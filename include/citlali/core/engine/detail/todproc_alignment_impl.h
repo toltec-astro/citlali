@@ -13,9 +13,14 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
     citlali::pipeline::clear_alignment_windows(engine().alignment);
     engine().alignment.gaps.clear();
+    auto candidate_raw_telescope =
+        std::make_shared<const citlali::pipeline::RawTelescopeTrajectory>(
+            engine().telescope.tel_data);
 
     // vector of network times
     std::vector<Eigen::VectorXd> nw_ts;
+    std::vector<citlali::pipeline::NativeNetworkAlignment>
+        native_networks;
 
     // sample rate
     double fsmp = -1;
@@ -50,6 +55,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
             // find gaps
             int gaps = citlali::pipeline::count_packet_counter_gaps(ts);
+            auto packet_counters =
+                citlali::pipeline::packet_counters_from_timestream_matrix(ts);
 
             // add gaps to engine map
             if (gaps>0) {
@@ -60,11 +67,15 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             double fpga_freq;
             fo.getVar("Header.Toltec.FpgaFreq").getVar(&fpga_freq);
 
-            nw_ts.push_back(
+            auto reconstructed_native_time =
                 citlali::pipeline::network_time_from_timestream_matrix(
                     ts.cast<double>(), fpga_freq,
                     engine().interface_sync.offsets[
-                        "toltec"+std::to_string(roach_index)]));
+                        "toltec"+std::to_string(roach_index)]);
+            nw_ts.push_back(reconstructed_native_time);
+            native_networks.emplace_back(
+                roach_index, 0, std::move(reconstructed_native_time),
+                std::move(packet_counters));
 
             fo.close();
 
@@ -139,14 +150,42 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     // shortest common data time vector
     Eigen::VectorXd xi = nw_ts[max_t0_i].segment(engine().alignment.start_indices[max_t0_i], min_size);
 
-    citlali::pipeline::interpolate_telescope_data_to_common_time(
-        engine().telescope.tel_data, xi, false);
+    std::vector<std::vector<citlali::pipeline::NativeSlotAssociation>>
+        native_associations;
+    native_associations.reserve(native_networks.size());
+    for (std::size_t network_index = 0;
+         network_index < native_networks.size(); ++network_index) {
+        native_associations.push_back(
+            citlali::pipeline::make_direct_native_slot_associations(
+                static_cast<citlali::pipeline::TimestreamNativeRow>(
+                    native_networks.at(network_index).first_native_row() +
+                    engine().alignment.start_indices.at(network_index)),
+                static_cast<std::size_t>(min_size)));
+    }
+    auto candidate_native_plan =
+        std::make_shared<const citlali::pipeline::NativeAlignmentPlan>(
+            std::move(native_networks), xi,
+            std::move(native_associations));
+
+    auto candidate_common_telescope =
+        citlali::pipeline::evaluate_raw_telescope_trajectory_at(
+            *candidate_raw_telescope, xi);
 
     // interpolate hwpr data
+    Eigen::VectorXd candidate_hwpr_angle;
     if (engine().calib.run_hwpr) {
+        candidate_hwpr_angle = engine().calib.hwpr_angle;
         citlali::pipeline::interpolate_hwpr_angle_to_common_time(
-            engine().calib.hwpr_angle, engine().calib.hwpr_recvt, xi);
+            candidate_hwpr_angle, engine().calib.hwpr_recvt, xi);
     }
+    engine().telescope.tel_data = std::move(candidate_common_telescope);
+    if (engine().calib.run_hwpr) {
+        engine().calib.hwpr_angle = std::move(candidate_hwpr_angle);
+    }
+    engine().alignment.raw_telescope_trajectory =
+        std::move(candidate_raw_telescope);
+    engine().alignment.native_consumer_plan =
+        std::move(candidate_native_plan);
 }
 
 // upgraded alignment of tod with telescope
@@ -156,10 +195,16 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
     using namespace netCDF::exceptions;
 
     citlali::pipeline::clear_gap_alignment_state(engine().alignment);
+    auto candidate_raw_telescope =
+        std::make_shared<const citlali::pipeline::RawTelescopeTrajectory>(
+            engine().telescope.tel_data);
 
     const auto kids_data = rawobs.kidsdata();
     std::vector<Eigen::VectorXd> nw_times(kids_data.size());
     std::vector<Eigen::Index> nw_ids(kids_data.size(), -1);
+    std::vector<citlali::pipeline::NativeNetworkAlignment>
+        native_networks;
+    native_networks.reserve(kids_data.size());
 
     // loop through networks and build time vectors
     double f_smp_roach = -1.0;
@@ -198,6 +243,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
 
             // find gaps
             int gaps = citlali::pipeline::count_packet_counter_gaps(ts);
+            auto packet_counters =
+                citlali::pipeline::packet_counters_from_timestream_matrix(ts);
 
             // add gaps to engine map
             if (gaps>0) {
@@ -210,6 +257,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
                     ts_double, fpga_freq,
                     engine().interface_sync.offsets[
                         "toltec"+std::to_string(roach_index)]);
+            native_networks.emplace_back(
+                roach_index, 0, nw_times[i], std::move(packet_counters));
 
             fo.close();
 
@@ -245,26 +294,54 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
         citlali::pipeline::build_common_time_grid_masks(
             nw_times, t_common, max_init_time, dt, tol, logger);
 
+    std::vector<std::vector<citlali::pipeline::NativeSlotAssociation>>
+        native_associations;
+    native_associations.reserve(native_networks.size());
+    for (std::size_t network_index = 0;
+         network_index < native_networks.size(); ++network_index) {
+        native_associations.push_back(
+            citlali::pipeline::make_gap_native_slot_associations(
+                native_networks.at(network_index), t_common,
+                masks.at(network_index), max_init_time, dt, tol));
+    }
+    auto candidate_native_plan =
+        std::make_shared<const citlali::pipeline::NativeAlignmentPlan>(
+            std::move(native_networks), t_common,
+            std::move(native_associations));
+
     // build a network-keyed mask table for downstream flagging
+    std::map<Eigen::Index, Eigen::VectorXi> candidate_network_masks;
     for (Eigen::Index j = 0; j < static_cast<Eigen::Index>(nw_ids.size()); ++j) {
         if (nw_ids[j] < 0) {
             continue;
         }
-        engine().alignment.network_masks[nw_ids[j]] = masks[j];
+        candidate_network_masks[nw_ids[j]] = masks[j];
     }
 
-    citlali::pipeline::interpolate_telescope_data_to_common_time(
-        engine().telescope.tel_data, t_common, true);
+    auto candidate_common_telescope =
+        citlali::pipeline::evaluate_raw_telescope_trajectory_at(
+            *candidate_raw_telescope, t_common);
 
     // interpolate hwpr
+    Eigen::VectorXd candidate_hwpr_angle;
     if (engine().calib.run_hwpr) {
         logger->debug("interpolating hwpr angle");
         int n_times = nw_times.size();
+        candidate_hwpr_angle = engine().calib.hwpr_angle;
         citlali::pipeline::interpolate_hwpr_angle_to_common_time(
-            engine().calib.hwpr_angle, nw_times[n_times - 1], t_common);
+            candidate_hwpr_angle, nw_times[n_times - 1], t_common);
     }
 
+    engine().telescope.tel_data = std::move(candidate_common_telescope);
+    if (engine().calib.run_hwpr) {
+        engine().calib.hwpr_angle = std::move(candidate_hwpr_angle);
+    }
     engine().alignment.common_time = t_common;
     engine().alignment.masks = masks;
     engine().alignment.network_times = nw_times;
+    engine().alignment.network_masks = std::move(candidate_network_masks);
+    engine().alignment.raw_telescope_trajectory =
+        std::move(candidate_raw_telescope);
+    engine().alignment.native_consumer_plan =
+        std::move(candidate_native_plan);
 }

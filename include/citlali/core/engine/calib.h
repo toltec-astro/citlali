@@ -1,13 +1,20 @@
 #pragma once
 
 #include <Eigen/Core>
+#include <cstdint>
+#include <memory>
 #include <string>
+#include <tuple>
 #include <vector>
 #include <map>
 #include <netcdf>
 
 #include <citlali/core/utils/ecsv_io.h>
 #include <citlali/core/utils/netcdf_io.h>
+
+namespace citlali::pipeline {
+class AptDetectorRelation;
+}
 
 namespace engine {
 
@@ -187,10 +194,44 @@ public:
     void setup();
     // read in apt (runs setup)
     void get_apt(const std::string &, std::vector<std::string> &, std::vector<std::string> &);
+    // Admit a byte- and receipt-verified canonical baseline APT. Detector
+    // columns are bound to the paired raw inputs, never to APT row order.
+    void get_canonical_baseline_apt(
+        const std::string &, const std::vector<std::string> &,
+        const std::vector<std::string> &);
+    // Admit a self-contained, byte- and receipt-verified APT-PROD-002
+    // observation artifact for ordinary runtime use. Its embedded verified
+    // baseline reference is provenance; runtime never dereferences the parent.
+    void get_canonical_observation_apt(
+        const std::string &, const std::vector<std::string> &,
+        const std::vector<std::string> &);
+    // Strict producer/issuance and explicitly invoked offline-audit admission.
+    // This overload revalidates the separately supplied baseline parent bytes.
+    void get_canonical_observation_apt(
+        const std::string &, const std::string &,
+        const std::vector<std::string> &,
+        const std::vector<std::string> &);
+    bool has_apt_detector_relation() const noexcept;
+    std::shared_ptr<const citlali::pipeline::AptDetectorRelation>
+    apt_detector_relation_handle() const noexcept;
+    const citlali::pipeline::AptDetectorRelation &
+    require_apt_detector_relation() const;
     // read in hwpr file if it exists
     void get_hwpr(const std::string &, bool);
     // determine flux conversion factors between various supported units
     void calc_flux_calibration(std::string, double);
+
+private:
+    // The typed relation is the sole detector-identity authority for a
+    // canonical admission. The public numeric APT remains a one-way legacy
+    // compatibility view and is never used to reconstruct this relation.
+    std::shared_ptr<const citlali::pipeline::AptDetectorRelation>
+        apt_detector_relation_;
+
+    void commit_apt_state(Calib &&candidate) noexcept;
+    void load_legacy_apt_in_place(
+        const std::string &, std::vector<std::string> &,
+        std::vector<std::string> &);
 };
 
 } // namespace engine

@@ -72,9 +72,15 @@ void finish_observation_calibration(TodProc &todproc, const RawObs &rawobs,
             make_apt_from_raw_files(todproc, rawobs, logger);
             return;
         }
+        // Beammap remains on its accepted legacy APT lane until the
+        // observation-matched Beammap contract and real fixture are approved.
+        load_array_properties_table(engine, rawobs, logger);
     }
-
-    load_array_properties_table(engine, rawobs, logger);
+    else {
+        // Science, Pointing, and OOF use only the self-contained canonical
+        // matched-observation artifact plus its adjacent receipt and raw data.
+        load_science_array_properties_table(engine, rawobs, logger);
+    }
 }
 
 template <bool IsBeammap, class TodProc, class RawObs, class Logger>

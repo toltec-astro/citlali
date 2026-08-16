@@ -21,6 +21,7 @@
 #include <citlali/core/pipeline/polarimetry_provenance.h>
 #include <citlali/core/pipeline/post_processing_provenance.h>
 #include <citlali/core/pipeline/post_processing_provenance_lifecycle.h>
+#include <citlali/core/pipeline/product_index_file.h>
 #include <citlali/core/pipeline/processed_timestream_provenance.h>
 #include <citlali/core/pipeline/reduction_pipeline.h>
 #include <citlali/core/pipeline/reduction_restart_checkpoint.h>
@@ -350,6 +351,12 @@ citlali::session::ReductionResult run_reduction_processor_session(
                 engine.output_paths.redu_dir_name)
                 .string());
     }
+
+    // This is the final completion witness.  Every required provenance/product
+    // write above has completed before the root index is atomically replaced;
+    // an exception propagates and no successful ReductionResult is returned.
+    citlali::pipeline::write_final_product_index_file(
+        engine.output_paths.redu_dir_name, result.provenance_artifacts);
 
     log_reduction_complete(logger);
     return result;

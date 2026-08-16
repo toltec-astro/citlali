@@ -16,6 +16,8 @@ class AstrometryBoundaryAuditTest(unittest.TestCase):
         self.assertFalse(result["drift"])
         self.assertTrue(result["boundary"]["exact"])
         self.assertTrue(result["provenance"]["origin_not_overclaimed"])
+        self.assertTrue(result["interpolation"]["native_trajectory_boundary"])
+        self.assertTrue(result["interpolation"]["incomplete_native_state_fails_closed"])
 
 
 if __name__ == "__main__":

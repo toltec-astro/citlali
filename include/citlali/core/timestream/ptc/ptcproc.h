@@ -15,6 +15,7 @@
 #include <numeric>
 #include <optional>
 #include <random>
+#include <set>
 #include <sstream>
 #include <type_traits>
 #include <unordered_map>
@@ -29,6 +30,7 @@
 
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/engine/io.h>
+#include <citlali/core/pipeline/timestream_native_consumer_bridge.h>
 #include <citlali/core/pipeline/timestream_invariant_validation.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
@@ -213,6 +215,368 @@ public:
 
     // ptc tod proc
     timestream::Cleaner cleaner;
+
+    // Phase B1 production-consumer seam.  It constructs the existing
+    // effective detector grouping (including exact corr_nw memberships and
+    // pass-through columns), gathers a private finite rectangular view from
+    // measured native rows, and checks optional-mode compatibility against
+    // the actual detector-cell exclusion mask.  It deliberately does not
+    // activate the bridge in run() at this checkpoint.
+    template <class calib_type>
+    citlali::pipeline::NativePreparedPcaOperation
+    prepare_native_consumer_pca(
+        const citlali::pipeline::NativeDetectorLedger &ledger,
+        const citlali::pipeline::NativeCohortSelection &selection,
+        calib_type &calib,
+        const std::string &grouping,
+        const citlali::pipeline::NativeDetectorFlagBitsMatrix &
+            actual_exclusion_bits,
+        citlali::pipeline::FinitePcaPlaceholder excluded_placeholder,
+        const citlali::pipeline::AptDetectorRelation *typed_relation =
+            nullptr) {
+        using namespace citlali::pipeline;
+
+        const auto detector_count =
+            static_cast<Eigen::Index>(calib.n_dets);
+        const auto &cohort = selection.cohort();
+        if (detector_count <= 0 ||
+            actual_exclusion_bits.rows() !=
+                static_cast<Eigen::Index>(cohort.slot_count()) ||
+            actual_exclusion_bits.cols() != detector_count) {
+            throw std::invalid_argument(
+                "native PTC exclusion mask must match the production cohort and detector count");
+        }
+        const auto requested_grouping =
+            Cleaner::normalize_group_name(grouping);
+        if (!Cleaner::is_supported_clean_group(requested_grouping)) {
+            throw std::invalid_argument(
+                "native PTC requested an unsupported production grouping");
+        }
+        const bool corr_nw_requested =
+            Cleaner::is_corr_nw_clean_group(requested_grouping);
+        const bool corr_nw_enabled =
+            corr_nw_requested && cleaner.corr_grouping.enabled;
+        std::string effective_grouping = requested_grouping;
+        if (corr_nw_requested && !corr_nw_enabled) {
+            if (logger != nullptr) {
+                logger->warn(
+                    "cleaning group 'corr_nw' requested but clean.corr_grouping.enabled=false; falling back to nw");
+            }
+            effective_grouping = "nw";
+        }
+
+        const auto &apt_flag = calib.apt.at("flag");
+        if (apt_flag.size() != detector_count ||
+            (typed_relation != nullptr &&
+             typed_relation->bindings().size() !=
+                 static_cast<std::size_t>(detector_count))) {
+            throw std::invalid_argument(
+                "native PTC detector bindings require a complete typed relation and flag policy");
+        }
+        const auto *apt_nw = typed_relation == nullptr
+            ? &calib.apt.at("nw") : nullptr;
+        const auto *apt_uid = typed_relation == nullptr
+            ? &calib.apt.at("uid") : nullptr;
+        if (typed_relation == nullptr &&
+            (apt_nw->size() != detector_count ||
+             apt_uid->size() != detector_count)) {
+            throw std::invalid_argument(
+                "legacy native PTC test binding requires complete nw and uid APT columns");
+        }
+
+        NativePreparedPcaOperation prepared{
+            cohort.operation(), effective_grouping, detector_count};
+        PcaCompatibilityInputs compatibility;
+        compatibility.null_model_active_for_operation =
+            cleaner.null_model.enabled &&
+            cleaner.null_model_enabled_for_group(effective_grouping);
+        compatibility.marchenko_pastur_active_for_operation =
+            cleaner.marchenko_pastur.enabled &&
+            cleaner.marchenko_pastur_enabled_for_group(effective_grouping);
+        compatibility.marchenko_pastur_band_requested =
+            cleaner.marchenko_pastur.band_low_Hz > 0.0 ||
+            cleaner.marchenko_pastur.band_high_Hz > 0.0;
+        compatibility.adaptive_selector_active_for_operation =
+            cleaner.adaptive_selector.enabled &&
+            cleaner.adaptive_selector_enabled_for_group(effective_grouping) &&
+            !corr_nw_enabled;
+
+        std::vector<TimestreamNetworkId> detector_networks(
+            static_cast<std::size_t>(detector_count));
+        std::vector<TimestreamDetectorUid> detector_uids(
+            static_cast<std::size_t>(detector_count));
+        Eigen::VectorXi detector_apt_flags(detector_count);
+        std::set<TimestreamDetectorUid> seen_uids;
+        for (Eigen::Index detector = 0; detector < detector_count;
+             ++detector) {
+            const long double apt_flag_value =
+                static_cast<long double>(apt_flag(detector));
+            if (!std::isfinite(apt_flag_value) ||
+                std::floor(apt_flag_value) != apt_flag_value ||
+                apt_flag_value < static_cast<long double>(
+                    std::numeric_limits<int>::min()) ||
+                apt_flag_value > static_cast<long double>(
+                    std::numeric_limits<int>::max())) {
+                throw std::invalid_argument(
+                    "production APT detector flag must be a representable integer");
+            }
+            TimestreamNetworkId network_id = -1;
+            TimestreamDetectorUid uid = -1;
+            if (typed_relation != nullptr) {
+                const auto reference =
+                    typed_relation->binding_reference_for_column(
+                        static_cast<std::size_t>(detector));
+                const auto &binding =
+                    typed_relation->require_binding(reference);
+                network_id = static_cast<TimestreamNetworkId>(
+                    binding.network);
+                uid = static_cast<TimestreamDetectorUid>(binding.uid);
+            }
+            else {
+                const long double network_value =
+                    static_cast<long double>((*apt_nw)(detector));
+                const long double uid_value =
+                    static_cast<long double>((*apt_uid)(detector));
+                if (!std::isfinite(network_value) ||
+                    std::floor(network_value) != network_value ||
+                    network_value < 0.0L ||
+                    network_value > static_cast<long double>(
+                        std::numeric_limits<TimestreamNetworkId>::max())) {
+                    throw std::invalid_argument(
+                        "production APT nw binding must be a nonnegative integer network ID");
+                }
+                if (!std::isfinite(uid_value) ||
+                    std::floor(uid_value) != uid_value ||
+                    uid_value < 0.0L ||
+                    uid_value > static_cast<long double>(
+                        std::numeric_limits<TimestreamDetectorUid>::max())) {
+                    throw std::invalid_argument(
+                        "production APT uid binding must be a nonnegative representable integer");
+                }
+                network_id =
+                    static_cast<TimestreamNetworkId>(network_value);
+                uid = static_cast<TimestreamDetectorUid>(uid_value);
+            }
+            if (!seen_uids.insert(uid).second) {
+                throw std::invalid_argument(
+                    "production APT detector UID must be injective");
+            }
+            detector_networks.at(static_cast<std::size_t>(detector)) =
+                network_id;
+            detector_uids.at(static_cast<std::size_t>(detector)) = uid;
+            detector_apt_flags(detector) =
+                static_cast<int>(apt_flag_value);
+        }
+
+        auto make_prepared_group =
+            [&](std::vector<TimestreamDetectorColumn> detector_columns,
+                Eigen::Index group_key,
+                Eigen::Index subgroup_index,
+                NativePreparedPcaGroupRole role) {
+                if (detector_columns.empty()) {
+                    throw std::logic_error(
+                        "native PTC prepared group must contain detectors");
+                }
+                const auto group_detector_count =
+                    static_cast<Eigen::Index>(detector_columns.size());
+                std::vector<NativeDetectorColumnBinding> bindings;
+                std::vector<TimestreamDetectorUid> group_uids;
+                bindings.reserve(detector_columns.size());
+                group_uids.reserve(detector_columns.size());
+                Eigen::VectorXi group_apt_flags(group_detector_count);
+                NativeDetectorFlagBitsMatrix group_exclusions(
+                    actual_exclusion_bits.rows(), group_detector_count);
+                for (Eigen::Index local = 0;
+                     local < group_detector_count; ++local) {
+                    const auto detector_column = detector_columns.at(
+                        static_cast<std::size_t>(local));
+                    if (detector_column < 0 ||
+                        detector_column >= detector_count) {
+                        throw std::logic_error(
+                            "native PTC detector subgroup column is out of range");
+                    }
+                    const auto index =
+                        static_cast<std::size_t>(detector_column);
+                    bindings.push_back(NativeDetectorColumnBinding{
+                        detector_column, detector_uids.at(index),
+                        detector_networks.at(index)});
+                    group_uids.push_back(detector_uids.at(index));
+                    group_apt_flags(local) =
+                        detector_apt_flags(detector_column);
+                    group_exclusions.col(local) =
+                        actual_exclusion_bits.col(detector_column);
+                }
+                auto working = gather_native_detector_pca_working_set(
+                    ledger, selection, std::move(bindings),
+                    group_exclusions, excluded_placeholder);
+                finalize_native_detector_pca_binding(
+                    working, group_apt_flags, excluded_placeholder);
+                require_native_detector_pca_compatibility(
+                    classify_native_detector_pca_compatibility(
+                        working, compatibility));
+                return NativePreparedPcaGroup{
+                    effective_grouping, group_key, subgroup_index,
+                    role, std::move(detector_columns),
+                    std::move(group_uids), std::move(group_apt_flags),
+                    std::move(working)};
+            };
+
+        std::map<Eigen::Index,
+                 std::tuple<Eigen::Index, Eigen::Index>> group_limits;
+        if (corr_nw_enabled) {
+            if (typed_relation != nullptr) {
+                Eigen::Index first = 0;
+                while (first < detector_count) {
+                    const auto network = detector_networks.at(
+                        static_cast<std::size_t>(first));
+                    Eigen::Index past = first + 1;
+                    while (past < detector_count &&
+                           detector_networks.at(
+                               static_cast<std::size_t>(past)) == network) {
+                        ++past;
+                    }
+                    if (!group_limits
+                             .emplace(network,
+                                      std::make_tuple(first, past))
+                             .second) {
+                        throw std::logic_error(
+                            "typed PTC network detector columns are not contiguous");
+                    }
+                    first = past;
+                }
+            }
+            else {
+                group_limits = get_grouping("nw", calib, detector_count);
+            }
+            for (const auto &[network_key, limits] : group_limits) {
+                const auto first = std::get<0>(limits);
+                const auto past = std::get<1>(limits);
+                if (first < 0 || past <= first || past > detector_count) {
+                    throw std::logic_error(
+                        "production corr_nw base grouping produced an invalid network interval");
+                }
+                for (auto detector = first; detector < past; ++detector) {
+                    if (detector_networks.at(static_cast<std::size_t>(
+                            detector)) != network_key) {
+                        throw std::logic_error(
+                            "production corr_nw base interval and APT network identity disagree");
+                    }
+                }
+                std::vector<TimestreamDetectorColumn> base_columns;
+                base_columns.reserve(static_cast<std::size_t>(past - first));
+                for (auto detector = first; detector < past; ++detector) {
+                    base_columns.push_back(detector);
+                }
+                auto base_group = make_prepared_group(
+                    base_columns, network_key, 0,
+                    NativePreparedPcaGroupRole::pca_clean);
+                const auto corr_groups = cleaner.get_corr_groups(
+                    base_group.working_set.values(),
+                    base_group.working_set.exclusion_flags(),
+                    base_group.apt_flags);
+                std::vector<bool> grouped(
+                    static_cast<std::size_t>(past - first), false);
+                for (Eigen::Index subgroup_index = 0;
+                     subgroup_index < static_cast<Eigen::Index>(
+                         corr_groups.groups.size()); ++subgroup_index) {
+                    const auto &local_columns = corr_groups.groups.at(
+                        static_cast<std::size_t>(subgroup_index));
+                    if (local_columns.size() < 2) {
+                        continue;
+                    }
+                    std::vector<TimestreamDetectorColumn> global_columns;
+                    global_columns.reserve(local_columns.size());
+                    for (const auto local_column : local_columns) {
+                        if (local_column < 0 ||
+                            local_column >= past - first ||
+                            grouped.at(static_cast<std::size_t>(
+                                local_column))) {
+                            throw std::logic_error(
+                                "production corr_nw subgroup is not an injective network-local binding");
+                        }
+                        grouped.at(static_cast<std::size_t>(local_column)) =
+                            true;
+                        global_columns.push_back(first + local_column);
+                    }
+                    prepared.groups.push_back(make_prepared_group(
+                        std::move(global_columns), network_key,
+                        subgroup_index,
+                        NativePreparedPcaGroupRole::pca_clean));
+                }
+                std::vector<TimestreamDetectorColumn> pass_through_columns;
+                for (Eigen::Index local = 0; local < past - first; ++local) {
+                    if (!grouped.at(static_cast<std::size_t>(local))) {
+                        pass_through_columns.push_back(first + local);
+                    }
+                }
+                if (!pass_through_columns.empty()) {
+                    prepared.groups.push_back(make_prepared_group(
+                        std::move(pass_through_columns), network_key,
+                        static_cast<Eigen::Index>(corr_groups.groups.size()),
+                        NativePreparedPcaGroupRole::pass_through));
+                }
+            }
+            prepared.require_complete_detector_partition();
+            return prepared;
+        }
+
+        if (Cleaner::is_all_clean_group(effective_grouping)) {
+            group_limits[0] = std::make_tuple(0, detector_count);
+        }
+        else if (typed_relation != nullptr &&
+                 citlali::config::is_network_map_grouping(
+                     effective_grouping)) {
+            Eigen::Index first = 0;
+            while (first < detector_count) {
+                const auto network = detector_networks.at(
+                    static_cast<std::size_t>(first));
+                Eigen::Index past = first + 1;
+                while (past < detector_count &&
+                       detector_networks.at(
+                           static_cast<std::size_t>(past)) == network) {
+                    ++past;
+                }
+                if (!group_limits
+                         .emplace(network, std::make_tuple(first, past))
+                         .second) {
+                    throw std::logic_error(
+                        "typed PTC network detector columns are not contiguous");
+                }
+                first = past;
+            }
+        }
+        else {
+            const auto grouping_column = calib.apt.find(effective_grouping);
+            if (grouping_column == calib.apt.end() ||
+                grouping_column->second.size() != detector_count) {
+                throw std::invalid_argument(
+                    "native PTC production grouping APT column is missing or incomplete");
+            }
+            group_limits =
+                get_grouping(effective_grouping, calib, detector_count);
+        }
+
+        for (const auto &[group_key, limits] : group_limits) {
+            const auto first = std::get<0>(limits);
+            const auto past = std::get<1>(limits);
+            if (first < 0 || past <= first || past > detector_count) {
+                throw std::logic_error(
+                    "production PTC grouping produced an invalid detector interval");
+            }
+            std::vector<TimestreamDetectorColumn> detector_columns;
+            detector_columns.reserve(
+                static_cast<std::size_t>(past - first));
+            for (auto detector_column = first;
+                 detector_column < past; ++detector_column) {
+                detector_columns.push_back(detector_column);
+            }
+            prepared.groups.push_back(make_prepared_group(
+                std::move(detector_columns), group_key, 0,
+                NativePreparedPcaGroupRole::pca_clean));
+        }
+        prepared.require_complete_detector_partition();
+        return prepared;
+    }
 
     struct CorrNWDiagSummary {
         Eigen::Index nw = -1;
@@ -413,10 +777,27 @@ public:
     void subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
                        const Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> *flags_override = nullptr);
 
+    struct RunDiagnosticTransaction {
+        std::optional<Eigen::VectorXi> corr_nw_group_ids;
+        std::optional<std::vector<CorrNWDiagSummary>> corr_nw_summary;
+        std::optional<std::vector<AdaptiveSelectorDiagSummary>>
+            adaptive_selector_summary;
+        std::optional<MeanRealizationSummary> mean_realization;
+        std::optional<std::vector<PCARealizationSummary>>
+            pca_realizations;
+    };
+
     // run main processing stage
     template <class calib_type>
     void run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
              calib_type &, std::string, std::string);
+
+    template <class calib_type>
+    void run_impl(TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
+                  TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
+                  calib_type &, std::string, std::string,
+                  const citlali::pipeline::AptDetectorRelation * = nullptr,
+                  RunDiagnosticTransaction * = nullptr);
 
     template <class calib_type>
     void apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_type &,
@@ -735,8 +1116,294 @@ template <class calib_type>
 void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKind::PTC, Eigen::MatrixXd> &out,
                   calib_type &calib, std::string pixel_axes, std::string map_grouping) {
 
+    in.require_native_science_mode_consistent();
+    if (!in.native_science_required()) {
+        run_impl(in, out, calib, std::move(pixel_axes),
+                 std::move(map_grouping));
+        return;
+    }
+    if (&in != &out) {
+        throw std::runtime_error(
+            "native-required PTC requires one transaction-owned in-place scan object");
+    }
+    if (weight_validation_is_enabled()) {
+        throw std::runtime_error(
+            "native-required PTC does not permit dense legacy-UID weight validation");
+    }
+
+    const auto &native = in.require_native_scan();
+    native.require_compatible(
+        in.scans.data.rows(), in.scans.data.cols(), in.index.data);
+    if (!native.is_processed_projection() ||
+        native.rtc_output_rows().size() !=
+            static_cast<std::size_t>(in.scans.data.rows())) {
+        throw std::runtime_error(
+            "native-required PTC requires exact prior RTC output provenance");
+    }
+    bool has_typed_relation = false;
+    std::shared_ptr<const citlali::pipeline::AptDetectorRelation>
+        relation_handle;
+    if constexpr (requires(calib_type &candidate) {
+                      candidate.has_apt_detector_relation();
+                      candidate.apt_detector_relation_handle();
+                  }) {
+        has_typed_relation = calib.has_apt_detector_relation();
+        relation_handle = calib.apt_detector_relation_handle();
+    }
+    if (!has_typed_relation) {
+        throw std::runtime_error(
+            "native-required PTC requires a typed artifact-scoped detector relation");
+    }
+    if (!relation_handle ||
+        relation_handle.get() != native.detector_relation_handle().get()) {
+        throw std::runtime_error(
+            "native-required PTC detector relation is stale or cross-scope");
+    }
+    if (run_tod_output || write_evals) {
+        throw std::runtime_error(
+            "native-required PTC output awaits B3 artifact-occurrence provenance synchronization");
+    }
+    if (second_pass_local.enabled) {
+        throw std::runtime_error(
+            "native-required PTC second-pass windowing lacks a bounded native-run carrier");
+    }
+    if (in.scans.data.rows() <= 0 || in.scans.data.cols() <= 0 ||
+        in.flags.data.rows() != in.scans.data.rows() ||
+        in.flags.data.cols() != in.scans.data.cols() ||
+        !in.scans.data.array().isFinite().all()) {
+        throw std::runtime_error(
+            "native-required PTC candidate must be a finite measured matrix with exact flags");
+    }
+    if (in.kernel.data.size() != 0 &&
+        (in.kernel.data.rows() != in.scans.data.rows() ||
+         in.kernel.data.cols() != in.scans.data.cols() ||
+         !in.kernel.data.array().isFinite().all())) {
+        throw std::runtime_error(
+            "native-required PTC kernel candidate differs from its measured matrix");
+    }
+
+    using namespace citlali::pipeline;
+    const auto n_rows = in.scans.data.rows();
+    const auto n_dets = in.scans.data.cols();
+    const auto apt_flag = calib.apt.find("flag");
+    if (apt_flag == calib.apt.end() ||
+        apt_flag->second.size() != n_dets) {
+        throw std::runtime_error(
+            "native-required PTC detector flag policy differs from the typed detector relation");
+    }
+    const auto &participants =
+        native.alignment_plan_handle()->participant_network_ids();
+    std::map<TimestreamNetworkId, Eigen::Index> first_column_by_network;
+    for (Eigen::Index detector = 0; detector < n_dets; ++detector) {
+        const auto &binding = relation_handle->require_binding(
+            relation_handle->binding_reference_for_column(
+                static_cast<std::size_t>(detector)));
+        first_column_by_network.try_emplace(
+            static_cast<TimestreamNetworkId>(binding.network), detector);
+    }
+    if (first_column_by_network.size() != participants.size()) {
+        throw std::runtime_error(
+            "native-required PTC typed detector networks differ from the cohort participants");
+    }
+
+    std::optional<TimestreamNativeRevision> input_revision;
+    std::optional<std::size_t> previous_common_slot;
+    for (Eigen::Index row = 0; row < n_rows; ++row) {
+        const auto common_slot = native.relational_common_slot(row);
+        if (previous_common_slot.has_value() &&
+            common_slot <= *previous_common_slot) {
+            throw std::runtime_error(
+                "native-required PTC relational grouping provenance is not strictly ordered");
+        }
+        previous_common_slot = common_slot;
+        for (const auto network_id : participants) {
+            const auto column = first_column_by_network.at(network_id);
+            const auto cell = native.require_cell(row, column);
+            if (cell.identity.network_id() != network_id) {
+                throw std::runtime_error(
+                    "native-required PTC cohort identity changed network");
+            }
+            if (!input_revision.has_value()) {
+                input_revision = cell.expected_revision;
+            }
+            else if (*input_revision != cell.expected_revision) {
+                throw std::runtime_error(
+                    "native-required PTC input revisions are not coherent");
+            }
+        }
+        for (Eigen::Index detector = 0; detector < n_dets; ++detector) {
+            const auto cell = native.require_cell(row, detector);
+            const auto &binding = relation_handle->require_binding(
+                cell.detector);
+            if (binding.detector_column !=
+                    static_cast<std::size_t>(detector) ||
+                binding.network != cell.identity.network_id()) {
+                throw std::runtime_error(
+                    "native-required PTC typed detector binding changed during gather");
+            }
+        }
+    }
+    if (!input_revision.has_value()) {
+        throw std::runtime_error(
+            "native-required PTC lacks an input revision");
+    }
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> operation_mask =
+        in.flags.data;
+    if (run_clean && mask_radius_arcsec > 0) {
+        operation_mask = mask_region(
+            in, calib, pixel_axes, map_grouping, n_rows, n_dets, 0);
+    }
+    if (run_clean) {
+        for (const auto &grouping : cleaner.grouping) {
+            const auto effective_grouping =
+                Cleaner::is_corr_nw_clean_group(grouping) &&
+                        !cleaner.corr_grouping.enabled
+                    ? std::string{"nw"}
+                    : Cleaner::normalize_group_name(grouping);
+            PcaCompatibilityInputs compatibility;
+            compatibility.null_model_active_for_operation =
+                cleaner.null_model.enabled &&
+                cleaner.null_model_enabled_for_group(effective_grouping);
+            compatibility.marchenko_pastur_active_for_operation =
+                cleaner.marchenko_pastur.enabled &&
+                cleaner.marchenko_pastur_enabled_for_group(
+                    effective_grouping);
+            compatibility.marchenko_pastur_band_requested =
+                cleaner.marchenko_pastur.band_low_Hz > 0.0 ||
+                cleaner.marchenko_pastur.band_high_Hz > 0.0;
+            compatibility.adaptive_selector_active_for_operation =
+                cleaner.adaptive_selector.enabled &&
+                cleaner.adaptive_selector_enabled_for_group(
+                    effective_grouping) &&
+                !Cleaner::is_corr_nw_clean_group(effective_grouping);
+            const bool has_excluded_cells =
+                operation_mask.count() != 0 ||
+                (apt_flag->second.array() != 0).any();
+            require_native_detector_pca_compatibility(
+                classify_native_detector_pca_compatibility(
+                    has_excluded_cells, compatibility));
+        }
+    }
+
+    const auto scan_id = in.index.data;
+    RunDiagnosticTransaction diagnostics;
+    auto candidate = in;
+    run_impl(candidate, candidate, calib, pixel_axes, map_grouping,
+             relation_handle.get(), &diagnostics);
+    for (Eigen::Index detector = 0; detector < n_dets; ++detector) {
+        const bool detector_excluded =
+            apt_flag->second(detector) != 0;
+        for (Eigen::Index row = 0; row < n_rows; ++row) {
+            if (!detector_excluded && !operation_mask(row, detector)) {
+                if (!std::isfinite(candidate.scans.data(row, detector)) ||
+                    (candidate.kernel.data.size() != 0 &&
+                     !std::isfinite(candidate.kernel.data(
+                         row, detector)))) {
+                    throw std::runtime_error(
+                        "native-required PTC candidate produced a nonfinite scientific value");
+                }
+                continue;
+            }
+            candidate.scans.data(row, detector) =
+                in.scans.data(row, detector);
+            candidate.flags.data(row, detector) =
+                in.flags.data(row, detector);
+            if (candidate.kernel.data.size() != 0) {
+                candidate.kernel.data(row, detector) =
+                    in.kernel.data(row, detector);
+            }
+        }
+    }
+    if (candidate.native_scan.get() != in.native_scan.get() ||
+        candidate.native_science_mode != in.native_science_mode) {
+        throw std::runtime_error(
+            "native-required PTC candidate changed an immutable input authority");
+    }
+    candidate.native_scan =
+        NativeMeasuredScanState::advance_revision(
+            candidate.native_scan);
+    candidate.require_native_science_mode_consistent();
+    candidate.require_native_scan().require_compatible(
+        candidate.scans.data.rows(), candidate.scans.data.cols(),
+        candidate.index.data);
+
+    auto stage_entry = [scan_id](auto &destination,
+                                 const auto &source) {
+        if (source.has_value()) {
+            destination[scan_id] = *source;
+        }
+        else {
+            destination.erase(scan_id);
+        }
+    };
+    std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+    auto pca_candidate = pca_realization_summary_by_scan;
+    auto mean_candidate = mean_realization_summary_by_scan;
+    auto corr_ids_candidate = corr_nw_group_ids_by_scan;
+    auto corr_summary_candidate = corr_nw_summary_by_scan;
+    auto adaptive_candidate = adaptive_selector_summary_by_scan;
+    stage_entry(pca_candidate, diagnostics.pca_realizations);
+    stage_entry(mean_candidate, diagnostics.mean_realization);
+    stage_entry(corr_ids_candidate, diagnostics.corr_nw_group_ids);
+    stage_entry(corr_summary_candidate, diagnostics.corr_nw_summary);
+    stage_entry(adaptive_candidate,
+                diagnostics.adaptive_selector_summary);
+    in = std::move(candidate);
+    pca_realization_summary_by_scan.swap(pca_candidate);
+    mean_realization_summary_by_scan.swap(mean_candidate);
+    corr_nw_group_ids_by_scan.swap(corr_ids_candidate);
+    corr_nw_summary_by_scan.swap(corr_summary_candidate);
+    adaptive_selector_summary_by_scan.swap(adaptive_candidate);
+}
+
+template <class calib_type>
+void PTCProc::run_impl(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKind::PTC, Eigen::MatrixXd> &out,
+                       calib_type &calib, std::string pixel_axes, std::string map_grouping,
+                       const citlali::pipeline::AptDetectorRelation *typed_relation,
+                       RunDiagnosticTransaction *diagnostics) {
+
     Eigen::Index n_pts = in.scans.data.rows();
     Eigen::Index n_dets = in.scans.data.cols();
+    auto get_runtime_grouping = [&](const std::string &grouping) {
+        if (typed_relation == nullptr ||
+            !citlali::config::is_network_map_grouping(
+                Cleaner::normalize_group_name(grouping))) {
+            return get_grouping(grouping, calib, n_dets);
+        }
+        if (typed_relation->bindings().size() !=
+            static_cast<std::size_t>(n_dets)) {
+            throw std::runtime_error(
+                "native-required PTC typed relation is incomplete for network grouping");
+        }
+        std::map<Eigen::Index,
+                 std::tuple<Eigen::Index, Eigen::Index>> group_limits;
+        std::set<Eigen::Index> seen;
+        Eigen::Index first = 0;
+        while (first < n_dets) {
+            const auto &first_binding = typed_relation->require_binding(
+                typed_relation->binding_reference_for_column(
+                    static_cast<std::size_t>(first)));
+            const auto network =
+                static_cast<Eigen::Index>(first_binding.network);
+            if (!seen.insert(network).second) {
+                throw std::runtime_error(
+                    "native-required PTC typed network detector columns are not contiguous");
+            }
+            Eigen::Index past = first + 1;
+            while (past < n_dets) {
+                const auto &binding = typed_relation->require_binding(
+                    typed_relation->binding_reference_for_column(
+                        static_cast<std::size_t>(past)));
+                if (static_cast<Eigen::Index>(binding.network) != network) {
+                    break;
+                }
+                ++past;
+            }
+            group_limits.emplace(network, std::make_tuple(first, past));
+            first = past;
+        }
+        return group_limits;
+    };
     MeanRealizationSummary mean_realization;
     mean_realization.mean_subtracted = true;
     std::vector<PCARealizationSummary> pca_realizations;
@@ -858,7 +1525,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                     Eigen::VectorXi corr_group_ids_scan = Eigen::VectorXi::Constant(in.scans.data.cols(), -1);
                     std::vector<CorrNWDiagSummary> corr_summary_scan;
                     corr_summary_scan.reserve(static_cast<std::size_t>(calib.n_nws));
-                    grp_limits = get_grouping("nw", calib, in.scans.data.cols());
+                    grp_limits = get_runtime_grouping("nw");
                     for (auto const& [key, val] : grp_limits) {
                         const Eigen::Index nw_index = key;
                         const Eigen::Index arr_index = toltec_io.nw_to_array_map[key];
@@ -990,7 +1657,13 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
                             }
                         }
                     }
-                    {
+                    if (diagnostics != nullptr) {
+                        diagnostics->corr_nw_group_ids =
+                            std::move(corr_group_ids_scan);
+                        diagnostics->corr_nw_summary =
+                            std::move(corr_summary_scan);
+                    }
+                    else {
                         std::lock_guard<std::mutex> lock(*diag_summary_mutex);
                         corr_nw_group_ids_by_scan[in.index.data] = std::move(corr_group_ids_scan);
                         corr_nw_summary_by_scan[in.index.data] = std::move(corr_summary_scan);
@@ -1007,7 +1680,7 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             }
             else {
                 // get group limits
-                grp_limits = get_grouping(effective_group, calib, in.scans.data.cols());
+                grp_limits = get_runtime_grouping(effective_group);
             }
             // loop through cleaning groups
             for (auto const& [key, val] : grp_limits) {
@@ -1195,8 +1868,15 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             log_kernel_matrix_diag(logger, "ptc after clean group=" + effective_group, out.kernel.data, in.index.data);
         }
         if (!adaptive_summary_scan.empty()) {
-            std::lock_guard<std::mutex> lock(*diag_summary_mutex);
-            adaptive_selector_summary_by_scan[in.index.data] = std::move(adaptive_summary_scan);
+            if (diagnostics != nullptr) {
+                diagnostics->adaptive_selector_summary =
+                    std::move(adaptive_summary_scan);
+            }
+            else {
+                std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+                adaptive_selector_summary_by_scan[in.index.data] =
+                    std::move(adaptive_summary_scan);
+            }
         }
     }
 
@@ -1208,7 +1888,11 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
             apply_second_pass_local(out, calib, pixel_axes, map_grouping);
         }
     }
-    {
+    if (diagnostics != nullptr) {
+        diagnostics->mean_realization = std::move(mean_realization);
+        diagnostics->pca_realizations = std::move(pca_realizations);
+    }
+    else {
         std::lock_guard<std::mutex> lock(*diag_summary_mutex);
         mean_realization_summary_by_scan[in.index.data] =
             std::move(mean_realization);
@@ -1221,6 +1905,9 @@ void PTCProc::run(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, TCData<TCDataKin
 template <class calib_type>
 void PTCProc::apply_second_pass_local(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, calib_type &calib,
                                       std::string pixel_axes, std::string map_grouping) {
+
+    engine_utils::reject_native_science_consumer(
+        in, "PTC second-pass windowing across native run support");
 
     struct DetectorEventRow {
         Eigen::Index nw = -1;
@@ -2050,6 +2737,12 @@ template <typename apt_type>
 void PTCProc::accumulate_weight_validation_atmosphere(
     TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_type &apt) {
 
+    in.require_native_science_mode_consistent();
+    if (in.native_science_required() &&
+        weight_validation_is_enabled()) {
+        throw std::runtime_error(
+            "native-required PTC does not permit legacy-UID atmosphere weight validation");
+    }
     if (!weight_validation_is_enabled() ||
         !weight_validation.atmospheric_correlation_enabled) {
         return;
@@ -2326,6 +3019,18 @@ void PTCProc::accumulate_weight_validation_atmosphere(
 template <typename apt_type, class tel_type>
 void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_type &apt, tel_type &telescope,
                            bool source_subtracted_for_weight_validation) {
+    engine_utils::require_native_science_matrix(in);
+    if (in.native_science_required() &&
+        weight_validation_is_enabled()) {
+        throw std::runtime_error(
+            "native-required PTC does not permit dense legacy-UID weight validation");
+    }
+    if (in.native_science_required() &&
+        (weight_corr_penalty.enabled ||
+         busy_row_suppression.enabled)) {
+        throw std::runtime_error(
+            "native-required PTC does not permit nontransactional processed-weight diagnostic penalties");
+    }
     // number of detectors
     Eigen::Index n_dets = in.scans.data.cols();
     const auto scan_index_1based = static_cast<long long>(in.index.data) + 1;
@@ -2413,10 +3118,11 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                         map_index < fruit_loops_source_valid.size() &&
                         fruit_loops_source_valid(map_index)) {
                         Eigen::Matrix<bool, Eigen::Dynamic, 1> weight_flags = base_flags;
-                        auto [lat, lon] = engine_utils::calc_det_pointing(
-                            in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
-                            telescope.pixel_axes, in.pointing_offsets_arcsec.data,
-                            active_map_grouping);
+                        auto [lat, lon] =
+                            engine_utils::calc_det_pointing_for_science_sample(
+                                in, i, apt["x_t"](i), apt["y_t"](i),
+                                telescope.pixel_axes,
+                                active_map_grouping);
                         const double source_lat = fruit_loops_source_lat(map_index);
                         const double source_lon = fruit_loops_source_lon(map_index);
                         for (Eigen::Index j = 0; j < weight_flags.size(); ++j) {
@@ -2479,6 +3185,19 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         };
 
         auto uid_for = [&](Eigen::Index i) {
+            if (in.native_science_required()) {
+                const auto uid =
+                    in.require_native_scan()
+                        .require_detector_binding(i).uid;
+                if (uid < 0 ||
+                    static_cast<std::uint64_t>(uid) >
+                        static_cast<std::uint64_t>(
+                            std::numeric_limits<Eigen::Index>::max())) {
+                    throw std::runtime_error(
+                        "native-required validated weight UID is not exactly representable");
+                }
+                return static_cast<Eigen::Index>(uid);
+            }
             auto uid_it = apt.find("uid");
             if (uid_it != apt.end() && i < uid_it->second.size() &&
                 std::isfinite(uid_it->second(i))) {
@@ -2518,10 +3237,11 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                     map_index < fruit_loops_source_valid.size() &&
                     fruit_loops_source_valid(map_index)) {
                     Eigen::Matrix<bool, Eigen::Dynamic, 1> weight_flags = base_flags;
-                    auto [lat, lon] = engine_utils::calc_det_pointing(
-                        in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
-                        telescope.pixel_axes, in.pointing_offsets_arcsec.data,
-                        active_map_grouping);
+                    auto [lat, lon] =
+                        engine_utils::calc_det_pointing_for_science_sample(
+                            in, i, apt["x_t"](i), apt["y_t"](i),
+                            telescope.pixel_axes,
+                            active_map_grouping);
                     const double source_lat = fruit_loops_source_lat(map_index);
                     const double source_lon = fruit_loops_source_lon(map_index);
                     for (Eigen::Index j = 0; j < weight_flags.size(); ++j) {
@@ -2583,6 +3303,19 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
         std::vector<HighWeightDiagSummary> high_weight_records;
 
         auto safe_apt_int = [&](const std::string &key, Eigen::Index i, Eigen::Index fallback) {
+            if (key == "nw" && in.native_science_required()) {
+                const auto network =
+                    in.require_native_scan()
+                        .require_detector_binding(i).network;
+                if (network < 0 ||
+                    static_cast<std::uint64_t>(network) >
+                        static_cast<std::uint64_t>(
+                            std::numeric_limits<Eigen::Index>::max())) {
+                    throw std::runtime_error(
+                        "native-required validated weight network is not exactly representable");
+                }
+                return static_cast<Eigen::Index>(network);
+            }
             auto it = apt.find(key);
             if (it != apt.end() && i >= 0 && i < it->second.size() &&
                 std::isfinite(it->second(i))) {
@@ -2937,12 +3670,29 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
     std::map<Eigen::Index, std::tuple<Eigen::Index, Eigen::Index>> nw_limits;
     if (weight_corr_penalty.enabled || busy_row_suppression.enabled) {
         if (n_dets > 0) {
-            Eigen::Index nw_i = static_cast<Eigen::Index>(apt["nw"](0));
+            auto network_for = [&](Eigen::Index detector) {
+                if (!in.native_science_required()) {
+                    return static_cast<Eigen::Index>(
+                        apt["nw"](detector));
+                }
+                const auto network =
+                    in.require_native_scan()
+                        .require_detector_binding(detector).network;
+                if (network < 0 ||
+                    static_cast<std::uint64_t>(network) >
+                        static_cast<std::uint64_t>(
+                            std::numeric_limits<Eigen::Index>::max())) {
+                    throw std::runtime_error(
+                        "native-required weight-correlation network is not exactly representable");
+                }
+                return static_cast<Eigen::Index>(network);
+            };
+            Eigen::Index nw_i = network_for(0);
             nw_limits[nw_i] = std::tuple<Eigen::Index, Eigen::Index>{0, 1};
             std::unordered_set<Eigen::Index> seen;
             seen.insert(nw_i);
             for (Eigen::Index i = 1; i < n_dets; ++i) {
-                auto nw_v = static_cast<Eigen::Index>(apt["nw"](i));
+                auto nw_v = network_for(i);
                 if (nw_v == nw_i) {
                     std::get<1>(nw_limits[nw_i]) = i + 1;
                 }
@@ -3238,18 +3988,39 @@ void PTCProc::calc_weights(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, apt_typ
                 }
 
                 if (weight_corr_penalty.cm_el_corr.enabled) {
-                    const auto el_it = in.tel_data.data.find("TelElAct");
-                    if (el_it != in.tel_data.data.end()) {
-                        const auto &tel_el = el_it->second;
+                    std::optional<Eigen::VectorXd> native_tel_el;
+                    const Eigen::VectorXd *tel_el = nullptr;
+                    if (in.native_science_required()) {
+                        const auto telescope_data =
+                            in.require_native_scan()
+                                .telescope_data_for_detector(start_index);
+                        const auto el_it =
+                            telescope_data.find("TelElAct");
+                        if (el_it == telescope_data.end() ||
+                            el_it->second.size() != n_pts_full) {
+                            throw std::runtime_error(
+                                "native-required weight correlation lacks network-native elevation");
+                        }
+                        native_tel_el = el_it->second;
+                        tel_el = &*native_tel_el;
+                    }
+                    else {
+                        const auto el_it =
+                            in.tel_data.data.find("TelElAct");
+                        if (el_it != in.tel_data.data.end()) {
+                            tel_el = &el_it->second;
+                        }
+                    }
+                    if (tel_el != nullptr) {
                         cm_valid.reserve(static_cast<std::size_t>(n_pts));
                         el_valid.reserve(static_cast<std::size_t>(n_pts));
                         for (Eigen::Index is = 0; is < n_pts; ++is) {
                             const Eigen::Index i = is * sample_step;
-                            if (i >= n_pts_full || i >= tel_el.size()) {
+                            if (i >= n_pts_full || i >= tel_el->size()) {
                                 break;
                             }
                             const double c = cm(is);
-                            const double e = tel_el(i);
+                            const double e = (*tel_el)(i);
                             if (!std::isfinite(c) || !std::isfinite(e)) {
                                 continue;
                             }
@@ -4226,6 +4997,8 @@ void PTCProc::append_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std
 template <typename calib_t>
 void PTCProc::append_diag_to_netcdf(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, std::string filepath,
                                     calib_t &calib, Eigen::Index scan_row_index) {
+    engine_utils::reject_native_science_consumer(
+        in, "PTC diagnostic output before B3 native provenance synchronization");
     using netCDF::NcDim;
     using netCDF::NcFile;
     using netCDF::NcVar;

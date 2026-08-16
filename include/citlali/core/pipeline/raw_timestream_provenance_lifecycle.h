@@ -52,10 +52,26 @@ inline void complete_raw_timestream_observation(
         throw std::logic_error(
             "cannot complete raw timestream plan before observation begins");
     }
-    plan.realized.completed_scan_count = completed_scan_count;
-    plan.realized.required_timestream_write_count =
+    auto realized = plan.realized;
+    if (plan.observation->native_cohort_lineage) {
+        const auto &lineage = *plan.observation->native_cohort_lineage;
+        if (lineage.scan_count() != completed_scan_count) {
+            throw std::logic_error(
+                "native cohort lineage scan cardinality does not match observation completion");
+        }
+        // This validates that every pre-numerics reservation reached its
+        // allocation-free commit point.  Snapshot construction may throw, so
+        // it intentionally precedes every realized-state mutation.
+        realized.native_cohort_provenance = lineage.snapshot_complete();
+    }
+    else {
+        realized.native_cohort_provenance.reset();
+    }
+    realized.completed_scan_count = completed_scan_count;
+    realized.required_timestream_write_count =
         required_timestream_write_count;
-    plan.realized.execution_completed = true;
+    realized.execution_completed = true;
+    plan.realized = std::move(realized);
 }
 
 template <bool IsBeammap, class Engine>

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/utils/utils.h>
+#include <citlali/core/pipeline/atomic_yaml_output.h>
 #include <citlali_config/gitversion.h>
 #include <kidscpp_config/gitversion.h>
 #include <tula_config/gitversion.h>
@@ -11,6 +12,7 @@
 #include <fstream>
 #include <set>
 #include <string>
+#include <vector>
 
 namespace citlali::pipeline {
 
@@ -38,7 +40,9 @@ inline std::string index_entry_name(const std::filesystem::path &path) {
     return path_string.substr(path_string.find_last_of("/") + 1);
 }
 
-inline void write_product_index_file(const std::filesystem::path &filepath) {
+inline void write_product_index_file(const std::filesystem::path &filepath);
+
+inline YAML::Node make_product_index_node(const std::filesystem::path &filepath) {
     auto node = make_product_index_metadata_node();
 
     for (const auto &entry : sorted_directory_entries(filepath)) {
@@ -48,8 +52,23 @@ inline void write_product_index_file(const std::filesystem::path &filepath) {
         node["files/dirs"].push_back(index_entry_name(entry));
     }
 
-    std::ofstream fout((filepath / "index.yaml").string());
-    fout << node;
+    return node;
+}
+
+inline void write_product_index_file(const std::filesystem::path &filepath) {
+    write_yaml_file_atomic(filepath / "index.yaml", make_product_index_node(filepath));
+}
+
+inline void write_final_product_index_file(
+    const std::filesystem::path &root,
+    const std::vector<std::filesystem::path> &required_products) {
+    for (const auto &path : required_products) {
+        if (path.empty() || !std::filesystem::is_regular_file(path)) {
+            throw std::logic_error(
+                "cannot publish final product index with a missing required product");
+        }
+    }
+    write_product_index_file(root);
 }
 
 }  // namespace citlali::pipeline

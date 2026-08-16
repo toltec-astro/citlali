@@ -5,6 +5,7 @@
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
 #include <citlali/core/pipeline/map_grouping_policy.h>
 #include <citlali/core/pipeline/jinc_processing_provenance.h>
+#include <citlali/core/pipeline/observation_buffers.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
@@ -58,6 +59,9 @@ auto Lali::run(
         apply_learned_rtc_sample_masks(rtcdata, calib);
         auto map_indices = rtcproc.run(rtcdata, ptcdata, calib, telescope, omb.pixel_size_rad, map_grouping,
                                        rtc_outer_output_ptr);
+        const auto native_ptc_input_revision =
+            citlali::pipeline::native_cohort_scan_uniform_revision(
+                ptcdata.require_native_scan());
         const auto rtc_detector_summary =
             rtcproc.snapshot_detector_diag_summary(ptcdata.index.data);
 
@@ -157,9 +161,18 @@ auto Lali::run(
         logger->debug("calculating stats");
         diagnostics.calc_stats(ptcdata);
 
+        auto native_cohort_reservation =
+            citlali::pipeline::prepare_native_cohort_scan_provenance_if_available(
+                *this,
+                citlali::pipeline::make_native_cohort_scan_provenance_for_map(
+                    *this, ptcdata.require_native_scan(),
+                    native_ptc_input_revision, map_indices,
+                    mapmaking_method, make_maps));
         populate_lali_final_maps(
             ptcdata, calib_scan, map_indices, map_grouping,
             mapmaking_method, make_maps, make_noise_maps);
+        citlali::pipeline::commit_native_cohort_scan_provenance(
+            native_cohort_reservation);
 
         // increment number of completed scans
         citlali::pipeline::log_scan_done(

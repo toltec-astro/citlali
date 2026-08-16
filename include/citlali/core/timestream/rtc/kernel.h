@@ -177,6 +177,8 @@ inline bool Kernel::source_fwhm_for_map(Eigen::Index map_index,
 template<typename apt_t>
 void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes, apt_t &apt) {
 
+    engine_utils::require_native_science_matrix(in);
+
     // dimensions of scan
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
@@ -194,9 +196,10 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
         // calc tangent plane pointing for a unit source kernel.  Detector
         // beammaps use fitted map-frame source centers when available; iter 0
         // and non-detector maps keep the source at the map center.
-        auto [lat, lon] = engine_utils::calc_det_pointing(
-            in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
-            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
+        auto [lat, lon] =
+            engine_utils::calc_det_pointing_for_science_sample(
+                in, i, apt["x_t"](i), apt["y_t"](i), pixel_axes,
+                map_grouping);
 
         // distance to source to truncate it
         auto dist = ((lat.array() - source_lat_rad).pow(2) +
@@ -216,6 +219,7 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
 
         // loop through samples and calculate
         for (Eigen::Index j=0; j<n_pts; ++j) {
+            engine_utils::require_native_science_cell(in, j, i);
             // truncate within radius
             if (dist(j) <= sigma_limit*sigma) {
                 in.kernel.data(j,i) = exp(-0.5*pow(dist(j)/sigma,2));
@@ -229,6 +233,8 @@ void Kernel::create_symmetric_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::Mat
 
 template<typename apt_t>
 void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes, apt_t &apt) {
+
+    engine_utils::require_native_science_matrix(in);
 
     // dimensions of scan
     Eigen::Index n_dets = in.scans.data.cols();
@@ -252,9 +258,10 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
         // calc tangent plane pointing for a unit source kernel.  Detector
         // beammaps use fitted map-frame source centers when available; iter 0
         // and non-detector maps keep the source at the map center.
-        auto [lat, lon] = engine_utils::calc_det_pointing(
-            in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
-            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
+        auto [lat, lon] =
+            engine_utils::calc_det_pointing_for_science_sample(
+                in, i, apt["x_t"](i), apt["y_t"](i), pixel_axes,
+                map_grouping);
 
         // distance to source to truncate it
         auto dist = ((lat.array() - source_lat_rad).pow(2) +
@@ -290,6 +297,7 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
 
         // make elliptical gaussian
         for (Eigen::Index j=0; j<n_pts; ++j) {
+            engine_utils::require_native_science_cell(in, j, i);
             // truncate within radius
             if (dist(j) <= sigma_limit_det) {
                 in.kernel.data(j,i) = amp*exp(pow(lon(j) - source_lon_rad, 2) * a +
@@ -305,6 +313,8 @@ void Kernel::create_gaussian_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in
 
 template<typename apt_t>
 void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes, apt_t &apt) {
+
+    engine_utils::require_native_science_matrix(in);
 
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
@@ -323,9 +333,10 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
         // calc tangent plane pointing for a unit source kernel.  Detector
         // beammaps use fitted map-frame source centers when available; iter 0
         // and non-detector maps keep the source at the map center.
-        auto [lat, lon] = engine_utils::calc_det_pointing(
-            in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
-            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
+        auto [lat, lon] =
+            engine_utils::calc_det_pointing_for_science_sample(
+                in, i, apt["x_t"](i), apt["y_t"](i), pixel_axes,
+                map_grouping);
 
         // distance to source to truncate it
         auto dist = ((lat.array() - source_lat_rad).pow(2) +
@@ -347,6 +358,7 @@ void Kernel::create_airy_kernel(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, st
         double factor = pi*(1.028/fwhm);
 
         for (Eigen::Index j=0; j<n_pts; ++j) {
+            engine_utils::require_native_science_cell(in, j, i);
             if (dist(j) <= sigma_limit*fwhm) {
                 const double x = factor * dist(j);
                 if (std::abs(x) < 1e-12) {
@@ -368,6 +380,8 @@ template<typename apt_t, typename Derived>
 void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, std::string &pixel_axes, apt_t &apt,
                                      double pixel_size_rad, Eigen::DenseBase<Derived> &map_indices) {
 
+    engine_utils::require_native_science_matrix(in);
+
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
 
@@ -387,9 +401,10 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
         // calc tangent plane pointing for a unit source kernel.  Detector
         // beammaps use fitted map-frame source centers when available; iter 0
         // and non-detector maps keep the source at the map center.
-        auto [lat, lon] = engine_utils::calc_det_pointing(
-            in.tel_data.data, apt["x_t"](i), apt["y_t"](i),
-            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
+        auto [lat, lon] =
+            engine_utils::calc_det_pointing_for_science_sample(
+                in, i, apt["x_t"](i), apt["y_t"](i), pixel_axes,
+                map_grouping);
 
         if (images.size() > 1) {
             map_index = source_map_index;
@@ -402,6 +417,7 @@ void Kernel::create_kernel_from_fits(TCData<TCDataKind::RTC, Eigen::MatrixXd> &i
         Eigen::VectorXd icols = (lon.array() - source_lon_rad)/pixel_size_rad + col_center;
 
         for (Eigen::Index j = 0; j<n_pts; ++j) {
+            engine_utils::require_native_science_cell(in, j, i);
             // row and col pixel for kernel image
             Eigen::Index ir = static_cast<Eigen::Index>(std::llround(irows(j)));
             Eigen::Index ic = static_cast<Eigen::Index>(std::llround(icols(j)));

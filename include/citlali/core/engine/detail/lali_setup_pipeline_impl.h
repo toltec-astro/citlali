@@ -18,6 +18,7 @@ void Lali::pipeline(
     KidsProc &kidsproc, RawObs &rawobs,
     citlali::pipeline::StageProfileCollector &stage_profile) {
     using tuple_t = TCData<TCDataKind::RTC, Eigen::MatrixXd>;
+    citlali::pipeline::require_native_science_pointing_ingress(*this);
     const auto output_flags =
         citlali::pipeline::standard_timestream_output_flags(*this);
     const auto output_writers =
@@ -49,24 +50,20 @@ void Lali::pipeline(
             const Eigen::Index scan = *next_scan;
             pb.count(telescope.scan_indices.cols(), 1);
 
-            TCData<TCDataKind::RTC, Eigen::MatrixXd> rtcdata;
-            const Eigen::Index scan_length =
-                citlali::pipeline::initialize_rtc_scan(
-                    rtcdata, telescope, scan);
+            auto rtcdata =
+                citlali::pipeline::make_native_rtc_scan_samples<
+                    TCData<TCDataKind::RTC, Eigen::MatrixXd>>(
+                    kidsproc, rawobs, scan, telescope.scan_indices,
+                    alignment.native_consumer_plan,
+                    alignment.native_pointing_plan,
+                    calib.apt_detector_relation_handle(),
+                    citlali::pipeline::timestream_config(*this).type);
 
             // populate noise matrix (do outside of parallelized region for thread safety)
             citlali::pipeline::populate_noise_map_signs(
                 rtcdata, omb, calib,
                 citlali::pipeline::noise_maps_enabled(*this),
                 rands, eng);
-
-            citlali::pipeline::populate_rtc_scan_samples(
-                rtcdata, kidsproc, rawobs, scan, telescope, alignment.start_indices,
-                alignment.end_indices, alignment.common_time, alignment.network_times, alignment.masks,
-                citlali::config::timing_gap_interpolation_active(
-                    citlali::pipeline::effective_runtime_values(*this)),
-                scan_length, calib.n_dets,
-                citlali::pipeline::timestream_config(*this).type);
 
             return rtcdata;
         },

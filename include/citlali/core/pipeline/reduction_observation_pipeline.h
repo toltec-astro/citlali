@@ -28,6 +28,20 @@ void run_reduction_observation_pipeline(TodProc &todproc, KidsProc &kidsproc,
     write_observation_outputs_and_accumulate<RawObsMap, FilteredObsMap,
                                              FitMaps>(
         todproc, stage_profile, logger);
+    // Required outputs are now closed.  Validate the staged native lineage
+    // before exposing its required raw-provenance file; this is deliberately
+    // after output creation and before any success-facing publication.
+    if constexpr (has_raw_timestream_plan_v<decltype(engine)>) {
+        const auto &raw_plan = raw_timestream_plan(engine);
+        if (raw_plan.observation && raw_plan.observation->native_cohort_lineage) {
+            if (!raw_plan.realized.native_cohort_provenance) {
+                throw std::logic_error(
+                    "native cohort lineage was not completed before required output publication");
+            }
+            raw_plan.realized.native_cohort_provenance->validate_complete(
+                raw_plan.observation->native_cohort_lineage->scan_count());
+        }
+    }
     const auto raw_provenance_path =
         publish_completed_raw_timestream_provenance<IsBeammap>(engine);
     if (raw_provenance_path) {

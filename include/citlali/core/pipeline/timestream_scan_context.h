@@ -8,6 +8,7 @@
 #include <fmt/core.h>
 
 #include <algorithm>
+#include <stdexcept>
 #include <tuple>
 
 namespace citlali::pipeline {
@@ -103,6 +104,22 @@ void apply_gap_masks_to_rtc_flags(
 template <class Engine, class RtcData>
 RtcScanSampleWindow prepare_standard_rtc_scan_context(
     Engine &engine, RtcData &rtcdata) {
+    rtcdata.require_native_science_mode_consistent();
+    if (rtcdata.native_science_required()) {
+        const auto &native_scan = rtcdata.require_native_scan();
+        native_scan.require_compatible(
+            rtcdata.scans.data.rows(), rtcdata.scans.data.cols(),
+            rtcdata.index.data);
+        if (!rtcdata.tel_data.data.empty() ||
+            !rtcdata.pointing_offsets_arcsec.data.empty() ||
+            rtcdata.hwpr_angle.data.size() != 0) {
+            throw std::logic_error(
+                "native Science/Pointing scan context cannot carry singleton common-time telescope, offset, or HWPR vectors");
+        }
+        initialize_rtc_flags(rtcdata);
+        return {0, native_scan.row_count()};
+    }
+
     const auto scan_window = copy_rtc_scan_context(
         rtcdata, engine.telescope, engine.pointing_offsets.arcsec);
     copy_hwpr_angle_if_enabled(

@@ -2,6 +2,11 @@
 
 // Implementation detail included by kidsproc.h.
 
+// Legacy/common-row compatibility only.  Native-required Science/Pointing
+// enters through solve_native_detector_scan and therefore never reaches the
+// detector interpolation in this file.  Keep this path unchanged for the
+// unactivated Beammap consumer.
+
 template <typename DerivedA, typename DerivedB, typename DerivedC>
 auto KidsDataProc::load_rawobs_gaps(const RawObs &rawobs, const Eigen::Index scan,
                                     Eigen::DenseBase<DerivedA>& scan_indices,

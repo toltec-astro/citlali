@@ -2,6 +2,7 @@
 
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/mapmaking/science_map_contract.h>
+#include <citlali/core/pipeline/apt_detector_relation.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/utils/constants.h>
@@ -133,25 +134,71 @@ mapmaking::ScienceMapSlotIdentity science_map_slot_identity(
             "network:" + std::to_string(calib.nws(base_slot));
     }
     else if (citlali::config::is_detector_map_grouping(grouping)) {
-        const auto uid_it = calib.apt.find("uid");
-        if (uid_it == calib.apt.end() || base_slot >= uid_it->second.size() ||
-            !std::isfinite(uid_it->second(base_slot))) {
+        const bool any_native_plan =
+            engine.alignment.native_consumer_plan != nullptr ||
+            engine.alignment.native_pointing_plan != nullptr;
+        const bool typed_identity =
+            calib.has_apt_detector_relation();
+        if (any_native_plan &&
+            (engine.alignment.native_consumer_plan == nullptr ||
+             engine.alignment.native_pointing_plan == nullptr ||
+             !engine.alignment.native_pointing_plan->bound_to(
+                 engine.alignment.native_consumer_plan))) {
             throw std::runtime_error(
-                "science-map detector slot lacks a finite detector UID");
+                "native science-map identity requires coherent alignment and pointing plans");
         }
-        const double uid = uid_it->second(base_slot);
-        if (std::trunc(uid) != uid ||
-            static_cast<long double>(uid) <
-                static_cast<long double>(
-                    std::numeric_limits<long long>::lowest()) ||
-            static_cast<long double>(uid) >
-                static_cast<long double>(
-                    std::numeric_limits<long long>::max())) {
+        if (any_native_plan && !typed_identity) {
             throw std::runtime_error(
-                "science-map detector UID must be an exact signed integer");
+                "native science-map identity requires an exact typed APT detector relation");
         }
-        result.group_identity = "detector_uid:" +
-            std::to_string(static_cast<long long>(uid));
+        if (typed_identity) {
+            const auto &relation = calib.require_apt_detector_relation();
+            const auto reference = relation.binding_reference_for_column(
+                static_cast<std::size_t>(base_slot));
+            (void)relation.require_binding(reference);
+            if (const auto *published =
+                    std::get_if<PublishedAptDetectorIdentity>(
+                        &reference.detector_identity)) {
+                result.group_identity =
+                    "apt_published_artifact:" +
+                    published->row.artifact_schema + "/occurrence:" +
+                    published->row.occurrence + "/envelope:" +
+                    published->row.envelope_sha256 + "/uid:" +
+                    std::to_string(published->row.local_key);
+            }
+            else {
+                const auto &producer =
+                    std::get<ProducerAptDetectorIdentity>(
+                        reference.detector_identity);
+                result.group_identity =
+                    "apt_producer_raw_manifest_nonfinal:" +
+                    producer.producer_scope_reference + "/manifest:" +
+                    producer.manifest_scope_sha256 + "/uid:" +
+                    std::to_string(producer.local_uid);
+            }
+        }
+        else {
+            const auto uid_it = calib.apt.find("uid");
+            if (uid_it == calib.apt.end() ||
+                base_slot >= uid_it->second.size() ||
+                !std::isfinite(uid_it->second(base_slot))) {
+                throw std::runtime_error(
+                    "science-map detector slot lacks a finite detector UID");
+            }
+            const double uid = uid_it->second(base_slot);
+            if (std::trunc(uid) != uid ||
+                static_cast<long double>(uid) <
+                    static_cast<long double>(
+                        std::numeric_limits<long long>::lowest()) ||
+                static_cast<long double>(uid) >
+                    static_cast<long double>(
+                        std::numeric_limits<long long>::max())) {
+                throw std::runtime_error(
+                    "science-map detector UID must be an exact signed integer");
+            }
+            result.group_identity = "detector_uid:" +
+                std::to_string(static_cast<long long>(uid));
+        }
     }
     else if (citlali::config::is_frequency_group_map_grouping(grouping)) {
         if (calib.fg.size() <= 0) {

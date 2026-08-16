@@ -2,9 +2,11 @@
 
 #include <citlali/core/config/interface_sync_config.h>
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/pipeline/native_cohort_product_provenance.h>
 #include <citlali/core/pipeline/raw_timestream_resolution.h>
 
 #include <cstddef>
+#include <memory>
 #include <optional>
 #include <stdexcept>
 #include <string>
@@ -21,6 +23,9 @@ struct RawTimestreamObservationState {
     std::optional<bool> source_protection_active;
     std::optional<bool> extinction_active;
     std::optional<std::string> extinction_model;
+    // Populated only for admitted native Science/Pointing observations.  The
+    // slots are observation-owned and intentionally do not publish a product.
+    std::shared_ptr<NativeCohortObservationLineage> native_cohort_lineage;
 };
 
 struct RawTimestreamRealizedState {
@@ -29,6 +34,10 @@ struct RawTimestreamRealizedState {
     std::optional<std::size_t> flagged_sample_count;
     std::optional<std::size_t> dynamic_notch_count;
     std::optional<std::size_t> required_timestream_write_count;
+    // Snapshot captured only after every reserved native scan commits.  The
+    // existing raw-timestream provenance writer serializes it; B3c owns any
+    // separate final sidecar or index publication.
+    std::optional<NativeCohortProductProvenance> native_cohort_provenance;
 };
 
 struct RawTimestreamExecutionPlan {

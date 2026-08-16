@@ -85,6 +85,7 @@ add_executable(citlali_sci_align_test EXCLUDE_FROM_ALL
     test_sci_align_partial_cohort.cpp
     test_sci_align_pca_placeholder_invariance.cpp
     test_sci_align_native_scatter.cpp
+    test_sci_align_production_consumer_bridge.cpp
 )
 set_target_properties(citlali_sci_align_test
     PROPERTIES

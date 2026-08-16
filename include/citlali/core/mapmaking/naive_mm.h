@@ -218,6 +218,13 @@ void NaiveMapmaker::populate_maps_naive_science_contract(
     std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb,
     bool run_noise,
     const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
+    engine_utils::require_native_science_matrix(in);
+    if (in.native_science_required() &&
+        omb.contribution_diag_enabled) {
+        throw std::runtime_error(
+            "native-required ordinary naive contribution output awaits the B3 artifact-occurrence join");
+    }
+
     using DoubleTriplet = Eigen::Triplet<double>;
     using CountTriplet = Eigen::Triplet<std::int64_t>;
     struct ContributionRecord {
@@ -226,7 +233,7 @@ void NaiveMapmaker::populate_maps_naive_science_contract(
         Eigen::Index col;
         double signal;
         double coefficient;
-        int detector_uid;
+        std::int64_t detector_uid;
         int scan;
         int sample;
     };
@@ -318,17 +325,24 @@ void NaiveMapmaker::populate_maps_naive_science_contract(
             (map_index >= active_maps->size() || !(*active_maps)(map_index))) {
             continue;
         }
-        int detector_uid = static_cast<int>(det);
-        const auto uid_it = apt.find("uid");
-        if (uid_it != apt.end() && det < uid_it->second.size() &&
-            std::isfinite(uid_it->second(det))) {
-            detector_uid =
-                static_cast<int>(std::llround(uid_it->second(det)));
+        std::int64_t detector_uid = static_cast<std::int64_t>(det);
+        if (in.native_science_required()) {
+            detector_uid = in.require_native_scan()
+                               .require_detector_binding(det).uid;
+        }
+        else {
+            const auto uid_it = apt.find("uid");
+            if (uid_it != apt.end() && det < uid_it->second.size() &&
+                std::isfinite(uid_it->second(det))) {
+                detector_uid =
+                    static_cast<int>(std::llround(uid_it->second(det)));
+            }
         }
 
-        auto [lat, lon] = engine_utils::calc_det_pointing(
-            in.tel_data.data, apt["x_t"](det), apt["y_t"](det), pixel_axes,
-            in.pointing_offsets_arcsec.data, omb.map_grouping);
+        auto [lat, lon] =
+            engine_utils::calc_det_pointing_for_science_sample(
+                in, det, apt["x_t"](det), apt["y_t"](det), pixel_axes,
+                omb.map_grouping);
         if (lat.size() != n_pts || lon.size() != n_pts) {
             throw std::runtime_error(
                 "ordinary naive projection cardinality differs from samples");
@@ -349,6 +363,10 @@ void NaiveMapmaker::populate_maps_naive_science_contract(
 
         const bool detector_eligible = apt["flag"](det) == 0;
         for (Eigen::Index sample = 0; sample < n_pts; ++sample) {
+            // Native cohort admission is an earlier eligibility authority
+            // than the established detector/sample flag gate below.  This
+            // check must precede even geometric-hit accounting.
+            engine_utils::require_native_science_cell(in, sample, det);
             const bool projection_finite =
                 std::isfinite(omb_irow(sample)) &&
                 std::isfinite(omb_icol(sample));
@@ -650,9 +668,19 @@ void NaiveMapmaker::populate_maps_naive_science_contract(
             }
         }
         for (const auto &record : contribution_records) {
+            if (record.detector_uid <
+                    static_cast<std::int64_t>(
+                        std::numeric_limits<int>::min()) ||
+                record.detector_uid >
+                    static_cast<std::int64_t>(
+                        std::numeric_limits<int>::max())) {
+                throw std::runtime_error(
+                    "ordinary naive legacy contribution UID is not exactly representable");
+            }
             omb.record_contribution(
                 record.map_index, record.row, record.col, record.signal,
-                record.coefficient, record.detector_uid, record.scan,
+                record.coefficient,
+                static_cast<int>(record.detector_uid), record.scan,
                 record.sample);
         }
     }
@@ -677,6 +705,9 @@ void NaiveMapmaker::populate_maps_naive(TCData<TCDataKind::PTC, Eigen::MatrixXd>
             run_noise, active_maps);
         return;
     }
+
+    engine_utils::reject_native_science_consumer(
+        in, "polarization/HWPR naive mapmaking without a native angle carrier");
 
     typedef Eigen::Triplet<double> T;
     std::vector<std::vector<T>> signals, weights, kernels, coverages;
@@ -1085,6 +1116,9 @@ void NaiveMapmaker::populate_maps_naive_parallel(TCData<TCDataKind::PTC, Eigen::
             run_noise, active_maps);
         return;
     }
+
+    engine_utils::reject_native_science_consumer(
+        in, "polarization/HWPR naive mapmaking without a native angle carrier");
 
     const bool use_cmb = !cmb.noise.empty();
     const bool use_omb = !omb.noise.empty();

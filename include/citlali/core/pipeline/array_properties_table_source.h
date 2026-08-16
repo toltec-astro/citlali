@@ -24,4 +24,13 @@ void load_array_properties_table_file(
     engine.calib.get_apt(filepath, raw_filenames, interfaces);
 }
 
+template <class Engine>
+void load_canonical_observation_array_properties_table_file(
+    Engine &engine, const std::string &filepath,
+    const std::vector<std::string> &raw_filenames,
+    const std::vector<std::string> &interfaces) {
+    engine.calib.get_canonical_observation_apt(
+        filepath, raw_filenames, interfaces);
+}
+
 }  // namespace citlali::pipeline

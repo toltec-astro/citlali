@@ -4,6 +4,7 @@
 #include <cmath>
 #include <limits>
 #include <map>
+#include <stdexcept>
 #include <string>
 
 #include <Eigen/Core>
@@ -75,6 +76,67 @@ auto calc_det_pointing(tel_data_t &tel_data, double az_off, double el_off,
     return std::tuple<Eigen::VectorXd, Eigen::VectorXd>{lat,lon};
 }
 
+// Select the coordinate carrier without changing the established detector
+// pointing arithmetic above.  Legacy direct tests must explicitly remain in
+// legacy_inactive mode.  A native-required timestream cannot fall back to its
+// rectangular/common-time telescope vectors.
+template <typename tc_data_t>
+void require_native_science_matrix(tc_data_t &in) {
+    in.require_native_science_mode_consistent();
+    if (in.native_science_required()) {
+        in.require_native_scan().require_compatible(
+            in.scans.data.rows(), in.scans.data.cols(), in.index.data);
+    }
+}
+
+template <typename tc_data_t>
+void require_native_science_cell(tc_data_t &in, Eigen::Index output_row,
+                                 Eigen::Index detector_column) {
+    require_native_science_matrix(in);
+    if (in.native_science_required()) {
+        (void)in.require_native_scan().require_cell(
+            output_row, detector_column);
+    }
+}
+
+template <typename tc_data_t>
+void reject_native_science_consumer(tc_data_t &in,
+                                    const std::string &consumer) {
+    in.require_native_science_mode_consistent();
+    if (in.native_science_required()) {
+        throw std::runtime_error(
+            "native-required timestream does not authorize " + consumer);
+    }
+}
+
+template <typename tc_data_t, typename MapGroupingT>
+auto calc_det_pointing_for_science_sample(
+    tc_data_t &in, Eigen::Index detector_column, double az_off,
+    double el_off, const std::string &pixel_axes,
+    const MapGroupingT &map_grouping, bool apply_det_offsets = false) {
+    require_native_science_matrix(in);
+    if (!in.native_science_required()) {
+        return calc_det_pointing(
+            in.tel_data.data, az_off, el_off, pixel_axes,
+            in.pointing_offsets_arcsec.data, map_grouping,
+            apply_det_offsets);
+    }
+
+    // These value-owned selections contain only the measured native rows
+    // admitted for this detector's network.  Telescope interpolation has
+    // already been evaluated by NativePointingPlan; no detector value is
+    // interpolated or synthesized here.
+    auto telescope_data =
+        in.require_native_scan().telescope_data_for_detector(
+            detector_column);
+    auto pointing_offsets =
+        in.require_native_scan().pointing_offsets_for_detector(
+            detector_column);
+    return calc_det_pointing(
+        telescope_data, az_off, el_off, pixel_axes, pointing_offsets,
+        map_grouping, apply_det_offsets);
+}
+
 template <typename tc_data_t, typename apt_t>
 auto calc_map_center_source_mask(tc_data_t &in, apt_t &apt,
                                  const std::string &pixel_axes,
@@ -101,12 +163,13 @@ auto calc_map_center_source_mask(tc_data_t &in, apt_t &apt,
         if (apt["flag"](det) != 0) {
             continue;
         }
-        auto [lat, lon] = calc_det_pointing(
-            in.tel_data.data, apt["x_t"](det), apt["y_t"](det),
-            pixel_axes, in.pointing_offsets_arcsec.data, map_grouping);
+        auto [lat, lon] = calc_det_pointing_for_science_sample(
+            in, det, apt["x_t"](det), apt["y_t"](det), pixel_axes,
+            map_grouping);
         const Eigen::Index n = std::min({n_pts, lat.size(), lon.size()});
         bool det_has_source = false;
         for (Eigen::Index i = 0; i < n; ++i) {
+            require_native_science_cell(in, i, det);
             const double y = lat(i);
             const double x = lon(i);
             if (!std::isfinite(x) || !std::isfinite(y)) {

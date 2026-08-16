@@ -17,6 +17,7 @@ APPLICATION_SOURCE = (
 INTERPOLATION_SOURCE = (
     "include/citlali/core/engine/detail/todproc_pointing_impl.h"
 )
+NATIVE_POINTING_SOURCE = "include/citlali/core/pipeline/telescope_pointing_operations.h"
 PROVENANCE_SOURCE = "include/citlali/core/pipeline/astrometry_provenance.h"
 CLI_SOURCE = "include/citlali/core/cli/reduction_execution.h"
 
@@ -31,6 +32,9 @@ def audit(repo_root: Path) -> dict[str, object]:
     plan = (repo_root / PLAN_SOURCE).read_text(encoding="utf-8")
     application = (repo_root / APPLICATION_SOURCE).read_text(encoding="utf-8")
     interpolation = (repo_root / INTERPOLATION_SOURCE).read_text(
+        encoding="utf-8"
+    )
+    native_pointing = (repo_root / NATIVE_POINTING_SOURCE).read_text(
         encoding="utf-8"
     )
     provenance = (repo_root / PROVENANCE_SOURCE).read_text(encoding="utf-8")
@@ -117,12 +121,24 @@ def audit(repo_root: Path) -> dict[str, object]:
     provenance_state["exact"] = all(provenance_state.values())
 
     interpolation_state = {
-        "legacy_interpolator_retained": "mlinterp::interp" in interpolation,
-        "explicit_bracketing_required": (
-            "xd(0) > engine().telescope.tel_data" in interpolation
-            and "xd(1) < engine().telescope.tel_data" in interpolation
+        "native_offset_model": "make_native_pointing_offset_model(" in interpolation,
+        "native_trajectory_boundary": all(
+            token in native_pointing
+            for token in (
+                "native_consumer_plan",
+                "native_pointing_plan",
+                "build_native_pointing_plan_candidate",
+                "NativePointingPlan",
+            )
         ),
-        "typed_failures": "citlali::error::" in interpolation,
+        "incomplete_native_state_fails_closed": (
+            "network-native pointing state is incomplete before evaluation" in native_pointing
+            and "has_native_alignment != has_raw_telescope" in native_pointing
+        ),
+        "no_common_time_compatibility_fallback": (
+            "no common-time compatibility" in native_pointing
+            and "candidate_native_pointing" in native_pointing
+        ),
     }
     interpolation_state["exact"] = all(interpolation_state.values())
 

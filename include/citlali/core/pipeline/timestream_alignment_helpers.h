@@ -1,8 +1,10 @@
 #pragma once
 
-#include <fmt/core.h>
+#include <fmt/format.h>
 #include <Eigen/Core>
 #include <tula/algorithm/mlinterp/mlinterp.hpp>
+
+#include <citlali/core/pipeline/timestream_native_pointing.h>
 
 #include <cmath>
 #include <limits>
@@ -231,6 +233,46 @@ void interpolate_telescope_data_to_common_time(
 
     tel_data["TelTime"] = common_time;
     tel_data["TelUTC"] = common_time;
+}
+
+inline NativeTelescopeData evaluate_raw_telescope_trajectory_at(
+    const RawTelescopeTrajectory &raw_telescope_trajectory,
+    const Eigen::VectorXd &target_times_unix_sec) {
+    native_pointing_detail::require_strictly_increasing(
+        target_times_unix_sec, "telescope evaluation target times");
+    if (target_times_unix_sec(0) <
+            raw_telescope_trajectory.support_start_unix_sec() ||
+        target_times_unix_sec(target_times_unix_sec.size() - 1) >
+            raw_telescope_trajectory.support_end_unix_sec()) {
+        throw std::out_of_range(
+            "telescope evaluation target is outside raw telescope support");
+    }
+
+    const auto &raw = raw_telescope_trajectory.telescope_data();
+    const auto &support =
+        raw_telescope_trajectory.support_times_unix_sec();
+    Eigen::Matrix<Eigen::Index, 1, 1> support_shape;
+    support_shape << support.size();
+
+    NativeTelescopeData evaluated;
+    for (const auto &[key, source] : raw) {
+        if (key == "TelTime" || key == "TelUTC") {
+            continue;
+        }
+        Eigen::VectorXd values(target_times_unix_sec.size());
+        mlinterp::interp(
+            support_shape.data(), values.size(), source.data(), values.data(),
+            support.data(), target_times_unix_sec.data());
+        if (!values.array().isFinite().all()) {
+            throw std::logic_error(
+                "telescope interpolation produced nonfinite series '" +
+                key + "'");
+        }
+        evaluated.emplace(key, std::move(values));
+    }
+    evaluated["TelTime"] = target_times_unix_sec;
+    evaluated["TelUTC"] = target_times_unix_sec;
+    return evaluated;
 }
 
 inline void interpolate_hwpr_angle_to_common_time(

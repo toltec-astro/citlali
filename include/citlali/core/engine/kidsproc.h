@@ -16,6 +16,23 @@
 #include <citlali/core/pipeline/kids_external_config.h>
 #include <citlali/core/pipeline/kids_input_validation.h>
 #include <citlali/core/pipeline/kids_tod_channel.h>
+#include <citlali/core/pipeline/apt_detector_relation.h>
+#include <citlali/core/pipeline/timestream_native_consumer_bridge.h>
+
+namespace citlali::pipeline {
+
+// Transactional measured-only solver candidate.  It is deliberately not a
+// TCData object: scan generation validates pointing and output-row ownership
+// before moving this state into the live Science/Pointing chunk.
+struct NativeMeasuredDetectorScan {
+    Eigen::MatrixXd measured_values;
+    NativeDetectorFlagBitsMatrix delivered_flag_bits;
+    std::vector<NativeDetectorBlock> measured_blocks;
+    std::vector<AptDetectorBindingReference>
+        detector_binding_references;
+};
+
+}  // namespace citlali::pipeline
 
 /**
  * @brief The KIDs data solver struct
@@ -105,6 +122,17 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
                                   std::vector<Eigen::Index> &,
                                   const int, const int,
                                   citlali::config::TodType);
+
+    // Solve only exact delivered native rows from complete scan/run cohorts.
+    // Raw columns are joined through the immutable typed detector relation;
+    // the legacy numeric APT and RawObs presentation order are not identity.
+    auto solve_native_detector_scan(
+        const RawObs &,
+        const citlali::pipeline::NativeAlignmentPlan &,
+        const citlali::pipeline::AptDetectorRelation &,
+        const std::vector<citlali::pipeline::NativeCompleteCohortRun> &,
+        citlali::config::TodType)
+        -> citlali::pipeline::NativeMeasuredDetectorScan;
 
     // load rawobs with gaps
     template <typename DerivedA, typename DerivedB, typename DerivedC>

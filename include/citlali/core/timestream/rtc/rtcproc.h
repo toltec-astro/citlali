@@ -18,6 +18,7 @@
 #include <vector>
 
 #include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/pipeline/timestream_native_consumer_bridge.h>
 #include <citlali/core/timestream/timestream.h>
 #include <citlali/core/engine/io.h>
 #include <citlali/core/utils/pointing.h>
@@ -85,6 +86,97 @@ public:
     timestream::Filter filter;
     timestream::Downsampler downsampler;
     timestream::Calibration calibration;
+
+    // B1 mechanics-only adapter.  Each invocation receives exactly one
+    // explicitly bounded measured native run, so the existing downsampler's
+    // row-zero stride phase resets at that run's first delivered row.  The
+    // production RTC run() path remains unchanged at this checkpoint.
+    citlali::pipeline::NativeRunDownsampleResult
+    downsample_native_consumer_run(
+        const citlali::pipeline::NativeDetectorBlock &block,
+        const citlali::pipeline::NativeContiguousRun &run,
+        const Eigen::MatrixXd &processed_run_values,
+        const citlali::pipeline::NativeDetectorFlagBitsMatrix &
+            actual_run_flag_bits,
+        std::size_t run_ordinal) {
+        using namespace citlali::pipeline;
+        if (downsampler.factor <= 0) {
+            throw std::invalid_argument(
+                "native RTC downsample factor must be positive");
+        }
+        if (run.network_id != block.network_id() ||
+            run.first_native_row < block.first_native_row() ||
+            run.past_last_native_row > block.past_last_native_row() ||
+            run.first_native_row >= run.past_last_native_row) {
+            throw std::invalid_argument(
+                "native RTC run must be a nonempty interval in its measured block");
+        }
+
+        const auto rows = static_cast<Eigen::Index>(run.row_count());
+        if (processed_run_values.rows() != rows ||
+            processed_run_values.cols() !=
+                block.measured_values().cols() ||
+            actual_run_flag_bits.rows() != rows ||
+            actual_run_flag_bits.cols() !=
+                processed_run_values.cols()) {
+            throw std::invalid_argument(
+                "native RTC processed values and actual flags must match the run shape");
+        }
+        if (!processed_run_values.array().isFinite().all()) {
+            throw std::logic_error(
+                "native RTC processed run must be finite before downsampling");
+        }
+        Eigen::MatrixXd processed = processed_run_values;
+        NativeDetectorBooleanMatrix flags(rows, processed.cols());
+        for (Eigen::Index row = 0; row < rows; ++row) {
+            for (Eigen::Index det = 0; det < processed.cols(); ++det) {
+                flags(row, det) = actual_run_flag_bits(row, det) != 0;
+            }
+        }
+
+        NativeRunDownsampleResult result{
+            run, Eigen::MatrixXd{}, NativeDetectorBooleanMatrix{},
+            make_native_stride_support(
+                block, run, actual_run_flag_bits, downsampler.factor,
+                run_ordinal)};
+        downsampler.downsample(processed, result.selected_values);
+        downsampler.downsample_flags(flags, result.ored_flags);
+        if (result.selected_values.rows() !=
+                static_cast<Eigen::Index>(result.support.size()) ||
+            result.ored_flags.rows() !=
+                static_cast<Eigen::Index>(result.support.size()) ||
+            result.selected_values.cols() != processed.cols() ||
+            result.ored_flags.cols() != processed.cols()) {
+            throw std::logic_error(
+                "native RTC downsample result and support provenance disagree");
+        }
+        for (Eigen::Index output_row = 0;
+             output_row < result.selected_values.rows(); ++output_row) {
+            const auto &support = result.support.at(
+                static_cast<std::size_t>(output_row));
+            const auto anchor_row =
+                block.local_row(support.selected_anchor.native_row());
+            for (Eigen::Index det = 0;
+                 det < result.selected_values.cols(); ++det) {
+                const auto run_anchor =
+                    anchor_row -
+                    block.local_row(run.first_native_row);
+                if (result.selected_values(output_row, det) !=
+                    processed_run_values(run_anchor, det)) {
+                    throw std::logic_error(
+                        "native RTC stride anchor differs from the existing downsampler");
+                }
+                const bool expected_flag =
+                    support.ored_flag_support.at(
+                        static_cast<std::size_t>(det)) != 0;
+                if (result.ored_flags(output_row, det) != expected_flag) {
+                    throw std::logic_error(
+                        "native RTC flag support differs from the existing downsampler");
+                }
+            }
+        }
+        return result;
+    }
 
     bool despike_source_protection_config_enabled = true;
 
@@ -518,13 +610,33 @@ public:
     // get config file
     // get indices to map from detector to index in map vectors
     template <class calib_t>
-    auto calc_map_indices(calib_t &, std::string);
+    auto calc_map_indices(
+        calib_t &, std::string,
+        const citlali::pipeline::NativeMeasuredScanState * = nullptr);
 
     // run the main processing
     template<typename calib_t, typename telescope_t>
     auto run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &, TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
              calib_t &, telescope_t &, double, std::string,
              TCData<TCDataKind::RTC, Eigen::MatrixXd> *tod_outer_output = nullptr);
+
+    template<typename calib_t, typename telescope_t>
+    auto run_single_segment(
+        TCData<TCDataKind::RTC, Eigen::MatrixXd> &,
+        TCData<TCDataKind::PTC, Eigen::MatrixXd> &, calib_t &,
+        telescope_t &, double, std::string,
+        TCData<TCDataKind::RTC, Eigen::MatrixXd> *tod_outer_output = nullptr);
+
+    template <typename tc_t, typename calib_t>
+    auto native_aware_grouping(tc_t &, const std::string &, calib_t &,
+                               Eigen::Index);
+
+    // Set only on the private worker used by native dispatch.  It preserves
+    // the configured RTC sample-rate authority for time-window arithmetic
+    // without manufacturing a singleton common-time telescope stream.
+    double native_dispatch_fsmp_Hz =
+        std::numeric_limits<double>::quiet_NaN();
+    bool native_pointwise_prestages_prepared = false;
 
     // remove nearby tones
     template <typename calib_t>
@@ -614,6 +726,57 @@ public:
                           pointing_offset_t &, calib_t &, bool apply_det_offsets = false,
                           Eigen::Index scan_row_index = -1, bool mini_output = false);
 };
+
+template <typename tc_t, typename calib_t>
+auto RTCProc::native_aware_grouping(tc_t &in, const std::string &grouping,
+                                    calib_t &calib,
+                                    Eigen::Index detector_count) {
+    in.require_native_science_mode_consistent();
+    if (!in.native_science_required() ||
+        !citlali::config::is_network_map_grouping(
+            grouping)) {
+        return get_grouping(
+            grouping, calib, static_cast<int>(detector_count));
+    }
+    const auto &native = in.require_native_scan();
+    native.require_compatible(
+        in.scans.data.rows(), in.scans.data.cols(), in.index.data);
+    if (detector_count != in.scans.data.cols() ||
+        detector_count != native.detector_count()) {
+        throw std::logic_error(
+            "native RTC network grouping detector cardinality is stale");
+    }
+    std::map<Eigen::Index,
+             std::tuple<Eigen::Index, Eigen::Index>> group_limits;
+    std::set<Eigen::Index> seen;
+    Eigen::Index first = 0;
+    while (first < detector_count) {
+        const auto &first_binding =
+            native.require_detector_binding(first);
+        if (first_binding.network < 0 ||
+            static_cast<std::uint64_t>(first_binding.network) >
+                static_cast<std::uint64_t>(
+                    std::numeric_limits<Eigen::Index>::max())) {
+            throw std::logic_error(
+                "native RTC detector network is not exactly representable");
+        }
+        const auto network =
+            static_cast<Eigen::Index>(first_binding.network);
+        if (!seen.insert(network).second) {
+            throw std::logic_error(
+                "native RTC typed detector networks are not contiguous");
+        }
+        Eigen::Index past = first + 1;
+        while (past < detector_count &&
+               native.require_detector_binding(past).network ==
+                   first_binding.network) {
+            ++past;
+        }
+        group_limits.emplace(network, std::make_tuple(first, past));
+        first = past;
+    }
+    return group_limits;
+}
 
 inline void RTCProc::configure_filter_edge_guard(double fs_hz) {
     auto combine_samples = [&](Eigen::Index current, Eigen::Index next) {
@@ -884,17 +1047,61 @@ Eigen::Index RTCProc::apply_rtc_line_audit_fixed_notches(
 }
 
 template <class calib_t>
-auto RTCProc::calc_map_indices(calib_t &calib, std::string map_grouping) {
+auto RTCProc::calc_map_indices(
+    calib_t &calib, std::string map_grouping,
+    const citlali::pipeline::NativeMeasuredScanState *native_state) {
     // indices for maps
     Eigen::VectorXI indices(calib.n_dets), map_indices(calib.n_dets);
+    Eigen::VectorXI typed_networks;
+    Eigen::VectorXI typed_arrays;
+    if (native_state != nullptr) {
+        if (native_state->detector_count() != calib.n_dets) {
+            throw std::logic_error(
+                "native RTC map grouping detector cardinality is stale");
+        }
+        typed_networks.resize(calib.n_dets);
+        typed_arrays.resize(calib.n_dets);
+        for (Eigen::Index detector = 0;
+             detector < calib.n_dets; ++detector) {
+            const auto &binding =
+                native_state->require_detector_binding(detector);
+            if (binding.network < 0 ||
+                static_cast<std::uint64_t>(binding.network) >
+                    static_cast<std::uint64_t>(
+                        std::numeric_limits<Eigen::Index>::max())) {
+                throw std::logic_error(
+                    "native RTC map grouping network is not exactly representable");
+            }
+            const auto network =
+                static_cast<Eigen::Index>(binding.network);
+            const auto array =
+                toltec_io.nw_to_array_map.find(network);
+            if (array == toltec_io.nw_to_array_map.end()) {
+                throw std::logic_error(
+                    "native RTC map grouping network lacks an established array mapping");
+            }
+            typed_networks(detector) = network;
+            typed_arrays(detector) = array->second;
+        }
+    }
 
     // overwrite map indices for networks
     if (citlali::config::is_network_map_grouping(map_grouping)) {
-        indices = calib.apt["nw"].template cast<Eigen::Index> ();
+        if (native_state == nullptr) {
+            indices = calib.apt["nw"].template cast<Eigen::Index>();
+        }
+        else {
+            indices = typed_networks;
+        }
     }
     // overwrite map indices for arrays
     else if (citlali::config::is_array_map_grouping(map_grouping)) {
-        indices = calib.apt["array"].template cast<Eigen::Index> ();
+        if (native_state == nullptr) {
+            indices = calib.apt["array"].template cast<Eigen::Index>();
+        }
+        else {
+            indices = typed_arrays;
+        }
     }
     // overwrite map indices for detectors
     else if (citlali::config::is_detector_map_grouping(map_grouping)) {
@@ -935,7 +1142,21 @@ auto RTCProc::calc_map_indices(calib_t &calib, std::string map_grouping) {
         }
         // allocate map indices from fg
         for (Eigen::Index i=0; i<indices.size(); ++i) {
-            map_indices(i) = fg_to_index[indices(i)] + calib.fg.size()*array_to_index[calib.apt["array"](i)];
+            if (native_state == nullptr) {
+                map_indices(i) = fg_to_index[indices(i)] +
+                    calib.fg.size() *
+                        array_to_index[calib.apt["array"](i)];
+                continue;
+            }
+            const auto fg = fg_to_index.find(indices(i));
+            const auto array = array_to_index.find(typed_arrays(i));
+            if (fg == fg_to_index.end() ||
+                array == array_to_index.end()) {
+                throw std::logic_error(
+                    "native RTC frequency-group map identity lacks an established fg or typed-derived array");
+            }
+            map_indices(i) = fg->second +
+                calib.fg.size() * array->second;
         }
     }
     // return the map indices
@@ -943,9 +1164,398 @@ auto RTCProc::calc_map_indices(calib_t &calib, std::string map_grouping) {
 }
 
 template<class calib_t, typename telescope_t>
-auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKind::PTC, Eigen::MatrixXd> &out,
-                  calib_t &calib, telescope_t &telescope, double pixel_size_rad, std::string map_grouping,
-                  TCData<TCDataKind::RTC, Eigen::MatrixXd> *tod_outer_output) {
+auto RTCProc::run(
+    TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
+    TCData<TCDataKind::PTC, Eigen::MatrixXd> &out, calib_t &calib,
+    telescope_t &telescope, double pixel_size_rad,
+    std::string map_grouping,
+    TCData<TCDataKind::RTC, Eigen::MatrixXd> *tod_outer_output) {
+    using namespace citlali::pipeline;
+
+    in.require_native_science_mode_consistent();
+    if (!in.native_science_required()) {
+        return run_single_segment(
+            in, out, calib, telescope, pixel_size_rad,
+            std::move(map_grouping), tod_outer_output);
+    }
+
+    const auto source_state = in.native_scan;
+    if (!source_state) {
+        throw std::logic_error(
+            "native RTC dispatch lacks its immutable measured scan state");
+    }
+    source_state->require_compatible(
+        in.scans.data.rows(), in.scans.data.cols(), in.index.data);
+    bool has_typed_relation = false;
+    std::shared_ptr<const citlali::pipeline::AptDetectorRelation>
+        live_relation;
+    if constexpr (requires(calib_t &candidate) {
+                      candidate.has_apt_detector_relation();
+                      candidate.apt_detector_relation_handle();
+                  }) {
+        has_typed_relation = calib.has_apt_detector_relation();
+        live_relation = calib.apt_detector_relation_handle();
+    }
+    if (!has_typed_relation || !live_relation ||
+        live_relation.get() !=
+            source_state->detector_relation_handle().get()) {
+        throw std::logic_error(
+            "native RTC calibration relation is missing, stale, or cross-scope");
+    }
+    if (source_state->is_rtc_dispatch_segment()) {
+        return run_single_segment(
+            in, out, calib, telescope, pixel_size_rad,
+            std::move(map_grouping), tod_outer_output);
+    }
+    if (source_state->is_processed_projection() ||
+        source_state->segments().empty()) {
+        throw std::logic_error(
+            "native RTC input is stale or is already a processed projection");
+    }
+    if (tod_outer_output != nullptr) {
+        throw std::logic_error(
+            "native RTC outer TOD publication is unavailable before B3 provenance synchronization");
+    }
+    if (run_polarization || in.has_auxiliary_measured_streams() ||
+        !in.tel_data.data.empty() ||
+        !in.pointing_offsets_arcsec.data.empty() ||
+        in.hwpr_angle.data.size() != 0) {
+        throw std::logic_error(
+            "native RTC dispatch cannot use polarization, auxiliary samples, or singleton common-time telescope carriers");
+    }
+    if (!std::isfinite(telescope.fsmp) || telescope.fsmp <= 0.0) {
+        throw std::invalid_argument(
+            "native RTC dispatch requires the established finite-positive sample rate");
+    }
+    if (in.flags.data.rows() != in.scans.data.rows() ||
+        in.flags.data.cols() != in.scans.data.cols()) {
+        throw std::invalid_argument(
+            "native RTC flags must exactly match the measured detector matrix");
+    }
+    if (run_downsample && downsampler.factor <= 0) {
+        throw std::invalid_argument(
+            "native RTC downsampling requires a positive factor");
+    }
+
+    const bool multiple_runs = source_state->segments().size() > 1;
+    const bool adjacency_sensitive =
+        run_despike || run_tod_filter || run_tod_notch ||
+        run_tod_iir_highpass || line_audit.enabled ||
+        filter_edge_guard.enabled || network_step_mask.enabled ||
+        impulsive_capture.enabled || impulsive_coincidence.enabled ||
+        coherent_iq_mode_observer_enabled || altaz_destripe.enabled;
+    if (multiple_runs && adjacency_sensitive) {
+        throw std::logic_error(
+            "native RTC refuses multiple disjoint runs while an adjacency-sensitive filter, diagnostic, mask, or destriper is active; no temporal support may cross a run boundary");
+    }
+    if (altaz_destripe.enabled) {
+        throw std::logic_error(
+            "native RTC altaz destriping is unavailable until its detector-local network-native telescope templates can be applied without changing the established fit; common-time fallback is forbidden");
+    }
+
+    // All pointwise work is performed on a private full candidate before any
+    // live TCData or output state changes.  Calibration arithmetic is the
+    // established implementation.  Extinction uses that same tau/factor
+    // arithmetic independently for each typed detector column, with the
+    // exact network-native TelElAct samples selected by its sidecar.
+    auto prepared = in;
+    prepared.fcf.data.setOnes(prepared.scans.data.cols());
+    if (run_calibrate) {
+        calibration.calibrate_tod(prepared, calib);
+        prepared.status.calibrated = true;
+    }
+    if (run_extinction) {
+        if (calib.apt.at("array").size() != prepared.scans.data.cols()) {
+            throw std::invalid_argument(
+                "native RTC extinction requires one established array value per typed detector");
+        }
+        for (Eigen::Index detector = 0;
+             detector < prepared.scans.data.cols(); ++detector) {
+            const auto &binding =
+                source_state->require_detector_binding(detector);
+            if (binding.detector_column !=
+                static_cast<std::size_t>(detector)) {
+                throw std::logic_error(
+                    "native RTC extinction detector binding is stale");
+            }
+            auto native_telescope =
+                source_state->telescope_data_for_detector(detector);
+            auto elevation = native_telescope.at("TelElAct");
+            auto tau_freq =
+                calibration.calc_tau(elevation, telescope.tau_225_GHz);
+            const long double array_value =
+                static_cast<long double>(calib.apt.at("array")(detector));
+            if (!std::isfinite(array_value) ||
+                std::floor(array_value) != array_value ||
+                array_value < 0.0L ||
+                array_value > static_cast<long double>(
+                                  std::numeric_limits<int>::max())) {
+                throw std::invalid_argument(
+                    "native RTC extinction array index is not a representable nonnegative integer");
+            }
+            const auto array_index = static_cast<int>(array_value);
+            const auto tau = tau_freq.find(array_index);
+            if (tau == tau_freq.end() ||
+                tau->second.size() != prepared.scans.data.rows()) {
+                throw std::logic_error(
+                    "native RTC extinction model lacks the detector array or native-row cardinality");
+            }
+            const Eigen::ArrayXd factor =
+                1.0 / (-tau->second.array()).exp();
+            if (!factor.isFinite().all()) {
+                throw std::logic_error(
+                    "native RTC extinction factor is nonfinite");
+            }
+            prepared.fcf.data(detector) =
+                (prepared.fcf.data(detector) * factor).mean();
+            prepared.scans.data.col(detector).array() *= factor;
+        }
+        prepared.status.extinction_corrected = true;
+    }
+    if (!prepared.scans.data.array().isFinite().all() ||
+        !prepared.fcf.data.array().isFinite().all()) {
+        throw std::logic_error(
+            "native RTC pointwise candidate is nonfinite");
+    }
+
+    RTCProc worker = [&]() {
+        std::scoped_lock lock(
+            *diag_cache_mutex,
+            *diag_summary_mutex,
+            *coherent_iq_mode_candidate_mutex);
+        return *this;
+    }();
+    worker.run_calibrate = false;
+    worker.run_extinction = false;
+    worker.native_pointwise_prestages_prepared = true;
+    worker.native_dispatch_fsmp_Hz = telescope.fsmp;
+
+    TCData<TCDataKind::PTC, Eigen::MatrixXd> candidate_out;
+    std::vector<NativeRtcOutputRowProvenance> combined_provenance;
+    std::optional<Eigen::VectorXI> result_map_indices;
+    bool have_output = false;
+
+    auto append_rows = [](auto &destination, const auto &source) {
+        if (source.rows() == 0) {
+            return;
+        }
+        if (destination.rows() == 0 && destination.cols() == 0) {
+            destination = source;
+            return;
+        }
+        if (destination.cols() != source.cols()) {
+            throw std::logic_error(
+                "native RTC segment outputs have different detector cardinalities");
+        }
+        const auto first = destination.rows();
+        destination.conservativeResize(first + source.rows(),
+                                       Eigen::NoChange);
+        destination.bottomRows(source.rows()) = source;
+    };
+
+    for (std::size_t segment_index = 0;
+         segment_index < source_state->segments().size(); ++segment_index) {
+        const auto &source_segment =
+            source_state->segments().at(segment_index);
+        const auto inner_first = std::max(
+            source_state->first_inner_output_row(),
+            source_segment.first_output_row());
+        const auto inner_past = std::min(
+            source_state->past_last_inner_output_row(),
+            source_segment.past_last_output_row());
+        if (inner_first >= inner_past) {
+            continue;
+        }
+        auto segment_state = NativeMeasuredScanState::rtc_segment_view(
+            source_state, segment_index);
+        auto segment_in = prepared;
+        const auto first = source_segment.first_output_row();
+        const auto rows = source_segment.row_count();
+        segment_in.scans.data = prepared.scans.data.middleRows(first, rows);
+        segment_in.flags.data = prepared.flags.data.middleRows(first, rows);
+        if (prepared.flags2.data.rows() == prepared.scans.data.rows() &&
+            prepared.flags2.data.cols() == prepared.scans.data.cols()) {
+            segment_in.flags2.data =
+                prepared.flags2.data.middleRows(first, rows);
+        }
+        if (prepared.kernel.data.rows() == prepared.scans.data.rows() &&
+            prepared.kernel.data.cols() == prepared.scans.data.cols()) {
+            segment_in.kernel.data =
+                prepared.kernel.data.middleRows(first, rows);
+        }
+        else {
+            segment_in.kernel.data.resize(0, 0);
+        }
+        for (auto &[key, values] : segment_in.pointing.data) {
+            const auto original = prepared.pointing.data.find(key);
+            if (original != prepared.pointing.data.end() &&
+                original->second.rows() == prepared.scans.data.rows()) {
+                values = original->second.middleRows(first, rows);
+            }
+        }
+        segment_in.scan_indices.data.resize(4);
+        segment_in.scan_indices.data <<
+            segment_state->first_inner_output_row(),
+            segment_state->past_last_inner_output_row() - 1, 0, rows - 1;
+        segment_in.native_scan = std::move(segment_state);
+        segment_in.native_science_mode =
+            NativeScienceMode::native_required;
+
+        TCData<TCDataKind::PTC, Eigen::MatrixXd> segment_out;
+        auto segment_map_indices = worker.run_single_segment(
+            segment_in, segment_out, calib, telescope, pixel_size_rad,
+            map_grouping, nullptr);
+        if (!segment_out.native_scan ||
+            !segment_out.native_scan->is_processed_projection()) {
+            throw std::logic_error(
+                "native RTC segment did not publish exact processed provenance");
+        }
+        if (!result_map_indices.has_value()) {
+            result_map_indices = segment_map_indices;
+        }
+        else if (result_map_indices->size() !=
+                     segment_map_indices.size() ||
+                 !(result_map_indices->array() ==
+                   segment_map_indices.array()).all()) {
+            throw std::logic_error(
+                "native RTC segment map groupings changed across runs");
+        }
+
+        const auto output_offset = candidate_out.scans.data.rows();
+        append_rows(candidate_out.scans.data, segment_out.scans.data);
+        append_rows(candidate_out.flags.data, segment_out.flags.data);
+        if (run_kernel) {
+            append_rows(candidate_out.kernel.data, segment_out.kernel.data);
+        }
+        for (const auto &row : segment_out.native_scan->rtc_output_rows()) {
+            auto adjusted = row;
+            adjusted.output_row += output_offset;
+            adjusted.source_row += source_segment.first_output_row();
+            combined_provenance.push_back(std::move(adjusted));
+        }
+        if (!have_output) {
+            candidate_out.index.data = segment_out.index.data;
+            candidate_out.fcf.data = segment_out.fcf.data;
+            candidate_out.status = segment_out.status;
+            candidate_out.noise.data = segment_out.noise.data;
+            have_output = true;
+        }
+        else if (candidate_out.fcf.data.size() !=
+                     segment_out.fcf.data.size() ||
+                 !(candidate_out.fcf.data.array() ==
+                   segment_out.fcf.data.array()).all()) {
+            throw std::logic_error(
+                "native RTC pointwise calibration state changed across runs");
+        }
+    }
+    if (!have_output || candidate_out.scans.data.rows() <= 0 ||
+        !result_map_indices.has_value() ||
+        combined_provenance.size() !=
+            static_cast<std::size_t>(candidate_out.scans.data.rows())) {
+        throw std::logic_error(
+            "native RTC stride selection produced no complete inner-science output");
+    }
+    candidate_out.scan_indices.data.resize(4);
+    candidate_out.scan_indices.data << 0,
+        candidate_out.scans.data.rows() - 1, 0,
+        candidate_out.scans.data.rows() - 1;
+    candidate_out.native_scan = NativeMeasuredScanState::rtc_output_projection(
+        source_state, std::move(combined_provenance), 1);
+    candidate_out.native_science_mode = NativeScienceMode::native_required;
+    candidate_out.native_scan->require_compatible(
+        candidate_out.scans.data.rows(), candidate_out.scans.data.cols(),
+        candidate_out.index.data);
+
+    // Stage the complete current-scan diagnostic transaction before
+    // publishing any live output.  Copying or inserting diagnostic values may
+    // allocate; those operations therefore happen on private map candidates.
+    // The final map swaps are non-allocating and retain every concurrently
+    // completed scan represented while both diagnostic locks are held.
+    {
+        std::scoped_lock lock(
+            *diag_summary_mutex,
+            *coherent_iq_mode_candidate_mutex);
+        const auto scan = in.index.data;
+        auto candidate_detector_summaries =
+            rtc_detector_summary_by_scan;
+        auto candidate_network_summaries =
+            rtc_network_summary_by_scan;
+        auto candidate_impulsive_summaries =
+            rtc_impulsive_summary_by_scan;
+        auto candidate_source_summaries =
+            rtc_source_protection_summary_by_scan;
+        auto candidate_notch_summaries =
+            rtc_notch_operators_by_scan;
+        auto candidate_coherent_modes =
+            coherent_iq_mode_candidates_by_scan;
+
+        auto stage_scan = [scan](auto &destination,
+                                 const auto &source) {
+            const auto value = source.find(scan);
+            if (value == source.end()) {
+                destination.erase(scan);
+            }
+            else {
+                destination[scan] = value->second;
+            }
+        };
+        stage_scan(candidate_detector_summaries,
+                   worker.rtc_detector_summary_by_scan);
+        stage_scan(candidate_network_summaries,
+                   worker.rtc_network_summary_by_scan);
+        stage_scan(candidate_impulsive_summaries,
+                   worker.rtc_impulsive_summary_by_scan);
+        stage_scan(candidate_source_summaries,
+                   worker.rtc_source_protection_summary_by_scan);
+        stage_scan(candidate_notch_summaries,
+                   worker.rtc_notch_operators_by_scan);
+        stage_scan(candidate_coherent_modes,
+                   worker.coherent_iq_mode_candidates_by_scan);
+
+        out = std::move(candidate_out);
+        rtc_detector_summary_by_scan.swap(candidate_detector_summaries);
+        rtc_network_summary_by_scan.swap(candidate_network_summaries);
+        rtc_impulsive_summary_by_scan.swap(candidate_impulsive_summaries);
+        rtc_source_protection_summary_by_scan.swap(
+            candidate_source_summaries);
+        rtc_notch_operators_by_scan.swap(candidate_notch_summaries);
+        coherent_iq_mode_candidates_by_scan.swap(
+            candidate_coherent_modes);
+    }
+    in.scans.data.resize(0, 0);
+    in.flags.data.resize(0, 0);
+    in.flags2.data.resize(0, 0);
+    in.kernel.data.resize(0, 0);
+    in.tel_data.data.clear();
+    in.pointing_offsets_arcsec.data.clear();
+    in.native_scan.reset();
+    in.native_science_mode = NativeScienceMode::legacy_inactive;
+    return std::move(*result_map_indices);
+}
+
+template<class calib_t, typename telescope_t>
+auto RTCProc::run_single_segment(
+    TCData<TCDataKind::RTC, Eigen::MatrixXd> &in,
+    TCData<TCDataKind::PTC, Eigen::MatrixXd> &out, calib_t &calib,
+    telescope_t &telescope, double pixel_size_rad,
+    std::string map_grouping,
+    TCData<TCDataKind::RTC, Eigen::MatrixXd> *tod_outer_output) {
+
+    std::shared_ptr<const citlali::pipeline::NativeMeasuredScanState>
+        native_segment_state;
+    in.require_native_science_mode_consistent();
+    if (in.native_science_required()) {
+        native_segment_state = in.native_scan;
+        if (!native_segment_state ||
+            !native_segment_state->is_rtc_dispatch_segment() ||
+            !std::isfinite(native_dispatch_fsmp_Hz) ||
+            native_dispatch_fsmp_Hz <= 0.0) {
+            throw std::logic_error(
+                "native RTC numerical body requires exactly one admitted run and its established sample rate");
+        }
+        native_segment_state->require_compatible(
+            in.scans.data.rows(), in.scans.data.cols(), in.index.data);
+    }
 
     reset_rtc_processing_realization(in.index.data);
 
@@ -964,12 +1574,23 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         polarization.calc_angle(in, calib);
     }
 
-    // resize fcf
-    in.fcf.data.setOnes(in.scans.data.cols());
+    // Native dispatch has already completed the pointwise calibration and
+    // network-native extinction candidate transactionally.  Legacy behavior
+    // continues to initialize FCF here exactly as before.
+    if (!native_segment_state ||
+        !native_pointwise_prestages_prepared) {
+        in.fcf.data.setOnes(in.scans.data.cols());
+    }
+    else if (in.fcf.data.size() != in.scans.data.cols() ||
+             !in.fcf.data.array().isFinite().all()) {
+        throw std::logic_error(
+            "native RTC pointwise FCF candidate is absent or nonfinite");
+    }
 
     // get indices for maps
     logger->debug("calculating map indices");
-    auto map_indices = calc_map_indices(calib, map_grouping);
+    auto map_indices = calc_map_indices(
+        calib, map_grouping, native_segment_state.get());
     auto despiker_local = despiker;
     RTCSourceProtectionDiagSummary despike_source_summary;
 
@@ -1046,7 +1667,8 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         despiker_local.despike(in.scans.data, in.flags.data, calib.apt);
 
         // we want to replace spikes on a per array or network basis
-        auto grp_limits = get_grouping(despiker_local.grouping, calib, in.scans.data.cols());
+        auto grp_limits = native_aware_grouping(
+            in, despiker_local.grouping, calib, in.scans.data.cols());
 
         logger->debug("replacing spikes");
         for (auto const& [key, val] : grp_limits) {
@@ -1269,7 +1891,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         *tod_outer_output = in;
     }
 
-    if (run_downsample) {
+    if (!native_segment_state && run_downsample) {
         logger->debug("downsampling data");
         // get the block of out scans that corresponds to the inner scan indices
         Eigen::Ref<Eigen::Map<Eigen::MatrixXd>> in_scans =
@@ -1328,7 +1950,7 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         in.status.downsampled = true;
     }
 
-    else {
+    else if (!native_segment_state) {
         // copy data
         out.scans.data = in.scans.data.block(si, 0, sl, in.scans.data.cols());
         // copy flags
@@ -1357,8 +1979,151 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
         }
     }
 
+    if (native_segment_state) {
+        std::vector<Eigen::Index> selected_source_rows;
+        if (run_downsample) {
+            logger->debug(
+                "downsampling one scan-bounded measured native run with stride phase reset at its first inner row");
+            Eigen::MatrixXd inner_scans = in.scans.data.block(
+                si, 0, sl, in.scans.data.cols());
+            Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> inner_flags =
+                in.flags.data.block(si, 0, sl, in.flags.data.cols());
+            downsampler.downsample(inner_scans, out.scans.data);
+            downsampler.downsample_flags(inner_flags, out.flags.data);
+            if (run_kernel) {
+                Eigen::MatrixXd inner_kernel = in.kernel.data.block(
+                    si, 0, sl, in.kernel.data.cols());
+                downsampler.downsample(inner_kernel, out.kernel.data);
+            }
+            const auto factor =
+                static_cast<Eigen::Index>(downsampler.factor);
+            for (Eigen::Index local_row = 0; local_row < sl;
+                 local_row += factor) {
+                selected_source_rows.push_back(si + local_row);
+            }
+            if (selected_source_rows.empty()) {
+                throw std::logic_error(
+                    "native RTC run has no stride anchor inside its inner-science interval");
+            }
+            if (out.scans.data.rows() !=
+                    static_cast<Eigen::Index>(selected_source_rows.size()) ||
+                out.flags.data.rows() != out.scans.data.rows() ||
+                (run_kernel &&
+                 out.kernel.data.rows() != out.scans.data.rows())) {
+                throw std::logic_error(
+                    "native RTC downsampler result differs from its exact inner-run stride anchors");
+            }
+            in.status.downsampled = true;
+        }
+        else {
+            selected_source_rows.reserve(static_cast<std::size_t>(sl));
+            for (Eigen::Index source_row = si;
+                 source_row < si + sl; ++source_row) {
+                selected_source_rows.push_back(source_row);
+            }
+            out.scans.data = in.scans.data.block(
+                si, 0, sl, in.scans.data.cols());
+            out.flags.data = in.flags.data.block(
+                si, 0, sl, in.flags.data.cols());
+            if (run_kernel) {
+                out.kernel.data = in.kernel.data.block(
+                    si, 0, sl, in.kernel.data.cols());
+            }
+        }
+
+        const auto &segment = native_segment_state->segments().front();
+        const auto support_factor =
+            run_downsample ? downsampler.factor : 1;
+        std::vector<citlali::pipeline::NativeRtcOutputRowProvenance>
+            output_provenance;
+        output_provenance.reserve(selected_source_rows.size());
+        for (std::size_t output_index = 0;
+             output_index < selected_source_rows.size(); ++output_index) {
+            const auto anchor_row = selected_source_rows[output_index];
+            const auto support_past = std::min<Eigen::Index>(
+                anchor_row + support_factor, si + sl);
+            citlali::pipeline::NativeRtcOutputRowProvenance provenance;
+            provenance.output_row =
+                static_cast<Eigen::Index>(output_index);
+            provenance.source_row = anchor_row;
+            provenance.relational_common_slot =
+                native_segment_state->relational_common_slot(anchor_row);
+            provenance.participant_support.reserve(
+                segment.participant_runs().size());
+            for (const auto &participant_run :
+                 segment.participant_runs()) {
+                std::vector<Eigen::Index> detector_columns;
+                for (Eigen::Index detector = 0;
+                     detector < in.scans.data.cols(); ++detector) {
+                    if (native_segment_state
+                            ->require_detector_binding(detector)
+                            .network == participant_run.network_id) {
+                        detector_columns.push_back(detector);
+                    }
+                }
+                if (detector_columns.empty()) {
+                    throw std::logic_error(
+                        "native RTC run participant has no typed detector columns");
+                }
+                std::vector<citlali::pipeline::NativeSampleIdentity>
+                    exact_support;
+                exact_support.reserve(static_cast<std::size_t>(
+                    support_past - anchor_row));
+                for (Eigen::Index support_row = anchor_row;
+                     support_row < support_past; ++support_row) {
+                    exact_support.push_back(
+                        native_segment_state
+                            ->require_cell(
+                                support_row, detector_columns.front())
+                            .identity);
+                }
+                std::vector<citlali::pipeline::NativeDetectorFlagBits>
+                    ored_flags(detector_columns.size(), 0);
+                for (std::size_t detector_index = 0;
+                     detector_index < detector_columns.size();
+                     ++detector_index) {
+                    const auto detector =
+                        detector_columns[detector_index];
+                    for (Eigen::Index support_row = anchor_row;
+                         support_row < support_past; ++support_row) {
+                        if (in.flags.data(support_row, detector)) {
+                            ored_flags[detector_index] |= 1;
+                        }
+                    }
+                }
+                provenance.participant_support.push_back(
+                    citlali::pipeline::NativeStrideSupport{
+                        segment.run_ordinal(),
+                        run_downsample
+                            ? (anchor_row - si) / support_factor
+                            : anchor_row - si,
+                        exact_support.front(), support_factor,
+                        exact_support.front().native_row(),
+                        exact_support.back().native_row() + 1,
+                        std::move(exact_support),
+                        support_past - anchor_row < support_factor,
+                        std::move(detector_columns),
+                        std::move(ored_flags)});
+            }
+            output_provenance.push_back(std::move(provenance));
+        }
+        out.native_scan =
+            citlali::pipeline::NativeMeasuredScanState::
+                rtc_output_projection(
+                    native_segment_state,
+                    std::move(output_provenance), 1);
+        out.native_science_mode = NativeScienceMode::native_required;
+    }
+
     // copy scan indices
-    out.scan_indices.data = in.scan_indices.data;
+    if (native_segment_state) {
+        out.scan_indices.data.resize(4);
+        out.scan_indices.data << 0, out.scans.data.rows() - 1, 0,
+            out.scans.data.rows() - 1;
+    }
+    else {
+        out.scan_indices.data = in.scan_indices.data;
+    }
     // copy scan index
     out.index.data = in.index.data;
     // copy fcf
@@ -1458,6 +2223,11 @@ auto RTCProc::run(TCData<TCDataKind::RTC, Eigen::MatrixXd> &in, TCData<TCDataKin
     }
 
     in.noise.data.resize(0,0);
+
+    if (native_segment_state) {
+        in.native_scan.reset();
+        in.native_science_mode = NativeScienceMode::legacy_inactive;
+    }
 
     return map_indices;
 }
@@ -1685,7 +2455,8 @@ void RTCProc::apply_altaz_destripe(TCData<TCDataKind::PTC, Eigen::MatrixXd> &out
         grp_limits[0] = std::make_tuple(0, n_dets_out);
     }
     else {
-        grp_limits = get_grouping(grp, calib, n_dets_out);
+        grp_limits = native_aware_grouping(
+            out, grp, calib, n_dets_out);
     }
 
     Eigen::Index n_fit_total = 0;
@@ -1813,6 +2584,14 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
     };
 
     auto infer_dt_sec = [&]() -> double {
+        if (in.native_science_required()) {
+            if (!std::isfinite(native_dispatch_fsmp_Hz) ||
+                native_dispatch_fsmp_Hz <= 0.0) {
+                throw std::logic_error(
+                    "native RTC line audit lacks its configured sample rate");
+            }
+            return 1.0 / native_dispatch_fsmp_Hz;
+        }
         for (const auto *name : {"TelTime", "TelUTC", "PpsTime"}) {
             const auto it = in.tel_data.data.find(name);
             if (it == in.tel_data.data.end()) {
@@ -2210,7 +2989,8 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
     }
 
     std::vector<RTCNetworkDiagSummary> nw_summary;
-    auto grp_limits = get_grouping("nw", calib, n_total_dets);
+    auto grp_limits = native_aware_grouping(
+        in, "nw", calib, n_total_dets);
     nw_summary.reserve(grp_limits.size());
 
     for (const auto &[nw, bounds] : grp_limits) {
@@ -2260,7 +3040,23 @@ void RTCProc::capture_rtc_line_audit(tc_t &in,
 
             SelectedDet selected;
             selected.det = det;
-            selected.uid = static_cast<int>(std::llround(calib.apt["uid"](det)));
+            if (in.native_science_required()) {
+                const auto uid =
+                    in.require_native_scan()
+                        .require_detector_binding(det).uid;
+                if (uid < 0 ||
+                    static_cast<std::uint64_t>(uid) >
+                        static_cast<std::uint64_t>(
+                            std::numeric_limits<int>::max())) {
+                    throw std::logic_error(
+                        "native RTC line-audit UID is not exactly representable in its established diagnostic field");
+                }
+                selected.uid = static_cast<int>(uid);
+            }
+            else {
+                selected.uid = static_cast<int>(
+                    std::llround(calib.apt["uid"](det)));
+            }
             selected.centered = Eigen::VectorXd::Zero(n_samples);
             selected.valid = valid;
             for (Eigen::Index i = 0; i < n_samples; ++i) {
@@ -3642,6 +4438,14 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     };
 
     auto infer_dt_sec = [&]() -> double {
+        if (in.native_science_required()) {
+            if (!std::isfinite(native_dispatch_fsmp_Hz) ||
+                native_dispatch_fsmp_Hz <= 0.0) {
+                throw std::logic_error(
+                    "native RTC diagnostics lack the configured sample rate");
+            }
+            return 1.0 / native_dispatch_fsmp_Hz;
+        }
         for (const auto *name : {"TelTime", "TelUTC", "PpsTime"}) {
             const auto it = in.tel_data.data.find(name);
             if (it == in.tel_data.data.end()) {
@@ -4018,7 +4822,8 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                                       std::max(dt_for_step, 1.0e-6))));
         const Eigen::Index snippet_len = snippet_pre + snippet_post + 1;
         std::map<Eigen::Index, std::vector<RTCImpulsiveSnippetSummary>> impulsive_by_network;
-        auto grp_limits = get_grouping("nw", calib, n_dets);
+        auto grp_limits = native_aware_grouping(
+            in, "nw", calib, n_dets);
         for (const auto &[nw, bounds] : grp_limits) {
             const auto start = std::get<0>(bounds);
             const auto end = std::get<1>(bounds);
@@ -4119,7 +4924,8 @@ void RTCProc::capture_rtc_diagnostics(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         ((network_step_mask.cluster_tol_sec > 0.0)
              ? (network_step_mask.cluster_tol_sec / dt_for_step)
              : (0.5 * static_cast<double>(step_window))));
-    auto grp_limits = get_grouping("nw", calib, n_dets);
+    auto grp_limits = native_aware_grouping(
+        in, "nw", calib, n_dets);
     nw_summary.reserve(grp_limits.size());
     for (const auto &[nw, bounds] : grp_limits) {
         const auto start = std::get<0>(bounds);
@@ -4353,6 +5159,14 @@ void RTCProc::apply_network_step_mask(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     }
 
     auto infer_dt_sec = [&]() -> double {
+        if (in.native_science_required()) {
+            if (!std::isfinite(native_dispatch_fsmp_Hz) ||
+                native_dispatch_fsmp_Hz <= 0.0) {
+                throw std::logic_error(
+                    "native RTC step mask lacks the configured sample rate");
+            }
+            return 1.0 / native_dispatch_fsmp_Hz;
+        }
         for (const auto *name : {"TelTime", "TelUTC", "PpsTime"}) {
             const auto it = in.tel_data.data.find(name);
             if (it == in.tel_data.data.end()) {
@@ -4383,7 +5197,8 @@ void RTCProc::apply_network_step_mask(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             ? infer_dt_sec()
             : 1.0;
     const Eigen::Index n_pts = in.scans.data.rows();
-    const auto grp_limits = get_grouping("nw", calib, in.scans.data.cols());
+    const auto grp_limits = native_aware_grouping(
+        in, "nw", calib, in.scans.data.cols());
 
     for (auto &row : nw_summary) {
         row.step_mask_applied = false;
@@ -4499,6 +5314,14 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
     }
 
     auto infer_dt_sec = [&]() -> double {
+        if (in.native_science_required()) {
+            if (!std::isfinite(native_dispatch_fsmp_Hz) ||
+                native_dispatch_fsmp_Hz <= 0.0) {
+                throw std::logic_error(
+                    "native RTC impulsive mask lacks the configured sample rate");
+            }
+            return 1.0 / native_dispatch_fsmp_Hz;
+        }
         for (const auto *name : {"TelTime", "TelUTC", "PpsTime"}) {
             const auto it = in.tel_data.data.find(name);
             if (it == in.tel_data.data.end()) {
@@ -4536,7 +5359,8 @@ void RTCProc::apply_impulsive_coincidence_mask(TCData<TCDataKind::PTC, Eigen::Ma
              ? (impulsive_coincidence.cluster_tol_sec / std::max(dt_sec, 1.0e-6))
              : 1.0));
     const Eigen::Index n_pts = in.scans.data.rows();
-    const auto grp_limits = get_grouping("nw", calib, in.scans.data.cols());
+    const auto grp_limits = native_aware_grouping(
+        in, "nw", calib, in.scans.data.cols());
     const auto det_summary = snapshot_detector_diag_summary(scan_id);
     const bool have_detector_summary =
         det_summary.size() == static_cast<std::size_t>(in.scans.data.cols());

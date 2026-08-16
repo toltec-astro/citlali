@@ -41,6 +41,54 @@ Eigen::Index Engine::apply_model_protected_ptc_line_audit(
         return 0;
     }
 
+    ptcdata.require_native_science_mode_consistent();
+    if (ptcdata.native_science_required()) {
+        const auto &native = ptcdata.require_native_scan();
+        native.require_compatible(
+            ptcdata.scans.data.rows(), ptcdata.scans.data.cols(),
+            ptcdata.index.data);
+        const auto &rows = native.rtc_output_rows();
+        if (!native.is_processed_projection() || rows.empty() ||
+            rows.size() !=
+                static_cast<std::size_t>(ptcdata.scans.data.rows())) {
+            throw std::runtime_error(
+                "native-required model-protected PTC line audit requires exact RTC support provenance");
+        }
+        const auto run_ordinal_for_source_row =
+            [&](Eigen::Index source_row) {
+                for (const auto &segment :
+                     native.admitted_segments()) {
+                    if (source_row >= segment.first_output_row() &&
+                        source_row < segment.past_last_output_row()) {
+                        return segment.run_ordinal();
+                    }
+                }
+                throw std::runtime_error(
+                    "native-required model-protected PTC line audit source row lacks admitted run provenance");
+            };
+        for (std::size_t row = 1; row < rows.size(); ++row) {
+            const auto &before = rows[row - 1].participant_support;
+            const auto &after = rows[row].participant_support;
+            bool same_native_run =
+                before.size() == after.size() &&
+                run_ordinal_for_source_row(rows[row - 1].source_row) ==
+                    run_ordinal_for_source_row(rows[row].source_row);
+            for (std::size_t participant = 0;
+                 same_native_run && participant < before.size();
+                 ++participant) {
+                same_native_run =
+                    before[participant].past_last_support_native_row ==
+                        after[participant].first_support_native_row &&
+                    before[participant].selected_anchor.network_id() ==
+                        after[participant].selected_anchor.network_id();
+            }
+            if (!same_native_run) {
+                throw std::runtime_error(
+                    "native-required model-protected PTC line audit cannot form filter or flag support across native run boundaries");
+            }
+        }
+    }
+
     auto audit = base_audit;
     audit.pre_filter_enabled = false;
     audit.post_filter_enabled = false;

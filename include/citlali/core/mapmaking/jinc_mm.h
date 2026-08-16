@@ -313,6 +313,17 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                         std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb, bool run_noise,
                         const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
 
+    engine_utils::require_native_science_matrix(in);
+    if (in.native_science_required() && run_polarization) {
+        engine_utils::reject_native_science_consumer(
+            in, "polarization/HWPR JINC mapmaking without a native angle carrier");
+    }
+    if (in.native_science_required() &&
+        omb.contribution_diag_enabled) {
+        throw std::runtime_error(
+            "native-required JINC contribution output awaits the B3 artifact-occurrence join");
+    }
+
     const bool use_omb = !omb.noise.empty();
     const bool use_cmb = !cmb.noise.empty() && !use_omb;
     const bool run_kernel = !omb.kernel.empty();
@@ -504,11 +515,21 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         if (apt["flag"](i)==0 && (in.flags.data.col(i).array()==false).any()) {
             // get detector positions from apt table if not in detector mapmaking mode
             auto det_index = i;
-            int det_uid = static_cast<int>(det_index);
-            auto uid_it = apt.find("uid");
-            if (uid_it != apt.end() && det_index < uid_it->second.size() &&
-                std::isfinite(uid_it->second(det_index))) {
-                det_uid = static_cast<int>(std::llround(uid_it->second(det_index)));
+            std::int64_t det_uid =
+                static_cast<std::int64_t>(det_index);
+            if (in.native_science_required()) {
+                det_uid = in.require_native_scan()
+                              .require_detector_binding(
+                                  det_index).uid;
+            }
+            else {
+                auto uid_it = apt.find("uid");
+                if (uid_it != apt.end() &&
+                    det_index < uid_it->second.size() &&
+                    std::isfinite(uid_it->second(det_index))) {
+                    det_uid = static_cast<int>(
+                        std::llround(uid_it->second(det_index)));
+                }
             }
 
             // which map to assign detector to
@@ -527,8 +548,15 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             Eigen::Index mat_cols_center = (mat_cols - 1.)/2.;
 
             // get detector pointing
-            auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
-                                                              pixel_axes, in.pointing_offsets_arcsec.data, omb.map_grouping);
+            auto [lat, lon] =
+                engine_utils::calc_det_pointing_for_science_sample(
+                    in, det_index, apt["x_t"](det_index),
+                    apt["y_t"](det_index), pixel_axes,
+                    omb.map_grouping);
+            if (lat.size() != n_pts || lon.size() != n_pts) {
+                throw std::runtime_error(
+                    "JINC projection cardinality differs from samples");
+            }
 
             // get map buffer row and col indices for lat and lon vectors
             Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows - 1)/2.;
@@ -555,6 +583,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
             // loop through the samples
             for (Eigen::Index j=0; j<n_pts; ++j) {
+                engine_utils::require_native_science_cell(in, j, i);
                 // check if sample is flagged, ignore if so
                 if (!in.flags.data(j,i) &&
                     std::isfinite(in.scans.data(j,i)) &&
@@ -845,6 +874,17 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                         std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb, bool run_noise,
                         const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
 
+    engine_utils::require_native_science_matrix(in);
+    if (in.native_science_required() && run_polarization) {
+        engine_utils::reject_native_science_consumer(
+            in, "polarization/HWPR JINC mapmaking without a native angle carrier");
+    }
+    if (in.native_science_required() &&
+        omb.contribution_diag_enabled) {
+        throw std::runtime_error(
+            "native-required JINC contribution output awaits the B3 artifact-occurrence join");
+    }
+
     const bool use_omb = !omb.noise.empty();
     const bool use_cmb = !cmb.noise.empty() && !use_omb;
     const bool run_kernel = !omb.kernel.empty();
@@ -919,7 +959,7 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
         }
     };
 
-    auto validate_map_index = [&](const char *stage, Eigen::Index map_index, Eigen::Index det_index, int det_uid) {
+    auto validate_map_index = [&](const char *stage, Eigen::Index map_index, Eigen::Index det_index, std::int64_t det_uid) {
         if (map_index < 0 || map_index >= static_cast<Eigen::Index>(omb.signal.size())) {
             std::ostringstream oss;
             oss << "det_col=" << det_index
@@ -939,7 +979,7 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
         }
     };
 
-    auto validate_kernel_cache = [&](const char *stage, Eigen::Index array_index, Eigen::Index det_index, int det_uid) {
+    auto validate_kernel_cache = [&](const char *stage, Eigen::Index array_index, Eigen::Index det_index, std::int64_t det_uid) {
         auto mat_it = jinc_weights_mat.find(array_index);
         auto mat_sq_it = jinc_weights_sq_mat.find(array_index);
         if (mat_it == jinc_weights_mat.end() || mat_sq_it == jinc_weights_sq_mat.end()) {
@@ -1002,7 +1042,7 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                                      int size_rows,
                                      int size_cols,
                                      Eigen::Index det_index,
-                                     int det_uid,
+                                     std::int64_t det_uid,
                                      Eigen::Index sample_index,
                                      Eigen::Index map_index,
                                      Eigen::Index array_index) {
@@ -1045,9 +1085,17 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
         if (apt["flag"](i)==0 && (in.flags.data.col(i).array()==false).any()) {
             // get detector positions from apt table if not in detector mapmaking mode
             auto det_index = i;
-            const int det_uid = (apt["uid"].size() > det_index)
-                ? static_cast<int>(std::llround(apt["uid"](det_index)))
-                : static_cast<int>(det_index);
+            std::int64_t det_uid =
+                static_cast<std::int64_t>(det_index);
+            if (in.native_science_required()) {
+                det_uid = in.require_native_scan()
+                              .require_detector_binding(
+                                  det_index).uid;
+            }
+            else if (apt["uid"].size() > det_index) {
+                det_uid = static_cast<int>(
+                    std::llround(apt["uid"](det_index)));
+            }
 
             // which map to assign detector to
             Eigen::Index map_index = map_indices(i);
@@ -1056,8 +1104,12 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                 return 0;
             }
             Eigen::Index array_index = apt["array"](det_index);
-            update_jinc_debug_breadcrumb("detector-preflight", det_index, det_uid, -1, map_index,
-                                         array_index, -1, -1, -1);
+            if (!in.native_science_required()) {
+                update_jinc_debug_breadcrumb(
+                    "detector-preflight", det_index,
+                    static_cast<int>(det_uid), -1, map_index,
+                    array_index, -1, -1, -1);
+            }
             validate_map_index("detector-preflight", map_index, det_index, det_uid);
             validate_kernel_cache("detector-preflight", array_index, det_index, det_uid);
             const bool use_subpix = (subpixel_n > 1) && (jinc_weights_mat_subpix.count(array_index) > 0);
@@ -1069,8 +1121,15 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
             Eigen::Index mat_cols_center = (mat_cols - 1.)/2.;
 
             // get detector pointing
-            auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
-                                                              pixel_axes, in.pointing_offsets_arcsec.data, omb.map_grouping);
+            auto [lat, lon] =
+                engine_utils::calc_det_pointing_for_science_sample(
+                    in, det_index, apt["x_t"](det_index),
+                    apt["y_t"](det_index), pixel_axes,
+                    omb.map_grouping);
+            if (lat.size() != n_pts || lon.size() != n_pts) {
+                throw std::runtime_error(
+                    "JINC projection cardinality differs from samples");
+            }
 
             // get map buffer row and col indices for lat and lon vectors
             Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows - 1)/2.;
@@ -1097,6 +1156,7 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
 
             // loop through the samples
             for (Eigen::Index j=0; j<n_pts; ++j) {
+                engine_utils::require_native_science_cell(in, j, i);
                 // check if sample is flagged, ignore if so
                 if (!in.flags.data(j,i) &&
                     std::isfinite(in.scans.data(j,i)) &&
@@ -1113,8 +1173,13 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                         int sc = jinc_phase_bin(dcol, subpixel_n);
                         subpix_idx = sr * subpixel_n + sc;
                     }
-                    update_jinc_debug_breadcrumb("sample", det_index, det_uid, j, map_index,
-                                                 array_index, static_cast<int>(omb_ir), static_cast<int>(omb_ic), subpix_idx);
+                    if (!in.native_science_required()) {
+                        update_jinc_debug_breadcrumb(
+                            "sample", det_index,
+                            static_cast<int>(det_uid), j, map_index,
+                            array_index, static_cast<int>(omb_ir),
+                            static_cast<int>(omb_ic), subpix_idx);
+                    }
 
                     if (run_polarization) {
                         auto fg_index = apt["fg"](det_index);
@@ -1147,8 +1212,13 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
 
                             const auto &jinc_mat = use_subpix ? subpix_vec->at(subpix_idx) : jinc_weights_mat[array_index];
                             const auto &jinc_sq_mat = use_subpix ? subpix_sq_vec->at(subpix_idx) : jinc_weights_sq_mat[array_index];
-                            update_jinc_debug_breadcrumb_block("omb-block-bounds", lower_row, upper_row, lower_col, upper_col,
-                                                               jinc_lower_row, jinc_lower_col, size_rows, size_cols);
+                            if (!in.native_science_required()) {
+                                update_jinc_debug_breadcrumb_block(
+                                    "omb-block-bounds", lower_row,
+                                    upper_row, lower_col, upper_col,
+                                    jinc_lower_row, jinc_lower_col,
+                                    size_rows, size_cols);
+                            }
                             validate_block_bounds("omb-jinc-kernel-block", jinc_mat, jinc_lower_row, jinc_lower_col,
                                                   size_rows, size_cols, det_index, det_uid, j, map_index, array_index);
                             validate_block_bounds("omb-jinc-weight-block", jinc_sq_mat, jinc_lower_row, jinc_lower_col,
@@ -1291,11 +1361,20 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                             const auto size_cols = crop.cols;
 
                             const auto &jinc_mat = use_subpix ? subpix_vec->at(nmb_subpix_idx) : jinc_weights_mat[array_index];
-                            update_jinc_debug_breadcrumb("noise-sample", det_index, det_uid, j, map_index,
-                                                         array_index, static_cast<int>(nmb_ir), static_cast<int>(nmb_ic),
-                                                         nmb_subpix_idx);
-                            update_jinc_debug_breadcrumb_block("noise-block-bounds", lower_row, upper_row, lower_col, upper_col,
-                                                               jinc_lower_row, jinc_lower_col, size_rows, size_cols);
+                            if (!in.native_science_required()) {
+                                update_jinc_debug_breadcrumb(
+                                    "noise-sample", det_index,
+                                    static_cast<int>(det_uid), j,
+                                    map_index, array_index,
+                                    static_cast<int>(nmb_ir),
+                                    static_cast<int>(nmb_ic),
+                                    nmb_subpix_idx);
+                                update_jinc_debug_breadcrumb_block(
+                                    "noise-block-bounds", lower_row,
+                                    upper_row, lower_col, upper_col,
+                                    jinc_lower_row, jinc_lower_col,
+                                    size_rows, size_cols);
+                            }
                             validate_block_bounds("noise-jinc-kernel-block", jinc_mat, jinc_lower_row, jinc_lower_col,
                                                   size_rows, size_cols, det_index, det_uid, j, map_index, array_index);
                             const auto mat_block = jinc_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);

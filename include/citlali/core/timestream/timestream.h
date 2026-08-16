@@ -37,6 +37,8 @@
 #include <citlali/core/pipeline/fruit_loop_diagnostics.h>
 #include <citlali/core/pipeline/fruit_loop_feedback_validation.h>
 #include <citlali/core/pipeline/fruit_loop_map_input_validation.h>
+#include <citlali/core/pipeline/apt_detector_relation.h>
+#include <citlali/core/pipeline/timestream_native_pointing.h>
 #include <citlali/core/timestream/auxiliary_stream.h>
 #include <citlali/core/utils/fits_io.h>
 #include <citlali/core/utils/utils.h>
@@ -47,7 +49,809 @@
 
 #include <fmt/core.h>
 
+namespace citlali::pipeline {
+
+class NativeMeasuredScanSegment {
+public:
+    NativeMeasuredScanSegment(
+        std::size_t run_ordinal, Eigen::Index first_output_row,
+        Eigen::Index past_last_output_row,
+        std::vector<std::size_t> relational_common_slots,
+        NativeCohortSelection selection,
+        std::vector<NativeContiguousRun> participant_runs)
+        : run_ordinal_{run_ordinal}, first_output_row_{first_output_row},
+          past_last_output_row_{past_last_output_row},
+          relational_common_slots_{std::move(relational_common_slots)},
+          selection_{std::move(selection)},
+          participant_runs_{std::move(participant_runs)} {}
+
+    std::size_t run_ordinal() const noexcept { return run_ordinal_; }
+    Eigen::Index first_output_row() const noexcept {
+        return first_output_row_;
+    }
+    Eigen::Index past_last_output_row() const noexcept {
+        return past_last_output_row_;
+    }
+    Eigen::Index row_count() const noexcept {
+        return past_last_output_row_ - first_output_row_;
+    }
+    const std::vector<std::size_t> &relational_common_slots() const
+        noexcept {
+        return relational_common_slots_;
+    }
+    const NativeCohortSelection &selection() const noexcept {
+        return selection_;
+    }
+    const std::vector<NativeContiguousRun> &participant_runs() const
+        noexcept {
+        return participant_runs_;
+    }
+
+private:
+    std::size_t run_ordinal_ = 0;
+    Eigen::Index first_output_row_ = 0;
+    Eigen::Index past_last_output_row_ = 0;
+    std::vector<std::size_t> relational_common_slots_;
+    NativeCohortSelection selection_;
+    std::vector<NativeContiguousRun> participant_runs_;
+};
+
+struct NativeMeasuredScanCell {
+    NativeSampleIdentity identity;
+    TimestreamNativeRevision expected_revision = 0;
+    AptDetectorBindingReference detector;
+};
+
+// Compact, immutable lineage for one RTC output row.  `source_row` is the
+// admitted measured input row selected by the existing downsampler.  The
+// common-slot value remains relational grouping provenance only; telescope
+// state is always recovered through the selected native identity.
+struct NativeRtcOutputRowProvenance {
+    Eigen::Index output_row = -1;
+    Eigen::Index source_row = -1;
+    std::size_t relational_common_slot = 0;
+    std::vector<NativeStrideSupport> participant_support;
+};
+
+// Immutable, complete admission for one measured Science/Pointing scan
+// matrix.  Common slots survive only as segment provenance.  Every scientific
+// row/column lookup is instead bound to one delivered native identity, the
+// exact observation-owned pointing plan, and one scoped typed APT binding.
+class NativeMeasuredScanState {
+public:
+    static std::shared_ptr<const NativeMeasuredScanState> admit(
+        NativeOperationIdentity operation,
+        std::shared_ptr<const NativeAlignmentPlan> alignment_plan,
+        std::shared_ptr<const NativePointingPlan> pointing_plan,
+        std::shared_ptr<const AptDetectorRelation> detector_relation,
+        Eigen::Index first_inner_output_row,
+        Eigen::Index past_last_inner_output_row,
+        std::vector<NativeMeasuredScanSegment> segments,
+        std::vector<NativeDetectorBlock> measured_blocks) {
+        return std::shared_ptr<const NativeMeasuredScanState>(
+            new NativeMeasuredScanState{
+                operation, std::move(alignment_plan),
+                std::move(pointing_plan), std::move(detector_relation),
+                first_inner_output_row, past_last_inner_output_row,
+                std::move(segments), std::move(measured_blocks)});
+    }
+
+    // Construct a private view of exactly one complete temporal run.  This is
+    // the only state accepted by RTC's single-run numerical body; the public
+    // RTC dispatcher creates one such view per admitted segment and never
+    // permits temporal support to cross between them.
+    static std::shared_ptr<const NativeMeasuredScanState>
+    rtc_segment_view(
+        std::shared_ptr<const NativeMeasuredScanState> source,
+        std::size_t segment_index) {
+        if (!source || source->source_state_ ||
+            segment_index >= source->segments_.size()) {
+            throw std::invalid_argument(
+                "native RTC segment view requires one original admitted segment");
+        }
+        const auto &segment = source->segments_.at(segment_index);
+        const auto inner_first = std::max(
+            source->first_inner_output_row_, segment.first_output_row());
+        const auto inner_past = std::min(
+            source->past_last_inner_output_row_,
+            segment.past_last_output_row());
+        if (inner_first >= inner_past) {
+            throw std::invalid_argument(
+                "native RTC segment has no measured inner-science rows");
+        }
+
+        std::vector<Eigen::Index> source_rows;
+        source_rows.reserve(static_cast<std::size_t>(segment.row_count()));
+        for (Eigen::Index row = segment.first_output_row();
+             row < segment.past_last_output_row(); ++row) {
+            source_rows.push_back(row);
+        }
+        std::vector<NativeMeasuredScanSegment> normalized_segments;
+        normalized_segments.emplace_back(
+            segment.run_ordinal(), 0, segment.row_count(),
+            segment.relational_common_slots(), segment.selection(),
+            segment.participant_runs());
+        return std::shared_ptr<const NativeMeasuredScanState>(
+            new NativeMeasuredScanState{
+                ViewTag{}, std::move(source), std::move(source_rows),
+                inner_first - segment.first_output_row(),
+                inner_past - segment.first_output_row(),
+                std::move(normalized_segments), {}, 0, true, false});
+    }
+
+    // Publish a processed/downsampled carrier only after the numerical
+    // candidate succeeds.  Source rows may be noncontiguous; each is an exact
+    // measured anchor and carries its ordered common-slot identity plus all
+    // participant-native support/ORed-flag provenance.
+    static std::shared_ptr<const NativeMeasuredScanState>
+    rtc_output_projection(
+        std::shared_ptr<const NativeMeasuredScanState> source,
+        std::vector<NativeRtcOutputRowProvenance> output_rows,
+        TimestreamNativeRevision revision_increment = 1) {
+        if (!source || output_rows.empty() || revision_increment == 0) {
+            throw std::invalid_argument(
+                "native RTC output projection requires source rows and a positive revision increment");
+        }
+        std::vector<Eigen::Index> source_rows;
+        source_rows.reserve(output_rows.size());
+        for (std::size_t index = 0; index < output_rows.size(); ++index) {
+            auto &row = output_rows[index];
+            if (row.output_row != static_cast<Eigen::Index>(index) ||
+                row.source_row < 0 || row.source_row >= source->row_count_ ||
+                (index > 0 &&
+                 row.source_row <= output_rows[index - 1].source_row) ||
+                row.relational_common_slot !=
+                    source->relational_common_slot(row.source_row)) {
+                throw std::invalid_argument(
+                    "native RTC output rows are not an ordered exact source selection");
+            }
+            source_rows.push_back(row.source_row);
+        }
+        return std::shared_ptr<const NativeMeasuredScanState>(
+            new NativeMeasuredScanState{
+                ViewTag{}, std::move(source), std::move(source_rows), 0,
+                static_cast<Eigen::Index>(output_rows.size()), {},
+                std::move(output_rows), revision_increment, false, true});
+    }
+
+    // A later transactional consumer (PTC) retains the exact RTC anchor and
+    // support carrier while advancing the expected revision only after its
+    // complete candidate is accepted.
+    static std::shared_ptr<const NativeMeasuredScanState> advance_revision(
+        std::shared_ptr<const NativeMeasuredScanState> source,
+        TimestreamNativeRevision revision_increment = 1) {
+        if (!source || revision_increment == 0) {
+            throw std::invalid_argument(
+                "native revision advance requires a source and positive increment");
+        }
+        std::vector<Eigen::Index> source_rows(
+            static_cast<std::size_t>(source->row_count_));
+        std::iota(source_rows.begin(), source_rows.end(), Eigen::Index{0});
+        auto provenance = source->rtc_output_rows_;
+        if (provenance.size() != source_rows.size()) {
+            throw std::invalid_argument(
+                "native revision advance requires prior RTC output provenance");
+        }
+        for (std::size_t row = 0; row < provenance.size(); ++row) {
+            provenance[row].output_row = static_cast<Eigen::Index>(row);
+            provenance[row].source_row = static_cast<Eigen::Index>(row);
+        }
+        return std::shared_ptr<const NativeMeasuredScanState>(
+            new NativeMeasuredScanState{
+                ViewTag{}, std::move(source), std::move(source_rows), 0,
+                static_cast<Eigen::Index>(provenance.size()), {},
+                std::move(provenance), revision_increment, false, true});
+    }
+
+    const NativeOperationIdentity &operation() const noexcept {
+        return operation_;
+    }
+    Eigen::Index row_count() const noexcept { return row_count_; }
+    Eigen::Index detector_count() const noexcept { return detector_count_; }
+    Eigen::Index first_inner_output_row() const noexcept {
+        return first_inner_output_row_;
+    }
+    Eigen::Index past_last_inner_output_row() const noexcept {
+        return past_last_inner_output_row_;
+    }
+    const std::shared_ptr<const NativeAlignmentPlan> &alignment_plan_handle()
+        const noexcept {
+        return alignment_plan_;
+    }
+    const std::shared_ptr<const NativePointingPlan> &pointing_plan_handle()
+        const noexcept {
+        return pointing_plan_;
+    }
+    const std::shared_ptr<const AptDetectorRelation> &
+    detector_relation_handle() const noexcept {
+        return detector_relation_;
+    }
+    const std::vector<NativeMeasuredScanSegment> &segments() const noexcept {
+        return segments_;
+    }
+    const std::vector<NativeMeasuredScanSegment> &admitted_segments()
+        const noexcept {
+        return source_state_ ? source_state_->admitted_segments() : segments_;
+    }
+    bool is_rtc_dispatch_segment() const noexcept {
+        return rtc_dispatch_segment_;
+    }
+    bool is_processed_projection() const noexcept {
+        return processed_projection_;
+    }
+    const std::vector<NativeRtcOutputRowProvenance> &rtc_output_rows()
+        const noexcept {
+        return rtc_output_rows_;
+    }
+
+    std::size_t relational_common_slot(Eigen::Index output_row) const {
+        if (output_row < 0 || output_row >= row_count_) {
+            throw std::out_of_range(
+                "native measured output row is out of range");
+        }
+        if (source_state_) {
+            return source_state_->relational_common_slot(
+                source_rows_.at(static_cast<std::size_t>(output_row)));
+        }
+        const auto &segment = segment_for_output_row(output_row);
+        return segment.relational_common_slots().at(
+            static_cast<std::size_t>(output_row -
+                                     segment.first_output_row()));
+    }
+
+    void require_compatible(Eigen::Index rows, Eigen::Index columns,
+                            Eigen::Index scan_index) const {
+        if (rows != row_count_ || columns != detector_count_ ||
+            scan_index != operation_.scan_index) {
+            throw std::logic_error(
+                "native measured scan state differs from the Science/Pointing matrix");
+        }
+        if (!pointing_plan_ || !alignment_plan_ || !detector_relation_ ||
+            !pointing_plan_->bound_to(alignment_plan_)) {
+            throw std::logic_error(
+                "native measured scan state lost an exact authority binding");
+        }
+    }
+
+    NativeMeasuredScanCell require_cell(Eigen::Index output_row,
+                                        Eigen::Index detector_column) const {
+        if (output_row < 0 || output_row >= row_count_ ||
+            detector_column < 0 || detector_column >= detector_count_) {
+            throw std::out_of_range(
+                "native measured Science/Pointing cell is out of range");
+        }
+        if (source_state_) {
+            auto cell = source_state_->require_cell(
+                source_rows_.at(static_cast<std::size_t>(output_row)),
+                detector_column);
+            if (cell.expected_revision >
+                std::numeric_limits<TimestreamNativeRevision>::max() -
+                    revision_increment_) {
+                throw std::overflow_error(
+                    "native processed revision would overflow");
+            }
+            cell.expected_revision += revision_increment_;
+            return cell;
+        }
+        const auto &reference = detector_references_.at(
+            static_cast<std::size_t>(detector_column));
+        const auto &binding = detector_relation_->require_binding(reference);
+        const auto &segment = segment_for_output_row(output_row);
+        const auto local_row = static_cast<std::size_t>(
+            output_row - segment.first_output_row());
+        const auto &cohort_cell = segment.selection().cohort()
+                                      .cell_for_network(
+                                          local_row,
+                                          static_cast<TimestreamNetworkId>(
+                                              binding.network));
+        if (cohort_cell.state() != CoincidenceCellState::mapped_valid ||
+            !cohort_cell.identity().has_value() ||
+            cohort_cell.expected_revision() != 0) {
+            throw std::logic_error(
+                "native measured Science/Pointing cell lost complete revision-zero eligibility");
+        }
+        NativeMeasuredScanCell cell{
+            *cohort_cell.identity(), cohort_cell.expected_revision(),
+            reference};
+        if (binding.detector_column !=
+                static_cast<std::size_t>(detector_column) ||
+            binding.network != cell.identity.network_id()) {
+            throw std::logic_error(
+                "native measured Science/Pointing cell has a stale typed detector binding");
+        }
+        const auto &pointing = pointing_plan_->network(
+            cell.identity.network_id());
+        if (!(pointing.identity(cell.identity.native_row()) ==
+              cell.identity)) {
+            throw std::logic_error(
+                "native measured Science/Pointing timestamp differs from its pointing carrier");
+        }
+        return cell;
+    }
+
+    const AptDetectorBinding &require_detector_binding(
+        Eigen::Index detector_column) const {
+        if (detector_column < 0 || detector_column >= detector_count_) {
+            throw std::out_of_range(
+                "native measured detector column is out of range");
+        }
+        return detector_relation_->require_binding(
+            detector_references_.at(
+                static_cast<std::size_t>(detector_column)));
+    }
+
+    NativeTelescopeData telescope_data_for_detector(
+        Eigen::Index detector_column) const {
+        (void)require_detector_binding(detector_column);
+        const auto first_cell = require_cell(0, detector_column);
+        const auto &network = pointing_plan_->network(
+            first_cell.identity.network_id());
+        NativeTelescopeData result;
+        for (const auto &[key, values] : network.telescope_data()) {
+            (void)values;
+            result[key].resize(row_count_);
+        }
+        for (Eigen::Index row = 0; row < row_count_; ++row) {
+            const auto cell = require_cell(row, detector_column);
+            if (cell.identity.network_id() !=
+                first_cell.identity.network_id()) {
+                throw std::logic_error(
+                    "native measured detector column changed network identity");
+            }
+            const auto local = network.local_row(cell.identity.native_row());
+            for (auto &[key, values] : result) {
+                values(row) = network.telescope_series(key)(local);
+            }
+        }
+        return result;
+    }
+
+    NativePointingOffsetsArcsec pointing_offsets_for_detector(
+        Eigen::Index detector_column) const {
+        (void)require_detector_binding(detector_column);
+        const auto first_cell = require_cell(0, detector_column);
+        const auto &network = pointing_plan_->network(
+            first_cell.identity.network_id());
+        NativePointingOffsetsArcsec result;
+        for (const auto &[axis, values] : network.pointing_offsets_arcsec()) {
+            (void)values;
+            result[axis].resize(row_count_);
+        }
+        for (Eigen::Index row = 0; row < row_count_; ++row) {
+            const auto cell = require_cell(row, detector_column);
+            if (cell.identity.network_id() !=
+                first_cell.identity.network_id()) {
+                throw std::logic_error(
+                    "native measured detector column changed network identity");
+            }
+            const auto local = network.local_row(cell.identity.native_row());
+            for (auto &[axis, values] : result) {
+                values(row) = network.pointing_offset_arcsec(axis)(local);
+            }
+        }
+        return result;
+    }
+
+private:
+    struct ViewTag {};
+
+    NativeMeasuredScanState(
+        NativeOperationIdentity operation,
+        std::shared_ptr<const NativeAlignmentPlan> alignment_plan,
+        std::shared_ptr<const NativePointingPlan> pointing_plan,
+        std::shared_ptr<const AptDetectorRelation> detector_relation,
+        Eigen::Index first_inner_output_row,
+        Eigen::Index past_last_inner_output_row,
+        std::vector<NativeMeasuredScanSegment> segments,
+        std::vector<NativeDetectorBlock> measured_blocks)
+        : operation_{operation}, alignment_plan_{std::move(alignment_plan)},
+          pointing_plan_{std::move(pointing_plan)},
+          detector_relation_{std::move(detector_relation)},
+          first_inner_output_row_{first_inner_output_row},
+          past_last_inner_output_row_{past_last_inner_output_row},
+          segments_{std::move(segments)},
+          measured_blocks_{std::move(measured_blocks)} {
+        validate_and_bind();
+    }
+
+    NativeMeasuredScanState(
+        ViewTag, std::shared_ptr<const NativeMeasuredScanState> source_state,
+        std::vector<Eigen::Index> source_rows,
+        Eigen::Index first_inner_output_row,
+        Eigen::Index past_last_inner_output_row,
+        std::vector<NativeMeasuredScanSegment> segments,
+        std::vector<NativeRtcOutputRowProvenance> rtc_output_rows,
+        TimestreamNativeRevision revision_increment,
+        bool rtc_dispatch_segment, bool processed_projection)
+        : operation_{source_state->operation_},
+          alignment_plan_{source_state ? source_state->alignment_plan_ :
+                                        nullptr},
+          pointing_plan_{source_state ? source_state->pointing_plan_ :
+                                       nullptr},
+          detector_relation_{source_state ? source_state->detector_relation_ :
+                                           nullptr},
+          first_inner_output_row_{first_inner_output_row},
+          past_last_inner_output_row_{past_last_inner_output_row},
+          row_count_{static_cast<Eigen::Index>(source_rows.size())},
+          detector_count_{source_state ? source_state->detector_count_ : 0},
+          segments_{std::move(segments)},
+          detector_references_{source_state ?
+                                   source_state->detector_references_ :
+                                   std::vector<AptDetectorBindingReference>{}},
+          source_state_{std::move(source_state)},
+          source_rows_{std::move(source_rows)},
+          rtc_output_rows_{std::move(rtc_output_rows)},
+          revision_increment_{revision_increment},
+          rtc_dispatch_segment_{rtc_dispatch_segment},
+          processed_projection_{processed_projection} {
+        if (processed_projection_) {
+            if (operation_.sequence >
+                std::numeric_limits<std::uint64_t>::max() -
+                    revision_increment_) {
+                throw std::overflow_error(
+                    "native processed operation sequence would overflow");
+            }
+            operation_.sequence += revision_increment_;
+        }
+        validate_view();
+    }
+
+    const NativeMeasuredScanSegment &segment_for_output_row(
+        Eigen::Index output_row) const {
+        const auto it = std::lower_bound(
+            segments_.begin(), segments_.end(), output_row,
+            [](const NativeMeasuredScanSegment &segment, Eigen::Index row) {
+                return segment.past_last_output_row() <= row;
+            });
+        if (it == segments_.end() ||
+            output_row < it->first_output_row()) {
+            throw std::out_of_range(
+                "native measured output row is outside admitted segments");
+        }
+        return *it;
+    }
+
+    void validate_view() {
+        if (!source_state_ || row_count_ <= 0 || detector_count_ <= 0 ||
+            first_inner_output_row_ < 0 ||
+            past_last_inner_output_row_ <= first_inner_output_row_ ||
+            past_last_inner_output_row_ > row_count_ ||
+            rtc_dispatch_segment_ == processed_projection_) {
+            throw std::invalid_argument(
+                "native measured view has invalid authority, shape, or role");
+        }
+        for (std::size_t index = 0; index < source_rows_.size(); ++index) {
+            const auto row = source_rows_[index];
+            if (row < 0 || row >= source_state_->row_count_ ||
+                (index > 0 && row <= source_rows_[index - 1])) {
+                throw std::invalid_argument(
+                    "native measured view source rows must be strictly ordered");
+            }
+        }
+        if (rtc_dispatch_segment_) {
+            if (segments_.size() != 1 || !rtc_output_rows_.empty() ||
+                revision_increment_ != 0 ||
+                segments_.front().first_output_row() != 0 ||
+                segments_.front().past_last_output_row() != row_count_) {
+                throw std::invalid_argument(
+                    "native RTC dispatch view must contain exactly one unmodified run");
+            }
+            return;
+        }
+        if (!segments_.empty() ||
+            rtc_output_rows_.size() != source_rows_.size() ||
+            revision_increment_ == 0) {
+            throw std::invalid_argument(
+                "native processed projection lacks exact row provenance");
+        }
+
+        const auto &participant_networks =
+            alignment_plan_->participant_network_ids();
+        for (std::size_t row_index = 0;
+             row_index < rtc_output_rows_.size(); ++row_index) {
+            const auto &row = rtc_output_rows_[row_index];
+            if (row.output_row != static_cast<Eigen::Index>(row_index) ||
+                row.source_row != source_rows_[row_index] ||
+                row.relational_common_slot !=
+                    source_state_->relational_common_slot(row.source_row) ||
+                row.participant_support.size() !=
+                    participant_networks.size()) {
+                throw std::invalid_argument(
+                    "native processed output row has incomplete temporal provenance");
+            }
+            std::set<Eigen::Index> covered_columns;
+            for (std::size_t participant = 0;
+                 participant < participant_networks.size(); ++participant) {
+                const auto &support = row.participant_support[participant];
+                const auto network_id = participant_networks[participant];
+                if (support.selected_anchor.network_id() != network_id ||
+                    support.factor <= 0 ||
+                    support.exact_support_rows.empty() ||
+                    !(support.exact_support_rows.front() ==
+                      support.selected_anchor) ||
+                    support.first_support_native_row !=
+                        support.exact_support_rows.front().native_row() ||
+                    support.past_last_support_native_row !=
+                        support.exact_support_rows.back().native_row() + 1 ||
+                    support.detector_columns.empty() ||
+                    support.detector_columns.size() !=
+                        support.ored_flag_support.size()) {
+                    throw std::invalid_argument(
+                        "native RTC support is incomplete or names the wrong participant");
+                }
+                const auto anchor_cell = source_state_->require_cell(
+                    row.source_row, support.detector_columns.front());
+                if (!(anchor_cell.identity == support.selected_anchor)) {
+                    throw std::invalid_argument(
+                        "native RTC selected anchor differs from its source row");
+                }
+                for (std::size_t support_index = 0;
+                     support_index < support.exact_support_rows.size();
+                     ++support_index) {
+                    const auto &identity =
+                        support.exact_support_rows[support_index];
+                    if (identity.network_id() != network_id ||
+                        identity.native_row() !=
+                            support.first_support_native_row +
+                                static_cast<TimestreamNativeRow>(
+                                    support_index)) {
+                        throw std::invalid_argument(
+                            "native RTC exact support rows are not one delivered contiguous run");
+                    }
+                }
+                for (const auto column : support.detector_columns) {
+                    if (column < 0 || column >= detector_count_ ||
+                        !covered_columns.insert(column).second ||
+                        require_detector_binding(column).network !=
+                            network_id) {
+                        throw std::invalid_argument(
+                            "native RTC support detector partition is stale or noninjective");
+                    }
+                }
+            }
+            if (covered_columns.size() !=
+                static_cast<std::size_t>(detector_count_)) {
+                throw std::invalid_argument(
+                    "native RTC support does not cover every typed detector column");
+            }
+        }
+    }
+
+    void validate_and_bind() {
+        if (!alignment_plan_ || !pointing_plan_ || !detector_relation_ ||
+            !pointing_plan_->bound_to(alignment_plan_)) {
+            throw std::invalid_argument(
+                "native measured scan requires exact alignment, pointing, and typed detector authorities");
+        }
+        detector_count_ = static_cast<Eigen::Index>(
+            detector_relation_->bindings().size());
+        if (detector_count_ <= 0 || segments_.empty()) {
+            throw std::invalid_argument(
+                "native measured scan requires detectors and complete segments");
+        }
+
+        detector_references_.reserve(
+            static_cast<std::size_t>(detector_count_));
+        for (Eigen::Index column = 0; column < detector_count_; ++column) {
+            auto reference = detector_relation_->binding_reference_for_column(
+                static_cast<std::size_t>(column));
+            const auto &binding = detector_relation_->require_binding(reference);
+            if (binding.detector_column != static_cast<std::size_t>(column)) {
+                throw std::invalid_argument(
+                    "native measured scan detector layout is not column-normalized");
+            }
+            detector_references_.push_back(std::move(reference));
+        }
+
+        Eigen::Index expected_first = 0;
+        std::optional<std::size_t> previous_common_slot;
+        const auto &participant_ids =
+            alignment_plan_->participant_network_ids();
+        for (const auto &segment : segments_) {
+            if (segment.first_output_row() != expected_first ||
+                segment.row_count() <= 0 ||
+                static_cast<Eigen::Index>(
+                    segment.relational_common_slots().size()) !=
+                    segment.row_count() ||
+                segment.selection().relational_common_slots() !=
+                    segment.relational_common_slots() ||
+                !(segment.selection().cohort().operation() == operation_) ||
+                segment.selection().cohort().participant_network_ids() !=
+                    participant_ids ||
+                segment.participant_runs().size() != participant_ids.size()) {
+                throw std::invalid_argument(
+                    "native measured scan segment is not a complete adjacent cohort/run binding");
+            }
+            for (const auto common_slot :
+                 segment.relational_common_slots()) {
+                if (previous_common_slot.has_value() &&
+                    common_slot <= *previous_common_slot) {
+                    throw std::invalid_argument(
+                        "native measured scan common-slot provenance must increase strictly");
+                }
+                previous_common_slot = common_slot;
+            }
+            for (std::size_t participant = 0;
+                 participant < participant_ids.size(); ++participant) {
+                const auto network_id = participant_ids[participant];
+                const auto &run = segment.participant_runs()[participant];
+                if (run.network_id != network_id ||
+                    run.row_count() != segment.row_count()) {
+                    throw std::invalid_argument(
+                        "native measured scan participant run differs from its complete cohort");
+                }
+                for (Eigen::Index local = 0; local < segment.row_count();
+                     ++local) {
+                    const auto &cell = segment.selection().cohort()
+                                           .cell_for_network(
+                                               static_cast<std::size_t>(local),
+                                               network_id);
+                    if (cell.state() != CoincidenceCellState::mapped_valid ||
+                        !cell.identity().has_value() ||
+                        cell.expected_revision() != 0 ||
+                        cell.identity()->native_row() !=
+                            run.first_native_row + local) {
+                        throw std::invalid_argument(
+                            "native measured scan admits only complete mapped-valid revision-zero runs");
+                    }
+                }
+            }
+            expected_first = segment.past_last_output_row();
+        }
+        row_count_ = expected_first;
+        if (first_inner_output_row_ < 0 ||
+            past_last_inner_output_row_ <= first_inner_output_row_ ||
+            past_last_inner_output_row_ > row_count_) {
+            throw std::invalid_argument(
+                "native measured scan inner output interval is invalid");
+        }
+
+        const std::size_t expected_block_count =
+            segments_.size() * participant_ids.size();
+        if (measured_blocks_.size() != expected_block_count) {
+            throw std::invalid_argument(
+                "native measured scan blocks must match every segment participant");
+        }
+        for (const auto &block : measured_blocks_) {
+            if (!block.measured_values().array().isFinite().all()) {
+                throw std::invalid_argument(
+                    "native measured scan mapped-valid detector values must be finite");
+            }
+        }
+        std::size_t measured_cell_count = 0;
+        for (const auto &block : measured_blocks_) {
+            const auto block_rows = static_cast<std::size_t>(
+                block.measured_values().rows());
+            const auto block_cols = static_cast<std::size_t>(
+                block.measured_values().cols());
+            if (block_rows > std::numeric_limits<std::size_t>::max() /
+                                 block_cols ||
+                measured_cell_count >
+                    std::numeric_limits<std::size_t>::max() -
+                        block_rows * block_cols) {
+                throw std::length_error(
+                    "native measured scan block cardinality would overflow");
+            }
+            measured_cell_count += block_rows * block_cols;
+        }
+        if (measured_cell_count !=
+            static_cast<std::size_t>(row_count_) *
+                static_cast<std::size_t>(detector_count_)) {
+            throw std::invalid_argument(
+                "native measured scan blocks are not a complete row/column matrix");
+        }
+
+        std::map<TimestreamNetworkId, std::vector<Eigen::Index>>
+            columns_by_network;
+        for (Eigen::Index column = 0; column < detector_count_; ++column) {
+            const auto &binding = detector_relation_->require_binding(
+                detector_references_.at(
+                    static_cast<std::size_t>(column)));
+            columns_by_network[static_cast<TimestreamNetworkId>(
+                binding.network)]
+                .push_back(column);
+        }
+        std::vector<bool> used_blocks(measured_blocks_.size(), false);
+        for (const auto &segment : segments_) {
+            for (std::size_t participant = 0;
+                 participant < participant_ids.size(); ++participant) {
+                const auto network_id = participant_ids[participant];
+                const auto &run = segment.participant_runs()[participant];
+                const auto columns = columns_by_network.find(network_id);
+                if (columns == columns_by_network.end() ||
+                    columns->second.empty()) {
+                    throw std::invalid_argument(
+                        "native measured scan participant has no typed detector columns");
+                }
+                const auto first_column = columns->second.front();
+                const auto past_column = columns->second.back() + 1;
+                if (past_column - first_column !=
+                    static_cast<Eigen::Index>(columns->second.size())) {
+                    throw std::invalid_argument(
+                        "native measured scan network detector columns are not contiguous");
+                }
+
+                const NativeDetectorBlock *matching_block = nullptr;
+                std::size_t matching_index = 0;
+                for (std::size_t index = 0;
+                     index < measured_blocks_.size(); ++index) {
+                    const auto &block = measured_blocks_[index];
+                    if (block.network_id() == network_id &&
+                        block.first_native_row() == run.first_native_row &&
+                        block.past_last_native_row() ==
+                            run.past_last_native_row &&
+                        block.first_detector_column() == first_column &&
+                        block.past_last_detector_column() == past_column) {
+                        if (matching_block != nullptr) {
+                            throw std::invalid_argument(
+                                "native measured scan duplicates one segment/network block");
+                        }
+                        matching_block = &block;
+                        matching_index = index;
+                    }
+                }
+                if (matching_block == nullptr ||
+                    used_blocks[matching_index]) {
+                    throw std::invalid_argument(
+                        "native measured scan lacks an exact segment/network block");
+                }
+                used_blocks[matching_index] = true;
+                for (Eigen::Index local = 0; local < segment.row_count();
+                     ++local) {
+                    const auto &cohort_cell = segment.selection().cohort()
+                                                  .cell_for_network(
+                                                      static_cast<std::size_t>(local),
+                                                      network_id);
+                    const auto &identity = *cohort_cell.identity();
+                    if (!(matching_block->identity(local) == identity) ||
+                        !(pointing_plan_->network(network_id)
+                              .identity(identity.native_row()) == identity)) {
+                        throw std::invalid_argument(
+                            "native measured scan block/cohort/pointing identity differs");
+                    }
+                }
+            }
+        }
+        if (std::find(used_blocks.begin(), used_blocks.end(), false) !=
+            used_blocks.end()) {
+            throw std::invalid_argument(
+                "native measured scan contains an unbound measured block");
+        }
+
+        // Measured matrices are the construction-time coverage witness only.
+        // TCData.scans remains the sole value owner; retaining a second
+        // O(rows*detectors) block or ledger in this immutable mapping would
+        // duplicate production data and repeat B1's bounded map cost.
+        std::vector<NativeDetectorBlock>().swap(measured_blocks_);
+    }
+
+    NativeOperationIdentity operation_;
+    std::shared_ptr<const NativeAlignmentPlan> alignment_plan_;
+    std::shared_ptr<const NativePointingPlan> pointing_plan_;
+    std::shared_ptr<const AptDetectorRelation> detector_relation_;
+    Eigen::Index first_inner_output_row_ = 0;
+    Eigen::Index past_last_inner_output_row_ = 0;
+    Eigen::Index row_count_ = 0;
+    Eigen::Index detector_count_ = 0;
+    std::vector<NativeMeasuredScanSegment> segments_;
+    std::vector<NativeDetectorBlock> measured_blocks_;
+    std::vector<AptDetectorBindingReference> detector_references_;
+    std::shared_ptr<const NativeMeasuredScanState> source_state_;
+    std::vector<Eigen::Index> source_rows_;
+    std::vector<NativeRtcOutputRowProvenance> rtc_output_rows_;
+    TimestreamNativeRevision revision_increment_ = 0;
+    bool rtc_dispatch_segment_ = false;
+    bool processed_projection_ = false;
+};
+
+}  // namespace citlali::pipeline
+
 namespace timestream {
+
+enum class NativeScienceMode {
+    legacy_inactive,
+    native_required,
+};
 
 enum TimestreamFlags {
     Good = 0,
@@ -215,6 +1019,14 @@ struct TimeStream : internal::TCDataBase<Derived>,
 
     // optional measured sidecar timestreams, such as quadrature r.
     AuxiliaryMeasuredStreams auxiliary_measured_streams;
+    // Explicit activation state plus immutable, complete native scan
+    // admission.  `native_required` never falls back when the handle is
+    // absent or stale; the legacy branch is intentionally explicit for
+    // unchanged direct unit tests and unactivated Beammap.
+    NativeScienceMode native_science_mode =
+        NativeScienceMode::legacy_inactive;
+    std::shared_ptr<const citlali::pipeline::NativeMeasuredScanState>
+        native_scan;
     // kernel timestreams
     data_t<Eigen::MatrixXd> kernel;
     // flag timestream
@@ -244,6 +1056,26 @@ struct TimeStream : internal::TCDataBase<Derived>,
 
     [[nodiscard]] bool has_auxiliary_measured_streams() const {
         return !auxiliary_measured_streams.empty();
+    }
+
+    [[nodiscard]] bool native_science_required() const noexcept {
+        return native_science_mode == NativeScienceMode::native_required;
+    }
+
+    [[nodiscard]] const citlali::pipeline::NativeMeasuredScanState &
+    require_native_scan() const {
+        if (!native_science_required() || !native_scan) {
+            throw std::logic_error(
+                "native-required timestream lacks an immutable measured scan state");
+        }
+        return *native_scan;
+    }
+
+    void require_native_science_mode_consistent() const {
+        if (native_science_required() != static_cast<bool>(native_scan)) {
+            throw std::logic_error(
+                "timestream native science mode and measured scan state disagree");
+        }
     }
 
     [[nodiscard]] AuxiliaryMeasuredStream *auxiliary_measured_stream(
@@ -2496,6 +3328,8 @@ auto TCProc::get_grouping(std::string grp, calib_t &calib, int n_dets) {
 template <TCDataKind tcdata_t, class calib_t>
 void TCProc::precompute_pointing(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, std::string pixel_axes, std::string map_grouping) {
 
+    engine_utils::require_native_science_matrix(in);
+
     // dimensions of data
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
@@ -2510,8 +3344,8 @@ void TCProc::precompute_pointing(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t 
         double el_off = calib.apt["y_t"](det_index);
 
         // get detector pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
-                                                          in.pointing_offsets_arcsec.data, map_grouping);
+        auto [lat, lon] = engine_utils::calc_det_pointing_for_science_sample(
+            in, i, az_off, el_off, pixel_axes, map_grouping);
 
         in.pointing.data["lat"].col(i) = std::move(lat);
         in.pointing.data["lon"].col(i) = std::move(lon);
@@ -2522,6 +3356,8 @@ template <TCProc::SourceType source_type, class mb_t, TCDataKind tcdata_t, class
 void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib,
                         Eigen::DenseBase<Derived> &map_indices, std::string pixel_axes,
                         std::string map_grouping) {
+
+    engine_utils::require_native_science_matrix(in);
 
     // dimensions of data
     Eigen::Index n_dets = in.scans.data.cols();
@@ -2616,8 +3452,9 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
             double el_off = calib.apt["y_t"](i);
 
             // calc tangent plane pointing
-            auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
-                                                              in.pointing_offsets_arcsec.data, map_grouping);
+            auto [lat, lon] =
+                engine_utils::calc_det_pointing_for_science_sample(
+                    in, i, az_off, el_off, pixel_axes, map_grouping);
 
             // get map buffer row and col indices for lat and lon vectors
             Eigen::VectorXd irows = lat.array()/mb.pixel_size_rad + row_offset;
@@ -2625,6 +3462,7 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
 
             // loop through data points
             for (Eigen::Index j=0; j<n_pts; ++j) {
+                engine_utils::require_native_science_cell(in, j, i);
                 const double map_row = irows(j);
                 const double map_col = icols(j);
 
@@ -2874,25 +3712,92 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
 template <TCDataKind tcdata_t, class calib_t>
 auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, std::string map_grouping) {
 
+    engine_utils::require_native_science_matrix(in);
+
     // make a copy of the calib class for flagging
     calib_t calib_scan = calib;
 
     // only run if limits are not zero
     if (lower_inv_var_factor !=0 || upper_inv_var_factor !=0) {
+        std::optional<Eigen::VectorXd> native_tel_time;
+        if (in.native_science_required()) {
+            const auto &native = in.require_native_scan();
+            if (native.admitted_segments().size() != 1) {
+                throw std::runtime_error(
+                    "native-required detector variance windows may not cross a native run boundary");
+            }
+            std::map<std::int64_t, Eigen::Index>
+                representative_column_by_network;
+            for (Eigen::Index detector = 0;
+                 detector < in.scans.data.cols(); ++detector) {
+                const auto &binding =
+                    native.require_detector_binding(detector);
+                representative_column_by_network.try_emplace(
+                    binding.network, detector);
+            }
+            if (representative_column_by_network.empty()) {
+                throw std::runtime_error(
+                    "native-required detector variance windows lack typed detector networks");
+            }
+            for (const auto &[network, detector] :
+                 representative_column_by_network) {
+                (void)network;
+                const auto telescope_data =
+                    native.telescope_data_for_detector(detector);
+                const auto time_it = telescope_data.find("TelTime");
+                if (time_it == telescope_data.end() ||
+                    time_it->second.size() != in.scans.data.rows() ||
+                    time_it->second.size() < 2 ||
+                    !time_it->second.array().isFinite().all()) {
+                    throw std::runtime_error(
+                        "native-required detector variance windows lack exact native TelTime support");
+                }
+                for (Eigen::Index row = 1;
+                     row < time_it->second.size(); ++row) {
+                    const double delta =
+                        time_it->second(row) - time_it->second(row - 1);
+                    if (!(delta > 0.0)) {
+                        throw std::runtime_error(
+                            "native-required detector variance TelTime support is not strictly increasing");
+                    }
+                    if (native_tel_time.has_value()) {
+                        const double reference_delta =
+                            (*native_tel_time)(row) -
+                            (*native_tel_time)(row - 1);
+                        if (delta != reference_delta) {
+                            throw std::runtime_error(
+                                "native-required detector variance networks have unequal native cadence");
+                        }
+                    }
+                }
+                if (!native_tel_time.has_value()) {
+                    native_tel_time = time_it->second;
+                }
+            }
+        }
         logger->info("removing outlier dets");
         std::vector<RemoveBadDetsWindowDiagSummary> window_diag(
             static_cast<std::size_t>(in.scans.data.cols()),
             RemoveBadDetsWindowDiagSummary{});
 
         auto infer_dt_sec = [&]() {
-            auto it = in.tel_data.data.find("TelTime");
-            if (it == in.tel_data.data.end() || it->second.size() < 2) {
+            const Eigen::VectorXd *tel_time = nullptr;
+            if (native_tel_time.has_value()) {
+                tel_time = &*native_tel_time;
+            }
+            else {
+                const auto it = in.tel_data.data.find("TelTime");
+                if (it != in.tel_data.data.end()) {
+                    tel_time = &it->second;
+                }
+            }
+            if (tel_time == nullptr || tel_time->size() < 2) {
                 return std::numeric_limits<double>::quiet_NaN();
             }
             std::vector<double> dt;
-            dt.reserve(static_cast<std::size_t>(it->second.size() - 1));
-            for (Eigen::Index i = 1; i < it->second.size(); ++i) {
-                const double delta = it->second(i) - it->second(i - 1);
+            dt.reserve(static_cast<std::size_t>(tel_time->size() - 1));
+            for (Eigen::Index i = 1; i < tel_time->size(); ++i) {
+                const double delta = (*tel_time)(i) - (*tel_time)(i - 1);
                 if (std::isfinite(delta) && delta > 0.0) {
                     dt.push_back(delta);
                 }
@@ -3034,19 +3939,18 @@ auto TCProc::remove_bad_dets(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &cal
                             Eigen::Matrix<bool, Eigen::Dynamic, 1> masked_flags = flags;
                             double az_off = calib.apt["x_t"](det_index);
                             double el_off = calib.apt["y_t"](det_index);
-                            auto [lat, lon] = engine_utils::calc_det_pointing(
-                                in.tel_data.data,
-                                az_off,
-                                el_off,
-                                std::string{"altaz"},
-                                in.pointing_offsets_arcsec.data,
-                                map_grouping);
+                            auto [lat, lon] =
+                                engine_utils::calc_det_pointing_for_science_sample(
+                                    in, det_index, az_off, el_off,
+                                    std::string{"altaz"}, map_grouping);
                             double source_lat = 0.0;
                             double source_lon = 0.0;
                             resolve_mask_center_rad(in, calib, map_grouping, det_index,
                                                     source_lat, source_lon);
                             const double radius_rad = mask_radius_arcsec * ASEC_TO_RAD;
                             for (Eigen::Index sample = 0; sample < masked_flags.size(); ++sample) {
+                                engine_utils::require_native_science_cell(
+                                    in, sample, det_index);
                                 const double dlat = lat(sample) - source_lat;
                                 const double dlon = lon(sample) - source_lon;
                                 if (std::sqrt(dlat * dlat + dlon * dlon) < radius_rad) {
@@ -3169,6 +4073,12 @@ template <TCProc::SourceType source_type, TCDataKind tcdata_t, typename Derived,
 void TCProc::add_gaussian(TCData<tcdata_t, Eigen::MatrixXd> &in, Eigen::DenseBase<Derived> &params, std::string &pixel_axes,
                           std::string &map_grouping, apt_t &apt, double pixel_size_rad, Eigen::Index n_rows, Eigen::Index n_cols) {
 
+    // This entry point is currently used only by Beammap.  B2b does not
+    // activate native Beammap source synthesis; an admitted native scan may
+    // not silently reuse the legacy common-time model path.
+    engine_utils::reject_native_science_consumer(
+        in, "Beammap Gaussian source-model synthesis");
+
     Eigen::Index n_dets = in.scans.data.cols();
     Eigen::Index n_pts = in.scans.data.rows();
 
@@ -3278,21 +4188,7 @@ template <TCDataKind tcdata_t, class calib_t>
 auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, std::string pixel_axes, std::string map_grouping,
                          int n_pts, int n_dets, int start_index) {
 
-    // copy of tel data
-    std::map<std::string, Eigen::VectorXd> tel_data_copy;
-
-    // populate copy of tel data
-    for (const auto &[key,val]: in.tel_data.data) {
-        tel_data_copy[key] = in.tel_data.data[key].segment(0,n_pts);
-    }
-
-    // copy of pointing offsets
-    std::map<std::string, Eigen::VectorXd> pointing_offset_copy;
-
-    // populate copy of pointing offsets
-    for (const auto &[key,val]: in.pointing_offsets_arcsec.data) {
-        pointing_offset_copy[key] = in.pointing_offsets_arcsec.data[key].segment(0,n_pts);
-    }
+    engine_utils::require_native_science_matrix(in);
 
     // make a copy of the timestream flags
     Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> masked_flags = in.flags.data.block(0, start_index, n_pts, n_dets);
@@ -3306,8 +4202,13 @@ auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, 
         double el_off = calib.apt["y_t"](det_index);
 
         // calc tangent plane pointing
-        auto [lat, lon] = engine_utils::calc_det_pointing(tel_data_copy, az_off, el_off, pixel_axes,
-                                                          pointing_offset_copy, map_grouping);
+        auto [lat, lon] =
+            engine_utils::calc_det_pointing_for_science_sample(
+                in, det_index, az_off, el_off, pixel_axes, map_grouping);
+        if (lat.size() < n_pts || lon.size() < n_pts) {
+            throw std::logic_error(
+                "source-mask pointing cardinality is shorter than its measured rows");
+        }
 
         double source_lat = 0.0;
         double source_lon = 0.0;
@@ -3319,6 +4220,7 @@ auto TCProc::mask_region(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib, 
 
         // loop through samples
         for (Eigen::Index j=0; j<n_pts; ++j) {
+            engine_utils::require_native_science_cell(in, j, det_index);
             // flag samples within radius as bad
             if (dist(j) < mask_radius_arcsec*ASEC_TO_RAD) {
                 masked_flags(j,i) = 1;
@@ -3334,6 +4236,8 @@ void TCProc::append_base_to_netcdf(netCDF::NcFile &fo, TCData<tcdata_t, Eigen::M
                                    std::string &pixel_axes, pointing_offset_t &pointing_offsets_arcsec, calib_t &calib,
                                    bool apply_det_offsets, Eigen::Index scan_row_index, bool output_outer_scan,
                                    bool mini_output) {
+    engine_utils::reject_native_science_consumer(
+        in, "RTC/PTC output before B3 native provenance synchronization");
     using netCDF::NcDim;
     using netCDF::NcFile;
     using netCDF::NcType;
