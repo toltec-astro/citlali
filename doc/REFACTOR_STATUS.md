@@ -174,6 +174,15 @@ implementation-blind GPT-5.6 Ultra scientific-author draft from the exact
 content-bound packet. Scope approval does not approve contract substance,
 implementation conformity, validation, or production use.
 
+The content-bound SCI-MAP author packet was committed and a fresh GPT-5.6
+Ultra implementation-blind author was dispatched on 2026-08-16. The author is
+restricted to the approved Scope Brief, exact independent core plus
+supersession cover, and sanitized conventions/ownership extract. The internal
+dossier, recovery record, implementation, audits, repairs, tests, validation,
+Unity evidence, MAP-002/MAP-003 evidence, and production state are excluded.
+The next owner-facing milestone is a manager-reviewed two-view contract draft
+or a precise scientific decision that prevents one.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

@@ -1,7 +1,7 @@
 # SCI-MAP — Ordinary Mapmaking And Observation Coaddition
 
 Status: Stage A complete; Scope Brief and exact author packet owner-approved;
-Stage B implementation-blind authorship authorized
+fresh Stage B implementation-blind author dispatched
 
 Scientific contract scope: `v0.1`, owner-approved (`2026-08-16`)
 
@@ -57,12 +57,13 @@ fitting, Beammap inference, and fruit-loop feedback.
 - [`DECISION_LOG.md`](DECISION_LOG.md): concise record of the six approved
   scope decisions
 
-No scientific rationale, engineering conformance contract, crosswalk, or PDF
-has yet been accepted. Scope approval does not approve the resulting contract.
+A fresh implementation-blind GPT-5.6 Ultra author was dispatched from the
+content-bound packet on `2026-08-16`. No scientific rationale, engineering
+conformance contract, crosswalk, or PDF has yet been accepted. Scope approval
+does not approve the resulting contract.
 
 ## Next Gate
 
-Dispatch a fresh implementation-blind scientific author using only the exact
-manifested packet. The next owner-facing gate is a manager-reviewed two-view
-draft or a precise scientific decision that blocks one. This work does not
-assess implementation conformity, run validation, or change production status.
+The next owner-facing gate is a manager-reviewed two-view draft or a precise
+scientific decision that blocks one. This work does not assess implementation
+conformity, run validation, or change production status.
