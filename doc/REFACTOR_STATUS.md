@@ -344,6 +344,27 @@ science-impact qualification, and production readiness remain unassessed.
 There is no further editorial round; only the contract-library's four governed
 revision triggers may reopen the package.
 
+After the project owner selected raw-timestream conditioning as the fourth
+contract product, [`SCI-RTC`](scientific_contracts/packages/SCI-RTC/v0.1/README.md)
+completed its initial Stage A recovery and sanitized scope draft on
+2026-08-17. Recovery reuses the frozen implementation-independent RTC core,
+approved D001--D004, the phase-zero point-selection amendment, and the
+owner-approved learned-sampling design. It also reconciles those sources with
+the later frozen SCI-BEAM raw `Delta f/f` boundary and conditional CAL, MAP,
+and PTC interfaces rather than repeating their reasoning.
+
+The proposed v0.1 scope preserves product-role-specific raw and calibrated
+signal domains; exact unit-domain calibration/replacement order; transitive
+synthesis/replacement ineligibility; complete-response-or-unavailable;
+immutable stage identity; phase-zero sampling; fixed and optional learned
+sampling; and one atomic RTC output bundle. Implementation, audits, handoffs,
+repairs, re-audits, tests, validation, Unity evidence, active ALIGN work, and
+production state remain quarantined. The next gate is owner review of
+`RTC-SCOPE-D001--D016`, eight explicit open scientific questions, and the
+exact proposed three-item author packet. No implementation-blind author has
+been launched, and no RTC scientific authority, conformity, validation, or
+production claim has been established.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

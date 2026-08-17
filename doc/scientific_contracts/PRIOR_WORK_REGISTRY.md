@@ -110,6 +110,14 @@ and cross-package handoffs are valuable recovery inputs.
 
 ### RTC And PTC
 
+- Package-specific RTC recovery:
+  [`packages/SCI-RTC/v0.1/PRIOR_WORK.md`](packages/SCI-RTC/v0.1/PRIOR_WORK.md)
+  at `2026-08-17`. It recovers the exact independent core, D001--D004, the
+  phase-zero amendment, the learned-sampling plan, later status records, four
+  incoming handoffs, and the CAL/MAP/BEAM/PTC interface changes. It proposes a
+  supersession cover so the author reuses the derivation without inheriting
+  audit findings or obsolete calibrated-only and aggregate-downsampling
+  assumptions.
 - Current shared authority plus the RTC/PTC decisions and amendments under
   `COORD:doc/audits/packages/SCI-RTC-001_*` and `SCI-PTC-001_*`.
 - Earlier independent cores and audits on `codex/audit-sci-rtc-001` and
