@@ -1,3 +1,577 @@
-% SCI-RTC v0.1 scientist-facing entry point.
-% Reserved for implementation-blind Stage B authorship after owner approval.
-% This Stage A placeholder contains no normative science.
+\documentclass[10pt]{article}
+
+\usepackage[letterpaper,margin=0.82in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{enumitem}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\usepackage{siunitx}
+
+\definecolor{RTCblue}{HTML}{1E4E79}
+\definecolor{RTCpale}{HTML}{EEF5FA}
+\definecolor{RTCgray}{HTML}{52606D}
+\hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
+  hypertexnames=false,
+  pdftitle={SCI-RTC Scientific Rationale v0.1/r0.1},
+  pdfauthor={SCI-RTC implementation-blind scientific author}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.52em}
+\emergencystretch=3em
+\hbadness=10000
+\setlist{leftmargin=*,nosep}
+\renewcommand{\arraystretch}{1.13}
+\newcommand{\ReqID}[1]{\texttt{\scriptsize #1}}
+\newcommand{\PredID}[1]{\texttt{\scriptsize #1}}
+\newcommand{\ReqWord}[1]{\textbf{#1}}
+\newcommand{\Avail}{\ensuremath{\mathrm{available}}}
+\newcommand{\Unavail}{\ensuremath{\mathrm{unavailable}}}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\RationaleBox}[2]{%
+  \begin{center}\fcolorbox{RTCblue}{RTCpale}{\parbox{0.92\linewidth}{%
+  \textbf{#1}\quad #2}}\end{center}}
+
+\begin{document}
+\raggedbottom
+
+\begin{titlepage}
+\thispagestyle{empty}
+\vspace*{0.75in}
+{\color{RTCblue}\rule{\linewidth}{2pt}}\\[0.42in]
+{\Huge\bfseries SCI-RTC\\[0.12in]}
+{\LARGE Raw-Timestream Conditioning and Temporal Response\\[0.28in]}
+{\huge\color{RTCblue}Scientific Rationale}
+
+\vspace{0.65in}
+\begin{tabular}{@{}ll@{}}
+Package version & v0.1 \\
+Revision & r0.1 \\
+Date & 2026-08-17 \\
+View & Scientist-facing rationale \\
+Authority & Shared normative core in \texttt{src/common/} \\
+Status & Implementation-blind author draft for scientific-owner review \\
+\end{tabular}
+
+\vfill
+\RationaleBox{Scope of this document.}{It explains the physical and
+statistical reasoning behind the shared SCI-RTC authority.  It does not claim
+scientific approval, implementation conformity, representation fidelity,
+observational performance, validation, or production readiness.}
+{\color{RTCblue}\rule{\linewidth}{2pt}}
+\end{titlepage}
+\pagestyle{plain}
+
+\pagenumbering{roman}
+\section*{Abstract}
+
+Raw-timestream conditioning is scientifically consequential even when it is
+described operationally as despiking, filtering, or downsampling.  Each such
+operation can move signal between detectors or times, alter amplitude and
+phase, create correlations, change temporal support, and make a finite output
+depend on samples that are not independent astronomical measurements.
+SCI-RTC therefore treats conditioning as a realized detector-time operator,
+not as an array mutation followed by a nominal filter label.
+
+The v0.1 contract is deliberately role-specific.  The primary standardized
+Beammap input remains raw $\Delta f/f$; only a separately authorized CAL path
+may produce \si{mJy\per beam}.  When raw donor replacement is justified by
+the multiplicative convention $z_i=\texttt{flxscale}_i x_i$, its transfer is
+the donor factor divided by the target factor, with exact occurrence and
+domain validity.  No legacy responsivity is required or revived.  Phase-zero
+point selection is the sole downsampling operator.  Any output influenced by
+ALIGN synthesis or RTC replacement is scientifically ineligible, while the
+numerical influence and its cause remain visible.  A response is complete or
+explicitly unavailable.
+
+Fixed and learned sampling share this authority.  Learned mode may choose the
+maximum safe factor only after owner-resolved transfer, alias, sampling,
+realizability, and compatibility tests pass, using one immutable common
+observation plan.  The output is an atomic bundle of signal, identity,
+support, response, influence, validity inputs, uncertainty status, provenance,
+diagnostics, and completion state.  The appendices contain the normative core;
+the first ten Arabic-numbered pages are explanatory narrative.
+
+\RationaleBox{Reading rule.}{Sections 1--10 explain why the contract takes
+its form.  Appendix A onward is the sole normative authority.  An explanatory
+phrase cannot weaken an appendix requirement or resolve an open owner choice.}
+
+{\footnotesize\setcounter{tocdepth}{1}\setlength{\parskip}{0pt}\tableofcontents}
+\clearpage
+\pagenumbering{arabic}
+\hypertarget{rtc-narrative-begin}{}
+
+\section{The scientific object is a conditioned measurement, not an array}
+\label{sec:rat-object}
+
+The input to RTC is already an interpretation: an upstream authority has
+associated detector values with an ordered grid, declared which cells are
+original or synthesized, and supplied identities and support.  RTC must not
+turn those bounded facts into stronger claims.  In particular, a regular
+software grid is useful for filtering but does not by itself prove where a
+physical integration occurred or how accurately that event is tied to an
+absolute epoch.  The distinction matters whenever a filter phase or a
+coordinate-dependent mask is interpreted astronomically.
+
+Conditioning then adds another layer of interpretation.  A despike detector
+selects cells from the data; a donor rule may move information across
+detectors; a finite filter couples neighboring times; an IIR carries state;
+a source mask changes the operator according to position; and a decimator
+keeps only selected points.  The resulting number at one output slot is
+therefore not characterized by its value and unit alone.  Its scientific
+meaning also includes where its information came from, which parts of that
+support were synthetic or replaced, how amplitude and phase changed, and
+whether the complete response can be reconstructed.
+
+This motivates the boundary of the package.  ALIGN continues to own grid and
+synthesis meaning.  AST continues to own coordinate identity and validity.
+SCI-BEAM and SCI-CAL continue to own calibration-factor science.  RTC owns
+only the ordered use of admitted inputs and the consequences of conditioning.
+Downstream packages retain their estimators and eligibility policies, but
+they may not strengthen an unavailable RTC fact.  This ownership structure is
+not administrative decoration: it prevents a finite array from silently
+manufacturing timing, calibration, astrometry, covariance, or exposure.
+
+The atomic output follows directly.  Signal values, ordered identity,
+response, support, causes, validity inputs, uncertainty status, state, and
+completion are one scientific unit.  If a required member cannot be written,
+the bundle has failed rather than partially succeeded.  Optional detail may
+be absent only when that absence cannot alter values, eligibility, or failure.
+
+\RationaleBox{Physical test.}{Ask whether two equal output numbers with
+different donor histories, filter state, or synthesized support represent the
+same measurement.  They do not.  The bundle exists to preserve that
+difference.}
+
+\clearpage
+\section{Product role fixes signal meaning before processing}
+\label{sec:rat-domain}
+
+A digital filter preserves dimensions but need not preserve astronomical
+meaning.  A low-pass output can still have the dimensions of its input while
+its point-source peak, phase, or effective beam-crossing response has changed.
+For that reason SCI-RTC attaches quantity, unit, sign, baseline/reference, and
+valid domain to the product role before any operator is applied.  Unit alone
+is never the complete label.
+
+The most important v0.1 separation is between raw and calibrated roles.  The
+frozen Beammap path expects the detector observable in raw $\Delta f/f$.
+That raw stream is the primary standardized input to subsequent beam
+inference; substituting a calibrated timestream or map would change the
+scientific object even if the substitution appeared convenient.  A different
+role may import an approved calibration operator and target
+\si{mJy\per beam}, but the request must name that authority and the output
+must retain its lineage and response.  Neither role inherits the other's
+factor, unit, or normalization.
+
+This separation also clarifies what RTC does not own.  The calibration factor
+may embody source, atmosphere, and beam information established elsewhere.
+RTC may apply the factor at a declared point in its sequence and must carry
+the resulting uncertainty and response consequences, but it cannot repair an
+invalid factor or infer a missing one.  Conversely, a raw role may use
+calibration factors solely as an authorized cross-detector conversion without
+claiming that the output itself is calibrated.  The factors then define a
+ratio between raw detector conventions, not a new output unit.
+
+Several apparently harmless shortcuts are therefore scientifically distinct:
+using a sensitivity diagnostic as a signal multiplier; describing a filtered
+calibrated stream as photometrically unchanged because its unit string did not
+change; or reusing a factor from a row with the same number but a different
+detector occurrence.  Each loses authority or identity.  The contract instead
+requires explicit role binding and honest unavailability.
+
+\begin{center}
+\begin{tabularx}{0.94\linewidth}{@{}p{0.19\linewidth}XX@{}}
+\toprule
+Role example & Authorized signal meaning & What cannot be inferred \\
+\midrule
+Beammap & Raw detector $\Delta f/f$ with full RTC response & Calibrated flux, unchanged effective PSF, or absolute timing \\
+CAL-authorized & Declared calibrated \si{mJy\per beam} domain & Raw Beammap substitutability or preserved peak response from unit alone \\
+Diagnostic-only & Exactly named diagnostic quantity and support & Scientific eligibility or policy effect unless separately selected \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\clearpage
+\section{Calibration order and raw donor scaling}
+\label{sec:rat-cal-donor}
+
+Cross-detector replacement is where signal domain and operator order meet.
+Suppose a raw value from donor detector $q$ is used to represent target
+detector $d$.  Under the admitted multiplicative convention, each detector's
+calibrated value equals its own \texttt{flxscale} times its raw value.  The
+raw target replacement must therefore be multiplied by donor
+\texttt{flxscale} divided by target \texttt{flxscale}.  Calibrating that
+replacement with the target factor then gives the same calibrated amplitude
+as calibrating the donor with the donor factor.  The direction is fixed by
+this equality, not by a field name or historical convention.
+
+The rule is intentionally narrow.  Both factors must bind the exact detector
+occurrences, use the same calibration convention and domain, apply on the
+relevant support, and be valid; the target factor must be nonzero.  A finite
+ratio between unrelated rows is not scientific authority.  When any condition
+fails, the \texttt{flxscale} route is unavailable unless a different
+donor-to-target authority is separately admitted with direction, units,
+support, uncertainty, validity, and provenance.
+
+This construction neither requires nor recreates legacy responsivity.  That
+quantity has no canonical role in the frozen Beammap contract.  Introducing
+it would add an unowned convention and could double-count or reverse a
+detector conversion.  The clean statement is entirely in terms of the owner-
+modified multiplicative rule.
+
+For a CAL-authorized role, calibration precedes cross-detector replacement.
+This makes the signal domain of the replacement explicit and avoids assuming
+that two detector-specific operations commute.  A reversed order can be
+equivalent, but only as a full affine operator: factor direction, additive
+offsets, time dependence, response, uncertainty, identity, validity, and
+domain must all agree.  Agreement for one constant or one fixture cannot
+establish that general equivalence.
+
+Two limiting checks expose common mistakes.  Equal compatible factors give a
+unit raw transfer.  If the donor factor is two and the target factor is four,
+a donor raw value of three becomes a target raw value of one and a half; both
+calibrate to six.  The reciprocal ratio gives twelve at the target and is
+immediately falsified.  If the target factor is zero or invalid, no numerical
+answer is authorized.
+
+\RationaleBox{Interpretive safeguard.}{A calibration factor may be used to
+relate two raw detector conventions without making the raw product calibrated.
+The role label, not the mere presence of a factor, controls output meaning.}
+
+\clearpage
+\section{Despiking is selection, mixing, and provenance}
+\label{sec:rat-despike}
+
+A despike operation has at least two scientific parts.  First, a detector or
+rule decides that a target cell should not pass unchanged.  Second, a
+replacement policy decides whether and how other cells contribute.  Both
+parts may depend on the observed data, source masks, flags, detector topology,
+or local time support.  The unconditional mapping is consequently not
+guaranteed to be linear, stationary, unbiased, or Gaussian, even when the
+replacement formula is affine after all choices are fixed.
+
+The realized selection must therefore remain reconstructible.  The output
+needs the target indicator, eligible candidate definition, donor score and tie
+rule, exact donor occurrences and time cells, weights, factor convention,
+fallback, and any additive baseline.  Determinism at ties is scientifically
+important: otherwise identical data can acquire different detector mixing,
+response, and covariance solely from execution order.  A fallback is also an
+operator.  Leaving a spike unchanged, inserting zero, copying an invalid
+donor, or failing the product have different consequences and cannot share a
+single unlabeled state.
+
+Replacement changes information, not just values.  The target identity is
+retained because the output remains located at the target detector and time,
+but its support links every donor.  Reusing a donor creates correlations
+between targets; filtering spreads that donor's influence into further
+outputs.  None of these derived samples is a new independent exposure.  A
+finite number can be useful for continuity while remaining unsuitable for a
+scientific estimator that assumes original independent measurements.
+
+The v0.1 owner rule makes this consequence explicit and transitive.  Any
+output influenced by RTC replacement is scientifically ineligible.  The same
+is true for upstream ALIGN synthesis.  The rule is not limited to the selected
+center of a downsampled output: a synthesized or replaced cell anywhere in
+the full filter or state support makes the output ineligible.  Numerical
+influence is still retained in the response, and compact cause/support
+bookkeeping remains mandatory.  Ineligibility must not erase the processing
+that actually occurred.
+
+This separation allows downstream policy to remain honest.  VAL can combine
+the causal facts with its own named rules; PTC or MAP can reject an affected
+sample without pretending the donor never influenced neighboring values.
+What they may not do is reinterpret finiteness or zero direct weight as
+independence.
+
+\RationaleBox{Limiting case.}{When the target indicator is zero, replacement
+reduces to identity.  When it is one, the donor link and influence are part of
+the measurement even if donor and target values happen to be equal.}
+
+\clearpage
+\section{Filtering requires state-complete response}
+\label{sec:rat-filter}
+
+For an ideal interior FIR with fixed coefficients, the familiar impulse and
+frequency responses are sufficient: coefficient sum gives DC gain, the
+complex response gives amplitude and phase, and its phase slope gives group
+delay where defined.  This special case is valuable because impulses,
+constants, ramps, steps, and sinusoids provide strong deterministic
+falsification.  They reveal reversed coefficients, normalization errors,
+wrong rate conventions, hidden delay, and stopband leakage without requiring
+an observational campaign.
+
+Real conditioning often falls outside that ideal.  An IIR or notch retains
+state, so its output depends on initialization and on where state is reset or
+carried.  A forward/backward pass changes magnitude, effective order, and
+edges relative to a causal pass.  A finite window needs padding, truncation,
+guarding, or rejection.  A coordinate or data mask may split segments,
+renormalize weights, or hold state.  Chained stages commute only in the
+translation-invariant convolution interior; at masks, boundaries, finite
+precision, and state transitions their order is observable.
+
+The complete response must include those facts.  A coefficient array by
+itself is not the response of a stateful, masked, detector-mixing,
+finite-window, multirate operator.  The general object is the local
+detector-time Jacobian at fixed realized state, represented sparsely or as an
+exact factorization.  It can include alignment weights, cross-detector donor
+links, calibration, each filter, state propagation, edges, and sampling.  At
+a selection boundary the derivative may be discontinuous or undefined; this
+is an availability fact, not permission to publish a convenient scalar curve.
+
+The complete-response-or-unavailable rule prevents partial truth from being
+misread as full truth.  If a stored FIR kernel omits a donor mix or an IIR
+state, it may still be a useful component, but it is not the conditioned
+response.  A downstream consumer may use the complete factorization or
+decline the affected claim.  It may not assume omitted stages are identity.
+
+The same reasoning applies to photometric labels.  A filter can preserve
+\si{mJy\per beam} dimension while attenuating a source crossing or moving its
+peak.  Preserved dimensional unit is not preserved point-source response.
+The response and its uncertainty must travel with the signal.
+
+\RationaleBox{Limiting case.}{As FIR coefficients approach a Kronecker delta,
+the interior filter approaches identity.  As a causal pole approaches the
+unit circle, memory grows; stability cannot survive at or beyond the circle.}
+
+\clearpage
+\section{Masks, edges, and non-finite state are different causes}
+\label{sec:rat-validity}
+
+A source mask answers a processing question: should a selected operation use
+this coordinate-associated cell?  It does not answer whether the acquisition
+exists, whether the coordinate is valid, whether the numerical value is
+finite, or whether a consumer may use the output.  Conflating these questions
+turns scientific causes into accidental control flow.
+
+Coordinate validity is especially important.  A finite coordinate in the
+wrong frame, an out-of-domain TAN coordinate, an unavailable detector binding,
+and a valid coordinate outside a source region are distinct states.  Only the
+last one is an outside-source result.  Treating invalid coordinates as
+outside would admit precisely the samples for which mask membership cannot be
+known.  The affected required operation must instead fail, retaining the
+cause.  Pointing, OOF, and Beammap controls use their declared AltAz tangent
+plane; Science uses its declared J2000 TAN relation.  RTC performs no quiet
+conversion between them.
+
+Edges pose a parallel problem in time.  A finite FIR needs a declared boundary
+extension or an output region with complete context.  An IIR needs an initial
+state and a state/reset boundary; a finite guard approximates a longer tail
+only under a stated residual criterion.  A short or empty scan is not an
+ordinary scan with fewer samples.  These cells may be guarded, edge-invalid,
+conditionally available, or rejected according to selected policy, but they
+cannot be mislabeled as interior.
+
+Non-finite values add state propagation.  A NaN in an FIR affects a bounded
+footprint unless an earlier authorized operation replaces it.  A NaN entering
+an IIR can poison the state-dependent tail until a declared recovery or reset
+establishes a new finite state.  Silent zero conversion changes both response
+and statistical meaning.  The contract therefore requires rejection, exact
+unavailable influence, or an explicitly selected prior recovery.
+
+Flags remain descriptive causes.  A flag may inform a mask or a downstream
+eligibility predicate only through a named policy.  Likewise, a mask does not
+become a confidence, and zero weight does not erase exposure or influence.
+Keeping these axes separate allows a later consumer to reason about cause
+without reconstructing it from sentinels.
+
+\RationaleBox{Falsification pattern.}{Test valid inside/outside coordinates
+beside invalid, unavailable, wrong-frame, and ambiguous cases; then inject
+NaN into samples, coefficients, coordinates, and state separately.  A single
+generic ``bad'' path cannot preserve the required distinctions.}
+
+\clearpage
+\section{Phase-zero selection fixes output identity but not support}
+\label{sec:rat-phasezero}
+
+V0.1 authorizes one downsampling operator: select pre-sampling points whose
+input indices are integer multiples of the factor, beginning at phase zero.
+This deliberately excludes arithmetic means and other block aggregates.  A
+point selector has a simple output index and representative assigned-grid
+time, which makes phase and identity auditable.  It does not average away
+high-frequency content and is not an anti-alias filter.
+
+The cardinality follows directly from the selected indices.  An empty segment
+has no output; otherwise the sequence includes zero and every factor-th input
+index still smaller than the segment length.  Odd and even factors require no
+special midpoint convention because the representative time is the selected
+point time.  An edge policy may reject a selected candidate for incomplete
+context, but it cannot shift the point to a new phase or rename a block mean
+as phase-zero selection.
+
+Output identity and scientific support must nevertheless remain separate.  A
+selected value normally depends on the prefilter footprint around its center;
+earlier filters expand that footprint, an IIR extends it to a state boundary,
+and donor or alignment mappings can introduce cross-detector or additional
+time support.  Flags and influence must aggregate over this transitive support.
+Center-only propagation would miss a replaced or synthesized neighbor that
+contributed to the selected value and would violate the ineligibility rule.
+
+Multirate response makes the same point in frequency space.  Decimation folds
+multiple input bands into each output frequency.  The exact phase-zero
+identity contains every folded image after the realized prefilter.  An
+alias-free claim therefore needs a stated input band, stopband metric and
+bound, and sufficient attenuation in every image.  Unknown high-frequency
+content makes the response conditional; point selection cannot remove it.
+
+The software grid's rate family remains conditional authority.  Dividing its
+rate by the integer factor defines the output software cadence, not a new
+claim about physical detector integration timing.  Output records must carry
+the parent grid and phase so a consumer cannot confuse those claims.
+
+\RationaleBox{Limiting case.}{$M=1$ selects every admitted point and leaves
+the software rate unchanged.  The full RTC chain is identity only if all
+earlier stages, states, and affine terms are also identity.}
+
+\clearpage
+\section{Learned sampling is a bounded plan-selection problem}
+\label{sec:rat-learned}
+
+Fixed and learned sampling differ in how the plan is obtained, not in what an
+applied plan must mean.  Both ultimately provide an exact filter, integer
+factor, phase-zero rule, rate, support semantics, compatibility state, and
+provenance before apply.  Apply executes an immutable plan; it does not learn,
+retune, or silently fall back while producing science data.
+
+The first learned scope asks for maximum safe reduction from a finite admitted
+candidate set.  ``Safe'' is a conjunction, not a score that permits one
+failure to compensate for another.  The astronomical transfer must stay
+within an owner-resolved tolerance over an owner-resolved signal band.  Every
+phase-zero alias image must meet its bound.  Sampling must remain adequate for
+the fastest valid in-scan crossing of the smallest admitted beam.  The exact
+filter must be realizable under the selected family and precision.  Every
+required downstream consumer must accept the common cadence and response.
+Only after all predicates pass is the largest factor selected.
+
+The smallest beam and maximum valid in-scan speed make the plan conservative
+over the admitted observation.  A percentile speed is useful diagnostic
+context, but it can miss a short fast crossing and therefore cannot be safety
+authority.  Similarly, the beam-times-filter calculation must use the exact
+realized FIR response and exact phase-zero multirate response; a nominal
+cutoff label is insufficient.  Source injection may later test a realization,
+but the analytical operator defines admission.
+
+One common observation plan avoids cadence changes across arrays or scans in
+this first scope.  Per-array or per-scan optimization, noise-aware choices,
+heterogeneous time grids, and continuous adaptation could be scientifically
+valuable, but they change downstream identity, covariance, and comparison
+semantics and require successor authority.
+
+The state lifecycle protects reproducibility.  The request, bootstrap facts,
+learned candidate evaluation, resolved plan, and applied state remain
+distinct.  Restart restores the complete resolved plan and rejects an
+incompatible beam, speed support, scan set, coefficient precision, rate,
+phase, role, or parent.  A learn-to-apply transfer is not evidence of
+convergence or observational performance.
+
+\RationaleBox{Open authority.}{The selection equation is complete only after
+the scientific owner resolves the numerical tolerances, support estimators,
+candidate/filter family, fallback, and compatibility predicates listed in the
+owner ledger.  Until then learned application is unavailable.}
+
+\clearpage
+\section{Covariance follows information flow, not storage shape}
+\label{sec:rat-statistics}
+
+Once selections and states are fixed, the realized operator provides a clean
+conditional covariance statement: propagate the admitted full input
+covariance through the same detector-time map that produced the signal.  This
+automatically captures correlations from reused donors, overlapping FIR
+support, IIR memory, alignment interpolation, and decimation footprints.  A
+rectangular output array does not make its cells independent.
+
+The statement is conditional because selectors are often learned from the
+same noisy data.  A spike detector, donor choice, mask, fitted coefficient, or
+data-derived state can preferentially select particular noise realizations.
+Conditioning on the realized choice removes that randomness from the local
+calculation; it does not prove that selection bias or selection covariance is
+zero.  Unconditional moments require the joint law of samples and selectors.
+If that law is absent, those terms are explicitly unavailable.
+
+Calibration and response introduce another class of uncertainty.  A common
+calibrator scale, atmosphere model, beam estimate, detector factors, donor
+ratios, filter coefficients, or uncertain cadence may correlate many samples
+or detectors.  Such common terms do not average down as independent noise.
+Linearized nuisance propagation is appropriate only when the model is
+differentiable and the approximation is adequate; otherwise nonlinear
+propagation or a separately approved ensemble is needed.  Cross terms are
+required when nuisance estimates share data with the timestream.
+
+These distinctions explain why inverse variance, precision, response, and
+confidence cannot be synonyms.  The reciprocal of one marginal conditional
+variance is not the diagonal of the full precision matrix.  A scalar weight
+does not encode cross-detector covariance.  A response curve does not say how
+uncertain that curve is.  A confidence score does not establish exposure.
+
+Unknown covariance is therefore unavailable, not diagonal or zero.  A
+bounded consumer may accept a conditional weight while explicitly excluding
+selection and systematic terms, but it cannot use that weight for an absolute
+significance or total-error claim.  The bundle records which statement is
+actually supported.
+
+\RationaleBox{Limiting case.}{One donor reused twice creates shared random
+input in both targets.  Even if both outputs are finite and stored in separate
+columns, their covariance is generally nonzero and neither is new independent
+exposure.}
+
+\clearpage
+\section{Atomic handoff preserves causal and claim boundaries}
+\label{sec:rat-output}
+
+The conditioned TOD is useful only when a consumer can bind it to the exact
+observation, detector occurrences, output grid, scan and interval identities,
+role domain, parents, and processing stage.  It also needs the complete
+response or an unavailable state; full support and transitive influence;
+typed acquisition, synthesis, replacement, mask, edge, filter, non-finite,
+and sampling causes; separated validity inputs; and the available statistical
+statement.  These components form one atomic handoff because a mismatch among
+them can be more damaging than a missing product.
+
+Compactness is compatible with exactness.  Coefficients, state, interval
+exceptions, donor mappings, and generative support rules can reconstruct the
+operator without storing a dense response or provenance matrix for every
+sample.  Compact representation ceases to be adequate when an exception
+cannot be reproduced, a cause is lost, or a partial kernel is mistaken for
+complete response.  Required write failure propagates to completion rather
+than leaving an apparently valid TOD beside stale metadata.
+
+Diagnostics follow the same discipline.  Each diagnostic has a named
+estimator, unit, support, selection, validity, and availability.  It is inert,
+advisory, or part of a selected policy.  Optional detail is scientifically
+inert: toggling it cannot change values, flags, eligibility, response,
+cardinality, or failure.  If a diagnostic affects a learned plan, it is no
+longer merely observational and must appear in the state and response.
+
+Downstream ownership remains clear.  PTC may clean and form weights only from
+an admitted bundle and may not treat influenced cells as independent.  VAL
+may apply a named eligibility policy without collapsing causes.  MAP and BEAM
+must bind the exact RTC parent and preserve response limitations.  When PTC is
+disabled, a terminal RTC bundle may be the requested product and does not
+imply a PTC or map result.
+
+Finally, the contract separates claims.  Algebraic coherence can be reviewed
+from this document.  Implementation conformity requires an independent trace.
+Representation fidelity requires evidence that stored artifacts reproduce the
+operator.  Observational performance and science impact require their own
+data and criteria.  Production readiness requires still different authority.
+No compilation or deterministic fixture collapses those layers.
+
+\RationaleBox{Completion test.}{If a consumer can see the TOD but cannot tell
+whether a response-changing donor, edge, state, or sampling phase is present,
+the required RTC product is incomplete even when every number is finite.}
+
+\hypertarget{rtc-narrative-end}{}
+\clearpage
+\appendix
+
+\input{common/notation.tex}
+\input{common/definitions.tex}
+\input{common/equations.tex}
+\input{common/assumptions.tex}
+\input{common/requirements.tex}
+\input{common/edge_cases.tex}
+
+\end{document}

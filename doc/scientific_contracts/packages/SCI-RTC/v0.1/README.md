@@ -1,7 +1,8 @@
 # SCI-RTC — Raw-Timestream Conditioning And Temporal Response
 
-Status: Stage A scope and exact author packet approved; implementation-blind
-Stage B drafting authorized; scientific authority not yet approved or frozen
+Status: Stage B v0.1/r0.1 implementation-blind two-view draft manager-reviewed
+and ready for scientific-owner review; scientific authority not approved or
+frozen
 
 Version: `v0.1`
 
@@ -27,12 +28,13 @@ inputs.
 - Sanitized Scope Brief: approved `2026-08-17`, including the owner-modified
   `flxscale` donor-scaling rule in `RTC-SCOPE-D004`.
 - Exact content-bound author packet: approved `2026-08-17`.
-- Implementation-blind Stage B authorship: authorized from that packet only.
+- Implementation-blind Stage B authorship: complete from that packet only.
+- Manager review: complete; r0.1 accepted for scientific-owner review.
 - Scientific authority, implementation conformity, validation, and production
   promotion: not established.
 
-The next gate is a manager-reviewed implementation-blind Stage B two-view
-contract draft; that draft will return for scientific-owner review.
+The next gate is scientific-owner review of the r0.1 two-view draft, its 18
+author decisions, and the decomposed owner-decision register.
 
 ## Contents
 
@@ -46,12 +48,17 @@ contract draft; that draft will return for scientific-owner review.
   sanitized conventions and package boundaries
 - [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): approved exact
   allowed and prohibited inputs
+- [`AUTHOR_DRAFT_DECISIONS.md`](AUTHOR_DRAFT_DECISIONS.md): 18 bounded author
+  presentation and consolidation decisions
+- [`MANAGER_REVIEW_R0.1.md`](MANAGER_REVIEW_R0.1.md): independence,
+  structural, scientific, build, and visual-QA review
 - [`DECISION_LOG.md`](DECISION_LOG.md): package-selection and approved scope
   decisions
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md):
-  open numerical and policy questions
-- [`CROSSWALK.md`](CROSSWALK.md), `src/`, and `pdf/`: reserved canonical
-  Stage B locations; no contract or PDF exists yet
+  23 open, one conditional, and four deferred numerical/policy decisions
+- [`CROSSWALK.md`](CROSSWALK.md): exact shared-core and packet traceability
+- `src/`: one six-file shared core and the two audience views
+- `pdf/`: canonical 25-page rationale and 17-page engineering draft outputs
 
 ## Protected Boundary
 
@@ -70,8 +77,9 @@ with a calibrated `mJy/beam` path.
 
 ## Authority And Status
 
-This is an owner-approved Stage A scope package and author packet. That
-approval authorizes drafting; it does not approve the future Stage B draft as
-the SCI-RTC v0.1 scientific authority. Current application and
-production behavior retain their existing repository status until a later,
-separately authorized conformity and validation program assesses them.
+This package contains an owner-approved Stage A scope/packet and a
+manager-reviewed Stage B r0.1 author draft. Neither the author nor the manager
+approves that draft as the SCI-RTC v0.1 scientific authority. Current
+application and production behavior retain their existing repository status
+until a later, separately authorized conformity and validation program
+assesses them.

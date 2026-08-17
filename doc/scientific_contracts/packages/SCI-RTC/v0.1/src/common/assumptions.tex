@@ -1,2 +1,81 @@
-% SCI-RTC v0.1 shared assumptions module.
-% Reserved for implementation-blind Stage B authorship after owner approval.
+% SCI-RTC v0.1/r0.1 shared normative core -- assumptions and scope.
+\section{Bounded assumptions and non-goals}
+\label{sec:core-assumptions}
+
+\begin{description}[style=nextline,leftmargin=1em,labelindent=0pt,
+  labelwidth=0pt,labelsep=0pt]
+
+\item[SCI-RTC-ASM-001 -- Capability.]
+V0.1 treats Stokes-I primary \texttt{xs}.  Enabled polarimetry and measured
+R-channel execution are excluded until separately approved.
+
+\item[SCI-RTC-ASM-002 -- Aligned-grid boundary.]
+The input grid, cadence, phase, mapping, gaps, synthesis/origin state,
+support, and scan partition are admitted ALIGN facts.  Physical event timing,
+absolute timing accuracy, and a producer epoch may remain unavailable.
+
+\item[SCI-RTC-ASM-003 -- Coordinate boundary.]
+Coordinate-dependent operations assume an admitted AST identity, frame,
+topology, detector binding, support, validity, and uncertainty where required.
+The absence of such authority does not license inference or clamping.
+
+\item[SCI-RTC-ASM-004 -- Calibration boundary.]
+Calibration-factor production, atmosphere lineage, beam meaning, uncertainty,
+and promotion belong to SCI-BEAM/SCI-CAL.  RTC conditions on an admitted
+operator only for a role that authorizes it.
+
+\item[SCI-RTC-ASM-005 -- Selected-policy boundary.]
+Despike, donor, mask, FIR, IIR, notch, state, edge, non-finite, recovery,
+sampling, diagnostic, and failure choices are selected versioned policies.
+No current default or numerical threshold is promoted to a universal
+scientific constant by this contract.
+
+\item[SCI-RTC-ASM-006 -- Conditional linearity.]
+Linear response and covariance identities condition on fixed realized
+selection and state.  Data-derived selectors make the unconditional operation
+generally nonlinear and nonstationary.
+
+\item[SCI-RTC-ASM-007 -- Statistical input.]
+Moments or covariance are claimed only from a supplied statistical model with
+declared correlation and limitations.  Absence does not imply diagonal,
+white, stationary, independent, or zero covariance.
+
+\item[SCI-RTC-ASM-008 -- Learned-mode scope.]
+The first learned applied scope produces one immutable common observation
+plan.  Per-array, per-scan, heterogeneous-cadence, noise-aware, and
+continuously adaptive execution are successor scopes.
+
+\item[SCI-RTC-ASM-009 -- Analytical authority.]
+Exact analytical beam-times-filter transfer and phase-zero alias accounting
+define learned-plan admission.  Deterministic vectors may falsify a
+realization; source injection is not required to define the operator.
+
+\item[SCI-RTC-ASM-010 -- Compact representation.]
+Dense observation-sized response, covariance, or per-sample provenance is not
+required when a factorized, sparse, interval-based, or generative
+representation exactly reconstructs the operator, support, causes, and
+exceptions.
+
+\item[SCI-RTC-ASM-011 -- Downstream authority.]
+RTC supplies causal inputs but does not own PTC cleaning/weights, VAL
+eligibility policy, MAP estimation, BEAM inference, empirical NOI products,
+MAP-003 response tracing, map filtering, source fitting, or fruit-loop
+recurrence.
+
+\item[SCI-RTC-ASM-012 -- Claim separation.]
+The contract is an algebraic and semantic authority only.  It contains no
+claim that a present implementation conforms, that a representation is
+faithful, that observational performance is adequate, or that a mode is ready
+for production.
+
+\end{description}
+
+\subsection{Explicit non-goals}
+
+This revision does not derive ALIGN timing, AST coordinates, SCI-BEAM or
+SCI-CAL calibration, PTC, VAL, MAP, or FLT estimators, source fitting, or recurrence;
+authorize absolute-timing or astrometric corrections; redesign mature
+despike/FIR/IIR/notch numerics; choose universal numerical thresholds; activate
+polarimetry or measured R; prescribe source classes, files, storage schemas,
+or product names; authorize per-array/per-scan cadence; inspect implementation;
+perform validation or reductions; or assert production status.

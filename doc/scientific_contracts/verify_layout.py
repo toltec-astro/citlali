@@ -18,13 +18,13 @@ COMPLETE_PACKAGES = {
     "SCI-MAP": "v0.1",
     "SCI-BEAM": "v0.1",
 }
-STAGE_A_PACKAGES = {
-    "SCI-RTC": "v0.1",
-}
+STAGE_A_PACKAGES = {}
 FROZEN_R03_PACKAGES = {
     "SCI-BEAM": "v0.1",
 }
-RENDERED_DRAFT_PACKAGES = {}
+RENDERED_DRAFT_PACKAGES = {
+    "SCI-RTC": "v0.1",
+}
 
 
 assert (ROOT / "INDEX.md").is_file()
@@ -70,27 +70,19 @@ for package, version in {
         for name in (
             "AUTHOR_PACKET_MANIFEST.md",
             "AUTHOR_CONVENTIONS_AND_OWNERSHIP.md",
-            "AUTHOR_PRIMARY_REFERENCE_BOUNDARY.md",
+            "AUTHOR_SUPERSESSION_COVER.md",
         ):
             assert (base / name).is_file(), f"{package}: missing {name}"
         assert (base / "pdf" / "README.md").is_file(), f"{package}: missing pdf/README.md"
         assert (base / "AUTHOR_DRAFT_DECISIONS.md").is_file(), f"{package}: missing AUTHOR_DRAFT_DECISIONS.md"
         assert (base / "MANAGER_REVIEW_R0.1.md").is_file(), f"{package}: missing MANAGER_REVIEW_R0.1.md"
-        for name in (
-            "SCIENTIFIC_OWNER_DIRECTIVE_R0.2.md",
-            "CHANGE_LOG_R0.2.md",
-            "CROSS_DOCUMENT_FOLLOWUP_R0.2.md",
-            "CONSISTENCY_REPORT_R0.2.md",
-        ):
-            assert (base / name).is_file(), f"{package}: missing {name}"
         rationale = (base / "src" / "scientific-rationale.tex").read_text()
         formal = (base / "src" / "engineering-conformance.tex").read_text()
-        assert "r0.2" in rationale and "r0.2" in formal, f"{package}: stale document revision"
-        assert "SCI-BEAM-REQ-" not in rationale and "SCI-BEAM-PRED-" not in rationale, f"{package}: rationale contains formal inventory"
+        assert "r0.1" in rationale and "r0.1" in formal, f"{package}: stale document revision"
         for name in COMMON:
-            token = "\\input{common/" + name.removesuffix(".tex") + "}"
+            token = "\\input{common/" + name + "}"
             assert formal.count(token) == 1, f"{package}: formal view must import {name} exactly once"
-            assert token not in rationale, f"{package}: rationale must remain scientist-facing"
+            assert rationale.count(token) == 1, f"{package}: rationale must import {name} exactly once"
     if package in FROZEN_R03_PACKAGES:
         for name in (
             "SCIENTIFIC_OWNER_REVIEW_R0.3.md",

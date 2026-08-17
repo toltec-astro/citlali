@@ -1,3 +1,234 @@
-% SCI-RTC v0.1 engineering-conformance entry point.
-% Reserved for implementation-blind Stage B authorship after owner approval.
-% This Stage A placeholder contains no normative science.
+\documentclass[10pt]{article}
+
+\usepackage[letterpaper,margin=0.76in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{enumitem}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\usepackage{siunitx}
+
+\definecolor{RTCblue}{HTML}{1E4E79}
+\definecolor{RTCpale}{HTML}{EEF5FA}
+\definecolor{RTCgray}{HTML}{52606D}
+\hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
+  hypertexnames=false,
+  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.1},
+  pdfauthor={SCI-RTC implementation-blind scientific author}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.48em}
+\emergencystretch=3em
+\hbadness=10000
+\setlist{leftmargin=*,nosep}
+\renewcommand{\arraystretch}{1.12}
+\newcommand{\ReqID}[1]{\texttt{\scriptsize #1}}
+\newcommand{\PredID}[1]{\texttt{\scriptsize #1}}
+\newcommand{\ReqWord}[1]{\textbf{#1}}
+\newcommand{\Avail}{\ensuremath{\mathrm{available}}}
+\newcommand{\Unavail}{\ensuremath{\mathrm{unavailable}}}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\GuideBox}[2]{%
+  \begin{center}\fcolorbox{RTCblue}{RTCpale}{\parbox{0.92\linewidth}{%
+  \textbf{#1}\quad #2}}\end{center}}
+
+\begin{document}
+\raggedbottom
+
+\begin{titlepage}
+\thispagestyle{empty}
+\vspace*{0.75in}
+{\color{RTCblue}\rule{\linewidth}{2pt}}\\[0.42in]
+{\Huge\bfseries SCI-RTC\\[0.12in]}
+{\LARGE Raw-Timestream Conditioning and Temporal Response\\[0.28in]}
+{\huge\color{RTCblue}Engineering Conformance View}
+
+\vspace{0.65in}
+\begin{tabular}{@{}ll@{}}
+Package version & v0.1 \\
+Revision & r0.1 \\
+Date & 2026-08-17 \\
+Authority & Shared normative core in \texttt{src/common/} \\
+View-specific content & Informative evidence and review guidance only \\
+Status & Implementation-blind author draft for scientific-owner review \\
+\end{tabular}
+
+\vfill
+\GuideBox{Claim boundary.}{This view does not assert scientific approval,
+implementation conformity, representation fidelity, validation,
+observational performance, or production readiness.  It contains no
+independent normative science.}
+{\color{RTCblue}\rule{\linewidth}{2pt}}
+\end{titlepage}
+\pagestyle{plain}
+
+\section*{How to use this view}
+
+The shared normative core below is byte-for-byte the same set of six inputs
+used by the scientist-facing rationale and is imported exactly once.  It is
+the only authority in this PDF.  The material after the end-of-core marker is
+an informative method for recording evidence against that authority.  It may
+not waive a requirement, select an owner decision, redefine an unavailable
+state, or restate an equation with different semantics.
+
+A conformance review should create one evidence record per requirement and
+one falsification record per applicable prediction.  Each record must bind an
+exact implementation and artifact identity, state what was inspected or
+executed, preserve unexpected error-level messages, and distinguish pass,
+fail, not exercised, blocked by owner decision, and unavailable evidence.
+Passing a fixture supports only the named requirement and claim layer.
+
+\GuideBox{Stop rule.}{If a required owner decision is open, the affected
+operation or claim remains unavailable.  Engineering must not choose a
+numerical value from current behavior and then describe it as scientific
+authority.}
+
+\tableofcontents
+\clearpage
+
+% Shared normative authority: each component is imported once, and only once.
+\input{common/notation.tex}
+\input{common/definitions.tex}
+\input{common/equations.tex}
+\input{common/assumptions.tex}
+\input{common/requirements.tex}
+\input{common/edge_cases.tex}
+
+\clearpage
+\appendix
+\section{Informative conformance-record schema}
+\label{sec:eng-schema}
+
+This appendix supplies bookkeeping guidance only.  It does not add a
+requirement.  A review record should contain the following fields.
+
+\begin{tabularx}{\linewidth}{@{}p{0.25\linewidth}X@{}}
+\toprule
+Field & Evidence content \\
+\midrule
+Record identity & Stable review ID, date, reviewer role, exact contract revision, and supersession status. \\
+Claim layer & Exactly one primary layer: implementation conformity, representation fidelity, observational performance, science impact, or production readiness. \\
+Target identity & Exact source/build/artifact identity and any configuration or runtime identity needed to reproduce the observation. \\
+Authority binding & One or more SCI-RTC requirement or prediction IDs; an equation/definition may be cited only through the shared core. \\
+Preconditions & Product role, signal domain, detector occurrences, grid, intervals, requested/effective/resolved state, and owner decisions required by the check. \\
+Method & Static trace, deterministic vector, bounded matrix calculation, serialization inspection, failure injection, or other named method. \\
+Expected result & Exact invariant and a tolerance justified before observing candidate output. \\
+Observed result & Values, states, messages, artifacts, and exceptions without interpretation hidden in a generic pass flag. \\
+Disposition & Pass, fail, not exercised, blocked by open owner decision, or evidence unavailable. \\
+Claim limit & Explicit statement of what the record does not establish. \\
+\bottomrule
+\end{tabularx}
+
+No status may be inferred from an omitted record.  ``Not exercised'' means
+the evidence was not attempted; ``blocked'' means a named unresolved authority
+prevents a meaningful check; and ``unavailable'' means the attempted evidence
+cannot support the claim.  These dispositions are not passes.
+
+\section{Informative requirement-review routing}
+\label{sec:eng-routing}
+
+The table suggests evidence classes without prescribing implementation
+structure.  Reviewers should use the exact crosswalk shipped with the package
+for one-to-one coverage.
+
+\small
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.22\linewidth}X@{}}
+\toprule
+Requirement range & Primary review surface & Useful evidence classes \\
+\midrule
+REQ-001--005 & Boundary and signal role & Typed input/output inspection, unit/domain failure injection, imported-authority lineage trace. \\
+REQ-006--012 & Identity, state, and selected policy & Serialization round trip, distinct-identity fixtures, request-to-realized trace, unsupported-policy rejection. \\
+REQ-013--018 & Ordering and donor transfer & Symbolic/static order trace, forced donor vectors, invalid-factor matrix, donor reuse/tie/fallback fixtures. \\
+REQ-019--020 & Transitive influence & Noncenter synthesis/replacement injection, full-support cause propagation, downstream eligibility handoff inspection. \\
+REQ-021--027 & Filters, masks, edges, and finite policy & Coefficient/state serialization, impulse/step/constant/ramp/notch vectors, mask-boundary and non-finite failure injection. \\
+REQ-028--031 & Fixed phase-zero sampling & Enumerated length/factor cases, selected index/time identity, rate trace, exact folded-band calculation. \\
+REQ-032--036 & Learned plan lifecycle & Candidate decision table, maximum-safe selection, common-plan identity, immutable apply and restart mismatch fixtures. \\
+REQ-037--041 & Complete response and support & Factorization reconstruction, local Jacobian fixtures, LTI-domain proof, edge/state/support expansion. \\
+REQ-042--045 & Statistical availability & Bounded covariance matrices, reused-donor correlation fixture, selector/nuisance availability inspection. \\
+REQ-046--051 & Validity and atomic output & Orthogonal-state fixtures, atomic write/failure injection, provenance reconstruction, inert-diagnostic toggle. \\
+REQ-052--054 & Consumers and claims & Parent-binding inspection, unavailable-state preservation, disabled-PTC terminal path, claim-label audit. \\
+\bottomrule
+\end{tabularx}
+\normalsize
+
+\section{Informative response and representation checks}
+\label{sec:eng-response}
+
+Review the response at the same granularity as the realized operation.  A
+stored coefficient vector can support a component-level check; it does not by
+itself establish complete response.  For each coherent segment, trace the
+ordered factorization, exact coefficients and precision, mask/state/edge
+exceptions, detector mixing, sampling phase, and support expansion to the
+artifact presented to consumers.  Mark complete response unavailable if any
+enabled response-changing stage cannot be represented truthfully.
+
+Use the prediction IDs rather than inventing new expected science after
+observing output.  Interior impulses and sinusoids exercise fixed linear
+components; donor impulses exercise detector mixing; split-state fixtures
+exercise recurrence; noncenter causes exercise transitive influence; and
+odd/even factor enumerations exercise phase-zero identity.  These checks are
+complementary.  An interior transfer match cannot close edges or selection,
+and an output-value match cannot close identity, response, or provenance.
+
+Representation fidelity is a separate record.  Reconstruct the exact
+operator and exceptions from persisted factors, intervals, mappings, and
+state.  Verify that omitted detail is typed optional and inert.  A readable
+plot or plausible header is not proof that the stored representation is
+complete.
+
+\section{Informative state and failure checks}
+\label{sec:eng-failure}
+
+Exercise each semantic state independently: not requested, disabled,
+automatic, rejected, invalid, failed, unavailable, unsupported, and omitted.
+Also separate original validity, synthesis, replacement, mask membership,
+numerical finiteness, edge/context, response availability, eligibility, and
+uncertainty.  A fixture that combines every failure into NaN or one generic
+bit cannot demonstrate these distinctions.
+
+For each required output member, inject a bounded write or authority failure
+and verify atomic completion behavior.  Inspect that no prior-observation
+factor, donor, state, mask, rate, product link, or completion marker remains.
+Then toggle optional detailed provenance and inert diagnostics; the scientific
+and numerical bundle must remain identical apart from the permitted optional
+detail.
+
+Learned mode requires an additional stop check before apply.  The review must
+bind every numerical predicate to an approved owner-decision entry, show the
+complete candidate disposition, and preserve bootstrap/learned/resolved state.
+If the resolved plan is absent or incompatible, apply does not begin.  A
+native-cadence result produced after silent fallback is not evidence of an
+applied learned plan.
+
+\section{Informative completion checklist}
+\label{sec:eng-checklist}
+
+\begin{itemize}
+\item Every SCI-RTC-REQ identifier has one explicit disposition and evidence
+      record; ranges are not used as a substitute for per-ID closure.
+\item Every applicable SCI-RTC-PRED identifier has a preregistered expected
+      result and tolerance, plus observed values and messages.
+\item Every open owner decision is either resolved by approved authority or
+      blocks the named operation/claim exactly as the ledger states.
+\item Both raw Beammap and separately CAL-authorized role boundaries are
+      exercised without cross-role inheritance.
+\item The owner-modified raw donor ratio is checked in both direction and
+      availability cases, with no dependency on legacy responsivity.
+\item Full-support synthesis/replacement influence is checked at noncenter
+      cells and remains scientifically ineligible downstream.
+\item Complete response includes every enabled stage or is typed unavailable.
+\item Requested, effective, observation-resolved, learned/resolved, realized,
+      and immutable product/stage identities remain distinct.
+\item Required failures are atomic; optional detail is inert; unexpected
+      error-level messages are zero in any run claimed successful.
+\item The final report names exactly one supported claim layer and explicitly
+      withholds all stronger layers.
+\end{itemize}
+
+This checklist does not itself establish any item.  It is a review index for
+future evidence governed by the shared core.
+
+\end{document}

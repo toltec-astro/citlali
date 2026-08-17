@@ -1,2 +1,96 @@
-% SCI-RTC v0.1 shared notation module.
-% Reserved for implementation-blind Stage B authorship after owner approval.
+% SCI-RTC v0.1/r0.1 shared normative core -- notation and status.
+% This file is imported once by each published view.
+\hypertarget{rtc-core-begin}{}
+\section{Shared normative authority and notation}
+\label{sec:core-notation}
+
+\begin{center}
+\fcolorbox{RTCblue}{RTCpale}{\parbox{0.92\linewidth}{
+\textbf{Normative core stamp:} \texttt{SCI-RTC-v0.1/r0.1}.  The six files in
+\texttt{src/common/} form one authority.  Text outside this shared core is
+explanatory or conformance guidance and cannot alter a definition, equation,
+assumption, requirement, prediction, unavailable state, or owner decision.
+}}
+\end{center}
+
+SCI-RTC begins with an admitted aligned primary detector stream and ends with
+an atomic, role-specific conditioning bundle.  ALIGN, AST, SCI-BEAM, and
+SCI-CAL retain authority for the upstream meanings they produce.  PTC, VAL,
+MAP, BEAM, NOI, MAP-003, FLT, SRC/MODE, and FRUIT retain authority for their
+downstream science.  This contract owns the realized conditioning order and
+its scientific consequences; it does not infer current software behavior.
+
+The words \ReqWord{shall} and \ReqWord{shall not} identify requirements.
+\ReqWord{Required unavailable} means that the affected product or claim shall
+not be reported as complete.  \ReqWord{Optional unavailable} is a typed,
+scientifically inert state.  Missing, disabled, automatic, rejected, invalid,
+failed, unavailable, unsupported, and omitted remain distinct states.
+
+\subsection{Indices, sets, and role labels}
+
+\begin{tabularx}{\linewidth}{@{}p{0.20\linewidth}X@{}}
+\toprule
+Symbol & Normative meaning \\
+\midrule
+$o$ & Immutable observation identity. \\
+$d,q\in\mathcal D_o$ & Exact admitted detector occurrences; $d$ is a target and $q$ may be a donor.  A detector index or row number alone is not this identity. \\
+$r$ & Native acquisition row; it is not an aligned or conditioned slot. \\
+$j\in\{0,\ldots,N-1\}$ & Ordered aligned input slot on the admitted ALIGN grid. \\
+$n\in\{0,\ldots,N_y-1\}$ & Ordered phase-zero RTC output slot. \\
+$\mathcal R$ & Product role, including Pointing, OOF, Science, Beammap, diagnostic-only, or another separately approved role. \\
+$\delta_{\mathcal R}$ & Role-domain selector: $0$ for an admitted raw role and $1$ for a separately CAL-authorized calibrated role. \\
+$x^A_{dj}$ & Admitted aligned primary \texttt{xs} value with declared physical observable, sign, baseline/reference, unit, support, and validity. \\
+$z_{dj}$ & Calibrated value when the role admits an imported CAL operator. \\
+$u_{dj}$ & Role-domain value immediately before the ordered RTC filter chain. \\
+$y_{dn}$ & Conditioned role-domain output at the selected phase-zero slot. \\
+$\phi_d$ & \texttt{flxscale} for one exact detector occurrence under the declared multiplicative convention and calibration domain. \\
+$A_\alpha$ & Imported, realized ALIGN mapping with state $\alpha$; its scientific meaning is not owned by RTC. \\
+$C_\kappa$ & Imported CAL operator with state $\kappa$; it is the identity for a raw role. \\
+$B_\omega$ & Realized despike/replacement operator conditioned on selection state $\omega$. \\
+$F_{k,\theta_k}$ & Realized ordered FIR, IIR, notch, or admitted mask-controlled stage $k$. \\
+$D_{M,0}$ & Integer phase-zero point selector of factor $M\geq1$. \\
+$\Omega$ & Complete realized conditioning state, including all upstream bindings and every selected stage, exception, state, edge rule, and output interval. \\
+$K_{dn,qj}$ & Local detector-time response of one output cell to one acquired input cell. \\
+$\mathcal S_{dn}$ & Exact transitive input support of output $(d,n)$, including alignment, donors, filters, state, and selection. \\
+$\mathcal I_{dn}$ & Cause-preserving transitive influence set for output $(d,n)$. \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Identity and interval conventions}
+
+Observation, Tune, array, network/interface, detector occurrence, selected
+APT row/binding, native row, aligned slot, scan, science interval, context
+interval, conditioned output slot, stage, and product identities are
+non-interchangeable.  Array identity is one of \texttt{a1100},
+\texttt{a1400}, and \texttt{a2000}; array ID, array index, network ID,
+detector index, and container position do not substitute for one another.
+Cross-artifact identity requires an explicit occurrence- and product-scoped
+binding.  Equal row numbers do not establish identity.
+
+Primary detector timestreams are samples on rows and detectors on columns
+unless a product explicitly declares another ordered shape.  Every interval
+is half-open.  Science windows, physical scans, processing chunks, filter
+context, output selections, and learned-plan scan sets retain separate
+identities.  Native, aligned, and output indices never silently renumber one
+another.
+
+Time is seconds on the admitted ALIGN-assigned grid.  The approximately
+8-ms rate relationships and the $0.5\times$, $2\times$, and $4\times$ family
+are conditional software-grid facts, not proof of a detector integration
+event, absolute epoch, or astrometric correction.  Coordinate-dependent
+Pointing, OOF, and Beammap controls use a declared AltAz tangent plane;
+Science controls use a declared equatorial J2000 TAN relation.  RTC performs
+no implicit frame conversion.
+
+\subsection{Logical and availability notation}
+
+$\mathbb I[\cdot]$ denotes an indicator, $\E$ expectation, $\Cov$ covariance,
+and $\mathrm{supp}(\cdot)$ operator support.  The logical symbols $\land$,
+$\lor$, and $\neg$ have their usual meanings.  A quantity decorated
+$\Avail$ is present with its required identity, domain, and validity; a
+quantity decorated $\Unavail$ is explicitly unavailable.  Neither zero nor
+NaN is an availability encoding.
+
+\begin{center}
+\textit{End of notation; shared definitions follow without a change of authority.}
+\end{center}

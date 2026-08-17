@@ -1,8 +1,226 @@
-# SCI-RTC v0.1 — Requirement Crosswalk
+# SCI-RTC v0.1/r0.1 exact authority crosswalk
 
-Status: reserved for Stage B; no requirements exist yet
+Status: implementation-blind author crosswalk. It maps every normative ID in
+the shared core to explanatory and conformance loci and to the approved author
+packet. It reports no implementation or validation result.
 
-The implementation-blind author will populate the exact
-requirement-to-rationale crosswalk after the scientific owner approves the
-Scope Brief and content-bound author packet. This placeholder contains no
-normative science.
+## Approved source keys
+
+| Key | Exact approved author input | Approved SHA-256 |
+| --- | --- | --- |
+| `SB` | `SCOPE_BRIEF.md` | `c8cac0b8ae731919622d7b696c60946685b5eba9b16a5cd830c01a2f6f28e013` |
+| `SC` | `AUTHOR_SUPERSESSION_COVER.md` | `f183c8fb083c3a851fda5d77a0944405cc41650ced29bd0162cffba832f25575` |
+| `CO` | `AUTHOR_CONVENTIONS_AND_OWNERSHIP.md` | `a26220dc827330e30ca8e4c75e82600e6cc2f05358887bbaa0c6da93f98ecb5b` |
+| `RC` | Exact retained core obtained as `git show 3319d7424c732c1c9fc300c336e4d428e6f91068:doc/audits/packages/SCI-RTC-001_INDEPENDENT_CORE.tex` | `d6cf49d1a5e17754c55cc4f2c8f4b4f5e276755f247496df888581d890be80b7` |
+
+The supersession cover controls wherever `RC` is broader, older, or
+ambiguous. In particular, crosswalk entries that cite the retained calibration,
+replacement, sampling, influence, or signal-domain derivation always include
+the applicable `SC` correction.
+
+## View inclusion crosswalk
+
+| Shared-core component | Scientist-facing view | Engineering view | Inclusion count per view |
+| --- | --- | --- | --- |
+| `src/common/notation.tex` | Appendix A onward in `scientific-rationale.tex` | Shared normative authority in `engineering-conformance.tex` | exactly 1 |
+| `src/common/definitions.tex` | same shared-core sequence | same shared-core sequence | exactly 1 |
+| `src/common/equations.tex` | same shared-core sequence | same shared-core sequence | exactly 1 |
+| `src/common/assumptions.tex` | same shared-core sequence | same shared-core sequence | exactly 1 |
+| `src/common/requirements.tex` | same shared-core sequence | same shared-core sequence | exactly 1 |
+| `src/common/edge_cases.tex` | same shared-core sequence | same shared-core sequence | exactly 1 |
+
+The engineering wrapper contains no displayed equation outside those six
+imports. The scientific rationale's sections 1--10 are explanatory and do not
+modify the imported authority.
+
+## Definitions
+
+| Normative ID | Shared-core locus | Rationale locus | Engineering use | Packet authority |
+| --- | --- | --- | --- | --- |
+| `SCI-RTC-DEF-001` | Definitions: admitted aligned stream | §1 | Routing REQ-001--009 | SB §§2--3; CO Identity/Time |
+| `SCI-RTC-DEF-002` | Definitions: product-role signal domain | §2 | Routing REQ-001--005 | SB D003; SC 1; CO Capability |
+| `SCI-RTC-DEF-003` | Definitions: exact detector occurrence | §§1, 4 | Routing REQ-006--012 | SB §3.2; CO Identity |
+| `SCI-RTC-DEF-004` | Definitions: imported CAL operator | §§2--3 | Routing REQ-001--005 | SB §§3.5, 5; SC 2; CO Producers |
+| `SCI-RTC-DEF-005` | Definitions: compatible `flxscale` pair | §3 | Routing REQ-013--018 | SB D004; SC 2; CO Signal labels |
+| `SCI-RTC-DEF-006` | Definitions: selected conditioning policy | §§4--8 | Routing REQ-006--012 | SB §§3.6, 10 D014; SC 13 |
+| `SCI-RTC-DEF-007` | Definitions: one-way state record | §§8, 10 | Routing REQ-006--012 | SB D007/D010; SC 5, 8; CO State |
+| `SCI-RTC-DEF-008` | Definitions: realized conditioning operator | §§3--7 | Response checks | SB D006/D009; RC operator derivation; SC corrections |
+| `SCI-RTC-DEF-009` | Definitions: phase-zero sampling | §7 | Routing REQ-028--031 | SB D008; SC 7; CO State |
+| `SCI-RTC-DEF-010` | Definitions: complete realized response | §5 | Response checks | SB D006; SC 4; CO Response |
+| `SCI-RTC-DEF-011` | Definitions: direct source cell | §4 | State/failure checks | SB D005; SC 3; CO Influence |
+| `SCI-RTC-DEF-012` | Definitions: transitive influence | §§4, 7 | Routing REQ-019--020 | SB D005; SC 3; CO Influence |
+| `SCI-RTC-DEF-013` | Definitions: scientifically ineligible output | §§4, 10 | Routing REQ-019--020 | SB D005; SC 3; CO Influence |
+| `SCI-RTC-DEF-014` | Definitions: coordinate-dependent control | §6 | Routing REQ-024--027 | SB D013; SC 12; CO Coordinates |
+| `SCI-RTC-DEF-015` | Definitions: fixed sampling mode | §8 | Routing REQ-028--031 | SB D010; SC 8; CO State |
+| `SCI-RTC-DEF-016` | Definitions: learned sampling mode | §8 | Routing REQ-032--036 | SB D010--D012; SC 8--11; CO State |
+| `SCI-RTC-DEF-017` | Definitions: conditional statistical covariance | §9 | Routing REQ-042--045 | SB §§3.8, 7.7; RC covariance; CO Statistics |
+| `SCI-RTC-DEF-018` | Definitions: atomic RTC bundle | §§1, 10 | Routing REQ-046--051 | SB D015; SC 14; CO RTC transformer |
+| `SCI-RTC-DEF-019` | Definitions: scientifically named diagnostic | §10 | State/failure checks | SB §4.10; SC 14 |
+| `SCI-RTC-DEF-020` | Definitions: claim layer | §10 | Completion checklist | SB D016; SC 15; CO Claim Layers |
+
+## Equations and identities
+
+| Normative ID | Shared-core locus | Rationale locus | Engineering use | Packet authority |
+| --- | --- | --- | --- | --- |
+| `SCI-RTC-EQ-001` | Equations: raw-to-calibrated convention | §3 | Donor vectors | SB D004; SC 2; CO Signal labels |
+| `SCI-RTC-EQ-002` | Equations: raw donor transfer | §3 | Donor direction/availability | SB D004; SC 2; CO Signal labels; supersedes RC responsivity equation |
+| `SCI-RTC-EQ-003` | Equations: role-domain CAL selector | §2 | Boundary checks | SB D003--D004; SC 1--2 |
+| `SCI-RTC-EQ-004` | Equations: affine order equivalence | §3 | Order trace | SB D004; SC 2; RC order reasoning as specialized |
+| `SCI-RTC-EQ-005` | Equations: complete ordered operator | §§1, 3--7 | Factorization reconstruction | SB D001/D006/D008; RC RTC-16; SC binding corrections |
+| `SCI-RTC-EQ-006` | Equations: conditional affine operator | §§4--5, 9 | Response/covariance checks | RC RTC-17; SC 1--7 |
+| `SCI-RTC-EQ-007` | Equations: realized replacement | §4 | Donor fixtures | RC RTC-08 specialized by SC 2--3 |
+| `SCI-RTC-EQ-008` | Equations: FIR response | §5 | Impulse/DC checks | RC RTC-10; SC 6, 13 |
+| `SCI-RTC-EQ-009` | Equations: IIR state | §§5--6 | Split-state checks | RC RTC-11; SC 6, 13 |
+| `SCI-RTC-EQ-010` | Equations: example mask operator | §6 | Mask distinction checks | RC RTC-12; SC 12--13 |
+| `SCI-RTC-EQ-011` | Equations: phase-zero selection/cardinality | §7 | Factor/length enumeration | SB D008; SC 7; RC RTC-14 specialized |
+| `SCI-RTC-EQ-012` | Equations: local response | §5 | Jacobian fixtures | SB D006; SC 4; RC RTC-26 |
+| `SCI-RTC-EQ-013` | Equations: restricted LTI response | §5 | Interior frequency checks | RC RTC-24--25; CO Response |
+| `SCI-RTC-EQ-014` | Equations: phase-zero alias identity | §§7--8 | Folded-band checks | SC 7, 9, 11; RC RTC-27 at phase zero |
+| `SCI-RTC-EQ-015` | Equations: transitive support | §§4, 6--7 | Support expansion | RC RTC-28; SC 3--4, 7 |
+| `SCI-RTC-EQ-016a` | Equations: conditional mean | §9 | Statistical checks | RC RTC-18 |
+| `SCI-RTC-EQ-016b` | Equations: conditional covariance | §9 | Bounded matrix checks | RC RTC-19; CO Statistics |
+| `SCI-RTC-EQ-017` | Equations: total covariance identity | §9 | Selector-availability check | RC RTC-21; SC transcription context |
+| `SCI-RTC-EQ-018` | Equations: nuisance propagation | §9 | Nuisance record check | RC RTC-22 |
+| `SCI-RTC-EQ-019` | Equations: total uncertainty | §9 | Availability audit | RC RTC-23 corrected by SC Corrections |
+| `SCI-RTC-EQ-020a` | Equations: influence closure | §§4, 7 | Noncenter-cause fixture | SB D005; SC 3; CO Influence |
+| `SCI-RTC-EQ-020b` | Equations: RTC ineligibility | §§4, 10 | Downstream handoff | SB D005; SC 3; CO Influence |
+| `SCI-RTC-EQ-021` | Equations: maximum-safe learned plan | §8 | Candidate decision table | SB D010--D012; SC 8--11; CO State |
+| `SCI-RTC-EQ-022` | Equations: atomic bundle | §§1, 10 | Atomic output checks | SB D015; SC 14; RC RTC-30 specialized |
+
+## Assumptions
+
+| Normative ID | Rationale locus | Engineering use | Packet authority |
+| --- | --- | --- | --- |
+| `SCI-RTC-ASM-001` | §§1--2 | Boundary review | SB D002; CO Capability |
+| `SCI-RTC-ASM-002` | §§1, 7 | Identity/grid review | SB §§2--3, 6; CO Time |
+| `SCI-RTC-ASM-003` | §6 | Mask failure review | SB D013; SC 12; CO Coordinates |
+| `SCI-RTC-ASM-004` | §§2--3 | CAL boundary review | SB D004; SC 2; CO Producers |
+| `SCI-RTC-ASM-005` | §§3--8 | Selected-policy review | SB D014; SC 13 |
+| `SCI-RTC-ASM-006` | §§4--5, 9 | Response/statistics review | RC conditional operator/covariance; CO Response |
+| `SCI-RTC-ASM-007` | §9 | Statistical availability | SB §3.8; CO Statistics |
+| `SCI-RTC-ASM-008` | §8 | Learned-plan lifecycle | SB D011--D012; SC 9--10 |
+| `SCI-RTC-ASM-009` | §8 | Learned analytical checks | SC 11 |
+| `SCI-RTC-ASM-010` | §§5, 10 | Representation fidelity | SB §4.3--4; SC 4, 14; RC compact provenance |
+| `SCI-RTC-ASM-011` | §§1, 10 | Consumer routing | SB §5; CO Consumers |
+| `SCI-RTC-ASM-012` | §10 | Claim checklist | SB D016; SC 15; CO Claim Layers |
+
+## Requirements
+
+| Requirement | Rationale locus | Engineering routing/check | Packet authority |
+| --- | --- | --- | --- |
+| `SCI-RTC-REQ-001` | §1 | Boundary/state fixture | SB §§1--3; CO Capability |
+| `SCI-RTC-REQ-002` | §2 | Role-domain inspection | SB §§3.9, 6; SC 1 |
+| `SCI-RTC-REQ-003` | §2 | Raw Beammap boundary | SB D003; SC 1; CO Capability |
+| `SCI-RTC-REQ-004` | §2 | CAL-authorized boundary | SB D003--D004; SC 1--2 |
+| `SCI-RTC-REQ-005` | §§2--3 | Imported-authority trace | SB §5; SC 2; CO Producers |
+| `SCI-RTC-REQ-006` | §1 | Distinct-identity fixture | SB §§3.2, 4.2; CO Identity |
+| `SCI-RTC-REQ-007` | §§1, 7 | Index/mapping round trip | SB §§3.2, 4.1--2; CO Identity |
+| `SCI-RTC-REQ-008` | §§1, 7 | Grid-claim audit | SB §6; CO Time |
+| `SCI-RTC-REQ-009` | §6 | Frame/binding failure injection | SB D013; SC 12; CO Coordinates |
+| `SCI-RTC-REQ-010` | §§8, 10 | State-flow trace | SB D007/D010; SC 5, 8 |
+| `SCI-RTC-REQ-011` | §§1, 10 | Stage/parent identity | SB D007; SC 5 |
+| `SCI-RTC-REQ-012` | §§3--8 | Policy admission/rejection | SB D014; SC 13 |
+| `SCI-RTC-REQ-013` | §3 | Order/equivalence trace | SB D004; SC 2 |
+| `SCI-RTC-REQ-014` | §3 | Raw donor direction matrix | SB D004; SC 2; CO Signal labels |
+| `SCI-RTC-REQ-015` | §3 | Dependency inspection | SB D004; SC 2; CO Signal labels |
+| `SCI-RTC-REQ-016` | §3 | Invalid-transfer failure | SB D004; SC 2; CO Transformer |
+| `SCI-RTC-REQ-017` | §4 | Donor/tie/fallback fixtures | SB §§3.6, 7.3; SC 13; RC replacement |
+| `SCI-RTC-REQ-018` | §§4, 9 | Donor link/covariance fixture | SB §§4.4--6; SC 3; CO Statistics |
+| `SCI-RTC-REQ-019` | §4 | Noncenter synthesis influence | SB D005; SC 3; CO Influence |
+| `SCI-RTC-REQ-020` | §4 | Noncenter replacement influence | SB D005; SC 3; CO Influence |
+| `SCI-RTC-REQ-021` | §5 | Coefficient/state serialization | SB D009; SC 6, 13 |
+| `SCI-RTC-REQ-022` | §5 | FIR impulse/DC checks | RC RTC-10; SC 6 |
+| `SCI-RTC-REQ-023` | §§5--6 | IIR/notch split-state checks | RC RTC-11; SC 6, 13 |
+| `SCI-RTC-REQ-024` | §6 | Mask-operator distinction | SB D013--D014; SC 12--13 |
+| `SCI-RTC-REQ-025` | §6 | Invalid-coordinate matrix | SB D013; SC 12; CO Coordinates |
+| `SCI-RTC-REQ-026` | §6 | Non-finite injection | SB §§4.4--5, 6; CO Missing State |
+| `SCI-RTC-REQ-027` | §6 | Edge/short-scan fixtures | SB D009/D014; SC 6, 13 |
+| `SCI-RTC-REQ-028` | §7 | Point-selection enumeration | SB D008; SC 7 |
+| `SCI-RTC-REQ-029` | §7 | Cardinality/time/support check | SB §§4.2, 7.8; SC 7 |
+| `SCI-RTC-REQ-030` | §7 | Folded-band calculation | SB §§4.3, 7.5; SC 7, 9 |
+| `SCI-RTC-REQ-031` | §8 | Fixed-plan state trace | SB D010; SC 8 |
+| `SCI-RTC-REQ-032` | §8 | Learned lifecycle trace | SB D010; SC 8 |
+| `SCI-RTC-REQ-033` | §8 | Candidate decision table | SB D011; SC 9, 11 |
+| `SCI-RTC-REQ-034` | §8 | Common-plan identity | SB D011--D012; SC 9--10 |
+| `SCI-RTC-REQ-035` | §8 | Immutable apply/fallback | SC 8--10; CO State |
+| `SCI-RTC-REQ-036` | §8 | Restart mismatch fixture | CO State and Sampling |
+| `SCI-RTC-REQ-037` | §§5, 10 | Complete-response audit | SB D006/D015; SC 4, 14 |
+| `SCI-RTC-REQ-038` | §5 | Local/factorized response | SB D006; SC 4; CO Response |
+| `SCI-RTC-REQ-039` | §5 | LTI-domain proof | RC temporal response; CO Response |
+| `SCI-RTC-REQ-040` | §§5, 7 | Response-component inspection | SB §§4.3, 7.5; RC response |
+| `SCI-RTC-REQ-041` | §§4, 6--7 | Support expansion | SB D005--D006; SC 3--4, 7 |
+| `SCI-RTC-REQ-042` | §9 | Bounded covariance fixture | SB §§3.8, 7.7; RC covariance |
+| `SCI-RTC-REQ-043` | §9 | Selector availability audit | RC RTC-20--21; CO Statistics |
+| `SCI-RTC-REQ-044` | §9 | Nuisance/correlation record | SB §§4.6, 7.7; RC RTC-22--23 |
+| `SCI-RTC-REQ-045` | §9 | Unknown-covariance audit | SB §3.8; CO Statistics |
+| `SCI-RTC-REQ-046` | §§6, 10 | Orthogonal-state fixture | SB §4.5; CO Validity |
+| `SCI-RTC-REQ-047` | §§6, 10 | Flag/cause aggregation | SB §§4.4--5, 7.6; CO Validity |
+| `SCI-RTC-REQ-048` | §§1, 10 | Atomic bundle inspection | SB D015; SC 14 |
+| `SCI-RTC-REQ-049` | §§1, 10 | Required-write failure injection | SB §§4.9, 6; CO Missing State |
+| `SCI-RTC-REQ-050` | §10 | Provenance reconstruction | SB §§4.2, 4.7--8; SC 5--6, 14 |
+| `SCI-RTC-REQ-051` | §10 | Diagnostic inertness/classification | SB §4.10; SC 14 |
+| `SCI-RTC-REQ-052` | §§4, 10 | Consumer parent/unavailable audit | SB §5; CO Consumers |
+| `SCI-RTC-REQ-053` | §10 | Disabled-PTC terminal path | CO Consumers |
+| `SCI-RTC-REQ-054` | §10 | Claim-label audit | SB D016; SC 15; CO Claim Layers |
+
+## Falsifiable predictions
+
+| Prediction | Rationale locus | Engineering method | Packet authority |
+| --- | --- | --- | --- |
+| `SCI-RTC-PRED-001` | §§1--2 | Identity/no-filter vector | RC identity limit; SC 1, 7 |
+| `SCI-RTC-PRED-002` | §2 | Paired role-boundary fixture | SB D003; SC 1 |
+| `SCI-RTC-PRED-003` | §3 | Exact raw donor numbers | SB D004; SC 2; CO Signal labels |
+| `SCI-RTC-PRED-004` | §3 | Invalid factor/domain matrix | SB D004; SC 2 |
+| `SCI-RTC-PRED-005` | §3 | Affine order comparison | SB D004; SC 2; RC order limit specialized |
+| `SCI-RTC-PRED-006` | §§4--5 | Target/donor impulses | RC impulse and donor cases; SC 2--4 |
+| `SCI-RTC-PRED-007` | §5 | Constant vector | RC constant case |
+| `SCI-RTC-PRED-008` | §5 | Step vector | RC step case |
+| `SCI-RTC-PRED-009` | §5 | Ramp/moment vector | RC ramp case |
+| `SCI-RTC-PRED-010` | §§5, 7 | Sinusoid grid | RC sinusoid/phase/alias cases; SC 7 |
+| `SCI-RTC-PRED-011` | §5 | Notch grid/state | RC notch case |
+| `SCI-RTC-PRED-012` | §6 | Invalid-coordinate matrix | RC invalid-coordinate case; SC 12 |
+| `SCI-RTC-PRED-013` | §6 | Mask boundary/dilation | RC mask-boundary case; SC 12--13 |
+| `SCI-RTC-PRED-014` | §§5--6 | FIR edge vector | RC FIR-edge case |
+| `SCI-RTC-PRED-015` | §§5--6 | IIR split-state vector | RC IIR state/edge case |
+| `SCI-RTC-PRED-016` | §6 | Short/empty length grid | RC short-scan case |
+| `SCI-RTC-PRED-017` | §6 | Non-finite injection | RC nonfinite case |
+| `SCI-RTC-PRED-018` | §§4, 7 | Full-support cause fixture | SB D005; SC 3, 7; RC flags strengthened |
+| `SCI-RTC-PRED-019` | §7 | Phase-zero length/factor enumeration | SB D008; SC 7; RC odd/even specialized |
+| `SCI-RTC-PRED-020` | §7 | Two-tone alias fixture | RC anti-alias case; SC 7, 9 |
+| `SCI-RTC-PRED-021` | §§4, 9 | Reused-donor covariance matrix | RC donor/covariance case; SC 3 |
+| `SCI-RTC-PRED-022` | §5 | Partial-response availability fixture | SB D006; SC 4 |
+| `SCI-RTC-PRED-023` | §8 | Learned candidate decision table | SB D011; SC 9--11 |
+| `SCI-RTC-PRED-024` | §8 | Restart compatibility matrix | SC 8--10; CO State |
+| `SCI-RTC-PRED-025` | §§6, 8, 10 | Two-observation reset | RC observation-reset case |
+| `SCI-RTC-PRED-026` | §10 | Optional-detail toggle | SB §6; RC optional-provenance case; SC 14--15 |
+
+## Decision-register coverage
+
+- `AUTHOR_DRAFT_DECISIONS.md` maps every `SCI-RTC-AUTHOR-D001` through
+  `SCI-RTC-AUTHOR-D018` to its packet basis and draft consequence.
+- `SCIENTIFIC_OWNER_DECISION_LEDGER.md` maps every
+  `SCI-RTC-OWNER-001` through `SCI-RTC-OWNER-024` to affected requirement
+  IDs and an exact unavailable consequence, and records successor exclusions
+  `SCI-RTC-OWNER-025` through `SCI-RTC-OWNER-028` as deferred.
+- No open owner entry is silently resolved in either PDF. In particular, the
+  learned safe set is undefined until OWNER-011 through OWNER-020 are resolved.
+
+## Mechanical completeness invariant
+
+For revision r0.1 the exact expected normative inventory is:
+
+- 20 definitions: `SCI-RTC-DEF-001`--`020`;
+- 24 displayed equation tags: `001`--`015`, `016a`, `016b`, `017`--`019`,
+  `020a`, `020b`, `021`, and `022`;
+- 12 assumptions: `SCI-RTC-ASM-001`--`012`;
+- 54 requirements: `SCI-RTC-REQ-001`--`054`;
+- 26 predictions: `SCI-RTC-PRED-001`--`026`;
+- 18 author-draft decisions: `SCI-RTC-AUTHOR-D001`--`D018`;
+- 24 open/conditional and 4 deferred owner entries:
+  `SCI-RTC-OWNER-001`--`028`.
+
+Every ID in that inventory appears exactly once as an authority-row key in
+this crosswalk or, for the two decision registers, in the explicitly named
+self-crosswalk table. Any missing, duplicated, out-of-range, or additional ID
+requires synchronized revision of the shared core, both views, crosswalk, and
+decision files.

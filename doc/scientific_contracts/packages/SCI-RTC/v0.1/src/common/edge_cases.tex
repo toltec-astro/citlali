@@ -1,2 +1,72 @@
-% SCI-RTC v0.1 shared edge-case module.
-% Reserved for implementation-blind Stage B authorship after owner approval.
+% SCI-RTC v0.1/r0.1 shared normative core -- falsifiable predictions.
+\clearpage
+\section{Falsifiable predictions and limiting cases}
+\label{sec:core-predictions}
+
+Each prediction is an algebraic or semantic falsification target.  A future
+conformance activity may choose an exact numerical tolerance justified by the
+operation and representation before observing candidate output.  No result is
+reported by this document.
+
+\footnotesize
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-001} & Identity chain: raw role, $A=I$, no replacement or filter, $M=1$, valid original samples.  Values, unit, order, identities, cardinality, response, flags, and support are unchanged. & Any hidden calibration, value/order/cardinality change, flag loss, nonidentity kernel, or new claim of timing/coordinate authority. \\
+\PredID{SCI-RTC-PRED-002} & Role separation: feed the same dimensionless raw Beammap input to raw and explicitly CAL-authorized requests.  The raw output remains $\Delta f/f$; the calibrated output exists only with its admitted CAL state. & A raw product labeled \si{mJy\per beam}, a calibrated product produced without CAL authority, or silent interchange between the products. \\
+\PredID{SCI-RTC-PRED-003} & Raw donor direction: choose $\phi_q=2$, $\phi_d=4$, and donor $x_q=3$.  Equation~\eqref{eq:raw-donor} predicts raw target replacement $1.5$ and equal calibrated amplitudes $6$. & Use of $\phi_d/\phi_q$, output other than $1.5$, unequal calibrated amplitude, or dependence on legacy \texttt{responsivity}. \\
+\PredID{SCI-RTC-PRED-004} & Raw donor availability: independently make either factor invalid, convention/domain-incompatible, occurrence-mismatched, or set $\phi_d=0$.  The \texttt{flxscale} route is unavailable. & Finite replacement, stale factor reuse, row-number-only binding, zero insertion, or success without separate donor authority. \\
+\PredID{SCI-RTC-PRED-005} & Order: compare calibration-before-replacement with a proposed reversed affine path using unequal factors and nonzero offsets.  Outputs and local response agree only if equation~\eqref{eq:order-equivalence} holds completely. & Equality asserted from multiplicative factors alone, ignored offsets/uncertainty, or fixture equality labeled a general proof. \\
+\PredID{SCI-RTC-PRED-006} & Interior target/donor impulses under fixed selection.  Each output column equals equation~\eqref{eq:local-kernel}; donor energy appears in the declared detector column, support, scale, and phase. & Missing or circularly wrapped energy, unexplained mixing, wrong donor identity/direction, support, normalization, or phase. \\
+\PredID{SCI-RTC-PRED-007} & Constant input with sufficient context.  Output equals the constant times realized DC gain after the declared transient; a DC-preserving chain is exactly constant. & Drift, divide-by-zero mask normalization, edge values advertised as interior, or a false DC-preservation claim. \\
+\PredID{SCI-RTC-PRED-008} & Interior step with complete context.  Response equals the cumulative impulse response and settles according to DC gain and stability. & Undeclared overshoot, failure to settle, hidden state leakage, or disagreement with the impulse-derived response. \\
+\PredID{SCI-RTC-PRED-009} & Affine ramp through each FIR and admitted alignment mapping.  Output slope and offset follow the zeroth and first moments of the exact kernel. & Unexplained clipping, wrong phase/slope/offset, or a ramp-preservation claim without the required moments. \\
+\PredID{SCI-RTC-PRED-010} & Long bin-centered and off-bin sinusoids at DC, passband interior/edge, transition, stopband, and near output Nyquist.  Amplitude and phase follow equations~\eqref{eq:lti-response} and \eqref{eq:alias}. & Gain/phase outside preregistered tolerance, unrecorded frequency convention, or an aliased component labeled passband signal. \\
+\PredID{SCI-RTC-PRED-011} & Sinusoids at the realized notch center and symmetric offsets under the exact rate and state.  Depth, width, phase, and transient follow realized zeros/poles. & Center/depth/width mismatch, unstable pole, rate mismatch, hidden state, or an edge transient reported ordinary-valid. \\
+\PredID{SCI-RTC-PRED-012} & Coordinate mask with valid inside/outside values plus invalid, unavailable, wrong-frame, out-of-domain, and ambiguously bound coordinates.  Invalid classes fail the affected operation and remain distinct from outside. & Invalid becoming outside/unmasked, entering geometry, clamping to a center/edge, or loss of the distinct cause. \\
+\PredID{SCI-RTC-PRED-013} & Samples just inside, exactly on, and just outside each selected mask boundary and temporal dilation.  Membership follows the recorded inclusive/exclusive and dilation policy identically across execution modes. & An undocumented boundary, frame mismatch, asymmetric dilation, or sequence-dependent membership. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-014} & Impulses and constants at first/last support cells and immediately inside complete FIR context.  Values, guard, support, and output admission follow the selected edge rule. & Undeclared padding, truncation, wrap, renormalization, guard, or output selection. \\
+\PredID{SCI-RTC-PRED-015} & Zero, impulse, and constant inputs split and rejoined at scan/chunk/state boundaries for an IIR.  Results follow the declared reset/carry and terminal-state policy. & Prior-observation leakage, hidden carry/reset, unbounded non-finite poisoning, or contradiction between split and declared state semantics. \\
+\PredID{SCI-RTC-PRED-016} & Lengths $0,1,L-1,L,L+1$ around every support/guard threshold, with stable scan identity. & Crash, underflow, stale output, silent scan deletion/renumbering, or ordinary-valid status without required context. \\
+\PredID{SCI-RTC-PRED-017} & Inject NaN, $+\infty$, and $-\infty$ separately into a sample, factor, coordinate, coefficient, and IIR state.  Failure or unavailable influence follows REQ-026 exactly. & Silent zero/coercion, finite-looking output without cause, stale state recovery, or an unbounded tail reported valid. \\
+\PredID{SCI-RTC-PRED-018} & Place one typed cause at every member of a phase-zero output's full support, including a noncenter synthesized or replaced cell.  Each cause propagates and either such influence makes the output scientifically ineligible. & Center-only aggregation, erased cause, finite output called eligible, or replacement/synthesis treated as independent exposure. \\
+\PredID{SCI-RTC-PRED-019} & For $M=1,2,3,4,5$ and $N=0$ through several incomplete final strides, enumerate $j=Mn$.  Cardinality and selected time follow equation~\eqref{eq:phase-zero}; no block mean appears. & Wrong $N_y$, dropped/duplicated point, nonzero phase, averaged value, timestamp misidentification, or rate mismatch. \\
+\PredID{SCI-RTC-PRED-020} & Two sinusoids separated by an integer multiple of $f_{\rm out}$, before and after the realized prefilter.  Folded amplitude is the sum in equation~\eqref{eq:alias}. & A folded term missing from response, inadequate stopband labeled alias-free, or incorrect image frequency/amplitude. \\
+\PredID{SCI-RTC-PRED-021} & Reuse one donor for two targets and give neighboring outputs overlapping filter support.  Equation~\eqref{eq:conditional-cov} predicts cross-target and temporal covariance when the admitted input covariance permits it. & Independent weights assigned, off-diagonal terms silently dropped, or reused donor described as additional exposure. \\
+\PredID{SCI-RTC-PRED-022} & Enable a response-changing mask, donor mix, stateful filter, edge, and decimator while providing only a scalar FIR transfer.  Complete response state is unavailable. & The partial scalar transfer labeled complete, or downstream use that assumes omitted stages are identity. \\
+\PredID{SCI-RTC-PRED-023} & Learned candidates include at least two safe factors and one failing each astronomical-transfer, alias, sampling, realizability, and compatibility constraint.  Equation~\eqref{eq:learned-plan} chooses the largest passing factor. & A smaller safe factor selected without rule, any failing factor applied, a percentile speed used for safety, or a missing numeric predicate treated as pass. \\
+\PredID{SCI-RTC-PRED-024} & Serialize and restart a learned plan, then alter one of beam identity, speed support, scan set, coefficient precision, rate, phase, role, or parent.  Apply rejects the mismatch. & Silent relearning, retuning, native fallback, stale-plan application, or realized state rewriting the request. \\
+\PredID{SCI-RTC-PRED-025} & Execute two observations sequentially with distinct rates, constants, factors, masks, donors, states, and output parents. & Any coefficient, state, factor, donor, mask, rate, flag, or product link leaks from the first observation. \\
+\PredID{SCI-RTC-PRED-026} & Toggle optional detailed provenance and inert diagnostics while holding the selected policy and realized operator fixed.  Values, flags, influence, eligibility, cardinality, response, and failures are identical. & Any scientific or numerical result changes, or an observational/production claim appears from the toggle. \\
+\bottomrule
+\end{tabularx}
+\normalsize
+
+\subsection{Analytic limits}
+
+The following limits are required: a compatible donor pair with
+$\phi_q=\phi_d$ gives unit raw donor scale; a replacement indicator tending
+to zero gives identity; filter coefficients tending to a Kronecker delta give
+identity; $M\to1$ gives no rate change; a source-mask radius tending to zero
+selects only exact valid coincidences under the declared boundary; complete
+context approaches the declared interior response; and a causal pole
+approaching the unit circle exposes increasing memory and never retains a
+stability claim at or outside the circle.
+
+\hypertarget{rtc-core-end}{}
+\begingroup
+\setlength{\fboxsep}{2pt}
+\noindent\fcolorbox{RTCblue}{RTCpale}{\parbox{0.97\linewidth}{\footnotesize
+\textbf{End of shared normative core:} \texttt{SCI-RTC-v0.1/r0.1}.
+View-specific material cannot add to or modify this scientific authority.
+}}
+\endgroup

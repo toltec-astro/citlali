@@ -1,2 +1,293 @@
-% SCI-RTC v0.1 shared equations module.
-% Reserved for implementation-blind Stage B authorship after owner approval.
+% SCI-RTC v0.1/r0.1 shared normative core -- equations.
+\section{Normative equations and identities}
+\label{sec:core-equations}
+
+The equations in this section are the sole displayed mathematical authority
+of both views.  They describe an implementation-independent, state-conditioned
+operator.  They neither select numerical policy nor assert implementation
+conformity.
+
+\subsection{Role domain and donor transfer}
+
+For an exact detector occurrence $i$ under the admitted multiplicative
+raw-to-calibrated convention,
+\begin{equation}
+ z_i=\phi_i x_i,
+ \qquad \phi_i=\texttt{flxscale}_i .
+ \tag{SCI-RTC-EQ-001}\label{eq:raw-cal}
+\end{equation}
+Equation~\eqref{eq:raw-cal} does not assign a role to legacy
+\texttt{responsivity}.  When $q$ is a raw donor and $d$ is a raw target, the
+unique multiplicative transfer that represents donor-calibrated amplitude in
+the target raw convention is
+\begin{equation}
+ x^{R}_{d\leftarrow q}
+   =a_{d\leftarrow q}x_q,
+ \qquad
+ a_{d\leftarrow q}=\frac{\phi_q}{\phi_d},
+ \qquad
+ \phi_d x^{R}_{d\leftarrow q}=\phi_qx_q .
+ \tag{SCI-RTC-EQ-002}\label{eq:raw-donor}
+\end{equation}
+This equation is defined only for a compatible \texttt{flxscale} pair as
+defined above.  Otherwise this transfer is unavailable.  An
+additive calibration convention, a different unit/reference domain, or an
+alternative donor authority requires its own complete affine equivalence and
+is not silently folded into equation~\eqref{eq:raw-donor}.
+
+Let the role-domain operator be
+\begin{equation}
+ C_{\mathcal R}=\begin{cases}
+ I, & \delta_{\mathcal R}=0\quad\text{(admitted raw role)},\\
+ C_\kappa, & \delta_{\mathcal R}=1\quad\text{(CAL-authorized role)}.
+ \end{cases}
+ \tag{SCI-RTC-EQ-003}\label{eq:role-cal}
+\end{equation}
+For a CAL-authorized role, calibration precedes cross-detector replacement.
+For a raw role, $C_{\mathcal R}=I$ and an admitted raw donor transfer may use
+equation~\eqref{eq:raw-donor}.  Reversing calibration and replacement is
+equivalent only if, for the complete admitted affine operators on the exact
+support,
+\begin{equation}
+ B^{(z)}_{\omega} C_\kappa
+   =C_\kappa B^{(x)}_{\omega},
+ \quad
+ \mathbf b^{(z)}_{\omega}
+   =C_\kappa\mathbf b^{(x)}_{\omega}
+     +\mathbf c_\kappa-B^{(z)}_{\omega}\mathbf c_\kappa,
+ \tag{SCI-RTC-EQ-004}\label{eq:order-equivalence}
+\end{equation}
+with unit, factor direction, additive offset, response, uncertainty, identity,
+validity, and domain equivalence all proved.  Equality of numerical values in
+one fixture is insufficient.
+
+\subsection{Realized conditioning operator}
+
+Conditioned on complete realized state $\Omega$, the ordered role-specific
+operator is
+\begin{equation}
+ \boxed{\;
+ \mathbf y_{\mathcal R}=D_{M,0}
+ F_{K,\theta_K}\cdots F_{1,\theta_1}
+ B_{\omega,\mathcal R}
+ \left[C_{\mathcal R}
+  (A_\alpha\mathbf x^{\rm acq}+\mathbf a_\alpha)
+  +\mathbf c_{\mathcal R}\right]
+ +\mathbf b_{\Omega}\; .}
+ \tag{SCI-RTC-EQ-005}\label{eq:complete-operator}
+\end{equation}
+Chronological order is read from right to left.  The affine terms include
+only declared calibration, replacement, filter-state, boundary, or other
+authorized contributions.  Masks, coefficients, finite handling, context,
+exceptions, and state are components of $\Omega$, not annotations outside
+the operator.  Conditional on them,
+\begin{equation}
+ \mathbf y_{\mathcal R}=L_\Omega\mathbf x^{\rm acq}
+  +\mathbf b'_\Omega,
+ \qquad
+ L_\Omega=D_{M,0}F_K\cdots F_1B_{\omega,\mathcal R}
+ C_{\mathcal R}A_\alpha .
+ \tag{SCI-RTC-EQ-006}\label{eq:affine-operator}
+\end{equation}
+This is a conditional affine identity, not an unconditional linear,
+stationary, unbiased, or Gaussian claim.
+
+A realized replacement at target cell $(d,j)$ may be written
+\begin{equation}
+ u^R_{dj}=(1-p_{dj})u_{dj}
+ +p_{dj}\left[
+ \sum_{(q,\ell)\in\mathcal Q_{dj}}
+ w_{dj,q\ell}\,a_{d\leftarrow q,j\ell}\,u_{q\ell}
+ +\beta_{dj}\right],
+ \quad
+ \sum_{q,\ell}w_{dj,q\ell}=1
+ \ \text{when normalization is claimed}.
+ \tag{SCI-RTC-EQ-007}\label{eq:replacement}
+\end{equation}
+The scale $a$ is domain-qualified: equation~\eqref{eq:raw-donor} is the
+authorized raw \texttt{flxscale} route, while a calibrated-domain transfer or
+any separately authorized route carries its own identity and validity.
+
+For a time-invariant FIR stage,
+\begin{equation}
+ v_{d,j}=\sum_{\ell\in\mathcal L_k}h^{(k)}_{d,\ell}u_{d,j-\ell},
+ \qquad
+ H^{(k)}_d(e^{i\omega})=
+ \sum_{\ell\in\mathcal L_k}h^{(k)}_{d,\ell}e^{-i\omega\ell},
+ \qquad H^{(k)}_d(1)=\sum_\ell h^{(k)}_{d,\ell}.
+ \tag{SCI-RTC-EQ-008}\label{eq:fir}
+\end{equation}
+For a causal IIR or notch stage, a state-complete form is
+\begin{equation}
+ \mathbf s_{j+1}=A_k\mathbf s_j+B_ku_j,
+ \qquad v_j=C_k\mathbf s_j+D_ku_j,
+ \qquad \mathbf s_{j_0}=\mathbf s_{0,k}.
+ \tag{SCI-RTC-EQ-009}\label{eq:iir}
+\end{equation}
+An exactly equivalent recurrence is admissible only with its coefficient
+convention, precision, state, and boundary identity.  A causal-stability claim
+requires every realized pole strictly inside the unit circle.
+
+One possible selected mask operator is normalized masked FIR convolution,
+\begin{equation}
+ v_j=
+ \frac{\sum_\ell h_\ell m_{j-\ell}u_{j-\ell}}
+      {\sum_\ell h_\ell m_{j-\ell}},
+ \qquad
+ \left|\sum_\ell h_\ell m_{j-\ell}\right|>\epsilon_m ,
+ \tag{SCI-RTC-EQ-010}\label{eq:masked-fir}
+\end{equation}
+but equation~\eqref{eq:masked-fir} is not a selected default.  Segmenting,
+zero filling, restoring a mask after filtering, holding state, and
+renormalizing are distinct operators.
+
+\subsection{Phase-zero sampling and response}
+
+For a coherent pre-sampling segment of length $N$, v0.1 selects only
+\begin{equation}
+ y_{d,n}=u_{d,Mn},
+ \qquad 0\le Mn<N,
+ \qquad f_{\rm out}=\frac{f_{\rm in}}{M},
+ \qquad
+ N_y=\begin{cases}0,&N=0,\\1+\left\lfloor\dfrac{N-1}{M}\right\rfloor,&N>0.
+ \end{cases}
+ \tag{SCI-RTC-EQ-011}\label{eq:phase-zero}
+\end{equation}
+The representative assigned-grid time is the selected point time
+$t^{\rm out}_n=t_{Mn}$; the scientific support is nevertheless the complete
+transitive support $\mathcal S_{dn}$ of all preceding stages.  A selected
+edge/output policy may reject candidate points, but shall not relabel a
+different phase or silently change equation~\eqref{eq:phase-zero}.
+
+For output $(d,n)$ and acquired input $(q,j)$, the exact local response is
+\begin{equation}
+ K_{dn,qj}=\frac{\partial y_{dn}}
+                 {\partial x^{\rm acq}_{qj}}
+ \quad\text{at fixed realized state }\Omega .
+ \tag{SCI-RTC-EQ-012}\label{eq:local-kernel}
+\end{equation}
+At a selection boundary the derivative may be discontinuous or undefined;
+that state shall be represented rather than replaced by an LTI claim.
+
+In the fixed, detector-separable, translation-invariant, single-rate interior
+case only,
+\begin{equation}
+ H^{\rm comb}_d(e^{i\omega})=
+ \prod_{k=1}^{K}H^{(k)}_d(e^{i\omega}),
+ \qquad
+ \tau_g(\omega)=-\Delta t\,\frac{d}{d\omega}
+ \operatorname{unwrap}\!\left[\arg H^{\rm comb}_d(e^{i\omega})\right].
+ \tag{SCI-RTC-EQ-013}\label{eq:lti-response}
+\end{equation}
+Amplitude is $|H|$, power response is $|H|^2$, and phase is $\arg H$ under
+the recorded Fourier convention.  Group delay is unavailable at response
+zeros unless a bounded convention is supplied.
+
+For an LTI prefilter followed by phase-zero selection, the exact multirate
+identity is
+\begin{equation}
+ Y(e^{i\Omega_o})=\frac{1}{M}\sum_{r=0}^{M-1}
+ H\!\left(e^{i(\Omega_o+2\pi r)/M}\right)
+ X\!\left(e^{i(\Omega_o+2\pi r)/M}\right),
+ \tag{SCI-RTC-EQ-014}\label{eq:alias}
+\end{equation}
+under the declared Fourier/sign convention.  Every folded image contributes;
+point selection itself is not anti-alias filtering.
+
+For an FIR output, direct support starts with
+\begin{equation}
+ \mathcal S^{(1)}_{dn}=\{Mn-\ell:\ell\in\mathcal L\},
+ \qquad
+ \mathcal S_{dn}=\operatorname{closure}_{A,B,F,\,\mathrm{state}}
+                 \!\left(\mathcal S^{(1)}_{dn}\right).
+ \tag{SCI-RTC-EQ-015}\label{eq:support}
+\end{equation}
+IIR support extends to the declared state/reset or context boundary and may
+be mathematically infinite.  Any finite guard is an approximation with a
+stated residual-tail criterion.
+
+\subsection{Moments, influence, and learned-plan selection}
+
+For admitted input mean $\boldsymbol\mu_x$ and full covariance $\Sigma_x$,
+conditional on fixed $\Omega$ independent of the modeled random noise,
+\begin{align}
+ \E[\mathbf y\mid\Omega]
+   &=L_\Omega\boldsymbol\mu_x+\mathbf b'_\Omega,
+ &\tag{SCI-RTC-EQ-016a}\label{eq:conditional-mean}\\
+ \Sigma^{\rm stat}_{y\mid\Omega}
+   &=L_\Omega\Sigma_xL_\Omega^{\mathsf T}.
+ &\tag{SCI-RTC-EQ-016b}\label{eq:conditional-cov}
+\end{align}
+If selectors depend on the random data, unconditional covariance obeys
+\begin{equation}
+ \Cov(\mathbf y)=
+ \E_\Omega[\Cov(\mathbf y\mid\Omega)]
+ +\Cov_\Omega(\E[\mathbf y\mid\Omega]).
+ \tag{SCI-RTC-EQ-017}\label{eq:total-covariance}
+\end{equation}
+The second term is not zero by default.  With named nuisance parameters
+$\boldsymbol\eta$ and an adequate local linearization,
+\begin{equation}
+ \Sigma_y^{\rm sys}\approx
+ J_\eta\Sigma_\eta J_\eta^{\mathsf T},
+ \qquad
+ J_\eta=\left.
+ \frac{\partial\E[\mathbf y\mid\Omega,\boldsymbol\eta]}
+      {\partial\boldsymbol\eta}\right|_{\boldsymbol\eta_0},
+ \tag{SCI-RTC-EQ-018}\label{eq:systematic-cov}
+\end{equation}
+and a total-covariance claim requires every applicable component and cross
+term:
+\begin{equation}
+ \Sigma_y^{\rm total}=
+ \Sigma_y^{\rm stat}+\Sigma_y^{\rm sys}
+ +\Sigma_y^{\rm selection}+\Sigma_y^{\rm model}
+ +\Sigma_y^{\rm cross}.
+ \tag{SCI-RTC-EQ-019}\label{eq:total-uncertainty}
+\end{equation}
+Unknown components are unavailable, not zero.
+
+Define cause-preserving influence and the v0.1 ineligibility rule by
+\begin{align}
+ \mathcal I_{dn}
+   &=\operatorname{closure}_{K,\,\mathrm{generative\ links}}
+     \{\text{typed source causes on }\mathcal S_{dn}\},
+ &\tag{SCI-RTC-EQ-020a}\label{eq:influence}\\
+ E^{\rm RTC}_{dn}
+   &=V^{\rm det}_d\land V^{\rm num}_{dn}\land
+     V^{\rm support}_{dn}\land V^{\rm response}_{dn}
+     \land\neg\mathbb I[\mathrm{ALIGN\_synth}\in\mathcal I_{dn}]
+     \land\neg\mathbb I[\mathrm{RTC\_replace}\in\mathcal I_{dn}].
+ &\tag{SCI-RTC-EQ-020b}\label{eq:eligibility}
+\end{align}
+Consumer-specific coordinate or policy predicates may further restrict
+eligibility; they may not remove either transitive-influence exclusion.
+
+For learned mode, let $\mathcal M$ be the admitted finite integer candidate
+set and $\mathcal F(M)$ the conjunction of all owner-resolved astronomical
+transfer, exact phase-zero alias, sampling, realized-filter realizability,
+and downstream-compatibility constraints, evaluated with the smallest
+admitted beam and maximum valid in-scan speed.  Then
+\begin{equation}
+ \mathcal M_{\rm safe}=\{M\in\mathcal M:\mathcal F(M)=\mathrm{true}\},
+ \qquad M_\star=\max\mathcal M_{\rm safe}.
+ \tag{SCI-RTC-EQ-021}\label{eq:learned-plan}
+\end{equation}
+Equation~\eqref{eq:learned-plan} is defined only after every numerical
+tolerance, support rule, fallback, and compatibility predicate named in the
+owner ledger is resolved.  Percentile speed is diagnostic, not safety
+authority.
+
+Finally, the atomic product is
+\begin{equation}
+ \mathcal O_{\rm RTC,\mathcal R}=
+ (\mathbf y,\mathcal J,\mathcal K,\mathcal S,\mathcal I,
+  \mathcal F,\mathcal V,\mathcal U,\mathcal P,\mathcal D,\mathcal C),
+ \tag{SCI-RTC-EQ-022}\label{eq:bundle}
+\end{equation}
+where $\mathcal J$ is ordered identity, $\mathcal K$ complete response status,
+$\mathcal S$ support, $\mathcal I$ influence, $\mathcal F$ typed flags/causes,
+$\mathcal V$ separated validity and eligibility inputs, $\mathcal U$
+uncertainty/covariance availability, $\mathcal P$ one-way state/provenance,
+$\mathcal D$ diagnostics, and $\mathcal C$ atomic completion or required-output
+failure state.

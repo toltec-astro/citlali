@@ -373,6 +373,25 @@ scientific questions remain explicitly open. No RTC scientific authority,
 implementation conformity, validation, or production claim has been
 established.
 
+The fresh implementation-blind author completed SCI-RTC Stage B v0.1/r0.1
+from the exact approved packet on 2026-08-17. The manager-reviewed draft has
+one six-file normative core, 20 definitions, 24 displayed equations, 12
+bounded assumptions, 54 sequential requirements, 26 falsifiable predictions,
+and an exact crosswalk. The scientist-facing rationale is 25 pages with ten
+substantive pre-appendix narrative pages; the engineering view is 17 pages and
+contains no independent normative mathematics. The owner-modified raw donor
+rule appears literally as `flxscale_q / flxscale_d`, with exact occurrence and
+domain validity, nonzero target denominator, unavailable fallbacks, and a
+numerical direction falsifier. The prior eight broad question families are
+decomposed into 23 open, one conditional, and four deferred owner entries.
+
+Both PDFs compile without TeX warnings or errors. Independent manager rebuilds
+match page counts and page text, and all 42 final pages passed 144-dpi Poppler
+inspection. Packet hashes and author write boundaries pass. The draft is ready
+for scientific-owner review but is not approved or frozen; implementation
+conformity, representation fidelity, observational performance, validation,
+science-impact qualification, and production readiness remain unassessed.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

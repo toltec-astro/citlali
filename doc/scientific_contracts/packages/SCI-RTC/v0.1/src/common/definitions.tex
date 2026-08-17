@@ -1,2 +1,141 @@
-% SCI-RTC v0.1 shared definitions module.
-% Reserved for implementation-blind Stage B authorship after owner approval.
+% SCI-RTC v0.1/r0.1 shared normative core -- definitions.
+\section{Normative definitions}
+\label{sec:core-definitions}
+
+\begin{description}[style=nextline,leftmargin=1em,labelindent=0pt,
+  labelwidth=0pt,labelsep=0pt]
+
+\item[SCI-RTC-DEF-001 -- Admitted aligned stream.]
+An immutable observation-scoped primary \texttt{xs} array whose physical
+observable, sign, zero/reference, baseline, unit, ordered detector binding,
+assigned sample grid, cadence, phase, support, origin/synthesis state,
+validity, scan partition, and mapping lineage are supplied by the responsible
+upstream authority.  Admission does not upgrade unavailable physical event
+timing.
+
+\item[SCI-RTC-DEF-002 -- Product-role signal domain.]
+The tuple $(\mathcal R,Q_{\mathcal R},U_{\mathcal R},s_{\mathcal R},
+b_{\mathcal R},\mathcal V_{\mathcal R})$ naming role, physical quantity,
+unit, sign, reference/baseline, and valid domain.  Frozen Beammap uses raw
+$\Delta f/f$.  A separately CAL-authorized role may use calibrated
+\si{mJy\per beam}.  The domains never substitute silently.
+
+\item[SCI-RTC-DEF-003 -- Exact detector occurrence.]
+An observation-local layered binding containing observation, Tune,
+network/interface, network-local tone or admitted row slot, selected APT
+identity/digest, and row association.  A transient column number is only a
+locator.
+
+\item[SCI-RTC-DEF-004 -- Imported CAL operator.]
+An immutable SCI-CAL-selected transformation carrying its detector binding,
+source and target atmosphere lineage, target unit, factor convention,
+validity, uncertainty, availability, and provenance.  RTC may apply it in an
+authorized role and owns that order; RTC does not derive, repair, or promote
+the factor.
+
+\item[SCI-RTC-DEF-005 -- Compatible \texttt{flxscale} pair.]
+Two finite factors $\phi_q$ and $\phi_d$ that are valid for the exact donor
+and target detector occurrences under the same multiplicative calibration
+convention, quantity domain, reference plane, and applicable support, with
+$\phi_d\neq0$.  Compatibility is not established by matching row numbers or
+finite values alone.
+
+\item[SCI-RTC-DEF-006 -- Selected conditioning policy.]
+A versioned, admitted specification of despike detection, donor eligibility,
+donor scoring and ties, replacement and fallback, source protection,
+filter stages and order, exact coefficients and normalization, numeric
+precision, state/reset, boundaries/edges, non-finite handling, sampling mode,
+phase-zero factor, flags, influence aggregation, diagnostics, and failure
+behavior.  It is selected authority, not an implementation default.
+
+\item[SCI-RTC-DEF-007 -- One-way state record.]
+The ordered record
+$(\Theta^{\rm req},\Theta^{\rm eff},\Theta^{\rm obs},
+\Theta^{\rm learned},\Theta^{\rm real})$.  Requested state preserves the
+accepted request; effective state is the admitted typed plan;
+observation-resolved state binds exact observation facts;
+learned/resolved state is present only in learned mode; and realized state
+records what ran.  A later state never rewrites an earlier state.
+
+\item[SCI-RTC-DEF-008 -- Realized conditioning operator.]
+The chronological composition of every admitted alignment, role-domain,
+replacement, mask, FIR/IIR/notch, boundary, state, non-finite, and phase-zero
+sampling action, including all affine state terms and exception intervals.
+Annotations that affect values, support, influence, or availability are part
+of the operator.
+
+\item[SCI-RTC-DEF-009 -- Phase-zero sampling.]
+Point selection of the pre-sampling stream at input indices $j=Mn$ for one
+integer factor $M\geq1$.  It is not an arithmetic mean, block aggregate, or
+implicit anti-alias filter.
+
+\item[SCI-RTC-DEF-010 -- Complete realized response.]
+An exact local or factorized representation that includes every enabled
+response-changing stage, detector mixing, mask, state, edge rule, exception,
+and sampling phase on its declared support.  If such a representation is not
+truthfully available, response state is \Unavail; a partial kernel is not
+complete response.
+
+\item[SCI-RTC-DEF-011 -- Direct source cell.]
+An aligned cell that enters an RTC value before transitive propagation.  It
+may be original, ALIGN-synthesized, or RTC-replaced.  Numerical participation
+does not confer independent scientific exposure.
+
+\item[SCI-RTC-DEF-012 -- Transitive influence.]
+The cause-preserving closure from every original, synthesized, replaced,
+masked, edge, state, and non-finite source cell through all nonzero realized
+alignment, donor, filter, state, and sampling dependencies to an output.
+Influence is broader than the selected point and may cross detector columns.
+
+\item[SCI-RTC-DEF-013 -- Scientifically ineligible RTC output.]
+An output having any transitive influence from an ALIGN-synthesized or
+RTC-replaced cell.  It remains ineligible even when finite and even when the
+influenced cell is not the phase-zero selected center.  Causes and numerical
+influence remain reportable.
+
+\item[SCI-RTC-DEF-014 -- Coordinate-dependent control.]
+A source mask or response operation that consumes an AST coordinate identity,
+frame, topology, detector binding, validity, uncertainty where required, and
+support.  Invalid or unavailable coordinates are not outside-source values.
+
+\item[SCI-RTC-DEF-015 -- Fixed sampling mode.]
+A request whose admitted factor, realizable prefilter, rate, phase-zero rule,
+and downstream compatibility are resolved without learning them from the
+observation.
+
+\item[SCI-RTC-DEF-016 -- Learned sampling mode.]
+An optional request that evaluates an admitted finite candidate set and
+resolves one immutable observation-wide cadence/filter plan before apply.
+Its admission uses the smallest admitted beam, maximum valid in-scan speed,
+analytical beam-times-realized-filter response, exact phase-zero alias
+accounting, sampling sufficiency, filter realizability, and downstream
+compatibility.  Noise-aware, per-array, per-scan, heterogeneous-cadence, and
+continuous adaptation are outside v0.1.
+
+\item[SCI-RTC-DEF-017 -- Conditional statistical covariance.]
+The covariance obtained from an admitted input covariance through a fixed
+realized operator while holding selection and nuisance state fixed.  It is
+not total uncertainty and does not imply a diagonal, white, stationary, or
+independent noise model.
+
+\item[SCI-RTC-DEF-018 -- Atomic RTC bundle.]
+One role-specific completion unit containing conditioned TOD; ordered
+detector/sample/scan/support and parent identity; complete response or typed
+unavailability; cause-preserving flags and influence; separated validity and
+eligibility inputs; conditional uncertainty/covariance status; one-way state
+and provenance; required diagnostics; and completion/failure state.  TOD
+alone is not this bundle.
+
+\item[SCI-RTC-DEF-019 -- Scientifically named diagnostic.]
+A quantity with an explicit estimator, unit, support, selection/mask,
+validity, uncertainty/availability, and policy role.  It is either inert,
+advisory, or an input to an explicitly selected policy; those roles are not
+interchangeable.
+
+\item[SCI-RTC-DEF-020 -- Claim layer.]
+One of algebraic contract correctness, implementation conformity,
+representation fidelity, observational performance, science-impact
+qualification, or production readiness.  Evidence at one layer does not
+establish another.
+
+\end{description}
