@@ -1,5 +1,10 @@
 # Citlali Scientific Contract Library Program
 
+The permanent workflow distilled from the first two pilot packages is recorded
+in [the pilot process review](PILOT_PROCESS_REVIEW_2026-08-16.md). Every new
+package must read and cite that review at startup together with this program
+and its package-specific prior-work recovery.
+
 Status: governing program charter
 
 Scientific owner: Grant Wilson

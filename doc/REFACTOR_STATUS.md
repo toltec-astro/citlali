@@ -239,6 +239,28 @@ filenames. A small `doc/scientific_contracts/verify_layout.py` check prevents
 future structural drift. The packages remain scientific contract v0.1;
 filesystem normalization does not silently create v1.0 authority.
 
+The CAL/MAP pilot lessons are now durable in
+[`PILOT_PROCESS_REVIEW_2026-08-16.md`](scientific_contracts/PILOT_PROCESS_REVIEW_2026-08-16.md).
+That review makes prior-work recovery, exact author-packet content binding,
+Stage A/Stage B separation, one shared normative core, independent consistency
+review, full rendered-PDF QA, and the four-trigger stopping rule mandatory for
+later packages. It also confirms that SCI-BEAM may enter Stage A while remaining
+separate from active ALIGN/AST work; this does not approve BEAM science or
+physical timing/absolute-placement claims.
+
+[`SCI-BEAM`](scientific_contracts/packages/SCI-BEAM/v0.1/README.md) completed
+its Stage A recovery and sanitized scope draft on 2026-08-16. Recovery found no
+dedicated approved implementation-independent BEAM core, so it preserved prior
+scope, three historical dependency handoffs, current Citlali conventions,
+TolAPT soft-prior ownership, and `toltec_beammap` downstream ownership without
+promoting any of them into a scientific contract. The complete canonical
+package scaffold now exists, but its LaTeX modules are blocked placeholders and
+no PDFs or author-packet manifest exist. The current gate is Grant's review of
+`BEAM-SCOPE-Q001--Q012`, the proposed scientific boundary, and the exact
+implementation-blind packet. No author has been commissioned, and no source
+audit, reduction, validation, Unity access, conformity assessment, or
+production decision occurred.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

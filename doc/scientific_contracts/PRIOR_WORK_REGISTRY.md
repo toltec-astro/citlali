@@ -93,6 +93,12 @@ and cross-package handoffs are valuable recovery inputs.
 
 ### Beammap
 
+- Package-specific recovery:
+  [`packages/SCI-BEAM/v0.1/PRIOR_WORK.md`](packages/SCI-BEAM/v0.1/PRIOR_WORK.md)
+  at `2026-08-16`. It records the absent independent BEAM core, the three
+  historical dependency handoffs, current Citlali scope evidence, the TolAPT
+  soft-prior producer contract, the `toltec_beammap` downstream ownership
+  boundary, and the proposed implementation-blind packet.
 - Current shared authority plus `MAIN:doc/BEAMMAP_CONFIG_AUTHORITY.md` and
   `MAIN:handoff/BEAMMAP_AUTHORITY_DESIGN_REVIEW_2026-07-14.md`.
 - Package and dependency scope: `FRAME:doc/audits/audit-ledger.yaml` entry

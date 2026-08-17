@@ -5,12 +5,14 @@ This index is governed by the
 linking to that charter and completing the prior-work recovery procedure.
 The [prior-work discovery registry](PRIOR_WORK_REGISTRY.md) seeds that search
 without replacing package-specific review.
+The [pilot process review](PILOT_PROCESS_REVIEW_2026-08-16.md) records the
+permanent CAL/MAP lessons and Stage A/Stage B gate used by later packages.
 
 | Package | Scope status | Contract status | Owner decision needed | Next action |
 | --- | --- | --- | --- | --- |
 | [SCI-CAL — detector calibration, extinction, and signal transfer](packages/SCI-CAL/v0.1/README.md) | Owner-approved scientific contract v0.1 scope | Science-team rationale r0.3 final cleanup complete and architecture frozen; engineering v0.1 unchanged; scientific authority not frozen | Resolve or disposition Q01--Q09, including `xs`, `flxscale` transfer, broadband convention, and numeric atmosphere authority | No further stylistic round; revise only under the four recorded stopping-rule triggers |
 | [SCI-MAP — ordinary mapmaking and observation coaddition](packages/SCI-MAP/v0.1/README.md) | Owner-approved scientific contract v0.1 scope | Science-team rationale r0.3 house version frozen; CI-001 resolved; 52 requirement IDs and 25 prediction IDs retained; scientific authority not frozen | Resolve `SCI-MAP-OD-001--009`; OD-007 now concerns numerical domain and failure policy only | No further stylistic round; revise only for owner decisions, normative change, new evidence, or inconsistency |
-| BEAM — Beammap inference and products | Proposed pilot 3; held separate from active ALIGN | Not started | Confirm boundary and timing | Begin only after pilot process review and without absorbing ALIGN |
+| [SCI-BEAM — detector beam inference, calibration candidates, QC, and products](packages/SCI-BEAM/v0.1/README.md) | Stage A draft complete; separate from active ALIGN/AST | Scope not yet owner-approved; Stage B not started | Approve or revise BEAM-SCOPE-Q001--Q012 and the exact author packet | Scientific-owner review of the sanitized Scope Brief; do not commission an author before approval |
 | ALIGN/AST — sample alignment and astrometry | Inventoried | Not started | None yet | Hold for tranche planning |
 | RTC — raw-timestream conditioning | Inventoried | Not started | None yet | Hold for tranche planning |
 | PTC — correlated-mode cleaning and detector weighting | Inventoried | Not started | None yet | Hold for tranche planning |
