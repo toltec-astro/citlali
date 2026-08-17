@@ -353,17 +353,25 @@ owner-approved learned-sampling design. It also reconciles those sources with
 the later frozen SCI-BEAM raw `Delta f/f` boundary and conditional CAL, MAP,
 and PTC interfaces rather than repeating their reasoning.
 
-The proposed v0.1 scope preserves product-role-specific raw and calibrated
+The v0.1 scope and exact three-item author packet were owner-approved on
+2026-08-17 with one modification to `RTC-SCOPE-D004`. For raw donor `q` and
+target `d`, valid compatible factors under `z_i = flxscale_i x_i` authorize
+raw donor scale `flxscale_q / flxscale_d`; both factors must be valid for the
+exact detector occurrences under the same convention/domain, and the target
+factor must be nonzero. This does not restore a scientific role for legacy
+`responsivity`.
+
+The approved v0.1 scope preserves product-role-specific raw and calibrated
 signal domains; exact unit-domain calibration/replacement order; transitive
 synthesis/replacement ineligibility; complete-response-or-unavailable;
 immutable stage identity; phase-zero sampling; fixed and optional learned
 sampling; and one atomic RTC output bundle. Implementation, audits, handoffs,
 repairs, re-audits, tests, validation, Unity evidence, active ALIGN work, and
-production state remain quarantined. The next gate is owner review of
-`RTC-SCOPE-D001--D016`, eight explicit open scientific questions, and the
-exact proposed three-item author packet. No implementation-blind author has
-been launched, and no RTC scientific authority, conformity, validation, or
-production claim has been established.
+production state remain quarantined. Stage B implementation-blind drafting is
+now authorized from the exact content-bound packet. Eight downstream
+scientific questions remain explicitly open. No RTC scientific authority,
+implementation conformity, validation, or production claim has been
+established.
 
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction

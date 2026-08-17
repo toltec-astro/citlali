@@ -1,14 +1,17 @@
-# SCI-RTC v0.1 — Proposed Author Packet Manifest
+# SCI-RTC v0.1 — Approved Author Packet Manifest
 
-Status: proposed, content-bound packet; scientific-owner approval pending
+Status: owner-approved, exact content-bound packet; Stage B drafting authorized
 
 Scientific owner: Grant Wilson
 
 Prepared: `2026-08-17`
 
-## Proposed Allowed Inputs
+Approved: Grant Wilson, `2026-08-17`, with the owner modification recorded in
+`RTC-SCOPE-D004`
 
-A fresh implementation-blind scientific author would be allowed to open only
+## Allowed Inputs
+
+A fresh implementation-blind scientific author is allowed to open only
 these three logical packet items:
 
 1. [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md)
@@ -20,14 +23,14 @@ these three logical packet items:
 
 | Logical item | Exact source | Content SHA-256 |
 | --- | --- | --- |
-| 1 — draft Scope Brief | `SCOPE_BRIEF.md` | `aac4149f14cbad49f49c3d42af6b76bce5c4e5270aa9a0a7020a0249ec0cbc09` |
-| 2a — proposed supersession cover | `AUTHOR_SUPERSESSION_COVER.md` | `1923b48baa0256c851b45fc302eee22c32a1e5300ed5ded1860d5e0746f434a9` |
+| 1 — approved Scope Brief | `SCOPE_BRIEF.md` | `c8cac0b8ae731919622d7b696c60946685b5eba9b16a5cd830c01a2f6f28e013` |
+| 2a — approved supersession cover | `AUTHOR_SUPERSESSION_COVER.md` | `f183c8fb083c3a851fda5d77a0944405cc41650ced29bd0162cffba832f25575` |
 | 2b — independent core | exact Git object named above | `d6cf49d1a5e17754c55cc4f2c8f4b4f5e276755f247496df888581d890be80b7` |
-| 3 — proposed conventions and ownership | `AUTHOR_CONVENTIONS_AND_OWNERSHIP.md` | `c2046fd00e135abcc1830b80c8715f273e5367ac7b9ae25681d3949b14da366f` |
+| 3 — approved conventions and ownership | `AUTHOR_CONVENTIONS_AND_OWNERSHIP.md` | `a26220dc827330e30ca8e4c75e82600e6cc2f05358887bbaa0c6da93f98ecb5b` |
 
-The local-file hashes identify the exact Stage A bytes proposed for approval.
-Owner approval would admit those exact bytes; any later content change
-requires a new review and manifest rather than silent packet drift.
+The local-file hashes identify the exact owner-approved Stage A bytes. Any
+later content change requires a new review and manifest rather than silent
+packet drift.
 
 ## Prohibited Inputs
 
@@ -44,16 +47,16 @@ The author must not open:
   above;
 - the raw learned-sampling plan, ADR, implementation, metrics, or successor
   history, whose approved scientific substance is instead consolidated in the
-  proposed supersession cover;
+  approved supersession cover;
 - active ALIGN work or any inferred physical timing solution; or
 - any unlisted repository, local file, web source, or model-memory substitute.
 
-If the proposed packet is insufficient, the author must return one precise
+If the approved packet is insufficient, the author must return one precise
 scientific question. It may not search for an answer.
 
-## Expected Author Deliverables After Approval
+## Required Author Deliverables
 
-The author would write only within this package's `src/`, `pdf/`,
+The author may write only within this package's `src/`, `pdf/`,
 `CROSSWALK.md`, `AUTHOR_DRAFT_DECISIONS.md`, and
 `SCIENTIFIC_OWNER_DECISION_LEDGER.md`, producing:
 

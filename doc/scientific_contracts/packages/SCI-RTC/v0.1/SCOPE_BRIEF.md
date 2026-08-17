@@ -1,12 +1,13 @@
 # SCI-RTC — Raw-Timestream Conditioning And Temporal Response Scope Brief
 
-Status: draft for scientific-owner approval
+Status: owner-approved Stage A author input
 
 Scientific owner: Grant Wilson
 
 Version/date: `v0.1`, `2026-08-17`
 
-Approved source identifier: not yet approved
+Approved source identifier: `RTC-SCOPE-D001--D016`, owner-approved
+`2026-08-17` with owner modification to `RTC-SCOPE-D004`
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -15,8 +16,8 @@ This package follows the
 [pilot process review](../../../PILOT_PROCESS_REVIEW_2026-08-16.md).
 
 - Prior-work record: [`PRIOR_WORK.md`](PRIOR_WORK.md)
-- Recovery reviewed by: Codex manager, `2026-08-17`; owner review pending
-- Existing material proposed for adoption: the independent RTC mathematical
+- Recovery reviewed by: Codex manager and scientific owner, `2026-08-17`
+- Existing material approved for adoption: the independent RTC mathematical
   core; owner decisions D001--D004; the phase-zero downsampling amendment;
   and the owner-approved learned-sampling design
 - Existing material abstracted or excluded: current shared conventions and
@@ -27,14 +28,14 @@ This package follows the
   prior derivation under current package boundaries; define selected-policy,
   response, availability, atomic-output, and learned-mode obligations; and
   expose remaining numeric owner choices
-- Proposed author references: this brief; the exact independent core plus
+- Approved author references: this brief; the exact independent core plus
   [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md); and
   [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md)
 - Author-packet exclusions: all unlisted repositories and files, including
   implementation, audit, repair, test, validation, and production material
 
 Confirm that this opening was reviewed before launching scientific authorship:
-`no — owner approval pending`.
+`yes — Grant Wilson, 2026-08-17`.
 
 ## 1. Package Name And Scientific Purpose
 
@@ -153,9 +154,13 @@ The contract must require, without prescribing a current storage schema:
   its ordering/response consequences; it may not derive `flxscale`, source
   flux, atmosphere physics, beam meaning, or promotion.
 - Frozen SCI-BEAM assigns legacy `responsivity` no canonical scientific role.
-  RTC may not revive it by implication; raw-domain cross-detector replacement
-  requires a separately declared donor-to-target transfer identity or is
-  unavailable.
+  For donor detector `q` and target detector `d`, RTC may instead use valid,
+  compatible `flxscale` values as the raw-domain transfer. Under the declared
+  multiplicative convention `z_i = flxscale_i x_i`, the replacement scale is
+  `flxscale_q / flxscale_d`. Both values must be valid for the exact detector
+  occurrences in the same calibration convention and domain, and the target
+  value must be nonzero. Otherwise this transfer is unavailable unless a
+  separate donor-to-target authority is admitted.
 - **SCI-BEAM** separately requires its primary standardized detector input in
   raw `Delta f/f`. RTC must preserve that role and may not silently replace it
   with a calibrated map or timestream.
@@ -247,9 +252,9 @@ V0.1 does not:
 - claim implementation correctness, response fidelity, observational
   performance, or production readiness.
 
-## 9. Proposed Allowed References
+## 9. Approved Allowed References
 
-Subject to owner approval, the implementation-blind author may receive only:
+The implementation-blind author may receive only:
 
 1. this Scope Brief;
 2. [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md) together
@@ -261,16 +266,17 @@ No raw owner-decision file, audit, handoff, repair, re-audit, test, validation,
 configuration document, current source file, sibling repository, or external
 reference is admitted unless the owner amends the exact packet.
 
-## 10. Proposed Owner Decisions And Remaining Ambiguities
+## 10. Approved Owner Decisions And Remaining Ambiguities
 
-The following scope decisions are proposed for approval together:
+The following scope decisions were approved together by Grant Wilson on
+`2026-08-17`; `RTC-SCOPE-D004` includes the owner's approval modification.
 
-| ID | Proposed decision |
+| ID | Approved decision |
 | --- | --- |
 | `RTC-SCOPE-D001` | V0.1 owns the conditioning transformation from an admitted aligned primary stream through the atomic RTC bundle; ALIGN/AST/CAL meanings remain imported. |
 | `RTC-SCOPE-D002` | V0.1 is Stokes-I primary `xs`; measured R and enabled polarimetry are excluded. |
 | `RTC-SCOPE-D003` | Product-role signal domains remain distinct: frozen Beammap uses raw `Delta f/f`; a separately CAL-authorized role may use `mJy/beam`; neither silently substitutes for the other. |
-| `RTC-SCOPE-D004` | Where calibration is admitted, CAL owns factor science while RTC owns exact ordered application; calibration precedes cross-detector replacement unless an alternative proves full unit/factor/offset/response equivalence. A raw-domain donor transfer requires separate declared authority and cannot inherit legacy Beammap `responsivity`. |
+| `RTC-SCOPE-D004` | Where calibration is admitted, CAL owns factor science while RTC owns exact ordered application. Calibration precedes cross-detector replacement unless an alternative proves full unit/factor/offset/response equivalence. For raw donor `q` and target `d`, valid compatible factors under `z_i = flxscale_i x_i` authorize donor scale `flxscale_q / flxscale_d`; both factors must be valid for the exact detector occurrences under the same convention/domain, and the target factor must be nonzero. Legacy Beammap `responsivity` is not required. |
 | `RTC-SCOPE-D005` | Any output influenced by ALIGN synthesis or RTC replacement is scientifically ineligible; compact causes and support remain mandatory. |
 | `RTC-SCOPE-D006` | Every response-changing RTC stage, detector mixing, state, edge, mask, and sampling phase appears in the realized response, or the required response is unavailable. |
 | `RTC-SCOPE-D007` | Outer, inner, full, mini, diagnostic, simulated, and processed products have distinct immutable identities and parents; requested/effective/observation-resolved/realized state is one-way. |

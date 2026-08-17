@@ -1,6 +1,6 @@
 # SCI-RTC v0.1 — Supersession Cover For The Reusable RTC Core
 
-Status: proposed author reference; scientific-owner approval pending
+Status: owner-approved and content-bound author reference
 
 Prepared: `2026-08-17`
 
@@ -17,7 +17,7 @@ conformity claims, and production status are not author references.
 
 ## Binding V0.1 Specializations
 
-If approved, the following decisions control wherever the reusable core is
+The following owner-approved decisions control wherever the reusable core is
 broader, older, or ambiguous.
 
 1. **Product-role signal domains.** V0.1 does not impose one unit on every RTC
@@ -30,9 +30,13 @@ broader, older, or ambiguous.
    owns its exact ordered application and response consequences but does not
    derive or repair it. Calibration precedes cross-detector replacement unless
    a different order proves complete unit, factor, additive-offset, response,
-   uncertainty, and validity equivalence. Frozen SCI-BEAM assigns legacy
-   `responsivity` no canonical role; raw-domain donor-to-target transfer needs
-   a separately declared authority and may not inherit that field by name.
+   uncertainty, and validity equivalence. For raw donor `q` and target `d`,
+   valid compatible factors under the declared convention
+   `z_i = flxscale_i x_i` authorize replacement scale
+   `flxscale_q / flxscale_d`. Both factors must be valid for the exact detector
+   occurrences under the same calibration convention and domain, and the
+   target factor must be nonzero. Frozen SCI-BEAM assigns legacy
+   `responsivity` no canonical role, and this route does not require it.
 3. **Transitive influence ineligibility.** Any signal corrupted by ALIGN
    synthesis or RTC replacement, and any downstream output influenced by it,
    is ineligible for scientific analysis. Compact cause/support bookkeeping is
@@ -136,5 +140,6 @@ The author may not:
 - weaken a binding owner decision to match remembered behavior; or
 - broaden v0.1 to PTC, VAL, MAP, FLT, source fitting, or fruit-loop science.
 
-This cover becomes binding only after scientific-owner approval and exact
-content binding in [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).
+This cover was approved by Grant Wilson on `2026-08-17` and is binding through
+the exact content hash in
+[`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).

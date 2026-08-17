@@ -6,7 +6,8 @@ This recovery record follows the
 internal Stage A artifact and is not automatically part of the scientific
 author packet.
 
-Status: reviewed by the Codex manager; pending scientific-owner review
+Status: reviewed by the Codex manager and scientific owner; Stage A approved
+`2026-08-17`
 
 Investigator/date: Codex manager, `2026-08-17`
 
@@ -143,9 +144,12 @@ and truly missing scientific choices require new work.
 2. **Calibration and donor transfer.** CAL owns factor science while RTC owns
    the realized conditioning order. Cross-detector replacement must be
    expressed in the active unit domain and either follow imported calibration
-   or prove exact equivalence. Frozen SCI-BEAM gives legacy `responsivity` no
-   canonical role, so raw-domain donor transfer requires separate authority
-   and cannot be inferred from that field.
+   or prove exact equivalence. By owner modification to `RTC-SCOPE-D004`, raw
+   donor `q` may replace raw target `d` using
+   `flxscale_q / flxscale_d` when both factors are valid for the exact detector
+   occurrences under the same multiplicative calibration convention/domain
+   and the target factor is nonzero. Legacy `responsivity` remains
+   noncanonical and is not required by this route.
 3. **Numeric learned policy.** Response-loss/broadening, alias, sampling,
    factor/order/cost, and fallback thresholds remain open owner decisions.
 4. **Policy families.** The core supplies constraints but does not select
@@ -191,9 +195,9 @@ After owner approval, a fresh implementation-blind author must:
 6. produce stable requirements, predictions, owner questions, and a complete
    crosswalk without assessing implementation.
 
-## Proposed Author Reference Packet
+## Approved Author Reference Packet
 
-The proposed packet contains only:
+The approved packet contains only:
 
 1. [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md);
 2. the pair of [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md)
@@ -201,7 +205,8 @@ The proposed packet contains only:
    `3319d7424c732c1c9fc300c336e4d428e6f91068:doc/audits/packages/SCI-RTC-001_INDEPENDENT_CORE.tex`;
 3. [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md).
 
-The packet is proposed, not approved. Exact hashes and exclusions are in
+The packet was approved by Grant Wilson on `2026-08-17`. Exact hashes and
+exclusions are in
 [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).
 
 ## Investigator Attestation
@@ -209,5 +214,5 @@ The packet is proposed, not approved. Exact hashes and exclusions are in
 Prior work was recovered before fresh derivation was commissioned. The
 independent core and later owner decisions are reused rather than rewritten.
 Implementation behavior was used only to establish scope and has not been
-promoted to scientific authority. No implementation-blind author has been
-launched.
+promoted to scientific authority. Stage B authorship is authorized only from
+the exact content-bound packet.

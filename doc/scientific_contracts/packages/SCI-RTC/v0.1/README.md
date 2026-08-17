@@ -1,7 +1,7 @@
 # SCI-RTC — Raw-Timestream Conditioning And Temporal Response
 
-Status: Stage A scope draft ready for scientific-owner review; scientific
-authority not approved or frozen
+Status: Stage A scope and exact author packet approved; implementation-blind
+Stage B drafting authorized; scientific authority not yet approved or frozen
 
 Version: `v0.1`
 
@@ -23,29 +23,30 @@ inputs.
 ## Current Gate
 
 - Package selection: approved by Grant Wilson on `2026-08-17`.
-- Stage A prior-work recovery: complete, pending owner review.
-- Sanitized Scope Brief: drafted, pending owner approval.
-- Proposed content-bound author packet: prepared, pending owner approval.
-- Implementation-blind Stage B authorship: not authorized.
+- Stage A prior-work recovery: complete and owner-reviewed.
+- Sanitized Scope Brief: approved `2026-08-17`, including the owner-modified
+  `flxscale` donor-scaling rule in `RTC-SCOPE-D004`.
+- Exact content-bound author packet: approved `2026-08-17`.
+- Implementation-blind Stage B authorship: authorized from that packet only.
 - Scientific authority, implementation conformity, validation, and production
   promotion: not established.
 
-The next owner action is to approve, amend, or reject the scientific boundary,
-`RTC-SCOPE-D001--D016`, and the proposed exact author packet.
+The next gate is a manager-reviewed implementation-blind Stage B two-view
+contract draft; that draft will return for scientific-owner review.
 
 ## Contents
 
 - [`PRIOR_WORK.md`](PRIOR_WORK.md): exact recovery and disposition record
 - [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md): quarantined
   implementation-informed scope evidence
-- [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md): sanitized draft author input
-- [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md): proposed
+- [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md): owner-approved sanitized author input
+- [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md): approved
   binding cover for the reusable RTC core
 - [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md):
-  proposed sanitized conventions and package boundaries
-- [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): proposed exact
+  sanitized conventions and package boundaries
+- [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): approved exact
   allowed and prohibited inputs
-- [`DECISION_LOG.md`](DECISION_LOG.md): package-selection and proposed scope
+- [`DECISION_LOG.md`](DECISION_LOG.md): package-selection and approved scope
   decisions
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md):
   open numerical and policy questions
@@ -69,8 +70,8 @@ with a calibrated `mJy/beam` path.
 
 ## Authority And Status
 
-This is a Stage A scope package. The prior independent core and named owner
-decisions are reusable inputs, but this library package has not yet been
-approved as the SCI-RTC v0.1 scientific authority. Current application and
+This is an owner-approved Stage A scope package and author packet. That
+approval authorizes drafting; it does not approve the future Stage B draft as
+the SCI-RTC v0.1 scientific authority. Current application and
 production behavior retain their existing repository status until a later,
 separately authorized conformity and validation program assesses them.

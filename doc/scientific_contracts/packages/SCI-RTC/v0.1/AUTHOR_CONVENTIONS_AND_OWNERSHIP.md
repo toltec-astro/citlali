@@ -1,6 +1,6 @@
 # SCI-RTC v0.1 — Sanitized Conventions And Ownership
 
-Status: proposed author reference; scientific-owner approval pending
+Status: owner-approved and content-bound author reference
 
 Prepared: `2026-08-17`
 
@@ -9,7 +9,7 @@ producer-transformer-consumer boundaries relevant to raw-timestream
 conditioning. It contains no Citlali source behavior, audit finding, repair,
 test, validation result, or production-status claim.
 
-Proposed source basis:
+Approved source basis:
 
 - `origin/codex/refactor-mainline@46ad23888a40f5102cdfd50c06e49a549bdf8a20:doc/SCIENTIFIC_CONVENTIONS.md`,
   content SHA-256
@@ -73,7 +73,12 @@ Proposed source basis:
   response, and Beammap effective PSF are different quantities with distinct
   parentage.
 - Frozen SCI-BEAM gives legacy `responsivity` no canonical scientific role.
-  RTC cross-detector replacement may use only a separately declared
+  For raw donor `q` and target `d`, valid compatible `flxscale` values may
+  define the transfer. Under the multiplicative raw-to-calibrated convention
+  `z_i = flxscale_i x_i`, RTC uses raw replacement scale
+  `flxscale_q / flxscale_d`. Both factors must be valid for the exact detector
+  occurrences under the same calibration convention and domain, and the
+  target factor must be nonzero. Otherwise RTC requires a separately declared
   donor-to-target transfer with exact direction, unit domain, support,
   uncertainty, validity, and provenance.
 - A scalar LTI transfer is a special fixed-state, translation-invariant,
@@ -154,6 +159,10 @@ Proposed source basis:
   state/edge/non-finite handling, fixed or learned phase-zero sampling,
   complete conditioned response or unavailability, support/influence, and the
   atomic RTC output bundle.
+- When the selected raw-domain donor policy uses the approved `flxscale`
+  route, RTC owns exact factor binding, ratio direction, application order,
+  support, validity, response, uncertainty availability, and provenance; it
+  does not own how SCI-BEAM established either factor.
 - Applying an imported upstream quantity does not transfer ownership of its
   physical meaning to RTC.
 
@@ -183,5 +192,5 @@ observational performance, science-impact qualification, and production
 readiness are separate claims. An analytic equation, compiled program, test
 pass, or existing-use status establishes only its named layer.
 
-If approved, this extract is content-bound in
+This owner-approved extract is content-bound in
 [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).
