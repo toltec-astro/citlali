@@ -1,54 +1,231 @@
 \documentclass[10pt]{article}
 \usepackage[letterpaper,margin=0.68in,headheight=15pt]{geometry}
-\usepackage{amsmath,amssymb,booktabs,longtable,array,enumitem,microtype,xcolor,hyperref,fancyhdr,lastpage}
+\usepackage{amsmath,amssymb,booktabs,longtable,tabularx,array,enumitem,microtype,xcolor,hyperref,fancyhdr,lastpage}
 \definecolor{beamgreen}{HTML}{176B5B}
-\hypersetup{colorlinks=true,linkcolor=beamgreen,urlcolor=beamgreen}
+\definecolor{beamlight}{HTML}{EEF7F4}
+\hypersetup{colorlinks=true,linkcolor=beamgreen,urlcolor=beamgreen,
+pdftitle={SCI-BEAM v0.1 Formal Scientific and Engineering Contract r0.2},
+pdfauthor={SCI-BEAM scientific-owner draft},
+pdfsubject={Normative Beammap analysis, effective PSF, calibration, sensitivity, and APT contract}}
 \pagestyle{fancy}\fancyhf{}
-\lhead{SCI-BEAM Engineering Conformance Specification}\rhead{v0.1 / r0.1}
+\lhead{SCI-BEAM Formal Scientific/Engineering Contract}
+\rhead{v0.1 / r0.2 DRAFT}
 \cfoot{\thepage\ of \pageref{LastPage}}
 \setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
 \setlength{\emergencystretch}{3em}
-\hbadness=10000
-\hfuzz=1pt
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 \setlist{nosep,leftmargin=*}
-\title{\textcolor{beamgreen}{SCI-BEAM}\\Engineering Conformance Specification}
-\author{Generated engineering view of the shared normative core\\Scientific owner: Grant Wilson}
-\date{Contract version v0.1 \quad Document revision r0.1 \quad 2026-08-16}
 \begin{document}
-\maketitle
-\begin{center}\fbox{\parbox{0.92\linewidth}{\textbf{Draft status.} This document contains no independent science. Normative equations, definitions, assumptions, requirements, and predictions are imported from the same shared v0.1 core as the Scientific Rationale. Conformance is not claimed here.}}\end{center}
+\hypersetup{pageanchor=false}
 
-\section{Conformance target}
-An implementation conforms only if it realizes the shared authority below and produces evidence for every applicable requirement and prediction without weakening upstream validity or upgrading scientific authority. Field names, schemas, algorithms, storage formats, and current behavior are intentionally unspecified.
+\begin{titlepage}
+\centering\vspace*{0.65in}
+{\Large\color{beamgreen}\textbf{SCI-BEAM}}\\[0.18in]
+{\huge\textbf{Formal Scientific/Engineering Contract}}\\[0.20in]
+{\Large Effective PSF, Detector Calibration, Sensitivity, and Beammap APT}\\[0.38in]
+{\large Scientific contract version v0.1}\\[0.06in]
+{\large Document revision r0.2 -- DRAFT}\\[0.08in]
+{\large 2026-08-17}\\[0.50in]
+\fcolorbox{beamgreen}{beamlight}{\begin{minipage}{0.80\linewidth}\small
+This is the normative, implementation-independent authority for the desired
+SCI-BEAM v0.1 estimator and products. It defines what a future implementation
+must realize and what evidence would be needed. It neither inspects nor claims
+conformance of current Citlali, existing APTs, tests, or production reductions.
+\end{minipage}}
+\vfill {\large Scientific owner: Grant Wilson}
+\end{titlepage}
+\hypersetup{pageanchor=true}
 
-\begin{longtable}{L{0.25\linewidth}L{0.67\linewidth}}
-\toprule Area & Required evidence class \\
+\begin{abstract}
+SCI-BEAM fits standardized per-detector Beammaps in raw $\Delta f/f$ to
+measure an observation-local effective PSF core, reference-origin amplitude,
+and relative detector geometry; derives source-atmosphere-corrected,
+top-of-atmosphere nominal-beam \texttt{flxscale}; derives NEFD-like
+\texttt{sens} from detector-specific off-source scans; and publishes a
+mandatory scientific Beammap APT with independent quantity states and dense
+companions. The fitted Gaussian is a full 2-D effective-core summary, not an
+automatic intrinsic or complete PSF. Source atmosphere belongs to BEAM;
+target atmosphere remains downstream. Exact production thresholds and several
+sensitivity, adequacy, geometry, and kernel policies remain open.
+\end{abstract}
+
+\tableofcontents
+\clearpage
+
+\section{Conformance object and prohibited inferences}
+
+The conformance object is one complete SCI-BEAM result for one immutable
+Beammap observation, including every attempted detector, the standardized
+input maps, fit and diagnostic state, mandatory APT, dense companions, and
+complete scientific lineage. A table of finite parameters alone is not a
+conformance object.
+
+Conformance is evaluated against the shared notation, definitions, equations,
+assumptions, numbered requirements, and predictions below. The contract does
+not prescribe current classes, files, columns, algorithms, storage layout, or
+configuration names. It shall not be reconciled to historical behavior during
+authorship. A later audit may map each requirement to an implementation and
+evidence, but that mapping cannot revise the scientific meaning.
+
+The strongest claim available from this document alone is algebraic contract
+correctness. It does not establish implementation conformance, parent-map or
+response fidelity, observational bias/coverage, science-impact qualification,
+or production readiness.
+
+\section{Logical input records}
+
+\begin{longtable}{L{0.20\linewidth}L{0.34\linewidth}L{0.38\linewidth}}
+\caption{Minimum logical inputs; representation is not prescribed.}\label{tab:inputs}\\
+\toprule Input & Required scientific content & Fail-closed conditions \\
 \midrule
-Identity and state & Demonstrate immutable parent/source/observation identity, explicit occurrence-scoped detector binding, and one-way requested/effective/realized state. \\
-Numerical operator & Demonstrate the declared source-convolved ellipse, amplitude normalization, background basis, admitted support, and objective, including edge and degeneracy behavior. \\
-Validity and uncertainty & Demonstrate causal exclusions, typed unavailable states, covariance method/assumptions, nuisance treatment, and cause-preserving QC. \\
-Prior and convergence & Demonstrate compatibility, blind fallback, common-objective candidate selection, influence record, and conjunctive termination state. \\
-Publication & Demonstrate an atomic required bundle, explicit optional-parent relations, candidate non-promotion, and compatibility checks. \\
-Authority gates & Label algebraic, implementation, response/representation, observational-performance, and production-readiness evidence separately. \\
+\endfirsthead
+\toprule Input & Required scientific content & Fail-closed conditions \\
+\midrule
+\endhead
+Raw-signal convention & $\Delta f/f$ definition, reference resonance frequency, sign, zero/baseline, filtering/resampling/flagging, loading/tune/signal domain & Missing or incompatible physical observable; calibrated signal substituted \\
+Standardized detector Beammap & stable observation and detector identity, $\Delta f/f$ pixels, valid support, map extent, parent mapmaking, pixelization, projection, gridding, filtering, response lineage, and noise/covariance state & Calibrated map; missing identity, WCS, support, or response provenance \\
+Coordinate authority & full WCS or bounded local Jacobian, orthonormal tangent-plane frame/unit, scale, handedness, rotation, shear, azimuth metric, uncertainty & Raw azimuth/elevation treated Euclidean without metric; material unbounded linearization \\
+Calibrator model & source identity/epoch, passband/spectrum, finite-source shape, zero-first-moment reference origin, uncertainty & Reference-origin or finite-source convention unresolved \\
+Nominal calibration reference & fixed versioned nominal-beam tensor and $F^{\rm TOA,nom}_{s,a}$ in TOA mJy per nominal beam under the same reference-origin convention & Recomputed from fitted effective PSF; integrated flux silently substituted \\
+Source atmosphere & operator, inputs, support/weighting, effective transmission/correction, uncertainty/correlation & Missing source-atmosphere authority for \texttt{flxscale}; target atmosphere substituted \\
+Field rotation & law/version, time/elevation support, per-detector weighting, conventional pivot/origin classification, uncertainty & Conventional pivot labeled physical; support inconsistent with fit \\
+Soft prior & producer/version, coordinate/unit, identity scope, compatibility, reliability, gate, fallback & Exact truth or objective penalty inferred; blind route absent \\
 \bottomrule
 \end{longtable}
 
-\section{Conformance procedure}
-For each requirement, evidence shall identify the realized policy and scientific identity, exercise applicable positive and negative cases, and compare the produced state and payload to the shared equation or invariant. A finite match without matching identity and validity is a failure. Skipped required inputs are not a pass. Threshold-dependent evidence shall report the supplied policy rather than imply a v0.1 default.
+\section{Logical result and state records}
 
-Prediction cases are falsifiable expectations of the shared operator. Synthetic cases can test algebra and state transitions; they cannot establish observational performance or production readiness. Correlated-noise calibration, response fidelity, and calibration promotion require evidence from their owning layers.
+\begin{longtable}{L{0.20\linewidth}L{0.40\linewidth}L{0.31\linewidth}}
+\caption{Required logical result records.}\label{tab:records}\\
+\toprule Record & Minimum contents & Primary evidence \\
+\midrule
+\endfirsthead
+\toprule Record & Minimum contents & Primary evidence \\
+\midrule
+\endhead
+Requested, effective, and realized state & model, source, support, background, covariance, prior, iteration, atmosphere, sensitivity, QC, and product policy as distinct one-way states & immutable resolution and no hidden defaults \\
+Per-detector fit & amplitude, centroid, full effective tensor, FWHM, conditional area, background, residual, support, model Jacobian, joint covariance, convergence, prior route & Equations~\ref{eq:model}--\ref{eq:nuisance} and applicable predictions \\
+Relative geometry & raw and horizon coordinates, coordinate covariance, effective derotation angle/support/weighting/range, rotation convention, origin/pivot state, rotated tensor & Equations~\ref{eq:affine-rotation}--\ref{eq:derotation} \\
+Response interpretation & effective-core state, empirical-map state, adequacy, measured-wing constraint, complete-PSF state, broadening tensor and PSD disposition & Equations~\ref{eq:fwhm-area}--\ref{eq:broadening} \\
+Calibration & observed and TOA-equivalent amplitude, nominal source amplitude, source-atmosphere route, \texttt{flxscale}, joint uncertainty/correlation, internal candidate/acceptance state & Equation~\ref{eq:flxscale}; no $H(0)$ multiplier \\
+Sensitivity & detector trajectory classification, admitted scans, scan-level statistics, TOA correction, robust summary/scatter, \texttt{sens}, policy/uncertainty/limitations & Equation~\ref{eq:sens}; open-policy gating \\
+Independent state vector & separate availability, validity, uncertainty, and causes for every required quantity and use & no all-or-nothing detector collapse \\
+Canonical lineage & all scientific identities, versions, parents, response/coordinate/atmosphere/calibration relations, content digests, limitations & deterministic reconstruction without row-order inference \\
+\bottomrule
+\end{longtable}
+
+\section{Canonical Beammap APT scientific content}
+
+The mandatory APT is the compact scientific index into the complete BEAM
+result. A storage implementation may serialize equivalent tensor or identity
+representations, but shall preserve the following meanings and resolvability.
+
+\begin{longtable}{L{0.24\linewidth}L{0.46\linewidth}L{0.21\linewidth}}
+\caption{Minimum per-detector canonical content.}\label{tab:apt-row}\\
+\toprule Quantity & Meaning & Unit/state \\
+\midrule
+\endfirsthead
+\toprule Quantity & Meaning & Unit/state \\
+\midrule
+\endhead
+Detector identity & stable detector occurrence and array/network/channel relation & identity \\
+$(x_t,y_t)_{\rm raw}$ & fitted relative coordinate in observation-local tangent plane & arcsec \\
+$(x_t,y_t)$ & horizon-derotated relative focal-plane coordinate & arcsec \\
+Effective derotation & detector fit-support angle, support/range/rule/version & angular unit/state \\
+Coordinate covariance & joint uncertainty of relative position & $\mathrm{arcsec^2}$ \\
+Effective PSF-core tensor & authoritative complete 2-D core shape & $\mathrm{arcsec^2}$ \\
+FWHM/orientation & compact shape; angle unavailable at circularity & arcsec/angular unit \\
+$A_d^{\rm obs}$ & reference-origin observed-plane source excess & $\Delta f/f$ \\
+Amplitude uncertainty & conditional/total status with covariance identity & $\Delta f/f$ \\
+\texttt{flxscale} & absolute TOA nominal-beam conversion & $\mathrm{mJy\,beam_{nom}^{-1}}/(\Delta f/f)$ \\
+\texttt{sens} & TOA nominal-beam NEFD-like sensitivity & $\mathrm{mJy\,beam_{nom}^{-1}\sqrt{s}}$ \\
+Independent states & coordinates, shape, angle, amplitude, calibration, sensitivity, adequacy, wings, health/kernel use & typed availability/validity/causes \\
+\texttt{responsivity} & deprecated; noncanonical compatibility metadata only & no authority \\
+\bottomrule
+\end{longtable}
+
+APT-level lineage shall resolve observation/calibrator/epoch, source model and
+uncertainty, fixed nominal beam, TOA amplitude convention, passband/spectrum,
+source atmosphere, raw-signal definition, WCS/Jacobian/frame, rotation law,
+conventional pivot status, common-origin rule, parent map response, PSF model,
+sensitivity estimator, contract/document versions, parents, and content
+digests.
+
+The APT shall link immutably to empirical detector Beammaps, support maps,
+residuals, Jacobians, joint covariance, backgrounds, adequacy diagnostics,
+broadening/wing state, off-source scan membership/statistics, convergence,
+prior routes, and complete QC/cause records. Optional array/network stacks
+remain diagnostic and do not replace per-detector products.
+
+\section{Conformance evaluation sequence}
+
+\begin{enumerate}[label=\textbf{E\arabic*.}]
+\item Bind immutable observation, parent, source, nominal-beam, detector, and
+contract identities; resolve the raw $\Delta f/f$ convention.
+\item Admit the standardized detector map only after causal validity, support,
+WCS/metric, response, and covariance checks.
+\item Resolve requested/effective/realized source, background, prior, fit,
+iteration, calibration, sensitivity, and QC policy without hidden defaults.
+\item Locate candidates with compatible soft prior plus blind fallback; compare
+admitted candidates under one measurement objective.
+\item Fit Equation~\ref{eq:model} jointly in the physical coordinate plane;
+resolve model Jacobian, covariance, identifiability, residual, adequacy, and
+convergence.
+\item Derive raw/horizon geometry, conditional FWHM/area, and compatible
+broadening while preserving origin/pivot limitations.
+\item Apply source atmosphere exactly once and evaluate/accept
+\texttt{flxscale}; separately classify and summarize off-source scans for
+\texttt{sens} only when its open policy inputs are resolved.
+\item Populate independent quantity states for every attempted detector,
+publish the mandatory APT and dense companions atomically, and retain all
+unavailable causes and downstream-use limitations.
+\end{enumerate}
+
+\section{Required evidence classes}
+\small
+
+\begin{longtable}{L{0.22\linewidth}L{0.69\linewidth}}
+\toprule Evidence layer & What it may establish \\
+\midrule
+Algebraic & identities, units, invariants, coordinate/tensor transformations, atmosphere once-only composition, and state-machine logic \\
+Implementation conformance & that a candidate implementation realizes every applicable requirement and prediction with no hidden substitution \\
+Representation/response fidelity & that WCS, map response, support, source/nominal beam, atmosphere, covariance, and scan classification represent the intended observation \\
+Observational performance & bias, scatter, uncertainty calibration, wing detectability, repeatability, and transfer over relevant observations \\
+Science impact & separate accuracy needs and qualification for health, amplitude, calibration, sensitivity, Gaussian/empirical kernels, and complete-PSF claims \\
+Production readiness & owner-approved numerical policies, operations, monitoring, failure handling, and evidence over the declared domain \\
+\bottomrule
+\end{longtable}
+
+The required future program includes PSF recovery across nominal, broadened,
+rotated, asymmetric, halo, multi-scale, cropped, masked, low-S/N, correlated-
+noise, background, and map-response cases; hidden-response/map-radius studies;
+kernel-impact propagation; coordinate/WCS/Jacobian and derivative checks;
+broadening and circular-limit tests; common-origin and conventional-pivot
+tests; per-detector angle and same-APT pointing-transfer tests. Authorship
+claims none of these results.
+\normalsize
 
 \clearpage
 \input{common/notation}
+\clearpage
 \input{common/definitions}
+\clearpage
 \input{common/equations}
+\clearpage
 \input{common/assumptions}
 \clearpage
 \input{common/requirements}
 \clearpage
 \input{common/edge_cases}
 
-\section{Conformance report minimum}
-A conformance report shall give, for every requirement and prediction, an evidence identifier, applicable/not-applicable decision with reason, realized policy identity, observed result, expected result, and disposition. It shall list unavailable upstream claims and shall not represent a compile, test pass, synthetic match, or clean log as proof of a later authority gate.
+\section{Minimum conformance report}
+
+A conformance report shall give, for every requirement and prediction, an
+evidence identifier, applicability and reason, realized scientific identity
+and policy, observed result, expected result, disposition, and unresolved
+dependency. It shall inventory required APT and companion products and shall
+not represent compilation, finite values, synthetic recovery, or a clean log
+as proof of a later evidence layer.
+
 \end{document}

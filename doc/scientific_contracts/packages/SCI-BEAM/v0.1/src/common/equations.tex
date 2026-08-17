@@ -1,62 +1,214 @@
-% SCI-BEAM v0.1 shared normative equations. Document revision r0.1.
-\section{Forward model and objective}
+% SCI-BEAM v0.1 shared normative equations. Document revision r0.2.
+\section{Normative scientific model}
 \label{sec:equations}
+
+\subsection{Raw signal, coordinate metric, and map-domain fit}
+
+For detector $d$, the raw uncalibrated observable and detector collection are
+\begin{equation}
+x_d(t)\equiv\frac{\Delta f_d(t)}{f_d},
+\qquad \mathbf x(t)=\{x_d(t)\}_d .
+\label{eq:raw-signal}
+\end{equation}
+The standardized detector Beammap $x^{\rm BM}_{d,p}$ remains in $\Delta f/f$.
+Its physical fit coordinate is
+\begin{equation}
+\boldsymbol\vartheta_p=f_{\rm WCS}(r_p,c_p),
+\qquad
+\mathbf J_{{\rm sky},p}=
+\left.\frac{\partial(\vartheta_x,\vartheta_y)}{\partial(r,c)}\right|_{(r_p,c_p)} .
+\label{eq:wcs}
+\end{equation}
+The full transformation shall be evaluated per pixel unless a declared local
+linearization has bounded error over the complete fit region.
 
 Let
 \begin{align}
-\mathbf R(\theta)&=\begin{bmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{bmatrix},\\
-\boldsymbol\Sigma&=\mathbf R(\theta)\,\mathrm{diag}(\sigma_{\rm maj}^2,\sigma_{\rm min}^2)\,\mathbf R(\theta)^\mathsf T,\\
-G(\mathbf u;\boldsymbol\Sigma)&=\exp\!\left(-\tfrac12\mathbf u^\mathsf T\boldsymbol\Sigma^{-1}\mathbf u\right),\\
-H(\mathbf u;\boldsymbol\Sigma,\boldsymbol\phi)&=\int S(\mathbf t;\boldsymbol\phi)G(\mathbf u-\mathbf t;\boldsymbol\Sigma)\,d^2\mathbf t,\\
-T(\mathbf u;\boldsymbol\Sigma,\boldsymbol\phi)&=\frac{H(\mathbf u;\boldsymbol\Sigma,\boldsymbol\phi)}{H(\mathbf 0;\boldsymbol\Sigma,\boldsymbol\phi)}.
+\mathbf R(\theta)&=
+\begin{bmatrix}\cos\theta&-\sin\theta\\ \sin\theta&\cos\theta\end{bmatrix},\\
+\boldsymbol\Sigma_{\rm eff}&=
+\mathbf R(\theta)\,
+\mathrm{diag}(\sigma_{\rm maj}^2,\sigma_{\rm min}^2)\,
+\mathbf R(\theta)^\mathsf T,\\
+G(\mathbf u;\boldsymbol\Sigma_{\rm eff})&=
+\exp\!\left(-\tfrac12\mathbf u^\mathsf T
+\boldsymbol\Sigma_{\rm eff}^{-1}\mathbf u\right),\\
+H(\mathbf u;\boldsymbol\Sigma_{\rm eff},\boldsymbol\phi)&=
+\int S(\mathbf t;\boldsymbol\phi)
+G(\mathbf u-\mathbf t;\boldsymbol\Sigma_{\rm eff})\,d^2\mathbf t,\\
+T(\mathbf u;\boldsymbol\Sigma_{\rm eff},\boldsymbol\phi)&=
+\frac{H(\mathbf u;\boldsymbol\Sigma_{\rm eff},\boldsymbol\phi)}
+{H(\mathbf0;\boldsymbol\Sigma_{\rm eff},\boldsymbol\phi)} .
 \label{eq:template}
 \end{align}
-The admitted source model shall have finite first moment and satisfy
-\[
-\int S(\mathbf u;\boldsymbol\phi)\,d^2\mathbf u=1,
-\qquad
-\int \mathbf uS(\mathbf u;\boldsymbol\phi)\,d^2\mathbf u=\mathbf0,
-\qquad H(\mathbf0)>0.
-\]
-Thus the declared reference origin is the source centroid, convolution with the centered Gaussian preserves that centroid, and Equation~\ref{eq:template} guarantees $T(\mathbf0)=1$. It does not assert that $\mathbf0$ is the global maximum for an asymmetric source. The detector model is
+The admitted source model shall satisfy
 \begin{equation}
-m_i(\mathbf q_d,\boldsymbol\phi)=A_dT(\mathbf x_i-\boldsymbol\mu_d;\boldsymbol\Sigma_d,\boldsymbol\phi)+\mathbf b_i^\mathsf T\boldsymbol\beta_d,
+S\ge0,\qquad
+\int S(\mathbf u;\boldsymbol\phi)d^2\mathbf u=1,\qquad
+\int\mathbf uS(\mathbf u;\boldsymbol\phi)d^2\mathbf u=\mathbf0,
+\qquad H(\mathbf0)>0.
+\label{eq:source}
+\end{equation}
+Thus $T(\mathbf0)=1$ at the declared reference origin, which need not be the
+global maximum for an asymmetric source.
+
+The canonical v0.1 map-domain model is
+\begin{equation}
+x^{\rm BM}_{d,p}=
+A_d^{\rm obs}
+T\!\left(\boldsymbol\vartheta_p-\boldsymbol\mu_{d,\rm raw};
+\boldsymbol\Sigma_{{\rm eff},d},\boldsymbol\phi\right)
++\mathbf b_p^\mathsf T\boldsymbol\beta_d+r_{d,p} .
 \label{eq:model}
 \end{equation}
-where $\mathbf b_i$ is the effective constant or planar background basis.
+The effective tensor summarizes the core already embodied in the standardized
+map response. Equation~\ref{eq:model} is not a deconvolution of mapmaking,
+pixelization, filtering, finite support, or any other parent response.
 
-For an admitted covariance, the estimator minimizes
+For admitted map covariance, the estimator minimizes
 \begin{equation}
-Q_d=(\mathbf y_d-\mathbf m_d)^\mathsf T\mathbf C_d^{-1}(\mathbf y_d-\mathbf m_d)+\log|\mathbf C_d|,
+Q_d=(\mathbf x_d^{\rm BM}-\mathbf m_d)^\mathsf T
+(\mathbf C_d^{\rm BM})^{-1}(\mathbf x_d^{\rm BM}-\mathbf m_d)
++\log|\mathbf C_d^{\rm BM}|,
 \label{eq:objective}
 \end{equation}
-up to additive constants. If only a declared diagonal or other approximation is supplied, the same expression uses $\widetilde{\mathbf C}_d$ and every covariance, standardized-residual, and significance claim is labeled conditional on that approximation. Singular covariance is handled by a declared, provenance-bearing factorization on an explicitly retained subspace; silent regularization is forbidden.
+up to additive constants. A declared approximation
+$\widetilde{\mathbf C}_d^{\rm BM}$ may replace $\mathbf C_d^{\rm BM}$ only
+with conditional labels. Singular covariance requires a declared retained-
+subspace or regularization procedure; silent replacement is forbidden.
 
-The fit covariance may be reported as a local likelihood covariance
+\subsection{Model Jacobian, covariance, and derived shape}
+
+For every realized free parameter $q_j$, including amplitude, centroid, all
+three independent tensor degrees of freedom, background, and admitted source
+nuisance parameters, the fit resolves
 \begin{equation}
-\mathbf V_{q,d}=\left[\tfrac12\nabla\nabla^\mathsf TQ_d(\widehat{\mathbf q}_d)\right]^{-1}
+J^{\rm fit}_{ij}=\frac{\partial m_i}{\partial q_j}.
+\label{eq:model-jacobian}
+\end{equation}
+Analytic, automatic, or verified numerical differentiation may realize the
+Jacobian. A local likelihood covariance may be reported as
+\begin{equation}
+\mathbf V_{q,d}=\left[
+\tfrac12\nabla\nabla^\mathsf TQ_d(\widehat{\mathbf q}_d)
+\right]^{-1}
 \label{eq:fitcov}
 \end{equation}
-only when the retained parameterization is locally identifiable, the solution is interior for the reported parameters, and the likelihood/covariance assumptions used by the formula are declared. Otherwise it is unavailable or supplied by a separately identified valid procedure. With nuisance vector $\boldsymbol\eta$ and admitted covariance $\mathbf V_\eta$, first-order propagation is
+only for an identifiable interior solution under the declared likelihood and
+covariance model. The joint representation retains material width--orientation,
+centroid--shape, amplitude--width, background--centroid, source--beam,
+coordinate--shape, atmosphere--amplitude, and calibrator--amplitude terms.
+With external nuisance vector $\boldsymbol\eta$ and joint covariance,
 \begin{equation}
-\mathbf V_{\rm total}=\mathbf V_{q}+\mathbf J_\eta\mathbf V_\eta\mathbf J_\eta^\mathsf T
+\mathbf V_{\rm derived}=\mathbf J_{(q,\eta)}
+\mathbf V_{(q,\eta)}\mathbf J_{(q,\eta)}^\mathsf T .
 \label{eq:nuisance}
 \end{equation}
-with cross-terms included when dependence exists. Omitted calibrator, coordinate, response, atmosphere, bandpass, or calibration uncertainty is named; ``total'' is prohibited when a material term is unavailable.
+Omitted material terms are named and prohibit a ``total'' label. At
+circularity shape covariance is expressed in an invariant tensor basis and
+angle uncertainty is unavailable.
 
-When the admitted source flux $F_{s,a}$ and fitted coefficient $A_d$ have compatible conventions and $A_d\neq0$, BEAM may form
+The compact Gaussian-core quantities are
 \begin{equation}
-K_d=\frac{F_{s,a}}{A_d},\qquad
-\mathrm{Var}(K_d)\simeq\frac{\mathrm{Var}(F_{s,a})}{A_d^2}+\frac{F_{s,a}^2\mathrm{Var}(A_d)}{A_d^4}-2\frac{F_{s,a}\mathrm{Cov}(F_{s,a},A_d)}{A_d^3}.
-\label{eq:candidate}
+{\rm FWHM}_{\rm maj,min}=2\sqrt{2\ln2}\,\sigma_{\rm maj,min},
+\qquad
+\Omega_G=2\pi\sigma_{\rm maj}\sigma_{\rm min}.
+\label{eq:fwhm-area}
 \end{equation}
-If any required variance or dependence term is unknown, candidate uncertainty is unavailable rather than silently independent. $K_d$ remains a typed candidate for SCI-CAL review.
+$\Omega_G$ is available only as the fitted Gaussian-core solid angle under a
+declared interpretation; it is not automatically the complete beam solid
+angle.
 
-An observation-local iteration may alternate locator and measurement phases. The effective policy declares a metric $d_j$ and scale $s_j$ for each parameter, objective scale $s_Q$, tolerances $\epsilon_j,\epsilon_Q$, support and valid-detector stability rules, and maximum iteration $N_{\max}$. Linear scalar parameters may use absolute difference only when the policy says so; orientation shall use the modulo-$\pi$ distance
+For compatible nominal/effective Gaussian and response conventions,
+\begin{equation}
+\boldsymbol\Sigma_{{\rm broad},d}=
+\boldsymbol\Sigma_{{\rm eff},d}-\boldsymbol\Sigma_{{\rm nom},a(d)} .
+\label{eq:broadening}
+\end{equation}
+A literal Gaussian-broadening interpretation requires the difference to be
+positive semidefinite within propagated uncertainty. Otherwise the tensor is
+unavailable as a smoothing kernel and the indefinite result remains
+model-inadequacy or convention-incompatibility evidence.
+
+\subsection{Relative coordinates, derotation, and pivot status}
+
+Let $\mathbf r_{od}$ denote the fitted relative coordinate in the
+observation-local plane and $\mathbf u_d$ the horizon-fixed relative
+coordinate. The physical relation is affine,
+\begin{equation}
+\mathbf r_{od}=
+\mathbf R(\chi_{od})\mathbf u_d+\mathbf t_o(\chi_{od}),
+\label{eq:affine-rotation}
+\end{equation}
+where the common translation contains the arbitrary coordinate-origin gauge
+and any unresolved pivot/pointing term. The v0.1 derotated product uses the
+declared conventional transform
+\begin{equation}
+\mathbf u_d=
+\mathbf R(-\chi_{d,\rm eff})
+\left(\mathbf r_{od}-\mathbf o_{\rm conv}\right),
+\qquad
+\boldsymbol\Sigma_{d,\rm hor}=
+\mathbf R(-\chi_{d,\rm eff})\boldsymbol\Sigma_{d,\rm raw}
+\mathbf R(-\chi_{d,\rm eff})^\mathsf T,
+\label{eq:derotation}
+\end{equation}
+with deterministic common recentering. $\mathbf o_{\rm conv}$ is not a
+physical boresight unless separately established. $\chi_{d,\rm eff}$ is
+derived from detector-specific valid support and weighting; a single
+observation-average angle is allowed only with negligible validated error.
+
+\subsection{Top-of-atmosphere calibration and sensitivity}
+
+The source model supplies $F^{\rm TOA,nom}_{s,a}$ in mJy per fixed nominal
+beam at the same reference origin as $A_d^{\rm obs}$. It already contains the
+finite-source/nominal-beam normalization, so no factor of $H(\mathbf0)$ is
+applied. With source-observation correction $C^{\rm eff}_{s,a}=1/T^{\rm eff}_{s,a}$,
+\begin{align}
+A_d^{\rm TOA-eq}&=C^{\rm eff}_{s,a}A_d^{\rm obs},\\
+\mathrm{flxscale}_d&=
+\frac{F^{\rm TOA,nom}_{s,a}}{A_d^{\rm TOA-eq}}
+=\frac{T^{\rm eff}_{s,a}F^{\rm TOA,nom}_{s,a}}{A_d^{\rm obs}} .
+\label{eq:flxscale}
+\end{align}
+The factor has role and unit
+$[\mathrm{mJy\,beam_{nom}^{-1}}/(\Delta f/f)]_{\rm TOA}$.
+Its uncertainty is obtained from Equation~\ref{eq:nuisance} using the joint
+covariance of nominal source amplitude, fitted amplitude, atmosphere, and all
+material shared nuisance terms. Source atmosphere appears once here; target
+atmosphere remains outside SCI-BEAM.
+
+For detector-specific off-source scan set $\mathcal S_{d,\rm off}$,
+\begin{align}
+n_{d,s}^{\rm obs}&=\mathcal N[x_{d,s}(t)],\\
+n_{d,s}^{\rm TOA-eq}&=C^{\rm eff}_{s,a,s}\,n_{d,s}^{\rm obs},\\
+n_d^{\rm off}&=\operatorname{median}_{s\in\mathcal S_{d,\rm off}}
+n_{d,s}^{\rm TOA-eq},\\
+\mathrm{sens}_d&=\mathrm{flxscale}_d\,n_d^{\rm off}.
+\label{eq:sens}
+\end{align}
+$\mathcal N$ includes a declared time/exposure normalization so
+$n_d^{\rm off}$ has $\Delta f/f\sqrt{\rm s}$ and \texttt{sens} has
+$\mathrm{mJy\,beam_{nom}^{-1}\sqrt{s}}$. The exact source exclusion,
+scan admission, baseline, frequency/bandwidth, robust statistic, correlated-
+noise, minimum-count, exposure, partial-scan, and uncertainty rules remain
+owner-controlled. The retained scan scatter is a required stability or
+uncertainty diagnostic. Approximate downstream weights may satisfy
+$\omega_d\propto\mathrm{sens}_d^{-2}$ only under a separately governed
+weighting policy.
+
+\subsection{Observation-local convergence}
+
+An observation-local iteration may alternate locator and measurement phases.
+The effective policy declares per-parameter metrics $d_j$ and scales $s_j$,
+objective scale $s_Q$, tolerances, support and valid-detector stability rules,
+a consecutive-transition count, and $N_{\max}$. Orientation uses
 \[
 d_\pi(a,b)=\min_{n\in\mathbb Z}|a-b+n\pi|.
 \]
-Let $\mathcal A_d^{(k)}$ be the parameter-availability set, $c_d^{(k)}$ the selected locator/measurement-candidate identity including a typed none state, and $\mathcal V^{(k)}$ the valid-detector set. Convergence occurs only when
+With parameter-availability set $\mathcal A_d^{(k)}$, selected candidate
+$c_d^{(k)}$, support $\mathcal I_d^{(k)}$, and valid-detector set
+$\mathcal V^{(k)}$, convergence requires
 \begin{equation}
 \begin{aligned}
 \max_{j\in\mathcal A_d^{(k)}\cap\mathcal A_d^{(k-1)}}
@@ -69,4 +221,7 @@ Let $\mathcal A_d^{(k)}$ be the parameter-availability set, $c_d^{(k)}$ the sele
 \end{aligned}
 \label{eq:convergence}
 \end{equation}
-for the declared number of consecutive transitions and only where the objective is mutually defined. Availability equality is tested separately: a parameter unavailable at both transitions, including $\theta$ at circularity, contributes no numerical metric; a change into or out of availability fails stability. Candidate, support, and valid-detector stability are separately recorded components, not entries hidden in a raw parameter vector. No numerical tolerance or count is a universal scientific constant in v0.1.
+for the declared number of consecutive transitions. Availability changes fail
+stability; a parameter unavailable at both transitions contributes no numeric
+metric. Optimizer completion alone is never scientific convergence, and v0.1
+defines no universal numeric defaults.

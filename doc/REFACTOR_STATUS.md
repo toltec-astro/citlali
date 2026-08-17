@@ -285,6 +285,42 @@ is ready for scientific-owner review, then a fresh implementation-blind
 consistency review; it is not accepted or frozen and makes no conformity,
 validation, observational-performance, or production claim.
 
+On 2026-08-17 the scientific owner issued a substantive SCI-BEAM r0.2
+revision directive after deeper scientific review. The directive supersedes
+conflicting r0.1 draft language while leaving contract version v0.1, the
+original author packet, and its hashes unchanged. R0.2 defines the primary fit
+as a standardized per-detector Beammap in raw fractional frequency shift
+`Delta f/f`; defines the fitted tensor as the observation-local effective PSF
+core rather than an intrinsic or complete beam; uses a fixed nominal-beam,
+top-of-atmosphere reference-origin source amplitude with no additional
+finite-source dilution factor; makes SCI-BEAM the desired authority for the
+complete Beammap APT, accepted source-APT `flxscale`, and scan-domain NEFD-like
+`sens`; requires full WCS metric, 2-D tensor, model Jacobian, joint covariance,
+broadening, raw/horizon geometry, conventional-pivot limitations, exact
+same-APT pointing transfer, independent quantity states, and empirical
+map/residual companions; and deprecates `responsivity` as noncanonical.
+
+The r0.2 authoring lane is explicitly independent of current code, APT
+contracts/files, audits, repairs, tests, and production reductions. It produces
+a separate science-team rationale and Formal Scientific/Engineering Contract,
+retains 46 requirement and 24 prediction IDs with an exact r0.1 disposition
+map, and records cross-package changes for later governed amendments rather
+than editing CAL, MAP, AST, TolProj, weighting, or kernel authorities now.
+Nine owner decisions remain open for sensitivity estimator details,
+model-adequacy/wing policies, required science accuracy, physical pivot
+registration, and kernel qualification. The planned final substantive step is
+an r0.3 owner-voice/presentation pass, after which architecture freezes unless
+a governed evidence or inconsistency trigger applies. No implementation,
+validation, or readiness claim follows from r0.2 authorship.
+
+The r0.2 document-consistency gate completed on 2026-08-17. The formal
+contract contains all 46 requirement and 24 prediction IDs and the exact
+70-row crosswalk; the separate rationale contains no formal ID inventory.
+Both sources compile without warnings. The canonical PDFs are 17 pages formal
+and 9 pages rationale, and all 26 Poppler-rendered pages passed visual review.
+The approved three-item author packet hashes remain unchanged. R0.2 is ready
+for owner review but is not accepted or frozen.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

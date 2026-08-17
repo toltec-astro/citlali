@@ -1,30 +1,41 @@
-% SCI-BEAM v0.1 shared normative notation. Document revision r0.1.
+% SCI-BEAM v0.1 shared normative notation. Document revision r0.2.
 \section{Normative notation}
 \label{sec:notation}
+\small
 \begin{longtable}{L{0.22\linewidth}L{0.70\linewidth}}
 \toprule
 Symbol & Meaning \\
 \midrule
-$o,d,i$ & Observation, stable detector identity, and admitted sample or map-pixel index. Indices in memory are zero-based; persisted FITS/WCS pixels are one-based. \\
-$\mathbf{x}_i=(x_i,y_i)^\mathsf{T}$ & Externally supplied AltAz tangent-plane azimuth/elevation offset, in arcseconds, about the declared source. WCS supplies signs and handedness. \\
-$y_i$ & Admitted detector datum in declared signal unit $U_y$; the active map boundary is $\mathrm{mJy/beam}$ but that label alone proves neither absolute calibration nor complete response. \\
-$v_i$ & Upstream eligibility and validity state, evaluated before the numerical payload. \\
-$\mathcal I_d$ & Admitted support for detector $d$: indices satisfying upstream eligibility, finite-data policy, coordinate validity, and the effective support rule. \\
-$\mathbf C_d$ & Declared covariance of $\mathbf y_d$ on $\mathcal I_d$, or a typed approximation $\widetilde{\mathbf C}_d$. \\
-$S(\mathbf u;\boldsymbol\phi)$ & Declared, non-negative calibrator surface-brightness shape with finite first moment, unit integral, and declared reference origin fixed by $\int \mathbf u S(\mathbf u)\,d^2\mathbf u=\mathbf0$, with nuisance parameters $\boldsymbol\phi$. \\
-$G(\mathbf u;\boldsymbol\Sigma)$ & Peak-normalized elliptical Gaussian beam. \\
-$T(\mathbf u;\boldsymbol\Sigma,\boldsymbol\phi)$ & Source-convolved template normalized to unity at the declared source-reference origin, $T(\mathbf0)=1$, as defined in Section~\ref{sec:equations}; that origin need not be the profile maximum. \\
-$A_d$ & Fitted source excess at the translated declared reference origin, in $U_y$; it is neither necessarily the profile peak nor source flux, calibration, or sensitivity. \\
-$\boldsymbol\mu_d=(\mu_{x,d},\mu_{y,d})$ & Fitted translation of the declared zero-first-moment source-reference origin in the admitted tangent plane, in arcseconds; equivalently the modeled convolved-profile centroid when the admitted moments exist. \\
-$\sigma_{\rm maj},\sigma_{\rm min},\theta$ & Gaussian major/minor standard deviations and orientation, with $\sigma_{\rm maj}\geq\sigma_{\rm min}>0$ and $\theta\in[0,\pi)$. \\
-$\mathbf q_d$ & Model parameter vector $(A_d,\boldsymbol\mu_d,\sigma_{\rm maj},\sigma_{\rm min},\theta,\boldsymbol\beta_d)$. \\
-$\boldsymbol\beta_d$ & Coefficients of the declared bounded background basis. \\
-$Q_d$ & Declared generalized least-squares or likelihood objective. \\
-$d_j(a,b)$ & Declared stability metric for available parameter $j$; for orientation, $d_\pi(a,b)=\min_{n\in\mathbb Z}|a-b+n\pi|$. \\
-$\mathcal A_d^{(k)},c_d^{(k)},\mathcal V^{(k)}$ & Parameter-availability set, selected locator/measurement-candidate identity (including a typed none state), and valid-detector set at iteration $k$. \\
-$F_{s,a}$ & Immutable source-model flux quantity supplied for array $a$, with its epoch, passband, convention, and uncertainty. \\
-$K_d$ & Typed candidate conversion factor $F_{s,a}/A_d$ when dimensional and authority preconditions hold. \\
+$o,a,d,p,s,t$ & Observation, array, stable detector occurrence, Beammap pixel, scan, and time/sample coordinate. In-memory indices are zero-based; persisted conventions remain explicitly declared. \\
+$x_d(t)=\Delta f_d(t)/f_d$ & Raw, uncalibrated fractional KID resonance-frequency shift for detector $d$. ``Raw'' names the physical observable, not necessarily untouched acquisition bytes. \\
+$\mathbf x(t)=\{x_d(t)\}_d$; \texttt{xs} & Detector collection of raw $\Delta f/f$ signals. Neither symbol denotes a calibrated $\mathrm{mJy\,beam^{-1}}$ signal. \\
+$x^{\rm BM}_{d,p}$ & Standardized per-detector Beammap datum fitted by v0.1, in $\Delta f/f$, with declared conditioning, support, mapmaking, WCS, and response lineage. \\
+$(r_p,c_p)$; $\boldsymbol\vartheta_p=(\vartheta_{x,p},\vartheta_{y,p})^\mathsf T$ & Map pixel coordinate and its metrically orthonormal angular tangent-plane coordinate in arcseconds. \\
+$f_{\rm WCS}$; $\mathbf J_{\rm sky}$ & Full pixel-to-tangent-plane transformation and local coordinate Jacobian $\partial\boldsymbol\vartheta/\partial(r,c)$, including scale, signs, handedness, rotation, shear, and azimuth metric. \\
+$\mathcal I_d$ & Admitted per-detector map support after upstream validity, finite-data, WCS, and effective fit-support rules. \\
+$\mathbf C^{\rm BM}_d$ & Declared covariance of admitted Beammap pixels, or a typed approximation $\widetilde{\mathbf C}^{\rm BM}_d$. \\
+$S(\mathbf u;\boldsymbol\phi)$ & Declared non-negative calibrator surface-brightness shape with unit integral, finite first moment, zero-first-moment reference origin, nuisance parameters $\boldsymbol\phi$, and uncertainty. \\
+$\boldsymbol\Sigma_{{\rm eff},d}$ & Symmetric positive-definite tensor of the observation-local effective PSF core measured in the standardized detector Beammap, in $\mathrm{arcsec^2}$. \\
+$G(\mathbf u;\boldsymbol\Sigma)$ & Peak-normalized elliptical Gaussian core associated with tensor $\boldsymbol\Sigma$. \\
+$H=S*G$; $T=H/H(\mathbf0)$ & Source-convolved profile and template normalized to unity at the declared source-reference origin. That origin need not be the profile maximum. \\
+$A_d^{\rm obs}$ & Fitted observed-plane source excess at the translated reference origin, in $\Delta f/f$. \\
+$\boldsymbol\mu_{d,\rm raw}$ & Fitted source-reference translation, interpreted as the raw relative detector coordinate in the observation-local tangent plane after the declared common-origin rule. \\
+$(x_t,y_t)_{d,\rm raw}$; $(x_t,y_t)_d$ & Raw observation-local relative detector coordinate and its horizon-derotated relative focal-plane coordinate, in arcseconds. \\
+$\chi_{d,\rm eff}$ & Effective field-derotation angle derived from the same valid time/elevation support and weighting that constrain detector $d$. \\
+$\boldsymbol\Sigma_{{\rm nom},a}$; $\boldsymbol\Sigma_{{\rm broad},d}$ & Fixed versioned nominal-beam tensor and compatible difference $\boldsymbol\Sigma_{{\rm eff},d}-\boldsymbol\Sigma_{{\rm nom},a}$. \\
+$\sigma_{\rm maj},\sigma_{\rm min},\theta$ & Effective-core major/minor Gaussian standard deviations and orientation, with ordered positive axes, period $\pi$, and unavailable orientation at circularity. \\
+$\mathbf q_d$; $\mathbf J^{\rm fit}_d$; $\mathbf V_{q,d}$ & Complete realized free-parameter vector, local model Jacobian, and joint parameter covariance. \\
+$\boldsymbol\beta_d$; $r_{d,p}$ & Declared constant or planar background coefficients and admitted residual $x^{\rm BM}_{d,p}-m_{d,p}$. \\
+$F^{\rm TOA,nom}_{s,a}$ & Model-predicted calibrator amplitude at top of atmosphere, in mJy per fixed nominal beam, at the same source-reference origin as $A_d^{\rm obs}$ and under the declared epoch/passband/spectral/finite-source convention. It is not necessarily integrated flux or a profile maximum. \\
+$C^{\rm eff}_{s,a}$; $T^{\rm eff}_{s,a}$ & Effective source-observation atmospheric correction and transmission, with $C^{\rm eff}=1/T^{\rm eff}$, matched to the amplitude support and weighting. \\
+$A_d^{\rm TOA-eq}$; $\mathrm{flxscale}_d$ & Top-of-atmosphere-equivalent fitted amplitude and BEAM-published conversion factor $F^{\rm TOA,nom}_{s,a}/A_d^{\rm TOA-eq}$ in $\mathrm{mJy\,beam_{nom}^{-1}}/(\Delta f/f)$. \\
+$\mathcal S_{d,\rm off}$; $n_{d,s}$; $\mathrm{sens}_d$ & Detector-specific admitted off-source scans, declared time-normalized scan noise statistic, and BEAM-published NEFD-like sensitivity in $\mathrm{mJy\,beam_{nom}^{-1}\sqrt{s}}$. \\
+$\mathcal A_d^{(k)},c_d^{(k)},\mathcal V^{(k)}$ & Parameter-availability set, selected locator/measurement-candidate identity, and valid-detector set at iteration $k$. \\
 \bottomrule
 \end{longtable}
 
-The words \emph{shall} and \emph{shall not} are normative. \emph{May} marks an allowed option whose realized state must be recorded. ``Unavailable'' is a typed scientific state, never an undocumented numeric sentinel.
+The words \emph{shall} and \emph{shall not} are normative. \emph{May} marks
+an allowed option whose realized state must be recorded. ``Unavailable'' is a
+typed scientific state with one or more causes, never an undocumented numeric
+sentinel.
+\normalsize

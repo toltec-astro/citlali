@@ -55,6 +55,21 @@ for package, version in {**COMPLETE_PACKAGES, **RENDERED_DRAFT_PACKAGES}.items()
         assert (base / "pdf" / "README.md").is_file(), f"{package}: missing pdf/README.md"
         assert (base / "AUTHOR_DRAFT_DECISIONS.md").is_file(), f"{package}: missing AUTHOR_DRAFT_DECISIONS.md"
         assert (base / "MANAGER_REVIEW_R0.1.md").is_file(), f"{package}: missing MANAGER_REVIEW_R0.1.md"
+        for name in (
+            "SCIENTIFIC_OWNER_DIRECTIVE_R0.2.md",
+            "CHANGE_LOG_R0.2.md",
+            "CROSS_DOCUMENT_FOLLOWUP_R0.2.md",
+            "CONSISTENCY_REPORT_R0.2.md",
+        ):
+            assert (base / name).is_file(), f"{package}: missing {name}"
+        rationale = (base / "src" / "scientific-rationale.tex").read_text()
+        formal = (base / "src" / "engineering-conformance.tex").read_text()
+        assert "r0.2" in rationale and "r0.2" in formal, f"{package}: stale document revision"
+        assert "SCI-BEAM-REQ-" not in rationale and "SCI-BEAM-PRED-" not in rationale, f"{package}: rationale contains formal inventory"
+        for name in COMMON:
+            token = "\\input{common/" + name.removesuffix(".tex") + "}"
+            assert formal.count(token) == 1, f"{package}: formal view must import {name} exactly once"
+            assert token not in rationale, f"{package}: rationale must remain scientist-facing"
 
 print("scientific_contract_layout=PASS")
 print("complete_packages=" + ",".join(f"{name}/{version}" for name, version in COMPLETE_PACKAGES.items()))

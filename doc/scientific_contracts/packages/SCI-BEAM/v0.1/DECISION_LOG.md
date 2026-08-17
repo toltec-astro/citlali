@@ -42,3 +42,31 @@ The exact packet and firewall are content-bound in
 
 Implementation conformity, validation, and production promotion are outside
 this log.
+
+## Approved r0.2 Scientific-Owner Decisions
+
+The directive dated `2026-08-17` is recorded in
+[`SCIENTIFIC_OWNER_DIRECTIVE_R0.2.md`](SCIENTIFIC_OWNER_DIRECTIVE_R0.2.md).
+It supersedes conflicting `r0.1` draft language without changing contract
+version `v0.1` or the original author-packet hashes.
+
+| Decision | Approved substance |
+| --- | --- |
+| `BEAM-SCOPE-D013` | SCI-BEAM owns complete Beammap analysis and the complete scientific Beammap APT. |
+| `BEAM-SCOPE-D014` | `x_d=Delta f_d/f_d` and `xs` name the raw uncalibrated detector observable; the standardized per-detector Beammap remains in `Delta f/f`. |
+| `BEAM-SCOPE-D015` | V0.1 fits standardized per-detector Beammap maps; timestream fitting is future validation or higher-fidelity work. |
+| `BEAM-SCOPE-D016` | Calibration uses a fixed nominal-beam top-of-atmosphere reference-origin source amplitude; finite-source normalization is embodied and no extra `H(0)` enters the ratio. |
+| `BEAM-SCOPE-D017` | The fitted tensor is the observation-local effective PSF core; intrinsic and complete-PSF interpretations require stronger evidence. |
+| `BEAM-SCOPE-D018` | Fit the complete positive-definite 2-D shape tensor and retain conditional FWHM, orientation, and Gaussian-area meanings. |
+| `BEAM-SCOPE-D019` | Evaluate the fit in a metrically orthonormal angular tangent plane established by the WCS transformation/Jacobian. |
+| `BEAM-SCOPE-D020` | Resolve the full model Jacobian and joint covariance with material cross terms and invariant circular-limit handling. |
+| `BEAM-SCOPE-D021` | Derive `Sigma_broad=Sigma_eff-Sigma_nom` only for compatible conventions and require positive-semidefinite support for literal Gaussian broadening. |
+| `BEAM-SCOPE-D022` | Distinguish raw fitted and horizon-derotated detector coordinates; derive per-detector effective rotation from realized fit support and transform the PSF tensor consistently. |
+| `BEAM-SCOPE-D023` | Treat common APT origin as a gauge, physical pivot as unestablished, and require exact same-APT/same-AST pointing transfer unless equivalence is separately proved. |
+| `BEAM-SCOPE-D024` | BEAM owns source-atmosphere treatment and publishes TOA nominal-beam `flxscale`; SCI-CAL later applies target atmosphere once. |
+| `BEAM-SCOPE-D025` | BEAM publishes NEFD-like TOA nominal-beam `sens` from robust off-source scan statistics; exact estimator policy remains open. |
+| `BEAM-SCOPE-D026` | `responsivity` is deprecated compatibility metadata and is not canonical scientific content. |
+| `BEAM-SCOPE-D027` | Availability and validity are independent per quantity; every attempted detector and unavailable field remains represented with causes. |
+| `BEAM-SCOPE-D028` | Empirical maps and adequacy/wing diagnostics are required; array/network stacked PSFs are optional diagnostics. |
+| `BEAM-SCOPE-D029` | Science-impact, recovery, hidden-response, kernel-impact, geometry, and rotation studies determine accuracy and downstream qualification; no validation result is presumed. |
+| `BEAM-SCOPE-D030` | The Beammap APT is mandatory and scientifically defined independently of current implementation or storage schema. |

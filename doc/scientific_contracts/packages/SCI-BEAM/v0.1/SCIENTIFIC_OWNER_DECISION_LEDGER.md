@@ -1,54 +1,28 @@
 # SCI-BEAM v0.1 — Scientific-Owner Decision Ledger
 
-Status: scope decisions approved; Stage B `r0.1` owner review pending
+Status: r0.2 open scientific decisions only
 
-Owner: Grant Wilson
+Scientific owner: Grant Wilson
 
-Opened: `2026-08-16`
+Updated: `2026-08-17`
 
-This ledger contains the choices that would materially change the scientific
-author's task. The author may analyze alternatives and identify consequences,
-but may not silently choose an owner policy.
+The owner decisions settled in the r0.2 directive are recorded in
+[`DECISION_LOG.md`](DECISION_LOG.md) as `BEAM-SCOPE-D013--D030` and are not
+reopened here. This ledger contains only choices that remain genuinely
+unresolved. No open item is replaced by an implementation default.
 
-| ID | Decision | Approved disposition | Status |
-| --- | --- | --- | --- |
-| `BEAM-SCOPE-Q001` | What source/beam model family is in v0.1? | Begin from an elliptical 2-D beam convolved with the declared calibrator brightness model plus explicitly bounded background terms; require typed model identity and allow unavailable claims outside that family. | APPROVED as `BEAM-SCOPE-D001` |
-| `BEAM-SCOPE-Q002` | How does finite calibrator angular extent enter? | The source model and beam model remain separate and are forward-convolved; point-source treatment is a declared limiting case, not a silent assumption. | APPROVED as `BEAM-SCOPE-D002` |
-| `BEAM-SCOPE-Q003` | What objective and uncertainty authority are required? | Author derives a general likelihood/covariance statement and an explicitly conditional diagonal approximation; reported covariance must name omitted correlation and nuisance terms. | APPROVED as `BEAM-SCOPE-D003` |
-| `BEAM-SCOPE-Q004` | What roles may a soft prior play? | Initialization and bounded candidate gating only in v0.1; no exact UID truth or unconditional veto; prior influence recorded and blind fallback required. | APPROVED as `BEAM-SCOPE-D004` |
-| `BEAM-SCOPE-Q005` | What constitutes BEAM iteration and convergence? | Observation-local locator/measurement estimator only; convergence requires a declared conjunction of parameter, candidate-set, and valid-detector stability, with maximum-iteration and non-converged terminal states. | APPROVED as `BEAM-SCOPE-D005` |
-| `BEAM-SCOPE-Q006` | Which QC thresholds belong in the scientific contract? | Define dimensionless/physical diagnostics and state semantics in v0.1; keep numerical production thresholds owner-controlled unless justified by approved evidence. | APPROVED as `BEAM-SCOPE-D006` |
-| `BEAM-SCOPE-Q007` | May BEAM publish a detector calibration factor? | Permit only a typed candidate derived from declared source-model flux and fitted amplitude/response, with full uncertainty and lineage; SCI-CAL separately owns promotion. | APPROVED as `BEAM-SCOPE-D007` |
-| `BEAM-SCOPE-Q008` | Is detector sensitivity a BEAM-owned result? | Treat sensitivity as downstream/conditional unless the owner supplies a precise noise, time, atmosphere, calibration, and bandwidth convention for v0.1. | APPROVED as `BEAM-SCOPE-D008` |
-| `BEAM-SCOPE-Q009` | What is the atomic product bundle? | One required fit/result/QC identity per attempted detector plus observation-level provenance; maps and optional TOD are parent/diagnostic companions, not alternate validity authorities. | APPROVED as `BEAM-SCOPE-D009` |
-| `BEAM-SCOPE-Q010` | Which external primary references enter the author packet? | Admit Bryan et al. 2018 and Golec and the TolTEC Collaboration 2024 for bounded TolTEC context. Admit no analogue-instrument methodology paper. | APPROVED as `BEAM-SCOPE-D010` |
-| `BEAM-SCOPE-Q011` | May CAL and MAP interface extracts enter the packet? | Allow only short content-bound extracts that state conditional producer boundaries and open authority; do not supply their full implementation or audit history. | APPROVED as `BEAM-SCOPE-D011` |
-| `BEAM-SCOPE-Q012` | Is the proposed repository boundary correct? | Citlali owns reduction inference/products; TolAPT owns soft-prior and matched/reference APT production; `toltec_beammap` owns downstream analysis/calibration use. No repository silently supersedes another's artifact. | APPROVED as `BEAM-SCOPE-D012` |
+| ID | Owning authority | State | Evidence or decision required | Exact blocked claim or output | Resolution authority | Resolution date | Affected documents |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `SCI-BEAM-ODQ-101` | SCI-BEAM sensitivity estimator | open | Exact scan-level noise statistic, baseline treatment, frequency range or bandwidth, robust/spectral estimator, correlated-noise treatment, and perturbation validation | Numerically authorized `sens` estimator | Grant Wilson or named successor sensitivity authority | — | Rationale; formal contract; validation plan |
+| `SCI-BEAM-ODQ-102` | SCI-BEAM support policy | open | Source-exclusion radius, trajectory-distance convention, partial-scan handling, minimum off-source scans, and admission policy | Production off-source scan membership and numerical `sens` | Grant Wilson | — | Formal contract; validation plan |
+| `SCI-BEAM-ODQ-103` | SCI-BEAM sensitivity estimator | open | Exposure/time normalization, bandwidth convention, atmosphere timing, and repeatability/uncertainty statistic | Exact `mJy beam_nom^-1 sqrt(s)` normalization and uncertainty | Grant Wilson or named successor sensitivity authority | — | Rationale; formal contract; validation plan |
+| `SCI-BEAM-ODQ-104` | SCI-BEAM model-adequacy policy | open | Quantitative residual, support-dependence, asymmetry, excess-response, multi-lobe, wing-completeness, and amplitude-bias diagnostics plus eventual policy thresholds | Production adequacy and `flxscale` robustness disposition | Grant Wilson | — | Rationale; formal contract; validation plan |
+| `SCI-BEAM-ODQ-105` | Downstream science-impact authority, presently unnamed | open | Kernel-impact study establishing separate accuracy needs for health, amplitude, `flxscale`, `sens`, Gaussian kernels, empirical kernels, and wing claims | Required PSF accuracy and downstream science qualification | Grant Wilson and named downstream science owner | — | Validation plan; future kernel contract |
+| `SCI-BEAM-ODQ-106` | SCI-BEAM observation design | open | Hidden-response study over map depth, radial extent, noise, backgrounds, and stacking | Quantitative wing-response completeness and complete-PSF claim | Grant Wilson | — | Rationale; validation plan; observation policy |
+| `SCI-BEAM-ODQ-107` | ALIGN/AST geometry authority | open | Conventional-pivot perturbation study over elevation, support, detector angle, and pointing/science separation | Acceptable residual common and differential geometry error | Grant Wilson or named ALIGN/AST owner | — | Rationale; AST successor contract; validation plan |
+| `SCI-BEAM-ODQ-108` | Future focal-plane/boresight registration authority, unnamed | open | Physical boresight and rotation-pivot measurement model, evidence, uncertainty, reference epoch, and transfer domain | Absolute array position, physical pivot, and telescope pointing interpretation | Grant Wilson or named future owner | — | AST successor; pointing contract; BEAM interface |
+| `SCI-BEAM-ODQ-109` | Downstream kernel authority, presently unnamed | open | Science-impact criteria for Gaussian, regularized empirical, or unavailable kernel; normalization and response requirements | Any downstream kernel-use qualification | Grant Wilson and named kernel owner | — | Rationale; validation plan; future kernel contract |
 
-## Gate Disposition
-
-Grant Wilson approved all twelve dispositions on `2026-08-16`. Stage B
-authorship is authorized subject to the exact packet and firewall in
-[`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md). Contract acceptance,
-implementation conformity, validation, and production promotion remain
-separate future gates.
-
-## Stage B r0.1 Questions
-
-The implementation-blind author opened the following questions. The
-contract-manager review resolved `SCI-BEAM-ODQ-001` as a traceability-only
-matter by adding the exact already-approved decision mapping to
-[`CROSSWALK.md`](CROSSWALK.md). The remaining questions require no answer for
-the algebraic draft to be reviewed, but their affected stronger claims and
-production policies remain unavailable.
-
-| ID | Question | Current disposition |
-| --- | --- | --- |
-| `SCI-BEAM-ODQ-001` | What exact `BEAM-SCOPE-D001--D012` mapping may appear in the final crosswalk? | RESOLVED as traceability metadata from this approved ledger; no scientific change. |
-| `SCI-BEAM-ODQ-002` | Which numerical support, convergence, QC, and S/N policies are approved for a production profile? | OPEN; no defaults inferred. |
-| `SCI-BEAM-ODQ-003` | How many consecutive stable transitions are required by each effective iteration policy? | OPEN; must be explicit in realized policy. |
-| `SCI-BEAM-ODQ-004` | Which singular-covariance retained-subspace or regularization procedures, if any, are authorized? | OPEN; no procedure inferred. |
-| `SCI-BEAM-ODQ-005` | Which model-inadequacy diagnostics and owner-controlled dispositions are approved? | OPEN; typed state only. |
-| `SCI-BEAM-ODQ-006` | Which source/amplitude unit and normalization combinations permit a calibration candidate in each admitted data mode? | OPEN; candidate unavailable unless compatibility is demonstrated. |
-| `SCI-BEAM-ODQ-007` | Which response-completeness statement permits intrinsic detector-plus-telescope beam interpretation? | OPEN; conditioned effective response only when incomplete. |
-| `SCI-BEAM-ODQ-008` | Should a successor authorize richer beam/background families, and under what selection and identifiability rule? | OPEN; v0.1 retains the minimal family. |
+Implementation conformance, current file/column names, historical values, and
+production behavior are audit questions, not scientific-owner decisions in
+this ledger.

@@ -1,6 +1,6 @@
-# SCI-BEAM — Detector Beam Inference, Calibration Candidates, QC, And Products
+# SCI-BEAM — Beammap Analysis, Effective PSF, Calibration, Sensitivity, And APT
 
-Status: Stage B implementation-blind draft `r0.1` ready for scientific-owner review
+Status: scientific-owner revision `r0.2` complete for owner review; not frozen
 
 Version: `v0.1`
 
@@ -23,14 +23,19 @@ three-part author packet on `2026-08-16`.
 - Separation from active ALIGN/AST work: confirmed as a process boundary.
 - Scientific-owner Scope Brief approval: complete.
 - Content-bound implementation-blind author packet: approved.
-- Implementation-blind Stage B author: complete.
+- Implementation-blind Stage B `r0.1` author and manager review: complete and
+  retained as draft history.
+- Scientific-owner `r0.2` revision directive: approved on `2026-08-17`.
 - Shared normative core: 46 requirements and 24 falsifiable predictions.
-- Scientific rationale and engineering conformance PDFs: rendered and
-  manager-reviewed at document revision `r0.1`.
-- Exact approved-decision traceability: manager-integrated after author freeze.
-- Scientific-owner review: pending, with seven substantive owner questions.
+- Formal Scientific/Engineering Contract and separate science-team rationale:
+  revised to `r0.2`; source, compilation, PDF, and page-by-page visual QA
+  complete.
+- Open scientific-owner decisions: nine, limited to sensitivity, adequacy,
+  PSF accuracy/wings, pivot registration, and downstream kernel qualification.
 - Implementation conformity, validation, and production promotion: outside
   this stage.
+- Next gate: `r0.3` owner-voice and presentation pass; no architecture change
+  unless scientific-owner review identifies a governed inconsistency.
 
 ## Contents
 
@@ -41,31 +46,37 @@ three-part author packet on `2026-08-16`.
 - [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md): sanitized stable conventions and interfaces
 - [`AUTHOR_PRIMARY_REFERENCE_BOUNDARY.md`](AUTHOR_PRIMARY_REFERENCE_BOUNDARY.md): bounded primary TolTEC context
 - [`DECISION_LOG.md`](DECISION_LOG.md): approved process and scientific-scope decisions
-- [`CROSSWALK.md`](CROSSWALK.md): exact 70-row normative and approved-decision traceability
-- [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md): approved scope decisions and retained Stage B owner questions
+- [`SCIENTIFIC_OWNER_DIRECTIVE_R0.2.md`](SCIENTIFIC_OWNER_DIRECTIVE_R0.2.md): governing substantive revision decisions
+- [`CROSSWALK.md`](CROSSWALK.md): exact 70-row rationale-to-contract traceability
+- [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md): nine genuinely open r0.2 decisions
+- [`CHANGE_LOG_R0.2.md`](CHANGE_LOG_R0.2.md): r0.1 clause-to-r0.2 disposition map
+- [`CROSS_DOCUMENT_FOLLOWUP_R0.2.md`](CROSS_DOCUMENT_FOLLOWUP_R0.2.md): required future adjacent-authority amendments
+- [`CONSISTENCY_REPORT_R0.2.md`](CONSISTENCY_REPORT_R0.2.md): unit, ownership, traceability, compilation, and visual QA record
 - [`AUTHOR_DRAFT_DECISIONS.md`](AUTHOR_DRAFT_DECISIONS.md): implementation-blind author choices, questions, tensions, and unavailable claims
 - [`MANAGER_REVIEW_R0.1.md`](MANAGER_REVIEW_R0.1.md): bounded correction, firewall, traceability, and QA review
 - `src/`: canonical shared core and the two document views
-- `pdf/`: rendered `r0.1` scientific-rationale and engineering-conformance views
+- `pdf/`: canonical `r0.2` science-team rationale and formal contract views
 
 ## Protected Boundary
 
-SCI-BEAM is not ALIGN/AST. It may condition scientific claims on an externally
-declared coordinate relation, frame, identity binding, validity state, and
-uncertainty. It may not establish physical timing, absolute pointing,
-astrometric correction, or detector-coordinate truth. Active ALIGN work is not
-an author reference.
+SCI-BEAM derives observation-local raw and horizon-derotated relative detector
+coordinates under an externally declared WCS and field-rotation convention.
+It does not establish absolute boresight, physical rotation pivot, telescope
+pointing error, or pointing-model correction. Bracketing pointing and science
+observations require the same immutable APT realization and AST convention
+unless a separately authorized transform proves equivalence.
 
-Citlali owns reduction behavior and product conventions. TolAPT owns
-producer-side soft beammap priors and matched/reference APT construction.
-`toltec_beammap` owns downstream beammap analysis, calibration use, APT
-diagnostics, and sensitivity utilities. SCI-BEAM must specify interfaces
-without absorbing those repositories' separate authorities.
+SCI-BEAM is the desired scientific authority for complete Beammap analysis and
+the source Beammap APT, including accepted `flxscale` and `sens`. TolAPT owns
+the supplied soft-prior producer contract; TolProj owns approved target
+association or child-APT transformation; SCI-CAL later consumes the selected
+factor and applies target atmosphere. Present repository implementations and
+schemas remain unassessed and are not reconciled in this authorship task.
 
 ## Authority And Status
 
-No accepted or frozen SCI-BEAM v0.1 scientific authority exists yet. The
-Stage B `r0.1` artifacts are a review draft, not an accepted contract. The
+No frozen SCI-BEAM v0.1 scientific authority exists yet. The `r0.2` artifacts
+are an owner-directed scientific draft, not an implementation verdict. The
 historical `SCI-BEAM-001` audit
 inventory was never launched and has no independent core or audit verdict.
 Current products and algorithms remain governed by their existing repository
