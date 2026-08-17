@@ -1,1 +1,30 @@
-% Stage A placeholder. Normative notation is authored only after Scope Brief approval.
+% SCI-BEAM v0.1 shared normative notation. Document revision r0.1.
+\section{Normative notation}
+\label{sec:notation}
+\begin{longtable}{L{0.22\linewidth}L{0.70\linewidth}}
+\toprule
+Symbol & Meaning \\
+\midrule
+$o,d,i$ & Observation, stable detector identity, and admitted sample or map-pixel index. Indices in memory are zero-based; persisted FITS/WCS pixels are one-based. \\
+$\mathbf{x}_i=(x_i,y_i)^\mathsf{T}$ & Externally supplied AltAz tangent-plane azimuth/elevation offset, in arcseconds, about the declared source. WCS supplies signs and handedness. \\
+$y_i$ & Admitted detector datum in declared signal unit $U_y$; the active map boundary is $\mathrm{mJy/beam}$ but that label alone proves neither absolute calibration nor complete response. \\
+$v_i$ & Upstream eligibility and validity state, evaluated before the numerical payload. \\
+$\mathcal I_d$ & Admitted support for detector $d$: indices satisfying upstream eligibility, finite-data policy, coordinate validity, and the effective support rule. \\
+$\mathbf C_d$ & Declared covariance of $\mathbf y_d$ on $\mathcal I_d$, or a typed approximation $\widetilde{\mathbf C}_d$. \\
+$S(\mathbf u;\boldsymbol\phi)$ & Declared, non-negative calibrator surface-brightness shape with finite first moment, unit integral, and declared reference origin fixed by $\int \mathbf u S(\mathbf u)\,d^2\mathbf u=\mathbf0$, with nuisance parameters $\boldsymbol\phi$. \\
+$G(\mathbf u;\boldsymbol\Sigma)$ & Peak-normalized elliptical Gaussian beam. \\
+$T(\mathbf u;\boldsymbol\Sigma,\boldsymbol\phi)$ & Source-convolved template normalized to unity at the declared source-reference origin, $T(\mathbf0)=1$, as defined in Section~\ref{sec:equations}; that origin need not be the profile maximum. \\
+$A_d$ & Fitted source excess at the translated declared reference origin, in $U_y$; it is neither necessarily the profile peak nor source flux, calibration, or sensitivity. \\
+$\boldsymbol\mu_d=(\mu_{x,d},\mu_{y,d})$ & Fitted translation of the declared zero-first-moment source-reference origin in the admitted tangent plane, in arcseconds; equivalently the modeled convolved-profile centroid when the admitted moments exist. \\
+$\sigma_{\rm maj},\sigma_{\rm min},\theta$ & Gaussian major/minor standard deviations and orientation, with $\sigma_{\rm maj}\geq\sigma_{\rm min}>0$ and $\theta\in[0,\pi)$. \\
+$\mathbf q_d$ & Model parameter vector $(A_d,\boldsymbol\mu_d,\sigma_{\rm maj},\sigma_{\rm min},\theta,\boldsymbol\beta_d)$. \\
+$\boldsymbol\beta_d$ & Coefficients of the declared bounded background basis. \\
+$Q_d$ & Declared generalized least-squares or likelihood objective. \\
+$d_j(a,b)$ & Declared stability metric for available parameter $j$; for orientation, $d_\pi(a,b)=\min_{n\in\mathbb Z}|a-b+n\pi|$. \\
+$\mathcal A_d^{(k)},c_d^{(k)},\mathcal V^{(k)}$ & Parameter-availability set, selected locator/measurement-candidate identity (including a typed none state), and valid-detector set at iteration $k$. \\
+$F_{s,a}$ & Immutable source-model flux quantity supplied for array $a$, with its epoch, passband, convention, and uncertainty. \\
+$K_d$ & Typed candidate conversion factor $F_{s,a}/A_d$ when dimensional and authority preconditions hold. \\
+\bottomrule
+\end{longtable}
+
+The words \emph{shall} and \emph{shall not} are normative. \emph{May} marks an allowed option whose realized state must be recorded. ``Unavailable'' is a typed scientific state, never an undocumented numeric sentinel.

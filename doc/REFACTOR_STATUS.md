@@ -264,6 +264,27 @@ author channel. This approval authorizes a fresh implementation-blind author;
 it does not accept the resulting contract, assess conformity, authorize
 validation, or change production status.
 
+The implementation-blind SCI-BEAM author subsequently completed document
+revision `r0.1`, and the contract manager completed the bounded first review.
+The draft has one shared normative core containing 46 sequential requirements
+and 24 sequential falsifiable predictions, an exact 70-row crosswalk, a
+13-page scientific rationale with nine substantive pages before its
+appendices, and a 9-page engineering conformance view with no independent
+normative science. The manager returned three bounded corrections to the same
+author: exact reference-origin rather than unjustified unit-peak
+normalization, modulo-pi and availability-aware convergence with separate
+candidate/support/valid-detector stability, and sufficient substantive
+rationale length. All were corrected without adding implementation-informed
+input. The author packet hashes remained unchanged. The manager supplied the
+already-approved `BEAM-SCOPE-D001--D012` ID mapping after author freeze,
+closing one traceability-only question. Seven scientific-owner questions
+remain open concerning later numerical policies, singular covariance,
+model-inadequacy diagnostics, calibration-candidate compatibility,
+response-completeness interpretation, and successor model families. The draft
+is ready for scientific-owner review, then a fresh implementation-blind
+consistency review; it is not accepted or frozen and makes no conformity,
+validation, observational-performance, or production claim.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

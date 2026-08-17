@@ -1,1 +1,62 @@
-% Stage A placeholder. Normative requirements are authored only after Scope Brief approval.
+% SCI-BEAM v0.1 shared normative requirements. Document revision r0.1.
+\section{Normative requirements}
+\label{sec:requirements}
+\small
+\begin{longtable}{>{\raggedright\arraybackslash\ttfamily\scriptsize}p{0.20\linewidth}L{0.72\linewidth}}
+\toprule ID & Requirement \\
+\midrule
+SCI-BEAM-REQ-001 & The result shall bind immutable observation, source, array, detector, parent-input, contract-version, and realized-policy identities. \\
+SCI-BEAM-REQ-002 & Stable detector binding shall be explicit and occurrence-scoped; row order, slot, array, network, or local key text shall not substitute for it. \\
+SCI-BEAM-REQ-003 & Requested, effective, observation-resolved, and realized model/support/prior/iteration/QC state shall be distinct, immutable, and one-way. \\
+SCI-BEAM-REQ-004 & Coordinates shall be the supplied AltAz tangent-plane azimuth/elevation offsets in arcseconds, with WCS identity, signs, handedness, validity, and uncertainty state recorded. \\
+SCI-BEAM-REQ-005 & The source input shall declare immutable identity, epoch, passband/spectral convention, extent, flux/brightness normalization, uncertainty, and upstream authority. \\
+SCI-BEAM-REQ-006 & The signal/map input shall declare unit, response/kernel status, calibration lineage, support, validity, covariance status, provenance, and stable detector binding. \\
+SCI-BEAM-REQ-007 & Upstream-invalid samples or detectors shall be excluded before payload evaluation; missing, disabled, rejected, invalid, failed, and unavailable shall remain distinct. \\
+SCI-BEAM-REQ-008 & The v0.1 forward model shall be Equation~\ref{eq:model}: a declared finite-source or point-limit template convolved with one elliptical Gaussian plus a constant or planar background. \\
+SCI-BEAM-REQ-009 & The ellipse shall use ordered positive axes, angle measured counterclockwise from WCS $+x$, period $\pi$, and unavailable angle at exact circularity. \\
+SCI-BEAM-REQ-010 & The template shall use Equation~\ref{eq:template}; the source shall satisfy the declared zero-first-moment reference convention, and the $T(\mathbf0)=1$ reference-origin normalization and source-model identity shall accompany every amplitude. \\
+SCI-BEAM-REQ-011 & $A_d$ shall mean modeled source excess at the translated declared reference origin in the admitted signal unit; it shall not be labeled a profile peak unless separately established, nor relabeled as intrinsic flux, response, promoted calibration, or sensitivity. \\
+SCI-BEAM-REQ-012 & The background family, origin, and coefficients shall be recorded; unsupported adaptive or higher-order backgrounds shall not be introduced. \\
+SCI-BEAM-REQ-013 & Admitted support shall record geometric selection, exclusions and causes, connectedness, edge/crop state, and retained sample count. \\
+SCI-BEAM-REQ-014 & The objective shall be Equation~\ref{eq:objective} with declared covariance or typed approximation; silent weighting or regularization is forbidden. \\
+SCI-BEAM-REQ-015 & Residuals shall mean admitted data minus the complete realized source-plus-background model on the retained support. \\
+SCI-BEAM-REQ-016 & Local identifiability shall be assessed for the realized support and model; non-identifiable parameters shall be unavailable with causes. \\
+SCI-BEAM-REQ-017 & Fit covariance shall identify its method and assumptions and shall satisfy Equation~\ref{eq:fitcov} only where those assumptions hold. \\
+SCI-BEAM-REQ-018 & Material source, coordinate, response, bandpass, atmosphere, and calibration nuisance uncertainties shall be propagated by a declared method or named unavailable. \\
+SCI-BEAM-REQ-019 & A covariance derived under an approximation shall be labeled conditional and shall not be described as calibrated by algebra alone. \\
+SCI-BEAM-REQ-020 & Response interpretation shall preserve the upstream response/kernel state; an incomplete state shall make intrinsic-beam interpretation unavailable. \\
+SCI-BEAM-REQ-021 & A prior shall record producer/version, array/network/slot identity, frame, unit, location, scale/covariance, reliability, compatibility, and fallback state. \\
+SCI-BEAM-REQ-022 & A compatible prior may initialize and bound locator gating but shall not enter the measurement objective as exact truth or veto the blind route. \\
+\bottomrule
+\end{longtable}
+\clearpage
+\begin{longtable}{>{\raggedright\arraybackslash\ttfamily\scriptsize}p{0.20\linewidth}L{0.72\linewidth}}
+\toprule ID & Requirement \\
+\midrule
+SCI-BEAM-REQ-023 & Missing, incompatible, weak, or unsuccessful prior use shall invoke the declared blind locator fallback and record the selected route. \\
+SCI-BEAM-REQ-024 & Candidate comparison shall use a common realized measurement model/objective so that a stronger observed compatible source can defeat a wrong soft prior. \\
+SCI-BEAM-REQ-025 & Prior influence shall report candidate route, displacement from prior, whether gating altered the searched domain, and whether the selected candidate came from prior or blind search. \\
+SCI-BEAM-REQ-026 & Locator and measurement phases, selected-candidate identity, parameter availability, support, valid-detector set, model identity, and their changes shall be recorded as one observation-local estimator trace. \\
+SCI-BEAM-REQ-027 & Convergence shall use all separately declared components of Equation~\ref{eq:convergence}, including per-parameter metrics, modulo-$\pi$ angular distance, availability equality, objective, candidate, support, and valid-detector stability; optimizer completion alone shall not imply convergence. \\
+SCI-BEAM-REQ-028 & Alternating candidates, changed parameter availability, violated parameter/objective/support/valid-detector stability, and maximum-iteration termination shall have distinct non-converged causes. \\
+SCI-BEAM-REQ-029 & Every attempted detector shall have an attempt record and exactly one terminal disposition with cause codes. \\
+SCI-BEAM-REQ-030 & Parameter admissibility shall require finite values where defined, positive ordered widths, a valid normalization, and parameters within the declared model domain. \\
+SCI-BEAM-REQ-031 & BEAM-specific QC shall separate quantitative validity conditions from review cues and shall preserve all triggered causes rather than collapse them into one flag. \\
+SCI-BEAM-REQ-032 & Any numerical QC, convergence, support, or S/N threshold shall be a versioned policy input with owner and requested/effective/realized values; v0.1 defines no production defaults. \\
+SCI-BEAM-REQ-033 & A signal-to-noise quantity shall name its numerator, uncertainty denominator, covariance assumptions, and status; a formal ratio shall not be called empirical significance without evidence. \\
+SCI-BEAM-REQ-034 & Model inadequacy, low S/N, edge truncation, masked core, disconnected support, nonphysical parameters, prior domination, and non-convergence shall remain distinguishable states or causes. \\
+SCI-BEAM-REQ-035 & A typed calibration candidate may be formed only by Equation~\ref{eq:candidate} with compatible source/amplitude conventions and declared uncertainty/dependence status. \\
+SCI-BEAM-REQ-036 & A calibration candidate shall carry source, amplitude, response, unit, covariance, observation, detector, model, and validity identities and shall not claim SCI-CAL promotion. \\
+SCI-BEAM-REQ-037 & Sensitivity shall be unavailable as a BEAM-owned v0.1 result; carried downstream diagnostics shall preserve their external authority and convention. \\
+SCI-BEAM-REQ-038 & Publication shall be atomic across result, QC, identity, policy, uncertainty, prior, convergence, candidate, and provenance records. \\
+SCI-BEAM-REQ-039 & Failure of a required bundle member shall fail publication; an optional map or TOD companion shall not substitute for it. \\
+SCI-BEAM-REQ-040 & Optional fit, APT, map, and TOD views shall carry explicit parent and compatibility identities and preserve BEAM state and limitations. \\
+SCI-BEAM-REQ-041 & Combining observations or using a result as a later prior shall require explicit compatibility checks and shall not mutate or retroactively redefine either observation-local result. \\
+SCI-BEAM-REQ-042 & Runs shall initialize all observation-local source, flux, prior, fit, convergence, QC, and validity state; execution order shall not affect an identical observation result. \\
+SCI-BEAM-REQ-043 & Duplicate rows, permuted rows, or repeated slot labels shall be resolved only through stable binding; ambiguous binding shall reject the affected relation. \\
+SCI-BEAM-REQ-044 & Equal numerical payloads with different validity or authority metadata shall remain scientifically distinct and shall not be silently merged. \\
+SCI-BEAM-REQ-045 & Outputs shall distinguish algebraic correctness, implementation conformance, response/representation fidelity, observational performance, and production readiness. \\
+SCI-BEAM-REQ-046 & Each claim unavailable because an upstream identity, covariance, response, calibration, or validity dependency is open shall be represented explicitly and causally. \\
+\bottomrule
+\end{longtable}
+\normalsize

@@ -1,6 +1,6 @@
 # SCI-BEAM — Detector Beam Inference, Calibration Candidates, QC, And Products
 
-Status: Stage A approved; Stage B author packet approved and being launched
+Status: Stage B implementation-blind draft `r0.1` ready for scientific-owner review
 
 Version: `v0.1`
 
@@ -23,9 +23,12 @@ three-part author packet on `2026-08-16`.
 - Separation from active ALIGN/AST work: confirmed as a process boundary.
 - Scientific-owner Scope Brief approval: complete.
 - Content-bound implementation-blind author packet: approved.
-- Implementation-blind Stage B author: authorized for launch.
-- Normative scientific contract, engineering conformance view, and PDFs: not
-  authored.
+- Implementation-blind Stage B author: complete.
+- Shared normative core: 46 requirements and 24 falsifiable predictions.
+- Scientific rationale and engineering conformance PDFs: rendered and
+  manager-reviewed at document revision `r0.1`.
+- Exact approved-decision traceability: manager-integrated after author freeze.
+- Scientific-owner review: pending, with seven substantive owner questions.
 - Implementation conformity, validation, and production promotion: outside
   this stage.
 
@@ -37,11 +40,13 @@ three-part author packet on `2026-08-16`.
 - [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): exact allowed and prohibited author inputs
 - [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md): sanitized stable conventions and interfaces
 - [`AUTHOR_PRIMARY_REFERENCE_BOUNDARY.md`](AUTHOR_PRIMARY_REFERENCE_BOUNDARY.md): bounded primary TolTEC context
-- [`DECISION_LOG.md`](DECISION_LOG.md): approved process decisions and pending scope decisions
-- [`CROSSWALK.md`](CROSSWALK.md): Stage A traceability scaffold
-- [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md): owner questions that gate or limit Stage B
-- `src/`: canonical Stage B source paths, presently blocked placeholders
-- `pdf/`: rendered outputs, presently unavailable because Stage B has not begun
+- [`DECISION_LOG.md`](DECISION_LOG.md): approved process and scientific-scope decisions
+- [`CROSSWALK.md`](CROSSWALK.md): exact 70-row normative and approved-decision traceability
+- [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md): approved scope decisions and retained Stage B owner questions
+- [`AUTHOR_DRAFT_DECISIONS.md`](AUTHOR_DRAFT_DECISIONS.md): implementation-blind author choices, questions, tensions, and unavailable claims
+- [`MANAGER_REVIEW_R0.1.md`](MANAGER_REVIEW_R0.1.md): bounded correction, firewall, traceability, and QA review
+- `src/`: canonical shared core and the two document views
+- `pdf/`: rendered `r0.1` scientific-rationale and engineering-conformance views
 
 ## Protected Boundary
 
@@ -59,8 +64,9 @@ without absorbing those repositories' separate authorities.
 
 ## Authority And Status
 
-No SCI-BEAM v0.1 scientific authority exists yet. The approved Stage B packet
-defines an author task, not an accepted contract. The historical `SCI-BEAM-001` audit
+No accepted or frozen SCI-BEAM v0.1 scientific authority exists yet. The
+Stage B `r0.1` artifacts are a review draft, not an accepted contract. The
+historical `SCI-BEAM-001` audit
 inventory was never launched and has no independent core or audit verdict.
 Current products and algorithms remain governed by their existing repository
 documents and production decisions until a later accepted contract says

@@ -1,6 +1,6 @@
 # SCI-BEAM v0.1 — Scientific-Owner Decision Ledger
 
-Status: scope decisions approved; Stage B author may proceed
+Status: scope decisions approved; Stage B `r0.1` owner review pending
 
 Owner: Grant Wilson
 
@@ -32,3 +32,23 @@ authorship is authorized subject to the exact packet and firewall in
 [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md). Contract acceptance,
 implementation conformity, validation, and production promotion remain
 separate future gates.
+
+## Stage B r0.1 Questions
+
+The implementation-blind author opened the following questions. The
+contract-manager review resolved `SCI-BEAM-ODQ-001` as a traceability-only
+matter by adding the exact already-approved decision mapping to
+[`CROSSWALK.md`](CROSSWALK.md). The remaining questions require no answer for
+the algebraic draft to be reviewed, but their affected stronger claims and
+production policies remain unavailable.
+
+| ID | Question | Current disposition |
+| --- | --- | --- |
+| `SCI-BEAM-ODQ-001` | What exact `BEAM-SCOPE-D001--D012` mapping may appear in the final crosswalk? | RESOLVED as traceability metadata from this approved ledger; no scientific change. |
+| `SCI-BEAM-ODQ-002` | Which numerical support, convergence, QC, and S/N policies are approved for a production profile? | OPEN; no defaults inferred. |
+| `SCI-BEAM-ODQ-003` | How many consecutive stable transitions are required by each effective iteration policy? | OPEN; must be explicit in realized policy. |
+| `SCI-BEAM-ODQ-004` | Which singular-covariance retained-subspace or regularization procedures, if any, are authorized? | OPEN; no procedure inferred. |
+| `SCI-BEAM-ODQ-005` | Which model-inadequacy diagnostics and owner-controlled dispositions are approved? | OPEN; typed state only. |
+| `SCI-BEAM-ODQ-006` | Which source/amplitude unit and normalization combinations permit a calibration candidate in each admitted data mode? | OPEN; candidate unavailable unless compatibility is demonstrated. |
+| `SCI-BEAM-ODQ-007` | Which response-completeness statement permits intrinsic detector-plus-telescope beam interpretation? | OPEN; conditioned effective response only when incomplete. |
+| `SCI-BEAM-ODQ-008` | Should a successor authorize richer beam/background families, and under what selection and identifiability rule? | OPEN; v0.1 retains the minimal family. |

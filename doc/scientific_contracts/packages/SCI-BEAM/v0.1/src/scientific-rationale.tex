@@ -1,1 +1,131 @@
-% Stage A placeholder. Scientific authorship has not been commissioned.
+\documentclass[10pt]{article}
+\usepackage[letterpaper,margin=0.72in,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,enumitem,microtype,xcolor,hyperref,fancyhdr,lastpage}
+\definecolor{beamblue}{HTML}{174A6E}
+\hypersetup{colorlinks=true,linkcolor=beamblue,urlcolor=beamblue}
+\pagestyle{fancy}\fancyhf{}
+\lhead{SCI-BEAM Scientific Rationale and Contract}\rhead{v0.1 / r0.1}
+\cfoot{\thepage\ of \pageref{LastPage}}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{3em}
+\hbadness=10000
+\hfuzz=1pt
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlist{nosep,leftmargin=*}
+\title{\textcolor{beamblue}{SCI-BEAM}\\Scientific Rationale and Contract}
+\author{Implementation-blind Stage B draft\\Scientific owner: Grant Wilson}
+\date{Contract version v0.1 \quad Document revision r0.1 \quad 2026-08-16}
+\begin{document}
+\maketitle
+\begin{center}\fbox{\parbox{0.92\linewidth}{\textbf{Draft status.} Owner-authorized scientific draft, not accepted or frozen. It states algebraic authority only. It makes no claim of implementation conformance, representation/response fidelity, observational performance, or production readiness.}}\end{center}
+
+\section*{Compact contract opening}
+\begin{tabular}{L{0.18\linewidth}L{0.75\linewidth}}
+\toprule
+Inputs & Immutable observation/calibrator identity; declared source brightness/flux model; detector-resolved conditioned signal or complete map bundle; WCS-bound relative coordinates; explicit detector metadata; covariance or typed approximation; requested/effective/realized policy; optional compatible soft prior.\\
+Outputs & Atomic per-observation bundle containing every detector attempt and terminal state, model/parameter estimates, translated source-reference centroid and shape, reference-origin excess amplitude, uncertainty status, prior influence, convergence/QC causes, typed calibration-candidate state, and compatibility provenance.\\
+Equation & $y_i=A\,T(\mathbf x_i-\boldsymbol\mu;\boldsymbol\Sigma,\boldsymbol\phi)+\mathbf b_i^\mathsf T\boldsymbol\beta+r_i$, fitted by declared generalized least squares or likelihood on causally admitted support.\\
+Source & First-principles derivation under the owner-approved SCI-BEAM Scope Brief and sanitized conventions. Bryan et al. (2018) and Golec et al. (2024) supply bounded instrument context only.\\
+Status & v0.1/r0.1 draft. Numerical production thresholds, calibration promotion, sensitivity authority, upstream closure, and current implementation behavior are intentionally unavailable.\\
+\bottomrule
+\end{tabular}
+
+\section{Scientific question and boundary}
+SCI-BEAM asks a narrow question: given an admitted observation of a declared calibrator and a trustworthy relation between retained data and a relative sky plane, what observation-local source-convolved profile is supported for each detector, with what uncertainty and validity? This question is smaller than astrometry, absolute calibration, sensitivity, mapmaking, and recurrent feedback. Keeping it smaller prevents a fitted centroid from becoming pointing truth, a fitted amplitude from becoming source flux, or a finite optimizer result from becoming production evidence.
+
+The observation and source identities are immutable. Every detector is attempted through an explicit occurrence-scoped binding. The scientific result is the parameterized response on admitted support, not a table row or filename. BEAM consumes upstream meanings without upgrading them: an incomplete response yields an effective-profile estimate, not a complete physical beam; a provisional unit yields a coefficient in that unit, not a promoted calibration. Likewise, the fitted translation of the declared source-reference origin is a relative modeled centroid in the supplied tangent plane, not a correction to the telescope pointing model or an assertion of absolute astrometric truth.
+
+This boundary determines what counts as an estimand. The observation-local coefficient, centroid translation, covariance ellipse, and background are quantities of one realized forward model. They exist only with their source identity, support, response state, covariance choice, and effective policy. Removing those qualifiers does not simplify the result; it changes the question. A consumer that needs a detector-plus-telescope beam, a pointing update, or a calibrated flux must establish the additional authority rather than infer it from a plausible number.
+
+\section{Why this forward model}
+The minimal two-dimensional beam model must represent unequal principal widths while avoiding redundant labels. A symmetric positive-definite covariance ellipse supplies that geometry. Ordering the eigenvalues and making angle periodic over $\pi$ removes the axis-swap degeneracy. At circularity the profile is rotation invariant, so reporting an angle would attach meaning to an unidentifiable coordinate.
+
+A calibrator is not always a mathematical point. Convolving a separately declared, unit-integral brightness shape with the Gaussian separates source extent from the beam parameterization. In v0.1 the source shape also has a finite first moment and a declared reference origin at zero first moment. A centered Gaussian has the same reference centroid, so their convolution retains it. The fitted $\boldsymbol\mu_d$ is the translation of that reference origin into the supplied tangent plane.
+
+Equation~\ref{eq:template} divides by the positive convolved value $H(\mathbf0)$ and therefore establishes exactly $T(\mathbf0)=1$. It does not establish that $H$ peaks at zero: a non-negative source can be asymmetric even when its first moment is zero. The amplitude $A_d$ is consequently the modeled source excess above background at $\mathbf x=\boldsymbol\mu_d$, not necessarily the maximum value of the convolved profile. This reference-origin convention makes the coefficient reproducible across point-like and finite-source cases without silently imposing source symmetry. A later claim that $A_d$ is a peak would require the realized source model to establish that additional property.
+
+The reference convention also prevents the translation and amplitude from absorbing arbitrary choices in the supplied source model. If the same brightness shape were tabulated about a shifted origin, a compensating change in $\boldsymbol\mu_d$ could leave the modeled pixels unchanged while changing the reported centroid. Fixing the first moment removes that bookkeeping degeneracy. Binding the normalization identity to every amplitude similarly prevents two otherwise identical fits, one normalized at a reference origin and another at a maximum or by integral, from masquerading as compatible measurements.
+
+Finite-source modeling does not by itself make the intrinsic beam identifiable. For a Gaussian source and Gaussian beam, for example, observed second moments combine source and beam contributions; uncertainty in one propagates directly into the other. With a general declared source shape, the same issue appears through correlated derivatives of $T$ with respect to $\boldsymbol\Sigma$ and $\boldsymbol\phi$. When source extent approaches the beam scale, a broad range of beam widths may be supported after plausible changes in the source nuisance parameters. The contract therefore requires the supplied source uncertainty to be propagated, or the intrinsic-width interpretation to become unavailable. Holding an uncertain source fixed can define a conditional fit, but it cannot create information.
+
+The point-source limit is a continuity check rather than permission to ignore finite extent. As the admitted source shape tends to a delta distribution at the declared reference origin, the reference-normalized convolution tends to the centered Gaussian. Away from that limit, the realized source identity and normalization remain part of the estimand. A fit cannot select whichever source extent makes the beam look most convenient unless such selection, its identifiability, and its evidence are separately authorized.
+
+A constant or planar background is the largest v0.1 family admitted. It can absorb a local offset or first-order slope while keeping the source model auditable. More flexible backgrounds can absorb broad source modes and require a new identifiability argument. Even the planar family is conditional: cropped or one-sided support may make gradients inseparable from centroid or width.
+
+\input{common/notation}
+
+\section{Admission, support, and objective}
+Validity precedes arithmetic. A non-finite value multiplied by zero is not removed, and a disabled or invalid sample is not restored because its payload is finite. After upstream exclusions, the effective geometric/support policy constructs $\mathcal I_d$ and records its shape, connectedness, edge relation, masked core, and causes. Zero support produces no fit.
+
+Support is part of the operator because it determines which distinctions the data can make. Symmetric coverage around the reference origin may separate a source translation from a planar background gradient, while one-sided or cropped coverage can make them nearly interchangeable. Removing a masked core may eliminate direct leverage on the reference-origin amplitude even when the wings constrain a width. A disconnected set can carry information only under an explicit rule that preserves its geometry. These are not merely data-volume effects: two supports with equal sample count can have different rank, covariance, and susceptibility to source/background degeneracy.
+
+The objective is a declared generalized least-squares likelihood. Full covariance is scientifically preferable when correlations are material, but v0.1 permits an explicitly labeled approximation so that the point estimate and its statistical limitations can be separated. A diagonal approximation may still yield a useful optimum, yet its inverse-Hessian errors are only conditional. Silent covariance regularization would change the estimator, so any retained-subspace factorization is part of realized provenance.
+
+Covariance has two roles that must not be conflated. In the objective it specifies how residual patterns are weighted, so changing it can move the optimum. In curvature or repeated-sampling interpretation it states how parameter variation is calibrated, so an approximation can also change claimed precision even when the optimum barely moves. A singular covariance contains no ordinary inverse on the full sample space; retaining a subspace or regularizing modes is therefore a scientific choice about which residual combinations are measured. v0.1 permits only a declared, provenance-bearing procedure and supplies no universal regularizer.
+
+Identifiability is local to the realized model and support. Width, source extent, background, and centroid can trade off, especially under cropping or uncertain finite-source size. A successful optimizer cannot supply information absent from the data. The contract therefore permits partial availability: a coefficient may exist while an intrinsic-beam interpretation or calibrated covariance remains unavailable.
+
+Local curvature is useful only after that distinction is made. An inverse Hessian around an interior, identifiable optimum describes uncertainty conditional on the realized likelihood and nuisance treatment. It is not automatically a total covariance, nor does finite matrix output prove regularity. Boundaries, near-circular ellipses, weak source/background separation, or an unconstrained source extent can make some parameter directions singular or coordinate-dependent. The result may retain an identifiable invariant such as the covariance ellipse or common width while marking orientation or a deconvolved width unavailable.
+
+\input{common/equations}
+
+\section{Priors, iteration, and convergence}
+The admitted TolAPT prior is intentionally soft and coarser than detector truth. It may seed candidate location and bound a prior-guided search, but it is not a penalty in the measurement objective and cannot veto blind search. Candidate comparison under one measurement objective gives observed evidence the final say among admitted candidates. Route, displacement, gate, reliability, compatibility, and fallback are retained so a result can reveal prior influence.
+
+This separation is causal, not cosmetic. A locator chooses which measurement hypotheses receive evaluation; a measurement objective scores the admitted data under the realized source-plus-background model. If prior reliability were inserted as an unreported objective penalty, a candidate could win because of inherited expectation rather than the observation. Conversely, a bounded prior-guided search alone could exclude a stronger source outside its gate. Maintaining a declared blind route and comparing candidate identities under the same measurement objective makes those two influences observable. The prior can reduce work or focus a search, but the record still shows whether it changed the searched domain or selected basin.
+
+A prior also cannot repair incompatible identity. Array, network, slot, frame, unit, producer version, and artifact relation must agree before its location or scale is used. Repeated slot text is not detector truth, and a finite coordinate is not evidence of compatibility. Missing, weak, incompatible, or unsuccessful prior use leads to the declared blind fallback with a typed cause. This preserves reproducibility: rerunning an identical observation with the same effective policy cannot inherit an unstated candidate from an earlier observation.
+
+Locator and measurement phases may alternate within the one observation-local estimator. That loop changes neither the immutable source nor external calibration authority. Convergence is a conjunction of separately represented stability statements under versioned metrics, scales, tolerances, and a declared consecutive-transition count. Alternation, incomplete stability, and maximum-iteration termination are distinct. There are no universal numerical defaults in this draft because selecting them is an empirical production decision.
+
+A raw parameter-vector difference is not a scientific convergence metric. Orientation is periodic over $\pi$, so angles just below $\pi$ and just above zero can represent nearly identical ellipses despite a large raw subtraction. The declared metric therefore uses modulo-$\pi$ angular distance. At circularity, orientation is unavailable rather than zero; no angular difference is computed when it is unavailable at both transitions, while a change into or out of availability fails stability. Other parameters use declared metrics and scales appropriate to their identities rather than acquiring an implicit common unit.
+
+The scalar comparisons are only one component. The parameter-availability set, measurement objective, selected candidate identity, admitted support, and valid-detector set each have an independent stability record. A loop that repeats nearly equal numbers while alternating source candidates has not converged. Nor has one whose objective is stable only because samples or detectors were dropped, or whose angle disappears as the fit crosses circularity. Convergence requires the complete conjunction for the declared number of consecutive transitions. Optimizer completion records what the numerical routine did; it does not override a failed scientific stability component.
+
+\section{Uncertainty and interpretation}
+Fit covariance is not a synonym for total uncertainty. Local curvature is meaningful only under the realized likelihood, identifiable interior parameterization, and adequate covariance statement. Calibrator extent/flux, coordinates, response, bandpass, atmosphere, and calibration can contribute nuisance uncertainty. Terms not supplied are named, and ``total'' is withheld. At circularity, uncertainty belongs to an invariant shape representation; angle uncertainty is unavailable.
+
+Nuisance propagation must follow dependence. Source flux and fitted reference-origin amplitude can share calibration or atmospheric information, and source extent can covary strongly with fitted width. Adding marginal variances while dropping cross-terms is not conservative in a universal direction: the omitted covariance can increase or decrease the result. Equation~\ref{eq:nuisance} therefore stands for a declared joint propagation, while Equation~\ref{eq:candidate} exposes the dependence term in the calibration candidate. When a material term or relationship is unknown, the corresponding total or candidate uncertainty is unavailable rather than silently independent.
+
+The response boundary is equally important. Filtering, map estimation, and kernels can reshape a source. Unless their complete realized transfer is established, the fitted $T$ describes the admitted conditioned response. This is still a legitimate estimand, but it is not silently relabeled as an intrinsic detector-plus-telescope beam.
+
+Response completeness also limits comparisons. Two observations can return equal fitted widths while referring to different filtering or map kernels; numerical equality does not make them measurements of the same physical object. Conversely, a well-characterized conditioned response may support precise repeatability claims without supporting an intrinsic-beam claim. The result therefore carries response identity and completeness beside the parameters. Deconvolution, if later authorized by the response owner, would be a separate interpretation with its own uncertainty and validity, not an automatic consequence of this fit.
+
+\section{QC, calibration candidacy, and products}
+QC records causes, not a magic integer. Algebraic conditions such as nonempty support, valid normalization, identified reported parameters, and physical width ordering can determine validity. Low S/N, unusual width, large residual structure, edge proximity, or prior displacement may be review cues whose thresholds require owner-controlled policy and evidence. Model inadequacy is not optimizer failure.
+
+The distinction between validity and review policy protects both physics and operations. A non-positive width or undefined reference normalization violates the model domain regardless of a production threshold. By contrast, deciding how much edge proximity, residual structure, or prior displacement is acceptable depends on observational performance and intended use. Encoding such cuts as if they followed from the Gaussian equations would promote an empirical operating choice into a physical constant. v0.1 therefore requires every numerical threshold to arrive as a versioned policy input with requested, effective, and realized values, while preserving the underlying quantitative diagnostic and every triggered cause.
+
+The same rule applies to signal-to-noise language. A ratio of $A_d$ to a conditional standard error is meaningful only with its numerator, denominator, covariance assumptions, and availability state. It becomes an empirically calibrated significance only after appropriate repeated-data evidence. A high formal ratio cannot rescue a misspecified source family, an incomplete response, or invalid support. A low ratio may be an owner-defined review cue without making an otherwise well-defined conditional coefficient algebraically nonexistent.
+
+When source flux and amplitude conventions are compatible, their ratio can be a typed detector-calibration candidate. Its uncertainty requires both component uncertainties and their dependence. The candidate preserves response and provisional-unit status and awaits SCI-CAL promotion. Sensitivity additionally requires an exact noise, time, atmosphere, calibration, and bandwidth convention, so it is not a BEAM-owned v0.1 output.
+
+Compatibility for that ratio is stronger than dimensional cancellation. The numerator must identify the intended source quantity, epoch, passband, and spectral convention; the denominator must identify the reference-origin template normalization, signal unit, response state, detector, and observation. A ratio formed from a peak-normalized amplitude is not interchangeable with one formed from a reference-origin amplitude unless the realized source model proves those locations coincide. BEAM can expose the typed candidate and the reason its uncertainty is available or unavailable, but only SCI-CAL can decide whether it becomes a calibration product.
+
+The result is published atomically. Fit, QC, identity, policy, uncertainty, prior, convergence, candidate, and provenance are one scientific commitment. Optional APT, map, or TOD representations refer to that parent; no optional artifact repairs a missing required companion. Observation combination requires explicit compatibility and never rewrites the original local result.
+
+This atomicity prevents selective promotion. A parameter table without its support and response state is not a smaller equivalent of the result, and a successful optional map does not repair a failed provenance record. Downstream APT or recurrent use may consume compatible quantities, but it must preserve the parent identity, unavailable claims, and observation-local nature of the estimate. Later evidence can qualify or supersede an interpretation through a new governed artifact; it does not retroactively turn the original r0.1 draft result into an accepted calibration, sensitivity, or production-ready beam.
+
+\input{common/definitions}
+\clearpage
+\input{common/assumptions}
+
+\section{Evidence and promotion boundary}
+An analytic identity or synthetic recovery can establish algebraic correctness. Code review and tests can establish implementation conformance. Transfer-function and coordinate checks are needed for representation/response fidelity. Repeated observations and truth-bearing data are needed for bias and uncertainty performance. Production readiness further needs owner-approved numerical policies and operational evidence. These gates are deliberately non-transitive.
+
+The predictions in Appendix B are routed accordingly. Reference-origin recovery, modulo-$\pi$ invariance, blind-prior fallback, and explicit stability transitions are algebraic or state-machine tests of this contract. They can expose a mismatch between an implementation and the shared core, but even perfect synthetic recovery does not validate the upstream source model, transfer response, covariance calibration, or production thresholds. Each stronger claim needs evidence from its owning layer and must remain unavailable until that evidence is admitted.
+
+The two admitted primary references establish only that TolTEC is a three-band millimeter-wave camera with optical context relevant to resolution/sensitivity, and that bright-source commissioning Beammap work publicly described detector location, raw-to-flux-density conversion, and beam FWHM outputs. They do not supply this estimator, thresholds, covariance, calibration meaning, or readiness evidence.
+
+\clearpage
+\appendix
+\input{common/requirements}
+\clearpage
+\input{common/edge_cases}
+
+\section{Bounded references}
+\begin{enumerate}
+\item S. Bryan et al., \emph{Optical Design of the TolTEC Millimeter-wave Camera}, 2018, arXiv:1807.00097, version 1. Used only for the bounded context stated above.
+\item J. Golec and the TolTEC Collaboration, \emph{Early high-resolution millimeter-wave maps from TolTEC}, 2024, \url{https://doi.org/10.1051/epjconf/202429300022}. Used only for the bounded commissioning/output context stated above.
+\end{enumerate}
+\end{document}

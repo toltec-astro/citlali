@@ -17,7 +17,7 @@ COMPLETE_PACKAGES = {
     "SCI-CAL": "v0.1",
     "SCI-MAP": "v0.1",
 }
-STAGE_B_PACKAGES = {
+RENDERED_DRAFT_PACKAGES = {
     "SCI-BEAM": "v0.1",
 }
 
@@ -25,7 +25,7 @@ STAGE_B_PACKAGES = {
 assert (ROOT / "INDEX.md").is_file()
 assert (ROOT / "templates" / "SCOPE_BRIEF.md").is_file()
 
-for package, version in {**COMPLETE_PACKAGES, **STAGE_B_PACKAGES}.items():
+for package, version in {**COMPLETE_PACKAGES, **RENDERED_DRAFT_PACKAGES}.items():
     base = ROOT / "packages" / package / version
     for name in (
         "README.md",
@@ -40,11 +40,11 @@ for package, version in {**COMPLETE_PACKAGES, **STAGE_B_PACKAGES}.items():
         assert (base / "src" / "common" / name).is_file(), f"{package}: missing common/{name}"
     for name in ("scientific-rationale.tex", "engineering-conformance.tex"):
         assert (base / "src" / name).is_file(), f"{package}: missing src/{name}"
-    if package in COMPLETE_PACKAGES:
+    if package in {**COMPLETE_PACKAGES, **RENDERED_DRAFT_PACKAGES}:
         for view in ("SCIENTIFIC-RATIONALE", "ENGINEERING-CONFORMANCE"):
             output = base / "pdf" / f"{package}-{view}-{version}.pdf"
             assert output.is_file() and output.stat().st_size > 0, f"{package}: missing {output.name}"
-    else:
+    if package in RENDERED_DRAFT_PACKAGES:
         assert (base / "INTERNAL_DOSSIER.md").is_file(), f"{package}: missing INTERNAL_DOSSIER.md"
         for name in (
             "AUTHOR_PACKET_MANIFEST.md",
@@ -53,7 +53,9 @@ for package, version in {**COMPLETE_PACKAGES, **STAGE_B_PACKAGES}.items():
         ):
             assert (base / name).is_file(), f"{package}: missing {name}"
         assert (base / "pdf" / "README.md").is_file(), f"{package}: missing pdf/README.md"
+        assert (base / "AUTHOR_DRAFT_DECISIONS.md").is_file(), f"{package}: missing AUTHOR_DRAFT_DECISIONS.md"
+        assert (base / "MANAGER_REVIEW_R0.1.md").is_file(), f"{package}: missing MANAGER_REVIEW_R0.1.md"
 
 print("scientific_contract_layout=PASS")
 print("complete_packages=" + ",".join(f"{name}/{version}" for name, version in COMPLETE_PACKAGES.items()))
-print("stage_b_authorized_packages=" + ",".join(f"{name}/{version}" for name, version in STAGE_B_PACKAGES.items()))
+print("rendered_draft_packages=" + ",".join(f"{name}/{version}" for name, version in RENDERED_DRAFT_PACKAGES.items()))

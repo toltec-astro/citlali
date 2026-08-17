@@ -1,1 +1,19 @@
-% Stage A placeholder. Normative assumptions are authored only after Scope Brief approval.
+% SCI-BEAM v0.1 shared normative assumptions. Document revision r0.1.
+\section{Assumptions, dependencies, and unavailable claims}
+\label{sec:assumptions}
+\begin{enumerate}[label=\textbf{A\arabic*.}]
+\item The immutable source identity and per-array brightness/flux model are upstream inputs. Source selection and catalog estimation are not BEAM results.
+\item Coordinates and WCS are externally supplied in the declared AltAz tangent plane. Relative centroid inference does not establish timing, detector-coordinate truth, pointing correction, or absolute astrometry.
+\item Upstream validity is causal and precedes payload evaluation. BEAM adds fit-specific admission and validity without weakening upstream exclusions.
+\item The admitted map/signal unit and response status are preserved. Unless the complete transfer response is established upstream, fitted shape is a conditioned effective profile and an intrinsic detector-plus-telescope beam claim is unavailable.
+\item The calibrator model is non-negative, unit-integral, has a finite first moment with declared reference origin satisfying $\int\mathbf uS(\mathbf u)\,d^2\mathbf u=\mathbf0$, is evaluated for the declared epoch/passband convention, and is accompanied by uncertainty or an explicit unavailable state.
+\item The base beam family is adequate only as a declared model. Good residuals or convergence do not prove that adequacy; model-inadequacy diagnostics remain distinct from optimizer failure.
+\item The covariance or approximation describes the retained support sufficiently for the statistical claims made. A diagonal approximation does not authorize calibrated uncertainty under correlated residuals.
+\item The support and background basis jointly identify source, centroid, widths, angle where non-circular, amplitude, and background. Parameters that are not identified are unavailable.
+\item A compatible TolAPT prior is soft locator initialization and bounded gating information only. It contributes no penalty to Equation~\ref{eq:objective}, is not exact UID truth, and cannot veto the declared blind route.
+\item Internal iteration is confined to one immutable observation/result identity. Cross-observation learning, feedback, recurrence, and restart are FRUIT responsibilities.
+\item SCI-CAL alone may promote a calibration candidate. Sensitivity is unavailable as a BEAM-owned result in v0.1 because no exact joint convention for noise, time, atmosphere, calibration, and bandwidth is authorized.
+\item Production thresholds are policy inputs, not inferred physical constants. Their provenance, requested value, effective value, realized value, owner, and change identity are recorded.
+\end{enumerate}
+
+Dependencies on TolProj/TolTECA photometry, SCI-CAL, ALIGN/AST, RTC/PTC, VAL, SCI-MAP, TolAPT, \texttt{toltec\_\allowbreak beammap}, and FRUIT remain open at their stated interfaces. This contract does not certify those inputs or close their authority decisions.

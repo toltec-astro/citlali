@@ -1,1 +1,72 @@
-% Stage A placeholder. Normative equations are authored only after Scope Brief approval.
+% SCI-BEAM v0.1 shared normative equations. Document revision r0.1.
+\section{Forward model and objective}
+\label{sec:equations}
+
+Let
+\begin{align}
+\mathbf R(\theta)&=\begin{bmatrix}\cos\theta&-\sin\theta\\\sin\theta&\cos\theta\end{bmatrix},\\
+\boldsymbol\Sigma&=\mathbf R(\theta)\,\mathrm{diag}(\sigma_{\rm maj}^2,\sigma_{\rm min}^2)\,\mathbf R(\theta)^\mathsf T,\\
+G(\mathbf u;\boldsymbol\Sigma)&=\exp\!\left(-\tfrac12\mathbf u^\mathsf T\boldsymbol\Sigma^{-1}\mathbf u\right),\\
+H(\mathbf u;\boldsymbol\Sigma,\boldsymbol\phi)&=\int S(\mathbf t;\boldsymbol\phi)G(\mathbf u-\mathbf t;\boldsymbol\Sigma)\,d^2\mathbf t,\\
+T(\mathbf u;\boldsymbol\Sigma,\boldsymbol\phi)&=\frac{H(\mathbf u;\boldsymbol\Sigma,\boldsymbol\phi)}{H(\mathbf 0;\boldsymbol\Sigma,\boldsymbol\phi)}.
+\label{eq:template}
+\end{align}
+The admitted source model shall have finite first moment and satisfy
+\[
+\int S(\mathbf u;\boldsymbol\phi)\,d^2\mathbf u=1,
+\qquad
+\int \mathbf uS(\mathbf u;\boldsymbol\phi)\,d^2\mathbf u=\mathbf0,
+\qquad H(\mathbf0)>0.
+\]
+Thus the declared reference origin is the source centroid, convolution with the centered Gaussian preserves that centroid, and Equation~\ref{eq:template} guarantees $T(\mathbf0)=1$. It does not assert that $\mathbf0$ is the global maximum for an asymmetric source. The detector model is
+\begin{equation}
+m_i(\mathbf q_d,\boldsymbol\phi)=A_dT(\mathbf x_i-\boldsymbol\mu_d;\boldsymbol\Sigma_d,\boldsymbol\phi)+\mathbf b_i^\mathsf T\boldsymbol\beta_d,
+\label{eq:model}
+\end{equation}
+where $\mathbf b_i$ is the effective constant or planar background basis.
+
+For an admitted covariance, the estimator minimizes
+\begin{equation}
+Q_d=(\mathbf y_d-\mathbf m_d)^\mathsf T\mathbf C_d^{-1}(\mathbf y_d-\mathbf m_d)+\log|\mathbf C_d|,
+\label{eq:objective}
+\end{equation}
+up to additive constants. If only a declared diagonal or other approximation is supplied, the same expression uses $\widetilde{\mathbf C}_d$ and every covariance, standardized-residual, and significance claim is labeled conditional on that approximation. Singular covariance is handled by a declared, provenance-bearing factorization on an explicitly retained subspace; silent regularization is forbidden.
+
+The fit covariance may be reported as a local likelihood covariance
+\begin{equation}
+\mathbf V_{q,d}=\left[\tfrac12\nabla\nabla^\mathsf TQ_d(\widehat{\mathbf q}_d)\right]^{-1}
+\label{eq:fitcov}
+\end{equation}
+only when the retained parameterization is locally identifiable, the solution is interior for the reported parameters, and the likelihood/covariance assumptions used by the formula are declared. Otherwise it is unavailable or supplied by a separately identified valid procedure. With nuisance vector $\boldsymbol\eta$ and admitted covariance $\mathbf V_\eta$, first-order propagation is
+\begin{equation}
+\mathbf V_{\rm total}=\mathbf V_{q}+\mathbf J_\eta\mathbf V_\eta\mathbf J_\eta^\mathsf T
+\label{eq:nuisance}
+\end{equation}
+with cross-terms included when dependence exists. Omitted calibrator, coordinate, response, atmosphere, bandpass, or calibration uncertainty is named; ``total'' is prohibited when a material term is unavailable.
+
+When the admitted source flux $F_{s,a}$ and fitted coefficient $A_d$ have compatible conventions and $A_d\neq0$, BEAM may form
+\begin{equation}
+K_d=\frac{F_{s,a}}{A_d},\qquad
+\mathrm{Var}(K_d)\simeq\frac{\mathrm{Var}(F_{s,a})}{A_d^2}+\frac{F_{s,a}^2\mathrm{Var}(A_d)}{A_d^4}-2\frac{F_{s,a}\mathrm{Cov}(F_{s,a},A_d)}{A_d^3}.
+\label{eq:candidate}
+\end{equation}
+If any required variance or dependence term is unknown, candidate uncertainty is unavailable rather than silently independent. $K_d$ remains a typed candidate for SCI-CAL review.
+
+An observation-local iteration may alternate locator and measurement phases. The effective policy declares a metric $d_j$ and scale $s_j$ for each parameter, objective scale $s_Q$, tolerances $\epsilon_j,\epsilon_Q$, support and valid-detector stability rules, and maximum iteration $N_{\max}$. Linear scalar parameters may use absolute difference only when the policy says so; orientation shall use the modulo-$\pi$ distance
+\[
+d_\pi(a,b)=\min_{n\in\mathbb Z}|a-b+n\pi|.
+\]
+Let $\mathcal A_d^{(k)}$ be the parameter-availability set, $c_d^{(k)}$ the selected locator/measurement-candidate identity including a typed none state, and $\mathcal V^{(k)}$ the valid-detector set. Convergence occurs only when
+\begin{equation}
+\begin{aligned}
+\max_{j\in\mathcal A_d^{(k)}\cap\mathcal A_d^{(k-1)}}
+\frac{d_j(q_j^{(k)},q_j^{(k-1)})}{s_j}&\le\epsilon_j,
+&\mathcal A_d^{(k)}&=\mathcal A_d^{(k-1)},\\
+\frac{|Q^{(k)}-Q^{(k-1)}|}{s_Q}&\le\epsilon_Q,
+&c_d^{(k)}&=c_d^{(k-1)},\\
+\mathcal I_d^{(k)}&=\mathcal I_d^{(k-1)},
+&\mathcal V^{(k)}&=\mathcal V^{(k-1)}.
+\end{aligned}
+\label{eq:convergence}
+\end{equation}
+for the declared number of consecutive transitions and only where the objective is mutually defined. Availability equality is tested separately: a parameter unavailable at both transitions, including $\theta$ at circularity, contributes no numerical metric; a change into or out of availability fails stability. Candidate, support, and valid-detector stability are separately recorded components, not entries hidden in a raw parameter vector. No numerical tolerance or count is a universal scientific constant in v0.1.

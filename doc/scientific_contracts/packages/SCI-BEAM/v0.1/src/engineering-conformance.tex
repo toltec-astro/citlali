@@ -1,1 +1,54 @@
-% Stage A placeholder. Engineering conformance is authored from the future shared authority.
+\documentclass[10pt]{article}
+\usepackage[letterpaper,margin=0.68in,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,enumitem,microtype,xcolor,hyperref,fancyhdr,lastpage}
+\definecolor{beamgreen}{HTML}{176B5B}
+\hypersetup{colorlinks=true,linkcolor=beamgreen,urlcolor=beamgreen}
+\pagestyle{fancy}\fancyhf{}
+\lhead{SCI-BEAM Engineering Conformance Specification}\rhead{v0.1 / r0.1}
+\cfoot{\thepage\ of \pageref{LastPage}}
+\setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
+\setlength{\emergencystretch}{3em}
+\hbadness=10000
+\hfuzz=1pt
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlist{nosep,leftmargin=*}
+\title{\textcolor{beamgreen}{SCI-BEAM}\\Engineering Conformance Specification}
+\author{Generated engineering view of the shared normative core\\Scientific owner: Grant Wilson}
+\date{Contract version v0.1 \quad Document revision r0.1 \quad 2026-08-16}
+\begin{document}
+\maketitle
+\begin{center}\fbox{\parbox{0.92\linewidth}{\textbf{Draft status.} This document contains no independent science. Normative equations, definitions, assumptions, requirements, and predictions are imported from the same shared v0.1 core as the Scientific Rationale. Conformance is not claimed here.}}\end{center}
+
+\section{Conformance target}
+An implementation conforms only if it realizes the shared authority below and produces evidence for every applicable requirement and prediction without weakening upstream validity or upgrading scientific authority. Field names, schemas, algorithms, storage formats, and current behavior are intentionally unspecified.
+
+\begin{longtable}{L{0.25\linewidth}L{0.67\linewidth}}
+\toprule Area & Required evidence class \\
+\midrule
+Identity and state & Demonstrate immutable parent/source/observation identity, explicit occurrence-scoped detector binding, and one-way requested/effective/realized state. \\
+Numerical operator & Demonstrate the declared source-convolved ellipse, amplitude normalization, background basis, admitted support, and objective, including edge and degeneracy behavior. \\
+Validity and uncertainty & Demonstrate causal exclusions, typed unavailable states, covariance method/assumptions, nuisance treatment, and cause-preserving QC. \\
+Prior and convergence & Demonstrate compatibility, blind fallback, common-objective candidate selection, influence record, and conjunctive termination state. \\
+Publication & Demonstrate an atomic required bundle, explicit optional-parent relations, candidate non-promotion, and compatibility checks. \\
+Authority gates & Label algebraic, implementation, response/representation, observational-performance, and production-readiness evidence separately. \\
+\bottomrule
+\end{longtable}
+
+\section{Conformance procedure}
+For each requirement, evidence shall identify the realized policy and scientific identity, exercise applicable positive and negative cases, and compare the produced state and payload to the shared equation or invariant. A finite match without matching identity and validity is a failure. Skipped required inputs are not a pass. Threshold-dependent evidence shall report the supplied policy rather than imply a v0.1 default.
+
+Prediction cases are falsifiable expectations of the shared operator. Synthetic cases can test algebra and state transitions; they cannot establish observational performance or production readiness. Correlated-noise calibration, response fidelity, and calibration promotion require evidence from their owning layers.
+
+\clearpage
+\input{common/notation}
+\input{common/definitions}
+\input{common/equations}
+\input{common/assumptions}
+\clearpage
+\input{common/requirements}
+\clearpage
+\input{common/edge_cases}
+
+\section{Conformance report minimum}
+A conformance report shall give, for every requirement and prediction, an evidence identifier, applicable/not-applicable decision with reason, realized policy identity, observed result, expected result, and disposition. It shall list unavailable upstream claims and shall not represent a compile, test pass, synthetic match, or clean log as proof of a later authority gate.
+\end{document}
