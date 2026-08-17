@@ -6,11 +6,11 @@
 \definecolor{beamlight}{HTML}{EEF5F8}
 \definecolor{beamwarn}{HTML}{A85D00}
 \hypersetup{colorlinks=true,linkcolor=beamblue,urlcolor=beamblue,
-pdftitle={TolTEC Beammap Analysis - SCI-BEAM v0.1 Science-Team Rationale r0.2},
-pdfauthor={SCI-BEAM scientific-owner draft},
+pdftitle={TolTEC Beammap Analysis - SCI-BEAM v0.1 Science-Team Rationale r0.3},
+pdfauthor={SCI-BEAM scientific owner},
 pdfsubject={Effective PSF, detector calibration, sensitivity, and Beammap APT production}}
 \pagestyle{fancy}\fancyhf{}
-\lhead{SCI-BEAM v0.1 -- Science-Team Rationale r0.2 DRAFT}
+\lhead{SCI-BEAM v0.1 -- Science-Team Rationale r0.3}
 \rhead{}
 \cfoot{\thepage\ of \pageref{LastPage}}
 \setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
@@ -31,7 +31,7 @@ pdfsubject={Effective PSF, detector calibration, sensitivity, and Beammap APT pr
 {\LARGE\color{beamblue}\textbf{Effective PSF, Detector Calibration,}}\\[0.04in]
 {\LARGE\color{beamblue}\textbf{Sensitivity, and APT Production}}\\[0.38in]
 {\large Scientific contract version v0.1}\\[0.06in]
-{\large Science-team rationale revision r0.2 -- DRAFT}\\[0.08in]
+{\large Science-team rationale revision r0.3}\\[0.08in]
 {\large 2026-08-17}\\[0.46in]
 \fcolorbox{beamblue}{beamlight}{\begin{minipage}{0.79\linewidth}\centering\small
 A scientist-facing explanation of what a TolTEC Beammap measures, how BEAM
@@ -73,8 +73,8 @@ $\mathrm{mJy\,beam^{-1}}$ product.
 Input & Standardized detector-resolved Beammap in $\Delta f/f$, physical WCS/metric, valid support, covariance state, parent map-response lineage, calibrator/source model, fixed nominal beam, source atmosphere, and optional soft locator prior.\\
 Output & Complete Beammap APT with raw/horizon coordinates, full effective-core tensor, amplitude, top-of-atmosphere nominal-beam \texttt{flxscale}, NEFD-like \texttt{sens}, independent quantity states, and immutable links to maps, residuals, covariance, and diagnostics.\\
 Organizing fit & $x^{\rm BM}_{d,p}=A_d^{\rm obs}T(\boldsymbol\vartheta_p-\boldsymbol\mu_d;\boldsymbol\Sigma_{{\rm eff},d},\boldsymbol\phi)+\mathbf b_p^\mathsf T\boldsymbol\beta_d+r_{d,p}$.\\
-Calibration & $\mathrm{flxscale}_d=F^{\rm TOA,nom}_{s,a}/(C^{\rm eff}_{s,a}A_d^{\rm obs})$, with no additional finite-source dilution factor.\\
-Status & Scientific-owner draft v0.1/r0.2. Implementation, map-response fidelity, observational performance, science-impact qualification, and production readiness are not assessed.\\
+Calibration & The source flux $F^{\rm TOA,nom}_{s,a}$ is required in top-of-atmosphere mJy per fixed nominal beam; $\mathrm{flxscale}_d=F^{\rm TOA,nom}_{s,a}/(C^{\rm eff}_{s,a}A_d^{\rm obs})$.\\
+Status & Scientific authority v0.1/r0.3 frozen. Implementation, map-response fidelity, observational performance, science-impact qualification, and production readiness are not assessed.\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -85,7 +85,15 @@ coexist with unavailable \texttt{sens}; a precise Gaussian core may coexist
 with unknown wing power; and a useful telescope-health measurement need not be
 qualified as a downstream kernel.}
 
-\tableofcontents\clearpage
+\section*{Contents}
+\begin{tabularx}{\linewidth}{@{}YY@{}}
+1. What BEAM measures & 6. NEFD-like sensitivity \\
+2. Nominal beam and calibrator model & 7. Aberration, adequacy, and broadening \\
+3. Per-detector Beammap fit & 8. Beammap APT and companion products \\
+4. Detector coordinates and LMT field rotation & 9. Validation and open scientific decisions \\
+5. Amplitude and top-of-atmosphere \texttt{flxscale} & Bounded references \\
+\end{tabularx}
+\clearpage
 
 \section{What BEAM measures}
 \label{sec:what}
@@ -142,7 +150,7 @@ remain part of the scientific result.}
 
 Calibration needs a stable reference that is not redefined by the very
 Beammap being measured. For array $a$, the source model therefore supplies
-$F^{\rm TOA,nom}_{s,a}$: the predicted calibrator amplitude at the top of the
+$F^{\rm TOA,nom}_{s,a}$: the required calibrator source flux at the top of the
 atmosphere, in mJy per fixed versioned nominal beam, for the declared source,
 epoch, passband, spectrum, finite-source convention, and source-reference
 origin. The nominal beam is a calibration reference, not a claim about the
@@ -163,12 +171,10 @@ translated reference origin. For an asymmetric source that origin need not be
 the profile maximum. This convention preserves the subtle and useful r0.1
 finite-source treatment while making the calibration numerator explicit.
 
-Crucially, $F^{\rm TOA,nom}_{s,a}$ is already the nominal-beam source
-amplitude under the same reference-origin convention. It is not integrated
-source flux and is not convolved again with the fitted effective PSF. There is
-therefore no additional factor of $H(\mathbf0)$ in the calibration ratio. An
-extra dilution factor would count the nominal-beam finite-source convention
-twice.
+$F^{\rm TOA,nom}_{s,a}$ is supplied in
+$\mathrm{mJy\,beam_{nom}^{-1}}$ under the same source-reference-origin
+convention as the fitted amplitude. That declared quantity enters the
+calibration ratio directly.
 
 \begin{figure}[ht]\centering
 \flowbox{0.92in}{Source model +\\fixed nominal beam\\$\Downarrow$\\$F^{\rm TOA,nom}$}
@@ -177,10 +183,9 @@ twice.
 \hspace{0.05in}
 \flowbox{0.92in}{Source atmosphere\\$A^{\rm TOA-eq}=CA^{\rm obs}$}
 $\longrightarrow$
-\flowbox{0.92in}{\texttt{flxscale}\\$F^{\rm TOA,nom}/A^{\rm TOA-eq}$\\no extra $H(0)$}
-\caption{The amplitude convention. The fixed nominal-beam prediction and the
-fitted map amplitude use the same source-reference origin. Finite-source
-normalization is already embodied in the numerator.}
+\flowbox{0.92in}{\texttt{flxscale}\\$F^{\rm TOA,nom}/A^{\rm TOA-eq}$}
+\caption{The amplitude convention. The fixed nominal-beam source flux and
+the fitted map amplitude use the same source-reference origin.}
 \label{fig:amplitude}
 \end{figure}
 
@@ -218,13 +223,22 @@ angle $\Omega_G=2\pi\sigma_{\rm maj}\sigma_{\rm min}$. This is not promoted
 to complete beam solid angle while material wings may be unmeasured.
 
 The fit is joint. Its local model Jacobian contains derivatives with respect
-to amplitude, centroid, all tensor degrees of freedom, background, and any
-admitted source nuisance parameters. Its covariance must retain material
-amplitude--width, centroid--shape, width--orientation, background--centroid,
-source-size--beam-width, coordinate--shape, atmosphere--amplitude, and
-calibrator--amplitude relationships. Independent one-parameter error bars do
-not describe this problem. At circularity, uncertainty is expressed in an
-invariant tensor basis rather than as an arbitrary angle error.
+to amplitude, centroid, all tensor degrees of freedom, background, admitted
+source-shape nuisance parameters, and coordinate/WCS nuisance parameters when
+they are included jointly. The fit covariance retains material cross terms
+among those map-model parameters, including amplitude--width,
+centroid--shape, width--orientation, background--centroid,
+source-size--beam-width, and coordinate--shape relationships. Independent
+one-parameter error bars do not describe this problem. At circularity,
+uncertainty is expressed in an invariant tensor basis rather than as an
+arbitrary angle error.
+
+Separate derived-product Jacobians propagate the calibrator source flux,
+nominal-beam convention, source atmosphere, source-model systematic terms,
+scan-noise statistic, and exposure normalization into \texttt{flxscale} and
+\texttt{sens}. The complete BEAM result retains material dependence between
+the map fit and these derived stages without relabeling every term as local
+fit covariance.
 
 Support is part of the estimator. Cropping, a masked core, a disconnected
 region, or a one-sided background can change which quantities are identifiable.
@@ -233,17 +247,35 @@ The complete empirical map, support, fitted model, residual, background, and
 model-adequacy diagnostics are therefore preserved beside the compact APT
 summary.
 
+A compatible TolAPT prior may seed or bound the source search, but it does not
+enter the measurement objective as hidden truth and cannot veto a blind
+search. The selected candidate, prior route, and fallback remain explicit.
+Optimizer completion alone is not scientific convergence: candidate identity,
+available parameters, support, objective, and valid-detector membership must
+be stable under the declared policy.
+
 \section{Detector coordinates and LMT field rotation}
 \label{sec:geometry}
 
-SCI-BEAM produces two relative coordinate representations. The raw coordinate
-$(x_t,y_t)_{\rm raw}$ comes from the fitted source centroid in the
-observation-local Beammap tangent plane. The horizon coordinate $(x_t,y_t)$ is
-the same detector geometry after derotation into the declared horizon-fixed
-focal-plane frame. The effective angle for detector $d$ is derived from the
-time and elevation support over which that detector's PSF was actually
-measured, using the same weighting that constrains the fit. The PSF tensor is
-rotated with the coordinate.
+SCI-BEAM produces two relative coordinate representations. If
+$\boldsymbol\mu_{d,\rm fit}$ is the fitted source centroid, the raw detector
+coordinate is
+\begin{equation}
+\mathbf x^{\rm raw}_{t,d}=
+\mathbf S_{\mu\rightarrow x,o}\boldsymbol\mu_{d,\rm fit},
+\label{eq:rationale-centroid-sign}
+\end{equation}
+where $\mathbf S_{\mu\rightarrow x,o}$ is the declared sign and frame
+transformation for the parent Beammap. It may not be inferred later from
+implementation behavior. The horizon coordinate $(x_t,y_t)$ is the same
+detector geometry after derotation into the declared horizon-fixed focal-plane
+frame.
+
+The effective angle for detector $d$ is derived from the parent-sample time
+and elevation support and contribution weights that produced the fitted map
+pixels, restricted through the realized pixel-domain fit support. Pixel fit
+weights alone are not parent timing evidence. The PSF tensor is rotated with
+the coordinate.
 
 A single observation-average angle is acceptable only when its induced
 coordinate and tensor error is negligible relative to the required accuracy.
@@ -267,13 +299,16 @@ different effective angles, as smaller differential geometry uncertainty.
 BEAM does not relabel its ensemble translation as telescope pointing error,
 absolute array position, or a pointing-model correction.
 
-This limitation makes one transfer rule essential: every pair of bracketing
-pointing observations and the science observation receiving their correction
-must use the same immutable APT coordinate realization and AST rotation
-convention. Then arbitrary centering and conventional-pivot terms are treated
-consistently and largely cancel. Changing APT origin or realization between
-pointing and science is invalid unless a separately authorized coordinate
-transform proves equivalence.
+This limitation makes one transfer rule essential: the bracketing pointing
+observations and the associated science observation must use the same
+immutable APT artifact and AST rotation convention. Then arbitrary centering
+and conventional-pivot terms are treated consistently and largely cancel.
+Changing the APT artifact between pointing and science is invalid unless a
+separately authorized coordinate transform proves equivalence.
+
+A pointing observation and correction immediately before the Beammap normally
+place the source close to the expected location, but do not establish the
+physical field-rotation pivot.
 
 \section{Amplitude and top-of-atmosphere \texttt{flxscale}}
 \label{sec:flxscale}
@@ -335,12 +370,15 @@ as the APT calibration, and robustly summarized:
 n_d^{\rm off}=\operatorname{median}_{s\in\mathcal S_{d,\rm off}}
 n_{d,s}^{\rm TOA-eq},
 \qquad
-{\tt sens}_d={\tt flxscale}_d\,n_d^{\rm off}.
+{\tt sens}_d=\left|{\tt flxscale}_d\right|\,n_d^{\rm off}.
 \label{eq:rationale-sens}
 \end{equation}
 With the declared time normalization, \texttt{sens} has units
 $\mathrm{mJy\,beam_{nom}^{-1}\sqrt{s}}$. It is a per-detector,
-top-of-atmosphere, nominal-beam, NEFD-like point-source sensitivity.
+top-of-atmosphere, nominal-beam, NEFD-like point-source sensitivity and is
+finite and strictly positive whenever available. The sign of
+\texttt{flxscale} remains part of the detector response convention; only its
+magnitude enters sensitivity.
 
 The quantity has two legitimate uses: a rough relative-sensitivity input for
 approximate weighting and a detector/array/system-health diagnostic. It is not
@@ -349,7 +387,7 @@ variance, empirical significance, or complete noise model. A weighting owner
 may adopt a relation proportional to $1/{\tt sens}^2$, but owns normalization,
 admission, covariance assumptions, and permitted claims.
 
-The exact scan statistic is deliberately not invented in r0.2. Source-
+The exact scan statistic is deliberately not invented in r0.3. Source-
 exclusion radius, baseline treatment, time-frequency range or bandwidth,
 robust or spectral estimator, correlated-noise treatment, minimum scan count,
 exposure normalization, partial-scan policy, and uncertainty/repeatability
@@ -482,15 +520,15 @@ Conventional pivot & observation/elevation, partly common & common plus differen
 \end{tabularx}
 \end{table}
 
-\DecisionBox{Sensitivity estimator and support}{The exact scan noise statistic,
+\DecisionBox{SCI-BEAM-OD-001 --- Sensitivity estimator and support}{The exact scan noise statistic,
 source-exclusion radius, scan admission, exposure/bandwidth normalization,
 correlated-noise treatment, and uncertainty statistic remain unresolved.}
 
-\DecisionBox{Adequacy, wings, and kernels}{Evidence must determine diagnostic
+\DecisionBox{SCI-BEAM-OD-002 --- Adequacy, wings, and kernels}{Evidence must determine diagnostic
 thresholds, required PSF accuracy for each use, map depth/radius for wing
 constraints, and the criteria for Gaussian, empirical, or unavailable kernels.}
 
-\DecisionBox{Physical pivot registration}{A future authority must establish
+\DecisionBox{SCI-BEAM-OD-003 --- Physical pivot registration}{A future authority must establish
 the physical boresight and field-rotation pivot, acceptable conventional-pivot
 residuals, uncertainty, epoch, and transfer domain.}
 

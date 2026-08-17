@@ -1,4 +1,4 @@
-% SCI-BEAM v0.1 shared normative definitions. Document revision r0.2.
+% SCI-BEAM v0.1 shared normative definitions. Document revision r0.3.
 \section{Definitions and scientific state model}
 \label{sec:definitions}
 
@@ -37,10 +37,9 @@ integral and a declared zero-first-moment reference origin. The effective
 Gaussian is convolved with that shape and the resulting template is normalized
 to unity at the same origin. $A_d^{\rm obs}$ is the fitted observed-plane
 excess at that origin in $\Delta f/f$; it is not necessarily a profile maximum.
-$F^{\rm TOA,nom}_{s,a}$ is a separately calculated top-of-atmosphere source
-amplitude in mJy per fixed nominal beam under the identical reference-origin
-convention. Because finite-source/nominal-beam dilution is already embodied in
-$F^{\rm TOA,nom}_{s,a}$, no additional $H(\mathbf0)$ factor enters
+$F^{\rm TOA,nom}_{s,a}$ is the required top-of-atmosphere calibrator source
+flux in $\mathrm{mJy\,beam_{nom}^{-1}}$ for the fixed nominal beam under the
+identical reference-origin convention. That declared value enters
 \texttt{flxscale}.
 
 \paragraph{Effective PSF tensor.} The scientific shape is one symmetric
@@ -65,11 +64,14 @@ and material spatial variation. Raw azimuth/elevation offsets are insufficient
 unless this transformation establishes their orthonormality.
 
 \paragraph{Raw and horizon coordinates.} $(x_t,y_t)_{\rm raw}$ is the relative
-detector coordinate derived from the fitted centroid in the observation-local
-tangent plane. $(x_t,y_t)$ is the coordinate after derotation into the
-declared horizon-fixed focal-plane frame. The effective derotation angle is
-derived for each detector from the same valid time/elevation support and
-weighting that determine its fit; the PSF tensor transforms consistently.
+detector coordinate obtained from the fitted source centroid by the explicit
+declared sign/frame transformation
+$\mathbf S_{\mu\rightarrow x,o}$. $(x_t,y_t)$ is the coordinate after
+derotation into the declared horizon-fixed focal-plane frame. The effective
+derotation angle is derived for each detector from the parent-sample
+time/elevation support and contribution weights that produced the fitted map
+pixels, propagated through the realized fit support; the PSF tensor transforms
+consistently.
 
 \paragraph{Origin gauge and rotation pivot.} Beammap APT coordinates are
 defined only up to a common translation. The deterministic recentering rule is
@@ -80,11 +82,10 @@ publish ensemble translation as pointing error, boresight offset, absolute
 array position, or pointing-model correction.
 
 \paragraph{Same-APT pointing transfer.} Bracketing pointing observations and
-the science observation receiving their correction use the same immutable APT
-coordinate realization and AST rotation convention. A different origin or
-realization is invalid unless a separately authorized coordinate transform
-proves equivalence. Physical focal-plane-to-boresight registration is a future
-calibration product.
+the associated science observation use the same immutable APT artifact and AST
+rotation convention. A different artifact is invalid unless a separately
+authorized coordinate transform proves equivalence. Physical
+focal-plane-to-boresight registration is a future calibration product.
 
 \paragraph{Broadening tensor.} For compatible Gaussian and response
 conventions, $\boldsymbol\Sigma_{\rm broad}=\boldsymbol\Sigma_{\rm eff}-
@@ -93,18 +94,27 @@ Gaussian-smoothing interpretation requires positive-semidefinite support
 within uncertainty. An indefinite result is preserved as model-inadequacy or
 incompatibility evidence and is not forced into a kernel.
 
+\paragraph{Fit and derived-product covariance.} The local map-fit Jacobian and
+covariance cover the fitted and admitted map-model parameters. Separate
+derived-product Jacobians add the calibrator source flux, nominal-beam
+convention, source atmosphere, source-model systematics, scan-noise statistic,
+and exposure normalization for \texttt{flxscale} and \texttt{sens}, retaining
+material dependence between stages.
+
 \paragraph{Top-of-atmosphere \texttt{flxscale}.} BEAM owns source-observation
 atmosphere treatment, candidate evaluation, scientific acceptance, and
 publication. The factor converts raw $\Delta f/f$ to top-of-atmosphere mJy per
-fixed nominal beam. Source atmosphere appears once in its lineage; target-
+fixed nominal beam. Source atmosphere belongs to its lineage; target-
 observation atmosphere is a later SCI-CAL operation. TolProj may associate or
 transform the published source APT under its own approved contract, and
-SCI-CAL consumes the selected observation-specific factor once.
+SCI-CAL consumes the selected observation-specific factor.
 
 \paragraph{Sensitivity.} \texttt{sens} is a per-detector, top-of-atmosphere,
-nominal-beam, NEFD-like point-source sensitivity. It is the product of
-\texttt{flxscale} and a declared robust, time-normalized off-source scan noise
-statistic on the matching source-atmosphere convention. It may support rough
+nominal-beam, NEFD-like point-source sensitivity. It is the product of the
+magnitude of \texttt{flxscale} and a declared non-negative, robust,
+time-normalized off-source scan noise statistic on the matching
+source-atmosphere convention. It is finite and strictly positive whenever
+available; the sign of \texttt{flxscale} remains separately preserved. It may support rough
 relative weights and health diagnosis; it is not calibration, total
 uncertainty, exact inverse variance, empirical significance, or a complete
 noise model.

@@ -1,15 +1,30 @@
 # SCI-BEAM v0.1 — Scientific-Owner Decision Ledger
 
-Status: r0.2 open scientific decisions only
+Status: r0.3 frozen-authority open scientific decisions
 
 Scientific owner: Grant Wilson
 
 Updated: `2026-08-17`
 
-The owner decisions settled in the r0.2 directive are recorded in
+The owner decisions settled in the r0.2 directive and bounded r0.3 review are recorded in
 [`DECISION_LOG.md`](DECISION_LOG.md) as `BEAM-SCOPE-D013--D030` and are not
 reopened here. This ledger contains only choices that remain genuinely
 unresolved. No open item is replaced by an implementation default.
+
+## Stable document-facing groups
+
+These three stable IDs appear in the rationale, formal contract, crosswalk,
+and future audit findings. The atomic question IDs remain stable underneath
+them so one group can be resolved in parts without changing its public
+identity.
+
+| Group ID | Subject | Atomic questions |
+| --- | --- | --- |
+| `SCI-BEAM-OD-001` | Sensitivity estimator and support | `SCI-BEAM-ODQ-101--103` |
+| `SCI-BEAM-OD-002` | Adequacy, wings, and kernels | `SCI-BEAM-ODQ-104--106`, `SCI-BEAM-ODQ-109` |
+| `SCI-BEAM-OD-003` | Physical pivot registration | `SCI-BEAM-ODQ-107--108` |
+
+## Atomic open questions
 
 | ID | Owning authority | State | Evidence or decision required | Exact blocked claim or output | Resolution authority | Resolution date | Affected documents |
 | --- | --- | --- | --- | --- | --- | --- | --- |

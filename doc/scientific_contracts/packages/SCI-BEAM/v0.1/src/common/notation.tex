@@ -1,4 +1,4 @@
-% SCI-BEAM v0.1 shared normative notation. Document revision r0.2.
+% SCI-BEAM v0.1 shared normative notation. Document revision r0.3.
 \section{Normative notation}
 \label{sec:notation}
 \small
@@ -19,17 +19,18 @@ $\boldsymbol\Sigma_{{\rm eff},d}$ & Symmetric positive-definite tensor of the ob
 $G(\mathbf u;\boldsymbol\Sigma)$ & Peak-normalized elliptical Gaussian core associated with tensor $\boldsymbol\Sigma$. \\
 $H=S*G$; $T=H/H(\mathbf0)$ & Source-convolved profile and template normalized to unity at the declared source-reference origin. That origin need not be the profile maximum. \\
 $A_d^{\rm obs}$ & Fitted observed-plane source excess at the translated reference origin, in $\Delta f/f$. \\
-$\boldsymbol\mu_{d,\rm raw}$ & Fitted source-reference translation, interpreted as the raw relative detector coordinate in the observation-local tangent plane after the declared common-origin rule. \\
+$\boldsymbol\mu_{d,\rm fit}$; $\mathbf S_{\mu\rightarrow x,o}$ & Fitted source-reference centroid and the declared sign/frame transformation from fitted source centroid to raw relative detector coordinate for observation $o$. \\
 $(x_t,y_t)_{d,\rm raw}$; $(x_t,y_t)_d$ & Raw observation-local relative detector coordinate and its horizon-derotated relative focal-plane coordinate, in arcseconds. \\
-$\chi_{d,\rm eff}$ & Effective field-derotation angle derived from the same valid time/elevation support and weighting that constrain detector $d$. \\
+$w^{\rm BM}_{d,p,t}$; $\chi_{d,\rm eff}$ & Parent-sample contribution weight to detector-map pixel $p$ and the effective field-derotation angle derived from those parent weights after restriction through the realized fit support. \\
 $\boldsymbol\Sigma_{{\rm nom},a}$; $\boldsymbol\Sigma_{{\rm broad},d}$ & Fixed versioned nominal-beam tensor and compatible difference $\boldsymbol\Sigma_{{\rm eff},d}-\boldsymbol\Sigma_{{\rm nom},a}$. \\
 $\sigma_{\rm maj},\sigma_{\rm min},\theta$ & Effective-core major/minor Gaussian standard deviations and orientation, with ordered positive axes, period $\pi$, and unavailable orientation at circularity. \\
-$\mathbf q_d$; $\mathbf J^{\rm fit}_d$; $\mathbf V_{q,d}$ & Complete realized free-parameter vector, local model Jacobian, and joint parameter covariance. \\
+$\mathbf q_d$; $\mathbf J^{\rm fit}_d$; $\mathbf V_{q,d}$ & Complete realized map-model free-parameter vector, local fit Jacobian, and joint map-fit parameter covariance. \\
+$\boldsymbol\eta_d$; $\mathbf J^{\rm drv}_d$; $\mathbf V_{{\rm drv},d}$ & External calibration/sensitivity nuisance vector, separate derived-product Jacobian, and propagated covariance retaining material dependence between fit and derived stages. \\
 $\boldsymbol\beta_d$; $r_{d,p}$ & Declared constant or planar background coefficients and admitted residual $x^{\rm BM}_{d,p}-m_{d,p}$. \\
-$F^{\rm TOA,nom}_{s,a}$ & Model-predicted calibrator amplitude at top of atmosphere, in mJy per fixed nominal beam, at the same source-reference origin as $A_d^{\rm obs}$ and under the declared epoch/passband/spectral/finite-source convention. It is not necessarily integrated flux or a profile maximum. \\
+$F^{\rm TOA,nom}_{s,a}$ & Required calibrator source flux at top of atmosphere, in $\mathrm{mJy\,beam_{nom}^{-1}}$ for the fixed nominal beam, at the same source-reference origin as $A_d^{\rm obs}$ and under the declared epoch/passband/spectral/finite-source convention. \\
 $C^{\rm eff}_{s,a}$; $T^{\rm eff}_{s,a}$ & Effective source-observation atmospheric correction and transmission, with $C^{\rm eff}=1/T^{\rm eff}$, matched to the amplitude support and weighting. \\
 $A_d^{\rm TOA-eq}$; $\mathrm{flxscale}_d$ & Top-of-atmosphere-equivalent fitted amplitude and BEAM-published conversion factor $F^{\rm TOA,nom}_{s,a}/A_d^{\rm TOA-eq}$ in $\mathrm{mJy\,beam_{nom}^{-1}}/(\Delta f/f)$. \\
-$\mathcal S_{d,\rm off}$; $n_{d,s}$; $\mathrm{sens}_d$ & Detector-specific admitted off-source scans, declared time-normalized scan noise statistic, and BEAM-published NEFD-like sensitivity in $\mathrm{mJy\,beam_{nom}^{-1}\sqrt{s}}$. \\
+$\mathcal S_{d,\rm off}$; $n_{d,s}$; $\mathrm{sens}_d$ & Detector-specific admitted off-source scans, non-negative declared time-normalized scan noise statistic, and finite strictly positive BEAM-published NEFD-like sensitivity in $\mathrm{mJy\,beam_{nom}^{-1}\sqrt{s}}$ when available. \\
 $\mathcal A_d^{(k)},c_d^{(k)},\mathcal V^{(k)}$ & Parameter-availability set, selected locator/measurement-candidate identity, and valid-detector set at iteration $k$. \\
 \bottomrule
 \end{longtable}

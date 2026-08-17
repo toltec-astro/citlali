@@ -16,10 +16,12 @@ COMMON = (
 COMPLETE_PACKAGES = {
     "SCI-CAL": "v0.1",
     "SCI-MAP": "v0.1",
-}
-RENDERED_DRAFT_PACKAGES = {
     "SCI-BEAM": "v0.1",
 }
+FROZEN_R03_PACKAGES = {
+    "SCI-BEAM": "v0.1",
+}
+RENDERED_DRAFT_PACKAGES = {}
 
 
 assert (ROOT / "INDEX.md").is_file()
@@ -70,7 +72,31 @@ for package, version in {**COMPLETE_PACKAGES, **RENDERED_DRAFT_PACKAGES}.items()
             token = "\\input{common/" + name.removesuffix(".tex") + "}"
             assert formal.count(token) == 1, f"{package}: formal view must import {name} exactly once"
             assert token not in rationale, f"{package}: rationale must remain scientist-facing"
+    if package in FROZEN_R03_PACKAGES:
+        for name in (
+            "SCIENTIFIC_OWNER_REVIEW_R0.3.md",
+            "CHANGE_LOG_R0.3.md",
+            "CROSS_DOCUMENT_FOLLOWUP_R0.3.md",
+            "CONSISTENCY_REPORT_R0.3.md",
+        ):
+            assert (base / name).is_file(), f"{package}: missing {name}"
+        for name in (
+            "SCI-BEAM-v0.1_SCIENCE-TEAM-RATIONALE_r0.3.pdf",
+            "SCI-BEAM-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.3.pdf",
+        ):
+            output = base / "pdf" / name
+            assert output.is_file() and output.stat().st_size > 0, f"{package}: missing {name}"
+        rationale = (base / "src" / "scientific-rationale.tex").read_text()
+        formal = (base / "src" / "engineering-conformance.tex").read_text()
+        assert "r0.3" in rationale and "r0.3" in formal, f"{package}: stale final document revision"
+        assert "DRAFT" not in rationale and "DRAFT" not in formal, f"{package}: frozen source labeled draft"
+        assert "SCI-BEAM-REQ-" not in rationale and "SCI-BEAM-PRED-" not in rationale, f"{package}: rationale contains formal inventory"
+        for name in COMMON:
+            token = "\\input{common/" + name.removesuffix(".tex") + "}"
+            assert formal.count(token) == 1, f"{package}: formal view must import {name} exactly once"
+            assert token not in rationale, f"{package}: rationale must remain scientist-facing"
 
 print("scientific_contract_layout=PASS")
 print("complete_packages=" + ",".join(f"{name}/{version}" for name, version in COMPLETE_PACKAGES.items()))
 print("rendered_draft_packages=" + ",".join(f"{name}/{version}" for name, version in RENDERED_DRAFT_PACKAGES.items()))
+print("frozen_r03_packages=" + ",".join(f"{name}/{version}" for name, version in FROZEN_R03_PACKAGES.items()))

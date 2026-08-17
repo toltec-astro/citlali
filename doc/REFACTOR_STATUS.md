@@ -321,6 +321,29 @@ and 9 pages rationale, and all 26 Poppler-rendered pages passed visual review.
 The approved three-item author packet hashes remain unchanged. R0.2 is ready
 for owner review but is not accepted or frozen.
 
+The scientific owner's final bounded SCI-BEAM review completed on 2026-08-17.
+Document revision r0.3 makes NEFD-like `sens` strictly positive through
+`abs(flxscale)` while preserving signed `flxscale`; separates map-fit
+Jacobian/covariance from derived calibration and sensitivity propagation;
+defines the centroid-to-detector sign/frame transformation; derives effective
+rotation from parent-sample contribution support propagated through fit
+support; requires the same immutable APT artifact for pointing/science
+transfer; restores a concise soft-prior/convergence explanation; and binds the
+three document-facing decision groups `SCI-BEAM-OD-001--003` to nine atomic
+open ledger questions. The source flux is stated directly in TOA
+mJy per fixed nominal beam without argumentative unit or duplicate-factor
+language, and the rationale uses a compact contents list.
+
+After final source/PDF consistency and rendered-page QA, SCI-BEAM v0.1/r0.3
+is the frozen implementation-independent scientific authority. Its 46
+requirement and 24 prediction IDs remain stable. The original author packet
+and hashes remain unchanged; no implementation, APT storage, audit, repair,
+test, reduction, or production behavior was inspected. Implementation
+conformance, representation fidelity, observational performance,
+science-impact qualification, and production readiness remain unassessed.
+There is no further editorial round; only the contract-library's four governed
+revision triggers may reopen the package.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

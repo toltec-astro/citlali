@@ -1,4 +1,4 @@
-% SCI-BEAM v0.1 shared normative assumptions. Document revision r0.2.
+% SCI-BEAM v0.1 shared normative assumptions. Document revision r0.3.
 \section{Assumptions, dependencies, and unavailable claims}
 \label{sec:assumptions}
 \begin{enumerate}[label=\textbf{A\arabic*.}]
@@ -17,10 +17,9 @@ approximation error over the fit region.
 \item The immutable calibrator identity and source model are supplied for the
 declared epoch, passband, spectral, finite-source, and reference-origin
 convention, with uncertainty or explicit unavailable state.
-\item $F^{\rm TOA,nom}_{s,a}$ is a top-of-atmosphere source amplitude in mJy per
-fixed versioned nominal beam at the fitted reference origin. It is not
-integrated flux and is not recalculated from the observation-local effective
-PSF. No additional $H(\mathbf0)$ factor is authorized.
+\item $F^{\rm TOA,nom}_{s,a}$ is supplied as the top-of-atmosphere calibrator
+source flux in $\mathrm{mJy\,beam_{nom}^{-1}}$ for the fixed versioned nominal
+beam at the fitted reference origin.
 \item The effective Gaussian family is only a compact core model. A good fit
 does not prove the complete PSF, absence of wings, intrinsic optical response,
 or adequacy for a downstream kernel.
@@ -30,25 +29,31 @@ nuisance, and background parameters. Unidentified quantities are unavailable.
 \item The covariance or declared approximation describes the retained map
 support sufficiently for the statistical claim. A diagonal approximation does
 not authorize calibrated uncertainty under correlated residuals.
-\item The full local model Jacobian and joint covariance preserve material
-cross terms. Missing nuisance covariance is unavailable, not independent or
-zero.
+\item The full local map-model Jacobian and fit covariance preserve material
+cross terms among fitted and admitted map-model parameters. Separate
+derived-product Jacobians propagate external calibration and sensitivity
+inputs while retaining material dependence between stages. Missing nuisance
+covariance is unavailable, not independent or zero.
 \item The nominal and effective tensors share compatible frame, Gaussian,
 source, and response conventions before broadening is formed. Positive-
 semidefinite support is required for a literal Gaussian smoothing meaning.
-\item The horizon derotation law, effective per-detector angle, support,
-weighting, conventional pivot, origin gauge, and uncertainty are supplied.
+\item The centroid-to-detector sign/frame transformation, horizon derotation
+law, parent-sample support and contribution weights, effective per-detector
+angle, fit support, conventional pivot, origin gauge, and uncertainty are
+supplied. Pixel-domain fit weights alone are not parent timing evidence.
 Neither the conventional origin nor ensemble translation is physical
 boresight truth.
-\item Bracketing pointing observations and their science observation use the
-same immutable APT coordinate realization and AST rotation convention unless
-a separately authorized transformation proves equivalence.
+\item Bracketing pointing observations and their associated science
+observation use the same immutable APT artifact and AST rotation convention
+unless a separately authorized transformation proves equivalence.
 \item BEAM owns source-observation atmosphere used in \texttt{flxscale}; the
 operator and support match the fitted amplitude. Target-observation atmosphere
-is excluded and later applied by SCI-CAL. No atmospheric term is applied twice.
-\item The scan-domain \texttt{sens} structure is fixed but its numerical noise,
-source-exclusion, admission, exposure, bandwidth, and uncertainty policies
-remain open owner decisions. No default is inferred.
+is excluded and later applied by SCI-CAL.
+\item The scan-domain \texttt{sens} structure is fixed and uses
+$|\texttt{flxscale}|$ so an available sensitivity is finite and strictly
+positive. Its numerical noise, source-exclusion, admission, exposure,
+bandwidth, and uncertainty policies remain open owner decisions. No default
+is inferred.
 \item A compatible TolAPT prior is soft locator initialization and bounded
 gating only. It contributes no measurement-objective penalty, is not exact
 detector or position truth, cannot veto the blind route, and records influence.

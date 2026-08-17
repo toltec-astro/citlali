@@ -1,6 +1,6 @@
 # SCI-BEAM — Beammap Analysis, Effective PSF, Calibration, Sensitivity, And APT
 
-Status: scientific-owner revision `r0.2` complete for owner review; not frozen
+Status: **Scientific authority frozen; implementation conformity not yet assessed under this contract.**
 
 Version: `v0.1`
 
@@ -26,16 +26,17 @@ three-part author packet on `2026-08-16`.
 - Implementation-blind Stage B `r0.1` author and manager review: complete and
   retained as draft history.
 - Scientific-owner `r0.2` revision directive: approved on `2026-08-17`.
+- Final bounded `r0.3` scientific-owner review: approved and incorporated on
+  `2026-08-17`.
 - Shared normative core: 46 requirements and 24 falsifiable predictions.
 - Formal Scientific/Engineering Contract and separate science-team rationale:
-  revised to `r0.2`; source, compilation, PDF, and page-by-page visual QA
-  complete.
+  frozen at `r0.3` after source, compilation, PDF, and page-by-page visual QA.
 - Open scientific-owner decisions: nine, limited to sensitivity, adequacy,
   PSF accuracy/wings, pivot registration, and downstream kernel qualification.
 - Implementation conformity, validation, and production promotion: outside
   this stage.
-- Next gate: `r0.3` owner-voice and presentation pass; no architecture change
-  unless scientific-owner review identifies a governed inconsistency.
+- No further editorial round. Revision is allowed only under the four
+  contract-library stopping-rule triggers.
 
 ## Contents
 
@@ -47,15 +48,19 @@ three-part author packet on `2026-08-16`.
 - [`AUTHOR_PRIMARY_REFERENCE_BOUNDARY.md`](AUTHOR_PRIMARY_REFERENCE_BOUNDARY.md): bounded primary TolTEC context
 - [`DECISION_LOG.md`](DECISION_LOG.md): approved process and scientific-scope decisions
 - [`SCIENTIFIC_OWNER_DIRECTIVE_R0.2.md`](SCIENTIFIC_OWNER_DIRECTIVE_R0.2.md): governing substantive revision decisions
+- [`SCIENTIFIC_OWNER_REVIEW_R0.3.md`](SCIENTIFIC_OWNER_REVIEW_R0.3.md): final bounded corrections and freeze authorization
 - [`CROSSWALK.md`](CROSSWALK.md): exact 70-row rationale-to-contract traceability
-- [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md): nine genuinely open r0.2 decisions
+- [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md): three stable groups and nine atomic open decisions
 - [`CHANGE_LOG_R0.2.md`](CHANGE_LOG_R0.2.md): r0.1 clause-to-r0.2 disposition map
+- [`CHANGE_LOG_R0.3.md`](CHANGE_LOG_R0.3.md): bounded r0.2-to-r0.3 correction map
 - [`CROSS_DOCUMENT_FOLLOWUP_R0.2.md`](CROSS_DOCUMENT_FOLLOWUP_R0.2.md): required future adjacent-authority amendments
+- [`CROSS_DOCUMENT_FOLLOWUP_R0.3.md`](CROSS_DOCUMENT_FOLLOWUP_R0.3.md): bounded final-review follow-up delta
 - [`CONSISTENCY_REPORT_R0.2.md`](CONSISTENCY_REPORT_R0.2.md): unit, ownership, traceability, compilation, and visual QA record
+- [`CONSISTENCY_REPORT_R0.3.md`](CONSISTENCY_REPORT_R0.3.md): final freeze-gate consistency and rendered-PDF QA record
 - [`AUTHOR_DRAFT_DECISIONS.md`](AUTHOR_DRAFT_DECISIONS.md): implementation-blind author choices, questions, tensions, and unavailable claims
 - [`MANAGER_REVIEW_R0.1.md`](MANAGER_REVIEW_R0.1.md): bounded correction, firewall, traceability, and QA review
 - `src/`: canonical shared core and the two document views
-- `pdf/`: canonical `r0.2` science-team rationale and formal contract views
+- `pdf/`: final revision-bearing `v0.1/r0.3` rationale and formal contract outputs; r0.2 pilot filenames retained as history
 
 ## Protected Boundary
 
@@ -63,7 +68,7 @@ SCI-BEAM derives observation-local raw and horizon-derotated relative detector
 coordinates under an externally declared WCS and field-rotation convention.
 It does not establish absolute boresight, physical rotation pivot, telescope
 pointing error, or pointing-model correction. Bracketing pointing and science
-observations require the same immutable APT realization and AST convention
+observations require the same immutable APT artifact and AST convention
 unless a separately authorized transform proves equivalence.
 
 SCI-BEAM is the desired scientific authority for complete Beammap analysis and
@@ -75,10 +80,10 @@ schemas remain unassessed and are not reconciled in this authorship task.
 
 ## Authority And Status
 
-No frozen SCI-BEAM v0.1 scientific authority exists yet. The `r0.2` artifacts
-are an owner-directed scientific draft, not an implementation verdict. The
+SCI-BEAM v0.1/r0.3 is the frozen implementation-independent scientific
+authority. It is not an implementation verdict. The
 historical `SCI-BEAM-001` audit
 inventory was never launched and has no independent core or audit verdict.
 Current products and algorithms remain governed by their existing repository
-documents and production decisions until a later accepted contract says
-otherwise.
+documents and production decisions until a later conformity and validation
+program establishes their relationship to this frozen authority.

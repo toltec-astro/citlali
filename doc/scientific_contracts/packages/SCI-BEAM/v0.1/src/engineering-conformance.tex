@@ -4,12 +4,12 @@
 \definecolor{beamgreen}{HTML}{176B5B}
 \definecolor{beamlight}{HTML}{EEF7F4}
 \hypersetup{colorlinks=true,linkcolor=beamgreen,urlcolor=beamgreen,
-pdftitle={SCI-BEAM v0.1 Formal Scientific and Engineering Contract r0.2},
-pdfauthor={SCI-BEAM scientific-owner draft},
+pdftitle={SCI-BEAM v0.1 Formal Scientific and Engineering Contract r0.3},
+pdfauthor={SCI-BEAM scientific owner},
 pdfsubject={Normative Beammap analysis, effective PSF, calibration, sensitivity, and APT contract}}
 \pagestyle{fancy}\fancyhf{}
 \lhead{SCI-BEAM Formal Scientific/Engineering Contract}
-\rhead{v0.1 / r0.2 DRAFT}
+\rhead{v0.1 / r0.3}
 \cfoot{\thepage\ of \pageref{LastPage}}
 \setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
 \setlength{\emergencystretch}{3em}
@@ -25,7 +25,7 @@ pdfsubject={Normative Beammap analysis, effective PSF, calibration, sensitivity,
 {\huge\textbf{Formal Scientific/Engineering Contract}}\\[0.20in]
 {\Large Effective PSF, Detector Calibration, Sensitivity, and Beammap APT}\\[0.38in]
 {\large Scientific contract version v0.1}\\[0.06in]
-{\large Document revision r0.2 -- DRAFT}\\[0.08in]
+{\large Document revision r0.3}\\[0.08in]
 {\large 2026-08-17}\\[0.50in]
 \fcolorbox{beamgreen}{beamlight}{\begin{minipage}{0.80\linewidth}\small
 This is the normative, implementation-independent authority for the desired
@@ -85,11 +85,11 @@ or production readiness.
 \endhead
 Raw-signal convention & $\Delta f/f$ definition, reference resonance frequency, sign, zero/baseline, filtering/resampling/flagging, loading/tune/signal domain & Missing or incompatible physical observable; calibrated signal substituted \\
 Standardized detector Beammap & stable observation and detector identity, $\Delta f/f$ pixels, valid support, map extent, parent mapmaking, pixelization, projection, gridding, filtering, response lineage, and noise/covariance state & Calibrated map; missing identity, WCS, support, or response provenance \\
-Coordinate authority & full WCS or bounded local Jacobian, orthonormal tangent-plane frame/unit, scale, handedness, rotation, shear, azimuth metric, uncertainty & Raw azimuth/elevation treated Euclidean without metric; material unbounded linearization \\
+Coordinate authority & full WCS or bounded local Jacobian, orthonormal tangent-plane frame/unit, scale, handedness, rotation, shear, azimuth metric, fitted-centroid sign/frame transformation, uncertainty & Raw azimuth/elevation treated Euclidean without metric; centroid-to-detector sign inferred from implementation; material unbounded linearization \\
 Calibrator model & source identity/epoch, passband/spectrum, finite-source shape, zero-first-moment reference origin, uncertainty & Reference-origin or finite-source convention unresolved \\
-Nominal calibration reference & fixed versioned nominal-beam tensor and $F^{\rm TOA,nom}_{s,a}$ in TOA mJy per nominal beam under the same reference-origin convention & Recomputed from fitted effective PSF; integrated flux silently substituted \\
+Nominal calibration reference & fixed versioned nominal-beam tensor and $F^{\rm TOA,nom}_{s,a}$ in TOA $\mathrm{mJy\,beam_{nom}^{-1}}$ under the same reference-origin convention & Unit, nominal-beam identity, or reference-origin convention missing \\
 Source atmosphere & operator, inputs, support/weighting, effective transmission/correction, uncertainty/correlation & Missing source-atmosphere authority for \texttt{flxscale}; target atmosphere substituted \\
-Field rotation & law/version, time/elevation support, per-detector weighting, conventional pivot/origin classification, uncertainty & Conventional pivot labeled physical; support inconsistent with fit \\
+Field rotation & law/version, parent-sample time/elevation support and contribution weights propagated through fit support, conventional pivot/origin classification, uncertainty & Pixel fit weights substituted for parent timing; conventional pivot labeled physical; support inconsistent with fit \\
 Soft prior & producer/version, coordinate/unit, identity scope, compatibility, reliability, gate, fallback & Exact truth or objective penalty inferred; blind route absent \\
 \bottomrule
 \end{longtable}
@@ -105,11 +105,11 @@ Soft prior & producer/version, coordinate/unit, identity scope, compatibility, r
 \midrule
 \endhead
 Requested, effective, and realized state & model, source, support, background, covariance, prior, iteration, atmosphere, sensitivity, QC, and product policy as distinct one-way states & immutable resolution and no hidden defaults \\
-Per-detector fit & amplitude, centroid, full effective tensor, FWHM, conditional area, background, residual, support, model Jacobian, joint covariance, convergence, prior route & Equations~\ref{eq:model}--\ref{eq:nuisance} and applicable predictions \\
-Relative geometry & raw and horizon coordinates, coordinate covariance, effective derotation angle/support/weighting/range, rotation convention, origin/pivot state, rotated tensor & Equations~\ref{eq:affine-rotation}--\ref{eq:derotation} \\
+Per-detector fit & amplitude, centroid, full effective tensor, FWHM, conditional area, background, residual, support, model Jacobian, joint map-fit covariance, convergence, prior route & Equations~\ref{eq:model}--\ref{eq:fitcov} and applicable predictions \\
+Relative geometry & centroid-to-detector sign/frame transformation, raw and horizon coordinates, coordinate covariance, parent-sample support/contribution weights, effective derotation angle/range, rotation convention, origin/pivot state, rotated tensor & Equations~\ref{eq:centroid-to-detector}--\ref{eq:derotation} \\
 Response interpretation & effective-core state, empirical-map state, adequacy, measured-wing constraint, complete-PSF state, broadening tensor and PSD disposition & Equations~\ref{eq:fwhm-area}--\ref{eq:broadening} \\
-Calibration & observed and TOA-equivalent amplitude, nominal source amplitude, source-atmosphere route, \texttt{flxscale}, joint uncertainty/correlation, internal candidate/acceptance state & Equation~\ref{eq:flxscale}; no $H(0)$ multiplier \\
-Sensitivity & detector trajectory classification, admitted scans, scan-level statistics, TOA correction, robust summary/scatter, \texttt{sens}, policy/uncertainty/limitations & Equation~\ref{eq:sens}; open-policy gating \\
+Calibration & observed and TOA-equivalent amplitude, required nominal-beam source flux, source-atmosphere route, \texttt{flxscale}, separate derived-product Jacobian/covariance, internal candidate/acceptance state & Equations~\ref{eq:nuisance} and \ref{eq:flxscale} \\
+Sensitivity & detector trajectory classification, admitted scans, scan-level statistics, TOA correction, robust summary/scatter, positive \texttt{sens}, separate derived-product Jacobian/covariance, policy/uncertainty/limitations & Equations~\ref{eq:nuisance} and \ref{eq:sens}; open-policy gating \\
 Independent state vector & separate availability, validity, uncertainty, and causes for every required quantity and use & no all-or-nothing detector collapse \\
 Canonical lineage & all scientific identities, versions, parents, response/coordinate/atmosphere/calibration relations, content digests, limitations & deterministic reconstruction without row-order inference \\
 \bottomrule
@@ -130,16 +130,16 @@ representations, but shall preserve the following meanings and resolvability.
 \midrule
 \endhead
 Detector identity & stable detector occurrence and array/network/channel relation & identity \\
-$(x_t,y_t)_{\rm raw}$ & fitted relative coordinate in observation-local tangent plane & arcsec \\
+$(x_t,y_t)_{\rm raw}$ & fitted relative coordinate after declared source-centroid sign/frame transformation & arcsec \\
 $(x_t,y_t)$ & horizon-derotated relative focal-plane coordinate & arcsec \\
-Effective derotation & detector fit-support angle, support/range/rule/version & angular unit/state \\
+Effective derotation & parent-sample contribution support/weights propagated through fit support, angle/range/rule/version & angular unit/state \\
 Coordinate covariance & joint uncertainty of relative position & $\mathrm{arcsec^2}$ \\
 Effective PSF-core tensor & authoritative complete 2-D core shape & $\mathrm{arcsec^2}$ \\
 FWHM/orientation & compact shape; angle unavailable at circularity & arcsec/angular unit \\
 $A_d^{\rm obs}$ & reference-origin observed-plane source excess & $\Delta f/f$ \\
 Amplitude uncertainty & conditional/total status with covariance identity & $\Delta f/f$ \\
 \texttt{flxscale} & absolute TOA nominal-beam conversion & $\mathrm{mJy\,beam_{nom}^{-1}}/(\Delta f/f)$ \\
-\texttt{sens} & TOA nominal-beam NEFD-like sensitivity & $\mathrm{mJy\,beam_{nom}^{-1}\sqrt{s}}$ \\
+\texttt{sens} & finite strictly positive TOA nominal-beam NEFD-like sensitivity using $|\texttt{flxscale}|$ & $\mathrm{mJy\,beam_{nom}^{-1}\sqrt{s}}$ \\
 Independent states & coordinates, shape, angle, amplitude, calibration, sensitivity, adequacy, wings, health/kernel use & typed availability/validity/causes \\
 \texttt{responsivity} & deprecated; noncanonical compatibility metadata only & no authority \\
 \bottomrule
@@ -147,13 +147,14 @@ Independent states & coordinates, shape, angle, amplitude, calibration, sensitiv
 
 APT-level lineage shall resolve observation/calibrator/epoch, source model and
 uncertainty, fixed nominal beam, TOA amplitude convention, passband/spectrum,
-source atmosphere, raw-signal definition, WCS/Jacobian/frame, rotation law,
-conventional pivot status, common-origin rule, parent map response, PSF model,
+source atmosphere, raw-signal definition, WCS/Jacobian/frame,
+centroid-to-detector sign transformation, parent-sample contribution weights,
+rotation law, conventional pivot status, common-origin rule, parent map response, PSF model,
 sensitivity estimator, contract/document versions, parents, and content
 digests.
 
 The APT shall link immutably to empirical detector Beammaps, support maps,
-residuals, Jacobians, joint covariance, backgrounds, adequacy diagnostics,
+residuals, fit and derived-product Jacobians/covariances, backgrounds, adequacy diagnostics,
 broadening/wing state, off-source scan membership/statistics, convergence,
 prior routes, and complete QC/cause records. Optional array/network stacks
 remain diagnostic and do not replace per-detector products.
@@ -172,11 +173,12 @@ admitted candidates under one measurement objective.
 \item Fit Equation~\ref{eq:model} jointly in the physical coordinate plane;
 resolve model Jacobian, covariance, identifiability, residual, adequacy, and
 convergence.
-\item Derive raw/horizon geometry, conditional FWHM/area, and compatible
-broadening while preserving origin/pivot limitations.
-\item Apply source atmosphere exactly once and evaluate/accept
-\texttt{flxscale}; separately classify and summarize off-source scans for
-\texttt{sens} only when its open policy inputs are resolved.
+\item Derive raw/horizon geometry using the declared centroid sign/frame
+transformation and parent-sample contribution support, then derive conditional
+FWHM/area and compatible broadening while preserving origin/pivot limitations.
+\item Evaluate and accept \texttt{flxscale} under BEAM's source-atmosphere
+authority; separately classify and summarize off-source scans and publish
+strictly positive \texttt{sens} only when its open policy inputs are resolved.
 \item Populate independent quantity states for every attempted detector,
 publish the mandatory APT and dense companions atomically, and retain all
 unavailable causes and downstream-use limitations.
@@ -188,7 +190,7 @@ unavailable causes and downstream-use limitations.
 \begin{longtable}{L{0.22\linewidth}L{0.69\linewidth}}
 \toprule Evidence layer & What it may establish \\
 \midrule
-Algebraic & identities, units, invariants, coordinate/tensor transformations, atmosphere once-only composition, and state-machine logic \\
+Algebraic & identities, units, invariants, coordinate/tensor transformations, atmosphere ownership/composition, and state-machine logic \\
 Implementation conformance & that a candidate implementation realizes every applicable requirement and prediction with no hidden substitution \\
 Representation/response fidelity & that WCS, map response, support, source/nominal beam, atmosphere, covariance, and scan classification represent the intended observation \\
 Observational performance & bias, scatter, uncertainty calibration, wing detectability, repeatability, and transfer over relevant observations \\
@@ -205,6 +207,20 @@ broadening and circular-limit tests; common-origin and conventional-pivot
 tests; per-detector angle and same-APT pointing-transfer tests. Authorship
 claims none of these results.
 \normalsize
+
+\section{Open scientific-owner decision groups}
+
+These stable group IDs are the document-facing index into the nine atomic open
+questions in the external scientific-owner decision ledger.
+
+\begin{longtable}{L{0.22\linewidth}L{0.30\linewidth}L{0.39\linewidth}}
+\toprule Group ID & Subject & Atomic ledger questions \\
+\midrule
+\texttt{SCI-BEAM-OD-001} & Sensitivity estimator and support & \texttt{SCI-BEAM-ODQ-101--103} \\
+\texttt{SCI-BEAM-OD-002} & Adequacy, wings, and kernels & \texttt{SCI-BEAM-ODQ-104--106}, \texttt{109} \\
+\texttt{SCI-BEAM-OD-003} & Physical pivot registration & \texttt{SCI-BEAM-ODQ-107--108} \\
+\bottomrule
+\end{longtable}
 
 \clearpage
 \input{common/notation}

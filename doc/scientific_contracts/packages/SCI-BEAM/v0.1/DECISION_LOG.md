@@ -70,3 +70,17 @@ version `v0.1` or the original author-packet hashes.
 | `BEAM-SCOPE-D028` | Empirical maps and adequacy/wing diagnostics are required; array/network stacked PSFs are optional diagnostics. |
 | `BEAM-SCOPE-D029` | Science-impact, recovery, hidden-response, kernel-impact, geometry, and rotation studies determine accuracy and downstream qualification; no validation result is presumed. |
 | `BEAM-SCOPE-D030` | The Beammap APT is mandatory and scientifically defined independently of current implementation or storage schema. |
+
+## Approved r0.3 Final-Review Decisions
+
+The scientific owner approved the final bounded review on `2026-08-17` and
+directed the authority to freeze after these corrections and consistency QA.
+
+| Decision | Approved substance |
+| --- | --- |
+| `BEAM-SCOPE-D031` | An available NEFD-like `sens` is finite and strictly positive: `sens=abs(flxscale) n_off`; the physical sign remains on `flxscale`. |
+| `BEAM-SCOPE-D032` | Map-fit Jacobian/covariance and derived calibration/sensitivity propagation are distinct stages with material dependence retained between them. |
+| `BEAM-SCOPE-D033` | The centroid-to-detector sign/frame transformation is explicit, and effective derotation is derived from parent-sample contribution support propagated through the pixel fit support. |
+| `BEAM-SCOPE-D034` | Bracketing pointing and associated science observations use the same immutable APT artifact and AST convention unless an authorized transform proves equivalence. |
+| `BEAM-SCOPE-D035` | The rationale retains one concise soft-prior/convergence explanation and uses stable document-facing decision groups `SCI-BEAM-OD-001--003`. |
+| `BEAM-SCOPE-D036` | The source flux is simply required in TOA mJy per fixed nominal beam at the declared reference origin; argumentative mJy-versus-mJy-per-beam and duplicate-factor language is removed. |
