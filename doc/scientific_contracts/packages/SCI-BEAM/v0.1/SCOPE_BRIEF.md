@@ -1,13 +1,13 @@
 # SCI-BEAM — Detector Beam Inference, Calibration Candidates, QC, And Products Scope Brief
 
-Status: draft Stage A output for scientific-owner review; **not approved**
+Status: owner-approved Stage B author input
 
 Scientific owner: Grant Wilson
 
-Proposed version/date: `v0.1`, drafted `2026-08-16`
+Version/date: `v0.1`, approved `2026-08-16`
 
-Approved source identifier: unavailable until owner approval and packet
-content-binding
+Approved source identifier: content-bound in
+[`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md)
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -16,11 +16,11 @@ This package follows the
 [pilot process review](../../../PILOT_PROCESS_REVIEW_2026-08-16.md).
 
 - Prior-work record: [`PRIOR_WORK.md`](PRIOR_WORK.md)
-- Recovery reviewed by: Codex manager, `2026-08-16`; scientific-owner review pending
+- Recovery reviewed by: Codex manager and scientific owner, `2026-08-16`
 - Existing material adopted for scope: stable Beammap frame/unit/identity
   conventions and current cross-repository ownership boundaries
 - Existing material reused conditionally: the TolAPT soft-prior producer
-  contract, subject to owner approval of a sanitized extract
+  contract through an owner-approved sanitized extract
 - Existing material not found: a dedicated approved implementation-independent
   SCI-BEAM scientific core
 - Existing material deferred or excluded: source, audit ledger, raw handoffs,
@@ -29,15 +29,17 @@ This package follows the
 - Genuinely new work: derive the BEAM estimand, source/beam model, objective,
   identifiability, covariance, prior role, iteration/convergence, QC, product
   validity, and promotion boundaries
-- Proposed author references: this brief; a future sanitized convention and
-  ownership extract; two primary TolTEC references; and at most one
-  owner-selected methodological analogue
+- Approved author references: this brief;
+  [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md);
+  and [`AUTHOR_PRIMARY_REFERENCE_BOUNDARY.md`](AUTHOR_PRIMARY_REFERENCE_BOUNDARY.md),
+  which admits only bounded claims from two named primary TolTEC references
 - Author-packet exclusions: [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md), this
   full recovery record, repository sources/interfaces, raw audits and handoffs,
   tests/validation, current A/B or production state, and active ALIGN/AST work
 
 Confirm that this opening was reviewed before launching scientific authorship:
-`NO — scientific-owner approval is the current gate`.
+`YES — Grant Wilson approved the Scope Brief, BEAM-SCOPE-D001--D012, and the
+exact three-part author packet on 2026-08-16`.
 
 ## 1. Package Name And Scientific Purpose
 
@@ -53,7 +55,7 @@ matched/reference APT products. It must make unavailable or conditional every
 claim that depends on upstream identity, coordinates, response, covariance,
 calibration, or validity not established by BEAM itself.
 
-## 2. Proposed Scientific Boundary
+## 2. Approved Scientific Boundary
 
 V0.1 begins with:
 
@@ -174,7 +176,7 @@ The contract must define, without copying the current table schema:
   cross-iteration science-product semantics. BEAM's internal estimator loop is
   not a fruit loop.
 
-## 6. Externally Imposed Conventions Proposed For Approval
+## 6. Approved Externally Imposed Conventions
 
 1. Detector-map coordinates are declared AltAz tangent-plane azimuth/elevation
    offsets about the Beammap source in arcseconds. Persisted WCS determines
@@ -202,8 +204,8 @@ The contract must define, without copying the current table schema:
 10. Internal BEAM iteration is observation-local estimator state and does not
     authorize general fruit-loop feedback or restart semantics.
 
-These are proposed scope conventions, not yet owner-approved scientific
-decisions.
+These are binding v0.1 scope conventions. The author may expose a scientific
+inconsistency or unavailable consequence, but may not silently replace them.
 
 ## 7. Questions The Contract Must Answer
 
@@ -310,17 +312,22 @@ After approval, a fresh implementation-blind author shall produce:
 The author must state dependencies and unavailable claims rather than inspect
 software, infer current behavior, or propose repairs.
 
-## 10. Scientific-Owner Approval Gate
+## 10. Scientific-Owner Approval Record
 
-Before Stage B, Grant must:
+Grant Wilson approved sections 1--9 and the proposed dispositions for
+`BEAM-SCOPE-Q001--Q012` on `2026-08-16`. Those dispositions are recorded as
+`BEAM-SCOPE-D001--D012` in [`DECISION_LOG.md`](DECISION_LOG.md) and the owner
+ledger.
 
-- approve or revise sections 1--6;
-- disposition `BEAM-SCOPE-Q001--Q012` in the owner ledger;
-- select the exact primary literature references and approve a content-bound
-  sanitized convention/ownership extract;
-- decide whether CAL/MAP interface extracts may enter the packet despite their
-  still-open authority questions; and
-- confirm the information-firewall exclusions.
+The approved packet contains exactly this brief, the sanitized conventions and
+ownership extract, and the primary-reference boundary. The latter admits only
+bounded instrument/context claims from Bryan et al. 2018 and Golec and the
+TolTEC Collaboration 2024; no analogue-instrument methodology paper is
+admitted. CAL and MAP enter only as conditional interface summaries in the
+sanitized ownership extract. The implementation, audits, handoffs, tests,
+validation, current A/B state, production state, active ALIGN/AST work,
+internal dossier, and full recovery record remain excluded.
 
-Until then, this brief is a proposal. No author packet manifest or author task
-may claim approval.
+This approval authorizes fresh implementation-blind Stage B authorship. It
+does not approve the resulting contract, assess implementation conformity,
+authorize validation, or change production status.

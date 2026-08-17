@@ -5,7 +5,7 @@ This recovery record follows the
 [pilot process review](../../../PILOT_PROCESS_REVIEW_2026-08-16.md). It is an
 internal Stage A artifact and is not automatically part of an author packet.
 
-Status: reviewed by the Codex manager; awaiting scientific-owner review
+Status: reviewed by the Codex manager and scientific owner; Stage A approved
 
 Investigator/date: Codex manager, `2026-08-16`
 
@@ -175,26 +175,27 @@ After owner approval, a fresh author must derive and explain:
    TolAPT, and `toltec_beammap`; and
 7. falsifiable limiting cases and tests without inspecting implementation.
 
-## Proposed Author Reference Packet
+## Approved Author Reference Packet
 
-No packet is approved yet. The minimal proposal is:
+Grant Wilson approved the exact packet on `2026-08-16`:
 
-1. the owner-approved successor of [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md);
-2. a content-bound sanitized convention/ownership extract to be prepared from
-   only the stable frame, unit, identity, lifecycle, and repository boundaries;
-3. Bryan et al. 2018 and Golec and the TolTEC Collaboration 2024 as TolTEC
-   instrument/context
-   references; and
-4. at most one owner-selected detector-beam/calibration methodology reference
-   (AzTEC or SPIRE), or a different primary reference supplied by the owner.
+1. [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md);
+2. [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md),
+   containing only stable conventions and conditional interface summaries; and
+3. [`AUTHOR_PRIMARY_REFERENCE_BOUNDARY.md`](AUTHOR_PRIMARY_REFERENCE_BOUNDARY.md),
+   admitting bounded context from Bryan et al. 2018 and Golec and the TolTEC
+   Collaboration 2024.
 
-CAL and MAP may be passed only as explicit conditional interface extracts, not
-as evidence that their still-open scientific authority has frozen. Raw
-implementation and audit material does not enter the packet.
+No analogue-instrument methodology paper is admitted. CAL and MAP enter only
+as explicit conditional interface summaries, not as evidence that their
+still-open scientific authority has frozen. Exact hashes and the complete
+firewall are recorded in
+[`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).
 
 ## Investigator Attestation
 
 Prior work was recovered before new derivation was commissioned. No dedicated
-BEAM independent core was found, no existing audit or validation was repeated,
-and no scientific author has been commissioned. The package remains at the
-owner Scope Brief gate.
+BEAM independent core was found and no existing audit or validation was
+repeated. The scientific owner approved the resulting Scope Brief and exact
+packet after recovery; implementation-blind authorship was not launched before
+that approval.

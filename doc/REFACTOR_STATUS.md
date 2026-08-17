@@ -253,13 +253,16 @@ its Stage A recovery and sanitized scope draft on 2026-08-16. Recovery found no
 dedicated approved implementation-independent BEAM core, so it preserved prior
 scope, three historical dependency handoffs, current Citlali conventions,
 TolAPT soft-prior ownership, and `toltec_beammap` downstream ownership without
-promoting any of them into a scientific contract. The complete canonical
-package scaffold now exists, but its LaTeX modules are blocked placeholders and
-no PDFs or author-packet manifest exist. The current gate is Grant's review of
-`BEAM-SCOPE-Q001--Q012`, the proposed scientific boundary, and the exact
-implementation-blind packet. No author has been commissioned, and no source
-audit, reduction, validation, Unity access, conformity assessment, or
-production decision occurred.
+promoting any of them into a scientific contract. Grant approved the Scope
+Brief and `BEAM-SCOPE-D001--D012` on 2026-08-16. The exact three-part packet is
+now content-bound: the approved Scope Brief, a sanitized conventions/ownership
+extract, and a primary-reference boundary admitting only bounded context from
+Bryan et al. 2018 and Golec and the TolTEC Collaboration 2024. No
+analogue-instrument methodology paper, code, audit, handoff, test, validation,
+current A/B or production status, or active ALIGN/AST material enters the
+author channel. This approval authorizes a fresh implementation-blind author;
+it does not accept the resulting contract, assess conformity, authorize
+validation, or change production status.
 
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
