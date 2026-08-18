@@ -1,24 +1,24 @@
-% SCI-RTC v0.1/r0.4 shared normative core -- definitions.
+% SCI-RTC v0.1/r0.5 shared normative core -- definitions.
 \section{Normative definitions}
 \label{sec:core-definitions}
 
 \begin{description}[style=nextline,leftmargin=1em,labelindent=0pt,
   labelwidth=0pt,labelsep=0pt]
 
-\item[SCI-RTC-DEF-001 -- Admitted aligned stream.]
-An immutable observation-scoped primary \texttt{xs} array whose physical
-observable is raw, uncalibrated detector $\Delta f/f$, with sign,
-zero/reference, baseline, ordered detector binding,
-assigned sample grid, cadence, phase, support, origin/synthesis state,
-validity, scan partition, and mapping lineage are supplied by the responsible
-upstream authority.  Admission does not upgrade unavailable physical event
-timing.
+\item[SCI-RTC-DEF-001 -- Admitted aligned paired stream.]
+An immutable observation-scoped pair of \texttt{xs} and \texttt{rs} arrays.
+Every admitted $x$ has exactly one $r$ partner with the same observation,
+Tune, array, network/interface, detector occurrence, native acquisition
+occurrence, aligned slot, cadence, phase, and mapping lineage.  Missing a
+partner is malformed required input.  The paired samples retain independent
+finiteness, origin/synthesis, support, validity, and uncertainty states.
 
 \item[SCI-RTC-DEF-002 -- RTC product-role contract.]
 The tuple $(\mathcal R,s_{\mathcal R},b_{\mathcal R},
 \mathcal V_{\mathcal R},\mathcal C_{\mathcal R})$ naming role, sign,
 reference/baseline, valid domain, and required consumers.  Every RTC role
-retains raw $\Delta f/f$ signal identity.  A calibrated downstream detector
+consumes paired raw \texttt{xs}/\texttt{rs}; only conditioned $x$ is eligible
+for a later SCI-CAL handoff.  A calibrated downstream detector
 signal is a distinct SCI-CAL product $c^{\rm CAL}$ in the top-of-atmosphere,
 point-source-equivalent mJy-per-fixed-nominal-beam convention; it is not
 another meaning of \texttt{xs}.
@@ -35,7 +35,11 @@ detector binding, complete RTC plan/response/support, selected \texttt{flxscale}
 authority, target-atmosphere lineage, validity, uncertainty availability, and
 provenance required by SCI-CAL.  Absolute \texttt{flxscale} and target
 atmosphere are applied only after RTC; RTC does not derive, apply, repair, or
-promote the calibrated product.
+promote the calibrated product.  Because target-atmosphere correction is
+sample dependent and follows temporal filtering, a handoff claim also
+requires complete response accounting over RTC support or a preregistered
+owner-approved noncommutation bound; output-time correction is not an
+automatic inverse of a filtered atmosphere operator.
 
 \item[SCI-RTC-DEF-005 -- Compatible \texttt{flxscale} pair.]
 Two finite factors $\phi_q$ and $\phi_d$ that are valid for the exact donor
@@ -63,16 +67,19 @@ admitted plan for every fixed or learned operation; and realized state
 records what ran.  A later state never rewrites an earlier state.
 
 \item[SCI-RTC-DEF-008 -- Realized conditioning operator.]
-The chronological composition of every admitted alignment, raw-domain
-replacement, mask, FIR/IIR/notch, boundary, state, non-finite, and phase-zero
-sampling action, including all affine state terms and exception intervals.
+The chronological composition of every admitted paired-channel admission,
+alignment, raw-domain replacement, level-shift transition mask and plateau
+segmentation, mask, FIR/IIR/notch, boundary, reset state, non-finite, and
+phase-zero sampling action, including all affine state terms and exception intervals.
 Annotations that affect values, support, influence, or availability are part
 of the operator.
 
 \item[SCI-RTC-DEF-009 -- Phase-zero sampling.]
-Point selection of the pre-sampling stream at input indices $j=Mn$ for one
+Point selection of the pre-sampling $x$ stream at input indices $j=Mn$ for one
 integer factor $M\geq1$.  It is not an arithmetic mean, block aggregate, or
-implicit anti-alias filter.
+implicit anti-alias filter.  Its representative occurrence is exactly
+$(d,Mn)$ on the raw paired aligned parent before replacement and filtering;
+that identity is not a largest-coefficient claim.
 
 \item[SCI-RTC-DEF-010 -- Complete realized response.]
 An exact local or factorized representation that includes every enabled
@@ -81,10 +88,11 @@ and sampling phase on its declared support.  If such a representation is not
 truthfully available, response state is \Unavail; a partial kernel is not
 complete response.
 
-\item[SCI-RTC-DEF-011 -- Direct source cell.]
-An aligned cell that enters an RTC value before transitive propagation.  It
-may be original, ALIGN-synthesized, or RTC-replaced.  Numerical participation
-does not confer independent scientific exposure.
+\item[SCI-RTC-DEF-011 -- Representative source occurrence.]
+For output $(d,n)$, the raw aligned paired occurrence $(d,Mn)$ before
+replacement and temporal propagation.  It may be original,
+ALIGN-synthesized, or subsequently RTC-replaced.  This identity, rather than
+the largest realized coefficient, governs independent-exposure exclusion.
 
 \item[SCI-RTC-DEF-012 -- Transitive influence.]
 The cause-preserving closure from every original, synthesized, replaced,
@@ -93,8 +101,8 @@ alignment, donor, filter, state, and sampling dependencies to an output.
 Influence is broader than the selected point and may cross detector columns.
 
 \item[SCI-RTC-DEF-013 -- Direct exclusion and consumer eligibility.]
-An output whose directly selected source occurrence is ALIGN-synthesized or
-RTC-replaced is universally excluded as an independent detector measurement,
+An output whose representative occurrence of SCI-RTC-DEF-011 is
+ALIGN-synthesized or RTC-replaced is universally excluded as an independent detector measurement,
 even when finite.  Synthesis or replacement elsewhere in its transitive
 support remains a mandatory cause-preserving influence input, not a universal
 RTC eligibility decision.  Each downstream consumer owns the declared policy
@@ -126,8 +134,10 @@ not total uncertainty and does not imply a diagonal, white, stationary, or
 independent noise model.
 
 \item[SCI-RTC-DEF-018 -- Atomic RTC bundle.]
-One role-specific completion unit containing conditioned raw $\Delta f/f$ TOD; ordered
-detector/sample/scan/support and parent identity; complete response or typed
+One role-specific completion unit containing conditioned raw $x$ TOD; the
+immutable paired \texttt{rs} parent and pairing/mapping identity; every
+\texttt{rs}-derived diagnostic, selector, segmentation, and resolved-plan use;
+ordered detector/sample/scan/support and parent identity; complete response or typed
 unavailability; cause-preserving flags and influence; separated validity and
 eligibility inputs; conditional uncertainty/covariance status; one-way state
 and provenance; required diagnostics; downstream CAL handoff state; and
@@ -209,5 +219,64 @@ typed finite stop cause.  No-successor, residual-satisfied, stable-plan,
 budget/stability/support/compatibility rejection, insufficient evidence,
 maximum-attempt, oscillating-plan, nonconvergent-parameter, and owner-cancelled
 states remain distinct.  Maximum-attempt termination is not convergence.
+
+\item[SCI-RTC-DEF-030 -- Paired raw $x,r$ detector coordinates.]
+The two raw coordinates $\mathbf u_d=(x_d,r_d)^{\mathsf T}$ produced for one
+exact detector occurrence by an admitted Tune-dependent readout mapping.  The
+$x$ coordinate carries the ordinary total-intensity analysis path; the
+nominally orthogonal $r$ coordinate carries readout, leakage, artifact, and
+Tune-health information.  Pairing does not assert equal scaling, response,
+validity, or uncertainty.
+
+\item[SCI-RTC-DEF-031 -- Tune-dependent $I,Q\rightarrow x,r$ mapping authority.]
+The upstream authority identified by $\zeta$ that owns the microwave
+transmission coordinates, transform, reference point, normalization, sign,
+local Jacobian or nonlinear equivalent, validity/linearity domain, epoch, and
+uncertainty.  RTC consumes its identity and admitted output but does not
+produce or repair the mapping.
+
+\item[SCI-RTC-DEF-032 -- Optical leakage into the paired $r$ coordinate.]
+A nonzero admitted optical-response projection in nominally orthogonal $r$.
+It is a readout-coordinate alignment or optical-leakage diagnostic, not
+automatically a literal Tune-angle error.  A scalar ratio or angle tests only
+its declared optical projection and does not prove the complete transform.
+
+\item[SCI-RTC-DEF-033 -- Atmospheric optical-leakage diagnostic.]
+A scientifically named estimate of paired $x/r$ response to a declared
+network atmospheric optical-mode template, with exact membership,
+self-inclusion rule, time/frequency support, preprocessing, estimator,
+response, covariance, uncertainty, coherence, Tune/loading state, and scalar,
+frequency-dependent, or unavailable disposition.
+
+\item[SCI-RTC-DEF-034 -- Bright-source optical-leakage diagnostic.]
+A separately parented estimate of paired $x/r$ response to a declared
+localized source template and support, normally relevant to Beammap,
+Pointing, or OOF roles.  It neither inherits nor silently replaces an
+atmosphere-derived diagnostic.
+
+\item[SCI-RTC-DEF-035 -- Network-coherent detector-dependent level shift.]
+An unexpected persistent readout-baseline change having a common or
+near-common network change time and independently estimated detector/channel
+amplitudes $(\Delta x,\Delta r)$.  Simultaneity, an $r$ signature, or its
+absence does not by itself identify physical cause.
+
+\item[SCI-RTC-DEF-036 -- Transition interval and guarded change-point support.]
+The accepted level-shift transition mask together with pre/post guards,
+timing uncertainty, affected detector population, and filter-state boundary.
+No FIR/IIR support may cross it absent separately authorized continuity.
+
+\item[SCI-RTC-DEF-037 -- Stable plateau and role-specific admissibility.]
+A half-open interval between resolved transitions that is consistent with its
+declared signal-plus-baseline model, accounting for atmosphere, sources,
+noise, slow variation, Tune state, valid support, and absence of unresolved
+additional shifts.  Suitability is role-specific and depends on the required
+estimator support, not sample count alone.
+
+\item[SCI-RTC-DEF-038 -- Separately authorized two-channel correction or stitching estimator.]
+Any estimator that numerically mixes $x$ and $r$, subtracts/rotates one into
+the other, or shifts plateau levels to manufacture continuity.  It requires
+separate purpose, coupling and learning models, complete two-channel response
+and covariance, astronomical transfer, uncertainty, validation, restart, and
+provenance authority; none is a v0.1 default.
 
 \end{description}

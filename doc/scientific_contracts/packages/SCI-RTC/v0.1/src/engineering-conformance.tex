@@ -16,7 +16,7 @@
 \definecolor{RTCgray}{HTML}{52606D}
 \hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
   hypertexnames=false,
-  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.4},
+  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.5},
   pdfauthor={SCI-RTC implementation-blind scientific author}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.48em}
@@ -43,13 +43,13 @@
 \vspace*{0.75in}
 {\color{RTCblue}\rule{\linewidth}{2pt}}\\[0.42in]
 {\Huge\bfseries SCI-RTC\\[0.12in]}
-{\LARGE Raw-Timestream Conditioning and Temporal Response\\[0.28in]}
+{\LARGE Paired Raw-Timestream Conditioning and Temporal Response\\[0.28in]}
 {\huge\color{RTCblue}Engineering Conformance View}
 
 \vspace{0.65in}
 \begin{tabular}{@{}ll@{}}
 Package version & v0.1 \\
-Revision & r0.4 \\
+Revision & r0.5 \\
 Date & 2026-08-18 \\
 Authority & Shared normative core in \texttt{src/common/} \\
 View-specific content & Informative evidence and review guidance only \\
@@ -86,7 +86,7 @@ operation or claim remains unavailable.  Engineering must not choose a
 numerical value from current behavior and then describe it as scientific
 authority.}
 
-\tableofcontents
+{\footnotesize\setcounter{tocdepth}{1}\setlength{\parskip}{0pt}\tableofcontents}
 \clearpage
 
 % Shared normative authority: each component is imported once, and only once.
@@ -139,7 +139,7 @@ for one-to-one coverage.
 \toprule
 Requirement range & Primary review surface & Useful evidence classes \\
 \midrule
-REQ-001--005 & Raw boundary and CAL handoff & Typed raw input/output inspection, downstream CAL-parent failure injection, imported-authority lineage trace. \\
+REQ-001--005 & Paired raw boundary and CAL handoff & Exact $x/r$ input/output inspection, $x$-only downstream CAL-parent failure injection, atmospheric-order and imported-authority lineage trace. \\
 REQ-006--012 & Identity, state, and selected policy & Serialization round trip, distinct-identity fixtures, request-to-realized trace, unsupported-policy rejection. \\
 REQ-013--018 & Ordering and donor transfer & Raw-RTC-then-CAL order trace, forced donor vectors, invalid-factor matrix, donor reuse/tie/fallback fixtures. \\
 REQ-019--020 & Direct exclusion and influence & Direct/noncenter synthesis/replacement injection, full-support cause propagation, downstream policy handoff inspection. \\
@@ -155,7 +155,11 @@ REQ-059--063 & Scientific filter design & Purpose/model register, scan--beam tra
 REQ-064--068 & Donor, decimation, timing, calibration & Donor-meaning separation, circular-factor rejection, folded-band calculation, centroid/coordinate tests, cross-plan response comparison. \\
 REQ-069--070 & Validation and claims & Preregistered design sweeps and strict claim-layer disposition. \\
 REQ-071--076 & Refinement attempts and replay & Distinct attempt/accepted-plan trace, immutable apply, complete-plan reconstruction, original-input replay, explicit-cascade comparison, intended-consequence assessment. \\
-REQ-077--082 & Candidate, stability, stopping, provenance & Artifact discrimination, cumulative budgets, complete-plan stability, typed attempt disposition, lineage, restart mismatch fixtures. \\
+REQ-077--082 & Candidate, stability, stopping, provenance & Artifact discrimination, cumulative budgets, complete-plan stability, actual/max-attempt distinction, typed disposition, lineage, restart mismatch fixtures. \\
+REQ-083--086 & Pair admission, identity, mapping, validity & Missing-partner failure, mapping reconstruction, reorder/rejoin rejection, independent $x/r$ validity matrix, restart identity. \\
+REQ-087--093 & Leakage, prohibited correction, joint statistics & Atmosphere/source estimator fixtures, scalar/frequency status, distinct parentage, forbidden-route rejection, full joint covariance. \\
+REQ-094--102 & Level shifts, plateaus, and state & Spike/shift order fixture, paired event amplitudes, transition masks/guards, multiple shifts, reset boundaries, no-stitch toggle, typed lifecycle states. \\
+REQ-103--105 & CAL, atmosphere composition, role routing & $x$-only CAL handoff, atmosphere-before-filter response or bound, paired role-plan disposition, optional-class disabled checks. \\
 \bottomrule
 \end{tabularx}
 \normalsize
@@ -170,6 +174,13 @@ ordered factorization, exact coefficients and precision, mask/state/edge
 exceptions, detector mixing, sampling phase, and support expansion to the
 artifact presented to consumers.  Mark complete response unavailable if any
 enabled response-changing stage cannot be represented truthfully.
+
+Begin that trace with exact IQ-to-$x/r$ mapping authority and preserve the
+ordered pair through every stage.  Exercise $x$ and $r$ impulses separately
+and jointly, retain full cross-coordinate response and covariance, and verify
+that level-shift segments reset or carry state exactly as resolved.  If a raw
+atmospheric template is enabled, reconstruct its composition before later
+filters and check the exact noncommutation response or approved bound.
 
 Use the prediction IDs rather than inventing new expected science after
 observing output.  Interior impulses and sinusoids exercise fixed linear
@@ -195,6 +206,13 @@ numerical finiteness, edge/context, response availability, eligibility, and
 uncertainty.  A fixture that combines every failure into NaN or one generic
 bit cannot demonstrate these distinctions.
 
+Additionally separate pair-malformed, $x$-invalid, $r$-invalid,
+mapping-unavailable, leakage-unavailable, level-shift-candidate,
+level-shift-accepted, transition-guard, segment-interior, plateau-advisory,
+reset, and atmosphere-response-unavailable states.  Confirm that missing one
+pair member fails required admission while independent validity of a present
+member remains expressible.
+
 For each required output member, inject a bounded write or authority failure
 and verify atomic completion behavior.  Inspect that no prior-observation
 factor, donor, state, mask, rate, product link, or completion marker remains.
@@ -217,8 +235,9 @@ and any new immutable evaluation product, together with candidate dispositions, 
 and science budgets, and continuation or stop cause. Confirm that the final
 plan is replayed against the original input unless a separately authorized
 cascade is recorded. Rejected attempts do not create accepted plans or
-evaluation products. Maximum-attempt, oscillating, and nonconvergent states are
-not convergence.
+evaluation products.  The record distinguishes actual attempts, configured
+maximum, and accepted plans; an early stop has no artificial no-op attempts.
+Maximum-attempt, oscillating, and nonconvergent states are not convergence.
 
 \section{Informative completion checklist}
 \label{sec:eng-checklist}
@@ -230,14 +249,27 @@ not convergence.
       result and tolerance, plus observed values and messages.
 \item Every open owner decision is either resolved by approved authority or
       blocks the named operation/claim exactly as the ledger states.
-\item Every RTC role retains raw $\Delta f/f$ and a distinct downstream
-      SCI-CAL product binds the complete RTC parent without cross-role inheritance.
+\item Every RTC role retains exact paired raw $x/r$ identity and independent
+      validity; raw $x$ is not labeled Stokes I, and a distinct downstream
+      SCI-CAL product consumes only $x$ while binding the complete RTC parent.
+\item Missing either pair member fails admission; no reorder, independent
+      join, copy, synthesis, zero fill, $r$ calibration, $r$-to-$x$
+      correction, or $r$-as-$x$ donor route is accepted.
 \item The owner-modified raw donor ratio is checked in both direction and
       availability cases, with no dependency on legacy responsivity.
 \item Direct synthesis/replacement is universally excluded, while noncenter
       full-support influence is preserved and evaluated by each declared
       downstream consumer policy.
 \item Complete response includes every enabled stage or is typed unavailable.
+\item Leakage diagnostics preserve separate atmosphere and bright-source
+      parents, scalar/frequency status, support, uncertainty, and pre/post
+      response; agreement is not automatic promotion.
+\item Despike/replacement precedes level-shift estimation; every accepted
+      shift has paired amplitudes or typed unavailability, transition mask,
+      guards, segment identity, reset/carry state, and no implicit plateau
+      stitching.
+\item Any selected raw atmospheric template precedes later temporal filters
+      and carries an exact composed response or approved noncommutation bound.
 \item Requested, effective, observation-resolved, learned-evidence,
       resolved-plan, realized,
       and immutable product/stage identities remain distinct.
@@ -247,8 +279,9 @@ not convergence.
 \item Filter validation varies scientific design choices over the admitted
       scan, projected-beam, and source domain; coefficient fixtures alone do
       not establish science qualification.
-\item Iterative notch refinement has a finite attempt bound, distinct attempt
-      and accepted-plan indices, complete cumulative proposals, immutable
+\item Iterative notch refinement has a finite configured maximum, distinct
+      actual-attempt and accepted-plan counts, no artificial no-op attempts,
+      complete cumulative proposals, immutable
       accepted-plan apply, explicit original-input replay or cascade authority,
       and a typed stop or nonconvergence disposition.
 \item Required failures are atomic; optional detail is inert; unexpected

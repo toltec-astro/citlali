@@ -1,7 +1,7 @@
 # SCI-RTC v0.1 — Decision Log
 
-Status: Stage B v0.1/r0.4 bounded correction complete and manager-reviewed;
-scientific authority not approved or frozen
+Status: Stage B v0.1/r0.5 paired-coordinate revision complete and
+manager-reviewed; scientific authority not approved or frozen
 
 | ID | Status | Decision |
 | --- | --- | --- |
@@ -20,6 +20,11 @@ scientific authority not approved or frozen
 | `RTC-SCI-D001` | approved `2026-08-18` | RTC remains raw $\Delta f/f$ through replacement, temporal conditioning, and phase-zero sampling. Compatible `flxscale_q/flxscale_d` is donor convention transfer; SCI-CAL applies absolute `flxscale` and target atmosphere only after RTC. |
 | `RTC-SCI-D002` | approved `2026-08-18` | Only directly selected ALIGN-synthesized or RTC-replaced occurrences are universally excluded. RTC preserves noncenter transitive influence; each downstream consumer owns its declared eligibility policy. |
 | `RTC-DRAFT-D005` | applied `2026-08-18` | R0.4 separates refinement attempts from accepted plans, defines the initial evaluation product, corrects pre-decimation sampling notation, applies the two owner decisions, fixes the title/signal boundary, and adds the role-specific RTC-plan matrix. |
+| `RTC-SCI-D003` | approved `2026-08-18` | Every admitted occurrence contains an exact paired raw $x/r$ coordinate under retained upstream IQ-to-$x/r$ mapping authority. Raw $x$ is the ordinary path but not itself Stokes I; $r$ is diagnostic, not calibrated or substituted. |
+| `RTC-SCI-D004` | approved `2026-08-18` | Despike detection and admitted replacement precede level-shift estimation on the repaired paired stream. Selected shifts create explicit transition masks, guards, segments, and state reset/carry; detection does not imply correction or stitching. |
+| `RTC-SCI-D005` | approved `2026-08-18` | A selected raw RTC atmospheric-template operation precedes later temporal filters and requires exact composed response or an owner-approved noncommutation bound. It remains distinct from the downstream SCI-CAL target-atmosphere correction. |
+| `RTC-DRAFT-D006` | applied `2026-08-18` | R0.5 appends paired-coordinate, mapping, leakage, level-shift, atmosphere-composition, and actual-attempt authority while preserving all r0.4 identifiers and architecture. |
+| `RTC-DRAFT-D007` | manager-reviewed `2026-08-18` | R0.5 independence, directive coverage, shared-core structure, exact inventories and crosswalk, warning-free compilation, PDF metadata, and visual integrity of all 84 pages pass; the draft is accepted for scientific-owner review and freeze disposition only. |
 
 Stage A approval authorized implementation-blind drafting only. The manager
 review establishes draft coherence, not scientific approval. No step here

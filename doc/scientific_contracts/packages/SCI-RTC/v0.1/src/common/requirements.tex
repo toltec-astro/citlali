@@ -1,9 +1,9 @@
-% SCI-RTC v0.1/r0.4 shared normative core -- requirements.
+% SCI-RTC v0.1/r0.5 shared normative core -- requirements.
 \clearpage
 \section{Sequential normative requirements}
 \label{sec:core-requirements}
 
-The following identifiers are stable within v0.1/r0.4.  Conformance is
+The following identifiers are stable within v0.1/r0.5.  Conformance is
 requirement-by-requirement; satisfying a neighboring requirement does not
 waive another one.
 
@@ -12,11 +12,11 @@ waive another one.
 \toprule
 Area & ID & Normative statement \\
 \midrule
-Boundary & \ReqID{SCI-RTC-REQ-001} & RTC shall admit only an aligned primary \texttt{xs} stream whose signal is raw, uncalibrated detector $\Delta f/f$ and whose ordered identity, assigned grid, support, origin/synthesis state, and validity are declared. \\
-Boundary & \ReqID{SCI-RTC-REQ-002} & Every requested RTC product role shall declare sign, reference/baseline, valid domain, plan, and required consumers while retaining the raw $\Delta f/f$ signal identity; no role shall give \texttt{xs} a calibrated meaning. \\
-Boundary & \ReqID{SCI-RTC-REQ-003} & Every RTC conditioned detector output, including Beammap, Pointing, OOF, Science, and diagnostic-only roles, shall remain raw $\Delta f/f$ and shall not be silently replaced by a calibrated timestream or map. \\
+Boundary & \ReqID{SCI-RTC-REQ-001} & RTC shall admit only exact aligned \texttt{xs}/\texttt{rs} pairs whose signals are raw, uncalibrated detector coordinates and whose ordered pair identity, assigned grid, support, origin/synthesis state, and independently declared validity are present; a missing partner is malformed required input. \\
+Boundary & \ReqID{SCI-RTC-REQ-002} & Every requested RTC product role shall declare the paired $x/r$ sign, reference/baseline, valid domain, plan, and required consumers while retaining raw coordinate identity; no role shall give either member a calibrated or Stokes meaning. \\
+Boundary & \ReqID{SCI-RTC-REQ-003} & Every RTC conditioned detector output, including Beammap, Pointing, OOF, Science, and diagnostic-only roles, shall preserve the paired raw $x/r$ coordinates and shall not be silently replaced by a calibrated timestream or map; the $r$ member is diagnostic rather than an alternative science signal. \\
 Boundary & \ReqID{SCI-RTC-REQ-004} & A calibrated detector signal shall be a distinct downstream SCI-CAL product in the top-of-atmosphere, point-source-equivalent mJy-per-fixed-nominal-beam convention, with admitted factor, atmosphere, detector, validity, uncertainty, and provenance state. \\
-Boundary & \ReqID{SCI-RTC-REQ-005} & RTC shall preserve the exact raw parent, plan, response, support, factor authority, and atmosphere lineage required by the downstream CAL handoff but shall not apply, derive, repair, promote, or reinterpret SCI-CAL calibration. \\
+Boundary & \ReqID{SCI-RTC-REQ-005} & RTC shall preserve the exact paired raw parent, plan, response, support, factor authority, RTC atmospheric-template lineage, and SCI-CAL atmosphere lineage required by downstream composition; it shall represent or bound noncommutation between RTC template removal and filtering but shall not apply, derive, repair, promote, or reinterpret SCI-CAL calibration. \\
 Identity & \ReqID{SCI-RTC-REQ-006} & Observation, Tune, array, network/interface, detector occurrence, APT binding, native row, aligned slot, scan, science interval, context interval, output slot, stage, and product identity shall remain distinct and immutable. \\
 Identity & \ReqID{SCI-RTC-REQ-007} & The ordered detector and sample shapes, index bases, native-to-aligned mapping, aligned-to-output map, scan membership, and memory order shall be explicit; indices shall not serve as cross-artifact detector identity. \\
 Identity & \ReqID{SCI-RTC-REQ-008} & RTC shall preserve the admitted ALIGN cadence, phase, rate, gaps, support, and synthesis/origin state without claiming physical integration-event timing or absolute epoch authority. \\
@@ -24,7 +24,7 @@ Identity & \ReqID{SCI-RTC-REQ-009} & A coordinate-dependent operation shall cons
 State & \ReqID{SCI-RTC-REQ-010} & Requested, effective, observation-resolved, learned/resolved when applicable, and realized state shall be recorded separately in one-way order; later state shall not overwrite the accepted request. \\
 State & \ReqID{SCI-RTC-REQ-011} & Outer, inner, full, mini, diagnostic, simulated, processed, and any other produced stage roles shall have distinct immutable identities and explicit parent/processing links without requiring duplicate computation. \\
 Policy & \ReqID{SCI-RTC-REQ-012} & Every despike, donor, replacement, mask, filter, state, edge, non-finite, recovery, sampling, flag, diagnostic, and fallback action shall be governed by an admitted versioned selected policy rather than an undocumented default. \\
-Order & \ReqID{SCI-RTC-REQ-013} & RTC shall complete raw-domain alignment, compatible donor transfer/replacement, temporal filtering, and phase-zero sampling before SCI-CAL applies absolute \texttt{flxscale} and target-atmosphere correction as in equation~\eqref{eq:order-equivalence}; no calibrated RTC branch or alternative interleaving is authorized in v0.1. \\
+Order & \ReqID{SCI-RTC-REQ-013} & RTC shall complete paired raw-domain alignment, selected early despike/level-shift composition, compatible $x$ donor transfer/replacement, selected atmospheric-template removal, temporal filtering, and phase-zero sampling before SCI-CAL consumes only $x$ and applies absolute \texttt{flxscale} and target-atmosphere correction as in equation~\eqref{eq:order-equivalence}; no calibrated RTC branch or alternative interleaving is authorized in v0.1. \\
 \bottomrule
 \end{tabularx}
 
@@ -38,11 +38,11 @@ Donor & \ReqID{SCI-RTC-REQ-015} & The raw donor route in REQ-014 shall use \text
 Donor & \ReqID{SCI-RTC-REQ-016} & When REQ-014 is not available, replacement shall fail under that route unless a separate donor-to-target authority declares direction, quantity/unit domain, support, uncertainty, validity, and provenance. \\
 Donor & \ReqID{SCI-RTC-REQ-017} & The despike detector, target indicator, candidate eligibility, topology, score, tie rule, donor weights, time relation, source-mask/flag use, fallback, and every realized donor link shall be reconstructible. \\
 Donor & \ReqID{SCI-RTC-REQ-018} & A replaced target shall retain target identity, link every donor and factor, preserve the replacement cause, and expose correlations from reused or shared donors; finiteness shall not create independent exposure. \\
-Influence & \ReqID{SCI-RTC-REQ-019} & An output whose directly selected occurrence is ALIGN-synthesized shall be universally excluded as an independent detector measurement; noncenter synthesized influence shall preserve its numerical effect, typed cause, and support for the downstream consumer's declared eligibility policy. \\
-Influence & \ReqID{SCI-RTC-REQ-020} & An output whose directly selected occurrence is RTC-replaced shall be universally excluded as an independent detector measurement; noncenter replacement influence shall preserve its numerical effect, typed cause, donor linkage, and support for the downstream consumer's declared eligibility policy. \\
-Filter & \ReqID{SCI-RTC-REQ-021} & Every enabled response-changing stage shall record chronological order, exact full-precision coefficients or exact digest, coefficient convention, normalization, numeric precision, rate, direction, state, context, mask, edge, non-finite policy, and exceptions once per coherent segment. \\
+Influence & \ReqID{SCI-RTC-REQ-019} & An output whose exact representative source occurrence $\rho_{dn}=(d,Mn)$ is ALIGN-synthesized shall be universally excluded as an independent detector measurement; nonrepresentative synthesized influence shall preserve its numerical effect, typed cause, and support for the downstream consumer's declared eligibility policy. \\
+Influence & \ReqID{SCI-RTC-REQ-020} & An output whose exact representative source occurrence $\rho_{dn}=(d,Mn)$ is RTC-replaced shall be universally excluded as an independent detector measurement; nonrepresentative replacement influence shall preserve its numerical effect, typed cause, donor linkage, and support for the downstream consumer's declared eligibility policy. \\
+Filter & \ReqID{SCI-RTC-REQ-021} & Every enabled response-changing stage shall record chronological order, exact full-precision coefficients or exact digest, coefficient convention, normalization, numeric precision, rate, direction, state, context, mask, edge, non-finite policy, exceptions, and the coherent segment bounded by gaps, resets, or level shifts. \\
 Filter & \ReqID{SCI-RTC-REQ-022} & An FIR claim shall expose exact impulse support, DC gain, phase convention, and normalization; a label such as ``normalized'' shall not substitute for the coefficient sum or response. \\
-Filter & \ReqID{SCI-RTC-REQ-023} & An IIR or notch claim shall expose an exact recurrence or state-space equivalent, realized poles/zeros where applicable, initial/final state, reset/carry boundary, transient/guard rule, precision, and stability status. \\
+Filter & \ReqID{SCI-RTC-REQ-023} & An IIR or notch claim shall expose an exact recurrence or state-space equivalent, realized poles/zeros where applicable, initial/final state, reset/carry boundary including admitted level shifts, transient/guard rule, precision, and stability status; state shall not silently cross a declared segment boundary. \\
 Mask & \ReqID{SCI-RTC-REQ-024} & A processing mask shall be represented as an operator control, including geometry or selection, boundary convention, dilation, denominator/segment behavior, and state interaction; it shall not be treated as acquisition validity or confidence. \\
 Mask & \ReqID{SCI-RTC-REQ-025} & Invalid, unavailable, wrong-frame, out-of-domain, or ambiguously bound coordinates shall not become outside-source samples and shall fail the affected required coordinate operation. \\
 Finite & \ReqID{SCI-RTC-REQ-026} & A non-finite required sample, factor, coefficient, coordinate, or filter state shall be rejected, marked unavailable over its exact transitive influence, or handled by an explicitly authorized prior replacement/recovery rule; it shall not be silently coerced to zero. \\
@@ -55,7 +55,7 @@ Edge & \ReqID{SCI-RTC-REQ-027} & Boundary extension, incomplete context, filter 
 \toprule
 Area & ID & Normative statement \\
 \midrule
-Sampling & \ReqID{SCI-RTC-REQ-028} & V0.1 downsampling shall use only phase-zero point selection $y^{\rm RTC}[n]=v^{\rm preD}[Mn]$ from the final pre-decimation stream; arithmetic-mean and other block-aggregate downsampling are excluded. \\
+Sampling & \ReqID{SCI-RTC-REQ-028} & V0.1 downsampling shall use only phase-zero point selection $y^{\rm RTC}[n]=v^{\rm preD}[Mn]$ from the final pre-decimation stream; the representative source occurrence is exactly $(d,Mn)$ before replacement/filtering, and arithmetic-mean or other block-aggregate downsampling is excluded. \\
 Sampling & \ReqID{SCI-RTC-REQ-029} & Each coherent segment shall record $M$, zero phase, input/output rates and grids, the cardinality of equation~\eqref{eq:phase-zero}, selected-point representative time, full transitive support, edge disposition, and flag/influence aggregation. \\
 Sampling & \ReqID{SCI-RTC-REQ-030} & Any alias-free or bounded-alias claim shall include the exact realized prefilter and all folded bands of equation~\eqref{eq:alias}, with a declared input band, metric, bound, and unavailable state; point selection alone shall not be called anti-alias filtering. \\
 Sampling & \ReqID{SCI-RTC-REQ-031} & Fixed mode shall resolve an admitted factor/filter/rate/compatibility plan before application and record it independently of realized output. \\
@@ -77,16 +77,16 @@ Response & \ReqID{SCI-RTC-REQ-041} & Output support shall be expanded transitive
 \toprule
 Area & ID & Normative statement \\
 \midrule
-Statistics & \ReqID{SCI-RTC-REQ-042} & Conditional mean and covariance shall follow equations~\eqref{eq:conditional-mean}--\eqref{eq:conditional-cov} only for an admitted input model and fixed realized state, with reused donors and overlapping support represented as correlations. \\
+Statistics & \ReqID{SCI-RTC-REQ-042} & Conditional mean and covariance shall follow equations~\eqref{eq:conditional-mean}--\eqref{eq:conditional-cov} only for an admitted joint $x/r$ input model and fixed realized state, with cross-coordinate covariance, reused donors, shared selectors, and overlapping support represented as correlations. \\
 Statistics & \ReqID{SCI-RTC-REQ-043} & When selection depends on modeled random data, selection bias and selection covariance shall be modeled or explicitly unavailable; they shall not be set to zero merely by conditioning on the realized selector. \\
 Statistics & \ReqID{SCI-RTC-REQ-044} & Calibration, atmosphere, beam, donor-scale, coefficient, cadence/phase, response, and model nuisance terms shall retain value, validity, uncertainty, provenance, and correlation scope, including required cross terms. \\
 Statistics & \ReqID{SCI-RTC-REQ-045} & Unknown covariance shall remain unavailable and shall not be replaced by diagonal, white, stationary, independent, zero, or scalar-weight assumptions; conditional inverse variance shall not be called full precision or total uncertainty. \\
-Validity & \ReqID{SCI-RTC-REQ-046} & Acquisition support, original validity, ALIGN synthesis, numerical computability, coordinate validity, flags/causes, operator masks, replacement, transitive influence, complete support, response status, consumer eligibility, uncertainty availability, and provenance shall remain separate states. \\
+Validity & \ReqID{SCI-RTC-REQ-046} & Acquisition support, independent $x$ validity, independent $r$ validity, pair identity, ALIGN synthesis, numerical computability, coordinate validity, flags/causes, operator masks, replacement, transitive influence, complete support, response status, consumer eligibility, uncertainty availability, and provenance shall remain separate states. \\
 Validity & \ReqID{SCI-RTC-REQ-047} & A flag shall describe a cause and shall not automatically become a mask, invalidity, weight, or universal eligibility decision; aggregation shall preserve every contributing cause required by the selected policy. \\
-Output & \ReqID{SCI-RTC-REQ-048} & RTC shall produce the role-specific atomic bundle of equation~\eqref{eq:bundle}; conditioned TOD alone shall not be reported as a complete required RTC product. \\
+Output & \ReqID{SCI-RTC-REQ-048} & RTC shall produce the role-specific paired atomic bundle of equation~\eqref{eq:bundle}; conditioned $x$ TOD alone or conditioned $r$ diagnostics alone shall not be reported as a complete required RTC product. \\
 Output & \ReqID{SCI-RTC-REQ-049} & Required malformed identity/state or missing authority shall propagate to atomic required-output failure; optional unavailable provenance detail shall be typed and numerically inert. \\
-Output & \ReqID{SCI-RTC-REQ-050} & Compact provenance shall reconstruct input/parent identity, detector binding, grid and intervals, downstream CAL handoff authority, donor links, ordered filters, masks, coefficients/state/edges, sampling, response/uncertainty status, exceptions, counts, and all one-way state records. \\
-Output & \ReqID{SCI-RTC-REQ-051} & Each diagnostic shall name estimator, unit, support, mask/selection, validity, availability, and whether it is inert, advisory, or enters the selected policy; optional diagnostic detail shall not change values, flags, eligibility, cardinality, or failure. \\
+Output & \ReqID{SCI-RTC-REQ-050} & Compact provenance shall reconstruct the exact IQ-to-$x/r$ mapping and pair identity, input/parent identity, detector binding, grid and intervals, downstream CAL handoff authority, donor links, level shifts/segments/resets, ordered filters, masks, coefficients/state/edges, sampling, response/uncertainty status, exceptions, counts, and all one-way state records. \\
+Output & \ReqID{SCI-RTC-REQ-051} & Each diagnostic, including leakage and level-shift products, shall name estimator, unit, support, mask/selection, validity, availability, scalar-versus-frequency status, and whether it is inert, advisory, or enters the selected policy; optional diagnostic detail shall not change values, flags, eligibility, cardinality, or failure. \\
 Consumer & \ReqID{SCI-RTC-REQ-052} & Beyond the direct exclusions in REQ-019--020, RTC shall supply cause-preserving transitive influence rather than a universal downstream eligibility bit; each consumer shall bind the exact RTC parent, declare its influence-to-eligibility policy, and shall not erase causes or strengthen unavailable timing, coordinate, calibration, response, covariance, or eligibility claims. \\
 Consumer & \ReqID{SCI-RTC-REQ-053} & PTC-disabled terminal RTC output shall be a valid requested state when selected; no PTC or map product shall be implied, while any requested downstream product shall require the exact admitted RTC bundle. \\
 Claims & \ReqID{SCI-RTC-REQ-054} & Algebraic contract correctness, implementation conformity, representation fidelity, observational performance, science-impact qualification, and production readiness shall be stated and assessed as separate claims. \\
@@ -130,7 +130,7 @@ Claims & \ReqID{SCI-RTC-REQ-070} & No plan shall be called science-qualified sol
 \toprule
 Area & ID & Normative statement \\
 \midrule
-Iteration & \ReqID{SCI-RTC-REQ-071} & Iterative notch-plan refinement shall use a finite owner-approved attempt bound and stopping policy; attempt count and accepted-plan count shall remain distinct, and an unbounded repeat-until-satisfactory process is unavailable. \\
+Iteration & \ReqID{SCI-RTC-REQ-071} & Iterative notch-plan refinement shall use a finite owner-approved maximum attempt bound and stopping policy; actual attempt count, configured maximum, and accepted-plan count shall remain distinct, unused maximum attempts shall not become artificial no-ops, and an unbounded repeat-until-satisfactory process is unavailable. \\
 Iteration & \ReqID{SCI-RTC-REQ-072} & Every apply of accepted plan $\Pi_k$ shall consume exactly that immutable plan and shall not change coefficients, notch parameters, policy, masks, donor rules, decimation, or state conventions. \\
 Plan & \ReqID{SCI-RTC-REQ-073} & Every proposed successor $\widetilde\Pi_a$ shall be a complete cumulative plan that dispositions all prior and proposed notches and records all stages, order, coefficients/precision, state, masks, edges/guards, intervals, decimation/timing, response/support, uncertainty, validity, and compatibility; rejection shall not assign it an accepted-plan index. \\
 Replay & \ReqID{SCI-RTC-REQ-074} & The default evaluation and final production rule shall apply each complete accepted plan to original admitted $x^{(0)}$ as in equation~\eqref{eq:iterative-refinement}; exploratory attempts shall not accumulate hidden rounding, padding, state, duplicate-filter, mask, flag, or parent effects. \\
@@ -150,6 +150,53 @@ Stability & \ReqID{SCI-RTC-REQ-079} & Plan stability shall compare the complete 
 Stop & \ReqID{SCI-RTC-REQ-080} & Every attempt shall record one typed accepted, rejected, or stop disposition plus its cause; maximum-attempt, oscillating-plan, and nonconvergent-parameter terminations shall not be labeled convergence or plan stability, and rejection shall leave the last accepted plan available unless policy says otherwise. \\
 Lineage & \ReqID{SCI-RTC-REQ-081} & Every attempt shall preserve attempt index, current accepted-plan index, original input, previous accepted plan, learning parent/population and PSD definition, original/predicted/measured spectra, proposal and disposition, predicates/tolerances, any newly accepted complete plan/evaluation product, cumulative response/astronomical diagnostics, stop cause, and final plan identity in one-way state. \\
 Restart & \ReqID{SCI-RTC-REQ-082} & Serialization and restart shall reproduce the final selected complete plan and declared parent rule exactly and reject incompatible original input, rate, learning population, parent, coefficient, interval, state, or policy identity. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.09\linewidth}p{0.20\linewidth}X@{}}
+\toprule
+Area & ID & Normative statement \\
+\midrule
+Pair & \ReqID{SCI-RTC-REQ-083} & Every required acquired occurrence shall contain both $x^A_{dj}$ and $r^A_{dj}$ with exact common detector, sample, stream, and mapping-revision identity; a missing member shall fail required-input admission rather than be synthesized, copied, or zero-filled. \\
+Pair & \ReqID{SCI-RTC-REQ-084} & Paired identity shall remain exact through selection, segmentation, filtering, sampling, serialization, and restart; reordering or independently joining the two members is not an equivalent representation. \\
+Mapping & \ReqID{SCI-RTC-REQ-085} & The upstream $IQ\!\rightarrow\!xr$ mapping shall expose authority, revision, coefficient/offset convention, applicability, validity, and provenance for each admitted occurrence; RTC shall consume rather than infer or repair that mapping. \\
+Validity & \ReqID{SCI-RTC-REQ-086} & Numerical and scientific validity of $x$ and $r$ shall be represented independently while retaining the pair; invalidity of one member shall not silently invalidate, replace, or validate the other. \\
+Leakage & \ReqID{SCI-RTC-REQ-087} & Optical response in $r$ shall not be assumed zero.  Any leakage claim shall identify the source class, estimator, support, selection, validity, uncertainty, and response convention. \\
+Leakage & \ReqID{SCI-RTC-REQ-088} & An atmosphere-derived $x/r$ leakage diagnostic shall identify the atmospheric template or population, temporal/frequency support, masks, estimator, quality, uncertainty, and applicability independently of any bright-source result. \\
+Leakage & \ReqID{SCI-RTC-REQ-089} & A bright-source-derived $x/r$ leakage diagnostic shall identify the source, model, spatial/temporal support, masks, estimator, quality, uncertainty, and applicability independently of any atmospheric result. \\
+Leakage & \ReqID{SCI-RTC-REQ-090} & Atmosphere-derived and bright-source-derived leakage products shall retain separate parentage and shall not be averaged, substituted, or promoted as mutually validating without an explicitly authorized comparison model. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.09\linewidth}p{0.20\linewidth}X@{}}
+\toprule
+Area & ID & Normative statement \\
+\midrule
+Leakage & \ReqID{SCI-RTC-REQ-091} & Each leakage product shall state whether it is scalar, band-limited, or frequency dependent and shall provide the corresponding response/support or a typed unavailable state. \\
+Boundary & \ReqID{SCI-RTC-REQ-092} & V0.1 shall not automatically correct $x$ using $r$, calibrate $r$, use $r$ as an $x$ donor, or treat a valid $r$ coordinate as a substitute for an invalid $x$ coordinate. \\
+Statistics & \ReqID{SCI-RTC-REQ-093} & Any joint $x/r$ selector, estimator, covariance, or diagnostic shall preserve cross-coordinate covariance, common support, shared selection, and unavailable components; independence shall require evidence. \\
+Shift & \ReqID{SCI-RTC-REQ-094} & Every level-shift candidate and disposition shall record detector, event/transition time or interval, $x$ and $r$ amplitudes or unavailability, estimator, support, quality, uncertainty, detection state, and cause. \\
+Shift & \ReqID{SCI-RTC-REQ-095} & The owner-selected early composition is despike detection and admitted sample replacement before level-shift estimation on the repaired paired stream; the exact policy revision and resulting masks shall be recorded, and no alternative suborder is implied. \\
+Shift & \ReqID{SCI-RTC-REQ-096} & A selected level shift shall create an explicit transition mask and owner-resolved pre/post guard whose samples remain distinguishable from ordinary segment interior. \\
+Shift & \ReqID{SCI-RTC-REQ-097} & A selected level shift shall delimit coherent processing segments and apply the selected reset/carry rule; filter, estimator, or donor state shall not silently cross that boundary. \\
+Plateau & \ReqID{SCI-RTC-REQ-098} & Any plateau diagnostic shall declare coordinate, segment, estimator, support, masks, uncertainty, validity, and whether it is inert, advisory, or a selected policy input. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.09\linewidth}p{0.20\linewidth}X@{}}
+\toprule
+Area & ID & Normative statement \\
+\midrule
+Shift & \ReqID{SCI-RTC-REQ-099} & Multiple level shifts shall retain ordered distinct event identities, including overlapping guards and short intervening segments, and shall follow a selected conflict and minimum-segment policy. \\
+Leakage & \ReqID{SCI-RTC-REQ-100} & When filtering or atmospheric-template removal can change an $x/r$ leakage estimate, pre- and post-operation diagnostics shall be separately identified and the comparison domain and response shall be declared. \\
+Plateau & \ReqID{SCI-RTC-REQ-101} & Plateau or level-shift estimates shall not authorize cross-segment offset stitching in v0.1; such stitching requires separate operator, response, covariance, provenance, and validation authority. \\
+State & \ReqID{SCI-RTC-REQ-102} & Pair admission, mapping, leakage estimation, level-shift detection, transition masking, segmentation, reset, plateau evaluation, and optional atmospheric-template removal shall expose requested, effective, resolved, realized, unavailable, and failed states with typed causes as applicable. \\
+CAL & \ReqID{SCI-RTC-REQ-103} & SCI-CAL shall receive only the exact conditioned $x$ member plus the complete paired RTC bundle needed for traceability; the $r$ member shall not receive SCI-CAL calibration or target-atmosphere correction. \\
+Atm. & \ReqID{SCI-RTC-REQ-104} & The owner-selected RTC atmospheric-template operation shall precede temporal filtering; its noncommutation with every later enabled filter shall be represented by an exact composed response on the admitted domain or by an owner-resolved quantitative bound and typed unavailable/failure state. \\
+Role & \ReqID{SCI-RTC-REQ-105} & Every role plan shall disposition paired mapping, $x/r$ validity, leakage diagnostics, level shifts, segmentation/reset, and atmosphere treatment; optional operation classes shall remain disabled unless explicitly selected.  Science consumption is ``SCI-CAL handoff and any explicitly authorized raw-domain consumers; subsequent PTC, VAL, MAP, and FLT use follows their own contracts.'' \\
 \bottomrule
 \end{tabularx}
 \normalsize

@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.4 shared normative core -- assumptions and scope.
+% SCI-RTC v0.1/r0.5 shared normative core -- assumptions and scope.
 \section{Bounded assumptions and non-goals}
 \label{sec:core-assumptions}
 
@@ -6,8 +6,11 @@
   labelwidth=0pt,labelsep=0pt]
 
 \item[SCI-RTC-ASM-001 -- Capability.]
-V0.1 treats Stokes-I primary \texttt{xs}.  Enabled polarimetry and measured
-R-channel execution are excluded until separately approved.
+V0.1 admits the exact paired raw readout coordinates \texttt{xs} and
+\texttt{rs}.  The $x$ member is the ordinary science-conditioning path; the
+$r$ member is a retained diagnostic coordinate.  Raw $x$ is not itself a
+Stokes observable, and enabled polarimetry remains excluded until separately
+approved.
 
 \item[SCI-RTC-ASM-002 -- Aligned-grid boundary.]
 The input grid, cadence, phase, mapping, gaps, synthesis/origin state,
@@ -20,22 +23,27 @@ topology, detector binding, support, validity, and uncertainty where required.
 The absence of such authority does not license inference or clamping.
 
 \item[SCI-RTC-ASM-004 -- Calibration boundary.]
-Calibration-factor production, atmosphere lineage, beam meaning, uncertainty,
-and promotion belong to SCI-BEAM/SCI-CAL.  RTC remains in raw $\Delta f/f$
-through replacement, filtering, and sampling.  SCI-CAL may consume the exact
-RTC bundle and apply absolute \texttt{flxscale} plus target atmosphere only
+Calibration-factor production, target-atmosphere correction, beam meaning,
+uncertainty, and promotion belong to SCI-BEAM/SCI-CAL.  RTC remains in raw
+$\Delta f/f$ through replacement, filtering, and sampling.  RTC may learn and
+apply a separately authorized raw atmospheric template and shall account for
+its noncommutation with later filters.  SCI-CAL consumes only the exact RTC
+$x$ product and applies absolute \texttt{flxscale} plus target atmosphere only
 after RTC.
 
 \item[SCI-RTC-ASM-005 -- Selected-policy boundary.]
-Despike, donor, mask, FIR, IIR, notch, state, edge, non-finite, recovery,
-sampling, diagnostic, and failure choices are selected versioned policies.
+Despike, level-shift detection, transition masks, segmentation, reset,
+plateau use, donor, mask, FIR, IIR, notch, atmospheric-template, leakage,
+state, edge, non-finite, recovery, sampling, diagnostic, and failure choices
+are selected versioned policies.
 No current default or numerical threshold is promoted to a universal
 scientific constant by this contract.
 
 \item[SCI-RTC-ASM-006 -- Conditional linearity.]
-Linear response and covariance identities condition on fixed realized
-selection and state.  Data-derived selectors make the unconditional operation
-generally nonlinear and nonstationary.
+Linear response and covariance identities condition on fixed paired-stream
+selection and realized state.  Cross-coordinate covariance and shared
+selectors are retained.  Data-derived selectors make the unconditional
+operation generally nonlinear and nonstationary.
 
 \item[SCI-RTC-ASM-007 -- Statistical input.]
 Moments or covariance are claimed only from a supplied statistical model with
@@ -49,9 +57,10 @@ first learned sampling scope produces one common observation plan.  Per-array,
 per-scan, heterogeneous-cadence, noise-aware, and continuously adaptive
 sampling execution are successor scopes.
 Bounded iterative notch-plan refinement is admitted only as a finite outer
-sequence of attempts over complete immutable accepted plans; rejected attempts
-do not advance the accepted-plan sequence, and no parameter evolves within an
-apply pass.
+sequence of actual attempts, bounded by a separately configured maximum, over
+complete immutable accepted plans; rejected attempts do not advance the
+accepted-plan sequence, unused maximum attempts are not artificial no-ops,
+and no parameter evolves within an apply pass.
 
 \item[SCI-RTC-ASM-009 -- Analytical authority.]
 Exact analytical source-times-realized-filter transfer and phase-zero alias
@@ -85,7 +94,8 @@ This revision does not derive ALIGN timing, AST coordinates, SCI-BEAM or
 SCI-CAL calibration, PTC, VAL, MAP, or FLT estimators, source fitting, or recurrence;
 authorize absolute-timing or astrometric corrections; redesign mature
 despike/FIR/IIR/notch numerics; choose universal numerical thresholds;
-authorize online adaptation; activate
-polarimetry or measured R; prescribe source classes, files, storage schemas,
-or product names; authorize per-array/per-scan cadence; inspect implementation;
+authorize online adaptation; activate polarimetry; authorize automatic
+$r$-to-$x$ correction, $r$ calibration, use of $r$ as an $x$ donor, or
+plateau-based cross-segment stitching; prescribe source classes, files,
+storage schemas, or product names; authorize per-array/per-scan cadence; inspect implementation;
 perform validation or reductions; or assert production status.

@@ -1,4 +1,4 @@
-# SCI-RTC v0.1/r0.4 exact authority crosswalk
+# SCI-RTC v0.1/r0.5 exact authority crosswalk
 
 Status: implementation-blind author crosswalk. It maps every normative ID in
 the shared core to explanatory and conformance loci and to the approved author
@@ -13,11 +13,16 @@ packet. It reports no implementation or validation result.
 | `CO` | `AUTHOR_CONVENTIONS_AND_OWNERSHIP.md` | `a26220dc827330e30ca8e4c75e82600e6cc2f05358887bbaa0c6da93f98ecb5b` |
 | `RC` | Exact retained core obtained as `git show 3319d7424c732c1c9fc300c336e4d428e6f91068:doc/audits/packages/SCI-RTC-001_INDEPENDENT_CORE.tex` | `d6cf49d1a5e17754c55cc4f2c8f4b4f5e276755f247496df888581d890be80b7` |
 | `R4` | Supplied r0.3 scientific-owner review plus the two explicit r0.4 owner approvals recorded in `SCIENTIFIC_OWNER_REVIEW_R0.4.md` | `2298d9b801a2213bf8327f83abe5e0a6aeb3eca2c1398bafb4ec106a9972eba4` |
+| `R5` | Supplied r0.5 scientific-owner directive, content-bound and summarized in `SCIENTIFIC_OWNER_DIRECTIVE_R0.5.md` | `7469fd327d9465904a4e59c287577bab0dcd9f93fd2cc555cdee6680e89714a6` |
 
 The supersession cover controls wherever `RC` is broader, older, or
 ambiguous. In particular, crosswalk entries that cite the retained calibration,
 replacement, sampling, influence, or signal-domain derivation always include
 the applicable `SC` correction.
+The later `R5` owner directive controls wherever the approved packet or
+retained core assumes a single measured coordinate or excludes the paired
+$r$ coordinate.  It does not alter the recorded hashes of those earlier
+inputs.
 
 ## View inclusion crosswalk
 
@@ -67,6 +72,15 @@ modify the imported authority.
 | `SCI-RTC-DEF-027` | Definitions: bounded attempts over accepted plans | §§2, 5 | Attempt/plan and immutability trace | R4 correction; r0.3 directive §§1--2 |
 | `SCI-RTC-DEF-028` | Definitions: complete cumulative successor proposal | §§2, 5 | Full-proposal reconstruction | R4 correction; r0.3 directive §§2--3 |
 | `SCI-RTC-DEF-029` | Definitions: final accepted plan and termination | §§2, 5, 12 | Stop/nonconvergence audit | r0.3 directive §§5--8 |
+| `SCI-RTC-DEF-030` | Definitions: exact paired raw occurrence | §§1, 4 | Pair-admission checks | R5 §§II--III |
+| `SCI-RTC-DEF-031` | Definitions: upstream IQ-to-$x/r$ mapping | §4 | Mapping reconstruction | R5 §III |
+| `SCI-RTC-DEF-032` | Definitions: optical-response vector | §§4, 6 | Paired response checks | R5 §IV |
+| `SCI-RTC-DEF-033` | Definitions: atmospheric leakage diagnostic | §§3, 6 | Atmosphere estimator routing | R5 §§IV--V |
+| `SCI-RTC-DEF-034` | Definitions: bright-source leakage diagnostic | §6 | Source estimator routing | R5 §VI |
+| `SCI-RTC-DEF-035` | Definitions: level-shift event | §§5, 10 | Event/state checks | R5 §§VII--VIII |
+| `SCI-RTC-DEF-036` | Definitions: transition mask and guard | §§5, 10 | Boundary checks | R5 §§VII--VIII |
+| `SCI-RTC-DEF-037` | Definitions: plateau state | §§5, 10 | Advisory/inert checks | R5 §§VII--VIII |
+| `SCI-RTC-DEF-038` | Definitions: two-coordinate correction boundary | §§4--6 | Forbidden-route checks | R5 §§IV, IX |
 
 ## Equations and identities
 
@@ -103,6 +117,12 @@ modify the imported authority.
 | `SCI-RTC-EQ-027` | Equations: scan displacement | §7 | Coordinate/centroid fixture | r0.2 directive §§6, 9 |
 | `SCI-RTC-EQ-028` | Equations: learn--resolve--apply | §2 | State and mutation trace | r0.2 directive §§1, 14 |
 | `SCI-RTC-EQ-029` | Equations: attempts, accepted plans, and replay | §§2, 5 | Attempt/plan/replay trace | R4 correction; r0.3 directive §§2--3, 10 |
+| `SCI-RTC-EQ-030` | Equations: upstream IQ-to-$x/r$ mapping and exact pair identity | §4 | Mapping/pair round trip | R5 §III |
+| `SCI-RTC-EQ-031` | Equations: local paired optical response | §§4, 6 | Paired injection response | R5 §IV |
+| `SCI-RTC-EQ-032` | Equations: source-qualified leakage diagnostic | §6 | Atmosphere/source leakage fixtures | R5 §§IV--VI |
+| `SCI-RTC-EQ-033` | Equations: paired piecewise level-shift model | §§5, 10 | Shift timing/amplitude fixtures | R5 §§VII--VIII |
+| `SCI-RTC-EQ-034` | Equations: plateau diagnostic and segment reset | §§5, 10 | Segment/state/no-stitch checks | R5 §§VII--VIII |
+| `SCI-RTC-EQ-035` | Equations: actual attempts, maximum, and accepted plans | §§2, 7 | Early-stop/no-no-op check | R5 bounded-iteration correction |
 
 ## Assumptions
 
@@ -207,6 +227,29 @@ modify the imported authority.
 | `SCI-RTC-REQ-080` | §§5, 12 | Typed attempt disposition and stop | R4 correction; r0.3 directive §§5--7 |
 | `SCI-RTC-REQ-081` | §§2, 5 | Attempt/accepted-plan one-way provenance | R4 correction; r0.3 directive §8 |
 | `SCI-RTC-REQ-082` | §§2, 12 | Final-plan restart reproducibility | r0.3 directive §8 |
+| `SCI-RTC-REQ-083` | §§1, 4 | Missing-partner admission failure | R5 §II |
+| `SCI-RTC-REQ-084` | §4 | Pair identity/reorder/restart | R5 §II |
+| `SCI-RTC-REQ-085` | §4 | Mapping authority reconstruction | R5 §III |
+| `SCI-RTC-REQ-086` | §§4, 12 | Independent member validity | R5 §II |
+| `SCI-RTC-REQ-087` | §6 | Nonzero optical-response check | R5 §IV |
+| `SCI-RTC-REQ-088` | §§3, 6 | Atmosphere leakage estimator | R5 §V |
+| `SCI-RTC-REQ-089` | §6 | Bright-source leakage estimator | R5 §VI |
+| `SCI-RTC-REQ-090` | §6 | Separate diagnostic parentage | R5 §§V--VI |
+| `SCI-RTC-REQ-091` | §6 | Scalar/frequency response status | R5 §§IV--VI |
+| `SCI-RTC-REQ-092` | §§4, 11 | Forbidden correction/calibration/donor routes | R5 §§IV, IX |
+| `SCI-RTC-REQ-093` | §§4, 12 | Joint $x/r$ covariance and selection | R5 §§III--V |
+| `SCI-RTC-REQ-094` | §§5, 10 | Paired shift event record | R5 §§VII--VIII |
+| `SCI-RTC-REQ-095` | §§5, 8 | Approved despike-before-shift suborder | R5 owner confirmation |
+| `SCI-RTC-REQ-096` | §§5, 10 | Transition mask and guards | R5 §§VII--VIII |
+| `SCI-RTC-REQ-097` | §§5, 10 | Segment/reset boundary | R5 §§VII--VIII |
+| `SCI-RTC-REQ-098` | §§5, 10 | Plateau diagnostic state | R5 §§VII--VIII |
+| `SCI-RTC-REQ-099` | §§5, 10 | Multiple-shift identity/conflict | R5 §§VII--VIII |
+| `SCI-RTC-REQ-100` | §6 | Pre/post leakage identity | R5 §§V--VI |
+| `SCI-RTC-REQ-101` | §§5, 10 | No implicit plateau stitching | R5 §VIII |
+| `SCI-RTC-REQ-102` | §§1, 10 | Paired lifecycle states/causes | R5 §§II--VIII |
+| `SCI-RTC-REQ-103` | §11 | Conditioned-$x$-only SCI-CAL handoff | R5 §§I, IX |
+| `SCI-RTC-REQ-104` | §§3, 8, 11 | Atmosphere-before-filter response/bound | R5 owner confirmation |
+| `SCI-RTC-REQ-105` | §§1, 11 | Paired role plan and consumer routing | R5 §§II, IX |
 
 ## Falsifiable predictions
 
@@ -258,34 +301,52 @@ modify the imported authority.
 | `SCI-RTC-PRED-044` | §5 | Oscillating/nonconvergent attempts | R4 correction; r0.3 directive §10.6 |
 | `SCI-RTC-PRED-045` | §5 | Maximum-attempt nonconvergence | R4 correction; r0.3 directive §10.7 |
 | `SCI-RTC-PRED-046` | §§2, 12 | Final-plan restart identity | r0.3 directive §10.8 |
+| `SCI-RTC-PRED-047` | §4 | Missing-pair-member failure | R5 §II |
+| `SCI-RTC-PRED-048` | §4 | IQ-to-$x/r$ mapping round trip | R5 §III |
+| `SCI-RTC-PRED-049` | §4 | Independent $x/r$ validity | R5 §II |
+| `SCI-RTC-PRED-050` | §6 | Injected optical leakage recovery | R5 §§IV--VI |
+| `SCI-RTC-PRED-051` | §6 | Distinct atmosphere/source values | R5 §§V--VI |
+| `SCI-RTC-PRED-052` | §6 | Scalar versus frequency leakage | R5 §§IV--VI |
+| `SCI-RTC-PRED-053` | §§4, 11 | Forbidden $r$ routes | R5 §§IV, IX |
+| `SCI-RTC-PRED-054` | §§4, 12 | Joint covariance/shared selection | R5 §§III--V |
+| `SCI-RTC-PRED-055` | §§5, 10 | Single paired level shift | R5 §§VII--VIII |
+| `SCI-RTC-PRED-056` | §5 | Spike/shift order | R5 owner confirmation |
+| `SCI-RTC-PRED-057` | §§5, 10 | State at shift boundary | R5 §§VII--VIII |
+| `SCI-RTC-PRED-058` | §§5, 10 | Multiple/overlapping shifts | R5 §§VII--VIII |
+| `SCI-RTC-PRED-059` | §§5, 10 | Plateau inertness/no stitch | R5 §VIII |
+| `SCI-RTC-PRED-060` | §6 | Pre/post leakage response | R5 §§V--VI |
+| `SCI-RTC-PRED-061` | §§3, 8 | Atmosphere/filter noncommutation | R5 owner confirmation |
+| `SCI-RTC-PRED-062` | §§2, 7 | Early stop without no-op attempts | R5 bounded-iteration correction |
+| `SCI-RTC-PRED-063` | §§1, 11 | All-role paired-plan disposition | R5 §IX |
 
 ## Decision-register coverage
 
 - `AUTHOR_DRAFT_DECISIONS.md` maps every `SCI-RTC-AUTHOR-D001` through
-  `SCI-RTC-AUTHOR-D018` to its packet basis and draft consequence.
+  `SCI-RTC-AUTHOR-D023` to its packet or later-directive basis and consequence.
 - `SCIENTIFIC_OWNER_DECISION_LEDGER.md` maps every
   `SCI-RTC-OWNER-001` through `SCI-RTC-OWNER-024` to affected requirement
   IDs and an exact unavailable consequence, and records successor exclusions
   `SCI-RTC-OWNER-025` through `SCI-RTC-OWNER-028` as deferred and adds the
   r0.2 design choices `SCI-RTC-OWNER-029`--`036` and the r0.3 bounded-cycle
-  choices `SCI-RTC-OWNER-037`--`050`.
+  choices `SCI-RTC-OWNER-037`--`050` and the r0.5 numerical/methodological
+  choices `SCI-RTC-OWNER-051`--`071`.
 - R0.4 resolves OWNER-010 and OWNER-024 by explicit scientific-owner approval;
   no other open entry is silently resolved in either PDF. In particular, the
   learned safe set is undefined until OWNER-011 through OWNER-020 are resolved.
 
 ## Mechanical completeness invariant
 
-For revision r0.4 the exact expected normative inventory is:
+For revision r0.5 the exact expected normative inventory is:
 
-- 29 definitions: `SCI-RTC-DEF-001`--`029`;
-- 31 displayed equation tags: `001`--`015`, `016a`, `016b`, `017`--`019`,
-  `020a`, `020b`, and `021`--`029`;
+- 38 definitions: `SCI-RTC-DEF-001`--`038`;
+- 37 displayed equation tags: `001`--`015`, `016a`, `016b`, `017`--`019`,
+  `020a`, `020b`, and `021`--`035`;
 - 12 assumptions: `SCI-RTC-ASM-001`--`012`;
-- 82 requirements: `SCI-RTC-REQ-001`--`082`;
-- 46 predictions: `SCI-RTC-PRED-001`--`046`;
-- 18 author-draft decisions: `SCI-RTC-AUTHOR-D001`--`D018`;
-- 44 open, 2 resolved, and 4 deferred owner entries:
-  `SCI-RTC-OWNER-001`--`050`.
+- 105 requirements: `SCI-RTC-REQ-001`--`105`;
+- 63 predictions: `SCI-RTC-PRED-001`--`063`;
+- 23 author-draft decisions: `SCI-RTC-AUTHOR-D001`--`D023`;
+- 65 open, 2 resolved, and 4 deferred owner entries:
+  `SCI-RTC-OWNER-001`--`071`.
 
 Every ID in that inventory appears exactly once as an authority-row key in
 this crosswalk or, for the two decision registers, in the explicitly named

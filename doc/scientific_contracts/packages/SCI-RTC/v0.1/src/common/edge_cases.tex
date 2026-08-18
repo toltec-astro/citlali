@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.4 shared normative core -- falsifiable predictions.
+% SCI-RTC v0.1/r0.5 shared normative core -- falsifiable predictions.
 \clearpage
 \section{Falsifiable predictions and limiting cases}
 \label{sec:core-predictions}
@@ -13,11 +13,11 @@ reported by this document.
 \toprule
 ID & Construction and prediction & Falsifier \\
 \midrule
-\PredID{SCI-RTC-PRED-001} & Identity chain: raw role, $A=I$, no replacement or filter, $M=1$, valid original samples.  Values, raw $\Delta f/f$ unit, order, identities, cardinality, response, flags, and support are unchanged. & Any hidden calibration, value/order/cardinality change, flag loss, nonidentity kernel, or new claim of timing/coordinate authority. \\
-\PredID{SCI-RTC-PRED-002} & Role separation: feed the same raw \texttt{xs} input to Beammap, Pointing, OOF, Science, and diagnostic-only RTC roles.  Every RTC output remains $\Delta f/f$; a distinct calibrated output exists only after downstream SCI-CAL. & Any role gives \texttt{xs} a calibrated meaning, an RTC product is labeled \si{mJy\per beam}, or CAL output is silently interchanged with RTC output. \\
+\PredID{SCI-RTC-PRED-001} & Identity chain: paired raw role, $A=I$, no replacement or filter, $M=1$, valid original pairs.  Both values, raw coordinate identity, pair order, cardinality, response, flags, and support are unchanged. & Missing/reordered partner, hidden calibration, value/order/cardinality change, flag loss, nonidentity kernel, or new claim of timing/coordinate authority. \\
+\PredID{SCI-RTC-PRED-002} & Role separation: feed the same paired \texttt{xs}/\texttt{rs} input to Beammap, Pointing, OOF, Science, and diagnostic-only RTC roles.  Both RTC outputs remain raw; a distinct calibrated $x$ output exists only after downstream SCI-CAL. & Any role gives either coordinate calibrated or Stokes meaning, $r$ is calibrated or substituted for $x$, an RTC product is labeled \si{mJy\per beam}, or CAL output is silently interchanged with RTC output. \\
 \PredID{SCI-RTC-PRED-003} & Raw donor direction: choose $\phi_q=2$, $\phi_d=4$, and donor $x_q=3$.  Equation~\eqref{eq:raw-donor} predicts raw target replacement $1.5$ and equal detector-static comparison coordinates $\chi_q=\chi_d^R=6$. & Use of $\phi_d/\phi_q$, output other than $1.5$, unequal comparison coordinate, calibration claimed from $\chi$, or dependence on legacy \texttt{responsivity}. \\
 \PredID{SCI-RTC-PRED-004} & Raw donor availability: independently make either factor invalid, convention/domain-incompatible, occurrence-mismatched, or set $\phi_d=0$.  The \texttt{flxscale} route is unavailable. & Finite replacement, stale factor reuse, row-number-only binding, zero insertion, or success without separate donor authority. \\
-\PredID{SCI-RTC-PRED-005} & Order: trace a raw input through replacement, every temporal stage, and phase-zero sampling, then through distinct downstream SCI-CAL.  The parent and response follow equation~\eqref{eq:order-equivalence}. & Absolute calibration or target atmosphere appears inside RTC, \texttt{flxscale} donor transfer is mislabeled calibration, or the CAL parent omits the complete RTC plan. \\
+\PredID{SCI-RTC-PRED-005} & Order: trace a paired raw input through early repair/level-shift segmentation, selected atmospheric-template removal, every temporal stage, and phase-zero sampling, then trace only $x$ through distinct downstream SCI-CAL.  The parent and response follow equation~\eqref{eq:order-equivalence}. & Absolute calibration or target atmosphere appears inside RTC, $r$ enters CAL, noncommutation is omitted, \texttt{flxscale} donor transfer is mislabeled calibration, or the CAL parent omits the complete RTC plan. \\
 \PredID{SCI-RTC-PRED-006} & Interior target/donor impulses under fixed selection.  Each output column equals equation~\eqref{eq:local-kernel}; donor energy appears in the declared detector column, support, scale, and phase. & Missing or circularly wrapped energy, unexplained mixing, wrong donor identity/direction, support, normalization, or phase. \\
 \PredID{SCI-RTC-PRED-007} & Constant input with sufficient context.  Output equals the constant times realized DC gain after the declared transient; a DC-preserving chain is exactly constant. & Drift, divide-by-zero mask normalization, edge values advertised as interior, or a false DC-preservation claim. \\
 \PredID{SCI-RTC-PRED-008} & Interior step with complete context.  Response equals the cumulative impulse response and settles according to DC gain and stability. & Undeclared overshoot, failure to settle, hidden state leakage, or disagreement with the impulse-derived response. \\
@@ -101,6 +101,39 @@ ID & Construction and prediction & Falsifier \\
 \PredID{SCI-RTC-PRED-046} & Serialize and restart the final cumulative plan, then vary original parent or learning-population identity. Exact compatible restart reproduces the product; either mismatch is rejected. & Silent relearning, stale-parent application, altered plan, or acceptance of incompatible learning lineage. \\
 \bottomrule
 \end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-047} & Supply complete paired occurrences, then remove only one $r$ partner and separately only one $x$ partner.  Complete pairs are admitted; either incomplete occurrence fails required-input admission. & Partner synthesis, copying, zero fill, independent join, or successful admission of an incomplete pair. \\
+\PredID{SCI-RTC-PRED-048} & Apply a known invertible $IQ\!\rightarrow\!xr$ mapping and serialize/restart.  Both coordinates and exact pair/mapping-revision identity reproduce equation~\eqref{eq:iq-xr-mapping}. & Value, order, offset, sign, detector/sample, or mapping revision changes. \\
+\PredID{SCI-RTC-PRED-049} & Make $x$ invalid and $r$ valid, then reverse them.  The pair persists and the two validity states remain independent. & One member's state copied to the other, invalid member used as valid, or pair discarded without selected policy. \\
+\PredID{SCI-RTC-PRED-050} & Inject an optical signal with known nonzero $r/x$ response.  Atmosphere- and bright-source estimators recover their own admitted $\zeta$ within preregistered uncertainty. & $r$ assumed zero, the two estimates silently merged, wrong source parent, or missing uncertainty/support. \\
+\PredID{SCI-RTC-PRED-051} & Give atmosphere and bright source deliberately different leakage ratios.  Two distinct products remain available for comparison without automatic reconciliation. & Averaging, substitution, or promotion to one universal leakage value without an authorized model. \\
+\PredID{SCI-RTC-PRED-052} & Generate frequency-dependent leakage and fit both a scalar and admitted spectral estimator.  Only the spectral product supports the frequency-dependent claim; the scalar is range-qualified. & Scalar advertised as broadband authority, missing band/support, or absent response status. \\
+\PredID{SCI-RTC-PRED-053} & Attempt to correct $x$ from $r$, calibrate $r$, use $r$ as an $x$ donor, or replace invalid $x$ with valid $r$.  Every route is unavailable in v0.1. & Any route executes or is implied by shared pair identity. \\
+\PredID{SCI-RTC-PRED-054} & Simulate correlated $x/r$ noise and a shared selector.  Joint covariance retains the cross block and selection term. & Block-diagonal independence, zero cross term, or separate selection represented as joint truth without evidence. \\
+\PredID{SCI-RTC-PRED-055} & Add one paired additive level shift with known transition and unequal $x/r$ amplitudes after isolated spikes.  Detection follows the repaired-stream model and reports the event, both amplitudes, transition mask, guards, and two segments. & Shift absorbed as spikes, amplitude copied between coordinates, missing mask/segment, or correction claimed from detection alone. \\
+\PredID{SCI-RTC-PRED-056} & Place isolated spikes immediately before and after a level shift.  The selected despike-then-shift suborder yields the preregistered event and repaired values. & Undeclared suborder, shift estimator using unrepaired spikes, or circular repair with no recorded plan. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-057} & Put a filter impulse on each side of a declared level-shift boundary.  Responses reset or carry exactly as selected and never silently cross segments. & Cross-boundary state leakage, ordinary-interior labels in guards, or missing reset provenance. \\
+\PredID{SCI-RTC-PRED-058} & Insert two level shifts with overlapping guards and a short middle segment.  Event identities remain ordered and the selected conflict/minimum-segment policy gives one deterministic disposition. & Event collapse, order dependence outside policy, negative/ambiguous segment, or silent guard truncation. \\
+\PredID{SCI-RTC-PRED-059} & Evaluate plateau diagnostics on known pre/post levels, then toggle their advisory output while holding policy fixed.  Values and segmentation are unchanged and no stitching occurs. & Plateau toggle changes science values, silently stitches offsets, or erases the level-shift cause. \\
+\PredID{SCI-RTC-PRED-060} & Measure leakage before and after a filter whose $x$ and $r$ responses differ.  The two diagnostics differ according to the composed response and retain separate identities. & One value reused across stages, filtering treated as commuting without proof, or pre/post parentage lost. \\
+\PredID{SCI-RTC-PRED-061} & Apply the selected RTC atmospheric template before a noncommuting temporal filter and compare with the reversed order.  The authorized order matches its exact composed response or preregistered bound. & Reversed result treated as equal, missing response/bound, or target SCI-CAL atmosphere conflated with the RTC template. \\
+\PredID{SCI-RTC-PRED-062} & Stop iterative refinement before $A_{\max}$ after $A$ actual attempts.  The record satisfies $K\le A<A_{\max}$ and contains no fabricated attempts. & $A=A_{\max}$ forced, artificial no-op attempts, or accepted-plan count confused with either attempt quantity. \\
+\PredID{SCI-RTC-PRED-063} & For every Beammap, Pointing, OOF, Science, and diagnostic-only role, inspect the resolved plan and output bundle.  Paired mapping, validity, leakage, level-shift/segment/reset, atmosphere treatment, and consumer routing are explicit; optional classes remain disabled unless selected. & Missing disposition, role-dependent loss of the pair, optional operation enabled by implication, or Science routing that bypasses its own downstream contracts. \\
+\bottomrule
+\end{tabularx}
 \normalsize
 
 \subsection{Analytic limits}
@@ -118,7 +151,7 @@ stability claim at or outside the circle.
 \begingroup
 \setlength{\fboxsep}{2pt}
 \noindent\fcolorbox{RTCblue}{RTCpale}{\parbox{0.97\linewidth}{\footnotesize
-\textbf{End of shared normative core:} \texttt{SCI-RTC-v0.1/r0.4}.
+\textbf{End of shared normative core:} \texttt{SCI-RTC-v0.1/r0.5}.
 View-specific material cannot add to or modify this scientific authority.
 }}
 \endgroup

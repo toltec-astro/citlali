@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.4 shared normative core -- equations.
+% SCI-RTC v0.1/r0.5 shared normative core -- equations.
 \section{Normative equations and identities}
 \label{sec:core-equations}
 
@@ -50,17 +50,22 @@ owned by SCI-CAL.  The distinct downstream calibration operator is
 Equation~\eqref{eq:role-cal} is an SCI-CAL handoff identity; its output is not
 \texttt{xs} and it is not an RTC stage.  The selected cross-package order is
 \begin{equation}
- \mathbf x^{\rm acq}
- \xrightarrow{\ A_\alpha,\,B_\omega,\,F_1\ldots F_K,\,D_{M,0}\ }
- \mathbf y^{\rm RTC}_{\mathcal R}
+\left(\mathbf x^{\rm acq},\mathbf r^{\rm acq}\right)
+ \xrightarrow{\ A_\alpha,\,E_{\omega,\lambda},\,F_1\ldots F_K,\,D_{M,0}\ }
+ \left(\mathbf y^{x,\rm RTC}_{\mathcal R},
+       \mathbf y^{r,\rm RTC}_{\mathcal R}\right)
  \xrightarrow{\ C^{\rm CAL}_{\kappa,\mathcal R}\ }
  \mathbf c^{\rm CAL}_{\mathcal R}.
  \tag{SCI-RTC-EQ-004}\label{eq:order-equivalence}
 \end{equation}
 RTC shall not move the downstream CAL arrow inside replacement, temporal
-filtering, or phase-zero sampling.  The raw donor ratio in
-equation~\eqref{eq:raw-donor} is convention transfer within $B_\omega$, not
-absolute calibration.
+filtering, or phase-zero sampling.  Only the $x$ member is handed to
+SCI-CAL.  The paired $r$ member remains an RTC diagnostic coordinate and is
+not calibrated, substituted for $x$, or interpreted as Stokes data.  The raw
+donor ratio in equation~\eqref{eq:raw-donor} is convention transfer within
+$E_{\omega,\lambda}$, not absolute calibration.  Any selected atmospheric
+template removal is part of $E_{\omega,\lambda}$ and its noncommutation with
+later filtering shall be represented by a response or declared bound.
 
 \subsection{Realized conditioning operator}
 
@@ -68,10 +73,10 @@ Conditioned on complete realized state $\Omega$, the ordered raw role-specific
 operator is
 \begin{equation}
  \boxed{\;
- \mathbf y^{\rm RTC}_{\mathcal R}=D_{M,0}
+ \mathbf y^{xr,\rm RTC}_{\mathcal R}=D_{M,0}
  F_{K,\theta_K}\cdots F_{1,\theta_1}
- B_{\omega,\mathcal R}
- \left(A_\alpha\mathbf x^{\rm acq}+\mathbf a_\alpha\right)
+ E_{\omega,\lambda,\mathcal R}
+ \left(A_\alpha\mathbf u^{xr,\rm acq}+\mathbf a_\alpha\right)
  +\mathbf b_{\Omega}\; .}
  \tag{SCI-RTC-EQ-005}\label{eq:complete-operator}
 \end{equation}
@@ -81,10 +86,10 @@ authorized contributions.  Masks, coefficients, finite handling, context,
 exceptions, and state are components of $\Omega$, not annotations outside
 the operator.  Conditional on them,
 \begin{equation}
- \mathbf y^{\rm RTC}_{\mathcal R}=L_\Omega\mathbf x^{\rm acq}
+ \mathbf y^{xr,\rm RTC}_{\mathcal R}=L_\Omega\mathbf u^{xr,\rm acq}
   +\mathbf b'_\Omega,
  \qquad
- L_\Omega=D_{M,0}F_K\cdots F_1B_{\omega,\mathcal R}A_\alpha .
+ L_\Omega=D_{M,0}F_K\cdots F_1E_{\omega,\lambda,\mathcal R}A_\alpha .
  \tag{SCI-RTC-EQ-006}\label{eq:affine-operator}
 \end{equation}
 This is a conditional affine identity, not an unconditional linear,
@@ -156,6 +161,10 @@ $t^{\rm out}_n=t_{Mn}$; the scientific support is nevertheless the complete
 transitive support $\mathcal S_{dn}$ of all preceding stages.  A selected
 edge/output policy may reject candidate points, but shall not relabel a
 different phase or silently change equation~\eqref{eq:phase-zero}.
+The representative source occurrence is exactly
+$\rho_{dn}=(d,Mn)$ in the pre-replacement acquired stream.  It is not the
+largest response coefficient, a support centroid, a donor occurrence, or a
+synthetic sample.
 
 For output $(d,n)$ and acquired input $(q,j)$, the exact local response is
 \begin{equation}
@@ -184,9 +193,9 @@ zeros unless a bounded convention is supplied.
 For an LTI prefilter followed by phase-zero selection, the exact multirate
 identity is
 \begin{equation}
- Y(e^{i\Omega_o})=\frac{1}{M}\sum_{r=0}^{M-1}
- H\!\left(e^{i(\Omega_o+2\pi r)/M}\right)
- X\!\left(e^{i(\Omega_o+2\pi r)/M}\right),
+ Y(e^{i\Omega_o})=\frac{1}{M}\sum_{p=0}^{M-1}
+ H\!\left(e^{i(\Omega_o+2\pi p)/M}\right)
+ X\!\left(e^{i(\Omega_o+2\pi p)/M}\right),
  \tag{SCI-RTC-EQ-014}\label{eq:alias}
 \end{equation}
 under the declared Fourier/sign convention.  Every folded image contributes;
@@ -262,7 +271,8 @@ by
  P_c(\mathcal I_{dn},\mathcal S_{dn},K_{dn,\cdot\cdot})
  &\tag{SCI-RTC-EQ-020b}\label{eq:eligibility}
 \end{align}
-$D_{dn}$ identifies a directly selected synthesized or replaced occurrence.
+$D_{dn}$ identifies whether the exact representative occurrence $\rho_{dn}$
+was synthesized or replaced before subsequent filtering and selection.
 $P_c$ is the declared policy of consumer $c$ for noncenter transitive
 influence.  RTC preserves every cause and numerical dependency but does not
 replace $P_c$ with a universal transitive-ineligibility decision.
@@ -285,11 +295,12 @@ authority.
 Finally, the atomic product is
 \begin{equation}
  \mathcal O_{\rm RTC,\mathcal R}=
- (\mathbf y,\mathcal J,\mathcal K,\mathcal S,\mathcal I,
+ (\mathbf y^x,\mathbf y^r,\mathcal J^{xr},\mathcal K^{xr},\mathcal S,\mathcal I,
   \mathcal F,\mathcal V,\mathcal U,\mathcal P,\mathcal D,\mathcal C),
  \tag{SCI-RTC-EQ-022}\label{eq:bundle}
 \end{equation}
-where $\mathcal J$ is ordered identity, $\mathcal K$ complete response status,
+where $\mathcal J^{xr}$ is exact ordered pair identity, $\mathcal K^{xr}$ is
+complete paired response status,
 $\mathcal S$ support, $\mathcal I$ influence, $\mathcal F$ typed flags/causes,
 $\mathcal V$ separated validity and eligibility inputs, $\mathcal U$
 uncertainty/covariance availability, $\mathcal P$ one-way state/provenance,
@@ -360,7 +371,8 @@ assumption that the realized operator is stationary at masks, edges, state
 boundaries, or other declared exceptions.
 
 For bounded iterative notch-plan refinement with original admitted input
-$x^{(0)}$, initial fixed or identity plan $\Pi_0$, attempt index $a$, and
+$x^{(0)}$, initial fixed or identity plan $\Pi_0$, actual attempt count $A$,
+configured maximum $A_{\max}$, attempt index $a\in\{1,\ldots,A\}$, and
 accepted-plan index $k_a$ available at the start of attempt $a$,
 \begin{equation}
  \begin{aligned}
@@ -379,15 +391,88 @@ accepted-plan index $k_a$ available at the start of attempt $a$,
  \delta_a\ne\mathrm{accepted}&\Longrightarrow
  \Pi_{k_{a+1}}=\Pi_{k_a}\quad\text{and no new evaluation is required},\\
  x^{\rm final}&=\mathcal A_{\Pi_K}(x^{(0)}),\qquad
- K=k_{N_A+1}\le N_A<\infty,\\
+ K=k_{A+1}\le A\le A_{\max}<\infty,\\
  \frac{\partial\Pi_k}{\partial j}&=0
              \quad\text{during every apply of accepted plan }k.
  \end{aligned}
  \tag{SCI-RTC-EQ-029}\label{eq:iterative-refinement}
 \end{equation}
-Equation~\eqref{eq:iterative-refinement} separates finite attempts from the
-accepted-plan sequence, defines the initial evaluation for nonidentity
+Equation~\eqref{eq:iterative-refinement} separates the actual finite attempt
+count from its configured maximum and from the accepted-plan sequence.  It
+does not create artificial no-op attempts after an earlier stop.  It defines
+the initial evaluation for nonidentity
 $\Pi_0$, and states the default original-input replay rule.  A sequential
 cascade from a preceding evaluation product requires separate
 explicit operator authority and complete propagation of every intermediate
 parent, response, state, phase, edge, support, covariance, and uncertainty.
+
+\subsection{Paired coordinates, leakage, and level shifts}
+
+For every admitted detector occurrence, the upstream mapping authority shall
+produce one ordered pair from measured in-phase and quadrature coordinates,
+\begin{equation}
+ \begin{bmatrix}x^A_{dj}\\ r^A_{dj}\end{bmatrix}
+ =T^{IQ\rightarrow xr}_{dj}
+ \begin{bmatrix}I^A_{dj}\\ Q^A_{dj}\end{bmatrix}
+ +\mathbf c^{xr}_{dj},
+ \qquad
+ J^{xr}_{dj}=(d,j,\text{stream},\text{mapping revision}).
+ \tag{SCI-RTC-EQ-030}\label{eq:iq-xr-mapping}
+\end{equation}
+The pair identity is exact.  Missing either member is malformed required
+input; validity may nevertheless differ between the two members.
+
+An admitted local optical response model may be written
+\begin{equation}
+ \begin{bmatrix}\Delta x_d\\ \Delta r_d\end{bmatrix}
+ =\begin{bmatrix}\alpha^x_d\\ \alpha^r_d\end{bmatrix}s_d
+ +\begin{bmatrix}\epsilon^x_d\\ \epsilon^r_d\end{bmatrix},
+ \qquad \alpha^x_d\ne0 .
+ \tag{SCI-RTC-EQ-031}\label{eq:optical-response}
+\end{equation}
+This is diagnostic authority, not permission to correct one member with the
+other or to assume $\alpha^r_d=0$.
+
+For a declared source class $c$ and support-qualified estimator,
+\begin{equation}
+ \zeta^{(c)}_d=\frac{\alpha^{r,(c)}_d}{\alpha^{x,(c)}_d},
+ \qquad
+ \Delta r_d=\zeta^{(c)}_d\Delta x_d+\varepsilon^{(c)}_d .
+ \tag{SCI-RTC-EQ-032}\label{eq:leakage}
+\end{equation}
+Atmosphere-derived and bright-source-derived estimates are distinct products
+with distinct parentage, support, validity, uncertainty, and scalar-versus-
+frequency-dependent status.
+
+For a declared level-shift event $e$ at transition $\tau_e$, the paired
+piecewise-additive model is
+\begin{equation}
+ u^c_{dj}=u^{c,\rm base}_{dj}
+   +\sum_{e\in\mathcal E_d}\Delta^c_{de}\,
+      \mathbb I[j\ge\tau_{de}],
+ \qquad c\in\{x,r\}.
+ \tag{SCI-RTC-EQ-033}\label{eq:level-shift}
+\end{equation}
+The event time, both amplitudes or their unavailability, detection state,
+transition mask, guards, and resulting segment boundaries belong to the
+realized plan.  Detection is distinct from correction.
+
+Within a segment $g$ delimited by admitted resets and level shifts, a plateau
+diagnostic and reset condition may be represented by
+\begin{equation}
+ P^c_{dg}=\operatorname{Plateau}(u^c_{d,\mathcal G_g};\Theta_P),
+ \qquad
+ \mathbf s_{j_g^+}=R_g(\mathbf s_{j_g^-};\Theta_R),
+ \qquad c\in\{x,r\}.
+ \tag{SCI-RTC-EQ-034}\label{eq:plateau-reset}
+\end{equation}
+No plateau value authorizes cross-segment stitching unless separately
+selected, propagated, and validated.
+
+The actual bounded-refinement counts satisfy
+\begin{equation}
+ 0\le K\le A\le A_{\max}<\infty,
+ \qquad
+ A=\#\{a:\operatorname{Learn}_a\text{ was actually attempted}\}.
+ \tag{SCI-RTC-EQ-035}\label{eq:actual-attempts}
+\end{equation}

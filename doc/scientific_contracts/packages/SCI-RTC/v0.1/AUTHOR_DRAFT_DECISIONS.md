@@ -1,7 +1,7 @@
-# SCI-RTC v0.1/r0.4 author-draft decisions
+# SCI-RTC v0.1/r0.5 author-draft decisions
 
 Status: implementation-blind author choices retained for traceability and
-updated where explicit r0.4 scientific-owner decisions supersede the earlier
+updated where explicit r0.4 and r0.5 scientific-owner decisions supersede the earlier
 draft. Binding owner approvals are recorded in `DECISION_LOG.md` and the owner
 ledger.
 
@@ -12,8 +12,8 @@ normative core. They do not select the open numeric and policy choices in
 | ID | Author-draft decision | Packet basis and consequence |
 | --- | --- | --- |
 | `SCI-RTC-AUTHOR-D001` | The six `src/common/*.tex` files are one normative core and are imported exactly once by each view. View-specific prose is explanatory or informative conformance guidance only. | Enforces one scientific authority without duplicating equations or requirements between audiences. |
-| `SCI-RTC-AUTHOR-D002` | The revision identity is `v0.1/r0.4`; requirement IDs remain sequential `SCI-RTC-REQ-001` through `SCI-RTC-REQ-082`, and prediction IDs remain sequential `SCI-RTC-PRED-001` through `SCI-RTC-PRED-046`. | Preserves stable, exact review and crosswalk targets through the bounded correction. |
-| `SCI-RTC-AUTHOR-D003` | Every RTC role retains raw, uncalibrated detector $\Delta f/f$; `x`/`xs` never denotes a calibrated signal. A distinct downstream SCI-CAL product has the top-of-atmosphere, point-source-equivalent mJy-per-fixed-nominal-beam convention. | Applies the r0.4 owner signal-boundary decision without cross-role inheritance. |
+| `SCI-RTC-AUTHOR-D002` | The revision identity is `v0.1/r0.5`; requirement IDs remain sequential `SCI-RTC-REQ-001` through `SCI-RTC-REQ-105`, and prediction IDs remain sequential `SCI-RTC-PRED-001` through `SCI-RTC-PRED-063`. | Preserves all earlier IDs and appends stable paired-coordinate review targets. |
+| `SCI-RTC-AUTHOR-D003` | Every RTC role retains exact paired raw $x/r$ coordinates; raw $x$ is the ordinary path but is not itself Stokes I, and $r$ is diagnostic rather than calibrated or substituted. A distinct downstream SCI-CAL product consumes only $x$ in the approved convention. | Applies the r0.5 paired-coordinate and downstream boundary without reopening polarimetry. |
 | `SCI-RTC-AUTHOR-D004` | The owner-modified raw donor rule is represented literally as `flxscale_q/flxscale_d` under the detector-static comparison coordinate `chi_i = flxscale_i x_i`, with exact occurrence/domain compatibility and a nonzero target factor. | Keeps raw convention transfer distinct from absolute calibration and retains no role for legacy responsivity. |
 | `SCI-RTC-AUTHOR-D005` | RTC completes raw replacement, filtering, and phase-zero sampling before the distinct SCI-CAL application of absolute `flxscale` and target atmosphere. No calibrated RTC branch or alternative interleaving is authorized in v0.1. | Records the binding r0.4 cross-package order selected by the scientific owner. |
 | `SCI-RTC-AUTHOR-D006` | The central role-specific RTC operator is expressed once as ALIGN, raw replacement, ordered filters, and phase-zero selection plus declared affine state terms; the downstream CAL handoff is separate. | Reuses and specializes the retained derivation without importing calibration into RTC. |
@@ -29,6 +29,11 @@ normative core. They do not select the open numeric and policy choices in
 | `SCI-RTC-AUTHOR-D016` | The scientist-facing view uses twelve substantive explanatory sections before the shared-core appendices; the engineering view contains the same shared authority plus nonnormative evidence guidance and no independently restated displayed equations. | Implements the requested audience genres while preserving one authority. |
 | `SCI-RTC-AUTHOR-D017` | Deterministic predictions cover role separation, donor direction/availability, operator order, response, masks, edges, non-finite state, phase zero, aliasing, covariance, learned-plan selection/restart, reset, and inert detail. | Converts the retained limiting cases into stable package-level falsification IDs without asserting any test result. |
 | `SCI-RTC-AUTHOR-D018` | Open selected-policy and numeric choices are retained in a separate owner ledger with an exact unavailable consequence for each; successor-only modes are marked deferred. | Prevents author inference from current behavior and keeps unaffected RTC products independently available. |
+| `SCI-RTC-AUTHOR-D019` | Upstream IQ-to-$x/r$ mapping produces an exact required pair per occurrence; mapping authority/provenance and independent member validity are retained through every role. | Applies the r0.5 paired-readout authority without inspecting implementation or inventing a mapping. |
+| `SCI-RTC-AUTHOR-D020` | Optical leakage is represented by separate atmosphere-derived and bright-source-derived diagnostics with source-class, scalar/frequency, support, validity, uncertainty, and pre/post-operation identity. | Makes nonzero $r$ optical response testable without authorizing automatic correction or calibration. |
+| `SCI-RTC-AUTHOR-D021` | Level shifts are persistent paired events distinct from spikes. The approved early order is despike/replacement followed by level-shift estimation; admitted events create transition masks, guards, segments, and explicit state reset/carry. | Applies the owner-confirmed suborder while leaving numeric detection and guard policy open. |
+| `SCI-RTC-AUTHOR-D022` | A selected raw RTC atmospheric-template operation precedes later temporal filters and must carry an exact composed response or an owner-resolved noncommutation bound; the SCI-CAL target-atmosphere operation remains downstream. | Applies the owner-confirmed atmosphere/filter order without conflating the two atmosphere roles. |
+| `SCI-RTC-AUTHOR-D023` | Iterative refinement records actual attempts $A$, configured maximum $A_{\max}$, and accepted plans $K$ separately; early stop creates no artificial no-op attempts. | Corrects the bounded-attempt semantics while preserving complete-plan replay and typed stopping. |
 
 ## Review disposition
 

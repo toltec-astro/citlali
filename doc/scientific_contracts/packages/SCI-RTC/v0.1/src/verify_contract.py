@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mechanical SCI-RTC v0.1/r0.4 author-deliverable checks.
+"""Mechanical SCI-RTC v0.1/r0.5 author-deliverable checks.
 
 This helper reads only the approved author inputs and package deliverables.
 It does not inspect implementation, tests, history, or sibling packages.
@@ -85,14 +85,14 @@ def main() -> None:
         r"\\tag\{SCI-RTC-EQ-(\d{3}[ab]?)\}", text(COMMON / "equations.tex")
     )
 
-    require(definitions == [f"{i:03d}" for i in range(1, 30)], "definition IDs")
+    require(definitions == [f"{i:03d}" for i in range(1, 39)], "definition IDs")
     require(assumptions == [f"{i:03d}" for i in range(1, 13)], "assumption IDs")
-    require(requirements == [f"{i:03d}" for i in range(1, 83)], "requirement IDs")
-    require(predictions == [f"{i:03d}" for i in range(1, 47)], "prediction IDs")
+    require(requirements == [f"{i:03d}" for i in range(1, 106)], "requirement IDs")
+    require(predictions == [f"{i:03d}" for i in range(1, 64)], "prediction IDs")
     expected_eq = (
         [f"{i:03d}" for i in range(1, 16)]
         + ["016a", "016b", "017", "018", "019", "020a", "020b"]
-        + [f"{i:03d}" for i in range(21, 30)]
+        + [f"{i:03d}" for i in range(21, 36)]
     )
     require(equation_ids == expected_eq, "equation tag IDs")
 
@@ -102,7 +102,7 @@ def main() -> None:
     ]
     expected_inputs = [rf"\input{{common/{name}}}" for name in common_files]
     for name in common_files:
-        require("v0.1/r0.4" in text(COMMON / name), f"r0.4 stamp in {name}")
+        require("v0.1/r0.5" in text(COMMON / name), f"r0.5 stamp in {name}")
     for wrapper_name in ("scientific-rationale.tex", "engineering-conformance.tex"):
         wrapper = text(SRC / wrapper_name)
         actual = re.findall(r"\\input\{common/[^}]+\}", wrapper)
@@ -122,6 +122,8 @@ def main() -> None:
     rationale = text(SRC / "scientific-rationale.tex")
     require("Learn--Resolve--Apply Filtering" in rationale, "rationale title")
     require("Role-specific RTC plans" in rationale, "role-specific plan matrix")
+    require(r"Paired IQ-to-\texorpdfstring{$x/r$}{x/r} readout coordinates" in rationale,
+            "paired-coordinate rationale section")
     narrative = rationale.split(r"\appendix", maxsplit=1)[0]
     numbered_sections = re.findall(r"^\\section\{", narrative, flags=re.MULTILINE)
     require(len(numbered_sections) == 12, "rationale narrative is not twelve sections")
@@ -133,40 +135,52 @@ def main() -> None:
         r"k_{a+1}",
         r"v^{\rm preD}_{d,Mn}",
         r"C^{\rm CAL}_{\kappa,\mathcal R}\mathbf y^{\rm RTC}_{\mathcal R}",
+        r"\begin{bmatrix}x^A_{dj}\\ r^A_{dj}\end{bmatrix}",
+        r"K=k_{A+1}\le A\le A_{\max}",
     ):
-        require(marker in equations_text, f"r0.4 equation marker: {marker}")
+        require(marker in equations_text, f"r0.5 equation marker: {marker}")
     require(r"C_{\mathcal R}" not in equations_text, "obsolete in-RTC CAL selector")
 
     requirements_text = text(COMMON / "requirements.tex")
-    require("noncenter replacement influence" in requirements_text,
-            "consumer-owned noncenter influence")
+    require("nonrepresentative replacement influence" in requirements_text,
+            "consumer-owned nonrepresentative influence")
     require("alternative interleaving is authorized" in requirements_text,
             "selected raw-RTC-then-CAL order")
+    require("despike detection and admitted sample replacement before level-shift"
+            in requirements_text, "approved early suborder")
+    require("shall precede temporal filtering" in requirements_text,
+            "approved atmosphere/filter order")
+    require("subsequent PTC, VAL, MAP, and FLT use follows their own contracts"
+            in requirements_text, "exact Science consumer wording")
+
+    directive = text(PKG / "SCIENTIFIC_OWNER_DIRECTIVE_R0.5.md")
+    require("7469fd327d9465904a4e59c287577bab0dcd9f93fd2cc555cdee6680e89714a6"
+            in directive, "r0.5 directive digest")
 
     crosswalk = text(PKG / "CROSSWALK.md")
     for stem, count in (
-        ("SCI-RTC-DEF-", 29),
+        ("SCI-RTC-DEF-", 38),
         ("SCI-RTC-ASM-", 12),
-        ("SCI-RTC-REQ-", 82),
-        ("SCI-RTC-PRED-", 46),
+        ("SCI-RTC-REQ-", 105),
+        ("SCI-RTC-PRED-", 63),
     ):
         sequential(table_row_ids(crosswalk, stem), stem, count)
     eq_rows = table_row_ids(crosswalk, "SCI-RTC-EQ-")
     require(eq_rows == [f"SCI-RTC-EQ-{item}" for item in expected_eq], "equation crosswalk")
 
     author_rows = table_row_ids(text(PKG / "AUTHOR_DRAFT_DECISIONS.md"), "SCI-RTC-AUTHOR-D")
-    sequential(author_rows, "SCI-RTC-AUTHOR-D", 18)
+    sequential(author_rows, "SCI-RTC-AUTHOR-D", 23)
     owner_rows = table_row_ids(
         text(PKG / "SCIENTIFIC_OWNER_DECISION_LEDGER.md"), "SCI-RTC-OWNER-"
     )
-    sequential(owner_rows, "SCI-RTC-OWNER-", 50)
+    sequential(owner_rows, "SCI-RTC-OWNER-", 71)
 
     print("PASS: approved packet hashes (4)")
     print("PASS: shared-core inclusion (6 files x 2 views, exactly once)")
-    print("PASS: definitions=29 equations=31 assumptions=12 requirements=82 predictions=46")
+    print("PASS: definitions=38 equations=37 assumptions=12 requirements=105 predictions=63")
     print("PASS: crosswalk rows complete and sequential")
-    print("PASS: author decisions=18 owner entries=50 (44 open, 2 resolved, 4 deferred)")
-    print("PASS: r0.4 attempt/plan, pre-decimation, raw/CAL, influence, title, and role markers")
+    print("PASS: author decisions=23 owner entries=71 (65 open, 2 resolved, 4 deferred)")
+    print("PASS: r0.5 paired mapping, level shifts, leakage, attempt counts, CAL, influence, and role markers")
     print("PASS: rationale narrative sections=12")
     print("PASS: engineering wrapper has no independent displayed mathematics")
 
