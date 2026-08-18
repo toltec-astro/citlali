@@ -67,9 +67,17 @@ NativeCohortObservationBinding native_cohort_observation_binding_from_engine(
         observation_index, *relation, alignment, pointing);
 }
 
-template <class Engine>
+template <bool EnableNativeCohortLineage = true, class Engine>
 void begin_native_cohort_observation_if_available(
     Engine &engine, std::size_t observation_index) {
+    if constexpr (!EnableNativeCohortLineage) {
+        // Beammap is an APT producer, not an observation-matched APT
+        // consumer.  Until its producer-specific lineage is introduced in
+        // the BEAM development cycle, native alignment/pointing may be used
+        // without activating the consumer lineage that requires an input
+        // typed-APT authority.
+        return;
+    }
     if constexpr (has_native_cohort_observation_sources_v<Engine>) {
         if (!native_cohort_observation_sources_active(engine)) {
             return;
@@ -417,14 +425,16 @@ inline void commit_native_cohort_scan_provenance(
     }
 }
 
-template <class TodProc, class MapExtents, class MapCoords, class Logger>
+template <bool EnableNativeCohortLineage = true, class TodProc,
+          class MapExtents, class MapCoords, class Logger>
 void allocate_observation_map_buffers_if_needed(
     TodProc &todproc, MapExtents &map_extents, MapCoords &map_coords,
     std::size_t observation_index, const Logger &logger) {
     auto &engine = todproc.engine();
 
     if (!should_allocate_observation_map_buffers(engine)) {
-        begin_native_cohort_observation_if_available(engine, observation_index);
+        begin_native_cohort_observation_if_available<
+            EnableNativeCohortLineage>(engine, observation_index);
         return;
     }
 
@@ -434,14 +444,16 @@ void allocate_observation_map_buffers_if_needed(
         logger);
     begin_mapmaking_observation_if_available(engine, observation_index);
     begin_pointing_observation_if_available(engine);
-    begin_native_cohort_observation_if_available(engine, observation_index);
+    begin_native_cohort_observation_if_available<EnableNativeCohortLineage>(
+        engine, observation_index);
 }
 
-template <class TodProc, class MapExtents, class MapCoords, class Logger>
+template <bool EnableNativeCohortLineage = true, class TodProc,
+          class MapExtents, class MapCoords, class Logger>
 void allocate_reduction_observation_map_buffers_if_needed(
     TodProc &todproc, MapExtents &map_extents, MapCoords &map_coords,
     std::size_t observation_index, const Logger &logger) {
-    allocate_observation_map_buffers_if_needed(
+    allocate_observation_map_buffers_if_needed<EnableNativeCohortLineage>(
         todproc, map_extents, map_coords, observation_index, logger);
 }
 

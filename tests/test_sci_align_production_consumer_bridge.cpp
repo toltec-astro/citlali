@@ -3584,6 +3584,26 @@ TEST(sci_align_native_cohort_product_lineage,
 }
 
 TEST(sci_align_native_cohort_product_lineage,
+     beammap_producer_mode_does_not_require_input_typed_apt_authority) {
+    const auto fixture = b3b_lineage_fixture();
+
+    auto consumer = b3b_lineage_engine(fixture, 1);
+    consumer.calib.relation.reset();
+    EXPECT_THROW(
+        citlali::pipeline::begin_native_cohort_observation_if_available(
+            consumer, 17),
+        std::exception);
+
+    auto beammap_producer = b3b_lineage_engine(fixture, 1);
+    beammap_producer.calib.relation.reset();
+    ASSERT_NO_THROW(
+        citlali::pipeline::begin_native_cohort_observation_if_available<false>(
+            beammap_producer, 17));
+    EXPECT_FALSE(beammap_producer.raw_timestream_plan.observation
+                     ->native_cohort_lineage);
+}
+
+TEST(sci_align_native_cohort_product_lineage,
      rtc_runs_reset_stride_and_preserve_exact_support_and_ored_flags) {
     const auto fixture = b3b_lineage_fixture();
     ASSERT_EQ(fixture.runs.size(), 2U);

@@ -92,7 +92,10 @@ bool prepare_reduction_observation_inputs(
     record_reduction_observation_timing_gaps_if_needed(engine, logger);
     calculate_reduction_observation_scan_indices_if_needed(
         engine, has_multiple_inputs, logger);
-    allocate_reduction_observation_map_buffers_if_needed(
+    // Beammap produces its APT from raw detector data (with optional priors),
+    // so it must not activate the observation-matched APT consumer lineage.
+    // Native timing/alignment and pointing calculation remain active.
+    allocate_reduction_observation_map_buffers_if_needed<!IsBeammap>(
         todproc, map_extents, map_coords, observation_index, logger);
     update_reduction_observation_exposure_time(engine);
     return true;
