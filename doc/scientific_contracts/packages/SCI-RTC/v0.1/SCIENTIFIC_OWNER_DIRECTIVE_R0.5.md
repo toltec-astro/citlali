@@ -1,6 +1,7 @@
 # SCI-RTC v0.1 scientific-owner directive r0.5
 
-Status: binding owner revision direction, received `2026-08-18`
+Status: historical r0.5 direction; the two attributed confirmations below were
+withdrawn and superseded by the binding r0.6 owner review
 
 Source SHA-256:
 `7469fd327d9465904a4e59c287577bab0dcd9f93fd2cc555cdee6680e89714a6`
@@ -55,6 +56,10 @@ claim layers.
   accepted plans. Early stopping creates no artificial no-op attempts.
 
 ## Owner confirmations received with the directive
+
+**Supersession notice:** the r0.6 owner review established that the following
+two possibilities had not been reviewed as owner decisions. They are retained
+here solely to make the r0.5 attribution error auditable and are not authority.
 
 The owner subsequently confirmed both choices left for explicit confirmation:
 

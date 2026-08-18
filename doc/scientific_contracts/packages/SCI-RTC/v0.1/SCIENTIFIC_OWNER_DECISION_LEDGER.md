@@ -1,4 +1,4 @@
-# SCI-RTC v0.1/r0.5 scientific-owner decision ledger
+# SCI-RTC v0.1/r0.6 scientific-owner decision ledger
 
 Status: implementation-blind owner register. Entries marked `RESOLVED` record
 explicit scientific-owner approval; all other entries retain their stated
@@ -90,38 +90,42 @@ unrelated raw RTC products.
 | `SCI-RTC-OWNER-049` | OPEN | Select original-input replay as the universal default or name bounded roles that authorize sequential cascade, with parent and equivalence requirements. | Any non-replay final product or cascade claim. | EQ-029, REQ-074--075 |
 | `SCI-RTC-OWNER-050` | OPEN | Select fallback after a rejected successor: retain the last accepted plan by default or fail/cancel under named causes. | Final-plan selection for a rejected successor cause not covered by policy. | DEF-029, REQ-080 |
 
-## Additional r0.5 paired-coordinate, leakage, and level-shift choices
+## Additional r0.6 paired-coordinate, leakage, and level-shift choices
 
-The existence and exact identity of paired $x/r$ input, the diagnostic role
-of $r$, the prohibition on automatic $r$-to-$x$ correction, the selected
-despike-before-level-shift order, the selected atmosphere-before-filter order,
-and the $x$-only SCI-CAL handoff are binding r0.5 architecture.  The entries
-below request only numerical or methodological choices needed to execute or
-qualify dependent operations.
+The existence and exact identity of paired $x/r$ input, conditioned $x$ as the
+required numerical output, immutable raw-$r$ parentage, the prohibition on
+automatic $r$-to-$x$ correction, diagnostic-only atmospheric templates,
+original-pair spike-masked level-shift learning before within-segment donor
+replacement, and the $x$-only SCI-CAL handoff are binding r0.6 architecture.
+The entries below request only numerical or methodological choices needed to
+execute or qualify dependent operations.
 
 | ID | State | Exact scientific-owner decision required | Unavailable while open | Contract dependencies |
 | --- | --- | --- | --- | --- |
 | `SCI-RTC-OWNER-051` | OPEN | Select accepted IQ-to-$x/r$ mapping families, coefficient/offset precision, revision-compatibility rule, and numeric reconstruction tolerances. | Mapping-conformance or restart-equivalence claims beyond exact identity/provenance checks. | EQ-030, REQ-083--085, PRED-048 |
 | `SCI-RTC-OWNER-052` | OPEN | Select independent $x$ and $r$ numeric/scientific validity predicates, thresholds, aggregation, and pair-level failure behavior when both members are present. | Role-specific paired apply when a required member's validity disposition is unresolved. | DEF-030, REQ-086, PRED-049 |
-| `SCI-RTC-OWNER-053` | OPEN | Select the atmosphere-derived leakage estimator, atmospheric population/template, masks, detector grouping, temporal/frequency support, quality metric, and acceptance threshold. | Atmosphere-derived $r/x$ leakage values or applicability claims. | EQ-031--032, REQ-087--088, PRED-050--052 |
+| `SCI-RTC-OWNER-053` | OPEN | Select the atmosphere-derived leakage estimator, atmospheric population/template, masks, detector grouping, temporal/frequency support, shared-data/noise-in-both-coordinates treatment, self-inclusion rule, quality metric, and acceptance threshold. | Atmosphere-derived $r/x$ leakage values or applicability claims. | EQ-031--032, REQ-087--088, PRED-050--052/064--066 |
 | `SCI-RTC-OWNER-054` | OPEN | Select the bright-source leakage estimator, source/model requirements, scan/beam/background treatment, masks, support, fit metric, and acceptance threshold. | Bright-source-derived $r/x$ leakage values or applicability claims. | EQ-031--032, REQ-087/089, PRED-050--052 |
 | `SCI-RTC-OWNER-055` | OPEN | Select when leakage is modeled as scalar, band-limited, or frequency dependent, including frequency grid, smoothing/regularization, response convention, and equality boundary. | Leakage interpretation beyond the exact estimator's declared support. | DEF-033--034, REQ-091, PRED-052 |
 | `SCI-RTC-OWNER-056` | OPEN | Select leakage uncertainty and covariance estimation, including $x/r$ cross terms, source/template uncertainty, selection effects, detector/interval correlation scope, and missing-component policy. | Leakage significance, comparison, or correction-readiness claims. | REQ-087--093, PRED-050/054 |
 | `SCI-RTC-OWNER-057` | OPEN | Select the atmosphere-versus-bright-source comparison model, consistency metric, tolerance, source-class transfer rule, and authority for any promoted common interpretation. | A claim that the two leakage diagnostics agree, disagree materially, or authorize one transferable value. | REQ-090, PRED-051 |
-| `SCI-RTC-OWNER-058` | OPEN | Select which operations require pre/post leakage diagnostics and the common-support, response-renormalization, and comparison metric used across stages. | Cross-stage leakage-change claims. | REQ-100, PRED-060 |
+| `SCI-RTC-OWNER-058` | OPEN | Select which operations and accepted level shifts require pre/post leakage diagnostics and the common-support, response-renormalization, material-change threshold, and comparison metric used across stages or plateaus. | Cross-stage or pre/post-shift leakage-change claims and additive-only event interpretation. | REQ-100/107, PRED-060/070 |
 | `SCI-RTC-OWNER-059` | OPEN | Select the level-shift detection statistic, baseline/window model, threshold, false-detection control, paired-coordinate combination, source/flag use, and boundary behavior. | Level-shift candidate detection and accepted-event state. | EQ-033, REQ-094--095, PRED-055--056 |
 | `SCI-RTC-OWNER-060` | OPEN | Select transition-time localization and separate $x/r$ pre/post amplitude estimators, including uncertainty, minimum support, missing-member disposition, and deterministic ties. | Quantitative event timing and paired amplitude products. | EQ-033, REQ-094, PRED-055 |
 | `SCI-RTC-OWNER-061` | OPEN | Select transition-mask geometry and pre/post guard lengths or response-tail criteria by enabled operator, including equality conventions. | Ordinary-interior status adjacent to a selected level shift. | REQ-096--097, PRED-055/057 |
 | `SCI-RTC-OWNER-062` | OPEN | Select multiple-event resolution, overlapping-guard behavior, minimum intervening segment, split/merge identity, and short-segment fallback. | Deterministic disposition of multiple or closely spaced shifts. | REQ-099, PRED-058 |
 | `SCI-RTC-OWNER-063` | OPEN | Select reset versus carry behavior for each estimator/filter/state class at admitted level shifts and gaps, including initial-state and restart reconstruction. | Stateful processing across a level-shift boundary. | EQ-034, REQ-097/102, PRED-057 |
-| `SCI-RTC-OWNER-064` | OPEN | Select plateau estimator, coordinate(s), support, masks, uncertainty, validity, and whether each role treats it as inert, advisory, or a resolved-policy input. | Plateau diagnostic values or any policy consuming them; cross-segment stitching remains forbidden. | DEF-037, EQ-034, REQ-098/101, PRED-059 |
-| `SCI-RTC-OWNER-065` | OPEN | Select preregistered level-shift validation populations, event/amplitude/timing metrics, false-positive/negative tolerances, state-leakage checks, and science-transfer limits. | Observational-performance or science-impact qualification of level-shift handling. | REQ-069/094--102, PRED-055--059 |
-| `SCI-RTC-OWNER-066` | OPEN | Select the raw RTC atmospheric-template estimator, learning population, detector grouping, coordinate use, regularization, source protection, and freeze/apply interval. | Atmospheric-template learning, resolution, and apply. | DEF-033, REQ-088/102/104, PRED-061 |
-| `SCI-RTC-OWNER-067` | OPEN | Select atmospheric-template temporal/frequency support, masks, quality/uncertainty metrics, validity, fallback, and role applicability. | A resolved atmospheric-template plan for any role. | REQ-088/104--105, PRED-061/063 |
-| `SCI-RTC-OWNER-068` | OPEN | Select the exact response calculation or quantitative noncommutation bound for atmosphere-before-filter composition, including domain, metric, tolerance, uncertainty margin, and failure boundary. | Astronomical-transfer or equivalence claims for a selected atmospheric-template plus filter chain. | DEF-004, REQ-005/104, PRED-005/061 |
+| `SCI-RTC-OWNER-064` | OPEN | Select plateau estimator, coordinate(s), support, masks, uncertainty, validity, role-specific minimum support for every required estimator, and whether each role treats it as inert, advisory, or a resolved-policy input. | Plateau diagnostic values, role-specific plateau admission, or any policy consuming them; cross-segment stitching remains forbidden. | DEF-037, EQ-034, REQ-098/101/106, PRED-059/071 |
+| `SCI-RTC-OWNER-065` | OPEN | Select preregistered level-shift validation populations, event/amplitude/timing metrics, false-positive/negative tolerances, source/drift discrimination, state-leakage checks, PSD/notch contamination metrics, and science-transfer limits. | Observational-performance or science-impact qualification of level-shift handling. | REQ-069/094--107, PRED-055--059/067--071 |
+| `SCI-RTC-OWNER-066` | OPEN | Select the diagnostic atmospheric-template estimator, learning population, detector grouping, coordinate use, regularization, source protection, and evaluation interval. | Atmospheric-template diagnostic learning, resolution, and reported evidence; science $x$ remains unchanged. | DEF-033, REQ-088/102/104, PRED-061/064--066 |
+| `SCI-RTC-OWNER-067` | OPEN | Select diagnostic atmospheric-template temporal/frequency support, masks, quality/uncertainty metrics, validity, fallback, and role applicability. | A resolved atmospheric-leakage diagnostic plan for any role. | REQ-088/104--105, PRED-061/063--066 |
+| `SCI-RTC-OWNER-068` | DEFERRED | Define any future numerical atmospheric/common-mode removal estimator, package ownership, null modes, source protection, response, covariance, and validation. | Numerical atmospheric-template subtraction from science $x$; it is outside RTC v0.1 and requires PTC or successor authority. | REQ-005/104, PRED-005/061 |
 | `SCI-RTC-OWNER-069` | OPEN | Select the evidence model and quantitative criteria for distinguishing optical leakage from electronic/common readout coupling or other causes. | Physical-origin attribution of an $r/x$ diagnostic. | DEF-032--034, REQ-087--090, PRED-050--052 |
 | `SCI-RTC-OWNER-070` | OPEN | Select the admitted joint $x/r$ statistical model, covariance estimator or supplied authority, shared-selection treatment, supported subset, and missing-cross-term policy. | Joint covariance, significance, or precision claims. | REQ-042/093, PRED-054 |
-| `SCI-RTC-OWNER-071` | OPEN | By product role, select the required paired diagnostic roster and completion policy for mapping reconstruction, member validity, leakage, level shifts, plateaus, atmospheric templates, and response status. | Complete role-specific paired bundle claim beyond the shared minimum. | REQ-048/051/102/105, PRED-063 |
+| `SCI-RTC-OWNER-071` | OPEN | By product role, select the required paired diagnostic roster and completion policy for mapping reconstruction, member validity, leakage, level shifts, plateaus, atmospheric templates, conditioned-$x$ response, and any separately requested conditioned-$r$ product. | Complete role-specific bundle claim beyond the shared minimum; conditioned $r$ remains unavailable without separate authority. | REQ-048/051/102/105/108, PRED-063 |
+| `SCI-RTC-OWNER-072` | RESOLVED | Atmospheric templates are diagnostic evidence only in RTC v0.1 and shall not be numerically subtracted from science $x$; numerical common-mode removal requires separate PTC or successor authority. | None for diagnostic use; numerical removal remains unavailable by architecture. | RTC-SCI-D006; REQ-005/104; PRED-005/061 |
+| `SCI-RTC-OWNER-073` | RESOLVED | Level-shift learning uses original paired data with isolated-spike candidates masked/excluded/downweighted; donor replacement follows resolved segmentation, stays within stable segments, and never crosses a shift boundary. | None for the architecture; numerical detection, masking, and donor policies remain open. | RTC-SCI-D007; REQ-013/095/097; PRED-055--056 |
+| `SCI-RTC-OWNER-074` | RESOLVED | Conditioned $x$ is the required RTC numerical output; immutable raw $r$ parentage and every causal use remain in the bundle, while conditioned $r$ requires a separate channel-specific operator. | None for the required bundle; separately conditioned $r$ remains unavailable until authorized. | RTC-SCI-D008; EQ-004--006/022; REQ-003/048/108; PRED-002/063 |
 
 ## Exact unavailable-state rule
 

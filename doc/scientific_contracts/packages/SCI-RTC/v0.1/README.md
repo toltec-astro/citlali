@@ -1,7 +1,7 @@
 # SCI-RTC — Raw-Timestream Conditioning And Temporal Response
 
-Status: Stage B v0.1/r0.5 implementation-blind paired-coordinate revision
-complete and manager-reviewed; scientific authority not approved or frozen
+Status: Stage B v0.1/r0.6 implementation-blind bounded correction
+manager-reviewed; scientific authority not approved or frozen
 
 Version: `v0.1`
 
@@ -30,12 +30,13 @@ inputs.
 - Implementation-blind Stage B authorship: complete from that packet only.
 - Manager review: r0.1 complete; r0.2, r0.3, and r0.4 scientific-owner
   revisions implemented and closing-reviewed; r0.5 paired-coordinate revision
-  complete and independently closing-reviewed.
+  complete and independently closing-reviewed; r0.6 owner-confirmed bounded
+  correction complete and independently closing-reviewed.
 - Scientific authority, implementation conformity, validation, and production
   promotion: not established.
 
-The next gate is scientific-owner review and freeze disposition for the r0.5
-two-view draft, its 23 author decisions, and the owner-decision register.
+The next gate is scientific-owner review and freeze disposition for the r0.6
+two-view draft, its 24 author decisions, and the owner-decision register.
 
 ## Contents
 
@@ -49,7 +50,7 @@ two-view draft, its 23 author decisions, and the owner-decision register.
   sanitized conventions and package boundaries
 - [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): approved exact
   allowed and prohibited inputs
-- [`AUTHOR_DRAFT_DECISIONS.md`](AUTHOR_DRAFT_DECISIONS.md): 23 bounded author
+- [`AUTHOR_DRAFT_DECISIONS.md`](AUTHOR_DRAFT_DECISIONS.md): 24 bounded author
   presentation and consolidation decisions
 - [`MANAGER_REVIEW_R0.1.md`](MANAGER_REVIEW_R0.1.md): independence,
   structural, scientific, build, and visual-QA review
@@ -92,24 +93,37 @@ two-view draft, its 23 author decisions, and the owner-decision register.
   Tune/readout, CAL, BEAM, AST/ALIGN, downstream, and validation follow-up
 - [`MANAGER_REVIEW_R0.5.md`](MANAGER_REVIEW_R0.5.md): independence,
   structural, scientific, build, metadata, and all-page visual-QA closing review
+- [`SCIENTIFIC_OWNER_REVIEW_R0.6.md`](SCIENTIFIC_OWNER_REVIEW_R0.6.md): binding
+  atmospheric-template, shift-learning/replacement, and output-boundary
+  decisions plus bounded scientific corrections
+- [`CHANGE_LOG_R0.6.md`](CHANGE_LOG_R0.6.md): exact r0.5-to-r0.6 changes
+- [`RATIONALE_TO_CONTRACT_CROSSWALK_R0.6.md`](RATIONALE_TO_CONTRACT_CROSSWALK_R0.6.md):
+  bounded-correction rationale-to-authority routing
+- [`CONSISTENCY_REPORT_R0.6.md`](CONSISTENCY_REPORT_R0.6.md): mapping, output,
+  atmosphere, shift, and falsifier consistency review
+- [`CROSS_PACKAGE_FOLLOWUP_R0.6.md`](CROSS_PACKAGE_FOLLOWUP_R0.6.md): routed
+  Tune, PTC, CAL, and successor-authority follow-up
+- [`MANAGER_REVIEW_R0.6.md`](MANAGER_REVIEW_R0.6.md): independence,
+  structural, scientific, build, metadata, and all-page visual-QA closing review
 - [`DECISION_LOG.md`](DECISION_LOG.md): package-selection and approved scope
   decisions
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md):
-  65 open, two resolved, and four deferred numerical/methodological decisions
+  64 open, five resolved, and five deferred numerical/methodological decisions
 - [`CROSSWALK.md`](CROSSWALK.md): exact shared-core and packet traceability
 - `src/`: one six-file shared core and the two audience views
-- `pdf/`: canonical r0.5 rationale (47 pages) and engineering draft (37 pages);
-  all 84 pages completed Poppler visual QA as recorded in
-  `MANAGER_REVIEW_R0.5.md`
+- `pdf/`: canonical stable-filename r0.6 PDFs: 49-page rationale and 41-page
+  engineering view, with all 90 pages Poppler-inspected
 
 ## Protected Boundary
 
 SCI-RTC begins with an admitted exact paired raw $x/r$ detector stream and the
 upstream IQ-to-$x/r$ mapping identity, time grid, independent validity, and
 support required by the selected role. It owns the scientific use of those
-coordinates, despike/level-shift segmentation, selected atmospheric-template
-operation, donor replacement, temporal conditioning, response, support,
-influence, covariance, phase-zero sampling, and its atomic paired bundle.
+coordinates, spike-aware level-shift segmentation on the original pair,
+post-segmentation conditioned-$x$ donor replacement, diagnostic-only
+atmospheric-template evidence, temporal conditioning, response, support,
+influence, covariance, phase-zero sampling, and its conditioned-$x$/raw-$r$
+atomic bundle.
 
 It does not derive ALIGN timing, AST coordinates, BEAM calibration factors,
 the CAL atmosphere operator, PTC correlated-mode cleaning or weights, VAL
@@ -120,8 +134,9 @@ with a calibrated `mJy/beam` path.
 ## Authority And Status
 
 This package contains an owner-approved Stage A scope/packet, preserved
-content-bound r0.4 inputs, and an implementation-blind Stage B r0.5
-owner-directed supersession. Neither the author nor the manager
+content-bound r0.4 inputs, an implementation-blind Stage B r0.5
+owner-directed supersession, and the binding r0.6 scientific-owner correction.
+Neither the author nor the manager
 approves that draft as the SCI-RTC v0.1 scientific authority. Current
 application and production behavior retain their existing repository status
 until a later, separately authorized conformity and validation program

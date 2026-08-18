@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.5 shared normative core -- notation and status.
+% SCI-RTC v0.1/r0.6 shared normative core -- notation and status.
 % This file is imported once by each published view.
 \hypertarget{rtc-core-begin}{}
 \section{Shared normative authority and notation}
@@ -6,7 +6,7 @@
 
 \begin{center}
 \fcolorbox{RTCblue}{RTCpale}{\parbox{0.92\linewidth}{
-\textbf{Normative core stamp:} \texttt{SCI-RTC-v0.1/r0.5}.  The six files in
+\textbf{Normative core stamp:} \texttt{SCI-RTC-v0.1/r0.6}.  The six files in
 \texttt{src/common/} form one authority.  Text outside this shared core is
 explanatory or conformance guidance and cannot alter a definition, equation,
 assumption, requirement, prediction, unavailable state, or owner decision.
@@ -15,9 +15,10 @@ assumption, requirement, prediction, unavailable state, or owner decision.
 
 SCI-RTC begins with admitted aligned paired raw detector-coordinate streams
 \texttt{xs} and \texttt{rs} and ends with an atomic, role-specific raw
-conditioning bundle.  The $x$ coordinate supplies the ordinary
-total-intensity analysis path; the paired $r$ coordinate supplies readout,
-leakage, artifact, and Tune-health information.  Raw $x$ is not itself a
+conditioning bundle.  Conditioned $x$ is the required numerical RTC output;
+the exact paired raw $r$ parent and every causal $r$ diagnostic or selector
+remain in that bundle.  A conditioned $r$ product is not required and needs a
+separately authorized channel-specific operator.  Raw $x$ is not itself a
 Stokes parameter.  ALIGN, the Tune/readout mapping authority, AST, and
 SCI-BEAM retain authority for the upstream meanings they produce; SCI-CAL may
 calibrate only the conditioned $x$ path of an exact RTC bundle.  PTC, VAL,
@@ -48,14 +49,15 @@ $\mathbf v^{IQ}_{dj}$ & Upstream orthogonal microwave transmission components $(
 $\mathbf u^{xr}_{dj}$ & Paired raw readout vector $(x_{dj},r_{dj})^{\mathsf T}$ produced by the admitted Tune-dependent mapping. \\
 $\zeta$ & Complete Tune and $I,Q\!\rightarrow x,r$ mapping identity, reference, normalization, validity domain, epoch, and uncertainty state. \\
 $\chi_{dj}$ & Detector-static \texttt{flxscale} comparison coordinate used only to define compatible donor transfer; it is not a calibrated RTC product. \\
-$u_{dj}$ & Raw $\Delta f/f$ value immediately before the ordered RTC filter chain. \\
-$v^{\rm preD}_{dj}$ & Final raw $\Delta f/f$ stream after every admitted RTC replacement/filter stage and immediately before phase-zero point selection. \\
-$y^{\rm RTC}_{dn}$ & Conditioned raw $\Delta f/f$ RTC output at the selected phase-zero slot. \\
+$u^x_{dj}$ & Raw $x$-coordinate $\Delta f/f$ value immediately before the ordered RTC filter chain. \\
+$v^{x,\rm preD}_{dj}$ & Final raw $x$ stream after every admitted RTC replacement/filter stage and immediately before phase-zero point selection. \\
+$y^{x,\rm RTC}_{dn}$ & Required conditioned raw $x$-coordinate $\Delta f/f$ RTC output at the selected phase-zero slot. \\
 $c^{\rm CAL}_{dn}$ & Distinct downstream SCI-CAL output, when authorized: top-of-atmosphere, point-source-equivalent mJy per fixed nominal beam. \\
 $\phi_d$ & \texttt{flxscale} for one exact detector occurrence under the declared multiplicative convention and calibration domain. \\
 $A_\alpha$ & Imported, realized ALIGN mapping with state $\alpha$; its scientific meaning is not owned by RTC. \\
 $C^{\rm CAL}_\kappa$ & Downstream SCI-CAL operator with state $\kappa$, including selected absolute \texttt{flxscale} and target-atmosphere correction; RTC does not apply it. \\
-$B_\omega$ & Realized despike/replacement operator conditioned on selection state $\omega$. \\
+$S_\sigma$ & Spike-candidate evidence selector used only for masking or robust downweighting during level-shift learning; it does not replace samples. \\
+$B^x_\omega$ & Realized post-segmentation $x$-replacement operator conditioned on selection state $\omega$; it has no $r$ numerical branch. \\
 $F_{k,\theta_k}$ & Realized ordered FIR, IIR, notch, or admitted mask-controlled stage $k$. \\
 $D_{M,0}$ & Integer phase-zero point selector of factor $M\geq1$. \\
 \bottomrule

@@ -16,7 +16,7 @@
 \definecolor{RTCgray}{HTML}{52606D}
 \hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
   hypertexnames=false,
-  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.5},
+  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.6},
   pdfauthor={SCI-RTC implementation-blind scientific author}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.48em}
@@ -49,7 +49,7 @@
 \vspace{0.65in}
 \begin{tabular}{@{}ll@{}}
 Package version & v0.1 \\
-Revision & r0.5 \\
+Revision & r0.6 \\
 Date & 2026-08-18 \\
 Authority & Shared normative core in \texttt{src/common/} \\
 View-specific content & Informative evidence and review guidance only \\
@@ -139,7 +139,7 @@ for one-to-one coverage.
 \toprule
 Requirement range & Primary review surface & Useful evidence classes \\
 \midrule
-REQ-001--005 & Paired raw boundary and CAL handoff & Exact $x/r$ input/output inspection, $x$-only downstream CAL-parent failure injection, atmospheric-order and imported-authority lineage trace. \\
+REQ-001--005 & Paired raw boundary and CAL handoff & Exact paired input, conditioned-$x$/raw-$r$-parent bundle inspection, $x$-only downstream CAL-parent failure injection, and atmospheric-diagnostic no-subtraction trace. \\
 REQ-006--012 & Identity, state, and selected policy & Serialization round trip, distinct-identity fixtures, request-to-realized trace, unsupported-policy rejection. \\
 REQ-013--018 & Ordering and donor transfer & Raw-RTC-then-CAL order trace, forced donor vectors, invalid-factor matrix, donor reuse/tie/fallback fixtures. \\
 REQ-019--020 & Direct exclusion and influence & Direct/noncenter synthesis/replacement injection, full-support cause propagation, downstream policy handoff inspection. \\
@@ -158,8 +158,9 @@ REQ-071--076 & Refinement attempts and replay & Distinct attempt/accepted-plan t
 REQ-077--082 & Candidate, stability, stopping, provenance & Artifact discrimination, cumulative budgets, complete-plan stability, actual/max-attempt distinction, typed disposition, lineage, restart mismatch fixtures. \\
 REQ-083--086 & Pair admission, identity, mapping, validity & Missing-partner failure, mapping reconstruction, reorder/rejoin rejection, independent $x/r$ validity matrix, restart identity. \\
 REQ-087--093 & Leakage, prohibited correction, joint statistics & Atmosphere/source estimator fixtures, scalar/frequency status, distinct parentage, forbidden-route rejection, full joint covariance. \\
-REQ-094--102 & Level shifts, plateaus, and state & Spike/shift order fixture, paired event amplitudes, transition masks/guards, multiple shifts, reset boundaries, no-stitch toggle, typed lifecycle states. \\
-REQ-103--105 & CAL, atmosphere composition, role routing & $x$-only CAL handoff, atmosphere-before-filter response or bound, paired role-plan disposition, optional-class disabled checks. \\
+REQ-094--102 & Level shifts, plateaus, and state & Original-pair spike masking/downweighting, post-segmentation donor fixtures, paired event amplitudes, transition masks/guards, multiple shifts, reset boundaries, no-stitch toggle, typed lifecycle states. \\
+REQ-103--105 & CAL, atmosphere diagnostics, role routing & $x$-only CAL handoff, atmospheric-template no-subtraction checks, retained raw-$r$ parentage, paired role-plan disposition, optional-class disabled checks. \\
+REQ-106--108 & Plateau support, pre/post leakage, optional conditioned $r$ & Role-specific support matrix, pre/post response comparison/unavailability, additive-only interpretation block, and separate-$r$-operator admission failure. \\
 \bottomrule
 \end{tabularx}
 \normalsize
@@ -175,12 +176,13 @@ exceptions, detector mixing, sampling phase, and support expansion to the
 artifact presented to consumers.  Mark complete response unavailable if any
 enabled response-changing stage cannot be represented truthfully.
 
-Begin that trace with exact IQ-to-$x/r$ mapping authority and preserve the
-ordered pair through every stage.  Exercise $x$ and $r$ impulses separately
-and jointly, retain full cross-coordinate response and covariance, and verify
-that level-shift segments reset or carry state exactly as resolved.  If a raw
-atmospheric template is enabled, reconstruct its composition before later
-filters and check the exact noncommutation response or approved bound.
+Begin that trace with exact general IQ-to-$x/r$ mapping authority and preserve
+the ordered pair identity through every stage.  Exercise the conditioned-$x$
+operator while retaining raw-$r$ parentage, full cross-coordinate selector
+dependence and covariance, and verify that level-shift segments reset or carry
+state exactly as resolved.  Confirm that atmospheric templates change only
+diagnostic or declared selector state, not numerical science $x$.  Reject any
+conditioned $r$ product without a separate channel-specific operator.
 
 Use the prediction IDs rather than inventing new expected science after
 observing output.  Interior impulses and sinusoids exercise fixed linear
@@ -208,8 +210,9 @@ bit cannot demonstrate these distinctions.
 
 Additionally separate pair-malformed, $x$-invalid, $r$-invalid,
 mapping-unavailable, leakage-unavailable, level-shift-candidate,
-level-shift-accepted, transition-guard, segment-interior, plateau-advisory,
-reset, and atmosphere-response-unavailable states.  Confirm that missing one
+level-shift-accepted, transition-guard, segment-interior, role-specific
+plateau-admissibility, plateau-advisory, reset, atmospheric-diagnostic-unavailable,
+and optional-conditioned-$r$-unavailable states.  Confirm that missing one
 pair member fails required admission while independent validity of a present
 member remains expressible.
 
@@ -250,8 +253,9 @@ Maximum-attempt, oscillating, and nonconvergent states are not convergence.
 \item Every open owner decision is either resolved by approved authority or
       blocks the named operation/claim exactly as the ledger states.
 \item Every RTC role retains exact paired raw $x/r$ identity and independent
-      validity; raw $x$ is not labeled Stokes I, and a distinct downstream
-      SCI-CAL product consumes only $x$ while binding the complete RTC parent.
+      validity; conditioned $x$ is the required numerical RTC output, raw $r$
+      parentage and causal uses remain in the bundle, and SCI-CAL consumes only
+      $x$ while binding the complete RTC parent.
 \item Missing either pair member fails admission; no reorder, independent
       join, copy, synthesis, zero fill, $r$ calibration, $r$-to-$x$
       correction, or $r$-as-$x$ donor route is accepted.
@@ -262,14 +266,18 @@ Maximum-attempt, oscillating, and nonconvergent states are not convergence.
       downstream consumer policy.
 \item Complete response includes every enabled stage or is typed unavailable.
 \item Leakage diagnostics preserve separate atmosphere and bright-source
-      parents, scalar/frequency status, support, uncertainty, and pre/post
-      response; agreement is not automatic promotion.
-\item Despike/replacement precedes level-shift estimation; every accepted
-      shift has paired amplitudes or typed unavailability, transition mask,
-      guards, segment identity, reset/carry state, and no implicit plateau
-      stitching.
-\item Any selected raw atmospheric template precedes later temporal filters
-      and carries an exact composed response or approved noncommutation bound.
+      parents, estimator bias controls, scalar/frequency status, support,
+      uncertainty, and pre/post response; agreement is not automatic promotion.
+\item Level-shift learning uses original paired data with isolated-spike
+      candidates masked or downweighted; donor replacement begins only after
+      segmentation, remains within stable segments, and never crosses a shift.
+\item Every accepted shift has paired amplitudes or typed unavailability,
+      transition mask, guards, segment identity, reset/carry state,
+      role-specific plateau support, and no implicit plateau stitching.
+\item Atmospheric templates are diagnostic evidence only and do not alter
+      science $x$; numerical common-mode removal requires separate authority.
+\item A conditioned $r$ output is unavailable unless its own operator,
+      response, support, unit, validity, uncertainty, and provenance are bound.
 \item Requested, effective, observation-resolved, learned-evidence,
       resolved-plan, realized,
       and immutable product/stage identities remain distinct.

@@ -1,7 +1,7 @@
 # SCI-RTC v0.1 — Decision Log
 
-Status: Stage B v0.1/r0.5 paired-coordinate revision complete and
-manager-reviewed; scientific authority not approved or frozen
+Status: Stage B v0.1/r0.6 bounded correction manager-reviewed; scientific
+authority not approved or frozen
 
 | ID | Status | Decision |
 | --- | --- | --- |
@@ -21,10 +21,15 @@ manager-reviewed; scientific authority not approved or frozen
 | `RTC-SCI-D002` | approved `2026-08-18` | Only directly selected ALIGN-synthesized or RTC-replaced occurrences are universally excluded. RTC preserves noncenter transitive influence; each downstream consumer owns its declared eligibility policy. |
 | `RTC-DRAFT-D005` | applied `2026-08-18` | R0.4 separates refinement attempts from accepted plans, defines the initial evaluation product, corrects pre-decimation sampling notation, applies the two owner decisions, fixes the title/signal boundary, and adds the role-specific RTC-plan matrix. |
 | `RTC-SCI-D003` | approved `2026-08-18` | Every admitted occurrence contains an exact paired raw $x/r$ coordinate under retained upstream IQ-to-$x/r$ mapping authority. Raw $x$ is the ordinary path but not itself Stokes I; $r$ is diagnostic, not calibrated or substituted. |
-| `RTC-SCI-D004` | approved `2026-08-18` | Despike detection and admitted replacement precede level-shift estimation on the repaired paired stream. Selected shifts create explicit transition masks, guards, segments, and state reset/carry; detection does not imply correction or stitching. |
-| `RTC-SCI-D005` | approved `2026-08-18` | A selected raw RTC atmospheric-template operation precedes later temporal filters and requires exact composed response or an owner-approved noncommutation bound. It remains distinct from the downstream SCI-CAL target-atmosphere correction. |
+| `RTC-SCI-D004` | withdrawn `2026-08-18` | R0.5 incorrectly attributed despike replacement before level-shift learning to the owner. Superseded by `RTC-SCI-D007`; the false approval is retained here only as correction history. |
+| `RTC-SCI-D005` | withdrawn `2026-08-18` | R0.5 incorrectly attributed numerical atmospheric-template removal and its placement to the owner. Superseded by `RTC-SCI-D006`; the false approval is retained here only as correction history. |
 | `RTC-DRAFT-D006` | applied `2026-08-18` | R0.5 appends paired-coordinate, mapping, leakage, level-shift, atmosphere-composition, and actual-attempt authority while preserving all r0.4 identifiers and architecture. |
 | `RTC-DRAFT-D007` | manager-reviewed `2026-08-18` | R0.5 independence, directive coverage, shared-core structure, exact inventories and crosswalk, warning-free compilation, PDF metadata, and visual integrity of all 84 pages pass; the draft is accepted for scientific-owner review and freeze disposition only. |
+| `RTC-SCI-D006` | approved `2026-08-18` | Atmospheric templates are diagnostic evidence only in RTC v0.1: leakage, Tune/readout health, level-shift/artifact evidence, and declared selection/review inputs. They are not numerically subtracted from science $x$; common-mode removal requires separate PTC or successor authority. |
+| `RTC-SCI-D007` | approved `2026-08-18` | Level-shift learning uses original paired data with isolated-spike candidates masked, excluded, or robustly downweighted. Donor replacement begins only after shift boundaries resolve, remains within stable segments, and never crosses an unresolved or accepted shift boundary. |
+| `RTC-SCI-D008` | approved `2026-08-18` | Conditioned $x$ is the required RTC numerical output. The immutable raw $r$ parent and every causal diagnostic/selector remain in the atomic bundle; any conditioned $r$ product requires a separate channel-specific operator and complete response/validity authority. |
+| `RTC-DRAFT-D008` | applied `2026-08-18` | R0.6 withdraws the two false r0.5 approvals, applies `RTC-SCI-D006--D008`, corrects mapping and leakage notation, strengthens plateau/pre-post-shift authority, and appends the missing scientific falsifiers without renumbering prior IDs. |
+| `RTC-DRAFT-D009` | manager-reviewed `2026-08-18` | R0.6 independence, owner-decision coverage, shared-core structure, exact inventories and crosswalk, warning-free compilation, PDF metadata, and visual integrity of all 90 pages pass; the draft is accepted for scientific-owner review and freeze disposition only. |
 
 Stage A approval authorized implementation-blind drafting only. The manager
 review establishes draft coherence, not scientific approval. No step here

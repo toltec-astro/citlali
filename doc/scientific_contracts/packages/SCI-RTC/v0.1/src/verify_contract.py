@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mechanical SCI-RTC v0.1/r0.5 author-deliverable checks.
+"""Mechanical SCI-RTC v0.1/r0.6 author-deliverable checks.
 
 This helper reads only the approved author inputs and package deliverables.
 It does not inspect implementation, tests, history, or sibling packages.
@@ -87,8 +87,8 @@ def main() -> None:
 
     require(definitions == [f"{i:03d}" for i in range(1, 39)], "definition IDs")
     require(assumptions == [f"{i:03d}" for i in range(1, 13)], "assumption IDs")
-    require(requirements == [f"{i:03d}" for i in range(1, 106)], "requirement IDs")
-    require(predictions == [f"{i:03d}" for i in range(1, 64)], "prediction IDs")
+    require(requirements == [f"{i:03d}" for i in range(1, 109)], "requirement IDs")
+    require(predictions == [f"{i:03d}" for i in range(1, 72)], "prediction IDs")
     expected_eq = (
         [f"{i:03d}" for i in range(1, 16)]
         + ["016a", "016b", "017", "018", "019", "020a", "020b"]
@@ -102,7 +102,7 @@ def main() -> None:
     ]
     expected_inputs = [rf"\input{{common/{name}}}" for name in common_files]
     for name in common_files:
-        require("v0.1/r0.5" in text(COMMON / name), f"r0.5 stamp in {name}")
+        require("v0.1/r0.6" in text(COMMON / name), f"r0.6 stamp in {name}")
     for wrapper_name in ("scientific-rationale.tex", "engineering-conformance.tex"):
         wrapper = text(SRC / wrapper_name)
         actual = re.findall(r"\\input\{common/[^}]+\}", wrapper)
@@ -133,54 +133,71 @@ def main() -> None:
         r"x^{\rm eval,(0)}",
         r"\widetilde\Pi_a",
         r"k_{a+1}",
-        r"v^{\rm preD}_{d,Mn}",
-        r"C^{\rm CAL}_{\kappa,\mathcal R}\mathbf y^{\rm RTC}_{\mathcal R}",
+        r"v^{x,\rm preD}_{d,Mn}",
+        r"C^{\rm CAL}_{\kappa,\mathcal R}\mathbf y^{x,\rm RTC}_{\mathcal R}",
         r"\begin{bmatrix}x^A_{dj}\\ r^A_{dj}\end{bmatrix}",
+        r"\mathcal T_{d,\zeta}",
+        r"\Delta r_d=\epsilon^{(c)}_d\Delta x_d+\eta^{(c)}_d",
+        r"(\mathbf y^x,\mathbf r^{A,\rm parent},\mathcal J^{xr},\mathcal K^{x}",
         r"K=k_{A+1}\le A\le A_{\max}",
     ):
-        require(marker in equations_text, f"r0.5 equation marker: {marker}")
+        require(marker in equations_text, f"r0.6 equation marker: {marker}")
     require(r"C_{\mathcal R}" not in equations_text, "obsolete in-RTC CAL selector")
 
     requirements_text = text(COMMON / "requirements.tex")
     require("nonrepresentative replacement influence" in requirements_text,
             "consumer-owned nonrepresentative influence")
-    require("alternative interleaving is authorized" in requirements_text,
-            "selected raw-RTC-then-CAL order")
-    require("despike detection and admitted sample replacement before level-shift"
-            in requirements_text, "approved early suborder")
-    require("shall precede temporal filtering" in requirements_text,
-            "approved atmosphere/filter order")
+    require("no calibrated RTC branch is authorized" in requirements_text,
+            "conditioned-x-then-CAL order")
+    require("without donor substitution" in requirements_text,
+            "original-pair shift-learning boundary")
+    require("shall not be subtracted from science $x$" in requirements_text,
+            "diagnostic-only atmospheric-template boundary")
+    require("Any separately requested conditioned $r$ product" in requirements_text,
+            "separately authorized conditioned-r boundary")
     require("subsequent PTC, VAL, MAP, and FLT use follows their own contracts"
             in requirements_text, "exact Science consumer wording")
 
     directive = text(PKG / "SCIENTIFIC_OWNER_DIRECTIVE_R0.5.md")
     require("7469fd327d9465904a4e59c287577bab0dcd9f93fd2cc555cdee6680e89714a6"
             in directive, "r0.5 directive digest")
+    review = text(PKG / "SCIENTIFIC_OWNER_REVIEW_R0.6.md")
+    require("2a4163d1ed0775e83ef981573d1a3a1f65fe2d89860bd92b0ad456e61fa8e266"
+            in review, "r0.6 review digest")
+
+    active_source = "\n".join(text(path) for path in sorted(SRC.rglob("*.tex")))
+    for forbidden in (
+        "atmospheric-template removal",
+        "atmosphere-template removal",
+        "despike-before-shift",
+        "IQ-map parent",
+    ):
+        require(forbidden not in active_source, f"superseded active-source phrase: {forbidden}")
 
     crosswalk = text(PKG / "CROSSWALK.md")
     for stem, count in (
         ("SCI-RTC-DEF-", 38),
         ("SCI-RTC-ASM-", 12),
-        ("SCI-RTC-REQ-", 105),
-        ("SCI-RTC-PRED-", 63),
+        ("SCI-RTC-REQ-", 108),
+        ("SCI-RTC-PRED-", 71),
     ):
         sequential(table_row_ids(crosswalk, stem), stem, count)
     eq_rows = table_row_ids(crosswalk, "SCI-RTC-EQ-")
     require(eq_rows == [f"SCI-RTC-EQ-{item}" for item in expected_eq], "equation crosswalk")
 
     author_rows = table_row_ids(text(PKG / "AUTHOR_DRAFT_DECISIONS.md"), "SCI-RTC-AUTHOR-D")
-    sequential(author_rows, "SCI-RTC-AUTHOR-D", 23)
+    sequential(author_rows, "SCI-RTC-AUTHOR-D", 24)
     owner_rows = table_row_ids(
         text(PKG / "SCIENTIFIC_OWNER_DECISION_LEDGER.md"), "SCI-RTC-OWNER-"
     )
-    sequential(owner_rows, "SCI-RTC-OWNER-", 71)
+    sequential(owner_rows, "SCI-RTC-OWNER-", 74)
 
     print("PASS: approved packet hashes (4)")
     print("PASS: shared-core inclusion (6 files x 2 views, exactly once)")
-    print("PASS: definitions=38 equations=37 assumptions=12 requirements=105 predictions=63")
+    print("PASS: definitions=38 equations=37 assumptions=12 requirements=108 predictions=71")
     print("PASS: crosswalk rows complete and sequential")
-    print("PASS: author decisions=23 owner entries=71 (65 open, 2 resolved, 4 deferred)")
-    print("PASS: r0.5 paired mapping, level shifts, leakage, attempt counts, CAL, influence, and role markers")
+    print("PASS: author decisions=24 owner entries=74 (64 open, 5 resolved, 5 deferred)")
+    print("PASS: r0.6 x-only numerical output, diagnostic atmosphere, paired shift learning, mapping, and leakage markers")
     print("PASS: rationale narrative sections=12")
     print("PASS: engineering wrapper has no independent displayed mathematics")
 

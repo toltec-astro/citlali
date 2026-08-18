@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.5 shared normative core -- assumptions and scope.
+% SCI-RTC v0.1/r0.6 shared normative core -- assumptions and scope.
 \section{Bounded assumptions and non-goals}
 \label{sec:core-assumptions}
 
@@ -25,15 +25,15 @@ The absence of such authority does not license inference or clamping.
 \item[SCI-RTC-ASM-004 -- Calibration boundary.]
 Calibration-factor production, target-atmosphere correction, beam meaning,
 uncertainty, and promotion belong to SCI-BEAM/SCI-CAL.  RTC remains in raw
-$\Delta f/f$ through replacement, filtering, and sampling.  RTC may learn and
-apply a separately authorized raw atmospheric template and shall account for
-its noncommutation with later filters.  SCI-CAL consumes only the exact RTC
-$x$ product and applies absolute \texttt{flxscale} plus target atmosphere only
-after RTC.
+$\Delta f/f$ through replacement, filtering, and sampling.  Atmospheric
+templates are diagnostic evidence for leakage, Tune/readout health, shift and
+artifact assessment, and selection/review only; v0.1 does not subtract them
+from science $x$.  SCI-CAL consumes only the exact RTC $x$ product and applies
+absolute \texttt{flxscale} plus target atmosphere only after RTC.
 
 \item[SCI-RTC-ASM-005 -- Selected-policy boundary.]
 Despike, level-shift detection, transition masks, segmentation, reset,
-plateau use, donor, mask, FIR, IIR, notch, atmospheric-template, leakage,
+plateau use, donor, mask, FIR, IIR, notch, atmospheric-template diagnostics, leakage,
 state, edge, non-finite, recovery, sampling, diagnostic, and failure choices
 are selected versioned policies.
 No current default or numerical threshold is promoted to a universal
@@ -94,7 +94,8 @@ This revision does not derive ALIGN timing, AST coordinates, SCI-BEAM or
 SCI-CAL calibration, PTC, VAL, MAP, or FLT estimators, source fitting, or recurrence;
 authorize absolute-timing or astrometric corrections; redesign mature
 despike/FIR/IIR/notch numerics; choose universal numerical thresholds;
-authorize online adaptation; activate polarimetry; authorize automatic
+authorize online adaptation; activate polarimetry; authorize atmospheric or
+common-mode template subtraction from science $x$; authorize automatic
 $r$-to-$x$ correction, $r$ calibration, use of $r$ as an $x$ donor, or
 plateau-based cross-segment stitching; prescribe source classes, files,
 storage schemas, or product names; authorize per-array/per-scan cadence; inspect implementation;

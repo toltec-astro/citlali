@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.5 shared normative core -- definitions.
+% SCI-RTC v0.1/r0.6 shared normative core -- definitions.
 \section{Normative definitions}
 \label{sec:core-definitions}
 
@@ -49,8 +49,9 @@ $\phi_d\neq0$.  Compatibility is not established by matching row numbers or
 finite values alone.
 
 \item[SCI-RTC-DEF-006 -- Selected conditioning policy.]
-A versioned, admitted specification of despike detection, donor eligibility,
-donor scoring and ties, replacement and fallback, source protection,
+A versioned, admitted specification of spike-candidate detection and
+change-point masking/downweighting, donor eligibility, donor scoring and ties,
+post-segmentation $x$ replacement and fallback, source protection,
 filter stages and order, exact coefficients and normalization, numeric
 precision, state/reset, boundaries/edges, non-finite handling, sampling mode,
 phase-zero factor, flags, influence aggregation, diagnostics, and failure
@@ -67,10 +68,12 @@ admitted plan for every fixed or learned operation; and realized state
 records what ran.  A later state never rewrites an earlier state.
 
 \item[SCI-RTC-DEF-008 -- Realized conditioning operator.]
-The chronological composition of every admitted paired-channel admission,
-alignment, raw-domain replacement, level-shift transition mask and plateau
-segmentation, mask, FIR/IIR/notch, boundary, reset state, non-finite, and
-phase-zero sampling action, including all affine state terms and exception intervals.
+The chronological composition of paired admission and evidence selection,
+level-shift transition masking and plateau segmentation, then every admitted
+$x$-domain replacement, mask, FIR/IIR/notch, boundary, reset state,
+non-finite, and phase-zero sampling action, including all affine state terms
+and exception intervals.  Raw $r$ may affect a selector or resolved state but
+does not thereby receive the $x$ numerical operator.
 Annotations that affect values, support, influence, or availability are part
 of the operator.
 
@@ -141,7 +144,9 @@ ordered detector/sample/scan/support and parent identity; complete response or t
 unavailability; cause-preserving flags and influence; separated validity and
 eligibility inputs; conditional uncertainty/covariance status; one-way state
 and provenance; required diagnostics; downstream CAL handoff state; and
-completion/failure state.  TOD alone is not this bundle.
+completion/failure state.  A separately conditioned $r$ product is optional
+and unavailable without its own declared operator, response, support, unit,
+validity, and provenance.  TOD alone is not this bundle.
 
 \item[SCI-RTC-DEF-019 -- Scientifically named diagnostic.]
 A quantity with an explicit estimator, unit, support, selection/mask,
@@ -246,7 +251,11 @@ A scientifically named estimate of paired $x/r$ response to a declared
 network atmospheric optical-mode template, with exact membership,
 self-inclusion rule, time/frequency support, preprocessing, estimator,
 response, covariance, uncertainty, coherence, Tune/loading state, and scalar,
-frequency-dependent, or unavailable disposition.
+frequency-dependent, or unavailable disposition.  The estimator shall address
+shared-data dependence, noise in both coordinates, and detector self-inclusion;
+measured correlation or direct noisy $r$-on-$x$ regression is not by itself an
+unbiased leakage coefficient.  This diagnostic does not authorize numerical
+template subtraction from $x$.
 
 \item[SCI-RTC-DEF-034 -- Bright-source optical-leakage diagnostic.]
 A separately parented estimate of paired $x/r$ response to a declared

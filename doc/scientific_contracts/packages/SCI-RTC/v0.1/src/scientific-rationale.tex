@@ -13,7 +13,7 @@
 \definecolor{RTCgold}{HTML}{B7791F}
 \hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
  hypertexnames=false,
- pdftitle={TolTEC Raw-Timestream Conditioning: Paired Readout Coordinates, Learn--Resolve--Apply, and Scientific Consequences v0.1/r0.5},
+ pdftitle={TolTEC Raw-Timestream Conditioning: Paired Readout Coordinates, Learn--Resolve--Apply, and Scientific Consequences v0.1/r0.6},
  pdfauthor={SCI-RTC implementation-blind scientific author}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.52em}
@@ -46,7 +46,7 @@ and Scientific Consequences\\[0.28in]}
 \vspace{0.55in}
 \begin{tabular}{@{}ll@{}}
 Scientific contract version & v0.1 \\
-Science-team rationale revision & r0.5 \\
+Science-team rationale revision & r0.6 \\
 Date & 2026-08-18 \\
 Authority & Shared normative core in \texttt{src/common/} \\
 Status & Draft for scientific-owner review \\
@@ -68,9 +68,9 @@ performance, science qualification, validation, or production readiness.}
 Raw-timestream conditioning is a scientific method over exact paired raw
 readout coordinates, not merely a sequence of array operations. Upstream
 authority maps measured IQ to one $x/r$ pair per detector occurrence. RTC
-retains both: $x$ is the ordinary science-conditioning path and $r$ is a
-diagnostic coordinate with independently represented validity. Despiking,
-level-shift segmentation, atmospheric-template removal, donor replacement,
+retains both: $x$ is the required science-conditioning output path and the raw
+$r$ parent is a diagnostic coordinate with independently represented
+validity. Spike-aware level-shift segmentation, later within-segment donor replacement,
 notches, and broad-band filters alter values, response, support, and
 covariance. Decimation changes temporal identity and can alias rejected modes
 into the retained band. Each choice can
@@ -78,7 +78,7 @@ therefore change a point-source peak, effective PSF, centroid, extended-source
 response, calibration transfer, or scientific eligibility without changing a
 unit label.
 
-SCI-RTC v0.1/r0.5 organizes those choices as \textbf{learn--resolve--apply}.
+SCI-RTC v0.1/r0.6 organizes those choices as \textbf{learn--resolve--apply}.
 Learn uses a declared population and diagnostics to estimate candidate
 parameters and uncertainty. Resolve combines that evidence with fixed policy
 and admits one complete immutable RTC plan. Apply executes exactly that plan
@@ -95,10 +95,11 @@ removes whatever astronomical response lies in its width. A detector-static
 transfer across different RTC plans requires explicit response accounting or
 observational evidence.
 
-The output is an atomic bundle of paired signal, exact mapping and plan identity, response,
-timing convention, support, influence, validity, uncertainty status, and
-provenance. RTC coordinates remain raw in every role; raw $x$ is not itself
-Stokes I and $r$ is neither calibrated nor substituted for $x$. Absolute
+The output is an atomic bundle of conditioned $x$, the immutable paired raw
+$r$ parent, exact mapping and plan identity, response, timing convention,
+support, influence, validity, uncertainty status, and provenance. Raw $x$ is
+not itself Stokes I and $r$ is neither calibrated, substituted for $x$, nor
+silently passed through the $x$ operator. Absolute
 \texttt{flxscale} and target atmosphere belong to a distinct downstream
 SCI-CAL product applied only to $x$. When a required predicate is unresolved, the affected operation
 or claim is explicitly unavailable. The formal appendices are the sole
@@ -115,9 +116,10 @@ unavailable state into a pass.}
 
 \section{Executive summary and present status}
 \label{sec:rat-summary}
-RTC is the scientific transformation between an admitted aligned paired
-$x/r$ detector stream and a conditioned paired stream whose temporal,
-detector-mixing, and cross-coordinate response is explicit. Its purpose is
+RTC is the scientific transformation from an admitted aligned paired $x/r$
+detector stream to a conditioned $x$ output with immutable raw $r$ parentage
+and explicit causal diagnostics. Its temporal, detector-mixing, selection,
+and cross-coordinate response is explicit. Its purpose is
 not to make every sample finite or every spectrum
 smooth. Its purpose is to address declared contamination and sampling
 problems while preserving a quantitatively adequate response for the intended
@@ -134,8 +136,8 @@ operator, design parameters, learning, resolution and application,
 astronomical consequences, calibration consequences, validation, and
 unavailable states. Those questions are applied below to despiking, donors,
 masks, notches, broad-band and general filters, state, boundaries, non-finite
-handling, level shifts, optical leakage diagnostics, raw atmospheric-template
-removal, and decimation.
+handling, level shifts, optical leakage diagnostics, atmospheric-template
+evidence, and decimation.
 
 The current document is a draft for scientific-owner review. It establishes
 no production numbers. Open decisions remain open in the ledger; their
@@ -162,7 +164,7 @@ software default.
 \toprule
 Role & Learning population & Ordered paired RTC operations & Parameters frozen \\
 \midrule
-Beammap & Exact designated Beammap scans & IQ-map parent $\to$ despike/shift segmentation $\to$ selected donor/template/filter $\to$ phase-zero selection & Complete paired Beammap RTC plan \\
+Beammap & Exact designated Beammap scans & Exact aligned paired \texttt{xs}/\texttt{rs} parent $\to$ spike-aware shift segmentation $\to$ selected within-segment $x$ donor/filter $\to$ phase-zero selection & Complete Beammap RTC plan and paired lineage \\
 Pointing & Exact designated Pointing scans & Same paired classes, separately selected; optional classes remain disabled unless selected & Complete paired Pointing RTC plan \\
 OOF & Exact designated OOF scans & Same paired classes, separately selected; optional classes remain disabled unless selected & Complete paired OOF RTC plan \\
 Science & Exact selected science observation or scan set & Same paired classes, separately selected; optional classes remain disabled unless selected & Complete paired Science RTC plan \\
@@ -178,7 +180,7 @@ Role & Apply interval & Output cadence & Response-sensitive consumer \\
 Beammap & Named half-open Beammap interval & Realized raw RTC grid & SCI-BEAM; later SCI-CAL handoff \\
 Pointing & Named half-open Pointing interval & Realized raw RTC grid & Pointing/SRC and AST consumers \\
 OOF & Named half-open OOF interval & Realized raw RTC grid & OOF/SRC response inference \\
-Science & Named half-open science interval & Realized paired raw RTC grid & SCI-CAL handoff and any explicitly authorized raw-domain consumers; subsequent PTC, VAL, MAP, and FLT use follows their own contracts. \\
+Science & Named half-open science interval & Realized conditioned $x$ grid with paired raw $r$ lineage & SCI-CAL handoff and any explicitly authorized raw-domain consumers; subsequent PTC, VAL, MAP, and FLT use follows their own contracts. \\
 Diagnostic & Exact declared interval & Declared raw diagnostic grid & Named diagnostic consumer only \\
 \bottomrule
 \end{tabularx}
@@ -318,16 +320,16 @@ coordinate.  A raw atmospheric template may be scientifically useful because
 it can expose common optical response in $x$ and $r$, but it is not the
 sample-dependent target-atmosphere correction owned by SCI-CAL.  Its learning
 population, estimator, frequency support, detector grouping, masks, quality,
-uncertainty, and applicability all belong to the RTC plan.
+uncertainty, and applicability all belong to the RTC diagnostic plan.
 
-Template removal and temporal filtering generally do not commute.  The owner
-has selected template removal before later RTC filters.  The response of that
-composition, or a quantitative bound over its admitted domain, is required;
-reversing the order is not an equivalent implementation detail.  Low-frequency
-sky modes may overlap the learned atmospheric subspace, so the validation
-domain must include compact and extended sources across scan speeds and
-directions.  Missing response authority makes the affected transfer claim
-unavailable rather than ``approximately preserved.''
+In v0.1 the template is optical excitation and diagnostic evidence only.  It
+may inform leakage, Tune/readout health, artifact and level-shift assessment,
+or a declared selector, but it is not subtracted from science $x$.  Numerical
+common-mode removal is a detector-mixing, response-changing estimator with
+null modes, covariance, source-mask dependence, and astronomical transfer of
+its own; it requires separate PTC or successor authority.  This boundary
+avoids granting sky cleaning merely because the same atmospheric fluctuations
+are scientifically useful for measuring leakage.
 
 \clearpage
 \section{Paired IQ-to-\texorpdfstring{$x/r$}{x/r} readout coordinates}
@@ -336,14 +338,17 @@ The acquired scientific object is an ordered pair, not two streams that may
 later be joined by row number.  Upstream mapping authority converts measured
 in-phase and quadrature coordinates into $x^A_{dj}$ and $r^A_{dj}$ with one
 detector, sample, stream, and mapping-revision identity.  RTC consumes that
-mapping and its coefficient, offset, applicability, validity, and provenance;
-it does not infer, repair, or silently replace it.
+general mapping and, where applicable, its local Jacobian or affine
+representation, domain, applicability, validity, and provenance; it does not
+infer, globally linearize, repair, or silently replace it.
 
 Both members are required for every admitted occurrence.  A missing partner
 is malformed input, but numerical or scientific validity is represented
 independently: valid $r$ does not repair invalid $x$, and invalid $r$ does not
-erase an otherwise valid $x$.  Exact pair identity survives segmentation,
-filtering, selection, serialization, and restart.  The notation
+erase an otherwise valid $x$.  Exact pair identity survives selection,
+segmentation, conditioned-$x$ filtering/sampling, bundle construction,
+serialization, and restart without implying that $r$ receives the $x$
+operator.  The notation
 $m_{\rm native}$ denotes a native table row so that the physical $r$
 coordinate is never confused with a row index.
 
@@ -353,7 +358,9 @@ is a diagnostic coordinate that can reveal optical response, level shifts,
 electronics behavior, and shared selection.  V0.1 does not authorize
 automatic $r$-to-$x$ correction, calibration of $r$, use of $r$ as an $x$
 donor, or substitution of $r$ for invalid $x$.  Polarimetry remains outside
-scope.
+scope.  A separately conditioned $r$ product would require its own declared
+operator, response, support, unit, validity, uncertainty, and provenance; it is
+not a required v0.1 output.
 
 \begin{center}
 \begin{tikzpicture}[node distance=0.30in]
@@ -382,13 +389,14 @@ new coherent processing segment.  Treating a shift as a cluster of spikes can
 replace real data and leave a biased plateau; treating a spike as a shift can
 unnecessarily reset a long filter.
 
-The owner-selected early suborder is explicit: detect spikes and apply the
-admitted sample-replacement policy first, then estimate level shifts on that
-repaired paired stream.  This choice prevents isolated extremes from driving
-the shift estimator.  The resolved plan still records the despike statistic,
-threshold, support, mask, false-positive control, donor topology, and exact
-transition masks used by the later estimator.  An alternative suborder is not
-implied by this contract.
+The selected early architecture separates evidence exclusion from numerical
+replacement.  Change-point learning uses the original aligned pair while
+candidate isolated spikes are excluded, masked, or robustly downweighted.  It
+does not consume donor-substituted values.  After level-shift boundaries are
+resolved, any admitted donor replacement operates only within a stable segment
+and no donor relation crosses an unresolved or accepted boundary.  The plan
+records spike statistic, threshold, support, mask/downweighting, false-positive
+control, shift estimator, donor topology, and each resulting boundary.
 
 A level-shift event records detector, transition time or interval, separate
 $x$ and $r$ amplitudes or typed unavailability, estimator, support, quality,
@@ -399,11 +407,22 @@ rule.  Multiple events retain ordered identities, even when guards overlap or
 the intervening segment is too short; a selected conflict and minimum-segment
 policy determines the disposition.
 
-Plateau estimates can diagnose pre/post state and help assess the event, but
+``Stable plateau'' does not mean a numerically constant timestream.  It means
+consistency with a declared local signal-plus-baseline model accounting for
+atmosphere, astronomical signal, noise, allowed slow variation, Tune state,
+valid support, and unresolved changes.  Suitability is role-specific: an
+interval may support a readout-health diagnostic while being too short for PSD
+or notch learning, Beammap source inference, or Science.  Sample count alone
+is not authority.
+
+Pre- and post-shift stable plateaus compare their optical-leakage or more
+general paired response state on common support, or record that comparison as
+unavailable when optical excitation is inadequate.  A material response change
+rules out an additive-only event interpretation.  Plateau estimates otherwise
 remain inert or advisory unless selected as policy input.  V0.1 does not
-authorize plateau-based cross-segment offset stitching.  Such stitching would
-be a new response-changing operator with its own support, covariance,
-provenance, and validation burden.
+authorize plateau-based cross-segment offset stitching; that would be a new
+response-changing operator with its own support, covariance, provenance, and
+validation burden.
 
 A \textbf{donor} is an admitted detector-time measurement used to construct a
 continuity surrogate for a rejected target $x$ cell.  The target retains its
@@ -414,8 +433,8 @@ convention, not sky identity or calibration.  The paired $r$ member is never
 an $x$ donor.  Beammap donor factors come from identified prior authority,
 never the new factor derived from the same Beammap lineage.
 
-The exact representative occurrence for a phase-zero output is $(d,Mn)$ in
-the pre-replacement acquired stream.  If that occurrence is synthesized or
+The exact representative occurrence for a phase-zero output is $(d,Mn)$ on
+the raw aligned paired parent.  If that occurrence is synthesized or
 replaced, the output is universally excluded as an independent detector
 measurement.  A donor, maximum response coefficient, or support centroid
 does not replace this definition.  Nonrepresentative influences preserve
@@ -435,8 +454,14 @@ and response convention.
 Atmospheric variability provides one high-occupancy optical diagnostic.  Its
 estimator must distinguish the selected atmospheric template or population,
 temporal and frequency support, detector grouping, masks, common-mode model,
-quality, and uncertainty.  Because the atmosphere can share modes with sky
-signal and electronics, coherence alone does not establish optical origin.
+quality, and uncertainty.  A measured $x/r$ correlation is not by itself an
+unbiased optical-leakage coefficient: the estimator must address shared-data
+dependence, noise in both coordinates, and detector self-inclusion.  Direct
+$r$-on-noisy-$x$ regression is generally biased unless the selected method
+accounts for those effects.  Leave-one-detector-out, joint latent-mode,
+cross-spectral, and other methods remain candidates rather than defaults.
+Because the atmosphere can share modes with sky signal and electronics,
+coherence alone does not establish optical origin.
 
 A bright compact source provides a second diagnostic with different spatial
 and temporal support.  It binds the source model, scan geometry, projected
@@ -448,10 +473,11 @@ validating without an explicit comparison model.
 
 Each diagnostic states whether it is scalar, band-limited, or frequency
 dependent.  A scalar fitted over one band cannot silently become authority
-outside it.  If atmospheric-template removal or subsequent filtering changes
-the two coordinate responses differently, pre- and post-operation leakage
-estimates are distinct products.  Their comparison includes the composed
-response and common support.
+outside it.  If coordinate-specific preprocessing or filtering changes the
+two response domains differently, pre- and post-operation leakage estimates
+are distinct products.  Their comparison includes common support and the
+applicable response.  The atmospheric template itself is not subtracted from
+science $x$.
 
 No leakage diagnostic in v0.1 authorizes automatic $r$-to-$x$ correction,
 calibration of $r$, or a new donor route.  Its immediate scientific purpose is
@@ -514,38 +540,40 @@ not imply that the preceding response is centered there.  Every role resolves
 zero phase, shifted time, coordinate correction, response-aware downstream
 use, or a quantitative bound on residual centroid and PSF effect.
 
-Composition order is equally scientific.  Despike replacement precedes
-level-shift estimation; admitted level shifts define state boundaries;
-selected raw atmospheric-template removal precedes later temporal filters;
-and all RTC operations precede SCI-CAL.  Each response is composed in that
-order.  Commutation may be claimed only over a declared domain with an exact
-identity or owner-resolved bound.
+Composition order is equally scientific.  Spike-candidate masking or robust
+downweighting informs level-shift learning on the original pair; admitted
+shifts define state and donor boundaries; any $x$ replacement then occurs
+inside stable segments; and all conditioned-$x$ RTC operations precede
+SCI-CAL.  Atmospheric-template diagnostics may affect declared selection and
+uncertainty but are not a numerical removal stage.  Each realized $x$ response
+is composed in the selected order.
 
 Validation varies order/taps, family, precision, bands, shift boundaries,
-template strength, scan speed, beam, and source class while measuring
+diagnostic-template strength, scan speed, beam, and source class while measuring
 amplitude, shape, delay, ringing, covariance, registration, and usable
 support.  Coefficient algebra alone is not science qualification.
 
 \clearpage
 \section{Decimation and alias control}
 \label{sec:rat-decimation}
-V0.1 phase-zero downsampling is point selection
-$v^{\rm preD}[Mn]$, not averaging and not anti-alias filtering.  It changes
+V0.1 phase-zero downsampling is conditioned-$x$ point selection
+$v^{x,\rm preD}[Mn]$, not averaging and not anti-alias filtering.  It changes
 cadence, Nyquist frequency, temporal identity, support, covariance, aliasing,
-and coordinate registration for both members of the exact pair.  The
+and coordinate registration for the required $x$ output while exact raw $r$
+parentage remains in the bundle.  The
 preceding composed filter determines the rejected-band power that remains to
 fold.
 
 Equation~\eqref{eq:alias} includes every folded image.  Before resolving $M$,
-the exact prefilter and any preceding atmospheric-template operation must meet
-approved transfer and alias bounds over the declared source domain.  A
+the exact conditioned-$x$ prefilter must meet approved transfer and alias
+bounds over the declared source domain.  A
 Gaussian is not band-limited, so safe means bounded residual transfer, not
 perfect preservation.  Factor choice uses cadence, smallest projected
 crossing time, maximum valid scan speed, source class, output requirements,
 timing accuracy, and downstream compatibility.
 
-The representative source occurrence is exactly $(d,Mn)$ in the acquired
-pre-replacement stream.  That identity is distinct from the assigned output
+The representative source occurrence is exactly $(d,Mn)$ on the raw aligned
+paired parent.  That identity is distinct from the assigned output
 time, the full transitive support, and the largest response coefficient.  It
 drives the direct synthesized/replaced exclusion without converting every
 nonrepresentative influenced sample into universal ineligibility.
@@ -586,17 +614,17 @@ semantics.
 \clearpage
 \section{Calibration handoff and downstream interpretation}
 \label{sec:rat-calibration}
-RTC distinguishes detector-static \texttt{flxscale}, an optional raw RTC
-atmospheric template, sample-dependent target-atmosphere correction,
-detector mixing, and temporal filtering.  Their names do not make them
-commute.  RTC remains raw through the complete paired plan.  A compatible
+RTC distinguishes detector-static \texttt{flxscale}, an atmospheric leakage
+template used only as diagnostic evidence, sample-dependent target-atmosphere
+correction, detector mixing, and temporal filtering.  RTC remains raw through
+the complete plan.  A compatible
 valid \texttt{flxscale} ratio may transfer donor convention within raw $x$
 replacement, but it is not absolute calibration and never involves $r$.
 
 Only after the complete RTC bundle exists may SCI-CAL consume the exact
 conditioned $x$ member and apply absolute \texttt{flxscale} and target
-atmosphere.  The $r$ member remains in the RTC bundle for traceability and
-diagnostics but receives neither operation.  This boundary does not assert
+atmosphere.  The raw $r$ parent remains in the RTC bundle for traceability and
+diagnostics but receives neither the $x$ conditioning chain nor SCI-CAL.  This boundary does not assert
 that raw $x$ is Stokes I.
 
 Filtering can preserve dimensions while changing source peak, PSF, extended
@@ -619,15 +647,16 @@ lineage; donor factors come from explicit pre-existing authority.}
 \clearpage
 \section{Covariance, support, eligibility, validation, and open decisions}
 \label{sec:rat-validation}
-Output dependence expands through paired mapping, alignment, despike
-selection, donors, level-shift segments, atmospheric templates, taps or state,
+Output dependence expands through paired mapping, alignment, spike and shift
+selection, within-segment donors, atmospheric diagnostic selectors, taps or state,
 boundaries, and sampling.  Support---not storage shape---governs information
 flow.  Reused donors correlate targets, overlapping filters correlate
 neighbors, shared $x/r$ selectors create cross-coordinate covariance, and an
 IIR links every output to its declared state boundary.
 
 At fixed realized state, the conditional moment equations propagate an
-admitted joint $x/r$ model through the same operator.  Data-dependent
+admitted joint $x/r$ model through the conditioned-$x$ operator and every
+paired selector.  Data-dependent
 selection, leakage estimation, shift detection, learned templates, or notch
 parameters add selection and model variation.  Conditioning does not make
 those terms zero.  Unknown covariance remains unavailable rather than
@@ -644,6 +673,7 @@ uncertainty status, and provenance is incomplete.
 Algebraic fixtures are necessary but not sufficient. Validation varies the
 scientific design choices and measures the observables they can change.
 
+{\small
 \begin{tabularx}{\linewidth}{@{}p{0.17\linewidth}p{0.32\linewidth}X@{}}
 \toprule
 Study & Variations & Measurements \\
@@ -656,21 +686,21 @@ Paired/leakage & mappings, independent validity, atmosphere/source class, scalar
 Level shift & spike adjacency, amplitudes, multiple events, guards, short segments, reset/carry & event accuracy, false detection, plateau bias, state leakage, response and data loss \\
 \bottomrule
 \end{tabularx}
+}
 
 Each study preregisters domain, estimator, tolerance and falsifier. Passing
 coefficient algebra does not establish science qualification. Observational
 performance, science impact and production readiness are separate layers.
 
-The owner ledger retains unresolved numerical or methodological authority for
-mapping tolerances; independent validity; leakage estimators and frequency
-status; level-shift thresholds, guards, amplitudes, multiple-event handling,
-and plateau diagnostics; atmospheric-template estimation and noncommutation
-bounds; learning populations and freeze points; filter designs; edges/state;
-decimation/alias; registration; uncertainty; and bundle representation.  The
-paired stream, no automatic $r$ correction, despike-before-shift order,
-atmosphere-before-filter order, $x$-only CAL handoff, representative
-occurrence, and downstream ownership are already resolved architecture and
-are not reopened as numerical questions. Online adaptation remains deferred.
+The owner ledger retains numerical or methodological authority for mapping
+tolerances and validity; leakage and level-shift estimators; plateau support;
+atmospheric leakage diagnostics; learned populations; filter designs;
+edges/state; decimation/alias; registration; uncertainty; and bundle form.
+Resolved architecture includes the paired stream, diagnostic-only atmospheric
+templates, spike-aware original-pair shift learning before within-segment
+replacement, conditioned-$x$ output with raw-$r$ lineage, $x$-only CAL
+handoff, representative occurrence, and downstream ownership. Online
+adaptation remains deferred.
 An open entry blocks only its named operation or
 claim and never authorizes a default or silent fallback. Cross-package
 follow-up routes CAL, BEAM, AST, PTC, VAL, MAP and filtering questions without

@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.5 shared normative core -- equations.
+% SCI-RTC v0.1/r0.6 shared normative core -- equations.
 \section{Normative equations and identities}
 \label{sec:core-equations}
 
@@ -44,40 +44,47 @@ owned by SCI-CAL.  The distinct downstream calibration operator is
  =\Phi C^{\rm atm}_{\kappa,\mathcal R},
  \qquad
  \mathbf c^{\rm CAL}_{\mathcal R}
- =C^{\rm CAL}_{\kappa,\mathcal R}\mathbf y^{\rm RTC}_{\mathcal R}.
+ =C^{\rm CAL}_{\kappa,\mathcal R}\mathbf y^{x,\rm RTC}_{\mathcal R}.
  \tag{SCI-RTC-EQ-003}\label{eq:role-cal}
 \end{equation}
 Equation~\eqref{eq:role-cal} is an SCI-CAL handoff identity; its output is not
-\texttt{xs} and it is not an RTC stage.  The selected cross-package order is
+\texttt{xs} and it is not an RTC stage.  The selected cross-package boundary is
 \begin{equation}
-\left(\mathbf x^{\rm acq},\mathbf r^{\rm acq}\right)
- \xrightarrow{\ A_\alpha,\,E_{\omega,\lambda},\,F_1\ldots F_K,\,D_{M,0}\ }
- \left(\mathbf y^{x,\rm RTC}_{\mathcal R},
-       \mathbf y^{r,\rm RTC}_{\mathcal R}\right)
- \xrightarrow{\ C^{\rm CAL}_{\kappa,\mathcal R}\ }
- \mathbf c^{\rm CAL}_{\mathcal R}.
+\begin{aligned}
+ (\mathbf x^{A},\mathbf r^{A})
+   &\xrightarrow{\ \text{pair admission, spike evidence, shift resolve}\ }
+     \Omega_{xr},\\
+ \mathbf x^{A}
+   &\xrightarrow{\ A_\alpha,\,B^x_\omega,\,F_1\ldots F_K,\,D_{M,0}\ }
+     \mathbf y^{x,\rm RTC}_{\mathcal R}
+     \xrightarrow{\ C^{\rm CAL}_{\kappa,\mathcal R}\ }
+     \mathbf c^{\rm CAL}_{\mathcal R},\\
+ \mathbf r^{A}
+   &\xrightarrow{\ \text{retain parent and declared diagnostics}\ }
+     \mathcal D^r_{\mathcal R}\hookrightarrow\mathcal O_{\rm RTC,\mathcal R}.
+\end{aligned}
  \tag{SCI-RTC-EQ-004}\label{eq:order-equivalence}
 \end{equation}
 RTC shall not move the downstream CAL arrow inside replacement, temporal
 filtering, or phase-zero sampling.  Only the $x$ member is handed to
-SCI-CAL.  The paired $r$ member remains an RTC diagnostic coordinate and is
-not calibrated, substituted for $x$, or interpreted as Stokes data.  The raw
-donor ratio in equation~\eqref{eq:raw-donor} is convention transfer within
-$E_{\omega,\lambda}$, not absolute calibration.  Any selected atmospheric
-template removal is part of $E_{\omega,\lambda}$ and its noncommutation with
-later filtering shall be represented by a response or declared bound.
+SCI-CAL.  The paired raw $r$ parent and every causal diagnostic/selector remain
+in the bundle but are not calibrated, substituted for $x$, or interpreted as
+Stokes data.  The raw donor ratio in equation~\eqref{eq:raw-donor} is
+$x$-domain convention transfer within $B^x_\omega$, not absolute calibration.
+Atmospheric templates are diagnostic evidence only; equation~\eqref{eq:order-equivalence}
+contains no atmospheric-removal operator.
 
 \subsection{Realized conditioning operator}
 
-Conditioned on complete realized state $\Omega$, the ordered raw role-specific
-operator is
+Conditioned on complete realized state $\Omega$---which may depend on paired
+$x/r$ evidence and selectors---the required ordered raw $x$ operator is
 \begin{equation}
  \boxed{\;
- \mathbf y^{xr,\rm RTC}_{\mathcal R}=D_{M,0}
+ \mathbf y^{x,\rm RTC}_{\mathcal R}=D_{M,0}
  F_{K,\theta_K}\cdots F_{1,\theta_1}
- E_{\omega,\lambda,\mathcal R}
- \left(A_\alpha\mathbf u^{xr,\rm acq}+\mathbf a_\alpha\right)
- +\mathbf b_{\Omega}\; .}
+ B^x_{\omega,\mathcal R}
+ \left(A_\alpha\mathbf x^{A}+\mathbf a^x_\alpha\right)
+ +\mathbf b^x_{\Omega}\; .}
  \tag{SCI-RTC-EQ-005}\label{eq:complete-operator}
 \end{equation}
 Chronological order is read from right to left.  The affine terms include
@@ -86,10 +93,10 @@ authorized contributions.  Masks, coefficients, finite handling, context,
 exceptions, and state are components of $\Omega$, not annotations outside
 the operator.  Conditional on them,
 \begin{equation}
- \mathbf y^{xr,\rm RTC}_{\mathcal R}=L_\Omega\mathbf u^{xr,\rm acq}
-  +\mathbf b'_\Omega,
+ \mathbf y^{x,\rm RTC}_{\mathcal R}=L^x_\Omega\mathbf x^{A}
+  +\mathbf b^{x\prime}_\Omega,
  \qquad
- L_\Omega=D_{M,0}F_K\cdots F_1E_{\omega,\lambda,\mathcal R}A_\alpha .
+ L^x_\Omega=D_{M,0}F_K\cdots F_1B^x_{\omega,\mathcal R}A_\alpha .
  \tag{SCI-RTC-EQ-006}\label{eq:affine-operator}
 \end{equation}
 This is a conditional affine identity, not an unconditional linear,
@@ -97,17 +104,18 @@ stationary, unbiased, or Gaussian claim.
 
 A realized replacement at target cell $(d,j)$ may be written
 \begin{equation}
- u^R_{dj}=(1-p_{dj})u_{dj}
+ x^R_{dj}=(1-p_{dj})x_{dj}
  +p_{dj}\left[
  \sum_{(q,\ell)\in\mathcal Q_{dj}}
- w_{dj,q\ell}\,a_{d\leftarrow q,j\ell}\,u_{q\ell}
+ w_{dj,q\ell}\,a_{d\leftarrow q,j\ell}\,x_{q\ell}
  +\beta_{dj}\right],
  \quad
  \sum_{q,\ell}w_{dj,q\ell}=1
  \ \text{when normalization is claimed}.
  \tag{SCI-RTC-EQ-007}\label{eq:replacement}
 \end{equation}
-The scale $a$ is domain-qualified: equation~\eqref{eq:raw-donor} is the
+This replacement is explicitly $x$-only.  The scale $a$ is domain-qualified:
+equation~\eqref{eq:raw-donor} is the
 authorized raw \texttt{flxscale} route.  Any other transfer carries separate
 identity and validity and does not import downstream calibration into RTC.
 
@@ -148,7 +156,7 @@ renormalizing are distinct operators.
 
 For a coherent pre-sampling segment of length $N$, v0.1 selects only
 \begin{equation}
- y^{\rm RTC}_{d,n}=v^{\rm preD}_{d,Mn},
+ y^{x,\rm RTC}_{d,n}=v^{x,\rm preD}_{d,Mn},
  \qquad 0\le Mn<N,
  \qquad f_{\rm out}=\frac{f_{\rm in}}{M},
  \qquad
@@ -162,7 +170,7 @@ transitive support $\mathcal S_{dn}$ of all preceding stages.  A selected
 edge/output policy may reject candidate points, but shall not relabel a
 different phase or silently change equation~\eqref{eq:phase-zero}.
 The representative source occurrence is exactly
-$\rho_{dn}=(d,Mn)$ in the pre-replacement acquired stream.  It is not the
+$\rho_{dn}=(d,Mn)$ in the raw aligned paired parent.  It is not the
 largest response coefficient, a support centroid, a donor occurrence, or a
 synthetic sample.
 
@@ -295,12 +303,13 @@ authority.
 Finally, the atomic product is
 \begin{equation}
  \mathcal O_{\rm RTC,\mathcal R}=
- (\mathbf y^x,\mathbf y^r,\mathcal J^{xr},\mathcal K^{xr},\mathcal S,\mathcal I,
+ (\mathbf y^x,\mathbf r^{A,\rm parent},\mathcal J^{xr},\mathcal K^{x},\mathcal S,\mathcal I,
   \mathcal F,\mathcal V,\mathcal U,\mathcal P,\mathcal D,\mathcal C),
  \tag{SCI-RTC-EQ-022}\label{eq:bundle}
 \end{equation}
-where $\mathcal J^{xr}$ is exact ordered pair identity, $\mathcal K^{xr}$ is
-complete paired response status,
+where $\mathcal J^{xr}$ is exact ordered pair identity, $\mathcal K^{x}$ is
+the complete conditioned-$x$ response status, $\mathbf r^{A,\rm parent}$ is
+the immutable paired raw parent rather than an implied conditioned output,
 $\mathcal S$ support, $\mathcal I$ influence, $\mathcal F$ typed flags/causes,
 $\mathcal V$ separated validity and eligibility inputs, $\mathcal U$
 uncertainty/covariance availability, $\mathcal P$ one-way state/provenance,
@@ -412,21 +421,21 @@ For every admitted detector occurrence, the upstream mapping authority shall
 produce one ordered pair from measured in-phase and quadrature coordinates,
 \begin{equation}
  \begin{bmatrix}x^A_{dj}\\ r^A_{dj}\end{bmatrix}
- =T^{IQ\rightarrow xr}_{dj}
- \begin{bmatrix}I^A_{dj}\\ Q^A_{dj}\end{bmatrix}
- +\mathbf c^{xr}_{dj},
+ =\mathcal T_{d,\zeta}\!\left(I^A_{dj},Q^A_{dj}\right),
  \qquad
- J^{xr}_{dj}=(d,j,\text{stream},\text{mapping revision}).
+ \mathcal J^{xr}_{dj}=(d,j,\text{stream},\zeta).
  \tag{SCI-RTC-EQ-030}\label{eq:iq-xr-mapping}
 \end{equation}
 The pair identity is exact.  Missing either member is malformed required
-input; validity may nevertheless differ between the two members.
+input; validity may nevertheless differ between the two members.  An affine
+matrix, offset, or Jacobian is only a local representation over a declared
+domain of the generally nonlinear mapping $\mathcal T_{d,\zeta}$.
 
 An admitted local optical response model may be written
 \begin{equation}
  \begin{bmatrix}\Delta x_d\\ \Delta r_d\end{bmatrix}
  =\begin{bmatrix}\alpha^x_d\\ \alpha^r_d\end{bmatrix}s_d
- +\begin{bmatrix}\epsilon^x_d\\ \epsilon^r_d\end{bmatrix},
+ +\begin{bmatrix}\eta^x_d\\ \eta^r_d\end{bmatrix},
  \qquad \alpha^x_d\ne0 .
  \tag{SCI-RTC-EQ-031}\label{eq:optical-response}
 \end{equation}
@@ -435,9 +444,9 @@ other or to assume $\alpha^r_d=0$.
 
 For a declared source class $c$ and support-qualified estimator,
 \begin{equation}
- \zeta^{(c)}_d=\frac{\alpha^{r,(c)}_d}{\alpha^{x,(c)}_d},
+ \epsilon^{(c)}_d=\frac{\alpha^{r,(c)}_d}{\alpha^{x,(c)}_d},
  \qquad
- \Delta r_d=\zeta^{(c)}_d\Delta x_d+\varepsilon^{(c)}_d .
+ \Delta r_d=\epsilon^{(c)}_d\Delta x_d+\eta^{(c)}_d .
  \tag{SCI-RTC-EQ-032}\label{eq:leakage}
 \end{equation}
 Atmosphere-derived and bright-source-derived estimates are distinct products
