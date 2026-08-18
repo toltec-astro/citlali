@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.1 shared normative core -- assumptions and scope.
+% SCI-RTC v0.1/r0.2 shared normative core -- assumptions and scope.
 \section{Bounded assumptions and non-goals}
 \label{sec:core-assumptions}
 
@@ -41,14 +41,17 @@ declared correlation and limitations.  Absence does not imply diagonal,
 white, stationary, independent, or zero covariance.
 
 \item[SCI-RTC-ASM-008 -- Learned-mode scope.]
-The first learned applied scope produces one immutable common observation
-plan.  Per-array, per-scan, heterogeneous-cadence, noise-aware, and
-continuously adaptive execution are successor scopes.
+Every learned-then-fixed RTC operation uses one declared learning population,
+one resolved immutable plan, and one explicit compatibility domain.  The
+first learned sampling scope produces one common observation plan.  Per-array,
+per-scan, heterogeneous-cadence, noise-aware, and continuously adaptive
+sampling execution are successor scopes.
 
 \item[SCI-RTC-ASM-009 -- Analytical authority.]
-Exact analytical beam-times-filter transfer and phase-zero alias accounting
-define learned-plan admission.  Deterministic vectors may falsify a
-realization; source injection is not required to define the operator.
+Exact analytical source-times-realized-filter transfer and phase-zero alias
+accounting define learned-plan admission.  Deterministic vectors may falsify
+a realization, while source injections and observational studies are required
+for separately claimed performance or science-impact evidence.
 
 \item[SCI-RTC-ASM-010 -- Compact representation.]
 Dense observation-sized response, covariance, or per-sample provenance is not
@@ -75,7 +78,8 @@ for production.
 This revision does not derive ALIGN timing, AST coordinates, SCI-BEAM or
 SCI-CAL calibration, PTC, VAL, MAP, or FLT estimators, source fitting, or recurrence;
 authorize absolute-timing or astrometric corrections; redesign mature
-despike/FIR/IIR/notch numerics; choose universal numerical thresholds; activate
+despike/FIR/IIR/notch numerics; choose universal numerical thresholds;
+authorize online adaptation; activate
 polarimetry or measured R; prescribe source classes, files, storage schemas,
 or product names; authorize per-array/per-scan cadence; inspect implementation;
 perform validation or reductions; or assert production status.

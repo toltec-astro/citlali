@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.1 shared normative core -- equations.
+% SCI-RTC v0.1/r0.2 shared normative core -- equations.
 \section{Normative equations and identities}
 \label{sec:core-equations}
 
@@ -291,3 +291,66 @@ $\mathcal V$ separated validity and eligibility inputs, $\mathcal U$
 uncertainty/covariance availability, $\mathcal P$ one-way state/provenance,
 $\mathcal D$ diagnostics, and $\mathcal C$ atomic completion or required-output
 failure state.
+
+\subsection{Scientific design and learn--resolve--apply identities}
+
+For a locally Gaussian effective beam with angular covariance $\Sigma$ and
+angular scan-velocity vector $\mathbf v$, the projected source-crossing time
+scale is
+\begin{equation}
+ \sigma_t=\left(\mathbf v^{\mathsf T}\Sigma^{-1}\mathbf v\right)^{-1/2}.
+ \tag{SCI-RTC-EQ-023}\label{eq:crossing-time}
+\end{equation}
+Equation~\eqref{eq:crossing-time} is a local Gaussian diagnostic.  Scientific
+admission shall use the exact source-times-realized-response model over the
+declared beam, scan, source-class, and cadence domain.
+
+A generic realized notch may be represented, where applicable, by
+\begin{equation}
+ H_{\rm notch}(z)=g\,
+ \frac{\prod_{a=1}^{N_z}(1-z_a z^{-1})}
+      {\prod_{b=1}^{N_p}(1-p_b z^{-1})},
+ \qquad |p_b|<1\ \text{for a causal-stability claim}.
+ \tag{SCI-RTC-EQ-024}\label{eq:notch-response}
+\end{equation}
+This form imposes no universal biquad.  Exact realized coefficients, sample
+rate, frequency convention, phase/direction, state, edges, and precision are
+part of the response.
+
+For an admitted FIR design family $H_N$, a selected order shall follow a
+declared constrained problem of the form
+\begin{equation}
+ N_\star=\min_N\left\{N:\begin{array}{l}
+ \sup_{f\in\mathcal P}|H_N(f)-H_{\rm target}(f)|\le\epsilon_{\mathcal P},\\
+ \sup_{f\in\mathcal S}|H_N(f)|\le\epsilon_{\mathcal S},\\
+ \text{phase/delay, alias, edge/guard, precision, and realizability predicates pass}
+ \end{array}\right\}.
+ \tag{SCI-RTC-EQ-025}\label{eq:fir-order-selection}
+\end{equation}
+The sets, metrics, tolerances, equality conventions, and family are
+owner-resolved; an approximate order formula is not universal authority.
+
+For a causal linear-phase FIR with $N$ taps at rate $f_{\rm samp}$, its
+nominal interior group delay is
+\begin{equation}
+ \tau_g=\frac{N-1}{2f_{\rm samp}}.
+ \tag{SCI-RTC-EQ-026}\label{eq:fir-group-delay}
+\end{equation}
+Where a temporal response has effective delay $\tau$ during a locally uniform
+scan, the corresponding scan-direction angular displacement is
+\begin{equation}
+ \Delta\boldsymbol\theta=\mathbf v\,\tau .
+ \tag{SCI-RTC-EQ-027}\label{eq:scan-displacement}
+\end{equation}
+
+For every learned RTC operation, the lifecycle is
+\begin{equation}
+ \Lambda=\operatorname{Learn}(\mathcal L;\Theta^{\rm eff}),\qquad
+ \Pi=\operatorname{Resolve}(\Lambda,\Theta^{\rm policy}),\qquad
+ \mathbf y=\mathcal A_{\Pi}(\mathbf x),\qquad
+ \frac{\partial\Pi}{\partial j}=0\ \text{during apply}.
+ \tag{SCI-RTC-EQ-028}\label{eq:learn-resolve-apply}
+\end{equation}
+The final equality denotes plan immutability over apply slots; it is not an
+assumption that the realized operator is stationary at masks, edges, state
+boundaries, or other declared exceptions.

@@ -1,16 +1,16 @@
 # SCI-RTC v0.1 PDF Outputs
 
-Status: Stage B v0.1/r0.1 manager-reviewed author draft; not scientifically
+Status: Stage B v0.1/r0.2 implementation-blind revision; not scientifically
 approved or frozen
 
 Canonical draft outputs:
 
-- `SCI-RTC-SCIENTIFIC-RATIONALE-v0.1.pdf`: 25 pages, including 10 substantive
+- `SCI-RTC-SCIENTIFIC-RATIONALE-v0.1.pdf`: 33 pages, including 12 substantive
   pre-appendix narrative pages; SHA-256
-  `8df6816260025ed18d1f58302a7917967f5c9d194b643d02cc5a74636385a5a5`.
-- `SCI-RTC-ENGINEERING-CONFORMANCE-v0.1.pdf`: 17 pages; SHA-256
-  `f92d0264901cd351a05202ff65d0fd141701357a2ff253d769b0bf6077cc0b82`.
+  `be919c5f97c9d192413c30a4c1b0022d91012788d839bd4c4820d6e98ad563b7`.
+- `SCI-RTC-ENGINEERING-CONFORMANCE-v0.1.pdf`: 24 pages; SHA-256
+  `6042ee06832d3cfe32945f3c1ce148087c3af0500ca910915ba411d393fad329`.
 
-Both PDFs compile cleanly and all 42 pages have completed Poppler visual QA.
+Both PDFs compile cleanly and all 57 pages have completed Poppler visual QA.
 They are author drafts for scientific-owner review, not approved contracts or
 evidence of implementation conformity, validation, or readiness.

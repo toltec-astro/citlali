@@ -16,7 +16,7 @@
 \definecolor{RTCgray}{HTML}{52606D}
 \hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
   hypertexnames=false,
-  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.1},
+  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.2},
   pdfauthor={SCI-RTC implementation-blind scientific author}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.48em}
@@ -49,8 +49,8 @@
 \vspace{0.65in}
 \begin{tabular}{@{}ll@{}}
 Package version & v0.1 \\
-Revision & r0.1 \\
-Date & 2026-08-17 \\
+Revision & r0.2 \\
+Date & 2026-08-18 \\
 Authority & Shared normative core in \texttt{src/common/} \\
 View-specific content & Informative evidence and review guidance only \\
 Status & Implementation-blind author draft for scientific-owner review \\
@@ -150,6 +150,10 @@ REQ-037--041 & Complete response and support & Factorization reconstruction, loc
 REQ-042--045 & Statistical availability & Bounded covariance matrices, reused-donor correlation fixture, selector/nuisance availability inspection. \\
 REQ-046--051 & Validity and atomic output & Orthogonal-state fixtures, atomic write/failure injection, provenance reconstruction, inert-diagnostic toggle. \\
 REQ-052--054 & Consumers and claims & Parent-binding inspection, unavailable-state preservation, disabled-PTC terminal path, claim-label audit. \\
+REQ-055--058 & Learn--resolve--apply lifecycle & Learning-population identity, predicate-completeness matrix, immutable-plan trace, mutation rejection, adaptive-estimator separation. \\
+REQ-059--063 & Scientific filter design & Purpose/model register, scan--beam transfer studies, notch and band specifications, constrained tap/order selection. \\
+REQ-064--068 & Donor, decimation, timing, calibration & Donor-meaning separation, circular-factor rejection, folded-band calculation, centroid/coordinate tests, cross-plan response comparison. \\
+REQ-069--070 & Validation and claims & Preregistered design sweeps and strict claim-layer disposition. \\
 \bottomrule
 \end{tabularx}
 \normalsize
@@ -196,9 +200,10 @@ Then toggle optional detailed provenance and inert diagnostics; the scientific
 and numerical bundle must remain identical apart from the permitted optional
 detail.
 
-Learned mode requires an additional stop check before apply.  The review must
-bind every numerical predicate to an approved owner-decision entry, show the
-complete candidate disposition, and preserve bootstrap/learned/resolved state.
+Every learned operation requires an additional stop check before apply.  The
+review must bind the declared learning population and every numerical
+predicate to approved authority, show the complete candidate disposition, and
+preserve learned-evidence and resolved-plan state.
 If the resolved plan is absent or incompatible, apply does not begin.  A
 native-cadence result produced after silent fallback is not evidence of an
 applied learned plan.
@@ -220,8 +225,15 @@ applied learned plan.
 \item Full-support synthesis/replacement influence is checked at noncenter
       cells and remains scientifically ineligible downstream.
 \item Complete response includes every enabled stage or is typed unavailable.
-\item Requested, effective, observation-resolved, learned/resolved, realized,
+\item Requested, effective, observation-resolved, learned-evidence,
+      resolved-plan, realized,
       and immutable product/stage identities remain distinct.
+\item Each learned operation names its learning population, and apply rejects
+      any mutation of the resolved plan; online adaptation is a separate
+      unavailable or separately authorized estimator.
+\item Filter validation varies scientific design choices over the admitted
+      scan, projected-beam, and source domain; coefficient fixtures alone do
+      not establish science qualification.
 \item Required failures are atomic; optional detail is inert; unexpected
       error-level messages are zero in any run claimed successful.
 \item The final report names exactly one supported claim layer and explicitly

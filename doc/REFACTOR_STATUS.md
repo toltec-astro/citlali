@@ -392,6 +392,26 @@ for scientific-owner review but is not approved or frozen; implementation
 conformity, representation fidelity, observational performance, validation,
 science-impact qualification, and production readiness remain unassessed.
 
+On 2026-08-18 the scientific owner directed an implementation-blind r0.2
+revision that makes learn--resolve--immutable-apply the RTC organizing
+principle. The completed revision defines operation purpose and signal model,
+projected scan/beam temporal response, notch width/depth and adaptation,
+low/high/band-pass meaning, constrained FIR order/taps, donor continuity and
+physical limits, decimation/alias control, temporal registration, and complete
+RTC-plan calibration compatibility. It preserves the approved
+`flxscale_q/flxscale_d` donor convention, adds a same-Beammap circular-factor
+prohibition, and imports no implementation evidence or production values.
+
+The r0.2 shared core now contains 26 definitions, 30 equation tags, 12
+assumptions, 70 requirements, and 38 predictions. The 33-page science-team
+rationale has 12 substantive narrative sections and five diagrams; the
+engineering view is 24 pages and contains no independent normative
+mathematics. Thirty-six owner entries retain 31 open, one conditional, and
+four deferred choices. Both PDFs compile without warnings; all 57 pages passed
+Poppler inspection. The package remains a draft for scientific-owner review;
+scientific approval, implementation conformity, validation, science
+qualification, and production readiness remain unassessed.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

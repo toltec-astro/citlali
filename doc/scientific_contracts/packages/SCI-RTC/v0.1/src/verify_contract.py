@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mechanical SCI-RTC v0.1/r0.1 author-deliverable checks.
+"""Mechanical SCI-RTC v0.1/r0.2 author-deliverable checks.
 
 This helper reads only the approved author inputs and package deliverables.
 It does not inspect implementation, tests, history, or sibling packages.
@@ -85,13 +85,14 @@ def main() -> None:
         r"\\tag\{SCI-RTC-EQ-(\d{3}[ab]?)\}", text(COMMON / "equations.tex")
     )
 
-    require(definitions == [f"{i:03d}" for i in range(1, 21)], "definition IDs")
+    require(definitions == [f"{i:03d}" for i in range(1, 27)], "definition IDs")
     require(assumptions == [f"{i:03d}" for i in range(1, 13)], "assumption IDs")
-    require(requirements == [f"{i:03d}" for i in range(1, 55)], "requirement IDs")
-    require(predictions == [f"{i:03d}" for i in range(1, 27)], "prediction IDs")
+    require(requirements == [f"{i:03d}" for i in range(1, 71)], "requirement IDs")
+    require(predictions == [f"{i:03d}" for i in range(1, 39)], "prediction IDs")
     expected_eq = (
         [f"{i:03d}" for i in range(1, 16)]
-        + ["016a", "016b", "017", "018", "019", "020a", "020b", "021", "022"]
+        + ["016a", "016b", "017", "018", "019", "020a", "020b"]
+        + [f"{i:03d}" for i in range(21, 29)]
     )
     require(equation_ids == expected_eq, "equation tag IDs")
 
@@ -119,14 +120,14 @@ def main() -> None:
     rationale = text(SRC / "scientific-rationale.tex")
     narrative = rationale.split(r"\appendix", maxsplit=1)[0]
     numbered_sections = re.findall(r"^\\section\{", narrative, flags=re.MULTILINE)
-    require(len(numbered_sections) == 10, "rationale narrative is not ten sections")
+    require(len(numbered_sections) == 12, "rationale narrative is not twelve sections")
 
     crosswalk = text(PKG / "CROSSWALK.md")
     for stem, count in (
-        ("SCI-RTC-DEF-", 20),
+        ("SCI-RTC-DEF-", 26),
         ("SCI-RTC-ASM-", 12),
-        ("SCI-RTC-REQ-", 54),
-        ("SCI-RTC-PRED-", 26),
+        ("SCI-RTC-REQ-", 70),
+        ("SCI-RTC-PRED-", 38),
     ):
         sequential(table_row_ids(crosswalk, stem), stem, count)
     eq_rows = table_row_ids(crosswalk, "SCI-RTC-EQ-")
@@ -137,14 +138,14 @@ def main() -> None:
     owner_rows = table_row_ids(
         text(PKG / "SCIENTIFIC_OWNER_DECISION_LEDGER.md"), "SCI-RTC-OWNER-"
     )
-    sequential(owner_rows, "SCI-RTC-OWNER-", 28)
+    sequential(owner_rows, "SCI-RTC-OWNER-", 36)
 
     print("PASS: approved packet hashes (4)")
     print("PASS: shared-core inclusion (6 files x 2 views, exactly once)")
-    print("PASS: definitions=20 equations=24 assumptions=12 requirements=54 predictions=26")
+    print("PASS: definitions=26 equations=30 assumptions=12 requirements=70 predictions=38")
     print("PASS: crosswalk rows complete and sequential")
-    print("PASS: author decisions=18 owner entries=28")
-    print("PASS: rationale narrative sections=10")
+    print("PASS: author decisions=18 owner entries=36")
+    print("PASS: rationale narrative sections=12")
     print("PASS: engineering wrapper has no independent displayed mathematics")
 
 

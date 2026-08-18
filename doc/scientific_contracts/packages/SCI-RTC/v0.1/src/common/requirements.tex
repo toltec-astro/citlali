@@ -1,9 +1,9 @@
-% SCI-RTC v0.1/r0.1 shared normative core -- requirements.
+% SCI-RTC v0.1/r0.2 shared normative core -- requirements.
 \clearpage
 \section{Sequential normative requirements}
 \label{sec:core-requirements}
 
-The following identifiers are stable within v0.1/r0.1.  Conformance is
+The following identifiers are stable within v0.1/r0.2.  Conformance is
 requirement-by-requirement; satisfying a neighboring requirement does not
 waive another one.
 
@@ -59,7 +59,7 @@ Sampling & \ReqID{SCI-RTC-REQ-028} & V0.1 downsampling shall use only phase-zero
 Sampling & \ReqID{SCI-RTC-REQ-029} & Each coherent segment shall record $M$, zero phase, input/output rates and grids, the cardinality of equation~\eqref{eq:phase-zero}, selected-point representative time, full transitive support, edge disposition, and flag/influence aggregation. \\
 Sampling & \ReqID{SCI-RTC-REQ-030} & Any alias-free or bounded-alias claim shall include the exact realized prefilter and all folded bands of equation~\eqref{eq:alias}, with a declared input band, metric, bound, and unavailable state; point selection alone shall not be called anti-alias filtering. \\
 Sampling & \ReqID{SCI-RTC-REQ-031} & Fixed mode shall resolve an admitted factor/filter/rate/compatibility plan before application and record it independently of realized output. \\
-Learned & \ReqID{SCI-RTC-REQ-032} & Learned mode shall preserve distinct requested, bootstrap, learned, resolved, and applied states and shall not advertise a learned plan before its admitted evidence and numeric policy are complete. \\
+Learned & \ReqID{SCI-RTC-REQ-032} & Every learned RTC operation shall preserve distinct requested, effective, observation-resolved, learned-evidence, resolved-plan, and applied states and shall not advertise a plan before admitted evidence and numeric policy are complete. \\
 Learned & \ReqID{SCI-RTC-REQ-033} & Learned resolution shall choose the largest admitted integer factor only after astronomical-transfer, exact phase-zero alias, sampling, filter-realizability, and downstream-compatibility constraints all pass using the smallest admitted beam and maximum valid in-scan speed. \\
 Learned & \ReqID{SCI-RTC-REQ-034} & The first learned applied scope shall use one common immutable observation cadence and filter across arrays and scans; percentile speed shall remain diagnostic rather than safety authority. \\
 Learned & \ReqID{SCI-RTC-REQ-035} & Apply shall consume exactly one immutable resolved plan and shall not retune, adapt, or silently fall back; an unavailable or rejected plan shall follow the selected failure/fallback policy before apply begins. \\
@@ -90,6 +90,38 @@ Output & \ReqID{SCI-RTC-REQ-051} & Each diagnostic shall name estimator, unit, s
 Consumer & \ReqID{SCI-RTC-REQ-052} & RTC shall supply cause-preserving validity inputs rather than a universal downstream eligibility bit; each consumer shall bind the exact RTC parent and shall not strengthen unavailable timing, coordinate, calibration, response, covariance, or eligibility claims. \\
 Consumer & \ReqID{SCI-RTC-REQ-053} & PTC-disabled terminal RTC output shall be a valid requested state when selected; no PTC or map product shall be implied, while any requested downstream product shall require the exact admitted RTC bundle. \\
 Claims & \ReqID{SCI-RTC-REQ-054} & Algebraic contract correctness, implementation conformity, representation fidelity, observational performance, science-impact qualification, and production readiness shall be stated and assessed as separate claims. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.09\linewidth}p{0.20\linewidth}X@{}}
+\toprule
+Area & ID & Normative statement \\
+\midrule
+Lifecycle & \ReqID{SCI-RTC-REQ-055} & Every learned operation shall name its learning population, estimator, support, selection, exclusions, quality, uncertainty, validity, and compatibility domain; same-observation learning shall be identified as data-dependent. \\
+Lifecycle & \ReqID{SCI-RTC-REQ-056} & Resolve shall convert evidence and fixed policy into one immutable plan containing every applicable sequence, family, coefficient identity, rate/convention, order/taps, band/notch parameter, applicability, mask, donor, edge/guard/reset, decimation/timing, response/support, uncertainty, validity, and downstream-compatibility field. \\
+Lifecycle & \ReqID{SCI-RTC-REQ-057} & A plan shall be resolved only when every required predicate and tolerance passes; missing evidence, missing tolerance, rejected evidence, or unavailable compatibility shall not be treated as pass. \\
+Lifecycle & \ReqID{SCI-RTC-REQ-058} & Any coefficient or operator parameter that evolves during apply shall be governed by a separately authorized online-adaptive estimator contract; it shall not be represented as learned-then-fixed filtering. \\
+Design & \ReqID{SCI-RTC-REQ-059} & Every despike, donor, mask, notch, low/high/band-pass, FIR, IIR, decimation, edge/state, or non-finite operation shall declare scientific purpose, signal/contaminant model, mathematical operator, design parameters, learn/resolve/apply behavior, astronomical and calibration consequences, validation/falsification, and unavailable states. \\
+Design & \ReqID{SCI-RTC-REQ-060} & Filter admission shall use the exact source-times-realized-response over the declared scan-speed/direction, projected-beam, source-class, prior-response, and cadence domain; $f\sim v/\theta$, a scalar FWHM, or a nominal cutoff shall remain pedagogical only. \\
+Notch & \ReqID{SCI-RTC-REQ-061} & Every notch shall resolve center, rate/frequency convention, width or Q, depth, family/order, poles/zeros where applicable, phase/group delay, state, transient/guard, applicability, learned uncertainty, drift tolerance, and combined response for overlaps. \\
+Bands & \ReqID{SCI-RTC-REQ-062} & Every admitted low-, high-, or band-pass shall resolve pass/transition/stop bands, ripple, attenuation, phase/delay, family, order/taps, precision, edges/guards, retained astronomical modes, and unavailable modes; no class label shall substitute for exact response. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.09\linewidth}p{0.20\linewidth}X@{}}
+\toprule
+Area & ID & Normative statement \\
+\midrule
+FIR & \ReqID{SCI-RTC-REQ-063} & FIR order or tap count shall follow owner-resolved transfer, alias, phase, support, guard, precision, and realizability constraints such as equation~\eqref{eq:fir-order-selection}; an arbitrary integer or approximate family formula shall not be scientific authority. \\
+Donor & \ReqID{SCI-RTC-REQ-064} & Donor replacement shall be identified as a continuity surrogate at the target identity and shall separately establish numerical convention transfer, donor admissibility, and scientific eligibility; compatible \texttt{flxscale} shall not be evidence of common sky signal. \\
+Donor & \ReqID{SCI-RTC-REQ-065} & Beammap-role donor scaling shall use an explicitly identified prior APT or other pre-existing calibration authority and shall not use a new \texttt{flxscale} derived from the same Beammap conditioning lineage. \\
+Sampling & \ReqID{SCI-RTC-REQ-066} & Decimation factor and prefilter shall be justified from cadence, exact response, folded-band alias bounds, smallest projected crossing time, maximum valid scan speed, source class, timing/coordinate accuracy, and downstream compatibility. \\
+Timing & \ReqID{SCI-RTC-REQ-067} & Each plan shall resolve temporal registration through zero phase, shifted output time, coordinate correction, response-aware downstream use, or an approved bound on residual centroid/PSF effect; selected grid time alone shall not imply response centering. \\
+CAL & \ReqID{SCI-RTC-REQ-068} & Calibration transfer between Beammap and target processing shall bind the complete RTC plans and require matching response or explicit calculation, renormalization, or observational evidence; identical operation labels or preserved units are insufficient. \\
+Validation & \ReqID{SCI-RTC-REQ-069} & Validation of a notch, broad-band/FIR, donor, or decimation plan shall vary its scientific design parameters over the admitted scan/beam/source domain and measure astronomical transfer, phase/centroid, PSF/morphology, ringing, support/edge loss, covariance, and alias or interference residual as applicable. \\
+Claims & \ReqID{SCI-RTC-REQ-070} & No plan shall be called science-qualified solely because coefficient algebra, optimization, serialization, or deterministic operator fixtures pass. \\
 \bottomrule
 \end{tabularx}
 \normalsize

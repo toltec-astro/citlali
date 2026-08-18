@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.1 shared normative core -- definitions.
+% SCI-RTC v0.1/r0.2 shared normative core -- definitions.
 \section{Normative definitions}
 \label{sec:core-definitions}
 
@@ -51,10 +51,11 @@ behavior.  It is selected authority, not an implementation default.
 \item[SCI-RTC-DEF-007 -- One-way state record.]
 The ordered record
 $(\Theta^{\rm req},\Theta^{\rm eff},\Theta^{\rm obs},
-\Theta^{\rm learned},\Theta^{\rm real})$.  Requested state preserves the
+\Theta^{\rm learned},\Theta^{\rm resolved},\Theta^{\rm real})$.  Requested state preserves the
 accepted request; effective state is the admitted typed plan;
-observation-resolved state binds exact observation facts;
-learned/resolved state is present only in learned mode; and realized state
+observation-resolved state binds exact observation facts; learned state
+records evidence when learning occurs; resolved state is the immutable
+admitted plan for every fixed or learned operation; and realized state
 records what ran.  A later state never rewrites an earlier state.
 
 \item[SCI-RTC-DEF-008 -- Realized conditioning operator.]
@@ -137,5 +138,45 @@ One of algebraic contract correctness, implementation conformity,
 representation fidelity, observational performance, science-impact
 qualification, or production readiness.  Evidence at one layer does not
 establish another.
+
+\item[SCI-RTC-DEF-021 -- Declared learning population.]
+The exact training interval, designated same-observation interval, scan
+collection, observation aggregate, or other named population used to infer an
+RTC quantity, including identity, support, selection, masks, exclusions,
+signal role, compatibility domain, and completeness.  A population is not
+defined by whatever samples happen to be available during execution.
+
+\item[SCI-RTC-DEF-022 -- Learned evidence.]
+The output of named diagnostics applied to a declared learning population,
+including candidate parameters, estimator, unit and convention, support,
+quality, uncertainty, validity, and failure state.  Learned evidence proposes
+or constrains a plan; it does not authorize apply.
+
+\item[SCI-RTC-DEF-023 -- Resolved RTC plan.]
+One immutable observation- and role-bound specification admitted only after
+all required scientific predicates pass.  It contains operation sequence,
+family, exact coefficients or identity, rates and conventions, order/taps,
+bands and tolerances, notch state, applicability, masks, donor policy, edges,
+guards, resets, decimation and timing, expected response/support, uncertainty,
+validity, and downstream compatibility.
+
+\item[SCI-RTC-DEF-024 -- Apply state.]
+Execution of exactly one resolved plan on compatible admitted input.  Apply
+records actual intervals, exceptions, resets, outputs, and completion but does
+not relearn, retune, change policy, or rewrite the resolved plan.
+
+\item[SCI-RTC-DEF-025 -- Online-adaptive estimator.]
+A separate time-varying, data-dependent estimator whose coefficients or other
+operator parameters evolve during apply under a declared update rule.  Its
+learning support, stability, response, uncertainty, guard, reset, and restart
+semantics are not those of learned-then-fixed filtering.  It is unavailable in
+v0.1 absent successor authority.
+
+\item[SCI-RTC-DEF-026 -- Scientific filter design specification.]
+The physical purpose, source/contaminant model, admitted scan/beam/source
+domain, pass/transition/stop or notch constraints, phase and registration,
+alias bound, support/guard, numeric precision, realizability, validation, and
+failure criteria that justify a filter family and its numerical parameters.
+An operation label or coefficient array alone is not this specification.
 
 \end{description}
