@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.3 shared normative core -- notation and status.
+% SCI-RTC v0.1/r0.4 shared normative core -- notation and status.
 % This file is imported once by each published view.
 \hypertarget{rtc-core-begin}{}
 \section{Shared normative authority and notation}
@@ -6,16 +6,17 @@
 
 \begin{center}
 \fcolorbox{RTCblue}{RTCpale}{\parbox{0.92\linewidth}{
-\textbf{Normative core stamp:} \texttt{SCI-RTC-v0.1/r0.3}.  The six files in
+\textbf{Normative core stamp:} \texttt{SCI-RTC-v0.1/r0.4}.  The six files in
 \texttt{src/common/} form one authority.  Text outside this shared core is
 explanatory or conformance guidance and cannot alter a definition, equation,
 assumption, requirement, prediction, unavailable state, or owner decision.
 }}
 \end{center}
 
-SCI-RTC begins with an admitted aligned primary detector stream and ends with
-an atomic, role-specific conditioning bundle.  ALIGN, AST, SCI-BEAM, and
-SCI-CAL retain authority for the upstream meanings they produce.  PTC, VAL,
+SCI-RTC begins with an admitted aligned raw primary detector stream and ends
+with an atomic, role-specific raw conditioning bundle.  ALIGN, AST, and
+SCI-BEAM retain authority for the upstream meanings they produce; SCI-CAL is
+the downstream authority that may calibrate an exact RTC bundle.  PTC, VAL,
 MAP, BEAM, NOI, MAP-003, FLT, SRC/MODE, and FRUIT retain authority for their
 downstream science.  This contract owns the realized conditioning order and
 its scientific consequences; it does not infer current software behavior.
@@ -37,26 +38,39 @@ $d,q\in\mathcal D_o$ & Exact admitted detector occurrences; $d$ is a target and 
 $r$ & Native acquisition row; it is not an aligned or conditioned slot. \\
 $j\in\{0,\ldots,N-1\}$ & Ordered aligned input slot on the admitted ALIGN grid. \\
 $n\in\{0,\ldots,N_y-1\}$ & Ordered phase-zero RTC output slot. \\
-$\mathcal R$ & Product role, including Pointing, OOF, Science, Beammap, diagnostic-only, or another separately approved role. \\
-$\delta_{\mathcal R}$ & Role-domain selector: $0$ for an admitted raw role and $1$ for a separately CAL-authorized calibrated role. \\
-$x^A_{dj}$ & Admitted aligned primary \texttt{xs} value with declared physical observable, sign, baseline/reference, unit, support, and validity. \\
-$z_{dj}$ & Calibrated value when the role admits an imported CAL operator. \\
-$u_{dj}$ & Role-domain value immediately before the ordered RTC filter chain. \\
-$y_{dn}$ & Conditioned role-domain output at the selected phase-zero slot. \\
+$\mathcal R$ & RTC product role, including Pointing, OOF, Science, Beammap, diagnostic-only, or another separately approved role; role changes policy and consumers, not the raw signal identity. \\
+$x^A_{dj}$ & Admitted aligned primary \texttt{xs} value: raw, uncalibrated detector $\Delta f/f$ with declared sign, baseline/reference, support, and validity. \\
+$\chi_{dj}$ & Detector-static \texttt{flxscale} comparison coordinate used only to define compatible donor transfer; it is not a calibrated RTC product. \\
+$u_{dj}$ & Raw $\Delta f/f$ value immediately before the ordered RTC filter chain. \\
+$v^{\rm preD}_{dj}$ & Final raw $\Delta f/f$ stream after every admitted RTC replacement/filter stage and immediately before phase-zero point selection. \\
+$y^{\rm RTC}_{dn}$ & Conditioned raw $\Delta f/f$ RTC output at the selected phase-zero slot. \\
+$c^{\rm CAL}_{dn}$ & Distinct downstream SCI-CAL output, when authorized: top-of-atmosphere, point-source-equivalent mJy per fixed nominal beam. \\
 $\phi_d$ & \texttt{flxscale} for one exact detector occurrence under the declared multiplicative convention and calibration domain. \\
 $A_\alpha$ & Imported, realized ALIGN mapping with state $\alpha$; its scientific meaning is not owned by RTC. \\
-$C_\kappa$ & Imported CAL operator with state $\kappa$; it is the identity for a raw role. \\
+$C^{\rm CAL}_\kappa$ & Downstream SCI-CAL operator with state $\kappa$, including selected absolute \texttt{flxscale} and target-atmosphere correction; RTC does not apply it. \\
 $B_\omega$ & Realized despike/replacement operator conditioned on selection state $\omega$. \\
 $F_{k,\theta_k}$ & Realized ordered FIR, IIR, notch, or admitted mask-controlled stage $k$. \\
 $D_{M,0}$ & Integer phase-zero point selector of factor $M\geq1$. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.20\linewidth}X@{}}
+\toprule
+Symbol & Normative meaning (continued) \\
+\midrule
 $\Omega$ & Complete realized conditioning state, including all upstream bindings and every selected stage, exception, state, edge rule, and output interval. \\
 $\mathcal L$ & Declared learning population with exact identity, selection, support, masks, exclusions, and compatibility domain. \\
 $\Lambda$ & Learned evidence and uncertainty produced by declared diagnostics; it is not authorization to apply. \\
 $\Pi$ & One immutable resolved RTC plan admitted from learned evidence and fixed scientific policy. \\
 $\mathcal A_\Pi$ & Apply operator that consumes plan $\Pi$ without changing it. \\
-$k\in\{1,\ldots,K\}$ & Cycle index and finite owner-bounded terminal cycle for iterative notch-plan refinement. \\
-$\Pi_k$ & Complete cumulative plan accepted at cycle $k$; $\Pi_0$ is the admitted initial fixed or identity plan. \\
-$x^{\rm eval,(k)}$ & Exploratory evaluation product for cycle $k$, normally obtained by applying $\Pi_k$ to original admitted input $x^{(0)}$. \\
+$a\in\{1,\ldots,N_A\}$ & Refinement-attempt index and finite owner-bounded maximum attempt count. \\
+$k\in\{0,\ldots,K\}$ & Accepted-plan index; $K\le N_A$ is the final accepted-plan index. \\
+$k_a$ & Accepted-plan index available at the start of attempt $a$. \\
+$\widetilde\Pi_a$ & Complete cumulative successor plan proposed by attempt $a$; it is not an accepted plan unless its disposition is accepted. \\
+$\delta_a$ & Typed attempt disposition in $\{\mathrm{accepted},\mathrm{rejected},\mathrm{stop}\}$. \\
+$\Pi_k$ & Complete cumulative accepted plan $k$; $\Pi_0$ is the admitted initial fixed or identity plan. \\
+$x^{\rm eval,(k)}$ & Exploratory evaluation product for accepted plan $k$, normally obtained by applying $\Pi_k$ to original admitted input $x^{(0)}$. \\
 $K_{dn,qj}$ & Local detector-time response of one output cell to one acquired input cell. \\
 $\mathcal S_{dn}$ & Exact transitive input support of output $(d,n)$, including alignment, donors, filters, state, and selection. \\
 $\mathcal I_{dn}$ & Cause-preserving transitive influence set for output $(d,n)$. \\

@@ -13,7 +13,7 @@
 \definecolor{RTCgold}{HTML}{B7791F}
 \hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
  hypertexnames=false,
- pdftitle={TolTEC Raw-Timestream Conditioning: Learn--Apply Filtering, Response, and Scientific Consequences v0.1/r0.3},
+ pdftitle={TolTEC Raw-Timestream Conditioning: Learn--Resolve--Apply Filtering, Response, and Scientific Consequences v0.1/r0.4},
  pdfauthor={SCI-RTC implementation-blind scientific author}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.52em}
@@ -40,13 +40,13 @@
 \vspace*{0.55in}
 {\color{RTCblue}\rule{\linewidth}{2pt}}\\[0.35in]
 {\huge\bfseries TolTEC Raw-Timestream Conditioning\\[0.18in]}
-{\LARGE Learn--Apply Filtering, Response,\\[0.08in]
+{\LARGE Learn--Resolve--Apply Filtering, Response,\\[0.08in]
 and Scientific Consequences\\[0.28in]}
 {\huge\color{RTCblue}Science-Team Rationale}\par
 \vspace{0.55in}
 \begin{tabular}{@{}ll@{}}
 Scientific contract version & v0.1 \\
-Science-team rationale revision & r0.3 \\
+Science-team rationale revision & r0.4 \\
 Date & 2026-08-18 \\
 Authority & Shared normative core in \texttt{src/common/} \\
 Status & Draft for scientific-owner review \\
@@ -74,7 +74,7 @@ therefore change a point-source peak, effective PSF, centroid, extended-source
 response, calibration transfer, or scientific eligibility without changing a
 unit label.
 
-SCI-RTC v0.1/r0.3 organizes those choices as \textbf{learn--resolve--apply}.
+SCI-RTC v0.1/r0.4 organizes those choices as \textbf{learn--resolve--apply}.
 Learn uses a declared population and diagnostics to estimate candidate
 parameters and uncertainty. Resolve combines that evidence with fixed policy
 and admits one complete immutable RTC plan. Apply executes exactly that plan
@@ -93,7 +93,9 @@ observational evidence.
 
 The output is an atomic bundle of signal, exact plan identity, response,
 timing convention, support, influence, validity, uncertainty status, and
-provenance. When a required predicate is unresolved, the affected operation
+provenance. RTC signal remains raw detector $\Delta f/f$ in every role;
+absolute \texttt{flxscale} and target atmosphere belong to a distinct
+downstream SCI-CAL product. When a required predicate is unresolved, the affected operation
 or claim is explicitly unavailable. The formal appendices are the sole
 normative authority; Sections 1--12 explain their scientific meaning.
 
@@ -139,6 +141,41 @@ the scientific architecture and later resolve the enumerated numerical and
 policy choices---not to infer those choices from current software or historical
 practice.}
 
+\textbf{Role-specific RTC plans.} The roles share one raw signal boundary and
+one operator order, but they do not inherit one another's learning population,
+plan, interval, cadence, or consumer. ``Selected'' below means owner-resolved
+for that role; unresolved entries remain unavailable rather than inheriting a
+software default.
+
+\begingroup
+\footnotesize
+\renewcommand{\arraystretch}{1.08}
+\begin{tabularx}{\linewidth}{@{}p{0.12\linewidth}p{0.23\linewidth}Xp{0.22\linewidth}@{}}
+\toprule
+Role & Learning population & Ordered RTC operations & Parameters frozen \\
+\midrule
+Beammap & Exact designated Beammap scans & ALIGN parent $\to$ selected despike/donor/mask $\to$ ordered filters $\to$ phase-zero selection & Complete Beammap RTC plan \\
+Pointing & Exact designated Pointing scans & Same operator classes, with a separately selected Pointing plan & Complete Pointing RTC plan \\
+OOF & Exact designated OOF scans & Same operator classes, with a separately selected OOF plan & Complete OOF RTC plan \\
+Science & Exact selected science observation or scan set & Same operator classes, with a separately selected Science plan & Complete Science RTC plan \\
+Diagnostic & Exact named parent and diagnostic sample set & Explicit selected subset; no science-role inheritance & Complete diagnostic-only plan \\
+\bottomrule
+\end{tabularx}
+
+\vspace{0.35em}
+\begin{tabularx}{\linewidth}{@{}p{0.12\linewidth}p{0.26\linewidth}p{0.22\linewidth}X@{}}
+\toprule
+Role & Apply interval & Output cadence & Response-sensitive consumer \\
+\midrule
+Beammap & Named half-open Beammap interval & Realized raw RTC grid & SCI-BEAM; later SCI-CAL handoff \\
+Pointing & Named half-open Pointing interval & Realized raw RTC grid & Pointing/SRC and AST consumers \\
+OOF & Named half-open OOF interval & Realized raw RTC grid & OOF/SRC response inference \\
+Science & Named half-open science interval & Realized raw RTC grid & PTC, MAP, FLT, and optional later SCI-CAL \\
+Diagnostic & Exact declared interval & Declared raw diagnostic grid & Named diagnostic consumer only \\
+\bottomrule
+\end{tabularx}
+\endgroup
+
 \clearpage
 \section{The learn--resolve--apply paradigm}
 \label{sec:rat-lifecycle}
@@ -173,9 +210,10 @@ rejects incompatible inputs. Realized state records what ran without rewriting
 the request or resolved plan.
 
 V0.1 also permits \textbf{bounded iterative notch-plan refinement}.  This is
-an outer finite sequence of complete learn--resolve--apply cycles. Parameters
-may change only after one apply has finished and a successor learn and resolve
-have admitted a new complete plan. Each apply remains immutable. This is the
+an outer finite sequence of attempts over complete accepted plans. Parameters
+may change only after one apply has finished and a successor attempt has
+admitted a new complete plan. A rejected or stop attempt does not advance the
+accepted-plan index or manufacture an evaluation product. Each apply remains immutable. This is the
 v0.1 scientific meaning when ``adaptive notch'' is used; it is not continuous
 coefficient tracking and is not the online-adaptive estimator of
 SCI-RTC-DEF-025.
@@ -183,9 +221,9 @@ SCI-RTC-DEF-025.
 \begin{center}
 \begin{tikzpicture}[node distance=0.22in]
 \node[rtcbox,text width=1.05in] (input) {original\\input $x^{(0)}$};
-\node[rtcbox,text width=1.12in,right=of input] (c1) {\textbf{cycle 1}\\learn $\to$ resolve\\$\to$ immutable apply};
+\node[rtcbox,text width=1.12in,right=of input] (c1) {\textbf{attempt 1}\\accept $\Pi_1$\\immutable apply};
 \node[rtcbox,text width=1.02in,right=of c1] (eval) {evaluate\\response +\\diagnostics};
-\node[rtcbox,text width=1.12in,right=of eval] (c2) {\textbf{optional cycle 2}\\new learn/resolve\\immutable apply};
+\node[rtcbox,text width=1.12in,right=of eval] (c2) {\textbf{later attempt}\\accept or reject\\proposal};
 \node[rtcbox,text width=1.12in,right=of c2] (final) {final plan $\Pi_K$\\replayed on\\$x^{(0)}$};
 \draw[rtcarr] (input)--(c1);
 \draw[rtcarr] (c1)--(eval);
@@ -196,9 +234,13 @@ SCI-RTC-DEF-025.
 \end{tikzpicture}
 \end{center}
 
-Cycle $k$ learns from an exact population and an evaluation product, resolves
-one complete cumulative plan $\Pi_k$, and normally applies that plan to the
-original input $x^{(0)}$. A successor plan names all retained, modified,
+Attempt $a$ learns from an exact population and the evaluation product of the
+current accepted plan $\Pi_{k_a}$. Resolve returns a complete cumulative
+proposal $\widetilde\Pi_a$ and a typed accepted, rejected, or stop disposition.
+Only acceptance advances the plan index and creates a new evaluation product.
+The initial evaluation is explicitly
+$x^{\rm eval,(0)}=\mathcal A_{\Pi_0}(x^{(0)})$, including when $\Pi_0$ is a
+nonidentity fixed plan. A successor proposal names all retained, modified,
 removed, or rejected notches and every broad-band, state, mask, edge, timing,
 and decimation choice. It is never merely ``add this notch to whatever ran
 before.'' The final production product normally replays $\Pi_K$ against the
@@ -212,9 +254,10 @@ covariance, and uncertainty is retained. Learned-then-fixed and online-adaptive
 filtering remain different: in the latter, parameters evolve inside one apply
 pass. V0.1 does not authorize that branch.
 
-\RationaleBox{Lifecycle test.}{For each cycle identify the learning and parent
-products, reproduce every predicate, name the complete cumulative plan, and
-show that apply did not modify it. Then identify the finite stop cause and the
+\RationaleBox{Lifecycle test.}{For each attempt identify its attempt index,
+current accepted-plan index, learning and parent products, complete proposal,
+predicates, and disposition. For each accepted plan show that apply did not
+modify it. Then identify the finite stop cause and the
 final selected plan. If any link is absent, the refinement claim is unavailable.}
 
 \clearpage
@@ -279,7 +322,7 @@ missing astronomical measurement.
 Donor and target can differ in focal-plane position, instantaneous sky,
 beam, atmosphere coupling, baseline, electronic response, loading, noise, and
 covariance. Numerical convention transfer, donor admissibility, and
-scientific eligibility are distinct questions. Under $z_i=\phi_i x_i$,
+scientific eligibility are distinct questions. Under $\chi_i=\phi_i x_i$,
 equation~\eqref{eq:raw-donor} uses $\phi_q/\phi_d$ only for exact compatible
 occurrences with nonzero target factor. The ratio solves a raw-domain
 convention problem; it does not prove that both detectors observed the same
@@ -301,10 +344,11 @@ that same Beammap.
 
 Resolve selects topology, time relation, masks, quality, scoring, ties,
 weights, baseline treatment, reuse and fallback. Apply cannot change them.
-Reused donors create correlations and no exposure. V0.1 retains the selected
-conservative policy: every output transitively influenced by RTC replacement
-or ALIGN synthesis is scientifically ineligible, while value, cause,
-response, and support remain visible. Validation injects spikes, invalid
+Reused donors create correlations and no exposure. A directly selected
+ALIGN-synthesized or RTC-replaced occurrence is universally excluded as an
+independent detector measurement. Noncenter influence through a filter or
+other support remains visible with its cause and numerical dependency; the
+declared downstream consumer, not RTC, determines its eligibility. Validation injects spikes, invalid
 samples, factor differences, sky mismatch, donor reuse, source crossings and
 mask-edge cases, measuring bias, covariance, affected support and data loss.
 
@@ -335,7 +379,7 @@ learn does not prove absence in apply; fitting noise can remove real sky
 modes. An evolving notch is an online-adaptive estimator with separate update,
 response, stability and restart authority; it remains unavailable in v0.1.
 
-\textbf{Successor-cycle assessment.} A later learn pass first asks whether the
+\textbf{Successor-attempt assessment.} A later learn pass first asks whether the
 accepted plan had its intended consequences: line attenuation and residual
 significance, center error or drift, adequate width/depth, ringing, transient,
 stability, edge loss, phase and group delay, point-source amplitude and
@@ -362,15 +406,16 @@ and cumulative astronomical amplitude, centroid, PSF, phase, registration,
 ringing, stability, support, cadence, response, uncertainty, and provenance
 budgets all pass. Missing evidence or tolerance is not a pass. Rejection leaves
 the last accepted plan available and preserves the proposal and cause.
-Iteration stops under an owner-approved finite policy governing cycle count,
+Iteration stops under an owner-approved finite policy governing attempt count,
 notch count, removed bandwidth, scientific loss, delay, ringing, edge loss,
 minimum improvement, plan stability, false-line control, and fallback.
-Maximum-cycle termination is not convergence. Alternating line sets or
+Maximum-attempt termination is not convergence. Alternating line sets or
 unstable parameters are explicitly nonconvergent.
 
-\textbf{Example.} Cycle 1 learns a strong coherent line and resolves a notch.
-After immutable apply, Cycle 2 learns from its diagnostic product and reveals
-a weaker line. It resolves a complete two-notch plan, which is replayed once
+\textbf{Example.} Attempt 1 learns a strong coherent line and accepts a
+one-notch plan $\Pi_1$. After immutable apply, Attempt 2 learns from its
+diagnostic product and reveals
+a weaker line. It accepts a complete two-notch plan, which is replayed once
 against the original input. In the counterexample, a peak at the first notch
 edge agrees with predicted ringing or response artifact; the candidate is
 rejected and the one-notch plan remains final. More notches are not
@@ -457,7 +502,7 @@ qualification.
 \section{Decimation and alias control}
 \label{sec:rat-decimation}
 V0.1 phase-zero downsampling, equation~\eqref{eq:phase-zero}, is point
-selection $u[Mn]$, not averaging and not anti-alias filtering. It changes
+selection $v^{\rm preD}[Mn]$, not averaging and not anti-alias filtering. It changes
 software cadence, Nyquist frequency, temporal identity, support, covariance,
 aliasing, and coordinate registration. The preceding filter determines the
 rejected-band power that remains to fold.
@@ -476,7 +521,7 @@ cadence, delay/coordinate accuracy and consumer compatibility.
 \begin{tikzpicture}[node distance=0.24in]
 \node[rtcbox,text width=1.28in] (i) {input spectrum\\sky + noise + lines};
 \node[rtcbox,text width=1.28in,right=of i] (p) {exact prefilter\\bounded bands};
-\node[rtcbox,text width=1.28in,right=of p] (s) {phase-zero\\$u[Mn]$};
+\node[rtcbox,text width=1.28in,right=of p] (s) {phase-zero\\$v^{\rm preD}[Mn]$};
 \node[rtcbox,text width=1.28in,right=of s] (o) {output\\folded images};
 \draw[rtcarr](i)--(p);\draw[rtcarr](p)--(s);\draw[rtcarr](s)--(o);
 \draw[rtcarr,dashed,RTCgold] (p.south) to[bend right=28]
@@ -522,12 +567,14 @@ atmosphere correction, detector mixing, single-detector temporal filters, and
 data-dependent learned or adaptive operators. Their order is not chosen by
 convenience.
 
-A static factor can commute with a fixed single-detector linear filter on a
-common support. It does not generally commute with detector mixing. A
-sample-dependent atmosphere operator does not generally commute even with a
-single-detector temporal filter. Equation~\eqref{eq:order-equivalence} states
-the burden for an alternative. Unresolved order remains a cross-package owner
-decision.
+The scientific owner selected one v0.1 cross-package order: RTC remains raw
+$\Delta f/f$ through compatible donor replacement, temporal filtering, and
+phase-zero sampling. A valid \texttt{flxscale} ratio may transfer donor
+convention inside raw replacement, but that ratio is not absolute calibration.
+Only after the complete raw RTC bundle exists may SCI-CAL apply selected
+absolute \texttt{flxscale} and sample-dependent target-atmosphere correction.
+Equation~\eqref{eq:order-equivalence} records this handoff; no calibrated RTC
+branch or alternative interleaving is authorized.
 
 Filtering can preserve units while changing peak, PSF, extended response,
 phase, centroid and covariance. Calibration does not restore removed modes. A
@@ -561,12 +608,14 @@ the same operator. Data-dependent selection or learned parameters add
 selection variation and possibly cross terms. Conditioning does not set them
 to zero. Unknown covariance is unavailable, not diagonal, white or zero.
 
-Eligibility differs from computability. V0.1 marks every output transitively
-influenced by ALIGN synthesis or RTC replacement ineligible while preserving
-value, response, cause and support. Downstream roles may add exclusions but
-cannot erase causes or strengthen unavailable response. Donor studies must
-measure both bias and resulting data loss; changing this conservative policy
-requires owner authority.
+Eligibility differs from computability. V0.1 universally excludes a directly
+selected ALIGN-synthesized or RTC-replaced occurrence as an independent
+detector measurement. For synthesis or replacement elsewhere in full support,
+RTC preserves value, response, cause, linkage, and numerical influence but
+does not impose universal ineligibility. Each downstream consumer declares
+how those noncenter influences affect its estimator. Consumers cannot erase
+causes or strengthen unavailable response. Donor studies must measure bias,
+influence extent, and the data loss produced by each consumer policy.
 
 Response, uncertainty and eligibility accompany signal in the atomic bundle
 of equation~\eqref{eq:bundle}. Finite TOD without exact plan, support,

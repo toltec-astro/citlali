@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.3 shared normative core -- definitions.
+% SCI-RTC v0.1/r0.4 shared normative core -- definitions.
 \section{Normative definitions}
 \label{sec:core-definitions}
 
@@ -7,18 +7,21 @@
 
 \item[SCI-RTC-DEF-001 -- Admitted aligned stream.]
 An immutable observation-scoped primary \texttt{xs} array whose physical
-observable, sign, zero/reference, baseline, unit, ordered detector binding,
+observable is raw, uncalibrated detector $\Delta f/f$, with sign,
+zero/reference, baseline, ordered detector binding,
 assigned sample grid, cadence, phase, support, origin/synthesis state,
 validity, scan partition, and mapping lineage are supplied by the responsible
 upstream authority.  Admission does not upgrade unavailable physical event
 timing.
 
-\item[SCI-RTC-DEF-002 -- Product-role signal domain.]
-The tuple $(\mathcal R,Q_{\mathcal R},U_{\mathcal R},s_{\mathcal R},
-b_{\mathcal R},\mathcal V_{\mathcal R})$ naming role, physical quantity,
-unit, sign, reference/baseline, and valid domain.  Frozen Beammap uses raw
-$\Delta f/f$.  A separately CAL-authorized role may use calibrated
-\si{mJy\per beam}.  The domains never substitute silently.
+\item[SCI-RTC-DEF-002 -- RTC product-role contract.]
+The tuple $(\mathcal R,s_{\mathcal R},b_{\mathcal R},
+\mathcal V_{\mathcal R},\mathcal C_{\mathcal R})$ naming role, sign,
+reference/baseline, valid domain, and required consumers.  Every RTC role
+retains raw $\Delta f/f$ signal identity.  A calibrated downstream detector
+signal is a distinct SCI-CAL product $c^{\rm CAL}$ in the top-of-atmosphere,
+point-source-equivalent mJy-per-fixed-nominal-beam convention; it is not
+another meaning of \texttt{xs}.
 
 \item[SCI-RTC-DEF-003 -- Exact detector occurrence.]
 An observation-local layered binding containing observation, Tune,
@@ -26,12 +29,13 @@ network/interface, network-local tone or admitted row slot, selected APT
 identity/digest, and row association.  A transient column number is only a
 locator.
 
-\item[SCI-RTC-DEF-004 -- Imported CAL operator.]
-An immutable SCI-CAL-selected transformation carrying its detector binding,
-source and target atmosphere lineage, target unit, factor convention,
-validity, uncertainty, availability, and provenance.  RTC may apply it in an
-authorized role and owns that order; RTC does not derive, repair, or promote
-the factor.
+\item[SCI-RTC-DEF-004 -- Downstream CAL handoff.]
+An immutable RTC-to-SCI-CAL boundary carrying the raw conditioned parent,
+detector binding, complete RTC plan/response/support, selected \texttt{flxscale}
+authority, target-atmosphere lineage, validity, uncertainty availability, and
+provenance required by SCI-CAL.  Absolute \texttt{flxscale} and target
+atmosphere are applied only after RTC; RTC does not derive, apply, repair, or
+promote the calibrated product.
 
 \item[SCI-RTC-DEF-005 -- Compatible \texttt{flxscale} pair.]
 Two finite factors $\phi_q$ and $\phi_d$ that are valid for the exact donor
@@ -59,7 +63,7 @@ admitted plan for every fixed or learned operation; and realized state
 records what ran.  A later state never rewrites an earlier state.
 
 \item[SCI-RTC-DEF-008 -- Realized conditioning operator.]
-The chronological composition of every admitted alignment, role-domain,
+The chronological composition of every admitted alignment, raw-domain
 replacement, mask, FIR/IIR/notch, boundary, state, non-finite, and phase-zero
 sampling action, including all affine state terms and exception intervals.
 Annotations that affect values, support, influence, or availability are part
@@ -88,11 +92,13 @@ masked, edge, state, and non-finite source cell through all nonzero realized
 alignment, donor, filter, state, and sampling dependencies to an output.
 Influence is broader than the selected point and may cross detector columns.
 
-\item[SCI-RTC-DEF-013 -- Scientifically ineligible RTC output.]
-An output having any transitive influence from an ALIGN-synthesized or
-RTC-replaced cell.  It remains ineligible even when finite and even when the
-influenced cell is not the phase-zero selected center.  Causes and numerical
-influence remain reportable.
+\item[SCI-RTC-DEF-013 -- Direct exclusion and consumer eligibility.]
+An output whose directly selected source occurrence is ALIGN-synthesized or
+RTC-replaced is universally excluded as an independent detector measurement,
+even when finite.  Synthesis or replacement elsewhere in its transitive
+support remains a mandatory cause-preserving influence input, not a universal
+RTC eligibility decision.  Each downstream consumer owns the declared policy
+that maps that influence, response, and support to its own eligibility.
 
 \item[SCI-RTC-DEF-014 -- Coordinate-dependent control.]
 A source mask or response operation that consumes an AST coordinate identity,
@@ -120,12 +126,12 @@ not total uncertainty and does not imply a diagonal, white, stationary, or
 independent noise model.
 
 \item[SCI-RTC-DEF-018 -- Atomic RTC bundle.]
-One role-specific completion unit containing conditioned TOD; ordered
+One role-specific completion unit containing conditioned raw $\Delta f/f$ TOD; ordered
 detector/sample/scan/support and parent identity; complete response or typed
 unavailability; cause-preserving flags and influence; separated validity and
 eligibility inputs; conditional uncertainty/covariance status; one-way state
-and provenance; required diagnostics; and completion/failure state.  TOD
-alone is not this bundle.
+and provenance; required diagnostics; downstream CAL handoff state; and
+completion/failure state.  TOD alone is not this bundle.
 
 \item[SCI-RTC-DEF-019 -- Scientifically named diagnostic.]
 A quantity with an explicit estimator, unit, support, selection/mask,
@@ -180,14 +186,17 @@ failure criteria that justify a filter family and its numerical parameters.
 An operation label or coefficient array alone is not this specification.
 
 \item[SCI-RTC-DEF-027 -- Bounded iterative notch-plan refinement.]
-A finite owner-bounded outer sequence of learn--resolve--apply cycles in which
-each cycle learns from a declared population and identified parent product,
-resolves one complete immutable cumulative plan, and applies that plan without
-within-cycle parameter change.  Parameters may change only between completed
-cycles.  This is not the online-adaptive estimator of SCI-RTC-DEF-025.
+A finite owner-bounded sequence of refinement attempts.  Each attempt learns
+from a declared population and the current accepted-plan evaluation product,
+resolves a complete cumulative proposal and typed disposition, and advances
+the accepted-plan index only when that proposal is accepted.  Apply of every
+accepted plan is immutable; rejected or stop attempts do not manufacture a
+new accepted plan or evaluation product.  This is not the online-adaptive
+estimator of SCI-RTC-DEF-025.
 
-\item[SCI-RTC-DEF-028 -- Complete cumulative successor plan.]
-The full plan proposed or accepted for cycle $k$, containing every retained,
+\item[SCI-RTC-DEF-028 -- Complete cumulative successor proposal.]
+The full plan proposed by attempt $a$ and accepted as $\Pi_{k+1}$ only after
+its admission predicates pass, containing every retained,
 modified, removed, and rejected notch disposition; every broad-band stage;
 exact order, coefficients, precision, state, masks, edges, guards, intervals,
 decimation, timing, cumulative response/support, uncertainty, validity, and
@@ -198,7 +207,7 @@ complete successor plan.
 The last complete plan whose admission predicates passed, together with one
 typed finite stop cause.  No-successor, residual-satisfied, stable-plan,
 budget/stability/support/compatibility rejection, insufficient evidence,
-maximum-cycle, oscillating-plan, nonconvergent-parameter, and owner-cancelled
-states remain distinct.  Maximum-cycle termination is not convergence.
+maximum-attempt, oscillating-plan, nonconvergent-parameter, and owner-cancelled
+states remain distinct.  Maximum-attempt termination is not convergence.
 
 \end{description}

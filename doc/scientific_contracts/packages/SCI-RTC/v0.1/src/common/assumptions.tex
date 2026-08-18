@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.3 shared normative core -- assumptions and scope.
+% SCI-RTC v0.1/r0.4 shared normative core -- assumptions and scope.
 \section{Bounded assumptions and non-goals}
 \label{sec:core-assumptions}
 
@@ -21,8 +21,10 @@ The absence of such authority does not license inference or clamping.
 
 \item[SCI-RTC-ASM-004 -- Calibration boundary.]
 Calibration-factor production, atmosphere lineage, beam meaning, uncertainty,
-and promotion belong to SCI-BEAM/SCI-CAL.  RTC conditions on an admitted
-operator only for a role that authorizes it.
+and promotion belong to SCI-BEAM/SCI-CAL.  RTC remains in raw $\Delta f/f$
+through replacement, filtering, and sampling.  SCI-CAL may consume the exact
+RTC bundle and apply absolute \texttt{flxscale} plus target atmosphere only
+after RTC.
 
 \item[SCI-RTC-ASM-005 -- Selected-policy boundary.]
 Despike, donor, mask, FIR, IIR, notch, state, edge, non-finite, recovery,
@@ -47,8 +49,9 @@ first learned sampling scope produces one common observation plan.  Per-array,
 per-scan, heterogeneous-cadence, noise-aware, and continuously adaptive
 sampling execution are successor scopes.
 Bounded iterative notch-plan refinement is admitted only as a finite outer
-sequence of complete immutable learned-then-fixed cycles; it does not admit
-parameter evolution within one apply pass.
+sequence of attempts over complete immutable accepted plans; rejected attempts
+do not advance the accepted-plan sequence, and no parameter evolves within an
+apply pass.
 
 \item[SCI-RTC-ASM-009 -- Analytical authority.]
 Exact analytical source-times-realized-filter transfer and phase-zero alias

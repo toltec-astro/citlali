@@ -1,7 +1,8 @@
-# SCI-RTC v0.1/r0.3 scientific-owner decision ledger
+# SCI-RTC v0.1/r0.4 scientific-owner decision ledger
 
-Status: implementation-blind author register; every entry below is unresolved
-unless superseded by later explicit scientific-owner approval.
+Status: implementation-blind owner register. Entries marked `RESOLVED` record
+explicit scientific-owner approval; all other entries retain their stated
+unresolved or deferred status.
 
 This ledger records choices that the approved author packet deliberately does
 not answer. It does not infer values from software, configuration, prior use,
@@ -15,6 +16,8 @@ unrelated raw RTC products.
   or claim can be applied.
 - `CONDITIONAL`: the default path is already defined; this decision is needed
   only if the optional alternative is requested.
+- `RESOLVED`: the scientific owner selected the exact stated policy; dependent
+  contract language may rely on it.
 - `DEFERRED`: explicitly outside v0.1 and unavailable in this revision.
 
 ## Unresolved v0.1 choices
@@ -30,7 +33,7 @@ unrelated raw RTC products.
 | `SCI-RTC-OWNER-007` | OPEN | Select the FIR/IIR/notch stage roster and chronological order, exact coefficient or design authority, coefficient convention, normalization, precision, sampling rate, direction, and stability acceptance. | Any filter stage lacking the selected policy; an explicitly selected identity/no-filter chain may remain available. | REQ-012, REQ-021--023, REQ-037--040 |
 | `SCI-RTC-OWNER-008` | OPEN | Select filter initial/final state, reset/carry boundaries, context interval, boundary extension, output guard/edge rule, short/empty-scan disposition, and any finite IIR tail criterion. | Ordinary-valid output on incomplete context and every stateful stage lacking a complete state policy. | REQ-021, REQ-023, REQ-027, REQ-041 |
 | `SCI-RTC-OWNER-009` | OPEN | Select non-finite rejection, unavailable-footprint, authorized prior replacement, reset/recovery, and failure behavior separately for samples, factors, coordinates, coefficients, and state. | Recovery from a required non-finite input; silent zero/coercion remains forbidden. | REQ-026--027, REQ-049 |
-| `SCI-RTC-OWNER-010` | OPEN | Select the exact flag/cause aggregation and compact transitive-influence representation over full support, including required cause precedence only where RTC itself needs it. | Any aggregated flag product beyond the unambiguous retained causes; scientific ineligibility from synthesis/replacement influence remains fixed. | REQ-019--020, REQ-029, REQ-046--047 |
+| `SCI-RTC-OWNER-010` | RESOLVED | Directly selected ALIGN-synthesized or RTC-replaced occurrences are universally excluded as independent detector measurements. RTC preserves cause-bearing transitive influence over full support; downstream consumers own declared eligibility policies for noncenter influence. | None from this decision; consumer-specific eligibility still requires the named consumer policy. | EQ-020a--020b, REQ-019--020, REQ-046--047, REQ-052 |
 | `SCI-RTC-OWNER-011` | OPEN | Select learned-mode candidate integer factors and the admitted realizable filter family for each candidate, including coefficient precision and coefficient-production authority. | Learned resolution and learned apply. | REQ-032--035 |
 | `SCI-RTC-OWNER-012` | OPEN | Define the smallest admitted beam used for learned safety: beam quantity/width convention, role and artifact identity, array/detector aggregation, uncertainty treatment, validity, and missing-beam policy. | Learned resolution and any learned safe-factor claim. | REQ-033--034 |
 | `SCI-RTC-OWNER-013` | OPEN | Define maximum valid in-scan speed: coordinate/frame, scan set, support, derivative/estimator, treatment of turnarounds and gaps, precision, validity threshold, uncertainty, and insufficient-support policy. Percentiles remain diagnostic only. | Learned resolution and any learned safe-factor claim. | REQ-033--034 |
@@ -44,7 +47,7 @@ unrelated raw RTC products.
 | `SCI-RTC-OWNER-021` | OPEN | Select the required diagnostic roster by product role and classify each diagnostic as inert, advisory, or a declared selected-policy input, with estimator, unit, support, validity, and availability. | A role's required diagnostic completion and any policy that consumes an unclassified diagnostic. | REQ-048--051 |
 | `SCI-RTC-OWNER-022` | OPEN | For each requested statistical product, select the admitted input mean/covariance or nuisance model, modeled correlations, supported subset, selection treatment, consumer exclusions, and whether only conditional weight is requested. | Covariance, total-uncertainty, significance, or weight claims requiring the missing model; conditioned TOD may remain available. | REQ-042--045 |
 | `SCI-RTC-OWNER-023` | OPEN | Select the exact required-output member roster and atomic completion policy for each product role, including which response, uncertainty, provenance, and diagnostics are required versus optional. | A complete role-specific bundle claim when the roster is not otherwise fixed by the core minimum. | REQ-048--051 |
-| `SCI-RTC-OWNER-024` | CONDITIONAL | If an alternative to calibration-before-replacement is requested, approve the complete affine equivalence evidence and its validity domain; otherwise retain the fixed default order. | Only the proposed alternative order; the default calibration-before-replacement path is unaffected. | REQ-013, EQ-004 |
+| `SCI-RTC-OWNER-024` | RESOLVED | RTC remains raw $\Delta f/f$ through compatible donor replacement, temporal filtering, and phase-zero sampling. Valid `flxscale_q/flxscale_d` is raw donor convention transfer only. SCI-CAL applies absolute `flxscale` and target-atmosphere correction after the complete RTC bundle. | No calibrated RTC branch or alternative interleaving is authorized in v0.1. | DEF-002/004, EQ-003--005, REQ-001--005, REQ-013--015 |
 
 ## Deferred successor choices
 

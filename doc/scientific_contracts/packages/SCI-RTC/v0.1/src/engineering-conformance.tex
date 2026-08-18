@@ -16,7 +16,7 @@
 \definecolor{RTCgray}{HTML}{52606D}
 \hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
   hypertexnames=false,
-  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.3},
+  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.4},
   pdfauthor={SCI-RTC implementation-blind scientific author}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.48em}
@@ -49,7 +49,7 @@
 \vspace{0.65in}
 \begin{tabular}{@{}ll@{}}
 Package version & v0.1 \\
-Revision & r0.3 \\
+Revision & r0.4 \\
 Date & 2026-08-18 \\
 Authority & Shared normative core in \texttt{src/common/} \\
 View-specific content & Informative evidence and review guidance only \\
@@ -139,10 +139,10 @@ for one-to-one coverage.
 \toprule
 Requirement range & Primary review surface & Useful evidence classes \\
 \midrule
-REQ-001--005 & Boundary and signal role & Typed input/output inspection, unit/domain failure injection, imported-authority lineage trace. \\
+REQ-001--005 & Raw boundary and CAL handoff & Typed raw input/output inspection, downstream CAL-parent failure injection, imported-authority lineage trace. \\
 REQ-006--012 & Identity, state, and selected policy & Serialization round trip, distinct-identity fixtures, request-to-realized trace, unsupported-policy rejection. \\
-REQ-013--018 & Ordering and donor transfer & Symbolic/static order trace, forced donor vectors, invalid-factor matrix, donor reuse/tie/fallback fixtures. \\
-REQ-019--020 & Transitive influence & Noncenter synthesis/replacement injection, full-support cause propagation, downstream eligibility handoff inspection. \\
+REQ-013--018 & Ordering and donor transfer & Raw-RTC-then-CAL order trace, forced donor vectors, invalid-factor matrix, donor reuse/tie/fallback fixtures. \\
+REQ-019--020 & Direct exclusion and influence & Direct/noncenter synthesis/replacement injection, full-support cause propagation, downstream policy handoff inspection. \\
 REQ-021--027 & Filters, masks, edges, and finite policy & Coefficient/state serialization, impulse/step/constant/ramp/notch vectors, mask-boundary and non-finite failure injection. \\
 REQ-028--031 & Fixed phase-zero sampling & Enumerated length/factor cases, selected index/time identity, rate trace, exact folded-band calculation. \\
 REQ-032--036 & Learned plan lifecycle & Candidate decision table, maximum-safe selection, common-plan identity, immutable apply and restart mismatch fixtures. \\
@@ -154,8 +154,8 @@ REQ-055--058 & Learn--resolve--apply lifecycle & Learning-population identity, p
 REQ-059--063 & Scientific filter design & Purpose/model register, scan--beam transfer studies, notch and band specifications, constrained tap/order selection. \\
 REQ-064--068 & Donor, decimation, timing, calibration & Donor-meaning separation, circular-factor rejection, folded-band calculation, centroid/coordinate tests, cross-plan response comparison. \\
 REQ-069--070 & Validation and claims & Preregistered design sweeps and strict claim-layer disposition. \\
-REQ-071--076 & Refinement cycle and replay & Finite-cycle trace, immutable apply, complete-plan reconstruction, original-input replay, explicit-cascade comparison, intended-consequence assessment. \\
-REQ-077--082 & Candidate, stability, stopping, provenance & Artifact discrimination, cumulative budgets, complete-plan stability, typed termination, cycle lineage, restart mismatch fixtures. \\
+REQ-071--076 & Refinement attempts and replay & Distinct attempt/accepted-plan trace, immutable apply, complete-plan reconstruction, original-input replay, explicit-cascade comparison, intended-consequence assessment. \\
+REQ-077--082 & Candidate, stability, stopping, provenance & Artifact discrimination, cumulative budgets, complete-plan stability, typed attempt disposition, lineage, restart mismatch fixtures. \\
 \bottomrule
 \end{tabularx}
 \normalsize
@@ -210,12 +210,14 @@ If the resolved plan is absent or incompatible, apply does not begin.  A
 native-cadence result produced after silent fallback is not evidence of an
 applied learned plan.
 
-Bounded iterative notch refinement requires one such record per cycle. Trace
-the original input, learning parent/population, prior accepted plan, complete
-successor plan, immutable evaluation product, candidate dispositions, response
+Bounded iterative notch refinement requires one such record per attempt. Trace
+the attempt and current accepted-plan indices, original input, learning
+parent/population, prior accepted plan, complete proposal, typed disposition,
+and any new immutable evaluation product, together with candidate dispositions, response
 and science budgets, and continuation or stop cause. Confirm that the final
 plan is replayed against the original input unless a separately authorized
-cascade is recorded. Maximum-cycle, oscillating, and nonconvergent states are
+cascade is recorded. Rejected attempts do not create accepted plans or
+evaluation products. Maximum-attempt, oscillating, and nonconvergent states are
 not convergence.
 
 \section{Informative completion checklist}
@@ -228,12 +230,13 @@ not convergence.
       result and tolerance, plus observed values and messages.
 \item Every open owner decision is either resolved by approved authority or
       blocks the named operation/claim exactly as the ledger states.
-\item Both raw Beammap and separately CAL-authorized role boundaries are
-      exercised without cross-role inheritance.
+\item Every RTC role retains raw $\Delta f/f$ and a distinct downstream
+      SCI-CAL product binds the complete RTC parent without cross-role inheritance.
 \item The owner-modified raw donor ratio is checked in both direction and
       availability cases, with no dependency on legacy responsivity.
-\item Full-support synthesis/replacement influence is checked at noncenter
-      cells and remains scientifically ineligible downstream.
+\item Direct synthesis/replacement is universally excluded, while noncenter
+      full-support influence is preserved and evaluated by each declared
+      downstream consumer policy.
 \item Complete response includes every enabled stage or is typed unavailable.
 \item Requested, effective, observation-resolved, learned-evidence,
       resolved-plan, realized,
@@ -244,9 +247,10 @@ not convergence.
 \item Filter validation varies scientific design choices over the admitted
       scan, projected-beam, and source domain; coefficient fixtures alone do
       not establish science qualification.
-\item Iterative notch refinement has a finite bound, complete cumulative
-      plans, immutable within-cycle apply, explicit original-input replay or
-      cascade authority, and a typed stop or nonconvergence disposition.
+\item Iterative notch refinement has a finite attempt bound, distinct attempt
+      and accepted-plan indices, complete cumulative proposals, immutable
+      accepted-plan apply, explicit original-input replay or cascade authority,
+      and a typed stop or nonconvergence disposition.
 \item Required failures are atomic; optional detail is inert; unexpected
       error-level messages are zero in any run claimed successful.
 \item The final report names exactly one supported claim layer and explicitly

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mechanical SCI-RTC v0.1/r0.3 author-deliverable checks.
+"""Mechanical SCI-RTC v0.1/r0.4 author-deliverable checks.
 
 This helper reads only the approved author inputs and package deliverables.
 It does not inspect implementation, tests, history, or sibling packages.
@@ -101,6 +101,8 @@ def main() -> None:
         "assumptions.tex", "requirements.tex", "edge_cases.tex",
     ]
     expected_inputs = [rf"\input{{common/{name}}}" for name in common_files]
+    for name in common_files:
+        require("v0.1/r0.4" in text(COMMON / name), f"r0.4 stamp in {name}")
     for wrapper_name in ("scientific-rationale.tex", "engineering-conformance.tex"):
         wrapper = text(SRC / wrapper_name)
         actual = re.findall(r"\\input\{common/[^}]+\}", wrapper)
@@ -118,9 +120,28 @@ def main() -> None:
     )
 
     rationale = text(SRC / "scientific-rationale.tex")
+    require("Learn--Resolve--Apply Filtering" in rationale, "rationale title")
+    require("Role-specific RTC plans" in rationale, "role-specific plan matrix")
     narrative = rationale.split(r"\appendix", maxsplit=1)[0]
     numbered_sections = re.findall(r"^\\section\{", narrative, flags=re.MULTILINE)
     require(len(numbered_sections) == 12, "rationale narrative is not twelve sections")
+
+    equations_text = text(COMMON / "equations.tex")
+    for marker in (
+        r"x^{\rm eval,(0)}",
+        r"\widetilde\Pi_a",
+        r"k_{a+1}",
+        r"v^{\rm preD}_{d,Mn}",
+        r"C^{\rm CAL}_{\kappa,\mathcal R}\mathbf y^{\rm RTC}_{\mathcal R}",
+    ):
+        require(marker in equations_text, f"r0.4 equation marker: {marker}")
+    require(r"C_{\mathcal R}" not in equations_text, "obsolete in-RTC CAL selector")
+
+    requirements_text = text(COMMON / "requirements.tex")
+    require("noncenter replacement influence" in requirements_text,
+            "consumer-owned noncenter influence")
+    require("alternative interleaving is authorized" in requirements_text,
+            "selected raw-RTC-then-CAL order")
 
     crosswalk = text(PKG / "CROSSWALK.md")
     for stem, count in (
@@ -144,7 +165,8 @@ def main() -> None:
     print("PASS: shared-core inclusion (6 files x 2 views, exactly once)")
     print("PASS: definitions=29 equations=31 assumptions=12 requirements=82 predictions=46")
     print("PASS: crosswalk rows complete and sequential")
-    print("PASS: author decisions=18 owner entries=50")
+    print("PASS: author decisions=18 owner entries=50 (44 open, 2 resolved, 4 deferred)")
+    print("PASS: r0.4 attempt/plan, pre-decimation, raw/CAL, influence, title, and role markers")
     print("PASS: rationale narrative sections=12")
     print("PASS: engineering wrapper has no independent displayed mathematics")
 

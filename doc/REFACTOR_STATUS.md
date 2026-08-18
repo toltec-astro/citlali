@@ -434,6 +434,26 @@ package remains a draft for scientific-owner review; scientific approval,
 implementation conformity, validation, science qualification, and production
 readiness remain unassessed.
 
+On 2026-08-18 the scientific owner approved two r0.4 boundary decisions and a
+bounded correction pass. RTC now remains raw `Delta f/f` through replacement,
+temporal conditioning, and phase-zero sampling; compatible
+`flxscale_q/flxscale_d` is raw donor convention transfer, while absolute
+`flxscale` and target-atmosphere correction belong to a later SCI-CAL handoff.
+Directly selected ALIGN-synthesized or RTC-replaced occurrences are universally
+excluded, while RTC preserves noncenter transitive influence and each
+downstream consumer owns its eligibility policy. R0.4 also separates refinement
+attempts from accepted plans, defines the initial evaluation product, corrects
+phase-zero selection to the final pre-decimation stream, restores the
+Learn--Resolve--Apply title and signal vocabulary, and adds a role-specific RTC
+plan matrix. The 29-definition, 31-equation-tag, 12-assumption, 82-requirement,
+and 46-prediction inventories retain their stable identifiers. The ledger now
+contains 44 open, two resolved, and four deferred entries. Both PDFs compile
+without warnings; the rationale is 39 pages and the engineering view 28 pages,
+and all 67 final Poppler-rendered pages passed visual inspection. The package
+remains a draft for scientific-owner review and freeze disposition; no
+implementation conformity, representation fidelity, validation, science
+qualification, or production-readiness claim is made.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

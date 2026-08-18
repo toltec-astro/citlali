@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.3 shared normative core -- equations.
+% SCI-RTC v0.1/r0.4 shared normative core -- equations.
 \section{Normative equations and identities}
 \label{sec:core-equations}
 
@@ -7,17 +7,18 @@ of both views.  They describe an implementation-independent, state-conditioned
 operator.  They neither select numerical policy nor assert implementation
 conformity.
 
-\subsection{Role domain and donor transfer}
+\subsection{Raw RTC domain, donor transfer, and CAL handoff}
 
 For an exact detector occurrence $i$ under the admitted multiplicative
-raw-to-calibrated convention,
+\texttt{flxscale} convention, define the detector-static comparison coordinate
 \begin{equation}
- z_i=\phi_i x_i,
+ \chi_i=\phi_i x_i,
  \qquad \phi_i=\texttt{flxscale}_i .
  \tag{SCI-RTC-EQ-001}\label{eq:raw-cal}
 \end{equation}
-Equation~\eqref{eq:raw-cal} does not assign a role to legacy
-\texttt{responsivity}.  When $q$ is a raw donor and $d$ is a raw target, the
+Equation~\eqref{eq:raw-cal} neither produces a calibrated RTC product nor
+assigns a role to legacy \texttt{responsivity}; target-atmosphere correction
+is absent.  When $q$ is a raw donor and $d$ is a raw target, the
 unique multiplicative transfer that represents donor-calibrated amplitude in
 the target raw convention is
 \begin{equation}
@@ -26,7 +27,7 @@ the target raw convention is
  \qquad
  a_{d\leftarrow q}=\frac{\phi_q}{\phi_d},
  \qquad
- \phi_d x^{R}_{d\leftarrow q}=\phi_qx_q .
+ \chi^R_d=\phi_d x^{R}_{d\leftarrow q}=\phi_qx_q=\chi_q .
  \tag{SCI-RTC-EQ-002}\label{eq:raw-donor}
 \end{equation}
 This equation is defined only for a compatible \texttt{flxscale} pair as
@@ -35,58 +36,55 @@ additive calibration convention, a different unit/reference domain, or an
 alternative donor authority requires its own complete affine equivalence and
 is not silently folded into equation~\eqref{eq:raw-donor}.
 
-Let the role-domain operator be
+Let $\Phi=\operatorname{diag}(\phi_d)$ be the selected detector-static factor
+operator and $C^{\rm atm}_{\kappa,\mathcal R}$ the target-atmosphere operator
+owned by SCI-CAL.  The distinct downstream calibration operator is
 \begin{equation}
- C_{\mathcal R}=\begin{cases}
- I, & \delta_{\mathcal R}=0\quad\text{(admitted raw role)},\\
- C_\kappa, & \delta_{\mathcal R}=1\quad\text{(CAL-authorized role)}.
- \end{cases}
+ C^{\rm CAL}_{\kappa,\mathcal R}
+ =\Phi C^{\rm atm}_{\kappa,\mathcal R},
+ \qquad
+ \mathbf c^{\rm CAL}_{\mathcal R}
+ =C^{\rm CAL}_{\kappa,\mathcal R}\mathbf y^{\rm RTC}_{\mathcal R}.
  \tag{SCI-RTC-EQ-003}\label{eq:role-cal}
 \end{equation}
-For a CAL-authorized role, calibration precedes cross-detector replacement.
-For a raw role, $C_{\mathcal R}=I$ and an admitted raw donor transfer may use
-equation~\eqref{eq:raw-donor}.  Reversing calibration and replacement is
-equivalent only if, for the complete admitted affine operators on the exact
-support,
+Equation~\eqref{eq:role-cal} is an SCI-CAL handoff identity; its output is not
+\texttt{xs} and it is not an RTC stage.  The selected cross-package order is
 \begin{equation}
- B^{(z)}_{\omega} C_\kappa
-   =C_\kappa B^{(x)}_{\omega},
- \quad
- \mathbf b^{(z)}_{\omega}
-   =C_\kappa\mathbf b^{(x)}_{\omega}
-     +\mathbf c_\kappa-B^{(z)}_{\omega}\mathbf c_\kappa,
+ \mathbf x^{\rm acq}
+ \xrightarrow{\ A_\alpha,\,B_\omega,\,F_1\ldots F_K,\,D_{M,0}\ }
+ \mathbf y^{\rm RTC}_{\mathcal R}
+ \xrightarrow{\ C^{\rm CAL}_{\kappa,\mathcal R}\ }
+ \mathbf c^{\rm CAL}_{\mathcal R}.
  \tag{SCI-RTC-EQ-004}\label{eq:order-equivalence}
 \end{equation}
-with unit, factor direction, additive offset, response, uncertainty, identity,
-validity, and domain equivalence all proved.  Equality of numerical values in
-one fixture is insufficient.
+RTC shall not move the downstream CAL arrow inside replacement, temporal
+filtering, or phase-zero sampling.  The raw donor ratio in
+equation~\eqref{eq:raw-donor} is convention transfer within $B_\omega$, not
+absolute calibration.
 
 \subsection{Realized conditioning operator}
 
-Conditioned on complete realized state $\Omega$, the ordered role-specific
+Conditioned on complete realized state $\Omega$, the ordered raw role-specific
 operator is
 \begin{equation}
  \boxed{\;
- \mathbf y_{\mathcal R}=D_{M,0}
+ \mathbf y^{\rm RTC}_{\mathcal R}=D_{M,0}
  F_{K,\theta_K}\cdots F_{1,\theta_1}
  B_{\omega,\mathcal R}
- \left[C_{\mathcal R}
-  (A_\alpha\mathbf x^{\rm acq}+\mathbf a_\alpha)
-  +\mathbf c_{\mathcal R}\right]
+ \left(A_\alpha\mathbf x^{\rm acq}+\mathbf a_\alpha\right)
  +\mathbf b_{\Omega}\; .}
  \tag{SCI-RTC-EQ-005}\label{eq:complete-operator}
 \end{equation}
 Chronological order is read from right to left.  The affine terms include
-only declared calibration, replacement, filter-state, boundary, or other
+only declared replacement, filter-state, boundary, or other
 authorized contributions.  Masks, coefficients, finite handling, context,
 exceptions, and state are components of $\Omega$, not annotations outside
 the operator.  Conditional on them,
 \begin{equation}
- \mathbf y_{\mathcal R}=L_\Omega\mathbf x^{\rm acq}
+ \mathbf y^{\rm RTC}_{\mathcal R}=L_\Omega\mathbf x^{\rm acq}
   +\mathbf b'_\Omega,
  \qquad
- L_\Omega=D_{M,0}F_K\cdots F_1B_{\omega,\mathcal R}
- C_{\mathcal R}A_\alpha .
+ L_\Omega=D_{M,0}F_K\cdots F_1B_{\omega,\mathcal R}A_\alpha .
  \tag{SCI-RTC-EQ-006}\label{eq:affine-operator}
 \end{equation}
 This is a conditional affine identity, not an unconditional linear,
@@ -105,8 +103,8 @@ A realized replacement at target cell $(d,j)$ may be written
  \tag{SCI-RTC-EQ-007}\label{eq:replacement}
 \end{equation}
 The scale $a$ is domain-qualified: equation~\eqref{eq:raw-donor} is the
-authorized raw \texttt{flxscale} route, while a calibrated-domain transfer or
-any separately authorized route carries its own identity and validity.
+authorized raw \texttt{flxscale} route.  Any other transfer carries separate
+identity and validity and does not import downstream calibration into RTC.
 
 For a time-invariant FIR stage,
 \begin{equation}
@@ -145,7 +143,7 @@ renormalizing are distinct operators.
 
 For a coherent pre-sampling segment of length $N$, v0.1 selects only
 \begin{equation}
- y_{d,n}=u_{d,Mn},
+ y^{\rm RTC}_{d,n}=v^{\rm preD}_{d,Mn},
  \qquad 0\le Mn<N,
  \qquad f_{\rm out}=\frac{f_{\rm in}}{M},
  \qquad
@@ -247,21 +245,27 @@ term:
 \end{equation}
 Unknown components are unavailable, not zero.
 
-Define cause-preserving influence and the v0.1 ineligibility rule by
+Define cause-preserving influence, direct exclusion, and consumer eligibility
+by
 \begin{align}
  \mathcal I_{dn}
    &=\operatorname{closure}_{K,\,\mathrm{generative\ links}}
      \{\text{typed source causes on }\mathcal S_{dn}\},
  &\tag{SCI-RTC-EQ-020a}\label{eq:influence}\\
- E^{\rm RTC}_{dn}
+ E^{\rm RTC,direct}_{dn}
    &=V^{\rm det}_d\land V^{\rm num}_{dn}\land
      V^{\rm support}_{dn}\land V^{\rm response}_{dn}
-     \land\neg\mathbb I[\mathrm{ALIGN\_synth}\in\mathcal I_{dn}]
-     \land\neg\mathbb I[\mathrm{RTC\_replace}\in\mathcal I_{dn}].
+     \land\neg D^{\rm ALIGN\_synth}_{dn}
+     \land\neg D^{\rm RTC\_replace}_{dn},
+ &\notag\\
+ E^{(c)}_{dn}&=E^{\rm RTC,direct}_{dn}\land
+ P_c(\mathcal I_{dn},\mathcal S_{dn},K_{dn,\cdot\cdot})
  &\tag{SCI-RTC-EQ-020b}\label{eq:eligibility}
 \end{align}
-Consumer-specific coordinate or policy predicates may further restrict
-eligibility; they may not remove either transitive-influence exclusion.
+$D_{dn}$ identifies a directly selected synthesized or replaced occurrence.
+$P_c$ is the declared policy of consumer $c$ for noncenter transitive
+influence.  RTC preserves every cause and numerical dependency but does not
+replace $P_c$ with a universal transitive-ineligibility decision.
 
 For learned mode, let $\mathcal M$ be the admitted finite integer candidate
 set and $\mathcal F(M)$ the conjunction of all owner-resolved astronomical
@@ -356,22 +360,34 @@ assumption that the realized operator is stationary at masks, edges, state
 boundaries, or other declared exceptions.
 
 For bounded iterative notch-plan refinement with original admitted input
-$x^{(0)}$, initial fixed or identity plan $\Pi_0$, and finite $K$,
+$x^{(0)}$, initial fixed or identity plan $\Pi_0$, attempt index $a$, and
+accepted-plan index $k_a$ available at the start of attempt $a$,
 \begin{equation}
  \begin{aligned}
- \Lambda_k&=\operatorname{Learn}(\mathcal L_k,
-             x^{\rm eval,(k-1)},\Pi_{k-1}),\\
- \Pi_k&=\operatorname{Resolve}(\Lambda_k,\Pi_{k-1},
-             \Theta^{\rm policy}),\\
- x^{\rm eval,(k)}&=\mathcal A_{\Pi_k}(x^{(0)}),\qquad
- x^{\rm final}=\mathcal A_{\Pi_K}(x^{(0)}),\\
+ x^{\rm eval,(0)}&=\mathcal A_{\Pi_0}(x^{(0)}),
+ \qquad k_1=0,\\
+ \Lambda_a&=\operatorname{Learn}(\mathcal L_a,
+             x^{\rm eval,(k_a)},\Pi_{k_a}),\\
+ (\widetilde\Pi_a,\delta_a)&=\operatorname{Resolve}
+             (\Lambda_a,\Pi_{k_a},\Theta^{\rm policy}),\\
+ k_{a+1}&=k_a+\mathbb I[\delta_a=\mathrm{accepted}],\\
+ \delta_a=\mathrm{accepted}&\Longrightarrow
+ \left\{\begin{aligned}
+ \Pi_{k_a+1}&=\widetilde\Pi_a,\\
+ x^{\rm eval,(k_a+1)}&=\mathcal A_{\Pi_{k_a+1}}(x^{(0)})
+ \end{aligned}\right.,\\
+ \delta_a\ne\mathrm{accepted}&\Longrightarrow
+ \Pi_{k_{a+1}}=\Pi_{k_a}\quad\text{and no new evaluation is required},\\
+ x^{\rm final}&=\mathcal A_{\Pi_K}(x^{(0)}),\qquad
+ K=k_{N_A+1}\le N_A<\infty,\\
  \frac{\partial\Pi_k}{\partial j}&=0
-             \quad\text{during the apply slots of cycle }k,
- \qquad 1\le k\le K<\infty .
+             \quad\text{during every apply of accepted plan }k.
  \end{aligned}
  \tag{SCI-RTC-EQ-029}\label{eq:iterative-refinement}
 \end{equation}
-Equation~\eqref{eq:iterative-refinement} states the default original-input
-replay rule.  A sequential cascade from $x^{\rm eval,(k-1)}$ requires separate
+Equation~\eqref{eq:iterative-refinement} separates finite attempts from the
+accepted-plan sequence, defines the initial evaluation for nonidentity
+$\Pi_0$, and states the default original-input replay rule.  A sequential
+cascade from a preceding evaluation product requires separate
 explicit operator authority and complete propagation of every intermediate
 parent, response, state, phase, edge, support, covariance, and uncertainty.
