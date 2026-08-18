@@ -1,4 +1,4 @@
-# SCI-RTC v0.1/r0.2 scientific-owner decision ledger
+# SCI-RTC v0.1/r0.3 scientific-owner decision ledger
 
 Status: implementation-blind author register; every entry below is unresolved
 unless superseded by later explicit scientific-owner approval.
@@ -67,6 +67,25 @@ unrelated raw RTC products.
 | `SCI-RTC-OWNER-034` | OPEN | By product role, select zero-phase, shifted-time, coordinate-corrected, response-aware, or bounded-negligible temporal registration, including centroid/PSF metric, tolerance, scan domain, and AST handoff. | Temporal-centering and scan-direction coordinate/centroid claims for a delayed response. | EQ-026--027, REQ-040, REQ-067 |
 | `SCI-RTC-OWNER-035` | OPEN | Define complete RTC-plan compatibility for transferring Beammap calibration to a target and select the required response calculation, renormalization, or observational evidence when plans differ. | Cross-plan point-source, PSF, or photometric calibration transfer beyond the exact matched-plan domain. | REQ-005, REQ-013, REQ-068 |
 | `SCI-RTC-OWNER-036` | OPEN | Select preregistered observational-performance and science-impact study domains, metrics, tolerances, uncertainty treatment, and acceptance authority for notch, broad-band/FIR, donor, and decimation design sweeps. | Observational-performance and science-impact qualification; algebraic contract review remains separately assessable. | REQ-054, REQ-069--070, PRED-030--038 |
+
+## Additional r0.3 bounded-refinement choices
+
+| ID | State | Exact scientific-owner decision required | Unavailable while open | Contract dependencies |
+| --- | --- | --- | --- | --- |
+| `SCI-RTC-OWNER-037` | OPEN | Select the maximum number of refinement cycles and the equality convention at the bound. | Iterative notch-plan refinement. | DEF-027/029, REQ-071/080 |
+| `SCI-RTC-OWNER-038` | OPEN | Select the number of consecutive complete-plan comparisons required for stability and whether an unchanged rejected cycle counts. | Plan-stability or convergence disposition. | REQ-079--080 |
+| `SCI-RTC-OWNER-039` | OPEN | Select candidate-line significance, uncertainty treatment, multiple-candidate/false-line control, and response-floor exclusion. | Successor-line admission. | REQ-077--078 |
+| `SCI-RTC-OWNER-040` | OPEN | Select the line-identity and matching rule across cycles, including split, merge, interval, detector, and frequency-convention cases. | Complete plan-stability comparison. | REQ-079 |
+| `SCI-RTC-OWNER-041` | OPEN | Select the minimum interference-metric improvement and equality convention required to continue or admit a successor. | Successor admission and improvement-based stopping. | REQ-078/080 |
+| `SCI-RTC-OWNER-042` | OPEN | Select the maximum number of admitted notches, including how overlapping or detector/interval-specific notches count. | Refinement beyond the admitted notch-count budget. | REQ-071/078 |
+| `SCI-RTC-OWNER-043` | OPEN | Select maximum cumulative removed or strongly attenuated bandwidth, metric, frequency convention, and overlap accounting. | Successor admission beyond the bandwidth budget. | REQ-078 |
+| `SCI-RTC-OWNER-044` | OPEN | Select the cumulative astronomical-transfer budget over the admitted scan/beam/source domain, including point-source peak, extended response, and uncertainty margin. | Successor admission and preserved-transfer claim. | REQ-076/078 |
+| `SCI-RTC-OWNER-045` | OPEN | Select cumulative phase, group-delay, centroid, PSF, and coordinate-registration budgets by product role. | Successor admission and temporal/coordinate validity. | REQ-076/078 |
+| `SCI-RTC-OWNER-046` | OPEN | Select cumulative ringing and transient metrics, support, tolerances, and equality convention. | Successor admission and ordinary-valid interior after transients. | REQ-076/078 |
+| `SCI-RTC-OWNER-047` | OPEN | Select cumulative edge/guard-loss metric, usable-support floor, interval aggregation, and failure boundary. | Successor admission and usable-support claim. | REQ-076/078 |
+| `SCI-RTC-OWNER-048` | OPEN | Select when held-out or otherwise independent scans are required and what same-data assessment may support. | Independent confirmation claim; same-data consistency remains explicitly data-dependent. | REQ-076--077 |
+| `SCI-RTC-OWNER-049` | OPEN | Select original-input replay as the universal default or name bounded roles that authorize sequential cascade, with parent and equivalence requirements. | Any non-replay final product or cascade claim. | EQ-029, REQ-074--075 |
+| `SCI-RTC-OWNER-050` | OPEN | Select fallback after a rejected successor: retain the last accepted plan by default or fail/cancel under named causes. | Final-plan selection for a rejected successor cause not covered by policy. | DEF-029, REQ-080 |
 
 ## Exact unavailable-state rule
 

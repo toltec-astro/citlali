@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.2 shared normative core -- falsifiable predictions.
+% SCI-RTC v0.1/r0.3 shared normative core -- falsifiable predictions.
 \clearpage
 \section{Falsifiable predictions and limiting cases}
 \label{sec:core-predictions}
@@ -77,6 +77,30 @@ ID & Construction and prediction & Falsifier \\
 \PredID{SCI-RTC-PRED-038} & Pass all deterministic coefficient and operator fixtures but withhold the required source/scan design studies.  Algebraic correctness may be supported; science qualification remains unassessed. & Deterministic pass promoted to observational performance, science qualification, or production readiness. \\
 \bottomrule
 \end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-039} & Inject one strong coherent line and no other valid line. Cycle 1 admits and suppresses it; Cycle 2 finds no successor that passes. The Cycle-1 plan remains final with a no-successor stop. & Unbounded iteration, an unsupported second notch, rejected evidence lost, or no typed stop/final-plan identity. \\
+\PredID{SCI-RTC-PRED-040} & Inject two unequal coherent lines so the weaker becomes identifiable only after the stronger is suppressed. Cycle 2 resolves one complete two-notch plan and replays it once on $x^{(0)}$; output follows the predicted cumulative response. & Increment-only plan, final use of an accumulated exploratory product, missing first notch, duplicate filtering, or response disagreement. \\
+\PredID{SCI-RTC-PRED-041} & Create a peak at a first-notch edge that agrees with predicted cumulative ringing or response artifact. The successor candidate is rejected and the first plan remains final. & Artifact admitted as a line, response floor ignored, or prior accepted plan invalidated solely by rejection. \\
+\PredID{SCI-RTC-PRED-042} & Compare applying a one-notch plan twice with applying the intended complete successor plan once to $x^{(0)}$. Values, response, phase, edges, support, and covariance differ unless exact operator equivalence is proved. & Repeated filtering treated as replay, or equality claimed from nominal notch identity without complete operator proof. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-043} & Propose a successor that fails one cumulative transfer, stability, support, or compatibility predicate. The rejected evidence and cause persist while the preceding accepted plan and its final product remain unchanged. & Failed plan applied, prior product rewritten, rejected proposal erased, or missing predicate treated as pass. \\
+\PredID{SCI-RTC-PRED-044} & Alternate between adding and removing the same line or vary its parameters outside declared stability across cycles. Termination is typed oscillating or nonconvergent. & Alternation or parameter instability labeled convergence, stable plan, or successful maximum-safe refinement. \\
+\PredID{SCI-RTC-PRED-045} & Supply a sequence that reaches the owner-approved maximum cycle count without satisfying plan stability. The result records maximum-cycle termination and the last accepted plan, not convergence. & Maximum count labeled stable/converged, continued iteration, or disappearance of the last accepted plan. \\
+\PredID{SCI-RTC-PRED-046} & Serialize and restart the final cumulative plan, then vary original parent or learning-population identity. Exact compatible restart reproduces the product; either mismatch is rejected. & Silent relearning, stale-parent application, altered plan, or acceptance of incompatible learning lineage. \\
+\bottomrule
+\end{tabularx}
 \normalsize
 
 \subsection{Analytic limits}
@@ -94,7 +118,7 @@ stability claim at or outside the circle.
 \begingroup
 \setlength{\fboxsep}{2pt}
 \noindent\fcolorbox{RTCblue}{RTCpale}{\parbox{0.97\linewidth}{\footnotesize
-\textbf{End of shared normative core:} \texttt{SCI-RTC-v0.1/r0.2}.
+\textbf{End of shared normative core:} \texttt{SCI-RTC-v0.1/r0.3}.
 View-specific material cannot add to or modify this scientific authority.
 }}
 \endgroup

@@ -412,6 +412,28 @@ Poppler inspection. The package remains a draft for scientific-owner review;
 scientific approval, implementation conformity, validation, science
 qualification, and production readiness remain unassessed.
 
+On 2026-08-18 the scientific owner issued the targeted SCI-RTC r0.3 bounded
+iterative notch-plan refinement directive. The completed implementation-blind
+revision defines a finite outer sequence of immutable learn--resolve--apply
+cycles, complete cumulative successor plans, default evaluation and final
+replay on the original admitted input, and separately authorized cascade
+semantics. Successor learning compares original, predicted, and conditioned
+spectra; distinguishes hidden candidates from filter artifacts; preserves
+cumulative scientific budgets; and terminates with an explicit accepted,
+rejected, nonconvergent, or maximum-cycle disposition. It does not introduce
+online adaptation or inspect current implementation evidence.
+
+The r0.3 shared core appends three definitions, one equation tag, twelve
+requirements, and eight predictions without renumbering prior authority. The
+complete inventory is now 29 definitions, 31 equation tags, 12 assumptions,
+82 requirements, and 46 predictions. Fourteen new owner decisions bring the
+ledger to 50 entries: 45 open, one conditional, and four deferred. Both PDFs
+compile without warnings; the rationale is 38 pages and the engineering view
+29 pages, and all 67 Poppler-rendered pages passed visual inspection. The
+package remains a draft for scientific-owner review; scientific approval,
+implementation conformity, validation, science qualification, and production
+readiness remain unassessed.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

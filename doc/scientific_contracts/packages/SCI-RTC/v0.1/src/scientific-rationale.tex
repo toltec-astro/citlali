@@ -13,7 +13,7 @@
 \definecolor{RTCgold}{HTML}{B7791F}
 \hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
  hypertexnames=false,
- pdftitle={TolTEC Raw-Timestream Conditioning: Learn--Apply Filtering, Response, and Scientific Consequences v0.1/r0.2},
+ pdftitle={TolTEC Raw-Timestream Conditioning: Learn--Apply Filtering, Response, and Scientific Consequences v0.1/r0.3},
  pdfauthor={SCI-RTC implementation-blind scientific author}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.52em}
@@ -46,7 +46,7 @@ and Scientific Consequences\\[0.28in]}
 \vspace{0.55in}
 \begin{tabular}{@{}ll@{}}
 Scientific contract version & v0.1 \\
-Science-team rationale revision & r0.2 \\
+Science-team rationale revision & r0.3 \\
 Date & 2026-08-18 \\
 Authority & Shared normative core in \texttt{src/common/} \\
 Status & Draft for scientific-owner review \\
@@ -74,7 +74,7 @@ therefore change a point-source peak, effective PSF, centroid, extended-source
 response, calibration transfer, or scientific eligibility without changing a
 unit label.
 
-SCI-RTC v0.1/r0.2 organizes those choices as \textbf{learn--resolve--apply}.
+SCI-RTC v0.1/r0.3 organizes those choices as \textbf{learn--resolve--apply}.
 Learn uses a declared population and diagnostics to estimate candidate
 parameters and uncertainty. Resolve combines that evidence with fixed policy
 and admits one complete immutable RTC plan. Apply executes exactly that plan
@@ -172,26 +172,50 @@ silently fall back, or refit a parameter. Restart restores the same plan and
 rejects incompatible inputs. Realized state records what ran without rewriting
 the request or resolved plan.
 
+V0.1 also permits \textbf{bounded iterative notch-plan refinement}.  This is
+an outer finite sequence of complete learn--resolve--apply cycles. Parameters
+may change only after one apply has finished and a successor learn and resolve
+have admitted a new complete plan. Each apply remains immutable. This is the
+v0.1 scientific meaning when ``adaptive notch'' is used; it is not continuous
+coefficient tracking and is not the online-adaptive estimator of
+SCI-RTC-DEF-025.
+
 \begin{center}
-\begin{tikzpicture}[node distance=0.48in]
-\node[rtcbox] (learn) {\textbf{LEARN}\\declared population\\estimates + uncertainty};
-\node[rtcbox,right=of learn] (resolve) {\textbf{RESOLVE}\\evidence + policy\\immutable plan};
-\node[rtcbox,right=of resolve] (apply) {\textbf{APPLY}\\execute only\\record state};
-\draw[rtcarr] (learn)--node[above]{evidence}(resolve);
-\draw[rtcarr] (resolve)--node[above]{admitted plan}(apply);
-\draw[rtcarr,dashed,RTCgold] (apply.south) to[bend right=32]
- node[below,align=center,text=RTCgold]{successor evidence; never hidden retuning} (learn.south);
+\begin{tikzpicture}[node distance=0.22in]
+\node[rtcbox,text width=1.05in] (input) {original\\input $x^{(0)}$};
+\node[rtcbox,text width=1.12in,right=of input] (c1) {\textbf{cycle 1}\\learn $\to$ resolve\\$\to$ immutable apply};
+\node[rtcbox,text width=1.02in,right=of c1] (eval) {evaluate\\response +\\diagnostics};
+\node[rtcbox,text width=1.12in,right=of eval] (c2) {\textbf{optional cycle 2}\\new learn/resolve\\immutable apply};
+\node[rtcbox,text width=1.12in,right=of c2] (final) {final plan $\Pi_K$\\replayed on\\$x^{(0)}$};
+\draw[rtcarr] (input)--(c1);
+\draw[rtcarr] (c1)--(eval);
+\draw[rtcarr] (eval)--(c2);
+\draw[rtcarr] (c2)--(final);
+\draw[rtcarr,dashed,RTCgold] (eval.south) to[bend right=30]
+ node[below,align=center,text=RTCgold]{stop with last accepted plan if no successor passes} (final.south);
 \end{tikzpicture}
 \end{center}
 
-Learned-then-fixed and online-adaptive filtering are different estimators. In
-the second, coefficients evolve during apply, so response, stability and
-uncertainty are time-dependent. V0.1 does not authorize that branch; its exact
-lifecycle remains an owner decision.
+Cycle $k$ learns from an exact population and an evaluation product, resolves
+one complete cumulative plan $\Pi_k$, and normally applies that plan to the
+original input $x^{(0)}$. A successor plan names all retained, modified,
+removed, or rejected notches and every broad-band, state, mask, edge, timing,
+and decimation choice. It is never merely ``add this notch to whatever ran
+before.'' The final production product normally replays $\Pi_K$ against the
+original input, avoiding unintended repeated rounding, padding, state
+transients, duplicate filtering, stale masks, or ambiguous parentage.
 
-\RationaleBox{Lifecycle test.}{Identify the learning population, reproduce
-every resolution predicate, name the immutable plan, and show apply did not
-modify it. If a link is absent, the learned operation is unavailable.}
+A sequential cascade from the preceding filtered product is a different
+scientific operator. It is allowed only when selected explicitly and when
+every immutable intermediate parent, response, state, phase, support,
+covariance, and uncertainty is retained. Learned-then-fixed and online-adaptive
+filtering remain different: in the latter, parameters evolve inside one apply
+pass. V0.1 does not authorize that branch.
+
+\RationaleBox{Lifecycle test.}{For each cycle identify the learning and parent
+products, reproduce every predicate, name the complete cumulative plan, and
+show that apply did not modify it. Then identify the finite stop cause and the
+final selected plan. If any link is absent, the refinement claim is unavailable.}
 
 \clearpage
 \section{Temporal frequencies, scan speed, and astronomical spatial scales}
@@ -310,6 +334,47 @@ and its drift-validity domain. Apply uses it unchanged. A line not found in
 learn does not prove absence in apply; fitting noise can remove real sky
 modes. An evolving notch is an online-adaptive estimator with separate update,
 response, stability and restart authority; it remains unavailable in v0.1.
+
+\textbf{Successor-cycle assessment.} A later learn pass first asks whether the
+accepted plan had its intended consequences: line attenuation and residual
+significance, center error or drift, adequate width/depth, ringing, transient,
+stability, edge loss, phase and group delay, point-source amplitude and
+centroid, effective PSF, extended-source transfer, covariance, and support.
+On a declared fixed-state LTI interior, the predicted filtered PSD may be
+compared with $P_{\mathrm{pred},k}(f)=|H_k(f)|^2P_0(f)$. That diagnostic is not
+universal at masks, edges, state transitions, selections, or nonstationary
+intervals. The spectral hole made by a notch is expected filter response, not
+new evidence that the original disturbance was absent.
+
+The second question is whether conditioned diagnostics warrant a successor
+notch. A peak is not sufficient. Resolve compares original, predicted, and
+conditioned PSDs; cumulative response; line uncertainty; astronomical temporal
+spectrum; transfer and alias budgets; and detector/network/array/scan/interval
+consistency. It rejects notch-edge artifacts, ringing, transients, leakage,
+normalization changes, numerical features, and structure where response is too
+small for inference. Held-out scans are preferred where practical. Reusing the
+same data for selection and assessment is labeled observation-internal,
+data-dependent consistency, not independent validation.
+
+\textbf{Bounded admission and stopping.} A successor is admitted only when its
+line and parameters are identifiable, it improves the interference metric,
+and cumulative astronomical amplitude, centroid, PSF, phase, registration,
+ringing, stability, support, cadence, response, uncertainty, and provenance
+budgets all pass. Missing evidence or tolerance is not a pass. Rejection leaves
+the last accepted plan available and preserves the proposal and cause.
+Iteration stops under an owner-approved finite policy governing cycle count,
+notch count, removed bandwidth, scientific loss, delay, ringing, edge loss,
+minimum improvement, plan stability, false-line control, and fallback.
+Maximum-cycle termination is not convergence. Alternating line sets or
+unstable parameters are explicitly nonconvergent.
+
+\textbf{Example.} Cycle 1 learns a strong coherent line and resolves a notch.
+After immutable apply, Cycle 2 learns from its diagnostic product and reveals
+a weaker line. It resolves a complete two-notch plan, which is replayed once
+against the original input. In the counterexample, a peak at the first notch
+edge agrees with predicted ringing or response artifact; the candidate is
+rejected and the one-notch plan remains final. More notches are not
+automatically better.
 
 \texttt{flxscale} cannot restore removed frequencies. Beammap and science
 observations with different notch plans do not automatically share

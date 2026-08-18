@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.2 shared normative core -- assumptions and scope.
+% SCI-RTC v0.1/r0.3 shared normative core -- assumptions and scope.
 \section{Bounded assumptions and non-goals}
 \label{sec:core-assumptions}
 
@@ -46,6 +46,9 @@ one resolved immutable plan, and one explicit compatibility domain.  The
 first learned sampling scope produces one common observation plan.  Per-array,
 per-scan, heterogeneous-cadence, noise-aware, and continuously adaptive
 sampling execution are successor scopes.
+Bounded iterative notch-plan refinement is admitted only as a finite outer
+sequence of complete immutable learned-then-fixed cycles; it does not admit
+parameter evolution within one apply pass.
 
 \item[SCI-RTC-ASM-009 -- Analytical authority.]
 Exact analytical source-times-realized-filter transfer and phase-zero alias

@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.2 shared normative core -- notation and status.
+% SCI-RTC v0.1/r0.3 shared normative core -- notation and status.
 % This file is imported once by each published view.
 \hypertarget{rtc-core-begin}{}
 \section{Shared normative authority and notation}
@@ -6,7 +6,7 @@
 
 \begin{center}
 \fcolorbox{RTCblue}{RTCpale}{\parbox{0.92\linewidth}{
-\textbf{Normative core stamp:} \texttt{SCI-RTC-v0.1/r0.2}.  The six files in
+\textbf{Normative core stamp:} \texttt{SCI-RTC-v0.1/r0.3}.  The six files in
 \texttt{src/common/} form one authority.  Text outside this shared core is
 explanatory or conformance guidance and cannot alter a definition, equation,
 assumption, requirement, prediction, unavailable state, or owner decision.
@@ -54,6 +54,9 @@ $\mathcal L$ & Declared learning population with exact identity, selection, supp
 $\Lambda$ & Learned evidence and uncertainty produced by declared diagnostics; it is not authorization to apply. \\
 $\Pi$ & One immutable resolved RTC plan admitted from learned evidence and fixed scientific policy. \\
 $\mathcal A_\Pi$ & Apply operator that consumes plan $\Pi$ without changing it. \\
+$k\in\{1,\ldots,K\}$ & Cycle index and finite owner-bounded terminal cycle for iterative notch-plan refinement. \\
+$\Pi_k$ & Complete cumulative plan accepted at cycle $k$; $\Pi_0$ is the admitted initial fixed or identity plan. \\
+$x^{\rm eval,(k)}$ & Exploratory evaluation product for cycle $k$, normally obtained by applying $\Pi_k$ to original admitted input $x^{(0)}$. \\
 $K_{dn,qj}$ & Local detector-time response of one output cell to one acquired input cell. \\
 $\mathcal S_{dn}$ & Exact transitive input support of output $(d,n)$, including alignment, donors, filters, state, and selection. \\
 $\mathcal I_{dn}$ & Cause-preserving transitive influence set for output $(d,n)$. \\

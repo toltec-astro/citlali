@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.2 shared normative core -- definitions.
+% SCI-RTC v0.1/r0.3 shared normative core -- definitions.
 \section{Normative definitions}
 \label{sec:core-definitions}
 
@@ -178,5 +178,27 @@ domain, pass/transition/stop or notch constraints, phase and registration,
 alias bound, support/guard, numeric precision, realizability, validation, and
 failure criteria that justify a filter family and its numerical parameters.
 An operation label or coefficient array alone is not this specification.
+
+\item[SCI-RTC-DEF-027 -- Bounded iterative notch-plan refinement.]
+A finite owner-bounded outer sequence of learn--resolve--apply cycles in which
+each cycle learns from a declared population and identified parent product,
+resolves one complete immutable cumulative plan, and applies that plan without
+within-cycle parameter change.  Parameters may change only between completed
+cycles.  This is not the online-adaptive estimator of SCI-RTC-DEF-025.
+
+\item[SCI-RTC-DEF-028 -- Complete cumulative successor plan.]
+The full plan proposed or accepted for cycle $k$, containing every retained,
+modified, removed, and rejected notch disposition; every broad-band stage;
+exact order, coefficients, precision, state, masks, edges, guards, intervals,
+decimation, timing, cumulative response/support, uncertainty, validity, and
+downstream compatibility.  ``Add this notch to the prior output'' is not a
+complete successor plan.
+
+\item[SCI-RTC-DEF-029 -- Final accepted plan and termination disposition.]
+The last complete plan whose admission predicates passed, together with one
+typed finite stop cause.  No-successor, residual-satisfied, stable-plan,
+budget/stability/support/compatibility rejection, insufficient evidence,
+maximum-cycle, oscillating-plan, nonconvergent-parameter, and owner-cancelled
+states remain distinct.  Maximum-cycle termination is not convergence.
 
 \end{description}

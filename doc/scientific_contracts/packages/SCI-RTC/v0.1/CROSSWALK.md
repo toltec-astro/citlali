@@ -1,4 +1,4 @@
-# SCI-RTC v0.1/r0.2 exact authority crosswalk
+# SCI-RTC v0.1/r0.3 exact authority crosswalk
 
 Status: implementation-blind author crosswalk. It maps every normative ID in
 the shared core to explanatory and conformance loci and to the approved author
@@ -63,6 +63,9 @@ modify the imported authority.
 | `SCI-RTC-DEF-024` | Definitions: apply state | §2 | Plan-mutation rejection | r0.2 directive §1 |
 | `SCI-RTC-DEF-025` | Definitions: online-adaptive estimator | §§2, 5 | Adaptive separation check | r0.2 directive §§1, 4 |
 | `SCI-RTC-DEF-026` | Definitions: scientific filter design | §§3--9 | Design-register review | r0.2 directive §§2--10, 14 |
+| `SCI-RTC-DEF-027` | Definitions: bounded iterative notch-plan refinement | §§2, 5 | Cycle-state and immutability trace | r0.3 directive §§1--2 |
+| `SCI-RTC-DEF-028` | Definitions: complete cumulative successor plan | §§2, 5 | Full-plan reconstruction | r0.3 directive §§2--3 |
+| `SCI-RTC-DEF-029` | Definitions: final accepted plan and termination | §§2, 5, 12 | Stop/nonconvergence audit | r0.3 directive §§5--8 |
 
 ## Equations and identities
 
@@ -98,6 +101,7 @@ modify the imported authority.
 | `SCI-RTC-EQ-026` | Equations: linear-phase FIR delay | §7 | Delay fixture | r0.2 directive §6 |
 | `SCI-RTC-EQ-027` | Equations: scan displacement | §7 | Coordinate/centroid fixture | r0.2 directive §§6, 9 |
 | `SCI-RTC-EQ-028` | Equations: learn--resolve--apply | §2 | State and mutation trace | r0.2 directive §§1, 14 |
+| `SCI-RTC-EQ-029` | Equations: bounded iterative refinement and replay | §§2, 5 | Cycle/replay/cascade trace | r0.3 directive §§2--3, 10 |
 
 ## Assumptions
 
@@ -190,6 +194,18 @@ modify the imported authority.
 | `SCI-RTC-REQ-068` | §10 | Complete-plan calibration compatibility | r0.2 directive §11 |
 | `SCI-RTC-REQ-069` | §12 | Scientific design studies | r0.2 directive §12 |
 | `SCI-RTC-REQ-070` | §12 | Claim-layer stop rule | r0.2 directive §§12, 15 |
+| `SCI-RTC-REQ-071` | §§2, 5 | Finite-cycle policy | r0.3 directive §6 |
+| `SCI-RTC-REQ-072` | §2 | Within-cycle plan immutability | r0.3 directive §§1--2 |
+| `SCI-RTC-REQ-073` | §§2, 5 | Complete cumulative plan | r0.3 directive §2 |
+| `SCI-RTC-REQ-074` | §2 | Original-input replay | r0.3 directive §3 |
+| `SCI-RTC-REQ-075` | §2 | Explicit cascade authority | r0.3 directive §3 |
+| `SCI-RTC-REQ-076` | §§5, 12 | Intended-consequence evaluation | r0.3 directive §4A |
+| `SCI-RTC-REQ-077` | §§5, 12 | Artifact-aware candidate admission | r0.3 directive §4B |
+| `SCI-RTC-REQ-078` | §§5, 12 | Cumulative scientific budgets | r0.3 directive §§5--6 |
+| `SCI-RTC-REQ-079` | §§5, 12 | Complete-plan stability | r0.3 directive §7 |
+| `SCI-RTC-REQ-080` | §§5, 12 | Typed stop and nonconvergence | r0.3 directive §§5--7 |
+| `SCI-RTC-REQ-081` | §§2, 5 | Cycle-complete one-way provenance | r0.3 directive §8 |
+| `SCI-RTC-REQ-082` | §§2, 12 | Final-plan restart reproducibility | r0.3 directive §8 |
 
 ## Falsifiable predictions
 
@@ -233,6 +249,14 @@ modify the imported authority.
 | `SCI-RTC-PRED-036` | §§7--8 | Delay/coordinate-direction fixture | r0.2 directive §§6, 9 |
 | `SCI-RTC-PRED-037` | §10 | Cross-plan calibration comparison | r0.2 directive §11 |
 | `SCI-RTC-PRED-038` | §12 | Algebra-pass/qualification-stop | r0.2 directive §§12, 15 |
+| `SCI-RTC-PRED-039` | §5 | Strong-line/no-successor cycle | r0.3 directive §10.1 |
+| `SCI-RTC-PRED-040` | §§2, 5 | Two-line discovery and replay | r0.3 directive §10.2 |
+| `SCI-RTC-PRED-041` | §5 | Notch-edge artifact rejection | r0.3 directive §10.3 |
+| `SCI-RTC-PRED-042` | §2 | Reapply-versus-successor distinction | r0.3 directive §10.4 |
+| `SCI-RTC-PRED-043` | §5 | Rejected-successor retention | r0.3 directive §10.5 |
+| `SCI-RTC-PRED-044` | §5 | Oscillating/nonconvergent disposition | r0.3 directive §10.6 |
+| `SCI-RTC-PRED-045` | §5 | Maximum-cycle nonconvergence | r0.3 directive §10.7 |
+| `SCI-RTC-PRED-046` | §§2, 12 | Final-plan restart identity | r0.3 directive §10.8 |
 
 ## Decision-register coverage
 
@@ -242,23 +266,24 @@ modify the imported authority.
   `SCI-RTC-OWNER-001` through `SCI-RTC-OWNER-024` to affected requirement
   IDs and an exact unavailable consequence, and records successor exclusions
   `SCI-RTC-OWNER-025` through `SCI-RTC-OWNER-028` as deferred and adds the
-  r0.2 design choices `SCI-RTC-OWNER-029`--`036`.
+  r0.2 design choices `SCI-RTC-OWNER-029`--`036` and the r0.3 bounded-cycle
+  choices `SCI-RTC-OWNER-037`--`050`.
 - No open owner entry is silently resolved in either PDF. In particular, the
   learned safe set is undefined until OWNER-011 through OWNER-020 are resolved.
 
 ## Mechanical completeness invariant
 
-For revision r0.2 the exact expected normative inventory is:
+For revision r0.3 the exact expected normative inventory is:
 
-- 26 definitions: `SCI-RTC-DEF-001`--`026`;
-- 30 displayed equation tags: `001`--`015`, `016a`, `016b`, `017`--`019`,
-  `020a`, `020b`, and `021`--`028`;
+- 29 definitions: `SCI-RTC-DEF-001`--`029`;
+- 31 displayed equation tags: `001`--`015`, `016a`, `016b`, `017`--`019`,
+  `020a`, `020b`, and `021`--`029`;
 - 12 assumptions: `SCI-RTC-ASM-001`--`012`;
-- 70 requirements: `SCI-RTC-REQ-001`--`070`;
-- 38 predictions: `SCI-RTC-PRED-001`--`038`;
+- 82 requirements: `SCI-RTC-REQ-001`--`082`;
+- 46 predictions: `SCI-RTC-PRED-001`--`046`;
 - 18 author-draft decisions: `SCI-RTC-AUTHOR-D001`--`D018`;
-- 32 open/conditional and 4 deferred owner entries:
-  `SCI-RTC-OWNER-001`--`036`.
+- 46 open/conditional and 4 deferred owner entries:
+  `SCI-RTC-OWNER-001`--`050`.
 
 Every ID in that inventory appears exactly once as an authority-row key in
 this crosswalk or, for the two decision registers, in the explicitly named

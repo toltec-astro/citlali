@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mechanical SCI-RTC v0.1/r0.2 author-deliverable checks.
+"""Mechanical SCI-RTC v0.1/r0.3 author-deliverable checks.
 
 This helper reads only the approved author inputs and package deliverables.
 It does not inspect implementation, tests, history, or sibling packages.
@@ -85,14 +85,14 @@ def main() -> None:
         r"\\tag\{SCI-RTC-EQ-(\d{3}[ab]?)\}", text(COMMON / "equations.tex")
     )
 
-    require(definitions == [f"{i:03d}" for i in range(1, 27)], "definition IDs")
+    require(definitions == [f"{i:03d}" for i in range(1, 30)], "definition IDs")
     require(assumptions == [f"{i:03d}" for i in range(1, 13)], "assumption IDs")
-    require(requirements == [f"{i:03d}" for i in range(1, 71)], "requirement IDs")
-    require(predictions == [f"{i:03d}" for i in range(1, 39)], "prediction IDs")
+    require(requirements == [f"{i:03d}" for i in range(1, 83)], "requirement IDs")
+    require(predictions == [f"{i:03d}" for i in range(1, 47)], "prediction IDs")
     expected_eq = (
         [f"{i:03d}" for i in range(1, 16)]
         + ["016a", "016b", "017", "018", "019", "020a", "020b"]
-        + [f"{i:03d}" for i in range(21, 29)]
+        + [f"{i:03d}" for i in range(21, 30)]
     )
     require(equation_ids == expected_eq, "equation tag IDs")
 
@@ -124,10 +124,10 @@ def main() -> None:
 
     crosswalk = text(PKG / "CROSSWALK.md")
     for stem, count in (
-        ("SCI-RTC-DEF-", 26),
+        ("SCI-RTC-DEF-", 29),
         ("SCI-RTC-ASM-", 12),
-        ("SCI-RTC-REQ-", 70),
-        ("SCI-RTC-PRED-", 38),
+        ("SCI-RTC-REQ-", 82),
+        ("SCI-RTC-PRED-", 46),
     ):
         sequential(table_row_ids(crosswalk, stem), stem, count)
     eq_rows = table_row_ids(crosswalk, "SCI-RTC-EQ-")
@@ -138,13 +138,13 @@ def main() -> None:
     owner_rows = table_row_ids(
         text(PKG / "SCIENTIFIC_OWNER_DECISION_LEDGER.md"), "SCI-RTC-OWNER-"
     )
-    sequential(owner_rows, "SCI-RTC-OWNER-", 36)
+    sequential(owner_rows, "SCI-RTC-OWNER-", 50)
 
     print("PASS: approved packet hashes (4)")
     print("PASS: shared-core inclusion (6 files x 2 views, exactly once)")
-    print("PASS: definitions=26 equations=30 assumptions=12 requirements=70 predictions=38")
+    print("PASS: definitions=29 equations=31 assumptions=12 requirements=82 predictions=46")
     print("PASS: crosswalk rows complete and sequential")
-    print("PASS: author decisions=18 owner entries=36")
+    print("PASS: author decisions=18 owner entries=50")
     print("PASS: rationale narrative sections=12")
     print("PASS: engineering wrapper has no independent displayed mathematics")
 

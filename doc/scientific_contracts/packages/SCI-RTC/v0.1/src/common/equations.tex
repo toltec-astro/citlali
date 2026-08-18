@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.2 shared normative core -- equations.
+% SCI-RTC v0.1/r0.3 shared normative core -- equations.
 \section{Normative equations and identities}
 \label{sec:core-equations}
 
@@ -354,3 +354,24 @@ For every learned RTC operation, the lifecycle is
 The final equality denotes plan immutability over apply slots; it is not an
 assumption that the realized operator is stationary at masks, edges, state
 boundaries, or other declared exceptions.
+
+For bounded iterative notch-plan refinement with original admitted input
+$x^{(0)}$, initial fixed or identity plan $\Pi_0$, and finite $K$,
+\begin{equation}
+ \begin{aligned}
+ \Lambda_k&=\operatorname{Learn}(\mathcal L_k,
+             x^{\rm eval,(k-1)},\Pi_{k-1}),\\
+ \Pi_k&=\operatorname{Resolve}(\Lambda_k,\Pi_{k-1},
+             \Theta^{\rm policy}),\\
+ x^{\rm eval,(k)}&=\mathcal A_{\Pi_k}(x^{(0)}),\qquad
+ x^{\rm final}=\mathcal A_{\Pi_K}(x^{(0)}),\\
+ \frac{\partial\Pi_k}{\partial j}&=0
+             \quad\text{during the apply slots of cycle }k,
+ \qquad 1\le k\le K<\infty .
+ \end{aligned}
+ \tag{SCI-RTC-EQ-029}\label{eq:iterative-refinement}
+\end{equation}
+Equation~\eqref{eq:iterative-refinement} states the default original-input
+replay rule.  A sequential cascade from $x^{\rm eval,(k-1)}$ requires separate
+explicit operator authority and complete propagation of every intermediate
+parent, response, state, phase, edge, support, covariance, and uncertainty.

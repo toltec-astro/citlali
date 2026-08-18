@@ -1,9 +1,9 @@
-% SCI-RTC v0.1/r0.2 shared normative core -- requirements.
+% SCI-RTC v0.1/r0.3 shared normative core -- requirements.
 \clearpage
 \section{Sequential normative requirements}
 \label{sec:core-requirements}
 
-The following identifiers are stable within v0.1/r0.2.  Conformance is
+The following identifiers are stable within v0.1/r0.3.  Conformance is
 requirement-by-requirement; satisfying a neighboring requirement does not
 waive another one.
 
@@ -122,6 +122,34 @@ Timing & \ReqID{SCI-RTC-REQ-067} & Each plan shall resolve temporal registration
 CAL & \ReqID{SCI-RTC-REQ-068} & Calibration transfer between Beammap and target processing shall bind the complete RTC plans and require matching response or explicit calculation, renormalization, or observational evidence; identical operation labels or preserved units are insufficient. \\
 Validation & \ReqID{SCI-RTC-REQ-069} & Validation of a notch, broad-band/FIR, donor, or decimation plan shall vary its scientific design parameters over the admitted scan/beam/source domain and measure astronomical transfer, phase/centroid, PSF/morphology, ringing, support/edge loss, covariance, and alias or interference residual as applicable. \\
 Claims & \ReqID{SCI-RTC-REQ-070} & No plan shall be called science-qualified solely because coefficient algebra, optimization, serialization, or deterministic operator fixtures pass. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.09\linewidth}p{0.20\linewidth}X@{}}
+\toprule
+Area & ID & Normative statement \\
+\midrule
+Iteration & \ReqID{SCI-RTC-REQ-071} & Iterative notch-plan refinement shall use a finite owner-approved cycle bound and stopping policy; an unbounded repeat-until-satisfactory process is unavailable. \\
+Iteration & \ReqID{SCI-RTC-REQ-072} & Within cycle $k$, apply shall consume exactly one immutable $\Pi_k$ and shall not change coefficients, notch parameters, policy, masks, donor rules, decimation, or state conventions. \\
+Plan & \ReqID{SCI-RTC-REQ-073} & Every successor $\Pi_k$ shall be a complete cumulative plan that dispositions all prior and proposed notches and records all stages, order, coefficients/precision, state, masks, edges/guards, intervals, decimation/timing, response/support, uncertainty, validity, and compatibility. \\
+Replay & \ReqID{SCI-RTC-REQ-074} & The default evaluation and final production rule shall apply each complete accepted plan to original admitted $x^{(0)}$ as in equation~\eqref{eq:iterative-refinement}; exploratory cycles shall not accumulate hidden rounding, padding, state, duplicate-filter, mask, flag, or parent effects. \\
+Cascade & \ReqID{SCI-RTC-REQ-075} & A cascade from a preceding filtered product shall require explicit scientific-operator authority and immutable intermediate parents, with total response, state, phase, edges, support, covariance, uncertainty, and sequential parentage retained. \\
+Evaluate & \ReqID{SCI-RTC-REQ-076} & Each successor learn pass shall assess intended line attenuation and residual, parameter error/drift, predicted-versus-measured response, stability, ringing/transient, edge/guard loss, phase/delay, source amplitude/centroid/PSF, extended transfer, covariance, and support where applicable. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.09\linewidth}p{0.20\linewidth}X@{}}
+\toprule
+Area & ID & Normative statement \\
+\midrule
+Candidate & \ReqID{SCI-RTC-REQ-077} & A successor line shall be admitted only after comparison of original, predicted, and conditioned spectra, cumulative response, line uncertainty, astronomical spectrum, transfer/alias budgets, and detector/network/array/scan/interval consistency excludes notch-edge, ringing, transient, leakage, normalization, numerical, and response-floor artifacts. \\
+Budget & \ReqID{SCI-RTC-REQ-078} & Successor admission shall preserve owner-approved cumulative interference improvement, removed bandwidth, astronomical transfer, source amplitude/centroid/PSF, phase/registration, ringing/transient, guard/support, stability, cadence/response compatibility, uncertainty, and provenance budgets. \\
+Stability & \ReqID{SCI-RTC-REQ-079} & Plan stability shall compare the complete line set and matching identity, centers, widths/Q, depths, family/order, precision, applicability, state/reset, masks/guards, broad-band stages, decimation/timing, response/support, and compatibility over the required consecutive cycles. \\
+Stop & \ReqID{SCI-RTC-REQ-080} & Every refinement shall record one typed stop or continuation cause; maximum-cycle, oscillating-plan, and nonconvergent-parameter terminations shall not be labeled convergence or plan stability, and rejection shall leave the last accepted plan available unless policy says otherwise. \\
+Lineage & \ReqID{SCI-RTC-REQ-081} & Every cycle shall preserve index, original input, previous accepted plan, learning parent/population and PSD definition, original/predicted/measured spectra, candidates and dispositions, predicates/tolerances, complete resolved plan, evaluation product, cumulative response/astronomical diagnostics, stop cause, and final plan identity in one-way state. \\
+Restart & \ReqID{SCI-RTC-REQ-082} & Serialization and restart shall reproduce the final selected complete plan and declared parent rule exactly and reject incompatible original input, rate, learning population, parent, coefficient, interval, state, or policy identity. \\
 \bottomrule
 \end{tabularx}
 \normalsize

@@ -16,7 +16,7 @@
 \definecolor{RTCgray}{HTML}{52606D}
 \hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
   hypertexnames=false,
-  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.2},
+  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.3},
   pdfauthor={SCI-RTC implementation-blind scientific author}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.48em}
@@ -49,7 +49,7 @@
 \vspace{0.65in}
 \begin{tabular}{@{}ll@{}}
 Package version & v0.1 \\
-Revision & r0.2 \\
+Revision & r0.3 \\
 Date & 2026-08-18 \\
 Authority & Shared normative core in \texttt{src/common/} \\
 View-specific content & Informative evidence and review guidance only \\
@@ -154,6 +154,8 @@ REQ-055--058 & Learn--resolve--apply lifecycle & Learning-population identity, p
 REQ-059--063 & Scientific filter design & Purpose/model register, scan--beam transfer studies, notch and band specifications, constrained tap/order selection. \\
 REQ-064--068 & Donor, decimation, timing, calibration & Donor-meaning separation, circular-factor rejection, folded-band calculation, centroid/coordinate tests, cross-plan response comparison. \\
 REQ-069--070 & Validation and claims & Preregistered design sweeps and strict claim-layer disposition. \\
+REQ-071--076 & Refinement cycle and replay & Finite-cycle trace, immutable apply, complete-plan reconstruction, original-input replay, explicit-cascade comparison, intended-consequence assessment. \\
+REQ-077--082 & Candidate, stability, stopping, provenance & Artifact discrimination, cumulative budgets, complete-plan stability, typed termination, cycle lineage, restart mismatch fixtures. \\
 \bottomrule
 \end{tabularx}
 \normalsize
@@ -208,6 +210,14 @@ If the resolved plan is absent or incompatible, apply does not begin.  A
 native-cadence result produced after silent fallback is not evidence of an
 applied learned plan.
 
+Bounded iterative notch refinement requires one such record per cycle. Trace
+the original input, learning parent/population, prior accepted plan, complete
+successor plan, immutable evaluation product, candidate dispositions, response
+and science budgets, and continuation or stop cause. Confirm that the final
+plan is replayed against the original input unless a separately authorized
+cascade is recorded. Maximum-cycle, oscillating, and nonconvergent states are
+not convergence.
+
 \section{Informative completion checklist}
 \label{sec:eng-checklist}
 
@@ -234,6 +244,9 @@ applied learned plan.
 \item Filter validation varies scientific design choices over the admitted
       scan, projected-beam, and source domain; coefficient fixtures alone do
       not establish science qualification.
+\item Iterative notch refinement has a finite bound, complete cumulative
+      plans, immutable within-cycle apply, explicit original-input replay or
+      cascade authority, and a typed stop or nonconvergence disposition.
 \item Required failures are atomic; optional detail is inert; unexpected
       error-level messages are zero in any run claimed successful.
 \item The final report names exactly one supported claim layer and explicitly
