@@ -2183,6 +2183,17 @@ TEST(science_map_fits_products,
     engine.rtcproc.filter.iir_highpass_order = 1;
     engine.rtcproc.filter.iir_highpass_zero_phase = false;
     engine.rtcproc.filter.notch_zero_phase = true;
+    // Disabled raw filtering may retain requested notch centers for config
+    // round-trip, but they are not realized operators and have no Q values.
+    engine.typed_config.timestream.raw_time_chunk.filter.enabled = false;
+    engine.typed_config.timestream.raw_time_chunk.filter.notch.enabled = true;
+    engine.typed_config.timestream.raw_time_chunk.filter.notch.freqs_Hz =
+        {15.0};
+    engine.typed_config.timestream.raw_time_chunk.filter.notch.delta_f_Hz =
+        {0.25};
+    engine.rtcproc.run_tod_notch = false;
+    engine.rtcproc.filter.w0s = {15.0};
+    engine.rtcproc.filter.qs.clear();
     engine.ptcproc.logger = engine.logger;
     engine.ptcproc.cleaner.logger = engine.logger;
     engine.ptcproc.run_clean = false;
@@ -2239,6 +2250,19 @@ TEST(science_map_fits_products,
     EXPECT_TRUE(configuration.processing_configuration_bound);
     EXPECT_FALSE(configuration.processing_realization_bound);
     EXPECT_EQ(configuration.processing_realization_identity, "unavailable");
+    const auto has_configuration_fact = [&](const std::string &name,
+                                            const std::string &value) {
+        return std::find(
+            configuration.processing_configuration_facts.begin(),
+            configuration.processing_configuration_facts.end(),
+            std::pair<std::string, std::string>{name, value}) !=
+               configuration.processing_configuration_facts.end();
+    };
+    EXPECT_TRUE(has_configuration_fact("configured_notch_enabled", "false"));
+    EXPECT_TRUE(has_configuration_fact("configured_notch_centers_hz", ""));
+    EXPECT_TRUE(has_configuration_fact("configured_notch_widths_hz", ""));
+    EXPECT_TRUE(has_configuration_fact("configured_notch_q", ""));
+    EXPECT_TRUE(has_configuration_fact("configured_notch_count", "0"));
 
     using PtcData =
         timestream::TCData<timestream::TCDataKind::PTC, Eigen::MatrixXd>;

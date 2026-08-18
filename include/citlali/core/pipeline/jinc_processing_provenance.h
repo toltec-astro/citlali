@@ -106,17 +106,29 @@ void bind_jinc_processing_configuration(Engine &engine) {
     const auto &rtc = engine.rtcproc;
     const auto &ptc = engine.ptcproc;
     const auto &cleaner = ptc.cleaner;
+    const bool configured_notch_enabled =
+        raw.filter.enabled && raw.filter.notch.enabled;
+    if (configured_notch_enabled != rtc.run_tod_notch) {
+        throw std::logic_error(
+            "JINC configured notch request and realized activation disagree");
+    }
+    std::vector<double> configured_notch_centers_hz;
     std::vector<double> configured_notch_widths_hz;
-    configured_notch_widths_hz.reserve(rtc.filter.w0s.size());
-    for (std::size_t index = 0; index < rtc.filter.w0s.size(); ++index) {
-        if (index >= rtc.filter.qs.size() ||
-            !std::isfinite(rtc.filter.qs[index]) ||
-            rtc.filter.qs[index] <= 0.0) {
-            throw std::logic_error(
-                "JINC configured notch identity requires finite-positive Q values");
+    std::vector<double> configured_notch_q;
+    if (configured_notch_enabled) {
+        configured_notch_centers_hz = rtc.filter.w0s;
+        configured_notch_q = rtc.filter.qs;
+        configured_notch_widths_hz.reserve(rtc.filter.w0s.size());
+        for (std::size_t index = 0; index < rtc.filter.w0s.size(); ++index) {
+            if (index >= rtc.filter.qs.size() ||
+                !std::isfinite(rtc.filter.qs[index]) ||
+                rtc.filter.qs[index] <= 0.0) {
+                throw std::logic_error(
+                    "JINC configured notch identity requires finite-positive Q values");
+            }
+            configured_notch_widths_hz.push_back(
+                rtc.filter.w0s[index] / rtc.filter.qs[index]);
         }
-        configured_notch_widths_hz.push_back(
-            rtc.filter.w0s[index] / rtc.filter.qs[index]);
     }
     std::vector<std::pair<std::string, std::string>> facts{
         {"raw_timestream_active",
@@ -125,8 +137,7 @@ void bind_jinc_processing_configuration(Engine &engine) {
         {"despike_enabled", jinc_processing_bool_text(raw.despike.enabled)},
         {"temporal_fir_enabled", jinc_processing_bool_text(raw.filter.enabled)},
         {"configured_notch_enabled",
-         jinc_processing_bool_text(
-             raw.filter.enabled && raw.filter.notch.enabled)},
+         jinc_processing_bool_text(configured_notch_enabled)},
         {"iir_highpass_enabled",
          jinc_processing_bool_text(raw.iir_filter.enabled)},
         {"downsample_enabled",
@@ -142,11 +153,13 @@ void bind_jinc_processing_configuration(Engine &engine) {
         {"fir_coefficients_digest",
          mapmaking::jinc_matrix_digest(rtc.filter.filter)},
         {"configured_notch_centers_hz",
-         jinc_processing_vector_text(rtc.filter.w0s)},
+         jinc_processing_vector_text(configured_notch_centers_hz)},
         {"configured_notch_widths_hz",
          jinc_processing_vector_text(configured_notch_widths_hz)},
-        {"configured_notch_q", jinc_processing_vector_text(rtc.filter.qs)},
-        {"configured_notch_count", std::to_string(rtc.filter.w0s.size())},
+        {"configured_notch_q",
+         jinc_processing_vector_text(configured_notch_q)},
+        {"configured_notch_count",
+         std::to_string(configured_notch_centers_hz.size())},
         {"line_audit_fixed_notch_enabled",
          jinc_processing_bool_text(rtc.line_audit.enabled &&
                                    rtc.line_audit.pre_filter_enabled &&
@@ -569,7 +582,9 @@ void bind_jinc_processing_realization(Engine &engine) {
          std::to_string(ptc_mean_masked)},
         {"pca_solve_count", std::to_string(pca_solves)},
         {"configured_notch_count",
-         std::to_string(engine.rtcproc.filter.w0s.size())},
+         std::to_string(engine.rtcproc.run_tod_notch
+                            ? engine.rtcproc.filter.w0s.size()
+                            : 0U)},
         {"configured_notch_applied_count",
          std::to_string(configured_notches_applied)},
         {"fixed_notch_count", std::to_string(fixed_notches)},
