@@ -24,4 +24,8 @@ inline bool is_flag2(std::string_view key) {
     return key == flag2();
 }
 
+inline bool is_legacy_observation_match_field(std::string_view key) {
+    return key == "fr" || key == "f_out" || key == "Qr";
+}
+
 } // namespace beammap_apt_keys

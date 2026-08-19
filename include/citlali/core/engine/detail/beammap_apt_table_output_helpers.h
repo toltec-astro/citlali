@@ -165,11 +165,15 @@ std::vector<std::string> preflight_atomic_kids_fit_reports(
     if (header.empty()) {
         throw apt::ContractError("atomic KIDs fit-report header is empty");
     }
+    struct OverlayField {
+        std::string name;
+        std::optional<apt::RegisteredField> contract;
+    };
+    std::vector<OverlayField> fields;
+    fields.reserve(header.size());
     std::vector<std::string> names;
     names.reserve(header.size());
     std::set<std::string> unique;
-    std::vector<apt::RegisteredField> contracts;
-    contracts.reserve(header.size());
     for (const auto &source_name : header) {
         // The accepted legacy source field is `flag`; the canonical artifact
         // name `kids_flag` is producer-owned and is not itself an admitted
@@ -180,15 +184,25 @@ std::vector<std::string> preflight_atomic_kids_fit_reports(
                 "literal source kids_flag/flag2 is not an admitted KIDs fit-report field");
         }
         const auto name = normalized_kids_model_name(source_name);
+        const auto is_legacy_match_field =
+            beammap_apt_keys::is_legacy_observation_match_field(name);
+        if (!unique.insert(name).second) {
+            throw apt::ContractError(
+                "KIDs fit-report field is protected, duplicate, or absent from the canonical v1 registry: " +
+                name);
+        }
         const auto contract = canonical_registered_field(name);
-        if (!contract || apt::detail::protected_contract_name(name) ||
-            !unique.insert(name).second) {
+        if (!contract || apt::detail::protected_contract_name(name)) {
+            if (is_legacy_match_field) {
+                fields.push_back({std::string(name), std::nullopt});
+                continue;
+            }
             throw apt::ContractError(
                 "KIDs fit-report field is protected, duplicate, or absent from the canonical v1 registry: " +
                 name);
         }
         names.push_back(name);
-        contracts.push_back(*contract);
+        fields.push_back({name, *contract});
     }
     for (std::size_t input_index = 0; input_index < reports.size();
          ++input_index) {
@@ -213,9 +227,12 @@ std::vector<std::string> preflight_atomic_kids_fit_reports(
         }
         for (Eigen::Index row = 0; row < model.rows(); ++row) {
             for (Eigen::Index column = 0; column < model.cols(); ++column) {
+                if (!fields[static_cast<std::size_t>(column)].contract.has_value()) {
+                    continue;
+                }
                 (void)typed_legacy_value(
                     model(row, column),
-                    contracts[static_cast<std::size_t>(column)]);
+                    *fields[static_cast<std::size_t>(column)].contract);
             }
         }
     }
@@ -229,6 +246,8 @@ void apply_atomic_kids_fit_report_overlay(
     const auto names =
         preflight_atomic_kids_fit_reports(reports, raw_manifest);
 
+    std::vector<std::pair<std::string, Eigen::VectorXd>> columns;
+    columns.reserve(names.size());
     Eigen::Index total_rows = 0;
     for (const auto &report : reports) {
         const auto &model = report.model;
@@ -248,8 +267,6 @@ void apply_atomic_kids_fit_report_overlay(
     // Construct every typed/preflighted column before mutating Calib. Shape,
     // name, registry, protected-field, and conversion failures therefore
     // leave the current scientific state untouched.
-    std::vector<std::pair<std::string, Eigen::VectorXd>> columns;
-    columns.reserve(names.size());
     for (Eigen::Index column = 0;
          column < static_cast<Eigen::Index>(names.size()); ++column) {
         Eigen::VectorXd values(calib.n_dets);
