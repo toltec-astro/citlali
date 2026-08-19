@@ -1,5 +1,21 @@
 # Citlali Scientific Conventions
 
+## Canonical compact APT v2 governing rule
+
+APT-PROD-003 compact v2 supersedes new canonical baseline and observation APT
+v1 issuance. Historical v1 may be opened only by an explicit migration or
+comparison operation. A normal guardian never silently accepts v1, a bare
+ECSV, a migration-marked product, or a synthesized fallback.
+
+Detector correspondence is always an occurrence-scoped local-row relation.
+UIDs, raw/KMP row numbers, ranks, table order, filenames, paths, timestamps,
+and digests alone are not persistent detector identity. A matched v2 product
+contains one target row and one disposition record per target, one rule per
+field, one source record per input, and only genuine exceptions. Exact
+nonunique matches are exposed as ambiguous (or a typed correlation failure),
+never resolved by row order. The exact four-field KMP authority and physical
+rules are in [`CANONICAL_APT_V2.md`](CANONICAL_APT_V2.md).
+
 ## Status And Scope
 
 This is the canonical human-readable statement of scientific identity, units,

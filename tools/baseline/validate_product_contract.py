@@ -65,6 +65,42 @@ OBSERVATION_ARTIFACT_CONTRACT_SHA256 = {
 OBSERVATION_ARTIFACT_CONTRACT_IDS = frozenset(
     OBSERVATION_ARTIFACT_CONTRACT_SHA256
 )
+COMPACT_APT_BASELINE_CONTRACT_ID = (
+    "apt-prod-003-canonical-baseline-bundle-v2"
+)
+COMPACT_APT_MATCHED_CONTRACT_ID = (
+    "apt-prod-003-observation-matched-bundle-v2"
+)
+COMPACT_APT_CONTRACT_SHA256 = {
+    COMPACT_APT_BASELINE_CONTRACT_ID: (
+        "a4814b2f9254d7712bc8afd30195d517a6584dcd1c4225598a3619d64418d499"
+    ),
+    COMPACT_APT_MATCHED_CONTRACT_ID: (
+        "ab96a58260762fb23060c8b74775db7c40b6916c4d6e6174e8976f3eacaf8cfe"
+    ),
+}
+COMPACT_APT_CONTRACT_IDS = frozenset(COMPACT_APT_CONTRACT_SHA256)
+COMPACT_APT_LIFECYCLE_SHA256 = (
+    "ccfe1d2ede8e4e09679092448b38cdf40e8b088c8f3cd18d2b4162ad077c4673"
+)
+COMPACT_APT_SHARED_CONTRACT_SHA256 = (
+    "6233b2c2dacb8e35de607d253457516634e7bcc651febd189a1bc0d2b439430f"
+)
+COMPACT_APT_SHARED_CONTRACT_ID = (
+    "citlali-canonical-apt-compact-components-v2"
+)
+COMPACT_APT_BASELINE_SCHEMA_V2 = (
+    "citlali-canonical-baseline-apt-bundle-v2"
+)
+COMPACT_APT_MATCHED_SCHEMA_V2 = (
+    "citlali-canonical-observation-apt-bundle-v2"
+)
+COMPACT_APT_ROOT_MANIFEST_SCHEMA_V2 = (
+    "citlali-canonical-apt-root-manifest-v2"
+)
+COMPACT_APT_ROOT_RECEIPT_SCHEMA_V2 = (
+    "citlali-canonical-apt-root-receipt-v2"
+)
 BASELINE_DESCRIPTOR_SCHEMA_V1 = (
     "citlali-verified-beammap-baseline-descriptor-v1"
 )
@@ -583,6 +619,194 @@ def _validate_observation_artifact_contract(
     return artifact
 
 
+def _validate_compact_apt_shared_contract(value: Any) -> dict[str, Any]:
+    context = "apt_compact_v2_shared_contract"
+    contract = _mapping(value, context)
+    digest = _canonical_json_sha256(contract)
+    if digest != COMPACT_APT_SHARED_CONTRACT_SHA256:
+        raise ContractError(
+            f"{context}: compact v2 shared contract drift "
+            f"({digest}; expected {COMPACT_APT_SHARED_CONTRACT_SHA256})"
+        )
+    if (
+        contract.get("shared_contract_id")
+        != COMPACT_APT_SHARED_CONTRACT_ID
+        or contract.get("contract_authority") != "citlali"
+        or contract.get("physical_encoding") != "canonical-ecsv-1.0-v2"
+        or contract.get("root_manifest_name") != "manifest.ecsv"
+        or contract.get("root_receipt_name") != "manifest.ecsv.sha256"
+        or contract.get("root_receipt_schema")
+        != COMPACT_APT_ROOT_RECEIPT_SCHEMA_V2
+        or contract.get("root_receipt_last") is not True
+        or contract.get("root_receipt_lines")
+        != [
+            COMPACT_APT_ROOT_RECEIPT_SCHEMA_V2,
+            "scope=citlali-canonical-apt-root-manifest-byte-sha256-v2",
+            "envelope_sha256={root-envelope-sha256}",
+            "byte_sha256={root-manifest-byte-sha256}",
+            "byte_count={canonical-uint64-decimal}",
+        ]
+        or contract.get("parse_policy")
+        != (
+            "receipt-and-manifest-bounded; exactly-one-complete-parse-per-"
+            "component; canonical-reread; no-detector-by-field-ledger"
+        )
+    ):
+        raise ContractError(f"{context}: authority/encoding/publication drift")
+    expected_columns = {
+        "manifest_columns": 8,
+        "field_columns": 12,
+        "source_columns": 10,
+        "relation_columns": 19,
+        "exception_columns": 15,
+    }
+    for name, count in expected_columns.items():
+        rows = _list(contract.get(name), f"{context}.{name}")
+        if len(rows) != count:
+            raise ContractError(
+                f"{context}.{name}: expected exactly {count} columns"
+            )
+        names = []
+        for index, value in enumerate(rows):
+            column = _mapping(value, f"{context}.{name}[{index}]")
+            if set(column) != {"name", "datatype", "unit", "nullable"}:
+                raise ContractError(
+                    f"{context}.{name}[{index}]: unexpected column keys"
+                )
+            if type(column.get("nullable")) is not bool:
+                raise ContractError(
+                    f"{context}.{name}[{index}].nullable: expected bool"
+                )
+            names.append(_text(column.get("name"), f"{context}.{name}.name"))
+        _unique(names, f"{context}.{name}.name")
+    if contract.get("relation_dispositions") != [
+        "matched", "unmatched", "ambiguous"
+    ] or contract.get("exception_kinds") != [
+        "field-deviation", "ambiguity-candidate", "seed-disposition"
+    ]:
+        raise ContractError(f"{context}: closed disposition/exception drift")
+    target = _mapping(
+        contract.get("target_logical_record"),
+        f"{context}.target_logical_record",
+    )
+    if (
+        target.get("schema") != "citlali-observation-target-manifest-v2"
+        or target.get("semantic_scope")
+        != "citlali-observation-target-manifest-semantic-sha256-v2"
+        or target.get("envelope_scope")
+        != "citlali-observation-target-manifest-envelope-sha256-v2"
+        or target.get("kids_flag_presence")
+        != "artifact-optional-all-rows-or-none"
+        or target.get("tone_policy")
+        != "tone_frequency_hz is exact-bit-equal to kids_f_out"
+    ):
+        raise ContractError(f"{context}: closed target logical record drift")
+    relation = _mapping(
+        contract.get("relation_metadata"),
+        f"{context}.relation_metadata",
+    )
+    if relation.get("network_evidence_statuses") != [
+        "matched-capable", "missing-baseline-network", "no-good-seed"
+    ] or relation.get("network_evidence_members") != [
+        "uid", "network", "status", "frequency_shift_bits", "gate_bits",
+        "quality_factor_bits",
+    ]:
+        raise ContractError(f"{context}: closed relation metadata drift")
+    return contract
+
+
+def _validate_compact_apt_lifecycle(value: Any) -> dict[str, Any]:
+    context = "apt_contract_lifecycle"
+    lifecycle = _mapping(value, context)
+    digest = _canonical_json_sha256(lifecycle)
+    if digest != COMPACT_APT_LIFECYCLE_SHA256:
+        raise ContractError(
+            f"{context}: compact v2 lifecycle drift "
+            f"({digest}; expected {COMPACT_APT_LIFECYCLE_SHA256})"
+        )
+    expected = {
+        "current_contract_family": "apt-prod-003-compact-v2",
+        "new_v1_issuance": "forbidden",
+        "v1_read_policy": "explicit-migration-or-comparison-only",
+        "v1_guardian_default": "reject",
+        "migration_output_policy": (
+            "migration-only-and-never-fresh-beammap-baseline"
+        ),
+        "activation_state": "unactivated",
+        "apt_dependent_validation_state": (
+            "suspended-until-apt-prod-003-gates-pass"
+        ),
+    }
+    if lifecycle != expected:
+        raise ContractError(f"{context}: lifecycle policy mismatch")
+    return lifecycle
+
+
+def _validate_compact_apt_artifact_contract(
+    artifact_id: str, value: Any
+) -> dict[str, Any]:
+    context = f"artifact_contracts.{artifact_id}"
+    artifact = _mapping(value, context)
+    if artifact_id not in COMPACT_APT_CONTRACT_SHA256:
+        raise ContractError(f"{context}: unsupported compact v2 contract")
+    if artifact.get("artifact_contract_id") != artifact_id:
+        raise ContractError(f"{context}.artifact_contract_id: mismatch")
+    digest = _canonical_json_sha256(artifact)
+    expected_digest = COMPACT_APT_CONTRACT_SHA256[artifact_id]
+    if digest != expected_digest:
+        raise ContractError(
+            f"{context}: compact v2 contract drift "
+            f"({digest}; expected {expected_digest})"
+        )
+    expected_schema = {
+        COMPACT_APT_BASELINE_CONTRACT_ID: COMPACT_APT_BASELINE_SCHEMA_V2,
+        COMPACT_APT_MATCHED_CONTRACT_ID: COMPACT_APT_MATCHED_SCHEMA_V2,
+    }[artifact_id]
+    if (
+        artifact.get("contract_schema_version")
+        != "citlali-canonical-apt-bundle-contract-v2"
+        or artifact.get("schema_version") != expected_schema
+        or artifact.get("activation_state") != "unactivated"
+        or artifact.get("artifact_kind") != "canonical-apt-compact-bundle"
+        or artifact.get("validator") != "citlali-canonical-apt-v2"
+        or artifact.get("contract_authority") != "citlali"
+        or artifact.get("shared_contract_id")
+        != COMPACT_APT_SHARED_CONTRACT_ID
+        or artifact.get("root_manifest_schema")
+        != COMPACT_APT_ROOT_MANIFEST_SCHEMA_V2
+        or artifact.get("routing")
+        != (
+            "no profile, accepted-run, ingestion-campaign, CAL, ALIGN, "
+            "or production activation"
+        )
+    ):
+        raise ContractError(f"{context}: schema/authority/activation drift")
+    expected_roles = {
+        COMPACT_APT_BASELINE_CONTRACT_ID: ["apt", "fields", "sources"],
+        COMPACT_APT_MATCHED_CONTRACT_ID: [
+            "apt", "relation", "fields", "sources", "exceptions",
+            "baseline-apt", "baseline-fields", "baseline-sources",
+            "baseline-manifest", "baseline-receipt",
+        ],
+    }[artifact_id]
+    if artifact.get("required_roles") != expected_roles:
+        raise ContractError(f"{context}.required_roles: exact role drift")
+    if artifact.get("optional_roles") != []:
+        raise ContractError(f"{context}.optional_roles: v2 is closed")
+    if artifact_id == COMPACT_APT_MATCHED_CONTRACT_ID:
+        catalog = _list(
+            artifact.get("kmp_field_registry"),
+            f"{context}.kmp_field_registry",
+        )
+        if [row.get("name") for row in catalog] != [
+            "kids_fr", "kids_f_out", "kids_Qr", "kids_flag"
+        ]:
+            raise ContractError(f"{context}: exact four-field KMP drift")
+        if artifact.get("hard_size_limit_bytes") != 20 * 1024 * 1024:
+            raise ContractError(f"{context}: 20 MiB hard gate drift")
+    return artifact
+
+
 def load_registry(path: Path) -> dict[str, Any]:
     with path.open(encoding="utf-8") as stream:
         registry = _mapping(
@@ -596,16 +820,30 @@ def load_registry(path: Path) -> dict[str, Any]:
     if registry.get("schema_version") != SCHEMA_VERSION:
         raise ContractError(f"{path}: unsupported schema_version")
 
+    lifecycle_value = registry.get("apt_contract_lifecycle")
+    shared_value = registry.get("apt_compact_v2_shared_contract")
+    if lifecycle_value is not None or shared_value is not None:
+        _validate_compact_apt_lifecycle(lifecycle_value)
+        _validate_compact_apt_shared_contract(shared_value)
+
     artifact_contracts = _mapping(
         registry.get("artifact_contracts", {}),
         f"{path}.artifact_contracts",
     )
+    if any(key in artifact_contracts for key in COMPACT_APT_CONTRACT_IDS) and (
+        lifecycle_value is None or shared_value is None
+    ):
+        raise ContractError(
+            "compact v2 artifact contracts require lifecycle and shared contract"
+        )
     for artifact_id, value in artifact_contracts.items():
         _text(artifact_id, "artifact_contracts key")
         if artifact_id == CANONICAL_APT_ARTIFACT_CONTRACT_ID:
             _validate_canonical_apt_artifact_contract(artifact_id, value)
         elif artifact_id in OBSERVATION_ARTIFACT_CONTRACT_IDS:
             _validate_observation_artifact_contract(artifact_id, value)
+        elif artifact_id in COMPACT_APT_CONTRACT_IDS:
+            _validate_compact_apt_artifact_contract(artifact_id, value)
         else:
             raise ContractError(
                 f"artifact_contracts.{artifact_id}: unsupported artifact contract"
@@ -980,6 +1218,7 @@ def load_registry(path: Path) -> dict[str, Any]:
         routed_artifacts = {
             CANONICAL_APT_ARTIFACT_CONTRACT_ID,
             *OBSERVATION_ARTIFACT_CONTRACT_IDS,
+            *COMPACT_APT_CONTRACT_IDS,
         }
         routed_matches = sorted(
             artifact_id
@@ -1018,6 +1257,10 @@ def artifact_contract_by_id(
         )
     if artifact_contract_id == CANONICAL_APT_ARTIFACT_CONTRACT_ID:
         return _validate_canonical_apt_artifact_contract(
+            artifact_contract_id, artifact_contracts[artifact_contract_id]
+        )
+    if artifact_contract_id in COMPACT_APT_CONTRACT_IDS:
+        return _validate_compact_apt_artifact_contract(
             artifact_contract_id, artifact_contracts[artifact_contract_id]
         )
     return _validate_observation_artifact_contract(
@@ -1867,6 +2110,775 @@ def _parse_csv_line(line: str) -> list[tuple[str, bool, str]]:
             cells.append(("", False, ""))
             break
     return cells
+
+
+COMPACT_APT_COMPONENT_SEMANTIC_SCOPE_V2 = (
+    "citlali-canonical-apt-component-semantic-sha256-v2"
+)
+COMPACT_APT_COMPONENT_ENVELOPE_SCOPE_V2 = (
+    "citlali-canonical-apt-component-envelope-sha256-v2"
+)
+COMPACT_APT_COMPONENT_TRANSPORT_SCOPE_V2 = (
+    "citlali-canonical-apt-component-byte-transport-sha256-v2"
+)
+COMPACT_APT_BUNDLE_TRANSPORT_SCOPE_V2 = (
+    "citlali-canonical-apt-root-manifest-byte-sha256-v2"
+)
+COMPACT_APT_BASELINE_BUNDLE_SEMANTIC_SCOPE_V2 = (
+    "citlali-canonical-baseline-apt-bundle-semantic-sha256-v2"
+)
+COMPACT_APT_BASELINE_BUNDLE_ENVELOPE_SCOPE_V2 = (
+    "citlali-canonical-baseline-apt-bundle-envelope-sha256-v2"
+)
+COMPACT_APT_MATCHED_BUNDLE_SEMANTIC_SCOPE_V2 = (
+    "citlali-canonical-observation-apt-bundle-semantic-sha256-v2"
+)
+COMPACT_APT_MATCHED_BUNDLE_ENVELOPE_SCOPE_V2 = (
+    "citlali-canonical-observation-apt-bundle-envelope-sha256-v2"
+)
+COMPACT_APT_FLAT_TYPES_V2 = frozenset(
+    {"int64", "uint64", "float64", "bool", "string"}
+)
+
+
+def _compact_v2_document_scope(
+    document: dict[str, Any], *, envelope: bool
+) -> str:
+    if document.get("role") != "manifest":
+        return (
+            COMPACT_APT_COMPONENT_ENVELOPE_SCOPE_V2
+            if envelope
+            else COMPACT_APT_COMPONENT_SEMANTIC_SCOPE_V2
+        )
+    product_kind = document.get("product_kind")
+    if product_kind == "beammap-baseline":
+        return (
+            COMPACT_APT_BASELINE_BUNDLE_ENVELOPE_SCOPE_V2
+            if envelope
+            else COMPACT_APT_BASELINE_BUNDLE_SEMANTIC_SCOPE_V2
+        )
+    if product_kind == "observation-matched":
+        return (
+            COMPACT_APT_MATCHED_BUNDLE_ENVELOPE_SCOPE_V2
+            if envelope
+            else COMPACT_APT_MATCHED_BUNDLE_SEMANTIC_SCOPE_V2
+        )
+    raise ContractError("compact v2 manifest product kind is not closed")
+
+
+def _compact_v2_float_payload(value: float) -> str:
+    if math.isnan(value):
+        return "nan"
+    if math.isinf(value):
+        return "-inf" if math.copysign(1.0, value) < 0 else "+inf"
+    return struct.pack(">d", value).hex()
+
+
+def _compact_v2_add_scalar(
+    output: bytearray, label: str, datatype: str, value: Any
+) -> None:
+    if value is None:
+        output.extend(canonical_frame(label, f"null-{datatype}", "null"))
+    elif datatype == "int64":
+        if type(value) is not int or not INT64_MIN <= value <= INT64_MAX:
+            raise ContractError(f"compact v2 {label}: expected exact int64")
+        output.extend(canonical_frame(label, "int64", str(value)))
+    elif datatype == "uint64":
+        if type(value) is not int or not 0 <= value <= UINT64_MAX:
+            raise ContractError(f"compact v2 {label}: expected exact uint64")
+        output.extend(canonical_frame(label, "uint64", str(value)))
+    elif datatype == "float64":
+        if type(value) is not float:
+            raise ContractError(f"compact v2 {label}: expected binary64")
+        output.extend(
+            canonical_frame(
+                label, "float64-ieee754", _compact_v2_float_payload(value)
+            )
+        )
+    elif datatype == "bool":
+        if type(value) is not bool:
+            raise ContractError(f"compact v2 {label}: expected bool")
+        output.extend(canonical_frame(label, "bool", "true" if value else "false"))
+    elif datatype == "string":
+        if not isinstance(value, str):
+            raise ContractError(f"compact v2 {label}: expected string")
+        _require_canonical_text(label, value, allow_empty=True)
+        output.extend(canonical_frame(label, "utf8", value))
+    else:
+        raise ContractError(f"compact v2 {label}: unsupported datatype {datatype!r}")
+
+
+def _compact_v2_component_semantic_preimage(document: dict[str, Any]) -> bytes:
+    schema = _text(document.get("schema"), "compact v2 component schema")
+    role = _text(document.get("role"), "compact v2 component role")
+    product_kind = _text(
+        document.get("product_kind"), "compact v2 component product_kind"
+    )
+    if product_kind not in {"beammap-baseline", "observation-matched"}:
+        raise ContractError("compact v2 component product_kind is not closed")
+    observation = _mapping(
+        document.get("observation"), "compact v2 component observation"
+    )
+    for name in ("obsnum", "subobsnum", "scannum"):
+        value = observation.get(name)
+        if type(value) is not int or not 0 <= value <= INT64_MAX:
+            raise ContractError(f"compact v2 observation {name} is invalid")
+    metadata = _mapping(
+        document.get("metadata", {}), "compact v2 component metadata"
+    )
+    columns = _list(document.get("columns"), "compact v2 component columns")
+    rows = _list(document.get("rows"), "compact v2 component rows")
+    if not columns:
+        raise ContractError("compact v2 component has no columns")
+
+    output = bytearray()
+    _compact_v2_add_scalar(
+        output, "scope", "string",
+        _compact_v2_document_scope(document, envelope=False),
+    )
+    _compact_v2_add_scalar(output, "schema", "string", schema)
+    _compact_v2_add_scalar(output, "role", "string", role)
+    _compact_v2_add_scalar(output, "product-kind", "string", product_kind)
+    for name in ("obsnum", "subobsnum", "scannum"):
+        _compact_v2_add_scalar(
+            output, f"observation.{name}", "int64", observation[name]
+        )
+    ordered_metadata = sorted(metadata.items())
+    _compact_v2_add_scalar(
+        output, "metadata.count", "uint64", len(ordered_metadata)
+    )
+    for index, (key, value) in enumerate(ordered_metadata):
+        _require_canonical_text("compact v2 metadata key", key)
+        if not isinstance(value, str):
+            raise ContractError("compact v2 metadata values are strings")
+        _require_canonical_text(
+            "compact v2 metadata value", value, allow_empty=True
+        )
+        prefix = f"metadata.{index}"
+        _compact_v2_add_scalar(output, f"{prefix}.key", "string", key)
+        _compact_v2_add_scalar(output, f"{prefix}.value", "string", value)
+    _compact_v2_add_scalar(output, "column.count", "uint64", len(columns))
+    names: list[str] = []
+    normalized_columns: list[dict[str, Any]] = []
+    for index, raw_column in enumerate(columns):
+        column = _mapping(raw_column, f"compact v2 column {index}")
+        if set(column) != {"name", "datatype", "unit", "nullable"}:
+            raise ContractError(f"compact v2 column {index}: unexpected keys")
+        name = _text(column.get("name"), f"compact v2 column {index} name")
+        datatype = _text(
+            column.get("datatype"), f"compact v2 column {index} datatype"
+        )
+        unit = _text(column.get("unit"), f"compact v2 column {index} unit")
+        nullable = column.get("nullable")
+        if datatype not in COMPACT_APT_FLAT_TYPES_V2 or type(nullable) is not bool:
+            raise ContractError(f"compact v2 column {index}: type/nullability invalid")
+        names.append(name)
+        normalized_columns.append(
+            {"name": name, "datatype": datatype, "unit": unit,
+             "nullable": nullable}
+        )
+        prefix = f"column.{index}"
+        _compact_v2_add_scalar(output, f"{prefix}.name", "string", name)
+        _compact_v2_add_scalar(
+            output, f"{prefix}.datatype", "string", datatype
+        )
+        _compact_v2_add_scalar(output, f"{prefix}.unit", "string", unit)
+        _compact_v2_add_scalar(
+            output, f"{prefix}.nullable", "bool", nullable
+        )
+    _unique(names, "compact v2 component columns")
+    _compact_v2_add_scalar(output, "row.count", "uint64", len(rows))
+    for row_index, raw_row in enumerate(rows):
+        row = _list(raw_row, f"compact v2 row {row_index}")
+        if len(row) != len(normalized_columns):
+            raise ContractError(f"compact v2 row {row_index}: width mismatch")
+        for column, value in zip(normalized_columns, row, strict=True):
+            if value is None and not column["nullable"]:
+                raise ContractError(
+                    f"compact v2 row {row_index} nonnullable cell is null"
+                )
+            _compact_v2_add_scalar(
+                output, f"row.{row_index}.{column['name']}",
+                column["datatype"], value,
+            )
+    return bytes(output)
+
+
+def _compact_v2_component_digests(document: dict[str, Any]) -> dict[str, str]:
+    issuance = _mapping(
+        document.get("issuance"), "compact v2 component issuance"
+    )
+    expected_keys = {
+        "occurrence", "event_reference", "producer", "software_revision",
+        "configuration_reference", "event_time_utc",
+    }
+    if set(issuance) != expected_keys:
+        raise ContractError("compact v2 issuance keys are not exact")
+    for key in expected_keys:
+        _require_canonical_text(f"compact v2 issuance {key}", issuance[key])
+    if not _valid_utc_timestamp(issuance["event_time_utc"]):
+        raise ContractError("compact v2 event time is not exact UTC")
+    semantic = "sha256:" + hashlib.sha256(
+        _compact_v2_component_semantic_preimage(document)
+    ).hexdigest()
+    envelope = bytearray()
+    for label, value in (
+        ("scope", _compact_v2_document_scope(document, envelope=True)),
+        ("semantic", semantic),
+        ("occurrence", issuance["occurrence"]),
+        ("event", issuance["event_reference"]),
+        ("producer", issuance["producer"]),
+        ("software", issuance["software_revision"]),
+        ("configuration", issuance["configuration_reference"]),
+        ("event-time", issuance["event_time_utc"]),
+    ):
+        _compact_v2_add_scalar(envelope, label, "string", value)
+    return {
+        "semantic_sha256": semantic,
+        "envelope_sha256": "sha256:" + hashlib.sha256(envelope).hexdigest(),
+    }
+
+
+def _compact_v2_cell_token(value: Any, datatype: str) -> str:
+    if value is None:
+        return ""
+    if datatype == "int64" or datatype == "uint64":
+        return str(value)
+    if datatype == "float64":
+        return _format_float64(value)
+    if datatype == "bool":
+        return "true" if value else "false"
+    if datatype == "string":
+        return _csv_quote(value)
+    raise ContractError(f"compact v2 cell datatype {datatype!r} is unsupported")
+
+
+def _serialize_compact_v2_component(document: dict[str, Any]) -> dict[str, Any]:
+    """Internal lexical codec; closed role wrappers own admission semantics."""
+    digests = _compact_v2_component_digests(document)
+    columns = document["columns"]
+    lines = ["# %ECSV 1.0", "# ---", "# datatype:"]
+    for column in columns:
+        lines.extend(
+            [
+                f"# - name: {_yaml_quote(column['name'])}",
+                f"#   datatype: {_yaml_quote(column['datatype'])}",
+                f"#   unit: {_yaml_quote(column['unit'])}",
+                "#   nullable: " + ("true" if column["nullable"] else "false"),
+            ]
+        )
+    issuance = document["issuance"]
+    observation = document["observation"]
+    lines.extend(["# meta:", "#   canonical_apt_v2:"])
+    for key, value in (
+        ("schema_version", document["schema"]),
+        ("component_role", document["role"]),
+        ("product_kind", document["product_kind"]),
+        ("occurrence", issuance["occurrence"]),
+        ("event_reference", issuance["event_reference"]),
+        ("producer", issuance["producer"]),
+        ("software_revision", issuance["software_revision"]),
+        ("configuration_reference", issuance["configuration_reference"]),
+        ("event_time_utc", issuance["event_time_utc"]),
+    ):
+        lines.append(f"#     {key}: {_yaml_quote(value)}")
+    lines.extend(
+        [
+            "#     observation:",
+            f"#       obsnum: {observation['obsnum']}",
+            f"#       subobsnum: {observation['subobsnum']}",
+            f"#       scannum: {observation['scannum']}",
+            "#     semantic_scope: "
+            + _yaml_quote(_compact_v2_document_scope(document, envelope=False)),
+            f"#     semantic_sha256: {_yaml_quote(digests['semantic_sha256'])}",
+            "#     envelope_scope: "
+            + _yaml_quote(_compact_v2_document_scope(document, envelope=True)),
+            f"#     envelope_sha256: {_yaml_quote(digests['envelope_sha256'])}",
+            f"#     row_count: {len(document['rows'])}",
+        ]
+    )
+    metadata = sorted(document.get("metadata", {}).items())
+    lines.extend(
+        [f"#     role_metadata_count: {len(metadata)}", "#     role_metadata:"]
+    )
+    for key, value in metadata:
+        lines.append(f"#       - key: {_yaml_quote(key)}")
+        lines.append(f"#         value: {_yaml_quote(value)}")
+    lines.extend(
+        [
+            "# delimiter: ','",
+            "# schema: astropy-2.0",
+            ",".join(_csv_quote(column["name"]) for column in columns),
+        ]
+    )
+    for row in document["rows"]:
+        lines.append(
+            ",".join(
+                _compact_v2_cell_token(value, column["datatype"])
+                for column, value in zip(columns, row, strict=True)
+            )
+        )
+    artifact_bytes = ("\n".join(lines) + "\n").encode("utf-8")
+    return {
+        **digests,
+        "bytes": artifact_bytes,
+        "transport_sha256": "sha256:" + hashlib.sha256(artifact_bytes).hexdigest(),
+        "byte_count": len(artifact_bytes),
+        "row_count": len(document["rows"]),
+    }
+
+
+def _parse_compact_v2_component_bytes(artifact_bytes: bytes) -> dict[str, Any]:
+    """Internal lexical parser; callers must apply an exact closed role schema."""
+    if not artifact_bytes or not artifact_bytes.endswith(b"\n") or b"\r" in artifact_bytes:
+        raise ContractError("compact v2 ECSV requires exact final-LF framing")
+    try:
+        text = artifact_bytes.decode("utf-8", errors="strict")
+    except UnicodeDecodeError as error:
+        raise ContractError(f"compact v2 ECSV is not UTF-8: {error}") from error
+    cursor = _CanonicalAptCursor(text[:-1].split("\n"))
+    cursor.expect("# %ECSV 1.0")
+    cursor.expect("# ---")
+    cursor.expect("# datatype:")
+    columns: list[dict[str, Any]] = []
+    while cursor.peek() is not None and cursor.peek().startswith("# - name: "):
+        name = _yaml_unquote(cursor.take("compact v2 column name")[10:])
+        datatype = _yaml_unquote(
+            cursor.take("compact v2 column datatype")[14:]
+        )
+        unit = _yaml_unquote(cursor.take("compact v2 column unit")[10:])
+        nullable_token = cursor.take("compact v2 column nullable")
+        if nullable_token not in {"#   nullable: true", "#   nullable: false"}:
+            raise ContractError("compact v2 nullable token is invalid")
+        columns.append(
+            {
+                "name": name,
+                "datatype": datatype,
+                "unit": unit,
+                "nullable": nullable_token.endswith("true"),
+            }
+        )
+    cursor.expect("# meta:")
+    cursor.expect("#   canonical_apt_v2:")
+
+    def quoted(prefix: str) -> str:
+        line = cursor.take(prefix)
+        if not line.startswith(prefix):
+            raise ContractError(f"compact v2 expected metadata {prefix!r}")
+        return _yaml_unquote(line[len(prefix):])
+
+    def uint(prefix: str) -> int:
+        line = cursor.take(prefix)
+        if not line.startswith(prefix):
+            raise ContractError(f"compact v2 expected count {prefix!r}")
+        return _parse_exact_uint64(line[len(prefix):], prefix)
+
+    schema = quoted("#     schema_version: ")
+    role = quoted("#     component_role: ")
+    product_kind = quoted("#     product_kind: ")
+    issuance = {
+        "occurrence": quoted("#     occurrence: "),
+        "event_reference": quoted("#     event_reference: "),
+        "producer": quoted("#     producer: "),
+        "software_revision": quoted("#     software_revision: "),
+        "configuration_reference": quoted("#     configuration_reference: "),
+        "event_time_utc": quoted("#     event_time_utc: "),
+    }
+    cursor.expect("#     observation:")
+    observation = {
+        "obsnum": uint("#       obsnum: "),
+        "subobsnum": uint("#       subobsnum: "),
+        "scannum": uint("#       scannum: "),
+    }
+    identity = {"role": role, "product_kind": product_kind}
+    if quoted("#     semantic_scope: ") != _compact_v2_document_scope(
+        identity, envelope=False
+    ):
+        raise ContractError("compact v2 semantic scope mismatch")
+    declared_semantic = quoted("#     semantic_sha256: ")
+    if quoted("#     envelope_scope: ") != _compact_v2_document_scope(
+        identity, envelope=True
+    ):
+        raise ContractError("compact v2 envelope scope mismatch")
+    declared_envelope = quoted("#     envelope_sha256: ")
+    row_count = uint("#     row_count: ")
+    metadata_count = uint("#     role_metadata_count: ")
+    cursor.expect("#     role_metadata:")
+    metadata: dict[str, str] = {}
+    for _ in range(metadata_count):
+        key = quoted("#       - key: ")
+        value = quoted("#         value: ")
+        if key in metadata:
+            raise ContractError("compact v2 metadata key is duplicate")
+        metadata[key] = value
+    cursor.expect("# delimiter: ','")
+    cursor.expect("# schema: astropy-2.0")
+    header = _parse_csv_line(cursor.take("compact v2 CSV header"))
+    if [(value, quoted_flag) for value, quoted_flag, _ in header] != [
+        (column["name"], True) for column in columns
+    ]:
+        raise ContractError("compact v2 CSV header is noncanonical")
+    rows: list[list[Any]] = []
+    while cursor.peek() is not None:
+        line = cursor.take("compact v2 CSV row")
+        if not line:
+            raise ContractError("compact v2 ECSV contains blank row")
+        cells = _parse_csv_line(line)
+        if len(cells) != len(columns):
+            raise ContractError("compact v2 ECSV row width mismatch")
+        row: list[Any] = []
+        for column, (value, quoted_flag, _token) in zip(columns, cells, strict=True):
+            if not value:
+                if quoted_flag:
+                    raise ContractError(
+                        "compact v2 quoted empty cell is noncanonical"
+                    )
+                if not column["nullable"]:
+                    raise ContractError("compact v2 nonnullable cell is null")
+                row.append(None)
+                continue
+            if column["datatype"] == "string":
+                if not quoted_flag:
+                    raise ContractError("compact v2 string cell is unquoted")
+                _require_canonical_text("compact v2 string cell", value, allow_empty=True)
+                row.append(value)
+            elif quoted_flag:
+                raise ContractError("compact v2 numeric/bool cell is quoted")
+            elif column["datatype"] == "int64":
+                row.append(_parse_exact_int64(value, column["name"]))
+            elif column["datatype"] == "uint64":
+                row.append(_parse_exact_uint64(value, column["name"]))
+            elif column["datatype"] == "float64":
+                row.append(_parse_float64(value, column["name"]))
+            elif column["datatype"] == "bool":
+                if value not in {"true", "false"}:
+                    raise ContractError("compact v2 bool token is invalid")
+                row.append(value == "true")
+            else:
+                raise ContractError("compact v2 cell datatype is unsupported")
+        rows.append(row)
+    if len(rows) != row_count:
+        raise ContractError("compact v2 ECSV row count mismatch")
+    document = {
+        "schema": schema,
+        "role": role,
+        "product_kind": product_kind,
+        "issuance": issuance,
+        "observation": observation,
+        "metadata": metadata,
+        "columns": columns,
+        "rows": rows,
+    }
+    computed = _serialize_compact_v2_component(document)
+    if (
+        computed["semantic_sha256"] != declared_semantic
+        or computed["envelope_sha256"] != declared_envelope
+        or computed["bytes"] != artifact_bytes
+    ):
+        raise ContractError(
+            "compact v2 component is stale, tampered, reordered, or noncanonical"
+        )
+    return {**computed, "document": document}
+
+
+COMPACT_APT_TARGET_SCHEMA_V2 = "citlali-observation-target-manifest-v2"
+COMPACT_APT_TARGET_SEMANTIC_SCOPE_V2 = (
+    "citlali-observation-target-manifest-semantic-sha256-v2"
+)
+COMPACT_APT_TARGET_ENVELOPE_SCOPE_V2 = (
+    "citlali-observation-target-manifest-envelope-sha256-v2"
+)
+
+
+def _compact_v2_target_semantic_preimage(target: dict[str, Any]) -> bytes:
+    """Independent closed mirror of the compact-v2 target logical identity."""
+
+    issuance = _mapping(target.get("issuance"), "compact v2 target.issuance")
+    expected_issuance = {
+        "occurrence", "event_reference", "producer", "software_revision",
+        "configuration_reference", "event_time_utc",
+    }
+    if set(issuance) != expected_issuance:
+        raise ContractError("compact v2 target issuance members are not exact")
+    for name in expected_issuance:
+        _require_canonical_text(f"compact v2 target issuance {name}", issuance[name])
+    if not _valid_utc_timestamp(issuance["event_time_utc"]):
+        raise ContractError("compact v2 target event time is not exact UTC")
+    observation = _mapping(
+        target.get("observation"), "compact v2 target.observation"
+    )
+    if set(observation) != {"obsnum", "subobsnum", "scannum"}:
+        raise ContractError("compact v2 target observation members are not exact")
+    observation_values = {
+        name: _parse_exact_int64(str(observation[name]), f"target {name}")
+        for name in ("obsnum", "subobsnum", "scannum")
+    }
+    if any(value < 0 for value in observation_values.values()):
+        raise ContractError("compact v2 target observation is negative")
+    sources = _list(target.get("sources"), "compact v2 target.sources")
+    rows = _list(target.get("rows"), "compact v2 target.rows")
+    if not sources or not rows:
+        raise ContractError("compact v2 target is empty")
+
+    frames: list[bytes] = []
+    _frame_text(frames, "scope", COMPACT_APT_TARGET_SEMANTIC_SCOPE_V2)
+    _frame_text(frames, "schema", COMPACT_APT_TARGET_SCHEMA_V2)
+    _frame_int64(frames, "observation.obsnum", str(observation_values["obsnum"]))
+    _frame_int64(
+        frames, "observation.subobsnum", str(observation_values["subobsnum"])
+    )
+    _frame_int64(frames, "observation.scannum", str(observation_values["scannum"]))
+
+    source_members = {
+        "source_uid", "role", "content_sha256", "byte_count",
+        "header_observation", "network", "interface", "channel_count",
+    }
+    normalized_sources: list[dict[str, Any]] = []
+    source_uids: set[int] = set()
+    for index, raw_source in enumerate(sources):
+        context = f"compact v2 target.sources[{index}]"
+        source = _mapping(raw_source, context)
+        if set(source) != source_members:
+            raise ContractError(f"{context}: members are not exact")
+        source_uid = _parse_exact_int64(str(source["source_uid"]), context)
+        network = _parse_exact_int64(str(source["network"]), context)
+        channel_count = _parse_exact_int64(str(source["channel_count"]), context)
+        byte_count = _parse_exact_uint64(str(source["byte_count"]), context)
+        if (
+            source_uid < 0
+            or source_uid in source_uids
+            or network < 0
+            or network > 12
+            or channel_count <= 0
+            or byte_count <= 0
+            or source.get("role") not in {"raw", "kmp"}
+            or source.get("interface") != f"toltec{network}"
+            or type(source.get("content_sha256")) is not str
+            or SHA256_REFERENCE_RE.fullmatch(source["content_sha256"]) is None
+        ):
+            raise ContractError(f"{context}: source facts are invalid")
+        source_uids.add(source_uid)
+        header = _mapping(source.get("header_observation"), f"{context}.header")
+        if set(header) != {"obsnum", "subobsnum", "scannum"}:
+            raise ContractError(f"{context}: header observation is not exact")
+        normalized_sources.append(
+            {
+                **source,
+                "source_uid": source_uid,
+                "network": network,
+                "channel_count": channel_count,
+                "byte_count": byte_count,
+                "header_observation": {
+                    key: _parse_exact_int64(str(header[key]), context)
+                    for key in ("obsnum", "subobsnum", "scannum")
+                },
+            }
+        )
+    normalized_sources.sort(key=lambda source: source["source_uid"])
+    source_by_uid = {source["source_uid"]: source for source in normalized_sources}
+    source_by_role_network: dict[tuple[str, int], dict[str, Any]] = {}
+    for source in normalized_sources:
+        key = (source["role"], source["network"])
+        if key in source_by_role_network:
+            raise ContractError("compact v2 target source role/network is duplicate")
+        source_by_role_network[key] = source
+        if source["role"] == "raw" and source["header_observation"] != observation_values:
+            raise ContractError("compact v2 raw source header is not the target observation")
+    for (role, network), source in source_by_role_network.items():
+        if role != "raw":
+            continue
+        kmp = source_by_role_network.get(("kmp", network))
+        if (
+            kmp is None
+            or kmp["interface"] != source["interface"]
+            or kmp["channel_count"] != source["channel_count"]
+        ):
+            raise ContractError("compact v2 raw/KMP source pair is incomplete")
+    if any(
+        role == "kmp" and ("raw", network) not in source_by_role_network
+        for role, network in source_by_role_network
+    ):
+        raise ContractError("compact v2 KMP source has no raw peer")
+    _frame_uint64(frames, "source.count", len(normalized_sources))
+    for index, source in enumerate(normalized_sources):
+        prefix = f"source.{index}"
+        _frame_int64(frames, f"{prefix}.uid", str(source["source_uid"]))
+        _frame_text(frames, f"{prefix}.role", source["role"])
+        _frame_text(frames, f"{prefix}.content", source["content_sha256"])
+        _frame_uint64(frames, f"{prefix}.bytes", source["byte_count"])
+        header = source["header_observation"]
+        _frame_int64(frames, f"{prefix}.observation", str(header["obsnum"]))
+        _frame_int64(
+            frames, f"{prefix}.subobservation", str(header["subobsnum"])
+        )
+        _frame_int64(frames, f"{prefix}.scan", str(header["scannum"]))
+        _frame_int64(frames, f"{prefix}.network", str(source["network"]))
+        _frame_text(frames, f"{prefix}.interface", source["interface"])
+        _frame_int64(frames, f"{prefix}.channels", str(source["channel_count"]))
+
+    row_members = {
+        "uid", "input_uid", "raw_source_uid", "kmp_source_uid",
+        "kmp_row_index", "source_rank", "application_rank",
+        "tone_frequency_hz", "array", "network", "channel", "fields",
+    }
+    normalized_rows: list[dict[str, Any]] = []
+    row_uids: set[int] = set()
+    raw_channels: set[tuple[int, int]] = set()
+    input_by_network: dict[int, int] = {}
+    network_by_input: dict[int, int] = {}
+    has_flag: set[bool] = set()
+    for index, raw_row in enumerate(rows):
+        context = f"compact v2 target.rows[{index}]"
+        row = _mapping(raw_row, context)
+        if set(row) != row_members:
+            raise ContractError(f"{context}: members are not exact")
+        integer_names = (
+            "uid", "input_uid", "raw_source_uid", "kmp_source_uid",
+            "kmp_row_index", "array", "network", "channel",
+        )
+        values = {
+            name: _parse_exact_int64(str(row[name]), f"{context}.{name}")
+            for name in integer_names
+        }
+        ranks = {
+            name: _parse_exact_uint64(str(row[name]), f"{context}.{name}")
+            for name in ("source_rank", "application_rank")
+        }
+        fields = _mapping(row.get("fields"), f"{context}.fields")
+        flag_present = "kids_flag" in fields
+        has_flag.add(flag_present)
+        expected_fields = {"kids_fr", "kids_f_out", "kids_Qr"}
+        if flag_present:
+            expected_fields.add("kids_flag")
+        if set(fields) != expected_fields:
+            raise ContractError(f"{context}: KMP field set is not closed")
+        normalized_fields: dict[str, Any] = {}
+        for name, value in fields.items():
+            if name == "kids_flag":
+                normalized_fields[name] = _parse_exact_int64(
+                    str(value), f"{context}.{name}"
+                )
+            else:
+                if type(value) is not float or not math.isfinite(value):
+                    raise ContractError(f"{context}.{name}: expected finite float64")
+                normalized_fields[name] = value
+        tone = row.get("tone_frequency_hz")
+        if type(tone) is not float or not math.isfinite(tone):
+            raise ContractError(f"{context}.tone_frequency_hz is invalid")
+        if struct.pack(">d", tone) != struct.pack(">d", normalized_fields["kids_f_out"]):
+            raise ContractError(f"{context}: tone frequency disagrees with kids_f_out")
+        if values["uid"] < 0 or values["uid"] in row_uids:
+            raise ContractError(f"{context}: UID is negative or duplicate")
+        raw = source_by_uid.get(values["raw_source_uid"])
+        kmp = source_by_uid.get(values["kmp_source_uid"])
+        expected_array = 0 if values["network"] <= 6 else (
+            1 if values["network"] <= 10 else 2
+        )
+        relation_key = (values["network"], values["channel"])
+        if (
+            values["input_uid"] < 0
+            or values["kmp_row_index"] < 0
+            or values["channel"] < 0
+            or values["network"] < 0
+            or values["network"] > 12
+            or values["array"] != expected_array
+            or relation_key in raw_channels
+            or raw is None
+            or raw["role"] != "raw"
+            or raw["network"] != values["network"]
+            or values["channel"] >= raw["channel_count"]
+            or kmp is None
+            or kmp["role"] != "kmp"
+            or kmp["network"] != values["network"]
+            or values["kmp_row_index"] != values["channel"]
+            or values["kmp_row_index"] >= kmp["channel_count"]
+        ):
+            raise ContractError(f"{context}: source/channel relation is invalid")
+        if values["network"] in input_by_network and (
+            input_by_network[values["network"]] != values["input_uid"]
+        ):
+            raise ContractError(f"{context}: input UID varies within a network")
+        if values["input_uid"] in network_by_input and (
+            network_by_input[values["input_uid"]] != values["network"]
+        ):
+            raise ContractError(f"{context}: input UID is reused across networks")
+        input_by_network[values["network"]] = values["input_uid"]
+        network_by_input[values["input_uid"]] = values["network"]
+        row_uids.add(values["uid"])
+        raw_channels.add(relation_key)
+        normalized_rows.append(
+            {**row, **values, **ranks, "tone_frequency_hz": tone, "fields": normalized_fields}
+        )
+    if len(has_flag) != 1:
+        raise ContractError("compact v2 target kids_flag presence is inconsistent")
+    if sum(
+        source["channel_count"]
+        for source in normalized_sources
+        if source["role"] == "raw"
+    ) != len(normalized_rows):
+        raise ContractError("compact v2 raw sources do not cover every target row")
+    for rank_name in ("source_rank", "application_rank"):
+        if sorted(row[rank_name] for row in normalized_rows) != list(range(len(rows))):
+            raise ContractError(f"compact v2 target {rank_name} is not a permutation")
+    normalized_rows.sort(key=lambda row: row["uid"])
+    _frame_uint64(frames, "row.count", len(normalized_rows))
+    for index, row in enumerate(normalized_rows):
+        prefix = f"row.{index}"
+        for label, key in (
+            ("uid", "uid"), ("input", "input_uid"),
+            ("raw-source", "raw_source_uid"),
+            ("kmp-source", "kmp_source_uid"),
+            ("kmp-row", "kmp_row_index"),
+        ):
+            _frame_int64(frames, f"{prefix}.{label}", str(row[key]))
+        _frame_uint64(frames, f"{prefix}.source-rank", row["source_rank"])
+        _frame_uint64(
+            frames, f"{prefix}.application-rank", row["application_rank"]
+        )
+        _frame_float64(
+            frames,
+            f"{prefix}.tone-frequency",
+            struct.pack(">d", row["tone_frequency_hz"]).hex(),
+        )
+        for label, key in (("array", "array"), ("network", "network"), ("channel", "channel")):
+            _frame_int64(frames, f"{prefix}.{label}", str(row[key]))
+        _frame_uint64(frames, f"{prefix}.field.count", len(row["fields"]))
+        for name, value in sorted(row["fields"].items()):
+            _frame_text(frames, f"{prefix}.field.name", name)
+            if name == "kids_flag":
+                _frame_int64(frames, f"{prefix}.field.value", str(value))
+            else:
+                _frame_float64(
+                    frames,
+                    f"{prefix}.field.value",
+                    struct.pack(">d", value).hex(),
+                )
+    return b"".join(frames)
+
+
+def _compact_v2_target_identity(target: dict[str, Any]) -> dict[str, str]:
+    semantic = "sha256:" + hashlib.sha256(
+        _compact_v2_target_semantic_preimage(target)
+    ).hexdigest()
+    issuance = _mapping(target.get("issuance"), "compact v2 target issuance")
+    frames: list[bytes] = []
+    for label, value in (
+        ("scope", COMPACT_APT_TARGET_ENVELOPE_SCOPE_V2),
+        ("semantic", semantic),
+        ("occurrence", issuance["occurrence"]),
+        ("event", issuance["event_reference"]),
+        ("producer", issuance["producer"]),
+        ("software", issuance["software_revision"]),
+        ("configuration", issuance["configuration_reference"]),
+        ("event-time", issuance["event_time_utc"]),
+    ):
+        _frame_text(frames, label, _text(value, f"target issuance {label}"))
+    return {
+        "schema": COMPACT_APT_TARGET_SCHEMA_V2,
+        "occurrence": issuance["occurrence"],
+        "semantic_sha256": semantic,
+        "envelope_sha256": "sha256:" + hashlib.sha256(b"".join(frames)).hexdigest(),
+    }
 
 
 def _valid_utc_timestamp(value: str) -> bool:

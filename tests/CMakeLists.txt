@@ -12,6 +12,8 @@ target_sources(citlali_test
         test_astrometry_config_plan.cpp
         test_beammap_config_plan.cpp
         test_canonical_apt_v1.cpp
+        test_canonical_apt_v2.cpp
+        ${CMAKE_SOURCE_DIR}/src/citlali/cli/canonical_apt_contract_protocol_v2.cpp
         test_calib_apt_filtering.cpp
         test_coherent_iq_mode_observer.cpp
         test_config_scaffold.cpp

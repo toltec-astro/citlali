@@ -2074,8 +2074,9 @@ std::string process_valid_request(
         return serialize_json(success_response(
             request_id, operation, describe_baseline(payload)));
     } else if (operation == issue_observation_apt_operation_v1) {
-        return issue_observation_apt(payload, dependencies,
-                                     request_id, operation);
+        (void)dependencies;
+        throw baseline::ContractError(
+            "new canonical APT v1 issuance is disabled; v1 is read-only historical evidence");
     } else if (operation == validate_observation_apt_operation_v1) {
         return serialize_json(success_response(
             request_id, operation, validate_observation_apt(payload)));

@@ -1,5 +1,10 @@
 # Citlali Canonical Baseline APT v1
 
+> Historical contract. APT-PROD-003 compact v2 supersedes all new issuance
+> and ordinary admission. V1 is accepted only by an explicitly selected
+> migration or comparison operation and must never be called a fresh Beammap
+> baseline. See [`CANONICAL_APT_V2.md`](CANONICAL_APT_V2.md).
+
 ## Status And Authority
 
 This document is the normative human-readable contract for the candidate

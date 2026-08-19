@@ -110,6 +110,7 @@ if (CITLALI_BUILD_CLI)
     target_sources(citlali_cli
         PRIVATE
             "src/citlali/cli/canonical_apt_contract_protocol_v1.cpp"
+            "src/citlali/cli/canonical_apt_contract_protocol_v2.cpp"
             "src/citlali/cli/main.cpp"
             )
     target_link_libraries(citlali_cli PRIVATE ${dep_libs})

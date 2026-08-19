@@ -1,5 +1,28 @@
 # Citlali Baseline Harness
 
+## Compact canonical APT v2
+
+APT-PROD-003 supersedes new baseline and matched-APT v1 issuance. V2 is a
+normalized content-addressed ECSV bundle with `apt`, field, source, relation,
+and exception components as applicable, one root `manifest.ecsv`, and one
+adjacent root receipt published last. JSON remains protocol-only. Ordinary
+validation defaults to v2 and rejects bare ECSV, v1, missing receipts, and
+migration-marked products. Historical v1 commands are explicit
+migration/comparison tools only. See
+[`../../doc/CANONICAL_APT_V2.md`](../../doc/CANONICAL_APT_V2.md).
+
+The current Citlali-only public protocol validates and describes fresh v2
+bundles:
+
+```bash
+printf '%s\n' \
+  '{"protocol":"citlali-canonical-apt-protocol-v2","request_id":"validate-1","operation":"validate-bundle-v2","payload":{"root_manifest":"/absolute/path/to/manifest.ecsv"}}' \
+  | build/bin/citlali --canonical-apt-contract-v2
+```
+
+Matched issuance, target canonicalization, and v1 migration operation names
+remain unavailable until the TolAPT/TolProj compact-v2 integration lands.
+
 This directory contains lightweight utilities for recording and comparing
 Citlali reduction outputs during the structural refactor.
 
@@ -107,7 +130,8 @@ match relation remain independently canonicalized logical records, but they
 are embedded in the final APT metadata: v1 does not publish `.target.ecsv`,
 `.relation.ecsv`, a bundle manifest, or JSON APT data.
 
-The supported machine boundary is the Citlali CLI's strict JSON-line protocol:
+The retained read-only machine boundary is the Citlali CLI's strict JSON-line
+protocol:
 
 ```bash
 printf '%s\n' \
@@ -117,23 +141,19 @@ printf '%s\n' \
 
 The option must be the only CLI argument. It consumes exactly one
 LF-terminated JSON request and returns exactly one JSON response line. Its
-three operations are:
+historical operation names are:
 
 - `describe-baseline-v1`: reread and verify a canonical baseline ECSV/receipt
   pair and return the complete typed descriptor and immutable reference;
-- `issue-observation-apt-v1`: verify the baseline and bound raw/KMP sources,
-  materialize caller-supplied occurrence-scoped target and relation facts,
-  construct and reread the final ECSV, then publish it no-replace with the
-  receipt visible last; and
+- `issue-observation-apt-v1`: disabled unconditionally before payload or source
+  processing; new v1 issuance is forbidden; and
 - `validate-observation-apt-v1`: reread an already published final
   ECSV/receipt pair against its verified baseline and return the complete
   typed target, relation, output, identity, and transport result.
 
-The request supplies legitimate observation values, selected match facts, and
-provenance. It does not supply Citlali's schemas, field catalog, digests,
-output-local keys, or final occurrence. Exact request and response examples,
-including generalized per-field source selection, live in
-`test_validate_product_contract.py`; the normative boundary is documented in
+Historical issue-request examples remain test evidence for the superseded
+contract shape; they are not an available producer API. The normative
+historical boundary is documented in
 [`../../doc/CANONICAL_APT_OBSERVATION_V1.md`](../../doc/CANONICAL_APT_OBSERVATION_V1.md).
 
 The Python artifact selector intentionally rejects all APT-PROD-002 contract

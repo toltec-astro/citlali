@@ -43,17 +43,41 @@ std::string Beammap::write_beammap_apt_table() {
     const auto document =
         beammap_apt_table_output_helpers::make_canonical_document(
             calib, flag2, context);
-    const auto output_path =
-        std::filesystem::path(apt_filename + ".ecsv");
-    const auto publication =
-        beammap_apt_table_output_helpers::publish_canonical_apt(
-            document, output_path);
-
+    const auto prepared =
+        beammap_apt_table_output_helpers::prepare_canonical_baseline_v2(
+            document, calib.canonical_apt_producer);
+    const auto bundle_directory =
+        std::filesystem::absolute(apt_filename + ".apt-v2");
+    std::error_code directory_error;
+    if (!std::filesystem::create_directory(bundle_directory,
+                                           directory_error) ||
+        directory_error) {
+        throw std::runtime_error(
+            "canonical APT v2 refuses to replace or reuse bundle directory: " +
+            bundle_directory.string());
+    }
+    const auto manifest_path =
+        bundle_directory /
+        citlali::pipeline::canonical_apt_v2::root_manifest_name_v2;
+    const auto publication = [&] {
+        try {
+            return
+            citlali::pipeline::canonical_apt_v2::publish_prepared_bundle(
+                manifest_path, prepared);
+        } catch (...) {
+            std::error_code cleanup_error;
+            if (std::filesystem::is_empty(bundle_directory, cleanup_error) &&
+                !cleanup_error) {
+                std::filesystem::remove(bundle_directory, cleanup_error);
+            }
+            throw;
+        }
+    }();
     logger->info(
-        "done writing canonical apt table {} receipt={} semantic={} envelope={} transport={}",
-        publication.ecsv_path.string(), publication.receipt_path.string(),
-        publication.digests.semantic_sha256,
-        publication.digests.envelope_sha256,
-        publication.transport.sha256);
+        "done writing canonical APT v2 bundle {} receipt={} semantic={} envelope={} bytes={} members={}",
+        manifest_path.string(), publication.receipt_path.string(),
+        prepared.identity.semantic_sha256,
+        prepared.identity.envelope_sha256,
+        prepared.total_byte_count, publication.member_paths.size());
     return apt_filename;
 }

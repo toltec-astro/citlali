@@ -8,6 +8,7 @@
 
 #include <citlali/core/cli/argument_parsing.h>
 #include <citlali/core/cli/canonical_apt_contract_protocol_v1.h>
+#include <citlali/core/cli/canonical_apt_contract_protocol_v2.h>
 #include <citlali/core/cli/default_config_dump.h>
 #include <citlali/core/cli/exception_reporting.h>
 #include <citlali/core/cli/process_control.h>
@@ -38,6 +39,11 @@ int main(int argc, char *argv[]) {
     // The versioned contract protocol is a clean machine boundary. Dispatch
     // it before default-config handling, logging, ordinary argument parsing,
     // or any reduction configuration is initialized.
+    if (const auto protocol_exit =
+            citlali::cli::canonical_apt_contract_protocol_v2::
+                dispatch_if_requested(argc, argv, std::cin, std::cout)) {
+        return *protocol_exit;
+    }
     if (const auto protocol_exit =
             citlali::cli::canonical_apt_contract_protocol_v1::
                 dispatch_if_requested(argc, argv, std::cin, std::cout)) {

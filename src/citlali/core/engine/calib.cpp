@@ -2,130 +2,168 @@
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/engine/calib.h>
 #include <citlali/core/error/error.h>
+#include <citlali/core/pipeline/canonical_apt_bundle_v2.h>
+#include <citlali/core/utils/sha256.h>
 #include <citlali/core/utils/toltec_io.h>
 
+#include <algorithm>
+#include <bit>
+#include <charconv>
 #include <cmath>
+#include <filesystem>
+#include <limits>
+#include <set>
 #include <stdexcept>
-
-namespace {
-
-std::string join_column_names(const std::vector<std::string> &names) {
-    std::string result;
-    for (const auto &name : names) {
-        if (!result.empty()) {
-            result += ", ";
-        }
-        result += name;
-    }
-    return result;
-}
-
-}  // namespace
 
 namespace engine {
 
 void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_filenames, std::vector<std::string> &interfaces) {
-    // store apt filepath
-    apt_filepath = filepath;
-    // read in the apt table
-    auto [apt_temp, header, map_with_strs] = to_map_from_ecsv_mixted_type(filepath);
-
-    // vector to hold any missing header keys
-    std::vector<std::string> missing_header_keys, empty_header_keys;
-
-    // look for missing header keys by comparing to required keys
-    for (auto &apt_header_key: apt_header_keys) {
-        bool found = std::find(header.begin(), header.end(), apt_header_key) != header.end();
-        if (!found) {
-            missing_header_keys.push_back(apt_header_key);
+    namespace apt2 = citlali::pipeline::canonical_apt_v2;
+    try {
+        if (raw_filenames.size() != interfaces.size() ||
+            raw_filenames.empty()) {
+            throw apt2::ContractError(
+                "canonical APT v2 admission requires one raw file per interface");
         }
-        // look for empty headers
-        else if (apt_temp[apt_header_key].size()==0) {
-            empty_header_keys.push_back(apt_header_key);
+        const auto manifest_path = std::filesystem::absolute(filepath);
+        auto verified = apt2::verify_bundle_filesystem(manifest_path, true);
+        if (verified.manifest.kind != apt2::BundleKind::matched) {
+            throw apt2::ContractError(
+                "ordinary APT consumer admission requires a fresh matched v2 bundle");
         }
-    }
 
-    // reject tables with missing required columns
-    if (!missing_header_keys.empty()) {
-        throw citlali::error::io(
-            "APT table is missing required columns: [" +
-            join_column_names(missing_header_keys) + "]");
-    }
-
-    // reject tables with empty required columns
-    if (!empty_header_keys.empty()) {
-        throw citlali::error::io(
-            "APT table columns are empty: [" +
-            join_column_names(empty_header_keys) + "]");
-    }
-
-    // pointing calculations require an altaz APT reference frame
-    if (map_with_strs["Radesys"]!="altaz") {
-        throw citlali::error::io(
-            "APT table reference frame must be altaz");
-    }
-
-    // set apt table
-    apt = apt_temp;
-
-    // A matched APT can retain fully flagged placeholder rows for a network
-    // that was absent from this observation. Restrict the table to the raw
-    // interfaces before setup validates its network and array groups.
-
-    // vectors to hold roach indices and missing roaches
-    std::vector<Eigen::Index> roach_indices, missing;
-    Eigen::Index n_dets_temp = 0;
-
-    // get roach indices from raw data files
-    for (Eigen::Index i=0; i<raw_filenames.size(); ++i) {
-        netCDF::NcFile fo(raw_filenames[i], netCDF::NcFile::read);
-        // get roach index
-        int roach_index;
-        fo.getVar("Header.Toltec.RoachIndex").getVar(&roach_index);
-        roach_indices.push_back(roach_index);
-        fo.close();
-    }
-
-    // vector to hold interface number
-    Eigen::VectorXi interfaces_vec(interfaces.size());
-
-    // get network interfaces
-    for (Eigen::Index i=0; i<interfaces.size(); ++i) {
-        interfaces_vec(i) = std::stoi(interfaces[i].substr(6));
-    }
-
-    // count up number of detectors
-    for (Eigen::Index i=0; i<interfaces.size(); ++i) {
-        n_dets_temp = n_dets_temp + (apt["nw"].array() == interfaces_vec(i)).count();
-    }
-
-    // clear apt
-    apt_temp.clear();
-    // populate apt temp
-    for (auto const& value: apt_header_keys) {
-        apt_temp[value].setZero(n_dets_temp);
-        Eigen::Index i = 0;
-        for (Eigen::Index j=0; j<apt["nw"].size(); ++j) {
-            if ((apt["nw"](j) == interfaces_vec.array()).any()) {
-                apt_temp[value](i) = apt[value](j);
-                i++;
+        std::map<std::int64_t, const apt2::SourceRecord *> raw_sources;
+        for (const auto &source : verified.sources) {
+            if (source.role == apt2::SourceRole::raw) {
+                raw_sources.emplace(source.network, &source);
             }
         }
+        std::set<std::int64_t> admitted_networks;
+        for (std::size_t index = 0; index < raw_filenames.size(); ++index) {
+            const auto &interface_name = interfaces[index];
+            if (!interface_name.starts_with("toltec") ||
+                interface_name.size() <= 6) {
+                throw apt2::ContractError(
+                    "raw interface is not exact toltecN");
+            }
+            std::int64_t network = -1;
+            const std::string_view digits{interface_name.data() + 6,
+                                          interface_name.size() - 6};
+            const auto [end, parse_error] = std::from_chars(
+                digits.data(), digits.data() + digits.size(), network);
+            if (parse_error != std::errc{} ||
+                end != digits.data() + digits.size() || network < 0 ||
+                network > 12 ||
+                interface_name != "toltec" + std::to_string(network)) {
+                throw apt2::ContractError(
+                    "raw interface is not exact toltec0..toltec12");
+            }
+            const auto source = raw_sources.find(network);
+            std::error_code size_error;
+            const auto byte_count = std::filesystem::file_size(
+                raw_filenames[index], size_error);
+            if (source == raw_sources.end() ||
+                source->second->interface_name != interface_name ||
+                size_error || byte_count != source->second->byte_count ||
+                "sha256:" + citlali::utils::sha256_file(raw_filenames[index]) !=
+                    source->second->content_sha256 ||
+                !admitted_networks.insert(network).second) {
+                throw apt2::ContractError(
+                    "raw observation bytes/interface do not match the verified target manifest");
+            }
+        }
+        if (admitted_networks.size() != raw_sources.size()) {
+            throw apt2::ContractError(
+                "raw observation does not exactly cover the verified target networks");
+        }
+
+        std::vector<const apt2::AptRow *> rows;
+        rows.reserve(verified.apt.rows.size());
+        for (const auto &row : verified.apt.rows) rows.push_back(&row);
+        std::sort(rows.begin(), rows.end(), [](const auto *lhs,
+                                              const auto *rhs) {
+            return lhs->presentation_rank < rhs->presentation_rank;
+        });
+
+        auto rules = verified.fields;
+        std::sort(rules.begin(), rules.end(), [](const auto &lhs,
+                                                const auto &rhs) {
+            return lhs.field_uid < rhs.field_uid;
+        });
+        apt.clear();
+        apt_header_keys.clear();
+        apt_header_units.clear();
+        apt_header_description.clear();
+        for (const auto &rule : rules) {
+            apt_header_keys.push_back(rule.name);
+            apt_header_units[rule.name] = rule.unit;
+            apt_header_description[rule.name] = rule.description;
+            apt[rule.name].resize(static_cast<Eigen::Index>(rows.size()));
+        }
+        const auto exact_double = [](std::int64_t value,
+                                     std::string_view field) {
+            constexpr std::int64_t exact_integer_limit =
+                INT64_C(9007199254740992);
+            if (value < -exact_integer_limit ||
+                value > exact_integer_limit) {
+                throw apt2::ContractError(
+                    "canonical int64 is not exactly representable by the legacy Calib adapter: " +
+                    std::string(field));
+            }
+            const auto result = static_cast<double>(value);
+            return result;
+        };
+        const auto stored_value = [&](const apt2::Value &value,
+                                      const apt2::FieldRule &rule) {
+            if (std::holds_alternative<apt2::NullValue>(value)) {
+                return std::numeric_limits<double>::quiet_NaN();
+            }
+            if (const auto integer = std::get_if<std::int64_t>(&value)) {
+                return exact_double(*integer, rule.name);
+            }
+            if (const auto number = std::get_if<double>(&value)) {
+                return *number;
+            }
+            throw apt2::ContractError(
+                "canonical APT field cannot enter the numeric Calib adapter: " +
+                rule.name);
+        };
+        for (Eigen::Index index = 0;
+             index < static_cast<Eigen::Index>(rows.size()); ++index) {
+            const auto &row = *rows[static_cast<std::size_t>(index)];
+            if (!admitted_networks.contains(row.network)) {
+                throw apt2::ContractError(
+                    "verified APT row is outside the admitted raw networks");
+            }
+            apt["uid"](index) = exact_double(row.uid, "uid");
+            apt["tone_freq"](index) = row.tone_frequency_hz;
+            apt["array"](index) = exact_double(row.array, "array");
+            apt["nw"](index) = exact_double(row.network, "nw");
+            apt["kids_tone"](index) = exact_double(row.channel, "kids_tone");
+            for (const auto &rule : rules) {
+                if (rule.name == "uid" || rule.name == "tone_freq" ||
+                    rule.name == "array" || rule.name == "nw" ||
+                    rule.name == "kids_tone") {
+                    continue;
+                }
+                apt[rule.name](index) =
+                    stored_value(row.fields.at(rule.name), rule);
+            }
+        }
+        apt_filepath = manifest_path.string();
+        apt_meta["Radesys"] = "altaz";
+        apt_meta["canonical_apt_schema"] = verified.identity.schema;
+        apt_meta["canonical_apt_occurrence"] = verified.identity.occurrence;
+        apt_meta["canonical_apt_semantic_sha256"] =
+            verified.identity.semantic_sha256;
+        apt_meta["canonical_apt_envelope_sha256"] =
+            verified.identity.envelope_sha256;
+        setup();
+    } catch (const apt2::ContractError &error) {
+        throw citlali::error::io(
+            "canonical APT v2 admission rejected: " +
+            std::string(error.what()));
     }
-
-    // clear apt
-    apt.clear();
-    // populate apt table
-    for (auto const& value: apt_header_keys) {
-        apt[value].setZero(n_dets_temp);
-        apt[value] = apt_temp[value];
-    }
-
-    // clear temporary apt
-    apt_temp.clear();
-
-    // run setup on new apt table
-    setup();
 }
 
 void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {

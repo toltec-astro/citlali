@@ -1917,8 +1917,12 @@ citlali::pipeline::RawObsDetectorInventory make_phase_b_inventory() {
     citlali::pipeline::RawObsDetectorInventory inventory;
     inventory.observation = {152389, 0, 1};
     inventory.inputs = {
-        {{0, "toltec0", 2}, 0, {1.25e9, 1.5e9}},
-        {{7, "toltec7", 1}, 1, {1.25e9}},
+        {{0, "toltec0", 2}, 0, {1.25e9, 1.5e9},
+         "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+         1024},
+        {{7, "toltec7", 1}, 1, {1.25e9},
+         "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+         2048},
     };
     inventory.n_dets = 3;
     inventory.dets = {2, 1};
@@ -2082,6 +2086,23 @@ TEST(canonical_apt_v1_phase_b,
     EXPECT_EQ(document.rows[2].channel, 0);
     EXPECT_EQ(document.rows[0].tone_frequency_hz,
               document.rows[2].tone_frequency_hz);
+
+    const auto prepared_v2 = apt_producer::prepare_canonical_baseline_v2(
+        document, fixture.calib.canonical_apt_producer);
+    const auto verified_v2 =
+        citlali::pipeline::canonical_apt_v2::verify_bundle_payload(
+            prepared_v2.payload);
+    EXPECT_EQ(verified_v2.manifest.kind,
+              citlali::pipeline::canonical_apt_v2::BundleKind::baseline);
+    EXPECT_EQ(verified_v2.apt.rows.size(), document.rows.size());
+    EXPECT_EQ(verified_v2.sources.size(),
+              fixture.calib.canonical_apt_producer.sources_v2.size());
+
+    auto wrong_frame = document;
+    wrong_frame.context.coordinate_frame = "icrs";
+    EXPECT_THROW(apt_producer::prepare_canonical_baseline_v2(
+                     wrong_frame, fixture.calib.canonical_apt_producer),
+                 apt::ContractError);
 }
 
 TEST(canonical_apt_v1_phase_b,

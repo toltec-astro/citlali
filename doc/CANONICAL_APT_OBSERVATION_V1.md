@@ -1,5 +1,10 @@
 # Canonical Observation APT v1
 
+> Rejected historical representation. The detector-by-field transformation
+> expansion is a contract-design defect. APT-PROD-003 compact v2 disables new
+> v1 issuance and permits v1 reads only for explicit migration/comparison.
+> See [`CANONICAL_APT_V2.md`](CANONICAL_APT_V2.md).
+
 Status: accepted bounded candidate; unactivated
 
 Durable decision: [ADR 0011](adr/0011-canonical-observation-apt-contract.md)
@@ -301,7 +306,7 @@ Every request has exactly `protocol`, `request_id`, `operation`, and `payload`.
 | Operation | Function |
 | --- | --- |
 | `describe-baseline-v1` | Reread a baseline `.ecsv` and receipt and return the complete verified typed descriptor plus immutable baseline reference. |
-| `issue-observation-apt-v1` | Verify baseline and source bytes, validate and materialize target/relation facts and field-source selections, create the final occurrence, canonicalize/reread, then publish one `.apt.ecsv` and receipt. |
+| `issue-observation-apt-v1` | Historical name only. The public protocol now rejects it before payload or source processing because all new v1 issuance is forbidden. |
 | `validate-observation-apt-v1` | Reread a final `.apt.ecsv` and receipt against the verified baseline, optionally compare expected identities, and return the complete target, relation, output, artifact, and transport descriptors. |
 
 Exit status `0` is success, `1` is contract or publication rejection, and `2`

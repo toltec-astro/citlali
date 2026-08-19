@@ -17,6 +17,7 @@
 #include <limits>
 #include <locale>
 #include <sstream>
+#include <set>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -655,6 +656,223 @@ inline PublicationResult validate_published_canonical_artifact(
     const auto receipt_bytes = detail::read_binary_file(receipt_path);
     validator(artifact_bytes, receipt_bytes);
     return {artifact_path, receipt_path};
+}
+
+enum class BundlePublicationStage {
+    members_staged,
+    members_validated,
+    receipt_staged,
+    receipt_validated,
+    before_members_publish,
+    member_published,
+    before_receipt_publish,
+};
+
+struct BundlePublicationHooks {
+    std::function<void(BundlePublicationStage,
+                       const std::filesystem::path &,
+                       const std::filesystem::path &)>
+        on_stage;
+};
+
+using BundlePublicationValidator = std::function<void(
+    const std::vector<std::pair<std::filesystem::path, std::string>> &,
+    std::string_view)>;
+
+struct BundlePublicationPlan {
+    // Members are published in this exact order. Canonical APT v2 places all
+    // content-addressed members first and manifest.ecsv last.
+    std::vector<std::pair<std::filesystem::path, std::string>> members;
+    std::filesystem::path receipt_path;
+    std::string receipt_bytes;
+    BundlePublicationValidator validate;
+};
+
+struct BundlePublicationResult {
+    std::vector<std::filesystem::path> member_paths;
+    std::filesystem::path receipt_path;
+};
+
+inline BundlePublicationResult publish_canonical_bundle(
+    const BundlePublicationPlan &plan,
+    const BundlePublicationHooks &hooks = {}) {
+    if (plan.members.empty() || plan.receipt_path.empty() || !plan.validate) {
+        throw PublicationError(
+            "canonical bundle publication plan is incomplete");
+    }
+    const auto parent = plan.receipt_path.parent_path();
+    if (parent.empty() || !std::filesystem::is_directory(parent)) {
+        throw PublicationError(
+            "canonical bundle publication parent does not exist");
+    }
+    std::set<std::filesystem::path> names;
+    names.insert(plan.receipt_path.filename());
+    for (const auto &[path, bytes] : plan.members) {
+        (void)bytes;
+        if (path.parent_path() != parent || path.filename().empty() ||
+            !names.insert(path.filename()).second) {
+            throw PublicationError(
+                "canonical bundle member paths are not unique siblings");
+        }
+        if (detail::path_exists(path)) {
+            throw PublicationError(
+                "canonical bundle refuses to overwrite an existing member");
+        }
+    }
+    if (detail::path_exists(plan.receipt_path)) {
+        throw PublicationError(
+            "canonical bundle refuses to overwrite an existing receipt");
+    }
+    plan.validate(plan.members, plan.receipt_bytes);
+    BundlePublicationResult result;
+    result.receipt_path = plan.receipt_path;
+    for (const auto &[path, bytes] : plan.members) {
+        (void)bytes;
+        result.member_paths.push_back(path);
+    }
+
+    // Stage beside the bundle directory, never inside it. Thus receipt
+    // visibility cannot race a guardian that rejects extra directory entries.
+    StagingDirectoryGuard staging(parent);
+    std::vector<std::filesystem::path> staged_members;
+    std::vector<std::filesystem::path> owner_members;
+    std::vector<std::filesystem::path> published_members;
+    const auto staged_receipt =
+        staging.path() / plan.receipt_path.filename();
+    const auto receipt_owner = staging.path() / ".owner-receipt";
+    bool receipt_published = false;
+    try {
+        for (std::size_t index = 0; index < plan.members.size(); ++index) {
+            const auto staged =
+                staging.path() / plan.members[index].first.filename();
+            const auto owner =
+                staging.path() / (".owner-member-" + std::to_string(index));
+            detail::write_binary_file(staged, plan.members[index].second);
+            staged_members.push_back(staged);
+            owner_members.push_back(owner);
+        }
+        if (hooks.on_stage) {
+            hooks.on_stage(BundlePublicationStage::members_staged,
+                           staging.path(), staged_receipt);
+        }
+        const auto reread_members = [&]() {
+            std::vector<std::pair<std::filesystem::path, std::string>> value;
+            value.reserve(staged_members.size());
+            for (std::size_t index = 0; index < staged_members.size(); ++index) {
+                value.emplace_back(plan.members[index].first,
+                                   detail::read_binary_file(
+                                       staged_members[index]));
+                if (value.back().second != plan.members[index].second) {
+                    throw PublicationError(
+                        "staged canonical bundle member changed");
+                }
+            }
+            return value;
+        };
+        auto checked_members = reread_members();
+        plan.validate(checked_members, plan.receipt_bytes);
+        if (hooks.on_stage) {
+            hooks.on_stage(BundlePublicationStage::members_validated,
+                           staging.path(), staged_receipt);
+        }
+        checked_members = reread_members();
+        plan.validate(checked_members, plan.receipt_bytes);
+
+        detail::write_binary_file(staged_receipt, plan.receipt_bytes);
+        if (hooks.on_stage) {
+            hooks.on_stage(BundlePublicationStage::receipt_staged,
+                           staging.path(), staged_receipt);
+        }
+        auto checked_receipt = detail::read_binary_file(staged_receipt);
+        if (checked_receipt != plan.receipt_bytes) {
+            throw PublicationError(
+                "staged canonical bundle receipt changed");
+        }
+        checked_members = reread_members();
+        plan.validate(checked_members, checked_receipt);
+        if (hooks.on_stage) {
+            hooks.on_stage(BundlePublicationStage::receipt_validated,
+                           staging.path(), staged_receipt);
+        }
+        checked_members = reread_members();
+        checked_receipt = detail::read_binary_file(staged_receipt);
+        plan.validate(checked_members, checked_receipt);
+
+        for (std::size_t index = 0; index < staged_members.size(); ++index) {
+            detail::make_publication_source_read_only(staged_members[index]);
+            detail::publish_no_replace_hard_link(staged_members[index],
+                                                 owner_members[index]);
+        }
+        detail::make_publication_source_read_only(staged_receipt);
+        detail::publish_no_replace_hard_link(staged_receipt, receipt_owner);
+        if (hooks.on_stage) {
+            hooks.on_stage(BundlePublicationStage::before_members_publish,
+                           staging.path(), staged_receipt);
+        }
+        checked_members = reread_members();
+        checked_receipt = detail::read_binary_file(staged_receipt);
+        plan.validate(checked_members, checked_receipt);
+
+        for (std::size_t index = 0; index < plan.members.size(); ++index) {
+            detail::require_owned_publication_alias(staged_members[index],
+                                                    owner_members[index]);
+            detail::publish_no_replace_hard_link(owner_members[index],
+                                                 plan.members[index].first);
+            published_members.push_back(plan.members[index].first);
+            if (hooks.on_stage) {
+                hooks.on_stage(BundlePublicationStage::member_published,
+                               plan.members[index].first, staged_receipt);
+            }
+        }
+        std::vector<std::pair<std::filesystem::path, std::string>> final_members;
+        final_members.reserve(plan.members.size());
+        for (const auto &[path, expected] : plan.members) {
+            auto value = detail::read_binary_file(path);
+            if (value != expected) {
+                throw PublicationError(
+                    "published canonical bundle member changed");
+            }
+            final_members.emplace_back(path, std::move(value));
+        }
+        checked_receipt = detail::read_binary_file(receipt_owner);
+        plan.validate(final_members, checked_receipt);
+        if (hooks.on_stage) {
+            hooks.on_stage(BundlePublicationStage::before_receipt_publish,
+                           staging.path(), staged_receipt);
+        }
+        for (std::size_t index = 0; index < plan.members.size(); ++index) {
+            detail::require_owned_publication_alias(plan.members[index].first,
+                                                    owner_members[index]);
+        }
+        detail::require_owned_publication_alias(staged_receipt, receipt_owner);
+        plan.validate(final_members, detail::read_binary_file(receipt_owner));
+        detail::publish_no_replace_hard_link(receipt_owner,
+                                             plan.receipt_path);
+        receipt_published = true;
+
+        // Receipt visibility is the sole success transition. No fallible
+        // product mutation or validation occurs after this point.
+        (void)staging.cleanup();
+        return result;
+    } catch (...) {
+        bool rollback_ok = true;
+        if (receipt_published) {
+            rollback_ok = detail::remove_if_owned_hard_link(
+                receipt_owner, plan.receipt_path);
+        }
+        for (std::size_t index = published_members.size(); index > 0; --index) {
+            rollback_ok = detail::remove_if_owned_hard_link(
+                              owner_members[index - 1],
+                              published_members[index - 1]) &&
+                rollback_ok;
+        }
+        const bool cleanup_ok = staging.cleanup();
+        if (!rollback_ok || !cleanup_ok) {
+            throw PublicationError(
+                "canonical bundle publication failed and owned cleanup was incomplete");
+        }
+        throw;
+    }
 }
 
 }  // namespace citlali::pipeline::canonical_artifact_publication

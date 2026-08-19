@@ -7,6 +7,7 @@
 #include <citlali/core/engine/calib.h>
 #include <citlali/core/engine/detail/beammap_apt_keys.h>
 #include <citlali/core/pipeline/canonical_artifact_publication.h>
+#include <citlali/core/pipeline/canonical_apt_bundle_v2.h>
 #include <citlali/core/pipeline/canonical_apt_ecsv.h>
 
 #include <Eigen/Core>
@@ -37,6 +38,7 @@
 namespace beammap_apt_table_output_helpers {
 
 namespace apt = citlali::pipeline::canonical_apt_v1;
+namespace apt2 = citlali::pipeline::canonical_apt_v2;
 namespace publication =
     citlali::pipeline::canonical_artifact_publication;
 
@@ -471,6 +473,88 @@ apt::Document make_canonical_document(
     }
     apt::validate(document);
     return document;
+}
+
+inline apt2::FieldRule v2_field_rule(
+    const apt::RegisteredField &field, std::int64_t field_uid) {
+    std::optional<std::string> authority_reference;
+    if (!field.authority_reference.empty()) {
+        authority_reference = field.authority_reference;
+    }
+    return {
+        field_uid,
+        field.name,
+        field.type,
+        field.unit,
+        field.nullable,
+        std::string(apt::field_authority_token(field.authority)),
+        std::move(authority_reference),
+        apt2::FieldOperation::preserve_target,
+        std::nullopt,
+        std::string(apt::nonfinite_policy_token(field.nonfinite)),
+        "nonidentity",
+        field.description,
+    };
+}
+
+inline apt2::AptTable make_canonical_baseline_v2(
+    const apt::Document &document) {
+    apt::validate(document);
+    if (document.context.coordinate_frame != "altaz") {
+        throw apt::ContractError(
+            "canonical Beammap APT v2 requires the established altaz coordinate frame");
+    }
+    apt2::AptTable table;
+    table.kind = apt2::BundleKind::baseline;
+    table.issuance = {
+        document.envelope.occurrence,
+        document.envelope.event_reference,
+        document.envelope.producer,
+        document.envelope.software_revision,
+        document.envelope.configuration_reference,
+        document.envelope.event_time_utc,
+    };
+    table.observation = document.raw_manifest.observation;
+    table.field_rules = apt2::canonical_structural_field_rules_v2();
+    std::int64_t field_uid =
+        static_cast<std::int64_t>(table.field_rules.size());
+    for (const auto &field : document.registered_fields) {
+        table.field_rules.push_back(v2_field_rule(field, field_uid++));
+    }
+    table.rows.reserve(document.rows.size());
+    for (std::size_t index = 0; index < document.rows.size(); ++index) {
+        const auto &row = document.rows[index];
+        table.rows.push_back({
+            row.uid,
+            static_cast<std::uint64_t>(index),
+            row.tone_frequency_hz,
+            row.array,
+            row.network,
+            row.channel,
+            row.fields,
+        });
+    }
+    apt2::validate(table);
+    return table;
+}
+
+inline apt2::PreparedBundle prepare_canonical_baseline_v2(
+    const apt::Document &document,
+    const engine::CanonicalAptProducerState &producer) {
+    if (!producer.raw_inventory_ready || producer.sources_v2.empty()) {
+        throw apt::ContractError(
+            "canonical Beammap APT v2 lacks content-bound raw sources");
+    }
+    auto table = make_canonical_baseline_v2(document);
+    auto prepared = apt2::prepare_baseline_bundle(
+        std::move(table), producer.sources_v2);
+    const auto verified = apt2::verify_bundle_payload(prepared.payload);
+    if (verified.identity != prepared.identity ||
+        verified.apt.rows.size() != document.rows.size()) {
+        throw apt::ContractError(
+            "canonical Beammap APT v2 reread disagrees with intended baseline");
+    }
+    return prepared;
 }
 
 inline std::string utc_timestamp_from_time_t(std::time_t seconds) {

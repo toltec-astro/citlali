@@ -12,6 +12,7 @@
 
 #include <citlali/core/pipeline/canonical_artifact_publication.h>
 #include <citlali/core/pipeline/canonical_apt_v1.h>
+#include <citlali/core/pipeline/canonical_apt_v2.h>
 #include <citlali/core/utils/ecsv_io.h>
 #include <citlali/core/utils/netcdf_io.h>
 
@@ -47,6 +48,8 @@ struct CanonicalAptProducerState {
     bool raw_inventory_ready = false;
     citlali::pipeline::canonical_apt_v1::RawManifest raw_manifest;
     std::vector<CanonicalAptRawRowBinding> rows;
+    std::vector<citlali::pipeline::canonical_apt_v2::SourceRecord>
+        sources_v2;
     citlali::pipeline::canonical_artifact_publication::IssuanceFactory
         issuance_factory = [] {
         return make_canonical_apt_entropy_issuance();

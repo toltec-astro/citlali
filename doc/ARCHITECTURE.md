@@ -1,5 +1,21 @@
 # Citlali Architecture
 
+## APT-PROD-003 compact v2 repair boundary
+
+All APT-dependent validation and new baseline issuance are suspended until the
+compact v2 gates pass. The verbose observation APT v1 contract is historical:
+its detector-by-field transformation ledger is not admitted by any ordinary
+producer or guardian. The current authority is
+[`CANONICAL_APT_V2.md`](CANONICAL_APT_V2.md) and [ADR 0012](adr/0012-canonical-apt-v2-compact-normalization.md).
+
+V2 is a normalized, content-addressed set of transparent ECSV components with
+one root manifest and one root receipt. Its logical size is O(target rows +
+fields + genuine exceptions). Citlali owns encoding, validation, issuance,
+guardian admission, and publication; TolAPT owns matching science; TolProj
+orchestrates only. Runtime consumers receive a scientific APT table only after
+the root receipt and every component have been verified once. Bare ECSV, v1,
+migration-marked v2, or synthesized fallback APTs are rejected by default.
+
 ## Status And Authority
 
 This document is the canonical human-readable map of the current Citlali

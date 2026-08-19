@@ -1,5 +1,16 @@
 # Citlali Retained Debt Register
 
+## APT v1 historical representation
+
+The verbose matched-APT v1 detector-by-field transformation expansion is not
+retained operational debt: it is superseded and new issuance is forbidden.
+The bytes remain historical comparison/migration evidence only. The compact
+v2 repair deliberately retains three bounded publication limitations: no
+fsync/crash-durability promise before root-receipt visibility, possible
+false-negative stdout acknowledgement after a successful receipt publication
+with `validate` recovery, and no owner-specified absolute stdin byte quota.
+None permits a false completion marker or legacy fallback.
+
 ## Status And Use
 
 This is the canonical register of architectural and scientific limitations

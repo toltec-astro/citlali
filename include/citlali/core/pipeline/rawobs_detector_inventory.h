@@ -1,7 +1,9 @@
 #pragma once
 
 #include <citlali/core/pipeline/canonical_apt_v1.h>
+#include <citlali/core/pipeline/canonical_apt_v2.h>
 #include <citlali/core/utils/netcdf_io.h>
+#include <citlali/core/utils/sha256.h>
 
 #include <fmt/core.h>
 #include <netcdf>
@@ -10,6 +12,7 @@
 #include <charconv>
 #include <cmath>
 #include <cstdint>
+#include <filesystem>
 #include <limits>
 #include <set>
 #include <stdexcept>
@@ -26,6 +29,8 @@ struct RawObsInputInventory {
     canonical_apt::RawInput manifest;
     std::int64_t array = 0;
     std::vector<double> tone_frequencies_hz;
+    std::string content_sha256;
+    std::uint64_t byte_count = 0;
 };
 
 struct RawObsDetectorInventory {
@@ -125,6 +130,8 @@ inline void validate_rawobs_detector_inventory(
             rawobs_interface_id(input.manifest.interface_name));
         if (input.manifest.network != parsed_network ||
             input.manifest.channel_count <= 0 ||
+            input.byte_count == 0 ||
+            !canonical_apt_v1::is_sha256_reference(input.content_sha256) ||
             input.array != rawobs_array_id(input.manifest.network) ||
             !networks.insert(input.manifest.network).second ||
             !interfaces.insert(input.manifest.interface_name).second) {
@@ -443,9 +450,16 @@ RawObsDetectorInventory read_rawobs_detector_inventory(
         if (!networks.insert(interface_id).second ||
             !interfaces.insert(data_item.interface()).second) {
             throw std::runtime_error(
-                "duplicate/split raw KIDs network input is unsupported by canonical APT v1");
+                "duplicate/split raw KIDs network input is unsupported by the canonical APT contract");
         }
         try {
+            std::error_code size_error;
+            const auto source_size = std::filesystem::file_size(
+                data_item.filepath(), size_error);
+            if (size_error || source_size == 0) {
+                throw std::runtime_error(
+                    "raw KIDs source has no stable nonempty byte count");
+            }
             NcFile file(data_item.filepath(), NcFile::read);
             const auto file_network = rawobs_exact_integer(
                 file, "Header.Toltec.RoachIndex");
@@ -483,13 +497,25 @@ RawObsDetectorInventory read_rawobs_detector_inventory(
             inventory.nws.push_back(static_cast<Eigen::Index>(interface_id));
             inventory.arrays.push_back(
                 static_cast<Eigen::Index>(expected_array));
+            file.close();
+            std::error_code final_size_error;
+            const auto final_size = std::filesystem::file_size(
+                data_item.filepath(), final_size_error);
+            if (final_size_error || final_size != source_size) {
+                throw std::runtime_error(
+                    "raw KIDs source size changed while inventory was read");
+            }
+            const auto content_sha256 =
+                "sha256:" + citlali::utils::sha256_file(
+                    data_item.filepath());
             inventory.inputs.push_back({
                 {interface_id, data_item.interface(),
                  static_cast<std::int64_t>(n_file_dets)},
                 expected_array,
                 std::move(tones),
+                content_sha256,
+                static_cast<std::uint64_t>(source_size),
             });
-            file.close();
         }
         catch (NcException &error) {
             logger->error("{}", error.what());
@@ -571,10 +597,23 @@ void populate_internal_apt_from_detector_inventory(
     producer.raw_manifest.observation = inventory.observation;
     producer.raw_manifest.inputs.clear();
     producer.rows.clear();
+    producer.sources_v2.clear();
+    producer.sources_v2.reserve(inventory.inputs.size());
     producer.rows.reserve(static_cast<std::size_t>(inventory.n_dets));
     Eigen::Index uid = 0;
+    std::int64_t source_uid = 0;
     for (const auto &input : inventory.inputs) {
         producer.raw_manifest.inputs.push_back(input.manifest);
+        producer.sources_v2.push_back({
+            source_uid++,
+            canonical_apt_v2::SourceRole::raw,
+            input.content_sha256,
+            input.byte_count,
+            inventory.observation,
+            input.manifest.network,
+            input.manifest.interface_name,
+            input.manifest.channel_count,
+        });
         for (std::int64_t channel = 0;
              channel < input.manifest.channel_count; ++channel, ++uid) {
             producer.rows.push_back({

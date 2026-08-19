@@ -67,7 +67,7 @@ std::filesystem::path write_apt(
 }
 
 TEST(calib_apt_filtering,
-     ignores_fully_flagged_network_absent_from_raw_observation) {
+     rejects_bare_legacy_ecsv_even_when_network_would_have_filtered) {
     TemporaryDirectory temp;
     engine::Calib calib;
     const auto apt_path = write_apt(temp.path / "apt", calib);
@@ -77,12 +77,9 @@ TEST(calib_apt_filtering,
     std::vector<std::string> raw_filenames{raw_path.string()};
     std::vector<std::string> interfaces{"toltec0"};
 
-    EXPECT_NO_THROW(
-        calib.get_apt(apt_path.string(), raw_filenames, interfaces));
-    EXPECT_EQ(calib.n_dets, 2);
-    EXPECT_EQ(calib.n_nws, 1);
-    EXPECT_EQ(calib.nws.size(), 1);
-    EXPECT_EQ(calib.nws(0), 0);
+    EXPECT_THROW(
+        calib.get_apt(apt_path.string(), raw_filenames, interfaces),
+        std::runtime_error);
 }
 
 TEST(calib_apt_filtering,

@@ -24,6 +24,7 @@ duplicate changing implementation inventories or validation snapshots.
 | [0009](0009-science-map-bundle-admission-and-validity.md) | Accepted | Admit complete full-precision science-map bundles atomically, retain centered-integer `L = I` coaddition with nonprecision coefficients, and persist distinct support and validity facts |
 | [0010](0010-canonical-baseline-apt-v1.md) | Accepted; candidate implementation unactivated | Define a typed Citlali-produced baseline APT with artifact-local UID, embedded raw-channel relation, distinct semantic/envelope/transport identities, and receipt-last publication |
 | [0011](0011-canonical-observation-apt-contract.md) | Accepted; candidate implementation unactivated | Replace row-position correspondence with occurrence-scoped target/seed relations and publish one observation-specific canonical ECSV plus receipt, with complete target/relation records embedded |
+| [0012](0012-canonical-apt-v2-compact-normalization.md) | Accepted owner-directed repair; Citlali verified locally, cross-repository gates pending | Supersede new v1 issuance with compact normalized ECSV bundles, occurrence-scoped TolAPT matching, v2-only guardians, and one root receipt |
 
 Numbers are never reused. A materially different decision adds a new ADR and
 marks the old record superseded; do not rewrite the historical rationale.

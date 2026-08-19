@@ -1,7 +1,34 @@
 # Citlali Refactor Status
 
+## 2026-08-19 OWNER PRIORITY: APT-PROD-003 compact v2
+
+APT-PROD-001/002 v1 histories remain immutable evidence, but new v1 issuance
+and ordinary v1 admission are stopped. The valid 148669-to-148670 v1 product
+is 249,525,124 bytes; 233,948,454 bytes are 261,700 repeated per-cell
+transformation records for a 3,541,490-byte scientific table. The owner has
+classified this as a contract-design defect.
+
+The active APT-only repair is [compact v2](CANONICAL_APT_V2.md), a normalized
+content-addressed ECSV bundle with one root manifest/receipt. All APT-dependent
+baseline generation, pointing validation, consumer conformance, and scientific
+acceptance remain suspended until the exact 148669/148670 equivalence, size,
+determinism, relocation, tamper, guardian, and publication gates pass. No
+ALIGN, JINC, map, RTC/PTC, CAL, TolTECA, Unity, or production work is activated
+by this status.
+
 This is the living roadmap and completion ledger for the Citlali refactor.
 Update it when a phase gate, governing decision, or validated snapshot changes.
+
+The current Citlali-only implementation checkpoint provides the compact v2
+model, deterministic ECSV component codecs, content-addressed root bundle,
+receipt-last no-replace publisher, fresh Beammap baseline adapter, matched-v2
+consumer guardian, and read-only `validate-bundle-v2` /
+`describe-baseline-v2` public protocol. New v1 issuance is mechanically
+disabled. The v2 target canonicalizer, matched issuer, and v1 migration command
+remain fail-closed until the TolAPT/TolProj repair is integrated; this
+checkpoint therefore authorizes only the owner-run raw-only 148670 Beammap
+baseline canary documented in `CANONICAL_APT_V2.md`, not downstream APT use or
+scientific acceptance.
 
 ## Governing Decision
 
