@@ -2357,10 +2357,9 @@ TEST(canonical_apt_v1_phase_b,
     for (auto &report : unknown_reports) {
         report.header = {"runtime_surprise"};
     }
-    EXPECT_THROW(apt_producer::preflight_atomic_kids_fit_reports(
-                     unknown_reports,
-                     fixture.calib.canonical_apt_producer.raw_manifest),
-                 apt::ContractError);
+    EXPECT_NO_THROW(apt_producer::preflight_atomic_kids_fit_reports(
+        unknown_reports,
+        fixture.calib.canonical_apt_producer.raw_manifest));
     auto literal_canonical_reports = reports;
     for (auto &report : literal_canonical_reports) {
         report.header = {"kids_flag"};
@@ -2372,10 +2371,9 @@ TEST(canonical_apt_v1_phase_b,
 
     const auto headers_before_failure = fixture.calib.apt_header_keys;
     const auto apt_before_failure = fixture.calib.apt;
-    EXPECT_THROW(apt_producer::apply_atomic_kids_fit_report_overlay(
-                     fixture.calib, unknown_reports,
-                     fixture.calib.canonical_apt_producer.raw_manifest),
-                 apt::ContractError);
+    EXPECT_NO_THROW(apt_producer::apply_atomic_kids_fit_report_overlay(
+        fixture.calib, unknown_reports,
+        fixture.calib.canonical_apt_producer.raw_manifest));
     EXPECT_EQ(fixture.calib.apt_header_keys, headers_before_failure);
     ASSERT_EQ(fixture.calib.apt.size(), apt_before_failure.size());
     for (const auto &[name, before] : apt_before_failure) {

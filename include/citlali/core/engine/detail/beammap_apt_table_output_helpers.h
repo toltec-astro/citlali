@@ -184,8 +184,6 @@ std::vector<std::string> preflight_atomic_kids_fit_reports(
                 "literal source kids_flag/flag2 is not an admitted KIDs fit-report field");
         }
         const auto name = normalized_kids_model_name(source_name);
-        const auto is_legacy_match_field =
-            beammap_apt_keys::is_legacy_observation_match_field(name);
         if (!unique.insert(name).second) {
             throw apt::ContractError(
                 "KIDs fit-report field is protected, duplicate, or absent from the canonical v1 registry: " +
@@ -193,13 +191,10 @@ std::vector<std::string> preflight_atomic_kids_fit_reports(
         }
         const auto contract = canonical_registered_field(name);
         if (!contract || apt::detail::protected_contract_name(name)) {
-            if (is_legacy_match_field) {
-                fields.push_back({std::string(name), std::nullopt});
-                continue;
-            }
-            throw apt::ContractError(
-                "KIDs fit-report field is protected, duplicate, or absent from the canonical v1 registry: " +
-                name);
+            // Preserve compatibility with externally produced tune reports by
+            // allowing unregistered diagnostics (like f_in) as ignored input.
+            fields.push_back({std::string(name), std::nullopt});
+            continue;
         }
         names.push_back(name);
         fields.push_back({name, *contract});
