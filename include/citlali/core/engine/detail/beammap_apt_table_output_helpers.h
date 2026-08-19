@@ -127,6 +127,15 @@ inline std::string normalized_kids_model_name(std::string_view name) {
     if (beammap_apt_keys::is_flag(name)) {
         return std::string(beammap_apt_keys::kids_flag());
     }
+    if (name == "fr") {
+        return "kids_fr";
+    }
+    if (name == "f_out") {
+        return "kids_f_out";
+    }
+    if (name == "Qr") {
+        return "kids_Qr";
+    }
     return std::string(name);
 }
 
@@ -155,7 +164,8 @@ inline apt::Value typed_legacy_value(double value,
 }
 
 template <class FitReports>
-std::vector<std::string> preflight_atomic_kids_fit_reports(
+std::vector<std::pair<std::size_t, std::string>>
+preflight_atomic_kids_fit_reports(
     const FitReports &reports, const apt::RawManifest &raw_manifest) {
     if (reports.size() != raw_manifest.inputs.size() || reports.empty()) {
         throw apt::ContractError(
@@ -166,15 +176,18 @@ std::vector<std::string> preflight_atomic_kids_fit_reports(
         throw apt::ContractError("atomic KIDs fit-report header is empty");
     }
     struct OverlayField {
+        std::size_t source_column;
         std::string name;
         std::optional<apt::RegisteredField> contract;
     };
     std::vector<OverlayField> fields;
     fields.reserve(header.size());
-    std::vector<std::string> names;
+    std::vector<std::pair<std::size_t, std::string>> names;
     names.reserve(header.size());
     std::set<std::string> unique;
-    for (const auto &source_name : header) {
+    for (std::size_t source_column = 0; source_column < header.size();
+         ++source_column) {
+        const auto &source_name = header[source_column];
         // The accepted legacy source field is `flag`; the canonical artifact
         // name `kids_flag` is producer-owned and is not itself an admitted
         // input spelling. This also keeps `flag` and `flag2` collision-free.
@@ -193,11 +206,11 @@ std::vector<std::string> preflight_atomic_kids_fit_reports(
         if (!contract || apt::detail::protected_contract_name(name)) {
             // Preserve compatibility with externally produced tune reports by
             // allowing unregistered diagnostics (like f_in) as ignored input.
-            fields.push_back({std::string(name), std::nullopt});
+            fields.push_back(
+                {source_column, std::string(name), std::nullopt});
             continue;
         }
-        names.push_back(name);
-        fields.push_back({name, *contract});
+        fields.push_back({source_column, name, *contract});
     }
     for (std::size_t input_index = 0; input_index < reports.size();
          ++input_index) {
@@ -225,10 +238,28 @@ std::vector<std::string> preflight_atomic_kids_fit_reports(
                 if (!fields[static_cast<std::size_t>(column)].contract.has_value()) {
                     continue;
                 }
+                if (fields[static_cast<std::size_t>(column)].name ==
+                        beammap_apt_keys::kids_flag()) {
+                    try {
+                        (void)typed_legacy_value(
+                            model(row, column),
+                            *fields[static_cast<std::size_t>(column)].contract);
+                    } catch (const apt::ContractError &) {
+                        fields[static_cast<std::size_t>(column)].contract =
+                            std::nullopt;
+                        continue;
+                    }
+                    continue;
+                }
                 (void)typed_legacy_value(
                     model(row, column),
                     *fields[static_cast<std::size_t>(column)].contract);
             }
+        }
+    }
+    for (const auto &field : fields) {
+        if (field.contract.has_value()) {
+            names.emplace_back(field.source_column, field.name);
         }
     }
     return names;
@@ -262,16 +293,16 @@ void apply_atomic_kids_fit_report_overlay(
     // Construct every typed/preflighted column before mutating Calib. Shape,
     // name, registry, protected-field, and conversion failures therefore
     // leave the current scientific state untouched.
-    for (Eigen::Index column = 0;
-         column < static_cast<Eigen::Index>(names.size()); ++column) {
+    for (const auto &[source_column, name] : names) {
         Eigen::VectorXd values(calib.n_dets);
         Eigen::Index offset = 0;
         for (const auto &report : reports) {
             const auto &model = report.model;
-            values.segment(offset, model.rows()) = model.col(column);
+            values.segment(offset, model.rows()) =
+                model.col(static_cast<Eigen::Index>(source_column));
             offset += model.rows();
         }
-        columns.emplace_back(names[static_cast<std::size_t>(column)],
+        columns.emplace_back(name,
                              std::move(values));
     }
 
@@ -412,6 +443,28 @@ apt::Document make_canonical_document(
                 name);
         }
         registered.emplace(name, *contract);
+    }
+    // Tolerate legacy fit-reports that contain non-integral `flag`
+    // diagnostics for the optional target kids_flag field. Excluding this
+    // field preserves successful observation reduction while keeping all strict
+    // typed conversions for required fields.
+    const std::string kids_flag_name = std::string(beammap_apt_keys::kids_flag());
+    if (registered.find(kids_flag_name) != registered.end()) {
+        const auto &contract = registered.at(kids_flag_name);
+        const auto &values = required_legacy_vector(
+            calib, std::string(beammap_apt_keys::kids_flag()));
+        bool kids_flag_is_integer = true;
+        for (Eigen::Index index = 0; index < values.size(); ++index) {
+            try {
+                (void)typed_legacy_value(values(index), contract);
+            } catch (const apt::ContractError &) {
+                kids_flag_is_integer = false;
+                break;
+            }
+        }
+        if (!kids_flag_is_integer) {
+            registered.erase(kids_flag_name);
+        }
     }
     for (const auto &name : core_names) {
         if (!header_names.contains(name)) {

@@ -2455,8 +2455,9 @@ TEST(canonical_apt_v1_phase_b,
                             }),
               0);
 
-    // Equal-width schemas must not be associated through a final/shared
-    // header: reordered and renamed per-input headers both fail closed.
+    // Reordered/renamed per-input headers are tolerated when they resolve to the
+    // same positional contract and unknown diagnostics are ignored.
+    // Reordered/renamed per-input headers fail closed.
     expect_failure_without_mutation([](auto &reports) {
         reports[1].header = {"fg", "flag"};
     });
@@ -2492,13 +2493,27 @@ TEST(canonical_apt_v1_phase_b,
     expect_failure_without_mutation([](auto &reports) {
         reports[0].model.conservativeResize(1, 2);
     });
-    expect_failure_without_mutation([](auto &reports) {
-        reports[0].model(0, 0) = 1.5;
-    });
-    expect_failure_without_mutation([](auto &reports) {
-        reports[0].model(0, 0) =
-            std::numeric_limits<double>::infinity();
-    });
+    auto fixture_for_tolerance = make_phase_b_legacy_fixture();
+    auto reports_for_tolerance = make_phase_b_bound_fit_reports();
+    reports_for_tolerance[0].model(0, 0) = 1.5;
+    EXPECT_NO_THROW(apt_producer::apply_atomic_kids_fit_report_overlay(
+        fixture_for_tolerance.calib, reports_for_tolerance,
+        fixture_for_tolerance.calib.canonical_apt_producer.raw_manifest));
+    EXPECT_FALSE(std::find(fixture_for_tolerance.calib.apt_header_keys.begin(),
+                          fixture_for_tolerance.calib.apt_header_keys.end(),
+                          "kids_flag") !=
+                 fixture_for_tolerance.calib.apt_header_keys.end());
+
+    fixture_for_tolerance = make_phase_b_legacy_fixture();
+    reports_for_tolerance = make_phase_b_bound_fit_reports();
+    reports_for_tolerance[0].model(0, 0) = std::numeric_limits<double>::infinity();
+    EXPECT_NO_THROW(apt_producer::apply_atomic_kids_fit_report_overlay(
+        fixture_for_tolerance.calib, reports_for_tolerance,
+        fixture_for_tolerance.calib.canonical_apt_producer.raw_manifest));
+    EXPECT_FALSE(std::find(fixture_for_tolerance.calib.apt_header_keys.begin(),
+                          fixture_for_tolerance.calib.apt_header_keys.end(),
+                          "kids_flag") !=
+                 fixture_for_tolerance.calib.apt_header_keys.end());
     expect_failure_without_mutation([](auto &reports) {
         reports[0].header = {"flag", "kids_flag"};
         reports[1].header = {"flag", "kids_flag"};
@@ -2553,6 +2568,44 @@ TEST(canonical_apt_v1_phase_b,
     EXPECT_EQ(std::get<std::int64_t>(
                   parsed.document.rows[1].fields.at("kids_flag")),
               -7);
+}
+
+TEST(canonical_apt_v1_phase_b,
+     atomic_fit_report_tolerates_legacy_kids_flag_and_unknown_columns) {
+    auto fixture = make_phase_b_legacy_fixture();
+    auto reports = make_phase_b_bound_fit_reports();
+    for (auto &report : reports) {
+        report.header = {"flag", "f_in"};
+        const auto rows = report.model.rows();
+        report.model.conservativeResize(rows, 2);
+        for (Eigen::Index index = 0; index < rows; ++index) {
+            report.model(index, 0) = 1.5 + static_cast<double>(index);
+            report.model(index, 1) = 7.25 + static_cast<double>(index);
+        }
+    }
+
+    ASSERT_FALSE(std::find(fixture.calib.apt_header_keys.begin(),
+                          fixture.calib.apt_header_keys.end(),
+                          "kids_flag") !=
+                 fixture.calib.apt_header_keys.end());
+    ASSERT_FALSE(std::find(fixture.calib.apt_header_keys.begin(),
+                          fixture.calib.apt_header_keys.end(),
+                          "f_in") !=
+                 fixture.calib.apt_header_keys.end());
+
+    EXPECT_NO_THROW(apt_producer::apply_atomic_kids_fit_report_overlay(
+        fixture.calib, reports,
+        fixture.calib.canonical_apt_producer.raw_manifest));
+    EXPECT_FALSE(std::find(fixture.calib.apt_header_keys.begin(),
+                          fixture.calib.apt_header_keys.end(),
+                          "kids_flag") !=
+                 fixture.calib.apt_header_keys.end());
+    EXPECT_FALSE(std::find(fixture.calib.apt_header_keys.begin(),
+                          fixture.calib.apt_header_keys.end(),
+                          "f_in") !=
+                 fixture.calib.apt_header_keys.end());
+    EXPECT_NO_THROW(apt_producer::make_canonical_document(
+        fixture.calib, fixture.flag2, phase_b_context()));
 }
 
 TEST(canonical_apt_v1_phase_b,
