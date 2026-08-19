@@ -13,7 +13,7 @@
 \definecolor{RTCgold}{HTML}{B7791F}
 \hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
  hypertexnames=false,
- pdftitle={TolTEC Raw-Timestream Conditioning: Paired Readout Coordinates, Learn--Resolve--Apply, and Scientific Consequences v0.1/r0.6},
+ pdftitle={TolTEC Raw-Timestream Conditioning: Paired Readout Coordinates, Learn--Resolve--Apply, and Scientific Consequences v0.1/r0.7},
  pdfauthor={SCI-RTC implementation-blind scientific author}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.52em}
@@ -46,7 +46,7 @@ and Scientific Consequences\\[0.28in]}
 \vspace{0.55in}
 \begin{tabular}{@{}ll@{}}
 Scientific contract version & v0.1 \\
-Science-team rationale revision & r0.6 \\
+Science-team rationale revision & r0.7 \\
 Date & 2026-08-18 \\
 Authority & Shared normative core in \texttt{src/common/} \\
 Status & Draft for scientific-owner review \\
@@ -78,7 +78,7 @@ therefore change a point-source peak, effective PSF, centroid, extended-source
 response, calibration transfer, or scientific eligibility without changing a
 unit label.
 
-SCI-RTC v0.1/r0.6 organizes those choices as \textbf{learn--resolve--apply}.
+SCI-RTC v0.1/r0.7 organizes those choices as \textbf{learn--resolve--apply}.
 Learn uses a declared population and diagnostics to estimate candidate
 parameters and uncertainty. Resolve combines that evidence with fixed policy
 and admits one complete immutable RTC plan. Apply executes exactly that plan
@@ -102,8 +102,9 @@ not itself Stokes I and $r$ is neither calibrated, substituted for $x$, nor
 silently passed through the $x$ operator. Absolute
 \texttt{flxscale} and target atmosphere belong to a distinct downstream
 SCI-CAL product applied only to $x$. When a required predicate is unresolved, the affected operation
-or claim is explicitly unavailable. The formal appendices are the sole
-normative authority; Sections 1--12 explain their scientific meaning.
+or claim is explicitly unavailable. The shared formal core rendered in the
+companion Engineering Conformance PDF is the sole normative authority;
+Sections 1--12 explain its scientific meaning.
 
 \RationaleBox{Reading rule.}{Narrative text explains the shared authority but
 cannot weaken a requirement, choose a missing numerical value, or convert an
@@ -119,7 +120,8 @@ unavailable state into a pass.}
 RTC is the scientific transformation from an admitted aligned paired $x/r$
 detector stream to a conditioned $x$ output with immutable raw $r$ parentage
 and explicit causal diagnostics. Its temporal, detector-mixing, selection,
-and cross-coordinate response is explicit. Its purpose is
+and cross-coordinate selection and uncertainty dependence are explicit. Its
+fixed-state numerical response has no $r\!\rightarrow x$ branch. Its purpose is
 not to make every sample finite or every spectrum
 smooth. Its purpose is to address declared contamination and sampling
 problems while preserving a quantitatively adequate response for the intended
@@ -281,7 +283,7 @@ claim is unavailable.}
 The same temporal frequency represents different angular structure in
 different scans. For a locally Gaussian effective beam with covariance
 $\Sigma$ and angular scan velocity $\mathbf v$, the characteristic crossing
-time is equation~\eqref{eq:crossing-time}. It uses the beam projected along
+time is formal identity \texttt{SCI-RTC-EQ-023}. It uses the beam projected along
 the actual scan direction, not merely a scalar array FWHM. Source extent,
 detector and telescope response, prior RTC stages, and cadence further shape
 the exact source-times-response spectrum.
@@ -340,7 +342,11 @@ in-phase and quadrature coordinates into $x^A_{dj}$ and $r^A_{dj}$ with one
 detector, sample, stream, and mapping-revision identity.  RTC consumes that
 general mapping and, where applicable, its local Jacobian or affine
 representation, domain, applicability, validity, and provenance; it does not
-infer, globally linearize, repair, or silently replace it.
+infer, globally linearize, repair, or silently replace it.  A separate
+upstream ALIGN relation then produces the admitted $x^A/r^A$ pair.  RTC starts
+there: it retains ALIGN identity and may compose an optional end-to-end
+response to native acquisition coordinates, but its local operator does not
+apply ALIGN a second time.
 
 Both members are required for every admitted occurrence.  A missing partner
 is malformed input, but numerical or scientific validity is represented
@@ -363,21 +369,29 @@ operator, response, support, unit, validity, uncertainty, and provenance; it is
 not a required v0.1 output.
 
 \begin{center}
-\begin{tikzpicture}[node distance=0.30in]
-\node[rtcbox,text width=1.25in] (iq) {measured pair\\$(I^A,Q^A)$};
-\node[rtcbox,text width=1.50in,right=of iq] (map) {upstream mapping\\authority + revision};
-\node[rtcbox,text width=1.45in,right=of map] (xr) {exact raw pair\\$(x^A,r^A)$};
-\node[rtcbox,text width=1.25in,above right=0.10in and 0.30in of xr] (x) {$x$ path\\RTC $\to$ SCI-CAL};
-\node[rtcbox,text width=1.25in,below right=0.10in and 0.30in of xr] (r) {$r$ path\\RTC diagnostics};
-\draw[rtcarr](iq)--(map);\draw[rtcarr](map)--(xr);
+\begin{tikzpicture}[node distance=0.16in]
+\node[rtcbox,text width=0.72in] (iq) {native IQ\\$(I^{\rm acq},Q^{\rm acq})$};
+\node[rtcbox,text width=0.92in,right=of iq] (map) {Tune mapping\\authority};
+\node[rtcbox,text width=0.82in,right=of map] (xracq) {native pair\\$(x^{\rm acq},r^{\rm acq})$};
+\node[rtcbox,text width=0.58in,right=of xracq] (align) {upstream\\ALIGN};
+\node[rtcbox,text width=0.82in,right=of align] (xr) {admitted pair\\$(x^A,r^A)$};
+\node[rtcbox,text width=0.88in,above right=0.10in and 0.18in of xr] (x) {$x$ path\\RTC $\to$ CAL};
+\node[rtcbox,text width=0.88in,below right=0.10in and 0.18in of xr] (r) {$r$ parent\\diagnostics};
+\draw[rtcarr](iq)--(map);\draw[rtcarr](map)--(xracq);
+\draw[rtcarr](xracq)--(align);\draw[rtcarr](align)--(xr);
 \draw[rtcarr](xr)--(x);\draw[rtcarr](xr)--(r);
 \end{tikzpicture}
 \end{center}
 
 Paired statistics retain the full $x/r$ covariance, common support, and any
-shared selector.  A block-diagonal or independent model requires evidence;
-it is not implied by coordinate names.  This paired boundary applies equally
-to Beammap, Pointing, OOF, Science, and diagnostic-only roles.
+shared selector.  At fixed resolved state, however, the numerical Jacobian is
+$[L^x\ 0]$: only $x$ enters the conditioned value.  The cross-coordinate
+blocks matter through selectors, learned parameters, diagnostics, model
+uncertainty, and cross terms rather than through an invented numerical $r$
+branch.  At a selector boundary a total derivative may be unavailable.  A
+block-diagonal or independent model requires evidence; it is not implied by
+coordinate names.  This paired boundary applies equally to Beammap, Pointing,
+OOF, Science, and diagnostic-only roles.
 
 \clearpage
 \section{Despiking, level shifts, and donor replacement}
@@ -398,12 +412,16 @@ and no donor relation crosses an unresolved or accepted boundary.  The plan
 records spike statistic, threshold, support, mask/downweighting, false-positive
 control, shift estimator, donor topology, and each resulting boundary.
 
-A level-shift event records detector, transition time or interval, separate
+A level-shift event records one network event time together with each
+detector's transition time or interval, timing offset and declared coherence
+tolerance, separate
 $x$ and $r$ amplitudes or typed unavailability, estimator, support, quality,
 uncertainty, and cause.  Detection does not itself authorize correction.
 Each admitted event creates a transition mask and owner-resolved pre/post
-guards, delimits coherent segments, and invokes an explicit reset or carry
-rule.  Multiple events retain ordered identities, even when guards overlap or
+guards, and delimits coherent segments.  Reset is ordinary.  Carry across an
+accepted shift is a separately authorized continuity exception requiring an
+explicit response and residual-contamination criterion.  Multiple events
+retain ordered identities, even when guards overlap or
 the intervening segment is too short; a selected conflict and minimum-segment
 policy determines the disposition.
 
@@ -445,11 +463,15 @@ policy.
 \section{Optical leakage diagnostics from atmosphere and bright sources}
 \label{sec:rat-leakage}
 The $r$ coordinate is not presumed optically dark.  A source-dependent local
-model permits both $x$ and $r$ to respond, and equation~\eqref{eq:leakage}
+model permits both $x$ and $r$ to respond, and \texttt{SCI-RTC-EQ-032}
 defines a diagnostic ratio only where the $x$ response is valid and nonzero.
 That ratio is not a universal detector correction.  It is an evidence product
 with a source class, estimator, support, selection, uncertainty, validity,
-and response convention.
+and response convention.  Because the number depends on coordinate
+normalization, every product also retains $x/r$ units or scales, mapping
+revision, normalization, metric, Tune/loading/epoch domain, and whether the
+ratio is dimensionless or carries a coordinate-unit ratio.  A response angle
+is comparable only after a declared metric makes the axes commensurate.
 
 Atmospheric variability provides one high-occupancy optical diagnostic.  Its
 estimator must distinguish the selected atmospheric template or population,
@@ -478,6 +500,13 @@ two response domains differently, pre- and post-operation leakage estimates
 are distinct products.  Their comparison includes common support and the
 applicable response.  The atmospheric template itself is not subtracted from
 science $x$.
+
+A leakage ratio or angle is not compared across detectors, Tunes, loading
+states, epochs, or mapping revisions merely because both values are finite.
+The comparison is available only when their coordinate conventions are
+compatible or an explicit transformation, normalization, and metric have been
+applied.  Thus a change in readout-coordinate scale cannot masquerade as a
+Tune-health trend.
 
 No leakage diagnostic in v0.1 authorizes automatic $r$-to-$x$ correction,
 calibration of $r$, or a new donor route.  Its immediate scientific purpose is
@@ -522,7 +551,7 @@ extended transfer, ringing, support, covariance, and usable fraction.
 \section{Filter order, phase, registration, and composition}
 \label{sec:rat-order-phase}
 FIR tap count is a scientific design result, not an arbitrary integer.
-Equation~\eqref{eq:fir-order-selection} chooses the smallest admitted order
+Formal identity \texttt{SCI-RTC-EQ-025} chooses the smallest admitted order
 that passes transfer, alias, phase, support, guard, precision, and
 realizability predicates.  An approximate family formula can initialize a
 search but cannot replace exact coefficients and response.
@@ -535,7 +564,7 @@ effective order, state, and edge behavior even when ideal interior phase is
 zero.
 
 Delay creates scan-direction displacement through
-equation~\eqref{eq:scan-displacement}.  A phase-zero selected grid point does
+formal identity \texttt{SCI-RTC-EQ-027}.  A phase-zero selected grid point does
 not imply that the preceding response is centered there.  Every role resolves
 zero phase, shifted time, coordinate correction, response-aware downstream
 use, or a quantitative bound on residual centroid and PSF effect.
@@ -564,7 +593,7 @@ parentage remains in the bundle.  The
 preceding composed filter determines the rejected-band power that remains to
 fold.
 
-Equation~\eqref{eq:alias} includes every folded image.  Before resolving $M$,
+Formal identity \texttt{SCI-RTC-EQ-014} includes every folded image.  Before resolving $M$,
 the exact conditioned-$x$ prefilter must meet approved transfer and alias
 bounds over the declared source domain.  A
 Gaussian is not band-limited, so safe means bounded residual transfer, not
@@ -595,13 +624,16 @@ automatically become a mask, zero weight, or universal eligibility decision.
 Gaps, resets, and selected level shifts delimit coherent segments.  FIR
 extension, rejection, reflection, zero padding, and local renormalization are
 different operators.  IIR state requires explicit initialization, reset or
-carry, transient, stability, and terminal state.  State shall not silently
-cross a declared shift boundary.  A guard removes or types outputs but does
+carry, transient, stability, and terminal state.  Reset is ordinary at an
+accepted shift.  Carry requires separately authorized continuity, complete
+response, and a residual-contamination criterion; state never crosses merely
+because a policy field says ``carry.''  A guard removes or types outputs but does
 not prove a residual tail negligible without a quantitative criterion.
 
 The realized event and segment state includes ordered shift identities,
 transition intervals, paired amplitudes, masks, guards, plateau diagnostics,
-short-segment disposition, and reset/carry decisions.  Optional operation
+short-segment disposition, ordinary reset, and any separately authorized carry
+decision.  Optional operation
 classes remain disabled unless the role plan explicitly selects them.
 
 A non-finite sample, coordinate, mapping value, factor, coefficient, or state
@@ -626,6 +658,14 @@ conditioned $x$ member and apply absolute \texttt{flxscale} and target
 atmosphere.  The raw $r$ parent remains in the RTC bundle for traceability and
 diagnostics but receives neither the $x$ conditioning chain nor SCI-CAL.  This boundary does not assert
 that raw $x$ is Stokes I.
+
+Target-atmosphere correction at one output time is generally not the inverse
+of attenuation mixed across a temporal filter's full support.  In compact
+terms, output-time correction followed by an RTC result is not assumed equal
+to filtering individually atmosphere-corrected inputs.  A CAL handoff therefore
+needs the complete RTC response over that support or a preregistered
+owner-approved noncommutation bound; a unit label or one output-time atmosphere
+value cannot supply the missing equivalence.
 
 Filtering can preserve dimensions while changing source peak, PSF, extended
 response, phase, centroid, and covariance.  Calibration cannot restore
@@ -654,13 +694,15 @@ flow.  Reused donors correlate targets, overlapping filters correlate
 neighbors, shared $x/r$ selectors create cross-coordinate covariance, and an
 IIR links every output to its declared state boundary.
 
-At fixed realized state, the conditional moment equations propagate an
-admitted joint $x/r$ model through the conditioned-$x$ operator and every
-paired selector.  Data-dependent
-selection, leakage estimation, shift detection, learned templates, or notch
-parameters add selection and model variation.  Conditioning does not make
-those terms zero.  Unknown covariance remains unavailable rather than
-diagonal, white, independent, or zero.
+At fixed realized state, the conditional moment equations apply
+$J_{\rm num}=[L^x\ 0]$ to the admitted joint $x/r$ model, so direct numerical
+covariance is $L^x\Sigma_{xx}(L^x)^{\mathsf T}$.  The cross-coordinate blocks
+remain scientifically necessary because selection, leakage estimation, shift
+detection, learned templates, or notch parameters may depend on both members.
+Their consequences enter selection, learned-parameter, model, diagnostic, and
+cross-term uncertainty rather than fixed-state numerical propagation.
+Conditioning does not make those terms zero.  Unknown covariance remains
+unavailable rather than diagonal, white, independent, or zero.
 
 Eligibility differs from computability.  V0.1 universally excludes an output
 whose exact representative occurrence $(d,Mn)$ was synthesized or replaced
@@ -683,7 +725,7 @@ FIR/bands & taps, edges, ripple, attenuation, family, precision, speed, beam, so
 Donor & spikes, invalids, factors, sky mismatch, noise, reuse, sources, mask edges & stabilization, bias, covariance, influence extent, scientific data loss \\
 Decimation & on/off-bin tones, speeds/directions, smallest beam, delay, aliases, strides, resets & retained/aliased transfer, timing, coordinate shift, PSF, support, edges \\
 Paired/leakage & mappings, independent validity, atmosphere/source class, scalar/frequency response & pair fidelity, $x/r$ covariance, leakage bias, pre/post response, unavailable states \\
-Level shift & spike adjacency, amplitudes, multiple events, guards, short segments, reset/carry & event accuracy, false detection, plateau bias, state leakage, response and data loss \\
+Level shift & spike adjacency, network/detector times, amplitudes, multiple events, guards, short segments, reset/authorized carry & event accuracy, false detection, plateau bias, state leakage, response and data loss \\
 \bottomrule
 \end{tabularx}
 }
@@ -713,12 +755,4 @@ atmosphere treatment, changed astronomical modes, response and calibration
 effects, validation evidence, and remaining unavailable claims.}
 
 \hypertarget{rtc-narrative-end}{}
-\clearpage
-\appendix
-\input{common/notation.tex}
-\input{common/definitions.tex}
-\input{common/equations.tex}
-\input{common/assumptions.tex}
-\input{common/requirements.tex}
-\input{common/edge_cases.tex}
 \end{document}

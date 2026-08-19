@@ -1,6 +1,6 @@
 # SCI-RTC v0.1 — Decision Log
 
-Status: Stage B v0.1/r0.6 bounded correction manager-reviewed; scientific
+Status: Stage B v0.1/r0.7 surgical correction manager-reviewed; scientific
 authority not approved or frozen
 
 | ID | Status | Decision |
@@ -30,6 +30,8 @@ authority not approved or frozen
 | `RTC-SCI-D008` | approved `2026-08-18` | Conditioned $x$ is the required RTC numerical output. The immutable raw $r$ parent and every causal diagnostic/selector remain in the atomic bundle; any conditioned $r$ product requires a separate channel-specific operator and complete response/validity authority. |
 | `RTC-DRAFT-D008` | applied `2026-08-18` | R0.6 withdraws the two false r0.5 approvals, applies `RTC-SCI-D006--D008`, corrects mapping and leakage notation, strengthens plateau/pre-post-shift authority, and appends the missing scientific falsifiers without renumbering prior IDs. |
 | `RTC-DRAFT-D009` | manager-reviewed `2026-08-18` | R0.6 independence, owner-decision coverage, shared-core structure, exact inventories and crosswalk, warning-free compilation, PDF metadata, and visual integrity of all 90 pages pass; the draft is accepted for scientific-owner review and freeze disposition only. |
+| `RTC-DRAFT-D010` | applied `2026-08-18` | R0.7 removes the second ALIGN application, separates fixed-state numerical covariance from paired selector uncertainty, qualifies leakage coordinates, reconciles network event times and carry authority, completes operation inventories, restores the atmosphere/support explanation, and splits the final rationale from the complete formal contract without changing stable IDs. |
+| `RTC-DRAFT-D011` | manager-reviewed `2026-08-18` | R0.7 independence, seven-correction coverage, exact inventories/crosswalk, clean compilation, focused-rationale/formal-contract split, metadata, PDF text coverage, and visual integrity of all 56 pages pass; the candidate proceeds to fresh consistency review and scientific-owner freeze disposition only. |
 
 Stage A approval authorized implementation-blind drafting only. The manager
 review establishes draft coherence, not scientific approval. No step here

@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.6 shared normative core -- assumptions and scope.
+% SCI-RTC v0.1/r0.7 shared normative core -- assumptions and scope.
 \section{Bounded assumptions and non-goals}
 \label{sec:core-assumptions}
 
@@ -16,6 +16,9 @@ approved.
 The input grid, cadence, phase, mapping, gaps, synthesis/origin state,
 support, and scan partition are admitted ALIGN facts.  Physical event timing,
 absolute timing accuracy, and a producer epoch may remain unavailable.
+RTC's local numerical operator begins at this aligned pair; ALIGN remains
+upstream lineage and is composed only for a separately identified end-to-end
+response.
 
 \item[SCI-RTC-ASM-003 -- Coordinate boundary.]
 Coordinate-dependent operations assume an admitted AST identity, frame,
@@ -41,9 +44,12 @@ scientific constant by this contract.
 
 \item[SCI-RTC-ASM-006 -- Conditional linearity.]
 Linear response and covariance identities condition on fixed paired-stream
-selection and realized state.  Cross-coordinate covariance and shared
-selectors are retained.  Data-derived selectors make the unconditional
-operation generally nonlinear and nonstationary.
+selection and realized state.  At fixed state the conditioned-$x$ numerical
+Jacobian has a zero $r$ branch.  Cross-coordinate covariance and shared
+selectors are retained in selection, learned-parameter, model, and cross-term
+uncertainty.  Data-derived selectors make the unconditional operation generally
+nonlinear and nonstationary, and a total derivative may be unavailable at a
+selector boundary.
 
 \item[SCI-RTC-ASM-007 -- Statistical input.]
 Moments or covariance are claimed only from a supplied statistical model with

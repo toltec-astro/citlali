@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.6 shared normative core -- equations.
+% SCI-RTC v0.1/r0.7 shared normative core -- equations.
 \section{Normative equations and identities}
 \label{sec:core-equations}
 
@@ -51,11 +51,16 @@ Equation~\eqref{eq:role-cal} is an SCI-CAL handoff identity; its output is not
 \texttt{xs} and it is not an RTC stage.  The selected cross-package boundary is
 \begin{equation}
 \begin{aligned}
+ \begin{bmatrix}\mathbf x^A\\ \mathbf r^A\end{bmatrix}
+   &=A_\alpha
+     \begin{bmatrix}\mathbf x^{\rm acq}\\ \mathbf r^{\rm acq}\end{bmatrix}
+     +\mathbf a_\alpha
+     &&\text{(upstream ALIGN relation)},\\
  (\mathbf x^{A},\mathbf r^{A})
-   &\xrightarrow{\ \text{pair admission, spike evidence, shift resolve}\ }
+   &\xrightarrow{\ \text{RTC pair admission, spike evidence, shift resolve}\ }
      \Omega_{xr},\\
  \mathbf x^{A}
-   &\xrightarrow{\ A_\alpha,\,B^x_\omega,\,F_1\ldots F_K,\,D_{M,0}\ }
+   &\xrightarrow{\ B^x_\omega,\,F_1\ldots F_K,\,D_{M,0}\ }
      \mathbf y^{x,\rm RTC}_{\mathcal R}
      \xrightarrow{\ C^{\rm CAL}_{\kappa,\mathcal R}\ }
      \mathbf c^{\rm CAL}_{\mathcal R},\\
@@ -73,6 +78,9 @@ Stokes data.  The raw donor ratio in equation~\eqref{eq:raw-donor} is
 $x$-domain convention transfer within $B^x_\omega$, not absolute calibration.
 Atmospheric templates are diagnostic evidence only; equation~\eqref{eq:order-equivalence}
 contains no atmospheric-removal operator.
+The first line is retained upstream lineage, not an RTC stage.  RTC begins at
+the admitted aligned pair; $A_\alpha$ is composed again only when a separately
+identified end-to-end response to native acquisition coordinates is requested.
 
 \subsection{Realized conditioning operator}
 
@@ -83,7 +91,7 @@ $x/r$ evidence and selectors---the required ordered raw $x$ operator is
  \mathbf y^{x,\rm RTC}_{\mathcal R}=D_{M,0}
  F_{K,\theta_K}\cdots F_{1,\theta_1}
  B^x_{\omega,\mathcal R}
- \left(A_\alpha\mathbf x^{A}+\mathbf a^x_\alpha\right)
+ \mathbf x^{A}
  +\mathbf b^x_{\Omega}\; .}
  \tag{SCI-RTC-EQ-005}\label{eq:complete-operator}
 \end{equation}
@@ -93,10 +101,18 @@ authorized contributions.  Masks, coefficients, finite handling, context,
 exceptions, and state are components of $\Omega$, not annotations outside
 the operator.  Conditional on them,
 \begin{equation}
- \mathbf y^{x,\rm RTC}_{\mathcal R}=L^x_\Omega\mathbf x^{A}
-  +\mathbf b^{x\prime}_\Omega,
- \qquad
- L^x_\Omega=D_{M,0}F_K\cdots F_1B^x_{\omega,\mathcal R}A_\alpha .
+ \begin{aligned}
+ \mathbf y^{x,\rm RTC}_{\mathcal R}
+   &=L^x_\Omega\mathbf x^{A}+\mathbf b^{x}_\Omega,
+ &L^x_\Omega&=D_{M,0}F_K\cdots F_1B^x_{\omega,\mathcal R},\\
+ K^{x\leftarrow x,\rm RTC}_\Omega
+   &=\left.\frac{\partial\mathbf y^x}{\partial\mathbf x^A}\right|_\Omega=L^x_\Omega,
+ &K^{x\leftarrow r,\rm RTC}_\Omega
+   &=\left.\frac{\partial\mathbf y^x}{\partial\mathbf r^A}\right|_\Omega=0,\\
+ J^{\rm end}_\Omega
+   &=\begin{bmatrix}L^x_\Omega&0\end{bmatrix}A_\alpha
+ &&\text{when the upstream ALIGN response is admitted.}
+ \end{aligned}
  \tag{SCI-RTC-EQ-006}\label{eq:affine-operator}
 \end{equation}
 This is a conditional affine identity, not an unconditional linear,
@@ -166,7 +182,8 @@ For a coherent pre-sampling segment of length $N$, v0.1 selects only
 \end{equation}
 The representative assigned-grid time is the selected point time
 $t^{\rm out}_n=t_{Mn}$; the scientific support is nevertheless the complete
-transitive support $\mathcal S_{dn}$ of all preceding stages.  A selected
+RTC-local transitive support $\mathcal S^{\rm RTC}_{dn}$ of all preceding
+stages.  A selected
 edge/output policy may reject candidate points, but shall not relabel a
 different phase or silently change equation~\eqref{eq:phase-zero}.
 The representative source occurrence is exactly
@@ -174,15 +191,18 @@ $\rho_{dn}=(d,Mn)$ in the raw aligned paired parent.  It is not the
 largest response coefficient, a support centroid, a donor occurrence, or a
 synthetic sample.
 
-For output $(d,n)$ and acquired input $(q,j)$, the exact local response is
+For output $(d,n)$ and admitted aligned input $(q,j)$, the exact RTC-local
+response is
 \begin{equation}
- K_{dn,qj}=\frac{\partial y_{dn}}
-                 {\partial x^{\rm acq}_{qj}}
+ K^{\rm RTC}_{dn,qj}=\frac{\partial y_{dn}}
+                 {\partial x^{A}_{qj}}
  \quad\text{at fixed realized state }\Omega .
  \tag{SCI-RTC-EQ-012}\label{eq:local-kernel}
 \end{equation}
 At a selection boundary the derivative may be discontinuous or undefined;
-that state shall be represented rather than replaced by an LTI claim.
+that state shall be represented rather than replaced by an LTI claim.  An
+end-to-end kernel to native acquisition cells is the distinct optional
+composition already defined in equation~\eqref{eq:affine-operator}.
 
 In the fixed, detector-separable, translation-invariant, single-rate interior
 case only,
@@ -213,27 +233,37 @@ For an FIR output, direct support starts with
 \begin{equation}
  \mathcal S^{(1)}_{dn}=\{Mn-\ell:\ell\in\mathcal L\},
  \qquad
- \mathcal S_{dn}=\operatorname{closure}_{A,B,F,\,\mathrm{state}}
+ \mathcal S^{\rm RTC}_{dn}=\operatorname{closure}_{B,F,\,\mathrm{state}}
                  \!\left(\mathcal S^{(1)}_{dn}\right).
  \tag{SCI-RTC-EQ-015}\label{eq:support}
 \end{equation}
-IIR support extends to the declared state/reset or context boundary and may
+This is RTC-local support on the aligned grid.  Optional end-to-end support is
+its explicit upstream expansion through admitted $A_\alpha$ support.  IIR
+support extends to the declared state/reset or context boundary and may
 be mathematically infinite.  Any finite guard is an approximation with a
 stated residual-tail criterion.
 
 \subsection{Moments, influence, and learned-plan selection}
 
-For admitted input mean $\boldsymbol\mu_x$ and full covariance $\Sigma_x$,
-conditional on fixed $\Omega$ independent of the modeled random noise,
+For admitted paired input $\mathbf u^A=(\mathbf x^A,\mathbf r^A)^{\mathsf T}$
+with mean $\boldsymbol\mu_u$ and joint covariance
+$\Sigma_u=\left[\begin{smallmatrix}\Sigma_{xx}&\Sigma_{xr}\\
+\Sigma_{rx}&\Sigma_{rr}\end{smallmatrix}\right]$, conditional on fixed
+$\Omega$ independent of the modeled random noise, define
+$J_{\rm num,\Omega}=\begin{bmatrix}L^x_\Omega&0\end{bmatrix}$.  Then
 \begin{align}
  \E[\mathbf y\mid\Omega]
-   &=L_\Omega\boldsymbol\mu_x+\mathbf b'_\Omega,
+   &=J_{\rm num,\Omega}\boldsymbol\mu_u+\mathbf b^x_\Omega,
  &\tag{SCI-RTC-EQ-016a}\label{eq:conditional-mean}\\
  \Sigma^{\rm stat}_{y\mid\Omega}
-   &=L_\Omega\Sigma_xL_\Omega^{\mathsf T}.
+   &=J_{\rm num,\Omega}\Sigma_uJ_{\rm num,\Omega}^{\mathsf T}
+     =L^x_\Omega\Sigma_{xx}(L^x_\Omega)^{\mathsf T}.
  &\tag{SCI-RTC-EQ-016b}\label{eq:conditional-cov}
 \end{align}
-If selectors depend on the random data, unconditional covariance obeys
+The cross-coordinate blocks do not enter fixed-state numerical propagation.
+They remain required for a joint selector, estimator, learned parameter, or
+diagnostic because $\Omega=\Omega(\mathbf x^A,\mathbf r^A)$.  If selectors
+depend on the random data, unconditional covariance obeys
 \begin{equation}
  \Cov(\mathbf y)=
  \E_\Omega[\Cov(\mathbf y\mid\Omega)]
@@ -417,13 +447,15 @@ parent, response, state, phase, edge, support, covariance, and uncertainty.
 
 \subsection{Paired coordinates, leakage, and level shifts}
 
-For every admitted detector occurrence, the upstream mapping authority shall
-produce one ordered pair from measured in-phase and quadrature coordinates,
+For every native acquired detector occurrence, the upstream mapping authority
+shall produce one ordered pair from measured in-phase and quadrature
+coordinates before the separate ALIGN relation of
+equation~\eqref{eq:order-equivalence},
 \begin{equation}
- \begin{bmatrix}x^A_{dj}\\ r^A_{dj}\end{bmatrix}
- =\mathcal T_{d,\zeta}\!\left(I^A_{dj},Q^A_{dj}\right),
+ \begin{bmatrix}x^{\rm acq}_{dm}\\ r^{\rm acq}_{dm}\end{bmatrix}
+ =\mathcal T_{d,\zeta}\!\left(I^{\rm acq}_{dm},Q^{\rm acq}_{dm}\right),
  \qquad
- \mathcal J^{xr}_{dj}=(d,j,\text{stream},\zeta).
+ \mathcal J^{xr,\rm acq}_{dm}=(d,m,\text{stream},\zeta).
  \tag{SCI-RTC-EQ-030}\label{eq:iq-xr-mapping}
 \end{equation}
 The pair identity is exact.  Missing either member is malformed required
@@ -444,14 +476,23 @@ other or to assume $\alpha^r_d=0$.
 
 For a declared source class $c$ and support-qualified estimator,
 \begin{equation}
- \epsilon^{(c)}_d=\frac{\alpha^{r,(c)}_d}{\alpha^{x,(c)}_d},
- \qquad
- \Delta r_d=\epsilon^{(c)}_d\Delta x_d+\eta^{(c)}_d .
+ \begin{aligned}
+ \epsilon^{(c)}_d&=\frac{\alpha^{r,(c)}_d}{\alpha^{x,(c)}_d},
+ &\Delta r_d&=\epsilon^{(c)}_d\Delta x_d+\eta^{(c)}_d,\\
+ \psi^{(c)}_d&=\operatorname{atan2}\!\left(
+   \alpha^{r,(c)}_d/s^r_{d,\zeta},
+   \alpha^{x,(c)}_d/s^x_{d,\zeta}\right)
+ &&\text{only under a declared commensurate metric.}
+ \end{aligned}
  \tag{SCI-RTC-EQ-032}\label{eq:leakage}
 \end{equation}
 Atmosphere-derived and bright-source-derived estimates are distinct products
 with distinct parentage, support, validity, uncertainty, and scalar-versus-
-frequency-dependent status.
+frequency-dependent status.  The ratio carries the coordinate-unit ratio when
+$x$ and $r$ are not dimensionless under a common normalization.  Comparison
+across mapping revisions is unavailable unless their units, scales,
+normalization, metric, and domains are compatible or an explicit transform has
+been applied.
 
 For a declared level-shift event $e$ at transition $\tau_e$, the paired
 piecewise-additive model is
@@ -459,10 +500,14 @@ piecewise-additive model is
  u^c_{dj}=u^{c,\rm base}_{dj}
    +\sum_{e\in\mathcal E_d}\Delta^c_{de}\,
       \mathbb I[j\ge\tau_{de}],
+ \qquad
+ \tau_{de}=\tau_e+\delta\tau_{de},
+ \quad |\delta\tau_{de}|\le\Delta\tau^{\rm coh}_e,
  \qquad c\in\{x,r\}.
  \tag{SCI-RTC-EQ-033}\label{eq:level-shift}
 \end{equation}
-The event time, both amplitudes or their unavailability, detection state,
+The network event time, detector offsets and coherence tolerance, both
+amplitudes or their unavailability, detection state,
 transition mask, guards, and resulting segment boundaries belong to the
 realized plan.  Detection is distinct from correction.
 
@@ -476,7 +521,9 @@ diagnostic and reset condition may be represented by
  \tag{SCI-RTC-EQ-034}\label{eq:plateau-reset}
 \end{equation}
 No plateau value authorizes cross-segment stitching unless separately
-selected, propagated, and validated.
+selected, propagated, and validated.  $R_g$ is ordinarily reset; carry across
+an accepted shift is available only as separately authorized continuity with
+an explicit response and residual-contamination criterion.
 
 The actual bounded-refinement counts satisfy
 \begin{equation}

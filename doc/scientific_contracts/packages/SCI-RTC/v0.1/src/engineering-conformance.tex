@@ -16,7 +16,7 @@
 \definecolor{RTCgray}{HTML}{52606D}
 \hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
   hypertexnames=false,
-  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.6},
+  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.7},
   pdfauthor={SCI-RTC implementation-blind scientific author}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.48em}
@@ -49,7 +49,7 @@
 \vspace{0.65in}
 \begin{tabular}{@{}ll@{}}
 Package version & v0.1 \\
-Revision & r0.6 \\
+Revision & r0.7 \\
 Date & 2026-08-18 \\
 Authority & Shared normative core in \texttt{src/common/} \\
 View-specific content & Informative evidence and review guidance only \\
@@ -67,9 +67,10 @@ independent normative science.}
 
 \section*{How to use this view}
 
-The shared normative core below is byte-for-byte the same set of six inputs
-used by the scientist-facing rationale and is imported exactly once.  It is
-the only authority in this PDF.  The material after the end-of-core marker is
+The six-file shared normative core below is imported exactly once and is the
+complete formal authority companion to the separate twelve-section
+science-team rationale.  The rationale explains this authority but does not
+duplicate it.  The material after the end-of-core marker is
 an informative method for recording evidence against that authority.  It may
 not waive a requirement, select an owner decision, redefine an unavailable
 state, or restate an equation with different semantics.
@@ -146,8 +147,8 @@ REQ-019--020 & Direct exclusion and influence & Direct/noncenter synthesis/repla
 REQ-021--027 & Filters, masks, edges, and finite policy & Coefficient/state serialization, impulse/step/constant/ramp/notch vectors, mask-boundary and non-finite failure injection. \\
 REQ-028--031 & Fixed phase-zero sampling & Enumerated length/factor cases, selected index/time identity, rate trace, exact folded-band calculation. \\
 REQ-032--036 & Learned plan lifecycle & Candidate decision table, maximum-safe selection, common-plan identity, immutable apply and restart mismatch fixtures. \\
-REQ-037--041 & Complete response and support & Factorization reconstruction, local Jacobian fixtures, LTI-domain proof, edge/state/support expansion. \\
-REQ-042--045 & Statistical availability & Bounded covariance matrices, reused-donor correlation fixture, selector/nuisance availability inspection. \\
+REQ-037--041 & Complete response and support & RTC-local factorization from the aligned parent, optional explicit ALIGN composition, local Jacobian fixtures, LTI-domain proof, edge/state/support expansion. \\
+REQ-042--045 & Statistical availability & Fixed-state $[L^x\ 0]$ covariance fixture, reused-donor correlation, and joint selector/nuisance availability inspection. \\
 REQ-046--051 & Validity and atomic output & Orthogonal-state fixtures, atomic write/failure injection, provenance reconstruction, inert-diagnostic toggle. \\
 REQ-052--054 & Consumers and claims & Parent-binding inspection, unavailable-state preservation, disabled-PTC terminal path, claim-label audit. \\
 REQ-055--058 & Learn--resolve--apply lifecycle & Learning-population identity, predicate-completeness matrix, immutable-plan trace, mutation rejection, adaptive-estimator separation. \\
@@ -157,8 +158,8 @@ REQ-069--070 & Validation and claims & Preregistered design sweeps and strict cl
 REQ-071--076 & Refinement attempts and replay & Distinct attempt/accepted-plan trace, immutable apply, complete-plan reconstruction, original-input replay, explicit-cascade comparison, intended-consequence assessment. \\
 REQ-077--082 & Candidate, stability, stopping, provenance & Artifact discrimination, cumulative budgets, complete-plan stability, actual/max-attempt distinction, typed disposition, lineage, restart mismatch fixtures. \\
 REQ-083--086 & Pair admission, identity, mapping, validity & Missing-partner failure, mapping reconstruction, reorder/rejoin rejection, independent $x/r$ validity matrix, restart identity. \\
-REQ-087--093 & Leakage, prohibited correction, joint statistics & Atmosphere/source estimator fixtures, scalar/frequency status, distinct parentage, forbidden-route rejection, full joint covariance. \\
-REQ-094--102 & Level shifts, plateaus, and state & Original-pair spike masking/downweighting, post-segmentation donor fixtures, paired event amplitudes, transition masks/guards, multiple shifts, reset boundaries, no-stitch toggle, typed lifecycle states. \\
+REQ-087--093 & Leakage, prohibited correction, joint statistics & Atmosphere/source estimator fixtures, coordinate rescaling and comparison compatibility, scalar/frequency status, forbidden-route rejection, fixed-state zero $r$ branch, and joint selector covariance. \\
+REQ-094--102 & Level shifts, plateaus, and state & Original-pair spike masking/downweighting, network/detector event-time coherence, post-segmentation donor fixtures, paired amplitudes, guards, reset-by-default boundaries, separately authorized carry, no-stitch toggle, and typed lifecycle states. \\
 REQ-103--105 & CAL, atmosphere diagnostics, role routing & $x$-only CAL handoff, atmospheric-template no-subtraction checks, retained raw-$r$ parentage, paired role-plan disposition, optional-class disabled checks. \\
 REQ-106--108 & Plateau support, pre/post leakage, optional conditioned $r$ & Role-specific support matrix, pre/post response comparison/unavailability, additive-only interpretation block, and separate-$r$-operator admission failure. \\
 \bottomrule
@@ -176,11 +177,14 @@ exceptions, detector mixing, sampling phase, and support expansion to the
 artifact presented to consumers.  Mark complete response unavailable if any
 enabled response-changing stage cannot be represented truthfully.
 
-Begin that trace with exact general IQ-to-$x/r$ mapping authority and preserve
-the ordered pair identity through every stage.  Exercise the conditioned-$x$
-operator while retaining raw-$r$ parentage, full cross-coordinate selector
-dependence and covariance, and verify that level-shift segments reset or carry
-state exactly as resolved.  Confirm that atmospheric templates change only
+Begin that trace with exact general IQ-to-$x/r$ mapping authority, one upstream
+ALIGN relation, and the admitted aligned RTC boundary.  Reject a second ALIGN
+application in the RTC-local operator; compose it only for an explicitly
+identified end-to-end response.  Exercise the conditioned-$x$ operator while
+retaining raw-$r$ parentage, zero fixed-state $r$ numerical branch, and full
+cross-coordinate selector and uncertainty dependence.  Verify ordinary reset
+at level shifts and admit carry only under separate continuity authority with
+response and residual criteria.  Confirm that atmospheric templates change only
 diagnostic or declared selector state, not numerical science $x$.  Reject any
 conditioned $r$ product without a separate channel-specific operator.
 

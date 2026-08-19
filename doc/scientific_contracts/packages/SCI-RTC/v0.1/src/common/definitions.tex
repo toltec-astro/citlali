@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.6 shared normative core -- definitions.
+% SCI-RTC v0.1/r0.7 shared normative core -- definitions.
 \section{Normative definitions}
 \label{sec:core-definitions}
 
@@ -87,9 +87,12 @@ that identity is not a largest-coefficient claim.
 \item[SCI-RTC-DEF-010 -- Complete realized response.]
 An exact local or factorized representation that includes every enabled
 response-changing stage, detector mixing, mask, state, edge rule, exception,
-and sampling phase on its declared support.  If such a representation is not
-truthfully available, response state is \Unavail; a partial kernel is not
-complete response.
+and sampling phase on its declared support.  The RTC-local response is with
+respect to the admitted aligned pair.  An optional end-to-end response to the
+native acquisition grid is a distinct composition with admitted upstream
+ALIGN response and lineage.  If either representation is not truthfully
+available, its response state is \Unavail; a partial kernel is not complete
+response.
 
 \item[SCI-RTC-DEF-011 -- Representative source occurrence.]
 For output $(d,n)$, the raw aligned paired occurrence $(d,Mn)$ before
@@ -245,6 +248,13 @@ A nonzero admitted optical-response projection in nominally orthogonal $r$.
 It is a readout-coordinate alignment or optical-leakage diagnostic, not
 automatically a literal Tune-angle error.  A scalar ratio or angle tests only
 its declared optical projection and does not prove the complete transform.
+Every product retains the $x/r$ coordinate units or scales, mapping revision,
+normalization and metric, Tune and validity domain, whether its ratio is
+dimensionless or carries a coordinate-unit ratio, and the compatibility rule
+for comparison across detectors, Tunes, loading states, epochs, or mapping
+revisions.  An angle is available only after a declared metric makes the two
+axes commensurate.  Otherwise it is coordinate bookkeeping, not a comparable
+physical readout angle.
 
 \item[SCI-RTC-DEF-033 -- Atmospheric optical-leakage diagnostic.]
 A scientifically named estimate of paired $x/r$ response to a declared
@@ -265,14 +275,19 @@ atmosphere-derived diagnostic.
 
 \item[SCI-RTC-DEF-035 -- Network-coherent detector-dependent level shift.]
 An unexpected persistent readout-baseline change having a common or
-near-common network change time and independently estimated detector/channel
-amplitudes $(\Delta x,\Delta r)$.  Simultaneity, an $r$ signature, or its
-absence does not by itself identify physical cause.
+near-common network event time $\tau_e$, detector times
+$\tau_{de}=\tau_e+\delta\tau_{de}$ constrained by a declared coherence
+tolerance, and independently estimated detector/channel amplitudes
+$(\Delta x,\Delta r)$.  The offset may be fixed to zero when exact simultaneity
+is selected.  Simultaneity, an $r$ signature, or its absence does not by itself
+identify physical cause.
 
 \item[SCI-RTC-DEF-036 -- Transition interval and guarded change-point support.]
 The accepted level-shift transition mask together with pre/post guards,
 timing uncertainty, affected detector population, and filter-state boundary.
-No FIR/IIR support may cross it absent separately authorized continuity.
+Reset is the ordinary segmentation behavior.  No FIR/IIR support may cross it
+absent separately authorized continuity with an explicit response and
+residual-contamination criterion.
 
 \item[SCI-RTC-DEF-037 -- Stable plateau and role-specific admissibility.]
 A half-open interval between resolved transitions that is consistent with its

@@ -1,12 +1,12 @@
-% SCI-RTC v0.1/r0.6 shared normative core -- notation and status.
-% This file is imported once by each published view.
+% SCI-RTC v0.1/r0.7 shared normative core -- notation and status.
+% This file is imported by the complete formal-contract view.
 \hypertarget{rtc-core-begin}{}
 \section{Shared normative authority and notation}
 \label{sec:core-notation}
 
 \begin{center}
 \fcolorbox{RTCblue}{RTCpale}{\parbox{0.92\linewidth}{
-\textbf{Normative core stamp:} \texttt{SCI-RTC-v0.1/r0.6}.  The six files in
+\textbf{Normative core stamp:} \texttt{SCI-RTC-v0.1/r0.7}.  The six files in
 \texttt{src/common/} form one authority.  Text outside this shared core is
 explanatory or conformance guidance and cannot alter a definition, equation,
 assumption, requirement, prediction, unavailable state, or owner decision.
@@ -44,9 +44,10 @@ $m_{\rm native}$ & Native acquisition-row index; it is not a physical $r$ coordi
 $j\in\{0,\ldots,N-1\}$ & Ordered aligned input slot on the admitted ALIGN grid. \\
 $n\in\{0,\ldots,N_y-1\}$ & Ordered phase-zero RTC output slot. \\
 $\mathcal R$ & RTC product role, including Pointing, OOF, Science, Beammap, diagnostic-only, or another separately approved role; role changes policy and consumers, not the raw signal identity. \\
-$x^A_{dj},r^A_{dj}$ & Exactly paired admitted aligned raw KID readout coordinates.  $x$ supplies the ordinary total-intensity analysis path; $r$ supplies readout/leakage/artifact/Tune-health evidence.  They share occurrence identity, cadence, phase, and mapping lineage but retain independent value validity. \\
-$\mathbf v^{IQ}_{dj}$ & Upstream orthogonal microwave transmission components $(I_{dj},Q_{dj})^{\mathsf T}$. \\
-$\mathbf u^{xr}_{dj}$ & Paired raw readout vector $(x_{dj},r_{dj})^{\mathsf T}$ produced by the admitted Tune-dependent mapping. \\
+$x^{\rm acq}_{dm},r^{\rm acq}_{dm}$ & Exactly paired raw readout coordinates on the native acquisition grid, before the imported ALIGN mapping. \\
+$x^A_{dj},r^A_{dj}$ & Exactly paired admitted aligned raw KID readout coordinates and the RTC-local input boundary.  $x$ supplies the ordinary total-intensity analysis path; $r$ supplies readout/leakage/artifact/Tune-health evidence.  They share occurrence identity, cadence, phase, and mapping lineage but retain independent value validity. \\
+$\mathbf v^{IQ,\rm acq}_{dm}$ & Upstream native-grid orthogonal microwave transmission components $(I^{\rm acq}_{dm},Q^{\rm acq}_{dm})^{\mathsf T}$. \\
+$\mathbf u^{xr}_{dj}$ & Paired raw readout vector $(x^A_{dj},r^A_{dj})^{\mathsf T}$ admitted at the RTC boundary. \\
 $\zeta$ & Complete Tune and $I,Q\!\rightarrow x,r$ mapping identity, reference, normalization, validity domain, epoch, and uncertainty state. \\
 $\chi_{dj}$ & Detector-static \texttt{flxscale} comparison coordinate used only to define compatible donor transfer; it is not a calibrated RTC product. \\
 $u^x_{dj}$ & Raw $x$-coordinate $\Delta f/f$ value immediately before the ordered RTC filter chain. \\
@@ -54,7 +55,7 @@ $v^{x,\rm preD}_{dj}$ & Final raw $x$ stream after every admitted RTC replacemen
 $y^{x,\rm RTC}_{dn}$ & Required conditioned raw $x$-coordinate $\Delta f/f$ RTC output at the selected phase-zero slot. \\
 $c^{\rm CAL}_{dn}$ & Distinct downstream SCI-CAL output, when authorized: top-of-atmosphere, point-source-equivalent mJy per fixed nominal beam. \\
 $\phi_d$ & \texttt{flxscale} for one exact detector occurrence under the declared multiplicative convention and calibration domain. \\
-$A_\alpha$ & Imported, realized ALIGN mapping with state $\alpha$; its scientific meaning is not owned by RTC. \\
+$A_\alpha,\mathbf a_\alpha$ & Imported, realized upstream ALIGN mapping and affine term with state $\alpha$.  They map the native acquired pair to the admitted aligned pair, remain in lineage, and are not reapplied by the RTC-local operator. \\
 $C^{\rm CAL}_\kappa$ & Downstream SCI-CAL operator with state $\kappa$, including selected absolute \texttt{flxscale} and target-atmosphere correction; RTC does not apply it. \\
 $S_\sigma$ & Spike-candidate evidence selector used only for masking or robust downweighting during level-shift learning; it does not replace samples. \\
 $B^x_\omega$ & Realized post-segmentation $x$-replacement operator conditioned on selection state $\omega$; it has no $r$ numerical branch. \\
@@ -83,11 +84,13 @@ $\Pi_k$ & Complete cumulative accepted plan $k$; $\Pi_0$ is the admitted initial
 $x^{\rm eval,(k)}$ & Exploratory evaluation product for accepted plan $k$, normally obtained by applying $\Pi_k$ to original admitted input $x^{(0)}$. \\
 $\rho_{dn}$ & Representative aligned occurrence $(d,Mn)$ on the raw paired ALIGN parent grid, before replacement and temporal propagation. \\
 $\alpha_{x,d},\alpha_{r,d}$ & Local optical-response coefficients in the paired readout coordinates over a declared signal and support domain. \\
-$\epsilon_d,\psi_d$ & Optional scalar optical-leakage ratio $\alpha_{r,d}/\alpha_{x,d}$ or response-direction angle; neither parameterization is universal. \\
+$\epsilon_d,\psi_d$ & Optional optical-leakage ratio $\alpha_{r,d}/\alpha_{x,d}$ and metric-qualified response-direction angle.  Their coordinate units, scales, mapping revision, normalization, metric, domain, and comparison compatibility are part of the product; neither parameterization is universal. \\
+$s^x_{d,\zeta},s^r_{d,\zeta}$ & Declared nonzero coordinate-normalization scales used only to place $x/r$ response components in a common metric when an angle is reported. \\
 $a_g(t)$ & Declared atmospheric optical-mode template or latent common mode for network $g$. \\
-$\tau_g,\Delta\mathbf b_{d,g}$ & Network level-shift change time and detector-specific paired amplitude $(\Delta x_{d,g},\Delta r_{d,g})^{\mathsf T}$. \\
+$\tau_e,\delta\tau_{de},\tau_{de},\Delta\mathbf b_{de}$ & Network event time, detector-specific timing offset, detector transition time $\tau_{de}=\tau_e+\delta\tau_{de}$, and paired amplitude $(\Delta x_{de},\Delta r_{de})^{\mathsf T}$; the offset is zero or bounded by a declared coherence tolerance. \\
 $I_h,\mathcal P_{d,h}$ & Coherent plateau interval $h$ and its role-specific admissibility state. \\
-$K_{dn,qj}$ & Local detector-time response of one output cell to one acquired input cell. \\
+$K^{\rm RTC}_{dn,qj}$ & RTC-local detector-time response of one output cell to one admitted aligned input cell at fixed realized state. \\
+$K^{\rm end}_{dn,qm}$ & Optional end-to-end response to one native acquired cell, available only by explicit composition with admitted upstream ALIGN response. \\
 $\mathcal S_{dn}$ & Exact transitive input support of output $(d,n)$, including alignment, donors, filters, state, and selection. \\
 $\mathcal I_{dn}$ & Cause-preserving transitive influence set for output $(d,n)$. \\
 \bottomrule
