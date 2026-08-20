@@ -1,0 +1,271 @@
+% SCI-PTC v0.1 shared normative equations -- owner-review draft r0.3.
+\section{Normative equations}
+\label{sec:normative-equations}
+
+The organizing detector-time model separates the latent correlated component
+from its fitted estimate:
+\begin{equation}
+Y^{\rm CAL}_{td}=S_{td}+U_{\star,td}+N_{td},
+\qquad
+U_{\star,td}=\sum_{k=1}^{K}M_{\star,tk}A_{\star,dk}.
+\label{eq:ptc-model}
+\end{equation}
+For the immutable fitted parent, the realized modeled component and transformed
+signal satisfy the identity
+\begin{equation}
+\widehat U=\widehat M\widehat A^{\mathsf T},
+\qquad
+Z=\mathcal A_{\Theta}(Y^{\rm CAL})
+  =Y^{\rm CAL}-\widehat U.
+\label{eq:ptc-subtraction}
+\end{equation}
+Equation~\ref{eq:ptc-subtraction} states the realized result on the fitted
+parent. It does not define how a new input or response companion is applied.
+
+For a declared centering operator $C$ with location state $\lambda$ and an
+invertible internal scaling $D$, the fitting coordinate and physical-unit
+application map are
+\begin{equation}
+\widetilde Y'=D^{-1}C(Y';\lambda),
+\qquad
+\mathcal A_{\Theta}(Y')
+=C^{-1}\!\left(D\widetilde{\mathcal A}_{\Theta}
+(\widetilde Y');\lambda\right).
+\label{eq:center-scale}
+\end{equation}
+Every reversible coordinate is restored for ordinary output. Any
+irrecoverable additive mode is published in $\mathcal N_{\rm PTC}$.
+
+Every typed cause $\phi$ is mapped independently to each use:
+\begin{equation}
+\Gamma(\phi)=
+\bigl(\Gamma_{\rm basis},\Gamma_{\rm load},\Gamma_{\rm apply},
+\Gamma_{\rm out},\Gamma_{\rm coeff},\Gamma_{\rm resp},
+\Gamma_{\rm emp},\Gamma_{\rm sim},\Gamma_{\rm down}\bigr).
+\label{eq:cause-support}
+\end{equation}
+
+An admitted weighted or robust low-rank family minimizes
+\begin{equation}
+(\widehat M,\widehat A)=
+\arg\min_{M,A}\sum_{t,d}w^{\rm fit}_{td}
+\,\rho\!\left(\widetilde Y_{td}-(MA^{\mathsf T})_{td}\right),
+\label{eq:masked-factor}
+\end{equation}
+where $w^{\rm fit}_{td}=0$ denotes no fit influence, not a zero-valued
+observation. The loss, metric, support, rank, and missing-data semantics are
+declared.
+
+For a fixed supplied design $B$ and fit metric $\Omega$, a conditioned
+regression family is
+\begin{equation}
+\widehat c=(B^{\mathsf T}\Omega B)^{+}B^{\mathsf T}\Omega y,
+\qquad
+\mathcal L_{B,\Omega}
+=I-B(B^{\mathsf T}\Omega B)^{+}B^{\mathsf T}\Omega .
+\label{eq:fixed-regression}
+\end{equation}
+The generalized inverse, tolerance, units, gauge, coefficient support, and
+application support are material state.
+
+A weighted common-mode family may estimate its temporal mode as
+\begin{equation}
+\widehat m_t=
+\frac{\sum_d w^{\rm fit}_{td}\omega^{\rm cm}_{td}
+      \widetilde Y_{td}}
+     {\sum_d w^{\rm fit}_{td}\omega^{\rm cm}_{td}},
+\label{eq:common-mode}
+\end{equation}
+only where the denominator is finite and nonzero. The aggregation weight
+$\omega^{\rm cm}_{td}$, its unit, normalization, and population are declared;
+it is not a fitted detector loading by implication.
+
+For base-v0.1 PCA/SVD, application means projection of any admitted
+application input through the frozen realized subspace and metric:
+\begin{equation}
+\widetilde{\mathcal A}_{\Theta}(\widetilde Y')=
+\begin{cases}
+\mathcal L^{t}_{\Theta}\widetilde Y',
+  &\text{temporal-space left action},\\
+\widetilde Y'\mathcal L^{d}_{\Theta},
+  &\text{detector-space right action},\\
+\operatorname{unvec}\!\left[
+\mathcal L^{v}_{\Theta}\operatorname{vec}(\widetilde Y')\right],
+  &\text{declared vectorized action}.
+\end{cases}
+\label{eq:conditional-cleaner}
+\end{equation}
+The realized family selects exactly one compatible action and records its
+domain, codomain, metric, supports, generalized inverse/tolerance, and
+linear coefficient-recomputation rule. A two-sided or detector/time-specific
+action is represented by its exact vectorized operator; it is not inferred
+from matrix orientation or rank alone.
+
+A separately named frozen-component subtraction family is
+\begin{equation}
+\mathcal A^{\rm sub}_{\widehat U}(Y')=Y'-\widehat U,
+\qquad
+D\mathcal A^{\rm sub}_{\widehat U}[Y](H)=H.
+\label{eq:frozen-component}
+\end{equation}
+It is not interchangeable with Equation~\ref{eq:conditional-cleaner} and is
+not the base-v0.1 PCA/SVD application rule.
+
+A declared within-array hierarchical model may be written
+\begin{equation}
+U_\star=U_\star^{\rm array}+U_\star^{\rm network}+U_\star^{\rm local},
+\label{eq:hierarchy}
+\end{equation}
+with exact group identities and joint or sequential fit order. Sequential
+fitting publishes the complete ordered composition and cumulative response.
+
+Let $\mathcal C$ be a finite candidate set with declared order $\preceq$. The
+base selection rule is
+\begin{equation}
+c_{\star}=\min_{\preceq}\left\{c\in\mathcal C:
+P_{\rm corr}(c)\wedge P_{\rm sky}(c)\wedge P_{\rm cond}(c)
+\wedge P_{\rm supp}(c)\wedge P_{\rm stab}(c)\wedge P_{\rm QC}(c)
+\right\}.
+\label{eq:conjunctive-selection}
+\end{equation}
+Every predicate value, unit, threshold, uncertainty treatment, pass/fail
+cause, order, tie, and rejected candidate is retained in $\mathfrak L$.
+
+For refinement index $j$, the support-changing lifecycle is
+\begin{align}
+\Theta_j&=\operatorname{Fit}(Y^{\rm CAL};\mathcal S_j),\nonumber\\
+\mathcal S_{j+1}&=\operatorname{Classify}(Y^{\rm CAL},\Theta_j),\nonumber\\
+\Theta_{j+1}&=\operatorname{Fit}(Y^{\rm CAL};\mathcal S_{j+1}).
+\label{eq:immutable-refit}
+\end{align}
+Every fit uses the same immutable admitted CAL parent. A cleaned $Z_j$ is not
+the next fit parent, and the final complete model is applied once.
+
+The one-way state lifecycle is
+\begin{equation}
+R\longrightarrow E\longrightarrow O\longrightarrow
+\mathfrak L\longrightarrow\Theta\longrightarrow\Lambda\longrightarrow\Pi ,
+\label{eq:lifecycle}
+\end{equation}
+where learned evidence, resolved selection, numerical application, and
+publication are distinct immutable states.
+
+The full PTC procedure has separately typed signal and state projections:
+\begin{equation}
+\mathcal P(Y^{\rm CAL},R,E,O)
+=\bigl(\mathcal P_Z(Y^{\rm CAL}),\mathcal P_{\Lambda}(Y^{\rm CAL})\bigr)
+=(Z,\Lambda).
+\label{eq:full-procedure}
+\end{equation}
+
+For fixed resolved model $\Theta$, the local detector-time response and a
+realized CAL-grid companion are
+\begin{equation}
+J_{\Theta}[Y]=D\mathcal A_{\Theta}[Y],
+\qquad
+k_{\rm src}^{\rm PTC\mid\Theta}
+=J_{\Theta}[Y]\,k_{\rm src}^{\rm CAL}.
+\label{eq:local-companion}
+\end{equation}
+If the parent is source-domain, the complete chain response is
+\begin{equation}
+k_{\rm src}^{\rm CAL}=K_{\rm up\to CAL}\tau_{\rm src},
+\qquad
+K_{\rm PTC\mid\Theta}=J_{\Theta}[Y]\circ K_{\rm up\to CAL},
+\qquad
+k_{\rm src}^{\rm PTC\mid\Theta}
+=K_{\rm PTC\mid\Theta}\tau_{\rm src}.
+\label{eq:conditional-response}
+\end{equation}
+Equations~\ref{eq:local-companion}--\ref{eq:conditional-response} are
+alternative entry points for different companion parents;
+$K_{\rm up\to CAL}$ is
+never applied twice.
+
+For a declared detector-time perturbation $h^{\rm CAL}$, the full-procedure
+finite-perturbation signal response is
+\begin{equation}
+K_{\rm PTC}^{\rm proc}(\epsilon,h^{\rm CAL})=
+\frac{\mathcal P_Z(Y^{\rm CAL}+\epsilon h^{\rm CAL})
+      -\mathcal P_Z(Y^{\rm CAL})}{\epsilon}.
+\label{eq:e2e-response}
+\end{equation}
+The corresponding state evidence is retained separately:
+\begin{equation}
+\Delta_{\rm state}(\epsilon,h^{\rm CAL})=
+\operatorname{Compare}_{\rm typed}\!\left[
+\mathcal P_{\Lambda}(Y^{\rm CAL}+\epsilon h^{\rm CAL}),
+\mathcal P_{\Lambda}(Y^{\rm CAL})\right].
+\label{eq:e2e-state}
+\end{equation}
+Amplitude, side, source state, location, domain, and every changed rank, mask,
+group, support, class, convergence, or fallback field are part of the result.
+
+For response role $r\in\{\mathrm{fixed},\mathrm{procedure}\}$, the optional
+map-center diagnostic is
+\begin{equation}
+\rho_{\rm center}^{\,r}
+=e_{\rm center}^{\mathsf T}A_{\rm ref}k_{\rm src}^{\rm PTC,r}.
+\label{eq:map-center}
+\end{equation}
+The exact response role, source-companion parent, reference MAP operator, and
+center selector are mandatory factors. The diagnostic confers no MAP or
+general beam authority.
+
+For a fixed differentiable realized map, conditional covariance is
+\begin{equation}
+C_{Z\mid\Theta}=J_{\Theta}[Y]\,C_Y\,J_{\Theta}[Y]^{\mathsf T}.
+\label{eq:conditional-covariance}
+\end{equation}
+For random selected state $\Theta$, the exact decomposition is
+\begin{equation}
+\operatorname{Cov}(Z)=
+\operatorname{E}\!\left[\operatorname{Cov}(Z\mid\Theta)\right]
++\operatorname{Cov}\!\left(\operatorname{E}[Z\mid\Theta]\right).
+\label{eq:total-covariance}
+\end{equation}
+Omitting the second term is a conditioned approximation, not complete
+uncertainty.
+
+A diagnostic indexed by detector or detector-time occurrence may take the
+generic residual form
+\begin{equation}
+\eta_i=H_i(Z,\widehat U,\mathcal S,\Theta;\chi_H),
+\label{eq:diagnostic}
+\end{equation}
+where $\chi_H$ records the domain, population/model reference, normalization,
+support, uncertainty, and policy role.
+
+A downstream analysis/gridding coefficient family is
+\begin{equation}
+\widetilde\gamma_i=f_{\gamma}(\eta_i;\chi_{\gamma}),
+\qquad
+\gamma_i=
+\mathcal N_{\gamma}\!\left(
+\widetilde\gamma_i;\{\widetilde\gamma_j:j\in\mathcal D_{\gamma}\}\right),
+\label{eq:analysis-coefficient}
+\end{equation}
+where $i=d$ or $i=(t,d)$ is declared, $\mathcal D_{\gamma}$ is the exact
+normalization domain, and $f_{\gamma}$ and $\mathcal N_{\gamma}$ are named
+operators. The result is not precision unless separately proved.
+
+Transitive causal influence for output $j$ is
+\begin{equation}
+\mathcal I_j=\bigcup_{i:\,i\rightarrow j}
+\left(\{i\}\cup\mathcal I_i\right),
+\label{eq:influence}
+\end{equation}
+including inputs that affect fitted state or selection even when a local
+numeric derivative vanishes.
+
+For disabled PTC on the PTC-dependent route,
+\begin{equation}
+\mathsf{PTC}=\mathsf{disabled}
+\Longrightarrow
+\mathsf{Exist}_{p}=\mathsf{disabled}
+\quad
+\text{for }p\in\{Z,\Lambda,\gamma,\mathsf{MAP}_{\rm PTC-route}\}.
+\label{eq:disabled-route}
+\end{equation}
+This product-realization statement does not assign response availability and
+does not govern a separately authorized direct CAL-to-MAP route.

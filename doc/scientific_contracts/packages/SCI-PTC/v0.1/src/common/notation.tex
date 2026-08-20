@@ -1,0 +1,57 @@
+% SCI-PTC v0.1 shared normative notation -- owner-review draft r0.3.
+\section{Normative notation}
+\label{sec:normative-notation}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.22\linewidth}
+                  >{\raggedright\arraybackslash}p{0.68\linewidth}}
+\toprule
+Symbol & Meaning \\
+\midrule
+\endhead
+$o,s,g$ & Immutable observation, scan, and coherent-segment identities. \\
+$t,d$ & Sample position on the declared time grid and immutable detector occurrence/UID. \\
+$a,n,\ell$ & Array, readout network/electronics group, and optional local or focal-plane group. \\
+$q$ & Immutable product-stage identity; it is never a diagnostic statistic. \\
+$Y\equiv Y^{\rm CAL}$ & Admitted sample-by-detector calibrated $x$ matrix, in top-of-atmosphere point-source-equivalent mJy per fixed nominal beam. \\
+$S$ & Astronomical contribution on the admitted detector-time grid. \\
+$M_\star=[m_{\star,tk}]$ & Latent shared temporal-mode or supplied-template representation admitted by the signal model. \\
+$A_\star=[a_{\star,dk}]$ & Latent detector-loading representation for the admitted correlated component. \\
+$U_\star=M_\star A_\star^{\mathsf T}$ & Correlated-mode or supplied-template component admitted as the estimand; it is not yet a fitted estimate. \\
+$\widehat U=\widehat M\widehat A^{\mathsf T}$ & Realized fitted estimate of the correlated component in the calibrated signal unit. \\
+$Z\equiv Y^{\rm PTC}$ & Transformed calibrated detector timestream. \\
+$N$ & Remaining detector-noise term; it is not assumed independent or stationary. \\
+$\mathcal G$ & Declared within-array hierarchy and its joint or sequential fit order. \\
+$C,D,\lambda$ & Centering operator, invertible internal scaling operator, and declared centering-location state. \\
+$\widehat{\mathcal U}$ & Realized removed subspace, represented independently of basis gauge. \\
+$\mathcal N_{\rm PTC}$ & Declared PTC null space, including additive-reference losses. \\
+$\mathcal S^{j}$ & Support for use $j$: basis fit, loading fit, application, output, coefficient/QC, response, empirical, simulation, or downstream use. \\
+$\Phi,\mathcal I$ & Typed direct causes and transitive causal-influence record. \\
+$R,E,O$ & Requested, effective-policy, and observation-resolved input states. \\
+$\mathfrak L$ & Complete learned/fitted evidence for every evaluated candidate, before final selection. \\
+$\Theta$ & Immutable resolved selected model, including the exact application map and all selection evidence. \\
+$\Lambda,\Pi$ & Applied/realized state and published product state. \\
+$\mathcal A_{\Theta}$ & Exact frozen-state numerical application map acting on an admitted detector-time input. \\
+$J_{\Theta}[Y]$ & Fr\'echet derivative $D\mathcal A_{\Theta}[Y]$, or the declared finite-dimensional linear part when $\mathcal A_{\Theta}$ is affine. \\
+$\mathcal L^{t}_{\Theta},\mathcal L^{d}_{\Theta},\mathcal L^{v}_{\Theta}$ & Frozen projection operators in temporal, detector, or explicitly vectorized detector-time space. \\
+$\mathcal P=(\mathcal P_Z,\mathcal P_{\Lambda})$ & Full data-dependent PTC procedure and its transformed-signal and typed-state projections. \\
+$K_{\rm up\to CAL}$ & Complete admitted upstream response carried by the CAL product from a declared source-domain perturbation to the CAL detector-time grid, including every applicable admitted source-to-detector, beam-convention, coordinate/scan, RTC, and CAL operation; otherwise an explicit unavailable state. \\
+$\tau_{\rm src}$ & Exact named source-domain perturbation/template. \\
+$k_{\rm src}^{\rm CAL}$ & Realized source companion already on the admitted CAL detector-time grid; when source-domain propagation is requested, $k_{\rm src}^{\rm CAL}=K_{\rm up\to CAL}\tau_{\rm src}$. \\
+$k_{\rm src}^{\rm PTC\mid\Theta}$ & Fixed-state propagated detector-time companion $J_{\Theta}[Y]k_{\rm src}^{\rm CAL}$. \\
+$K_{\rm PTC\mid\Theta}$ & Complete fixed-state chain response $J_{\Theta}[Y]\circ K_{\rm up\to CAL}$. \\
+$K_{\rm PTC}^{\rm proc}$ & Full-PTC-procedure finite-perturbation signal-response family from the immutable CAL parent. \\
+$\Delta_{\rm state}$ & Typed comparison of two discrete or mixed realized states; it is not numerical subtraction. \\
+$A_{\rm ref}$ & Exact named reference MAP functional, imported only for an optional diagnostic. \\
+$\rho_{\rm center}$ & Optional estimated map-center point-source response diagnostic. \\
+$C_Y,C_Z$ & Declared input and transformed-signal covariance, with exact status and conditioning. \\
+$\eta_i$ & Declared diagnostic statistic for coefficient index $i$, where $i=d$ or $i=(t,d)$ according to the coefficient family. \\
+$\gamma_i$ & A downstream analysis/gridding coefficient with declared detector or detector-time index family; never a fitted loading by implication. \\
+$\mathsf{Avail}_{r}$ & Typed availability for requested role $r$: \texttt{computed\_published}, \nolinkurl{not_computed_or_not_requested_for_this_product}, \texttt{invalid}, or \texttt{unavailable}. \\
+$\mathsf{Exist}_{p}$ & Product realization state for product $p$: \texttt{realized}, \texttt{disabled}, \texttt{not\_requested}, \texttt{rejected}, or \texttt{unavailable}. \\
+\bottomrule
+\end{longtable}
+
+Superscripts and subscripts identify scientific role and conditioning, not a
+storage layout. Dense row or column positions are local conveniences and are
+never stable external identities. Operator products are written only when
+their domains and codomains are compatible.

@@ -1,0 +1,33 @@
+% SCI-PTC v0.1 shared normative assumptions -- owner-review draft r0.3.
+\section{Normative assumptions and declared limits}
+\label{sec:normative-assumptions}
+
+\PTCAssumption{001}{The primary numerical parent is an admitted SCI-CAL calibrated $x$ product in the declared top-of-atmosphere, point-source-equivalent mJy-per-fixed-nominal-beam convention.}
+\PTCAssumption{002}{The complete RTC and CAL lineage, including exact detector/time identities, validity, influence, response, and uncertainty status, is available or the affected claim fails closed.}
+\PTCAssumption{003}{Correlation alone does not identify atmosphere, electronics, calibration residual, detector noise, astronomical signal, or any unique mixture.}
+\PTCAssumption{004}{PTC fitting is confined to one array unless a successor authority supplies a cross-array spectral, calibration, beam, source-color, and response model.}
+\PTCAssumption{005}{The selected estimator family supplies explicit missing-data semantics. Replacing a missing or excluded value with numerical zero is not exclusion unless the estimator proves equivalence.}
+\PTCAssumption{006}{Every centering/scaling transform has a declared axis, population, support, weights, estimator, boundary, unit, inverse, gauge, and null-space consequence.}
+\PTCAssumption{007}{Internal scaling is invertible and restored before ordinary transformed output; any noninvertible operation changes the signal definition and requires a separately named output role.}
+\PTCAssumption{008}{A source mask protects only its declared model and registered support. Unmasked compact or extended sky components may overlap the fitted subspace.}
+\PTCAssumption{009}{Candidate selection is finite, conjunctive, deterministically ordered, and least-aggressive. Numerical predicates are owner-controlled inputs rather than inferred defaults.}
+\PTCAssumption{010}{All support-changing detector refinements refit the complete selected model from the same immutable admitted CAL parent.}
+\PTCAssumption{011}{A sequential residual fit is valid only when declared as part of one complete ordered hierarchical estimator with cumulative removed subspace, response, covariance, and parentage.}
+\PTCAssumption{012}{The conditioned-$r$ branch, when available, has its own operator, unit, response, validity, optical-leakage state, and exact relation to the calibrated-$x$ grid.}
+\PTCAssumption{013}{Base-v0.1 $r$ analysis is inert or advisory. It cannot change calibrated-$x$ fit membership, subtraction, output retention, or coefficients and cannot supply an $x$ subtraction basis.}
+\PTCAssumption{014}{A fixed-state application map does not by itself represent the response of data-derived rank, mask, grouping, clipping, classification, convergence, or fallback decisions.}
+\PTCAssumption{015}{A whole-chain RTC-to-CAL-to-PTC injection is distinct from the PTC full-procedure response and requires separately named upstream owners and response companions.}
+\PTCAssumption{016}{Full covariance is optional. An absent covariance or cross-covariance is unknown/unavailable rather than zero, independent, or diagonal.}
+\PTCAssumption{017}{Fitted loadings, centering/scaling parameters, diagnostic quantities, and analysis/gridding coefficients are distinct types and lifecycles.}
+\PTCAssumption{018}{A scalar analysis/gridding coefficient is nonprecision unless its exact target variance, conditioning, unit, normalization, covariance, and independence conditions are proven.}
+\PTCAssumption{019}{PTC internal iteration, a new PTC pass, and an external FRUIT recurrence are distinct identities with distinct parents and stop rules.}
+\PTCAssumption{020}{The in-memory transformed TOD is an authoritative intermediate for the PTC-dependent route, not an independent sky estimator or a claim of map, beam, significance, or production validity.}
+\PTCAssumption{021}{A required unavailable input, response term, support, identity, or output makes only the affected product or claim unavailable; it is never replaced silently by a numeric default.}
+\PTCAssumption{022}{Implementation conformity, representation fidelity, observational performance, and production readiness require separate evidence and are not established by this contract.}
+\PTCAssumption{023}{For every admitted base-v0.1 PCA/SVD family, application to science or a fixed-state companion is projection through the frozen realized subspace and metric with linear coefficient recomputation. Subtraction of one frozen fitted numerical component is a distinct family and is not inferred.}
+\PTCAssumption{024}{No universal temporal, detector, two-sided, or vectorized PCA action is inferred from rank or matrix orientation. Each realized family declares exactly which space contains the removed basis and the exact left, right, or general action.}
+\PTCAssumption{025}{Source-domain templates, CAL-grid detector-time companions, PTC-local operators, complete chain responses, and realized propagated companions are distinct typed objects. An upstream response operator is applied exactly once.}
+\PTCAssumption{026}{Learned candidate evidence, resolved selected model, applied state, and published product state are distinct immutable lifecycle stages even when one implementation stores them together.}
+\PTCAssumption{027}{An external source/residual parent or shifted/null surrogate is scientifically usable only when its complete parent, coordinate, validity, support, response, recurrence, and transformation state is available; insufficient support is not a valid zero surrogate.}
+
+\PTCAssumption{028}{Fit exclusion does not itself authorize application. A fit-excluded occurrence is application-available only when the resolved frozen operator defines that occurrence from admitted frozen state and support without inferred interpolation, zero filling, or extension.}

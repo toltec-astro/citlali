@@ -1,0 +1,187 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[letterpaper,margin=0.72in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{needspace}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={SCI-PTC Engineering Conformance Specification v0.1 r0.3},pdfauthor={TolTEC scientific contract program},pdfsubject={Engineering conformance for correlated-mode cleaning}}
+\setlength{\emergencystretch}{3em}
+\hbadness=10000
+\hfuzz=8.5pt
+\setlist{nosep,leftmargin=*}
+\definecolor{ptcblue}{RGB}{25,73,104}
+\definecolor{ptclight}{RGB}{235,242,246}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small SCI-PTC Engineering Conformance}
+\fancyhead[R]{\small v0.1 / r0.3}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+
+\newcommand{\PTCDefinition}[3]{\Needspace{3\baselineskip}\par\noindent\textbf{\texttt{SCI-PTC-DEF-#1} -- #2.} #3\par\smallskip}
+\newcommand{\PTCAssumption}[2]{\Needspace{3\baselineskip}\par\noindent\textbf{\texttt{SCI-PTC-ASM-#1}.} #2\par\smallskip}
+\newcommand{\PTCRequirement}[6]{\Needspace{4\baselineskip}\par\noindent\textbf{\texttt{SCI-PTC-REQ-#1} -- #2.}\label{req:#1} #6\par\smallskip}
+\newcommand{\PTCPrediction}[6]{\Needspace{4\baselineskip}\par\noindent\textbf{\texttt{SCI-PTC-PRED-#1} -- #2.}\label{pred:#1} #6\par}
+
+\title{\vspace{-1.0cm}\textcolor{ptcblue}{\Huge SCI-PTC}\\[0.3em]
+\Large Correlated-Mode Cleaning and Detector Coefficients\\[0.5em]
+\LARGE Engineering Conformance Specification\\[0.4em]
+\large Scientific contract v0.1 -- document revision r0.3}
+\author{TolTEC Scientific Contract Program\\Scientific owner: Grant Wilson}
+\date{2026-08-20}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\begin{center}
+\fcolorbox{ptcblue}{ptclight}{\parbox{0.90\linewidth}{
+\textbf{Status.} Owner-approved scope; bounded Stage B r0.3 engineering draft. This
+specification defines conformance evidence but reports no implementation
+assessment, validation result, or production authorization.}}
+\end{center}
+
+\vfill
+\noindent\textbf{Normative rule.} The six shared modules imported below are
+the sole normative science. This view adds organization and evidence guidance
+only; it does not introduce an independent equation, estimator, threshold, or
+scientific interpretation.
+\vfill
+\clearpage
+\tableofcontents
+\clearpage
+
+\section{Conformance scope and evidence posture}
+\label{sec:engineering-scope}
+
+Conformance means that a candidate implementation, its interfaces, and its
+published products satisfy every applicable shared requirement for the exact
+realized product role. A source trace or readable file alone is not sufficient.
+Evidence must bind numerical behavior to immutable identity, declared
+supports, realized state, response, uncertainty status, and output role.
+
+The present document provides no implementation mapping and no pass/fail
+disposition. A later authorized conformance effort shall classify each
+requirement as conformant, nonconformant, partial, unavailable, or not
+applicable with exact evidence and scope. Unknown is never a pass.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}p{0.22\linewidth}X}
+\toprule
+Evidence layer & Required interpretation \\
+\midrule
+Algebraic contract & The shared definitions, equations, assumptions, requirements, and predictions are the authority to be satisfied.\\
+Implementation conformity & Requires source/interface/product evidence for every applicable requirement; unassessed here.\\
+Representation fidelity & Requires proof that serialized state, support, identity, and response represent the realized numerical operation; not performed here.\\
+Observational performance & Requires approved data and thresholds for residual contamination, sky transfer, stability, covariance, and source recovery; not performed here.\\
+Production readiness & Requires separate operational evidence and authorization; not assessed here.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Required interface families}
+\label{sec:engineering-interfaces}
+
+An implementation claiming SCI-PTC v0.1 conformance must expose or publish the
+following scientific interface families. Exact representation is engineering-
+owned, but every scientific field below must be recoverable without guessing.
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.21\linewidth}
+                  >{\raggedright\arraybackslash}p{0.71\linewidth}}
+\toprule
+Interface family & Required recoverable content \\
+\midrule
+\endhead
+Input identity & Immutable CAL parent; complete RTC parent; observation, scan, segment, sample-time, detector occurrence/UID, array, group, stage, product role, pass, recurrence, and parent identities; exact axes and storage mapping; typed source/residual or surrogate parent where used.\\
+Signal contract & Top-of-atmosphere, point-source-equivalent mJy per fixed nominal beam; factor/atmosphere lineage; validity, uncertainty, nuisance-correlation, and complete upstream-response status.\\
+Support policy & Per-cause decisions for basis fit, loading fit, application, output, coefficient/QC, response, empirical, simulation, and downstream use, including fit-excluded/apply-allowed and the exact inputs required to make each excluded occurrence application-available.\\
+Estimator request & Family, fit objective/loss/metric, missing-data model, candidate set/order/ties, typed conjunctive predicates, centering/scaling, grouping/order, gauge, source protection, refinement, response, covariance, simulation, and outputs.\\
+Learned evidence & Every candidate and fitted state; all predicate values, units, uncertainties, thresholds, comparison polarities, pass/fail causes, ordering/tie result, and selected or rejected disposition.\\
+Resolved model & Exact admitted identities, groups, fitted basis/templates and loadings, modeled subtraction, removed subspace, acting space, rank, degeneracy/gauge, centering/scaling, null space, exact frozen application map and derivative/linear part, classification/refit trace, fallback, and stop state.\\
+Coefficient products & Separate fitted loadings, coordinate parameters, diagnostics, and detector- or detector-time-indexed analysis/gridding families with units, factor domains, normalization operator/domain, support, lifecycle, numerical use, consumers, and prohibited interpretations.\\
+Response products & PTC-local operator, complete admitted upstream response ending on the CAL grid, complete upstream-to-PTC chain response, realized propagated companions with exact parent domain, full-PTC-procedure signal-response family and typed state differences or explicit unavailability, and optional map-center functional with exact response role and reference-MAP parent.\\
+Uncertainty products & Exact status and conditioning for formal covariance, marginal variance, empirical scatter, calibration/systematic, response, selection, cross-coordinate, and cross-observation terms.\\
+Output/provenance & Transformed TOD role; immutable requested, effective-policy, observation-resolved, learned, resolved, applied, and published state; product-realization and role-availability axes; required siblings, completeness, failure scope, random/surrogate state, and typed relations to downstream consumers.\\
+\bottomrule
+\end{longtable}
+
+\section{Fail-closed implementation behavior}
+\label{sec:engineering-failure}
+
+Failure is scoped to the affected product or claim unless a required product
+dependency makes the entire requested output incomplete. Implementations shall
+represent missing, non-finite, invalid, rejected, disabled, not requested,
+unavailable, and numeric zero as distinct states. Product realization,
+response availability, covariance availability, and evidence disposition are
+independent axes. Implementations shall not infer missing units, identities,
+supports, thresholds, rank rules, response terms, bias claims, or covariance.
+
+A typed fallback is conformant only when the request authorizes it and the
+realized state records its cause, stage, changed scientific operation,
+response consequence, covariance consequence, and affected availability.
+Required-output failure propagates to the calling boundary. Best-effort
+diagnostic failure is inert only when that diagnostic is neither required nor
+used by policy.
+
+The base-v0.1 conditioned-$r$ branch is diagnostic-only. A conformance trace
+must show that it cannot change calibrated-$x$ fit membership, subtraction,
+output, or coefficients. Raw-$r$ processing, $r$-derived subtraction from
+$x$, joint $x/r$ PCA, raw Beammap PTC, cross-array fitting, and polarimetry are
+outside this contract.
+
+\section{Evidence checklist for a later assessment}
+\label{sec:engineering-evidence}
+
+For each claimed product role, a later assessment should obtain:
+
+\begin{enumerate}
+\item the immutable requested, effective-policy, observation-resolved,
+learned/fitted, resolved-selected, applied/realized, and published states and
+their parent links;
+\item a field-level source/interface trace for every shared requirement;
+\item minimal deterministic probes for the applicable shared predictions;
+\item exact comparisons of fitted support, candidate evidence, removed
+subspace, frozen application map, classification, response-domain chain,
+covariance status, expectation/bias status, and coefficient semantics;
+\item proof that PCA/SVD application projects through the declared frozen
+subspace/metric in the declared acting space, that fixed-state companions
+cannot affect learning, that the complete upstream response ending on the CAL
+grid is applied exactly once, and
+that full-procedure response restarts from the immutable CAL parent while
+retaining typed state changes;
+\item proof that every fit-excluded/apply-allowed occurrence has the exact
+basis-coefficient or recomputation input, neighboring support, detector
+binding, metric, coordinate, and boundary state required by the resolved
+operator, and otherwise becomes unavailable without inferred interpolation,
+zero filling, reconstruction, or extension;
+\item failure probes for missing external-parent identity, mismatched
+surrogate membership, zero/empty support, non-finite values, rank deficiency,
+oscillation, unavailable response, independent realization/availability
+states, and incomplete publication; and
+\item an evidence-layer disposition that does not promote conformance into
+observational performance or production authorization.
+\end{enumerate}
+
+The shared prediction register is deliberately implementation-independent.
+A later probe may falsify a conformance claim, but passing a small synthetic
+case does not by itself validate observational performance. The science-team
+validation table groups the intended studies and observables; it supplies no
+threshold, result, or evidence-layer promotion.
+
+\clearpage
+\input{common/notation.tex}
+\input{common/definitions.tex}
+\input{common/equations.tex}
+\input{common/assumptions.tex}
+\input{common/requirements.tex}
+\input{common/edge_cases.tex}
+
+\end{document}

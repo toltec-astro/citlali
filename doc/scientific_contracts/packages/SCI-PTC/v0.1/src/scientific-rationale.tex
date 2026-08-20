@@ -1,0 +1,617 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[letterpaper,margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{needspace}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={SCI-PTC Scientific Rationale v0.1 r0.3},pdfauthor={TolTEC scientific contract program},pdfsubject={Scientific rationale for correlated-mode cleaning and detector coefficients}}
+\setlength{\emergencystretch}{3em}
+\hbadness=10000
+\hfuzz=8.5pt
+\setlist{nosep,leftmargin=*}
+\definecolor{ptcblue}{RGB}{25,73,104}
+\definecolor{ptclight}{RGB}{235,242,246}
+\definecolor{ptcwarn}{RGB}{250,244,225}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small SCI-PTC Scientific Rationale}
+\fancyhead[R]{\small v0.1 / r0.3}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+
+\newcommand{\sciencebox}[2]{%
+\begin{center}
+\fcolorbox{ptcblue}{#1}{\parbox{0.91\linewidth}{#2}}
+\end{center}}
+
+\title{\vspace{-1.0cm}\textcolor{ptcblue}{\Huge SCI-PTC}\\[0.3em]
+\Large Correlated-Mode Cleaning and Detector Coefficients\\[0.5em]
+\LARGE Scientific Rationale\\[0.4em]
+\large Scientific contract v0.1 -- document revision r0.3}
+\author{TolTEC Scientific Contract Program\\Scientific owner: Grant Wilson}
+\date{2026-08-20}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\sciencebox{ptclight}{\textbf{Status.} Owner-approved scope; bounded Stage B
+r0.3 freeze-candidate revision. The scientific architecture and the base-v0.1
+frozen-subspace projection decision are approved. Scientific authority is not
+yet frozen. Implementation conformity, representation/response fidelity,
+observational performance, and production readiness remain unassessed.}
+
+\vfill
+\noindent\textbf{Document role.} This is the standalone science-team rationale.
+The companion \emph{Engineering Conformance Specification} contains the
+complete shared normative notation, definitions, equations, assumptions,
+requirements, and falsifiable predictions. This rationale explains that
+authority without reproducing its full formal register.
+\vfill
+\clearpage
+\setcounter{tocdepth}{1}
+\tableofcontents
+\clearpage
+
+\section{What PTC estimates -- and what it cannot identify}
+\label{sec:science-purpose}
+
+\subsection{The calibrated detector-time problem}
+
+PTC begins after raw-timestream conditioning and calibration. Its primary
+input is an admitted SCI-CAL detector-time matrix in the top-of-atmosphere,
+point-source-equivalent mJy-per-fixed-nominal-beam convention, accompanied by
+complete RTC/CAL identity, validity, influence, response, and uncertainty
+state. It is not raw readout coordinate, a map, or an arbitrary matrix with a
+familiar filename.
+
+The organizing scientific model is
+\[
+Y^{\rm CAL}=S+U_\star+N,\qquad
+U_\star=M_\star A_\star^{\mathsf T},
+\]
+where $S$ is astronomical signal, $U_\star$ is the latent correlated-mode or
+supplied-template component admitted by the signal model, and $N$ is the
+remaining detector-noise term. PTC estimates
+$\widehat U=\widehat M\widehat A^{\mathsf T}$ and the realized removed
+subspace $\widehat{\mathcal U}$. This model admits robust common modes,
+fixed-template regression, and masked or weighted low-rank families while
+requiring their distinct fit and application rules.
+
+\subsection{Correlation is not a physical label}
+
+Detector correlation establishes shared structure, not physical origin.
+Atmosphere can be important, but electronics, calibration residuals,
+detector noise, astronomical structure, or mixtures can occupy the same
+statistical subspace. An array-wide component is a detector-membership and
+geometry statement, not proof of an atmospheric origin. A component visible
+in conditioned $r$ is not automatically electronics-only.
+
+Subtraction follows the admitted statistical object, not its informal name.
+Sky that overlaps the removed subspace is attenuated even when the mode was
+called atmosphere. The contract therefore publishes the fitted component,
+subspace, supports, and response while leaving physical attribution
+diagnostic unless separately established.
+
+\begin{figure}[htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{c@{\hspace{0.5em}$\Longrightarrow$\hspace{0.5em}}c@{\hspace{0.5em}$\Longrightarrow$\hspace{0.5em}}c}
+\fcolorbox{ptcblue}{ptclight}{\parbox[c][1.15in][c]{0.25\linewidth}{\centering
+\textbf{Admitted CAL signal}\\[0.3em]
+$Y^{\rm CAL}=S+U_\star+N$\\[0.3em]
+exact identity and support}}
+&
+\fcolorbox{ptcblue}{ptcwarn}{\parbox[c][1.15in][c]{0.28\linewidth}{\centering
+\textbf{Learn removed subspace}\\[0.3em]
+$\widehat{\mathcal U},\widehat U$\\[0.3em]
+may contain astronomical signal}}
+&
+\fcolorbox{ptcblue}{ptclight}{\parbox[c][1.15in][c]{0.25\linewidth}{\centering
+\textbf{Freeze and apply}\\[0.3em]
+$Z=\mathcal A_{\Theta}(Y^{\rm CAL})$\\[0.3em]
+publish response and null space}}
+\end{tabular}
+\caption{Scientific flow of correlated-mode cleaning. The removed subspace is
+part of the result because statistical correlation does not identify physical
+origin. This schematic is explanatory; the formal operator contract is in the
+engineering specification.}
+\label{fig:ptc-science-flow}
+\end{figure}
+
+\subsection{The removed subspace is part of the result}
+
+The transformed timestream alone is incomplete. PTC must identify the removed
+subspace, metric, rank, support, grouping, fit order, centering/scaling,
+degeneracy, gauge, and exact application map. Basis sign, reciprocal
+basis/loading scale, component order, and rotations within a degenerate space
+are representation freedoms. Scientific claims attach to the modeled
+correlated signal and removed subspace.
+
+The null space includes perturbations made unidentifiable by the complete
+operation. A detector-common sky mode can be removed while output retains the
+same unit. Centering can remove an additive reference. A source mask can
+protect its registered model while leaving unmasked extended emission
+exposed. Retaining mJy/beam is therefore not a response claim.
+
+\section{Validity is use-specific support}
+\label{sec:science-support}
+
+\subsection{A cause does not prescribe one action}
+
+Each typed cause maps independently to basis fitting, loading fitting,
+application, output retention, coefficient/QC estimation, response,
+empirical estimation, simulation, and downstream use. One occurrence can be
+excluded from basis learning, admitted for frozen application, retained in
+output, and excluded from a coefficient. An output-only rejection does not
+retroactively change the learned subspace.
+
+Only eligible finite occurrences enter arithmetic. Missing and non-finite
+remain distinct from numerical zero. Replacing an excluded value by zero
+before ordinary PCA changes means, covariance, singular values, and possibly
+rank. A weighted missing-data estimator can assign zero statistical influence,
+but that is a declared property of that estimator \cite{bailey2012}.
+
+\begin{figure}[htbp]
+\centering
+\small
+\begin{tabularx}{0.94\linewidth}{>{\raggedright\arraybackslash\bfseries}p{0.24\linewidth}
+                                 >{\centering\arraybackslash}p{0.16\linewidth}
+                                 >{\centering\arraybackslash}p{0.16\linewidth}
+                                 >{\centering\arraybackslash}p{0.16\linewidth}
+                                 >{\centering\arraybackslash}X}
+\toprule
+One occurrence with cause $\phi$ & Basis fit & Frozen application & Output & Coefficient \\
+\midrule
+Example policy & Excluded & Admitted & Retained & Excluded \\
+Scientific meaning & No learning influence & Receives declared projection & Value may remain & No coefficient influence \\
+\bottomrule
+\end{tabularx}
+\caption{Use-specific support. A flag records a cause; the immutable policy
+maps that cause separately into each scientific use. No single good/bad bit
+can encode this example.}
+\label{fig:ptc-support}
+\end{figure}
+
+\subsection{Direct validity and causal influence}
+
+Direct validity describes an occurrence itself. Causal influence records what
+could have affected an output through a fit, selection, classification, or
+coefficient. One sample used to learn a common mode can influence many other
+detector-time outputs even where its local numerical derivative is zero.
+Direct synthesized or RTC-replaced occurrences remain excluded from the
+calibrated science branch; noncenter influence is preserved and routed by
+use-specific policy.
+
+\section{Coordinates, grouping, and source protection}
+\label{sec:science-coordinates}
+
+\subsection{Centering, scaling, and gauge define the operator}
+
+Centering each detector over time is not centering detectors at each time.
+Scaling by detector scatter is not scaling by a formal noise model. Every
+coordinate transform therefore declares its axis, population, support,
+weights, estimator, boundaries, unit, inverse, gauge, and null-space
+consequence. Internal invertible scaling is restored before ordinary output.
+Noninvertible transformation changes the signal definition and needs a
+separately named product role.
+
+\subsection{Within-array hierarchy}
+
+Base v0.1 fits within one TolTEC array. A hierarchy may contain an array-wide
+component, network/electronics components, and optional local or focal-plane
+components. Joint and sequential fitting are generally different when
+subspaces overlap; the exact order and cumulative removed subspace are state.
+Data-derived groups retain their population, metric, candidate rule,
+cardinality controls, stability evidence, and selection uncertainty.
+
+Cross-array fitting remains unavailable without separate spectral,
+calibration, beam, source-color, and response authority. Equal unit labels
+cannot supply those missing physical relations.
+
+\subsection{External source/residual parents have finite authority}
+
+A source model, mask, residual, or prior-pass parent may be consumed only
+with exact owner, unit, frame, registration, validity, response, support,
+boundary, and recurrence identity. A mask protects only its declared model
+and support. It does not prove survival of unmasked compact emission,
+extended emission, or other sky components correlated with the fitted
+subspace. Missing recurrence or registration identity makes the affected
+protected/fitted role unavailable, not approximately safe.
+
+\section{Learn, select, resolve, and apply}
+\label{sec:science-estimators}
+
+\subsection{Estimator families and the one-way lifecycle}
+
+The lifecycle is:
+\[
+\begin{aligned}
+\text{request}&\rightarrow\text{effective policy}
+\rightarrow\text{observation-resolved inputs}\rightarrow\text{learned evidence}\\
+&\rightarrow\text{resolved model}\rightarrow\text{application}
+\rightarrow\text{publication}.
+\end{aligned}
+\]
+Learned evidence contains every evaluated candidate, its fitted state,
+diagnostics, predicate values and causes, ordering, ties, and disposition.
+The selected resolved model is immutable and contains the exact application
+map. Application and publication are later states; a published rank is not a
+substitute for the evidence explaining why it was selected.
+
+Admitted base families remain distinct. A robust common-mode family declares
+its location estimator, aggregation weights, denominator, population,
+loadings, and robust-loss behavior. A fixed-template regression declares
+template parent, metric, generalized inverse, tolerance, and supports. A
+masked/weighted PCA/SVD family declares its low-rank objective, missing-data
+semantics, metric, candidate construction, rank, degeneracy, and exact
+application rule.
+
+These choices also carry different scientific strengths. A robust group
+common mode is comparatively interpretable and resistant to isolated
+outliers, but can be inadequate when several correlated structures coexist.
+Fixed-template regression is appropriate when a physically or diagnostically
+motivated temporal basis already exists, but its authority is limited by the
+supplied model and parent. PCA/SVD can capture several unknown mixtures, but
+its learned subspace can contain sky and depends strongly on metric, grouping,
+support, and rank. Conditioned-$r$ PCA supplies electronics-enriched
+diagnostic evidence; it neither establishes electronic origin nor controls
+the calibrated-$x$ branch in base v0.1.
+
+\subsection{The exact frozen application map}
+
+The owner-approved base-v0.1 PCA/SVD rule is projection of any admitted
+application input through the frozen realized subspace and metric. It is not
+subtraction of one frozen numerical reconstruction. The realized family must
+say which space contains the removed basis and whether application is a
+temporal-left action, detector-right action, two-sided action, detector/time-
+specific action, or an exact vectorized operator. It must also state which
+quantities are frozen and which coefficients are recomputed linearly during
+application.
+
+This resolves a response-critical ambiguity. On the fitted parent,
+frozen-component subtraction and frozen-subspace projection can both equal
+$Y^{\rm CAL}-\widehat U$. On a perturbation $H$, however, frozen-component
+subtraction has identity derivative, whereas frozen-subspace projection
+removes the component of $H$ in the selected space. Likewise, temporal-left
+and detector-right projection generally act differently on $H$.
+
+Frozen-component subtraction remains a possible separately named affine
+family, with identity derivative, but it is not silently called PCA/SVD
+projection and is not the base-v0.1 PCA application rule.
+
+A fit-excluded occurrence is application-available only when the resolved
+frozen operator defines its value from admitted fitted state and support. If a
+required basis coefficient or coefficient-recomputation input, neighboring
+support, detector binding, metric term, coordinate transform, or boundary
+state is unavailable, application at that occurrence is unavailable rather
+than implicitly interpolated, zero-filled, reconstructed, or extended from
+the fit population.
+
+\subsection{Least-aggressive conjunctive selection}
+
+Candidates are finite and ordered from least to more aggressive. The first
+candidate is admitted only when every required residual-contamination,
+astronomical-transfer, conditioning, support, stability, and QC predicate
+passes. A failed transfer predicate cannot be compensated by residual
+suppression or a scalar score. Nonnested candidates are compared through
+their complete subspaces and responses, not mode count alone.
+
+The astronomical-transfer predicate is itself typed: source class and
+companion, fixed-state or full-procedure response, amplitude/location domain,
+metric, tolerance, mask/support, upstream response, uncertainty treatment,
+and exact tested claim. A transfer number without those identities is not a
+candidate-admission result.
+
+\subsection{Diagnostic-only conditioned \(r\)}
+
+A separately authorized conditioned $r$ product can support diagnostic PCA.
+In base v0.1 it remains inert or advisory. Changing $r$ cannot change
+calibrated-$x$ fit membership, subtraction, output, or coefficients, and it
+cannot supply an $x$ subtraction basis.
+
+\section{Post-fit assessment and immutable-parent refinement}
+\label{sec:science-refinement}
+
+\subsection{What diagnostics can and cannot establish}
+
+Relevant diagnostic families include residual PSD or variance, coherence,
+removed variance, loading magnitude and stability, leverage, protected-source
+response, non-Gaussianity, transients, and conditioned-$r$ comparison. Each
+needs an estimator, population or approved model, normalization, support,
+uncertainty, and policy role.
+
+A population outlier is not automatically detector pathology. Astronomical
+signal, source-model failure, calibration state, focal-plane position, and
+expected sensitivity variation are competing explanations. Numerical
+classification thresholds remain owner-controlled inputs.
+
+\subsection{Refit from the immutable CAL parent}
+
+When classification changes fit support, the complete selected model is
+refitted from the same immutable admitted CAL parent. A cleaned output is not
+the next fit parent. The final resolved model is applied once. This prevents
+detector-QC refinement from becoming accidental repeated cleaning with
+compounded subtraction and null spaces.
+
+Sequential residual fitting is permitted only as one explicit ordered
+hierarchical estimator with cumulative subspace, response, covariance, and
+parentage. The refinement loop is finite and distinguishes stable state,
+no-new-threshold event, maximum refinements, oscillation, insufficient
+support, nonconvergence, exhaustion, and error.
+
+\subsection{Internal iteration, PTC pass, and FRUIT recurrence}
+
+Internal numerical iteration solves one fit. A new PTC pass has a new
+immutable input parent and realized identity. External FRUIT recurrence owns
+source-model subtraction/add-back, map feedback, restart, and recurrence
+parentage. These identities cannot be interchanged.
+
+\section{Coefficient types, uncertainty, and bias}
+\label{sec:science-uncertainty}
+
+\subsection{A loading is not a weight}
+
+A fitted loading couples a detector to a mode/template and changes under basis
+gauge. A centering/scaling parameter defines coordinates. A diagnostic
+summarizes a declared statistic. Only an explicitly named analysis/gridding
+family may be MAP-facing. That family declares whether its index is detector
+or detector-time, its statistic and factor domains, unit, normalization
+operator and domain, support, lifecycle, consumers, and prohibited meanings.
+
+An empirical-scatter coefficient is not automatically precision. Re-estimating
+a coefficient creates new realized state and does not silently modify an
+earlier transformed signal.
+
+\subsection{Conditional, selection, systematic, and bias claims}
+
+Conditional covariance propagates through the derivative or affine linear
+part of the exact frozen application map. It can contain temporal and
+inter-detector off-diagonal terms. When rank, groups, masks,
+classifications, or coefficients vary, total uncertainty includes
+between-selection variation. Omitting that term is a conditioned
+approximation, not complete uncertainty.
+
+Formal covariance, marginal variance, empirical scatter, calibration/systematic
+uncertainty, response uncertainty, selection uncertainty, and cross-coordinate
+covariance remain separate types. An absent cross-observation block means
+unknown, not independent.
+
+Each family and product role also states its conditional expectation or bias
+claim for astronomical signal, fitted nuisance, remaining detector noise,
+calibration uncertainty, and selection. If a claim is not supported, it is
+unavailable. A single zero-mean synthetic residual cannot establish general
+unbiasedness.
+
+\section{Response domains: local, chain, and full procedure}
+\label{sec:science-response}
+
+\subsection{Local operators and propagated companions}
+
+Three objects are distinct:
+
+\begin{enumerate}
+\item the PTC-local derivative or linear part of the frozen application map;
+\item the complete chain response formed by composing that local operator
+with the complete admitted upstream response ending on the CAL grid; and
+\item the realized propagated detector-time companion.
+\end{enumerate}
+
+A source-domain template is first carried through the complete admitted
+upstream response ending on the CAL grid, then through the PTC-local operator.
+That upstream response is the response carried by the CAL product, including
+every applicable admitted source-to-detector relation, beam convention,
+coordinate and scan geometry, RTC operation, and CAL operation; it is not only
+the CAL-owned multiplicative operator. If an exact detector-time companion is
+already supplied on the CAL grid, propagation begins directly with the
+PTC-local operator. The upstream response is never applied twice.
+
+\sciencebox{ptclight}{\textbf{Typed response chain.}\quad
+$\tau_{\rm src}\xrightarrow{K_{\rm up\to CAL}}k_{\rm src}^{\rm CAL}
+\xrightarrow{J_{\Theta}[Y]}k_{\rm src}^{\rm PTC\mid\Theta}$.\quad
+An already realized $k_{\rm src}^{\rm CAL}$ enters at the middle node.}
+
+\subsection{Full-procedure signal response and state change}
+
+Fixed-state response asks what the resolved operator does while learned state
+is held fixed. Full-procedure response reruns learning, selection, rank,
+classification, refinement, and application from the immutable CAL parent.
+Its finite difference is defined only on the transformed-signal projection of
+the procedure. Masks, ranks, groups, classes, and stop causes are not
+numerically subtracted; their changes are retained through a typed state
+comparison.
+
+Perturbation amplitude, side, source state, location, and domain are part of
+the response. If response changes materially across them, the product is a
+bounded family, not one global kernel. A whole-chain RTC-to-CAL-to-PTC
+injection is separate again because PTC alone cannot relearn upstream state
+\cite{downes2011}.
+
+\subsection{The optional map-center diagnostic}
+
+The optional map-center point-source diagnostic names whether it uses a
+fixed-state or full-procedure companion. It also requires the exact source
+parent, propagated companion, reference MAP functional, center selector,
+band/mode/state binding, and uncertainty status. It does not confer general
+PTC, off-center, extended-source, arbitrary-morphology, beam-shape, or MAP
+authority.
+
+\section{Products, surrogates, state axes, and boundaries}
+\label{sec:science-products}
+
+\subsection{The authoritative intermediate and complete provenance}
+
+The in-memory transformed TOD is the authoritative PTC-to-MAP intermediate on
+the PTC-dependent route. A persisted copy declares diagnostic-artifact or
+requested-analysis role. Persistence grants no map, beam, significance,
+archival, validation, or production authority.
+
+Material provenance follows the full one-way lifecycle: immutable parent,
+request, effective policy, observation-resolved inputs, learned evidence,
+resolved model, application, publication, supports, subspace, coefficients,
+classification, response, covariance, randomness, and output identity.
+Required siblings and links are atomic; a readable partial file is not a
+complete product.
+
+\subsection{Shifted/null surrogates and insufficiency}
+
+A shifted or null surrogate is a controlled diagnostic or simulation
+population used to estimate false associations, a null distribution, or
+empirical variability; it is not additional astronomical exposure.
+A shifted or null surrogate moves signal and its associated
+validity/eligibility, support, boundaries, randomness, and parent identity
+together. Shifting values while leaving membership fixed changes the
+scientific population and is not the declared surrogate. Insufficient
+transformed support is unavailable or rejected, never a valid numerical-zero
+fallback.
+
+Every fallback records cause, stage, changed operation, and response/covariance
+consequences. Randomness that can affect science records generator/version,
+seed, stream, draw identity, and input identity.
+
+\subsection{Independent state axes and ownership boundaries}
+
+Product realization, response availability, covariance availability, and
+validation/evidence disposition are independent axes. A realized transformed
+signal may have unavailable complete response. A disabled PTC route has no
+realized PTC signal even when an upstream CAL response exists. Not produced
+is therefore not a response-availability value.
+
+PTC does not own RTC conditioning, CAL calibration/atmosphere, AST/ALIGN
+coordinates, VAL reusable eligibility, MAP estimation, NOI uncertainty
+calibration, BEAM interpretation, FLT filtering, or FRUIT recurrence. Base
+v0.1 also excludes raw-$\Delta f/f$ Beammap PTC, raw-$r$ numerical science,
+$r$-derived $x$ subtraction, unconstrained joint $x/r$ PCA, cross-array
+fitting, and polarimetry.
+
+\section{Scientific validation program, evidence status, and owner decisions}
+\label{sec:science-status}
+
+\subsection{Scientific validation program}
+
+Before numerical thresholds or production dispositions are selected, the
+science program should declare the following study families and observables.
+This table specifies studies, not achieved results or acceptance thresholds.
+
+\begin{table}[htbp]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash\bfseries}p{0.17\linewidth}
+                              >{\raggedright\arraybackslash}p{0.37\linewidth}X}
+\toprule
+Study & Variations & Measurements \\
+\midrule
+Missing data and flags & Missingness pattern, zero fill, weighted exclusion, fit-excluded/apply-allowed & Fitted subspace, rank, transformed signal, bias, and use-specific support \\
+Estimator family & Robust common mode, fixed template, and PCA/SVD & Residual coherence, null modes, source transfer, and covariance \\
+Group hierarchy & Array, network, and local groups; joint versus sequential order & Cumulative removed subspace, order dependence, residuals, and sky response \\
+Mode admission & Candidate ranks/subspaces, source classes, support, and noise regimes & Selected candidate, stability, residual contamination, and compact/extended response \\
+Detector refinement & Leverage, residual outliers, threshold changes, and oscillating membership & Final detector set, refit stability, bias, and data loss \\
+Response & Fixed-state versus full-procedure; amplitude, side, location, and mask boundary & Propagated companion, typed state changes, nonlinearity, and response family \\
+Conditioned $r$ & Optical leakage, electronics-common modes, and tune/loading state & Diagnostic-mode stability, $x/r$ correspondence, and false physical attribution \\
+Surrogates & Shifted/null membership, support, boundary, and random stream & Null distribution, false detections, and membership fidelity \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Evidence layers}
+
+\begin{table}[htbp]
+\centering
+\small
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash\bfseries}p{0.23\linewidth}X}
+\toprule
+Layer & Status of this draft \\
+\midrule
+Algebraic contract & Defined and mechanically traceable across the shared formal core.\\
+Implementation conformity & Unassessed; no implementation evidence entered this revision.\\
+Representation and response fidelity & Not performed; later evidence must bind serialized state to the realized numerical operator.\\
+Observational performance & Not performed; no transfer, residual, covariance, or source-recovery threshold is claimed achieved.\\
+Production readiness & Not assessed and not authorized by this document.\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\Needspace{0.38\textheight}
+\subsection{Decision and availability register}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.28\linewidth}
+                  >{\raggedright\arraybackslash}p{0.18\linewidth}
+                  >{\raggedright\arraybackslash}p{0.46\linewidth}}
+\toprule
+Item & State & Consequence \\
+\midrule
+\endhead
+Conditioned $r$ use & Decided & Diagnostic-only and inert/advisory for base v0.1; cross-channel subtraction is unavailable.\\
+PCA/SVD frozen application & Decided & Project through the frozen realized subspace and metric; exact acting space is family state.\\
+Numerical selection predicates & Open policy input & Automatic candidate admission is unavailable until every required typed predicate is supplied.\\
+Mandatory/default estimator & Open policy input & An absent estimator request cannot be replaced by an inferred default.\\
+Centering/scaling choices & Open policy input & Concrete coordinates must be supplied for each product role.\\
+Detector diagnostic thresholds & Open policy input & Policy-changing classification requires registered thresholds.\\
+Conditioned $r$ producer & Known, not supplied & The optional diagnostic branch remains unavailable.\\
+Reference MAP functional & Known, not supplied & The optional map-center diagnostic remains unavailable.\\
+Complete covariance model & Deferred & Precision/significance claims remain blocked.\\
+Full-procedure perturbation domain & Open policy input & A concrete response family needs amplitude, side, source state, location, and validity domain.\\
+Implementation and validation evidence & Not assessed & No conformity, achieved performance, freeze, or readiness claim follows.\\
+\bottomrule
+\end{longtable}
+
+\appendix
+\section{Compact rationale-to-contract crosswalk}
+\label{sec:science-crosswalk}
+
+The exact identifier-by-identifier crosswalk is supplied with the package.
+This compact view shows where the principal scientific questions are governed
+in the companion engineering specification.
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.28\linewidth}
+                  >{\raggedright\arraybackslash}p{0.27\linewidth}
+                  >{\raggedright\arraybackslash}p{0.35\linewidth}}
+\toprule
+Scientific question & Rationale location & Formal authority \\
+\midrule
+\endhead
+What is estimated and removed? & Sections 1 and 3 & Definitions 001--008; Requirements 019--025 \\
+How is validity routed? & Section 2 & Definitions 009--013; Requirements 011--018 \\
+What is learned, selected, resolved, and applied? & Section 4 & Definitions 014--015, 029--032, and 040; Requirements 026--040, 083--085, and 089 \\
+How does detector refinement repeat? & Section 5 & Definitions 019--021; Requirements 042--051 \\
+What do coefficients and uncertainties mean? & Section 6 & Definitions 023--024 and 039; Requirements 052--060 and 086 \\
+How are response domains separated? & Section 7 & Definitions 016--018, 033--034, and 041; Requirements 061--068 and 087 \\
+What are product and surrogate states? & Section 8 & Definitions 025, 028, 035--037; Requirements 069--079, 081--082, and 088 \\
+How will realizations be studied? & Section 9.1 & Predictions 001--049 \\
+What evidence is claimed? & Section 9.2 & Requirement 080 and Prediction 038 \\
+\bottomrule
+\end{longtable}
+
+\section{Provenance and program adherence}
+\label{sec:science-program}
+
+SCI-PTC follows the Citlali Scientific Contract Library Program and began from
+an owner-reviewed prior-work recovery record rather than a fresh derivation.
+The implementation-blind author packet reused an independent mathematical
+core under a binding supersession cover and excluded implementation, audit,
+repair, test, validation, Unity, and production material. The r0.3 revision
+implements the bounded scientific-owner review of r0.2 after the explicitly
+approved frozen-subspace projection decision. It does not reopen mature
+numerical algorithms or make an implementation claim.
+
+\begingroup
+\small
+\begin{thebibliography}{9}
+\bibitem{bailey2012} S. Bailey, \textit{Principal Component Analysis with Noisy and/or Missing Data}, 2012.
+\bibitem{candes2009} E. J. Cand\`es, X. Li, Y. Ma, and J. Wright, \textit{Robust Principal Component Analysis?}, 2009.
+\bibitem{downes2011} T. P. Downes et al., \textit{Calculating the transfer function of noise removal by principal component analysis and application to AzTEC observations}, 2011.
+\bibitem{kovacs2008} A. Kov\'acs, \textit{CRUSH: fast and scalable data reduction for imaging arrays}, 2008.
+\bibitem{patanchon2007} G. Patanchon et al., \textit{SANEPIC: A Map-Making Method for Timestream Data From Large Arrays}, 2007.
+\bibitem{gavish2013} M. Gavish and D. L. Donoho, \textit{The Optimal Hard Threshold for Singular Values is $4/\sqrt{3}$}, 2013.
+\end{thebibliography}
+\endgroup
+
+\end{document}

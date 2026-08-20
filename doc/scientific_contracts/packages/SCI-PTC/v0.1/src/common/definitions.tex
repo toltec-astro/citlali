@@ -1,0 +1,85 @@
+% SCI-PTC v0.1 shared normative definitions -- owner-review draft r0.3.
+\section{Normative definitions}
+\label{sec:normative-definitions}
+
+\PTCDefinition{001}{Admitted CAL parent}{The immutable SCI-CAL detector-time product accepted by all required unit, identity, validity, lineage, uncertainty, and response gates. It is the numerical parent of every base-v0.1 fit and support-changing refit.}
+
+\PTCDefinition{002}{Correlated-mode estimand}{A latent declared detector-time component $U_\star$ represented by a shared temporal basis or supplied template and detector loadings. PTC estimates $\widehat U$ and the realized removed subspace $\widehat{\mathcal U}$; statistical correlation does not identify their physical origin.}
+
+\PTCDefinition{003}{Transformed detector signal}{The calibrated detector-time signal after subtracting the realized correlated component and restoring every invertible internal coordinate transform. It is not an independent sky estimate.}
+
+\PTCDefinition{004}{Removed subspace}{The complete realized subspace or template span whose fitted contribution is subtracted, including its group, support, metric, rank, order, and gauge-equivalence class.}
+
+\PTCDefinition{005}{Null space}{The set of admitted input perturbations that the complete realized operation maps to zero or makes unidentifiable, including additive-reference loss and any sky component overlapping the removed subspace.}
+
+\PTCDefinition{006}{Gauge}{A sign, scale, ordering, or rotation freedom in a basis/loading representation that leaves the fitted correlated component and removed subspace unchanged.}
+
+\PTCDefinition{007}{Centering state}{The declared location estimate, axis, population, weights, support, masks, boundary, unit, and restoration rule used to define the fitting coordinate.}
+
+\PTCDefinition{008}{Scaling state}{The declared nonzero internal scale, axis, population, weights, estimator, support, unit, and inverse transform used for numerical conditioning.}
+
+\PTCDefinition{009}{Basis-fit support}{Detector-time occurrences permitted to influence construction or selection of a temporal basis or supplied-template fit.}
+
+\PTCDefinition{010}{Loading-fit support}{Occurrences permitted to influence the detector loading of an already declared temporal basis or template.}
+
+\PTCDefinition{011}{Application support}{Occurrences to which the exact frozen application map is authorized to apply, including an explicitly allowed fit-excluded/apply-allowed state only where the resolved operator defines the value from admitted frozen state and support.}
+
+\PTCDefinition{012}{Output support}{Occurrences eligible to remain in a transformed output; it is independent of fit and application supports.}
+
+\PTCDefinition{013}{Cause-to-support policy}{An immutable mapping from each typed cause to separate basis-fit, loading-fit, application, output, coefficient/QC, response, empirical, simulation, and downstream-support decisions.}
+
+\PTCDefinition{014}{Fixed-state application map}{The exact numerical map $\mathcal A_{\Theta}$ obtained after all fitted, selected, classified, ranked, grouped, masked, metric, support, coordinate, and fallback state is frozen. For an admitted PCA/SVD family it projects any admitted application input through the frozen realized subspace and metric, with its acting space and coefficient recomputation declared.}
+
+\PTCDefinition{015}{Full PTC procedure}{The complete learn, fit, select, rank, classify, refit, apply, and publish operation beginning from the immutable admitted CAL parent.}
+
+\PTCDefinition{016}{Response companion}{An exact perturbation with a declared domain and parent, carried through the exact fixed-state derivative or used in a full-procedure injection study. A detector-time companion already on the CAL grid is not passed through $K_{\rm up\to CAL}$ again, and no companion silently enters the fit.}
+
+\PTCDefinition{017}{Conditional response}{The derivative or declared affine linear part of the frozen application map, conditioned on the exact resolved selected model. It excludes movement of learned, selected, classified, or fallback state.}
+
+\PTCDefinition{018}{Full-procedure response}{A finite-perturbation signal response produced by rerunning the complete PTC procedure from the immutable admitted CAL parent. It is paired with a typed comparison of changed discrete/mixed state and may be a family over amplitude, side, source state, or location.}
+
+\PTCDefinition{019}{Post-fit detector assessment}{A bounded evaluation of declared residual, loading, influence, stability, source-response, and diagnostic quantities used to classify detector state.}
+
+\PTCDefinition{020}{Support-changing refinement}{A post-fit classification change that alters basis-fit or loading-fit support and therefore requires one complete refit from the immutable admitted CAL parent.}
+
+\PTCDefinition{021}{PTC pass}{A complete PTC realization with an immutable input parent and distinct realized identity. It is neither an internal solver iteration nor an external FRUIT recurrence.}
+
+\PTCDefinition{022}{Diagnostic-only conditioned $r$}{A separately authorized, PTC-compatible, electronics-enriched $r$ product used only for inert or advisory diagnostics in base v0.1. It cannot control or subtract calibrated $x$.}
+
+\PTCDefinition{023}{Fitted loading}{A gauge-dependent coefficient coupling a temporal basis/template to one detector. It is not a gridding weight, precision, significance, or sensitivity.}
+
+\PTCDefinition{024}{Analysis/gridding coefficient}{An explicitly named detector-indexed or detector-time-indexed coefficient permitted for downstream aggregation. Its index family, identity, unit, normalization operator and domain, factors, support, and lifecycle are declared; it is nonprecision unless separately proven.}
+
+\PTCDefinition{025}{Typed availability}{A role-specific response, covariance, coefficient, or diagnostic status among \texttt{computed\_published}, \nolinkurl{not_computed_or_not_requested_for_this_product}, \texttt{invalid}, or \texttt{unavailable}, with a cause and affected claim. It is distinct from whether a product exists or was realized.}
+
+\PTCDefinition{026}{Least-aggressive admissible candidate}{The first candidate under a declared ordering for which every required residual-contamination, astronomical-transfer, conditioning, support, stability, and QC predicate passes. No failed predicate can be offset by a scalar score.}
+
+\PTCDefinition{027}{Map-center response diagnostic}{The optional scalar functional of an exact source companion, propagated PTC response, exact named reference MAP operator, and center selector. It is neither the general PTC response nor MAP authority.}
+
+\PTCDefinition{028}{Material state}{Every requested, resolved, learned, fitted, selected, classified, applied, randomized, fallback, or publication quantity capable of changing a declared output, response, coefficient, uncertainty, or downstream use.}
+
+\PTCDefinition{029}{Learned/fitted evidence state}{The complete record $\mathfrak L$ of every evaluated candidate, its fitted state, diagnostics, predicate values and units, pass/fail causes, ordering, tie result, and disposition before final selection.}
+
+\PTCDefinition{030}{Resolved selected model}{The immutable state $\Theta$ selected from learned evidence, including its exact basis/subspace, acting space, metric, coefficient-recomputation rule, supports, coordinates, grouping, rank, classes, fallback, and application map.}
+
+\PTCDefinition{031}{Frozen-subspace projection family}{An admitted PCA/SVD application family that recomputes application coefficients linearly against a frozen realized subspace and metric. It must declare temporal-left, detector-right, two-sided, detector/time-specific, or general vectorized action.}
+
+\PTCDefinition{032}{Frozen-component subtraction family}{A separately named affine family $Y'\mapsto Y'-\widehat U$ with one frozen numerical component. Its derivative is the identity; it is not interchangeable with frozen-subspace projection and is not the base-v0.1 PCA/SVD application rule.}
+
+\PTCDefinition{033}{Realized propagated companion}{The detector-time companion after exactly one compatible application of the requested local or chain response. It records whether its parent was source-domain or already on the CAL grid and whether propagation was conditional or full-procedure.}
+
+\PTCDefinition{034}{Typed state comparison}{A field-aware comparison $\Delta_{\rm state}$ of learned, selected, classified, ranked, grouped, support, convergence, and fallback state across two procedure runs. Discrete state is compared by identity and disposition, never numerically subtracted.}
+
+\PTCDefinition{035}{Product realization state}{A state among \texttt{realized}, \texttt{disabled}, \texttt{not\_requested}, \texttt{rejected}, or \texttt{unavailable} for a named product role. It is orthogonal to response or uncertainty availability.}
+
+\PTCDefinition{036}{External source/residual parent}{A source model, mask, residual, or prior-pass parent admitted only with explicit owner, unit, coordinate frame, registration, validity, response, support, and recurrence identity.}
+
+\PTCDefinition{037}{Shifted/null surrogate}{A derived realization in which signal, associated validity/eligibility, support, boundaries, randomness, and parent identity are transformed together under one declared shift or null rule.}
+
+\PTCDefinition{038}{Astronomical-transfer predicate}{A candidate-admission predicate bound to an exact source class and companion, conditional or full-procedure response type, amplitude/location domain, metric, tolerance, mask/support, upstream response identity, and response-uncertainty treatment.}
+
+\PTCDefinition{039}{Expectation/bias claim}{A family- and role-specific statement about the conditional expectation or bias of astronomical signal, fitted nuisance, remaining detector noise, calibration uncertainty, and selection. A missing or unproved claim is explicitly unavailable rather than silently unbiased.}
+
+\PTCDefinition{040}{Application-available occurrence}{An occurrence, including a fit-excluded occurrence, for which the resolved frozen operator has every required detector binding, basis coefficient or coefficient-recomputation input, neighboring support, metric term, coordinate transform, and boundary state needed to define the application value without interpolation, zero filling, or an inferred extension.}
+
+\PTCDefinition{041}{Complete upstream response ending on the CAL grid}{The exact admitted response $K_{\rm up\to CAL}$ carried by the CAL product from a declared source-domain perturbation to the CAL detector-time grid. It composes every applicable admitted source-to-detector relation, beam convention, coordinate and scan geometry, RTC operation, and CAL operation; omission or unavailability of a required factor makes the complete-response claim unavailable.}
