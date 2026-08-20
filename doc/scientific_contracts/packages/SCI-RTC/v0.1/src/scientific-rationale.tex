@@ -13,7 +13,7 @@
 \definecolor{RTCgold}{HTML}{B7791F}
 \hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
  hypertexnames=false,
- pdftitle={TolTEC Raw-Timestream Conditioning: Paired Readout Coordinates, Learn--Resolve--Apply, and Scientific Consequences v0.1/r0.7},
+ pdftitle={TolTEC Raw-Timestream Conditioning: Paired Readout Coordinates, Learn--Resolve--Apply, and Scientific Consequences v0.1/r0.8},
  pdfauthor={SCI-RTC implementation-blind scientific author}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.52em}
@@ -46,7 +46,7 @@ and Scientific Consequences\\[0.28in]}
 \vspace{0.55in}
 \begin{tabular}{@{}ll@{}}
 Scientific contract version & v0.1 \\
-Science-team rationale revision & r0.7 \\
+Science-team rationale revision & r0.8 \\
 Date & 2026-08-18 \\
 Authority & Shared normative core in \texttt{src/common/} \\
 Status & Draft for scientific-owner review \\
@@ -78,7 +78,7 @@ therefore change a point-source peak, effective PSF, centroid, extended-source
 response, calibration transfer, or scientific eligibility without changing a
 unit label.
 
-SCI-RTC v0.1/r0.7 organizes those choices as \textbf{learn--resolve--apply}.
+SCI-RTC v0.1/r0.8 organizes those choices as \textbf{learn--resolve--apply}.
 Learn uses a declared population and diagnostics to estimate candidate
 parameters and uncertainty. Resolve combines that evidence with fixed policy
 and admits one complete immutable RTC plan. Apply executes exactly that plan
@@ -412,35 +412,58 @@ and no donor relation crosses an unresolved or accepted boundary.  The plan
 records spike statistic, threshold, support, mask/downweighting, false-positive
 control, shift estimator, donor topology, and each resulting boundary.
 
-A level-shift event records one network event time together with each
-detector's transition time or interval, timing offset and declared coherence
-tolerance, separate
-$x$ and $r$ amplitudes or typed unavailability, estimator, support, quality,
-uncertainty, and cause.  Detection does not itself authorize correction.
-Each admitted event creates a transition mask and owner-resolved pre/post
-guards, and delimits coherent segments.  Reset is ordinary.  Carry across an
-accepted shift is a separately authorized continuity exception requiring an
-explicit response and residual-contamination criterion.  Multiple events
-retain ordered identities, even when guards overlap or
-the intervening segment is too short; a selected conflict and minimum-segment
-policy determines the disposition.
+A level shift is modeled in v0.1 as an additive baseline change, not as a gain
+or responsivity change. On each stable plateau, $x(t)$ is the intended signal
+plus a plateau baseline $b_i$. There is no present observational basis for an
+additional multiplicative degree of freedom. Evidence of a response change
+therefore blocks the additive interpretation; it does not cause RTC to fit a
+gain-changing model. Such models remain successor scope unless evidence
+requires this assumption to be reopened.
+
+The physical/readout event has finite transition width. Each accepted event
+therefore records a network identity and detector-specific physical-time
+transition interval, or a conservative bound on that interval, plus timing
+coherence, separate $x$ and $r$ evidence or typed unavailability, quality,
+uncertainty, and cause. The corresponding sample set comes from the applicable
+timing vector. It is never defined as a fixed number of samples, a fraction of
+a scan or scan leg, or another scan-dependent quantity, so the same physical
+criterion remains meaningful across cadences and scan strategies.
+
+Transition samples belong to neither stable plateau. They are explicitly
+flagged, excluded from both plateau estimates, and remain unmodeled even when
+the stable plateaus are offset-corrected. Later filters, donor replacement, or
+downsampling may expand their influence according to operator support, but the
+record preserves the distinction between underlying physical transition
+support and downstream propagated influence. The transition also delimits
+coherent segments. Reset is ordinary; carry is a separately authorized
+continuity exception. Multiple events retain ordered identities under the
+selected conflict and minimum-segment policy.
 
 ``Stable plateau'' does not mean a numerically constant timestream.  It means
 consistency with a declared local signal-plus-baseline model accounting for
 atmosphere, astronomical signal, noise, allowed slow variation, Tune state,
-valid support, and unresolved changes.  Suitability is role-specific: an
-interval may support a readout-health diagnostic while being too short for PSD
-or notch learning, Beammap source inference, or Science.  Sample count alone
-is not authority.
+valid support, and unresolved changes. Suitability depends on the resolved
+application context: an interval may support a readout-health diagnostic while
+being too short for PSD or notch learning, Beammap source inference, or
+Science. Sample count alone is not authority.
 
 Pre- and post-shift stable plateaus compare their optical-leakage or more
 general paired response state on common support, or record that comparison as
-unavailable when optical excitation is inadequate.  A material response change
-rules out an additive-only event interpretation.  Plateau estimates otherwise
-remain inert or advisory unless selected as policy input.  V0.1 does not
-authorize plateau-based cross-segment offset stitching; that would be a new
-response-changing operator with its own support, covariance, provenance, and
-validation burden.
+unavailable when optical excitation is inadequate. A material response change
+rules out an additive-only correction. When both plateaus have scientifically
+adequate stable support, RTC may estimate their additive level difference and
+translate one plateau to the declared reference. The resolved plan supplies
+the estimator, minimum support, quality and uncertainty criteria, reference
+plateau, and failure behavior. The inferred offset applies only to valid stable
+plateau cells, never to transition support. If support is inadequate, RTC
+invents no offset: the event remains a segment boundary, and the plan decides
+which usable plateau or plateaus are retained.
+
+Normal production records need compact event and treatment state plus useful
+population summaries, not a mandatory permanent manifest of every detailed
+fit. Full event-by-event fits and diagnostic traces may remain verbose or
+diagnostic products. This economy changes neither the actual conditioning nor
+the explicit transition flags and segment state carried by ordinary products.
 
 A \textbf{donor} is an admitted detector-time measurement used to construct a
 continuity surrogate for a rejected target $x$ cell.  The target retains its

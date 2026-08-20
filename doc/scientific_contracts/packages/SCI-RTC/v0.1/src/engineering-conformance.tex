@@ -16,7 +16,7 @@
 \definecolor{RTCgray}{HTML}{52606D}
 \hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
   hypertexnames=false,
-  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.7},
+  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.8},
   pdfauthor={SCI-RTC implementation-blind scientific author}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.48em}
@@ -49,7 +49,7 @@
 \vspace{0.65in}
 \begin{tabular}{@{}ll@{}}
 Package version & v0.1 \\
-Revision & r0.7 \\
+Revision & r0.8 \\
 Date & 2026-08-18 \\
 Authority & Shared normative core in \texttt{src/common/} \\
 View-specific content & Informative evidence and review guidance only \\
@@ -159,9 +159,9 @@ REQ-071--076 & Refinement attempts and replay & Distinct attempt/accepted-plan t
 REQ-077--082 & Candidate, stability, stopping, provenance & Artifact discrimination, cumulative budgets, complete-plan stability, actual/max-attempt distinction, typed disposition, lineage, restart mismatch fixtures. \\
 REQ-083--086 & Pair admission, identity, mapping, validity & Missing-partner failure, mapping reconstruction, reorder/rejoin rejection, independent $x/r$ validity matrix, restart identity. \\
 REQ-087--093 & Leakage, prohibited correction, joint statistics & Atmosphere/source estimator fixtures, coordinate rescaling and comparison compatibility, scalar/frequency status, forbidden-route rejection, fixed-state zero $r$ branch, and joint selector covariance. \\
-REQ-094--102 & Level shifts, plateaus, and state & Original-pair spike masking/downweighting, network/detector event-time coherence, post-segmentation donor fixtures, paired amplitudes, guards, reset-by-default boundaries, separately authorized carry, no-stitch toggle, and typed lifecycle states. \\
+REQ-094--102 & Level shifts, plateaus, and state & Original-pair spike masking/downweighting; network/detector finite physical-time transition support; timing-vector-derived sample masks; additive-only plateau model and optional valid offset correction; transition exclusion; post-segmentation donor fixtures; reset-by-default boundaries; separately authorized carry; compact production state; and typed lifecycle states. \\
 REQ-103--105 & CAL, atmosphere diagnostics, role routing & $x$-only CAL handoff, atmospheric-template no-subtraction checks, retained raw-$r$ parentage, paired role-plan disposition, optional-class disabled checks. \\
-REQ-106--108 & Plateau support, pre/post leakage, optional conditioned $r$ & Role-specific support matrix, pre/post response comparison/unavailability, additive-only interpretation block, and separate-$r$-operator admission failure. \\
+REQ-106--108 & Plateau support, pre/post leakage, optional conditioned $r$ & Application-context support matrix, insufficient-offset-support behavior, pre/post response comparison/unavailability, gain-model exclusion, and separate-$r$-operator admission failure. \\
 \bottomrule
 \end{tabularx}
 \normalsize
@@ -214,7 +214,9 @@ bit cannot demonstrate these distinctions.
 
 Additionally separate pair-malformed, $x$-invalid, $r$-invalid,
 mapping-unavailable, leakage-unavailable, level-shift-candidate,
-level-shift-accepted, transition-guard, segment-interior, role-specific
+level-shift-accepted, physical-transition-unmodeled,
+propagated-transition-influence, additive-offset-applied,
+additive-offset-unavailable, segment-interior, application-specific
 plateau-admissibility, plateau-advisory, reset, atmospheric-diagnostic-unavailable,
 and optional-conditioned-$r$-unavailable states.  Confirm that missing one
 pair member fails required admission while independent validity of a present
@@ -277,7 +279,9 @@ Maximum-attempt, oscillating, and nonconvergent states are not convergence.
       segmentation, remains within stable segments, and never crosses a shift.
 \item Every accepted shift has paired amplitudes or typed unavailability,
       transition mask, guards, segment identity, reset/carry state,
-      role-specific plateau support, and no implicit plateau stitching.
+      application-specific plateau support, selected additive correction only
+      with sufficient stable support, persistent transition flags, and no
+      gain- or responsivity-change model.
 \item Atmospheric templates are diagnostic evidence only and do not alter
       science $x$; numerical common-mode removal requires separate authority.
 \item A conditioned $r$ output is unavailable unless its own operator,

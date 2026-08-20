@@ -1,7 +1,7 @@
 # SCI-RTC — Raw-Timestream Conditioning And Temporal Response
 
-Status: Stage B v0.1/r0.7 implementation-blind surgical correction
-manager-reviewed as a final candidate; scientific authority not frozen
+Status: Stage B v0.1/r0.8 implementation-blind Decision 9 revision
+mechanically and visually checked; scientific authority not frozen
 
 Version: `v0.1`
 
@@ -32,12 +32,13 @@ inputs.
   revisions implemented and closing-reviewed; r0.5 paired-coordinate revision
   complete and independently closing-reviewed; r0.6 owner-confirmed bounded
   correction complete and independently closing-reviewed; r0.7 owner-directed
-  surgical correction complete and manager-reviewed.
+  surgical correction complete and manager-reviewed; r0.8 binding owner
+  Decision 9 applied and author-checked.
 - Scientific authority, implementation conformity, validation, and production
   promotion: not established.
 
 The next gates are the program-required fresh implementation-blind consistency
-review and explicit scientific-owner freeze disposition for the r0.7 final
+review and explicit scientific-owner freeze disposition for the r0.8 final
 candidate, its 24 author decisions, and the owner-decision register.
 
 ## Contents
@@ -116,14 +117,22 @@ candidate, its 24 author decisions, and the owner-decision register.
   self-check pending fresh consistency review
 - [`MANAGER_REVIEW_R0.7.md`](MANAGER_REVIEW_R0.7.md): independence,
   seven-correction, output-split, build, metadata, and all-page QA review
+- [`SCIENTIFIC_OWNER_DECISION_R0.8.md`](SCIENTIFIC_OWNER_DECISION_R0.8.md):
+  binding additive-only, finite-transition, unmodeled-support, and optional
+  stable-plateau correction authority
+- [`CHANGE_LOG_R0.8.md`](CHANGE_LOG_R0.8.md): exact r0.7-to-r0.8 Decision 9 changes
+- [`RATIONALE_TO_CONTRACT_CROSSWALK_R0.8.md`](RATIONALE_TO_CONTRACT_CROSSWALK_R0.8.md):
+  Decision 9 rationale-to-authority routing
+- [`CONSISTENCY_REPORT_R0.8.md`](CONSISTENCY_REPORT_R0.8.md): additive-model,
+  timing/support, correction, state, build, metadata, and all-page visual check
 - [`DECISION_LOG.md`](DECISION_LOG.md): package-selection and approved scope
   decisions
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md):
-  63 open, one conditional, five resolved, and five deferred decisions
+  63 open, one conditional, six resolved, and five deferred decisions
 - [`CROSSWALK.md`](CROSSWALK.md): exact shared-core and packet traceability
 - `src/`: one six-file shared core and the two audience views
-- `pdf/`: canonical r0.7 outputs: 14-page focused science-team rationale and
-  42-page complete formal engineering view, with all 56 pages Poppler-inspected
+- `pdf/`: canonical r0.8 outputs: 15-page focused science-team rationale and
+  42-page complete formal engineering view, with all 57 pages Poppler-inspected
 
 ## Protected Boundary
 
@@ -147,8 +156,8 @@ with a calibrated `mJy/beam` path.
 
 This package contains an owner-approved Stage A scope/packet, preserved
 content-bound r0.4 inputs, an implementation-blind Stage B r0.5
-owner-directed supersession, the binding r0.6 scientific-owner correction, and
-the binding r0.7 surgical-correction request.
+owner-directed supersession, the binding r0.6 scientific-owner correction,
+the binding r0.7 surgical-correction request, and binding r0.8 Decision 9.
 Neither the author nor the manager
 approves that draft as the SCI-RTC v0.1 scientific authority. Current
 application and production behavior retain their existing repository status

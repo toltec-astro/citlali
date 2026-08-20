@@ -1,4 +1,4 @@
-# SCI-RTC v0.1/r0.7 exact authority crosswalk
+# SCI-RTC v0.1/r0.8 exact authority crosswalk
 
 Status: implementation-blind author crosswalk. It maps every normative ID in
 the shared core to explanatory and conformance loci and to the approved author
@@ -16,6 +16,7 @@ packet. It reports no implementation or validation result.
 | `R5` | Supplied r0.5 scientific-owner directive, content-bound and summarized in `SCIENTIFIC_OWNER_DIRECTIVE_R0.5.md` | `7469fd327d9465904a4e59c287577bab0dcd9f93fd2cc555cdee6680e89714a6` |
 | `R6` | Supplied r0.6 scientific-owner review plus the three explicit owner confirmations recorded in `SCIENTIFIC_OWNER_REVIEW_R0.6.md` | `2a4163d1ed0775e83ef981573d1a3a1f65fe2d89860bd92b0ad456e61fa8e266` |
 | `R7` | Supplied r0.7 scientific-owner review and surgical correction request recorded in `SCIENTIFIC_OWNER_REVIEW_R0.7.md` | `01ec886e6d1dad89835463a1cee39dd0da067cf7532608698f90262cb41a9937` |
+| `R8` | Binding scientific-owner Decision 9 recorded in `SCIENTIFIC_OWNER_DECISION_R0.8.md` | `8862e3d4caf3fdd695fa66cbc0af58d40725375444f145525c4393f3859095b1` |
 
 The supersession cover controls wherever `RC` is broader, older, or
 ambiguous. In particular, crosswalk entries that cite the retained calibration,
@@ -33,6 +34,10 @@ The later `R7` review accepts the r0.6 narrative and architecture, controls the
 ALIGN, fixed-state covariance, leakage-normalization, event-time, reset/carry,
 operation-inventory, atmosphere/support, and output-split corrections, and
 adds no implementation or validation evidence.
+The later `R8` Decision 9 controls the additive-only stable-plateau model,
+finite physical-time transition support, transition-unmodeled boundary,
+optional valid additive correction, insufficient-support behavior, compact
+production state, and exclusion of gain/responsivity-change modeling.
 
 ## View inclusion crosswalk
 
@@ -88,10 +93,10 @@ modify the formal authority.
 | `SCI-RTC-DEF-032` | Definitions: coordinate-qualified optical leakage | §§4, 6 | Paired response checks | R7 clarification 3; R5 §IV |
 | `SCI-RTC-DEF-033` | Definitions: atmospheric leakage diagnostic | §§3, 6 | Atmosphere estimator routing | R5 §§IV--V |
 | `SCI-RTC-DEF-034` | Definitions: bright-source leakage diagnostic | §6 | Source estimator routing | R5 §VI |
-| `SCI-RTC-DEF-035` | Definitions: network event and detector timing offsets | §§5, 10 | Event/state checks | R7 clarification 4; R5 §§VII--VIII |
-| `SCI-RTC-DEF-036` | Definitions: transition mask, guard, and continuity exception | §§5, 10 | Boundary checks | R7 clarification 5; R5 §§VII--VIII |
-| `SCI-RTC-DEF-037` | Definitions: plateau state | §§5, 10 | Advisory/inert checks | R5 §§VII--VIII |
-| `SCI-RTC-DEF-038` | Definitions: two-coordinate correction boundary | §§4--6 | Forbidden-route checks | R5 §§IV, IX |
+| `SCI-RTC-DEF-035` | Definitions: additive-only network level shift | §§5, 10 | Event/model checks | R8 Decision 9; R7 clarification 4; R5 §§VII--VIII |
+| `SCI-RTC-DEF-036` | Definitions: finite physical transition support and propagated influence | §§5, 10 | Timing-vector/mask/boundary checks | R8 Decision 9; R7 clarification 5; R5 §§VII--VIII |
+| `SCI-RTC-DEF-037` | Definitions: stable additive-baseline plateau | §§5, 10 | Support/admission checks | R8 Decision 9; R5 §§VII--VIII |
+| `SCI-RTC-DEF-038` | Definitions: response-changing successor boundary | §§4--6 | Gain/two-coordinate forbidden-route checks | R8 Decision 9; R5 §§IV, IX |
 
 ## Equations and identities
 
@@ -131,8 +136,8 @@ modify the formal authority.
 | `SCI-RTC-EQ-030` | Equations: native Tune-dependent IQ-to-$x/r$ mapping before ALIGN | §4 | Nonlinear/local mapping and pair round trip | R7 blocker 1; R6 mapping correction; R5 §III |
 | `SCI-RTC-EQ-031` | Equations: local paired optical response with distinct residual | §§4, 6 | Paired injection response | R6 symbol correction; R5 §IV |
 | `SCI-RTC-EQ-032` | Equations: coordinate-qualified leakage ratio and metric-qualified angle | §6 | Atmosphere/source leakage, rescaling, and bias fixtures | R7 clarification 3; R6 estimator/symbol corrections; R5 §§IV--VI |
-| `SCI-RTC-EQ-033` | Equations: network event with detector timing offsets | §§5, 10 | Shift timing/amplitude fixtures | R7 clarification 4; R5 §§VII--VIII |
-| `SCI-RTC-EQ-034` | Equations: plateau diagnostic, ordinary reset, authorized carry | §§5, 10 | Segment/state/no-stitch checks | R7 clarification 5; R5 §§VII--VIII |
+| `SCI-RTC-EQ-033` | Equations: additive plateaus around finite physical-time transition support | §§5, 10 | Cross-cadence support/model fixtures | R8 Decision 9; R7 clarification 4; R5 §§VII--VIII |
+| `SCI-RTC-EQ-034` | Equations: additive plateau correction, transition exclusion, reset/carry | §§5, 10 | Offset/reference/support/state checks | R8 Decision 9; R7 clarification 5; R5 §§VII--VIII |
 | `SCI-RTC-EQ-035` | Equations: actual attempts, maximum, and accepted plans | §§2, 7 | Early-stop/no-no-op check | R5 bounded-iteration correction |
 
 ## Assumptions
@@ -168,7 +173,7 @@ modify the formal authority.
 | `SCI-RTC-REQ-010` | §§8, 10 | State-flow trace | SB D007/D010; SC 5, 8 |
 | `SCI-RTC-REQ-011` | §§1, 10 | Stage/parent identity | SB D007; SC 5 |
 | `SCI-RTC-REQ-012` | §§1--10 | Complete policy-inventory admission/rejection | R7 clarification 6; SB D014; SC 13 |
-| `SCI-RTC-REQ-013` | §§4--5, 11 | Single upstream ALIGN, original-pair shift learning, post-segmentation replacement, conditioned-$x$-then-CAL trace | R7 blocker 1; R6 decisions 2--3; R4 calibration-order decision |
+| `SCI-RTC-REQ-013` | §§4--5, 11 | Single upstream ALIGN, original-pair shift learning, transition/plateau resolution, optional valid additive correction, post-segmentation replacement, conditioned-$x$-then-CAL trace | R8 Decision 9; R7 blocker 1; R6 decisions 2--3; R4 calibration-order decision |
 | `SCI-RTC-REQ-014` | §3 | Raw donor direction matrix | SB D004; SC 2; CO Signal labels |
 | `SCI-RTC-REQ-015` | §3 | Dependency inspection | SB D004; SC 2; CO Signal labels |
 | `SCI-RTC-REQ-016` | §3 | Invalid-transfer failure | SB D004; SC 2; CO Transformer |
@@ -249,20 +254,20 @@ modify the formal authority.
 | `SCI-RTC-REQ-091` | §6 | Scalar/frequency status and coordinate-comparison compatibility | R7 clarification 3; R5 §§IV--VI |
 | `SCI-RTC-REQ-092` | §§4, 11 | Forbidden correction/calibration/donor routes | R5 §§IV, IX |
 | `SCI-RTC-REQ-093` | §§4, 12 | Joint $x/r$ selection dependence without a fixed-state numerical branch | R7 blocker 2; R5 §§III--V |
-| `SCI-RTC-REQ-094` | §§5, 10 | Network event and detector timing-offset record | R7 clarification 4; R5 §§VII--VIII |
+| `SCI-RTC-REQ-094` | §§5, 10 | Compact event/treatment state, physical-time transition bound, and population-summary boundary | R8 Decision 9; R7 clarification 4; R5 §§VII--VIII |
 | `SCI-RTC-REQ-095` | §§5, 8 | Spike-aware original-pair shift learning before replacement | R6 decision 2 |
-| `SCI-RTC-REQ-096` | §§5, 10 | Transition mask and guards | R5 §§VII--VIII |
+| `SCI-RTC-REQ-096` | §§5, 10 | Timing-vector-derived physical transition mask, unmodeled state, and distinct propagated influence | R8 Decision 9; R5 §§VII--VIII |
 | `SCI-RTC-REQ-097` | §§5, 10 | Ordinary reset, authorized carry, and no-cross-boundary donor rule | R7 clarification 5; R6 decision 2; R5 §§VII--VIII |
-| `SCI-RTC-REQ-098` | §§5, 10 | Plateau diagnostic state | R5 §§VII--VIII |
+| `SCI-RTC-REQ-098` | §§5, 10 | Plateau/additive-offset estimator, support, reference, and state | R8 Decision 9; R5 §§VII--VIII |
 | `SCI-RTC-REQ-099` | §§5, 10 | Multiple-shift identity/conflict | R5 §§VII--VIII |
 | `SCI-RTC-REQ-100` | §§5--6 | Pre/post operation leakage identity | R6 response-comparison correction; R5 §§V--VI |
-| `SCI-RTC-REQ-101` | §§5, 10 | No implicit plateau stitching | R5 §VIII |
-| `SCI-RTC-REQ-102` | §§1, 5, 10 | Paired learning/segmentation/replacement lifecycle states | R6 decision 2; R5 §§II--VIII |
+| `SCI-RTC-REQ-101` | §§5, 10 | Selected additive stable-plateau correction and no-gain boundary | R8 Decision 9; R5 §VIII superseded for additive correction |
+| `SCI-RTC-REQ-102` | §§1, 5, 10 | Physical support/influence, additive correction, segmentation, and replacement lifecycle states | R8 Decision 9; R6 decision 2; R5 §§II--VIII |
 | `SCI-RTC-REQ-103` | §11 | Conditioned-$x$-only SCI-CAL handoff | R5 §§I, IX |
 | `SCI-RTC-REQ-104` | §§3, 6, 11 | Diagnostic-only atmospheric-template boundary | R6 decision 1 |
 | `SCI-RTC-REQ-105` | §§1, 11 | Conditioned-$x$, raw-$r$ lineage, role plan, and consumer routing | R6 decisions 1/3; R5 §§II, IX |
-| `SCI-RTC-REQ-106` | §§5, 10 | Role-specific plateau-support disposition | R6 plateau-support correction |
-| `SCI-RTC-REQ-107` | §§5--6, 10 | Pre/post-shift optical-response comparison and additive-only block | R6 response-comparison correction |
+| `SCI-RTC-REQ-106` | §§5, 10 | Application-context plateau support, no-invented-offset, and retain/reject disposition | R8 Decision 9; R6 plateau-support correction |
+| `SCI-RTC-REQ-107` | §§5--6, 10 | Response-change block and no fitted gain-change model | R8 Decision 9; R6 response-comparison correction |
 | `SCI-RTC-REQ-108` | §§1, 4, 11 | Separately authorized conditioned-$r$ product boundary | R6 decision 3 |
 
 ## Falsifiable predictions
@@ -323,11 +328,11 @@ modify the formal authority.
 | `SCI-RTC-PRED-052` | §6 | Scalar versus frequency leakage | R5 §§IV--VI |
 | `SCI-RTC-PRED-053` | §§4, 11 | Forbidden $r$ routes | R5 §§IV, IX |
 | `SCI-RTC-PRED-054` | §§4, 12 | Fixed-state zero $r$ branch and joint selector uncertainty | R7 blocker 2; R5 §§III--V |
-| `SCI-RTC-PRED-055` | §§5, 10 | Network event, detector timing offsets, original-pair learning, then within-segment replacement | R7 clarification 4; R6 decision 2; R5 §§VII--VIII |
+| `SCI-RTC-PRED-055` | §§5, 10 | Cross-cadence finite-transition support, original-pair learning, then correction/replacement | R8 Decision 9; R7 clarification 4; R6 decision 2; R5 §§VII--VIII |
 | `SCI-RTC-PRED-056` | §5 | Donor-invariant spike/shift learning and post-segmentation replacement | R6 decision 2 |
 | `SCI-RTC-PRED-057` | §§5, 10 | Ordinary reset versus separately authorized carry | R7 clarification 5; R5 §§VII--VIII |
 | `SCI-RTC-PRED-058` | §§5, 10 | Multiple/overlapping shifts | R5 §§VII--VIII |
-| `SCI-RTC-PRED-059` | §§5, 10 | Plateau inertness/no stitch | R5 §VIII |
+| `SCI-RTC-PRED-059` | §§5, 10 | Selected additive correction, reference/sign, transition exclusion, and no gain | R8 Decision 9; R5 §VIII superseded for additive correction |
 | `SCI-RTC-PRED-060` | §6 | Pre/post leakage response | R5 §§V--VI |
 | `SCI-RTC-PRED-061` | §§3, 6, 11 | Diagnostic atmosphere inertness to conditioned $x$ | R6 decision 1 |
 | `SCI-RTC-PRED-062` | §§2, 7 | Early stop without no-op attempts | R5 bounded-iteration correction |
@@ -338,8 +343,8 @@ modify the formal authority.
 | `SCI-RTC-PRED-067` | §§5--6 | Optical-source versus abrupt-shift discrimination | R6 source-discrimination falsifier |
 | `SCI-RTC-PRED-068` | §5 | Gradual-drift versus step discrimination | R6 drift-discrimination falsifier |
 | `SCI-RTC-PRED-069` | §§5, 8 | Unsegmented-step PSD/notch contamination | R6 spectral-contamination falsifier |
-| `SCI-RTC-PRED-070` | §§5--6 | Pre/post response-change additive-only block | R6 response-comparison falsifier |
-| `SCI-RTC-PRED-071` | §§5, 10 | Role-specific short-plateau disposition | R6 plateau-support falsifier |
+| `SCI-RTC-PRED-070` | §§5--6 | Response-change additive block and no gain fit | R8 Decision 9; R6 response-comparison falsifier |
+| `SCI-RTC-PRED-071` | §§5, 10 | Insufficient offset support, no invention, and application-context plateau disposition | R8 Decision 9; R6 plateau-support falsifier |
 
 ## Decision-register coverage
 
@@ -352,7 +357,8 @@ modify the formal authority.
   r0.2 design choices `SCI-RTC-OWNER-029`--`036` and the r0.3 bounded-cycle
   choices `SCI-RTC-OWNER-037`--`050` and the r0.5 numerical/methodological
   choices `SCI-RTC-OWNER-051`--`071` and the r0.6 bounded decisions
-  `SCI-RTC-OWNER-072`--`074`.
+  `SCI-RTC-OWNER-072`--`074`, and the r0.8 Decision 9 entry
+  `SCI-RTC-OWNER-075`.
 - R0.4 resolves OWNER-010 and OWNER-024 by explicit scientific-owner approval;
   r0.6 resolves OWNER-072--074 and defers OWNER-068 by explicit owner
   confirmation. No other open entry is silently resolved in either PDF. In particular, the
@@ -360,7 +366,7 @@ modify the formal authority.
 
 ## Mechanical completeness invariant
 
-For revision r0.7 the exact expected normative inventory is:
+For revision r0.8 the exact expected normative inventory is:
 
 - 38 definitions: `SCI-RTC-DEF-001`--`038`;
 - 37 displayed equation tags: `001`--`015`, `016a`, `016b`, `017`--`019`,

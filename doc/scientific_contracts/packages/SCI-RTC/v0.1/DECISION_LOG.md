@@ -1,6 +1,6 @@
 # SCI-RTC v0.1 — Decision Log
 
-Status: Stage B v0.1/r0.7 surgical correction manager-reviewed; scientific
+Status: Stage B v0.1/r0.8 Decision 9 correction in author review; scientific
 authority not approved or frozen
 
 | ID | Status | Decision |
@@ -32,6 +32,8 @@ authority not approved or frozen
 | `RTC-DRAFT-D009` | manager-reviewed `2026-08-18` | R0.6 independence, owner-decision coverage, shared-core structure, exact inventories and crosswalk, warning-free compilation, PDF metadata, and visual integrity of all 90 pages pass; the draft is accepted for scientific-owner review and freeze disposition only. |
 | `RTC-DRAFT-D010` | applied `2026-08-18` | R0.7 removes the second ALIGN application, separates fixed-state numerical covariance from paired selector uncertainty, qualifies leakage coordinates, reconciles network event times and carry authority, completes operation inventories, restores the atmosphere/support explanation, and splits the final rationale from the complete formal contract without changing stable IDs. |
 | `RTC-DRAFT-D011` | manager-reviewed `2026-08-18` | R0.7 independence, seven-correction coverage, exact inventories/crosswalk, clean compilation, focused-rationale/formal-contract split, metadata, PDF text coverage, and visual integrity of all 56 pages pass; the candidate proceeds to fresh consistency review and scientific-owner freeze disposition only. |
+| `RTC-SCI-D009` | approved `2026-08-20` | Decision 9 defines level shifts as additive baseline changes on stable plateaus, gives every accepted event finite physical-time transition support derived through the timing vector, keeps that support flagged and unmodeled, admits plan-selected additive correction only on sufficiently supported stable plateaus, forbids speculative gain/responsivity modeling, and permits compact normal-run event state plus population summaries. |
+| `RTC-DRAFT-D012` | applied `2026-08-20` | R0.8 applies RTC-SCI-D009 to the scientific rationale, shared formal authority, engineering guidance, owner ledger, falsifiers, and crosswalk without adding or renumbering normative IDs. |
 
 Stage A approval authorized implementation-blind drafting only. The manager
 review establishes draft coherence, not scientific approval. No step here

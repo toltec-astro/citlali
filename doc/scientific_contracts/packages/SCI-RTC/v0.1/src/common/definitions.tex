@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.7 shared normative core -- definitions.
+% SCI-RTC v0.1/r0.8 shared normative core -- definitions.
 \section{Normative definitions}
 \label{sec:core-definitions}
 
@@ -274,33 +274,41 @@ Pointing, or OOF roles.  It neither inherits nor silently replaces an
 atmosphere-derived diagnostic.
 
 \item[SCI-RTC-DEF-035 -- Network-coherent detector-dependent level shift.]
-An unexpected persistent readout-baseline change having a common or
-near-common network event time $\tau_e$, detector times
-$\tau_{de}=\tau_e+\delta\tau_{de}$ constrained by a declared coherence
-tolerance, and independently estimated detector/channel amplitudes
-$(\Delta x,\Delta r)$.  The offset may be fixed to zero when exact simultaneity
-is selected.  Simultaneity, an $r$ signature, or its absence does not by itself
-identify physical cause.
+An unexpected persistent additive readout-baseline change having a common or
+near-common network event identity, detector transition support constrained by
+a declared coherence tolerance, and independently estimated detector/channel
+amplitudes $(\Delta x,\Delta r)$.  On each stable $x$ plateau the v0.1 model is
+signal plus an additive baseline; it contains no multiplicative gain,
+responsivity, or more general response-change degree of freedom.  Simultaneity,
+an $r$ signature, or its absence does not by itself identify physical cause.
 
 \item[SCI-RTC-DEF-036 -- Transition interval and guarded change-point support.]
-The accepted level-shift transition mask together with pre/post guards,
-timing uncertainty, affected detector population, and filter-state boundary.
-Reset is the ordinary segmentation behavior.  No FIR/IIR support may cross it
-absent separately authorized continuity with an explicit response and
-residual-contamination criterion.
+The finite physical-time interval between stable pre- and post-event plateaus,
+together with its timing uncertainty, affected detector population, and any
+downstream operator-specific guards.  Its sample support is derived from the
+applicable timing vector, never from a fixed sample count or scan-relative
+fraction.  The physical transition support is explicitly flagged, excluded
+from both plateau estimators, and remains unmodeled even when a valid plateau
+offset correction is applied.  Propagated influence remains distinguishable
+from this underlying physical support.  Reset is the ordinary segmentation
+behavior; carry requires separately authorized continuity.
 
-\item[SCI-RTC-DEF-037 -- Stable plateau and role-specific admissibility.]
-A half-open interval between resolved transitions that is consistent with its
-declared signal-plus-baseline model, accounting for atmosphere, sources,
-noise, slow variation, Tune state, valid support, and absence of unresolved
-additional shifts.  Suitability is role-specific and depends on the required
-estimator support, not sample count alone.
+\item[SCI-RTC-DEF-037 -- Stable plateau and application-context admissibility.]
+A half-open interval outside resolved transition support that is consistent
+with its declared signal-plus-additive-baseline model, accounting for
+atmosphere, sources, noise, slow variation, Tune state, valid support, and
+absence of unresolved additional shifts.  Suitability is application-context
+specific and depends on the required estimator support, not sample count
+alone.
 
-\item[SCI-RTC-DEF-038 -- Separately authorized two-channel correction or stitching estimator.]
-Any estimator that numerically mixes $x$ and $r$, subtracts/rotates one into
-the other, or shifts plateau levels to manufacture continuity.  It requires
-separate purpose, coupling and learning models, complete two-channel response
-and covariance, astronomical transfer, uncertainty, validation, restart, and
-provenance authority; none is a v0.1 default.
+\item[SCI-RTC-DEF-038 -- Separately authorized response-changing correction.]
+Any estimator that numerically mixes $x$ and $r$, subtracts or rotates one into
+the other, or assigns a multiplicative gain, responsivity, or more general
+response change to a level-shift event.  It requires separate purpose,
+coupling and learning models, complete response and covariance, astronomical
+transfer, uncertainty, validation, restart, and provenance authority; none is
+part of the v0.1 additive level-shift model.  A selected additive translation
+between sufficiently supported stable $x$ plateaus is governed instead by
+Equations~\eqref{eq:level-shift}--\eqref{eq:plateau-reset} and REQ-101.
 
 \end{description}

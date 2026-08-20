@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mechanical SCI-RTC v0.1/r0.7 author-deliverable checks.
+"""Mechanical SCI-RTC v0.1/r0.8 author-deliverable checks.
 
 This helper reads only the approved author inputs and package deliverables.
 It does not inspect implementation, tests, history, or sibling packages.
@@ -102,7 +102,7 @@ def main() -> None:
     ]
     expected_inputs = [rf"\input{{common/{name}}}" for name in common_files]
     for name in common_files:
-        require("v0.1/r0.7" in text(COMMON / name), f"r0.7 stamp in {name}")
+        require("v0.1/r0.8" in text(COMMON / name), f"r0.8 stamp in {name}")
     engineering = text(SRC / "engineering-conformance.tex")
     rationale = text(SRC / "scientific-rationale.tex")
     require(
@@ -151,12 +151,15 @@ def main() -> None:
         r"\epsilon^{(c)}_d&=\frac{\alpha^{r,(c)}_d}{\alpha^{x,(c)}_d}",
         r"K^{x\leftarrow r,\rm RTC}_\Omega",
         r"J_{\rm num,\Omega}=\begin{bmatrix}L^x_\Omega&0\end{bmatrix}",
+        r"\mathcal T_{de}=[t^-_{de},t^+_{de}]",
+        r"\Delta t_{de}=t^+_{de}-t^-_{de}>0",
         r"\tau_{de}=\tau_e+\delta\tau_{de}",
+        r"\widehat{\Delta b}_{de}=\widehat b^+_{de}-\widehat b^-_{de}",
         r"\operatorname{atan2}",
         r"(\mathbf y^x,\mathbf r^{A,\rm parent},\mathcal J^{xr},\mathcal K^{x}",
         r"K=k_{A+1}\le A\le A_{\max}",
     ):
-        require(marker in equations_text, f"r0.7 equation marker: {marker}")
+        require(marker in equations_text, f"r0.8 equation marker: {marker}")
     complete_operator = equations_text.split(
         r"\tag{SCI-RTC-EQ-005}", maxsplit=1
     )[0].rsplit(r"\begin{equation}", maxsplit=1)[1]
@@ -186,6 +189,12 @@ def main() -> None:
             "leakage coordinate compatibility")
     require("Carry across the boundary is permitted only" in requirements_text,
             "carry continuity exception")
+    require("finite transition interval in physical time" in requirements_text,
+            "finite physical-time transition support")
+    require("shall not invent one" in requirements_text,
+            "insufficient-support no-invention rule")
+    require("shall not introduce a gain, responsivity" in requirements_text,
+            "additive-only correction boundary")
     require("subsequent PTC, VAL, MAP, and FLT use follows their own contracts"
             in requirements_text, "exact Science consumer wording")
 
@@ -198,6 +207,12 @@ def main() -> None:
     review_r07 = text(PKG / "SCIENTIFIC_OWNER_REVIEW_R0.7.md")
     require("01ec886e6d1dad89835463a1cee39dd0da067cf7532608698f90262cb41a9937"
             in review_r07, "r0.7 review digest")
+    decision_r08 = PKG / "SCIENTIFIC_OWNER_DECISION_R0.8.md"
+    require(
+        digest(decision_r08)
+        == "8862e3d4caf3fdd695fa66cbc0af58d40725375444f145525c4393f3859095b1",
+        "r0.8 Decision 9 digest",
+    )
 
     active_source = "\n".join(text(path) for path in sorted(SRC.rglob("*.tex")))
     for forbidden in (
@@ -224,7 +239,7 @@ def main() -> None:
     owner_rows = table_row_ids(
         text(PKG / "SCIENTIFIC_OWNER_DECISION_LEDGER.md"), "SCI-RTC-OWNER-"
     )
-    sequential(owner_rows, "SCI-RTC-OWNER-", 74)
+    sequential(owner_rows, "SCI-RTC-OWNER-", 75)
 
     owner_ledger = text(PKG / "SCIENTIFIC_OWNER_DECISION_LEDGER.md")
     owner_states = re.findall(
@@ -233,7 +248,7 @@ def main() -> None:
     )
     require(
         {state: owner_states.count(state) for state in set(owner_states)}
-        == {"OPEN": 63, "CONDITIONAL": 1, "RESOLVED": 5, "DEFERRED": 5},
+        == {"OPEN": 63, "CONDITIONAL": 1, "RESOLVED": 6, "DEFERRED": 5},
         "owner-ledger state counts",
     )
 
@@ -241,8 +256,8 @@ def main() -> None:
     print("PASS: focused rationale plus complete six-file engineering/formal view")
     print("PASS: definitions=38 equations=37 assumptions=12 requirements=108 predictions=71")
     print("PASS: crosswalk rows complete and sequential")
-    print("PASS: author decisions=24 owner entries=74 (63 open, 1 conditional, 5 resolved, 5 deferred)")
-    print("PASS: r0.7 ALIGN, fixed-state covariance, leakage metric, event-time, carry, inventory, and atmosphere markers")
+    print("PASS: author decisions=24 owner entries=75 (63 open, 1 conditional, 6 resolved, 5 deferred)")
+    print("PASS: r0.8 additive-only level shift, finite physical-time transition, unmodeled support, and correction markers")
     print("PASS: rationale narrative sections=12")
     print("PASS: engineering wrapper has no independent displayed mathematics")
 

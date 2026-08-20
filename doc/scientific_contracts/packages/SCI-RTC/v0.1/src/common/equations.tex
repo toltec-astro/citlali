@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.7 shared normative core -- equations.
+% SCI-RTC v0.1/r0.8 shared normative core -- equations.
 \section{Normative equations and identities}
 \label{sec:core-equations}
 
@@ -494,36 +494,51 @@ across mapping revisions is unavailable unless their units, scales,
 normalization, metric, and domains are compatible or an explicit transform has
 been applied.
 
-For a declared level-shift event $e$ at transition $\tau_e$, the paired
-piecewise-additive model is
+For a declared level-shift event $e$, detector $d$ has finite transition
+support $\mathcal T_{de}$ on the admitted aligned timing vector $t^A_j$.  The
+v0.1 stable-plateau model is additive:
 \begin{equation}
- u^c_{dj}=u^{c,\rm base}_{dj}
-   +\sum_{e\in\mathcal E_d}\Delta^c_{de}\,
-      \mathbb I[j\ge\tau_{de}],
- \qquad
- \tau_{de}=\tau_e+\delta\tau_{de},
- \quad |\delta\tau_{de}|\le\Delta\tau^{\rm coh}_e,
- \qquad c\in\{x,r\}.
+ \begin{gathered}
+ \mathcal T_{de}=[t^-_{de},t^+_{de}],\qquad
+ \Delta t_{de}=t^+_{de}-t^-_{de}>0,\\
+ \tau_{de}\in\mathcal T_{de},\qquad
+ \tau_{de}=\tau_e+\delta\tau_{de},\qquad
+ |\delta\tau_{de}|\le\Delta\tau^{\rm coh}_e,\\
+ \mathcal I_{de}=\{j:t^A_j\in\mathcal T_{de}\},\\
+ x^A_{dj}=s^x_{dj}+b^-_{de}\quad(t^A_j<t^-_{de}),\qquad
+ x^A_{dj}=s^x_{dj}+b^+_{de}\quad(t^A_j>t^+_{de}),\qquad
+ \Delta b_{de}=b^+_{de}-b^-_{de}.
+ \end{gathered}
  \tag{SCI-RTC-EQ-033}\label{eq:level-shift}
 \end{equation}
-The network event time, detector offsets and coherence tolerance, both
-amplitudes or their unavailability, detection state,
-transition mask, guards, and resulting segment boundaries belong to the
-realized plan.  Detection is distinct from correction.
+No plateau equation applies on $\mathcal I_{de}$.  The network event identity,
+detector interval localization or conservative bound, physical-time width,
+timing-vector-derived sample support, coherence tolerance, separately measured
+$x/r$ evidence or unavailability, and resulting segment boundaries belong to
+the realized record.  No multiplicative gain or responsivity term is admitted.
 
-Within a segment $g$ delimited by admitted resets and level shifts, a plateau
-diagnostic and reset condition may be represented by
+For sufficiently supported stable pre/post plateau sets
+$\mathcal G^-_{de},\mathcal G^+_{de}$, an admitted additive correction and
+reset condition may be represented by
 \begin{equation}
- P^c_{dg}=\operatorname{Plateau}(u^c_{d,\mathcal G_g};\Theta_P),
- \qquad
+ \begin{gathered}
+ \widehat b^{\pm}_{de}=\operatorname{Plateau}
+   (x^A_{d,\mathcal G^{\pm}_{de}};\Theta_P),\qquad
+ \widehat{\Delta b}_{de}=\widehat b^+_{de}-\widehat b^-_{de},
+ \qquad \mathcal G^{\pm}_{de}\cap\mathcal I_{de}=\varnothing,\\
+ x^{A,\rm corr}_{dj}=x^A_{dj}-\widehat{\Delta b}_{de}\,
+   \mathbb I[t^A_j>t^+_{de}]\quad(j\notin\mathcal I_{de}),\qquad
  \mathbf s_{j_g^+}=R_g(\mathbf s_{j_g^-};\Theta_R),
- \qquad c\in\{x,r\}.
+ \end{gathered}
  \tag{SCI-RTC-EQ-034}\label{eq:plateau-reset}
 \end{equation}
-No plateau value authorizes cross-segment stitching unless separately
-selected, propagated, and validated.  $R_g$ is ordinarily reset; carry across
-an accepted shift is available only as separately authorized continuity with
-an explicit response and residual-contamination criterion.
+This displayed orientation translates the post-event plateau to the pre-event
+reference; a selected plan may use the opposite reference and sign.  The
+transition cells remain flagged and unmodeled, not values made scientifically
+valid by the offset.  If either required stable support or its selected
+quality/uncertainty criterion fails, $\widehat{\Delta b}_{de}$ and the
+correction are unavailable.  $R_g$ is ordinarily reset; carry across an
+accepted shift remains separately authorized continuity.
 
 The actual bounded-refinement counts satisfy
 \begin{equation}
