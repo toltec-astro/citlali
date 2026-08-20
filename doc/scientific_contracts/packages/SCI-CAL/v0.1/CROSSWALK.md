@@ -1,13 +1,17 @@
 # SCI-CAL v0.1 Draft Crosswalk
 
-Status: implementation-blind author draft, 2026-08-16
+Status: refreshed for science rationale r0.4 and engineering conformance r0.3,
+2026-08-20
 
-The scientist-facing and engineering-facing PDFs include the same files under
-`src/common/`. The numbered requirements below are therefore one authority,
-not parallel restatements. "Scientist authority" points to the rationale,
-definition, equation, or assumption that gives each requirement its scientific
-meaning. "Engineering observable" identifies implementation-independent
-evidence; it does not map to current source files, functions, classes, or tests.
+The engineering PDF includes the canonical modules under `src/common/`; the
+scientist-facing PDF explains and routes that same authority without embedding
+the full audit-oriented clauses. The numbered requirements therefore have one
+normative engineering home, not parallel restatements. "Scientist-facing
+authority" points to the rationale, approved boundary, definition, equation,
+or assumption that gives each requirement its scientific meaning.
+"Engineering observable" identifies implementation-independent evidence; it
+does not map to current source files, functions, classes, configuration, or
+tests.
 The shared structural state is `science-qualification-eligible`, never an
 achieved `science-qualified` or `calibrated-science` claim; SCI-CAL-REQ-049
 defines the separate evidence gate for either achieved claim.

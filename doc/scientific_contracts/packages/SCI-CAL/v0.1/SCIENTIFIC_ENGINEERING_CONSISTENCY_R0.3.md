@@ -1,6 +1,7 @@
 # SCI-CAL v0.1 Rationale r0.3 / Engineering r0.2 Consistency Report
 
-Status: corrected consistency candidate; scientific authority not frozen
+Status: superseded by the 2026-08-20 fresh implementation-blind review and the
+r0.4/r0.3 bounded repair; scientific authority not frozen
 
 Original review: `2026-08-16`
 
@@ -35,9 +36,10 @@ without changing the science rationale or resolving an owner decision.
 - No open decision is marked resolved, and no numerical science or
   implementation behavior is introduced.
 
-## Remaining gate
+## Historical remaining gate
 
-The corrected pair still requires the program's fresh implementation-blind
-consistency review and explicit scientific-owner freeze disposition. This
-repair is not implementation conformity, atmosphere fidelity, observational
-validation, or production readiness.
+At this report's stage, the corrected pair still required the program's fresh
+implementation-blind consistency review and explicit scientific-owner freeze
+disposition. The r0.4/r0.3 successor subsequently passed that review; owner
+freeze remains pending. Neither repair is implementation conformity,
+atmosphere fidelity, observational validation, or production readiness.

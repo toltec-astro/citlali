@@ -26,9 +26,10 @@ review and does not establish implementation conformity.
 - The canonical science-rationale PDF remains byte-identical at SHA-256
   `075efafcbe4f0f3897be3bb88604e00a575d5d623a2eaf78a11d25ed7c3284d3`.
 
-## Remaining Gate
+## Historical remaining gate
 
-The repaired pair still requires a fresh implementation-blind consistency
-review and explicit scientific-owner freeze disposition. Q01--Q09 remain
-open. No implementation, scientific-validation, or production-readiness
-claim follows from this build review.
+At this build-review stage, the repaired pair still required a fresh
+implementation-blind consistency review and explicit scientific-owner freeze
+disposition. The r0.4/r0.3 successor subsequently passed that review; owner
+freeze and Q01--Q09 remain open. No implementation, scientific-validation, or
+production-readiness claim follows from this build review.

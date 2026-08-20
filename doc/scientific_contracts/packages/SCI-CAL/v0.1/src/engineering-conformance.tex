@@ -1,10 +1,11 @@
 \documentclass[10pt]{article}
-\newcommand{\DocRevision}{Engineering revision r0.2}
-\newcommand{\DocShortTitle}{Engineering Conformance r0.2}
-\newcommand{\DocPdfTitle}{SCI-CAL v0.1 Engineering Conformance r0.2 Draft}
+\newcommand{\DocRevision}{Engineering revision r0.3}
+\newcommand{\DocDate}{2026-08-20}
+\newcommand{\DocShortTitle}{Engineering Conformance r0.3}
+\newcommand{\DocPdfTitle}{SCI-CAL v0.1 Engineering Conformance r0.3 Draft}
 \input{common/preamble.tex}
-\fancyhead[L]{\small\color{calgray}SCI-CAL v0.1/r0.2 DRAFT}
-\hypersetup{pdfsubject={SCI-CAL v0.1 engineering companion to Science-Team Rationale r0.3}}
+\fancyhead[L]{\small\color{calgray}SCI-CAL v0.1/r0.3 DRAFT}
+\hypersetup{pdfsubject={SCI-CAL v0.1 engineering companion to Science-Team Rationale r0.4}}
 
 \begin{document}
 
@@ -12,13 +13,13 @@
   An implementation-independent conformance view of the same shared
   scientific authority, suitable for a clean implementation or future audit
   without mapping to current files, functions, classes, or behavior. This
-  revision is the formal companion to Science-Team Rationale r0.3.}
+  revision is the formal companion to Science-Team Rationale r0.4.}
 
 \DraftNotice
 
 \begin{abstract}
 This document converts the shared SCI-CAL v0.1 scientific authority, as
-explained by Science-Team Rationale r0.3, into
+explained by Science-Team Rationale r0.4, into
 observable conformance conditions. A candidate realizes a typed, occurrence-
 scoped transformation from admitted \code{xs} samples to top-of-atmosphere
 point-source-peak \(\mjybeam\), applies selected \code{flxscale} and target
@@ -51,8 +52,8 @@ placement, or historical behavior. It does not map requirements to current
 files, functions, classes, configuration keys, or tests. Such a mapping, if
 later authorized, is a separate implementation audit.
 
-This r0.2 engineering view is the semantic companion to Science-Team
-Rationale r0.3 and its Q01--Q09 decision register. Retaining every formal ID is
+This r0.3 engineering view is the semantic companion to Science-Team
+Rationale r0.4 and its Q01--Q09 decision register. Retaining every formal ID is
 necessary but not sufficient for consistency: open authority, scientific
 ownership, transfer validity, broadband convention, and ordering limitations
 must also survive into a conformance disposition.
@@ -114,7 +115,7 @@ spectrum, calibrator/color treatment, passband weighting/variation, and
 compatibility across source factor, target atmosphere, and reported unit &
 unsupported monochromatic or cross-array interpretation remains unavailable \\
 Pipeline boundary/order state & exact pre-CAL signal/baseline boundary and
-declared relation to RTC, detector mixing, PCA/common-mode removal, temporal
+declared relation to upstream conditioning, detector mixing, PCA/common-mode removal, temporal
 filtering, weighting, mapmaking, and downstream response & local CAL algebra
 is not promoted to a unique end-to-end transfer claim while Q02 is open \\
 Realized factor ledger & one entry per factor instance and occurrence/support,
@@ -200,7 +201,7 @@ boundary before a hot sample calculation can have scientific meaning.
 \section{Open scientific authority gates}
 \label{sec:eng-owner-gates}
 
-Table~\ref{tab:eng-owner-gates} carries the Science-Team Rationale r0.3
+Table~\ref{tab:eng-owner-gates} carries the Science-Team Rationale r0.4
 decision register into engineering disposition. It does not resolve any item.
 The consequence is applied to exactly the affected signal, interpretation, or
 claim; an unrelated open item does not erase a separately valid quantity.
@@ -322,8 +323,8 @@ claim-specific disposition for every open Q01--Q09 consequence, including the
 numeric-atmosphere disposition under \Assump{011}; it is not a pass or a
 failure of an untested implementation. \\
 Not applicable & A requirement's premise is demonstrably absent and the
-canonical record gives the scientific justification, for example an embodied
-pointing correction marked \code{not_applicable}. \\
+canonical record gives the scientific justification, for example a pointing-
+correction premise shown to be absent and marked \code{not_applicable}. \\
 \bottomrule
 \end{longtable}
 

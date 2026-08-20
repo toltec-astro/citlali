@@ -1,6 +1,6 @@
 # SCI-CAL Scientific Owner Decision Ledger
 
-Status: active companion to the SCI-CAL v0.1 rationale r0.3; no open item is
+Status: active companion to the SCI-CAL v0.1 rationale r0.4; no open item is
 resolved by inference
 
 Date: 2026-08-16
@@ -25,11 +25,12 @@ explicit ownership and absence-classification decision.
 
 This ledger records responsibility without manufacturing authority. When an
 item is resolved, the state changes only with a cited owner decision or
-approved scientific source and its date. Table 4 of rationale r0.3 was checked
-against this ledger on 2026-08-16 for decision ID, issue, closure condition,
-and blocked consequence.
+approved scientific source and its date. Table 4 of rationale r0.4 was checked
+against this ledger on 2026-08-20 for decision ID, issue, closure condition,
+and blocked consequence; the bounded repair did not change those entries from
+r0.3.
 
-Engineering conformance r0.2 was checked against this ledger on 2026-08-20.
+Engineering conformance r0.3 was checked against this ledger on 2026-08-20.
 It carries Q01--Q09 as explicit admission gates with claim-specific
 unavailable consequences. The alignment repair does not resolve, defer, or
 supersede any ledger item.
