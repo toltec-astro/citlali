@@ -1,6 +1,6 @@
 # SCI-CAL v0.1 Draft Crosswalk
 
-Status: refreshed for science rationale r0.4 and engineering conformance r0.3,
+Status: refreshed for science rationale r0.5 and engineering conformance r0.4,
 2026-08-20
 
 The engineering PDF includes the canonical modules under `src/common/`; the
@@ -19,10 +19,10 @@ defines the separate evidence gate for either achieved claim.
 | Requirement | Scientist-facing authority | Engineering observable and proposed falsifier |
 |---|---|---|
 | SCI-CAL-REQ-001 | Scientific boundary; operation definition; SCI-CAL-ASM-002 | Requested/effective channel identity; non-`xs` no-output case, SCI-CAL-EDGE-028 |
-| SCI-CAL-REQ-002 | Science rationale Sections 5 and 9, Q05; point-source-peak and reference-plane definitions; SCI-CAL-ASM-005 and 010 | Exact target token, plane, response meaning, and photometric-convention state; incomplete monochromatic/cross-array meaning remains unavailable; unsupported-target case, SCI-CAL-EDGE-028 |
-| SCI-CAL-REQ-003 | Science rationale Sections 1 and 9, Q01; notation table; SCI-CAL-ASM-001 and 004; Eq. `eq:affine-input` | Typed signal declaration, approved physical-input authority, and baseline disposition; unresolved-unit and affine cases, SCI-CAL-EDGE-028 and 029 |
+| SCI-CAL-REQ-002 | Science rationale Sections 5 and 9, Q05; point-source-peak and reference-plane definitions; SCI-CAL-ASM-005 and 010 | Exact target token, plane, 272/214/150 GHz references, retained spectrum convention, and downstream target-color-correction boundary; unsupported-target case, SCI-CAL-EDGE-028 |
+| SCI-CAL-REQ-003 | Science rationale Sections 1 and 9, Q01; notation table; SCI-CAL-ASM-001 and 004; Eq. `eq:affine-input` | Dimensionless fitted `delta_f/f_res`, positive optical-power direction, no additive CAL operation, Tune validity, and high-noise condition; SCI-CAL-EDGE-028 and 029 |
 | SCI-CAL-REQ-004 | Validity and quality tuple; Eq. `eq:validity-tuple` | Enumerated states, including `science-qualification-eligible`, and reason codes; sentinel-injection cases across SCI-CAL-EDGE-006, 010, 022, and 028 |
-| SCI-CAL-REQ-005 | Science rationale Appendix B and Q01--Q09; validity discussion; Eq. `eq:reconstruction`; SCI-CAL-ASM-009 | Requested/effective/resolved/realized records plus immutable owner-decision snapshot; candidate state cannot close an open decision; two-observation replay, SCI-CAL-EDGE-030 |
+| SCI-CAL-REQ-005 | Science rationale Appendix B and Q01--Q09; validity discussion; Eq. `eq:reconstruction`; SCI-CAL-ASM-009 | Requested/effective/resolved/realized records plus immutable decided owner snapshot and explicit unavailable products; two-observation replay, SCI-CAL-EDGE-030 |
 | SCI-CAL-REQ-006 | Acquisition-occurrence definition; notation table | Observation/Tune plus network/interface and local slot in every key; global-column reorder, SCI-CAL-EDGE-016 |
 | SCI-CAL-REQ-007 | Binding definition; SCI-CAL-ASM-001 | Keyed relation or ordered proof with scope/order/cardinality; keyed and ordered permutation cases, SCI-CAL-EDGE-014 and 015 |
 | SCI-CAL-REQ-008 | Association-edge definition; Eq. `eq:valid-support` | Single-valued complete selected support; missing/duplicate cases, SCI-CAL-EDGE-017 and 018 |
@@ -38,36 +38,36 @@ defines the separate evidence gate for either achieved claim.
 | SCI-CAL-REQ-018 | Sensitivity definition; uncertainty interpretation | `sens` role and exclusions; signal-factor insertion and unavailable-weight cases, SCI-CAL-EDGE-022 |
 | SCI-CAL-REQ-019 | Opaque-total-factor definition | Exact compatibility decomposition; opaque, omitted, duplicate, and inverted aggregate challenge, SCI-CAL-EDGE-012 |
 | SCI-CAL-REQ-020 | Science rationale Figure 1, Sections 3 and 9; producer--transformer--delivery--consumer and canonical-lineage definitions; Eq. `eq:reconstruction` | Resolvable role-separated factor ledger, Q01--Q09 snapshot, photometric/order states, and one package record; deterministic reconstruction and compact-link resolution |
-| SCI-CAL-REQ-021 | Atmosphere notation; SCI-CAL-ASM-006; Eq. `eq:los-coordinate` | Zenith opacity, full airmass, model/time support, and zero pivot; SCI-CAL-EDGE-001 through 003 |
-| SCI-CAL-REQ-022 | SCI-CAL-ASM-006; Eq. `eq:atmos-domain` | Endpoint/method/gap/validity record; bracketed and unbracketed cases, SCI-CAL-EDGE-007 and 008 |
-| SCI-CAL-REQ-023 | Science rationale Section 4 and Q06; structural-operator definition; SCI-CAL-ASM-011; Eqs. `eq:operator-nodes` through `eq:operator-orientation` | Content digest, nodes, orientation, support, model and passband record; omission yields unavailable and closure is explicitly limited to Q06 |
-| SCI-CAL-REQ-024 | Eqs. `eq:operator-nodes` through `eq:operator-orientation` | Exact zero/node values, authoritative-ordinate interpolation, and seam continuity; SCI-CAL-EDGE-001, 004, and 005 |
+| SCI-CAL-REQ-021 | Atmosphere notation; SCI-CAL-ASM-006; Eq. `eq:los-coordinate` | LMT WVR `tau225` from `tel*.nc`, full sample airmass, model/time support, and zero pivot; SCI-CAL-EDGE-001 through 003 |
+| SCI-CAL-REQ-022 | SCI-CAL-ASM-006; Eq. `eq:atmos-domain` | Approximate five-minute WVR cadence, recorded bracketing interpolation, and no endpoint extrapolation; SCI-CAL-EDGE-007 and 008 |
+| SCI-CAL-REQ-023 | Science rationale Section 4 and Q06; atmosphere-operator definition; SCI-CAL-ASM-011; Eqs. `eq:operator-nodes` through `eq:operator-orientation` | Exact operator, contract/node digests, fixed AM profile, array/passband assignment, support, and fail-closed behavior |
+| SCI-CAL-REQ-024 | Eqs. `eq:operator-nodes` through `eq:operator-orientation` | Broadband trapezoid integration, PCHIP elevation, piecewise-linear opacity, exact zero/nodes, and seam continuity; SCI-CAL-EDGE-001, 004, and 005 |
 | SCI-CAL-REQ-025 | Eq. `eq:atmos-invariants` | Positive finite and strict-direction property checks; increasing-opacity and plateau cases, SCI-CAL-EDGE-002 and 003 |
 | SCI-CAL-REQ-026 | Eq. `eq:atmos-domain`; SCI-CAL-ASM-006 and 011 | Intersection support and no fallback/clamp/extrapolation; SCI-CAL-EDGE-006 through 010 |
-| SCI-CAL-REQ-027 | Validity/quality definition; Eq. `eq:atmos-domain`; claim-layer table | Segment wholly within 0 through 0.15 and otherwise complete may be only `science-qualification-eligible`; SCI-CAL-EDGE-001 verifies no promotion to achieved qualification |
-| SCI-CAL-REQ-028 | Validity/quality definition; SCI-CAL-ASM-009 | Engineering-opacity segment produces truthful no-output state; SCI-CAL-EDGE-009 |
-| SCI-CAL-REQ-029 | Validity/quality definition; Eq. `eq:atmos-domain` | Negative, non-finite, absent, above-0.25, and out-of-support cases; SCI-CAL-EDGE-006 and 010 |
-| SCI-CAL-REQ-030 | Eq. `eq:validity-tuple`; SCI-CAL-ASM-009 | One class per predeclared segment and explicit split lineage; boundary-crossing segment, SCI-CAL-EDGE-009 |
-| SCI-CAL-REQ-031 | Science rationale Sections 4--5 and Q05; passband and photometric-convention definitions; SCI-CAL-ASM-010 | Exact passband-set ID, unknowns ledger, and separate source-factor/atmosphere/output compatibility disposition; equal identity alone is rejected as proof |
-| SCI-CAL-REQ-032 | SCI-CAL-ASM-007; Eq. `eq:conditional-covariance` | Ordered dense covariance fixture with off-diagonal preservation, SCI-CAL-EDGE-021 |
-| SCI-CAL-REQ-033 | Conditional-uncertainty definition; Eq. `eq:variance-weight` | Scalar units and square/inverse-square scaling; signed-factor case, SCI-CAL-EDGE-020 |
-| SCI-CAL-REQ-034 | Conditional-uncertainty definition; Eq. `eq:variance-weight` | Unavailable state rather than zero/infinite value or undeclared `sens` estimate; SCI-CAL-EDGE-022 |
+| SCI-CAL-REQ-027 | Validity/quality definition; Eq. `eq:atmos-domain`; claim-layer table | One deterministic CAL class per observation, nominal 0.15 guidance, 0.025 momentary-excursion tolerance, and recorded classifier evidence |
+| SCI-CAL-REQ-028 | Validity/quality definition; SCI-CAL-ASM-009 | Supported engineering-observation samples use the same correction operator but carry no science-quality claim; SCI-CAL-EDGE-009 |
+| SCI-CAL-REQ-029 | Validity/quality definition; Eq. `eq:atmos-domain` | Affected-sample rejection for negative, non-finite, absent, above-0.25, and out-of-support values without invalidating unrelated supported samples; SCI-CAL-EDGE-006 and 010 |
+| SCI-CAL-REQ-030 | Eq. `eq:validity-tuple`; SCI-CAL-ASM-009 | Exactly one class per observation, no science/engineering splitting, and owner-controlled policy; SCI-CAL-EDGE-009 |
+| SCI-CAL-REQ-031 | Science rationale Sections 4--5 and Q05; passband and photometric-convention definitions; SCI-CAL-ASM-010 | Exact TolTECA-v1 energy-weighted array-average passband, authorized alpha set/default, no spectral extrapolation, and unavailable detector/network variation |
+| SCI-CAL-REQ-032 | SCI-CAL-ASM-007; Eq. `eq:conditional-covariance` | CAL/noise-estimator boundary plus downstream ordered-covariance consistency fixture, SCI-CAL-EDGE-021 |
+| SCI-CAL-REQ-033 | Conditional-uncertainty definition; Eq. `eq:variance-weight` | CAL emits no variance/weight; downstream square/inverse-square consistency case, SCI-CAL-EDGE-020 |
+| SCI-CAL-REQ-034 | Conditional-uncertainty definition; Eq. `eq:variance-weight` | CAL labels measurement uncertainty downstream/unavailable rather than synthesizing zero/infinite values or `sens`; SCI-CAL-EDGE-022 |
 | SCI-CAL-REQ-035 | Nuisance-uncertainty definition; uncertainty interpretation | Six-category completeness ledger with status and correlation scope; remove each category in turn, SCI-CAL-EDGE-022 |
-| SCI-CAL-REQ-036 | Eqs. `eq:nuisance-covariance` and `eq:common-rank-one` | Dense detector/array/observation/cohort/global covariance fixtures; sample-count challenge, SCI-CAL-EDGE-023 |
+| SCI-CAL-REQ-036 | Eqs. `eq:nuisance-covariance` and `eq:common-rank-one` | Within-array common-scale scope, observation-common WVR driver, array-dependent response, and unavailable cross-array covariance; SCI-CAL-EDGE-023 |
 | SCI-CAL-REQ-037 | Conditional versus nuisance definitions; Eq. `eq:full-covariance` | Total/significance claim withheld until complete ledger and cross terms; missing-nuisance case, SCI-CAL-EDGE-022 |
-| SCI-CAL-REQ-038 | SCI-CAL-ASM-007; Eqs. `eq:atmos-log-slope` through `eq:full-covariance` | Declared propagation regime; seam-spanning, large/asymmetric, discrete, and same-data cases, SCI-CAL-EDGE-005 and 024 |
-| SCI-CAL-REQ-039 | Science rationale Sections 2 and 9, Q02; Eq. `eq:conditional-covariance`, `eq:variance-weight`, and `eq:companion-transfer`; SCI-CAL-ASM-002 | Exact local multiplier/support/lineage identity across signal, uncertainty, injection, noise, and Jacobian; reject promotion to unique end-to-end response while Q02 is open |
+| SCI-CAL-REQ-038 | SCI-CAL-ASM-007; Eqs. `eq:atmos-derivatives` through `eq:full-covariance` | Future-systematics propagation regime; seam-spanning, large/asymmetric, discrete, and same-data cases, SCI-CAL-EDGE-005 and 024 |
+| SCI-CAL-REQ-039 | Science rationale Sections 2 and 9, Q02; Eq. `eq:conditional-covariance`, `eq:variance-weight`, and `eq:companion-transfer`; SCI-CAL-ASM-002 | Exact local multiplier/support/lineage identity and enforced CAL-before-PTC order |
 | SCI-CAL-REQ-040 | Science rationale Sections 3 and 5; response-basis and producer definitions; SCI-CAL-ASM-008; Eq. `eq:beam-peak` | Producer-owned Beammap/source APT, selected child APT, template occurrence, and retained ellipse/frame/unit/fit/uncertainty metadata |
 | SCI-CAL-REQ-041 | Response-basis definition; SCI-CAL-ASM-008; Eq. `eq:elliptical-solid-angle` | Separate originating and realized response records; labeled circularization case, SCI-CAL-EDGE-027 |
 | SCI-CAL-REQ-042 | Point-source-peak definition; Eqs. `eq:beam-peak` and `eq:peak-response` | Unit-peak unresolved-source fixture and explicit renormalization proof, SCI-CAL-EDGE-025 and 026 |
 | SCI-CAL-REQ-043 | Response interpretation; Eq. `eq:peak-response`; SCI-CAL-ASM-008 | Before/after kernel response and claim status; SCI-CAL-EDGE-026 |
 | SCI-CAL-REQ-044 | Operation and point-source definitions; scientific boundary | Unsupported-unit and photometric-meaning no-output cases, SCI-CAL-EDGE-028 |
 | SCI-CAL-REQ-045 | Science rationale Sections 7 and 9 and Appendix B; validity/quality definitions; Eq. `eq:validity-tuple` | Complete tuple, reason-code coverage, and machine-distinguishable Q01--Q09 limitations without sentinels |
-| SCI-CAL-REQ-046 | Science rationale Tables 3--4; validity/quality definitions; Eq. `eq:valid-support` | Distinct no-output, interpretation-unavailable, and uncertainty-only states; exact claim-specific decision consequences |
+| SCI-CAL-REQ-046 | Science rationale Tables 3--4; validity/quality definitions; Eq. `eq:valid-support` | Distinct invalid/outside/engineering/uncertainty states; supported engineering signal under the same operator without a science claim |
 | SCI-CAL-REQ-047 | Science rationale Sections 3--5 and 9 and Appendix C; canonical-lineage discussion; Eq. `eq:reconstruction` | One package record resolving source/child/delivery identities, generating/transform records, photometric/order states, Q01--Q09 snapshot, atmosphere, uncertainty, and response |
 | SCI-CAL-REQ-048 | Canonical-lineage discussion; Eq. `eq:reconstruction` | Product links resolve canonical record, source APT, selected child APT, and owner-decision snapshot without copied dense tables |
-| SCI-CAL-REQ-049 | Science rationale Sections 5, 8, and 9; three-claim-layer section and table | Independent input/factor, transfer, broadband, end-to-end response, structural, representation, repeatability, and absolute-performance statuses; no promotion across layers |
-| SCI-CAL-REQ-050 | Science rationale Section 8 and Q01--Q09; claim-layer and proposed-evidence sections; SCI-CAL-ASM-011 | Preregistered evidence proves Q06 closure does not promote other open decisions; skipped evidence remains unavailable and provisional targets are not guarantees |
+| SCI-CAL-REQ-049 | Science rationale Sections 5, 8, and 9; claim-layer section and table | Separate structural, atmosphere-representation, same-Beammap closure, independent transfer, repeatability, absolute-performance, and owner-acceptance statuses |
+| SCI-CAL-REQ-050 | Science rationale Section 8 and Q09; proposed-evidence section; SCI-CAL-ASM-011 | Concrete Beammap/APT/library/TolProj closure and associated-pointing transfer records by array; no arbitrary matrix/sample minimum; benchmarks are reporting values and final acceptance is owner-owned |
 
 ## Coverage statement
 

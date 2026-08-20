@@ -9,7 +9,7 @@ sample occurrence. The three arrays are $a1100$, $a1400$, and $a2000$.
 Networks 0 through 6 belong to $a1100$, 7 through 10 to $a1400$, and 11
 through 12 to $a2000$.
 
-\begin{longtable}{L{0.16\linewidth}L{0.26\linewidth}L{0.18\linewidth}L{0.32\linewidth}}
+\begin{longtable}{L{0.16\linewidth}L{0.26\linewidth}L{0.21\linewidth}L{0.29\linewidth}}
 \caption{Canonical symbols and types.}\label{tab:notation}\\
 \toprule
 Symbol & Identity and support & Unit & Meaning \\
@@ -20,9 +20,8 @@ Symbol & Identity and support & Unit & Meaning \\
 \midrule
 \endhead
 
-\(x^{xs}_{j}\) & acquisition sample occurrence & declared pre-CAL unit \(U_{x,d}\) & admitted ordinary \code{xs} detector sample \\
-\(b_j\) & same recipient/support as \(x_j\) & \(U_{x,d}\) & explicitly authorized offset or baseline; ``not applicable'' is distinct from missing \\
-\(z_j=x^{xs}_j-b_j\) & valid sample support & \(U_{x,d}\) & CAL input after the declared affine convention \\
+\(x^{xs}_{j}\) & acquisition sample occurrence & dimensionless & ordinary fitted KID resonance-frequency change \(\Delta f/f_{\rm res}\) \\
+\(z_j=x^{xs}_j\) & valid sample support & dimensionless & CAL input; no additive CAL baseline operation \\
 \(K^{\rm acq}_{od}\) & target acquisition occurrence & identity only & observation/Tune, network or interface, and network-local tone or row slot \\
 \(R^{\rm src}_{sd}\) & producer-owned source-APT row occurrence & identity only & immutable source APT identity plus source observation/network context and artifact-local row key \\
 \(E^{\rm assoc}_{od,sd}\) & target-to-source occurrence edge & identity only & matcher method/version, disposition, and available quality evidence \\
@@ -30,17 +29,17 @@ Symbol & Identity and support & Unit & Meaning \\
 \(G^{\rm src}_{sd}\) & source-calibration generating record & identity and typed fields & producer, calibrator, source atmosphere, estimator, response, spectral convention, direction, and covariance lineage \\
 \(T^{\rm child}_{od,sd}\) & approved child transformation & identity plus typed rule & TolProj association/transformation, validity domain, retained systematic, and identity-transform state \\
 \(D^{\rm del}_{o}\) & selected-artifact delivery record & identity only & TolTECA handoff identity that preserves child meaning and value \\
-\(F^{\rm sel}_{od}\) & selected child-APT row occurrence & \(\mjybeam/U_{x,d}\) & authoritative absolute \code{flxscale} for this selected lineage, subject to Q01 and Q03--Q05 \\
+\(F^{\rm sel}_{od}\) & selected child-APT row occurrence & \(\mjybeam\,(\Delta f/f)^{-1}\) & authoritative absolute \code{flxscale} for this selected lineage \\
 \(P_{od}\) & lineage event, if applicable & dimensionless & TolProj pointing-derived correction already embodied in \(F^{\rm sel}\); never an additional CAL runtime factor \\
 \(r_{od}\) & selected APT row occurrence & declared relative-response unit & \code{responsivity}; a relative quantity, not absolute flux calibration \\
 \(s_{od}\) & selected APT row occurrence & declared sensitivity unit & Beammap \code{sens}; sensitivity or approximate-weight input only \\
 \(\tau_{225,o}(t)\) & declared time support & dimensionless & zenith optical depth at 225 GHz \\
 \(X_{ot}\) & eligible sample occurrence & dimensionless & full sample airmass supplied under approved upstream meaning \\
 \(\ell_{ot}=\tau_{225,o}(t)X_{ot}\) & eligible sample occurrence & dimensionless & line-of-sight 225 GHz optical-depth coordinate relative to \(X_{\rm ref}=0\) \\
-\(\mathcal O_a\) & content-bound operator for array \(a\) & identity plus nodes & retained \code{am12_fixed_djf25_piecewise_linear_los_tau_v1} structural operator \\
-\(H_a(\ell)\) & operator node support & dimensionless & authoritative piecewise-linear ordinate, whose orientation must be declared as transmission or correction \\
-\(T_a(\ell)\) & operator support & dimensionless & band transmission implied by \(H_a\) and its declared orientation \\
-\(C_a(\ell)=T_a(\ell)^{-1}\) & operator support & dimensionless & positive correction from the eligible sample plane to top of atmosphere \\
+\(\mathcal O_a\) & content-bound operator for array \(a\) & identity plus nodes & retained \code{am12_fixed_djf25_piecewise_linear_los_tau_v1} operator \\
+\(\lambda_{a,\alpha}(\tau,EL)\) & operator support & dimensionless & authoritative \(-\ln T^{\rm eff}\) surface \\
+\(T_{a,\alpha}(\tau,EL)\) & operator support & dimensionless & broadband array transmission \\
+\(C_{a,\alpha}=T_{a,\alpha}^{-1}\) & operator support & dimensionless & positive correction from the eligible sample plane to top of atmosphere \\
 \(M_j\) & valid sample occurrence & \(\mjybeam/U_{x,d}\) & exact realized once-only multiplier \\
 \(y_j\) & valid sample occurrence & \(\mjybeam\) & calibrated top-of-atmosphere, point-source-peak detector sample \\
 \(C_{x\mid\theta}\) & valid input vector support & \(U_x^2\) with typed blocks & conditional measurement covariance at fixed calibration state \(\theta\) \\
