@@ -16,7 +16,7 @@
 \definecolor{RTCgray}{HTML}{52606D}
 \hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
   hypertexnames=false,
-  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.8},
+  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.9},
   pdfauthor={SCI-RTC implementation-blind scientific author}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.48em}
@@ -49,8 +49,8 @@
 \vspace{0.65in}
 \begin{tabular}{@{}ll@{}}
 Package version & v0.1 \\
-Revision & r0.8 \\
-Date & 2026-08-18 \\
+Revision & r0.9 \\
+Date & 2026-08-20 \\
 Authority & Shared normative core in \texttt{src/common/} \\
 View-specific content & Informative evidence and review guidance only \\
 Status & Implementation-blind author draft for scientific-owner review \\
@@ -114,7 +114,7 @@ Record identity & Stable review ID, date, reviewer role, exact contract revision
 Claim layer & Exactly one primary layer: implementation conformity, representation fidelity, observational performance, science impact, or production readiness. \\
 Target identity & Exact source/build/artifact identity and any configuration or runtime identity needed to reproduce the observation. \\
 Authority binding & One or more SCI-RTC requirement or prediction IDs; an equation/definition may be cited only through the shared core. \\
-Preconditions & Product role, signal domain, detector occurrences, grid, intervals, requested/effective/resolved state, and owner decisions required by the check. \\
+Preconditions & RTC application context, signal domain, detector occurrences, grid, intervals, immutable resolved plan, realized-record scope, and owner decisions required by the check. \\
 Method & Static trace, deterministic vector, bounded matrix calculation, serialization inspection, failure injection, or other named method. \\
 Expected result & Exact invariant and a tolerance justified before observing candidate output. \\
 Observed result & Values, states, messages, artifacts, and exceptions without interpretation hidden in a generic pass flag. \\
@@ -135,21 +135,21 @@ The table suggests evidence classes without prescribing implementation
 structure.  Reviewers should use the exact crosswalk shipped with the package
 for one-to-one coverage.
 
-\small
+\footnotesize
 \begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.22\linewidth}X@{}}
 \toprule
 Requirement range & Primary review surface & Useful evidence classes \\
 \midrule
 REQ-001--005 & Paired raw boundary and CAL handoff & Exact paired input, conditioned-$x$/raw-$r$-parent bundle inspection, $x$-only downstream CAL-parent failure injection, and atmospheric-diagnostic no-subtraction trace. \\
-REQ-006--012 & Identity, state, and selected policy & Serialization round trip, distinct-identity fixtures, request-to-realized trace, unsupported-policy rejection. \\
-REQ-013--018 & Ordering and donor transfer & Raw-RTC-then-CAL order trace, forced donor vectors, invalid-factor matrix, donor reuse/tie/fallback fixtures. \\
+REQ-006--012 & Identity, context--plan--record state, and selected policy & Serialization round trip, distinct-identity fixtures, one-way context/plan/record trace, context-label neutrality, unsupported-policy rejection. \\
+REQ-013--018 & Ordering, despiking, and donor transfer & Raw-RTC-then-CAL order trace, accepted-target modification check, compact spike-population summary, forced donor vectors, invalid-factor matrix, donor reuse/tie/fallback fixtures, and optional detailed-manifest toggle. \\
 REQ-019--020 & Direct exclusion and influence & Direct/noncenter synthesis/replacement injection, full-support cause propagation, downstream policy handoff inspection. \\
 REQ-021--027 & Filters, masks, edges, and finite policy & Coefficient/state serialization, impulse/step/constant/ramp/notch vectors, mask-boundary and non-finite failure injection. \\
 REQ-028--031 & Fixed phase-zero sampling & Enumerated length/factor cases, selected index/time identity, rate trace, exact folded-band calculation. \\
 REQ-032--036 & Learned plan lifecycle & Candidate decision table, maximum-safe selection, common-plan identity, immutable apply and restart mismatch fixtures. \\
 REQ-037--041 & Complete response and support & RTC-local factorization from the aligned parent, optional explicit ALIGN composition, local Jacobian fixtures, LTI-domain proof, edge/state/support expansion. \\
-REQ-042--045 & Statistical availability & Fixed-state $[L^x\ 0]$ covariance fixture, reused-donor correlation, and joint selector/nuisance availability inspection. \\
-REQ-046--051 & Validity and atomic output & Orthogonal-state fixtures, atomic write/failure injection, provenance reconstruction, inert-diagnostic toggle. \\
+REQ-042--045 & Statistical claim disclosure & Fixed-state $[L^x\ 0]$ covariance fixture; for every conditional, component-limited, or total claim, inspect explicit included/excluded components and correlations plus unavailable-state preservation. \\
+REQ-046--051 & Validity and consumer-neutral atomic output & Orthogonal-state fixtures, common bundle-schema inspection across contexts, atomic write/failure injection, compact provenance reconstruction, inert detailed spike/donor-manifest toggle. \\
 REQ-052--054 & Consumers and claims & Parent-binding inspection, unavailable-state preservation, disabled-PTC terminal path, claim-label audit. \\
 REQ-055--058 & Learn--resolve--apply lifecycle & Learning-population identity, predicate-completeness matrix, immutable-plan trace, mutation rejection, adaptive-estimator separation. \\
 REQ-059--063 & Scientific filter design & Purpose/model register, scan--beam transfer studies, notch and band specifications, constrained tap/order selection. \\
@@ -160,7 +160,7 @@ REQ-077--082 & Candidate, stability, stopping, provenance & Artifact discriminat
 REQ-083--086 & Pair admission, identity, mapping, validity & Missing-partner failure, mapping reconstruction, reorder/rejoin rejection, independent $x/r$ validity matrix, restart identity. \\
 REQ-087--093 & Leakage, prohibited correction, joint statistics & Atmosphere/source estimator fixtures, coordinate rescaling and comparison compatibility, scalar/frequency status, forbidden-route rejection, fixed-state zero $r$ branch, and joint selector covariance. \\
 REQ-094--102 & Level shifts, plateaus, and state & Original-pair spike masking/downweighting; network/detector finite physical-time transition support; timing-vector-derived sample masks; additive-only plateau model and optional valid offset correction; transition exclusion; post-segmentation donor fixtures; reset-by-default boundaries; separately authorized carry; compact production state; and typed lifecycle states. \\
-REQ-103--105 & CAL, atmosphere diagnostics, role routing & $x$-only CAL handoff, atmospheric-template no-subtraction checks, retained raw-$r$ parentage, paired role-plan disposition, optional-class disabled checks. \\
+REQ-103--105 & CAL, atmosphere diagnostics, context and consumer routing & $x$-only CAL handoff, atmospheric-template no-subtraction checks, retained raw-$r$ parentage, consumer-neutral bundle binding, all-class admission, explicit-selection execution, and context-label neutrality checks. \\
 REQ-106--108 & Plateau support, pre/post leakage, optional conditioned $r$ & Application-context support matrix, insufficient-offset-support behavior, pre/post response comparison/unavailability, gain-model exclusion, and separate-$r$-operator admission failure. \\
 \bottomrule
 \end{tabularx}
@@ -225,9 +225,11 @@ member remains expressible.
 For each required output member, inject a bounded write or authority failure
 and verify atomic completion behavior.  Inspect that no prior-observation
 factor, donor, state, mask, rate, product link, or completion marker remains.
-Then toggle optional detailed provenance and inert diagnostics; the scientific
-and numerical bundle must remain identical apart from the permitted optional
-detail.
+Then toggle the complete spike-event/donor manifest and other optional inert
+diagnostics; the scientific and numerical bundle, compact treatment state, and
+spike-population summary must remain identical apart from the permitted
+optional detail.  Separately verify that selected despiking actually modifies
+accepted target $x$ cells according to the resolved recovery policy.
 
 Every learned operation requires an additional stop check before apply.  The
 review must bind the declared learning population and every numerical
@@ -258,10 +260,13 @@ Maximum-attempt, oscillating, and nonconvergent states are not convergence.
       result and tolerance, plus observed values and messages.
 \item Every open owner decision is either resolved by approved authority or
       blocks the named operation/claim exactly as the ledger states.
-\item Every RTC role retains exact paired raw $x/r$ identity and independent
+\item Every RTC application context retains exact paired raw $x/r$ identity and independent
       validity; conditioned $x$ is the required numerical RTC output, raw $r$
       parentage and causal uses remain in the bundle, and SCI-CAL consumes only
-      $x$ while binding the complete RTC parent.
+      $x$ while binding the complete consumer-neutral RTC parent.
+\item Application context, immutable resolved plan, and realized record are
+      distinct one-way objects; context labels neither partition admitted
+      operation classes nor change the atomic bundle schema.
 \item Missing either pair member fails admission; no reorder, independent
       join, copy, synthesis, zero fill, $r$ calibration, $r$-to-$x$
       correction, or $r$-as-$x$ donor route is accepted.
@@ -277,6 +282,10 @@ Maximum-attempt, oscillating, and nonconvergent states are not convergence.
 \item Level-shift learning uses original paired data with isolated-spike
       candidates masked or downweighted; donor replacement begins only after
       segmentation, remains within stable segments, and never crosses a shift.
+\item Selected despiking modifies accepted target $x$ cells.  Normal output
+      retains compact treatment state and useful spike-population counts and
+      characteristics; a complete event/donor manifest is optional diagnostic
+      detail and its toggle is numerically inert.
 \item Every accepted shift has paired amplitudes or typed unavailability,
       transition mask, guards, segment identity, reset/carry state,
       application-specific plateau support, selected additive correction only
@@ -287,8 +296,11 @@ Maximum-attempt, oscillating, and nonconvergent states are not convergence.
 \item A conditioned $r$ output is unavailable unless its own operator,
       response, support, unit, validity, uncertainty, and provenance are bound.
 \item Requested, effective, observation-resolved, learned-evidence,
-      resolved-plan, realized,
-      and immutable product/stage identities remain distinct.
+      resolved-plan, realized, and immutable product/stage substates remain
+      distinct within the context--plan--record lifecycle.
+\item Every covariance or uncertainty claim explicitly states its included and
+      excluded components and correlations; excluded or unknown terms are not
+      silently zero, and only declared complete coverage is called total.
 \item Each learned operation names its learning population, and apply rejects
       any mutation of the resolved plan; online adaptation is a separate
       unavailable or separately authorized estimator.

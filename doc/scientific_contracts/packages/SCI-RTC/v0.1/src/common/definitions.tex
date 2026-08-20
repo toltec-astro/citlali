@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.8 shared normative core -- definitions.
+% SCI-RTC v0.1/r0.9 shared normative core -- definitions.
 \section{Normative definitions}
 \label{sec:core-definitions}
 
@@ -13,11 +13,14 @@ occurrence, aligned slot, cadence, phase, and mapping lineage.  Missing a
 partner is malformed required input.  The paired samples retain independent
 finiteness, origin/synthesis, support, validity, and uncertainty states.
 
-\item[SCI-RTC-DEF-002 -- RTC product-role contract.]
-The tuple $(\mathcal R,s_{\mathcal R},b_{\mathcal R},
-\mathcal V_{\mathcal R},\mathcal C_{\mathcal R})$ naming role, sign,
-reference/baseline, valid domain, and required consumers.  Every RTC role
-consumes paired raw \texttt{xs}/\texttt{rs}; only conditioned $x$ is eligible
+\item[SCI-RTC-DEF-002 -- RTC application context.]
+The immutable request-side description $\mathcal R$ naming requested use,
+paired input and interval, raw-coordinate sign and reference/baseline, valid
+domain, named consumers, and external constraints.  Historical labels such as
+Beammap, Pointing, OOF, Science, or diagnostic may be recorded as context but
+do not partition the admitted RTC operation classes or silently select a
+policy.  Every context consumes paired raw \texttt{xs}/\texttt{rs}; only
+conditioned $x$ is eligible
 for a later SCI-CAL handoff.  A calibrated downstream detector
 signal is a distinct SCI-CAL product $c^{\rm CAL}$ in the top-of-atmosphere,
 point-source-equivalent mJy-per-fixed-nominal-beam convention; it is not
@@ -49,23 +52,28 @@ $\phi_d\neq0$.  Compatibility is not established by matching row numbers or
 finite values alone.
 
 \item[SCI-RTC-DEF-006 -- Selected conditioning policy.]
-A versioned, admitted specification of spike-candidate detection and
+A versioned, admitted specification selected within a resolved RTC plan from
+operation classes available to every application context.  It covers
+spike-candidate detection and
 change-point masking/downweighting, donor eligibility, donor scoring and ties,
 post-segmentation $x$ replacement and fallback, source protection,
 filter stages and order, exact coefficients and normalization, numeric
 precision, state/reset, boundaries/edges, non-finite handling, sampling mode,
 phase-zero factor, flags, influence aggregation, diagnostics, and failure
-behavior.  It is selected authority, not an implementation default.
+behavior.  Availability or admission does not mean enabled, selected,
+numerically resolved, or scientifically qualified.  It is selected authority,
+not an implementation default.
 
-\item[SCI-RTC-DEF-007 -- One-way state record.]
-The ordered record
-$(\Theta^{\rm req},\Theta^{\rm eff},\Theta^{\rm obs},
-\Theta^{\rm learned},\Theta^{\rm resolved},\Theta^{\rm real})$.  Requested state preserves the
-accepted request; effective state is the admitted typed plan;
-observation-resolved state binds exact observation facts; learned state
-records evidence when learning occurs; resolved state is the immutable
-admitted plan for every fixed or learned operation; and realized state
-records what ran.  A later state never rewrites an earlier state.
+\item[SCI-RTC-DEF-007 -- One-way context--plan--record lifecycle.]
+Three distinct objects are preserved in one-way order.  The
+\emph{RTC application context} preserves requested use, input, consumers, and
+constraints.  The \emph{RTC resolved plan} is the immutable selected numerical
+plan admitted after every required predicate passes, including any learned
+evidence and observation binding.  The \emph{RTC realized record} states the
+exact operations, intervals, state, exceptions, outputs, and completion that
+actually occurred.  More detailed requested, effective, observation-resolved,
+learned, resolved, and realized substates may be retained, but a later object
+or substate never rewrites an earlier one.
 
 \item[SCI-RTC-DEF-008 -- Realized conditioning operator.]
 The chronological composition of paired admission and evidence selection,
@@ -137,16 +145,20 @@ continuous adaptation are outside v0.1.
 The covariance obtained from an admitted input covariance through a fixed
 realized operator while holding selection and nuisance state fixed.  It is
 not total uncertainty and does not imply a diagonal, white, stationary, or
-independent noise model.
+independent noise model.  Every covariance or uncertainty claim, whether
+conditional, component-limited, or total, explicitly names the components and
+correlations it includes and excludes; unknown items remain unavailable rather
+than zero.
 
 \item[SCI-RTC-DEF-018 -- Atomic RTC bundle.]
-One role-specific completion unit containing conditioned raw $x$ TOD; the
+One consumer-neutral completion unit containing conditioned raw $x$ TOD; the
 immutable paired \texttt{rs} parent and pairing/mapping identity; every
 \texttt{rs}-derived diagnostic, selector, segmentation, and resolved-plan use;
 ordered detector/sample/scan/support and parent identity; complete response or typed
 unavailability; cause-preserving flags and influence; separated validity and
 eligibility inputs; conditional uncertainty/covariance status; one-way state
-and provenance; required diagnostics; downstream CAL handoff state; and
+and provenance; required common diagnostics and any separately requested
+diagnostic detail; downstream CAL handoff state; and
 completion/failure state.  A separately conditioned $r$ product is optional
 and unavailable without its own declared operator, response, support, unit,
 validity, and provenance.  TOD alone is not this bundle.
@@ -177,7 +189,7 @@ quality, uncertainty, validity, and failure state.  Learned evidence proposes
 or constrains a plan; it does not authorize apply.
 
 \item[SCI-RTC-DEF-023 -- Resolved RTC plan.]
-One immutable observation- and role-bound specification admitted only after
+One immutable observation- and application-context-bound specification admitted only after
 all required scientific predicates pass.  It contains operation sequence,
 family, exact coefficients or identity, rates and conventions, order/taps,
 bands and tolerances, notch state, applicability, masks, donor policy, edges,
@@ -269,8 +281,8 @@ template subtraction from $x$.
 
 \item[SCI-RTC-DEF-034 -- Bright-source optical-leakage diagnostic.]
 A separately parented estimate of paired $x/r$ response to a declared
-localized source template and support, normally relevant to Beammap,
-Pointing, or OOF roles.  It neither inherits nor silently replaces an
+localized source template and support, often requested by Beammap,
+Pointing, or OOF application contexts.  It neither inherits nor silently replaces an
 atmosphere-derived diagnostic.
 
 \item[SCI-RTC-DEF-035 -- Network-coherent detector-dependent level shift.]

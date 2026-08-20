@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mechanical SCI-RTC v0.1/r0.8 author-deliverable checks.
+"""Mechanical SCI-RTC v0.1/r0.9 author-deliverable checks.
 
 This helper reads only the approved author inputs and package deliverables.
 It does not inspect implementation, tests, history, or sibling packages.
@@ -102,7 +102,7 @@ def main() -> None:
     ]
     expected_inputs = [rf"\input{{common/{name}}}" for name in common_files]
     for name in common_files:
-        require("v0.1/r0.8" in text(COMMON / name), f"r0.8 stamp in {name}")
+        require("v0.1/r0.9" in text(COMMON / name), f"r0.9 stamp in {name}")
     engineering = text(SRC / "engineering-conformance.tex")
     rationale = text(SRC / "scientific-rationale.tex")
     require(
@@ -126,7 +126,10 @@ def main() -> None:
     )
 
     require("Learn--Resolve--Apply Filtering" in rationale, "rationale title")
-    require("Role-specific RTC plans" in rationale, "role-specific plan matrix")
+    require("RTC application context, resolved plan, and realized record" in rationale,
+            "application-context lifecycle table")
+    require("consumer-neutral atomic bundle" in rationale,
+            "consumer-neutral rationale boundary")
     require(r"Paired IQ-to-\texorpdfstring{$x/r$}{x/r} readout coordinates" in rationale,
             "paired-coordinate rationale section")
     numbered_sections = re.findall(r"^\\section\{", rationale, flags=re.MULTILINE)
@@ -159,7 +162,7 @@ def main() -> None:
         r"(\mathbf y^x,\mathbf r^{A,\rm parent},\mathcal J^{xr},\mathcal K^{x}",
         r"K=k_{A+1}\le A\le A_{\max}",
     ):
-        require(marker in equations_text, f"r0.8 equation marker: {marker}")
+        require(marker in equations_text, f"r0.9 equation marker: {marker}")
     complete_operator = equations_text.split(
         r"\tag{SCI-RTC-EQ-005}", maxsplit=1
     )[0].rsplit(r"\begin{equation}", maxsplit=1)[1]
@@ -195,8 +198,20 @@ def main() -> None:
             "insufficient-support no-invention rule")
     require("shall not introduce a gain, responsivity" in requirements_text,
             "additive-only correction boundary")
-    require("subsequent PTC, VAL, MAP, and FLT use follows their own contracts"
-            in requirements_text, "exact Science consumer wording")
+    require("classes are admitted across RTC application contexts" in requirements_text,
+            "all-class application-context admission")
+    require("consumer-neutral atomic bundle" in requirements_text,
+            "consumer-neutral atomic bundle")
+    require("RTC application context, immutable resolved plan, and realized record"
+            in requirements_text, "three-object lifecycle")
+    require("explicitly name the components and correlations it includes and excludes"
+            in requirements_text, "covariance-claim disclosure")
+    require("shall actually apply the selected replacement or recovery"
+            in requirements_text, "actual despiking")
+    require("useful spike-population counts and characteristics" in requirements_text,
+            "compact normal spike population summary")
+    require("undifferentiated generic non-finite" in requirements_text,
+            "typed non-finite cause")
 
     directive = text(PKG / "SCIENTIFIC_OWNER_DIRECTIVE_R0.5.md")
     require("7469fd327d9465904a4e59c287577bab0dcd9f93fd2cc555cdee6680e89714a6"
@@ -212,6 +227,12 @@ def main() -> None:
         digest(decision_r08)
         == "8862e3d4caf3fdd695fa66cbc0af58d40725375444f145525c4393f3859095b1",
         "r0.8 Decision 9 digest",
+    )
+    decisions_r09 = PKG / "SCIENTIFIC_OWNER_DECISIONS_R0.9.md"
+    require(
+        digest(decisions_r09)
+        == "90cad00151d975e0bb2a432c907f4a2198a1f3645f52c645c7e71cfa58ac57cb",
+        "r0.9 Decisions 1--8 digest",
     )
 
     active_source = "\n".join(text(path) for path in sorted(SRC.rglob("*.tex")))
@@ -239,7 +260,7 @@ def main() -> None:
     owner_rows = table_row_ids(
         text(PKG / "SCIENTIFIC_OWNER_DECISION_LEDGER.md"), "SCI-RTC-OWNER-"
     )
-    sequential(owner_rows, "SCI-RTC-OWNER-", 75)
+    sequential(owner_rows, "SCI-RTC-OWNER-", 83)
 
     owner_ledger = text(PKG / "SCIENTIFIC_OWNER_DECISION_LEDGER.md")
     owner_states = re.findall(
@@ -248,7 +269,7 @@ def main() -> None:
     )
     require(
         {state: owner_states.count(state) for state in set(owner_states)}
-        == {"OPEN": 63, "CONDITIONAL": 1, "RESOLVED": 6, "DEFERRED": 5},
+        == {"OPEN": 63, "CONDITIONAL": 1, "RESOLVED": 14, "DEFERRED": 5},
         "owner-ledger state counts",
     )
 
@@ -256,8 +277,8 @@ def main() -> None:
     print("PASS: focused rationale plus complete six-file engineering/formal view")
     print("PASS: definitions=38 equations=37 assumptions=12 requirements=108 predictions=71")
     print("PASS: crosswalk rows complete and sequential")
-    print("PASS: author decisions=24 owner entries=75 (63 open, 1 conditional, 6 resolved, 5 deferred)")
-    print("PASS: r0.8 additive-only level shift, finite physical-time transition, unmodeled support, and correction markers")
+    print("PASS: author decisions=24 owner entries=83 (63 open, 1 conditional, 14 resolved, 5 deferred)")
+    print("PASS: r0.8 level-shift Decision 9 and r0.9 owner Decisions 1--8 markers")
     print("PASS: rationale narrative sections=12")
     print("PASS: engineering wrapper has no independent displayed mathematics")
 

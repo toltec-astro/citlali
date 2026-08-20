@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.8 shared normative core -- assumptions and scope.
+% SCI-RTC v0.1/r0.9 shared normative core -- assumptions and scope.
 \section{Bounded assumptions and non-goals}
 \label{sec:core-assumptions}
 
@@ -38,7 +38,9 @@ absolute \texttt{flxscale} plus target atmosphere only after RTC.
 Despike, level-shift detection, transition masks, segmentation, reset,
 plateau use, donor, mask, FIR, IIR, notch, atmospheric-template diagnostics, leakage,
 state, edge, non-finite, recovery, sampling, diagnostic, and failure choices
-are selected versioned policies.
+are operation classes admitted across application contexts and governed by
+selected versioned policies.  Admission does not mean execution; a class runs
+only when the resolved plan selects and numerically resolves it.
 No current default or numerical threshold is promoted to a universal
 scientific constant by this contract.
 
@@ -53,8 +55,9 @@ selector boundary.
 
 \item[SCI-RTC-ASM-007 -- Statistical input.]
 Moments or covariance are claimed only from a supplied statistical model with
-declared correlation and limitations.  Absence does not imply diagonal,
-white, stationary, independent, or zero covariance.
+declared included and excluded components, correlations, and limitations.
+Absence does not imply diagonal, white, stationary, independent, or zero
+covariance, and a qualified partial claim need not pretend to be total.
 
 \item[SCI-RTC-ASM-008 -- Learned-mode scope.]
 Every learned-then-fixed RTC operation uses one declared learning population,
@@ -78,7 +81,10 @@ for separately claimed performance or science-impact evidence.
 Dense observation-sized response, covariance, or per-sample provenance is not
 required when a factorized, sparse, interval-based, or generative
 representation exactly reconstructs the operator, support, causes, and
-exceptions.
+exceptions.  Normal despike output may retain compact treatment state and
+population counts and characteristics without a complete per-event or
+per-donor manifest; detailed event fits and donor links may be a separately
+requested verbose or diagnostic product whose presence is numerically inert.
 
 \item[SCI-RTC-ASM-011 -- Downstream authority.]
 RTC supplies causal inputs but does not own PTC cleaning/weights, VAL

@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.8 shared normative core -- equations.
+% SCI-RTC v0.1/r0.9 shared normative core -- equations.
 \section{Normative equations and identities}
 \label{sec:core-equations}
 
@@ -281,8 +281,10 @@ $\boldsymbol\eta$ and an adequate local linearization,
       {\partial\boldsymbol\eta}\right|_{\boldsymbol\eta_0},
  \tag{SCI-RTC-EQ-018}\label{eq:systematic-cov}
 \end{equation}
-and a total-covariance claim requires every applicable component and cross
-term:
+Claims may be conditional, component-limited, or total.  Each claim shall
+name the components and correlations included and excluded.  The following is
+a possible complete decomposition only when every applicable term and cross
+term is supplied; ``total'' is reserved for that declared complete coverage:
 \begin{equation}
  \Sigma_y^{\rm total}=
  \Sigma_y^{\rm stat}+\Sigma_y^{\rm sys}
@@ -290,7 +292,9 @@ term:
  +\Sigma_y^{\rm cross}.
  \tag{SCI-RTC-EQ-019}\label{eq:total-uncertainty}
 \end{equation}
-Unknown components are unavailable, not zero.
+Unknown or omitted components and correlations are unavailable, not zero.  A
+truthfully labeled partial or conditional claim does not require this maximal
+decomposition.
 
 Define cause-preserving influence, direct exclusion, and consumer eligibility
 by
@@ -330,7 +334,8 @@ tolerance, support rule, fallback, and compatibility predicate named in the
 owner ledger is resolved.  Percentile speed is diagnostic, not safety
 authority.
 
-Finally, the atomic product is
+Finally, the consumer-neutral atomic product for application context
+$\mathcal R$ is
 \begin{equation}
  \mathcal O_{\rm RTC,\mathcal R}=
  (\mathbf y^x,\mathbf r^{A,\rm parent},\mathcal J^{xr},\mathcal K^{x},\mathcal S,\mathcal I,

@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.8 shared normative core -- notation and status.
+% SCI-RTC v0.1/r0.9 shared normative core -- notation and status.
 % This file is imported by the complete formal-contract view.
 \hypertarget{rtc-core-begin}{}
 \section{Shared normative authority and notation}
@@ -6,7 +6,7 @@
 
 \begin{center}
 \fcolorbox{RTCblue}{RTCpale}{\parbox{0.92\linewidth}{
-\textbf{Normative core stamp:} \texttt{SCI-RTC-v0.1/r0.8}.  The six files in
+\textbf{Normative core stamp:} \texttt{SCI-RTC-v0.1/r0.9}.  The six files in
 \texttt{src/common/} form one authority.  Text outside this shared core is
 explanatory or conformance guidance and cannot alter a definition, equation,
 assumption, requirement, prediction, unavailable state, or owner decision.
@@ -14,7 +14,7 @@ assumption, requirement, prediction, unavailable state, or owner decision.
 \end{center}
 
 SCI-RTC begins with admitted aligned paired raw detector-coordinate streams
-\texttt{xs} and \texttt{rs} and ends with an atomic, role-specific raw
+\texttt{xs} and \texttt{rs} and ends with an atomic, consumer-neutral raw
 conditioning bundle.  Conditioned $x$ is the required numerical RTC output;
 the exact paired raw $r$ parent and every causal $r$ diagnostic or selector
 remain in that bundle.  A conditioned $r$ product is not required and needs a
@@ -32,7 +32,7 @@ not be reported as complete.  \ReqWord{Optional unavailable} is a typed,
 scientifically inert state.  Missing, disabled, automatic, rejected, invalid,
 failed, unavailable, unsupported, and omitted remain distinct states.
 
-\subsection{Indices, sets, and role labels}
+\subsection{Indices, sets, and application-context labels}
 
 \begin{tabularx}{\linewidth}{@{}p{0.20\linewidth}X@{}}
 \toprule
@@ -43,7 +43,7 @@ $d,q\in\mathcal D_o$ & Exact admitted detector occurrences; $d$ is a target and 
 $m_{\rm native}$ & Native acquisition-row index; it is not a physical $r$ coordinate or an aligned or conditioned slot. \\
 $j\in\{0,\ldots,N-1\}$ & Ordered aligned input slot on the admitted ALIGN grid. \\
 $n\in\{0,\ldots,N_y-1\}$ & Ordered phase-zero RTC output slot. \\
-$\mathcal R$ & RTC product role, including Pointing, OOF, Science, Beammap, diagnostic-only, or another separately approved role; role changes policy and consumers, not the raw signal identity. \\
+$\mathcal R$ & RTC application context naming requested use, paired input and interval, consumers, and constraints.  Pointing, OOF, Science, Beammap, and diagnostic labels may be context facts; no such label restricts operation availability or silently selects policy. \\
 $x^{\rm acq}_{dm},r^{\rm acq}_{dm}$ & Exactly paired raw readout coordinates on the native acquisition grid, before the imported ALIGN mapping. \\
 $x^A_{dj},r^A_{dj}$ & Exactly paired admitted aligned raw KID readout coordinates and the RTC-local input boundary.  $x$ supplies the ordinary total-intensity analysis path; $r$ supplies readout/leakage/artifact/Tune-health evidence.  They share occurrence identity, cadence, phase, and mapping lineage but retain independent value validity. \\
 $\mathbf v^{IQ,\rm acq}_{dm}$ & Upstream native-grid orthogonal microwave transmission components $(I^{\rm acq}_{dm},Q^{\rm acq}_{dm})^{\mathsf T}$. \\
@@ -88,7 +88,7 @@ $\epsilon_d,\psi_d$ & Optional optical-leakage ratio $\alpha_{r,d}/\alpha_{x,d}$
 $s^x_{d,\zeta},s^r_{d,\zeta}$ & Declared nonzero coordinate-normalization scales used only to place $x/r$ response components in a common metric when an angle is reported. \\
 $a_g(t)$ & Declared atmospheric optical-mode template or latent common mode for network $g$. \\
 $\tau_e,\delta\tau_{de},\tau_{de},\Delta\mathbf b_{de}$ & Network event time, detector-specific timing offset, detector transition time $\tau_{de}=\tau_e+\delta\tau_{de}$, and paired amplitude $(\Delta x_{de},\Delta r_{de})^{\mathsf T}$; the offset is zero or bounded by a declared coherence tolerance. \\
-$I_h,\mathcal P_{d,h}$ & Coherent plateau interval $h$ and its role-specific admissibility state. \\
+$I_h,\mathcal P_{d,h}$ & Coherent plateau interval $h$ and its application-context-specific admissibility state. \\
 $K^{\rm RTC}_{dn,qj}$ & RTC-local detector-time response of one output cell to one admitted aligned input cell at fixed realized state. \\
 $K^{\rm end}_{dn,qm}$ & Optional end-to-end response to one native acquired cell, available only by explicit composition with admitted upstream ALIGN response. \\
 $\mathcal S_{dn}$ & Exact transitive input support of output $(d,n)$, including alignment, donors, filters, state, and selection. \\

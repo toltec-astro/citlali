@@ -1,7 +1,7 @@
 # SCI-RTC — Raw-Timestream Conditioning And Temporal Response
 
-Status: Stage B v0.1/r0.8 implementation-blind Decision 9 revision
-mechanically and visually checked; scientific authority not frozen
+Status: Stage B v0.1/r0.9 implementation-blind owner-decision cleanup
+mechanically, consistently, and visually checked; scientific authority not frozen
 
 Version: `v0.1`
 
@@ -33,13 +33,13 @@ inputs.
   complete and independently closing-reviewed; r0.6 owner-confirmed bounded
   correction complete and independently closing-reviewed; r0.7 owner-directed
   surgical correction complete and manager-reviewed; r0.8 binding owner
-  Decision 9 applied and author-checked.
+  Decision 9 applied; r0.9 owner Decisions 1--8 applied and freshly
+  consistency-reviewed.
 - Scientific authority, implementation conformity, validation, and production
   promotion: not established.
 
-The next gates are the program-required fresh implementation-blind consistency
-review and explicit scientific-owner freeze disposition for the r0.8 final
-candidate, its 24 author decisions, and the owner-decision register.
+The next gate is explicit scientific-owner freeze disposition for the r0.9
+final candidate, its 24 author decisions, and the owner-decision register.
 
 ## Contents
 
@@ -125,26 +125,35 @@ candidate, its 24 author decisions, and the owner-decision register.
   Decision 9 rationale-to-authority routing
 - [`CONSISTENCY_REPORT_R0.8.md`](CONSISTENCY_REPORT_R0.8.md): additive-model,
   timing/support, correction, state, build, metadata, and all-page visual check
+- [`SCIENTIFIC_OWNER_DECISIONS_R0.9.md`](SCIENTIFIC_OWNER_DECISIONS_R0.9.md):
+  binding application-context, lifecycle, bundle, mapping/coordinate,
+  non-finite, covariance-disclosure, and despike-reporting authority
+- [`CHANGE_LOG_R0.9.md`](CHANGE_LOG_R0.9.md): exact bounded r0.8-to-r0.9 changes
+- [`RATIONALE_TO_CONTRACT_CROSSWALK_R0.9.md`](RATIONALE_TO_CONTRACT_CROSSWALK_R0.9.md):
+  owner Decisions 1--8 rationale-to-authority routing
+- [`CONSISTENCY_REPORT_R0.9.md`](CONSISTENCY_REPORT_R0.9.md): fresh
+  implementation-blind decision, build, metadata, and all-page consistency review
 - [`DECISION_LOG.md`](DECISION_LOG.md): package-selection and approved scope
   decisions
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md):
-  63 open, one conditional, six resolved, and five deferred decisions
+  63 open, one conditional, 14 resolved, and five deferred decisions
 - [`CROSSWALK.md`](CROSSWALK.md): exact shared-core and packet traceability
 - `src/`: one six-file shared core and the two audience views
-- `pdf/`: canonical r0.8 outputs: 15-page focused science-team rationale and
-  42-page complete formal engineering view, with all 57 pages Poppler-inspected
+- `pdf/`: canonical r0.9 outputs: 14-page focused science-team rationale and
+  43-page complete formal engineering view, with all 57 pages Poppler-inspected
 
 ## Protected Boundary
 
 SCI-RTC begins with an admitted exact aligned paired raw $x/r$ detector stream
 and retains the distinct upstream IQ-to-$x/r$ and ALIGN mapping identities,
-time grid, independent validity, and support required by the selected role.
+time grid, independent validity, and support required by the resolved
+application-context plan.
 Its local operator does not reapply ALIGN. It owns the scientific use of those
 coordinates, spike-aware level-shift segmentation on the original pair,
 post-segmentation conditioned-$x$ donor replacement, diagnostic-only
 atmospheric-template evidence, temporal conditioning, response, support,
-influence, covariance, phase-zero sampling, and its conditioned-$x$/raw-$r$
-atomic bundle.
+influence, covariance, phase-zero sampling, and its consumer-neutral
+conditioned-$x$/raw-$r$ atomic bundle.
 
 It does not derive ALIGN timing, AST coordinates, BEAM calibration factors,
 the CAL atmosphere operator, PTC correlated-mode cleaning or weights, VAL
@@ -157,7 +166,8 @@ with a calibrated `mJy/beam` path.
 This package contains an owner-approved Stage A scope/packet, preserved
 content-bound r0.4 inputs, an implementation-blind Stage B r0.5
 owner-directed supersession, the binding r0.6 scientific-owner correction,
-the binding r0.7 surgical-correction request, and binding r0.8 Decision 9.
+the binding r0.7 surgical-correction request, binding r0.8 Decision 9, and
+binding r0.9 owner Decisions 1--8.
 Neither the author nor the manager
 approves that draft as the SCI-RTC v0.1 scientific authority. Current
 application and production behavior retain their existing repository status

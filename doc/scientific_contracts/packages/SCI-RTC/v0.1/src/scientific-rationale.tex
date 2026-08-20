@@ -13,7 +13,7 @@
 \definecolor{RTCgold}{HTML}{B7791F}
 \hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
  hypertexnames=false,
- pdftitle={TolTEC Raw-Timestream Conditioning: Paired Readout Coordinates, Learn--Resolve--Apply, and Scientific Consequences v0.1/r0.8},
+  pdftitle={TolTEC Raw-Timestream Conditioning: Paired Readout Coordinates, Learn--Resolve--Apply, and Scientific Consequences v0.1/r0.9},
  pdfauthor={SCI-RTC implementation-blind scientific author}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.52em}
@@ -46,7 +46,7 @@ and Scientific Consequences\\[0.28in]}
 \vspace{0.55in}
 \begin{tabular}{@{}ll@{}}
 Scientific contract version & v0.1 \\
-Science-team rationale revision & r0.8 \\
+Science-team rationale revision & r0.9 \\
 Date & 2026-08-18 \\
 Authority & Shared normative core in \texttt{src/common/} \\
 Status & Draft for scientific-owner review \\
@@ -78,7 +78,7 @@ therefore change a point-source peak, effective PSF, centroid, extended-source
 response, calibration transfer, or scientific eligibility without changing a
 unit label.
 
-SCI-RTC v0.1/r0.8 organizes those choices as \textbf{learn--resolve--apply}.
+SCI-RTC v0.1/r0.9 organizes those choices as \textbf{learn--resolve--apply}.
 Learn uses a declared population and diagnostics to estimate candidate
 parameters and uncertainty. Resolve combines that evidence with fixed policy
 and admits one complete immutable RTC plan. Apply executes exactly that plan
@@ -153,40 +153,37 @@ the scientific architecture and later resolve the enumerated numerical and
 policy choices---not to infer those choices from current software or historical
 practice.}
 
-\textbf{Role-specific RTC plans.} The roles share one paired raw signal boundary and
-one operator order, but they do not inherit one another's learning population,
-plan, interval, cadence, or consumer. ``Selected'' below means owner-resolved
-for that role; unresolved entries remain unavailable rather than inheriting a
-software default.
+\textbf{RTC application context, resolved plan, and realized record.}
+RTC does not partition operation availability by historical product role.
+Beammap, Pointing, OOF, Science, and diagnostic labels may describe requested
+use and consumers, but all v0.1 operation classes remain available until
+evidence or explicit policy disqualifies one for a particular application.
+Available does not mean enabled, selected, numerically resolved, or
+scientifically qualified.
 
 \begingroup
 \footnotesize
 \renewcommand{\arraystretch}{1.08}
-\begin{tabularx}{\linewidth}{@{}p{0.12\linewidth}p{0.23\linewidth}Xp{0.22\linewidth}@{}}
+\begin{tabularx}{\linewidth}{@{}p{0.22\linewidth}Xp{0.30\linewidth}@{}}
 \toprule
-Role & Learning population & Ordered paired RTC operations & Parameters frozen \\
+Object & Owns & Must not do \\
 \midrule
-Beammap & Exact designated Beammap scans & Exact aligned paired \texttt{xs}/\texttt{rs} parent $\to$ spike-aware shift segmentation $\to$ selected within-segment $x$ donor/filter $\to$ phase-zero selection & Complete Beammap RTC plan and paired lineage \\
-Pointing & Exact designated Pointing scans & Same paired classes, separately selected; optional classes remain disabled unless selected & Complete paired Pointing RTC plan \\
-OOF & Exact designated OOF scans & Same paired classes, separately selected; optional classes remain disabled unless selected & Complete paired OOF RTC plan \\
-Science & Exact selected science observation or scan set & Same paired classes, separately selected; optional classes remain disabled unless selected & Complete paired Science RTC plan \\
-Diagnostic & Exact named parent and diagnostic sample set & Explicit selected paired subset; no science-role inheritance & Complete diagnostic-only paired plan \\
-\bottomrule
-\end{tabularx}
-
-\vspace{0.35em}
-\begin{tabularx}{\linewidth}{@{}p{0.12\linewidth}p{0.26\linewidth}p{0.22\linewidth}X@{}}
-\toprule
-Role & Apply interval & Output cadence & Response-sensitive consumer \\
-\midrule
-Beammap & Named half-open Beammap interval & Realized raw RTC grid & SCI-BEAM; later SCI-CAL handoff \\
-Pointing & Named half-open Pointing interval & Realized raw RTC grid & Pointing/SRC and AST consumers \\
-OOF & Named half-open OOF interval & Realized raw RTC grid & OOF/SRC response inference \\
-Science & Named half-open science interval & Realized conditioned $x$ grid with paired raw $r$ lineage & SCI-CAL handoff and any explicitly authorized raw-domain consumers; subsequent PTC, VAL, MAP, and FLT use follows their own contracts. \\
-Diagnostic & Exact declared interval & Declared raw diagnostic grid & Named diagnostic consumer only \\
+RTC application context & Requested use, exact paired input and interval,
+named consumers, raw-coordinate convention, and external constraints & Use a
+context label to enable, disable, or numerically define an operation \\
+RTC resolved plan & Immutable selected operation sequence and exact numerical
+policy after every required evidence and compatibility predicate passes &
+Inherit hidden defaults or mutate during apply \\
+RTC realized record & Exact intervals, operations, state, exceptions, outputs,
+and completion that actually occurred & Rewrite the application context or
+resolved plan \\
 \bottomrule
 \end{tabularx}
 \endgroup
+
+RTC produces one consumer-neutral atomic bundle.  Each downstream consumer
+binds the members and separately requested diagnostic detail it needs; the
+bundle schema and raw signal meaning do not change with the consumer label.
 
 \clearpage
 \section{The learn--resolve--apply paradigm}
@@ -390,27 +387,29 @@ blocks matter through selectors, learned parameters, diagnostics, model
 uncertainty, and cross terms rather than through an invented numerical $r$
 branch.  At a selector boundary a total derivative may be unavailable.  A
 block-diagonal or independent model requires evidence; it is not implied by
-coordinate names.  This paired boundary applies equally to Beammap, Pointing,
-OOF, Science, and diagnostic-only roles.
+coordinate names.  This paired boundary applies equally across all RTC
+application contexts.
 
 \clearpage
 \section{Despiking, level shifts, and donor replacement}
 \label{sec:rat-early-conditioning}
-Despikes and level shifts are different contaminants.  An isolated spike is
-a localized departure from the intended signal model.  A level shift is a
-persistent paired offset change with a transition, pre/post plateaus, and a
-new coherent processing segment.  Treating a shift as a cluster of spikes can
-replace real data and leave a biased plateau; treating a spike as a shift can
-unnecessarily reset a long filter.
+\enlargethispage{\baselineskip}
+Despikes and level shifts are different contaminants. A spike is localized;
+a level shift is a persistent paired offset change with a transition,
+pre/post plateaus, and a new coherent segment. Confusing them can replace real
+data, bias a plateau, or unnecessarily reset a long filter.
 
 The selected early architecture separates evidence exclusion from numerical
 replacement.  Change-point learning uses the original aligned pair while
 candidate isolated spikes are excluded, masked, or robustly downweighted.  It
 does not consume donor-substituted values.  After level-shift boundaries are
 resolved, any admitted donor replacement operates only within a stable segment
-and no donor relation crosses an unresolved or accepted boundary.  The plan
-records spike statistic, threshold, support, mask/downweighting, false-positive
-control, shift estimator, donor topology, and each resulting boundary.
+and no donor relation crosses an unresolved or accepted boundary.  When
+despiking is selected, accepted target $x$ cells are actually replaced or
+recovered under the resolved policy; detection without modification is a
+separate evidence mode, not despiking. The plan records spike statistic,
+threshold, support, mask/downweighting, false-positive control, shift
+estimator, donor policy, and resulting boundaries.
 
 A level shift is modeled in v0.1 as an additive baseline change, not as a gain
 or responsivity change. On each stable plateau, $x(t)$ is the intended signal
@@ -459,28 +458,23 @@ plateau cells, never to transition support. If support is inadequate, RTC
 invents no offset: the event remains a segment boundary, and the plan decides
 which usable plateau or plateaus are retained.
 
-Normal production records need compact event and treatment state plus useful
-population summaries, not a mandatory permanent manifest of every detailed
-fit. Full event-by-event fits and diagnostic traces may remain verbose or
-diagnostic products. This economy changes neither the actual conditioning nor
-the explicit transition flags and segment state carried by ordinary products.
+Normal production retains compact spike/shift treatment state and useful
+population counts and characteristics, not a permanent manifest of every
+spike, donor link, or fit. Event fits, donor traces, and detailed diagnostics
+may be verbose products. This changes neither conditioning nor the causes,
+transition flags, and segment state carried by ordinary products.
 
-A \textbf{donor} is an admitted detector-time measurement used to construct a
-continuity surrogate for a rejected target $x$ cell.  The target retains its
-identity and replacement cause while donor information and covariance remain
-traceable.  Under the approved raw convention, compatible valid
+A \textbf{donor} constructs a continuity surrogate for a rejected target $x$
+cell. The target retains identity and replacement cause while donor influence
+and covariance remain traceable. Under the approved raw convention, compatible
 \texttt{flxscale} values permit the factor $\phi_q/\phi_d$; this transfers
 convention, not sky identity or calibration.  The paired $r$ member is never
 an $x$ donor.  Beammap donor factors come from identified prior authority,
 never the new factor derived from the same Beammap lineage.
 
-The exact representative occurrence for a phase-zero output is $(d,Mn)$ on
-the raw aligned paired parent.  If that occurrence is synthesized or
-replaced, the output is universally excluded as an independent detector
-measurement.  A donor, maximum response coefficient, or support centroid
-does not replace this definition.  Nonrepresentative influences preserve
-their causes and are routed to each downstream consumer's own eligibility
-policy.
+For phase-zero output, $(d,Mn)$ on the raw aligned pair is representative. If
+synthesized or replaced, it is not independent; donors, coefficients, and
+centroids do not change it; other causes route to consumer policy.
 
 \clearpage
 \section{Optical leakage diagnostics from atmosphere and bright sources}
@@ -588,7 +582,7 @@ zero.
 
 Delay creates scan-direction displacement through
 formal identity \texttt{SCI-RTC-EQ-027}.  A phase-zero selected grid point does
-not imply that the preceding response is centered there.  Every role resolves
+not imply that the preceding response is centered there.  Every resolved application context selects
 zero phase, shifted time, coordinate correction, response-aware downstream
 use, or a quantitative bound on residual centroid and PSF effect.
 
@@ -656,12 +650,14 @@ not prove a residual tail negligible without a quantitative criterion.
 The realized event and segment state includes ordered shift identities,
 transition intervals, paired amplitudes, masks, guards, plateau diagnostics,
 short-segment disposition, ordinary reset, and any separately authorized carry
-decision.  Optional operation
-classes remain disabled unless the role plan explicitly selects them.
+decision.  Every operation class remains admitted across application contexts,
+but only the operations selected and numerically resolved in the immutable plan
+execute.
 
 A non-finite sample, coordinate, mapping value, factor, coefficient, or state
-is rejected, represented unavailable over its exact influence, or handled by
-an authorized prior recovery rule.  It never silently becomes zero.  Tests
+is rejected with a typed cause, represented unavailable with that cause over
+its exact influence, or handled by an authorized prior recovery rule.  It
+never silently becomes zero or an undifferentiated generic missing value.  Tests
 place impulses, sources, spikes, shifts, masks, and non-finites at every
 boundary and compare split/rejoined execution against the declared state
 semantics.
@@ -700,7 +696,8 @@ transfer is scientifically available.
 The Science consumer route is: ``SCI-CAL handoff and any explicitly
 authorized raw-domain consumers; subsequent PTC, VAL, MAP, and FLT use follows
 their own contracts.''  Pointing, OOF, Beammap, and diagnostic consumers also
-bind their exact paired parent and role plan.  RTC does not assign their
+bind their exact application context, paired parent, resolved plan, and
+consumer-neutral bundle.  RTC does not assign their
 eligibility, weighting, mapping, or source-estimation policies.
 
 \RationaleBox{Beammap circularity guard.}{New \texttt{flxscale} derived from
@@ -726,6 +723,12 @@ Their consequences enter selection, learned-parameter, model, diagnostic, and
 cross-term uncertainty rather than fixed-state numerical propagation.
 Conditioning does not make those terms zero.  Unknown covariance remains
 unavailable rather than diagonal, white, independent, or zero.
+
+RTC need not claim a maximal total covariance.  The simpler binding rule is
+that every covariance or uncertainty claim explicitly enumerates the
+components and correlations it includes and excludes.  Excluded and unknown
+items are not zero; a conditional or component-limited claim remains validly
+qualified, while ``total'' is reserved for declared complete coverage.
 
 Eligibility differs from computability.  V0.1 universally excludes an output
 whose exact representative occurrence $(d,Mn)$ was synthesized or replaced
@@ -771,11 +774,10 @@ claim and never authorizes a default or silent fallback. Cross-package
 follow-up routes CAL, BEAM, AST, PTC, VAL, MAP and filtering questions without
 letting RTC assume their answers.
 
-\RationaleBox{Success criterion.}{For every operation, a scientist can
-explain paired input authority, purpose, learned evidence, resolved numerical
-choice, immutable application, level-shift/segment state, leakage and
-atmosphere treatment, changed astronomical modes, response and calibration
-effects, validation evidence, and remaining unavailable claims.}
+\enlargethispage{3\baselineskip}
+\RationaleBox{Success criterion.}{For every operation, a scientist can explain
+input authority, purpose, resolved choice, realized state, astronomical and
+calibration effects, evidence, and remaining unavailable claims.}
 
 \hypertarget{rtc-narrative-end}{}
 \end{document}

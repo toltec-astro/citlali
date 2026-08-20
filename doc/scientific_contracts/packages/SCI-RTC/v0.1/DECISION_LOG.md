@@ -1,6 +1,6 @@
 # SCI-RTC v0.1 — Decision Log
 
-Status: Stage B v0.1/r0.8 Decision 9 correction in author review; scientific
+Status: Stage B v0.1/r0.9 bounded owner-decision cleanup in author review; scientific
 authority not approved or frozen
 
 | ID | Status | Decision |
@@ -34,6 +34,15 @@ authority not approved or frozen
 | `RTC-DRAFT-D011` | manager-reviewed `2026-08-18` | R0.7 independence, seven-correction coverage, exact inventories/crosswalk, clean compilation, focused-rationale/formal-contract split, metadata, PDF text coverage, and visual integrity of all 56 pages pass; the candidate proceeds to fresh consistency review and scientific-owner freeze disposition only. |
 | `RTC-SCI-D009` | approved `2026-08-20` | Decision 9 defines level shifts as additive baseline changes on stable plateaus, gives every accepted event finite physical-time transition support derived through the timing vector, keeps that support flagged and unmodeled, admits plan-selected additive correction only on sufficiently supported stable plateaus, forbids speculative gain/responsivity modeling, and permits compact normal-run event state plus population summaries. |
 | `RTC-DRAFT-D012` | applied `2026-08-20` | R0.8 applies RTC-SCI-D009 to the scientific rationale, shared formal authority, engineering guidance, owner ledger, falsifiers, and crosswalk without adding or renumbering normative IDs. |
+| `RTC-SCI-D010` | approved `2026-08-20` | All RTC v0.1 operation classes are admitted across application contexts until evidence or explicit policy disqualifies one. Context labels do not partition availability, and availability does not imply selection, numerical resolution, qualification, or execution. |
+| `RTC-SCI-D011` | approved `2026-08-20` | RTCApplicationContext, RTCResolvedPlan, and RTCRealizedRecord are distinct one-way objects; later objects and substates do not rewrite earlier ones. |
+| `RTC-SCI-D012` | approved `2026-08-20` | RTC produces one consumer-neutral atomic bundle. Consumers bind the members and optional diagnostic detail they need without changing bundle schema or raw signal meaning. |
+| `RTC-SCI-D013` | approved `2026-08-20` | Upstream IQ-to-$x/r$ and ALIGN mapping authorities remain distinct and preserved; exact pair identity is retained and $x/r$ validity remains independent. |
+| `RTC-SCI-D014` | approved `2026-08-20` | Coordinate-dependent RTC operations require explicit identity, frame, topology, detector binding, support, and validity; RTC does not infer, clamp, or silently convert them. |
+| `RTC-SCI-D015` | approved `2026-08-20` | Non-finite handling is typed and cause-preserving; silent zero coercion and undifferentiated generic non-finite availability encoding are forbidden. |
+| `RTC-SCI-D016` | approved `2026-08-20` | Every RTC covariance or uncertainty claim states included and excluded components and correlations. Unknowns remain unavailable, qualified partial claims are permitted, and only complete declared coverage is total/full precision. |
+| `RTC-SCI-D017` | approved `2026-08-20` | Selected despiking actually replaces or recovers accepted target $x$ cells, or records the selected explicit failure/no-correction disposition. Normal output carries compact treatment and spike-population summaries; full event/donor manifests are optional inert diagnostic detail. |
+| `RTC-DRAFT-D013` | applied `2026-08-20` | R0.9 applies RTC-SCI-D010--D017 across the rationale, shared formal authority, engineering guidance, owner ledger, crosswalk, and falsifiers without adding numerical defaults or renumbering normative IDs. |
 
 Stage A approval authorized implementation-blind drafting only. The manager
 review establishes draft coherence, not scientific approval. No step here
