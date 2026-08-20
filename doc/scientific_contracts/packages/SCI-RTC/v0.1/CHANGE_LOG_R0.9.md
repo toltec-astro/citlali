@@ -42,5 +42,11 @@ r0.8 level-shift model, or renumber a normative identifier.
   transition support, unmodeled transition cells, optional valid additive
   plateau correction, and no gain-change model in RTC v0.1.
 - Implementation conformity, observational performance, science-impact
-  qualification, production readiness, and scientific-owner freeze are not
-  claimed.
+  qualification, and production readiness are not claimed.
+
+## Freeze disposition
+
+On `2026-08-20`, after the fresh r0.9 consistency review passed, the scientific
+owner stated exactly, “Freeze SCI-RTC v0.1/r0.9.” The status-only freeze changes
+no normative content or ledger state. The canonical PDFs were republished to
+carry the frozen status; implementation conformity remains unassessed.

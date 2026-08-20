@@ -64,3 +64,13 @@ scientific-owner freeze disposition. Open numerical/methodological ledger
 entries remain open and continue to block only their named operations or
 claims. After owner freeze, RTC is ready to enter the RTC--CAL--PTC coherence
 review; this report does not perform that cross-package review.
+
+## Post-review owner disposition
+
+After this review passed, the scientific owner stated exactly, “Freeze SCI-RTC
+v0.1/r0.9.” The reviewed candidate therefore became frozen scientific
+authority on `2026-08-20`; implementation conformity remains unassessed. The
+two PDFs were republished with status-only title-page changes, and their frozen
+artifact hashes are recorded in `pdf/README.md`. No normative content,
+identifier, inventory, or owner-ledger state changed after this consistency
+review.

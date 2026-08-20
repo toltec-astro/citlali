@@ -1,8 +1,9 @@
 # SCI-RTC v0.1/r0.9 exact authority crosswalk
 
-Status: implementation-blind author crosswalk. It maps every normative ID in
-the shared core to explanatory and conformance loci and to the approved author
-packet. It reports no implementation or validation result.
+Status: Scientific authority frozen; implementation conformity not yet assessed
+under this contract. This crosswalk maps every normative ID in the shared core
+to explanatory and conformance loci and to the approved author packet. It
+reports no implementation or validation result.
 
 ## Approved source keys
 
@@ -18,6 +19,7 @@ packet. It reports no implementation or validation result.
 | `R7` | Supplied r0.7 scientific-owner review and surgical correction request recorded in `SCIENTIFIC_OWNER_REVIEW_R0.7.md` | `01ec886e6d1dad89835463a1cee39dd0da067cf7532608698f90262cb41a9937` |
 | `R8` | Binding scientific-owner Decision 9 recorded in `SCIENTIFIC_OWNER_DECISION_R0.8.md` | `8862e3d4caf3fdd695fa66cbc0af58d40725375444f145525c4393f3859095b1` |
 | `R9` | Binding scientific-owner Decisions 1--8 recorded in `SCIENTIFIC_OWNER_DECISIONS_R0.9.md` | `90cad00151d975e0bb2a432c907f4a2198a1f3645f52c645c7e71cfa58ac57cb` |
+| `R9F` | Exact v0.1/r0.9 scientific-owner freeze recorded in `SCIENTIFIC_OWNER_FREEZE_R0.9.md` | `e64e8686a25ce4b1ab436442f4a7a27584a3c077f0be096a9f89ef08a8d66815` |
 
 The supersession cover controls wherever `RC` is broader, older, or
 ambiguous. In particular, crosswalk entries that cite the retained calibration,
@@ -31,6 +33,10 @@ The later `R6` review and confirmations supersede the two false r0.5 owner
 attributions and control the atmospheric-template, shift-learning/replacement,
 required-output, general-mapping, and bounded scientific-correction questions.
 They do not alter the recorded hashes of earlier inputs.
+`R9F` freezes the exact r0.9 scientific authority. It does not resolve any
+remaining open numerical or methodological decision and does not assess an
+implementation, validation result, observational performance, or production
+readiness.
 The later `R7` review accepts the r0.6 narrative and architecture, controls the
 ALIGN, fixed-state covariance, leakage-normalization, event-time, reset/carry,
 operation-inventory, atmosphere/support, and output-split corrections, and
@@ -365,6 +371,8 @@ modify the formal authority.
   `SCI-RTC-OWNER-072`--`074`, the r0.8 Decision 9 entry
   `SCI-RTC-OWNER-075`, and the r0.9 clarifications
   `SCI-RTC-OWNER-076`--`083`.
+- `SCIENTIFIC_OWNER_FREEZE_R0.9.md` and `RTC-SCI-D018` record the exact owner
+  freeze and preserve every ledger state and unavailable consequence.
 - R0.4 resolves OWNER-010 and OWNER-024 by explicit scientific-owner approval;
   r0.6 resolves OWNER-072--074 and defers OWNER-068 by explicit owner
   confirmation; r0.8 resolves OWNER-075; and r0.9 resolves OWNER-076--083.

@@ -1,7 +1,7 @@
 # SCI-RTC — Raw-Timestream Conditioning And Temporal Response
 
-Status: Stage B v0.1/r0.9 implementation-blind owner-decision cleanup
-mechanically, consistently, and visually checked; scientific authority not frozen
+Status: Scientific authority frozen; implementation conformity not yet assessed
+under this contract.
 
 Version: `v0.1`
 
@@ -35,11 +35,13 @@ inputs.
   surgical correction complete and manager-reviewed; r0.8 binding owner
   Decision 9 applied; r0.9 owner Decisions 1--8 applied and freshly
   consistency-reviewed.
-- Scientific authority, implementation conformity, validation, and production
-  promotion: not established.
+- Scientific-owner freeze: complete for v0.1/r0.9 on `2026-08-20`.
+- Implementation conformity, validation, and production promotion: not
+  established.
 
-The next gate is explicit scientific-owner freeze disposition for the r0.9
-final candidate, its 24 author decisions, and the owner-decision register.
+The next gate is the RTC--CAL--PTC play-well-together coherence review. It is
+not an RTC implementation-conformity audit and cannot silently amend this
+frozen authority.
 
 ## Contents
 
@@ -133,6 +135,8 @@ final candidate, its 24 author decisions, and the owner-decision register.
   owner Decisions 1--8 rationale-to-authority routing
 - [`CONSISTENCY_REPORT_R0.9.md`](CONSISTENCY_REPORT_R0.9.md): fresh
   implementation-blind decision, build, metadata, and all-page consistency review
+- [`SCIENTIFIC_OWNER_FREEZE_R0.9.md`](SCIENTIFIC_OWNER_FREEZE_R0.9.md): exact
+  owner freeze, claim boundary, retained open states, and change-control rule
 - [`DECISION_LOG.md`](DECISION_LOG.md): package-selection and approved scope
   decisions
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md):
@@ -167,9 +171,12 @@ This package contains an owner-approved Stage A scope/packet, preserved
 content-bound r0.4 inputs, an implementation-blind Stage B r0.5
 owner-directed supersession, the binding r0.6 scientific-owner correction,
 the binding r0.7 surgical-correction request, binding r0.8 Decision 9, and
-binding r0.9 owner Decisions 1--8.
-Neither the author nor the manager
-approves that draft as the SCI-RTC v0.1 scientific authority. Current
-application and production behavior retain their existing repository status
-until a later, separately authorized conformity and validation program
-assesses them.
+binding r0.9 owner Decisions 1--8. Grant Wilson froze this exact v0.1/r0.9
+package as scientific authority on `2026-08-20`. The freeze retains every
+recorded open, conditional, resolved, and deferred owner-ledger state; it does
+not invent missing decisions or make blocked claims available.
+
+Current application and production behavior retain their existing repository
+status until a later, separately authorized conformity and validation program
+assesses them. Any substantive change to this frozen authority requires
+explicit owner action and a versioned successor or formally reopened revision.

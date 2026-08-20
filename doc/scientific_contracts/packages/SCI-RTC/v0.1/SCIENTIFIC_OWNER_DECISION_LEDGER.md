@@ -1,8 +1,8 @@
 # SCI-RTC v0.1/r0.9 scientific-owner decision ledger
 
-Status: implementation-blind owner register. Entries marked `RESOLVED` record
+Status: frozen scientific-authority register. Entries marked `RESOLVED` record
 explicit scientific-owner approval; all other entries retain their stated
-unresolved or deferred status.
+unresolved or deferred status under the v0.1/r0.9 freeze.
 
 This ledger records choices that the approved author packet deliberately does
 not answer. It does not infer values from software, configuration, prior use,
@@ -147,5 +147,6 @@ An unresolved entry must be referenced by ID in the observation-resolved
 state when it blocks an operation. It must not be replaced by a numerical
 sentinel, a software default, a value recovered from prior products, or a
 claim that the unavailable operation was disabled after being requested.
-Resolution requires explicit scientific-owner approval and a successor ledger
-revision; this author draft does not provide that approval.
+Resolution requires explicit scientific-owner approval and a versioned
+successor or formally reopened ledger revision. The v0.1/r0.9 freeze does not
+provide that missing approval or alter an unavailable consequence.

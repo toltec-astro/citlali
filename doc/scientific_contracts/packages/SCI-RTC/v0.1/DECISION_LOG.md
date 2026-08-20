@@ -1,7 +1,7 @@
 # SCI-RTC v0.1 — Decision Log
 
-Status: Stage B v0.1/r0.9 bounded owner-decision cleanup in author review; scientific
-authority not approved or frozen
+Status: Scientific authority frozen; implementation conformity not yet assessed
+under this contract.
 
 | ID | Status | Decision |
 | --- | --- | --- |
@@ -43,7 +43,9 @@ authority not approved or frozen
 | `RTC-SCI-D016` | approved `2026-08-20` | Every RTC covariance or uncertainty claim states included and excluded components and correlations. Unknowns remain unavailable, qualified partial claims are permitted, and only complete declared coverage is total/full precision. |
 | `RTC-SCI-D017` | approved `2026-08-20` | Selected despiking actually replaces or recovers accepted target $x$ cells, or records the selected explicit failure/no-correction disposition. Normal output carries compact treatment and spike-population summaries; full event/donor manifests are optional inert diagnostic detail. |
 | `RTC-DRAFT-D013` | applied `2026-08-20` | R0.9 applies RTC-SCI-D010--D017 across the rationale, shared formal authority, engineering guidance, owner ledger, crosswalk, and falsifiers without adding numerical defaults or renumbering normative IDs. |
+| `RTC-SCI-D018` | approved and frozen `2026-08-20` | The scientific owner states exactly, “Freeze SCI-RTC v0.1/r0.9.” This establishes the exact r0.9 package as scientific authority while retaining all recorded owner-ledger states and leaving implementation conformity, validation, performance, qualification, and production readiness unassessed. |
 
-Stage A approval authorized implementation-blind drafting only. The manager
-review establishes draft coherence, not scientific approval. No step here
-assesses implementation, runs scientific validation, or changes production.
+Stage A approval authorized implementation-blind drafting. Manager and fresh
+consistency reviews established candidate coherence. `RTC-SCI-D018` supplies
+the later scientific-owner freeze, but no step here assesses implementation,
+runs scientific validation, or changes production.

@@ -234,6 +234,30 @@ def main() -> None:
         == "90cad00151d975e0bb2a432c907f4a2198a1f3645f52c645c7e71cfa58ac57cb",
         "r0.9 Decisions 1--8 digest",
     )
+    freeze_r09 = PKG / "SCIENTIFIC_OWNER_FREEZE_R0.9.md"
+    require(
+        digest(freeze_r09)
+        == "e64e8686a25ce4b1ab436442f4a7a27584a3c077f0be096a9f89ef08a8d66815",
+        "r0.9 scientific-owner freeze digest",
+    )
+    freeze_status = (
+        "Scientific authority frozen; implementation conformity not yet assessed "
+        "under this contract."
+    )
+    require(freeze_status in text(freeze_r09).replace("\n", " "),
+            "exact frozen status in owner record")
+    require("Scientific authority frozen" in rationale,
+            "frozen status in rationale")
+    require("Scientific authority frozen" in engineering,
+            "frozen status in engineering")
+    frozen_pdfs = {
+        PKG / "pdf" / "SCI-RTC-SCIENTIFIC-RATIONALE-v0.1.pdf":
+            "0d397cbcf3eb5df19aa684c84efc317e95fcef7e404f3954a1356336ce09629e",
+        PKG / "pdf" / "SCI-RTC-ENGINEERING-CONFORMANCE-v0.1.pdf":
+            "8ff6eb431f18ac64659f864d9fbd3f40c2349892fcc5154bc51ab3a9fc598805",
+    }
+    for path, expected in frozen_pdfs.items():
+        require(digest(path) == expected, f"frozen PDF hash changed: {path.name}")
 
     active_source = "\n".join(text(path) for path in sorted(SRC.rglob("*.tex")))
     for forbidden in (
@@ -278,7 +302,8 @@ def main() -> None:
     print("PASS: definitions=38 equations=37 assumptions=12 requirements=108 predictions=71")
     print("PASS: crosswalk rows complete and sequential")
     print("PASS: author decisions=24 owner entries=83 (63 open, 1 conditional, 14 resolved, 5 deferred)")
-    print("PASS: r0.8 level-shift Decision 9 and r0.9 owner Decisions 1--8 markers")
+    print("PASS: r0.8 Decision 9, r0.9 Decisions 1--8, and r0.9 owner freeze")
+    print("PASS: canonical frozen PDF hashes (2)")
     print("PASS: rationale narrative sections=12")
     print("PASS: engineering wrapper has no independent displayed mathematics")
 
