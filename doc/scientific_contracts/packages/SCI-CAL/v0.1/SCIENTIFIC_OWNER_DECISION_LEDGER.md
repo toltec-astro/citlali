@@ -28,3 +28,8 @@ item is resolved, the state changes only with a cited owner decision or
 approved scientific source and its date. Table 4 of rationale r0.3 was checked
 against this ledger on 2026-08-16 for decision ID, issue, closure condition,
 and blocked consequence.
+
+Engineering conformance r0.2 was checked against this ledger on 2026-08-20.
+It carries Q01--Q09 as explicit admission gates with claim-specific
+unavailable consequences. The alignment repair does not resolve, defer, or
+supersede any ledger item.

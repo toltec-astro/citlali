@@ -1,35 +1,43 @@
-# SCI-CAL v0.1 Rationale r0.3 Scientific/Engineering Consistency Report
+# SCI-CAL v0.1 Rationale r0.3 / Engineering r0.2 Consistency Report
 
-Status: complete for the rationale r0.3 correction pass
+Status: corrected consistency candidate; scientific authority not frozen
 
-Date: 2026-08-16
+Original review: `2026-08-16`
 
-The engineering contract remains unchanged and normative for formal
-conformance. Rationale r0.3 changes scientific explanation and ownership
-clarity without changing requirements, assumptions, edge predictions, or
-machine states.
+Corrected review: `2026-08-20`
 
-| Consistency axis | r0.3 result |
+The original r0.3 report established equation and inventory consistency but
+treated stable-ID coverage as sufficient semantic closure. A fresh read-only
+comparison found that the engineering view did not carry the rationale's full
+Q01--Q09 authority consequences, producer--transformer--consumer boundary,
+source-factor generating record, transfer limitations, broadband compatibility,
+or pipeline-order limitation. Engineering conformance r0.2 corrects those gaps
+without changing the science rationale or resolving an owner decision.
+
+| Consistency axis | Corrected result |
 | --- | --- |
-| Ownership | Consistent under producer--transformer--consumer: Beammap/source APT owns source flxscale meaning; TolProj owns target/source association and approved child transformation lineage; SCI-CAL applies selected child flxscale and target atmosphere once; MAP/FLT owns realized response. |
-| Factor direction | Consistent: the abstract generative response is R in input units per mJy/beam and selected flxscale is R inverse. R is explicitly not the APT responsivity field. |
-| Atmosphere orientation | Consistent: both main text and Appendix A interpolate neutral H first, then define (T,C) from the declared transmission-or-correction orientation. No numerical orientation is inferred. |
-| Units and output plane | Consistent: the intended result is top-of-atmosphere, point-source-equivalent, beam-peak-normalized amplitude; literal mJy/beam peak additionally depends on realized downstream response. Unsupported surface-brightness, temperature, extended-source, and integrated-photometry meanings remain excluded. |
-| Ordering | Consistent: fixed per-detector scalar commutation is distinguished from detector mixing and sample-dependent atmosphere. The exact pipeline order remains open decision Q02. |
-| Claim layers | Consistent: conformance, atmosphere-representation fidelity, observational performance, and production readiness remain separate. The exact engineering state science-qualification-eligible is retained only in the formal appendix; main text uses criteria for validated science use. |
-| Version axes | Consistent: v0.1 identifies the governed scientific contract; r0.3 identifies this science-rationale revision. No prose revision is represented as a contract-version change. |
+| Open authority | Every Q01--Q09 state, owner, closure evidence, and blocked claim/output is now an explicit engineering record and disposition gate. Candidate metadata and realized behavior cannot close a decision. |
+| Ownership | Beammap/source-APT production owns source calibration and factor meaning; TolProj owns association and approved child transformation; TolTECA delivery preserves the selected artifact; SCI-CAL consumes the selected child factor and target atmosphere once; MAP/FLT owns realized response. |
+| Factor derivation | The selected child factor resolves a producer-owned generating record containing calibrator model/epoch, source atmosphere, estimator, beam/template normalization, pointing, spectral convention, direction, and uncertainty/covariance status. Q03 remains open. |
+| Transfer | The child record carries the approved transformation, validity domain, and retained systematics. Transfer outside an approved domain remains unavailable under Q04. |
+| Broadband meaning | A photometric-convention state connects source factor, target atmosphere, and reported output. Equal passband identity alone is not compatibility evidence; Q05 limitations remain explicit. |
+| Ordering | The local CAL affine boundary and global pipeline-order state are distinct. Local operator equality is not promoted to a unique end-to-end response while Q02 is open. |
+| Atmosphere | Orientation-neutral interpolation, reciprocal order, support, and invariants remain unchanged. Binding the missing operator record resolves Q06 only. |
+| Units and output plane | The intended result remains top-of-atmosphere, point-source-equivalent, beam-peak-normalized amplitude. Literal peak meaning still depends on realized response; complete monochromatic/cross-array meaning remains unavailable under Q05. |
+| Uncertainty and claims | Conditional, nuisance, total, representation-fidelity, observational-performance, and production claims remain separate. Q08 and Q09 consequences are unchanged. |
+| Version axes | Contract version remains v0.1; science rationale remains r0.3; the repaired engineering document is r0.2. Stable canonical filenames continue to identify the active views. |
 
-## Unresolved consistency dependencies
+## Mechanical invariants
 
-- Q01 blocks complete physical units and interpretation of ordinary xs.
-- Q02 blocks a unique governed pipeline order.
-- Q03--Q05 block complete scientific derivation and broadband transfer
-  meaning.
-- Q06 blocks contract-supported numerical calibration and associated
-  atmosphere-evaluation claims.
-- Q07--Q09 block policy rationale, total uncertainty, and achieved validation
-  claims.
+- 11 sequential assumption IDs remain `SCI-CAL-ASM-001`--`011`.
+- 50 sequential requirement IDs remain `SCI-CAL-REQ-001`--`050`.
+- 30 sequential edge IDs remain `SCI-CAL-EDGE-001`--`030`.
+- No open decision is marked resolved, and no numerical science or
+  implementation behavior is introduced.
 
-No unresolved item was converted into a factual claim. No numerical
-calibration, representation-fidelity, observational-performance, or
-production-readiness validation was performed in this pass.
+## Remaining gate
+
+The corrected pair still requires the program's fresh implementation-blind
+consistency review and explicit scientific-owner freeze disposition. This
+repair is not implementation conformity, atmosphere fidelity, observational
+validation, or production readiness.

@@ -5,11 +5,13 @@
 
 Let \(\mathsf A_j\) be the conjunction of the scientific admission predicates:
 the sample is upstream-eligible \code{xs}; its acquisition key and sample
-column binding are resolved; its selected APT row and unique admitted
-association are resolved; units and factor directions are declared; the
-sample, baseline state, factor, opacity, airmass, time support, operator, and
-response basis are valid for the requested operation; and the effective mode
-is enabled. The mathematical domain is
+column binding are resolved; its source and selected-child APT rows, unique
+admitted association, approved transformation, and delivery identity are
+resolved; applicable owner gates admit the requested physical output; units,
+factor directions, photometric convention, and pipeline boundary are declared;
+the sample, baseline state, factor, opacity, airmass, time support, operator,
+and response basis are valid for the requested operation; and the effective
+mode is enabled. The mathematical domain is
 \begin{equation}
   \valid=\{j:\mathsf A_j=\mathrm{true}\}.
   \label{eq:valid-support}
@@ -105,9 +107,11 @@ operator record in \Assump{011} is supplied.
 \subsection{Once-only signal factorization}
 \label{sec:factor-equations}
 
-The selected APT is the value boundary for absolute calibration. If TolProj
-has materialized a pointing-derived correction, its causal ancestry may be
-written
+The selected observation-specific child APT is the value boundary for
+absolute calibration. Its value and scientific meaning resolve through the
+source-calibration generating record, admitted association, approved child
+transformation, and immutable delivery record. If TolProj has materialized a
+pointing-derived correction, its causal ancestry may be written
 \begin{equation}
   F^{\rm sel}_{od}=P_{od}F^{\rm parent}_{od}
   \quad\text{(lineage identity only)}.
@@ -133,8 +137,10 @@ Equation~\eqref{eq:multiplier}. Any such quantity used upstream may be named in
 lineage or a nuisance model, but does not become another signal factor.
 
 Numeric multiplication in Equation~\eqref{eq:multiplier} is commutative.
-Causal provenance is not: the selected APT must exist before its row factor is
-bound, and target atmosphere state is applied at the target sample. For each
+Causal provenance is not: the source APT and generating record precede the
+admitted association and child transformation; the exact selected child APT
+must exist before its row factor is delivered and bound; target atmosphere
+state is then applied at the target sample. For each
 factor role \(\rho\in\{\mathrm{absolute\ flxscale},
 \mathrm{target\ atmosphere},\mathrm{unit\ identity}\}\), define the realized
 application count \(n_{j\rho}\). The once-only invariant is
@@ -286,10 +292,15 @@ Let \(\mathcal L_o\) denote one canonical calibration-lineage record per
 coherent reduction package. For every valid occurrence, it must be possible to
 resolve
 \begin{equation}
- \mathcal L_o\longrightarrow
- \{x^{xs}_j,b_j,K^{\rm acq},R^{\rm APT},E^{\rm assoc},F^{\rm sel},
- \mathcal O_a,\tau_{225},X,C_a,Q,\mathcal V,\theta,P_B,L\}
+ \begin{aligned}
+ \mathcal L_o &\longrightarrow
+ \bigl\{x^{xs}_j,b_j,K^{\rm acq},R^{\rm src},E^{\rm assoc},R^{\rm child},
+ G^{\rm src},T^{\rm child},\\
+ &\qquad D^{\rm del},F^{\rm sel},\mathcal O_a,\tau_{225},X,C_a,Q,\Pi_o,
+ \Omega_o,Q^{\rm owner}_o,\\
+ &\qquad \mathcal V,\theta,P_B,L\bigr\}
  \longrightarrow M_j\longrightarrow y_j.
+ \end{aligned}
  \label{eq:reconstruction}
 \end{equation}
 The arrows mean resolvable scientific lineage, not a required file layout.

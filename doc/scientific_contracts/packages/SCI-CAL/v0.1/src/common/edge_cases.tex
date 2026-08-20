@@ -79,7 +79,9 @@ identify the challenged role. \\
 \Edge{013} & Corrected-APT double application & With
 \(F^{\rm sel}=P F^{\rm parent}\), applying \(P\) again changes the result by
 \(P\) and violates application count. Using the parent without the embodied
-event changes it by \(P^{-1}\). \\
+event changes it by \(P^{-1}\). An unapproved, unidentified, or
+out-of-domain child transformation yields no calibrated output even when its
+numeric value is plausible. \\
 
 \Edge{014} & Keyed row permutation & Arbitrarily permuting selected APT rows
 while preserving row occurrence keys and the explicit keyed relation leaves
@@ -102,7 +104,8 @@ scope. No first-row or nearest-row choice is allowed. \\
 \Edge{018} & Association disposition & A unique admitted match may calibrate.
 Abstained, ambiguous, rejected, and missing associations produce no calibrated
 value for the endpoint; aggregate matcher performance cannot convert one into
-a match. \\
+a match. The matcher cannot become the owner of source-factor meaning, and an
+association without an exact selected-child artifact is incomplete. \\
 
 \Edge{019} & Irrelevant design identity & Adding, removing, or changing a
 design-ID match while measured occurrence endpoints, association, selected
@@ -136,7 +139,8 @@ sensitivity calculation need not agree with a local linearization. \\
 \Edge{025} & Unresolved point source & Under a unit-peak originating beam and
 a realized response with \(\rho_L=1\), an unresolved source of flux density
 \(S\) mJy has ideal peak \(S\ \mjybeam\). This is a response prediction, not
-an integrated-flux claim. \\
+an integrated-flux, complete monochromatic, or cross-array spectral claim;
+those interpretations require the Q05 photometric-convention state. \\
 
 \Edge{026} & Response-changing kernel & If a downstream kernel changes
 \(\rho_L\) to \(r\), the unrenormalized ideal peak is \(rS\ \mjybeam\). A
@@ -151,17 +155,19 @@ originating ellipse. \\
 \Edge{028} & Unsupported stream or target & A non-\code{xs} stream, or a
 request for surface brightness, per-pixel flux, temperature, extended-source
 calibration, or integrated photometry, yields an unsupported no-output state
-without a calibrated v0.1 label. \\
+without a calibrated v0.1 label. An unresolved Q01 input meaning likewise
+cannot acquire a calibrated unit merely from the \code{xs} token. \\
 
 \Edge{029} & Zero signal and affine convention & With an explicit
 not-applicable baseline and \(x=0\), every finite multiplier gives \(y=0\):
 CAL creates no additive offset. With a declared nonzero \(b\), the result is
 \(-Mb\), exposing the affine convention rather than hiding it. \\
 
-\Edge{030} & Observation-order replay & Two observations with distinct APT,
-association, atmosphere, and response identities give identical per-
-observation results in either processing order. No state or factor from one
-appears in the other's canonical lineage. \\
+\Edge{030} & Observation-order replay & Two observations with distinct source
+and child APTs, associations/transformations, delivery records, atmosphere,
+photometric/order states, owner-decision snapshots, and response identities
+give identical per-observation results in either processing order. No state
+or factor from one appears in the other's canonical lineage. \\
 
 \bottomrule
 \end{longtable}

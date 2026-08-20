@@ -5,7 +5,8 @@
 
 \Term{SCI-CAL v0.1 operation.} On admitted \code{xs} support, SCI-CAL binds
 each target acquisition occurrence to one row occurrence in one exact selected
-immutable measured APT, applies that row's absolute \code{flxscale} once,
+immutable observation-specific child APT, applies that row's absolute
+\code{flxscale} once without reinterpreting its producer-owned meaning,
 applies one supported target-observation atmosphere correction to the
 top-of-atmosphere plane, and propagates conditional measurement uncertainty.
 It ends at calibrated detector samples, not at a map, fitted source, or
@@ -35,6 +36,15 @@ identity, its artifact-local row key, and source observation/network context.
 A UID is local to that immutable artifact. It is not a universal detector
 name.
 
+\Term{Source APT and observation-specific child APT.} The source APT is the
+producer-owned Beammap calibration artifact whose row supplies the scientific
+meaning and generating lineage of \code{flxscale}. The selected child APT is
+the exact immutable observation-specific artifact chosen or produced by
+TolProj from an admitted target-to-source association and, if applicable, one
+explicitly approved transformation. An identity transformation is recorded
+when the source row is selected unchanged. Parent and child occurrences remain
+distinct even when their values are numerically equal.
+
 \Term{Association edge.} A separate, directed target-to-source relation that
 names both occurrence-scoped endpoints, matcher method and version,
 disposition, and available quality evidence. Only a unique admitted match is
@@ -52,6 +62,16 @@ contract may bind acquisition occurrences to sample columns and selected APT
 rows. An ordered relation is valid only with recorded scope, cardinality,
 ordering definition, and proof. Row position alone is not identity.
 
+\Term{Producer--transformer--delivery--consumer boundary.} Beammap/source-APT
+production owns the source calibration, source atmosphere, estimator,
+beam/template normalization, pointing treatment, spectral convention,
+uncertainty, and published factor meaning. TolProj owns target-to-source
+association and only an explicitly approved child transformation with its
+lineage. TolTECA may deliver the selected immutable artifact into Citlali but
+does not change its scientific meaning or value. SCI-CAL consumes the exact
+selected child value, applies it once with target atmosphere, and does not
+rederive or reinterpret producer or transformer quantities.
+
 \subsection{Factors and once-only lineage}
 
 \Term{Factor instance.} A value together with a stable instance identity,
@@ -59,11 +79,16 @@ scientific role, direction, unit, recipient identity, support, reference
 plane, validity, application stage, uncertainty status, and parent lineage.
 Numerically equal values with different roles are not interchangeable.
 
-\Term{Selected absolute factor.} $F^{\rm sel}_{od}$ is the selected APT
-row's \code{flxscale}, oriented as \(\mjybeam/U_{x,d}\). It is the sole
-absolute detector factor in the v0.1 signal multiplier. If TolProj created a
-corrected child APT, its pointing-derived correction is an ancestry event
-already embodied in this value.
+\Term{Selected absolute factor.} $F^{\rm sel}_{od}$ is the selected child-APT
+row's \code{flxscale}, oriented under the contract as
+\(\mjybeam/U_{x,d}\). It is the sole absolute detector factor in the v0.1
+signal multiplier. Its scientific meaning resolves to the source-calibration
+producer record. If TolProj created a transformed child APT, every approved
+transformation, including an embodied pointing-derived correction, is an
+ancestry event already represented in this value. Open decisions Q01, Q03,
+Q04, and Q05 limit the physical unit, derivation, transfer, and broadband
+claims exactly as recorded in Section~\ref{sec:eng-owner-gates}; the contract
+orientation alone does not close them.
 
 \Term{Relative responsivity.} \code{responsivity} may support a separately
 declared relative-response, diagnostic, normalization, or nuisance role. It
@@ -109,6 +134,20 @@ physical convention are not established. The passband identity can identify
 an input to a declared operator; it cannot, by itself, establish that
 operator's physical truth.
 
+\Term{Photometric-convention state.} The record connecting source-APT
+\code{flxscale}, target-atmosphere evaluation, and reported \(\mjybeam\)
+meaning names the per-array reference frequency or wavelength, reference
+spectrum, calibrator/color treatment, passband weighting and variation, and
+compatibility disposition. Until Q05 is resolved, complete monochromatic mJy
+meaning and cross-array spectral interpretation are unavailable rather than
+inferred from the unit token.
+
+\Term{Pipeline boundary/order state.} The exact pre-CAL signal and affine
+boundary, together with its declared relation to detector mixing,
+common-mode/PCA operations, temporal filtering, weighting, mapmaking, and
+downstream response. Until Q02 is resolved, local CAL algebra remains
+separate from a unique end-to-end transfer-function claim.
+
 \subsection{Uncertainty and response}
 
 \Term{Conditional measurement uncertainty.} Variance, inverse variance, or
@@ -128,6 +167,11 @@ response required to interpret a downstream point-source peak. A
 circularization is a labeled approximation, never silent replacement.
 
 \subsection{Validity and quality tuple}
+
+An immutable owner-decision snapshot accompanies the tuple below. It records
+Q01--Q09 state, owning authority, evidence required, resolution source/date,
+and blocked claim or output. It conditions the affected tuple field or claim
+without adding an unrelated failure to every other quantity.
 
 Every coherent observation or explicitly declared segment has a state tuple
 \begin{equation}
@@ -173,7 +217,7 @@ Claim & What it establishes & What it does not establish \\
 Claim & What it establishes & What it does not establish \\
 \midrule
 \endhead
-Structural calibration correctness & typed inputs, valid association, exact factor algebra, once-only lineage, supported operator evaluation, uncertainty transform, and reconstructible output & truth of the atmosphere model, telescope response, repeatability, absolute flux accuracy, or production readiness \\
+Structural calibration correctness & applicable owner gates, typed inputs, producer/transformer/delivery/consumer lineage, valid association, exact factor algebra, once-only lineage, supported operator evaluation, uncertainty transform, and reconstructible output & truth of the atmosphere model, universal transfer, complete broadband meaning, telescope response, repeatability, absolute flux accuracy, or production readiness \\
 Atmosphere representation fidelity & agreement of the declared finite operator with a named higher-fidelity atmosphere calculation over declared support & agreement with the actual atmosphere, WVR accuracy, telescope passband truth, or source recovery \\
 Observational calibration performance & repeatability and absolute recovery against independent astronomical evidence with full covariance & structural correctness by itself or universal performance outside the studied population and support \\
 \bottomrule

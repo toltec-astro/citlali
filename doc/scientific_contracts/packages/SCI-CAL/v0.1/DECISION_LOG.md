@@ -22,6 +22,7 @@ author task live in [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md).
 | `CAL-SCI-D008` | Adopt the r0.3 three-artifact science-rationale architecture and the library house standard as the template for subsequent packages. Accuracy, explicit gaps, and traceability govern freeze; completeness by invention does not. |
 | `CAL-GOV-D009` | The prefix `v` identifies the scientific-contract/package version; `r` identifies the revision of a particular representing document. SCI-CAL remains contract v0.1 while the present science rationale is revision r0.3. |
 | `CAL-GOV-D010` | After the r0.3 cleanup there is no further stylistic round. A later rationale revision requires formal resolution of Q01--Q09, a normative engineering-contract change, validation evidence that changes an evidentiary status, or a genuine scientific inconsistency. |
+| `CAL-GOV-D011` | Repair engineering conformance as document revision r0.2 against science rationale r0.3 while retaining contract v0.1 and all stable inventories. The engineering view must carry Q01--Q09, the producer--transformer--delivery--consumer boundary, source/child APT lineage, broadband convention, pipeline-order constraints, and claim-layer limitations without resolving scientific decisions or asserting implementation conformity. |
 
 Grant also confirmed the previously recovered CAL scientific decisions named
 in Scope Brief section 6, including the layered APT identity model, once-only
@@ -32,5 +33,6 @@ from physical and observational performance.
 The original scope decisions authorized implementation-blind scientific
 authorship. Decisions D006--D010 approve the r0.3 ownership boundary,
 producer--transformer--consumer rule, reusable rationale architecture,
-version axes, and stopping rule. They do not resolve Q01--Q09, establish
+version axes, and stopping rule. D011 authorizes the bounded engineering
+alignment repair. These decisions do not resolve Q01--Q09, establish
 implementation conformity, authorize validation, or change production state.

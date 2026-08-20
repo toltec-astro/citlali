@@ -8,16 +8,22 @@ not permissions to replace missing information with defaults.
 \item[\Assump{001}: upstream sample authority.]
   The supplied sample axis, time, eligibility, original/synthesized state,
   elevation/airmass meaning, and acquisition-column binding are correct under
-  approved upstream authority. SCI-CAL neither chooses nor rederives them.
+  approved upstream authority. The physical observable, unit, sign,
+  preprocessing, normalization, stream scope, and valid multiplicative domain
+  are separately approved. SCI-CAL neither chooses nor rederives them; Q01
+  records their present unresolved status.
 
 \item[\Assump{002}: ordinary measured channel.]
   The admitted signal is the ordinary \code{xs} stream. A distinct measured
   stream is a distinct physical observable and does not inherit this factor.
 
-\item[\Assump{003}: selected immutable APT.]
-  TolProj has selected and bound one immutable measured APT to the target
-  observation, and the supplied target-to-source associations are admitted
-  TolAPT/TolProj results. SCI-CAL does not choose the artifact or matcher.
+\item[\Assump{003}: selected immutable child APT.]
+  Beammap/source-APT production owns the generating calibration record.
+  TolProj has supplied one admitted target-to-source association and selected
+  or created one immutable observation-specific child APT, with an identity
+  transformation recorded when the source row is unchanged. TolTECA delivery
+  preserves that exact artifact. SCI-CAL does not choose the artifact,
+  matcher, or transformation and does not reinterpret the selected value.
 
 \item[\Assump{004}: explicit affine convention.]
   Any baseline or offset operation preceding the multiplier is named, typed,
@@ -27,7 +33,12 @@ not permissions to replace missing information with defaults.
 \item[\Assump{005}: coefficient direction and reference plane.]
   The selected \code{flxscale} is finite, nonzero, oriented as
   \(\mjybeam/U_x\), and refers to the top-of-atmosphere calibration plane. Its
-  lineage states the disposition of any TolProj pointing-derived correction.
+  producer record states calibrator model/epoch, source atmosphere, amplitude
+  estimator, beam/template normalization, pointing and spectral treatment,
+  direction, and uncertainty/covariance status. Its child lineage states the
+  approved transformation, transfer-validity domain, retained systematics,
+  and disposition of any pointing-derived correction. Q03--Q05 record the
+  present unresolved scientific authority for those meanings.
 
 \item[\Assump{006}: atmosphere inputs.]
   \(\tau_{225}\) is zenith optical depth; $X$ is the full eligible-sample
@@ -41,10 +52,11 @@ not permissions to replace missing information with defaults.
   on the same signal requires cross-covariance or joint propagation.
 
 \item[\Assump{008}: response ownership.]
-  Beam/Beammap supplies the originating beam/template identity; MAP/FLT
-  supplies the realized mapmaker/kernel/filter response. SCI-CAL records and
-  conditions on those identities but does not certify their empirical
-  fidelity.
+  Beammap/source-APT production supplies the originating beam/template and
+  source-calibration identity; MAP/FLT supplies the realized
+  mapmaker/kernel/filter response. SCI-CAL records and conditions on those
+  identities but does not certify their empirical fidelity or reinterpret
+  their producer-owned meaning.
 
 \item[\Assump{009}: coherent segment.]
   A segment is declared before quality classification and is internally
@@ -56,7 +68,10 @@ not permissions to replace missing information with defaults.
   The selected TolTECA v1 passband set is a modeled array-named reference with
   the recorded unknowns in Section~\ref{sec:definitions}. Any atmosphere
   result using it is conditional on the declared, presently unestablished
-  response weighting and carries unavailable passband uncertainty.
+  response weighting and carries unavailable passband uncertainty. Q05 also
+  leaves compatibility among source-factor, atmosphere, and reported-output
+  spectral conventions unresolved; sharing a passband identifier does not by
+  itself establish that compatibility.
 
 \item[\Assump{011}: unresolved numeric operator authority.]
   The packet does not contain the exact nodes, node ordinate orientation,

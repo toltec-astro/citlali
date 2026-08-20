@@ -24,9 +24,13 @@ Symbol & Identity and support & Unit & Meaning \\
 \(b_j\) & same recipient/support as \(x_j\) & \(U_{x,d}\) & explicitly authorized offset or baseline; ``not applicable'' is distinct from missing \\
 \(z_j=x^{xs}_j-b_j\) & valid sample support & \(U_{x,d}\) & CAL input after the declared affine convention \\
 \(K^{\rm acq}_{od}\) & target acquisition occurrence & identity only & observation/Tune, network or interface, and network-local tone or row slot \\
-\(R^{\rm APT}_{sd}\) & selected source-row occurrence & identity only & immutable APT identity plus source observation/network context and artifact-local row key \\
+\(R^{\rm src}_{sd}\) & producer-owned source-APT row occurrence & identity only & immutable source APT identity plus source observation/network context and artifact-local row key \\
 \(E^{\rm assoc}_{od,sd}\) & target-to-source occurrence edge & identity only & matcher method/version, disposition, and available quality evidence \\
-\(F^{\rm sel}_{od}\) & selected APT row occurrence & \(\mjybeam/U_{x,d}\) & authoritative absolute \code{flxscale} for this selected lineage \\
+\(R^{\rm child}_{od}\) & selected child-APT row occurrence & identity only & immutable observation-specific child artifact, parent relation, and artifact-local row key \\
+\(G^{\rm src}_{sd}\) & source-calibration generating record & identity and typed fields & producer, calibrator, source atmosphere, estimator, response, spectral convention, direction, and covariance lineage \\
+\(T^{\rm child}_{od,sd}\) & approved child transformation & identity plus typed rule & TolProj association/transformation, validity domain, retained systematic, and identity-transform state \\
+\(D^{\rm del}_{o}\) & selected-artifact delivery record & identity only & TolTECA handoff identity that preserves child meaning and value \\
+\(F^{\rm sel}_{od}\) & selected child-APT row occurrence & \(\mjybeam/U_{x,d}\) & authoritative absolute \code{flxscale} for this selected lineage, subject to Q01 and Q03--Q05 \\
 \(P_{od}\) & lineage event, if applicable & dimensionless & TolProj pointing-derived correction already embodied in \(F^{\rm sel}\); never an additional CAL runtime factor \\
 \(r_{od}\) & selected APT row occurrence & declared relative-response unit & \code{responsivity}; a relative quantity, not absolute flux calibration \\
 \(s_{od}\) & selected APT row occurrence & declared sensitivity unit & Beammap \code{sens}; sensitivity or approximate-weight input only \\
@@ -43,6 +47,9 @@ Symbol & Identity and support & Unit & Meaning \\
 \(C_{y\mid\theta}\) & identical valid output support & \((\mjybeam)^2\) & transformed conditional measurement covariance \\
 \(v^{(x)}_j,w^{(x)}_j\) & scalar sample occurrence & \(U_x^2,U_x^{-2}\) & diagonal conditional variance and inverse variance, when supplied \\
 \(\theta\) & named detector, array, observation, cohort, or global scope & parameter-specific & calibration, atmosphere, and response nuisance state \\
+\(\Pi_o\) & observation/segment & identity plus typed fields & photometric-convention compatibility and unavailable status \\
+\(\Omega_o\) & observation/segment & identity plus typed fields & pre-CAL boundary and declared global pipeline-order state \\
+\(Q^{\rm owner}_o\) & package/observation authority snapshot & identity plus state & Q01--Q09 ownership, evidence, resolution, and blocked-claim state \\
 \bottomrule
 \end{longtable}
 
