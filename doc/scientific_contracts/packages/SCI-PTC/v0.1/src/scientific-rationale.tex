@@ -10,7 +10,7 @@
 \usepackage{needspace}
 \usepackage{fancyhdr}
 \usepackage[hidelinks]{hyperref}
-\hypersetup{pdftitle={SCI-PTC Scientific Rationale v0.1 r0.3},pdfauthor={TolTEC scientific contract program},pdfsubject={Scientific rationale for correlated-mode cleaning and detector coefficients}}
+\hypersetup{pdftitle={SCI-PTC Scientific Rationale v0.1 r0.4},pdfauthor={TolTEC scientific contract program},pdfsubject={Scientific rationale for correlated-mode cleaning and detector coefficients}}
 \setlength{\emergencystretch}{3em}
 \hbadness=10000
 \hfuzz=8.5pt
@@ -21,7 +21,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small SCI-PTC Scientific Rationale}
-\fancyhead[R]{\small v0.1 / r0.3}
+\fancyhead[R]{\small v0.1 / r0.4}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.3pt}
 
@@ -33,7 +33,7 @@
 \title{\vspace{-1.0cm}\textcolor{ptcblue}{\Huge SCI-PTC}\\[0.3em]
 \Large Correlated-Mode Cleaning and Detector Coefficients\\[0.5em]
 \LARGE Scientific Rationale\\[0.4em]
-\large Scientific contract v0.1 -- document revision r0.3}
+\large Scientific contract v0.1 -- document revision r0.4}
 \author{TolTEC Scientific Contract Program\\Scientific owner: Grant Wilson}
 \date{2026-08-20}
 
@@ -41,11 +41,11 @@
 \maketitle
 \thispagestyle{empty}
 
-\sciencebox{ptclight}{\textbf{Status.} Owner-approved scope; bounded Stage B
-r0.3 freeze-candidate revision. The scientific architecture and the base-v0.1
-frozen-subspace projection decision are approved. Scientific authority is not
-yet frozen. Implementation conformity, representation/response fidelity,
-observational performance, and production readiness remain unassessed.}
+\sciencebox{ptclight}{\textbf{Status.} Scientific authority frozen;
+implementation conformity not yet assessed under this contract. The freeze
+retains every recorded open, known-but-not-supplied, and deferred decision and
+does not authorize validation, observational-performance, science-
+qualification, or production-readiness claims.}
 
 \vfill
 \noindent\textbf{Document role.} This is the standalone science-team rationale.
@@ -146,12 +146,36 @@ exposed. Retaining mJy/beam is therefore not a response claim.
 
 \subsection{A cause does not prescribe one action}
 
-Each typed cause maps independently to basis fitting, loading fitting,
-application, output retention, coefficient/QC estimation, response,
-empirical estimation, simulation, and downstream use. One occurrence can be
-excluded from basis learning, admitted for frozen application, retained in
-output, and excluded from a coefficient. An output-only rejection does not
-retroactively change the learned subspace.
+Facts and causes accumulate without erasure. If producers report causes
+$A$ and $B$, the retained evidence is $\mathcal C=\mathcal C_A\cup
+\mathcal C_B$; one cause never overwrites the other. This evidence union is
+not itself an admission decision, and ``usable for diagnostics'' is a
+named-use conclusion rather than a cause.
+
+For every PTC-owned scientific use $U$, PTC declares an exact versioned
+support policy. The effective decision is conservative:
+\[
+\operatorname{eligible}_U=b_U\land\bigwedge_i p_{i,U},
+\qquad
+\operatorname{ineligible}_U=\bigvee_i\neg p_{i,U}.
+\]
+One cause cannot rescue an occurrence excluded by another applicable cause.
+If no known predicate excludes it but any required predicate is unknown, the
+result is \texttt{decision\_unavailable}, not eligible. Each composite support
+states its exact inputs, Boolean rule, missing-state behavior, scope,
+scientific use, owner, and policy/version identity.
+
+PTC owns this admission rule for PTC-local estimator fit, loading fit,
+operator application, output retention, coefficient/QC, response, empirical,
+and simulation uses. The owner of any downstream named use owns its own
+admission rule. SCI-VAL may supply common types, knowledge-state semantics,
+cause-preserving evaluation machinery, provenance requirements, and shared
+profile vocabulary; it does not invent PTC, MAP, RTC, or other package-
+specific scientific policies.
+
+Consequently, one occurrence can be excluded from basis learning, admitted
+for frozen application, retained in output, and excluded from a coefficient.
+An output-only rejection does not retroactively change the learned subspace.
 
 Only eligible finite occurrences enter arithmetic. Missing and non-finite
 remain distinct from numerical zero. Replacing an excluded value by zero
@@ -196,12 +220,17 @@ use-specific policy.
 \subsection{Centering, scaling, and gauge define the operator}
 
 Centering each detector over time is not centering detectors at each time.
+TolTEC detector $x$ has no scientifically meaningful optical DC response, so
+the learned additive location $\lambda$ defines the PTC working coordinate
+$x_c=x-\lambda$ and is discarded. The conditioned output is
+$y=P(x-\lambda)$, not $\lambda+P(x-\lambda)$.
+
 Scaling by detector scatter is not scaling by a formal noise model. Every
 coordinate transform therefore declares its axis, population, support,
-weights, estimator, boundaries, unit, inverse, gauge, and null-space
-consequence. Internal invertible scaling is restored before ordinary output.
-Noninvertible transformation changes the signal definition and needs a
-separately named product role.
+weights, estimator, boundaries, unit, gauge, failure behavior, and null-space
+consequence. Internal invertible scaling is restored before ordinary output;
+the additive location is not. Any other noninvertible transformation changes
+the signal definition and needs a separately named product role.
 
 \subsection{Within-array hierarchy}
 
@@ -275,6 +304,12 @@ temporal-left action, detector-right action, two-sided action, detector/time-
 specific action, or an exact vectorized operator. It must also state which
 quantities are frozen and which coefficients are recomputed linearly during
 application.
+
+The exact frozen state includes $\lambda$. Fixed-state application subtracts
+that already fitted location, does not re-estimate it, and does not restore it.
+In a full-procedure response the entire fit is rerun, so $\lambda$ may change
+under perturbation; each newly estimated location is still discarded, and its
+movement is retained as typed changed-state evidence.
 
 This resolves a response-critical ambiguity. On the fitted parent,
 frozen-component subtraction and frozen-subspace projection can both equal
@@ -485,7 +520,8 @@ realized PTC signal even when an upstream CAL response exists. Not produced
 is therefore not a response-availability value.
 
 PTC does not own RTC conditioning, CAL calibration/atmosphere, AST/ALIGN
-coordinates, VAL reusable eligibility, MAP estimation, NOI uncertainty
+coordinates, shared VAL types or evaluation machinery, another named-use
+owner's admission policy, MAP estimation, NOI uncertainty
 calibration, BEAM interpretation, FLT filtering, or FRUIT recurrence. Base
 v0.1 also excludes raw-$\Delta f/f$ Beammap PTC, raw-$r$ numerical science,
 $r$-derived $x$ subtraction, unconstrained joint $x/r$ PCA, cross-array
@@ -585,7 +621,7 @@ How does detector refinement repeat? & Section 5 & Definitions 019--021; Require
 What do coefficients and uncertainties mean? & Section 6 & Definitions 023--024 and 039; Requirements 052--060 and 086 \\
 How are response domains separated? & Section 7 & Definitions 016--018, 033--034, and 041; Requirements 061--068 and 087 \\
 What are product and surrogate states? & Section 8 & Definitions 025, 028, 035--037; Requirements 069--079, 081--082, and 088 \\
-How will realizations be studied? & Section 9.1 & Predictions 001--049 \\
+How will realizations be studied? & Section 9.1 & Predictions 001--050 \\
 What evidence is claimed? & Section 9.2 & Requirement 080 and Prediction 038 \\
 \bottomrule
 \end{longtable}
@@ -597,8 +633,9 @@ SCI-PTC follows the Citlali Scientific Contract Library Program and began from
 an owner-reviewed prior-work recovery record rather than a fresh derivation.
 The implementation-blind author packet reused an independent mathematical
 core under a binding supersession cover and excluded implementation, audit,
-repair, test, validation, Unity, and production material. The r0.3 revision
-implements the bounded scientific-owner review of r0.2 after the explicitly
+repair, test, validation, Unity, and production material. The r0.4 revision
+adds the owner-directed support-composition and nonrestoring-centering
+decisions after the bounded r0.3 review and the explicitly
 approved frozen-subspace projection decision. It does not reopen mature
 numerical algorithms or make an implementation claim.
 

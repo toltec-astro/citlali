@@ -1,4 +1,4 @@
-% SCI-PTC v0.1 shared normative assumptions -- owner-review draft r0.3.
+% SCI-PTC v0.1 shared normative assumptions -- owner-review draft r0.4.
 \section{Normative assumptions and declared limits}
 \label{sec:normative-assumptions}
 
@@ -7,8 +7,8 @@
 \PTCAssumption{003}{Correlation alone does not identify atmosphere, electronics, calibration residual, detector noise, astronomical signal, or any unique mixture.}
 \PTCAssumption{004}{PTC fitting is confined to one array unless a successor authority supplies a cross-array spectral, calibration, beam, source-color, and response model.}
 \PTCAssumption{005}{The selected estimator family supplies explicit missing-data semantics. Replacing a missing or excluded value with numerical zero is not exclusion unless the estimator proves equivalence.}
-\PTCAssumption{006}{Every centering/scaling transform has a declared axis, population, support, weights, estimator, boundary, unit, inverse, gauge, and null-space consequence.}
-\PTCAssumption{007}{Internal scaling is invertible and restored before ordinary transformed output; any noninvertible operation changes the signal definition and requires a separately named output role.}
+\PTCAssumption{006}{Every centering/scaling transform has a declared axis, population, support, weights, estimator, boundary, unit, gauge, failure behavior, and null-space consequence. Centering subtracts a learned additive location $\lambda$ that is not restored because detector $x$ has no scientifically meaningful optical DC response.}
+\PTCAssumption{007}{Internal scaling is invertible and restored before ordinary transformed output. The learned additive location is not restored. Any other noninvertible operation changes the signal definition and requires a separately named output role.}
 \PTCAssumption{008}{A source mask protects only its declared model and registered support. Unmasked compact or extended sky components may overlap the fitted subspace.}
 \PTCAssumption{009}{Candidate selection is finite, conjunctive, deterministically ordered, and least-aggressive. Numerical predicates are owner-controlled inputs rather than inferred defaults.}
 \PTCAssumption{010}{All support-changing detector refinements refit the complete selected model from the same immutable admitted CAL parent.}
@@ -31,3 +31,5 @@
 \PTCAssumption{027}{An external source/residual parent or shifted/null surrogate is scientifically usable only when its complete parent, coordinate, validity, support, response, recurrence, and transformation state is available; insufficient support is not a valid zero surrogate.}
 
 \PTCAssumption{028}{Fit exclusion does not itself authorize application. A fit-excluded occurrence is application-available only when the resolved frozen operator defines that occurrence from admitted frozen state and support without inferred interpolation, zero filling, or extension.}
+
+\PTCAssumption{029}{Producer facts and causes accumulate without erasure. PTC owns composite support predicates for PTC-local scientific uses; the owner of any other named use owns its admission policy. Shared VAL machinery may represent knowledge state, preserve causes, evaluate a supplied policy, and record provenance, but it does not invent package-specific scientific predicates.}

@@ -1,10 +1,9 @@
 # SCI-PTC — Correlated-Mode Cleaning And Detector Coefficients
 
-Status: Stage B v0.1/r0.3 bounded freeze-candidate revision complete and ready
-for scientific-owner review; `PTC-OWNER-Q001` and `PTC-OWNER-Q002` resolved;
-scientific authority not frozen
+Status: Scientific authority frozen; implementation conformity not yet assessed
+under this contract.
 
-Proposed scientific contract version: `v0.1`
+Scientific contract version: `v0.1`
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -54,14 +53,16 @@ SCI-PTC does not repair or complete an unavailable upstream RTC or CAL state.
   scope decision
 - [`CROSS_PACKAGE_FOLLOWUP.md`](CROSS_PACKAGE_FOLLOWUP.md): RTC, CAL, raw
   Beammap, MAP, VAL, NOI, and BEAM routing raised by the revision
-- [`CROSSWALK.md`](CROSSWALK.md): exact 138-row mapping for 89 requirements and
-  49 falsifiable predictions
-- [`AUTHOR_DRAFT_DECISIONS.md`](AUTHOR_DRAFT_DECISIONS.md): 24 author choices,
+- [`CROSSWALK.md`](CROSSWALK.md): exact 139-row mapping for 89 requirements and
+  50 falsifiable predictions
+- [`AUTHOR_DRAFT_DECISIONS.md`](AUTHOR_DRAFT_DECISIONS.md): 27 author choices,
   the decided Q001 and Q002 dispositions, and 12 still-open,
   known-but-not-supplied, or deferred owner entries
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md):
   manager-facing decision summary that refers to the detailed author ledger
   rather than duplicating it
+- [`SCIENTIFIC_OWNER_FREEZE_R0.4.md`](SCIENTIFIC_OWNER_FREEZE_R0.4.md): exact
+  owner freeze, retained open states, claim boundary, and change-control rule
 - `src/common/`: the six-file shared canonical notation, definition, equation,
   assumption, requirement, and edge-prediction authority
 - `src/scientific-rationale.tex`: the standalone science-team rationale with
@@ -72,8 +73,8 @@ SCI-PTC does not repair or complete an unavailable upstream RTC or CAL state.
   exact requirement/prediction crosswalk
 - `src/verify_contract.py`: repeatable approved-packet, identifier, crosswalk,
   audience-view, and PDF coverage checks
-- `pdf/`: the canonical 11-page scientific rationale and 20-page engineering
-  conformance draft PDFs
+- `pdf/`: the canonical frozen 11-page scientific rationale and 22-page
+  engineering conformance PDFs
 
 ## Protected Boundary
 
@@ -90,22 +91,23 @@ alter calibrated-`x` membership, subtraction, output, or coefficients in base
 v0.1; stronger use requires successor owner authority.
 
 It does not own RTC temporal filtering or replacement, CAL factor or
-atmosphere science, raw-`Delta f/f` Beammap processing, AST coordinates, VAL
-eligibility policy, MAP estimation, NOI empirical uncertainty, FRUIT
+atmosphere science, raw-`Delta f/f` Beammap processing, AST coordinates, shared
+VAL interchange/evaluation machinery, downstream named-use admission policy,
+MAP estimation, NOI empirical uncertainty, FRUIT
 recurrence, or FLT map filtering.
 
-## Stage B Result And Next Gate
+## Frozen Authority And Next Gate
 
 The owner-approved packet and the r0.1/r0.2 reviews have been consolidated into
 one shared normative core containing 41 definitions, 25 numbered equations,
-28 assumptions, 89 sequential requirements, and 49 sequential falsifiable
-predictions. Every r0.2 normative ID is preserved; r0.3 appends only the
+29 assumptions, 89 sequential requirements, and 50 sequential falsifiable
+predictions. Every r0.2 normative ID is preserved; r0.3 appended only the
 fit-excluded application-availability definition, assumption, requirement,
 and prediction plus the complete-upstream-response definition. The engineering
 view imports that authority exactly once; the standalone rationale explains
 the science without reproducing the full register. Packet-hash, identifier,
 crosswalk, audience-separation, PDF coverage, and content checks pass at
-document revision `r0.3`.
+document revision `r0.4`.
 
 The owner-approved base-v0.1 PCA/SVD application rule is now explicit:
 application projects any admitted input or fixed-state companion through the
@@ -124,22 +126,34 @@ companion specification mechanically satisfies the exact local/chain/procedure
 response, state-comparison, lifecycle, source/surrogate, bias, and identifier
 obligations named by the r0.2 review.
 
-The next gate is scientific-owner review of the r0.3 rationale and an explicit
-rationale-freeze disposition, together with review of the 12
-open/known-but-not-supplied/deferred entries in
-[`AUTHOR_DRAFT_DECISIONS.md`](AUTHOR_DRAFT_DECISIONS.md). None blocks the
+The bounded r0.4 pass makes producer causes cumulative without erasure and
+assigns admission to the owner of each exact named use. PTC owns its local
+support composites; MAP and other downstream owners own their admission
+rules; VAL owns only shared types, knowledge/cause-preservation semantics,
+provenance, evaluation machinery, and vocabulary. PTC-local eligibility is
+the base predicate conjoined with every applicable permission predicate; one
+exclusion cannot be rescued, and an unknown required predicate produces
+`decision_unavailable`. The same pass resolves centering as nonrestoring:
+detector output is `P(x-lambda)`, fixed-state response freezes `lambda`, and a
+full-procedure response re-estimates, records, and again discards it. All 139
+normative rows now carry nonblank resolved rationale locators.
+
+Grant Wilson froze this exact v0.1/r0.4 package as scientific authority on
+`2026-08-20`. The six open, four known-but-not-supplied, and two deferred
+detailed-ledger entries retain their recorded states. None blocks the frozen
 structural contract; each blocks only its named automatic policy, numerical
-product, response, coefficient use, or evidentiary claim. `PTC-OWNER-Q001`
-remains decided: conditioned `r` is diagnostic-only and inert/advisory in base
-v0.1. `PTC-OWNER-Q002` is also decided: base PCA/SVD application is frozen-
-subspace projection with the exact acting space declared by the realized
-family. Final pagination and cosmetic layout polish are intentionally deferred
-until the final editorial revision.
+product, response, coefficient use, adjacent-owner input, or evidentiary claim.
+`PTC-OWNER-Q001` remains decided: conditioned `r` is diagnostic-only and
+inert/advisory in base v0.1. `PTC-OWNER-Q002` remains decided: base PCA/SVD
+application is frozen-subspace projection with the exact acting space declared
+by the realized family.
 
-After the rationale disposition, the next scientific task is the cross-package
-RTC--CAL--PTC response and lifecycle coherence profile, not another broad PTC
-rewrite.
+The next scientific task is the cross-package RTC--CAL--PTC response and
+lifecycle coherence review, not another broad PTC rewrite. That review cannot
+silently amend this frozen authority. Any substantive correction or newly
+resolved open choice requires explicit owner action and a versioned successor
+or formally reopened revision.
 
-No implementation conformity, validation, achieved performance,
-production-readiness, or scientific-freeze claim is made by this Stage B
-draft.
+No implementation conformity, representation/response fidelity, validation,
+achieved performance, science-qualification, or production-readiness claim is
+made by this scientific-authority freeze.

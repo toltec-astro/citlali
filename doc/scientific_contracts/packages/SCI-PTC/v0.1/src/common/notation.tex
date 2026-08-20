@@ -1,4 +1,4 @@
-% SCI-PTC v0.1 shared normative notation -- owner-review draft r0.3.
+% SCI-PTC v0.1 shared normative notation -- owner-review draft r0.4.
 \section{Normative notation}
 \label{sec:normative-notation}
 
@@ -21,11 +21,12 @@ $\widehat U=\widehat M\widehat A^{\mathsf T}$ & Realized fitted estimate of the 
 $Z\equiv Y^{\rm PTC}$ & Transformed calibrated detector timestream. \\
 $N$ & Remaining detector-noise term; it is not assumed independent or stationary. \\
 $\mathcal G$ & Declared within-array hierarchy and its joint or sequential fit order. \\
-$C,D,\lambda$ & Centering operator, invertible internal scaling operator, and declared centering-location state. \\
+$C_{\lambda},D,\lambda$ & Nonrestoring centering map $C_{\lambda}(Y)=Y-\lambda$, invertible internal scaling operator, and declared learned additive-location state. \\
 $\widehat{\mathcal U}$ & Realized removed subspace, represented independently of basis gauge. \\
 $\mathcal N_{\rm PTC}$ & Declared PTC null space, including additive-reference losses. \\
 $\mathcal S^{j}$ & Support for use $j$: basis fit, loading fit, application, output, coefficient/QC, response, empirical, simulation, or downstream use. \\
-$\Phi,\mathcal I$ & Typed direct causes and transitive causal-influence record. \\
+$\Phi,\mathcal I,\mathcal C$ & Typed direct causes, transitive causal-influence record, and the accumulated cause/fact set or graph retained without erasure. \\
+$U,b_U,p_{i,U}$ & Exact named scientific use, its owner-controlled base predicate, and one applicable owner-controlled permission predicate derived from retained fact or cause $i$. \\
 $R,E,O$ & Requested, effective-policy, and observation-resolved input states. \\
 $\mathfrak L$ & Complete learned/fitted evidence for every evaluated candidate, before final selection. \\
 $\Theta$ & Immutable resolved selected model, including the exact application map and all selection evidence. \\

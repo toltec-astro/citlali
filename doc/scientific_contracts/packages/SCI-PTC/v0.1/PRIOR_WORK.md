@@ -217,8 +217,12 @@ The binding cover must replace or narrow:
 6. **Coefficient families.** D004 preserves existing scalar families but does
    not authorize universal inverse-variance, significance, or independent-
    noise interpretation.
-7. **Eligibility.** PTC preserves typed causes and provides consumer inputs;
-   reusable downstream eligibility and cause precedence remain VAL-owned.
+7. **Eligibility.** PTC preserves typed causes and provides consumer inputs.
+   The `2026-08-20` owner clarification supersedes the earlier VAL-ownership
+   shorthand: PTC owns PTC-local composite supports, each downstream named-use
+   owner owns its admission rule, and VAL is limited to shared semantics,
+   cause preservation, provenance, vocabulary, and reusable evaluation
+   machinery for owner-supplied policies.
 8. **Influence policy.** Current RTC authority no longer makes every
    transitively influenced descendant universally ineligible. Stage B must
    define PTC fit/output treatment for noncenter influence without erasing its

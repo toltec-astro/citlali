@@ -1,6 +1,7 @@
 # SCI-PTC v0.1 — Scientific Decision Log
 
-Status: Stage A scope and exact packet owner-approved `2026-08-19`
+Status: Scientific authority frozen at v0.1/r0.4; implementation conformity
+not yet assessed under this contract
 
 Scientific owner: Grant Wilson
 
@@ -16,7 +17,7 @@ Date: `2026-08-19`
 | `PTC-SCOPE-D004` | approved `2026-08-19` | PTC owns the correlated-mode fit/subtraction, source-protection supports, and additive/null-space state; correlation does not identify physical origin. RTC/separate authority owns temporal notches, and FRUIT owns recurrence/add-back. |
 | `PTC-SCOPE-D005` | approved `2026-08-19` | PTC may run without MAP for requested transformed TOD. Disabled PTC realizes no PTC or MAP product on the PTC-dependent v0.1 route. Any direct CAL-to-MAP route requires separate authority. |
 | `PTC-SCOPE-D006` | approved `2026-08-19` | The Stage B packet contains only the Scope Brief, frozen core plus inseparable cover, sanitized conventions/ownership, and bounded method-reference summary. Raw implementation, audit, repair, test, validation, and full-paper access remain excluded. |
-| `PTC-SCOPE-D007` | approved `2026-08-19` | Every flag cause maps independently into basis-fit, loading-fit, application, output, coefficient/QC, kernel, empirical, simulation, and downstream supports. Zero-fill PCA and universal flag actions are not authorized. |
+| `PTC-SCOPE-D007` | approved `2026-08-19`; narrowed by owner `2026-08-20` | Causes accumulate without erasure and do not themselves prescribe action. For every PTC-owned use, PTC composes its base predicate and all applicable cause/fact predicates conjunctively; any exclusion controls, and an unknown required predicate with no known exclusion yields `decision_unavailable`. PTC preserves facts for downstream uses, whose owners define their own admission rules. Every composite declares inputs, Boolean rule, missing-state behavior, scope, use, owner, and policy/version. Zero-fill PCA and universal flag actions remain unauthorized. |
 | `PTC-SCOPE-D008` | approved `2026-08-19` | PTC may consume a separately conditioned, compatible `r` diagnostic parent for `r`-only PCA. Under resolved `PTC-OWNER-Q001`, that analysis is inert or advisory and may not alter calibrated-`x` membership, subtraction, output, or coefficients. Raw-`r` processing, `r`-derived `x` subtraction, and unconstrained joint `x/r` PCA are excluded from base v0.1. |
 | `PTC-SCOPE-D009` | approved `2026-08-19` | PTC supports a finite fit-diagnose-classify-refit process. A fit-support change refits one complete selected model from the same immutable admitted CAL parent and applies the final model once; a cleaned output is not the refit parent. Output-only or coefficient-only decisions do not alter the fit. Sequential residual fitting is allowed only as an explicit ordered stage of one complete hierarchical estimator with cumulative subspace, response, covariance, and parentage. Post-fit diagnostics have declared population/model reference, normalization, support, uncertainty, and policy role; thresholds remain owner-controlled. |
 | `PTC-SCOPE-D010` | approved `2026-08-19` | Base estimator families are robust group common modes, explicit fixed-template regression, masked/weighted PCA/SVD, and `r`-only diagnostic PCA. Cross-channel `r` templates are gated; joint sky/noise and correlated-noise ML mapmaking are adjacent/successor authorities. |
@@ -26,13 +27,19 @@ Date: `2026-08-19`
 | `PTC-SCOPE-D014` | approved `2026-08-19` | PTC publishes its estimand, fitted correlated model, removed subspace, additive reference, null space, and permitted astronomical attenuation; retaining signal units is not response preservation. |
 | `PTC-SCOPE-D015` | approved `2026-08-19` | Fitted loadings, centering/scaling parameters, diagnostic coefficients, and downstream analysis/gridding coefficients are distinct families. Only an explicitly named analysis/gridding family may be MAP-facing. |
 | `PTC-SCOPE-D016` | approved `2026-08-19` | PTC owns sample-domain response. `estimated_map_center_point_source_response` is an optional functional of an exact source template, propagated response, and named reference MAP operator—not the general PTC response or MAP authority. |
-| `PTC-SCOPE-D017` | approved `2026-08-19` | Every centering/scaling transform declares axis, population, support, estimator, masks, units, reversibility, gauge, and null space. Internal standardization is inverted before ordinary output. |
+| `PTC-SCOPE-D017` | approved `2026-08-19`; physically resolved by owner `2026-08-20` | Every centering/scaling transform declares axis, population, support, estimator, masks, units, gauge, failure behavior, and null space. Internal scaling is inverted before ordinary output. The learned additive detector location `lambda` is discarded rather than restored because detector `x` has no scientifically meaningful optical DC response. Frozen-state response holds `lambda` fixed; full-procedure response re-estimates and again discards it. |
 
 ## Resolved Scientific Owner Decision
 
 | Decision | Status | Question and consequence |
 | --- | --- | --- |
 | `PTC-OWNER-Q001` | resolved `2026-08-19` | In the first implementation/base v0.1, `r` analysis is diagnostic-only and inert or advisory relative to calibrated `x`. It may not supply subtraction modes or alter `x` membership, subtraction, output, or coefficients. Stronger use requires a successor owner decision; unconstrained joint `x/r` PCA remains deferred. |
+
+## Scientific-Owner Freeze
+
+| Decision | Status | Decision and consequence |
+| --- | --- | --- |
+| `PTC-FREEZE-D001` | approved and frozen `2026-08-20` | The scientific owner states exactly, “Freeze SCI-PTC v0.1/r0.4.” This establishes the exact r0.4 package as scientific authority while retaining all recorded detailed-ledger states and leaving implementation conformity, validation, performance, qualification, and production readiness unassessed. |
 
 ## Preserved Approved Historical Decisions
 
@@ -47,10 +54,11 @@ Date: `2026-08-19`
 
 ## Decision Discipline
 
-Approval of Stage A authorizes only implementation-blind scientific authorship
-from the exact packet. It does not freeze the eventual PTC authority, approve
-an implementation, authorize a repair or numerical redesign, run validation,
-or change production status.
+Stage A approval authorized implementation-blind scientific authorship from
+the exact packet. The later reviews established candidate coherence, and
+`PTC-FREEZE-D001` supplies the scientific-owner freeze. No step here approves
+an implementation, authorizes a repair or numerical redesign, runs validation,
+or changes production status.
 
 If approved, `PTC-SCOPE-D001` is also a cross-package input to SCI-CAL owner
 question Q02: it selects CAL-before-PTC ordering for this route without

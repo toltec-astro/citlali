@@ -1,4 +1,4 @@
-% SCI-PTC v0.1 shared normative definitions -- owner-review draft r0.3.
+% SCI-PTC v0.1 shared normative definitions -- owner-review draft r0.4.
 \section{Normative definitions}
 \label{sec:normative-definitions}
 
@@ -6,7 +6,7 @@
 
 \PTCDefinition{002}{Correlated-mode estimand}{A latent declared detector-time component $U_\star$ represented by a shared temporal basis or supplied template and detector loadings. PTC estimates $\widehat U$ and the realized removed subspace $\widehat{\mathcal U}$; statistical correlation does not identify their physical origin.}
 
-\PTCDefinition{003}{Transformed detector signal}{The calibrated detector-time signal after subtracting the realized correlated component and restoring every invertible internal coordinate transform. It is not an independent sky estimate.}
+\PTCDefinition{003}{Transformed detector signal}{The calibrated detector-time signal after discarding the learned additive detector reference, applying the realized correlated-mode operation, and restoring only invertible internal scaling. The discarded reference carries no scientifically meaningful optical DC information. The result is not an independent sky estimate.}
 
 \PTCDefinition{004}{Removed subspace}{The complete realized subspace or template span whose fitted contribution is subtracted, including its group, support, metric, rank, order, and gauge-equivalence class.}
 
@@ -14,7 +14,7 @@
 
 \PTCDefinition{006}{Gauge}{A sign, scale, ordering, or rotation freedom in a basis/loading representation that leaves the fitted correlated component and removed subspace unchanged.}
 
-\PTCDefinition{007}{Centering state}{The declared location estimate, axis, population, weights, support, masks, boundary, unit, and restoration rule used to define the fitting coordinate.}
+\PTCDefinition{007}{Centering state}{The declared additive location estimate $\lambda$, axis, population, weights, support, masks, boundary, unit, estimator, and failure rule used to define $C_{\lambda}(Y)=Y-\lambda$. The location is discarded rather than restored because detector $x$ has no scientifically meaningful optical DC response.}
 
 \PTCDefinition{008}{Scaling state}{The declared nonzero internal scale, axis, population, weights, estimator, support, unit, and inverse transform used for numerical conditioning.}
 
@@ -26,9 +26,9 @@
 
 \PTCDefinition{012}{Output support}{Occurrences eligible to remain in a transformed output; it is independent of fit and application supports.}
 
-\PTCDefinition{013}{Cause-to-support policy}{An immutable mapping from each typed cause to separate basis-fit, loading-fit, application, output, coefficient/QC, response, empirical, simulation, and downstream-support decisions.}
+\PTCDefinition{013}{Cause and named-use support policy}{Producer facts and causes accumulate without erasure in $\mathcal C$. For each exact PTC-owned scientific use $U$, an immutable owner-controlled policy maps all applicable facts and causes to a composite support decision with declared inputs, Boolean rule, missing-state behavior, scope, use, and policy/version identity. A downstream use owner applies its own rule to the preserved facts supplied by PTC.}
 
-\PTCDefinition{014}{Fixed-state application map}{The exact numerical map $\mathcal A_{\Theta}$ obtained after all fitted, selected, classified, ranked, grouped, masked, metric, support, coordinate, and fallback state is frozen. For an admitted PCA/SVD family it projects any admitted application input through the frozen realized subspace and metric, with its acting space and coefficient recomputation declared.}
+\PTCDefinition{014}{Fixed-state application map}{The exact numerical map $\mathcal A_{\Theta}$ obtained after all fitted, selected, classified, ranked, grouped, masked, metric, support, coordinate, centering location $\lambda$, and fallback state is frozen. It subtracts but does not restore the frozen $\lambda$. For an admitted PCA/SVD family it projects any admitted application input through the frozen realized subspace and metric, with its acting space and coefficient recomputation declared.}
 
 \PTCDefinition{015}{Full PTC procedure}{The complete learn, fit, select, rank, classify, refit, apply, and publish operation beginning from the immutable admitted CAL parent.}
 
@@ -74,7 +74,7 @@
 
 \PTCDefinition{036}{External source/residual parent}{A source model, mask, residual, or prior-pass parent admitted only with explicit owner, unit, coordinate frame, registration, validity, response, support, and recurrence identity.}
 
-\PTCDefinition{037}{Shifted/null surrogate}{A derived realization in which signal, associated validity/eligibility, support, boundaries, randomness, and parent identity are transformed together under one declared shift or null rule.}
+\PTCDefinition{037}{Shifted/null surrogate}{A derived realization in which signal, associated producer facts, causes, support decisions, boundaries, randomness, and parent identity are transformed together under one declared shift or null rule.}
 
 \PTCDefinition{038}{Astronomical-transfer predicate}{A candidate-admission predicate bound to an exact source class and companion, conditional or full-procedure response type, amplitude/location domain, metric, tolerance, mask/support, upstream response identity, and response-uncertainty treatment.}
 

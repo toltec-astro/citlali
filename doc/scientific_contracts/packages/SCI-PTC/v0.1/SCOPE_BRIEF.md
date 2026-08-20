@@ -147,11 +147,14 @@ selected operation:
    detector occurrence and stable UID, array/network/group, stage, product
    role, internal estimator iteration, PTC pass, FRUIT recurrence, and parent
    identities. Dense positions are not external identities.
-6. **Cause-to-support policy:** direct validity, finite/missing state, typed
-   causes, upstream influence, and an immutable per-cause mapping into
-   temporal-basis fit, detector-loading fit, subtraction/application,
-   output-retention, coefficient/QC, kernel, empirical-noise, simulation, and
-   downstream-science supports.
+6. **Cause and support policy:** direct validity, finite/missing state, typed
+   causes, and upstream influence accumulate without erasure. For every
+   PTC-owned use, an immutable versioned policy combines a base predicate and
+   every applicable fact/cause predicate conjunctively; any exclusion controls,
+   while no exclusion plus an unknown required predicate yields
+   `decision_unavailable`. The policy declares exact inputs, Boolean rule,
+   missing behavior, scope, use, owner, and version. PTC preserves facts for
+   downstream-science uses rather than deciding their owners' admission rules.
 7. **Decision-stage disposition:** enough state to determine whether an
    occurrence participated in the fit, may receive the fitted subtraction,
    may be retained, may contribute a coefficient, and whether a classification
@@ -249,8 +252,12 @@ mark unavailable:
     parentage, and whether they are inert, advisory, policy-selecting, or
     response-changing.
 
-Internal centering or standardization is inverted before publication unless an
-explicit output role authorizes a changed signal definition. No partial
+Internal invertible scaling is inverted before publication. The additive
+detector location removed by centering is not restored: detector `x` has no
+scientifically meaningful optical DC response, so the conditioned output is
+`P(x - lambda)`, not `lambda + P(x - lambda)`. Frozen-state response holds the
+learned `lambda` fixed; full-procedure response re-estimates and again discards
+it. No partial
 artifact may be labeled complete. Required-output failure propagates. A
 best-effort diagnostic failure does not invalidate an otherwise valid product
 unless that diagnostic was declared required or entered selected policy.
@@ -288,9 +295,12 @@ cumulative removed subspace, response, covariance, and parentage.
   map feedback, external recurrence, pass parentage, and restart. PTC internal
   numerical iteration, a new immutable-parent PTC pass, and FRUIT recurrence
   are distinct.
-- **VAL** owns reusable sample/detector eligibility and cause precedence. PTC
-  supplies typed causes, stage-specific supports, fitted-state consequences,
-  and response availability rather than one universal eligibility bit.
+- **SCI-VAL** may own common types, knowledge-state semantics, cause
+  preservation, reusable policy-evaluation machinery, provenance
+  requirements, and shared profile vocabulary. It does not own or invent PTC,
+  MAP, RTC, or other package-specific scientific admission policies. PTC owns
+  the composite predicates for PTC-local uses; every downstream named-use
+  owner owns its own rule and consumes PTC's preserved facts.
 - **SCI-MAP** owns sample-to-map estimation, gridding normalization, map
   support/response/covariance, coaddition, and any direct CAL-to-MAP route. An
   exact named reference map functional may be imported solely for an optional
@@ -319,10 +329,14 @@ cumulative removed subspace, response, covariance, and parentage.
    and parent are distinct identities.
 5. Missing, non-finite, invalid, rejected, disabled, automatic, unavailable,
    and zero are distinct. Finite does not imply eligible.
-6. A flag is a cause. Selected policy maps each cause independently into every
-   fit, application, output, coefficient, kernel, empirical, simulation, and
-   downstream support. No flag implies zero-fill, universal rejection, zero
-   coefficient, or refit by name alone.
+6. A flag is a cause. Causes accumulate without erasure. For every PTC-owned
+   use, the selected policy combines its base predicate and all applicable
+   fact/cause predicates conjunctively; one exclusion controls, while an
+   unknown required predicate with no known exclusion yields
+   `decision_unavailable`. Every composite declares inputs, rule, missing
+   behavior, scope, use, owner, and policy/version. Downstream use owners apply
+   their own policies to preserved PTC facts. No flag implies zero-fill,
+   universal rejection, zero coefficient, or refit by name alone.
 7. Only eligible finite samples enter fitted arithmetic. `fit_invalid`
    requires refit or fitted-state invalidation; `postfit_output_reject` and
    `weight_only` do not retroactively change the fit. A fit-excluded occurrence
@@ -331,9 +345,11 @@ cumulative removed subspace, response, covariance, and parentage.
    Noncenter transitive influence is preserved and handled by PTC's declared
    use-specific fit/output/response policy.
 9. Every centering/scaling operation declares axis, population, support,
-   weights, location/scale estimator, masks, boundary, unit, reversibility, and
-   resulting null space. Internal standardization is inverted before ordinary
-   publication.
+   weights, location/scale estimator, masks, boundary, unit, gauge, failure
+   behavior, and resulting null space. Internal scaling is inverted before
+   ordinary publication. The learned additive detector location is discarded,
+   not restored; frozen-state response holds it fixed and full-procedure
+   response re-estimates and again discards it.
 10. Fitted loadings, centering/scaling parameters, diagnostic coefficients,
     and downstream analysis/gridding coefficients are distinct. Only an
     explicitly named analysis/gridding family may be consumed by SCI-MAP. A
@@ -369,9 +385,9 @@ cumulative removed subspace, response, covariance, and parentage.
 16. Full covariance may be unavailable. Unavailable uncertainty is never zero,
     and scalar coefficients are nonprecision unless stronger conditions are
     proved.
-17. Shifted/null surrogates shift signal and associated validity/eligibility
-    together. Insufficient support is unavailable or rejected, never a valid
-    zero fallback.
+17. Shifted/null surrogates shift signal and associated producer facts,
+    causes, support decisions, boundaries, and identity together. Insufficient
+    support is unavailable or rejected, never a valid zero fallback.
 18. Required outputs fail closed and cannot be represented as complete after
     partial publication.
 

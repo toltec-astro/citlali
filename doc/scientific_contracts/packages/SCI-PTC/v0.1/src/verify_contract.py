@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mechanical checks for the SCI-PTC v0.1/r0.3 bounded owner-review draft.
+"""Mechanical checks for the SCI-PTC v0.1/r0.4 bounded owner-review draft.
 
 This helper reads only the approved author packet and package deliverables.
 It does not inspect implementation or claim conformity, validation,
@@ -50,11 +50,11 @@ def pdf_text(path: Path) -> tuple[PdfReader, str]:
 def main() -> None:
     expected_hashes = {
         PKG / "SCOPE_BRIEF.md":
-            "836fa3aaca0423c7f11c6d745574b348553dce00524920ed90410c38b6173c6f",
+            "8aa05920589b67cb7634003f466161769101e3013cf82573260e94b257532bed",
         PKG / "AUTHOR_SUPERSESSION_COVER.md":
             "2a13d3984c2334ccd1886021d2d869bb71363abd3a06bb7f9fbf536614d9ee3e",
         PKG / "AUTHOR_CONVENTIONS_AND_OWNERSHIP.md":
-            "57d7032a0e050dab295fd4fc84bde0a2629b0ee359eeea884e0e7767ffa5ec84",
+            "568b35ff3da16c8ed6902d3bb0d845e01eec38e5374c6e89e75823f1f8ecabe6",
         PKG / "AUTHOR_METHOD_REFERENCE_BOUNDARY.md":
             "d5d33180c9e40958237916ec6dd98ba655d161bc984a3b694197a1a90d78be61",
     }
@@ -90,9 +90,29 @@ def main() -> None:
         r"\\PTCPrediction\{(\d{3})\}", text(COMMON / "edge_cases.tex")
     )
     sequence([f"SCI-PTC-DEF-{item}" for item in definitions], "SCI-PTC-DEF-", 41)
-    sequence([f"SCI-PTC-ASM-{item}" for item in assumptions], "SCI-PTC-ASM-", 28)
+    sequence([f"SCI-PTC-ASM-{item}" for item in assumptions], "SCI-PTC-ASM-", 29)
     sequence([f"SCI-PTC-REQ-{item}" for item in requirements], "SCI-PTC-REQ-", 89)
-    sequence([f"SCI-PTC-PRED-{item}" for item in predictions], "SCI-PTC-PRED-", 49)
+    sequence([f"SCI-PTC-PRED-{item}" for item in predictions], "SCI-PTC-PRED-", 50)
+
+    metadata_pattern = re.compile(
+        r"\\(PTCRequirement|PTCPrediction)\{(\d{3})\}\{([^{}]*)\}"
+        r"\{([^{}]*)\}\{([^{}]*)\}\{([^{}]*)\}\{"
+    )
+    metadata = []
+    for path in (COMMON / "requirements.tex", COMMON / "edge_cases.tex"):
+        metadata.extend(metadata_pattern.findall(text(path)))
+    require(len(metadata) == 139, "normative metadata row count differs")
+    for macro, number, _title, locator, _decision, _dependency in metadata:
+        stem = "REQ" if macro == "PTCRequirement" else "PRED"
+        require(locator.strip() != "", f"SCI-PTC-{stem}-{number} has blank rationale locator")
+        require(
+            locator.startswith("Rationale ") and re.search(r"\d", locator),
+            f"SCI-PTC-{stem}-{number} has unresolved rationale locator: {locator!r}",
+        )
+        require(
+            not re.search(r"\b(?:TBD|UNRESOLVED|PENDING|UNKNOWN)\b", locator, re.I),
+            f"SCI-PTC-{stem}-{number} has unresolved rationale locator: {locator!r}",
+        )
     equation_source = text(COMMON / "equations.tex")
     require(
         len(re.findall(r"\\begin\{(?:equation|align)\}", equation_source)) == 25,
@@ -151,14 +171,14 @@ def main() -> None:
         flags=re.MULTILINE,
     )
     sequence(crosswalk_ids[:89], "SCI-PTC-REQ-", 89)
-    sequence(crosswalk_ids[89:], "SCI-PTC-PRED-", 49)
-    require(len(crosswalk_ids) == 138, "crosswalk row count differs")
+    sequence(crosswalk_ids[89:], "SCI-PTC-PRED-", 50)
+    require(len(crosswalk_ids) == 139, "crosswalk row count differs")
 
     decisions = text(PKG / "AUTHOR_DRAFT_DECISIONS.md")
     author_ids = re.findall(
         r"^\| .(PTC-AUTH-D\d{3}). \|", decisions, flags=re.MULTILINE
     )
-    sequence(author_ids, "PTC-AUTH-D", 24)
+    sequence(author_ids, "PTC-AUTH-D", 27)
     require("PTC-OWNER-Q002" in decisions and "decided" in decisions,
             "owner-approved projection decision is missing")
     review = text(PKG / "SCIENTIFIC_OWNER_REVIEW_R0.2.md")
@@ -168,6 +188,24 @@ def main() -> None:
         and "High effort is sufficient" in review,
         "r0.2 scientific-owner review record or effort disposition is missing",
     )
+    freeze_path = PKG / "SCIENTIFIC_OWNER_FREEZE_R0.4.md"
+    require(
+        digest(freeze_path)
+        == "90334ea7853e1ab274f6858fad66078356c06326438625c7fe294e41c07fbcc4",
+        "r0.4 scientific-owner freeze digest",
+    )
+    freeze_status = (
+        "Scientific authority frozen; implementation conformity not yet assessed "
+        "under this contract."
+    )
+    require(
+        freeze_status in text(freeze_path).replace("\n", " "),
+        "exact frozen status in owner record",
+    )
+    require("Scientific authority frozen" in rationale,
+            "frozen status in rationale")
+    require("Scientific authority frozen" in engineering,
+            "frozen status in engineering")
 
     required_markers = (
         r"\mathcal A_{\Theta}",
@@ -179,12 +217,30 @@ def main() -> None:
         r"U_{\star,td}=\sum_{k=1}^{K}M_{\star,tk}A_{\star,dk}",
         r"k_{\rm src}^{\rm CAL}=K_{\rm up\to CAL}\tau_{\rm src}",
         r"\mathsf{Exist}_{p}",
+        r"C_{\lambda}(Y')=Y'-\lambda",
+        r"\mathcal C&=\bigcup_i\mathcal C_i",
+        r"\operatorname{eligible}_U",
+        r"\texttt{decision\_unavailable}",
     )
     for marker in required_markers:
-        require(marker in equation_source, f"missing r0.3 formal marker: {marker}")
+        require(marker in equation_source, f"missing r0.4 formal marker: {marker}")
+    require(r"C^{-1}" not in equation_source, "centering inverse/restoration remains")
+    require(
+        r"$y=P(x-\lambda)$" in rationale
+        and r"not $\lambda+P(x-\lambda)$" in rationale,
+        "scientist-facing nonrestoring-centering statement is missing",
+    )
 
     rationale_path = PDF / "SCI-PTC-SCIENTIFIC-RATIONALE-v0.1.pdf"
     engineering_path = PDF / "SCI-PTC-ENGINEERING-CONFORMANCE-v0.1.pdf"
+    frozen_pdfs = {
+        rationale_path:
+            "7cb358eec6633e06ca2559741d4f32ca2cf62607fac2fe6efb73365863832fd0",
+        engineering_path:
+            "1e73d3e001dafce4dd6a9025553af95da58075fb49ea2b4eb41222431d658b85",
+    }
+    for path, expected in frozen_pdfs.items():
+        require(digest(path) == expected, f"frozen PDF hash changed: {path.name}")
     rationale_pdf, rationale_text = pdf_text(rationale_path)
     engineering_pdf, engineering_text = pdf_text(engineering_path)
     require(10 <= len(rationale_pdf.pages) <= 18,
@@ -206,8 +262,10 @@ def main() -> None:
                 and float(page.mediabox.height) == 792.0,
                 f"{name} contains a non-letter page",
             )
-        require("v0.1" in extracted and "r0.3" in extracted,
+        require("v0.1" in extracted and "r0.4" in extracted,
                 f"{name} version stamps")
+        require("Scientific authority frozen" in extracted,
+                f"{name} frozen status")
         require("diagnostic-only" in extracted.lower(),
                 f"{name} diagnostic-r disposition")
         require("frozen" in extracted.lower() and "projection" in extracted.lower(),
@@ -218,7 +276,7 @@ def main() -> None:
             f"SCI-PTC-REQ-{number:03d}" in engineering_text,
             f"engineering PDF missing requirement {number:03d}",
         )
-    for number in range(1, 50):
+    for number in range(1, 51):
         require(
             f"SCI-PTC-PRED-{number:03d}" in engineering_text,
             f"engineering PDF missing prediction {number:03d}",
@@ -243,16 +301,17 @@ def main() -> None:
                 f"forbidden active-source claim: {forbidden}")
 
     print("PASS: approved packet hashes (5 items including retained core)")
-    print("PASS: definitions=41 equations=25 assumptions=28 requirements=89 predictions=49")
+    print("PASS: definitions=41 equations=25 assumptions=29 requirements=89 predictions=50")
     print("PASS: standalone rationale plus six-file engineering/formal view")
-    print("PASS: crosswalk rows=138, exact and sequential")
-    print("PASS: author decisions=24, owner projection decision Q002, and r0.2 review recorded")
-    print("PASS: r0.3 latent-estimand, upstream-response, application-availability, and validation markers")
+    print("PASS: crosswalk rows=139, exact and sequential; all rationale locators resolved")
+    print("PASS: author decisions=27, owner projection decision Q002, r0.2 review, and r0.4 freeze")
+    print("PASS: r0.4 support composition and nonrestoring-centering markers")
     print(
         f"PASS: PDFs={len(rationale_pdf.pages)}/{len(engineering_pdf.pages)} "
         "letter pages, unencrypted, no forms/JavaScript"
     )
-    print("PASS: engineering PDF contains all 138 normative IDs")
+    print("PASS: canonical frozen PDF hashes (2)")
+    print("PASS: engineering PDF contains all 139 normative IDs")
     print("PASS: engineering wrapper has no independent displayed mathematics")
 
 

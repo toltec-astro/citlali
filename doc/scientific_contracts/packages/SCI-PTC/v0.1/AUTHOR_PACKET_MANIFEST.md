@@ -4,7 +4,7 @@ Status: scientific-owner approved content-bound Stage B author packet
 
 Scientific owner: Grant Wilson
 
-Prepared date: `2026-08-19`
+Prepared date: `2026-08-20`
 
 ## Allowed Inputs
 
@@ -19,10 +19,10 @@ these five owner-approved packet items:
 
 | Logical item | Exact source | Content SHA-256 |
 | --- | --- | --- |
-| 1 — approved Scope Brief | `SCOPE_BRIEF.md` | `836fa3aaca0423c7f11c6d745574b348553dce00524920ed90410c38b6173c6f` |
+| 1 — approved Scope Brief | `SCOPE_BRIEF.md` | `8aa05920589b67cb7634003f466161769101e3013cf82573260e94b257532bed` |
 | 2 — binding supersession cover | `AUTHOR_SUPERSESSION_COVER.md` | `2a13d3984c2334ccd1886021d2d869bb71363abd3a06bb7f9fbf536614d9ee3e` |
 | 3 — reusable independent core | `01ee247461d6c19bc4db81ccac4fec21af162c88:doc/audits/packages/SCI-PTC-001_INDEPENDENT_CORE.tex` | `82c0835f51ea9b1fa8a37489f289be89a8018a0b2700e84b1e25c2e4d2a013c2` |
-| 4 — conventions and ownership | `AUTHOR_CONVENTIONS_AND_OWNERSHIP.md` | `57d7032a0e050dab295fd4fc84bde0a2629b0ee359eeea884e0e7767ffa5ec84` |
+| 4 — conventions and ownership | `AUTHOR_CONVENTIONS_AND_OWNERSHIP.md` | `568b35ff3da16c8ed6902d3bb0d845e01eec38e5374c6e89e75823f1f8ecabe6` |
 | 5 — bounded method-reference context | `AUTHOR_METHOD_REFERENCE_BOUNDARY.md` | `d5d33180c9e40958237916ec6dd98ba655d161bc984a3b694197a1a90d78be61` |
 
 Items 2 and 3 are inseparable. The author may not read or use the frozen core
@@ -111,5 +111,14 @@ compiling draft is not automatically accepted or frozen.
 Grant Wilson approved the Scope Brief, `PTC-SCOPE-D001--D017`, and this exact
 packet on `2026-08-19`, launching implementation-blind Stage B authorship.
 `PTC-OWNER-Q001` is resolved diagnostic-only for the first implementation/base
-v0.1. Approval does not establish implementation conformity, validation,
-scientific freeze, or production readiness.
+v0.1. On `2026-08-20`, the owner directed the r0.4 support-ownership,
+conservative composition, nonrestoring-centering, and traceability amendments;
+items 1 and 4 were re-bound above rather than changed silently. Approval does
+not establish implementation conformity, validation, scientific freeze, or
+production readiness.
+
+The subsequent owner statement recorded in
+[`SCIENTIFIC_OWNER_FREEZE_R0.4.md`](SCIENTIFIC_OWNER_FREEZE_R0.4.md) freezes the
+completed v0.1/r0.4 scientific authority. That later status decision does not
+retroactively broaden the author packet or establish implementation
+conformity, validation, or production readiness.

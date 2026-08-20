@@ -1,6 +1,6 @@
 # SCI-PTC v0.1 -- Stage B Author Decisions And Owner Ledger
 
-Status: bounded scientific-owner freeze-candidate revision, document revision `r0.3`
+Status: frozen scientific-authority author ledger, document revision `r0.4`
 
 Date: `2026-08-20`
 
@@ -35,6 +35,9 @@ packet. It does not report implementation behavior or validation evidence.
 | `PTC-AUTH-D022` | Rename the source-domain-to-CAL-grid operator `K_up->CAL` and define it as the complete admitted upstream response carried by the CAL product. | The chain includes every applicable admitted source-to-detector, beam-convention, coordinate/scan, RTC, and CAL operation and cannot be mistaken for only the CAL-owned multiplier. |
 | `PTC-AUTH-D023` | Make fit-excluded application availability an explicit scientific contract rather than an inferred extension of the fit population. | Append Definition 040, Assumption 028, Requirement 089, and Prediction 049; preserve every r0.2 normative ID. |
 | `PTC-AUTH-D024` | Add the bounded science validation program, estimator-family orientation, surrogate purpose, resolved lifecycle wording, and named orphan-heading correction requested by the r0.2 review. | The rationale becomes a freeze-candidate content revision without adding thresholds, results, default methods, implementation evidence, or a broad stylistic rewrite. |
+| `PTC-AUTH-D025` | Compose applicable producer causes by union without erasure, then evaluate PTC-local admission as the base predicate conjoined with every applicable permission predicate; one exclusion cannot be rescued and an unknown required predicate yields `decision_unavailable`. | Cause provenance is conserved while admission remains deterministic, conservative, and specific to one named scientific use. |
+| `PTC-AUTH-D026` | Assign each producer its facts and local predicates, PTC its local named-use composites, each downstream named-use owner its own admission policy, and VAL only shared types, knowledge/cause-preservation semantics, provenance, evaluation machinery, and vocabulary. | Neither VAL nor PTC silently owns MAP admission or a universal eligibility policy. Every composite records exact inputs, rule, missing behavior, scope, use, owner, and policy/version identity. |
+| `PTC-AUTH-D027` | Treat detector centering as a nonrestoring coordinate operation: the output is `P(x-lambda)`, not `lambda+P(x-lambda)`; fixed response freezes `lambda`, while full-procedure response re-estimates, records, and again discards it. | The contract no longer implies a meaningful optical DC level for detector `x`; only invertible internal scaling is restored. |
 
 ## Scientific Owner Decision Ledger
 
@@ -57,7 +60,8 @@ packet. It does not report implementation behavior or validation evidence.
 
 ## Draft Blocking Assessment
 
-No open item blocks the structural scientific contract or either document
-view. Open and known-but-not-supplied items block only automatic/default
-instantiation or the specifically named numerical product or claim. No
-conformity, validation, performance, freeze, or readiness claim is made.
+No open item blocks the frozen structural scientific contract or either
+document view. Open and known-but-not-supplied items block only
+automatic/default instantiation or the specifically named numerical product or
+claim. The v0.1/r0.4 freeze supplies no missing decision and makes no
+conformity, validation, performance, qualification, or readiness claim.

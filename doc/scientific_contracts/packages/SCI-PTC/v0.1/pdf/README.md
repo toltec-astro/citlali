@@ -1,23 +1,28 @@
 # SCI-PTC v0.1 PDF Outputs
 
-The bounded Stage B freeze-candidate revision is complete at document revision
-`r0.3`. The canonical owner-review PDFs are:
+Status: Scientific authority frozen; implementation conformity not yet assessed
+under this contract.
 
-- `SCI-PTC-SCIENTIFIC-RATIONALE-v0.1.pdf`; and
-- `SCI-PTC-ENGINEERING-CONFORMANCE-v0.1.pdf`.
+The canonical v0.1/r0.4 frozen PDFs are:
+
+- `SCI-PTC-SCIENTIFIC-RATIONALE-v0.1.pdf`: 11 pages; SHA-256
+  `7cb358eec6633e06ca2559741d4f32ca2cf62607fac2fe6efb73365863832fd0`; and
+- `SCI-PTC-ENGINEERING-CONFORMANCE-v0.1.pdf`: 22 pages; SHA-256
+  `1e73d3e001dafce4dd6a9025553af95da58075fb49ea2b4eb41222431d658b85`.
 
 Both PDFs are generated from the audience views under `../src/`. The 11-page
 scientific rationale is a standalone science-team document with compact
-traceability and no duplicated full register. The 20-page engineering view
+traceability and no duplicated full register. The 22-page engineering view
 imports the six shared normative modules exactly once and is the complete
-formal contract view. These files are contract drafts for scientific review;
-their presence does not claim implementation conformity, validation, achieved
-performance, freeze, or production readiness.
+formal contract view. These files are the frozen scientific authority. Their
+presence does not claim implementation conformity, representation/response
+fidelity, validation, achieved performance, science qualification, or
+production readiness.
 
 Repeatable packet-hash, source-identifier, crosswalk, audience-separation, and
 PDF coverage checks are provided by `../src/verify_contract.py`. Both PDFs
-were rendered with Poppler for targeted visual sanity at revision `r0.3`; the
-new science table, response chain, appended formal entries, and named orphan
-heading are clean and readable. Final
-pagination and cosmetic layout polish are deferred to the final editorial
-revision so this pass remains focused on scientific content.
+were rendered with Poppler and inspected page by page at revision `r0.4`; the
+support-composition rule, nonrestoring-centering statements, repaired
+traceability, response chain, and formal registers are clean and readable.
+Future substantive edits require explicit owner authority and a versioned
+successor or formally reopened revision.

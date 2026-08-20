@@ -51,9 +51,13 @@ implementation, conformity, validation, or production readiness.
 - Direct validity and transitive causal influence are distinct. Compact
   over-approximation of influence is permitted; under-approximation is not.
 - Only eligible finite samples enter fitted-state arithmetic.
-- A flag is a cause, not an action. Policy maps each cause independently into
-  basis-fit, loading-fit, application, output, coefficient/QC, kernel,
-  empirical, simulation, and downstream supports. Zero-fill is not exclusion.
+- A flag is a cause, not an action. Facts and causes accumulate without
+  erasure. For each PTC-owned use, PTC's versioned policy combines its base
+  predicate and every applicable fact/cause predicate conjunctively: one
+  exclusion controls, while no exclusion plus an unknown required predicate
+  yields `decision_unavailable`. Each composite declares exact inputs, rule,
+  missing behavior, scope, use, owner, and policy/version. Downstream use
+  owners define their own admission rules. Zero-fill is not exclusion.
 - `fit_invalid`, `postfit_output_reject`, `weight_only`, advisory-only, and
   fit-excluded/apply-allowed behavior are distinct. Only a fit-support change
   invokes refit or fitted-state invalidation.
@@ -83,8 +87,9 @@ implementation, conformity, validation, or production readiness.
   state flow one way. Data-derived masks, groups, selections, modes, ranks,
   thresholds, coefficients, and convergence branches are realized random
   quantities even when computation is deterministic.
-- Shifted/null surrogates shift signal and associated validity/eligibility
-  together. Insufficient support is unavailable or rejected, not a valid zero.
+- Shifted/null surrogates shift signal and associated facts, causes, support
+  decisions, boundaries, and identity together. Insufficient support is
+  unavailable or rejected, not a valid zero.
 
 ## Response, Covariance, And Coefficients
 
@@ -94,8 +99,11 @@ implementation, conformity, validation, or production readiness.
 - The removed subspace, additive-reference state, centering/scaling, gauge,
   null space, and permitted astronomical attenuation are required state.
 - Every centering/scaling transform declares axis, population, support,
-  weights, estimator, masks, boundary, unit, reversibility, gauge, and null
-  space. Internal standardization is inverted before ordinary output.
+  weights, estimator, masks, boundary, unit, gauge, failure behavior, and null
+  space. Internal scaling is inverted before ordinary output. The learned
+  additive detector location is not restored because detector `x` has no
+  scientifically meaningful optical DC response. Frozen-state response holds
+  it fixed; full-procedure response re-estimates and again discards it.
 - Base fitting is hierarchical within one array. Array-wide,
   network/electronics, and optional local/focal-plane components declare joint
   versus sequential order. Data-derived groups are learned state. Cross-array
@@ -161,7 +169,11 @@ implementation, conformity, validation, or production readiness.
 - **FRUIT or a declared recurrence owner** owns model subtraction/add-back,
   map feedback, external recurrence, pass parentage, and restart. PTC internal
   iteration and a new PTC pass remain distinct from that recurrence.
-- **VAL** owns reusable eligibility and cause precedence.
+- **SCI-VAL** may own common types, knowledge-state semantics, cause
+  preservation, reusable policy-evaluation machinery, provenance
+  requirements, and shared profile vocabulary. It does not own PTC or another
+  package's scientific admission policy. PTC owns PTC-local support rules;
+  every downstream named-use owner owns its own rule.
 - **SCI-MAP** owns sample-to-map estimation, gridding normalization, map
   response/support/covariance, coaddition, and any direct CAL-to-MAP route. A
   named reference functional may enter an optional PTC diagnostic only.

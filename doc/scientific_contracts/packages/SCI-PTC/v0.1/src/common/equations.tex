@@ -1,4 +1,4 @@
-% SCI-PTC v0.1 shared normative equations -- owner-review draft r0.3.
+% SCI-PTC v0.1 shared normative equations -- owner-review draft r0.4.
 \section{Normative equations}
 \label{sec:normative-equations}
 
@@ -22,28 +22,41 @@ Z=\mathcal A_{\Theta}(Y^{\rm CAL})
 Equation~\ref{eq:ptc-subtraction} states the realized result on the fitted
 parent. It does not define how a new input or response companion is applied.
 
-For a declared centering operator $C$ with location state $\lambda$ and an
-invertible internal scaling $D$, the fitting coordinate and physical-unit
-application map are
+For declared learned additive location $\lambda$ and invertible internal
+scaling $D$, the fitting coordinate and physical-unit application map are
 \begin{equation}
-\widetilde Y'=D^{-1}C(Y';\lambda),
+Y'_c=C_{\lambda}(Y')=Y'-\lambda,
+\qquad
+\widetilde Y'=D^{-1}Y'_c,
 \qquad
 \mathcal A_{\Theta}(Y')
-=C^{-1}\!\left(D\widetilde{\mathcal A}_{\Theta}
-(\widetilde Y');\lambda\right).
+=D\widetilde{\mathcal A}_{\Theta}(\widetilde Y').
 \label{eq:center-scale}
 \end{equation}
-Every reversible coordinate is restored for ordinary output. Any
-irrecoverable additive mode is published in $\mathcal N_{\rm PTC}$.
+Scaling is restored for ordinary output; $\lambda$ is not. Detector $x$ has
+no scientifically meaningful optical DC response, so the removed additive
+reference is discarded and published in $\mathcal N_{\rm PTC}$. In
+fixed-state application $\lambda$ is held fixed. In a full-procedure response
+it is re-estimated in each run, may move under perturbation, and is again
+discarded.
 
-Every typed cause $\phi$ is mapped independently to each use:
+Facts and causes accumulate without erasure, while admission is a separate
+owner-controlled decision for an exact named use:
 \begin{equation}
-\Gamma(\phi)=
-\bigl(\Gamma_{\rm basis},\Gamma_{\rm load},\Gamma_{\rm apply},
-\Gamma_{\rm out},\Gamma_{\rm coeff},\Gamma_{\rm resp},
-\Gamma_{\rm emp},\Gamma_{\rm sim},\Gamma_{\rm down}\bigr).
+\begin{aligned}
+\mathcal C&=\bigcup_i\mathcal C_i,\\
+\operatorname{eligible}_U
+  &=b_U\land\bigwedge_{i\in I_U}p_{i,U},\\
+\operatorname{ineligible}_U
+  &=\bigvee_{i\in I_U}\neg p_{i,U}.
+\end{aligned}
 \label{eq:cause-support}
 \end{equation}
+One applicable exclusion cannot be rescued by another cause. If no known
+predicate excludes the occurrence but any required predicate is unknown, the
+result is \texttt{decision\_unavailable}, not eligible. PTC owns this rule for
+PTC-local uses; another named-use owner supplies its own policy while
+consuming the preserved facts.
 
 An admitted weighted or robust low-rank family minimizes
 \begin{equation}
@@ -158,8 +171,8 @@ The full PTC procedure has separately typed signal and state projections:
 \label{eq:full-procedure}
 \end{equation}
 
-For fixed resolved model $\Theta$, the local detector-time response and a
-realized CAL-grid companion are
+For fixed resolved model $\Theta$, including frozen $\lambda$, the local
+detector-time response and a realized CAL-grid companion are
 \begin{equation}
 J_{\Theta}[Y]=D\mathcal A_{\Theta}[Y],
 \qquad
@@ -190,7 +203,9 @@ K_{\rm PTC}^{\rm proc}(\epsilon,h^{\rm CAL})=
       -\mathcal P_Z(Y^{\rm CAL})}{\epsilon}.
 \label{eq:e2e-response}
 \end{equation}
-The corresponding state evidence is retained separately:
+Each full-procedure evaluation re-estimates and again discards $\lambda$. The
+corresponding state evidence, including any centering-state movement, is
+retained separately:
 \begin{equation}
 \Delta_{\rm state}(\epsilon,h^{\rm CAL})=
 \operatorname{Compare}_{\rm typed}\!\left[

@@ -1,6 +1,7 @@
 # SCI-PTC v0.1 — Scientific Owner Decision Ledger
 
-Status: Stage B v0.1/r0.3 freeze-candidate owner-review summary; scientific authority not frozen
+Status: frozen v0.1/r0.4 scientific-authority summary; implementation
+conformity not yet assessed under this contract
 
 | Decision group | Status | Required owner action | Blocked work |
 | --- | --- | --- | --- |
@@ -24,7 +25,16 @@ No unresolved entry blocks review of the structural contract. Each blocks only
 the specifically named automatic policy, numerical product, response,
 coefficient use, covariance claim, or later evidence-layer claim.
 
-The bounded r0.3 revision introduces no new owner question. It records the
-latent-estimand distinction, complete-upstream-response naming,
-fit-excluded-application availability, and validation-study program as author
-dispositions under the already approved scope and Q002 operator decision.
+The bounded r0.4 revision introduces no new unresolved owner question. It
+records the owner-directed cause-union and named-use support-composition rule,
+the producer/PTC/downstream/VAL ownership split, nonrestoring detector
+centering, and complete rationale locators as author dispositions. These
+clarifications preserve the already approved estimator and Q002 projection
+decisions and do not select any open numerical threshold or default.
+
+The scientific-owner freeze recorded in
+[`SCIENTIFIC_OWNER_FREEZE_R0.4.md`](SCIENTIFIC_OWNER_FREEZE_R0.4.md) preserves
+all 14 detailed-ledger states: two decided, six open, four
+known-but-not-supplied, and two deferred. Resolving any remaining item requires
+explicit owner authority and a versioned successor or formally reopened
+revision; the freeze itself does not supply that authority.

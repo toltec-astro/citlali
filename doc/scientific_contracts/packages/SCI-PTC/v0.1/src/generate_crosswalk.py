@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate or check the exact SCI-PTC v0.1/r0.3 crosswalk."""
+"""Generate or check the exact SCI-PTC v0.1/r0.4 crosswalk."""
 
 from __future__ import annotations
 
@@ -22,6 +22,16 @@ def parse_rows(path: Path, macro: str, stem: str, audience: str) -> list[str]:
     )
     rows = []
     for number, title, rationale, decision, dependency in pattern.findall(source):
+        if (
+            not rationale.strip()
+            or not rationale.startswith("Rationale ")
+            or not re.search(r"\d", rationale)
+            or re.search(r"\b(?:TBD|UNRESOLVED|PENDING|UNKNOWN)\b", rationale, re.I)
+        ):
+            raise SystemExit(
+                f"FAIL: SCI-PTC-{stem}-{number} has blank or unresolved "
+                f"rationale locator: {rationale!r}"
+            )
         identifier = f"SCI-PTC-{stem}-{number}"
         rows.append(
             f"| `{identifier}` | `src/common/{path.name}` ({title}) | "
@@ -47,7 +57,7 @@ def render() -> str:
     lines = [
         "# SCI-PTC v0.1 -- Requirement And Prediction Crosswalk",
         "",
-        "Status: Stage B bounded freeze-candidate draft `r0.3`; generated from the shared "
+        "Status: frozen scientific authority `v0.1/r0.4`; generated from the shared "
         "normative macro metadata",
         "",
         f"Coverage: {len(requirements)} requirements and {len(predictions)} predictions.",
