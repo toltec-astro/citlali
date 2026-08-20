@@ -16,6 +16,7 @@
 #include <citlali/core/utils/utils.h>
 
 #include <citlali/core/mapmaking/jinc_debug_breadcrumb.h>
+#include <citlali/core/mapmaking/jinc_contract.h>
 #include <citlali/core/timestream/timestream.h>
 
 #include <citlali/core/mapmaking/map.h>
@@ -75,6 +76,10 @@ public:
 
     // jinc filter shape parameters
     std::map<Eigen::Index,Eigen::VectorXd> shape_params;
+    // stable selected-array identity supplied by the typed one-way adapter
+    std::map<Eigen::Index,std::string> array_names;
+    // validated, observation-independent cache realization
+    std::vector<JincResolvedArrayParameters> resolved_arrays;
 
     // matrices to hold precomputed jinc function
     std::map<Eigen::Index,Eigen::MatrixXd> jinc_weights_mat;
@@ -133,16 +138,22 @@ auto JincMapmaker::jinc_func(double r, double a, double b, double c, double r_ma
 }
 
 void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
-    l_d[0] = (1.1/1000)/45;
-    l_d[1] = (1.4/1000)/45;
-    l_d[2] = (2.0/1000)/45;
+    const std::map<Eigen::Index, double> next_l_d{
+        {0, (1.1/1000)/45},
+        {1, (1.4/1000)/45},
+        {2, (2.0/1000)/45},
+    };
+    if (!std::isfinite(pixel_size_rad) || pixel_size_rad <= 0.0 ||
+        !std::isfinite(r_max) || r_max <= 0.0 || subpixel_n < 1) {
+        throw std::invalid_argument(
+            "JINC cache requires finite-positive pixel size/r_max and subpixel_n >= 1");
+    }
 
-    subpixel_n = std::max(1, subpixel_n);
-
-    jinc_weights_mat.clear();
-    jinc_weights_sq_mat.clear();
-    jinc_weights_mat_subpix.clear();
-    jinc_weights_sq_mat_subpix.clear();
+    std::map<Eigen::Index,Eigen::MatrixXd> next_weights;
+    std::map<Eigen::Index,Eigen::MatrixXd> next_weights_sq;
+    std::map<Eigen::Index,std::vector<Eigen::MatrixXd>> next_subpix;
+    std::map<Eigen::Index,std::vector<Eigen::MatrixXd>> next_subpix_sq;
+    std::vector<JincResolvedArrayParameters> next_resolved;
 
     std::vector<double> subpixel_offsets;
     if (subpixel_n > 1) {
@@ -153,21 +164,33 @@ void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
     }
 
     // loop through lambda/diameters
-    for (const auto &ld: l_d) {
+    for (const auto &ld: next_l_d) {
+        const auto shape_it = shape_params.find(ld.first);
+        const auto name_it = array_names.find(ld.first);
+        if (shape_it == shape_params.end() || name_it == array_names.end() ||
+            shape_it->second.size() != 3) {
+            throw std::invalid_argument(
+                "JINC selected array is missing stable identity or shape parameters");
+        }
         // get shape params
-        auto a = shape_params[ld.first](0);
-        auto b = shape_params[ld.first](1);
-        auto c = shape_params[ld.first](2);
+        auto a = shape_it->second(0);
+        auto b = shape_it->second(1);
+        auto c = shape_it->second(2);
 
         // maximum radius in pixels
         int r_max_pix = std::floor(r_max*ld.second/pixel_size_rad);
+        JincResolvedArrayParameters resolved{
+            ld.first, name_it->second, a, b, c, r_max, pixel_size_rad,
+            ld.second, r_max_pix, 2 * r_max_pix + 1,
+            2 * r_max_pix + 1};
+        validate_jinc_resolved_array(resolved);
 
         // pixel centers within max radius
         Eigen::VectorXd pixels = Eigen::VectorXd::LinSpaced(2*r_max_pix + 1,-r_max_pix, r_max_pix);
 
         // allocate jinc weights
-        jinc_weights_mat[ld.first].setZero(2*r_max_pix + 1,2*r_max_pix + 1);
-        jinc_weights_sq_mat[ld.first].setZero(2*r_max_pix + 1,2*r_max_pix + 1);
+        next_weights[ld.first].setZero(2*r_max_pix + 1,2*r_max_pix + 1);
+        next_weights_sq[ld.first].setZero(2*r_max_pix + 1,2*r_max_pix + 1);
 
         // loop through matrix rows
         for (Eigen::Index i=0; i<pixels.size(); ++i) {
@@ -177,14 +200,18 @@ void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
                 double r = pixel_size_rad*sqrt(pow(pixels(i),2) + pow(pixels(j),2));
                 // calculate jinc weight at pixel
                 auto w = jinc_func(r,a,b,c,r_max,ld.second);
-                jinc_weights_mat[ld.first](i,j) = w;
-                jinc_weights_sq_mat[ld.first](i,j) = w*w;
+                if (!std::isfinite(w)) {
+                    throw std::invalid_argument(
+                        "JINC evaluated a non-finite selected-array coefficient");
+                }
+                next_weights[ld.first](i,j) = w;
+                next_weights_sq[ld.first](i,j) = w*w;
             }
         }
 
         if (subpixel_n > 1) {
-            auto &subpix_vec = jinc_weights_mat_subpix[ld.first];
-            auto &subpix_sq_vec = jinc_weights_sq_mat_subpix[ld.first];
+            auto &subpix_vec = next_subpix[ld.first];
+            auto &subpix_sq_vec = next_subpix_sq[ld.first];
             subpix_vec.resize(subpixel_n * subpixel_n);
             subpix_sq_vec.resize(subpixel_n * subpixel_n);
             for (int sr = 0; sr < subpixel_n; ++sr) {
@@ -201,6 +228,10 @@ void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
                         for (Eigen::Index j=0; j<pixels.size(); ++j) {
                             double r = pixel_size_rad*sqrt(pow(pixels(i) - drow,2) + pow(pixels(j) - dcol,2));
                             auto w = jinc_func(r,a,b,c,r_max,ld.second);
+                            if (!std::isfinite(w)) {
+                                throw std::invalid_argument(
+                                    "JINC evaluated a non-finite phase coefficient");
+                            }
                             mat(i,j) = w;
                             mat_sq(i,j) = w*w;
                         }
@@ -208,7 +239,14 @@ void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
                 }
             }
         }
+        next_resolved.push_back(std::move(resolved));
     }
+    l_d = next_l_d;
+    jinc_weights_mat = std::move(next_weights);
+    jinc_weights_sq_mat = std::move(next_weights_sq);
+    jinc_weights_mat_subpix = std::move(next_subpix);
+    jinc_weights_sq_mat_subpix = std::move(next_subpix_sq);
+    resolved_arrays = std::move(next_resolved);
 }
 
 void JincMapmaker::calculate_jinc_splines() {
@@ -367,6 +405,22 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
         }
     };
 
+    auto ensure_zero_count_vec = [](std::vector<JincCountPlane> &vec,
+                                    Eigen::Index size,
+                                    Eigen::Index n_rows,
+                                    Eigen::Index n_cols) {
+        if (static_cast<Eigen::Index>(vec.size()) != size) {
+            vec.resize(static_cast<size_t>(size));
+        }
+        for (Eigen::Index ii = 0; ii < size; ++ii) {
+            auto &m = vec[static_cast<size_t>(ii)];
+            if (m.rows() != n_rows || m.cols() != n_cols) {
+                m.resize(n_rows, n_cols);
+            }
+            m.setZero();
+        }
+    };
+
     auto &omb_copy = scratch.omb_copy;
     omb_copy.n_rows = omb.n_rows;
     omb_copy.n_cols = omb.n_cols;
@@ -374,6 +428,20 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     if (run_omb) {
         ensure_zero_matrix_vec(omb_copy.signal, static_cast<Eigen::Index>(omb.signal.size()), omb.n_rows, omb.n_cols);
         ensure_zero_matrix_vec(omb_copy.weight, static_cast<Eigen::Index>(omb.weight.size()), omb.n_rows, omb.n_cols);
+        if (!omb.jinc_products.initialized ||
+            omb.jinc_products.denominator_sum_abs.size() != omb.signal.size() ||
+            omb.jinc_products.contributor_count.size() != omb.signal.size()) {
+            throw std::runtime_error(
+                "JINC population requires complete observation conditioning planes");
+        }
+        ensure_zero_matrix_vec(
+            omb_copy.jinc_products.denominator_sum_abs,
+            static_cast<Eigen::Index>(omb.signal.size()), omb.n_rows,
+            omb.n_cols);
+        ensure_zero_count_vec(
+            omb_copy.jinc_products.contributor_count,
+            static_cast<Eigen::Index>(omb.signal.size()), omb.n_rows,
+            omb.n_cols);
         if (!omb.grid_weight.empty()) {
             ensure_zero_matrix_vec(omb_copy.grid_weight, static_cast<Eigen::Index>(omb.grid_weight.size()),
                                    omb.n_rows, omb.n_cols);
@@ -497,20 +565,10 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                     Eigen::Index omb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
                     int subpix_idx = 0;
                     if (use_subpix) {
-                        auto subpix_index = [&](double d) {
-                            int idx = static_cast<int>(std::floor((d + 0.5) * subpixel_n));
-                            if (idx < 0) {
-                                idx = 0;
-                            }
-                            else if (idx >= subpixel_n) {
-                                idx = subpixel_n - 1;
-                            }
-                            return idx;
-                        };
                         double drow = omb_irow(j) - static_cast<double>(omb_ir);
                         double dcol = omb_icol(j) - static_cast<double>(omb_ic);
-                        int sr = subpix_index(drow);
-                        int sc = subpix_index(dcol);
+                        int sr = jinc_phase_bin(drow, subpixel_n);
+                        int sc = jinc_phase_bin(dcol, subpixel_n);
                         subpix_idx = sr * subpixel_n + sc;
                     }
 
@@ -531,21 +589,17 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                         // make sure the data point is within the map
                         if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
 
-                            int lower_row = omb_ir - mat_rows_center;
-                            int upper_row = omb_ir + mat_rows - 1 - mat_rows_center;
-                            int lower_col = omb_ic - mat_cols_center;
-                            int upper_col = omb_ic + mat_cols - 1 - mat_cols_center;
-
-                            int jinc_lower_row = abs(std::min(0, lower_row));
-                            int jinc_lower_col = abs(std::min(0, lower_col));
-
-                            lower_row = std::max(0,lower_row);
-                            upper_row = std::min(static_cast<int>(omb.n_rows - 1),upper_row);
-                            lower_col = std::max(0,lower_col);
-                            upper_col = std::min(static_cast<int>(omb.n_cols - 1),upper_col);
-
-                            int size_rows = upper_row - lower_row + 1;
-                            int size_cols = upper_col - lower_col + 1;
+                            const auto crop = jinc_square_crop(
+                                omb.n_rows, omb.n_cols, omb_ir, omb_ic,
+                                mat_rows, mat_cols);
+                            const auto lower_row = crop.map_row;
+                            const auto lower_col = crop.map_col;
+                            const auto upper_row = lower_row + crop.rows - 1;
+                            const auto upper_col = lower_col + crop.cols - 1;
+                            const auto jinc_lower_row = crop.cache_row;
+                            const auto jinc_lower_col = crop.cache_col;
+                            const auto size_rows = crop.rows;
+                            const auto size_cols = crop.cols;
 
                             const auto &jinc_mat = use_subpix ? subpix_vec->at(subpix_idx) : jinc_weights_mat[array_index];
                             const auto &jinc_sq_mat = use_subpix ? subpix_sq_vec->at(subpix_idx) : jinc_weights_sq_mat[array_index];
@@ -555,6 +609,12 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             auto sig_block = omb_copy.signal[map_index].block(lower_row,lower_col,size_rows,size_cols);
                             auto grid_wt_block = omb_copy.grid_weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
                             auto wt_block = omb_copy.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                            auto abs_c_block =
+                                omb_copy.jinc_products.denominator_sum_abs[map_index]
+                                    .block(lower_row, lower_col, size_rows, size_cols);
+                            auto count_block =
+                                omb_copy.jinc_products.contributor_count[map_index]
+                                    .block(lower_row, lower_col, size_rows, size_cols);
 
                             // populate signal map
                             const double weighted_signal =
@@ -610,6 +670,9 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
                             // memo-style gridding denominator
                             grid_wt_block.array() += (mat_block.array() * in.weights.data(i));
+                            abs_c_block.array() +=
+                                (mat_block.array() * in.weights.data(i)).abs();
+                            count_block.array() += 1;
 
                             // variance accumulator for final inverse-variance weights
                             wt_block.array() += (mat_sq_block.array() * in.weights.data(i));
@@ -648,40 +711,26 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                         if ((nmb_ir >= 0) && (nmb_ir < nmb->n_rows) && (nmb_ic >= 0) && (nmb_ic < nmb->n_cols)) {
                             int nmb_subpix_idx = 0;
                             if (use_subpix) {
-                                auto subpix_index = [&](double d) {
-                                    int idx = static_cast<int>(std::floor((d + 0.5) * subpixel_n));
-                                    if (idx < 0) {
-                                        idx = 0;
-                                    }
-                                    else if (idx >= subpixel_n) {
-                                        idx = subpixel_n - 1;
-                                    }
-                                    return idx;
-                                };
                                 double drow = use_cmb ? (cmb_irow(j) - static_cast<double>(nmb_ir))
                                                       : (omb_irow(j) - static_cast<double>(nmb_ir));
                                 double dcol = use_cmb ? (cmb_icol(j) - static_cast<double>(nmb_ic))
                                                       : (omb_icol(j) - static_cast<double>(nmb_ic));
-                                int sr = subpix_index(drow);
-                                int sc = subpix_index(dcol);
+                                int sr = jinc_phase_bin(drow, subpixel_n);
+                                int sc = jinc_phase_bin(dcol, subpixel_n);
                                 nmb_subpix_idx = sr * subpixel_n + sc;
                             }
 
-                            int lower_row = nmb_ir - mat_rows_center;
-                            int upper_row = nmb_ir + mat_rows - 1 - mat_rows_center;
-                            int lower_col = nmb_ic - mat_cols_center;
-                            int upper_col = nmb_ic + mat_cols - 1 - mat_cols_center;
-
-                            int jinc_lower_row = abs(std::min(0, lower_row));
-                            int jinc_lower_col = abs(std::min(0, lower_col));
-
-                            lower_row = std::max(0,lower_row);
-                            upper_row = std::min(static_cast<int>(nmb->n_rows - 1),upper_row);
-                            lower_col = std::max(0,lower_col);
-                            upper_col = std::min(static_cast<int>(nmb->n_cols - 1),upper_col);
-
-                            int size_rows = upper_row - lower_row + 1;
-                            int size_cols = upper_col - lower_col + 1;
+                            const auto crop = jinc_square_crop(
+                                nmb->n_rows, nmb->n_cols, nmb_ir, nmb_ic,
+                                mat_rows, mat_cols);
+                            const auto lower_row = crop.map_row;
+                            const auto lower_col = crop.map_col;
+                            const auto upper_row = lower_row + crop.rows - 1;
+                            const auto upper_col = lower_col + crop.cols - 1;
+                            const auto jinc_lower_row = crop.cache_row;
+                            const auto jinc_lower_col = crop.cache_col;
+                            const auto size_rows = crop.rows;
+                            const auto size_cols = crop.cols;
 
                             const auto &jinc_mat = use_subpix ? subpix_vec->at(nmb_subpix_idx) : jinc_weights_mat[array_index];
                             const auto mat_block = jinc_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
@@ -743,6 +792,14 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                     omb_copy.weight[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols);
                 omb.grid_weight[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols) +=
                     omb_copy.grid_weight[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols);
+                omb.jinc_products.denominator_sum_abs[i]
+                    .block(bounds.row_min, bounds.col_min, size_rows, size_cols) +=
+                    omb_copy.jinc_products.denominator_sum_abs[i]
+                        .block(bounds.row_min, bounds.col_min, size_rows, size_cols);
+                omb.jinc_products.contributor_count[i]
+                    .block(bounds.row_min, bounds.col_min, size_rows, size_cols) +=
+                    omb_copy.jinc_products.contributor_count[i]
+                        .block(bounds.row_min, bounds.col_min, size_rows, size_cols);
 
                 if (run_coverage) {
                     omb.coverage[i].block(bounds.row_min, bounds.col_min, size_rows, size_cols) +=
@@ -836,6 +893,13 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                 oss << "omb.grid_weight.size()=" << omb.grid_weight.size()
                     << " does not match omb.signal.size()=" << omb.signal.size();
                 fail_validation("preflight", oss.str());
+            }
+            if (!omb.jinc_products.initialized ||
+                omb.jinc_products.denominator_sum_abs.size() != omb.signal.size() ||
+                omb.jinc_products.contributor_count.size() != omb.signal.size()) {
+                fail_validation(
+                    "preflight",
+                    "JINC conditioning plane inventory does not match signal maps");
             }
             if (run_coverage && omb.coverage.size() != omb.signal.size()) {
                 std::ostringstream oss;
@@ -1043,20 +1107,10 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                     Eigen::Index omb_ic = static_cast<Eigen::Index>(std::llround(omb_icol(j)));
                     int subpix_idx = 0;
                     if (use_subpix) {
-                        auto subpix_index = [&](double d) {
-                            int idx = static_cast<int>(std::floor((d + 0.5) * subpixel_n));
-                            if (idx < 0) {
-                                idx = 0;
-                            }
-                            else if (idx >= subpixel_n) {
-                                idx = subpixel_n - 1;
-                            }
-                            return idx;
-                        };
                         double drow = omb_irow(j) - static_cast<double>(omb_ir);
                         double dcol = omb_icol(j) - static_cast<double>(omb_ic);
-                        int sr = subpix_index(drow);
-                        int sc = subpix_index(dcol);
+                        int sr = jinc_phase_bin(drow, subpixel_n);
+                        int sc = jinc_phase_bin(dcol, subpixel_n);
                         subpix_idx = sr * subpixel_n + sc;
                     }
                     update_jinc_debug_breadcrumb("sample", det_index, det_uid, j, map_index,
@@ -1079,21 +1133,17 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                         // make sure the data point is within the map
                         if ((omb_ir >= 0) && (omb_ir < omb.n_rows) && (omb_ic >= 0) && (omb_ic < omb.n_cols)) {
 
-                            int lower_row = omb_ir - mat_rows_center;
-                            int upper_row = omb_ir + mat_rows - 1 - mat_rows_center;
-                            int lower_col = omb_ic - mat_cols_center;
-                            int upper_col = omb_ic + mat_cols - 1 - mat_cols_center;
-
-                            int jinc_lower_row = abs(std::min(0, lower_row));
-                            int jinc_lower_col = abs(std::min(0, lower_col));
-
-                            lower_row = std::max(0,lower_row);
-                            upper_row = std::min(static_cast<int>(omb.n_rows - 1),upper_row);
-                            lower_col = std::max(0,lower_col);
-                            upper_col = std::min(static_cast<int>(omb.n_cols - 1),upper_col);
-
-                            int size_rows = upper_row - lower_row + 1;
-                            int size_cols = upper_col - lower_col + 1;
+                            const auto crop = jinc_square_crop(
+                                omb.n_rows, omb.n_cols, omb_ir, omb_ic,
+                                mat_rows, mat_cols);
+                            const auto lower_row = crop.map_row;
+                            const auto lower_col = crop.map_col;
+                            const auto upper_row = lower_row + crop.rows - 1;
+                            const auto upper_col = lower_col + crop.cols - 1;
+                            const auto jinc_lower_row = crop.cache_row;
+                            const auto jinc_lower_col = crop.cache_col;
+                            const auto size_rows = crop.rows;
+                            const auto size_cols = crop.cols;
 
                             const auto &jinc_mat = use_subpix ? subpix_vec->at(subpix_idx) : jinc_weights_mat[array_index];
                             const auto &jinc_sq_mat = use_subpix ? subpix_sq_vec->at(subpix_idx) : jinc_weights_sq_mat[array_index];
@@ -1115,6 +1165,12 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                             auto sig_block = omb.signal[map_index].block(lower_row,lower_col,size_rows,size_cols);
                             auto grid_wt_block = omb.grid_weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
                             auto wt_block = omb.weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
+                            auto abs_c_block =
+                                omb.jinc_products.denominator_sum_abs[map_index]
+                                    .block(lower_row, lower_col, size_rows, size_cols);
+                            auto count_block =
+                                omb.jinc_products.contributor_count[map_index]
+                                    .block(lower_row, lower_col, size_rows, size_cols);
 
                             // populate signal map
                             const double weighted_signal =
@@ -1170,6 +1226,9 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
 
                             // memo-style gridding denominator
                             grid_wt_block.array() += (mat_block.array() * in.weights.data(i));
+                            abs_c_block.array() +=
+                                (mat_block.array() * in.weights.data(i)).abs();
+                            count_block.array() += 1;
 
                             // variance accumulator for final inverse-variance weights
                             wt_block.array() += (mat_sq_block.array() * in.weights.data(i));
@@ -1210,40 +1269,26 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
                         if ((nmb_ir >= 0) && (nmb_ir < nmb->n_rows) && (nmb_ic >= 0) && (nmb_ic < nmb->n_cols)) {
                             int nmb_subpix_idx = 0;
                             if (use_subpix) {
-                                auto subpix_index = [&](double d) {
-                                    int idx = static_cast<int>(std::floor((d + 0.5) * subpixel_n));
-                                    if (idx < 0) {
-                                        idx = 0;
-                                    }
-                                    else if (idx >= subpixel_n) {
-                                        idx = subpixel_n - 1;
-                                    }
-                                    return idx;
-                                };
                                 double drow = use_cmb ? (cmb_irow(j) - static_cast<double>(nmb_ir))
                                                       : (omb_irow(j) - static_cast<double>(nmb_ir));
                                 double dcol = use_cmb ? (cmb_icol(j) - static_cast<double>(nmb_ic))
                                                       : (omb_icol(j) - static_cast<double>(nmb_ic));
-                                int sr = subpix_index(drow);
-                                int sc = subpix_index(dcol);
+                                int sr = jinc_phase_bin(drow, subpixel_n);
+                                int sc = jinc_phase_bin(dcol, subpixel_n);
                                 nmb_subpix_idx = sr * subpixel_n + sc;
                             }
 
-                            int lower_row = nmb_ir - mat_rows_center;
-                            int upper_row = nmb_ir + mat_rows - 1 - mat_rows_center;
-                            int lower_col = nmb_ic - mat_cols_center;
-                            int upper_col = nmb_ic + mat_cols - 1 - mat_cols_center;
-
-                            int jinc_lower_row = abs(std::min(0, lower_row));
-                            int jinc_lower_col = abs(std::min(0, lower_col));
-
-                            lower_row = std::max(0,lower_row);
-                            upper_row = std::min(static_cast<int>(nmb->n_rows - 1),upper_row);
-                            lower_col = std::max(0,lower_col);
-                            upper_col = std::min(static_cast<int>(nmb->n_cols - 1),upper_col);
-
-                            int size_rows = upper_row - lower_row + 1;
-                            int size_cols = upper_col - lower_col + 1;
+                            const auto crop = jinc_square_crop(
+                                nmb->n_rows, nmb->n_cols, nmb_ir, nmb_ic,
+                                mat_rows, mat_cols);
+                            const auto lower_row = crop.map_row;
+                            const auto lower_col = crop.map_col;
+                            const auto upper_row = lower_row + crop.rows - 1;
+                            const auto upper_col = lower_col + crop.cols - 1;
+                            const auto jinc_lower_row = crop.cache_row;
+                            const auto jinc_lower_col = crop.cache_col;
+                            const auto size_rows = crop.rows;
+                            const auto size_cols = crop.cols;
 
                             const auto &jinc_mat = use_subpix ? subpix_vec->at(nmb_subpix_idx) : jinc_weights_mat[array_index];
                             update_jinc_debug_breadcrumb("noise-sample", det_index, det_uid, j, map_index,

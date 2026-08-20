@@ -425,14 +425,57 @@ The version-one F010 product hierarchy is:
 
 `coadd_observation_count_I` is not applicable to observation maps. The v1
 contract makes the complete F010 bundle explicitly unavailable for JINC and
-detector-grouped products. No ordinary positive-coefficient rule is inferred
-for JINC; a signed contribution predicate and any corresponding product
-availability remain owned by `SCI-MAP-002`.
+detector-grouped products. JINC does not inherit the ordinary positive-
+coefficient predicate or synthesize any F010 plane. Its separately approved
+signed estimator and formal-support products are governed by `SCI-MAP-002`.
 
 `coverage_I` is retained only as a bitwise compatibility alias of
 `retained_exposure_I`, with detector-seconds meaning. `coverage_bool_I` is a
 deprecated bitwise compatibility alias of `science_policy_support_I`. Neither
 alias is a science-validity authority.
+
+### SCI-MAP-002 JINC Estimator And Support
+
+The bounded JINC contract retains every finite signed lobe and the established
+equations
+`N = sum(q_i c_i d_i)`, `C = sum(q_i c_i)`, and
+`Q = sum(q_i c_i^2)`. Finalized signal is `N/C`; conditional formal mapmaker
+weight is `C^2/Q`. That formal weight remains distinct from any empirically
+rescaled working weight and carries no covariance or inverse-variance claim.
+
+`r_max` remains both the second-JINC-zero parameter and the square-cache
+half-width. Every square-cache cell is populated, including corners whose
+radius exceeds `r_max`; map edges crop only the rectangle and apply no radial
+predicate. Residual sample phase is rounded-center, quantized point sampling.
+`subpixel_n` refines phase bins and never denotes pixel-area integration.
+
+Admission requires stable selected-array identity and finite-positive `a`,
+`b`, `c`, `r_max`, pixel size, and array scale before deposition. Finalization
+requires finite accumulators, `Q > 0`, nonzero `C`, and a resolved
+dimensionless cancellation ratio
+`rho = abs(C) / sum(abs(q_i c_i))`. The declared two-level binary64 policy is
+`naive-binary64-two-level-2gamma-n-sumabs-v1`, with resolution bound
+`2 * gamma_n`, `gamma_n = n * epsilon / (1 - n * epsilon)`, derived from the
+realized contributor count. Unit-bearing absolute `C` or `Q` gates are
+forbidden.
+
+For JINC, `coverage_bool_I` is the authoritative formal-support mask exactly
+where admission/conditioning passes and finalized signal and formal weight are
+finite with positive formal weight. Empirical policy may downgrade that mask
+but cannot promote it. `coverage_I` is the coefficient-squared effective
+integration-time sum `sum(c_i^2 / f_s,i)`, in seconds, and is consumed only on
+formal support; it is neither geometric exposure, a hit count, nor validity.
+`kernel_I` is the realized processing-filtered source-template response
+projected through JINC, `K/C`, not an analytic unfiltered JINC or measured
+beam.
+
+One compact atomic forward-only record is persisted per coherent observation
+or declared processing segment. It preserves requested, effective, resolved,
+and realized JINC identity, summation/conditioning policy, contributor and
+support summaries, and immutable output-file/HDU/content-digest joins. It is
+never emitted per sample, detector, or pixel. Integrated `SCI-MAP-001` and
+`SCI-NOI-002` ownership, writer/finalizer, publication, and provenance seams
+remain unchanged.
 
 Normalization and science-policy support use separate versioned rules. Both
 select finite strictly positive coefficient values. If `N` values remain, the

@@ -4,6 +4,7 @@
 #include <citlali/core/pipeline/observation_fruit_loop_map_loading.h>
 #include <citlali/core/pipeline/observation_output_execution.h>
 #include <citlali/core/pipeline/observation_pipeline.h>
+#include <citlali/core/pipeline/jinc_processing_provenance.h>
 #include <citlali/core/pipeline/raw_timestream_provenance_lifecycle.h>
 #include <citlali/core/pipeline/stage_profile.h>
 
@@ -20,6 +21,8 @@ void run_reduction_observation_pipeline(TodProc &todproc, KidsProc &kidsproc,
     load_observation_fruit_loop_maps_if_needed<IsBeammap>(engine, logger);
     setup_and_run_observation_pipeline(
         engine, kidsproc, rawobs, stage_profile, logger);
+    complete_raw_timestream_observation_if_available<IsBeammap>(engine);
+    bind_jinc_processing_realization_if_available(engine);
     write_coherent_iq_mode_sidecar_if_requested(
         engine, rawobs, logger);
     write_observation_outputs_and_accumulate<RawObsMap, FilteredObsMap,

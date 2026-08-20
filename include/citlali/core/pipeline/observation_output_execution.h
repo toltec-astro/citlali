@@ -11,6 +11,14 @@
 
 namespace citlali::pipeline {
 
+template <class WriteRequiredOutputs, class CompleteObservation>
+void publish_required_observation_outputs(
+    WriteRequiredOutputs &&write_required_outputs,
+    CompleteObservation &&complete_observation) {
+    write_required_outputs();
+    complete_observation();
+}
+
 template <class Engine>
 bool should_accumulate_observation_coadd(const Engine &engine) {
     return coadd_outputs_enabled(engine);
@@ -41,19 +49,26 @@ void write_observation_outputs_and_accumulate(TodProc &todproc,
     const auto profile_scope =
         profile_stage(stage_profile, "observation.outputs_and_accumulation", logger);
 
-    write_raw_observation_outputs<RawObsMap>(
-        todproc, stage_profile, logger);
+    publish_required_observation_outputs(
+        [&] {
+            write_raw_observation_outputs<RawObsMap>(
+                todproc, stage_profile, logger);
 
-    if (should_accumulate_observation_coadd(engine)) {
-        write_coadded_observation_outputs(todproc, stage_profile, logger);
-    }
-    else {
-        write_noncoadded_observation_outputs<FilteredObsMap, FitMaps>(
-            todproc, stage_profile, logger);
-    }
-    complete_mapmaking_observation_if_available(engine);
-    complete_pointing_observation_if_available(engine);
-    complete_beammap_observation_if_available(engine);
+            if (should_accumulate_observation_coadd(engine)) {
+                write_coadded_observation_outputs(
+                    todproc, stage_profile, logger);
+            }
+            else {
+                write_noncoadded_observation_outputs<FilteredObsMap,
+                                                      FitMaps>(
+                    todproc, stage_profile, logger);
+            }
+        },
+        [&] {
+            complete_mapmaking_observation_if_available(engine);
+            complete_pointing_observation_if_available(engine);
+            complete_beammap_observation_if_available(engine);
+        });
 }
 
 }  // namespace citlali::pipeline

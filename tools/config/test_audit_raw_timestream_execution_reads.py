@@ -43,6 +43,18 @@ class RawTimestreamExecutionReadAuditTest(unittest.TestCase):
             "executor_operation",
         )
         self.assertEqual(
+            audit.classify_access("snapshot_network_diag_summary"),
+            "executor_operation",
+        )
+        self.assertEqual(
+            audit.classify_access("snapshot_notch_operator_summary"),
+            "executor_operation",
+        )
+        self.assertEqual(
+            audit.classify_access("filter.w0s.size"),
+            "output_or_realized_state",
+        )
+        self.assertEqual(
             audit.classify_access("run_polarization"),
             "separate_polarimetry_domain",
         )

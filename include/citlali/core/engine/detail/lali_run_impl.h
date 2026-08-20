@@ -4,6 +4,7 @@
 
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
 #include <citlali/core/pipeline/map_grouping_policy.h>
+#include <citlali/core/pipeline/jinc_processing_provenance.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
@@ -73,6 +74,9 @@ auto Lali::run(
 
         collect_rtc_learning_diagnostics(rtcdata, ptcdata, calib_scan, rtc_detector_summary);
 
+        citlali::pipeline::record_jinc_rtc_scan_state_if_available(
+            *this, ptcdata, calib_scan.apt, map_indices);
+
         write_lali_rtc_outputs(
             rtcdata, ptcdata, rtc_outer_output, calib_scan, output_flags,
             output_writers, rtc_scan_row, write_this_rtc, map_grouping);
@@ -134,6 +138,9 @@ auto Lali::run(
             ptcproc.snapshot_high_weight_summary(ptcdata.index.data);
         collect_ptc_learning_diagnostics(
             ptcdata, calib_scan, ptc_second_pass_summary, ptc_high_weight_summary);
+
+        citlali::pipeline::record_jinc_ptc_scan_state_if_available(
+            *this, ptcdata, calib_scan.apt, map_indices);
 
         write_lali_ptc_outputs(
             ptcdata, calib_scan, output_flags, output_writers, map_grouping);

@@ -6,6 +6,13 @@
 #include <citlali/core/pipeline/raw_timestream_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
+#include <algorithm>
+#include <cmath>
+#include <sstream>
+#include <stdexcept>
+#include <type_traits>
+#include <vector>
+
 template <class EngineType>
 void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map_coord_t &map_coord) {
     auto& omb = engine().omb;
@@ -27,8 +34,70 @@ void TimeOrderedDataProc<EngineType>::allocate_omb(map_extent_t &map_extent, map
         omb, engine().map_indices.n_maps,
         mapmaking_settings.method == citlali::config::MapMethod::jinc,
         citlali::pipeline::raw_kernel_enabled(engine()),
-        mapmaking_settings.grouping != citlali::config::MapGrouping::detector,
-        allocate_science_products, science_product_absence_reason);
+        mapmaking_settings.method == citlali::config::MapMethod::jinc ||
+            mapmaking_settings.grouping != citlali::config::MapGrouping::detector,
+        allocate_science_products, science_product_absence_reason,
+        mapmaking_settings.method == citlali::config::MapMethod::jinc);
+    if (mapmaking_settings.method == citlali::config::MapMethod::jinc) {
+        auto &provenance = omb.jinc_products.provenance;
+        const auto &plan = citlali::pipeline::mapmaking_plan(engine());
+        if (!plan.initialized ||
+            plan.effective.method != citlali::config::MapMethod::jinc ||
+            engine().jinc_mm.resolved_arrays.empty() ||
+            engine().map_indices.maps_to_arrays.size() !=
+                engine().map_indices.n_maps) {
+            throw std::logic_error(
+                "JINC observation allocation requires a resolved typed plan and map identity");
+        }
+        provenance.requested_digest =
+            mapmaking::jinc_filter_config_digest(
+                plan.requested.jinc_filter);
+        provenance.effective_digest =
+            mapmaking::jinc_filter_config_digest(
+                plan.effective.jinc_filter);
+        provenance.requested_r_max = plan.requested.jinc_filter.r_max;
+        provenance.effective_r_max = plan.effective.jinc_filter.r_max;
+        provenance.requested_subpixel_n =
+            plan.requested.jinc_filter.subpixel_n;
+        provenance.effective_subpixel_n =
+            plan.effective.jinc_filter.subpixel_n;
+        provenance.requested_shape_params =
+            plan.requested.jinc_filter.shape_params;
+        provenance.effective_shape_params =
+            plan.effective.jinc_filter.shape_params;
+        for (const auto &resolved : engine().jinc_mm.resolved_arrays) {
+            bool selected = false;
+            for (Eigen::Index slot = 0;
+                 slot < engine().map_indices.maps_to_arrays.size(); ++slot) {
+                if (engine().map_indices.maps_to_arrays(slot) ==
+                    resolved.array_id) {
+                    selected = true;
+                    break;
+                }
+            }
+            if (selected) {
+                mapmaking::validate_jinc_resolved_array(resolved);
+                provenance.resolved_arrays.push_back(resolved);
+            }
+        }
+        for (Eigen::Index slot = 0;
+             slot < engine().map_indices.maps_to_arrays.size(); ++slot) {
+            const auto array_id =
+                engine().map_indices.maps_to_arrays(slot);
+            const bool resolved = std::any_of(
+                provenance.resolved_arrays.begin(),
+                provenance.resolved_arrays.end(), [&](const auto &record) {
+                    return record.array_id == array_id;
+                });
+            if (!resolved) {
+                throw std::logic_error(
+                    "JINC selected map array lacks a resolved stable identity");
+            }
+        }
+        // Processing configuration and realization are deliberately left
+        // unbound here. Allocation precedes construction of the observation's
+        // actual kernel/FIR/notch state and raw execution.
+    }
     citlali::pipeline::allocate_polarization_pointing_matrices(
         omb, engine().map_indices.n_maps,
         static_cast<Eigen::Index>(
@@ -56,7 +125,7 @@ void TimeOrderedDataProc<EngineType>::allocate_cmb() {
         cmb, engine().map_indices.n_maps, false,
         citlali::pipeline::raw_kernel_enabled(engine()),
         mapmaking_settings.grouping != citlali::config::MapGrouping::detector,
-        allocate_science_products, science_product_absence_reason);
+        allocate_science_products, science_product_absence_reason, false);
     citlali::pipeline::allocate_polarization_pointing_matrices(
         cmb, engine().map_indices.n_maps,
         static_cast<Eigen::Index>(

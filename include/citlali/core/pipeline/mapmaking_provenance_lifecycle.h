@@ -129,11 +129,29 @@ void record_mapmaking_observation_science_state_if_available(
 }
 
 template <class Engine>
+void record_mapmaking_observation_jinc_state_if_available(
+    Engine &engine, MapmakingExecutionPlan &plan) {
+    if constexpr (requires { engine.omb.jinc_products; }) {
+        if (plan.effective.method != citlali::config::MapMethod::jinc) {
+            return;
+        }
+        const auto &products = engine.omb.jinc_products;
+        if (!products.initialized || !products.provenance.available) {
+            throw std::logic_error(
+                "effective JINC observation lacks typed realized state");
+        }
+        plan.record_observation_jinc_state(products.provenance);
+    }
+}
+
+template <class Engine>
 void complete_mapmaking_observation_if_available(Engine &engine) {
     if constexpr (has_mapmaking_plan_v<Engine>) {
         auto &plan = mapmaking_plan(engine);
         if (plan.initialized && plan.effective.enabled) {
             record_mapmaking_observation_science_state_if_available(
+                engine, plan);
+            record_mapmaking_observation_jinc_state_if_available(
                 engine, plan);
             complete_mapmaking_observation(plan);
         }

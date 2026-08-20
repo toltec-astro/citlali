@@ -2203,6 +2203,7 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
     else {
         cleaned_scans.derived().noalias() = cleaned;
     }
+    return limit_index;
 }
 
 } // namespace timestream

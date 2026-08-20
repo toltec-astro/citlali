@@ -254,6 +254,33 @@ class ValidateProductContractTest(unittest.TestCase):
         ):
             product_contract.load_registry(self.write_registry(registry))
 
+    def test_jinc_contract_freezes_signed_conditioning_and_product_truth(self) -> None:
+        checked = (
+            Path(__file__).resolve().parents[2]
+            / "validation/product_contracts.json"
+        )
+        registry = product_contract.load_registry(checked)
+        jinc = registry["jinc_map_contracts"]["sci-map-002-jinc-v1"]
+
+        self.assertEqual(
+            jinc["estimator"], "signed-N-over-C-formal-C2-over-Q-v1"
+        )
+        self.assertIn("no radial predicate", jinc["support_geometry"])
+        self.assertIn("point sampling", jinc["phase_policy"])
+        self.assertEqual(
+            jinc["conditioning_policy"]["summation_method"],
+            "naive-binary64-two-level-2gamma-n-sumabs-v1",
+        )
+        self.assertIn(
+            "authoritative formal-support",
+            jinc["products"]["coverage_bool_I"],
+        )
+        self.assertIn("in seconds", jinc["products"]["coverage_I"])
+        self.assertIn("K/C", jinc["products"]["kernel_I"])
+        self.assertEqual(
+            jinc["preserved_contracts"], ["SCI-MAP-001", "SCI-NOI-002"]
+        )
+
     @unittest.skipIf(product_contract.fits is None, "astropy is unavailable")
     def test_checks_fits_structure_without_reading_pixels(self) -> None:
         from astropy.io import fits

@@ -130,6 +130,52 @@ inline const char *kernel_map_description() {
     return "Mapmaking or filtering kernel image";
 }
 
+inline const char *jinc_formal_weight_map_description() {
+    return "Conditional formal JINC mapmaker weight C^2/Q on authoritative formal support; distinct from empirical working weight and not a covariance claim";
+}
+
+inline const char *jinc_working_weight_map_description(
+    bool empirical_calibration) {
+    return empirical_calibration
+        ? "Empirically scaled JINC working weight; distinct from the conditional formal C^2/Q mapmaker weight"
+        : jinc_formal_weight_map_description();
+}
+
+inline const char *jinc_coverage_map_description() {
+    return "Coefficient-squared effective integration time sum(c_i^2/f_s,i), seconds, consumed only on authoritative JINC formal support";
+}
+
+inline const char *jinc_formal_support_map_description() {
+    return "Authoritative JINC formal-support mask: finite finalized signal and finite positive formal weight after admission and conditioning";
+}
+
+inline const char *jinc_kernel_map_description() {
+    return "Realized processing-filtered source-template response projected through JINC and finalized as K/C; not an analytic unfiltered JINC or measured beam";
+}
+
+// Metadata fragments are textually included inside citlali::pipeline, so
+// these compatibility spellings keep that boundary independent of the typed
+// mapmaking header. Contract tests require exact equality with the typed IDs.
+inline const char *jinc_estimator_contract_identity() {
+    return "signed-N-over-C-formal-C2-over-Q-v1";
+}
+
+inline const char *jinc_conditioning_contract_identity() {
+    return "finite-positive-Q-exact-cancellation-and-rho-resolution-v1";
+}
+
+inline const char *jinc_formal_support_contract_identity() {
+    return "finite-signal-finite-positive-formal-weight-admitted-conditioned-v1";
+}
+
+inline const char *jinc_coverage_contract_identity() {
+    return "coefficient-squared-effective-integration-time-v1";
+}
+
+inline const char *jinc_kernel_contract_identity() {
+    return "processing-filtered-source-template-response-projected-through-JINC-v1";
+}
+
 inline const char *coverage_map_description() {
     return "Compatibility alias of retained detector-seconds; not wall-clock time, support, confidence, or validity";
 }
