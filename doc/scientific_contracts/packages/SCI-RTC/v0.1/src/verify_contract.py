@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mechanical SCI-RTC v0.1/r0.12 candidate author-deliverable checks.
+"""Mechanical SCI-RTC v0.1/r0.12 frozen-authority deliverable checks.
 
 This helper reads only the approved author inputs and package deliverables.
 It does not inspect implementation, tests, history, or sibling packages.
@@ -297,17 +297,31 @@ def main() -> None:
     for decision in range(1, 8):
         require(f"R12-D{decision:02d}" in revision_r12,
                 f"r0.12 owner decision D{decision:02d}")
-    candidate_status = "Surgical scientific-authority correction"
-    require(candidate_status in rationale, "candidate status in rationale")
-    require(candidate_status in engineering, "candidate status in engineering")
-    candidate_pdfs = {
+    freeze_r12 = PKG / "SCIENTIFIC_OWNER_FREEZE_R0.12.md"
+    require(
+        digest(freeze_r12)
+        == "0cac4396df225c1f2808ee1055e063c9a4e72a02549557c5e997f54d72dac0bf",
+        "r0.12 scientific-owner freeze digest",
+    )
+    require(
+        "Freeze SCI-RTC v0.1/r0.12." in text(freeze_r12),
+        "exact r0.12 owner freeze statement",
+    )
+    require(
+        "ffce339abbb3c89ae1bf622c5395e28a5e727ea4" in text(freeze_r12),
+        "verified r0.12 candidate commit",
+    )
+    frozen_status = "Scientific authority frozen by owner"
+    require(frozen_status in rationale, "frozen status in rationale")
+    require(frozen_status in engineering, "frozen status in engineering")
+    frozen_pdfs = {
         PKG / "pdf" / "SCI-RTC-SCIENTIFIC-RATIONALE-v0.1.pdf":
-            "3c3a0d6f0b592f4c28d8a337f230a8d521ade5b874708e2605388e608d3f52c6",
+            "b0060b28253906f83f2f106d9df761864d8277317ebd5e3742ff963e11e30b3d",
         PKG / "pdf" / "SCI-RTC-ENGINEERING-CONFORMANCE-v0.1.pdf":
-            "bd9acf1fc84fcf6f65a5b82f16fe43fbfa4181a41b8d820b7bbcee67fe4ffc61",
+            "9211091e71830295a8fe5febb102704c95f8397b017584cbeb4575728081da42",
     }
-    for path, expected in candidate_pdfs.items():
-        require(digest(path) == expected, f"candidate PDF hash changed: {path.name}")
+    for path, expected in frozen_pdfs.items():
+        require(digest(path) == expected, f"frozen PDF hash changed: {path.name}")
 
     active_source = "\n".join(text(path) for path in sorted(SRC.rglob("*.tex")))
     for forbidden in (
@@ -352,8 +366,9 @@ def main() -> None:
     print("PASS: definitions=52 equations=44 assumptions=12 requirements=143 predictions=108")
     print("PASS: crosswalk rows complete and sequential")
     print("PASS: author decisions=24 owner entries=103 (63 open, 1 conditional, 34 resolved, 5 deferred)")
-    print("PASS: r0.9 freeze preserved; r0.11 architecture and r0.12 D01--D07 bound")
-    print("PASS: canonical candidate PDF hashes (2)")
+    print("PASS: r0.9 history preserved; r0.11 architecture and r0.12 D01--D07 bound")
+    print("PASS: exact r0.12 scientific-owner freeze bound")
+    print("PASS: canonical frozen PDF hashes (2)")
     print("PASS: rationale narrative sections=12")
     print("PASS: engineering wrapper has no independent displayed mathematics")
 

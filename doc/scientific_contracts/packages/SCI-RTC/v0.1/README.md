@@ -1,8 +1,7 @@
 # SCI-RTC — Raw-Timestream Conditioning And Temporal Response
 
-Status: Candidate v0.1/r0.12 surgical scientific-authority correction from
-the approved v0.1/r0.11 architecture; owner freeze pending. Implementation
-conformity not assessed under this contract.
+Status: SCI-RTC v0.1/r0.12 scientific authority frozen by Grant Wilson on
+`2026-08-21`; implementation conformity not assessed under this contract.
 
 Version: `v0.1`
 
@@ -51,13 +50,16 @@ inputs.
   influence, conditional product wording, r0.11 decision enumeration, and
   immutable raw-$r$ event evidence explicit without reopening the approved
   r0.11 scientific architecture.
+- Scientific-owner freeze: complete for v0.1/r0.12 on `2026-08-21`; the
+  verified candidate at commit `ffce339abbb3c89ae1bf622c5395e28a5e727ea4`
+  was promoted without scientific change.
 - Implementation conformity, validation, and production promotion: not
   established.
 
-The next gate is scientific-owner review of the exact candidate r0.12 source,
-crosswalk, consistency report, and rendered PDFs. Candidate review is not an
-RTC implementation-conformity audit and cannot silently resolve PTC, SCI-VAL,
-or any unrelated open RTC policy.
+Any implementation-conformity, representation-fidelity, validation,
+science-qualification, or production-readiness activity is a separate later
+gate requiring its own authority and evidence. The freeze does not silently
+resolve PTC, SCI-VAL, or any unrelated open RTC policy.
 
 ## Contents
 
@@ -192,13 +194,17 @@ or any unrelated open RTC policy.
   exact PDF metadata, text identity, and all-page visual-QA record
 - [`SCIENTIFIC_OWNER_CANDIDATE_R0.12.md`](SCIENTIFIC_OWNER_CANDIDATE_R0.12.md):
   exact content-bound r0.12 candidate snapshot; not an authority freeze
+- [`SCIENTIFIC_OWNER_FREEZE_R0.12.md`](SCIENTIFIC_OWNER_FREEZE_R0.12.md):
+  exact scientific-owner freeze, retained states, hashes, and change control
+- [`FREEZE_VERIFICATION_R0.12.md`](FREEZE_VERIFICATION_R0.12.md): status-only
+  source/PDF verification and all-page visual-QA record
 - [`DECISION_LOG.md`](DECISION_LOG.md): package-selection and approved scope
   decisions
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md):
   63 open, one conditional, 34 resolved, and five deferred decisions
 - [`CROSSWALK.md`](CROSSWALK.md): exact shared-core and packet traceability
 - `src/`: one six-file shared core and the two audience views
-- `pdf/`: canonical candidate r0.12 science-team rationale and complete formal
+- `pdf/`: canonical frozen r0.12 science-team rationale and complete formal
   engineering view, with page counts, hashes, and all-page inspection recorded
   after the fresh build
 
@@ -250,8 +256,9 @@ records seven additional resolved decisions and expressly permits accepted
 $r$-origin evidence to change conditioned-$x$ selection/support through one
 pair plan while preserving zero fixed-state cross-coordinate numerical
 response. The supplied scientific review approved that architecture and
-authorized the surgical r0.12 consistency correction. Candidate r0.12 is not
-frozen authority until a separate owner review and freeze action.
+authorized the surgical r0.12 consistency correction. On `2026-08-21`, Grant
+Wilson froze v0.1/r0.12 as scientific authority without changing its scientific
+content or any owner-ledger state.
 
 Current application and production behavior retain their existing repository
 status until a later, separately authorized conformity and validation program

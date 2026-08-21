@@ -1,7 +1,7 @@
-# SCI-RTC v0.1/r0.12 candidate exact authority crosswalk
+# SCI-RTC v0.1/r0.12 frozen exact authority crosswalk
 
-Status: Surgical scientific-authority correction candidate from the approved
-r0.11 architecture; owner freeze pending. Implementation conformity is not assessed. This
+Status: Scientific authority frozen by owner; implementation conformity is
+not assessed under this contract. This
 crosswalk maps every normative ID in the shared core to explanatory and
 conformance loci and to approved authority. It reports no implementation or
 validation result.
@@ -61,6 +61,8 @@ unavailable affine corrections propagate through downstream operator support;
 paired prefilter and conditional output language replace x-only shorthand;
 OWNER-090--096 are enumerated; and conditioned-$r$ correction never rewrites
 the immutable raw-$r$ parent or original event evidence.
+The exact owner freeze in `SCIENTIFIC_OWNER_FREEZE_R0.12.md` promotes this
+revision without changing any normative content or ledger state.
 The later `R7` review accepts the r0.6 narrative and architecture, controls the
 ALIGN, fixed-state covariance, leakage-normalization, event-time, reset/carry,
 operation-inventory, atmosphere/support, and output-split corrections, and
@@ -500,13 +502,13 @@ modify the formal authority.
   r0.6 resolves OWNER-072--074 and defers OWNER-068 by explicit owner
   confirmation; r0.8 resolves OWNER-075; r0.9 resolves OWNER-076--083; and
   sealed candidate r0.10 resolves OWNER-084--089; candidate r0.11 resolves
-  OWNER-090--096; candidate r0.12 resolves OWNER-097--103. No other open entry is silently
+  OWNER-090--096; frozen r0.12 resolves OWNER-097--103. No other open entry is silently
   resolved in either PDF. In particular, the
   learned safe set is undefined until OWNER-011 through OWNER-020 are resolved.
 
 ## Mechanical completeness invariant
 
-For candidate revision r0.12 the exact expected normative inventory is:
+For frozen revision r0.12 the exact expected normative inventory is:
 
 - 52 definitions: `SCI-RTC-DEF-001`--`052`;
 - 44 displayed equation tags: `001`--`015`, `016a`, `016b`, `017`--`019`,

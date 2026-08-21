@@ -1,10 +1,10 @@
-# SCI-RTC v0.1/r0.12 candidate scientific-owner decision ledger
+# SCI-RTC v0.1/r0.12 frozen scientific-owner decision ledger
 
-Status: surgical scientific-authority revision candidate derived from the
+Status: scientific authority frozen by owner, derived from the
 approved r0.11 architecture at commit
 `85e1e6c6865f74f1a97e99fab465714f43877c3d`. Entries marked `RESOLVED` record explicit
 scientific-owner approval; all other entries retain their stated unresolved or
-deferred status. Candidate owner review is pending.
+deferred status. Implementation conformity is not assessed under this contract.
 
 This ledger records choices that the approved author packet deliberately does
 not answer. It does not infer values from software, configuration, prior use,
@@ -205,6 +205,6 @@ state when it blocks an operation. It must not be replaced by a numerical
 sentinel, a software default, a value recovered from prior products, or a
 claim that the unavailable operation was disabled after being requested.
 Resolution requires explicit scientific-owner approval and a versioned
-successor or formally reopened ledger revision. Candidate r0.12 additionally
+successor or formally reopened ledger revision. Frozen r0.12 additionally
 resolves OWNER-097--103 and does not provide missing approval for any other
 open entry or alter its unavailable consequence.
