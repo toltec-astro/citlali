@@ -1,5 +1,27 @@
 # Citlali Refactor Status
 
+## 2026-08-21 Compact-v2 Native ALIGN Consumer Reconstruction Plan
+
+The orphaned native-consumer behavior in historical commits `fd3627fc7` and
+`9d9d55a54` has been reduced to a bounded compact-v2 reconstruction plan. The
+historical patches remain ineligible for cherry-pick: together they mix a
+superseded canonical APT v1 authority with 48 application paths spanning
+alignment, KIDs ingress, RTC/PTC, pointing, mapmaking, and product provenance.
+
+The [reconstruction plan](COMPACT_V2_NATIVE_ALIGN_CONSUMER_RECONSTRUCTION_PLAN_2026-08-21.md)
+defines compact-v2 detector identity, native-time and gap invariants,
+transactional gather/scatter, numerical-preservation boundaries, and seven
+separately gated implementation stages. It also promotes the Beammap
+correction to an explicit mode contract: Beammap remains the raw/APT producer
+and may not acquire an observation-matched consumer lineage merely because
+native timing or pointing is present.
+
+This is a documentation-only design checkpoint. No native consumer is
+activated and no application code or production status changes. Implementation
+is blocked until an independent reviewer accepts the exact plan commit; the
+first permitted implementation stage is then the immutable verified
+compact-v2 bundle-to-detector-column relation, with no runtime activation.
+
 ## 2026-08-21 JINC Parallel Ownership Reconstruction
 
 The independently accepted SCI-MAP-002 ownership contract has been
