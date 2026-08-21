@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.9 shared normative core -- equations.
+% SCI-RTC v0.1/r0.12 shared normative core -- equations.
 \section{Normative equations and identities}
 \label{sec:core-equations}
 
@@ -65,16 +65,22 @@ Equation~\eqref{eq:role-cal} is an SCI-CAL handoff identity; its output is not
      \xrightarrow{\ C^{\rm CAL}_{\kappa,\mathcal R}\ }
      \mathbf c^{\rm CAL}_{\mathcal R},\\
  \mathbf r^{A}
-   &\xrightarrow{\ \text{retain parent and declared diagnostics}\ }
-     \mathcal D^r_{\mathcal R}\hookrightarrow\mathcal O_{\rm RTC,\mathcal R}.
+   &\xrightarrow{\ \text{same applicable }F_1\ldots F_K,\,D_{M,0}\ }
+     \mathbf y^{r,\rm RTC}_{\mathcal R}\ \text{when requested},\\
+ \mathbf r^{A,\rm parent},\ \mathbf y^{r,\rm RTC}_{\mathcal R},\
+ \mathcal D^r_{\mathcal R}
+   &\hookrightarrow\mathcal O_{\rm RTC,\mathcal R}.
 \end{aligned}
  \tag{SCI-RTC-EQ-004}\label{eq:order-equivalence}
 \end{equation}
 RTC shall not move the downstream CAL arrow inside replacement, temporal
 filtering, or phase-zero sampling.  Only the $x$ member is handed to
 SCI-CAL.  The paired raw $r$ parent and every causal diagnostic/selector remain
-in the bundle but are not calibrated, substituted for $x$, or interpreted as
-Stokes data.  The raw donor ratio in equation~\eqref{eq:raw-donor} is
+in the bundle.  When conditioned $r$ is requested, its ordinary shared RTC
+filtering and phase-zero selection are coordinate-diagonal; no $x$ repair or
+replacement is silently applied to it.  Neither raw nor conditioned $r$ is
+calibrated, substituted for $x$, or interpreted as Stokes data.  The raw donor
+ratio in equation~\eqref{eq:raw-donor} is
 $x$-domain convention transfer within $B^x_\omega$, not absolute calibration.
 Atmospheric templates are diagnostic evidence only; equation~\eqref{eq:order-equivalence}
 contains no atmospheric-removal operator.
@@ -172,15 +178,20 @@ renormalizing are distinct operators.
 
 For a coherent pre-sampling segment of length $N$, v0.1 selects only
 \begin{equation}
- y^{x,\rm RTC}_{d,n}=v^{x,\rm preD}_{d,Mn},
- \qquad 0\le Mn<N,
- \qquad f_{\rm out}=\frac{f_{\rm in}}{M},
- \qquad
+ \begin{gathered}
+ y^{x,\rm RTC}_{d,n}=v^{x,\rm preD}_{d,Mn},\qquad
+ y^{r,\rm RTC}_{d,n}=v^{r,\rm preD}_{d,Mn}\ \text{when available},\\
+ 0\le Mn<N,\qquad f_{\rm out}=\frac{f_{\rm in}}{M},\qquad
  N_y=\begin{cases}0,&N=0,\\1+\left\lfloor\dfrac{N-1}{M}\right\rfloor,&N>0.
  \end{cases}
+ \end{gathered}
  \tag{SCI-RTC-EQ-011}\label{eq:phase-zero}
 \end{equation}
-The representative assigned-grid time is the selected point time
+The conditioned-$r$ companion has the same cardinality and selected slots as
+conditioned $x$ when requested.  A location at which no scientifically
+justified conditioned-$r$ value exists remains present and typed invalid or
+unavailable; it is not dropped, reindexed, interpolated, or filled.  The
+representative assigned-grid time is the selected point time
 $t^{\rm out}_n=t_{Mn}$; the scientific support is nevertheless the complete
 RTC-local transitive support $\mathcal S^{\rm RTC}_{dn}$ of all preceding
 stages.  A selected
@@ -250,7 +261,8 @@ with mean $\boldsymbol\mu_u$ and joint covariance
 $\Sigma_u=\left[\begin{smallmatrix}\Sigma_{xx}&\Sigma_{xr}\\
 \Sigma_{rx}&\Sigma_{rr}\end{smallmatrix}\right]$, conditional on fixed
 $\Omega$ independent of the modeled random noise, define
-$J_{\rm num,\Omega}=\begin{bmatrix}L^x_\Omega&0\end{bmatrix}$.  Then
+$J_{\rm num,\Omega}=\begin{bmatrix}L^x_\Omega&0\end{bmatrix}$ for conditioned
+$x$ alone.  Then
 \begin{align}
  \E[\mathbf y\mid\Omega]
    &=J_{\rm num,\Omega}\boldsymbol\mu_u+\mathbf b^x_\Omega,
@@ -260,7 +272,8 @@ $J_{\rm num,\Omega}=\begin{bmatrix}L^x_\Omega&0\end{bmatrix}$.  Then
      =L^x_\Omega\Sigma_{xx}(L^x_\Omega)^{\mathsf T}.
  &\tag{SCI-RTC-EQ-016b}\label{eq:conditional-cov}
 \end{align}
-The cross-coordinate blocks do not enter fixed-state numerical propagation.
+The cross-coordinate blocks do not enter fixed-state numerical propagation
+of conditioned $x$ alone.
 They remain required for a joint selector, estimator, learned parameter, or
 diagnostic because $\Omega=\Omega(\mathbf x^A,\mathbf r^A)$.  If selectors
 depend on the random data, unconditional covariance obeys
@@ -338,13 +351,16 @@ Finally, the consumer-neutral atomic product for application context
 $\mathcal R$ is
 \begin{equation}
  \mathcal O_{\rm RTC,\mathcal R}=
- (\mathbf y^x,\mathbf r^{A,\rm parent},\mathcal J^{xr},\mathcal K^{x},\mathcal S,\mathcal I,
+ (\mathbf y^x,\mathbf y^{r,\rm opt},\mathbf r^{A,\rm parent},\mathcal J^{xr},
+  \mathcal K^{x},\mathcal K^{r,\rm opt},\mathcal S,\mathcal I,
   \mathcal F,\mathcal V,\mathcal U,\mathcal P,\mathcal D,\mathcal C),
  \tag{SCI-RTC-EQ-022}\label{eq:bundle}
 \end{equation}
 where $\mathcal J^{xr}$ is exact ordered pair identity, $\mathcal K^{x}$ is
-the complete conditioned-$x$ response status, $\mathbf r^{A,\rm parent}$ is
-the immutable paired raw parent rather than an implied conditioned output,
+the complete conditioned-$x$ response status, $\mathbf y^{r,\rm opt}$ and
+$\mathcal K^{r,\rm opt}$ are the requested conditioned-$r$ companion and its
+coordinate-diagonal response or typed local/global unavailability, and
+$\mathbf r^{A,\rm parent}$ is the immutable paired raw parent,
 $\mathcal S$ support, $\mathcal I$ influence, $\mathcal F$ typed flags/causes,
 $\mathcal V$ separated validity and eligibility inputs, $\mathcal U$
 uncertainty/covariance availability, $\mathcal P$ one-way state/provenance,
@@ -404,9 +420,10 @@ scan, the corresponding scan-direction angular displacement is
 
 For every learned RTC operation, the lifecycle is
 \begin{equation}
- \Lambda=\operatorname{Learn}(\mathcal L;\Theta^{\rm eff}),\qquad
+ \Lambda=\operatorname{Learn}(\mathcal L,\mathbf u^{(0)};
+                  \Theta^{\rm eff}),\qquad
  \Pi=\operatorname{Resolve}(\Lambda,\Theta^{\rm policy}),\qquad
- \mathbf y=\mathcal A_{\Pi}(\mathbf x),\qquad
+ \mathbf u^{\rm eval}=\mathcal A_{\Pi}(\mathbf u^{(0)}),\qquad
  \frac{\partial\Pi}{\partial j}=0\ \text{during apply}.
  \tag{SCI-RTC-EQ-028}\label{eq:learn-resolve-apply}
 \end{equation}
@@ -414,27 +431,30 @@ The final equality denotes plan immutability over apply slots; it is not an
 assumption that the realized operator is stationary at masks, edges, state
 boundaries, or other declared exceptions.
 
-For bounded iterative notch-plan refinement with original admitted input
-$x^{(0)}$, initial fixed or identity plan $\Pi_0$, actual attempt count $A$,
+For bounded iterative notch-plan refinement with original admitted pair
+$\mathbf u^{(0)}=((\mathbf x^A)^{\mathsf T},
+(\mathbf r^A)^{\mathsf T})^{\mathsf T}$, initial fixed or identity plan
+$\Pi_0$, actual attempt count $A$,
 configured maximum $A_{\max}$, attempt index $a\in\{1,\ldots,A\}$, and
 accepted-plan index $k_a$ available at the start of attempt $a$,
 \begin{equation}
  \begin{aligned}
- x^{\rm eval,(0)}&=\mathcal A_{\Pi_0}(x^{(0)}),
+ \mathbf u^{\rm eval,(0)}&=\mathcal A_{\Pi_0}(\mathbf u^{(0)}),
  \qquad k_1=0,\\
  \Lambda_a&=\operatorname{Learn}(\mathcal L_a,
-             x^{\rm eval,(k_a)},\Pi_{k_a}),\\
+             \mathbf u^{\rm eval,(k_a)},\Pi_{k_a}),\\
  (\widetilde\Pi_a,\delta_a)&=\operatorname{Resolve}
              (\Lambda_a,\Pi_{k_a},\Theta^{\rm policy}),\\
  k_{a+1}&=k_a+\mathbb I[\delta_a=\mathrm{accepted}],\\
  \delta_a=\mathrm{accepted}&\Longrightarrow
  \left\{\begin{aligned}
  \Pi_{k_a+1}&=\widetilde\Pi_a,\\
- x^{\rm eval,(k_a+1)}&=\mathcal A_{\Pi_{k_a+1}}(x^{(0)})
+ \mathbf u^{\rm eval,(k_a+1)}&=
+             \mathcal A_{\Pi_{k_a+1}}(\mathbf u^{(0)})
  \end{aligned}\right.,\\
  \delta_a\ne\mathrm{accepted}&\Longrightarrow
  \Pi_{k_{a+1}}=\Pi_{k_a}\quad\text{and no new evaluation is required},\\
- x^{\rm final}&=\mathcal A_{\Pi_K}(x^{(0)}),\qquad
+ \mathbf u^{\rm final}&=\mathcal A_{\Pi_K}(\mathbf u^{(0)}),\qquad
  K=k_{A+1}\le A\le A_{\max}<\infty,\\
  \frac{\partial\Pi_k}{\partial j}&=0
              \quad\text{during every apply of accepted plan }k.
@@ -445,7 +465,9 @@ Equation~\eqref{eq:iterative-refinement} separates the actual finite attempt
 count from its configured maximum and from the accepted-plan sequence.  It
 does not create artificial no-op attempts after an earlier stop.  It defines
 the initial evaluation for nonidentity
-$\Pi_0$, and states the default original-input replay rule.  A sequential
+$\Pi_0$, and states the default original-pair replay rule.  The application-
+context projection publishes required conditioned $x$ and, only when
+requested, conditioned $r$ or its exact availability state.  A sequential
 cascade from a preceding evaluation product requires separate
 explicit operator authority and complete propagation of every intermediate
 parent, response, state, phase, edge, support, covariance, and uncertainty.
@@ -552,3 +574,113 @@ The actual bounded-refinement counts satisfy
  A=\#\{a:\operatorname{Learn}_a\text{ was actually attempted}\}.
  \tag{SCI-RTC-EQ-035}\label{eq:actual-attempts}
 \end{equation}
+
+On the common pair grid $\mathcal G_{\rm pair}$, define the admitted raw pair
+and any separately available coordinate-specific affine baseline state by
+\begingroup\small
+\begin{equation}
+ \begin{aligned}
+ \mathbf u_d&=\begin{bmatrix}\mathbf x^A_d\\\mathbf r^A_d\end{bmatrix},\\
+ \mathbf b_{d,k}&=\begin{bmatrix}b^x_{d,k}\\b^r_{d,k}\end{bmatrix},\\
+ \mathbf u_d^\star&=\mathbf u_d-\mathbf b_{d,k}
+ \quad\text{on stable segment }I_k .
+ \end{aligned}
+ \tag{SCI-RTC-EQ-036}\label{eq:paired-conditioned-r}
+\end{equation}
+\endgroup
+The two affine components have separate estimators, availability, uncertainty,
+and action.  This identity assumes neither equality nor permission to copy one
+component into the other.
+
+Learn retains coordinate-specific and genuinely joint evidence as an ordered
+cause-preserving collection,
+\begin{equation}
+ \mathcal E_{xr}=\bigl(E_x,E_r,E_{xr}\bigr),\qquad
+ E_c=(\mathcal J, c, \widehat\theta_c,\mathcal S_c,
+ P_c,\zeta_c,U_c,Q_c,K_c,D_c,F_c),
+ \quad c\in\{x,r,xr\}.
+ \tag{SCI-RTC-EQ-037}\label{eq:paired-evidence}
+\end{equation}
+Here $\mathcal J$ is exact occurrence identity, $c$ is evidence origin,
+$\widehat\theta$ identifies the estimator output, $\mathcal S$ its support,
+$P$ protection/Tune/mapping state, $U$ uncertainty, $Q$ quality, $K$ causal
+class and direct/inferred state, $D$ source/frequency domain, and $F$ its
+accepted, rejected, candidate, or unavailable disposition.  This tuple is a
+minimum semantic inventory, not a storage schema.
+
+For owner-designated hard classes after protection and admission predicates
+have been resolved, the pair action support is the cause-preserving union
+\begin{equation}
+ B_{\rm pair}=B_x^{\rm hard}\cup B_r^{\rm hard}
+                    \cup B_{xr}^{\rm hard},
+ \qquad
+ \operatorname{origin}(E_c)=c\ \text{is retained}.
+ \tag{SCI-RTC-EQ-038}\label{eq:hard-pair-union}
+\end{equation}
+This unions action support, not evidence values, causes, correction
+amplitudes, or generic flags.  A diagnostic or spectral candidate is absent
+from $B_{\rm pair}$ until its stronger class-specific predicate passes.
+
+Resolve composes the full evidence collection and policy into one immutable
+pair plan, and Apply consumes exactly that plan on both coordinates:
+\begin{equation}
+ \Pi_{xr}=\operatorname{Resolve}_{xr}(\mathcal E_{xr},
+               \Theta^{\rm policy}),\qquad
+ (\mathbf y_d,\mathcal R_d)=\operatorname{Apply}_{\Pi_{xr}}
+               (\mathbf u_d),\qquad
+ \frac{\partial\Pi_{xr}}{\partial j}=0\ \text{during Apply}.
+ \tag{SCI-RTC-EQ-039}\label{eq:pair-resolve-apply}
+\end{equation}
+$\mathcal R_d$ is the realized cause/action/availability record.  Evidence
+discovered after resolve belongs to a successor learn--resolve--apply attempt,
+never an in-place plan mutation.
+
+On $\mathcal A_x\cap\mathcal A_r$, the canonical ordinary numerical action
+and its fixed-state Jacobian are
+\begin{equation}
+ \mathbf y_d=(I_2\otimes L_\Pi)\mathbf u_d^\star,
+ \qquad
+ J_{{\rm pair},\Pi}=I_2\otimes L_\Pi
+ =\begin{bmatrix}L_\Pi&0\\0&L_\Pi\end{bmatrix},
+ \qquad
+ \frac{\partial\mathbf y^x}{\partial\mathbf r}
+ =\frac{\partial\mathbf y^r}{\partial\mathbf x}=0.
+ \tag{SCI-RTC-EQ-040}\label{eq:canonical-pair-operator}
+\end{equation}
+$L_\Pi$ includes identical masks, pair support, segments, transitions, guards,
+coefficients, state and reset, filter definition, order and precision,
+phase/delay, boundaries, downsampling, selected times, representative
+occurrences, cardinality, and grid.  The $x$-only donor-recovery exception is
+not inserted into the $r$ block: over its complete causal influence the
+conditioned-$r$ value and response are typed unavailable on the unchanged
+grid.  A distinct $r$ operator would be a separately named descendant.
+
+For an admitted joint input covariance on common available support, the
+fixed-state conditional propagation is
+\begin{equation}
+ C_{y\mid\Pi}=(I_2\otimes L_\Pi)C_{\rm in}
+                    (I_2\otimes L_\Pi)^{\mathsf T},
+ \qquad
+ C'_{xr}=L_\Pi C_{xr}L_\Pi^{\mathsf T}.
+ \tag{SCI-RTC-EQ-041}\label{eq:canonical-pair-covariance}
+\end{equation}
+Available cross blocks are retained.  Conditional fixed-state propagation,
+coordinate-specific affine-correction uncertainty, learned-parameter and
+selection uncertainty, donor-induced $r$ unavailability, and total derivative
+availability remain distinct.  The zero fixed-state cross response does not
+erase the valid data-dependent path
+$r\rightarrow E_r/E_{xr}\rightarrow\Pi_{xr}\rightarrow y_x$.
+
+The support and availability states obey
+\begin{equation}
+ \mathcal A_{\rm pair}\subseteq\mathcal G_{\rm pair},\qquad
+ \mathcal A_x,\mathcal A_r\subseteq\mathcal G_{\rm pair},\qquad
+ \mathcal A_C\subseteq\mathcal A_x\cap\mathcal A_r,
+ \qquad \mathcal A_x\ne\mathcal A_r\ \text{is permitted}.
+ \tag{SCI-RTC-EQ-042}\label{eq:support-availability-partition}
+\end{equation}
+The first set records common pair action and ordinary-operator support, not
+joint numerical completeness.  A required but unavailable affine correction
+removes the affected coordinate from $\mathcal A_x$ or $\mathcal A_r$ over
+the full downstream realized influence while preserving
+$\mathcal G_{\rm pair}$ and the other coordinate's independent availability.

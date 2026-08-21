@@ -1,7 +1,7 @@
 # SCI-RTC — Raw-Timestream Conditioning And Temporal Response
 
-Status: Scientific authority frozen; implementation conformity not yet assessed
-under this contract.
+Status: SCI-RTC v0.1/r0.12 scientific authority frozen by Grant Wilson on
+`2026-08-21`; implementation conformity not assessed under this contract.
 
 Version: `v0.1`
 
@@ -36,12 +36,30 @@ inputs.
   Decision 9 applied; r0.9 owner Decisions 1--8 applied and freshly
   consistency-reviewed.
 - Scientific-owner freeze: complete for v0.1/r0.9 on `2026-08-20`.
+- Bounded conditioned-$r$ reopening: owner-authorized on `2026-08-21`; the six
+  decisions were incorporated in sealed comparison candidate v0.1/r0.10 at
+  commit `326ec554998a124202d746f435bec8180e875fa1`.
+- Canonical pair-level r0.11 revision: owner-authorized on `2026-08-21`; seven
+  decisions reopen evidence, pair-plan selection/support, the identical
+  ordinary operator, affine correction symmetry, spectral admission, and the
+  explicit $x$-only donor exception while preserving every unrelated
+  numerical owner-ledger state.
+- Surgical r0.12 correction: owner-authorized from supplied review on
+  `2026-08-21`; seven decisions make native mapping/ALIGN order, original-pair
+  replay, support/availability partition, downstream unavailable-correction
+  influence, conditional product wording, r0.11 decision enumeration, and
+  immutable raw-$r$ event evidence explicit without reopening the approved
+  r0.11 scientific architecture.
+- Scientific-owner freeze: complete for v0.1/r0.12 on `2026-08-21`; the
+  verified candidate at commit `ffce339abbb3c89ae1bf622c5395e28a5e727ea4`
+  was promoted without scientific change.
 - Implementation conformity, validation, and production promotion: not
   established.
 
-The next gate is the RTC--CAL--PTC play-well-together coherence review. It is
-not an RTC implementation-conformity audit and cannot silently amend this
-frozen authority.
+Any implementation-conformity, representation-fidelity, validation,
+science-qualification, or production-readiness activity is a separate later
+gate requiring its own authority and evidence. The freeze does not silently
+resolve PTC, SCI-VAL, or any unrelated open RTC policy.
 
 ## Contents
 
@@ -137,14 +155,58 @@ frozen authority.
   implementation-blind decision, build, metadata, and all-page consistency review
 - [`SCIENTIFIC_OWNER_FREEZE_R0.9.md`](SCIENTIFIC_OWNER_FREEZE_R0.9.md): exact
   owner freeze, claim boundary, retained open states, and change-control rule
+- [`SCIENTIFIC_OWNER_REOPENING_DIRECTIVE_R0.10.md`](SCIENTIFIC_OWNER_REOPENING_DIRECTIVE_R0.10.md):
+  exact bounded reopening scope and owner decisions D01--D06
+- [`CHANGE_LOG_R0.10.md`](CHANGE_LOG_R0.10.md): exact bounded r0.9-to-r0.10
+  candidate changes
+- [`RATIONALE_TO_CONTRACT_CROSSWALK_R0.10.md`](RATIONALE_TO_CONTRACT_CROSSWALK_R0.10.md):
+  six-decision rationale-to-authority routing
+- [`CONSISTENCY_REPORT_R0.10.md`](CONSISTENCY_REPORT_R0.10.md): implementation-blind
+  source, build, metadata, and all-page visual verification record
+- [`SCIENTIFIC_OWNER_CANDIDATE_R0.10.md`](SCIENTIFIC_OWNER_CANDIDATE_R0.10.md):
+  exact content-bound candidate review snapshot; not an authority freeze
+- [`SCIENTIFIC_OWNER_REVISION_DIRECTIVE_R0.11.md`](SCIENTIFIC_OWNER_REVISION_DIRECTIVE_R0.11.md):
+  binding seven-decision canonical pair-level revision authority
+- [`CHANGE_ANALYSIS_R0.10_TO_R0.11.md`](CHANGE_ANALYSIS_R0.10_TO_R0.11.md):
+  clause/equation supersession and preservation map
+- [`CHANGE_LOG_R0.11.md`](CHANGE_LOG_R0.11.md): exact bounded r0.10-to-r0.11
+  candidate changes
+- [`RATIONALE_TO_CONTRACT_CROSSWALK_R0.11.md`](RATIONALE_TO_CONTRACT_CROSSWALK_R0.11.md):
+  seven-decision rationale-to-authority routing
+- [`CROSS_PACKAGE_FOLLOWUP_R0.11.md`](CROSS_PACKAGE_FOLLOWUP_R0.11.md):
+  bounded PTC, SCI-VAL, and CAL handoff questions
+- [`CONSISTENCY_REPORT_R0.11.md`](CONSISTENCY_REPORT_R0.11.md):
+  implementation-blind source, structure, and PDF verification record
+- [`PDF_VISUAL_QA_AND_SOURCE_IDENTITY_R0.11.md`](PDF_VISUAL_QA_AND_SOURCE_IDENTITY_R0.11.md):
+  exact PDF metadata, text identity, and all-page visual-QA record
+- [`SCIENTIFIC_OWNER_CANDIDATE_R0.11.md`](SCIENTIFIC_OWNER_CANDIDATE_R0.11.md):
+  exact content-bound r0.11 candidate snapshot; not an authority freeze
+- [`SCIENTIFIC_OWNER_REVISION_DIRECTIVE_R0.12.md`](SCIENTIFIC_OWNER_REVISION_DIRECTIVE_R0.12.md):
+  binding seven-correction surgical r0.12 authority
+- [`CHANGE_ANALYSIS_R0.11_TO_R0.12.md`](CHANGE_ANALYSIS_R0.11_TO_R0.12.md):
+  exact preservation and supersession map
+- [`CHANGE_LOG_R0.12.md`](CHANGE_LOG_R0.12.md): exact bounded r0.11-to-r0.12 changes
+- [`RATIONALE_TO_CONTRACT_CROSSWALK_R0.12.md`](RATIONALE_TO_CONTRACT_CROSSWALK_R0.12.md):
+  seven-correction rationale-to-authority routing
+- [`CONSISTENCY_REPORT_R0.12.md`](CONSISTENCY_REPORT_R0.12.md):
+  implementation-blind source, structure, and PDF verification record
+- [`PDF_VISUAL_QA_AND_SOURCE_IDENTITY_R0.12.md`](PDF_VISUAL_QA_AND_SOURCE_IDENTITY_R0.12.md):
+  exact PDF metadata, text identity, and all-page visual-QA record
+- [`SCIENTIFIC_OWNER_CANDIDATE_R0.12.md`](SCIENTIFIC_OWNER_CANDIDATE_R0.12.md):
+  exact content-bound r0.12 candidate snapshot; not an authority freeze
+- [`SCIENTIFIC_OWNER_FREEZE_R0.12.md`](SCIENTIFIC_OWNER_FREEZE_R0.12.md):
+  exact scientific-owner freeze, retained states, hashes, and change control
+- [`FREEZE_VERIFICATION_R0.12.md`](FREEZE_VERIFICATION_R0.12.md): status-only
+  source/PDF verification and all-page visual-QA record
 - [`DECISION_LOG.md`](DECISION_LOG.md): package-selection and approved scope
   decisions
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md):
-  63 open, one conditional, 14 resolved, and five deferred decisions
+  63 open, one conditional, 34 resolved, and five deferred decisions
 - [`CROSSWALK.md`](CROSSWALK.md): exact shared-core and packet traceability
 - `src/`: one six-file shared core and the two audience views
-- `pdf/`: canonical r0.9 outputs: 14-page focused science-team rationale and
-  43-page complete formal engineering view, with all 57 pages Poppler-inspected
+- `pdf/`: canonical frozen r0.12 science-team rationale and complete formal
+  engineering view, with page counts, hashes, and all-page inspection recorded
+  after the fresh build
 
 ## Protected Boundary
 
@@ -157,7 +219,13 @@ coordinates, spike-aware level-shift segmentation on the original pair,
 post-segmentation conditioned-$x$ donor replacement, diagnostic-only
 atmospheric-template evidence, temporal conditioning, response, support,
 influence, covariance, phase-zero sampling, and its consumer-neutral
-conditioned-$x$/raw-$r$ atomic bundle.
+conditioned-$x$/optional-same-grid-conditioned-$r$/raw-$r$ atomic bundle.
+Learn retains direct-$x$, direct-$r$, and joint evidence. Resolve unions
+owner-approved hard action support without erasing causes, and every ordinary
+canonical stage uses one identical $I_2\otimes L_\Pi$ operator. Coordinate-
+specific affine amplitudes remain independent; the existing $x$ donor is the
+explicit recovery exception and makes unreconstructed $r$ honestly
+unavailable over its full influence without affecting valid conditioned $x$.
 
 It does not derive ALIGN timing, AST coordinates, BEAM calibration factors,
 the CAL atmosphere operator, PTC correlated-mode cleaning or weights, VAL
@@ -176,7 +244,24 @@ package as scientific authority on `2026-08-20`. The freeze retains every
 recorded open, conditional, resolved, and deferred owner-ledger state; it does
 not invent missing decisions or make blocked claims available.
 
+On `2026-08-21`, Grant Wilson explicitly authorized a bounded reopening of the
+existing conditioned-$r$ extension point. Sealed comparison candidate r0.10 records six resolved
+decisions covering role/optionality, pair-coherent artifacts, exact paired
+grid/failure isolation, coordinate-diagonal response/covariance, optical
+leakage/source protection, and downstream handoff. The frozen r0.9 baseline
+remains unchanged.
+
+Grant Wilson then authorized the r0.11 canonical pair-level revision. It
+records seven additional resolved decisions and expressly permits accepted
+$r$-origin evidence to change conditioned-$x$ selection/support through one
+pair plan while preserving zero fixed-state cross-coordinate numerical
+response. The supplied scientific review approved that architecture and
+authorized the surgical r0.12 consistency correction. On `2026-08-21`, Grant
+Wilson froze v0.1/r0.12 as scientific authority without changing its scientific
+content or any owner-ledger state.
+
 Current application and production behavior retain their existing repository
 status until a later, separately authorized conformity and validation program
-assesses them. Any substantive change to this frozen authority requires
-explicit owner action and a versioned successor or formally reopened revision.
+assesses them. Any substantive change beyond this bounded reopening requires
+explicit owner action and another versioned successor or formally reopened
+revision.

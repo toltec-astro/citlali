@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mechanical SCI-RTC v0.1/r0.9 author-deliverable checks.
+"""Mechanical SCI-RTC v0.1/r0.12 frozen-authority deliverable checks.
 
 This helper reads only the approved author inputs and package deliverables.
 It does not inspect implementation, tests, history, or sibling packages.
@@ -85,14 +85,14 @@ def main() -> None:
         r"\\tag\{SCI-RTC-EQ-(\d{3}[ab]?)\}", text(COMMON / "equations.tex")
     )
 
-    require(definitions == [f"{i:03d}" for i in range(1, 39)], "definition IDs")
+    require(definitions == [f"{i:03d}" for i in range(1, 53)], "definition IDs")
     require(assumptions == [f"{i:03d}" for i in range(1, 13)], "assumption IDs")
-    require(requirements == [f"{i:03d}" for i in range(1, 109)], "requirement IDs")
-    require(predictions == [f"{i:03d}" for i in range(1, 72)], "prediction IDs")
+    require(requirements == [f"{i:03d}" for i in range(1, 144)], "requirement IDs")
+    require(predictions == [f"{i:03d}" for i in range(1, 109)], "prediction IDs")
     expected_eq = (
         [f"{i:03d}" for i in range(1, 16)]
         + ["016a", "016b", "017", "018", "019", "020a", "020b"]
-        + [f"{i:03d}" for i in range(21, 36)]
+        + [f"{i:03d}" for i in range(21, 43)]
     )
     require(equation_ids == expected_eq, "equation tag IDs")
 
@@ -102,7 +102,7 @@ def main() -> None:
     ]
     expected_inputs = [rf"\input{{common/{name}}}" for name in common_files]
     for name in common_files:
-        require("v0.1/r0.9" in text(COMMON / name), f"r0.9 stamp in {name}")
+        require("v0.1/r0.12" in text(COMMON / name), f"r0.12 stamp in {name}")
     engineering = text(SRC / "engineering-conformance.tex")
     rationale = text(SRC / "scientific-rationale.tex")
     require(
@@ -144,7 +144,7 @@ def main() -> None:
 
     equations_text = text(COMMON / "equations.tex")
     for marker in (
-        r"x^{\rm eval,(0)}",
+        r"\mathbf u^{\rm eval,(0)}",
         r"\widetilde\Pi_a",
         r"k_{a+1}",
         r"v^{x,\rm preD}_{d,Mn}",
@@ -159,10 +159,15 @@ def main() -> None:
         r"\tau_{de}=\tau_e+\delta\tau_{de}",
         r"\widehat{\Delta b}_{de}=\widehat b^+_{de}-\widehat b^-_{de}",
         r"\operatorname{atan2}",
-        r"(\mathbf y^x,\mathbf r^{A,\rm parent},\mathcal J^{xr},\mathcal K^{x}",
+        r"(\mathbf y^x,\mathbf y^{r,\rm opt},\mathbf r^{A,\rm parent},\mathcal J^{xr}",
+        r"\mathcal E_{xr}=\bigl(E_x,E_r,E_{xr}\bigr)",
+        r"B_{\rm pair}=B_x^{\rm hard}\cup B_r^{\rm hard}",
+        r"J_{{\rm pair},\Pi}=I_2\otimes L_\Pi",
+        r"C'_{xr}=L_\Pi C_{xr}L_\Pi^{\mathsf T}",
         r"K=k_{A+1}\le A\le A_{\max}",
+        r"\mathcal A_C\subseteq\mathcal A_x\cap\mathcal A_r",
     ):
-        require(marker in equations_text, f"r0.9 equation marker: {marker}")
+        require(marker in equations_text, f"r0.12 equation marker: {marker}")
     complete_operator = equations_text.split(
         r"\tag{SCI-RTC-EQ-005}", maxsplit=1
     )[0].rsplit(r"\begin{equation}", maxsplit=1)[1]
@@ -184,10 +189,16 @@ def main() -> None:
             "original-pair shift-learning boundary")
     require("shall not be subtracted from science $x$" in requirements_text,
             "diagnostic-only atmospheric-template boundary")
-    require("Any separately requested conditioned $r$ product" in requirements_text,
-            "separately authorized conditioned-r boundary")
-    require(r"$J_{\rm num,\Omega}=[L^x_\Omega\ 0]$" in requirements_text,
-            "fixed-state numerical covariance boundary")
+    require("Requested conditioned $r$ shall use RTC's paired-companion extension"
+            in requirements_text, "paired-companion conditioned-r boundary")
+    require("Fixed-state $x\\leftarrow r$ and $r\\leftarrow x$ numerical responses are both zero"
+            in requirements_text, "coordinate-diagonal numerical-response boundary")
+    require("Local or global conditioned-$r$ failure shall never corrupt"
+            in requirements_text, "conditioned-r failure isolation")
+    require("Source protection for artifact learning/correction shall be pair-coherent"
+            in requirements_text, "pair-coherent source protection")
+    require("shall not convert those facts into a PTC joint-mode decision"
+            in requirements_text, "RTC producer/consumer-policy boundary")
     require("coordinate-comparison compatibility" in requirements_text,
             "leakage coordinate compatibility")
     require("Carry across the boundary is permitted only" in requirements_text,
@@ -212,6 +223,14 @@ def main() -> None:
             "compact normal spike population summary")
     require("undifferentiated generic non-finite" in requirements_text,
             "typed non-finite cause")
+    require("Every canonical iterative refinement evaluation" in requirements_text,
+            "pair-based iterative replay")
+    require(r"shall record $\mathcal G_{\rm pair}$" in requirements_text,
+            "support and availability partition")
+    require("through the exact downstream support" in requirements_text,
+            "unavailable affine-correction influence")
+    require("shall not overwrite, replace, or reinterpret the immutable raw-$r$ parent"
+            in requirements_text, "raw-r event lineage")
 
     directive = text(PKG / "SCIENTIFIC_OWNER_DIRECTIVE_R0.5.md")
     require("7469fd327d9465904a4e59c287577bab0dcd9f93fd2cc555cdee6680e89714a6"
@@ -246,15 +265,60 @@ def main() -> None:
     )
     require(freeze_status in text(freeze_r09).replace("\n", " "),
             "exact frozen status in owner record")
-    require("Scientific authority frozen" in rationale,
-            "frozen status in rationale")
-    require("Scientific authority frozen" in engineering,
-            "frozen status in engineering")
+    reopening_r10 = PKG / "SCIENTIFIC_OWNER_REOPENING_DIRECTIVE_R0.10.md"
+    require(
+        digest(reopening_r10)
+        == "6e1c215dda40e8b716b8274f9bbf6fd42c67335b9cd8574aaa4f207b5f47f4cb",
+        "r0.10 scientific-owner reopening digest",
+    )
+    revision_r11 = text(PKG / "SCIENTIFIC_OWNER_REVISION_DIRECTIVE_R0.11.md")
+    require(
+        "89eb07832fa064238045c6c765c019f3b6fe74c3e5d1c6f163de5f5ebd20e9d8"
+        in revision_r11,
+        "r0.11 supplied owner-directive digest",
+    )
+    require(
+        "326ec554998a124202d746f435bec8180e875fa1" in revision_r11,
+        "sealed r0.10 comparison baseline",
+    )
+    for decision in range(1, 8):
+        require(f"R11-D{decision:02d}" in revision_r11,
+                f"r0.11 owner decision D{decision:02d}")
+    revision_r12 = text(PKG / "SCIENTIFIC_OWNER_REVISION_DIRECTIVE_R0.12.md")
+    require(
+        "432b7cbeccdee0b9a41e75b15ee11cc2aced2a8c474248914c14d1885ab1309b"
+        in revision_r12,
+        "r0.12 supplied owner-review digest",
+    )
+    require(
+        "85e1e6c6865f74f1a97e99fab465714f43877c3d" in revision_r12,
+        "approved r0.11 comparison baseline",
+    )
+    for decision in range(1, 8):
+        require(f"R12-D{decision:02d}" in revision_r12,
+                f"r0.12 owner decision D{decision:02d}")
+    freeze_r12 = PKG / "SCIENTIFIC_OWNER_FREEZE_R0.12.md"
+    require(
+        digest(freeze_r12)
+        == "0cac4396df225c1f2808ee1055e063c9a4e72a02549557c5e997f54d72dac0bf",
+        "r0.12 scientific-owner freeze digest",
+    )
+    require(
+        "Freeze SCI-RTC v0.1/r0.12." in text(freeze_r12),
+        "exact r0.12 owner freeze statement",
+    )
+    require(
+        "ffce339abbb3c89ae1bf622c5395e28a5e727ea4" in text(freeze_r12),
+        "verified r0.12 candidate commit",
+    )
+    frozen_status = "Scientific authority frozen by owner"
+    require(frozen_status in rationale, "frozen status in rationale")
+    require(frozen_status in engineering, "frozen status in engineering")
     frozen_pdfs = {
         PKG / "pdf" / "SCI-RTC-SCIENTIFIC-RATIONALE-v0.1.pdf":
-            "0d397cbcf3eb5df19aa684c84efc317e95fcef7e404f3954a1356336ce09629e",
+            "b0060b28253906f83f2f106d9df761864d8277317ebd5e3742ff963e11e30b3d",
         PKG / "pdf" / "SCI-RTC-ENGINEERING-CONFORMANCE-v0.1.pdf":
-            "8ff6eb431f18ac64659f864d9fbd3f40c2349892fcc5154bc51ab3a9fc598805",
+            "9211091e71830295a8fe5febb102704c95f8397b017584cbeb4575728081da42",
     }
     for path, expected in frozen_pdfs.items():
         require(digest(path) == expected, f"frozen PDF hash changed: {path.name}")
@@ -270,10 +334,10 @@ def main() -> None:
 
     crosswalk = text(PKG / "CROSSWALK.md")
     for stem, count in (
-        ("SCI-RTC-DEF-", 38),
+        ("SCI-RTC-DEF-", 52),
         ("SCI-RTC-ASM-", 12),
-        ("SCI-RTC-REQ-", 108),
-        ("SCI-RTC-PRED-", 71),
+        ("SCI-RTC-REQ-", 143),
+        ("SCI-RTC-PRED-", 108),
     ):
         sequential(table_row_ids(crosswalk, stem), stem, count)
     eq_rows = table_row_ids(crosswalk, "SCI-RTC-EQ-")
@@ -284,7 +348,7 @@ def main() -> None:
     owner_rows = table_row_ids(
         text(PKG / "SCIENTIFIC_OWNER_DECISION_LEDGER.md"), "SCI-RTC-OWNER-"
     )
-    sequential(owner_rows, "SCI-RTC-OWNER-", 83)
+    sequential(owner_rows, "SCI-RTC-OWNER-", 103)
 
     owner_ledger = text(PKG / "SCIENTIFIC_OWNER_DECISION_LEDGER.md")
     owner_states = re.findall(
@@ -293,16 +357,17 @@ def main() -> None:
     )
     require(
         {state: owner_states.count(state) for state in set(owner_states)}
-        == {"OPEN": 63, "CONDITIONAL": 1, "RESOLVED": 14, "DEFERRED": 5},
+        == {"OPEN": 63, "CONDITIONAL": 1, "RESOLVED": 34, "DEFERRED": 5},
         "owner-ledger state counts",
     )
 
     print("PASS: approved packet hashes (4)")
     print("PASS: focused rationale plus complete six-file engineering/formal view")
-    print("PASS: definitions=38 equations=37 assumptions=12 requirements=108 predictions=71")
+    print("PASS: definitions=52 equations=44 assumptions=12 requirements=143 predictions=108")
     print("PASS: crosswalk rows complete and sequential")
-    print("PASS: author decisions=24 owner entries=83 (63 open, 1 conditional, 14 resolved, 5 deferred)")
-    print("PASS: r0.8 Decision 9, r0.9 Decisions 1--8, and r0.9 owner freeze")
+    print("PASS: author decisions=24 owner entries=103 (63 open, 1 conditional, 34 resolved, 5 deferred)")
+    print("PASS: r0.9 history preserved; r0.11 architecture and r0.12 D01--D07 bound")
+    print("PASS: exact r0.12 scientific-owner freeze bound")
     print("PASS: canonical frozen PDF hashes (2)")
     print("PASS: rationale narrative sections=12")
     print("PASS: engineering wrapper has no independent displayed mathematics")
