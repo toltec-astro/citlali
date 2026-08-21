@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.9 shared normative core -- equations.
+% SCI-RTC v0.1/r0.10 shared normative core -- equations.
 \section{Normative equations and identities}
 \label{sec:core-equations}
 
@@ -65,16 +65,22 @@ Equation~\eqref{eq:role-cal} is an SCI-CAL handoff identity; its output is not
      \xrightarrow{\ C^{\rm CAL}_{\kappa,\mathcal R}\ }
      \mathbf c^{\rm CAL}_{\mathcal R},\\
  \mathbf r^{A}
-   &\xrightarrow{\ \text{retain parent and declared diagnostics}\ }
-     \mathcal D^r_{\mathcal R}\hookrightarrow\mathcal O_{\rm RTC,\mathcal R}.
+   &\xrightarrow{\ \text{same applicable }F_1\ldots F_K,\,D_{M,0}\ }
+     \mathbf y^{r,\rm RTC}_{\mathcal R}\ \text{when requested},\\
+ \mathbf r^{A,\rm parent},\ \mathbf y^{r,\rm RTC}_{\mathcal R},\
+ \mathcal D^r_{\mathcal R}
+   &\hookrightarrow\mathcal O_{\rm RTC,\mathcal R}.
 \end{aligned}
  \tag{SCI-RTC-EQ-004}\label{eq:order-equivalence}
 \end{equation}
 RTC shall not move the downstream CAL arrow inside replacement, temporal
 filtering, or phase-zero sampling.  Only the $x$ member is handed to
 SCI-CAL.  The paired raw $r$ parent and every causal diagnostic/selector remain
-in the bundle but are not calibrated, substituted for $x$, or interpreted as
-Stokes data.  The raw donor ratio in equation~\eqref{eq:raw-donor} is
+in the bundle.  When conditioned $r$ is requested, its ordinary shared RTC
+filtering and phase-zero selection are coordinate-diagonal; no $x$ repair or
+replacement is silently applied to it.  Neither raw nor conditioned $r$ is
+calibrated, substituted for $x$, or interpreted as Stokes data.  The raw donor
+ratio in equation~\eqref{eq:raw-donor} is
 $x$-domain convention transfer within $B^x_\omega$, not absolute calibration.
 Atmospheric templates are diagnostic evidence only; equation~\eqref{eq:order-equivalence}
 contains no atmospheric-removal operator.
@@ -172,15 +178,20 @@ renormalizing are distinct operators.
 
 For a coherent pre-sampling segment of length $N$, v0.1 selects only
 \begin{equation}
- y^{x,\rm RTC}_{d,n}=v^{x,\rm preD}_{d,Mn},
- \qquad 0\le Mn<N,
- \qquad f_{\rm out}=\frac{f_{\rm in}}{M},
- \qquad
+ \begin{gathered}
+ y^{x,\rm RTC}_{d,n}=v^{x,\rm preD}_{d,Mn},\qquad
+ y^{r,\rm RTC}_{d,n}=v^{r,\rm preD}_{d,Mn}\ \text{when available},\\
+ 0\le Mn<N,\qquad f_{\rm out}=\frac{f_{\rm in}}{M},\qquad
  N_y=\begin{cases}0,&N=0,\\1+\left\lfloor\dfrac{N-1}{M}\right\rfloor,&N>0.
  \end{cases}
+ \end{gathered}
  \tag{SCI-RTC-EQ-011}\label{eq:phase-zero}
 \end{equation}
-The representative assigned-grid time is the selected point time
+The conditioned-$r$ companion has the same cardinality and selected slots as
+conditioned $x$ when requested.  A location at which no scientifically
+justified conditioned-$r$ value exists remains present and typed invalid or
+unavailable; it is not dropped, reindexed, interpolated, or filled.  The
+representative assigned-grid time is the selected point time
 $t^{\rm out}_n=t_{Mn}$; the scientific support is nevertheless the complete
 RTC-local transitive support $\mathcal S^{\rm RTC}_{dn}$ of all preceding
 stages.  A selected
@@ -250,7 +261,8 @@ with mean $\boldsymbol\mu_u$ and joint covariance
 $\Sigma_u=\left[\begin{smallmatrix}\Sigma_{xx}&\Sigma_{xr}\\
 \Sigma_{rx}&\Sigma_{rr}\end{smallmatrix}\right]$, conditional on fixed
 $\Omega$ independent of the modeled random noise, define
-$J_{\rm num,\Omega}=\begin{bmatrix}L^x_\Omega&0\end{bmatrix}$.  Then
+$J_{\rm num,\Omega}=\begin{bmatrix}L^x_\Omega&0\end{bmatrix}$ for conditioned
+$x$ alone.  Then
 \begin{align}
  \E[\mathbf y\mid\Omega]
    &=J_{\rm num,\Omega}\boldsymbol\mu_u+\mathbf b^x_\Omega,
@@ -260,7 +272,8 @@ $J_{\rm num,\Omega}=\begin{bmatrix}L^x_\Omega&0\end{bmatrix}$.  Then
      =L^x_\Omega\Sigma_{xx}(L^x_\Omega)^{\mathsf T}.
  &\tag{SCI-RTC-EQ-016b}\label{eq:conditional-cov}
 \end{align}
-The cross-coordinate blocks do not enter fixed-state numerical propagation.
+The cross-coordinate blocks do not enter fixed-state numerical propagation
+of conditioned $x$ alone.
 They remain required for a joint selector, estimator, learned parameter, or
 diagnostic because $\Omega=\Omega(\mathbf x^A,\mathbf r^A)$.  If selectors
 depend on the random data, unconditional covariance obeys
@@ -338,13 +351,16 @@ Finally, the consumer-neutral atomic product for application context
 $\mathcal R$ is
 \begin{equation}
  \mathcal O_{\rm RTC,\mathcal R}=
- (\mathbf y^x,\mathbf r^{A,\rm parent},\mathcal J^{xr},\mathcal K^{x},\mathcal S,\mathcal I,
+ (\mathbf y^x,\mathbf y^{r,\rm opt},\mathbf r^{A,\rm parent},\mathcal J^{xr},
+  \mathcal K^{x},\mathcal K^{r,\rm opt},\mathcal S,\mathcal I,
   \mathcal F,\mathcal V,\mathcal U,\mathcal P,\mathcal D,\mathcal C),
  \tag{SCI-RTC-EQ-022}\label{eq:bundle}
 \end{equation}
 where $\mathcal J^{xr}$ is exact ordered pair identity, $\mathcal K^{x}$ is
-the complete conditioned-$x$ response status, $\mathbf r^{A,\rm parent}$ is
-the immutable paired raw parent rather than an implied conditioned output,
+the complete conditioned-$x$ response status, $\mathbf y^{r,\rm opt}$ and
+$\mathcal K^{r,\rm opt}$ are the requested conditioned-$r$ companion and its
+coordinate-diagonal response or typed local/global unavailability, and
+$\mathbf r^{A,\rm parent}$ is the immutable paired raw parent,
 $\mathcal S$ support, $\mathcal I$ influence, $\mathcal F$ typed flags/causes,
 $\mathcal V$ separated validity and eligibility inputs, $\mathcal U$
 uncertainty/covariance availability, $\mathcal P$ one-way state/provenance,
@@ -552,3 +568,35 @@ The actual bounded-refinement counts satisfy
  A=\#\{a:\operatorname{Learn}_a\text{ was actually attempted}\}.
  \tag{SCI-RTC-EQ-035}\label{eq:actual-attempts}
 \end{equation}
+
+On the exact support $\mathcal A^r_\Omega$ where the optional conditioned-$r$
+companion and an admitted joint input covariance are available, the paired
+coordinate-diagonal affine response and conditional covariance are
+\begin{equation}
+ \begin{gathered}
+ \begin{bmatrix}\mathbf y^{x,\rm RTC}\\\mathbf y^{r,\rm RTC}\end{bmatrix}
+ =\begin{bmatrix}L^x_\Omega&0\\0&L^r_\Omega\end{bmatrix}
+  \begin{bmatrix}\mathbf x^A\\\mathbf r^A\end{bmatrix}
+  +\begin{bmatrix}\mathbf b^x_\Omega\\\mathbf b^r_\Omega\end{bmatrix},
+ \qquad
+ J^{xr}_\Omega=\begin{bmatrix}L^x_\Omega&0\\0&L^r_\Omega\end{bmatrix},\\
+ \Sigma^{xr}_{y\mid\Omega}=
+ \begin{bmatrix}
+ L^x_\Omega\Sigma_{xx}(L^x_\Omega)^{\mathsf T}&
+ L^x_\Omega\Sigma_{xr}(L^r_\Omega)^{\mathsf T}\\
+ L^r_\Omega\Sigma_{rx}(L^x_\Omega)^{\mathsf T}&
+ L^r_\Omega\Sigma_{rr}(L^r_\Omega)^{\mathsf T}
+ \end{bmatrix}.
+ \end{gathered}
+ \tag{SCI-RTC-EQ-036}\label{eq:paired-conditioned-r}
+\end{equation}
+$L^r_\Omega$ carries the same applicable filtering, masks, state boundaries,
+sampling phase, selected grid, and pair-level affected support as $L^x_\Omega$,
+but it contains no $x$-specific donor repair or replacement branch.  Where an
+$r$-domain correction is not scientifically justified, the affected
+conditioned-$r$ value, $r$ response, and associated covariance blocks are
+typed unavailable rather than invented.  A numerical covariance product is
+not required without an admitted model; when one is supplied, available
+cross-coordinate blocks are retained rather than set to zero.  This identity
+does not permit numerical $x\leftrightarrow r$ mixing, and no conditioned-$r$
+failure changes the conditioned-$x$ value or its upper-left covariance block.

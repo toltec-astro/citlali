@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.9 shared normative core -- notation and status.
+% SCI-RTC v0.1/r0.10 shared normative core -- notation and status.
 % This file is imported by the complete formal-contract view.
 \hypertarget{rtc-core-begin}{}
 \section{Shared normative authority and notation}
@@ -6,7 +6,7 @@
 
 \begin{center}
 \fcolorbox{RTCblue}{RTCpale}{\parbox{0.92\linewidth}{
-\textbf{Normative core stamp:} \texttt{SCI-RTC-v0.1/r0.9}.  The six files in
+\textbf{Normative core stamp:} \texttt{SCI-RTC-v0.1/r0.10}.  The six files in
 \texttt{src/common/} form one authority.  Text outside this shared core is
 explanatory or conformance guidance and cannot alter a definition, equation,
 assumption, requirement, prediction, unavailable state, or owner decision.
@@ -16,10 +16,12 @@ assumption, requirement, prediction, unavailable state, or owner decision.
 SCI-RTC begins with admitted aligned paired raw detector-coordinate streams
 \texttt{xs} and \texttt{rs} and ends with an atomic, consumer-neutral raw
 conditioning bundle.  Conditioned $x$ is the required numerical RTC output;
-the exact paired raw $r$ parent and every causal $r$ diagnostic or selector
-remain in that bundle.  A conditioned $r$ product is not required and needs a
-separately authorized channel-specific operator.  Raw $x$ is not itself a
-Stokes parameter.  ALIGN, the Tune/readout mapping authority, AST, and
+when conditioned $r$ is requested, it is the optional paired companion on
+exactly the conditioned-$x$ grid.  The exact paired raw $r$ parent and every
+causal $r$ diagnostic or selector remain in that bundle whether or not the
+companion is requested.  Conditioned $r$ is neither an independent RTC
+pipeline nor a calibrated or Stokes product.  Raw $x$ is not itself a Stokes
+parameter.  ALIGN, the Tune/readout mapping authority, AST, and
 SCI-BEAM retain authority for the upstream meanings they produce; SCI-CAL may
 calibrate only the conditioned $x$ path of an exact RTC bundle.  PTC, VAL,
 MAP, BEAM, NOI, MAP-003, FLT, SRC/MODE, and FRUIT retain authority for their
@@ -53,6 +55,7 @@ $\chi_{dj}$ & Detector-static \texttt{flxscale} comparison coordinate used only 
 $u^x_{dj}$ & Raw $x$-coordinate $\Delta f/f$ value immediately before the ordered RTC filter chain. \\
 $v^{x,\rm preD}_{dj}$ & Final raw $x$ stream after every admitted RTC replacement/filter stage and immediately before phase-zero point selection. \\
 $y^{x,\rm RTC}_{dn}$ & Required conditioned raw $x$-coordinate $\Delta f/f$ RTC output at the selected phase-zero slot. \\
+$y^{r,\rm RTC}_{dn}$ & Optional conditioned raw $r$-coordinate companion at exactly the paired conditioned-$x$ slot.  It retains the raw-$r$ coordinate convention and is typed invalid or unavailable where no scientifically justified $r$ value exists. \\
 $c^{\rm CAL}_{dn}$ & Distinct downstream SCI-CAL output, when authorized: top-of-atmosphere, point-source-equivalent mJy per fixed nominal beam. \\
 $\phi_d$ & \texttt{flxscale} for one exact detector occurrence under the declared multiplicative convention and calibration domain. \\
 $A_\alpha,\mathbf a_\alpha$ & Imported, realized upstream ALIGN mapping and affine term with state $\alpha$.  They map the native acquired pair to the admitted aligned pair, remain in lineage, and are not reapplied by the RTC-local operator. \\
@@ -90,6 +93,7 @@ $a_g(t)$ & Declared atmospheric optical-mode template or latent common mode for 
 $\tau_e,\delta\tau_{de},\tau_{de},\Delta\mathbf b_{de}$ & Network event time, detector-specific timing offset, detector transition time $\tau_{de}=\tau_e+\delta\tau_{de}$, and paired amplitude $(\Delta x_{de},\Delta r_{de})^{\mathsf T}$; the offset is zero or bounded by a declared coherence tolerance. \\
 $I_h,\mathcal P_{d,h}$ & Coherent plateau interval $h$ and its application-context-specific admissibility state. \\
 $K^{\rm RTC}_{dn,qj}$ & RTC-local detector-time response of one output cell to one admitted aligned input cell at fixed realized state. \\
+$K^{x\leftarrow x,\rm RTC}_{dn,qj},K^{r\leftarrow r,\rm RTC}_{dn,qj}$ & Coordinate-diagonal RTC-local responses for conditioned $x$ and available conditioned $r$.  Both cross-coordinate numerical responses are zero. \\
 $K^{\rm end}_{dn,qm}$ & Optional end-to-end response to one native acquired cell, available only by explicit composition with admitted upstream ALIGN response. \\
 $\mathcal S_{dn}$ & Exact transitive input support of output $(d,n)$, including alignment, donors, filters, state, and selection. \\
 $\mathcal I_{dn}$ & Cause-preserving transitive influence set for output $(d,n)$. \\

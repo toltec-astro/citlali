@@ -1,7 +1,8 @@
 # SCI-RTC — Raw-Timestream Conditioning And Temporal Response
 
-Status: Scientific authority frozen; implementation conformity not yet assessed
-under this contract.
+Status: Candidate v0.1/r0.10 formally reopened from the unchanged frozen r0.9
+scientific authority; owner review pending. Implementation conformity not
+assessed under this contract.
 
 Version: `v0.1`
 
@@ -36,12 +37,16 @@ inputs.
   Decision 9 applied; r0.9 owner Decisions 1--8 applied and freshly
   consistency-reviewed.
 - Scientific-owner freeze: complete for v0.1/r0.9 on `2026-08-20`.
+- Bounded conditioned-$r$ reopening: owner-authorized on `2026-08-21`; the six
+  decisions are incorporated in candidate v0.1/r0.10 without changing r0.9
+  conditioned-$x$ numerical behavior or any unrelated owner-ledger state.
 - Implementation conformity, validation, and production promotion: not
   established.
 
-The next gate is the RTC--CAL--PTC play-well-together coherence review. It is
-not an RTC implementation-conformity audit and cannot silently amend this
-frozen authority.
+The next gate is scientific-owner review of the exact candidate r0.10 source,
+crosswalk, consistency report, and rendered PDFs. Candidate review is not an
+RTC implementation-conformity audit and cannot silently resolve PTC, SCI-VAL,
+or any unrelated open RTC policy.
 
 ## Contents
 
@@ -137,14 +142,25 @@ frozen authority.
   implementation-blind decision, build, metadata, and all-page consistency review
 - [`SCIENTIFIC_OWNER_FREEZE_R0.9.md`](SCIENTIFIC_OWNER_FREEZE_R0.9.md): exact
   owner freeze, claim boundary, retained open states, and change-control rule
+- [`SCIENTIFIC_OWNER_REOPENING_DIRECTIVE_R0.10.md`](SCIENTIFIC_OWNER_REOPENING_DIRECTIVE_R0.10.md):
+  exact bounded reopening scope and owner decisions D01--D06
+- [`CHANGE_LOG_R0.10.md`](CHANGE_LOG_R0.10.md): exact bounded r0.9-to-r0.10
+  candidate changes
+- [`RATIONALE_TO_CONTRACT_CROSSWALK_R0.10.md`](RATIONALE_TO_CONTRACT_CROSSWALK_R0.10.md):
+  six-decision rationale-to-authority routing
+- [`CONSISTENCY_REPORT_R0.10.md`](CONSISTENCY_REPORT_R0.10.md): implementation-blind
+  source, build, metadata, and all-page visual verification record
+- [`SCIENTIFIC_OWNER_CANDIDATE_R0.10.md`](SCIENTIFIC_OWNER_CANDIDATE_R0.10.md):
+  exact content-bound candidate review snapshot; not an authority freeze
 - [`DECISION_LOG.md`](DECISION_LOG.md): package-selection and approved scope
   decisions
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md):
-  63 open, one conditional, 14 resolved, and five deferred decisions
+  63 open, one conditional, 20 resolved, and five deferred decisions
 - [`CROSSWALK.md`](CROSSWALK.md): exact shared-core and packet traceability
 - `src/`: one six-file shared core and the two audience views
-- `pdf/`: canonical r0.9 outputs: 14-page focused science-team rationale and
-  43-page complete formal engineering view, with all 57 pages Poppler-inspected
+- `pdf/`: canonical candidate r0.10 science-team rationale and complete formal
+  engineering view, with page counts, hashes, and all-page inspection recorded
+  after the fresh build
 
 ## Protected Boundary
 
@@ -157,7 +173,10 @@ coordinates, spike-aware level-shift segmentation on the original pair,
 post-segmentation conditioned-$x$ donor replacement, diagnostic-only
 atmospheric-template evidence, temporal conditioning, response, support,
 influence, covariance, phase-zero sampling, and its consumer-neutral
-conditioned-$x$/raw-$r$ atomic bundle.
+conditioned-$x$/optional-same-grid-conditioned-$r$/raw-$r$ atomic bundle.
+Artifact detection and affected support are pair-coherent; coordinate-specific
+correction remains diagonal, and unrepairable $r$ support is honestly invalid
+or unavailable without affecting valid conditioned $x$.
 
 It does not derive ALIGN timing, AST coordinates, BEAM calibration factors,
 the CAL atmosphere operator, PTC correlated-mode cleaning or weights, VAL
@@ -176,7 +195,15 @@ package as scientific authority on `2026-08-20`. The freeze retains every
 recorded open, conditional, resolved, and deferred owner-ledger state; it does
 not invent missing decisions or make blocked claims available.
 
+On `2026-08-21`, Grant Wilson explicitly authorized a bounded reopening of the
+existing conditioned-$r$ extension point. Candidate r0.10 records six resolved
+decisions covering role/optionality, pair-coherent artifacts, exact paired
+grid/failure isolation, coordinate-diagonal response/covariance, optical
+leakage/source protection, and downstream handoff. The frozen r0.9 baseline
+remains unchanged until this candidate receives separate owner freeze action.
+
 Current application and production behavior retain their existing repository
 status until a later, separately authorized conformity and validation program
-assesses them. Any substantive change to this frozen authority requires
-explicit owner action and a versioned successor or formally reopened revision.
+assesses them. Any substantive change beyond this bounded reopening requires
+explicit owner action and another versioned successor or formally reopened
+revision.

@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.9 shared normative core -- assumptions and scope.
+% SCI-RTC v0.1/r0.10 shared normative core -- assumptions and scope.
 \section{Bounded assumptions and non-goals}
 \label{sec:core-assumptions}
 
@@ -8,9 +8,11 @@
 \item[SCI-RTC-ASM-001 -- Capability.]
 V0.1 admits the exact paired raw readout coordinates \texttt{xs} and
 \texttt{rs}.  The $x$ member is the ordinary science-conditioning path; the
-$r$ member is a retained diagnostic coordinate.  Raw $x$ is not itself a
-Stokes observable, and enabled polarimetry remains excluded until separately
-approved.
+$r$ member is a retained diagnostic coordinate and, when requested, an
+optional conditioned companion on exactly the conditioned-$x$ grid.  It is
+not an independently planned pipeline.  Raw $x$ and conditioned $r$ are not
+themselves Stokes observables, and enabled polarimetry remains excluded until
+separately approved.
 
 \item[SCI-RTC-ASM-002 -- Aligned-grid boundary.]
 The input grid, cadence, phase, mapping, gaps, synthesis/origin state,
@@ -41,13 +43,18 @@ state, edge, non-finite, recovery, sampling, diagnostic, and failure choices
 are operation classes admitted across application contexts and governed by
 selected versioned policies.  Admission does not mean execution; a class runs
 only when the resolved plan selects and numerically resolves it.
+Artifact evidence may be coordinate-specific, but detection and affected
+support are pair-coherent.  Coordinate-valued corrections remain distinct;
+an $x$ repair does not imply an $r$ reconstruction.
 No current default or numerical threshold is promoted to a universal
 scientific constant by this contract.
 
 \item[SCI-RTC-ASM-006 -- Conditional linearity.]
 Linear response and covariance identities condition on fixed paired-stream
-selection and realized state.  At fixed state the conditioned-$x$ numerical
-Jacobian has a zero $r$ branch.  Cross-coordinate covariance and shared
+selection and realized state.  At fixed state the paired conditioned response
+is coordinate-diagonal: both cross-coordinate numerical Jacobian branches are
+zero.  Available joint covariance retains its cross-coordinate blocks even
+though numerical mixing is absent.  Cross-coordinate covariance and shared
 selectors are retained in selection, learned-parameter, model, and cross-term
 uncertainty.  Data-derived selectors make the unconditional operation generally
 nonlinear and nonstationary, and a total derivative may be unavailable at a
@@ -90,7 +97,9 @@ requested verbose or diagnostic product whose presence is numerically inert.
 RTC supplies causal inputs but does not own PTC cleaning/weights, VAL
 eligibility policy, MAP estimation, BEAM inference, empirical NOI products,
 MAP-003 response tracing, map filtering, source fitting, or fruit-loop
-recurrence.
+recurrence.  It reports the conditioned $x/r$ pair and enough exact RTC facts
+for those consumers to apply their own policies; it does not select a PTC
+joint-$r$ mode or a cross-package validity aggregation policy.
 
 \item[SCI-RTC-ASM-012 -- Claim separation.]
 The contract is an algebraic and semantic authority only.  It contains no
@@ -109,6 +118,9 @@ despike/FIR/IIR/notch numerics; choose universal numerical thresholds;
 authorize online adaptation; activate polarimetry; authorize atmospheric or
 common-mode template subtraction from science $x$; authorize automatic
 $r$-to-$x$ correction, $r$ calibration, use of $r$ as an $x$ donor, or a
+donor-based or otherwise invented $r$ repair; decide how PTC uses conditioned
+$r$ or how SCI-VAL aggregates cross-package validity; or authorize a default
+joint-$r$ mode;
 gain-, responsivity-, or general response-changing level-shift model;
 prescribe source classes, files,
 storage schemas, or product names; authorize per-array/per-scan cadence; inspect implementation;

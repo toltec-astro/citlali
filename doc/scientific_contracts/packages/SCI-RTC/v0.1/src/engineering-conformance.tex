@@ -16,7 +16,7 @@
 \definecolor{RTCgray}{HTML}{52606D}
 \hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
   hypertexnames=false,
-  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.9},
+  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.10},
   pdfauthor={SCI-RTC implementation-blind scientific author}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.48em}
@@ -49,16 +49,16 @@
 \vspace{0.65in}
 \begin{tabular}{@{}ll@{}}
 Package version & v0.1 \\
-Revision & r0.9 \\
-Date & 2026-08-20 \\
+Revision & r0.10 \\
+Date & 2026-08-21 \\
 Authority & Shared normative core in \texttt{src/common/} \\
 View-specific content & Informative evidence and review guidance only \\
-Status & \parbox[t]{0.55\linewidth}{Scientific authority frozen; implementation
-conformity not yet assessed under this contract.} \\
+Status & \parbox[t]{0.55\linewidth}{Scientific-authority candidate reopened
+from frozen r0.9; owner review pending. Implementation conformity not assessed.} \\
 \end{tabular}
 
 \vfill
-\GuideBox{Claim boundary.}{This view carries the frozen scientific authority
+\GuideBox{Claim boundary.}{This view carries the candidate scientific authority
 in the shared core. It does not assert implementation conformity,
 representation fidelity, validation, observational performance, or production
 readiness. It contains no independent normative science.}
@@ -141,15 +141,15 @@ for one-to-one coverage.
 \toprule
 Requirement range & Primary review surface & Useful evidence classes \\
 \midrule
-REQ-001--005 & Paired raw boundary and CAL handoff & Exact paired input, conditioned-$x$/raw-$r$-parent bundle inspection, $x$-only downstream CAL-parent failure injection, and atmospheric-diagnostic no-subtraction trace. \\
+REQ-001--005 & Paired raw boundary and CAL handoff & Exact paired input, conditioned-$x$/requested-conditioned-$r$/raw-$r$-parent bundle inspection, $x$-only downstream CAL-parent failure injection, and atmospheric-diagnostic no-subtraction trace. \\
 REQ-006--012 & Identity, context--plan--record state, and selected policy & Serialization round trip, distinct-identity fixtures, one-way context/plan/record trace, context-label neutrality, unsupported-policy rejection. \\
 REQ-013--018 & Ordering, despiking, and donor transfer & Raw-RTC-then-CAL order trace, accepted-target modification check, compact spike-population summary, forced donor vectors, invalid-factor matrix, donor reuse/tie/fallback fixtures, and optional detailed-manifest toggle. \\
 REQ-019--020 & Direct exclusion and influence & Direct/noncenter synthesis/replacement injection, full-support cause propagation, downstream policy handoff inspection. \\
-REQ-021--027 & Filters, masks, edges, and finite policy & Coefficient/state serialization, impulse/step/constant/ramp/notch vectors, mask-boundary and non-finite failure injection. \\
-REQ-028--031 & Fixed phase-zero sampling & Enumerated length/factor cases, selected index/time identity, rate trace, exact folded-band calculation. \\
+REQ-021--027 & Filters, masks, edges, and finite policy & Coordinate-applicability and coefficient/state serialization, paired impulse/step/constant/ramp/notch vectors, mask-boundary and non-finite failure injection, and local conditioned-$r$ unavailability isolation. \\
+REQ-028--031 & Fixed phase-zero sampling & Enumerated paired length/factor cases, exact $x/r$ grid/cardinality/selected-index/time identity, retained invalid slots, rate trace, and exact folded-band calculation. \\
 REQ-032--036 & Learned plan lifecycle & Candidate decision table, maximum-safe selection, common-plan identity, immutable apply and restart mismatch fixtures. \\
-REQ-037--041 & Complete response and support & RTC-local factorization from the aligned parent, optional explicit ALIGN composition, local Jacobian fixtures, LTI-domain proof, edge/state/support expansion. \\
-REQ-042--045 & Statistical claim disclosure & Fixed-state $[L^x\ 0]$ covariance fixture; for every conditional, component-limited, or total claim, inspect explicit included/excluded components and correlations plus unavailable-state preservation. \\
+REQ-037--041 & Complete response and support & RTC-local coordinate-diagonal factorization from the aligned parent, zero cross-coordinate numerical branches, optional explicit ALIGN composition, local Jacobian fixtures, LTI-domain proof, edge/state/support expansion. \\
+REQ-042--045 & Statistical claim disclosure & Conditioned-$x$ fixed-state covariance and paired block-covariance fixtures; for every conditional, component-limited, or total claim, inspect explicit included/excluded components and correlations plus unavailable-state preservation. \\
 REQ-046--051 & Validity and consumer-neutral atomic output & Orthogonal-state fixtures, common bundle-schema inspection across contexts, atomic write/failure injection, compact provenance reconstruction, inert detailed spike/donor-manifest toggle. \\
 REQ-052--054 & Consumers and claims & Parent-binding inspection, unavailable-state preservation, disabled-PTC terminal path, claim-label audit. \\
 REQ-055--058 & Learn--resolve--apply lifecycle & Learning-population identity, predicate-completeness matrix, immutable-plan trace, mutation rejection, adaptive-estimator separation. \\
@@ -158,11 +158,12 @@ REQ-064--068 & Donor, decimation, timing, calibration & Donor-meaning separation
 REQ-069--070 & Validation and claims & Preregistered design sweeps and strict claim-layer disposition. \\
 REQ-071--076 & Refinement attempts and replay & Distinct attempt/accepted-plan trace, immutable apply, complete-plan reconstruction, original-input replay, explicit-cascade comparison, intended-consequence assessment. \\
 REQ-077--082 & Candidate, stability, stopping, provenance & Artifact discrimination, cumulative budgets, complete-plan stability, actual/max-attempt distinction, typed disposition, lineage, restart mismatch fixtures. \\
-REQ-083--086 & Pair admission, identity, mapping, validity & Missing-partner failure, mapping reconstruction, reorder/rejoin rejection, independent $x/r$ validity matrix, restart identity. \\
-REQ-087--093 & Leakage, prohibited correction, joint statistics & Atmosphere/source estimator fixtures, coordinate rescaling and comparison compatibility, scalar/frequency status, forbidden-route rejection, fixed-state zero $r$ branch, and joint selector covariance. \\
+REQ-083--086 & Pair admission, identity, mapping, validity & Missing-partner failure, mapping reconstruction, reorder/rejoin rejection, coordinate-specific numerical-validity and pair-level cause/support matrix, restart identity. \\
+REQ-087--093 & Leakage, prohibited correction, joint statistics & Atmosphere/source estimator fixtures, coordinate rescaling and comparison compatibility, scalar/frequency status, forbidden bidirectional-route rejection, fixed-state zero cross branches, and joint selector covariance. \\
 REQ-094--102 & Level shifts, plateaus, and state & Original-pair spike masking/downweighting; network/detector finite physical-time transition support; timing-vector-derived sample masks; additive-only plateau model and optional valid offset correction; transition exclusion; post-segmentation donor fixtures; reset-by-default boundaries; separately authorized carry; compact production state; and typed lifecycle states. \\
 REQ-103--105 & CAL, atmosphere diagnostics, context and consumer routing & $x$-only CAL handoff, atmospheric-template no-subtraction checks, retained raw-$r$ parentage, consumer-neutral bundle binding, all-class admission, explicit-selection execution, and context-label neutrality checks. \\
-REQ-106--108 & Plateau support, pre/post leakage, optional conditioned $r$ & Application-context support matrix, insufficient-offset-support behavior, pre/post response comparison/unavailability, gain-model exclusion, and separate-$r$-operator admission failure. \\
+REQ-106--108 & Plateau support, pre/post leakage, optional conditioned $r$ & Application-context support matrix, insufficient-offset-support behavior, pre/post response comparison/unavailability, gain-model exclusion, and paired-companion operator completeness. \\
+REQ-109--114 & Conditioned-$r$ reopening decisions & Request-toggle $x$ invariance, pair-coherent artifact support without donor $r$ repair, exact paired-grid/local-global failure isolation, coordinate-diagonal response and joint covariance, leakage/source protection, and consumer-policy handoff. \\
 \bottomrule
 \end{tabularx}
 \normalsize
@@ -181,13 +182,17 @@ enabled response-changing stage cannot be represented truthfully.
 Begin that trace with exact general IQ-to-$x/r$ mapping authority, one upstream
 ALIGN relation, and the admitted aligned RTC boundary.  Reject a second ALIGN
 application in the RTC-local operator; compose it only for an explicitly
-identified end-to-end response.  Exercise the conditioned-$x$ operator while
-retaining raw-$r$ parentage, zero fixed-state $r$ numerical branch, and full
-cross-coordinate selector and uncertainty dependence.  Verify ordinary reset
+identified end-to-end response.  Exercise the existing conditioned-$x$
+operator while retaining raw-$r$ parentage and requested same-grid conditioned
+$r$.  Verify coordinate-diagonal shared stages, zero fixed-state cross
+branches, no $x$-repair branch in the $r$ response, honest local/global $r$
+unavailability, and full cross-coordinate selector and uncertainty dependence.
+Verify ordinary reset
 at level shifts and admit carry only under separate continuity authority with
 response and residual criteria.  Confirm that atmospheric templates change only
-diagnostic or declared selector state, not numerical science $x$.  Reject any
-conditioned $r$ product without a separate channel-specific operator.
+diagnostic or declared selector state, not numerical science $x$.  Reject
+conditioned $r$ that has a separate lifecycle, mismatched grid, invented
+repair, missing response/availability facts, or any effect on valid $x$.
 
 Use the prediction IDs rather than inventing new expected science after
 observing output.  Interior impulses and sinusoids exercise fixed linear
@@ -219,9 +224,11 @@ level-shift-accepted, physical-transition-unmodeled,
 propagated-transition-influence, additive-offset-applied,
 additive-offset-unavailable, segment-interior, application-specific
 plateau-admissibility, plateau-advisory, reset, atmospheric-diagnostic-unavailable,
-and optional-conditioned-$r$-unavailable states.  Confirm that missing one
-pair member fails required admission while independent validity of a present
-member remains expressible.
+and conditioned-$r$ not-requested, locally unavailable, globally unavailable,
+and available states.  Confirm that missing one raw pair member fails required
+admission while coordinate-specific evidence and numerical validity remain
+expressible, pair-level pathology support is conserved, invalid $r$ slots
+remain on-grid, and no $r$ failure changes valid conditioned $x$.
 
 For each required output member, inject a bounded write or authority failure
 and verify atomic completion behavior.  Inspect that no prior-observation

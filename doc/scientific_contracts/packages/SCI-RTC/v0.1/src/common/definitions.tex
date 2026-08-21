@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.9 shared normative core -- definitions.
+% SCI-RTC v0.1/r0.10 shared normative core -- definitions.
 \section{Normative definitions}
 \label{sec:core-definitions}
 
@@ -19,8 +19,9 @@ paired input and interval, raw-coordinate sign and reference/baseline, valid
 domain, named consumers, and external constraints.  Historical labels such as
 Beammap, Pointing, OOF, Science, or diagnostic may be recorded as context but
 do not partition the admitted RTC operation classes or silently select a
-policy.  Every context consumes paired raw \texttt{xs}/\texttt{rs}; only
-conditioned $x$ is eligible
+policy.  Every context consumes paired raw \texttt{xs}/\texttt{rs}; when
+conditioned $r$ is requested it is produced as the paired companion on the
+selected conditioned-$x$ grid.  Only conditioned $x$ is eligible
 for a later SCI-CAL handoff.  A calibrated downstream detector
 signal is a distinct SCI-CAL product $c^{\rm CAL}$ in the top-of-atmosphere,
 point-source-equivalent mJy-per-fixed-nominal-beam convention; it is not
@@ -83,11 +84,13 @@ non-finite, and phase-zero sampling action, including all affine state terms
 and exception intervals.  Raw $r$ may affect a selector or resolved state but
 does not thereby receive the $x$ numerical operator.
 Annotations that affect values, support, influence, or availability are part
-of the operator.
+of the operator.  Detection and affected-support decisions are pair-coherent;
+coordinate-specific evidence and correction amplitudes remain distinct.
 
 \item[SCI-RTC-DEF-009 -- Phase-zero sampling.]
-Point selection of the pre-sampling $x$ stream at input indices $j=Mn$ for one
-integer factor $M\geq1$.  It is not an arithmetic mean, block aggregate, or
+Point selection of the pre-sampling paired stream at input indices $j=Mn$ for
+one integer factor $M\geq1$, with conditioned $r$ occupying exactly the
+conditioned-$x$ grid when requested.  It is not an arithmetic mean, block aggregate, or
 implicit anti-alias filter.  Its representative occurrence is exactly
 $(d,Mn)$ on the raw paired aligned parent before replacement and filtering;
 that identity is not a largest-coefficient claim.
@@ -95,7 +98,9 @@ that identity is not a largest-coefficient claim.
 \item[SCI-RTC-DEF-010 -- Complete realized response.]
 An exact local or factorized representation that includes every enabled
 response-changing stage, detector mixing, mask, state, edge rule, exception,
-and sampling phase on its declared support.  The RTC-local response is with
+and sampling phase on its declared support.  Conditioned $x$ and available
+conditioned $r$ each retain their coordinate-diagonal response; both
+cross-coordinate numerical responses are zero.  The RTC-local response is with
 respect to the admitted aligned pair.  An optional end-to-end response to the
 native acquisition grid is a distinct composition with admitted upstream
 ALIGN response and lineage.  If either representation is not truthfully
@@ -142,8 +147,10 @@ compatibility.  Noise-aware, per-array, per-scan, heterogeneous-cadence, and
 continuous adaptation are outside v0.1.
 
 \item[SCI-RTC-DEF-017 -- Conditional statistical covariance.]
-The covariance obtained from an admitted input covariance through a fixed
-realized operator while holding selection and nuisance state fixed.  It is
+The covariance obtained from an admitted joint $x/r$ input covariance through
+a fixed coordinate-diagonal realized operator while holding selection and
+nuisance state fixed.  It preserves available cross-coordinate covariance even
+though numerical $x\leftrightarrow r$ response is zero.  It is
 not total uncertainty and does not imply a diagonal, white, stationary, or
 independent noise model.  Every covariance or uncertainty claim, whether
 conditional, component-limited, or total, explicitly names the components and
@@ -151,17 +158,19 @@ correlations it includes and excludes; unknown items remain unavailable rather
 than zero.
 
 \item[SCI-RTC-DEF-018 -- Atomic RTC bundle.]
-One consumer-neutral completion unit containing conditioned raw $x$ TOD; the
-immutable paired \texttt{rs} parent and pairing/mapping identity; every
+One consumer-neutral completion unit containing conditioned raw $x$ TOD; when
+requested, its grid-aligned conditioned raw $r$ companion and exact local or
+global availability; the immutable paired \texttt{rs} parent and
+pairing/mapping identity; every
 \texttt{rs}-derived diagnostic, selector, segmentation, and resolved-plan use;
 ordered detector/sample/scan/support and parent identity; complete response or typed
 unavailability; cause-preserving flags and influence; separated validity and
 eligibility inputs; conditional uncertainty/covariance status; one-way state
 and provenance; required common diagnostics and any separately requested
 diagnostic detail; downstream CAL handoff state; and
-completion/failure state.  A separately conditioned $r$ product is optional
-and unavailable without its own declared operator, response, support, unit,
-validity, and provenance.  TOD alone is not this bundle.
+completion/failure state.  Conditioned $r$ is optional product content under
+the same context, plan, and realized record; it is not a separately optimized
+pipeline.  TOD alone is not this bundle.
 
 \item[SCI-RTC-DEF-019 -- Scientifically named diagnostic.]
 A quantity with an explicit estimator, unit, support, selection/mask,
@@ -322,5 +331,18 @@ transfer, uncertainty, validation, restart, and provenance authority; none is
 part of the v0.1 additive level-shift model.  A selected additive translation
 between sufficiently supported stable $x$ plateaus is governed instead by
 Equations~\eqref{eq:level-shift}--\eqref{eq:plateau-reset} and REQ-101.
+
+\item[SCI-RTC-DEF-039 -- Conditioned-$r$ paired companion.]
+The optional raw-coordinate $r$ product produced under the same RTC
+application context, immutable resolved plan, realized record, selected grid,
+temporal support, source protection, and pair-level pathology decisions as
+conditioned $x$.  Ordinary shared filtering, masking, state, and sampling act
+coordinate-diagonally.  Existing $x$ repair does not imply $r$ reconstruction:
+where no scientifically justified $r$-domain correction exists, the paired
+$r$ location and response remain typed invalid or unavailable with exact
+cause.  The companion preserves raw-$r$ parentage, mapping, units, sign,
+reference, optical-leakage lineage, coordinate-specific evidence, response,
+uncertainty status, and provenance.  It does not enter SCI-CAL, alter
+conditioned $x$, or authorize numerical $x\leftrightarrow r$ mixing.
 
 \end{description}
