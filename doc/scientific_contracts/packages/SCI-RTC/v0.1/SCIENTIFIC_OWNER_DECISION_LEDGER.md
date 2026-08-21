@@ -1,7 +1,8 @@
-# SCI-RTC v0.1/r0.11 candidate scientific-owner decision ledger
+# SCI-RTC v0.1/r0.12 candidate scientific-owner decision ledger
 
-Status: scientific-authority revision candidate derived from the sealed
-v0.1/r0.10 comparison baseline, which in turn preserves frozen r0.9. Entries marked `RESOLVED` record explicit
+Status: surgical scientific-authority revision candidate derived from the
+approved r0.11 architecture at commit
+`85e1e6c6865f74f1a97e99fab465714f43877c3d`. Entries marked `RESOLVED` record explicit
 scientific-owner approval; all other entries retain their stated unresolved or
 deferred status. Candidate owner review is pending.
 
@@ -180,6 +181,23 @@ unrelated quantitative policy.
 | `SCI-RTC-OWNER-095` | RESOLVED | $r$ is an equal contamination sensor. Expected optical/atmospheric response in $r$ is not automatically pathology. Source, leakage, Tune, loading, mapping, and source-class protection participate in Resolve, and diagnostic/candidate evidence remains distinct from hard action until stronger owner-approved predicates pass. | None for evidence role; exact protection, leakage, spectral, and false-detection predicates remain open under OWNER-053--058/066--070. | R11-D06; DEF-043; EQ-038; REQ-121/129; PRED-085/087--089/097--099/103 |
 | `SCI-RTC-OWNER-096` | RESOLVED | Ordinary canonical action is symmetric after separately admitted coordinate-specific affine corrections. A paired level shift has one event/support/segmentation/reset but independent $x/r$ amplitudes and correction availability. An $r$ spectral candidate does not automatically notch $x$; once shared admission passes, the same notch acts on both. The existing $x$ donor is the sole explicit coordinate-specific recovery exception, creates no $r$ value, and makes conditioned $r$ unavailable over its full causal influence on the common grid. CAL remains $x$-only and PTC/SCI-VAL retain downstream policy. | None for this architecture; quantitative correction, spectral admission, covariance, donor, and downstream policies remain governed by existing open entries. | R11-D07; DEF-047--050; EQ-036/040--041; REQ-126--138; PRED-090--103 |
 
+## Candidate r0.12 surgical consistency decisions
+
+These entries record the seven bounded corrections authorized in
+`SCIENTIFIC_OWNER_REVISION_DIRECTIVE_R0.12.md`. They approve the r0.11
+scientific architecture and change no unrelated numerical or downstream
+policy.
+
+| ID | State | Binding scientific-owner decision | Unavailable while open | Contract dependencies |
+| --- | --- | --- | --- | --- |
+| `SCI-RTC-OWNER-097` | RESOLVED | Tune/readout maps native measured $(I,Q)$ to native $(x^{\rm acq},r^{\rm acq})$; a separate ALIGN relation maps that pair to admitted $(x^A,r^A)$; RTC begins at the admitted aligned pair and never reapplies ALIGN. | None for identity architecture; quantitative mapping policy remains open in OWNER-051. | R12-D01; DEF-030--031; EQ-004/030; REQ-083--085/139; PRED-048/104 |
+| `SCI-RTC-OWNER-098` | RESOLVED | Canonical iterative learning, evaluation, replay, restart, and lineage use original admitted pair $\mathbf u^{(0)}$. Product projection publishes required conditioned $x$ and only requested conditioned $r$ or availability; raw $r$ remains learning evidence regardless of publication. | None for replay identity; iterative numerical policies remain under existing entries. | R12-D02; DEF-027--029; EQ-028--029; REQ-074/081--082/140; PRED-040/042/105 |
+| `SCI-RTC-OWNER-099` | RESOLVED | Common grid, common pair-action/ordinary-operator support, coordinate-local numerical availability, and joint covariance support are distinct. Pair identity/action never asserts complete paired values. | None for state architecture; numerical covariance model remains open in OWNER-070. | R12-D03; DEF-049/052; EQ-042; REQ-093/107/116/135/141; PRED-096/106 |
+| `SCI-RTC-OWNER-100` | RESOLVED | A required unavailable coordinate-specific affine correction propagates that coordinate's unavailability through the exact downstream common-operator support, including state to the next reset where applicable; grid and other-coordinate availability remain intact. | None for propagation semantics; quantitative correction policy remains open in OWNER-064. | R12-D04; DEF-049; EQ-042; REQ-128/142; PRED-091--092/096/107 |
+| `SCI-RTC-OWNER-101` | RESOLVED | Unconditional conditioned-pair language is prohibited where conditioned $r$ is unrequested or unavailable. Ordinary response uses the common paired operator; affine corrections and the $x$ donor exception remain explicit; the common prefilter is admitted by $x$ science budgets; CAL remains $x$-only. | None for naming/composition architecture. | R12-D05; DEF-040/046/052; REQ-129--130/136--138/141; rationale §§8--12 |
+| `SCI-RTC-OWNER-102` | RESOLVED | The rationale and review records shall enumerate OWNER-090--096 and identify the r0.11 comparison baseline; every unrelated ledger state remains unchanged. | None for amendment trace. | R12-D06; r0.12 crosswalk/change/candidate records |
+| `SCI-RTC-OWNER-103` | RESOLVED | The paired-coordinate figure separately identifies immutable raw-$r$ parentage and optional conditioned $r$ or availability. Any conditioned-$r$ affine correction preserves the original raw readout step and event diagnostics. The isolated rationale spill page is removed without deleting scientific content. | None for lineage/presentation architecture. | R12-D07; DEF-039/049/052; REQ-134/143; PRED-108 |
+
 ## Exact unavailable-state rule
 
 An unresolved entry must be referenced by ID in the observation-resolved
@@ -187,6 +205,6 @@ state when it blocks an operation. It must not be replaced by a numerical
 sentinel, a software default, a value recovered from prior products, or a
 claim that the unavailable operation was disabled after being requested.
 Resolution requires explicit scientific-owner approval and a versioned
-successor or formally reopened ledger revision. Candidate r0.11 additionally
-resolves OWNER-090--096 and does not provide missing approval for any other
+successor or formally reopened ledger revision. Candidate r0.12 additionally
+resolves OWNER-097--103 and does not provide missing approval for any other
 open entry or alter its unavailable consequence.

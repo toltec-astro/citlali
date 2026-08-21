@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.11 shared normative core -- definitions.
+% SCI-RTC v0.1/r0.12 shared normative core -- definitions.
 \section{Normative definitions}
 \label{sec:core-definitions}
 
@@ -227,7 +227,8 @@ An operation label or coefficient array alone is not this specification.
 
 \item[SCI-RTC-DEF-027 -- Bounded iterative notch-plan refinement.]
 A finite owner-bounded sequence of refinement attempts.  Each attempt learns
-from a declared population and the current accepted-plan evaluation product,
+from a declared population and the current accepted-plan paired evaluation
+product derived from the original admitted pair $\mathbf u^{(0)}$,
 resolves a complete cumulative proposal and typed disposition, and advances
 the accepted-plan index only when that proposal is accepted.  Apply of every
 accepted plan is immutable; rejected or stop attempts do not manufacture a
@@ -241,7 +242,9 @@ modified, removed, and rejected notch disposition; every broad-band stage;
 exact order, coefficients, precision, state, masks, edges, guards, intervals,
 decimation, timing, cumulative response/support, uncertainty, validity, and
 downstream compatibility.  ``Add this notch to the prior output'' is not a
-complete successor plan.
+complete successor plan.  Its canonical evaluation and final replay parent is
+the original admitted pair, not an $x$-only projection or accumulated
+exploratory output.
 
 \item[SCI-RTC-DEF-029 -- Final accepted plan and termination disposition.]
 The last complete plan whose admission predicates passed, together with one
@@ -418,12 +421,15 @@ ordinary common paired operator, creates no donor-derived $r$ value, and makes
 conditioned $r$ and its response unavailable over the full causal influence
 of the repair while retaining the common grid and every raw-pair cause.
 
-\item[SCI-RTC-DEF-049 -- Conditioned-$r$ local unavailable influence.]
-The exact selected-grid support on which requested conditioned $r$, its
+\item[SCI-RTC-DEF-049 -- Coordinate-local unavailable influence.]
+The exact selected-grid support on which one conditioned coordinate, its
 response, or its covariance component cannot be scientifically produced,
-including the complete transitive influence of an $x$-only donor repair or a
-failed $r$-specific affine correction.  Locations remain in place with typed
-causes; otherwise valid conditioned $x$ remains available.
+including the complete downstream transitive influence of an $x$-only donor
+repair or a required but unavailable coordinate-specific affine correction.
+Finite filters, stateful filters, and phase-zero sampling propagate the cause
+through their exact realized support; an IIR influence may continue to the next
+reset. Locations remain in place with typed causes, and the other coordinate
+may remain available.
 
 \item[SCI-RTC-DEF-050 -- Separately optimized $r$ diagnostic descendant.]
 Any future product that uses an $r$-specific temporal, sampling, state, mask,
@@ -438,5 +444,14 @@ pair action, exact support and transitive influence, coordinate-local
 modification and availability, operator identity, uncertainty, and downstream
 handoff.  It allows reconstruction of why pair action occurred without
 turning a unioned support into an undifferentiated flag.
+
+\item[SCI-RTC-DEF-052 -- Pair support and availability partition.]
+Four noninterchangeable states: (1) the common index grid
+$\mathcal G_{\rm pair}$; (2) common pair-action and ordinary-operator support
+$\mathcal A_{\rm pair}$; (3) coordinate-local numerical availability
+$\mathcal A_x$ and $\mathcal A_r$; and (4) joint covariance support
+$\mathcal A_C\subseteq\mathcal A_x\cap\mathcal A_r$ where both conditioned
+values and the required admitted statistical model are available.  Common
+identity or action support never asserts identical numerical availability.
 
 \end{description}

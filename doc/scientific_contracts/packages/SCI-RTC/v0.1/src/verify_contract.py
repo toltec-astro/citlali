@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mechanical SCI-RTC v0.1/r0.11 candidate author-deliverable checks.
+"""Mechanical SCI-RTC v0.1/r0.12 candidate author-deliverable checks.
 
 This helper reads only the approved author inputs and package deliverables.
 It does not inspect implementation, tests, history, or sibling packages.
@@ -85,14 +85,14 @@ def main() -> None:
         r"\\tag\{SCI-RTC-EQ-(\d{3}[ab]?)\}", text(COMMON / "equations.tex")
     )
 
-    require(definitions == [f"{i:03d}" for i in range(1, 52)], "definition IDs")
+    require(definitions == [f"{i:03d}" for i in range(1, 53)], "definition IDs")
     require(assumptions == [f"{i:03d}" for i in range(1, 13)], "assumption IDs")
-    require(requirements == [f"{i:03d}" for i in range(1, 139)], "requirement IDs")
-    require(predictions == [f"{i:03d}" for i in range(1, 104)], "prediction IDs")
+    require(requirements == [f"{i:03d}" for i in range(1, 144)], "requirement IDs")
+    require(predictions == [f"{i:03d}" for i in range(1, 109)], "prediction IDs")
     expected_eq = (
         [f"{i:03d}" for i in range(1, 16)]
         + ["016a", "016b", "017", "018", "019", "020a", "020b"]
-        + [f"{i:03d}" for i in range(21, 42)]
+        + [f"{i:03d}" for i in range(21, 43)]
     )
     require(equation_ids == expected_eq, "equation tag IDs")
 
@@ -102,7 +102,7 @@ def main() -> None:
     ]
     expected_inputs = [rf"\input{{common/{name}}}" for name in common_files]
     for name in common_files:
-        require("v0.1/r0.11" in text(COMMON / name), f"r0.11 stamp in {name}")
+        require("v0.1/r0.12" in text(COMMON / name), f"r0.12 stamp in {name}")
     engineering = text(SRC / "engineering-conformance.tex")
     rationale = text(SRC / "scientific-rationale.tex")
     require(
@@ -144,7 +144,7 @@ def main() -> None:
 
     equations_text = text(COMMON / "equations.tex")
     for marker in (
-        r"x^{\rm eval,(0)}",
+        r"\mathbf u^{\rm eval,(0)}",
         r"\widetilde\Pi_a",
         r"k_{a+1}",
         r"v^{x,\rm preD}_{d,Mn}",
@@ -165,8 +165,9 @@ def main() -> None:
         r"J_{{\rm pair},\Pi}=I_2\otimes L_\Pi",
         r"C'_{xr}=L_\Pi C_{xr}L_\Pi^{\mathsf T}",
         r"K=k_{A+1}\le A\le A_{\max}",
+        r"\mathcal A_C\subseteq\mathcal A_x\cap\mathcal A_r",
     ):
-        require(marker in equations_text, f"r0.11 equation marker: {marker}")
+        require(marker in equations_text, f"r0.12 equation marker: {marker}")
     complete_operator = equations_text.split(
         r"\tag{SCI-RTC-EQ-005}", maxsplit=1
     )[0].rsplit(r"\begin{equation}", maxsplit=1)[1]
@@ -222,6 +223,14 @@ def main() -> None:
             "compact normal spike population summary")
     require("undifferentiated generic non-finite" in requirements_text,
             "typed non-finite cause")
+    require("Every canonical iterative refinement evaluation" in requirements_text,
+            "pair-based iterative replay")
+    require(r"shall record $\mathcal G_{\rm pair}$" in requirements_text,
+            "support and availability partition")
+    require("through the exact downstream support" in requirements_text,
+            "unavailable affine-correction influence")
+    require("shall not overwrite, replace, or reinterpret the immutable raw-$r$ parent"
+            in requirements_text, "raw-r event lineage")
 
     directive = text(PKG / "SCIENTIFIC_OWNER_DIRECTIVE_R0.5.md")
     require("7469fd327d9465904a4e59c287577bab0dcd9f93fd2cc555cdee6680e89714a6"
@@ -275,14 +284,27 @@ def main() -> None:
     for decision in range(1, 8):
         require(f"R11-D{decision:02d}" in revision_r11,
                 f"r0.11 owner decision D{decision:02d}")
-    candidate_status = "Scientific-authority revision candidate"
+    revision_r12 = text(PKG / "SCIENTIFIC_OWNER_REVISION_DIRECTIVE_R0.12.md")
+    require(
+        "432b7cbeccdee0b9a41e75b15ee11cc2aced2a8c474248914c14d1885ab1309b"
+        in revision_r12,
+        "r0.12 supplied owner-review digest",
+    )
+    require(
+        "85e1e6c6865f74f1a97e99fab465714f43877c3d" in revision_r12,
+        "approved r0.11 comparison baseline",
+    )
+    for decision in range(1, 8):
+        require(f"R12-D{decision:02d}" in revision_r12,
+                f"r0.12 owner decision D{decision:02d}")
+    candidate_status = "Surgical scientific-authority correction"
     require(candidate_status in rationale, "candidate status in rationale")
     require(candidate_status in engineering, "candidate status in engineering")
     candidate_pdfs = {
         PKG / "pdf" / "SCI-RTC-SCIENTIFIC-RATIONALE-v0.1.pdf":
-            "f92cefdd064a250466d75be7b1aafb9725c22ff2930a8fecef5a9e1db7315dbd",
+            "3c3a0d6f0b592f4c28d8a337f230a8d521ade5b874708e2605388e608d3f52c6",
         PKG / "pdf" / "SCI-RTC-ENGINEERING-CONFORMANCE-v0.1.pdf":
-            "b11dbf3bfc835f7bf144d4f6088960b3b3a7ff0409a3d93ddcd5514ff8bc24d5",
+            "bd9acf1fc84fcf6f65a5b82f16fe43fbfa4181a41b8d820b7bbcee67fe4ffc61",
     }
     for path, expected in candidate_pdfs.items():
         require(digest(path) == expected, f"candidate PDF hash changed: {path.name}")
@@ -298,10 +320,10 @@ def main() -> None:
 
     crosswalk = text(PKG / "CROSSWALK.md")
     for stem, count in (
-        ("SCI-RTC-DEF-", 51),
+        ("SCI-RTC-DEF-", 52),
         ("SCI-RTC-ASM-", 12),
-        ("SCI-RTC-REQ-", 138),
-        ("SCI-RTC-PRED-", 103),
+        ("SCI-RTC-REQ-", 143),
+        ("SCI-RTC-PRED-", 108),
     ):
         sequential(table_row_ids(crosswalk, stem), stem, count)
     eq_rows = table_row_ids(crosswalk, "SCI-RTC-EQ-")
@@ -312,7 +334,7 @@ def main() -> None:
     owner_rows = table_row_ids(
         text(PKG / "SCIENTIFIC_OWNER_DECISION_LEDGER.md"), "SCI-RTC-OWNER-"
     )
-    sequential(owner_rows, "SCI-RTC-OWNER-", 96)
+    sequential(owner_rows, "SCI-RTC-OWNER-", 103)
 
     owner_ledger = text(PKG / "SCIENTIFIC_OWNER_DECISION_LEDGER.md")
     owner_states = re.findall(
@@ -321,16 +343,16 @@ def main() -> None:
     )
     require(
         {state: owner_states.count(state) for state in set(owner_states)}
-        == {"OPEN": 63, "CONDITIONAL": 1, "RESOLVED": 27, "DEFERRED": 5},
+        == {"OPEN": 63, "CONDITIONAL": 1, "RESOLVED": 34, "DEFERRED": 5},
         "owner-ledger state counts",
     )
 
     print("PASS: approved packet hashes (4)")
     print("PASS: focused rationale plus complete six-file engineering/formal view")
-    print("PASS: definitions=51 equations=43 assumptions=12 requirements=138 predictions=103")
+    print("PASS: definitions=52 equations=44 assumptions=12 requirements=143 predictions=108")
     print("PASS: crosswalk rows complete and sequential")
-    print("PASS: author decisions=24 owner entries=96 (63 open, 1 conditional, 27 resolved, 5 deferred)")
-    print("PASS: r0.9 freeze and sealed r0.10 baseline preserved; r0.11 D01--D07 bound")
+    print("PASS: author decisions=24 owner entries=103 (63 open, 1 conditional, 34 resolved, 5 deferred)")
+    print("PASS: r0.9 freeze preserved; r0.11 architecture and r0.12 D01--D07 bound")
     print("PASS: canonical candidate PDF hashes (2)")
     print("PASS: rationale narrative sections=12")
     print("PASS: engineering wrapper has no independent displayed mathematics")

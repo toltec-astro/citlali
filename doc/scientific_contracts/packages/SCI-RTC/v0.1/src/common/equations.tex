@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.11 shared normative core -- equations.
+% SCI-RTC v0.1/r0.12 shared normative core -- equations.
 \section{Normative equations and identities}
 \label{sec:core-equations}
 
@@ -420,9 +420,10 @@ scan, the corresponding scan-direction angular displacement is
 
 For every learned RTC operation, the lifecycle is
 \begin{equation}
- \Lambda=\operatorname{Learn}(\mathcal L;\Theta^{\rm eff}),\qquad
+ \Lambda=\operatorname{Learn}(\mathcal L,\mathbf u^{(0)};
+                  \Theta^{\rm eff}),\qquad
  \Pi=\operatorname{Resolve}(\Lambda,\Theta^{\rm policy}),\qquad
- \mathbf y=\mathcal A_{\Pi}(\mathbf x),\qquad
+ \mathbf u^{\rm eval}=\mathcal A_{\Pi}(\mathbf u^{(0)}),\qquad
  \frac{\partial\Pi}{\partial j}=0\ \text{during apply}.
  \tag{SCI-RTC-EQ-028}\label{eq:learn-resolve-apply}
 \end{equation}
@@ -430,27 +431,30 @@ The final equality denotes plan immutability over apply slots; it is not an
 assumption that the realized operator is stationary at masks, edges, state
 boundaries, or other declared exceptions.
 
-For bounded iterative notch-plan refinement with original admitted input
-$x^{(0)}$, initial fixed or identity plan $\Pi_0$, actual attempt count $A$,
+For bounded iterative notch-plan refinement with original admitted pair
+$\mathbf u^{(0)}=((\mathbf x^A)^{\mathsf T},
+(\mathbf r^A)^{\mathsf T})^{\mathsf T}$, initial fixed or identity plan
+$\Pi_0$, actual attempt count $A$,
 configured maximum $A_{\max}$, attempt index $a\in\{1,\ldots,A\}$, and
 accepted-plan index $k_a$ available at the start of attempt $a$,
 \begin{equation}
  \begin{aligned}
- x^{\rm eval,(0)}&=\mathcal A_{\Pi_0}(x^{(0)}),
+ \mathbf u^{\rm eval,(0)}&=\mathcal A_{\Pi_0}(\mathbf u^{(0)}),
  \qquad k_1=0,\\
  \Lambda_a&=\operatorname{Learn}(\mathcal L_a,
-             x^{\rm eval,(k_a)},\Pi_{k_a}),\\
+             \mathbf u^{\rm eval,(k_a)},\Pi_{k_a}),\\
  (\widetilde\Pi_a,\delta_a)&=\operatorname{Resolve}
              (\Lambda_a,\Pi_{k_a},\Theta^{\rm policy}),\\
  k_{a+1}&=k_a+\mathbb I[\delta_a=\mathrm{accepted}],\\
  \delta_a=\mathrm{accepted}&\Longrightarrow
  \left\{\begin{aligned}
  \Pi_{k_a+1}&=\widetilde\Pi_a,\\
- x^{\rm eval,(k_a+1)}&=\mathcal A_{\Pi_{k_a+1}}(x^{(0)})
+ \mathbf u^{\rm eval,(k_a+1)}&=
+             \mathcal A_{\Pi_{k_a+1}}(\mathbf u^{(0)})
  \end{aligned}\right.,\\
  \delta_a\ne\mathrm{accepted}&\Longrightarrow
  \Pi_{k_{a+1}}=\Pi_{k_a}\quad\text{and no new evaluation is required},\\
- x^{\rm final}&=\mathcal A_{\Pi_K}(x^{(0)}),\qquad
+ \mathbf u^{\rm final}&=\mathcal A_{\Pi_K}(\mathbf u^{(0)}),\qquad
  K=k_{A+1}\le A\le A_{\max}<\infty,\\
  \frac{\partial\Pi_k}{\partial j}&=0
              \quad\text{during every apply of accepted plan }k.
@@ -461,7 +465,9 @@ Equation~\eqref{eq:iterative-refinement} separates the actual finite attempt
 count from its configured maximum and from the accepted-plan sequence.  It
 does not create artificial no-op attempts after an earlier stop.  It defines
 the initial evaluation for nonidentity
-$\Pi_0$, and states the default original-input replay rule.  A sequential
+$\Pi_0$, and states the default original-pair replay rule.  The application-
+context projection publishes required conditioned $x$ and, only when
+requested, conditioned $r$ or its exact availability state.  A sequential
 cascade from a preceding evaluation product requires separate
 explicit operator authority and complete propagation of every intermediate
 parent, response, state, phase, edge, support, covariance, and uncertainty.
@@ -569,9 +575,8 @@ The actual bounded-refinement counts satisfy
  \tag{SCI-RTC-EQ-035}\label{eq:actual-attempts}
 \end{equation}
 
-For a requested canonical conditioned pair on ordinary common available
-support $\mathcal A^{xr}_\Pi$, define the paired input and any separately
-admitted coordinate-specific affine baseline state by
+On the common pair grid $\mathcal G_{\rm pair}$, define the admitted raw pair
+and any separately available coordinate-specific affine baseline state by
 \begingroup\small
 \begin{equation}
  \begin{aligned}
@@ -630,7 +635,8 @@ $\mathcal R_d$ is the realized cause/action/availability record.  Evidence
 discovered after resolve belongs to a successor learn--resolve--apply attempt,
 never an in-place plan mutation.
 
-The canonical ordinary numerical action and its fixed-state Jacobian are
+On $\mathcal A_x\cap\mathcal A_r$, the canonical ordinary numerical action
+and its fixed-state Jacobian are
 \begin{equation}
  \mathbf y_d=(I_2\otimes L_\Pi)\mathbf u_d^\star,
  \qquad
@@ -664,3 +670,17 @@ selection uncertainty, donor-induced $r$ unavailability, and total derivative
 availability remain distinct.  The zero fixed-state cross response does not
 erase the valid data-dependent path
 $r\rightarrow E_r/E_{xr}\rightarrow\Pi_{xr}\rightarrow y_x$.
+
+The support and availability states obey
+\begin{equation}
+ \mathcal A_{\rm pair}\subseteq\mathcal G_{\rm pair},\qquad
+ \mathcal A_x,\mathcal A_r\subseteq\mathcal G_{\rm pair},\qquad
+ \mathcal A_C\subseteq\mathcal A_x\cap\mathcal A_r,
+ \qquad \mathcal A_x\ne\mathcal A_r\ \text{is permitted}.
+ \tag{SCI-RTC-EQ-042}\label{eq:support-availability-partition}
+\end{equation}
+The first set records common pair action and ordinary-operator support, not
+joint numerical completeness.  A required but unavailable affine correction
+removes the affected coordinate from $\mathcal A_x$ or $\mathcal A_r$ over
+the full downstream realized influence while preserving
+$\mathcal G_{\rm pair}$ and the other coordinate's independent availability.
