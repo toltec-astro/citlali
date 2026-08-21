@@ -1,0 +1,93 @@
+% Canonical formal module. Imported exactly once by the engineering view.
+\section{Assumptions, authority limits, and availability}
+\label{sec:assumptions}
+
+\subsection{Declared scientific assumptions}
+
+This v0.1 contract assumes that producer authority, profile-owner authority,
+stable identities, and immutable source bindings can be supplied explicitly.
+It does not assume that every fact or policy is available. Unavailability is
+a modeled outcome. It further assumes:
+\begin{enumerate}
+  \item producer fact sets, registry records, and evaluated records can be
+        immutable and assigned stable identities;
+  \item every producer assertion, explicit negative, local support, response,
+        uncertainty status, and influence statement can identify owner,
+        scope, stage, source, and version;
+  \item a use owner can completely declare applicability, predicate roles,
+        missing behavior, permitted exceptions, failure scope, compatibility,
+        and aggregation without VAL filling scientific gaps;
+  \item exact timestamps and occurrence populations can be retained where
+        time support matters; and
+  \item consumer action can bind a realized decision identity rather than an
+        ambient mutable flag.
+\end{enumerate}
+These are interchange assumptions, not claims about a present implementation.
+
+\subsection{Contract-level invariants}
+
+The following are boundaries, not VAL-authored policy defaults:
+\begin{itemize}
+  \item An exact representative occurrence synthesized by ALIGN or replaced
+        by RTC is not an original independent detector exposure. This
+        invariant is non-exceptionable within
+        \texttt{SCI-VAL:independent\_exposure@1}.
+  \item Nonrepresentative influence stays visible but has no universal
+        downstream disposition.
+  \item Invalid-payload exclusion precedes numerical consumption; finiteness
+        alone establishes no admission.
+  \item Producer facts and composites retain producer authority; registered
+        policy retains named-use-owner authority; consumer estimators and
+        products retain consumer authority.
+  \item Causes accumulate without erasure. Applicable exceptionable
+        restrictions for one use compose conjunctively in permission unless
+        the same profile contains a permitted, cause-preserving exception.
+  \item A later fact, profile resolution, source binding, aggregate
+        propagation, or consumer stage cannot promote or rewrite its immutable
+        parent decision.
+\end{itemize}
+
+\subsection{Current source and profile availability}
+
+The exact registered canonical profile is
+\texttt{SCI-VAL:independent\_exposure@1}. The package-qualified PTC and MAP
+names listed in \texttt{PROFILE\_REGISTRY.md} are reserved but unbound in this
+package. In particular, no exact MAP-owned
+\texttt{SCI-MAP:map\_upstream\_admission} profile is available. The MAP
+boundary is known; its predicates, thresholds, and exceptions are not
+invented. CAL inputs remain conditional on the source-binding register.
+
+This status is a scientific availability statement, not an implementation
+finding. A requested evaluation under an unbound profile is
+\texttt{decision\_unavailable}; it is not a reason to use a broad name,
+current software behavior, or a neighboring profile as a substitute.
+
+No aggregate profile is registered by this package. Each future aggregate
+must bind its own profile identity and owner, exact atomic source profile,
+operator, threshold, domain, and propagation authority. The base rule permits
+only homogeneous atomic inputs and supplies no heterogeneous transformation.
+
+\subsection{Non-goals and deferred authority}
+
+SCI-VAL v0.1 does not select a bit mask, flag layout, enum, table, schema, file
+format, class, database, serialization, numerical threshold, quality
+estimator, replacement method, filter, mapmaker, fit objective, uncertainty
+estimator, producer Boolean expression, or production policy. It does not
+replace, calibrate, fit, grid, coadd, filter, estimate noise, fit a source or
+beam, or run recurrence. It does not audit, repair, test, validate, optimize,
+authorize, or describe an implementation.
+
+It owns neither physical event timing nor missing producer facts; neither PTC
+basis/loading fit, application, output, coefficient/QC, response, or
+population policies; neither MAP admission, contribution, normalization,
+science-policy support, response/covariance, coaddition, or final raw
+validity; and neither another consumer's estimator admission nor output
+validity. It defines no global cause precedence, heterogeneous aggregation
+transformation, automatic detector-to-occurrence propagation, or iterative
+classification loop.
+
+Enabled polarimetry and numerical auxiliary measured-R scientific execution
+remain outside active v0.1 authority. This contract makes no assertion of
+implementation conformity, representation fidelity, observational
+validation, scientific freeze, production readiness, or adjacent-package
+readiness.

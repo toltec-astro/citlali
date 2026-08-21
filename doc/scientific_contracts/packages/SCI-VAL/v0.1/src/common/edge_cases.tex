@@ -1,0 +1,189 @@
+% Canonical formal module. Imported exactly once by the engineering view.
+\section{Worked cases and edge behavior}
+\label{sec:edge-cases}
+
+\subsection{One finite, retained, replaced occurrence}
+
+Consider occurrence $\omega_r$ with complete stable identity and parentage.
+Its payload is finite and retained. RTC authoritatively states that the exact
+representative source was replaced and supplies cause $c_{\rm repl}$ and its
+source link. Only the canonical independent-exposure profile is registered by
+this package. Other rows below are evaluable only when the indicated owner
+binds a complete immutable profile.
+
+\begin{center}
+\begin{longtable}{p{0.24\linewidth}p{0.29\linewidth}p{0.38\linewidth}}
+\toprule
+Scientific question & Registry/policy state & Contract result \\
+\midrule
+\endhead
+Count as an independent astronomical exposure? &
+\nolinkurl{SCI-VAL:independent_exposure@1} is bound; the direct-origin fact is
+authoritative & Ineligible. Replacement is non-exceptionable and
+$c_{\rm repl}$ remains a cause. \\
+Stabilize continuity or receive a frozen operator? & Hypothetical complete
+owner-bound \texttt{operator\_application} profile used only for illustration
+& Would be eligible for that exact application only if that exact profile
+were registered, applicable, and satisfied; this permission could not rescue
+independent exposure. \\
+Remain in an output? & Hypothetical complete owner-bound
+\texttt{output\_retention} profile used only for illustration & Would be
+eligible for retention only if that exact profile were registered,
+applicable, and satisfied; retention would say nothing about fit or map
+admission. \\
+Be displayed for diagnosis? & Hypothetical complete package-qualified
+diagnostic profile used only for illustration & Would be eligible for display
+only if that exact profile were registered, applicable, and satisfied, with
+replacement provenance visible and no stronger claim. \\
+Enter the PTC basis fit? & Only reserved name
+\nolinkurl{SCI-PTC:basis_fit_admission} is present & Decision unavailable. A
+name, finiteness, retention, and operator support cannot supply PTC policy. \\
+Enter the PTC loading fit or coefficient/QC population? & No exact owner-bound
+profile is registered & Decision unavailable separately for each question;
+one broad estimator-fit answer cannot substitute. \\
+Pass MAP upstream admission? & The accepted MAP boundary is bound, but no
+exact \nolinkurl{SCI-MAP:map_upstream_admission} profile is registered &
+Decision unavailable. Even later eligibility cannot establish projection,
+contribution, support, or final map validity. \\
+Receive a response companion? & A hypothetical complete owner profile assigns
+response availability the \texttt{structural\_gate} role, but the fact is
+unknown & Would be decision unavailable if that exact profile were registered
+and applicable; unknown response is not identity response. \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+One occurrence is therefore finite, retained, directly replaced, ineligible
+for independent exposure, conditionally eligible in hypothetical examples
+only if their exact profiles are later registered and applicable, and
+undecidable for unbound uses. One Boolean cannot
+represent these propositions without losing owner, profile, or reason.
+
+\subsection{Forbidden independent-exposure exception}
+
+Suppose a supplied independent-exposure profile contains an exception saying
+that a finite replacement may count as an independent exposure. The registry
+does not first evaluate replacement and then apply the exception. It rejects
+the profile binding because the attempted exception conflicts with a
+non-exceptionable contract invariant. The requested result is
+\texttt{decision\_unavailable} with \texttt{policy\_invalid}; it is never
+eligible. A policy for a genuinely different scientific proposition requires
+a different named use.
+
+Generic permitted exceptions still behave cause-preservingly. If two
+exceptionable restrictions exclude an occurrence and an authorized exception
+supersedes one, the other exclusion remains. If it supersedes the only
+exceptionable exclusion and all other predicates are true, the result can be
+eligible while retaining cause, restriction, and exception.
+If exception applicability is unknown or conflicting, no supersession has
+been established: the underlying exclusion remains decisive and the conflict
+is retained.
+
+\subsection{Restriction and missing-fact cases}
+
+\begin{center}
+\begin{tabular}{p{0.30\linewidth}p{0.27\linewidth}p{0.33\linewidth}}
+\toprule
+Knowledge state & Disposition & Preserved evidence \\
+\midrule
+all required true & eligible & all inputs, source bindings, profile identity \\
+one false, all others true & ineligible & false restriction and causes \\
+one false, another unknown & ineligible & both false and unknown reasons \\
+one false, unrelated non-gating conflict & ineligible & false and conflict reasons \\
+none false, one unknown & decision unavailable & every unresolved reason \\
+none false, required non-gating conflict & decision unavailable & every conflict reason \\
+structural registry/source conflict & applicability unknown; decision unavailable & conflict; no consumer mutation \\
+false restriction, conflicting exception applicability & ineligible & restriction, exception conflict, and causes \\
+known inapplicable profile & no eligibility proposition & applicability and lineage \\
+not requested & no eligibility proposition & request state; no decision invented \\
+artifact production fails & no authoritative eligibility assertion & realization failure, not disposition \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Silence, explicit absence, and conflicting producers}
+
+Suppose a profile requires authoritative absence of cause family $K$. No
+record gives $\mathbf U$ and therefore decision unavailable when no other
+restriction is false. Explicit absence from the owning producer is
+$\mathbf F$ for cause presence only when the producer declares $K$ complete;
+that can make an ``absence established'' predicate true. An assertion from a
+non-owner or a conflict between authoritative records does not establish
+cleanliness. The conflict is preserved and the decision fails closed.
+
+\subsection{Direct origin versus transitive influence}
+
+Direct representative replacement triggers the independent-exposure
+invariant. A nonrepresentative occurrence connected by an exact confirmed
+influence edge is governed by the registered profile for its use. A
+conservative possible edge is different again: its approximation rule and
+false-positive consequence remain visible, and the profile may permit,
+exclude, request review, or return decision unavailable. No choice changes
+the producer-owned edge or imposes the same choice on another use.
+
+\subsection{PTC stage separation and package-qualified questions}
+
+\begin{center}
+\begin{tabular}{p{0.31\linewidth}p{0.26\linewidth}p{0.33\linewidth}}
+\toprule
+PTC-owned question/state & Immediate scope & Forbidden inference \\
+\midrule
+basis-fit admission & basis learning population & does not define loading-fit
+or application support \\
+loading-fit admission & loading-model population & does not rewrite basis-fit
+membership \\
+fit excluded, application available & fit versus resolved operator application
+& fit exclusion alone does not forbid application \\
+post-fit output reject & output after fit & does not rewrite earlier fit \\
+coefficient/QC population & coefficient or QC estimation & is not an alias for
+either fit population \\
+weight-only noncontribution & declared numerical role & zero contribution is
+not universal invalidity \\
+advisory only & review/provenance & advice is not eligibility \\
+\bottomrule
+\end{tabular}
+\end{center}
+Only the PTC owner can bind these profiles. A later support change forms
+$\mathsf F_{k+1}$ and $\mathsf V_{k+1}$; only the affected PTC fit-support
+change requires refit or fitted-state invalidation.
+
+\subsection{Aggregation compatibility and feedback}
+
+An aggregate containing decisions from
+\texttt{diagnostic\_display} and
+\texttt{independent\_exposure}, from two profile versions, from different
+lifecycle stages, or from sample and detector object types is not a meaningful
+base-v0.1 fraction. The compatibility gate returns unavailable before
+applying the numerical operator. A future transformation could define one
+common proposition, but only its scientific owner can authorize it.
+
+For a homogeneous population, unknown decisions cannot disappear from the
+denominator unless the aggregation owner explicitly states their treatment.
+The aggregate also has its own registered profile identity, owner, version,
+domain, operator, threshold, propagation authority, and exact atomic
+source-profile binding. It cannot reuse the atomic identity or masquerade as
+another occurrence evaluated under the atomic profile. A missing aggregate
+profile makes the aggregate proposition unavailable before arithmetic.
+Empty support is not a scientifically good detector with zero rejected
+fraction. If a detector aggregate is propagated back to its occurrences, the
+propagated result becomes a new generation of producer facts. The original
+atomic decisions and denominator remain immutable. A same-generation loop is
+rejected; an iterative classifier needs a separately authorized bounded
+lifecycle and stop rule.
+
+\subsection{Response and payload edges}
+
+Response and uncertainty facts can be available, known unavailable, unknown,
+or inapplicable without becoming numeric zero. The owner-bound profile assigns
+exactly one role: \texttt{structural\_gate} makes unresolved or unsatisfied
+structure applicability unknown and the decision unavailable;
+\texttt{required\_permission} requires authoritative permission;
+\texttt{decisive\_exclusion} makes authoritative failure ineligible; and
+\texttt{advisory} preserves the state without deciding eligibility. Unknown or
+conflicting required permission/exclusion is unresolved. The role and scope
+come from the owner-bound profile, not VAL.
+
+An invalid payload---finite or non-finite---is excluded before arithmetic. If
+an admitted required payload is then found non-finite, the operation fails or
+becomes unavailable at its declared scope. These orders are observationally
+different and remain in provenance.

@@ -1,0 +1,161 @@
+\documentclass[10pt]{article}
+\usepackage[letterpaper,margin=0.72in,headheight=14pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{array,booktabs,longtable,tabularx,enumitem}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+
+\definecolor{VALblue}{HTML}{175A6A}
+\definecolor{VALpale}{HTML}{EAF4F5}
+\hypersetup{colorlinks=true,linkcolor=VALblue,urlcolor=VALblue,
+  hypertexnames=false,
+  pdftitle={SCI-VAL Engineering Conformance Specification v0.1/r0.3},
+  pdfauthor={SCI-VAL implementation-blind scientific authorship}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.40em}
+\setlist{leftmargin=*,nosep}
+\renewcommand{\arraystretch}{1.10}
+\emergencystretch=3em
+\hbadness=10000
+\newcommand{\GuideBox}[2]{\begin{center}\fcolorbox{VALblue}{VALpale}{%
+  \parbox{0.92\linewidth}{\textbf{#1}\quad #2}}\end{center}}
+
+\begin{document}
+\raggedbottom
+\sloppy
+
+\begin{titlepage}
+\thispagestyle{empty}
+\vspace*{0.65in}
+{\color{VALblue}\rule{\linewidth}{2pt}}\\[0.40in]
+{\Huge\bfseries SCI-VAL\\[0.12in]}
+{\LARGE Sample and Detector Validity, Flags, and Map Eligibility\\[0.12in]}
+{\large\bfseries Producer Facts and Use-Specific Eligibility:\\[0.03in]
+Not Final Map Validity\\[0.22in]}
+{\huge\color{VALblue}Engineering Conformance Specification}\par
+\vspace{0.62in}
+\begin{tabular}{@{}ll@{}}
+Scientific contract version & v0.1 \\
+Document revision & r0.3 \\
+Date & 2026-08-21 \\
+Formal authority & Six canonical modules in \texttt{src/common/} \\
+Architecture & SCI-VAL Core plus owner-bound Profile Registry \\
+Status & \parbox[t]{0.56\linewidth}{Owner-approved revision architecture;
+scientific authority not frozen; implementation conformity and validation not
+assessed.} \\
+\end{tabular}
+\vfill
+\GuideBox{Authority boundary.}{VAL remains the evaluator and registry
+mechanism, not the policy author. A registry record binds a policy to its
+actual owner and source without transferring authority. This document selects
+no PTC, MAP, or production policy.}
+{\color{VALblue}\rule{\linewidth}{2pt}}
+\end{titlepage}
+
+\section*{How to use this specification}
+
+The six imported modules are the complete formal authority for this revision.
+The separate science-team rationale explains the same architecture without
+reproducing tuples, truth tables, or numbered clauses. Every numbered
+requirement is an observable obligation and every prediction is a potential
+falsifier. No clause reports a test result.
+
+An engineering review must treat producer facts, registry records, owner
+profiles, evaluated decisions, consumer actions, and lifecycle generations as
+separate identities. A convenient flag or schema is a candidate
+representation only if it preserves every typed distinction and source
+binding here. Deferred representation detail, profile-local policy, an unbound
+profile, missing source digest, or unavailable evidence is not a pass.
+
+\GuideBox{Stop rule.}{If policy owner, authoritative source, profile version,
+domain, restriction, exception permission, compatibility, or required
+producer fact cannot be established, engineering must preserve the resulting
+unavailable state. It may not infer a policy from a name or current behavior.}
+
+{\footnotesize\setcounter{tocdepth}{1}\setlength{\parskip}{0pt}\tableofcontents}
+\clearpage
+
+% Complete shared formal authority, imported once and only once.
+\input{common/notation.tex}
+\input{common/definitions.tex}
+\input{common/equations.tex}
+\input{common/assumptions.tex}
+\input{common/requirements.tex}
+\input{common/edge_cases.tex}
+
+\clearpage
+\appendix
+\section{Informative conformance-record schema}
+\label{sec:eng-schema}
+
+This appendix supplies bookkeeping guidance only. It adds no scientific
+requirement. One future evidence record should bind one primary claim layer
+and the exact clauses it addresses.
+
+\begin{tabularx}{\linewidth}{@{}p{0.25\linewidth}X@{}}
+\toprule
+Field & Evidence content \\
+\midrule
+Record identity & Stable review ID, date, reviewer role, exact contract
+revision, and supersession status \\
+Claim layer & One primary layer: logical/evaluator conformity,
+representation fidelity, observational performance, science impact, or
+production readiness \\
+Target identity & Exact source/build/artifact/configuration identity needed to
+reproduce the observation \\
+Authority binding & Requirement or prediction IDs, exact profile registry
+key/version, scientific owner, authoritative source/version or digest \\
+Preconditions & Object identity, fact-set parent, domain, lifecycle stage,
+profile binding, aggregation compatibility key, and open decisions \\
+Method & Static trace, deterministic fixture, property test, serialization
+inspection, failure injection, or preregistered observational method \\
+Expected result & Exact invariant and tolerance justified before observing
+candidate output \\
+Observed result & Values, typed states, messages, artifacts, and exceptions
+without interpretation hidden in a pass flag \\
+Disposition & Pass, fail, not exercised, blocked by owner decision, or
+evidence unavailable \\
+Claim limit & What the record does not establish \\
+\bottomrule
+\end{tabularx}
+
+No status may be inferred from an omitted record. Passing a fixture supports
+only the named requirement and claim layer; it does not freeze science or
+establish production readiness.
+
+\section{Informative review routing}
+\label{sec:eng-routing}
+
+\begin{tabularx}{\linewidth}{@{}p{0.19\linewidth}p{0.28\linewidth}X@{}}
+\toprule
+Clause range & Primary review surface & Useful evidence classes \\
+\midrule
+REQ-001--010 & Ownership, identity, fact and registry envelopes & Exact-owner
+and digest fixtures; incomplete-profile rejection; stable-join and
+complete-family-negative tests \\
+REQ-011--018 & Four axes and disposition algebra & Exhaustive truth-domain,
+not-requested/inapplicable, false-plus-unknown, no-rescue, and
+cause-preserving exception fixtures \\
+REQ-019--026 & Direct origin, influence, payload, response, PTC stages &
+Representative replacement; exact/conservative edge; invalid-before-numeric;
+package-qualified stage-separation fixtures \\
+REQ-027--029 & Lifecycle, determinism, replay & Snapshot immutability,
+permutation/idempotence, source-digest and profile-version replay \\
+REQ-030--034 & Aggregation & Homogeneous compatibility key, denominator,
+missing-decision, permutation, and declared partition-equivalence tests \\
+REQ-035--042 & Consumer boundaries and claim limits & MAP admission-versus-
+contribution separation; no-promotion; fail-closed conflict; no-default tests \\
+REQ-043--049 & Core/registry repair & Policy-authority separation,
+non-exceptionable invariant, naming migration, heterogeneous rejection,
+anti-circular propagation, and source-change fixtures \\
+PRED-001--024 & Contract falsifiers & One explicit counterexample-oriented
+fixture per applicable prediction \\
+\bottomrule
+\end{tabularx}
+
+The exact Markdown crosswalk is the one-to-one traceability authority. This
+routing table merely groups evidence work and cannot replace it.
+
+\end{document}

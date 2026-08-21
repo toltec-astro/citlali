@@ -125,6 +125,43 @@ and cross-package handoffs are valuable recovery inputs.
 - Earlier scope/reference material: `MAIN:doc/RTC_FLAGGING_AUDIT_2026-03-16.md`
   and `MAIN:doc/PTC_MODEL_PROTECTED_NOTCH_PLAN_2026-05-21.md`.
 
+### Validity And Eligibility
+
+- Package-specific recovery:
+  [`packages/SCI-VAL/v0.1/PRIOR_WORK.md`](packages/SCI-VAL/v0.1/PRIOR_WORK.md)
+  at `2026-08-20`. It records that no frozen SCI-VAL independent core was
+  found, resolves all eleven recovered `SCI-VAL-001-XAUD-001--011` handoffs
+  including the X005/X006 and X008/X009 supersessions, and separates approved
+  MAP/PTC/RTC interface facts from historical implementation/audit evidence.
+- Current shared authority: `MAIN:doc/SCIENTIFIC_CONVENTIONS.md`,
+  `MAIN:validation/product_contracts.json`, and
+  `MAIN:doc/adr/0009-science-map-bundle-admission-and-validity.md`, rechecked
+  against the living scientific-contract library.
+- Historical inventory and handoffs:
+  `COORD:doc/audits/audit-ledger.yaml` and
+  `COORD:doc/audits/handoffs/SCI-VAL-001/`. Only approved owner decisions may
+  be abstracted for authorship; post-core findings and source traces remain
+  quarantined for later conformity work.
+- Current adjacent-package inputs are the owner-approved RTC/PTC scope
+  decisions, the accepted MAP separation of upstream eligibility from MAP
+  support/final validity, and CAL producer-local validity. Full adjacent
+  drafts are not automatic author references while their scientific freeze
+  states remain open.
+- Implementation scope evidence includes RTC/PTC sample flags, detector/APT
+  flags, masks, finite checks, weights, and mapmaker admission paths. Those
+  paths are internal-dossier evidence only and may not select VAL science.
+- The owner-approved r0.3 work is a representation-independent,
+  cause-preserving evaluator plus an owner-bound immutable Profile Registry;
+  neither layer authors producer facts or named-use policy. It establishes
+  `SCI-VAL:independent_exposure@1` with a non-exceptionable direct-origin
+  invariant, distinct registered aggregate propositions bound to exact
+  homogeneous atomic profiles, deterministic structural/non-gating conflict
+  precedence, four owner-supplied response/uncertainty roles, non-circular
+  successor-generation propagation, and continuing adjacent source/version
+  bindings. The sanitized RTC/CAL/PTC/MAP boundary profile remains approved
+  author-packet content, not adjacent-package policy or freeze authority;
+  unavailable PTC/MAP policy was not invented.
+
 ### Alignment And Astrometry
 
 - Current frame, indexing, and pointing-correction authority in

@@ -1,0 +1,415 @@
+% Canonical formal module. Imported exactly once by the engineering view.
+\section{Normative requirements and falsifiable predictions}
+\label{sec:requirements}
+
+\newcommand{\ContractRequirement}[2]{%
+  \par\medskip\noindent\begin{minipage}{\linewidth}%
+  \textbf{SCI-VAL-REQ-#1.}\quad #2%
+  \end{minipage}\par}
+\newcommand{\ContractPrediction}[2]{%
+  \par\medskip\noindent\begin{minipage}{\linewidth}%
+  \textbf{SCI-VAL-PRED-#1.}\quad #2%
+  \end{minipage}\par}
+
+\subsection{Normative requirements}
+
+\ContractRequirement{001}{For one exact identity, VAL shall accept only an
+immutable producer-fact set and an exact owner-bound registered profile as
+scientific inputs and shall return a cause-preserving evaluated record; it
+shall not originate either side.}
+
+\ContractRequirement{002}{Producers shall remain authoritative for atomic
+facts, direct causes, explicit negatives, and producer-local Boolean
+composites/supports; the named-use owner shall remain authoritative for all
+scientific predicates and permitted exceptions; the registry shall bind that
+authority; VAL Core shall own only shared interchange, knowledge-state,
+provenance, cause-preservation, and deterministic execution semantics.}
+
+\ContractRequirement{003}{Every decision shall bind stable observation,
+segment, occurrence, detector occurrence/UID, product role, stage, parent,
+and lifecycle identities as applicable; dense row, column, or file order
+shall not substitute for stable identity, and detector joins shall use the
+declared UID/occurrence relation.}
+
+\ContractRequirement{004}{Fact interchange shall distinguish authoritative
+true, authoritative explicit false, unknown/missing,
+contradictory/out-of-domain, and applicability; missing, unavailable,
+inapplicable, invalid, non-finite, rejected, disabled, automatic, and numeric
+zero shall remain distinct.}
+
+\ContractRequirement{005}{Silence about a cause shall remain unknown. An
+explicit negative cause assertion shall be accepted only from the owning
+producer under a declared complete cause family.}
+
+\ContractRequirement{006}{A producer-local composite/support shall carry its
+owner, exact inputs, truth-domain rule, missing-state behavior, scope, use,
+and version and shall be consumed as an opaque authoritative producer fact;
+VAL shall not reconstruct or reinterpret it from raw causes.}
+
+\ContractRequirement{007}{All material direct causes and inherited influence
+shall be accumulated by a commutative, associative, idempotent set/graph join
+without erasure, ranking, or conversion into a universal action.}
+
+\ContractRequirement{008}{Every realized decision shall bind exact use,
+registry key/version, actual policy owner, authoritative source/version or
+digest, immutable fact-set parent, requested/effective/observation-resolved/
+learned/realized lineage, and all reason and lifecycle identities needed for
+exact replay.}
+
+\ContractRequirement{009}{The eight shared use-class names shall provide
+vocabulary only except where an explicit canonical registry record binds an
+owner-approved invariant. Operationally distinct package questions shall use
+package-qualified profile names, and no name alone shall supply a predicate,
+threshold, support, estimator, response, covariance, or final-validity rule.}
+
+\ContractRequirement{010}{VAL shall complete registry integrity and the
+mandatory structural interchange gate before any use predicate or consumer
+scientific-state mutation; unresolved registry binding, identity, parent,
+policy owner/source/version, compatibility, applicability authority, fact
+authority, or required scope shall make the decision domain unavailable.}
+
+\ContractRequirement{011}{Request, applicability, eligibility, and
+realization shall be independent typed axes. The tokens not requested,
+inapplicable, decision unavailable, ineligible, and not produced shall never
+be aliases or silently converted across axes.}
+
+\ContractRequirement{012}{A not-requested evaluation or a known inapplicable
+profile shall assert no eligibility proposition. Not requested shall not
+manufacture a decision, and inapplicable shall not be relabeled decision
+unavailable.}
+
+\ContractRequirement{013}{For a requested decision, unknown applicability or
+an unresolved registry/structural gate shall yield a realized
+\texttt{decision\_unavailable} record when a record can be produced; an
+incomplete, failed, or unproduced artifact shall not itself be called an
+eligibility disposition.}
+
+\ContractRequirement{014}{After domain establishment, any known decisive
+false restriction shall yield ineligible even when an unrelated non-gating
+required predicate is unknown or conflicting; if none is false and at least
+one required predicate is unknown or conflicting the result shall be decision
+unavailable; only all required true restrictions shall yield eligible.}
+
+\ContractRequirement{015}{Evaluation shall preserve every material false,
+unknown, contradictory, out-of-domain, influence, exception, source-binding,
+compatibility, and policy-invalid reason even when one known false already
+determines the disposition.}
+
+\ContractRequirement{016}{For one exact profile, all applicable restrictions
+shall compose conjunctively in permission, equivalently disjunctively in
+exclusion; an additional permission shall not rescue an excluded occurrence.}
+
+\ContractRequirement{017}{An override, supersession, or exception shall be
+effective only when permitted and explicit in the same immutable owner-bound
+profile. Its identity, resolution, underlying restriction, and causes shall
+remain in the decision; it shall not apply to a registry-declared
+non-exceptionable invariant; and a changed exception shall produce distinct
+resolved-profile lineage and decision identity. Unknown or conflicting
+exception applicability shall not neutralize the underlying restriction.}
+
+\ContractRequirement{018}{A permission or eligibility disposition shall not
+be stored or propagated as a cause.}
+
+\ContractRequirement{019}{Under the mandatory registered profile
+\texttt{SCI-VAL:independent\_exposure@1}, an occurrence whose exact
+representative source is authoritatively synthesized or replaced shall be
+ineligible regardless of a finite retained payload or permission under
+another use.}
+
+\ContractRequirement{020}{Direct replacement and nonrepresentative influence
+shall not automatically exclude operator application, output retention,
+diagnostic display, or another named use; each consequence shall require that
+use owner's exact registered profile.}
+
+\ContractRequirement{021}{Influence records shall preserve producer, source,
+target, support, approximation-rule identity, exact versus conservative
+coverage, and confirmed versus possible status; conservative influence shall
+never be silently promoted to exact or confirmed.}
+
+\ContractRequirement{022}{For possible influence, the owner-bound profile
+shall explicitly select permit, exclude, scientific unavailability, or
+review. Review shall remain action metadata and shall not introduce a fourth
+eligibility disposition.}
+
+\ContractRequirement{023}{A producer- or policy-declared invalid payload
+shall be excluded before numerical evaluation. Finiteness, positive weight,
+mask membership, computability, or retention shall never establish
+eligibility.}
+
+\ContractRequirement{024}{If an admitted required payload is non-finite, the
+affected operation shall fail or become scientifically unavailable at the
+owner-declared scope; its value shall not be coerced to zero or used to
+retroactively change admission.}
+
+\ContractRequirement{025}{Response and uncertainty availability shall be
+typed separately from numerical response and uncertainty. Unknown or
+unavailable values shall not be treated as zero or identity. The named-use
+owner shall assign each fact exactly one role from
+\texttt{structural\_gate}, \texttt{required\_permission},
+\texttt{decisive\_exclusion}, or \texttt{advisory} and shall declare failure
+scope. VAL shall apply the role's deterministic structural, permission,
+exclusion, or neutral-advisory consequence without inventing another role.}
+
+\ContractRequirement{026}{PTC-owned basis-fit, loading-fit,
+fit-excluded/application-available, post-fit output-rejection,
+coefficient/QC-population, weight-only, and advisory states shall retain
+distinct stage/action scope. Only a PTC-owned change to the affected fit
+support shall require that fit or fitted-state invalidation.}
+
+\ContractRequirement{027}{The lifecycle shall be nonretroactive:
+$\mathsf F_k\rightarrow\mathsf V_k\rightarrow\mathsf A_k\rightarrow
+\mathsf F_{k+1}$. Later facts, influence, source bindings, or propagated
+aggregates shall produce a new fact-set and decision identity; later profile
+resolution shall produce distinct lineage and a new decision. Neither path
+shall mutate the earlier facts, disposition, reasons, or consumer action.}
+
+\ContractRequirement{028}{For equal immutable scientific inputs, VAL
+evaluation shall produce equal four-axis states and equal reason/cause graphs,
+independent of iteration order, ambient time, hidden defaults, mutable global
+state, or consumer side effects.}
+
+\ContractRequirement{029}{Replay shall bind canonical scientific content of
+the fact set, complete registry record, source bindings, applicability,
+exception resolution, aggregation, and lifecycle; no unversioned current
+profile, registry entry, or producer state shall substitute for recorded
+input.}
+
+\ContractRequirement{030}{Every occurrence-to-detector or
+detector-to-occurrence aggregation shall bind its own registered aggregate
+profile identity/version, actual scientific owner, source, object type and
+domain, and the exact compatible atomic source-profile identity/version. It
+shall declare exact population, observation/scan/segment/time support, counts
+by all four axes, denominator, missing treatment, operator, threshold if any,
+boundary polarity, propagation authority, advisory/binding role,
+learned/data-dependent uncertainty, and failure scope. It shall not reuse the
+atomic profile identity or masquerade as another atomic instance.}
+
+\ContractRequirement{031}{An aggregate shall retain all atomic decision
+identities, source bindings, exact atomic-profile lineage, and its distinct
+aggregate-profile lineage. Missing or failed decisions shall be counted and
+treated only as specified by the aggregation owner, never silently dropped.}
+
+\ContractRequirement{032}{An empty or unknown aggregation denominator shall
+be inapplicable or decision unavailable under the supplied policy and shall
+never be interpreted as a valid zero fraction.}
+
+\ContractRequirement{033}{No detector-level aggregate shall automatically
+apply to every occurrence. Reverse propagation shall require exact population,
+time support, aggregation, and propagation authority and shall create a new
+producer fact and lifecycle generation.}
+
+\ContractRequirement{034}{Aggregation over the same exact homogeneous
+multiset shall be permutation invariant. Partitioned and unpartitioned
+aggregation shall be interchangeable only when the owner declares a
+sufficient summary, associative combine rule, and exact equivalence for the
+active missing, boundary, threshold, and uncertainty rules.}
+
+\ContractRequirement{035}{A VAL-evaluated MAP-owned
+\texttt{map\_upstream\_admission} result shall remain necessary but not
+sufficient for MAP projection, estimator contribution, normalization or
+science-policy support, response/covariance, coaddition, supported output, or
+final raw map validity.}
+
+\ContractRequirement{036}{A consumer shall not relabel decision unavailable
+as eligible, erase producer causes, infer a clean cause family from silence,
+or promote an invalid/unavailable parent because a descendant is finite or
+locally valid.}
+
+\ContractRequirement{037}{A conflict in required identity, parentage,
+registry/profile authority, source/compatibility, applicability, or another
+structural-gate fact shall yield applicability unknown and decision
+unavailable before consumer mutation. After domain establishment, a known
+decisive exclusion shall remain ineligible despite an unrelated conflicting
+non-gating fact; without such an exclusion, a required non-gating conflict
+shall yield decision unavailable. Every conflict reason shall be preserved.}
+
+\ContractRequirement{038}{VAL shall not repair, infer, strengthen, recompute,
+or default a missing producer fact/support, registry binding, or policy
+element, including by substituting clean cause, identity response, zero
+uncertainty, finite payload, source alias, or a policy predicate.}
+
+\ContractRequirement{039}{Monotonicity shall be asserted only for a
+use-owner-declared stricter-profile relation on an exact common domain. Under
+that relation, eligibility under the stricter profile shall imply eligibility
+under the weaker profile; VAL shall not infer strictness from names, versions,
+or registry order.}
+
+\ContractRequirement{040}{Requested, effective, observation-resolved,
+learned/resolved, and realized profile state shall flow one way and remain in
+decision lineage; a realized state shall not rewrite its requested or
+effective ancestors.}
+
+\ContractRequirement{041}{The contract and any future conformance claim
+against it shall remain representation-independent and shall not select
+numerical thresholds, estimators, flags/bit layouts, schemas, producer
+composites, PTC or MAP scientific policy, heterogeneous transformation policy,
+or another production default.}
+
+\ContractRequirement{042}{SCI-VAL v0.1 shall not be used to authorize enabled
+polarimetry or numerical auxiliary measured-R scientific execution, nor to
+claim implementation conformity, representation fidelity, observational
+validation, scientific freeze, production readiness, or adjacent-package
+readiness.}
+
+\ContractRequirement{043}{SCI-VAL Core and the Profile Registry shall remain
+separate authority layers: Core owns shared evaluation semantics; the
+registry binds immutable owner-approved profiles; neither shall author,
+approve by inference, duplicate, or acquire the scientific policy it carries.}
+
+\ContractRequirement{044}{A usable registry record shall bind immutable key
+and version, named use, actual scientific owner, authoritative source and
+exact version/digest, domain/object type, restrictions, exception permissions,
+compatibility/supersession, and missing behavior. A reserved or partial record
+shall be unavailable.}
+
+\ContractRequirement{045}{The direct representative synthesis/replacement
+restriction in \nolinkurl{SCI-VAL:independent_exposure@1} shall be
+non-exceptionable. Any supplied profile that attempts to override it shall be
+rejected as policy invalid and shall never yield eligible.}
+
+\ContractRequirement{046}{The former
+\nolinkurl{analysis_or_gridding_contribution} label shall not be accepted as
+a v0.1 registry key or automatic alias. MAP upstream admission shall use
+\nolinkurl{SCI-MAP:map_upstream_admission}; PTC basis fit, loading fit,
+application, output, coefficient/QC, response, and population questions shall
+use distinct package-qualified profile identities.}
+
+\ContractRequirement{047}{Base v0.1 aggregation shall require every atomic
+decision to share exact profile identity/version, lifecycle stage, object
+type, and applicability domain, and the distinct registered aggregate profile
+shall bind that exact atomic source-profile key. A heterogeneous input shall
+be unavailable unless an explicit owner-approved transformation profile maps
+all inputs to one common aggregate proposition; SCI-VAL v0.1 supplies no such
+policy.}
+
+\ContractRequirement{048}{An aggregate propagated back to occurrences shall
+create successor-generation facts and decisions. It shall not rewrite an
+atomic decision in its own denominator, feed the same generation's aggregate,
+or create an iterative classification loop without a separately authorized
+bounded lifecycle and stop rule.}
+
+\ContractRequirement{049}{Every imported RTC, CAL, PTC, MAP, or other
+adjacent meaning shall bind the exact approved source/version or digest and
+compatibility consequence. A changed, missing, or non-authoritative source
+shall require a new binding or an unavailable result; VAL shall not substitute
+ambient current meaning or invent an unavailable MAP profile.}
+
+\subsection{Falsifiable predictions}
+
+The following predictions are contract tests, not reports of tests already
+performed.
+
+\ContractPrediction{001}{For a finite, retained occurrence whose exact
+representative source is authoritatively replaced, every conforming
+\texttt{SCI-VAL:independent\_exposure@1} evaluation is ineligible and
+preserves the replacement cause.}
+
+\ContractPrediction{002}{If an exact noncanonical diagnostic-display or
+frozen-operator profile is actually registered, applicable, and satisfied,
+the same occurrence may be eligible for only that use while its
+independent-exposure decision remains ineligible and unchanged. An
+illustrative unregistered profile produces no such decision.}
+
+\ContractPrediction{003}{If no authoritative package-qualified estimator-fit
+or MAP upstream-admission profile is bound, a requested evaluation cannot
+become eligible from finiteness, retention, positive weight, or another use's
+permission; it is decision unavailable.}
+
+\ContractPrediction{004}{Every permutation of the same
+producer-qualified cause/influence graph and exact registered profile
+produces the same disposition and reason graph.}
+
+\ContractPrediction{005}{Repeating an identical cause or influence edge does
+not change disposition, unique-cause counts, or replay identity based on
+canonical scientific content.}
+
+\ContractPrediction{006}{With an established decision domain, one known
+decisive false restriction plus any unrelated unknown or conflicting
+non-gating restriction yields ineligible and preserves every reason.}
+
+\ContractPrediction{007}{With an established decision domain, no decisive
+false and at least one required unknown or conflicting restriction yields
+decision unavailable; changing that fact to authoritative true can yield
+eligible only if all other requirements are true.}
+
+\ContractPrediction{008}{A missing or conflicting exact parent, registry
+digest, policy source/version, compatibility, or applicability authority
+yields applicability unknown and decision unavailable before consumer
+mutation, even when the payload is finite.}
+
+\ContractPrediction{009}{Not requested and known inapplicable evaluations
+carry no eligibility proposition; neither is observationally identical to a
+realized decision-unavailable record.}
+
+\ContractPrediction{010}{A permitted resolved same-profile exception can
+neutralize only the exceptionable restriction it names; the result retains
+exception, restriction, and causes, and an unrelated exclusion still prevents
+eligibility. An unknown or conflicting exception cannot neutralize its
+underlying exclusion.}
+
+\ContractPrediction{011}{The same possible conservative influence may be
+permitted, excluded, marked for review, or made scientifically unavailable by
+different authoritative profiles without changing or relabeling the producer
+influence record.}
+
+\ContractPrediction{012}{Adding $\mathsf F_{k+1}$ and evaluating
+$\mathsf V_{k+1}$ leaves the serialized scientific content and action
+association of $\mathsf F_k$, $\mathsf V_k$, and $\mathsf A_k$ unchanged.}
+
+\ContractPrediction{013}{An empty or unknown aggregation denominator never
+produces an eligible zero-fraction result; the owner-declared outcome is
+inapplicable or decision unavailable.}
+
+\ContractPrediction{014}{Permutation of an exact homogeneous aggregate
+multiset does not alter its result; partitioned evaluation matches
+unpartitioned evaluation only for an explicitly declared and satisfied
+sufficient-summary equivalence. The result binds a distinct registered
+aggregate profile and its exact atomic source-profile identity.}
+
+\ContractPrediction{015}{A declared-invalid non-finite payload is excluded
+without numerical consumption; a required payload admitted before discovering
+non-finiteness instead fails or becomes unavailable at the declared scope.
+Neither path is converted to eligibility by finiteness logic.}
+
+\ContractPrediction{016}{Response/uncertainty facts assigned
+\texttt{structural\_gate}, \texttt{required\_permission},
+\texttt{decisive\_exclusion}, and \texttt{advisory} produce respectively the
+declared structural, permission, exclusion, and neutral-preserved outcomes;
+unknown or unavailable state is never replayed as numeric zero or identity.}
+
+\ContractPrediction{017}{Upstream eligibility under a MAP-owned profile alone
+cannot establish MAP numerical contribution, supported output, or final raw
+map validity.}
+
+\ContractPrediction{018}{For a correctly declared stricter relation
+$\rho'\preceq\rho$ on the same domain, no fact set ineligible under $\rho$
+can become eligible under $\rho'$; a counterexample falsifies either the
+declaration or evaluator.}
+
+\ContractPrediction{019}{A profile that attempts to admit a directly
+synthesized or replaced representative occurrence as independent exposure is
+rejected as policy invalid and produces no eligible result.}
+
+\ContractPrediction{020}{Two otherwise identical profile records with
+different authoritative source digests produce distinct replay identities;
+an absent digest cannot be silently replaced by the current source.}
+
+\ContractPrediction{021}{A base-v0.1 aggregate containing two profile
+versions, lifecycle stages, object types, or applicability domains is
+unavailable before its numerical operator is applied. So is an aggregate
+whose own registered profile or exact atomic source-profile binding is absent,
+or whose aggregate identity reuses the atomic identity.}
+
+\ContractPrediction{022}{Propagating a detector aggregate to its source
+occurrences creates generation $k+1$ facts and decisions while every
+generation $k$ denominator decision remains bit-for-bit scientifically
+unchanged.}
+
+\ContractPrediction{023}{Supplying only the reserved name
+\nolinkurl{SCI-PTC:basis_fit_admission} or
+\nolinkurl{SCI-MAP:map_upstream_admission} cannot yield eligibility without
+the actual owner's complete immutable registry record.}
+
+\ContractPrediction{024}{If an adjacent source revision changes an imported
+meaning without an approved compatibility binding, the dependent evaluation
+becomes unavailable rather than replaying under silently updated semantics.}

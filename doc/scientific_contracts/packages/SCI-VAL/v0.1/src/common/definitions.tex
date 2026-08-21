@@ -1,0 +1,211 @@
+% Canonical formal module. Imported exactly once by the engineering view.
+\section{Core, registry, and scientific ownership}
+\label{sec:definitions}
+
+\subsection{Two layers, one authority boundary}
+
+SCI-VAL Core defines the fact and policy envelopes, four-axis logic,
+knowledge states, deterministic evaluation, cause preservation, immutable
+lifecycle, aggregation mechanics, and replay semantics. The SCI-VAL Profile
+Registry binds a complete immutable profile to its real scientific owner and
+source. It also rejects incomplete, conflicting, or incompatible bindings.
+Neither layer originates a producer fact or a scientific-use predicate.
+
+The distinction between registry mechanism and policy authority is
+normative. Registration makes an approved policy discoverable and replayable;
+it does not transfer ownership, authorize a threshold, or turn a reserved
+name into a policy. A registry record whose scientific owner or source cannot
+be established is unavailable, not VAL-owned.
+
+\subsection{Why facts, causes, support, and eligibility differ}
+
+Finiteness, acquisition validity, an unasserted cause, positive weight,
+membership in an operator mask, producer-local support, retention, numerical
+computability, and eligibility for a named use answer different questions. A
+cause explains a producer-owned condition. A local support is the producer's
+composite decision for one producer-local operation. Eligibility is a
+disposition produced by evaluating one profile owned by the named-use
+authority. A consumer's final numerical admission and product validity remain
+separate again. No bare flag or universal Boolean can carry this contract.
+
+\begin{center}
+\begin{tabular}{p{0.18\linewidth}p{0.74\linewidth}}
+\toprule
+Authority & Owned scientific content \\
+\midrule
+Producer & Atomic facts and causes; explicit negative assertions; origin,
+validity, response and uncertainty availability; transformation state;
+producer-local Boolean composites and supports; direct and transitive
+influence; parentage and lifecycle. \\
+Named-use owner & Applicability, required facts, decisive predicates,
+restriction composition, cause-preserving exceptions, aggregation and
+propagation, thresholds, failure scope, policy version, and compatibility for
+its exact scientific use. \\
+Profile Registry & Immutable binding of profile identity to the actual owner,
+authoritative source/version or digest, domain, restrictions, exception
+permissions, compatibility, and missing behavior. It supplies no predicate. \\
+VAL Core & Shared types; authority and registry checks; knowledge-state and
+four-axis logic; immutable provenance; order-independent cause preservation;
+deterministic execution of the exact supplied profile; evaluated record. \\
+Consumer & Estimator-specific numerical support and action; response,
+covariance, normalization, coaddition, recurrence, or final product validity
+that it owns. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+VAL never originates a PTC fit/application/output/coefficient policy, a MAP
+admission rule, a producer composite, a threshold, or a global cause ranking.
+The named-use owner can reuse VAL mechanics and register a profile without
+transferring scientific authority.
+
+\subsection{Producer fact and profile envelopes}
+
+A fact envelope is scientifically complete for interchange only when it
+binds, as applicable:
+\begin{enumerate}
+  \item exact identity, product role, stage, parent, and lifecycle;
+  \item owner and assertion authority, including complete-family authority
+        for an explicit negative cause assertion;
+  \item origin and required causal source links;
+  \item distinct structural, detector-binding, numerical/domain,
+        coordinate/time, response, uncertainty, and completion states;
+  \item direct causes, local support/composite identity, operator-control and
+        edge/context state, representative occurrence, and transitive
+        influence with exact/conservative status; and
+  \item immutable source, plan, version, and provenance identity.
+\end{enumerate}
+A source-protection mask, edge guard, fit mask, or other control remains an
+operator input. It does not become acquisition validity or confidence.
+
+A usable profile envelope must contain every field of $\rho$ in
+Section~\ref{sec:notation}. The registry verifies exact identity, digest,
+owner, source, domain, restriction and exception declarations, compatibility,
+response/uncertainty roles, and supersession; it does not fill a missing
+field. An aggregate profile additionally binds its distinct aggregate
+proposition, exact atomic source-profile identity/version, operator,
+threshold, and propagation authority. Requested, effective,
+observation-resolved, learned/resolved, and realized profile states remain
+distinct and flow only forward.
+
+\subsection{Mandatory canonical independent-exposure profile}
+\label{sec:independent-profile}
+
+The first mandatory canonical record is
+\texttt{SCI-VAL:independent\_exposure@1}. Its scientific owner is the exact
+owner recorded in the immutable registry binding, not the VAL evaluator. The
+package namespace identifies the registry, not policy ownership. Its domain
+is an exact sample--detector occurrence with authoritative
+representative-source identity and origin.
+
+Within that domain, an exact representative source that is synthesized or
+replaced is not an original independent astronomical exposure. This
+restriction is non-exceptionable. A supplied profile that attempts to
+supersede it is structurally invalid and yields a realized
+\texttt{decision\_unavailable} record with reason
+\texttt{policy\_invalid} when a record can be produced. It is never evaluated
+as eligible. A scientifically different proposition must receive a different
+named use rather than weaken this profile.
+
+Other restrictions for independent exposure remain owner-supplied and must
+enter through a compatible immutable successor record. Direct replacement
+does not automatically decide operator application, output retention,
+diagnostic display, or another exact use.
+
+\subsection{Adjacent source-binding register}
+\label{sec:source-register}
+
+The exact companion register is \nolinkurl{SOURCE_BINDING_REGISTER.md}. The
+table below is the r0.3 registry snapshot; the companion register is the
+continuing source-binding authority.
+
+\textbf{Adjacent-source r0.3 registry snapshot.}
+
+\begin{center}
+\begin{longtable}{@{}p{0.14\linewidth}p{0.22\linewidth}p{0.30\linewidth}p{0.22\linewidth}@{}}
+\toprule
+Authority & Bound source & Meaning admitted & Change consequence \\
+\midrule
+\endhead
+SCI-RTC & v0.1/r0.9 frozen authority; owner-approved sanitized RTC boundary &
+Representative source, origin, causes, support, influence precision,
+response/uncertainty availability, lifecycle & Changed origin semantics
+requires a new binding and independent-exposure compatibility review. \\
+SCI-CAL & v0.1/r0.3 architecture-frozen rationale; scientific authority not
+frozen; owner-approved sanitized CAL boundary & Factor/domain, detector join,
+atmosphere role, response, uncertainty, availability meanings & Conditional
+input; unresolved change leaves dependent profile unavailable. \\
+SCI-PTC & v0.1/r0.4 frozen authority as recorded by the program index;
+owner-approved sanitized PTC boundary & Distinct basis/loading fit,
+application, output, coefficient/QC, response, population, and stage roles &
+Package-qualified policies remain unbound until exact owner records are
+registered; revision creates a new binding. \\
+SCI-MAP & v0.1/r0.3 house rationale; scientific authority not frozen;
+accepted F010/ADR boundary & Upstream admission remains distinct from
+projection, contribution, supports, response/covariance, coaddition, and final
+validity & Boundary is admitted; exact MAP profile is unavailable and is not
+invented by VAL. \\
+ALIGN/\allowbreak AST/\allowbreak TEL & Owner-approved sanitized boundary; no standalone frozen
+package/version supplied & Time, coordinate, association, origin,
+synthesis/recomputation, binding, frame, local validity roles & Meaning-only
+dependency until a versioned owning source is supplied. \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+Source identity/version or digest is part of profile and replay identity. A
+new source never silently substitutes for the recorded source.
+
+\subsection{Decision record and structural gate}
+
+One immutable evaluation record $\mathsf V_k$ binds:
+\begin{enumerate}
+  \item $\boldsymbol\iota$, $\mathsf F_k$, exact parent and product role;
+  \item complete $\rho$, policy lineage, source bindings, and registry state;
+  \item all four axes, with no eligibility assertion where
+        $E=\varnothing_E$;
+  \item every required fact and its knowledge/applicability state;
+  \item every material direct cause and inherited influence;
+  \item every false, unresolved, conflict, exception, unavailable, and
+        policy-invalid reason;
+  \item response/uncertainty availability and producer-local supports
+        consumed without reinterpretation;
+  \item decision stage, object type, applicability domain, action scope,
+        aggregate profile and exact atomic-source-profile binding where
+        applicable, aggregation interchange, and realization/failure reason;
+        and
+  \item identities for fact set, decision, consumer action, propagated
+        aggregate if any, and successor generation.
+\end{enumerate}
+The record is always read as ``eligible/ineligible under registered profile
+$\rho$ for use $U_\rho$, evaluated with SCI-VAL Core.'' An unqualified
+\emph{valid} or \emph{eligible} token is scientifically incomplete.
+
+Before evaluating a use predicate, VAL checks identity, stable joins,
+parentage, fact-set immutability, registry identity/digest, actual policy owner
+and source, use, profile version, applicability authority, producer authority,
+scope, compatibility, exceptions, and internal consistency of referenced
+supports and influence. This gate establishes the scientific question; it
+does not decide consumer science. Missing, conflicting, ambiguous,
+out-of-domain, unbound, or policy-invalid material yields applicability
+unknown and a realized \texttt{decision\_unavailable} record when possible.
+The check precedes consumer scientific-state mutation.
+
+After that structural domain is established, a non-gating conflict is not a
+structural failure. It remains preserved as unresolved evidence: an unrelated
+known decisive exclusion still establishes \texttt{ineligible}; with no such
+exclusion, a required conflict gives \texttt{decision\_unavailable}. A
+conflict about an exception never supplies permission and cannot neutralize
+the underlying restriction.
+
+\subsection{Downstream authority remains downstream}
+
+MAP owns geometric incidence, estimator contribution, retained exposure,
+normalization support, science-policy support, response, covariance,
+coaddition, companion identity, and final raw map validity. A registered
+MAP-owned \texttt{map\_upstream\_admission} profile may be evaluated by VAL,
+but success is necessary and not sufficient for MAP contribution, supported
+output, or final validity. No exact MAP-owned profile is registered by this
+v0.1 package. NOI, FLT, BEAM, SRC/MODE, FRUIT, PTC, and other consumers retain
+their estimator, response, recurrence, and output authority. A finite or
+locally valid descendant cannot promote an invalid or unavailable parent.
