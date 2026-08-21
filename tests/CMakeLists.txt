@@ -167,6 +167,26 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     )
 endif()
 
+add_executable(citlali_jinc_parallel_ownership_test EXCLUDE_FROM_ALL
+    test_jinc_parallel_ownership.cpp
+)
+set_target_properties(citlali_jinc_parallel_ownership_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+target_link_libraries(citlali_jinc_parallel_ownership_test
+    PRIVATE
+        citlali::citlali
+        GTest::gtest_main
+)
+add_dependencies(check citlali_jinc_parallel_ownership_test)
+gtest_discover_tests(
+    citlali_jinc_parallel_ownership_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        TEST_PREFIX "citlali::jinc_parallel_ownership::"
+        DISCOVERY_MODE PRE_TEST
+)
+
 add_executable(citlali_safety_test EXCLUDE_FROM_ALL)
 set_target_properties(citlali_safety_test
     PROPERTIES

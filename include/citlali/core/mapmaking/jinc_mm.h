@@ -861,10 +861,6 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
     if (run_noise) {
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
     }
-    if (run_omb) {
-        omb.ensure_contribution_diag(static_cast<Eigen::Index>(omb.signal.size()));
-    }
-
     auto fail_validation = [&](const std::string &stage, const std::string &message) -> void {
         std::ostringstream oss;
         oss << "populate_maps_jinc_parallel " << stage << ": " << message;
@@ -880,42 +876,148 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
     auto validate_global_preflight = [&]() {
         if (run_omb) {
             if (omb.signal.empty()) {
-                fail_validation("preflight", "run_omb=true but omb.signal is empty");
+                fail_validation("ownership-preflight", "run_omb=true but omb.signal is empty");
             }
             if (omb.weight.size() != omb.signal.size()) {
                 std::ostringstream oss;
                 oss << "omb.weight.size()=" << omb.weight.size()
                     << " does not match omb.signal.size()=" << omb.signal.size();
-                fail_validation("preflight", oss.str());
+                fail_validation("ownership-preflight", oss.str());
             }
             if (omb.grid_weight.size() != omb.signal.size()) {
                 std::ostringstream oss;
                 oss << "omb.grid_weight.size()=" << omb.grid_weight.size()
                     << " does not match omb.signal.size()=" << omb.signal.size();
-                fail_validation("preflight", oss.str());
+                fail_validation("ownership-preflight", oss.str());
             }
             if (!omb.jinc_products.initialized ||
                 omb.jinc_products.denominator_sum_abs.size() != omb.signal.size() ||
                 omb.jinc_products.contributor_count.size() != omb.signal.size()) {
                 fail_validation(
-                    "preflight",
+                    "ownership-preflight",
                     "JINC conditioning plane inventory does not match signal maps");
             }
             if (run_coverage && omb.coverage.size() != omb.signal.size()) {
                 std::ostringstream oss;
                 oss << "omb.coverage.size()=" << omb.coverage.size()
                     << " does not match omb.signal.size()=" << omb.signal.size();
-                fail_validation("preflight", oss.str());
+                fail_validation("ownership-preflight", oss.str());
             }
             if (run_kernel && omb.kernel.size() != omb.signal.size()) {
                 std::ostringstream oss;
                 oss << "omb.kernel.size()=" << omb.kernel.size()
                     << " does not match omb.signal.size()=" << omb.signal.size();
-                fail_validation("preflight", oss.str());
+                fail_validation("ownership-preflight", oss.str());
             }
         }
         if (run_noise && nmb == nullptr) {
-            fail_validation("preflight", "run_noise=true but no noise map buffer is available");
+            fail_validation("ownership-preflight", "run_noise=true but no noise map buffer is available");
+        }
+    };
+
+    auto validate_matrix_destination = [&](const char *name,
+                                           const auto &planes,
+                                           Eigen::Index map_index) {
+        if (map_index < 0 ||
+            map_index >= static_cast<Eigen::Index>(planes.size())) {
+            std::ostringstream oss;
+            oss << "map_index=" << map_index << " is outside " << name
+                << " [0, " << static_cast<Eigen::Index>(planes.size()) - 1
+                << "]";
+            fail_validation("ownership-preflight", oss.str());
+        }
+        const auto &plane = planes[static_cast<std::size_t>(map_index)];
+        if (plane.rows() != omb.n_rows || plane.cols() != omb.n_cols) {
+            std::ostringstream oss;
+            oss << name << "[" << map_index << "] has dims "
+                << matrix_dims(plane) << "; expected " << omb.n_rows << "x"
+                << omb.n_cols;
+            fail_validation("ownership-preflight", oss.str());
+        }
+    };
+
+    auto validate_noise_destination = [&](Eigen::Index map_index,
+                                          Eigen::Index det_index) {
+        if (nmb == nullptr || map_index < 0 ||
+            map_index >= static_cast<Eigen::Index>(nmb->noise.size())) {
+            std::ostringstream oss;
+            oss << "det_col=" << det_index << " map_index=" << map_index
+                << " is outside "
+                << (nmb == &cmb ? "cmb.noise" : "omb.noise") << " [0, "
+                << (nmb == nullptr
+                        ? -1
+                        : static_cast<Eigen::Index>(nmb->noise.size()) - 1)
+                << "]";
+            fail_validation("ownership-preflight", oss.str());
+        }
+        const auto &noise = nmb->noise[static_cast<std::size_t>(map_index)];
+        if (noise.dimension(0) != nmb->n_rows ||
+            noise.dimension(1) != nmb->n_cols ||
+            noise.dimension(2) != nmb->n_noise) {
+            std::ostringstream oss;
+            oss << (nmb == &cmb ? "cmb.noise" : "omb.noise") << "["
+                << map_index << "] has dims " << noise.dimension(0) << "x"
+                << noise.dimension(1) << "x" << noise.dimension(2)
+                << "; expected " << nmb->n_rows << "x" << nmb->n_cols
+                << "x" << nmb->n_noise;
+            fail_validation("ownership-preflight", oss.str());
+        }
+    };
+
+    auto validate_ownership_preflight = [&]() {
+        if (map_indices.size() != n_dets) {
+            std::ostringstream oss;
+            oss << "map_indices.size()=" << map_indices.size()
+                << " does not match n_dets=" << n_dets;
+            fail_validation("ownership-preflight", oss.str());
+        }
+
+        std::vector<Eigen::Index> owners(omb.signal.size(), -1);
+        for (Eigen::Index det_index = 0; det_index < n_dets; ++det_index) {
+            const Eigen::Index map_index = map_indices(det_index);
+            if (map_index < 0 ||
+                map_index >= static_cast<Eigen::Index>(omb.signal.size())) {
+                std::ostringstream oss;
+                oss << "det_col=" << det_index << " map_index=" << map_index
+                    << " is outside omb.signal [0, "
+                    << static_cast<Eigen::Index>(omb.signal.size()) - 1 << "]";
+                fail_validation("ownership-preflight", oss.str());
+            }
+
+            validate_matrix_destination("omb.signal", omb.signal, map_index);
+            if (run_omb) {
+                validate_matrix_destination("omb.weight", omb.weight,
+                                            map_index);
+                validate_matrix_destination("omb.grid_weight", omb.grid_weight,
+                                            map_index);
+                validate_matrix_destination(
+                    "omb.jinc_products.denominator_sum_abs",
+                    omb.jinc_products.denominator_sum_abs, map_index);
+                validate_matrix_destination(
+                    "omb.jinc_products.contributor_count",
+                    omb.jinc_products.contributor_count, map_index);
+                if (run_coverage) {
+                    validate_matrix_destination("omb.coverage", omb.coverage,
+                                                map_index);
+                }
+                if (run_kernel) {
+                    validate_matrix_destination("omb.kernel", omb.kernel,
+                                                map_index);
+                }
+            }
+            if (run_noise) {
+                validate_noise_destination(map_index, det_index);
+            }
+
+            auto &owner = owners[static_cast<std::size_t>(map_index)];
+            if (owner >= 0) {
+                std::ostringstream oss;
+                oss << "duplicate map_index=" << map_index
+                    << " for det_col=" << det_index
+                    << "; first owned by det_col=" << owner;
+                fail_validation("ownership-preflight", oss.str());
+            }
+            owner = det_index;
         }
     };
 
@@ -1024,6 +1126,11 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
     };
 
     validate_global_preflight();
+    validate_ownership_preflight();
+
+    if (run_omb) {
+        omb.ensure_contribution_diag(static_cast<Eigen::Index>(omb.signal.size()));
+    }
 
     // placeholder vectors of size ndet for grppi maps
     std::vector<int> map_in_vec, map_out_vec;

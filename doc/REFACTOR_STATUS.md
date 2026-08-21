@@ -1,5 +1,37 @@
 # Citlali Refactor Status
 
+## 2026-08-21 JINC Parallel Ownership Reconstruction
+
+The independently accepted SCI-MAP-002 ownership contract has been
+reconstructed on the current convergence line without replaying historical
+`jinc_mm.h`. The implementation rejects map-index cardinality mismatches,
+invalid or duplicate detector ownership, and incompatible signal, coefficient,
+conditioning, coverage, kernel, or noise destinations before contribution
+diagnostic allocation, destination mutation, output side effects, or the
+parallel launch. The reconstruction adapts the old contract to today's JINC
+state by including the absolute-denominator and contributor-count destinations
+introduced after the original repair.
+
+The established worker suffix beginning at `grppi::map` is byte-identical to
+parent `c67f12120ca29f0c2d603fd551146635ef7b3782` (SHA-256
+`5d3030566e7616139c73061f8f7556078a4e2e5b9be504577fc2fa6466309ccf`).
+The focused six-case suite passes at 1, 2, 4, and 8 OpenMP threads; all 28
+focused current-JINC tests pass; the CLI builds; all 732 runnable CTests pass
+with the one established disabled exact-product-sequence test not run; all 203
+baseline-tool tests pass; the 127-test required config preflight passes all
+four mode kits, 8/8 compact-compatibility cases with zero skips, 100% compact
+surface coverage, and every authority audit; and the 60-record validation and
+three-change/five-integration-commit science-change ledgers validate.
+
+No Unity rerun is required for this contract-only reconstruction. The accepted
+`redu04` run used detector-grouped JINC mapmaking, the admitted domain is the
+already governed unique per-detector ownership path, and neither worker
+arithmetic nor valid-path output changed. The accepted targeted Unity result at
+`e77460cff` therefore remains the science authority beneath this fail-closed
+hardening. General JINC promotion remains bounded by the four deliberately
+unavailable large FITS products. See the
+[reconstruction record](../handoff/JINC_PARALLEL_OWNERSHIP_RECONSTRUCTION_2026-08-21.md).
+
 ## 2026-08-21 APT / ALIGN / JINC Convergence Audit
 
 The exact Unity-tested JINC implementation
@@ -26,13 +58,16 @@ That merge contains compact APT v2 plus SCI-ALIGN native-cohort foundation
 patches are based on the superseded canonical APT v1 lineage and have no
 independent exact-SHA acceptance record, so they must be reconstructed against
 compact v2 rather than cherry-picked. Independently re-audited JINC ownership
-repair `e6c8d1261` is the first proposed clean reconstruction; it is not yet
-integrated. PTC metadata repairs `7fc59344c` and `5c6309125` remain a separate
-conditional lane, with the latter's fresh-root Unity replay still pending.
+repair `e6c8d1261` has now been cleanly reconstructed and locally validated on
+the convergence line. PTC metadata repairs `7fc59344c` and `5c6309125` remain
+a separate conditional lane, with the latter's fresh-root Unity replay still
+pending.
 
-This audit changes no application code, production status, remote ref, or
-general JINC/ALIGN/APT acceptance. Application integration remains blocked on
-exact reconstructed candidates, affected gates, and owner-controlled push.
+The frozen audit itself changed no application code, production status, remote
+ref, or general JINC/ALIGN/APT acceptance. Its first proposed reconstruction
+has since passed the governed local gates above; broader application
+integration remains blocked on the compact-v2 native-consumer reconstruction,
+its independent review, and owner-controlled push.
 
 ## 2026-08-21 JINC Working-Support Incident Repair — Targeted Unity Validation Passed
 
