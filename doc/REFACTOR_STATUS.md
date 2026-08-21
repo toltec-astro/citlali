@@ -1,6 +1,6 @@
 # Citlali Refactor Status
 
-## 2026-08-21 JINC Working-Support Incident Repair Candidate
+## 2026-08-21 JINC Working-Support Incident Repair — Targeted Unity Validation Passed
 
 The owner-provided Unity validation Beammap for observation 148670 completed
 under JINC after the inactive-notch provenance fix but failed scientific
@@ -40,12 +40,35 @@ classified in the raw-execution census: 48 records, digest
 `efd347b41857542b770de90c9c383a254fbb5a4890988f3b1da43f27de4bcf9f`, zero
 review-required entries, and no drift.
 
-This is a local repair candidate, not accepted JINC science evidence. A Unity
-rerun of the same observation and merged configuration must restore historical
-detector yield, map RMS, signal-to-noise rejection, empirical-template
-construction, and bounded kernel peaks before promotion. No push, Unity
-access, production authorization, or unrelated JINC numerical broadening is
-performed or implied.
+The owner-run Unity rerun `redu04` passed that targeted incident gate with
+Citlali `v4.0.0-3657-ge77460cf`, KIDs `04088da`, and Tula `f30f81d`. Its
+requested and merged configuration hashes are byte-identical to failed JINC
+run `redu03` (`d81ac8b1...` and `5035d010...`, respectively). The repaired run
+retained 4,973 good detectors, rejected 181 for signal-to-noise, had median map
+RMS `1.036e-7`, built all three empirical templates from 500 detectors each,
+used template calibration for 5,133 of 5,234 detectors, found 494 reference
+candidates, and bounded the final kernel peak at `7.798`. The failed run had
+462 good detectors, 4,754 signal-to-noise rejections, median map RMS
+`4.124e-6`, no empirical templates, 51 reference candidates, and final kernel
+peak `1.403e4`. The healthy naive comparison retained 4,829 detectors with
+median map RMS `1.800e-7`; the repaired detector yield also exactly restores
+the older controlled JINC result's 4,973 detectors. The `redu04` log contains
+zero error- or critical-level records and completes normally. Working-support
+downgrades were active on 7,810,611, 9,901,143, and 9,859,003 pixels in the
+three iterations, directly connecting the repaired behavior to the intended
+support-floor mechanism.
+
+This is accepted targeted Unity evidence that the JINC working-support defect
+is repaired for observation 148670. It is not yet a complete validation-ledger
+product snapshot: the local retrieval intentionally omits four indexed large
+FITS products (all three good-detector cubes and the a1100 bad-detector cube),
+so strict full-product comparison and general JINC promotion remain pending.
+The retained small products, log, configuration snapshots, provenance, fit-QC
+table, and compact APT v2 bundle are sufficient for the incident verdict and
+are inventoried in
+`handoff/JINC_WORKING_SUPPORT_UNITY_VALIDATION_2026-08-21.md`. No push,
+production authorization, or unrelated JINC numerical broadening is performed
+or implied.
 
 ## 2026-08-19 OWNER PRIORITY: APT-PROD-003 compact v2
 
