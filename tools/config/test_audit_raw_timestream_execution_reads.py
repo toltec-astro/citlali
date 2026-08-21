@@ -39,6 +39,9 @@ class RawTimestreamExecutionReadAuditTest(unittest.TestCase):
             audit.classify_access("run_extinction"), "raw_policy_read"
         )
         self.assertEqual(
+            audit.classify_access("run_tod_notch"), "raw_policy_read"
+        )
+        self.assertEqual(
             audit.classify_access("append_to_netcdf"),
             "executor_operation",
         )

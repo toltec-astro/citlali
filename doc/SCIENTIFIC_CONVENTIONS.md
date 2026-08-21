@@ -469,6 +469,13 @@ formal support; it is neither geometric exposure, a hit count, nor validity.
 projected through JINC, `K/C`, not an analytic unfiltered JINC or measured
 beam.
 
+The JINC empirical downgrade evaluates the normalization-support rule on the
+finalized formal `C^2/Q` coefficient plane. Before any working map is consumed,
+the persisted support mask and the coupled signal, coefficient, coverage,
+kernel, and noise planes are cleared wherever that rule rejects a formally
+conditioned pixel. This downgrade does not alter the signed estimator,
+conditioning decision, or any retained well-conditioned pixel.
+
 One compact atomic forward-only record is persisted per coherent observation
 or declared processing segment. It preserves requested, effective, resolved,
 and realized JINC identity, summation/conditioning policy, contributor and

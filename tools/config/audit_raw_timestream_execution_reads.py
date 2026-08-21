@@ -26,9 +26,9 @@ EXCLUDED_FILES = {
     "include/citlali/core/pipeline/timestream_config_adapter_raw_flagging.h",
     "include/citlali/core/pipeline/timestream_config_adapter_raw_line_audit.h",
 }
-EXPECTED_RECORD_COUNT = 47
+EXPECTED_RECORD_COUNT = 48
 EXPECTED_RECORD_SHA256 = (
-    "37bbb9c4a1a7ed78e3d79571a4cd6e0e745af2520eddb24f54ca191d52d4d1bf"
+    "efd347b41857542b770de90c9c383a254fbb5a4890988f3b1da43f27de4bcf9f"
 )
 
 EXECUTOR_OPERATIONS = {
@@ -79,7 +79,12 @@ OUTPUT_OR_REALIZED_STATE = {
     "line_audit",
     "remove_bad_dets_window_sec",
 }
-RAW_POLICY_READS = {"run_downsample", "run_extinction", "run_kernel"}
+RAW_POLICY_READS = {
+    "run_downsample",
+    "run_extinction",
+    "run_kernel",
+    "run_tod_notch",
+}
 
 
 def strip_non_code(text: str) -> str:

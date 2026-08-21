@@ -124,7 +124,6 @@ void normalize_jinc_maps(
         diag.map_index = static_cast<Eigen::Index>(slot);
         diag.n_total = rows * cols;
         diag.use_grid_weight = true;
-        diag.support_weight_threshold = 0.0;
         auto &formal_mask = products.formal_support[slot];
         formal_mask.setZero();
         auto &map_summary = summary.map_summaries[slot];
@@ -192,8 +191,6 @@ void normalize_jinc_maps(
                         }
                     }
                     formal_mask(row, col) = 1;
-                    ++map_summary.formally_supported_pixel_count;
-                    ++diag.n_retained;
                 }
                 else {
                     buffer.signal[slot](row, col) = 0.0;
@@ -208,7 +205,6 @@ void normalize_jinc_maps(
                             buffer.noise[slot](row, col, realization) = 0.0;
                         }
                     }
-                    ++diag.n_masked;
                     if (!result.accumulators_finite || !companions_finite) {
                         ++map_summary.nonfinite_accumulator_pixel_count;
                     }
@@ -220,6 +216,52 @@ void normalize_jinc_maps(
                     }
                     else if (!result.numerically_resolved) {
                         ++map_summary.unresolved_cancellation_pixel_count;
+                    }
+                }
+            }
+        }
+
+        // Formal conditioning deliberately uses only the dimensionless
+        // cancellation-resolution contract.  The map consumed by later
+        // stages still requires the historical empirical working-support
+        // downgrade so resolved but near-cancelled denominators do not admit
+        // unbounded N/C and K/C values.  Select the threshold from the
+        // finalized formal C^2/Q plane, then apply it only as a downgrade of
+        // formal support.
+        const auto working_selection =
+            engine_utils::find_weight_threshold_selection(
+                buffer.weight[slot], buffer.cov_cut / 10.0);
+        diag.support_weight_threshold = working_selection.threshold;
+        for (Eigen::Index row = 0; row < rows; ++row) {
+            for (Eigen::Index col = 0; col < cols; ++col) {
+                const bool formally_supported = formal_mask(row, col) != 0;
+                const double formal_weight = buffer.weight[slot](row, col);
+                const bool empirical_admission =
+                    std::isfinite(formal_weight) && formal_weight > 0.0 &&
+                    formal_weight >= working_selection.threshold;
+                const bool working_supported = jinc_empirical_support(
+                    formally_supported, empirical_admission);
+                if (working_supported) {
+                    ++map_summary.formally_supported_pixel_count;
+                    ++diag.n_retained;
+                    continue;
+                }
+
+                ++diag.n_masked;
+                if (formally_supported) {
+                    ++diag.n_masked_by_support_threshold;
+                }
+                formal_mask(row, col) = 0;
+                buffer.signal[slot](row, col) = 0.0;
+                buffer.weight[slot](row, col) = 0.0;
+                buffer.coverage[slot](row, col) = 0.0;
+                if (!buffer.kernel.empty()) {
+                    buffer.kernel[slot](row, col) = 0.0;
+                }
+                if (!buffer.noise.empty()) {
+                    for (Eigen::Index realization = 0;
+                         realization < buffer.n_noise; ++realization) {
+                        buffer.noise[slot](row, col, realization) = 0.0;
                     }
                 }
             }

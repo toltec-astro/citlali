@@ -328,6 +328,90 @@ TEST(jinc_map_contract, finalization_owns_formal_support_coverage_and_kernel) {
 }
 
 TEST(jinc_map_contract,
+     production_working_support_rejects_resolved_near_cancellation) {
+    mapmaking::MapBuffer buffer{"omb"};
+    buffer.n_rows = 1;
+    buffer.n_cols = 8;
+    buffer.n_noise = 1;
+    buffer.cov_cut = 0.1;
+    buffer.signal = {Eigen::MatrixXd::Constant(1, 8, 2.0)};
+    buffer.grid_weight = {Eigen::MatrixXd::Ones(1, 8)};
+    buffer.weight = {Eigen::MatrixXd::Ones(1, 8)};
+    buffer.coverage = {Eigen::MatrixXd::Constant(1, 8, 3.0)};
+    buffer.kernel = {Eigen::MatrixXd::Constant(1, 8, 4.0)};
+    buffer.noise = {Eigen::Tensor<double, 3>(1, 8, 1)};
+    buffer.noise[0].setConstant(5.0);
+    buffer.jinc_products.allocate(1, 1, 8);
+    buffer.jinc_products.denominator_sum_abs[0].setOnes();
+    buffer.jinc_products.contributor_count[0].setConstant(100);
+
+    // This pixel passes the formal 2*gamma_n resolution rule but has a tiny
+    // formal C^2/Q coefficient and would otherwise realize signal=1e10,
+    // kernel=4e10, and noise=5e10 in the working map.
+    buffer.signal[0](0, 0) = 1.0;
+    buffer.grid_weight[0](0, 0) = 1e-10;
+    const auto near_cancelled = mapmaking::finalize_jinc_accumulators(
+        1.0, 1e-10, 1.0, 1.0, 100);
+    ASSERT_TRUE(near_cancelled.formal_support);
+    ASSERT_DOUBLE_EQ(near_cancelled.formal_weight, 1e-20);
+
+    buffer.normalize_maps();
+
+    EXPECT_EQ(buffer.jinc_products.formal_support[0](0, 0), 0);
+    EXPECT_DOUBLE_EQ(buffer.signal[0](0, 0), 0.0);
+    EXPECT_DOUBLE_EQ(buffer.weight[0](0, 0), 0.0);
+    EXPECT_DOUBLE_EQ(buffer.coverage[0](0, 0), 0.0);
+    EXPECT_DOUBLE_EQ(buffer.kernel[0](0, 0), 0.0);
+    EXPECT_DOUBLE_EQ(buffer.noise[0](0, 0, 0), 0.0);
+
+    for (Eigen::Index col = 1; col < 8; ++col) {
+        EXPECT_EQ(buffer.jinc_products.formal_support[0](0, col), 1);
+        EXPECT_DOUBLE_EQ(buffer.signal[0](0, col), 2.0);
+        EXPECT_DOUBLE_EQ(buffer.weight[0](0, col), 1.0);
+        EXPECT_DOUBLE_EQ(buffer.coverage[0](0, col), 3.0);
+        EXPECT_DOUBLE_EQ(buffer.kernel[0](0, col), 4.0);
+        EXPECT_DOUBLE_EQ(buffer.noise[0](0, col, 0), 5.0);
+    }
+
+    ASSERT_EQ(buffer.normalize_support_diag.size(), 1U);
+    const auto &diag = buffer.normalize_support_diag[0];
+    EXPECT_DOUBLE_EQ(diag.support_weight_threshold, 0.01);
+    EXPECT_EQ(diag.n_retained, 7);
+    EXPECT_EQ(diag.n_masked, 1);
+    EXPECT_EQ(diag.n_masked_by_support_threshold, 1);
+    EXPECT_EQ(
+        buffer.jinc_products.provenance.realized
+            .formally_supported_pixel_count,
+        7U);
+}
+
+TEST(jinc_map_contract,
+     zero_working_support_cut_preserves_every_formally_supported_pixel) {
+    mapmaking::MapBuffer buffer{"omb"};
+    buffer.n_rows = 1;
+    buffer.n_cols = 2;
+    buffer.cov_cut = 0.0;
+    buffer.signal = {Eigen::MatrixXd::Constant(1, 2, 1.0)};
+    buffer.grid_weight = {Eigen::MatrixXd::Ones(1, 2)};
+    buffer.weight = {Eigen::MatrixXd::Ones(1, 2)};
+    buffer.coverage = {Eigen::MatrixXd::Ones(1, 2)};
+    buffer.jinc_products.allocate(1, 1, 2);
+    buffer.jinc_products.denominator_sum_abs[0].setOnes();
+    buffer.jinc_products.contributor_count[0].setOnes();
+    buffer.grid_weight[0](0, 0) = 1e-10;
+
+    buffer.normalize_maps();
+
+    EXPECT_EQ(buffer.jinc_products.formal_support[0].sum(), 2U);
+    EXPECT_DOUBLE_EQ(buffer.signal[0](0, 0), 1e10);
+    EXPECT_DOUBLE_EQ(buffer.weight[0](0, 0), 1e-20);
+    EXPECT_DOUBLE_EQ(
+        buffer.normalize_support_diag[0].support_weight_threshold, 0.0);
+    EXPECT_EQ(
+        buffer.normalize_support_diag[0].n_masked_by_support_threshold, 0);
+}
+
+TEST(jinc_map_contract,
      beammap_reset_clears_atomic_jinc_iteration_state_for_active_subset) {
     mapmaking::MapBuffer buffer{"omb"};
     buffer.n_rows = 1;

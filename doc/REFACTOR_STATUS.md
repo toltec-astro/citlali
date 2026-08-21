@@ -1,5 +1,52 @@
 # Citlali Refactor Status
 
+## 2026-08-21 JINC Working-Support Incident Repair Candidate
+
+The owner-provided Unity validation Beammap for observation 148670 completed
+under JINC after the inactive-notch provenance fix but failed scientific
+validation. The controlled comparison held the observation and merged
+configuration fixed: current naive reduction `redu02` retained 4,829 good
+detectors and had median map RMS `1.80e-7`, while current JINC reduction
+`redu03` retained 462 good detectors, rejected 4,754 for signal-to-noise, and
+had median map RMS `4.12e-6`. The byte-identical older JINC configuration at
+`cfae989c` retained 4,973 good detectors. This exact application snapshot is
+therefore rejected for JINC scientific use but remains diagnostic evidence.
+
+The bounded incident repair is prepared on
+`codex/repair-jinc-working-support` from exact failed application base
+`a71fce4198769a88c6c0c85fc035ec3496ccbe03` plus the retained inactive-notch
+hotfix `5ef2d011660d7d7d3e17e4a30874003f713746b5`. It leaves JINC accumulation,
+signed `N/C`, formal `C^2/Q`, dimensionless cancellation conditioning, cache
+geometry, phase sampling, and the ordinary mapmaking path unchanged. After
+formal finalization it now applies the already governed `coverage_cut / 10`
+normalization-support rule to the formal coefficient plane as a downgrade
+only, atomically clearing rejected signal, coefficient, coverage, kernel,
+noise, and persisted support pixels. A zero cut retains all formally supported
+pixels. `MapBuffer::cov_cut` also receives a deterministic zero default for
+directly constructed test and library buffers; configured reductions continue
+to supply their requested value.
+
+The focused production regression proves that a denominator which passes the
+formal `2*gamma_n` resolution rule but would realize `1e10`-scale working-map
+values is rejected by the empirical support floor, while seven ordinary pixels
+remain exactly unchanged. All 22 focused JINC contract tests pass. The CLI and
+all separate test targets build; 726/726 enabled CTests pass with the one
+pre-existing disabled exact-product-sequence test not run. The complete
+baseline-tool suite passes 203 tests plus 137 subtests. The required config
+preflight passes 127 tests, all four mode kits, 8/8 compact-compatibility cases
+with zero skips, 100% compact-surface coverage, and every authority audit. The
+inactive-notch hotfix's new `run_tod_notch` shadow comparison is now explicitly
+classified in the raw-execution census: 48 records, digest
+`efd347b41857542b770de90c9c383a254fbb5a4890988f3b1da43f27de4bcf9f`, zero
+review-required entries, and no drift.
+
+This is a local repair candidate, not accepted JINC science evidence. A Unity
+rerun of the same observation and merged configuration must restore historical
+detector yield, map RMS, signal-to-noise rejection, empirical-template
+construction, and bounded kernel peaks before promotion. No push, Unity
+access, production authorization, or unrelated JINC numerical broadening is
+performed or implied.
+
 ## 2026-08-19 OWNER PRIORITY: APT-PROD-003 compact v2
 
 APT-PROD-001/002 v1 histories remain immutable evidence, but new v1 issuance

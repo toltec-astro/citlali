@@ -160,7 +160,7 @@ public:
     bool randomize_dets;
 
     // coverage cut
-    double cov_cut;
+    double cov_cut = 0.0;
 
     // smoothing window for psd
     int smooth_window = 10;
