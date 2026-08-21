@@ -1,5 +1,39 @@
 # Citlali Refactor Status
 
+## 2026-08-21 APT / ALIGN / JINC Convergence Audit
+
+The exact Unity-tested JINC implementation
+`e77460cffad49387795009539d6abc7e370e8b58` is now the application authority
+for the targeted working-support incident repair. Local convergence branch
+`codex/converge-apt-align-jinc` starts at that tested commit and carries the
+documentation-only `redu04` validation record at parent
+`91f42ccdc8ce9a4e6811f2f03857180d50d21345`. The tested tree is byte-identical
+to local repair tree `59a142b334a4d7882f85f031ba090cdd74171839`;
+the local cherry-pick history remains an equivalence backup and is not another
+replay source.
+
+The frozen [convergence audit](../handoff/APT_ALIGN_JINC_CONVERGENCE_AUDIT_2026-08-21.md)
+accounts for all 76 commits on the historical SCI-ALIGN Lissajous line plus
+the relevant side branches. None of the 76 commits is eligible for direct
+application replay: ten touch application sources but remain an unaccepted
+old-base repair, diagnostic-only mapmaking/configuration, or incomplete PTC
+product repair; the other 66 are diagnostic tooling, generated evidence,
+campaign/transport mechanics, or an unrelated handoff.
+
+The audit also corrects the ancestry implied by merge subject `a71fce419`.
+That merge contains compact APT v2 plus SCI-ALIGN native-cohort foundation
+`c87d5693d`, but not consumer commits `fd3627fc7` and `9d9d55a54`. Those
+patches are based on the superseded canonical APT v1 lineage and have no
+independent exact-SHA acceptance record, so they must be reconstructed against
+compact v2 rather than cherry-picked. Independently re-audited JINC ownership
+repair `e6c8d1261` is the first proposed clean reconstruction; it is not yet
+integrated. PTC metadata repairs `7fc59344c` and `5c6309125` remain a separate
+conditional lane, with the latter's fresh-root Unity replay still pending.
+
+This audit changes no application code, production status, remote ref, or
+general JINC/ALIGN/APT acceptance. Application integration remains blocked on
+exact reconstructed candidates, affected gates, and owner-controlled push.
+
 ## 2026-08-21 JINC Working-Support Incident Repair — Targeted Unity Validation Passed
 
 The owner-provided Unity validation Beammap for observation 148670 completed
