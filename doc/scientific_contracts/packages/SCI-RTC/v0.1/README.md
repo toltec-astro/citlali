@@ -1,8 +1,8 @@
 # SCI-RTC — Raw-Timestream Conditioning And Temporal Response
 
-Status: Candidate v0.1/r0.10 formally reopened from the unchanged frozen r0.9
-scientific authority; owner review pending. Implementation conformity not
-assessed under this contract.
+Status: Candidate v0.1/r0.11 scientific-authority revision from the sealed
+v0.1/r0.10 comparison baseline; owner review pending. Implementation
+conformity not assessed under this contract.
 
 Version: `v0.1`
 
@@ -38,12 +38,17 @@ inputs.
   consistency-reviewed.
 - Scientific-owner freeze: complete for v0.1/r0.9 on `2026-08-20`.
 - Bounded conditioned-$r$ reopening: owner-authorized on `2026-08-21`; the six
-  decisions are incorporated in candidate v0.1/r0.10 without changing r0.9
-  conditioned-$x$ numerical behavior or any unrelated owner-ledger state.
+  decisions were incorporated in sealed comparison candidate v0.1/r0.10 at
+  commit `326ec554998a124202d746f435bec8180e875fa1`.
+- Canonical pair-level r0.11 revision: owner-authorized on `2026-08-21`; seven
+  decisions reopen evidence, pair-plan selection/support, the identical
+  ordinary operator, affine correction symmetry, spectral admission, and the
+  explicit $x$-only donor exception while preserving every unrelated
+  numerical owner-ledger state.
 - Implementation conformity, validation, and production promotion: not
   established.
 
-The next gate is scientific-owner review of the exact candidate r0.10 source,
+The next gate is scientific-owner review of the exact candidate r0.11 source,
 crosswalk, consistency report, and rendered PDFs. Candidate review is not an
 RTC implementation-conformity audit and cannot silently resolve PTC, SCI-VAL,
 or any unrelated open RTC policy.
@@ -152,13 +157,29 @@ or any unrelated open RTC policy.
   source, build, metadata, and all-page visual verification record
 - [`SCIENTIFIC_OWNER_CANDIDATE_R0.10.md`](SCIENTIFIC_OWNER_CANDIDATE_R0.10.md):
   exact content-bound candidate review snapshot; not an authority freeze
+- [`SCIENTIFIC_OWNER_REVISION_DIRECTIVE_R0.11.md`](SCIENTIFIC_OWNER_REVISION_DIRECTIVE_R0.11.md):
+  binding seven-decision canonical pair-level revision authority
+- [`CHANGE_ANALYSIS_R0.10_TO_R0.11.md`](CHANGE_ANALYSIS_R0.10_TO_R0.11.md):
+  clause/equation supersession and preservation map
+- [`CHANGE_LOG_R0.11.md`](CHANGE_LOG_R0.11.md): exact bounded r0.10-to-r0.11
+  candidate changes
+- [`RATIONALE_TO_CONTRACT_CROSSWALK_R0.11.md`](RATIONALE_TO_CONTRACT_CROSSWALK_R0.11.md):
+  seven-decision rationale-to-authority routing
+- [`CROSS_PACKAGE_FOLLOWUP_R0.11.md`](CROSS_PACKAGE_FOLLOWUP_R0.11.md):
+  bounded PTC, SCI-VAL, and CAL handoff questions
+- [`CONSISTENCY_REPORT_R0.11.md`](CONSISTENCY_REPORT_R0.11.md):
+  implementation-blind source, structure, and PDF verification record
+- [`PDF_VISUAL_QA_AND_SOURCE_IDENTITY_R0.11.md`](PDF_VISUAL_QA_AND_SOURCE_IDENTITY_R0.11.md):
+  exact PDF metadata, text identity, and all-page visual-QA record
+- [`SCIENTIFIC_OWNER_CANDIDATE_R0.11.md`](SCIENTIFIC_OWNER_CANDIDATE_R0.11.md):
+  exact content-bound r0.11 candidate snapshot; not an authority freeze
 - [`DECISION_LOG.md`](DECISION_LOG.md): package-selection and approved scope
   decisions
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md):
-  63 open, one conditional, 20 resolved, and five deferred decisions
+  63 open, one conditional, 27 resolved, and five deferred decisions
 - [`CROSSWALK.md`](CROSSWALK.md): exact shared-core and packet traceability
 - `src/`: one six-file shared core and the two audience views
-- `pdf/`: canonical candidate r0.10 science-team rationale and complete formal
+- `pdf/`: canonical candidate r0.11 science-team rationale and complete formal
   engineering view, with page counts, hashes, and all-page inspection recorded
   after the fresh build
 
@@ -174,9 +195,12 @@ post-segmentation conditioned-$x$ donor replacement, diagnostic-only
 atmospheric-template evidence, temporal conditioning, response, support,
 influence, covariance, phase-zero sampling, and its consumer-neutral
 conditioned-$x$/optional-same-grid-conditioned-$r$/raw-$r$ atomic bundle.
-Artifact detection and affected support are pair-coherent; coordinate-specific
-correction remains diagonal, and unrepairable $r$ support is honestly invalid
-or unavailable without affecting valid conditioned $x$.
+Learn retains direct-$x$, direct-$r$, and joint evidence. Resolve unions
+owner-approved hard action support without erasing causes, and every ordinary
+canonical stage uses one identical $I_2\otimes L_\Pi$ operator. Coordinate-
+specific affine amplitudes remain independent; the existing $x$ donor is the
+explicit recovery exception and makes unreconstructed $r$ honestly
+unavailable over its full influence without affecting valid conditioned $x$.
 
 It does not derive ALIGN timing, AST coordinates, BEAM calibration factors,
 the CAL atmosphere operator, PTC correlated-mode cleaning or weights, VAL
@@ -196,11 +220,18 @@ recorded open, conditional, resolved, and deferred owner-ledger state; it does
 not invent missing decisions or make blocked claims available.
 
 On `2026-08-21`, Grant Wilson explicitly authorized a bounded reopening of the
-existing conditioned-$r$ extension point. Candidate r0.10 records six resolved
+existing conditioned-$r$ extension point. Sealed comparison candidate r0.10 records six resolved
 decisions covering role/optionality, pair-coherent artifacts, exact paired
 grid/failure isolation, coordinate-diagonal response/covariance, optical
 leakage/source protection, and downstream handoff. The frozen r0.9 baseline
-remains unchanged until this candidate receives separate owner freeze action.
+remains unchanged.
+
+Grant Wilson then authorized the r0.11 canonical pair-level revision. It
+records seven additional resolved decisions and expressly permits accepted
+$r$-origin evidence to change conditioned-$x$ selection/support through one
+pair plan while preserving zero fixed-state cross-coordinate numerical
+response. Candidate r0.11 is not frozen authority until a separate owner
+review and freeze action.
 
 Current application and production behavior retain their existing repository
 status until a later, separately authorized conformity and validation program

@@ -16,7 +16,7 @@
 \definecolor{RTCgray}{HTML}{52606D}
 \hypersetup{colorlinks=true,linkcolor=RTCblue,urlcolor=RTCblue,
   hypertexnames=false,
-  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.10},
+  pdftitle={SCI-RTC Engineering Conformance v0.1/r0.11},
   pdfauthor={SCI-RTC implementation-blind scientific author}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.48em}
@@ -49,12 +49,13 @@
 \vspace{0.65in}
 \begin{tabular}{@{}ll@{}}
 Package version & v0.1 \\
-Revision & r0.10 \\
+Revision & r0.11 \\
 Date & 2026-08-21 \\
 Authority & Shared normative core in \texttt{src/common/} \\
 View-specific content & Informative evidence and review guidance only \\
-Status & \parbox[t]{0.55\linewidth}{Scientific-authority candidate reopened
-from frozen r0.9; owner review pending. Implementation conformity not assessed.} \\
+Status & \parbox[t]{0.55\linewidth}{Scientific-authority revision candidate
+from sealed r0.10 comparison baseline; owner review pending. Implementation
+conformity not assessed.} \\
 \end{tabular}
 
 \vfill
@@ -168,6 +169,21 @@ REQ-109--114 & Conditioned-$r$ reopening decisions & Request-toggle $x$ invarian
 \end{tabularx}
 \normalsize
 
+\clearpage
+\footnotesize
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.22\linewidth}X@{}}
+\toprule
+Requirement range & Primary review surface & Useful evidence classes \\
+\midrule
+REQ-115--120 & Canonical pair identity, identical operator, and evidence semantics & Exact raw-pair identity; paired impulse/state/sampling equality; zero cross branches; retained $E_x/E_r/E_{xr}$ origin, support, uncertainty, protection, and direct/inferred causes; cause-preserving hard-union fixtures. \\
+REQ-121--125 & Protection, symmetric pair action, and immutable lifecycle & Expected-source/leakage protection cases; direct-$r$-to-inferred-$x$ and converse hard events; complete Resolve trace; Apply mutation rejection; successor-attempt identity. \\
+REQ-126--130 & Paired level shifts and spectral admission & One event/support/reset with unequal coordinate amplitudes and asymmetric correction availability; no copied amplitude; $r$-only candidate rejection; complete shared-notch admission and identical response. \\
+REQ-131--135 & Donor exception, grid, provenance, and uncertainty & No-$r$-donor rejection; full causal unavailable influence through state/filter support; exact common grid; reconstructible cause/action record; conditional versus selection/parameter/correction uncertainty and cross-block retention. \\
+REQ-136--138 & Product naming and package boundaries & Canonical-pair versus unrequested/globally-unavailable-$r$ and descendant identity; $x$-only CAL; no automatic $r\rightarrow x$ correction; unchanged producer facts across PTC/VAL consumer policies. \\
+\bottomrule
+\end{tabularx}
+\normalsize
+
 \section{Informative response and representation checks}
 \label{sec:eng-response}
 
@@ -184,15 +200,17 @@ ALIGN relation, and the admitted aligned RTC boundary.  Reject a second ALIGN
 application in the RTC-local operator; compose it only for an explicitly
 identified end-to-end response.  Exercise the existing conditioned-$x$
 operator while retaining raw-$r$ parentage and requested same-grid conditioned
-$r$.  Verify coordinate-diagonal shared stages, zero fixed-state cross
-branches, no $x$-repair branch in the $r$ response, honest local/global $r$
-unavailability, and full cross-coordinate selector and uncertainty dependence.
+$r$.  Verify identical ordinary paired stages, zero fixed-state cross
+branches, retained $r$-origin effects on pair-plan selection/support, no
+$x$-donor branch in the $r$ response, honest local/global $r$ unavailability,
+and full cross-coordinate selector and uncertainty dependence.
 Verify ordinary reset
 at level shifts and admit carry only under separate continuity authority with
 response and residual criteria.  Confirm that atmospheric templates change only
 diagnostic or declared selector state, not numerical science $x$.  Reject
 conditioned $r$ that has a separate lifecycle, mismatched grid, invented
-repair, missing response/availability facts, or any effect on valid $x$.
+repair, missing response/availability facts, numerical cross mixing, or
+corruption of valid $x$ merely because conditioned $r$ is unavailable.
 
 Use the prediction IDs rather than inventing new expected science after
 observing output.  Interior impulses and sinusoids exercise fixed linear
@@ -278,6 +296,16 @@ Maximum-attempt, oscillating, and nonconvergent states are not convergence.
 \item Missing either pair member fails admission; no reorder, independent
       join, copy, synthesis, zero fill, $r$ calibration, $r$-to-$x$
       correction, or $r$-as-$x$ donor route is accepted.
+\item Direct-$x$, direct-$r$, and joint evidence retain origin and causal
+      class; accepted hard support is unioned once at Resolve, inferred pair
+      consequences are not reported as direct detections, and Apply does not
+      mutate the plan.
+\item Every ordinary canonical stage has exactly identical $x/r$ masks,
+      segments, guards, coefficients, state/reset, phase, sampling, grid, and
+      self-response, with both fixed-state cross-coordinate branches zero.
+\item Expected $r$ optical or atmospheric response is protected evidence, not
+      automatic pathology; candidate spectral evidence never becomes shared
+      subtraction without the complete selected admission budgets.
 \item The owner-modified raw donor ratio is checked in both direction and
       availability cases, with no dependency on legacy responsivity.
 \item Direct synthesis/replacement is universally excluded, while noncenter
@@ -299,6 +327,12 @@ Maximum-attempt, oscillating, and nonconvergent states are not convergence.
       application-specific plateau support, selected additive correction only
       with sufficient stable support, persistent transition flags, and no
       gain- or responsivity-change model.
+\item Paired shifts have one event/support/segmentation/reset and independent
+      coordinate-specific affine amplitudes, uncertainty, and correction
+      availability; neither amplitude is copied or mixed.
+\item The $x$ donor exception creates no $r$ value and makes requested
+      conditioned $r$ and its response unavailable over the full transitive
+      influence while preserving the exact grid and all causes.
 \item Atmospheric templates are diagnostic evidence only and do not alter
       science $x$; numerical common-mode removal requires separate authority.
 \item A conditioned $r$ output is unavailable unless its own operator,

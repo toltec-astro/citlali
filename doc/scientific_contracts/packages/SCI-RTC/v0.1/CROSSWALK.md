@@ -1,7 +1,7 @@
-# SCI-RTC v0.1/r0.10 candidate exact authority crosswalk
+# SCI-RTC v0.1/r0.11 candidate exact authority crosswalk
 
-Status: Scientific-authority candidate formally reopened from unchanged frozen
-r0.9; owner review pending. Implementation conformity is not assessed. This
+Status: Scientific-authority revision candidate from the sealed r0.10
+comparison baseline; owner review pending. Implementation conformity is not assessed. This
 crosswalk maps every normative ID in the shared core to explanatory and
 conformance loci and to approved authority. It reports no implementation or
 validation result.
@@ -22,6 +22,7 @@ validation result.
 | `R9` | Binding scientific-owner Decisions 1--8 recorded in `SCIENTIFIC_OWNER_DECISIONS_R0.9.md` | `90cad00151d975e0bb2a432c907f4a2198a1f3645f52c645c7e71cfa58ac57cb` |
 | `R9F` | Exact v0.1/r0.9 scientific-owner freeze recorded in `SCIENTIFIC_OWNER_FREEZE_R0.9.md` | `e64e8686a25ce4b1ab436442f4a7a27584a3c077f0be096a9f89ef08a8d66815` |
 | `R10` | Bounded conditioned-$r$ reopening decisions D01--D06 recorded in `SCIENTIFIC_OWNER_REOPENING_DIRECTIVE_R0.10.md` | `6e1c215dda40e8b716b8274f9bbf6fd42c67335b9cd8574aaa4f207b5f47f4cb` |
+| `R11` | Canonical pair-level learning, identical-operator, cause-preserving union, and explicit-exception decisions D01--D07 recorded in `SCIENTIFIC_OWNER_REVISION_DIRECTIVE_R0.11.md` | `89eb07832fa064238045c6c765c019f3b6fe74c3e5d1c6f163de5f5ebd20e9d8` |
 
 The supersession cover controls wherever `RC` is broader, older, or
 ambiguous. In particular, crosswalk entries that cite the retained calibration,
@@ -44,6 +45,13 @@ candidate r0.10. It preserves r0.9 conditioned-$x$ numerical behavior, raw-$r$
 parentage, x-only SCI-CAL, and every unrelated owner-ledger state. It resolves
 no PTC or SCI-VAL consumer policy and makes no implementation, validation,
 performance, science-qualification, or production claim.
+`R11` controls wherever r0.10 allowed distinct ordinary $x/r$ diagonal
+operators or asserted that $r$ evidence could not change conditioned-$x$
+selection/support. It requires an identical canonical ordinary operator,
+retained coordinate-specific and joint evidence, hard cause-preserving action
+union at Resolve, protected optical/source candidates, independent affine
+amplitudes, and the explicit $x$-only donor exception. It preserves every
+unrelated numerical policy and all cross-package claim boundaries.
 The later `R7` review accepts the r0.6 narrative and architecture, controls the
 ALIGN, fixed-state covariance, leakage-normalization, event-time, reset/carry,
 operation-inventory, atmosphere/support, and output-split corrections, and
@@ -116,6 +124,18 @@ modify the formal authority.
 | `SCI-RTC-DEF-037` | Definitions: stable additive-baseline plateau | §§5, 10 | Support/admission checks | R8 Decision 9; R5 §§VII--VIII |
 | `SCI-RTC-DEF-038` | Definitions: response-changing successor boundary | §§4--6 | Gain/two-coordinate forbidden-route checks | R8 Decision 9; R5 §§IV, IX |
 | `SCI-RTC-DEF-039` | Definitions: optional conditioned-$r$ paired companion | §§1, 4--7, 10--12 | Routing REQ-108--114 | R10 D01--D06 |
+| `SCI-RTC-DEF-040` | Definitions: canonical conditioned pair and exact naming boundary | §§1, 4, 10 | Routing REQ-115--117/133/136 | R11 D01/D05/D07 |
+| `SCI-RTC-DEF-041` | Definitions: coordinate-specific evidence | §§2, 4--6 | Evidence-origin review | R11 D02/D04 |
+| `SCI-RTC-DEF-042` | Definitions: genuinely joint paired evidence | §§2, 4--6 | Joint-estimator and origin review | R11 D02/D04 |
+| `SCI-RTC-DEF-043` | Definitions: owner-designated hard pair-pathology class | §§4--6 | Hard-versus-candidate admission matrix | R11 D04/D06 |
+| `SCI-RTC-DEF-044` | Definitions: pair-level action support | §§2, 4--6 | Cause-preserving union fixture | R11 D03/D04 |
+| `SCI-RTC-DEF-045` | Definitions: inferred pair contamination | §§4--6 | Direct/inferred cause audit | R11 D04/D05 |
+| `SCI-RTC-DEF-046` | Definitions: common identical paired operator | §§4--8 | Paired impulse/state/sampling equality | R11 D01 |
+| `SCI-RTC-DEF-047` | Definitions: coordinate-specific affine correction | §§4--5 | Unequal-amplitude and availability fixtures | R11 D07 |
+| `SCI-RTC-DEF-048` | Definitions: explicit $x$-only donor exception | §§4--5, 7 | No-$r$-donor and influence checks | R11 D07 |
+| `SCI-RTC-DEF-049` | Definitions: conditioned-$r$ local unavailable influence | §§4--7, 10 | Full causal support and grid check | R11 D05/D07 |
+| `SCI-RTC-DEF-050` | Definitions: separately optimized $r$ diagnostic descendant | §§1, 4, 10 | Product identity/response rejection | R11 D01 |
+| `SCI-RTC-DEF-051` | Definitions: cause-preserving pair evidence/action record | §§2, 4--6, 10--12 | Provenance reconstruction | R11 D02--D05/D07 |
 
 ## Equations and identities
 
@@ -158,7 +178,12 @@ modify the formal authority.
 | `SCI-RTC-EQ-033` | Equations: additive plateaus around finite physical-time transition support | §§5, 10 | Cross-cadence support/model fixtures | R8 Decision 9; R7 clarification 4; R5 §§VII--VIII |
 | `SCI-RTC-EQ-034` | Equations: additive plateau correction, transition exclusion, reset/carry | §§5, 10 | Offset/reference/support/state checks | R8 Decision 9; R7 clarification 5; R5 §§VII--VIII |
 | `SCI-RTC-EQ-035` | Equations: actual attempts, maximum, and accepted plans | §§2, 7 | Early-stop/no-no-op check | R5 bounded-iteration correction |
-| `SCI-RTC-EQ-036` | Equations: coordinate-diagonal conditioned pair and propagated joint covariance | §§4, 12 | Zero-cross-response, shared-stage, failure-isolation, and block-covariance checks | R10 D04 |
+| `SCI-RTC-EQ-036` | Equations: paired input and separate coordinate-specific affine baseline state | §§4--5, 12 | Unequal affine correction and availability checks | R11 D07; R10 D04 narrowed |
+| `SCI-RTC-EQ-037` | Equations: coordinate-specific/joint evidence tuple | §§2, 4--6 | Origin/support/protection/uncertainty inventory | R11 D02 |
+| `SCI-RTC-EQ-038` | Equations: cause-preserving hard pair-support union | §§2, 4--6 | Union and hard/candidate distinction | R11 D03/D04/D06 |
+| `SCI-RTC-EQ-039` | Equations: pair-level Resolve and immutable Apply | §§2, 4--6 | Plan composition and mutation rejection | R11 D03 |
+| `SCI-RTC-EQ-040` | Equations: exact $I_2\otimes L_\Pi$ canonical response | §§4--8, 12 | Identical branches, zero cross response, donor exception | R11 D01/D07 |
+| `SCI-RTC-EQ-041` | Equations: identical-operator joint covariance propagation | §§4, 9, 12 | Cross-block retention and uncertainty-layer review | R11 D01/D05/D07 |
 
 ## Assumptions
 
@@ -295,6 +320,30 @@ modify the formal authority.
 | `SCI-RTC-REQ-112` | §§4, 12 | Coordinate-diagonal response, preserved lineage, and joint covariance | R10 D04 |
 | `SCI-RTC-REQ-113` | §§5--6 | Optical-leakage characterization and pair-coherent source protection | R10 D05 |
 | `SCI-RTC-REQ-114` | §§10--12 | Producer facts and consumer/PTC/SCI-VAL policy boundary | R10 D06 |
+| `SCI-RTC-REQ-115` | §§1, 4 | Exact canonical raw-pair identity and coordinate facts | R11 D01/D02/D05 |
+| `SCI-RTC-REQ-116` | §§4--8 | Exact identical ordinary paired operator and zero cross branches | R11 D01 |
+| `SCI-RTC-REQ-117` | §§4--8 | Mask/segment/state/phase/grid equality inventory | R11 D01 |
+| `SCI-RTC-REQ-118` | §§2, 4--6 | Coordinate-specific/joint evidence retention | R11 D02 |
+| `SCI-RTC-REQ-119` | §§2, 4--6 | Hard cause-preserving pair-support union | R11 D03/D04 |
+| `SCI-RTC-REQ-120` | §§4--6 | Generic-flag rejection and direct/inferred distinction | R11 D04/D05 |
+| `SCI-RTC-REQ-121` | §§4, 6 | Source/leakage/Tune/mapping protection and unavailable state | R11 D06 |
+| `SCI-RTC-REQ-122` | §§2, 4--6 | $r$-origin hard evidence affecting $x$ plan selection/support | R11 D04/D06 |
+| `SCI-RTC-REQ-123` | §§2, 4--6 | $x$-origin hard evidence affecting requested conditioned $r$ | R11 D04/D07 |
+| `SCI-RTC-REQ-124` | §§2, 4--6 | Complete pair-level Resolve composition | R11 D03/D07 |
+| `SCI-RTC-REQ-125` | §2 | No within-Apply discovery or adaptation | R11 D03 |
+| `SCI-RTC-REQ-126` | §5 | One paired level-shift event/support/segmentation/reset | R11 D04/D07 |
+| `SCI-RTC-REQ-127` | §5 | Independent coordinate affine estimators/amplitudes/actions | R11 D07 |
+| `SCI-RTC-REQ-128` | §5 | No copied/mixed amplitude; asymmetric correction failure | R11 D07 |
+| `SCI-RTC-REQ-129` | §§5--6 | $r$ spectral candidate no automatic $x$ action | R11 D06/D07 |
+| `SCI-RTC-REQ-130` | §§5--7 | Identical notch after complete shared admission | R11 D01/D07 |
+| `SCI-RTC-REQ-131` | §§4--5 | Explicit $x$-only donor exception and no $r$ reconstruction | R11 D07 |
+| `SCI-RTC-REQ-132` | §§4--5, 7 | Full causal conditioned-$r$ unavailable influence | R11 D05/D07 |
+| `SCI-RTC-REQ-133` | §§4, 7--8 | Exact common grid through unavailable intervals | R11 D01/D05/D07 |
+| `SCI-RTC-REQ-134` | §§4--6, 10--12 | Complete cause/evidence/action/provenance bundle | R11 D02--D07 |
+| `SCI-RTC-REQ-135` | §§4, 9, 12 | Conditional/correction/parameter/selection uncertainty separation | R11 D05/D07 |
+| `SCI-RTC-REQ-136` | §§1, 4, 10 | Canonical pair, absent companion, and descendant naming | R11 D01 |
+| `SCI-RTC-REQ-137` | §§1, 10--11 | $x$-only CAL and no automatic $r\rightarrow x$ correction | R11 D07; preserved R10 D01 |
+| `SCI-RTC-REQ-138` | §§10--12 | RTC fact handoff without PTC/SCI-VAL policy inference | R11 D07; preserved R10 D06 |
 
 ## Falsifiable predictions
 
@@ -377,6 +426,32 @@ modify the formal authority.
 | `SCI-RTC-PRED-075` | §§4, 12 | Coordinate-diagonal response, x-only repair, and block covariance | R10 D04 |
 | `SCI-RTC-PRED-076` | §§5--6 | Nonzero optical $r$, raw/conditioned leakage, and source-protection failure | R10 D05 |
 | `SCI-RTC-PRED-077` | §§10--12 | Invariant RTC facts under distinct downstream consumer policies | R10 D06 |
+| `SCI-RTC-PRED-078` | §§4, 7 | Paired FIR impulse equality | R11 D01 |
+| `SCI-RTC-PRED-079` | §§4--5, 7 | Identical paired state/reset/guard behavior | R11 D01/D07 |
+| `SCI-RTC-PRED-080` | §§4, 7--8 | Exact paired sampling/grid/mask identity | R11 D01/D05 |
+| `SCI-RTC-PRED-081` | §§4, 12 | Identical self-response and zero fixed-state cross response | R11 D01 |
+| `SCI-RTC-PRED-082` | §§4--5 | Direct-$r$ hard spike with inferred-$x$ pair action | R11 D02--D05 |
+| `SCI-RTC-PRED-083` | §§4--5 | Direct-$x$ and joint evidence symmetry with origin retention | R11 D02--D05 |
+| `SCI-RTC-PRED-084` | §§2, 4--6 | Overlapping hard cause-preserving union | R11 D03/D04 |
+| `SCI-RTC-PRED-085` | §§4--6 | Hard event versus leakage/spectral/quality candidates | R11 D04/D06 |
+| `SCI-RTC-PRED-086` | §2 | No within-Apply plan mutation | R11 D03 |
+| `SCI-RTC-PRED-087` | §§4, 6 | Protected expected optical response under common operator | R11 D01/D06 |
+| `SCI-RTC-PRED-088` | §6 | Missing protection makes learning/correction unavailable | R11 D06 |
+| `SCI-RTC-PRED-089` | §§4--6 | Protected source coincident with independent hard cause | R11 D04/D06 |
+| `SCI-RTC-PRED-090` | §5 | One shift with unequal coordinate amplitudes | R11 D07 |
+| `SCI-RTC-PRED-091` | §5 | Valid $x$/unsupported $r$ affine correction | R11 D05/D07 |
+| `SCI-RTC-PRED-092` | §5 | Valid $r$/unsupported $x$ affine correction | R11 D05/D07 |
+| `SCI-RTC-PRED-093` | §5 | Independent sign/reference reversal | R11 D07 |
+| `SCI-RTC-PRED-094` | §5 | Common physical shift across cadences | R11 D01/D07 |
+| `SCI-RTC-PRED-095` | §5 | Common event with coordinate-specific quality/uncertainty | R11 D05/D07 |
+| `SCI-RTC-PRED-096` | §§5, 7 | Identical reset/guard with unequal affine amplitudes | R11 D01/D07 |
+| `SCI-RTC-PRED-097` | §§5--6 | $r$ spectral candidate without automatic action | R11 D06/D07 |
+| `SCI-RTC-PRED-098` | §§5--7 | Identical shared notch after complete admission | R11 D01/D07 |
+| `SCI-RTC-PRED-099` | §§2, 5--6 | Preregistered spectral admission boundary and immutable Apply | R11 D03/D07 |
+| `SCI-RTC-PRED-100` | §§4--5, 7 | Full causal conditioned-$r$ unavailability after $x$ donor | R11 D05/D07 |
+| `SCI-RTC-PRED-101` | §§4--5, 9, 12 | Donor correlation with unavailable $r$ covariance components | R11 D05/D07 |
+| `SCI-RTC-PRED-102` | §§4--5, 7 | Ordinary identical response outside donor exception | R11 D01/D07 |
+| `SCI-RTC-PRED-103` | §12 | Preregistered false-pair-action and $x$ data-loss study | R11 D06 |
 
 ## Decision-register coverage
 
@@ -391,32 +466,34 @@ modify the formal authority.
   choices `SCI-RTC-OWNER-051`--`071` and the r0.6 bounded decisions
   `SCI-RTC-OWNER-072`--`074`, the r0.8 Decision 9 entry
   `SCI-RTC-OWNER-075`, and the r0.9 clarifications
-  `SCI-RTC-OWNER-076`--`083`, followed by the candidate r0.10 conditioned-$r$
-  reopening decisions `SCI-RTC-OWNER-084`--`089`.
+  `SCI-RTC-OWNER-076`--`083`, the sealed candidate r0.10 conditioned-$r$
+  reopening decisions `SCI-RTC-OWNER-084`--`089`, and the candidate r0.11
+  canonical pair-level decisions `SCI-RTC-OWNER-090`--`096`.
 - `SCIENTIFIC_OWNER_FREEZE_R0.9.md` and `RTC-SCI-D018` record the exact owner
   freeze and preserve the unchanged baseline. The bounded
-  `SCIENTIFIC_OWNER_REOPENING_DIRECTIVE_R0.10.md` authorizes only candidate
-  OWNER-084--089.
+  `SCIENTIFIC_OWNER_REOPENING_DIRECTIVE_R0.10.md` authorizes OWNER-084--089;
+  `SCIENTIFIC_OWNER_REVISION_DIRECTIVE_R0.11.md` authorizes OWNER-090--096.
 - R0.4 resolves OWNER-010 and OWNER-024 by explicit scientific-owner approval;
   r0.6 resolves OWNER-072--074 and defers OWNER-068 by explicit owner
   confirmation; r0.8 resolves OWNER-075; r0.9 resolves OWNER-076--083; and
-  candidate r0.10 resolves OWNER-084--089. No other open entry is silently
+  sealed candidate r0.10 resolves OWNER-084--089; candidate r0.11 resolves
+  OWNER-090--096. No other open entry is silently
   resolved in either PDF. In particular, the
   learned safe set is undefined until OWNER-011 through OWNER-020 are resolved.
 
 ## Mechanical completeness invariant
 
-For candidate revision r0.10 the exact expected normative inventory is:
+For candidate revision r0.11 the exact expected normative inventory is:
 
-- 39 definitions: `SCI-RTC-DEF-001`--`039`;
-- 38 displayed equation tags: `001`--`015`, `016a`, `016b`, `017`--`019`,
-  `020a`, `020b`, and `021`--`036`;
+- 51 definitions: `SCI-RTC-DEF-001`--`051`;
+- 43 displayed equation tags: `001`--`015`, `016a`, `016b`, `017`--`019`,
+  `020a`, `020b`, and `021`--`041`;
 - 12 assumptions: `SCI-RTC-ASM-001`--`012`;
-- 114 requirements: `SCI-RTC-REQ-001`--`114`;
-- 77 predictions: `SCI-RTC-PRED-001`--`077`;
+- 138 requirements: `SCI-RTC-REQ-001`--`138`;
+- 103 predictions: `SCI-RTC-PRED-001`--`103`;
 - 24 author-draft decisions: `SCI-RTC-AUTHOR-D001`--`D024`;
-- 63 open, 1 conditional, 20 resolved, and 5 deferred owner entries:
-  `SCI-RTC-OWNER-001`--`089`.
+- 63 open, 1 conditional, 27 resolved, and 5 deferred owner entries:
+  `SCI-RTC-OWNER-001`--`096`.
 
 Every ID in that inventory appears exactly once as an authority-row key in
 this crosswalk or, for the two decision registers, in the explicitly named

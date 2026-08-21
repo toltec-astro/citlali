@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.10 shared normative core -- equations.
+% SCI-RTC v0.1/r0.11 shared normative core -- equations.
 \section{Normative equations and identities}
 \label{sec:core-equations}
 
@@ -569,34 +569,98 @@ The actual bounded-refinement counts satisfy
  \tag{SCI-RTC-EQ-035}\label{eq:actual-attempts}
 \end{equation}
 
-On the exact support $\mathcal A^r_\Omega$ where the optional conditioned-$r$
-companion and an admitted joint input covariance are available, the paired
-coordinate-diagonal affine response and conditional covariance are
+For a requested canonical conditioned pair on ordinary common available
+support $\mathcal A^{xr}_\Pi$, define the paired input and any separately
+admitted coordinate-specific affine baseline state by
+\begingroup\small
 \begin{equation}
- \begin{gathered}
- \begin{bmatrix}\mathbf y^{x,\rm RTC}\\\mathbf y^{r,\rm RTC}\end{bmatrix}
- =\begin{bmatrix}L^x_\Omega&0\\0&L^r_\Omega\end{bmatrix}
-  \begin{bmatrix}\mathbf x^A\\\mathbf r^A\end{bmatrix}
-  +\begin{bmatrix}\mathbf b^x_\Omega\\\mathbf b^r_\Omega\end{bmatrix},
- \qquad
- J^{xr}_\Omega=\begin{bmatrix}L^x_\Omega&0\\0&L^r_\Omega\end{bmatrix},\\
- \Sigma^{xr}_{y\mid\Omega}=
- \begin{bmatrix}
- L^x_\Omega\Sigma_{xx}(L^x_\Omega)^{\mathsf T}&
- L^x_\Omega\Sigma_{xr}(L^r_\Omega)^{\mathsf T}\\
- L^r_\Omega\Sigma_{rx}(L^x_\Omega)^{\mathsf T}&
- L^r_\Omega\Sigma_{rr}(L^r_\Omega)^{\mathsf T}
- \end{bmatrix}.
- \end{gathered}
+ \begin{aligned}
+ \mathbf u_d&=\begin{bmatrix}\mathbf x^A_d\\\mathbf r^A_d\end{bmatrix},\\
+ \mathbf b_{d,k}&=\begin{bmatrix}b^x_{d,k}\\b^r_{d,k}\end{bmatrix},\\
+ \mathbf u_d^\star&=\mathbf u_d-\mathbf b_{d,k}
+ \quad\text{on stable segment }I_k .
+ \end{aligned}
  \tag{SCI-RTC-EQ-036}\label{eq:paired-conditioned-r}
 \end{equation}
-$L^r_\Omega$ carries the same applicable filtering, masks, state boundaries,
-sampling phase, selected grid, and pair-level affected support as $L^x_\Omega$,
-but it contains no $x$-specific donor repair or replacement branch.  Where an
-$r$-domain correction is not scientifically justified, the affected
-conditioned-$r$ value, $r$ response, and associated covariance blocks are
-typed unavailable rather than invented.  A numerical covariance product is
-not required without an admitted model; when one is supplied, available
-cross-coordinate blocks are retained rather than set to zero.  This identity
-does not permit numerical $x\leftrightarrow r$ mixing, and no conditioned-$r$
-failure changes the conditioned-$x$ value or its upper-left covariance block.
+\endgroup
+The two affine components have separate estimators, availability, uncertainty,
+and action.  This identity assumes neither equality nor permission to copy one
+component into the other.
+
+Learn retains coordinate-specific and genuinely joint evidence as an ordered
+cause-preserving collection,
+\begin{equation}
+ \mathcal E_{xr}=\bigl(E_x,E_r,E_{xr}\bigr),\qquad
+ E_c=(\mathcal J, c, \widehat\theta_c,\mathcal S_c,
+ P_c,\zeta_c,U_c,Q_c,K_c,D_c,F_c),
+ \quad c\in\{x,r,xr\}.
+ \tag{SCI-RTC-EQ-037}\label{eq:paired-evidence}
+\end{equation}
+Here $\mathcal J$ is exact occurrence identity, $c$ is evidence origin,
+$\widehat\theta$ identifies the estimator output, $\mathcal S$ its support,
+$P$ protection/Tune/mapping state, $U$ uncertainty, $Q$ quality, $K$ causal
+class and direct/inferred state, $D$ source/frequency domain, and $F$ its
+accepted, rejected, candidate, or unavailable disposition.  This tuple is a
+minimum semantic inventory, not a storage schema.
+
+For owner-designated hard classes after protection and admission predicates
+have been resolved, the pair action support is the cause-preserving union
+\begin{equation}
+ B_{\rm pair}=B_x^{\rm hard}\cup B_r^{\rm hard}
+                    \cup B_{xr}^{\rm hard},
+ \qquad
+ \operatorname{origin}(E_c)=c\ \text{is retained}.
+ \tag{SCI-RTC-EQ-038}\label{eq:hard-pair-union}
+\end{equation}
+This unions action support, not evidence values, causes, correction
+amplitudes, or generic flags.  A diagnostic or spectral candidate is absent
+from $B_{\rm pair}$ until its stronger class-specific predicate passes.
+
+Resolve composes the full evidence collection and policy into one immutable
+pair plan, and Apply consumes exactly that plan on both coordinates:
+\begin{equation}
+ \Pi_{xr}=\operatorname{Resolve}_{xr}(\mathcal E_{xr},
+               \Theta^{\rm policy}),\qquad
+ (\mathbf y_d,\mathcal R_d)=\operatorname{Apply}_{\Pi_{xr}}
+               (\mathbf u_d),\qquad
+ \frac{\partial\Pi_{xr}}{\partial j}=0\ \text{during Apply}.
+ \tag{SCI-RTC-EQ-039}\label{eq:pair-resolve-apply}
+\end{equation}
+$\mathcal R_d$ is the realized cause/action/availability record.  Evidence
+discovered after resolve belongs to a successor learn--resolve--apply attempt,
+never an in-place plan mutation.
+
+The canonical ordinary numerical action and its fixed-state Jacobian are
+\begin{equation}
+ \mathbf y_d=(I_2\otimes L_\Pi)\mathbf u_d^\star,
+ \qquad
+ J_{{\rm pair},\Pi}=I_2\otimes L_\Pi
+ =\begin{bmatrix}L_\Pi&0\\0&L_\Pi\end{bmatrix},
+ \qquad
+ \frac{\partial\mathbf y^x}{\partial\mathbf r}
+ =\frac{\partial\mathbf y^r}{\partial\mathbf x}=0.
+ \tag{SCI-RTC-EQ-040}\label{eq:canonical-pair-operator}
+\end{equation}
+$L_\Pi$ includes identical masks, pair support, segments, transitions, guards,
+coefficients, state and reset, filter definition, order and precision,
+phase/delay, boundaries, downsampling, selected times, representative
+occurrences, cardinality, and grid.  The $x$-only donor-recovery exception is
+not inserted into the $r$ block: over its complete causal influence the
+conditioned-$r$ value and response are typed unavailable on the unchanged
+grid.  A distinct $r$ operator would be a separately named descendant.
+
+For an admitted joint input covariance on common available support, the
+fixed-state conditional propagation is
+\begin{equation}
+ C_{y\mid\Pi}=(I_2\otimes L_\Pi)C_{\rm in}
+                    (I_2\otimes L_\Pi)^{\mathsf T},
+ \qquad
+ C'_{xr}=L_\Pi C_{xr}L_\Pi^{\mathsf T}.
+ \tag{SCI-RTC-EQ-041}\label{eq:canonical-pair-covariance}
+\end{equation}
+Available cross blocks are retained.  Conditional fixed-state propagation,
+coordinate-specific affine-correction uncertainty, learned-parameter and
+selection uncertainty, donor-induced $r$ unavailability, and total derivative
+availability remain distinct.  The zero fixed-state cross response does not
+erase the valid data-dependent path
+$r\rightarrow E_r/E_{xr}\rightarrow\Pi_{xr}\rightarrow y_x$.

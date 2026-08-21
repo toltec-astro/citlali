@@ -1,9 +1,9 @@
-% SCI-RTC v0.1/r0.10 shared normative core -- requirements.
+% SCI-RTC v0.1/r0.11 shared normative core -- requirements.
 \clearpage
 \section{Sequential normative requirements}
 \label{sec:core-requirements}
 
-The following identifiers are stable within v0.1/r0.10.  Conformance is
+The following identifiers are stable within v0.1/r0.11.  Conformance is
 requirement-by-requirement; satisfying a neighboring requirement does not
 waive another one.
 
@@ -32,7 +32,7 @@ Identity & \ReqID{SCI-RTC-REQ-009} & A coordinate-dependent operation shall cons
 State & \ReqID{SCI-RTC-REQ-010} & RTC application context, immutable resolved plan, and realized record shall be distinct one-way objects; requested, effective, observation-resolved, learned, resolved, and realized substates may refine them, but no later object or substate shall overwrite an earlier one. \\
 State & \ReqID{SCI-RTC-REQ-011} & Outer, inner, full, mini, diagnostic, simulated, processed, and any other produced stage roles shall have distinct immutable identities and explicit parent/processing links without requiring duplicate computation. \\
 Policy & \ReqID{SCI-RTC-REQ-012} & Despike, spike-evidence, level-shift learning, segmentation, plateau-assessment, leakage-diagnostic, donor, replacement, mask, filter, state, edge, non-finite, recovery, sampling, flag, diagnostic, and fallback classes are admitted across RTC application contexts.  Evidence may be coordinate-specific, but pathology detection and affected-support decisions shall be pair-coherent.  Availability shall not be confused with enabled, selected, numerically resolved, or scientifically qualified; every executed action shall be governed by an admitted versioned resolved plan rather than an undocumented default. \\
-Order & \ReqID{SCI-RTC-REQ-013} & RTC shall begin at the admitted upstream-aligned paired raw parent, perform spike-candidate masking/downweighting for level-shift learning on that original pair, resolve finite transition support and stable plateaus, apply any selected and valid additive $x$ plateau correction, then apply compatible $x$ donor replacement within stable segments.  Ordinary applicable filtering and phase-zero sampling shall act coordinate-diagonally on requested conditioned $r$, while $x$-specific correction/replacement shall instead make affected $r$ support typed invalid or unavailable unless a distinct justified $r$ correction exists.  SCI-CAL consumes only $x$ as in equation~\eqref{eq:order-equivalence}; no calibrated RTC branch or second ALIGN application is authorized. \\
+Order & \ReqID{SCI-RTC-REQ-013} & RTC shall begin at the admitted upstream-aligned paired raw parent, perform spike-candidate masking/downweighting for level-shift learning on that original pair, resolve finite transition support and stable plateaus, apply any separately selected and valid coordinate-specific additive plateau corrections, then apply compatible $x$ donor replacement within stable segments.  Ordinary filtering and phase-zero sampling shall use the identical paired operator, while the $x$ donor exception shall make affected $r$ support typed unavailable without reconstruction.  SCI-CAL consumes only $x$ as in equation~\eqref{eq:order-equivalence}; no calibrated RTC branch or second ALIGN application is authorized. \\
 \bottomrule
 \end{tabularx}
 
@@ -234,9 +234,66 @@ Output & \ReqID{SCI-RTC-REQ-108} & Requested conditioned $r$ shall use RTC's pai
 Role & \ReqID{SCI-RTC-REQ-109} & Conditioned $r$ shall be optional requested content of the atomic RTC bundle.  Its request shall prescribe neither a universal default nor an independent lifecycle; it shall remain uncalibrated, non-Stokes, numerically unable to alter conditioned $x$, and ineligible for SCI-CAL.  Any future downstream $x\leftarrow r$ nuisance prediction remains explicit PTC-owned authority. \\
 Artifacts & \ReqID{SCI-RTC-REQ-110} & Artifact detection and affected-support decisions shall be pair-coherent while evidence and correction amplitudes may be coordinate-specific.  A pathology affecting either coordinate shall conservatively affect the paired occurrence.  Existing $x$ repair need not numerically replace $r$; absent a justified $r$ correction, conditioned $r$ and its response shall be typed invalid or unavailable over the affected support without donor reconstruction or numerical coordinate mixing. \\
 Grid & \ReqID{SCI-RTC-REQ-111} & When requested, conditioned $r$ shall occupy exactly the conditioned-$x$ grid, cardinality, selected times, phase-zero slots, and representative occurrences.  Invalid or unavailable locations shall be retained in place rather than dropped, reindexed, interpolated, or filled.  Local or global conditioned-$r$ failure shall never corrupt, change, or invalidate otherwise valid conditioned $x$. \\
-Response & \ReqID{SCI-RTC-REQ-112} & The paired realized numerical response shall be coordinate-diagonal.  Applicable filtering, masks, state, sampling, grid, and pair-level support shall be shared; $x$-specific repair shall be absent from the $r$ response.  The bundle shall retain raw mapping, units/sign/reference, source and leakage lineage, response, validity, support, and uncertainty status.  If an admitted joint covariance is available, its propagated cross-coordinate blocks shall be preserved as in equation~\eqref{eq:paired-conditioned-r}; otherwise numerical covariance may remain unavailable. \\
+Response & \ReqID{SCI-RTC-REQ-112} & The paired realized ordinary numerical response shall have identical coordinate-diagonal blocks and zero cross branches as in equation~\eqref{eq:canonical-pair-operator}.  Applicable filtering, masks, state, sampling, grid, and pair-level support shall be identical; the $x$ donor exception shall be absent from the $r$ response and shall create typed $r$ unavailability.  The bundle shall retain raw mapping, units/sign/reference, source and leakage lineage, response, validity, support, and uncertainty status.  If an admitted joint covariance is available, its propagated cross-coordinate blocks shall be preserved as in equation~\eqref{eq:canonical-pair-covariance}; otherwise numerical covariance may remain unavailable. \\
 Leakage & \ReqID{SCI-RTC-REQ-113} & Nonzero optical response in $r$ shall remain diagnostic evidence, not pathology or invalidity, and RTC shall not remove, rotate, or renormalize it to an ideal coordinate.  Raw and conditioned leakage diagnostics shall remain stage-distinct.  Source protection for artifact learning/correction shall be pair-coherent; absent required source authority, the affected learned or corrective operation shall be unavailable, while an already resolved applicable linear filter may still act.  RTC reports these facts and does not decide PTC or SCI-VAL policy. \\
 Handoff & \ReqID{SCI-RTC-REQ-114} & Downstream consumers shall receive conditioned $x$, requested conditioned $r$ or its exact local/global availability state, and sufficient RTC mapping, support, response, validity, cause, uncertainty, leakage, source-protection, and provenance facts to know what happened to the raw pair.  RTC shall not convert those facts into a PTC joint-mode decision or a cross-package aggregate validity/usage policy. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.09\linewidth}p{0.20\linewidth}X@{}}
+\toprule
+Area & ID & Normative statement \\
+\midrule
+Identity & \ReqID{SCI-RTC-REQ-115} & Canonical pair learning and conditioning shall begin from the exact admitted raw $x/r$ occurrence pair and shall preserve its ordered identity, independent coordinate-local raw validity, mapping revision, units, sign, reference, normalization, Tune/loading state, and immutable parentage. \\
+Operator & \ReqID{SCI-RTC-REQ-116} & Every ordinary jointly applicable canonical stage shall use exactly $J_{{\rm pair},\Pi}=I_2\otimes L_\Pi$ on common available support.  Both numerical cross-coordinate branches shall remain zero.  Any $r$-specific optimized operator shall be a separately named descendant with new authority, never the canonical companion. \\
+Operator & \ReqID{SCI-RTC-REQ-117} & The two canonical coordinate branches shall have identical masks, pair-level action support, segments, transitions, guards, coefficients, state, initialization/reset, filter definitions, order/precision, phase/delay, boundaries, downsampling, selected times, representative occurrences, cardinality, and output grid. \\
+Evidence & \ReqID{SCI-RTC-REQ-118} & Learn shall retain $E_x$, $E_r$, and genuinely joint $E_{xr}$ as distinct records with coordinate of origin, exact identity, estimator, physical/sample support, source protection, Tune/mapping state, uncertainty, quality, causal class, direct/inferred status, and source/frequency domain where applicable.  Later pair action shall not erase or relabel evidence origin. \\
+Union & \ReqID{SCI-RTC-REQ-119} & For every owner-designated hard class whose admission predicates pass, Resolve shall form $B_{\rm pair}=B_x^{\rm hard}\cup B_r^{\rm hard}\cup B_{xr}^{\rm hard}$ and shall apply the same resolved masks, guards, segments, resets, and affected support to both coordinates while preserving every contributing cause. \\
+Semantics & \ReqID{SCI-RTC-REQ-120} & RTC shall not infer universal pair contamination from an undifferentiated generic flag.  Pair action requires typed accepted direct-$x$, direct-$r$, joint, inferred-$x$-from-$r$, or inferred-$r$-from-$x$ cause under the selected class policy; inferred consequence shall not be reported as direct evidence. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.09\linewidth}p{0.20\linewidth}X@{}}
+\toprule
+Area & ID & Normative statement \\
+\midrule
+Protection & \ReqID{SCI-RTC-REQ-121} & Expected astronomical, atmospheric, leakage, Tune, loading, mapping, or source-class behavior in either coordinate shall not be treated as contamination without the required source-protection and causal predicates.  Missing required protection authority shall make the affected learned or corrective operation unavailable rather than convert protected or ambiguous evidence into a hard event. \\
+Pair action & \ReqID{SCI-RTC-REQ-122} & Accepted hard direct-$r$ or joint evidence shall be permitted to alter the resolved conditioned-$x$ masks, segments, guards, reset boundaries, support, and plan selection through pair-level Resolve, while retaining zero fixed-state numerical $r\rightarrow x$ response. \\
+Pair action & \ReqID{SCI-RTC-REQ-123} & Accepted hard direct-$x$ or joint evidence shall analogously determine pair action for requested conditioned $r$, subject to its coordinate-local numerical correction and availability state; no $x$ value or correction amplitude shall be copied into $r$. \\
+Lifecycle & \ReqID{SCI-RTC-REQ-124} & Resolve shall compose all retained evidence, protection state, class-specific predicates, accepted/rejected/candidate dispositions, and policies into one complete immutable pair plan before Apply.  The plan shall explicitly distinguish common ordinary action from every coordinate-specific affine correction or $x$-only donor exception. \\
+Lifecycle & \ReqID{SCI-RTC-REQ-125} & Apply shall neither discover a new event nor adapt thresholds, coefficients, state policy, action support, or any other plan member within one apply pass.  New evidence shall enter only through a separately identified successor learn--resolve--apply attempt. \\
+Level shift & \ReqID{SCI-RTC-REQ-126} & An accepted paired level shift shall have one event identity, physical transition interval, timing uncertainty, coherence state, guards, segment split, and reset disposition shared by both coordinates, while preserving separate direct/joint evidence and direct/inferred causes. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.09\linewidth}p{0.20\linewidth}X@{}}
+\toprule
+Area & ID & Normative statement \\
+\midrule
+Level shift & \ReqID{SCI-RTC-REQ-127} & Each stable plateau correction shall be coordinate-specific: $b^x$, $b^r$, their estimators, reference orientations, uncertainties, quality states, support sufficiency, availability, and numerical actions shall be recorded independently even though the event boundary and ordinary operator are common. \\
+Level shift & \ReqID{SCI-RTC-REQ-128} & RTC shall not copy, equate, rotate, regress, or otherwise infer one level-shift amplitude from the other coordinate.  Failure of one coordinate's plateau correction shall leave the shared event and segmentation intact and shall make only that coordinate's local corrected value/response unavailable where required. \\
+Spectral & \ReqID{SCI-RTC-REQ-129} & An $r$-origin spectral feature shall remain candidate evidence and shall not automatically notch, subtract, or otherwise alter $x$.  Admission of a shared spectral action shall require the owner-selected cross-coordinate predicate and complete $x$ astronomical-transfer, phase, support, covariance, source-protection, and false-detection budgets. \\
+Spectral & \ReqID{SCI-RTC-REQ-130} & Once a shared spectral action is admitted into the canonical pair plan, its exact notch or filter operator, coefficients, precision, phase, state, masks, support, guards, response, and sampling shall be identical on $x$ and $r$ under equation~\eqref{eq:canonical-pair-operator}. \\
+Donor & \ReqID{SCI-RTC-REQ-131} & The existing donor recovery shall remain an explicitly typed $x$-only exception.  It shall create no $r$ donor, cross-coordinate donor, copied value, regression value, interpolation, or other numerical reconstruction of conditioned $r$. \\
+Donor & \ReqID{SCI-RTC-REQ-132} & Every $x$-only donor recovery shall make requested conditioned $r$, its local response, and dependent covariance components typed unavailable over the complete causal operator influence of that recovery, not merely at the replaced representative occurrence; raw-$r$ parentage and all pair causes shall persist. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\footnotesize
+\begin{tabularx}{\linewidth}{@{}p{0.09\linewidth}p{0.20\linewidth}X@{}}
+\toprule
+Area & ID & Normative statement \\
+\midrule
+Grid & \ReqID{SCI-RTC-REQ-133} & Requested conditioned $r$ shall remain on exactly the conditioned-$x$ grid through all local invalid or unavailable intervals, including the $x$-donor exception.  No row may be dropped, reindexed, filled, or assigned a different phase, time, representative occurrence, cardinality, or boundary. \\
+Provenance & \ReqID{SCI-RTC-REQ-134} & The canonical output bundle shall include the raw pair, requested conditioned coordinates or exact availability, evidence and origin, accepted/rejected/candidate dispositions, unioned pair support, direct/inferred causes, common operator identity, coordinate-specific affine actions, donor exceptions, mapping and source-protection state, leakage lineage, response, uncertainty, and realized provenance sufficient to reconstruct what happened. \\
+Uncertainty & \ReqID{SCI-RTC-REQ-135} & Every paired statistical claim shall distinguish fixed-state conditional covariance, retained input cross blocks, coordinate-specific affine-correction uncertainty, learned-parameter uncertainty, data-dependent selection/plan uncertainty, donor-induced conditioned-$r$ unavailability, and total-derivative availability.  Unknown or unsupported components shall be unavailable rather than zero. \\
+Naming & \ReqID{SCI-RTC-REQ-136} & Product identity and prose shall distinguish the canonical conditioned pair from conditioned $x$ with an unrequested or globally unavailable conditioned-$r$ companion, and from any future separately optimized $r$ diagnostic descendant.  None shall silently inherit another's response or qualification. \\
+CAL & \ReqID{SCI-RTC-REQ-137} & SCI-CAL shall continue to consume and calibrate conditioned $x$ only.  RTC shall not calibrate $r$, create an $r$ Stokes meaning, or authorize any automatic $r\rightarrow x$ subtraction; any future $x\leftarrow r$ nuisance prediction remains explicit PTC-owned authority. \\
+Handoff & \ReqID{SCI-RTC-REQ-138} & RTC shall hand downstream consumers exact pair facts and causes without selecting a PTC joint-$r$ mode, a diagnostic or nuisance-prediction policy, eligibility, named scientific use, or cross-package aggregate validity/usage.  PTC and SCI-VAL shall bind those decisions under their own separately authorized contracts. \\
 \bottomrule
 \end{tabularx}
 \normalsize

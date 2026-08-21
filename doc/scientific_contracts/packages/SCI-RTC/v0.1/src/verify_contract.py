@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mechanical SCI-RTC v0.1/r0.10 candidate author-deliverable checks.
+"""Mechanical SCI-RTC v0.1/r0.11 candidate author-deliverable checks.
 
 This helper reads only the approved author inputs and package deliverables.
 It does not inspect implementation, tests, history, or sibling packages.
@@ -85,14 +85,14 @@ def main() -> None:
         r"\\tag\{SCI-RTC-EQ-(\d{3}[ab]?)\}", text(COMMON / "equations.tex")
     )
 
-    require(definitions == [f"{i:03d}" for i in range(1, 40)], "definition IDs")
+    require(definitions == [f"{i:03d}" for i in range(1, 52)], "definition IDs")
     require(assumptions == [f"{i:03d}" for i in range(1, 13)], "assumption IDs")
-    require(requirements == [f"{i:03d}" for i in range(1, 115)], "requirement IDs")
-    require(predictions == [f"{i:03d}" for i in range(1, 78)], "prediction IDs")
+    require(requirements == [f"{i:03d}" for i in range(1, 139)], "requirement IDs")
+    require(predictions == [f"{i:03d}" for i in range(1, 104)], "prediction IDs")
     expected_eq = (
         [f"{i:03d}" for i in range(1, 16)]
         + ["016a", "016b", "017", "018", "019", "020a", "020b"]
-        + [f"{i:03d}" for i in range(21, 37)]
+        + [f"{i:03d}" for i in range(21, 42)]
     )
     require(equation_ids == expected_eq, "equation tag IDs")
 
@@ -102,7 +102,7 @@ def main() -> None:
     ]
     expected_inputs = [rf"\input{{common/{name}}}" for name in common_files]
     for name in common_files:
-        require("v0.1/r0.10" in text(COMMON / name), f"r0.10 stamp in {name}")
+        require("v0.1/r0.11" in text(COMMON / name), f"r0.11 stamp in {name}")
     engineering = text(SRC / "engineering-conformance.tex")
     rationale = text(SRC / "scientific-rationale.tex")
     require(
@@ -160,11 +160,13 @@ def main() -> None:
         r"\widehat{\Delta b}_{de}=\widehat b^+_{de}-\widehat b^-_{de}",
         r"\operatorname{atan2}",
         r"(\mathbf y^x,\mathbf y^{r,\rm opt},\mathbf r^{A,\rm parent},\mathcal J^{xr}",
-        r"J^{xr}_\Omega=\begin{bmatrix}L^x_\Omega&0\\0&L^r_\Omega\end{bmatrix}",
-        r"L^x_\Omega\Sigma_{xr}(L^r_\Omega)^{\mathsf T}",
+        r"\mathcal E_{xr}=\bigl(E_x,E_r,E_{xr}\bigr)",
+        r"B_{\rm pair}=B_x^{\rm hard}\cup B_r^{\rm hard}",
+        r"J_{{\rm pair},\Pi}=I_2\otimes L_\Pi",
+        r"C'_{xr}=L_\Pi C_{xr}L_\Pi^{\mathsf T}",
         r"K=k_{A+1}\le A\le A_{\max}",
     ):
-        require(marker in equations_text, f"r0.10 equation marker: {marker}")
+        require(marker in equations_text, f"r0.11 equation marker: {marker}")
     complete_operator = equations_text.split(
         r"\tag{SCI-RTC-EQ-005}", maxsplit=1
     )[0].rsplit(r"\begin{equation}", maxsplit=1)[1]
@@ -260,14 +262,27 @@ def main() -> None:
         == "6e1c215dda40e8b716b8274f9bbf6fd42c67335b9cd8574aaa4f207b5f47f4cb",
         "r0.10 scientific-owner reopening digest",
     )
-    candidate_status = "Scientific-authority candidate reopened"
+    revision_r11 = text(PKG / "SCIENTIFIC_OWNER_REVISION_DIRECTIVE_R0.11.md")
+    require(
+        "89eb07832fa064238045c6c765c019f3b6fe74c3e5d1c6f163de5f5ebd20e9d8"
+        in revision_r11,
+        "r0.11 supplied owner-directive digest",
+    )
+    require(
+        "326ec554998a124202d746f435bec8180e875fa1" in revision_r11,
+        "sealed r0.10 comparison baseline",
+    )
+    for decision in range(1, 8):
+        require(f"R11-D{decision:02d}" in revision_r11,
+                f"r0.11 owner decision D{decision:02d}")
+    candidate_status = "Scientific-authority revision candidate"
     require(candidate_status in rationale, "candidate status in rationale")
     require(candidate_status in engineering, "candidate status in engineering")
     candidate_pdfs = {
         PKG / "pdf" / "SCI-RTC-SCIENTIFIC-RATIONALE-v0.1.pdf":
-            "b09efeb698c736917c159bf5295e0281b21d7ee90f0deea81aca2737ea042e87",
+            "f92cefdd064a250466d75be7b1aafb9725c22ff2930a8fecef5a9e1db7315dbd",
         PKG / "pdf" / "SCI-RTC-ENGINEERING-CONFORMANCE-v0.1.pdf":
-            "ce474dd5f9aa64ddcd664ef21a509fa3de2d53b9c7a6055b1ab0596813dfed49",
+            "b11dbf3bfc835f7bf144d4f6088960b3b3a7ff0409a3d93ddcd5514ff8bc24d5",
     }
     for path, expected in candidate_pdfs.items():
         require(digest(path) == expected, f"candidate PDF hash changed: {path.name}")
@@ -283,10 +298,10 @@ def main() -> None:
 
     crosswalk = text(PKG / "CROSSWALK.md")
     for stem, count in (
-        ("SCI-RTC-DEF-", 39),
+        ("SCI-RTC-DEF-", 51),
         ("SCI-RTC-ASM-", 12),
-        ("SCI-RTC-REQ-", 114),
-        ("SCI-RTC-PRED-", 77),
+        ("SCI-RTC-REQ-", 138),
+        ("SCI-RTC-PRED-", 103),
     ):
         sequential(table_row_ids(crosswalk, stem), stem, count)
     eq_rows = table_row_ids(crosswalk, "SCI-RTC-EQ-")
@@ -297,7 +312,7 @@ def main() -> None:
     owner_rows = table_row_ids(
         text(PKG / "SCIENTIFIC_OWNER_DECISION_LEDGER.md"), "SCI-RTC-OWNER-"
     )
-    sequential(owner_rows, "SCI-RTC-OWNER-", 89)
+    sequential(owner_rows, "SCI-RTC-OWNER-", 96)
 
     owner_ledger = text(PKG / "SCIENTIFIC_OWNER_DECISION_LEDGER.md")
     owner_states = re.findall(
@@ -306,16 +321,16 @@ def main() -> None:
     )
     require(
         {state: owner_states.count(state) for state in set(owner_states)}
-        == {"OPEN": 63, "CONDITIONAL": 1, "RESOLVED": 20, "DEFERRED": 5},
+        == {"OPEN": 63, "CONDITIONAL": 1, "RESOLVED": 27, "DEFERRED": 5},
         "owner-ledger state counts",
     )
 
     print("PASS: approved packet hashes (4)")
     print("PASS: focused rationale plus complete six-file engineering/formal view")
-    print("PASS: definitions=39 equations=38 assumptions=12 requirements=114 predictions=77")
+    print("PASS: definitions=51 equations=43 assumptions=12 requirements=138 predictions=103")
     print("PASS: crosswalk rows complete and sequential")
-    print("PASS: author decisions=24 owner entries=89 (63 open, 1 conditional, 20 resolved, 5 deferred)")
-    print("PASS: r0.9 owner freeze preserved and r0.10 conditioned-r reopening bound")
+    print("PASS: author decisions=24 owner entries=96 (63 open, 1 conditional, 27 resolved, 5 deferred)")
+    print("PASS: r0.9 freeze and sealed r0.10 baseline preserved; r0.11 D01--D07 bound")
     print("PASS: canonical candidate PDF hashes (2)")
     print("PASS: rationale narrative sections=12")
     print("PASS: engineering wrapper has no independent displayed mathematics")

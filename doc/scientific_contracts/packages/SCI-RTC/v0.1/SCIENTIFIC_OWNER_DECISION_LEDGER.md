@@ -1,7 +1,7 @@
-# SCI-RTC v0.1/r0.10 candidate scientific-owner decision ledger
+# SCI-RTC v0.1/r0.11 candidate scientific-owner decision ledger
 
-Status: formally reopened scientific-authority candidate derived from the
-unchanged frozen v0.1/r0.9 register. Entries marked `RESOLVED` record explicit
+Status: scientific-authority revision candidate derived from the sealed
+v0.1/r0.10 comparison baseline, which in turn preserves frozen r0.9. Entries marked `RESOLVED` record explicit
 scientific-owner approval; all other entries retain their stated unresolved or
 deferred status. Candidate owner review is pending.
 
@@ -122,7 +122,7 @@ execute or qualify dependent operations.
 | `SCI-RTC-OWNER-067` | OPEN | Select diagnostic atmospheric-template temporal/frequency support, masks, quality/uncertainty metrics, validity, fallback, and application-context applicability. | A selected atmospheric-leakage diagnostic plan for the requested context. | REQ-088/104--105, PRED-061/063--066 |
 | `SCI-RTC-OWNER-068` | DEFERRED | Define any future numerical atmospheric/common-mode removal estimator, package ownership, null modes, source protection, response, covariance, and validation. | Numerical atmospheric-template subtraction from science $x$; it is outside RTC v0.1 and requires PTC or successor authority. | REQ-005/104, PRED-005/061 |
 | `SCI-RTC-OWNER-069` | OPEN | Select the evidence model and quantitative criteria for distinguishing optical leakage from electronic/common readout coupling or other causes. | Physical-origin attribution of an $r/x$ diagnostic. | DEF-032--034, REQ-087--090, PRED-050--052 |
-| `SCI-RTC-OWNER-070` | OPEN | Select the admitted joint $x/r$ statistical model, covariance estimator or supplied authority, shared-selection and learned-parameter treatment, supported subset, selector-boundary policy, and missing-cross-term policy. | Joint selector/model covariance, significance, or total-uncertainty claims; the coordinate-diagonal propagation rule is resolved, but numerical covariance remains unavailable without an admitted model. | EQ-016--019/036, REQ-042/093/112, PRED-054/075 |
+| `SCI-RTC-OWNER-070` | OPEN | Select the admitted joint $x/r$ statistical model, covariance estimator or supplied authority, shared-selection and learned-parameter treatment, supported subset, selector-boundary policy, and missing-cross-term policy. | Joint selector/model covariance, significance, or total-uncertainty claims; the identical-operator conditional propagation rule is resolved, but numerical covariance remains unavailable without an admitted model. | EQ-016--019/041, REQ-042/093/112/135, PRED-054/075/081/101 |
 | `SCI-RTC-OWNER-071` | OPEN | By application context and named consumer, select any paired diagnostic-detail extension and completion policy beyond the common bundle for mapping reconstruction, member validity, leakage, level shifts, plateaus, atmospheric templates, and coordinate-specific response detail. | Complete extended-detail claim beyond the consumer-neutral shared minimum; requested conditioned $r$ and its mandatory facts are governed by OWNER-084--089 and do not depend on this diagnostic-detail choice. | REQ-048/051/102/105/108--114, PRED-063/072--077 |
 | `SCI-RTC-OWNER-072` | RESOLVED | Atmospheric templates are diagnostic evidence only in RTC v0.1 and shall not be numerically subtracted from science $x$; numerical common-mode removal requires separate PTC or successor authority. | None for diagnostic use; numerical removal remains unavailable by architecture. | RTC-SCI-D006; REQ-005/104; PRED-005/061 |
 | `SCI-RTC-OWNER-073` | RESOLVED | Level-shift learning uses original paired data with isolated-spike candidates masked/excluded/downweighted; donor replacement follows resolved segmentation, stays within stable segments, and never crosses a shift boundary. | None for the architecture; numerical detection, masking, and donor policies remain open. | RTC-SCI-D007; REQ-013/095/097; PRED-055--056 |
@@ -159,6 +159,27 @@ unrelated r0.9 decision and open numerical policy retains its prior state.
 | `SCI-RTC-OWNER-088` | RESOLVED | Nonzero optical response in $r$ is diagnostic rather than pathology or invalidity and is not removed, rotated, or renormalized to an ideal coordinate. Raw and conditioned leakage diagnostics remain stage-distinct. Source protection for artifact learning/correction is pair-coherent; missing required source authority makes the affected learned/corrective operation unavailable, while an already resolved applicable linear filter still acts. RTC reports these facts without deciding PTC or SCI-VAL policy. | None from this architecture; exact leakage estimators, source authority, and quantitative protection policies retain their existing owner states. | R10-D05; DEF-032--034/039; REQ-024/051/087--091/100/113; PRED-050--052/060/067/076 |
 | `SCI-RTC-OWNER-089` | RESOLVED | Downstream consumers receive conditioned $x$, requested conditioned $r$ or its exact local/global availability, and sufficient RTC facts to know what happened to the raw pair. Consumers own their use of those facts. RTC does not select PTC joint-$r$ use or aggregate cross-package validity/usage; SCI-VAL retains that deferred authority. | None from this producer-handoff architecture; named consumer policies remain governed by their own contracts and existing open entries. | R10-D06; DEF-018/039; REQ-048/052/105/114; PRED-063/077 |
 
+## Candidate r0.11 canonical pair-level revision decisions
+
+These entries record the seven binding decisions authorized by Grant Wilson
+on 2026-08-21 under
+`SCIENTIFIC_OWNER_REVISION_DIRECTIVE_R0.11.md`.  They preserve the sealed
+r0.10 candidate at commit `326ec554998a124202d746f435bec8180e875fa1`
+as the comparison baseline.  They supersede r0.10 only where that candidate
+allowed distinct ordinary diagonal blocks or claimed that $r$ evidence could
+not change conditioned-$x$ selection/support.  They do not resolve any
+unrelated quantitative policy.
+
+| ID | State | Binding scientific-owner decision | Unavailable while open | Contract dependencies |
+| --- | --- | --- | --- | --- |
+| `SCI-RTC-OWNER-090` | RESOLVED | The canonical ordinary paired response is exactly $J_{{\rm pair},\Pi}=I_2\otimes L_\Pi$: both coordinates use identical masks, pair support, segments, transitions, guards, coefficients, state/reset, filter definitions, precision, phase/delay, boundaries, sampling, selected times, representative occurrences, cardinality, and grid, with both cross-coordinate numerical branches zero. A future optimized $r$ diagnostic is a separately named descendant. This supersedes the distinct-$L_x/L_r$ allowance in OWNER-087 while preserving zero cross response. | None for operator identity; every still-open numerical filter or sampling policy remains unavailable under its existing entry. | R11-D01; DEF-040/046/050; EQ-040; REQ-116--117/136; PRED-078--081 |
+| `SCI-RTC-OWNER-091` | RESOLVED | Learn retains coordinate-specific $E_x$, $E_r$, and genuinely joint $E_{xr}$ with exact origin, identity, estimator, support, protection, Tune/mapping state, uncertainty, quality, causal/direct/inferred state, and applicable domain. Later pair action never erases or relabels evidence origin. | None for evidence architecture; quantitative estimators, class predicates, thresholds, and quality policies remain governed by existing open entries, especially OWNER-052/059/060/069--071. | R11-D02; DEF-041--042/051; EQ-037; REQ-118/134; PRED-082--085 |
+| `SCI-RTC-OWNER-092` | RESOLVED | Resolve composes accepted hard $x$, $r$, and joint support by cause-preserving union into one immutable pair plan; Apply uses the same resolved support for both coordinates and neither discovers events nor mutates the plan. New evidence requires a successor learn--resolve--apply attempt. | None for lifecycle/union architecture; numerical admission policies remain open. | R11-D03; DEF-043--044/051; EQ-038--039; REQ-119/124--125; PRED-084--086 |
+| `SCI-RTC-OWNER-093` | RESOLVED | An accepted hard event from either coordinate or joint evidence pair-flags the occurrence and declared support while preserving direct-$x$, direct-$r$, joint, inferred-$x$-from-$r$, and inferred-$r$-from-$x$ distinctions. A generic flag is not universal pair evidence. | None for causal semantics; class-specific thresholds and false-detection controls remain open. | R11-D04; DEF-043/045; REQ-120/122--123; PRED-082--085 |
+| `SCI-RTC-OWNER-094` | RESOLVED | RTC separately records coordinate-local raw numerical validity/direct evidence, accepted pair event/action support, and coordinate-local conditioned modification/availability/response. Pair action does not assert direct evidence in both coordinates, and a valid payload does not erase inferred pair consequence. | None for layered state architecture; quantitative coordinate-validity predicates remain open in OWNER-052. | R11-D05; DEF-045/049/051; REQ-115/120/134; PRED-082--085/100--102 |
+| `SCI-RTC-OWNER-095` | RESOLVED | $r$ is an equal contamination sensor. Expected optical/atmospheric response in $r$ is not automatically pathology. Source, leakage, Tune, loading, mapping, and source-class protection participate in Resolve, and diagnostic/candidate evidence remains distinct from hard action until stronger owner-approved predicates pass. | None for evidence role; exact protection, leakage, spectral, and false-detection predicates remain open under OWNER-053--058/066--070. | R11-D06; DEF-043; EQ-038; REQ-121/129; PRED-085/087--089/097--099/103 |
+| `SCI-RTC-OWNER-096` | RESOLVED | Ordinary canonical action is symmetric after separately admitted coordinate-specific affine corrections. A paired level shift has one event/support/segmentation/reset but independent $x/r$ amplitudes and correction availability. An $r$ spectral candidate does not automatically notch $x$; once shared admission passes, the same notch acts on both. The existing $x$ donor is the sole explicit coordinate-specific recovery exception, creates no $r$ value, and makes conditioned $r$ unavailable over its full causal influence on the common grid. CAL remains $x$-only and PTC/SCI-VAL retain downstream policy. | None for this architecture; quantitative correction, spectral admission, covariance, donor, and downstream policies remain governed by existing open entries. | R11-D07; DEF-047--050; EQ-036/040--041; REQ-126--138; PRED-090--103 |
+
 ## Exact unavailable-state rule
 
 An unresolved entry must be referenced by ID in the observation-resolved
@@ -166,6 +187,6 @@ state when it blocks an operation. It must not be replaced by a numerical
 sentinel, a software default, a value recovered from prior products, or a
 claim that the unavailable operation was disabled after being requested.
 Resolution requires explicit scientific-owner approval and a versioned
-successor or formally reopened ledger revision. Candidate r0.10 resolves only
-OWNER-084--089 and does not provide missing approval for any other open entry
-or alter its unavailable consequence.
+successor or formally reopened ledger revision. Candidate r0.11 additionally
+resolves OWNER-090--096 and does not provide missing approval for any other
+open entry or alter its unavailable consequence.

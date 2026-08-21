@@ -1,4 +1,4 @@
-% SCI-RTC v0.1/r0.10 shared normative core -- definitions.
+% SCI-RTC v0.1/r0.11 shared normative core -- definitions.
 \section{Normative definitions}
 \label{sec:core-definitions}
 
@@ -81,8 +81,9 @@ The chronological composition of paired admission and evidence selection,
 level-shift transition masking and plateau segmentation, then every admitted
 $x$-domain replacement, mask, FIR/IIR/notch, boundary, reset state,
 non-finite, and phase-zero sampling action, including all affine state terms
-and exception intervals.  Raw $r$ may affect a selector or resolved state but
-does not thereby receive the $x$ numerical operator.
+and exception intervals.  Raw $r$ may affect evidence and the resolved pair
+state; every ordinary canonical stage then acts through the same $L_\Pi$ on
+both coordinates, without copying any $x$-only donor exception into $r$.
 Annotations that affect values, support, influence, or availability are part
 of the operator.  Detection and affected-support decisions are pair-coherent;
 coordinate-specific evidence and correction amplitudes remain distinct.
@@ -99,7 +100,7 @@ that identity is not a largest-coefficient claim.
 An exact local or factorized representation that includes every enabled
 response-changing stage, detector mixing, mask, state, edge rule, exception,
 and sampling phase on its declared support.  Conditioned $x$ and available
-conditioned $r$ each retain their coordinate-diagonal response; both
+conditioned $r$ use identical ordinary diagonal response blocks; both
 cross-coordinate numerical responses are zero.  The RTC-local response is with
 respect to the admitted aligned pair.  An optional end-to-end response to the
 native acquisition grid is a distinct composition with admitted upstream
@@ -148,7 +149,7 @@ continuous adaptation are outside v0.1.
 
 \item[SCI-RTC-DEF-017 -- Conditional statistical covariance.]
 The covariance obtained from an admitted joint $x/r$ input covariance through
-a fixed coordinate-diagonal realized operator while holding selection and
+the fixed identical paired operator while holding selection and
 nuisance state fixed.  It preserves available cross-coordinate covariance even
 though numerical $x\leftrightarrow r$ response is zero.  It is
 not total uncertainty and does not imply a diagonal, white, stationary, or
@@ -342,7 +343,100 @@ where no scientifically justified $r$-domain correction exists, the paired
 $r$ location and response remain typed invalid or unavailable with exact
 cause.  The companion preserves raw-$r$ parentage, mapping, units, sign,
 reference, optical-leakage lineage, coordinate-specific evidence, response,
-uncertainty status, and provenance.  It does not enter SCI-CAL, alter
-conditioned $x$, or authorize numerical $x\leftrightarrow r$ mixing.
+uncertainty status, and provenance.  It does not enter SCI-CAL, numerically
+mix into conditioned $x$, or authorize numerical $x\leftrightarrow r$ mixing;
+its evidence may nevertheless affect the resolved pair plan under
+equations~\eqref{eq:paired-evidence}--\eqref{eq:pair-resolve-apply}.
+
+\item[SCI-RTC-DEF-040 -- Canonical conditioned pair.]
+The jointly requested RTC product formed from one exact admitted raw
+$x/r$ occurrence pair, one application context, one immutable resolved pair
+plan, one realized record, and one selected output grid.  On ordinary common
+available support, both coordinates undergo the identical operator of
+equation~\eqref{eq:canonical-pair-operator}.  ``Conditioned pair'' is not a
+permitted product claim when conditioned $r$ was not requested or is globally
+unavailable; the product is then conditioned $x$ with raw-$r$ parentage and
+the exact conditioned-$r$ request/availability disposition.
+
+\item[SCI-RTC-DEF-041 -- Coordinate-specific evidence.]
+A learned record $E_x$ or $E_r$ whose direct numerical observation originates
+in exactly one member of the raw pair.  It preserves detector and occurrence
+identity, estimator, coordinate of origin, physical and sample support,
+source-protection and Tune/mapping state, uncertainty, quality, causal class,
+direct status, and source or frequency domain where applicable.  Pair action
+does not convert it into direct evidence in the other coordinate.
+
+\item[SCI-RTC-DEF-042 -- Joint paired evidence.]
+A learned record $E_{xr}$ whose estimator and declared causal meaning depend
+on the joint behavior of the exact paired coordinates.  It carries the same
+identity, support, protection, mapping, uncertainty, quality, and domain facts
+as coordinate-specific evidence and is not reducible to two generic flags.
+
+\item[SCI-RTC-DEF-043 -- Hard pair-pathology class.]
+An owner-designated causal class whose accepted direct or joint evidence is
+sufficient under its resolved policy to require pair-level action.  Accepted
+spikes, level shifts, resets or discontinuities, structurally invalid mapped
+pairs, declared non-finite or out-of-domain events, and later expressly
+approved classes may qualify.  Weak lines, PSD shape, variance, leakage,
+coherence, population outliers, Tune-health metrics, and source-overlapping
+features remain diagnostic or candidate evidence until their stronger
+owner-approved predicates pass.
+
+\item[SCI-RTC-DEF-044 -- Pair-level action support.]
+The immutable mask, physical/sample interval, guards, segments, reset
+boundaries, and transitive operator influence on which one resolved pair plan
+acts because at least one accepted hard cause requires action.  Its union does
+not merge or erase the originating evidence records or their causal classes.
+
+\item[SCI-RTC-DEF-045 -- Inferred pair contamination.]
+The typed consequence assigned to the paired coordinate when accepted direct
+evidence in one coordinate or accepted joint evidence establishes a hard pair
+event.  It identifies direct-$x$, direct-$r$, joint, inferred-$x$-from-$r$,
+or inferred-$r$-from-$x$ status and never asserts a numerical detection that
+was not made.
+
+\item[SCI-RTC-DEF-046 -- Common identical paired operator.]
+The canonical ordinary operator $I_2\otimes L_\Pi$, with exactly the same
+masks, pair-action support, segments, transitions, guards, coefficients,
+state, initialization/reset, filter definitions, order, precision,
+phase/delay, boundaries, downsampling, selected times, representative
+occurrences, cardinality, and output grid on both coordinates.  Its two
+cross-coordinate numerical branches are zero.
+
+\item[SCI-RTC-DEF-047 -- Coordinate-specific affine correction.]
+An admitted additive baseline translation $b^x$ or $b^r$ learned for one
+coordinate on stable plateau support.  A shared event has one transition,
+guards, segmentation, and reset, while the two amplitudes, uncertainties,
+quality states, availability, and numerical correction actions remain
+separate.  Neither amplitude is copied, inferred, or numerically mixed from
+the other.
+
+\item[SCI-RTC-DEF-048 -- $x$-only donor-recovery exception.]
+The existing coordinate-specific RTC repair in which justified donor
+information may replace an accepted target $x$ occurrence.  It is not an
+ordinary common paired operator, creates no donor-derived $r$ value, and makes
+conditioned $r$ and its response unavailable over the full causal influence
+of the repair while retaining the common grid and every raw-pair cause.
+
+\item[SCI-RTC-DEF-049 -- Conditioned-$r$ local unavailable influence.]
+The exact selected-grid support on which requested conditioned $r$, its
+response, or its covariance component cannot be scientifically produced,
+including the complete transitive influence of an $x$-only donor repair or a
+failed $r$-specific affine correction.  Locations remain in place with typed
+causes; otherwise valid conditioned $x$ remains available.
+
+\item[SCI-RTC-DEF-050 -- Separately optimized $r$ diagnostic descendant.]
+Any future product that uses an $r$-specific temporal, sampling, state, mask,
+or response operator differing from $L_\Pi$.  It requires a new name,
+identity, purpose, response, covariance, uncertainty, provenance, and owner
+authority and is not the canonical conditioned-$r$ companion.
+
+\item[SCI-RTC-DEF-051 -- Cause-preserving pair evidence/action record.]
+The ordered record linking every $E_x$, $E_r$, and $E_{xr}$ item to its
+accepted/rejected/candidate disposition, direct or inferred status, resolved
+pair action, exact support and transitive influence, coordinate-local
+modification and availability, operator identity, uncertainty, and downstream
+handoff.  It allows reconstruction of why pair action occurred without
+turning a unioned support into an undifferentiated flag.
 
 \end{description}
