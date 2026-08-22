@@ -109,6 +109,30 @@ still cannot enter RTC. No Unity run is required for Stage 3; before Stage 4,
 the required small owner-reproducible native-gap fixture must be frozen
 locally.
 
+That pre-Stage-4 fixture gate is satisfied at exact commit
+`6d65b151eb836e2bbd5f5f1d3bf381427800528a`, tree
+`406d1784d64d6fb41e567aab083798324f871634`. The frozen
+`urn:citlali:sci-align:native-gap:v1` YAML is raw-byte pinned by SHA-256
+`a4dfdfe4b45638952f57f5f258badfab84f5d6ce1d022abfefc47a9e84091701`
+and has a reusable test-only loader. It contains two interleaved detector
+networks, exact zero/large/max-int64 output UIDs, measured values, original
+flag bits, five relational slots, and one delivered network-7 packet gap with
+the exact `701 -> 703` counter discontinuity. The gap remains one explicit
+absent cell; it is not allocated a value or native identity.
+
+The fixture freezes complete-cohort slot intervals `[0,2)` and `[3,5)`, exact
+packet-contiguous network runs, and a factor-2 Stage 4 oracle for run-local
+selected anchors and bitwise-OR original flag support. Four focused fixture
+tests reject any unreviewed byte change and prove that the current Stage 2
+alignment contracts materialize exactly that topology. The
+[fixture-gate handoff](../handoff/COMPACT_V2_NATIVE_ALIGN_STAGE4_FIXTURE_GATE_2026-08-22.md)
+records 32/32 complete SCI-ALIGN cases, 753/753 runnable CTests, the established
+single disabled test, 203/203 baseline-tool tests, the complete required
+config gate, exact-commit CLI identity, and valid ledgers. This test/data-only
+commit does not call RTC, alter a numerical route, or activate runtime
+processing. The fixture prerequisite is closed and Stage 4 RTC adapter work
+may begin under its existing separate stop gate.
+
 ## 2026-08-21 JINC Parallel Ownership Reconstruction
 
 The independently accepted SCI-MAP-002 ownership contract has been
