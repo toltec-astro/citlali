@@ -204,6 +204,42 @@ at this boundary. Stage 6 native science pointing and map projection may begin
 as a separate commit, with its stop gate before output-lineage claims or mode
 activation.
 
+Stage 6 native science pointing and map projection is implemented at exact
+commit `d09234f37b2eda851f35106d994be2620e2468bc`, tree
+`12137d9701025ac6c3faa6e40eb6f44e1c56ba39`. The immutable projection is
+constructible only from the exact Stage 3 measured-scan handle retained by a
+successfully committed Stage 5 operation. It freezes every rectangular
+consumer cell's exact network-native identity, post-PTC revision and value,
+validity state, native latitude/longitude pair, detector binding, and current
+map index. Missing cells are never materialized; invalid cells remain present
+but flagged and cannot project.
+
+Before either mapmaker can mutate a destination, the adapter revalidates exact
+sample values and flags, pixel axes, resolved map grouping, map indices, typed
+output UID/array/flag identity, and detector offsets. Stale, foreign,
+incomplete, duplicate, unequal, nonfinite, unresolved, or synthetic
+candidates fail closed. The opt-in naive and sequential/parallel JINC entry
+points then execute their existing accumulation bodies with only the pointing
+source selected from the admitted native snapshot. JINC's established unique
+map-owner preflight remains in force.
+
+Six focused Stage 6 cases pass, including bit-exact identical-time equivalence
+with naive checksum `8052882556844240840`, JINC checksum
+`4269599267376700904`, and exact JINC repetition at OpenMP thread counts 1, 2,
+4, and 8. The complete SCI-ALIGN executable passes 49/49 cases; all 770
+runnable CTests pass with the established single disabled test not run; all
+203 baseline-tool tests pass; and the full required config gate passes 127/127
+unit tests, all four mode kits, and 8/8 compact-compatibility cases with zero
+skips or gaps. Both ledgers and the session-exit audit remain valid, and the
+frozen fixture digest is unchanged.
+
+The [Stage 6 handoff](../handoff/COMPACT_V2_NATIVE_ALIGN_STAGE6_SCIENCE_PROJECTION_2026-08-22.md)
+records the complete evidence. No ordinary runtime route, output lineage,
+product publication, or numerical kernel is changed or activated. No Unity
+run is required at this boundary. Stage 7 has not begun: it remains separately
+gated on compact provenance, lifecycle and publication tests, explicit mode
+routing, and the owner-run Unity campaign defined by the accepted plan.
+
 ## 2026-08-21 JINC Parallel Ownership Reconstruction
 
 The independently accepted SCI-MAP-002 ownership contract has been
