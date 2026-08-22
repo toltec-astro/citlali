@@ -487,19 +487,30 @@ public:
     const std::vector<NativePtcGroupWorkingSet> &groups() const noexcept {
         return groups_;
     }
+    const std::shared_ptr<const NativeMeasuredDetectorScan> &mapping_handle()
+        const noexcept {
+        return mapping_;
+    }
 
     NativePtcPreparedOperation(
+        std::shared_ptr<const NativeMeasuredDetectorScan> mapping,
         NativeOperationIdentity operation, std::string requested_grouping,
         std::string effective_grouping, std::size_t detector_count,
         std::size_t segment_count,
         std::vector<NativePtcGroupWorkingSet> groups)
-        : operation_{operation},
+        : mapping_{std::move(mapping)}, operation_{operation},
           requested_grouping_{std::move(requested_grouping)},
           effective_grouping_{std::move(effective_grouping)},
           detector_count_{detector_count}, segment_count_{segment_count},
-          groups_{std::move(groups)} {}
+          groups_{std::move(groups)} {
+        if (!mapping_) {
+            throw std::invalid_argument(
+                "native PTC prepared operation requires its scan mapping");
+        }
+    }
 
 private:
+    std::shared_ptr<const NativeMeasuredDetectorScan> mapping_;
     NativeOperationIdentity operation_;
     std::string requested_grouping_;
     std::string effective_grouping_;
@@ -819,7 +830,8 @@ inline NativePtcPreparedOperation prepare_native_ptc_cohorts(
             "native PTC operation sequence changed during preparation");
     }
     return NativePtcPreparedOperation{
-        operation, requested, effective, scan.detector_count(),
+        ledger.mapping_handle(), operation, requested, effective,
+        scan.detector_count(),
         segments.size(), std::move(groups)};
 }
 

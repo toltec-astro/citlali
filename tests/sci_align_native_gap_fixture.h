@@ -161,6 +161,14 @@ struct NativeGapFixtureV1 {
         telescope["TelUTC"] = support;
         telescope["TelAzAct"] = Eigen::Vector2d{10.0, 11.0};
         telescope["TelElAct"] = Eigen::Vector2d{50.0, 51.0};
+        telescope["alt_phys"] = Eigen::Vector2d{-1.5e-5, 1.5e-5};
+        telescope["az_phys"] = Eigen::Vector2d{1.0e-5, -1.0e-5};
+        telescope["ActParAng"] = Eigen::Vector2d{0.1, 0.2};
+        telescope["dec_phys"] = Eigen::Vector2d{-1.5e-5, 1.5e-5};
+        telescope["ra_phys"] = Eigen::Vector2d{1.0e-5, -1.0e-5};
+        telescope["ActGalAng"] = Eigen::Vector2d{0.3, 0.4};
+        telescope["b_phys"] = Eigen::Vector2d{-1.5e-5, 1.5e-5};
+        telescope["l_phys"] = Eigen::Vector2d{1.0e-5, -1.0e-5};
         auto raw =
             std::make_shared<const pipeline::RawTelescopeTrajectory>(
                 std::move(telescope));

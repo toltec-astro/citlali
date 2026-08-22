@@ -17,6 +17,7 @@
 
 #include <citlali/core/mapmaking/jinc_debug_breadcrumb.h>
 #include <citlali/core/mapmaking/jinc_contract.h>
+#include <citlali/core/pipeline/timestream_native_science_projection.h>
 #include <citlali/core/timestream/timestream.h>
 
 #include <citlali/core/mapmaking/map.h>
@@ -117,6 +118,39 @@ public:
     void populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
                                      Eigen::DenseBase<Derived> &, std::string &, apt_t &, double, bool, bool,
                                      const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr);
+
+    template<class map_buffer_t, typename Derived, typename apt_t>
+    void populate_maps_jinc_native(
+        TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &,
+        map_buffer_t &, Eigen::DenseBase<Derived> &, std::string &, apt_t &,
+        double, bool, bool,
+        const citlali::pipeline::NativeScienceProjection &,
+        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr);
+
+    template<class map_buffer_t, typename Derived, typename apt_t>
+    void populate_maps_jinc_parallel_native(
+        TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &,
+        map_buffer_t &, Eigen::DenseBase<Derived> &, std::string &, apt_t &,
+        double, bool, bool,
+        const citlali::pipeline::NativeScienceProjection &,
+        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr);
+
+private:
+    template<class map_buffer_t, typename Derived, typename apt_t>
+    void populate_maps_jinc_impl(
+        TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &,
+        map_buffer_t &, Eigen::DenseBase<Derived> &, std::string &, apt_t &,
+        double, bool, bool,
+        const citlali::pipeline::NativeScienceProjection *,
+        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *);
+
+    template<class map_buffer_t, typename Derived, typename apt_t>
+    void populate_maps_jinc_parallel_impl(
+        TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &,
+        map_buffer_t &, Eigen::DenseBase<Derived> &, std::string &, apt_t &,
+        double, bool, bool,
+        const citlali::pipeline::NativeScienceProjection *,
+        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *);
 };
 
 auto JincMapmaker::jinc_func(double r, double a, double b, double c, double r_max, double l_d) {
@@ -308,9 +342,37 @@ void JincMapmaker::allocate_pointing(map_buffer_t &mb, double weight, double cos
 }
 
 template<class map_buffer_t, typename Derived, typename apt_t>
-void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
+void JincMapmaker::populate_maps_jinc(
+    TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, map_buffer_t &omb,
+    map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
+    std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb,
+    bool run_noise,
+    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
+    populate_maps_jinc_impl(
+        in, omb, cmb, map_indices, pixel_axes, apt, d_fsmp, run_omb,
+        run_noise, nullptr, active_maps);
+}
+
+template<class map_buffer_t, typename Derived, typename apt_t>
+void JincMapmaker::populate_maps_jinc_native(
+    TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, map_buffer_t &omb,
+    map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
+    std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb,
+    bool run_noise,
+    const citlali::pipeline::NativeScienceProjection &native_projection,
+    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
+    native_projection.require_compatible_mapmaking_input(
+        in, map_indices, pixel_axes, omb.map_grouping, apt);
+    populate_maps_jinc_impl(
+        in, omb, cmb, map_indices, pixel_axes, apt, d_fsmp, run_omb,
+        run_noise, &native_projection, active_maps);
+}
+
+template<class map_buffer_t, typename Derived, typename apt_t>
+void JincMapmaker::populate_maps_jinc_impl(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
                         std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb, bool run_noise,
+                        const citlali::pipeline::NativeScienceProjection *native_projection,
                         const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
 
     const bool use_omb = !omb.noise.empty();
@@ -527,8 +589,12 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
             Eigen::Index mat_cols_center = (mat_cols - 1.)/2.;
 
             // get detector pointing
-            auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
-                                                              pixel_axes, in.pointing_offsets_arcsec.data, omb.map_grouping);
+            auto [lat, lon] = native_projection != nullptr
+                ? native_projection->detector_pointing(det_index)
+                : engine_utils::calc_det_pointing(
+                      in.tel_data.data, apt["x_t"](det_index),
+                      apt["y_t"](det_index), pixel_axes,
+                      in.pointing_offsets_arcsec.data, omb.map_grouping);
 
             // get map buffer row and col indices for lat and lon vectors
             Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows - 1)/2.;
@@ -840,9 +906,37 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
 
 template<class map_buffer_t, typename Derived, typename apt_t>
-void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
+void JincMapmaker::populate_maps_jinc_parallel(
+    TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, map_buffer_t &omb,
+    map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
+    std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb,
+    bool run_noise,
+    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
+    populate_maps_jinc_parallel_impl(
+        in, omb, cmb, map_indices, pixel_axes, apt, d_fsmp, run_omb,
+        run_noise, nullptr, active_maps);
+}
+
+template<class map_buffer_t, typename Derived, typename apt_t>
+void JincMapmaker::populate_maps_jinc_parallel_native(
+    TCData<TCDataKind::PTC, Eigen::MatrixXd> &in, map_buffer_t &omb,
+    map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
+    std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb,
+    bool run_noise,
+    const citlali::pipeline::NativeScienceProjection &native_projection,
+    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
+    native_projection.require_compatible_mapmaking_input(
+        in, map_indices, pixel_axes, omb.map_grouping, apt);
+    populate_maps_jinc_parallel_impl(
+        in, omb, cmb, map_indices, pixel_axes, apt, d_fsmp, run_omb,
+        run_noise, &native_projection, active_maps);
+}
+
+template<class map_buffer_t, typename Derived, typename apt_t>
+void JincMapmaker::populate_maps_jinc_parallel_impl(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                         map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
                         std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb, bool run_noise,
+                        const citlali::pipeline::NativeScienceProjection *native_projection,
                         const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
 
     const bool use_omb = !omb.noise.empty();
@@ -1176,8 +1270,12 @@ void JincMapmaker::populate_maps_jinc_parallel(TCData<TCDataKind::PTC, Eigen::Ma
             Eigen::Index mat_cols_center = (mat_cols - 1.)/2.;
 
             // get detector pointing
-            auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, apt["x_t"](det_index), apt["y_t"](det_index),
-                                                              pixel_axes, in.pointing_offsets_arcsec.data, omb.map_grouping);
+            auto [lat, lon] = native_projection != nullptr
+                ? native_projection->detector_pointing(det_index)
+                : engine_utils::calc_det_pointing(
+                      in.tel_data.data, apt["x_t"](det_index),
+                      apt["y_t"](det_index), pixel_axes,
+                      in.pointing_offsets_arcsec.data, omb.map_grouping);
 
             // get map buffer row and col indices for lat and lon vectors
             Eigen::VectorXd omb_irow = lat.array()/omb.pixel_size_rad + (omb.n_rows - 1)/2.;
