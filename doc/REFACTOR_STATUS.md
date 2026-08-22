@@ -12,15 +12,25 @@ The [reconstruction plan](COMPACT_V2_NATIVE_ALIGN_CONSUMER_RECONSTRUCTION_PLAN_2
 defines compact-v2 detector identity, native-time and gap invariants,
 transactional gather/scatter, numerical-preservation boundaries, and seven
 separately gated implementation stages. It also promotes the Beammap
-correction to an explicit mode contract: Beammap remains the raw/APT producer
-and may not acquire an observation-matched consumer lineage merely because
-native timing or pointing is present.
+correction to an explicit mode contract: detector/automatic Beammap remains
+the raw/APT producer; the existing non-detector calibration-table lane remains
+unchanged; and neither may acquire an observation-matched consumer lineage
+merely because native timing or pointing is present.
+
+Independent review of exact plan commit `82b086856f891873167760534b64a0811840f3cb`
+returned `revise` on 2026-08-22. The revised plan distinguishes both Beammap
+calibration lanes, names baseline-governed `flag` and its authorized typed
+missing state, freezes exact signed-counter continuity and gap association,
+and assigns immutable observation, mutable scan/chunk, and output publication
+owners. See the [review record](../handoff/COMPACT_V2_NATIVE_ALIGN_PLAN_INDEPENDENT_REVIEW_2026-08-22.md).
+Implementation remains blocked until independent re-review accepts the exact
+revised plan commit.
 
 This is a documentation-only design checkpoint. No native consumer is
-activated and no application code or production status changes. Implementation
-is blocked until an independent reviewer accepts the exact plan commit; the
-first permitted implementation stage is then the immutable verified
-compact-v2 bundle-to-detector-column relation, with no runtime activation.
+activated and no application code or production status changes. After an
+exact-SHA `accept` verdict, the first permitted implementation stage is the
+immutable verified compact-v2 bundle-to-detector-column relation, with no
+runtime activation.
 
 ## 2026-08-21 JINC Parallel Ownership Reconstruction
 

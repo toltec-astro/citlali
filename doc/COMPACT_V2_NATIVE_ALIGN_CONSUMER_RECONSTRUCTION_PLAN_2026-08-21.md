@@ -16,6 +16,15 @@ production-readiness claim. Implementation is blocked until an independent
 review accepts the contracts and stage boundaries below against an exact plan
 commit.
 
+The first independent review of exact plan commit `82b086856f891873167760534b64a0811840f3cb`
+returned `revise` on 2026-08-22. This revision resolves its four blocking
+findings by distinguishing both existing Beammap calibration lanes, naming
+the baseline-governed consumer-selection `flag`, freezing packet-counter
+continuity, and assigning observation, scan/chunk, and output transaction
+owners. It also adopts the review's nonblocking recommendation to freeze gap
+slot-association tolerance and presence-mask parity. A new exact-SHA
+independent review remains required.
+
 ## Frozen inputs
 
 | Role | Identity | Use |
@@ -55,7 +64,16 @@ minimum:
 - target `ScopedRowReference`;
 - raw network and channel;
 - relation disposition and, when present, selected seed reference; and
-- the exact governed detector flag value and its missing policy.
+- the exact baseline-governed consumer-selection `flag` value and its typed
+  missing policy.
+
+The consumer-selection flag is the compact-v2 baseline-governed field named
+exactly `flag`. It is never inferred from target KMP `kids_flag`, native sample
+flag bits, or Beammap's later `flag2`. A matched relation row requires exact
+signed-int64 `flag`. An unmatched or ambiguous row may carry typed missing
+only when its verified compact-v2 field rule authorizes that state; the typed
+relation retains it as absent and never fills or interprets it. Authorized
+typed missing is not a nonfinite-value failure.
 
 `presentation_rank`, `application_rank`, `source_rank`, UID, network, and
 channel remain distinct artifact-local facts. None becomes a persistent
@@ -79,7 +97,22 @@ delivered row and reconstructed timestamp are immutable. A common-time slot
 is only a relational coincidence coordinate and provenance label; it is
 never substituted for a measured sample timestamp.
 
-Packet-counter discontinuities partition each network into contiguous runs.
+Packet-counter ingress is fail-closed and exact: a nonfinite, fractional, or
+out-of-range value rejects the alignment candidate before publication. For
+admitted signed integer counters `before` and `after`, two delivered rows may
+share a contiguous run only when `before` is not the maximum representable
+counter and `after == before + 1`. Repeated, decreasing, jumping, and
+maximum-to-minimum rollover transitions close the run; there is no inferred
+wrap policy. A scan boundary also closes support even when adjacent counters
+would otherwise be contiguous.
+
+Gap slot association preserves the established compatibility construction:
+the common grid uses its realized `dt`, association tolerance is exactly
+`dt / 2`, each native timestamp is rounded to its one candidate grid slot,
+and admission requires both an injective native-row/slot mapping and exact
+presence/absence parity with the established legacy mask. Alternative
+within-tolerance row selection is not admitted by this lane.
+
 No operation may synthesize a detector sample for an absent cell, interpolate
 a detector value across a gap, reuse a native row in two cohort cells, or
 bridge two runs for filtering, downsampling, PCA, variance, pointing, or
@@ -129,14 +162,38 @@ only pointing/sample selection changed.
 | --- | --- | --- | --- |
 | Science | Required when native consumer execution is activated | Required | Candidate activation path |
 | Pointing | Required when native consumer execution is activated | Required | Candidate activation path |
-| Beammap | Forbidden as an input authority; Beammap is the raw detector/APT producer | May be used under a separately reviewed producer-native carrier | Must remain disabled until a Beammap-specific producer lineage exists |
+| Beammap, detector/automatic grouping | Forbidden as an input authority; this lane builds the APT from raw detector inventory | May be used without consumer lineage; a producer-native carrier requires separate review | Must remain disabled until a Beammap-specific producer lineage exists |
+| Beammap, existing non-detector grouping | The established calibration-table load remains unchanged but is never a matched-v2 native-consumer authority | May be used without consumer lineage; a producer-native carrier requires separate review | Must remain disabled until a Beammap-specific producer lineage exists |
 | OOF or any other mode | No inferred activation | No inferred activation | Fail closed pending an explicit mode decision |
 
 The historical `9d9d55a54` correction is therefore a first-class acceptance
 contract, not a cleanup to apply later. A Beammap must continue to build its
-APT from raw detector inventory and optional priors. It must not require,
-publish, or inherit an observation-matched consumer relation merely because
-native timing or pointing objects exist.
+APT from raw detector inventory for detector/automatic grouping. Existing
+non-detector grouping may continue through its current calibration-table load;
+this plan neither removes nor relabels that legacy lane. Neither Beammap lane
+may require, publish, or inherit an observation-matched native-consumer
+relation merely because native timing or pointing objects exist.
+
+### 7. Lifecycle and transaction ownership is explicit
+
+The verified compact-v2 relation plus immutable alignment and pointing handles
+belong to one observation lifetime. Each handle is published only after its
+own complete admission; the native-ready observation binding is published
+atomically only after the exact set is present. All are reset/destroyed at the
+observation boundary.
+
+The measured detector mapping, mutable native-sample ledger, and monotonic
+operation sequence belong to exactly one scan/chunk transaction. They are
+created fresh after scan/chunk admission and destroyed on commit, rollback,
+or boundary exit; no mutable revision or `last_operation` state may cross a
+scan/chunk or observation boundary. The existing science matrix remains the
+value owner where applicable.
+
+Required product staging, commit/rollback, and deterministic index replacement
+belong to the existing output/publication owner. Numerical processors may
+return immutable provenance facts but do not own output publication. None of
+these owners is implemented as process-lifetime state or new cross-cutting
+public `Engine` state.
 
 ## Reconstruction architecture
 
@@ -149,17 +206,19 @@ bridge header.
 | Compact-v2 detector relation | Immutable verified bundle-to-detector-column join | Raw I/O, timing, PCA, pointing, mapmaking |
 | Native network alignment | Delivered times, packet counters, run boundaries, relational slot associations | Detector values, APT matching, telescope interpolation |
 | Native pointing plan | Telescope/offset values sampled at exact native times | Detector cleaning or map accumulation |
-| Measured detector scan | Exact raw channel-to-typed-column gather and immutable cell lookup | Filtering, synthesized gap filling, publication |
+| Measured detector scan | One-scan/chunk exact raw channel-to-typed-column gather, ledger, revision sequence, and immutable cell lookup | Filtering, synthesized gap filling, cross-boundary state, publication |
 | RTC run adapter | Dispatch one contiguous run at a time and record exact support/ORed flags | Cross-run windows or detector identity decisions |
 | PTC cohort adapter | Gather finite rectangular working groups and transactionally scatter results | Treat placeholders as samples or change PCA math |
 | Science projection adapter | Supply exact measured cells and matching native pointing to existing mapmakers | Change naive/JINC numerical kernels |
-| Product provenance | Bind observation, relation, alignment, pointing, operation, revisions, support, and outputs | Own scientific values or mutate processing state |
+| Product provenance | Bind observation, relation, alignment, pointing, operation, revisions, support, and outputs for the existing output owner | Own scientific values or mutate processing state |
 
 Headers must remain independently compilable. Large application orchestration
 belongs in private implementation fragments or small cohesive interfaces; it
-must not become new cross-cutting public `Engine` state. Observation and scan
-lifecycle owners retain the immutable handles they require and clear them at
-their existing lifecycle boundaries.
+must not become new cross-cutting public `Engine` state. The observation owner
+retains only observation-scoped immutable handles; the scan/chunk owner retains
+the measured mapping, ledger, and operation sequence; the existing output
+owner retains publication state. Each clears its state at the boundary named
+above.
 
 ## Staged implementation and stop gates
 
@@ -190,10 +249,12 @@ introducing a second parser or a v1 fallback.
 Focused tests must cover matched-bundle admission; target/output joins;
 presentation permutations; exact int64 preservation; complete detector-column
 and raw network/channel coverage; matched, unmatched, and ambiguous relation
-states; bundle/row/relation identity binding; and atomic rejection of tamper,
-stale scope, duplicates, omissions, wrong channel/network, foreign rows, and
-nonfinite governed values. A Beammap baseline must not be admitted through
-this consumer API.
+states; exact baseline `flag`; authorized typed missing only for verified
+unmatched/ambiguous rows; rejection of `kids_flag`, sample flags, or `flag2` as
+substitutes; bundle/row/relation identity binding; and atomic rejection of
+tamper, stale scope, duplicates, omissions, wrong channel/network, foreign
+rows, unauthorized nulls, and invalid governed values. A Beammap baseline must
+not be admitted through this consumer API.
 
 Stop after the relation tests and the complete existing compact-v2 suite.
 There is no runtime native-consumer activation in this stage.
@@ -203,13 +264,18 @@ There is no runtime native-consumer activation in this stage.
 Reconstruct per-network delivered times, packet counters, discontinuities,
 contiguous runs, relational slot associations, and telescope interpolation at
 native times. Store immutable observation-owned handles without changing the
-current common-time compatibility products.
+current common-time compatibility products. Use exact signed-counter `+1`
+continuity without rollover and the established `dt / 2`, single-rounded-slot,
+injective, legacy-presence-parity association rule.
 
 Focused tests must demonstrate subcadence-drop preservation without
-synthesis; gap partitioning; no cross-run association; input-order and network
+synthesis; counter repeat, decrease, jump, maximum-counter rollover, and scan
+boundary partitioning; no cross-run association; exact `dt / 2` tolerance and
+legacy presence-mask parity; collision rejection; input-order and network
 permutation invariance; exact equality for identical native times; telescope
 and detector-offset evaluation at native time; and atomic rejection of
-duplicate, absent, nonfinite, stale, or cross-scope candidates.
+duplicate, absent, nonfinite, fractional/out-of-range counter, stale, or
+cross-scope candidates.
 
 Stop before reading detector values or dispatching RTC/PTC/mapmaking.
 
@@ -217,9 +283,11 @@ Stop before reading detector values or dispatching RTC/PTC/mapmaking.
 
 Join each raw KIDs matrix channel to exactly one compact-v2 detector column,
 gather only complete native run/cohort cells, preserve original flag bits, and
-publish an immutable measured scan mapping. The existing science matrix may
-remain the value owner; the mapping must not retain an unnecessary second
-O(rows x detectors) value copy.
+publish an immutable measured scan mapping. Create the mutable ledger and
+operation sequence fresh for this scan/chunk; destroy them on commit,
+rollback, or boundary exit. The existing science matrix may remain the value
+owner; the mapping must not retain an unnecessary second O(rows x detectors)
+value copy.
 
 Focused tests must cover complete and partial cohorts, exact row/channel
 selection, input network permutation, typed-relation presentation
@@ -251,7 +319,7 @@ cells. Preserve the existing grouping algorithms (`nw`, `array`, and other
 already supported ordinary groups) only where exact typed membership exists.
 Use checked finite placeholders for excluded cells, preserve invalid native
 values, and scatter replacements transactionally with monotonically
-increasing revisions.
+increasing revisions inside the current scan/chunk owner only.
 
 Focused tests must cover ordinary groups ignoring private placeholders;
 exact noncontiguous memberships; pass-through groups; optional modes failing
@@ -287,14 +355,17 @@ transitions, RTC support, PTC grouping, and map/product occurrence. Required
 product publication and index replacement remain atomic and deterministic.
 
 Only now may reviewed Science and Pointing routes activate the native-required
-consumer. Beammap must take the compile-time or typed runtime producer route
-that cannot request matched-consumer lineage. Other modes remain inactive.
+consumer. Detector/automatic Beammap must take the compile-time or typed
+runtime raw-producer route that cannot request matched-consumer lineage. The
+existing non-detector Beammap calibration-table lane remains unchanged and
+also cannot request that lineage. Other modes remain inactive.
 
 Focused tests must cover lifecycle begin/commit/rollback/retry; stale,
 missing, foreign, and partial lineage rejection before mutation; deterministic
 relation/raw-manifest digests; complete prepared and committed snapshots;
 required-product failure propagation; deterministic index replacement; and
-the explicit Beammap producer-without-input-relation case.
+the explicit detector/automatic Beammap producer-without-input-relation case
+plus an unchanged non-detector Beammap calibration-lane case.
 
 ## Validation matrix
 
@@ -330,9 +401,12 @@ the owner must run at least:
 2. a matched identical-time or no-gap comparison against the legacy-inactive
    path;
 3. naive and JINC projections from the same admitted native scan where both
-   are configured; and
-4. a Beammap producer regression proving no matched-v2 consumer authority is
-   required and comparing against the accepted relevant Beammap baseline.
+   are configured;
+4. a detector/automatic Beammap producer regression proving no matched-v2
+   consumer authority is required and comparing against the accepted relevant
+   Beammap baseline; and
+5. an existing non-detector Beammap calibration-lane regression proving that
+   it remains unchanged and does not acquire matched-consumer lineage.
 
 The exact binary, source commit/tree, requested and merged configurations,
 input bundle identity, raw input digests, logs, product index, and retained
