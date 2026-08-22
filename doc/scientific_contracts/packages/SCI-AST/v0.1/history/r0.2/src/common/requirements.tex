@@ -1,0 +1,442 @@
+\section{Normative scientific requirements}
+\label{sec:requirements}
+
+The key word ``shall'' marks a falsifiable v0.1 obligation.  The identifiers
+are stable and sequential; a successor may append requirements but shall not
+renumber these identities.
+
+\subsection{Identity, input admission, and cause separation}
+
+\Req{001}{One-way lifecycle}{Requested, effective, observation-resolved, and
+realized AST states shall be distinct one-way objects; a later state shall not
+rewrite the accepted request.}
+
+\Req{002}{Observation identity}{Every realized AST bundle shall bind one exact
+immutable observation identity and product-plan identity.}
+
+\Req{003}{Detector occurrence}{Every detector coordinate shall bind an exact
+detector/acquisition occurrence and its observation, not merely an array
+position or optional design identity.}
+
+\Req{004}{Admitted detector binding}{A detector-to-geometry binding shall be
+either a proven observation-local row relation or an explicit keyed relation;
+bare row coincidence shall be rejected.}
+
+\Req{005}{Distinct detector identities}{Acquisition identity, selected
+measured-geometry identity, and optional design identity shall remain
+separate and shall not be substituted for one another.}
+
+\Req{006}{Immutable ALIGN transfer}{AST shall consume the exact
+\nolinkurl{SCI-ALIGN_TO_SCI-AST v0.1/r0.1} transfer bundle without
+reconstructing, reinterpreting, or independently finalizing any transferred
+fact. Compatibility shall preserve every required identity, semantic state,
+ownership boundary, and typed-availability rule; a successor shall name the
+revision it supersedes and map every semantic change explicitly.}
+
+\Req{007}{No shaped substitute}{A missing required ALIGN payload, field,
+record, plan, version, source relation, or parent shall not be replaced by a
+similarly shaped or similarly named object.}
+
+\Req{008}{No clock or mapping reconstruction}{AST shall not reconstruct
+clocks, offsets, assignment, interpolation, gap/guard, continuity synthesis,
+epoch, topology, or source mapping from transferred values or array shape.}
+
+\Req{009}{Aligned-field typing}{Every consumed boresight or current
+observing-state field shall declare identity, registry version, unit, unchanged
+producer frame, topology, operator, exact source mapping/support, origin,
+validity, and uncertainty availability.}
+
+\Req{010}{Signal-independent coordinate availability}{A finite or requested
+$x^A$ or $r^A$ numerical detector-signal payload shall not be a prerequisite
+for an otherwise fully defined AST coordinate.}
+
+\Req{011}{Paired signal provenance}{Transferred $x^A/r^A$ producer facts shall
+retain their common source relation and origin/synthesis state and their
+coordinate-specific numerical-validity and payload states without mixing or
+cross-filling.}
+
+\Req{012}{Five typed causes}{Detector-occurrence identity, signal-coordinate
+validity and payload availability, ALIGN mapping validity, AST coordinate validity, and
+downstream use-specific eligibility shall be represented as five distinct
+causes with no implicit precedence, alias, or rescue rule.}
+
+\subsection{Pointing support and correction}
+
+\Req{013}{Producer selection}{A named pointing-support producer shall select
+the exact correction record identities and native support; AST shall not
+select a calibrator, replacement, or stale record.}
+
+\Req{014}{Correction semantics}{Each correction shall declare vector meaning,
+sign, ordered basis, coordinate-increment versus tangent meaning, arcsecond
+unit, parent, support mode/times, covariance availability, and application
+count before admission.}
+
+\Req{015}{Explicit sign adapter}{A producer residual with the opposite action
+shall be converted only by one explicit, versioned adapter whose direction and
+single application are recorded; an ambiguous sign shall fail before state
+replacement.}
+
+\Req{016}{Constant support}{One finite correction pair shall realize the
+\texttt{constant} mode of Equation~\ref{eq:constant-correction} over its
+declared admitted observation support.}
+
+\Req{017}{Bracketed-MJD support}{Two finite correction pairs with finite,
+strictly increasing MJD supports shall realize
+Equation~\ref{eq:mjd-correction} only for occurrences satisfying
+$0\leq\lambda_s\leq1$.}
+
+\Req{018}{No extrapolation}{AST shall neither clamp, extrapolate, choose the
+nearest endpoint, nor reuse another observation for an occurrence outside
+producer-selected correction support.}
+
+\Req{019}{Legacy-span admission}{Two deliberately absent support times may
+select only the explicit \texttt{legacy\_observation\_span} mode, using the
+exact first and last admitted aligned sample identities/times in
+Equation~\ref{eq:span-correction}.}
+
+\Req{020}{Ambiguous support failure}{Mixed absent/present, reversed, equal,
+non-finite, or otherwise ambiguous two-support encodings shall fail; a
+one-sample span is admissible only when both endpoint corrections are exactly
+equal and reduce to constant mode.}
+
+\Req{021}{Current-state separation}{Pointing interpolation shall use the exact
+ALIGN-admitted time relation, while field rotation shall use the aligned
+current science-sample time/elevation; the latter shall not be inferred from a
+pointing-support record.}
+
+\Req{022}{Support covariance}{When support covariance is reported, AST shall
+apply Equation~\ref{eq:support-covariance}, retain supplied cross-covariance,
+and keep model, selection, calibrator, and systematic terms separate;
+unavailable terms shall not become zero.}
+
+\subsection{Detector geometry, field rotation, and composition}
+
+\Req{023}{Geometry authorities}{Every selected geometry shall bind SCI-BEAM's
+measured relative-geometry authority and limitations plus an exact named
+observation-specific association or transformation authority and instance, or
+shall be typed unavailable.}
+
+\Req{024}{Complete geometry artifact}{The selected artifact shall declare raw
+observation-local coordinates and, where applicable, horizon-fixed/derotated
+coordinates; ordered basis/handedness; units; gauge; angle support; versioned
+rotation law; pivot state; covariance; unresolved affine modes; exact APT
+realization; occurrence binding; and complete lineage.}
+
+\Req{025}{No inferred origin or detector}{AST shall not infer APT origin equals
+telescope boresight, nominate a reference detector, or infer a geometry
+relation from design identity or row order.}
+
+\Req{026}{Gauge preservation}{Every geometry realization shall preserve the
+declared origin/recentering translation, basis, handedness, tangent versus
+coordinate-increment meaning, and conventional pivot parent.}
+
+\Req{027}{Current field rotation}{AST shall evaluate the selected versioned
+field-rotation relation at the current aligned occurrence time/elevation and
+other declared current state, within its exact support.}
+
+\Req{028}{Rotation support}{A geometry or rotation value outside its declared
+time, elevation, or domain support shall be unavailable; AST shall not clamp,
+extrapolate, or replace it with an unversioned field-rotation relation.}
+
+\Req{029}{Affine and pivot availability}{Unknown pivot covariance or
+unresolved translation, scale, skew, shear, or other affine terms shall retain
+typed unavailability/bounds and shall not be set silently to zero or identity.}
+
+\Req{030}{Same-realization key}{Every pointing-support observation and the
+science observation receiving its correction shall have identical
+$K_\gamma$ from Equation~\ref{eq:geometry-key}, unless Requirement~031 is
+satisfied.}
+
+\Req{031}{Authorized equivalence transform}{A cross-realization transform
+shall name both immutable parents, prove equivalence over a declared detector/
+time/elevation domain, act in the correct direction and units, propagate
+covariance, cross-covariance and transform uncertainty, and record authority,
+version, validity, and failure behavior.}
+
+\Req{032}{Incompatible transfer failure}{Absent the complete transform in
+Requirement~031, any mismatch in $K_\gamma$ shall make the dependent
+correction/coordinate unavailable without rewriting unrelated ALIGN or signal
+facts.}
+
+\Req{033}{Noncommuting order}{AST shall apply the eight operations in
+Section~\ref{sec:ordered-composition} in their stated order and retain each
+stage's exact parents.}
+
+\Req{034}{No duplicate operation}{Composition history and application counts
+shall prevent any pointing, geometry, rotation, frame, RTC, or upstream
+coordinate correction from being applied twice.}
+
+\Req{035}{Bounded small-angle operator}{Production use of
+Equation~\ref{eq:small-angle} shall require a preregistered field/elevation/
+time domain, detector population, coordinate and pixel metric, named use,
+tolerance owner/value, spherical oracle/version, and fail-closed behavior;
+AST shall invent neither a universal threshold nor an automatic fallback.}
+
+\subsection{Direction, frame, topology, and projection}
+
+\Req{036}{Vector direction identity}{A sky direction shall be represented by a
+finite normalizable unit vector in one declared frame; longitude alone shall
+not establish direction at a pole.}
+
+\Req{037}{Longitude-component type}{Every longitude-like correction or offset
+shall declare coordinate-increment or on-sky tangent meaning and shall be
+normalized according to Equation~\ref{eq:longitude-normalization}.}
+
+\Req{038}{Circular topology}{Longitude differences shall use the exact
+$[-P/2,P/2)$ convention in Equation~\ref{eq:wrap}; persisted longitude shall
+use Equation~\ref{eq:norm} in its declared unit interval. Exactly antipodal
+interpolation shall be unavailable without an explicit unwrap authority.}
+
+\Req{039}{Product-family frame split}{Point, OOF, and Beammap shall use native
+AltAz tangent azimuth/elevation coordinates in arcseconds; Science shall use
+explicitly identified equatorial J2000 TAN coordinates in degrees.}
+
+\Req{040}{Named frame transform}{Every non-identity frame operation shall name
+source/target frames, epoch/equinox, time scale, site, model/version,
+EOP/refraction applicability, required inputs, validity, and uncertainty
+availability.}
+
+\Req{041}{No frame relabeling}{Missing or incompatible frame authority shall
+make the dependent coordinate unavailable; AST shall not equate J2000, FK5,
+ICRS, apparent, observed, or unrefracted frames by name or default.}
+
+\Req{042}{Exact TAN domain}{The forward TAN mathematical domain shall be
+finite $D>0$ as in Equation~\ref{eq:tan-forward}; v0.1 shall impose no
+universal positive $D_{\min}$.}
+
+\Req{043}{TAN invalidity}{A non-finite direction, $D$, tangent output, or
+$D\leq0$ shall produce explicit AST coordinate invalidity and no stale,
+center, clamped, or edge-pixel substitute.}
+
+\Req{044}{Projection units and axes}{Tangent outputs shall preserve the exact
+frame, ordered axes, topology, and units in Equations~\ref{eq:altaz-plane}
+and~\ref{eq:science-plane}.}
+
+\subsection{Physical center, WCS, and pixel facts}
+
+\Req{045}{Center selection authority}{Every WCS shall bind the exact physical
+center and selection/product-plan identity supplied by a named upstream
+target/product authority.}
+
+\Req{046}{No center inference}{AST automatic WCS shall never search, fit,
+recenter, derive a center from map bounds, or default a missing/ambiguous
+center; the affected WCS shall be unavailable.}
+
+\Req{047}{Legacy all-zero adapter}{Only the exact all-zero pattern across all
+six named legacy CRPIX/CRVAL/TAN controls shall adapt to internal
+\texttt{automatic}; the adapter and original request shall be recorded.}
+
+\Req{048}{Unsupported explicit WCS}{A nonzero or non-finite legacy explicit
+WCS control request shall fail at v0.1 admission as unsupported; numeric zero
+outside the exact six-field adapter shall remain an ordinary value.}
+
+\Req{049}{Immutable WCS identity}{The realized WCS shall bind projection,
+center authority, CRVAL, one-based CRPIX, CD or equivalent PC+CDELT, axis
+order/sign/rotation/handedness, dimensions/bounds, units, frame/epoch,
+precision, product plan, and version.}
+
+\Req{050}{Nonsingular continuous WCS}{The CD-equivalent matrix shall be finite
+and nonsingular, and continuous FITS coordinates shall satisfy
+Equation~\ref{eq:wcs}; hidden transpose, flip, or axis exchange shall fail
+directional checks.}
+
+\Req{051}{Reference-pixel policy}{When the center policy is geometric array
+center, CRPIX shall satisfy Equation~\ref{eq:crpix}; any other declared policy
+shall still place CRVAL exactly at its one-based CRPIX and shall be recorded.}
+
+\Req{052}{Index bases}{FITS pixel centers and zero-based local storage indices
+shall obey Equation~\ref{eq:index-base}; local row $j$ shall never be used as
+the stable ALIGN slot $s$ or another external identity, and a consumer shall
+not infer one convention from the other.}
+
+\Req{053}{Nominal pixel rule}{When requested, the v0.1 nominal containing
+pixel shall obey the half-open nearest-center rule in
+Equation~\ref{eq:pixel-assignment}, or shall name a separately versioned rule
+with equivalent boundary tests.}
+
+\Req{054}{Bounds separation}{Continuous coordinate validity, nominal discrete
+pixel identity, in-bounds/out-of-bounds state, MAP support/coverage, and
+coordinate precision shall remain distinct facts.}
+
+\Req{055}{Non-finite pixel behavior}{A non-finite continuous coordinate or
+pixel shall be invalid and shall never be cast to an integer, mapped to an
+edge, or retained from a prior occurrence.}
+
+\subsection{Validity, atomic output, products, and lifecycle}
+
+\Req{056}{Dedicated AST validity}{Direction, tangent, continuous-pixel,
+nominal-pixel, and RTC coordinate roles shall each publish a dedicated AST
+coordinate-validity cause and exact reason, distinct from ALIGN and downstream
+states.}
+
+\Req{057}{Dependency-limited failure}{A missing or invalid required input shall
+make only its dependent coordinate/product/claim unavailable unless the
+required product contract demands whole-product failure; WCS failure shall not
+erase a valid direction or tangent fact, pixel failure shall not erase a valid
+tangent fact, and no failure shall rewrite unrelated exact relations.}
+
+\Req{058}{Role-factored atomic records}{Each direction, tangent,
+continuous-pixel, nominal-pixel, or RTC role shall publish its value, exact
+layered parent, validity, uncertainty/Jacobian availability, and provenance
+atomically. A family contract may additionally require an atomic complete
+product without collapsing the individual scientific facts or causes.}
+
+\Req{059}{Required-output failure}{Failure to construct or write a required
+coordinate role, WCS, provenance, or product shall fail the required product
+and reduction; partial or mislabeled product output shall not be success, but
+valid upstream role facts and their exact causes shall remain reportable.}
+
+\Req{060}{Typed optional absence}{An optional, unsupported, or unavailable
+coordinate role, Jacobian, $I^{\rm geom}_{pi}$, or $G_{pi}$ product shall
+carry its exact typed state and reason and shall not masquerade as a complete
+role record or family product.}
+
+\Req{061}{Full and mini TOD truth}{Full TOD may retain coordinate arrays with
+compact interpretation/validity state; mini TOD shall declare coordinate
+arrays unavailable rather than silently omit their meaning.}
+
+\Req{062}{Complete replacement}{Observation resolution shall build a complete
+immutable candidate before atomic replacement; failure shall leave no partial
+or prior AST state usable by the next observation.}
+
+\Req{063}{Sequential/parallel equivalence}{Under the declared numerical
+policy, sequential and parallel schedules shall produce identical per-parent
+coordinates, nominal pixels, validity, counts, WCS identity, and deterministic
+provenance order.}
+
+\Req{064}{Real/simulation parity}{Supported real and simulation paths shall use
+the same equations, support, wrap, index, validity, and output-failure rules;
+simulation shall differ only through explicit origin/generator provenance.}
+
+\subsection{Map-center Jacobian and uncertainty}
+
+\Req{065}{Typed Jacobian schema}{Every available
+\texttt{astrometric\_map\_center\_jacobian} shall bind exact input domain,
+output codomain, direction, axis order, units, center/WCS/product parents,
+family, approximation domain, method/version, and included/unavailable terms.}
+
+\Req{066}{Family request gate}{The map-center Jacobian shall be typed
+unavailable until a named product family requests its exact domain, codomain,
+axis order, units, and direction.}
+
+\Req{067}{Center-only scope}{V0.1 shall evaluate the Jacobian only at the
+declared map center and shall not create per-sample, per-detector, per-pixel,
+response-grid, dense, or broadly composed astrometric response/covariance.}
+
+\Req{068}{Response exclusions}{The AST Jacobian shall not be labeled or used
+as a source-amplitude, beam, RTC temporal, MAP transfer, or point-source
+response.}
+
+\Req{069}{Available covariance only}{AST shall transform only declared
+available map-center covariance and cross-covariance terms using the typed
+realized derivative; unavailable terms shall remain unavailable.}
+
+\Req{070}{No unjustified total}{A total map-center covariance shall be formed
+only when all claimed components, cross-covariances, conditioning, and
+combination assumptions are declared.}
+
+\Req{071}{Native tangent uncertainty}{When native tangent uncertainty is the
+product quantity, AST shall preserve it with its frame, basis, units, parent,
+conditioning, and availability rather than relabel it as another domain.}
+
+\Req{072}{Selection uncertainty}{Discrete selection/availability uncertainty
+shall not be converted to Gaussian covariance without a separately approved
+model and parent.}
+
+\subsection{ALIGN-grid, RTC-grid, and MAP handoff}
+
+\Req{073}{ALIGN-grid coordinate parents}{$\theta^A_{ds}$ shall bind stable
+slot $(o,s)$, never local row $j$. Its direction parent shall bind the exact
+ALIGN profile/plan/grid/source relation, detector occurrence, observing state,
+correction, geometry/rotation realization, and frame. Tangent, pixel, and
+nominal-pixel roles shall extend that identity only as specified by
+Equations~\ref{eq:tangent-parent}--\ref{eq:nominal-pixel-parent}.}
+
+\Req{074}{RTC-grid coordinate parent}{$\theta^{\rm RTC}_{dn}$ shall extend the
+appropriate exact ALIGN-grid direction, tangent, or pixel role and bind the
+exact RTC product/plan/grid and all facts in Equation~\ref{eq:rtc-parent}, even
+when it numerically equals a phase-zero representative stable ALIGN slot.}
+
+\Req{075}{RTC fact completeness}{The RTC parent shall include selected
+direction/tangent/pixel role; owner, product, plan, version, detector and
+stable output sample; representative stable ALIGN slot; selected output time,
+scale, support, uncertainty, phase/delay sign, unit, value and count; segment,
+decimation factor, phase and support; correction state, temporal response, and
+status/reasons.}
+
+\Req{076}{No RTC reconstruction}{AST shall not infer or reconstruct RTC plan,
+grid, cadence, phase, delay, time shift, representative stable ALIGN slot,
+selected coordinate role, segment, decimation support, response, or correction
+state from shape or numerical coincidence.}
+
+\Req{077}{No repeated upstream operation}{Constructing
+$\theta^{\rm RTC}_{dn}$ shall not repeat ALIGN, reapply an RTC/upstream
+coordinate correction, silently reuse pre-RTC time, or promote an unavailable
+upstream role by borrowing a downstream WCS or pixel fact.}
+
+\Req{078}{Full RTC sky-response support}{A response-aware consumer shall retain
+the RTC temporal operator and the full contributing set of ALIGN-grid
+coordinates; it shall not replace them by one nominal output coordinate.}
+
+\Req{079}{No angular signal filtering}{AST shall not apply RTC signal
+coefficients directly to angular coordinates as a representation of filtered
+sky response, consistent with Equation~\ref{eq:not-angular-filter}.}
+
+\Req{080}{Projection ownership}{AST shall own TAN/WCS astrometric projection
+and continuous coordinate facts; MAP shall own sample-to-pixel deposition/
+gridding selection, numerical operator, support, normalization, boundaries,
+conservation, response, covariance, accumulation, cropping, and reprojection.}
+
+\Req{081}{Candidate versus deposition gate}{AST may publish separately named
+$I^{\rm geom}_{pi}$ as geometry-only incidence, neighbor stencil, or candidate
+pixel support, but it shall carry no numerical-contribution meaning,
+normalization or conservation claim, MAP-support or validity meaning,
+response, or covariance authority. AST may materialize $G_{pi}$ only for a
+complete exact MAP-owned request naming kernel family, parameters, support,
+normalization, edge/boundary behavior, conservation claim, requested artifact
+form, response/covariance role, plan identity, and version.}
+
+\Req{082}{Delegated parentage}{Every exact materialized $G_{pi}$ shall bind the exact
+AST coordinate parent, WCS/pixel geometry, exact RTC output-grid parent when
+applicable, and exact MAP projection-plan parent as in
+Equation~\ref{eq:gpi-parentage}.}
+
+\Req{083}{No ownership transfer}{AST materialization shall neither select nor
+authorize estimator-specific $G_{pi}$ and shall not transfer MAP scientific
+ownership to AST.}
+
+\subsection{Provenance, availability, and verification obligations}
+
+\Req{084}{Requested provenance}{Requested provenance shall retain exact
+accepted values and source identities, pointing pairs/support, center,
+projection, scale, orientation, dimensions, products, and inactive expert
+values.}
+
+\Req{085}{Effective provenance}{Effective provenance shall retain activation,
+normalized units/topology, sign adapter, support policy, WCS request state,
+projection family, compatibility decisions, and their versions.}
+
+\Req{086}{Observation-resolved provenance}{Observation-resolved provenance
+shall retain observation/detector/geometry/ALIGN/RTC identities as applicable,
+support bracket, frame operator, field origins/validity, center authority,
+exact WCS/bounds, approximation record, and uncertainty availability.}
+
+\Req{087}{Realized provenance}{Realized provenance shall retain applied
+support and endpoint identities, occurrence and product counts, exclusions and
+reasons, coordinate extrema/wrap events, exact serialized WCS, algorithm and
+contract versions, unavailable terms, required-output outcomes, product links,
+and artifact digests.}
+
+\Req{088}{Reconstructible compactness}{Compact provenance may reuse stable
+ALIGN-grid and detector bindings, but shall reconstruct every policy decision
+and bind each persisted coordinate/product to its exact parents and versions.}
+
+\Req{089}{Empirical gates}{Small-angle, time-representation, and large-array
+precision adequacy shall be tested against preregistered domains, metrics,
+tolerances, owners, oracles, and failure rules; a required-data skip shall not
+be counted as a pass.}
+
+\Req{090}{Claim separation}{Scientific-contract authorship, implementation
+conformity, representation fidelity, empirical validation, observational
+performance, freeze, and production readiness shall remain separate claims;
+this Stage B draft shall assert none of the latter claims.}

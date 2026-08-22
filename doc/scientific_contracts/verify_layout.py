@@ -17,14 +17,21 @@ COMPLETE_PACKAGES = {
     "SCI-CAL": "v0.1",
     "SCI-MAP": "v0.1",
     "SCI-BEAM": "v0.1",
+    "SCI-RTC": "v0.1",
+    "SCI-PTC": "v0.1",
+    "SCI-VAL": "v0.1",
+    "SCI-ALIGN": "v0.1",
+    "SCI-AST": "v0.1",
 }
 STAGE_A_PACKAGES = {}
 FROZEN_R03_PACKAGES = {
     "SCI-BEAM": "v0.1",
 }
-RENDERED_DRAFT_PACKAGES = {
-    "SCI-RTC": "v0.1",
+FROZEN_MANIFEST_PACKAGES = {
+    "SCI-ALIGN": "v0.1",
+    "SCI-AST": "v0.1",
 }
+RENDERED_DRAFT_PACKAGES = {}
 
 
 assert (ROOT / "INDEX.md").is_file()
@@ -107,8 +114,22 @@ for package, version in {
             assert formal.count(token) == 1, f"{package}: formal view must import {name} exactly once"
             assert token not in rationale, f"{package}: rationale must remain scientist-facing"
 
+for package, version in FROZEN_MANIFEST_PACKAGES.items():
+    base = ROOT / "packages" / package / version
+    readme = (base / "README.md").read_text()
+    assert "Scientific authority frozen; implementation conformity not yet" in readme
+    assert (base / "SOURCE_MANIFEST.md").is_file(), f"{package}: missing SOURCE_MANIFEST.md"
+    assert (base / "history" / "r0.2" / "SOURCE_MANIFEST.md").is_file(), (
+        f"{package}: missing retained r0.2 manifest"
+    )
+
+align_boundary = ROOT / "packages" / "SCI-ALIGN" / "v0.1" / "SCI-ALIGN_TO_SCI-AST_BOUNDARY.md"
+ast_boundary = ROOT / "packages" / "SCI-AST" / "v0.1" / "SCI-ALIGN_TO_SCI-AST_BOUNDARY.md"
+assert align_boundary.read_bytes() == ast_boundary.read_bytes(), "ALIGN/AST boundary copies differ"
+
 print("scientific_contract_layout=PASS")
 print("complete_packages=" + ",".join(f"{name}/{version}" for name, version in COMPLETE_PACKAGES.items()))
 print("rendered_draft_packages=" + ",".join(f"{name}/{version}" for name, version in RENDERED_DRAFT_PACKAGES.items()))
 print("frozen_r03_packages=" + ",".join(f"{name}/{version}" for name, version in FROZEN_R03_PACKAGES.items()))
+print("frozen_manifest_packages=" + ",".join(f"{name}/{version}" for name, version in FROZEN_MANIFEST_PACKAGES.items()))
 print("stage_a_packages=" + ",".join(f"{name}/{version}" for name, version in STAGE_A_PACKAGES.items()))

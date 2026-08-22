@@ -7,6 +7,11 @@ and its package-specific prior-work recovery.
 
 Status: governing program charter
 
+Canonical package and branch provenance is recorded in the
+[2026-08-22 consolidation ledger](CONSOLIDATION_LEDGER_2026-08-22.md). That
+ledger is the pre-audit inventory for the current eight-package library; it
+does not replace any package's scientific authority or decision ledger.
+
 Scientific owner: Grant Wilson
 
 Program status phrase for a frozen package:

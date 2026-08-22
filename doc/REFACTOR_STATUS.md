@@ -736,7 +736,8 @@ freeze the application mainline.
   owner questions; it establishes scientific-content authority only, not
   implementation conformity, observational validation, readiness, or
   production authorization. The exact content bindings and successor rules
-  are recorded in the scientific-contract library's ALIGN/AST freeze record.
+  are recorded in the scientific-contract library's
+  [ALIGN/AST freeze record](scientific_contracts/audits/ALIGN_AST_HORIZONTAL_R0.3/SCI-ALIGN_AST_STAGE_B_R0.3_FREEZE_RECORD.md).
 - A 2026-07-30 coherent raw-I/Q event investigation has produced the first
   mode-aware observe-only production slice. The current RTC/PTC learning
   path records accepted intervals per detector UID and compacts only within

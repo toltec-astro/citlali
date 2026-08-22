@@ -1,0 +1,171 @@
+\section{Edge cases and falsifiable predictions}
+\label{sec:predictions}
+
+These predictions are pre-observation, implementation-independent comparison
+targets; listing them is not validation.  Categorical identities, counts,
+memberships, source relations, and masks compare exactly.  For deterministic
+double-precision fixtures, finite scalar results compare at relative tolerance
+\(10^{-12}\) and absolute tolerance
+\(64\epsilon_{\rm mach}\max(1,h_D)\) in the declared unit.  Circular values
+compare by wrapped distance at \(10^{-12}\) rad.  Available covariance compares
+at relative tolerance \(10^{-12}\) with exact sparsity and source-weight
+identity.  A lower-precision successor must declare and justify its tolerance
+before examining results.
+
+Predictions 001--018 preserve recovered-core T01--T18 in order.  Predictions
+019--026 append falsifiers required by the approved paired-coordinate, AST
+boundary, cause-separation, telescope-family, and compact-detail decisions.
+
+\Prediction{001}{For telescope native times \(0,1,2\) s, values \(0,1,2\),
+\(\delta_{T\rightarrow\rm ref}=+0.25\) s with \(i_{\rm ref}=D\), and target \(t=1\) s, corrected source
+times shall be \(0.25,1.25,2.25\) s and the aligned value \(0.75\), with
+weights \(0.25,0.75\); no integer rounding is allowed.  Reversing the offset
+sign shall fail this value.  (Recovered-core T01.)}
+
+\Prediction{002}{Exact coincidence and valid endpoints shall produce one-hot
+weights, unchanged value, unit, and frame, and original origin.  Targets before
+the first or after the last admitted coordinate shall be unavailable, not
+extrapolated.  (T02.)}
+
+\Prediction{003}{Constant and affine continuous-scalar fixtures on coincident
+and fractional grids shall reproduce analytically, and constant/DC response
+shall be one.  (T03.)}
+
+\Prediction{004}{Sinusoidal injections at multiple fractional positions and
+frequencies, including near Nyquist, shall match complex amplitude and phase
+from Equation~\ref{eq:fractional-response}; no unity response away from DC may
+be claimed.  (T04.)}
+
+\Prediction{005}{Using shortest signed difference in \([-P/2,P/2)\), a
+declared circular pair \(359^\circ,1^\circ\) at midpoint
+shall wrap to \(0^\circ\), not \(180^\circ\).  An exactly antipodal pair shall
+be unavailable absent explicit unwrap state.  (T05.)}
+
+\Prediction{006}{Categorical and step fields shall reject linear
+interpolation.  A producer-declared step state shall use its half-open hold
+interval and have synthesized/held provenance at a non-native target.  (T06.)}
+
+\Prediction{007}{Conditional on owner authorization under
+\code{SCI-ALIGN-ODQ-104}, one-, two-, and maximum-admitted-length internal
+detector gaps in constant and ramp fixtures shall form one maximal run and
+match Equation~\ref{eq:gap} with exact source identities, weights, synthesized
+state, and zero acquired exposure.  Until authorization, the synthesis result
+shall be unavailable.  (T07 specialized.)}
+
+\Prediction{008}{Leading, trailing, over-limit, invalid-endpoint, and
+cross-revision gaps shall never be extrapolated or partially filled; their
+unavailable reason shall be exact, and a native non-finite row shall remain
+original-invalid rather than become a timing gap.  (T08 specialized.)}
+
+\Prediction{009}{Within-tolerance detector jitter shall retain exact
+assignment residuals.  A half-slot ambiguity admitted only by an invalid
+tolerance, duplicate/nonmonotonic timestamp identity, or two rows assigned to
+one slot shall fail before conditioning.  (T09.)}
+
+\Prediction{010}{For the separately admitted fixed-duration processing-window
+case \(N=7,M=3\), windows shall be \([0,3),[3,6),[6,7)\); the final sample is
+retained, an exact boundary has one membership, and indices remain zero-based.
+This fixture makes no physical-scan claim.  (T10 specialized.)}
+
+\Prediction{011}{Short and empty interval identities shall be recorded without
+padding or renumbering; a subset preserves full-observation identities;
+overlap is rejected absent successor authority.  (T11.)}
+
+\Prediction{012}{Two interpolated outputs sharing correlated source endpoints
+shall reproduce full \(AC A^{\mathsf T}\), Equation~\ref{eq:linear-variance},
+and nonzero cross-output covariance; smoothness shall not create independent
+information.  (T12.)}
+
+\Prediction{013}{With supplied nonzero offset covariance on a known ramp,
+the timing term shall match Equation~\ref{eq:timing-covariance}.  With a
+scientifically justified curvature bound, a quadratic fixture shall satisfy
+Equation~\ref{eq:interp-bound}; without those inputs the respective terms
+shall be unavailable, not zero.  (T13.)}
+
+\Prediction{014}{For original, synthesized, unavailable, and window-sliced
+cells, synthesized and unavailable exposure shall be zero, valid-original
+exposure shall sum once, and nominal span, elapsed span, and exposure shall
+remain distinct.  (T14.)}
+
+\Prediction{015}{Missing telescope support shall not trim the detector grid;
+affected telescope fields shall be unavailable.  Absent optional HWPR shall
+be explicit and shall authorize no polarization output.  (T15.)}
+
+\Prediction{016}{Two observations and repeated runs with distinct offsets,
+gaps, fields, and intervals shall reconstruct independent requested,
+effective, observation-resolved, and realized state with no leakage.  (T16.)}
+
+\Prediction{017}{For every admitted alternate or parallel execution path over
+Predictions 001--016, integer, state, identity, mapping, provenance, and
+ordering outputs shall match exactly and finite values shall meet the same
+declared tolerance.  A required path skip is not a pass.  (T17.)}
+
+\Prediction{018}{Injected failure of required mapping, state, availability,
+provenance, or output publication shall make the operation unsuccessful; a
+log-and-continue success shall falsify the contract.  (T18.)}
+
+\Prediction{019}{Given distinct finite \(x^{\rm acq}\) and
+\(r^{\rm acq}\) payloads on the same occurrences, both outputs shall have
+identical source rows, temporal weights, residuals, stable slots \(s\), source-relation
+identity, and origin/synthesis state while retaining their distinct numerical
+values and coordinate-specific validity.  Any cross-mixing or different
+mapping falsifies Equation~\ref{eq:paired}.}
+
+\Prediction{020}{If the only candidate interpolation bracket crosses a Tune
+state or Tune/readout mapping-revision boundary and no separate authority is
+provided, both affected paired outputs shall be typed unavailable across that
+boundary; neither coordinate shall be synthesized or used to rescue the
+other.}
+
+\Prediction{021}{In a factorial fixture varying detector occurrence identity,
+\(x/r\) validity, ALIGN mapping validity, AST input validity, and named-use
+predicate independently, the five causes shall remain separately queryable.
+Invalid \(x/r\) alone shall not invalidate an otherwise defined coordinate;
+an available coordinate shall not rescue invalid ALIGN mapping or authorize a
+named downstream use.}
+
+\Prediction{022}{When aligned current elevation differs numerically from a
+field carried in a selected pointing-correction record, the transfer shall
+retain both families, identities, meanings, and supports separately.  Current
+field-rotation state shall not be inferred from the correction record, and a
+correction target outside selected native support shall be unavailable rather
+than extrapolated.}
+
+\Prediction{023}{An exact \code{SCI-ALIGN_TO_SCI-AST} \code{v0.1/r0.1}
+bundle shall be accepted only with every required identity, semantics, and
+typed-availability rule.  A byte-mutated boundary or similarly shaped payload
+without a declared compatible profile/revision and semantic mapping shall not
+be treated as compatible.}
+
+\Prediction{024}{For identical inputs and resolved state, compact-only and
+expanded-detail output tiers shall reconstruct the same mapping, exceptions,
+conditional response, identities, states, counts, exposures, and numerical
+results.  Requested detail shall not change science.}
+
+\Prediction{025}{Removing one unresolved optional field-registry entry shall
+make only that field and its dependent claim unavailable.  It shall not trim
+the detector relation, fabricate semantics, invalidate an unrelated AST input,
+or enable a downstream eligibility bit.}
+
+\Prediction{026}{A physical-scan identity and a processing chunk with equal
+numerical bounds shall remain distinct parents.  Subsetting or repartitioning
+chunks shall preserve physical-scan, science/context-window, and output
+selection identities and shall not double-count exposure.}
+
+\subsection{Fail-closed edge conditions}
+
+The following conditions are unsuccessful before scientific conditioning or
+typed unavailable for the exact dependent output: invalid or ambiguous offset
+unit/sign/reference/stage; incomparable epoch; nonpositive cadence; empty
+detector support; nonmonotonic or duplicate time identity; ambiguous or
+colliding slot assignment; undeclared field topology/operator; invalid
+interval overlap; missing required observing-state support; unauthorized
+signal synthesis; cross-Tune-revision mapping; extrapolated pointing support;
+or inability to publish required realized provenance.  Missing optional HWPR
+is nonfatal for the ordinary nonpolarimetric detector-signal path while every
+polarimetric interpretation remains unavailable.
+
+These predictions do not pre-authorize fixtures, claim that any executable
+path exists, or report a pass.  They become validation evidence only through a
+separately governed comparison against a named implementation and exact
+artifacts.

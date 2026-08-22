@@ -1,0 +1,100 @@
+\section{Declared assumptions and conditional adequacy}
+\label{sec:assumptions}
+
+These are bounded assumptions of the v0.1 scientific object, not achieved
+claims.  If a required assumption is false, unsupported, or unavailable, the
+dependent output is unavailable or fails closed as stated by the requirements.
+
+\Assumption{001}{Authoritative upstream selection}{The exact
+\nolinkurl{SCI-ALIGN_TO_SCI-AST v0.1/r0.1} bundle,
+pointing-support record selection, physical-center selection, frame plan, RTC
+plan when used, and MAP projection plan when used are supplied by their named
+authorities.  AST validates and consumes these selections but does not create
+them.  The exact per-family center owner remains open under
+\texttt{AST-OWNER-Q002}.}
+
+\Assumption{002}{Exact aligned field registry}{Every required boresight and
+current observing-state field arrives with stable identity, registry version,
+unit, unchanged producer frame, topology, operator, source relation, support,
+origin, validity, and uncertainty availability.  The exact registry and
+composition-history semantics remain open under \texttt{AST-OWNER-Q001};
+outputs needing an unresolved field are unavailable rather than inferred.}
+
+\Assumption{003}{Immutable selected geometry}{A selected geometry instance is
+bound to one immutable APT realization and complete approved lineage.  The
+exact producer, association authority/schema, and cross-realization transform
+remain open under \texttt{AST-OWNER-Q006}; an unresolved instance cannot be
+used unconditionally.}
+
+\Assumption{004}{No hidden commutation}{The ordered composition in
+Section~\ref{sec:ordered-composition} is physical authority.  Zero-offset or
+infinitesimal cases are limiting cases only and do not authorize reordering,
+double application, or removal of lineage.}
+
+\Assumption{005}{Bounded small-angle production}{The established small-angle
+production relation is admissible only under a preregistered record naming the
+field/elevation/time domain, detector population, coordinate and pixel error
+metrics, required product use, tolerance owner and value, and fail-closed
+behavior.  Exact spherical composition is the independent offline oracle.
+The owner and quantitative record remain open under
+\texttt{AST-OWNER-Q004}; no universal threshold or automatic fallback is
+created here.}
+
+\Assumption{006}{Time adequacy}{A time representation is adequate only when a
+preregistered angular-error analysis bounds the induced astrometric error for
+the named use.  Unused digits and an arbitrary microsecond target are not
+authority.  The quantitative time bound remains unavailable under
+\texttt{AST-OWNER-Q004}.}
+
+\Assumption{007}{Large-array precision adequacy}{Compact WCS authorities and
+fitted/catalog coordinates use adequate high precision.  A representation for
+large coordinate arrays is admitted only after a preregistered empirical
+coordinate/pixel adequacy bound for the required product use.  The bound
+remains unavailable under \texttt{AST-OWNER-Q004}.}
+
+\Assumption{008}{Named frame semantics}{A requested frame transform is
+available only with declared source/target identities, epoch/equinox, time
+scale, site, model/version, input availability, and EOP/refraction
+applicability.  Ordinary native AltAz paths do not acquire unnecessary
+EOP/refraction requirements, and missing equatorial authority is not repaired
+by relabeling.}
+
+\Assumption{009}{TAN operating support}{The mathematical forward TAN domain is
+finite $D>0$.  A product may impose a tighter footprint-derived operating
+support only through a separately preregistered authority, metric, and failure
+rule.  This package invents no positive universal $D_{\min}$.}
+
+\Assumption{010}{Conditional uncertainty}{Only explicitly available
+map-center input covariance and cross-covariance terms are propagated.  The
+producer, conditioning, and per-family availability of those terms remain
+open under \texttt{AST-OWNER-Q003}.  Unavailable is not zero.}
+
+\Assumption{011}{Typed Jacobian request}{A map-center Jacobian exists as an
+available product only after a named family requests exact input/output
+domains, axis order, units, and direction.  Those family-specific requests
+remain open under \texttt{AST-OWNER-Q007}.}
+
+\Assumption{012}{RTC role is explicit}{RTC-grid coordinates or response-aware
+use exist only for named families with an exact RTC profile instance.  The
+requesting families and profile owner remain open under
+\texttt{AST-OWNER-Q008}.  Missing RTC parent facts do not alter unrelated
+ALIGN-grid coordinate availability.}
+
+\Assumption{013}{MAP-specific retained-grid policy is external}{The deferred
+MAP-003 retained-WCS/crop/dual-axis disposition under
+\texttt{AST-OWNER-Q005} is not supplied by this v0.1 authority.  Any later
+requirement that changes AST admission or parentage requires a named amendment;
+until then, MAP cropping and retained-grid policy remain MAP-owned.}
+
+\Assumption{014}{Ordinary nonpolarimetric coordinate scope}{Only the ordinary nonpolarimetric coordinate path
+is admitted.  AST does not interpret
+polarization. Optional HWPR timing may remain only as an ALIGN-parent fact;
+no demodulation, polarization calibration or response, or Stokes reconstruction
+is authorized. In particular, raw KID readout $x$ is not identified as Stokes
+I. Galactic simulation, general reprojection, source fitting, calibration,
+photometry, beam inference, and map accumulation are outside this authority.}
+
+\Assumption{015}{No achieved-status inference}{Compilation, document
+verification, a plausible image, a downstream fit, or existing operational
+use cannot establish scientific approval, implementation conformity,
+observational performance, validation, freeze, or production readiness.}

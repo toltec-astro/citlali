@@ -23,8 +23,8 @@ freeze record governs scientific-content status.
 
 | Frozen item | Exact identity | SHA-256 |
 | --- | --- | --- |
-| SCI-ALIGN packet control | `SCI-ALIGN/v0.1-stage-b-r0.3/SOURCE_MANIFEST.md` | `26285329635c722cb9161d383ad1b95f56a03b782c101bcd89d8785a3575faac` |
-| SCI-AST packet control | `SCI-AST/v0.1-stage-b-r0.3/SOURCE_MANIFEST.md` | `b54b6013750540f28aad02339a60bf36078980dc53b132beab73069d66ef3601` |
+| SCI-ALIGN packet control | `packages/SCI-ALIGN/v0.1/SOURCE_MANIFEST.md` | `26285329635c722cb9161d383ad1b95f56a03b782c101bcd89d8785a3575faac` |
+| SCI-AST packet control | `packages/SCI-AST/v0.1/SOURCE_MANIFEST.md` | `b54b6013750540f28aad02339a60bf36078980dc53b132beab73069d66ef3601` |
 | Shared ALIGN-to-AST boundary | `SCI-ALIGN_TO_SCI-AST v0.1/r0.1` | `04357d36b302d607b95950f529044e178deb2528d0c6f656d90da93067a5da36` |
 | Final horizontal audit | `SCI-ALIGN_AST_HORIZONTAL_AUDIT_STAGE_B_R0.3.md` | `8baff259a73526a9858dae7c5b50192bb64285bd4b59a8f9344670541c22855f` |
 | ALIGN scientific rationale PDF | 9 pages | `3ff4de1c6a487e14285c7c4f37771c8106e78d94f4299cd3d92604ee0b0c4538` |
@@ -51,8 +51,8 @@ and PDFs. The two shared-boundary copies are byte-identical.
 
 ## Change Control
 
-The directories `SCI-ALIGN/v0.1-stage-b-r0.3` and
-`SCI-AST/v0.1-stage-b-r0.3` are immutable frozen baselines. A scientific
+The directories `packages/SCI-ALIGN/v0.1` and
+`packages/SCI-AST/v0.1` are immutable frozen baselines. A scientific
 content change requires a successor revision or version, an explicit semantic
 change map, append-only treatment of stable identifiers, regenerated
 manifests/PDFs, and a new horizontal review where the shared boundary is

@@ -1,0 +1,113 @@
+\documentclass[10pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=0.68in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{microtype}
+
+\definecolor{astnavy}{RGB}{25,55,88}
+\definecolor{astpale}{RGB}{238,244,249}
+\definecolor{astwarn}{RGB}{125,56,22}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3.5pt}
+\setlength{\emergencystretch}{3em}
+\setlist[itemize]{leftmargin=1.4em,itemsep=1pt,topsep=2pt}
+\setlist[enumerate]{leftmargin=1.6em,itemsep=1pt,topsep=2pt}
+\setlist[description]{itemsep=2pt,topsep=2pt}
+\renewcommand{\arraystretch}{1.11}
+\renewcommand{\mathsf}[1]{\mathrm{#1}}
+
+\newcommand{\Req}[3]{%
+  \par\smallskip\noindent
+  \hypertarget{req:#1}{\textcolor{astnavy}{\textbf{\texttt{SCI-AST-REQ-#1}
+  --- #2.}}} #3\par}
+\newcommand{\Pred}[2]{%
+  \par\smallskip\noindent
+  \hypertarget{pred:#1}{\textcolor{astnavy}{\textbf{\texttt{SCI-AST-PRED-#1}.}}}
+  #2\par}
+\newcommand{\Assumption}[3]{%
+  \par\smallskip\noindent
+  \hypertarget{asm:#1}{\textcolor{astwarn}{\textbf{\texttt{SCI-AST-ASM-#1}
+  --- #2.}}} #3\par}
+
+\title{\vspace{-1.3em}\textcolor{astnavy}{\textbf{SCI-AST v0.1}}\\
+\large Engineering conformance view}
+\author{Stage B targeted implementation-blind scientific author draft\\
+Scientific owner: Grant Wilson}
+\date{Revision r0.2 draft, 2026-08-22}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\begin{center}
+\fcolorbox{astnavy}{astpale}{\begin{minipage}{0.92\linewidth}
+\textbf{Use of this view.}
+This is the requirements-oriented view containing all six canonical formal
+modules.  The separate scientist-facing rationale is a concise narrative. This
+specification defines prospective conformance obligations
+and falsifiers; it does not report that any implementation, schema, product,
+test, or observation conforms or has been validated, frozen, or made ready.
+\end{minipage}}
+\end{center}
+
+\section*{Conformance reading guide}
+
+A future conformance review should trace every \texttt{SCI-AST-REQ-NNN} to an
+explicit representation, application point, failure path, persisted identity,
+and one or more independent falsification fixtures.  It must evaluate the
+ordered composition as a whole, not merely compare output shape.  It must also
+show that unavailable authority remains unavailable, that no stale or default
+value enters a required result, and that AST does not absorb ALIGN, RTC, MAP,
+geometry-producer, target-selection, or downstream-use ownership.
+
+The exact imported compatibility anchor is
+\nolinkurl{SCI-ALIGN_TO_SCI-AST v0.1/r0.1}.  The stable ALIGN slot is $s$ with
+identity $(o,s)$; $j$ is local storage row only; $n$ is stable RTC output
+sample identity; and $x/r$ remain exclusively the paired KID readout
+coordinates.
+
+\begin{center}
+\begin{tabularx}{0.96\linewidth}{>{\bfseries}p{0.23\linewidth}X}
+\toprule
+Review object & Minimum prospective evidence \\
+\midrule
+Identity and parentage & Exact observation, occurrence, grid/slot, geometry,
+frame, center/WCS, plan/version, and lifecycle binding. \\
+Numerical relation & Unit/topology checks, independent oracle, limiting cases,
+directional signs, domain and non-finite behavior. \\
+Failure behavior & Typed unavailability, no substitute/default/stale state,
+and required-output propagation. \\
+Ownership & No reconstruction or policy selection beyond AST's bounded
+TAN/WCS coordinate authority. \\
+Parity & Deterministic sequential/parallel and supported real/simulation
+scientific identity. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\tableofcontents
+\newpage
+
+\input{common/notation.tex}
+\input{common/requirements.tex}
+\input{common/definitions.tex}
+\input{common/equations.tex}
+\input{common/assumptions.tex}
+\input{common/edge_cases.tex}
+
+\section*{Conformance disposition}
+
+Every requirement remains prospective until separately authorized evidence
+binds it to an exact implementation and representation.  Open owner questions
+are not implementation choices: they keep only their dependent outputs or
+quantitative claims unavailable.  Passing a subset of predictions cannot
+establish scientific approval, overall conformity, validation, freeze, or
+production readiness.
+
+\end{document}

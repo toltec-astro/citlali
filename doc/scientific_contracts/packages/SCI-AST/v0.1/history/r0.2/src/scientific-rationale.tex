@@ -1,0 +1,394 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=0.72in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,array,tabularx}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{microtype}
+\definecolor{astnavy}{RGB}{25,55,88}
+\definecolor{astblue}{RGB}{222,235,246}
+\definecolor{astgreen}{RGB}{226,241,232}
+\definecolor{astgold}{RGB}{247,237,211}
+\definecolor{astwarn}{RGB}{125,56,22}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{3em}
+\setlist[itemize]{leftmargin=1.4em,itemsep=2pt,topsep=2pt}
+\renewcommand{\arraystretch}{1.12}
+\renewcommand{\mathsf}[1]{\mathrm{#1}}
+\newcommand{\stagebox}[2]{\fcolorbox{astnavy}{#1}{\parbox[c][0.46in][c]{0.17\linewidth}{\centering\small #2}}}
+\title{\vspace{-1.5em}\textcolor{astnavy}{\textbf{SCI-AST v0.1}}\\
+\large Scientist-facing rationale for astrometric coordinates}
+\author{Stage B targeted implementation-blind scientific author draft\\
+Scientific owner: Grant Wilson}
+\date{Revision r0.2 draft, 2026-08-22}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+\begin{center}
+\fcolorbox{astnavy}{astblue}{\begin{minipage}{0.92\linewidth}
+\textbf{Status boundary.}
+This concise narrative explains the canonical authority carried in the
+companion Engineering Conformance Specification. It is a Stage B targeted
+draft, not scientific approval. Implementation conformity, empirical
+adequacy, validation, freeze, observational performance, and production
+readiness remain unassessed.
+\end{minipage}}
+\end{center}
+
+\section*{How to read this rationale}
+SCI-AST answers a narrow scientific question: for a particular detector
+occurrence and a particular aligned reference-grid slot, where is the detector
+looking, and which later coordinate facts can be derived from that direction?
+The answer is not merely two floating-point numbers. It includes the
+observation, detector occurrence, stable ALIGN slot, selected geometry,
+pointing correction, observing state, frame, projection, validity, uncertainty
+availability, and provenance that make the coordinate interpretable.
+
+The authoritative import is exactly
+\nolinkurl{SCI-ALIGN_TO_SCI-AST v0.1/r0.1}. Compatibility requires preservation
+of all required identities, semantic states, ownership boundaries, and typed
+availability. A successor must name the revision it supersedes and map every
+changed, removed, or newly required item; similar fields or array shape do not
+establish compatibility.
+
+Three notation choices prevent accidental aliasing. The stable ALIGN
+detector-reference slot is $s$, with stable identity $(o,s)$. The symbol $j$
+is only a local storage row and is never an external identity. The stable RTC
+output sample is $n$. Finally, $x$ and $r$ are reserved exclusively for the
+paired KID readout coordinates; a unit sky direction is
+$\widehat{\boldsymbol u}_{\rm sky}$.
+\vfill
+\begin{center}\small
+Narrative map: coordinate meaning $\rightarrow$ immutable parent $\rightarrow$
+ordered geometry $\rightarrow$ frames/TAN $\rightarrow$ WCS/pixels
+$\rightarrow$ RTC response $\rightarrow$ MAP handoff.
+\end{center}
+
+\newpage
+\section{What an AST coordinate scientifically means}
+An AST coordinate is a role-factored scientific record. A detector sky
+direction has the parent
+\begin{equation*}
+ \Pi_{\rm direction}=(o,d,s,\ \text{exact ALIGN relation},\
+ \text{observing state},\ \text{pointing correction},\
+ \text{geometry/rotation realization},F).
+\end{equation*}
+The tangent role adds the upstream-selected physical center and tangent
+projection. The continuous-pixel role adds the exact WCS. The nominal-pixel
+role then adds the rounding rule, dimensions, and bounds convention. These
+layers matter: WCS failure cannot erase a valid direction or tangent fact, and
+a nominal-pixel failure cannot erase a valid continuous pixel. A product
+family may demand a complete atomic product and fail it, while the available
+upstream scientific facts and exact causes remain intact.
+
+Each role carries its own validity, parent, uncertainty availability, and
+four-stage provenance. Continuous WCS coordinates, nominal containing pixels,
+zero-based local indices, in-bounds state, MAP support, and coordinate
+precision are distinct facts.
+
+\section{The immutable ALIGN parent and signal validity}
+ALIGN supplies one immutable occurrence/time/mapping and observing-state
+relation. It also transfers the paired detector-readout source relation
+\begin{equation*}
+ x^A=A_{\rm ALIGN}x^{\rm acq},\qquad
+ r^A=A_{\rm ALIGN}r^{\rm acq}.
+\end{equation*}
+The two readout coordinates share native occurrences, weights, residuals,
+stable slots, source relation, and origin/synthesis state, while their numeric
+validity and payload availability remain separate. AST needs the exact
+occurrence, time, mapping, observing state, and geometry inputs; it does not
+need a finite or requested $x^A$ or $r^A$ payload to define an otherwise valid
+coordinate.
+
+Five causes therefore remain independent: detector-occurrence identity,
+readout-coordinate validity, ALIGN mapping validity, AST coordinate validity,
+and downstream use-specific eligibility. No cause rescues, overwrites, or
+silently stands in for another.
+
+\newpage
+\section{Boresight, pointing correction, geometry, and field rotation}
+The operations are ordered and generally noncommuting. AST first admits the
+aligned boresight and current science-occurrence state. It applies the
+producer-selected pointing correction only inside its selected native support,
+then evaluates the selected geometry and field rotation at the current aligned
+time and elevation. Current elevation is never inferred from a bracketing
+pointing record. AST neither extrapolates nor selects a nearest or stale
+correction.
+
+For tangent displacement $\boldsymbol\eta$, the spherical oracle is
+\begin{equation*}
+ \operatorname{Exp}_{\widehat{\boldsymbol u}_{\rm sky}}(\boldsymbol\eta)
+ =\cos\rho\,\widehat{\boldsymbol u}_{\rm sky}
+  +\sin\rho\,\widehat{\boldsymbol v},\qquad
+ \rho=\|\boldsymbol\eta\|>0,
+\end{equation*}
+with the original direction returned at $\rho=0$. The established small-angle
+production relation is allowed only within a preregistered adequate domain;
+the spherical relation is the independent offline oracle, not an automatic
+runtime fallback.
+
+\begin{figure}[!ht]
+\centering
+\stagebox{astblue}{ALIGN boresight\\and current state}\hfill$\longrightarrow$\hfill
+\stagebox{astgold}{producer-selected\\pointing correction}\hfill$\longrightarrow$\hfill
+\stagebox{astgreen}{geometry and\\field rotation}\hfill$\longrightarrow$\hfill
+\stagebox{astblue}{detector sky\\direction}\\[8pt]
+\hfill$\longrightarrow$\hfill
+\stagebox{astgold}{named frame\\operation}\hfill$\longrightarrow$\hfill
+\stagebox{astgreen}{circular topology\\and TAN}\hfill$\longrightarrow$\hfill
+\stagebox{astblue}{WCS and continuous\\pixel facts}\hfill$\longrightarrow$\hfill
+\stagebox{astgold}{optional nominal\\pixel fact}
+\caption{The ordered, noncommuting AST chain. Every stage retains its exact
+parent and application count; a special zero-offset case does not authorize
+reordering or double application.}
+\label{fig:chain}
+\end{figure}
+
+\newpage
+\section{APT gauge, pivot uncertainty, affine limitations, and transfer}
+SCI-BEAM owns measured relative detector geometry and its limitations. An
+exact named TolProj/TolAPT or other approved authority owns the
+observation-specific association/transformation and immutable APT realization.
+The selected artifact declares coordinate basis and handedness, angular units,
+origin/recentering gauge, field-rotation law and support, conventional pivot
+state, covariance availability, unresolved translation/scale/skew/shear, and
+complete lineage. AST consumes this artifact; it does not infer that the APT
+origin is telescope boresight, nominate a reference detector, or silently
+reduce the relation to a pure rotation about a known pivot.
+
+Pointing-support observations and the corrected science observation must share
+the same realization key
+\begin{equation*}
+ K_\gamma=(\text{APT realization},\ \text{gauge},\ \text{geometry version},
+ \ \text{rotation law},\ \text{pivot},\ \text{AST convention}).
+\end{equation*}
+A mismatch is incompatible unless a separately authorized transform names
+both immutable parents, proves equivalence over a declared domain, acts in the
+correct direction and units, and propagates covariance, cross-covariance, and
+transform uncertainty.
+
+\begin{figure}[!ht]
+\centering
+\begin{tabular}{c@{\quad$\longrightarrow$\quad}c@{\quad$\longrightarrow$\quad}c}
+\fcolorbox{astnavy}{astblue}{\parbox{0.23\linewidth}{\centering measured
+relative geometry\\and limitations}} &
+\fcolorbox{astnavy}{astgreen}{\parbox{0.28\linewidth}{\centering immutable APT
+realization\\gauge, basis, pivot, affine state}} &
+\fcolorbox{astnavy}{astgold}{\parbox{0.23\linewidth}{\centering current-state
+field rotation\\and detector displacement}}
+\end{tabular}\\[12pt]
+\fcolorbox{astnavy}{astblue}{\parbox{0.27\linewidth}{\centering pointing-support
+$K_\gamma$}}\quad
+$\underset{\text{or authorized uncertain transform}}{\overset{\text{exactly equal}}{\longleftrightarrow}}$\quad
+\fcolorbox{astnavy}{astblue}{\parbox{0.27\linewidth}{\centering corrected-science
+$K_\gamma$}}
+\caption{Gauge and field rotation remain part of one immutable realization.
+Pointing transfer requires the same realization or a complete, explicitly
+uncertain equivalence transform.}
+\label{fig:gauge}
+\end{figure}
+
+\newpage
+\section{Frame conversion, circular topology, and TAN}
+Point, OOF, and Beammap retain native AltAz tangent coordinates in arcseconds.
+Science uses explicitly identified equatorial J2000 TAN coordinates in
+degrees. J2000, FK5, ICRS, apparent place, observed AltAz, and unrefracted
+AltAz are not synonyms. Every non-identity transform declares source and
+target frames, epoch/equinox, time scale, site, model/version,
+EOP/refraction applicability, inputs, validity, and uncertainty availability.
+
+For period $P$, shortest signed difference is exactly
+\begin{equation*}
+ \operatorname{wrap}_P(\theta)=
+ \theta-P\left\lfloor\frac{\theta+P/2}{P}\right\rfloor
+ \in[-P/2,P/2).
+\end{equation*}
+Persisted longitude lies in $[0,P)$. Exactly antipodal interpolation has no
+unique shortest path and is unavailable unless an explicit unwrap authority
+selects and parents the path. At a coordinate pole the unit vector, not an
+ambiguous longitude, is the direction identity.
+
+For direction $\widehat{\boldsymbol u}_{\rm sky}$, selected center
+$\widehat{\boldsymbol u}_{\rm sky,0}$, and center basis
+$(\boldsymbol e_1,\boldsymbol e_2)$, TAN uses
+\begin{equation*}
+ D=\widehat{\boldsymbol u}_{\rm sky}\cdot
+ \widehat{\boldsymbol u}_{\rm sky,0},\qquad
+ \zeta_a=\frac{\widehat{\boldsymbol u}_{\rm sky}\cdot\boldsymbol e_a}{D},
+ \quad a\in\{1,2\},\quad D>0.
+\end{equation*}
+There is no universal positive $D_{\min}$. Non-finite input/output or
+$D\leq0$ is coordinate invalidity, never a center, edge, or stale pixel.
+
+\section*{Why the vector form matters}
+The unit-vector formulation remains finite through longitude wrap and near a
+pole, exposes the exact spherical domain, and prevents either paired readout
+coordinate $x$ or $r$ from being confused with sky direction or a TAN axis.
+
+\newpage
+\section{Physical center, WCS, continuous pixels, and nominal pixels}
+The physical center is selected by a named upstream target/product authority.
+AST realizes that exact choice; it never searches, fits, silently recenters,
+derives a center from bounds, or supplies a default. The exact six-field
+legacy all-zero control pattern adapts only at the boundary to
+\texttt{automatic}. A nonzero or non-finite legacy explicit request is
+unsupported in v0.1, while numeric zero elsewhere remains an ordinary value.
+
+An immutable WCS binds projection, center authority, CRVAL, one-based CRPIX,
+CD or equivalent PC+CDELT, axes/sign/rotation/handedness, dimensions, bounds,
+units, frame/epoch, precision, product plan, and realization version. If
+$\boldsymbol w$ is the tangent coordinate and $\boldsymbol q$ the one-based
+continuous FITS coordinate,
+\begin{equation*}
+ \boldsymbol w=\mathsf M(\boldsymbol q-\boldsymbol q_0),\qquad
+ \boldsymbol q=\boldsymbol q_0+\mathsf M^{-1}\boldsymbol w.
+\end{equation*}
+When the product plan selects geometric array center,
+$\mathrm{CRPIX}_a=(N_a+1)/2$, so even dimensions have half-integer reference
+pixels.
+
+The v0.1 nominal containing pixel uses a half-open nearest-center rule. Local
+storage row $j$ and column $h$ are zero-based implementation-local positions,
+not external identities. In particular, no array reorder may change stable
+slot $(o,s)$. A subpixel dither changes the continuous pixel smoothly; the
+nominal pixel changes only at its declared boundary. Neither fact establishes
+MAP coverage or coordinate precision.
+
+\begin{center}
+\fcolorbox{astwarn}{astgold}{\begin{minipage}{0.88\linewidth}
+\textbf{Layered availability example.} If the frame transform succeeds but
+the requested WCS is unavailable, the detector direction remains valid. If
+the selected center and TAN succeed but a pixel matrix is singular, the
+tangent coordinate remains valid. A family that requires a complete map
+coordinate product still fails that product; the upstream facts are not
+retroactively deleted.
+\end{minipage}}
+\end{center}
+
+\newpage
+\section{ALIGN-grid versus RTC-output-grid coordinates}
+$\theta^A_{ds}$ belongs to the exact ALIGN grid and stable slot $(o,s)$.
+$\theta^{\rm RTC}_{dn}$ belongs to the exact RTC product, resolved plan,
+output grid, stable output sample $n$, representative ALIGN slot, selected
+output time, phase/delay convention, segment, decimation, support, response,
+and correction state. Even if a phase-zero RTC coordinate is numerically
+equal to one ALIGN-grid coordinate, their roles and parents differ.
+
+For RTC signal operator $L_{ns}$, role-factored sky response retains the
+operator and the full contributing coordinate support:
+\begin{equation*}
+ \operatorname{sky\mbox{-}response}
+ (L_{ns},\{\theta^A_{ds}\})\ne
+ \sum_s L_{ns}\theta^A_{ds}.
+\end{equation*}
+Angular coordinates are not detector signals. Negative coefficients,
+circular wrap, and nonlinear projection make direct filtering of angles an
+incorrect replacement for the response support.
+
+\begin{figure}[!ht]
+\centering
+\fcolorbox{astnavy}{astblue}{\parbox{0.25\linewidth}{\centering
+\textbf{ALIGN grid}\\stable $(o,s)$\\occurrence coordinates
+$\theta^A_{ds}$}}\quad$\Longrightarrow$\quad
+\fcolorbox{astnavy}{astgreen}{\parbox{0.25\linewidth}{\centering
+\textbf{RTC output grid}\\stable $n$\\time/phase/support and full sky response}}
+\quad$\Longrightarrow$\quad
+\fcolorbox{astnavy}{astgold}{\parbox{0.25\linewidth}{\centering
+\textbf{MAP deposition}\\exact MAP plan\\estimator-owned $G_{pi}$}}\\[10pt]
+\small distinct identities \hfill distinct response role \hfill distinct estimator authority
+\caption{ALIGN-grid coordinates, RTC-output-grid coordinates, and MAP
+deposition are three distinct scientific stages. Numerical coincidence or
+equal shape never aliases their parents.}
+\label{fig:grid-roles}
+\end{figure}
+
+\newpage
+\section{AST coordinates versus MAP $G_{pi}$}
+AST owns the occurrence-to-direction, tangent, WCS, and continuous-pixel
+geometry. MAP owns how a sample contributes to pixels: kernel family and
+parameters, estimator support, normalization, edge behavior, conservation,
+response, covariance, accumulation, cropping, and reprojection.
+
+The symbol $G_{pi}$ is reserved for an exact MAP-owned deposition/gridding
+plan. AST may materialize it only as a delegated service for a complete exact
+MAP request, with the AST coordinate/WCS parent, applicable RTC parent, and
+MAP plan all bound. Delegation transfers no scientific ownership:
+\begin{center}
+\textbf{AST determines exactly where the occurrence is; MAP determines
+exactly how it contributes to pixels.}
+\end{center}
+
+Before a complete MAP estimator request, AST may publish a separately named
+geometry-only candidate $I^{\rm geom}_{pi}$ describing incidence, a neighbor
+stencil, or candidate pixel support. It explicitly has:
+\begin{itemize}
+ \item no numerical-contribution meaning;
+ \item no normalization or conservation claim;
+ \item no MAP-support or validity meaning; and
+ \item no response or covariance authority.
+\end{itemize}
+Calling that candidate $G_{pi}$ would incorrectly turn geometry into an
+estimator claim. Conversely, two MAP plans can use the same AST continuous
+coordinates to produce different valid $G_{pi}$ operators without changing
+the AST coordinate identity.
+
+\section*{Ordinary nonpolarimetric coordinate path only}
+Only the ordinary nonpolarimetric coordinate path is in scope. AST does not
+interpret polarization. Optional HWPR timing may remain only as an ALIGN-parent
+fact; it authorizes no demodulation, polarization calibration or response, or
+Stokes reconstruction. Raw KID readout $x$ is not identified as Stokes I.
+
+\section*{A practical ownership test}
+If a choice can change a sample's estimator weight without changing its
+physical direction or continuous pixel coordinate, that choice belongs to
+MAP. If a choice changes the occurrence's direction, frame, tangent
+projection, or WCS geometry, it belongs in the exact AST parent or in a named
+upstream authority consumed by AST.
+
+\newpage
+\section{Astrometric uncertainty, validation, and open decisions}
+The only v0.1 astrometric response product is the typed
+\texttt{astrometric\_map\_center\_jacobian}. It exists only after a named
+family requests exact input/output domains, direction, axes, and units. It is
+evaluated at the declared center and is not an amplitude, beam, RTC temporal,
+MAP transfer, or point-source response. Only declared available covariance
+and cross-covariance terms are propagated; unavailable is not zero, and no
+total is formed without complete combination assumptions.
+
+\subsection*{Open owner decisions}
+Eight existing questions remain open or deferred: aligned-field registry and
+composition history; per-family center selection; covariance producers and
+conditioning; quantitative small-angle/time/precision adequacy; MAP-003
+retained-grid disposition; geometry association and cross-realization
+transform; family-specific Jacobian requests; and RTC-grid family/profile
+ownership. Each question blocks only its dependent output or claim. This
+targeted revision introduces no new owner question.
+
+\subsection*{Compact rationale-to-contract crosswalk}
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}p{0.30\linewidth}X}
+\toprule
+Narrative subject & Engineering authority \\
+\midrule
+Immutable ALIGN parent and cause separation & REQ-006--012; PRED-009--010 \\
+Correction, geometry, gauge, composition & REQ-013--035; PRED-001--017 \\
+Direction, frame, topology, TAN & REQ-036--044; PRED-018--022 \\
+Center, layered WCS and pixel facts & REQ-045--064; PRED-023--031, 041--044 \\
+Jacobian and covariance & REQ-065--072; PRED-032--034 \\
+ALIGN/RTC/MAP role boundaries & REQ-073--083; PRED-035--040 \\
+Provenance, adequacy, claim separation & REQ-084--090; PRED-045--050 \\
+\bottomrule
+\end{tabularx}
+
+The Engineering Conformance Specification retains the complete notation,
+definitions, canonical equations, 15 assumptions, 90 stable requirements, and
+50 stable predictions. Those predictions are future falsifiers, not reported
+test results. One clean horizontal ALIGN--AST audit remains required before
+any scientific freeze. This document's deterministic build and visual review
+are publication checks only and establish none of the unassessed claims named
+on the first page.
+\end{document}
