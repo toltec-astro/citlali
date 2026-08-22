@@ -133,6 +133,36 @@ commit does not call RTC, alter a numerical route, or activate runtime
 processing. The fixture prerequisite is closed and Stage 4 RTC adapter work
 may begin under its existing separate stop gate.
 
+Stage 4 RTC contiguous-run dispatch is implemented at exact commit
+`23a5cabe9fa6ec6579c91ec7c7a344339d06c993`, tree
+`bd2c74f4dde97e3eb9f99b845d2f4741ee458d76`. The adapter derives maximal
+complete temporal segments from the Stage 3 measured scan, dispatches each
+network's detector partition one packet-contiguous run at a time, and invokes
+the existing downsampler separately for every run so its stride anchor resets
+at a discontinuity. Each output records ordered exact native support, selected
+anchor, detector partition, common slots, and the bitwise OR of actual input
+flags. Delivered flagged rows remain temporally present; nonfinite measured
+values, cross-run windows, numerical-body shape drift, removed input flag bits,
+and nonfinite outputs fail closed.
+
+Five focused cases pass separately at OpenMP thread counts 1, 2, 4, and 8;
+the complete SCI-ALIGN executable passes 37/37 cases; and the public header
+compiles in isolation. All 758 runnable CTests pass with the established
+single disabled test not run, all 203 baseline-tool tests pass, and the full
+required config gate passes 127/127 unit tests, all four mode kits, and 8/8
+compact-compatibility cases with zero skips or gaps. Both ledgers remain valid,
+the frozen fixture digest is unchanged, and the exact implementation-boundary
+CLI is `v4.0.0-3672-g23a5cabe9` with binary SHA-256
+`88bc483ca7fe9a3ee8a26be73e1505cf6504e3be8391a737be9f0358d412c89a`.
+
+The [Stage 4 handoff](../handoff/COMPACT_V2_NATIVE_ALIGN_STAGE4_RTC_DISPATCH_2026-08-22.md)
+records the complete evidence. This stage does not call `RTCProc::run`, change
+an RTC numerical kernel, enter PTC/PCA or mapmaking, publish products, or
+activate a production route. RTC product writing remains disabled and the
+native-required mode still cannot enter production RTC. No Unity run is
+required at this boundary. Stage 5 PTC/PCA cohort gather and transactional
+scatter may begin as a separate commit, with its stop gate before mapmaking.
+
 ## 2026-08-21 JINC Parallel Ownership Reconstruction
 
 The independently accepted SCI-MAP-002 ownership contract has been
