@@ -1,0 +1,73 @@
+# Campaign-only final overlay for SCI-ALIGN Stage 7 Campaign 1.
+#
+# This file is not a Science default and must not be copied back into the
+# canonical mode kit.  It deliberately bounds the activation candidate to
+# operations whose native support and lineage have been reconstructed.
+reduce:
+  steps:
+    0:
+      config:
+        low_level:
+          # Keep Campaign 1 to one observation map and the simplest admitted
+          # projection.  Campaign 3 owns the same-scan naive/JINC comparison.
+          coadd:
+            enabled: false
+          mapmaking:
+            method: naive
+          noise_maps:
+            enabled: false
+          post_processing:
+            map_filtering:
+              enabled: false
+            source_finding:
+              enabled: false
+
+          timestream:
+            fruit_loops:
+              enabled: false
+            learning:
+              enabled: false
+            polarimetry:
+              enabled: false
+
+            raw_time_chunk:
+              altaz_destripe:
+                enabled: false
+              extinction_correction:
+                enabled: false
+
+              # A nonzero FIR length creates loaded outer scan context.  The
+              # Stage 7 candidate admits only outer bounds equal to science
+              # bounds, so Campaign 1 disables the FIR explicitly.
+              filter:
+                enabled: false
+              coherent_iq_mode_observer:
+                enabled: false
+              flagging:
+                impulsive_coincidence:
+                  enabled: false
+                lower_tod_inv_var_factor: 0.0
+                upper_tod_inv_var_factor: 0.0
+              kernel:
+                enabled: false
+              line_audit:
+                enabled: false
+              output:
+                enabled: false
+
+            processed_time_chunk:
+              clean:
+                mask_radius_arcsec: 0.0
+              flagging:
+                lower_tod_inv_var_factor: 0.0
+                upper_tod_inv_var_factor: 0.0
+                second_pass_local:
+                  enabled: false
+              output:
+                enabled: false
+              weighting:
+                busy_row_suppression:
+                  enabled: false
+                source_mask_radius_arcsec: 0.0
+                validation:
+                  enabled: false
