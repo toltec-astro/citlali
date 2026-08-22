@@ -1,6 +1,6 @@
 #pragma once
 
-#include <fmt/core.h>
+#include <fmt/format.h>
 #include <Eigen/Core>
 #include <tula/algorithm/mlinterp/mlinterp.hpp>
 
