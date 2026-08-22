@@ -178,8 +178,8 @@ cd ~/work_toltec/citlali_dev/citlali_refactor
 git fetch origin
 git switch codex/converge-apt-align-jinc
 git pull --ff-only
-PACKAGE_COMMIT=3735d42c34f061c225dd9b8c486135591802e807
-PACKAGE_ROOT=/work/toltec/citlali-validation/sci-align-stage7-campaign1-3735d42c
+PACKAGE_COMMIT=39138fc24aa762ceb3dda8a471ffe1747f359d1c
+PACKAGE_ROOT=/work/toltec/citlali-validation/sci-align-stage7-campaign1-39138fc2
 test ! -e "$PACKAGE_ROOT"
 mkdir -p "$PACKAGE_ROOT"
 git archive --format=tar "$PACKAGE_COMMIT" \
@@ -209,7 +209,7 @@ after the exact-candidate run evidence is frozen.
 ## Stop boundary and next action
 
 The candidate commit is complete. The bounded native-gap Science package is
-prepared at commit `3735d42c34f061c225dd9b8c486135591802e807`; its four
+prepared at commit `39138fc24aa762ceb3dda8a471ffe1747f359d1c`; its four
 focused tests, checksum inventory, explicit merge preflight, and the complete
 required config gate pass. The canonical Science kit is unchanged.
 

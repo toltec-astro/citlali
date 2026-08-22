@@ -286,8 +286,8 @@ zero review-required entries, and no drift. The exact CLI is
 The [Stage 7 candidate handoff](../handoff/COMPACT_V2_NATIVE_ALIGN_STAGE7_ACTIVATION_CANDIDATE_2026-08-22.md)
 records the implementation, bounded config domain, complete local evidence,
 and owner checklist. Campaign 1 preparation is frozen at exact package commit
-`3735d42c34f061c225dd9b8c486135591802e807`, tree
-`1b954d88006a356b12a07fa235cb8f06739ee6d1`, under
+`39138fc24aa762ceb3dda8a471ffe1747f359d1c`, tree
+`9191007a1f50f611cba7ee0487d345e00de2edcc`, under
 [`validation/campaigns/SCI-ALIGN-STAGE7-UNITY-001/campaign-1-native-gap/`](../validation/campaigns/SCI-ALIGN-STAGE7-UNITY-001/campaign-1-native-gap/README.md).
 The campaign-only final overlay selects naive projection, disables every
 unsupported operation and the nonzero-context Science FIR, and retains the
