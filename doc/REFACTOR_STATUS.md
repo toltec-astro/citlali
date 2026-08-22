@@ -22,9 +22,15 @@ returned `revise` on 2026-08-22. The revised plan distinguishes both Beammap
 calibration lanes, names baseline-governed `flag` and its authorized typed
 missing state, freezes exact signed-counter continuity and gap association,
 and assigns immutable observation, mutable scan/chunk, and output publication
-owners. See the [review record](../handoff/COMPACT_V2_NATIVE_ALIGN_PLAN_INDEPENDENT_REVIEW_2026-08-22.md).
-Implementation remains blocked until independent re-review accepts the exact
-revised plan commit.
+owners. See the [initial review record](../handoff/COMPACT_V2_NATIVE_ALIGN_PLAN_INDEPENDENT_REVIEW_2026-08-22.md).
+
+Independent re-review then returned `accept` with no blockers for exact plan
+commit `a3f2bf465a26048b24017ebd50876c4a2684b1b8`, tree
+`3ef26b7f05413dd3a48139fb0be3fd0586a59a2b`. The
+[acceptance record](../handoff/COMPACT_V2_NATIVE_ALIGN_PLAN_ACCEPTANCE_2026-08-22.md)
+opens Stage 1 only: immutable verified compact-v2 bundle-to-detector-column
+relation and atomic `Calib::get_apt` publication, without runtime consumer
+activation. Later stages retain their separate stop gates.
 
 This is a documentation-only design checkpoint. No native consumer is
 activated and no application code or production status changes. After an
