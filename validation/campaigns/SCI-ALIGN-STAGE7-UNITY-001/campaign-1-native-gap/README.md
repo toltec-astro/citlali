@@ -40,8 +40,9 @@ submission:
 ```bash
 CAMPAIGN=validation/campaigns/SCI-ALIGN-STAGE7-UNITY-001/campaign-1-native-gap
 REDUCTION=/absolute/path/to/the/new/science/reduction
+PYTHON_BIN=/absolute/path/to/the/TolTECA-environment/bin/python
 cp "$CAMPAIGN/99_zzz_sci_align_stage7_native_gap.yaml" "$REDUCTION/"
-$HOME/tolteca/bin/python "$CAMPAIGN/preflight.py" \
+"$PYTHON_BIN" "$CAMPAIGN/preflight.py" \
   --mode-dir "$REDUCTION" \
   --merged-out "$REDUCTION/sci-align-stage7-c1-merged.yaml" \
   --report-out "$REDUCTION/sci-align-stage7-c1-config-report.json"
