@@ -36,9 +36,9 @@ At fixed positive opacity, a larger admitted airmass gives larger \(\ell\) and
 larger correction. At zero opacity the result is independent of airmass. \\
 
 \Edge{004} & Exact atmosphere node & Evaluation at \(\ell_{a,k}\) returns the
-declared authoritative ordinate exactly, followed by the one declared
-orientation mapping. Interpolation of the reciprocal instead is detectable
-at nontrivial intervals. \\
+declared authoritative \(-\ln T^{\rm eff}\) ordinate exactly, followed by the
+declared exponential orientation. Interpolation of transmission or correction
+instead is detectable at nontrivial intervals. \\
 
 \Edge{005} & Operator seam & Left and right values agree at every node. Slopes
 may differ; a derivative or linear covariance claim exactly at, or spanning,
@@ -60,12 +60,15 @@ is outside temporal support. It yields no calibrated output rather than an
 endpoint hold or extrapolation. \\
 
 \Edge{009} & Engineering opacity & Any unsplit segment containing
-\(0.15<\tau_{225}\leq0.25\) is \code{engineering-only} \code{unavailable}; v0.1
-emits no calibrated signal for that segment. \\
+\(0.15<\tau_{225}\leq0.25\) may receive one observation-level
+\code{engineering-only} class. Every numerically supported sample uses the
+same calibration operator, while the class conveys no science-quality claim. \\
 
 \Edge{010} & Outside or malformed opacity & Negative or non-finite opacity is
 invalid. Opacity above 0.25 or absent opacity is outside supported
-calibration. Neither case is silently clamped or relabeled. \\
+calibration for the affected sample. Neither case is silently clamped or
+relabeled, but a momentary unsupported sample does not automatically
+invalidate other supported samples in the observation. \\
 
 \Edge{011} & Unity factor & Replacing one required factor value by numeric
 unity leaves values unchanged only when unity is the intended value; the
@@ -79,7 +82,9 @@ identify the challenged role. \\
 \Edge{013} & Corrected-APT double application & With
 \(F^{\rm sel}=P F^{\rm parent}\), applying \(P\) again changes the result by
 \(P\) and violates application count. Using the parent without the embodied
-event changes it by \(P^{-1}\). \\
+event changes it by \(P^{-1}\). An unapproved, unidentified, or
+out-of-domain child transformation yields no calibrated output even when its
+numeric value is plausible. \\
 
 \Edge{014} & Keyed row permutation & Arbitrarily permuting selected APT rows
 while preserving row occurrence keys and the explicit keyed relation leaves
@@ -102,7 +107,8 @@ scope. No first-row or nearest-row choice is allowed. \\
 \Edge{018} & Association disposition & A unique admitted match may calibrate.
 Abstained, ambiguous, rejected, and missing associations produce no calibrated
 value for the endpoint; aggregate matcher performance cannot convert one into
-a match. \\
+a match. The matcher cannot become the owner of source-factor meaning, and an
+association without an exact selected-child artifact is incomplete. \\
 
 \Edge{019} & Irrelevant design identity & Adding, removing, or changing a
 design-ID match while measured occurrence endpoints, association, selected
@@ -136,7 +142,9 @@ sensitivity calculation need not agree with a local linearization. \\
 \Edge{025} & Unresolved point source & Under a unit-peak originating beam and
 a realized response with \(\rho_L=1\), an unresolved source of flux density
 \(S\) mJy has ideal peak \(S\ \mjybeam\). This is a response prediction, not
-an integrated-flux claim. \\
+an integrated-flux or target-color-corrected spectral claim. The result
+retains the declared per-array reference-spectrum convention until the
+downstream scientist applies a target color correction. \\
 
 \Edge{026} & Response-changing kernel & If a downstream kernel changes
 \(\rho_L\) to \(r\), the unrenormalized ideal peak is \(rS\ \mjybeam\). A
@@ -151,17 +159,20 @@ originating ellipse. \\
 \Edge{028} & Unsupported stream or target & A non-\code{xs} stream, or a
 request for surface brightness, per-pixel flux, temperature, extended-source
 calibration, or integrated photometry, yields an unsupported no-output state
-without a calibrated v0.1 label. \\
+without a calibrated v0.1 label. A stream that is not the dimensionless fitted
+KID resonance-frequency change cannot acquire calibrated meaning merely from
+the \code{xs} token. \\
 
-\Edge{029} & Zero signal and affine convention & With an explicit
-not-applicable baseline and \(x=0\), every finite multiplier gives \(y=0\):
-CAL creates no additive offset. With a declared nonzero \(b\), the result is
-\(-Mb\), exposing the affine convention rather than hiding it. \\
+\Edge{029} & Zero signal and additive convention & With an explicit
+ordinary \(x^{xs}=0\), every finite multiplier gives \(y=0\): CAL creates no
+additive offset. Any nonzero additive CAL term is a detectable violation; DC
+and correlated-mode removal belong to downstream PTC. \\
 
-\Edge{030} & Observation-order replay & Two observations with distinct APT,
-association, atmosphere, and response identities give identical per-
-observation results in either processing order. No state or factor from one
-appears in the other's canonical lineage. \\
+\Edge{030} & Observation-order replay & Two observations with distinct source
+and child APTs, associations/transformations, delivery records, atmosphere,
+photometric/order states, owner-decision snapshots, and response identities
+give identical per-observation results in either processing order. No state
+or factor from one appears in the other's canonical lineage. \\
 
 \bottomrule
 \end{longtable}
@@ -170,8 +181,9 @@ appears in the other's canonical lineage. \\
 \subsection{Proposed evidence, separated by claim}
 \label{sec:validation-evidence}
 
-No scientific validation is executed by this authorship task. The following
-evidence is proposed for a future, separately authorized campaign.
+No scientific validation is executed by this authorship task. Evidence must
+follow the realizable TolTEC calibration workflow; it must not invent an
+arbitrary combinatorial matrix or minimum sample size.
 
 \begin{enumerate}[label=\textbf{V\arabic*.},leftmargin=*]
 \item \Term{Analytic structural fixtures.} Use small scalar and dense-vector
@@ -189,35 +201,38 @@ evidence is proposed for a future, separately authorized campaign.
   factor instances. Expected invariants and ratios are fixed by
   Equations~\eqref{eq:once-only} and \eqref{eq:factor-challenges}.
 
-\item \Term{Atmosphere structural fixtures.} Once the missing content-bound
-  operator record is supplied, verify its digest, exact nodes, analytic zero
+\item \Term{Atmosphere structural fixtures.} Verify the content-bound
+  operator's commit and digests, exact nodes, analytic zero
   anchor, positivity, strict direction, seam continuity, and support rejection
   without using observational data. This establishes structural correctness
   only.
 
-\item \Term{Atmosphere representation study.} Compare the finite retained
+\item \Term{Atmosphere representation report.} Compare the finite retained
   operator with its named higher-fidelity generating calculation on a dense,
-  preregistered grid over the exact declared support, using the exact selected
+  reproducible grid over the exact declared support, using the exact selected
   passband identity and a fully declared weighting convention. Report maximum
   and distributional error separately by array, opacity, and airmass. The
-  prior one-percent target is a falsification threshold, not a guaranteed
-  outcome. Unknown passband uncertainty remains a limitation even if the
-  numeric approximation passes.
+  prior one-percent value is a reporting benchmark, not an automatic
+  pass/fail ceiling. Unknown passband uncertainty remains a limitation.
 
-\item \Term{Synthetic response and uncertainty study.} Inject a point-source
-  template through an independently declared beam and downstream response;
-  test Equation~\eqref{eq:peak-response} before and after a response-changing
-  kernel. Inject detector, array, observation, and global nuisances and recover
-  the dense covariance predicted by Equations~\eqref{eq:nuisance-covariance}
-  and \eqref{eq:common-rank-one}. Blank inputs test the absence of additive
-  offsets or residual airmass trend.
+\item \Term{Beammap closure test.} Reduce calibrated Beammaps to source APTs,
+  have \code{toltec_beammap} establish that they are scientifically acceptable,
+  enter them into \code{apt_library}, use TolProj's ordinary matching machinery
+  to associate each APT back to its generating Beammap, and reduce that Beammap
+  through the ordinary science path. Report recovered/input flux ratios or
+  residuals separately for each array. This establishes end-to-end numerical
+  closure of APT--TolProj--CAL--downstream processing, not independent absolute
+  calibration accuracy.
 
-\item \Term{Observational performance study.} Only after structural and
-  representation evidence exists, use independent standard-source predictions
-  with epoch, spectrum, passband, beam/template, and full covariance. Estimate
-  relative repeatability and absolute recovery separately by array and over
-  declared atmosphere support; test residual trend with airmass. The prior
-  approximate five-percent repeatability and five-to-ten-percent absolute
-  goals are study targets, not acceptance by assertion. Correlated standards
-  are not counted as independent.
+\item \Term{Associated-pointing transfer test.} Use TolProj to apply an
+  accepted Beammap-derived APT to that Beammap's associated pointing
+  observation and reduce it through the same ordinary science path. When the
+  pointing source has an adequate independent ALMA, SMA, planet, or
+  well-calibrated asteroid flux, this tests calibration transfer. Across the
+  observations actually available, record observation and source/child APT
+  identities, TolProj association, reference and recovered flux, array,
+  atmosphere, flux ratio or residual, repeatability, absolute recovery, and
+  observed condition dependence. The five-percent and five-to-ten-percent
+  values are reporting benchmarks only. Final scientific acceptance is an
+  owner decision based on the honestly reported evidence.
 \end{enumerate}

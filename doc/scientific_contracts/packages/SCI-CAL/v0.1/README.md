@@ -1,12 +1,14 @@
 # SCI-CAL — Detector Calibration, Atmospheric Extinction, And Signal Transfer
 
-Status: science-team rationale r0.3 final cleanup complete; rationale
-architecture frozen as the package template; scientific contract v0.1 and
-engineering conformance v0.1 unchanged; scientific authority not frozen
+Status: science-team rationale r0.5 and engineering conformance r0.4 carry the
+approved Q01--Q09 owner dispositions; scientific contract v0.1; validation
+evidence and final scientific acceptance pending
 
 Scientific contract version: `v0.1` (`2026-08-16`)
 
-Active science-rationale revision: `r0.3`
+Active science-rationale revision: `r0.5`
+
+Active engineering-conformance revision: `r0.4`
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -57,6 +59,27 @@ four-item author-reference packet on `2026-08-16`.
   manager consistency check and `nw10` authority finding
 - [`SCIENTIST_CROSSWALK_V0.2.md`](SCIENTIST_CROSSWALK_V0.2.md): grouped routing
   of every assumption, requirement, and edge prediction
+- [`ENGINEERING_CONFORMANCE_R0.2_CHANGELOG.md`](ENGINEERING_CONFORMANCE_R0.2_CHANGELOG.md):
+  bounded repair aligning the engineering view with science rationale r0.3
+- [`ENGINEERING_CONFORMANCE_R0.2_BUILD_REVIEW.md`](ENGINEERING_CONFORMANCE_R0.2_BUILD_REVIEW.md):
+  mechanical, PDF, and visual QA for the repaired engineering artifact
+- [`SCIENTIFIC_RATIONALE_R0.4_CHANGELOG.md`](SCIENTIFIC_RATIONALE_R0.4_CHANGELOG.md):
+  bounded science-view corrections from the implementation-blind review
+- [`ENGINEERING_CONFORMANCE_R0.3_CHANGELOG.md`](ENGINEERING_CONFORMANCE_R0.3_CHANGELOG.md):
+  bounded engineering-view corrections from the implementation-blind review
+- [`SCIENTIFIC_OWNER_DECISIONS_R0.5.md`](SCIENTIFIC_OWNER_DECISIONS_R0.5.md):
+  approved Q01--Q09 scientific dispositions, exact atmosphere authority, and
+  concrete closure/transfer validation workflow
+- [`SCIENTIFIC_RATIONALE_R0.5_CHANGELOG.md`](SCIENTIFIC_RATIONALE_R0.5_CHANGELOG.md):
+  owner-decision integration in the scientist-facing view
+- [`ENGINEERING_CONFORMANCE_R0.4_CHANGELOG.md`](ENGINEERING_CONFORMANCE_R0.4_CHANGELOG.md):
+  corresponding normative engineering repair
+- [`SCIENTIFIC_ENGINEERING_CONSISTENCY_R0.5.md`](SCIENTIFIC_ENGINEERING_CONSISTENCY_R0.5.md):
+  implementation-blind consistency assessment of the r0.5/r0.4 pair
+- [`SCIENTIFIC_ENGINEERING_R0.5_R0.4_BUILD_REVIEW.md`](SCIENTIFIC_ENGINEERING_R0.5_R0.4_BUILD_REVIEW.md):
+  mechanical, PDF, and visual QA for the owner-decision revision
+- [`SCIENTIFIC_ENGINEERING_R0.4_R0.3_BUILD_REVIEW.md`](SCIENTIFIC_ENGINEERING_R0.4_R0.3_BUILD_REVIEW.md):
+  mechanical, PDF, and visual QA for the repaired canonical pair
 - [`CROSSWALK.md`](CROSSWALK.md): all 50 requirements traced to the
   scientist-facing authority and implementation-independent observables
 - `src/common/`: shared notation, definitions, assumptions, equations,
@@ -66,36 +89,40 @@ four-item author-reference packet on `2026-08-16`.
 - [`src/engineering-conformance.tex`](src/engineering-conformance.tex):
   canonical source for the engineering-facing view
 - [`pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1.pdf`](pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1.pdf):
-  stable canonical filename for the active scientist-facing PDF
+  stable canonical filename for the active scientist-facing r0.5 PDF
 - [`pdf/SCI-CAL-ENGINEERING-CONFORMANCE-v0.1.pdf`](pdf/SCI-CAL-ENGINEERING-CONFORMANCE-v0.1.pdf):
-  stable canonical filename for the engineering-facing PDF
+  stable canonical filename for the active engineering-facing r0.4 PDF
 - [`pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1-DRAFT.pdf`](pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1-DRAFT.pdf):
   archived 24-page scientist-facing predecessor reviewed by Grant
 - [`pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.2-DRAFT.pdf`](pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.2-DRAFT.pdf):
   revised 14-page science-team rationale, including formal appendices
 - [`pdf/SCI-CAL-ENGINEERING-CONFORMANCE-v0.1-DRAFT.pdf`](pdf/SCI-CAL-ENGINEERING-CONFORMANCE-v0.1-DRAFT.pdf):
-  21-page engineering-facing draft
+  archived 21-page engineering-facing predecessor
 
 The archived r0.1/r0.2 filenames above predate the adopted contract/document
 version-axis rule and are retained as historical artifact names. They do not
 identify contract versions later than v0.1.
 
-## r0.3 Correction Artifacts
+## Consistency Artifacts
 
 - [`SCIENTIFIC_RATIONALE_R0.3_CHANGELOG.md`](SCIENTIFIC_RATIONALE_R0.3_CHANGELOG.md): bounded ownership, ordering, atmosphere, terminology, versioning, and governance corrections
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md): active Q01--Q09 authority, status, evidence, blocked-product, resolution, and affected-document ledger
-- [`SCIENTIFIC_ENGINEERING_CONSISTENCY_R0.3.md`](SCIENTIFIC_ENGINEERING_CONSISTENCY_R0.3.md): ownership, factor direction, orientation, units, ordering, claim-layer, and version-axis consistency
+- [`SCIENTIFIC_ENGINEERING_CONSISTENCY_R0.3.md`](SCIENTIFIC_ENGINEERING_CONSISTENCY_R0.3.md): corrected comparison of science rationale r0.3 and engineering conformance r0.2 across ownership, factor direction, orientation, units, ordering, claim layers, and version axes
 - [`SCIENTIST_CROSSWALK_R0.3.md`](SCIENTIST_CROSSWALK_R0.3.md): refreshed grouped routing of every assumption, requirement, and edge prediction
+- [`SCIENTIST_CROSSWALK_R0.4.md`](SCIENTIST_CROSSWALK_R0.4.md): corrected grouped routing for the r0.4/r0.3 pair
+- [`SCIENTIFIC_ENGINEERING_CONSISTENCY_R0.4.md`](SCIENTIFIC_ENGINEERING_CONSISTENCY_R0.4.md): fresh high-effort implementation-blind consistency-review pass for the repaired pair
 - [`pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1-r0.3-DRAFT.pdf`](pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1-r0.3-DRAFT.pdf): final-form science-team rationale and frozen package-template model
 
 ## Next Gate
 
-There is no further stylistic review. The active work is to disposition
-Q01--Q09 as approved authority or evidence becomes available. A later
-rationale revision requires one of the four triggers in `CAL-GOV-D010`.
+Q01--Q09 are scientifically dispositioned. The next scientific gate is to
+execute the realizable workflow: validate Beammap-derived source APTs with
+`toltec_beammap`, enter accepted APTs into `apt_library`, match them through
+TolProj, and run ordinary science reductions for same-Beammap closure and,
+where an adequate independent flux exists, associated-pointing transfer.
+Results are reported by array without an arbitrary matrix or sample minimum.
 
-After scientific-substance approval, an implementation-blind consistency
-review must compare the two views, crosswalk, and ledger before freezing the
-scientific authority.
-This draft does not approve an implementation, run validation, or change
-production status.
+This revision does not approve an implementation, establish implementation
+conformity, execute scientific validation, or change production status. The
+1%, 5%, and 5--10% figures remain reporting benchmarks; final scientific
+acceptance is an owner decision based on the evidence actually achieved.

@@ -8,32 +8,43 @@ not permissions to replace missing information with defaults.
 \item[\Assump{001}: upstream sample authority.]
   The supplied sample axis, time, eligibility, original/synthesized state,
   elevation/airmass meaning, and acquisition-column binding are correct under
-  approved upstream authority. SCI-CAL neither chooses nor rederives them.
+  approved upstream authority. Ordinary \code{xs} is dimensionless KID
+  \(\Delta f/f_{\rm res}\), positive with increasing absorbed optical power,
+  with no absolute DC sensitivity. The fitted resonance is expected to match
+  the active probe tone. Wrong-Tune and high-noise quality states are explicit.
 
 \item[\Assump{002}: ordinary measured channel.]
   The admitted signal is the ordinary \code{xs} stream. A distinct measured
   stream is a distinct physical observable and does not inherit this factor.
 
-\item[\Assump{003}: selected immutable APT.]
-  TolProj has selected and bound one immutable measured APT to the target
-  observation, and the supplied target-to-source associations are admitted
-  TolAPT/TolProj results. SCI-CAL does not choose the artifact or matcher.
+\item[\Assump{003}: selected immutable child APT.]
+  Beammap/source-APT production owns the generating calibration record.
+  TolProj has supplied one admitted target-to-source association and selected
+  or created one immutable observation-specific child APT, with an identity
+  transformation recorded when the source row is unchanged. TolTECA delivery
+  preserves that exact artifact. SCI-CAL does not choose the artifact,
+  matcher, or transformation and does not reinterpret the selected value.
 
-\item[\Assump{004}: explicit affine convention.]
-  Any baseline or offset operation preceding the multiplier is named, typed,
-  and already authorized. ``No baseline subtraction'' is an explicit
-  not-applicable state, not an inferred zero.
+\item[\Assump{004}: no additive CAL operation.]
+  SCI-CAL performs no baseline or offset subtraction. PTC is downstream and
+  owns DC removal and correlated-atmosphere/common-mode cleaning.
 
 \item[\Assump{005}: coefficient direction and reference plane.]
   The selected \code{flxscale} is finite, nonzero, oriented as
-  \(\mjybeam/U_x\), and refers to the top-of-atmosphere calibration plane. Its
-  lineage states the disposition of any TolProj pointing-derived correction.
+  \(\mjybeam/(\Delta f/f)\), and refers to the top-of-atmosphere calibration plane. Its
+  producer record states calibrator model/epoch, source atmosphere, amplitude
+  estimator, beam/template normalization, pointing and spectral treatment,
+  direction, and uncertainty/covariance status. Its child lineage states the
+  approved transformation, transfer-validity domain, retained systematics,
+  and disposition of any pointing-source photometric rescale. SCI-BEAM owns
+  the generating source-factor meaning; TolProj owns only the admitted child
+  transformation and its lineage.
 
 \item[\Assump{006}: atmosphere inputs.]
-  \(\tau_{225}\) is zenith optical depth; $X$ is the full eligible-sample
-  airmass; the target pivot is $X_{\rm ref}=0$; and every value carries
-  declared time and model support. SCI-CAL does not infer $X$ from elevation
-  or choose an opacity estimator.
+  \(\tau_{225}\) is dimensionless zenith optical depth from the LMT WVR values
+  written into the observation's \code{tel*.nc} file. The approximately
+  five-minute readings are interpolated onto sample time. $X$ is the full
+  eligible-sample airmass and the target pivot is $X_{\rm ref}=0$.
 
 \item[\Assump{007}: fixed conditional state.]
   Conditional covariance equations hold at fixed identities, factor values,
@@ -41,32 +52,33 @@ not permissions to replace missing information with defaults.
   on the same signal requires cross-covariance or joint propagation.
 
 \item[\Assump{008}: response ownership.]
-  Beam/Beammap supplies the originating beam/template identity; MAP/FLT
-  supplies the realized mapmaker/kernel/filter response. SCI-CAL records and
-  conditions on those identities but does not certify their empirical
-  fidelity.
+  Beammap/source-APT production supplies the originating beam/template and
+  source-calibration identity; MAP/FLT supplies the realized
+  mapmaker/kernel/filter response. SCI-CAL records and conditions on those
+  identities but does not certify their empirical fidelity or reinterpret
+  their producer-owned meaning.
 
-\item[\Assump{009}: coherent segment.]
-  A segment is declared before quality classification and is internally
-  coherent in selected APT, atmosphere/operator identity, requested/effective
-  mode, target unit, and response basis. Splitting a segment is a provenance
-  event, not a sample-by-sample quality switch.
+\item[\Assump{009}: coherent observation class.]
+  CAL assigns one opacity quality class to the complete observation and does
+  not split an observation into science and engineering pieces. A 0.025
+  tolerance prevents momentary excursions from invalidating the observation;
+  it does not extend the numerical operator's sample support.
 
 \item[\Assump{010}: passband limitation.]
   The selected TolTECA v1 passband set is a modeled array-named reference with
-  the recorded unknowns in Section~\ref{sec:definitions}. Any atmosphere
-  result using it is conditional on the declared, presently unestablished
-  response weighting and carries unavailable passband uncertainty.
+  the recorded unknowns in Section~\ref{sec:definitions}. The operator uses
+  its supplied energy-weighted throughput with denominator normalization and
+  the selected reference spectrum. Passband uncertainty and detector/network
+  variation remain unavailable.
 
-\item[\Assump{011}: unresolved numeric operator authority.]
-  The packet does not contain the exact nodes, node ordinate orientation,
-  content digest, or numeric line-of-sight support of
-  \code{am12_fixed_djf25_piecewise_linear_los_tau_v1}. Consequently this draft
-  defines the strongest structural operator contract but does not authorize a
-  numeric atmosphere evaluation, calibrated numeric output, or numeric
-  \code{science-qualification-eligible} disposition until the owner supplies
-  one content-bound operator record answering the question in the draft
-  decision register. Resolving that question can enable structural evaluation
-  only; it does not establish an achieved \code{science-qualified} or
-  \code{calibrated-science} claim.
+\item[\Assump{011}: content-bound numeric operator authority.]
+  The adopted machine contract and node table for
+  \code{am12_fixed_djf25_piecewise_linear_los_tau_v1} are content-bound by:
+  \begin{center}\footnotesize
+  \code{7a064ff768a3de4f427f1338d94ef6cb9026d248f3c3c816fc3dfc96d156e36a}\\
+  \code{fd688a4cd3f46585b08631bc63a562aed482feb9b24ec9ee0071b70db7eb8a5f}.
+  \end{center}
+  The first is the contract digest and the second the node-table digest.
+  This authorizes numerical representation on declared support; it does not
+  establish WVR truth, observational accuracy, or scientific acceptance.
 \end{description}
