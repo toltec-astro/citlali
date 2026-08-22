@@ -3,8 +3,10 @@
 // Implementation detail included by lali.h.
 
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
+#include <citlali/core/pipeline/map_group_indexing.h>
 #include <citlali/core/pipeline/map_grouping_policy.h>
 #include <citlali/core/pipeline/jinc_processing_provenance.h>
+#include <citlali/core/pipeline/native_consumer_execution.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
@@ -34,6 +36,51 @@ auto Lali::run(
                                                    output_flags,
                                                    map_grouping_ptr](input_t &rtcdata) {
         auto &map_grouping = *map_grouping_ptr;
+        if (rtcdata.native_runtime) {
+            citlali::pipeline::log_scan_start(
+                scans_done_mutex, logger, rtcdata.index.data,
+                *scans_done_count, telescope);
+            auto map_indices =
+                citlali::pipeline::detector_map_indices_for_grouping(
+                    citlali::pipeline::mapmaking_config(*this).grouping,
+                    calib);
+            auto native =
+                citlali::pipeline::prepare_native_consumer_map_scan(
+                    *this, rtcdata, map_indices);
+            auto &raw_plan =
+                citlali::pipeline::raw_timestream_plan(*this);
+            if (!raw_plan.observation ||
+                !raw_plan.observation->native_cohort_lineage) {
+                throw std::logic_error(
+                    "native Lali scan lacks observation-owned lineage");
+            }
+            auto map_publication =
+                citlali::pipeline::make_native_map_publication_request_v2(
+                    *this, mapmaking_method, make_maps, *native.runtime,
+                    native.ptcdata.weights.data);
+            auto record =
+                citlali::pipeline::make_native_cohort_scan_provenance_v2(
+                    raw_plan.observation->native_cohort_lineage->binding(),
+                    native.runtime->ledger(), *native.runtime->rtc,
+                    *native.runtime->ptc_prepared,
+                    *native.runtime->science_projection,
+                    std::move(map_publication));
+            auto reservation =
+                raw_plan.observation->native_cohort_lineage->reserve(
+                    std::move(record));
+            populate_lali_final_maps(
+                native.ptcdata, calib, native.map_indices, map_grouping,
+                mapmaking_method, make_maps, make_noise_maps,
+                &*native.runtime->science_projection);
+            citlali::pipeline::publish_native_jinc_processing_trace_if_active(
+                *this, rtcdata.index.data,
+                *native.runtime->jinc_processing_trace);
+            reservation.commit();
+            citlali::pipeline::log_scan_done(
+                scans_done_mutex, logger, rtcdata.index.data,
+                *scans_done_count, telescope);
+            return;
+        }
         citlali::pipeline::prepare_standard_rtc_scan_context(*this, rtcdata);
 
         // create PTCData

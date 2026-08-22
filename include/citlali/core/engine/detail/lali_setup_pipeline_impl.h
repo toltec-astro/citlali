@@ -4,6 +4,7 @@
 
 #include <citlali/core/pipeline/map_diagnostics.h>
 #include <citlali/core/pipeline/noise_execution_plan.h>
+#include <citlali/core/pipeline/native_scan_runtime_state.h>
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_scan_generation.h>
@@ -53,6 +54,35 @@ void Lali::pipeline(
             const Eigen::Index scan_length =
                 citlali::pipeline::initialize_rtc_scan(
                     rtcdata, telescope, scan);
+            const auto &raw_plan =
+                citlali::pipeline::raw_timestream_plan(*this);
+            if (raw_plan.observation &&
+                raw_plan.observation->native_consumer_route ==
+                    citlali::pipeline::NativeConsumerRoute::native_required) {
+                const auto first_slot = rtcdata.scan_indices.data(0);
+                const auto past_slot = rtcdata.scan_indices.data(1) + 1;
+                if (first_slot < 0 || past_slot <= first_slot) {
+                    throw std::logic_error(
+                        "native Science scan has invalid relational bounds");
+                }
+                if (rtcdata.scan_indices.data(2) != first_slot ||
+                    rtcdata.scan_indices.data(3) + 1 != past_slot) {
+                    throw std::logic_error(
+                        "native Science scan requires a separately approved outer-context run contract");
+                }
+                auto mapping = kidsproc.make_native_measured_scan(
+                    rawobs,
+                    citlali::pipeline::NativeScanChunkScope{
+                        alignment.native_carriers->scope(), scan, 0},
+                    alignment.native_carriers,
+                    calib.apt_detector_relation_v2_handle(),
+                    static_cast<std::size_t>(first_slot),
+                    static_cast<std::size_t>(past_slot),
+                    citlali::pipeline::timestream_config(*this).type);
+                rtcdata.native_runtime = std::make_shared<
+                    citlali::pipeline::NativeScanRuntimeState>(
+                        std::move(mapping));
+            }
 
             // populate noise matrix (do outside of parallelized region for thread safety)
             citlali::pipeline::populate_noise_map_signs(

@@ -92,6 +92,8 @@ bool prepare_reduction_observation_inputs(
     record_reduction_observation_timing_gaps_if_needed(engine, logger);
     calculate_reduction_observation_scan_indices_if_needed(
         engine, has_multiple_inputs, logger);
+    begin_native_consumer_observation_if_available<IsBeammap>(
+        engine, observation_index);
     allocate_reduction_observation_map_buffers_if_needed(
         todproc, map_extents, map_coords, observation_index, logger);
     update_reduction_observation_exposure_time(engine);

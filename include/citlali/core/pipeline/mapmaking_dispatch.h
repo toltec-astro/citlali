@@ -1,6 +1,9 @@
 #pragma once
 
 #include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/pipeline/timestream_native_science_projection.h>
+
+#include <stdexcept>
 
 namespace citlali::pipeline {
 
@@ -24,6 +27,30 @@ void populate_naive_or_jinc_maps(citlali::config::MapMethod method,
             ptcdata, omb, cmb, map_indices, pixel_axes, apt, d_fsmp, run_omb,
             run_noise);
     }
+}
+
+template <class NaiveMapmaker, class JincMapmaker, class PtcData,
+          class MapBuffer, class MapIndices, class PixelAxes, class Apt>
+void populate_naive_or_jinc_maps_native(
+    citlali::config::MapMethod method, NaiveMapmaker &naive_mm,
+    JincMapmaker &jinc_mm, PtcData &ptcdata, MapBuffer &omb,
+    MapBuffer &cmb, MapIndices &map_indices, PixelAxes &pixel_axes,
+    Apt &apt, double d_fsmp, bool run_omb, bool run_noise,
+    const NativeScienceProjection &projection) {
+    if (citlali::config::is_naive_map_method(method)) {
+        naive_mm.populate_maps_naive_native(
+            ptcdata, omb, cmb, map_indices, pixel_axes, apt, d_fsmp,
+            run_omb, run_noise, projection);
+        return;
+    }
+    if (citlali::config::is_jinc_map_method(method)) {
+        jinc_mm.populate_maps_jinc_parallel_native(
+            ptcdata, omb, cmb, map_indices, pixel_axes, apt, d_fsmp,
+            run_omb, run_noise, projection);
+        return;
+    }
+    throw std::logic_error(
+        "native science projection supports only naive or JINC mapmaking");
 }
 
 template <class NaiveMapmaker, class JincMapmaker, class MlMapmaker,

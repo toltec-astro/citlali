@@ -47,6 +47,10 @@
 
 #include <fmt/core.h>
 
+namespace citlali::pipeline {
+class NativeScanRuntimeState;
+}
+
 namespace timestream {
 
 enum TimestreamFlags {
@@ -215,6 +219,10 @@ struct TimeStream : internal::TCDataBase<Derived>,
 
     // optional measured sidecar timestreams, such as quadrature r.
     AuxiliaryMeasuredStreams auxiliary_measured_streams;
+    // Present only for the explicitly activated compact-v2 native consumer.
+    // This is scan-owned sidecar state, not a second numerical authority.
+    std::shared_ptr<citlali::pipeline::NativeScanRuntimeState>
+        native_runtime;
     // kernel timestreams
     data_t<Eigen::MatrixXd> kernel;
     // flag timestream

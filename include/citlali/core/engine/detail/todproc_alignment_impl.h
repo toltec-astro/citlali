@@ -14,8 +14,20 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     citlali::pipeline::clear_alignment_windows(engine().alignment);
     engine().alignment.gaps.clear();
 
+    const auto native_relation =
+        engine().calib.apt_detector_relation_v2_handle();
+    std::shared_ptr<const citlali::pipeline::RawTelescopeTrajectory>
+        candidate_raw_telescope;
+    if (native_relation) {
+        candidate_raw_telescope = std::make_shared<const
+            citlali::pipeline::RawTelescopeTrajectory>(
+                engine().telescope.tel_data);
+    }
+
     // vector of network times
     std::vector<Eigen::VectorXd> nw_ts;
+    std::vector<citlali::pipeline::NativeNetworkAlignment>
+        native_networks;
 
     // sample rate
     double fsmp = -1;
@@ -50,6 +62,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
 
             // find gaps
             int gaps = citlali::pipeline::count_packet_counter_gaps(ts);
+            auto packet_counters =
+                citlali::pipeline::packet_counters_from_timestream_matrix(ts);
 
             // add gaps to engine map
             if (gaps>0) {
@@ -60,11 +74,17 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
             double fpga_freq;
             fo.getVar("Header.Toltec.FpgaFreq").getVar(&fpga_freq);
 
-            nw_ts.push_back(
+            auto reconstructed_native_time =
                 citlali::pipeline::network_time_from_timestream_matrix(
                     ts.cast<double>(), fpga_freq,
                     engine().interface_sync.offsets[
-                        "toltec"+std::to_string(roach_index)]));
+                        "toltec"+std::to_string(roach_index)]);
+            nw_ts.push_back(reconstructed_native_time);
+            if (native_relation) {
+                native_networks.emplace_back(
+                    roach_index, 0, std::move(reconstructed_native_time),
+                    std::move(packet_counters));
+            }
 
             fo.close();
 
@@ -139,6 +159,44 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
     // shortest common data time vector
     Eigen::VectorXd xi = nw_ts[max_t0_i].segment(engine().alignment.start_indices[max_t0_i], min_size);
 
+    std::shared_ptr<const citlali::pipeline::NativeAlignmentPlan>
+        candidate_native_alignment;
+    if (native_relation) {
+        std::vector<citlali::pipeline::NativeNetworkAlignment>
+            cropped_networks;
+        std::map<citlali::pipeline::TimestreamNetworkId,
+                 std::vector<citlali::pipeline::NativeSlotAssociation>>
+            associations;
+        cropped_networks.reserve(native_networks.size());
+        for (std::size_t index = 0; index < native_networks.size(); ++index) {
+            const auto &source = native_networks[index];
+            const auto first = static_cast<
+                citlali::pipeline::TimestreamNativeRow>(
+                    engine().alignment.start_indices.at(index));
+            Eigen::VectorXd times =
+                source.reconstructed_times_unix_sec().segment(
+                    static_cast<Eigen::Index>(first), min_size);
+            std::vector<citlali::pipeline::TimestreamPacketCounter> counters(
+                source.packet_counters().begin() + first,
+                source.packet_counters().begin() + first + min_size);
+            cropped_networks.emplace_back(
+                source.network_id(), first, std::move(times),
+                std::move(counters));
+            associations.emplace(
+                source.network_id(),
+                citlali::pipeline::make_direct_native_slot_associations(
+                    first, static_cast<std::size_t>(min_size)));
+        }
+        const auto &observation = native_relation->observation();
+        candidate_native_alignment = std::make_shared<const
+            citlali::pipeline::NativeAlignmentPlan>(
+                citlali::pipeline::NativeObservationScope{
+                    observation.observation, observation.subobservation,
+                    observation.scan},
+                std::move(cropped_networks), xi,
+                std::move(associations));
+    }
+
     citlali::pipeline::interpolate_telescope_data_to_common_time(
         engine().telescope.tel_data, xi, false);
 
@@ -147,6 +205,10 @@ void TimeOrderedDataProc<EngineType>::align_timestreams(const RawObs &rawobs) {
         citlali::pipeline::interpolate_hwpr_angle_to_common_time(
             engine().calib.hwpr_angle, engine().calib.hwpr_recvt, xi);
     }
+    engine().alignment.raw_telescope_trajectory =
+        std::move(candidate_raw_telescope);
+    engine().alignment.native_alignment_plan =
+        std::move(candidate_native_alignment);
 }
 
 // upgraded alignment of tod with telescope
@@ -157,9 +219,22 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
 
     citlali::pipeline::clear_gap_alignment_state(engine().alignment);
 
+    const auto native_relation =
+        engine().calib.apt_detector_relation_v2_handle();
+    std::shared_ptr<const citlali::pipeline::RawTelescopeTrajectory>
+        candidate_raw_telescope;
+    if (native_relation) {
+        candidate_raw_telescope = std::make_shared<const
+            citlali::pipeline::RawTelescopeTrajectory>(
+                engine().telescope.tel_data);
+    }
+
     const auto kids_data = rawobs.kidsdata();
     std::vector<Eigen::VectorXd> nw_times(kids_data.size());
     std::vector<Eigen::Index> nw_ids(kids_data.size(), -1);
+    std::vector<citlali::pipeline::NativeNetworkAlignment>
+        native_networks;
+    native_networks.reserve(kids_data.size());
 
     // loop through networks and build time vectors
     double f_smp_roach = -1.0;
@@ -198,6 +273,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
 
             // find gaps
             int gaps = citlali::pipeline::count_packet_counter_gaps(ts);
+            auto packet_counters =
+                citlali::pipeline::packet_counters_from_timestream_matrix(ts);
 
             // add gaps to engine map
             if (gaps>0) {
@@ -210,6 +287,11 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
                     ts_double, fpga_freq,
                     engine().interface_sync.offsets[
                         "toltec"+std::to_string(roach_index)]);
+            if (native_relation) {
+                native_networks.emplace_back(
+                    roach_index, 0, nw_times[i],
+                    std::move(packet_counters));
+            }
 
             fo.close();
 
@@ -245,6 +327,56 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
         citlali::pipeline::build_common_time_grid_masks(
             nw_times, t_common, max_init_time, dt, tol, logger);
 
+    std::shared_ptr<const citlali::pipeline::NativeAlignmentPlan>
+        candidate_native_alignment;
+    if (native_relation) {
+        std::vector<citlali::pipeline::NativeNetworkAlignment>
+            cropped_networks;
+        std::map<citlali::pipeline::TimestreamNetworkId,
+                 std::vector<citlali::pipeline::NativeSlotAssociation>>
+            associations;
+        cropped_networks.reserve(native_networks.size());
+        for (std::size_t index = 0; index < native_networks.size(); ++index) {
+            const auto &source = native_networks[index];
+            auto network_associations =
+                citlali::pipeline::make_gap_native_slot_associations(
+                    source, t_common, masks.at(index), dt);
+            std::optional<citlali::pipeline::TimestreamNativeRow> first;
+            std::optional<citlali::pipeline::TimestreamNativeRow> past;
+            for (const auto &association : network_associations) {
+                if (!association.mapped()) continue;
+                first = first ? std::min(*first, association.native_row)
+                              : association.native_row;
+                const auto next = association.native_row + 1;
+                past = past ? std::max(*past, next) : next;
+            }
+            if (!first || !past || *first >= *past) {
+                throw std::logic_error(
+                    "native alignment participant has no admitted overlap");
+            }
+            const auto count = static_cast<Eigen::Index>(*past - *first);
+            Eigen::VectorXd times =
+                source.reconstructed_times_unix_sec().segment(
+                    static_cast<Eigen::Index>(*first), count);
+            std::vector<citlali::pipeline::TimestreamPacketCounter> counters(
+                source.packet_counters().begin() + *first,
+                source.packet_counters().begin() + *past);
+            cropped_networks.emplace_back(
+                source.network_id(), *first, std::move(times),
+                std::move(counters));
+            associations.emplace(
+                source.network_id(), std::move(network_associations));
+        }
+        const auto &observation = native_relation->observation();
+        candidate_native_alignment = std::make_shared<const
+            citlali::pipeline::NativeAlignmentPlan>(
+                citlali::pipeline::NativeObservationScope{
+                    observation.observation, observation.subobservation,
+                    observation.scan},
+                std::move(cropped_networks), t_common,
+                std::move(associations));
+    }
+
     // build a network-keyed mask table for downstream flagging
     for (Eigen::Index j = 0; j < static_cast<Eigen::Index>(nw_ids.size()); ++j) {
         if (nw_ids[j] < 0) {
@@ -267,4 +399,8 @@ void TimeOrderedDataProc<EngineType>::align_timestreams_gaps(const RawObs &rawob
     engine().alignment.common_time = t_common;
     engine().alignment.masks = masks;
     engine().alignment.network_times = nw_times;
+    engine().alignment.raw_telescope_trajectory =
+        std::move(candidate_raw_telescope);
+    engine().alignment.native_alignment_plan =
+        std::move(candidate_native_alignment);
 }

@@ -16,6 +16,7 @@
 #include <citlali/core/pipeline/kids_external_config.h>
 #include <citlali/core/pipeline/kids_input_validation.h>
 #include <citlali/core/pipeline/kids_tod_channel.h>
+#include <citlali/core/pipeline/timestream_measured_scan.h>
 
 /**
  * @brief The KIDs data solver struct
@@ -105,6 +106,16 @@ struct KidsDataProc : ConfigMapper<KidsDataProc> {
                                   std::vector<Eigen::Index> &,
                                   const int, const int,
                                   citlali::config::TodType);
+
+    auto make_native_measured_scan(
+        const RawObs &,
+        citlali::pipeline::NativeScanChunkScope,
+        std::shared_ptr<const citlali::pipeline::NativeObservationCarriers>,
+        std::shared_ptr<const
+            citlali::pipeline::CanonicalAptDetectorRelationV2>,
+        std::size_t, std::size_t, citlali::config::TodType)
+        -> std::shared_ptr<const
+            citlali::pipeline::NativeMeasuredDetectorScan>;
 
     // load rawobs with gaps
     template <typename DerivedA, typename DerivedB, typename DerivedC>

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/pipeline/native_consumer_mode_policy.h>
 #include <citlali/core/pipeline/ordered_writer.h>
 #include <citlali/core/pipeline/output_policy.h>
 
@@ -99,6 +100,14 @@ inline std::shared_ptr<OrderedWriter> make_ordered_writer_if(bool enabled) {
 template <class Engine>
 TimestreamOutputFlags standard_timestream_output_flags(const Engine &engine) {
     TimestreamOutputFlags flags;
+    if constexpr (has_raw_timestream_plan_v<Engine>) {
+        const auto &plan = raw_timestream_plan(engine);
+        if (plan.observation &&
+            plan.observation->native_consumer_route ==
+                NativeConsumerRoute::native_required) {
+            return flags;
+        }
+    }
     flags.write_rtc = raw_tod_output_files_available(engine);
     flags.write_ptc = processed_tod_output_files_available(engine);
     flags.write_rtcdiag = !engine.output_paths.rtcdiag_filename.empty();

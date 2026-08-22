@@ -312,6 +312,13 @@ public:
         const std::string &axis) const {
         return pointing_offsets_arcsec_.at(axis);
     }
+    const NativeTelescopeData &telescope_data() const noexcept {
+        return telescope_data_;
+    }
+    const NativePointingOffsetsArcsec &pointing_offsets_arcsec() const
+        noexcept {
+        return pointing_offsets_arcsec_;
+    }
 
 private:
     void require_series(const Eigen::VectorXd &values,
@@ -391,6 +398,10 @@ public:
     bool bound_to(const std::shared_ptr<const NativeAlignmentPlan> &plan)
         const noexcept {
         return alignment_plan_.get() == plan.get();
+    }
+    const std::shared_ptr<const RawTelescopeTrajectory> &
+    raw_trajectory_handle() const noexcept {
+        return raw_trajectory_;
     }
     const std::vector<TimestreamNetworkId> &participant_network_ids() const
         noexcept {

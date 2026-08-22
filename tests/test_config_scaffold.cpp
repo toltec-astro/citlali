@@ -24,6 +24,7 @@
 #include <citlali/core/pipeline/learning_config_read.h>
 #include <citlali/core/pipeline/interface_sync_config_adapter.h>
 #include <citlali/core/pipeline/map_geometry.h>
+#include <citlali/core/pipeline/map_group_indexing.h>
 #include <citlali/core/pipeline/map_index_state.h>
 #include <citlali/core/pipeline/map_buffer_allocation.h>
 #include <citlali/core/pipeline/mapmaking_execution_plan.h>
@@ -1460,6 +1461,37 @@ TEST(config_scaffold, parses_existing_mapmaking_enum_values) {
               citlali::config::MapMethod::jinc);
     EXPECT_EQ(citlali::config::parse_map_method("maximum_likelihood").value(),
               citlali::config::MapMethod::maximum_likelihood);
+}
+
+TEST(config_scaffold, derives_detector_map_indices_from_typed_grouping) {
+    struct MapCalib {
+        int n_dets = 6;
+        Eigen::VectorXI arrays =
+            (Eigen::VectorXI(2) << 0, 1).finished();
+        Eigen::VectorXI fg =
+            (Eigen::VectorXI(2) << 10, 20).finished();
+        std::map<std::string, Eigen::VectorXd> apt = {
+            {"nw", (Eigen::VectorXd(6) << 4, 4, 7, 7, 4, 9).finished()},
+            {"array", (Eigen::VectorXd(6) << 0, 0, 1, 1, 0, 1).finished()},
+            {"fg", (Eigen::VectorXd(6) << 10, 20, 10, 20, 10, 20).finished()}};
+    } calib;
+
+    using citlali::config::MapGrouping;
+    EXPECT_EQ(citlali::pipeline::detector_map_indices_for_grouping(
+                  MapGrouping::network, calib),
+              (Eigen::VectorXI(6) << 0, 0, 1, 1, 0, 2).finished());
+    EXPECT_EQ(citlali::pipeline::detector_map_indices_for_grouping(
+                  MapGrouping::array, calib),
+              (Eigen::VectorXI(6) << 0, 0, 1, 1, 0, 1).finished());
+    EXPECT_EQ(citlali::pipeline::detector_map_indices_for_grouping(
+                  MapGrouping::detector, calib),
+              (Eigen::VectorXI(6) << 0, 1, 2, 3, 4, 5).finished());
+    EXPECT_EQ(citlali::pipeline::detector_map_indices_for_grouping(
+                  MapGrouping::frequency_group, calib),
+              (Eigen::VectorXI(6) << 0, 1, 2, 3, 0, 3).finished());
+    EXPECT_THROW(citlali::pipeline::detector_map_indices_for_grouping(
+                     MapGrouping::automatic, calib),
+                 std::invalid_argument);
 }
 
 TEST(config_scaffold, limits_science_map_v1_products_to_naive_array_stokes_i) {

@@ -194,6 +194,16 @@ template <class EngineT>
 void create_observation_diagnostic_files(
     EngineT &engine, citlali::pipeline::StageProfileCollector &stage_profile) {
     (void)stage_profile;
+    if constexpr (citlali::pipeline::has_raw_timestream_plan_v<EngineT>) {
+        const auto &plan = citlali::pipeline::raw_timestream_plan(engine);
+        if (plan.observation &&
+            plan.observation->native_consumer_route ==
+                citlali::pipeline::NativeConsumerRoute::native_required) {
+            engine.output_paths.rtcdiag_filename.clear();
+            engine.output_paths.ptcdiag_filename.clear();
+            return;
+        }
+    }
     {
         auto profile_scope = citlali::pipeline::profile_stage(stage_profile,
             "observation.setup.create_rtcdiag_file", engine.logger);

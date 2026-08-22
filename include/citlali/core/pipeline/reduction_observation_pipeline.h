@@ -5,8 +5,11 @@
 #include <citlali/core/pipeline/observation_output_execution.h>
 #include <citlali/core/pipeline/observation_pipeline.h>
 #include <citlali/core/pipeline/jinc_processing_provenance.h>
+#include <citlali/core/pipeline/product_index_file.h>
 #include <citlali/core/pipeline/raw_timestream_provenance_lifecycle.h>
 #include <citlali/core/pipeline/stage_profile.h>
+
+#include <type_traits>
 
 namespace citlali::pipeline {
 
@@ -31,6 +34,20 @@ void run_reduction_observation_pipeline(TodProc &todproc, KidsProc &kidsproc,
     const auto raw_provenance_path =
         publish_completed_raw_timestream_provenance<IsBeammap>(engine);
     if (raw_provenance_path) {
+        if constexpr (has_raw_timestream_plan_v<
+                          std::remove_reference_t<decltype(engine)>>) {
+            const auto &plan = raw_timestream_plan(engine);
+            if (plan.observation &&
+                plan.observation->native_consumer_route ==
+                    NativeConsumerRoute::native_required) {
+                // The observation index becomes visible only after the
+                // complete compact-v2 lineage sidecar has committed. The
+                // reduction-root index is regenerated at iteration close.
+                write_final_product_index_file(
+                    engine.output_paths.obsnum_dir_name,
+                    {*raw_provenance_path});
+            }
+        }
         logger->info("raw timestream provenance sidecar: {}",
                      raw_provenance_path->string());
     }

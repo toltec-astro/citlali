@@ -15,7 +15,9 @@ void Pointing::populate_pointing_final_maps(
     const std::string &map_grouping,
     citlali::config::MapMethod mapmaking_method,
     bool make_maps,
-    bool make_noise_maps) {
+    bool make_noise_maps,
+    const citlali::pipeline::NativeScienceProjection *
+        native_projection) {
     if (!make_maps) {
         return;
     }
@@ -26,10 +28,31 @@ void Pointing::populate_pointing_final_maps(
             make_noise_maps,
             citlali::pipeline::fruit_loops_config(*this).enabled,
             !ptcproc.tod_mb.signal.empty());
+    const auto native_flags = native_projection
+        ? std::optional{ptcdata.flags.data} : std::nullopt;
     apply_learned_mapmaking_detector_exclusions(ptcdata, calib_scan);
+    if (native_flags) {
+        for (Eigen::Index detector = 0;
+             detector < ptcdata.flags.data.cols(); ++detector) {
+            if ((ptcdata.flags.data.col(detector).array() &&
+                 !native_flags->col(detector).array()).any()) {
+                ptcdata.weights.data(detector) = 0.0;
+            }
+        }
+        ptcdata.flags.data = *native_flags;
+    }
     logger->info("populating maps");
-    citlali::pipeline::populate_naive_or_jinc_maps(
-        mapmaking_method, naive_mm, jinc_mm, ptcdata, omb, cmb,
-        map_indices, telescope.pixel_axes, calib_scan.apt,
-        telescope.d_fsmp, run_omb, run_noise_fruit);
+    if (native_projection) {
+        citlali::pipeline::populate_naive_or_jinc_maps_native(
+            mapmaking_method, naive_mm, jinc_mm, ptcdata, omb, cmb,
+            map_indices, telescope.pixel_axes, calib_scan.apt,
+            telescope.d_fsmp, run_omb, run_noise_fruit,
+            *native_projection);
+    }
+    else {
+        citlali::pipeline::populate_naive_or_jinc_maps(
+            mapmaking_method, naive_mm, jinc_mm, ptcdata, omb, cmb,
+            map_indices, telescope.pixel_axes, calib_scan.apt,
+            telescope.d_fsmp, run_omb, run_noise_fruit);
+    }
 }

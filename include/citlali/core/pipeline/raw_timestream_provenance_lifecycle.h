@@ -52,10 +52,34 @@ inline void complete_raw_timestream_observation(
         throw std::logic_error(
             "cannot complete raw timestream plan before observation begins");
     }
-    plan.realized.completed_scan_count = completed_scan_count;
-    plan.realized.required_timestream_write_count =
+    auto realized = plan.realized;
+    if (plan.observation->native_cohort_lineage) {
+        if (plan.observation->native_consumer_route !=
+            NativeConsumerRoute::native_required) {
+            throw std::logic_error(
+                "native cohort lineage is active outside its required route");
+        }
+        const auto &lineage = *plan.observation->native_cohort_lineage;
+        if (lineage.scan_count() != completed_scan_count) {
+            throw std::logic_error(
+                "native cohort scan cardinality differs at completion");
+        }
+        realized.native_cohort_provenance =
+            lineage.snapshot_complete();
+    }
+    else {
+        if (plan.observation->native_consumer_route ==
+            NativeConsumerRoute::native_required) {
+            throw std::logic_error(
+                "native-required observation has no cohort lineage");
+        }
+        realized.native_cohort_provenance.reset();
+    }
+    realized.completed_scan_count = completed_scan_count;
+    realized.required_timestream_write_count =
         required_timestream_write_count;
-    plan.realized.execution_completed = true;
+    realized.execution_completed = true;
+    plan.realized = std::move(realized);
 }
 
 template <bool IsBeammap, class Engine>

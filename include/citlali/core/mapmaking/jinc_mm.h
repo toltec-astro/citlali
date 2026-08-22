@@ -153,7 +153,8 @@ private:
         const Eigen::Matrix<bool, Eigen::Dynamic, 1> *);
 };
 
-auto JincMapmaker::jinc_func(double r, double a, double b, double c, double r_max, double l_d) {
+inline auto JincMapmaker::jinc_func(double r, double a, double b, double c,
+                                    double r_max, double l_d) {
     if (r!=0) {
         // unitless radius
         r = r/l_d;
@@ -171,7 +172,7 @@ auto JincMapmaker::jinc_func(double r, double a, double b, double c, double r_ma
     }
 }
 
-void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
+inline void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
     const std::map<Eigen::Index, double> next_l_d{
         {0, (1.1/1000)/45},
         {1, (1.4/1000)/45},
@@ -283,7 +284,7 @@ void JincMapmaker::allocate_jinc_matrix(double pixel_size_rad) {
     resolved_arrays = std::move(next_resolved);
 }
 
-void JincMapmaker::calculate_jinc_splines() {
+inline void JincMapmaker::calculate_jinc_splines() {
     l_d[0] = (1.1/1000)/45;
     l_d[1] = (1.4/1000)/45;
     l_d[2] = (2.0/1000)/45;

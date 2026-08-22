@@ -60,7 +60,9 @@ public:
         const std::string &map_grouping,
         citlali::config::MapMethod mapmaking_method,
         bool make_maps,
-        bool make_noise_maps);
+        bool make_noise_maps,
+        const citlali::pipeline::NativeScienceProjection *
+            native_projection = nullptr);
     template <class CalibScan>
     void maybe_subtract_lali_fruitloop_model(
         TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,

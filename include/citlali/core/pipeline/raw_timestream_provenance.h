@@ -97,6 +97,176 @@ inline YAML::Node raw_timestream_effective_resolutions_node(
     return node;
 }
 
+inline const char *native_consumer_route_name(NativeConsumerRoute route) {
+    switch (route) {
+        case NativeConsumerRoute::legacy_inactive:
+            return "legacy_inactive";
+        case NativeConsumerRoute::native_required:
+            return "native_required";
+        case NativeConsumerRoute::beammap_raw_apt_producer:
+            return "beammap_raw_apt_producer";
+        case NativeConsumerRoute::beammap_calibration_table:
+            return "beammap_calibration_table";
+    }
+    throw std::logic_error("unknown native consumer route");
+}
+
+inline YAML::Node native_component_identity_node_v2(
+    const canonical_apt_v2::ComponentIdentity &identity) {
+    YAML::Node node;
+    node["schema"] = identity.schema;
+    node["occurrence"] = identity.occurrence;
+    node["semantic_sha256"] = identity.semantic_sha256;
+    node["envelope_sha256"] = identity.envelope_sha256;
+    return node;
+}
+
+inline YAML::Node native_sample_identity_node_v2(
+    const NativeSampleIdentity &identity) {
+    YAML::Node node;
+    node["network_id"] = identity.network_id();
+    node["native_row"] = identity.native_row();
+    node["reconstructed_time_unix_sec"] =
+        identity.reconstructed_time_unix_sec();
+    return node;
+}
+
+inline const char *native_ptc_role_name(NativePtcGroupRole role) {
+    return role == NativePtcGroupRole::pca_clean
+        ? "pca_clean" : "pass_through";
+}
+
+inline const char *native_revision_action_name(
+    NativeMeasuredDetectorLedger::RevisionAction action) {
+    switch (action) {
+        case NativeMeasuredDetectorLedger::RevisionAction::
+                 replaced_by_pca_result:
+            return "replaced_by_pca_result";
+        case NativeMeasuredDetectorLedger::RevisionAction::
+                 preserved_pca_invalid:
+            return "preserved_pca_invalid";
+        case NativeMeasuredDetectorLedger::RevisionAction::
+                 preserved_pass_through:
+            return "preserved_pass_through";
+    }
+    throw std::logic_error("unknown native revision action");
+}
+
+inline YAML::Node native_cohort_product_provenance_node_v2(
+    const NativeCohortProductProvenanceV2 &provenance) {
+    provenance.validate_complete(provenance.scans.size());
+    YAML::Node node;
+    node["schema_version"] =
+        std::string{native_cohort_product_provenance_v2_schema};
+    const auto &binding = provenance.binding;
+    auto binding_node = node["observation_binding"];
+    binding_node["observation_index"] = binding.observation_index;
+    binding_node["observation"]["observation"] =
+        binding.observation.observation;
+    binding_node["observation"]["subobservation"] =
+        binding.observation.subobservation;
+    binding_node["observation"]["scan"] = binding.observation.scan;
+    binding_node["bundle_identity"] =
+        native_component_identity_node_v2(binding.bundle_identity);
+    binding_node["relation_identity"] =
+        native_component_identity_node_v2(binding.relation_identity);
+    binding_node["detector_relation_digest"] =
+        binding.detector_relation_digest;
+    binding_node["raw_manifest_digest"] = binding.raw_manifest_digest;
+    binding_node["alignment_plan_digest"] = binding.alignment_plan_digest;
+    binding_node["pointing_plan_digest"] = binding.pointing_plan_digest;
+    binding_node["binding_digest"] = binding.digest();
+
+    for (const auto &scan : provenance.scans) {
+        YAML::Node scan_node;
+        scan_node["observation_binding_digest"] =
+            scan.observation_binding_digest;
+        scan_node["scan_index"] = scan.scope.scan_index;
+        scan_node["chunk_index"] = scan.scope.chunk_index;
+        scan_node["operation_sequence"] = scan.operation.sequence;
+        for (const auto &support : scan.rtc_support) {
+            YAML::Node support_node;
+            support_node["segment_ordinal"] = support.segment_ordinal;
+            support_node["run_output_row"] = support.run_output_row;
+            support_node["factor"] = support.factor;
+            support_node["selected_anchor"] =
+                native_sample_identity_node_v2(support.selected_anchor);
+            support_node["final_short_support"] =
+                support.final_short_support;
+            for (const auto slot : support.exact_common_slots) {
+                support_node["exact_common_slots"].push_back(slot);
+            }
+            for (const auto &identity : support.exact_native_support) {
+                support_node["exact_native_support"].push_back(
+                    native_sample_identity_node_v2(identity));
+            }
+            for (std::size_t detector = 0;
+                 detector < support.detector_columns.size(); ++detector) {
+                YAML::Node detector_node;
+                detector_node["detector_column"] =
+                    support.detector_columns[detector];
+                detector_node["ored_flag_support"] =
+                    support.ored_flag_support[detector];
+                support_node["detectors"].push_back(detector_node);
+            }
+            scan_node["rtc_support"].push_back(support_node);
+        }
+        for (const auto &group : scan.ptc_groups) {
+            YAML::Node group_node;
+            group_node["segment_ordinal"] = group.segment_ordinal;
+            group_node["effective_grouping"] = group.effective_grouping;
+            group_node["group_key"] = group.group_key;
+            group_node["subgroup_index"] = group.subgroup_index;
+            group_node["role"] = native_ptc_role_name(group.role);
+            for (const auto detector : group.detector_columns) {
+                group_node["detector_columns"].push_back(detector);
+            }
+            scan_node["ptc_groups"].push_back(group_node);
+        }
+        for (const auto &revision : scan.revisions) {
+            YAML::Node revision_node;
+            revision_node["identity"] =
+                native_sample_identity_node_v2(revision.identity);
+            revision_node["detector_column"] =
+                revision.detector_column;
+            revision_node["input_revision"] = revision.input_revision;
+            revision_node["output_revision"] = revision.output_revision;
+            revision_node["action"] =
+                native_revision_action_name(revision.action);
+            scan_node["revision_transitions"].push_back(revision_node);
+        }
+        auto map_node = scan_node["map_occurrence"];
+        map_node["enabled"] = scan.map_occurrence.mapmaking_enabled;
+        if (scan.map_occurrence.mapmaking_enabled) {
+            map_node["method"] = scan.map_occurrence.method;
+            map_node["eligible_input_digest"] =
+                scan.map_occurrence.eligible_input_digest;
+            map_node["eligible_weight_digest"] =
+                scan.map_occurrence.eligible_weight_digest;
+            map_node["product_occurrence"] =
+                scan.map_occurrence.product_occurrence;
+            map_node["product_identity_digest"] =
+                scan.map_occurrence.product_identity_digest;
+            if (scan.map_occurrence
+                    .jinc_processing_configuration_digest) {
+                map_node["jinc_processing_configuration_digest"] =
+                    *scan.map_occurrence
+                         .jinc_processing_configuration_digest;
+            }
+            if (scan.map_occurrence.jinc_scan_trace_digest) {
+                map_node["jinc_scan_trace_digest"] =
+                    *scan.map_occurrence.jinc_scan_trace_digest;
+            }
+            for (const auto map_index :
+                 scan.map_occurrence.ordered_map_indices) {
+                map_node["ordered_map_indices"].push_back(map_index);
+            }
+        }
+        node["scans"].push_back(scan_node);
+    }
+    return node;
+}
+
 inline YAML::Node raw_timestream_observation_state_node(
     const std::optional<RawTimestreamObservationState> &observation) {
     YAML::Node node;
@@ -125,6 +295,10 @@ inline YAML::Node raw_timestream_observation_state_node(
         raw_optional_scalar_node(observation->extinction_active);
     value["extinction_model"] =
         raw_optional_scalar_node(observation->extinction_model);
+    value["native_consumer_route"] =
+        native_consumer_route_name(observation->native_consumer_route);
+    value["native_cohort_lineage_prepared"] =
+        static_cast<bool>(observation->native_cohort_lineage);
     return node;
 }
 
@@ -141,6 +315,13 @@ inline YAML::Node raw_timestream_realized_state_node(
     node["required_timestream_write_count"] =
         raw_optional_scalar_node(
             realized.required_timestream_write_count);
+    node["native_cohort_provenance"]["available"] =
+        realized.native_cohort_provenance.has_value();
+    if (realized.native_cohort_provenance) {
+        node["native_cohort_provenance"]["value"] =
+            native_cohort_product_provenance_node_v2(
+                *realized.native_cohort_provenance);
+    }
     return node;
 }
 
@@ -191,6 +372,12 @@ inline void write_raw_timestream_provenance_file(
         || !plan.realized.required_timestream_write_count.has_value()) {
         throw std::logic_error(
             "cannot write raw timestream provenance without realized counts");
+    }
+    if (plan.observation->native_consumer_route ==
+            NativeConsumerRoute::native_required &&
+        !plan.realized.native_cohort_provenance) {
+        throw std::logic_error(
+            "cannot publish native-required raw provenance without complete lineage");
     }
     write_yaml_file_atomic(
         raw_timestream_provenance_path(reduction_dir),
