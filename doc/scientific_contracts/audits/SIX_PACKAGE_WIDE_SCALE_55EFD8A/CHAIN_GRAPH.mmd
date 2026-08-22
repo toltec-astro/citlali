@@ -1,0 +1,97 @@
+flowchart LR
+  classDef external fill:#f3f4f6,stroke:#6b7280,color:#111827
+  classDef producer fill:#e8f4ff,stroke:#2563eb,color:#111827
+  classDef decision fill:#fff7db,stroke:#b7791f,color:#111827
+  classDef blocked fill:#ffe8e8,stroke:#b91c1c,color:#111827
+  classDef optional fill:#f4ebff,stroke:#7e22ce,color:#111827
+
+  subgraph SIG[Main signal lane]
+    TR["Tune/readout<br/>native paired x and r"]:::external
+    ALX["SCI-ALIGN<br/>paired aligned relation on slot s"]:::producer
+    RTCX["SCI-RTC<br/>conditioned x on stable output n"]:::producer
+    CALX["SCI-CAL<br/>flxscale and target atmosphere once"]:::producer
+    PTCX["SCI-PTC candidate transformed x<br/>exact identity and use blocked by F-001/F-002"]:::blocked
+    COEF["Exact MAP-facing omega_i family<br/>owner unresolved F-023"]:::blocked
+    EXPC["MAP-facing exposure carrier<br/>unresolved F-019"]:::blocked
+    MAPB["Logical MAP handoff bundle<br/>required members unavailable"]:::blocked
+    MAPN[SCI-MAP numerical deposition]:::blocked
+    TR --> ALX --> RTCX --> CALX --> PTCX --> MAPB --> MAPN
+    PTCX -. coefficient candidate .-> COEF --> MAPB
+    ALX -. physical exposure ancestry .-> EXPC --> MAPB
+  end
+
+  subgraph COORD[Coordinate and geometry lane]
+    TEL[Telescope state, clock, pointing support, geometry]:::external
+    ALA[ALIGN stable occurrence and observing-state fields]:::producer
+    ASTA["SCI-AST ALIGN-grid role<br/>parent o,d,s"]:::producer
+    RTCP["RTC resolved plan<br/>learning, masks, support, sampling"]:::producer
+    RTCO["RTC exact output grid<br/>parent o,d,n and full support"]:::producer
+    ASTR["Logical SCI-AST RTC-grid role<br/>exact boundary and geometry closure blocked"]:::blocked
+    GREQ["MAP-owned projection request<br/>OD-008 unresolved"]:::blocked
+    GPI["Materialized G_pi<br/>producer and authority unresolved"]:::blocked
+    TEL --> ALA --> ASTA --> RTCP --> RTCO --> ASTR --> GREQ --> GPI
+    ALX --> ASTA
+    RTCP --> RTCX
+    RTCX --> RTCO
+  end
+
+  subgraph POLICY[Policy and eligibility lane]
+    FACTS[Producer facts and local supports]:::producer
+    PROF[Exact owner-bound profile]:::blocked
+    VAL["SCI-VAL evaluation<br/>current route decision unavailable"]:::blocked
+    ACT["Consumer numerical action<br/>not authorized"]:::blocked
+    FACTS --> PROF --> VAL --> ACT
+    ALX -. facts .-> FACTS
+    ASTA -. facts .-> FACTS
+    RTCX -. facts .-> FACTS
+    CALX -. facts .-> FACTS
+    PTCX -. facts .-> FACTS
+    VAL -. map admission unavailable .-> MAPB
+    ACT -. MAP contribution remains consumer-owned .-> MAPN
+  end
+
+  subgraph RESP[Response lane]
+    RB[External source and nominal-beam basis]:::external
+    RA[ALIGN conditional mapping response]:::producer
+    RR[RTC complete fixed-state temporal response]:::producer
+    RC[CAL realized multiplier and response basis]:::producer
+    RP["PTC response/null-space candidate<br/>F-001 and profile blocked"]:::blocked
+    RG["MAP G_pi, deposition,<br/>normalization response"]:::blocked
+    RB --> RA --> RR --> RC --> RP --> RG
+  end
+
+  subgraph UNC[Uncertainty lane]
+    UA[ALIGN timing and mapping terms]:::producer
+    UAST[AST pointing, geometry, frame terms]:::producer
+    URTC[RTC conditional, donor, selection, model terms]:::producer
+    UCAL[CAL conditional transform and calibration systematics]:::producer
+    UPTC[PTC fit, selection, model and null-space terms]:::producer
+    UMAP[MAP conditional covariance and omitted-term state]:::blocked
+    UA --> UAST --> URTC --> UCAL --> UPTC --> UMAP
+  end
+
+  subgraph RBR[Optional conditioned-r branch]
+    RAWR[Immutable raw-r parent]:::optional
+    CONDR["Requested conditioned r<br/>same grid; typed availability"]:::optional
+    RDIAG["PTC r-only diagnostic<br/>inert or advisory"]:::optional
+    RAWR --> CONDR --> RDIAG
+    ALX --> RAWR
+    RTCP -. x-only donor plan makes conditioned r, response, and dependent covariance unavailable across complete donor causal influence .-> CONDR
+    RDIAG -. must not control x membership, subtraction, output, or coefficients .-> PTCX
+  end
+
+  subgraph LIFE[Immutable lifecycle generations]
+    FK[Producer facts k]:::producer
+    VK[VAL decision k]:::decision
+    CK[Consumer action k]:::decision
+    FK1[Producer facts k plus 1]:::producer
+    VK1[VAL decision k plus 1]:::decision
+    FK --> VK --> CK --> FK1 --> VK1
+  end
+
+  ASTR -. exact coordinate parent .-> MAPB
+  PTCX -. exact signal parent .-> MAPB
+  RP -. response and null-space state .-> MAPB
+  UPTC -. uncertainty availability .-> MAPB
+  GPI -. unresolved materialized projection .-> MAPN
+  PROF -. profiles stale or unbound at pinned commit .-> MAPB
