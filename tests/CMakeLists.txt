@@ -91,6 +91,7 @@ add_executable(citlali_sci_align_test EXCLUDE_FROM_ALL
     timestream_measured_scan_header.cpp
     test_sci_align_canonical_apt_relation_v2.cpp
     test_sci_align_native_carriers.cpp
+    test_sci_align_native_gap_fixture.cpp
     test_sci_align_measured_scan.cpp
     test_sci_align_partial_cohort.cpp
     test_sci_align_pca_placeholder_invariance.cpp
@@ -111,6 +112,10 @@ target_link_libraries(citlali_sci_align_test
     PRIVATE
         citlali::citlali
         GTest::gtest_main
+)
+target_compile_definitions(citlali_sci_align_test
+    PRIVATE
+        CITLALI_SCI_ALIGN_FIXTURE_DIR="${CMAKE_CURRENT_LIST_DIR}/fixtures/sci_align"
 )
 add_dependencies(check citlali_sci_align_test)
 gtest_discover_tests(

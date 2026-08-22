@@ -1,0 +1,121 @@
+schema_version: citlali-sci-align-native-gap-fixture-v1
+fixture_id: urn:citlali:sci-align:native-gap:v1
+accepted_plan_commit: a3f2bf465a26048b24017ebd50876c4a2684b1b8
+historical_evidence_commits:
+  - fd3627fc7
+scope:
+  observation: 148669
+  subobservation: 0
+  scan: 2
+scan_chunk:
+  scan_index: 5
+  chunk_index: 0
+realized_dt_sec: 0.01
+common_slot_reference_times_unix_sec:
+  - 1000.00
+  - 1000.01
+  - 1000.02
+  - 1000.03
+  - 1000.04
+detector_columns:
+  - detector_column: 0
+    network_id: 7
+    raw_source_uid: 22
+    raw_channel: 1
+    output_uid: 9223372036854775807
+  - detector_column: 1
+    network_id: 0
+    raw_source_uid: 20
+    raw_channel: 0
+    output_uid: 0
+  - detector_column: 2
+    network_id: 7
+    raw_source_uid: 22
+    raw_channel: 0
+    output_uid: 9007199254740993
+  - detector_column: 3
+    network_id: 0
+    raw_source_uid: 20
+    raw_channel: 1
+    output_uid: 1
+networks:
+  - network_id: 0
+    raw_source_uid: 20
+    interface: toltec0
+    first_native_row: 100
+    reconstructed_times_unix_sec:
+      - 1000.00
+      - 1000.01
+      - 1000.02
+      - 1000.03
+      - 1000.04
+    packet_counters: [100, 101, 102, 103, 104]
+    legacy_presence_mask: [1, 1, 1, 1, 1]
+    expected_slot_native_rows: [100, 101, 102, 103, 104]
+    measured_values:
+      - [1000.0, 1001.0]
+      - [1010.0, 1011.0]
+      - [1020.0, 1021.0]
+      - [1030.0, 1031.0]
+      - [1040.0, 1041.0]
+    original_flag_bits:
+      - [1, 0]
+      - [4, 8]
+      - [16, 0]
+      - [32, 128]
+      - [64, 256]
+    expected_packet_contiguous_runs:
+      - {first_native_row: 100, past_last_native_row: 105}
+  - network_id: 7
+    raw_source_uid: 22
+    interface: toltec7
+    first_native_row: 700
+    reconstructed_times_unix_sec:
+      - 1000.0025
+      - 1000.0125
+      - 1000.0325
+      - 1000.0425
+    packet_counters: [700, 701, 703, 704]
+    legacy_presence_mask: [1, 1, 0, 1, 1]
+    expected_slot_native_rows: [700, 701, null, 702, 703]
+    measured_values:
+      - [7000.0, 7001.0]
+      - [7010.0, 7011.0]
+      - [7020.0, 7021.0]
+      - [7030.0, 7031.0]
+    original_flag_bits:
+      - [2, 16]
+      - [8, 32]
+      - [512, 1024]
+      - [2048, 4096]
+    expected_packet_contiguous_runs:
+      - {first_native_row: 700, past_last_native_row: 702}
+      - {first_native_row: 702, past_last_native_row: 704}
+expected_complete_cohort_slot_runs:
+  - {first_common_slot: 0, past_last_common_slot: 2}
+  - {first_common_slot: 3, past_last_common_slot: 5}
+expected_stage4_factor2_support:
+  - segment_ordinal: 0
+    network_id: 0
+    first_common_slot: 0
+    past_last_common_slot: 2
+    selected_anchor_native_row: 100
+    original_flag_or_by_channel: [5, 8]
+  - segment_ordinal: 0
+    network_id: 7
+    first_common_slot: 0
+    past_last_common_slot: 2
+    selected_anchor_native_row: 700
+    original_flag_or_by_channel: [10, 48]
+  - segment_ordinal: 1
+    network_id: 0
+    first_common_slot: 3
+    past_last_common_slot: 5
+    selected_anchor_native_row: 103
+    original_flag_or_by_channel: [96, 384]
+  - segment_ordinal: 1
+    network_id: 7
+    first_common_slot: 3
+    past_last_common_slot: 5
+    selected_anchor_native_row: 702
+    original_flag_or_by_channel: [2560, 5120]
