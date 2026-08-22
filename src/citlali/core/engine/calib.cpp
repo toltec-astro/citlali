@@ -17,7 +17,22 @@
 
 namespace engine {
 
-void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_filenames, std::vector<std::string> &interfaces) {
+void Calib::get_apt(
+    const std::string &filepath, std::vector<std::string> &raw_filenames,
+    std::vector<std::string> &interfaces,
+    citlali::pipeline::AptDetectorRelationRetention retention) {
+    Calib candidate = *this;
+    candidate.apt_meta = YAML::Clone(apt_meta);
+    candidate.apt_detector_relation_v2_.reset();
+    candidate.load_apt_in_place(
+        filepath, raw_filenames, interfaces, retention);
+    commit_apt_state(std::move(candidate));
+}
+
+void Calib::load_apt_in_place(
+    const std::string &filepath, std::vector<std::string> &raw_filenames,
+    std::vector<std::string> &interfaces,
+    citlali::pipeline::AptDetectorRelationRetention retention) {
     namespace apt2 = citlali::pipeline::canonical_apt_v2;
     try {
         if (raw_filenames.size() != interfaces.size() ||
@@ -75,6 +90,17 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
         if (admitted_networks.size() != raw_sources.size()) {
             throw apt2::ContractError(
                 "raw observation does not exactly cover the verified target networks");
+        }
+
+        std::shared_ptr<
+            const citlali::pipeline::CanonicalAptDetectorRelationV2>
+            typed_relation;
+        if (retention ==
+            citlali::pipeline::AptDetectorRelationRetention::retain) {
+            typed_relation = std::make_shared<const
+                citlali::pipeline::CanonicalAptDetectorRelationV2>(
+                citlali::pipeline::
+                    admit_canonical_apt_detector_relation_v2(verified));
         }
 
         std::vector<const apt2::AptRow *> rows;
@@ -158,12 +184,63 @@ void Calib::get_apt(const std::string &filepath, std::vector<std::string> &raw_f
             verified.identity.semantic_sha256;
         apt_meta["canonical_apt_envelope_sha256"] =
             verified.identity.envelope_sha256;
+        apt_detector_relation_v2_ = std::move(typed_relation);
+        flux_conversion_factor.resize(0);
+        mean_flux_conversion_factor.clear();
         setup();
     } catch (const apt2::ContractError &error) {
         throw citlali::error::io(
             "canonical APT v2 admission rejected: " +
             std::string(error.what()));
     }
+}
+
+bool Calib::has_apt_detector_relation_v2() const noexcept {
+    return apt_detector_relation_v2_ != nullptr;
+}
+
+std::shared_ptr<
+    const citlali::pipeline::CanonicalAptDetectorRelationV2>
+Calib::apt_detector_relation_v2_handle() const noexcept {
+    return apt_detector_relation_v2_;
+}
+
+const citlali::pipeline::CanonicalAptDetectorRelationV2 &
+Calib::require_apt_detector_relation_v2() const {
+    if (apt_detector_relation_v2_ == nullptr) {
+        throw std::logic_error(
+            "Calib has no admitted compact-v2 detector relation");
+    }
+    return *apt_detector_relation_v2_;
+}
+
+void Calib::commit_apt_state(Calib &&candidate) noexcept {
+    apt_filepath.swap(candidate.apt_filepath);
+    apt.swap(candidate.apt);
+    apt_header_keys.swap(candidate.apt_header_keys);
+    apt_header_units.swap(candidate.apt_header_units);
+    apt_header_description.swap(candidate.apt_header_description);
+    std::swap(apt_meta, candidate.apt_meta);
+    apt_detector_relation_v2_.swap(candidate.apt_detector_relation_v2_);
+    fg.swap(candidate.fg);
+    nws.swap(candidate.nws);
+    arrays.swap(candidate.arrays);
+    std::swap(n_dets, candidate.n_dets);
+    std::swap(n_nws, candidate.n_nws);
+    std::swap(n_arrays, candidate.n_arrays);
+    nw_limits.swap(candidate.nw_limits);
+    array_limits.swap(candidate.array_limits);
+    nw_detector_indices.swap(candidate.nw_detector_indices);
+    array_detector_indices.swap(candidate.array_detector_indices);
+    nw_fwhms.swap(candidate.nw_fwhms);
+    array_fwhms.swap(candidate.array_fwhms);
+    nw_pas.swap(candidate.nw_pas);
+    array_pas.swap(candidate.array_pas);
+    nw_beam_areas.swap(candidate.nw_beam_areas);
+    array_beam_areas.swap(candidate.array_beam_areas);
+    flux_conversion_factor.swap(candidate.flux_conversion_factor);
+    mean_flux_conversion_factor.swap(
+        candidate.mean_flux_conversion_factor);
 }
 
 void Calib::get_hwpr(const std::string &filepath, bool sim_obs) {

@@ -13,6 +13,7 @@
 #include <citlali/core/pipeline/canonical_artifact_publication.h>
 #include <citlali/core/pipeline/canonical_apt_v1.h>
 #include <citlali/core/pipeline/canonical_apt_v2.h>
+#include <citlali/core/pipeline/canonical_apt_detector_relation_v2.h>
 #include <citlali/core/utils/ecsv_io.h>
 #include <citlali/core/utils/netcdf_io.h>
 
@@ -237,11 +238,35 @@ public:
     // setup apt. determine nws and arrays. get groupings and mean values
     void setup();
     // read in apt (runs setup)
-    void get_apt(const std::string &, std::vector<std::string> &, std::vector<std::string> &);
+    void get_apt(
+        const std::string &, std::vector<std::string> &,
+        std::vector<std::string> &,
+        citlali::pipeline::AptDetectorRelationRetention =
+            citlali::pipeline::AptDetectorRelationRetention::retain);
+    bool has_apt_detector_relation_v2() const noexcept;
+    std::shared_ptr<
+        const citlali::pipeline::CanonicalAptDetectorRelationV2>
+    apt_detector_relation_v2_handle() const noexcept;
+    const citlali::pipeline::CanonicalAptDetectorRelationV2 &
+    require_apt_detector_relation_v2() const;
     // read in hwpr file if it exists
     void get_hwpr(const std::string &, bool);
     // determine flux conversion factors between various supported units
     void calc_flux_calibration(std::string, double);
+
+private:
+    // This immutable typed relation is published only from the verified-v2
+    // admission transaction. The public numeric APT remains a one-way legacy
+    // value view and is never used to reconstruct detector identity.
+    std::shared_ptr<
+        const citlali::pipeline::CanonicalAptDetectorRelationV2>
+        apt_detector_relation_v2_;
+
+    void load_apt_in_place(
+        const std::string &, std::vector<std::string> &,
+        std::vector<std::string> &,
+        citlali::pipeline::AptDetectorRelationRetention);
+    void commit_apt_state(Calib &&candidate) noexcept;
 };
 
 } // namespace engine

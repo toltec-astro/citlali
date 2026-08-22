@@ -239,6 +239,9 @@ struct FakeCalib {
     std::string loaded_apt_path;
     std::vector<std::string> loaded_raw_filenames;
     std::vector<std::string> loaded_interfaces;
+    citlali::pipeline::AptDetectorRelationRetention
+        loaded_apt_relation_retention =
+            citlali::pipeline::AptDetectorRelationRetention::retain;
     bool loaded_hwpr = false;
     std::string loaded_hwpr_filepath;
     bool loaded_hwpr_sim_obs = false;
@@ -248,11 +251,15 @@ struct FakeCalib {
 
     void get_apt(const std::string &apt_path,
                  const std::vector<std::string> &raw_filenames,
-                 const std::vector<std::string> &interfaces) {
+                 const std::vector<std::string> &interfaces,
+                 citlali::pipeline::AptDetectorRelationRetention retention =
+                     citlali::pipeline::
+                         AptDetectorRelationRetention::retain) {
         ++get_apt_calls;
         loaded_apt_path = apt_path;
         loaded_raw_filenames = raw_filenames;
         loaded_interfaces = interfaces;
+        loaded_apt_relation_retention = retention;
     }
 
     void get_hwpr(const std::string &filepath, bool sim_obs) {
@@ -6522,6 +6529,9 @@ TEST(pipeline_preflight, loads_array_properties_table) {
                                         "/data/toltec1.nc"}));
     EXPECT_EQ(engine.calib.loaded_interfaces,
               (std::vector<std::string>{"nw0", "nw1"}));
+    EXPECT_EQ(
+        engine.calib.loaded_apt_relation_retention,
+        citlali::pipeline::AptDetectorRelationRetention::retain);
     EXPECT_EQ(logger->info_calls, 1);
 }
 
@@ -6562,6 +6572,9 @@ TEST(pipeline_preflight, configures_non_beammap_observation_calibration) {
     EXPECT_EQ(todproc.engine().get_photometry_config_calls, 0);
     EXPECT_EQ(todproc.get_apt_from_files_calls, 0);
     EXPECT_EQ(todproc.engine().calib.get_apt_calls, 1);
+    EXPECT_EQ(
+        todproc.engine().calib.loaded_apt_relation_retention,
+        citlali::pipeline::AptDetectorRelationRetention::retain);
 }
 
 TEST(pipeline_preflight, configures_beammap_detector_calibration_from_files) {
@@ -6596,6 +6609,9 @@ TEST(pipeline_preflight, configures_beammap_array_calibration_from_apt) {
     EXPECT_EQ(todproc.engine().get_photometry_config_calls, 1);
     EXPECT_EQ(todproc.get_apt_from_files_calls, 0);
     EXPECT_EQ(todproc.engine().calib.get_apt_calls, 1);
+    EXPECT_EQ(
+        todproc.engine().calib.loaded_apt_relation_retention,
+        citlali::pipeline::AptDetectorRelationRetention::discard);
 }
 
 TEST(pipeline_preflight, skips_reduction_calibration_when_not_needed) {

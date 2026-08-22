@@ -74,7 +74,10 @@ void finish_observation_calibration(TodProc &todproc, const RawObs &rawobs,
         }
     }
 
-    load_array_properties_table(engine, rawobs, logger);
+    load_array_properties_table(
+        engine, rawobs, logger,
+        IsBeammap ? AptDetectorRelationRetention::discard
+                  : AptDetectorRelationRetention::retain);
 }
 
 template <bool IsBeammap, class TodProc, class RawObs, class Logger>

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <citlali/core/pipeline/canonical_apt_detector_relation_v2.h>
+
 #include <string>
 #include <vector>
 
@@ -20,8 +22,10 @@ template <class Engine>
 void load_array_properties_table_file(
     Engine &engine, const std::string &filepath,
     std::vector<std::string> &raw_filenames,
-    std::vector<std::string> &interfaces) {
-    engine.calib.get_apt(filepath, raw_filenames, interfaces);
+    std::vector<std::string> &interfaces,
+    AptDetectorRelationRetention retention =
+        AptDetectorRelationRetention::retain) {
+    engine.calib.get_apt(filepath, raw_filenames, interfaces, retention);
 }
 
 }  // namespace citlali::pipeline

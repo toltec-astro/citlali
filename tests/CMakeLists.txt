@@ -85,9 +85,15 @@ gtest_discover_tests(
 )
 
 add_executable(citlali_sci_align_test EXCLUDE_FROM_ALL
+    canonical_apt_detector_relation_v2_header.cpp
+    test_sci_align_canonical_apt_relation_v2.cpp
     test_sci_align_partial_cohort.cpp
     test_sci_align_pca_placeholder_invariance.cpp
     test_sci_align_native_scatter.cpp
+)
+set_source_files_properties(
+    canonical_apt_detector_relation_v2_header.cpp
+    PROPERTIES SKIP_PRECOMPILE_HEADERS ON
 )
 set_target_properties(citlali_sci_align_test
     PROPERTIES
