@@ -88,6 +88,19 @@ struct NativeGapFixtureV1 {
     std::vector<NativeGapStage4SupportV1>
         expected_stage4_factor2_support;
 
+    NativeGapNetworkV1 &network(
+        pipeline::TimestreamNetworkId network_id) {
+        const auto found = std::find_if(
+            networks.begin(), networks.end(), [&](const auto &candidate) {
+                return candidate.network_id == network_id;
+            });
+        if (found == networks.end()) {
+            throw std::out_of_range(
+                "network is absent from native-gap fixture");
+        }
+        return *found;
+    }
+
     const NativeGapNetworkV1 &network(
         pipeline::TimestreamNetworkId network_id) const {
         const auto found = std::find_if(
@@ -135,7 +148,242 @@ struct NativeGapFixtureV1 {
             common_slot_reference_times_unix_sec,
             std::move(associations));
     }
+
+    std::shared_ptr<const pipeline::NativeObservationCarriers>
+    materialize_carriers() const {
+        const auto alignment = materialize_alignment();
+        pipeline::NativeTelescopeData telescope;
+        Eigen::VectorXd support(2);
+        support << common_slot_reference_times_unix_sec(0) - 1.0,
+            common_slot_reference_times_unix_sec(
+                common_slot_reference_times_unix_sec.size() - 1) + 1.0;
+        telescope["TelTime"] = support;
+        telescope["TelUTC"] = support;
+        telescope["TelAzAct"] = Eigen::Vector2d{10.0, 11.0};
+        telescope["TelElAct"] = Eigen::Vector2d{50.0, 51.0};
+        auto raw =
+            std::make_shared<const pipeline::RawTelescopeTrajectory>(
+                std::move(telescope));
+        pipeline::NativePointingOffsetsArcsec offsets;
+        offsets[citlali::config::pointing_axis_az()] =
+            Eigen::VectorXd::Zero(1);
+        offsets[citlali::config::pointing_axis_alt()] =
+            Eigen::VectorXd::Zero(1);
+        pipeline::NativePointingOffsetModel offset_model{
+            std::move(offsets), support};
+        auto pointing = pipeline::make_native_pointing_plan(
+            alignment, raw, offset_model);
+        return std::make_shared<const pipeline::NativeObservationCarriers>(
+            scope, alignment, std::move(pointing));
+    }
 };
+
+namespace native_gap_detail {
+
+namespace apt = pipeline::canonical_apt_v2;
+
+inline std::string digest(char value) {
+    return "sha256:" + std::string(64, value);
+}
+
+inline apt::IssuanceContext issuance(std::string occurrence,
+                                     std::string event) {
+    return {std::move(occurrence), std::move(event), "citlali",
+            "native-gap-v1-test-support", digest('1'),
+            "2026-08-22T17:00:00.000Z"};
+}
+
+inline apt::FieldRule baseline_flag_rule() {
+    return {5, "flag", apt::ValueType::int64, "N/A", false,
+            "beammap-baseline", std::string("citlali:beammap-fit-v1"),
+            apt::FieldOperation::preserve_target, std::nullopt, "reject",
+            "nonidentity", "native-gap baseline selection flag"};
+}
+
+inline std::vector<apt::FieldRule> baseline_rules() {
+    auto result = apt::canonical_structural_field_rules_v2();
+    result.push_back(baseline_flag_rule());
+    return result;
+}
+
+inline std::vector<apt::FieldRule> matched_rules() {
+    auto result = apt::canonical_structural_field_rules_v2();
+    auto flag = baseline_flag_rule();
+    flag.nullable = true;
+    flag.operation = apt::FieldOperation::copy_seed_or_null;
+    flag.missing_policy = "typed-null";
+    result.push_back(std::move(flag));
+    auto kmp = apt::canonical_kmp_field_rules_v2(true);
+    for (std::size_t index = 0; index < kmp.size(); ++index) {
+        kmp[index].field_uid = static_cast<std::int64_t>(6 + index);
+        result.push_back(kmp[index]);
+    }
+    return result;
+}
+
+inline std::map<std::string, apt::Value> kmp_values(
+    std::int64_t detector_column) {
+    const double frequency =
+        2.0e9 + 1.0e6 * static_cast<double>(detector_column);
+    return {{"kids_fr", frequency},
+            {"kids_f_out", frequency},
+            {"kids_Qr", 15000.0 + detector_column},
+            {"kids_flag", std::int64_t{70 + detector_column}}};
+}
+
+inline std::map<std::string, apt::Value> matched_values(
+    std::int64_t detector_column) {
+    auto result = kmp_values(detector_column);
+    result["flag"] = std::int64_t{0};
+    return result;
+}
+
+inline std::shared_ptr<const pipeline::CanonicalAptDetectorRelationV2>
+materialize_relation(const NativeGapFixtureV1 &fixture) {
+    const apt::ObservationIdentity observation{
+        fixture.scope.observation, fixture.scope.subobservation,
+        fixture.scope.scan};
+    const apt::ObservationIdentity baseline_observation{
+        fixture.scope.observation + 1, 0, 0};
+
+    apt::AptTable baseline;
+    baseline.kind = apt::BundleKind::baseline;
+    baseline.issuance = issuance(
+        "urn:citlali:native-gap:baseline:occurrence",
+        "urn:citlali:native-gap:baseline:event");
+    baseline.observation = baseline_observation;
+    baseline.field_rules = baseline_rules();
+    for (const auto &detector : fixture.detector_columns) {
+        baseline.rows.push_back({
+            10 + detector.detector_column,
+            static_cast<std::uint64_t>(detector.detector_column),
+            1.0e9 + 1.0e6 * detector.detector_column,
+            apt::array_for_network(detector.network_id),
+            detector.network_id, detector.raw_channel,
+            {{"flag", std::int64_t{0}}}});
+    }
+    const std::vector<apt::SourceRecord> baseline_sources{
+        {3, apt::SourceRole::raw, digest('2'), 1024,
+         baseline_observation, 0, "toltec0", 2},
+        {4, apt::SourceRole::raw, digest('3'), 1024,
+         baseline_observation, 7, "toltec7", 2}};
+    auto verified_baseline = apt::verify_bundle_payload(
+        apt::prepare_baseline_bundle(baseline, baseline_sources).payload);
+
+    apt::AptTable output;
+    output.kind = apt::BundleKind::matched;
+    output.issuance = issuance(
+        "urn:citlali:native-gap:matched:occurrence",
+        "urn:citlali:native-gap:matched:event");
+    output.observation = observation;
+    output.field_rules = matched_rules();
+    for (const auto &detector : fixture.detector_columns) {
+        output.rows.push_back({
+            detector.output_uid,
+            static_cast<std::uint64_t>(detector.detector_column),
+            2.0e9 + 1.0e6 * detector.detector_column,
+            apt::array_for_network(detector.network_id),
+            detector.network_id, detector.raw_channel,
+            matched_values(detector.detector_column)});
+    }
+
+    std::vector<apt::SourceRecord> sources{
+        {20, apt::SourceRole::raw, digest('4'), 2048, observation,
+         0, "toltec0", 2},
+        {21, apt::SourceRole::kmp, digest('5'), 4096,
+         baseline_observation, 0, "toltec0", 2},
+        {22, apt::SourceRole::raw, digest('6'), 2048, observation,
+         7, "toltec7", 2},
+        {23, apt::SourceRole::kmp, digest('7'), 4096,
+         baseline_observation, 7, "toltec7", 2}};
+
+    apt::TargetManifest target;
+    target.issuance = issuance(
+        "urn:citlali:native-gap:target:occurrence",
+        "urn:citlali:native-gap:target:event");
+    target.observation = observation;
+    target.sources = sources;
+    for (const auto &detector : fixture.detector_columns) {
+        const auto kmp_source_uid =
+            detector.network_id == 0 ? INT64_C(21) : INT64_C(23);
+        target.rows.push_back({
+            30 + detector.detector_column,
+            77 + detector.network_id,
+            detector.raw_source_uid, kmp_source_uid,
+            detector.raw_channel,
+            static_cast<std::uint64_t>(detector.detector_column),
+            static_cast<std::uint64_t>(detector.detector_column),
+            2.0e9 + 1.0e6 * detector.detector_column,
+            apt::array_for_network(detector.network_id),
+            detector.network_id, detector.raw_channel,
+            kmp_values(detector.detector_column)});
+    }
+
+    apt::RelationTable relation;
+    relation.issuance = output.issuance;
+    relation.observation = observation;
+    relation.target_parent = apt::target_identity(target);
+    relation.target_issuance = target.issuance;
+    relation.baseline_parent = verified_baseline.identity;
+    relation.matcher = {
+        "urn:tolapt:native-gap:matcher", digest('8'), digest('9'),
+        "observation-tone-match-v2", "tolapt"};
+    relation.network_evidence = {
+        {40, 0, apt::NetworkEvidenceStatus::matched_capable,
+         0.0, 200000.0, 15000.0},
+        {41, 7, apt::NetworkEvidenceStatus::matched_capable,
+         0.0, 200000.0, 15000.0}};
+    for (const auto &detector : fixture.detector_columns) {
+        relation.rows.push_back({
+            60 + detector.detector_column, detector.output_uid,
+            {relation.target_parent, 30 + detector.detector_column},
+            77 + detector.network_id, detector.raw_source_uid,
+            detector.network_id == 0 ? INT64_C(21) : INT64_C(23),
+            detector.raw_channel,
+            static_cast<std::uint64_t>(detector.detector_column),
+            static_cast<std::uint64_t>(detector.detector_column),
+            static_cast<std::uint64_t>(detector.detector_column),
+            apt::RelationDisposition::matched,
+            50 + detector.detector_column,
+            apt::ScopedRowReference{
+                verified_baseline.identity,
+                10 + detector.detector_column},
+            100.0 + detector.detector_column, true,
+            detector.network_id == 0 ? 40 : 41,
+            "selected-good-seed"});
+    }
+
+    auto prepared = apt::prepare_matched_bundle(
+        output, relation, sources, {}, verified_baseline);
+    auto verified =
+        apt::verify_bundle_payload(std::move(prepared.payload));
+    return std::make_shared<const pipeline::CanonicalAptDetectorRelationV2>(
+        pipeline::admit_canonical_apt_detector_relation_v2(verified));
+}
+
+}  // namespace native_gap_detail
+
+inline std::shared_ptr<const pipeline::NativeMeasuredDetectorScan>
+materialize_native_gap_measured_scan(const NativeGapFixtureV1 &fixture) {
+    std::vector<pipeline::NativeMeasuredNetworkInput> inputs;
+    inputs.reserve(fixture.networks.size());
+    for (const auto &network : fixture.networks) {
+        inputs.emplace_back(
+            network.raw_source_uid, network.network_id, network.interface,
+            network.first_native_row,
+            std::make_shared<const Eigen::MatrixXd>(
+                network.measured_values),
+            std::make_shared<const pipeline::NativeDetectorFlagBitsMatrix>(
+                network.original_flag_bits));
+    }
+    return pipeline::NativeMeasuredDetectorScan::admit(
+        {fixture.scope, fixture.scan_index, fixture.chunk_index},
+        fixture.materialize_carriers(),
+        native_gap_detail::materialize_relation(fixture), 0,
+        static_cast<std::size_t>(
+            fixture.common_slot_reference_times_unix_sec.size()),
+        std::move(inputs));
+}
 
 inline std::filesystem::path native_gap_fixture_v1_path() {
     return std::filesystem::path{CITLALI_SCI_ALIGN_FIXTURE_DIR} /
