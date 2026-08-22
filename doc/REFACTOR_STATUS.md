@@ -725,6 +725,18 @@ freeze the application mainline.
 
 ## Current Snapshot
 
+- On 2026-08-22, the scientific owner froze the exact SCI-ALIGN v0.1 Stage B
+  r0.3 and SCI-AST v0.1 Stage B r0.3 scientific-contract packets after their
+  bounded joint revision and implementation-blind horizontal coherence audit.
+  The shared boundary identity is exactly
+  `SCI-ALIGN_TO_SCI-AST v0.1/r0.1`; its two installed copies are byte-identical
+  with SHA-256
+  `04357d36b302d607b95950f529044e178deb2528d0c6f656d90da93067a5da36`.
+  The freeze preserves all stable normative IDs and the typed unresolved
+  owner questions; it establishes scientific-content authority only, not
+  implementation conformity, observational validation, readiness, or
+  production authorization. The exact content bindings and successor rules
+  are recorded in the scientific-contract library's ALIGN/AST freeze record.
 - A 2026-07-30 coherent raw-I/Q event investigation has produced the first
   mode-aware observe-only production slice. The current RTC/PTC learning
   path records accepted intervals per detector UID and compacts only within
