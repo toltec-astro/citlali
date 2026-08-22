@@ -1,0 +1,250 @@
+\section{Edge cases and falsifiable predictions}
+\label{sec:predictions}
+
+Each prediction states a future truth condition for an implementation or
+representation claiming this contract.  No prediction is reported as tested
+or satisfied here.  Required-data absence is not a pass.  A successor may
+append identifiers but shall not renumber these.
+
+\subsection{Correction, signal independence, and causes}
+
+\Pred{001}{Zero correction and zero admitted detector displacement return the
+declared boresight to numerical roundoff; if that boresight is the selected TAN
+center, the continuous tangent coordinate is zero and the FITS coordinate is
+CRPIX.}
+
+\Pred{002}{Injecting $+1$ arcsecond separately in each declared tangent
+correction component produces positive displacement along the matching basis
+axis with magnitude $\kappa$ in the small-offset oracle.}
+
+\Pred{003}{A declared longitude coordinate increment and an equal-valued
+on-sky tangent component differ by the $\cos b$ factor in
+Equation~\ref{eq:longitude-normalization}; conflating them produces a
+latitude/elevation-dependent error.}
+
+\Pred{004}{For bracketed MJD support, the two endpoints and midpoint reproduce
+$\boldsymbol c_0$, $(\boldsymbol c_0+\boldsymbol c_1)/2$, and
+$\boldsymbol c_1$, and any affine correction ramp is reproduced.}
+
+\Pred{005}{Occurrences immediately outside either MJD endpoint, or fixtures
+with equal, reversed, mixed, or non-finite support, produce no clamped,
+nearest, extrapolated, or stale correction output.}
+
+\Pred{006}{Explicit legacy observation-span mode reproduces its exact first
+and last admitted occurrence corrections and affine midpoint, records both
+endpoint identities, and never identifies itself as bracketed MJD.}
+
+\Pred{007}{A one-sample legacy span is admitted only when both endpoint
+corrections are exactly equal; unequal endpoints make the dependent output
+unavailable.}
+
+\Pred{008}{A correlated two-support covariance fixture reproduces
+Equation~\ref{eq:support-covariance}; a fully shared systematic does not
+artificially shrink at the midpoint.}
+
+\Pred{009}{With exact occurrence/time/mapping, geometry, observing state,
+correction, frame, and product inputs, toggling a numerical $x$ or $r$ payload
+between finite, invalid, non-finite, unavailable, and not requested does not
+by itself change the AST coordinate.}
+
+\Pred{010}{Fixtures varying each of the five cause types independently retain
+five independently reportable states: no signal or AST state rescues an
+invalid ALIGN mapping, and no coordinate fact alone authorizes downstream
+eligibility.}
+
+\subsection{Geometry, composition, topology, and frames}
+
+\Pred{011}{A finite non-collinear pointing correction and detector displacement
+match the declared ordered composition and differ from reversed composition by
+the expected nonzero higher-order term.}
+
+\Pred{012}{Permuting geometry rows leaves every detector coordinate unchanged
+when an admitted keyed binding is used; a proven observation-local row mode is
+stable only inside its declared binding, while bare coincidence, duplicate
+keys, or missing keys fail.}
+
+\Pred{013}{Changing any component of $K_\gamma$ between pointing support and
+science observation makes the dependent correction/coordinate unavailable
+when no authorized equivalence transform is supplied.}
+
+\Pred{014}{A supplied cross-realization transform is accepted only when both
+immutable parents, direction/units, domain, covariance/cross-covariance,
+transform uncertainty, authority, version, and failure behavior are complete;
+removing any required item makes the dependent transfer unavailable.}
+
+\Pred{015}{Field rotation responds to the current aligned science-occurrence
+time/elevation fixture and is invariant to an unrelated elevation stored on a
+bracketing pointing record.}
+
+\Pred{016}{A geometry angle or rotation-law query just outside its declared
+time/elevation support is unavailable and is neither clamped nor replaced by
+an unversioned parallactic-angle calculation.}
+
+\Pred{017}{Fixtures with unavailable pivot covariance or unresolved affine
+translation, scale, skew, or shear retain those typed limitations; their outputs do
+not equal a silently zeroed or identity-modeled uncertainty claim.}
+
+\Pred{018}{Directions and centers straddling $0/2\pi$ use the short signed
+separation, yield a continuous tangent projection, and persist normalized
+longitude under the exact $[-P/2,P/2)$ convention. An exactly antipodal
+interpolation fixture is unavailable unless an explicit unwrap authority is
+supplied.}
+
+\Pred{019}{Near either coordinate pole, vector direction and in-domain
+round-trip remain finite, while an ambiguous longitude-only input does not
+establish a coordinate.}
+
+\Pred{020}{Identical physical directions requested under Point/OOF/Beammap and
+Science roles produce their declared AltAz-arcsecond and equatorial-J2000-
+degree identities; relabeling one as the other without a named transform
+fails.}
+
+\subsection{TAN, WCS, pixels, and product availability}
+
+\Pred{021}{The selected TAN center maps exactly to $(0,0)$; finite $D>0$ is in
+the mathematical domain, while $D\leq0$ or non-finite $D$/output is invalid.
+No fixture is rejected solely by an invented universal positive $D_{\min}$.}
+
+\Pred{022}{Random preregistered in-domain unit directions in both admitted
+frame families satisfy
+inverse-TAN(forward-TAN$(\widehat{\boldsymbol u}_{\rm sky}))=
+\widehat{\boldsymbol u}_{\rm sky}$ to the preregistered angular tolerance.}
+
+\Pred{023}{The exact upstream-selected physical center, and no center inferred
+from bounds, source fit, coverage, or array contents, maps to tangent zero and
+the realized CRPIX.}
+
+\Pred{024}{Only the exact six-field legacy all-zero pattern enters
+\texttt{automatic}; changing one field to a nonzero or non-finite value fails
+as unsupported explicit control, while numeric zero in unrelated data remains
+numeric.}
+
+\Pred{025}{Removing or making ambiguous the selected center makes the affected
+automatic WCS unavailable without searching, fitting, recentering, or reusing
+a prior center; an otherwise valid detector sky direction remains available.}
+
+\Pred{026}{Positive tangent-axis perturbations move continuous pixels in the
+directions predicted by the realized CD-equivalent matrix; transpose, hidden
+flip, and swapped-axis fixtures fail.}
+
+\Pred{027}{Odd and even geometric-center policies satisfy
+Equation~\ref{eq:crpix}, including half-integer CRPIX for even dimensions;
+every different declared policy still maps CRVAL exactly to its CRPIX.}
+
+\Pred{028}{Pixel centers satisfy Equation~\ref{eq:index-base}; the half-open
+nearest-center rule includes its lower edge, excludes its upper edge, and does
+not depend on language-specific integer casting.}
+
+\Pred{029}{Subpixel dithers move the continuous WCS coordinate continuously
+and change the nominal discrete pixel only at the declared boundary; neither
+event changes MAP coverage or claims coordinate precision.}
+
+\Pred{030}{Missing, NaN, or infinite required direction, tangent, WCS, or
+continuous-pixel inputs produce explicit invalidity/unavailability and never a
+cast integer, edge pixel, center, or stale coordinate. Failure at a downstream
+role leaves valid upstream direction or tangent facts and their causes intact.}
+
+\Pred{031}{A full-TOD request may retain coordinate arrays with compact
+interpretation state, whereas an otherwise equivalent mini-TOD request
+reports those arrays unavailable rather than silently omitting their identity.}
+
+\subsection{Jacobian, uncertainty, RTC, and MAP}
+
+\Pred{032}{For every claimed available family/domain pair, the typed
+map-center Jacobian agrees with a preregistered symmetric finite-difference or
+validated automatic/analytic derivative oracle, including unit, axis-sign,
+center, pixel, and near-wrap fixtures. The independent spherical oracle uses
+the complete \(\boldsymbol t=\eta_1\boldsymbol e_1+\eta_2\boldsymbol e_2\),
+\(\rho=\lVert\boldsymbol t\rVert\), \(\widehat{\boldsymbol v}=\boldsymbol t/\rho\)
+relation and its explicit \(\rho=0\) branch.}
+
+\Pred{033}{Small correlated map-center input draws reproduce
+Equation~\ref{eq:center-covariance} in the declared linear domain, including
+the supplied cross term; removing a term changes its state to unavailable
+rather than numeric zero.}
+
+\Pred{034}{Without a named family and exact input/output domains, the
+\texttt{astrometric\_\allowbreak map\_\allowbreak center\_\allowbreak jacobian}
+is unavailable and is not inferred
+from shape, WCS, or consumer name.}
+
+\Pred{035}{An ordinary phase-zero RTC fixture may make
+$\theta^{\rm RTC}_{dn}$ numerically equal to one $\theta^A_{ds}$, but the two
+outputs retain different exact parent identities and roles. Permuting local
+storage rows $j$ does not change the stable $(o,s)$ identity.}
+
+\Pred{036}{Removing any required RTC plan, grid, occurrence, time, phase/delay,
+segment, decimation, support, response, or correction fact makes only the dependent
+RTC-grid coordinate, response composition, or delegated $G_{pi}$ unavailable;
+unrelated ALIGN-grid direction, tangent, and available pixel roles remain
+unchanged.}
+
+\Pred{037}{For a temporal operator with negative coefficients or coordinates
+crossing circular topology, direct $\sum_sL_{ns}\theta^A_{ds}$ differs from
+the sky response obtained by retaining the operator and its full coordinate
+support, falsifying angular signal filtering.}
+
+\Pred{038}{Changing the RTC output-grid parent or MAP deposition-plan parent
+while holding numerical coordinates and array shape fixed changes the identity
+of every exact delegated $G_{pi}$ artifact. Before a MAP plan, base AST output
+remains only continuous pixel, optional nominal containing pixel, and bounds;
+similar shape is not compatibility.}
+
+\Pred{039}{AST refuses exact delegated $G_{pi}$ materialization when the MAP kernel,
+support, normalization, boundary, conservation, artifact form, plan/version,
+or response/covariance role is missing or ambiguous. AST shall not substitute a
+kernel-dependent neighbor stencil or candidate support; its base coordinate
+facts make none of those MAP claims.}
+
+\Pred{040}{Two MAP-owned deposition plans using the same AST continuous
+coordinates may realize different valid $G_{pi}$ operators without changing
+the underlying AST coordinate/WCS identity, demonstrating the ownership
+boundary.}
+
+\subsection{Lifecycle, parity, failure, and empirical gates}
+
+\Pred{041}{A valid--missing--valid observation sequence with different
+correction, geometry, center, WCS, and RTC modes shows no inherited prior
+state; recovery after failure constructs a clean candidate.}
+
+\Pred{042}{Permuted scheduling and thread counts preserve per-parent
+coordinates, pixels, validity, counts, serialized WCS, and deterministic
+provenance order under the declared numerical policy.}
+
+\Pred{043}{Identical supported abstract inputs through real and simulation
+paths produce the same scientific coordinate and validity; only declared
+origin/generator/version/seed provenance differs.}
+
+\Pred{044}{Injected required coordinate, WCS, provenance, and product-write
+failures each produce unsuccessful required-product/reduction state and no
+apparently complete mislabeled artifact.}
+
+\Pred{045}{Within a preregistered small-angle domain, the production operator's
+coordinate and pixel errors relative to the complete exact spherical oracle
+with explicit tangent vector, norm, unit direction, and zero branch satisfy the
+named tolerance; outside the domain or without the record, the dependent
+adequacy claim/output fails closed rather than switching algorithms silently.}
+
+\Pred{046}{Preregistered time-quantization and large-array representation
+perturbations satisfy their named angular/pixel error bounds for the required
+use; a missing owner, metric, domain, tolerance, or failure rule cannot yield
+an achieved-adequacy claim.}
+
+\Pred{047}{Unsupported Galactic/other-frame simulation or polarization-science
+requests fail at admission and do not emerge as relabeled supported
+coordinates. An optional HWPR timing parent authorizes no AST demodulation,
+polarization calibration/response, or Stokes reconstruction, and raw KID
+readout $x$ is never relabeled Stokes I.}
+
+\Pred{048}{A downstream source, pointing, OOF, or Beammap fit may succeed or
+fail without changing the already realized AST coordinate identity or
+retroactively establishing AST validity.}
+
+\Pred{049}{For every persisted coordinate, compact provenance reconstructs the
+requested, effective, observation-resolved, and realized policy; changing any
+parent or version changes the reconstructed identity rather than silently
+aliasing it.}
+
+\Pred{050}{A compilation, clean render, or plausible coordinate image alone
+does not change the explicit states of scientific approval, implementation
+conformity, empirical validation, freeze, or production readiness.}

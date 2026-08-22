@@ -1,0 +1,77 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.78in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,longtable,array,enumitem}
+\usepackage{xcolor,hyperref,fancyhdr}
+\hypersetup{
+  colorlinks=true,
+  hypertexnames=false,
+  linkcolor=blue!55!black,
+  urlcolor=blue!55!black,
+  pdftitle={SCI-ALIGN v0.1 Engineering Conformance Specification r0.3},
+  pdfauthor={Grant Wilson}
+}
+\setlength{\emergencystretch}{3em}
+\setlength{\tabcolsep}{4pt}
+\setlist{nosep,leftmargin=2em}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\state}[1]{\mathrm{#1}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\Req}[2]{\par\medskip\noindent\hypertarget{req:#1}{\textbf{SCI-ALIGN-REQ-#1.}}\ #2\par}
+\newcommand{\Prediction}[2]{\par\medskip\noindent\hypertarget{pred:#1}{\textbf{SCI-ALIGN-PRED-#1.}}\ #2\par}
+\newcommand{\Assumption}[2]{\par\medskip\noindent\textbf{SCI-ALIGN-ASM-#1.}\ #2\par}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{SCI-ALIGN v0.1 --- engineering view}
+\fancyhead[R]{Stage B targeted draft r0.3; no conformity claim}
+\fancyfoot[C]{\thepage}
+
+\title{SCI-ALIGN v0.1\\
+\large Engineering Conformance Specification of the Shared Scientific Authority\\
+\normalsize Stage B Targeted Revision r0.3 --- Author Draft}
+\author{Implementation-blind Stage B scientific author\\
+Scientific owner: Grant Wilson}
+\date{2026-08-22}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This engineering-facing specification contains the complete six-module
+SCI-ALIGN v0.1 formal authority: notation, definitions, assumptions, all
+twenty canonical equations, all fifty-five stable requirements, and all
+twenty-six stable predictions.  The scientist-facing rationale is a separate
+narrative crosswalk to this complete contract.  The title names an intended
+future comparison activity; this document neither inspected nor assesses an
+implementation and therefore makes no conformity, validation, freeze,
+readiness, or production claim.
+\end{abstract}
+
+\noindent\textbf{Use rule.} A future assessment may compare a named
+implementation and exact evidence set against these requirements only after
+scientific-owner disposition of the affected open decisions.  A typed
+unavailable claim is not a failure of unrelated contract content and is never
+silently replaced by an implementation convention.
+
+\tableofcontents
+
+\input{common/notation}
+\input{common/definitions}
+\input{common/assumptions}
+\input{common/equations}
+\input{common/requirements}
+\input{common/edge_cases}
+
+\section*{Assessment boundary}
+The requirements and predictions are durable comparison targets.  No
+comparison was performed in this Stage B targeted revision, and no statement here establishes
+implementation behavior, observational performance, scientific conformity,
+validation success, operational readiness, or authorization for production.
+
+\end{document}

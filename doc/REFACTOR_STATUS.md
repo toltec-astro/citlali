@@ -78,6 +78,19 @@ freeze the application mainline.
 
 ## Current Snapshot
 
+- On 2026-08-22, the scientific owner froze the exact SCI-ALIGN v0.1 Stage B
+  r0.3 and SCI-AST v0.1 Stage B r0.3 scientific-contract packets after their
+  bounded joint revision and implementation-blind horizontal coherence audit.
+  The shared boundary identity is exactly
+  `SCI-ALIGN_TO_SCI-AST v0.1/r0.1`; its two installed copies are byte-identical
+  with SHA-256
+  `04357d36b302d607b95950f529044e178deb2528d0c6f656d90da93067a5da36`.
+  The freeze preserves all stable normative IDs and the typed unresolved
+  owner questions; it establishes scientific-content authority only, not
+  implementation conformity, observational validation, readiness, or
+  production authorization. The exact content bindings and successor rules
+  are recorded in
+  [`SCI-ALIGN_AST_STAGE_B_R0.3_FREEZE_RECORD.md`](../output/scientific_contracts/SCI-ALIGN_AST_STAGE_B_R0.3_FREEZE_RECORD.md).
 - A 2026-08-06 owner-authorized `SCI-ALIGN-001` split-direction Beammap
   diagnostic candidate is implemented on the isolated
   `codex/sci-align-001-split-direction-beammap-validation` branch. The optional
