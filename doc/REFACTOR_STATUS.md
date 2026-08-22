@@ -80,6 +80,35 @@ unchanged. Detector values, RTC/PTC, naive/JINC mapmaking, products, and runtime
 activation remain outside this stage; Stage 3 has not begun and retains its
 separate stop gate. No Unity run is required for this carrier-only stage.
 
+Stage 3 is implemented at exact commit
+`6008ec6330e7058c7c87f3a6a7e568165763f35b`, tree
+`de5edb31e645bf662e4dfe82daf890f4ba38863f`. The scan admission boundary now
+joins every raw KIDs source and channel to exactly one compact-v2 detector
+column while retaining exact raw source, network, channel, detector-column,
+output-UID, disposition, and baseline `flag` identity. The immutable mapping
+distinguishes mapped-valid, mapped-invalid, and absent cells across complete
+and partial cohorts. Original native flag bits are retained, and a nonfinite
+value or nonzero original flag is mapped-invalid rather than being converted
+into an absent or synthesized sample.
+
+The existing measured matrices remain the value owners: admitted network
+inputs and the measured mapping retain shared handles, so Stage 3 introduces
+no second O(rows x detectors) value copy. A scan/chunk transaction constructs
+the complete mapping, a fresh per-sample revision ledger, and a fresh monotonic
+operation sequence before one owner swap. Rejected admission leaves the live
+lifecycle pointer-identical; commit, rollback, or boundary destruction clears
+all scan-owned mapping, ledger, and sequence state.
+
+The [Stage 3 handoff](../handoff/COMPACT_V2_NATIVE_ALIGN_STAGE3_2026-08-22.md)
+records 6/6 focused ingress cases, 28/28 complete SCI-ALIGN cases, 749/749
+runnable CTests, the established single disabled test, 203/203 baseline-tool
+tests, the complete required config gate, exact-commit CLI identity, and valid
+ledgers. Runtime routing, RTC/PTC, naive/JINC mapmaking, products, and numerical
+kernels remain unchanged and inactive. The native-required processing mode
+still cannot enter RTC. No Unity run is required for Stage 3; before Stage 4,
+the required small owner-reproducible native-gap fixture must be frozen
+locally.
+
 ## 2026-08-21 JINC Parallel Ownership Reconstruction
 
 The independently accepted SCI-MAP-002 ownership contract has been
