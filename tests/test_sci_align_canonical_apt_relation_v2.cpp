@@ -293,6 +293,7 @@ TEST(sci_align_canonical_apt_relation_v2,
 
     const auto &matched = relation.binding_for_detector_column(0);
     EXPECT_EQ(matched.output_uid, 100);
+    EXPECT_EQ(matched.array, 0);
     EXPECT_EQ(matched.target.local_uid, 30);
     EXPECT_EQ(matched.source_rank, 2U);
     EXPECT_EQ(matched.application_rank, 1U);

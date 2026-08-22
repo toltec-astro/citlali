@@ -336,10 +336,12 @@ TEST(sci_align_measured_scan,
     ASSERT_EQ(scan->detector_count(), 4U);
     ASSERT_EQ(scan->measured_sample_count(), 12U);
     EXPECT_EQ(scan->binding(0).network_id, 7);
+    EXPECT_EQ(scan->binding(0).array, apt::array_for_network(7));
     EXPECT_EQ(scan->binding(0).raw_channel, 1);
     EXPECT_EQ(scan->binding(0).output_uid,
               std::numeric_limits<std::int64_t>::max());
     EXPECT_EQ(scan->binding(1).network_id, 0);
+    EXPECT_EQ(scan->binding(1).array, apt::array_for_network(0));
     EXPECT_EQ(scan->binding(1).output_uid, 0);
     EXPECT_EQ(scan->binding(2).network_id, 7);
     EXPECT_EQ(scan->binding(2).output_uid, INT64_C(9007199254740993));

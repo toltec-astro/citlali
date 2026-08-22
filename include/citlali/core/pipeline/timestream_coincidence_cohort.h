@@ -617,6 +617,8 @@ public:
 
 private:
     friend PcaCompatibilityClassification classify_pca_compatibility(
+        bool, const PcaCompatibilityInputs &);
+    friend PcaCompatibilityClassification classify_pca_compatibility(
         const PcaRectangularWorkingSet &,
         const PcaCompatibilityInputs &);
     explicit PcaCompatibilityClassification(std::uint8_t hazards)
@@ -625,12 +627,7 @@ private:
 };
 
 inline PcaCompatibilityClassification classify_pca_compatibility(
-    const PcaRectangularWorkingSet &working_set,
-    const PcaCompatibilityInputs &inputs) {
-    const bool has_excluded_cells = std::any_of(
-        working_set.exclusion_flags().begin(),
-        working_set.exclusion_flags().end(),
-        [](std::uint8_t excluded) { return excluded != 0; });
+    bool has_excluded_cells, const PcaCompatibilityInputs &inputs) {
     std::uint8_t hazards = 0;
     if (has_excluded_cells &&
         inputs.null_model_active_for_operation) {
@@ -649,6 +646,16 @@ inline PcaCompatibilityClassification classify_pca_compatibility(
             PcaCompatibilityHazard::band_limited_marchenko_pastur);
     }
     return PcaCompatibilityClassification{hazards};
+}
+
+inline PcaCompatibilityClassification classify_pca_compatibility(
+    const PcaRectangularWorkingSet &working_set,
+    const PcaCompatibilityInputs &inputs) {
+    const bool has_excluded_cells = std::any_of(
+        working_set.exclusion_flags().begin(),
+        working_set.exclusion_flags().end(),
+        [](std::uint8_t excluded) { return excluded != 0; });
+    return classify_pca_compatibility(has_excluded_cells, inputs);
 }
 
 inline void require_pca_compatibility(

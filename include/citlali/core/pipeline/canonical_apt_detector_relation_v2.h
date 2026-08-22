@@ -42,6 +42,7 @@ struct CanonicalAptDetectorBindingV2 {
     canonical_apt_v2::ScopedRowReference target;
     std::int64_t target_input_uid = 0;
     std::int64_t raw_source_uid = 0;
+    std::int64_t array = 0;
     std::int64_t network = 0;
     std::int64_t channel = 0;
     std::uint64_t source_rank = 0;
@@ -400,7 +401,7 @@ admit_canonical_apt_detector_relation_v2(
         bindings.push_back({
             detector_column, record.relation_uid, row.uid, record.target,
             record.target_input_uid, record.target_raw_source_uid,
-            row.network, row.channel, record.source_rank,
+            row.array, row.network, row.channel, record.source_rank,
             record.application_rank, record.presentation_rank,
             record.disposition, record.selected_seed, flag});
         ++detector_count_by_network[row.network];
