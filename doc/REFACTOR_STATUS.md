@@ -163,6 +163,47 @@ native-required mode still cannot enter production RTC. No Unity run is
 required at this boundary. Stage 5 PTC/PCA cohort gather and transactional
 scatter may begin as a separate commit, with its stop gate before mapmaking.
 
+Stage 5 PTC/PCA cohort gather and transactional scatter is implemented at
+exact commit `35a61eaaf91722ac7167bfb90d1029f09b4d1df2`, tree
+`11b7c62726f3678fb54ef5f0513935dc0d0e0383`. The adapter accepts only a
+complete Stage 4 RTC dispatch that exactly matches the admitted scan's run
+inventory, raw inputs, detector partitions, run boundaries, ordered support,
+and anchors, with internally consistent recorded ORed flags. It builds a
+separate detector-level cohort for every contiguous Stage 4 segment, so PCA
+cannot bridge the frozen packet gap.
+
+Ordinary `all`, `nw`, `array`, and per-detector groups use exact typed relation
+membership, including noncontiguous presentation-ranked columns. Enabled
+`corr_nw` delegates subgroup selection to its established grouping body and
+preserves ungrouped columns as pass-through. Unsupported group identities and
+second-pass/windowed requests fail closed. Excluded cells use checked finite
+private placeholders; the established optional-mode compatibility authority
+runs before a grouping or cleaner body; and both PCA-invalid and pass-through
+cells preserve the exact finite RTC value entering PTC.
+
+The scan/chunk ledger now stages the complete scatter before one swap of
+sparse current values and dense revisions. Foreign, stale, duplicate,
+identity-changing, shape-changing, or nonfinite results leave both unchanged
+and may be corrected and retried under the same issued operation. A successful
+scatter advances each affected anchor revision exactly once and records a
+monotonic committed operation inside the existing scan/chunk owner.
+
+Six focused Stage 5 cases pass separately at OpenMP thread counts 1, 2, 4,
+and 8; the complete SCI-ALIGN executable passes 43/43 cases; and the public
+header compiles in isolation. All 764 runnable CTests pass with the established
+single disabled test not run, all 203 baseline-tool tests pass, and the full
+required config gate passes 127/127 unit tests, all four mode kits, and 8/8
+compact-compatibility cases with zero skips or gaps. Both ledgers and all
+boundary audits remain valid, and the frozen fixture digest is unchanged.
+
+The [Stage 5 handoff](../handoff/COMPACT_V2_NATIVE_ALIGN_STAGE5_PTC_COHORTS_2026-08-22.md)
+records the complete evidence. This stage does not alter an established RTC
+or PTC numerical kernel, enter naive or JINC mapmaking, publish products, add
+public `Engine` state, or activate a production route. No Unity run is required
+at this boundary. Stage 6 native science pointing and map projection may begin
+as a separate commit, with its stop gate before output-lineage claims or mode
+activation.
+
 ## 2026-08-21 JINC Parallel Ownership Reconstruction
 
 The independently accepted SCI-MAP-002 ownership contract has been
