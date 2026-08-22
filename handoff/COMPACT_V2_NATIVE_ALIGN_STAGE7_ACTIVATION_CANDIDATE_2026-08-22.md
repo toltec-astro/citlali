@@ -167,7 +167,10 @@ and comparison evidence are retained.
 ## Unity preparation after push
 
 The owner controls Unity. Use the required SSH alias and do not reuse the
-pre-amend `8918189e4` candidate:
+pre-amend `8918189e4` candidate. The branch contains documentation and
+campaign-package descendants after the exact implementation commit, so a
+plain branch-head build is not the exact candidate. First export the frozen
+Campaign 1 package, then detach the source checkout at the implementation:
 
 ```bash
 ssh unity_toltec
@@ -175,8 +178,21 @@ cd ~/work_toltec/citlali_dev/citlali_refactor
 git fetch origin
 git switch codex/converge-apt-align-jinc
 git pull --ff-only
+PACKAGE_COMMIT=3735d42c34f061c225dd9b8c486135591802e807
+PACKAGE_ROOT=/work/toltec/citlali-validation/sci-align-stage7-campaign1-3735d42c
+test ! -e "$PACKAGE_ROOT"
+mkdir -p "$PACKAGE_ROOT"
+git archive --format=tar "$PACKAGE_COMMIT" \
+  validation/campaigns/SCI-ALIGN-STAGE7-UNITY-001/campaign-1-native-gap \
+  | tar -x -C "$PACKAGE_ROOT" --strip-components=4
+cd "$PACKAGE_ROOT"
+sha256sum -c SHA256SUMS
+cd ~/work_toltec/citlali_dev/citlali_refactor
+git switch --detach 36f6ada25d06f2236dfcd279d53c6afc40298cb1
 git rev-parse HEAD
 git rev-parse 'HEAD^{tree}'
+test "$(git rev-parse HEAD)" = 36f6ada25d06f2236dfcd279d53c6afc40298cb1
+test "$(git rev-parse 'HEAD^{tree}')" = 40099545347326aed03df7be22bcc7cfe74e0e7d
 cmake -S . -B build
 cmake --build build --target citlali_cli -j 8
 build/bin/citlali --version
@@ -187,12 +203,21 @@ Before launching a reduction, confirm the source identity is exactly
 `36f6ada25d06f2236dfcd279d53c6afc40298cb1` and the tree is exactly
 `40099545347326aed03df7be22bcc7cfe74e0e7d`. The Unity binary SHA-256 is
 expected to differ from the local macOS binary and must be recorded as its own
-identity.
+identity. The detached checkout is intentional. Return to the branch only
+after the exact-candidate run evidence is frozen.
 
 ## Stop boundary and next action
 
-The candidate commit is complete. The next action is to push the candidate
-and this documentation record, then prepare—not yet launch—the bounded
-native-gap Science campaign with an explicit merged-config review. Stage 7
-must not be marked accepted, integrated, or production-ready until all five
-Unity campaigns are complete and independently dispositioned.
+The candidate commit is complete. The bounded native-gap Science package is
+prepared at commit `3735d42c34f061c225dd9b8c486135591802e807`; its four
+focused tests, checksum inventory, explicit merge preflight, and the complete
+required config gate pass. The canonical Science kit is unchanged.
+
+The next action is owner selection of one conforming small Science
+observation and generation of a fresh TolProj `--refactor` reduction. Copy the
+campaign overlay into that reduction, run the packaged preflight, and review
+the merged YAML/report before requesting launch. The observation-dependent
+bundle/raw binding, native carriers, zero-duplicate-tone state, and realized
+scan bounds remain pending and must not be inferred from the static config.
+Stage 7 must not be marked accepted, integrated, or production-ready until
+all five Unity campaigns are complete and independently dispositioned.

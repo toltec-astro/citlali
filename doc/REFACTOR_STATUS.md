@@ -285,12 +285,28 @@ zero review-required entries, and no drift. The exact CLI is
 
 The [Stage 7 candidate handoff](../handoff/COMPACT_V2_NATIVE_ALIGN_STAGE7_ACTIVATION_CANDIDATE_2026-08-22.md)
 records the implementation, bounded config domain, complete local evidence,
-and owner checklist. Stage 7 is not accepted or production-ready. The next
-gate is the five-part owner-run Unity campaign: native-gap Science,
-identical-time/no-gap legacy comparison, same-scan naive/JINC, detector or
-automatic Beammap producer regression, and non-detector Beammap
-calibration-lane regression with exact source, binary, config, input, log,
-index, and retained-product evidence.
+and owner checklist. Campaign 1 preparation is frozen at exact package commit
+`3735d42c34f061c225dd9b8c486135591802e807`, tree
+`1b954d88006a356b12a07fa235cb8f06739ee6d1`, under
+[`validation/campaigns/SCI-ALIGN-STAGE7-UNITY-001/campaign-1-native-gap/`](../validation/campaigns/SCI-ALIGN-STAGE7-UNITY-001/campaign-1-native-gap/README.md).
+The campaign-only final overlay selects naive projection, disables every
+unsupported operation and the nonzero-context Science FIR, and retains the
+supported network-local RTC, PCA, and weighting bodies. Its preflight passes
+four focused positive/fail-closed tests and emits the explicit merged config,
+numbered-source inventory, override origins, and policy digest. The full
+required config gate remains green: 127/127 unit tests, four mode kits, 8/8
+compact cases, and zero skips or gaps. Bundle/raw admission, exact native
+carriers, zero duplicate tones, and realized zero outer context remain
+owner-observation checks and are not prefilled.
+
+Stage 7 is not accepted or production-ready. Campaign 1 is prepared but not
+launched. Its next gate is owner selection of one conforming small matched-v2
+Science observation, explicit deployed merged-config review, and owner-run
+Unity execution. The remaining campaign sequence is identical-time/no-gap
+legacy comparison, same-scan naive/JINC, detector or automatic Beammap
+producer regression, and non-detector Beammap calibration-lane regression,
+all with exact source, binary, config, input, log, index, and retained-product
+evidence.
 
 ## 2026-08-21 JINC Parallel Ownership Reconstruction
 
