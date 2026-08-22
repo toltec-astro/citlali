@@ -32,11 +32,25 @@ opens Stage 1 only: immutable verified compact-v2 bundle-to-detector-column
 relation and atomic `Calib::get_apt` publication, without runtime consumer
 activation. Later stages retain their separate stop gates.
 
-This is a documentation-only design checkpoint. No native consumer is
-activated and no application code or production status changes. After an
-exact-SHA `accept` verdict, the first permitted implementation stage is the
-immutable verified compact-v2 bundle-to-detector-column relation, with no
-runtime activation.
+Stage 1 is implemented at exact commit
+`da9e1deac139f4904d059822e8518259838e45c0`, tree
+`41897db2ef8468d408153c7da2110812b880c36e`. The immutable relation binds the
+verified matched bundle and relation component to presentation-ranked legacy
+detector columns while retaining exact target, raw network/channel, rank,
+disposition, selected-seed, and baseline-governed `flag` facts. The numeric
+APT compatibility view and typed relation publish through one candidate
+`Calib` transaction; rejection leaves live APT and derived grouping state
+unchanged.
+
+Science and Pointing loads retain this relation. Detector/automatic Beammap
+continues through its raw producer lane. Existing non-detector Beammap loading
+keeps its numeric calibration-table view but explicitly discards native-
+consumer lineage. No runtime consumer is activated. The
+[Stage 1 handoff](../handoff/COMPACT_V2_NATIVE_ALIGN_STAGE1_2026-08-22.md)
+records focused rejection coverage, public-header isolation, 736/736 runnable
+CTests, the established single disabled test, 203/203 baseline-tool tests, the
+complete 127-test required config preflight, and valid ledgers. Stage 2 has not
+begun and remains behind its separate stop gate.
 
 ## 2026-08-21 JINC Parallel Ownership Reconstruction
 
