@@ -49,8 +49,36 @@ consumer lineage. No runtime consumer is activated. The
 [Stage 1 handoff](../handoff/COMPACT_V2_NATIVE_ALIGN_STAGE1_2026-08-22.md)
 records focused rejection coverage, public-header isolation, 736/736 runnable
 CTests, the established single disabled test, 203/203 baseline-tool tests, the
-complete 127-test required config preflight, and valid ledgers. Stage 2 has not
-begun and remains behind its separate stop gate.
+complete 127-test required config preflight, and valid ledgers. That accepted
+snapshot opened the separately gated Stage 2 carrier work.
+
+Stage 2 is implemented at exact commit
+`838f50249ac07bd90308f90f49397d3a38c4cd4a`, tree
+`f38ef2fe1e1cacc676a250a21474dd1877208114`. Immutable observation-owned
+carriers now preserve per-network delivered timestamps, exact signed packet
+counters, counter discontinuities, scan-bounded contiguous runs, and the
+relational association of native rows to existing compatibility slots.
+Association pins the established one-candidate `std::round` behavior, the
+inclusive realized-`dt/2` edge, injectivity, and exact legacy presence-mask
+parity; it never synthesizes a missing detector sample.
+
+Raw telescope trajectories and the existing one- or two-value pointing-offset
+model are evaluated at each network's exact native detector times. The
+pointing carrier is admitted only when every network, row interval, and sample
+identity exactly matches its immutable alignment handle. Observation
+publication constructs and validates the complete alignment/pointing pair
+before one pointer swap, so rejected absent, stale, foreign-scope, duplicate,
+nonfinite, fractional, out-of-range, or cross-handle input leaves the accepted
+pair pointer-identical.
+
+The [Stage 2 handoff](../handoff/COMPACT_V2_NATIVE_ALIGN_STAGE2_2026-08-22.md)
+records 7/7 focused carrier cases, 22/22 complete SCI-ALIGN cases, 743/743
+runnable CTests, the established single disabled test, 203/203 baseline-tool
+tests, the complete required config gate, the CLI build, and valid ledgers.
+Current common-time compatibility products and all numerical routes are
+unchanged. Detector values, RTC/PTC, naive/JINC mapmaking, products, and runtime
+activation remain outside this stage; Stage 3 has not begun and retains its
+separate stop gate. No Unity run is required for this carrier-only stage.
 
 ## 2026-08-21 JINC Parallel Ownership Reconstruction
 
