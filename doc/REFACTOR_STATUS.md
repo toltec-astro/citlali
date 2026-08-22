@@ -236,9 +236,61 @@ frozen fixture digest is unchanged.
 The [Stage 6 handoff](../handoff/COMPACT_V2_NATIVE_ALIGN_STAGE6_SCIENCE_PROJECTION_2026-08-22.md)
 records the complete evidence. No ordinary runtime route, output lineage,
 product publication, or numerical kernel is changed or activated. No Unity
-run is required at this boundary. Stage 7 has not begun: it remains separately
-gated on compact provenance, lifecycle and publication tests, explicit mode
-routing, and the owner-run Unity campaign defined by the accepted plan.
+run is required at this boundary.
+
+Stage 7 is now implemented as a local activation candidate at exact commit
+`36f6ada25d06f2236dfcd279d53c6afc40298cb1`, tree
+`40099545347326aed03df7be22bcc7cfe74e0e7d`. An ordinary Science observation
+activates the native-required route only with one complete verified compact-v2
+matched relation and its exact native alignment/pointing carriers. That route
+is exclusive: it does not run the legacy common-grid RTC/PTC pass first, and
+it does not advertise or create legacy RTC/PTC TOD or diagnostic products.
+The established RTC/PTC numerical bodies run on admitted native runs/cohorts,
+and the established naive or JINC body projects measured cells through the
+Stage 6 native pointing snapshot.
+
+The observation-owned `citlali-native-cohort-product-provenance-v2` lineage
+binds compact bundle/relation, raw manifest, alignment, pointing, scan
+operation, RTC support, PTC groups, revision transitions, detector weights,
+eligible map inputs, and product occurrence. JINC occurrences additionally
+bind the processing configuration and actual native scan trace. Required
+lineage is committed with the scan, and final product-index replacement is
+deterministic and atomic after required-product existence checks.
+
+Mode routing remains deliberately asymmetric. Pointing fails closed when
+native authority is present because the current low-level identity cannot
+distinguish Pointing from OOF. OOF remains inactive. Detector/automatic
+Beammap remains the raw/APT producer; non-detector Beammap remains the existing
+calibration-table consumer; neither can request matched-consumer lineage.
+
+The candidate domain also fails closed on operations that lack native support
+lineage: polarimetry, extinction, RTC kernels, cross-network RTC observers,
+line audit, AltAz destriping, nonzero raw/processed detector outlier cuts,
+learning, noise maps, TOD output, source-mask radii, PTC second pass, fruit
+loops, weight validation, duplicate-tone exclusions, and outer scan context.
+Only disabled, naive, or JINC mapmaking is admitted. These restrictions must
+be made explicit in the first Unity Science config; they are not silently
+discarded.
+
+All 66 SCI-ALIGN cases pass at OpenMP thread counts 1, 2, 4, and 8. All 788
+runnable CTests pass with the established single disabled test not run; all
+203 baseline-tool tests pass; the full required config gate passes 127/127
+unit tests, all four mode kits, and 8/8 compact cases; and both ledgers,
+Phase 5 readiness validation, and the 733-dependency session-exit audit pass.
+The frozen raw execution census remains exactly 48 records with digest
+`efd347b41857542b770de90c9c383a254fbb5a4890988f3b1da43f27de4bcf9f`,
+zero review-required entries, and no drift. The exact CLI is
+`v4.0.0-3678-g36f6ada25` with local binary SHA-256
+`95c53af60db30a353b6bfd8e2badcbb368a16d112fb04f876218183cdab84a7a`.
+
+The [Stage 7 candidate handoff](../handoff/COMPACT_V2_NATIVE_ALIGN_STAGE7_ACTIVATION_CANDIDATE_2026-08-22.md)
+records the implementation, bounded config domain, complete local evidence,
+and owner checklist. Stage 7 is not accepted or production-ready. The next
+gate is the five-part owner-run Unity campaign: native-gap Science,
+identical-time/no-gap legacy comparison, same-scan naive/JINC, detector or
+automatic Beammap producer regression, and non-detector Beammap
+calibration-lane regression with exact source, binary, config, input, log,
+index, and retained-product evidence.
 
 ## 2026-08-21 JINC Parallel Ownership Reconstruction
 
