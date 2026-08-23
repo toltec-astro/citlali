@@ -2,7 +2,8 @@
 
 Boundary identity: `DETECTOR_GEOMETRY_FIELD_ROTATION_BOUNDARY v0.1/r0.1`
 
-Status: owner-decision-complete candidate; exact artifact approval pending
+Status: owner-approved boundary authority; implementation conformity not
+assessed
 
 Prepared: `2026-08-23`
 
@@ -14,9 +15,9 @@ Boundary owners: measured-geometry/APT authority and SCI-AST boundary owner
 
 This package-neutral boundary defines the static producer interface and
 runtime binding rule by which measured relative detector geometry becomes an
-observation-specific AST geometry realization. It supplies candidate
-authority for audit finding `F-007` without changing SCI-BEAM fitting or
-SCI-AST coordinate mathematics.
+observation-specific AST geometry realization. It supplies the approved
+boundary authority required for later re-audit of finding `F-007` without
+changing SCI-BEAM fitting or SCI-AST coordinate mathematics.
 
 It composes, without superseding:
 
@@ -170,4 +171,3 @@ shall name this revision and provide a complete semantic mapping.
 This boundary does not establish a physical boresight or rotation pivot,
 validate a geometry artifact, assess implementation conformity, or authorize
 production use.
-

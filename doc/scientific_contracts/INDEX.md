@@ -12,10 +12,11 @@ canonical branch, package provenance, retained revision history, and known
 recovery gaps before the next program-wide audit.
 
 The package-neutral
-[WP-2 timestream boundary candidate](boundaries/v0.1/README.md) composes the
+[WP-2 timestream boundary authority](boundaries/v0.1/README.md) composes the
 approved RTC-to-AST sample-grid, detector-geometry/field-rotation, and
-occurrence-level exposure-lineage decisions. Exact artifact approval and
-clean-room re-audit remain pending; MAP work remains deferred.
+occurrence-level exposure-lineage decisions. Exact artifact approval was
+recorded on `2026-08-23`; clean-room re-audit remains pending and MAP work
+remains deferred.
 
 | Package | Scope status | Contract status | Owner decision needed | Next action |
 | --- | --- | --- | --- | --- |

@@ -1,6 +1,7 @@
-# WP-2 Timestream Boundary Candidate Source Manifest
+# WP-2 Timestream Boundary Source Manifest
 
-Status: candidate packet-control manifest; exact artifact approval pending
+Status: deterministic packet-control manifest for owner-approved boundary
+authority; not implementation conformity or audit closure
 
 Prepared: `2026-08-23`
 
@@ -23,22 +24,23 @@ The source packet contains no Citlali implementation, test, configuration,
 schema, generated product, validation result, or production behavior as
 scientific authority.
 
-## Candidate Artifact Digests
+## Approved Artifact Digests
 
-The exact SHA-256 values below bind the focused-check candidate. The manifest
-does not hash itself.
+The exact SHA-256 values below bind the status-clean approved authority. The
+manifest does not hash itself.
 
 | Artifact | SHA-256 |
 | --- | --- |
-| `README.md` | `a66c72891f920a7b116053daecab7476e420919886fb50be31d92f61add6ecc4` |
-| `SCI-RTC_TO_SCI-AST_SAMPLE_GRID_BOUNDARY.md` | `94f0a7762ed210f5d91770e8cba548278128f213836c63c42d229507a5de71eb` |
-| `DETECTOR_GEOMETRY_FIELD_ROTATION_BOUNDARY.md` | `7a86e397c01547651a79b7a7b94569a806d83da3a4987d1a19274beb126f9e64` |
-| `TIMESTREAM_EXPOSURE_LINEAGE_BOUNDARY.md` | `9cd9b8956dded5a65f153d380fd7d6bb30dade193d73289e96a9c3d1296fd8cd` |
-| `WP2_BOUNDARY_CANDIDATE_CHANGE_MAP.md` | `fb0216c92321d24d6408f9179082f938f7950cf78aacb330c2939cacb655ffe5` |
+| `README.md` | `0a0300b87abd175d90fbe2c758fd835bb53c2130a600bbc09e79bf27bd9c15e8` |
+| `SCI-RTC_TO_SCI-AST_SAMPLE_GRID_BOUNDARY.md` | `237cc448e6597a207158858cf5e9dbf603a52ec8ad4f0859eb6788274677bb71` |
+| `DETECTOR_GEOMETRY_FIELD_ROTATION_BOUNDARY.md` | `690f2956f38f7146a6289af805395b7c3162ba0fc8c7f74f31bf81e26f2d417c` |
+| `TIMESTREAM_EXPOSURE_LINEAGE_BOUNDARY.md` | `4e2e3cda643a687932dd659c5d8008c7e4865a3368f66121a083eb8657a7dceb` |
+| `WP2_BOUNDARY_CANDIDATE_CHANGE_MAP.md` | `25afd7d33468d9377ce65a6fe67c53c2181a82c55340172f6a390535f44539b9` |
+| `SCIENTIFIC_OWNER_APPROVAL_2026-08-23.md` | `9206a20b6acb3399b54a20016857d5f486b73f95ceec4eb076d4298971e7e2ae` |
 
 ## Claim Boundary
 
-These hashes establish candidate byte identity only. They do not establish
-scientific-owner approval of the exact artifacts, audit-finding closure,
-implementation conformity, numerical validation, observational performance,
-production readiness, or MAP availability.
+These hashes and the separate approval record establish approved byte
+identity only. They do not establish audit-finding closure, implementation
+conformity, numerical validation, observational performance, production
+readiness, or MAP availability.

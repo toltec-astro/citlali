@@ -44,6 +44,7 @@ for name in (
     "DETECTOR_GEOMETRY_FIELD_ROTATION_BOUNDARY.md",
     "TIMESTREAM_EXPOSURE_LINEAGE_BOUNDARY.md",
     "WP2_BOUNDARY_CANDIDATE_CHANGE_MAP.md",
+    "SCIENTIFIC_OWNER_APPROVAL_2026-08-23.md",
     "SOURCE_MANIFEST.md",
 ):
     assert (BOUNDARY_ROOT / name).is_file(), f"timestream boundary: missing {name}"

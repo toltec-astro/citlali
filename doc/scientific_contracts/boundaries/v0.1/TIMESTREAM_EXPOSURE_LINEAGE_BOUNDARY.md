@@ -2,7 +2,8 @@
 
 Boundary identity: `TIMESTREAM_EXPOSURE_LINEAGE_BOUNDARY v0.1/r0.1`
 
-Status: owner-decision-complete candidate; exact artifact approval pending
+Status: owner-approved boundary authority; implementation conformity not
+assessed
 
 Prepared: `2026-08-23`
 
@@ -14,9 +15,10 @@ Boundary owners: SCI-ALIGN, SCI-RTC, SCI-CAL, and SCI-PTC scientific owners
 
 This package-neutral boundary preserves exact physical-acquisition and
 valid-original exposure truth from original sample occurrences through the
-processed-timestream chain. It supplies candidate authority for the
-timestream facet of `F-019/XOD-018` and post-audit check `TS-CLAR-002`. It does
-not define a MAP, projected, coadded, retained, or generic usable exposure.
+processed-timestream chain. It supplies the approved boundary authority
+required for later re-audit of the timestream facet of `F-019/XOD-018` and
+post-audit check `TS-CLAR-002`. It does not define a MAP, projected, coadded,
+retained, or generic usable exposure.
 
 It composes, without superseding:
 

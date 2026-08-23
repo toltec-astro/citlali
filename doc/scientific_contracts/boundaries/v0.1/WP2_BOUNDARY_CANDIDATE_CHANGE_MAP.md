@@ -1,6 +1,7 @@
 # WP-2 Timestream Boundary Candidate Change Map
 
-Status: owner-decision-complete candidate; exact artifact approval pending
+Status: exact candidate approved and promoted to owner-approved boundary
+authority on `2026-08-23`
 
 Date: `2026-08-23`
 
@@ -11,9 +12,13 @@ Authoring baseline: SCI-PTC v0.1/r0.5 frozen authority at commit
 
 Scientific owner: Grant Wilson
 
-This candidate implements `WP2-OWNER-D001--D010`. It does not close an audit
-finding before exact artifact approval, content binding, and the authorized
-clean-room re-audit.
+Candidate identity: commit
+`967cf83452269038d13c7233ce40ba8e2c8a1790`
+
+This candidate implements `WP2-OWNER-D001--D010`. Grant Wilson approved the
+exact packet and authorized its status-only promotion on `2026-08-23`. The
+promotion does not close an audit finding before the authorized clean-room
+re-audit.
 
 ## Owner-Decision Realization
 
@@ -37,7 +42,8 @@ clean-room re-audit.
 | `SCI-RTC_TO_SCI-AST_SAMPLE_GRID_BOUNDARY.md` | Exact RTC product/plan/grid/sample-to-AST coordinate parent and hard-failure contract. |
 | `DETECTOR_GEOMETRY_FIELD_ROTATION_BOUNDARY.md` | Exact geometry producer, observation association, representation, rotation, gauge, uncertainty, and runtime-binding contract. |
 | `TIMESTREAM_EXPOSURE_LINEAGE_BOUNDARY.md` | Immutable occurrence-level exposure and downstream lineage contract through PTC. |
-| `SOURCE_MANIFEST.md` | Exact candidate byte identities and source-authority references. |
+| `SCIENTIFIC_OWNER_APPROVAL_2026-08-23.md` | Exact packet approval and status-only promotion authority. |
+| `SOURCE_MANIFEST.md` | Exact approved byte identities and source-authority references. |
 
 ## Scope And Deferral
 
@@ -53,5 +59,5 @@ adds package-neutral composition authority. In particular it does not:
   readiness.
 
 `F-006`, `F-007`, the timestream facet of `F-019`, and `TS-CLAR-002` remain
-open until the complete candidate is approved, content-bound, and passes the
-authorized clean-room re-audit.
+open until the approved, content-bound authority passes the authorized
+clean-room re-audit.

@@ -2,7 +2,8 @@
 
 Boundary identity: `SCI-RTC_TO_SCI-AST_SAMPLE_GRID_BOUNDARY v0.1/r0.1`
 
-Status: owner-decision-complete candidate; exact artifact approval pending
+Status: owner-approved boundary authority; implementation conformity not
+assessed
 
 Prepared: `2026-08-23`
 
@@ -14,9 +15,9 @@ Joint boundary owners: SCI-RTC and SCI-AST scientific owners
 
 This package-neutral boundary defines how an exact SCI-RTC output-grid sample
 is attached to the SCI-AST role
-`SCI-AST:rtc_output_grid_coordinates@1`. It closes the candidate-authority
-work for audit finding `F-006` without introducing another signal, temporal,
-or astrometric operator.
+`SCI-AST:rtc_output_grid_coordinates@1`. It supplies the approved boundary
+authority required for later re-audit of finding `F-006` without introducing
+another signal, temporal, or astrometric operator.
 
 It composes, without superseding:
 
@@ -172,4 +173,3 @@ equivalent.
 This boundary does not assess implementation conformity, validate numerical
 response recovery, authorize production use, or introduce MAP projection or
 deposition semantics.
-
