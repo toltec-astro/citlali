@@ -1,7 +1,7 @@
 # WP-1 SCI-PTC Scientific-Owner Decision Packet
 
-Status: **proposal for scientific-owner disposition; non-authoritative until
-the owner records an explicit decision**
+Status: **proposal history; superseded where different by the approved
+scientific-owner disposition linked below**
 
 Date: `2026-08-23`
 
@@ -20,6 +20,16 @@ Timestream closure-program commit preceding this packet:
 
 Governing scope:
 [`TIMESTREAM_AUDIT_DISPOSITION_ADDENDUM.md`](TIMESTREAM_AUDIT_DISPOSITION_ADDENDUM.md)
+
+Approved scientific-owner disposition:
+[`WP1_PTC_SCIENTIFIC_OWNER_DISPOSITION_2026-08-23.md`](WP1_PTC_SCIENTIFIC_OWNER_DISPOSITION_2026-08-23.md)
+
+The disposition record governs wherever its approved language differs from
+the recommendations below. In particular, it replaces the proposal's
+disabled-role table with an RTC-terminal export route, admits configured
+network- or array-level PCA with support at the selected grouping level,
+requires an explicitly configured strictly positive rank, and removes
+automatic candidate admission from the first ordinary route.
 
 Tracked records:
 [`F-001`](../SIX_PACKAGE_WIDE_SCALE_55EFD8A/SIX_PACKAGE_HORIZONTAL_COHERENCE_FINDINGS.md),
