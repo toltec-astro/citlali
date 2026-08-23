@@ -21,6 +21,9 @@ Proposal packet:
 Governing scope:
 [`TIMESTREAM_AUDIT_DISPOSITION_ADDENDUM.md`](TIMESTREAM_AUDIT_DISPOSITION_ADDENDUM.md)
 
+Authorized successor author packet:
+[`WP1_PTC_R0.5_SUCCESSOR_AUTHOR_PACKET.md`](WP1_PTC_R0.5_SUCCESSOR_AUTHOR_PACKET.md)
+
 ## 1. Authority and precedence
 
 This record captures the scientific owner's completed, one-at-a-time
@@ -350,4 +353,3 @@ The fixed-state kernel rule remains valid within its exact PTC-local domain:
 the kernel uses the derivative or linear part of the same realized operator,
 group, support, mask, metric, subspace, and rank that acted on the data. This
 does not close the stronger response claim tiers.
-
