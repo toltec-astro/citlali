@@ -1,6 +1,6 @@
 # Citlali Refactor Status
 
-## 2026-08-23 Canonical APT v2 Typed-Null Issuance Repair
+## 2026-08-23 Canonical APT v2 Typed-Null Issuance Repairs
 
 The first owner-run Stage 7 Pointing reduction using project-local matched-v2
 bundles exposed a producer/consumer contract inconsistency. The observation
@@ -17,18 +17,29 @@ policy. The public protocol regression now issues and rereads a TolProj-style
 bundle, admits its typed detector relation, proves a matched baseline `flag`
 is retained, proves an unmatched `flag` is null, and rejects a copied-field
 policy changed back to `reject`. This changes no target/seed choice, detector
-identity, field value, Pointing numerical algorithm, RTC/PTC, mapmaking, or
-Beammap baseline bytes.
+identity, finite copied value, Pointing numerical algorithm, RTC/PTC,
+mapmaking, or Beammap baseline bytes.
 
-The three already issued Stage 7 matched bundles are immutable evidence from
-the defective producer and are not edited in place. They must be reissued
-under new labels after deploying this repair; the verified observation 137389
-Beammap baseline remains reusable. Local verification builds the complete CLI,
+The first owner-run regeneration with that repair exposed the companion value
+conversion defect. A selected 137389 seed carried
+`cal_amp_over_fit_amp` as the baseline's permitted `nan-token`; the issuer
+declared the matched field `typed-null` but copied the raw NaN, so its own row
+validator correctly rejected publication. Matched-v2 issuance now normalizes
+both baseline nulls and permitted baseline NaNs to the one declared typed-null
+representation. Finite selected-seed values remain exact, and independent
+matched-bundle verification reconstructs the same normalization rule. The
+public protocol regression includes this production-shaped matched-seed NaN
+case and completes a filesystem reread plus typed detector-relation admission.
+
+The owner removed the three defective project-local Stage 7 bundles rather
+than retaining them as evidence, so TolProj may regenerate the original labels
+after deployment. The verified observation 137389 Beammap baseline remains
+reusable and unchanged. Local verification builds the affected test targets,
 passes all 791 runnable CTests with the established single disabled test, and
-passes all 203 baseline-tool tests plus 137 subtests. The config preflight
-passes all 127 unit tests, all four mode kits, and all six locally available
-OOF, Beammap, and Science compact-compatibility cases. Its two Pointing cases
-remain unavailable because the owner-local
+passes all 203 baseline-tool tests plus 137 subtests. The earlier config
+preflight result for this branch remains 127 unit tests, all four mode kits,
+and all six locally available OOF, Beammap, and Science compact-compatibility
+cases. Its two Pointing cases remain unavailable because the owner-local
 `point/refactor/70_reduce.yaml` fixture is absent, the same recorded external
 input gap as the parent candidate; therefore the local `--require-all` config
 gate is not represented as complete.

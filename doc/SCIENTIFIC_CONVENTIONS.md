@@ -742,9 +742,11 @@ artifact level.
 
 Canonical observation APT v2 likewise declares every copied baseline field
 nullable with operation `copy-seed-or-null` and missing policy `typed-null`.
-A matched target carries the exact selected-seed value; an unmatched or
-ambiguous target carries the typed null. Publication verification and typed
-detector-relation admission both enforce this rule.
+A matched target carries the exact selected-seed value when that value is
+present. A baseline null or permitted baseline `nan-token` is normalized to
+the typed null, and an unmatched or ambiguous target likewise carries the
+typed null. Publication verification and typed detector-relation admission
+both enforce this rule.
 
 ## Configuration And Provenance States
 

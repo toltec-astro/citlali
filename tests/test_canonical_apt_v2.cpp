@@ -433,8 +433,16 @@ TEST(canonical_apt_v2,
          "producer", std::string("citlali:beammap-fit-v1"),
          apt::FieldOperation::preserve_target, std::nullopt, "reject",
          "nonidentity", "beammap fit quality flag"});
+    baseline.apt.field_rules.push_back(
+        {7, "cal_amp_over_fit_amp", apt::ValueType::float64, "N/A", true,
+         "producer", std::string("citlali:beammap-empirical-calibration-v1"),
+         apt::FieldOperation::preserve_target, std::nullopt, "nan-token",
+         "nonidentity", "calibration amplitude divided by fit amplitude"});
     baseline.apt.rows.at(0).fields.emplace("flag", std::int64_t{0});
     baseline.apt.rows.at(1).fields.emplace("flag", std::int64_t{1});
+    baseline.apt.rows.at(0).fields.emplace(
+        "cal_amp_over_fit_amp", std::numeric_limits<double>::quiet_NaN());
+    baseline.apt.rows.at(1).fields.emplace("cal_amp_over_fit_amp", 1.25);
     const auto baseline_prepared = apt::prepare_baseline_bundle(
         baseline.apt, baseline.sources);
     const auto baseline_dir = temporary.path / "baseline.apt-v2";
@@ -563,6 +571,10 @@ TEST(canonical_apt_v2,
     EXPECT_EQ(verified.apt.rows.at(0).fields.at("a_fwhm"), apt::Value{8.5});
     EXPECT_TRUE(std::holds_alternative<apt::NullValue>(
         verified.apt.rows.at(1).fields.at("a_fwhm")));
+    EXPECT_TRUE(std::holds_alternative<apt::NullValue>(
+        verified.apt.rows.at(0).fields.at("cal_amp_over_fit_amp")));
+    EXPECT_TRUE(std::holds_alternative<apt::NullValue>(
+        verified.apt.rows.at(1).fields.at("cal_amp_over_fit_amp")));
     ASSERT_TRUE(verified.relation);
     EXPECT_EQ(verified.relation->rows.at(0).disposition,
               apt::RelationDisposition::matched);

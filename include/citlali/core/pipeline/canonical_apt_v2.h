@@ -76,6 +76,21 @@ using ValueType = v1::ValueType;
 using NonFinitePolicy = v1::NonFinitePolicy;
 using ObservationIdentity = v1::ObservationIdentity;
 
+// Matched-v2 output uses one typed-null representation for every missing
+// copied baseline value. Baseline-v2 may still carry legacy nan-token values,
+// so normalize those values at the copy boundary instead of allowing the
+// baseline representation to leak into the matched artifact.
+inline Value copied_seed_value_or_null(const Value &value) {
+    if (std::holds_alternative<NullValue>(value)) {
+        return NullValue{};
+    }
+    if (const auto number = std::get_if<double>(&value);
+        number != nullptr && std::isnan(*number)) {
+        return NullValue{};
+    }
+    return value;
+}
+
 enum class BundleKind { baseline, matched };
 
 inline std::string_view bundle_kind_token(BundleKind kind) {

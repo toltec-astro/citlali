@@ -527,7 +527,7 @@ inline std::vector<SeedDisposition> validate_matched_semantics(
                 continue;
             }
             const Value expected = selected_seed
-                ? selected_seed->fields.at(name)
+                ? copied_seed_value_or_null(selected_seed->fields.at(name))
                 : Value{NullValue{}};
             const auto &actual = output->second->fields.at(name);
             const auto exception = field_exceptions.find(

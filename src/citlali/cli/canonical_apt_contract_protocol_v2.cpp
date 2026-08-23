@@ -828,7 +828,8 @@ apt::VerifiedBundle issue_observation_matched_bundle(
         for (const auto *field : copied_baseline_fields) {
             row.fields.emplace(
                 field->name,
-                seed ? seed->fields.at(field->name)
+                seed ? apt::copied_seed_value_or_null(
+                           seed->fields.at(field->name))
                      : apt::Value{apt::NullValue{}});
         }
         for (const auto name :
