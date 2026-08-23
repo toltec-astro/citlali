@@ -11,6 +11,12 @@ The [consolidation ledger](CONSOLIDATION_LEDGER_2026-08-22.md) records the
 canonical branch, package provenance, retained revision history, and known
 recovery gaps before the next program-wide audit.
 
+The package-neutral
+[WP-2 timestream boundary candidate](boundaries/v0.1/README.md) composes the
+approved RTC-to-AST sample-grid, detector-geometry/field-rotation, and
+occurrence-level exposure-lineage decisions. Exact artifact approval and
+clean-room re-audit remain pending; MAP work remains deferred.
+
 | Package | Scope status | Contract status | Owner decision needed | Next action |
 | --- | --- | --- | --- | --- |
 | [SCI-CAL — detector calibration, extinction, and signal transfer](packages/SCI-CAL/v0.1/README.md) | Owner-approved scientific contract v0.1 scope | Science-team rationale r0.5 and engineering conformance r0.4 carry the approved Q01--Q09 dispositions; validation evidence and final scientific acceptance pending; scientific authority not frozen | No scientific decision remains open in Q01--Q09; named numerical uncertainty products and achieved validation remain unavailable until their evidence exists | Execute the owner-approved validation workflow, report the evidence honestly, and obtain an explicit scientific-owner freeze disposition |

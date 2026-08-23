@@ -37,6 +37,17 @@ RENDERED_DRAFT_PACKAGES = {}
 assert (ROOT / "INDEX.md").is_file()
 assert (ROOT / "templates" / "SCOPE_BRIEF.md").is_file()
 
+BOUNDARY_ROOT = ROOT / "boundaries" / "v0.1"
+for name in (
+    "README.md",
+    "SCI-RTC_TO_SCI-AST_SAMPLE_GRID_BOUNDARY.md",
+    "DETECTOR_GEOMETRY_FIELD_ROTATION_BOUNDARY.md",
+    "TIMESTREAM_EXPOSURE_LINEAGE_BOUNDARY.md",
+    "WP2_BOUNDARY_CANDIDATE_CHANGE_MAP.md",
+    "SOURCE_MANIFEST.md",
+):
+    assert (BOUNDARY_ROOT / name).is_file(), f"timestream boundary: missing {name}"
+
 for package, version in {
     **COMPLETE_PACKAGES,
     **RENDERED_DRAFT_PACKAGES,
