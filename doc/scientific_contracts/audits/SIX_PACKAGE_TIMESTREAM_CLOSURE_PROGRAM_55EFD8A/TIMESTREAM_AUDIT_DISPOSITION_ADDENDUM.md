@@ -126,7 +126,7 @@ uncertainty remains explicitly unavailable.
 
 | `B_TS` member | Scientific owner and required meaning | Snapshot obligation or gap | Primary source anchors |
 | --- | --- | --- | --- |
-| Acquisition and native readout identity | Tune/readout authority owns the native paired `x/r` mapping, sign, reference, Tune association, occurrence identity, validity, and runtime binding | Exact producer interface is outside the admitted packet; no shape/value inference is allowed | F-017/XOD-015; ALIGN `REQ-001`, `REQ-007--011` |
+| Acquisition and native readout identity | Tune/readout authority owns the native paired `x/r` mapping, sign, reference, Tune association, occurrence identity, validity, and runtime binding; ALIGN owns the subsequent native-to-aligned relation | `WP2-FOLLOWUP-D011` approves a bounded upstream interface record; the exact candidate remains pending approval and no shape/value inference is allowed | F-017/XOD-015; ALIGN `REQ-001`, `REQ-003--007`; RTC `REQ-083--085`, `REQ-139` |
 | ALIGN occurrence, time, origin, support, and exposure | ALIGN owns ordering, slot/interval identity, mapping, original/synthesized origin, physical acquired exposure, valid-original exposure, and zero added acquired exposure for synthesized values | Frozen authority is coherent; downstream preservation and exact external timing/input bindings remain required | ALIGN `REQ-003--006`, `REQ-015`, `REQ-027--030`, `REQ-050` |
 | AST ALIGN-grid coordinate state | AST owns coordinate construction on the ALIGN role from exact TEL/pointing/geometry parents; RTC consumes this role only under exact identity | External producer identities remain claim-local gates | AST `REQ-006--031`, `REQ-036--060`, `REQ-073`; RTC `REQ-009`, `REQ-060`, `REQ-113`, `REQ-121` |
 | RTC atomic conditioned bundle and plan | RTC owns stable output sample `n`, representative ALIGN parent, selected time/segment/phase, conditioned `x`, optional conditioned `r`, plan, support, response, causes, influence, and realization state | Formal `K` collision needs a bounded notation map; optional `r` compatibility remains role-specific | F-008; RTC `REQ-028--029`, `REQ-037--052`, `REQ-103--143` |
@@ -301,6 +301,7 @@ The register uses these canonical packet identifiers:
 | WP-0 | `WP-0_DISPOSITION_TRACKER` |
 | WP-1 | `WP-1_PTC_SUCCESSOR` |
 | WP-2 | `WP-2_TS_BOUNDARIES` |
+| WP-2A | `WP-2A_NATIVE_READOUT_INTERFACE` |
 | WP-3 | `WP-3_CAL_EXTERNAL_PRODUCERS` |
 | WP-4 | `WP-4_SOURCE_HYGIENE` |
 | WP-5 | `WP-5_VAL_BINDINGS_PROFILES` |
@@ -334,6 +335,17 @@ Prepare the owner-approved RTC-to-AST, detector-geometry/field-rotation, and
 exposure-lineage artifacts needed to close `F-006`, `F-007`, the timestream
 facet of `F-019`, and `TS-CLAR-002`. These compose existing package authority and
 must not silently change RTC or AST mathematics.
+
+### WP-2A — native Tune/readout producer interface
+
+Bind the exact external producer interface by which native measured readout
+occurrences become paired \((x,r)^{\rm acq}\) before SCI-ALIGN. This packet
+records producer/interface version, transform identity, detector/tone and
+occurrence association, producer-owned unit/sign/reference/normalization,
+Tune/mapping revision, applicability, validity, uncertainty state, runtime
+binding, failure, and provenance. It composes frozen ALIGN and RTC authority;
+it does not reopen either package, create a CAL acquisition boundary, or
+freeze observation-instance payloads.
 
 ### WP-3 — CAL and external producer closure
 
@@ -374,10 +386,11 @@ records, and full digests in one immutable source commit. WP-7 does not
 originate those scientific-owner decisions. Then launch a fresh six-package
 timestream-only audit.
 
-WP-1, WP-2, WP-3, and WP-4 may proceed in parallel where their owner inputs are
-independent. WP-5 waits for producer identities to stabilize. WP-6 may develop
-alongside producer work but its final result binds the stabilized sources.
-WP-7 waits for every required `TS-S`/`TS-C` item selected for the candidate.
+WP-1, WP-2, WP-2A, WP-3, and WP-4 may proceed in parallel where their owner
+inputs are independent. WP-5 waits for producer identities to stabilize. WP-6
+may develop alongside producer work but its final result binds the stabilized
+sources. WP-7 waits for every required `TS-S`/`TS-C` item selected for the
+candidate.
 
 ## 9. Closure register protocol
 

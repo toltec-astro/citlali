@@ -18,6 +18,14 @@ occurrence-level exposure-lineage decisions. Exact artifact approval was
 recorded on `2026-08-23`; clean-room re-audit remains pending and MAP work
 remains deferred.
 
+The package-neutral
+[external producer-interface candidates](producer_interfaces/v0.1/README.md)
+separate static producer meaning from observation-instance realization.
+`WP2-FOLLOWUP-D011` has approved the upstream Tune/readout disposition; exact
+approval of the resulting v0.1/r0.1 candidate bytes remains pending. The
+record preserves frozen ALIGN/RTC ownership and creates no CAL acquisition
+interpretation.
+
 | Package | Scope status | Contract status | Owner decision needed | Next action |
 | --- | --- | --- | --- | --- |
 | [SCI-CAL — detector calibration, extinction, and signal transfer](packages/SCI-CAL/v0.1/README.md) | Owner-approved scientific contract v0.1 scope | **Scientific authority frozen** at v0.1/r0.5-r0.4 on `2026-08-23`; implementation conformity and achieved performance unassessed | No scientific decision remains open in Q01--Q09; named numerical uncertainty products and achieved-performance acceptance remain unavailable until their evidence exists | Preserve the frozen packet; execute the owner-approved validation workflow separately and report the evidence honestly |

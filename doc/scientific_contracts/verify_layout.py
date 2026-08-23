@@ -49,6 +49,17 @@ for name in (
 ):
     assert (BOUNDARY_ROOT / name).is_file(), f"timestream boundary: missing {name}"
 
+PRODUCER_INTERFACE_ROOT = ROOT / "producer_interfaces" / "v0.1"
+for name in (
+    "README.md",
+    "TUNE_READOUT_NATIVE_XR_PRODUCER_INTERFACE.md",
+    "WP2_FOLLOWUP_D011_OWNER_DECISION_2026-08-23.md",
+    "SOURCE_MANIFEST.md",
+):
+    assert (PRODUCER_INTERFACE_ROOT / name).is_file(), (
+        f"timestream producer interface: missing {name}"
+    )
+
 for package, version in {
     **COMPLETE_PACKAGES,
     **RENDERED_DRAFT_PACKAGES,
