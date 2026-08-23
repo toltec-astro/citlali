@@ -1,10 +1,10 @@
 \documentclass[10pt]{article}
 \newcommand{\DocRevision}{Engineering revision r0.4}
-\newcommand{\DocDate}{2026-08-20}
+\newcommand{\DocDate}{2026-08-23}
 \newcommand{\DocShortTitle}{Engineering Conformance r0.4}
-\newcommand{\DocPdfTitle}{SCI-CAL v0.1 Engineering Conformance r0.4 Draft}
+\newcommand{\DocPdfTitle}{SCI-CAL v0.1 Engineering Conformance r0.4 Frozen}
 \input{common/preamble.tex}
-\fancyhead[L]{\small\color{calgray}SCI-CAL v0.1/r0.4 DRAFT}
+\fancyhead[L]{\small\color{calgray}SCI-CAL v0.1/r0.4 FROZEN}
 \hypersetup{pdfsubject={SCI-CAL v0.1 engineering companion to Science-Team Rationale r0.5}}
 
 \begin{document}
@@ -15,7 +15,7 @@
   without mapping to current files, functions, classes, or behavior. This
   revision is the formal companion to Science-Team Rationale r0.5.}
 
-\DraftNotice
+\AuthorityNotice
 
 \begin{abstract}
 This document converts the shared SCI-CAL v0.1 scientific authority, as
@@ -30,7 +30,7 @@ prescribe present software structure and does not assert that any
 implementation conforms. The common numbered requirements are the only
 normative clauses; the procedures here describe evidence for them. Q01--Q09
 are scientifically dispositioned; explicitly unavailable uncertainty products
-and final performance acceptance remain visible and cannot be fabricated by
+and achieved-performance acceptance remain visible and cannot be fabricated by
 candidate metadata or implementation behavior.
 \end{abstract}
 
@@ -65,7 +65,7 @@ performance require their own evidence. Its strongest structural-policy state
 is \Term{science-qualification-eligible}, never an achieved
 \code{science-qualified} or \code{calibrated-science} claim. The latter claims
 remain governed by the separate-evidence threshold in \Req{049}. No production
-state follows from this draft.
+state follows from this frozen authority.
 
 \section{Logical conformance records}
 \label{sec:eng-records}
@@ -226,7 +226,7 @@ SCI-CAL-OWNER-Q05 & 272/214/150 GHz convention; source-dependent spectrum; downs
 SCI-CAL-OWNER-Q06 & Exact WVR/AM/passband operator and content digests & Evaluate within \(0\le\tau_{225}\le0.25\), \(25^\circ\le EL\le80^\circ\), and the authorized \(\alpha\) set; fail closed outside. \\
 SCI-CAL-OWNER-Q07 & One CAL class per observation, 0.025 momentary-excursion tolerance & Never split an observation; separate quality classification from sample-level numeric support. \\
 SCI-CAL-OWNER-Q08 & Noise downstream; CAL ultimately owns array-dependent systematics & Publish current missing source, rescale, WVR, and covariance terms as unavailable; do not emit total uncertainty/significance. \\
-SCI-CAL-OWNER-Q09 & Concrete Beammap closure and associated-pointing transfer workflow & Report achieved evidence by array without arbitrary sample-size/matrix gates; final scientific acceptance remains an owner decision. \\
+SCI-CAL-OWNER-Q09 & Concrete Beammap closure and associated-pointing transfer workflow & Report achieved evidence by array without arbitrary sample-size/matrix gates; achieved-performance acceptance remains an owner decision. \\
 \bottomrule
 \end{longtable}
 

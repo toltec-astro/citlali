@@ -27,7 +27,7 @@ The review specifically confirmed:
 - identical distinction between same-Beammap closure and independent
   associated-pointing transfer; and
 - identical treatment of 1%, 5%, and 5--10% as reporting benchmarks, with
-  final acceptance reserved to the scientific owner.
+  achieved-performance acceptance reserved to the scientific owner.
 
 No arbitrary validation matrix or minimum sample size appears in either view.
 No implementation, executed validation, science qualification, or production

@@ -1,8 +1,8 @@
 # SCI-CAL — Detector Calibration, Atmospheric Extinction, And Signal Transfer
 
-Status: science-team rationale r0.5 and engineering conformance r0.4 carry the
-approved Q01--Q09 owner dispositions; scientific contract v0.1; validation
-evidence and final scientific acceptance pending
+Status: scientific authority frozen at v0.1/r0.5-r0.4 by Grant Wilson on
+`2026-08-23`; implementation conformity, validation evidence, and
+achieved-performance acceptance remain unestablished
 
 Scientific contract version: `v0.1` (`2026-08-16`)
 
@@ -78,6 +78,10 @@ four-item author-reference packet on `2026-08-16`.
   implementation-blind consistency assessment of the r0.5/r0.4 pair
 - [`SCIENTIFIC_ENGINEERING_R0.5_R0.4_BUILD_REVIEW.md`](SCIENTIFIC_ENGINEERING_R0.5_R0.4_BUILD_REVIEW.md):
   mechanical, PDF, and visual QA for the owner-decision revision
+- [`SCIENTIFIC_OWNER_FREEZE_R0.5.md`](SCIENTIFIC_OWNER_FREEZE_R0.5.md):
+  exact owner approval, frozen authority, claim boundary, and change control
+- [`FREEZE_VERIFICATION_R0.5.md`](FREEZE_VERIFICATION_R0.5.md): status-only
+  source, artifact, mechanical, and visual freeze verification
 - [`SCIENTIFIC_ENGINEERING_R0.4_R0.3_BUILD_REVIEW.md`](SCIENTIFIC_ENGINEERING_R0.4_R0.3_BUILD_REVIEW.md):
   mechanical, PDF, and visual QA for the repaired canonical pair
 - [`CROSSWALK.md`](CROSSWALK.md): all 50 requirements traced to the
@@ -92,6 +96,8 @@ four-item author-reference packet on `2026-08-16`.
   stable canonical filename for the active scientist-facing r0.5 PDF
 - [`pdf/SCI-CAL-ENGINEERING-CONFORMANCE-v0.1.pdf`](pdf/SCI-CAL-ENGINEERING-CONFORMANCE-v0.1.pdf):
   stable canonical filename for the active engineering-facing r0.4 PDF
+- [`pdf/README.md`](pdf/README.md): canonical frozen PDF identities, page
+  counts, digests, and claim boundary
 - [`pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1-DRAFT.pdf`](pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1-DRAFT.pdf):
   archived 24-page scientist-facing predecessor reviewed by Grant
 - [`pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.2-DRAFT.pdf`](pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.2-DRAFT.pdf):
@@ -113,16 +119,20 @@ identify contract versions later than v0.1.
 - [`SCIENTIFIC_ENGINEERING_CONSISTENCY_R0.4.md`](SCIENTIFIC_ENGINEERING_CONSISTENCY_R0.4.md): fresh high-effort implementation-blind consistency-review pass for the repaired pair
 - [`pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1-r0.3-DRAFT.pdf`](pdf/SCI-CAL-SCIENTIFIC-RATIONALE-v0.1-r0.3-DRAFT.pdf): final-form science-team rationale and frozen package-template model
 
-## Next Gate
+## Frozen Authority And Next Evidence Gate
 
-Q01--Q09 are scientifically dispositioned. The next scientific gate is to
-execute the realizable workflow: validate Beammap-derived source APTs with
+Q01--Q09 are scientifically dispositioned, and the r0.5/r0.4 pair is the
+frozen SCI-CAL v0.1 scientific authority. The next evidence gate is to execute
+the realizable workflow: validate Beammap-derived source APTs with
 `toltec_beammap`, enter accepted APTs into `apt_library`, match them through
 TolProj, and run ordinary science reductions for same-Beammap closure and,
 where an adequate independent flux exists, associated-pointing transfer.
 Results are reported by array without an arbitrary matrix or sample minimum.
 
-This revision does not approve an implementation, establish implementation
+This freeze does not approve an implementation, establish implementation
 conformity, execute scientific validation, or change production status. The
-1%, 5%, and 5--10% figures remain reporting benchmarks; final scientific
-acceptance is an owner decision based on the evidence actually achieved.
+1%, 5%, and 5--10% figures remain reporting benchmarks;
+achieved-performance acceptance is an owner decision based on the evidence
+actually achieved. Future substantive scientific change requires a versioned
+successor or formally reopened revision; later evidence may attach without
+silently changing this authority.

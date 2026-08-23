@@ -1,4 +1,4 @@
-# SCI-CAL v0.1 Draft Crosswalk
+# SCI-CAL v0.1 Frozen Crosswalk
 
 Status: refreshed for science rationale r0.5 and engineering conformance r0.4,
 2026-08-20

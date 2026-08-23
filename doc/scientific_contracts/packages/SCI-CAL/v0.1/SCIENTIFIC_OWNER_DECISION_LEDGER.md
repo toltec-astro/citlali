@@ -1,7 +1,8 @@
 # SCI-CAL Scientific Owner Decision Ledger
 
-Status: Q01--Q09 scientifically dispositioned for the SCI-CAL v0.1
-r0.5/r0.4 revision; numerical products remain unavailable where stated
+Status: Q01--Q09 scientifically dispositioned and SCI-CAL v0.1/r0.5-r0.4
+scientific authority frozen; numerical products and achieved-performance
+acceptance remain unavailable where stated
 
 Date: 2026-08-20
 
@@ -17,7 +18,7 @@ State vocabulary: open, decided, deferred, superseded.
 | SCI-CAL-OWNER-Q06 | Grant Wilson plus recovered content-bound atmosphere authority | decided | LMT WVR in `tel*.nc`, time interpolation, exact AM12 fixed-DJF25 nodes/operator, broadband integration, support and digests | Numeric operator authority resolved; observational atmosphere truth and WVR uncertainty remain unvalidated/unavailable | atmosphere commit `7156881bd...` plus `SCIENTIFIC_OWNER_DECISIONS_R0.5.md` | 2026-08-20 | Science rationale; engineering contract; atmosphere authority; validation plan |
 | SCI-CAL-OWNER-Q07 | Grant Wilson, SCI-CAL scientific owner | decided | Experience-based flexible limits; one CAL-owned observation class; no splitting; 0.025 excursion tolerance; owner changes policy | Policy rationale and ownership resolved; tolerance does not extend numeric operator support | `SCIENTIFIC_OWNER_DECISIONS_R0.5.md` | 2026-08-20 | Science rationale; engineering contract; segment-policy authority |
 | SCI-CAL-OWNER-Q08 | Grant Wilson coordinating CAL/BEAM/TolProj uncertainty producers | decided | Noise downstream; systematic CAL error intended; current BEAM, WVR, and TolProj-rescale uncertainties unavailable; array/observation correlation scopes declared | Total calibrated uncertainty and total significance remain unavailable pending named producer mechanisms | `SCIENTIFIC_OWNER_DECISIONS_R0.5.md` | 2026-08-20 | Science rationale; engineering contract; MAP/NOI/BEAM/TolProj contracts |
-| SCI-CAL-OWNER-Q09 | Grant Wilson, scientific acceptance authority | decided | Concrete Beammap closure and associated-pointing transfer workflow; per-array honest reporting; no arbitrary matrix/sample minimum | Validation procedure resolved; achieved acceptance remains unavailable until owner reviews executed evidence | `SCIENTIFIC_OWNER_DECISIONS_R0.5.md` | 2026-08-20 | Science rationale; engineering contract; validation plan; acceptance record |
+| SCI-CAL-OWNER-Q09 | Grant Wilson, achieved-performance acceptance authority | decided | Concrete Beammap closure and associated-pointing transfer workflow; per-array honest reporting; no arbitrary matrix/sample minimum | Validation procedure resolved; achieved-performance acceptance remains unavailable until owner reviews executed evidence | `SCIENTIFIC_OWNER_DECISIONS_R0.5.md` | 2026-08-20 | Science rationale; engineering contract; validation plan; acceptance record |
 
 The earlier SCI-CAL-OWNER-Q001 atmosphere-content question is superseded by
 SCI-CAL-OWNER-Q06, which retains all of its required fields and adds an
@@ -30,4 +31,5 @@ not yet available.
 
 Engineering conformance r0.4 was checked against this ledger on 2026-08-20.
 It carries Q01--Q09 as decided authority with claim-specific unavailable
-products and an explicit owner-acceptance gate for achieved performance.
+products and an explicit owner-acceptance gate for achieved performance. The
+scientific-authority freeze does not satisfy or bypass that evidence gate.

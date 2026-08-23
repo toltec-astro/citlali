@@ -154,5 +154,5 @@ The one-percent representation, five-percent repeatability, and five-to-ten-
 percent absolute-accuracy figures are reporting benchmarks, not automatic
 contractual pass/fail ceilings. The job is to report achieved performance
 honestly and as accurately as possible. No combinatorial validation matrix or
-arbitrary minimum sample size is required. Final scientific acceptance is an
+arbitrary minimum sample size is required. Achieved-performance acceptance is an
 explicit owner decision based on the resulting evidence.

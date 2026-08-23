@@ -28,6 +28,6 @@ scientific validation.
 
 The documents specify but do not execute the Beammap closure and
 associated-pointing transfer workflow. Systematic uncertainty products remain
-unavailable where recorded. Final scientific acceptance is an owner decision
+unavailable where recorded. Achieved-performance acceptance is an owner decision
 based on the evidence actually achieved; the numerical benchmark values are
 not automatic pass/fail ceilings.
