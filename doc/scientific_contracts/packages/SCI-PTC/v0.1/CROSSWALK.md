@@ -2,7 +2,7 @@
 
 Status: scientific-owner review candidate `v0.1/r0.5`; generated from the shared normative macro metadata
 
-Coverage: 99 requirements and 59 predictions.
+Coverage: 99 requirements and 60 predictions.
 
 | Identifier | Shared canonical source | Scientist-facing source | Engineering-facing source | Owner decision | Dependency |
 | --- | --- | --- | --- | --- | --- |
@@ -34,7 +34,7 @@ Coverage: 99 requirements and 59 predictions.
 | `SCI-PTC-REQ-026` | `src/common/requirements.tex` (Estimator-family identity) | Rationale 4.1; compact crosswalk | Engineering normative requirements | D010 | None |
 | `SCI-PTC-REQ-027` | `src/common/requirements.tex` (Robust common-mode family) | Rationale 4.1; compact crosswalk | Engineering normative requirements | D010 | None |
 | `SCI-PTC-REQ-028` | `src/common/requirements.tex` (Fixed-template family) | Rationale 4.1; compact crosswalk | Engineering normative requirements | D010 | None |
-| `SCI-PTC-REQ-029` | `src/common/requirements.tex` (Masked/weighted PCA family) | Rationale 4.1--4.2; compact crosswalk | Engineering normative requirements | D007,D010,Q002,WP1-D006 | None |
+| `SCI-PTC-REQ-029` | `src/common/requirements.tex` (Masked/weighted PCA family) | Rationale 4.1--4.2; compact crosswalk | Engineering normative requirements | D007,D010,Q002,Q003,WP1-D006 | None |
 | `SCI-PTC-REQ-030` | `src/common/requirements.tex` (Diagnostic-only conditioned $r$) | Rationale 4.2; compact crosswalk | Engineering normative requirements | D008,Q001,WP1-D008 | SCI-RTC |
 | `SCI-PTC-REQ-031` | `src/common/requirements.tex` (Configured ordinary groups) | Rationale 3.2; compact crosswalk | Engineering normative requirements | D011,WP1-D006 | APT |
 | `SCI-PTC-REQ-032` | `src/common/requirements.tex` (No implicit hierarchy) | Rationale 3.2; compact crosswalk | Engineering normative requirements | D011,WP1-D006 | None |
@@ -88,13 +88,13 @@ Coverage: 99 requirements and 59 predictions.
 | `SCI-PTC-REQ-080` | `src/common/requirements.tex` (Evidence-layer separation) | Rationale 9.2; compact crosswalk | Engineering normative requirements | D006 | None |
 | `SCI-PTC-REQ-081` | `src/common/requirements.tex` (External source/residual parent) | Rationale 3.3; compact crosswalk | Engineering normative requirements | D004,D014 | AST,FRUIT |
 | `SCI-PTC-REQ-082` | `src/common/requirements.tex` (Shifted/null surrogate) | Rationale 8.2; compact crosswalk | Engineering normative requirements | D006,D007 | VAL shared semantics,NOI |
-| `SCI-PTC-REQ-083` | `src/common/requirements.tex` (Exact frozen application map) | Rationale 4.2; compact crosswalk | Engineering normative requirements | D010,Q002,WP1-D001,D006 | None |
+| `SCI-PTC-REQ-083` | `src/common/requirements.tex` (Exact frozen application map) | Rationale 4.2; compact crosswalk | Engineering normative requirements | D010,Q002,Q003,WP1-D001,D006 | None |
 | `SCI-PTC-REQ-084` | `src/common/requirements.tex` (Candidate evidence retention) | Rationale 4.1 and 4.3; compact crosswalk | Engineering normative requirements | D012,WP1-D007 | Owner policy |
 | `SCI-PTC-REQ-085` | `src/common/requirements.tex` (Typed astronomical-transfer predicate) | Rationale 4.3 and 7.2; compact crosswalk | Engineering normative requirements | D012,D013,WP1-D007,D008 | Owner policy |
 | `SCI-PTC-REQ-086` | `src/common/requirements.tex` (Expectation and bias statement) | Rationale 6.2; compact crosswalk | Engineering normative requirements | D010,D014 | NOI |
 | `SCI-PTC-REQ-087` | `src/common/requirements.tex` (Response-domain chain) | Rationale 7.1; compact crosswalk | Engineering normative requirements | D013 | SCI-CAL |
 | `SCI-PTC-REQ-088` | `src/common/requirements.tex` (Independent state axes) | Rationale 8.3; compact crosswalk | Engineering normative requirements | D005,D013,WP1-D005 | None |
-| `SCI-PTC-REQ-089` | `src/common/requirements.tex` (Fit-excluded application availability) | Rationale 4.2; compact crosswalk | Engineering normative requirements | D007,D010,WP1-D006 | None |
+| `SCI-PTC-REQ-089` | `src/common/requirements.tex` (Fit-excluded application availability) | Rationale 4.2; compact crosswalk | Engineering normative requirements | D007,D010,Q003,WP1-D006 | None |
 | `SCI-PTC-REQ-090` | `src/common/requirements.tex` (Ordinary route identity) | Rationale 4.2--4.3; compact crosswalk | Engineering normative requirements | WP1-D006--D008 | SCI-CAL |
 | `SCI-PTC-REQ-091` | `src/common/requirements.tex` (Mutually exclusive grouping level) | Rationale 3.2; compact crosswalk | Engineering normative requirements | WP1-D006 | APT |
 | `SCI-PTC-REQ-092` | `src/common/requirements.tex` (Group-local scientific state) | Rationale 2.1 and 3.2; compact crosswalk | Engineering normative requirements | WP1-D006 | None |
@@ -102,7 +102,7 @@ Coverage: 99 requirements and 59 predictions.
 | `SCI-PTC-REQ-094` | `src/common/requirements.tex` (Explicit positive rank) | Rationale 4.3; compact crosswalk | Engineering normative requirements | WP1-D007 | Owner policy |
 | `SCI-PTC-REQ-095` | `src/common/requirements.tex` (Rank failure is not routing) | Rationale 4.3 and 8.2--8.3; compact crosswalk | Engineering normative requirements | WP1-D005,D007 | None |
 | `SCI-PTC-REQ-096` | `src/common/requirements.tex` (One immutable-parent fit) | Rationale 5.2; compact crosswalk | Engineering normative requirements | WP1-D008 | SCI-CAL |
-| `SCI-PTC-REQ-097` | `src/common/requirements.tex` (Group-local fixed kernel) | Rationale 7.1; compact crosswalk | Engineering normative requirements | WP1-D001,D006,D008 | SCI-CAL |
+| `SCI-PTC-REQ-097` | `src/common/requirements.tex` (Group-local fixed kernel) | Rationale 7.1; compact crosswalk | Engineering normative requirements | Q003,WP1-D001,D006,D008 | SCI-CAL |
 | `SCI-PTC-REQ-098` | `src/common/requirements.tex` (Classification preservation) | Rationale 2.1; compact crosswalk | Engineering normative requirements | WP1-D003 | SCI-CAL,VAL |
 | `SCI-PTC-REQ-099` | `src/common/requirements.tex` (Ordinary route exclusions) | Rationale 4.3--7.3; compact crosswalk | Engineering normative requirements | WP1-D007--D008 | None |
 | `SCI-PTC-PRED-001` | `src/common/edge_cases.tex` (RTC-terminal disabled route) | Rationale 8.3; compact crosswalk | Engineering falsifiable predictions | D005,WP1-D005 | SCI-RTC |
@@ -164,3 +164,4 @@ Coverage: 99 requirements and 59 predictions.
 | `SCI-PTC-PRED-057` | `src/common/edge_cases.tex` (Masked influence is not zero data) | Rationale 2.1 and 4.2; compact crosswalk | Engineering falsifiable predictions | WP1-D006 | None |
 | `SCI-PTC-PRED-058` | `src/common/edge_cases.tex` (Data-kernel state identity) | Rationale 7.1; compact crosswalk | Engineering falsifiable predictions | WP1-D001,D006,D008 | SCI-CAL |
 | `SCI-PTC-PRED-059` | `src/common/edge_cases.tex` (Advisory-diagnostic inertia) | Rationale 5.1--5.2; compact crosswalk | Engineering falsifiable predictions | WP1-D008 | None |
+| `SCI-PTC-PRED-060` | `src/common/edge_cases.tex` (Time-local application-rank guard) | Rationale 4.2 and 8.2; compact crosswalk | Engineering falsifiable predictions | Q003 | None |

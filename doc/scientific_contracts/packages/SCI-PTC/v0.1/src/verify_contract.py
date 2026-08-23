@@ -92,7 +92,7 @@ def main() -> None:
     sequence([f"SCI-PTC-DEF-{item}" for item in definitions], "SCI-PTC-DEF-", 45)
     sequence([f"SCI-PTC-ASM-{item}" for item in assumptions], "SCI-PTC-ASM-", 35)
     sequence([f"SCI-PTC-REQ-{item}" for item in requirements], "SCI-PTC-REQ-", 99)
-    sequence([f"SCI-PTC-PRED-{item}" for item in predictions], "SCI-PTC-PRED-", 59)
+    sequence([f"SCI-PTC-PRED-{item}" for item in predictions], "SCI-PTC-PRED-", 60)
 
     metadata_pattern = re.compile(
         r"\\(PTCRequirement|PTCPrediction)\{(\d{3})\}\{([^{}]*)\}"
@@ -101,7 +101,7 @@ def main() -> None:
     metadata = []
     for path in (COMMON / "requirements.tex", COMMON / "edge_cases.tex"):
         metadata.extend(metadata_pattern.findall(text(path)))
-    require(len(metadata) == 158, "normative metadata row count differs")
+    require(len(metadata) == 159, "normative metadata row count differs")
     for macro, number, _title, locator, _decision, _dependency in metadata:
         stem = "REQ" if macro == "PTCRequirement" else "PRED"
         require(locator.strip() != "", f"SCI-PTC-{stem}-{number} has blank rationale locator")
@@ -171,14 +171,14 @@ def main() -> None:
         flags=re.MULTILINE,
     )
     sequence(crosswalk_ids[:99], "SCI-PTC-REQ-", 99)
-    sequence(crosswalk_ids[99:], "SCI-PTC-PRED-", 59)
-    require(len(crosswalk_ids) == 158, "crosswalk row count differs")
+    sequence(crosswalk_ids[99:], "SCI-PTC-PRED-", 60)
+    require(len(crosswalk_ids) == 159, "crosswalk row count differs")
 
     decisions = text(PKG / "AUTHOR_DRAFT_DECISIONS.md")
     author_ids = re.findall(
         r"^\| .(PTC-AUTH-D\d{3}). \|", decisions, flags=re.MULTILINE
     )
-    sequence(author_ids, "PTC-AUTH-D", 37)
+    sequence(author_ids, "PTC-AUTH-D", 38)
     require("PTC-OWNER-Q002" in decisions and "decided" in decisions,
             "owner-approved projection decision is missing")
     review = text(PKG / "SCIENTIFIC_OWNER_REVIEW_R0.2.md")
@@ -223,6 +223,7 @@ def main() -> None:
         r"\lambda_{g,d}",
         r"\mathcal T^{\rm ctr}_{g,d}",
         r"w^{\rm ctr}_{gtd}&=1",
+        r"\operatorname{rank}_{\tau_g}(G^{\rm app}_{g,t})",
         r"\texttt{decision\_unavailable}",
     )
     for marker in required_markers:
@@ -244,9 +245,9 @@ def main() -> None:
     )
     candidate_pdfs = {
         rationale_path:
-            "ce5ccaed4c570533e2d6e96a3230e6eda3b99555aff411494bce0acb0a56cdec",
+            "eb881ba6d85193d01b3c5f3cc387e5e59d70d498f5210914cfdf0041a4671703",
         engineering_path:
-            "bbdb32535511395925b8b85c1529b94365a8e077bd8dd5ccbdd32ae46d5f47e0",
+            "23941bb70fb24a0e46f24a41409d0f94ba5de9c4b14b35126b239f6452ff4dfc",
     }
     for path, expected in candidate_pdfs.items():
         require(digest(path) == expected, f"candidate PDF hash changed: {path.name}")
@@ -285,7 +286,7 @@ def main() -> None:
             f"SCI-PTC-REQ-{number:03d}" in engineering_text,
             f"engineering PDF missing requirement {number:03d}",
         )
-    for number in range(1, 60):
+    for number in range(1, 61):
         require(
             f"SCI-PTC-PRED-{number:03d}" in engineering_text,
             f"engineering PDF missing prediction {number:03d}",
@@ -310,17 +311,17 @@ def main() -> None:
                 f"forbidden active-source claim: {forbidden}")
 
     print("PASS: approved packet hashes (5 items including retained core)")
-    print("PASS: definitions=45 equations=25 assumptions=35 requirements=99 predictions=59")
+    print("PASS: definitions=45 equations=25 assumptions=35 requirements=99 predictions=60")
     print("PASS: standalone rationale plus six-file engineering/formal view")
-    print("PASS: crosswalk rows=158, exact and sequential; all rationale locators resolved")
-    print("PASS: author decisions=37, resolved centering OD003, owner projection decision Q002, r0.2 review, and preserved r0.4 freeze")
+    print("PASS: crosswalk rows=159, exact and sequential; all rationale locators resolved")
+    print("PASS: author decisions=38, resolved centering OD003, owner projection decisions Q002--Q003, r0.2 review, and preserved r0.4 freeze")
     print("PASS: r0.5 operator, knowledge, grouping, rank, kernel, and RTC-terminal markers")
     print(
         f"PASS: PDFs={len(rationale_pdf.pages)}/{len(engineering_pdf.pages)} "
         "letter pages, unencrypted, no forms/JavaScript"
     )
     print("PASS: separate r0.5 candidate PDF hashes (2); r0.4 canonical PDFs preserved")
-    print("PASS: engineering PDF contains all 158 normative IDs")
+    print("PASS: engineering PDF contains all 159 normative IDs")
     print("PASS: engineering wrapper has no independent displayed mathematics")
 
 

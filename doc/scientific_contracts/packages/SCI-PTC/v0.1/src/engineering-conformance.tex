@@ -175,7 +175,10 @@ subspace, frozen application map, classification, response-domain chain,
 covariance status, expectation/bias status, and coefficient semantics;
 \item proof that ordinary PCA/SVD uses the configured network- or array-level
 group, group-local support and masks, detector-right mask-aware coefficient
-recomputation, and strictly positive requested rank; that the learned
+recomputation only where its finite time-local normal matrix has the strictly
+positive requested rank under the frozen tolerance; that a deficient
+group-time is unavailable for both data and kernel without rank reduction,
+interpolation, numerical-zero admission, or cross-group borrowing; that the learned
 $\lambda_g$ is subtracted from science data and not restored; that fixed-state
 companions hold $\lambda_g$ fixed without subtracting it from the perturbation;
 that full-procedure response, when separately requested, re-estimates and

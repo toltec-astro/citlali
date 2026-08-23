@@ -138,18 +138,26 @@ recomputation. For centered row
 $x_{g,t}=Y^{\rm CAL}_{g,t}-\lambda_g$,
 \begin{equation}
 \begin{aligned}
+G^{\rm app}_{g,t}
+&:=\widehat A_g^{\mathsf T}W^{\rm app}_{g,t}\widehat A_g,
+&\operatorname{rank}_{\tau_g}(G^{\rm app}_{g,t})
+&=k_{{\rm req},g},\\
 \widehat m^{\rm app}_{g,t}
 &=x_{g,t}W^{\rm app}_{g,t}\widehat A_g
-  \left(\widehat A_g^{\mathsf T}W^{\rm app}_{g,t}
-  \widehat A_g\right)^+,\\
+  \left(G^{\rm app}_{g,t}\right)^+,\\
 z_{g,t}
 &=x_{g,t}-\widehat m^{\rm app}_{g,t}\widehat A_g^{\mathsf T}.
 \end{aligned}
 \label{eq:conditional-cleaner}
 \end{equation}
 The exact output support determines which entries of $z_{g,t}$ are published.
-The generalized inverse, tolerance, detector binding, metric, support, and
-insufficient-support state are frozen in $\Theta_g$. On complete uniform
+The solve is authorized only when every required input and
+$G^{\rm app}_{g,t}$ is finite and its numerical rank under frozen tolerance
+$\tau_g$ equals $k_{{\rm req},g}$. Otherwise application and output for that
+group-time are unavailable with cause. The generalized inverse does not
+authorize partial-rank subtraction, rank reduction, interpolation, or
+borrowing detectors from another group. Detector binding, metric, support,
+and insufficient-support state are frozen in $\Theta_g$. On complete uniform
 support this reduces to detector-right projection through
 $I-\widehat A_g(\widehat A_g^{\mathsf T}\widehat A_g)^+
 \widehat A_g^{\mathsf T}$. Any temporal-left, two-sided,

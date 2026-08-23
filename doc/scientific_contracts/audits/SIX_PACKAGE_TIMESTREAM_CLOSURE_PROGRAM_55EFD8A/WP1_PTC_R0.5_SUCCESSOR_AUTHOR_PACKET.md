@@ -234,10 +234,15 @@ z_{g,t}
 =x_{g,t}-\widehat m^{\rm app}_{g,t}\widehat A_g^{\mathsf T}.
 \]
 
-This equation is an author-level exact realization of the approved mask-aware
-coefficient-recomputation rule and therefore remains subject to the separate
-final r0.5 owner review. Its generalized inverse, tolerance, output support,
-detector binding, and insufficient-support behavior are material state. On
+This equation was submitted as an author-level exact realization of the
+approved mask-aware coefficient-recomputation rule. During the separate r0.5
+owner review, Grant Wilson accepted it with the additional requirement that
+the finite time-local normal matrix have numerical rank equal to the
+configured positive rank under the frozen tolerance. A deficient group-time
+is unavailable for both data and kernel; no partial-rank subtraction, rank
+reduction, interpolation, numerical-zero admission, or cross-group borrowing
+is authorized. Its generalized inverse, tolerance, output support, detector
+binding, and insufficient-support behavior are material state. On
 complete uniform support it reduces to
 
 \[
@@ -395,7 +400,9 @@ Append predictions for:
    detector-space projector;
 7. masked samples having zero coefficient influence without becoming zeros;
 8. identical data/kernel operator state; and
-9. advisory diagnostics leaving `\Theta_g` unchanged.
+9. advisory diagnostics leaving `\Theta_g` unchanged; and
+10. the later owner-approved time-local full-rank guard making a deficient
+    data/kernel group-time unavailable without partial-rank substitution.
 
 ## 10. Rationale and engineering-view obligations
 
@@ -429,8 +436,9 @@ to current implementation fields or claim implementation conformance.
 - mark automatic candidate selection, source protection, refinement,
   simulation, full-procedure response, stronger covariance, and the deferred
   `\lambda` treatment accurately;
-- record the mask-aware coefficient-recomputation equation as candidate r0.5
-  author text pending final owner approval; and
+- record the mask-aware coefficient-recomputation equation and its time-local
+  full-rank guard as approved r0.5 candidate text pending complete-packet
+  approval and freeze; and
 - state that no implementation or numerical validation evidence was used.
 
 Regenerate `CROSSWALK.md` deterministically. Every changed or appended

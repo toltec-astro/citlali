@@ -5,13 +5,13 @@ Status: scientific-owner review candidate; not frozen.
 The candidate PDFs are intentionally separate from the canonical v0.1/r0.4
 frozen PDFs in the parent directory:
 
-- `SCI-PTC-SCIENTIFIC-RATIONALE-v0.1-r0.5-CANDIDATE.pdf`: 12 pages;
+- `SCI-PTC-SCIENTIFIC-RATIONALE-v0.1-r0.5-CANDIDATE.pdf`: 13 pages;
   SHA-256
-  `ce5ccaed4c570533e2d6e96a3230e6eda3b99555aff411494bce0acb0a56cdec`;
+  `eb881ba6d85193d01b3c5f3cc387e5e59d70d498f5210914cfdf0041a4671703`;
   and
-- `SCI-PTC-ENGINEERING-CONFORMANCE-v0.1-r0.5-CANDIDATE.pdf`: 25 pages;
+- `SCI-PTC-ENGINEERING-CONFORMANCE-v0.1-r0.5-CANDIDATE.pdf`: 26 pages;
   SHA-256
-  `bbdb32535511395925b8b85c1529b94365a8e077bd8dd5ccbdd32ae46d5f47e0`.
+  `23941bb70fb24a0e46f24a41409d0f94ba5de9c4b14b35126b239f6452ff4dfc`.
 
 Both PDFs are generated from the r0.5 candidate audience views under
 `../../src/`. The scientific rationale is the standalone science-team view;

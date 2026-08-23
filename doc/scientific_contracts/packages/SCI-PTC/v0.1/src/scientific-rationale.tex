@@ -353,6 +353,13 @@ numerical zeros. On complete uniform support the operator reduces to
 I-\widehat A_g(\widehat A_g^{\mathsf T}\widehat A_g)^+
 \widehat A_g^{\mathsf T}.
 \]
+At each group-time, the finite normal matrix
+$G^{\rm app}_{g,t}=\widehat A_g^{\mathsf T}W^{\rm app}_{g,t}\widehat A_g$
+must have numerical rank equal to the configured $k_{{\rm req},g}$ under the
+frozen tolerance $\tau_g$. If it does not, the complete group-time application
+and its kernel are unavailable. The generalized inverse does not authorize a
+lower-rank subtraction, interpolation, a masked numerical zero, or borrowing
+detectors from another group.
 The exact group, mask, support, rank, generalized inverse, tolerance, and
 failure state are frozen in $\Theta_g$. Temporal-left, two-sided, or general
 vectorized actions remain separately named future families.
@@ -658,7 +665,7 @@ Production readiness & Not assessed and not authorized by this document.\\
 \end{tabularx}
 \end{table}
 
-\Needspace{0.38\textheight}
+\Needspace{0.16\textheight}
 \subsection{Decision and availability register}
 
 \begingroup
@@ -672,7 +679,7 @@ Item & State & Consequence \\
 \endhead
 Conditioned $r$ use & Decided & Diagnostic-only and inert/advisory; it cannot change calibrated-$x$ rank or processing.\\
 Ordinary grouping & Decided for r0.5 candidate & Explicitly configured network- or array-level PCA, with support and operator state scoped to the same group.\\
-PCA/SVD frozen application & Decided for r0.5 candidate & Group-local detector-right mask-aware projection; the identical fixed state acts on a compatible kernel.\\
+PCA/SVD frozen application & Decided for r0.5 candidate & Group-local detector-right mask-aware projection with a finite time-local full-rank guard; the identical available state acts on a compatible kernel.\\
 Ordinary rank & Decided for r0.5 candidate & Explicit integer $k\ge1$; zero and unrealizable positive ranks fail without fallback or route conversion.\\
 Numerical selection predicates & Deferred capability & Automatic candidate admission is outside the ordinary route and unavailable until every required typed predicate is supplied.\\
 Mandatory/default estimator & Open policy input & An absent estimator request cannot be replaced by an inferred default.\\
@@ -712,7 +719,7 @@ How does detector refinement repeat? & Section 5 & Definitions 019--021; Require
 What do coefficients and uncertainties mean? & Section 6 & Definitions 023--024 and 039; Requirements 052--060 and 086 \\
 How are response domains separated? & Section 7 & Definitions 016--018, 033--034, and 041; Requirements 061--068 and 087 \\
 What are product and surrogate states? & Section 8 & Definitions 025, 028, 035--037, and 044--045; Requirements 069--079, 081--082, 088, 095, and 099 \\
-How will realizations be studied? & Section 9.1 & Predictions 001--059 \\
+How will realizations be studied? & Section 9.1 & Predictions 001--060 \\
 What evidence is claimed? & Section 9.2 & Requirement 080 and Prediction 038 \\
 \bottomrule
 \end{longtable}
