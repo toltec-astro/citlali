@@ -2,6 +2,7 @@
 
 #include <citlali/core/cli/canonical_apt_contract_protocol_v2.h>
 #include <citlali/core/pipeline/canonical_apt_bundle_v2.h>
+#include <citlali/core/pipeline/canonical_apt_detector_relation_v2.h>
 
 #include <bit>
 #include <chrono>
@@ -87,7 +88,7 @@ MatchedFixture matched_fixture(const apt::VerifiedBundle &baseline) {
     result.apt.field_rules.push_back(
         {5, "a_fwhm", apt::ValueType::float64, "arcsec", true,
          "producer", std::string("citlali:beammap-fit-v1"),
-         apt::FieldOperation::copy_seed_or_null, std::nullopt, "nan-token",
+         apt::FieldOperation::copy_seed_or_null, std::nullopt, "typed-null",
          "nonidentity", "fitted beam width"});
     auto kmp = apt::canonical_kmp_field_rules_v2(false);
     for (std::size_t index = 0; index < kmp.size(); ++index) {
@@ -224,10 +225,10 @@ TEST(canonical_apt_v2, baseline_and_matched_bundle_roundtrip_compactly) {
     auto prepared = apt::prepare_matched_bundle(
         matched.apt, matched.relation, matched.sources, {}, baseline);
     EXPECT_EQ(prepared.identity.semantic_sha256,
-              "sha256:a315c101983189c3e0c930bd5eb8e179775be01f7f0c33526cc4d654b5853086");
+              "sha256:8f3281405b13c2a27bb34f344d64b2e6301105ffea6d14a1569381533a00c501");
     EXPECT_EQ(prepared.identity.envelope_sha256,
-              "sha256:3b49d38b24b414525b9f118e481552b9fee60d4eee6cf8f93696e04b12cc9f87");
-    EXPECT_EQ(prepared.total_byte_count, std::uint64_t{34194});
+              "sha256:c257184d273d47a8debceefe32e014bb532f4d1c83dddde073b10aa63861a925");
+    EXPECT_EQ(prepared.total_byte_count, std::uint64_t{34195});
     auto verified = apt::verify_bundle_payload(std::move(prepared.payload));
     EXPECT_EQ(verified.parser_count, 12);
     EXPECT_EQ(verified.apt.rows.size(), std::size_t{2});
@@ -567,6 +568,38 @@ TEST(canonical_apt_v2,
               apt::RelationDisposition::matched);
     EXPECT_EQ(verified.relation->rows.at(1).disposition,
               apt::RelationDisposition::unmatched);
+    EXPECT_NO_THROW(
+        citlali::pipeline::admit_canonical_apt_detector_relation_v2(
+            verified));
+    const auto copied_flag = std::find_if(
+        verified.fields.begin(), verified.fields.end(),
+        [](const auto &field) { return field.name == "flag"; });
+    ASSERT_NE(copied_flag, verified.fields.end());
+    EXPECT_TRUE(copied_flag->nullable);
+    EXPECT_EQ(copied_flag->operation,
+              apt::FieldOperation::copy_seed_or_null);
+    EXPECT_EQ(copied_flag->missing_policy, "typed-null");
+
+    auto invalid_apt = verified.apt;
+    auto invalid_fields = verified.fields;
+    const auto invalidate_flag_policy = [](auto &fields) {
+        const auto flag = std::find_if(
+            fields.begin(), fields.end(),
+            [](const auto &field) { return field.name == "flag"; });
+        ASSERT_NE(flag, fields.end());
+        flag->missing_policy = "reject";
+    };
+    invalidate_flag_policy(invalid_apt.field_rules);
+    invalidate_flag_policy(invalid_fields);
+    ASSERT_TRUE(verified.baseline_snapshot);
+    ASSERT_TRUE(verified.relation);
+    EXPECT_THROW(
+        apt::bundle_detail::validate_matched_semantics(
+            invalid_apt, invalid_fields, verified.sources,
+            *verified.relation, verified.exceptions,
+            verified.baseline_snapshot->apt,
+            verified.baseline_snapshot->fields),
+        apt::ContractError);
     EXPECT_EQ(issuance_index, 3U);
 
     const auto bad_digest_dir = temporary.path / "bad-digest.apt-v2";

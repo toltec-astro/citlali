@@ -744,6 +744,7 @@ apt::VerifiedBundle issue_observation_matched_bundle(
         copied.field_uid = next_field_uid++;
         copied.nullable = true;
         copied.operation = apt::FieldOperation::copy_seed_or_null;
+        copied.missing_policy = "typed-null";
         output.field_rules.push_back(std::move(copied));
         copied_baseline_fields.push_back(&field);
     }

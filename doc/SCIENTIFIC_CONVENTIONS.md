@@ -740,6 +740,12 @@ or substitutes a numeric sentinel. Its four authorized KMP fields are
 nonnullable when present; `kids_flag` is optional only at the complete target
 artifact level.
 
+Canonical observation APT v2 likewise declares every copied baseline field
+nullable with operation `copy-seed-or-null` and missing policy `typed-null`.
+A matched target carries the exact selected-seed value; an unmatched or
+ambiguous target carries the typed null. Publication verification and typed
+detector-relation admission both enforce this rule.
+
 ## Configuration And Provenance States
 
 TolTECA owns discovery, ordering, and merge behavior for numbered `NN*.yaml`

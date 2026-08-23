@@ -1,5 +1,38 @@
 # Citlali Refactor Status
 
+## 2026-08-23 Canonical APT v2 Typed-Null Issuance Repair
+
+The first owner-run Stage 7 Pointing reduction using project-local matched-v2
+bundles exposed a producer/consumer contract inconsistency. The observation
+issuer correctly made every copied Beammap-baseline field nullable and marked
+it `copy-seed-or-null`, but retained the baseline field's
+`missing_policy: reject`. General matched-bundle verification did not check
+that policy, so publication and TolProj validation succeeded; the stricter
+typed detector-relation admission then correctly rejected the bundle because
+an unmatched detector requires an explicit typed null.
+
+The issuer now records `missing_policy: typed-null` for every copied baseline
+field, and general matched-bundle validation independently requires the same
+policy. The public protocol regression now issues and rereads a TolProj-style
+bundle, admits its typed detector relation, proves a matched baseline `flag`
+is retained, proves an unmatched `flag` is null, and rejects a copied-field
+policy changed back to `reject`. This changes no target/seed choice, detector
+identity, field value, Pointing numerical algorithm, RTC/PTC, mapmaking, or
+Beammap baseline bytes.
+
+The three already issued Stage 7 matched bundles are immutable evidence from
+the defective producer and are not edited in place. They must be reissued
+under new labels after deploying this repair; the verified observation 137389
+Beammap baseline remains reusable. Local verification builds the complete CLI,
+passes all 791 runnable CTests with the established single disabled test, and
+passes all 203 baseline-tool tests plus 137 subtests. The config preflight
+passes all 127 unit tests, all four mode kits, and all six locally available
+OOF, Beammap, and Science compact-compatibility cases. Its two Pointing cases
+remain unavailable because the owner-local
+`point/refactor/70_reduce.yaml` fixture is absent, the same recorded external
+input gap as the parent candidate; therefore the local `--require-all` config
+gate is not represented as complete.
+
 ## 2026-08-23 Legacy Pointing APT Admission Repair
 
 The first owner-run Stage 7 Pointing setup exposed a compatibility regression

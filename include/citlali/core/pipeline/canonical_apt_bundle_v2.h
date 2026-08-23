@@ -379,7 +379,8 @@ inline std::vector<SeedDisposition> validate_matched_semantics(
             field->authority != baseline.authority ||
             field->authority_reference != baseline.authority_reference ||
             field->identity_role != baseline.identity_role ||
-            field->operation != FieldOperation::copy_seed_or_null) {
+            field->operation != FieldOperation::copy_seed_or_null ||
+            field->missing_policy != "typed-null") {
             throw ContractError(
                 "canonical APT v2 copied baseline field rule changed");
         }
