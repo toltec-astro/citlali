@@ -1,5 +1,30 @@
 # Citlali Refactor Status
 
+## 2026-08-23 Legacy Pointing APT Admission Repair
+
+The first owner-run Stage 7 Pointing setup exposed a compatibility regression
+at the APT format boundary. TolProj correctly supplied the established
+observation-matched Pointing ECSV, but Citlali routed every APT locator through
+compact-v2 root-manifest admission. The strict guardian correctly rejected the
+legacy filename because it was not an absolute `manifest.ecsv` locator.
+
+Citlali now dispatches explicitly on the fixed compact-v2 root name:
+`manifest.ecsv` receives strict v2 verification with no fallback, while every
+established non-manifest APT ECSV uses the restored legacy loader. The load
+remains transactional, and a rejected manifest cannot be reinterpreted as a
+legacy table. This changes no APT values, matching, detector filtering,
+Pointing numerics, ALIGN, RTC/PTC, JINC, or TolProj behavior. Stage 7 may use
+the unchanged legacy Pointing products for observations 152389 and 152391 and
+the explicit matched-v2 science product for observation 152390.
+
+Local verification passes all 647 runnable C++ tests with the established
+single disabled test and builds the complete CLI. The required config gate
+passes all 127 unit tests and all four mode kits; its six locally available
+OOF, Beammap, and Science compact-compatibility cases pass. The two Pointing
+cases remain unavailable because the owner-local
+`point/refactor/70_reduce.yaml` fixture is absent, the same recorded external
+input gap as the parent candidate.
+
 ## 2026-08-23 TolProj-Orchestrated Observation APT v2 Candidate
 
 The controlled `issue-observation-apt-v2` producer boundary is implemented as

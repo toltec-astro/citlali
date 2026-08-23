@@ -62,8 +62,13 @@ and returns immutable occurrence-scoped match facts. TolProj selects inputs
 and orchestrates the public TolAPT and Citlali interfaces; it does not write
 APT bytes or reproduce either authority's algorithms. A consumer admits a
 v2 product only after the Citlali guardian verifies its root receipt and every
-component. TolTECA remains outside this contract and must not trim, synthesize,
-or re-key a canonical v2 APT.
+component. The ordinary Citlali boundary selects this contract explicitly by
+the fixed root-manifest basename `manifest.ecsv`; a failed v2 verification
+never falls back to another APT format. Established non-manifest APT ECSV
+locators remain on the legacy admission path for Pointing and other unchanged
+compatibility workflows. This filename dispatch does not relabel, migrate, or
+weaken verification of either format. TolTECA remains outside this contract
+and must not trim, synthesize, or re-key a canonical v2 APT.
 
 For the bounded Stage 7 integration candidate, TolProj's existing legacy tone
 matcher is the realized compatibility implementation and TolProj records its
@@ -354,9 +359,12 @@ historical comparison and deliberate migration development.
 The Beammap producer now writes only a fresh baseline directory named
 `<historical-apt-stem>.apt-v2/`, containing the compact components,
 `manifest.ecsv`, and `manifest.ecsv.sha256`. It does not publish a new v1 APT.
-The ordinary Citlali APT consumer admits only a fresh matched-v2 root manifest
-whose raw-source bytes exactly match the current observation; therefore a
-baseline root cannot be mistaken for a matched input.
+When the ordinary Citlali APT consumer is given `manifest.ecsv`, it admits only
+a fresh matched-v2 root manifest whose raw-source bytes exactly match the
+current observation; therefore a baseline root cannot be mistaken for a
+matched input. A non-manifest ECSV locator remains an explicit request for the
+established legacy admission path. There is no parse-failure fallback between
+the two paths.
 
 ### Owner-run 148670 Beammap baseline canary (not executed by Codex)
 

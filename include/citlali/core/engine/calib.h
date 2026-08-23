@@ -266,6 +266,9 @@ private:
         const std::string &, std::vector<std::string> &,
         std::vector<std::string> &,
         citlali::pipeline::AptDetectorRelationRetention);
+    void load_legacy_apt_in_place(
+        const std::string &, std::vector<std::string> &,
+        std::vector<std::string> &);
     void commit_apt_state(Calib &&candidate) noexcept;
 };
 

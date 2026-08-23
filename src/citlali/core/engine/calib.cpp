@@ -15,6 +15,21 @@
 #include <set>
 #include <stdexcept>
 
+namespace {
+
+std::string join_column_names(const std::vector<std::string> &names) {
+    std::string result;
+    for (const auto &name : names) {
+        if (!result.empty()) {
+            result += ", ";
+        }
+        result += name;
+    }
+    return result;
+}
+
+}  // namespace
+
 namespace engine {
 
 void Calib::get_apt(
@@ -34,6 +49,11 @@ void Calib::load_apt_in_place(
     std::vector<std::string> &interfaces,
     citlali::pipeline::AptDetectorRelationRetention retention) {
     namespace apt2 = citlali::pipeline::canonical_apt_v2;
+    const auto requested_path = std::filesystem::path(filepath);
+    if (requested_path.filename() != apt2::root_manifest_name_v2) {
+        load_legacy_apt_in_place(filepath, raw_filenames, interfaces);
+        return;
+    }
     try {
         if (raw_filenames.size() != interfaces.size() ||
             raw_filenames.empty()) {
@@ -193,6 +213,78 @@ void Calib::load_apt_in_place(
             "canonical APT v2 admission rejected: " +
             std::string(error.what()));
     }
+}
+
+void Calib::load_legacy_apt_in_place(
+    const std::string &filepath, std::vector<std::string> &raw_filenames,
+    std::vector<std::string> &interfaces) {
+    apt_filepath = filepath;
+    auto [apt_temp, header, map_with_strs] =
+        to_map_from_ecsv_mixted_type(filepath);
+
+    std::vector<std::string> missing_header_keys, empty_header_keys;
+    for (const auto &apt_header_key : apt_header_keys) {
+        const bool found =
+            std::find(header.begin(), header.end(), apt_header_key) !=
+            header.end();
+        if (!found) {
+            missing_header_keys.push_back(apt_header_key);
+        } else if (apt_temp[apt_header_key].size() == 0) {
+            empty_header_keys.push_back(apt_header_key);
+        }
+    }
+
+    if (!missing_header_keys.empty()) {
+        throw citlali::error::io(
+            "APT table is missing required columns: [" +
+            join_column_names(missing_header_keys) + "]");
+    }
+    if (!empty_header_keys.empty()) {
+        throw citlali::error::io(
+            "APT table columns are empty: [" +
+            join_column_names(empty_header_keys) + "]");
+    }
+    if (map_with_strs["Radesys"] != "altaz") {
+        throw citlali::error::io(
+            "APT table reference frame must be altaz");
+    }
+
+    apt = std::move(apt_temp);
+
+    for (const auto &raw_filename : raw_filenames) {
+        netCDF::NcFile file(raw_filename, netCDF::NcFile::read);
+        int roach_index;
+        file.getVar("Header.Toltec.RoachIndex").getVar(&roach_index);
+        (void)roach_index;
+        file.close();
+    }
+
+    Eigen::VectorXi interface_networks(interfaces.size());
+    for (Eigen::Index index = 0;
+         index < static_cast<Eigen::Index>(interfaces.size()); ++index) {
+        interface_networks(index) =
+            std::stoi(interfaces[static_cast<std::size_t>(index)].substr(6));
+    }
+
+    Eigen::Index detector_count = 0;
+    for (Eigen::Index index = 0; index < interface_networks.size(); ++index) {
+        detector_count +=
+            (apt["nw"].array() == interface_networks(index)).count();
+    }
+
+    std::map<std::string, Eigen::VectorXd> filtered;
+    for (const auto &name : apt_header_keys) {
+        filtered[name].setZero(detector_count);
+        Eigen::Index output_index = 0;
+        for (Eigen::Index row = 0; row < apt["nw"].size(); ++row) {
+            if ((apt["nw"](row) == interface_networks.array()).any()) {
+                filtered[name](output_index) = apt[name](row);
+                ++output_index;
+            }
+        }
+    }
+    apt = std::move(filtered);
+    setup();
 }
 
 bool Calib::has_apt_detector_relation_v2() const noexcept {

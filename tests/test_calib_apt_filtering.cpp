@@ -67,7 +67,7 @@ std::filesystem::path write_apt(
 }
 
 TEST(calib_apt_filtering,
-     rejects_bare_legacy_ecsv_even_when_network_would_have_filtered) {
+     admits_legacy_ecsv_and_filters_network_absent_from_raw_observation) {
     TemporaryDirectory temp;
     engine::Calib calib;
     const auto apt_path = write_apt(temp.path / "apt", calib);
@@ -77,9 +77,32 @@ TEST(calib_apt_filtering,
     std::vector<std::string> raw_filenames{raw_path.string()};
     std::vector<std::string> interfaces{"toltec0"};
 
+    EXPECT_NO_THROW(
+        calib.get_apt(apt_path.string(), raw_filenames, interfaces));
+    EXPECT_EQ(calib.n_dets, 2);
+    EXPECT_EQ(calib.n_nws, 1);
+    ASSERT_EQ(calib.nws.size(), 1);
+    EXPECT_EQ(calib.nws(0), 0);
+    EXPECT_EQ(calib.apt_filepath, apt_path.string());
+    EXPECT_FALSE(calib.has_apt_detector_relation_v2());
+}
+
+TEST(calib_apt_filtering,
+     manifest_ecsv_never_falls_back_to_legacy_admission) {
+    TemporaryDirectory temp;
+    engine::Calib calib;
+    const auto apt_path = write_apt(temp.path / "manifest", calib);
+    const auto raw_path = temp.path / "toltec0.nc";
+    write_raw_network_file(raw_path, 0);
+
+    std::vector<std::string> raw_filenames{raw_path.string()};
+    std::vector<std::string> interfaces{"toltec0"};
+
     EXPECT_THROW(
         calib.get_apt(apt_path.string(), raw_filenames, interfaces),
         std::runtime_error);
+    EXPECT_TRUE(calib.apt.empty());
+    EXPECT_TRUE(calib.apt_filepath.empty());
 }
 
 TEST(calib_apt_filtering,
