@@ -1,6 +1,6 @@
 # SCI-PTC v0.1 -- Requirement And Prediction Crosswalk
 
-Status: scientific-owner review candidate `v0.1/r0.5`; generated from the shared normative macro metadata
+Status: scientific authority frozen at `v0.1/r0.5`; generated from the shared normative macro metadata
 
 Coverage: 99 requirements and 60 predictions.
 

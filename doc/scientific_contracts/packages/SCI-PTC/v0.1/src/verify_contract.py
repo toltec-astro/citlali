@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Mechanical checks for the SCI-PTC v0.1/r0.5 owner-review candidate.
+"""Mechanical checks for frozen SCI-PTC v0.1/r0.5 authority.
 
 This helper reads only the approved author packet and package deliverables.
 It does not inspect implementation or claim conformity, validation,
-performance, scientific freeze, or production readiness.
+performance, production readiness, MAP availability, or finding closure.
 """
 
 from __future__ import annotations
@@ -179,6 +179,23 @@ def main() -> None:
         r"^\| .(PTC-AUTH-D\d{3}). \|", decisions, flags=re.MULTILINE
     )
     sequence(author_ids, "PTC-AUTH-D", 38)
+    owner_rows = re.findall(
+        r"^\| .(PTC-(?:OWNER-Q|OD-)\d{3}). \| [^|]+ \| ([^|]+) \|",
+        decisions,
+        flags=re.MULTILINE,
+    )
+    require(len(owner_rows) == 15, "detailed owner-ledger row count differs")
+    owner_states = [state.strip() for _identifier, state in owner_rows]
+    require(
+        {
+            "decided": sum(state.startswith("decided") for state in owner_states),
+            "open": sum(state == "open" for state in owner_states),
+            "known": sum(state == "known but not supplied" for state in owner_states),
+            "deferred": sum(state.startswith("deferred") for state in owner_states),
+        }
+        == {"decided": 5, "open": 3, "known": 4, "deferred": 3},
+        "detailed owner-ledger state counts differ",
+    )
     require("PTC-OWNER-Q002" in decisions and "decided" in decisions,
             "owner-approved projection decision is missing")
     review = text(PKG / "SCIENTIFIC_OWNER_REVIEW_R0.2.md")
@@ -188,9 +205,9 @@ def main() -> None:
         and "High effort is sufficient" in review,
         "r0.2 scientific-owner review record or effort disposition is missing",
     )
-    freeze_path = PKG / "SCIENTIFIC_OWNER_FREEZE_R0.4.md"
+    freeze_r04 = PKG / "SCIENTIFIC_OWNER_FREEZE_R0.4.md"
     require(
-        digest(freeze_path)
+        digest(freeze_r04)
         == "90334ea7853e1ab274f6858fad66078356c06326438625c7fe294e41c07fbcc4",
         "r0.4 scientific-owner freeze digest",
     )
@@ -199,13 +216,22 @@ def main() -> None:
         "under this contract."
     )
     require(
-        freeze_status in text(freeze_path).replace("\n", " "),
-        "exact frozen status in owner record",
+        freeze_status in text(freeze_r04).replace("\n", " "),
+        "exact r0.4 frozen status in owner record",
     )
-    require("Scientific-owner review candidate" in rationale,
-            "candidate status in rationale")
-    require("Scientific-owner review candidate" in engineering,
-            "candidate status in engineering")
+    freeze_r05 = PKG / "SCIENTIFIC_OWNER_FREEZE_R0.5.md"
+    require(
+        digest(freeze_r05) == "8357961a49272adc40e27a8aa9e760e0d01ff2419ae2c88a62c0f93c9f959e66",
+        "r0.5 scientific-owner freeze digest",
+    )
+    require("Freeze SCI-PTC v0.1/r0.5." in text(freeze_r05),
+            "exact r0.5 owner freeze statement")
+    require("8f0ecccfacbdce0543141c4289ec06c702065f5e" in text(freeze_r05),
+            "verified r0.5 candidate commit")
+    require("Scientific authority frozen by owner" in rationale,
+            "frozen status in rationale")
+    require("Scientific authority frozen by owner" in engineering,
+            "frozen status in engineering")
 
     required_markers = (
         r"\mathcal A_{\Theta}",
@@ -235,22 +261,27 @@ def main() -> None:
         "scientist-facing nonrestoring-centering statement is missing",
     )
 
-    rationale_path = (
-        PDF / "r0.5-candidate"
-        / "SCI-PTC-SCIENTIFIC-RATIONALE-v0.1-r0.5-CANDIDATE.pdf"
-    )
-    engineering_path = (
-        PDF / "r0.5-candidate"
-        / "SCI-PTC-ENGINEERING-CONFORMANCE-v0.1-r0.5-CANDIDATE.pdf"
-    )
     candidate_pdfs = {
-        rationale_path:
+        PDF / "r0.5-candidate"
+        / "SCI-PTC-SCIENTIFIC-RATIONALE-v0.1-r0.5-CANDIDATE.pdf":
             "eb881ba6d85193d01b3c5f3cc387e5e59d70d498f5210914cfdf0041a4671703",
-        engineering_path:
+        PDF / "r0.5-candidate"
+        / "SCI-PTC-ENGINEERING-CONFORMANCE-v0.1-r0.5-CANDIDATE.pdf":
             "23941bb70fb24a0e46f24a41409d0f94ba5de9c4b14b35126b239f6452ff4dfc",
     }
     for path, expected in candidate_pdfs.items():
-        require(digest(path) == expected, f"candidate PDF hash changed: {path.name}")
+        require(digest(path) == expected, f"candidate history changed: {path.name}")
+
+    rationale_path = PDF / "SCI-PTC-SCIENTIFIC-RATIONALE-v0.1.pdf"
+    engineering_path = PDF / "SCI-PTC-ENGINEERING-CONFORMANCE-v0.1.pdf"
+    frozen_pdfs = {
+        rationale_path:
+            "3c927dbcb631b2033f04d933fa4d69911698b840b7b4642e759ad8c715c16ab6",
+        engineering_path:
+            "f0b3bdc28c0997e4960b8231d6113339fe391d331e84dc7c0638912b0d3f7adb",
+    }
+    for path, expected in frozen_pdfs.items():
+        require(digest(path) == expected, f"frozen PDF hash changed: {path.name}")
     rationale_pdf, rationale_text = pdf_text(rationale_path)
     engineering_pdf, engineering_text = pdf_text(engineering_path)
     require(10 <= len(rationale_pdf.pages) <= 18,
@@ -274,8 +305,8 @@ def main() -> None:
             )
         require("v0.1" in extracted and "r0.5" in extracted,
                 f"{name} version stamps")
-        require("Scientific-owner review candidate" in extracted,
-                f"{name} candidate status")
+        require("Scientific authority frozen by owner" in extracted,
+                f"{name} frozen status")
         require("diagnostic-only" in extracted.lower(),
                 f"{name} diagnostic-r disposition")
         require("frozen" in extracted.lower() and "projection" in extracted.lower(),
@@ -314,13 +345,14 @@ def main() -> None:
     print("PASS: definitions=45 equations=25 assumptions=35 requirements=99 predictions=60")
     print("PASS: standalone rationale plus six-file engineering/formal view")
     print("PASS: crosswalk rows=159, exact and sequential; all rationale locators resolved")
-    print("PASS: author decisions=38, resolved centering OD003, owner projection decisions Q002--Q003, r0.2 review, and preserved r0.4 freeze")
+    print("PASS: author decisions=38, owner entries=15 (5 decided, 3 open, 4 known-but-not-supplied, 3 deferred)")
     print("PASS: r0.5 operator, knowledge, grouping, rank, kernel, and RTC-terminal markers")
     print(
         f"PASS: PDFs={len(rationale_pdf.pages)}/{len(engineering_pdf.pages)} "
         "letter pages, unencrypted, no forms/JavaScript"
     )
-    print("PASS: separate r0.5 candidate PDF hashes (2); r0.4 canonical PDFs preserved")
+    print("PASS: exact r0.5 scientific-owner freeze bound; r0.4 freeze preserved")
+    print("PASS: canonical frozen r0.5 PDF hashes (2); candidate history preserved")
     print("PASS: engineering PDF contains all 159 normative IDs")
     print("PASS: engineering wrapper has no independent displayed mathematics")
 

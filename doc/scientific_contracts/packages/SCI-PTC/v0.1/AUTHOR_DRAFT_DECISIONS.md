@@ -1,6 +1,7 @@
 # SCI-PTC v0.1 -- Stage B Author Decisions And Owner Ledger
 
-Status: scientific-owner review candidate author ledger, document revision `r0.5`; frozen predecessor remains `r0.4`
+Status: frozen scientific-authority ledger, document revision `r0.5`; superseded
+revision `r0.4` remains preserved in provenance
 
 Date: `2026-08-23`
 
@@ -56,10 +57,10 @@ packet. It does not report implementation behavior or validation evidence.
 | --- | --- | --- | --- | --- | --- | --- |
 | `PTC-OWNER-Q001` | Grant Wilson | decided | Base v0.1 uses diagnostic-only, inert/advisory conditioned `r`. | Cross-channel `x <- r` subtraction and `r`-controlled `x` decisions are unavailable. | Grant Wilson, `2026-08-19` | All shared modules and both views |
 | `PTC-OWNER-Q002` | Grant Wilson | decided | Base-v0.1 PCA/SVD applies any admitted science input or fixed-state companion by projection through the frozen realized subspace and metric; each family declares exact acting space and coefficient recomputation. | Frozen numerical reconstruction subtraction is not the PCA/SVD response rule; it remains only a separately named affine family. | Grant Wilson, `2026-08-20` | Definitions 014, 029--032; Equations 2, 8--9, 15--16; Requirements 019, 029, 062, 083; Predictions 039--041; both views |
-| `PTC-OWNER-Q003` | Grant Wilson | decided for r0.5 candidate | Accept Equation 8's group-local detector-right mask-aware coefficient recomputation with an explicit finite time-local full-rank guard: `rank_tau_g(Ahat_g^T W_app,g,t Ahat_g)=k_req,g`. | Rank-deficient or nonfinite group-time application and its kernel are unavailable; no partial-rank subtraction, rank reduction, interpolation, masked numerical-zero admission, or cross-group borrowing is authorized. | Grant Wilson, `2026-08-23` | Definitions 030--031; Equation 8; Assumption 023; Requirements 029, 083, 089, 097; Prediction 060; both views |
+| `PTC-OWNER-Q003` | Grant Wilson | decided and frozen in r0.5 | Accept Equation 8's group-local detector-right mask-aware coefficient recomputation with an explicit finite time-local full-rank guard: `rank_tau_g(Ahat_g^T W_app,g,t Ahat_g)=k_req,g`. | Rank-deficient or nonfinite group-time application and its kernel are unavailable; no partial-rank subtraction, rank reduction, interpolation, masked numerical-zero admission, or cross-group borrowing is authorized. | Grant Wilson, `2026-08-23` | Definitions 030--031; Equation 8; Assumption 023; Requirements 029, 083, 089, 097; Prediction 060; both views |
 | `PTC-OD-001` | Scientific owner | deferred for ordinary route | Select numerical residual-contamination, typed astronomical-transfer, conditioning, support, stability, and QC predicates only for a separately requested automatic-selection family. | Automatic candidate admission; the ordinary route uses explicit positive rank. | Grant Wilson, ordinary-route disposition `2026-08-23`; future family open | Requirements 034--040 and 085; predictions 017--020 and 046 |
 | `PTC-OD-002` | Scientific owner | open | Select a mandatory/default estimator family, if absence of an explicit request is ever to be accepted. | Automatic operation when estimator family is absent. | Scientific owner; date open | Requirements 008, 026--030 |
-| `PTC-OD-003` | Scientific owner | decided for r0.5 candidate | Use the support-normalized arithmetic mean per detector over finite basis-fit-admitted occurrences within one immutable PTC segment and configured group; centering influence is binary, no inverse-noise or other numerical weighting or cross-boundary borrowing is permitted, invalid denominator/support fails the affected group, and identity scaling and nonrestoration remain selected. | No centering-method gap remains in the ordinary-route candidate; stronger robust or weighted location families require separate authority. | Grant Wilson, `2026-08-23` | Definition 007; Equation 3; Assumption 031; Requirements 023--024 and 093; Prediction 005 |
+| `PTC-OD-003` | Scientific owner | decided and frozen in r0.5 | Use the support-normalized arithmetic mean per detector over finite basis-fit-admitted occurrences within one immutable PTC segment and configured group; centering influence is binary, no inverse-noise or other numerical weighting or cross-boundary borrowing is permitted, invalid denominator/support fails the affected group, and identity scaling and nonrestoration remain selected. | No centering-method gap remains in the ordinary route; stronger robust or weighted location families require separate authority. | Grant Wilson, `2026-08-23` | Definition 007; Equation 3; Assumption 031; Requirements 023--024 and 093; Prediction 005 |
 | `PTC-OD-004` | Scientific owner | decided for ordinary route | Ordinary diagnostics are advisory and maximum support-changing refinements are zero. Future policy-changing refinement needs separate thresholds and authority. | No ordinary hidden refit; future classification/refinement remains unavailable. | Grant Wilson, `2026-08-23` | Requirements 042--048 and 096 |
 | `PTC-OD-005` | SCI-RTC or named conditioner | known but not supplied | Provide a PTC-compatible conditioned-`r` product with exact operator, unit, response, validity, optical-leakage state, and `x`-grid relation. | Optional diagnostic-$r$ branch. | Upstream owner; date open | Requirement 030; predictions 025--026 |
 | `PTC-OD-006` | SCI-MAP | known but not supplied | Provide an exact named reference-map operator and center selector. | Optional estimated map-center point-source response diagnostic. | SCI-MAP owner; date open | Requirements 067--068; prediction 034 |
@@ -70,12 +71,11 @@ packet. It does not report implementation behavior or validation evidence.
 | `PTC-OD-011` | Source-model owner | known but not supplied | Supply an exact source model/mask/residual or prior-pass parent with owner, unit, frame, registration, validity, response, support, and recurrence identity for a protected/fitted role. | Source-protection or external-parent fitting claim for that role. | Named source owner; date open | Requirements 018, 041, 081; prediction 044 |
 | `PTC-OD-012` | Validation program | deferred | Supply implementation, representation-fidelity, observational-performance, and readiness evidence under later authorization. | Conformity, achieved transfer/performance, and production claims. | Later validation authority; date open | Requirement 080; prediction 038 |
 
-## Draft Blocking Assessment
+## Frozen-Authority Blocking Assessment
 
-The r0.5 text is a review candidate, not frozen authority. The ordinary
-centering estimator and exact mask-aware Equation 8 operator are decided for
-the candidate; complete-packet approval and freeze remain pending. Each
-runtime instance still requires an admitted CAL parent. Other open items block only their
+The r0.5 text is frozen scientific authority. The ordinary centering estimator
+and exact mask-aware Equation 8 operator are decided within that authority.
+Each runtime instance still requires an admitted CAL parent. Other open items block only their
 named automatic-selection, optional diagnostic, stronger response/covariance,
 source-protection, MAP-facing, or evidentiary claims. No implementation,
 numerical-validation, performance, qualification, or readiness evidence was

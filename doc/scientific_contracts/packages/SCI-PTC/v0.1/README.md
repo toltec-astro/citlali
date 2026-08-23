@@ -1,7 +1,7 @@
 # SCI-PTC — Correlated-Mode Cleaning And Detector Coefficients
 
-Status: Scientific authority frozen; implementation conformity not yet assessed
-under this contract.
+Status: SCI-PTC v0.1/r0.5 scientific authority frozen by Grant Wilson on
+`2026-08-23`; implementation conformity not yet assessed under this contract.
 
 Scientific contract version: `v0.1`
 
@@ -53,16 +53,25 @@ SCI-PTC does not repair or complete an unavailable upstream RTC or CAL state.
   scope decision
 - [`CROSS_PACKAGE_FOLLOWUP.md`](CROSS_PACKAGE_FOLLOWUP.md): RTC, CAL, raw
   Beammap, MAP, VAL, NOI, and BEAM routing raised by the revision
-- [`CROSSWALK.md`](CROSSWALK.md): exact 139-row mapping for 89 requirements and
-  50 falsifiable predictions
-- [`AUTHOR_DRAFT_DECISIONS.md`](AUTHOR_DRAFT_DECISIONS.md): 27 author choices,
-  the decided Q001 and Q002 dispositions, and 12 still-open,
-  known-but-not-supplied, or deferred owner entries
+- [`CROSSWALK.md`](CROSSWALK.md): exact 159-row mapping for 99 requirements and
+  60 falsifiable predictions
+- [`AUTHOR_DRAFT_DECISIONS.md`](AUTHOR_DRAFT_DECISIONS.md): 38 author choices
+  and the 15-entry detailed owner ledger
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md):
   manager-facing decision summary that refers to the detailed author ledger
   rather than duplicating it
-- [`SCIENTIFIC_OWNER_FREEZE_R0.4.md`](SCIENTIFIC_OWNER_FREEZE_R0.4.md): exact
+- [`R0.5_CANDIDATE_REVIEW_COVER.md`](R0.5_CANDIDATE_REVIEW_COVER.md): exact
+  content-bound candidate identity and promotion history
+- [`CHANGE_LOG_R0.5.md`](CHANGE_LOG_R0.5.md): bounded r0.4-to-r0.5 scientific
+  changes and preserved claim boundary
+- [`CONSISTENCY_REPORT_R0.5.md`](CONSISTENCY_REPORT_R0.5.md): package-local
+  implementation-blind source and audience-view consistency review
+- [`SCIENTIFIC_OWNER_FREEZE_R0.5.md`](SCIENTIFIC_OWNER_FREEZE_R0.5.md): active
   owner freeze, retained open states, claim boundary, and change-control rule
+- [`FREEZE_VERIFICATION_R0.5.md`](FREEZE_VERIFICATION_R0.5.md): status-only
+  source/PDF verification and all-page visual-QA record
+- [`SCIENTIFIC_OWNER_FREEZE_R0.4.md`](SCIENTIFIC_OWNER_FREEZE_R0.4.md):
+  superseded r0.4 freeze retained for provenance
 - `src/common/`: the six-file shared canonical notation, definition, equation,
   assumption, requirement, and edge-prediction authority
 - `src/scientific-rationale.tex`: the standalone science-team rationale with
@@ -73,8 +82,8 @@ SCI-PTC does not repair or complete an unavailable upstream RTC or CAL state.
   exact requirement/prediction crosswalk
 - `src/verify_contract.py`: repeatable approved-packet, identifier, crosswalk,
   audience-view, and PDF coverage checks
-- `pdf/`: the canonical frozen 11-page scientific rationale and 22-page
-  engineering conformance PDFs
+- `pdf/`: the canonical frozen r0.5 rationale and engineering conformance PDFs,
+  with exact page counts, hashes, and all-page inspection recorded
 
 ## Protected Boundary
 
@@ -98,62 +107,53 @@ recurrence, or FLT map filtering.
 
 ## Frozen Authority And Next Gate
 
-The owner-approved packet and the r0.1/r0.2 reviews have been consolidated into
-one shared normative core containing 41 definitions, 25 numbered equations,
-29 assumptions, 89 sequential requirements, and 50 sequential falsifiable
-predictions. Every r0.2 normative ID is preserved; r0.3 appended only the
-fit-excluded application-availability definition, assumption, requirement,
-and prediction plus the complete-upstream-response definition. The engineering
-view imports that authority exactly once; the standalone rationale explains
-the science without reproducing the full register. Packet-hash, identifier,
-crosswalk, audience-separation, PDF coverage, and content checks pass at
-document revision `r0.4`.
+The active r0.5 shared core contains 45 definitions, 25 numbered equations,
+35 assumptions, 99 sequential requirements, and 60 sequential falsifiable
+predictions. Every preserved normative identifier retains its earlier role;
+the bounded successor appends only the exact repair and ordinary-route
+authority recorded in the r0.4-to-r0.5 change map. The engineering view imports
+the six shared modules exactly once, and the standalone rationale explains the
+science without reproducing the full formal register.
 
-The owner-approved base-v0.1 PCA/SVD application rule is now explicit:
-application projects any admitted input or fixed-state companion through the
-frozen realized subspace and metric with linear coefficient recomputation.
-The exact temporal-left, detector-right, two-sided, detector/time-specific, or
-general vectorized acting space is realized-family state. Frozen numerical
-component subtraction is a separately named affine family with identity
-derivative, not the base PCA/SVD response rule.
+R0.5 makes the complete affine application operator primary, defines total
+removal by input-output identity, and distinguishes learned location,
+correlated-subspace removal, and total removed signal. It replaces the
+incomplete named-use truth rule with total T/F/U/C evaluation, preserves
+classification without making classification a global ban on PTC mathematics,
+and reserves distinct permission propositions for learning, application,
+retention, QC, response, and other uses.
 
-The bounded r0.3 pass also separates the latent correlated component from its
-fitted estimate, names the complete admitted upstream response ending on the
-CAL grid, defines when a fit-excluded occurrence is application-available,
-adds the scientist-facing validation-study matrix and estimator orientation,
-explains surrogate purpose, and aligns the lifecycle wording with RTC. The
-companion specification mechanically satisfies the exact local/chain/procedure
-response, state-comparison, lifecycle, source/surrogate, bias, and identifier
-obligations named by the r0.2 review.
+The ordinary route selects exactly one configured array- or network-level PCA
+grouping, an explicit strictly positive independently feasible rank per group,
+one immutable-CAL-parent fit, zero support-changing refinement, and exact
+group-local fixed-state kernel propagation. Its detector-right mask-aware
+application is authorized only where the finite time-local normal matrix has
+full configured rank under frozen tolerance. A deficient group-time is
+unavailable for both data and kernel, with no partial-rank, interpolation,
+numerical-zero, route-conversion, or cross-group fallback.
 
-The bounded r0.4 pass makes producer causes cumulative without erasure and
-assigns admission to the owner of each exact named use. PTC owns its local
-support composites; MAP and other downstream owners own their admission
-rules; VAL owns only shared types, knowledge/cause-preservation semantics,
-provenance, evaluation machinery, and vocabulary. PTC-local eligibility is
-the base predicate conjoined with every applicable permission predicate; one
-exclusion cannot be rescued, and an unknown required predicate produces
-`decision_unavailable`. The same pass resolves centering as nonrestoring:
-detector output is `P(x-lambda)`, fixed-state response freezes `lambda`, and a
-full-procedure response re-estimates, records, and again discards it. All 139
-normative rows now carry nonblank resolved rationale locators.
+Disabled PTC is a distinct RTC-terminal export workflow: Citlali publishes the
+complete RTC product and terminates successfully before CAL, PTC, or MAP.
+There is no PTC-disabled map and no inferred CAL-to-MAP fallback. MAP authority
+remains deferred and outside this freeze.
 
-Grant Wilson froze this exact v0.1/r0.4 package as scientific authority on
-`2026-08-20`. The six open, four known-but-not-supplied, and two deferred
-detailed-ledger entries retain their recorded states. None blocks the frozen
-structural contract; each blocks only its named automatic policy, numerical
-product, response, coefficient use, adjacent-owner input, or evidentiary claim.
-`PTC-OWNER-Q001` remains decided: conditioned `r` is diagnostic-only and
-inert/advisory in base v0.1. `PTC-OWNER-Q002` remains decided: base PCA/SVD
-application is frozen-subspace projection with the exact acting space declared
-by the realized family.
+Grant Wilson approved the complete content-bound candidate at commit
+`8f0ecccfacbdce0543141c4289ec06c702065f5e` and authorized its freeze on
+`2026-08-23`. The 15 detailed owner
+entries retain five decided, three open, four known-but-not-supplied, and three
+deferred states. None of the unresolved entries blocks the frozen ordinary
+structural route; each blocks only its named automatic-selection, optional
+diagnostic, stronger response/covariance, source-protection, MAP-facing, or
+evidentiary claim.
 
-The next scientific task is the cross-package RTC--CAL--PTC response and
-lifecycle coherence review, not another broad PTC rewrite. That review cannot
-silently amend this frozen authority. Any substantive correction or newly
-resolved open choice requires explicit owner action and a versioned successor
-or formally reopened revision.
+The next integration work remains timestream-only: stabilize CAL and the
+required coordinate/external producer boundaries, then bind the exact frozen
+PTC and CAL sources into VAL and run the authorized clean-room horizontal
+re-audit. This freeze alone does not close `F-001`, `F-002`, `F-009`, or
+`F-011`; closure requires the re-audit result and recorded closure commit.
 
 No implementation conformity, representation/response fidelity, validation,
-achieved performance, science-qualification, or production-readiness claim is
-made by this scientific-authority freeze.
+achieved performance, science qualification, production readiness, or MAP
+availability is established by this scientific-authority freeze. Any future
+substantive correction or newly resolved open choice requires explicit owner
+action and a versioned successor or formally reopened revision.

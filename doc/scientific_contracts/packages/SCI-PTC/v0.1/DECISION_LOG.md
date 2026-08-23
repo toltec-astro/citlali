@@ -1,6 +1,6 @@
 # SCI-PTC v0.1 — Scientific Decision Log
 
-Status: Scientific authority frozen at v0.1/r0.4; implementation conformity
+Status: Scientific authority frozen at v0.1/r0.5; implementation conformity
 not yet assessed under this contract
 
 Scientific owner: Grant Wilson
@@ -40,6 +40,7 @@ Date: `2026-08-19`
 | Decision | Status | Decision and consequence |
 | --- | --- | --- |
 | `PTC-FREEZE-D001` | approved and frozen `2026-08-20` | The scientific owner states exactly, “Freeze SCI-PTC v0.1/r0.4.” This establishes the exact r0.4 package as scientific authority while retaining all recorded detailed-ledger states and leaving implementation conformity, validation, performance, qualification, and production readiness unassessed. |
+| `PTC-FREEZE-D002` | approved and frozen `2026-08-23` | The scientific owner's “approved” response to the complete-packet freeze question authorizes SCI-PTC v0.1/r0.5 as the active scientific authority, superseding r0.4 while retaining r0.4 provenance. The promotion is status-only and does not close audit findings or establish implementation conformity, validation, performance, qualification, or production readiness. |
 
 ## Preserved Approved Historical Decisions
 
@@ -56,7 +57,8 @@ Date: `2026-08-19`
 
 Stage A approval authorized implementation-blind scientific authorship from
 the exact packet. The later reviews established candidate coherence, and
-`PTC-FREEZE-D001` supplies the scientific-owner freeze. No step here approves
+`PTC-FREEZE-D002` supplies the active scientific-owner freeze; the preceding
+`PTC-FREEZE-D001` remains the exact r0.4 historical freeze. No step here approves
 an implementation, authorizes a repair or numerical redesign, runs validation,
 or changes production status.
 

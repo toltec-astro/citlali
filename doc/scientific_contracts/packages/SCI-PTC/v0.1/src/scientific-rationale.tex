@@ -10,7 +10,7 @@
 \usepackage{needspace}
 \usepackage{fancyhdr}
 \usepackage[hidelinks]{hyperref}
-\hypersetup{pdftitle={SCI-PTC Scientific Rationale v0.1 r0.5 candidate},pdfauthor={TolTEC scientific contract program},pdfsubject={Scientific rationale for correlated-mode cleaning and detector coefficients}}
+\hypersetup{pdftitle={SCI-PTC Scientific Rationale v0.1 r0.5},pdfauthor={TolTEC scientific contract program},pdfsubject={Scientific rationale for correlated-mode cleaning and detector coefficients}}
 \setlength{\emergencystretch}{3em}
 \hbadness=10000
 \hfuzz=8.5pt
@@ -21,7 +21,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small SCI-PTC Scientific Rationale}
-\fancyhead[R]{\small v0.1 / r0.5 candidate}
+\fancyhead[R]{\small v0.1 / r0.5 frozen}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.3pt}
 
@@ -33,7 +33,7 @@
 \title{\vspace{-1.0cm}\textcolor{ptcblue}{\Huge SCI-PTC}\\[0.3em]
 \Large Correlated-Mode Cleaning and Detector Coefficients\\[0.5em]
 \LARGE Scientific Rationale\\[0.4em]
-\large Scientific contract v0.1 -- document revision r0.5 candidate}
+\large Scientific contract v0.1 -- frozen document revision r0.5}
 \author{TolTEC Scientific Contract Program\\Scientific owner: Grant Wilson}
 \date{2026-08-23}
 
@@ -41,11 +41,11 @@
 \maketitle
 \thispagestyle{empty}
 
-\sciencebox{ptclight}{\textbf{Status.} Scientific-owner review candidate;
-not frozen. The frozen predecessor remains v0.1/r0.4. This candidate records
-the approved WP-1 successor decisions but does not authorize implementation
-conformity, validation, observational performance, science qualification, or
-production readiness.}
+\sciencebox{ptclight}{\textbf{Status.} Scientific authority frozen by owner at
+v0.1/r0.5 on 2026-08-23; implementation conformity not yet assessed under
+this contract. The superseded r0.4 authority remains preserved in provenance.
+This freeze does not authorize validation, observational performance, science
+qualification, or production readiness.}
 
 \vfill
 \noindent\textbf{Document role.} This is the standalone science-team rationale.
@@ -678,19 +678,19 @@ Item & State & Consequence \\
 \midrule
 \endhead
 Conditioned $r$ use & Decided & Diagnostic-only and inert/advisory; it cannot change calibrated-$x$ rank or processing.\\
-Ordinary grouping & Decided for r0.5 candidate & Explicitly configured network- or array-level PCA, with support and operator state scoped to the same group.\\
-PCA/SVD frozen application & Decided for r0.5 candidate & Group-local detector-right mask-aware projection with a finite time-local full-rank guard; the identical available state acts on a compatible kernel.\\
-Ordinary rank & Decided for r0.5 candidate & Explicit integer $k\ge1$; zero and unrealizable positive ranks fail without fallback or route conversion.\\
+Ordinary grouping & Decided and frozen in r0.5 & Explicitly configured network- or array-level PCA, with support and operator state scoped to the same group.\\
+PCA/SVD frozen application & Decided and frozen in r0.5 & Group-local detector-right mask-aware projection with a finite time-local full-rank guard; the identical available state acts on a compatible kernel.\\
+Ordinary rank & Decided and frozen in r0.5 & Explicit integer $k\ge1$; zero and unrealizable positive ranks fail without fallback or route conversion.\\
 Numerical selection predicates & Deferred capability & Automatic candidate admission is outside the ordinary route and unavailable until every required typed predicate is supplied.\\
 Mandatory/default estimator & Open policy input & An absent estimator request cannot be replaced by an inferred default.\\
-Centering/scaling choices & Decided for r0.5 candidate & Detector-wise support-normalized arithmetic-mean centering on finite basis-fit support, binary influence, exact segment boundaries, nonrestoration, and identity scaling.\\
+Centering/scaling choices & Decided and frozen in r0.5 & Detector-wise support-normalized arithmetic-mean centering on finite basis-fit support, binary influence, exact segment boundaries, nonrestoration, and identity scaling.\\
 Detector diagnostic thresholds & Open policy input & Policy-changing classification requires registered thresholds.\\
 Conditioned $r$ producer & Known, not supplied & The optional diagnostic branch remains unavailable.\\
 Reference MAP functional & Known, not supplied & The optional map-center diagnostic remains unavailable.\\
 Complete covariance model & Deferred & Precision/significance claims remain blocked.\\
 Full-procedure perturbation domain & Open policy input & A concrete response family needs amplitude, side, source state, location, and validity domain.\\
-PTC-disabled route & Decided for r0.5 candidate & Complete RTC export followed by successful termination; CAL, PTC, and MAP are not entered.\\
-Implementation and validation evidence & Not assessed & No conformity, achieved performance, r0.5 freeze, or readiness claim follows.\\
+PTC-disabled route & Decided and frozen in r0.5 & Complete RTC export followed by successful termination; CAL, PTC, and MAP are not entered.\\
+Implementation and validation evidence & Not assessed & No conformity, achieved performance, validation, or readiness claim follows from this freeze.\\
 \bottomrule
 \end{longtable}
 \endgroup
@@ -732,14 +732,14 @@ SCI-PTC follows the Citlali Scientific Contract Library Program and began from
 an owner-reviewed prior-work recovery record rather than a fresh derivation.
 The implementation-blind author packet reused an independent mathematical
 core under a binding supersession cover and excluded implementation, test,
-validation, Unity, and production material. The frozen r0.4 revision added
-owner-directed support composition and nonrestoring centering. This r0.5
-candidate applies the approved WP-1 repair and route decisions:
+validation, Unity, and production material. The superseded frozen r0.4
+revision added owner-directed support composition and nonrestoring centering.
+The frozen r0.5 successor applies the approved WP-1 repair and route decisions:
 operator-primary removal, total T/F/U/C use evaluation, distinct candidate
 notation, RTC-terminal disabled routing, configured network/array grouping,
 explicit positive rank, group-local mask-aware detector projection, kernel
-propagation, and zero refinement. It does not inspect implementation, freeze
-the candidate, or make a conformity claim.
+propagation, and zero refinement. The status-only freeze did not inspect
+implementation and makes no conformity claim.
 
 \begingroup
 \scriptsize

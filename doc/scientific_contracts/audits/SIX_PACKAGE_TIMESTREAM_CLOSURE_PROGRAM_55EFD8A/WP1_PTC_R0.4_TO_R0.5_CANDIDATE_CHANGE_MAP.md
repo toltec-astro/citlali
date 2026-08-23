@@ -1,16 +1,20 @@
 # WP-1 SCI-PTC r0.4 to r0.5 Candidate Change Map
 
-Status: bounded scientific-owner review candidate; not frozen
+Status: content-bound candidate approved and promoted to frozen SCI-PTC
+v0.1/r0.5 authority on `2026-08-23`
 
 Date: `2026-08-23`
 
 Baseline authority: consolidation commit
 `55efd8a54464636a24e621f6d1b60486d235b20e`, SCI-PTC `v0.1/r0.4`
 
-Candidate authority: none. This change map records authoring performed under
-approved `WP1-OWNER-D001`--`WP1-OWNER-D009`. The canonical r0.4 PDFs remain
-byte-for-byte unchanged. No audit finding is closed until separate owner
-approval, freeze, and clean-room re-audit.
+Candidate identity: commit `8f0ecccfacbdce0543141c4289ec06c702065f5e`.
+This change map records authoring
+performed under approved `WP1-OWNER-D001`--`WP1-OWNER-D009`. Grant Wilson
+approved the complete candidate and authorized its status-only promotion on
+`2026-08-23`. The r0.4 source and PDFs remain byte-for-byte recoverable from
+the baseline and candidate commits. No audit finding is closed until the
+authorized clean-room re-audit.
 
 ## Owner-decision realization
 
@@ -100,7 +104,7 @@ hashes, complete formal-ID coverage, letter page size, and absence of PDF
 forms, encryption, or JavaScript. All candidate pages were rendered with
 Poppler and inspected for clipping, overlap, and legibility.
 
-## Remaining owner review before freeze
+## Owner review and promotion resolution
 
 The first owner-review gate was resolved on `2026-08-23`: the ordinary route
 uses the support-normalized arithmetic mean per detector over finite
@@ -119,10 +123,11 @@ admission, or cross-group borrowing. This resolution updates Definitions
 030--031, Equation 8, Assumption 023, Requirements 029, 083, 089, and 097,
 Prediction 060, and the two audience views.
 
-No substantive candidate equation remains open. Complete-packet owner
-approval and freeze are still required before r0.5 becomes authoritative.
+No substantive candidate equation remained open. Grant Wilson approved the
+complete packet and authorized freeze on `2026-08-23`; the canonical status-
+clean r0.5 sources and PDFs are bound separately by
+`SCIENTIFIC_OWNER_FREEZE_R0.5.md` and `FREEZE_VERIFICATION_R0.5.md`.
 
-Until the full candidate receives a separate owner approval and freeze, r0.5
-remains non-authoritative. This packet makes no claim of
+The freeze makes no claim of
 implementation conformity, numerical validation, achieved performance,
 science qualification, production readiness, or MAP availability.
