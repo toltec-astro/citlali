@@ -178,7 +178,7 @@ def main() -> None:
     author_ids = re.findall(
         r"^\| .(PTC-AUTH-D\d{3}). \|", decisions, flags=re.MULTILINE
     )
-    sequence(author_ids, "PTC-AUTH-D", 36)
+    sequence(author_ids, "PTC-AUTH-D", 37)
     require("PTC-OWNER-Q002" in decisions and "decided" in decisions,
             "owner-approved projection decision is missing")
     review = text(PKG / "SCIENTIFIC_OWNER_REVIEW_R0.2.md")
@@ -216,10 +216,13 @@ def main() -> None:
         r"U_{\star,td}=\sum_{k=1}^{K}M_{\star,tk}A_{\star,dk}",
         r"k_{\rm src}^{\rm CAL}=K_{\rm up\to CAL}\tau_{\rm src}",
         r"\mathsf{route}=\mathsf{RTC\_terminal\_export}",
-        r"C_{\lambda}(Y')=Y'-\lambda",
+        r"C_{\lambda_g}(Y')=Y'-\lambda_g",
         r"\mathcal C&=\bigcup_i\mathcal C_i",
         r"\operatorname{Decision}_U",
         r"k_{{\rm req},g}\in\mathbb Z",
+        r"\lambda_{g,d}",
+        r"\mathcal T^{\rm ctr}_{g,d}",
+        r"w^{\rm ctr}_{gtd}&=1",
         r"\texttt{decision\_unavailable}",
     )
     for marker in required_markers:
@@ -241,9 +244,9 @@ def main() -> None:
     )
     candidate_pdfs = {
         rationale_path:
-            "69dc2c86f6193434fcbba3737def8395f5d650c30eb6858ab6b85e47e2a5b7d0",
+            "ce5ccaed4c570533e2d6e96a3230e6eda3b99555aff411494bce0acb0a56cdec",
         engineering_path:
-            "cfee3e2f691289ef6bb6a81100051277f65a2e8a6bface962afc8477aa03d9a6",
+            "bbdb32535511395925b8b85c1529b94365a8e077bd8dd5ccbdd32ae46d5f47e0",
     }
     for path, expected in candidate_pdfs.items():
         require(digest(path) == expected, f"candidate PDF hash changed: {path.name}")
@@ -310,7 +313,7 @@ def main() -> None:
     print("PASS: definitions=45 equations=25 assumptions=35 requirements=99 predictions=59")
     print("PASS: standalone rationale plus six-file engineering/formal view")
     print("PASS: crosswalk rows=158, exact and sequential; all rationale locators resolved")
-    print("PASS: author decisions=36, owner projection decision Q002, r0.2 review, and preserved r0.4 freeze")
+    print("PASS: author decisions=37, resolved centering OD003, owner projection decision Q002, r0.2 review, and preserved r0.4 freeze")
     print("PASS: r0.5 operator, knowledge, grouping, rank, kernel, and RTC-terminal markers")
     print(
         f"PASS: PDFs={len(rationale_pdf.pages)}/{len(engineering_pdf.pages)} "

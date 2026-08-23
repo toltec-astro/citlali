@@ -350,7 +350,9 @@ Append requirements covering at minimum:
 3. group-local support, masks, centering, subspace, rank, application, and
    kernel state;
 4. detector-wise time-axis centering with its exact estimator retained as an
-   owner-required input, and identity scaling;
+   owner-required input, and identity scaling (subsequently resolved during
+   r0.5 owner review as the support-normalized arithmetic mean on finite
+   basis-fit support with binary influence and exact segment boundaries);
 5. explicit integer `k\ge1` and per-group feasibility;
 6. rank-zero and unrealizable-rank fail-closed behavior;
 7. one immutable-parent fit and zero support-changing refinements;

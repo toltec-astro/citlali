@@ -253,6 +253,17 @@ the learned additive location $\lambda$ defines the PTC working coordinate
 $x_c=x-\lambda$ and is discarded. The conditioned output is
 $y=P(x-\lambda)$, not $\lambda+P(x-\lambda)$.
 
+For the ordinary route, the location is the support-normalized arithmetic
+mean of the finite basis-fit-admitted occurrences for that detector in one
+immutable segment and configured group:
+\[
+\lambda_{g,d}=
+\frac{1}{|\mathcal T^{\rm ctr}_{g,d}|}
+\sum_{t\in\mathcal T^{\rm ctr}_{g,d}}Y^{\rm CAL}_{gtd}.
+\]
+Influence is binary; there is no numerical reweighting, gap bridging, or
+borrowing across segments or groups. Empty or invalid support fails the group.
+
 Scaling by detector scatter is not scaling by a formal noise model. Every
 coordinate transform therefore declares its axis, population, support,
 weights, estimator, boundaries, unit, gauge, failure behavior, and null-space
@@ -610,7 +621,7 @@ This table specifies studies, not achieved results or acceptance thresholds.
 
 \begin{table}[htbp]
 \centering
-\scriptsize
+\small
 \setlength{\tabcolsep}{3pt}
 \begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash\bfseries}p{0.17\linewidth}
                               >{\raggedright\arraybackslash}p{0.37\linewidth}X}
@@ -650,6 +661,8 @@ Production readiness & Not assessed and not authorized by this document.\\
 \Needspace{0.38\textheight}
 \subsection{Decision and availability register}
 
+\begingroup
+\small
 \begin{longtable}{>{\raggedright\arraybackslash}p{0.28\linewidth}
                   >{\raggedright\arraybackslash}p{0.18\linewidth}
                   >{\raggedright\arraybackslash}p{0.46\linewidth}}
@@ -663,7 +676,7 @@ PCA/SVD frozen application & Decided for r0.5 candidate & Group-local detector-r
 Ordinary rank & Decided for r0.5 candidate & Explicit integer $k\ge1$; zero and unrealizable positive ranks fail without fallback or route conversion.\\
 Numerical selection predicates & Deferred capability & Automatic candidate admission is outside the ordinary route and unavailable until every required typed predicate is supplied.\\
 Mandatory/default estimator & Open policy input & An absent estimator request cannot be replaced by an inferred default.\\
-Centering/scaling choices & Partly decided & Detector-wise time-axis nonrestoring centering and identity scaling are selected; the exact location estimator remains an owner-required input.\\
+Centering/scaling choices & Decided for r0.5 candidate & Detector-wise support-normalized arithmetic-mean centering on finite basis-fit support, binary influence, exact segment boundaries, nonrestoration, and identity scaling.\\
 Detector diagnostic thresholds & Open policy input & Policy-changing classification requires registered thresholds.\\
 Conditioned $r$ producer & Known, not supplied & The optional diagnostic branch remains unavailable.\\
 Reference MAP functional & Known, not supplied & The optional map-center diagnostic remains unavailable.\\
@@ -673,6 +686,7 @@ PTC-disabled route & Decided for r0.5 candidate & Complete RTC export followed b
 Implementation and validation evidence & Not assessed & No conformity, achieved performance, r0.5 freeze, or readiness claim follows.\\
 \bottomrule
 \end{longtable}
+\endgroup
 
 \appendix
 \section{Compact rationale-to-contract crosswalk}
@@ -682,6 +696,8 @@ The exact identifier-by-identifier crosswalk is supplied with the package.
 This compact view shows where the principal scientific questions are governed
 in the companion engineering specification.
 
+\begingroup
+\small
 \begin{longtable}{>{\raggedright\arraybackslash}p{0.28\linewidth}
                   >{\raggedright\arraybackslash}p{0.27\linewidth}
                   >{\raggedright\arraybackslash}p{0.35\linewidth}}
@@ -700,6 +716,7 @@ How will realizations be studied? & Section 9.1 & Predictions 001--059 \\
 What evidence is claimed? & Section 9.2 & Requirement 080 and Prediction 038 \\
 \bottomrule
 \end{longtable}
+\endgroup
 
 \section{Provenance and program adherence}
 \label{sec:science-program}
@@ -718,8 +735,10 @@ propagation, and zero refinement. It does not inspect implementation, freeze
 the candidate, or make a conformity claim.
 
 \begingroup
-\small
+\scriptsize
 \begin{thebibliography}{9}
+\setlength{\itemsep}{-1pt}
+\setlength{\parskip}{0pt}
 \bibitem{bailey2012} S. Bailey, \textit{Principal Component Analysis with Noisy and/or Missing Data}, 2012.
 \bibitem{candes2009} E. J. Cand\`es, X. Li, Y. Ma, and J. Wright, \textit{Robust Principal Component Analysis?}, 2009.
 \bibitem{downes2011} T. P. Downes et al., \textit{Calculating the transfer function of noise removal by principal component analysis and application to AzTEC observations}, 2011.

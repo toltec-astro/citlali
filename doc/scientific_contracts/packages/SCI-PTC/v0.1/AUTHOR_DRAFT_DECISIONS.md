@@ -47,6 +47,7 @@ packet. It does not report implementation behavior or validation evidence.
 | `PTC-AUTH-D034` | Apply approved `WP1-OWNER-D007`: the ordinary rank is explicit, integer, strictly positive, and independently feasible per group. | `k=0` and unrealizable rank fail without clipping, centering-only output, route conversion, or map; automatic selection becomes a deferred family. |
 | `PTC-AUTH-D035` | Apply approved `WP1-OWNER-D008`: one immutable-parent fit per group, zero support-changing refinement, advisory diagnostics, inert `r`, and exact group-local fixed-state kernel propagation. | Source protection, simulation, recurrence, full-procedure response, and stronger covariance remain outside the first route. |
 | `PTC-AUTH-D036` | Treat the exact mask-aware time-local coefficient equation in r0.5 as candidate author text requiring the separate final owner review authorized by `WP1-OWNER-D009`. | The author does not infer implementation behavior; final operator text is not frozen by this drafting decision. |
+| `PTC-AUTH-D037` | Apply the scientific owner's r0.5 review resolution of `PTC-OD-003`: the ordinary detector location is the support-normalized arithmetic mean of finite basis-fit-admitted occurrences within one immutable PTC segment, with binary centering influence, no numerical reweighting or support borrowing, and fail-closed denominator behavior. | The ordinary centering estimator is now exact; fixed-state kernel treatment remains unchanged because learned `lambda_g` is held fixed and is not subtracted from a perturbation. |
 
 ## Scientific Owner Decision Ledger
 
@@ -56,7 +57,7 @@ packet. It does not report implementation behavior or validation evidence.
 | `PTC-OWNER-Q002` | Grant Wilson | decided | Base-v0.1 PCA/SVD applies any admitted science input or fixed-state companion by projection through the frozen realized subspace and metric; each family declares exact acting space and coefficient recomputation. | Frozen numerical reconstruction subtraction is not the PCA/SVD response rule; it remains only a separately named affine family. | Grant Wilson, `2026-08-20` | Definitions 014, 029--032; Equations 2, 8--9, 15--16; Requirements 019, 029, 062, 083; Predictions 039--041; both views |
 | `PTC-OD-001` | Scientific owner | deferred for ordinary route | Select numerical residual-contamination, typed astronomical-transfer, conditioning, support, stability, and QC predicates only for a separately requested automatic-selection family. | Automatic candidate admission; the ordinary route uses explicit positive rank. | Grant Wilson, ordinary-route disposition `2026-08-23`; future family open | Requirements 034--040 and 085; predictions 017--020 and 046 |
 | `PTC-OD-002` | Scientific owner | open | Select a mandatory/default estimator family, if absence of an explicit request is ever to be accepted. | Automatic operation when estimator family is absent. | Scientific owner; date open | Requirements 008, 026--030 |
-| `PTC-OD-003` | Scientific owner | partly decided | Detector-wise time-axis nonrestoring centering and identity scaling are selected for the ordinary route; exact location estimator and boundaries remain required inputs. | Ordinary route remains unavailable when centering authority is absent; no estimator default is inferred. | Grant Wilson, partial disposition `2026-08-23`; estimator open | Requirements 023--024 and 093 |
+| `PTC-OD-003` | Scientific owner | decided for r0.5 candidate | Use the support-normalized arithmetic mean per detector over finite basis-fit-admitted occurrences within one immutable PTC segment and configured group; centering influence is binary, no inverse-noise or other numerical weighting or cross-boundary borrowing is permitted, invalid denominator/support fails the affected group, and identity scaling and nonrestoration remain selected. | No centering-method gap remains in the ordinary-route candidate; stronger robust or weighted location families require separate authority. | Grant Wilson, `2026-08-23` | Definition 007; Equation 3; Assumption 031; Requirements 023--024 and 093; Prediction 005 |
 | `PTC-OD-004` | Scientific owner | decided for ordinary route | Ordinary diagnostics are advisory and maximum support-changing refinements are zero. Future policy-changing refinement needs separate thresholds and authority. | No ordinary hidden refit; future classification/refinement remains unavailable. | Grant Wilson, `2026-08-23` | Requirements 042--048 and 096 |
 | `PTC-OD-005` | SCI-RTC or named conditioner | known but not supplied | Provide a PTC-compatible conditioned-`r` product with exact operator, unit, response, validity, optical-leakage state, and `x`-grid relation. | Optional diagnostic-$r$ branch. | Upstream owner; date open | Requirement 030; predictions 025--026 |
 | `PTC-OD-006` | SCI-MAP | known but not supplied | Provide an exact named reference-map operator and center selector. | Optional estimated map-center point-source response diagnostic. | SCI-MAP owner; date open | Requirements 067--068; prediction 034 |
@@ -69,9 +70,10 @@ packet. It does not report implementation behavior or validation evidence.
 
 ## Draft Blocking Assessment
 
-The r0.5 text is a review candidate, not frozen authority. The exact ordinary
-centering estimator remains owner-required input, and each runtime instance
-still requires an admitted CAL parent. Other open items block only their
+The r0.5 text is a review candidate, not frozen authority. The ordinary
+centering estimator is decided for the candidate, while final acceptance of
+the mask-aware Equation 8 operator and the complete packet remains pending;
+each runtime instance still requires an admitted CAL parent. Other open items block only their
 named automatic-selection, optional diagnostic, stronger response/covariance,
 source-protection, MAP-facing, or evidentiary claims. No implementation,
 numerical-validation, performance, qualification, or readiness evidence was

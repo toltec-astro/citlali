@@ -28,7 +28,7 @@ Coverage: 99 requirements and 59 predictions.
 | `SCI-PTC-REQ-020` | `src/common/requirements.tex` (No physical-origin inference) | Rationale 1.2; compact crosswalk | Engineering normative requirements | D004,D014 | None |
 | `SCI-PTC-REQ-021` | `src/common/requirements.tex` (Removed subspace publication) | Rationale 1.2; compact crosswalk | Engineering normative requirements | D014,WP1-D001,D006 | None |
 | `SCI-PTC-REQ-022` | `src/common/requirements.tex` (Additive reference and null roles) | Rationale 1.3; compact crosswalk | Engineering normative requirements | D014,D017,WP1-D001 | None |
-| `SCI-PTC-REQ-023` | `src/common/requirements.tex` (Centering contract) | Rationale 3.1; compact crosswalk | Engineering normative requirements | D017,WP1-D001,D006 | None |
+| `SCI-PTC-REQ-023` | `src/common/requirements.tex` (Centering contract) | Rationale 3.1; compact crosswalk | Engineering normative requirements | D017,WP1-D001,D006,OD003 | None |
 | `SCI-PTC-REQ-024` | `src/common/requirements.tex` (Scaling contract) | Rationale 3.1; compact crosswalk | Engineering normative requirements | D017,WP1-D006 | None |
 | `SCI-PTC-REQ-025` | `src/common/requirements.tex` (Gauge-invariant claim) | Rationale 3.1; compact crosswalk | Engineering normative requirements | D014,D015 | None |
 | `SCI-PTC-REQ-026` | `src/common/requirements.tex` (Estimator-family identity) | Rationale 4.1; compact crosswalk | Engineering normative requirements | D010 | None |
@@ -98,7 +98,7 @@ Coverage: 99 requirements and 59 predictions.
 | `SCI-PTC-REQ-090` | `src/common/requirements.tex` (Ordinary route identity) | Rationale 4.2--4.3; compact crosswalk | Engineering normative requirements | WP1-D006--D008 | SCI-CAL |
 | `SCI-PTC-REQ-091` | `src/common/requirements.tex` (Mutually exclusive grouping level) | Rationale 3.2; compact crosswalk | Engineering normative requirements | WP1-D006 | APT |
 | `SCI-PTC-REQ-092` | `src/common/requirements.tex` (Group-local scientific state) | Rationale 2.1 and 3.2; compact crosswalk | Engineering normative requirements | WP1-D006 | None |
-| `SCI-PTC-REQ-093` | `src/common/requirements.tex` (Ordinary centering and scaling) | Rationale 3.1; compact crosswalk | Engineering normative requirements | WP1-D001,D006 | None |
+| `SCI-PTC-REQ-093` | `src/common/requirements.tex` (Ordinary centering and scaling) | Rationale 3.1; compact crosswalk | Engineering normative requirements | WP1-D001,D006,OD003 | None |
 | `SCI-PTC-REQ-094` | `src/common/requirements.tex` (Explicit positive rank) | Rationale 4.3; compact crosswalk | Engineering normative requirements | WP1-D007 | Owner policy |
 | `SCI-PTC-REQ-095` | `src/common/requirements.tex` (Rank failure is not routing) | Rationale 4.3 and 8.2--8.3; compact crosswalk | Engineering normative requirements | WP1-D005,D007 | None |
 | `SCI-PTC-REQ-096` | `src/common/requirements.tex` (One immutable-parent fit) | Rationale 5.2; compact crosswalk | Engineering normative requirements | WP1-D008 | SCI-CAL |
@@ -109,7 +109,7 @@ Coverage: 99 requirements and 59 predictions.
 | `SCI-PTC-PRED-002` | `src/common/edge_cases.tex` (Same-unit response loss) | Rationale 1.3; compact crosswalk | Engineering falsifiable predictions | D002,D014 | SCI-CAL |
 | `SCI-PTC-PRED-003` | `src/common/edge_cases.tex` (Correlation non-identification) | Rationale 1.2; compact crosswalk | Engineering falsifiable predictions | D004,D014 | None |
 | `SCI-PTC-PRED-004` | `src/common/edge_cases.tex` (Gauge invariance) | Rationale 3.1; compact crosswalk | Engineering falsifiable predictions | D014,D015 | None |
-| `SCI-PTC-PRED-005` | `src/common/edge_cases.tex` (Centering null mode) | Rationale 3.1 and 7.2; compact crosswalk | Engineering falsifiable predictions | D017 | None |
+| `SCI-PTC-PRED-005` | `src/common/edge_cases.tex` (Centering null mode) | Rationale 3.1 and 7.2; compact crosswalk | Engineering falsifiable predictions | D017,OD003 | None |
 | `SCI-PTC-PRED-006` | `src/common/edge_cases.tex` (Scaling restoration) | Rationale 3.1; compact crosswalk | Engineering falsifiable predictions | D017 | None |
 | `SCI-PTC-PRED-007` | `src/common/edge_cases.tex` (Zero-fill is not exclusion) | Rationale 2.1; compact crosswalk | Engineering falsifiable predictions | D007,D010 | None |
 | `SCI-PTC-PRED-008` | `src/common/edge_cases.tex` (Fit-excluded apply-allowed) | Rationale 2.1 and 4.2; compact crosswalk | Engineering falsifiable predictions | D007 | None |

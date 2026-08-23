@@ -36,7 +36,7 @@
 
 \PTCAssumption{030}{The ordinary route selects exactly one configured grouping level: one full array or the set of readout networks within one array. Every support, mask, centering state, fitted subspace, rank, application, and kernel response is scoped to that same group identity.}
 
-\PTCAssumption{031}{The ordinary route uses detector-wise time-axis centering and identity internal scaling. The learned location is not restored, and no later baseline or FRUIT recurrence treatment is inferred.}
+\PTCAssumption{031}{The ordinary route uses the detector-wise support-normalized arithmetic mean over finite basis-fit-admitted occurrences within each exact immutable PTC segment, with binary centering influence and identity internal scaling. It does not use inverse-noise or other numerical centering weights, borrow across segments or configured groups, or bridge gaps. The learned location is not restored, and no later baseline or FRUIT recurrence treatment is inferred.}
 
 \PTCAssumption{032}{The ordinary route rank is an explicitly requested integer greater than or equal to one. Rank zero and unrealizable positive rank fail closed and are not defaults, fallbacks, centering-only outputs, PTC-disabled states, or RTC-export requests.}
 

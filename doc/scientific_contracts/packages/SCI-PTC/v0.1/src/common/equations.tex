@@ -29,18 +29,32 @@ with one physical contaminant. The exact application operator defines the
 result; a fitted correlated component alone does not define how a new input
 or response companion is acted on.
 
-For declared learned additive location $\lambda$ and invertible internal
-scaling $D$, the fitting coordinate and physical-unit application map are
+For the ordinary route, let $\mathcal T^{\rm ctr}_{g,d}$ contain exactly the
+finite basis-fit-admitted time occurrences for detector $d$ in one immutable
+PTC segment and configured group $g$. Its binary centering influence is one on
+that support and zero otherwise. The learned location, fitting coordinate, and
+physical-unit application map are
 \begin{equation}
-Y'_c=C_{\lambda}(Y')=Y'-\lambda,
-\qquad
-\widetilde Y'=D^{-1}Y'_c,
-\qquad
-\mathcal A_{\Theta}(Y')
-=D\widetilde{\mathcal A}_{\Theta}(\widetilde Y').
+\begin{aligned}
+\lambda_{g,d}
+&=\frac{\displaystyle\sum_{t\in\mathcal T^{\rm ctr}_{g,d}}
+ w^{\rm ctr}_{gtd}Y^{\rm CAL}_{gtd}}
+ {\displaystyle\sum_{t\in\mathcal T^{\rm ctr}_{g,d}}
+ w^{\rm ctr}_{gtd}},
+&w^{\rm ctr}_{gtd}&=1
+\quad(t\in\mathcal T^{\rm ctr}_{g,d}),\\
+Y'_c&=C_{\lambda_g}(Y')=Y'-\lambda_g,
+&\widetilde Y'&=D^{-1}Y'_c,\\
+\mathcal A_{\Theta_g}(Y')
+&=D\widetilde{\mathcal A}_{\Theta_g}(\widetilde Y').
+\end{aligned}
 \label{eq:center-scale}
 \end{equation}
-Scaling is restored for ordinary output; $\lambda$ is not. Detector $x$ has
+The denominator must be finite and strictly positive; otherwise the affected
+group fails closed. No occurrence outside the exact segment and support enters
+the sum, including across gaps, networks, or arrays. Ordinary internal scaling
+is identity. Any separately declared invertible scaling is restored for
+ordinary output; $\lambda$ is not. Detector $x$ has
 no scientifically meaningful optical DC response, so the removed additive
 reference is discarded and published in $\mathcal N_{\rm PTC}$. In
 fixed-state application $\lambda$ is held fixed. In a full-procedure response

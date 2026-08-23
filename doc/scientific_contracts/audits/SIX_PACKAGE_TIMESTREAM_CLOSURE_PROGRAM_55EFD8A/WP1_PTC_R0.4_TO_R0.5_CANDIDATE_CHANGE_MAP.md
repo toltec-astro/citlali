@@ -67,25 +67,25 @@ Candidate source SHA-256 digests are:
 
 | Candidate file | SHA-256 |
 | --- | --- |
-| `src/common/notation.tex` | `94082ef51a1702a5637eac29fcdd3798114343eeccb18e3343985a950c725543` |
-| `src/common/definitions.tex` | `a79bfa0ac0f6fbfef1bc6264dc95389cedfc31b77723fe12ab881f28691c6bd1` |
-| `src/common/equations.tex` | `9d1806e281d53501ea9042de6332e06addd4ad92502666f4c0dd89deaebf7410` |
-| `src/common/assumptions.tex` | `74dce0b34991d450c952eb742e5079f116676de188a26fabc41f2269d2f0451b` |
-| `src/common/requirements.tex` | `da66a9d6cc90c6656a80d1ac3659a6afbd4874525beef6977104c72b929da066` |
-| `src/common/edge_cases.tex` | `ca526796ca1ea7781b208a248ebe9b6a76bf4b95bbe91f131ab3214e9173e323` |
-| `src/scientific-rationale.tex` | `89b08cb564da174bde1b9400521e77211d747c186b68d36d9930e4e4a2dd475c` |
-| `src/engineering-conformance.tex` | `4c8ec10bef5243f3d67e2a0a6ee14af7f3ce56ebe44b626b51ed51fa4f5b91cc` |
-| `AUTHOR_DRAFT_DECISIONS.md` | `b31fc6c9654245d78353468d19aa3d1917158c1b3b3c63177fd51e0906270ed0` |
-| `CROSSWALK.md` | `bc0bd3f9d428a72531c74e03f8c545bcb993c3aade74c732dc329ef51fb61d1f` |
+| `src/common/notation.tex` | `4ed9c44386c3723f72f381c409171de1d558f69bf35581cd7aa3ca5b600dc5c2` |
+| `src/common/definitions.tex` | `e9b6cd6dcc7aa6efbfec9b73f72506c6c896103b10bfae82b2536795d1dcd003` |
+| `src/common/equations.tex` | `97917f4cb805bd566f91a81f40b12afc917f884cbb860ebc53f707c92a0693dc` |
+| `src/common/assumptions.tex` | `8d4281cc62fdcbb231b4cf7b582f1f272a8c0fee7f6287da3a2ba0271eb28724` |
+| `src/common/requirements.tex` | `a74b12fe762d7248ae7ddff91208561a829e7b4213cf8dc409365b284d5e2508` |
+| `src/common/edge_cases.tex` | `d74901e1fc8f67e52c166d8a3f0933c1906651ee7588b6afad545b12872177ae` |
+| `src/scientific-rationale.tex` | `3adc73b8c9f8ca257a78a9ea97859bdef0f3bcbb94e86081a1454cf5623cf474` |
+| `src/engineering-conformance.tex` | `159b4e74672a35b021e7c4a1b42bc7a0e8de93d45c41dd0190bc63a57edfb9cd` |
+| `AUTHOR_DRAFT_DECISIONS.md` | `f260879cf004b9c37ce58ef763eabc7c1a485117d6e9d4e5ad3de377dec85114` |
+| `CROSSWALK.md` | `378298f296b436c89bfbdb3d3e53741f93301332d291b65e18c62e9ec6e4b969` |
 | `src/generate_crosswalk.py` | `e022f0463a215f81dbd731e5dea27fdcd253fffedd2bc0b6e216486ffa64b797` |
-| `src/verify_contract.py` | `1bbdea1a091ceda9b12dafede31cc66aeb324d285c22fe6899c5de8b14b1f2ff` |
+| `src/verify_contract.py` | `264fa001c788cbfc189143df1289bbc87d563993235f958351bfe690ad8adc29` |
 
 The separate candidate PDFs are:
 
 - scientific rationale, 12 letter pages, SHA-256
-  `69dc2c86f6193434fcbba3737def8395f5d650c30eb6858ab6b85e47e2a5b7d0`;
+  `ce5ccaed4c570533e2d6e96a3230e6eda3b99555aff411494bce0acb0a56cdec`;
 - engineering conformance, 25 letter pages, SHA-256
-  `cfee3e2f691289ef6bb6a81100051277f65a2e8a6bface962afc8477aa03d9a6`.
+  `bbdb32535511395925b8b85c1529b94365a8e077bd8dd5ccbdd32ae46d5f47e0`.
 
 The canonical r0.4 PDF hashes remain:
 
@@ -102,12 +102,17 @@ Poppler and inspected for clipping, overlap, and legibility.
 
 ## Remaining owner review before freeze
 
-The following is deliberately not inferred by the author:
+The first owner-review gate was resolved on `2026-08-23`: the ordinary route
+uses the support-normalized arithmetic mean per detector over finite
+basis-fit-admitted occurrences within one immutable PTC segment, with binary
+centering influence, no numerical reweighting or cross-boundary borrowing,
+and fail-closed invalid-support behavior. This resolution updates Definition
+007, Equation 3, Assumption 031, Requirements 023 and 093, Prediction 005, and
+the two audience views.
 
-1. the exact detector-wise time-axis location estimator and its boundary rule
-   for `lambda_g`; and
-2. final acceptance of the Equation 8 mask-aware coefficient realization as
-   the exact ordinary-route operator text.
+The remaining substantive item deliberately not inferred by the author is
+final acceptance of the Equation 8 mask-aware coefficient realization as the
+exact ordinary-route operator text.
 
 Until those items are resolved and the full candidate receives a separate
 owner approval, r0.5 remains non-authoritative. This packet makes no claim of

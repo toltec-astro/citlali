@@ -14,7 +14,7 @@
 
 \PTCDefinition{006}{Gauge}{A sign, scale, ordering, or rotation freedom in a basis/loading representation that leaves the fitted correlated component and removed subspace unchanged.}
 
-\PTCDefinition{007}{Centering state}{The declared detector-wise time-axis additive location estimate $\lambda_g$ within one exact segment and configured group, including population, weights, support, masks, boundary, unit, estimator, and failure rule used to define $C_{\lambda_g}(Y_g)=Y_g-\lambda_g$. The location is discarded rather than restored because detector $x$ has no scientifically meaningful optical DC response.}
+\PTCDefinition{007}{Centering state}{For the ordinary route, the detector-wise time-axis additive location $\lambda_{g,d}$ is the support-normalized arithmetic mean of finite basis-fit-admitted occurrences for detector $d$ within one exact immutable PTC segment and configured group. Its centering weights are binary: one on that exact support and zero influence otherwise. No inverse-noise or other numerical weighting, cross-segment or cross-group borrowing, or gap bridging is permitted. The state includes support, mask, segment boundary, unit, denominator, and failure rule used to define $C_{\lambda_g}(Y_g)=Y_g-\lambda_g$. The location is discarded rather than restored because detector $x$ has no scientifically meaningful optical DC response.}
 
 \PTCDefinition{008}{Scaling state}{The declared nonzero internal scale, axis, population, weights, estimator, support, unit, and inverse transform used for numerical conditioning.}
 
