@@ -413,11 +413,188 @@ TEST(canonical_apt_v2,
         std::string("{\"protocol\":\"") +
         std::string(protocol::protocol_v2) +
         "\",\"request_id\":\"test\",\"operation\":\"" +
-        std::string(protocol::issue_observation_apt_operation_v2) +
+        std::string(protocol::canonicalize_target_operation_v2) +
         "\",\"payload\":{}}";
     EXPECT_EQ(protocol::process_request_line(
                   disabled, protocol::production_dependencies()).exit_code,
               protocol::contract_rejection_exit_code);
+}
+
+TEST(canonical_apt_v2,
+     public_protocol_issues_and_rereads_tolproj_matched_bundle) {
+    namespace protocol =
+        citlali::cli::canonical_apt_contract_protocol_v2;
+    TemporaryDirectory temporary;
+
+    auto baseline = baseline_fixture();
+    baseline.apt.field_rules.push_back(
+        {6, "flag", apt::ValueType::int64, "N/A", false,
+         "producer", std::string("citlali:beammap-fit-v1"),
+         apt::FieldOperation::preserve_target, std::nullopt, "reject",
+         "nonidentity", "beammap fit quality flag"});
+    baseline.apt.rows.at(0).fields.emplace("flag", std::int64_t{0});
+    baseline.apt.rows.at(1).fields.emplace("flag", std::int64_t{1});
+    const auto baseline_prepared = apt::prepare_baseline_bundle(
+        baseline.apt, baseline.sources);
+    const auto baseline_dir = temporary.path / "baseline.apt-v2";
+    ASSERT_TRUE(std::filesystem::create_directory(baseline_dir));
+    const auto baseline_manifest = baseline_dir / apt::root_manifest_name_v2;
+    (void)apt::publish_prepared_bundle(
+        baseline_manifest, baseline_prepared);
+
+    const auto raw_path = temporary.path / "toltec0_148669_raw.nc";
+    const auto kmp_path = temporary.path / "toltec0_148668_tune.txt";
+    const std::string raw_bytes = "raw-observation-source\n";
+    const std::string kmp_bytes = "kmp-observation-source\n";
+    {
+        std::ofstream output(raw_path, std::ios::binary);
+        output << raw_bytes;
+    }
+    {
+        std::ofstream output(kmp_path, std::ios::binary);
+        output << kmp_bytes;
+    }
+
+    const auto match_path = temporary.path / "match-request.json";
+    const auto output_dir = temporary.path / "matched.apt-v2";
+    ASSERT_TRUE(std::filesystem::create_directory(output_dir));
+    const auto output_manifest = output_dir / apt::root_manifest_name_v2;
+    const auto bits = [](double value) {
+        return apt::canonical_binary64(value);
+    };
+    const auto source_json = [&](std::int64_t uid, std::string_view role,
+                                 const std::filesystem::path &path,
+                                 std::string_view bytes,
+                                 std::string_view observation) {
+        return std::string("{\"source_uid\":\"") + std::to_string(uid) +
+            "\",\"role\":\"" + std::string(role) +
+            "\",\"locator\":\"" + path.string() +
+            "\",\"content_sha256\":\"sha256:" +
+            citlali::utils::sha256(bytes) + "\",\"byte_count\":\"" +
+            std::to_string(bytes.size()) +
+            "\",\"header_observation\":" + std::string(observation) +
+            ",\"nw\":\"0\",\"interface\":\"toltec0\"," +
+            "\"channel_count\":\"2\"}";
+    };
+    const std::string target_observation =
+        "{\"obsnum\":\"148669\",\"subobsnum\":\"0\",\"scannum\":\"2\"}";
+    const std::string kmp_observation =
+        "{\"obsnum\":\"148668\",\"subobsnum\":\"0\",\"scannum\":\"1\"}";
+    const std::string row0 =
+        "{\"uid\":\"10\",\"input_uid\":\"77\",\"raw_source_uid\":\"20\"," +
+        std::string("\"kmp_source_uid\":\"21\",\"kmp_row_index\":\"0\",") +
+        "\"source_rank\":\"1\",\"application_rank\":\"0\"," +
+        "\"tone_freq_bits\":\"" + bits(1.0e9) +
+        "\",\"array\":\"0\",\"nw\":\"0\",\"kids_tone\":\"0\"," +
+        "\"kids_fr_bits\":\"" + bits(1.0e9) +
+        "\",\"kids_f_out_bits\":\"" + bits(1.0e9) +
+        "\",\"kids_Qr_bits\":\"" + bits(15000.0) + "\"}";
+    const std::string row1 =
+        "{\"uid\":\"11\",\"input_uid\":\"77\",\"raw_source_uid\":\"20\"," +
+        std::string("\"kmp_source_uid\":\"21\",\"kmp_row_index\":\"1\",") +
+        "\"source_rank\":\"0\",\"application_rank\":\"1\"," +
+        "\"tone_freq_bits\":\"" + bits(1.1e9) +
+        "\",\"array\":\"0\",\"nw\":\"0\",\"kids_tone\":\"1\"," +
+        "\"kids_fr_bits\":\"" + bits(1.1e9) +
+        "\",\"kids_f_out_bits\":\"" + bits(1.1e9) +
+        "\",\"kids_Qr_bits\":\"" + bits(16000.0) + "\"}";
+    const std::string match_document =
+        "{\"schema\":\"tolproj-canonical-apt-match-request-v1\"," +
+        std::string("\"producer\":\"tolproj\",\"software_revision\":\"fixture\",") +
+        "\"configuration_sha256\":\"" + digest('6') +
+        "\",\"event_time_utc\":\"2026-08-23T12:00:00Z\"," +
+        "\"observation\":" + target_observation + ",\"sources\":[" +
+        source_json(20, "raw", raw_path, raw_bytes, target_observation) + "," +
+        source_json(21, "kmp", kmp_path, kmp_bytes, kmp_observation) +
+        "],\"rows\":[" + row0 + "," + row1 + "],\"matcher\":{" +
+        "\"implementation_sha256\":\"" + digest('7') +
+        "\",\"configuration_sha256\":\"" + digest('8') +
+        "\",\"method\":\"tolproj-legacy-tone-match\"," +
+        "\"backend\":\"astropy\"},\"network_evidence\":[{" +
+        "\"evidence_uid\":\"30\",\"nw\":\"0\"," +
+        "\"frequency_shift_bits\":\"" + bits(0.0) +
+        "\",\"gate_bits\":\"" + bits(200000.0) +
+        "\",\"quality_factor_bits\":\"" + bits(15000.0) +
+        "\"}],\"matches\":[{\"target_uid\":\"10\",\"seed_uid\":\"5\"," +
+        "\"separation_bits\":\"" + bits(0.0) +
+        "\",\"is_good_match\":\"true\"}]}";
+    {
+        std::ofstream output(match_path, std::ios::binary);
+        output << match_document;
+    }
+
+    std::size_t issuance_index = 0;
+    protocol::ProtocolDependencies dependencies;
+    dependencies.issuance_factory = [&] {
+        ++issuance_index;
+        return citlali::pipeline::canonical_artifact_publication::OpaqueIssuance{
+            "urn:fixture:occurrence:" + std::to_string(issuance_index),
+            "urn:fixture:event:" + std::to_string(issuance_index)};
+    };
+    const auto issue_request = [&](std::string_view match_sha256,
+                                   const std::filesystem::path &manifest) {
+        return "{\"protocol\":\"" + std::string(protocol::protocol_v2) +
+            "\",\"request_id\":\"issue\",\"operation\":\"" +
+            std::string(protocol::issue_observation_apt_operation_v2) +
+            "\",\"payload\":{\"baseline_root_manifest\":\"" +
+            baseline_manifest.string() + "\",\"match_request\":\"" +
+            match_path.string() + "\",\"match_request_sha256\":\"" +
+            std::string(match_sha256) +
+            "\",\"publication_root_manifest\":\"" + manifest.string() +
+            "\"}}";
+    };
+    const auto match_sha256 =
+        "sha256:" + citlali::utils::sha256(match_document);
+    const auto request = issue_request(match_sha256, output_manifest);
+
+    const auto issued = protocol::process_request_line(request, dependencies);
+    EXPECT_EQ(issued.exit_code, protocol::success_exit_code)
+        << issued.response_json << "\nrequest=" << request
+        << "\nmatch_document=" << match_document;
+    EXPECT_NE(issued.response_json.find(
+                  "\"product_kind\":\"observation-matched\""),
+              std::string::npos);
+    const auto verified = apt::verify_bundle_filesystem(output_manifest, true);
+    EXPECT_EQ(verified.manifest.observation,
+              (apt::ObservationIdentity{148669, 0, 2}));
+    EXPECT_EQ(verified.manifest.baseline_parent, baseline_prepared.identity);
+    EXPECT_EQ(verified.apt.rows.size(), 2U);
+    EXPECT_EQ(verified.apt.rows.at(0).fields.at("a_fwhm"), apt::Value{8.5});
+    EXPECT_TRUE(std::holds_alternative<apt::NullValue>(
+        verified.apt.rows.at(1).fields.at("a_fwhm")));
+    ASSERT_TRUE(verified.relation);
+    EXPECT_EQ(verified.relation->rows.at(0).disposition,
+              apt::RelationDisposition::matched);
+    EXPECT_EQ(verified.relation->rows.at(1).disposition,
+              apt::RelationDisposition::unmatched);
+    EXPECT_EQ(issuance_index, 3U);
+
+    const auto bad_digest_dir = temporary.path / "bad-digest.apt-v2";
+    ASSERT_TRUE(std::filesystem::create_directory(bad_digest_dir));
+    const auto bad_digest = protocol::process_request_line(
+        issue_request(digest('9'),
+                      bad_digest_dir / apt::root_manifest_name_v2),
+        dependencies);
+    EXPECT_EQ(bad_digest.exit_code,
+              protocol::contract_rejection_exit_code);
+    EXPECT_NE(bad_digest.response_json.find("digest disagrees"),
+              std::string::npos);
+
+    {
+        std::ofstream output(raw_path, std::ios::binary | std::ios::app);
+        output << "tamper";
+    }
+    const auto tampered_dir = temporary.path / "tampered-source.apt-v2";
+    ASSERT_TRUE(std::filesystem::create_directory(tampered_dir));
+    const auto tampered = protocol::process_request_line(
+        issue_request(match_sha256,
+                      tampered_dir / apt::root_manifest_name_v2),
+        dependencies);
+    EXPECT_EQ(tampered.exit_code,
+              protocol::contract_rejection_exit_code);
+    EXPECT_NE(tampered.response_json.find("bound source bytes disagree"),
+              std::string::npos);
+    EXPECT_EQ(issuance_index, 3U);
 }
 
 }  // namespace

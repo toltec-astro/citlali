@@ -1,5 +1,33 @@
 # Citlali Refactor Status
 
+## 2026-08-23 TolProj-Orchestrated Observation APT v2 Candidate
+
+The controlled `issue-observation-apt-v2` producer boundary is implemented as
+an integration candidate. TolProj owns project/cohort selection, exact raw/KMP
+source discovery and byte binding, and realization of the established tone
+matcher. Its compact SHA-pinned match request contains exact target KMP facts,
+source/application ranks, matcher evidence, and selected target/seed UIDs.
+Citlali remains the sole authority for target/relation validation, canonical
+identities, selected-seed value copying, typed unmatched nulls, receipt-last
+publication, and filesystem reread.
+
+The operation requires one fresh verified Beammap baseline and publishes one
+fresh observation-matched bundle without replacing any existing destination.
+Digest disagreement and post-request source-byte tampering fail before
+publication. `canonicalize-target-v2` and `migrate-v1-to-v2` remain disabled.
+This candidate does not change the Beammap producer, matcher numerics, ALIGN,
+JINC, RTC/PTC, detector membership, the shared APT library, or legacy APT
+selection. Stage 7 remains unaccepted until the owner runs the 152390 campaign
+and supplies the matched-product and science-reduction evidence.
+
+Local candidate verification passes the complete 646-test C++ binary with the
+established single disabled test, all 203 baseline-tool tests plus 137
+subtests, and all 127 config unit tests with all four mode kits. The six
+locally available OOF, Beammap, and Science compact-compatibility cases pass.
+The two Pointing cases remain unavailable because the owner-local
+`point/refactor/70_reduce.yaml` fixture is absent; this is the previously
+recorded external-input gap.
+
 ## 2026-08-23 Compact-v2 Product-Index Contamination Repair
 
 The first owner-produced Beammap compact-v2 baseline exposed a publication
@@ -499,16 +527,17 @@ by this status.
 This is the living roadmap and completion ledger for the Citlali refactor.
 Update it when a phase gate, governing decision, or validated snapshot changes.
 
-The current Citlali-only implementation checkpoint provides the compact v2
+The current implementation checkpoint provides the compact v2
 model, deterministic ECSV component codecs, content-addressed root bundle,
 receipt-last no-replace publisher, fresh Beammap baseline adapter, matched-v2
 consumer guardian, and read-only `validate-bundle-v2` /
 `describe-baseline-v2` public protocol. New v1 issuance is mechanically
-disabled. The v2 target canonicalizer, matched issuer, and v1 migration command
-remain fail-closed until the TolAPT/TolProj repair is integrated; this
-checkpoint therefore authorizes only the owner-run raw-only 148670 Beammap
-baseline canary documented in `CANONICAL_APT_V2.md`, not downstream APT use or
-scientific acceptance.
+disabled. The TolProj-orchestrated `issue-observation-apt-v2` integration
+candidate is active behind its closed request and verification boundary; the
+standalone target canonicalizer and v1 migration command remain fail-closed.
+This checkpoint authorizes only the controlled Stage 7 campaign documented in
+`CANONICAL_APT_V2.md`, not general APT-library activation or scientific
+acceptance.
 
 ## Governing Decision
 

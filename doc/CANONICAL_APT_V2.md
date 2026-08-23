@@ -65,6 +65,13 @@ v2 product only after the Citlali guardian verifies its root receipt and every
 component. TolTECA remains outside this contract and must not trim, synthesize,
 or re-key a canonical v2 APT.
 
+For the bounded Stage 7 integration candidate, TolProj's existing legacy tone
+matcher is the realized compatibility implementation and TolProj records its
+exact source/configuration digests and evidence. This does not transfer the
+long-term matching-science authority from TolAPT; replacing the compatibility
+implementation requires a separately reviewed producer change with equivalent
+request facts.
+
 The scientific matching behavior is preserved for non-ties: the existing
 network shift, median-Qr source, 200 kHz gate, good-seed-first then bad-seed
 pass, and missing-network behavior remain unchanged. Internal array indices
@@ -300,21 +307,46 @@ after receipt publication can yield a false-negative acknowledgement; the
 caller recovers by invoking `validate` on the requested destination. The
 strict local protocol has no owner-specified absolute stdin byte quota.
 
-### Current Citlali-only checkpoint
+### Public protocol checkpoint
 
-The public `--canonical-apt-contract-v2` boundary currently implements exactly
-two read-only operations:
+The public `--canonical-apt-contract-v2` boundary implements two read-only
+operations:
 
 - `validate-bundle-v2` verifies either fresh v2 bundle and returns its complete
   typed descriptor; and
 - `describe-baseline-v2` performs the same verification but requires a fresh
   Beammap baseline bundle.
 
-Both requests have the exact payload
+Both read-only requests have the exact payload
 `{"root_manifest":"/absolute/path/to/manifest.ecsv"}`.
-`canonicalize-target-v2`, `issue-observation-apt-v2`, and
-`migrate-v1-to-v2` are reserved operation names but fail closed before doing
-work until the separately owned TolAPT/TolProj compact-v2 boundary is landed.
+
+The controlled producer operation `issue-observation-apt-v2` has the exact
+payload:
+
+```json
+{
+  "baseline_root_manifest": "/absolute/path/to/baseline.apt-v2/manifest.ecsv",
+  "match_request": "/absolute/path/to/tolproj-match-request.json",
+  "match_request_sha256": "sha256:<64 lowercase hex>",
+  "publication_root_manifest": "/absolute/path/to/matched.apt-v2/manifest.ecsv"
+}
+```
+
+The external request is the closed
+`tolproj-canonical-apt-match-request-v1` schema. It binds every selected raw
+and KMP file by SHA-256 and byte count, exact header observation/network/
+interface/channel count, every target KMP value as canonical binary64, source
+and application ranks, matcher implementation/configuration digests, one
+finite evidence record per network, and only the realized selected
+target/seed UID pairs. Citlali verifies those source bytes, translates the
+request into its owned target/relation models, copies selected baseline values
+or writes typed nulls for unmatched rows, publishes receipt-last without
+replacement, rereads the complete filesystem bundle, and returns the normal
+typed descriptor. The caller independently invokes `validate-bundle-v2` and
+compares artifact, transport, relation, observation, and locator facts.
+
+`canonicalize-target-v2` and `migrate-v1-to-v2` remain reserved operation names
+and fail closed before doing work.
 The legacy v1 public issue operation likewise fails before payload or source
 processing. Read-only v1 describe/validate remain available solely for
 historical comparison and deliberate migration development.
