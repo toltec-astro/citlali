@@ -1,4 +1,4 @@
-% SCI-PTC v0.1 shared normative notation -- owner-review draft r0.4.
+% SCI-PTC v0.1 shared normative notation -- owner-review candidate r0.5.
 \section{Normative notation}
 \label{sec:normative-notation}
 
@@ -17,22 +17,27 @@ $S$ & Astronomical contribution on the admitted detector-time grid. \\
 $M_\star=[m_{\star,tk}]$ & Latent shared temporal-mode or supplied-template representation admitted by the signal model. \\
 $A_\star=[a_{\star,dk}]$ & Latent detector-loading representation for the admitted correlated component. \\
 $U_\star=M_\star A_\star^{\mathsf T}$ & Correlated-mode or supplied-template component admitted as the estimand; it is not yet a fitted estimate. \\
-$\widehat U=\widehat M\widehat A^{\mathsf T}$ & Realized fitted estimate of the correlated component in the calibrated signal unit. \\
+$\widehat{\widetilde U}_{\rm corr}=\widehat M\widehat A^{\mathsf T}$ & Realized fitted estimate of the correlated component in the declared scaled fitting coordinate. \\
+$\widehat U_{\rm corr}=D\widehat{\widetilde U}_{\rm corr}$ & Realized fitted correlated component restored to the admitted CAL physical unit; correlation does not identify its physical origin. \\
+$U_{{\rm total},\Theta}(Y')=Y'-\mathcal A_\Theta(Y')$ & Total removed signal defined by the input-output difference for the exact application operator; for the nonrestoring linear specialization it contains both the discarded $\lambda$ and the correlated-subspace component. \\
 $Z\equiv Y^{\rm PTC}$ & Transformed calibrated detector timestream. \\
 $N$ & Remaining detector-noise term; it is not assumed independent or stationary. \\
-$\mathcal G$ & Declared within-array hierarchy and its joint or sequential fit order. \\
+$g,\mathcal G$ & One configured PCA group and the selected group set: one full array for array-level PCA or the set of readout networks in that array for network-level PCA. \\
 $C_{\lambda},D,\lambda$ & Nonrestoring centering map $C_{\lambda}(Y)=Y-\lambda$, invertible internal scaling operator, and declared learned additive-location state. \\
 $\widehat{\mathcal U}$ & Realized removed subspace, represented independently of basis gauge. \\
 $\mathcal N_{\rm PTC}$ & Declared PTC null space, including additive-reference losses. \\
 $\mathcal S^{j}$ & Support for use $j$: basis fit, loading fit, application, output, coefficient/QC, response, empirical, simulation, or downstream use. \\
 $\Phi,\mathcal I,\mathcal C$ & Typed direct causes, transitive causal-influence record, and the accumulated cause/fact set or graph retained without erasure. \\
-$U,b_U,p_{i,U}$ & Exact named scientific use, its owner-controlled base predicate, and one applicable owner-controlled permission predicate derived from retained fact or cause $i$. \\
+$U,\mathcal R_U,K(r)$ & Exact named scientific use, its complete owner-controlled required-restriction set, and the T/F/U/C knowledge state of restriction $r$. \\
+$\mathcal M_{\rm cand},c,c_\star$ & Finite candidate-model-specification set, one candidate specification, and the selected specification before resolution into $\Theta$; $\mathcal C$ is never reused for this role. \\
+$W^{\rm fit}_{g},W^{\rm app}_{g,t}$ & Exact group-local fit-influence and time-local application-influence masks or weights; zero influence is not a numerical zero observation. \\
+$k_{{\rm req},g}$ & Explicitly requested strictly positive PCA rank for group $g$; zero is invalid and is not PTC-disabled. \\
 $R,E,O$ & Requested, effective-policy, and observation-resolved input states. \\
 $\mathfrak L$ & Complete learned/fitted evidence for every evaluated candidate, before final selection. \\
-$\Theta$ & Immutable resolved selected model, including the exact application map and all selection evidence. \\
+$\Theta_g$ & Immutable group-local resolved selected model, including exact grouping level, support, masks, metric, rank, subspace, degeneracy, generalized inverse/tolerance, application map, and selection or feasibility evidence. \\
 $\Lambda,\Pi$ & Applied/realized state and published product state. \\
-$\mathcal A_{\Theta}$ & Exact frozen-state numerical application map acting on an admitted detector-time input. \\
-$J_{\Theta}[Y]$ & Fr\'echet derivative $D\mathcal A_{\Theta}[Y]$, or the declared finite-dimensional linear part when $\mathcal A_{\Theta}$ is affine. \\
+$\mathcal A_{\Theta_g}$ & Exact frozen-state numerical application map acting on one admitted group-local detector-time input. \\
+$J_{\Theta_g}[Y_g]$ & Fr\'echet derivative $D\mathcal A_{\Theta_g}[Y_g]$, or the declared finite-dimensional linear part when $\mathcal A_{\Theta_g}$ is affine. \\
 $\mathcal L^{t}_{\Theta},\mathcal L^{d}_{\Theta},\mathcal L^{v}_{\Theta}$ & Frozen projection operators in temporal, detector, or explicitly vectorized detector-time space. \\
 $\mathcal P=(\mathcal P_Z,\mathcal P_{\Lambda})$ & Full data-dependent PTC procedure and its transformed-signal and typed-state projections. \\
 $K_{\rm up\to CAL}$ & Complete admitted upstream response carried by the CAL product from a declared source-domain perturbation to the CAL detector-time grid, including every applicable admitted source-to-detector, beam-convention, coordinate/scan, RTC, and CAL operation; otherwise an explicit unavailable state. \\

@@ -349,7 +349,8 @@ Append requirements covering at minimum:
 2. mutually exclusive configured network/array grouping;
 3. group-local support, masks, centering, subspace, rank, application, and
    kernel state;
-4. detector-wise time-axis arithmetic centering and identity scaling;
+4. detector-wise time-axis centering with its exact estimator retained as an
+   owner-required input, and identity scaling;
 5. explicit integer `k\ge1` and per-group feasibility;
 6. rank-zero and unrealizable-rank fail-closed behavior;
 7. one immutable-parent fit and zero support-changing refinements;
@@ -457,4 +458,3 @@ Before returning the candidate for owner review:
 
 No final VAL binding or horizontal re-audit begins from an unfrozen r0.5
 candidate.
-

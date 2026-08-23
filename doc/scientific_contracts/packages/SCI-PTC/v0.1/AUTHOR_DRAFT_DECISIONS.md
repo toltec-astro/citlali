@@ -1,8 +1,8 @@
 # SCI-PTC v0.1 -- Stage B Author Decisions And Owner Ledger
 
-Status: frozen scientific-authority author ledger, document revision `r0.4`
+Status: scientific-owner review candidate author ledger, document revision `r0.5`; frozen predecessor remains `r0.4`
 
-Date: `2026-08-20`
+Date: `2026-08-23`
 
 This ledger records choices made while consolidating the owner-approved author
 packet. It does not report implementation behavior or validation evidence.
@@ -38,6 +38,15 @@ packet. It does not report implementation behavior or validation evidence.
 | `PTC-AUTH-D025` | Compose applicable producer causes by union without erasure, then evaluate PTC-local admission as the base predicate conjoined with every applicable permission predicate; one exclusion cannot be rescued and an unknown required predicate yields `decision_unavailable`. | Cause provenance is conserved while admission remains deterministic, conservative, and specific to one named scientific use. |
 | `PTC-AUTH-D026` | Assign each producer its facts and local predicates, PTC its local named-use composites, each downstream named-use owner its own admission policy, and VAL only shared types, knowledge/cause-preservation semantics, provenance, evaluation machinery, and vocabulary. | Neither VAL nor PTC silently owns MAP admission or a universal eligibility policy. Every composite records exact inputs, rule, missing behavior, scope, use, owner, and policy/version identity. |
 | `PTC-AUTH-D027` | Treat detector centering as a nonrestoring coordinate operation: the output is `P(x-lambda)`, not `lambda+P(x-lambda)`; fixed response freezes `lambda`, while full-procedure response re-estimates, records, and again discards it. | The contract no longer implies a meaningful optical DC level for detector `x`; only invertible internal scaling is restored. |
+| `PTC-AUTH-D028` | Apply approved `WP1-OWNER-D001`: define transformed signal through the complete application operator, distinguish scaled and physical correlated components, and define total removed signal by input-output identity. | `lambda`, correlated-subspace removal, and total removal remain distinct and physically origin-neutral; F-001 receives a bounded candidate repair. |
+| `PTC-AUTH-D029` | Apply approved `WP1-OWNER-D002`: replace the incomplete eligibility pair with a total T/F/U/C rule after request, binding, and applicability checks. | Base-false is covered; causes and conflicts remain visible; VAL evaluates but does not author PTC policy. |
+| `PTC-AUTH-D030` | Apply approved `WP1-OWNER-D003`: keep permissions use-specific, preserve CAL classification, and let each use owner decide whether engineering-only input is admissible. | PTC mathematics is not globally prohibited by classification and no unnecessary engineering route is introduced. |
+| `PTC-AUTH-D031` | Apply approved `WP1-OWNER-D004`: reserve `mathcal C` for causes and use `mathcal M_cand` for candidate model specifications while retaining candidate `c`. | F-009 receives a notation-only candidate repair without colliding with temporal-mode symbol `m`. |
+| `PTC-AUTH-D032` | Apply approved `WP1-OWNER-D005`: PTC-disabled selects complete RTC export and successful termination before CAL/PTC/MAP. | No fabricated disabled PTC roles and no direct CAL-to-MAP fallback; F-011 receives a route-level candidate repair. |
+| `PTC-AUTH-D033` | Apply approved `WP1-OWNER-D006`: the ordinary route selects network- or array-level PCA and scopes support, masks, fit, application, resolved state, and kernel response to that group. | Network mode is group-isolated; array mode may couple networks; the alternatives are not an implicit hierarchy. |
+| `PTC-AUTH-D034` | Apply approved `WP1-OWNER-D007`: the ordinary rank is explicit, integer, strictly positive, and independently feasible per group. | `k=0` and unrealizable rank fail without clipping, centering-only output, route conversion, or map; automatic selection becomes a deferred family. |
+| `PTC-AUTH-D035` | Apply approved `WP1-OWNER-D008`: one immutable-parent fit per group, zero support-changing refinement, advisory diagnostics, inert `r`, and exact group-local fixed-state kernel propagation. | Source protection, simulation, recurrence, full-procedure response, and stronger covariance remain outside the first route. |
+| `PTC-AUTH-D036` | Treat the exact mask-aware time-local coefficient equation in r0.5 as candidate author text requiring the separate final owner review authorized by `WP1-OWNER-D009`. | The author does not infer implementation behavior; final operator text is not frozen by this drafting decision. |
 
 ## Scientific Owner Decision Ledger
 
@@ -45,10 +54,10 @@ packet. It does not report implementation behavior or validation evidence.
 | --- | --- | --- | --- | --- | --- | --- |
 | `PTC-OWNER-Q001` | Grant Wilson | decided | Base v0.1 uses diagnostic-only, inert/advisory conditioned `r`. | Cross-channel `x <- r` subtraction and `r`-controlled `x` decisions are unavailable. | Grant Wilson, `2026-08-19` | All shared modules and both views |
 | `PTC-OWNER-Q002` | Grant Wilson | decided | Base-v0.1 PCA/SVD applies any admitted science input or fixed-state companion by projection through the frozen realized subspace and metric; each family declares exact acting space and coefficient recomputation. | Frozen numerical reconstruction subtraction is not the PCA/SVD response rule; it remains only a separately named affine family. | Grant Wilson, `2026-08-20` | Definitions 014, 029--032; Equations 2, 8--9, 15--16; Requirements 019, 029, 062, 083; Predictions 039--041; both views |
-| `PTC-OD-001` | Scientific owner | open | Select numerical residual-contamination, typed astronomical-transfer, conditioning, support, stability, and QC predicates for a concrete product role. | Automatic candidate admission for that role. | Scientific owner; date open | Requirements 034--040 and 085; predictions 017--020 and 046 |
+| `PTC-OD-001` | Scientific owner | deferred for ordinary route | Select numerical residual-contamination, typed astronomical-transfer, conditioning, support, stability, and QC predicates only for a separately requested automatic-selection family. | Automatic candidate admission; the ordinary route uses explicit positive rank. | Grant Wilson, ordinary-route disposition `2026-08-23`; future family open | Requirements 034--040 and 085; predictions 017--020 and 046 |
 | `PTC-OD-002` | Scientific owner | open | Select a mandatory/default estimator family, if absence of an explicit request is ever to be accepted. | Automatic operation when estimator family is absent. | Scientific owner; date open | Requirements 008, 026--030 |
-| `PTC-OD-003` | Scientific owner | open | Select concrete centering/scaling estimators and boundaries for each intended product role. | Automatic coordinate resolution when the request is incomplete. | Scientific owner; date open | Requirements 023--024 |
-| `PTC-OD-004` | Scientific owner | open | Select registered post-fit diagnostic thresholds and finite refinement count for each product role. | Policy-changing detector classification; diagnostics remain reportable when otherwise defined. | Scientific owner; date open | Requirements 042--048 |
+| `PTC-OD-003` | Scientific owner | partly decided | Detector-wise time-axis nonrestoring centering and identity scaling are selected for the ordinary route; exact location estimator and boundaries remain required inputs. | Ordinary route remains unavailable when centering authority is absent; no estimator default is inferred. | Grant Wilson, partial disposition `2026-08-23`; estimator open | Requirements 023--024 and 093 |
+| `PTC-OD-004` | Scientific owner | decided for ordinary route | Ordinary diagnostics are advisory and maximum support-changing refinements are zero. Future policy-changing refinement needs separate thresholds and authority. | No ordinary hidden refit; future classification/refinement remains unavailable. | Grant Wilson, `2026-08-23` | Requirements 042--048 and 096 |
 | `PTC-OD-005` | SCI-RTC or named conditioner | known but not supplied | Provide a PTC-compatible conditioned-`r` product with exact operator, unit, response, validity, optical-leakage state, and `x`-grid relation. | Optional diagnostic-$r$ branch. | Upstream owner; date open | Requirement 030; predictions 025--026 |
 | `PTC-OD-006` | SCI-MAP | known but not supplied | Provide an exact named reference-map operator and center selector. | Optional estimated map-center point-source response diagnostic. | SCI-MAP owner; date open | Requirements 067--068; prediction 034 |
 | `PTC-OD-007` | SCI-CAL | known but not supplied | Supply a numerically admitted CAL product with complete response and uncertainty state for the requested observation. | Numerical calibrated PTC product and complete composed response. | SCI-CAL owner; date open | Requirements 001--003, 061 |
@@ -60,8 +69,10 @@ packet. It does not report implementation behavior or validation evidence.
 
 ## Draft Blocking Assessment
 
-No open item blocks the frozen structural scientific contract or either
-document view. Open and known-but-not-supplied items block only
-automatic/default instantiation or the specifically named numerical product or
-claim. The v0.1/r0.4 freeze supplies no missing decision and makes no
-conformity, validation, performance, qualification, or readiness claim.
+The r0.5 text is a review candidate, not frozen authority. The exact ordinary
+centering estimator remains owner-required input, and each runtime instance
+still requires an admitted CAL parent. Other open items block only their
+named automatic-selection, optional diagnostic, stronger response/covariance,
+source-protection, MAP-facing, or evidentiary claims. No implementation,
+numerical-validation, performance, qualification, or readiness evidence was
+consulted or is claimed.

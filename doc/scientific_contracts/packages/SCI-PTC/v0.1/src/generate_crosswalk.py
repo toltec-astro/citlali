@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate or check the exact SCI-PTC v0.1/r0.4 crosswalk."""
+"""Generate or check the exact SCI-PTC v0.1/r0.5 candidate crosswalk."""
 
 from __future__ import annotations
 
@@ -57,7 +57,7 @@ def render() -> str:
     lines = [
         "# SCI-PTC v0.1 -- Requirement And Prediction Crosswalk",
         "",
-        "Status: frozen scientific authority `v0.1/r0.4`; generated from the shared "
+        "Status: scientific-owner review candidate `v0.1/r0.5`; generated from the shared "
         "normative macro metadata",
         "",
         f"Coverage: {len(requirements)} requirements and {len(predictions)} predictions.",

@@ -1,20 +1,20 @@
-% SCI-PTC v0.1 shared normative definitions -- owner-review draft r0.4.
+% SCI-PTC v0.1 shared normative definitions -- owner-review candidate r0.5.
 \section{Normative definitions}
 \label{sec:normative-definitions}
 
 \PTCDefinition{001}{Admitted CAL parent}{The immutable SCI-CAL detector-time product accepted by all required unit, identity, validity, lineage, uncertainty, and response gates. It is the numerical parent of every base-v0.1 fit and support-changing refit.}
 
-\PTCDefinition{002}{Correlated-mode estimand}{A latent declared detector-time component $U_\star$ represented by a shared temporal basis or supplied template and detector loadings. PTC estimates $\widehat U$ and the realized removed subspace $\widehat{\mathcal U}$; statistical correlation does not identify their physical origin.}
+\PTCDefinition{002}{Correlated-mode estimand}{A latent declared detector-time component $U_\star$ represented by a shared temporal basis or supplied template and detector loadings. PTC estimates $\widehat{\widetilde U}_{\rm corr}=\widehat M\widehat A^{\mathsf T}$ in the scaled fitting coordinate and $\widehat U_{\rm corr}=D\widehat{\widetilde U}_{\rm corr}$ in the admitted CAL physical unit, plus the realized removed subspace $\widehat{\mathcal U}$. The operator-defined total removed signal is distinct, and statistical correlation does not identify the physical origin of either removed quantity.}
 
-\PTCDefinition{003}{Transformed detector signal}{The calibrated detector-time signal after discarding the learned additive detector reference, applying the realized correlated-mode operation, and restoring only invertible internal scaling. The discarded reference carries no scientifically meaningful optical DC information. The result is not an independent sky estimate.}
+\PTCDefinition{003}{Transformed detector signal}{The operator-primary result $Z=\mathcal A_\Theta(Y^{\rm CAL})$ after discarding the learned additive detector reference, applying the realized correlated-mode operation, and restoring only invertible internal scaling. The total removed signal is defined as $U_{{\rm total},\Theta}(Y^{\rm CAL})=Y^{\rm CAL}-Z$ rather than identified with the fitted correlated component alone. The discarded reference carries no scientifically meaningful optical DC information. The result is not an independent sky estimate.}
 
-\PTCDefinition{004}{Removed subspace}{The complete realized subspace or template span whose fitted contribution is subtracted, including its group, support, metric, rank, order, and gauge-equivalence class.}
+\PTCDefinition{004}{Removed subspace}{The complete realized subspace or template span whose fitted contribution is rejected, including its configured network- or array-level group, support, masks, metric, strictly positive rank, order, degeneracy, generalized-inverse state, and gauge-equivalence class.}
 
-\PTCDefinition{005}{Null space}{The set of admitted input perturbations that the complete realized operation maps to zero or makes unidentifiable, including additive-reference loss and any sky component overlapping the removed subspace.}
+\PTCDefinition{005}{Null and loss roles}{Three separately published roles: the fixed-state linear null $\ker J_\Theta$; modes made invariant or unidentifiable when centering is re-estimated by a declared full procedure; and the affine additive-reference loss caused by discarding $\lambda$. A sky component overlapping the removed subspace may appear in one or more roles, but the roles are not interchangeable.}
 
 \PTCDefinition{006}{Gauge}{A sign, scale, ordering, or rotation freedom in a basis/loading representation that leaves the fitted correlated component and removed subspace unchanged.}
 
-\PTCDefinition{007}{Centering state}{The declared additive location estimate $\lambda$, axis, population, weights, support, masks, boundary, unit, estimator, and failure rule used to define $C_{\lambda}(Y)=Y-\lambda$. The location is discarded rather than restored because detector $x$ has no scientifically meaningful optical DC response.}
+\PTCDefinition{007}{Centering state}{The declared detector-wise time-axis additive location estimate $\lambda_g$ within one exact segment and configured group, including population, weights, support, masks, boundary, unit, estimator, and failure rule used to define $C_{\lambda_g}(Y_g)=Y_g-\lambda_g$. The location is discarded rather than restored because detector $x$ has no scientifically meaningful optical DC response.}
 
 \PTCDefinition{008}{Scaling state}{The declared nonzero internal scale, axis, population, weights, estimator, support, unit, and inverse transform used for numerical conditioning.}
 
@@ -26,9 +26,9 @@
 
 \PTCDefinition{012}{Output support}{Occurrences eligible to remain in a transformed output; it is independent of fit and application supports.}
 
-\PTCDefinition{013}{Cause and named-use support policy}{Producer facts and causes accumulate without erasure in $\mathcal C$. For each exact PTC-owned scientific use $U$, an immutable owner-controlled policy maps all applicable facts and causes to a composite support decision with declared inputs, Boolean rule, missing-state behavior, scope, use, and policy/version identity. A downstream use owner applies its own rule to the preserved facts supplied by PTC.}
+\PTCDefinition{013}{Cause and named-use support policy}{Producer facts and causes accumulate without erasure in $\mathcal C$. For each exact PTC-owned scientific use $U$, an immutable owner-controlled policy supplies the complete required-restriction set $\mathcal R_U$, exact inputs, T/F/U/C knowledge states, exceptions, scope, use, missing/conflict behavior, and policy/version identity. VAL evaluates the supplied proposition under the common total knowledge rule but does not invent PTC science. A downstream use owner applies its own rule to the preserved facts supplied by PTC.}
 
-\PTCDefinition{014}{Fixed-state application map}{The exact numerical map $\mathcal A_{\Theta}$ obtained after all fitted, selected, classified, ranked, grouped, masked, metric, support, coordinate, centering location $\lambda$, and fallback state is frozen. It subtracts but does not restore the frozen $\lambda$. For an admitted PCA/SVD family it projects any admitted application input through the frozen realized subspace and metric, with its acting space and coefficient recomputation declared.}
+\PTCDefinition{014}{Fixed-state application map}{The exact group-local numerical map $\mathcal A_{\Theta_g}$ obtained after all fitted, selected, classified, ranked, grouped, masked, metric, support, coordinate, centering location $\lambda_g$, generalized-inverse, tolerance, and failure state is frozen. It subtracts but does not restore the frozen $\lambda_g$. For the ordinary PCA/SVD family it recomputes time-local coefficients against the frozen detector-loading subspace using the exact group-local application-influence state.}
 
 \PTCDefinition{015}{Full PTC procedure}{The complete learn, fit, select, rank, classify, refit, apply, and publish operation beginning from the immutable admitted CAL parent.}
 
@@ -38,9 +38,9 @@
 
 \PTCDefinition{018}{Full-procedure response}{A finite-perturbation signal response produced by rerunning the complete PTC procedure from the immutable admitted CAL parent. It is paired with a typed comparison of changed discrete/mixed state and may be a family over amplitude, side, source state, or location.}
 
-\PTCDefinition{019}{Post-fit detector assessment}{A bounded evaluation of declared residual, loading, influence, stability, source-response, and diagnostic quantities used to classify detector state.}
+\PTCDefinition{019}{Post-fit detector assessment}{A bounded evaluation of declared residual, loading, influence, stability, source-response, and diagnostic quantities. In the ordinary configured-rank route it is advisory and cannot change group membership, support, rank, or resolved state.}
 
-\PTCDefinition{020}{Support-changing refinement}{A post-fit classification change that alters basis-fit or loading-fit support and therefore requires one complete refit from the immutable admitted CAL parent.}
+\PTCDefinition{020}{Support-changing refinement}{A separately authorized future capability in which a post-fit classification change alters basis-fit or loading-fit support and therefore requires one complete refit from the immutable admitted CAL parent. The ordinary configured-rank route permits zero such refinements.}
 
 \PTCDefinition{021}{PTC pass}{A complete PTC realization with an immutable input parent and distinct realized identity. It is neither an internal solver iteration nor an external FRUIT recurrence.}
 
@@ -52,25 +52,25 @@
 
 \PTCDefinition{025}{Typed availability}{A role-specific response, covariance, coefficient, or diagnostic status among \texttt{computed\_published}, \nolinkurl{not_computed_or_not_requested_for_this_product}, \texttt{invalid}, or \texttt{unavailable}, with a cause and affected claim. It is distinct from whether a product exists or was realized.}
 
-\PTCDefinition{026}{Least-aggressive admissible candidate}{The first candidate under a declared ordering for which every required residual-contamination, astronomical-transfer, conditioning, support, stability, and QC predicate passes. No failed predicate can be offset by a scalar score.}
+\PTCDefinition{026}{Least-aggressive admissible candidate}{For a separately requested future automatic-selection family, the first candidate under a declared ordering for which every required residual-contamination, astronomical-transfer, conditioning, support, stability, and QC predicate passes. No failed predicate can be offset by a scalar score. This is not the ordinary configured-rank route.}
 
 \PTCDefinition{027}{Map-center response diagnostic}{The optional scalar functional of an exact source companion, propagated PTC response, exact named reference MAP operator, and center selector. It is neither the general PTC response nor MAP authority.}
 
 \PTCDefinition{028}{Material state}{Every requested, resolved, learned, fitted, selected, classified, applied, randomized, fallback, or publication quantity capable of changing a declared output, response, coefficient, uncertainty, or downstream use.}
 
-\PTCDefinition{029}{Learned/fitted evidence state}{The complete record $\mathfrak L$ of every evaluated candidate, its fitted state, diagnostics, predicate values and units, pass/fail causes, ordering, tie result, and disposition before final selection.}
+\PTCDefinition{029}{Learned/fitted evidence state}{The complete record $\mathfrak L$ of every evaluated candidate-model specification and its fitted or failed state. For the ordinary route it retains the one explicitly requested positive-rank candidate, exact group-local feasibility evidence, diagnostics, and cause. A future automatic-selection family additionally retains every predicate value and unit, pass/fail cause, ordering, tie result, and disposition.}
 
-\PTCDefinition{030}{Resolved selected model}{The immutable state $\Theta$ selected from learned evidence, including its exact basis/subspace, acting space, metric, coefficient-recomputation rule, supports, coordinates, grouping, rank, classes, fallback, and application map.}
+\PTCDefinition{030}{Resolved selected model}{The immutable group-local state $\Theta_g$ resolved from learned evidence, including its configured network- or array-level identity, exact basis/subspace, detector-right acting space, metric, mask-aware coefficient-recomputation rule, supports, coordinates, strictly positive requested rank, degeneracy, generalized-inverse/tolerance, classes, failure state, and application map.}
 
-\PTCDefinition{031}{Frozen-subspace projection family}{An admitted PCA/SVD application family that recomputes application coefficients linearly against a frozen realized subspace and metric. It must declare temporal-left, detector-right, two-sided, detector/time-specific, or general vectorized action.}
+\PTCDefinition{031}{Frozen-subspace projection family}{An admitted PCA/SVD application family that recomputes application coefficients linearly against a frozen realized subspace and metric. The ordinary configured-rank route uses group-local detector-right, mask-aware coefficient recomputation. Any temporal-left, two-sided, detector/time-specific, or general vectorized action is a separately named family rather than an inferred orientation.}
 
-\PTCDefinition{032}{Frozen-component subtraction family}{A separately named affine family $Y'\mapsto Y'-\widehat U$ with one frozen numerical component. Its derivative is the identity; it is not interchangeable with frozen-subspace projection and is not the base-v0.1 PCA/SVD application rule.}
+\PTCDefinition{032}{Frozen-component subtraction family}{A separately named affine family $Y'\mapsto Y'-\widehat U_{\rm total}$ with the typed frozen operand $\widehat U_{\rm total}:=U_{{\rm total},\Theta}(Y^{\rm CAL})$. Its derivative is the identity; it is not interchangeable with frozen-subspace projection and is not the ordinary PCA/SVD application rule.}
 
 \PTCDefinition{033}{Realized propagated companion}{The detector-time companion after exactly one compatible application of the requested local or chain response. It records whether its parent was source-domain or already on the CAL grid and whether propagation was conditional or full-procedure.}
 
 \PTCDefinition{034}{Typed state comparison}{A field-aware comparison $\Delta_{\rm state}$ of learned, selected, classified, ranked, grouped, support, convergence, and fallback state across two procedure runs. Discrete state is compared by identity and disposition, never numerically subtracted.}
 
-\PTCDefinition{035}{Product realization state}{A state among \texttt{realized}, \texttt{disabled}, \texttt{not\_requested}, \texttt{rejected}, or \texttt{unavailable} for a named product role. It is orthogonal to response or uncertainty availability.}
+\PTCDefinition{035}{Product realization state}{A state among \texttt{realized}, \texttt{disabled}, \texttt{not\_requested}, \texttt{rejected}, or \texttt{unavailable} for a named product role after its producing stage is entered. It is orthogonal to response or uncertainty availability. The RTC-terminal export route does not enter CAL or PTC and therefore does not fabricate PTC product-role states.}
 
 \PTCDefinition{036}{External source/residual parent}{A source model, mask, residual, or prior-pass parent admitted only with explicit owner, unit, coordinate frame, registration, validity, response, support, and recurrence identity.}
 
@@ -83,3 +83,11 @@
 \PTCDefinition{040}{Application-available occurrence}{An occurrence, including a fit-excluded occurrence, for which the resolved frozen operator has every required detector binding, basis coefficient or coefficient-recomputation input, neighboring support, metric term, coordinate transform, and boundary state needed to define the application value without interpolation, zero filling, or an inferred extension.}
 
 \PTCDefinition{041}{Complete upstream response ending on the CAL grid}{The exact admitted response $K_{\rm up\to CAL}$ carried by the CAL product from a declared source-domain perturbation to the CAL detector-time grid. It composes every applicable admitted source-to-detector relation, beam convention, coordinate and scan geometry, RTC operation, and CAL operation; omission or unavailability of a required factor makes the complete-response claim unavailable.}
+
+\PTCDefinition{042}{Ordinary configured-rank PCA route}{The requested PTC route that selects exactly one network- or array-level grouping, detector-wise time-axis centering, identity internal scaling, group-local mask-aware detector-space PCA/SVD, one explicitly configured strictly positive rank, one immutable-parent fit per group, and zero support-changing refinements.}
+
+\PTCDefinition{043}{Group-local operator state}{The exact detector membership, segment, fit, loading, application, and output supports, influence masks, centering, metric, fitted loading subspace, strictly positive rank, degeneracy, generalized inverse and tolerance, coefficient-recomputation rule, fixed-state kernel operator, failure state, and provenance for one configured network or array group.}
+
+\PTCDefinition{044}{RTC-terminal export route}{The successful workflow selected only by an explicit PTC-disabled request: publish the complete required consumer-neutral RTC bundle and terminate Citlali after RTC without entering CAL, PTC, or MAP. Failure of the required RTC publication fails the route.}
+
+\PTCDefinition{045}{Fail-closed rank resolution}{The rule that rank zero, a noninteger rank, or a positive rank not realizable on the exact group-local support produces no PTC transformed signal and no map, with exact cause and without rank clipping, substitution, centering-only output, PTC-disabled reinterpretation, or RTC-export fallback.}

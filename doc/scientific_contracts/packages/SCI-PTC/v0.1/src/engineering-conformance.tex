@@ -10,7 +10,7 @@
 \usepackage{needspace}
 \usepackage{fancyhdr}
 \usepackage[hidelinks]{hyperref}
-\hypersetup{pdftitle={SCI-PTC Engineering Conformance Specification v0.1 r0.4},pdfauthor={TolTEC scientific contract program},pdfsubject={Engineering conformance for correlated-mode cleaning}}
+\hypersetup{pdftitle={SCI-PTC Engineering Conformance Specification v0.1 r0.5 candidate},pdfauthor={TolTEC scientific contract program},pdfsubject={Engineering conformance for correlated-mode cleaning}}
 \setlength{\emergencystretch}{3em}
 \hbadness=10000
 \hfuzz=8.5pt
@@ -20,7 +20,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small SCI-PTC Engineering Conformance}
-\fancyhead[R]{\small v0.1 / r0.4}
+\fancyhead[R]{\small v0.1 / r0.5 candidate}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.3pt}
 
@@ -32,9 +32,9 @@
 \title{\vspace{-1.0cm}\textcolor{ptcblue}{\Huge SCI-PTC}\\[0.3em]
 \Large Correlated-Mode Cleaning and Detector Coefficients\\[0.5em]
 \LARGE Engineering Conformance Specification\\[0.4em]
-\large Scientific contract v0.1 -- document revision r0.4}
+\large Scientific contract v0.1 -- document revision r0.5 candidate}
 \author{TolTEC Scientific Contract Program\\Scientific owner: Grant Wilson}
-\date{2026-08-20}
+\date{2026-08-23}
 
 \begin{document}
 \maketitle
@@ -42,10 +42,10 @@
 
 \begin{center}
 \fcolorbox{ptcblue}{ptclight}{\parbox{0.90\linewidth}{
-\textbf{Status.} Scientific authority frozen; implementation conformity not
-yet assessed under this contract. This specification defines conformance
-evidence but reports no implementation assessment, validation result, or
-production authorization.}}
+\textbf{Status.} Scientific-owner review candidate; not frozen. The frozen
+predecessor remains v0.1/r0.4. This specification defines candidate
+conformance obligations but reports no implementation assessment, validation
+result, or production authorization.}}
 \end{center}
 
 \vfill
@@ -103,14 +103,14 @@ Interface family & Required recoverable content \\
 \endhead
 Input identity & Immutable CAL parent; complete RTC parent; observation, scan, segment, sample-time, detector occurrence/UID, array, group, stage, product role, pass, recurrence, and parent identities; exact axes and storage mapping; typed source/residual or surrogate parent where used.\\
 Signal contract & Top-of-atmosphere, point-source-equivalent mJy per fixed nominal beam; factor/atmosphere lineage; validity, uncertainty, nuisance-correlation, and complete upstream-response status.\\
-Support policy & Complete accumulated producer facts and causes without erasure; for each PTC-owned use, the exact base and applicable predicates, conjunctive/exclusion rule, missing-state behavior, scope, owner, use, and policy/version identity; fit-excluded/apply-allowed state and the exact inputs required to make each excluded occurrence application-available. Downstream facts are preserved for the downstream use owner rather than decided by PTC or VAL.\\
-Estimator request & Family, fit objective/loss/metric, missing-data model, candidate set/order/ties, typed conjunctive predicates, centering/scaling, grouping/order, gauge, source protection, refinement, response, covariance, simulation, and outputs.\\
-Learned evidence & Every candidate and fitted state; all predicate values, units, uncertainties, thresholds, comparison polarities, pass/fail causes, ordering/tie result, and selected or rejected disposition.\\
-Resolved model & Exact admitted identities, groups, fitted basis/templates and loadings, modeled subtraction, removed subspace, acting space, rank, degeneracy/gauge, learned centering location and its nonrestoration, scaling, null space, exact frozen application map and derivative/linear part, classification/refit trace, fallback, and stop state.\\
+Support policy & Complete accumulated producer facts and causes without erasure; for each distinct PTC-owned use, the complete required-restriction set, T/F/U/C knowledge, exceptions, total decision rule, missing/conflict behavior, scope, owner, use, and policy/version identity; fit-excluded/apply-allowed state and exact group-local inputs required to define it. Downstream facts remain owned by their named-use owner.\\
+Estimator request & Family, fit objective/loss/metric, missing-data model, configured network- or array-level grouping, group-local masks/support, detector-wise centering estimator, identity scaling, strictly positive rank, gauge, source-protection state, zero-refinement state, response, covariance, simulation, and outputs. Future automatic-selection families additionally require candidates, ordering, ties, and typed predicates.\\
+Learned evidence & For the ordinary route, the one requested positive-rank candidate per group, fitted or failed state, feasibility cause, and diagnostics; for a future automatic family, every candidate, predicate, threshold, uncertainty, ordering/tie result, and disposition.\\
+Resolved model & Exact admitted identities and configured groups; fitted basis/loadings; scaled correlated and total removed signals; detector-right acting space; mask-aware coefficient solve; strictly positive rank; degeneracy/gauge; learned centering location and nonrestoration; identity scaling; three null/loss roles; exact frozen application map and derivative/linear part; failure and stop state.\\
 Coefficient products & Separate fitted loadings, coordinate parameters, diagnostics, and detector- or detector-time-indexed analysis/gridding families with units, factor domains, normalization operator/domain, support, lifecycle, numerical use, consumers, and prohibited interpretations.\\
 Response products & PTC-local operator, complete admitted upstream response ending on the CAL grid, complete upstream-to-PTC chain response, realized propagated companions with exact parent domain, full-PTC-procedure signal-response family and typed state differences or explicit unavailability, and optional map-center functional with exact response role and reference-MAP parent.\\
 Uncertainty products & Exact status and conditioning for formal covariance, marginal variance, empirical scatter, calibration/systematic, response, selection, cross-coordinate, and cross-observation terms.\\
-Output/provenance & Transformed TOD role; immutable requested, effective-policy, observation-resolved, learned, resolved, applied, and published state; product-realization and role-availability axes; required siblings, completeness, failure scope, random/surrogate state, and typed relations to downstream consumers.\\
+Output/provenance & Transformed TOD role; immutable requested, effective-policy, observation-resolved, learned, resolved, applied, and published state; group identity; product-realization and role-availability axes after PTC is entered; RTC-terminal route publication and terminal state when PTC is disabled; required siblings, completeness, failure scope, random/surrogate state, and typed relations to downstream consumers.\\
 \bottomrule
 \end{longtable}
 
@@ -125,15 +125,14 @@ response availability, covariance availability, and evidence disposition are
 independent axes. Implementations shall not infer missing units, identities,
 supports, thresholds, rank rules, response terms, bias claims, or covariance.
 
-For every PTC-owned named use, a composite support decision is conformant only
-when it evaluates the declared base predicate and every applicable retained
-fact/cause predicate. Any known exclusion yields ineligible; if none excludes
-but a required predicate is unknown, the result is
-\texttt{decision\_unavailable}. The trace shall retain all causes and state
-the exact inputs, Boolean rule, missing-state behavior, scope, owner, use, and
-policy/version. Shared VAL machinery may evaluate this supplied policy but
-shall not invent it. A downstream use remains owned by its named scientific
-owner.
+For every PTC-owned named use, a support decision is conformant only when it
+evaluates the owner's complete required-restriction set under the total
+T/F/U/C rule after request, binding, and applicability checks. Any decisive
+false yields \texttt{ineligible}; all true yields \texttt{eligible}; every
+other applicable requested state yields \texttt{decision\_unavailable}. The
+trace retains every cause, unknown, conflict, exception, scope, owner, use,
+and policy/version. Shared VAL machinery may evaluate this supplied policy
+but shall not invent it. Permission for one use cannot substitute for another.
 
 A typed fallback is conformant only when the request authorizes it and the
 realized state records its cause, stage, changed scientific operation,
@@ -142,9 +141,21 @@ Required-output failure propagates to the calling boundary. Best-effort
 diagnostic failure is inert only when that diagnostic is neither required nor
 used by policy.
 
+For the ordinary route, $k$ must be an explicitly requested integer greater
+than or equal to one and realizable in every required group. Rank zero and an
+unrealizable positive rank fail without clipping, substitution, centering-only
+output, disabled-route conversion, RTC export, or map. The route performs one
+immutable-parent fit per group and zero support-changing refinements.
+
+An explicit PTC-disabled request instead requires complete RTC publication
+and successful termination after RTC without entering CAL, PTC, or MAP.
+Failure of required RTC publication is a route failure. Library code returns
+the typed terminal result rather than implementing process-level exit.
+
 The base-v0.1 conditioned-$r$ branch is diagnostic-only. A conformance trace
-must show that it cannot change calibrated-$x$ fit membership, subtraction,
-output, or coefficients. Raw-$r$ processing, $r$-derived subtraction from
+must show that it cannot change calibrated-$x$ fit membership, requested or
+resolved rank, subtraction, output, or coefficients. Raw-$r$ processing,
+$r$-derived subtraction from
 $x$, joint $x/r$ PCA, raw Beammap PTC, cross-array fitting, and polarimetry are
 outside this contract.
 
@@ -162,10 +173,13 @@ their parent links;
 \item exact comparisons of fitted support, candidate evidence, removed
 subspace, frozen application map, classification, response-domain chain,
 covariance status, expectation/bias status, and coefficient semantics;
-\item proof that PCA/SVD application projects through the declared frozen
-subspace/metric in the declared acting space, that the learned $\lambda$ is
-subtracted and not restored, that fixed-state companions hold $\lambda$
-fixed, that full-procedure response re-estimates and again discards $\lambda$,
+\item proof that ordinary PCA/SVD uses the configured network- or array-level
+group, group-local support and masks, detector-right mask-aware coefficient
+recomputation, and strictly positive requested rank; that the learned
+$\lambda_g$ is subtracted from science data and not restored; that fixed-state
+companions hold $\lambda_g$ fixed without subtracting it from the perturbation;
+that full-procedure response, when separately requested, re-estimates and
+again discards $\lambda$,
 that fixed-state companions cannot affect learning, that the complete upstream response ending on the CAL
 grid is applied exactly once, and
 that full-procedure response restarts from the immutable CAL parent while
@@ -176,9 +190,10 @@ binding, metric, coordinate, and boundary state required by the resolved
 operator, and otherwise becomes unavailable without inferred interpolation,
 zero filling, reconstruction, or extension;
 \item failure probes for missing external-parent identity, mismatched
-surrogate membership, zero/empty support, non-finite values, rank deficiency,
-oscillation, unavailable response, independent realization/availability
-states, and incomplete publication; and
+surrogate membership, zero/empty support, non-finite values, $k=0$,
+unrealizable positive rank, forbidden rank clipping, cross-group support
+leakage, disabled-route RTC publication failure, unavailable response,
+independent realization/availability states, and incomplete publication; and
 \item an evidence-layer disposition that does not promote conformance into
 observational performance or production authorization.
 \end{enumerate}

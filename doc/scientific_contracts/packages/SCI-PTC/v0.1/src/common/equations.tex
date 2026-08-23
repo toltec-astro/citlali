@@ -1,4 +1,4 @@
-% SCI-PTC v0.1 shared normative equations -- owner-review draft r0.4.
+% SCI-PTC v0.1 shared normative equations -- owner-review candidate r0.5.
 \section{Normative equations}
 \label{sec:normative-equations}
 
@@ -10,17 +10,24 @@ Y^{\rm CAL}_{td}=S_{td}+U_{\star,td}+N_{td},
 U_{\star,td}=\sum_{k=1}^{K}M_{\star,tk}A_{\star,dk}.
 \label{eq:ptc-model}
 \end{equation}
-For the immutable fitted parent, the realized modeled component and transformed
-signal satisfy the identity
+For the immutable fitted parent, distinguish the scaled-coordinate correlated
+fit, its physical-unit realization, the operator-primary output, and the total
+removed signal:
 \begin{equation}
-\widehat U=\widehat M\widehat A^{\mathsf T},
+\widehat{\widetilde U}_{\rm corr}
+  =\widehat M\widehat A^{\mathsf T},
 \qquad
-Z=\mathcal A_{\Theta}(Y^{\rm CAL})
-  =Y^{\rm CAL}-\widehat U.
+\widehat U_{\rm corr}=D\widehat{\widetilde U}_{\rm corr},
+\qquad
+Z=\mathcal A_{\Theta}(Y^{\rm CAL}),
+\qquad
+U_{{\rm total},\Theta}(Y^{\rm CAL})=Y^{\rm CAL}-Z.
 \label{eq:ptc-subtraction}
 \end{equation}
-Equation~\ref{eq:ptc-subtraction} states the realized result on the fitted
-parent. It does not define how a new input or response companion is applied.
+Equation~\ref{eq:ptc-subtraction} does not identify either removed quantity
+with one physical contaminant. The exact application operator defines the
+result; a fitted correlated component alone does not define how a new input
+or response companion is acted on.
 
 For declared learned additive location $\lambda$ and invertible internal
 scaling $D$, the fitting coordinate and physical-unit application map are
@@ -40,27 +47,45 @@ fixed-state application $\lambda$ is held fixed. In a full-procedure response
 it is re-estimated in each run, may move under perturbation, and is again
 discarded.
 
-Facts and causes accumulate without erasure, while admission is a separate
-owner-controlled decision for an exact named use:
+For the linear specialization
+$\widetilde{\mathcal A}_{\Theta}(\widetilde Y')=L_{\Theta}\widetilde Y'$,
+the correlated-subspace and total removed signals are
+\[
+U_{{\rm corr},\Theta}(Y')
+=D(I-L_{\Theta})D^{-1}(Y'-\lambda),
+\qquad
+U_{{\rm total},\Theta}(Y')
+=\lambda+U_{{\rm corr},\Theta}(Y').
+\]
+
+Facts and causes accumulate without erasure, while the exact named-use owner
+supplies a complete required-restriction set evaluated under common T/F/U/C
+knowledge semantics:
 \begin{equation}
 \begin{aligned}
 \mathcal C&=\bigcup_i\mathcal C_i,\\
-\operatorname{eligible}_U
-  &=b_U\land\bigwedge_{i\in I_U}p_{i,U},\\
-\operatorname{ineligible}_U
-  &=\bigvee_{i\in I_U}\neg p_{i,U}.
+\operatorname{Decision}_U&=
+\begin{cases}
+\texttt{ineligible},
+  &\exists r\in\mathcal R_U:\ K(r)=\mathsf F,\\
+\texttt{eligible},
+  &\forall r\in\mathcal R_U:\ K(r)=\mathsf T,\\
+\texttt{decision\_unavailable},
+  &\text{otherwise}.
+\end{cases}
 \end{aligned}
 \label{eq:cause-support}
 \end{equation}
-One applicable exclusion cannot be rescued by another cause. If no known
-predicate excludes the occurrence but any required predicate is unknown, the
-result is \texttt{decision\_unavailable}, not eligible. PTC owns this rule for
-PTC-local uses; another named-use owner supplies its own policy while
+This rule follows exact request, structural binding, and applicability checks.
+Known inapplicability yields no eligibility proposition. One applicable false
+restriction cannot be rescued by another cause; all causes, unknowns, and
+conflicts remain visible. PTC owns each PTC-use proposition, VAL evaluates the
+supplied rule, and another named-use owner supplies its own proposition while
 consuming the preserved facts.
 
-An admitted weighted or robust low-rank family minimizes
+An admitted group-local weighted or robust low-rank family minimizes
 \begin{equation}
-(\widehat M,\widehat A)=
+(\widehat M_g,\widehat A_g)=
 \arg\min_{M,A}\sum_{t,d}w^{\rm fit}_{td}
 \,\rho\!\left(\widetilde Y_{td}-(MA^{\mathsf T})_{td}\right),
 \label{eq:masked-factor}
@@ -93,58 +118,75 @@ only where the denominator is finite and nonzero. The aggregation weight
 $\omega^{\rm cm}_{td}$, its unit, normalization, and population are declared;
 it is not a fitted detector loading by implication.
 
-For base-v0.1 PCA/SVD, application means projection of any admitted
-application input through the frozen realized subspace and metric:
+For the ordinary configured-rank PCA/SVD route, application uses the frozen
+group-local detector-loading subspace and mask-aware linear coefficient
+recomputation. For centered row
+$x_{g,t}=Y^{\rm CAL}_{g,t}-\lambda_g$,
 \begin{equation}
-\widetilde{\mathcal A}_{\Theta}(\widetilde Y')=
-\begin{cases}
-\mathcal L^{t}_{\Theta}\widetilde Y',
-  &\text{temporal-space left action},\\
-\widetilde Y'\mathcal L^{d}_{\Theta},
-  &\text{detector-space right action},\\
-\operatorname{unvec}\!\left[
-\mathcal L^{v}_{\Theta}\operatorname{vec}(\widetilde Y')\right],
-  &\text{declared vectorized action}.
-\end{cases}
+\begin{aligned}
+\widehat m^{\rm app}_{g,t}
+&=x_{g,t}W^{\rm app}_{g,t}\widehat A_g
+  \left(\widehat A_g^{\mathsf T}W^{\rm app}_{g,t}
+  \widehat A_g\right)^+,\\
+z_{g,t}
+&=x_{g,t}-\widehat m^{\rm app}_{g,t}\widehat A_g^{\mathsf T}.
+\end{aligned}
 \label{eq:conditional-cleaner}
 \end{equation}
-The realized family selects exactly one compatible action and records its
-domain, codomain, metric, supports, generalized inverse/tolerance, and
-linear coefficient-recomputation rule. A two-sided or detector/time-specific
-action is represented by its exact vectorized operator; it is not inferred
-from matrix orientation or rank alone.
+The exact output support determines which entries of $z_{g,t}$ are published.
+The generalized inverse, tolerance, detector binding, metric, support, and
+insufficient-support state are frozen in $\Theta_g$. On complete uniform
+support this reduces to detector-right projection through
+$I-\widehat A_g(\widehat A_g^{\mathsf T}\widehat A_g)^+
+\widehat A_g^{\mathsf T}$. Any temporal-left, two-sided,
+detector/time-specific, or general vectorized family remains separately named
+and is not inferred from matrix orientation or rank.
 
 A separately named frozen-component subtraction family is
 \begin{equation}
-\mathcal A^{\rm sub}_{\widehat U}(Y')=Y'-\widehat U,
+\widehat U_{\rm total}:=U_{{\rm total},\Theta}(Y^{\rm CAL}),
 \qquad
-D\mathcal A^{\rm sub}_{\widehat U}[Y](H)=H.
+\mathcal A^{\rm sub}_{\widehat U_{\rm total}}(Y')=Y'-\widehat U_{\rm total},
+\qquad
+D\mathcal A^{\rm sub}_{\widehat U_{\rm total}}[Y](H)=H.
 \label{eq:frozen-component}
 \end{equation}
 It is not interchangeable with Equation~\ref{eq:conditional-cleaner} and is
 not the base-v0.1 PCA/SVD application rule.
 
-A declared within-array hierarchical model may be written
+The ordinary route selects exactly one configured grouping level:
 \begin{equation}
-U_\star=U_\star^{\rm array}+U_\star^{\rm network}+U_\star^{\rm local},
+\mathcal G=
+\begin{cases}
+\{D_a\},&\text{array-level PCA},\\
+\{D_{a,n}\}_n,&\text{network-level PCA}.
+\end{cases}
 \label{eq:hierarchy}
 \end{equation}
-with exact group identities and joint or sequential fit order. Sequential
-fitting publishes the complete ordered composition and cumulative response.
+Each $g\in\mathcal G$ has independent group-local support and resolved state.
+The alternatives are not automatically sequential. A future hierarchical
+family requires separate authority for its exact joint or sequential order.
 
-Let $\mathcal C$ be a finite candidate set with declared order $\preceq$. The
-base selection rule is
+For the ordinary route, the finite candidate-model set contains exactly the
+explicitly requested positive-rank model specification:
 \begin{equation}
-c_{\star}=\min_{\preceq}\left\{c\in\mathcal C:
-P_{\rm corr}(c)\wedge P_{\rm sky}(c)\wedge P_{\rm cond}(c)
-\wedge P_{\rm supp}(c)\wedge P_{\rm stab}(c)\wedge P_{\rm QC}(c)
-\right\}.
+\mathcal M_{{\rm cand},g}=\{c_g(k_{{\rm req},g})\},
+\qquad
+k_{{\rm req},g}\in\mathbb Z,
+\qquad
+1\le k_{{\rm req},g}\le k_{{\rm admissible},g}.
 \label{eq:conjunctive-selection}
 \end{equation}
-Every predicate value, unit, threshold, uncertainty treatment, pass/fail
-cause, order, tie, and rejected candidate is retained in $\mathfrak L$.
+The first route performs mathematical feasibility resolution, not automatic
+scientific rank selection. Rank zero and unrealizable positive rank fail with
+cause and no fallback, clipping, centering-only output, route conversion, or
+map. A future automatic-selection family may use a separately authorized
+conjunctive least-aggressive rule and must retain every predicate, threshold,
+uncertainty treatment, order, tie, and rejected candidate in $\mathfrak L$.
 
-For refinement index $j$, the support-changing lifecycle is
+The ordinary route performs one immutable-parent fit per configured group and
+zero support-changing refinements. For a separately authorized future
+refinement family, the immutable-parent lifecycle is
 \begin{align}
 \Theta_j&=\operatorname{Fit}(Y^{\rm CAL};\mathcal S_j),\nonumber\\
 \mathcal S_{j+1}&=\operatorname{Classify}(Y^{\rm CAL},\Theta_j),\nonumber\\
@@ -171,15 +213,18 @@ The full PTC procedure has separately typed signal and state projections:
 \label{eq:full-procedure}
 \end{equation}
 
-For fixed resolved model $\Theta$, including frozen $\lambda$, the local
-detector-time response and a realized CAL-grid companion are
+For fixed group-local resolved model $\Theta_g$, including frozen $\lambda_g$,
+the local detector-time response and a realized CAL-grid companion are
 \begin{equation}
-J_{\Theta}[Y]=D\mathcal A_{\Theta}[Y],
+J_{\Theta_g}[Y_g]=D\mathcal A_{\Theta_g}[Y_g],
 \qquad
-k_{\rm src}^{\rm PTC\mid\Theta}
-=J_{\Theta}[Y]\,k_{\rm src}^{\rm CAL}.
+k_{{\rm src},g}^{\rm PTC\mid\Theta_g}
+=J_{\Theta_g}[Y_g]\,k_{{\rm src},g}^{\rm CAL}.
 \label{eq:local-companion}
 \end{equation}
+The companion uses the same group, support, mask, metric, rank, loading
+subspace, generalized inverse, and tolerance as the data. The frozen
+$\lambda_g$ is not subtracted from a perturbation and is not re-estimated.
 If the parent is source-domain, the complete chain response is
 \begin{equation}
 k_{\rm src}^{\rm CAL}=K_{\rm up\to CAL}\tau_{\rm src},
@@ -245,7 +290,8 @@ uncertainty.
 A diagnostic indexed by detector or detector-time occurrence may take the
 generic residual form
 \begin{equation}
-\eta_i=H_i(Z,\widehat U,\mathcal S,\Theta;\chi_H),
+\eta_i=H_i(Z,\widehat U_{\rm corr},U_{{\rm total},\Theta},
+\mathcal S,\Theta;\chi_H),
 \label{eq:diagnostic}
 \end{equation}
 where $\chi_H$ records the domain, population/model reference, normalization,
@@ -273,14 +319,16 @@ Transitive causal influence for output $j$ is
 including inputs that affect fitted state or selection even when a local
 numeric derivative vanishes.
 
-For disabled PTC on the PTC-dependent route,
+An explicit PTC-disabled request selects the RTC-terminal export route:
 \begin{equation}
-\mathsf{PTC}=\mathsf{disabled}
+\mathsf{PTC\ request}=\mathsf{disabled}
 \Longrightarrow
-\mathsf{Exist}_{p}=\mathsf{disabled}
-\quad
-\text{for }p\in\{Z,\Lambda,\gamma,\mathsf{MAP}_{\rm PTC-route}\}.
+\mathsf{route}=\mathsf{RTC\_terminal\_export}
+\Longrightarrow
+\mathsf{terminal}=\mathsf{successful\ after\ complete\ RTC\ publication}.
 \label{eq:disabled-route}
 \end{equation}
-This product-realization statement does not assign response availability and
-does not govern a separately authorized direct CAL-to-MAP route.
+CAL, PTC, and MAP are not entered and no products for those stages are
+realized. Failure of the required RTC publication fails the route. Rank zero
+is not an alias for this transition, and no direct CAL-to-MAP fallback exists
+for ordinary Citlali reduction.

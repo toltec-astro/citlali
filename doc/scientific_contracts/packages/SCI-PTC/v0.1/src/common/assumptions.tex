@@ -1,4 +1,4 @@
-% SCI-PTC v0.1 shared normative assumptions -- owner-review draft r0.4.
+% SCI-PTC v0.1 shared normative assumptions -- owner-review candidate r0.5.
 \section{Normative assumptions and declared limits}
 \label{sec:normative-assumptions}
 
@@ -10,11 +10,11 @@
 \PTCAssumption{006}{Every centering/scaling transform has a declared axis, population, support, weights, estimator, boundary, unit, gauge, failure behavior, and null-space consequence. Centering subtracts a learned additive location $\lambda$ that is not restored because detector $x$ has no scientifically meaningful optical DC response.}
 \PTCAssumption{007}{Internal scaling is invertible and restored before ordinary transformed output. The learned additive location is not restored. Any other noninvertible operation changes the signal definition and requires a separately named output role.}
 \PTCAssumption{008}{A source mask protects only its declared model and registered support. Unmasked compact or extended sky components may overlap the fitted subspace.}
-\PTCAssumption{009}{Candidate selection is finite, conjunctive, deterministically ordered, and least-aggressive. Numerical predicates are owner-controlled inputs rather than inferred defaults.}
-\PTCAssumption{010}{All support-changing detector refinements refit the complete selected model from the same immutable admitted CAL parent.}
-\PTCAssumption{011}{A sequential residual fit is valid only when declared as part of one complete ordered hierarchical estimator with cumulative removed subspace, response, covariance, and parentage.}
+\PTCAssumption{009}{A separately requested future automatic-selection family is finite, conjunctive, deterministically ordered, and least-aggressive. Numerical predicates are owner-controlled inputs rather than inferred defaults. The ordinary route instead uses one explicitly requested positive-rank candidate.}
+\PTCAssumption{010}{The ordinary route performs zero support-changing detector refinements. Any separately authorized future support-changing refinement refits the complete selected model from the same immutable admitted CAL parent.}
+\PTCAssumption{011}{Network- and array-level PCA are alternative configured ordinary routes rather than sequential stages. A future sequential residual fit is valid only when declared as part of one complete ordered hierarchical estimator with cumulative removed subspace, response, covariance, and parentage.}
 \PTCAssumption{012}{The conditioned-$r$ branch, when available, has its own operator, unit, response, validity, optical-leakage state, and exact relation to the calibrated-$x$ grid.}
-\PTCAssumption{013}{Base-v0.1 $r$ analysis is inert or advisory. It cannot change calibrated-$x$ fit membership, subtraction, output retention, or coefficients and cannot supply an $x$ subtraction basis.}
+\PTCAssumption{013}{Base-v0.1 $r$ analysis is inert or advisory. It cannot change calibrated-$x$ fit membership, requested or resolved rank, subtraction, output retention, or coefficients and cannot supply an $x$ subtraction basis.}
 \PTCAssumption{014}{A fixed-state application map does not by itself represent the response of data-derived rank, mask, grouping, clipping, classification, convergence, or fallback decisions.}
 \PTCAssumption{015}{A whole-chain RTC-to-CAL-to-PTC injection is distinct from the PTC full-procedure response and requires separately named upstream owners and response companions.}
 \PTCAssumption{016}{Full covariance is optional. An absent covariance or cross-covariance is unknown/unavailable rather than zero, independent, or diagonal.}
@@ -24,12 +24,24 @@
 \PTCAssumption{020}{The in-memory transformed TOD is an authoritative intermediate for the PTC-dependent route, not an independent sky estimator or a claim of map, beam, significance, or production validity.}
 \PTCAssumption{021}{A required unavailable input, response term, support, identity, or output makes only the affected product or claim unavailable; it is never replaced silently by a numeric default.}
 \PTCAssumption{022}{Implementation conformity, representation fidelity, observational performance, and production readiness require separate evidence and are not established by this contract.}
-\PTCAssumption{023}{For every admitted base-v0.1 PCA/SVD family, application to science or a fixed-state companion is projection through the frozen realized subspace and metric with linear coefficient recomputation. Subtraction of one frozen fitted numerical component is a distinct family and is not inferred.}
-\PTCAssumption{024}{No universal temporal, detector, two-sided, or vectorized PCA action is inferred from rank or matrix orientation. Each realized family declares exactly which space contains the removed basis and the exact left, right, or general action.}
+\PTCAssumption{023}{For every admitted base-v0.1 PCA/SVD family, application to science or a fixed-state companion is projection through the frozen realized subspace and metric with linear coefficient recomputation. The ordinary route uses group-local detector-right, mask-aware recomputation. Subtraction of one frozen fitted numerical component is a distinct family and is not inferred.}
+\PTCAssumption{024}{The ordinary route's detector-right action is explicit owner-selected state, not an inference from rank or matrix orientation. Any temporal-left, two-sided, detector/time-specific, or vectorized action is a separately named family with its exact acting space and operator.}
 \PTCAssumption{025}{Source-domain templates, CAL-grid detector-time companions, PTC-local operators, complete chain responses, and realized propagated companions are distinct typed objects. An upstream response operator is applied exactly once.}
 \PTCAssumption{026}{Learned candidate evidence, resolved selected model, applied state, and published product state are distinct immutable lifecycle stages even when one implementation stores them together.}
 \PTCAssumption{027}{An external source/residual parent or shifted/null surrogate is scientifically usable only when its complete parent, coordinate, validity, support, response, recurrence, and transformation state is available; insufficient support is not a valid zero surrogate.}
 
 \PTCAssumption{028}{Fit exclusion does not itself authorize application. A fit-excluded occurrence is application-available only when the resolved frozen operator defines that occurrence from admitted frozen state and support without inferred interpolation, zero filling, or extension.}
 
-\PTCAssumption{029}{Producer facts and causes accumulate without erasure. PTC owns composite support predicates for PTC-local scientific uses; the owner of any other named use owns its admission policy. Shared VAL machinery may represent knowledge state, preserve causes, evaluate a supplied policy, and record provenance, but it does not invent package-specific scientific predicates.}
+\PTCAssumption{029}{Producer facts and causes accumulate without erasure. PTC owns complete policy propositions for PTC-local scientific uses; the owner of any other named use owns its admission policy. Shared VAL machinery represents T/F/U/C knowledge state, preserves causes, evaluates a supplied total rule, and records provenance, but it does not invent package-specific scientific predicates. Any decisive false yields ineligible; all true yields eligible; otherwise an applicable requested use is decision unavailable.}
+
+\PTCAssumption{030}{The ordinary route selects exactly one configured grouping level: one full array or the set of readout networks within one array. Every support, mask, centering state, fitted subspace, rank, application, and kernel response is scoped to that same group identity.}
+
+\PTCAssumption{031}{The ordinary route uses detector-wise time-axis centering and identity internal scaling. The learned location is not restored, and no later baseline or FRUIT recurrence treatment is inferred.}
+
+\PTCAssumption{032}{The ordinary route rank is an explicitly requested integer greater than or equal to one. Rank zero and unrealizable positive rank fail closed and are not defaults, fallbacks, centering-only outputs, PTC-disabled states, or RTC-export requests.}
+
+\PTCAssumption{033}{Masked or excluded occurrences have zero statistical influence only through the declared group-local estimator and application masks; they are not numerical zero observations.}
+
+\PTCAssumption{034}{Post-fit diagnostics in the ordinary route are advisory and cannot change fitted support, grouping, rank, resolved model, or output application state.}
+
+\PTCAssumption{035}{An explicit PTC-disabled request selects a successful RTC-terminal export only after the complete required RTC bundle is published. CAL, PTC, and MAP are not entered; failure of required RTC publication fails the route.}
