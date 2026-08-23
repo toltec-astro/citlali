@@ -78,9 +78,20 @@ inline std::string existing_product_index_publication_date(
     return dates[0].as<std::string>();
 }
 
+inline bool is_opaque_product_bundle_directory(
+    const std::filesystem::path &filepath) {
+    return filepath.extension() == ".apt-v2";
+}
+
 inline void write_product_index_file(const std::filesystem::path &filepath) {
+    // Canonical compact-v2 APT bundles are immutable, receipt-complete
+    // product namespaces. Their verifier rejects every member not declared by
+    // manifest.ecsv, so the generic reduction index may list the bundle at
+    // its parent but must never recurse into or write inside it.
+    if (is_opaque_product_bundle_directory(filepath)) return;
     for (const auto &entry : sorted_directory_entries(filepath)) {
-        if (std::filesystem::is_directory(entry)) {
+        if (std::filesystem::is_directory(entry) &&
+            !is_opaque_product_bundle_directory(entry)) {
             write_product_index_file(entry);
         }
     }

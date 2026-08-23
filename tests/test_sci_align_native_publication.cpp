@@ -58,4 +58,37 @@ TEST(SciAlignNativePublication,
     std::filesystem::remove_all(root);
 }
 
+TEST(SciAlignNativePublication,
+     ProductIndexTreatsCompactAptV2BundleAsOpaque) {
+    const auto root = std::filesystem::temp_directory_path() /
+        "citlali_sci_align_opaque_apt_v2";
+    std::filesystem::remove_all(root);
+    const auto bundle = root / "baseline.apt-v2";
+    std::filesystem::create_directories(bundle);
+    const auto required = root / "required.yaml";
+    {
+        std::ofstream output(required);
+        ASSERT_TRUE(output.good());
+        output << "complete: true\n";
+    }
+    for (const auto *name : {"manifest.ecsv", "manifest.ecsv.sha256",
+                             "sha256-fixture.apt.ecsv"}) {
+        std::ofstream output(bundle / name);
+        ASSERT_TRUE(output.good());
+        output << "fixture\n";
+    }
+    const auto members_before =
+        citlali::pipeline::sorted_directory_entries(bundle);
+
+    citlali::pipeline::write_final_product_index_file(root, {required});
+
+    EXPECT_TRUE(std::filesystem::is_regular_file(root / "index.yaml"));
+    EXPECT_FALSE(std::filesystem::exists(bundle / "index.yaml"));
+    EXPECT_EQ(citlali::pipeline::sorted_directory_entries(bundle),
+              members_before);
+    EXPECT_NE(read_text(root / "index.yaml").find("- baseline.apt-v2"),
+              std::string::npos);
+    std::filesystem::remove_all(root);
+}
+
 }  // namespace

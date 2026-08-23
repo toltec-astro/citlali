@@ -286,6 +286,13 @@ fresh v2 product kinds. Bare ECSV, v1, migration-marked v2, and synthesized
 fallback APTs are rejected unless the caller explicitly enters the bounded
 migration/validation operation.
 
+The generic reduction product index treats every directory whose name ends in
+`.apt-v2` as an opaque product namespace. A parent `index.yaml` may list that
+directory, but indexing never recurses into it and never writes an
+`index.yaml` member inside it. Canonical bundle membership remains owned only
+by `manifest.ecsv` and its receipt; post-publication indexing cannot mutate a
+receipt-complete bundle.
+
 The transaction is receipt-atomic but not promised fsync/crash durable before
 receipt publication. A process or host failure may leave incomplete files
 without a receipt; it cannot leave a falsely complete bundle. A broken stdout

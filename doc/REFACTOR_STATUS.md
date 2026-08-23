@@ -1,5 +1,38 @@
 # Citlali Refactor Status
 
+## 2026-08-23 Compact-v2 Product-Index Contamination Repair
+
+The first owner-produced Beammap compact-v2 baseline exposed a publication
+boundary defect before Stage 7 Science activation. The Beammap producer wrote
+the receipt-complete `.apt-v2` bundle correctly, but the later generic
+reduction product-index pass recursed into that bundle and added an unbound
+`index.yaml`. Public `describe-baseline-v2` verification correctly rejected
+the resulting directory as containing an extra member. The adjacent
+`manifest.ecsv.sha256` is the canonical five-line receipt, not a GNU
+`sha256sum -c` input file.
+
+Generic product indexing now treats every `.apt-v2` directory as an opaque
+product namespace. Its parent index may list the bundle, but the indexer does
+not recurse into it or write any member inside it. A regression test freezes
+the bundle membership across final product-index publication. This repair
+does not change APT values, Beammap fitting, native alignment, RTC/PTC, or
+mapmaking behavior.
+
+The focused SCI-ALIGN publication cases and all 67 SCI-ALIGN cases pass. All
+789 runnable CTests pass with the established single disabled test not run,
+and all 203 baseline-tool tests pass. The config gate passes all 127 unit
+tests, all four mode kits, and all six locally available Beammap, Science, and
+OOF compact cases. Its two Pointing compatibility cases remain unexecuted
+because the owner-local `point/refactor/70_reduce.yaml` fixture is absent;
+this is an external-input gap, not a code failure.
+
+An already produced field bundle can be salvaged without rerunning the
+Beammap by retaining the injected `index.yaml` as evidence outside the
+`.apt-v2` directory, leaving every canonical member untouched, and then
+passing the public compact-v2 verifier. Successful verification is still
+required before the baseline is eligible for the separately gated
+observation-matched producer work; Stage 7 remains unaccepted.
+
 ## 2026-08-21 Compact-v2 Native ALIGN Consumer Reconstruction Plan
 
 The orphaned native-consumer behavior in historical commits `fd3627fc7` and
