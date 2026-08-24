@@ -2,9 +2,9 @@
 
 Date opened: `2026-08-23`
 
-Status: in progress; `WP3-OWNER-D001`, upstream clarification
-`WP2-FOLLOWUP-D011`, and `WP3-OWNER-D002--D007` are approved; remaining
-producer-interface decisions await review one at a time
+Status: scientific-owner decision complete; `WP3-OWNER-D001`, upstream
+clarification `WP2-FOLLOWUP-D011`, and `WP3-OWNER-D002--D008` are approved;
+compact binding-register preparation and verification remain
 
 Scope: `WP-3_CAL_EXTERNAL_PRODUCERS`, the CAL facet of `F-016`, the
 timestream-route facets of `F-017`, and the applicable CAL/input contribution
@@ -488,11 +488,65 @@ Consequences:
 6. A demonstrated owner-level omission is corrected at its owner or remains
    unavailable; CAL shall not synthesize a replacement provenance bundle.
 
-## Remaining WP-3 Owner Work
+## WP3-OWNER-D008 — Producer-Payload Completeness
 
-The remaining decisions must identify the smallest exact
-producer-interface set required by the selected ordinary processed-timestream
-route. Each interface must separate static/operator authority from
-observation-instance realization. Optional roles may be explicitly not
-requested or unavailable; they may not be supplied by inference. MAP-only
-roles remain deferred.
+Status: approved `2026-08-24`
+
+Question:
+
+> Does the ordinary processed-timestream route require any additional
+> observation-level producer payload beyond the products, sidecars, and
+> manifests already identified?
+
+Recommendation:
+
+> No. Native \(x/r\), Tune, and detector/tone identity remain in the
+> Tune/readout record and approved upstream interface. ALIGN owns acquisition
+> timing and original occurrences. RTC owns its processing, grid, flags,
+> diagnostics, and response in its product or sidecar. AST owns its realized
+> RTC-grid coordinates while referencing RTC, telescope/observing, geometry,
+> target/source center, frame, EOP, and refraction inputs. The SHA-bound
+> matched APT row owns the selected detector geometry and `flxscale`; its
+> manifest and referenced BEAM products retain Beammap, source, and calibrator
+> ancestry. Existing telescope records own WVR opacity and telescope state.
+> Frozen content-bound CAL authority owns the atmosphere operator and passband
+> selection. The CAL product or compact sidecar owns the applied calibration
+> and classification. The CAL-to-PTC boundary passes the calibrated signal,
+> identity, required flags/validity, and parent references. No combined
+> external-producer bundle is required. If AST cannot reconstruct
+> scientifically valid pointing on the RTC grid from the referenced
+> authorities, the previously approved observation-level hard stop remains.
+> WP-3 should now produce only a compact reference-binding register or source
+> manifest naming each authority, owner, reference/integrity rule, dependent
+> operation, and failure scope. That register is source-closure documentation,
+> not another runtime payload.
+
+Owner response:
+
+> approved
+
+Disposition: **approved**.
+
+Consequences:
+
+1. WP-3 has identified no remaining scientific need for a new
+   observation-level producer object on the ordinary processed-timestream
+   route.
+2. The approved AST pointing hard stop remains in force without requiring CAL
+   or PTC to copy AST's input records.
+3. The remaining WP-3 artifact is a compact reference-binding register that
+   points to existing authority rather than serializing observation history.
+4. Remaining work is mechanical artifact preparation, content binding, and
+   contract verification; it does not authorize inferred facts or claims.
+5. Final closure of `F-017` remains a clean-room re-audit disposition rather
+   than a claim made by this owner packet.
+
+## Remaining WP-3 Work
+
+Prepare the smallest exact reference-binding register for the selected
+ordinary processed-timestream route. It shall distinguish static/operator
+authority from observation-instance realization and shall point to existing
+products, sidecars, manifests, and package authority without duplicating their
+contents. Optional roles may be explicitly not requested or unavailable; they
+may not be supplied by inference. MAP-only roles remain deferred. Final
+finding closure belongs to WP-7 clean-room re-audit.
