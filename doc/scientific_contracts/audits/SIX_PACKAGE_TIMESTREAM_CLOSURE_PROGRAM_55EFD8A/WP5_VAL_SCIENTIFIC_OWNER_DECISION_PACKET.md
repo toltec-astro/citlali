@@ -2,8 +2,8 @@
 
 Opened: `2026-08-24`
 
-Status: `WP5-OWNER-D001--D011` approved; remaining registry work awaits
-review one at a time
+Status: `WP5-OWNER-D001--D012` approved; exact PTC profile materialization
+approved; VAL freeze and clean-room re-audit remain
 
 Scope: non-MAP processed-timestream source bindings and VAL profiles. VAL Core
 is not reopened. MAP and coadd profiles remain deferred.
@@ -618,3 +618,44 @@ Disposition:
    evaluate.
 9. No MAP or coadd profile is introduced. Authoring the exact common artifact
    and five source-current registry records is the next bounded registry step.
+
+## WP5-OWNER-D012 — Exact PTC Profile Registry Materialization
+
+Question:
+
+> Do you approve the exact registry packet as the owner-approved
+> materialization of D003--D011, while leaving F-004 and F-020 open until
+> clean-room re-audit?
+
+Owner response:
+
+> approved
+
+Disposition:
+
+1. The exact packet committed at `6d1f4e67d` is approved.
+2. The approved PTC-owned common semantics artifact is
+   `SCI-PTC-COMMON-NAMED-USE-SEMANTICS-v0.1/r0.1`, SHA-256
+   `c1fc8370007b65307769fb966c8523251695924aaff84f3e5b4c89b6d3380b8c`.
+3. The approved continuing SCI-VAL profile registry has SHA-256
+   `5a5a96a283ab6bd3aa6176548b11a9798ec6a12a0b430277eecd7c2caf752893`.
+   Its five complete PTC profiles are:
+
+   - `SCI-PTC:basis_fit_admission@1`;
+   - `SCI-PTC:loading_fit_admission@1`;
+   - `SCI-PTC:operator_application@1`;
+   - `SCI-PTC:output_retention@1`; and
+   - `SCI-PTC:response_companion@1`.
+
+4. `SCI-PTC:coefficient_qc_population@1` and
+   `SCI-PTC:empirical_or_simulation_population@1` retain their explicit
+   unsupported and unbound dispositions. No vacuous profile is created.
+5. The adjacent source-binding register remains unchanged at SHA-256
+   `ff5402b71c40f31daac1f7c820a705a5a23eb64688f70955fac76e10e2916430`.
+   The canonical independent-exposure proposition is unchanged.
+6. F-004 and F-020 remain `OPEN` until the authorized clean-room re-audit.
+   D012 supplies exact owner approval but is not itself a re-audit result or
+   finding closure.
+7. MAP and coadd remain deferred and unbound. D012 establishes no
+   implementation conformity, validation, performance, production readiness,
+   or MAP availability.

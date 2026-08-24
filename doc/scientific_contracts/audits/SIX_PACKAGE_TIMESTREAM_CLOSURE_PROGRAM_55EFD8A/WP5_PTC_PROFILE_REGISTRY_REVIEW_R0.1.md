@@ -2,9 +2,8 @@
 
 Date: `2026-08-24`
 
-Status: exact integration packet prepared from approved
-`WP5-OWNER-D003--D011`; F-004 and F-020 remain open pending owner review and
-clean-room re-audit
+Status: exact integration packet approved under `WP5-OWNER-D012`; F-004 and
+F-020 remain open pending clean-room re-audit
 
 Scope: non-MAP PTC named-use admission only
 
@@ -39,6 +38,12 @@ Explicitly unsupported and unbound:
 
 MAP and coadd profiles remain deferred and unbound.
 
+## Scientific-owner approval
+
+Grant Wilson approved this exact packet on `2026-08-24` under
+`WP5-OWNER-D012`. Approval binds the three hashes above without changing their
+bytes or meanings.
+
 ## Review assertions
 
 1. The common fragment grants no permission and contains no use-specific
@@ -67,7 +72,6 @@ MAP and coadd profiles remain deferred and unbound.
 
 ## Next gate
 
-Scientific-owner approval of this exact packet may be recorded as
-`WP5-OWNER-D012`. Closure still requires the WP-7 clean-room re-audit; this
-packet alone does not claim implementation conformity, validation,
-performance, production readiness, or MAP availability.
+Closure requires the WP-7 clean-room re-audit. This approved packet alone does
+not claim implementation conformity, validation, performance, production
+readiness, or MAP availability.
