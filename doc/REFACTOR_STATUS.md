@@ -1,5 +1,35 @@
 # Citlali Refactor Status
 
+## 2026-08-24 Canonical APT v2 Pointing-Flux Calibration
+
+Citlali now owns issuance and admission of immutable
+`citlali-observation-fluxcal-apt-v2` children from an ordinary fresh
+matched-v2 parent. The public `issue-fluxcal-apt-v2` operation verifies the
+parent, a closed TolProj request, the request/report digests, exact observation
+and cohort bracket identity, and one positive finite binary64 correction for
+each TolTEC array. Publication is no-replace and receipt-last, followed by an
+independent filesystem reread. TolProj remains the correction-estimation and
+orchestration owner; it does not write canonical APT bytes.
+
+The calibrated child retains the matched detector relation and changes only
+positive finite `flxscale` values through typed `field-deviation` exceptions.
+Nulls remain null and finite zeros remain bitwise unchanged. The authority
+reference binds the matched-parent semantic identity, request digest, report
+digest, and all three exact factors; each exception repeats its applicable
+factor so admission proves the output by multiplication instead of recovering
+a potentially rounded ratio.
+
+A local end-to-end smoke used the downloaded Stage 7 NGC4449 152390 matched-v2
+bundle: all 5,518 observation rows reread successfully, with 813 null scales
+and 193 zero scales preserved and all 4,512 positive scales transformed with
+zero bitwise mismatches against the requested three-array factors. The focused
+seven-test canonical-v2 C++ suite and the 32 focused TolProj integration tests
+pass. The complete Citlali surface passes all 797 runnable CTests with the one
+established disabled test not run, all 205 baseline-tool tests, and the full
+required config gate: 129 unit tests, all four mode kits, and all eight
+compatibility cases. The complete TolProj surface passes 222 tests with one
+established skip and the full Ruff check.
+
 ## 2026-08-24 Flagged Non-Finite PCA Masking Repair
 
 The canonical Stage 7 two-observation Pointing replay with empirical map

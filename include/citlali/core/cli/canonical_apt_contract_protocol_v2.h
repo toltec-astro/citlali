@@ -24,6 +24,8 @@ inline constexpr std::string_view canonicalize_target_operation_v2 =
     "canonicalize-target-v2";
 inline constexpr std::string_view issue_observation_apt_operation_v2 =
     "issue-observation-apt-v2";
+inline constexpr std::string_view issue_fluxcal_apt_operation_v2 =
+    "issue-fluxcal-apt-v2";
 inline constexpr std::string_view migrate_v1_to_v2_operation =
     "migrate-v1-to-v2";
 

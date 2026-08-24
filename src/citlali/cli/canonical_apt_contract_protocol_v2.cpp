@@ -421,6 +421,133 @@ struct ProducerMatchRequest {
     std::vector<RequestedMatch> matches;
 };
 
+struct ProducerFluxcalRequest {
+    std::string producer;
+    std::string software_revision;
+    std::string configuration_sha256;
+    std::string event_time_utc;
+    apt::ObservationIdentity observation;
+    std::string source_name;
+    std::string cohort_id;
+    std::vector<std::int64_t> bracket_obsnums;
+    std::map<std::int64_t, double> factors_by_array;
+};
+
+ProducerFluxcalRequest parse_producer_fluxcal_request(
+    const Json &value, const apt::VerifiedBundle &source,
+    std::string_view expected_report_sha256) {
+    const auto &document = object(value, "flux calibration request");
+    exact_members(document,
+                  {"schema", "producer", "software_revision",
+                   "configuration_sha256", "event_time_utc", "observation",
+                   "source_artifact_sha256", "report_sha256", "cohort",
+                   "correction_factors"},
+                  "flux calibration request");
+    if (string_value(member(document, "schema", "flux calibration request"),
+                     "flux calibration request.schema") !=
+        "tolproj-canonical-apt-fluxcal-request-v1") {
+        throw ProtocolError("flux calibration request schema is unsupported");
+    }
+
+    ProducerFluxcalRequest result;
+    result.producer = string_value(
+        member(document, "producer", "flux calibration request"),
+        "flux calibration request.producer");
+    if (result.producer != "tolproj") {
+        throw ProtocolError(
+            "flux calibration request producer must be tolproj");
+    }
+    result.software_revision = string_value(
+        member(document, "software_revision", "flux calibration request"),
+        "flux calibration request.software_revision");
+    result.configuration_sha256 = string_value(
+        member(document, "configuration_sha256", "flux calibration request"),
+        "flux calibration request.configuration_sha256");
+    apt::require_sha256(result.configuration_sha256,
+                        "flux calibration configuration digest");
+    result.event_time_utc = string_value(
+        member(document, "event_time_utc", "flux calibration request"),
+        "flux calibration request.event_time_utc");
+    result.observation = observation_value(
+        member(document, "observation", "flux calibration request"),
+        "flux calibration request.observation");
+    const auto source_sha256 = string_value(
+        member(document, "source_artifact_sha256",
+               "flux calibration request"),
+        "flux calibration request.source_artifact_sha256");
+    apt::require_sha256(source_sha256,
+                        "flux calibration source artifact digest");
+    const auto report_sha256 = string_value(
+        member(document, "report_sha256", "flux calibration request"),
+        "flux calibration request.report_sha256");
+    apt::require_sha256(report_sha256, "flux calibration report digest");
+    if (result.observation != source.manifest.observation ||
+        source_sha256 != source.identity.semantic_sha256 ||
+        report_sha256 != expected_report_sha256) {
+        throw apt::ContractError(
+            "flux calibration request identity binding disagrees");
+    }
+
+    const auto &cohort = object(
+        member(document, "cohort", "flux calibration request"),
+        "flux calibration request.cohort");
+    exact_members(cohort, {"source_name", "cohort_id", "bracket_obsnums"},
+                  "flux calibration request.cohort");
+    result.source_name = string_value(
+        member(cohort, "source_name", "flux calibration request.cohort"),
+        "flux calibration request.cohort.source_name");
+    result.cohort_id = string_value(
+        member(cohort, "cohort_id", "flux calibration request.cohort"),
+        "flux calibration request.cohort.cohort_id");
+    std::set<std::int64_t> brackets;
+    for (const auto &item : array_value(
+             member(cohort, "bracket_obsnums",
+                    "flux calibration request.cohort"),
+             "flux calibration request.cohort.bracket_obsnums")) {
+        const auto obsnum = int64_value(
+            item, "flux calibration request.cohort.bracket_obsnum");
+        if (obsnum < 0 || !brackets.insert(obsnum).second) {
+            throw ProtocolError(
+                "flux calibration bracket observation is invalid");
+        }
+        result.bracket_obsnums.push_back(obsnum);
+    }
+    if (result.bracket_obsnums.empty()) {
+        throw ProtocolError("flux calibration request has no bracket observation");
+    }
+
+    const std::map<std::string, std::int64_t> array_ids{
+        {"a1100", 0}, {"a1400", 1}, {"a2000", 2}};
+    for (const auto &item : array_value(
+             member(document, "correction_factors",
+                    "flux calibration request"),
+             "flux calibration request.correction_factors")) {
+        const auto &record = object(
+            item, "flux calibration request correction factor");
+        exact_members(record, {"array_name", "factor_bits"},
+                      "flux calibration request correction factor");
+        const auto name = string_value(
+            member(record, "array_name",
+                   "flux calibration request correction factor"),
+            "flux calibration request correction factor.array_name");
+        const auto array = array_ids.find(name);
+        const auto factor = binary64_value(
+            member(record, "factor_bits",
+                   "flux calibration request correction factor"),
+            "flux calibration request correction factor.factor_bits");
+        if (array == array_ids.end() || factor <= 0.0 ||
+            !result.factors_by_array.emplace(array->second, factor).second) {
+            throw ProtocolError(
+                "flux calibration request correction factor is invalid");
+        }
+    }
+    if (result.factors_by_array.size() != array_ids.size()) {
+        throw ProtocolError(
+            "flux calibration request must bind all three TolTEC arrays");
+    }
+    return result;
+}
+
 ProducerMatchRequest parse_producer_match_request(
     const Json &value, const publication::IssuanceFactory &issuance_factory) {
     const auto &document = object(value, "match request");
@@ -890,6 +1017,167 @@ apt::VerifiedBundle issue_observation_matched_bundle(
     return verified;
 }
 
+apt::VerifiedBundle issue_observation_fluxcal_bundle(
+    const apt::VerifiedBundle &source, ProducerFluxcalRequest request,
+    std::string_view calibration_request_sha256,
+    std::string_view calibration_report_sha256,
+    const std::filesystem::path &publication_manifest,
+    const ProtocolDependencies &dependencies) {
+    if (source.manifest.kind != apt::BundleKind::matched ||
+        source.manifest.profile != apt::matched_profile_v2 ||
+        source.manifest.issuance_class != "fresh" ||
+        !source.relation || !source.baseline_snapshot) {
+        throw apt::ContractError(
+            "flux calibration issuance requires one fresh observation-matched v2 bundle");
+    }
+    if (request.observation != source.manifest.observation) {
+        throw apt::ContractError(
+            "flux calibration issuance observation identity disagrees");
+    }
+
+    apt::BundlePayload baseline_payload;
+    baseline_payload.root_manifest_bytes =
+        source.payload.component_bytes_by_role.at("baseline-manifest");
+    baseline_payload.root_receipt_bytes =
+        source.payload.component_bytes_by_role.at("baseline-receipt");
+    baseline_payload.component_bytes_by_role = {
+        {"apt", source.payload.component_bytes_by_role.at("baseline-apt")},
+        {"fields", source.payload.component_bytes_by_role.at("baseline-fields")},
+        {"sources", source.payload.component_bytes_by_role.at("baseline-sources")},
+    };
+    const auto baseline = apt::verify_bundle_payload(
+        std::move(baseline_payload));
+    if (!source.manifest.baseline_parent ||
+        *source.manifest.baseline_parent != baseline.identity) {
+        throw apt::ContractError(
+            "flux calibration source baseline snapshot disagrees");
+    }
+
+    const auto opaque_output =
+        publication::issue_opaque(dependencies.issuance_factory);
+    const apt::IssuanceContext output_issuance{
+        opaque_output.occurrence,
+        opaque_output.event_reference,
+        request.producer,
+        request.software_revision,
+        request.configuration_sha256,
+        request.event_time_utc,
+    };
+    auto output = source.apt;
+    output.issuance = output_issuance;
+    auto relation = *source.relation;
+    relation.issuance = output_issuance;
+    auto exceptions = source.exceptions;
+    if (std::any_of(exceptions.begin(), exceptions.end(),
+                    [](const auto &item) {
+                        return item.kind == apt::ExceptionKind::field_deviation;
+                    })) {
+        throw apt::ContractError(
+            "flux calibration source already contains field deviations");
+    }
+
+    const auto flxscale_rule = std::find_if(
+        output.field_rules.begin(), output.field_rules.end(),
+        [](const auto &field) { return field.name == "flxscale"; });
+    if (flxscale_rule == output.field_rules.end() ||
+        flxscale_rule->datatype != apt::ValueType::float64 ||
+        !flxscale_rule->nullable ||
+        flxscale_rule->operation != apt::FieldOperation::copy_seed_or_null ||
+        flxscale_rule->missing_policy != "typed-null") {
+        throw apt::ContractError(
+            "flux calibration source lacks the canonical flxscale field");
+    }
+
+    std::map<std::int64_t, std::int64_t> target_by_output;
+    for (const auto &record : relation.rows) {
+        if (!target_by_output.emplace(record.output_uid,
+                                      record.target.local_uid).second) {
+            throw apt::ContractError(
+                "flux calibration source repeats an output relation");
+        }
+    }
+    std::int64_t next_exception_uid = 0;
+    for (const auto &item : exceptions) {
+        next_exception_uid = std::max(next_exception_uid,
+                                      item.exception_uid + 1);
+    }
+    const std::string authority_reference =
+        std::string(apt::fluxcal_authority_prefix_v2) +
+        source.identity.semantic_sha256 + "/" +
+        std::string(calibration_request_sha256) + "/" +
+        std::string(calibration_report_sha256) + "/" +
+        apt::canonical_binary64(request.factors_by_array.at(0)) + "/" +
+        apt::canonical_binary64(request.factors_by_array.at(1)) + "/" +
+        apt::canonical_binary64(request.factors_by_array.at(2));
+    if (!apt::bundle_detail::valid_fluxcal_authority_reference(
+            authority_reference)) {
+        throw apt::ContractError(
+            "flux calibration authority reference is invalid");
+    }
+
+    std::uint64_t calibrated_rows = 0;
+    for (auto &row : output.rows) {
+        const auto relation_target = target_by_output.find(row.uid);
+        const auto factor = request.factors_by_array.find(row.array);
+        const auto field = row.fields.find("flxscale");
+        if (relation_target == target_by_output.end() ||
+            factor == request.factors_by_array.end() ||
+            field == row.fields.end()) {
+            throw apt::ContractError(
+                "flux calibration source row identity is incomplete");
+        }
+        if (std::holds_alternative<apt::NullValue>(field->second)) continue;
+        const auto before = std::get_if<double>(&field->second);
+        if (before == nullptr || !std::isfinite(*before) || *before < 0.0) {
+            throw apt::ContractError(
+                "flux calibration source flxscale is not finite nonnegative");
+        }
+        const auto before_value = *before;
+        if (before_value == 0.0) continue;
+        const auto after = before_value * factor->second;
+        if (!std::isfinite(after) || after <= 0.0) {
+            throw apt::ContractError(
+                "flux calibration output flxscale is not positive finite");
+        }
+        field->second = after;
+        exceptions.push_back({
+            next_exception_uid++, apt::ExceptionKind::field_deviation,
+            relation_target->second, std::string("flxscale"),
+            apt::FieldOperation::override_declared,
+            apt::ValueType::float64, apt::Value{before_value},
+            apt::Value{after},
+            std::nullopt, std::nullopt, std::nullopt,
+            std::string(apt::fluxcal_reason_prefix_v2) +
+                apt::canonical_binary64(factor->second),
+            authority_reference});
+        ++calibrated_rows;
+    }
+    if (calibrated_rows == 0U) {
+        throw apt::ContractError(
+            "flux calibration source has no eligible flxscale values");
+    }
+
+    auto prepared = apt::prepare_matched_bundle(
+        std::move(output), std::move(relation), source.sources,
+        std::move(exceptions), baseline, "fresh",
+        std::string(apt::fluxcal_profile_v2));
+    (void)apt::publish_prepared_bundle(
+        publication_manifest, prepared, dependencies.publication_hooks);
+    auto verified = apt::verify_bundle_filesystem(publication_manifest, true);
+    if (verified.identity != prepared.identity ||
+        verified.total_byte_count != prepared.total_byte_count ||
+        verified.manifest.kind != apt::BundleKind::matched ||
+        verified.manifest.profile != apt::fluxcal_profile_v2 ||
+        verified.manifest.issuance_class != "fresh" ||
+        verified.manifest.baseline_parent != source.manifest.baseline_parent ||
+        verified.manifest.target_parent != source.manifest.target_parent ||
+        verified.manifest.observation != request.observation) {
+        throw apt::ContractError(
+            "published flux-calibrated APT v2 disagrees with intended issuance");
+    }
+    return verified;
+}
+
 std::string quote(std::string_view input) {
     std::string result{"\""};
     constexpr char hex[] = "0123456789abcdef";
@@ -1238,6 +1526,50 @@ std::string verified_result_json(const apt::VerifiedBundle &verified) {
         relation_result.add("seed_unused_count", udecimal(seed_unused));
         result.add("relation", relation_result.finish());
     }
+    if (verified.manifest.profile == apt::fluxcal_profile_v2) {
+        std::map<std::int64_t, std::int64_t> array_by_target;
+        std::map<std::int64_t, const apt::AptRow *> output_by_uid;
+        for (const auto &row : verified.apt.rows) {
+            output_by_uid.emplace(row.uid, &row);
+        }
+        for (const auto &record : verified.relation->rows) {
+            array_by_target.emplace(
+                record.target.local_uid,
+                output_by_uid.at(record.output_uid)->array);
+        }
+        std::map<std::int64_t, std::string> factors;
+        std::optional<std::string> authority_reference;
+        std::uint64_t deviation_count = 0;
+        for (const auto &exception : verified.exceptions) {
+            if (exception.kind != apt::ExceptionKind::field_deviation) {
+                continue;
+            }
+            const auto factor =
+                apt::bundle_detail::fluxcal_factor_from_reason(
+                    exception.reason);
+            factors.emplace(array_by_target.at(*exception.target_uid),
+                            apt::canonical_binary64(*factor));
+            authority_reference = *exception.authority_reference;
+            ++deviation_count;
+        }
+        factors = *apt::bundle_detail::
+            fluxcal_factors_from_authority_reference(*authority_reference);
+        static const std::map<std::int64_t, std::string> names{
+            {0, "a1100"}, {1, "a1400"}, {2, "a2000"}};
+        std::vector<std::string> factor_values;
+        for (const auto &[array_id, factor_bits] : factors) {
+            ObjectBuilder item;
+            item.add("array_name", quote(names.at(array_id)));
+            item.add("factor_bits", quote(factor_bits));
+            factor_values.push_back(item.finish());
+        }
+        ObjectBuilder calibration;
+        calibration.add("authority_reference",
+                        quote(*authority_reference));
+        calibration.add("correction_factors", array(factor_values));
+        calibration.add("deviation_count", udecimal(deviation_count));
+        result.add("flux_calibration", calibration.finish());
+    }
     return result.finish();
 }
 
@@ -1346,6 +1678,63 @@ std::string process_valid_request(const Json &request,
         auto verified = issue_observation_matched_bundle(
             baseline, std::move(producer_request), publication_manifest,
             dependencies);
+        return response(request_id, operation,
+                        verified_result_json(verified));
+    }
+    if (operation == issue_fluxcal_apt_operation_v2) {
+        exact_members(payload,
+                      {"source_root_manifest", "calibration_request",
+                       "calibration_request_sha256", "calibration_report",
+                       "calibration_report_sha256",
+                       "publication_root_manifest"},
+                      "request.payload");
+        const auto source_manifest = std::filesystem::absolute(string_value(
+            member(payload, "source_root_manifest", "request.payload"),
+            "request.payload.source_root_manifest"));
+        const auto calibration_request_path =
+            std::filesystem::absolute(string_value(
+                member(payload, "calibration_request", "request.payload"),
+                "request.payload.calibration_request"));
+        const auto expected_request_sha256 = string_value(
+            member(payload, "calibration_request_sha256", "request.payload"),
+            "request.payload.calibration_request_sha256");
+        const auto calibration_report_path =
+            std::filesystem::absolute(string_value(
+                member(payload, "calibration_report", "request.payload"),
+                "request.payload.calibration_report"));
+        const auto expected_report_sha256 = string_value(
+            member(payload, "calibration_report_sha256", "request.payload"),
+            "request.payload.calibration_report_sha256");
+        const auto publication_manifest =
+            std::filesystem::absolute(string_value(
+                member(payload, "publication_root_manifest", "request.payload"),
+                "request.payload.publication_root_manifest"));
+        apt::require_sha256(expected_request_sha256,
+                            "flux calibration request transport digest");
+        apt::require_sha256(expected_report_sha256,
+                            "flux calibration report transport digest");
+        constexpr std::uint64_t maximum_calibration_evidence_bytes =
+            64ULL * 1024ULL * 1024ULL;
+        const auto request_bytes = read_bounded_file(
+            calibration_request_path, maximum_calibration_evidence_bytes,
+            "canonical APT v2 TolProj flux calibration request");
+        const auto report_bytes = read_bounded_file(
+            calibration_report_path, maximum_calibration_evidence_bytes,
+            "canonical APT v2 TolProj flux calibration report");
+        if ("sha256:" + citlali::utils::sha256(request_bytes) !=
+                expected_request_sha256 ||
+            "sha256:" + citlali::utils::sha256(report_bytes) !=
+                expected_report_sha256) {
+            throw apt::ContractError(
+                "canonical APT v2 flux calibration evidence digest disagrees");
+        }
+        auto source = apt::verify_bundle_filesystem(source_manifest, true);
+        auto producer_request = parse_producer_fluxcal_request(
+            JsonParser(request_bytes).parse(), source,
+            expected_report_sha256);
+        auto verified = issue_observation_fluxcal_bundle(
+            source, std::move(producer_request), expected_request_sha256,
+            expected_report_sha256, publication_manifest, dependencies);
         return response(request_id, operation,
                         verified_result_json(verified));
     }

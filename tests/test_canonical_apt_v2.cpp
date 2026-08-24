@@ -438,11 +438,18 @@ TEST(canonical_apt_v2,
          "producer", std::string("citlali:beammap-empirical-calibration-v1"),
          apt::FieldOperation::preserve_target, std::nullopt, "nan-token",
          "nonidentity", "calibration amplitude divided by fit amplitude"});
+    baseline.apt.field_rules.push_back(
+        {8, "flxscale", apt::ValueType::float64, "mJy/beam", false,
+         "producer", std::string("citlali:beammap-fluxscale-v1"),
+         apt::FieldOperation::preserve_target, std::nullopt, "reject",
+         "nonidentity", "detector flux calibration scale"});
     baseline.apt.rows.at(0).fields.emplace("flag", std::int64_t{0});
     baseline.apt.rows.at(1).fields.emplace("flag", std::int64_t{1});
     baseline.apt.rows.at(0).fields.emplace(
         "cal_amp_over_fit_amp", std::numeric_limits<double>::quiet_NaN());
     baseline.apt.rows.at(1).fields.emplace("cal_amp_over_fit_amp", 1.25);
+    baseline.apt.rows.at(0).fields.emplace("flxscale", 2.0);
+    baseline.apt.rows.at(1).fields.emplace("flxscale", 3.0);
     const auto baseline_prepared = apt::prepare_baseline_bundle(
         baseline.apt, baseline.sources);
     const auto baseline_dir = temporary.path / "baseline.apt-v2";
@@ -640,6 +647,98 @@ TEST(canonical_apt_v2,
     EXPECT_NE(tampered.response_json.find("bound source bytes disagree"),
               std::string::npos);
     EXPECT_EQ(issuance_index, 3U);
+
+    const auto calibration_report_path =
+        temporary.path / "fluxscale-report.json";
+    const std::string calibration_report =
+        "{\"schema\":\"tolproj-fluxscale-report-v1\"}\n";
+    {
+        std::ofstream output(calibration_report_path, std::ios::binary);
+        output << calibration_report;
+    }
+    const auto calibration_report_sha256 =
+        "sha256:" + citlali::utils::sha256(calibration_report);
+    const auto calibration_request_path =
+        temporary.path / "fluxscale-request.json";
+    const std::string calibration_request =
+        "{\"schema\":\"tolproj-canonical-apt-fluxcal-request-v1\"," +
+        std::string("\"producer\":\"tolproj\",") +
+        "\"software_revision\":\"fixture\"," +
+        "\"configuration_sha256\":\"" + digest('6') + "\"," +
+        "\"event_time_utc\":\"2026-08-24T18:00:00Z\"," +
+        "\"observation\":" + target_observation + "," +
+        "\"source_artifact_sha256\":\"" +
+        verified.identity.semantic_sha256 + "\"," +
+        "\"report_sha256\":\"" + calibration_report_sha256 + "\"," +
+        "\"cohort\":{\"source_name\":\"science\"," +
+        "\"cohort_id\":\"pt-1\",\"bracket_obsnums\":[\"148668\"]}," +
+        "\"correction_factors\":[" +
+        "{\"array_name\":\"a1100\",\"factor_bits\":\"" + bits(1.5) + "\"}," +
+        "{\"array_name\":\"a1400\",\"factor_bits\":\"" + bits(2.0) + "\"}," +
+        "{\"array_name\":\"a2000\",\"factor_bits\":\"" + bits(2.5) + "\"}]}";
+    {
+        std::ofstream output(calibration_request_path, std::ios::binary);
+        output << calibration_request;
+    }
+    const auto calibration_request_sha256 =
+        "sha256:" + citlali::utils::sha256(calibration_request);
+    const auto fluxcal_dir = temporary.path / "fluxcal.apt-v2";
+    ASSERT_TRUE(std::filesystem::create_directory(fluxcal_dir));
+    const auto fluxcal_manifest =
+        fluxcal_dir / apt::root_manifest_name_v2;
+    const auto fluxcal_protocol_request =
+        "{\"protocol\":\"" + std::string(protocol::protocol_v2) +
+        "\",\"request_id\":\"fluxcal\",\"operation\":\"" +
+        std::string(protocol::issue_fluxcal_apt_operation_v2) +
+        "\",\"payload\":{\"source_root_manifest\":\"" +
+        output_manifest.string() + "\",\"calibration_request\":\"" +
+        calibration_request_path.string() +
+        "\",\"calibration_request_sha256\":\"" +
+        calibration_request_sha256 + "\",\"calibration_report\":\"" +
+        calibration_report_path.string() +
+        "\",\"calibration_report_sha256\":\"" +
+        calibration_report_sha256 +
+        "\",\"publication_root_manifest\":\"" +
+        fluxcal_manifest.string() + "\"}}";
+    const auto fluxcal_issued = protocol::process_request_line(
+        fluxcal_protocol_request, dependencies);
+    EXPECT_EQ(fluxcal_issued.exit_code, protocol::success_exit_code)
+        << fluxcal_issued.response_json;
+    EXPECT_NE(fluxcal_issued.response_json.find(
+                  "\"profile\":\"citlali-observation-fluxcal-apt-v2\""),
+              std::string::npos);
+    EXPECT_NE(fluxcal_issued.response_json.find(
+                  "\"flux_calibration\":{"),
+              std::string::npos);
+    EXPECT_NE(fluxcal_issued.response_json.find(
+                  "\"array_name\":\"a1100\",\"factor_bits\":\"" +
+                  bits(1.5) + "\""),
+              std::string::npos);
+    EXPECT_NE(fluxcal_issued.response_json.find(
+                  "\"array_name\":\"a1400\",\"factor_bits\":\"" +
+                  bits(2.0) + "\""),
+              std::string::npos);
+    EXPECT_NE(fluxcal_issued.response_json.find(
+                  "\"array_name\":\"a2000\",\"factor_bits\":\"" +
+                  bits(2.5) + "\""),
+              std::string::npos);
+    const auto fluxcal = apt::verify_bundle_filesystem(
+        fluxcal_manifest, true);
+    EXPECT_EQ(fluxcal.manifest.profile, apt::fluxcal_profile_v2);
+    EXPECT_EQ(fluxcal.apt.rows.at(0).fields.at("flxscale"),
+              apt::Value{3.0});
+    EXPECT_TRUE(std::holds_alternative<apt::NullValue>(
+        fluxcal.apt.rows.at(1).fields.at("flxscale")));
+    const auto field_deviation_count = std::count_if(
+        fluxcal.exceptions.begin(), fluxcal.exceptions.end(),
+        [](const auto &item) {
+            return item.kind == apt::ExceptionKind::field_deviation;
+        });
+    EXPECT_EQ(field_deviation_count, 1);
+    EXPECT_NO_THROW(
+        citlali::pipeline::admit_canonical_apt_detector_relation_v2(
+            fluxcal));
+    EXPECT_EQ(issuance_index, 4U);
 }
 
 }  // namespace

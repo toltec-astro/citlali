@@ -42,6 +42,15 @@ target-governed field is retained from its exact source. Those rules are
 declared once. The output is deterministically reconstructable from the
 verified baseline snapshot, target values, relation, rules, and exceptions.
 
+Pointing-derived science flux calibration is a distinct matched-family
+profile, `citlali-observation-fluxcal-apt-v2`. Its ordinary matched parent is
+immutable. Each positive finite `flxscale` change is one typed
+`field-deviation`; null values remain null and finite zeros remain exact zeros.
+The common authority reference binds the parent semantic identity, TolProj
+request digest, report digest, and all three exact binary64 array factors. The
+per-row reason repeats the applicable factor, allowing admission to prove the
+new value by multiplication without reconstructing a factor by division.
+
 The only observation-specific KMP facts admitted by v2 are:
 
 | Canonical field | Exact source column | Type | Unit | Presence | Authority |
@@ -349,6 +358,27 @@ or writes typed nulls for unmatched rows, publishes receipt-last without
 replacement, rereads the complete filesystem bundle, and returns the normal
 typed descriptor. The caller independently invokes `validate-bundle-v2` and
 compares artifact, transport, relation, observation, and locator facts.
+
+The controlled `issue-fluxcal-apt-v2` operation accepts:
+
+```json
+{
+  "source_root_manifest": "/absolute/path/to/matched.apt-v2/manifest.ecsv",
+  "calibration_request": "/absolute/path/to/fluxcal-request.json",
+  "calibration_request_sha256": "sha256:<64 lowercase hex>",
+  "calibration_report": "/absolute/path/to/fluxscale-report.json",
+  "calibration_report_sha256": "sha256:<64 lowercase hex>",
+  "publication_root_manifest": "/absolute/path/to/fluxcal.apt-v2/manifest.ecsv"
+}
+```
+
+The closed `tolproj-canonical-apt-fluxcal-request-v1` request binds the exact
+observation, ordinary matched parent semantic digest, cohort and bracket
+observations, report digest, producer/configuration provenance, and one
+positive finite binary64 factor for each TolTEC array. Citlali verifies every
+binding, rejects an already calibrated parent, publishes without replacement,
+rereads the child, and returns the normal descriptor plus the calibrated-row
+count, authority reference, and three factors.
 
 `canonicalize-target-v2` and `migrate-v1-to-v2` remain reserved operation names
 and fail closed before doing work.

@@ -755,6 +755,14 @@ the typed null, and an unmatched or ambiguous target likewise carries the
 typed null. Publication verification and typed detector-relation admission
 both enforce this rule.
 
+The flux-calibrated observation-v2 profile changes only `flxscale` under
+typed exception authority. Null scales stay null, finite zero scales stay
+bitwise unchanged, and every positive finite scale is the exact binary64
+product of its matched-parent value and the declared array factor. The
+immutable evidence binds the matched parent, TolProj request, fluxscale report,
+cohort brackets, and all three array factors; factor reconstruction by output
+division is not authoritative.
+
 ## Configuration And Provenance States
 
 TolTECA owns discovery, ordering, and merge behavior for numbered `NN*.yaml`

@@ -25,6 +25,16 @@ namespace publication = canonical_artifact_publication;
 inline constexpr std::string_view root_manifest_name_v2 = "manifest.ecsv";
 inline constexpr std::string_view root_receipt_name_v2 =
     "manifest.ecsv.sha256";
+inline constexpr std::string_view baseline_profile_v2 =
+    "citlali-beammap-baseline-apt-v2";
+inline constexpr std::string_view matched_profile_v2 =
+    "citlali-observation-matched-apt-v2";
+inline constexpr std::string_view fluxcal_profile_v2 =
+    "citlali-observation-fluxcal-apt-v2";
+inline constexpr std::string_view fluxcal_authority_prefix_v2 =
+    "tolproj:pointing-fluxscale-v1/";
+inline constexpr std::string_view fluxcal_reason_prefix_v2 =
+    "pointing-fluxscale-array-factor:";
 
 struct BundlePayload {
     std::string root_manifest_bytes;
@@ -181,6 +191,66 @@ inline bool exact_value_equal(const Value &lhs, const Value &rhs,
     v1::detail::add_value(left, "value", lhs, type);
     v1::detail::add_value(right, "value", rhs, type);
     return left == right;
+}
+
+inline std::optional<double> positive_binary64_from_bits(
+    std::string_view value) {
+    if (value.size() != 16U) return std::nullopt;
+    std::uint64_t bits = 0;
+    for (const char ch : value) {
+        bits <<= 4U;
+        if (ch >= '0' && ch <= '9') {
+            bits |= static_cast<std::uint64_t>(ch - '0');
+        } else if (ch >= 'a' && ch <= 'f') {
+            bits |= 10U + static_cast<std::uint64_t>(ch - 'a');
+        } else {
+            return std::nullopt;
+        }
+    }
+    const auto factor = std::bit_cast<double>(bits);
+    if (!std::isfinite(factor) || factor <= 0.0 ||
+        canonical_binary64(factor) != value) {
+        return std::nullopt;
+    }
+    return factor;
+}
+
+inline std::optional<double> fluxcal_factor_from_reason(
+    std::string_view reason) {
+    if (!reason.starts_with(fluxcal_reason_prefix_v2)) return std::nullopt;
+    reason.remove_prefix(fluxcal_reason_prefix_v2.size());
+    return positive_binary64_from_bits(reason);
+}
+
+inline std::optional<std::map<std::int64_t, std::string>>
+fluxcal_factors_from_authority_reference(std::string_view value) {
+    if (!value.starts_with(fluxcal_authority_prefix_v2)) return std::nullopt;
+    value.remove_prefix(fluxcal_authority_prefix_v2.size());
+    std::vector<std::string_view> tokens;
+    while (true) {
+        const auto separator = value.find('/');
+        tokens.push_back(separator == std::string_view::npos
+                             ? value
+                             : value.substr(0, separator));
+        if (separator == std::string_view::npos) break;
+        value.remove_prefix(separator + 1U);
+    }
+    if (tokens.size() != 6U || !is_sha256_reference(tokens[0]) ||
+        !is_sha256_reference(tokens[1]) ||
+        !is_sha256_reference(tokens[2])) {
+        return std::nullopt;
+    }
+    std::map<std::int64_t, std::string> result;
+    for (std::int64_t array = 0; array < 3; ++array) {
+        const auto bits = tokens[static_cast<std::size_t>(array) + 3U];
+        if (!positive_binary64_from_bits(bits)) return std::nullopt;
+        result.emplace(array, std::string(bits));
+    }
+    return result;
+}
+
+inline bool valid_fluxcal_authority_reference(std::string_view value) {
+    return fluxcal_factors_from_authority_reference(value).has_value();
 }
 
 inline ComponentDescriptor make_descriptor(
@@ -340,7 +410,8 @@ inline std::vector<SeedDisposition> validate_matched_semantics(
     const std::vector<SourceRecord> &sources, const RelationTable &relation,
     const std::vector<ExceptionRecord> &exceptions,
     const AptTable &baseline_apt,
-    const std::vector<FieldRule> &baseline_fields) {
+    const std::vector<FieldRule> &baseline_fields,
+    bool allow_fluxscale_deviations = false) {
     if (apt.kind != BundleKind::matched ||
         apt.observation != relation.observation ||
         apt.rows.size() != relation.rows.size() ||
@@ -417,11 +488,35 @@ inline std::vector<SeedDisposition> validate_matched_semantics(
     std::map<std::int64_t, std::vector<const ExceptionRecord *>>
         ambiguity_exceptions;
     std::set<std::int64_t> seed_exception_uids;
+    std::optional<std::string> fluxcal_authority_reference;
     for (const auto &exception : exceptions) {
         validate(exception);
         if (exception.kind == ExceptionKind::field_deviation) {
-            throw ContractError(
-                "canonical APT v2 has no activated field-deviation authority");
+            if (!allow_fluxscale_deviations ||
+                exception.field_name != std::optional<std::string>{"flxscale"} ||
+                exception.operation !=
+                    std::optional<FieldOperation>{FieldOperation::override_declared} ||
+                exception.value_type !=
+                    std::optional<ValueType>{ValueType::float64} ||
+                !fluxcal_factor_from_reason(exception.reason) ||
+                !exception.authority_reference ||
+                !valid_fluxcal_authority_reference(
+                    *exception.authority_reference) ||
+                !relation_by_target.contains(*exception.target_uid) ||
+                !field_exceptions.emplace(
+                    std::pair{*exception.target_uid,
+                              *exception.field_name},
+                    &exception).second) {
+                throw ContractError(
+                    "canonical APT v2 field-deviation authority is invalid");
+            }
+            if (fluxcal_authority_reference &&
+                *fluxcal_authority_reference !=
+                    *exception.authority_reference) {
+                throw ContractError(
+                    "canonical APT v2 flux calibration authority is inconsistent");
+            }
+            fluxcal_authority_reference = *exception.authority_reference;
         } else if (exception.kind == ExceptionKind::ambiguity_candidate) {
             if (!relation_by_target.contains(*exception.target_uid) ||
                 exception.seed->artifact != relation.baseline_parent ||
@@ -450,6 +545,8 @@ inline std::vector<SeedDisposition> validate_matched_semantics(
 
     std::map<std::int64_t, std::pair<ScopedRowReference, std::int64_t>>
         selected_seed_to_target_pair;
+    std::map<std::int64_t, std::string> fluxcal_factor_bits_by_array;
+    std::uint64_t fluxcal_value_count = 0;
     std::set<std::pair<std::int64_t, std::int64_t>> target_channels;
     for (const auto &record : relation.rows) {
         const auto output = output_by_uid.find(record.output_uid);
@@ -537,6 +634,19 @@ inline std::vector<SeedDisposition> validate_matched_semantics(
                     throw ContractError(
                         "canonical APT v2 ordinary field reconstruction disagrees");
                 }
+                if (allow_fluxscale_deviations && name == "flxscale" &&
+                    !std::holds_alternative<NullValue>(actual)) {
+                    const auto value = std::get_if<double>(&actual);
+                    if (value == nullptr || !std::isfinite(*value) ||
+                        *value < 0.0) {
+                        throw ContractError(
+                            "canonical APT v2 copied fluxscale is invalid");
+                    }
+                    if (*value > 0.0) {
+                        throw ContractError(
+                            "canonical APT v2 fluxscale calibration evidence is absent");
+                    }
+                }
             } else if (!exact_value_equal(*exception->second->before, expected,
                                           rule->datatype) ||
                        !exact_value_equal(*exception->second->after, actual,
@@ -544,8 +654,52 @@ inline std::vector<SeedDisposition> validate_matched_semantics(
                        exception->second->value_type != rule->datatype) {
                 throw ContractError(
                     "canonical APT v2 field exception reconstruction disagrees");
+            } else {
+                const auto before = std::get_if<double>(
+                    &*exception->second->before);
+                const auto after = std::get_if<double>(
+                    &*exception->second->after);
+                if (name != "flxscale" || before == nullptr ||
+                    after == nullptr || !std::isfinite(*before) ||
+                    *before <= 0.0 || !std::isfinite(*after) ||
+                    *after <= 0.0) {
+                    throw ContractError(
+                        "canonical APT v2 fluxscale deviation is invalid");
+                }
+                const auto factor = fluxcal_factor_from_reason(
+                    exception->second->reason);
+                if (!factor ||
+                    !exact_value_equal(Value{*before * *factor}, actual,
+                                       ValueType::float64)) {
+                    throw ContractError(
+                        "canonical APT v2 fluxscale factor reconstruction disagrees");
+                }
+                const auto factor_bits = canonical_binary64(*factor);
+                const auto authority_factors =
+                    fluxcal_factors_from_authority_reference(
+                        *exception->second->authority_reference);
+                if (!authority_factors ||
+                    authority_factors->at(output->second->array) !=
+                        factor_bits) {
+                    throw ContractError(
+                        "canonical APT v2 fluxscale factor authority disagrees");
+                }
+                const auto prior = fluxcal_factor_bits_by_array.emplace(
+                    output->second->array, factor_bits);
+                if (!prior.second && prior.first->second != factor_bits) {
+                    throw ContractError(
+                        "canonical APT v2 fluxscale factor varies within an array");
+                }
+                ++fluxcal_value_count;
             }
         }
+    }
+
+    if (allow_fluxscale_deviations &&
+        (!fluxcal_authority_reference || fluxcal_value_count == 0U ||
+         fluxcal_value_count != field_exceptions.size())) {
+        throw ContractError(
+            "canonical APT v2 flux calibration evidence is incomplete");
     }
 
     std::vector<SeedDisposition> dispositions;
@@ -640,7 +794,7 @@ inline VerifiedBundle verify_bundle_payload(
     const auto &bytes = payload.component_bytes_by_role;
 
     if (result.manifest.kind == BundleKind::baseline) {
-        if (result.manifest.profile != "citlali-beammap-baseline-apt-v2") {
+        if (result.manifest.profile != baseline_profile_v2) {
             throw ContractError(
                 "canonical APT v2 baseline profile is not exact");
         }
@@ -671,7 +825,9 @@ inline VerifiedBundle verify_bundle_payload(
         return result;
     }
 
-    if (result.manifest.profile != "citlali-observation-matched-apt-v2") {
+    const bool fluxcal_profile =
+        result.manifest.profile == fluxcal_profile_v2;
+    if (result.manifest.profile != matched_profile_v2 && !fluxcal_profile) {
         throw ContractError(
             "canonical APT v2 matched profile is not exact");
     }
@@ -682,7 +838,7 @@ inline VerifiedBundle verify_bundle_payload(
         descriptors.at("baseline-manifest"), baseline_manifest);
     if (baseline_manifest.document.kind != BundleKind::baseline ||
         baseline_manifest.document.profile !=
-            "citlali-beammap-baseline-apt-v2") {
+            baseline_profile_v2) {
         throw ContractError(
             "canonical APT v2 embedded baseline manifest is not baseline v2");
     }
@@ -802,7 +958,8 @@ inline VerifiedBundle verify_bundle_payload(
         apt.document, relation.document, sources.document);
     auto seed_dispositions = bundle_detail::validate_matched_semantics(
         apt.document, fields.document, sources.document, relation.document,
-        exceptions.document, baseline_apt.document, baseline_fields.document);
+        exceptions.document, baseline_apt.document, baseline_fields.document,
+        fluxcal_profile);
 
     result.fields = std::move(fields.document);
     result.sources = std::move(sources.document);
@@ -838,7 +995,7 @@ inline PreparedBundle prepare_baseline_bundle(
 
     BundleManifest manifest;
     manifest.kind = BundleKind::baseline;
-    manifest.profile = "citlali-beammap-baseline-apt-v2";
+    manifest.profile = std::string(baseline_profile_v2);
     manifest.issuance_class = std::move(issuance_class);
     manifest.issuance = issuance;
     manifest.observation = observation;
@@ -868,7 +1025,8 @@ inline PreparedBundle prepare_matched_bundle(
     std::vector<SourceRecord> sources,
     std::vector<ExceptionRecord> exceptions,
     const VerifiedBundle &baseline,
-    std::string issuance_class = "fresh") {
+    std::string issuance_class = "fresh",
+    std::string profile = std::string(matched_profile_v2)) {
     if (apt.kind != BundleKind::matched ||
         baseline.manifest.kind != BundleKind::baseline ||
         !baseline.payload.component_bytes_by_role.contains("apt") ||
@@ -911,7 +1069,11 @@ inline PreparedBundle prepare_matched_bundle(
 
     BundleManifest manifest;
     manifest.kind = BundleKind::matched;
-    manifest.profile = "citlali-observation-matched-apt-v2";
+    if (profile != matched_profile_v2 && profile != fluxcal_profile_v2) {
+        throw ContractError(
+            "canonical APT v2 matched preparation profile is unsupported");
+    }
+    manifest.profile = std::move(profile);
     manifest.issuance_class = std::move(issuance_class);
     manifest.issuance = apt.issuance;
     manifest.observation = apt.observation;

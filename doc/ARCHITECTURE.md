@@ -16,6 +16,14 @@ orchestrates only. Runtime consumers receive a scientific APT table only after
 the root receipt and every component have been verified once. Bare ECSV, v1,
 migration-marked v2, or synthesized fallback APTs are rejected by default.
 
+Pointing-derived flux calibration follows the same ownership boundary. TolProj
+owns correction estimation and its request/report evidence; Citlali alone
+issues and admits the immutable calibrated-v2 child. The child retains the
+matched detector relation, changes only positive finite `flxscale` cells under
+typed exceptions, and binds its matched parent plus all three exact array
+factors. Science setup selects the recorded child rather than mutating or
+copying an APT into a parallel library.
+
 ## Status And Authority
 
 This document is the canonical human-readable map of the current Citlali
