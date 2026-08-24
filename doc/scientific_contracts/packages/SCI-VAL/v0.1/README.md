@@ -2,11 +2,10 @@
 
 Producer facts and use-specific eligibility; not final map validity.
 
-Status: owner-approved targeted Stage B r0.3 revision implemented and
-manager-reviewed; scientific-owner review pending; scientific authority not
-frozen
+Status: content-bound v0.1/r0.3 freeze candidate prepared; scientific-owner
+freeze approval pending; implementation conformity and validation not assessed
 
-Proposed scientific contract version: `v0.1`
+Scientific contract version: `v0.1`
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -113,6 +112,8 @@ Producer and consumer ownership remains explicit:
   and artifact QA record
 - [`MANAGER_REVIEW_R0.3.md`](MANAGER_REVIEW_R0.3.md): surgical revision
   content, consistency, and artifact QA record
+- [`R0.3_FREEZE_CANDIDATE_REVIEW_COVER.md`](R0.3_FREEZE_CANDIDATE_REVIEW_COVER.md):
+  exact Core/PDF and continuing-registry candidate identity for owner review
 - [`src/`](src/): six shared canonical modules and the two view wrappers
 - [`pdf/`](pdf/): the 8-page scientist-facing rationale and 20-page formal
   engineering conformance view
@@ -123,11 +124,18 @@ The original approved four-file packet and the owner-approved r0.2/r0.3
 directives are content-bound and verified. The active canonical profile is
 `SCI-VAL:independent_exposure@1`, with no compatibility alias from the former
 draft key; the namespace does not confer policy ownership. Every aggregate is
-now a distinct registered proposition binding its exact homogeneous atomic
-source profile. Structural and non-gating conflicts, exception conflicts, and
-the four owner-supplied response/uncertainty roles have deterministic
-semantics. Exact adjacent source/version bindings remain in the continuing
-source register without inventing unavailable PTC or MAP policy.
+a distinct registered proposition binding its exact homogeneous atomic source
+profile. Structural and non-gating conflicts, exception conflicts, and the
+four owner-supplied response/uncertainty roles have deterministic semantics.
+
+The continuing source register now binds the exact frozen ALIGN, AST, RTC,
+CAL, and PTC timestream authorities while leaving MAP deferred. The continuing
+profile registry binds five exact owner-approved PTC propositions for basis
+fit, loading fit, frozen operator application, ordinary output retention, and
+the existing tracked-kernel response companion. The broad coefficient/QC and
+empirical/simulation identities are explicitly unsupported rather than
+represented by vacuous profiles. These registry updates do not rewrite VAL
+Core or the r0.3 source-table snapshots embedded in the two views.
 
 The scientist-facing rationale is a standalone 8-page narrative with the
 worked occurrence table on physical page 2. The 20-page engineering view
@@ -151,5 +159,6 @@ as engineering-deferred; QB006 retains sufficient-summary and associative
 combine details as profile-local. Those dispositions do not select an
 implementation representation or package-owned profile.
 
-No implementation conformity, validation, scientific freeze, production
-readiness, or adjacent-package readiness claim is made.
+This candidate makes no implementation conformity, validation, production
+readiness, MAP availability, or adjacent-package readiness claim. Scientific
+freeze remains pending the exact owner-review gate.

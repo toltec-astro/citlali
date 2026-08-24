@@ -44,17 +44,17 @@ Not Final Map Validity\\[0.20in]}
 \begin{tabularx}{\linewidth}{@{}p{0.25\linewidth}X@{}}
 Scientific contract version & v0.1 \\
 Rationale revision & r0.3 \\
-Date & 2026-08-21 \\
+Date & 2026-08-24 \\
 Input & Exact immutable producer facts/supports plus one exact owner-bound
 registered profile \\
 Output & Cause-preserving, use-qualified request/applicability/eligibility/
 realization record \\
 Governing rule & Producers own facts; named-use owners own policy; VAL Core
 evaluates; the registry binds but does not author policy \\
-Source & Owner-approved r0.3 directive and exact adjacent source-binding
-register \\
-Status & Owner-approved revision architecture; scientific authority not
-frozen; implementation conformity and validation not assessed \\
+Source & Owner-approved r0.3 Core directive plus exact continuing source and
+profile registries \\
+Status & Content-bound freeze candidate; scientific-owner approval pending;
+implementation conformity and validation not assessed \\
 \end{tabularx}
 \vspace{0.30in}
 \RationaleBox{Central claim.}{VAL is an evaluator and registry mechanism, not
@@ -77,10 +77,13 @@ V0.1 has one mandatory canonical registered profile:
 \texttt{SCI-VAL:independent\_exposure@1}. Its direct-origin rule is a
 contract-level scientific invariant: a synthesized or replaced representative
 occurrence is not an original independent exposure, and no exception may
-redefine it. Other PTC, MAP, response, population, output, and diagnostic
-profiles remain owned by their packages and are unavailable until exactly
-bound. The companion Engineering Conformance Specification is the complete
-formal authority; this rationale explains its scientific meaning.
+redefine it. The continuing registry also binds five exact PTC-owned profiles
+for basis fit, loading fit, frozen operator application, ordinary output
+retention, and existing tracked-kernel propagation. Generic coefficient/QC
+and empirical/simulation identities are explicitly unsupported; MAP remains
+unbound. The companion Engineering Conformance Specification is the complete
+VAL Core formal authority; the continuing registries bind owner policies and
+sources without rewriting that Core.
 
 \vfill
 {\color{VALblue}\rule{\linewidth}{2pt}}
@@ -104,25 +107,29 @@ Question & Profile/authority status & Scientific outcome \\
 Independent astronomical exposure? & Mandatory canonical profile plus RTC
 origin fact & \textbf{Ineligible.} Direct replacement is non-exceptionable;
 the cause remains visible. \\
-Receive a frozen operator? & Hypothetical complete owner-bound profile used
-only for illustration & Would be eligible for that application only if that
-exact profile were registered, applicable, and satisfied. It could not rescue
-independent exposure. \\
-Remain in an output? & Hypothetical complete retention profile used only for
-illustration & Would be eligible for retention only if that exact profile were
-registered, applicable, and satisfied. Retention would say nothing about
-fitting. \\
-Display for diagnosis? & Hypothetical complete package-qualified diagnostic
-profile used only for illustration & Would be eligible for display only if
-that exact profile were registered, applicable, and satisfied, with
-replacement provenance visible. \\
-Enter PTC basis fitting? & Only the reserved profile name is known &
-\textbf{Decision unavailable.} VAL cannot infer a PTC policy from finiteness
-or another permission. \\
-Enter PTC loading fitting? & No exact owner-bound profile & Decision
-unavailable separately; basis and loading fits are different questions. \\
-Enter coefficient/QC estimation? & No exact owner-bound profile & Decision
-unavailable; coefficient/QC is not an alias for estimator fit. \\
+Receive a frozen operator? & Exact
+\nolinkurl{SCI-PTC:operator_application@1} profile; required group-time facts are
+not supplied by this worked case & \textbf{Decision unavailable here.} Direct
+replacement is not itself an application veto; complete operator facts would
+decide this separate use. \\
+Remain in an ordinary PTC output? & Exact
+\nolinkurl{SCI-PTC:output_retention@1} profile plus RTC replacement fact &
+\textbf{Ineligible.} Direct replacement is excluded from ordinary PTC
+science-signal support even if a numerical value was calculated. \\
+Display for diagnosis? & Purely informational display; no admission or
+decision role requested & No eligibility proposition. The value may remain
+visible with replacement provenance and no stronger claim. \\
+Enter PTC basis fitting? & Exact
+\nolinkurl{SCI-PTC:basis_fit_admission@1} profile plus RTC replacement fact &
+\textbf{Ineligible.} The occurrence teaches neither ordinary centering nor
+the PCA basis. \\
+Enter PTC loading fitting? & Exact
+\nolinkurl{SCI-PTC:loading_fit_admission@1} profile plus RTC replacement fact &
+\textbf{Ineligible.} Loading permission remains distinct from basis
+permission. \\
+Enter generic coefficient/QC estimation? & Broad profile identity explicitly
+unsupported & No present proposition is available for VAL to evaluate; a
+future diagnostic with decision authority needs its own exact profile. \\
 Pass MAP upstream admission? & MAP boundary known; exact profile absent &
 Decision unavailable. Even eligibility would not prove projection,
 contribution, support, or final validity. \\
@@ -130,18 +137,25 @@ contribution, support, or final validity. \\
 \end{tabularx}
 \endgroup
 
-\RationaleBox{Why one flag fails.}{This occurrence is finite, retained,
-directly replaced, ineligible for independent exposure, potentially eligible
-for a non-independent use only under an exact future registered and applicable
-profile, and undecidable for unbound uses.
-A single good/bad bit loses the scientific question, owner, and reason.}
+\RationaleBox{Why one flag fails.}{This occurrence is finite and upstream
+retained, but directly replaced and therefore ineligible for independent
+exposure, ordinary PTC basis/loading influence, and ordinary PTC output
+retention. Exact frozen-operator application remains a separate question;
+informational display asserts no eligibility proposition; MAP remains
+unbound. A single good/bad bit loses the scientific question, owner, and
+reason.}
 
 The independent-exposure result is not a hidden VAL policy. The exact
 scientific owner is recorded in the immutable registry binding; the
 \texttt{SCI-VAL} namespace identifies the registry package, not the policy
 owner. VAL checks and evaluates that immutable binding. A policy that tries
-to admit direct replacement as independent exposure is itself invalid; the
-result is decision unavailable with a policy-invalid reason, never eligible.
+to override the non-exceptionable origin rule is invalid. Hypothetical complete
+future profiles remain unavailable until their exact owner,
+source, domain, restrictions, and compatibility are registered; a name alone
+conveys no permission. ``Would be eligible'' is therefore a conditional
+statement about a complete future binding, never a present decision. The
+invalid-origin override yields decision
+unavailable with a policy-invalid reason, never eligible.
 
 \clearpage
 \section{Four authorities must stay separate}
