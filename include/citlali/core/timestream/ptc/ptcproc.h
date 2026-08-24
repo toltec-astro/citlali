@@ -706,10 +706,13 @@ inline void PTCProc::finalize_weight_validation_iteration(int iter) {
 void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
                             const Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> *flags_override) {
     const auto &flags_ref = flags_override ? *flags_override : in.flags.data;
-    // cast flags to double and flip 1's and 0's so we can multiply by the data
+    // Cast flags to a finite-good mask. Select rather than multiply below so
+    // a non-finite flagged payload cannot enter the detector mean.
     auto f = (flags_ref.derived().array().cast <double> ().array() - 1).abs();
+    const Eigen::MatrixXd masked_scans =
+        (f.array() != 0.0).select(in.scans.data.derived().array(), 0.0);
     // mean of each detector
-    Eigen::RowVectorXd col_mean = (in.scans.data.derived().array()*f).colwise().sum()/
+    Eigen::RowVectorXd col_mean = masked_scans.colwise().sum().array() /
                                    f.colwise().sum();
 
     // remove nans from completely flagged detectors
@@ -720,7 +723,9 @@ void PTCProc::subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &in,
 
     // subtract kernel mean
     if (in.kernel.data.size()!=0) {
-        Eigen::RowVectorXd col_mean = (in.kernel.data.derived().array()*f).colwise().sum()/
+        const Eigen::MatrixXd masked_kernel =
+            (f.array() != 0.0).select(in.kernel.data.derived().array(), 0.0);
+        Eigen::RowVectorXd col_mean = masked_kernel.colwise().sum().array() /
                                       f.colwise().sum();
 
         // remove nans from completely flagged detectors

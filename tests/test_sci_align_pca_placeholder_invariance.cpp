@@ -9,6 +9,7 @@
 #include <Eigen/Core>
 
 #include <cmath>
+#include <limits>
 #include <memory>
 #include <string>
 #include <utility>
@@ -136,6 +137,57 @@ TEST(sci_align_pca_placeholder,
             else {
                 EXPECT_NEAR(low.cleaned(row, column),
                             high.cleaned(row, column), 1.0e-12);
+            }
+        }
+    }
+}
+
+TEST(sci_align_pca_placeholder,
+     ordinary_pca_all_group_does_not_inspect_nonfinite_flagged_payloads) {
+    const auto fixture = make_placeholder_fixture();
+    auto nonfinite = fixture.low_placeholder;
+    for (Eigen::Index row = 0; row < fixture.flags.rows(); ++row) {
+        for (Eigen::Index column = 0;
+             column < fixture.flags.cols(); ++column) {
+            if (!fixture.flags(row, column)) {
+                continue;
+            }
+            nonfinite(row, column) =
+                (column % 2 == 0)
+                    ? std::numeric_limits<double>::quiet_NaN()
+                    : std::numeric_limits<double>::infinity();
+        }
+    }
+
+    const auto finite = run_existing_ordinary_pca(
+        fixture.low_placeholder, fixture.flags, "all");
+    const auto masked = run_existing_ordinary_pca(
+        nonfinite, fixture.flags, "all");
+
+    EXPECT_TRUE(finite.eigenvalues.isApprox(masked.eigenvalues, 1.0e-12));
+    const auto finite_projector =
+        finite.eigenvectors.leftCols(1) *
+        finite.eigenvectors.leftCols(1).transpose();
+    const auto masked_projector =
+        masked.eigenvectors.leftCols(1) *
+        masked.eigenvectors.leftCols(1).transpose();
+    EXPECT_TRUE(finite_projector.isApprox(masked_projector, 1.0e-12));
+
+    for (Eigen::Index row = 0; row < fixture.flags.rows(); ++row) {
+        for (Eigen::Index column = 0;
+             column < fixture.flags.cols(); ++column) {
+            if (fixture.flags(row, column)) {
+                if (std::isnan(nonfinite(row, column))) {
+                    EXPECT_TRUE(std::isnan(masked.cleaned(row, column)));
+                }
+                else {
+                    EXPECT_EQ(masked.cleaned(row, column),
+                              nonfinite(row, column));
+                }
+            }
+            else {
+                EXPECT_NEAR(finite.cleaned(row, column),
+                            masked.cleaned(row, column), 1.0e-12);
             }
         }
     }

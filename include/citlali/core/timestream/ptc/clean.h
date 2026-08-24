@@ -385,7 +385,13 @@ public:
 
     template <typename DerivedA, typename DerivedB>
     Eigen::MatrixXd calc_cov_with_mask(const Eigen::DenseBase<DerivedA> &sig, const Eigen::DenseBase<DerivedB> &good) {
-        Eigen::MatrixXd det = (sig.derived().array() * good.derived().array()).matrix();
+        // A flagged payload is outside the numerical contract and may be
+        // non-finite. Multiplication is not a mask for IEEE values because
+        // NaN * 0 remains NaN; select the finite placeholder explicitly.
+        Eigen::MatrixXd det =
+            (good.derived().array() != 0.0)
+                .select(sig.derived().array(), 0.0)
+                .matrix();
         Eigen::MatrixXd numer = det.adjoint() * det;
         Eigen::MatrixXd denom = (good.derived().adjoint() * good.derived()).array() - 1.0;
         // Return a concrete matrix. Returning the select expression here would
@@ -1487,10 +1493,16 @@ auto Cleaner::select_adaptive_cut(const Eigen::DenseBase<DerivedA> &scans,
                                        .template cast<double>()
                                        .matrix();
             auto evecs_cut = evecs.derived().leftCols(k_use);
-            Eigen::MatrixXd proj = (scans.derived().array() * good.array()).matrix() * evecs_cut;
+            Eigen::MatrixXd projection_input =
+                (good.array() != 0.0)
+                    .select(scans.derived().array(), 0.0)
+                    .matrix();
+            Eigen::MatrixXd proj = projection_input * evecs_cut;
             Eigen::MatrixXd model = proj * evecs_cut.adjoint();
             return (scans.derived().template cast<double>() -
-                    (model.array() * good.array()).matrix())
+                    (good.array() != 0.0)
+                        .select(model.array(), 0.0)
+                        .matrix())
                 .eval();
         };
 
@@ -1985,7 +1997,10 @@ auto Cleaner::calc_eig_values(const Eigen::DenseBase<DerivedA> &scans, const Eig
     Eigen::MatrixXd det(n_pts, n_active_dets);
     for (Eigen::Index i=0; i<n_active_dets; i++) {
         const auto src_col = active_cols[static_cast<std::size_t>(i)];
-        det.col(i) = (scans.derived().col(src_col).array() * f_active.col(i).array()).matrix();
+        det.col(i) =
+            (f_active.col(i).array() != 0.0)
+                .select(scans.derived().col(src_col).array(), 0.0)
+                .matrix();
     }
 
     // calculate the covariance matrix with safe denominator handling
@@ -2194,9 +2209,15 @@ auto Cleaner::remove_eig_values(const Eigen::DenseBase<DerivedA> &scans, const E
                                .template cast<double>()
                                .matrix();
     const auto evecs_cut = evecs.derived().leftCols(limit_index);
-    Eigen::MatrixXd proj = (scans.derived().array() * good.array()).matrix() * evecs_cut;
+    Eigen::MatrixXd projection_input =
+        (good.array() != 0.0)
+            .select(scans.derived().array(), 0.0)
+            .matrix();
+    Eigen::MatrixXd proj = projection_input * evecs_cut;
     Eigen::MatrixXd model = proj * evecs_cut.adjoint();
-    Eigen::MatrixXd cleaned = scans.derived() - (model.array() * good.array()).matrix();
+    Eigen::MatrixXd cleaned =
+        scans.derived() -
+        (good.array() != 0.0).select(model.array(), 0.0).matrix();
     if (cleaned_scans.derived().data() == scans.derived().data()) {
         cleaned_scans.derived() = std::move(cleaned);
     }

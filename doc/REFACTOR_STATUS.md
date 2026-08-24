@@ -1,5 +1,40 @@
 # Citlali Refactor Status
 
+## 2026-08-24 Flagged Non-Finite PCA Masking Repair
+
+The canonical Stage 7 two-observation Pointing replay with empirical map
+weighting enabled exposed a processed-timestream masking defect rather than a
+JINC or weighting defect. The matched-v2 APT correctly represents unavailable
+detector fields as typed nulls, and the corresponding detector/sample flags
+correctly exclude those payloads. RTC retained finite active samples, but the
+ordinary PCA paths used multiplication by a zero/one mask. Under IEEE
+arithmetic, a flagged `NaN * 0` remains NaN, so nullable flagged detector
+payloads contaminated the PCA projection and made every PTC detector sample
+non-finite. JINC then correctly admitted no contributors, and the empirical
+global-nonprecision scale failed closed as unavailable.
+
+All ordinary and adaptive PCA covariance, projection, and correction paths now
+use explicit selection of a finite zero for excluded samples. PTC mean
+subtraction applies the same rule to detector and kernel means. Flagged payloads
+remain outside the numerical contract and retain their original representation
+in the cleaned result; unflagged finite values and the established PCA
+algorithm are otherwise unchanged. A focused regression alternates NaN and
+infinity in flagged cells and proves that the eigensystem and every unflagged
+cleaned sample are invariant to those excluded payloads.
+
+The complete downloaded Stage 7 replay now succeeds with the canonical
+empirical-weight configuration for both 152389 and 152391. Every unflagged PTC
+sample is finite (13,333,916 and 13,467,298 samples respectively); the JINC
+maps contain 307,096 and 300,853 supported pixels with maximum contributor
+counts of 56,082 and 55,715; every array has a positive formal map-weight sum
+and a finite empirical scale. Both observations produce valid Pointing fits,
+the reduction exits successfully, and its log contains no error- or
+critical-level entries. The complete local C++ surface passes all 797 runnable
+CTests with the one established disabled test not run. All 203 baseline-tool
+tests pass. The full config preflight passes 129 unit tests, all four mode kits,
+and all eight compatibility cases. This is owner-local replay evidence; Unity
+deployment and campaign confirmation remain pending.
+
 ## 2026-08-24 Stage 7 Pointing Output Completion Repairs
 
 The downloaded Stage 7 two-observation Pointing project now completes a local
