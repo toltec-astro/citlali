@@ -1,5 +1,36 @@
 # Citlali Refactor Status
 
+## 2026-08-24 Telescope Observation-State Replacement Repair
+
+The owner-run Stage 7 two-observation Pointing reduction passed compact-v2
+admission and the repaired constant-offset evaluation. During initial geometry
+for the second observation, 152391, native telescope capture rejected
+`alt_phys` under its finite/shape contract. The reduction-lifetime
+`Telescope` compatibility object retained derived tangent-plane fields created
+while preparing 152389. The next telescope load overwrote configured raw
+fields but did not clear the observation-owned data/header maps, so the stale
+152389 `alt_phys` entered the 152391 native snapshot with the earlier
+observation's cardinality and values. The same behavior could also retain an
+optional raw field or header omitted by a later telescope file.
+
+The telescope file boundary now clears only the observation-owned data and
+header containers immediately before every load. Reduction-wide telescope
+configuration remains intact. The next observation therefore constructs its
+raw trajectory solely from its own file, and missing optional inputs remain
+missing instead of inheriting prior values. A pipeline regression seeds stale
+raw, derived, and optional-header state and proves that all are replaced before
+the next loader runs. This changes no telescope values within an observation,
+interpolation, pointing offsets, RTC/PTC, mapmaking, or product contract.
+
+Local verification builds the complete CLI, passes all eight focused telescope
+pipeline cases and all 68 SCI-ALIGN cases, and passes all 793 runnable CTests
+with the established single disabled test not run. All 203 baseline-tool tests
+pass and both ledgers are valid. The config preflight passes all 127 unit tests,
+all four mode kits, and the six locally available OOF, Beammap, and Science
+compatibility cases. Its two Pointing cases retain the recorded missing
+owner-local `point/refactor/70_reduce.yaml` fixture and are not represented as
+passed.
+
 ## 2026-08-23 Native Constant Pointing-Offset Support Repair
 
 The owner-run Stage 7 Pointing reduction using repaired matched-v2 APTs passed

@@ -418,6 +418,7 @@ struct FakeEngine {
         bool sim_obs = false;
         std::string pixel_axes = "pixel_axes";
         int get_tel_data_calls = 0;
+        bool telescope_input_state_empty_on_load = false;
         int calc_tan_pointing_calls = 0;
         int calc_scan_indices_calls = 0;
         std::string scan_chunk_mode;
@@ -431,6 +432,8 @@ struct FakeEngine {
         void get_tel_data(const std::string &tel_path,
                           const ChunkingConfig &chunking) {
             ++get_tel_data_calls;
+            telescope_input_state_empty_on_load =
+                tel_data.empty() && tel_header.empty();
             loaded_tel_path = tel_path;
             scan_chunk_mode = chunking.mode;
             scan_chunk_value = chunking.value;
@@ -6730,6 +6733,29 @@ TEST(pipeline_preflight, loads_and_aligns_telescope_data) {
     EXPECT_EQ(todproc.align_timestreams_calls, 1);
     EXPECT_EQ(todproc.align_timestreams_gaps_calls, 0);
     EXPECT_EQ(logger->info_calls, 2);
+}
+
+TEST(pipeline_preflight,
+     replaces_telescope_input_state_at_each_observation_boundary) {
+    FakeTelescopeTodProc todproc;
+    todproc.engine().telescope.tel_data["TelTime"].values = {1.0, 2.0};
+    todproc.engine().telescope.tel_data["alt_phys"].values = {3.0, 4.0};
+    todproc.engine().telescope.tel_header["optional_previous"] =
+        FakeTelHeaderValue{};
+    FakeRawObs rawobs;
+    rawobs.tel.path = "/data/next_tel.nc";
+    auto logger = std::make_shared<FakeLogger>();
+
+    citlali::pipeline::load_and_align_telescope_data(
+        todproc, rawobs, logger);
+
+    EXPECT_TRUE(todproc.engine().telescope.tel_data.empty());
+    EXPECT_TRUE(todproc.engine().telescope.tel_header.empty());
+    EXPECT_TRUE(
+        todproc.engine().telescope.telescope_input_state_empty_on_load);
+    EXPECT_EQ(todproc.engine().telescope.get_tel_data_calls, 1);
+    EXPECT_EQ(todproc.engine().telescope.loaded_tel_path,
+              "/data/next_tel.nc");
 }
 
 TEST(pipeline_preflight, aligns_telescope_data_over_gaps) {

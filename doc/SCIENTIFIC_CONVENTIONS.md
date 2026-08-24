@@ -597,6 +597,11 @@ effective, and realized astrometry are recorded per observation. A later
 observation cannot inherit a prior observation's calibration availability or
 offset state.
 
+Raw telescope samples, telescope headers, and derived tangent-plane series are
+likewise observation-owned. Loading an observation replaces those containers
+before reading its telescope file; a missing optional field or a derived series
+from an earlier observation is never inherited by the later observation.
+
 ### Beammap Photometry
 
 TolProj determines the Beammap calibrator and estimates its per-array flux;
