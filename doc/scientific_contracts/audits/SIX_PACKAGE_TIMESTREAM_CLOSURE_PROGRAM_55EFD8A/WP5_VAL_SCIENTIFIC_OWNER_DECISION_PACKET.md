@@ -2,7 +2,7 @@
 
 Opened: `2026-08-24`
 
-Status: `WP5-OWNER-D001--D008` approved; remaining profile decisions await
+Status: `WP5-OWNER-D001--D009` approved; remaining profile decisions await
 review one at a time
 
 Scope: non-MAP processed-timestream source bindings and VAL profiles. VAL Core
@@ -462,3 +462,65 @@ Disposition:
 10. D008 is an explicit unsupported disposition for the broad generic profile,
     not a prohibition on useful PTC diagnostics. It contributes no restriction
     to the future common fragment and creates no runtime abstraction.
+
+## WP5-OWNER-D009 — Existing Tracked-Kernel Response Admission
+
+Question:
+
+> Should `SCI-PTC:response_companion@1` serve only as VAL's admission profile
+> for the tracked-kernel propagation already defined by frozen PTC r0.5, without
+> creating any new response object, computation, runtime type, or serialization
+> requirement?
+
+Owner response:
+
+> approved
+
+Disposition:
+
+1. `SCI-PTC:response_companion@1` is the VAL admission profile for the existing
+   frozen PTC tracked-kernel role defined by `SCI-PTC-DEF-016`,
+   `SCI-PTC-REQ-062`, `SCI-PTC-REQ-087`, and `SCI-PTC-REQ-097`. It introduces
+   no scientifically distinct response object, estimator, computation,
+   payload, sidecar, or serialization rule.
+2. The existing operation is
+
+   \[
+   \underbrace{K^{\rm in}_g}_{\text{existing tracked kernel}}
+   \xrightarrow[\text{existing computation}]{J_{\Theta_g}[Y_g]}
+   \underbrace{K^{\rm out}_g}_{\text{existing propagated-kernel result}}.
+   \]
+
+   The profile answers only whether the exact existing companion is authorized
+   to participate in that role.
+3. The companion declares its parent domain. A detector-time companion already
+   on the CAL grid enters the PTC-local fixed-state operator directly and does
+   not receive `K_{\rm up\to CAL}` a second time. A source-domain companion
+   composes the existing admitted upstream chain exactly once.
+4. Propagation uses the same frozen group-local state as the data: group,
+   coordinates, metric, support, masks, positive rank, subspace, tolerance,
+   generalized inverse, time-local full-rank guard, detector classes, and
+   boundaries. The companion never enters or alters learning or the science
+   result, and frozen `\lambda_g` is not subtracted from the perturbation.
+5. A group-time unavailable for data application is unavailable for its
+   tracked kernel. No different support, lower rank, interpolation, borrowed
+   solve, or alternative operator may be substituted under the same identity.
+6. Missing complete upstream response makes the source-domain complete-chain
+   claim unavailable but does not erase an otherwise supported CAL-grid local
+   PTC response or transformed signal. Unrequested or unavailable response
+   remains distinct from product realization.
+7. The contract requires response authority and recoverability, not dense
+   serialization of every kernel element. An implementation may use any
+   representation that exactly recovers the authorized response role.
+8. Response uncertainty or statistical interpretation is required only when
+   scientifically necessary for the claimed use. Propagation alone establishes
+   no PSF/beam recovery, photometric validity, MAP authority, or science
+   qualification.
+9. Any required upstream pointing identity inherits the approved fail-closed
+   observation rule; PTC cannot repair unrecoverable pointing.
+10. Full-procedure response remains a separate role and is unavailable on the
+    ordinary route. D009 authorizes only existing fixed-state tracked-kernel
+    propagation.
+11. These restrictions remain in `\Delta\mathcal R_{\rm response}` until final
+    common-fragment comparison. D009 alone does not produce a final
+    digest-bound usable registry record.
