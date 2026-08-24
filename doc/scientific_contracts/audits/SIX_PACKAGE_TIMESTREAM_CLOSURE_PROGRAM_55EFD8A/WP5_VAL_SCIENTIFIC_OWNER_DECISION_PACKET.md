@@ -2,7 +2,7 @@
 
 Opened: `2026-08-24`
 
-Status: `WP5-OWNER-D001--D007` approved; remaining profile decisions await
+Status: `WP5-OWNER-D001--D008` approved; remaining profile decisions await
 review one at a time
 
 Scope: non-MAP processed-timestream source bindings and VAL profiles. VAL Core
@@ -407,3 +407,58 @@ Disposition:
 10. These restrictions remain in `\Delta\mathcal R_{\rm output}` until final
     common-fragment comparison. D007 alone does not produce a final
     digest-bound usable registry record.
+
+## WP5-OWNER-D008 — Coefficient/QC Population Disposition
+
+Question:
+
+> Should the broad reserved name `SCI-PTC:coefficient_qc_population@1` remain
+> unsupported as a generic ordinary-route profile, while PTC may define useful
+> informational diagnostics directly and VAL policy is required only when a
+> diagnostic receives admission or decision authority?
+
+Owner response: **approved with anti-overengineering clarifications**.
+
+Disposition:
+
+1. The governing rule is:
+
+   \[
+   \boxed{
+   \text{PTC may calculate whatever well-defined diagnostics are useful;}\quad
+   \text{VAL policy is required when one of them is given decision authority.}
+   }
+   \]
+
+2. No usable generic `SCI-PTC:coefficient_qc_population@1` profile is
+   registered for the ordinary route. The underlying quantities do not share
+   one universal scientific meaning or population rule.
+3. Fitted detector loadings remain governed by loading-fit admission and their
+   own declared semantics. Time-local application coefficients remain part of
+   exact frozen operator application. Neither role is reclassified as generic
+   coefficient/QC population membership.
+4. Analysis/gridding coefficients remain MAP-facing and deferred. No PTC
+   loading, application coefficient, or diagnostic becomes a MAP coefficient,
+   weight, precision, sensitivity, or significance by inference.
+5. Purely informational diagnostics require no VAL profile. PTC may calculate
+   and record quantities such as maximum mode amplitude, admitted-sample
+   fraction, residual RMS, or a convergence statistic when each is
+   scientifically well defined.
+6. Every diagnostic defines its estimator, population and support,
+   normalization where applicable, lifecycle, and intended policy role. Its
+   uncertainty or statistical interpretation is specified only when
+   scientifically required for the claimed use; no uncertainty estimate is
+   manufactured merely to satisfy the Registry.
+7. A diagnostic requires a separate complete VAL profile when it gains
+   admission, exclusion, thresholding, classification, routing, or other
+   decision authority. That profile is family- and use-qualified rather than
+   inferred from the broad reserved name.
+8. Ordinary-route post-fit diagnostics remain advisory. They cannot modify
+   fitted support, grouping, configured rank, `\Theta_g`, operator application,
+   output retention, or a previously realized transformed signal.
+9. Missing or unavailable optional diagnostics do not invalidate an otherwise
+   legitimate transformed signal. No excluded occurrence receives a silent
+   numerical-zero coefficient.
+10. D008 is an explicit unsupported disposition for the broad generic profile,
+    not a prohibition on useful PTC diagnostics. It contributes no restriction
+    to the future common fragment and creates no runtime abstraction.
