@@ -2,7 +2,7 @@
 
 Opened: `2026-08-24`
 
-Status: `WP5-OWNER-D001--D009` approved; remaining profile decisions await
+Status: `WP5-OWNER-D001--D010` approved; remaining profile decisions await
 review one at a time
 
 Scope: non-MAP processed-timestream source bindings and VAL profiles. VAL Core
@@ -524,3 +524,44 @@ Disposition:
 11. These restrictions remain in `\Delta\mathcal R_{\rm response}` until final
     common-fragment comparison. D009 alone does not produce a final
     digest-bound usable registry record.
+
+## WP5-OWNER-D010 — No Ensemble-Inference Use
+
+Question:
+
+> Does PTC v0.1 make any scientific inference from an ensemble of alternative
+> realizations requiring VAL admission under
+> `SCI-PTC:empirical_or_simulation_population@1`?
+
+Owner response:
+
+> approved
+
+Disposition:
+
+1. The governing scientific statement is
+
+   \[
+   \boxed{
+   \text{PTC v0.1 makes no scientific inference from an ensemble of
+   alternative realizations.}
+   }
+   \]
+
+2. There is therefore no present PTC scientific proposition for VAL to admit
+   under `SCI-PTC:empirical_or_simulation_population@1`. The reserved identity
+   remains explicitly unsupported and unbound for PTC v0.1; no placeholder
+   profile or vacuous eligibility result is created.
+3. This disposition does not prohibit PTC-owned descriptive diagnostics of the
+   realized data under D008. Such diagnostics acquire a VAL profile only if a
+   later decision policy gives them admission or other decision authority.
+4. Existing fixed-state tracked-kernel propagation under D009 is response
+   propagation, not scientific inference from an ensemble of alternative
+   realizations.
+5. D010 creates no simulation, surrogate, randomization, resampling, ensemble
+   uncertainty, runtime, payload, or serialization requirement.
+6. If a future PTC revision makes a scientific inference from empirical,
+   simulated, surrogate, or alternative realizations, its owner must define a
+   separately named exact use and complete policy before VAL can evaluate it.
+7. Because no present proposition exists, D010 contributes no restriction to
+   the future common fragment.
