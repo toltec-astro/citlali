@@ -258,6 +258,25 @@ TEST(sci_align_native_carriers,
 }
 
 TEST(sci_align_native_carriers,
+     constant_offsets_cover_native_times_outside_legacy_common_support) {
+    pipeline::NativePointingOffsetsArcsec offsets;
+    offsets[citlali::config::pointing_axis_az()] = values({0.0});
+    offsets[citlali::config::pointing_axis_alt()] = values({-2.5});
+    const pipeline::NativePointingOffsetModel constant{
+        std::move(offsets), values({1.0, 3.0})};
+
+    const auto evaluated = constant.evaluate_at(values({0.5, 3.5}));
+    EXPECT_TRUE((evaluated.at(citlali::config::pointing_axis_az()).array() ==
+                 0.0).all());
+    EXPECT_TRUE((evaluated.at(citlali::config::pointing_axis_alt()).array() ==
+                 -2.5).all());
+
+    EXPECT_THROW(
+        offset_model().evaluate_at(values({-0.5, 3.5})),
+        std::out_of_range);
+}
+
+TEST(sci_align_native_carriers,
      observation_publication_rejects_absent_stale_and_foreign_atomically) {
     const pipeline::NativeObservationScope scope{148670, 0, 2};
     const auto alignment = two_network_alignment(scope);

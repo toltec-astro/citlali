@@ -1,5 +1,31 @@
 # Citlali Refactor Status
 
+## 2026-08-23 Native Constant Pointing-Offset Support Repair
+
+The owner-run Stage 7 Pointing reduction using repaired matched-v2 APTs passed
+canonical admission and reached native telescope/offset construction, where it
+failed with `native pointing-offset target is outside support`. TolProj's
+Pointing kit supplies one finite azimuth value and one finite altitude value,
+both zero. That is the established constant-observation offset model, but the
+native evaluator incorrectly subjected it to the support bounds required only
+for two-value interpolation. Exact delivered detector timestamps may extend
+slightly beyond the legacy common-slot grid while remaining inside the raw
+telescope trajectory, so a valid constant model was rejected.
+
+The native evaluator now applies the no-extrapolation support guard only to a
+genuine two-value interpolation model. A one-value model remains constant at
+every finite exact native target time; raw telescope interpolation retains its
+independent strict measured-support guard. Focused coverage proves constant
+azimuth/altitude values on both sides of nominal common support and proves a
+two-value model still rejects the same request. This changes no reconstructed
+timestamp, telescope interpolation, offset value, detector relation, RTC/PTC
+kernel, mapmaker, or product contract. The complete 792-test runnable CTest
+surface passes with the established single disabled test not run, and all 203
+baseline-tool tests plus 137 subtests pass. The config preflight passes all
+127 unit tests, all four mode kits, and the six locally available OOF,
+Beammap, and Science compatibility cases. Its two Pointing cases retain the
+recorded external owner-fixture gap and are not represented as passed.
+
 ## 2026-08-23 Canonical APT v2 Typed-Null Issuance Repairs
 
 The first owner-run Stage 7 Pointing reduction using project-local matched-v2

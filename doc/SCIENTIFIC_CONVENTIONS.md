@@ -581,7 +581,9 @@ radians, while pointing-offset variables are recorded in arcseconds.
 TolTECA owns selection of pointing-support calibration records. Citlali owns
 validation and application of the supplied azimuth/altitude offsets:
 
-- one finite az/alt pair is constant throughout the observation;
+- one finite az/alt pair is constant throughout the observation, including
+  exact native detector samples outside the legacy common-slot bounds but
+  still inside measured raw telescope support;
 - two finite pairs with two positive, increasing MJD support values are
   linearly interpolated in MJD, require observation bracketing, and are not
   extrapolated;

@@ -183,9 +183,15 @@ public:
         const Eigen::VectorXd &target_times_unix_sec) const {
         native_pointing_detail::require_strictly_increasing(
             target_times_unix_sec, "native pointing-offset target times");
-        if (target_times_unix_sec(0) < support_times_unix_sec_(0) ||
-            target_times_unix_sec(target_times_unix_sec.size() - 1) >
-                support_times_unix_sec_(1)) {
+        // A single configured value is a constant observation model, not an
+        // interpolation model. Exact native detector samples may extend past
+        // the legacy common-slot grid used to supply these nominal bounds;
+        // the constant remains defined there. Two-value models retain strict
+        // no-extrapolation support.
+        if (source_value_count_ == 2 &&
+            (target_times_unix_sec(0) < support_times_unix_sec_(0) ||
+             target_times_unix_sec(target_times_unix_sec.size() - 1) >
+                 support_times_unix_sec_(1))) {
             throw std::out_of_range(
                 "native pointing-offset target is outside support");
         }
