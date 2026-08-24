@@ -2,7 +2,7 @@
 
 Opened: `2026-08-24`
 
-Status: `WP5-OWNER-D001--D002` approved; remaining profile decisions await
+Status: `WP5-OWNER-D001--D003` approved; remaining profile decisions await
 review one at a time
 
 Scope: non-MAP processed-timestream source bindings and VAL profiles. VAL Core
@@ -77,3 +77,57 @@ Consequences:
 6. The existing atomic truth rule, missing/conflict behavior, and absence of
    inferred response or uncertainty roles are unchanged. VAL Core is not
    modified.
+
+## WP5-OWNER-D003 — Compact Common PTC Policy Factoring
+
+Question:
+
+> May the seven distinct PTC named-use profiles reference one immutable common
+> restriction fragment, provided the fragment itself grants no permission and
+> every use remains a complete separately registered proposition?
+
+Owner response: **approved with binding interpretation**.
+
+Disposition:
+
+1. The common restriction fragment is compact, PTC-owned, immutable, and
+   versioned. It contains only restrictions proved to apply without scientific
+   variation to all seven named PTC uses.
+2. The common fragment is not a VAL profile, is not independently evaluable,
+   produces no eligibility result, and grants no permission.
+3. Every PTC use `U` remains a complete, separately registered proposition:
+
+   \[
+   \mathcal R_U
+   =
+   \mathcal R_{\rm common}
+   \cup
+   \Delta\mathcal R_U.
+   \]
+
+   Each profile retains its own named action, use-specific restrictions,
+   applicability, and unknown or fail-closed behavior.
+4. Permission never transfers between named uses:
+
+   \[
+   E_U \not\Rightarrow E_V,
+   \qquad U\ne V.
+   \]
+
+5. A restriction enters `\mathcal R_{\rm common}` only when it is genuinely
+   required by all seven uses. Any scientific variation keeps the restriction
+   in `\Delta\mathcal R_U`.
+6. CAL's `engineering-only` classification remains a preserved producer fact.
+   Whether it excludes a PTC use belongs to that named PTC policy; it is not a
+   universal CAL or VAL veto on PTC mathematics.
+7. Every registered PTC profile references the common fragment by exact
+   identity and digest. Changing the fragment creates a new version and cannot
+   silently change an existing profile or evaluation identity.
+8. This decision creates no runtime common-policy object, inheritance
+   mechanism, serialization requirement, sidecar, duplicated provenance
+   payload, or separate engineering route. A separate route is required only
+   if a later genuinely different scientific policy requires one.
+9. D003 approves the factoring rule, not the fragment's contents. The common
+   fragment remains unbound until the remaining use-by-use decisions establish
+   which restrictions, if any, satisfy the universal-use test. No PTC profile
+   becomes usable through D003 alone.
