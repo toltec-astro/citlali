@@ -2,8 +2,9 @@
 
 Date opened: `2026-08-23`
 
-Status: in progress; `WP3-OWNER-D001` and upstream clarification
-`WP2-FOLLOWUP-D011` are approved; `WP3-OWNER-D002` awaits owner review
+Status: in progress; `WP3-OWNER-D001`, upstream clarification
+`WP2-FOLLOWUP-D011`, and `WP3-OWNER-D002` are approved; remaining
+producer-interface decisions await review one at a time
 
 Scope: `WP-3_CAL_EXTERNAL_PRODUCERS`, the CAL facet of `F-016`, the
 timestream-route facets of `F-017`, and the applicable CAL/input contribution
@@ -105,7 +106,7 @@ Consequences:
 
 ## WP3-OWNER-D002 — Conditioned RTC `x` Handoff To CAL
 
-Status: pending scientific-owner review
+Status: approved
 
 Question:
 
@@ -140,9 +141,35 @@ Recommendation:
 > each dependent claim or operation at the scope required by the frozen CAL
 > and RTC contracts.
 
+Owner response:
+
+> yes
+
+Disposition: **approved**.
+
+Consequences:
+
+1. SCI-CAL consumes only the exact conditioned \(x\) member numerically.
+2. The complete paired RTC bundle remains the immutable traceability parent;
+   CAL does not calibrate raw or conditioned \(r\).
+3. The \(x\) unit or scale, sign, reference, and normalization are inherited
+   from upstream authority and are not redefined at this boundary.
+4. RTC-owned plan, grid, support/response state, validity, causes, uncertainty
+   state, occurrence/exposure lineage, lifecycle, and provenance accompany the
+   admitted \(x\).
+5. Response authority may remain compact, factorized, or otherwise
+   reconstructible; the decision does not require dense response
+   serialization.
+6. Calibration-factor/APT and target-atmosphere/passband records remain
+   separately owned CAL-time joins. RTC may preserve their exact references
+   without acquiring their scientific ownership.
+7. Missing required handoff identity or state fails CAL admission at the
+   affected scope; typed unavailable response or uncertainty never becomes
+   numerical zero.
+
 ## Remaining WP-3 Owner Work
 
-After D002, the remaining decisions must identify the smallest exact
+The remaining decisions must identify the smallest exact
 producer-interface set required by the selected ordinary processed-timestream
 route. Each interface must separate static/operator authority from
 observation-instance realization. Optional roles may be explicitly not
