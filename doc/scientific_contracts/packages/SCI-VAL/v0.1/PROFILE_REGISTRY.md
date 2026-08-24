@@ -1,9 +1,10 @@
 # SCI-VAL v0.1 — Owner-Bound Profile Registry
 
-Status: r0.3 contract registry; one mandatory canonical profile registered;
-package-qualified policy records otherwise unbound unless stated
+Status: r0.3 continuing contract registry; one mandatory canonical atomic
+profile registered and source-current; package-qualified policy records
+otherwise unbound unless stated
 
-Date: `2026-08-21`
+Date: `2026-08-24`
 
 ## Registry Rule
 
@@ -32,13 +33,14 @@ evaluation. A reserved name is not a usable policy.
 | Registry key | `SCI-VAL:independent_exposure@1` |
 | Named use | `independent_exposure` |
 | Scientific owner | Grant Wilson, as scientific owner of the owner-approved SCI-VAL v0.1 contract-level invariant |
-| Authoritative source | `REVISION_DIRECTIVE_R0.3.md`, `VAL-R03-D001`, preserving the invariant approved in `REVISION_DIRECTIVE_R0.2.md`, `VAL-R02-D003`; formal clauses `SCI-VAL-REQ-019`, `SCI-VAL-REQ-043`, and `SCI-VAL-REQ-045` |
+| Authoritative source | `REVISION_DIRECTIVE_R0.3.md`, `VAL-R03-D001`, preserving the invariant approved in `REVISION_DIRECTIVE_R0.2.md`, `VAL-R02-D003`; formal clauses `SCI-VAL-REQ-019`, `SCI-VAL-REQ-043`, and `SCI-VAL-REQ-045`; current adjacent-source compatibility is bound by `SOURCE_BINDING_REGISTER.md` SHA-256 `ff5402b71c40f31daac1f7c820a705a5a23eb64688f70955fac76e10e2916430`, including frozen SCI-ALIGN r0.3, frozen SCI-RTC r0.12, and the approved WP-2 exposure-lineage boundary |
 | Domain | Exact sample-detector occurrence with authoritative representative-source identity and origin state |
 | Decisive invariant | An exact representative source that is synthesized or replaced is not an original independent astronomical exposure |
 | Exception permission | None for the decisive invariant; an attempted exception makes the supplied policy invalid |
 | Other restrictions | Must be supplied by the actual scientific owner in an immutable compatible successor record; VAL supplies none |
 | Compatibility | Compatible only when the direct-origin invariant, domain identity, and no-exception rule are preserved exactly; a weakening requires a different named use and is not a compatible successor |
 | Response/uncertainty roles | No role is imposed by this direct-origin invariant; any added compatible restriction must select only from the four closed roles and retain the same owner/source binding discipline |
+| Aggregation and propagation compatibility | `atomic_only`. Aggregation and reverse propagation are `not_applicable` under this profile identity. Any future aggregate is a separately registered, owner-bound proposition under the Aggregate Profile Rule. Any propagation it authorizes creates a new derived proposition and lifecycle generation; it preserves the exact atomic source references and cannot rewrite the atomic decision or the original acquisition and valid-original facts |
 | Missing/conflicting behavior | `applicability_unknown` plus `decision_unavailable` when structural/profile binding or required origin authority is unresolved; an authoritative synthesized/replaced origin is `ineligible` |
 
 This registry entry names its scientific owner explicitly so that the
@@ -49,6 +51,13 @@ SCI-VAL Core the policy owner.
 The former draft key `VAL.core.independent_exposure@1` is not registered and
 has no compatibility alias. An input carrying that key is an unbound profile,
 not a migration accepted by inference.
+
+The atomic-only disposition does not define a generic usable exposure,
+detector fraction, retained exposure, projected exposure, coadd exposure, or
+threshold. Physical-acquisition and valid-original facts remain owned by
+SCI-ALIGN and preserved through the approved timestream exposure-lineage
+boundary. A future scientific use owns any additional use-qualified exposure
+quantity it defines.
 
 ## Aggregate Profile Rule
 
