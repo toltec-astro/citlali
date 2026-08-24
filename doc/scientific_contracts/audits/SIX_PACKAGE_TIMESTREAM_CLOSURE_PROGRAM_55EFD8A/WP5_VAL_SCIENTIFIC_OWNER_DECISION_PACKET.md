@@ -2,7 +2,7 @@
 
 Opened: `2026-08-24`
 
-Status: `WP5-OWNER-D001--D010` approved; remaining profile decisions await
+Status: `WP5-OWNER-D001--D011` approved; remaining registry work awaits
 review one at a time
 
 Scope: non-MAP processed-timestream source bindings and VAL profiles. VAL Core
@@ -565,3 +565,56 @@ Disposition:
    separately named exact use and complete policy before VAL can evaluate it.
 7. Because no present proposition exists, D010 contributes no restriction to
    the future common fragment.
+
+## WP5-OWNER-D011 — Minimal Common Semantics Fragment
+
+Question:
+
+> After comparing all seven named PTC-use dispositions, what may be factored
+> into their common policy fragment without collapsing the uses or allowing
+> unrelated metadata to acquire admission authority?
+
+Owner response:
+
+> approved, with the scientific-relevance rule sharpened so that the mere
+> existence, availability, or unknown state of unrelated metadata has no
+> admission consequence
+
+Disposition:
+
+1. The common fragment is a compact, PTC-owned, immutable, versioned, and
+   digest-bound semantics fragment. It is not a VAL profile, cannot be
+   evaluated independently, grants no permission, and produces no eligibility
+   result.
+2. Every named PTC use remains a distinct scientific proposition. Permission
+   for one use never implies permission for another:
+
+   \[
+   E_U \not\Rightarrow E_V \qquad (U\ne V).
+   \]
+
+3. PTC preserves upstream facts and classifications and does not upgrade them.
+   In particular, `engineering-only` remains a preserved producer fact, while
+   its consequence for admission belongs to each named use-specific policy.
+4. Only facts that the named use explicitly declares scientifically relevant
+   to its decision may affect that decision. The mere existence,
+   availability, or unknown state of other metadata has no admission
+   consequence.
+5. The common fragment creates no runtime common-policy object, inheritance
+   mechanism, sidecar, payload, serialization requirement, duplicated
+   provenance, or separate engineering route.
+6. Direct-origin exclusions, fit populations, loading-estimator inputs,
+   group/rank guards, output-retention rules, response requirements,
+   uncertainty requirements, and missing/conflict behavior are not common
+   restrictions. They remain in the complete use-specific propositions where
+   scientifically applicable.
+7. The five supported profiles—basis fit, loading fit, operator application,
+   output retention, and response companion—shall each bind the exact common
+   fragment identity and digest while remaining complete propositions with
+   their own action, applicability, restrictions, and fail-closed behavior.
+8. The generic coefficient/QC and empirical/simulation identities remain
+   explicit unsupported dispositions, not fabricated profiles. They need not
+   reference the common fragment because there is presently no proposition to
+   evaluate.
+9. No MAP or coadd profile is introduced. Authoring the exact common artifact
+   and five source-current registry records is the next bounded registry step.
