@@ -3,7 +3,7 @@
 Date opened: `2026-08-23`
 
 Status: in progress; `WP3-OWNER-D001`, upstream clarification
-`WP2-FOLLOWUP-D011`, and `WP3-OWNER-D002--D005` are approved; remaining
+`WP2-FOLLOWUP-D011`, and `WP3-OWNER-D002--D006` are approved; remaining
 producer-interface decisions await review one at a time
 
 Scope: `WP-3_CAL_EXTERNAL_PRODUCERS`, the CAL facet of `F-016`, the
@@ -353,6 +353,86 @@ Consequences:
 9. No CAL successor is presumed necessary merely to serialize Beammap detail.
    Any later clean-room finding of a literal conflict shall be handled as a
    bounded wording correction rather than used to create redundant state.
+
+## WP3-OWNER-D006 — Compact CAL-To-PTC Handoff
+
+Status: approved with owner correction `2026-08-24`
+
+Question:
+
+> What is the minimum CAL-to-PTC handoff that preserves the scientific
+> meaning of the calibrated timestream without reproducing the observation's
+> upstream history at another processing boundary?
+
+Recommendation as corrected by the owner:
+
+> Pass the data needed by the next stage and reference the history rather than
+> retelling it. The primary handoff is the calibrated ordinary-`xs` signal
+> \(Y^{\rm CAL}_{dn}\), its detector and RTC output-sample identity, the
+> flags/validity required for PTC to interpret it, and references to the
+> relevant CAL and RTC products or sidecars. The RTC sidecar owns the
+> RTC-specific decisions, validity and diagnostics, response information,
+> parentage, and other required RTC facts. The CAL sidecar owns what
+> calibration was applied, the matched-APT reference, target-atmosphere
+> calibration information, CAL validity/classification, and other CAL-owned
+> facts. PTC shall reference those records when their information is needed;
+> the boundary shall not re-encode RTC support, exposure lineage, APT or
+> Beammap ancestry, WVR history, operator identities, or the full provenance
+> graph. PTC knows from the admitted CAL product identity that the CAL-defined
+> operations have already been applied and shall not reapply them. CAL
+> produces no calibrated \(r\) quantity. PTC's science-signal parent is the
+> calibrated \(x\) (`xs`) timestream. The paired RTC \(r\) channel remains
+> reachable through the RTC parentage; whether and how PTC uses it as
+> auxiliary evidence is owned by PTC. CAL failure does not authorize PTC to
+> substitute uncalibrated RTC \(x\). An `engineering-only` classification is
+> preserved in the CAL sidecar but does not itself prohibit PTC mathematics;
+> named-use admission remains owned by the applicable PTC or downstream
+> policy.
+
+Owner response:
+
+> I agree with the scientific core of D006, subject to the simplified
+> reference-based boundary above. Do not create new provenance payloads merely
+> because information might someday be useful downstream. Each stage records
+> the new scientific facts that it owns and references inherited history.
+
+Disposition: **approved with owner correction**.
+
+Consequences:
+
+1. The primary numerical parent of PTC is \(Y^{\rm CAL}_{dn}\) with detector
+   identity, RTC output-sample identity, and the required flags/validity.
+2. The handoff carries references to the CAL and RTC products or sidecars; it
+   does not serialize their contents again.
+3. CAL records only CAL-owned new facts in its compact sidecar. RTC facts stay
+   in the referenced RTC sidecar, and APT, Beammap, WVR, and other upstream
+   facts stay in their authoritative referenced artifacts.
+4. PTC does not reapply or reinterpret CAL operations. Detailed factor,
+   atmosphere, response, or lineage facts are dereferenced only when a PTC
+   operation or scientific claim actually requires them.
+5. CAL produces no \(r^{\rm CAL}\). The paired \(r^{\rm RTC}\) remains
+   reachable through RTC parentage, and PTC owns any auxiliary use of it.
+6. A failed or absent CAL science-signal parent does not enable an RTC-\(x\)
+   fallback within the ordinary PTC route.
+7. `engineering-only` remains a preserved CAL classification, not an automatic
+   prohibition on PTC mathematics; each scientific use owns its admission.
+8. Response or kernel composition remains possible by resolving the referenced
+   RTC and CAL authority when needed; dense or repeated response serialization
+   is not required.
+
+## WP-3 Boundary Serialization Discipline
+
+The owner correction to D006 governs the remainder of WP-3:
+
+> **Pass the data needed by the next stage; reference the history rather than
+> retelling it.**
+
+Each stage records the new scientific facts it owns in its product or compact
+sidecar and retains resolvable references to authoritative parents. A boundary
+must not create a new provenance payload merely because inherited information
+might later be useful. Reconstructibility and auditability require resolvable
+authority, identity, and integrity; they do not require every processing stage
+to serialize the full history of the observation.
 
 ## Remaining WP-3 Owner Work
 
