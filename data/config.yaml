@@ -145,7 +145,7 @@ runtime: # parameters to control how citlali runs
   n_threads: 1 # number of threads to use
   output_dir: /path/to/redu/directory/ # path to output directory
   parallel_policy: seq # parallelization policy (seq=sequential, omp=OpenMP parallelization)
-  reduction_type: science # reduction engine (science, pointing, beammap)
+  reduction_type: science # reduction identity (science, pointing, oof, beammap); pointing and oof share one execution family
   use_subdir: true # create "redu00, redu01,..." sub-directories.  increments automatically.
 timestream: # timestream reduction parameters
   type: xs # type of TOD (xs, rs, is, qs)

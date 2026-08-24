@@ -57,7 +57,7 @@ def load_authority_owners(path: Path) -> dict[str, str]:
 
 def load_sources(
     repo_root: Path, cases_path: Path, require_all: bool
-) -> tuple[list[dict[str, Any]], list[str]]:
+) -> tuple[list[dict[str, Any]], list[str], dict[str, str]]:
     sources = [
         {
             "label": "default",
@@ -68,6 +68,7 @@ def load_sources(
     cases = load_yaml(cases_path)
     seen: set[tuple[str, Path]] = set()
     missing: list[str] = []
+    missing_source_modes: dict[str, str] = {}
     for case in cases.get("cases", []):
         mode = str(case.get("intent", ""))
         raw_path = case.get("base_config")
@@ -80,6 +81,7 @@ def load_sources(
         seen.add(key)
         if not path.is_file():
             missing.append(str(path))
+            missing_source_modes[mode] = mode
             continue
         sources.append({"label": mode, "mode": mode, "path": path})
 
@@ -87,13 +89,14 @@ def load_sources(
         path = (repo_root / relative_path).resolve()
         if not path.is_file():
             missing.append(str(path))
+            missing_source_modes[f"mode-kit-{mode}"] = mode
             continue
         sources.append(
             {"label": f"mode-kit-{mode}", "mode": mode, "path": path}
         )
     if missing and require_all:
         raise ContractError("missing config input(s): " + ", ".join(missing))
-    return sources, missing
+    return sources, missing, missing_source_modes
 
 
 def observed_leaves(sources: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
@@ -188,7 +191,9 @@ def build_contract(
     authority_owners = load_authority_owners(authority_path)
     external = rules.get("external_boundaries", {})
     supported_modes = set(rules.get("supported_modes", []))
-    sources, missing = load_sources(repo_root, cases_path, require_all)
+    sources, missing, missing_source_modes = load_sources(
+        repo_root, cases_path, require_all
+    )
     leaves = observed_leaves(sources)
     rows: list[dict[str, Any]] = []
     counts: dict[str, int] = defaultdict(int)
@@ -270,6 +275,7 @@ def build_contract(
             "non_executable_leaf_count": sum(1 for row in rows if not row["executable"]),
             "authority_counts": dict(sorted(counts.items())),
             "missing_optional_inputs": missing,
+            "missing_optional_source_modes": missing_source_modes,
         },
         "leaves": rows,
     }
@@ -278,7 +284,48 @@ def build_contract(
 def semantic_view(contract: dict[str, Any]) -> dict[str, Any]:
     copy = json.loads(json.dumps(contract))
     copy.get("summary", {}).pop("missing_optional_inputs", None)
+    copy.get("summary", {}).pop("missing_optional_source_modes", None)
     return copy
+
+
+def preserve_missing_optional_source_evidence(
+    contract: dict[str, Any], checked: dict[str, Any]
+) -> None:
+    """Retain only checked source labels for unavailable optional fixtures."""
+    missing_source_modes = contract.get("summary", {}).get(
+        "missing_optional_source_modes", {}
+    )
+    if not missing_source_modes:
+        return
+
+    current_by_path = {row["path"]: row for row in contract.get("leaves", [])}
+    checked_by_path = {row["path"]: row for row in checked.get("leaves", [])}
+    checked_source_labels = {
+        label
+        for row in checked_by_path.values()
+        for label in row.get("sources", [])
+    }
+    unavailable_labels = set(missing_source_modes).intersection(
+        checked_source_labels
+    )
+    unavailable_modes = set(missing_source_modes.values())
+
+    for path, current in current_by_path.items():
+        prior = checked_by_path.get(path)
+        if prior is None:
+            continue
+        retained_sources = unavailable_labels.intersection(prior.get("sources", []))
+        retained_modes = unavailable_modes.intersection(
+            prior.get("observed_modes", [])
+        )
+        if retained_sources:
+            current["sources"] = sorted(
+                set(current.get("sources", [])).union(retained_sources)
+            )
+        if retained_modes:
+            current["observed_modes"] = sorted(
+                set(current.get("observed_modes", [])).union(retained_modes)
+            )
 
 
 def write_compact_manifest(path: Path, contract: dict[str, Any]) -> None:
@@ -324,12 +371,14 @@ def main(argv: list[str]) -> int:
             args.require_all,
         )
         manifest_path = (repo_root / args.manifest).resolve()
+        if manifest_path.is_file():
+            checked = json.loads(manifest_path.read_text(encoding="utf-8"))
+            preserve_missing_optional_source_evidence(contract, checked)
         if args.write_manifest:
             write_compact_manifest(manifest_path, contract)
         elif not manifest_path.is_file():
             raise ContractError(f"resolved manifest is missing: {manifest_path}")
         else:
-            checked = json.loads(manifest_path.read_text(encoding="utf-8"))
             if semantic_view(contract) != checked:
                 raise ContractError(
                     "resolved leaf contract differs from checked manifest; regenerate with --write-manifest"

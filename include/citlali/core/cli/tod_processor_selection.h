@@ -64,8 +64,9 @@ bool emplace_tod_processor_for_reduction_type(
         return true;
     }
 
-    if (citlali::config::is_pointing_reduction_type(reduction_type)) {
-        logger->info("reducing in pointing mode");
+    if (citlali::config::is_pointing_family_reduction_type(reduction_type)) {
+        logger->info("reducing in {} mode",
+                     citlali::config::to_string(reduction_type));
         todproc.template emplace<PointingTodProc>(
             PointingTodProc::from_config(config));
         return true;

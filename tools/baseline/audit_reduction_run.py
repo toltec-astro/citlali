@@ -3002,10 +3002,12 @@ def post_processing_provenance_semantic_errors(
             errors.append("source-finding disable resolution is inconsistent")
 
         reduction_type = resolution["reduction_type"]
-        if reduction_type not in ("science", "pointing", "beammap"):
+        if reduction_type not in ("science", "pointing", "oof", "beammap"):
             errors.append("post-processing reduction type is invalid")
             return errors
-        required_by_reduction = reduction_type in ("pointing", "beammap")
+        required_by_reduction = reduction_type in (
+            "pointing", "oof", "beammap"
+        )
         fitting_required = (
             required_by_reduction or requested_filter or requested_source
         )
@@ -3053,7 +3055,7 @@ def post_processing_provenance_semantic_errors(
         raw_contexts = realized["pointing_fits"]["raw"]["context_count"]
         filtered_contexts = realized["pointing_fits"]["filtered"]["context_count"]
         beammap_contexts = realized["beammap_fits"]["context_count"]
-        if reduction_type == "pointing" and mapmaking_enabled:
+        if reduction_type in ("pointing", "oof") and mapmaking_enabled:
             if raw_contexts == 0:
                 errors.append("pointing reduction records no raw fit context")
             expected_filtered = realized["observation"]["filter_context_count"]

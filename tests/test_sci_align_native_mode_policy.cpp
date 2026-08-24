@@ -28,14 +28,34 @@ TEST(SciAlignNativeModePolicy,
 }
 
 TEST(SciAlignNativeModePolicy,
-     CollapsedPointingAndOofRuntimeCannotInferActivation) {
+     PointingAdmitsCompleteMatchedAuthorityWithoutNativeActivation) {
     EXPECT_EQ(pipeline::resolve_native_consumer_route({
                   config::ReductionType::pointing,
                   config::MapGrouping::detector, false, false}),
               pipeline::NativeConsumerRoute::legacy_inactive);
+    EXPECT_EQ(pipeline::resolve_native_consumer_route({
+                  config::ReductionType::pointing,
+                  config::MapGrouping::detector, true, true}),
+              pipeline::NativeConsumerRoute::legacy_inactive);
     EXPECT_THROW(pipeline::resolve_native_consumer_route({
                      config::ReductionType::pointing,
-                     config::MapGrouping::detector, true, true}),
+                     config::MapGrouping::detector, true, false}),
+                 std::logic_error);
+}
+
+TEST(SciAlignNativeModePolicy,
+     OofAdmitsCompleteMatchedAuthorityWithoutNativeActivation) {
+    EXPECT_EQ(pipeline::resolve_native_consumer_route({
+                  config::ReductionType::oof,
+                  config::MapGrouping::detector, false, false}),
+              pipeline::NativeConsumerRoute::legacy_inactive);
+    EXPECT_EQ(pipeline::resolve_native_consumer_route({
+                  config::ReductionType::oof,
+                  config::MapGrouping::detector, true, true}),
+              pipeline::NativeConsumerRoute::legacy_inactive);
+    EXPECT_THROW(pipeline::resolve_native_consumer_route({
+                     config::ReductionType::oof,
+                     config::MapGrouping::detector, false, true}),
                  std::logic_error);
 }
 

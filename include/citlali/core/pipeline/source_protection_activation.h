@@ -22,7 +22,7 @@ inline SourceProtectionActivationResolution resolve_source_protection(
     const auto &processed =
         config.processed_time_chunk.flagging.second_pass_local;
     const bool source_aware_reduction =
-        citlali::config::is_pointing_reduction_type(reduction_type);
+        citlali::config::is_pointing_family_reduction_type(reduction_type);
     const bool raw_activation_requested =
         raw.enabled && raw.source_protection.enabled;
     const bool processed_activation_requested =

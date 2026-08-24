@@ -22,7 +22,7 @@ from tolteca_mode_kit import (
 
 
 SCHEMA_VERSION = "citlali-tolteca-mode-kit-manifest-v2"
-KIT_VERSION = "phase4.1-v2.1"
+KIT_VERSION = "phase4.1-v2.2"
 
 RUNTIME_PATHS = (
     "runtime.n_threads",

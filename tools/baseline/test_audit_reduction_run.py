@@ -976,7 +976,7 @@ def valid_beammap_mapmaking_document() -> dict[str, object]:
 def valid_post_processing_document(
     reduction_type: str = "science",
 ) -> dict[str, object]:
-    pointing = reduction_type == "pointing"
+    pointing = reduction_type in ("pointing", "oof")
     beammap = reduction_type == "beammap"
     coadd = reduction_type == "science"
     observation_contexts = 2 if pointing else 0

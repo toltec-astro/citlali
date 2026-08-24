@@ -11,7 +11,7 @@ namespace citlali::pipeline {
 inline bool post_processing_source_fitting_required(
     citlali::config::ReductionType reduction_type,
     const citlali::config::PostProcessingConfig &requested) {
-    return citlali::config::is_pointing_reduction_type(reduction_type) ||
+    return citlali::config::is_pointing_family_reduction_type(reduction_type) ||
            citlali::config::is_beammap_reduction_type(reduction_type) ||
            requested.map_filtering.enabled ||
            requested.source_finding.enabled;
@@ -77,7 +77,7 @@ struct PostProcessingExecutionPlan {
         effective = request;
 
         const bool fitting_required_by_reduction =
-            citlali::config::is_pointing_reduction_type(reduction_type) ||
+            citlali::config::is_pointing_family_reduction_type(reduction_type) ||
             citlali::config::is_beammap_reduction_type(reduction_type);
         const bool fitting_required =
             post_processing_source_fitting_required(

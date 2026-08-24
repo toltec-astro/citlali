@@ -48,13 +48,76 @@ class ConfigLeafContractTest(unittest.TestCase):
 
     def test_semantic_view_ignores_machine_local_missing_inputs(self) -> None:
         value = {
-            "summary": {"leaf_count": 1, "missing_optional_inputs": ["/tmp/x"]},
+            "summary": {
+                "leaf_count": 1,
+                "missing_optional_inputs": ["/tmp/x"],
+                "missing_optional_source_modes": {"pointing": "pointing"},
+            },
             "leaves": [],
         }
         self.assertEqual(
             audit.semantic_view(value),
             {"summary": {"leaf_count": 1}, "leaves": []},
         )
+
+    def test_missing_optional_fixture_preserves_only_checked_source_evidence(self) -> None:
+        current = {
+            "summary": {
+                "missing_optional_inputs": ["/missing/pointing.yaml"],
+                "missing_optional_source_modes": {"pointing": "pointing"},
+            },
+            "leaves": [
+                {
+                    "path": "runtime.reduction_type",
+                    "owner": "current-owner",
+                    "sources": ["default", "mode-kit-pointing"],
+                    "observed_modes": ["oof"],
+                }
+            ],
+        }
+        checked = {
+            "leaves": [
+                {
+                    "path": "runtime.reduction_type",
+                    "owner": "checked-owner",
+                    "sources": [
+                        "default",
+                        "mode-kit-pointing",
+                        "pointing",
+                        "unrelated-retired-source",
+                    ],
+                    "observed_modes": ["oof", "pointing", "unrelated-mode"],
+                }
+            ]
+        }
+
+        audit.preserve_missing_optional_source_evidence(current, checked)
+
+        leaf = current["leaves"][0]
+        self.assertEqual(leaf["sources"], ["default", "mode-kit-pointing", "pointing"])
+        self.assertEqual(leaf["observed_modes"], ["oof", "pointing"])
+        self.assertEqual(leaf["owner"], "current-owner")
+
+    def test_source_evidence_is_not_preserved_when_all_inputs_are_available(self) -> None:
+        current = {
+            "summary": {
+                "missing_optional_inputs": [],
+                "missing_optional_source_modes": {},
+            },
+            "leaves": [{"path": "runtime.reduction_type", "sources": ["default"]}],
+        }
+        checked = {
+            "leaves": [
+                {
+                    "path": "runtime.reduction_type",
+                    "sources": ["default", "pointing"],
+                }
+            ]
+        }
+
+        audit.preserve_missing_optional_source_evidence(current, checked)
+
+        self.assertEqual(current["leaves"][0]["sources"], ["default"])
 
 
 if __name__ == "__main__":

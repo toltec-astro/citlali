@@ -232,7 +232,8 @@ sequenceDiagram
 constructs one of these by value:
 
 - `TimeOrderedDataProc<Lali>` for science;
-- `TimeOrderedDataProc<Pointing>` for pointing and OOF intent; or
+- `TimeOrderedDataProc<Pointing>` for the distinct pointing and OOF reduction
+  identities, which deliberately share one numerical processor; or
 - `TimeOrderedDataProc<Beammap>` for Beammap.
 
 `TimeOrderedDataProc` owns its mode engine by value. The selected variant is

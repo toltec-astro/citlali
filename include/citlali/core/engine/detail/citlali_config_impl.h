@@ -106,8 +106,8 @@ void Engine::get_citlali_config(CT &config) {
     }
 
     /* get pointing config */
-    if (runtime_config.reduction_type ==
-        citlali::config::ReductionType::pointing) {
+    if (citlali::config::is_pointing_family_reduction_type(
+            runtime_config.reduction_type)) {
         get_pointing_config(config);
     }
 

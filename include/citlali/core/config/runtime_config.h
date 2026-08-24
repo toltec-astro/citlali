@@ -12,6 +12,7 @@ namespace citlali::config {
 enum class ReductionType {
     science,
     pointing,
+    oof,
     beammap
 };
 
@@ -20,9 +21,10 @@ enum class ParallelPolicy {
     omp
 };
 
-inline constexpr std::array<EnumName<ReductionType>, 3> reduction_type_names{{
+inline constexpr std::array<EnumName<ReductionType>, 4> reduction_type_names{{
     {ReductionType::science, "science"},
     {ReductionType::pointing, "pointing"},
+    {ReductionType::oof, "oof"},
     {ReductionType::beammap, "beammap"},
 }};
 
@@ -69,6 +71,24 @@ inline bool is_pointing_reduction_type(std::string_view value) {
 
 inline bool is_pointing_reduction_type(ReductionType value) {
     return is_reduction_type(value, ReductionType::pointing);
+}
+
+inline bool is_oof_reduction_type(std::string_view value) {
+    return is_reduction_type(value, ReductionType::oof);
+}
+
+inline bool is_oof_reduction_type(ReductionType value) {
+    return is_reduction_type(value, ReductionType::oof);
+}
+
+// Pointing and OOF retain one established numerical execution family even
+// though they now carry distinct reduction identities.
+inline bool is_pointing_family_reduction_type(std::string_view value) {
+    return is_pointing_reduction_type(value) || is_oof_reduction_type(value);
+}
+
+inline bool is_pointing_family_reduction_type(ReductionType value) {
+    return is_pointing_reduction_type(value) || is_oof_reduction_type(value);
 }
 
 inline bool is_beammap_reduction_type(std::string_view value) {

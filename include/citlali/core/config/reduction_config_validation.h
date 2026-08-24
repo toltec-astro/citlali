@@ -28,7 +28,8 @@ inline ValidationReport validate(const ReductionConfig &config) {
     validate(config.beammap_photometry, report);
     validate(config.astrometry, report);
     if (config.timestream.fruit_loops.injected_source_test.enabled &&
-        config.runtime.reduction_type != ReductionType::pointing) {
+        !is_pointing_family_reduction_type(
+            config.runtime.reduction_type)) {
         report.add_error(
             {"timestream", "fruit_loops", "injected_source_test", "enabled"},
             "is diagnostic-only and supported only by pointing/OOF reductions");

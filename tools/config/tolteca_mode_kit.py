@@ -31,7 +31,7 @@ DEFAULT_REQUIRED_ROLES = {
 }
 MODE_REDUCTION_TYPES = {
     "point": "pointing",
-    "oof": "pointing",
+    "oof": "oof",
     "beammap": "beammap",
     "science": "science",
 }

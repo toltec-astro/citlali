@@ -1442,8 +1442,17 @@ TEST(config_scaffold, parses_existing_runtime_enum_values) {
               citlali::config::ReductionType::science);
     EXPECT_EQ(citlali::config::parse_reduction_type("pointing").value(),
               citlali::config::ReductionType::pointing);
+    EXPECT_EQ(citlali::config::parse_reduction_type("oof").value(),
+              citlali::config::ReductionType::oof);
     EXPECT_EQ(citlali::config::parse_reduction_type("beammap").value(),
               citlali::config::ReductionType::beammap);
+
+    EXPECT_TRUE(citlali::config::is_pointing_family_reduction_type(
+        citlali::config::ReductionType::pointing));
+    EXPECT_TRUE(citlali::config::is_pointing_family_reduction_type(
+        citlali::config::ReductionType::oof));
+    EXPECT_FALSE(citlali::config::is_pointing_family_reduction_type(
+        citlali::config::ReductionType::science));
 }
 
 TEST(config_scaffold, parses_existing_mapmaking_enum_values) {
@@ -6482,6 +6491,22 @@ TEST(cli_tod_processor_selection, selects_pointing_processor) {
     EXPECT_EQ(std::get<FakePointingTodProc>(todproc).loaded_value, 88);
 }
 
+TEST(cli_tod_processor_selection, selects_shared_pointing_processor_for_oof) {
+    std::variant<std::monostate, FakeScienceTodProc, FakePointingTodProc,
+                 FakeBeammapTodProc>
+        todproc;
+    FakeTodConfig config{89};
+    auto logger = std::make_shared<FakeLogger>();
+
+    EXPECT_TEMPLATE_TRUE(citlali::cli::emplace_tod_processor_for_reduction_type<
+        decltype(todproc), FakeScienceTodProc, FakePointingTodProc,
+        FakeBeammapTodProc>(todproc, citlali::config::ReductionType::oof,
+                            config, logger));
+
+    ASSERT_TRUE(std::holds_alternative<FakePointingTodProc>(todproc));
+    EXPECT_EQ(std::get<FakePointingTodProc>(todproc).loaded_value, 89);
+}
+
 TEST(cli_tod_processor_selection, rejects_unknown_processor_type) {
     std::variant<std::monostate, FakeScienceTodProc, FakePointingTodProc,
                  FakeBeammapTodProc>
@@ -10980,6 +11005,7 @@ TEST(config_scaffold, raw_source_protection_matches_shared_resolution) {
 
     for (const auto reduction_type : {
              citlali::config::ReductionType::pointing,
+             citlali::config::ReductionType::oof,
              citlali::config::ReductionType::science}) {
         const auto raw_resolution =
             citlali::pipeline::resolve_raw_source_protection_observation(

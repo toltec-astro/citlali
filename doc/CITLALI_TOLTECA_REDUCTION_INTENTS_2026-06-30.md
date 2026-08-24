@@ -10,17 +10,18 @@ still targets the current Citlali schema.
 
 Normal users should choose one of four reduction intents:
 
-| Intent | Compact mode | Legacy Citlali reduction type | Purpose |
+| Intent | Compact mode | Citlali reduction type | Purpose |
 | --- | --- | --- | --- |
 | Pointing | `pointing` | `pointing` | Compact-source pointing/focus reductions |
-| Out-of-focus holography | `oof` | `pointing` | PSF-preserving OOF/holography reductions |
+| Out-of-focus holography | `oof` | `oof` | PSF-preserving OOF/holography reductions using the shared Pointing numerical processor |
 | Beammap | `beammap` | `beammap` | Detector beam characterization |
 | Science | `science` | `science` | Normal science maps and diagnostics |
 
-`oof` is intentionally first-class in the compact layer even though it still
-expands to `runtime.reduction_type: pointing`. This keeps the user-facing
-language aligned with observing/reduction practice while avoiding a behavior
-change in Citlali before OOF-specific validation exists.
+As of 2026-08-24, `oof` is first-class at both the compact and low-level
+runtime boundaries. It expands to `runtime.reduction_type: oof`, while
+processor selection deliberately routes both Pointing and OOF to the existing
+Pointing numerical implementation. Historical OOF files encoded as
+`runtime.reduction_type: pointing` remain valid legacy Pointing requests.
 
 ## TolTECA Layering
 
@@ -142,8 +143,9 @@ point for moving point configuration groups behind compact names before asking
 Unity reductions to compare science products.
 
 The same no-op compatibility harness now exists for all four user-facing
-intents. Representative local checks passed with zero low-level YAML
-differences after ignoring `runtime.output_dir`:
+intents. The original representative local checks passed with zero low-level
+YAML differences after ignoring `runtime.output_dir`; the 2026-08-24 OOF
+identity migration supersedes only the OOF runtime-type leaf as noted below:
 
 | Intent | Baseline | Leaf keys |
 | --- | --- | ---: |
@@ -152,7 +154,7 @@ differences after ignoring `runtime.output_dir`:
 | Beammap | `/Users/gwilson/work_toltec/local_data/beammaps/3c273/70_reduce.yaml` | 485 |
 | Science | `/Users/gwilson/work_toltec/local_data/2025-C1-COM-04/GOODS-N/70_reduce.yaml` | 219 |
 
-The stronger compact-key fixtures below also passed the same zero-difference
+The stronger compact-key fixtures below also passed the same compatibility
 check. These files use compact runtime, map, product, processing, and
 intent-specific fields where the selected baseline already has matching
 low-level destinations:
@@ -164,7 +166,10 @@ low-level destinations:
 | Beammap | `tools/config/examples/beammap_compat_3c273_compact.yaml` |
 | Science | `tools/config/examples/science_compat_goodsn_compact.yaml` |
 
-These checks are now captured in
+OOF's historical baseline comparison now permits exactly one named difference,
+`runtime.reduction_type`, for the intentional `pointing` to `oof` identity
+migration; its numerical configuration remains exact. These checks are now
+captured in
 `tools/config/compact_compatibility_cases.yaml` and can be rerun with:
 
 ```bash
@@ -175,6 +180,7 @@ $HOME/tolteca/bin/python tools/config/run_compact_compatibility.py \
 ```
 
 Existing TolTECA low-level files can also be bootstrapped into compact
-compatibility YAML with `tools/config/lowlevel_to_compact_config.py`. For OOF,
-pass `--mode oof`; otherwise the legacy `runtime.reduction_type: pointing`
-cannot distinguish OOF from a normal pointing reduction.
+compatibility YAML with `tools/config/lowlevel_to_compact_config.py`. New
+low-level OOF files are inferred directly from `runtime.reduction_type: oof`.
+For historical OOF files encoded as `pointing`, pass `--mode oof` because the
+legacy identity cannot distinguish them from normal Pointing reductions.

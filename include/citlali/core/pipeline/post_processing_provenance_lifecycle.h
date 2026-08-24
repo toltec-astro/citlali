@@ -217,7 +217,8 @@ inline void record_post_processing_run_completed(
         plan.effective.source_finding.enabled);
 
     const auto reduction_type = plan.effective_resolution.reduction_type;
-    if (citlali::config::is_pointing_reduction_type(reduction_type)) {
+    if (citlali::config::is_pointing_family_reduction_type(
+            reduction_type)) {
         const auto expected_raw = mapmaking_plan.observations.size();
         const auto expected_filtered =
             plan.effective.map_filtering.enabled &&

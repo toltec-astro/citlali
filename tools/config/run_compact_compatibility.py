@@ -52,6 +52,19 @@ def evaluate_expectations(case: dict[str, Any], compare_result: dict[str, Any]) 
     if summary["diff_count"] != expected_diff_count:
         errors.append(f"diff_count expected {expected_diff_count}, got {summary['diff_count']}")
 
+    expected_diff_paths = case.get("expected_diff_paths", [])
+    if not isinstance(expected_diff_paths, list) or not all(
+        isinstance(path, str) for path in expected_diff_paths
+    ):
+        errors.append("expected_diff_paths must be a list of strings")
+    else:
+        actual_diff_paths = sorted(diff["path"] for diff in compare_result["diffs"])
+        if actual_diff_paths != sorted(expected_diff_paths):
+            errors.append(
+                "diff paths expected "
+                f"{sorted(expected_diff_paths)}, got {actual_diff_paths}"
+            )
+
     expected_baseline_leaf_count = case.get("expected_baseline_leaf_count")
     if expected_baseline_leaf_count is not None and summary["baseline_leaf_count"] != expected_baseline_leaf_count:
         errors.append(
@@ -168,6 +181,7 @@ def run_case(
         "diff_count": summary["diff_count"],
         "diff_count_by_kind": summary["diff_count_by_kind"],
         "diff_count_by_top": summary["diff_count_by_top"],
+        "diff_paths": [diff["path"] for diff in compare_result["diffs"]],
         "ignore_patterns": ignore_patterns,
         "warnings": expansion_summary.get("warnings", []),
         "errors": errors,

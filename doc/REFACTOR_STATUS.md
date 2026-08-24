@@ -1,5 +1,40 @@
 # Citlali Refactor Status
 
+## 2026-08-24 Distinct OOF Reduction Identity
+
+OOF is now a distinct public low-level reduction identity instead of being
+encoded as `runtime.reduction_type: pointing`. The runtime enum, parser,
+canonical TolTECA v1/v2 mode kits, compact expander, reverse converter,
+baseline auditor, and provenance-facing configuration all carry `oof`
+directly. Pointing and OOF remain one numerical execution family and both
+dispatch to the existing `PointingTodProc`; this change does not fork or
+duplicate their mature RTC, PTC, mapmaking, fitting, or output algorithms.
+Exact identity remains available for future mode-specific contracts.
+The changed canonical kits are versioned as successor `phase4.1-v1.1` and
+`phase4.1-v2.2` artifacts so TolProj cannot confuse them with an installed
+pre-change bundle.
+
+Complete matched-v2 APT authority is admitted equivalently for Science,
+Pointing, and OOF, and partial native authority is rejected for all three.
+The current native numerical activation candidate remains Science-only.
+Pointing and OOF therefore publish admitted matched-v2 calibration values but
+continue through their established legacy numerical path until each mode has
+an approved native product and kernel-support contract. Existing low-level OOF
+files that say `pointing` remain valid legacy Pointing requests; new canonical
+OOF kits say `oof` and select the same Pointing processor explicitly.
+
+The complete local C++ surface passes all 795 runnable CTests with the one
+established disabled test not run. All 203 baseline-tool tests pass. The full
+config preflight passes 129 unit tests, all four v1 mode kits, all config
+authority/boundary gates, and the six locally available OOF, Beammap, and
+Science compatibility cases. OOF's two historical comparisons admit exactly
+the one named `runtime.reduction_type` identity migration; all numerical
+leaves remain exact. The two Pointing compatibility cases retain the recorded
+missing owner-local fixture and are not represented as passed. The independent
+v2 mode-kit validator also passes all four modes with the revised OOF policy
+digest. The coordinated TolProj vendor update remains the closeout gate for
+this candidate.
+
 ## 2026-08-24 Telescope Observation-State Replacement Repair
 
 The owner-run Stage 7 two-observation Pointing reduction passed compact-v2

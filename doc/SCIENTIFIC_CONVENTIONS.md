@@ -59,7 +59,7 @@ its receipt form the persisted output.
 | Reduction intent | Current execution status | Validated contract |
 | --- | --- | --- |
 | Pointing | Supported | Point profile and product contract |
-| Out-of-focus holography (OOF) | Supported as a distinct validation intent using the pointing execution path | OOF profile and product contract |
+| Out-of-focus holography (OOF) | Supported as a distinct reduction identity using the shared Pointing numerical execution path | OOF profile and product contract |
 | Science | Supported | Science profile and product contract |
 | Beammap | Supported | Beammap profile and product contract |
 | Enabled polarimetry | Planned but unavailable; rejected before execution | No enabled reference contract |
@@ -882,8 +882,9 @@ The following are not silently resolved by this document:
 - the action policy for raw ADC saturation or low headroom (detection,
   severity, persistence, network exclusion, and reduction failure), tracked as
   retained debt D17; and
-- whether OOF should eventually become a distinct public execution type rather
-  than a distinct intent routed through pointing execution.
+- the native product and kernel-support contracts required before Pointing or
+  OOF may activate native numerical consumers; their distinct public
+  identities currently share the established Pointing numerical processor.
 
 Each decision must name its owner, accepted behavior, provenance, failure
 policy, and validation dataset before implementation relies on it.

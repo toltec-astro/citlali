@@ -302,7 +302,7 @@ resolve_raw_source_protection_observation(
     const bool requested =
         request.enabled && request.source_protection.enabled;
     const bool source_aware =
-        citlali::config::is_pointing_reduction_type(reduction_type);
+        citlali::config::is_pointing_family_reduction_type(reduction_type);
     return {requested, source_aware, requested && source_aware};
 }
 

@@ -134,10 +134,10 @@ from the authoring files.
 current full `data/config.yaml` shape. It supports the normal TolTECA/Citlali
 reduction intents:
 
-| Mode | Default profile | Legacy Citlali reduction type |
+| Mode | Default profile | Citlali reduction type |
 | --- | --- | --- |
 | `pointing` | `pointing_standard` | `pointing` |
-| `oof` | `oof_standard` | `pointing` |
+| `oof` | `oof_standard` | `oof` |
 | `beammap` | `beammap_detector` | `beammap` |
 | `science` | `science_standard` | `science` |
 
@@ -446,7 +446,9 @@ The current suite includes eight cases:
 - passthrough and compact-key science fixtures
 
 All cases are expected to have zero low-level differences after ignoring
-`runtime.output_dir`.
+`runtime.output_dir`, except that the two historical OOF baselines name the
+single intentional identity migration at `runtime.reduction_type` from legacy
+`pointing` to canonical `oof`.
 
 The compact translator currently covers the common runtime/output/map/product
 surface plus selected direct controls:
@@ -501,10 +503,11 @@ $HOME/tolteca/bin/python tools/config/lowlevel_to_compact_config.py \
   --summary-out /tmp/science_compact.summary.yaml
 ```
 
-`--mode` is optional for `science` and `beammap` baselines because those map
-directly from `runtime.reduction_type`. Use `--mode oof` for OOF reductions,
-because legacy Citlali still represents OOF through
-`runtime.reduction_type: pointing`.
+`--mode` is optional for new `science`, `beammap`, and `oof` baselines because
+those map directly from `runtime.reduction_type`. Use `--mode oof` when
+converting a historical OOF baseline encoded as
+`runtime.reduction_type: pointing`, since that legacy identity is otherwise
+indistinguishable from a normal Pointing reduction.
 
 The generated compact file should be validated immediately with the equivalence
 tools:

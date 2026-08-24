@@ -148,7 +148,7 @@ def infer_mode(low_level: dict[str, Any], mode_override: str | None) -> str:
     found, reduction_type = path_get(low_level, ("runtime", "reduction_type"))
     if not found:
         raise ConvertError("cannot infer mode because runtime.reduction_type is missing; pass --mode")
-    if reduction_type in {"science", "beammap"}:
+    if reduction_type in {"science", "oof", "beammap"}:
         return str(reduction_type)
     if reduction_type == "pointing":
         return "pointing"

@@ -4,7 +4,7 @@ mode: oof
 description: Out-of-focus holography profile using the pointing engine with PSF-preserving defaults.
 full:
   runtime:
-    reduction_type: pointing
+    reduction_type: oof
     verbose: false
   source:
     map_regime: source_dominant

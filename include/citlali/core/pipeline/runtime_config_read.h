@@ -41,7 +41,7 @@ citlali::config::RuntimeConfig read_runtime_config(
     read_parsed_mirrored_config_value(
         config, std::tuple{"runtime", "reduction_type"}, reduction_type,
         runtime_config.reduction_type, citlali::config::parse_reduction_type,
-        diagnostics, {"science", "pointing", "beammap"});
+        diagnostics, {"science", "pointing", "oof", "beammap"});
 
     bool use_subdir = runtime_config.use_subdir;
     read_mirrored_config_value(

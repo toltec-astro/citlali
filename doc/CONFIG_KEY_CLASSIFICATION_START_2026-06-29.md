@@ -27,7 +27,7 @@ miss dynamic and multi-line accesses. Treat it as an inventory aid only.
 
 | Config group | Initial level | Reason |
 | --- | --- | --- |
-| `runtime.reduction_type` | Core | Selects science, pointing, or beammap. |
+| `runtime.reduction_type` | Core | Selects science, pointing, OOF, or beammap; pointing and OOF share the Pointing numerical processor. |
 | `runtime.output_dir` | Core | Required operational output choice. |
 | `runtime.n_threads` | Core | Common operational performance choice. |
 | `runtime.parallel_policy` | Core | Common operational performance choice. |

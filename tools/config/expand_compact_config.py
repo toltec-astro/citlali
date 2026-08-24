@@ -20,9 +20,7 @@ DEFAULT_PROFILE_BY_MODE = {
     "oof": "oof_standard",
     "beammap": "beammap_detector",
 }
-LEGACY_REDUCTION_TYPE_BY_MODE = {
-    "oof": "pointing",
-}
+LEGACY_REDUCTION_TYPE_BY_MODE: dict[str, str] = {}
 TOP_LEVEL_KEYS = {
     "schema",
     "mode",

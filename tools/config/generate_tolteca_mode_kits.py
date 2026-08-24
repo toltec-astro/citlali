@@ -223,7 +223,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--baseline", action="append", default=[], metavar="MODE=PATH")
     parser.add_argument("--record", action="append", default=[], metavar="MODE=ID")
     parser.add_argument("--output-root", required=True)
-    parser.add_argument("--kit-version", default="phase4.1-v1")
+    parser.add_argument("--kit-version", default="phase4.1-v1.1")
     return parser.parse_args(argv)
 
 

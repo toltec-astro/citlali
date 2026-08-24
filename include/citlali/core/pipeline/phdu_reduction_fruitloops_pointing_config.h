@@ -27,7 +27,7 @@ void add_phdu_fruit_loops_config(FitsEntry &fits_entry,
     hdu.addKey("CONFIG.FRUITLOOPS.TYPE", config.type,
                "Fruit loops type");
     const auto source_center_mode =
-        reduction_type == citlali::config::ReductionType::pointing
+        citlali::config::is_pointing_family_reduction_type(reduction_type)
             ? std::string{citlali::config::to_string(
                   pointing_config.fruitloops_center_mode)}
             : std::string{citlali::config::to_string(
@@ -144,7 +144,8 @@ void add_phdu_pointing_config_if_needed(
     FitsEntry &fits_entry, const std::string &array_name,
     const Logger &logger, citlali::config::ReductionType reduction_type,
     const citlali::config::PointingConfig &pointing_config) {
-    if (!citlali::config::is_pointing_reduction_type(reduction_type)) {
+    if (!citlali::config::is_pointing_family_reduction_type(
+            reduction_type)) {
         return;
     }
     add_phdu_pointing_config(

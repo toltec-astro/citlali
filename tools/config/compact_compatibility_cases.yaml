@@ -24,7 +24,9 @@ cases:
     base_config: ${HOME}/work_toltec/local_data/OOF/149056/70_reduce.yaml
     ignore:
       - runtime.output_dir
-    expected_diff_count: 0
+    expected_diff_count: 1
+    expected_diff_paths:
+      - runtime.reduction_type
     expected_baseline_leaf_count: 164
 
   - name: oof_149056_compact_keys
@@ -33,7 +35,9 @@ cases:
     base_config: ${HOME}/work_toltec/local_data/OOF/149056/70_reduce.yaml
     ignore:
       - runtime.output_dir
-    expected_diff_count: 0
+    expected_diff_count: 1
+    expected_diff_paths:
+      - runtime.reduction_type
     expected_baseline_leaf_count: 164
 
   - name: beammap_3c273_passthrough

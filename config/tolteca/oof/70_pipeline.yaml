@@ -199,7 +199,7 @@ reduce:
           n_threads: 6
           output_dir: .
           parallel_policy: omp
-          reduction_type: pointing
+          reduction_type: oof
           use_subdir: true
           verbose: true
         source:

@@ -27,9 +27,10 @@ struct NativeConsumerModeRequest {
 // never request matched-consumer lineage: detector/automatic is the raw APT
 // producer, while all established non-detector groups retain the calibration
 // table lane. Science activates only with one complete matched-v2
-// relation/carrier pair; partial authority fails closed. The current low-level
-// `pointing` value also represents OOF, so it cannot activate until a distinct
-// intent reaches this boundary.
+// relation/carrier pair; partial authority fails closed. Pointing and OOF may
+// admit complete matched-v2 calibration values while retaining their shared
+// legacy numerical execution family. Native Pointing/OOF execution remains
+// unavailable until those mode-specific product contracts are reconstructed.
 inline NativeConsumerRoute resolve_native_consumer_route(
     const NativeConsumerModeRequest &request) {
     if (request.reduction_type ==
@@ -48,10 +49,19 @@ inline NativeConsumerRoute resolve_native_consumer_route(
 
     if (request.reduction_type ==
         citlali::config::ReductionType::pointing) {
-        if (request.matched_v2_relation_available ||
+        if (request.matched_v2_relation_available !=
             request.native_carriers_available) {
             throw std::logic_error(
-                "native Pointing activation cannot distinguish Pointing from OOF intent");
+                "native Pointing activation has partial authority");
+        }
+        return NativeConsumerRoute::legacy_inactive;
+    }
+
+    if (request.reduction_type == citlali::config::ReductionType::oof) {
+        if (request.matched_v2_relation_available !=
+            request.native_carriers_available) {
+            throw std::logic_error(
+                "native OOF admission has partial authority");
         }
         return NativeConsumerRoute::legacy_inactive;
     }
