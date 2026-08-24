@@ -35,6 +35,12 @@ decisions and mechanical artifact preparation are complete and are
 [content-bound by the WP-3 source manifest](audits/SIX_PACKAGE_TIMESTREAM_CLOSURE_PROGRAM_55EFD8A/WP3_SOURCE_MANIFEST.md);
 final clean-room finding disposition remains pending.
 
+The
+[WP-4 source-hygiene manifest](audits/SIX_PACKAGE_TIMESTREAM_CLOSURE_PROGRAM_55EFD8A/WP4_SOURCE_HYGIENE_MANIFEST.md)
+binds compact notation-only semantic maps for frozen RTC and AST. The maps
+change no package bytes or runtime representation; WP-7 re-audit remains the
+finding-closure authority.
+
 | Package | Scope status | Contract status | Owner decision needed | Next action |
 | --- | --- | --- | --- | --- |
 | [SCI-CAL — detector calibration, extinction, and signal transfer](packages/SCI-CAL/v0.1/README.md) | Owner-approved scientific contract v0.1 scope | **Scientific authority frozen** at v0.1/r0.5-r0.4 on `2026-08-23`; implementation conformity and achieved performance unassessed | No scientific decision remains open in Q01--Q09; named numerical uncertainty products and achieved-performance acceptance remain unavailable until their evidence exists | Preserve the frozen packet; execute the owner-approved validation workflow separately and report the evidence honestly |
