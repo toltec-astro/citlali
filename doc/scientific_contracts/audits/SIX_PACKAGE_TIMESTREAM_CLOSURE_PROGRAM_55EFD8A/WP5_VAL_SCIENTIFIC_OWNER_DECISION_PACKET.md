@@ -2,7 +2,7 @@
 
 Opened: `2026-08-24`
 
-Status: `WP5-OWNER-D001--D005` approved; remaining profile decisions await
+Status: `WP5-OWNER-D001--D006` approved; remaining profile decisions await
 review one at a time
 
 Scope: non-MAP processed-timestream source bindings and VAL profiles. VAL Core
@@ -272,3 +272,69 @@ Disposition:
 12. Until all seven use decisions establish the common fragment, these
     restrictions remain in `\Delta\mathcal R_{\rm loading}`. D005 alone does
     not produce a final digest-bound usable registry record.
+
+## WP5-OWNER-D006 — Frozen Operator Application
+
+Question:
+
+> Should `SCI-PTC:operator_application@1` authorize whether the exact resolved
+> frozen group-local operator may act at one configured group-time, while
+> allowing fit-excluded inputs only when every operator-defined quantity is
+> available and forbidding every silent fallback?
+
+Owner response: **approved with an explicit rank-deficiency rule**.
+
+Disposition:
+
+1. The profile is supported for the ordinary configured-rank PCA route. Its
+   decision object is the exact coupled group-time application event with its
+   target occurrence roles: network-time for network-level PCA and array-time
+   for array-level PCA.
+2. Application requires only the inputs named by the frozen operator,
+   including resolved `\Theta_g`, frozen `\lambda_g`, strictly positive
+   configured rank, fitted subspace and required loadings, metric, tolerance,
+   generalized inverse, application support and mask, detector bindings,
+   finite time-local coefficient-recomputation inputs, and every required
+   coordinate transform and boundary state within that same configured group.
+3. The mandatory fail-closed numerical boundary is
+
+   \[
+   \boxed{
+   \operatorname{rank}(N_{g,t}) < k_{{\rm req},g}
+   \Longrightarrow
+   \text{the frozen group-time operator application is unavailable}.}
+   \]
+
+   No implementation may replace that failed application by a lower-rank,
+   interpolated, zero-filled, reconstructed, or cross-group alternative while
+   labeling it as the same operator.
+4. A missing, conflicting, nonfinite, or unavailable required operator input
+   yields `decision_unavailable` or `ineligible` under the complete T/F/U/C
+   rule and no numerical action is authorized. Failure remains scoped to the
+   configured group: one network's failure does not alter another network's
+   operator, while array mode has array-group scope.
+5. Fit exclusion does not imply application exclusion. An occurrence may be
+   acted upon when the exact frozen group-local operator defines the result
+   completely:
+
+   \[
+   \neg E_{\rm basis}\not\Rightarrow\neg E_{\rm application},
+   \qquad
+   \neg E_{\rm loading}\not\Rightarrow\neg E_{\rm application}.
+   \]
+
+6. Direct synthesized/replaced origin and CAL `engineering-only`
+   classification are preserved producer facts but are not universal vetoes
+   on performing the frozen mathematics. Application eligibility does not
+   relabel either fact, create an independent exposure, or authorize retention
+   in an ordinary science product.
+7. Eligibility authorizes only data application of the exact frozen operator.
+   It grants no output-retention, coefficient/QC, response-companion, or
+   empirical/simulation permission. Acting on a response kernel is governed by
+   the separate response-companion profile.
+8. Numerical complete-chain response or covariance availability is not a
+   required permission for data application. Product realization, response,
+   covariance, and validation/evidence remain independent typed axes.
+9. These restrictions remain in
+   `\Delta\mathcal R_{\rm application}` until final common-fragment comparison.
+   D006 alone does not produce a final digest-bound usable registry record.
