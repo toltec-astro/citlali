@@ -37,6 +37,46 @@ namespace citlali::pipeline {
 
 inline constexpr NativeDetectorFlagBits native_rtc_processing_flag_bit_v2 =
     NativeDetectorFlagBits{1} << 63U;
+inline constexpr NativeDetectorFlagBits
+    native_duplicate_tone_exclusion_bit_v2 =
+        NativeDetectorFlagBits{1} << 62U;
+
+template <class FlagMatrix>
+void reconcile_native_rtc_detector_result(
+    const Eigen::MatrixXd &measured, Eigen::Index detector,
+    const std::optional<std::int64_t> &apt_flag,
+    Eigen::MatrixXd &processed, FlagMatrix &flags, double &fcf) {
+    if (detector < 0 || detector >= measured.cols() ||
+        processed.rows() != measured.rows() ||
+        processed.cols() != measured.cols() ||
+        flags.rows() != measured.rows() ||
+        flags.cols() != measured.cols()) {
+        throw std::logic_error(
+            "native RTC detector reconciliation has unequal shape");
+    }
+    const bool apt_excluded = !apt_flag.has_value() || *apt_flag != 0;
+    if (!apt_excluded) {
+        if (!std::isfinite(fcf) ||
+            !processed.col(detector).array().isFinite().all()) {
+            throw std::logic_error(
+                "native RTC returned a nonfinite result for an eligible detector");
+        }
+        return;
+    }
+
+    flags.col(detector).setConstant(true);
+    for (Eigen::Index row = 0; row < processed.rows(); ++row) {
+        if (!std::isfinite(processed(row, detector))) {
+            const auto preserved = measured(row, detector);
+            if (!std::isfinite(preserved)) {
+                throw std::logic_error(
+                    "native RTC excluded detector lacks a finite measured value");
+            }
+            processed(row, detector) = preserved;
+        }
+    }
+    if (!std::isfinite(fcf)) fcf = 1.0;
+}
 
 inline void add_native_jinc_trace_count(
     std::size_t &total, std::size_t value, const char *field) {
@@ -350,12 +390,14 @@ NativeRtcDispatchResult run_native_rtc_numerical_bodies(
             for (std::size_t local = 0;
                  local < run.detector_columns.size(); ++local) {
                 const auto detector = run.detector_columns[local];
-                const auto value = output.fcf.data(
+                auto value = output.fcf.data(
                     static_cast<Eigen::Index>(local));
-                if (!std::isfinite(value)) {
-                    throw std::logic_error(
-                        "native RTC body returned a nonfinite detector FCF");
-                }
+                reconcile_native_rtc_detector_result(
+                    run.measured_values,
+                    static_cast<Eigen::Index>(local),
+                    runtime.mapping_handle()->binding(detector).apt_flag,
+                    output.scans.data, output.flags.data, value);
+                output.fcf.data(static_cast<Eigen::Index>(local)) = value;
                 auto &stored = fcf(detector);
                 if (std::isfinite(stored) &&
                     std::bit_cast<std::uint64_t>(stored) !=
@@ -448,6 +490,37 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
     NativePtcCohortRequest request{
         normalized, FinitePcaPlaceholder::checked(0.0), {}, {}, false,
         false};
+    const auto duplicate = engine.calib.apt.find("duplicate_tone");
+    if (duplicate == engine.calib.apt.end() ||
+        duplicate->second.size() !=
+            static_cast<Eigen::Index>(
+                runtime.mapping_handle()->detector_count())) {
+        throw std::logic_error(
+            "native PTC lacks exact duplicate-tone detector state");
+    }
+    for (const auto &run : rtc.runs) {
+        for (const auto &support : run.support) {
+            for (const auto detector : support.detector_columns) {
+                if (duplicate->second(detector) == 0.0) continue;
+                const auto &binding =
+                    runtime.mapping_handle()->binding(detector);
+                if (!binding.apt_flag.has_value() ||
+                    *binding.apt_flag != 0) {
+                    continue;
+                }
+                const NativeDetectorSampleKey key{
+                    support.selected_anchor.key(), detector};
+                if (!request.operation_exclusion_bits
+                         .emplace(
+                             key,
+                             native_duplicate_tone_exclusion_bit_v2)
+                         .second) {
+                    throw std::logic_error(
+                        "native duplicate-tone exclusion repeats a detector sample");
+                }
+            }
+        }
+    }
     request.corr_grouping_enabled =
         engine.ptcproc.cleaner.corr_grouping.enabled;
     request.requires_second_pass_window =
@@ -593,10 +666,16 @@ inline NativeScienceProjectionRequest native_projection_request(
          ++detector) {
         const auto column = static_cast<TimestreamDetectorColumn>(detector);
         const auto &binding = mapping.binding(column);
+        const auto az_offset =
+            native_science_projection_detail::resolve_detector_offset_arcsec(
+                x->second(column), binding.apt_flag);
+        const auto el_offset =
+            native_science_projection_detail::resolve_detector_offset_arcsec(
+                y->second(column), binding.apt_flag);
         request.detectors.push_back({
             column, binding.output_uid, binding.array,
             binding.network_id, binding.apt_flag,
-            map_indices(column), x->second(column), y->second(column)});
+            map_indices(column), az_offset, el_offset});
     }
     return request;
 }

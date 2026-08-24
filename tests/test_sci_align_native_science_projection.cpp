@@ -520,6 +520,31 @@ TEST(sci_align_native_science_projection,
 }
 
 TEST(sci_align_native_science_projection,
+     typed_null_offsets_are_resolved_only_for_excluded_detectors) {
+    const auto missing = std::numeric_limits<double>::quiet_NaN();
+    EXPECT_DOUBLE_EQ(
+        pipeline::native_science_projection_detail::
+            resolve_detector_offset_arcsec(12.5, std::int64_t{0}),
+        12.5);
+    EXPECT_DOUBLE_EQ(
+        pipeline::native_science_projection_detail::
+            resolve_detector_offset_arcsec(12.5, std::nullopt),
+        12.5);
+    EXPECT_DOUBLE_EQ(
+        pipeline::native_science_projection_detail::
+            resolve_detector_offset_arcsec(missing, std::int64_t{1}),
+        0.0);
+    EXPECT_DOUBLE_EQ(
+        pipeline::native_science_projection_detail::
+            resolve_detector_offset_arcsec(missing, std::nullopt),
+        0.0);
+    EXPECT_THROW(
+        pipeline::native_science_projection_detail::
+            resolve_detector_offset_arcsec(missing, std::int64_t{0}),
+        std::logic_error);
+}
+
+TEST(sci_align_native_science_projection,
      typed_detector_request_permutation_is_exactly_invariant) {
     auto committed = make_committed_projection(
         complete_identical_time_fixture());

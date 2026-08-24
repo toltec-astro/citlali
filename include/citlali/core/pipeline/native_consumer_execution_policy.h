@@ -5,6 +5,7 @@
 
 #include <Eigen/Core>
 
+#include <cmath>
 #include <stdexcept>
 
 namespace citlali::pipeline {
@@ -99,9 +100,13 @@ void require_supported_native_consumer_observation(const Engine &engine) {
         throw std::logic_error(
             "native consumer requires exact duplicate-tone detector state");
     }
-    if ((duplicate->second.array() != 0.0).any()) {
-        throw std::logic_error(
-            "native consumer duplicate-tone rejection requires native detector exclusion lineage");
+    for (Eigen::Index detector = 0;
+         detector < duplicate->second.size(); ++detector) {
+        const auto value = duplicate->second(detector);
+        if (!std::isfinite(value) || (value != 0.0 && value != 1.0)) {
+            throw std::logic_error(
+                "native consumer duplicate-tone detector state must be exact binary data");
+        }
     }
     const auto &scans = engine.telescope.scan_indices;
     if (scans.rows() != 4) {

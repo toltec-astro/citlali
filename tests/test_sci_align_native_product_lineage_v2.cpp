@@ -6,6 +6,8 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <utility>
@@ -25,7 +27,8 @@ struct LineageFixture {
     pipeline::NativeCohortScanProvenanceV2 record;
 };
 
-LineageFixture make_lineage_fixture(bool mapmaking_enabled = true) {
+LineageFixture make_lineage_fixture(bool mapmaking_enabled = true,
+                                    bool operation_exclusion = false) {
     auto loaded = fixture::load_native_gap_fixture_v1();
     loaded.scan_index = 0;
     auto scan = fixture::materialize_native_gap_measured_scan(loaded);
@@ -39,6 +42,14 @@ LineageFixture make_lineage_fixture(bool mapmaking_enabled = true) {
     pipeline::NativePtcCohortRequest ptc_request{
         "all", pipeline::FinitePcaPlaceholder::checked(-71.0),
         {}, {}, false, false};
+    if (operation_exclusion) {
+        const auto &first_run = rtc.runs.front();
+        ptc_request.operation_exclusion_bits.emplace(
+            pipeline::NativeDetectorSampleKey{
+                first_run.support.front().selected_anchor.key(),
+                first_run.input.detector_columns.front()},
+            0x40U);
+    }
     auto prepared = pipeline::prepare_native_ptc_cohorts(
         ledger, rtc, ptc_request);
     auto processed = pipeline::run_native_ptc_groups(
@@ -247,6 +258,52 @@ TEST(SciAlignNativeProductLineageV2,
         product["scans"][0]["map_occurrence"]["method"]
             .as<std::string>(),
         "naive");
+}
+
+TEST(SciAlignNativeProductLineageV2,
+     OperationExclusionCauseIsBoundAndSerializedPerSample) {
+    auto fixture = make_lineage_fixture(true, true);
+    const auto excluded = std::find_if(
+        fixture.record.revisions.begin(), fixture.record.revisions.end(),
+        [](const auto &revision) {
+            return revision.operation_exclusion_bits != 0;
+        });
+    ASSERT_NE(excluded, fixture.record.revisions.end());
+    EXPECT_EQ(excluded->operation_exclusion_bits, 0x40U);
+    EXPECT_EQ(
+        excluded->action,
+        pipeline::NativeMeasuredDetectorLedger::RevisionAction::
+            preserved_pca_invalid);
+
+    auto lineage = pipeline::NativeCohortObservationLineageV2::create(
+        fixture.binding, 1);
+    auto reservation = lineage->reserve(std::move(fixture.record));
+    reservation.commit();
+    pipeline::RawTimestreamExecutionPlan plan;
+    plan.initialized = true;
+    auto &observation = plan.begin_observation();
+    observation.native_consumer_route =
+        pipeline::NativeConsumerRoute::native_required;
+    observation.native_cohort_lineage = std::move(lineage);
+    pipeline::complete_raw_timestream_observation(plan, 1, 0);
+    const auto revisions =
+        pipeline::raw_timestream_provenance_node(plan)
+            ["realized"]["native_cohort_provenance"]["value"]
+            ["scans"][0]["revision_transitions"];
+    bool found = false;
+    for (const auto &revision : revisions) {
+        if (revision["operation_exclusion_bits"].as<std::uint64_t>() ==
+            0x40U) {
+            found = true;
+            EXPECT_EQ(
+                revision["action"].as<std::string>(),
+                "preserved_pca_invalid");
+            EXPECT_TRUE(
+                revision["apt_flag"]["available"].as<bool>());
+            EXPECT_EQ(revision["apt_flag"]["value"].as<int>(), 0);
+        }
+    }
+    EXPECT_TRUE(found);
 }
 
 }  // namespace

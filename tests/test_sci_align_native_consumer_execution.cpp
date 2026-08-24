@@ -6,7 +6,10 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
+#include <cstdint>
+#include <limits>
 #include <memory>
+#include <optional>
 #include <string>
 
 namespace {
@@ -217,10 +220,87 @@ TEST(SciAlignNativeConsumerExecution,
         std::logic_error);
     pipeline::noise_config(engine).enabled = false;
 
-    engine.calib.apt["duplicate_tone"](0) = 1.0;
+    engine.calib.apt["duplicate_tone"](0) = 0.5;
     EXPECT_THROW(
         pipeline::require_supported_native_consumer_observation(engine),
         std::logic_error);
+}
+
+TEST(SciAlignNativeConsumerExecution,
+     DuplicateTonesUseExactPtcExclusionAndFlagEveryMappedSample) {
+    auto loaded = fixture::load_native_gap_fixture_v1();
+    loaded.scan_index = 0;
+    auto scan = fixture::materialize_native_gap_measured_scan(loaded);
+    Engine engine;
+    configure_native_test_engine(engine, *scan);
+    engine.ptcproc.weighting_type = "full";
+    engine.calib.apt["duplicate_tone"](0) = 1.0;
+    engine.telescope.scan_indices.resize(4, 1);
+    engine.telescope.scan_indices.col(0) << 4, 11, 4, 11;
+
+    EXPECT_NO_THROW(
+        pipeline::require_supported_native_consumer_observation(engine));
+
+    timestream::TCData<timestream::TCDataKind::RTC, Eigen::MatrixXd>
+        source;
+    source.native_runtime =
+        std::make_shared<pipeline::NativeScanRuntimeState>(scan);
+    Eigen::VectorXI map_indices(
+        static_cast<Eigen::Index>(scan->detector_count()));
+    for (Eigen::Index detector = 0; detector < map_indices.size();
+         ++detector) {
+        map_indices(detector) = detector;
+    }
+
+    auto prepared = pipeline::prepare_native_consumer_map_scan(
+        engine, source, map_indices);
+    ASSERT_TRUE(prepared.runtime->ptc_prepared.has_value());
+    EXPECT_TRUE(prepared.ptcdata.flags.data.col(0).array().all());
+    EXPECT_DOUBLE_EQ(prepared.ptcdata.weights.data(0), 0.0);
+    for (const auto &group : prepared.runtime->ptc_prepared->groups()) {
+        for (Eigen::Index local = 0;
+             local < group.detector_count(); ++local) {
+            for (Eigen::Index row = 0; row < group.slot_count(); ++row) {
+                const auto &cell = group.cell(row, local);
+                const auto detector = group.detector_columns().at(
+                    static_cast<std::size_t>(local));
+                EXPECT_EQ(
+                    cell.operation_exclusion_bits,
+                    detector == 0
+                        ? pipeline::native_duplicate_tone_exclusion_bit_v2
+                        : 0U);
+            }
+        }
+    }
+}
+
+TEST(SciAlignNativeConsumerExecution,
+     TypedAptExclusionPreservesFiniteMeasuredRtcPayloadAndFlagsIt) {
+    Eigen::MatrixXd measured(3, 2);
+    measured << 1.0, 2.0,
+                3.0, 4.0,
+                5.0, 6.0;
+    Eigen::MatrixXd processed = measured;
+    processed.col(0).setConstant(
+        std::numeric_limits<double>::quiet_NaN());
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> flags(3, 2);
+    flags.setConstant(false);
+    double excluded_fcf = std::numeric_limits<double>::quiet_NaN();
+
+    EXPECT_NO_THROW(pipeline::reconcile_native_rtc_detector_result(
+        measured, 0, std::nullopt, processed, flags, excluded_fcf));
+    EXPECT_TRUE((processed.col(0).array() ==
+                 measured.col(0).array()).all());
+    EXPECT_TRUE(flags.col(0).array().all());
+    EXPECT_DOUBLE_EQ(excluded_fcf, 1.0);
+
+    auto invalid_eligible = processed;
+    invalid_eligible(0, 1) =
+        std::numeric_limits<double>::quiet_NaN();
+    double eligible_fcf = 1.0;
+    EXPECT_THROW(pipeline::reconcile_native_rtc_detector_result(
+        measured, 1, std::optional<std::int64_t>{0}, invalid_eligible,
+        flags, eligible_fcf), std::logic_error);
 }
 
 }  // namespace

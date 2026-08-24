@@ -346,6 +346,9 @@ struct NativeCohortRevisionTransitionV2 {
     TimestreamDetectorColumn detector_column = -1;
     TimestreamNativeRevision input_revision = 0;
     TimestreamNativeRevision output_revision = 0;
+    NativeDetectorFlagBits delivered_flag_bits = 0;
+    NativeDetectorFlagBits operation_exclusion_bits = 0;
+    std::optional<std::int64_t> apt_flag;
     NativeMeasuredDetectorLedger::RevisionAction action =
         NativeMeasuredDetectorLedger::RevisionAction::replaced_by_pca_result;
 };
@@ -413,6 +416,18 @@ struct NativeCohortScanProvenanceV2 {
                 revision.output_revision != revision.input_revision + 1) {
                 throw std::logic_error(
                     "native cohort revision transition is invalid");
+            }
+            const bool excluded = revision.delivered_flag_bits != 0 ||
+                revision.operation_exclusion_bits != 0 ||
+                !revision.apt_flag.has_value() ||
+                *revision.apt_flag != 0;
+            const bool preserved_invalid =
+                revision.action ==
+                NativeMeasuredDetectorLedger::RevisionAction::
+                    preserved_pca_invalid;
+            if (excluded != preserved_invalid) {
+                throw std::logic_error(
+                    "native cohort revision exclusion lineage is inconsistent");
             }
         }
         if (!map_occurrence.mapmaking_enabled) {
@@ -543,6 +558,12 @@ inline std::string native_cohort_eligible_input_digest_v2(
                            revision.detector_column);
         digest.add_integer("revision.input", revision.input_revision);
         digest.add_integer("revision.output", revision.output_revision);
+        digest.add_integer("revision.delivered-flags",
+                           revision.delivered_flag_bits);
+        digest.add_integer("revision.operation-exclusions",
+                           revision.operation_exclusion_bits);
+        digest.add("revision.apt-flag", revision.apt_flag
+                       ? std::to_string(*revision.apt_flag) : "null");
         digest.add_integer("revision.action", revision.action);
     }
     for (const auto map_index : record.map_occurrence.ordered_map_indices) {
@@ -656,7 +677,9 @@ make_native_cohort_scan_provenance_v2(
                 revisions.push_back({
                     key,
                     {*cell.identity, detector, cell.expected_revision,
-                     current.revision, action}});
+                     current.revision, cell.delivered_flag_bits,
+                     cell.operation_exclusion_bits, cell.apt_flag,
+                     action}});
             }
         }
     }

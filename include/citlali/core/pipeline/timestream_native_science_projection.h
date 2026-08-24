@@ -68,6 +68,23 @@ inline bool exact_double_equal(double lhs, double rhs) noexcept {
            std::bit_cast<std::uint64_t>(rhs);
 }
 
+inline double resolve_detector_offset_arcsec(
+    double apt_offset_arcsec,
+    const std::optional<std::int64_t> &apt_flag) {
+    if (std::isfinite(apt_offset_arcsec)) {
+        return apt_offset_arcsec;
+    }
+    if (!apt_flag.has_value() || *apt_flag != 0) {
+        // Canonical APT v2 permits science-ineligible detector rows to carry
+        // typed-null geometry. They remain excluded by the native PTC flags,
+        // but projection still needs a finite, deterministic coordinate in
+        // order to preserve the rectangular detector inventory.
+        return 0.0;
+    }
+    throw std::logic_error(
+        "eligible native science detector has nonfinite APT offset");
+}
+
 inline std::vector<std::string> required_telescope_series(
     const std::string &pixel_axes) {
     if (citlali::config::is_radec_map_pixel_axes(pixel_axes)) {
@@ -223,6 +240,12 @@ public:
              detector < detector_count(); ++detector) {
             const auto &binding = detectors_.at(
                 static_cast<std::size_t>(detector));
+            const auto resolved_x =
+                native_science_projection_detail::resolve_detector_offset_arcsec(
+                    x_t(detector), binding.apt_flag);
+            const auto resolved_y =
+                native_science_projection_detail::resolve_detector_offset_arcsec(
+                    y_t(detector), binding.apt_flag);
             if (binding.detector_column != detector ||
                 map_indices(detector) != binding.map_index ||
                 !std::isfinite(uid(detector)) ||
@@ -236,9 +259,9 @@ public:
                      : (std::isfinite(flag(detector)) &&
                         flag(detector) == 0.0)) ||
                 !native_science_projection_detail::exact_double_equal(
-                    x_t(detector), binding.az_offset_arcsec) ||
+                    resolved_x, binding.az_offset_arcsec) ||
                 !native_science_projection_detail::exact_double_equal(
-                    y_t(detector), binding.el_offset_arcsec)) {
+                    resolved_y, binding.el_offset_arcsec)) {
                 throw std::logic_error(
                     "native science mapmaking detector authority is unequal or synthetic");
             }

@@ -231,6 +231,12 @@ inline YAML::Node native_cohort_product_provenance_node_v2(
                 revision.detector_column;
             revision_node["input_revision"] = revision.input_revision;
             revision_node["output_revision"] = revision.output_revision;
+            revision_node["delivered_flag_bits"] =
+                revision.delivered_flag_bits;
+            revision_node["operation_exclusion_bits"] =
+                revision.operation_exclusion_bits;
+            revision_node["apt_flag"] =
+                raw_optional_scalar_node(revision.apt_flag);
             revision_node["action"] =
                 native_revision_action_name(revision.action);
             scan_node["revision_transitions"].push_back(revision_node);
