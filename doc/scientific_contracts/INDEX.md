@@ -26,6 +26,15 @@ approval of the resulting v0.1/r0.1 candidate bytes remains pending. The
 record preserves frozen ALIGN/RTC ownership and creates no CAL acquisition
 interpretation.
 
+The
+[WP-3 CAL and external-producer reference binding](audits/SIX_PACKAGE_TIMESTREAM_CLOSURE_PROGRAM_55EFD8A/WP3_REFERENCE_BINDING_REGISTER.md)
+records the approved reference-first processed-timestream handoff through CAL
+and into PTC. It binds existing products, sidecars, and manifests without
+creating a combined runtime provenance payload. WP-3 scientific-owner
+decisions and mechanical artifact preparation are complete and are
+[content-bound by the WP-3 source manifest](audits/SIX_PACKAGE_TIMESTREAM_CLOSURE_PROGRAM_55EFD8A/WP3_SOURCE_MANIFEST.md);
+final clean-room finding disposition remains pending.
+
 | Package | Scope status | Contract status | Owner decision needed | Next action |
 | --- | --- | --- | --- | --- |
 | [SCI-CAL — detector calibration, extinction, and signal transfer](packages/SCI-CAL/v0.1/README.md) | Owner-approved scientific contract v0.1 scope | **Scientific authority frozen** at v0.1/r0.5-r0.4 on `2026-08-23`; implementation conformity and achieved performance unassessed | No scientific decision remains open in Q01--Q09; named numerical uncertainty products and achieved-performance acceptance remain unavailable until their evidence exists | Preserve the frozen packet; execute the owner-approved validation workflow separately and report the evidence honestly |

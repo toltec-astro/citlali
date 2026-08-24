@@ -2,9 +2,9 @@
 
 Date opened: `2026-08-23`
 
-Status: scientific-owner decision complete; `WP3-OWNER-D001`, upstream
-clarification `WP2-FOLLOWUP-D011`, and `WP3-OWNER-D002--D008` are approved;
-compact binding-register preparation and verification remain
+Status: scientific-owner decision and mechanical closure-artifact preparation
+complete; `WP3-OWNER-D001`, upstream clarification `WP2-FOLLOWUP-D011`, and
+`WP3-OWNER-D002--D008` are approved; clean-room re-audit remains
 
 Scope: `WP-3_CAL_EXTERNAL_PRODUCERS`, the CAL facet of `F-016`, the
 timestream-route facets of `F-017`, and the applicable CAL/input contribution
@@ -541,12 +541,13 @@ Consequences:
 5. Final closure of `F-017` remains a clean-room re-audit disposition rather
    than a claim made by this owner packet.
 
-## Remaining WP-3 Work
+## WP-3 Mechanical Handoff
 
-Prepare the smallest exact reference-binding register for the selected
-ordinary processed-timestream route. It shall distinguish static/operator
-authority from observation-instance realization and shall point to existing
-products, sidecars, manifests, and package authority without duplicating their
-contents. Optional roles may be explicitly not requested or unavailable; they
-may not be supplied by inference. MAP-only roles remain deferred. Final
-finding closure belongs to WP-7 clean-room re-audit.
+`WP3_REFERENCE_BINDING_REGISTER.md` provides the smallest exact reference map
+for the selected ordinary processed-timestream route. It distinguishes
+static/operator authority from observation-instance realization and points to
+existing products, sidecars, manifests, and package authority without
+duplicating their contents. `WP3_SOURCE_MANIFEST.md` content-binds the WP-3
+packet and register. Optional roles may be explicitly not requested or
+unavailable; they may not be supplied by inference. MAP-only roles remain
+deferred. Final finding closure belongs to WP-7 clean-room re-audit.
