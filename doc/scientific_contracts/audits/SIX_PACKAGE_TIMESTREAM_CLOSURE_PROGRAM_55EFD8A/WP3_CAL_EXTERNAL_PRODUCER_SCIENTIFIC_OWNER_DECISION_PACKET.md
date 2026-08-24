@@ -3,7 +3,7 @@
 Date opened: `2026-08-23`
 
 Status: in progress; `WP3-OWNER-D001`, upstream clarification
-`WP2-FOLLOWUP-D011`, and `WP3-OWNER-D002` are approved; remaining
+`WP2-FOLLOWUP-D011`, and `WP3-OWNER-D002--D003` are approved; remaining
 producer-interface decisions await review one at a time
 
 Scope: `WP-3_CAL_EXTERNAL_PRODUCERS`, the CAL facet of `F-016`, the
@@ -166,6 +166,62 @@ Consequences:
 7. Missing required handoff identity or state fails CAL admission at the
    affected scope; typed unavailable response or uncertainty never becomes
    numerical zero.
+
+## WP3-OWNER-D003 — Absolute Calibration-Factor Handoff
+
+Status: approved `2026-08-24`
+
+Question:
+
+> Should CAL receive one logical, layered calibration-factor bundle while
+> preserving separate ownership for source calibration, target
+> association/transformation, delivery, and consumption?
+
+Recommendation:
+
+> Yes. The logical bundle shall preserve the source APT and generating record,
+> target-to-source association, approved child transformation, exact selected
+> child row, delivery record, and selected factor \(F^{\rm sel}_{od}\). The
+> SCI-BEAM/source-calibration authority owns the original `flxscale` meaning,
+> calibrator model, source atmosphere, beam and spectral convention, validity,
+> and uncertainty state. TolProj owns the unique target-to-source association
+> and any explicitly approved child transformation, recording an identity
+> transformation when the value is unchanged. TolTECA delivers the exact
+> immutable child artifact without changing its value or meaning. SCI-CAL
+> binds one target detector occurrence to one exact child row and applies that
+> row's finite, nonzero \(F^{\rm sel}_{od}\) exactly once. Parent `flxscale`,
+> any pointing correction already embodied in the child, `responsivity`,
+> `sens`, or an opaque `fcf` shall not become additional CAL multipliers. Row
+> position is not detector identity. A TolAPT/design match is not required for
+> ordinary measured-APT calibration; if present, it remains separate
+> ancestry. Missing, ambiguous, duplicate, or incompatible association,
+> artifact digest, detector binding, factor direction, or recipient yields no
+> calibrated output at the affected scope. Missing factor uncertainty may
+> leave the calibrated signal available only with stronger uncertainty claims
+> typed unavailable. Observation-specific APTs remain runtime artifacts rather
+> than repository-embedded payloads.
+
+Owner response:
+
+> approved
+
+Disposition: **approved**.
+
+Consequences:
+
+1. One reconstructible logical handoff does not collapse the distinct
+   producer, transformer, delivery, and consumer authorities.
+2. The selected immutable child row is CAL's sole absolute numerical factor
+   input for the v0.1 ordinary route.
+3. Parent values and embodied transformations remain lineage rather than
+   additional runtime multipliers.
+4. Exact artifact, occurrence, association, row-recipient, direction, unit,
+   validity, application-count, and uncertainty states remain queryable.
+5. Missing factor uncertainty blocks only the dependent uncertainty claim;
+   missing required factor identity or value blocks the affected calibrated
+   signal.
+6. The decision selects no new source-APT policy, child transformation, or
+   observation instance beyond the authority already frozen in SCI-CAL.
 
 ## Remaining WP-3 Owner Work
 
