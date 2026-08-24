@@ -2,8 +2,8 @@
 
 Opened: `2026-08-24`
 
-Status: `WP5-OWNER-D001--D012` approved; exact PTC profile materialization
-approved; VAL freeze and clean-room re-audit remain
+Status: `WP5-OWNER-D001--D013` approved; SCI-VAL v0.1/r0.3 frozen authority;
+clean-room re-audit remains
 
 Scope: non-MAP processed-timestream source bindings and VAL profiles. VAL Core
 is not reopened. MAP and coadd profiles remain deferred.
@@ -659,3 +659,35 @@ Disposition:
 7. MAP and coadd remain deferred and unbound. D012 establishes no
    implementation conformity, validation, performance, production readiness,
    or MAP availability.
+
+## WP5-OWNER-D013 — SCI-VAL v0.1/r0.3 Freeze
+
+Question:
+
+> Do you approve the complete content-bound SCI-VAL v0.1/r0.3 candidate in
+> WP5 source-manifest SHA-256
+> `314823249917e09d36ba76557699c1fbd1ba29171b3604a9b6d74cea8ca5d7f1`
+> and authorize its status-only promotion to frozen scientific authority,
+> while leaving implementation conformity, validation, performance,
+> production readiness, MAP availability, and clean-room finding closure
+> unestablished?
+
+Owner response:
+
+> and yes, let's approve this as frozen authority
+
+Disposition:
+
+1. `WP5-OWNER-D013` is approved on `2026-08-24`.
+2. The approval binds the exact content reviewed at candidate commit
+   `3ad018e97` and candidate-manifest SHA-256
+   `314823249917e09d36ba76557699c1fbd1ba29171b3604a9b6d74cea8ca5d7f1`.
+3. Promotion is status-only. It may not change VAL Core, a profile predicate,
+   exception, missing/conflict rule, source binding, policy owner, or claim
+   boundary.
+4. SCI-VAL v0.1/r0.3 becomes frozen scientific authority after the canonical
+   status-clean PDFs and final freeze records pass mechanical and visual
+   verification.
+5. MAP and coadd remain deferred and unbound. Implementation conformity,
+   validation, performance, production readiness, and clean-room finding
+   closure remain unestablished.

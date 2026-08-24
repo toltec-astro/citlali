@@ -2,8 +2,8 @@
 
 Producer facts and use-specific eligibility; not final map validity.
 
-Status: content-bound v0.1/r0.3 freeze candidate prepared; scientific-owner
-freeze approval pending; implementation conformity and validation not assessed
+Status: v0.1/r0.3 scientific authority frozen by Grant Wilson on `2026-08-24`;
+implementation conformity and validation not assessed
 
 Scientific contract version: `v0.1`
 
@@ -113,7 +113,12 @@ Producer and consumer ownership remains explicit:
 - [`MANAGER_REVIEW_R0.3.md`](MANAGER_REVIEW_R0.3.md): surgical revision
   content, consistency, and artifact QA record
 - [`R0.3_FREEZE_CANDIDATE_REVIEW_COVER.md`](R0.3_FREEZE_CANDIDATE_REVIEW_COVER.md):
-  exact Core/PDF and continuing-registry candidate identity for owner review
+  exact Core/PDF and continuing-registry candidate identity approved under
+  `WP5-OWNER-D013`
+- [`SCIENTIFIC_OWNER_FREEZE_R0.3.md`](SCIENTIFIC_OWNER_FREEZE_R0.3.md):
+  owner approval and frozen-authority identity
+- [`FREEZE_VERIFICATION_R0.3.md`](FREEZE_VERIFICATION_R0.3.md): status-only
+  promotion and final artifact verification
 - [`src/`](src/): six shared canonical modules and the two view wrappers
 - [`pdf/`](pdf/): the 8-page scientist-facing rationale and 20-page formal
   engineering conformance view
@@ -159,6 +164,7 @@ as engineering-deferred; QB006 retains sufficient-summary and associative
 combine details as profile-local. Those dispositions do not select an
 implementation representation or package-owned profile.
 
-This candidate makes no implementation conformity, validation, production
-readiness, MAP availability, or adjacent-package readiness claim. Scientific
-freeze remains pending the exact owner-review gate.
+This frozen authority makes no implementation conformity, validation,
+production readiness, MAP availability, adjacent-package readiness, or
+clean-room finding-closure claim. Those questions retain their separate
+evidence and re-audit gates.
