@@ -2,7 +2,7 @@
 
 Opened: `2026-08-24`
 
-Status: `WP5-OWNER-D001--D006` approved; remaining profile decisions await
+Status: `WP5-OWNER-D001--D007` approved; remaining profile decisions await
 review one at a time
 
 Scope: non-MAP processed-timestream source bindings and VAL profiles. VAL Core
@@ -338,3 +338,72 @@ Disposition:
 9. These restrictions remain in
    `\Delta\mathcal R_{\rm application}` until final common-fragment comparison.
    D006 alone does not produce a final digest-bound usable registry record.
+
+## WP5-OWNER-D007 — Output Retention
+
+Question:
+
+> Should `SCI-PTC:output_retention@1` decide whether an exact transformed
+> occurrence is scientifically legitimate as a member of the ordinary PTC
+> science-signal support, while remaining independent of both numerical
+> calculation and every later scientific-use admission decision?
+
+Owner response: **approved with binding interpretation**.
+
+Disposition:
+
+1. The governing distinctions are:
+
+   \[
+   \boxed{
+   \text{PTC may calculate more values than it is entitled to call ordinary
+   science samples.}}
+   \]
+
+   and
+
+   \[
+   \boxed{
+   \text{PTC retention says the PTC result is scientifically legitimate as a
+   signal; it does not say every later scientific use must accept it.}}
+   \]
+
+2. The profile is supported for the ordinary configured-rank transformed
+   `x` product. It decides membership in ordinary PTC science-signal support;
+   it does not prescribe whether or how an implementation serializes a
+   calculated value.
+3. Retention requires the exact group-time operator application to have been
+   realized successfully, the transformed value to be finite, the exact
+   output mask to admit the occurrence, and every output-specific required
+   fact to be resolved. A failed group-time application yields no retained
+   ordinary occurrence for that group-time and no substitute value may be
+   relabeled as its result.
+4. Application permission does not imply output retention, while retention of
+   a transformed numerical value requires realized application:
+
+   \[
+   E_{\rm application}\not\Rightarrow E_{\rm output},
+   \qquad
+   E_{\rm output}\Rightarrow R_{\rm application}.
+   \]
+
+5. Direct ALIGN-synthesized or RTC-replaced occurrences are ineligible for the
+   ordinary PTC science-signal support under `SCI-PTC-REQ-016`. Their computed
+   values may remain reachable as explicitly flagged diagnostic or ineligible
+   values, but cannot be represented as retained ordinary science samples.
+6. CAL `engineering-only` occurrences may remain in the transformed PTC
+   product with the classification preserved. Retention does not create a
+   science-quality claim; every later scientific use applies its own exact
+   admission profile.
+7. Missing complete-chain response or covariance does not erase an otherwise
+   valid transformed signal. Product realization, response, covariance, and
+   validation/evidence remain independent axes.
+8. Retention preserves the admitted CAL unit and calibration convention but
+   does not assert preservation of point-source peak, absolute level,
+   extended-source response, detector combination, or beam shape.
+9. Retention creates no exposure, cannot recreate or increase valid-original
+   exposure, and does not imply coefficient/QC membership, response-companion
+   admission, MAP contribution, or any other later permission.
+10. These restrictions remain in `\Delta\mathcal R_{\rm output}` until final
+    common-fragment comparison. D007 alone does not produce a final
+    digest-bound usable registry record.
