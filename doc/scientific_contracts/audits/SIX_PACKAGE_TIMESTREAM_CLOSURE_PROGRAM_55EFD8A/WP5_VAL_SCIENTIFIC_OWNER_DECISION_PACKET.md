@@ -2,7 +2,7 @@
 
 Opened: `2026-08-24`
 
-Status: `WP5-OWNER-D001--D004` approved; remaining profile decisions await
+Status: `WP5-OWNER-D001--D005` approved; remaining profile decisions await
 review one at a time
 
 Scope: non-MAP processed-timestream source bindings and VAL profiles. VAL Core
@@ -203,3 +203,72 @@ Consequences:
     fragment, these restrictions remain in
     `\Delta\mathcal R_{\rm basis}`. D004 alone does not produce a final
     digest-bound usable registry record.
+
+## WP5-OWNER-D005 — Loading-Fit Admission
+
+Question:
+
+> Should `SCI-PTC:loading_fit_admission@1` authorize only whether an exact
+> occurrence may influence estimation of a detector's coupling to an already
+> fixed basis or template, without requiring its population to equal the
+> basis-fit population or importing unrelated metadata as restrictions?
+
+Owner response: **approved with binding interpretation**.
+
+Disposition:
+
+1. The scientific distinction is:
+
+   \[
+   \boxed{
+   \text{Basis fitting chooses the model;}\quad
+   \text{loading fitting estimates a detector's coupling to that fixed model.}
+   }
+   \]
+
+2. The profile is supported for the ordinary configured-rank PCA route and is
+   atomic at the exact CAL sample-detector occurrence within one immutable PTC
+   segment and configured network or array group.
+3. Eligibility requires only the inputs explicitly required by the frozen PTC
+   loading estimator. For the ordinary route these include the exact fixed
+   basis/template identity, frozen centering state, detector/group/segment
+   identity, loading support and mask, fitting coordinate, declared metric and
+   gauge, and the numerical quantities actually used to estimate that
+   loading.
+4. Generic upstream or downstream metadata, optional facts, provenance that is
+   merely reachable, or fields that happen to exist are not loading-estimator
+   inputs and cannot become restrictions, decisive exclusions, or missing-fact
+   blockers by inference.
+5. A required loading-estimator input that is missing, conflicting, nonfinite,
+   or unavailable yields `decision_unavailable` or `ineligible` according to
+   the complete T/F/U/C rule. A direct ALIGN-synthesized or RTC-replaced
+   occurrence is loading-fit ineligible on the calibrated PTC science branch.
+   Facts and causes remain preserved.
+6. CAL `engineering-only` classification is not by itself a loading-fit
+   exclusion. It remains a preserved producer fact and successful loading
+   estimation does not create or imply CAL science qualification.
+7. Loading fitting uses the already-frozen `\lambda_{g,d}` and fixed model. It
+   cannot re-estimate `\lambda_{g,d}`, change the basis, alter basis membership,
+   change configured rank, or change the resolved subspace.
+8. Basis-fit and loading-fit populations may overlap completely, partially, or
+   not for a particular occurrence. No equality and no permission transfer is
+   inferred:
+
+   \[
+   E_{\rm basis}\not\Rightarrow E_{\rm loading},
+   \qquad
+   \neg E_{\rm basis}\not\Rightarrow\neg E_{\rm loading}.
+   \]
+
+9. Eligibility authorizes influence only on the fitted detector loading. It
+   grants no operator-application, output-retention, coefficient/QC, response,
+   or empirical/simulation permission.
+10. Every fitted loading retains its basis/template identity, gauge, unit,
+    configured group, fit support, lifecycle, and numerical use. It is not a
+    weight, precision, significance, sensitivity, or independent-noise
+    measure.
+11. Numerical response or covariance availability is not required for loading
+    estimation. The profile is atomic-only.
+12. Until all seven use decisions establish the common fragment, these
+    restrictions remain in `\Delta\mathcal R_{\rm loading}`. D005 alone does
+    not produce a final digest-bound usable registry record.
