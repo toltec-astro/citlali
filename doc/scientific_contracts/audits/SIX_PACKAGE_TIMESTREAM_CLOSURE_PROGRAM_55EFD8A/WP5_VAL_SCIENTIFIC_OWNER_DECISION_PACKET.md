@@ -2,7 +2,7 @@
 
 Opened: `2026-08-24`
 
-Status: `WP5-OWNER-D001--D003` approved; remaining profile decisions await
+Status: `WP5-OWNER-D001--D004` approved; remaining profile decisions await
 review one at a time
 
 Scope: non-MAP processed-timestream source bindings and VAL profiles. VAL Core
@@ -131,3 +131,75 @@ Disposition:
    fragment remains unbound until the remaining use-by-use decisions establish
    which restrictions, if any, satisfy the universal-use test. No PTC profile
    becomes usable through D003 alone.
+
+## WP5-OWNER-D004 — Basis-Fit Admission
+
+Question:
+
+> Should `SCI-PTC:basis_fit_admission@1` authorize only whether an exact
+> occurrence may influence ordinary-route detector centering and PCA
+> basis/subspace estimation, without implying loading-fit, application,
+> output-retention, coefficient/QC, response, or empirical/simulation
+> permission?
+
+Owner response:
+
+> agreed
+
+Disposition: **approved with the frozen ordinary-centering identity made
+explicit**.
+
+Consequences:
+
+1. The profile is supported for the ordinary configured-rank PCA route and is
+   atomic at the exact CAL sample-detector occurrence within one immutable PTC
+   segment and configured network or array group.
+2. Eligibility requires the exact CAL parent, detector/sample identity,
+   segment, group, calibrated `x`, basis-fit mask, and every other fact required
+   specifically for basis fitting to be resolved and numerically admissible.
+   Missing or conflicting required facts yield `decision_unavailable`; a
+   decisive false yields `ineligible`; all required restrictions true yields
+   `eligible`.
+3. A nonfinite or unavailable required calibrated `x`, an occurrence outside
+   the exact segment or group, a rejecting basis-fit mask, or a direct
+   ALIGN-synthesized or RTC-replaced occurrence is basis-fit ineligible. Facts
+   and causes remain preserved.
+4. CAL `engineering-only` classification is not by itself a basis-fit
+   exclusion. It remains a preserved producer fact and successful basis
+   fitting does not create or imply CAL science qualification.
+5. Nonrepresentative RTC influence remains visible and is not an automatic
+   basis-fit veto unless an exact basis-fit restriction names it as decisive.
+6. For the frozen ordinary route, `SCI-PTC-REQ-023`, `SCI-PTC-REQ-093`,
+   `SCI-PTC-DEF-007`, and the normative centering equation define
+   `\lambda_{g,d}` from exactly the finite basis-fit-admitted occurrences with
+   binary centering influence. Therefore:
+
+   \[
+   \text{basis-fit ineligible}
+   \Longrightarrow
+   w^{\rm ctr}_{gtd}=0
+   \]
+
+   for this route. A directly synthesized or replaced occurrence teaches
+   neither `\lambda_{g,d}` nor the PCA basis.
+7. This shared-support identity is PTC mathematics, not a VAL inference. It is
+   not a universal rule for every possible centering method. A future robust
+   or otherwise different centering family requires its own declared
+   population, support, estimator, policy, and version.
+8. Eligibility authorizes influence only on ordinary-route `\lambda_{g,d}` and
+   basis/subspace estimation. It decides neither whether the fitted operator
+   may act on the occurrence nor whether a transformed value may be retained:
+
+   \[
+   E_{\rm basis}\not\Rightarrow E_{\rm application},
+   \qquad
+   \neg E_{\rm basis}\not\Rightarrow\neg E_{\rm application}.
+   \]
+
+9. Response and uncertainty states are explicit typed structural facts, but
+   numerical response or covariance availability is not a required permission
+   for ordinary basis fitting. The profile is atomic-only.
+10. Until all seven use decisions establish the contents of the common
+    fragment, these restrictions remain in
+    `\Delta\mathcal R_{\rm basis}`. D004 alone does not produce a final
+    digest-bound usable registry record.
