@@ -51,7 +51,23 @@ void Pointing::add_pointing_fit_header_keys(CCfits::ExtHDU &hdu,
     for (Eigen::Index j = 0; j < ppt_header.size(); ++j) {
         const auto &key = ppt_header[j];
         const std::string comment = key + " (" + ppt_header_units[key] + ")";
-        hdu.addKey("POINTING." + key, ppt_table(map_row, j), comment);
+        const auto value = citlali::pipeline::pointing_fits_header_value(
+            ppt_table(map_row, j));
+        if (!value) {
+            logger->debug(
+                "omitting non-finite POINTING.{} FITS keyword for map row {}",
+                key, static_cast<long long>(map_row));
+            continue;
+        }
+        try {
+            hdu.addKey("POINTING." + key, *value, comment);
+        }
+        catch (const CCfits::FitsError &error) {
+            throw citlali::error::output(
+                fmt::format(
+                    "failed to write POINTING.{} FITS keyword for map row {}: {}",
+                    key, static_cast<long long>(map_row), error.message()));
+        }
     }
 
     hdu.addKey(

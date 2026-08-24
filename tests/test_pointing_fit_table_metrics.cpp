@@ -22,6 +22,14 @@ TEST(pointing_fit_table_metrics, rejects_nonpositive_denominators) {
     EXPECT_TRUE(std::isnan(metrics.fit_sig2noise));
 }
 
+TEST(pointing_fit_table_metrics, omits_nonfinite_fits_header_values) {
+    EXPECT_EQ(citlali::pipeline::pointing_fits_header_value(2.5F), 2.5F);
+    EXPECT_FALSE(citlali::pipeline::pointing_fits_header_value(
+        std::numeric_limits<float>::quiet_NaN()));
+    EXPECT_FALSE(citlali::pipeline::pointing_fits_header_value(
+        std::numeric_limits<float>::infinity()));
+}
+
 TEST(pointing_fit_table_metrics, appends_explicit_columns_after_legacy_schema) {
     constexpr Eigen::Index n_params = 6;
 

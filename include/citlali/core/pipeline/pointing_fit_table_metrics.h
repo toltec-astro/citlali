@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <limits>
+#include <optional>
 
 #include <Eigen/Core>
 
@@ -30,6 +31,13 @@ inline PointingFitTableMetrics pointing_fit_table_metrics(
         peak_over_full_map_rms,
         pointing_finite_ratio(amplitude, amplitude_error),
     };
+}
+
+inline std::optional<float> pointing_fits_header_value(float value) {
+    if (!std::isfinite(value)) {
+        return std::nullopt;
+    }
+    return value;
 }
 
 inline Eigen::Index pointing_fit_table_legacy_sig2noise_column(

@@ -3,7 +3,7 @@ cases:
   - name: pointing_152389_passthrough
     intent: pointing
     compact_config: examples/pointing_compat_passthrough_compact.yaml
-    base_config: ${HOME}/work_toltec/local_data/2026-refactor/point/refactor/70_reduce.yaml
+    base_config: ${HOME}/work_toltec/local_data/2026-refactor/v1/point/refactor/70_reduce.yaml
     ignore:
       - runtime.output_dir
     expected_diff_count: 0
@@ -12,7 +12,7 @@ cases:
   - name: pointing_152389_compact_keys
     intent: pointing
     compact_config: examples/pointing_compat_point70_compact.yaml
-    base_config: ${HOME}/work_toltec/local_data/2026-refactor/point/refactor/70_reduce.yaml
+    base_config: ${HOME}/work_toltec/local_data/2026-refactor/v1/point/refactor/70_reduce.yaml
     ignore:
       - runtime.output_dir
     expected_diff_count: 0

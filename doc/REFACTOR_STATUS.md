@@ -1,5 +1,37 @@
 # Citlali Refactor Status
 
+## 2026-08-24 Stage 7 Pointing Output Completion Repairs
+
+The downloaded Stage 7 two-observation Pointing project now completes a local
+single-iteration replay after disabling empirical-weight application for this
+bounded output/lifecycle check. Both 152389 and 152391 independently load their
+own telescope file and matched-v2 APT, run through mapmaking, write all three
+array FITS products, publish raw-timestream lineage, and participate in final
+reduction provenance. This confirms the earlier telescope observation-state
+replacement repair across the complete two-observation lifecycle; it is not a
+claim that the separately configured empirical global-nonprecision scale gate
+has passed.
+
+The replay exposed two independent output defects after mapmaking. Invalid
+Gaussian fits correctly produce non-finite optional pointing-table values and
+`fit_valid=0`, but the FITS adapter attempted to serialize those values as
+floating-point header cards. It now omits only non-finite optional
+`POINTING.*` fit-value cards while retaining the ECSV table values and explicit
+fit-validity card. The existing fruit-loop map reader already treats those
+value cards as optional and requires a valid fit before consuming them. The
+replay then exposed a NetCDF API mismatch in final noise-product validation:
+querying a missing `comment` attribute throws rather than returning a null
+attribute. Validation now enumerates attributes, remains strict for the three
+noise-contract variables, and ignores unrelated variables without comments.
+
+The owner-local Pointing compatibility fixture moved under the campaign's `v1`
+directory, so the compatibility manifest now follows that existing location.
+The complete local C++ surface passes all 796 runnable CTests with the one
+established disabled test not run. All 203 baseline-tool tests pass. The full
+config preflight passes 129 unit tests, all four mode kits, and all eight local
+compatibility cases. The bounded Stage 7 replay exits successfully and writes
+the final noise, post-processing, and Pointing provenance sidecars.
+
 ## 2026-08-24 Distinct OOF Reduction Identity
 
 OOF is now a distinct public low-level reduction identity instead of being

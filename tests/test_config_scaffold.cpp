@@ -3352,6 +3352,9 @@ void write_noise_netcdf_fixture(
         variable.putAtt("comment", transform(contract, comment));
         variable.putVar(&value);
     }
+    auto unrelated = file.addVar("unrelated_without_comment", netCDF::ncDouble,
+                                 dim);
+    unrelated.putVar(&value);
 }
 
 citlali::pipeline::NoiseExecutionPlan completed_noise_fixture_plan(

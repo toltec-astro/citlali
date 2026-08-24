@@ -816,14 +816,15 @@ inline NoiseMemberJoinValidation validate_noise_netcdf_joins(
                     "missing NetCDF noise-contract variable " +
                     std::string{contract.name});
             }
-            const auto comment_attribute = variable.getAtt("comment");
-            if (comment_attribute.isNull()) {
+            const auto attributes = variable.getAtts();
+            const auto comment_it = attributes.find("comment");
+            if (comment_it == attributes.end()) {
                 throw std::runtime_error(
                     "missing NetCDF noise-contract comment for " +
                     std::string{contract.name});
             }
             std::string comment;
-            comment_attribute.getValues(comment);
+            comment_it->second.getValues(comment);
             try {
                 validate_noise_netcdf_join_comment(
                     comment, contract.name, contract.identity,
@@ -848,12 +849,13 @@ inline NoiseMemberJoinValidation validate_noise_netcdf_joins(
             if (expected) {
                 continue;
             }
-            const auto comment_attribute = variable.getAtt("comment");
-            if (comment_attribute.isNull()) {
+            const auto attributes = variable.getAtts();
+            const auto comment_it = attributes.find("comment");
+            if (comment_it == attributes.end()) {
                 continue;
             }
             std::string comment;
-            comment_attribute.getValues(comment);
+            comment_it->second.getValues(comment);
             if (comment.find(noise_netcdf_join_schema) !=
                 std::string::npos) {
                 throw std::runtime_error(
