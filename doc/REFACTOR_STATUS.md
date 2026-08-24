@@ -1,5 +1,36 @@
 # Citlali Refactor Status
 
+## 2026-08-24 Build-Time Git-Provenance Refresh Repair
+
+The Stage 7 Unity workflow exposed that a successful build after changing Git
+commits could compile current source while retaining an older embedded Citlali
+revision. Tula's Git-version helper queried Git only during CMake configuration;
+its generated-header target depended on the already-existing header and had no
+input edge that changed when HEAD moved. A build-only invocation therefore had
+no reason to refresh `citlali_config/gitversion.h`, making `citlali --version`
+and reduction provenance potentially stale even when compiled implementation
+files were current.
+
+The active Citlali graph now adds an always-run build dependency ahead of the
+existing generated-header target. It resolves the current short revision and
+`git describe` identity, rewrites the header atomically only when that identity
+changes, and otherwise leaves its contents and timestamp untouched. A Git
+identity change therefore recompiles the version-dependent objects in the same
+build invocation, while an unchanged checkout retains a true no-op build. A
+missing Git executable or unreadable checkout fails the provenance refresh
+instead of silently reusing an unverifiable identity.
+
+The build-system regression creates a temporary Git repository and executable,
+builds its first commit, advances HEAD, and proves that a second build without
+reconfiguration embeds the new revision. It also proves that a following no-op
+build does not rewrite the generated header. The real Citlali target reproduces
+both outcomes: the first identity refresh recompiles and relinks the dependent
+objects, and the next build performs no compilation or link. The complete
+local surface passes all 800 runnable CTests with the one established disabled
+test not run, all 205 baseline-tool tests, and the full required config gate:
+129 unit tests, all four mode kits, and all eight compatibility cases. A final
+owner-run Unity confirmation remains pending.
+
 ## 2026-08-24 Native Explicit-MJD Pointing-Support Repair
 
 The owner-run Stage 7 NGC4449 science reduction for observation 152390

@@ -121,8 +121,15 @@ cmake -S . -B build \
   -DFETCH_NETCDFCXX4=ON \
   -U FETCHCONTENT_SOURCE_DIR_TULA
 cmake --build build --target citlali_cli -j "$(nproc)"
+git rev-parse --short HEAD
 ./build/bin/citlali --version
 ```
+
+The build refreshes Citlali's generated Git-version header before compilation,
+including after a checkout or fast-forward that does not otherwise require
+CMake reconfiguration. The short revision printed by `citlali --version` must
+match `git rev-parse --short HEAD`. A mismatch is a failed provenance build;
+do not submit a reduction with that executable.
 
 ## Useful Overrides
 

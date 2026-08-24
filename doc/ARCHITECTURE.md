@@ -657,9 +657,13 @@ grounds for a replacement rewrite.
 
 ### Generated Artifacts
 
-Configure-time `citlali_config/config.h`, `citlali_config/gitversion.h`, and
-`citlali_config/default_config.h` under the build tree are generated inputs to
-the active targets, not editable source modules. The checked-in
+`citlali_config/config.h` and `citlali_config/default_config.h` are generated
+under the build tree at configure time. `citlali_config/gitversion.h` is
+initialized at configure time and refreshed from the current Git checkout by
+an always-run, change-sensitive dependency before active targets compile. An
+unchanged identity leaves the header timestamp untouched so a true no-op build
+remains a no-op. These headers are generated inputs to the active targets, not
+editable source modules. The checked-in
 `config_leaf_schema_generated.h` is likewise generated from the resolved
 low-level leaf contract, but is retained in source so startup validation can
 compile without invoking Python; `generate_config_schema_header.py --check`

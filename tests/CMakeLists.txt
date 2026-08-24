@@ -2,6 +2,14 @@ project (citlali_test LANGUAGES CXX C)
 
 include(testing)
 
+add_test(
+    NAME citlali::build_gitversion_refresh
+    COMMAND "${CMAKE_COMMAND}"
+        "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/gitversion_refresh_test"
+        "-DREFRESH_MODULE=${CMAKE_SOURCE_DIR}/cmake/citlali_gitversion.cmake"
+        -P "${CMAKE_CURRENT_LIST_DIR}/test_gitversion_refresh.cmake"
+)
+
 add_executable(citlali_test EXCLUDE_FROM_ALL)
 set_target_properties(citlali_test
     PROPERTIES

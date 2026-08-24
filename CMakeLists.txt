@@ -138,8 +138,15 @@ if (CITLALI_STANDALONE)
     endif()
 endif()
 
-# Create concfig headers
+# Create config headers
 generate_gitversion_header(${PROJECT_NAME})
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/citlali_gitversion.cmake")
+get_config_header_output_dir(output_dir ${PROJECT_NAME})
+citlali_enable_buildtime_gitversion_refresh(
+    gitversion_header_${PROJECT_NAME}
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${output_dir}/gitversion.h"
+)
 generate_config_header(${PROJECT_NAME})
 
 # create default citlali config file header

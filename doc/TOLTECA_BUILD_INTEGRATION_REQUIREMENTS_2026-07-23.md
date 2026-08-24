@@ -27,7 +27,8 @@ The current physical build has:
 - one supported `citlali_cli` executable, emitted as `citlali`;
 - a small number of compiled implementation files plus a still
   header-dominant numerical and orchestration graph;
-- configure-time default-config and Git-version headers; and
+- a configure-time default-config header and a configure-initialized,
+  build-refreshed Git-version header; and
 - dependencies supplied through Kidscpp, Tula, CMake modules, system
   libraries, and the existing Conan-mediated cluster environment.
 

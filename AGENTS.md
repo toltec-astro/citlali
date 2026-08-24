@@ -75,6 +75,12 @@ measured, and recorded as intentional.
 
   `cmake --build build --target citlali_cli -j 8`
 
+- The build refreshes `citlali_config/gitversion.h` from the current Git
+  checkout before compiling. After changing commits, verify that
+  `build/bin/citlali --version` reports the same short revision as
+  `git rev-parse --short HEAD`; treat a mismatch as a failed build and do not
+  use that executable for validation or reduction provenance.
+
 - Run the config gate with:
 
   `$HOME/tolteca/bin/python tools/config/run_config_preflight.py --require-all`
