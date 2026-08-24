@@ -197,7 +197,7 @@
       "mode": "point",
       "status": "preparing",
       "baseline_record_id": null,
-      "product_contract_id": "phase4-point-products-v1",
+      "product_contract_id": "phase5-point-products-v2",
       "audit": {
         "expected_mode": null,
         "expected_label": null,

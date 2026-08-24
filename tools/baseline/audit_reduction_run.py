@@ -131,16 +131,19 @@ PROVENANCE_SIDECARS = {
     },
     "mapmaking": {
         "filename": "mapmaking_provenance.yaml",
-        "schema_version": "citlali-mapmaking-provenance-v2",
+        "schema_version": "citlali-mapmaking-provenance-v3",
         "accepted_schema_versions": (
             "citlali-mapmaking-provenance-v1",
             "citlali-mapmaking-provenance-v2",
+            "citlali-mapmaking-provenance-v3",
         ),
         "required_paths": (
             ("initialized",),
             ("requested",),
             ("effective", "config"),
             ("effective", "resolution"),
+            ("science_contract",),
+            ("jinc_contract",),
             ("observations",),
             ("coadd",),
             ("realized", "reduction_completed"),
@@ -156,23 +159,52 @@ PROVENANCE_SIDECARS = {
                 ("realized", "reduction_completed"),
                 ("realized", "mapmaking_executed"),
             ),
+            "citlali-mapmaking-provenance-v2": (
+                ("initialized",),
+                ("requested",),
+                ("effective", "config"),
+                ("effective", "resolution"),
+                ("observations",),
+                ("coadd",),
+                ("realized", "reduction_completed"),
+                ("realized", "mapmaking_executed"),
+            ),
         },
         "allow_multiple": False,
     },
     "coadd": {
         "filename": "coadd_provenance.yaml",
-        "schema_version": "citlali-coadd-provenance-v1",
+        "schema_version": "citlali-coadd-provenance-v2",
+        "accepted_schema_versions": (
+            "citlali-coadd-provenance-v1",
+            "citlali-coadd-provenance-v2",
+        ),
         "required_paths": (
             ("initialized",),
             ("requested", "enabled"),
             ("effective", "config", "enabled"),
             ("effective", "resolution"),
+            ("science_contract",),
+            ("observation_resolved",),
             ("realized", "reduction_completed"),
             ("realized", "coadd_executed"),
             ("realized", "map_count"),
             ("realized", "required_map_write_count"),
             ("realized", "outputs_completed"),
         ),
+        "required_paths_by_schema": {
+            "citlali-coadd-provenance-v1": (
+                ("initialized",),
+                ("requested", "enabled"),
+                ("effective", "config", "enabled"),
+                ("effective", "resolution"),
+                ("realized", "reduction_completed"),
+                ("realized", "coadd_executed"),
+                ("realized", "map_count"),
+                ("realized", "required_map_write_count"),
+                ("realized", "outputs_completed"),
+            ),
+        },
         "allow_multiple": False,
     },
     "noise_products": {
@@ -797,7 +829,10 @@ def mapmaking_provenance_semantic_errors(
             errors.append(
                 "mapmaking execution record does not match effective config"
             )
-        if data.get("schema_version") == "citlali-mapmaking-provenance-v2":
+        if data.get("schema_version") in {
+            "citlali-mapmaking-provenance-v2",
+            "citlali-mapmaking-provenance-v3",
+        }:
             errors.extend(mapmaking_cardinality_semantic_errors(data))
     except (KeyError, TypeError) as exc:
         errors.append(f"cannot evaluate mapmaking provenance semantics: {exc}")
@@ -2104,10 +2139,14 @@ def noise_mapmaking_cross_check_errors(
 ) -> list[str]:
     errors: list[str] = []
     try:
-        if mapmaking.get("schema_version") != (
-            "citlali-mapmaking-provenance-v2"
-        ):
-            return ["noise-products cross-check requires mapmaking provenance v2"]
+        if mapmaking.get("schema_version") not in {
+            "citlali-mapmaking-provenance-v2",
+            "citlali-mapmaking-provenance-v3",
+        }:
+            return [
+                "noise-products cross-check requires mapmaking provenance "
+                "v2 or v3"
+            ]
         noise_resolution = noise["effective"]["resolution"]
         noise_effective = noise["effective"]["config"]
         noise_expected = noise["expected"]
@@ -2411,10 +2450,13 @@ def pointing_mapmaking_cross_check_errors(
 ) -> list[str]:
     errors: list[str] = []
     try:
-        if mapmaking.get("schema_version") != (
-            "citlali-mapmaking-provenance-v2"
-        ):
-            return ["pointing cross-check requires mapmaking provenance v2"]
+        if mapmaking.get("schema_version") not in {
+            "citlali-mapmaking-provenance-v2",
+            "citlali-mapmaking-provenance-v3",
+        }:
+            return [
+                "pointing cross-check requires mapmaking provenance v2 or v3"
+            ]
         pointing_resolution = pointing["effective"]["resolution"]
         mapmaking_effective = mapmaking["effective"]["config"]
         if pointing_resolution["mapmaking_enabled"] != (
@@ -2802,10 +2844,13 @@ def beammap_mapmaking_cross_check_errors(
 ) -> list[str]:
     errors: list[str] = []
     try:
-        if mapmaking.get("schema_version") != (
-            "citlali-mapmaking-provenance-v2"
-        ):
-            return ["beammap cross-check requires mapmaking provenance v2"]
+        if mapmaking.get("schema_version") not in {
+            "citlali-mapmaking-provenance-v2",
+            "citlali-mapmaking-provenance-v3",
+        }:
+            return [
+                "beammap cross-check requires mapmaking provenance v2 or v3"
+            ]
         beammap_resolution = beammap["effective"]["resolution"]
         mapmaking_effective = mapmaking["effective"]["config"]
         if beammap_resolution["mapmaking_enabled"] != mapmaking_effective[
@@ -3078,11 +3123,13 @@ def post_processing_mapmaking_cross_check_errors(
 ) -> list[str]:
     errors: list[str] = []
     try:
-        if mapmaking.get("schema_version") != (
-            "citlali-mapmaking-provenance-v2"
-        ):
+        if mapmaking.get("schema_version") not in {
+            "citlali-mapmaking-provenance-v2",
+            "citlali-mapmaking-provenance-v3",
+        }:
             return [
-                "post-processing cross-check requires mapmaking provenance v2"
+                "post-processing cross-check requires mapmaking provenance "
+                "v2 or v3"
             ]
         resolution = post_processing["effective"]["resolution"]
         realized = post_processing["realized"]

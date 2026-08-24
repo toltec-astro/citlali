@@ -22,7 +22,7 @@ algorithm are otherwise unchanged. A focused regression alternates NaN and
 infinity in flagged cells and proves that the eigensystem and every unflagged
 cleaned sample are invariant to those excluded payloads.
 
-The complete downloaded Stage 7 replay now succeeds with the canonical
+The complete downloaded Stage 7 local replay succeeds with the canonical
 empirical-weight configuration for both 152389 and 152391. Every unflagged PTC
 sample is finite (13,333,916 and 13,467,298 samples respectively); the JINC
 maps contain 307,096 and 300,853 supported pixels with maximum contributor
@@ -30,10 +30,34 @@ counts of 56,082 and 55,715; every array has a positive formal map-weight sum
 and a finite empirical scale. Both observations produce valid Pointing fits,
 the reduction exits successfully, and its log contains no error- or
 critical-level entries. The complete local C++ surface passes all 797 runnable
-CTests with the one established disabled test not run. All 203 baseline-tool
+CTests with the one established disabled test not run. All 205 baseline-tool
 tests pass. The full config preflight passes 129 unit tests, all four mode kits,
-and all eight compatibility cases. This is owner-local replay evidence; Unity
-deployment and campaign confirmation remain pending.
+and all eight compatibility cases.
+
+The owner then supplied the completed Unity Stage 7 Pointing reduction from
+job 63565989. The log records Citlali `v4.0.0-3693-g16dda3011`, KIDs
+`04088da`, and the expected Citlali executable SHA-256
+`35940cc8b96a0084a61ed350376bb274d871f41a6900fc85eac2220bef610173`.
+The six-thread OpenMP reduction completed in 172.493 logged seconds with no
+error- or critical-level records, marked `status.pointings_done` true, and
+published both observations plus all required reduction sidecars. Its two PTC
+products reproduce the local finite-eligibility counts exactly, and its JINC
+support/contributor counts and empirical scales agree with the local replay.
+All six Pointing-fit rows are bit-for-bit identical to the local single-thread
+replay across every ECSV column.
+
+Intake exposed validation-tool drift rather than a product failure. The general
+auditor still admitted only mapmaking provenance v1/v2 and coadd provenance v1,
+although the reviewed application contracts emit mapmaking v3 and coadd v2.
+The preparing Phase-5 Pointing profile also still referenced the immutable
+Phase-4 product contract, whose legacy FITS unit spellings are `sec` and `N/A`;
+the current JINC Pointing products correctly use FITS-standard `s` and `1`.
+The auditor now admits and semantically cross-checks the successor schemas, and
+the preparing profile uses a new `phase5-point-products-v2` successor contract
+without changing the Phase-4 snapshot. The supplied Unity reduction passes all
+required provenance checks and all 27/27 classified product checks. This is
+owner-supplied Unity campaign evidence, not an accepted-ledger promotion; the
+Phase-5 profile remains preparing pending the coordinated validation decision.
 
 ## 2026-08-24 Stage 7 Pointing Output Completion Repairs
 

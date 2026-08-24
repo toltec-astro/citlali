@@ -267,6 +267,14 @@ def valid_mapmaking_v1_document() -> dict:
     return document
 
 
+def valid_mapmaking_v3_document() -> dict:
+    document = valid_mapmaking_document()
+    document["schema_version"] = "citlali-mapmaking-provenance-v3"
+    document["science_contract"] = {}
+    document["jinc_contract"] = {}
+    return document
+
+
 def valid_coadd_document(enabled: bool = True) -> dict:
     return {
         "schema_version": "citlali-coadd-provenance-v1",
@@ -297,6 +305,14 @@ def valid_coadd_document(enabled: bool = True) -> dict:
             "outputs_completed": enabled,
         },
     }
+
+
+def valid_coadd_v2_document(enabled: bool = True) -> dict:
+    document = valid_coadd_document(enabled=enabled)
+    document["schema_version"] = "citlali-coadd-provenance-v2"
+    document["science_contract"] = {}
+    document["observation_resolved"] = {}
+    return document
 
 
 def valid_noise_document(enabled: bool = True) -> dict:
@@ -1509,7 +1525,7 @@ class ProvenanceAuditTest(unittest.TestCase):
     def test_cross_checks_post_processing_pointing_and_mapmaking(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             redu = Path(directory)
-            mapmaking = valid_mapmaking_document()
+            mapmaking = valid_mapmaking_v3_document()
             mapmaking["effective"]["resolution"]["reduction_type"] = (
                 "pointing"
             )
@@ -1571,6 +1587,26 @@ class ProvenanceAuditTest(unittest.TestCase):
             self.assertTrue(mapmaking["required"])
             self.assertTrue(mapmaking["valid"])
             self.assertEqual(len(mapmaking["sha256"]), 64)
+
+    def test_accepts_current_mapmaking_v3_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "mapmaking_provenance.yaml").write_text(
+                yaml.safe_dump(
+                    valid_mapmaking_v3_document(), sort_keys=False
+                ),
+                encoding="utf-8",
+            )
+
+            mapmaking = audit.audit_provenance_sidecars(
+                redu, require_mapmaking=True
+            )["mapmaking"]
+
+            self.assertTrue(mapmaking["valid"])
+            self.assertEqual(
+                mapmaking["schema_version"],
+                "citlali-mapmaking-provenance-v3",
+            )
 
     def test_accepts_historical_mapmaking_v1_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -1695,6 +1731,26 @@ class ProvenanceAuditTest(unittest.TestCase):
             self.assertTrue(coadd["present"])
             self.assertTrue(coadd["required"])
             self.assertTrue(coadd["valid"])
+
+    def test_accepts_current_coadd_v2_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory)
+            (redu / "coadd_provenance.yaml").write_text(
+                yaml.safe_dump(
+                    valid_coadd_v2_document(), sort_keys=False
+                ),
+                encoding="utf-8",
+            )
+
+            coadd = audit.audit_provenance_sidecars(
+                redu, require_coadd=True
+            )["coadd"]
+
+            self.assertTrue(coadd["valid"])
+            self.assertEqual(
+                coadd["schema_version"],
+                "citlali-coadd-provenance-v2",
+            )
 
     def test_accepts_effectively_disabled_coadd_provenance(self) -> None:
         document = valid_coadd_document(enabled=False)
@@ -2668,7 +2724,7 @@ class ProvenanceAuditTest(unittest.TestCase):
     def test_rejects_noise_mapmaking_cardinality_mismatch(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             redu = Path(directory)
-            mapmaking = valid_mapmaking_document()
+            mapmaking = valid_mapmaking_v3_document()
             noise = valid_noise_document()
             noise["expected"]["coadd_scientific_map_count"] = 6
             noise["expected"]["coadd_noise_realization_count"] = 60

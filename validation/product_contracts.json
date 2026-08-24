@@ -1967,6 +1967,43 @@
         "sig2noise_I": "N/A"
       }
     },
+    "point_jinc_raw_map_v1": {
+      "min_hdus": 9,
+      "primary_bunit": "mJy/beam",
+      "required_extnames": [
+        "signal_I",
+        "weight_I",
+        "weight_formal_I",
+        "noise_variance_I",
+        "kernel_I",
+        "coverage_I",
+        "coverage_bool_I",
+        "sig2noise_I"
+      ],
+      "forbidden_extnames": ["sig2noise_pixel_I"],
+      "axis_types": [
+        "AZOFFSET",
+        "ELOFFSET",
+        "FREQ",
+        "STOKES"
+      ],
+      "axis_units": [
+        "arcsec",
+        "arcsec",
+        "Hz",
+        null
+      ],
+      "ext_bunits": {
+        "signal_I": "mJy/beam",
+        "weight_I": "1/(mJy/beam)^2",
+        "weight_formal_I": "1/(mJy/beam)^2",
+        "noise_variance_I": "(mJy/beam)^2",
+        "kernel_I": "mJy/beam",
+        "coverage_I": "s",
+        "coverage_bool_I": "1",
+        "sig2noise_I": "N/A"
+      }
+    },
     "filtered_map": {
       "min_hdus": 12,
       "primary_bunit": "mJy/beam",
@@ -2504,6 +2541,17 @@
           "max_matches": null
         }
       ]
+    },
+    {
+      "contract_id": "phase5-point-products-v2",
+      "profile_id": "phase5-point-152389-v2",
+      "mode": "point",
+      "extends_contract_id": "phase4-point-products-v1",
+      "entry_overrides": {
+        "raw-maps": {
+          "check_id": "point_jinc_raw_map_v1"
+        }
+      }
     },
     {
       "contract_id": "phase4-oof-products-v1",
