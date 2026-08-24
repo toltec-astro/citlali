@@ -3,7 +3,7 @@
 Date opened: `2026-08-23`
 
 Status: in progress; `WP3-OWNER-D001`, upstream clarification
-`WP2-FOLLOWUP-D011`, and `WP3-OWNER-D002--D003` are approved; remaining
+`WP2-FOLLOWUP-D011`, and `WP3-OWNER-D002--D004` are approved; remaining
 producer-interface decisions await review one at a time
 
 Scope: `WP-3_CAL_EXTERNAL_PRODUCERS`, the CAL facet of `F-016`, the
@@ -222,6 +222,65 @@ Consequences:
    signal.
 6. The decision selects no new source-APT policy, child transformation, or
    observation instance beyond the authority already frozen in SCI-CAL.
+
+## WP3-OWNER-D004 — Target-Atmosphere Input Realization
+
+Status: approved `2026-08-24`
+
+Question:
+
+> Should CAL construct its target-atmosphere correction from a layered runtime
+> join of authoritative WVR and telescope-state facts with the frozen
+> atmosphere operator, rather than consume an opaque precomputed correction
+> factor?
+
+Recommendation:
+
+> Yes. The WVR producer owns \(\tau_{225}\), its event time and epoch meaning,
+> measurement support, validity, uncertainty state, and exact bracketing
+> readings. TEL/ALIGN/AST authority supplies current elevation and, where
+> required, full airmass on the exact RTC output-sample identity; airmass
+> retains its model identity and CAL shall not silently assume
+> \(X=1/\sin(EL)\). SCI-CAL owns only the authorized interpolation and
+> evaluation defined by its frozen contract,
+> \(C_{a,\alpha}(\hat\tau_{225}(t_n),EL_n)\), using the frozen content-bound
+> atmosphere operator and passband identities. WVR interpolation is allowed
+> only between valid bracketing states under the declared source-authorized
+> rule. Endpoint extrapolation, prior-observation inheritance, clamping, and
+> replacement with a legacy or opaque correction are prohibited. Elevation,
+> airmass, WVR state, and conditioned \(x\) join on the exact observation and
+> RTC sample identity. Observation-level science/engineering classification
+> does not enlarge sample-level numerical support. The atmosphere factor has
+> application count one. Actual WVR and telescope records remain runtime
+> instances. Missing or invalid required WVR, telescope state, operator
+> support, or identity yields no calibrated output for the affected sample.
+> Output-time correction is not claimed to invert atmosphere variation across
+> RTC's full filter support; the applicable RTC response or an approved
+> noncommutation bound remains required for each dependent response claim or
+> operation.
+
+Owner response:
+
+> yes
+
+Disposition: **approved**.
+
+Consequences:
+
+1. Target-atmosphere calibration is a transparent multi-parent join, not an
+   independently authoritative opaque correction product.
+2. WVR, telescope-state, operator/passband, and CAL application ownership
+   remain separate and reconstructible.
+3. No airmass law, interpolation beyond valid brackets, clamping, endpoint
+   extrapolation, prior-observation inheritance, or legacy fallback is
+   inferred.
+4. Observation classification and numerical sample support remain distinct.
+5. The exact multiplicative atmosphere correction is applied once on valid
+   support and remains unavailable where any required parent or domain state
+   is missing or invalid.
+6. RTC support and response authority remain attached so output-time
+   correction cannot be misrepresented as an automatic inverse of
+   support-varying atmosphere.
 
 ## Remaining WP-3 Owner Work
 
