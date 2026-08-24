@@ -3,7 +3,7 @@
 Date opened: `2026-08-23`
 
 Status: in progress; `WP3-OWNER-D001`, upstream clarification
-`WP2-FOLLOWUP-D011`, and `WP3-OWNER-D002--D004` are approved; remaining
+`WP2-FOLLOWUP-D011`, and `WP3-OWNER-D002--D005` are approved; remaining
 producer-interface decisions await review one at a time
 
 Scope: `WP-3_CAL_EXTERNAL_PRODUCERS`, the CAL facet of `F-016`, the
@@ -222,6 +222,9 @@ Consequences:
    signal.
 6. The decision selects no new source-APT policy, child transformation, or
    observation instance beyond the authority already frozen in SCI-CAL.
+7. `WP3-OWNER-D005` governs the concrete realization of this logical handoff:
+   these authorities remain transitively resolvable through one content-bound
+   matched-APT manifest and are not separate CAL payloads.
 
 ## WP3-OWNER-D004 — Target-Atmosphere Input Realization
 
@@ -281,6 +284,75 @@ Consequences:
 6. RTC support and response authority remain attached so output-time
    correction cannot be misrepresented as an automatic inverse of
    support-varying atmosphere.
+
+## WP3-OWNER-D005 — Matched-APT Reference And Beammap Provenance
+
+Status: approved `2026-08-24`
+
+Question:
+
+> Should the exact imported, SHA-bound matched APT and its manifest be the
+> sole APT/calibration provenance reference for CAL and AST, with CAL binding
+> a detector row and applying its `flxscale`, AST consuming its detector
+> position, and all upstream Beammap, matching, transformation, and response
+> detail remaining recoverable through that reference rather than duplicated?
+
+Recommendation:
+
+> Yes. Record one exact matched-APT artifact identity, content digest, and
+> manifest identity at reduction scope. Bind each admitted detector to its
+> exact artifact-local row key or detector UID. CAL consumes that row's
+> finite, nonzero `flxscale` exactly once; AST may consume the detector
+> position and other coordinate facts owned by the same APT row. The matched
+> APT manifest remains authoritative for the originating Beammap observation
+> number, association and matching ancestry, approved transformations,
+> artifact history, and other APT provenance. CAL shall not copy those facts,
+> detector positions, Beammap fit parameters, or response descriptions into a
+> new CAL-specific bundle or per-sample lineage. A later response-dependent
+> consumer follows the manifest to the exact BEAM/Beammap artifact and binds
+> the required response authority at that time. Failure to materialize
+> detailed Beammap response information does not block an otherwise valid
+> calibration; it leaves only response-dependent claims or operations
+> unavailable. A missing or digest-invalid matched APT, ambiguous or missing
+> detector-row binding, or missing, nonfinite, or zero selected `flxscale`
+> blocks CAL at the affected scope. The nominal-beam calibration convention,
+> Beammap response, and realized RTC/PTC response remain distinct scientific
+> objects. This decision clarifies the concrete realization of D003 and does
+> not add another provenance layer.
+
+Owner response:
+
+> agreed
+
+Disposition: **approved**.
+
+Consequences:
+
+1. The SHA-bound matched APT and its manifest are the single content-bound
+   APT/calibration handoff object.
+2. The artifact reference is recorded once at reduction scope; only the exact
+   APT row key or detector UID need accompany the detector binding. No
+   per-sample APT provenance copy is required.
+3. CAL reads `flxscale`, while AST reads detector-coordinate facts, from their
+   authorized fields in the same referenced artifact; sharing the reference
+   does not merge package ownership.
+4. The originating Beammap observation number, matching and transformation
+   history, and upstream artifacts remain transitively resolvable through the
+   manifest and are not duplicated in CAL.
+5. Detailed Beammap/BEAM response authority is resolved only when a later
+   response-dependent claim or operation requires it. Its absence does not
+   by itself invalidate the calibrated signal.
+6. Missing required matched-APT identity or integrity, detector-row identity,
+   or a finite nonzero selected `flxscale` blocks calibration at the affected
+   scope.
+7. The nominal-beam calibration convention is not the Beammap response, and
+   neither is the realized RTC/PTC response.
+8. D003's layered ownership model is retained semantically, but its runtime
+   realization is referential rather than a collection of duplicated
+   payloads.
+9. No CAL successor is presumed necessary merely to serialize Beammap detail.
+   Any later clean-room finding of a literal conflict shall be handled as a
+   bounded wording correction rather than used to create redundant state.
 
 ## Remaining WP-3 Owner Work
 
