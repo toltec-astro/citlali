@@ -597,6 +597,12 @@ effective, and realized astrometry are recorded per observation. A later
 observation cannot inherit a prior observation's calibration availability or
 offset state.
 
+For exact native detector-sample evaluation, a supplied positive, increasing
+MJD pair is the interpolation-support authority. The narrower common telescope
+grid must not replace that explicit calibration bracket. When no explicit MJD
+pair is supplied, the common observation span remains the interpolation
+support. Both paths reject targets outside their applicable support.
+
 Raw telescope samples, telescope headers, and derived tangent-plane series are
 likewise observation-owned. Loading an observation replaces those containers
 before reading its telescope file; a missing optional field or a derived series

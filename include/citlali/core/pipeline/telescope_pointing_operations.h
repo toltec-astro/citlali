@@ -1,8 +1,10 @@
 #pragma once
 
 #include <citlali/core/pipeline/native_observation_carriers.h>
+#include <citlali/core/pipeline/pointing_offset_state.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_native_pointing.h>
+#include <citlali/core/utils/utils.h>
 
 #include <cstddef>
 #include <memory>
@@ -24,6 +26,36 @@ inline constexpr bool native_pointing_publication_capable_v =
         engine.telescope.tel_data = std::move(data);
     };
 
+inline Eigen::VectorXd resolve_native_pointing_offset_support_unix_sec(
+    const PointingOffsetState &pointing_offsets,
+    const Eigen::VectorXd &common_telescope_times_unix_sec) {
+    if (common_telescope_times_unix_sec.size() < 2) {
+        throw std::invalid_argument(
+            "native pointing requires common telescope support bounds");
+    }
+
+    const auto &mjd = pointing_offsets.modified_julian_date;
+    const bool explicit_mjd_support =
+        mjd.size() == 2 && (mjd > 0.0).all();
+    Eigen::VectorXd support(2);
+    if (explicit_mjd_support) {
+        support << static_cast<double>(
+                       engine_utils::modified_julian_date_to_unix(mjd(0))),
+            static_cast<double>(
+                engine_utils::modified_julian_date_to_unix(mjd(1)));
+    }
+    else {
+        support << common_telescope_times_unix_sec(0),
+            common_telescope_times_unix_sec(
+                common_telescope_times_unix_sec.size() - 1);
+    }
+    if (!support.array().isFinite().all() || !(support(1) > support(0))) {
+        throw std::invalid_argument(
+            "native pointing offsets require increasing two-point support");
+    }
+    return support;
+}
+
 template <class Engine>
 std::shared_ptr<const NativePointingPlan>
 build_native_pointing_plan_candidate(Engine &engine) {
@@ -39,9 +71,8 @@ build_native_pointing_plan_candidate(Engine &engine) {
         throw std::logic_error(
             "native pointing requires common telescope support bounds");
     }
-    Eigen::VectorXd support(2);
-    support << common->second(0),
-        common->second(common->second.size() - 1);
+    auto support = resolve_native_pointing_offset_support_unix_sec(
+        engine.pointing_offsets, common->second);
     NativePointingOffsetModel offset_model{
         engine.pointing_offsets.arcsec, std::move(support)};
 

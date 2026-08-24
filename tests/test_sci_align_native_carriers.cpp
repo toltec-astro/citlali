@@ -1,4 +1,5 @@
 #include <citlali/core/pipeline/native_observation_carriers.h>
+#include <citlali/core/pipeline/telescope_pointing_operations.h>
 
 #include <gtest/gtest.h>
 
@@ -274,6 +275,45 @@ TEST(sci_align_native_carriers,
     EXPECT_THROW(
         offset_model().evaluate_at(values({-0.5, 3.5})),
         std::out_of_range);
+}
+
+TEST(sci_align_native_carriers,
+     explicit_mjd_offsets_use_calibration_support_not_common_grid) {
+    pipeline::PointingOffsetState offsets;
+    offsets.arcsec[citlali::config::pointing_axis_az()] =
+        values({0.0, 10.0});
+    offsets.arcsec[citlali::config::pointing_axis_alt()] =
+        values({100.0, 200.0});
+    offsets.modified_julian_date = Eigen::Array2d{40587.0, 40588.0};
+
+    const auto support =
+        pipeline::resolve_native_pointing_offset_support_unix_sec(
+            offsets, values({100.0, 86300.0}));
+    EXPECT_DOUBLE_EQ(support(0), 0.0);
+    EXPECT_DOUBLE_EQ(support(1), 86400.0);
+
+    const pipeline::NativePointingOffsetModel model{
+        offsets.arcsec, support};
+    const auto evaluated = model.evaluate_at(values({50.0, 86350.0}));
+    EXPECT_NEAR(
+        evaluated.at(citlali::config::pointing_axis_az())(0),
+        10.0 * 50.0 / 86400.0, 1.0e-12);
+    EXPECT_NEAR(
+        evaluated.at(citlali::config::pointing_axis_alt())(1),
+        100.0 + 100.0 * 86350.0 / 86400.0, 1.0e-12);
+    EXPECT_THROW(model.evaluate_at(values({-1.0, 86350.0})),
+                 std::out_of_range);
+}
+
+TEST(sci_align_native_carriers,
+     offsets_without_explicit_mjd_retain_common_grid_support) {
+    pipeline::PointingOffsetState offsets;
+    offsets.modified_julian_date = Eigen::Array2d::Zero();
+    const auto support =
+        pipeline::resolve_native_pointing_offset_support_unix_sec(
+            offsets, values({100.0, 200.0, 300.0}));
+    EXPECT_DOUBLE_EQ(support(0), 100.0);
+    EXPECT_DOUBLE_EQ(support(1), 300.0);
 }
 
 TEST(sci_align_native_carriers,

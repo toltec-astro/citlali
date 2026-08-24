@@ -1,5 +1,34 @@
 # Citlali Refactor Status
 
+## 2026-08-24 Native Explicit-MJD Pointing-Support Repair
+
+The owner-run Stage 7 NGC4449 science reduction for observation 152390
+successfully admitted its observation-matched, pointing-flux-calibrated APT v2
+and reached native RA/Dec geometry, then failed because the native pointing
+offset model used the narrower common science telescope grid as the support for
+two pointing-derived offset values. Exact detector timestamps may legitimately
+extend just beyond that common grid while remaining inside the explicit MJD
+bracket supplied by pointing observations 152389 and 152391, so the strict
+no-extrapolation guard rejected a supported target.
+
+Two-value native pointing offsets now use their positive, increasing explicit
+MJD pair as the interpolation support, converted through the established
+MJD-to-Unix utility. Only configurations without an explicit MJD pair retain
+the observation-span support. Constant offsets are unchanged, and the native
+model continues to reject evaluation outside the applicable calibration or
+observation support; this repair does not permit extrapolation.
+
+Focused regressions prove that exact native timestamps outside the common grid
+but inside the explicit calibration bracket are accepted, that targets outside
+the calibration bracket remain rejected, and that the no-explicit-MJD fallback
+retains common-grid support. Both the 10-test native-carrier suite and the
+16-test astrometry/native suite pass. The CLI builds, all 799 runnable CTests
+pass with the one established disabled test not run, all 205 baseline-tool
+tests pass, and the full required config gate passes 129 unit tests, all four
+mode kits, and all eight compatibility cases. The validation and science-change
+ledgers, profile registry, and Phase 5 readiness report also validate. Owner-run
+Unity replay of the Stage 7 science reduction remains pending.
+
 ## 2026-08-24 Canonical APT v2 Pointing-Flux Calibration
 
 Citlali now owns issuance and admission of immutable
