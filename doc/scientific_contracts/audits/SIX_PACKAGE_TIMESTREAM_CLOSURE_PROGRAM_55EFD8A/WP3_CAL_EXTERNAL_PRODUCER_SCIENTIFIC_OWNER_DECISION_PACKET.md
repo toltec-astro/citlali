@@ -3,7 +3,7 @@
 Date opened: `2026-08-23`
 
 Status: in progress; `WP3-OWNER-D001`, upstream clarification
-`WP2-FOLLOWUP-D011`, and `WP3-OWNER-D002--D006` are approved; remaining
+`WP2-FOLLOWUP-D011`, and `WP3-OWNER-D002--D007` are approved; remaining
 producer-interface decisions await review one at a time
 
 Scope: `WP-3_CAL_EXTERNAL_PRODUCERS`, the CAL facet of `F-016`, the
@@ -433,6 +433,60 @@ must not create a new provenance payload merely because inherited information
 might later be useful. Reconstructibility and auditability require resolvable
 authority, identity, and integrity; they do not require every processing stage
 to serialize the full history of the observation.
+
+## WP3-OWNER-D007 — External-Interface Closure By Reference
+
+Status: approved `2026-08-24`
+
+Question:
+
+> When an authoritative upstream product or sidecar already contains the
+> required scientific fact, should WP-3 bind that existing artifact by
+> identity and reference rather than define another payload that repeats its
+> contents?
+
+Recommendation:
+
+> Yes. A producer-interface contract may identify the authoritative existing
+> product or sidecar, its schema or interface version, the observation-instance
+> selection rule, required integrity and compatibility checks, and failure
+> behavior. It shall not create another observation data product merely to
+> duplicate the referenced information. The native \(x/r\) identity remains
+> in the Tune/readout and ALIGN/RTC parentage; RTC processing and response in
+> the RTC product or sidecar; RTC-grid pointing in the RTC-to-AST reference;
+> detector geometry and `flxscale` in the SHA-bound matched APT row; Beammap
+> and calibrator ancestry in the matched-APT manifest; WVR opacity and
+> telescope state in the existing observation telescope records; the
+> atmosphere operator and passband in frozen content-bound CAL authority; CAL
+> application and classification in the CAL product or sidecar; and original
+> acquisition/exposure in referenced ALIGN/RTC occurrence lineage. If an
+> existing product lacks a required authoritative fact, identify that exact
+> omission and either add it at its owning stage, leave the dependent use
+> unavailable, or return the bounded omission for owner review. Do not repair
+> it by constructing a generic provenance bundle in CAL.
+
+Owner response:
+
+> yes
+
+Disposition: **approved**.
+
+Consequences:
+
+1. A boundary contract binds an authority; it need not copy the authority's
+   data.
+2. WP-3 creates no combined APT/Beammap/WVR/TEL/CAL provenance payload and no
+   per-sample copy of observation-level metadata.
+3. Static interface records may describe reference resolution, identity,
+   integrity, compatibility, and failure without becoming new runtime data
+   products.
+4. Each runtime stage carries only its newly owned facts and references to its
+   authoritative parents.
+5. A missing reference or owner fact fails only the operation or claim that
+   requires it, except where an already approved boundary declares a broader
+   hard stop.
+6. A demonstrated owner-level omission is corrected at its owner or remains
+   unavailable; CAL shall not synthesize a replacement provenance bundle.
 
 ## Remaining WP-3 Owner Work
 
