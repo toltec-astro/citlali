@@ -18,7 +18,9 @@ This package-neutral record defines the producer interface by which native
 measured readout occurrences become exact paired detector-coordinate
 occurrences before SCI-ALIGN. It binds the external producer authority already
 required by the frozen SCI-ALIGN and SCI-RTC contracts; it does not introduce
-a new transformation, coordinate convention, or CAL acquisition boundary.
+a new transformation, coordinate convention, CAL acquisition boundary, or
+runtime provenance payload. A consumer references the authoritative
+Tune/readout record rather than copying its contents.
 
 The ordinary order is
 
@@ -80,25 +82,26 @@ producer authority.
 
 ## 4. Observation-Instance Realization
 
-For each admitted observation and native occurrence, the runtime realization
-shall bind:
+For each admitted observation and native occurrence, the runtime binding shall
+resolve:
 
-- observation and Tune identity;
-- producer-interface and mapping revision;
-- network/interface plus stable tone, channel, or admitted row identity;
-- exact detector occurrence and exact reference to its owning detector-
-  association record; any selected APT binding remains separately owned;
-- the parent measured readout occurrence or exact parent-record relation;
+- the exact observation, Tune, producer-interface, and mapping-record
+  reference;
+- the network/interface and stable tone, channel, or admitted row identity;
+- the exact detector occurrence and its owning detector-association reference;
+  any selected APT binding remains separately owned;
+- the parent measured-readout occurrence or exact parent-record relation;
 - one exact paired native \((x,r)^{\rm acq}\) occurrence identity;
-- native event time, epoch meaning, acquisition or integration support,
-  cadence relation, and their producer-authoritative validity and uncertainty
-  state, either directly or by exact reference to the owning record;
+- the native event-time and acquisition/integration-support relation required
+  by SCI-ALIGN; and
 - coordinate-specific numerical availability and validity for \(x\) and
-  \(r\), independent of their common pair identity;
-- transform identity, units or scales, sign, reference, normalization,
-  applicability domain, and application count; and
-- complete parent and producer provenance sufficient to resolve the static
-  interface authority.
+  \(r\), independent of their common pair identity.
+
+The exact producer/mapping reference resolves the transform, units or scales,
+sign, reference, normalization, epoch, applicability domain, and available
+uncertainty state. Those facts may reside in the referenced Tune/readout
+record; this interface does not require them to be copied into every
+occurrence or into another sidecar.
 
 The observation's numerical payload and selected Tune record are execution
 instances. They need not be embedded in the frozen scientific-contract

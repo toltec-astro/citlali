@@ -45,7 +45,7 @@ register. They do not copy the scientific contents of those records.
 | `packages/SCI-PTC/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.5.md` | `8357961a49272adc40e27a8aa9e760e0d01ff2419ae2c88a62c0f93c9f959e66` |
 | `packages/SCI-PTC/v0.1/FREEZE_VERIFICATION_R0.5.md` | `da0a8dc8c5059449afd860abd06955322b3c887188983d4d4b145daea58b6860` |
 | `boundaries/v0.1/SOURCE_MANIFEST.md` | `ce813e0adab8270daf713b30db8a271185227048fb79a71abe4b9e4a6ae2ab4a` |
-| `producer_interfaces/v0.1/SOURCE_MANIFEST.md` | `9ef824ce746d8ed515458308e51d6c0e9248004e7e54d7791a4ae148a1e7ec96` |
+| `producer_interfaces/v0.1/SOURCE_MANIFEST.md` | `f3f80008968b04ee3e6d41f87a312fe4bc9755bfbe98615553f76c51f763e6f7` |
 
 ## Mechanical Verification
 
