@@ -25,7 +25,7 @@ payload schema and creates no observation data product.
 
 | Role | Static authority | Observation-instance realization |
 | --- | --- | --- |
-| Native readout and paired \(x/r\) meaning | `producer_interfaces/v0.1/TUNE_READOUT_NATIVE_XR_PRODUCER_INTERFACE.md`; approved `WP2-FOLLOWUP-D011` disposition | Exact Tune/readout record and detector/tone occurrence association. The v0.1/r0.1 interface bytes remain candidate authority pending exact artifact approval. |
+| Native readout and paired \(x/r\) meaning | Exact owner-approved `producer_interfaces/v0.1/TUNE_READOUT_NATIVE_XR_PRODUCER_INTERFACE.md` v0.1/r0.1 authority and `WP2-FOLLOWUP-D011` | Exact Tune/readout record and detector/tone occurrence association, referenced rather than copied. |
 | ALIGN occurrence identity and physical acquisition | Frozen SCI-ALIGN v0.1/r0.3 plus the WP-2 exposure boundary | ALIGN product or sidecar referenced by occurrence key. |
 | RTC conditioned pair, output grid, decisions, support, diagnostics, and response state | Frozen SCI-RTC v0.1/r0.12 plus the approved WP-2 RTC-to-AST boundary | RTC product or compact RTC sidecar referenced by product identity and detector/sample key. |
 | RTC-grid pointing and coordinate realization | Frozen SCI-AST v0.1/r0.3 plus both approved WP-2 coordinate boundaries | AST product or sidecar referencing the RTC parent, telescope/observing inputs, and matched APT. |
@@ -74,10 +74,9 @@ on the ordinary PTC route.
 ## Verification State
 
 The references above correspond to existing frozen package authority,
-approved WP-2 boundaries, the frozen CAL packet, the frozen PTC successor, and
-the approved WP-3 decisions. The Tune/readout interface disposition is
-approved, but exact approval of the current v0.1/r0.1 candidate artifact bytes
-remains pending and must not be inferred from this register.
+approved WP-2 boundaries, the exact approved Tune/readout v0.1/r0.1 interface,
+the frozen CAL packet, the frozen PTC successor, and the approved WP-3
+decisions.
 
 This register establishes neither observation-instance validity nor closure of
 `F-016` or `F-017`. Final finding disposition belongs to the unchanged

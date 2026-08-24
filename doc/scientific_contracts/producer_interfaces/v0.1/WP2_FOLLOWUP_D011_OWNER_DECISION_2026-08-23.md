@@ -4,8 +4,7 @@ Date: `2026-08-23`
 
 Scientific owner: Grant Wilson
 
-Status: scientific disposition approved; exact candidate artifact approval
-pending
+Status: scientific disposition and exact v0.1/r0.1 artifact approved
 
 ## Question Presented
 
@@ -40,5 +39,5 @@ Disposition: **approved**.
    distinct.
 5. No new sign, reference, normalization, calibrated meaning, Stokes meaning,
    implementation-conformity claim, or MAP route is authorized.
-6. The resulting prose artifact is a candidate until the owner approves its
-   exact bytes and a content-bound manifest records that approval.
+6. The exact v0.1/r0.1 artifact was approved on `2026-08-24` and is bound by
+   `SCIENTIFIC_OWNER_APPROVAL_2026-08-24.md` and `SOURCE_MANIFEST.md`.

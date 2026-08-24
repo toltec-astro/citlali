@@ -19,11 +19,11 @@ recorded on `2026-08-23`; clean-room re-audit remains pending and MAP work
 remains deferred.
 
 The package-neutral
-[external producer-interface candidates](producer_interfaces/v0.1/README.md)
+[external producer interfaces](producer_interfaces/v0.1/README.md)
 separate static producer meaning from observation-instance realization.
-`WP2-FOLLOWUP-D011` has approved the upstream Tune/readout disposition; exact
-approval of the resulting v0.1/r0.1 candidate bytes remains pending. The
-record preserves frozen ALIGN/RTC ownership and creates no CAL acquisition
+`WP2-FOLLOWUP-D011` and the exact v0.1/r0.1 Tune/readout artifact were approved
+on `2026-08-24`. The record preserves frozen ALIGN/RTC ownership, uses
+reference-first runtime binding, and creates no CAL acquisition
 interpretation.
 
 The

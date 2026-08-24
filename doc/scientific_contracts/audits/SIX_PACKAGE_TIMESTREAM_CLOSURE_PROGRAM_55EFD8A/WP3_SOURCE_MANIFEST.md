@@ -15,7 +15,7 @@ Scientific owner: Grant Wilson
 | SCI-CAL | frozen v0.1 science-rationale r0.5 / engineering-conformance r0.4 at `a8b57587a02bba309677cda5267bf394167ec146` |
 | SCI-PTC consumer boundary | frozen v0.1/r0.5 at `a18defe701bc824879a18cc6adafa6631fd22391` |
 | WP-2 timestream boundaries | exact packet approved at `0b3cfb24070c1eda04dbda7633accf40e2e8b852` |
-| Native Tune/readout disposition | `WP2-FOLLOWUP-D011` approved; v0.1/r0.1 candidate-byte approval remains pending |
+| Native Tune/readout interface | `WP2-FOLLOWUP-D011` and exact v0.1/r0.1 artifact approved `2026-08-24` |
 | WP-3 owner decisions | `WP3-OWNER-D001--D008`, approved or approved with recorded owner correction through `57d221d253d00186ab37fa5ccb2552be9dbbda8c` |
 
 The CAL freeze, upstream clarification, and WP-3 decision sequence are retained
@@ -31,7 +31,7 @@ This manifest does not hash itself.
 | Artifact | SHA-256 |
 | --- | --- |
 | `WP3_CAL_EXTERNAL_PRODUCER_SCIENTIFIC_OWNER_DECISION_PACKET.md` | `26d1e75094a5cf465199f87f33332326e5d196d5c66926c8868b8928ce2fff4c` |
-| `WP3_REFERENCE_BINDING_REGISTER.md` | `3364bced67ff9add77f4acd367ef285a1c0715ec923c2787af9805852a8680d9` |
+| `WP3_REFERENCE_BINDING_REGISTER.md` | `96338b56aa57211d2e59664f6eeb9514d0846d51aca94bcb9cbf11d076402efe` |
 
 ## Referenced Authority Digests
 
@@ -45,7 +45,7 @@ register. They do not copy the scientific contents of those records.
 | `packages/SCI-PTC/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.5.md` | `8357961a49272adc40e27a8aa9e760e0d01ff2419ae2c88a62c0f93c9f959e66` |
 | `packages/SCI-PTC/v0.1/FREEZE_VERIFICATION_R0.5.md` | `da0a8dc8c5059449afd860abd06955322b3c887188983d4d4b145daea58b6860` |
 | `boundaries/v0.1/SOURCE_MANIFEST.md` | `ce813e0adab8270daf713b30db8a271185227048fb79a71abe4b9e4a6ae2ab4a` |
-| `producer_interfaces/v0.1/SOURCE_MANIFEST.md` | `f3f80008968b04ee3e6d41f87a312fe4bc9755bfbe98615553f76c51f763e6f7` |
+| `producer_interfaces/v0.1/SOURCE_MANIFEST.md` | `a417fb3d22aa46ad7d7f1134b6d804b9d3c3f5a7f601dbb53c19f10a23e72912` |
 
 ## Mechanical Verification
 
@@ -63,9 +63,8 @@ The assembled register was checked for the following approved properties:
   requested operation requires them; and
 - MAP-only roles remain excluded.
 
-The current Tune/readout v0.1/r0.1 candidate digest is already recorded in its
-own candidate manifest. This WP-3 manifest does not promote those candidate
-bytes to exact owner-approved authority.
+The exact Tune/readout v0.1/r0.1 interface digest and approval record are bound
+by its own source manifest.
 
 ## Claim Boundary
 
@@ -73,6 +72,5 @@ This manifest establishes the identity and internal reference structure of the
 WP-3 closure packet. It does not establish implementation conformity,
 observation-instance validity, numerical validation, achieved performance,
 science qualification, total uncertainty, production readiness, MAP
-availability, exact approval of the Tune/readout candidate bytes, or closure
-of `F-016` or `F-017`. Final finding disposition belongs to WP-7 clean-room
-re-audit.
+availability, or closure of `F-016` or `F-017`. Final finding disposition
+belongs to WP-7 clean-room re-audit.
