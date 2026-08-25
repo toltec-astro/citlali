@@ -1,7 +1,12 @@
 # WP-7 Repair Scientific-Owner Decision Packet
 
 Status: **active owner disposition record; `WP7-OWNER-D001` approved;
-successor work authorized only for the bounded D001 publication repair**
+`WP7-OWNER-D002` exact-byte recovery complete; D002 temporal rule and
+D003--D004 pending**
+
+Authorized successor work remains bounded to D001 authority publication and
+admission of D002's recovered exact bytes. No WVR, classifier, consumer, or
+implementation decision is inferred.
 
 Date opened: `2026-08-25`
 
@@ -76,11 +81,33 @@ The frozen CAL authority names but the clean-room packet does not contain:
 | Atmosphere node table | `fd688a4cd3f46585b08631bc63a562aed482feb9b24ec9ee0071b70db7eb8a5f` |
 | TolTECA-v1 passband set | `5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433` |
 
-A repository/workspace filename and reference search on `2026-08-25` did not
-locate candidate bytes for these three identities. The similarly named
-`toltec_beammap/src/toltec_sensitivity/model_passbands.npz` has SHA-256
-`861e6ce7af55b18c14a800defaf0b9a11099a16c307da08e391e1d8f79a39765`
-and is not the selected passband object. No substitute is authorized.
+The original archived SCI-CAL-001 atmosphere-model task and its evidence
+branch were recovered on `2026-08-25`. The machine contract and node table are
+exact Git objects at Citlali evidence commit
+`7156881bd1a47e8cece97b8c541a013c93ac03e1` on
+`codex/sci-cal-001-atmosphere-operator`. Their SHA-256 values exactly match the
+two frozen identities above.
+
+The passband set is the following four-object set at TolTECA commit
+`2791e6a1e6349ad1d3ac549a648f41cbc51b98c7`:
+
+| Member | SHA-256 |
+| --- | --- |
+| `index.yaml` | `74465637294e536c44818099e4858a916fc6b9acbb1ea21b40427d15fb6532d5` |
+| `data/a1100_passband.ecsv` | `13b8fd009bb8d7c375d3c46d21e26d0a779f7f00a949a2a5ccd619d1fe56fd72` |
+| `data/a1400_passband.ecsv` | `a7b671d9f659cbc98dad99d3015ce81a3d7a3486c702819d9b3305703e7c682e` |
+| `data/a2000_passband.ecsv` | `77e4b33c7bbc2c345ef94d41480d5fee5cb096d789f4fe78e1b4f80a37e0d6ff` |
+
+Applying the original canonical member-name/digest aggregation rule in lexical
+member order reproduces passband-set SHA-256
+`5e6f38f14bcae93a29ffe8362c52b15209f51aee4e48373b23aaa5ec2f8a6433`
+over `1,297,803` member bytes.
+
+Exact source paths, notices, checksums, and a standalone verifier are staged
+under `RECOVERED_CAL_NUMERICAL_AUTHORITY_2026-08-25/`. This supersedes the
+earlier filename-only search result. The similarly named
+`toltec_beammap/src/toltec_sensitivity/model_passbands.npz` remains a different
+object and is not substituted.
 
 The frozen CAL sources also require a source-authorized interpolation between
 valid bracketing WVR readings but do not select its exact method, version,
@@ -107,7 +134,7 @@ and requires no new scientific choice.
 | Decision | Present state | Recommendation | Owner response |
 | --- | --- | --- | --- |
 | `WP7-OWNER-D001` — native-interface authority publication | Scientific decision already approved; approval/precedence not readable in WP-7 | Approve a successor clean-room packet that admits the exact existing decision, approval, source manifest, README, and interface as one readable authority set while preserving the approved interface bytes and digest | **APPROVED — 2026-08-25** |
-| `WP7-OWNER-D002` — CAL numerical authority | Three exact objects not yet recovered; WVR temporal method not selected | Recover the exact digest-matching objects first. If any cannot be recovered, return for a new operator/passband decision; do not reconstruct from prose. Separately select a versioned WVR interpolation rule | **PENDING EVIDENCE AND DECISION** |
+| `WP7-OWNER-D002` — CAL numerical authority | Three exact numerical identities recovered and staged; WVR temporal method not selected | Admit the verified bytes without regeneration or substitution. Separately select a versioned WVR interpolation rule | **BYTE RECOVERY COMPLETE — WVR DECISION PENDING** |
 | `WP7-OWNER-D003` — observation-wide opacity classifier | Exact classifier incomplete | Approve one versioned deterministic classifier record defining every required statistic and boundary; infer no default from `momentary` or the numerical-operator support | **PENDING DECISION** |
 | `WP7-OWNER-D004` — RTC-terminal consumer boundary | Terminal publication approved; additional consumer unnamed | For WP-7 v0.1, define successful publication of the complete consumer-neutral RTC bundle as the endpoint. Keep companion-ML acceptance and handoff schema outside WP-7 until separately named | **PENDING DECISION** |
 
@@ -179,6 +206,15 @@ do not substitute a similarly named file. If any object is unrecoverable, the
 ordinary nonzero-opacity route remains unavailable until the owner approves a
 successor operator/passband generation with new identities and digests.
 
+#### Gate A result — complete
+
+The exact machine contract, node table, owner-decision record, TolTECA-v1
+passband members, and their source-license notices were recovered directly
+from the two recorded Git commits. The staging verifier confirms the complete
+source inventory, every individual digest, the `1,297,803` passband-member
+bytes, and the frozen passband-set aggregate. No object was reconstructed from
+prose and no similarly named substitute was used.
+
 #### Gate B — WVR interpolation authority
 
 Approve one versioned rule that states:
@@ -196,7 +232,12 @@ does not supply the scientific basis for choosing one.
 
 ### Owner response
 
-**Pending evidence recovery and scientific decision.**
+**Gate A complete — 2026-08-25. Gate B pending scientific-owner decision.**
+
+After the original atmosphere-model task was located, the scientific owner
+directed the exact-object recovery and staging to proceed. This response
+authorizes admission of the verified existing objects; it does not select a
+WVR interpolation rule or alter the recovered numerical authority.
 
 ## 6. `WP7-OWNER-D003`: deterministic opacity classifier
 
