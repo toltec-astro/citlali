@@ -177,6 +177,54 @@ TEST(fruit_loop_recurrence, subtract_addback_round_trip_restores_signal_and_kern
     EXPECT_DOUBLE_EQ(data.kernel.data(0, 0), original_kernel(0, 0));
 }
 
+TEST(fruit_loop_recurrence,
+     precomputed_detector_pointing_reuses_exact_feedback_arithmetic) {
+    auto calib = make_calib();
+    auto legacy = make_scan();
+    for (Eigen::Index sample = 0; sample < legacy.scans.data.rows();
+         ++sample) {
+        legacy.scans.data(sample, 0) =
+            std::sin(0.17 * static_cast<double>(sample)) + 1.5;
+        legacy.kernel.data(sample, 0) =
+            std::cos(0.23 * static_cast<double>(sample)) - 0.4;
+    }
+    legacy.flags.data(3, 0) = true;
+    auto native = legacy;
+    native.pointing.data["lat"] = legacy.tel_data.data.at("alt_phys");
+    native.pointing.data["lon"] = legacy.tel_data.data.at("az_phys");
+
+    auto model = make_map_buffer(true);
+    model.signal[0] = gaussian(5.5, 1.35);
+    model.kernel[0] = gaussian(0.6, 1.7);
+    Eigen::VectorXi map_indices(1);
+    map_indices << 0;
+    auto legacy_processor = make_processor();
+    auto native_processor = make_processor();
+    long long legacy_count = -1;
+    long long native_count = -1;
+
+    legacy_processor.map_to_tod<
+        timestream::TCProc::SourceType::NegativeMap>(
+        model, legacy, calib, map_indices, "altaz", "array",
+        &legacy_count);
+    native_processor.map_to_tod<
+        timestream::TCProc::SourceType::NegativeMap>(
+        model, native, calib, map_indices, "altaz", "array",
+        &native_count);
+
+    EXPECT_TRUE(native.scans.data.isApprox(legacy.scans.data, 0.0));
+    EXPECT_TRUE(native.kernel.data.isApprox(legacy.kernel.data, 0.0));
+    EXPECT_EQ(native_count, legacy_count);
+    EXPECT_GT(native_count, 0);
+
+    native.pointing.data.erase("lon");
+    EXPECT_THROW(
+        native_processor.map_to_tod<
+            timestream::TCProc::SourceType::Map>(
+            model, native, calib, map_indices, "altaz", "array"),
+        std::logic_error);
+}
+
 TEST(fruit_loop_recurrence, injected_gaussian_converges_through_controlled_cleaner) {
     constexpr double truth_amplitude = 10.0;
     constexpr double truth_sigma = 1.2;

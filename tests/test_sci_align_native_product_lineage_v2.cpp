@@ -236,6 +236,17 @@ TEST(SciAlignNativeProductLineageV2,
         pipeline::make_native_noise_assignment_summary_v3(
             noise_signs, true, false, 2,
             static_cast<std::size_t>(fixture.projection.detector_count()));
+    request.fruit_loop_feedback.enabled = true;
+    request.fruit_loop_feedback.source_model_available = true;
+    request.fruit_loop_feedback.noise_map_pass_applied = true;
+    request.fruit_loop_feedback.keep_source_subtracted_weights = true;
+    request.fruit_loop_feedback.iteration = 2;
+    request.fruit_loop_feedback.model_map_count = 4;
+    request.fruit_loop_feedback.subtraction_sample_count = 11;
+    request.fruit_loop_feedback.addback_sample_count = 9;
+    request.fruit_loop_feedback.interpolation_mode = "jinc";
+    request.fruit_loop_feedback.support_authority =
+        pipeline::native_fruit_loop_feedback_authority_v3;
     auto record = pipeline::make_native_cohort_scan_provenance_v3(
         fixture.binding, fixture.ledger, fixture.rtc, fixture.prepared,
         fixture.projection, fixture.projection.flags(),
@@ -278,6 +289,18 @@ TEST(SciAlignNativeProductLineageV2,
         1U);
     EXPECT_FALSE(
         map["noise_assignment"]["assignment_values_serialized"].as<bool>());
+    ASSERT_TRUE(map["fruit_loop_feedback"]["enabled"].as<bool>());
+    EXPECT_EQ(
+        map["fruit_loop_feedback"]["subtraction_sample_count"]
+            .as<std::size_t>(),
+        11U);
+    EXPECT_EQ(
+        map["fruit_loop_feedback"]["addback_sample_count"]
+            .as<std::size_t>(),
+        9U);
+    EXPECT_FALSE(
+        map["fruit_loop_feedback"]["projected_values_serialized"]
+            .as<bool>());
 }
 
 TEST(SciAlignNativeProductLineageV2,

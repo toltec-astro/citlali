@@ -183,6 +183,44 @@ public:
                 longitudes_rad_.col(detector)};
     }
 
+    // Create a transient projection after a deterministic runtime value
+    // transform such as fruit-loop model add-back. Identity, validity, and
+    // pointing remain bound to the committed native PTC operation; the
+    // transformed detector-sample values are runtime state, not canonical
+    // lineage.
+    NativeScienceProjection with_deterministic_state(
+        Eigen::MatrixXd values,
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> flags) const {
+        if (values.rows() != row_count() ||
+            values.cols() != detector_count() ||
+            !values.array().isFinite().all() ||
+            flags.rows() != row_count() ||
+            flags.cols() != detector_count() ||
+            (flags_.array() && !flags.array()).any()) {
+            throw std::logic_error(
+                "native science deterministic state transform is incomplete, nonfinite, or removes an exclusion");
+        }
+        auto cells = cells_;
+        for (Eigen::Index row = 0; row < row_count(); ++row) {
+            for (Eigen::Index detector = 0;
+                 detector < detector_count(); ++detector) {
+                auto &cell = cells.at(
+                    static_cast<std::size_t>(row) *
+                        static_cast<std::size_t>(detector_count()) +
+                    static_cast<std::size_t>(detector));
+                cell.value = values(row, detector);
+                if (flags(row, detector)) {
+                    cell.state = CoincidenceCellState::mapped_invalid;
+                }
+            }
+        }
+        return NativeScienceProjection{
+            operation_, scope_, pixel_axes_, map_grouping_, detectors_,
+            std::move(values), std::move(flags), latitudes_rad_,
+            longitudes_rad_,
+            std::move(cells)};
+    }
+
     Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>
     map_center_source_mask(double radius_arcsec) const {
         Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> result(

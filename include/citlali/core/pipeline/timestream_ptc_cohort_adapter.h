@@ -969,14 +969,16 @@ private:
 template <class NumericalBody>
 NativePtcProcessedOperation run_native_ptc_groups(
     const NativePtcPreparedOperation &prepared,
-    NumericalBody &&numerical_body) {
+    NumericalBody &&numerical_body,
+    bool invoke_pass_through = false) {
     std::vector<NativePtcProcessedGroup> processed;
     processed.reserve(prepared.groups().size());
     for (const auto &group : prepared.groups()) {
         NativePtcNumericalResult result{
             group.values(), group.kernel_values(), group.exclusion_flags(),
             group.exclusion_flags()};
-        if (group.role() == NativePtcGroupRole::pca_clean) {
+        if (group.role() == NativePtcGroupRole::pca_clean ||
+            invoke_pass_through) {
             auto invoked =
                 std::invoke(numerical_body, std::as_const(group));
             if constexpr (std::is_same_v<

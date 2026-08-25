@@ -100,11 +100,33 @@ Both shared-sign and per-detector randomization shapes fail closed, and every
 runtime sign must be exactly minus or plus one. An identical-time fixture
 proves exact native/legacy JINC noise-map arithmetic.
 
-The CLI builds, all 819 runnable CTests pass with the one established disabled
+The fifth execution layer restores the mature fruit-loop order without a
+second feedback algorithm: previous-map subtraction precedes each PTC body,
+source-subtracted weights and empirical-noise maps follow PTC, model add-back
+precedes final mapping, and the configured policy selects retained or
+recomputed weights. Detector-specific native pointing is supplied through the
+existing precomputed-pointing carrier to the established map-to-TOD sampler,
+including its JINC interpolation, threshold, adaptive-support, and kernel
+rules. Pass-through PTC groups receive the same deterministic model transform
+without being sent through the cleaner. Final map projection uses an
+append-only transient state overlay while the committed PTC projection remains
+the provenance comparison authority.
+
+Canonical fruit-loop provenance remains bounded: iteration, interpolation
+mode, model-map count, source-model/noise-pass/weight-policy decisions,
+subtraction and add-back population counts, and a named support authority. It
+explicitly does not serialize projected detector-sample values. Focused tests
+prove exact reuse of the established feedback arithmetic, ordered native
+subtraction/add-back, pass-through transformation, append-only projection
+state, and bounded serialization.
+
+The CLI builds, all 821 runnable CTests pass with the one established disabled
 test not run, and the required config preflight passes 129 Python tests, four
-mode kits, eight compatibility cases, and every authority audit. Native parity
-for fruit-loop feedback remains required before the clean-commit JINC replay
-and one exact-SHA Unity confirmation.
+mode kits, eight compatibility cases, and every authority audit. The next
+exact production-JINC replay reaches the remaining native outer-context guard:
+152390 carries 32 valid context samples on each side of its inner scan
+interval. Native context carriage remains required before the clean-commit
+JINC replay and one exact-SHA Unity confirmation.
 
 ## 2026-08-24 Build-Time Git-Provenance Refresh Repair
 

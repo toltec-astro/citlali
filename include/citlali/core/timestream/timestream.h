@@ -842,7 +842,7 @@ public:
 
     // translate citlali map buffer to timestream and add/subtract from TCData scans
     template <TCProc::SourceType source_type, class mb_t, TCDataKind tcdata_t, class calib_t, typename Derived>
-    void map_to_tod(mb_t &, TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &, std::string, std::string);
+    void map_to_tod(mb_t &, TCData<tcdata_t, Eigen::MatrixXd> &, calib_t &, Eigen::DenseBase<Derived> &, std::string, std::string, long long * = nullptr);
 
     // remove detectors with outlier weights
     template <TCDataKind tcdata_t, class calib_t>
@@ -2529,7 +2529,8 @@ void TCProc::precompute_pointing(TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t 
 template <TCProc::SourceType source_type, class mb_t, TCDataKind tcdata_t, class calib_t, typename Derived>
 void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t &calib,
                         Eigen::DenseBase<Derived> &map_indices, std::string pixel_axes,
-                        std::string map_grouping) {
+                        std::string map_grouping,
+                        long long *realized_feedback_samples) {
 
     // dimensions of data
     Eigen::Index n_dets = in.scans.data.cols();
@@ -2574,6 +2575,24 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
     bool warned_rms = false;
     bool warned_flux = false;
     bool warned_adaptive = false;
+
+    const auto precomputed_lat = in.pointing.data.find("lat");
+    const auto precomputed_lon = in.pointing.data.find("lon");
+    const bool has_precomputed_pointing =
+        precomputed_lat != in.pointing.data.end() ||
+        precomputed_lon != in.pointing.data.end();
+    if (has_precomputed_pointing &&
+        (precomputed_lat == in.pointing.data.end() ||
+         precomputed_lon == in.pointing.data.end() ||
+         precomputed_lat->second.rows() != n_pts ||
+         precomputed_lat->second.cols() != n_dets ||
+         precomputed_lon->second.rows() != n_pts ||
+         precomputed_lon->second.cols() != n_dets ||
+         !precomputed_lat->second.array().isFinite().all() ||
+         !precomputed_lon->second.array().isFinite().all())) {
+        throw std::logic_error(
+            "fruit-loop precomputed pointing is incomplete or nonfinite");
+    }
 
     double row_offset = fruit_loops_legacy_center ? (mb.n_rows / 2.0) : ((mb.n_rows - 1) / 2.0);
     double col_offset = fruit_loops_legacy_center ? (mb.n_cols / 2.0) : ((mb.n_cols - 1) / 2.0);
@@ -2623,9 +2642,18 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
             double az_off = calib.apt["x_t"](i);
             double el_off = calib.apt["y_t"](i);
 
-            // calc tangent plane pointing
-            auto [lat, lon] = engine_utils::calc_det_pointing(in.tel_data.data, az_off, el_off, pixel_axes,
-                                                              in.pointing_offsets_arcsec.data, map_grouping);
+            Eigen::VectorXd lat;
+            Eigen::VectorXd lon;
+            if (has_precomputed_pointing) {
+                lat = precomputed_lat->second.col(i);
+                lon = precomputed_lon->second.col(i);
+            }
+            else {
+                // calc tangent plane pointing
+                std::tie(lat, lon) = engine_utils::calc_det_pointing(
+                    in.tel_data.data, az_off, el_off, pixel_axes,
+                    in.pointing_offsets_arcsec.data, map_grouping);
+            }
 
             // get map buffer row and col indices for lat and lon vectors
             Eigen::VectorXd irows = lat.array()/mb.pixel_size_rad + row_offset;
@@ -2852,10 +2880,8 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                         }
                         feedback_applied = true;
                     }
-                    if constexpr (source_type==NegativeMap) {
-                        if (feedback_applied) {
-                            ++feedback_samples;
-                        }
+                    if (feedback_applied) {
+                        ++feedback_samples;
                     }
                 }
             }
@@ -2876,6 +2902,9 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
     if constexpr (source_type==NegativeMap) {
         fruit_loop_feedback_samples->fetch_add(
             feedback_samples, std::memory_order_relaxed);
+    }
+    if (realized_feedback_samples) {
+        *realized_feedback_samples = feedback_samples;
     }
 }
 

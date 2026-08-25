@@ -316,6 +316,17 @@ TEST(sci_align_ptc_cohort_adapter,
             return (group.values().array() + 5.0).matrix();
         });
     EXPECT_EQ(cleaner_calls, 1U);
+    std::size_t all_group_calls = 0;
+    const auto transformed = pipeline::run_native_ptc_groups(
+        prepared,
+        [&](const pipeline::NativePtcGroupWorkingSet &group) {
+            ++all_group_calls;
+            return (group.values().array() + 3.0).matrix();
+        },
+        true);
+    EXPECT_EQ(all_group_calls, 2U);
+    EXPECT_TRUE(transformed.groups()[1].values().isApprox(
+        (prepared.groups()[1].values().array() + 3.0).matrix(), 0.0));
     pipeline::scatter_native_ptc_results_transactionally(
         ledger, prepared, processed);
     for (std::size_t slot = 0; slot < 5; ++slot) {

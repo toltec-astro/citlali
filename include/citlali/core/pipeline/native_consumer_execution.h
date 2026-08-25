@@ -7,12 +7,14 @@
 
 #include <citlali/core/mapmaking/science_map_contract.h>
 #include <citlali/core/engine/learning.h>
+#include <citlali/core/pipeline/mapmaking_dispatch.h>
 #include <citlali/core/pipeline/native_cohort_product_provenance_v3.h>
 #include <citlali/core/pipeline/native_consumer_execution_policy.h>
 #include <citlali/core/pipeline/native_detector_run_fcf_contract.h>
 #include <citlali/core/pipeline/native_scan_runtime_state.h>
 #include <citlali/core/pipeline/downsample_config.h>
 #include <citlali/core/pipeline/jinc_processing_provenance.h>
+#include <citlali/core/pipeline/timestream_run_context.h>
 
 #include <netcdf>
 
@@ -196,6 +198,11 @@ make_native_map_publication_request_v3(
             "native map occurrence lacks noise-assignment realization state");
     }
     result.noise_assignment = *runtime.noise_assignment;
+    if (!runtime.fruit_loop_feedback) {
+        throw std::logic_error(
+            "native map occurrence lacks fruit-loop realization state");
+    }
+    result.fruit_loop_feedback = *runtime.fruit_loop_feedback;
     if (citlali::config::is_naive_map_method(method)) {
         const auto &identity = engine.omb.science_products.bundle_identity;
         if (!identity) {
@@ -665,9 +672,76 @@ NativeRtcDispatchResult run_native_rtc_numerical_bodies(
 }
 
 template <class Engine>
+Eigen::VectorXI populate_native_ptc_group_pointing(
+    Engine &engine, const NativePtcGroupWorkingSet &group,
+    timestream::TCData<timestream::TCDataKind::PTC,
+                       Eigen::MatrixXd> &data,
+    const Eigen::VectorXI &map_indices,
+    const NativeMeasuredDetectorScan &mapping) {
+    const auto detector_count = static_cast<Eigen::Index>(
+        engine.calib.n_dets);
+    if (map_indices.size() != detector_count ||
+        data.scans.data.rows() != group.slot_count() ||
+        data.scans.data.cols() != group.detector_count()) {
+        throw std::logic_error(
+            "native fruit-loop group pointing has unequal shape");
+    }
+    const auto require_apt = [&](const char *name) -> const auto & {
+        const auto found = engine.calib.apt.find(name);
+        if (found == engine.calib.apt.end() ||
+            found->second.size() != detector_count) {
+            throw std::logic_error(
+                std::string{"native fruit-loop projection lacks exact "} +
+                name + " inventory");
+        }
+        return found->second;
+    };
+    const auto &x_t = require_apt("x_t");
+    const auto &y_t = require_apt("y_t");
+    Eigen::VectorXI local_map_indices(group.detector_count());
+    auto &latitudes = data.pointing.data["lat"];
+    auto &longitudes = data.pointing.data["lon"];
+    latitudes.resize(group.slot_count(), group.detector_count());
+    longitudes.resize(group.slot_count(), group.detector_count());
+    const auto &native_pointing =
+        *mapping.carriers_handle()->pointing_handle();
+    for (Eigen::Index local = 0; local < group.detector_count(); ++local) {
+        const auto detector = group.detector_columns().at(
+            static_cast<std::size_t>(local));
+        const auto &binding = mapping.binding(detector);
+        const NativeScienceDetectorProjection projection{
+            detector, binding.output_uid, binding.array,
+            binding.network_id, binding.apt_flag, map_indices(detector),
+            native_science_projection_detail::resolve_detector_offset_arcsec(
+                x_t(detector), binding.apt_flag),
+            native_science_projection_detail::resolve_detector_offset_arcsec(
+                y_t(detector), binding.apt_flag)};
+        local_map_indices(local) = map_indices(detector);
+        for (Eigen::Index row = 0; row < group.slot_count(); ++row) {
+            const auto &cell = group.cell(row, local);
+            if (!cell.identity) {
+                throw std::logic_error(
+                    "native fruit-loop group cell lacks exact identity");
+            }
+            const auto [latitude, longitude] =
+                native_science_projection_detail::project_native_pointing(
+                    native_pointing.network(binding.network_id),
+                    *cell.identity, projection,
+                    engine.telescope.pixel_axes,
+                    active_map_grouping_name(engine));
+            latitudes(row, local) = latitude;
+            longitudes(row, local) = longitude;
+        }
+    }
+    return local_map_indices;
+}
+
+template <class Engine>
 NativePtcPreparedOperation run_native_ptc_numerical_bodies(
     Engine &engine, NativeScanRuntimeState &runtime,
-    const NativeRtcDispatchResult &rtc) {
+    const NativeRtcDispatchResult &rtc,
+    const Eigen::VectorXI &map_indices,
+    std::size_t &fruit_loop_subtraction_sample_count) {
     if (!runtime.jinc_processing_trace) {
         throw std::logic_error(
             "native PTC execution lacks its staged RTC realization trace");
@@ -774,6 +848,8 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
         flag_offsets[segment] = flag_total_rows;
         flag_total_rows += flag_rows_per_segment[segment];
     }
+    const auto fruit_weight_policy = fruit_loop_weight_policy(engine);
+    fruit_loop_subtraction_sample_count = 0;
     auto processed = run_native_ptc_groups(
         prepared, [&](const NativePtcGroupWorkingSet &group) {
             auto local_calib = make_native_detector_subset_calibration(
@@ -803,8 +879,40 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
                 data, local_calib, "pre_ptc_detector_exclusion", false,
                 true, true, true);
             const auto preclean_flags = data.flags.data;
+            if (fruit_weight_policy.use_noise_weights) {
+                auto local_map_indices =
+                    populate_native_ptc_group_pointing(
+                        engine, group, data, map_indices,
+                        *runtime.mapping_handle());
+                long long applied = 0;
+                local_ptc.template map_to_tod<
+                    timestream::TCProc::SourceType::NegativeMap>(
+                    local_ptc.tod_mb, data, local_calib,
+                    local_map_indices, engine.telescope.pixel_axes,
+                    active_map_grouping_name(engine), &applied);
+                if (applied < 0 ||
+                    static_cast<std::size_t>(applied) >
+                        std::numeric_limits<std::size_t>::max() -
+                            fruit_loop_subtraction_sample_count) {
+                    throw std::overflow_error(
+                        "native fruit-loop subtraction count overflow");
+                }
+                fruit_loop_subtraction_sample_count +=
+                    static_cast<std::size_t>(applied);
+            }
+            if (group.role() != NativePtcGroupRole::pca_clean) {
+                return NativePtcNumericalResult{
+                    std::move(data.scans.data),
+                    data.kernel.data.size() == 0
+                        ? std::optional<Eigen::MatrixXd>{}
+                        : std::optional<Eigen::MatrixXd>{
+                              std::move(data.kernel.data)},
+                    preclean_flags,
+                    std::move(data.flags.data)};
+            }
             local_ptc.run(
-                data, data, local_calib, engine.telescope.pixel_axes,
+                data, data, local_calib,
+                engine.telescope.pixel_axes,
                 active_map_grouping_name(engine));
             const auto prefix =
                 "segment_" + std::to_string(group.segment_ordinal()) +
@@ -945,7 +1053,7 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
                           std::move(data.kernel.data)},
                 preclean_flags,
                 std::move(data.flags.data)};
-        });
+        }, true);
     scatter_native_ptc_results_transactionally(
         runtime.ledger(), prepared, processed);
     mean_facts.emplace_back(
@@ -1142,8 +1250,10 @@ NativeConsumerPreparedMapScan prepare_native_consumer_map_scan(
     }
     auto runtime = source_rtc.native_runtime;
     runtime->rtc = run_native_rtc_numerical_bodies(engine, *runtime);
+    std::size_t fruit_loop_subtraction_sample_count = 0;
     runtime->ptc_prepared = run_native_ptc_numerical_bodies(
-        engine, *runtime, *runtime->rtc);
+        engine, *runtime, *runtime->rtc, map_indices,
+        fruit_loop_subtraction_sample_count);
     runtime->science_projection = make_native_science_projection(
         runtime->ledger(), *runtime->ptc_prepared,
         native_projection_request(
@@ -1187,15 +1297,101 @@ NativeConsumerPreparedMapScan prepare_native_consumer_map_scan(
             runtime->mapping_handle()->detector_count());
     result.ptcdata.map_indices.data = map_indices;
 
+    const auto &fruit_config = fruit_loops_config(engine);
+    const auto fruit_weight_policy = fruit_loop_weight_policy(engine);
+    NativeFruitLoopFeedbackSummaryV3 fruit_summary;
+    if (fruit_config.enabled) {
+        fruit_summary.enabled = true;
+        fruit_summary.source_model_available =
+            fruit_weight_policy.use_noise_weights;
+        fruit_summary.iteration = engine.iteration.fruit_iter;
+        fruit_summary.interpolation_mode =
+            engine.ptcproc.fruit_loops_interp_mode;
+        fruit_summary.support_authority =
+            native_fruit_loop_feedback_authority_v3;
+        if (fruit_summary.source_model_available) {
+            fruit_summary.model_map_count =
+                engine.ptcproc.tod_mb.signal.size();
+            fruit_summary.subtraction_sample_count =
+                fruit_loop_subtraction_sample_count;
+            fruit_summary.keep_source_subtracted_weights =
+                fruit_weight_policy.keep_source_subtracted_weights;
+        }
+    }
+
+    auto local_ptc = engine.ptcproc;
+    local_ptc.source_mask_radius_arcsec = 0.0;
+    const auto calculate_and_reset_weights = [&](bool noise_only) {
+        local_ptc.calc_weights(
+            result.ptcdata, engine.calib.apt, engine.telescope,
+            noise_only);
+        const auto authoritative_flags = result.ptcdata.flags.data;
+        auto reset_calib = local_ptc.reset_weights(
+            result.ptcdata, engine.calib,
+            active_map_grouping_name(engine));
+        (void)reset_calib;
+        for (Eigen::Index detector = 0;
+             detector < result.ptcdata.flags.data.cols(); ++detector) {
+            if ((result.ptcdata.flags.data.col(detector).array() &&
+                 !authoritative_flags.col(detector).array()).any()) {
+                result.ptcdata.weights.data(detector) = 0.0;
+            }
+        }
+        result.ptcdata.flags.data = authoritative_flags;
+    };
+
+    if (fruit_weight_policy.use_noise_weights) {
+        calculate_and_reset_weights(true);
+        if (mapmaking_enabled(engine) && noise_maps_enabled(engine)) {
+            const auto noise_projection =
+                runtime->science_projection->with_deterministic_state(
+                    result.ptcdata.scans.data,
+                    result.ptcdata.flags.data);
+            bool run_omb = false;
+            populate_naive_or_jinc_maps_native(
+                mapmaking_config(engine).method, engine.naive_mm,
+                engine.jinc_mm, result.ptcdata, engine.omb, engine.cmb,
+                result.map_indices, engine.telescope.pixel_axes,
+                engine.calib.apt, engine.telescope.d_fsmp, run_omb, true,
+                noise_projection);
+            fruit_summary.noise_map_pass_applied = true;
+        }
+        result.ptcdata.pointing.data["lat"] =
+            runtime->science_projection->latitudes_rad();
+        result.ptcdata.pointing.data["lon"] =
+            runtime->science_projection->longitudes_rad();
+        long long addback_samples = 0;
+        local_ptc.template map_to_tod<
+            timestream::TCProc::SourceType::Map>(
+            local_ptc.tod_mb, result.ptcdata, engine.calib,
+            result.map_indices, engine.telescope.pixel_axes,
+            active_map_grouping_name(engine), &addback_samples);
+        if (addback_samples < 0) {
+            throw std::logic_error(
+                "native fruit-loop add-back count is negative");
+        }
+        fruit_summary.addback_sample_count =
+            static_cast<std::size_t>(addback_samples);
+    }
+
     const auto &processed = processed_time_chunk_config(engine);
     if (processed.flagging.lower_tod_inv_var_factor != 0.0 ||
         processed.flagging.upper_tod_inv_var_factor != 0.0) {
-        auto local_ptc = engine.ptcproc;
         auto outlier_calib = local_ptc.remove_bad_dets(
             result.ptcdata, engine.calib,
             active_map_grouping_name(engine));
         (void)outlier_calib;
     }
+
+    if (!fruit_weight_policy.keep_source_subtracted_weights) {
+        calculate_and_reset_weights(false);
+    }
+
+    runtime->map_projection =
+        runtime->science_projection->with_deterministic_state(
+            result.ptcdata.scans.data, result.ptcdata.flags.data);
+    fruit_summary.validate();
+    runtime->fruit_loop_feedback = std::move(fruit_summary);
 
     if (!runtime->jinc_processing_trace) {
         throw std::logic_error(
@@ -1225,23 +1421,6 @@ NativeConsumerPreparedMapScan prepare_native_consumer_map_scan(
         (apt_flag->second.array() != 0.0).count());
     (void)native_jinc_processing_scan_trace_digest_v2(trace);
 
-    auto local_ptc = engine.ptcproc;
-    local_ptc.source_mask_radius_arcsec = 0.0;
-    local_ptc.calc_weights(
-        result.ptcdata, engine.calib.apt, engine.telescope);
-    const auto authoritative_flags = result.ptcdata.flags.data;
-    auto reset_calib = local_ptc.reset_weights(
-        result.ptcdata, engine.calib,
-        active_map_grouping_name(engine));
-    (void)reset_calib;
-    for (Eigen::Index detector = 0;
-         detector < result.ptcdata.flags.data.cols(); ++detector) {
-        if ((result.ptcdata.flags.data.col(detector).array() &&
-             !authoritative_flags.col(detector).array()).any()) {
-            result.ptcdata.weights.data(detector) = 0.0;
-        }
-    }
-    result.ptcdata.flags.data = authoritative_flags;
     const auto high_weight_summary =
         local_ptc.snapshot_high_weight_summary(
             result.ptcdata.index.data);

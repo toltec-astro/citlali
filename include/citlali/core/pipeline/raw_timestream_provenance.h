@@ -464,6 +464,30 @@ inline YAML::Node native_cohort_product_provenance_node_v3(
                     noise.support_authority;
                 noise_node["assignment_values_serialized"] = false;
             }
+            const auto &fruit =
+                scan.map_occurrence.fruit_loop_feedback;
+            auto fruit_node = map_node["fruit_loop_feedback"];
+            fruit_node["enabled"] = fruit.enabled;
+            if (fruit.enabled) {
+                fruit_node["source_model_available"] =
+                    fruit.source_model_available;
+                fruit_node["noise_map_pass_applied"] =
+                    fruit.noise_map_pass_applied;
+                fruit_node["keep_source_subtracted_weights"] =
+                    fruit.keep_source_subtracted_weights;
+                fruit_node["iteration"] = fruit.iteration;
+                fruit_node["model_map_count"] =
+                    fruit.model_map_count;
+                fruit_node["subtraction_sample_count"] =
+                    fruit.subtraction_sample_count;
+                fruit_node["addback_sample_count"] =
+                    fruit.addback_sample_count;
+                fruit_node["interpolation_mode"] =
+                    fruit.interpolation_mode;
+                fruit_node["support_authority"] =
+                    fruit.support_authority;
+                fruit_node["projected_values_serialized"] = false;
+            }
         }
         node["scans"].push_back(item);
     }

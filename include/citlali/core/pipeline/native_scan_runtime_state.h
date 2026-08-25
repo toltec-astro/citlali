@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/mapmaking/jinc_contract.h>
+#include <citlali/core/pipeline/native_fruit_loop_feedback.h>
 #include <citlali/core/pipeline/native_noise_assignment.h>
 #include <citlali/core/pipeline/timestream_native_science_projection.h>
 
@@ -39,6 +40,7 @@ public:
     std::optional<NativeRtcDispatchResult> rtc;
     std::optional<NativePtcPreparedOperation> ptc_prepared;
     std::optional<NativeScienceProjection> science_projection;
+    std::optional<NativeScienceProjection> map_projection;
     std::optional<Eigen::MatrixXd> kernel;
     std::optional<Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>>
         ptc_preclean_flags;
@@ -47,6 +49,7 @@ public:
     std::optional<mapmaking::JincProcessingScanTrace>
         jinc_processing_trace;
     std::optional<NativeNoiseAssignmentSummaryV3> noise_assignment;
+    std::optional<NativeFruitLoopFeedbackSummaryV3> fruit_loop_feedback;
     std::vector<TimestreamDetectorColumn>
         learned_map_zero_weight_detector_columns;
     Eigen::VectorXd fcf;

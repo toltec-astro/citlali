@@ -71,10 +71,14 @@ auto Lali::run(
             auto reservation =
                 raw_plan.observation->native_cohort_lineage->reserve(
                     std::move(record));
+            if (!native.runtime->map_projection) {
+                throw std::logic_error(
+                    "native Lali scan lacks its final map projection");
+            }
             populate_lali_final_maps(
                 native.ptcdata, calib, native.map_indices, map_grouping,
                 mapmaking_method, make_maps, make_noise_maps,
-                &*native.runtime->science_projection);
+                &*native.runtime->map_projection);
             citlali::pipeline::publish_native_jinc_processing_trace_if_active(
                 *this, rtcdata.index.data,
                 *native.runtime->jinc_processing_trace);

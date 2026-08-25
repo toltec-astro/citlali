@@ -6,6 +6,7 @@
 // without serializing detector-by-sample execution history. See ADR 0013.
 
 #include <citlali/core/pipeline/native_cohort_product_provenance_v2.h>
+#include <citlali/core/pipeline/native_fruit_loop_feedback.h>
 #include <citlali/core/pipeline/native_noise_assignment.h>
 
 #include <algorithm>
@@ -170,6 +171,7 @@ struct NativeCohortMapOccurrenceV3 {
     std::string product_identity_digest;
     std::optional<std::string> jinc_processing_configuration_digest;
     NativeNoiseAssignmentSummaryV3 noise_assignment;
+    NativeFruitLoopFeedbackSummaryV3 fruit_loop_feedback;
 };
 
 struct NativeCohortScanProvenanceV3 {
@@ -227,11 +229,13 @@ inline void NativeCohortScanProvenanceV3::validate(
         ptc.pca_clean_group_count + ptc.pass_through_group_count !=
             ptc.group_count ||
         (!map_occurrence.mapmaking_enabled &&
-         map_occurrence.noise_assignment.enabled)) {
+         (map_occurrence.noise_assignment.enabled ||
+          map_occurrence.fruit_loop_feedback.enabled))) {
         throw std::logic_error(
             "bounded native cohort scan provenance does not reconcile");
     }
     map_occurrence.noise_assignment.validate(population.detector_count);
+    map_occurrence.fruit_loop_feedback.validate();
     std::size_t raw_input_cause_samples = 0;
     std::size_t rtc_processing_cause_samples = 0;
     std::size_t learned_rtc_cause_samples = 0;
@@ -594,6 +598,7 @@ struct NativeCohortMapPublicationRequestV3 {
     std::vector<TimestreamDetectorColumn>
         learned_map_zero_weight_detector_columns;
     NativeNoiseAssignmentSummaryV3 noise_assignment;
+    NativeFruitLoopFeedbackSummaryV3 fruit_loop_feedback;
 };
 
 NativeCohortScanProvenanceV3 make_native_cohort_scan_provenance_v3(
@@ -907,6 +912,7 @@ make_native_cohort_scan_provenance_v3(
         "postclean_detector_outlier");
 
     map_request.noise_assignment.validate(mapping->detector_count());
+    map_request.fruit_loop_feedback.validate();
     if (map_request.mapmaking_enabled) {
         if ((map_request.method != "naive" &&
              map_request.method != "jinc") ||
@@ -958,6 +964,8 @@ make_native_cohort_scan_provenance_v3(
             std::move(map_request.zero_weight_detector_columns);
         result.map_occurrence.noise_assignment =
             std::move(map_request.noise_assignment);
+        result.map_occurrence.fruit_loop_feedback =
+            std::move(map_request.fruit_loop_feedback);
         const std::set<TimestreamDetectorColumn> zero_weight_detectors{
             result.map_occurrence.zero_weight_detector_columns.begin(),
             result.map_occurrence.zero_weight_detector_columns.end()};
@@ -1044,7 +1052,8 @@ make_native_cohort_scan_provenance_v3(
             !map_request.zero_weight_detector_columns.empty() ||
             map_request.jinc_processing_configuration_digest ||
             !map_request.learned_map_zero_weight_detector_columns.empty() ||
-            map_request.noise_assignment.enabled) {
+            map_request.noise_assignment.enabled ||
+            map_request.fruit_loop_feedback.enabled) {
             throw std::invalid_argument(
                 "disabled native map publication request carries identity");
         }

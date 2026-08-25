@@ -323,10 +323,101 @@ TEST(SciAlignNativeConsumerExecution,
         pipeline::require_supported_native_consumer_observation(engine));
     pipeline::noise_config(engine).enabled = false;
 
+    pipeline::fruit_loops_config(engine).enabled = true;
+    EXPECT_NO_THROW(
+        pipeline::require_supported_native_consumer_observation(engine));
+    pipeline::fruit_loops_config(engine).enabled = false;
+
     engine.calib.apt["duplicate_tone"](0) = 0.5;
     EXPECT_THROW(
         pipeline::require_supported_native_consumer_observation(engine),
         std::logic_error);
+}
+
+TEST(SciAlignNativeConsumerExecution,
+     FruitLoopFeedbackPreservesMatureOrderAndBoundedRealization) {
+    auto loaded = fixture::load_native_gap_fixture_v1();
+    loaded.scan_index = 0;
+    auto reference_scan =
+        fixture::materialize_native_gap_measured_scan(loaded);
+    auto fruit_scan =
+        fixture::materialize_native_gap_measured_scan(loaded);
+    Engine reference_engine;
+    configure_native_test_engine(reference_engine, *reference_scan);
+    Engine fruit_engine;
+    configure_native_test_engine(fruit_engine, *fruit_scan);
+    std::set<std::int64_t> arrays;
+    for (Eigen::Index detector = 0;
+         detector < static_cast<Eigen::Index>(fruit_scan->detector_count());
+         ++detector) {
+        arrays.insert(fruit_scan->binding(detector).array);
+    }
+    fruit_engine.calib.arrays.resize(
+        static_cast<Eigen::Index>(arrays.size()));
+    Eigen::Index array_index = 0;
+    for (const auto array : arrays) {
+        fruit_engine.calib.arrays(array_index++) = array;
+    }
+
+    auto &fruit = pipeline::fruit_loops_config(fruit_engine);
+    fruit.enabled = true;
+    fruit.recompute_weights_after_addback = false;
+    fruit_engine.iteration.fruit_iter = 1;
+    fruit_engine.ptcproc.fruit_loops_interp_mode = "nearest";
+    fruit_engine.ptcproc.fruit_mode = "upper";
+    fruit_engine.ptcproc.fruit_loops_flux = Eigen::VectorXd::Constant(
+        fruit_engine.calib.arrays.size(), 0.1);
+    fruit_engine.ptcproc.fruit_loops_kernel_feedback_enabled = false;
+    auto &model = fruit_engine.ptcproc.tod_mb;
+    model.n_rows = 21;
+    model.n_cols = 21;
+    model.pixel_size_rad = 1.0;
+    model.signal.assign(
+        fruit_scan->detector_count(),
+        Eigen::MatrixXd::Constant(21, 21, 0.5));
+
+    Eigen::VectorXI map_indices(
+        static_cast<Eigen::Index>(fruit_scan->detector_count()));
+    for (Eigen::Index detector = 0; detector < map_indices.size();
+         ++detector) {
+        map_indices(detector) = detector;
+    }
+    timestream::TCData<timestream::TCDataKind::RTC, Eigen::MatrixXd>
+        reference_source;
+    reference_source.native_runtime =
+        std::make_shared<pipeline::NativeScanRuntimeState>(reference_scan);
+    timestream::TCData<timestream::TCDataKind::RTC, Eigen::MatrixXd>
+        fruit_source;
+    fruit_source.native_runtime =
+        std::make_shared<pipeline::NativeScanRuntimeState>(fruit_scan);
+
+    const auto reference = pipeline::prepare_native_consumer_map_scan(
+        reference_engine, reference_source, map_indices);
+    const auto realized = pipeline::prepare_native_consumer_map_scan(
+        fruit_engine, fruit_source, map_indices);
+
+    ASSERT_TRUE(realized.runtime->fruit_loop_feedback.has_value());
+    const auto &summary = *realized.runtime->fruit_loop_feedback;
+    EXPECT_TRUE(summary.enabled);
+    EXPECT_TRUE(summary.source_model_available);
+    EXPECT_FALSE(summary.noise_map_pass_applied);
+    EXPECT_TRUE(summary.keep_source_subtracted_weights);
+    EXPECT_EQ(summary.iteration, 1);
+    EXPECT_EQ(summary.model_map_count, fruit_scan->detector_count());
+    EXPECT_GT(summary.subtraction_sample_count, 0U);
+    EXPECT_EQ(summary.addback_sample_count,
+              summary.subtraction_sample_count);
+    EXPECT_EQ(summary.interpolation_mode, "nearest");
+    EXPECT_EQ(summary.support_authority,
+              pipeline::native_fruit_loop_feedback_authority_v3);
+    EXPECT_TRUE(realized.runtime->map_projection.has_value());
+    EXPECT_FALSE(realized.ptcdata.scans.data.isApprox(
+        reference.ptcdata.scans.data, 1.0e-14));
+    EXPECT_TRUE(realized.runtime->map_projection->values().isApprox(
+        realized.ptcdata.scans.data, 0.0));
+    EXPECT_FALSE(realized.runtime->science_projection->values().isApprox(
+        realized.ptcdata.scans.data, 0.0));
+    EXPECT_NO_THROW(summary.validate());
 }
 
 TEST(SciAlignNativeConsumerExecution,
