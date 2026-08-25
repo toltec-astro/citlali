@@ -409,6 +409,32 @@ public:
         return it->second;
     }
 
+    void store_second_pass_summary(
+        Eigen::Index scan_id,
+        std::vector<SecondPassDiagSummary> summaries) {
+        std::lock_guard<std::mutex> lock(*diag_summary_mutex);
+        second_pass_summary_by_scan[scan_id] = std::move(summaries);
+    }
+
+    template <class SummaryRange>
+    void store_second_pass_weight_summary(
+        Eigen::Index scan_id, SummaryRange summaries) {
+        std::vector<SecondPassDiagSummary> realized;
+        realized.reserve(summaries.size());
+        for (const auto &summary : summaries) {
+            SecondPassDiagSummary row;
+            row.nw = summary.nw;
+            row.n_det = summary.n_det;
+            row.n_pts = summary.n_pts;
+            row.n_candidate_clusters = summary.n_candidate_clusters;
+            row.busy_network_vetoed = summary.busy_network_vetoed;
+            row.max_unflagged_residual_z =
+                summary.max_unflagged_residual_z;
+            realized.push_back(std::move(row));
+        }
+        store_second_pass_summary(scan_id, std::move(realized));
+    }
+
     // subtract detector means
     void subtract_mean(TCData<TCDataKind::PTC, Eigen::MatrixXd> &,
                        const Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> *flags_override = nullptr);

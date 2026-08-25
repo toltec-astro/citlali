@@ -256,6 +256,62 @@ TEST(SciAlignNativeConsumerExecution,
 }
 
 TEST(SciAlignNativeConsumerExecution,
+     NativeSecondPassWeightSummariesMergeGapSegmentsByNetwork) {
+    pipeline::NativePtcExecutionResult::SecondPassWeightSummary nw4_first;
+    nw4_first.nw = 4;
+    nw4_first.n_det = 12;
+    nw4_first.n_pts = 100;
+    nw4_first.n_candidate_clusters = 2;
+    nw4_first.busy_network_vetoed = false;
+    nw4_first.max_unflagged_residual_z = 7.5;
+
+    auto nw4_second = nw4_first;
+    nw4_second.n_pts = 80;
+    nw4_second.n_candidate_clusters = 3;
+    nw4_second.busy_network_vetoed = true;
+    nw4_second.max_unflagged_residual_z = 11.0;
+
+    pipeline::NativePtcExecutionResult::SecondPassWeightSummary nw9;
+    nw9.nw = 9;
+    nw9.n_det = 8;
+    nw9.n_pts = 180;
+    nw9.n_candidate_clusters = 1;
+    nw9.max_unflagged_residual_z = 4.0;
+
+    const auto merged =
+        pipeline::aggregate_native_second_pass_weight_summaries(
+            {nw9, nw4_first, nw4_second});
+    ASSERT_EQ(merged.size(), 2U);
+    EXPECT_EQ(merged[0].nw, 4);
+    EXPECT_EQ(merged[0].n_det, 12);
+    EXPECT_EQ(merged[0].n_pts, 180);
+    EXPECT_EQ(merged[0].n_candidate_clusters, 5);
+    EXPECT_TRUE(merged[0].busy_network_vetoed);
+    EXPECT_DOUBLE_EQ(merged[0].max_unflagged_residual_z, 11.0);
+    EXPECT_EQ(merged[1].nw, 9);
+    EXPECT_EQ(merged[1].n_pts, 180);
+    EXPECT_EQ(merged[1].n_candidate_clusters, 1);
+    EXPECT_FALSE(merged[1].busy_network_vetoed);
+    EXPECT_DOUBLE_EQ(merged[1].max_unflagged_residual_z, 4.0);
+
+    timestream::PTCProc weighting;
+    weighting.store_second_pass_weight_summary(3, merged);
+    const auto realized = weighting.snapshot_second_pass_summary(3);
+    ASSERT_EQ(realized.size(), 2U);
+    EXPECT_EQ(realized[0].nw, 4);
+    EXPECT_EQ(realized[0].n_candidate_clusters, 5);
+    EXPECT_TRUE(realized[0].busy_network_vetoed);
+    EXPECT_DOUBLE_EQ(realized[0].max_unflagged_residual_z, 11.0);
+    EXPECT_EQ(realized[1].nw, 9);
+    EXPECT_FALSE(realized[1].busy_network_vetoed);
+
+    nw9.nw = -1;
+    EXPECT_THROW(
+        pipeline::aggregate_native_second_pass_weight_summaries({nw9}),
+        std::logic_error);
+}
+
+TEST(SciAlignNativeConsumerExecution,
      GlobalRtcCohortSupportsInterleavedDetectorNetworks) {
     auto loaded = fixture::load_native_gap_fixture_v1();
     loaded.scan_index = 0;

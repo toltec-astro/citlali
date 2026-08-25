@@ -24,6 +24,7 @@
 
 #include <Eigen/Core>
 
+#include <algorithm>
 #include <bit>
 #include <cmath>
 #include <cstddef>
@@ -754,8 +755,61 @@ Eigen::VectorXI populate_native_ptc_group_pointing(
     return local_map_indices;
 }
 
+struct NativePtcExecutionResult {
+    NativePtcPreparedOperation prepared;
+    struct SecondPassWeightSummary {
+        Eigen::Index nw = -1;
+        Eigen::Index n_det = 0;
+        Eigen::Index n_pts = 0;
+        Eigen::Index n_candidate_clusters = 0;
+        bool busy_network_vetoed = false;
+        double max_unflagged_residual_z =
+            std::numeric_limits<double>::quiet_NaN();
+    };
+    std::vector<SecondPassWeightSummary> second_pass_weight_summaries;
+};
+
+inline std::vector<NativePtcExecutionResult::SecondPassWeightSummary>
+aggregate_native_second_pass_weight_summaries(
+    const std::vector<NativePtcExecutionResult::SecondPassWeightSummary>
+        &rows) {
+    std::map<Eigen::Index, NativePtcExecutionResult::SecondPassWeightSummary>
+        by_network;
+    for (const auto &row : rows) {
+        if (row.nw < 0 || row.n_det < 0 || row.n_pts < 0 ||
+            row.n_candidate_clusters < 0) {
+            throw std::logic_error(
+                "native second-pass weight summary has invalid identity or count");
+        }
+        auto [found, inserted] = by_network.try_emplace(row.nw);
+        auto &merged = found->second;
+        if (inserted) {
+            merged.nw = row.nw;
+        }
+        merged.n_det = std::max(merged.n_det, row.n_det);
+        merged.n_pts += row.n_pts;
+        merged.n_candidate_clusters += row.n_candidate_clusters;
+        merged.busy_network_vetoed =
+            merged.busy_network_vetoed || row.busy_network_vetoed;
+        if (std::isfinite(row.max_unflagged_residual_z) &&
+            (!std::isfinite(merged.max_unflagged_residual_z) ||
+             row.max_unflagged_residual_z >
+                 merged.max_unflagged_residual_z)) {
+            merged.max_unflagged_residual_z =
+                row.max_unflagged_residual_z;
+        }
+    }
+    std::vector<NativePtcExecutionResult::SecondPassWeightSummary> result;
+    result.reserve(by_network.size());
+    for (auto &[network, summary] : by_network) {
+        (void)network;
+        result.push_back(std::move(summary));
+    }
+    return result;
+}
+
 template <class Engine>
-NativePtcPreparedOperation run_native_ptc_numerical_bodies(
+NativePtcExecutionResult run_native_ptc_numerical_bodies(
     Engine &engine, NativeScanRuntimeState &runtime,
     const NativeRtcDispatchResult &rtc,
     const Eigen::VectorXI &map_indices,
@@ -770,6 +824,8 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
     std::vector<std::pair<std::string, std::string>> second_pass_facts{
         {"enabled", engine.ptcproc.second_pass_local.enabled
                         ? "true" : "false"}};
+    std::vector<NativePtcExecutionResult::SecondPassWeightSummary>
+        second_pass_weight_rows;
     std::string grouping = "detector";
     if (engine.ptcproc.run_clean) {
         if (engine.ptcproc.cleaner.grouping.size() != 1) {
@@ -1013,6 +1069,15 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
                         static_cast<int>(segment_offset);
                 }
             }
+            for (const auto &summary : second_pass) {
+                second_pass_weight_rows.push_back({
+                    summary.nw,
+                    summary.n_det,
+                    summary.n_pts,
+                    summary.n_candidate_clusters,
+                    summary.busy_network_vetoed,
+                    summary.max_unflagged_residual_z});
+            }
             engine.collect_ptc_learning_diagnostics(
                 data, local_calib, second_pass, {});
             second_pass_facts.emplace_back(
@@ -1208,7 +1273,10 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
     else {
         runtime.kernel.reset();
     }
-    return prepared;
+    return NativePtcExecutionResult{
+        std::move(prepared),
+        aggregate_native_second_pass_weight_summaries(
+            second_pass_weight_rows)};
 }
 
 inline NativeScienceProjectionRequest native_projection_request(
@@ -1295,9 +1363,10 @@ NativeConsumerPreparedMapScan prepare_native_consumer_map_scan(
     auto runtime = source_rtc.native_runtime;
     runtime->rtc = run_native_rtc_numerical_bodies(engine, *runtime);
     std::size_t fruit_loop_subtraction_sample_count = 0;
-    runtime->ptc_prepared = run_native_ptc_numerical_bodies(
+    auto native_ptc = run_native_ptc_numerical_bodies(
         engine, *runtime, *runtime->rtc, map_indices,
         fruit_loop_subtraction_sample_count);
+    runtime->ptc_prepared = std::move(native_ptc.prepared);
     runtime->science_projection = make_native_science_projection(
         runtime->ledger(), *runtime->ptc_prepared,
         native_projection_request(
@@ -1365,6 +1434,15 @@ NativeConsumerPreparedMapScan prepare_native_consumer_map_scan(
 
     auto local_ptc = engine.ptcproc;
     local_ptc.source_mask_radius_arcsec = 0.0;
+    if (local_ptc.busy_row_suppression.enabled) {
+        if (native_ptc.second_pass_weight_summaries.empty()) {
+            throw std::logic_error(
+                "native busy-row suppression requires realized second-pass diagnostics");
+        }
+        local_ptc.store_second_pass_weight_summary(
+            result.ptcdata.index.data,
+            std::move(native_ptc.second_pass_weight_summaries));
+    }
     const auto calculate_and_reset_weights = [&](bool noise_only) {
         local_ptc.calc_weights(
             result.ptcdata, engine.calib.apt, engine.telescope,
