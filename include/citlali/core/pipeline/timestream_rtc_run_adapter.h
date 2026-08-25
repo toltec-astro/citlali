@@ -11,6 +11,7 @@
 #include <cstdint>
 #include <functional>
 #include <limits>
+#include <map>
 #include <optional>
 #include <stdexcept>
 #include <utility>
@@ -44,6 +45,7 @@ struct NativeRtcRunInput {
 struct NativeRtcProcessedRun {
     Eigen::MatrixXd values;
     NativeDetectorFlagBitsMatrix flag_bits;
+    std::optional<Eigen::MatrixXd> kernel_values;
 };
 
 struct NativeRtcOutputRowSupport {
@@ -63,6 +65,7 @@ struct NativeRtcRunResult {
     Eigen::MatrixXd selected_values;
     NativeDetectorFlagBitsMatrix ored_flag_bits;
     std::vector<NativeRtcOutputRowSupport> support;
+    std::optional<Eigen::MatrixXd> selected_kernel_values;
 };
 
 struct NativeRtcDispatchResult {
@@ -75,6 +78,21 @@ struct NativeRtcDispatchResult {
         return result;
     }
 };
+
+// Global RTC numerical bodies receive one complete, gap-bounded native
+// segment before any downsampling. Detector columns retain the scan-wide
+// column identity; rows retain the exact common-slot identity. The dispatcher
+// validates finite shape and append-only flag support before scattering the
+// result back into its network-owned run partitions.
+struct NativeRtcCohortInput {
+    std::size_t segment_ordinal = 0;
+    std::vector<std::size_t> common_slots;
+    Eigen::MatrixXd values;
+    NativeDetectorFlagBitsMatrix flag_bits;
+};
+
+using NativeRtcCohortNumericalBody = std::function<NativeRtcProcessedRun(
+    const NativeRtcCohortInput &)>;
 
 namespace detail {
 
@@ -359,21 +377,151 @@ template <class NumericalBody>
 NativeRtcDispatchResult dispatch_native_rtc_runs(
     const NativeMeasuredDetectorScan &scan,
     const NativeRtcDispatchRequest &request,
-    NumericalBody &&numerical_body) {
+    NumericalBody &&numerical_body,
+    const NativeRtcCohortNumericalBody &cohort_numerical_body = {}) {
     auto inputs = prepare_native_rtc_runs(scan, request);
+    std::vector<NativeRtcProcessedRun> processed_runs;
+    processed_runs.reserve(inputs.size());
+    if (!cohort_numerical_body) {
+        for (const auto &input : inputs) {
+            processed_runs.push_back(std::invoke(
+                numerical_body, std::as_const(input)));
+        }
+    }
+    else {
+        processed_runs.resize(inputs.size());
+        std::map<std::size_t, std::vector<std::size_t>> runs_by_segment;
+        for (std::size_t index = 0; index < inputs.size(); ++index) {
+            runs_by_segment[inputs[index].segment_ordinal].push_back(index);
+        }
+        for (const auto &[segment_ordinal, run_indices] : runs_by_segment) {
+            if (run_indices.empty()) {
+                throw std::logic_error(
+                    "native RTC cohort numerical body has an empty segment");
+            }
+            const auto &reference = inputs[run_indices.front()];
+            NativeRtcCohortInput cohort;
+            cohort.segment_ordinal = segment_ordinal;
+            cohort.common_slots = reference.common_slots;
+            cohort.values.resize(
+                reference.measured_values.rows(),
+                static_cast<Eigen::Index>(scan.detector_count()));
+            cohort.flag_bits.resize(cohort.values.rows(), cohort.values.cols());
+            Eigen::Array<bool, Eigen::Dynamic, 1> detector_seen(
+                cohort.values.cols());
+            detector_seen.setConstant(false);
+            for (const auto index : run_indices) {
+                const auto &input = inputs[index];
+                if (input.segment_ordinal != segment_ordinal ||
+                    input.common_slots != reference.common_slots ||
+                    input.measured_values.rows() != cohort.values.rows() ||
+                    input.measured_values.cols() !=
+                        static_cast<Eigen::Index>(
+                            input.detector_columns.size()) ||
+                    input.input_flag_bits.rows() != cohort.flag_bits.rows() ||
+                    input.input_flag_bits.cols() != input.measured_values.cols()) {
+                    throw std::logic_error(
+                        "native RTC cohort numerical participants have unequal support");
+                }
+                for (std::size_t local = 0;
+                     local < input.detector_columns.size(); ++local) {
+                    const auto detector = input.detector_columns[local];
+                    if (detector < 0 || detector >= cohort.values.cols() ||
+                        detector_seen(detector)) {
+                        throw std::logic_error(
+                            "native RTC cohort numerical detector partition is invalid");
+                    }
+                    detector_seen(detector) = true;
+                    cohort.values.col(detector) = input.measured_values.col(
+                        static_cast<Eigen::Index>(local));
+                    cohort.flag_bits.col(detector) = input.input_flag_bits.col(
+                        static_cast<Eigen::Index>(local));
+                }
+            }
+            if (!detector_seen.all() ||
+                !cohort.values.array().isFinite().all()) {
+                throw std::logic_error(
+                    "native RTC cohort numerical support is incomplete");
+            }
+            auto processed = cohort_numerical_body(cohort);
+            if (processed.values.rows() != cohort.values.rows() ||
+                processed.values.cols() != cohort.values.cols() ||
+                processed.flag_bits.rows() != cohort.flag_bits.rows() ||
+                processed.flag_bits.cols() != cohort.flag_bits.cols() ||
+                !processed.values.array().isFinite().all() ||
+                (processed.kernel_values &&
+                 (processed.kernel_values->rows() != cohort.values.rows() ||
+                  processed.kernel_values->cols() != cohort.values.cols() ||
+                  !processed.kernel_values->array().isFinite().all()))) {
+                throw std::logic_error(
+                    "native RTC cohort numerical body changed its segment shape");
+            }
+            for (Eigen::Index row = 0; row < processed.flag_bits.rows(); ++row) {
+                for (Eigen::Index detector = 0;
+                     detector < processed.flag_bits.cols(); ++detector) {
+                    if ((processed.flag_bits(row, detector) &
+                         cohort.flag_bits(row, detector)) !=
+                        cohort.flag_bits(row, detector)) {
+                        throw std::logic_error(
+                            "native RTC cohort numerical body removed delivered flag bits");
+                    }
+                }
+            }
+            for (const auto index : run_indices) {
+                const auto &input = inputs[index];
+                auto &destination = processed_runs[index];
+                destination.values.resize(
+                    processed.values.rows(),
+                    static_cast<Eigen::Index>(input.detector_columns.size()));
+                destination.flag_bits.resize(
+                    processed.flag_bits.rows(), destination.values.cols());
+                if (processed.kernel_values) {
+                    destination.kernel_values.emplace(
+                        processed.kernel_values->rows(),
+                        destination.values.cols());
+                }
+                for (std::size_t local = 0;
+                     local < input.detector_columns.size(); ++local) {
+                    const auto detector = input.detector_columns[local];
+                    destination.values.col(
+                        static_cast<Eigen::Index>(local)) =
+                        processed.values.col(detector);
+                    destination.flag_bits.col(
+                        static_cast<Eigen::Index>(local)) =
+                        processed.flag_bits.col(detector);
+                    if (processed.kernel_values) {
+                        destination.kernel_values->col(
+                            static_cast<Eigen::Index>(local)) =
+                            processed.kernel_values->col(detector);
+                    }
+                }
+            }
+        }
+    }
+
     NativeRtcDispatchResult result;
     result.downsample_factor = request.downsample_factor;
     result.runs.reserve(inputs.size());
 
-    for (auto &input : inputs) {
-        auto processed = std::invoke(numerical_body,
-                                     std::as_const(input));
+    for (std::size_t input_index = 0; input_index < inputs.size();
+         ++input_index) {
+        auto &input = inputs[input_index];
+        auto &processed = processed_runs[input_index];
         if (processed.values.rows() != input.measured_values.rows() ||
             processed.values.cols() != input.measured_values.cols() ||
             processed.flag_bits.rows() != input.input_flag_bits.rows() ||
             processed.flag_bits.cols() != input.input_flag_bits.cols()) {
             throw std::logic_error(
                 "native RTC numerical body changed its run shape");
+        }
+        if (processed.kernel_values &&
+            (processed.kernel_values->rows() !=
+                 input.measured_values.rows() ||
+             processed.kernel_values->cols() !=
+                 input.measured_values.cols() ||
+             !processed.kernel_values->array().isFinite().all())) {
+            throw std::logic_error(
+                "native RTC numerical body returned an invalid run-local kernel");
         }
         if (!processed.values.array().isFinite().all()) {
             throw std::logic_error(
@@ -395,6 +543,12 @@ NativeRtcDispatchResult dispatch_native_rtc_runs(
         downsampler.factor = request.downsample_factor;
         Eigen::MatrixXd selected_values;
         downsampler.downsample(processed.values, selected_values);
+        std::optional<Eigen::MatrixXd> selected_kernel_values;
+        if (processed.kernel_values) {
+            selected_kernel_values.emplace();
+            downsampler.downsample(
+                *processed.kernel_values, *selected_kernel_values);
+        }
         auto ored_flags = detail::native_rtc_or_flag_support(
             processed.flag_bits, request.downsample_factor);
         auto support = detail::native_rtc_support(
@@ -405,7 +559,11 @@ NativeRtcDispatchResult dispatch_native_rtc_runs(
                 static_cast<Eigen::Index>(support.size()) ||
             selected_values.cols() !=
                 static_cast<Eigen::Index>(input.detector_columns.size()) ||
-            ored_flags.cols() != selected_values.cols()) {
+            ored_flags.cols() != selected_values.cols() ||
+            (selected_kernel_values &&
+             (selected_kernel_values->rows() != selected_values.rows() ||
+              selected_kernel_values->cols() != selected_values.cols() ||
+              !selected_kernel_values->array().isFinite().all()))) {
             throw std::logic_error(
                 "native RTC downsample result and support disagree");
         }
@@ -434,7 +592,8 @@ NativeRtcDispatchResult dispatch_native_rtc_runs(
         }
         result.runs.push_back(NativeRtcRunResult{
             std::move(input), std::move(selected_values),
-            std::move(ored_flags), std::move(support)});
+            std::move(ored_flags), std::move(support),
+            std::move(selected_kernel_values)});
     }
     return result;
 }

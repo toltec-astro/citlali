@@ -37,6 +37,7 @@ public:
     std::optional<NativeRtcDispatchResult> rtc;
     std::optional<NativePtcPreparedOperation> ptc_prepared;
     std::optional<NativeScienceProjection> science_projection;
+    std::optional<Eigen::MatrixXd> kernel;
     std::optional<mapmaking::JincProcessingScanTrace>
         jinc_processing_trace;
     Eigen::VectorXd fcf;

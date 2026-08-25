@@ -231,6 +231,67 @@ TEST(sci_align_rtc_run_adapter,
 }
 
 TEST(sci_align_rtc_run_adapter,
+     global_cohort_body_runs_before_downsample_and_scatters_by_identity) {
+    const auto loaded = complete_identical_time_fixture();
+    const auto scan = fixture::materialize_native_gap_measured_scan(loaded);
+    int local_calls = 0;
+    int cohort_calls = 0;
+    const auto result = pipeline::dispatch_native_rtc_runs(
+        *scan, {2, false},
+        [&](const pipeline::NativeRtcRunInput &input) {
+            ++local_calls;
+            return identity_body(input);
+        },
+        pipeline::NativeRtcCohortNumericalBody{
+            [&](const pipeline::NativeRtcCohortInput &input) {
+                ++cohort_calls;
+                auto values = input.values;
+                for (Eigen::Index detector = 0;
+                     detector < values.cols(); ++detector) {
+                    values.col(detector).array() +=
+                        1000.0 * static_cast<double>(detector + 1);
+                }
+                auto flags = input.flag_bits;
+                flags(2, 3) |= pipeline::NativeDetectorFlagBits{1};
+                Eigen::MatrixXd kernel = values.array() * 0.5;
+                return pipeline::NativeRtcProcessedRun{
+                    std::move(values), std::move(flags),
+                    std::move(kernel)};
+            }});
+
+    EXPECT_EQ(local_calls, 0);
+    EXPECT_EQ(cohort_calls, 1);
+    ASSERT_EQ(result.runs.size(), 2U);
+    for (const auto &run : result.runs) {
+        ASSERT_TRUE(run.selected_kernel_values.has_value());
+        for (std::size_t local = 0;
+             local < run.input.detector_columns.size(); ++local) {
+            const auto detector = run.input.detector_columns[local];
+            for (Eigen::Index row = 0;
+                 row < run.selected_values.rows(); ++row) {
+                const auto expected = run.input.measured_values(
+                    row * 2, static_cast<Eigen::Index>(local)) +
+                    1000.0 * static_cast<double>(detector + 1);
+                EXPECT_DOUBLE_EQ(
+                    run.selected_values(
+                        row, static_cast<Eigen::Index>(local)),
+                    expected);
+                EXPECT_DOUBLE_EQ(
+                    (*run.selected_kernel_values)(
+                        row, static_cast<Eigen::Index>(local)),
+                    0.5 * expected);
+            }
+            if (detector == 3) {
+                EXPECT_NE(
+                    run.ored_flag_bits(1, static_cast<Eigen::Index>(local)) &
+                        pipeline::NativeDetectorFlagBits{1},
+                    pipeline::NativeDetectorFlagBits{0});
+            }
+        }
+    }
+}
+
+TEST(sci_align_rtc_run_adapter,
      repeated_results_are_exact_at_openmp_thread_counts_1_2_4_8) {
     const auto loaded = fixture::load_native_gap_fixture_v1();
     const auto scan = fixture::materialize_native_gap_measured_scan(loaded);

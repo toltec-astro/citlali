@@ -99,6 +99,13 @@ TEST(SciAlignNativeConsumerExecution,
     auto scan = fixture::materialize_native_gap_measured_scan(loaded);
     Engine engine;
     configure_native_test_engine(engine, *scan);
+    pipeline::raw_time_chunk_config(engine).kernel.enabled = true;
+    pipeline::raw_time_chunk_config(engine).kernel.type = "gaussian";
+    engine.rtcproc.run_kernel = true;
+    engine.rtcproc.kernel.type = "gaussian";
+    engine.rtcproc.kernel.fwhm_rad = 0.0;
+    engine.rtcproc.kernel.sigma_rad = 0.0;
+    engine.rtcproc.kernel.map_grouping = "detector";
 
     timestream::TCData<timestream::TCDataKind::RTC, Eigen::MatrixXd>
         source;
@@ -128,6 +135,11 @@ TEST(SciAlignNativeConsumerExecution,
         prepared.ptcdata.scans.data.cols(),
         static_cast<Eigen::Index>(scan->detector_count()));
     EXPECT_TRUE(prepared.ptcdata.scans.data.array().isFinite().all());
+    EXPECT_EQ(prepared.ptcdata.kernel.data.rows(),
+              prepared.ptcdata.scans.data.rows());
+    EXPECT_EQ(prepared.ptcdata.kernel.data.cols(),
+              prepared.ptcdata.scans.data.cols());
+    EXPECT_TRUE(prepared.ptcdata.kernel.data.array().isFinite().all());
     EXPECT_TRUE(prepared.ptcdata.weights.data.array().isFinite().all());
     EXPECT_TRUE((prepared.ptcdata.weights.data.array() > 0.0).all());
 
@@ -151,7 +163,7 @@ TEST(SciAlignNativeConsumerExecution,
 }
 
 TEST(SciAlignNativeConsumerExecution,
-     UnsupportedKernelAndExtinctionFailBeforeLedgerMutation) {
+     GlobalRtcCohortSupportsInterleavedDetectorNetworks) {
     auto loaded = fixture::load_native_gap_fixture_v1();
     loaded.scan_index = 0;
     auto scan = fixture::materialize_native_gap_measured_scan(loaded);
@@ -159,18 +171,39 @@ TEST(SciAlignNativeConsumerExecution,
     configure_native_test_engine(engine, *scan);
     pipeline::NativeScanRuntimeState runtime{scan};
 
-    pipeline::raw_time_chunk_config(engine).kernel.enabled = true;
-    EXPECT_THROW(
-        pipeline::run_native_rtc_numerical_bodies(engine, runtime),
-        std::logic_error);
+    pipeline::raw_time_chunk_config(engine).line_audit.enabled = true;
+    const auto rtc =
+        pipeline::run_native_rtc_numerical_bodies(engine, runtime);
+    EXPECT_EQ(rtc.output_row_count(), 8U);
+    EXPECT_TRUE(runtime.jinc_processing_trace.has_value());
+    EXPECT_EQ(runtime.fcf.size(), 4);
     EXPECT_FALSE(runtime.ledger().last_operation().has_value());
-    pipeline::raw_time_chunk_config(engine).kernel.enabled = false;
-    pipeline::raw_time_chunk_config(engine).extinction_correction_enabled =
-        true;
+}
+
+TEST(SciAlignNativeConsumerExecution,
+     ExtinctionFcfContractUsesExactRunSampleCounts) {
+    pipeline::NativeDetectorRunFcfContract contract(3, true);
+    contract.observe({0, 2}, (Eigen::Vector2d{} << 2.0, 6.0).finished(), 2);
+    contract.observe({0, 1, 2},
+                     (Eigen::Vector3d{} << 4.0, 8.0, 10.0).finished(), 3);
+    const auto result = contract.finish();
+    EXPECT_DOUBLE_EQ(result(0), 3.2);
+    EXPECT_DOUBLE_EQ(result(1), 8.0);
+    EXPECT_DOUBLE_EQ(result(2), 8.4);
+}
+
+TEST(SciAlignNativeConsumerExecution,
+     NonExtinctionFcfContractRetainsExactEquality) {
+    pipeline::NativeDetectorRunFcfContract contract(1, false);
+    contract.observe({0}, Eigen::VectorXd::Constant(1, 2.0), 2);
+    contract.observe({0}, Eigen::VectorXd::Constant(1, 2.0), 3);
+    EXPECT_DOUBLE_EQ(contract.finish()(0), 2.0);
+
+    pipeline::NativeDetectorRunFcfContract mismatch(1, false);
+    mismatch.observe({0}, Eigen::VectorXd::Constant(1, 2.0), 2);
     EXPECT_THROW(
-        pipeline::run_native_rtc_numerical_bodies(engine, runtime),
+        mismatch.observe({0}, Eigen::VectorXd::Constant(1, 2.5), 3),
         std::logic_error);
-    EXPECT_FALSE(runtime.ledger().last_operation().has_value());
 }
 
 TEST(SciAlignNativeConsumerExecution,
@@ -200,7 +233,7 @@ TEST(SciAlignNativeConsumerExecution,
 }
 
 TEST(SciAlignNativeConsumerExecution,
-     ObservationPreflightRejectsUnrepresentedDetectorSelection) {
+     ObservationPreflightAdmitsCohortOutliersAndRejectsUnsupportedState) {
     auto loaded = fixture::load_native_gap_fixture_v1();
     auto scan = fixture::materialize_native_gap_measured_scan(loaded);
     Engine engine;
@@ -210,9 +243,8 @@ TEST(SciAlignNativeConsumerExecution,
 
     pipeline::raw_time_chunk_config(engine)
         .flagging.lower_tod_inv_var_factor = 0.5;
-    EXPECT_THROW(
-        pipeline::require_supported_native_consumer_observation(engine),
-        std::logic_error);
+    EXPECT_NO_THROW(
+        pipeline::require_supported_native_consumer_observation(engine));
     pipeline::raw_time_chunk_config(engine)
         .flagging.lower_tod_inv_var_factor = 0.0;
 

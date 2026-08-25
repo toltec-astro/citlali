@@ -15,6 +15,7 @@
 #include <set>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -46,6 +47,7 @@ struct NativePtcRtcSample {
     NativeSampleIdentity identity;
     double value = 0.0;
     NativeDetectorFlagBits delivered_flag_bits = 0;
+    std::optional<double> kernel_value;
 };
 
 struct NativePtcRtcCohortRow {
@@ -207,6 +209,8 @@ make_native_ptc_rtc_cohort_segments(
         const auto &reference = *network_runs.at(
             participant_networks.front());
         const auto output_rows = reference.selected_values.rows();
+        const bool has_kernel =
+            reference.selected_kernel_values.has_value();
         if (output_rows <= 0) {
             throw std::logic_error(
                 "native PTC RTC segment has no output rows");
@@ -243,7 +247,13 @@ make_native_ptc_rtc_cohort_segments(
                 run.input.past_last_common_slot !=
                     reference.input.past_last_common_slot ||
                 run.selected_values.rows() != output_rows ||
-                run.support.size() != reference.support.size()) {
+                run.support.size() != reference.support.size() ||
+                run.selected_kernel_values.has_value() != has_kernel ||
+                (has_kernel &&
+                 (run.selected_kernel_values->rows() != output_rows ||
+                  run.selected_kernel_values->cols() !=
+                      run.selected_values.cols() ||
+                  !run.selected_kernel_values->array().isFinite().all()))) {
                 throw std::logic_error(
                     "native PTC RTC participant runs disagree on their cohort");
             }
@@ -326,7 +336,13 @@ make_native_ptc_rtc_cohort_segments(
                             run.selected_values(
                                 row, static_cast<Eigen::Index>(local)),
                             run.ored_flag_bits(
-                                row, static_cast<Eigen::Index>(local))};
+                                row, static_cast<Eigen::Index>(local)),
+                            has_kernel
+                                ? std::optional<double>{
+                                      (*run.selected_kernel_values)(
+                                          row,
+                                          static_cast<Eigen::Index>(local))}
+                                : std::optional<double>{}};
                 }
             }
         }
@@ -376,6 +392,9 @@ public:
         return detector_uids_;
     }
     const Eigen::MatrixXd &values() const noexcept { return values_; }
+    const std::optional<Eigen::MatrixXd> &kernel_values() const noexcept {
+        return kernel_values_;
+    }
     const NativePtcExclusionMatrix &exclusion_flags() const noexcept {
         return exclusion_flags_;
     }
@@ -408,7 +427,8 @@ public:
         Eigen::MatrixXd values,
         NativePtcExclusionMatrix exclusion_flags,
         Eigen::VectorXi apt_exclusion_flags,
-        std::vector<NativePtcCellBinding> cells)
+        std::vector<NativePtcCellBinding> cells,
+        std::optional<Eigen::MatrixXd> kernel_values = {})
         : operation_{operation}, segment_ordinal_{segment_ordinal},
           effective_grouping_{std::move(effective_grouping)},
           group_key_{group_key}, subgroup_index_{subgroup_index},
@@ -417,7 +437,8 @@ public:
           values_{std::move(values)},
           exclusion_flags_{std::move(exclusion_flags)},
           apt_exclusion_flags_{std::move(apt_exclusion_flags)},
-          cells_{std::move(cells)} {}
+          cells_{std::move(cells)},
+          kernel_values_{std::move(kernel_values)} {}
 
 private:
     NativeOperationIdentity operation_;
@@ -432,6 +453,7 @@ private:
     NativePtcExclusionMatrix exclusion_flags_;
     Eigen::VectorXi apt_exclusion_flags_;
     std::vector<NativePtcCellBinding> cells_;
+    std::optional<Eigen::MatrixXd> kernel_values_;
 };
 
 struct NativePtcCohortRequest {
@@ -538,6 +560,10 @@ inline NativePtcGroupWorkingSet make_native_ptc_group(
     const auto columns =
         static_cast<Eigen::Index>(detector_columns.size());
     Eigen::MatrixXd values(rows, columns);
+    const bool has_kernel = segment.rows.front()
+        .detector_samples.front()->kernel_value.has_value();
+    std::optional<Eigen::MatrixXd> kernel_values;
+    if (has_kernel) kernel_values.emplace(rows, columns);
     NativePtcExclusionMatrix exclusions(rows, columns);
     exclusions.setConstant(true);
     Eigen::VectorXi apt_exclusions(columns);
@@ -570,6 +596,15 @@ inline NativePtcGroupWorkingSet make_native_ptc_group(
             const auto &binding = scan.binding(detector_column);
             const auto &sample = *cohort_row.detector_samples.at(
                 static_cast<std::size_t>(detector_column));
+            if (sample.kernel_value.has_value() != has_kernel ||
+                (sample.kernel_value &&
+                 !std::isfinite(*sample.kernel_value))) {
+                throw std::logic_error(
+                    "native PTC RTC kernel inventory is inconsistent");
+            }
+            if (kernel_values) {
+                (*kernel_values)(row, local) = *sample.kernel_value;
+            }
             const NativeDetectorSampleKey key{
                 sample.identity.key(), detector_column};
             const auto operation_bits = [&]() {
@@ -637,7 +672,8 @@ inline NativePtcGroupWorkingSet make_native_ptc_group(
         std::move(effective_grouping), group_key, subgroup_index, role,
         std::move(detector_columns), std::move(detector_uids),
         std::move(values), std::move(exclusions),
-        std::move(apt_exclusions), std::move(cells)};
+        std::move(apt_exclusions), std::move(cells),
+        std::move(kernel_values)};
 }
 
 inline NativePtcPreparedOperation prepare_native_ptc_cohorts(
@@ -835,16 +871,29 @@ inline NativePtcPreparedOperation prepare_native_ptc_cohorts(
         segments.size(), std::move(groups)};
 }
 
+struct NativePtcNumericalResult {
+    Eigen::MatrixXd values;
+    std::optional<Eigen::MatrixXd> kernel_values;
+};
+
 class NativePtcProcessedGroup {
 public:
     explicit NativePtcProcessedGroup(
-        const NativePtcGroupWorkingSet &source, Eigen::MatrixXd values)
+        const NativePtcGroupWorkingSet &source,
+        NativePtcNumericalResult result)
         : segment_ordinal_{source.segment_ordinal()},
           effective_grouping_{source.effective_grouping()},
           group_key_{source.group_key()},
           subgroup_index_{source.subgroup_index()}, role_{source.role()},
           detector_columns_{source.detector_columns()},
-          values_{std::move(values)} {}
+          values_{std::move(result.values)},
+          kernel_values_{std::move(result.kernel_values)} {}
+
+    explicit NativePtcProcessedGroup(
+        const NativePtcGroupWorkingSet &source, Eigen::MatrixXd values)
+        : NativePtcProcessedGroup(
+              source, NativePtcNumericalResult{
+                          std::move(values), source.kernel_values()}) {}
 
     std::size_t segment_ordinal() const noexcept {
         return segment_ordinal_;
@@ -862,6 +911,9 @@ public:
         return detector_columns_;
     }
     const Eigen::MatrixXd &values() const noexcept { return values_; }
+    const std::optional<Eigen::MatrixXd> &kernel_values() const noexcept {
+        return kernel_values_;
+    }
     Eigen::MatrixXd &mutable_values_for_retry() noexcept { return values_; }
 
 private:
@@ -872,6 +924,7 @@ private:
     NativePtcGroupRole role_ = NativePtcGroupRole::pca_clean;
     std::vector<TimestreamDetectorColumn> detector_columns_;
     Eigen::MatrixXd values_;
+    std::optional<Eigen::MatrixXd> kernel_values_;
 };
 
 class NativePtcProcessedOperation {
@@ -903,11 +956,32 @@ NativePtcProcessedOperation run_native_ptc_groups(
     std::vector<NativePtcProcessedGroup> processed;
     processed.reserve(prepared.groups().size());
     for (const auto &group : prepared.groups()) {
-        Eigen::MatrixXd values = group.values();
+        NativePtcNumericalResult result{
+            group.values(), group.kernel_values()};
         if (group.role() == NativePtcGroupRole::pca_clean) {
-            values = std::invoke(numerical_body, std::as_const(group));
+            auto invoked =
+                std::invoke(numerical_body, std::as_const(group));
+            if constexpr (std::is_same_v<
+                              std::decay_t<decltype(invoked)>,
+                              NativePtcNumericalResult>) {
+                result = std::move(invoked);
+            }
+            else {
+                result.values = std::move(invoked);
+            }
         }
-        processed.emplace_back(group, std::move(values));
+        if (result.values.rows() != group.slot_count() ||
+            result.values.cols() != group.detector_count() ||
+            (result.kernel_values &&
+             (result.kernel_values->rows() != group.slot_count() ||
+              result.kernel_values->cols() != group.detector_count() ||
+              !result.kernel_values->array().isFinite().all())) ||
+            result.kernel_values.has_value() !=
+                group.kernel_values().has_value()) {
+            throw std::logic_error(
+                "native PTC numerical result has invalid signal/kernel shape");
+        }
+        processed.emplace_back(group, std::move(result));
     }
     return NativePtcProcessedOperation{
         prepared.operation(), std::move(processed)};

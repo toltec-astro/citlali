@@ -21,30 +21,6 @@ void require_supported_native_consumer_execution(const Engine &engine) {
         throw std::logic_error(
             "native consumer polarization requires a separately approved measured-channel contract");
     }
-    if (raw.extinction_correction_enabled) {
-        throw std::logic_error(
-            "native consumer extinction requires a detector/run-local weight contract");
-    }
-    if (raw.kernel.enabled) {
-        throw std::logic_error(
-            "native consumer kernel products require native RTC kernel support lineage");
-    }
-    if (raw.flagging.impulsive_coincidence.enabled ||
-        raw.coherent_iq_mode_observer.enabled) {
-        throw std::logic_error(
-            "native consumer cross-network RTC observers cannot run on network-local dispatch");
-    }
-    if (raw.line_audit.enabled || raw.altaz_destripe.enabled) {
-        throw std::logic_error(
-            "native consumer global RTC audit/destripe operations require a native cohort contract");
-    }
-    if (raw.flagging.lower_tod_inv_var_factor != 0.0 ||
-        raw.flagging.upper_tod_inv_var_factor != 0.0 ||
-        processed.flagging.lower_tod_inv_var_factor != 0.0 ||
-        processed.flagging.upper_tod_inv_var_factor != 0.0) {
-        throw std::logic_error(
-            "native consumer detector outlier cuts require gap-aware native cohort support");
-    }
     if (learning_config(engine).enabled) {
         throw std::logic_error(
             "native consumer learned masks and exclusions require native iteration lineage");

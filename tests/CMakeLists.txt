@@ -102,6 +102,7 @@ add_executable(citlali_sci_align_test EXCLUDE_FROM_ALL
     timestream_native_science_projection_header.cpp
     native_cohort_product_provenance_v3_header.cpp
     native_cohort_debug_trace_header.cpp
+    native_detector_run_fcf_contract_header.cpp
     native_consumer_mode_policy_header.cpp
     native_consumer_execution_header.cpp
     native_consumer_execution_policy_header.cpp
@@ -130,6 +131,7 @@ set_source_files_properties(
     timestream_native_science_projection_header.cpp
     native_cohort_product_provenance_v3_header.cpp
     native_cohort_debug_trace_header.cpp
+    native_detector_run_fcf_contract_header.cpp
     native_consumer_mode_policy_header.cpp
     native_consumer_execution_header.cpp
     native_consumer_execution_policy_header.cpp

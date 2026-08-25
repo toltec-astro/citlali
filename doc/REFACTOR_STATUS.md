@@ -40,12 +40,29 @@ scans, and 204 local-residual despike guard summaries reported 1,207 rejected
 detector occurrences, including a maximum added fraction of 0.9598 against the
 0.1 cap. These are observed-data events, not software completion failures.
 
-All 810 runnable CTests pass with the one established disabled test not run;
+All 813 runnable CTests pass with the one established disabled test not run;
 the focused bounded-provenance/publication tests, Python provenance auditors,
 and required config preflight also pass. The localized production JINC config
-differs from the downloaded Unity merge only in four classes of absolute local
-paths and has zero scientific leaf differences. Its clean-commit full replay
-is the remaining local gate before one exact-SHA Unity confirmation.
+differs from the downloaded Unity merge in local paths and one explicit
+scientific correction: empirical noise products are enabled because JINC
+fruit-loop S/N selection requests them. The downloaded merge requested ten
+noise realizations and positive S/N selection while disabling those products,
+which is invalid and fails the typed validator.
+
+The exact production-JINC replay exposed an orchestration-parity gap in the
+compact-v2 native-required route rather than a sequence of independent JINC
+defects. That route bypasses mature Lali orchestration and initially admitted
+only a restricted RTC/PTC subset. A first separately gated execution layer now
+supports exact run-local extinction FCF aggregation, native kernel carriage
+through RTC and PTC, and gap-bounded full-cohort RTC execution for line audit,
+Alt/Az destriping, cross-network coincidence, and detector inverse-variance
+cuts. The full-cohort adapter preserves exact common-slot identity, accepts
+interleaved input detector columns through stable internal grouping, scatters
+back to original identities, and runs before downsampling. The production
+replay now reaches the next intentional boundary, reduction learning. Native
+parity for learning, PTC second-pass flags, noise realizations, and fruit-loop
+feedback remains required before the clean-commit JINC replay and one
+exact-SHA Unity confirmation.
 
 ## 2026-08-24 Build-Time Git-Provenance Refresh Repair
 
