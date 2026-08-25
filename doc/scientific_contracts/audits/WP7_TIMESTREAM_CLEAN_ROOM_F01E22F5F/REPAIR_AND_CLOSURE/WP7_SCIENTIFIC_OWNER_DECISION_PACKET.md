@@ -136,7 +136,7 @@ and requires no new scientific choice.
 | --- | --- | --- | --- |
 | `WP7-OWNER-D001` — native-interface authority publication | Scientific decision already approved; approval/precedence not readable in WP-7 | Approve a successor clean-room packet that admits the exact existing decision, approval, source manifest, README, and interface as one readable authority set while preserving the approved interface bytes and digest | **APPROVED — 2026-08-25** |
 | `WP7-OWNER-D002` — CAL numerical authority | Three exact numerical identities recovered and staged; WVR interpolation and unavailable-opacity rules approved | Admit the verified bytes without regeneration or substitution and use the approved versioned interpolation and fail-closed unavailable-opacity rules | **APPROVED — RECOVERY, INTERPOLATION, AND UNAVAILABLE-OPACITY — 2026-08-25** |
-| `WP7-OWNER-D003` — observation-wide opacity classifier | Exact classifier incomplete | Approve one versioned deterministic classifier record defining every required statistic and boundary; infer no default from `momentary` or the numerical-operator support | **PENDING DECISION** |
+| `WP7-OWNER-D003` — observation-wide opacity classifier | Approved policy intent recovered; no existing source defines `momentary` by duration or fraction | Approve `cal_wvr_observation_quality_mean_peak_v1`: time-weighted mean at `0.15`, tolerated peak through `0.175`, engineering support through `0.25`, exact coverage and failure classes | **PENDING DECISION** |
 | `WP7-OWNER-D004` — RTC-terminal consumer boundary | Terminal publication approved; additional consumer unnamed | For WP-7 v0.1, define successful publication of the complete consumer-neutral RTC bundle as the endpoint. Keep companion-ML acceptance and handoff schema outside WP-7 until separately named | **PENDING DECISION** |
 
 ## 4. `WP7-OWNER-D001`: native-interface authority publication
@@ -312,31 +312,106 @@ the observation-wide classifier or alter the recovered numerical authority.
 What exact observation-wide classifier implements the approved `0.15`
 guidance and `0.025` tolerance for momentary excursions?
 
-### Required owner fields
-
-The decision shall define:
-
-1. classifier identity and version;
-2. the admitted opacity population and validity filtering;
-3. the observation-wide summary statistic;
-4. the exact excursion statistic, time window, duration/count/fraction rule,
-   and treatment of irregular sampling or gaps;
-5. the complete class set and mapping;
-6. inclusive/exclusive behavior at `0.15`, `0.175`, `0.25`, and every other
-   class boundary;
-7. missing, empty, conflicting, and nonfinite behavior;
-8. deterministic precision and tie rules; and
-9. the exact output record: summary, excursions, class, causes, and authority
-   identity.
-
-Sample-level numerical atmosphere support remains independent. No classifier
-decision may authorize numerical extrapolation beyond the operator domain.
-
 ### Recommendation
 
-Approve these fields in one compact, versioned classifier record, then have
-SCI-CAL reference it. Do not distribute the algorithm across narrative,
-requirements, and an implementation default.
+Approve `cal_wvr_observation_quality_mean_peak_v1` with the following exact
+policy.
+
+#### Population and observation window
+
+1. The classified window is the closed interval from the first to the last
+   detector-reference sample time belonging to the current observation,
+   before CAL validity masking. A missing/non-finite endpoint or
+   `t_end <= t_start` yields `opacity_quality_unavailable`.
+2. Map that interval to the WVR source-time basis with the approved SCI-ALIGN
+   authority and construct `cal_wvr_tau225_linear_detector_time_v1` from only
+   the current observation's `tel*.nc` records. The complete classified
+   interval must be covered. An empty source, missing bracket, disallowed gap,
+   conflicting duplicate, or unavailable time mapping yields
+   `opacity_quality_unavailable`; negative or non-finite required opacity
+   yields `invalid_opacity_input`.
+3. The ordered classifier breakpoints are the mapped observation endpoints
+   plus every admitted WVR source time strictly inside the interval. Evaluate
+   the approved interpolant at both endpoints. Do not resample, smooth,
+   cadence-weight, fill a gap, or count detector samples as independent WVR
+   evidence.
+
+#### Summary and excursions
+
+4. Compute the duration-weighted mean of the continuous piecewise-linear
+   opacity over the complete interval. For chronological breakpoints
+   `(t_i, tau_i)`, its area is the composite trapezoid
+   `A = sum_i (t_(i+1)-t_i) * (tau_i+tau_(i+1)) / 2`, and
+   `tau_mean = A / (t_end-t_start)`. Also record the minimum and maximum; the
+   extrema occur at the breakpoints.
+5. An excursion is one connected component of the interval on which
+   `tau225(t) > 0.15`. Resolve threshold crossings analytically on the same
+   linear segments. For a strict interior crossing of threshold `q`, evaluate
+   `u = (q - tau_i) / (tau_(i+1) - tau_i)` followed by
+   `t_cross = t_i + u * (t_(i+1) - t_i)`; an endpoint exactly equal to `q`
+   is the crossing. Record every component's start, end, duration, and peak,
+   plus total excursion duration, longest duration, duration fraction, count,
+   and integrated excess `integral max(tau225(t)-0.15, 0) dt`. Partition at
+   every threshold crossing and compute the excess with the same chronological
+   trapezoid rule applied to the nonnegative endpoint excesses.
+6. There is no additional duration, count, cadence, or fraction cutoff in v1.
+   Here `momentary` has the exact combined meaning that the time-weighted mean
+   remains at or below `0.15` and no instantaneous peak exceeds `0.175`.
+   Thus excursion persistence affects the class through its contribution to
+   the time-weighted mean without inventing a new unstated threshold.
+
+#### Class mapping and boundary behavior
+
+7. Assign exactly one class in this precedence order:
+
+   - `invalid_opacity_input` if a required opacity state is negative or
+     non-finite;
+   - `opacity_quality_unavailable` if the complete window or required source
+     coverage cannot be resolved under items 1--3;
+   - `outside_supported_opacity` if complete valid coverage exists but
+     `tau_max > 0.25`;
+   - `science_qualification_eligible` if
+     `tau_mean <= 0.15` and `tau_max <= 0.175`; or
+   - `engineering_only` for every other completely covered, finite,
+     nonnegative observation with `tau_max <= 0.25`.
+
+   Equality is inclusive at `0.15`, `0.175`, and `0.25`. A value immediately
+   above a boundary takes the next less-favorable class. These are
+   operational quality classes, not achieved atmosphere-fidelity,
+   observational-performance, `science-qualified`, or `calibrated-science`
+   claims.
+
+#### Determinism and output record
+
+8. Parse source values, mapped times, and the decimal threshold strings
+   `"0.15"`, `"0.175"`, and `"0.25"` into IEEE-754 binary64 with correct
+   round-to-nearest, ties-to-even conversion. Evaluate interpolation,
+   crossings, segment areas, chronological accumulation, duration, division,
+   and comparisons in binary64 round-to-nearest ties-to-even with the written
+   operation order and a rounding step after every elementary operation.
+   Fused contraction and reassociation are prohibited. Exact binary64 equality
+   receives the inclusive disposition above. A non-increasing breakpoint,
+   non-finite intermediate, or summary outside the finite input range yields
+   `opacity_quality_unavailable` with cause `classifier_numeric_failure`.
+9. Publish the classifier and interpolation identifiers; observation and
+   source identities; mapped interval; ordered input record identities and
+   values; coverage/validity disposition; breakpoint count; minimum, maximum,
+   mean, duration, and trapezoid area; the complete excursion inventory and
+   aggregate statistics from item 5; threshold constants; precision rule;
+   final class; and machine-distinguishable causes.
+
+Sample-level numerical atmosphere support remains independent. An
+observation-wide class neither fills an unsupported sample nor authorizes
+numerical extrapolation. Conversely, an unavailable, invalid, or
+outside-supported observation class does not erase independently supported
+sample-level CAL results; their validity and limitations remain explicit.
+
+This rule is recommended because it uses the already-approved `0.15`,
+`0.025`, and `0.25` quantities directly and gives irregular WVR intervals
+their actual duration. If the owner instead intends `momentary` to impose an
+independent maximum duration or fraction, that new threshold must be supplied
+and versioned rather than inferred from the approximately five-minute WVR
+cadence.
 
 ### Owner response
 
