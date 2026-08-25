@@ -230,6 +230,12 @@ TEST(SciAlignNativeProductLineageV2,
         static_cast<std::size_t>(fixture.projection.detector_count());
     request.jinc_processing_configuration_digest =
         "sha256:test-jinc-processing-config";
+    Eigen::MatrixXi noise_signs(2, 1);
+    noise_signs << 1, -1;
+    request.noise_assignment =
+        pipeline::make_native_noise_assignment_summary_v3(
+            noise_signs, true, false, 2,
+            static_cast<std::size_t>(fixture.projection.detector_count()));
     auto record = pipeline::make_native_cohort_scan_provenance_v3(
         fixture.binding, fixture.ledger, fixture.rtc, fixture.prepared,
         fixture.projection, fixture.projection.flags(),
@@ -262,6 +268,16 @@ TEST(SciAlignNativeProductLineageV2,
         map["jinc_processing_configuration_digest"].as<std::string>(),
         "sha256:test-jinc-processing-config");
     EXPECT_FALSE(map["jinc_scan_trace_digest"]);
+    ASSERT_TRUE(map["noise_assignment"]["enabled"].as<bool>());
+    EXPECT_EQ(
+        map["noise_assignment"]["realization_count"].as<std::size_t>(),
+        2U);
+    EXPECT_EQ(
+        map["noise_assignment"]["assignment_column_count"]
+            .as<std::size_t>(),
+        1U);
+    EXPECT_FALSE(
+        map["noise_assignment"]["assignment_values_serialized"].as<bool>());
 }
 
 TEST(SciAlignNativeProductLineageV2,

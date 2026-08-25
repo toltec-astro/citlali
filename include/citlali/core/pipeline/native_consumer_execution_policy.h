@@ -21,10 +21,6 @@ void require_supported_native_consumer_execution(const Engine &engine) {
         throw std::logic_error(
             "native consumer polarization requires a separately approved measured-channel contract");
     }
-    if (noise_maps_enabled(engine)) {
-        throw std::logic_error(
-            "native consumer noise realizations require native sample support lineage");
-    }
     if (mapmaking_enabled(engine)) {
         const auto method = mapmaking_config(engine).method;
         if (!citlali::config::is_naive_map_method(method) &&

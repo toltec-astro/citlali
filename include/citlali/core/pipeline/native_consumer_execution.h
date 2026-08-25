@@ -191,6 +191,11 @@ make_native_map_publication_request_v3(
     }
     result.learned_map_zero_weight_detector_columns =
         runtime.learned_map_zero_weight_detector_columns;
+    if (!runtime.noise_assignment) {
+        throw std::logic_error(
+            "native map occurrence lacks noise-assignment realization state");
+    }
+    result.noise_assignment = *runtime.noise_assignment;
     if (citlali::config::is_naive_map_method(method)) {
         const auto &identity = engine.omb.science_products.bundle_identity;
         if (!identity) {
@@ -1171,6 +1176,15 @@ NativeConsumerPreparedMapScan prepare_native_consumer_map_scan(
     result.ptcdata.status.cleaned =
         processed_time_chunk_config(engine).clean.enabled;
     result.ptcdata.noise.data = source_rtc.noise.data;
+    const auto &noise = noise_config(engine);
+    result.runtime->noise_assignment =
+        make_native_noise_assignment_summary_v3(
+            result.ptcdata.noise.data, noise_maps_enabled(engine),
+            noise.randomize_dets,
+            noise_maps_enabled(engine)
+                ? static_cast<std::size_t>(noise.n_noise_maps)
+                : 0U,
+            runtime->mapping_handle()->detector_count());
     result.ptcdata.map_indices.data = map_indices;
 
     const auto &processed = processed_time_chunk_config(engine);

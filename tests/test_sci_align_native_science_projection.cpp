@@ -181,7 +181,9 @@ Eigen::VectorXi projection_map_indices(
     return result;
 }
 
-mapmaking::MapBuffer make_map(Eigen::Index map_count, bool jinc) {
+mapmaking::MapBuffer make_map(Eigen::Index map_count, bool jinc,
+                              Eigen::Index n_noise = 0,
+                              bool randomize_dets = true) {
     mapmaking::MapBuffer result{"omb"};
     result.n_rows = 11;
     result.n_cols = 11;
@@ -190,6 +192,12 @@ mapmaking::MapBuffer make_map(Eigen::Index map_count, bool jinc) {
     result.parallel_policy = "seq";
     citlali::pipeline::allocate_map_matrices(
         result, map_count, jinc, true, true, false, {}, jinc);
+    result.n_noise = n_noise;
+    result.randomize_dets = randomize_dets;
+    for (Eigen::Index map = 0; map < map_count && n_noise > 0; ++map) {
+        result.noise.emplace_back(result.n_rows, result.n_cols, n_noise);
+        result.noise.back().setZero();
+    }
     return result;
 }
 
@@ -244,6 +252,24 @@ void expect_map_exact(const mapmaking::MapBuffer &lhs,
             expect_matrix_exact(
                 lhs.jinc_products.contributor_count[map],
                 rhs.jinc_products.contributor_count[map]);
+        }
+    }
+    ASSERT_EQ(lhs.noise.size(), rhs.noise.size());
+    for (std::size_t map = 0; map < lhs.noise.size(); ++map) {
+        ASSERT_EQ(lhs.noise[map].dimensions(), rhs.noise[map].dimensions());
+        for (Eigen::Index realization = 0;
+             realization < lhs.noise[map].dimension(2); ++realization) {
+            for (Eigen::Index column = 0;
+                 column < lhs.noise[map].dimension(1); ++column) {
+                for (Eigen::Index row = 0;
+                     row < lhs.noise[map].dimension(0); ++row) {
+                    EXPECT_EQ(
+                        std::bit_cast<std::uint64_t>(
+                            lhs.noise[map](row, column, realization)),
+                        std::bit_cast<std::uint64_t>(
+                            rhs.noise[map](row, column, realization)));
+                }
+            }
         }
     }
 }
@@ -396,6 +422,36 @@ TEST(sci_align_native_science_projection,
             valid * projection_input(projection).weights.data(detector));
         EXPECT_EQ(jinc_contributors, valid * 9);
     }
+}
+
+TEST(sci_align_native_science_projection,
+     identical_times_match_existing_jinc_noise_arithmetic_exactly) {
+    const auto committed = make_committed_projection(
+        complete_identical_time_fixture());
+    const auto &projection = committed.projection;
+    auto apt = projection_apt(projection);
+    auto map_indices = projection_map_indices(projection);
+    std::string pixel_axes = "altaz";
+    auto native_input = projection_input(projection);
+    native_input.noise.data.resize(2, projection.detector_count());
+    native_input.noise.data << 1, -1, 1, -1,
+                              -1, -1, 1, 1;
+    auto legacy_input = projection_input(projection, true);
+    legacy_input.noise.data = native_input.noise.data;
+    auto native_map = make_map(projection.detector_count(), true, 2, true);
+    auto legacy_map = make_map(projection.detector_count(), true, 2, true);
+    mapmaking::MapBuffer empty_native{"cmb"};
+    mapmaking::MapBuffer empty_legacy{"cmb"};
+    auto native_maker = make_jinc();
+    auto legacy_maker = make_jinc();
+
+    native_maker.populate_maps_jinc_parallel_native(
+        native_input, native_map, empty_native, map_indices,
+        pixel_axes, apt, kSampleRateHz, true, true, projection);
+    legacy_maker.populate_maps_jinc_parallel(
+        legacy_input, legacy_map, empty_legacy, map_indices,
+        pixel_axes, apt, kSampleRateHz, true, true);
+    expect_map_exact(native_map, legacy_map, true);
 }
 
 TEST(sci_align_native_science_projection,

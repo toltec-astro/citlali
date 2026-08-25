@@ -442,6 +442,28 @@ inline YAML::Node native_cohort_product_provenance_node_v3(
                     *scan.map_occurrence
                          .jinc_processing_configuration_digest;
             }
+            const auto &noise = scan.map_occurrence.noise_assignment;
+            auto noise_node = map_node["noise_assignment"];
+            noise_node["enabled"] = noise.enabled;
+            if (noise.enabled) {
+                noise_node["randomize_detectors"] =
+                    noise.randomize_detectors;
+                noise_node["realization_count"] =
+                    noise.realization_count;
+                noise_node["assignment_column_count"] =
+                    noise.assignment_column_count;
+                noise_node["assignment_count"] =
+                    noise.assignment_count;
+                noise_node["positive_sign_count"] =
+                    noise.positive_sign_count;
+                noise_node["negative_sign_count"] =
+                    noise.negative_sign_count;
+                noise_node["assignment_digest"] =
+                    noise.assignment_digest;
+                noise_node["support_authority"] =
+                    noise.support_authority;
+                noise_node["assignment_values_serialized"] = false;
+            }
         }
         node["scans"].push_back(item);
     }

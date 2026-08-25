@@ -319,9 +319,8 @@ TEST(SciAlignNativeConsumerExecution,
         .flagging.lower_tod_inv_var_factor = 0.0;
 
     pipeline::noise_config(engine).enabled = true;
-    EXPECT_THROW(
-        pipeline::require_supported_native_consumer_observation(engine),
-        std::logic_error);
+    EXPECT_NO_THROW(
+        pipeline::require_supported_native_consumer_observation(engine));
     pipeline::noise_config(engine).enabled = false;
 
     engine.calib.apt["duplicate_tone"](0) = 0.5;
@@ -344,6 +343,82 @@ TEST(SciAlignNativeConsumerExecution,
 
     EXPECT_NO_THROW(
         pipeline::require_supported_native_consumer_observation(engine));
+}
+
+TEST(SciAlignNativeConsumerExecution,
+     NoiseAssignmentsAreExactBoundedAndProjectionOwned) {
+    auto loaded = fixture::load_native_gap_fixture_v1();
+    loaded.scan_index = 0;
+    auto scan = fixture::materialize_native_gap_measured_scan(loaded);
+    Engine engine;
+    configure_native_test_engine(engine, *scan);
+    pipeline::noise_config(engine).enabled = true;
+    pipeline::noise_config(engine).n_noise_maps = 2;
+    pipeline::noise_config(engine).randomize_dets = true;
+
+    timestream::TCData<timestream::TCDataKind::RTC, Eigen::MatrixXd>
+        source;
+    source.native_runtime =
+        std::make_shared<pipeline::NativeScanRuntimeState>(scan);
+    source.noise.data.resize(2, 4);
+    source.noise.data << 1, -1, 1, -1,
+                        -1, -1, 1, 1;
+    Eigen::VectorXI map_indices(4);
+    map_indices << 0, 1, 2, 3;
+
+    auto prepared = pipeline::prepare_native_consumer_map_scan(
+        engine, source, map_indices);
+    ASSERT_TRUE(prepared.runtime->noise_assignment.has_value());
+    const auto &noise = *prepared.runtime->noise_assignment;
+    EXPECT_TRUE(noise.enabled);
+    EXPECT_TRUE(noise.randomize_detectors);
+    EXPECT_EQ(noise.realization_count, 2U);
+    EXPECT_EQ(noise.assignment_column_count, 4U);
+    EXPECT_EQ(noise.assignment_count, 8U);
+    EXPECT_EQ(noise.positive_sign_count, 4U);
+    EXPECT_EQ(noise.negative_sign_count, 4U);
+    EXPECT_FALSE(noise.assignment_digest.empty());
+    EXPECT_EQ(noise.support_authority,
+              pipeline::native_noise_support_authority_v3);
+
+    auto bad_signs = source.noise.data;
+    bad_signs(0, 0) = 0;
+    EXPECT_THROW(
+        pipeline::make_native_noise_assignment_summary_v3(
+            bad_signs, true, true, 2, 4),
+        std::logic_error);
+
+    pipeline::NativeCohortMapPublicationRequestV3 map_request;
+    map_request.mapmaking_enabled = true;
+    map_request.method = "naive";
+    map_request.product_occurrence = "urn:citlali:test:native-noise";
+    map_request.product_identity_digest =
+        "sha256:test-native-noise-product";
+    map_request.eligible_weight_digest =
+        mapmaking::jinc_matrix_digest(prepared.ptcdata.weights.data);
+    map_request.noise_assignment = noise;
+    for (Eigen::Index detector = 0;
+         detector < prepared.ptcdata.weights.data.size(); ++detector) {
+        if (prepared.ptcdata.weights.data(detector) > 0.0) {
+            ++map_request.positive_weight_detector_count;
+        }
+        else {
+            ++map_request.zero_weight_detector_count;
+            map_request.zero_weight_detector_columns.push_back(detector);
+        }
+    }
+    const auto binding =
+        pipeline::make_native_cohort_observation_binding_v2(
+            0, *scan->relation_handle(), scan->carriers_handle());
+    const auto record = pipeline::make_native_cohort_scan_provenance_v3(
+        binding, prepared.runtime->ledger(), *prepared.runtime->rtc,
+        *prepared.runtime->ptc_prepared,
+        *prepared.runtime->science_projection,
+        *prepared.runtime->ptc_preclean_flags,
+        *prepared.runtime->ptc_flags,
+        prepared.ptcdata.flags.data, std::move(map_request));
+    EXPECT_EQ(record.map_occurrence.noise_assignment.assignment_digest,
+              noise.assignment_digest);
 }
 
 TEST(SciAlignNativeConsumerExecution,

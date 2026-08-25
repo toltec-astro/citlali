@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/mapmaking/jinc_contract.h>
+#include <citlali/core/pipeline/native_noise_assignment.h>
 #include <citlali/core/pipeline/timestream_native_science_projection.h>
 
 #include <memory>
@@ -45,6 +46,7 @@ public:
         ptc_flags;
     std::optional<mapmaking::JincProcessingScanTrace>
         jinc_processing_trace;
+    std::optional<NativeNoiseAssignmentSummaryV3> noise_assignment;
     std::vector<TimestreamDetectorColumn>
         learned_map_zero_weight_detector_columns;
     Eigen::VectorXd fcf;

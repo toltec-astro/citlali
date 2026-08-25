@@ -88,12 +88,23 @@ instead of narrowing into a different detector identity.
 Focused activated-learning tests prove strict earlier-iteration selection,
 both coordinate systems across a native gap, append-only PTC masks, exact
 pre-map weight exclusion even when samples were already flagged, all three
-bounded cause authorities, and oversized-UID non-aliasing. The CLI builds, all
-817 runnable
-CTests pass, and the required config preflight passes 129 Python tests, four
+bounded cause authorities, and oversized-UID non-aliasing.
+
+The fourth execution layer restores the established seeded noise-realization
+assignment and native science-projection arithmetic. The detector-by-
+realization sign matrix remains runtime state. Canonical provenance records
+only the effective realization and assignment dimensions, positive/negative
+population counts, the deterministic assignment digest, and the named native
+projection authority; it explicitly does not serialize assignment values.
+Both shared-sign and per-detector randomization shapes fail closed, and every
+runtime sign must be exactly minus or plus one. An identical-time fixture
+proves exact native/legacy JINC noise-map arithmetic.
+
+The CLI builds, all 819 runnable CTests pass with the one established disabled
+test not run, and the required config preflight passes 129 Python tests, four
 mode kits, eight compatibility cases, and every authority audit. Native parity
-for noise realizations and fruit-loop feedback remains required before the
-clean-commit JINC replay and one exact-SHA Unity confirmation.
+for fruit-loop feedback remains required before the clean-commit JINC replay
+and one exact-SHA Unity confirmation.
 
 ## 2026-08-24 Build-Time Git-Provenance Refresh Repair
 
