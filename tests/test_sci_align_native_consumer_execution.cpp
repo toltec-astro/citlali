@@ -210,6 +210,29 @@ TEST(SciAlignNativeConsumerExecution,
     EXPECT_TRUE(prepared.ptcdata.weights.data.array().isFinite().all());
     EXPECT_TRUE((prepared.ptcdata.weights.data.array() > 0.0).all());
 
+    for (const auto &name : engine.diagnostics.det_stats_header) {
+        engine.diagnostics.stats[name].setZero(
+            prepared.ptcdata.scans.data.cols(), 1);
+    }
+    for (const auto &name : engine.diagnostics.grp_stats_header) {
+        engine.diagnostics.stats[name].setZero(1, 1);
+    }
+    EXPECT_NO_THROW(
+        pipeline::collect_native_consumer_scan_diagnostics(
+            engine.diagnostics, prepared));
+    EXPECT_TRUE(engine.diagnostics.stats["rms"].array().isFinite().all());
+    EXPECT_GT(engine.diagnostics.stats["rms"].sum(), 0.0);
+    EXPECT_TRUE(engine.diagnostics.stats["weights"].col(0).isApprox(
+        prepared.ptcdata.weights.data, 0.0));
+    for (Eigen::Index detector = 0;
+         detector < prepared.ptcdata.flags.data.cols(); ++detector) {
+        const auto expected =
+            prepared.ptcdata.flags.data.col(detector).cast<double>().mean();
+        EXPECT_DOUBLE_EQ(
+            engine.diagnostics.stats["flagged_frac"](detector, 0),
+            expected);
+    }
+
     const auto binding =
         pipeline::make_native_cohort_observation_binding_v2(
             0, *scan->relation_handle(), scan->carriers_handle());

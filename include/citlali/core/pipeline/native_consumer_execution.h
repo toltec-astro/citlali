@@ -1258,6 +1258,32 @@ struct NativeConsumerPreparedMapScan {
     Eigen::VectorXI map_indices;
 };
 
+template <class Diagnostics>
+void collect_native_consumer_scan_diagnostics(
+    Diagnostics &diagnostics, NativeConsumerPreparedMapScan &prepared) {
+    auto &ptcdata = prepared.ptcdata;
+    const auto scan_index = ptcdata.index.data;
+    if (ptcdata.scans.data.rows() <= 0 ||
+        ptcdata.scans.data.cols() <= 0 ||
+        ptcdata.flags.data.rows() != ptcdata.scans.data.rows() ||
+        ptcdata.flags.data.cols() != ptcdata.scans.data.cols() ||
+        ptcdata.weights.data.size() != ptcdata.scans.data.cols() ||
+        scan_index < 0) {
+        throw std::logic_error(
+            "native consumer diagnostics require one complete PTC scan");
+    }
+    for (const auto &name : diagnostics.det_stats_header) {
+        const auto found = diagnostics.stats.find(name);
+        if (found == diagnostics.stats.end() ||
+            found->second.rows() != ptcdata.scans.data.cols() ||
+            scan_index >= found->second.cols()) {
+            throw std::logic_error(
+                "native consumer detector diagnostics are not initialized");
+        }
+    }
+    diagnostics.calc_stats(ptcdata);
+}
+
 template <class Engine, class RtcData>
 NativeConsumerPreparedMapScan prepare_native_consumer_map_scan(
     Engine &engine, const RtcData &source_rtc,

@@ -58,6 +58,9 @@ auto Lali::run(
             auto native =
                 citlali::pipeline::prepare_native_consumer_map_scan(
                     *this, rtcdata, map_indices);
+            logger->debug("calculating native stats");
+            citlali::pipeline::collect_native_consumer_scan_diagnostics(
+                diagnostics, native);
             auto &raw_plan =
                 citlali::pipeline::raw_timestream_plan(*this);
             if (!raw_plan.observation ||
