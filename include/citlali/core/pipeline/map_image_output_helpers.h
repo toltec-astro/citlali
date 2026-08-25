@@ -50,8 +50,9 @@ bool science_map_successor_coadd_product(
 // admission.  A method such as JINC can retain the established legacy coadd
 // arithmetic while truthfully remaining outside the F009/F010 successor
 // profile.  It is still a coadd product, however, and must not publish
-// observation-only empirical-noise companions or legacy observation summary
-// cards merely because that richer science-map profile is unavailable.
+// observation-only empirical-noise companions merely because that richer
+// science-map profile is unavailable.  Legacy coadds retain legacy iteration
+// control metadata such as MEDRMS; successor coadds replace that contract.
 template <class ScienceProducts>
 bool science_map_coadd_output_product(
     const ScienceProducts &products) {
@@ -425,11 +426,15 @@ void add_primary_map_image_hdus(
     const std::string &map_name, const std::string &stokes_suffix,
     const Wcs &wcs, double source_epoch, bool empirical_weight_calibration,
     bool empirical_noise_products_expected, bool is_beammap,
-    bool coadd_product, const Logger &logger,
+    bool coadd_output_product, bool successor_coadd_product,
+    const Logger &logger,
     bool is_filtered_output = false,
     const std::string &raw_parent_digest = {}) {
     const bool publish_empirical_product_companions =
-        empirical_noise_products_expected && !coadd_product;
+        empirical_noise_products_expected && !coadd_output_product;
+    const bool publish_legacy_fruit_loop_scale =
+        coadd_output_product && !successor_coadd_product &&
+        !is_filtered_output;
     const bool stack_scatter_valid =
         i >= 0 && i < mb->noise_stack_scatter_valid.size()
             ? mb->noise_stack_scatter_valid(i) != 0
@@ -452,7 +457,7 @@ void add_primary_map_image_hdus(
                 "empirical noise products were requested but map index {} lacks formal-coefficient or conditional-stack-scatter data",
                 static_cast<long long>(i)));
     }
-    if (!coadd_product &&
+    if (!successor_coadd_product &&
         (i < 0 || i >= mb->median_err.size())) {
         fail_required_output(
             logger,
@@ -493,6 +498,12 @@ void add_primary_map_image_hdus(
         add_raw_parent_identity_keys(
             *fits_entry.hdus.back(), raw_parent_digest);
     }
+    if (publish_legacy_fruit_loop_scale && i >= 0 &&
+        i < mb->median_rms.size() && std::isfinite(mb->median_rms(i)) &&
+        mb->median_rms(i) > 0.0) {
+        add_image_median_rms_key(
+            *fits_entry.hdus.back(), mb->median_rms(i), mb->sig_unit);
+    }
     if (publish_empirical_product_companions) {
         const Eigen::Index valid_pixels =
             i >= 0 && i < mb->noise_valid_pixels.size()
@@ -516,7 +527,7 @@ void add_primary_map_image_hdus(
         }
     }
 
-    if (!coadd_product) {
+    if (!successor_coadd_product) {
         const double median_err_value = mb->median_err(i);
         const double median_err = map_median_error_or_zero_logged(
             median_err_value, is_beammap, map_name, fits_entry.filepath,

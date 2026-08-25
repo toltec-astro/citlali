@@ -182,14 +182,17 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
         citlali::pipeline::noise_maps_enabled(*this) &&
         citlali::pipeline::noise_realization_outputs_enabled(*this) &&
         mb->n_noise > 0;
-    const bool coadd_product =
+    const bool coadd_output_product =
         citlali::pipeline::science_map_coadd_output_product(
             science_products);
-    if (!coadd_product &&
+    const bool successor_coadd_product =
+        citlali::pipeline::science_map_successor_coadd_product(
+            science_products);
+    if (!successor_coadd_product &&
         (i < 0 || i >= mb->median_err.size())) {
         mb->calc_median_err();
     }
-    if (!coadd_product &&
+    if (!successor_coadd_product &&
         (i < 0 || i >= mb->median_err.size())) {
         citlali::pipeline::fail_required_output(
             logger,
@@ -197,7 +200,7 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
                 "observation map index {} lacks the required legacy median coefficient-scale diagnostic",
                 static_cast<long long>(i)));
     }
-    if (empirical_noise_products_expected && !coadd_product &&
+    if (empirical_noise_products_expected && !coadd_output_product &&
         (!citlali::pipeline::has_map_image_slot(
              mb->weight_formal, i, mb->n_rows, mb->n_cols) ||
          !citlali::pipeline::has_map_image_slot(
@@ -298,8 +301,8 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
         citlali::pipeline::add_primary_map_image_hdus(
             fits_io->at(map_index), mb, i, map_name, stokes_suffix, mb->wcs,
             source_epoch, empirical_weight_calibration,
-            empirical_noise_products_expected, is_beammap, coadd_product,
-            logger,
+            empirical_noise_products_expected, is_beammap,
+            coadd_output_product, successor_coadd_product, logger,
             is_filtered_output, raw_parent_digest);
 
         // kernel map
@@ -314,7 +317,7 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
         citlali::pipeline::add_coverage_support_image_hdus(
             fits_io->at(map_index), mb, i, map_name, stokes_suffix, mb->wcs,
             source_epoch, is_filtered_output,
-            empirical_noise_products_expected, coadd_product, logger);
+            empirical_noise_products_expected, coadd_output_product, logger);
 
         // write noise maps
         if (write_noise_realizations) {

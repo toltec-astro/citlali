@@ -1423,6 +1423,28 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                                 *map_index, map_path.string()));
                         }
                         weight_maps[*map_index] = fits_io.get_hdu(extName);
+                        // A legacy JINC coadd is deliberately outside the
+                        // F009/F010 successor profile and therefore omits the
+                        // observation-only noise-variance companion.  Its
+                        // raw weight HDU carries the bounded MEDRMS iteration
+                        // control summary needed by the next fruit loop.
+                        if (s2n_gate_requested && !found_rms_for_array) {
+                            double median_rms =
+                                std::numeric_limits<double>::quiet_NaN();
+                            try {
+                                ext.readKey("MEDRMS", median_rms);
+                            }
+                            catch (const CCfits::HDU::NoSuchKeyword &) {
+                                median_rms =
+                                    std::numeric_limits<double>::quiet_NaN();
+                            }
+                            if (std::isfinite(median_rms) &&
+                                median_rms > 0.0) {
+                                median_rms_vec[arr_it->second] = median_rms;
+                                found_rms_for_array = true;
+                                found_any_rms = true;
+                            }
+                        }
                         logger->info("found {} [{}]", map_path.filename().string(), extName);
                     }
                 }
@@ -1442,8 +1464,10 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
             }
 
             // Legacy fallback: older products kept MEDRMS only in realization
-            // FITS files.  New products carry it on the main noise-variance
-            // HDU, so writing all realizations is not required for feedback.
+            // FITS files.  Current observation products carry it on the main
+            // noise-variance HDU and legacy JINC coadds carry it on the raw
+            // weight HDU, so writing all realizations is not required for
+            // feedback.
             if (s2n_gate_requested && !found_rms_for_array) {
                 std::vector<fs::path> noise_files;
                 for (const auto& entry : fs::directory_iterator(noise_filepath)) {

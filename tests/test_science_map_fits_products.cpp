@@ -537,7 +537,7 @@ TEST(science_map_fits_products,
 
     citlali::pipeline::add_primary_map_image_hdus(
         primary, map, 0, "", "I", wcs, 2000.0, false, true, false,
-        false, science_map_test_logger());
+        false, false, science_map_test_logger());
     citlali::pipeline::add_coverage_support_image_hdus(
         raw_support, map, 0, "", "I", wcs, 2000.0, false, true, false,
         science_map_test_logger());
@@ -683,7 +683,7 @@ TEST(science_map_fits_products,
 
     citlali::pipeline::add_primary_map_image_hdus(
         primary, map, 0, "", "I", wcs, 2000.0, false, false, false,
-        true, science_map_test_logger());
+        true, true, science_map_test_logger());
     citlali::pipeline::add_coverage_support_image_hdus(
         support, map, 0, "", "I", wcs, 2000.0, false, false, true,
         science_map_test_logger());
@@ -802,7 +802,7 @@ TEST(science_map_fits_products,
 
     citlali::pipeline::add_primary_map_image_hdus(
         output, map, 0, "", "I", wcs, 2000.0, false, false, false,
-        true, science_map_test_logger());
+        true, true, science_map_test_logger());
 
     const auto &weight = captured_hdu(output, "weight_I").keys;
     EXPECT_EQ(weight.at("PRECSTAT"), "not_established");
@@ -878,7 +878,7 @@ TEST(science_map_fits_products,
     EXPECT_THROW(
         citlali::pipeline::add_primary_map_image_hdus(
             primary_output, map, 0, "", "I", wcs, 2000.0, true, true,
-            false, false, science_map_test_logger()),
+            false, false, false, science_map_test_logger()),
         citlali::error::Error);
     EXPECT_TRUE(primary_output.images.empty());
 
@@ -900,7 +900,7 @@ TEST(science_map_fits_products,
     EXPECT_THROW(
         citlali::pipeline::add_primary_map_image_hdus(
             output, map, 0, "", "I", wcs, 2000.0, false, false,
-            false, false, science_map_test_logger()),
+            false, false, false, science_map_test_logger()),
         citlali::error::Error);
     EXPECT_TRUE(output.images.empty());
 }
@@ -917,7 +917,7 @@ TEST(science_map_fits_products,
     DummyWcs wcs;
     EXPECT_NO_THROW(citlali::pipeline::add_primary_map_image_hdus(
         output, map, 0, "", "I", wcs, 2000.0, false, false, false,
-        false, science_map_test_logger()));
+        false, false, science_map_test_logger()));
     ASSERT_EQ(output.images.size(), 2U);
     const auto &weight = captured_hdu(output, "weight_I").keys;
     EXPECT_NE(weight.find("MEDERR"), weight.end());
@@ -1699,6 +1699,31 @@ TEST(science_map_fits_products,
             realization_base + ".fits"};
         data_files.clear();
         realization_files.clear();
+
+        fitsfile *coadd_file = nullptr;
+        int coadd_fits_status = 0;
+        ASSERT_EQ(
+            fits_open_file(
+                &coadd_file, data_paths.front().c_str(), READONLY,
+                &coadd_fits_status),
+            0);
+        ASSERT_NO_THROW(move_to_required_image(coadd_file, "weight_I"));
+        if (successor_profile_available) {
+            double unexpected_median_rms = 0.0;
+            coadd_fits_status = 0;
+            EXPECT_EQ(
+                fits_read_key(
+                    coadd_file, TDOUBLE, "MEDRMS", &unexpected_median_rms,
+                    nullptr, &coadd_fits_status),
+                KEY_NO_EXIST);
+            coadd_fits_status = 0;
+        }
+        else {
+            EXPECT_DOUBLE_EQ(
+                read_required_fits_double(coadd_file, "MEDRMS"), 2.0);
+        }
+        ASSERT_EQ(fits_close_file(coadd_file, &coadd_fits_status), 0);
+
         ASSERT_NO_THROW(
             citlali::pipeline::record_noise_map_output_publication(
                 engine.noise_plan, true, false, *coadd,
