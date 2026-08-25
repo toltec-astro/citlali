@@ -1,13 +1,13 @@
 # WP-7 Repair Scientific-Owner Decision Packet
 
 Status: **active owner disposition record; `WP7-OWNER-D001` approved;
-`WP7-OWNER-D002` exact-byte recovery and WVR interpolation rule approved;
-D002 unavailable-opacity disposition and D003--D004 pending**
+`WP7-OWNER-D002` exact-byte recovery, WVR interpolation, and
+unavailable-opacity disposition approved; D003--D004 pending**
 
 Authorized successor work remains bounded to D001 authority publication and
 admission of D002's recovered exact bytes and approved WVR interpolation
-authority. No unavailable-opacity, classifier, consumer, or implementation
-decision is inferred.
+and unavailable-opacity authorities. No classifier, consumer, or
+implementation decision is inferred.
 
 Date opened: `2026-08-25`
 
@@ -135,7 +135,7 @@ and requires no new scientific choice.
 | Decision | Present state | Recommendation | Owner response |
 | --- | --- | --- | --- |
 | `WP7-OWNER-D001` — native-interface authority publication | Scientific decision already approved; approval/precedence not readable in WP-7 | Approve a successor clean-room packet that admits the exact existing decision, approval, source manifest, README, and interface as one readable authority set while preserving the approved interface bytes and digest | **APPROVED — 2026-08-25** |
-| `WP7-OWNER-D002` — CAL numerical authority | Three exact numerical identities recovered and staged; WVR interpolation rule approved; unavailable-opacity disposition not yet explicit | Admit the verified bytes without regeneration or substitution, use the approved versioned linear rule, and separately approve the fail-closed unavailable-opacity disposition | **BYTE RECOVERY AND INTERPOLATION APPROVED — UNAVAILABLE-OPACITY DISPOSITION PENDING** |
+| `WP7-OWNER-D002` — CAL numerical authority | Three exact numerical identities recovered and staged; WVR interpolation and unavailable-opacity rules approved | Admit the verified bytes without regeneration or substitution and use the approved versioned interpolation and fail-closed unavailable-opacity rules | **APPROVED — RECOVERY, INTERPOLATION, AND UNAVAILABLE-OPACITY — 2026-08-25** |
 | `WP7-OWNER-D003` — observation-wide opacity classifier | Exact classifier incomplete | Approve one versioned deterministic classifier record defining every required statistic and boundary; infer no default from `momentary` or the numerical-operator support | **PENDING DECISION** |
 | `WP7-OWNER-D004` — RTC-terminal consumer boundary | Terminal publication approved; additional consumer unnamed | For WP-7 v0.1, define successful publication of the complete consumer-neutral RTC bundle as the endpoint. Keep companion-ML acceptance and handoff schema outside WP-7 until separately named | **PENDING DECISION** |
 
@@ -289,17 +289,21 @@ Approve `cal_wvr_tau225_unavailable_v1` with the following policy:
    product. Observation-wide opacity classification remains governed by the
    separate D003 authority and cannot restore numerical support.
 
+#### Gate C result — approved
+
+The scientific owner approved `cal_wvr_tau225_unavailable_v1` as written on
+`2026-08-25`.
+
 ### Owner response
 
-**Gate A complete and Gate B approved — 2026-08-25. Gate C pending
-scientific-owner decision.**
+**Gate A complete and Gates B--C approved — 2026-08-25.**
 
 After the original atmosphere-model task was located, the scientific owner
 directed the exact-object recovery and staging to proceed. This response
 authorizes admission of the verified existing objects and approves
-`cal_wvr_tau225_linear_detector_time_v1` exactly as recorded above. It does
-not yet approve `cal_wvr_tau225_unavailable_v1`, select the observation-wide
-classifier, or alter the recovered numerical authority.
+`cal_wvr_tau225_linear_detector_time_v1` and
+`cal_wvr_tau225_unavailable_v1` exactly as recorded above. It does not select
+the observation-wide classifier or alter the recovered numerical authority.
 
 ## 6. `WP7-OWNER-D003`: deterministic opacity classifier
 
