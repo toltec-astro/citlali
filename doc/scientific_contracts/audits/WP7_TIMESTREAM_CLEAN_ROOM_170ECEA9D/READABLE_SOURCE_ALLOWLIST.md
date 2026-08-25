@@ -1,7 +1,8 @@
 # WP-7 Readable Source Allowlist
 
-Source commit: `170ecea9de1ee810da7d7e45a489a4545ccd623d
-Perimeter authorization: **approved by scientific owner Grant Wilson**`
+Source commit: `170ecea9de1ee810da7d7e45a489a4545ccd623d`
+
+Perimeter authorization: **approved by scientific owner Grant Wilson**
 
 The fresh auditor may read only the source-commit paths below plus the
 packet-local inputs named in `SOURCE_MANIFEST.md`. Git history,
@@ -128,7 +129,6 @@ For each package, `src/common/*.tex` means the six canonical modules named
 - `doc/scientific_contracts/audits/WP7_TIMESTREAM_CLEAN_ROOM_F01E22F5F/REPAIR_AND_CLOSURE/WP7_PASSBAND_IDENTITY_COMPATIBILITY_PROPOSAL_2026-08-25.md`
 - `doc/scientific_contracts/audits/WP7_TIMESTREAM_CLEAN_ROOM_F01E22F5F/REPAIR_AND_CLOSURE/WP7_CAL_QUALITY_TOKEN_COMPATIBILITY_PROPOSAL_2026-08-25.md`
 - `doc/scientific_contracts/audits/WP7_TIMESTREAM_CLEAN_ROOM_F01E22F5F/REPAIR_AND_CLOSURE/WP7_VAL_SUCCESSOR_BINDING_COMPATIBILITY_PROPOSAL_2026-08-25.md`
-
 
 ## Packet-Local Readability View
 
