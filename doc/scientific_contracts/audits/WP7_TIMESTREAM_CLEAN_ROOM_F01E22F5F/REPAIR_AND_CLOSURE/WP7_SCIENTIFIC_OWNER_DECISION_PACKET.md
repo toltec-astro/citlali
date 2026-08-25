@@ -2,12 +2,13 @@
 
 Status: **active owner disposition record; `WP7-OWNER-D001` approved;
 `WP7-OWNER-D002` exact-byte recovery, WVR interpolation, and
-unavailable-opacity disposition approved; D003--D004 pending**
+unavailable-opacity disposition approved; `WP7-OWNER-D003` approved; D004
+pending**
 
 Authorized successor work remains bounded to D001 authority publication and
 admission of D002's recovered exact bytes and approved WVR interpolation
-and unavailable-opacity authorities. No classifier, consumer, or
-implementation decision is inferred.
+and unavailable-opacity authorities, plus publication of the approved D003
+classifier. No consumer or implementation decision is inferred.
 
 Date opened: `2026-08-25`
 
@@ -136,7 +137,7 @@ and requires no new scientific choice.
 | --- | --- | --- | --- |
 | `WP7-OWNER-D001` — native-interface authority publication | Scientific decision already approved; approval/precedence not readable in WP-7 | Approve a successor clean-room packet that admits the exact existing decision, approval, source manifest, README, and interface as one readable authority set while preserving the approved interface bytes and digest | **APPROVED — 2026-08-25** |
 | `WP7-OWNER-D002` — CAL numerical authority | Three exact numerical identities recovered and staged; WVR interpolation and unavailable-opacity rules approved | Admit the verified bytes without regeneration or substitution and use the approved versioned interpolation and fail-closed unavailable-opacity rules | **APPROVED — RECOVERY, INTERPOLATION, AND UNAVAILABLE-OPACITY — 2026-08-25** |
-| `WP7-OWNER-D003` — observation-wide opacity classifier | Approved policy intent recovered; no existing source defines `momentary` by duration or fraction | Approve `cal_wvr_observation_quality_mean_peak_v1`: time-weighted mean at `0.15`, tolerated peak through `0.175`, engineering support through `0.25`, exact coverage and failure classes | **PENDING DECISION** |
+| `WP7-OWNER-D003` — observation-wide opacity classifier | Approved policy intent recovered; no existing source defines `momentary` by duration or fraction | Approve `cal_wvr_observation_quality_mean_peak_v1`: time-weighted mean at `0.15`, tolerated peak through `0.175`, engineering support through `0.25`, exact coverage and failure classes | **APPROVED — 2026-08-25** |
 | `WP7-OWNER-D004` — RTC-terminal consumer boundary | Terminal publication approved; additional consumer unnamed | For WP-7 v0.1, define successful publication of the complete consumer-neutral RTC bundle as the endpoint. Keep companion-ML acceptance and handoff schema outside WP-7 until separately named | **PENDING DECISION** |
 
 ## 4. `WP7-OWNER-D001`: native-interface authority publication
@@ -415,7 +416,15 @@ cadence.
 
 ### Owner response
 
-**Pending.**
+**Approved — 2026-08-25.**
+
+The scientific owner approved
+`cal_wvr_observation_quality_mean_peak_v1` exactly as written, including the
+explicit absence of an independent duration, count, cadence, or fraction
+cutoff. This authorizes the successor packet to publish and bind the complete
+classifier authority. It does not authorize implementation work, alter
+sample-level atmosphere support, supply achieved atmosphere-fidelity or
+observational-performance evidence, or decide D004.
 
 ## 7. `WP7-OWNER-D004`: RTC-terminal consumer boundary
 
