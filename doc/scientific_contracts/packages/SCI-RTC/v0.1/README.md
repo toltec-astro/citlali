@@ -1,7 +1,9 @@
 # SCI-RTC — Raw-Timestream Conditioning And Temporal Response
 
 Status: SCI-RTC v0.1/r0.12 scientific authority frozen by Grant Wilson on
-`2026-08-21`; implementation conformity not assessed under this contract.
+`2026-08-21`; approved explanatory owner-identifier source correction
+published `2026-08-25`; implementation conformity not assessed under this
+contract.
 
 Version: `v0.1`
 
@@ -53,6 +55,11 @@ inputs.
 - Scientific-owner freeze: complete for v0.1/r0.12 on `2026-08-21`; the
   verified candidate at commit `ffce339abbb3c89ae1bf622c5395e28a5e727ea4`
   was promoted without scientific change.
+- Explanatory source correction: approved and published `2026-08-25`; only the
+  rationale's `OWNER-090--096` paraphrase ordering changed to match the
+  controlling ledger. The shared normative core, ledger, crosswalk, numerical
+  behavior, and engineering source are unchanged; both canonical PDFs were
+  rebuilt and rebound under the dated correction manifest.
 - Implementation conformity, validation, and production promotion: not
   established.
 
@@ -196,6 +203,11 @@ resolve PTC, SCI-VAL, or any unrelated open RTC policy.
   exact content-bound r0.12 candidate snapshot; not an authority freeze
 - [`SCIENTIFIC_OWNER_FREEZE_R0.12.md`](SCIENTIFIC_OWNER_FREEZE_R0.12.md):
   exact scientific-owner freeze, retained states, hashes, and change control
+- [`SCIENTIFIC_OWNER_SOURCE_CORRECTION_2026-08-25.md`](SCIENTIFIC_OWNER_SOURCE_CORRECTION_2026-08-25.md):
+  approved explanatory `OWNER-090--096` traceability correction and preserved
+  authority boundary
+- [`SOURCE_MANIFEST_CORRECTED_2026-08-25.md`](SOURCE_MANIFEST_CORRECTED_2026-08-25.md):
+  exact corrected source and PDF generation binding
 - [`FREEZE_VERIFICATION_R0.12.md`](FREEZE_VERIFICATION_R0.12.md): status-only
   source/PDF verification and all-page visual-QA record
 - [`DECISION_LOG.md`](DECISION_LOG.md): package-selection and approved scope

@@ -454,6 +454,21 @@ remains a draft for scientific-owner review and freeze disposition; no
 implementation conformity, representation fidelity, validation, science
 qualification, or production-readiness claim is made.
 
+Current SCI-RTC status supersedes the draft-stage statements above. Subsequent
+bounded owner-directed revisions advanced the package through r0.12, which
+Grant froze on `2026-08-21` with 52 definitions, 44 equation tags, 12
+assumptions, 143 requirements, 108 predictions, and 103 owner entries. On
+`2026-08-25`, the WP-7 scientific-owner disposition approved a source-resolved
+explanatory correction: only the rationale's `OWNER-090--096` paraphrase
+ordering now changes to match the controlling ledger. The shared normative
+core, engineering source, ledger, crosswalk, numerical behavior, and retained
+open states are unchanged. Both PDFs were rebuilt and rebound under
+`SCIENTIFIC_OWNER_SOURCE_CORRECTION_2026-08-25.md` and
+`SOURCE_MANIFEST_CORRECTED_2026-08-25.md`; package verification and all-page
+Poppler QA pass. This publishes authority for a new WP-7 clean-room successor
+only and establishes no implementation, validation, performance, production,
+MAP, or finding-closure claim.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

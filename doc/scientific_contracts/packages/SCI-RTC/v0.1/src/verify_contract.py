@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mechanical SCI-RTC v0.1/r0.12 frozen-authority deliverable checks.
+"""Mechanical SCI-RTC v0.1/r0.12 corrected-authority deliverable checks.
 
 This helper reads only the approved author inputs and package deliverables.
 It does not inspect implementation, tests, history, or sibling packages.
@@ -311,14 +311,43 @@ def main() -> None:
         "ffce339abbb3c89ae1bf622c5395e28a5e727ea4" in text(freeze_r12),
         "verified r0.12 candidate commit",
     )
+    source_correction = PKG / "SCIENTIFIC_OWNER_SOURCE_CORRECTION_2026-08-25.md"
+    require(
+        digest(source_correction)
+        == "e79efa61cff5cb8c733a8718eb4ff91ecfd3a3826063e506cb2e628929cd5a3e",
+        "approved r0.12 explanatory source correction digest",
+    )
+    for corrected_owner_text in (
+        r"OWNER-090}: the canonical ordinary paired response is exactly",
+        r"OWNER-091}: Learn retains coordinate-specific and genuinely",
+        r"OWNER-092}: Resolve forms a cause-preserving union in one",
+        r"OWNER-093}: accepted hard evidence pair-flags support while",
+        r"OWNER-094}: raw validity and evidence, accepted pair action, and",
+        r"OWNER-095}: $r$ is an equal contamination sensor",
+        r"OWNER-096}: canonical action is symmetric after separately admitted",
+    ):
+        require(corrected_owner_text in rationale,
+                f"corrected explanatory owner trace: {corrected_owner_text}")
+    corrected_manifest = text(PKG / "SOURCE_MANIFEST_CORRECTED_2026-08-25.md")
+    corrected_rows = re.findall(
+        r"^\| `([^`]+)` \| [^|]+ \| `([0-9a-f]{64})` \|$",
+        corrected_manifest,
+        flags=re.MULTILINE,
+    )
+    require(len(corrected_rows) == 17, "corrected source-manifest inventory")
+    for relative, expected in corrected_rows:
+        path = PKG / relative
+        require(path.is_file(), f"corrected manifest object exists: {relative}")
+        require(digest(path) == expected,
+                f"corrected manifest hash: {relative}")
     frozen_status = "Scientific authority frozen by owner"
     require(frozen_status in rationale, "frozen status in rationale")
     require(frozen_status in engineering, "frozen status in engineering")
     frozen_pdfs = {
         PKG / "pdf" / "SCI-RTC-SCIENTIFIC-RATIONALE-v0.1.pdf":
-            "b0060b28253906f83f2f106d9df761864d8277317ebd5e3742ff963e11e30b3d",
+            "4cb1bdeefd56dc4d27870792f5a980e489bb887382ed7794426114bf9d0a5f1b",
         PKG / "pdf" / "SCI-RTC-ENGINEERING-CONFORMANCE-v0.1.pdf":
-            "9211091e71830295a8fe5febb102704c95f8397b017584cbeb4575728081da42",
+            "6b4c69e56ddc50310e588da2f500d10a068dacc05aa54e50b11bcd7b309ca989",
     }
     for path, expected in frozen_pdfs.items():
         require(digest(path) == expected, f"frozen PDF hash changed: {path.name}")
@@ -367,8 +396,8 @@ def main() -> None:
     print("PASS: crosswalk rows complete and sequential")
     print("PASS: author decisions=24 owner entries=103 (63 open, 1 conditional, 34 resolved, 5 deferred)")
     print("PASS: r0.9 history preserved; r0.11 architecture and r0.12 D01--D07 bound")
-    print("PASS: exact r0.12 scientific-owner freeze bound")
-    print("PASS: canonical frozen PDF hashes (2)")
+    print("PASS: exact r0.12 scientific-owner freeze and source correction bound")
+    print("PASS: canonical corrected PDF hashes (2)")
     print("PASS: rationale narrative sections=12")
     print("PASS: engineering wrapper has no independent displayed mathematics")
 
