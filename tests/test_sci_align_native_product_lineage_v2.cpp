@@ -121,7 +121,7 @@ LineageFixture make_lineage_fixture(bool mapmaking_enabled = true,
     }
     auto record = pipeline::make_native_cohort_scan_provenance_v3(
         binding, ledger, rtc, prepared, projection,
-        projection.flags(), projection.flags(),
+        projection.flags(), projection.flags(), projection.flags(),
         std::move(map_request));
     return {std::move(scan), std::move(ledger), std::move(rtc),
             std::move(prepared), std::move(projection),
@@ -233,7 +233,8 @@ TEST(SciAlignNativeProductLineageV2,
     auto record = pipeline::make_native_cohort_scan_provenance_v3(
         fixture.binding, fixture.ledger, fixture.rtc, fixture.prepared,
         fixture.projection, fixture.projection.flags(),
-        fixture.projection.flags(), std::move(request));
+        fixture.projection.flags(), fixture.projection.flags(),
+        std::move(request));
     EXPECT_EQ(
         record.map_occurrence.jinc_processing_configuration_digest,
         std::optional<std::string>{
@@ -491,7 +492,8 @@ TEST(SciAlignNativeProductLineageV2,
 
     auto record = pipeline::make_native_cohort_scan_provenance_v3(
         fixture.binding, fixture.ledger, fixture.rtc, fixture.prepared,
-        fixture.projection, ptc_flags, final_flags, {});
+        fixture.projection, fixture.projection.flags(), ptc_flags,
+        final_flags, {});
     EXPECT_EQ(record.population.ptc_second_pass_excluded_sample_count, 1U);
     EXPECT_EQ(record.population.postclean_outlier_excluded_sample_count, 0U);
     EXPECT_EQ(
@@ -512,7 +514,8 @@ TEST(SciAlignNativeProductLineageV2,
     outlier_flags(eligible[0].first, eligible[0].second) = true;
     auto outlier_record = pipeline::make_native_cohort_scan_provenance_v3(
         fixture.binding, fixture.ledger, fixture.rtc, fixture.prepared,
-        fixture.projection, fixture.projection.flags(), outlier_flags, {});
+        fixture.projection, fixture.projection.flags(),
+        fixture.projection.flags(), outlier_flags, {});
     EXPECT_EQ(
         outlier_record.population.postclean_outlier_excluded_sample_count,
         1U);
@@ -531,7 +534,8 @@ TEST(SciAlignNativeProductLineageV2,
     EXPECT_THROW(
         pipeline::make_native_cohort_scan_provenance_v3(
             fixture.binding, fixture.ledger, fixture.rtc,
-            fixture.prepared, fixture.projection, ptc_flags,
+            fixture.prepared, fixture.projection,
+            fixture.projection.flags(), ptc_flags,
             invalid_final, {}),
         std::logic_error);
 }
@@ -557,9 +561,11 @@ TEST(SciAlignNativeProductLineageV2,
     scan.population.delivered_flagged_sample_count = 0;
     scan.population.raw_input_flagged_sample_count = 0;
     scan.population.rtc_processing_flagged_sample_count = 0;
+    scan.population.learned_rtc_excluded_sample_count = 0;
     scan.population.operation_excluded_sample_count = 0;
     scan.population.apt_excluded_sample_count = 0;
     scan.population.ptc_second_pass_excluded_sample_count = 0;
+    scan.population.learned_ptc_excluded_sample_count = 0;
     scan.population.postclean_outlier_excluded_sample_count = 0;
     scan.population.final_excluded_sample_count = 0;
     scan.population.replaced_by_pca_sample_count =

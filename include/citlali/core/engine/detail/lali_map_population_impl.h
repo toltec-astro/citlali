@@ -30,18 +30,9 @@ void Lali::populate_lali_final_maps(
             citlali::pipeline::fruit_loops_config(*this).enabled,
             !ptcproc.tod_mb.signal.empty());
 
-    const auto native_flags = native_projection
-        ? std::optional{ptcdata.flags.data} : std::nullopt;
-    apply_learned_mapmaking_detector_exclusions(ptcdata, calib_scan);
-    if (native_flags) {
-        for (Eigen::Index detector = 0;
-             detector < ptcdata.flags.data.cols(); ++detector) {
-            if ((ptcdata.flags.data.col(detector).array() &&
-                 !native_flags->col(detector).array()).any()) {
-                ptcdata.weights.data(detector) = 0.0;
-            }
-        }
-        ptcdata.flags.data = *native_flags;
+    if (!native_projection) {
+        apply_learned_mapmaking_detector_exclusions(
+            ptcdata, calib_scan);
     }
     // populate maps with current time chunk
     logger->info("populating maps");

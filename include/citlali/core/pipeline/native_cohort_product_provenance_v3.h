@@ -33,6 +33,9 @@ inline constexpr NativeDetectorFlagBits
     native_cohort_duplicate_tone_exclusion_bit_v3 =
         NativeDetectorFlagBits{1} << 62U;
 inline constexpr NativeDetectorFlagBits
+    native_cohort_learned_rtc_exclusion_bit_v3 =
+        NativeDetectorFlagBits{1} << 61U;
+inline constexpr NativeDetectorFlagBits
     native_cohort_rtc_processing_flag_bit_v3 =
         NativeDetectorFlagBits{1} << 63U;
 
@@ -140,9 +143,11 @@ struct NativeCohortPopulationV3 {
     std::size_t delivered_flagged_sample_count = 0;
     std::size_t raw_input_flagged_sample_count = 0;
     std::size_t rtc_processing_flagged_sample_count = 0;
+    std::size_t learned_rtc_excluded_sample_count = 0;
     std::size_t operation_excluded_sample_count = 0;
     std::size_t apt_excluded_sample_count = 0;
     std::size_t ptc_second_pass_excluded_sample_count = 0;
+    std::size_t learned_ptc_excluded_sample_count = 0;
     std::size_t postclean_outlier_excluded_sample_count = 0;
     std::size_t final_excluded_sample_count = 0;
     std::size_t replaced_by_pca_sample_count = 0;
@@ -224,8 +229,10 @@ inline void NativeCohortScanProvenanceV3::validate(
     }
     std::size_t raw_input_cause_samples = 0;
     std::size_t rtc_processing_cause_samples = 0;
+    std::size_t learned_rtc_cause_samples = 0;
     std::size_t operation_cause_samples = 0;
     std::size_t second_pass_cause_samples = 0;
+    std::size_t learned_ptc_cause_samples = 0;
     std::size_t postclean_outlier_cause_samples = 0;
     for (const auto &cause : scoped_causes) {
         if (cause.scope.empty() || cause.authority.empty() ||
@@ -242,6 +249,7 @@ inline void NativeCohortScanProvenanceV3::validate(
                 !cause.flag_bits || *cause.flag_bits == 0 ||
                 (*cause.flag_bits &
                  (native_cohort_rtc_processing_flag_bit_v3 |
+                  native_cohort_learned_rtc_exclusion_bit_v3 |
                   native_cohort_duplicate_tone_exclusion_bit_v3)) != 0) {
                 throw std::logic_error(
                     "bounded raw-input cause has invalid authority fields");
@@ -264,6 +272,21 @@ inline void NativeCohortScanProvenanceV3::validate(
                 rtc_processing_cause_samples,
                 cause.affected_count,
                 "RTC processing flag cause");
+        }
+        else if (cause.authority ==
+                 "citlali.learning.native_rtc_application_v1") {
+            if (cause.scope != "scan_summary" ||
+                cause.cause != "learned_rtc_sample_mask" ||
+                cause.count_unit != "detector_samples" ||
+                cause.flag_bits !=
+                    native_cohort_learned_rtc_exclusion_bit_v3 ||
+                cause.start_row || cause.end_row) {
+                throw std::logic_error(
+                    "bounded learned RTC cause has invalid authority fields");
+            }
+            native_cohort_checked_add_v3(
+                learned_rtc_cause_samples, cause.affected_count,
+                "learned RTC flag cause");
         }
         else if (cause.authority ==
                  "citlali.native_duplicate_tone_policy_v2") {
@@ -290,6 +313,17 @@ inline void NativeCohortScanProvenanceV3::validate(
             }
         }
         else if (cause.authority ==
+                 "citlali.learning.native_map_application_v1") {
+            if (cause.scope != "scan_detector" ||
+                cause.cause != "learned_pre_map_detector_exclusion" ||
+                cause.count_unit != "detectors" || cause.flag_bits ||
+                cause.start_row || cause.end_row ||
+                cause.affected_count != cause.detector_columns.size()) {
+                throw std::logic_error(
+                    "bounded learned map cause has invalid authority fields");
+            }
+        }
+        else if (cause.authority ==
                  "citlali.ptc.second_pass_local_v1") {
             if (cause.scope != "scan_detector_interval" ||
                 cause.cause != "accepted_second_pass_event" ||
@@ -306,6 +340,24 @@ inline void NativeCohortScanProvenanceV3::validate(
             native_cohort_checked_add_v3(
                 second_pass_cause_samples, cause.affected_count,
                 "PTC second-pass interval cause");
+        }
+        else if (cause.authority ==
+                 "citlali.learning.native_ptc_application_v1") {
+            if (cause.scope != "scan_detector_interval" ||
+                cause.cause != "learned_ptc_sample_or_detector_mask" ||
+                cause.count_unit != "detector_samples" ||
+                cause.flag_bits || !cause.start_row || !cause.end_row ||
+                cause.detector_columns.size() != 1 ||
+                *cause.start_row > *cause.end_row ||
+                *cause.end_row >= population.row_count ||
+                cause.affected_count !=
+                    *cause.end_row - *cause.start_row + 1) {
+                throw std::logic_error(
+                    "bounded learned PTC cause has invalid interval fields");
+            }
+            native_cohort_checked_add_v3(
+                learned_ptc_cause_samples, cause.affected_count,
+                "learned PTC interval cause");
         }
         else if (cause.authority ==
                  "citlali.ptc.postclean_outlier_policy_v1") {
@@ -350,21 +402,29 @@ inline void NativeCohortScanProvenanceV3::validate(
             population.raw_input_flagged_sample_count ||
         rtc_processing_cause_samples !=
             population.rtc_processing_flagged_sample_count ||
+        learned_rtc_cause_samples !=
+            population.learned_rtc_excluded_sample_count ||
         population.delivered_flagged_sample_count <
             population.raw_input_flagged_sample_count ||
         population.delivered_flagged_sample_count <
             population.rtc_processing_flagged_sample_count ||
+        population.delivered_flagged_sample_count <
+            population.learned_rtc_excluded_sample_count ||
         population.delivered_flagged_sample_count >
             population.raw_input_flagged_sample_count +
-                population.rtc_processing_flagged_sample_count ||
+                population.rtc_processing_flagged_sample_count +
+                population.learned_rtc_excluded_sample_count ||
         operation_cause_samples !=
             population.operation_excluded_sample_count ||
         second_pass_cause_samples !=
             population.ptc_second_pass_excluded_sample_count ||
+        learned_ptc_cause_samples !=
+            population.learned_ptc_excluded_sample_count ||
         postclean_outlier_cause_samples !=
             population.postclean_outlier_excluded_sample_count ||
         population.final_excluded_sample_count !=
             population.mapped_invalid_sample_count +
+                population.learned_ptc_excluded_sample_count +
                 population.ptc_second_pass_excluded_sample_count +
                 population.postclean_outlier_excluded_sample_count) {
         throw std::logic_error(
@@ -433,7 +493,9 @@ inline void NativeCohortScanProvenanceV3::validate(
     }
     for (const auto &cause : scoped_causes) {
         if (cause.authority ==
-            "citlali.weighting.detector_weight_contract_v1") {
+                "citlali.weighting.detector_weight_contract_v1" ||
+            cause.authority ==
+                "citlali.learning.native_map_application_v1") {
             for (const auto detector : cause.detector_columns) {
                 if (!zero_weights.contains(detector)) {
                     throw std::logic_error(
@@ -493,7 +555,9 @@ inline void NativeCohortProductProvenanceV3::validate_complete(
                 if (cause.authority ==
                         "citlali.native_duplicate_tone_policy_v2" ||
                     cause.authority ==
-                        "citlali.weighting.detector_weight_contract_v1") {
+                        "citlali.weighting.detector_weight_contract_v1" ||
+                    cause.authority ==
+                        "citlali.learning.native_map_application_v1") {
                     named_zero_weights.insert(
                         cause.detector_columns.begin(),
                         cause.detector_columns.end());
@@ -522,6 +586,8 @@ struct NativeCohortMapPublicationRequestV3 {
     std::size_t zero_weight_detector_count = 0;
     std::vector<TimestreamDetectorColumn> zero_weight_detector_columns;
     std::optional<std::string> jinc_processing_configuration_digest;
+    std::vector<TimestreamDetectorColumn>
+        learned_map_zero_weight_detector_columns;
 };
 
 NativeCohortScanProvenanceV3 make_native_cohort_scan_provenance_v3(
@@ -530,6 +596,7 @@ NativeCohortScanProvenanceV3 make_native_cohort_scan_provenance_v3(
     const NativeRtcDispatchResult &rtc,
     const NativePtcPreparedOperation &prepared,
     const NativeScienceProjection &projection,
+    const NativePtcExclusionMatrix &ptc_preclean_flags,
     const NativePtcExclusionMatrix &ptc_runtime_flags,
     const NativePtcExclusionMatrix &final_flags,
     NativeCohortMapPublicationRequestV3 map_request);
@@ -552,6 +619,7 @@ make_native_cohort_scan_provenance_v3(
     const NativeRtcDispatchResult &rtc,
     const NativePtcPreparedOperation &prepared,
     const NativeScienceProjection &projection,
+    const NativePtcExclusionMatrix &ptc_preclean_flags,
     const NativePtcExclusionMatrix &ptc_runtime_flags,
     const NativePtcExclusionMatrix &final_flags,
     NativeCohortMapPublicationRequestV3 map_request) {
@@ -562,11 +630,15 @@ make_native_cohort_scan_provenance_v3(
         !(*ledger.last_committed_operation() == prepared.operation()) ||
         !(projection.operation() == prepared.operation()) ||
         !(projection.scope() == mapping->scope()) ||
+        ptc_preclean_flags.rows() != projection.row_count() ||
+        ptc_preclean_flags.cols() != projection.detector_count() ||
         ptc_runtime_flags.rows() != projection.row_count() ||
         ptc_runtime_flags.cols() != projection.detector_count() ||
         final_flags.rows() != projection.row_count() ||
         final_flags.cols() != projection.detector_count() ||
         (projection.flags().array() &&
+         !ptc_preclean_flags.array()).any() ||
+        (ptc_preclean_flags.array() &&
          !ptc_runtime_flags.array()).any() ||
         (ptc_runtime_flags.array() && !final_flags.array()).any() ||
         rtc.runs.empty() ||
@@ -673,7 +745,8 @@ make_native_cohort_scan_provenance_v3(
                 if (cell.delivered_flag_bits != 0) {
                     ++result.population.delivered_flagged_sample_count;
                     const auto raw_bits = cell.delivered_flag_bits &
-                        ~native_cohort_rtc_processing_flag_bit_v3;
+                        ~(native_cohort_rtc_processing_flag_bit_v3 |
+                          native_cohort_learned_rtc_exclusion_bit_v3);
                     if (raw_bits != 0) {
                         ++result.population.raw_input_flagged_sample_count;
                         auto &cause = causes[{
@@ -701,6 +774,23 @@ make_native_cohort_scan_provenance_v3(
                         cause.count_unit = "detector_samples";
                         cause.flag_bits =
                             native_cohort_rtc_processing_flag_bit_v3;
+                        ++cause.affected_count;
+                        cause.detector_columns.push_back(detector);
+                    }
+                    if ((cell.delivered_flag_bits &
+                         native_cohort_learned_rtc_exclusion_bit_v3) != 0) {
+                        ++result.population
+                              .learned_rtc_excluded_sample_count;
+                        auto &cause = causes[{
+                            "learned_rtc_sample_mask",
+                            native_cohort_learned_rtc_exclusion_bit_v3}];
+                        cause.scope = "scan_summary";
+                        cause.authority =
+                            "citlali.learning.native_rtc_application_v1";
+                        cause.cause = "learned_rtc_sample_mask";
+                        cause.count_unit = "detector_samples";
+                        cause.flag_bits =
+                            native_cohort_learned_rtc_exclusion_bit_v3;
                         ++cause.affected_count;
                         cause.detector_columns.push_back(detector);
                     }
@@ -750,10 +840,14 @@ make_native_cohort_scan_provenance_v3(
             result.population.row_count,
             result.population.detector_count,
             "native detector sample");
+    const NativePtcExclusionMatrix learned_ptc_added =
+        (ptc_preclean_flags.array() && !projection.flags().array()).matrix();
     const NativePtcExclusionMatrix second_pass_added =
-        (ptc_runtime_flags.array() && !projection.flags().array()).matrix();
+        (ptc_runtime_flags.array() && !ptc_preclean_flags.array()).matrix();
     const NativePtcExclusionMatrix postclean_outlier_added =
         (final_flags.array() && !ptc_runtime_flags.array()).matrix();
+    result.population.learned_ptc_excluded_sample_count =
+        static_cast<std::size_t>(learned_ptc_added.array().count());
     result.population.ptc_second_pass_excluded_sample_count =
         static_cast<std::size_t>(second_pass_added.array().count());
     result.population.postclean_outlier_excluded_sample_count =
@@ -795,6 +889,10 @@ make_native_cohort_scan_provenance_v3(
             }
         };
     append_interval_causes(
+        learned_ptc_added,
+        "citlali.learning.native_ptc_application_v1",
+        "learned_ptc_sample_or_detector_mask");
+    append_interval_causes(
         second_pass_added, "citlali.ptc.second_pass_local_v1",
         "accepted_second_pass_event");
     append_interval_causes(
@@ -819,7 +917,14 @@ make_native_cohort_scan_provenance_v3(
             std::adjacent_find(
                 map_request.zero_weight_detector_columns.begin(),
                 map_request.zero_weight_detector_columns.end()) !=
-                map_request.zero_weight_detector_columns.end()) {
+                map_request.zero_weight_detector_columns.end() ||
+            !std::is_sorted(
+                map_request.learned_map_zero_weight_detector_columns.begin(),
+                map_request.learned_map_zero_weight_detector_columns.end()) ||
+            std::adjacent_find(
+                map_request.learned_map_zero_weight_detector_columns.begin(),
+                map_request.learned_map_zero_weight_detector_columns.end()) !=
+                map_request.learned_map_zero_weight_detector_columns.end()) {
             throw std::invalid_argument(
                 "bounded native map publication request is incomplete");
         }
@@ -847,6 +952,29 @@ make_native_cohort_scan_provenance_v3(
         const std::set<TimestreamDetectorColumn> zero_weight_detectors{
             result.map_occurrence.zero_weight_detector_columns.begin(),
             result.map_occurrence.zero_weight_detector_columns.end()};
+        NativeCohortScopedCauseV3 learned_map_cause;
+        learned_map_cause.scope = "scan_detector";
+        learned_map_cause.authority =
+            "citlali.learning.native_map_application_v1";
+        learned_map_cause.cause =
+            "learned_pre_map_detector_exclusion";
+        learned_map_cause.count_unit = "detectors";
+        learned_map_cause.detector_columns =
+            std::move(
+                map_request.learned_map_zero_weight_detector_columns);
+        learned_map_cause.affected_count =
+            learned_map_cause.detector_columns.size();
+        for (const auto detector :
+             learned_map_cause.detector_columns) {
+            if (!zero_weight_detectors.contains(detector)) {
+                throw std::logic_error(
+                    "learned map exclusion retains a positive detector weight");
+            }
+        }
+        if (learned_map_cause.affected_count != 0) {
+            result.scoped_causes.push_back(
+                std::move(learned_map_cause));
+        }
         std::set<TimestreamDetectorColumn> explained_zero_weights;
         for (const auto &detector : mapping->relation_handle()->bindings()) {
             if (!detector.flag.has_value() || *detector.flag != 0) {
@@ -857,7 +985,9 @@ make_native_cohort_scan_provenance_v3(
         }
         for (const auto &cause : result.scoped_causes) {
             if (cause.authority ==
-                "citlali.native_duplicate_tone_policy_v2") {
+                    "citlali.native_duplicate_tone_policy_v2" ||
+                cause.authority ==
+                    "citlali.learning.native_map_application_v1") {
                 explained_zero_weights.insert(
                     cause.detector_columns.begin(),
                     cause.detector_columns.end());
@@ -903,7 +1033,8 @@ make_native_cohort_scan_provenance_v3(
             map_request.positive_weight_detector_count != 0 ||
             map_request.zero_weight_detector_count != 0 ||
             !map_request.zero_weight_detector_columns.empty() ||
-            map_request.jinc_processing_configuration_digest) {
+            map_request.jinc_processing_configuration_digest ||
+            !map_request.learned_map_zero_weight_detector_columns.empty()) {
             throw std::invalid_argument(
                 "disabled native map publication request carries identity");
         }

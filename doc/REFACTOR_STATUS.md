@@ -40,7 +40,7 @@ scans, and 204 local-residual despike guard summaries reported 1,207 rejected
 detector occurrences, including a maximum added fraction of 0.9598 against the
 0.1 cap. These are observed-data events, not software completion failures.
 
-All 815 runnable CTests pass with the one established disabled test not run;
+All 817 runnable CTests pass with the one established disabled test not run;
 the focused bounded-provenance/publication tests, Python provenance auditors,
 and required config preflight also pass. The localized production JINC config
 differs from the downloaded Unity merge in local paths and one explicit
@@ -70,12 +70,30 @@ reconciles the final mask actually consumed by mapmaking, but reduces new
 second-pass and post-clean exclusions to named detector intervals and counts;
 it does not publish the runtime mask. Focused tests cover complete-network
 admission, rejection of incomplete groupings and mask rollback, final map
-eligibility, and bounded interval causes. The CLI builds, all 815 runnable
+eligibility, and bounded interval causes.
+
+The third execution layer restores ordered reduction-learning behavior without
+publishing an exhaustive detector-sample ledger. Earlier-iteration RTC masks
+are applied on absolute common-slot coordinates before each native RTC body;
+earlier-iteration PTC masks are applied on concatenated, gap-bounded output-row
+coordinates before each established PTC body. Learned detector and network
+exclusions run at their configured pre-RTC, pre-PTC, and pre-map boundaries.
+The exact applied pre-map detector set, rather than a difference inferred from
+already-flagged samples, owns detector-weight zeroing. Bounded canonical
+lineage distinguishes learned RTC flag bits, learned PTC detector intervals,
+and learned pre-map detector causes with named authorities and reconciled
+counts. Canonical UIDs outside the legacy learning integer domain are rejected
+instead of narrowing into a different detector identity.
+
+Focused activated-learning tests prove strict earlier-iteration selection,
+both coordinate systems across a native gap, append-only PTC masks, exact
+pre-map weight exclusion even when samples were already flagged, all three
+bounded cause authorities, and oversized-UID non-aliasing. The CLI builds, all
+817 runnable
 CTests pass, and the required config preflight passes 129 Python tests, four
 mode kits, eight compatibility cases, and every authority audit. Native parity
-for reduction learning, noise realizations, and fruit-loop feedback remains
-required before the clean-commit JINC replay and one exact-SHA Unity
-confirmation.
+for noise realizations and fruit-loop feedback remains required before the
+clean-commit JINC replay and one exact-SHA Unity confirmation.
 
 ## 2026-08-24 Build-Time Git-Provenance Refresh Repair
 

@@ -6,6 +6,7 @@
 // numerical bodies and prepares the immutable native map input.
 
 #include <citlali/core/mapmaking/science_map_contract.h>
+#include <citlali/core/engine/learning.h>
 #include <citlali/core/pipeline/native_cohort_product_provenance_v3.h>
 #include <citlali/core/pipeline/native_consumer_execution_policy.h>
 #include <citlali/core/pipeline/native_detector_run_fcf_contract.h>
@@ -16,6 +17,7 @@
 #include <netcdf>
 
 #include <citlali/core/timestream/ptc/clean.h>
+#include <citlali/core/timestream/rtc/despike.h>
 #include <citlali/core/timestream/timestream.h>
 
 #include <Eigen/Core>
@@ -38,6 +40,8 @@ namespace citlali::pipeline {
 
 inline constexpr NativeDetectorFlagBits native_rtc_processing_flag_bit_v2 =
     native_cohort_rtc_processing_flag_bit_v3;
+inline constexpr NativeDetectorFlagBits native_learned_rtc_flag_bit_v2 =
+    native_cohort_learned_rtc_exclusion_bit_v3;
 inline constexpr NativeDetectorFlagBits
     native_duplicate_tone_exclusion_bit_v2 =
         native_cohort_duplicate_tone_exclusion_bit_v3;
@@ -185,6 +189,8 @@ make_native_map_publication_request_v3(
             result.zero_weight_detector_columns.push_back(detector);
         }
     }
+    result.learned_map_zero_weight_detector_columns =
+        runtime.learned_map_zero_weight_detector_columns;
     if (citlali::config::is_naive_map_method(method)) {
         const auto &identity = engine.omb.science_products.bundle_identity;
         if (!identity) {
@@ -333,6 +339,30 @@ NativeRtcDispatchResult run_native_rtc_numerical_bodies(
                     values.segment(first, rows);
             }
 
+            engine.apply_learned_detector_exclusions(
+                input, local_calib, "pre_rtc_detector_exclusion", true,
+                false, true, true);
+            const auto &raw_source_protection =
+                raw_time_chunk_config(engine).despike.source_protection;
+            engine.apply_learned_sample_masks(
+                input, local_calib, true, "pre_rtc",
+                raw_source_protection.active,
+                raw_source_protection.radius_arcsec,
+                static_cast<long long>(run.first_common_slot));
+            NativeDetectorFlagBitsMatrix effective_input_flag_bits =
+                run.input_flag_bits;
+            for (Eigen::Index row = 0;
+                 row < input.flags.data.rows(); ++row) {
+                for (Eigen::Index column = 0;
+                     column < input.flags.data.cols(); ++column) {
+                    if (input.flags.data(row, column) &&
+                        effective_input_flag_bits(row, column) == 0) {
+                        effective_input_flag_bits(row, column) |=
+                            native_learned_rtc_flag_bit_v2;
+                    }
+                }
+            }
+
             (void)local_rtc.run(
                 input, output, local_calib, local_telescope,
                 engine.omb.pixel_size_rad,
@@ -373,6 +403,36 @@ NativeRtcDispatchResult run_native_rtc_numerical_bodies(
                     ? static_cast<std::size_t>(source.protected_samples)
                     : 0U,
                 "RTC source-mask");
+            auto detector_learning =
+                local_rtc.snapshot_detector_diag_summary(input.index.data);
+            for (auto &summary : detector_learning) {
+                const auto add_common_slot_offset = [&](auto &event) {
+                    if (!event.valid()) return;
+                    event.sample +=
+                        static_cast<int>(run.first_common_slot);
+                    event.start_sample +=
+                        static_cast<int>(run.first_common_slot);
+                    event.end_sample +=
+                        static_cast<int>(run.first_common_slot);
+                };
+                add_common_slot_offset(summary.local_raw_event);
+                add_common_slot_offset(summary.local_delta_event);
+            }
+            engine.collect_rtc_learning_diagnostics(
+                input, output, local_calib, detector_learning);
+            if (source.enabled) {
+                ReductionLearningState::SourceProtectionSummary summary;
+                summary.obsnum = engine.observation_identity.obsnum;
+                summary.producer = "rtc_despike";
+                summary.mode = "map_center_radius";
+                summary.iter = engine.iteration.fruit_iter;
+                summary.scan = static_cast<int>(input.index.data);
+                summary.protected_samples = source.protected_samples;
+                summary.total_samples = source.total_samples;
+                summary.radius_arcsec = source.radius_arcsec;
+                engine.learning.record_source_protection_summary(
+                    std::move(summary));
+            }
             const auto notches = local_rtc.snapshot_notch_operator_summary(
                 input.index.data);
             notch_facts.emplace_back(
@@ -447,7 +507,8 @@ NativeRtcDispatchResult run_native_rtc_numerical_bodies(
                 run.detector_columns, output.fcf.data,
                 static_cast<std::size_t>(output.scans.data.rows()));
 
-            NativeDetectorFlagBitsMatrix flags = run.input_flag_bits;
+            NativeDetectorFlagBitsMatrix flags =
+                std::move(effective_input_flag_bits);
             for (Eigen::Index row = 0; row < flags.rows(); ++row) {
                 for (Eigen::Index column = 0; column < flags.cols();
                      ++column) {
@@ -686,6 +747,28 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
     }
     auto prepared = prepare_native_ptc_cohorts(
         runtime.ledger(), rtc, request, corr_body);
+    std::vector<Eigen::Index> flag_rows_per_segment(
+        prepared.segment_count(), -1);
+    for (const auto &group : prepared.groups()) {
+        auto &rows = flag_rows_per_segment.at(group.segment_ordinal());
+        if (rows < 0) rows = group.slot_count();
+        if (rows != group.slot_count()) {
+            throw std::logic_error(
+                "native PTC flag segment row counts are unequal");
+        }
+    }
+    std::vector<Eigen::Index> flag_offsets(
+        flag_rows_per_segment.size(), 0);
+    Eigen::Index flag_total_rows = 0;
+    for (std::size_t segment = 0;
+         segment < flag_rows_per_segment.size(); ++segment) {
+        if (flag_rows_per_segment[segment] <= 0) {
+            throw std::logic_error(
+                "native PTC flag segment inventory is incomplete");
+        }
+        flag_offsets[segment] = flag_total_rows;
+        flag_total_rows += flag_rows_per_segment[segment];
+    }
     auto processed = run_native_ptc_groups(
         prepared, [&](const NativePtcGroupWorkingSet &group) {
             auto local_calib = make_native_detector_subset_calibration(
@@ -701,6 +784,20 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
                 data.kernel.data = *group.kernel_values();
             }
             data.index.data = runtime.mapping_handle()->scope().scan_index;
+            const auto segment_offset =
+                flag_offsets.at(group.segment_ordinal());
+            const auto &source_protection =
+                processed_time_chunk_config(engine)
+                    .flagging.second_pass_local.source_protection;
+            engine.apply_learned_sample_masks(
+                data, local_calib, false, "pre_ptc",
+                source_protection.active,
+                source_protection.radius_arcsec,
+                static_cast<long long>(segment_offset));
+            engine.apply_learned_detector_exclusions(
+                data, local_calib, "pre_ptc_detector_exclusion", false,
+                true, true, true);
+            const auto preclean_flags = data.flags.data;
             local_ptc.run(
                 data, data, local_calib, engine.telescope.pixel_axes,
                 active_map_grouping_name(engine));
@@ -760,8 +857,33 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
             }
             add_native_jinc_trace_count(
                 trace.pca_solve_count, pca.size(), "PTC PCA solve");
-            const auto second_pass =
+            auto second_pass =
                 local_ptc.snapshot_second_pass_summary(data.index.data);
+            for (auto &summary : second_pass) {
+                if (summary.top_candidate_cluster_sample !=
+                    timestream::kTransientFillInt) {
+                    summary.top_candidate_cluster_sample +=
+                        static_cast<int>(segment_offset);
+                }
+                if (summary.top_event.valid()) {
+                    summary.top_event.sample +=
+                        static_cast<int>(segment_offset);
+                    summary.top_event.start_sample +=
+                        static_cast<int>(segment_offset);
+                    summary.top_event.end_sample +=
+                        static_cast<int>(segment_offset);
+                }
+                for (auto &event : summary.candidate_events) {
+                    event.sample += static_cast<int>(segment_offset);
+                    event.start_sample +=
+                        static_cast<int>(segment_offset);
+                    event.end_sample += static_cast<int>(segment_offset);
+                    event.cluster_sample +=
+                        static_cast<int>(segment_offset);
+                }
+            }
+            engine.collect_ptc_learning_diagnostics(
+                data, local_calib, second_pass, {});
             second_pass_facts.emplace_back(
                 prefix + "summary_count",
                 std::to_string(second_pass.size()));
@@ -816,6 +938,7 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
                     ? std::optional<Eigen::MatrixXd>{}
                     : std::optional<Eigen::MatrixXd>{
                           std::move(data.kernel.data)},
+                preclean_flags,
                 std::move(data.flags.data)};
         });
     scatter_native_ptc_results_transactionally(
@@ -835,34 +958,17 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
         "native-ptc-mean-mask-realization-v2", mean_facts);
     trace.pca_realization_digest = native_jinc_trace_facts_digest(
         "native-ptc-pca-realization-v2", pca_facts);
-    std::vector<Eigen::Index> flag_rows_per_segment(
-        prepared.segment_count(), -1);
-    for (const auto &group : prepared.groups()) {
-        auto &rows = flag_rows_per_segment.at(group.segment_ordinal());
-        if (rows < 0) rows = group.slot_count();
-        if (rows != group.slot_count()) {
-            throw std::logic_error(
-                "native PTC flag segment row counts are unequal");
-        }
-    }
-    std::vector<Eigen::Index> flag_offsets(
-        flag_rows_per_segment.size(), 0);
-    Eigen::Index flag_total_rows = 0;
-    for (std::size_t segment = 0;
-         segment < flag_rows_per_segment.size(); ++segment) {
-        if (flag_rows_per_segment[segment] <= 0) {
-            throw std::logic_error(
-                "native PTC flag segment inventory is incomplete");
-        }
-        flag_offsets[segment] = flag_total_rows;
-        flag_total_rows += flag_rows_per_segment[segment];
-    }
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> ptc_preclean_flags(
+        flag_total_rows,
+        static_cast<Eigen::Index>(
+            runtime.mapping_handle()->detector_count()));
     Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> ptc_flags(
         flag_total_rows,
         static_cast<Eigen::Index>(
             runtime.mapping_handle()->detector_count()));
     Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> flag_seen(
         ptc_flags.rows(), ptc_flags.cols());
+    ptc_preclean_flags.setConstant(true);
     ptc_flags.setConstant(true);
     flag_seen.setConstant(false);
     for (std::size_t index = 0;
@@ -872,6 +978,10 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
         if (!result.exclusion_flags()) {
             throw std::logic_error(
                 "native PTC output flag inventory is absent");
+        }
+        if (!result.preclean_exclusion_flags()) {
+            throw std::logic_error(
+                "native PTC pre-clean flag inventory is absent");
         }
         for (Eigen::Index local = 0;
              local < source.detector_count(); ++local) {
@@ -885,6 +995,8 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
                         "native PTC flag destination is duplicated");
                 }
                 flag_seen(output_row, detector) = true;
+                ptc_preclean_flags(output_row, detector) =
+                    (*result.preclean_exclusion_flags())(row, local);
                 ptc_flags(output_row, detector) =
                     (*result.exclusion_flags())(row, local);
             }
@@ -894,6 +1006,7 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
         throw std::logic_error(
             "native PTC flag projection is incomplete");
     }
+    runtime.ptc_preclean_flags = std::move(ptc_preclean_flags);
     runtime.ptc_flags = std::move(ptc_flags);
     const bool has_kernel = std::any_of(
         processed.groups().begin(), processed.groups().end(),
@@ -1115,6 +1228,29 @@ NativeConsumerPreparedMapScan prepare_native_consumer_map_scan(
         }
     }
     result.ptcdata.flags.data = authoritative_flags;
+    const auto high_weight_summary =
+        local_ptc.snapshot_high_weight_summary(
+            result.ptcdata.index.data);
+    auto learning_calib = engine.calib;
+    engine.collect_ptc_learning_diagnostics(
+        result.ptcdata, learning_calib, {}, high_weight_summary);
+
+    const auto pre_map_flags = result.ptcdata.flags.data;
+    const auto learned_map_columns =
+        engine.apply_learned_mapmaking_detector_exclusions(
+        result.ptcdata, learning_calib);
+    runtime->learned_map_zero_weight_detector_columns.clear();
+    for (const auto detector : learned_map_columns) {
+        if (detector < 0 ||
+            detector >= result.ptcdata.weights.data.size()) {
+            throw std::logic_error(
+                "learned pre-map detector exclusion is out of range");
+        }
+        result.ptcdata.weights.data(detector) = 0.0;
+        runtime->learned_map_zero_weight_detector_columns.push_back(
+            detector);
+    }
+    result.ptcdata.flags.data = pre_map_flags;
     return result;
 }
 

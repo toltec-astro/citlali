@@ -10,7 +10,8 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
                                         bool apply_pre_rtc,
                                         const std::string &stage,
                                         bool source_protection_enabled,
-                                        double source_protection_radius_arcsec) {
+                                        double source_protection_radius_arcsec,
+                                        long long sample_index_offset) {
     if (!learning.is_enabled() ||
         !learning.options.apply_sample_masks_enabled ||
         !learning.apply_active()) {
@@ -64,8 +65,8 @@ void Engine::apply_learned_sample_masks(tc_t &tcdata, calib_t &calib_scan,
 
     for (const auto &record : records) {
         const Eigen::Index det = citlali::pipeline::learning_find_det_by_uid(calib_scan.apt, record.uid);
-        const long long raw_start = record.start;
-        const long long raw_stop = record.stop;
+        const long long raw_start = record.start - sample_index_offset;
+        const long long raw_stop = record.stop - sample_index_offset;
         if (det < 0 || det >= n_dets || raw_start < 0 || raw_stop < raw_start ||
             raw_stop < 0 || raw_start >= n_pts) {
             ++summary.invalid_records;

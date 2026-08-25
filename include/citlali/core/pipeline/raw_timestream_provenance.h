@@ -371,12 +371,16 @@ inline YAML::Node native_cohort_product_provenance_node_v3(
             population.raw_input_flagged_sample_count;
         population_node["rtc_processing_flagged_sample_count"] =
             population.rtc_processing_flagged_sample_count;
+        population_node["learned_rtc_excluded_sample_count"] =
+            population.learned_rtc_excluded_sample_count;
         population_node["operation_excluded_sample_count"] =
             population.operation_excluded_sample_count;
         population_node["apt_excluded_sample_count"] =
             population.apt_excluded_sample_count;
         population_node["ptc_second_pass_excluded_sample_count"] =
             population.ptc_second_pass_excluded_sample_count;
+        population_node["learned_ptc_excluded_sample_count"] =
+            population.learned_ptc_excluded_sample_count;
         population_node["postclean_outlier_excluded_sample_count"] =
             population.postclean_outlier_excluded_sample_count;
         population_node["final_excluded_sample_count"] =

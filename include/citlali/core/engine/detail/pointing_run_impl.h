@@ -195,6 +195,7 @@ auto Pointing::run(
                     native.runtime->ledger(), *native.runtime->rtc,
                     *native.runtime->ptc_prepared,
                     *native.runtime->science_projection,
+                    *native.runtime->ptc_preclean_flags,
                     *native.runtime->ptc_flags,
                     native.ptcdata.flags.data,
                     std::move(map_publication));

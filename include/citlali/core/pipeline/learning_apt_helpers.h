@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <string>
 
 #include <Eigen/Core>
@@ -20,8 +21,11 @@ Eigen::Index learning_find_det_by_uid(const Apt &apt, int uid) {
         return static_cast<Eigen::Index>(uid);
     }
     for (Eigen::Index i = 0; i < uid_it->second.size(); ++i) {
-        if (std::isfinite(uid_it->second(i)) &&
-            static_cast<int>(std::llround(uid_it->second(i))) == uid) {
+        const auto value = uid_it->second(i);
+        if (std::isfinite(value) &&
+            value >= static_cast<double>(std::numeric_limits<int>::min()) &&
+            value <= static_cast<double>(std::numeric_limits<int>::max()) &&
+            static_cast<int>(std::llround(value)) == uid) {
             return i;
         }
     }
@@ -32,11 +36,16 @@ template <class Apt>
 int learning_apt_int(const Apt &apt, const std::string &key,
                      Eigen::Index det, int fallback) {
     const auto it = apt.find(key);
-    if (it == apt.end() || det < 0 || det >= it->second.size() ||
-        !std::isfinite(it->second(det))) {
+    if (it == apt.end() || det < 0 || det >= it->second.size()) {
         return fallback;
     }
-    return static_cast<int>(std::llround(it->second(det)));
+    const auto value = it->second(det);
+    if (!std::isfinite(value) ||
+        value < static_cast<double>(std::numeric_limits<int>::min()) ||
+        value > static_cast<double>(std::numeric_limits<int>::max())) {
+        return fallback;
+    }
+    return static_cast<int>(std::llround(value));
 }
 
 template <class Apt>

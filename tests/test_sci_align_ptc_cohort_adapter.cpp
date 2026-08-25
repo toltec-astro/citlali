@@ -422,7 +422,8 @@ TEST(sci_align_ptc_cohort_adapter,
                     "PTC append-only test fixture has no eligible sample");
             }
             return pipeline::NativePtcNumericalResult{
-                group.values(), group.kernel_values(), std::move(flags)};
+                group.values(), group.kernel_values(),
+                group.exclusion_flags(), std::move(flags)};
         });
     ASSERT_EQ(processed.groups().size(), prepared.groups().size());
     for (std::size_t index = 0; index < processed.groups().size(); ++index) {
@@ -454,7 +455,8 @@ TEST(sci_align_ptc_cohort_adapter,
                         "PTC append-only test fixture has no excluded sample");
                 }
                 return pipeline::NativePtcNumericalResult{
-                    group.values(), group.kernel_values(), std::move(flags)};
+                    group.values(), group.kernel_values(),
+                    group.exclusion_flags(), std::move(flags)};
             }),
         std::logic_error);
 }

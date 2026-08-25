@@ -37,9 +37,10 @@ void Engine::apply_learned_ptc_detector_exclusions(ptc_t &ptcdata,
 }
 
 template <class tc_t, class calib_t>
-void Engine::apply_learned_mapmaking_detector_exclusions(tc_t &tcdata,
-                                                         calib_t &calib_scan) {
-    apply_learned_detector_exclusions(
+std::vector<Eigen::Index>
+Engine::apply_learned_mapmaking_detector_exclusions(tc_t &tcdata,
+                                                    calib_t &calib_scan) {
+    return apply_learned_detector_exclusions(
         tcdata, calib_scan, "pre_mapmaking_detector_exclusion", false, false,
         false, true);
 }

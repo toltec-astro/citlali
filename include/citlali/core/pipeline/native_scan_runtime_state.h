@@ -7,6 +7,7 @@
 #include <optional>
 #include <stdexcept>
 #include <utility>
+#include <vector>
 
 namespace citlali::pipeline {
 
@@ -39,9 +40,13 @@ public:
     std::optional<NativeScienceProjection> science_projection;
     std::optional<Eigen::MatrixXd> kernel;
     std::optional<Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>>
+        ptc_preclean_flags;
+    std::optional<Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>>
         ptc_flags;
     std::optional<mapmaking::JincProcessingScanTrace>
         jinc_processing_trace;
+    std::vector<TimestreamDetectorColumn>
+        learned_map_zero_weight_detector_columns;
     Eigen::VectorXd fcf;
 
 private:

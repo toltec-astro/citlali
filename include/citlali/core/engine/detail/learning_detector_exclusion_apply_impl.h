@@ -6,19 +6,20 @@
 #include <citlali/core/pipeline/map_grouping_policy.h>
 
 template <class tc_t, class calib_t>
-void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
-                                               calib_t &calib_scan,
-                                               const std::string &stage,
-                                               bool pre_rtc,
-                                               bool update_apt_flags,
-                                               bool include_detector_records,
-                                               bool include_network_records) {
+std::vector<Eigen::Index>
+Engine::apply_learned_detector_exclusions(tc_t &tcdata,
+                                          calib_t &calib_scan,
+                                          const std::string &stage,
+                                          bool pre_rtc,
+                                          bool update_apt_flags,
+                                          bool include_detector_records,
+                                          bool include_network_records) {
     if (!learning.is_enabled() ||
         !learning.apply_active()) {
-        return;
+        return {};
     }
     if (tcdata.flags.data.rows() <= 0 || tcdata.flags.data.cols() <= 0) {
-        return;
+        return {};
     }
 
     const bool mapdiag_detector_exclusion =
@@ -36,7 +37,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
                 (pre_rtc && learning.options.scan_network_pathology_apply_pre_rtc)));
     if (!mapdiag_detector_exclusion && !busy_detector_exclusion &&
         !network_exclusion) {
-        return;
+        return {};
     }
 
     const int scan_id = static_cast<int>(tcdata.index.data);
@@ -73,7 +74,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
             }
     }
     if (records.empty()) {
-        return;
+        return {};
     }
 
     ReductionLearningState::LearnedMaskApplicationSummary summary;
@@ -129,7 +130,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
     }
     if (proposed_dets.empty()) {
         learning.record_learned_mask_application(summary);
-        return;
+        return {};
     }
 
     Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> source_mask;
@@ -285,4 +286,8 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
             summary.newly_flagged_samples, summary.already_flagged_samples,
             summary.newly_flagged_fraction);
     }
+    if (over_cap) {
+        return {};
+    }
+    return {proposed_dets.begin(), proposed_dets.end()};
 }

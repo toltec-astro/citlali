@@ -21,10 +21,6 @@ void require_supported_native_consumer_execution(const Engine &engine) {
         throw std::logic_error(
             "native consumer polarization requires a separately approved measured-channel contract");
     }
-    if (learning_config(engine).enabled) {
-        throw std::logic_error(
-            "native consumer learned masks and exclusions require native iteration lineage");
-    }
     if (noise_maps_enabled(engine)) {
         throw std::logic_error(
             "native consumer noise realizations require native sample support lineage");

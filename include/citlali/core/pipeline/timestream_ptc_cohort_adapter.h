@@ -874,6 +874,7 @@ inline NativePtcPreparedOperation prepare_native_ptc_cohorts(
 struct NativePtcNumericalResult {
     Eigen::MatrixXd values;
     std::optional<Eigen::MatrixXd> kernel_values;
+    std::optional<NativePtcExclusionMatrix> preclean_exclusion_flags;
     std::optional<NativePtcExclusionMatrix> exclusion_flags;
 };
 
@@ -889,6 +890,8 @@ public:
           detector_columns_{source.detector_columns()},
           values_{std::move(result.values)},
           kernel_values_{std::move(result.kernel_values)},
+          preclean_exclusion_flags_{
+              std::move(result.preclean_exclusion_flags)},
           exclusion_flags_{std::move(result.exclusion_flags)} {}
 
     explicit NativePtcProcessedGroup(
@@ -896,6 +899,7 @@ public:
         : NativePtcProcessedGroup(
               source, NativePtcNumericalResult{
                           std::move(values), source.kernel_values(),
+                          source.exclusion_flags(),
                           source.exclusion_flags()}) {}
 
     std::size_t segment_ordinal() const noexcept {
@@ -921,6 +925,10 @@ public:
         noexcept {
         return exclusion_flags_;
     }
+    const std::optional<NativePtcExclusionMatrix> &preclean_exclusion_flags()
+        const noexcept {
+        return preclean_exclusion_flags_;
+    }
     Eigen::MatrixXd &mutable_values_for_retry() noexcept { return values_; }
 
 private:
@@ -932,6 +940,7 @@ private:
     std::vector<TimestreamDetectorColumn> detector_columns_;
     Eigen::MatrixXd values_;
     std::optional<Eigen::MatrixXd> kernel_values_;
+    std::optional<NativePtcExclusionMatrix> preclean_exclusion_flags_;
     std::optional<NativePtcExclusionMatrix> exclusion_flags_;
 };
 
@@ -965,7 +974,8 @@ NativePtcProcessedOperation run_native_ptc_groups(
     processed.reserve(prepared.groups().size());
     for (const auto &group : prepared.groups()) {
         NativePtcNumericalResult result{
-            group.values(), group.kernel_values(), group.exclusion_flags()};
+            group.values(), group.kernel_values(), group.exclusion_flags(),
+            group.exclusion_flags()};
         if (group.role() == NativePtcGroupRole::pca_clean) {
             auto invoked =
                 std::invoke(numerical_body, std::as_const(group));
@@ -986,10 +996,16 @@ NativePtcProcessedOperation run_native_ptc_groups(
               !result.kernel_values->array().isFinite().all())) ||
             result.kernel_values.has_value() !=
                 group.kernel_values().has_value() ||
+            !result.preclean_exclusion_flags ||
+            result.preclean_exclusion_flags->rows() != group.slot_count() ||
+            result.preclean_exclusion_flags->cols() !=
+                group.detector_count() ||
+            (group.exclusion_flags().array() &&
+             !result.preclean_exclusion_flags->array()).any() ||
             !result.exclusion_flags ||
             result.exclusion_flags->rows() != group.slot_count() ||
             result.exclusion_flags->cols() != group.detector_count() ||
-            (group.exclusion_flags().array() &&
+            (result.preclean_exclusion_flags->array() &&
              !result.exclusion_flags->array()).any()) {
             throw std::logic_error(
                 "native PTC numerical result has invalid signal/kernel/flag support");
