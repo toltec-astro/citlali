@@ -1,14 +1,15 @@
 # WP-7 Repair Scientific-Owner Decision Packet
 
-Status: **active owner disposition record; `WP7-OWNER-D001` approved;
+Status: **owner disposition complete; `WP7-OWNER-D001` approved;
 `WP7-OWNER-D002` exact-byte recovery, WVR interpolation, and
 unavailable-opacity disposition approved; `WP7-OWNER-D003` approved; D004
-pending**
+approved**
 
 Authorized successor work remains bounded to D001 authority publication and
 admission of D002's recovered exact bytes and approved WVR interpolation
 and unavailable-opacity authorities, plus publication of the approved D003
-classifier. No consumer or implementation decision is inferred.
+classifier and the approved D004 logical-stream terminal clarification. No
+external-consumer acceptance or implementation decision is inferred.
 
 Date opened: `2026-08-25`
 
@@ -142,7 +143,7 @@ and requires no new scientific choice.
 | `WP7-OWNER-D001` — native-interface authority publication | Scientific decision already approved; approval/precedence not readable in WP-7 | Approve a successor clean-room packet that admits the exact existing decision, approval, source manifest, README, and interface as one readable authority set while preserving the approved interface bytes and digest | **APPROVED — 2026-08-25** |
 | `WP7-OWNER-D002` — CAL numerical authority | Three exact numerical identities recovered and staged; WVR interpolation and unavailable-opacity rules approved | Admit the verified bytes without regeneration or substitution and use the approved versioned interpolation and fail-closed unavailable-opacity rules | **APPROVED — RECOVERY, INTERPOLATION, AND UNAVAILABLE-OPACITY — 2026-08-25** |
 | `WP7-OWNER-D003` — observation-wide opacity classifier | Approved policy intent recovered; no existing source defines `momentary` by duration or fraction | Approve `cal_wvr_observation_quality_mean_peak_v1`: time-weighted mean at `0.15`, tolerated peak through `0.175`, engineering support through `0.25`, exact coverage and failure classes | **APPROVED — 2026-08-25** |
-| `WP7-OWNER-D004` — RTC logical-stream terminal boundary | Consumer-neutral RTC completion and the PTC-disabled terminal route are approved; the earlier repair wording incorrectly implied observation-sized materialization | Define the endpoint as completion of the logical RTC output stream over the declared domain plus finalization of observation-level RTC facts. Permit incremental consumption and optional explicit materialization; keep external-consumer acceptance outside WP-7 until separately named | **PENDING DECISION** |
+| `WP7-OWNER-D004` — RTC logical-stream terminal boundary | Consumer-neutral RTC completion and the PTC-disabled terminal route are approved; the earlier repair wording incorrectly implied observation-sized materialization | Define the endpoint as completion of the logical RTC output stream over the declared domain plus finalization of observation-level RTC facts. Permit incremental consumption and optional explicit materialization; keep external-consumer acceptance outside WP-7 until separately named | **APPROVED — 2026-08-25** |
 
 ## 4. `WP7-OWNER-D001`: native-interface authority publication
 
@@ -493,7 +494,15 @@ acceptance criteria.
 
 ### Owner response
 
-**Pending.**
+**Approved — 2026-08-25.**
+
+The scientific owner approved the recommendation exactly as written. This
+authorizes successor authority to clarify that RTC logical completion may be
+incremental and that the existing terms “atomic bundle,” “publish,” and
+“export” do not require observation-sized materialization or serialization.
+It does not authorize implementation work, require a persistent RTC
+intermediate, claim external-consumer acceptance, or name an additional
+consumer.
 
 ## 8. Procedural disposition of `TS-A`
 
