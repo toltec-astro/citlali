@@ -143,7 +143,7 @@ void Telescope::get_tel_data(
         }
 
         if (!missing_data_keys.empty() || !missing_header_keys.empty()) {
-            logger->warn(
+            logger->info(
                 "telescope input {} omits {} configured data variables and {} configured header values; individual optional names are available at debug level",
                 filepath, missing_data_keys.size(), missing_header_keys.size());
         }

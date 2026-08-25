@@ -2773,7 +2773,12 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                     double rms = std::numeric_limits<double>::quiet_NaN();
                     bool have_rms = false;
                     if (run_noise) {
-                        if (mb.median_rms.size() == calib.arrays.size()) {
+                        if (mb.median_rms.size() ==
+                            static_cast<Eigen::Index>(mb.signal.size())) {
+                            rms = mb.median_rms(map_index);
+                            have_rms = std::isfinite(rms) && rms > 0;
+                        }
+                        else if (mb.median_rms.size() == calib.arrays.size()) {
                             rms = mb.median_rms(array_pos);
                             have_rms = std::isfinite(rms) && rms > 0;
                         }
@@ -2800,11 +2805,6 @@ void TCProc::map_to_tod(mb_t &mb, TCData<tcdata_t, Eigen::MatrixXd> &in, calib_t
                         have_flux = std::isfinite(flux_limit) && std::abs(flux_limit) > 0.0;
                     }
                     else if (array_id < fruit_loops_flux.size()) {
-                        if (!warned_flux) {
-                            logger->warn("fruit_loops_flux size ({}) does not match arrays ({}); using array id indexing",
-                                         fruit_loops_flux.size(), calib.arrays.size());
-                            warned_flux = true;
-                        }
                         flux_limit = fruit_loops_flux(array_id);
                         have_flux = std::isfinite(flux_limit) && std::abs(flux_limit) > 0.0;
                     }
