@@ -66,9 +66,11 @@ authority.
 The included BSD three-clause notices preserve the source repositories'
 redistribution terms. This manifest asserts no additional license grant.
 
-This bundle completes `WP7-OWNER-D002` Gate A only. The exact WVR source/time
-interpolation rule remains pending under Gate B. Until that rule is approved,
-the bundle does not make the full ordinary CAL route source-closed.
+This bundle completes `WP7-OWNER-D002` Gate A only. It intentionally does not
+carry WVR policy authority. Gate B was subsequently approved in
+`../WP7_SCIENTIFIC_OWNER_DECISION_PACKET.md`; consult that mutable disposition
+record for the current policy state. This exact-byte bundle alone does not
+make the full ordinary CAL route source-closed.
 
 ## Verification
 

@@ -1,12 +1,13 @@
 # WP-7 Repair Scientific-Owner Decision Packet
 
 Status: **active owner disposition record; `WP7-OWNER-D001` approved;
-`WP7-OWNER-D002` exact-byte recovery complete; D002 temporal rule and
-D003--D004 pending**
+`WP7-OWNER-D002` exact-byte recovery and WVR interpolation rule approved;
+D002 unavailable-opacity disposition and D003--D004 pending**
 
 Authorized successor work remains bounded to D001 authority publication and
-admission of D002's recovered exact bytes. No WVR, classifier, consumer, or
-implementation decision is inferred.
+admission of D002's recovered exact bytes and approved WVR interpolation
+authority. No unavailable-opacity, classifier, consumer, or implementation
+decision is inferred.
 
 Date opened: `2026-08-25`
 
@@ -134,7 +135,7 @@ and requires no new scientific choice.
 | Decision | Present state | Recommendation | Owner response |
 | --- | --- | --- | --- |
 | `WP7-OWNER-D001` — native-interface authority publication | Scientific decision already approved; approval/precedence not readable in WP-7 | Approve a successor clean-room packet that admits the exact existing decision, approval, source manifest, README, and interface as one readable authority set while preserving the approved interface bytes and digest | **APPROVED — 2026-08-25** |
-| `WP7-OWNER-D002` — CAL numerical authority | Three exact numerical identities recovered and staged; WVR temporal method not selected | Admit the verified bytes without regeneration or substitution. Separately select a versioned WVR interpolation rule | **BYTE RECOVERY COMPLETE — WVR DECISION PENDING** |
+| `WP7-OWNER-D002` — CAL numerical authority | Three exact numerical identities recovered and staged; WVR interpolation rule approved; unavailable-opacity disposition not yet explicit | Admit the verified bytes without regeneration or substitution, use the approved versioned linear rule, and separately approve the fail-closed unavailable-opacity disposition | **BYTE RECOVERY AND INTERPOLATION APPROVED — UNAVAILABLE-OPACITY DISPOSITION PENDING** |
 | `WP7-OWNER-D003` — observation-wide opacity classifier | Exact classifier incomplete | Approve one versioned deterministic classifier record defining every required statistic and boundary; infer no default from `momentary` or the numerical-operator support | **PENDING DECISION** |
 | `WP7-OWNER-D004` — RTC-terminal consumer boundary | Terminal publication approved; additional consumer unnamed | For WP-7 v0.1, define successful publication of the complete consumer-neutral RTC bundle as the endpoint. Keep companion-ML acceptance and handoff schema outside WP-7 until separately named | **PENDING DECISION** |
 
@@ -184,7 +185,8 @@ transform, convention, runtime payload, or implementation claim.
 ### Question
 
 Can the three exact digest-bound objects be recovered and admitted, and what
-exact WVR time-interpolation rule governs valid bracketing readings?
+exact WVR time-interpolation rule governs valid bracketing readings? What
+happens when no admissible telescope `tau225` state covers a detector sample?
 
 ### Recommendation
 
@@ -217,27 +219,87 @@ prose and no similarly named substitute was used.
 
 #### Gate B — WVR interpolation authority
 
-Approve one versioned rule that states:
+Approve `cal_wvr_tau225_linear_detector_time_v1` with the following exact
+policy:
 
-- the WVR source record and time coordinate;
-- the interpolation family;
-- precision and deterministic evaluation convention;
-- valid bracketing and equality behavior;
-- maximum permitted gap or a declaration that source validity alone governs;
-- missing/nonfinite input behavior; and
-- prohibition of endpoint extrapolation and prior-observation inheritance.
+1. The input is the sequence of producer-valid LMT WVR `tau225` records in the
+   current observation's `tel*.nc` stream, using each record's source time.
+   The detector-reference sample time is mapped to that time basis by the
+   approved SCI-ALIGN mapping. Records from another observation are never
+   admitted.
+2. At an exact matching source time, return the source value exactly. Multiple
+   byte-identical records at one time collapse to one record; conflicting
+   duplicate values make opacity unavailable at that time and for any bracket
+   that would use it.
+3. Otherwise, let `(t0, tau0)` and `(t1, tau1)` be the consecutive valid
+   source records that bracket `t`, with `t0 < t < t1`. Evaluate
+   `w = (t - t0) / (t1 - t0)` and
+   `tau225(t) = tau0 + w * (tau1 - tau0)`.
+4. Evaluate in IEEE-754 binary64, round-to-nearest ties-to-even, in the written
+   subtraction, division, subtraction, multiplication, addition order. Each
+   operation rounds separately; contraction to a fused multiply-add is not
+   permitted.
+5. The WVR source's declared validity governs whether a bracket and its gap
+   are admissible. This rule adds no arbitrary elapsed-time threshold.
+6. Do not extrapolate, clamp, hold an endpoint, inherit a prior-observation
+   value, or interpolate through an invalid or conflicting record.
+7. Record the two source record identities, source times and values, mapped
+   detector time, interpolation weight, result, source-validity interval, and
+   method identifier. An exact-match result records its single source record
+   and equality disposition.
 
-No interpolation family is recommended here because the admitted authority
-does not supply the scientific basis for choosing one.
+#### Gate B result — approved
+
+The scientific owner approved
+`cal_wvr_tau225_linear_detector_time_v1` as written on `2026-08-25`.
+
+#### Gate C — unavailable telescope opacity
+
+An explicit fail-closed rule is required even though SCI-CAL already requires
+sample-local numerical support. Without it, an implementation could silently
+substitute zero opacity, unity correction, a scalar header, an observation
+summary, or an endpoint hold.
+
+Approve `cal_wvr_tau225_unavailable_v1` with the following policy:
+
+1. A detector sample has no admissible telescope opacity when it has neither
+   a producer-valid exact-time WVR record nor a valid same-observation bracket
+   under `cal_wvr_tau225_linear_detector_time_v1`.
+2. Absent records, an unbracketed time, a bracket outside source-declared
+   validity, a conflicting duplicate, or an unavailable time mapping yield
+   `outside_supported_calibration` for the affected sample. Negative or
+   non-finite opacity yields `invalid_atmosphere`.
+3. The affected sample is excluded from calibrated-signal support and no CAL
+   multiplier or calibrated value is emitted for it. Its upstream value may
+   remain available only under its upstream identity and validity; it must not
+   be passed onward or relabeled as an ordinary calibrated sample.
+4. Do not substitute numeric zero, a unity correction, an observation mean or
+   median, nearest-neighbor or hold-last/hold-next state, a scalar-header
+   fallback, an AM climatology or profile, a configured default, or opacity
+   from another observation.
+5. Publish a machine-distinguishable cause from
+   `wvr_tau225_absent`, `wvr_tau225_unbracketed`,
+   `wvr_tau225_gap_outside_source_validity`,
+   `wvr_tau225_conflicting_duplicate`, `wvr_tau225_negative`,
+   `wvr_tau225_nonfinite`, or `wvr_time_mapping_unavailable`, together with
+   the affected sample support and available source lineage.
+6. Unsupported samples do not invalidate independently supported samples in
+   the same observation. If no samples remain supported, CAL publishes the
+   truthful no-calibrated-output state rather than an ordinary calibrated
+   product. Observation-wide opacity classification remains governed by the
+   separate D003 authority and cannot restore numerical support.
 
 ### Owner response
 
-**Gate A complete — 2026-08-25. Gate B pending scientific-owner decision.**
+**Gate A complete and Gate B approved — 2026-08-25. Gate C pending
+scientific-owner decision.**
 
 After the original atmosphere-model task was located, the scientific owner
 directed the exact-object recovery and staging to proceed. This response
-authorizes admission of the verified existing objects; it does not select a
-WVR interpolation rule or alter the recovered numerical authority.
+authorizes admission of the verified existing objects and approves
+`cal_wvr_tau225_linear_detector_time_v1` exactly as recorded above. It does
+not yet approve `cal_wvr_tau225_unavailable_v1`, select the observation-wide
+classifier, or alter the recovered numerical authority.
 
 ## 6. `WP7-OWNER-D003`: deterministic opacity classifier
 
@@ -362,8 +424,9 @@ A successor generation is ready for clean-room confirmation only when:
 2. the native approval set is readable and its exact internal hashes verify;
 3. the CAL numerical objects are either admitted at exact frozen digests or
    the ordinary nonzero-opacity route remains explicitly unavailable;
-4. the WVR interpolation and opacity classifier have exact owner authority or
-   their dependent results remain explicitly unavailable;
+4. the WVR interpolation, unavailable-opacity disposition, and opacity
+   classifier have exact owner authority or their dependent results remain
+   explicitly unavailable;
 5. the RTC consumer boundary is explicit;
 6. the RTC explanatory owner-identifier list matches the ledger;
 7. package verifiers, PDF generation checks, source-manifest checks, and

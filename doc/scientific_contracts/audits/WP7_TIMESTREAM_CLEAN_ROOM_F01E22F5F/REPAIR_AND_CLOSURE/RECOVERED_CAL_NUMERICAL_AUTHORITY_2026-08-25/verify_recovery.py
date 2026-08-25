@@ -158,7 +158,7 @@ def main() -> int:
     print("OK: atmosphere machine contract and 1,368-row node table")
     print(f"OK: TolTECA-v1 passband set {PASSBAND_SET_SHA256}")
     print(f"OK: passband member bytes {PASSBAND_TOTAL_BYTES}")
-    print("NOTE: WVR temporal interpolation authority remains pending")
+    print("NOTE: WVR policy authority is outside this exact-byte verifier")
     return 0
 
 
