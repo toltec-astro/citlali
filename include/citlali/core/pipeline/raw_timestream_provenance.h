@@ -375,6 +375,12 @@ inline YAML::Node native_cohort_product_provenance_node_v3(
             population.operation_excluded_sample_count;
         population_node["apt_excluded_sample_count"] =
             population.apt_excluded_sample_count;
+        population_node["ptc_second_pass_excluded_sample_count"] =
+            population.ptc_second_pass_excluded_sample_count;
+        population_node["postclean_outlier_excluded_sample_count"] =
+            population.postclean_outlier_excluded_sample_count;
+        population_node["final_excluded_sample_count"] =
+            population.final_excluded_sample_count;
         population_node["replaced_by_pca_sample_count"] =
             population.replaced_by_pca_sample_count;
         population_node["preserved_pca_invalid_sample_count"] =
@@ -396,6 +402,10 @@ inline YAML::Node native_cohort_product_provenance_node_v3(
             cause_node["count_unit"] = cause.count_unit;
             cause_node["flag_bits"] =
                 raw_optional_scalar_node(cause.flag_bits);
+            cause_node["start_row"] =
+                raw_optional_scalar_node(cause.start_row);
+            cause_node["end_row"] =
+                raw_optional_scalar_node(cause.end_row);
             cause_node["affected_count"] = cause.affected_count;
             for (const auto detector : cause.detector_columns) {
                 cause_node["detector_columns"].push_back(detector);

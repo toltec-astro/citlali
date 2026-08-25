@@ -53,10 +53,6 @@ void require_supported_native_consumer_execution(const Engine &engine) {
         throw std::logic_error(
             "native consumer variance source masking requires detector-specific native weight support");
     }
-    if (processed.flagging.second_pass_local.enabled) {
-        throw std::logic_error(
-            "native consumer PTC second-pass flagging requires a native context-window contract");
-    }
     if (fruit_loops_config(engine).enabled) {
         throw std::logic_error(
             "native consumer fruit-loop projection requires a separately approved native feedback contract");

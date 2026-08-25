@@ -609,6 +609,9 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
     auto &trace = *runtime.jinc_processing_trace;
     std::vector<std::pair<std::string, std::string>> mean_facts;
     std::vector<std::pair<std::string, std::string>> pca_facts;
+    std::vector<std::pair<std::string, std::string>> second_pass_facts{
+        {"enabled", engine.ptcproc.second_pass_local.enabled
+                        ? "true" : "false"}};
     std::string grouping = "detector";
     if (engine.ptcproc.run_clean) {
         if (engine.ptcproc.cleaner.grouping.size() != 1) {
@@ -690,7 +693,6 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
             auto local_ptc = engine.ptcproc;
             local_ptc.cleaner.grouping = {"all"};
             local_ptc.mask_radius_arcsec = 0.0;
-            local_ptc.second_pass_local.enabled = false;
             timestream::TCData<timestream::TCDataKind::PTC,
                                Eigen::MatrixXd> data;
             data.scans.data = group.values();
@@ -758,12 +760,63 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
             }
             add_native_jinc_trace_count(
                 trace.pca_solve_count, pca.size(), "PTC PCA solve");
+            const auto second_pass =
+                local_ptc.snapshot_second_pass_summary(data.index.data);
+            second_pass_facts.emplace_back(
+                prefix + "summary_count",
+                std::to_string(second_pass.size()));
+            for (std::size_t index = 0;
+                 index < second_pass.size(); ++index) {
+                const auto &summary = second_pass[index];
+                const auto summary_prefix = prefix + "summary_" +
+                    std::to_string(index) + "_";
+                second_pass_facts.emplace_back(
+                    summary_prefix + "network",
+                    std::to_string(summary.nw));
+                second_pass_facts.emplace_back(
+                    summary_prefix + "accepted_clusters",
+                    std::to_string(summary.n_accepted_clusters));
+                second_pass_facts.emplace_back(
+                    summary_prefix + "accepted_events",
+                    std::to_string(summary.n_accepted_events));
+                second_pass_facts.emplace_back(
+                    summary_prefix + "rejected_events",
+                    std::to_string(summary.n_rejected_events));
+                second_pass_facts.emplace_back(
+                    summary_prefix + "newly_flagged_fraction",
+                    mapmaking::jinc_double_hex(
+                        summary.newly_flagged_fraction));
+                std::size_t accepted_index = 0;
+                for (const auto &event : summary.candidate_events) {
+                    if (!event.accepted) continue;
+                    const auto event_prefix = summary_prefix +
+                        "accepted_event_" +
+                        std::to_string(accepted_index++) + "_";
+                    second_pass_facts.emplace_back(
+                        event_prefix + "uid", std::to_string(event.uid));
+                    second_pass_facts.emplace_back(
+                        event_prefix + "kind", std::to_string(event.kind));
+                    second_pass_facts.emplace_back(
+                        event_prefix + "start_sample",
+                        std::to_string(event.start_sample));
+                    second_pass_facts.emplace_back(
+                        event_prefix + "end_sample",
+                        std::to_string(event.end_sample));
+                    second_pass_facts.emplace_back(
+                        event_prefix + "score",
+                        mapmaking::jinc_double_hex(event.score));
+                }
+                second_pass_facts.emplace_back(
+                    summary_prefix + "accepted_event_record_count",
+                    std::to_string(accepted_index));
+            }
             return NativePtcNumericalResult{
                 std::move(data.scans.data),
                 data.kernel.data.size() == 0
                     ? std::optional<Eigen::MatrixXd>{}
                     : std::optional<Eigen::MatrixXd>{
-                          std::move(data.kernel.data)}};
+                          std::move(data.kernel.data)},
+                std::move(data.flags.data)};
         });
     scatter_native_ptc_results_transactionally(
         runtime.ledger(), prepared, processed);
@@ -773,10 +826,75 @@ NativePtcPreparedOperation run_native_ptc_numerical_bodies(
         "operation_sequence", std::to_string(prepared.operation().sequence));
     pca_facts.emplace_back(
         "solve_count", std::to_string(trace.pca_solve_count));
+    pca_facts.emplace_back(
+        "second_pass_realization_digest",
+        native_jinc_trace_facts_digest(
+            "native-ptc-second-pass-realization-v1",
+            second_pass_facts));
     trace.ptc_mean_mask_digest = native_jinc_trace_facts_digest(
         "native-ptc-mean-mask-realization-v2", mean_facts);
     trace.pca_realization_digest = native_jinc_trace_facts_digest(
         "native-ptc-pca-realization-v2", pca_facts);
+    std::vector<Eigen::Index> flag_rows_per_segment(
+        prepared.segment_count(), -1);
+    for (const auto &group : prepared.groups()) {
+        auto &rows = flag_rows_per_segment.at(group.segment_ordinal());
+        if (rows < 0) rows = group.slot_count();
+        if (rows != group.slot_count()) {
+            throw std::logic_error(
+                "native PTC flag segment row counts are unequal");
+        }
+    }
+    std::vector<Eigen::Index> flag_offsets(
+        flag_rows_per_segment.size(), 0);
+    Eigen::Index flag_total_rows = 0;
+    for (std::size_t segment = 0;
+         segment < flag_rows_per_segment.size(); ++segment) {
+        if (flag_rows_per_segment[segment] <= 0) {
+            throw std::logic_error(
+                "native PTC flag segment inventory is incomplete");
+        }
+        flag_offsets[segment] = flag_total_rows;
+        flag_total_rows += flag_rows_per_segment[segment];
+    }
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> ptc_flags(
+        flag_total_rows,
+        static_cast<Eigen::Index>(
+            runtime.mapping_handle()->detector_count()));
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> flag_seen(
+        ptc_flags.rows(), ptc_flags.cols());
+    ptc_flags.setConstant(true);
+    flag_seen.setConstant(false);
+    for (std::size_t index = 0;
+         index < processed.groups().size(); ++index) {
+        const auto &source = prepared.groups().at(index);
+        const auto &result = processed.groups().at(index);
+        if (!result.exclusion_flags()) {
+            throw std::logic_error(
+                "native PTC output flag inventory is absent");
+        }
+        for (Eigen::Index local = 0;
+             local < source.detector_count(); ++local) {
+            const auto detector = source.detector_columns().at(
+                static_cast<std::size_t>(local));
+            for (Eigen::Index row = 0; row < source.slot_count(); ++row) {
+                const auto output_row =
+                    flag_offsets.at(source.segment_ordinal()) + row;
+                if (flag_seen(output_row, detector)) {
+                    throw std::logic_error(
+                        "native PTC flag destination is duplicated");
+                }
+                flag_seen(output_row, detector) = true;
+                ptc_flags(output_row, detector) =
+                    (*result.exclusion_flags())(row, local);
+            }
+        }
+    }
+    if (!flag_seen.array().all()) {
+        throw std::logic_error(
+            "native PTC flag projection is incomplete");
+    }
+    runtime.ptc_flags = std::move(ptc_flags);
     const bool has_kernel = std::any_of(
         processed.groups().begin(), processed.groups().end(),
         [](const auto &group) { return group.kernel_values().has_value(); });
@@ -920,6 +1038,18 @@ NativeConsumerPreparedMapScan prepare_native_consumer_map_scan(
     result.map_indices = map_indices;
     result.ptcdata.scans.data = runtime->science_projection->values();
     result.ptcdata.flags.data = runtime->science_projection->flags();
+    if (runtime->ptc_flags) {
+        if (runtime->ptc_flags->rows() !=
+                result.ptcdata.flags.data.rows() ||
+            runtime->ptc_flags->cols() !=
+                result.ptcdata.flags.data.cols() ||
+            (result.ptcdata.flags.data.array() &&
+             !runtime->ptc_flags->array()).any()) {
+            throw std::logic_error(
+                "native PTC runtime flags are unequal or remove an exclusion");
+        }
+        result.ptcdata.flags.data = *runtime->ptc_flags;
+    }
     if (runtime->kernel) result.ptcdata.kernel.data = *runtime->kernel;
     result.ptcdata.index.data = runtime->mapping_handle()->scope().scan_index;
     result.ptcdata.fcf.data = runtime->fcf;

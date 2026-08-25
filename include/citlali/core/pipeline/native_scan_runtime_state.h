@@ -38,6 +38,8 @@ public:
     std::optional<NativePtcPreparedOperation> ptc_prepared;
     std::optional<NativeScienceProjection> science_projection;
     std::optional<Eigen::MatrixXd> kernel;
+    std::optional<Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>>
+        ptc_flags;
     std::optional<mapmaking::JincProcessingScanTrace>
         jinc_processing_trace;
     Eigen::VectorXd fcf;

@@ -121,6 +121,7 @@ LineageFixture make_lineage_fixture(bool mapmaking_enabled = true,
     }
     auto record = pipeline::make_native_cohort_scan_provenance_v3(
         binding, ledger, rtc, prepared, projection,
+        projection.flags(), projection.flags(),
         std::move(map_request));
     return {std::move(scan), std::move(ledger), std::move(rtc),
             std::move(prepared), std::move(projection),
@@ -231,7 +232,8 @@ TEST(SciAlignNativeProductLineageV2,
         "sha256:test-jinc-processing-config";
     auto record = pipeline::make_native_cohort_scan_provenance_v3(
         fixture.binding, fixture.ledger, fixture.rtc, fixture.prepared,
-        fixture.projection, std::move(request));
+        fixture.projection, fixture.projection.flags(),
+        fixture.projection.flags(), std::move(request));
     EXPECT_EQ(
         record.map_occurrence.jinc_processing_configuration_digest,
         std::optional<std::string>{
@@ -470,6 +472,71 @@ TEST(SciAlignNativeProductLineageV2,
 }
 
 TEST(SciAlignNativeProductLineageV2,
+     RuntimeFlagsBecomeBoundedNamedIntervalsWithoutSampleLedger) {
+    auto fixture = make_lineage_fixture(false);
+    auto ptc_flags = fixture.projection.flags();
+    auto final_flags = ptc_flags;
+    std::vector<std::pair<Eigen::Index, Eigen::Index>> eligible;
+    for (Eigen::Index detector = 0;
+         detector < ptc_flags.cols(); ++detector) {
+        for (Eigen::Index row = 0; row < ptc_flags.rows(); ++row) {
+            if (!ptc_flags(row, detector)) {
+                eligible.emplace_back(row, detector);
+            }
+        }
+    }
+    ASSERT_GE(eligible.size(), 1U);
+    ptc_flags(eligible[0].first, eligible[0].second) = true;
+    final_flags = ptc_flags;
+
+    auto record = pipeline::make_native_cohort_scan_provenance_v3(
+        fixture.binding, fixture.ledger, fixture.rtc, fixture.prepared,
+        fixture.projection, ptc_flags, final_flags, {});
+    EXPECT_EQ(record.population.ptc_second_pass_excluded_sample_count, 1U);
+    EXPECT_EQ(record.population.postclean_outlier_excluded_sample_count, 0U);
+    EXPECT_EQ(
+        record.population.final_excluded_sample_count,
+            static_cast<std::size_t>(fixture.projection.flags().array().count()) +
+            1U);
+    const auto second_pass = std::find_if(
+        record.scoped_causes.begin(), record.scoped_causes.end(),
+        [](const auto &cause) {
+            return cause.authority ==
+                "citlali.ptc.second_pass_local_v1";
+        });
+    ASSERT_NE(second_pass, record.scoped_causes.end());
+    EXPECT_EQ(second_pass->scope, "scan_detector_interval");
+    EXPECT_EQ(second_pass->affected_count, 1U);
+    EXPECT_EQ(second_pass->start_row, second_pass->end_row);
+    auto outlier_flags = fixture.projection.flags();
+    outlier_flags(eligible[0].first, eligible[0].second) = true;
+    auto outlier_record = pipeline::make_native_cohort_scan_provenance_v3(
+        fixture.binding, fixture.ledger, fixture.rtc, fixture.prepared,
+        fixture.projection, fixture.projection.flags(), outlier_flags, {});
+    EXPECT_EQ(
+        outlier_record.population.postclean_outlier_excluded_sample_count,
+        1U);
+    const auto postclean = std::find_if(
+        outlier_record.scoped_causes.begin(),
+        outlier_record.scoped_causes.end(),
+        [](const auto &cause) {
+            return cause.authority ==
+                "citlali.ptc.postclean_outlier_policy_v1";
+        });
+    ASSERT_NE(postclean, outlier_record.scoped_causes.end());
+    EXPECT_EQ(postclean->affected_count, 1U);
+
+    auto invalid_final = final_flags;
+    invalid_final(eligible[0].first, eligible[0].second) = false;
+    EXPECT_THROW(
+        pipeline::make_native_cohort_scan_provenance_v3(
+            fixture.binding, fixture.ledger, fixture.rtc,
+            fixture.prepared, fixture.projection, ptc_flags,
+            invalid_final, {}),
+        std::logic_error);
+}
+
+TEST(SciAlignNativeProductLineageV2,
      CanonicalSerializationDoesNotScaleWithDetectorSampleCardinality) {
     auto fixture = make_lineage_fixture(false);
     auto lineage = pipeline::NativeCohortObservationLineageV3::create(
@@ -492,6 +559,9 @@ TEST(SciAlignNativeProductLineageV2,
     scan.population.rtc_processing_flagged_sample_count = 0;
     scan.population.operation_excluded_sample_count = 0;
     scan.population.apt_excluded_sample_count = 0;
+    scan.population.ptc_second_pass_excluded_sample_count = 0;
+    scan.population.postclean_outlier_excluded_sample_count = 0;
+    scan.population.final_excluded_sample_count = 0;
     scan.population.replaced_by_pca_sample_count =
         scan.population.detector_sample_count;
     scan.population.preserved_pca_invalid_sample_count = 0;

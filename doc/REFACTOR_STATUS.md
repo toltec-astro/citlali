@@ -40,7 +40,7 @@ scans, and 204 local-residual despike guard summaries reported 1,207 rejected
 detector occurrences, including a maximum added fraction of 0.9598 against the
 0.1 cap. These are observed-data events, not software completion failures.
 
-All 813 runnable CTests pass with the one established disabled test not run;
+All 815 runnable CTests pass with the one established disabled test not run;
 the focused bounded-provenance/publication tests, Python provenance auditors,
 and required config preflight also pass. The localized production JINC config
 differs from the downloaded Unity merge in local paths and one explicit
@@ -59,10 +59,23 @@ Alt/Az destriping, cross-network coincidence, and detector inverse-variance
 cuts. The full-cohort adapter preserves exact common-slot identity, accepts
 interleaved input detector columns through stable internal grouping, scatters
 back to original identities, and runs before downsampling. The production
-replay now reaches the next intentional boundary, reduction learning. Native
-parity for learning, PTC second-pass flags, noise realizations, and fruit-loop
-feedback remains required before the clean-commit JINC replay and one
-exact-SHA Unity confirmation.
+replay now reaches the next intentional boundary, reduction learning.
+
+The second execution layer now admits the established PTC second-pass only on
+complete network cohorts within each native gap-bounded segment. Numerical
+results carry an append-only runtime exclusion mask through PTC and into map
+weighting; neither existing exclusions nor gaps may be removed. Post-clean
+detector-outlier exclusions are applied afterward. Canonical provenance
+reconciles the final mask actually consumed by mapmaking, but reduces new
+second-pass and post-clean exclusions to named detector intervals and counts;
+it does not publish the runtime mask. Focused tests cover complete-network
+admission, rejection of incomplete groupings and mask rollback, final map
+eligibility, and bounded interval causes. The CLI builds, all 815 runnable
+CTests pass, and the required config preflight passes 129 Python tests, four
+mode kits, eight compatibility cases, and every authority audit. Native parity
+for reduction learning, noise realizations, and fruit-loop feedback remains
+required before the clean-commit JINC replay and one exact-SHA Unity
+confirmation.
 
 ## 2026-08-24 Build-Time Git-Provenance Refresh Repair
 

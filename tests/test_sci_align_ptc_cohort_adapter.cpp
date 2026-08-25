@@ -335,7 +335,7 @@ TEST(sci_align_ptc_cohort_adapter,
 }
 
 TEST(sci_align_ptc_cohort_adapter,
-     optional_and_windowed_modes_fail_before_any_cleaner_or_operation) {
+     optional_modes_and_incomplete_second_pass_cohorts_fail_before_operation) {
     const auto loaded = complete_identical_time_fixture();
     const auto scan = fixture::materialize_native_gap_measured_scan(loaded);
     const auto rtc = identity_rtc(*scan);
@@ -378,11 +378,85 @@ TEST(sci_align_ptc_cohort_adapter,
         std::logic_error);
     EXPECT_FALSE(ledger.last_operation().has_value());
 
+    auto complete_network = request_for("nw", 0.0);
+    complete_network.requires_second_pass_window = true;
+    EXPECT_NO_THROW(
+        pipeline::prepare_native_ptc_cohorts(
+            ledger, rtc, complete_network));
+    EXPECT_TRUE(ledger.last_operation().has_value());
+
     auto unsupported = request_for("fg", 0.0);
+    pipeline::NativeMeasuredDetectorLedger unsupported_ledger{scan};
     EXPECT_THROW(
-        pipeline::prepare_native_ptc_cohorts(ledger, rtc, unsupported),
+        pipeline::prepare_native_ptc_cohorts(
+            unsupported_ledger, rtc, unsupported),
         std::invalid_argument);
-    EXPECT_FALSE(ledger.last_operation().has_value());
+    EXPECT_FALSE(unsupported_ledger.last_operation().has_value());
+}
+
+TEST(sci_align_ptc_cohort_adapter,
+     numerical_flags_are_append_only_and_survive_the_processed_group) {
+    const auto loaded = complete_identical_time_fixture();
+    const auto scan = fixture::materialize_native_gap_measured_scan(loaded);
+    const auto rtc = identity_rtc(*scan);
+    pipeline::NativeMeasuredDetectorLedger ledger{scan};
+    const auto prepared = pipeline::prepare_native_ptc_cohorts(
+        ledger, rtc, request_for("nw", 0.0));
+
+    const auto processed = pipeline::run_native_ptc_groups(
+        prepared, [](const pipeline::NativePtcGroupWorkingSet &group) {
+            auto flags = group.exclusion_flags();
+            bool added = false;
+            for (Eigen::Index row = 0; row < flags.rows() && !added; ++row) {
+                for (Eigen::Index detector = 0;
+                     detector < flags.cols(); ++detector) {
+                    if (!flags(row, detector)) {
+                        flags(row, detector) = true;
+                        added = true;
+                        break;
+                    }
+                }
+            }
+            if (!added) {
+                throw std::logic_error(
+                    "PTC append-only test fixture has no eligible sample");
+            }
+            return pipeline::NativePtcNumericalResult{
+                group.values(), group.kernel_values(), std::move(flags)};
+        });
+    ASSERT_EQ(processed.groups().size(), prepared.groups().size());
+    for (std::size_t index = 0; index < processed.groups().size(); ++index) {
+        ASSERT_TRUE(processed.groups()[index].exclusion_flags());
+        EXPECT_GT(
+            processed.groups()[index].exclusion_flags()->array().count(),
+            prepared.groups()[index].exclusion_flags().array().count());
+    }
+
+    EXPECT_THROW(
+        pipeline::run_native_ptc_groups(
+            prepared,
+            [](const pipeline::NativePtcGroupWorkingSet &group) {
+                auto flags = group.exclusion_flags();
+                bool removed = false;
+                for (Eigen::Index row = 0;
+                     row < flags.rows() && !removed; ++row) {
+                    for (Eigen::Index detector = 0;
+                         detector < flags.cols(); ++detector) {
+                        if (flags(row, detector)) {
+                            flags(row, detector) = false;
+                            removed = true;
+                            break;
+                        }
+                    }
+                }
+                if (!removed) {
+                    throw std::logic_error(
+                        "PTC append-only test fixture has no excluded sample");
+                }
+                return pipeline::NativePtcNumericalResult{
+                    group.values(), group.kernel_values(), std::move(flags)};
+            }),
+        std::logic_error);
 }
 
 TEST(sci_align_ptc_cohort_adapter,

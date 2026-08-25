@@ -125,6 +125,8 @@ struct NativeCohortScopedCauseV3 {
     std::string cause;
     std::string count_unit;
     std::optional<NativeDetectorFlagBits> flag_bits;
+    std::optional<std::size_t> start_row;
+    std::optional<std::size_t> end_row;
     std::size_t affected_count = 0;
     std::vector<TimestreamDetectorColumn> detector_columns;
 };
@@ -140,6 +142,9 @@ struct NativeCohortPopulationV3 {
     std::size_t rtc_processing_flagged_sample_count = 0;
     std::size_t operation_excluded_sample_count = 0;
     std::size_t apt_excluded_sample_count = 0;
+    std::size_t ptc_second_pass_excluded_sample_count = 0;
+    std::size_t postclean_outlier_excluded_sample_count = 0;
+    std::size_t final_excluded_sample_count = 0;
     std::size_t replaced_by_pca_sample_count = 0;
     std::size_t preserved_pca_invalid_sample_count = 0;
     std::size_t preserved_pass_through_sample_count = 0;
@@ -220,6 +225,8 @@ inline void NativeCohortScanProvenanceV3::validate(
     std::size_t raw_input_cause_samples = 0;
     std::size_t rtc_processing_cause_samples = 0;
     std::size_t operation_cause_samples = 0;
+    std::size_t second_pass_cause_samples = 0;
+    std::size_t postclean_outlier_cause_samples = 0;
     for (const auto &cause : scoped_causes) {
         if (cause.scope.empty() || cause.authority.empty() ||
             cause.cause.empty() || cause.count_unit.empty() ||
@@ -282,6 +289,42 @@ inline void NativeCohortScanProvenanceV3::validate(
                     "bounded weight cause has invalid authority fields");
             }
         }
+        else if (cause.authority ==
+                 "citlali.ptc.second_pass_local_v1") {
+            if (cause.scope != "scan_detector_interval" ||
+                cause.cause != "accepted_second_pass_event" ||
+                cause.count_unit != "detector_samples" ||
+                cause.flag_bits || !cause.start_row || !cause.end_row ||
+                cause.detector_columns.size() != 1 ||
+                *cause.start_row > *cause.end_row ||
+                *cause.end_row >= population.row_count ||
+                cause.affected_count !=
+                    *cause.end_row - *cause.start_row + 1) {
+                throw std::logic_error(
+                    "bounded PTC second-pass cause has invalid interval fields");
+            }
+            native_cohort_checked_add_v3(
+                second_pass_cause_samples, cause.affected_count,
+                "PTC second-pass interval cause");
+        }
+        else if (cause.authority ==
+                 "citlali.ptc.postclean_outlier_policy_v1") {
+            if (cause.scope != "scan_detector_interval" ||
+                cause.cause != "postclean_detector_outlier" ||
+                cause.count_unit != "detector_samples" ||
+                cause.flag_bits || !cause.start_row || !cause.end_row ||
+                cause.detector_columns.size() != 1 ||
+                *cause.start_row > *cause.end_row ||
+                *cause.end_row >= population.row_count ||
+                cause.affected_count !=
+                    *cause.end_row - *cause.start_row + 1) {
+                throw std::logic_error(
+                    "bounded post-clean outlier cause has invalid interval fields");
+            }
+            native_cohort_checked_add_v3(
+                postclean_outlier_cause_samples, cause.affected_count,
+                "post-clean outlier interval cause");
+        }
         else {
             throw std::logic_error(
                 "bounded native cohort cause has no admitted authority");
@@ -315,7 +358,15 @@ inline void NativeCohortScanProvenanceV3::validate(
             population.raw_input_flagged_sample_count +
                 population.rtc_processing_flagged_sample_count ||
         operation_cause_samples !=
-            population.operation_excluded_sample_count) {
+            population.operation_excluded_sample_count ||
+        second_pass_cause_samples !=
+            population.ptc_second_pass_excluded_sample_count ||
+        postclean_outlier_cause_samples !=
+            population.postclean_outlier_excluded_sample_count ||
+        population.final_excluded_sample_count !=
+            population.mapped_invalid_sample_count +
+                population.ptc_second_pass_excluded_sample_count +
+                population.postclean_outlier_excluded_sample_count) {
         throw std::logic_error(
             "bounded native cohort named causes do not reconcile");
     }
@@ -479,6 +530,8 @@ NativeCohortScanProvenanceV3 make_native_cohort_scan_provenance_v3(
     const NativeRtcDispatchResult &rtc,
     const NativePtcPreparedOperation &prepared,
     const NativeScienceProjection &projection,
+    const NativePtcExclusionMatrix &ptc_runtime_flags,
+    const NativePtcExclusionMatrix &final_flags,
     NativeCohortMapPublicationRequestV3 map_request);
 
 inline std::string native_cohort_map_index_digest_v3(
@@ -499,6 +552,8 @@ make_native_cohort_scan_provenance_v3(
     const NativeRtcDispatchResult &rtc,
     const NativePtcPreparedOperation &prepared,
     const NativeScienceProjection &projection,
+    const NativePtcExclusionMatrix &ptc_runtime_flags,
+    const NativePtcExclusionMatrix &final_flags,
     NativeCohortMapPublicationRequestV3 map_request) {
     const auto mapping = ledger.mapping_handle();
     if (!mapping || prepared.mapping_handle().get() != mapping.get() ||
@@ -506,7 +561,15 @@ make_native_cohort_scan_provenance_v3(
         !(*ledger.last_operation() == prepared.operation()) ||
         !(*ledger.last_committed_operation() == prepared.operation()) ||
         !(projection.operation() == prepared.operation()) ||
-        !(projection.scope() == mapping->scope()) || rtc.runs.empty() ||
+        !(projection.scope() == mapping->scope()) ||
+        ptc_runtime_flags.rows() != projection.row_count() ||
+        ptc_runtime_flags.cols() != projection.detector_count() ||
+        final_flags.rows() != projection.row_count() ||
+        final_flags.cols() != projection.detector_count() ||
+        (projection.flags().array() &&
+         !ptc_runtime_flags.array()).any() ||
+        (ptc_runtime_flags.array() && !final_flags.array()).any() ||
+        rtc.runs.empty() ||
         prepared.groups().empty() ||
         binding.detector_relation_digest !=
             native_cohort_detector_relation_digest_v2(
@@ -687,6 +750,57 @@ make_native_cohort_scan_provenance_v3(
             result.population.row_count,
             result.population.detector_count,
             "native detector sample");
+    const NativePtcExclusionMatrix second_pass_added =
+        (ptc_runtime_flags.array() && !projection.flags().array()).matrix();
+    const NativePtcExclusionMatrix postclean_outlier_added =
+        (final_flags.array() && !ptc_runtime_flags.array()).matrix();
+    result.population.ptc_second_pass_excluded_sample_count =
+        static_cast<std::size_t>(second_pass_added.array().count());
+    result.population.postclean_outlier_excluded_sample_count =
+        static_cast<std::size_t>(postclean_outlier_added.array().count());
+    result.population.final_excluded_sample_count =
+        static_cast<std::size_t>(final_flags.array().count());
+
+    const auto append_interval_causes =
+        [&](const NativePtcExclusionMatrix &added,
+            std::string_view authority, std::string_view cause) {
+            for (Eigen::Index detector = 0;
+                 detector < added.cols(); ++detector) {
+                Eigen::Index row = 0;
+                while (row < added.rows()) {
+                    if (!added(row, detector)) {
+                        ++row;
+                        continue;
+                    }
+                    const auto start = row;
+                    while (row + 1 < added.rows() &&
+                           added(row + 1, detector)) {
+                        ++row;
+                    }
+                    const auto end = row;
+                    NativeCohortScopedCauseV3 interval;
+                    interval.scope = "scan_detector_interval";
+                    interval.authority = std::string{authority};
+                    interval.cause = std::string{cause};
+                    interval.count_unit = "detector_samples";
+                    interval.start_row =
+                        static_cast<std::size_t>(start);
+                    interval.end_row = static_cast<std::size_t>(end);
+                    interval.affected_count =
+                        static_cast<std::size_t>(end - start + 1);
+                    interval.detector_columns.push_back(detector);
+                    result.scoped_causes.push_back(std::move(interval));
+                    ++row;
+                }
+            }
+        };
+    append_interval_causes(
+        second_pass_added, "citlali.ptc.second_pass_local_v1",
+        "accepted_second_pass_event");
+    append_interval_causes(
+        postclean_outlier_added,
+        "citlali.ptc.postclean_outlier_policy_v1",
+        "postclean_detector_outlier");
 
     if (map_request.mapmaking_enabled) {
         if ((map_request.method != "naive" &&
@@ -774,7 +888,7 @@ make_native_cohort_scan_provenance_v3(
         for (Eigen::Index row = 0; row < projection.row_count(); ++row) {
             for (Eigen::Index detector = 0;
                  detector < projection.detector_count(); ++detector) {
-                if (!projection.flags()(row, detector) &&
+                if (!final_flags(row, detector) &&
                     !zero_weight_detectors.contains(detector)) {
                     ++result.population.eligible_map_input_sample_count;
                 }
@@ -803,9 +917,11 @@ make_native_cohort_scan_provenance_v3(
         result.scoped_causes.begin(), result.scoped_causes.end(),
         [](const auto &lhs, const auto &rhs) {
             return std::tie(lhs.authority, lhs.cause, lhs.count_unit,
-                            lhs.flag_bits) <
+                            lhs.flag_bits, lhs.start_row, lhs.end_row,
+                            lhs.detector_columns) <
                 std::tie(rhs.authority, rhs.cause, rhs.count_unit,
-                         rhs.flag_bits);
+                         rhs.flag_bits, rhs.start_row, rhs.end_row,
+                         rhs.detector_columns);
         });
     result.validate(
         binding, detector_population,
