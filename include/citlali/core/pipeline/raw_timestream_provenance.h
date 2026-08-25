@@ -5,6 +5,7 @@
 #include <citlali/core/pipeline/raw_timestream_execution_plan.h>
 
 #include <yaml-cpp/yaml.h>
+#include <citlali_config/gitversion.h>
 
 #include <filesystem>
 #include <optional>
@@ -14,7 +15,7 @@
 namespace citlali::pipeline {
 
 inline constexpr const char *raw_timestream_provenance_schema_version =
-    "citlali-raw-timestream-provenance-v2";
+    "citlali-raw-timestream-provenance-v3";
 inline constexpr const char *raw_timestream_provenance_filename =
     "raw_timestream_provenance.yaml";
 
@@ -273,6 +274,166 @@ inline YAML::Node native_cohort_product_provenance_node_v2(
     return node;
 }
 
+inline YAML::Node native_cohort_product_provenance_node_v3(
+    const NativeCohortProductProvenanceV3 &provenance) {
+    provenance.validate_complete(provenance.scans.size());
+    YAML::Node node;
+    node["schema_version"] =
+        std::string{native_cohort_product_provenance_v3_schema};
+    node["policy_schema_version"] =
+        std::string{native_cohort_policy_schema_v3};
+    node["serialization_policy"] =
+        "authorities_causes_populations_and_identities_at_natural_scope";
+    node["detector_sample_expansion"] = false;
+
+    const auto &binding = provenance.binding;
+    auto binding_node = node["observation_binding"];
+    binding_node["observation_index"] = binding.observation_index;
+    binding_node["observation"]["observation"] =
+        binding.observation.observation;
+    binding_node["observation"]["subobservation"] =
+        binding.observation.subobservation;
+    binding_node["observation"]["scan"] = binding.observation.scan;
+    binding_node["bundle_identity"] =
+        native_component_identity_node_v2(binding.bundle_identity);
+    binding_node["relation_identity"] =
+        native_component_identity_node_v2(binding.relation_identity);
+    binding_node["detector_relation_digest"] =
+        binding.detector_relation_digest;
+    binding_node["raw_manifest_digest"] = binding.raw_manifest_digest;
+    binding_node["alignment_plan_digest"] = binding.alignment_plan_digest;
+    binding_node["pointing_plan_digest"] = binding.pointing_plan_digest;
+    binding_node["binding_digest"] = binding.digest();
+
+    const auto &detectors = provenance.detector_population;
+    node["detector_population"]["detector_count"] =
+        detectors.detector_count;
+    node["detector_population"]["apt_eligible_detector_count"] =
+        detectors.apt_eligible_detector_count;
+    node["detector_population"]["apt_excluded_detector_count"] =
+        detectors.apt_excluded_detector_count;
+    for (const auto &exclusion : provenance.detector_exclusions) {
+        YAML::Node item;
+        item["detector_column"] = exclusion.detector_column;
+        item["output_uid"] = exclusion.output_uid;
+        item["network"] = exclusion.network;
+        item["channel"] = exclusion.channel;
+        item["apt_flag"] = raw_optional_scalar_node(exclusion.apt_flag);
+        item["scope"] = "observation_detector";
+        item["authority"] = exclusion.authority;
+        item["cause"] = exclusion.cause;
+        node["detector_exclusions"].push_back(item);
+    }
+
+    for (const auto &scan : provenance.scans) {
+        YAML::Node item;
+        item["observation_binding_digest"] =
+            scan.observation_binding_digest;
+        item["scan_index"] = scan.scope.scan_index;
+        item["chunk_index"] = scan.scope.chunk_index;
+        item["operation_sequence"] = scan.operation.sequence;
+        item["rtc"]["run_count"] = scan.rtc.run_count;
+        item["rtc"]["output_row_count"] = scan.rtc.output_row_count;
+        item["rtc"]["exact_support_identity_count"] =
+            scan.rtc.exact_support_identity_count;
+        item["rtc"]["detector_support_count"] =
+            scan.rtc.detector_support_count;
+        item["rtc"]["flagged_detector_support_count"] =
+            scan.rtc.flagged_detector_support_count;
+        item["rtc"]["final_short_support_count"] =
+            scan.rtc.final_short_support_count;
+        item["ptc"]["requested_grouping"] =
+            scan.ptc.requested_grouping;
+        item["ptc"]["effective_grouping"] =
+            scan.ptc.effective_grouping;
+        item["ptc"]["segment_count"] = scan.ptc.segment_count;
+        item["ptc"]["group_count"] = scan.ptc.group_count;
+        item["ptc"]["pca_clean_group_count"] =
+            scan.ptc.pca_clean_group_count;
+        item["ptc"]["pass_through_group_count"] =
+            scan.ptc.pass_through_group_count;
+        item["ptc"]["detector_membership_count"] =
+            scan.ptc.detector_membership_count;
+
+        const auto &population = scan.population;
+        auto population_node = item["population"];
+        population_node["row_count"] = population.row_count;
+        population_node["detector_count"] = population.detector_count;
+        population_node["detector_sample_count"] =
+            population.detector_sample_count;
+        population_node["mapped_valid_sample_count"] =
+            population.mapped_valid_sample_count;
+        population_node["mapped_invalid_sample_count"] =
+            population.mapped_invalid_sample_count;
+        population_node["delivered_flagged_sample_count"] =
+            population.delivered_flagged_sample_count;
+        population_node["raw_input_flagged_sample_count"] =
+            population.raw_input_flagged_sample_count;
+        population_node["rtc_processing_flagged_sample_count"] =
+            population.rtc_processing_flagged_sample_count;
+        population_node["operation_excluded_sample_count"] =
+            population.operation_excluded_sample_count;
+        population_node["apt_excluded_sample_count"] =
+            population.apt_excluded_sample_count;
+        population_node["replaced_by_pca_sample_count"] =
+            population.replaced_by_pca_sample_count;
+        population_node["preserved_pca_invalid_sample_count"] =
+            population.preserved_pca_invalid_sample_count;
+        population_node["preserved_pass_through_sample_count"] =
+            population.preserved_pass_through_sample_count;
+        population_node["positive_weight_detector_count"] =
+            population.positive_weight_detector_count;
+        population_node["zero_weight_detector_count"] =
+            population.zero_weight_detector_count;
+        population_node["eligible_map_input_sample_count"] =
+            population.eligible_map_input_sample_count;
+
+        for (const auto &cause : scan.scoped_causes) {
+            YAML::Node cause_node;
+            cause_node["scope"] = cause.scope;
+            cause_node["authority"] = cause.authority;
+            cause_node["cause"] = cause.cause;
+            cause_node["count_unit"] = cause.count_unit;
+            cause_node["flag_bits"] =
+                raw_optional_scalar_node(cause.flag_bits);
+            cause_node["affected_count"] = cause.affected_count;
+            for (const auto detector : cause.detector_columns) {
+                cause_node["detector_columns"].push_back(detector);
+            }
+            item["scoped_causes"].push_back(cause_node);
+        }
+
+        auto map_node = item["map_occurrence"];
+        map_node["enabled"] = scan.map_occurrence.mapmaking_enabled;
+        if (scan.map_occurrence.mapmaking_enabled) {
+            map_node["method"] = scan.map_occurrence.method;
+            map_node["eligible_weight_digest"] =
+                scan.map_occurrence.eligible_weight_digest;
+            map_node["map_index_digest"] =
+                scan.map_occurrence.map_index_digest;
+            map_node["map_index_count"] =
+                scan.map_occurrence.map_index_count;
+            for (const auto detector :
+                 scan.map_occurrence.zero_weight_detector_columns) {
+                map_node["zero_weight_detector_columns"].push_back(
+                    detector);
+            }
+            map_node["product_occurrence"] =
+                scan.map_occurrence.product_occurrence;
+            map_node["product_identity_digest"] =
+                scan.map_occurrence.product_identity_digest;
+            if (scan.map_occurrence
+                    .jinc_processing_configuration_digest) {
+                map_node["jinc_processing_configuration_digest"] =
+                    *scan.map_occurrence
+                         .jinc_processing_configuration_digest;
+            }
+        }
+        node["scans"].push_back(item);
+    }
+    return node;
+}
+
 inline YAML::Node raw_timestream_observation_state_node(
     const std::optional<RawTimestreamObservationState> &observation) {
     YAML::Node node;
@@ -325,7 +486,7 @@ inline YAML::Node raw_timestream_realized_state_node(
         realized.native_cohort_provenance.has_value();
     if (realized.native_cohort_provenance) {
         node["native_cohort_provenance"]["value"] =
-            native_cohort_product_provenance_node_v2(
+            native_cohort_product_provenance_node_v3(
                 *realized.native_cohort_provenance);
     }
     return node;
@@ -335,6 +496,32 @@ inline YAML::Node raw_timestream_provenance_node(
     const RawTimestreamExecutionPlan &plan) {
     YAML::Node root;
     root["schema_version"] = raw_timestream_provenance_schema_version;
+    root["software_identity"]["citlali_revision"] =
+        CITLALI_GIT_REVISION;
+    root["software_identity"]["citlali_version"] =
+        CITLALI_GIT_VERSION;
+    root["software_identity"]["build_timestamp"] =
+        CITLALI_BUILD_TIMESTAMP;
+    root["canonical_run_identity"]["available"] =
+        plan.canonical_run_identity.has_value();
+    if (plan.canonical_run_identity) {
+        const auto &identity = *plan.canonical_run_identity;
+        root["canonical_run_identity"]["accepted_merged_config_sha256"] =
+            identity.accepted_merged_config_sha256;
+        root["canonical_run_identity"]
+            ["effective_configuration_identity"] =
+            identity.effective_configuration_identity;
+        root["canonical_run_identity"]["runtime_effective_identity"] =
+            identity.runtime_effective_identity;
+        for (const auto &source : identity.config_sources) {
+            YAML::Node item;
+            item["precedence"] = source.precedence;
+            item["path"] = source.path;
+            item["size_bytes"] = source.size_bytes;
+            item["sha256"] = source.sha256;
+            root["canonical_run_identity"]["config_sources"].push_back(item);
+        }
+    }
     root["initialized"] = plan.initialized;
     auto requested = raw_timestream_request_node(plan.requested);
     requested["interface_sync_offset"] =
@@ -351,6 +538,21 @@ inline YAML::Node raw_timestream_provenance_node(
         raw_timestream_observation_state_node(plan.observation);
     root["realized"] =
         raw_timestream_realized_state_node(plan.realized);
+    const bool native_canonical = plan.observation &&
+        plan.observation->native_consumer_route ==
+            NativeConsumerRoute::native_required;
+    const bool native_validated = native_canonical &&
+        plan.realized.execution_completed &&
+        plan.realized.native_cohort_provenance.has_value() &&
+        plan.canonical_run_identity &&
+        plan.canonical_run_identity->complete();
+    root["canonical_publication"]["required"] = native_canonical;
+    root["canonical_publication"]["status"] = !native_canonical
+        ? "not_applicable"
+        : native_validated ? "validated_complete"
+                           : "incomplete_not_publishable";
+    root["canonical_publication"]["bounded_provenance_validated"] =
+        native_validated;
     return root;
 }
 
@@ -381,9 +583,11 @@ inline void write_raw_timestream_provenance_file(
     }
     if (plan.observation->native_consumer_route ==
             NativeConsumerRoute::native_required &&
-        !plan.realized.native_cohort_provenance) {
+        (!plan.realized.native_cohort_provenance ||
+         !plan.canonical_run_identity ||
+         !plan.canonical_run_identity->complete())) {
         throw std::logic_error(
-            "cannot publish native-required raw provenance without complete lineage");
+            "cannot publish native-required raw provenance without complete bounded identities");
     }
     write_yaml_file_atomic(
         raw_timestream_provenance_path(reduction_dir),

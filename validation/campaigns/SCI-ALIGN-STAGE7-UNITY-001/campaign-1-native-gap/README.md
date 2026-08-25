@@ -7,11 +7,13 @@ the first owner-run Stage 7 campaign: one small Science observation with a
 fresh verified matched-v2 relation and native gaps. It does not accept Stage
 7, change the canonical Science kit, or authorize production use.
 
-The activation implementation is exact commit
+The original activation implementation was exact commit
 `36f6ada25d06f2236dfcd279d53c6afc40298cb1`, tree
-`40099545347326aed03df7be22bcc7cfe74e0e7d`. Campaign setup and evidence must
-retain that implementation identity even when later documentation-only
-descendants are used to carry this package.
+`40099545347326aed03df7be22bcc7cfe74e0e7d`. The owner-directed ADR 0013
+bounded-provenance successor must complete its frozen local 152390 replay and
+receive a new exact implementation identity before this Unity campaign is
+launched. Campaign evidence must retain that selected source, build, and
+binary identity.
 
 ## Campaign configuration
 
@@ -64,8 +66,10 @@ all of the following are true:
 2. the candidate CLI returns `status:"ok"` for `validate-bundle-v2` and the
    verified bundle's raw-source identities match the selected files exactly;
 3. all matched native alignment and pointing carriers are present;
-4. duplicate-tone detection realizes one value per admitted detector and all
-   values are zero; and
+4. duplicate-tone detection realizes exactly one finite binary value per
+   admitted detector, every value is exactly zero or one, and every realized
+   exclusion is represented by the named native duplicate-tone authority with
+   zero weight; and
 5. every realized scan has outer-context bounds equal to its science bounds.
 
 Validate the bundle with the same executable that will run the reduction:
@@ -77,8 +81,9 @@ printf '%s\n' "{\"protocol\":\"citlali-canonical-apt-protocol-v2\",\"request_id\
   | tee sci-align-stage7-c1-bundle-validation.json
 ```
 
-If duplicate tones or nonzero outer context are reported at observation setup,
-stop. Select or prepare a conforming input; do not weaken the candidate guard.
+If duplicate-tone values are not exact zero/one, if their scoped cause and
+zero-weight populations do not reconcile, or if nonzero outer context is
+reported at observation setup, stop. Do not weaken the candidate guard.
 
 ## Evidence to retain
 
@@ -88,11 +93,17 @@ YAML and its SHA-256, bundle-validation response, root/component identities,
 and exact raw-source paths/byte counts/SHA-256 values. Also retain the Slurm
 command, resources, environment, and complete stdout/stderr.
 
-After a successful run, retain the complete native provenance sidecar,
-deterministic product index, product inventory, log, exit status, and
+After a successful run, retain the bounded native provenance sidecar,
+checksum-bearing deterministic product index, product inventory, log, exit
+status, and
 Unity-side byte count/SHA-256/header inventory for every large FITS product.
-The native sidecar must cover every expected scan and establish measured-only
-sample identity with no synthesized or gap-bridging occurrence.
+The native sidecar must cover every expected scan; bind the exact inputs, APT,
+config, source/build and policy identities; reconcile every authority/cause,
+detector, sample, zero-weight, and contributing population; and establish
+measured-only execution with no synthesized or gap-bridging occurrence. It
+must not contain a detector-by-sample revision expansion. Optional bounded
+debug traces are investigation artifacts and are not campaign completion
+requirements.
 
 Stop on a missing scan/product, missing or partial native lineage, unexpected
 error-level log record, unexplained detector/flag change, or any evidence that

@@ -55,11 +55,11 @@ auto Lali::run(
                     "native Lali scan lacks observation-owned lineage");
             }
             auto map_publication =
-                citlali::pipeline::make_native_map_publication_request_v2(
+                citlali::pipeline::make_native_map_publication_request_v3(
                     *this, mapmaking_method, make_maps, *native.runtime,
                     native.ptcdata.weights.data);
             auto record =
-                citlali::pipeline::make_native_cohort_scan_provenance_v2(
+                citlali::pipeline::make_native_cohort_scan_provenance_v3(
                     raw_plan.observation->native_cohort_lineage->binding(),
                     native.runtime->ledger(), *native.runtime->rtc,
                     *native.runtime->ptc_prepared,

@@ -6,7 +6,7 @@
 // numerical bodies and prepares the immutable native map input.
 
 #include <citlali/core/mapmaking/science_map_contract.h>
-#include <citlali/core/pipeline/native_cohort_product_provenance_v2.h>
+#include <citlali/core/pipeline/native_cohort_product_provenance_v3.h>
 #include <citlali/core/pipeline/native_consumer_execution_policy.h>
 #include <citlali/core/pipeline/native_scan_runtime_state.h>
 #include <citlali/core/pipeline/downsample_config.h>
@@ -36,10 +36,10 @@
 namespace citlali::pipeline {
 
 inline constexpr NativeDetectorFlagBits native_rtc_processing_flag_bit_v2 =
-    NativeDetectorFlagBits{1} << 63U;
+    native_cohort_rtc_processing_flag_bit_v3;
 inline constexpr NativeDetectorFlagBits
     native_duplicate_tone_exclusion_bit_v2 =
-        NativeDetectorFlagBits{1} << 62U;
+        native_cohort_duplicate_tone_exclusion_bit_v3;
 
 template <class FlagMatrix>
 void reconcile_native_rtc_detector_result(
@@ -154,13 +154,13 @@ void publish_native_jinc_processing_trace_if_active(
 }
 
 template <class Engine>
-NativeCohortMapPublicationRequestV2
-make_native_map_publication_request_v2(
+NativeCohortMapPublicationRequestV3
+make_native_map_publication_request_v3(
     Engine &engine, citlali::config::MapMethod method, bool enabled,
     const NativeScanRuntimeState &runtime,
     const Eigen::VectorXd &eligible_weights) {
     if (!enabled) return {};
-    NativeCohortMapPublicationRequestV2 result;
+    NativeCohortMapPublicationRequestV3 result;
     result.mapmaking_enabled = true;
     result.method = std::string{citlali::config::to_string(method)};
     if (eligible_weights.size() != static_cast<Eigen::Index>(
@@ -172,6 +172,18 @@ make_native_map_publication_request_v2(
     }
     result.eligible_weight_digest =
         mapmaking::jinc_matrix_digest(eligible_weights);
+    result.positive_weight_detector_count = static_cast<std::size_t>(
+        (eligible_weights.array() > 0.0).count());
+    result.zero_weight_detector_count = static_cast<std::size_t>(
+        (eligible_weights.array() == 0.0).count());
+    result.zero_weight_detector_columns.reserve(
+        result.zero_weight_detector_count);
+    for (Eigen::Index detector = 0;
+         detector < eligible_weights.size(); ++detector) {
+        if (eligible_weights(detector) == 0.0) {
+            result.zero_weight_detector_columns.push_back(detector);
+        }
+    }
     if (citlali::config::is_naive_map_method(method)) {
         const auto &identity = engine.omb.science_products.bundle_identity;
         if (!identity) {
@@ -205,9 +217,6 @@ make_native_map_publication_request_v2(
         result.product_identity_digest;
     result.jinc_processing_configuration_digest =
         provenance.processing_configuration_identity;
-    result.jinc_scan_trace_digest =
-        native_jinc_processing_scan_trace_digest_v2(
-            *runtime.jinc_processing_trace);
     return result;
 }
 

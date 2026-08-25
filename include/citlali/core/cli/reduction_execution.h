@@ -23,11 +23,16 @@
 #include <citlali/core/pipeline/post_processing_provenance_lifecycle.h>
 #include <citlali/core/pipeline/processed_timestream_provenance.h>
 #include <citlali/core/pipeline/reduction_pipeline.h>
+#include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/reduction_restart_checkpoint.h>
+#include <citlali/core/pipeline/runtime_provenance_output.h>
+#include <citlali/core/utils/sha256.h>
+#include <citlali_config/gitversion.h>
 #include <citlali/core/session/reduction_result.h>
 #include <spdlog/spdlog.h>
 
 #include <cstdlib>
+#include <filesystem>
 #include <ostream>
 #include <type_traits>
 #include <utility>
@@ -154,6 +159,54 @@ citlali::session::ReductionResult run_reduction_processor_session(
     }
 
     auto &engine = todproc.engine();
+    if constexpr (citlali::pipeline::has_raw_timestream_plan_v<
+                      std::remove_reference_t<decltype(engine)>>) {
+        const auto merged_config = config.to_str();
+        citlali::utils::Sha256 merged_digest;
+        merged_digest.update(merged_config);
+        const auto accepted_sha256 =
+            std::string{"sha256:"} + merged_digest.finish();
+        const auto runtime_node =
+            citlali::pipeline::runtime_provenance_node(
+                citlali::pipeline::runtime_config_provenance(engine));
+        const auto runtime_bytes = YAML::Dump(runtime_node);
+        citlali::utils::Sha256 runtime_digest;
+        runtime_digest.update(runtime_bytes);
+        const auto runtime_sha256 =
+            std::string{"sha256:"} + runtime_digest.finish();
+        citlali::pipeline::NativeCohortDigestBuilderV2 effective_digest;
+        effective_digest.add(
+            "schema", "citlali-effective-configuration-identity-v1");
+        effective_digest.add("accepted-config", accepted_sha256);
+        effective_digest.add("runtime-effective", runtime_sha256);
+        effective_digest.add("citlali-revision", CITLALI_GIT_REVISION);
+        effective_digest.add(
+            "native-policy",
+            citlali::pipeline::native_cohort_policy_schema_v3);
+        citlali::pipeline::RawTimestreamCanonicalRunIdentity identity;
+        identity.accepted_merged_config_sha256 = accepted_sha256;
+        identity.runtime_effective_identity = runtime_sha256;
+        identity.effective_configuration_identity =
+            effective_digest.finish();
+        identity.config_sources.reserve(config_filepaths.size());
+        for (std::size_t index = 0;
+             index < config_filepaths.size(); ++index) {
+            const auto path = std::filesystem::absolute(
+                std::filesystem::path{config_filepaths[index]})
+                                  .lexically_normal();
+            identity.config_sources.push_back({
+                index, path.string(),
+                std::filesystem::file_size(path),
+                std::string{"sha256:"} +
+                    citlali::utils::sha256_file(path)});
+        }
+        if (!identity.complete()) {
+            throw std::logic_error(
+                "canonical run configuration identity is incomplete");
+        }
+        citlali::pipeline::raw_timestream_plan(engine)
+            .canonical_run_identity = std::move(identity);
+    }
     citlali::pipeline::OutputRootLease output_root_lease(
         citlali::pipeline::runtime_output_dir(engine));
     logger->info("acquired exclusive Citlali output root: {}",
@@ -347,8 +400,26 @@ citlali::session::ReductionResult run_reduction_processor_session(
         logger->info(
             "pointing provenance sidecar: {}",
             citlali::pipeline::pointing_provenance_path(
-                engine.output_paths.redu_dir_name)
+            engine.output_paths.redu_dir_name)
                 .string());
+    }
+
+    if constexpr (citlali::pipeline::has_raw_timestream_plan_v<
+                      std::remove_reference_t<decltype(engine)>>) {
+        const auto &raw_plan =
+            citlali::pipeline::raw_timestream_plan(engine);
+        if (raw_plan.observation &&
+            raw_plan.observation->native_consumer_route ==
+                citlali::pipeline::NativeConsumerRoute::native_required) {
+            citlali::pipeline::write_final_product_index_file(
+                engine.output_paths.redu_dir_name,
+                result.provenance_artifacts);
+            logger->info(
+                "published checksum-bearing native reduction index: {}",
+                (std::filesystem::path{
+                     engine.output_paths.redu_dir_name} / "index.yaml")
+                    .string());
+        }
     }
 
     log_reduction_complete(logger);

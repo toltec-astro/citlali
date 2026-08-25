@@ -1,6 +1,7 @@
 #include "sci_align_native_gap_fixture.h"
 
-#include <citlali/core/pipeline/native_cohort_product_provenance_v2.h>
+#include <citlali/core/pipeline/native_cohort_product_provenance_v3.h>
+#include <citlali/core/pipeline/native_cohort_debug_trace.h>
 #include <citlali/core/pipeline/raw_timestream_provenance.h>
 #include <citlali/core/pipeline/raw_timestream_provenance_lifecycle.h>
 
@@ -8,6 +9,7 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <utility>
@@ -24,31 +26,40 @@ struct LineageFixture {
     pipeline::NativePtcPreparedOperation prepared;
     pipeline::NativeScienceProjection projection;
     pipeline::NativeCohortObservationBindingV2 binding;
-    pipeline::NativeCohortScanProvenanceV2 record;
+    pipeline::NativeCohortScanProvenanceV3 record;
 };
 
 LineageFixture make_lineage_fixture(bool mapmaking_enabled = true,
-                                    bool operation_exclusion = false) {
+                                    bool operation_exclusion = false,
+                                    bool rtc_processing_flag = false,
+                                    bool force_weight_zero = false) {
     auto loaded = fixture::load_native_gap_fixture_v1();
     loaded.scan_index = 0;
     auto scan = fixture::materialize_native_gap_measured_scan(loaded);
     pipeline::NativeMeasuredDetectorLedger ledger{scan};
     auto rtc = pipeline::dispatch_native_rtc_runs(
         *scan, {1, false},
-        [](const pipeline::NativeRtcRunInput &input) {
+        [rtc_processing_flag](const pipeline::NativeRtcRunInput &input) {
+            auto flags = input.input_flag_bits;
+            if (rtc_processing_flag) {
+                flags(0, 0) |=
+                    pipeline::native_cohort_rtc_processing_flag_bit_v3;
+            }
             return pipeline::NativeRtcProcessedRun{
-                input.measured_values, input.input_flag_bits};
+                input.measured_values, std::move(flags)};
         });
     pipeline::NativePtcCohortRequest ptc_request{
         "all", pipeline::FinitePcaPlaceholder::checked(-71.0),
         {}, {}, false, false};
     if (operation_exclusion) {
         const auto &first_run = rtc.runs.front();
-        ptc_request.operation_exclusion_bits.emplace(
-            pipeline::NativeDetectorSampleKey{
-                first_run.support.front().selected_anchor.key(),
-                first_run.input.detector_columns.front()},
-            0x40U);
+        for (const auto &support : first_run.support) {
+            ptc_request.operation_exclusion_bits.emplace(
+                pipeline::NativeDetectorSampleKey{
+                    support.selected_anchor.key(),
+                    first_run.input.detector_columns.front()},
+                pipeline::native_cohort_duplicate_tone_exclusion_bit_v3);
+        }
     }
     auto prepared = pipeline::prepare_native_ptc_cohorts(
         ledger, rtc, ptc_request);
@@ -72,16 +83,55 @@ LineageFixture make_lineage_fixture(bool mapmaking_enabled = true,
         ledger, prepared, std::move(projection_request));
     auto binding = pipeline::make_native_cohort_observation_binding_v2(
         0, *scan->relation_handle(), scan->carriers_handle());
-    auto record = pipeline::make_native_cohort_scan_provenance_v2(
+    std::size_t positive_weights = 0;
+    std::size_t zero_weights = 0;
+    std::vector<pipeline::TimestreamDetectorColumn>
+        zero_weight_detector_columns;
+    for (Eigen::Index detector = 0;
+         detector < projection.detector_count(); ++detector) {
+        bool eligible = false;
+        for (Eigen::Index row = 0; row < projection.row_count(); ++row) {
+            eligible = eligible || !projection.flags()(row, detector);
+        }
+        if (force_weight_zero && detector == 0) {
+            eligible = false;
+        }
+        if (eligible) {
+            ++positive_weights;
+        }
+        else {
+            ++zero_weights;
+            zero_weight_detector_columns.push_back(detector);
+        }
+    }
+    pipeline::NativeCohortMapPublicationRequestV3 map_request;
+    if (mapmaking_enabled) {
+        map_request.mapmaking_enabled = true;
+        map_request.method = "naive";
+        map_request.product_occurrence =
+            "urn:citlali:test:map:occurrence";
+        map_request.product_identity_digest =
+            "sha256:test-map-product";
+        map_request.eligible_weight_digest =
+            "sha256:test-map-weights";
+        map_request.positive_weight_detector_count = positive_weights;
+        map_request.zero_weight_detector_count = zero_weights;
+        map_request.zero_weight_detector_columns =
+            std::move(zero_weight_detector_columns);
+    }
+    auto record = pipeline::make_native_cohort_scan_provenance_v3(
         binding, ledger, rtc, prepared, projection,
-        mapmaking_enabled
-            ? pipeline::NativeCohortMapPublicationRequestV2{
-                  true, "naive", "urn:citlali:test:map:occurrence",
-                  "sha256:test-map-product", "sha256:test-map-weights"}
-            : pipeline::NativeCohortMapPublicationRequestV2{});
+        std::move(map_request));
     return {std::move(scan), std::move(ledger), std::move(rtc),
             std::move(prepared), std::move(projection),
             std::move(binding), std::move(record)};
+}
+
+pipeline::RawTimestreamCanonicalRunIdentity make_run_identity() {
+    const std::string digest =
+        "sha256:0123456789abcdef0123456789abcdef"
+        "0123456789abcdef0123456789abcdef";
+    return {digest, digest, digest, {{0, "/test/config.yaml", 17, digest}}};
 }
 
 TEST(SciAlignNativeProductLineageV2,
@@ -103,18 +153,18 @@ TEST(SciAlignNativeProductLineageV2,
 TEST(SciAlignNativeProductLineageV2,
      CommitPublishesOneCompletePreparedSnapshot) {
     auto fixture = make_lineage_fixture();
-    auto lineage = pipeline::NativeCohortObservationLineageV2::create(
-        fixture.binding, 1);
+    auto lineage = pipeline::NativeCohortObservationLineageV3::create(
+        fixture.binding, *fixture.scan->relation_handle(), 1);
     auto reservation = lineage->reserve(fixture.record);
     EXPECT_THROW(lineage->snapshot_complete(), std::logic_error);
     reservation.commit();
     const auto snapshot = lineage->snapshot_complete();
     ASSERT_EQ(snapshot.scans.size(), 1U);
-    EXPECT_EQ(snapshot.scans.front().rtc_support.size(),
-              fixture.record.rtc_support.size());
-    EXPECT_EQ(snapshot.scans.front().ptc_groups.size(),
-              fixture.record.ptc_groups.size());
-    EXPECT_EQ(snapshot.scans.front().revisions.size(),
+    EXPECT_EQ(snapshot.scans.front().rtc.output_row_count,
+              fixture.record.rtc.output_row_count);
+    EXPECT_EQ(snapshot.scans.front().ptc.group_count,
+              fixture.record.ptc.group_count);
+    EXPECT_EQ(snapshot.scans.front().population.detector_sample_count,
               static_cast<std::size_t>(fixture.projection.row_count()) *
                   static_cast<std::size_t>(
                       fixture.projection.detector_count()));
@@ -124,8 +174,8 @@ TEST(SciAlignNativeProductLineageV2,
 TEST(SciAlignNativeProductLineageV2,
      RollbackLeavesNoPartialStateAndAllowsExactRetry) {
     auto fixture = make_lineage_fixture(false);
-    auto lineage = pipeline::NativeCohortObservationLineageV2::create(
-        fixture.binding, 1);
+    auto lineage = pipeline::NativeCohortObservationLineageV3::create(
+        fixture.binding, *fixture.scan->relation_handle(), 1);
     {
         auto reservation = lineage->reserve(fixture.record);
         reservation.rollback();
@@ -140,8 +190,8 @@ TEST(SciAlignNativeProductLineageV2,
 TEST(SciAlignNativeProductLineageV2,
      MissingForeignAndDuplicateLineageRejectBeforePublication) {
     auto fixture = make_lineage_fixture();
-    auto lineage = pipeline::NativeCohortObservationLineageV2::create(
-        fixture.binding, 2);
+    auto lineage = pipeline::NativeCohortObservationLineageV3::create(
+        fixture.binding, *fixture.scan->relation_handle(), 2);
 
     auto foreign = fixture.record;
     foreign.observation_binding_digest = "sha256:foreign";
@@ -159,34 +209,36 @@ TEST(SciAlignNativeProductLineageV2,
     auto fixture = make_lineage_fixture(false);
     fixture.record.map_occurrence.mapmaking_enabled = true;
     fixture.record.map_occurrence.method = "jinc";
-    auto lineage = pipeline::NativeCohortObservationLineageV2::create(
-        fixture.binding, 1);
+    auto lineage = pipeline::NativeCohortObservationLineageV3::create(
+        fixture.binding, *fixture.scan->relation_handle(), 1);
     EXPECT_THROW(lineage->reserve(std::move(fixture.record)),
                  std::logic_error);
     EXPECT_THROW(lineage->snapshot_complete(), std::logic_error);
 }
 
 TEST(SciAlignNativeProductLineageV2,
-     JincOccurrenceRequiresAndSerializesConfigurationAndScanTrace) {
+     JincOccurrenceRequiresConfigurationWithoutBindingExecutionTrace) {
     auto fixture = make_lineage_fixture(false);
-    auto record = pipeline::make_native_cohort_scan_provenance_v2(
+    pipeline::NativeCohortMapPublicationRequestV3 request;
+    request.mapmaking_enabled = true;
+    request.method = "jinc";
+    request.product_occurrence = "urn:citlali:test:jinc:occurrence";
+    request.product_identity_digest = "sha256:test-jinc-product";
+    request.eligible_weight_digest = "sha256:test-jinc-weights";
+    request.positive_weight_detector_count =
+        static_cast<std::size_t>(fixture.projection.detector_count());
+    request.jinc_processing_configuration_digest =
+        "sha256:test-jinc-processing-config";
+    auto record = pipeline::make_native_cohort_scan_provenance_v3(
         fixture.binding, fixture.ledger, fixture.rtc, fixture.prepared,
-        fixture.projection,
-        {true, "jinc", "urn:citlali:test:jinc:occurrence",
-         "sha256:test-jinc-product",
-         "sha256:test-jinc-weights",
-         std::string{"sha256:test-jinc-processing-config"},
-         std::string{"sha256:test-jinc-scan-trace"}});
+        fixture.projection, std::move(request));
     EXPECT_EQ(
         record.map_occurrence.jinc_processing_configuration_digest,
         std::optional<std::string>{
             "sha256:test-jinc-processing-config"});
-    EXPECT_EQ(
-        record.map_occurrence.jinc_scan_trace_digest,
-        std::optional<std::string>{"sha256:test-jinc-scan-trace"});
 
-    auto lineage = pipeline::NativeCohortObservationLineageV2::create(
-        fixture.binding, 1);
+    auto lineage = pipeline::NativeCohortObservationLineageV3::create(
+        fixture.binding, *fixture.scan->relation_handle(), 1);
     auto reservation = lineage->reserve(std::move(record));
     reservation.commit();
     EXPECT_NO_THROW(lineage->snapshot_complete());
@@ -206,9 +258,7 @@ TEST(SciAlignNativeProductLineageV2,
     EXPECT_EQ(
         map["jinc_processing_configuration_digest"].as<std::string>(),
         "sha256:test-jinc-processing-config");
-    EXPECT_EQ(
-        map["jinc_scan_trace_digest"].as<std::string>(),
-        "sha256:test-jinc-scan-trace");
+    EXPECT_FALSE(map["jinc_scan_trace_digest"]);
 }
 
 TEST(SciAlignNativeProductLineageV2,
@@ -220,8 +270,8 @@ TEST(SciAlignNativeProductLineageV2,
     observation.native_consumer_route =
         pipeline::NativeConsumerRoute::native_required;
     observation.native_cohort_lineage =
-        pipeline::NativeCohortObservationLineageV2::create(
-            fixture.binding, 1);
+        pipeline::NativeCohortObservationLineageV3::create(
+            fixture.binding, *fixture.scan->relation_handle(), 1);
 
     EXPECT_THROW(
         pipeline::complete_raw_timestream_observation(plan, 1, 2),
@@ -252,7 +302,7 @@ TEST(SciAlignNativeProductLineageV2,
         node["realized"]["native_cohort_provenance"]["value"];
     EXPECT_EQ(
         product["schema_version"].as<std::string>(),
-        pipeline::native_cohort_product_provenance_v2_schema);
+        pipeline::native_cohort_product_provenance_v3_schema);
     ASSERT_EQ(product["scans"].size(), 1U);
     EXPECT_EQ(
         product["scans"][0]["map_occurrence"]["method"]
@@ -261,22 +311,78 @@ TEST(SciAlignNativeProductLineageV2,
 }
 
 TEST(SciAlignNativeProductLineageV2,
-     OperationExclusionCauseIsBoundAndSerializedPerSample) {
-    auto fixture = make_lineage_fixture(true, true);
-    const auto excluded = std::find_if(
-        fixture.record.revisions.begin(), fixture.record.revisions.end(),
-        [](const auto &revision) {
-            return revision.operation_exclusion_bits != 0;
-        });
-    ASSERT_NE(excluded, fixture.record.revisions.end());
-    EXPECT_EQ(excluded->operation_exclusion_bits, 0x40U);
-    EXPECT_EQ(
-        excluded->action,
-        pipeline::NativeMeasuredDetectorLedger::RevisionAction::
-            preserved_pca_invalid);
+     NativePublicationRequiresCompleteCanonicalRunIdentity) {
+    auto fixture = make_lineage_fixture();
+    pipeline::RawTimestreamExecutionPlan plan;
+    plan.initialized = true;
+    auto &observation = plan.begin_observation();
+    observation.native_consumer_route =
+        pipeline::NativeConsumerRoute::native_required;
+    observation.native_cohort_lineage =
+        pipeline::NativeCohortObservationLineageV3::create(
+            fixture.binding, *fixture.scan->relation_handle(), 1);
+    auto reservation =
+        observation.native_cohort_lineage->reserve(fixture.record);
+    reservation.commit();
+    pipeline::complete_raw_timestream_observation(plan, 1, 0);
 
-    auto lineage = pipeline::NativeCohortObservationLineageV2::create(
-        fixture.binding, 1);
+    const auto output_dir = std::filesystem::path(testing::TempDir()) /
+        "citlali_bounded_native_publication_identity_test";
+    std::filesystem::remove_all(output_dir);
+    std::filesystem::create_directories(output_dir);
+    EXPECT_THROW(
+        pipeline::write_raw_timestream_provenance_file(output_dir, plan),
+        std::logic_error);
+    EXPECT_FALSE(std::filesystem::exists(
+        pipeline::raw_timestream_provenance_path(output_dir)));
+
+    plan.canonical_run_identity = make_run_identity();
+    ASSERT_NO_THROW(
+        pipeline::write_raw_timestream_provenance_file(output_dir, plan));
+    const auto stored = YAML::LoadFile(
+        pipeline::raw_timestream_provenance_path(output_dir).string());
+    EXPECT_TRUE(stored["canonical_run_identity"]["available"].as<bool>());
+    EXPECT_EQ(
+        stored["canonical_run_identity"]["config_sources"][0]["path"]
+            .as<std::string>(),
+        "/test/config.yaml");
+    EXPECT_EQ(
+        stored["software_identity"]["citlali_revision"].as<std::string>(),
+        CITLALI_GIT_REVISION);
+    EXPECT_TRUE(
+        stored["canonical_publication"]["required"].as<bool>());
+    EXPECT_EQ(
+        stored["canonical_publication"]["status"].as<std::string>(),
+        "validated_complete");
+    EXPECT_TRUE(stored["canonical_publication"]
+                      ["bounded_provenance_validated"]
+                          .as<bool>());
+    std::filesystem::remove_all(output_dir);
+}
+
+TEST(SciAlignNativeProductLineageV2,
+     OperationExclusionCauseIsNamedAndSerializedAtScanScope) {
+    auto fixture = make_lineage_fixture(true, true);
+    const auto found = std::find_if(
+        fixture.record.scoped_causes.begin(),
+        fixture.record.scoped_causes.end(),
+        [](const auto &candidate) {
+            return candidate.cause == "duplicate_tone";
+        });
+    ASSERT_NE(found, fixture.record.scoped_causes.end());
+    const auto &cause = *found;
+    EXPECT_EQ(cause.scope, "scan_summary");
+    EXPECT_EQ(cause.authority,
+              "citlali.native_duplicate_tone_policy_v2");
+    EXPECT_EQ(cause.cause, "duplicate_tone");
+    EXPECT_EQ(cause.flag_bits,
+              pipeline::native_cohort_duplicate_tone_exclusion_bit_v3);
+    EXPECT_EQ(cause.count_unit, "detector_samples");
+    EXPECT_EQ(cause.detector_columns.size(), 1U);
+    EXPECT_GT(cause.affected_count, 0U);
+
+    auto lineage = pipeline::NativeCohortObservationLineageV3::create(
+        fixture.binding, *fixture.scan->relation_handle(), 1);
     auto reservation = lineage->reserve(std::move(fixture.record));
     reservation.commit();
     pipeline::RawTimestreamExecutionPlan plan;
@@ -286,24 +392,152 @@ TEST(SciAlignNativeProductLineageV2,
         pipeline::NativeConsumerRoute::native_required;
     observation.native_cohort_lineage = std::move(lineage);
     pipeline::complete_raw_timestream_observation(plan, 1, 0);
-    const auto revisions =
+    const auto causes =
         pipeline::raw_timestream_provenance_node(plan)
             ["realized"]["native_cohort_provenance"]["value"]
-            ["scans"][0]["revision_transitions"];
-    bool found = false;
-    for (const auto &revision : revisions) {
-        if (revision["operation_exclusion_bits"].as<std::uint64_t>() ==
-            0x40U) {
-            found = true;
-            EXPECT_EQ(
-                revision["action"].as<std::string>(),
-                "preserved_pca_invalid");
-            EXPECT_TRUE(
-                revision["apt_flag"]["available"].as<bool>());
-            EXPECT_EQ(revision["apt_flag"]["value"].as<int>(), 0);
+            ["scans"][0]["scoped_causes"];
+    bool serialized_duplicate = false;
+    for (const auto &serialized : causes) {
+        if (serialized["cause"].as<std::string>() == "duplicate_tone") {
+            serialized_duplicate = true;
+            EXPECT_EQ(serialized["scope"].as<std::string>(),
+                      "scan_summary");
         }
     }
-    EXPECT_TRUE(found);
+    EXPECT_TRUE(serialized_duplicate);
+    EXPECT_FALSE(
+        pipeline::raw_timestream_provenance_node(plan)
+            ["realized"]["native_cohort_provenance"]["value"]
+            ["scans"][0]["revision_transitions"]);
+}
+
+TEST(SciAlignNativeProductLineageV2,
+     RawAndRtcFlagsRetainDistinctNamedAuthorities) {
+    const auto fixture = make_lineage_fixture(false, false, true);
+    const auto find_authority = [&](const std::string &authority) {
+        return std::find_if(
+            fixture.record.scoped_causes.begin(),
+            fixture.record.scoped_causes.end(),
+            [&](const auto &cause) {
+                return cause.authority == authority;
+            });
+    };
+    const auto rtc = find_authority(
+        "citlali.native_rtc_processing_policy_v2");
+    ASSERT_NE(rtc, fixture.record.scoped_causes.end());
+    EXPECT_EQ(rtc->cause, "rtc_processing_generated_flag");
+    EXPECT_EQ(rtc->scope, "scan_summary");
+    EXPECT_EQ(rtc->flag_bits,
+              pipeline::native_cohort_rtc_processing_flag_bit_v3);
+    EXPECT_EQ(
+        fixture.record.population.rtc_processing_flagged_sample_count,
+        rtc->affected_count);
+
+    const auto raw = find_authority("raw_kids_input.sample_flags");
+    if (raw != fixture.record.scoped_causes.end()) {
+        EXPECT_EQ(raw->cause, "raw_input_flag_bits");
+        EXPECT_EQ(raw->scope, "scan_summary");
+        ASSERT_TRUE(raw->flag_bits.has_value());
+        EXPECT_EQ(*raw->flag_bits &
+                      pipeline::native_cohort_rtc_processing_flag_bit_v3,
+                  0U);
+    }
+}
+
+TEST(SciAlignNativeProductLineageV2,
+     AdditionalZeroWeightDetectorHasNamedWeightAuthority) {
+    const auto fixture = make_lineage_fixture(true, false, false, true);
+    const auto found = std::find_if(
+        fixture.record.scoped_causes.begin(),
+        fixture.record.scoped_causes.end(),
+        [](const auto &cause) {
+            return cause.authority ==
+                "citlali.weighting.detector_weight_contract_v1";
+        });
+    ASSERT_NE(found, fixture.record.scoped_causes.end());
+    EXPECT_EQ(found->scope, "scan_detector");
+    EXPECT_EQ(found->cause, "nonpositive_final_detector_weight");
+    EXPECT_EQ(found->count_unit, "detectors");
+    EXPECT_FALSE(found->flag_bits.has_value());
+    EXPECT_EQ(found->affected_count, found->detector_columns.size());
+    EXPECT_TRUE(std::binary_search(found->detector_columns.begin(),
+                                   found->detector_columns.end(), 0));
+    auto lineage = pipeline::NativeCohortObservationLineageV3::create(
+        fixture.binding, *fixture.scan->relation_handle(), 1);
+    auto reservation = lineage->reserve(fixture.record);
+    reservation.commit();
+    EXPECT_NO_THROW(lineage->snapshot_complete());
+}
+
+TEST(SciAlignNativeProductLineageV2,
+     CanonicalSerializationDoesNotScaleWithDetectorSampleCardinality) {
+    auto fixture = make_lineage_fixture(false);
+    auto lineage = pipeline::NativeCohortObservationLineageV3::create(
+        fixture.binding, *fixture.scan->relation_handle(), 1);
+    auto reservation = lineage->reserve(std::move(fixture.record));
+    reservation.commit();
+    auto product = lineage->snapshot_complete();
+    const auto baseline = YAML::Dump(
+        pipeline::native_cohort_product_provenance_node_v3(product));
+
+    auto &scan = product.scans.front();
+    scan.population.row_count = 1000000U;
+    scan.population.detector_sample_count =
+        scan.population.row_count * scan.population.detector_count;
+    scan.population.mapped_valid_sample_count =
+        scan.population.detector_sample_count;
+    scan.population.mapped_invalid_sample_count = 0;
+    scan.population.delivered_flagged_sample_count = 0;
+    scan.population.raw_input_flagged_sample_count = 0;
+    scan.population.rtc_processing_flagged_sample_count = 0;
+    scan.population.operation_excluded_sample_count = 0;
+    scan.population.apt_excluded_sample_count = 0;
+    scan.population.replaced_by_pca_sample_count =
+        scan.population.detector_sample_count;
+    scan.population.preserved_pca_invalid_sample_count = 0;
+    scan.population.preserved_pass_through_sample_count = 0;
+    scan.scoped_causes.clear();
+    const auto long_observation = YAML::Dump(
+        pipeline::native_cohort_product_provenance_node_v3(product));
+
+    EXPECT_LT(baseline.size(), 16384U);
+    EXPECT_LT(long_observation.size(), baseline.size() + 128U);
+    EXPECT_EQ(long_observation.find("revision_transitions"),
+              std::string::npos);
+    EXPECT_EQ(long_observation.find("exact_native_support"),
+              std::string::npos);
+}
+
+TEST(SciAlignNativeProductLineageV2,
+     DebugTraceRequiresExplicitSelectionAndHonorsHardRecordBound) {
+    auto fixture = make_lineage_fixture();
+    pipeline::NativeCohortDebugTraceRequestV1 invalid;
+    invalid.enabled = true;
+    invalid.max_records = 2;
+    EXPECT_THROW(
+        pipeline::make_native_cohort_debug_trace_v1(
+            fixture.ledger, fixture.prepared, invalid),
+        std::invalid_argument);
+
+    pipeline::NativeCohortDebugTraceRequestV1 request;
+    request.enabled = true;
+    request.max_records = 2;
+    request.scan_index = 0;
+    const auto trace = pipeline::make_native_cohort_debug_trace_v1(
+        fixture.ledger, fixture.prepared, request);
+    EXPECT_EQ(trace.records.size(), 2U);
+    EXPECT_GT(trace.matching_record_count, trace.records.size());
+    EXPECT_TRUE(trace.truncated);
+    const auto node = pipeline::native_cohort_debug_trace_node_v1(trace);
+    EXPECT_EQ(node["artifact_class"].as<std::string>(),
+              "diagnostic_not_canonical");
+    EXPECT_FALSE(node["retention_required"].as<bool>());
+    EXPECT_EQ(node["selection"]["scan_index"].as<std::int64_t>(), 0);
+    auto overfilled = trace;
+    overfilled.records.push_back(trace.records.front());
+    EXPECT_THROW(
+        pipeline::native_cohort_debug_trace_node_v1(overfilled),
+        std::logic_error);
 }
 
 }  // namespace

@@ -351,10 +351,11 @@ PROVENANCE_SIDECARS = {
     },
     "raw_timestream": {
         "filename": "raw_timestream_provenance.yaml",
-        "schema_version": "citlali-raw-timestream-provenance-v2",
+        "schema_version": "citlali-raw-timestream-provenance-v3",
         "accepted_schema_versions": (
             "citlali-raw-timestream-provenance-v1",
             "citlali-raw-timestream-provenance-v2",
+            "citlali-raw-timestream-provenance-v3",
         ),
         "required_paths": (
             ("initialized",),
@@ -636,7 +637,10 @@ def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
         if data["initialized"] is not True:
             errors.append("raw execution plan is not initialized")
 
-        if data.get("schema_version") == "citlali-raw-timestream-provenance-v2":
+        if data.get("schema_version") in {
+            "citlali-raw-timestream-provenance-v2",
+            "citlali-raw-timestream-provenance-v3",
+        }:
             requested_offsets = data["requested"]["interface_sync_offset"]
             effective_offsets = data["effective"]["config"][
                 "interface_sync_offset"
@@ -668,6 +672,62 @@ def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
                         )
             if requested_offsets != effective_offsets:
                 errors.append("interface-sync requested/effective values differ")
+
+        if data.get("schema_version") == "citlali-raw-timestream-provenance-v3":
+            digest_pattern = re.compile(r"sha256:[0-9a-f]{64}")
+            software = data.get("software_identity")
+            if not isinstance(software, dict) or any(
+                not isinstance(software.get(name), str)
+                or not software.get(name)
+                for name in (
+                    "citlali_revision",
+                    "citlali_version",
+                    "build_timestamp",
+                )
+            ):
+                errors.append("v3 Citlali software identity is incomplete")
+            run_identity = data.get("canonical_run_identity")
+            if (
+                not isinstance(run_identity, dict)
+                or run_identity.get("available") is not True
+            ):
+                errors.append("v3 canonical run identity is unavailable")
+            else:
+                for name in (
+                    "accepted_merged_config_sha256",
+                    "effective_configuration_identity",
+                    "runtime_effective_identity",
+                ):
+                    value = run_identity.get(name)
+                    if (
+                        not isinstance(value, str)
+                        or digest_pattern.fullmatch(value) is None
+                    ):
+                        errors.append(
+                            f"v3 canonical run identity {name} is invalid"
+                        )
+                sources = run_identity.get("config_sources")
+                if not isinstance(sources, list) or not sources:
+                    errors.append("v3 config-source identities are unavailable")
+                else:
+                    for index, source in enumerate(sources):
+                        if not isinstance(source, dict):
+                            errors.append("v3 config-source identity is not a mapping")
+                            continue
+                        if source.get("precedence") != index:
+                            errors.append("v3 config-source precedence is invalid")
+                        path = source.get("path")
+                        if not isinstance(path, str) or not Path(path).is_absolute():
+                            errors.append("v3 config-source path is not absolute")
+                        digest = source.get("sha256")
+                        if (
+                            not isinstance(digest, str)
+                            or digest_pattern.fullmatch(digest) is None
+                        ):
+                            errors.append("v3 config-source checksum is invalid")
+                        size = source.get("size_bytes")
+                        if type(size) is not int or size < 0:
+                            errors.append("v3 config-source size is invalid")
 
         observation = data["observation"]
         if observation.get("available") is not True:
@@ -771,6 +831,46 @@ def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
                 errors.append(
                     f"realized {name} must be a nonnegative integer"
                 )
+        if (
+            data.get("schema_version") ==
+                "citlali-raw-timestream-provenance-v3"
+            and data.get("observation", {}).get("value", {}).get(
+                "native_consumer_route"
+            ) == "native_required"
+        ):
+            publication = data.get("canonical_publication")
+            if (
+                not isinstance(publication, dict)
+                or publication.get("required") is not True
+                or publication.get("status") != "validated_complete"
+                or publication.get("bounded_provenance_validated") is not True
+            ):
+                errors.append(
+                    "native canonical publication status is not validated complete"
+                )
+            native = realized.get("native_cohort_provenance")
+            value = native.get("value") if isinstance(native, dict) else None
+            completed = realized.get("completed_scan_count", {}).get("value")
+            if (
+                not isinstance(native, dict)
+                or native.get("available") is not True
+                or not isinstance(value, dict)
+            ):
+                errors.append("bounded native provenance is unavailable")
+            else:
+                if value.get("schema_version") != (
+                    "citlali-native-cohort-product-provenance-v3"
+                ):
+                    errors.append("bounded native provenance schema is invalid")
+                if value.get("policy_schema_version") != (
+                    "citlali-native-cohort-bounded-provenance-policy-v1"
+                ):
+                    errors.append("bounded native provenance policy is invalid")
+                if value.get("detector_sample_expansion") is not False:
+                    errors.append("bounded native provenance expands samples")
+                scans = value.get("scans")
+                if not isinstance(scans, list) or len(scans) != completed:
+                    errors.append("bounded native scan count is incomplete")
     except (AttributeError, KeyError, TypeError) as exc:
         errors.append(f"cannot evaluate raw provenance semantics: {exc}")
     return errors

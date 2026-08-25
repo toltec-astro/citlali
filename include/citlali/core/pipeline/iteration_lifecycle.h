@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/pipeline/native_consumer_mode_policy.h>
 #include <citlali/core/pipeline/reduction_learning_lifecycle.h>
 #include <citlali/core/pipeline/fruit_loop_restart_lifecycle.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
@@ -99,6 +100,20 @@ template <class TodProc, class Logger>
 void make_reduction_iteration_index_file(TodProc &todproc,
                                          const Logger &logger) {
     auto &engine = todproc.engine();
+
+    if constexpr (has_raw_timestream_plan_v<decltype(engine)>) {
+        const auto &raw_plan = raw_timestream_plan(engine);
+        if (raw_plan.observation &&
+            raw_plan.observation->native_consumer_route ==
+                NativeConsumerRoute::native_required) {
+            // Native publication is fail-closed. The canonical reduction
+            // index is written by the session boundary only after every
+            // required reduction sidecar has committed and validated.
+            logger->info(
+                "deferring native reduction index until canonical publication");
+            return;
+        }
+    }
 
     logger->info("making index files");
     todproc.make_index_file(engine.output_paths.redu_dir_name);

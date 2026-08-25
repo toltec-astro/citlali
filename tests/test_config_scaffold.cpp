@@ -10372,7 +10372,7 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
         citlali::pipeline::raw_timestream_provenance_node(plan);
 
     EXPECT_EQ(node["schema_version"].as<std::string>(),
-              "citlali-raw-timestream-provenance-v2");
+              "citlali-raw-timestream-provenance-v3");
     EXPECT_TRUE(node["initialized"].as<bool>());
     EXPECT_EQ(node["requested"]["downsample"]["factor"].as<int>(), 0);
     EXPECT_EQ(
@@ -10414,6 +10414,9 @@ TEST(config_scaffold, serializes_versioned_raw_timestream_provenance) {
     EXPECT_EQ(node["realized"]["required_timestream_write_count"]["value"]
                   .as<std::size_t>(),
               24U);
+    EXPECT_FALSE(node["canonical_publication"]["required"].as<bool>());
+    EXPECT_EQ(node["canonical_publication"]["status"].as<std::string>(),
+              "not_applicable");
 }
 
 TEST(config_scaffold, serializes_unavailable_raw_observation_explicitly) {
@@ -10450,7 +10453,7 @@ TEST(config_scaffold, atomically_writes_raw_timestream_provenance) {
     EXPECT_FALSE(std::filesystem::exists(output_path.string() + ".tmp"));
     const auto stored = YAML::LoadFile(output_path.string());
     EXPECT_EQ(stored["schema_version"].as<std::string>(),
-              "citlali-raw-timestream-provenance-v2");
+              "citlali-raw-timestream-provenance-v3");
     EXPECT_TRUE(stored["initialized"].as<bool>());
     std::filesystem::remove_all(output_dir);
 }

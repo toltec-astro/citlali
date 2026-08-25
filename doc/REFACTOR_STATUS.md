@@ -1,5 +1,52 @@
 # Citlali Refactor Status
 
+## 2026-08-24 Bounded Native Scientific Provenance
+
+The owner rejected the proposed compressed NetCDF encoding of exhaustive
+native detector-sample lineage. Runtime sample state, canonical scientific
+provenance, and diagnostic tracing now have separate contracts under ADR 0013.
+The native-required Science route publishes the bounded
+`citlali-native-cohort-product-provenance-v3` contract: authoritative
+observation/APT/input/config/software identities, one observation-wide record
+per APT detector exclusion, named causes at their natural scope, reconciled
+scan populations, detector-scope weight/map identities, and final product
+checksums. It neither serializes nor hashes a complete detector-by-sample
+revision history. The historical v2 contract remains independently readable,
+and execution repair `9c3b71e79` remains its own reviewable commit.
+
+Detailed sample tracing is now an explicit diagnostic API, disabled by
+default, with required scan/network/detector/row selection and a hard record
+bound. Its products declare themselves noncanonical and carry no retention or
+completion requirement. Ordinary publication never calls this API.
+
+Native publication is fail-closed at the index boundary. Iteration completion
+does not publish the reduction-root index for a native-required run. The
+observation index follows validation and atomic publication of the bounded
+sidecar, and the final checksum-bearing root index follows every required
+reduction sidecar. Live log/profile files are classified as mutable
+operational artifacts and are explicitly excluded from the immutable checksum
+set rather than carrying stale checksums. The v3 sidecar records an explicit
+`validated_complete` publication status, and the reduction auditor requires
+it.
+
+The frozen local 152390 native-gap campaign completed all 124 scans and all
+three array maps with no error- or critical-level records. The 8,168,140-byte
+bounded sidecar contains 1,006 observation-wide APT exclusions and 124 scan
+summaries, declares `detector_sample_expansion: false`, and replaces the
+previous roughly 835-million-record requirement. All 23 independently checked
+hash bindings across the three product indices passed. The data-pathology
+review is separate from completion: 77 network-step masks occurred across 39
+scans, and 204 local-residual despike guard summaries reported 1,207 rejected
+detector occurrences, including a maximum added fraction of 0.9598 against the
+0.1 cap. These are observed-data events, not software completion failures.
+
+All 810 runnable CTests pass with the one established disabled test not run;
+the focused bounded-provenance/publication tests, Python provenance auditors,
+and required config preflight also pass. The localized production JINC config
+differs from the downloaded Unity merge only in four classes of absolute local
+paths and has zero scientific leaf differences. Its clean-commit full replay
+is the remaining local gate before one exact-SHA Unity confirmation.
+
 ## 2026-08-24 Build-Time Git-Provenance Refresh Repair
 
 The Stage 7 Unity workflow exposed that a successful build after changing Git

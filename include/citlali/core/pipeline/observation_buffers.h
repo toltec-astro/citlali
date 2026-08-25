@@ -3,7 +3,7 @@
 #include <citlali/core/pipeline/observation_buffer_allocation.h>
 #include <citlali/core/pipeline/observation_map_access.h>
 #include <citlali/core/pipeline/mapmaking_provenance_lifecycle.h>
-#include <citlali/core/pipeline/native_cohort_product_provenance_v2.h>
+#include <citlali/core/pipeline/native_cohort_product_provenance_v3.h>
 #include <citlali/core/pipeline/native_consumer_execution_policy.h>
 #include <citlali/core/pipeline/native_consumer_mode_policy.h>
 #include <citlali/core/pipeline/pointing_provenance_lifecycle.h>
@@ -47,7 +47,7 @@ void begin_native_consumer_observation_if_available(
             reduction_type, mapmaking_config(engine).grouping,
             static_cast<bool>(relation), static_cast<bool>(carriers)});
 
-        std::shared_ptr<NativeCohortObservationLineageV2> lineage;
+        std::shared_ptr<NativeCohortObservationLineageV3> lineage;
         if (route == NativeConsumerRoute::native_required) {
             require_supported_native_consumer_observation(engine);
             const auto scan_count = engine.telescope.scan_indices.cols();
@@ -55,9 +55,9 @@ void begin_native_consumer_observation_if_available(
                 throw std::logic_error(
                     "native consumer requires positive scan cardinality");
             }
-            lineage = NativeCohortObservationLineageV2::create(
+            lineage = NativeCohortObservationLineageV3::create(
                 make_native_cohort_observation_binding_v2(
-                    observation_index, *relation, carriers),
+                    observation_index, *relation, carriers), *relation,
                 static_cast<std::size_t>(scan_count));
         }
         plan.observation->native_consumer_route = route;

@@ -134,15 +134,17 @@ TEST(SciAlignNativeConsumerExecution,
     const auto binding =
         pipeline::make_native_cohort_observation_binding_v2(
             0, *scan->relation_handle(), scan->carriers_handle());
-    auto record = pipeline::make_native_cohort_scan_provenance_v2(
+    auto record = pipeline::make_native_cohort_scan_provenance_v3(
         binding, prepared.runtime->ledger(), *prepared.runtime->rtc,
         *prepared.runtime->ptc_prepared,
         *prepared.runtime->science_projection,
         {true, "naive", "urn:citlali:test:native-execution",
          "sha256:test-native-execution-product",
-         "sha256:test-native-execution-weights"});
-    auto lineage = pipeline::NativeCohortObservationLineageV2::create(
-        binding, 1);
+         "sha256:test-native-execution-weights",
+         static_cast<std::size_t>(prepared.ptcdata.weights.data.size()),
+         0});
+    auto lineage = pipeline::NativeCohortObservationLineageV3::create(
+        binding, *scan->relation_handle(), 1);
     auto reservation = lineage->reserve(std::move(record));
     reservation.commit();
     EXPECT_NO_THROW(lineage->snapshot_complete());

@@ -16,6 +16,33 @@ nonunique matches are exposed as ambiguous (or a typed correlation failure),
 never resolved by row order. The exact four-field KMP authority and physical
 rules are in [`CANONICAL_APT_V2.md`](CANONICAL_APT_V2.md).
 
+## Bounded native provenance governing rule
+
+Native detector/sample flags, eligibility, operation exclusions, revisions,
+weights, and intermediate values are runtime scientific state. They remain
+exact and fail-closed while an observation is processed, but canonical
+provenance does not expand them into a detector-by-sample history. Under ADR
+0013, deterministic consequences are regenerated from the bound raw inputs,
+compact-v2 APT, complete configuration identity, source/build identity, and
+policy versions.
+
+Canonical native exclusions are recorded at their authoritative natural
+scope. APT exclusions occur once per detector and retain the matched relation
+authority plus typed-null or nonzero-flag cause. Raw-input flags,
+RTC-generated processing flags, native operation exclusions, and additional
+nonpositive detector-weight decisions retain distinct named authorities and
+reconcile per scan. Duplicate tones use the explicit native duplicate-tone
+policy and every affected detector receives zero scientific weight. The
+sidecar records positive and zero detector-weight populations, the exact
+zero-weight detector scope, and eligible contributing-sample counts. These
+facts must reconcile with the runtime no-contribution contract; a finite value
+alone never makes an excluded sample valid.
+
+Detailed detector/sample tracing is diagnostic, explicit, selected, and hard
+bounded. It is not canonical completion evidence. A sample-level persisted
+mask or checkpoint requires a separately named scientific or operational
+product, consumer, owner, and retention policy.
+
 ## Status And Scope
 
 This is the canonical human-readable statement of scientific identity, units,

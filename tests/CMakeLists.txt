@@ -100,7 +100,8 @@ add_executable(citlali_sci_align_test EXCLUDE_FROM_ALL
     timestream_rtc_run_adapter_header.cpp
     timestream_ptc_cohort_adapter_header.cpp
     timestream_native_science_projection_header.cpp
-    native_cohort_product_provenance_v2_header.cpp
+    native_cohort_product_provenance_v3_header.cpp
+    native_cohort_debug_trace_header.cpp
     native_consumer_mode_policy_header.cpp
     native_consumer_execution_header.cpp
     native_consumer_execution_policy_header.cpp
@@ -127,7 +128,8 @@ set_source_files_properties(
     timestream_rtc_run_adapter_header.cpp
     timestream_ptc_cohort_adapter_header.cpp
     timestream_native_science_projection_header.cpp
-    native_cohort_product_provenance_v2_header.cpp
+    native_cohort_product_provenance_v3_header.cpp
+    native_cohort_debug_trace_header.cpp
     native_consumer_mode_policy_header.cpp
     native_consumer_execution_header.cpp
     native_consumer_execution_policy_header.cpp

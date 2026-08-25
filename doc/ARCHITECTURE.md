@@ -465,6 +465,42 @@ A successful reduction has:
 
 ## Product And Provenance Boundary
 
+### Bounded native Science provenance
+
+ADR 0013 separates native runtime sample state from canonical provenance and
+diagnostic tracing. The scan-owned measured ledger, masks, exclusions,
+revisions, weights, and intermediate arrays remain exact in-memory execution
+authority. The canonical successor
+`citlali-native-cohort-product-provenance-v3` does not copy those rectangular
+objects into a permanent detector-by-sample history.
+
+At observation scope, v3 binds the compact-v2 APT and detector relation, raw
+manifest, alignment and pointing plans, complete accepted/effective config
+identity, config-source checksums, Citlali source/build identity, policy
+versions, detector populations, and each APT exclusion once per detector. At
+scan scope it records dimensions, compact RTC/PTC summaries, distinct raw-input
+and RTC-generated flag authorities, named operation and weight-exclusion
+causes, reconciled sample and weight populations, zero-weight detector scope,
+map indices, and scientific product identity. It does not hide an exhaustive
+sample history behind a digest.
+
+The generic product index v2 retains its legacy filename inventory while
+adding byte size and SHA-256 for files, child-index identity for ordinary
+directories, and root manifest/receipt checksums for opaque compact-v2 APT
+bundles. A required native index is written only after required outputs and
+the bounded sidecar validate. Failure leaves no new canonical completion
+record. The final native reduction-root index is regenerated after all
+required reduction sidecars commit. Live logging and profiling files are
+identified as mutable operational artifacts and are not assigned checksums
+that would become stale after publication.
+
+Detailed native traces use a distinct opt-in diagnostic contract with an
+explicit scan/network/detector/row selection and a hard record bound. They are
+never emitted by default, are not required for canonical completion, and have
+no canonical retention claim. A future checkpoint, cache, or external
+sample-mask product requires a separately approved owner and contract; it
+cannot reuse provenance as an implicit transport.
+
 Scientific product identity does not come from filesystem position alone.
 `validation/product_contracts.json` defines the required FITS, NetCDF, ECSV,
 and CSV families for point, OOF, science, and Beammap. The contract checker

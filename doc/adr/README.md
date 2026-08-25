@@ -25,6 +25,7 @@ duplicate changing implementation inventories or validation snapshots.
 | [0010](0010-canonical-baseline-apt-v1.md) | Accepted; candidate implementation unactivated | Define a typed Citlali-produced baseline APT with artifact-local UID, embedded raw-channel relation, distinct semantic/envelope/transport identities, and receipt-last publication |
 | [0011](0011-canonical-observation-apt-contract.md) | Accepted; candidate implementation unactivated | Replace row-position correspondence with occurrence-scoped target/seed relations and publish one observation-specific canonical ECSV plus receipt, with complete target/relation records embedded |
 | [0012](0012-canonical-apt-v2-compact-normalization.md) | Accepted owner-directed repair; Citlali verified locally, cross-repository gates pending | Supersede new v1 issuance with compact normalized ECSV bundles, occurrence-scoped TolAPT matching, v2-only guardians, and one root receipt |
+| [0013](0013-bounded-native-scientific-provenance.md) | Accepted owner-directed Stage 7 revision; implementation and frozen 152390 replay pending | Separate runtime sample state, bounded canonical native provenance, and opt-in bounded debug tracing; regenerate deterministic per-sample consequences instead of serializing them |
 
 Numbers are never reused. A materially different decision adds a new ADR and
 marks the old record superseded; do not rewrite the historical rationale.

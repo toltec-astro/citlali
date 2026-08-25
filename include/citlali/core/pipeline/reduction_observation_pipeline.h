@@ -42,7 +42,8 @@ void run_reduction_observation_pipeline(TodProc &todproc, KidsProc &kidsproc,
                     NativeConsumerRoute::native_required) {
                 // The observation index becomes visible only after the
                 // complete compact-v2 lineage sidecar has committed. The
-                // reduction-root index is regenerated at iteration close.
+                // reduction-root index is published at the final session
+                // boundary after every required reduction sidecar commits.
                 write_final_product_index_file(
                     engine.output_paths.obsnum_dir_name,
                     {*raw_provenance_path});
