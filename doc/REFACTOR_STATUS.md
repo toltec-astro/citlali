@@ -1,52 +1,62 @@
 # Citlali Refactor Status
 
-## 2026-08-25 Exact Production-JINC Local Completion Candidate
+## 2026-08-25 Production-JINC Diagnostic Repair and Local Smoke
 
-The frozen local Stage 7 NGC4449 observation 152390 production-JINC replay now
-completes at exact Citlali commit
-`8addcce62c79c1a1cad12912c1d16cfef0ed47ea`. The local executable reports
-`v4.0.0-3706-g8addcce62` and has SHA-256
-`5f9fd79168c4f4510b2806ad44d4e4c2c4ef0fa876a983fc222fe3cbb795215a`.
-The frozen merged input has SHA-256
-`13e1fbfee5f4581b90aa1f13073a0137ce42a6b28482ebb91296884ad96a51ad`.
+The first frozen local Stage 7 NGC4449 observation 152390 production-JINC
+replay completed all four fruit-loop iterations at
+`8addcce62c79c1a1cad12912c1d16cfef0ed47ea`, but subsequent scientific-product
+inspection invalidated it as a complete reduction candidate. Its required
+124-by-5,518 scan/detector statistics product serialized all-zero `rms`,
+`stddev`, `median`, `flagged_frac`, and `weights` matrices even though the maps
+and other diagnostics were populated. Successful process exit and checksum-
+valid publication therefore did not establish required-product validity.
 
-All four fruit-loop iterations and all 496 scan executions (124 scans per
-iteration) completed in 1h45m30.474s with no error- or critical-level log
-records. Canonical publication occurred only after the final iteration. The
-root product index reports the expected source identity, and the observation
-bounded-provenance sidecar reports 124 completed scans,
-`detector_sample_expansion: false`, and
-`canonical_publication.status: validated_complete` with bounded-provenance
-validation true. A recursive independent audit verified all six indexes, five
-child indexed directories, and all 33 immutable files (133,869,733 bytes)
-against their recorded sizes and SHA-256 values.
+The compact-v2 native Science route returned before the established
+`Diagnostics::calc_stats` lifecycle. The Pointing route calculated those
+statistics from the legacy PTC state before replacing the projection input
+with the native prepared PTC, so even a populated result could describe the
+wrong execution state. Commit
+`f17c356f88584b8c817c370d9031c362a9b4cbf9` adds one shared native-consumer
+diagnostic collector after native map-scan preparation in both routes. It
+validates complete shapes and scan identity, then fills the existing product
+matrices from the same native PTC flags and weights consumed by mapmaking.
 
-The repair preserves the legacy production-JINC fruit-loop weight-scale
-contract. Observation-only empirical-noise companions remain suppressed for a
-coadd; legacy JINC coadds retain the established raw-weight `MEDERR` and
-positive `MEDRMS`, and the next fruit-loop iteration reads that `MEDRMS` from
-the raw weight HDU. Focused FITS-product coverage passes 35/35 checks, all 823
-runnable CTests pass with the one established disabled test not run, and the
-required config preflight passes 129 Python tests, all four mode kits, all
-eight compatibility cases, and every boundary audit.
+Focused coverage verifies finite, positive RMS values, exact native weights,
+and exact per-detector native flagged fractions. All 823 runnable CTests pass
+with the one established disabled test not run. The required config preflight
+passes 129 Python tests, all four mode kits, all eight compatibility cases, and
+every boundary audit. The exact post-commit executable reports
+`v4.0.0-3708-gf17c356f8` and has SHA-256
+`e23a6063985c570278c2bcf4bd91666cbab7f4232e1ccb59552f1620706baea9`.
 
-This is a software-completion and artifact-integrity candidate, not accepted
-scientific equivalence. The successful replay contains 8,681 warnings in four
-known classes: 4,092 map-index fallbacks for three-element `median_rms`, 4,092
-array-id fallbacks for three-element `fruit_loops_flux`, 496 unavailable
-second-pass busy-row diagnostics, and one optional telescope-field warning.
-Their repetition requires a separate warning-contract cleanup, although no
-unexpected error-level record occurred. The 152390 maps and data pathologies
-must still be compared with the available prior science products before this
-run enters the accepted-science ledger.
+A production-data smoke used the frozen merged input with SHA-256
+`13e1fbfee5f4581b90aa1f13073a0137ce42a6b28482ebb91296884ad96a51ad`,
+changing only the isolated output root and the required minimum fruit-loop
+count to two iterations. It completed all 248 scan executions and exited zero
+with no error-level records. The final 124-by-5,518 product has 660,300 nonzero
+RMS and standard-deviation cells, 660,300 nonzero median cells, 327,774
+nonzero flagged fractions bounded by [0,1], and 497,107 positive weights; all
+684,232 cells in every matrix are finite and no weight is negative. An
+independent recursive audit verified all six indexes and all 34 immutable
+files (131,904,936 bytes) against their recorded sizes and SHA-256 values.
 
-A second same-input replay reproduced the first two iterations' learning
-counters and the legacy `MEDRMS` transition without an error, but was
-owner-paused during the third iteration and exited by interrupt. It produced
-no canonical final publication and is not recorded as a completed
-reproducibility result. The next gates are the local scientific comparison and,
-only if that review succeeds, one owner-run Unity confirmation built from the
-exact source SHA above.
+The map comparison is informative but is not yet an equivalence gate. Against
+the established July JINC reference, the candidate uses one science
+observation and a canonical flux-calibrated APT, whereas the reference uses
+two observations and a legacy APT. The maps have the same angular scale and
+sky reference with an exact integer WCS footprint shift; central-three-arcmin
+correlations after 16-arcsec smoothing are approximately 0.676, 0.809, and
+0.921 for a1100, a1400, and a2000. Their coherent morphology supports
+continued validation, but the input/cohort differences prevent interpreting
+the residuals as implementation differences.
+
+The earlier four-iteration `8addcce62` replay remains useful execution and
+transactional-publication evidence, including its verified bounded provenance
+and legacy `MEDRMS` transition, but it is explicitly superseded for required-
+diagnostic validity. No accepted-science ledger entry has been added. The next
+gate is one exact four-iteration local replay at `f17c356f8`; only after its
+required products, indexes, and map diagnostics pass should the owner push the
+exact commit for one Unity confirmation.
 
 ## 2026-08-24 Bounded Native Scientific Provenance
 
