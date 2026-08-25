@@ -17,6 +17,7 @@
 
 #include <citlali/core/mapmaking/jinc_debug_breadcrumb.h>
 #include <citlali/core/mapmaking/jinc_contract.h>
+#include <citlali/core/pipeline/ordered_writer.h>
 #include <citlali/core/pipeline/timestream_native_science_projection.h>
 #include <citlali/core/timestream/timestream.h>
 
@@ -111,7 +112,8 @@ public:
     template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &, map_buffer_t &, map_buffer_t &,
                             Eigen::DenseBase<Derived> &, std::string &, apt_t &, double, bool, bool,
-                            const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr);
+                            const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr,
+                            citlali::pipeline::OrderedWriter *merge_order = nullptr);
 
     // populate maps with a time chunk (signal, kernel, coverage, and noise)
     template<class map_buffer_t, typename Derived, typename apt_t>
@@ -125,7 +127,8 @@ public:
         map_buffer_t &, Eigen::DenseBase<Derived> &, std::string &, apt_t &,
         double, bool, bool,
         const citlali::pipeline::NativeScienceProjection &,
-        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr);
+        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps = nullptr,
+        citlali::pipeline::OrderedWriter *merge_order = nullptr);
 
     template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_jinc_parallel_native(
@@ -142,7 +145,8 @@ private:
         map_buffer_t &, Eigen::DenseBase<Derived> &, std::string &, apt_t &,
         double, bool, bool,
         const citlali::pipeline::NativeScienceProjection *,
-        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *);
+        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *,
+        citlali::pipeline::OrderedWriter *);
 
     template<class map_buffer_t, typename Derived, typename apt_t>
     void populate_maps_jinc_parallel_impl(
@@ -348,10 +352,11 @@ void JincMapmaker::populate_maps_jinc(
     map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
     std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb,
     bool run_noise,
-    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
+    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
+    citlali::pipeline::OrderedWriter *merge_order) {
     populate_maps_jinc_impl(
         in, omb, cmb, map_indices, pixel_axes, apt, d_fsmp, run_omb,
-        run_noise, nullptr, active_maps);
+        run_noise, nullptr, active_maps, merge_order);
 }
 
 template<class map_buffer_t, typename Derived, typename apt_t>
@@ -361,12 +366,13 @@ void JincMapmaker::populate_maps_jinc_native(
     std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb,
     bool run_noise,
     const citlali::pipeline::NativeScienceProjection &native_projection,
-    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
+    const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
+    citlali::pipeline::OrderedWriter *merge_order) {
     native_projection.require_compatible_mapmaking_input(
         in, map_indices, pixel_axes, omb.map_grouping, apt);
     populate_maps_jinc_impl(
         in, omb, cmb, map_indices, pixel_axes, apt, d_fsmp, run_omb,
-        run_noise, &native_projection, active_maps);
+        run_noise, &native_projection, active_maps, merge_order);
 }
 
 template<class map_buffer_t, typename Derived, typename apt_t>
@@ -374,7 +380,8 @@ void JincMapmaker::populate_maps_jinc_impl(TCData<TCDataKind::PTC, Eigen::Matrix
                         map_buffer_t &omb, map_buffer_t &cmb, Eigen::DenseBase<Derived> &map_indices,
                         std::string &pixel_axes, apt_t &apt, double d_fsmp, bool run_omb, bool run_noise,
                         const citlali::pipeline::NativeScienceProjection *native_projection,
-                        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
+                        const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps,
+                        citlali::pipeline::OrderedWriter *merge_order) {
 
     const bool use_omb = !omb.noise.empty();
     const bool use_cmb = !cmb.noise.empty() && !use_omb;
@@ -391,10 +398,6 @@ void JincMapmaker::populate_maps_jinc_impl(TCData<TCDataKind::PTC, Eigen::Matrix
     if (run_noise) {
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
     }
-    if (run_omb) {
-        omb.ensure_contribution_diag(static_cast<Eigen::Index>(omb.signal.size()));
-    }
-
     double noise_cube_gb = 0.0;
     if (run_noise && nmb != nullptr) {
         noise_cube_gb = 8.0 * static_cast<double>(nmb->n_rows) * static_cast<double>(nmb->n_cols) *
@@ -403,6 +406,18 @@ void JincMapmaker::populate_maps_jinc_impl(TCData<TCDataKind::PTC, Eigen::Matrix
     constexpr double direct_noise_accum_threshold_gb = 16.0;
     const bool direct_noise_accum =
         run_noise && nmb != nullptr && noise_cube_gb >= direct_noise_accum_threshold_gb;
+    if (merge_order != nullptr &&
+        (direct_noise_accum || omb.contribution_diag_enabled)) {
+        merge_order->write_when_ready(in.index.data, [&] {
+            populate_maps_jinc_impl(
+                in, omb, cmb, map_indices, pixel_axes, apt, d_fsmp,
+                run_omb, run_noise, native_projection, active_maps, nullptr);
+        });
+        return;
+    }
+    if (run_omb) {
+        omb.ensure_contribution_diag(static_cast<Eigen::Index>(omb.signal.size()));
+    }
     if (direct_noise_accum && logger) {
         logger->info("jinc noise cube is {:.2f} GB; using locked direct accumulation instead of full scratch copy",
                      noise_cube_gb);
@@ -842,7 +857,7 @@ void JincMapmaker::populate_maps_jinc_impl(TCData<TCDataKind::PTC, Eigen::Matrix
         }
     }
 
-    {
+    const auto merge_scratch = [&] {
         std::scoped_lock<std::mutex> lk(*jinc_mutex);
         if (run_omb) {
             for (size_t i = 0; i < omb.signal.size(); ++i) {
@@ -897,6 +912,13 @@ void JincMapmaker::populate_maps_jinc_impl(TCData<TCDataKind::PTC, Eigen::Matrix
                 }
             }
         }
+    };
+
+    if (merge_order != nullptr) {
+        merge_order->write_when_ready(in.index.data, merge_scratch);
+    }
+    else {
+        merge_scratch();
     }
 
     if (run_noise) {
@@ -1059,7 +1081,7 @@ void JincMapmaker::populate_maps_jinc_parallel_impl(TCData<TCDataKind::PTC, Eige
         }
     };
 
-    auto validate_ownership_preflight = [&]() {
+    auto validate_ownership_preflight = [&]() -> bool {
         if (map_indices.size() != n_dets) {
             std::ostringstream oss;
             oss << "map_indices.size()=" << map_indices.size()
@@ -1068,6 +1090,7 @@ void JincMapmaker::populate_maps_jinc_parallel_impl(TCData<TCDataKind::PTC, Eige
         }
 
         std::vector<Eigen::Index> owners(omb.signal.size(), -1);
+        bool unique_map_ownership = true;
         for (Eigen::Index det_index = 0; det_index < n_dets; ++det_index) {
             const Eigen::Index map_index = map_indices(det_index);
             if (map_index < 0 ||
@@ -1106,14 +1129,13 @@ void JincMapmaker::populate_maps_jinc_parallel_impl(TCData<TCDataKind::PTC, Eige
 
             auto &owner = owners[static_cast<std::size_t>(map_index)];
             if (owner >= 0) {
-                std::ostringstream oss;
-                oss << "duplicate map_index=" << map_index
-                    << " for det_col=" << det_index
-                    << "; first owned by det_col=" << owner;
-                fail_validation("ownership-preflight", oss.str());
+                unique_map_ownership = false;
             }
-            owner = det_index;
+            else {
+                owner = det_index;
+            }
         }
+        return unique_map_ownership;
     };
 
     auto validate_map_index = [&](const char *stage, Eigen::Index map_index, Eigen::Index det_index, int det_uid) {
@@ -1221,21 +1243,13 @@ void JincMapmaker::populate_maps_jinc_parallel_impl(TCData<TCDataKind::PTC, Eige
     };
 
     validate_global_preflight();
-    validate_ownership_preflight();
+    const bool unique_map_ownership = validate_ownership_preflight();
 
     if (run_omb) {
         omb.ensure_contribution_diag(static_cast<Eigen::Index>(omb.signal.size()));
     }
 
-    // placeholder vectors of size ndet for grppi maps
-    std::vector<int> map_in_vec, map_out_vec;
-    map_in_vec.resize(static_cast<size_t>(n_dets));
-    std::iota(map_in_vec.begin(), map_in_vec.end(), 0);
-    map_out_vec.resize(map_in_vec.size());
-
-    // parallelize over detectors
-    //for (Eigen::Index i=0; i<n_dets; ++i) {
-    grppi::map(tula::grppi_utils::dyn_ex(omb.parallel_policy), map_in_vec, map_out_vec, [&](auto i) {
+    const auto process_detector = [&](int i) {
         reset_jinc_debug_breadcrumb();
         // skip fg = -1 if in polarization mode
         const bool run_det = !(run_polarization && apt["fg"](i)==-1);
@@ -1528,7 +1542,42 @@ void JincMapmaker::populate_maps_jinc_parallel_impl(TCData<TCDataKind::PTC, Eige
             }
         }
         return 0;
-    });
+    };
+
+    if (unique_map_ownership) {
+        std::vector<int> detector_inputs(static_cast<std::size_t>(n_dets));
+        std::iota(detector_inputs.begin(), detector_inputs.end(), 0);
+        std::vector<int> detector_outputs(detector_inputs.size());
+        grppi::map(
+            tula::grppi_utils::dyn_ex(omb.parallel_policy),
+            detector_inputs, detector_outputs, process_detector);
+    }
+    else {
+        std::vector<std::vector<int>> detectors_by_map(omb.signal.size());
+        for (Eigen::Index detector = 0; detector < n_dets; ++detector) {
+            detectors_by_map.at(static_cast<std::size_t>(
+                map_indices(detector))).push_back(
+                    static_cast<int>(detector));
+        }
+        std::vector<int> map_inputs;
+        for (std::size_t map_index = 0;
+             map_index < detectors_by_map.size(); ++map_index) {
+            if (!detectors_by_map[map_index].empty()) {
+                map_inputs.push_back(static_cast<int>(map_index));
+            }
+        }
+        std::vector<int> map_outputs(map_inputs.size());
+        grppi::map(
+            tula::grppi_utils::dyn_ex(omb.parallel_policy),
+            map_inputs, map_outputs, [&](int map_index) {
+                for (const auto detector :
+                     detectors_by_map.at(
+                         static_cast<std::size_t>(map_index))) {
+                    (void)process_detector(detector);
+                }
+                return 0;
+            });
+    }
 
     if (run_noise) {
         nmb = nullptr;

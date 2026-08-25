@@ -333,6 +333,10 @@ inline YAML::Node native_cohort_product_provenance_node_v3(
         item["chunk_index"] = scan.scope.chunk_index;
         item["operation_sequence"] = scan.operation.sequence;
         item["rtc"]["run_count"] = scan.rtc.run_count;
+        item["rtc"]["loaded_input_row_count"] =
+            scan.rtc.loaded_input_row_count;
+        item["rtc"]["selected_input_row_count"] =
+            scan.rtc.selected_input_row_count;
         item["rtc"]["output_row_count"] = scan.rtc.output_row_count;
         item["rtc"]["exact_support_identity_count"] =
             scan.rtc.exact_support_identity_count;
@@ -342,6 +346,8 @@ inline YAML::Node native_cohort_product_provenance_node_v3(
             scan.rtc.flagged_detector_support_count;
         item["rtc"]["final_short_support_count"] =
             scan.rtc.final_short_support_count;
+        item["rtc"]["interval_authority"] =
+            scan.rtc.interval_authority;
         item["ptc"]["requested_grouping"] =
             scan.ptc.requested_grouping;
         item["ptc"]["effective_grouping"] =

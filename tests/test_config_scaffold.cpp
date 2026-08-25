@@ -2444,6 +2444,10 @@ TEST(config_scaffold,
     buffer.science_products.is_coadd = true;
     EXPECT_FALSE(citlali::pipeline::noise_data_fits_have_package_join(
         plan, false, buffer));
+    buffer.science_products.ordinary_contribution_predicate_available =
+        false;
+    EXPECT_FALSE(citlali::pipeline::noise_data_fits_have_package_join(
+        plan, false, buffer));
     buffer.raw_science_parent = buffer.science_products;
     buffer.science_products.is_coadd = false;
     EXPECT_FALSE(citlali::pipeline::noise_data_fits_have_package_join(

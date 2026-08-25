@@ -17,7 +17,8 @@ void Pointing::populate_pointing_final_maps(
     bool make_maps,
     bool make_noise_maps,
     const citlali::pipeline::NativeScienceProjection *
-        native_projection) {
+        native_projection,
+    citlali::pipeline::OrderedWriter *jinc_merge_order) {
     if (!make_maps) {
         return;
     }
@@ -38,12 +39,13 @@ void Pointing::populate_pointing_final_maps(
             mapmaking_method, naive_mm, jinc_mm, ptcdata, omb, cmb,
             map_indices, telescope.pixel_axes, calib_scan.apt,
             telescope.d_fsmp, run_omb, run_noise_fruit,
-            *native_projection);
+            *native_projection, jinc_merge_order);
     }
     else {
         citlali::pipeline::populate_naive_or_jinc_maps(
             mapmaking_method, naive_mm, jinc_mm, ptcdata, omb, cmb,
             map_indices, telescope.pixel_axes, calib_scan.apt,
-            telescope.d_fsmp, run_omb, run_noise_fruit);
+            telescope.d_fsmp, run_omb, run_noise_fruit,
+            jinc_merge_order);
     }
 }

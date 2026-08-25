@@ -23,6 +23,14 @@ auto Lali::run(
         citlali::pipeline::mapmaking_config(*this).method;
     const bool make_maps = citlali::pipeline::mapmaking_enabled(*this);
     const bool make_noise_maps = citlali::pipeline::noise_maps_enabled(*this);
+    auto jinc_merge_order =
+        make_maps && citlali::config::is_jinc_map_method(mapmaking_method)
+            ? std::make_shared<citlali::pipeline::OrderedWriter>()
+            : nullptr;
+    auto jinc_noise_merge_order =
+        jinc_merge_order != nullptr
+            ? std::make_shared<citlali::pipeline::OrderedWriter>()
+            : nullptr;
 
     auto map_grouping_ptr = std::make_shared<std::string>(
         citlali::pipeline::active_map_grouping_name(*this));
@@ -34,8 +42,11 @@ auto Lali::run(
                                                    mapmaking_method, make_maps,
                                                    make_noise_maps,
                                                    output_flags,
-                                                   map_grouping_ptr](input_t &rtcdata) {
+                                                   map_grouping_ptr,
+                                                   jinc_merge_order,
+                                                   jinc_noise_merge_order](input_t &rtcdata) {
         auto &map_grouping = *map_grouping_ptr;
+        try {
         if (rtcdata.native_runtime) {
             citlali::pipeline::log_scan_start(
                 scans_done_mutex, logger, rtcdata.index.data,
@@ -78,7 +89,7 @@ auto Lali::run(
             populate_lali_final_maps(
                 native.ptcdata, calib, native.map_indices, map_grouping,
                 mapmaking_method, make_maps, make_noise_maps,
-                &*native.runtime->map_projection);
+                &*native.runtime->map_projection, jinc_merge_order.get());
             citlali::pipeline::publish_native_jinc_processing_trace_if_active(
                 *this, rtcdata.index.data,
                 *native.runtime->jinc_processing_trace);
@@ -135,6 +146,13 @@ auto Lali::run(
             rtcdata, ptcdata, rtc_outer_output, calib_scan, output_flags,
             output_writers, rtc_scan_row, write_this_rtc, map_grouping);
         if (output_writers.failed()) {
+            if (jinc_merge_order != nullptr) {
+                const auto error = std::make_exception_ptr(
+                    std::runtime_error(
+                        "ordered JINC accumulation cancelled after required output failure"));
+                jinc_merge_order->cancel(error);
+                jinc_noise_merge_order->cancel(error);
+            }
             return;
         }
 
@@ -165,7 +183,7 @@ auto Lali::run(
         run_lali_fruitloop_noise_pass(
             ptcdata, calib_scan, map_indices, map_grouping,
             mapmaking_method, make_maps, make_noise_maps,
-            fruit_weight_policy);
+            fruit_weight_policy, jinc_noise_merge_order.get());
 
         // remove outliers after cleaning
         calib_scan = ptcproc.remove_bad_dets(ptcdata, calib_scan, map_grouping);
@@ -199,6 +217,13 @@ auto Lali::run(
         write_lali_ptc_outputs(
             ptcdata, calib_scan, output_flags, output_writers, map_grouping);
         if (output_writers.failed()) {
+            if (jinc_merge_order != nullptr) {
+                const auto error = std::make_exception_ptr(
+                    std::runtime_error(
+                        "ordered JINC accumulation cancelled after required output failure"));
+                jinc_merge_order->cancel(error);
+                jinc_noise_merge_order->cancel(error);
+            }
             return;
         }
 
@@ -213,12 +238,21 @@ auto Lali::run(
 
         populate_lali_final_maps(
             ptcdata, calib_scan, map_indices, map_grouping,
-            mapmaking_method, make_maps, make_noise_maps);
+            mapmaking_method, make_maps, make_noise_maps, nullptr,
+            jinc_merge_order.get());
 
         // increment number of completed scans
         citlali::pipeline::log_scan_done(
             scans_done_mutex, logger, ptcdata.index.data, *scans_done_count,
             telescope);
+        }
+        catch (...) {
+            if (jinc_merge_order != nullptr) {
+                jinc_merge_order->cancel(std::current_exception());
+                jinc_noise_merge_order->cancel(std::current_exception());
+            }
+            throw;
+        }
     }};
     auto farm = grppi::farm(
         citlali::pipeline::runtime_thread_count(*this), std::move(farm_fn));

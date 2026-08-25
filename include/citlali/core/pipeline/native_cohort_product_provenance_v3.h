@@ -107,11 +107,14 @@ native_cohort_detector_population_v3(
 
 struct NativeCohortRtcSummaryV3 {
     std::size_t run_count = 0;
+    std::size_t loaded_input_row_count = 0;
+    std::size_t selected_input_row_count = 0;
     std::size_t output_row_count = 0;
     std::size_t exact_support_identity_count = 0;
     std::size_t detector_support_count = 0;
     std::size_t flagged_detector_support_count = 0;
     std::size_t final_short_support_count = 0;
+    std::string interval_authority;
 };
 
 struct NativeCohortPtcSummaryV3 {
@@ -213,7 +216,11 @@ inline void NativeCohortScanProvenanceV3::validate(
         scope.observation_scope.scan != binding.observation.scan ||
         scope.scan_index != operation.scan_index || operation.scan_index < 0 ||
         static_cast<std::size_t>(operation.scan_index) >= scan_count ||
-        rtc.run_count == 0 || rtc.output_row_count == 0 ||
+        rtc.run_count == 0 || rtc.loaded_input_row_count == 0 ||
+        rtc.selected_input_row_count == 0 || rtc.output_row_count == 0 ||
+        rtc.loaded_input_row_count < rtc.selected_input_row_count ||
+        rtc.interval_authority !=
+            "telescope.scan_indices.inner_and_outer_intervals" ||
         ptc.segment_count == 0 ||
         ptc.group_count == 0 || ptc.requested_grouping.empty() ||
         ptc.effective_grouping.empty() ||
@@ -676,7 +683,21 @@ make_native_cohort_scan_provenance_v3(
     result.operation = prepared.operation();
     result.rtc.run_count = rtc.runs.size();
     result.rtc.output_row_count = rtc.output_row_count();
+    result.rtc.interval_authority =
+        "telescope.scan_indices.inner_and_outer_intervals";
+    std::set<std::size_t> summarized_rtc_segments;
     for (const auto &run : rtc.runs) {
+        if (summarized_rtc_segments.insert(
+                run.input.segment_ordinal).second) {
+            native_cohort_checked_add_v3(
+                result.rtc.loaded_input_row_count,
+                run.input.common_slots.size(),
+                "RTC loaded input row");
+            native_cohort_checked_add_v3(
+                result.rtc.selected_input_row_count,
+                run.input.selected_row_count(),
+                "RTC selected input row");
+        }
         for (const auto &support : run.support) {
             if (support.final_short_support) {
                 ++result.rtc.final_short_support_count;

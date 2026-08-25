@@ -55,14 +55,12 @@ void Pointing::pipeline(
                     citlali::pipeline::NativeConsumerRoute::native_required) {
                 const auto first_slot = rtcdata.scan_indices.data(0);
                 const auto past_slot = rtcdata.scan_indices.data(1) + 1;
-                if (first_slot < 0 || past_slot <= first_slot) {
+                const auto outer_first_slot = rtcdata.scan_indices.data(2);
+                const auto outer_past_slot = rtcdata.scan_indices.data(3) + 1;
+                if (outer_first_slot < 0 || first_slot < outer_first_slot ||
+                    past_slot <= first_slot || outer_past_slot < past_slot) {
                     throw std::logic_error(
                         "native Pointing scan has invalid relational bounds");
-                }
-                if (rtcdata.scan_indices.data(2) != first_slot ||
-                    rtcdata.scan_indices.data(3) + 1 != past_slot) {
-                    throw std::logic_error(
-                        "native Pointing scan requires a separately approved outer-context run contract");
                 }
                 auto mapping = kidsproc.make_native_measured_scan(
                     rawobs,
@@ -70,12 +68,14 @@ void Pointing::pipeline(
                         alignment.native_carriers->scope(), scan, 0},
                     alignment.native_carriers,
                     calib.apt_detector_relation_v2_handle(),
-                    static_cast<std::size_t>(first_slot),
-                    static_cast<std::size_t>(past_slot),
+                    static_cast<std::size_t>(outer_first_slot),
+                    static_cast<std::size_t>(outer_past_slot),
                     citlali::pipeline::timestream_config(*this).type);
                 rtcdata.native_runtime = std::make_shared<
                     citlali::pipeline::NativeScanRuntimeState>(
-                        std::move(mapping));
+                        std::move(mapping),
+                        static_cast<std::size_t>(first_slot),
+                        static_cast<std::size_t>(past_slot));
             }
 
             // populate noise matrix

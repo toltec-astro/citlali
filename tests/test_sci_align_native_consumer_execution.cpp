@@ -277,7 +277,7 @@ TEST(SciAlignNativeConsumerExecution,
 }
 
 TEST(SciAlignNativeConsumerExecution,
-     ObservationPreflightRejectsLegacyTodOutputAndOuterContext) {
+     ObservationPreflightRejectsLegacyTodOutputAndInvalidOuterContext) {
     auto loaded = fixture::load_native_gap_fixture_v1();
     auto scan = fixture::materialize_native_gap_measured_scan(loaded);
     Engine engine;
@@ -297,6 +297,10 @@ TEST(SciAlignNativeConsumerExecution,
     engine.typed_config.timestream.output.type =
         citlali::config::TodOutputType::none;
     engine.telescope.scan_indices.col(0) << 4, 11, 2, 13;
+    EXPECT_NO_THROW(
+        pipeline::require_supported_native_consumer_observation(engine));
+
+    engine.telescope.scan_indices.col(0) << 4, 11, 5, 13;
     EXPECT_THROW(
         pipeline::require_supported_native_consumer_observation(engine),
         std::logic_error);

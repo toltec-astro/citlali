@@ -297,10 +297,12 @@ bool noise_data_fits_have_package_join(
         is_filtered && map_buffer.raw_science_parent
             ? *map_buffer.raw_science_parent
             : map_buffer.science_products;
-    const bool successor_coadd =
-        products.initialized && products.is_coadd &&
-        products.ordinary_contribution_predicate_available;
-    return !successor_coadd || plan.effective.apply_empirical_weights;
+    // Package membership follows output-family identity, not availability of
+    // the optional F009/F010 successor profile.  Legacy/JINC coadds remain
+    // coadds and may carry only the configured standalone scaled coefficient;
+    // full empirical bundles belong to observation products.
+    const bool coadd_output = products.initialized && products.is_coadd;
+    return !coadd_output || plan.effective.apply_empirical_weights;
 }
 
 inline void add_noise_observed_count(

@@ -34,7 +34,8 @@ void Lali::run_lali_fruitloop_noise_pass(
     citlali::config::MapMethod mapmaking_method,
     bool make_maps,
     bool make_noise_maps,
-    const citlali::pipeline::FruitLoopWeightPolicy &fruit_weight_policy) {
+    const citlali::pipeline::FruitLoopWeightPolicy &fruit_weight_policy,
+    citlali::pipeline::OrderedWriter *jinc_merge_order) {
     // if running fruit loops and a map has been read in
     if (!fruit_weight_policy.use_noise_weights) {
         return;
@@ -55,7 +56,8 @@ void Lali::run_lali_fruitloop_noise_pass(
         citlali::pipeline::populate_naive_or_jinc_maps(
             mapmaking_method, naive_mm, jinc_mm, ptcdata, omb, cmb,
             map_indices, telescope.pixel_axes, calib_scan.apt,
-            telescope.d_fsmp, run_omb, make_noise_maps);
+            telescope.d_fsmp, run_omb, make_noise_maps,
+            jinc_merge_order);
     }
     logger->info("adding map to tod");
     // add map back

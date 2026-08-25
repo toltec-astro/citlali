@@ -10,6 +10,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <limits>
 #include <map>
 #include <optional>
 #include <set>
@@ -110,8 +111,18 @@ make_native_ptc_rtc_cohort_segments(
         throw std::logic_error(
             "native PTC RTC dispatch has no participant networks");
     }
+    std::size_t selected_first =
+        std::numeric_limits<std::size_t>::max();
+    std::size_t selected_past = 0;
+    for (const auto &run : rtc.runs) {
+        selected_first = std::min(
+            selected_first, run.input.selected_first_common_slot);
+        selected_past = std::max(
+            selected_past, run.input.selected_past_last_common_slot);
+    }
     const auto expected_inputs = prepare_native_rtc_runs(
-        scan, {rtc.downsample_factor, false});
+        scan, {rtc.downsample_factor, false,
+               selected_first, selected_past});
     if (expected_inputs.size() != rtc.runs.size()) {
         throw std::logic_error(
             "native PTC RTC dispatch inventory differs from the admitted scan");
@@ -154,6 +165,10 @@ make_native_ptc_rtc_cohort_segments(
                 expected.first_common_slot ||
             run.input.past_last_common_slot !=
                 expected.past_last_common_slot ||
+            run.input.selected_first_common_slot !=
+                expected.selected_first_common_slot ||
+            run.input.selected_past_last_common_slot !=
+                expected.selected_past_last_common_slot ||
             actual_run.network_id != expected_run.network_id ||
             actual_run.first_native_row !=
                 expected_run.first_native_row ||
@@ -246,6 +261,10 @@ make_native_ptc_rtc_cohort_segments(
                     reference.input.first_common_slot ||
                 run.input.past_last_common_slot !=
                     reference.input.past_last_common_slot ||
+                run.input.selected_first_common_slot !=
+                    reference.input.selected_first_common_slot ||
+                run.input.selected_past_last_common_slot !=
+                    reference.input.selected_past_last_common_slot ||
                 run.selected_values.rows() != output_rows ||
                 run.support.size() != reference.support.size() ||
                 run.selected_kernel_values.has_value() != has_kernel ||
@@ -260,11 +279,13 @@ make_native_ptc_rtc_cohort_segments(
             for (Eigen::Index row = 0; row < output_rows; ++row) {
                 const auto &support = run.support.at(
                     static_cast<std::size_t>(row));
-                const auto first = static_cast<std::size_t>(row) *
-                    static_cast<std::size_t>(rtc.downsample_factor);
+                const auto first = run.input.selected_row_offset() +
+                    static_cast<std::size_t>(row) *
+                        static_cast<std::size_t>(rtc.downsample_factor);
                 const auto past = std::min(
                     first + static_cast<std::size_t>(rtc.downsample_factor),
-                    run.input.common_slots.size());
+                    run.input.selected_row_offset() +
+                        run.input.selected_row_count());
                 std::vector<std::size_t> expected_common_slots(
                     run.input.common_slots.begin() +
                         static_cast<std::ptrdiff_t>(first),

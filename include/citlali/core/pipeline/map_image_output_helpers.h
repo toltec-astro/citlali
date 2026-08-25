@@ -46,6 +46,18 @@ bool science_map_successor_coadd_product(
            products.ordinary_contribution_predicate_available;
 }
 
+// Output-family identity is deliberately weaker than successor science-map
+// admission.  A method such as JINC can retain the established legacy coadd
+// arithmetic while truthfully remaining outside the F009/F010 successor
+// profile.  It is still a coadd product, however, and must not publish
+// observation-only empirical-noise companions or legacy observation summary
+// cards merely because that richer science-map profile is unavailable.
+template <class ScienceProducts>
+bool science_map_coadd_output_product(
+    const ScienceProducts &products) {
+    return products.initialized && products.is_coadd;
+}
+
 inline std::size_t science_map_product_index(
     mapmaking::ScienceMapProduct product) {
     return static_cast<std::size_t>(product);

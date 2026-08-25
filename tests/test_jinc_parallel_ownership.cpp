@@ -9,6 +9,7 @@
 #include <array>
 #include <cmath>
 #include <functional>
+#include <future>
 #include <limits>
 #include <map>
 #include <stdexcept>
@@ -367,13 +368,78 @@ std::string invoke_invalid(
     return {};
 }
 
-TEST(JincParallelOwnership, DuplicateMapIsRejectedBeforeMutation) {
-    Eigen::VectorXi indices(kDetectors);
-    indices << 0, 0, 2, 3;
-    EXPECT_EQ(
-        invoke_invalid(indices),
-        "populate_maps_jinc_parallel ownership-preflight: duplicate "
-        "map_index=0 for det_col=1; first owned by det_col=0");
+TEST(JincParallelOwnership,
+     GroupedMapUsesDeterministicDetectorOrderAndMatchesSerialExactly) {
+    auto fixture = make_fixture();
+    fixture.map_indices << 0, 0, 2, 2;
+    RunOptions options;
+    options.policy = "omp";
+    options.subpixel_n = 2;
+    options.repetitions = 2;
+    const auto sequential = run_fixture(fixture, options, false);
+    const auto parallel_entry = run_fixture(fixture, options, true);
+    expect_map_exact(parallel_entry.omb, sequential.omb);
+    expect_map_exact(parallel_entry.cmb, sequential.cmb);
+}
+
+TEST(JincParallelOwnership,
+     ConcurrentGroupedScansMergeInScanOrderAndMatchSerialExactly) {
+    auto first_scan = make_fixture();
+    auto second_scan = make_fixture();
+    first_scan.map_indices << 0, 0, 2, 2;
+    second_scan.map_indices = first_scan.map_indices;
+    first_scan.data.index.data = 0;
+    second_scan.data.index.data = 1;
+    second_scan.data.scans.data.array() *= -0.375;
+
+    RunOptions options;
+    options.run_noise = false;
+    options.contribution_diag = false;
+    auto expected_omb = make_map(
+        "expected", true, false, options.run_kernel, options.run_coverage,
+        false, "seq");
+    auto expected_cmb = make_map(
+        "expected-cmb", false, false, false, false, false, "seq");
+    auto expected_mapmaker = make_mapmaker(1);
+    std::string expected_axes = "altaz";
+    expected_mapmaker.populate_maps_jinc(
+        first_scan.data, expected_omb, expected_cmb, first_scan.map_indices,
+        expected_axes, first_scan.apt, kSampleRateHz, true, false);
+    expected_mapmaker.populate_maps_jinc(
+        second_scan.data, expected_omb, expected_cmb,
+        second_scan.map_indices, expected_axes, second_scan.apt,
+        kSampleRateHz, true, false);
+
+    auto actual_omb = make_map(
+        "actual", true, false, options.run_kernel, options.run_coverage,
+        false, "seq");
+    auto actual_cmb = make_map(
+        "actual-cmb", false, false, false, false, false, "seq");
+    auto actual_mapmaker = make_mapmaker(1);
+    citlali::pipeline::OrderedWriter merge_order;
+    std::string actual_axes = "altaz";
+    std::promise<void> later_started;
+    auto later_ready = later_started.get_future();
+    auto later = std::async(std::launch::async, [&] {
+        later_started.set_value();
+        actual_mapmaker.populate_maps_jinc(
+            second_scan.data, actual_omb, actual_cmb,
+            second_scan.map_indices, actual_axes, second_scan.apt,
+            kSampleRateHz, true, false, nullptr, &merge_order);
+    });
+    later_ready.get();
+    auto first = std::async(std::launch::async, [&] {
+        actual_mapmaker.populate_maps_jinc(
+            first_scan.data, actual_omb, actual_cmb, first_scan.map_indices,
+            actual_axes, first_scan.apt, kSampleRateHz, true, false, nullptr,
+            &merge_order);
+    });
+
+    first.get();
+    later.get();
+    EXPECT_EQ(merge_order.completed_count(), 2);
+    expect_map_exact(actual_omb, expected_omb);
+    expect_map_exact(actual_cmb, expected_cmb);
 }
 
 TEST(JincParallelOwnership, InvalidSizesAndIndicesFailBeforeMutation) {

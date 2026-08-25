@@ -333,8 +333,12 @@ NativeRtcDispatchResult run_native_rtc_numerical_bodies(
                 }
             }
             input.scan_indices.data.resize(4);
-            input.scan_indices.data << 0, input.scans.data.rows() - 1,
-                0, input.scans.data.rows() - 1;
+            input.scan_indices.data <<
+                static_cast<Eigen::Index>(run.selected_first_common_slot),
+                static_cast<Eigen::Index>(
+                    run.selected_past_last_common_slot - 1),
+                static_cast<Eigen::Index>(run.first_common_slot),
+                static_cast<Eigen::Index>(run.past_last_common_slot - 1);
             input.index.data = runtime.mapping_handle()->scope().scan_index;
 
             const auto &pointing = runtime.mapping_handle()
@@ -485,9 +489,16 @@ NativeRtcDispatchResult run_native_rtc_numerical_bodies(
                         "native RTC notch realization has an unknown stage");
                 }
             }
-            if (output.scans.data.rows() != run.measured_values.rows() ||
+            const auto selected_rows = static_cast<Eigen::Index>(
+                run.selected_row_count());
+            const auto selected_offset = static_cast<Eigen::Index>(
+                run.selected_row_offset());
+            const Eigen::MatrixXd selected_measured =
+                run.measured_values.middleRows(
+                    selected_offset, selected_rows);
+            if (output.scans.data.rows() != selected_rows ||
                 output.scans.data.cols() != run.measured_values.cols() ||
-                output.flags.data.rows() != run.input_flag_bits.rows() ||
+                output.flags.data.rows() != selected_rows ||
                 output.flags.data.cols() != run.input_flag_bits.cols() ||
                 output.fcf.data.size() != output.scans.data.cols()) {
                 throw std::logic_error(
@@ -509,7 +520,7 @@ NativeRtcDispatchResult run_native_rtc_numerical_bodies(
                 auto value = output.fcf.data(
                     static_cast<Eigen::Index>(local));
                 reconcile_native_rtc_detector_result(
-                    run.measured_values,
+                    selected_measured,
                     static_cast<Eigen::Index>(local),
                     runtime.mapping_handle()->binding(detector).apt_flag,
                     output.scans.data, output.flags.data, value);
@@ -520,7 +531,8 @@ NativeRtcDispatchResult run_native_rtc_numerical_bodies(
                 static_cast<std::size_t>(output.scans.data.rows()));
 
             NativeDetectorFlagBitsMatrix flags =
-                std::move(effective_input_flag_bits);
+                effective_input_flag_bits.middleRows(
+                    selected_offset, selected_rows);
             for (Eigen::Index row = 0; row < flags.rows(); ++row) {
                 for (Eigen::Index column = 0; column < flags.cols();
                      ++column) {
@@ -580,6 +592,10 @@ NativeRtcDispatchResult run_native_rtc_numerical_bodies(
                       input.first_common_slot = cohort.common_slots.front();
                       input.past_last_common_slot =
                           cohort.common_slots.back() + 1;
+                      input.selected_first_common_slot =
+                          cohort.selected_first_common_slot;
+                      input.selected_past_last_common_slot =
+                          cohort.selected_past_last_common_slot;
                       input.run = NativeContiguousRun{
                           network_id, first_native_row,
                           past_last_native_row, {}, {}};
@@ -628,7 +644,9 @@ NativeRtcDispatchResult run_native_rtc_numerical_bodies(
                   }}
             : NativeRtcCohortNumericalBody{};
     auto result = dispatch_native_rtc_runs(
-        *runtime.mapping_handle(), {factor, false},
+        *runtime.mapping_handle(),
+        {factor, false, runtime.selected_first_common_slot(),
+         runtime.selected_past_last_common_slot()},
         run_numerical_body, cohort_numerical_body);
     auto fcf = fcf_contract.finish();
     const auto cohorts = detail::make_native_ptc_rtc_cohort_segments(

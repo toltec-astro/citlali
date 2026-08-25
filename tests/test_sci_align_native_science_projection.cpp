@@ -545,7 +545,8 @@ TEST(sci_align_native_science_projection,
         std::logic_error);
     EXPECT_EQ(map_checksum(map, false), before);
 
-    // The native bridge does not replace JINC's unique map-owner authority.
+    // Grouped JINC ownership is a valid map identity.  The parallel entry
+    // must preserve the serial detector order within the shared map.
     auto duplicate_owner_request = projection_request(*committed.scan);
     duplicate_owner_request.detectors[1].map_index =
         duplicate_owner_request.detectors[0].map_index;
@@ -556,15 +557,21 @@ TEST(sci_align_native_science_projection,
     auto jinc_input = projection_input(duplicate_owner);
     auto jinc_apt = projection_apt(duplicate_owner);
     auto duplicate_indices = projection_map_indices(duplicate_owner);
+    auto jinc_reference = make_map(duplicate_owner.detector_count(), true);
     auto jinc_map = make_map(duplicate_owner.detector_count(), true);
-    const auto jinc_before = map_checksum(jinc_map, true);
     auto jinc = make_jinc();
-    EXPECT_THROW(
+    ASSERT_NO_THROW(
+        jinc.populate_maps_jinc_native(
+            jinc_input, jinc_reference, empty, duplicate_indices,
+            pixel_axes, jinc_apt, kSampleRateHz, true, false,
+            duplicate_owner));
+    ASSERT_NO_THROW(
         jinc.populate_maps_jinc_parallel_native(
             jinc_input, jinc_map, empty, duplicate_indices, pixel_axes,
-            jinc_apt, kSampleRateHz, true, false, duplicate_owner),
-        std::runtime_error);
-    EXPECT_EQ(map_checksum(jinc_map, true), jinc_before);
+            jinc_apt, kSampleRateHz, true, false, duplicate_owner));
+    EXPECT_EQ(
+        map_checksum(jinc_map, true),
+        map_checksum(jinc_reference, true));
 
     // A later issued operation makes the committed Stage 5 snapshot stale.
     (void)committed.ledger.issue_operation();

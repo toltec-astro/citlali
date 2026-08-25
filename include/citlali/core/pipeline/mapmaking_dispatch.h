@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/config/mapmaking_config.h>
+#include <citlali/core/pipeline/ordered_writer.h>
 #include <citlali/core/pipeline/timestream_native_science_projection.h>
 
 #include <stdexcept>
@@ -16,7 +17,8 @@ void populate_naive_or_jinc_maps(citlali::config::MapMethod method,
                                  MapIndices &map_indices,
                                  PixelAxes &pixel_axes, Apt &apt,
                                  double d_fsmp, bool run_omb,
-                                 bool run_noise) {
+                                 bool run_noise,
+                                 OrderedWriter *jinc_merge_order = nullptr) {
     if (citlali::config::is_naive_map_method(method)) {
         naive_mm.populate_maps_naive(
             ptcdata, omb, cmb, map_indices, pixel_axes, apt, d_fsmp, run_omb,
@@ -25,7 +27,7 @@ void populate_naive_or_jinc_maps(citlali::config::MapMethod method,
     else if (citlali::config::is_jinc_map_method(method)) {
         jinc_mm.populate_maps_jinc(
             ptcdata, omb, cmb, map_indices, pixel_axes, apt, d_fsmp, run_omb,
-            run_noise);
+            run_noise, nullptr, jinc_merge_order);
     }
 }
 
@@ -36,7 +38,8 @@ void populate_naive_or_jinc_maps_native(
     JincMapmaker &jinc_mm, PtcData &ptcdata, MapBuffer &omb,
     MapBuffer &cmb, MapIndices &map_indices, PixelAxes &pixel_axes,
     Apt &apt, double d_fsmp, bool run_omb, bool run_noise,
-    const NativeScienceProjection &projection) {
+    const NativeScienceProjection &projection,
+    OrderedWriter *jinc_merge_order = nullptr) {
     if (citlali::config::is_naive_map_method(method)) {
         naive_mm.populate_maps_naive_native(
             ptcdata, omb, cmb, map_indices, pixel_axes, apt, d_fsmp,
@@ -44,9 +47,9 @@ void populate_naive_or_jinc_maps_native(
         return;
     }
     if (citlali::config::is_jinc_map_method(method)) {
-        jinc_mm.populate_maps_jinc_parallel_native(
+        jinc_mm.populate_maps_jinc_native(
             ptcdata, omb, cmb, map_indices, pixel_axes, apt, d_fsmp,
-            run_omb, run_noise, projection);
+            run_omb, run_noise, projection, nullptr, jinc_merge_order);
         return;
     }
     throw std::logic_error(
@@ -61,7 +64,8 @@ void populate_lali_maps(citlali::config::MapMethod method,
                         MlMapmaker &ml_mm, PtcData &ptcdata, MapBuffer &omb,
                         MapBuffer &cmb, MapIndices &map_indices,
                         PixelAxes &pixel_axes, CalibScan &calib_scan,
-                        double d_fsmp, bool run_omb, bool run_noise) {
+                        double d_fsmp, bool run_omb, bool run_noise,
+                        OrderedWriter *jinc_merge_order = nullptr) {
     if (citlali::config::is_maximum_likelihood_map_method(method)) {
         ml_mm.populate_maps_ml(
             ptcdata, omb, cmb, map_indices, pixel_axes, calib_scan, d_fsmp,
@@ -70,7 +74,7 @@ void populate_lali_maps(citlali::config::MapMethod method,
     }
     populate_naive_or_jinc_maps(
         method, naive_mm, jinc_mm, ptcdata, omb, cmb, map_indices, pixel_axes,
-        calib_scan.apt, d_fsmp, run_omb, run_noise);
+        calib_scan.apt, d_fsmp, run_omb, run_noise, jinc_merge_order);
 }
 
 inline bool should_populate_final_noise_maps(bool make_noise_maps,

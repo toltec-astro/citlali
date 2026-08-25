@@ -20,11 +20,25 @@ namespace citlali::pipeline {
 class NativeScanRuntimeState {
 public:
     explicit NativeScanRuntimeState(
-        std::shared_ptr<const NativeMeasuredDetectorScan> mapping)
+        std::shared_ptr<const NativeMeasuredDetectorScan> mapping,
+        std::optional<std::size_t> selected_first_common_slot = {},
+        std::optional<std::size_t> selected_past_last_common_slot = {})
         : mapping_{std::move(mapping)}, ledger_{mapping_} {
         if (!mapping_) {
             throw std::invalid_argument(
                 "native scan runtime state requires its measured mapping");
+        }
+        selected_first_common_slot_ = selected_first_common_slot.value_or(
+            mapping_->first_common_slot());
+        selected_past_last_common_slot_ =
+            selected_past_last_common_slot.value_or(
+                mapping_->past_last_common_slot());
+        if (selected_first_common_slot_ < mapping_->first_common_slot() ||
+            selected_past_last_common_slot_ >
+                mapping_->past_last_common_slot() ||
+            selected_first_common_slot_ >= selected_past_last_common_slot_) {
+            throw std::invalid_argument(
+                "native scan selected interval is empty or outside loaded support");
         }
     }
 
@@ -35,6 +49,20 @@ public:
     NativeMeasuredDetectorLedger &ledger() noexcept { return ledger_; }
     const NativeMeasuredDetectorLedger &ledger() const noexcept {
         return ledger_;
+    }
+    std::size_t selected_first_common_slot() const noexcept {
+        return selected_first_common_slot_;
+    }
+    std::size_t selected_past_last_common_slot() const noexcept {
+        return selected_past_last_common_slot_;
+    }
+    std::size_t loaded_row_count() const noexcept {
+        return mapping_->past_last_common_slot() -
+            mapping_->first_common_slot();
+    }
+    std::size_t selected_row_count() const noexcept {
+        return selected_past_last_common_slot_ -
+            selected_first_common_slot_;
     }
 
     std::optional<NativeRtcDispatchResult> rtc;
@@ -57,6 +85,8 @@ public:
 private:
     std::shared_ptr<const NativeMeasuredDetectorScan> mapping_;
     NativeMeasuredDetectorLedger ledger_;
+    std::size_t selected_first_common_slot_ = 0;
+    std::size_t selected_past_last_common_slot_ = 0;
 };
 
 }  // namespace citlali::pipeline

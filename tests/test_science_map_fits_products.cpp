@@ -1608,9 +1608,11 @@ TEST(science_map_fits_products,
 }
 
 TEST(science_map_fits_products,
-     successor_coadd_writer_finalizes_unscaled_and_scaled_only_packages) {
-    for (const bool apply_empirical_weights : {false, true}) {
-        SCOPED_TRACE(apply_empirical_weights);
+    coadd_writer_finalizes_unscaled_and_scaled_only_packages) {
+    for (const bool successor_profile_available : {false, true}) {
+        for (const bool apply_empirical_weights : {false, true}) {
+            SCOPED_TRACE(successor_profile_available);
+            SCOPED_TRACE(apply_empirical_weights);
         const auto nonce = std::chrono::high_resolution_clock::now()
                                .time_since_epoch()
                                .count();
@@ -1618,6 +1620,7 @@ TEST(science_map_fits_products,
             std::filesystem::path{"/private/tmp"} /
             ("citlali-noise-coadd-package-" +
              std::to_string(nonce) + "-" +
+             std::to_string(successor_profile_available) + "-" +
              std::to_string(apply_empirical_weights))};
         std::filesystem::create_directories(cleanup.path);
 
@@ -1674,6 +1677,17 @@ TEST(science_map_fits_products,
         realization_files.emplace_back(realization_base);
         auto coadd = make_production_science_map_buffer(
             engine, true, 3, 4, {2.0, 1.5});
+        if (!successor_profile_available) {
+            coadd->science_products.allocate(
+                1, 3, 4, true, false, false,
+                "method-specific contribution predicate unavailable");
+        }
+        EXPECT_EQ(
+            citlali::pipeline::science_map_successor_coadd_product(
+                coadd->science_products),
+            successor_profile_available);
+        EXPECT_TRUE(citlali::pipeline::science_map_coadd_output_product(
+            coadd->science_products));
         auto *data_file_ptr = &data_files;
         auto *realization_file_ptr = &realization_files;
         ASSERT_NO_THROW(engine.write_maps(
@@ -1754,6 +1768,7 @@ TEST(science_map_fits_products,
                 citlali::pipeline::validate_noise_fits_joins(
                     data_paths.front()),
                 std::runtime_error);
+        }
         }
     }
 }
@@ -2496,6 +2511,8 @@ TEST(science_map_fits_products,
         "method-specific contribution predicate unavailable");
 
     EXPECT_FALSE(citlali::pipeline::science_map_successor_coadd_product(
+        legacy_coadd));
+    EXPECT_TRUE(citlali::pipeline::science_map_coadd_output_product(
         legacy_coadd));
 }
 

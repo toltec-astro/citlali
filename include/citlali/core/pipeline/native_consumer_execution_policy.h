@@ -74,14 +74,11 @@ void require_supported_native_consumer_observation(const Engine &engine) {
             "native consumer requires four-row scan interval authority");
     }
     for (Eigen::Index scan = 0; scan < scans.cols(); ++scan) {
-        if (scans(0, scan) < 0 || scans(1, scan) < scans(0, scan)) {
+        if (scans(2, scan) < 0 || scans(0, scan) < scans(2, scan) ||
+            scans(1, scan) < scans(0, scan) ||
+            scans(3, scan) < scans(1, scan)) {
             throw std::logic_error(
                 "native consumer scan has invalid relational bounds");
-        }
-        if (scans(2, scan) != scans(0, scan) ||
-            scans(3, scan) != scans(1, scan)) {
-            throw std::logic_error(
-                "native consumer requires a separately approved outer-context run contract");
         }
     }
 }

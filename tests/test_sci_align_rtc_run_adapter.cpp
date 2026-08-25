@@ -1,6 +1,7 @@
 #include "sci_align_native_gap_fixture.h"
 
 #include <citlali/core/pipeline/timestream_rtc_run_adapter.h>
+#include <citlali/core/pipeline/timestream_ptc_cohort_adapter.h>
 
 #include <gtest/gtest.h>
 
@@ -231,6 +232,60 @@ TEST(sci_align_rtc_run_adapter,
 }
 
 TEST(sci_align_rtc_run_adapter,
+     outer_context_is_processed_but_only_inner_rows_are_published) {
+    const auto loaded = complete_identical_time_fixture();
+    const auto scan = fixture::materialize_native_gap_measured_scan(loaded);
+    std::size_t body_calls = 0;
+    const auto result = pipeline::dispatch_native_rtc_runs(
+        *scan, {1, false, 1U, 4U},
+        [&](const pipeline::NativeRtcRunInput &input) {
+            ++body_calls;
+            EXPECT_EQ(input.measured_values.rows(), 5);
+            EXPECT_EQ(input.selected_row_offset(), 1U);
+            EXPECT_EQ(input.selected_row_count(), 3U);
+            Eigen::MatrixXd selected(3, input.measured_values.cols());
+            for (Eigen::Index row = 0; row < selected.rows(); ++row) {
+                selected.row(row) =
+                    input.measured_values.row(row) +
+                    input.measured_values.row(row + 1) +
+                    input.measured_values.row(row + 2);
+            }
+            return pipeline::NativeRtcProcessedRun{
+                std::move(selected),
+                input.input_flag_bits.middleRows(1, 3)};
+        });
+
+    ASSERT_EQ(body_calls, 2U);
+    ASSERT_EQ(result.runs.size(), 2U);
+    for (const auto &run : result.runs) {
+        ASSERT_EQ(run.selected_values.rows(), 3);
+        ASSERT_EQ(run.support.size(), 3U);
+        EXPECT_EQ(run.support.front().exact_common_slots,
+                  (std::vector<std::size_t>{1}));
+        EXPECT_EQ(run.support.back().exact_common_slots,
+                  (std::vector<std::size_t>{3}));
+        for (Eigen::Index row = 0; row < 3; ++row) {
+            for (Eigen::Index detector = 0;
+                 detector < run.selected_values.cols(); ++detector) {
+                EXPECT_DOUBLE_EQ(
+                    run.selected_values(row, detector),
+                    run.input.measured_values(row, detector) +
+                        run.input.measured_values(row + 1, detector) +
+                        run.input.measured_values(row + 2, detector));
+            }
+        }
+    }
+    const auto cohorts = pipeline::detail::make_native_ptc_rtc_cohort_segments(
+        *scan, result);
+    ASSERT_EQ(cohorts.size(), 1U);
+    ASSERT_EQ(cohorts.front().rows.size(), 3U);
+    EXPECT_EQ(cohorts.front().rows.front().exact_common_slots,
+              (std::vector<std::size_t>{1}));
+    EXPECT_EQ(cohorts.front().rows.back().exact_common_slots,
+              (std::vector<std::size_t>{3}));
+}
+
+TEST(sci_align_rtc_run_adapter,
      global_cohort_body_runs_before_downsample_and_scatters_by_identity) {
     const auto loaded = complete_identical_time_fixture();
     const auto scan = fixture::materialize_native_gap_measured_scan(loaded);
@@ -357,6 +412,12 @@ TEST(sci_align_rtc_run_adapter,
         std::logic_error);
     EXPECT_EQ(body_calls, 0U);
     EXPECT_FALSE(invalid_ledger.last_operation().has_value());
+
+    EXPECT_THROW(
+        pipeline::dispatch_native_rtc_runs(
+            *scan, {1, false, 0U, scan->past_last_common_slot() + 1},
+            body),
+        std::invalid_argument);
 }
 
 TEST(sci_align_rtc_run_adapter,

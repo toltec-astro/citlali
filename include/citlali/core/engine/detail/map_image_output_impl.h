@@ -183,7 +183,7 @@ Eigen::Index Engine::write_maps(fits_io_type &fits_io, fits_io_type &noise_fits_
         citlali::pipeline::noise_realization_outputs_enabled(*this) &&
         mb->n_noise > 0;
     const bool coadd_product =
-        citlali::pipeline::science_map_successor_coadd_product(
+        citlali::pipeline::science_map_coadd_output_product(
             science_products);
     if (!coadd_product &&
         (i < 0 || i >= mb->median_err.size())) {

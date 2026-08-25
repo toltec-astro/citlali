@@ -62,7 +62,8 @@ public:
         bool make_maps,
         bool make_noise_maps,
         const citlali::pipeline::NativeScienceProjection *
-            native_projection = nullptr);
+            native_projection = nullptr,
+        citlali::pipeline::OrderedWriter *jinc_merge_order = nullptr);
     template <class CalibScan>
     void maybe_subtract_lali_fruitloop_model(
         TCData<TCDataKind::PTC, Eigen::MatrixXd> &ptcdata,
@@ -79,7 +80,8 @@ public:
         citlali::config::MapMethod mapmaking_method,
         bool make_maps,
         bool make_noise_maps,
-        const citlali::pipeline::FruitLoopWeightPolicy &fruit_weight_policy);
+        const citlali::pipeline::FruitLoopWeightPolicy &fruit_weight_policy,
+        citlali::pipeline::OrderedWriter *jinc_merge_order = nullptr);
 
     // output files
     void finalize_lali_map_fits_outputs(
