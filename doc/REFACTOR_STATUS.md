@@ -1,5 +1,53 @@
 # Citlali Refactor Status
 
+## 2026-08-25 Exact Production-JINC Local Completion Candidate
+
+The frozen local Stage 7 NGC4449 observation 152390 production-JINC replay now
+completes at exact Citlali commit
+`8addcce62c79c1a1cad12912c1d16cfef0ed47ea`. The local executable reports
+`v4.0.0-3706-g8addcce62` and has SHA-256
+`5f9fd79168c4f4510b2806ad44d4e4c2c4ef0fa876a983fc222fe3cbb795215a`.
+The frozen merged input has SHA-256
+`13e1fbfee5f4581b90aa1f13073a0137ce42a6b28482ebb91296884ad96a51ad`.
+
+All four fruit-loop iterations and all 496 scan executions (124 scans per
+iteration) completed in 1h45m30.474s with no error- or critical-level log
+records. Canonical publication occurred only after the final iteration. The
+root product index reports the expected source identity, and the observation
+bounded-provenance sidecar reports 124 completed scans,
+`detector_sample_expansion: false`, and
+`canonical_publication.status: validated_complete` with bounded-provenance
+validation true. A recursive independent audit verified all six indexes, five
+child indexed directories, and all 33 immutable files (133,869,733 bytes)
+against their recorded sizes and SHA-256 values.
+
+The repair preserves the legacy production-JINC fruit-loop weight-scale
+contract. Observation-only empirical-noise companions remain suppressed for a
+coadd; legacy JINC coadds retain the established raw-weight `MEDERR` and
+positive `MEDRMS`, and the next fruit-loop iteration reads that `MEDRMS` from
+the raw weight HDU. Focused FITS-product coverage passes 35/35 checks, all 823
+runnable CTests pass with the one established disabled test not run, and the
+required config preflight passes 129 Python tests, all four mode kits, all
+eight compatibility cases, and every boundary audit.
+
+This is a software-completion and artifact-integrity candidate, not accepted
+scientific equivalence. The successful replay contains 8,681 warnings in four
+known classes: 4,092 map-index fallbacks for three-element `median_rms`, 4,092
+array-id fallbacks for three-element `fruit_loops_flux`, 496 unavailable
+second-pass busy-row diagnostics, and one optional telescope-field warning.
+Their repetition requires a separate warning-contract cleanup, although no
+unexpected error-level record occurred. The 152390 maps and data pathologies
+must still be compared with the available prior science products before this
+run enters the accepted-science ledger.
+
+A second same-input replay reproduced the first two iterations' learning
+counters and the legacy `MEDRMS` transition without an error, but was
+owner-paused during the third iteration and exited by interrupt. It produced
+no canonical final publication and is not recorded as a completed
+reproducibility result. The next gates are the local scientific comparison and,
+only if that review succeeds, one owner-run Unity confirmation built from the
+exact source SHA above.
+
 ## 2026-08-24 Bounded Native Scientific Provenance
 
 The owner rejected the proposed compressed NetCDF encoding of exhaustive
