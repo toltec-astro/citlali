@@ -1,6 +1,6 @@
 # Citlali Refactor Status
 
-## 2026-08-25 Production-JINC Diagnostic Repair and Local Smoke
+## 2026-08-25 Production-JINC Diagnostic Repair and Full Local Completion
 
 The first frozen local Stage 7 NGC4449 observation 152390 production-JINC
 replay completed all four fruit-loop iterations at
@@ -40,6 +40,20 @@ nonzero flagged fractions bounded by [0,1], and 497,107 positive weights; all
 independent recursive audit verified all six indexes and all 34 immutable
 files (131,904,936 bytes) against their recorded sizes and SHA-256 values.
 
+The exact four-iteration frozen-input replay then completed all 496 scan
+executions in 1h52m16.609s with no error- or critical-level records. Its final
+`redu03` statistics product remains fully populated: 660,300 nonzero RMS and
+standard-deviation cells, 660,300 nonzero median cells, 326,999 nonzero
+flagged fractions bounded by [0,1], and 497,211 positive weights. Every matrix
+cell is finite and no weight is negative. Canonical publication reports 124
+completed scans, 5,518 detectors reconciled as 4,512 eligible plus 1,006
+excluded, no detector-sample expansion, and validated-complete bounded
+provenance. A second recursive audit verified all six indexes and 34 immutable
+files (133,869,964 bytes); the root-index SHA-256 is
+`f8489173bd1dbec2f9e975af44dfa6687b48e010fb705a885aff987412d41a57`.
+All 8,681 warnings belong to the four previously classified fallback or
+optional-diagnostic classes, with no unclassified warning.
+
 The map comparison is informative but is not yet an equivalence gate. Against
 the established July JINC reference, the candidate uses one science
 observation and a canonical flux-calibrated APT, whereas the reference uses
@@ -50,13 +64,20 @@ correlations after 16-arcsec smoothing are approximately 0.676, 0.809, and
 continued validation, but the input/cohort differences prevent interpreting
 the residuals as implementation differences.
 
+The repaired full replay's nine FITS products also agree with the earlier
+completed `8addcce62` replay within `rtol=atol=1e-12`. The a1100 and a1400 raw
+and filtered coadds are bit-for-bit identical; the largest a2000 absolute
+difference is approximately `3e-12`. Collecting the required native statistics
+therefore did not materially change the established map arithmetic.
+
 The earlier four-iteration `8addcce62` replay remains useful execution and
 transactional-publication evidence, including its verified bounded provenance
 and legacy `MEDRMS` transition, but it is explicitly superseded for required-
 diagnostic validity. No accepted-science ledger entry has been added. The next
-gate is one exact four-iteration local replay at `f17c356f8`; only after its
-required products, indexes, and map diagnostics pass should the owner push the
-exact commit for one Unity confirmation.
+gate is for the owner to push exact source commit `f17c356f8`, build it on
+Unity, record the Unity executable SHA-256, and perform one campaign reduction
+confirmation. Scientific acceptance remains separate because no same-input
+established reference exists for this one-observation canonical-APT campaign.
 
 ## 2026-08-24 Bounded Native Scientific Provenance
 
