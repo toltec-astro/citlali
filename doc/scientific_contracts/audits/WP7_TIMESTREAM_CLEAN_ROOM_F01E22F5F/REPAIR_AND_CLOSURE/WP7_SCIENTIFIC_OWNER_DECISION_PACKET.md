@@ -42,7 +42,7 @@ The bounded repair lane may:
    packet;
 2. recover and admit exact digest-bound numerical objects;
 3. request the missing observation-classifier decision;
-4. decide the RTC-terminal consumer boundary; and
+4. decide the RTC logical-stream terminal boundary; and
 5. correct explanatory owner-identifier traceability without changing the
    controlling owner ledger.
 
@@ -115,14 +115,18 @@ The frozen CAL sources also require a source-authorized interpolation between
 valid bracketing WVR readings but do not select its exact method, version,
 precision, or boundary/tie behavior.
 
-### 2.3 RTC-terminal consumer
+### 2.3 RTC logical-stream terminal boundary
 
 The approved PTC decision identifies the intended use as export of
 RTC-conditioned timestreams for a companion ML mapmaker, while
 `SCI-RTC-OWNER-001` remains open and requires any additional raw-domain
-consumer, exact paired-bundle subset, and lineage needs to be named. The
-consumer-neutral RTC terminal product itself is already authorized and does
-not depend on naming a further consumer.
+consumer, exact logical RTC-output subset, and lineage needs to be named.
+Existing RTC authority defines the consumer-neutral atomic bundle as a
+logical completion unit containing the conditioned outputs and RTC-owned facts;
+it does not require one observation-sized serialized object or simultaneous
+residence in memory or on disk. The consumer-neutral logical RTC stream and
+PTC-disabled terminal route are already authorized and do not depend on naming
+a further consumer.
 
 ### 2.4 RTC owner-identifier traceability
 
@@ -138,7 +142,7 @@ and requires no new scientific choice.
 | `WP7-OWNER-D001` — native-interface authority publication | Scientific decision already approved; approval/precedence not readable in WP-7 | Approve a successor clean-room packet that admits the exact existing decision, approval, source manifest, README, and interface as one readable authority set while preserving the approved interface bytes and digest | **APPROVED — 2026-08-25** |
 | `WP7-OWNER-D002` — CAL numerical authority | Three exact numerical identities recovered and staged; WVR interpolation and unavailable-opacity rules approved | Admit the verified bytes without regeneration or substitution and use the approved versioned interpolation and fail-closed unavailable-opacity rules | **APPROVED — RECOVERY, INTERPOLATION, AND UNAVAILABLE-OPACITY — 2026-08-25** |
 | `WP7-OWNER-D003` — observation-wide opacity classifier | Approved policy intent recovered; no existing source defines `momentary` by duration or fraction | Approve `cal_wvr_observation_quality_mean_peak_v1`: time-weighted mean at `0.15`, tolerated peak through `0.175`, engineering support through `0.25`, exact coverage and failure classes | **APPROVED — 2026-08-25** |
-| `WP7-OWNER-D004` — RTC-terminal consumer boundary | Terminal publication approved; additional consumer unnamed | For WP-7 v0.1, define successful publication of the complete consumer-neutral RTC bundle as the endpoint. Keep companion-ML acceptance and handoff schema outside WP-7 until separately named | **PENDING DECISION** |
+| `WP7-OWNER-D004` — RTC logical-stream terminal boundary | Consumer-neutral RTC completion and the PTC-disabled terminal route are approved; the earlier repair wording incorrectly implied observation-sized materialization | Define the endpoint as completion of the logical RTC output stream over the declared domain plus finalization of observation-level RTC facts. Permit incremental consumption and optional explicit materialization; keep external-consumer acceptance outside WP-7 until separately named | **PENDING DECISION** |
 
 ## 4. `WP7-OWNER-D001`: native-interface authority publication
 
@@ -426,32 +430,66 @@ classifier authority. It does not authorize implementation work, alter
 sample-level atmosphere support, supply achieved atmosphere-fidelity or
 observational-performance evidence, or decide D004.
 
-## 7. `WP7-OWNER-D004`: RTC-terminal consumer boundary
+## 7. `WP7-OWNER-D004`: RTC logical-stream terminal boundary
 
 ### Question
 
-For WP-7 v0.1, is successful publication of the complete consumer-neutral RTC
-bundle the terminal scientific endpoint, or must the packet also authorize a
-specific external consumer handoff?
+For WP-7 v0.1, what event completes the terminal RTC route without turning the
+logical RTC product into a mandatory observation-sized serialized intermediate
+or requiring acceptance by a specific external consumer?
 
 ### Recommendation
 
-Select terminal publication as the WP-7 endpoint. The route then:
+Define the WP-7 terminal endpoint as completion of the consumer-neutral logical
+RTC output stream over the declared observation or processing domain, together
+with finalization of the RTC facts that genuinely have observation-level
+scope.
 
-1. publishes the complete required RTC bundle;
-2. terminates successfully without CAL, PTC, or MAP;
-3. claims no external-consumer acceptance; and
-4. leaves any companion ML mapmaker identity, subset, coordinate/response
-   needs, serialization, and acceptance criteria to a separately approved
-   consumer contract.
+The logical RTC output stream is the ordered sequence of conditioned sample
+outputs plus the RTC-owned facts needed to interpret them. Its elements may be
+produced and consumed incrementally. They need not all coexist in memory, on
+disk, or in one file, table, archive, or observation-sized object. Here,
+“complete” describes scientific-content and lifecycle completion, not physical
+materialization or serialization. Under this clarification, the existing RTC
+and PTC terms “atomic bundle,” “publish,” and “export” mean successful
+availability and completion of that logical content and its required facts;
+they do not prescribe a storage form.
 
-This preserves the prior intended use without turning an unnamed future
-consumer into a required authority for the RTC product itself.
+Normal operation may partition the stream into chunks, scans, or other
+engineering units. An arbitrary chunk boundary is not scientific support. If
+an RTC operator is defined over a scan, segment, or other declared domain, its
+chunked execution must preserve the same domain-level scientific result as
+non-chunked execution, subject only to the operator's declared numerical
+tolerance. RTC may therefore retain the state, overlap, guards, learned
+parameters, or deferred decisions needed across implementation chunks. A scan
+boundary has scientific force only where the governing operator contract gives
+it that force.
 
-If the external handoff is required inside WP-7 instead, the owner response
-must name the consumer and approve its exact paired-bundle subset, coordinate,
-support, response, uncertainty, lineage, serialization, failure, and
-acceptance requirements.
+This boundary distinguishes three things:
+
+1. downstream-visible incremental conditioned outputs and their required
+   interpretive facts;
+2. temporary RTC state used to preserve domain-level semantics across chunks,
+   which is not thereby a persistent product; and
+3. optional materialization requested explicitly for validation, audit,
+   diagnostics, user output, or a separately approved downstream contract.
+
+Persist only facts required by the RTC contract. Do not infer mandatory
+per-chunk sidecars, per-sample provenance records, or repeated observation
+history. Observation-level facts are finalized once at the terminal boundary
+unless a governing requirement explicitly assigns a different cadence.
+
+RTC owns the scientific identity, ordering, support, validity, response, and
+lineage facts of its logical outputs. Each downstream consumer owns its own
+admission and acceptance requirements. The terminal route therefore completes
+successfully without CAL, PTC, or MAP, claims no external-consumer acceptance,
+and requires no unnamed consumer.
+
+If an external handoff is later placed inside a governed route, its separately
+approved consumer contract must name the consumer and define the admitted
+logical-stream subset, cadence or grid, coordinate and support semantics,
+response, uncertainty, lineage, any serialization, failure behavior, and
+acceptance criteria.
 
 ### Owner response
 
@@ -515,7 +553,7 @@ A successor generation is ready for clean-room confirmation only when:
 4. the WVR interpolation, unavailable-opacity disposition, and opacity
    classifier have exact owner authority or their dependent results remain
    explicitly unavailable;
-5. the RTC consumer boundary is explicit;
+5. the RTC logical-stream terminal boundary is explicit;
 6. the RTC explanatory owner-identifier list matches the ledger;
 7. package verifiers, PDF generation checks, source-manifest checks, and
    packet verification pass with zero missing required evidence; and
