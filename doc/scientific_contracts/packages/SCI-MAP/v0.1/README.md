@@ -32,7 +32,10 @@ by that reopening.
 
 The proposed exact Stage B inputs are content-bound in
 [`PTC_HANDOFF_AUTHOR_PACKET_MANIFEST_2026-08-26.md`](PTC_HANDOFF_AUTHOR_PACKET_MANIFEST_2026-08-26.md)
-and await scientific-owner approval.
+and were approved with Ultra Stage B authoring authority in
+[`PTC_HANDOFF_STAGE_A_OWNER_APPROVAL_2026-08-26.md`](PTC_HANDOFF_STAGE_A_OWNER_APPROVAL_2026-08-26.md).
+Approval authorizes the bounded fresh-author round, not its resulting
+scientific substance.
 
 Grant approved this opening, `MAP-SCOPE-D001--D006`, and the exact three-part
 author packet on `2026-08-16`. The approved packet is content-bound in

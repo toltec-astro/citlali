@@ -74,6 +74,9 @@ packet. The existing formal MAP clauses, 52 requirement IDs, 25 prediction
 IDs, and local owner-decision ledger remain unchanged at launch; no Stage B
 author, implementation change, conformity finding, validation result, Unity
 work, freeze, performance claim, or readiness claim follows from this status.
+The owner approved the exact four-file MAP author packet and Ultra Stage B
+dispatch later on `2026-08-26`; this authoring approval does not approve the
+revision that will be returned.
 
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
