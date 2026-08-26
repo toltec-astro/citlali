@@ -69,18 +69,11 @@ target_sources(citlali
     "src/citlali/core/config/timestream_enums.cpp"
     "src/citlali/core/pipeline/output_root_lease.cpp"
     "src/citlali/core/pipeline/reduction_restart_checkpoint.cpp"
-    #"src/citlali/core/engine/todproc.cpp"
-    #"src/citlali/core/engine/kidsproc.cpp"
     "src/citlali/core/engine/calib.cpp"
     "src/citlali/core/engine/telescope.cpp"
-    #"src/citlali/core/engine/engine.cpp"
     "src/citlali/core/utils/gauss_models.cpp"
     "src/citlali/core/timestream/ptc/sensitivity.cpp"
     "src/citlali/core/mapmaking/map.cpp"
-    #"src/citlali/core/mapmaking/wiener_filter.cpp"
-    #"src/citlali/core/engine/lali.cpp"
-    #"src/citlali/core/engine/pointing.cpp"
-    #"src/citlali/core/engine/beammap.cpp"
     )
 target_include_directories(citlali PUBLIC "include")
 target_link_libraries(citlali PUBLIC ${dep_libs})

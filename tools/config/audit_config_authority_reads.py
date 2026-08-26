@@ -48,13 +48,6 @@ def category_for(path: str) -> str:
         return "typed-loader-boundary"
     if path.startswith("include/citlali/core/engine/detail/") and "config" in Path(path).name:
         return "typed-loader-boundary"
-    if path in {
-        "src/citlali/main_old.cpp",
-        "src/citlali/mpi_main.cpp",
-        "src/citlali/lali_main.cpp",
-        "src/citlali/kids_main.cpp",
-    }:
-        return "legacy-entrypoint"
     return "review-required"
 
 
