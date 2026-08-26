@@ -1,5 +1,24 @@
 # Phase 5 Preparation And Integration Plan - 2026-07-16
 
+## 2026-08-26 Source-Disposition Update
+
+The bounded post-review source cleanup is complete on the local WP-7
+integration candidate at commit `aa85a2287`. A pre-delete reachability census
+proved that the 13 selected sources were neither compiled nor included by the
+active eight-library-plus-three-CLI translation-unit graph. Recursive include
+analysis reached 733 repository headers, including every corresponding engine,
+Wiener, and utility implementation header; no header-defined implementation
+was removed. The one Wiener source was exactly a one-include unbuilt
+placeholder. The cleanup also removed its seven stale commented CMake entries
+and four obsolete legacy-main audit exceptions.
+
+The cleanup descends from, but does not replace, exact Unity-tested application
+identity `3ebc2a67fc32bad69759ff45638484efabf91773`. Its local build and complete
+gate matrix belong to the WP-7 integration-candidate record. A short Unity
+point smoke at the final candidate remains the proportionate cluster-path gate;
+the completed four-iteration 152390 science campaign remains evidence for exact
+`3ebc2a67f` and is not relabeled as a same-SHA Phase 5 successor matrix.
+
 ## 2026-07-26 Status Update
 
 The external build implementation is now available and the entry review has
@@ -60,16 +79,17 @@ following dispositions are based on that target, the canonical
 | `src/citlali/cli/main.cpp` and the eight compiled `citlali` library sources | Active production target | Retain. Any later movement requires ordinary build and affected-mode evidence. |
 | Headers reached by the active target, including transitional `engine/detail` fragments | Active implementation graph | Retain for the candidate. Public/private physical reorganization is criterion 6 and remains deferred. |
 | `include/citlali/core/pipeline/config_leaf_schema_generated.h` | Checked-in generated startup schema | Retain and continue guarding with `generate_config_schema_header.py --check`. |
-| `src/citlali/main_old.cpp`, `mpi_main.cpp`, `kids_main.cpp`, and `lali_main.cpp` | Unbuilt historical or experimental mains | Recommend deletion in the bounded post-review cleanup. Git preserves their forensic history; they are not supported entry points. |
-| Empty/commented engine sources: `todproc.cpp`, `kidsproc.cpp`, `engine.cpp`, `lali.cpp`, `pointing.cpp`, and `beammap.cpp` | Unbuilt placeholders referenced only by commented CMake entries | Recommend deleting the files and their comments together after the build review. Do not present them as module boundaries. |
-| `src/citlali/core/mapmaking/wiener_filter.cpp` | Unbuilt one-include placeholder referenced by a commented CMake entry | Decide during the compiled-boundary review: either make it part of a measured coherent boundary or delete it and its comment. Do not retain an ambiguous placeholder. |
-| `src/citlali/core/utils/utils.cpp` and `src/citlali/dummy.cpp` | Unbuilt empty/placeholder sources with no active target role | Recommend deletion with the bounded cleanup. |
+| `src/citlali/main_old.cpp`, `mpi_main.cpp`, `kids_main.cpp`, and `lali_main.cpp` | Removed by bounded cleanup `aa85a2287` after negative build/include reachability proof | Complete. Git preserves their forensic history; they are not supported entry points. |
+| Empty/commented engine sources: `todproc.cpp`, `kidsproc.cpp`, `engine.cpp`, `lali.cpp`, `pointing.cpp`, and `beammap.cpp` | Removed with all seven stale commented CMake entries by `aa85a2287` | Complete. Their reachable header implementations remain retained; the deleted files were not module boundaries. |
+| `src/citlali/core/mapmaking/wiener_filter.cpp` | Removed by `aa85a2287` after confirming it was an unbuilt one-include placeholder | Complete. The reachable header-defined mature Wiener implementation is retained unchanged. |
+| `src/citlali/core/utils/utils.cpp` and `src/citlali/dummy.cpp` | Removed by `aa85a2287` after negative build/include reachability proof | Complete. |
 | Configure-time headers under `build/config_header` | Generated build artifacts | Never edit or commit as source. Reproducibility and version identity belong to criterion 10. |
 
-The proposed cleanup is intentionally one decision after the build review. It
-is not a series of speculative deletion commits. A local build and tests prove
-that the selected files are not part of the active graph; a Unity build plus
-point gate confirms the cluster path before the candidate is frozen.
+The cleanup was made as the one bounded decision prepared by this census, not
+as speculative header or algorithm deletion. The pre-delete static graph and
+post-delete local build/tests prove that the selected files were not part of
+the active graph. A final-candidate Unity build plus short point gate remains
+recommended to confirm the cluster path before retiring its superseded refs.
 
 ## Final Candidate Discipline
 
@@ -194,8 +214,9 @@ The review must answer only the questions that are actually blocking closeout:
 3. Is a broader compiled boundary useful in that topology, or should criterion
    7 receive an explicit scope disposition based on the neutral measurement?
 4. What clean, pinned test lane is proportionate for four clusters?
-5. Should `wiener_filter.cpp` become part of a coherent compiled boundary or be
-   removed with the other placeholders?
+5. Resolved 2026-08-26: `wiener_filter.cpp` was an unbuilt one-include
+   placeholder and was removed with the other census targets; the reachable
+   mature header implementation remains unchanged.
 
 The project owner must also name the destination branch and preferred
 integration operation before final freeze. Those decisions do not block the

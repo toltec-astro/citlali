@@ -1,5 +1,58 @@
 # Citlali Refactor Status
 
+## 2026-08-26 Unity Stage 7 Completion And WP-7 Integration Candidate
+
+The owner-run Stage 7 NGC4449 observation 152390 campaign completed from exact
+application commit `3ebc2a67fc32bad69759ff45638484efabf91773`. The published
+executable identity is `v4.0.0-3712-g3ebc2a67f`. All four fruit-loop iterations
+each completed 124 scans, and the downloaded final `redu04` log contains zero
+warning-, error-, or critical-level records. The final scan-diagnostic product
+has shape 124 by 5,518 for `rms`, `stddev`, `median`, `flagged_frac`, and
+`weights`; all 684,232 cells in each matrix are finite. There are 660,300
+nonzero RMS, standard-deviation, and median cells, 326,995 nonzero flagged
+fractions, and 484,755 positive weights.
+
+The raw v3 sidecar reports 124 completed scans, a reconciled detector
+population of 5,518 = 4,512 APT-eligible + 1,006 APT-excluded detectors, no
+detector-sample expansion, and `validated_complete` bounded canonical
+publication. An independent recursive check verified all six product indexes,
+all 33 immutable indexed files (134,493,770 bytes), and the one explicitly
+checksum-excluded operational log with no missing, extra, size-mismatched, or
+digest-mismatched artifact. The final root index is the downloaded
+`SCI_ALIGN_STAGE7_NGC4449_152390/.../reduced/redu04/index.yaml` with SHA-256
+`e72c7c8f326d514ec0025691ca8b31206c40d0f08b7b50729fc093d7a5273040`.
+
+Commit `3ebc2a67f` restores the second-pass diagnostic carriage required for
+configured native busy-row weight suppression. The final log records 36
+factor-zero suppressions across 22 scans and seven networks. The owner has
+explicitly judged this restored suppression not overly aggressive. That is a
+bounded disposition of this correctness repair, not acceptance of a general
+successor science baseline. The campaign still lacks the same-input accepted
+comparison required by the current accepted-run and intended-science-change
+ledger contracts, so `validation/accepted_runs.json` and
+`validation/intended_science_changes.json` remain unchanged.
+
+The local WP-7 integration candidate preserves `3ebc2a67f` as the exact
+Unity-tested application identity. Commit `aa85a2287` removes only the 13
+pre-censused inactive or placeholder source files, their seven stale commented
+CMake entries, and the four obsolete legacy-main config-audit exceptions.
+Before removal, the active graph was verified as eight library and three CLI
+translation units; none of the deleted sources was compiled or included, while
+all corresponding implementation headers remained among the 733 headers
+reachable from the active graph. Commit `ff7899668` repairs two reduction-audit
+false negatives without changing application behavior: PyYAML `datetime`
+build timestamps are valid v3 identity values, and one unambiguous config
+`reduction_type` supplies mode evidence outside the historical validation-root
+path convention.
+
+Remote `origin/codex/refactor-mainline` at
+`46ad23888a40f5102cdfd50c06e49a549bdf8a20` is an ancestor of `3ebc2a67f`.
+The exact relation is zero mainline-only commits and 71 candidate-only commits,
+so it can be fast-forwarded without a merge. The separate Conan 2 build-
+adaptation lane and divergent scientific-contract/evidence lanes remain
+outside this candidate and must be retained until their independent gates and
+evidence-preservation dispositions complete.
+
 ## 2026-08-25 Production-JINC Diagnostic Repair and Full Local Completion
 
 The first frozen local Stage 7 NGC4449 observation 152390 production-JINC

@@ -631,7 +631,7 @@ frames, units, indexing, and missing values is defined in
 | `include/citlali/core/engine` | Active compatibility aggregate, mode processors, calibration/telescope/KIDs integration, and contextual implementation fragments |
 | `include/citlali/core/timestream` | RTC/PTC data structures, contracts, diagnostics, and mature timestream algorithms |
 | `include/citlali/core/mapmaking` | Map buffers, mapmakers, filtering, and hot map operations |
-| `src/citlali/core` | Current compiled implementation boundary for selected cold/non-template code |
+| `src/citlali/core` | Current compiled implementation boundary for eight selected cold/non-template library translation units |
 | `tests` | Focused C++ contract, safety, session, writer, header-isolation, and multi-translation-unit tests |
 | `tools/config` | Config schema, authority, compact-translation, and preflight gates |
 | `tools/baseline` | Run audit, product contract, numerical comparison, validation ledger, and performance evidence |
@@ -662,10 +662,10 @@ rewrites. The following rules prevent further textual decomposition:
 6. A compiled-boundary change requires local header/link tests and mode
    validation proportionate to the touched behavior.
 
-Compilation-side modernization is currently deferred pending review of
-TolTECA's revised C++ integration approach. This policy describes the intended
-shape; it does not authorize CMake, dependency, preset, CI-build, install, or
-cluster-helper changes during the deferral.
+Compilation-side modernization follows the separately governed Conan 2 Adapt
+lane. This policy describes the intended application shape; it does not
+authorize importing that lane's CMake, dependency, preset, CI-build,
+install/export, or cluster-helper changes into bounded application cleanup.
 
 ## Active, Transitional, Legacy, And Deferred Paths
 
@@ -706,20 +706,22 @@ compile without invoking Python; `generate_config_schema_header.py --check`
 guards drift. Generated files do not define an independent architecture or
 authority.
 
-### Unbuilt Legacy Or Experimental Source
+### Removed Legacy Or Placeholder Source
 
-The following files are not part of either active CMake production target and
-must not be treated as supported entry points:
+Bounded cleanup `aa85a2287` removed the four inactive historical mains, six
+empty/commented engine sources, the one-include unbuilt Wiener placeholder,
+and the empty utility and dummy sources identified by the Phase 5 census. It
+also removed their stale commented CMake entries. A pre-delete static graph
+proved that none was compiled or included by the eight library and three CLI
+translation units.
 
-- `src/citlali/main_old.cpp`;
-- `src/citlali/mpi_main.cpp`;
-- `src/citlali/kids_main.cpp`; and
-- `src/citlali/lali_main.cpp`.
-
-Empty or placeholder files such as the commented mode `.cpp` entries and
-`src/citlali/dummy.cpp` are not active module boundaries or promises of future
-architecture. Phase 5 may remove, relocate, or mark these paths more visibly
-after the exact validated tree is preserved.
+This disposition applies only to those source files. Recursive include
+analysis reached 733 repository headers, including every corresponding engine,
+Wiener, and utility implementation header. Those header-defined
+implementations remain active and must not be proposed for deletion merely
+because they lack a direct CMake source entry. Git retains the removed files'
+forensic history; they are not supported entry points or promised module
+boundaries.
 
 ### Explicitly Deferred
 
@@ -812,13 +814,11 @@ The following debt remains visible and bounded:
   are not independently enforceable modules.
 - Some generic stage paths return Boolean failure before session
   classification rather than a precise typed error.
-- Legacy and placeholder sources remain physically beside active code even
-  though this document now classifies them.
 - Some NetCDF and legacy ECSV products lack complete unit/fill metadata. The
   canonical APT v1 candidate instead carries exact unit, nullability,
   authority, and non-finite declarations.
-- Build and dependency reproducibility cannot be closed until the deferred
-  TolTECA integration direction is known.
+- Build and dependency reproducibility remains assigned to the separate Conan
+  2 Adapt lane and closes only through its build-integration gates.
 - External library consumption and concurrent in-process reductions are not
   accepted requirements.
 
