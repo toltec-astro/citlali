@@ -3,7 +3,10 @@
 The permanent workflow distilled from the first two pilot packages is recorded
 in [the pilot process review](PILOT_PROCESS_REVIEW_2026-08-16.md). Every new
 package must read and cite that review at startup together with this program
-and its package-specific prior-work recovery.
+and its package-specific prior-work recovery. For work downstream of the
+frozen ALIGN-through-PTC chain, the package must also read and cite the
+[owner-approved downstream roadmap](DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md)
+so sequencing and predecessor boundaries do not drift.
 
 Status: governing program charter
 
@@ -73,13 +76,14 @@ The first substantive section of every package `README.md` and Scope Brief is
 **Program adherence and prior-work recovery**. It must:
 
 1. link to this charter;
-2. identify the package's completed `PRIOR_WORK.md` record;
-3. state which earlier materials are adopted, cited, abstracted, superseded,
+2. link to the applicable approved program roadmap and predecessor authority;
+3. identify the package's completed `PRIOR_WORK.md` record;
+4. state which earlier materials are adopted, cited, abstracted, superseded,
    or excluded;
-4. state what genuinely new scientific work remains;
-5. identify exactly which sanitized references may enter the author packet;
+5. state what genuinely new scientific work remains;
+6. identify exactly which sanitized references may enter the author packet;
    and
-6. confirm that implementation-derived material remains outside the
+7. confirm that implementation-derived material remains outside the
    implementation-blind author channel.
 
 A package may not commission a new scientific-contract author until that

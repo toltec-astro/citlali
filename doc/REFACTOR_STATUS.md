@@ -63,6 +63,18 @@ independent author channel. The initial proposed pilot order is CAL, shared
 mapmaking/coaddition, then Beammap; Beammap contract work remains separate from
 active ALIGN work.
 
+On 2026-08-26 the scientific owner approved and archived the downstream
+contract sequence from MAP closure through separate JINC, NOI, filtering,
+source/mode, and FRUIT tranches. The owner also approved the horizontal
+ALIGN-to-MAP decisions governing the mandatory PTC-to-MAP route, MAP-owned
+admission policy, honest response and covariance disclosure, versioned later
+derivatives, and coordinate/projection ownership. A bounded SCI-MAP Stage A
+reopening is now active to reconcile those authorities with the older MAP
+packet. The existing formal MAP clauses, 52 requirement IDs, 25 prediction
+IDs, and local owner-decision ledger remain unchanged at launch; no Stage B
+author, implementation change, conformity finding, validation result, Unity
+work, freeze, performance claim, or readiness claim follows from this status.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

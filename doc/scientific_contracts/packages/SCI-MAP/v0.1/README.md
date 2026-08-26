@@ -1,7 +1,8 @@
 # SCI-MAP — Ordinary Mapmaking And Observation Coaddition
 
 Status: science-team rationale r0.3 house version frozen; CI-001 resolved and
-normatively incorporated; scientific authority not frozen
+normatively incorporated; scientific authority not frozen; bounded PTC-handoff
+Stage A reopening launched on `2026-08-26` with the formal contract unchanged
 
 Scientific contract scope: `v0.1`, owner-approved (`2026-08-16`)
 
@@ -19,6 +20,19 @@ the later owner-approved whole-bundle/coaddition decisions, and the registered
 weighted-normalization reasoning. It does not repeat the prior derivation or
 promote the SCI-MAP-001/002/003 audits, repairs, tests, reductions, or
 validation results into scientific authority.
+
+The later frozen PTC handoff and approved horizontal ownership decisions are
+being reconciled through the bounded
+[`MAP_PTC_HANDOFF_STAGE_A_LAUNCH_2026-08-26.md`](MAP_PTC_HANDOFF_STAGE_A_LAUNCH_2026-08-26.md)
+lane. Its
+[`PRIOR_WORK_DELTA_PTC_HANDOFF_2026-08-26.md`](PRIOR_WORK_DELTA_PTC_HANDOFF_2026-08-26.md)
+records the changed authorities without repeating the ordinary-map derivation.
+No Stage B author has been dispatched and no clause below has yet been revised
+by that reopening.
+
+The proposed exact Stage B inputs are content-bound in
+[`PTC_HANDOFF_AUTHOR_PACKET_MANIFEST_2026-08-26.md`](PTC_HANDOFF_AUTHOR_PACKET_MANIFEST_2026-08-26.md)
+and await scientific-owner approval.
 
 Grant approved this opening, `MAP-SCOPE-D001--D006`, and the exact three-part
 author packet on `2026-08-16`. The approved packet is content-bound in
