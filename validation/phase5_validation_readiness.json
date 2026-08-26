@@ -2,7 +2,7 @@
   "schema_version": "citlali-phase5-validation-readiness-v1",
   "epoch_id": "phase5-v2.1-candidate-2026-07-24",
   "status": "preparing",
-  "evaluated_on": "2026-07-24",
+  "evaluated_on": "2026-08-26",
   "config_binding_policy_id": "tolteca-native-project-bindings-v1",
   "fixtures": [
     {
@@ -91,8 +91,8 @@
     },
     {
       "blocker_id": "build-integration-review",
-      "description": "The supported TolTECA C++ build and dependency path remains under external review.",
-      "exit_condition": "Record the accepted build path and dependency identity required by the Phase 5 integration plan."
+      "description": "The Conan 2 Adapt path is selected, but its successor build, dependency, packaging, and external-consumer gates are not yet complete.",
+      "exit_condition": "Complete and record the bounded build-integration gates and exact dependency identity required by the adopted review."
     },
     {
       "blocker_id": "accepted-successor-baselines",

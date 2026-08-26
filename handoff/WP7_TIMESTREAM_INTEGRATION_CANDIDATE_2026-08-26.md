@@ -21,9 +21,9 @@ At the exact tested application SHA, remote
 `46ad23888a40f5102cdfd50c06e49a549bdf8a20`. It is an ancestor of
 `3ebc2a67f`; `git rev-list --left-right --count
 origin/codex/refactor-mainline...3ebc2a67f` returned `0 71`. At code/tool
-candidate `ff7899668`, the relation was `0 73`. The final evidence-only commit
-will add only candidate-side history, so the owner can use an ordinary guarded
-fast-forward after fetching and recomputing the relation.
+candidate `ff7899668`, the relation was `0 73`. Subsequent evidence-only
+descendants add only candidate-side history, so the owner can use an ordinary
+guarded fast-forward after fetching and recomputing the relation.
 
 ## Exact Unity Stage 7 Evidence
 
@@ -141,6 +141,12 @@ commit and reported with the task handoff so the embedded executable revision
 matches exact candidate HEAD. One established disabled CTest,
 `MapFitterLifecycle.DISABLED_ExactProductSequence`, is reported separately and
 is not treated as a runnable pass or unexpected skip.
+
+Phase 5 readiness remains `preparing`. Its 2026-08-26 reevaluation updates the
+stale build-review blocker to the adopted Conan 2 Adapt disposition while
+retaining the real successor build/dependency gates. The same-SHA four-mode
+matrix and accepted-successor-baseline blockers also remain. No validation
+profile, fixture gate, accepted run, or promotion condition was weakened.
 
 A short Unity point smoke at final candidate HEAD is recommended before local
 branch retirement. It validates the cluster build/reachability path after
