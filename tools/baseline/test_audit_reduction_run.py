@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import tempfile
 import unittest
+from datetime import datetime
 from pathlib import Path
 
 import yaml
@@ -179,6 +180,32 @@ def valid_raw_v2_document() -> dict:
     document["effective"]["config"]["interface_sync_offset"] = {
         "unit": interface_sync["unit"],
         "offsets": dict(interface_sync["offsets"]),
+    }
+    return document
+
+
+def valid_raw_v3_document() -> dict:
+    document = valid_raw_v2_document()
+    document["schema_version"] = "citlali-raw-timestream-provenance-v3"
+    document["software_identity"] = {
+        "citlali_revision": "3ebc2a67f",
+        "citlali_version": "v4.0.0-3712-g3ebc2a67f",
+        "build_timestamp": "2026-08-25T20:08:50",
+    }
+    digest = "sha256:" + "a" * 64
+    document["canonical_run_identity"] = {
+        "available": True,
+        "accepted_merged_config_sha256": digest,
+        "effective_configuration_identity": digest,
+        "runtime_effective_identity": digest,
+        "config_sources": [
+            {
+                "precedence": 0,
+                "path": "/project/70_reduce.yaml",
+                "size_bytes": 1,
+                "sha256": digest,
+            }
+        ],
     }
     return document
 
@@ -1236,6 +1263,57 @@ def write_valid_config_source_manifest(redu: Path) -> None:
 
 
 class ProvenanceAuditTest(unittest.TestCase):
+    def test_recognizes_mode_from_config_outside_legacy_validation_root(
+        self,
+    ) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            redu = Path(directory) / "redu04"
+            redu.mkdir()
+            config = {
+                "runtime": {
+                    "reduction_type": "science",
+                    "output_dir": (
+                        "/work/toltec/commissioning2025-test/2026-refactor/"
+                        "projects/SCI_ALIGN_STAGE7_NGC4449_152390/"
+                        "toltec_umass_edu/NGC4449/reduced/"
+                    ),
+                }
+            }
+            (redu / "citlali_o152390.yaml").write_text(
+                yaml.safe_dump(config, sort_keys=False),
+                encoding="utf-8",
+            )
+
+            result = audit.build_audit(audit.parse_args([
+                str(redu), "--expected-mode", "science",
+            ]))
+
+            self.assertEqual(result["labels"], [])
+            self.assertEqual(result["recognized_modes"], ["science"])
+            self.assertTrue(result["mode_ok"])
+
+            mismatch = audit.build_audit(audit.parse_args([
+                str(redu), "--expected-mode", "point",
+            ]))
+            self.assertFalse(mismatch["mode_ok"])
+
+    def test_accepts_yaml_datetime_build_timestamp_in_raw_v3(self) -> None:
+        document = valid_raw_v3_document()
+        document["software_identity"]["build_timestamp"] = yaml.safe_load(
+            "build_timestamp: 2026-08-25T20:08:50\n"
+        )["build_timestamp"]
+
+        self.assertIsInstance(
+            document["software_identity"]["build_timestamp"], datetime
+        )
+        self.assertEqual(audit.raw_provenance_semantic_errors(document), [])
+
+        document["software_identity"]["build_timestamp"] = 20260825
+        self.assertIn(
+            "v3 Citlali software identity is incomplete",
+            audit.raw_provenance_semantic_errors(document),
+        )
+
     def test_accepts_required_runtime_v2_provenance(self) -> None:
         document = {
             "schema_version": "citlali-runtime-provenance-v2",

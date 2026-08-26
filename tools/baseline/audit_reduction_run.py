@@ -33,6 +33,12 @@ except Exception:  # pragma: no cover - depends on validation environment
 REDU_RE = re.compile(r"^redu(\d+)$")
 TIMESTAMP_RE = re.compile(r"^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3})\]")
 VALIDATION_PATH_RE = re.compile(r"/2026-refactor/(?P<mode>[^/]+)/(?P<label>[^/]+)/reduced/?")
+REDUCTION_TYPE_MODES = {
+    "pointing": "point",
+    "oof": "oof",
+    "beammap": "beammap",
+    "science": "science",
+}
 PRODUCT_SUFFIXES = {".fits", ".fit", ".nc", ".nc4", ".cdf", ".csv", ".ecsv"}
 PROFILE_SIDECAR_NAMES = {"citlali_profile.ecsv"}
 PROVENANCE_SIDECARS = {
@@ -484,6 +490,16 @@ def find_nested_key(value: Any, key: str) -> list[Any]:
     return []
 
 
+def modes_from_config(value: Any) -> list[str]:
+    modes = {
+        REDUCTION_TYPE_MODES[reduction_type]
+        for reduction_type in find_nested_key(value, "reduction_type")
+        if isinstance(reduction_type, str)
+        and reduction_type in REDUCTION_TYPE_MODES
+    }
+    return sorted(modes) if len(modes) == 1 else []
+
+
 def has_nested_path(value: Any, path: tuple[str, ...]) -> bool:
     current = value
     for key in path:
@@ -676,15 +692,24 @@ def raw_provenance_semantic_errors(data: dict[str, Any]) -> list[str]:
         if data.get("schema_version") == "citlali-raw-timestream-provenance-v3":
             digest_pattern = re.compile(r"sha256:[0-9a-f]{64}")
             software = data.get("software_identity")
-            if not isinstance(software, dict) or any(
-                not isinstance(software.get(name), str)
-                or not software.get(name)
-                for name in (
-                    "citlali_revision",
-                    "citlali_version",
-                    "build_timestamp",
+            text_identity_valid = isinstance(software, dict) and all(
+                isinstance(software.get(name), str)
+                and bool(software.get(name))
+                for name in ("citlali_revision", "citlali_version")
+            )
+            build_timestamp = (
+                software.get("build_timestamp")
+                if isinstance(software, dict)
+                else None
+            )
+            timestamp_valid = (
+                isinstance(build_timestamp, datetime)
+                or (
+                    isinstance(build_timestamp, str)
+                    and bool(build_timestamp)
                 )
-            ):
+            )
+            if not text_identity_valid or not timestamp_valid:
                 errors.append("v3 Citlali software identity is incomplete")
             run_identity = data.get("canonical_run_identity")
             if (
@@ -4130,6 +4155,7 @@ def audit_config(path: Path | None) -> dict[str, Any]:
             result["n_threads"] = find_nested_key(data, "n_threads")
             result["parallel_policy"] = find_nested_key(data, "parallel_policy")
             result["reduction_type"] = find_nested_key(data, "reduction_type")
+            result["recognized_modes"] = modes_from_config(data)
     except Exception as exc:
         result["error"] = str(exc)
     return result
@@ -4280,11 +4306,16 @@ def build_audit(args: argparse.Namespace) -> dict[str, Any]:
     config = audit_config(find_config(redu))
     log = audit_log(find_log(redu))
     labels = unique_labels(config, log)
+    recognized_modes = sorted({
+        *(str(item["mode"]) for item in labels),
+        *(str(mode) for mode in config.get("recognized_modes", [])),
+    })
     result = {
         "reduction": str(redu),
         "expected_label": args.expected_label,
         "expected_mode": args.expected_mode,
         "labels": labels,
+        "recognized_modes": recognized_modes,
         "label_ok": None,
         "mode_ok": None,
         "config": config,
@@ -4310,7 +4341,7 @@ def build_audit(args: argparse.Namespace) -> dict[str, Any]:
     if args.expected_label:
         result["label_ok"] = any(item["label"] == args.expected_label for item in labels)
     if args.expected_mode:
-        result["mode_ok"] = any(item["mode"] == args.expected_mode for item in labels)
+        result["mode_ok"] = args.expected_mode in recognized_modes
     return result
 
 
@@ -4334,6 +4365,12 @@ def render_markdown(result: dict[str, Any]) -> str:
         "",
     ]
     labels = result["labels"]
+    recognized_modes = result.get("recognized_modes", [])
+    lines.append(
+        "- Recognized modes: `" + ", ".join(recognized_modes) + "`"
+        if recognized_modes
+        else "- No validation mode found in path labels or config reduction_type."
+    )
     if labels:
         for item in labels:
             lines.append(f"- `{item['mode']}/{item['label']}`")
