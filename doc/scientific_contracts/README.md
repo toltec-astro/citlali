@@ -58,6 +58,14 @@ anti-drift rule for the program.
 8. Documentation should remain proportional to the science. This program does
    not create a lifecycle database, generalized audit engine, or elaborate
    document generator.
+9. Once a scientific-owner decision is incorporated into a scientific
+   contract, subsequent audit and implementation work tests conformance to
+   that decision rather than reopening it because a stronger architecture is
+   possible. Reopening requires an actual contradiction, inability to perform
+   the intended science, or new scientific evidence that the approved
+   decision is wrong. An unimplemented stronger capability, an intentionally
+   unsupported readiness tier, or an implementation discrepancy is not by
+   itself grounds to reopen scientific scope.
 
 ## Required Package Opening
 

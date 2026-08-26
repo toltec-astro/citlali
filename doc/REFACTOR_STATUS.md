@@ -469,6 +469,20 @@ Poppler QA pass. This publishes authority for a new WP-7 clean-room successor
 only and establishes no implementation, validation, performance, production,
 MAP, or finding-closure claim.
 
+On `2026-08-26`, the source-commit-`170ecea9d` WP-7.1 successor audit and its
+locked regression comparison completed. The independent audit found `TS-A`,
+`TS-S`, and `TS-C` ready and the RTC-only terminal route contract-closed. The
+comparison classified nine normalized predecessor issues as closed by the
+approved successor authority, with zero regressions, recurrent findings, new
+successor findings, or unresolved contradictions. Grant recorded the
+[scientific-owner closure](scientific_contracts/audits/WP7_TIMESTREAM_CLEAN_ROOM_170ECEA9D/WP7_SCIENTIFIC_OWNER_CLOSURE_2026-08-26.md),
+which closes WP-7 scientifically at its approved contract scope. The seven
+retained limitations, including unavailable `TS-R`, `TS-U`, and `TS-T`, are
+scope statements only and are not WP-7 findings, owner questions, or repair
+requirements. Implementation conformity, observational validation, achieved
+performance, and production readiness remain separate evidence programs; no
+further WP-7 repair or audit cycle is authorized by this closure.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

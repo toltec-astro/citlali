@@ -1,0 +1,5 @@
+# WP-7 successor regression/comparison report identities
+# predecessor source commit f01e22f5f8d8d92e49ae70312bdc59a81c1540ec
+# successor source commit 170ecea9de1ee810da7d7e45a489a4545ccd623d
+fd803e859e7b6f1d6155a7b0230ba16732deaf8a003bc831c9c0a53ca547beb5  WP7_SUCCESSOR_REGRESSION_COMPARISON_REPORT.md
+cff9c68f6cd32451d53dd4d7dc8baa56c96f56bf2c82f5d39a5ad28b47fe6721  WP7_SUCCESSOR_FINDING_CROSSWALK.csv
