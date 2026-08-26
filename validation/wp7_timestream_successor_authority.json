@@ -1,0 +1,104 @@
+{
+  "schema_version": "citlali-wp7-timestream-successor-authority-v1",
+  "authority_id": "wp7-timestream-successor-2026-08-26",
+  "recorded_date": "2026-08-26",
+  "status": "accepted_architecture_implementation_not_started",
+  "identity_policy": "Artifact identity is filename plus SHA-256. Archive paths are convenience locators and are not identity.",
+  "repository_authority": {
+    "decision": "doc/adr/0014-wp7-timestream-successor.md",
+    "implementation_baseline": "doc/WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md",
+    "architecture": "doc/ARCHITECTURE.md",
+    "living_status": "doc/REFACTOR_STATUS.md"
+  },
+  "scientific_packet": {
+    "scope": "closed bounded WP-7.1 ordinary native-paired-readout-to-PTC route and RTC-only terminal route",
+    "source_commit": "170ecea9de1ee810da7d7e45a489a4545ccd623d",
+    "clean_room_archive_sha256": "c5f6e14b0e918591515ae7db733f2b58d5a10aaaa8abd3027d5a3d369b3609ed",
+    "archive_locator": "/Users/gwilson/Documents/Codex/2026-08-26/wp7-1-clean-room-audit/outputs",
+    "artifacts": [
+      {
+        "filename": "WP7_SUCCESSOR_INDEPENDENT_SCIENTIFIC_CONTRACT_AUDIT.md",
+        "sha256": "f460c5b1b2f866dda8729895367f9f4341bcae2367e881fc22a323a636e36fe8",
+        "role": "locked independent scientific-contract audit"
+      },
+      {
+        "filename": "WP7_SUCCESSOR_INDEPENDENT_SCENARIO_SUITE.md",
+        "sha256": "7927685239572f72cbbeba5692c5ebb56b80cd7404e2afe622cc36687ebd4284",
+        "role": "locked independent implementation-consequence scenario suite"
+      },
+      {
+        "filename": "WP7_SUCCESSOR_INDEPENDENT_REPORT_SHA256SUMS.txt",
+        "sha256": "7e79c096f396c3e7ea2227da6cb493d4d52344873d2ac82e2f378e098c6c4918",
+        "role": "checksum manifest for the locked independent outputs"
+      },
+      {
+        "filename": "WP7_SUCCESSOR_REGRESSION_COMPARISON_REPORT.md",
+        "sha256": "fd803e859e7b6f1d6155a7b0230ba16732deaf8a003bc831c9c0a53ca547beb5",
+        "role": "locked predecessor-to-successor regression comparison"
+      },
+      {
+        "filename": "WP7_SUCCESSOR_FINDING_CROSSWALK.csv",
+        "sha256": "cff9c68f6cd32451d53dd4d7dc8baa56c96f56bf2c82f5d39a5ad28b47fe6721",
+        "role": "locked regression finding crosswalk"
+      },
+      {
+        "filename": "WP7_SUCCESSOR_COMPARISON_SHA256SUMS.txt",
+        "sha256": "94a2605d4855bccce988ac4abc4909c19a5e4c4da1c1731366ed0014361cb98d",
+        "role": "checksum manifest for the locked comparison outputs"
+      }
+    ],
+    "readiness": {
+      "ready_tiers": [
+        "TS-A",
+        "TS-S",
+        "TS-C"
+      ],
+      "rtc_only_terminal_route": "contract_closed",
+      "regressions": 0,
+      "recurrent_findings": 0,
+      "new_successor_findings": 0,
+      "unresolved_contract_contradictions": 0
+    },
+    "retained_scope_limits": [
+      "source_or_beam_response",
+      "stronger_covariance_claims",
+      "stronger_scientific_tiers",
+      "external_consumer_acceptance",
+      "conditional_observation_instance_coordinates",
+      "generic_usable_exposure",
+      "runtime_realization_and_implementation_conformity",
+      "observational_validation_and_production_readiness"
+    ]
+  },
+  "implementation_review": {
+    "reviewed_repository": "/private/tmp/citlali-legacy-apt-dispatch",
+    "reviewed_branch": "codex/repair-native-consumer-extinction",
+    "reviewed_commit": "3ebc2a67fc32bad69759ff45638484efabf91773",
+    "disposition": "nonconformant_for_ordinary_wp7_and_rtc_only_routes",
+    "finding_counts": {
+      "blocker": 4,
+      "major": 7,
+      "minor": 0,
+      "mechanical": 0
+    },
+    "archive_locator": "/Users/gwilson/Documents/Codex/2026-08-26/wp7-timestream-implementation-review/outputs",
+    "artifacts": [
+      {
+        "filename": "WP7_TIMESTREAM_IMPLEMENTATION_REVIEW.md",
+        "sha256": "2d570ad87477e4eda9e108142ccc6fb2b2a02cf13600f48cb838bb770a9199bc",
+        "role": "read-only implementation-conformance review"
+      },
+      {
+        "filename": "WP7_TIMESTREAM_IMPLEMENTATION_CROSSWALK.csv",
+        "sha256": "6dfcf4dab00545a98a34a02a7c0df069f478f95dec7ba993d783d36d093b382c",
+        "role": "contract-to-code and scenario crosswalk"
+      }
+    ]
+  },
+  "change_control": {
+    "scientific_contract_may_not_be_reopened_by_implementation_convenience": true,
+    "optional_tooling_requires_measured_trigger": true,
+    "intentional_science_change_requires_successor_epoch_and_ledger_entry": true,
+    "legacy_route_retirement_requires_separate_accepted_decision": true
+  }
+}

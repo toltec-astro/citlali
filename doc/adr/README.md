@@ -17,7 +17,7 @@ duplicate changing implementation inventories or validation snapshots.
 | [0002](0002-reduction-result-and-required-output-failures.md) | Accepted | Structured reduction result, required-output failure propagation, and CLI-only process exit |
 | [0003](0003-session-lifecycle-and-engine-compatibility.md) | Accepted | Sequential session lifecycle and `Engine` as a frozen compatibility boundary |
 | [0004](0004-compiled-boundary-and-header-policy.md) | Accepted | Evidence-driven compiled boundaries and header/hot-path policy |
-| [0005](0005-defer-measured-r-channel-execution.md) | Accepted | Preserve measured R-channel structure while deferring execution until its contract is approved |
+| [0005](0005-defer-measured-r-channel-execution.md) | Partially superseded by 0014 | Defer measured-R uses outside the approved WP-7 successor route |
 | [0006](0006-fruit-loop-restart-checkpoint.md) | Accepted | Resume fruit loops from a required state-complete iteration checkpoint with absolute iteration identity and fail-closed compatibility checks |
 | [0007](0007-observe-only-coherent-raw-iq-event-sidecar.md) | Accepted | Score versioned network-specific coherent raw-I/Q modes for every present network at shared RTC-seeded epochs without changing science data |
 | [0008](0008-application-mainline-and-build-adaptation-lanes.md) | Accepted | Keep application development authoritative on one mainline while adapting Conan 2 in an isolated, regularly synchronized worktree |
@@ -25,7 +25,8 @@ duplicate changing implementation inventories or validation snapshots.
 | [0010](0010-canonical-baseline-apt-v1.md) | Accepted; candidate implementation unactivated | Define a typed Citlali-produced baseline APT with artifact-local UID, embedded raw-channel relation, distinct semantic/envelope/transport identities, and receipt-last publication |
 | [0011](0011-canonical-observation-apt-contract.md) | Accepted; candidate implementation unactivated | Replace row-position correspondence with occurrence-scoped target/seed relations and publish one observation-specific canonical ECSV plus receipt, with complete target/relation records embedded |
 | [0012](0012-canonical-apt-v2-compact-normalization.md) | Accepted owner-directed repair; Citlali verified locally, cross-repository gates pending | Supersede new v1 issuance with compact normalized ECSV bundles, occurrence-scoped TolAPT matching, v2-only guardians, and one root receipt |
-| [0013](0013-bounded-native-scientific-provenance.md) | Accepted owner-directed Stage 7 revision; implementation and bounded frozen 152390 replay complete; general successor-baseline acceptance pending | Separate runtime sample state, bounded canonical native provenance, and opt-in bounded debug tracing; regenerate deterministic per-sample consequences instead of serializing them |
+| [0013](0013-bounded-native-scientific-provenance.md) | Accepted owner-directed Stage 7 revision; implementation and bounded frozen 152390 replay complete | Separate runtime sample state, bounded canonical native provenance, and opt-in bounded debug tracing; regenerate deterministic per-sample consequences instead of serializing them |
+| [0014](0014-wp7-timestream-successor.md) | Accepted; implementation not started | Implement the approved paired x/r WP-7 route as bounded subsystem succession inside the existing application |
 
 Numbers are never reused. A materially different decision adds a new ADR and
 marks the old record superseded; do not rewrite the historical rationale.

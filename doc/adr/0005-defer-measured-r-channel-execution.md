@@ -1,6 +1,6 @@
 # ADR 0005: Defer Measured R-Channel Execution
 
-- **Status:** Accepted
+- **Status:** Partially superseded 2026-08-26 by ADR 0014
 - **Recorded:** 2026-07-16
 - **Decision owners:** Citlali project owner, scientific owner, and engineering
 
@@ -67,10 +67,13 @@ intentional-science decision.
 
 ## Supersession
 
-A successor ADR is required before R execution. It must reference the approved
-measured-channel contract, disabled/no-cost tests, an enabled reference
-dataset, product/provenance contracts, and the allowed influence on primary
-science processing.
+ADR 0014 supersedes this deferral only for the exact approved paired x/r WP-7
+successor route. This ADR remains active for independent R products, R-derived
+X cleaning, unauthorized calibration or null mapping, polarimetry, and any
+other consumer not named by that route.
+
+See [ADR 0014](0014-wp7-timestream-successor.md) for the bounded authorization
+and its evidence authorities.
 
 ## Evidence
 

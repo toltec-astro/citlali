@@ -3,25 +3,30 @@
 Read these documents before making architectural changes:
 
 1. `doc/REFACTOR_STATUS.md` - current phase, gates, and next actions.
-2. `doc/PHASE5_PREPARATION_AND_INTEGRATION_PLAN_2026-07-16.md` - active
+2. `doc/WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md` - accepted
+   bounded subsystem-succession structure, implementation slices, and
+   performance-tool adoption policy.
+3. `doc/adr/0014-wp7-timestream-successor.md` - durable WP-7 route,
+   migration, and technology-boundary decision.
+4. `doc/PHASE5_PREPARATION_AND_INTEGRATION_PLAN_2026-07-16.md` - active
    compilation-independent closeout lane and final-candidate discipline.
-3. `doc/TOLTECA_BUILD_INTEGRATION_REQUIREMENTS_2026-07-23.md` - required
+5. `doc/TOLTECA_BUILD_INTEGRATION_REQUIREMENTS_2026-07-23.md` - required
    outcomes and evidence for the build/integration review.
-4. `doc/TOLTECA_BUILD_INTEGRATION_REVIEW_2026-07-26.md` - reviewed Conan 2
+6. `doc/TOLTECA_BUILD_INTEGRATION_REVIEW_2026-07-26.md` - reviewed Conan 2
    evidence, Adapt decision, compatibility gaps, and bounded integration path.
-5. `doc/PHASE4_1_TOLTECA_CONFIG_STRUCTURE_PLAN_2026-07-16.md` - completed
+7. `doc/PHASE4_1_TOLTECA_CONFIG_STRUCTURE_PLAN_2026-07-16.md` - completed
    four-mode numbered-YAML authoring work and gates.
-6. `doc/PHASE4_2_TECHNIQUE_PERFORMANCE_REVIEW_PLAN_2026-07-16.md` - completed
+8. `doc/PHASE4_2_TECHNIQUE_PERFORMANCE_REVIEW_PLAN_2026-07-16.md` - completed
    whole-code review rubric, evidence labels, priorities, and stop rules.
-7. `doc/ARCHITECTURE.md` - active components, ownership, dependencies,
+9. `doc/ARCHITECTURE.md` - active components, ownership, dependencies,
    compatibility boundaries, and extension rules.
-8. `doc/SCIENTIFIC_CONVENTIONS.md` - identities, units, frames, validity, and
+10. `doc/SCIENTIFIC_CONVENTIONS.md` - identities, units, frames, validity, and
    validation routing.
-9. `doc/RETAINED_DEBT.md` - deliberate limitations, owners, triggers, and exit
+11. `doc/RETAINED_DEBT.md` - deliberate limitations, owners, triggers, and exit
    conditions.
-10. `handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md` - adopted
+12. `handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md` - adopted
    independent review and completion criteria.
-11. `doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md` - original goals and history.
+13. `doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md` - original goals and history.
 
 The living status document governs sequencing when these documents differ.
 Durable architecture decisions are indexed in `doc/adr/README.md`.
@@ -39,6 +44,13 @@ integration may proceed under
 refactored CLI and validation surface, keep the existing build available until
 the successor passes its gates, and do not combine build integration with
 numerical algorithm changes. Open-ended header subdivision remains paused.
+
+The accepted WP-7 successor is a separate bounded subsystem-succession
+workstream governed by `doc/WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md`
+and ADR 0014. It may implement the contract-specific RTC and PTC operators
+without treating the legacy kernels as a general cleanup target. Keep that work
+separate from Conan build integration, and keep the legacy route authoritative
+until the successor passes its activation gates.
 
 Do not broaden mature RTC, PTC, JINC, or Wiener-filter algorithms while fixing
 their contracts. Preserve numerical behavior unless a change is named,
@@ -65,8 +77,9 @@ measured, and recorded as intentional.
   dispatch out of established inner loops unless evidence justifies them.
 - Validation must cover the behavior touched. A successful run has zero
   unexpected error-level messages.
-- R integration remains structure-only until its measured-channel contract is
-  explicitly approved.
+- Measured-r execution is authorized only inside the exact approved WP-7
+  successor route under ADR 0014. Stronger or different R uses remain deferred
+  by ADR 0005.
 
 ## Working Protocol
 

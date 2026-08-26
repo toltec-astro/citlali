@@ -1,5 +1,39 @@
 # Citlali Refactor Status
 
+## 2026-08-26 WP-7 Timestream Successor Baseline
+
+The project has accepted the name **Citlali WP-7 Timestream Successor
+Implementation**, shortened to **WP-7 successor**, and classifies the work as
+**bounded subsystem succession**. It will replace the timestream execution
+spine inside the existing application while retaining the application shell,
+configuration boundary, lifecycle, publication, and downstream product
+contracts. It is neither a continuation of the general structural refactor nor
+a clean-slate rewrite of Citlali.
+
+[ADR 0014](adr/0014-wp7-timestream-successor.md) records the durable decision.
+[The implementation baseline](WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md)
+defines the accepted route, ownership boundaries, implementation slices, small
+initial technology set, and evidence-triggered adoption policy. The
+[machine-readable authority manifest](../validation/wp7_timestream_successor_authority.json)
+binds the exact independent scientific-contract and implementation-review
+artifacts, their SHA-256 digests, and their reviewed source identities.
+
+The scientific contract is not reopened by this documentation. The independent
+packet closes the RTC-only route and identifies TS-A, TS-S, and TS-C as ready
+tiers. The independent implementation review remains the starting engineering
+evidence: the reviewed implementation is nonconformant, with four blocker and
+seven major findings. The accepted successor therefore starts from explicit
+seams and vertical slices; it does not renovate that implementation in place.
+
+No successor implementation, production activation, accepted-run entry,
+intended-science-change entry, or validation-epoch change is made here. The
+existing WP-7 integration candidate at `a36abaebfb82d503b113de0cf4c1c6e0f6dcffc3`
+is the authoritative application and evidence base for this documentation; it
+is not itself a conforming successor implementation. The next implementation
+gate is slice S0 (seams and representative benchmark harness), followed by S1
+(native paired x/r ingest through the RTC-only route). The legacy route remains
+authoritative until all activation gates pass.
+
 ## 2026-08-26 Unity Stage 7 Completion And WP-7 Integration Candidate
 
 The owner-run Stage 7 NGC4449 observation 152390 campaign completed from exact

@@ -330,6 +330,36 @@ contracts, lifecycle ownership, and validation around them. It does not grant
 permission for broad numerical rewrites. A hot-path change requires measured
 motivation and a successor validation record when behavior changes.
 
+## Accepted WP-7 Successor Direction
+
+The scientific data flow above describes the current authoritative route. A
+new WP-7 execution spine is accepted as architecture but is not yet implemented
+or production-active. This work is a **bounded subsystem succession** inside
+the existing Citlali application, not a continuation of broad structural
+refactoring and not a clean-slate replacement of the application.
+
+The accepted route is:
+
+```text
+native paired x/r -> ALIGN/AST -> RTC -> RTC-only output
+                                  \-> CAL -> PTC with VAL -> downstream consumers
+```
+
+It retains the application shell, configuration boundary, lifecycle,
+publication, and downstream product contracts while replacing the internal
+timestream execution spine behind typed interfaces. It does not add new state
+to `Engine`. Compatibility adapters remain one-way, route selection is
+explicit and fails closed, and the legacy route stays authoritative until the
+successor passes its activation gates. Conan 2 build adaptation remains a
+separate workstream.
+
+The governing decision is [ADR 0014](adr/0014-wp7-timestream-successor.md).
+The implementation slices, storage and execution baseline, performance-tool
+adoption policy, and evidence gates are in
+[WP-7 Timestream Successor Implementation Baseline](WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md).
+Exact external scientific and implementation-review authorities are bound by
+[`validation/wp7_timestream_successor_authority.json`](../validation/wp7_timestream_successor_authority.json).
+
 ## Configuration Architecture
 
 Configuration facts move in one direction:
