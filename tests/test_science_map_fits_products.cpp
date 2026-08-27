@@ -1347,8 +1347,9 @@ TEST(science_map_fits_products, preserves_native_fits_scalar_types) {
                            .time_since_epoch()
                            .count();
     const std::string base =
-        "/private/tmp/citlali-science-map-fits-types-" +
-        std::to_string(nonce);
+        (std::filesystem::temp_directory_path() /
+         ("citlali-science-map-fits-types-" + std::to_string(nonce)))
+            .string();
     FitsFileCleanup cleanup{base + ".fits"};
 
     using FitsOutput = fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>;
@@ -1415,8 +1416,9 @@ TEST(science_map_fits_products,
                            .time_since_epoch()
                            .count();
     const std::string base =
-        "/private/tmp/citlali-science-map-f010-bundle-" +
-        std::to_string(nonce);
+        (std::filesystem::temp_directory_path() /
+         ("citlali-science-map-f010-bundle-" + std::to_string(nonce)))
+            .string();
     FitsFileCleanup cleanup{base + ".fits"};
     using FitsOutput = fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>;
     FitsOutput output{base};
@@ -1540,8 +1542,10 @@ TEST(science_map_fits_products,
                            .time_since_epoch()
                            .count();
     const std::string base =
-        "/private/tmp/citlali-science-map-filtered-parent-" +
-        std::to_string(nonce);
+        (std::filesystem::temp_directory_path() /
+         ("citlali-science-map-filtered-parent-" +
+          std::to_string(nonce)))
+            .string();
     FitsFileCleanup cleanup{base + ".fits"};
     using FitsOutput = fitsIO<file_type_enum::write_fits, CCfits::ExtHDU *>;
     FitsOutput output{base};
@@ -1585,7 +1589,7 @@ TEST(science_map_fits_products,
                            .time_since_epoch()
                            .count();
     FitsDirectoryCleanup cleanup{
-        std::filesystem::path{"/private/tmp"} /
+        std::filesystem::temp_directory_path() /
         ("citlali-science-map-observation-inventory-" +
          std::to_string(nonce))};
     Engine engine;
@@ -1617,7 +1621,7 @@ TEST(science_map_fits_products,
                                .time_since_epoch()
                                .count();
         FitsDirectoryCleanup cleanup{
-            std::filesystem::path{"/private/tmp"} /
+            std::filesystem::temp_directory_path() /
             ("citlali-noise-coadd-package-" +
              std::to_string(nonce) + "-" +
              std::to_string(successor_profile_available) + "-" +
@@ -1819,7 +1823,7 @@ TEST(science_map_fits_products,
                                .time_since_epoch()
                                .count();
         FitsDirectoryCleanup cleanup{
-            std::filesystem::path{"/private/tmp"} /
+            std::filesystem::temp_directory_path() /
             ("citlali-noise-split-beammap-package-" +
              std::to_string(nonce) + "-" +
              std::to_string(shape_index))};
@@ -1956,7 +1960,7 @@ TEST(science_map_fits_products,
                            .time_since_epoch()
                            .count();
     FitsDirectoryCleanup cleanup{
-        std::filesystem::path{"/private/tmp"} /
+        std::filesystem::temp_directory_path() /
         ("citlali-science-map-production-writer-" +
          std::to_string(nonce))};
     Engine engine;
@@ -2202,7 +2206,7 @@ TEST(science_map_fits_products,
                            .time_since_epoch()
                            .count();
     FitsDirectoryCleanup cleanup{
-        std::filesystem::path{"/private/tmp"} /
+        std::filesystem::temp_directory_path() /
         ("citlali-jinc-processing-writer-" + std::to_string(nonce))};
     std::filesystem::create_directories(cleanup.path);
 
