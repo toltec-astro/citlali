@@ -8,6 +8,7 @@
 #include <limits>
 #include <vector>
 #include <Eigen/Core>
+#include <fmt/ostream.h>
 
 #include <tula/logging.h>
 
@@ -1330,7 +1331,7 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
 
                     detm.transposeInPlace();
 
-                    logger->trace("detm {}", detm);
+                    logger->trace("detm {}", fmt::streamed(detm));
 
                     // for each of these go through and redo the offset
                     Eigen::MatrixXd lin_offset_others(det_count, n_flags);
@@ -1369,11 +1370,12 @@ void Despiker::replace_spikes(Eigen::DenseBase<DerivedA> &scans, Eigen::DenseBas
 
                     logger->trace("xx {}", xx);
                     logger->trace("yy {}", yy);
-                    logger->trace("lin_offset_others {}", lin_offset_others);
+                    logger->trace(
+                        "lin_offset_others {}", fmt::streamed(lin_offset_others));
 
                     detm.noalias() = detm - lin_offset_others;
 
-                    logger->trace("detm {}", detm);
+                    logger->trace("detm {}", fmt::streamed(detm));
 
                     // scale det by responsivities and average to make sky model
                     Eigen::VectorXd sky_model = Eigen::VectorXd::Zero(n_flags);
