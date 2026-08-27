@@ -77,6 +77,14 @@ work, freeze, performance claim, or readiness claim follows from this status.
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
+The fresh implementation-blind author returned a bounded r0.1 specification
+on `2026-08-26`. Manager review retained its successful PTC-route, ownership,
+response/covariance, and immutable-derivative science but did not accept it for
+integration because it reinterprets x/r identity, invents a universal PTC
+availability-scope rule, standardizes a JSON/SHA representation, and would
+close OD-003 through an unapproved claim registry. Canonical MAP clauses remain
+unchanged. A content-bound r0.2 correction requires scientific-owner approval;
+no implementation, conformity, validation, freeze, or readiness claim follows.
 
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.

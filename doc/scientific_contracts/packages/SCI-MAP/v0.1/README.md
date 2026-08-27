@@ -37,6 +37,18 @@ and were approved with Ultra Stage B authoring authority in
 Approval authorizes the bounded fresh-author round, not its resulting
 scientific substance.
 
+The fresh Ultra author returned
+[`PTC_HANDOFF_STAGE_B_AUTHOR_RETURN_R0.1_2026-08-26.md`](PTC_HANDOFF_STAGE_B_AUTHOR_RETURN_R0.1_2026-08-26.md).
+Manager review in
+[`PTC_HANDOFF_STAGE_B_MANAGER_REVIEW_R0.1_2026-08-26.md`](PTC_HANDOFF_STAGE_B_MANAGER_REVIEW_R0.1_2026-08-26.md)
+preserves the successful handoff science but rejects integration as written:
+the return reinterprets x/r identity, invents availability scope, standardizes
+serialization, and proposes an unapproved response-claim registry. A bounded
+r0.2 author correction requires a successor owner-approved packet. The
+canonical r0.3 MAP clauses remain unchanged.
+The proposed corrective packet is content-bound in
+[`PTC_HANDOFF_STAGE_B_R0.2_AUTHOR_PACKET_MANIFEST_2026-08-26.md`](PTC_HANDOFF_STAGE_B_R0.2_AUTHOR_PACKET_MANIFEST_2026-08-26.md).
+
 Grant approved this opening, `MAP-SCOPE-D001--D006`, and the exact three-part
 author packet on `2026-08-16`. The approved packet is content-bound in
 [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).
