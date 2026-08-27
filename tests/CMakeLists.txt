@@ -1,5 +1,9 @@
 project (citlali_test LANGUAGES CXX C)
 
+get_filename_component(
+    CITLALI_TEST_SOURCE_ROOT "${CMAKE_CURRENT_LIST_DIR}/.." REALPATH
+)
+
 if(NOT TARGET GTest::gtest_main)
     include(testing)
 endif()
@@ -18,7 +22,7 @@ add_test(
     NAME citlali::build_gitversion_refresh
     COMMAND "${CMAKE_COMMAND}"
         "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/gitversion_refresh_test"
-        "-DREFRESH_MODULE=${CMAKE_SOURCE_DIR}/cmake/citlali_gitversion.cmake"
+        "-DREFRESH_MODULE=${CITLALI_TEST_SOURCE_ROOT}/cmake/citlali_gitversion.cmake"
         -P "${CMAKE_CURRENT_LIST_DIR}/test_gitversion_refresh.cmake"
 )
 
@@ -33,7 +37,7 @@ target_sources(citlali_test
         test_beammap_config_plan.cpp
         test_canonical_apt_v1.cpp
         test_canonical_apt_v2.cpp
-        ${CMAKE_SOURCE_DIR}/src/citlali/cli/canonical_apt_contract_protocol_v2.cpp
+        ${CITLALI_TEST_SOURCE_ROOT}/src/citlali/cli/canonical_apt_contract_protocol_v2.cpp
         test_calib_apt_filtering.cpp
         test_coherent_iq_mode_observer.cpp
         test_config_scaffold.cpp

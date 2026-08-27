@@ -28,6 +28,13 @@ class SpackSourceGraphTest(unittest.TestCase):
         self.assertEqual(spack, established)
         self.assertEqual(len(established), 11)
 
+    def test_shared_test_graph_is_independent_of_top_level_entry_point(self) -> None:
+        source_root = Path(__file__).resolve().parents[2]
+        test_graph = (source_root / "tests/CMakeLists.txt").read_text()
+
+        self.assertIn("CITLALI_TEST_SOURCE_ROOT", test_graph)
+        self.assertNotIn("${CMAKE_SOURCE_DIR}/", test_graph)
+
 
 if __name__ == "__main__":
     unittest.main()
