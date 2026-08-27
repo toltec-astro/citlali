@@ -17,7 +17,7 @@
 \definecolor{MapGoldPale}{HTML}{FFF7E6}
 \definecolor{MapGray}{HTML}{53606B}
 \hypersetup{colorlinks=true,linkcolor=MapBlue,urlcolor=MapBlue,citecolor=MapBlue,
-  pdftitle={SCI-MAP v0.1 TolTEC Ordinary Mapmaking and Observation Coaddition - Science-Team Rationale r0.3 Draft},
+  pdftitle={SCI-MAP v0.1 TolTEC Ordinary Mapmaking and Observation Coaddition - Science-Team Rationale r0.4 Draft},
   pdfauthor={SCI-MAP scientific-owner review revision}}
 \setlength{\emergencystretch}{3em}
 \setlength{\parindent}{0pt}
@@ -37,7 +37,7 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small\color{MapGray}SCI-MAP v0.1 -- Science-Team Rationale r0.3 DRAFT}
+\fancyhead[L]{\small\color{MapGray}SCI-MAP v0.1 -- Science-Team Rationale r0.4 DRAFT}
 \fancyfoot[L]{\small\color{MapGray}Science-team circulation | DRAFT}
 \fancyfoot[R]{\small\color{MapGray}Page \thepage}
 
@@ -49,9 +49,9 @@
 {\LARGE\color{MapNavy}\textbf{and Observation Coaddition}}\\[0.10in]
 {\Large\color{MapBlue}\textbf{Scientific Basis, Response, and Validity}}\\[0.38in]
 {\large Scientific contract version: v0.1}\\[0.06in]
-{\large Science-team rationale revision: r0.3}\\[0.06in]
-{\large Status: house rationale frozen; scientific authority draft}\\[0.08in]
-{\large 2026-08-16}\\[0.42in]
+{\large Science-team rationale revision: r0.4}\\[0.06in]
+{\large Status: integrated scientific authority draft}\\[0.08in]
+{\large 2026-08-26}\\[0.42in]
 \fcolorbox{MapBlue}{MapPale}{\begin{minipage}{0.80\linewidth}\centering\small
 This document explains the map estimator, its response and uncertainty, the
 meaning of support and validity, and the scope of observation coaddition for
@@ -71,10 +71,11 @@ For a map pixel \(p\), SCI-MAP forms the coefficient-weighted average
  =\frac{N_p}{Q_p},
  \label{eq:map}
 \end{equation}
-using only calibrated samples with valid coordinates, upstream eligibility,
-and finite positive effective coefficients. Here \(G_{pi}\) describes how
+using only realized PTC samples that are available under PTC's declared
+identity and scope, have valid ALIGN/AST coordinates, and pass MAP's admission
+conditions. Here \(G_{pi}\) describes how
 sample \(i\) is assigned or divided among pixels, and \(\omega_i\) is the
-upstream-declared analysis coefficient. Pixels without adequate valid support
+PTC-supplied MAP-facing analysis coefficient. Pixels without adequate valid support
 are unavailable; they are not measurements of zero sky brightness.
 
 For compatible observation maps on one common grid, the v0.1 coadd is
@@ -97,7 +98,7 @@ joint model or resampling result.
 
 \StatusBox{\begin{tabularx}{\linewidth}{@{}L{0.31\linewidth}Y@{}}
 \textbf{Intended scientific estimator} & Positive-coefficient ordinary map and compatible common-grid observation coadd, Equations~\eqref{eq:map}--\eqref{eq:coadd}.\\
-\textbf{Upstream input status} & Inherited conditionally from SCI-CAL, ALIGN/AST, PTC, and VAL; unresolved \code{xs}, broadband, calibration, response, or uncertainty status is not repaired by MAP.\\
+\textbf{Upstream input status} & MAP always consumes a realized PTC product; there is no CAL-to-MAP fallback. ALIGN/AST owns coordinate facts, PTC owns product availability and producer-local validity, MAP owns MAP admission, and VAL may evaluate named rules without authoring them.\\
 \textbf{Implementation conformance} & Not assessed in this authorship revision.\\
 \textbf{Response/representation validation} & Not established; response injections and WCS round trips remain required evidence.\\
 \textbf{Observational validation} & Not established; amplitude, shape, position, covariance, and repeatability require astronomical controls.\\
@@ -108,11 +109,12 @@ joint model or resampling result.
 
 \clearpage
 \section{What SCI-MAP estimates}\label{sec:estimand}
-SCI-MAP estimates a map-domain average of the \emph{calibrated, processed}
+SCI-MAP estimates a map-domain average of the \emph{realized PTC-transformed}
 sample quantity. It does not estimate unconvolved sky truth. The physical
 meaning of the result is therefore inherited from the complete upstream
-chain: what the ordinary \code{xs} sample represents, how it was calibrated
-and conditioned, what sky coordinate it has, and which samples are eligible.
+CAL-to-PTC chain: what the ordinary \code{xs} sample represents, how it was
+calibrated and transformed, what sky coordinate it has, and whether the
+required PTC product exists under its declared producer-local validity.
 
 The numerical signal scale may be the declared point-source-equivalent
 \(\mjybeam\) convention inherited from SCI-CAL. MAP does not create absolute
@@ -136,12 +138,15 @@ common-mode removal, or filter may already have removed it.
 
 A stored kernel is a realized response only when its template, sample-domain
 parent, and processing lineage prove the relation in Equation~\eqref{eq:response}.
-Otherwise it is a tracer or has an explicit unavailable status. Every
-response-dependent consumer must retain that distinction.
+Otherwise it is a tracer or has an explicit limited or unavailable status.
+That state does not invalidate the numerical map or prohibit later analysis;
+it only limits the claims made by the original bundle. A later simulated
+response or response-corrected map is a new versioned product bound to the
+original MAP product and processing identity.
 
 \begin{figure}[h]
 \centering
-\fcolorbox{MapBlue}{MapPale}{\parbox[c][0.82in][c]{0.25\linewidth}{\centering\footnotesize SCI-CAL: scale/unit/response\\ALIGN/AST: coordinates\\PTC: samples/coefficients\\VAL: eligibility}}
+\fcolorbox{MapBlue}{MapPale}{\parbox[c][0.82in][c]{0.25\linewidth}{\centering\footnotesize CAL \(\rightarrow\) PTC: realized signal/coefficients\\ALIGN/AST: coordinate facts\\VAL: optional rule evaluation}}
 \hfill\(\longrightarrow\)\hfill
 \fcolorbox{MapNavy}{white}{\parbox[c][0.82in][c]{0.20\linewidth}{\centering\footnotesize SCI-MAP\\projection and weighted accumulation}}
 \hfill\(\longrightarrow\)\hfill
@@ -167,9 +172,19 @@ another named family. They are not inverse variances merely because their
 stored unit is inverse-square signal. A stronger precision interpretation
 requires separate calibration and covariance/independence evidence.
 
-The effective contribution is \(G_{pi}\omega_i\). SCI-MAP first selects the
-samples whose calibration, coordinates, flags, signal, projection, and
-required companions are valid, then accumulates
+Here \(x_i\) is PTC's realized transformed signal. The paired PTC \(x/r\)
+components are upstream detector coordinates, not MAP response products; MAP
+carries only the facts needed by its interface and never reinterprets \(r\) as
+a response. An identity-like cleaning configuration still produces a realized
+PTC product. If that required product does not exist, MAP has no input.
+
+The effective contribution is \(G_{pi}\omega_i\). SCI-MAP first requires the
+PTC product to be available under PTC's exact declared identity and scope,
+then applies its own finite-signal, coefficient, projection, boundary, support,
+and use conditions. One layer cannot rescue a failure in the other. These
+conditions do not imply a universal hierarchy between occurrence-, detector-,
+observation-, and product-scoped failures. VAL can evaluate a named rule but
+does not invent either layer's policy. MAP then accumulates
 \begin{equation}
  N_p=\sum_iG_{pi}\omega_i x_i,\qquad
  Q_p=\sum_iG_{pi}\omega_i.
@@ -233,7 +248,8 @@ operator as the signal:
  C_x=A N A^{\mathsf T},
  \label{eq:cov}
 \end{equation}
-where \(N\) is the processed-sample noise covariance. Equation~\eqref{eq:cov}
+where \(N\) is the declared PTC-domain processed-sample noise covariance when
+it is available for the asserted domain. Equation~\eqref{eq:cov}
 retains cross-pixel terms created by shared samples and any correlations
 already present in the timestream.
 
@@ -248,12 +264,14 @@ pixels when available; and
 by NOI from admitted realizations or data.
 \end{enumerate}
 
-The raw map bundle must say whether covariance is persisted, recoverable from
-lineage, summarized, or unavailable. It must not turn missing correlations,
-calibration uncertainty, astrometric uncertainty, response uncertainty, or
-additive-bias uncertainty into zeros. A signal multiplied by the square root
-of a merely formal weight is a \emph{formal standardized signal}, not an
-empirical significance map.
+The raw map bundle reports what uncertainty or covariance information it
+actually provides, its meaning, domain, assumptions, and limitations, and
+whether fuller information is persisted, recoverable from lineage,
+summarized, incomplete, or unavailable. Missing correlations and nuisance
+terms are not zeros. Normalization, hits, exposure, and diagnostic weight are
+not covariance. Absence of a complete covariance model neither invalidates the
+map nor prohibits later analysis. A later covariance estimate is a new
+versioned product bound to the original map and processing identity.
 
 The distinction is especially important when sample membership, weights,
 projection, response, or support is estimated from the same observation. The
@@ -364,13 +382,14 @@ outside this positive-coefficient branch.
 
 \clearpage
 \section{Units, WCS, products, and downstream use}\label{sec:products}
-SCI-MAP preserves the scale, unit convention, response basis, validity, and
-uncertainty status supplied by SCI-CAL. It preserves the coordinates, exact
-frame metadata, geometry, and coordinate validity supplied by ALIGN/AST; it
-does not replace that authority with the shorthand phrase ``J2000.'' PTC owns
-the processed sample and coefficient/covariance inputs, and VAL owns upstream
-sample and detector eligibility. MAP transforms these inputs but does not
-complete, repair, reinterpret, or validate them.
+SCI-MAP receives its scale and unit convention only through the realized PTC
+product; there is no direct SCI-CAL fallback. It preserves the coordinates,
+exact frame metadata, geometry, and coordinate validity supplied by ALIGN/AST
+and does not replace that authority with the shorthand phrase ``J2000.'' PTC
+owns transformed-sample identity and availability, producer-local validity,
+and MAP-facing coefficient/covariance facts. MAP owns the target grid and its
+own projection, coefficient-admission, boundary, support, and use conditions.
+VAL may represent and evaluate named rules; it does not author those policies.
 
 The accepted map-bundle authority is ADR~0009 and its 2026-08-05 owner
 amendment. The full binary64 typed or sidecar WCS is the lossless identity used
@@ -392,9 +411,9 @@ reprojection.
 \toprule Science-user state & Interpretation and required action \\
 \midrule
 Valid map; response available & Use only for the response class and processing lineage actually declared.\\
-Valid numerical map; response unavailable & Restrict to owner-approved response-independent uses; response-dependent consumers fail closed.\\
+Valid numerical map; response unavailable & Preserve the honest limitation. The original bundle makes no unsupported response-dependent claim; later analysis may attach a new versioned response or corrected product.\\
 Formal weight; empirical significance unavailable & Use only according to its declared role---normalization or formal precision---and do not call it significance.\\
-Covariance summarized or unavailable & Do not make a claim that needs missing correlations or nuisance terms.\\
+Covariance summarized or unavailable & State meaning, domain, and limits. The map remains valid; later covariance work is a new bound product.\\
 Unsupported pixel & Unavailable, not zero sky.\\
 Raw-invalid pixel & No downstream finite value may promote it to raw-valid.\\
 Coadd-incompatible observation & Entire observation bundle is excluded; no partial coadd.\\
@@ -439,15 +458,15 @@ OD-007 remains open only for its numerical domain and failure behavior. The
 other open items expose genuine upstream gaps rather than asking
 implementation questions.
 
-Rationale r0.3 is the frozen SCI-MAP house version. Further revisions should
-follow an owner decision, a normative contract change, new validation
-evidence, or a newly identified scientific inconsistency--not stylistic
-churn.
+Rationale r0.4 integrates the owner-authorized PTC-to-MAP handoff correction.
+Further revisions should follow an owner decision, a normative contract
+change, new validation evidence, or a newly identified scientific
+inconsistency--not stylistic churn.
 
 \addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
 \section*{References}
 \begin{enumerate}[label={[\arabic*]},leftmargin=*]
-\item \emph{SCI-MAP v0.1 Formal Scientific/Engineering Contract}, canonical shared authority and amended r0.3 formal view.
+\item \emph{SCI-MAP v0.1 Formal Scientific/Engineering Contract}, canonical shared authority and amended r0.4 formal view.
 \item \emph{SCI-CAL v0.1 Science-Team Rationale}, revision r0.3.
 \item \emph{SCI-PTC-001 D004 Owner Amendment}, approved 2026-08-09, for scalar coefficient and covariance semantics.
 \item \emph{Citlali Scientific Conventions}, map-bundle and ownership authority.
@@ -456,7 +475,7 @@ churn.
 
 \clearpage\appendix
 \section{Compact rationale-to-contract crosswalk}\label{app:crosswalk}
-The separate \code{SCIENTIST_CROSSWALK_R0.3.md} carries the same grouped
+The separate \code{CROSSWALK.md} carries the detailed
 routing. The formal contract remains normative; this appendix does not replace
 or paraphrase any requirement or prediction as authority.
 
@@ -486,8 +505,8 @@ and affected clauses live in \code{SCIENTIFIC_OWNER_DECISION_LEDGER.md}.
 \midrule
 OD-001 & Threshold rationale & Adopted policy only; no physical optimality or completeness claim.\\
 OD-002 & Threshold change authority & Formula and population are frozen until an owner-approved successor.\\
-OD-003 & Response-unavailable use & Response state remains explicit; response-dependent consumers fail closed.\\
-OD-004 & Covariance persistence & Representation and omissions are explicit; stronger consumers fail closed.\\
+OD-003 & Response obligations & Original claims use only response information actually provided; later response work is a bound versioned product.\\
+OD-004 & Covariance persistence & Representation, meaning, domain, and omissions are explicit; absence does not invalidate the map.\\
 OD-005 & Observation-map publication & Follow the effective required-output policy; infer no universal storage mandate.\\
 OD-006 & Pointing/OOF reuse & No mode-specific authority follows from ordinary arithmetic alone.\\
 OD-007 & \code{coverage_cut} numeric domain & Dimensionless status is fixed; no numerical domain or boundary behavior is inferred.\\
@@ -497,8 +516,8 @@ OD-009 & Common-grid preparation and future mosaicking & Odd-difference inputs r
 \end{longtable}
 
 \section{Document authority}
-Rationale revision r0.3 freezes the scientist-facing house form and records
-the scientific-owner disposition of SCI-MAP-CI-001. The scientific contract
+Rationale revision r0.4 integrates the PTC-to-MAP handoff correction and
+retains the scientific-owner disposition of SCI-MAP-CI-001. The scientific contract
 remains v0.1, with 52 canonical requirement IDs and 25 canonical prediction
 IDs unchanged. Their bounded amended clauses now classify
 \code{coverage_cut} as dimensionless while leaving its numerical domain and

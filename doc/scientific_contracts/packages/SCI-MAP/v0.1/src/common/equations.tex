@@ -4,7 +4,8 @@
 \begin{align}
  a_{pi} &= G_{pi}\,\omega_i,
  \label{eq:effective-coefficient}\\
- \mathcal C_p&=\{i:\text{all declared contribution predicates pass and }a_{pi}>0\},
+ \mathcal C_p&=\{i:\operatorname{available}_{\rm PTC}(i)=1,\
+   \ \operatorname{admit}_{\Pi_{\rm MAP}}(i,p)=1,\ a_{pi}>0\},
  \label{eq:contribution-set}\\
  \mathcal S_{\rm out}(\Pi_{\rm eff})
  &=\{p:\operatorname{authorize}_{\Pi_{\rm eff}}(p)=1\},
@@ -31,7 +32,7 @@
  R_{\rm out}&=A_{\rm out}H,
  &\mathbb E[\widehat{\boldsymbol x}_{\rm out}\mid\Theta]
    &=R_{\rm out}\boldsymbol s+A_{\rm out}\boldsymbol\mu_0,
- &C_{x,{\rm out}}&=A_{\rm out} N A_{\rm out}^{\mathsf T}.
+ &C_{x,{\rm out}}&=A_{\rm out} N_{\rm PTC} A_{\rm out}^{\mathsf T}.
  \label{eq:response-covariance}
 \end{align}}
 

@@ -1,6 +1,6 @@
 # SCI-MAP v0.1 Contract Crosswalk
 
-Document revision: `r0.3`
+Document revision: `r0.4`
 
 Status: author-draft traceability aid; it does not assert implementation,
 validation, or production status.
@@ -17,6 +17,8 @@ validation, or production status.
   `13dd5922bd492e381afcc3b015284216dde1ccc2199ece3d070ee577c7324381`.
 - **CO**: owner-approved `AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`, SHA-256
   `2d478cb6c5e897308d19614b8b01663318744971850c67459f84c7ddcd57c5c9`.
+- **HC**: owner-authorized 2026-08-26 PTC-to-MAP handoff correction, recorded
+  in `CHANGE_LOG_R0.4.md`.
 
 The canonical requirement and prediction text lives only in
 `src/common/requirements.tex` and `src/common/edge_cases.tex`, with notation,
@@ -42,15 +44,15 @@ ownership.
 | Requirement | Admitted authority | Scientific-rationale location | Engineering location | Linked predictions | Open owner/dependency gate |
 |---|---|---|---|---|---|
 | SCI-MAP-REQ-001 | SB metadata/status | Cover; App. C | Sec. 1; Sec. 6 | -- | Owner freeze still required |
-| SCI-MAP-REQ-002 | SB 2, 3, 6, 8; SS 1, 9; CO Capability | Sec. 1 | Sec. 4 canonical clause | PRED-024 | CAL meaning remains upstream |
+| SCI-MAP-REQ-002 | SB 2, 3, 6, 8; SS 1, 9; CO Capability; HC | Sec. 1 | Sec. 3--4 | PRED-024 | Realized PTC product required; no CAL fallback |
 | SCI-MAP-REQ-003 | SB 3, 6; SS 10; CO Identity | Sec. 7 | Sec. 4 canonical clause | PRED-014 | Occurrence binding supplied upstream |
-| SCI-MAP-REQ-004 | SB 3, 5; CO Validity/Producers | Sec. 1, 5 | Sec. 4 canonical clause | PRED-011 | CAL/VAL facts remain upstream |
-| SCI-MAP-REQ-005 | SB 2, 3, 5, 6; CO Shape/Frames | Sec. 1, 3, 7 | Sec. 4 canonical clause | PRED-005, PRED-009, PRED-011 | ALIGN/AST facts remain upstream |
+| SCI-MAP-REQ-004 | SB 3, 5; CO Validity/Producers; HC | Sec. 1, 5 | Sec. 3--4 | PRED-011 | PTC producer facts and MAP policy stay separate; VAL evaluates named rules |
+| SCI-MAP-REQ-005 | SB 2, 3, 5, 6; CO Shape/Frames; HC | Sec. 1, 3, 7 | Sec. 3--4 | PRED-005, PRED-009, PRED-011 | ALIGN/AST owns coordinates; MAP owns target grid and projection |
 | SCI-MAP-REQ-006 | SB 2, 3, 6; SS 1, 2; CO Units | Sec. 1 | Sec. 4 canonical clause | PRED-010 | PTC coefficient status remains upstream |
 | SCI-MAP-REQ-007 | SB 3, 4; FC Hits/exposure; CO Units | Sec. 5 | Sec. 4 canonical clause | PRED-008 | Exposure accounting supplied upstream |
-| SCI-MAP-REQ-008 | SB 2--4, 10; SS 8; CO Validity | Sec. 2, 8 | Sec. 4 canonical clause | PRED-013 | OD-003 |
+| SCI-MAP-REQ-008 | SB 2--4, 10; SS 8; CO Validity; HC | Sec. 2, 8 | Sec. 3--4 | PRED-013 | OD-003; later response work is a bound versioned product |
 | SCI-MAP-REQ-009 | SB 3, 4, 6; FC lifecycle; CO State | Sec. 7 | Sec. 4 canonical clause | PRED-014 | None |
-| SCI-MAP-REQ-010 | SB 3, 6; FC ordinary gridder/validity | Sec. 1 | Sec. 3--4 | PRED-010, PRED-011 | VAL policy remains upstream |
+| SCI-MAP-REQ-010 | SB 3, 6; FC ordinary gridder/validity; HC | Sec. 1 | Sec. 3--4 | PRED-010, PRED-011 | PTC availability AND MAP admission; no universal failure-scope hierarchy |
 | SCI-MAP-REQ-011 | SB 6.1; SS 1; FC ordinary gridder | Sec. 1 | Sec. 3--4 | PRED-003, PRED-004 | None |
 | SCI-MAP-REQ-012 | SB 4, 6; FC ordinary gridder/validity | Sec. 1--2, 5 | Sec. 3--4 | PRED-003, PRED-025 | OD-007 when the effective support policy uses `c` |
 | SCI-MAP-REQ-013 | SB 1, 4, 6; SS 2; FC formal covariance | Sec. 1, 4 | Sec. 4 | PRED-004, PRED-022 | PTC statistical status remains upstream |
@@ -62,7 +64,7 @@ ownership.
 | SCI-MAP-REQ-019 | SB 4, 7B; FC full covariance | Sec. 2, 4 | Sec. 4 | PRED-004, PRED-019 | PTC covariance remains upstream; covariance domain is exact authorized rows |
 | SCI-MAP-REQ-020 | SB 6.2, 7B; SS 2; FC formal covariance | Sec. 4 | Sec. 4 | PRED-004, PRED-019 | Coefficient calibration/correlation evidence absent |
 | SCI-MAP-REQ-021 | SB 4, 7B; FC formal diagonal weight | Sec. 4 | Sec. 4 | PRED-004, PRED-022 | OD-004 for persistence form |
-| SCI-MAP-REQ-022 | SB 4, 7B, 10; FC conditioned inputs/systematics | Sec. 4 | Sec. 4 | PRED-019 | OD-004; CAL/AST/PTC nuisance facts upstream |
+| SCI-MAP-REQ-022 | SB 4, 7B, 10; FC conditioned inputs/systematics; HC | Sec. 4 | Sec. 3--4 | PRED-019 | OD-004; honest incomplete/unavailable disclosure does not invalidate map |
 | SCI-MAP-REQ-023 | SB 7B; FC conditioning rule | Sec. 2, 4 | Sec. 4 | PRED-020 | Joint model/resampling outside MAP fixed-state claim |
 | SCI-MAP-REQ-024 | SB 7B, 8; CO Statistical labels | Sec. 4, 8 | Sec. 4 | PRED-022 | NOI empirical calibration remains upstream |
 | SCI-MAP-REQ-025 | SB 4, 6.9; SS 6; CO Validity | Sec. 5 | Sec. 4 | PRED-010, PRED-011, PRED-017 | None |
@@ -74,7 +76,7 @@ ownership.
 | SCI-MAP-REQ-031 | SB 6.10, 10; SS 7 | Sec. 5 | Sec. 4 | PRED-012 | OD-001, OD-002, OD-007 |
 | SCI-MAP-REQ-032 | SB 6.10; SS 7; CO Validity | Sec. 5 | Sec. 4 | PRED-012 | OD-001, OD-002, OD-007 |
 | SCI-MAP-REQ-033 | SB 4, 6.8--9; SS 5--6; CO Validity | Sec. 5, 8 | Sec. 4 | PRED-011, PRED-023, PRED-025 | OD-003 determines required-response set; OD-007 gates `c` admission |
-| SCI-MAP-REQ-034 | SB 6.8; SS 5; FC validity; CO Missing data | Sec. 8 | Sec. 3--4 | PRED-011, PRED-025 | VAL cause policy remains upstream |
+| SCI-MAP-REQ-034 | SB 6.8; SS 5; FC validity; CO Missing data; HC | Sec. 8 | Sec. 3--4 | PRED-011, PRED-025 | Producer and MAP exclusions are screened before arithmetic |
 | SCI-MAP-REQ-035 | SB 7C; FC validity | Sec. 5, 8 | Sec. 4 | PRED-010, PRED-011 | Low-positive policy is the adopted support rule; OD-007 gates `c` admission |
 | SCI-MAP-REQ-036 | SB 4, 6.5; SS 5--8; FC downstream bundle | Sec. 6--8 | Sec. 3--4 | PRED-013, PRED-014 | OD-003, OD-004 |
 | SCI-MAP-REQ-037 | SB 6.5, 6.12; SS 4; FC coadd admission | Sec. 6, 8 | Sec. 3--4 | PRED-014, PRED-017 | None |
@@ -90,7 +92,7 @@ ownership.
 | SCI-MAP-REQ-047 | SB 4, 6.12, 7C; CO Missing data | Sec. 8 | Sec. 3--4 | PRED-014, PRED-025 | Exact product scope comes from effective plan |
 | SCI-MAP-REQ-048 | SB 4, 6.12, 10; CO Missing data | Sec. 8, 10 | Sec. 4 | PRED-014, PRED-025 | OD-005 |
 | SCI-MAP-REQ-049 | SB 4, 6.12; SS 8; CO Consumers | Sec. 8 | Sec. 4 | PRED-023 | None |
-| SCI-MAP-REQ-050 | SB 1, 4--5, 7D; FC downstream contract; CO Consumers | Sec. 8 | Sec. 4 | PRED-013, PRED-022, PRED-023 | OD-003, OD-004, OD-006 |
+| SCI-MAP-REQ-050 | SB 1, 4--5, 7D; FC downstream contract; CO Consumers; HC | Sec. 8 | Sec. 3--4 | PRED-013, PRED-022, PRED-023 | OD-003, OD-004, OD-006; no closed-world use registry |
 | SCI-MAP-REQ-051 | SB 5, 6.4, 7E; FC noise-operator test | Sec. 8 | Sec. 4 | PRED-020, PRED-021 | NOI distribution remains upstream; OD-007 gates any `c`-bearing fixed policy |
 | SCI-MAP-REQ-052 | SB 2, 5, 8; SS 11--13; CO Adjacent packages | Sec. 1, 9--10 | Sec. 2, 6 | PRED-005--009, PRED-022--024 | OD-006; all named adjacent-package science excluded |
 

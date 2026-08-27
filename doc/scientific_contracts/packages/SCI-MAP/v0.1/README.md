@@ -1,8 +1,7 @@
 # SCI-MAP — Ordinary Mapmaking And Observation Coaddition
 
-Status: science-team rationale r0.3 house version frozen; CI-001 resolved and
-normatively incorporated; scientific authority not frozen; bounded PTC-handoff
-Stage A reopening launched on `2026-08-26` with the formal contract unchanged
+Status: integrated r0.4 scientific/engineering contract draft rendered;
+PTC-to-MAP handoff corrected; CI-001 retained; scientific authority not frozen
 
 Scientific contract scope: `v0.1`, owner-approved (`2026-08-16`)
 
@@ -21,14 +20,13 @@ weighted-normalization reasoning. It does not repeat the prior derivation or
 promote the SCI-MAP-001/002/003 audits, repairs, tests, reductions, or
 validation results into scientific authority.
 
-The later frozen PTC handoff and approved horizontal ownership decisions are
-being reconciled through the bounded
+The later frozen PTC handoff and approved horizontal ownership decisions were
+reconciled through the bounded
 [`MAP_PTC_HANDOFF_STAGE_A_LAUNCH_2026-08-26.md`](MAP_PTC_HANDOFF_STAGE_A_LAUNCH_2026-08-26.md)
 lane. Its
 [`PRIOR_WORK_DELTA_PTC_HANDOFF_2026-08-26.md`](PRIOR_WORK_DELTA_PTC_HANDOFF_2026-08-26.md)
-records the changed authorities without repeating the ordinary-map derivation.
-No Stage B author has been dispatched and no clause below has yet been revised
-by that reopening.
+records the changed authorities without repeating the ordinary-map derivation,
+and the owner-authorized r0.4 revision integrates the correction.
 
 The proposed exact Stage B inputs are content-bound in
 [`PTC_HANDOFF_AUTHOR_PACKET_MANIFEST_2026-08-26.md`](PTC_HANDOFF_AUTHOR_PACKET_MANIFEST_2026-08-26.md)
@@ -41,12 +39,13 @@ The fresh Ultra author returned
 [`PTC_HANDOFF_STAGE_B_AUTHOR_RETURN_R0.1_2026-08-26.md`](PTC_HANDOFF_STAGE_B_AUTHOR_RETURN_R0.1_2026-08-26.md).
 Manager review in
 [`PTC_HANDOFF_STAGE_B_MANAGER_REVIEW_R0.1_2026-08-26.md`](PTC_HANDOFF_STAGE_B_MANAGER_REVIEW_R0.1_2026-08-26.md)
-preserves the successful handoff science but rejects integration as written:
+preserved the successful handoff science but rejected integration as written:
 the return reinterprets x/r identity, invents availability scope, standardizes
-serialization, and proposes an unapproved response-claim registry. A bounded
-r0.2 author correction requires a successor owner-approved packet. The
-canonical r0.3 MAP clauses remain unchanged.
-The proposed corrective packet is content-bound in
+serialization, and proposed an unapproved response-claim registry. The owner
+then directed correction of the actual canonical deliverable rather than
+another procedural cycle. Revision r0.4 repairs those issues directly; the
+prior packet and review remain historical records. The proposed corrective
+packet is preserved in
 [`PTC_HANDOFF_STAGE_B_R0.2_AUTHOR_PACKET_MANIFEST_2026-08-26.md`](PTC_HANDOFF_STAGE_B_R0.2_AUTHOR_PACKET_MANIFEST_2026-08-26.md).
 
 Grant approved this opening, `MAP-SCOPE-D001--D006`, and the exact three-part
@@ -90,23 +89,22 @@ A fresh implementation-blind GPT-5.6 Ultra author was dispatched from the
 content-bound packet on `2026-08-16`. Scope approval did not approve the
 resulting contract.
 
-## Formal Contract And Frozen Science-Team Rationale r0.3
+## Integrated Formal Contract And Science-Team Rationale r0.4
 
 The manager-reviewed r0.1 draft supplied one shared canonical LaTeX authority
 and two rendered views. The first scientific editing round found the formal
 science strong but required the SCI-CAL house-model genre separation. The
 package now exposes:
 
-- [formal scientific/engineering contract r0.3](pdf/SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.3-DRAFT.pdf),
+- [formal scientific/engineering contract r0.4](pdf/SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.4-DRAFT.pdf),
   preserving all canonical equations, 52 requirements, 25 predictions, exact
   support/state semantics, provenance, decision register, and conformance
   routing;
-- [science-team rationale r0.3](pdf/SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.3-DRAFT.pdf),
+- [science-team rationale r0.4](pdf/SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.4-DRAFT.pdf),
   a scientist-facing account of the estimator, response, uncertainty,
   support/validity, coaddition, WCS, products, and validation without the full
   requirement or prediction inventories;
-- [engineering conformance specification r0.2](pdf/SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.2-DRAFT.pdf)
-  (18 pages);
+- [engineering conformance specification r0.4](pdf/SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.4-DRAFT.pdf);
 - [`src/common/`](src/common/), containing the required canonical
   `notation`, `definitions`, `equations`, `assumptions`, `requirements`, and
   `edge_cases` modules;
@@ -151,10 +149,7 @@ reduction, Unity execution, or production-status decision was performed.
 
 ## Stopping Rule And Next Gate
 
-The r0.3 scientist-facing house form is frozen. `SCI-MAP-CI-001` is resolved:
-`coverage_cut` is dimensionless. `SCI-MAP-OD-007` remains open only for
-numerical-domain and failure-policy questions, and OD-001--009 otherwise
-remain open as recorded. Later revision requires an owner decision, a
-normative contract change, new validation evidence, or a newly identified
-scientific inconsistency. Implementation conformance and validation remain
-later, separate gates.
+Revision r0.4 is the current rendered owner-review draft. It does not claim
+implementation conformance, validation, freeze, or readiness. OD-001--009
+remain open as recorded. The next gate is scientific-owner review of the r0.4
+PDFs; implementation conformance and validation remain later, separate gates.

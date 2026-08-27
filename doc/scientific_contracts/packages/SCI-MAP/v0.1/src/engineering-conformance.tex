@@ -15,7 +15,7 @@
 \definecolor{EngPale}{HTML}{EAF5F3}
 \definecolor{EngGray}{HTML}{58636D}
 \hypersetup{colorlinks=true,linkcolor=EngTeal,urlcolor=EngTeal,
-  pdftitle={SCI-MAP v0.1 Engineering Conformance Specification, r0.2},
+  pdftitle={SCI-MAP v0.1 Engineering Conformance Specification, r0.4},
   pdfauthor={Independent Stage B scientific-contract author}}
 \setlength{\emergencystretch}{3em}
 \setlength{\parindent}{0pt}
@@ -26,12 +26,12 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small\color{EngGray}SCI-MAP v0.1 | Engineering Conformance Specification}
-\fancyhead[R]{\small\color{EngGray}Document r0.2}
+\fancyhead[R]{\small\color{EngGray}Document r0.4}
 \fancyfoot[L]{\small\color{EngGray}Procedure only | conformance unassessed}
 \fancyfoot[R]{\small\color{EngGray}Page \thepage}
 
 \input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.1.tex}
-\renewcommand{\SCIMapDocumentRevision}{r0.2}
+\renewcommand{\SCIMapDocumentRevision}{r0.4}
 
 \newcommand{\ProcedureBox}[1]{%
   \begin{center}\fcolorbox{EngTeal}{EngPale}{\parbox{0.92\linewidth}{#1}}\end{center}}
@@ -170,11 +170,16 @@ Run evidence in the following order so later evidence cannot mask an earlier
 contract failure:
 
 \begin{enumerate}
-\item Parse and freeze identity, units, lifecycle, support policy (including
+\item Parse and freeze the realized PTC parent identity and source-declared
+availability/validity scope; reject a direct CAL input and a missing PTC
+product, while accepting an explicitly realized identity-like PTC product.
+\item Parse and freeze identity, units, lifecycle, MAP policy (including
 the exact admitted value and unit status of every policy parameter), WCS, and
 required-product plan.
-\item Verify input and effective-policy admission, including fail-closed
-handling of every non-authorized policy-parameter state, before arithmetic.
+\item Separately verify PTC-owned source facts, ALIGN/AST-owned coordinate
+facts, and MAP-owned projection/coefficient/boundary/support/use conditions
+before arithmetic. Verify that VAL, if used, evaluates the named rule without
+authoring it and that no layer rescues a failed condition in another.
 \item Compare exact scientific output-row identity and cardinality, plus
 one-pixel, one-hot, fractional, covariance, response, and eight-fact
 observation outputs, to independent expected values; retained storage rows do
@@ -186,7 +191,11 @@ atomic nonmutation.
 identity, and companion placement.
 \item Round-trip all required representations and reconstruct each
 row-selected operator from provenance.
-\item Exercise consumer fail-closed boundaries and immutable raw parentage.
+\item Exercise honest response/covariance disclosure, including partial and
+unavailable states that leave the map valid, and verify versioned binding for
+later response, covariance, or corrected-map products.
+\item Exercise consumer claim boundaries and immutable raw parentage without
+assuming a closed-world registry of all future scientific uses.
 \item Repeat supported execution modes under the preregistered floating-point
 policy, while requiring exact discrete facts.
 \item Only after deterministic gates pass, execute representation, external,

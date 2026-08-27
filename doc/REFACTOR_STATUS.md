@@ -80,11 +80,19 @@ revision that will be returned.
 The fresh implementation-blind author returned a bounded r0.1 specification
 on `2026-08-26`. Manager review retained its successful PTC-route, ownership,
 response/covariance, and immutable-derivative science but did not accept it for
-integration because it reinterprets x/r identity, invents a universal PTC
-availability-scope rule, standardizes a JSON/SHA representation, and would
-close OD-003 through an unapproved claim registry. Canonical MAP clauses remain
-unchanged. A content-bound r0.2 correction requires scientific-owner approval;
-no implementation, conformity, validation, freeze, or readiness claim follows.
+integration because it reinterpreted x/r identity, invented a universal PTC
+availability-scope rule, standardized a JSON/SHA representation, and would
+have closed OD-003 through an unapproved claim registry. The scientific owner
+then directed a bounded correction of the actual canonical deliverable. The
+r0.4 formal, rationale, and engineering sources now fix CAL-to-PTC-to-MAP as
+the sole route; separate PTC facts from MAP admission and ALIGN/AST coordinates
+from MAP projection; retain VAL only as a rule registry/evaluator; preserve
+declared failure scopes; keep paired x/r upstream; and require honest response
+and covariance disclosure with versioned later derivatives. All 52 requirement
+IDs, 25 prediction IDs, and nine open decision IDs are retained. The durable
+checker passes and all 56 rendered PDF pages passed independent Poppler visual
+inspection. This is an owner-review draft, not an implementation-conformity,
+validation, freeze, performance, Unity, or readiness result.
 
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
