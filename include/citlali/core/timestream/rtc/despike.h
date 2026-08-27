@@ -8,8 +8,8 @@
 #include <limits>
 #include <vector>
 #include <Eigen/Core>
-#include <fmt/ostream.h>
 
+#include <tula/formatter/matrix.h>
 #include <tula/logging.h>
 
 #include <tula/algorithm/mlinterp/mlinterp.hpp>
