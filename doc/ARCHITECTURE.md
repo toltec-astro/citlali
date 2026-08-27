@@ -102,12 +102,15 @@ does not reconstruct unavailable upstream overlay history.
 
 ## Active Build And Entry Points
 
-The active CMake graph has two production targets:
+The established CMake graph remains the operational fallback while the
+parallel Spack CMake graph proceeds through final integration and Unity
+acceptance. Both graphs must carry the same production translation-unit set
+and expose the same two production targets:
 
 | Target | Role | Active implementation |
 | --- | --- | --- |
 | `citlali` / `citlali::citlali` | Static library and shared include/dependency boundary | Eight compiled implementation files plus the header-defined numerical and orchestration graph |
-| `citlali_cli` | Production executable, emitted as `citlali` | `src/citlali/cli/main.cpp` plus the unactivated canonical-APT protocol adapter, linked to `citlali::citlali` |
+| `citlali_cli` | Production executable, emitted as `citlali` | Three CLI translation units: the two versioned canonical-APT protocol adapters and `src/citlali/cli/main.cpp`, linked to `citlali::citlali` |
 
 The eight compiled library sources currently cover timestream enum
 definitions, output-root leasing, restart-checkpoint publication, calibration,
@@ -662,10 +665,12 @@ rewrites. The following rules prevent further textual decomposition:
 6. A compiled-boundary change requires local header/link tests and mode
    validation proportionate to the touched behavior.
 
-Compilation-side modernization follows the separately governed Conan 2 Adapt
-lane. This policy describes the intended application shape; it does not
-authorize importing that lane's CMake, dependency, preset, CI-build,
-install/export, or cluster-helper changes into bounded application cleanup.
+Compilation-side modernization follows the Spack Adapt decision in ADR 0014.
+The dedicated integration branch imports that lane only after preserving the
+validated application checkpoint and reconciling the complete current source
+graph. This policy does not authorize numerical changes, removal of the
+fallback build, or release/operational acceptance without the recorded local,
+package-consumer, Unity, provenance, and same-SHA gates.
 
 ## Active, Transitional, Legacy, And Deferred Paths
 
@@ -725,8 +730,10 @@ boundaries.
 
 ### Explicitly Deferred
 
-- build-system, dependency, preset, CI-build, install/export, and cluster
-  helper modernization until the TolTECA integration direction is reviewed;
+- retirement of the established build until the Spack successor passes its
+  operational gates and rollback remains straightforward;
+- portable Spack release locks, immutable release archives, and managed
+  deployment acceptance until ADR 0015's remaining evidence is complete;
 - production rollout of compact config;
 - broad RTC, PTC, JINC, or Wiener numerical cleanup;
 - enabled polarimetry until a supported scientific contract and validation
@@ -817,8 +824,9 @@ The following debt remains visible and bounded:
 - Some NetCDF and legacy ECSV products lack complete unit/fill metadata. The
   canonical APT v1 candidate instead carries exact unit, nullability,
   authority, and non-finite declarations.
-- Build and dependency reproducibility remains assigned to the separate Conan
-  2 Adapt lane and closes only through its build-integration gates.
+- Build and dependency reproducibility is partially closed by the Spack Adapt
+  lane and remains open for portable release artifacts, managed deployment,
+  and the exact-SHA operational validation matrix.
 - External library consumption and concurrent in-process reductions are not
   accepted requirements.
 

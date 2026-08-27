@@ -1,0 +1,6 @@
+#pragma once
+
+#include <kids/config.h>
+
+#define KIDSCPP_GIT_VERSION KIDSCPP_VERSION
+#define KIDSCPP_BUILD_TIMESTAMP "spack-package"

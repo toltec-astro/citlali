@@ -1,0 +1,129 @@
+{
+  "schema_version": "citlali-build-timing-v1",
+  "campaign_id": "20260814T111058-0400",
+  "profile": "macos-llvm20",
+  "source": {
+    "revision": "3a4defda5308fa86a89fa7be24a991a17c9755b7",
+    "status": []
+  },
+  "host": {
+    "hostname": "ASTRO-GWILSON01.local",
+    "platform": "macOS-26.6.1-arm64-arm-64bit-Mach-O",
+    "cpu_count": 14
+  },
+  "build": {
+    "jobs": 8,
+    "generator": "Ninja",
+    "build_type": "Release",
+    "build_dir": "/Users/gwilson/GitHub/citlali-refactor-build/build/spack-citlali-timing-4n69gzqo",
+    "spack_environment": "/Users/gwilson/GitHub/citlali-refactor-build/spack/environments/citlali-macos-llvm20",
+    "spack_root_hash": "u2qcns6o5rtnzzzblqvqsnbdr7uldxgf",
+    "spack_root_spec": "citlali@4.0.0+openmp+tests+wiener_openmp %cxx=clang@20.1.8 ^cfitsio@4.3.0~fortran ^fftw@3.3.10~mpi ^hdf5@1.14.6+hl~mpi+shared~szip ^netcdf-c@4.10.0~blosc+shared+szip+zstd build_system=cmake ^openblas~fortran ^tula@3.1.0+cli+ecsv+enum~fitting+grppi+netcdf+openmp+perflibs"
+  },
+  "incremental_inputs": [
+    "src/citlali/cli/main.cpp"
+  ],
+  "stages": [
+    {
+      "name": "clean_configure",
+      "command": [
+        "/Users/gwilson/GitHub/spack/bin/spack",
+        "-e",
+        "/Users/gwilson/GitHub/citlali-refactor-build/spack/environments/citlali-macos-llvm20",
+        "build-env",
+        "citlali",
+        "--",
+        "cmake",
+        "--fresh",
+        "-G",
+        "Ninja",
+        "-S",
+        "/Users/gwilson/GitHub/citlali-refactor-build/cmake/spack",
+        "-B",
+        "/Users/gwilson/GitHub/citlali-refactor-build/build/spack-citlali-timing-4n69gzqo",
+        "-DCMAKE_C_COMPILER=/opt/homebrew/opt/llvm@20/bin/clang",
+        "-DCMAKE_CXX_COMPILER=/opt/homebrew/opt/llvm@20/bin/clang++",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+        "-DCMAKE_OSX_DEPLOYMENT_TARGET=26.0",
+        "-DCITLALI_BUILD_CLI=ON",
+        "-DCITLALI_BUILD_TESTS=ON",
+        "-DCITLALI_ENABLE_OPENMP=ON",
+        "-DCITLALI_USE_WIENER_FILTER_OMP=ON",
+        "-DCITLALI_SPACK_DAG_HASH=u2qcns6o5rtnzzzblqvqsnbdr7uldxgf"
+      ],
+      "started_at": "2026-08-14T11:10:58.567450-04:00",
+      "elapsed_seconds": 5.925941583001986,
+      "returncode": 0,
+      "log": "clean_configure.log"
+    },
+    {
+      "name": "clean_build",
+      "command": [
+        "/Users/gwilson/GitHub/spack/bin/spack",
+        "-e",
+        "/Users/gwilson/GitHub/citlali-refactor-build/spack/environments/citlali-macos-llvm20",
+        "build-env",
+        "citlali",
+        "--",
+        "cmake",
+        "--build",
+        "/Users/gwilson/GitHub/citlali-refactor-build/build/spack-citlali-timing-4n69gzqo",
+        "-j",
+        "8"
+      ],
+      "started_at": "2026-08-14T11:11:04.494156-04:00",
+      "elapsed_seconds": 161.5970877080108,
+      "returncode": 0,
+      "log": "clean_build.log"
+    },
+    {
+      "name": "no_op_build",
+      "command": [
+        "/Users/gwilson/GitHub/spack/bin/spack",
+        "-e",
+        "/Users/gwilson/GitHub/citlali-refactor-build/spack/environments/citlali-macos-llvm20",
+        "build-env",
+        "citlali",
+        "--",
+        "cmake",
+        "--build",
+        "/Users/gwilson/GitHub/citlali-refactor-build/build/spack-citlali-timing-4n69gzqo",
+        "-j",
+        "8"
+      ],
+      "started_at": "2026-08-14T11:13:46.101421-04:00",
+      "elapsed_seconds": 0.9375954170245677,
+      "returncode": 0,
+      "log": "no_op_build.log"
+    },
+    {
+      "name": "incremental_build_1",
+      "command": [
+        "/Users/gwilson/GitHub/spack/bin/spack",
+        "-e",
+        "/Users/gwilson/GitHub/citlali-refactor-build/spack/environments/citlali-macos-llvm20",
+        "build-env",
+        "citlali",
+        "--",
+        "cmake",
+        "--build",
+        "/Users/gwilson/GitHub/citlali-refactor-build/build/spack-citlali-timing-4n69gzqo",
+        "-j",
+        "8"
+      ],
+      "started_at": "2026-08-14T11:13:47.044248-04:00",
+      "elapsed_seconds": 173.21697979199234,
+      "returncode": 0,
+      "log": "incremental_build_1.log",
+      "input": {
+        "path": "/Users/gwilson/GitHub/citlali-refactor-build/src/citlali/cli/main.cpp",
+        "sha256": "0189b8270911731b5f1e2056fdf37449b8574413a03fa82b9ba53a0ceb4eaa0a",
+        "original_mtime_ns": 1786368148158896256,
+        "touched_mtime_ns": 1786720427044178000
+      }
+    }
+  ],
+  "completed_at": "2026-08-14T11:16:40.267841-04:00",
+  "build_dir_retained": false
+}

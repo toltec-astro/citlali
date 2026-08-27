@@ -1,6 +1,18 @@
 project (citlali_test LANGUAGES CXX C)
 
-include(testing)
+if(NOT TARGET GTest::gtest_main)
+    include(testing)
+endif()
+if(NOT COMMAND gtest_discover_tests)
+    include(GoogleTest)
+endif()
+if(NOT TARGET check)
+    add_custom_target(
+        check
+        COMMAND "${CMAKE_CTEST_COMMAND}" --output-on-failure
+        USES_TERMINAL
+    )
+endif()
 
 add_test(
     NAME citlali::build_gitversion_refresh
@@ -25,8 +37,10 @@ target_sources(citlali_test
         test_calib_apt_filtering.cpp
         test_coherent_iq_mode_observer.cpp
         test_config_scaffold.cpp
+        test_deployment_identity.cpp
         test_external_config_provenance.cpp
         test_fruit_loop_recurrence.cpp
+        test_kidscpp_raw_timestream_compat.cpp
         reduction_session_header_result.cpp
         reduction_session_header_state.cpp
         fruit_loop_feedback_validation_header.cpp
@@ -256,7 +270,9 @@ target_link_libraries(citlali_safety_test
         citlali::citlali
         GTest::gtest_main
 )
-target_compile_definitions(citlali_safety_test PRIVATE LOGLEVEL=${LOGLEVEL})
+if(DEFINED LOGLEVEL AND NOT "${LOGLEVEL}" STREQUAL "")
+    target_compile_definitions(citlali_safety_test PRIVATE LOGLEVEL=${LOGLEVEL})
+endif()
 gtest_discover_tests(
     citlali_safety_test
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}

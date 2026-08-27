@@ -1,0 +1,180 @@
+{
+  "schema_version": "citlali-release-recipe-audit-v1",
+  "release_id": "citlali-spack-adaptation-candidate-2026-08-14",
+  "manifest_state": "development-candidate",
+  "status": "blocked",
+  "package_count": 10,
+  "failure_count": 10,
+  "packages": [
+    {
+      "repository": "citlali",
+      "package": "citlali",
+      "source_commit": "6d497fc31d47054db791eead9aa0894d6ab0362a",
+      "recipe_commit": "6d497fc31d47054db791eead9aa0894d6ab0362a",
+      "recipe_path": "spack/spack_repo/toltec/citlali/packages/citlali/package.py",
+      "accepted": false,
+      "reason": "no package version resolves the accepted commit; declared 4.0.0:source=unbound",
+      "versions": [
+        {
+          "version": "4.0.0",
+          "commit": null,
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "tula_cmake",
+      "package": "tula-cmake",
+      "source_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_path": "spack_repo/toltec/tula_cmake/packages/tula_cmake/package.py",
+      "accepted": false,
+      "reason": "no package version resolves the accepted commit; declared 3.2.0:commit=a7d411dc9f342014586785a2c985b0fd16888f13",
+      "versions": [
+        {
+          "version": "3.2.0",
+          "commit": "a7d411dc9f342014586785a2c985b0fd16888f13",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "tula_cmake",
+      "package": "tula-logging",
+      "source_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_path": "spack_repo/toltec/tula_cmake/packages/tula_logging/package.py",
+      "accepted": false,
+      "reason": "no package version resolves the accepted commit; declared 1.0.0:commit=a7d411dc9f342014586785a2c985b0fd16888f13",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "commit": "a7d411dc9f342014586785a2c985b0fd16888f13",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "tula_cmake",
+      "package": "tula-yaml-cpp",
+      "source_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_path": "spack_repo/toltec/tula_cmake/packages/tula_yaml_cpp/package.py",
+      "accepted": false,
+      "reason": "no package version resolves the accepted commit; declared 0.8.0:commit=a7d411dc9f342014586785a2c985b0fd16888f13",
+      "versions": [
+        {
+          "version": "0.8.0",
+          "commit": "a7d411dc9f342014586785a2c985b0fd16888f13",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "tula_cmake",
+      "package": "tula-eigen3",
+      "source_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_path": "spack_repo/toltec/tula_cmake/packages/tula_eigen3/package.py",
+      "accepted": false,
+      "reason": "no package version resolves the accepted commit; declared 3.4.0:commit=a7d411dc9f342014586785a2c985b0fd16888f13",
+      "versions": [
+        {
+          "version": "3.4.0",
+          "commit": "a7d411dc9f342014586785a2c985b0fd16888f13",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "tula_cmake",
+      "package": "tula-ccfits",
+      "source_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_path": "spack_repo/toltec/tula_cmake/packages/tula_ccfits/package.py",
+      "accepted": false,
+      "reason": "no package version resolves the accepted commit; declared 1.0.0:commit=a7d411dc9f342014586785a2c985b0fd16888f13",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "commit": "a7d411dc9f342014586785a2c985b0fd16888f13",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "tula_cmake",
+      "package": "tula-netcdf-cxx4",
+      "source_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_path": "spack_repo/toltec/tula_cmake/packages/tula_netcdf_cxx4/package.py",
+      "accepted": false,
+      "reason": "no package version resolves the accepted commit; declared 4.3.1:commit=a7d411dc9f342014586785a2c985b0fd16888f13",
+      "versions": [
+        {
+          "version": "4.3.1",
+          "commit": "a7d411dc9f342014586785a2c985b0fd16888f13",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "tula_cmake",
+      "package": "tula-perflibs",
+      "source_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_commit": "6433cdabe7010d0af2d0ba69da7af27510391b80",
+      "recipe_path": "spack_repo/toltec/tula_cmake/packages/tula_perflibs/package.py",
+      "accepted": false,
+      "reason": "no package version resolves the accepted commit; declared 0.1.0:commit=a7d411dc9f342014586785a2c985b0fd16888f13",
+      "versions": [
+        {
+          "version": "0.1.0",
+          "commit": "a7d411dc9f342014586785a2c985b0fd16888f13",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "tula",
+      "package": "tula",
+      "source_commit": "aa16c853c6b596c04ccdc90dc3acc4ce2006d947",
+      "recipe_commit": "aa16c853c6b596c04ccdc90dc3acc4ce2006d947",
+      "recipe_path": "spack_repo/toltec/tula/packages/tula/package.py",
+      "accepted": false,
+      "reason": "no package version resolves the accepted commit; declared 3.1.0:commit=212717a2844fe1da7c4248dfefdead2ff21e80be",
+      "versions": [
+        {
+          "version": "3.1.0",
+          "commit": "212717a2844fe1da7c4248dfefdead2ff21e80be",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    },
+    {
+      "repository": "kidscpp",
+      "package": "kidscpp",
+      "source_commit": "498ece1113001ae2d42d96d9fc29152aea3eaaef",
+      "recipe_commit": "498ece1113001ae2d42d96d9fc29152aea3eaaef",
+      "recipe_path": "spack_repo/toltec/kidscpp/packages/kidscpp/package.py",
+      "accepted": false,
+      "reason": "no package version resolves the accepted commit; declared 3.1.0:commit=06b3130ba7f6f96b509011c5855f635f76a25087",
+      "versions": [
+        {
+          "version": "3.1.0",
+          "commit": "06b3130ba7f6f96b509011c5855f635f76a25087",
+          "url": null,
+          "sha256": null
+        }
+      ]
+    }
+  ]
+}

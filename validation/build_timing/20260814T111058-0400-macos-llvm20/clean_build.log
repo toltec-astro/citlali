@@ -1,0 +1,161 @@
+[1/44] Building CXX object CMakeFiles/citlali.dir/Users/gwilson/GitHub/citlali-refactor-build/src/citlali/core/config/timestream_enums.cpp.o
+[2/44] Building CXX object CMakeFiles/citlali.dir/Users/gwilson/GitHub/citlali-refactor-build/src/citlali/core/pipeline/output_root_lease.cpp.o
+[3/44] Building CXX object CMakeFiles/citlali.dir/Users/gwilson/GitHub/citlali-refactor-build/src/citlali/core/timestream/ptc/sensitivity.cpp.o
+[4/44] Building CXX object CMakeFiles/citlali.dir/Users/gwilson/GitHub/citlali-refactor-build/src/citlali/core/utils/gauss_models.cpp.o
+[5/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_astrometry_config_plan.cpp.o
+[6/44] Building CXX object CMakeFiles/citlali.dir/Users/gwilson/GitHub/citlali-refactor-build/src/citlali/core/pipeline/reduction_restart_checkpoint.cpp.o
+[7/44] Building CXX object CMakeFiles/citlali.dir/Users/gwilson/GitHub/citlali-refactor-build/src/citlali/core/engine/telescope.cpp.o
+[8/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_calib_apt_filtering.cpp.o
+[9/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_deployment_identity.cpp.o
+[10/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_coherent_iq_mode_observer.cpp.o
+[11/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_external_config_provenance.cpp.o
+[12/44] Building CXX object CMakeFiles/citlali.dir/Users/gwilson/GitHub/citlali-refactor-build/src/citlali/core/engine/calib.cpp.o
+[13/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_beammap_config_plan.cpp.o
+[14/44] Building CXX object tests/CMakeFiles/citlali_test.dir/reduction_session_header_result.cpp.o
+[15/44] Building CXX object tests/CMakeFiles/citlali_test.dir/fruit_loop_feedback_validation_header.cpp.o
+[16/44] Building CXX object tests/CMakeFiles/citlali_test.dir/reduction_session_header_state.cpp.o
+[17/44] Building CXX object tests/CMakeFiles/citlali_test.dir/fruit_loop_map_input_validation_header.cpp.o
+[18/44] Building CXX object tests/CMakeFiles/citlali_test.dir/output_root_lease_header.cpp.o
+[19/44] Building CXX object tests/CMakeFiles/citlali_test.dir/wiener_filter_validation_header.cpp.o
+[20/44] Building CXX object CMakeFiles/citlali.dir/Users/gwilson/GitHub/citlali-refactor-build/src/citlali/core/mapmaking/map.cpp.o
+[21/44] Linking CXX static library libcitlali.a
+[22/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_kidscpp_raw_timestream_compat.cpp.o
+[23/44] Building CXX object tests/CMakeFiles/citlali_test.dir/reduction_restart_checkpoint_header.cpp.o
+[24/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_kids_input_validation.cpp.o
+[25/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_output_root_lease.cpp.o
+[26/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_pointing_fit_table_metrics.cpp.o
+[27/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_process_resource_snapshot.cpp.o
+[28/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_rawobs_adc_snap.cpp.o
+[29/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_reduction_session.cpp.o
+[30/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_learning_and_fruit_contracts.cpp.o
+[31/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_fruit_loop_recurrence.cpp.o
+[32/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_tod_output_selection_config.cpp.o
+[33/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_map_fitter_lifecycle.cpp.o
+[34/44] Building CXX object tests/CMakeFiles/citlali_safety_test.dir/test_config_safety.cpp.o
+[35/44] Building CXX object tests/CMakeFiles/citlali_safety_test.dir/test_scan_cursor.cpp.o
+[36/44] Building CXX object tests/CMakeFiles/citlali_safety_test.dir/test_ordered_writer.cpp.o
+[37/44] Building CXX object tests/CMakeFiles/citlali_safety_test.dir/test_output_schema.cpp.o
+[38/44] Linking CXX executable tests/citlali_safety_test
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/zlib-ng-2.3.3-oukq3gyw6q6ui4aobu2igtqhbkkuuiey/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/hdf5-1.14.6-jumh6zmyh5trqlu3jv5pgmo6kx3c6qor/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/netcdf-c-4.10.0-tp45a2y267msvmuit3t7ywjfjzdf6yjf/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/yaml-cpp-0.8.0-smujwg7t6ukwyqg3ca5tzduwucusgodf/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/llvm-openmp-20.1.8-tqjvlazlpgke47qcehjnarrib4g5mp6n/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/netcdf-cxx4-4.3.1-36welxvz5dm2tbjhlircaie7cbwwxn22/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/spdlog-1.12.0-572juua46hrf2ru7krgb2x3d4blhbm5h/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/cfitsio-4.3.0-37jjs47grbuol22wlzszaiflny2bvymt/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/gflags-2.2.2-c2ty65b3jnl3spchlmrrvmvkctxsmtbp/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/glog-0.7.1-agkmgt2owydxpnevw3xpxcyjq2ba4h6p/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/ceres-solver-2.2.0-jnnd5wnvz4iz3cfahpzck7ktmqazpq7d/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/zlib-ng-2.3.3-oukq3gyw6q6ui4aobu2igtqhbkkuuiey/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/hdf5-1.14.6-jumh6zmyh5trqlu3jv5pgmo6kx3c6qor/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/netcdf-c-4.10.0-tp45a2y267msvmuit3t7ywjfjzdf6yjf/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/yaml-cpp-0.8.0-smujwg7t6ukwyqg3ca5tzduwucusgodf/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/llvm-openmp-20.1.8-tqjvlazlpgke47qcehjnarrib4g5mp6n/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/netcdf-cxx4-4.3.1-36welxvz5dm2tbjhlircaie7cbwwxn22/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/spdlog-1.12.0-572juua46hrf2ru7krgb2x3d4blhbm5h/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/cfitsio-4.3.0-37jjs47grbuol22wlzszaiflny2bvymt/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/gflags-2.2.2-c2ty65b3jnl3spchlmrrvmvkctxsmtbp/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/glog-0.7.1-agkmgt2owydxpnevw3xpxcyjq2ba4h6p/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/ceres-solver-2.2.0-jnnd5wnvz4iz3cfahpzck7ktmqazpq7d/lib' ignored
+[39/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_session_failure_boundaries.cpp.o
+[40/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_utils.cpp.o
+[41/44] Building CXX object tests/CMakeFiles/citlali_test.dir/test_config_scaffold.cpp.o
+[42/44] Linking CXX executable tests/citlali_test
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/zlib-ng-2.3.3-oukq3gyw6q6ui4aobu2igtqhbkkuuiey/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/hdf5-1.14.6-jumh6zmyh5trqlu3jv5pgmo6kx3c6qor/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/netcdf-c-4.10.0-tp45a2y267msvmuit3t7ywjfjzdf6yjf/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/yaml-cpp-0.8.0-smujwg7t6ukwyqg3ca5tzduwucusgodf/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/llvm-openmp-20.1.8-tqjvlazlpgke47qcehjnarrib4g5mp6n/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/netcdf-cxx4-4.3.1-36welxvz5dm2tbjhlircaie7cbwwxn22/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/spdlog-1.12.0-572juua46hrf2ru7krgb2x3d4blhbm5h/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/cfitsio-4.3.0-37jjs47grbuol22wlzszaiflny2bvymt/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/gflags-2.2.2-c2ty65b3jnl3spchlmrrvmvkctxsmtbp/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/glog-0.7.1-agkmgt2owydxpnevw3xpxcyjq2ba4h6p/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/ceres-solver-2.2.0-jnnd5wnvz4iz3cfahpzck7ktmqazpq7d/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/zlib-ng-2.3.3-oukq3gyw6q6ui4aobu2igtqhbkkuuiey/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/hdf5-1.14.6-jumh6zmyh5trqlu3jv5pgmo6kx3c6qor/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/netcdf-c-4.10.0-tp45a2y267msvmuit3t7ywjfjzdf6yjf/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/yaml-cpp-0.8.0-smujwg7t6ukwyqg3ca5tzduwucusgodf/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/llvm-openmp-20.1.8-tqjvlazlpgke47qcehjnarrib4g5mp6n/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/netcdf-cxx4-4.3.1-36welxvz5dm2tbjhlircaie7cbwwxn22/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/spdlog-1.12.0-572juua46hrf2ru7krgb2x3d4blhbm5h/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/cfitsio-4.3.0-37jjs47grbuol22wlzszaiflny2bvymt/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/gflags-2.2.2-c2ty65b3jnl3spchlmrrvmvkctxsmtbp/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/glog-0.7.1-agkmgt2owydxpnevw3xpxcyjq2ba4h6p/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/ceres-solver-2.2.0-jnnd5wnvz4iz3cfahpzck7ktmqazpq7d/lib' ignored
+[43/44] Building CXX object CMakeFiles/citlali_cli.dir/Users/gwilson/GitHub/citlali-refactor-build/src/citlali/cli/main.cpp.o
+In file included from /Users/gwilson/GitHub/citlali-refactor-build/src/citlali/cli/main.cpp:4:
+In file included from /Users/gwilson/GitHub/spack/opt/spack/darwin-m4/tula-3.1.0-do3zkzrduoh4kov2lbfyg47oahgunvbg/include/tula/logging.h:3:
+In file included from /Users/gwilson/GitHub/spack/opt/spack/darwin-m4/tula-3.1.0-do3zkzrduoh4kov2lbfyg47oahgunvbg/include/tula/meta.h:7:
+In file included from /Users/gwilson/GitHub/spack/opt/spack/darwin-m4/tula-3.1.0-do3zkzrduoh4kov2lbfyg47oahgunvbg/include/tula/concepts.h:6:
+In file included from /opt/homebrew/Cellar/llvm@20/20.1.8/bin/../include/c++/v1/type_traits:436:
+/opt/homebrew/Cellar/llvm@20/20.1.8/bin/../include/c++/v1/__type_traits/aligned_union.h:45:1: warning: 'aligned_union<0, grppi::mpmc_queue<std::pair<std::optional<timestream::TCData<timestream::TCDataKind::RTC, Eigen::Matrix<double, -1, -1>>>, long>>::concrete_queue<grppi::atomic_mpmc_queue<std::pair<std::optional<timestream::TCData<timestream::TCDataKind::RTC, Eigen::Matrix<double, -1, -1>>>, long>>>, grppi::mpmc_queue<std::pair<std::optional<timestream::TCData<timestream::TCDataKind::RTC, Eigen::Matrix<double, -1, -1>>>, long>>::concrete_queue<grppi::locked_mpmc_queue<std::pair<std::optional<timestream::TCData<timestream::TCDataKind::RTC, Eigen::Matrix<double, -1, -1>>>, long>>>>' is deprecated [-Wdeprecated-declarations]
+   45 | using aligned_union_t _LIBCPP_DEPRECATED_IN_CXX23 = typename aligned_union<_Len, _Types...>::type;
+      | ^
+/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/tula-grppi-2020.06.11-lzdez2xxprdctfrmfyikvm34bvoe43w2/include/grppi/dyn/../seq/../common/mpmc_queue.h:436:8: note: in instantiation of template type alias 'aligned_union_t' requested here
+  436 |   std::aligned_union_t<0,
+      |        ^
+/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/tula-grppi-2020.06.11-lzdez2xxprdctfrmfyikvm34bvoe43w2/include/grppi/dyn/../native/parallel_execution_native.h:873:23: note: in instantiation of template class 'grppi::mpmc_queue<std::pair<std::optional<timestream::TCData<timestream::TCDataKind::RTC, Eigen::Matrix<double, -1, -1>>>, long>>' requested here
+  873 |   auto output_queue = make_queue<output_type>();
+      |                       ^
+/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/tula-grppi-2020.06.11-lzdez2xxprdctfrmfyikvm34bvoe43w2/include/grppi/dyn/dynamic_execution.h:405:25: note: in instantiation of function template specialization 'grppi::parallel_execution_native::pipeline<(lambda at /Users/gwilson/GitHub/citlali-refactor-build/include/citlali/core/engine/detail/lali_setup_pipeline_impl.h:44:9), grppi::farm_t<std::function<void (timestream::TCData<timestream::TCDataKind::RTC, Eigen::Matrix<double, -1, -1>> &)>>>' requested here
+  405 |   GRPPI_TRY_PATTERN_ALL(pipeline, std::forward<Generator>(generate_op),
+      |                         ^
+/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/tula-grppi-2020.06.11-lzdez2xxprdctfrmfyikvm34bvoe43w2/include/grppi/pipeline.h:53:6: note: in instantiation of function template specialization 'grppi::dynamic_execution::pipeline<(lambda at /Users/gwilson/GitHub/citlali-refactor-build/include/citlali/core/engine/detail/lali_setup_pipeline_impl.h:44:9), grppi::farm_t<std::function<void (timestream::TCData<timestream::TCDataKind::RTC, Eigen::Matrix<double, -1, -1>> &)>>>' requested here
+   53 |   ex.pipeline(std::forward<Generator>(generate_op),
+      |      ^
+/Users/gwilson/GitHub/citlali-refactor-build/include/citlali/core/engine/detail/lali_setup_pipeline_impl.h:41:12: note: in instantiation of function template specialization 'grppi::pipeline<grppi::dynamic_execution, (lambda at /Users/gwilson/GitHub/citlali-refactor-build/include/citlali/core/engine/detail/lali_setup_pipeline_impl.h:44:9), grppi::farm_t<std::function<void (timestream::TCData<timestream::TCDataKind::RTC, Eigen::Matrix<double, -1, -1>> &)>>, 0>' requested here
+   41 |     grppi::pipeline(
+      |            ^
+/Users/gwilson/GitHub/citlali-refactor-build/include/citlali/core/pipeline/observation_pipeline.h:29:12: note: (skipping 20 contexts in backtrace; use -ftemplate-backtrace-limit=0 to see all)
+   29 |     engine.pipeline(kidsproc, rawobs, stage_profile);
+      |            ^
+/Users/gwilson/GitHub/citlali-refactor-build/include/citlali/core/cli/standard_reduction_execution.h:80:16: note: in instantiation of function template specialization 'citlali::cli::run_standard_citlali_reduction_inputs<KidsDataProc, tula::config::YamlConfig, SeqIOCoordinator, std::shared_ptr<spdlog::logger>>' requested here
+   80 |         return run_standard_citlali_reduction_inputs<KidsDataProc>(
+      |                ^
+/Users/gwilson/GitHub/citlali-refactor-build/include/citlali/core/cli/standard_reduction_execution.h:77:20: note: in instantiation of function template specialization 'citlali::session::ReductionSession::run<(lambda at /Users/gwilson/GitHub/citlali-refactor-build/include/citlali/core/cli/standard_reduction_execution.h:77:24)>' requested here
+   77 |     return session.run([&](auto &stage_profile) {
+      |                    ^
+/Users/gwilson/GitHub/citlali-refactor-build/include/citlali/core/cli/standard_reduction_execution.h:89:12: note: in instantiation of function template specialization 'citlali::cli::load_and_run_standard_citlali_reduction<KidsDataProc, SeqIOCoordinator, tula::config::YamlConfig, std::shared_ptr<spdlog::logger>>' requested here
+   89 |     return load_and_run_standard_citlali_reduction<
+      |            ^
+/Users/gwilson/GitHub/citlali-refactor-build/include/citlali/core/cli/standard_reduction_execution.h:98:25: note: in instantiation of function template specialization 'citlali::cli::load_and_run_default_citlali_session<tula::config::YamlConfig, std::shared_ptr<spdlog::logger>>' requested here
+   98 |     const auto result = load_and_run_default_citlali_session(
+      |                         ^
+/Users/gwilson/GitHub/citlali-refactor-build/src/citlali/cli/main.cpp:28:35: note: in instantiation of function template specialization 'citlali::cli::load_and_run_default_citlali_reduction<tula::config::YamlConfig, std::shared_ptr<spdlog::logger>>' requested here
+   28 |     auto exitcode = citlali::cli::load_and_run_default_citlali_reduction(
+      |                                   ^
+/opt/homebrew/Cellar/llvm@20/20.1.8/bin/../include/c++/v1/__type_traits/aligned_union.h:36:8: note: 'aligned_union<0, grppi::mpmc_queue<std::pair<std::optional<timestream::TCData<timestream::TCDataKind::RTC, Eigen::Matrix<double, -1, -1>>>, long>>::concrete_queue<grppi::atomic_mpmc_queue<std::pair<std::optional<timestream::TCData<timestream::TCDataKind::RTC, Eigen::Matrix<double, -1, -1>>>, long>>>, grppi::mpmc_queue<std::pair<std::optional<timestream::TCData<timestream::TCDataKind::RTC, Eigen::Matrix<double, -1, -1>>>, long>>::concrete_queue<grppi::locked_mpmc_queue<std::pair<std::optional<timestream::TCData<timestream::TCDataKind::RTC, Eigen::Matrix<double, -1, -1>>>, long>>>>' has been explicitly marked deprecated here
+   36 | struct _LIBCPP_DEPRECATED_IN_CXX23 _LIBCPP_NO_SPECIALIZATIONS aligned_union {
+      |        ^
+/opt/homebrew/Cellar/llvm@20/20.1.8/bin/../include/c++/v1/__config:737:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX23'
+  737 | #    define _LIBCPP_DEPRECATED_IN_CXX23 _LIBCPP_DEPRECATED
+      |                                         ^
+/opt/homebrew/Cellar/llvm@20/20.1.8/bin/../include/c++/v1/__config:698:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  698 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+1 warning generated.
+[44/44] Linking CXX executable citlali
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/zlib-ng-2.3.3-oukq3gyw6q6ui4aobu2igtqhbkkuuiey/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/hdf5-1.14.6-jumh6zmyh5trqlu3jv5pgmo6kx3c6qor/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/netcdf-c-4.10.0-tp45a2y267msvmuit3t7ywjfjzdf6yjf/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/yaml-cpp-0.8.0-smujwg7t6ukwyqg3ca5tzduwucusgodf/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/llvm-openmp-20.1.8-tqjvlazlpgke47qcehjnarrib4g5mp6n/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/netcdf-cxx4-4.3.1-36welxvz5dm2tbjhlircaie7cbwwxn22/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/spdlog-1.12.0-572juua46hrf2ru7krgb2x3d4blhbm5h/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/cfitsio-4.3.0-37jjs47grbuol22wlzszaiflny2bvymt/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/gflags-2.2.2-c2ty65b3jnl3spchlmrrvmvkctxsmtbp/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/glog-0.7.1-agkmgt2owydxpnevw3xpxcyjq2ba4h6p/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/ceres-solver-2.2.0-jnnd5wnvz4iz3cfahpzck7ktmqazpq7d/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/zlib-ng-2.3.3-oukq3gyw6q6ui4aobu2igtqhbkkuuiey/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/hdf5-1.14.6-jumh6zmyh5trqlu3jv5pgmo6kx3c6qor/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/netcdf-c-4.10.0-tp45a2y267msvmuit3t7ywjfjzdf6yjf/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/yaml-cpp-0.8.0-smujwg7t6ukwyqg3ca5tzduwucusgodf/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/llvm-openmp-20.1.8-tqjvlazlpgke47qcehjnarrib4g5mp6n/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/netcdf-cxx4-4.3.1-36welxvz5dm2tbjhlircaie7cbwwxn22/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/spdlog-1.12.0-572juua46hrf2ru7krgb2x3d4blhbm5h/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/cfitsio-4.3.0-37jjs47grbuol22wlzszaiflny2bvymt/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/gflags-2.2.2-c2ty65b3jnl3spchlmrrvmvkctxsmtbp/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/glog-0.7.1-agkmgt2owydxpnevw3xpxcyjq2ba4h6p/lib' ignored
+ld: warning: duplicate -rpath '/Users/gwilson/GitHub/spack/opt/spack/darwin-m4/ceres-solver-2.2.0-jnnd5wnvz4iz3cfahpzck7ktmqazpq7d/lib' ignored

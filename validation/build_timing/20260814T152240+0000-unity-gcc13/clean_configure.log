@@ -1,0 +1,48 @@
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Found OpenMP_CXX: -fopenmp (found version "4.5") 
+-- Found OpenMP: TRUE (found version "4.5") found components: CXX 
+-- Found PkgConfig: /home/toltec_umass_edu/work_toltec/spack-1.2.2/opt/spack/linux-cascadelake/pkgconf-2.5.1-jhof6p7r4bgdkacc5dzl3uyoxx6ei2cj/bin/pkg-config (found version "2.5.1") 
+-- Checking for module 'cfitsio'
+--   Found cfitsio, version 4.3.0
+-- Checking for module 'CCfits'
+--   Found CCfits, version 2.6
+-- Found HDF5: hdf5-shared (found version "1.14.6")  
+-- Found required Ceres dependency: Eigen version 3.4.0 in /home/toltec_umass_edu/work_toltec/spack-1.2.2/opt/spack/linux-cascadelake/eigen-3.4.0-gafehw46rmw7fxcutwxogyxg5qvgmi2q/share/eigen3/cmake
+-- Found required Ceres dependency: glog
+-- Found required Ceres dependency: gflags
+-- Found Ceres version: 2.2.0 installed in: /home/toltec_umass_edu/work_toltec/spack-1.2.2/opt/spack/linux-cascadelake/ceres-solver-2.2.0-b6ah6caowsavynnrh5rvnbn5e744a6fc with components: [EigenSparse, SparseLinearAlgebraLibrary, LAPACK, SchurSpecializations]
+CMake Warning (dev) at CMakeLists.txt:28 (find_package):
+  Policy CMP0144 is not set: find_package uses upper-case <PACKAGENAME>_ROOT
+  variables.  Run "cmake --help-policy CMP0144" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  Environment variable BOOST_ROOT is set to:
+
+    /work/toltec/spack-1.2.2/opt/spack/linux-cascadelake/boost-1.83.0-uv5bno6szp4vjjlben6rwtdvai7trqxv
+
+  For compatibility, find_package is ignoring the variable, but code in a
+  .cmake module might still use it.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Found HDF5: hdf5-shared (found version "1.14.6") found components: C HL 
+-- Found ZLIB: /home/toltec_umass_edu/work_toltec/spack-1.2.2/opt/spack/linux-cascadelake/zlib-ng-2.3.3-dzzklo3dyw2pc62fldpnsrywe6o5m6oo/lib/libz.so (found version "1.3.1")  
+-- Checking for module 'fftw3'
+--   Found fftw3, version 3.3.10
+-- Found FFTW3Threads: /home/toltec_umass_edu/work_toltec/spack-1.2.2/opt/spack/linux-cascadelake/fftw-3.3.10-yukpt6axugzqohxwaxzyuu3edpbchoxi/lib/libfftw3_threads.so  
+-- Configuring done (7.6s)
+-- Generating done (1.7s)
+-- Build files have been written to: /home/toltec_umass_edu/work_toltec/citlali_spack_acceptance/citlali/build/spack-citlali-timing-276oxiz4

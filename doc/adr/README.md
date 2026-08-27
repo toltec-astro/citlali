@@ -20,12 +20,14 @@ duplicate changing implementation inventories or validation snapshots.
 | [0005](0005-defer-measured-r-channel-execution.md) | Accepted | Preserve measured R-channel structure while deferring execution until its contract is approved |
 | [0006](0006-fruit-loop-restart-checkpoint.md) | Accepted | Resume fruit loops from a required state-complete iteration checkpoint with absolute iteration identity and fail-closed compatibility checks |
 | [0007](0007-observe-only-coherent-raw-iq-event-sidecar.md) | Accepted | Score versioned network-specific coherent raw-I/Q modes for every present network at shared RTC-seeded epochs without changing science data |
-| [0008](0008-application-mainline-and-build-adaptation-lanes.md) | Accepted | Keep application development authoritative on one mainline while adapting Conan 2 in an isolated, regularly synchronized worktree |
+| [0008](0008-application-mainline-and-build-adaptation-lanes.md) | Superseded in part by 0014 | Keep application development authoritative on one mainline while isolating successor-build adaptation |
 | [0009](0009-science-map-bundle-admission-and-validity.md) | Accepted | Admit complete full-precision science-map bundles atomically, retain centered-integer `L = I` coaddition with nonprecision coefficients, and persist distinct support and validity facts |
 | [0010](0010-canonical-baseline-apt-v1.md) | Accepted; candidate implementation unactivated | Define a typed Citlali-produced baseline APT with artifact-local UID, embedded raw-channel relation, distinct semantic/envelope/transport identities, and receipt-last publication |
 | [0011](0011-canonical-observation-apt-contract.md) | Accepted; candidate implementation unactivated | Replace row-position correspondence with occurrence-scoped target/seed relations and publish one observation-specific canonical ECSV plus receipt, with complete target/relation records embedded |
 | [0012](0012-canonical-apt-v2-compact-normalization.md) | Accepted owner-directed repair; Citlali verified locally, cross-repository gates pending | Supersede new v1 issuance with compact normalized ECSV bundles, occurrence-scoped TolAPT matching, v2-only guardians, and one root receipt |
 | [0013](0013-bounded-native-scientific-provenance.md) | Accepted owner-directed Stage 7 revision; implementation and bounded frozen 152390 replay complete; general successor-baseline acceptance pending | Separate runtime sample state, bounded canonical native provenance, and opt-in bounded debug tracing; regenerate deterministic per-sample consequences instead of serializing them |
+| [0014](0014-spack-build-foundation.md) | Accepted | Use Spack as the successor dependency/environment authority while preserving the full refactored application and fallback build |
+| [0015](0015-release-bundle-contract.md) | Accepted | Bind immutable first-party sources to one host-path-free Spack lock per supported platform profile, with explicit evidence and build-cache trust |
 
 Numbers are never reused. A materially different decision adds a new ADR and
 marks the old record superseded; do not rewrite the historical rationale.

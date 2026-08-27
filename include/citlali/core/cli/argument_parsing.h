@@ -1,5 +1,6 @@
 #pragma once
 
+#include <citlali/core/provenance/deployment_identity.h>
 #include <citlali_config/gitversion.h>
 #include <kidscpp_config/gitversion.h>
 #include <fmt/core.h>
@@ -27,6 +28,26 @@ inline std::string kidscpp_version_string() {
                        KIDSCPP_BUILD_TIMESTAMP);
 }
 
+inline std::string build_provenance_string() {
+#ifdef CITLALI_SPACK_DAG_HASH
+    const auto deployment = citlali::provenance::runtime_deployment_identity();
+    const auto binding = citlali::provenance::require_deployment_matches_build(
+        deployment, CITLALI_SPACK_DAG_HASH);
+    return fmt::format(
+        "build {} dag={} compiler={}-{} cxx={} {} {}; deployment "
+        "profile={} lock={} binding={}",
+        CITLALI_BUILD_SYSTEM, CITLALI_SPACK_DAG_HASH,
+        CITLALI_CMAKE_CXX_COMPILER_ID,
+        CITLALI_CMAKE_CXX_COMPILER_VERSION, CITLALI_CMAKE_CXX_STANDARD,
+        CITLALI_CMAKE_BUILD_TYPE, CITLALI_BUILD_VARIANTS,
+        citlali::provenance::deployment_profile_label(deployment),
+        citlali::provenance::deployment_lock_label(deployment),
+        citlali::provenance::deployment_binding_label(binding));
+#else
+    return "";
+#endif
+}
+
 inline auto default_cli_log_level_name() {
     auto v = spdlog::level::info;
     if (v < tula::logging::active_level) {
@@ -51,6 +72,7 @@ inline RuntimeConfig parse_args(int argc, char *argv[]) {
     // some of the option specs
     auto ver_str = citlali_version_string();
     auto kids_ver_str = kidscpp_version_string();
+    auto build_provenance_str = build_provenance_string();
     constexpr auto level_names = tula::logging::active_level_names;
     auto default_level_name = default_cli_log_level_name();
     using ex_config = tula::grppi_utils::ex_config;
@@ -88,6 +110,9 @@ inline RuntimeConfig parse_args(int argc, char *argv[]) {
         screen.version();
         // also print the kids version
         fmt::print("{}\n", kids_ver_str);
+        if (!build_provenance_str.empty()) {
+            fmt::print("{}\n", build_provenance_str);
+        }
         std::exit(EXIT_SUCCESS);
     }
     apply_cli_log_level(cc);

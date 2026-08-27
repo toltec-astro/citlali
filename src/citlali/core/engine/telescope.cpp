@@ -3,6 +3,7 @@
 
 #include <tula/logging.h>
 #include <tula/algorithm/ei_stats.h>
+#include <tula/formatter/matrix.h>
 
 #include <citlali/core/config/mapmaking_config.h>
 #include <citlali/core/engine/telescope.h>

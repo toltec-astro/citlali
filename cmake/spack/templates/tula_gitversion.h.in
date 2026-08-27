@@ -1,0 +1,6 @@
+#pragma once
+
+#include <tula/config.h>
+
+#define TULA_GIT_VERSION TULA_VERSION
+#define TULA_BUILD_TIMESTAMP "spack-package"

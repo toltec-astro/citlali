@@ -7,6 +7,7 @@
 
 #include <array>
 #include <atomic>
+#include <chrono>
 #include <cstdlib>
 #include <filesystem>
 #include <future>
@@ -110,6 +111,48 @@ TEST(ordered_writer, required_output_failure_cancels_other_streams) {
     EXPECT_NO_THROW(waiting_ptc.get());
     EXPECT_FALSE(ptc_write_ran.load());
     EXPECT_THROW(writers.rethrow_if_failed(), std::runtime_error);
+}
+
+TEST(ordered_writer, serializes_netcdf_callbacks_across_streams) {
+    using namespace std::chrono_literals;
+
+    citlali::pipeline::TimestreamOutputFlags flags;
+    flags.write_rtc = true;
+    flags.write_ptcdiag = true;
+    const auto writers =
+        citlali::pipeline::make_timestream_output_writers(flags);
+
+    std::promise<void> first_entered;
+    std::promise<void> release_first;
+    std::promise<void> second_started;
+    std::promise<void> second_entered;
+    auto first_ready = first_entered.get_future();
+    auto release = release_first.get_future().share();
+    auto second_ready = second_started.get_future();
+    auto second_callback_ready = second_entered.get_future();
+
+    auto first = std::async(std::launch::async, [&] {
+        return writers.write_when_ready(writers.rtc, 0, [&] {
+            first_entered.set_value();
+            release.wait();
+        });
+    });
+    first_ready.get();
+
+    auto second = std::async(std::launch::async, [&] {
+        second_started.set_value();
+        return writers.write_when_ready(writers.ptcdiag, 0, [&] {
+            second_entered.set_value();
+        });
+    });
+    second_ready.get();
+
+    EXPECT_EQ(
+        second_callback_ready.wait_for(100ms), std::future_status::timeout);
+    release_first.set_value();
+    EXPECT_TRUE(first.get());
+    EXPECT_TRUE(second.get());
+    EXPECT_EQ(second_callback_ready.wait_for(0ms), std::future_status::ready);
 }
 
 TEST(ordered_writer, verifies_required_output_cardinality) {

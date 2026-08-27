@@ -5,6 +5,7 @@
 
 #include <citlali/core/pipeline/output_policy.h>
 #include <citlali/core/pipeline/raw_timestream_policy.h>
+#include <citlali/core/provenance/deployment_identity.h>
 
 template <class map_buffer_t>
 void Engine::add_tod_header(map_buffer_t &mb) {
@@ -59,6 +60,18 @@ void Engine::add_tod_header(map_buffer_t &mb) {
             RAD_TO_DEG * telescope.tel_data["ActParAng"].mean(),
             calib.arrays, calib.array_fwhms, calib.array_pas,
             toltec_io.array_name_map, RAD_TO_DEG, pi / 2, omb.sig_unit);
+
+        const auto deployment =
+            citlali::provenance::runtime_deployment_identity();
+        add_netcdf_var<std::string>(
+            fo, "SPACK_DAG_HASH",
+            citlali::provenance::compiled_spack_dag_hash());
+        add_netcdf_var<std::string>(
+            fo, "DEPLOY_PROFILE",
+            citlali::provenance::deployment_profile_label(deployment));
+        add_netcdf_var<std::string>(
+            fo, "SPACK_LOCK_SHA256",
+            citlali::provenance::deployment_lock_label(deployment));
 
         citlali::pipeline::add_jinc_shape_config_vars_if_needed(
             fo, mapmaking_settings.method, calib.arrays, jinc_mm.shape_params,

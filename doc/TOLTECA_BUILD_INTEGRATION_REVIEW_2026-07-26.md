@@ -2,6 +2,11 @@
 
 Date: 2026-07-26
 
+Historical status: superseded for package-manager selection by the
+[2026-07-31 Spack review](TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md).
+Its application-preservation requirements and bounded Adapt rationale remain
+historical input to the successor decision.
+
 Status: initial architecture review complete; **Adapt** path selected. The
 reviewed implementation is a strong foundation for the successor build, but
 its current Citlali target is a deliberately limited library milestone rather

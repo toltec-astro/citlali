@@ -1,5 +1,36 @@
 # Citlali Refactor Status
 
+## 2026-08-26 Spack Build-Modernization Integration
+
+The owner directed the completed successor-build work into application
+mainline before the next WP-7 audit cycle. The dedicated local branch
+`codex/integrate-spack-build-modernization` starts from exact pushed
+application checkpoint `a36abaebfb82d503b113de0cf4c1c6e0f6dcffc3` and
+merges exact clean build-lane head
+`d9843e85ed87ba9ac8c42d8cc21f997dacbe1046`. The source build lane remains an
+evidence-preserving pointer and is not rewritten or deleted.
+
+The `a36abaeb` Unity point smoke is the frozen pre-build comparison checkpoint.
+Its audit JSON, Markdown report, and manifest are preserved outside Git under
+`2026-refactor/archives/wp7-point-a36abae-20260826/`. This evidence does not
+promote an accepted scientific baseline or change either validation ledger.
+
+Integration carries the accepted Tula CMake/Spack dependency graph, installed
+consumers, managed deployment identity, NetCDF output serialization repair,
+build timing evidence, and release-composition contract without importing
+`tolteca_deploy` or changing mature numerical algorithms. Mainline now has
+eight library and three CLI translation units; source-graph parity is an
+explicit regression gate for the established and Spack CMake paths. The Spack
+path also uses the same change-sensitive build-time Git-version refresh as the
+fallback build so a persistent tree cannot report a stale application commit.
+
+Local established-build, Spack/build-tool, CTest, configuration, baseline,
+ledger, schema, header, and session-exit gates remain required at the merged
+candidate. The owner-run Unity gate will build that exact commit with the
+modern environment and repeat the same point project for an A/B comparison
+against `a36abaeb`. Until those gates pass, `codex/refactor-mainline` remains
+at the pre-build checkpoint and the fallback build remains operational.
+
 ## 2026-08-26 Unity Stage 7 Completion And WP-7 Integration Candidate
 
 The owner-run Stage 7 NGC4449 observation 152390 campaign completed from exact
@@ -45,13 +76,11 @@ build timestamps are valid v3 identity values, and one unambiguous config
 `reduction_type` supplies mode evidence outside the historical validation-root
 path convention.
 
-Remote `origin/codex/refactor-mainline` at
-`46ad23888a40f5102cdfd50c06e49a549bdf8a20` is an ancestor of `3ebc2a67f`.
-The exact relation is zero mainline-only commits and 71 candidate-only commits,
-so it can be fast-forwarded without a merge. The separate Conan 2 build-
-adaptation lane and divergent scientific-contract/evidence lanes remain
-outside this candidate and must be retained until their independent gates and
-evidence-preservation dispositions complete.
+The owner fast-forwarded `origin/codex/refactor-mainline` to exact candidate
+`a36abaebfb82d503b113de0cf4c1c6e0f6dcffc3` and published the Stage 7 and
+WP-7 integration tags. The separate build-adaptation and divergent
+scientific-contract/evidence lanes remain retained until their independent
+gates and evidence-preservation dispositions complete.
 
 ## 2026-08-25 Production-JINC Diagnostic Repair and Full Local Completion
 
@@ -1164,15 +1193,253 @@ operational development remains active there. The previous
 branches are retained as historical pointers rather than competing
 application authorities.
 
-The successor build proceeds independently on `codex/conan2-adaptation` in a
+The successor build proceeds independently on `codex/build-adaptation` in a
 separate worktree created from the application mainline. It incorporates
 mainline regularly and may return only after the bounded Adapt gates pass. It
-does not wholesale-merge `citlali/v4.x_conan2`, replace the refactored
+does not wholesale-merge an upstream Citlali build branch, replace the refactored
 application, or mix numerical algorithm changes into build integration.
 
 The live branch, upstream revision, gate, and import policy are recorded in
 [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md). The durable rationale is
-[ADR 0008](adr/0008-application-mainline-and-build-adaptation-lanes.md).
+[ADR 0014](adr/0014-spack-build-foundation.md).
+
+## 2026-07-31 Spack Build Reset
+
+The build owner replaced the Conan 2 implementation with a decentralized
+Spack package graph and reconciled design. The project accepts Spack as the
+successor dependency/environment foundation while retaining the bounded Adapt
+strategy. Exact revisions, reproduced evidence, reported compiler/real-data
+results, requirement dispositions, and entry gates are recorded in
+[`TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md`](TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md).
+
+The new architecture substantially improves the earlier NetCDF C++ export
+problem and has stronger installed-package and real-data evidence. Its
+installed adapter still omits NetCDF-C's include directory for independent
+consumers, so Citlali retains a bounded direct NetCDF-C target. It does not
+remove the need to port the full refactor, preserve provenance and tests, add
+explicit HDF5/Zlib ownership, provide native Mac and Unity environments, or
+define immutable release sources and a portable lock. The existing build
+remains the operational path until those gates pass.
+
+The build owner subsequently confirmed the intended deployment contract:
+native macOS is supported and Unity installation is in user-owned space. The
+upstream developer workflow uses sibling repositories and the Tula CMake
+`Justfile`. Citlali's bounded adaptation instead owns an exact revision
+manifest and materializes clean build-only Tula CMake, Tula, and Kidscpp
+checkouts under ignored `build/spack-sources/`; unrelated developer checkouts
+and `tolteca_deploy` are not modified. Project policy makes exact Homebrew LLVM
+20 the initial Mac gate and treats containers as optional CI/troubleshooting
+infrastructure, not a local prerequisite. Real-data fixture identity,
+provenance improvements, and release locking remain implementation work.
+
+The native-Mac foundation checkpoint is complete on the build-adaptation
+branch. A tested preflight accepts exact Homebrew LLVM 20.1.8, Spack 1.2.2,
+CMake 4.3, Ninja 1.13, the supported Spack Python launcher, the three pinned
+package sources, and the current Citlali build worktree while rejecting
+AppleClang, wrong Spack releases, missing repositories, and globally forced
+unversioned Homebrew `libomp`.
+
+The source-built Tula component closure now installs through a concrete
+macOS Spack environment. Fourteen Tula tests and an independent installed
+consumer pass under LLVM 20. NetCDF-C is constrained to explicit Spack HDF5,
+Szip, and Zstandard edges after an undeclared Homebrew-header/Spack-library
+ABI mix was reproduced and eliminated. The accepted upstream Tula CMake
+package now supplies the normalized NetCDF C++ target without relying on
+metadata that NetCDF C++ 4.3.1 does not install, so the bounded local adapter
+has been removed.
+
+The native Kidscpp checkpoint is also complete. The accepted upstream
+`tula-perflibs` recipe declares exact `llvm-openmp@20.1.8` and exports that
+resolved runtime to installed consumers; the local override has been removed.
+Kidscpp installs from source, its independent installed consumer passes, and a
+separate reader consumer opens a current raw pointing file and reads a
+two-sample I/Q slice. The 2026-08-04 upstream revision cleanly separates
+portable generated-input tests from the optional historical real-file test,
+so an unavailable large fixture is no longer counted as a skipped success.
+The project now publishes a path-independent content manifest for pointing
+observation 152389, network 0, scan 2. The acceptance tool verifies its
+basename, byte size, and SHA-256 before the installed Kidscpp reader opens the
+external payload and reads a two-sample I/Q slice. That gate passes under the
+exact native LLVM 20 graph; the historical upstream fixture is no longer an
+acceptance dependency.
+
+The full native-Mac application checkpoint is now complete locally. The
+parallel Spack CMake project builds all eight active refactor implementation
+sources, the production CLI, generated default/config/version headers, and the
+complete compiled test surface under exact Homebrew LLVM 20 and C++23. Direct
+HDF5 and Zlib ownership is explicit. A bounded Kidscpp V3 adapter preserves the
+TolTEC raw-timestream boundary while the legacy build path remains available;
+the constructed but unused sweep fitter is excluded only in the V3 lane.
+Ceres 2, Tula 3 ECSV, and public-header isolation differences are handled by
+localized compatibility code rather than algorithm changes.
+
+All 533 enabled CTests pass in the persistent native build tree; the one
+disabled map-fitter lifecycle test remains explicitly reported. The complete
+123-test/four-mode config preflight passes. The installed CLI exposes the full
+operational help surface, and an independent installed
+`find_package(citlali)` consumer configures, links, and passes. The CLI reports
+Citlali commit/dirty state, Kidscpp version, build type, exact compiler,
+Wiener variant, and concrete Spack DAG hash. A persistent Ninja workflow now
+separates ordinary incremental development from the slower `spack install`
+packaging gate; a measured no-op build takes 0.82 seconds.
+
+Phase 5 is still not complete. Exact first-party development revisions are now
+machine-readable and checked, but immutable release source archives, a portable
+release lock, the user-owned Unity environment, point smoke run, and same-SHA
+four-mode validation matrix remain open. The legacy build therefore remains
+the operational fallback.
+
+The formal build-timing gate is complete. At clean source `3a4defda5`, the
+native LLVM 20/Ninja campaign recorded 5.93 seconds configure, 161.60 seconds
+clean build, 0.94 seconds no-op, and 173.22 seconds for the production CLI
+translation unit. At clean source `4f9c7e55a`, the Unity GCC 13/Make campaign
+recorded 20.16, 315.56, 4.98, and 277.38 seconds respectively. Both results
+show small build-system overhead and a header-dominant CLI compile as the
+development bottleneck; they do not claim a cross-host performance ranking.
+
+The Citlali-owned release-composition contract is now defined by
+[`spack/release/`](../spack/release/README.md) and
+[ADR 0015](adr/0015-release-bundle-contract.md). Its validator distinguishes a
+checked development candidate from a release, verifies repository inputs and
+checksums, separates immutable first-party source and recipe revisions,
+requires a checked audit proving every recipe resolves its accepted source,
+requires one source-based lock without development paths per supported
+profile, and makes buildcache trust explicit while retaining source
+reconstruction. The first audit is correctly blocked for all ten first-party
+package recipes: Citlali is unbound and the Tula CMake, Tula, and Kidscpp
+recipes identify older sources than the accepted development revisions. No
+release profile will be generated until repository-owned recipe revisions
+close that mismatch. Archives, profile release locks, deployment propagation,
+and the same-SHA four-mode acceptance matrix also remain open.
+`tolteca_deploy` remains external and unchanged.
+
+On 2026-08-14, isolated metadata-only commits in each owning repository bound
+the ten canonical package recipes to the exact accepted source revisions. The
+manifest now records the tested source and later recipe revisions separately,
+and the local recipe/source audit passes 10/10 with zero failures. These are
+proposed recipe revisions pending maintainer review and publication; no source
+archive, recipe archive, portable release profile, or release lock has been
+generated. Normal `develop:`-based work remains unchanged.
+
+The first user-supplied Unity inventory is now recorded operational evidence:
+Ubuntu 24.04 x86_64 exposes GCC/G++/GFortran 13.3 and Clang 18.1, CMake 3.30 through the
+TolTECA environment, Python 3.12, and no user-callable Spack or Ninja command.
+Cluster modules are generated under Spack paths but do not provide the package
+manager itself. A versioned `unity-gcc13` profile now uses system GCC/libgomp,
+Unix Makefiles, and a user-owned Spack 1.2.2 checkout while source-building the
+declared dependency graph. Matching GFortran is registered for OpenBLAS's
+internal build requirement without enabling public Fortran interfaces. This
+is an acceptance candidate, not a claim that
+GCC 13 belongs to the upstream GCC 14/LLVM 20 matrix. Concretization, install,
+compiled tests, package-consumer acceptance, and reduction validation remain
+pending on Unity.
+
+The first Unity concretization passed with historical lock SHA-256
+`02e5dddbd3775e4335d4d5ddd4c72a45493562fe531180f225b206467073f6ac`.
+The 2026-08-03 upstream-adapter adoption intentionally supersedes that graph:
+the new root distinguishes pipeline OpenMP from Wiener OpenMP and consumes
+pinned upstream Tula adapters from Citlali's build-only source area. A fresh
+Unity concretization, install, compiled-test run, installed-consumer check, and
+point reduction are therefore pending. The checked Slurm acceptance script
+owns those gates and records final executable provenance.
+
+The 2026-08-04 dependency refresh accepts exact TulaCMake `e8b6721e`, Tula
+`47471cf7`, and Kidscpp `006c980d` candidates. Their immutable source-release,
+provenance, and portable-test improvements compile under the native Mac graph;
+all 533 enabled Citlali CTests pass. The upstream Citlali `37099244` revision
+is reviewed as design evidence only and is not imported as application code.
+Exact-clean installed-package acceptance and Unity validation remain the next
+gates for this refreshed graph.
+
+The 2026-08-10 refresh supersedes that dependency snapshot with exact
+TulaCMake `6433cdab`, Tula `aa16c853`, and Kidscpp `498ece11`; upstream Citlali
+`ceb4335c` and TolTECA Deploy `0a6b896` are reviewed reference evidence only.
+The full refactored CLI builds natively with the new concrete root
+`u2qcns6o5rtnzzzblqvqsnbdr7uldxgf`, and all 539 enabled CTests pass. Managed
+activation now supplies a deployment profile, lock digest, and environment
+path. Citlali checks that the lock contains exactly its compiled root DAG
+before running and records the accepted identities in its version output and
+science-product metadata. Unmanaged developer launches remain explicit. A
+clean installed package now reports the exact source revision and managed DAG
+binding, preserves the full CLI surface, passes its independent consumer, and
+passes all 539 enabled developer CTests. The real Unity GCC 13.3 acceptance
+lane is still required; the upstream ARM64 development locks are not Unity
+evidence.
+
+The first exact-source Unity GCC 13.3 attempt, Slurm job `62888690`, used
+Citlali `0add18c24f45580cca7637449b6ff02ca92c9d11`, dependency lock SHA-256
+`d2204524bc170cf9e9458a9f83f2730f4e44c78fe628eb01f7d9f8dee0c52f72`,
+and concrete root `elcot6ah6jtv3onjjmqerxaznnshumqh`. Spack installed the
+full package, the persistent developer build completed, and all 539 enabled
+CTests passed; the pre-existing `MapFitterLifecycle.ExactProductSequence`
+remained explicitly disabled. The job then failed before installed-CLI and
+consumer acceptance because Spack's expected Linux development build
+directory was not ignored and the clean-source gate rejected it. This is a
+build-lane hygiene failure, not a compilation or test failure. The Linux
+development build directory is now ignored consistently with the existing
+macOS Spack build directory.
+
+The second exact-source attempt, job `62889350`, used Citlali
+`34b83df514847695e8c17648eb7b66e75e97b7d3` with the same accepted lock and
+concrete root. The full package and persistent developer build again
+completed, all 539 enabled CTests passed, and the clean-source gate passed.
+The installed CLI then reported the correct source prefix `34b83df5`, Kidscpp
+identity, GCC 13.3/C++23 build identity, concrete DAG, deployment profile,
+lock digest, and `binding=dag-match`. The acceptance checker nevertheless
+failed because it requested a fixed nine-character Git abbreviation from the
+source tree while Git's generated version header selected the valid
+eight-character abbreviation. The checker now compares the reported dynamic
+abbreviation against the full source commit. The independent installed
+consumer did not run after this checker-only failure; one fresh exact-SHA job
+and then a point reduction remain required.
+
+The third exact-source attempt, job `62890572`, closes the Unity build and
+installed-package gates at Citlali
+`7ee2c4f7c7bdc04846966032587ce458ee9be62d`. It used the same lock and
+concrete root, installed the full package, passed source hygiene, passed both
+executions of all 539 enabled developer CTests, and passed the independent
+installed consumer `1/1`. The expected lifecycle test remained explicitly
+disabled. The completed manifest records installed executable SHA-256
+`89a159c508f3f51bd0556105486fb4dadccf6bce525a6d0ceff99f53da04145e` and
+the CLI reports source `7ee2c4f7`, Kidscpp 3.1.0, GCC 13.3/C++23, concrete
+DAG `elcot6ah6jtv3onjjmqerxaznnshumqh`, deployment profile `unity-gcc13`,
+the accepted lock digest, and `binding=dag-match`. The job completed without
+stderr diagnostics beyond GNU Time output. A Unity point reduction using
+this exact installed executable is now the remaining operational smoke gate.
+
+The first point smoke with that installed executable completed in 61.9
+seconds with no warning, error, or critical diagnostics. Its effective config
+and product contract passed, the common pointing-fit columns were exactly
+unchanged, and FITS differences against the earlier validation epoch were
+numerically negligible. That launch did not inherit the managed deployment
+variables, however, so its products correctly recorded `profile=unmanaged`
+and it did not close the managed-operation gate.
+
+The 2026-08-14 managed rerun then exposed a nondeterministic reliability
+defect after PTC diagnostics output: HDF5 1.14.6 segfaulted while closing a
+NetCDF file on a `libgomp` worker. Source inspection showed that RTC TOD, PTC
+TOD, RTC diagnostics, and PTC diagnostics each had independent ordering but
+could enter NetCDF-C/HDF5 concurrently. The candidate repair shares one mutex
+across those four output callbacks while leaving scan computation parallel.
+Its fresh native LLVM 20/C++23 Spack build passes all 540 enabled CTests,
+including a cross-stream serialization regression, all 31 build-tool tests,
+all 135 baseline-tool tests, and the complete 123-test/four-mode config
+preflight. The exact repair commit `b8e80fb15` subsequently completed the
+interactive Unity acceptance workflow with six CPUs and 16 GB. Two completed
+point runs reproduced all 1,930 compared scientific records exactly and the
+HDF5 failure did not recur. Their 66.43- and 67.72-second iteration times are
+close to one another; the increase from the unsafe 61.84-second run is
+consistent with removing overlapping NetCDF writes but is not a controlled
+performance result.
+
+Managed deployment propagation remains open. Direct invocation of the
+installed executable with the three deployment variables reports
+`profile=unity-gcc13`, the accepted lock digest, and `binding=dag-match`, but
+the same environment applied to `tolteca reduce` produces science products
+marked `profile=unmanaged`. The project assigns this launch-boundary contract
+to the external TolTECA deployment owner and will not add a competing
+Citlali- or TolProj-local wrapper. A deployment-owned propagation fix and one
+short point rerun are required to close the managed-operation gate.
 
 ## 2026-08-14 APT-PROD-001 Canonical Baseline APT v1 Candidate
 

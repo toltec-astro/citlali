@@ -10,7 +10,7 @@ auto KidsDataProc::load_rawobs_gaps(const RawObs &rawobs, const Eigen::Index sca
                                     std::vector<DerivedC>& times,
                                     const double tol) {
 
-    std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>> result;
+    std::vector<RawTimeStream> result;
 
     if (scan_indices(2, scan) < 0 || scan_indices(3, scan) >= t_common.size() ||
         scan_indices(3, scan) < scan_indices(2, scan)) {
@@ -170,8 +170,7 @@ auto KidsDataProc::populate_rtc_gaps(LoadedType &loaded, Eigen::DenseBase<Derive
 
     Eigen::Index i = 0, j = 0;
     // loop through raw timestream objects
-    for (std::vector<kids::KidsData<kids::KidsDataKind::RawTimeStream>>::
-         iterator it = loaded.begin(); it != loaded.end(); ++it) {
+    for (auto it = loaded.begin(); it != loaded.end(); ++it) {
         // run the solver
         auto result = this->solver()(*it, Solver::Config{});
         Eigen::Index n_cols = 0;
