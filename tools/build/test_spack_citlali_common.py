@@ -149,6 +149,21 @@ class SpackCitlaliSourceRevisionTest(unittest.TestCase):
         )
         self.assertEqual(reported, "34b83df51484")
 
+    def test_accepts_tagless_matching_abbreviation(self) -> None:
+        reported = require_matching_source_revision(
+            "34b83df5 (2026-08-14T11:16:05)\n"
+            "kids 3.1.0 (spack-package)\n",
+            self.source_revision,
+        )
+        self.assertEqual(reported, "34b83df5")
+
+    def test_accepts_tagless_longer_dirty_abbreviation(self) -> None:
+        reported = require_matching_source_revision(
+            "34b83df51484-dirty (2026-08-14T11:16:05)",
+            self.source_revision,
+        )
+        self.assertEqual(reported, "34b83df51484")
+
     def test_rejects_mismatched_abbreviation(self) -> None:
         with self.assertRaisesRegex(RuntimeError, "does not match"):
             require_matching_source_revision(
@@ -160,6 +175,14 @@ class SpackCitlaliSourceRevisionTest(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "exactly one Git revision"):
             require_matching_source_revision(
                 "v4.0.0 (2026-08-14T11:16:05)", self.source_revision
+            )
+
+    def test_rejects_multiple_revision_lines(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "exactly one Git revision"):
+            require_matching_source_revision(
+                "v4.0.0-3642-g34b83df5 (2026-08-14T11:16:05)\n"
+                "34b83df5 (duplicate)\n",
+                self.source_revision,
             )
 
 

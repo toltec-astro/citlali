@@ -116,7 +116,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     version_output = run([str(executable), "--version"], environment=environment)
     require_matching_source_revision(version_output, source_revision)
     for required_text in (
-        "v4.0.0-",
         "kids 3.1.0",
         root_hash,
         profile.provenance_compiler,
