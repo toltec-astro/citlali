@@ -242,7 +242,13 @@ if(CITLALI_BUILD_TESTS)
     enable_testing()
     add_subdirectory("${CITLALI_SOURCE_ROOT}/tests" tests)
     set_property(
-        TARGET citlali_test citlali_safety_test
+        TARGET
+            citlali_test
+            citlali_jinc_map_contract_test
+            citlali_jinc_parallel_ownership_test
+            citlali_safety_test
+            citlali_sci_align_test
+            citlali_science_map_fits_products_test
         PROPERTY EXCLUDE_FROM_ALL FALSE
     )
 endif()
