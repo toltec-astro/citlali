@@ -1,6 +1,6 @@
 # SCI-MAP v0.1 Contract Crosswalk
 
-Document revision: `r0.4`
+Document revision: `r0.5`
 
 Status: author-draft traceability aid; it does not assert implementation,
 validation, or production status.
@@ -19,6 +19,10 @@ validation, or production status.
   `2d478cb6c5e897308d19614b8b01663318744971850c67459f84c7ddcd57c5c9`.
 - **HC**: owner-authorized 2026-08-26 PTC-to-MAP handoff correction, recorded
   in `CHANGE_LOG_R0.4.md`.
+- **R05**: owner directive `SCI-MAP v0.1 r0.5 TARGETED PTC-TO-MAP
+  CROSS-PACKAGE CLOSURE DIRECTIVE`, SHA-256
+  `210e8beafe26381a7d35cf38bacab9a9d959646055635a7c1179e0729a3cfa9a`,
+  plus `SCI-PTC_TO_SCI-MAP v0.1/r0.1` and the exact registered MAP profiles.
 
 The canonical requirement and prediction text lives only in
 `src/common/requirements.tex` and `src/common/edge_cases.tex`, with notation,
@@ -29,27 +33,26 @@ the science-team rationale imports the same authority but does not expand the
 full inventories.
 Section names below are navigation aids, not a second normative wording.
 
-Nine owner decisions remain `OPEN` in
+Eight owner decisions remain `OPEN` in
 `SCIENTIFIC_OWNER_DECISION_LEDGER.md`. `SCI-MAP-CI-001` is `RESOLVED` by the
 2026-08-16 scientific-owner disposition fixing `c=coverage_cut` as a
 dimensionless support-policy scalar. The shared equations, REQ-031/032, and
 PRED-012 incorporate that bounded amendment. SCI-MAP-OD-007 remains open only
 for numerical-domain and failure-policy questions; no numerical range is
-inferred. OD-008 covers projection normalization and boundaries; OD-009
-covers canonical-grid preparation and future reprojection/mosaicking
-ownership.
+inferred. OD-008 is resolved by the exact one-hot containing-pixel family;
+OD-009 covers canonical-grid preparation and future reprojection/mosaicking.
 
 ## Requirement crosswalk
 
 | Requirement | Admitted authority | Scientific-rationale location | Engineering location | Linked predictions | Open owner/dependency gate |
 |---|---|---|---|---|---|
 | SCI-MAP-REQ-001 | SB metadata/status | Cover; App. C | Sec. 1; Sec. 6 | -- | Owner freeze still required |
-| SCI-MAP-REQ-002 | SB 2, 3, 6, 8; SS 1, 9; CO Capability; HC | Sec. 1 | Sec. 3--4 | PRED-024 | Realized PTC product required; no CAL fallback |
+| SCI-MAP-REQ-002 | SB 2, 3, 6, 8; SS 1, 9; CO Capability; HC; R05 | Sec. 1 | Sec. 3--4 | PRED-024 | Exact positive-rank PTC r0.5 quantity/beam parent required; no CAL, disabled, no-op, or Stokes promotion |
 | SCI-MAP-REQ-003 | SB 3, 6; SS 10; CO Identity | Sec. 7 | Sec. 4 canonical clause | PRED-014 | Occurrence binding supplied upstream |
 | SCI-MAP-REQ-004 | SB 3, 5; CO Validity/Producers; HC | Sec. 1, 5 | Sec. 3--4 | PRED-011 | PTC producer facts and MAP policy stay separate; VAL evaluates named rules |
-| SCI-MAP-REQ-005 | SB 2, 3, 5, 6; CO Shape/Frames; HC | Sec. 1, 3, 7 | Sec. 3--4 | PRED-005, PRED-009, PRED-011 | ALIGN/AST owns coordinates; MAP owns target grid and projection |
-| SCI-MAP-REQ-006 | SB 2, 3, 6; SS 1, 2; CO Units | Sec. 1 | Sec. 4 canonical clause | PRED-010 | PTC coefficient status remains upstream |
-| SCI-MAP-REQ-007 | SB 3, 4; FC Hits/exposure; CO Units | Sec. 5 | Sec. 4 canonical clause | PRED-008 | Exposure accounting supplied upstream |
+| SCI-MAP-REQ-005 | SB 2, 3, 5, 6; CO Shape/Frames; HC; R05 | Sec. 1, 3, 7 | Sec. 3--4 | PRED-004, PRED-005, PRED-009 | Exact same-`n` AST join; MAP one-hot half-open projection selected |
+| SCI-MAP-REQ-006 | SB 2, 3, 6; SS 1, 2; CO Units; R05 | Sec. 1 | Sec. 4 canonical clause | PRED-010 | PTC-OD-010 hard-blocks ordinary numerical MAP |
+| SCI-MAP-REQ-007 | SB 3, 4; FC Hits/exposure; CO Units; R05 | Sec. 5 | Sec. 4 canonical clause | PRED-008 | Exact ALIGN exposure lineage; MAP use-qualified deduplicated exposure |
 | SCI-MAP-REQ-008 | SB 2--4, 10; SS 8; CO Validity; HC | Sec. 2, 8 | Sec. 3--4 | PRED-013 | OD-003; later response work is a bound versioned product |
 | SCI-MAP-REQ-009 | SB 3, 4, 6; FC lifecycle; CO State | Sec. 7 | Sec. 4 canonical clause | PRED-014 | None |
 | SCI-MAP-REQ-010 | SB 3, 6; FC ordinary gridder/validity; HC | Sec. 1 | Sec. 3--4 | PRED-010, PRED-011 | PTC availability AND MAP admission; no universal failure-scope hierarchy |
@@ -67,7 +70,7 @@ ownership.
 | SCI-MAP-REQ-022 | SB 4, 7B, 10; FC conditioned inputs/systematics; HC | Sec. 4 | Sec. 3--4 | PRED-019 | OD-004; honest incomplete/unavailable disclosure does not invalidate map |
 | SCI-MAP-REQ-023 | SB 7B; FC conditioning rule | Sec. 2, 4 | Sec. 4 | PRED-020 | Joint model/resampling outside MAP fixed-state claim |
 | SCI-MAP-REQ-024 | SB 7B, 8; CO Statistical labels | Sec. 4, 8 | Sec. 4 | PRED-022 | NOI empirical calibration remains upstream |
-| SCI-MAP-REQ-025 | SB 4, 6.9; SS 6; CO Validity | Sec. 5 | Sec. 4 | PRED-010, PRED-011, PRED-017 | None |
+| SCI-MAP-REQ-025 | SB 4, 6.9; SS 6; CO Validity; R05 | Sec. 5 | Sec. 4 | PRED-010, PRED-011, PRED-017 | Geometry, route candidate, contribution, exposure, support, and MAP validity separated |
 | SCI-MAP-REQ-026 | SB 4; FC hits; CO Units | Sec. 5 | Sec. 4 | PRED-004, PRED-010 | Fractional counting convention must be declared |
 | SCI-MAP-REQ-027 | SB 4; FC weighted hits | Sec. 5 | Sec. 4 | PRED-010, PRED-011 | None |
 | SCI-MAP-REQ-028 | SB 4; SS 6, 8; FC coadd companions | Sec. 5--6 | Sec. 4 | PRED-017 | None |
@@ -81,12 +84,12 @@ ownership.
 | SCI-MAP-REQ-036 | SB 4, 6.5; SS 5--8; FC downstream bundle | Sec. 6--8 | Sec. 3--4 | PRED-013, PRED-014 | OD-003, OD-004 |
 | SCI-MAP-REQ-037 | SB 6.5, 6.12; SS 4; FC coadd admission | Sec. 6, 8 | Sec. 3--4 | PRED-014, PRED-017 | None |
 | SCI-MAP-REQ-038 | SB 6.6, 6.11; SS 4; CO Shape/Frames | Sec. 6--7 | Sec. 3--4 | PRED-018 | ALIGN/AST/WCS authority upstream |
-| SCI-MAP-REQ-039 | SB 1--2, 6.1; SS 1, 4; FC coadd | Sec. 6 | Sec. 4 | PRED-015, PRED-016 | OD-007 when the effective coadd support policy uses `c` |
+| SCI-MAP-REQ-039 | SB 1--2, 6.1; SS 1, 4; FC coadd; R05 | Sec. 6 | Sec. 4 | PRED-015, PRED-016 | Uniform dimensionless observation family selected; OD-007 still gates any `c` use |
 | SCI-MAP-REQ-040 | SB 4, 6.4--5; SS 8; FC coadd companions | Sec. 5--6 | Sec. 4 | PRED-015, PRED-017, PRED-018 | OD-003 for unavailable response; exact row set comes from effective policy |
 | SCI-MAP-REQ-041 | SB 4, 7B; SS 2; FC coadd covariance | Sec. 4, 6 | Sec. 4 | PRED-019 | Cross-observation covariance status upstream; domain is exact authorized rows |
 | SCI-MAP-REQ-042 | SB 2, 7B, 8; SS 1; FC correlated coadd | Sec. 6 | Sec. 4 | PRED-019, PRED-024 | Correlated GLS excluded from v0.1 |
 | SCI-MAP-REQ-043 | SB 3--4, 6.13; SS 10; CO Identity | Sec. 7 | Sec. 4 | PRED-014 | Occurrence binding supplied upstream |
-| SCI-MAP-REQ-044 | SB 3, 6.14; SS 9; CO Frames/Units | Sec. 1, 7 | Sec. 4 | PRED-005, PRED-024 | OD-006 for Point/OOF registered reuse |
+| SCI-MAP-REQ-044 | SB 3, 6.14; SS 9; CO Frames/Units; R05 | Sec. 1, 7 | Sec. 4 | PRED-005, PRED-024 | Complete AST frame identity; no J2000/FK5/ICRS equivalence by default |
 | SCI-MAP-REQ-045 | SB 6.11, 6.13; CO Shape/Frames | Sec. 6--7 | Sec. 4 | PRED-018 | ALIGN/AST serialization reference needed for fidelity |
 | SCI-MAP-REQ-046 | SB 4, 7D; FC lifecycle; CO State | Sec. 7 | Sec. 4 | PRED-014, PRED-020 | Effective support policy supplies exact row-set identity |
 | SCI-MAP-REQ-047 | SB 4, 6.12, 7C; CO Missing data | Sec. 8 | Sec. 3--4 | PRED-014, PRED-025 | Exact product scope comes from effective plan |
@@ -135,8 +138,8 @@ ownership.
 - Every requirement appears once in the requirement table above.
 - Every prediction appears once in the prediction table above and is linked to
   at least one requirement.
-- Open owner decisions: **9**, `SCI-MAP-OD-001` through
-  `SCI-MAP-OD-009`, with no gaps. The formal PDF carries the exact generated
+- Owner-decision IDs remain **9**, `SCI-MAP-OD-001` through
+  `SCI-MAP-OD-009`, with no gaps; **8 are open** and OD-008 is resolved. The formal PDF carries the exact generated
   register; the science-team rationale carries a compact register and grouped
   crosswalk.
 - The formal and engineering PDFs render the same canonical requirement and

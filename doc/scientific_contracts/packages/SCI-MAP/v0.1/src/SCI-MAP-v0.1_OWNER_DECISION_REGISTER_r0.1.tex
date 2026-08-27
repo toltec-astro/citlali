@@ -39,9 +39,9 @@ State only that reuse is conditional on a fully conforming input bundle; grant n
 What numerical domain is authoritative for the dimensionless scalar \texttt{c=coverage\_cut}, including the required disposition of negative, zero, non-finite, and greater-than-one values, and what failure behavior applies when a numerical state is not authorized? &
 Assert no general numerical domain. Require the exact numerical value to be explicitly admitted by the owner-authorized effective support policy; otherwise fail closed before constructing support-authorized output rows or mutating a required product.\\
 \addlinespace[0.35em]
-\texttt{SCI-MAP-OD-008}\\\textbf{OPEN} &
-Which sample-to-pixel projection classes are authorized for ordinary SCI-MAP v0.1, what normalization applies to MAP-owned \texttt{G\_pi} (including whether and where \texttt{sum\_p G\_pi=1} is required), and how is boundary loss represented? &
-Require every product to declare its actual projection class, normalization, extent, and boundary convention. Permit the existing one-hot and fractional examples, but assert no unrecorded conservation property or additional projection class.\\
+\texttt{SCI-MAP-OD-008}\\\textbf{RESOLVED} &
+Which sample-to-pixel projection classes are authorized for ordinary SCI-MAP v0.1, what normalization applies to MAP-owned \texttt{G\_pi}, and how is boundary loss represented? &
+Authorize only \texttt{SCI-MAP:one\_hot\_containing\_pixel@1} with half-open cells, unity on the unique finite in-grid containing pixel, outer-upper-boundary loss, no wrap/clamp, and fractional projection deferred.\\
 \addlinespace[0.35em]
 \texttt{SCI-MAP-OD-009}\\\textbf{OPEN} &
 Is upstream crop or pad to a canonical common grid an authorized preparation for v0.1 observation coaddition, which package owns it, and which future package owns reprojection or mosaicking beyond centered-integer placement? &

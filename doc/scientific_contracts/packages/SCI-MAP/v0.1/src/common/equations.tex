@@ -2,20 +2,22 @@
 % Canonical equations. They are typeset in the scientist-facing view only.
 \newcommand{\SCIMapObservationEquations}{%
 \begin{align}
- a_{pi} &= G_{pi}\,\omega_i,
+ a_{pi} &= G_{pi}\,\gamma_i,
  \label{eq:effective-coefficient}\\
- \mathcal C_p&=\{i:\operatorname{available}_{\rm PTC}(i)=1,\
-   \ \operatorname{admit}_{\Pi_{\rm MAP}}(i,p)=1,\ a_{pi}>0\},
+ \mathcal C_p&=\{i:S_Z(i)\land R_{\rm PTC}(i)\land A_\gamma(i)
+ \land Q_\gamma(i)\land A_{\rm MAP}(i)\land V_{\rm AST}(i)\notag\\
+ &\hspace{4.5em}\land F_Z(i)\land P_\gamma(i)\land
+ P_G(i,p)\land L_{\rm MAP}(i,p)\},
  \label{eq:contribution-set}\\
  \mathcal S_{\rm out}(\Pi_{\rm eff})
  &=\{p:\operatorname{authorize}_{\Pi_{\rm eff}}(p)=1\},
  \label{eq:support-authorized-row-set}\\
- N_p &= \sum_{i\in\mathcal C_p} a_{pi}x_i, &
+ N_p &= \sum_{i\in\mathcal C_p} a_{pi}z_i, &
  Q_p &= \sum_{i\in\mathcal C_p} a_{pi},
  \label{eq:ordinary-accumulators}\\
  K_p&=\sum_{i\in\mathcal C_p}a_{pi}k_i,
  \label{eq:response-accumulator}\\
- \widehat x_p &= N_p/Q_p, &
+ \widehat m_p &= N_p/Q_p, &
  \widehat k_p&=K_p/Q_p, \qquad p\in\mathcal S_{\rm out},
  \label{eq:ordinary-products}
 \end{align}}
@@ -27,29 +29,29 @@
  &D_{Q,{\rm out}}&=J_{\rm out}D_QJ_{\rm out}^{\mathsf T},
  \label{eq:output-row-selection}\\
  A_{\rm out}&=D_{Q,{\rm out}}^{-1}J_{\rm out}G\Omega,
- &\widehat{\boldsymbol x}_{\rm out}&=A_{\rm out}\boldsymbol y,
+ &\widehat{\boldsymbol m}_{\rm out}&=A_{\rm out}\boldsymbol z,
  \label{eq:map-operator}\\
  R_{\rm out}&=A_{\rm out}H,
- &\mathbb E[\widehat{\boldsymbol x}_{\rm out}\mid\Theta]
-   &=R_{\rm out}\boldsymbol s+A_{\rm out}\boldsymbol\mu_0,
- &C_{x,{\rm out}}&=A_{\rm out} N_{\rm PTC} A_{\rm out}^{\mathsf T}.
+ &\delta\mathbb E[\widehat{\boldsymbol m}_{\rm out}\mid\Theta]
+   &=R_{\rm out}\,\delta\boldsymbol s,
+ &C_{m,{\rm out}}&=A_{\rm out} N_{\rm PTC} A_{\rm out}^{\mathsf T}.
  \label{eq:response-covariance}
 \end{align}}
 
 \newcommand{\SCIMapFormalWeightEquations}{%
 \begin{align}
- \operatorname{Var}(\widehat x_p\mid\Theta)
- &=\frac{\sum_iG_{pi}^{2}\omega_i}
-         {(\sum_iG_{pi}\omega_i)^2},
+ \operatorname{Var}(\widehat m_p\mid\Theta)
+ &=\frac{\sum_iG_{pi}^{2}\gamma_i}
+         {(\sum_iG_{pi}\gamma_i)^2},
  &
- \operatorname{Cov}(\widehat x_p,\widehat x_r\mid\Theta)
- &=\frac{\sum_iG_{pi}G_{ri}\omega_i}{Q_pQ_r},
+ \operatorname{Cov}(\widehat m_p,\widehat m_r\mid\Theta)
+ &=\frac{\sum_iG_{pi}G_{ri}\gamma_i}{Q_pQ_r},
  \qquad p,r\in\mathcal S_{\rm out},
  \label{eq:fractional-covariance}\\
- \phi_p&=\frac{Q_p^2}{\sum_iG_{pi}^{2}\omega_i},
+ \phi_p&=\frac{Q_p^2}{\sum_iG_{pi}^{2}\gamma_i},
  &
  \phi_p=Q_p&\Longleftrightarrow
- \sum_i\omega_i(G_{pi}^{2}-G_{pi})=0,
+ \sum_i\gamma_i(G_{pi}^{2}-G_{pi})=0,
  \qquad p\in\mathcal S_{\rm out},
  \label{eq:formal-weight}
 \end{align}}
@@ -84,21 +86,23 @@
  \mathcal S^c_{\rm out}
  &=\{p:\operatorname{authorize}_{\Pi^c_{\rm eff}}(p)=1\},
  \label{eq:coadd-support-authorized-row-set}\\
- N^c_p&=\sum_{o\in\mathcal O_p}u_{op}\widehat x_{op},
+ u_{op}&=1\quad\text{for each admitted observation row},
+ \label{eq:coadd-uniform-coefficient}\\
+ N^c_p&=\sum_{o\in\mathcal O_p}u_{op}\widehat m_{op},
  &Q^c_p&=\sum_{o\in\mathcal O_p}u_{op},
  \label{eq:coadd-accumulators}\\
  \widehat s_p&=N^c_p/Q^c_p, \qquad p\in\mathcal S^c_{\rm out},
  \label{eq:coadd-ordinary}\\
  J^c_{\rm out}\boldsymbol z&=(z_p)_{p\in\mathcal S^c_{\rm out}},
  \label{eq:coadd-output-row-selection}\\
- \widehat{\boldsymbol s}_{\rm out}
+ \widehat{\boldsymbol m}^{c}_{\rm out}
    &=(\widehat s_p)_{p\in\mathcal S^c_{\rm out}}
-     =B_{\rm out}\widehat{\boldsymbol x}_{\rm obs},
+     =B_{\rm out}\widehat{\boldsymbol m}_{\rm obs},
  \label{eq:coadd-map-operator}\\
  \widehat k^c_p&=\frac{\sum_{o\in\mathcal O_p}u_{op}\widehat k_{op}}{Q^c_p},
  \qquad p\in\mathcal S^c_{\rm out}.
  \label{eq:coadd-response-product}\\
  C_{c,{\rm out}}&=B_{\rm out} C_{\rm obs}B_{\rm out}^{\mathsf T},
- &R_{c,{\rm out}}&=B_{\rm out}T.
+ &R_{c,{\rm out}}&=B_{\rm out}T_{\rm obs}.
  \label{eq:coadd-companions}
 \end{align}}

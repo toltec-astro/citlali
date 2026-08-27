@@ -31,9 +31,9 @@ ENG_TEX = SRC / "engineering-conformance.tex"
 FORMAL_PDF = PDF / "SCI-MAP-FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT-v0.1.pdf"
 RATIONALE_PDF = PDF / "SCI-MAP-SCIENTIFIC-RATIONALE-v0.1.pdf"
 ENG_PDF = PDF / "SCI-MAP-ENGINEERING-CONFORMANCE-v0.1.pdf"
-FORMAL_REV_PDF = PDF / "SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.4-DRAFT.pdf"
-RATIONALE_REV_PDF = PDF / "SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.4-DRAFT.pdf"
-ENG_REV_PDF = PDF / "SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.4-DRAFT.pdf"
+FORMAL_REV_PDF = PDF / "SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.5-DRAFT.pdf"
+RATIONALE_REV_PDF = PDF / "SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.5-DRAFT.pdf"
+ENG_REV_PDF = PDF / "SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.5-DRAFT.pdf"
 CROSSWALK = ROOT / "CROSSWALK.md"
 SCIENTIST_CROSSWALK = ROOT / "SCIENTIST_CROSSWALK_R0.3.md"
 OWNER_LEDGER = ROOT / "SCIENTIFIC_OWNER_DECISION_LEDGER.md"
@@ -113,13 +113,17 @@ for required_support_token in (
     r"\mathcal S_{\rm out}",
     r"J_{\rm out}",
     r"A_{\rm out}",
-    r"C_{x,{\rm out}}",
+    r"C_{m,{\rm out}}",
     r"\mathcal S^c_{\rm out}",
     r"J^c_{\rm out}",
     r"B_{\rm out}",
     r"\operatorname{admit}_{\Pi_{\rm eff}}",
-    r"\operatorname{available}_{\rm PTC}",
-    r"\operatorname{admit}_{\Pi_{\rm MAP}}",
+    r"S_Z(i)",
+    r"R_{\rm PTC}(i)",
+    r"A_\gamma(i)",
+    r"Q_\gamma(i)",
+    r"A_{\rm MAP}(i)",
+    r"V_{\rm AST}(i)",
 ):
     assert required_support_token in shared, f"missing support-domain token: {required_support_token}"
 
@@ -128,10 +132,17 @@ crosswalk_predictions = re.findall(r"^\| (SCI-MAP-PRED-\d{3}) \|", crosswalk, re
 expect_sequence(crosswalk_requirements, "SCI-MAP-REQ-", 52)
 expect_sequence(crosswalk_predictions, "SCI-MAP-PRED-", 25)
 
-owner_decisions = re.findall(
+owner_decisions = list(dict.fromkeys(re.findall(
+    r"^\| (SCI-MAP-OD-\d{3}) \| \*\*(?:OPEN|RESOLVED)\*\* \|",
+    ledger,
+    re.MULTILINE,
+)))
+open_owner_decisions = re.findall(
     r"^\| (SCI-MAP-OD-\d{3}) \| \*\*OPEN\*\* \|", ledger, re.MULTILINE
 )
 expect_sequence(owner_decisions, "SCI-MAP-OD-", 9)
+assert len(open_owner_decisions) == 8
+assert "SCI-MAP-OD-008" not in open_owner_decisions
 for decision in owner_decisions:
     assert decision.replace("SCI-MAP-OD", "OD") in author_decisions
     assert owner_register.count(decision) == 1, f"{decision} register coverage"
@@ -205,8 +216,8 @@ rationale_joined = "\n".join(rationale_pages)
 for required_text in (
     "SCI-MAP-CI-001",
     "dimensionless",
-    "Q = 1",
-    "variance",
+    "one_hot_containing_pixel",
+    "map_upstream_admission",
     "OD-008",
     "OD-009",
     "0.1 arcsec",
@@ -231,7 +242,8 @@ print(f"requirements={len(requirements)} sequential_unique=PASS")
 print(f"predictions={len(predictions)} sequential_unique=PASS")
 print("crosswalk_requirement_coverage=PASS")
 print("crosswalk_prediction_coverage=PASS")
-print(f"open_owner_decisions={len(owner_decisions)}")
+print(f"owner_decision_ids={len(owner_decisions)}")
+print(f"open_owner_decisions={len(open_owner_decisions)}")
 print("owner_decision_register_exact_check=PASS")
 print("canonical_common_module_layout=PASS")
 print("support_authorized_operator_domain_check=PASS")

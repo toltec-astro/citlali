@@ -133,8 +133,11 @@ a distinct registered proposition binding its exact homogeneous atomic source
 profile. Structural and non-gating conflicts, exception conflicts, and the
 four owner-supplied response/uncertainty roles have deterministic semantics.
 
-The continuing source register now binds the exact frozen ALIGN, AST, RTC,
-CAL, and PTC timestream authorities while leaving MAP deferred. The continuing
+The continuing source register binds the exact frozen ALIGN, AST, RTC, CAL,
+and PTC timestream authorities. On `2026-08-27` it added the separately
+owner-authorized SCI-MAP r0.5 source/boundary binding, and the continuing
+profile registry added exact `SCI-MAP:map_upstream_admission@1`. MAP owns that
+policy; VAL only registers and evaluates it. The continuing
 profile registry binds five exact owner-approved PTC propositions for basis
 fit, loading fit, frozen operator application, ordinary output retention, and
 the existing tracked-kernel response companion. The broad coefficient/QC and

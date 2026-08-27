@@ -1,14 +1,14 @@
 # SCI-MAP v0.1 Scientific-Owner Decision Ledger
 
-Document revision: `r0.4`
+Document revision: `r0.5`
 
 Scientific owner: Grant Wilson
 
-Status: nine unresolved decisions. Six preserve questions carried by the
+Status: eight unresolved decisions. Six preserve questions carried by the
 owner-approved author packet; SCI-MAP-OD-007 records the numeric-policy gap
-exposed by support-domain review; SCI-MAP-OD-008 and SCI-MAP-OD-009 record
-genuine projection and common-grid ownership gaps exposed by the first science
-editing round.
+exposed by support-domain review; SCI-MAP-OD-008 is resolved by the r0.5
+one-hot projection disposition; SCI-MAP-OD-009 retains the common-grid
+preparation and future reprojection/mosaic ownership gap.
 
 On `2026-08-16`, scientific owner Grant Wilson approved `SCI-MAP-CI-001`:
 `coverage_cut` is a dimensionless support-policy scalar. The disposition does
@@ -25,7 +25,7 @@ recommended-range, authority, and failure questions.
 | SCI-MAP-OD-005 | **OPEN** | Beyond the adopted v0.1 effective required-output rule, is physical observation-map publication an abstract contract obligation whenever coaddition is requested? | Logical complete-bundle construction and durable publication are different obligations. | Preserve the v0.1 rule that every product designated required by the effective plan, including required observation products during coaddition, must publish successfully. Do not generalize this into a future universal storage mandate. | Owner statement defining logical availability, required persisted artifacts, retention, and failure scope. |
 | SCI-MAP-OD-006 | **OPEN** | Is Pointing/OOF ordinary-map arithmetic a registered use of the shared SCI-MAP v0.1 operator, with mode-specific interpretation remaining outside this package? | Registration determines capability metadata, frame routing, conformance profiles, and consumer claims without changing the arithmetic. | State only that reuse is conditional on a fully conforming input bundle; grant no mode-specific fitting, astrometric, response, or production authority. | Owner registration naming supported mode(s), exact input/output identity, AltAz WCS profile, and separate MODE ownership. |
 | SCI-MAP-OD-007 | **OPEN** | What numerical domain is authoritative for the dimensionless scalar `c=coverage_cut`, including the required disposition of negative, zero, non-finite, and greater-than-one values, and what failure behavior applies when a numerical state is not authorized? | The threshold formula fixes `c` as dimensionless but supplies no numerical range or boundary-case disposition; inventing one would change support and scientific output membership. | Assert no general numerical domain. Require the exact numerical value to be explicitly admitted by the owner-authorized effective support policy; otherwise fail closed before constructing support-authorized output rows or mutating a required product. | Scientific-owner statement fixing the admissible numerical domain, boundary-case disposition, recommended range, effective-policy authority, failure scope, and required transition/validation evidence. |
-| SCI-MAP-OD-008 | **OPEN** | Which sample-to-pixel projection classes are authorized for ordinary SCI-MAP v0.1, what normalization applies to MAP-owned `G_pi` (including whether and where `sum_p G_pi=1` is required), and how is boundary loss represented? | Projection normalization and boundaries determine the estimand, constant preservation, response, covariance, hits, exposure, and edge behavior; ALIGN/AST owns coordinate facts, while MAP owns the target grid and projection semantics. | Require every product to declare its actual projection class, normalization, extent, and boundary convention. Permit the existing one-hot and fractional examples, but assert no unrecorded conservation property or additional projection class. | Scientific-owner statement identifying allowed classes, normalization and edge rules, required metadata, and analytic/response/covariance/edge validation. |
+| SCI-MAP-OD-008 | **RESOLVED** | Which sample-to-pixel projection classes are authorized for ordinary SCI-MAP v0.1, what normalization applies to MAP-owned `G_pi`, and how is boundary loss represented? | Projection normalization and boundaries determine the estimand, response, covariance, exposure, and edge behavior. | Authorize only `SCI-MAP:one_hot_containing_pixel@1` with half-open cells, unity on the unique finite in-grid containing pixel, outer-upper-boundary loss, no wrap/clamp, and fractional projection deferred. | `SCI-MAP-R05-D003`, owner directive SHA-256 `210e8beafe26381a7d35cf38bacab9a9d959646055635a7c1179e0729a3cfa9a`, `2026-08-27`. |
 | SCI-MAP-OD-009 | **OPEN** | Is upstream crop or pad to a canonical common grid an authorized preparation for v0.1 observation coaddition, which package owns it, and which future package owns reprojection or mosaicking beyond centered-integer placement? | The existing contract correctly rejects odd shape differences and different grids, but it does not authorize a producer to change an observation map merely to make it admissible or assign future grid-changing science. | Reject every odd-difference or otherwise incompatible observation bundle. SCI-MAP performs no crop, pad, fractional shift, reprojection, interpolation, or mosaic; no other package is named as authorized until the owner decides. | Scientific-owner statement defining whether canonical-grid preparation exists, its producer, response/covariance/validity/provenance rules, and the owner/scope of any future reprojection or mosaicking contract. |
 
 ## Resolved inconsistency disposition
@@ -33,6 +33,20 @@ recommended-range, authority, and failure questions.
 | ID | Status | Date | Scientific-owner disposition | Normative effect |
 |---|---|---|---|---|
 | SCI-MAP-CI-001 | **RESOLVED** | 2026-08-16 | `coverage_cut` is a dimensionless support-policy scalar. This does not determine its admissible numerical range or the handling of negative, zero, non-finite, or greater-than-one values. | Shared threshold equations, REQ-031/032, and PRED-012 amended in place; OD-007 narrowed without renumbering. |
+| SCI-MAP-OD-008 | **RESOLVED** | 2026-08-27 | Authorize `SCI-MAP:one_hot_containing_pixel@1` with exact half-open boundary behavior; defer fractional projection. | REQ-005, REQ-011, REQ-015, REQ-016, REQ-026, REQ-029--030 and PRED-004/009 amended in place; stable IDs preserved. |
+
+## Blocking-scope classification
+
+- **A — numerical single-observation map:** PTC coefficient family and
+  `coverage_cut` numerical domain remain open. MAP admission, exact same-`n`
+  join, one-hot projection, and exposure role are closed by r0.5. No generally
+  authorized ordinary numerical route is claimed.
+- **B — response/uncertainty:** OD-003 and OD-004 remain open, together with
+  upstream full-procedure response inputs/domain.
+- **C — coadd:** the uniform observation coefficient, coadd admission profile,
+  and unavailable-response policy are selected; OD-005 and OD-009 remain.
+- **D — optional/future:** OD-006, fractional projection, correlated GLS, and
+  mosaicking remain deferred.
 
 ## Upstream dependency gates (not owner decisions in this ledger)
 

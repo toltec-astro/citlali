@@ -15,7 +15,7 @@
 \definecolor{EngPale}{HTML}{EAF5F3}
 \definecolor{EngGray}{HTML}{58636D}
 \hypersetup{colorlinks=true,linkcolor=EngTeal,urlcolor=EngTeal,
-  pdftitle={SCI-MAP v0.1 Engineering Conformance Specification, r0.4},
+  pdftitle={SCI-MAP v0.1 Engineering Conformance Specification, r0.5},
   pdfauthor={Independent Stage B scientific-contract author}}
 \setlength{\emergencystretch}{3em}
 \setlength{\parindent}{0pt}
@@ -26,12 +26,12 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small\color{EngGray}SCI-MAP v0.1 | Engineering Conformance Specification}
-\fancyhead[R]{\small\color{EngGray}Document r0.4}
+\fancyhead[R]{\small\color{EngGray}Document r0.5}
 \fancyfoot[L]{\small\color{EngGray}Procedure only | conformance unassessed}
 \fancyfoot[R]{\small\color{EngGray}Page \thepage}
 
 \input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.1.tex}
-\renewcommand{\SCIMapDocumentRevision}{r0.4}
+\renewcommand{\SCIMapDocumentRevision}{r0.5}
 
 \newcommand{\ProcedureBox}[1]{%
   \begin{center}\fcolorbox{EngTeal}{EngPale}{\parbox{0.92\linewidth}{#1}}\end{center}}
@@ -170,9 +170,10 @@ Run evidence in the following order so later evidence cannot mask an earlier
 contract failure:
 
 \begin{enumerate}
-\item Parse and freeze the realized PTC parent identity and source-declared
-availability/validity scope; reject a direct CAL input and a missing PTC
-product, while accepting an explicitly realized identity-like PTC product.
+\item Parse and freeze the exact frozen PTC r0.5 parent/application generation,
+transformed-signal and retention states, exact AST same-\(n\) coordinate parent,
+boundary/profile versions, and source digests. Reject direct CAL, PTC-disabled,
+missing-product, inferred no-op, and cross-generation routes.
 \item Parse and freeze identity, units, lifecycle, MAP policy (including
 the exact admitted value and unit status of every policy parameter), WCS, and
 required-product plan.
@@ -181,7 +182,8 @@ facts, and MAP-owned projection/coefficient/boundary/support/use conditions
 before arithmetic. Verify that VAL, if used, evaluates the named rule without
 authoring it and that no layer rescues a failed condition in another.
 \item Compare exact scientific output-row identity and cardinality, plus
-one-pixel, one-hot, fractional, covariance, response, and eight-fact
+one-pixel, one-hot half-open-boundary, prohibited-fractional, covariance,
+response, and distinct-fact
 observation outputs, to independent expected values; retained storage rows do
 not count as scientific output rows.
 \item Verify complete immutable observation-bundle construction.

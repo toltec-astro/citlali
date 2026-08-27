@@ -94,6 +94,25 @@ checker passes and all 56 rendered PDF pages passed independent Poppler visual
 inspection. This is an owner-review draft, not an implementation-conformity,
 validation, freeze, performance, Unity, or readiness result.
 
+On 2026-08-27 the owner-directed targeted SCI-MAP r0.5 cross-package closure
+was integrated for review without inspecting implementation, schemas, tests,
+reductions, validation products, or production behavior. It binds frozen PTC
+r0.5 and WP-7 closure, frozen CAL and AST authority, continuing VAL Core/
+Registry/source bindings, and the exact exposure/coordinate boundaries. The
+package now includes `SCI-PTC_TO_SCI-MAP v0.1/r0.1`, registered
+`SCI-MAP:map_upstream_admission@1`, exact one-hot containing-pixel projection,
+original-occurrence exposure carriage, typed response/null/covariance state,
+and exact uniform observation-coadd/admission profiles. It renames the ordinary
+quantity as calibrated-`x`-derived nonpolarimetric total-intensity-equivalent
+rather than Stokes I. All 52 requirement and 25 prediction IDs remain stable;
+OD-008 is resolved and eight owner decisions remain open. Frozen PTC leaves the
+MAP-facing coefficient family open and MAP OD-007 leaves the admitted numerical
+`coverage_cut` domain open, so no generally authorized ordinary numerical MAP
+route is claimed. The durable verifier passes and all 58 PDF pages passed
+Poppler visual inspection. This remains an owner-review document result only,
+not implementation conformity, validation, achieved response/performance,
+freeze, readiness, or production authorization.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

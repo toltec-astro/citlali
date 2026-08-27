@@ -1,10 +1,10 @@
 # SCI-VAL v0.1 — Owner-Bound Profile Registry
 
-Status: r0.3 continuing contract registry; mandatory canonical atomic profile
-and five SCI-PTC named-use profiles registered and source-current; two broad
-SCI-PTC identities explicitly unsupported; MAP unbound
+Status: r0.3 continuing contract registry; mandatory canonical atomic profile,
+five SCI-PTC named-use profiles, and one SCI-MAP named-use profile registered;
+two broad SCI-PTC identities explicitly unsupported
 
-Date: `2026-08-24`
+Last updated: `2026-08-27`
 
 ## Registry Rule
 
@@ -183,6 +183,27 @@ complete proposition.
 | Action scope and nonimplication | Authorizes only the existing tracked-kernel role. It creates no response object, estimator, computation, sidecar, payload, PSF/beam recovery, photometric validity, MAP authority, science qualification, or full-procedure response |
 | Supersession | A changed response role, operator/domain chain, restriction, exception, common-fragment digest, or source digest requires a new immutable profile version; no prior decision is rewritten |
 
+## Registered SCI-MAP Named-Use Profile
+
+### `SCI-MAP:map_upstream_admission@1`
+
+| Field | Binding |
+| --- | --- |
+| Registry key | `SCI-MAP:map_upstream_admission@1` |
+| Named use and action | `map_upstream_admission`; decide whether one exact realized PTC occurrence may enter the MAP-route-candidate population before pixel-specific placement and local numerical contribution gates |
+| Scientific owner | Grant Wilson, SCI-MAP scientific-policy owner |
+| Authoritative source | Owner directive `SCI-MAP v0.1 r0.5 TARGETED PTC-TO-MAP CROSS-PACKAGE CLOSURE DIRECTIVE`, SHA-256 `210e8beafe26381a7d35cf38bacab9a9d959646055635a7c1179e0729a3cfa9a`; `SCI-PTC_TO_SCI-MAP v0.1/r0.1`; frozen SCI-PTC v0.1/r0.5 freeze-record SHA-256 `8357961a49272adc40e27a8aa9e760e0d01ff2419ae2c88a62c0f93c9f959e66`; frozen SCI-AST v0.1/r0.3 source-manifest SHA-256 `b54b6013750540f28aad02339a60bf36078980dc53b132beab73069d66ef3601`; frozen SCI-CAL v0.1/r0.5-r0.4 freeze-record SHA-256 `413426f49edf1249f751a05bb8c6e9fd907b11e8da0530fe2da39814885efb22`; SCI-VAL Core r0.3 plus this continuing Registry and Source-Binding Register |
+| Applicability and object | Requested ordinary positive-rank PTC-to-MAP route; one exact occurrence binding observation, detector occurrence/UID, stable RTC output sample `n`, PTC product/application generation, segment, array/network/group, and complete PTC/AST/CAL/RTC/ALIGN parent chain |
+| Required permissions | Exact realized PTC product exists; `SCI-PTC:output_retention@1` is `eligible`; transformed signal and its source identity are available; an exact PTC-owner-selected MAP-facing coefficient family/value is available and its coefficient/QC disposition permits this use; the exact AST RTC-grid coordinate for the same `n` and parent chain is structurally bound; all required source and lifecycle bindings are compatible |
+| Decisive exclusions | PTC-disabled, no-product, direct CAL input, inferred no-op PTC, PTC output-retention `ineligible`, direct synthesized or replaced representative source for the MAP signal use, incompatible signal/coordinate parent, incompatible generations, or a coefficient/QC disposition that forbids MAP use |
+| Classification and influence behavior | CAL `engineering-only` may remain a route candidate only when PTC retained it and the classification is preserved; this creates no science-qualification claim. Direct synthesized/replaced origin is decisive for this profile. Transitive inherited influence and all other causes are preserved but have no universal veto: they affect this decision only when an exact required restriction names them |
+| Response/uncertainty roles | `advisory` for base numerical MAP signal admission. Exact response class/state, conditional covariance, missing terms, limitations, and causes are carried. A later MAP claim may require them through a separate exact product/claim binding; this profile neither fabricates nor upgrades them |
+| Exceptions | None for exact occurrence/parent/generation binding, realized positive-rank PTC route, output-retention permission, direct synthesized/replaced exclusion, coefficient identity/QC permission, or same-`n` AST binding |
+| Missing/conflicting behavior | Missing or conflicting applicability, identity, parent, generation, required permission, coefficient family/value/QC state, or coordinate binding yields `applicability_unknown` and `decision_unavailable`. A decisive false restriction yields `ineligible`; all restrictions true yields `eligible`. Causes and scopes are retained |
+| Lifecycle and consumer action | Evaluation binds requested, effective, observation-resolved, applied, and realized identities plus exact source/profile versions. `eligible` creates a MAP-route candidate only. MAP still evaluates signal finiteness, positive coefficient, `G_pi`, boundary, support, required companions, and final contribution; VAL performs no pixel placement or accumulation |
+| Aggregation and propagation compatibility | `atomic_only`; no pixel, detector, observation, exposure, or coadd aggregate is implied. No reverse propagation or producer-fact rewrite is authorized |
+| Supersession | Any changed source digest, occurrence domain, restriction, exception, response/uncertainty role, lifecycle, or direct/inherited influence rule requires a new immutable profile version and evaluation generation; prior decisions remain unchanged |
+
 ## Aggregate Profile Rule
 
 Every aggregate is a distinct scientific proposition and therefore requires
@@ -219,7 +240,6 @@ immutable record satisfying the registry rule.
 | --- | --- | --- |
 | `SCI-PTC:coefficient_qc_population@1` | SCI-PTC | Explicitly unsupported under `WP5-OWNER-D008`. Informational diagnostics remain PTC-owned; a separately named complete profile is required only when a diagnostic gains decision authority |
 | `SCI-PTC:empirical_or_simulation_population@1` | SCI-PTC | Explicitly unsupported under `WP5-OWNER-D010`. PTC v0.1 makes no scientific inference from an ensemble of alternative realizations |
-| `SCI-MAP:map_upstream_admission` | SCI-MAP | Unbound; accepted MAP boundary exists, but no exact owner-approved profile is registered here |
 | `<PACKAGE>:diagnostic_display` | Owning package or diagnostic consumer | Namespace template only; display permission conveys no stronger scientific use |
 
 The earlier broad label `analysis_or_gridding_contribution` is not a v0.1

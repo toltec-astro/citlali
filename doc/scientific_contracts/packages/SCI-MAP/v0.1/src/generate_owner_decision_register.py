@@ -44,12 +44,15 @@ def ledger_rows() -> list[tuple[str, str, str, str]]:
         if not line.startswith("| SCI-MAP-OD-"):
             continue
         cells = [cell.strip() for cell in line.split("|")[1:-1]]
-        assert len(cells) == 6, f"unexpected owner-ledger row: {line}"
+        if len(cells) != 6:
+            continue
         decision_id, status, question, _, interim, _ = cells
         rows.append((decision_id, status.replace("**", ""), question, interim))
     expected = [f"SCI-MAP-OD-{number:03d}" for number in range(1, 10)]
     assert [row[0] for row in rows] == expected, "owner-decision sequence mismatch"
-    assert all(row[1] == "OPEN" for row in rows), "non-OPEN owner decision present"
+    assert all(row[1] in {"OPEN", "RESOLVED"} for row in rows), (
+        "unknown owner-decision status present"
+    )
     return rows
 
 

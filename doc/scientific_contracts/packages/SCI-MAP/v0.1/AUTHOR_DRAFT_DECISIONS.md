@@ -27,11 +27,13 @@ in `SCIENTIFIC_OWNER_DECISION_LEDGER.md`.
 | MAP-AUTH-D017 | Cite ADR 0009 and its 2026-08-05 owner amendment for lossless typed/sidecar WCS, FITS use, and the 0.1-arcsec serialization bound. | The first edit requested exact authority rather than an invented rationale. | No new WCS owner decision is introduced. |
 | MAP-AUTH-D018 | Record and incorporate the owner-approved disposition of `SCI-MAP-CI-001`: the threshold equations fix `coverage_cut` as dimensionless. | This corrects a dimensional inconsistency without choosing a numerical domain. | Equations, REQ-031/032, and PRED-012 are amended in place; OD-007 remains open only for numerical-domain and failure-policy questions. |
 | MAP-AUTH-D019 | Append OD-008 and OD-009 without renumbering existing decisions. | PTC resolves coefficient semantics but not projection conservation/boundaries; accepted coadd authority rejects incompatible grids but does not authorize canonical-grid preparation or assign future reprojection/mosaicking. | The owner must resolve only the genuine remaining gaps; no implementation observation is promoted to science. |
+| MAP-AUTH-D020 | Apply the targeted r0.5 directive through exact PTC/WP-7/CAL/AST/VAL source binding, a representation-independent PTC-to-MAP boundary, MAP admission/coadd profiles, nonpolarimetric quantity naming, one-hot projection, exposure lineage, response/null-state repair, and a withheld PTC coefficient. | Stable requirement/prediction IDs remain fixed; OD-008 is resolved while the missing PTC coefficient and `coverage_cut` numerical domain remain hard blockers. | Cross-package closure is scientifically explicit without inventing an executable route or claiming conformity/validation/readiness. |
 
 ## Draft-disposition summary
 
 The author finds the bounded ordinary estimator and atomic common-grid coadd
 scientifically coherent as a conditional draft. This is not a verdict on an
-implementation. The nine unresolved owner decisions remain visible,
+implementation. The nine stable owner-decision IDs remain visible; eight are
+open and OD-008 is resolved,
 SCI-MAP-CI-001 is resolved by the recorded scientific-owner disposition, and
 every stronger upstream fact is fail-closed rather than inferred.
