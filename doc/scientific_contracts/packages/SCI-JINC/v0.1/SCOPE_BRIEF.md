@@ -1,6 +1,7 @@
 # SCI-JINC — Signed-Coefficient JINC Observation Mapmaker Scope Brief
 
-Status: final Stage A scope-repair candidate; not owner-approved; Stage B
+Status: ODQ-101 Stage A successor candidate; predecessor Stage A bytes
+owner-approved; this delta requires renewed exact-byte approval; Stage B
 blocked
 
 Scientific owner: Grant Wilson
@@ -10,7 +11,13 @@ Version/date: `v0.1`, `2026-08-28`
 Starting authority:
 `codex/scientific-contract-library@731f821954d4321509765720c6ba1838c95eff3d`
 
-Approved source identifier: unavailable until owner approval
+Approved predecessor identifier:
+`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`
+
+Controlled ODQ-101 successor source:
+`54475956f6aefb839d43b2f0fb019a142cb64310:doc/scientific_contracts/packages/SCI-MAP/v0.1/POST_FREEZE_SCIENTIFIC_OWNER_DECISIONS_2026-08-28.md`,
+SHA-256
+`4d2b857b7ec9efe489fe065f464df4ecd23b57a4c1320cda6a10a56592825d1c`
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -43,17 +50,25 @@ which remains unchanged.
   `2019-07-23` LMT OTF/JINC method, exact original SHA-256
   `835fb02e842c9109c2c7ad3f03288882dfac283e63bfcd0f818c7d5379e7e5cd`,
   through a page-exact method excerpt and explicit TolTEC-exclusion cover
+- Adopted as a controlled successor decision: one PTC-owned versioned
+  positive analysis/gridding coefficient registry with explicit per-family
+  `SCI-MAP`/`SCI-JINC` consumer permissions, staged selection identity and
+  fail-closed no-fallback semantics, using the exact post-freeze source only
+  through
+  [`AUTHOR_PTC_COEFFICIENT_REGISTRY_COVER.md`](AUTHOR_PTC_COEFFICIENT_REGISTRY_COVER.md)
 - Genuinely new work: bind the exact TolTEC per-array radial scale and
-  parameter source, select the exact coefficient family, close the listed
-  geometry/numerical owner choices, then render the recovered science in the
-  program's two-view form
+  parameter source, register and realize at least one exact JINC-permitted PTC
+  family before any numerical route, close the listed geometry/numerical owner
+  choices, then render the recovered science in the program's two-view form
 - Proposed sanitized packet: the exact items in
   [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md)
 
 The raw recovery record, owner feedback, decision conversations and all
 implementation/evidence material remain outside the implementation-blind
-author channel. This opening and its repaired packet have **not** been
-scientific-owner approved. No Stage B author is commissioned.
+author channel. The predecessor Stage A packet was owner-approved at
+`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`; this ODQ-101 successor changes
+allowed input bytes and has **not** received renewed exact-byte approval. No
+Stage B author is commissioned.
 
 ## 1. Purpose And Relation To SCI-MAP
 
@@ -76,7 +91,7 @@ must remain visible in normalization, conditioning, response and covariance.
 The operation begins with one exact PTC occurrence `i` and the same-parent AST
 RTC-output-grid continuous coordinate, under:
 
-- [`SCI-PTC_TO_SCI-JINC v0.1/r0.1`](SCI-PTC_TO_SCI-JINC_BOUNDARY.md);
+- [`SCI-PTC_TO_SCI-JINC v0.1/r0.2`](SCI-PTC_TO_SCI-JINC_BOUNDARY.md);
 - [`SCI-AST_TO_SCI-JINC v0.1/r0.1`](SCI-AST_TO_SCI-JINC_BOUNDARY.md); and
 - proposed profile
   [`SCI-JINC:upstream_admission@1`](SCI-JINC_UPSTREAM_ADMISSION_PROFILE.md).
@@ -96,10 +111,13 @@ For occurrence `i` and target pixel `p`, the contract may use only:
 
 - exact transformed signal `z_i=Z_i^PTC`, quantity/unit identity, immutable
   PTC application generation, retention and causes;
-- one exact PTC-owner-selected JINC-facing positive analysis coefficient
-  `omega_i`, with family/version, index/broadcast, unit, statistic, factors,
-  normalization, population, support, generation, JINC permission, QC,
-  covariance assumptions, uncertainty and prohibited meanings;
+- one exact positive analysis/gridding coefficient `omega_i` produced by a
+  family/version in the single PTC-owned registry, with explicit `SCI-JINC`
+  permission, requested/effective/observation-resolved/realized selection
+  identity, user selection or exact versioned mode-policy default,
+  index/broadcast, unit, statistic, factors, normalization, population,
+  support, generation, separately typed availability/QC, covariance meaning,
+  uncertainty and prohibited meanings;
 - stable observation, detector occurrence/UID, RTC sample `n`, PTC segment,
   stable array (`a1100`, `a1400`, or `a2000`) and exact group parents;
 - frozen AST role `SCI-AST:rtc_output_grid_coordinates@1` for the same `n`,
@@ -113,10 +131,14 @@ For occurrence `i` and target pixel `p`, the contract may use only:
 - finite positive processed sample frequency `f_s,i` for
   `jinc_coefficient_squared_time`.
 
-No numerical JINC route exists until one exact PTC-owner-selected coefficient
-family is versioned, source-bound and admitted. SCI-JINC must not infer unity,
-the MAP coefficient, `sens`, loading, scatter, inverse variance, precision or
-significance.
+The registry/permission architecture is owner-approved, but no numerical JINC
+route exists until an exact registered family permits `SCI-JINC`, is selected
+by the user or an authorized versioned mode default, and its compatible
+payload and QC are realized. Missing selection without a default, an
+unregistered family, absent JINC permission or unavailable/mismatched payload
+makes the route unavailable. SCI-JINC must not infer unity, a MAP-permitted
+family, `sens`, loading, scatter, inverse variance, precision, significance or
+an alternate-family fallback.
 
 ## 4. Collision-Free Estimator Algebra
 
@@ -299,9 +321,14 @@ a requested-required failure suppresses success.
   lineage.
 - CAL owns calibrated quantity/unit, response/uncertainty, quality and
   lineage.
-- PTC owns transformed signal, retention, coefficient family/QC, cleaning
+- PTC owns transformed signal, retention, the one versioned positive
+  analysis/gridding coefficient registry, each family's named-consumer
+  permissions, family definition/payload, availability/QC, normalization,
+  support, provenance/covariance meaning, selection stages, cleaning
   realization, response/covariance state and application generation.
-- SCI-JINC owns only signed deposition, parameter selection, point phase,
+- SCI-JINC consumes `omega_i` only from an exact JINC-permitted realized
+  family and owns signed deposition through `kappa_ip`,
+  `w_ip=kappa_ip omega_i`, parameter selection, point phase,
   square support, edge policy, normalization, conditioning, JINC response/
   covariance, formal support, grouping, destination and atomic products.
 - VAL Registry binds the owner-authored profile and VAL Core evaluates it; VAL
@@ -345,21 +372,25 @@ SCI-JINC v0.1 does not:
 
 The exact ledger is
 [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md).
+`SCI-JINC-ODQ-101` is resolved for registry ownership, named-consumer
+permission, selection lifecycle and fail-closed behavior. It does not register
+or realize a family; numerical production remains typed unavailable until that
+separate PTC successor work exists.
+
 Before author dispatch, the owner must:
 
 1. supply the exact TolTEC per-array scale and parameter source
    (`SCI-JINC-ODQ-102B`); the generic analytic method is now content-bound;
-2. select/version the exact JINC-facing coefficient family and QC/profile
-   bindings (`SCI-JINC-ODQ-101`);
-3. decide the center/tie/phase/cache/error-bound policy
+2. decide the center/tie/phase/cache/error-bound policy
    (`SCI-JINC-ODQ-109`);
-4. decide the outside-center overlapping-square edge rule
+3. decide the outside-center overlapping-square edge rule
    (`SCI-JINC-ODQ-110`);
-5. approve the exact Schloerb method excerpt and cover, PTC/AST boundaries,
+4. approve the exact Schloerb method excerpt and cover, controlled PTC
+   coefficient-registry source/cover, PTC/AST boundaries,
    admission profile, grouping/product table, response/covariance table and
    inherited-decision table;
-6. authorize a versioned VAL registry binding; and
-7. approve every exact author-packet byte and SHA-256 value.
+5. authorize a versioned VAL registry binding; and
+6. approve every exact successor author-packet byte and SHA-256 value.
 
 The requested Stage A repairs and exact proposed packet are recorded in
 [`STAGE_A_CHANGE_LOG.md`](STAGE_A_CHANGE_LOG.md) and

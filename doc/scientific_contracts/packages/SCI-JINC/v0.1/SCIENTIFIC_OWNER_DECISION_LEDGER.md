@@ -1,6 +1,7 @@
 # SCI-JINC v0.1 — Scientific-Owner Decision Ledger
 
-Status: Stage A owner-review candidate
+Status: ODQ-101 decided; bounded Stage A successor bytes awaiting exact owner
+approval
 
 Scientific owner: Grant Wilson
 
@@ -25,12 +26,12 @@ product, audit result, or successful reduction cannot resolve an open item.
 | `SCI-JINC-ODQ-009` | Historical SCI-MAP-002 / owner acceptance | decided | Third-successor owner acceptance preserves the signed `N/C`, distinct `N/C/Q`, and conditional `C^2/Q` contract | A different estimator or denominator requires explicit successor authority | Grant Wilson | `2026-08-09` | Scope; cover; future equations |
 | `SCI-JINC-ODQ-010` | SCI-JINC Stage A launch | decided for scope | Owner launch directs recovery of the later destination-ownership decision; proposed packet abstracts unique pre-mutation destination ownership only | Raw implementation/evidence and general race/performance claims remain outside authority | Grant Wilson | `2026-08-28` | Scope; cover; internal dossier; future identity/failure clauses |
 | `SCI-JINC-ODQ-011` | SCI-JINC analytic method reference | decided for Stage A scope | Owner supplied the exact Schloerb `2019-07-23` LMT memo as authoritative for generic JINC/OTF ideas and stated that it is geared to 3-mm spectroscopic receivers, not TolTEC. Admit only the page-exact method excerpt under a cover that normalizes notation and excludes FCRAO values, simulations, TolTEC parameters, optimization and performance claims | The generic two-JINC formula, envelope and parameter roles are recoverable; no TolTEC scale/value/default/optimum follows | Grant Wilson | `2026-08-28` | Prior work; Scope; analytic identity; reference cover; manifest |
+| `SCI-JINC-ODQ-101` | SCI-PTC and SCI-JINC coefficient boundary | decided for successor architecture | PTC owns one versioned positive analysis/gridding coefficient-family registry. Each family/version explicitly permits `SCI-MAP`, `SCI-JINC`, or both. User or authorized versioned mode-policy selection retains requested/effective/observation-resolved/realized identities. JINC consumes the same PTC-produced positive `omega_i` only with JINC permission and separately typed identity, availability/QC, normalization, support, provenance and covariance meaning; JINC alone applies `kappa_ip` and owns signed `w_ip`, normalization, conditioning, support, response, covariance and products. Missing selection/default, registration, permission or compatible payload fails closed with no fallback | Ownership, consumer-permission, selection and failure architecture are closed. No numerical route exists until an exact JINC-permitted family is registered, selected and realized; no inverse-variance or precision meaning is implied | Grant Wilson | `2026-08-28` | Scope; PTC-to-JINC r0.2; admission profile; registry cover; manifest |
 
 ## Open Scope And Scientific Questions
 
 | ID | Owning authority | State | Evidence or decision required | Exact blocked claim or output | Resolution authority | Resolution date | Affected documents |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `SCI-JINC-ODQ-101` | SCI-PTC and SCI-JINC input boundary | open | Exact transformed-signal quantity and exact JINC-facing coefficient family/version, units, normalization, support, QC, generation compatibility, and covariance meaning | Unconditional numerical route; inverse-variance interpretation; formal weight/covariance availability | Grant Wilson with PTC/JINC authority | — | Scope; future boundary; equations; uncertainty table |
 | `SCI-JINC-ODQ-102B` | SCI-JINC TolTEC array-scale and parameter authority | open | The Schloerb memo closes the generic formula, Bessel convention, zero limit, amplitude, envelope, `(a,b,c,RMAX)` ordering/roles/units and second-factor zero. Supply exact effective radial scale `s_a` and source/version for `a1100`, `a1400`, `a2000`, plus per-array parameter values or typed no-numerical-route state | TolTEC-resolved analytic coefficient, parameter provenance and any numerical JINC route | Grant Wilson or named TolTEC JINC scientific authority | — | Scope; analytic identity; future definitions/equations/provenance |
 | `SCI-JINC-ODQ-103` | SCI-AST and SCI-JINC admission | open | Exact AST coordinate role/parent join, JINC-owned admission/profile identity, boundary rule, and cause policy | Source-closed sample-to-pixel admission and coordinate-validity claim | Grant Wilson with AST/JINC authority | — | Scope; future PTC-to-JINC boundary; validity clauses |
 | `SCI-JINC-ODQ-104` | SCI-JINC temporal/exposure products | proposed base-v0.1 disposition; approval pending | Make `jinc_coefficient_squared_time`, `T_p^(kappa^2)`, the only base v0.1 time-support product. Defer physical exposure until exact original-occurrence exposure lineage and distinct semantics are authorized | Any JINC physical-exposure product or exposure-based downstream claim | Grant Wilson | — | Scope; product inventory; future crosswalk |
@@ -41,11 +42,12 @@ product, audit result, or successful reduction cannot resolve an open item.
 | `SCI-JINC-ODQ-109` | SCI-JINC numerical realization | open | Realized summation method, contributor-count error bound, deterministic policy, phase tie/bin rule, and convergence/acceptance tolerance | Exact near-cancellation, subpixel, and sequential/parallel conformance predicates | Grant Wilson or named numerical-policy owner | — | Scope; future assumptions/requirements/predictions |
 | `SCI-JINC-ODQ-110` | SCI-JINC finite-map edge policy | open | Decide treatment when rounded sample center is outside but square support overlaps; bind truncation response/covariance and boundary-loss semantics | Exact edge membership, response, and covariance result | Grant Wilson | — | Scope; future equations/edge cases |
 
-## Stage A Approval Question
+## Stage A Approval Questions
 
 | ID | Owning authority | State | Evidence or decision required | Exact blocked claim or output | Resolution authority | Resolution date | Affected documents |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `SCI-JINC-STAGE-A-Q001` | Scientific Contract Library owner | open | Approve or revise the exact repaired Scope Brief, Schloerb excerpt/cover, decision table, PTC/AST boundaries, admission profile, notation/geometry/grouping/response tables, open-question routing, and author-packet hashes | Commissioning any implementation-blind Stage B author | Grant Wilson | — | README; Scope; packet manifest; decision log; Stage A change log |
+| `SCI-JINC-STAGE-A-Q001` | Scientific Contract Library owner | decided for predecessor bytes | Exact repaired Stage A candidate at `6639bff3d94b92ace8faf3e407ccaefd5a38ea1f` approved; manifest SHA-256 `771f04ce97b0cd08681f24959f1365cdd6673a77415638be6bb299769e8f97b6` | None for the immutable predecessor packet; changed allowed bytes require Q002 | Grant Wilson | `2026-08-28` | `SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md` |
+| `SCI-JINC-STAGE-A-Q002` | Scientific Contract Library owner | open | Approve or revise the exact ODQ-101 successor Scope Brief, registry source/cover, PTC-to-JINC r0.2 boundary, admission profile, conventions extract, ledger disposition and recomputed author-packet hashes | Commissioning any implementation-blind Stage B author from the successor packet | Grant Wilson | — | README; Scope; packet manifest; ODQ-101 decision record |
 
 Implementation conformity, representation fidelity, validation, achieved
 response/performance, readiness, and production state are not owner questions

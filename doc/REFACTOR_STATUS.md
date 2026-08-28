@@ -210,6 +210,24 @@ ledger gaps remain unresolved or require typed disposition. Stage B remains
 unlaunched; Ultra use was not authorized; no implementation, validation,
 performance, readiness, production or push claim follows.
 
+Later on `2026-08-28`, Grant Wilson resolved `SCI-JINC-ODQ-101` for successor
+architecture. PTC owns one versioned registry of positive analysis/gridding
+coefficient families; every family/version explicitly permits `SCI-MAP`,
+`SCI-JINC`, or both, and user or authorized versioned mode-policy selection
+retains distinct requested/effective/observation-resolved/realized identities.
+JINC consumes the same positive PTC-produced `omega_i` only with explicit JINC
+permission and owns its signed `kappa_ip`, `w_ip`, normalization, conditioning,
+support, response, covariance and product semantics. The exact post-freeze
+predecessor at `54475956f6aefb839d43b2f0fb019a142cb64310`, SHA-256
+`4d2b857b7ec9efe489fe065f464df4ecd23b57a4c1320cda6a10a56592825d1c`,
+is admitted only under a JINC-specific cover and does not modify frozen MAP or
+PTC. No family is registered by this decision, so numerical production remains
+typed unavailable until an exact JINC-permitted family is selected and
+realized. The bounded successor packet now awaits exact-byte approval under
+`SCI-JINC-STAGE-A-Q002`; Stage B remains unlaunched. The next owner question is
+`SCI-JINC-ODQ-102B`, the exact TolTEC per-array radial scale and parameter
+source/value disposition.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

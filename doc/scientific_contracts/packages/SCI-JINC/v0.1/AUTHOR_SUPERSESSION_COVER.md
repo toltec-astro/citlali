@@ -32,7 +32,9 @@ core is broader, earlier, or ambiguous:
 3. **Conditional precision only.** `C_p^2/Q_p` is a formal diagonal weight only
    when the exact upstream `omega_i` family and covariance assumptions justify
    that interpretation. Frozen PTC supplies no default inverse-variance
-   family for JINC; dimensional units or historical names are insufficient.
+   family for JINC. The controlled ODQ-101 successor supplies a consumer-
+   permission registry architecture, not a registered family or statistical
+   interpretation; dimensional units or historical names are insufficient.
 4. **Square support supersedes radial support.** `r_max` sets the first zero of
    the second JINC factor and the half-width of a fully populated square
    deposition cache. Square corners beyond radial `r_max` are part of the
@@ -99,8 +101,8 @@ This cover does not itself supply:
   Schloerb method excerpt and its author reference cover;
 - the exact TolTEC `a1100`/`a1400`/`a2000` radial-scale authority or per-array
   parameter values/provenance;
-- a JINC-facing PTC coefficient family or unconditional inverse-variance
-  interpretation;
+- a registered, selected and realized JINC-permitted PTC coefficient family or
+  unconditional inverse-variance interpretation;
 - final owner approval of the proposed AST coordinate boundary, JINC admission
   profile, grouping/product table, or response/covariance families;
 - the realized summation algorithm/error bound, phase tie/bin rule, or

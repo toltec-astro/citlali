@@ -1,6 +1,7 @@
 # SCI-JINC v0.1 — Proposed Sanitized Conventions And Ownership
 
-Status: proposed sanitized author reference; awaiting scientific-owner approval
+Status: ODQ-101 sanitized successor candidate; renewed exact-byte approval
+required
 
 Prepared: `2026-08-28`
 
@@ -30,7 +31,13 @@ Exact source set at
   `bd3f172f8bb1e17bf95fde034ad76632439c766ef89b0a992361b9e6d79ada0a`;
 - exact ordinary `SCI-PTC_TO_SCI-MAP v0.1/r0.1` boundary, SHA-256
   `a499c59afb69eefda74a5b131ad37afd165213b99324c8b67a6de1d20793c9b7`,
-  used only to identify what cannot be silently inherited by JINC; and
+  used only to identify what cannot be silently inherited by JINC;
+- controlled post-freeze PTC coefficient-registry predecessor at
+  `54475956f6aefb839d43b2f0fb019a142cb64310`, SHA-256
+  `4d2b857b7ec9efe489fe065f464df4ecd23b57a4c1320cda6a10a56592825d1c`,
+  admitted only under
+  [`AUTHOR_PTC_COEFFICIENT_REGISTRY_COVER.md`](AUTHOR_PTC_COEFFICIENT_REGISTRY_COVER.md);
+  and
 - the approved JINC decisions consolidated in the proposed
   [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md).
 
@@ -98,6 +105,9 @@ Exact source set at
 - The upstream coefficient `omega_i` carries its producer-declared unit and
   normalization. An inverse-square signal unit does not prove inverse variance,
   independence, or full covariance authority.
+- `omega_i` comes from one exact family/version in the PTC-owned positive
+  analysis/gridding registry. The family must explicitly permit `SCI-JINC`;
+  permission for another named consumer does not transfer.
 - `N/C` carries the signal unit when numerator and denominator are constructed
   from the same admitted membership and signed coefficient convention.
 - Conditional covariance carries the square of the signal unit. `C^2/Q` is a
@@ -163,19 +173,25 @@ Exact source set at
 - **SCI-CAL** owns calibrated quantity/unit meaning, calibration transfer,
   response basis, quality/validity, uncertainty, and lineage.
 - **SCI-PTC** owns transformed signal, retention, cleaning/subspace
-  realization, coefficient family and QC when supplied, response/covariance
-  state, and application generation.
+  realization, the one versioned positive analysis/gridding coefficient
+  registry, each family's definition and named-consumer permissions, user or
+  versioned mode-policy selection, requested/effective/observation-resolved/
+  realized family identities, coefficient payload and separate availability/
+  QC, normalization, support, provenance/covariance meaning, response/
+  covariance state, and application generation.
 - **SCI-VAL** owns representation-independent evaluation and exact profile
   registration. Named-use policy remains with the scientific producer or
   consumer that owns the use.
 
 ### SCI-JINC transformer
 
-SCI-JINC owns the signed coefficient, spatial support/phase convention,
-normalization, cancellation conditioning, conditional covariance, transformed
-response, coefficient-squared temporal support, local formal support,
-destination/product identity, and JINC provenance. It applies upstream facts
-without redefining their meaning.
+SCI-JINC consumes the same positive PTC-produced `omega_i` only when its exact
+family/version permits `SCI-JINC`. It owns the signed `kappa_ip` and
+`w_ip=kappa_ip omega_i`, spatial support/phase convention, normalization,
+cancellation conditioning, conditional covariance, transformed response,
+coefficient-squared temporal support, local formal support, destination/
+product identity, and JINC provenance. It applies upstream facts without
+redefining their meaning.
 
 ### Adjacent and downstream packages
 
@@ -202,7 +218,7 @@ than by this extract: the generic analytic family, exact PTC/AST boundary
 candidates, admission profile candidate, grouping/product roles and response/
 covariance family table. The following remain unavailable:
 
-- a selected JINC-facing PTC coefficient family;
+- a registered and realized JINC-permitted PTC coefficient family/payload;
 - exact TolTEC `a1100`/`a1400`/`a2000` radial scales and per-array parameter
   values/provenance;
 - a frozen SCI-VAL registration of `SCI-JINC:upstream_admission@1`;
