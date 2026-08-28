@@ -28,17 +28,23 @@ Work began with the package's reviewed
   importing its implementation, tests, audit verdict, or validation results;
 - supersedes the core's radial-support and pixel-area-integration branches
   with the later owner-approved square-cache and point-phase conventions;
+- admits the owner-supplied Schloerb LMT OTF/JINC method only through a
+  page-exact excerpt and cover, using it for the generic analytic family while
+  excluding its 3-mm/FCRAO values and simulations from TolTEC authority;
 - defers implementation, audit, repair, re-audit, Unity, achieved-performance,
   integration, and production records to later separately authorized work;
   and
 - excludes ordinary positive-coefficient SCI-MAP predicates and products from
   JINC by analogy.
 
-The proposed exact author inputs are the scientist-readable
+The repaired proposed author inputs include the scientist-readable
 [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md), the frozen independent core paired with
-[`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md), and
-[`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md).
-Their byte identities and the complete firewall are recorded in
+[`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md), the page-exact
+Schloerb method excerpt paired with
+[`AUTHOR_LMT_JINC_REFERENCE_COVER.md`](AUTHOR_LMT_JINC_REFERENCE_COVER.md),
+and the exact sanitized decision, boundary, notation, geometry, grouping,
+product, response/covariance and ownership artifacts. Their byte identities
+and the complete firewall are recorded in
 [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).
 
 Genuinely new work is limited to reconciling the recovered JINC authority with
@@ -70,7 +76,7 @@ Scope Brief, owner-question disposition, and content-bound packet.
 SCI-JINC owns a distinct signed-coefficient observation-map estimator. Its
 authority includes the JINC coefficient family, signed deposition,
 normalization, response, support, unit-invariant conditioning, conditional
-covariance, formal-support validity, response-weighted temporal support,
+covariance, formal-support validity, coefficient-squared temporal accounting,
 product identity, and one-way provenance.
 
 It does not inherit ordinary SCI-MAP's positive-coefficient contribution
@@ -91,6 +97,23 @@ authorities.
   owner-decision cover for the recovered core
 - [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md):
   proposed sanitized upstream/downstream boundary extract
+- [`AUTHOR_DECISIONS_AND_OWNERSHIP.md`](AUTHOR_DECISIONS_AND_OWNERSHIP.md):
+  exact sanitized table of eight inherited owner decisions
+- [`AUTHOR_LMT_JINC_REFERENCE_COVER.md`](AUTHOR_LMT_JINC_REFERENCE_COVER.md)
+  and [`ANALYTIC_JINC_IDENTITY.md`](ANALYTIC_JINC_IDENTITY.md): generic
+  Schloerb formula, notation reconciliation, SCI-JINC supersessions and the
+  remaining TolTEC per-array scale/parameter gap
+- [`SCI-PTC_TO_SCI-JINC_BOUNDARY.md`](SCI-PTC_TO_SCI-JINC_BOUNDARY.md) and
+  [`SCI-AST_TO_SCI-JINC_BOUNDARY.md`](SCI-AST_TO_SCI-JINC_BOUNDARY.md): exact
+  proposed upstream quantity and coordinate boundaries
+- [`SCI-JINC_UPSTREAM_ADMISSION_PROFILE.md`](SCI-JINC_UPSTREAM_ADMISSION_PROFILE.md):
+  JINC-owned profile draft awaiting a versioned VAL registry binding
+- [`NOTATION_AND_UNITS.md`](NOTATION_AND_UNITS.md),
+  [`GEOMETRY_DECISION_TABLE.md`](GEOMETRY_DECISION_TABLE.md),
+  [`GROUPING_AND_PRODUCT_ROLES.md`](GROUPING_AND_PRODUCT_ROLES.md), and
+  [`RESPONSE_AND_COVARIANCE_FAMILIES.md`](RESPONSE_AND_COVARIANCE_FAMILIES.md):
+  exact Stage A scientific tables and remaining blockers
+- [`STAGE_A_CHANGE_LOG.md`](STAGE_A_CHANGE_LOG.md): owner-feedback repair map
 - [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): exact proposed
   allowed and prohibited inputs
 - [`DECISION_LOG.md`](DECISION_LOG.md): applied Stage A decisions and approval

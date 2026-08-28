@@ -25,11 +25,12 @@ core is broader, earlier, or ambiguous:
    SCI-MAP positive-coefficient predicate, one-hot placement, F010 bundle,
    support alias, coadd rule, or validity rule applies by analogy.
 2. **Retained signed algebra.** Preserve distinct
-   `N_p=sum_i q_i c_ip d_i`, `C_p=sum_i q_i c_ip`, and
-   `Q_p=sum_i q_i c_ip^2`; valid signal is `N_p/C_p`. Negative finite JINC
+   `N_p=sum_i omega_i kappa_ip z_i`,
+   `C_p=sum_i omega_i kappa_ip`, and
+   `Q_p=sum_i omega_i kappa_ip^2`; valid signal is `N_p/C_p`. Negative finite JINC
    lobes keep their sign in `N` and `C` and enter `Q` quadratically.
 3. **Conditional precision only.** `C_p^2/Q_p` is a formal diagonal weight only
-   when the exact upstream `q_i` family and covariance assumptions justify
+   when the exact upstream `omega_i` family and covariance assumptions justify
    that interpretation. Frozen PTC supplies no default inverse-variance
    family for JINC; dimensional units or historical names are insufficient.
 4. **Square support supersedes radial support.** `r_max` sets the first zero of
@@ -42,7 +43,7 @@ core is broader, earlier, or ambiguous:
    point-phase representation; it is not pixel-area integration.
 6. **Unit-invariant conditioning.** Require finite contributors, finite `C`
    and `Q`, `Q>0`, and nonzero `C`. Define
-   `rho=abs(sum_i q_i c_i)/sum_i abs(q_i c_i)`. Exact cancellation is invalid;
+   `rho=abs(sum_i omega_i kappa_i)/sum_i abs(omega_i kappa_i)`. Exact cancellation is invalid;
    unresolved near-cancellation is determined only by a documented
    floating-point error bound tied to the realized summation method and
    contributor count. No absolute unit-bearing `C` or `Q` floor is authority.
@@ -56,10 +57,13 @@ core is broader, earlier, or ambiguous:
    strictly positive, and every required JINC admission and conditioning gate
    passes. A named empirical policy may only downgrade this state, never
    promote it.
-9. **Coefficient-squared effective integration time.** The temporal-support
-   quantity is `T_c2,p=sum_i c_ip^2/f_s,i` seconds for eligible samples. It is
-   response-weighted temporal support, not geometric exposure, hits,
-   normalization, precision, or validity. An analytic zero contributes zero.
+9. **JINC coefficient-squared time.** The method-specific accounting product
+   is `jinc_coefficient_squared_time`,
+   `T_p^(kappa^2)=sum_i kappa_ip^2/f_s,i` seconds for eligible samples. The
+   squared object is the signed dimensionless analytic kernel coefficient,
+   not `omega_i` or the complete `omega_i kappa_ip` contribution. It is not
+   physical exposure, complete temporal support, hits, normalized influence,
+   white-noise-equivalent time, precision, validity, or significance.
 10. **Realized response.** The response companion is the upstream
     processing-filtered source-template response transformed through the same
     JINC coefficients and normalized by `C`. It is not a bare analytic JINC,
@@ -73,10 +77,11 @@ core is broader, earlier, or ambiguous:
     parent generations, and publication joins. Required failure prevents a
     realized-success record.
 12. **Unambiguous destination ownership.** Each admitted bounded population
-    route resolves one unique worker-to-destination mapping before allocation,
-    mutation, output side effects, or parallel execution. Ambiguous or aliased
-    destinations fail without partial result. This is an identity/lifecycle
-    invariant, not a performance or race-freedom claim.
+    resolves one unique complete scientific destination identity before
+    allocation, mutation, output side effects, or parallel execution. Worker,
+    thread, process, container and filename are not scientific identity.
+    Ambiguous or aliased destinations fail without partial result. This is an
+    identity/lifecycle invariant, not a performance or race-freedom claim.
 13. **Observation scope.** The recovered authority controls the direct
     observation estimator. No observation-coaddition rule is admitted unless
     the scientific owner adds an exact separately identified boundary.
@@ -88,13 +93,16 @@ core is broader, earlier, or ambiguous:
 
 ## Matters The Cover Does Not Decide
 
-This cover does not supply:
+This cover does not itself supply:
 
-- the missing complete content-bound analytic function/scale/parameter map;
+- the complete analytic function, which is supplied separately by the exact
+  Schloerb method excerpt and its author reference cover;
+- the exact TolTEC `a1100`/`a1400`/`a2000` radial-scale authority or per-array
+  parameter values/provenance;
 - a JINC-facing PTC coefficient family or unconditional inverse-variance
   interpretation;
-- the exact AST coordinate role, JINC admission profile, exposure policy,
-  supported grouping set, or observation-coadd rule;
+- final owner approval of the proposed AST coordinate boundary, JINC admission
+  profile, grouping/product table, or response/covariance families;
 - the realized summation algorithm/error bound, phase tie/bin rule, or
   finite-map center-outside behavior; or
 - any numerical parameter value, threshold, default, storage schema,
@@ -114,4 +122,3 @@ decision to match an implementation, or consult any excluded source.
 This proposed cover becomes an author reference only if the scientific owner
 approves its exact bytes in
 [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).
-

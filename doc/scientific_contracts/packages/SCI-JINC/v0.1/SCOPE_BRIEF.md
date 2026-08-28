@@ -1,12 +1,13 @@
-# SCI-JINC — Signed-Coefficient JINC Gridding And Response Scope Brief
+# SCI-JINC — Signed-Coefficient JINC Observation Mapmaker Scope Brief
 
-Status: Stage A owner-review candidate; not owner-approved
+Status: final Stage A scope-repair candidate; not owner-approved; Stage B
+blocked
 
 Scientific owner: Grant Wilson
 
 Version/date: `v0.1`, `2026-08-28`
 
-Starting source identifier:
+Starting authority:
 `codex/scientific-contract-library@731f821954d4321509765720c6ba1838c95eff3d`
 
 Approved source identifier: unavailable until owner approval
@@ -17,338 +18,352 @@ This package follows the
 [Citlali Scientific Contract Library Program](../../../README.md), the
 [pilot process review](../../../PILOT_PROCESS_REVIEW_2026-08-16.md), and the
 [owner-approved downstream roadmap](../../../DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md).
-It starts after, and does not alter, the
-[frozen SCI-MAP v0.1/r0.7.1 authority](../../SCI-MAP/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.7.1.md).
+Scientific authorship begins after the
+[frozen SCI-MAP v0.1/r0.7.1 authority](../../SCI-MAP/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.7.1.md),
+which remains unchanged.
 
-- Prior-work record: [`PRIOR_WORK.md`](PRIOR_WORK.md)
-- Recovery reviewed by: Codex manager on `2026-08-28`; scientific-owner review
-  pending
-- Existing material adopted: the accepted signed `N/C` estimator and distinct
-  `N`, `C`, `Q`; the eight approved D003 support, subpixel, conditioning,
-  admission, mask, coverage, kernel, and provenance decisions; the frozen
-  ordinary-MAP exclusion; and the bounded destination-ownership invariant
-- Existing material cited: the frozen implementation-independent
-  `SCI-MAP-002_INDEPENDENT_CORE.tex`, content SHA-256
+- Completed recovery: [`PRIOR_WORK.md`](PRIOR_WORK.md)
+- Adopted: the signed `N_p/C_p` estimator; distinct `N_p`, `C_p`, `Q_p`;
+  positive, zero and negative JINC lobes; eight D003 owner decisions; atomic
+  destination identity; and owner acceptance of the retained estimator
+- Cited: the implementation-independent core at
+  `fe201b69be2764dc47dc0a1957bfc8e493f2905a:doc/audits/packages/SCI-MAP-002_INDEPENDENT_CORE.tex`,
+  SHA-256
   `2c1f9ff95f65422a098846f747ed165d5aeddc5bedd854678bfa7faeebba4e24`
-- Existing material abstracted: stable upstream quantity, identity, coordinate,
-  unit, validity, lifecycle, response/covariance, and producer/transformer/
-  consumer boundaries; no source or schema mechanics
-- Existing material superseded: the core's radial-cutoff and pixel-area-
-  integrated response branches, replaced by owner-approved square-cache and
-  point-phase conventions
-- Existing material deferred or excluded: implementation, source audit,
-  findings, repairs, re-audits, tests, Unity, reductions, validation,
-  achieved-performance, integration, production status, and the unidentified
-  “memo” behind the March alignment note
-- Genuinely new scientific work: reconcile the retained JINC authority with
-  frozen upstream boundaries, close only the listed owner choices, and render
-  one shared JINC authority in the library's two-view form without repeating
-  the estimator derivation
-- Proposed author references: this Scope Brief; the exact frozen independent
-  core paired with [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md);
-  and [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md)
-- Author-packet exclusions: the complete recovery record, internal dossier,
-  decision log, raw owner-decision files, adjacent packages, implementation,
-  audits, repairs, tests, validation, reductions, Unity, current status, and
-  every unlisted source
+- Abstracted: exact frozen PTC and AST ownership, quantity, identity,
+  coordinate, response/covariance, lifecycle and cause boundaries; no source
+  or schema mechanics
+- Superseded: the independent core's circular radial-cutoff branch and
+  pixel-area-integrated branch; both are unavailable
+- Deferred/excluded: implementation, schemas, tests, products, audits,
+  repairs, validation, reductions, Unity, integration, achieved performance,
+  readiness, production behavior, historical tuning, the full 42-page memo
+  and its 3-mm/FCRAO numerical examples and simulations
+- Cited as a sanitized reusable scientific reference: F. Peter Schloerb's
+  `2019-07-23` LMT OTF/JINC method, exact original SHA-256
+  `835fb02e842c9109c2c7ad3f03288882dfac283e63bfcd0f818c7d5379e7e5cd`,
+  through a page-exact method excerpt and explicit TolTEC-exclusion cover
+- Genuinely new work: bind the exact TolTEC per-array radial scale and
+  parameter source, select the exact coefficient family, close the listed
+  geometry/numerical owner choices, then render the recovered science in the
+  program's two-view form
+- Proposed sanitized packet: the exact items in
+  [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md)
 
-Confirm that this opening and the exact packet were reviewed before launching
-scientific authorship: **no**. Stage B is blocked on explicit owner approval.
+The raw recovery record, owner feedback, decision conversations and all
+implementation/evidence material remain outside the implementation-blind
+author channel. This opening and its repaired packet have **not** been
+scientific-owner approved. No Stage B author is commissioned.
 
-## 1. Package Name And Scientific Purpose
+## 1. Purpose And Relation To SCI-MAP
 
-SCI-JINC defines a signed spatial-kernel estimator that turns an admitted,
-coordinate-bearing detector timestream into a normalized observation map and
-its method-specific response, support, conditional uncertainty, and lineage.
+SCI-JINC defines a signed spatial-kernel estimator that transforms exact
+admitted PTC occurrences and their exact AST coordinates into one atomic
+observation-level JINC map bundle per TolTEC array.
 
-The central physical distinction is cancellation. A JINC footprint contains
-positive lobes, analytic zeros, and negative lobes. The estimator therefore
-cannot be described by the ordinary positive-coefficient language used for
-SCI-MAP. It needs its own denominator, conditioning, response, support,
-covariance, and validity meanings.
+SCI-JINC is a sibling alternative observation mapmaker, not a downstream
+stage of SCI-MAP. It consumes exact PTC and AST parents directly and consumes
+no SCI-MAP product. It inherits no ordinary positive-coefficient SCI-MAP
+estimator, normalization, projection, support, exposure, validity, response,
+covariance, product-availability or coaddition rule by analogy.
 
-The package exists to make those meanings durable and usable by scientists and
-engineers without making current Citlali behavior the scientific answer.
+The central physical distinction is signed cancellation. Positive lobes,
+analytic zeros and negative lobes are scientific kernel values. Their signs
+must remain visible in normalization, conditioning, response and covariance.
 
-## 2. Scientific Boundary
+## 2. Observation-Level Scientific Boundary
 
-The v0.1 operation begins after an upstream producer has supplied one exact
-observation occurrence bundle containing:
+The operation begins with one exact PTC occurrence `i` and the same-parent AST
+RTC-output-grid continuous coordinate, under:
 
-- an admitted transformed detector sample and its quantity/unit identity;
-- a declared JINC coefficient-weighting input or a typed unavailable state;
-- the stable detector, array, sample, product-generation, and segment identity;
-- the sample's AST-owned coordinate in the exact target JINC WCS;
-- producer-owned retention, validity, response, covariance, and cause state;
-  and
-- the requested/effective/resolved state needed to select one JINC operator.
+- [`SCI-PTC_TO_SCI-JINC v0.1/r0.1`](SCI-PTC_TO_SCI-JINC_BOUNDARY.md);
+- [`SCI-AST_TO_SCI-JINC v0.1/r0.1`](SCI-AST_TO_SCI-JINC_BOUNDARY.md); and
+- proposed profile
+  [`SCI-JINC:upstream_admission@1`](SCI-JINC_UPSTREAM_ADMISSION_PROFILE.md).
 
-It ends after one atomic observation-level JINC result has either been
-published with complete identity and required companions or declared
-unavailable/failed with cause.
+It ends after one requested array observation bundle has either been
+published atomically with every required product, identity, join and cause or
+has been declared unavailable/failed. Required failure suppresses realized
+success.
 
-The in-scope transformer owns:
-
-- the analytic JINC coefficient convention and array-specific parameter
-  selection;
-- square-cache footprint support and map-edge cropping;
-- point-phase subpixel response;
-- signed accumulation and `N/C` normalization;
-- unit-invariant cancellation conditioning;
-- conditional diagonal weight and off-diagonal covariance equations;
-- the JINC-transformed, processing-filtered source-template response;
-- coefficient-squared effective integration time;
-- formal-support validity and any named JINC-local science policy;
-- grouping, destination, and atomic publication identity; and
-- requested/effective/resolved/realized JINC provenance.
-
-Observation coaddition, map filtering, empirical noise/significance, source
-fitting, Beammap inference, Pointing/OOF interpretation, and fruit-loop
-feedback are outside this observation-estimator boundary unless the owner
-explicitly adds a separately identified interface. In particular, no ordinary
-SCI-MAP coadd rule is imported here.
+Base v0.1 defines no JINC coadd. A future JINC coadd requires a separately
+authorized boundary over complete JINC bundles. Ordinary MAP coadd is not a
+candidate default.
 
 ## 3. Legitimate Inputs
 
-For an admitted sample occurrence `i` and target pixel `p`, the contract may
-use only explicitly bound inputs:
+For occurrence `i` and target pixel `p`, the contract may use only:
 
-- signal `d_i` (or successor symbol), with finite payload, physical quantity
-  role, unit, CAL/PTC ancestry, and immutable product generation;
-- a finite positive producer-supplied coefficient `q_i` with exact family,
-  unit, normalization, support, uncertainty meaning, and covariance
-  assumptions, or a typed unavailable state;
-- stable observation, detector occurrence/UID, array identity (`a1100`,
-  `a1400`, or `a2000`), sample identity, PTC segment, and grouping identity;
-- an AST-owned coordinate valid for the same occurrence and exact target JINC
-  WCS; row, column, shape, time, or numerical equality alone cannot establish
-  the join;
-- producer-owned retention and cause-preserving validity/policy results;
-- upstream response and covariance objects, each with exact domain, codomain,
-  parents, support, approximations, unavailable terms, and lifecycle;
-- finite strictly positive JINC shape parameters `a`, `b`, and `c`, `r_max`,
-  pixel size, and array scale, plus integer effective `subpixel_n >= 1`;
-- a declared processing-filtered source-template timestream when a response
-  product is requested; and
-- finite positive effective processed-timestream sample frequency `f_s,i`
-  when coefficient-squared effective integration time is requested.
+- exact transformed signal `z_i=Z_i^PTC`, quantity/unit identity, immutable
+  PTC application generation, retention and causes;
+- one exact PTC-owner-selected JINC-facing positive analysis coefficient
+  `omega_i`, with family/version, index/broadcast, unit, statistic, factors,
+  normalization, population, support, generation, JINC permission, QC,
+  covariance assumptions, uncertainty and prohibited meanings;
+- stable observation, detector occurrence/UID, RTC sample `n`, PTC segment,
+  stable array (`a1100`, `a1400`, or `a2000`) and exact group parents;
+- frozen AST role `SCI-AST:rtc_output_grid_coordinates@1` for the same `n`,
+  exact target JINC WCS, validity, bounds, uncertainty and provenance;
+- exact upstream response and covariance roles, each with domain, codomain,
+  parents, support, approximation, omitted terms, lifecycle and causes;
+- finite positive kernel parameters, pixel size, array scale and `r_max`, plus
+  effective integer `subpixel_n>=1`, all under one complete analytic identity;
+- an exact processed source-template companion when response is requested;
+  and
+- finite positive processed sample frequency `f_s,i` for
+  `jinc_coefficient_squared_time`.
 
-The input coefficient's statistical interpretation is not inferred from its
-name or inverse-square unit. If the exact family does not establish
-inverse-variance meaning and applicable covariance assumptions, the contract
-must preserve the algebraic estimator while typing formal precision and
-covariance claims unavailable or conditional as appropriate.
+No numerical JINC route exists until one exact PTC-owner-selected coefficient
+family is versioned, source-bound and admitted. SCI-JINC must not infer unity,
+the MAP coefficient, `sens`, loading, scatter, inverse variance, precision or
+significance.
 
-## 4. Required Outputs
+## 4. Collision-Free Estimator Algebra
 
-For every requested and supported observation-level JINC map identity, the
-contract must define an atomic result containing or explicitly typing
-unavailable:
+The canonical symbols and both unit cases are defined in
+[`NOTATION_AND_UNITS.md`](NOTATION_AND_UNITS.md):
 
-1. normalized signal `m_p = N_p/C_p` in the admitted signal unit;
-2. the distinct normalization and quadratic accumulators or sufficient exact
-   identities to reproduce and audit their roles;
-3. conditional diagonal variance/weight and the associated off-diagonal
-   covariance model, with assumptions and omitted terms;
-4. the realized processing-filtered source-template response projected
-   through the same JINC operator and normalized by `C_p`;
-5. coefficient-squared effective integration time
-   `T_c2,p = sum_i c_ip^2/f_s,i` in seconds;
-6. an authoritative formal-support validity state distinct from temporal
-   support, hits, finiteness, or empirical policy;
-7. exact JINC map, array/group, WCS/frame, unit, operator, parameter, support,
-   subpixel, conditioning, and parent identity;
-8. explicit availability/cause for every required or optional companion;
-9. requested/effective/resolved/realized provenance and immutable product
-   joins; and
-10. failure state that suppresses realized success when any required output or
-    join fails.
+```text
+kappa_ip = signed dimensionless point-phase JINC coefficient
+omega_i  = positive upstream analysis coefficient
+w_ip     = kappa_ip omega_i
 
-Names and storage layouts are not selected by this Scope Brief. The contract
-must state meanings independently of current FITS, YAML, C++, or container
-representations.
+N_p = sum_i I_ip omega_i kappa_ip z_i
+C_p = sum_i I_ip omega_i kappa_ip
+Q_p = sum_i I_ip omega_i kappa_ip^2
+m_p = N_p / C_p
+A_pi = I_ip omega_i kappa_ip / C_p.
+```
 
-## 5. Upstream And Downstream Responsibilities
+If and only if `omega_i=Var(z_i)^-1` for mutually independent admitted
+occurrences,
 
-### Upstream producers
+```text
+Var_formal(m_p) = Q_p/C_p^2
+W_formal,p      = C_p^2/Q_p
+Cov(m_p,m_p')   =
+  sum_i I_ip I_ip' omega_i kappa_ip kappa_ip'/(C_p C_p').
+```
 
-- **SCI-ALIGN/SCI-AST** own occurrence/time identity, sample coordinates,
-  frame/WCS realization, coordinate validity, and coordinate uncertainty.
-- **SCI-RTC** owns raw-timestream conditioning and its response, causal
-  influence, validity, and lineage.
-- **SCI-CAL** owns calibrated quantity/unit meaning, calibration response and
-  uncertainty, quality, and lineage.
-- **SCI-PTC** owns the transformed signal, retention, cleaning realization,
-  coefficient family and QC when supplied, response/covariance state, and
-  application generation. SCI-JINC cannot infer a coefficient family or
-  precision role left unavailable by PTC.
-- **SCI-VAL** registers and evaluates exact versioned rules. It does not author
-  JINC admission, formal support, response use, publication, or consumer
-  policy.
+Generally, `C_JINC=A_JINC C_PTC A_JINC^T`. Inverse-square units do not by
+themselves establish inverse variance or precision. For dimensionless
+`omega_i`, `Q_p/C_p^2` is dimensionless and is not signal variance.
 
-An exact `SCI-PTC_TO_SCI-JINC` boundary and JINC-owned admission profile do not
-yet exist. The ordinary `SCI-PTC_TO_SCI-MAP v0.1/r0.1` boundary is informative
-predecessor evidence only; it is not silently renamed or inherited.
+## 5. Analytic Kernel Authority
 
-### SCI-JINC transformer
+The owner-supplied Schloerb LMT memo closes the generic two-JINC analytic
+family. Define the collision-free peak-normalized function
 
-SCI-JINC owns only the declared signed transformation and its local
-conditioning, response, covariance, support, validity, destination, product,
-and provenance facts. It preserves producer meaning and causes without
-reclassifying them.
+```text
+J(x)=2 J_1(x)/x for x!=0;  J(0)=1,
+```
 
-### Downstream consumers
+and `r'_a=r/s_a`. Memo Equation 9, normalized without changing its function,
+is
 
-- **SCI-NOI** owns empirical noise realizations, empirical covariance/weight,
-  and significance calibration.
-- **SCI-FLT** owns deterministic or inference-bearing filter transfer,
-  filtered response/covariance/support/validity, and immutable raw-JINC
-  parentage.
-- **SCI-BEAM/SRC/MODE** own Beammap, source-fit, Pointing, and OOF
-  interpretation and their consumer-specific qualification.
-- **SCI-FRUIT** owns recurrence, map-to-TOD feedback, learning, iteration,
-  convergence, and restart identity.
+```text
+kappa_a(r'_a; a_a,b_a,c_a,RMAX_a)
+  = J(2 pi r'_a/a_a)
+    exp[-(2 r'_a/b_a)^c_a]
+    J(3.831706 r'_a/RMAX_a).
+```
 
-No consumer may reconstruct the JINC response from defaults, relabel
-coefficient-squared time as exposure or precision, promote formal-invalid
-support, or turn a conditional formal weight into empirical significance.
+Thus `(a,b,c,RMAX)` is the ordered dimensionless tuple; `a` scales the first
+JINC argument, `b` the envelope, `c` is the envelope exponent, and `RMAX`
+places the second factor's first zero. The peak is one. Analytic zeros and
+finite signed lobes are retained.
 
-## 6. Externally Imposed Conventions
+The memo is geared to 3-mm spectroscopic receivers. Its FCRAO values and
+86-GHz simulations are not TolTEC authority. The exact effective scale `s_a`
+and per-array parameter source for `a1100`, `a1400`, and `a2000` remain open as
+`SCI-JINC-ODQ-102B`. See
+[`ANALYTIC_JINC_IDENTITY.md`](ANALYTIC_JINC_IDENTITY.md) and
+[`AUTHOR_LMT_JINC_REFERENCE_COVER.md`](AUTHOR_LMT_JINC_REFERENCE_COVER.md).
+Codex may not infer TolTEC scale or parameters from the memo or software.
 
-- Array identity is the stable name `a1100`, `a1400`, or `a2000`, never a
-  container or map position.
-- In-memory indices are zero-based; persisted FITS/WCS pixel coordinates are
-  one-based.
-- FITS/WCS, when used, is the persisted coordinate authority; memory order
-  does not define axis sign, handedness, orientation, or wrapping.
-- Requested, effective, observation-resolved, and realized states are
-  distinct, one-way lifecycle stages.
-- Missing, unavailable, unsupported, invalid, and failed are explicit states,
-  not undocumented numeric sentinels.
-- A required product or publication failure propagates and prevents a
-  realized-success record.
-- The JINC analytic coefficient is dimensionless; signal/response, coefficient,
-  covariance, support-time, and logical-state units must be declared at their
-  own boundaries.
-- Enabled polarimetry and measured-R execution remain outside the active
-  authority.
+## 6. Square Cache, Point Phase And Edges
 
-## 7. Questions The Contract Must Answer
+The binding geometry is:
 
-The retained core and owner decisions already answer the estimator,
-signed-lobe, support-family, subpixel-family, conditioning principle, formal
-support, coefficient-squared time, response role, and provenance-stage
-questions. Stage B must reuse those answers.
+- AST supplies the exact continuous pixel coordinate and WCS;
+- SCI-JINC rounds the sample center, bins residual phase and point-evaluates
+  one phase-quantized kernel matrix;
+- `r_max` fixes the second-factor first zero and square-cache half-width;
+- every resolved square pixel is evaluated, including corners beyond radial
+  `r_max`; no circular cutoff survives;
+- no pixel-area-integration branch survives; and
+- finite-map crop removes outside pixels without wrap, reflection or an
+  interior normalizer. Response and covariance use the actual retained
+  membership.
 
-Before author dispatch, the owner must classify each question below as an
-owner-supplied answer, an explicit deferral with a typed unavailable
-consequence, or a bounded question the Stage B author is authorized to analyze.
-The author may not choose a task-changing branch silently:
+The exact tie rule, phase-bin edges/representatives, cache-index rounding,
+effective `subpixel_n` realization and convergence/error bound remain open
+under `SCI-JINC-ODQ-109`. The case where the rounded center is outside but the
+square overlaps the map remains open under `SCI-JINC-ODQ-110`; the owner must
+select center-required, overlap-admitted, or another exact rule. See
+[`GEOMETRY_DECISION_TABLE.md`](GEOMETRY_DECISION_TABLE.md).
 
-1. **Upstream quantity and coefficient.** What exact PTC product quantity and
-   JINC-facing coefficient family enter the estimator, and under what evidence
-   may `q_i` be called inverse variance?
-2. **Complete analytic identity.** What exact content-bound analytic JINC
-   function, parameter ordering, array scale, envelope, zero-limit, and
-   amplitude convention complete the generic core without relying on current
-   source or the unrecovered memo?
-3. **Coordinates and admission.** Which AST coordinate role and exact
-   JINC-owned VAL profile govern sample admission? Does JINC require its own
-   exposure product, or only `T_c2`?
-4. **Observation coaddition.** Is v0.1 strictly observation-level, or must it
-   define a separate signed-estimator-compatible coadd boundary? Ordinary MAP
-   coaddition is not a default answer.
-5. **Grouping and destination cardinality.** Which array/network/detector
-   groupings are scientifically supported, and how is one unique destination
-   product identity established for each worker/population route?
-6. **Product availability.** Which companions are required for every JINC
-   product, which are optional, and what exact cause vocabulary applies when
-   inputs or consumers are unavailable?
-7. **Response and covariance composition.** Which fixed-state, full-procedure,
-   or re-resolved response families and which covariance approximations may be
-   published, and how are omitted selection/nuisance/parameter terms typed?
-8. **Numerical realization.** What summation policy, contributor-count error
-   bound, phase tie/bin rule, convergence tolerance, and deterministic
-   sequential/parallel acceptance policy are contract parameters rather than
-   implementation defaults?
-9. **Finite-map edge rule.** What happens when the rounded sample center is
-   outside the map but square support would overlap, and how are truncated
-   response and covariance recorded?
+## 7. Signed Normalization And Support
 
-The contract must also explain limiting cases: constant input, a single
-contributor, equal coefficients, analytic zero, negative lobe, exact and near
-cancellation, rescaling of signal units, truncated edges, missing array
-identity, non-finite parameters/coefficients, unavailable upstream covariance,
-and ambiguous destination identity.
+Finite negative `C_p` is admissible. Exact `C_p=0` is unavailable, not zero
+sky. Define the dimensionless cancellation statistic
 
-## 8. Non-Goals
+```text
+rho_p = abs(C_p) / sum_i I_ip abs(omega_i kappa_ip).
+```
+
+Admission requires finite contributors, finite `C_p` and `Q_p`, `Q_p>0`,
+`C_p!=0`, and `rho_p` not below a documented floating-point error bound
+derived from the realized summation method and contributor count. The bound,
+method and policy identities are provenance. The exact bound identity remains
+open under `SCI-JINC-ODQ-109`; no unit-bearing `C` or `Q` floor is permitted.
+
+Algebraic membership, resolved numerical conditioning, formal JINC support,
+final product validity and downstream eligibility are separate. An empirical
+policy may narrow formal support but never promote it. Rejected pixels carry
+typed unavailable signal/response/covariance roles with causes, never finite
+substitute values.
+
+Required predictions include constant input, one contributor, equal
+coefficients, analytic zero, negative lobe, finite negative normalization,
+exact cancellation, unresolved and resolved near cancellation, signal-unit
+rescaling, common coefficient rescaling and edge truncation.
+
+## 8. Coefficient-Squared Time
+
+The normative product name is `jinc_coefficient_squared_time`:
+
+```text
+T_p^(kappa^2) = sum_i I_ip kappa_ip^2/f_s,i.
+```
+
+The squared object is `kappa_ip`, not `omega_i` or `w_ip`. The declared unit is
+seconds. This is method-specific accounting, not physical acquired exposure,
+valid-original exposure, complete temporal support, normalized influence,
+white-noise-equivalent time, formal precision, validity or significance.
+
+No physical-exposure product is required in base v0.1. A future need must
+import exact original-occurrence exposure lineage as a distinct product; it
+must not distribute one physical integration through every JINC lobe.
+
+## 9. Response And Covariance
+
+[`RESPONSE_AND_COVARIANCE_FAMILIES.md`](RESPONSE_AND_COVARIANCE_FAMILIES.md)
+separates:
+
+1. fixed-state JINC response;
+2. PTC full-procedure finite difference with JINC fixed;
+3. JINC re-resolved procedure response; and
+4. separately authorized whole-chain RTC-to-CAL-to-PTC-to-JINC response.
+
+The fixed-state response uses exact signal membership, coefficient, phase,
+square placement, edge crop, `C_p` and output rows. A realized PTC-grid
+response companion begins at JINC and receives the JINC operator once. No
+hidden subset or double application is permitted.
+
+Every covariance/weight publication states its exact coefficient meaning,
+correlation assumptions, domain, overlap-induced off-diagonal covariance,
+edge truncation, unavailable upstream blocks and omitted calibration,
+response, selection, nuisance and parameter terms. `C_p`, `Q_p`, time and
+counts are not automatically precision. Empirical noise/significance remain
+SCI-NOI authority.
+
+## 10. Grouping, Destination And Products
+
+Base product identity is
+
+```text
+observation x TolTEC array x JINC plan x target WCS
+x product role x lifecycle generation.
+```
+
+Base v0.1 produces independent `a1100`, `a1400` and `a2000` observation
+bundles. Cross-array/network-combined products are unavailable. Workers,
+threads, processes, containers and filenames are not identity. Complete
+destination identity is resolved before mutation or the bundle fails
+atomically.
+
+[`GROUPING_AND_PRODUCT_ROLES.md`](GROUPING_AND_PRODUCT_ROLES.md) defines exact
+population and required, conditional-required, optional and outside roles.
+Required roles include signal, `N/C/Q`, formal support, WCS/operator/parameter
+identity, upstream causes/lineage, coefficient-squared time and atomic
+provenance. Response and covariance are conditional-required under an exact
+request/consumer role. Optional absence is allowed only when the role says so;
+a requested-required failure suppresses success.
+
+## 11. Producer, Transformer And Consumer Ownership
+
+- ALIGN/AST own occurrence/time identity, RTC-grid coordinates, frame/WCS,
+  coordinate validity and coordinate uncertainty.
+- RTC owns conditioned signal-grid meaning, response, influence, validity and
+  lineage.
+- CAL owns calibrated quantity/unit, response/uncertainty, quality and
+  lineage.
+- PTC owns transformed signal, retention, coefficient family/QC, cleaning
+  realization, response/covariance state and application generation.
+- SCI-JINC owns only signed deposition, parameter selection, point phase,
+  square support, edge policy, normalization, conditioning, JINC response/
+  covariance, formal support, grouping, destination and atomic products.
+- VAL Registry binds the owner-authored profile and VAL Core evaluates it; VAL
+  does not author JINC policy. Frozen VAL is unchanged, so registration of
+  `SCI-JINC:upstream_admission@1` requires a versioned successor.
+- NOI owns empirical noise/covariance/weight/significance; FLT owns filtering
+  and filtered response; BEAM/SRC/MODE own science interpretation; FRUIT owns
+  recurrence/feedback/iteration.
+
+No cause or flag prescribes one universal action. Each named use owns its
+policy and preserves direct and transitive causes.
+
+## 12. Scientific Numerical Adequacy
+
+The scientific authority may require exact discrete identity/membership,
+explicit conditioning, a preregistered accumulation-error bound, no silent
+coefficient thresholding and operation-count/conditioning-aware sequential/
+parallel agreement. It does not prescribe a summation algorithm, cache
+layout, thread order or optimization. Candidate procedures and pass/fail
+evidence belong in the later Engineering Conformance Specification and
+subsequent assessment.
+
+## 13. Non-Goals And Claim Boundary
 
 SCI-JINC v0.1 does not:
 
-- alter or reopen frozen SCI-MAP, PTC, RTC, CAL, ALIGN, AST, or VAL authority;
-- import ordinary positive-coefficient admission, one-hot projection, F010
-  availability, exposure aliases, coaddition, or validity by analogy;
-- tune `r_max`, `a`, `b`, `c`, `subpixel_n`, thresholds, or defaults;
-- audit, repair, optimize, or refactor Citlali or assess an implementation
-  candidate;
-- run tests, simulations, reductions, Unity work, transfer-function studies,
-  or observational validation;
-- define empirical noise, significance, filtering, source fitting, Beammap,
-  Pointing/OOF, or fruit-loop feedback science;
-- assert achieved response fidelity, photometric accuracy, covariance
-  fidelity, numerical reproducibility, performance, readiness, or production
-  suitability; or
-- draft or freeze Stage B artifacts under this Stage A authorization.
+- alter frozen SCI-MAP, PTC, RTC, CAL, ALIGN, AST or VAL;
+- tune or optimize `a`, `b`, `c`, `r_max`, `subpixel_n`, thresholds or defaults;
+- derive or claim optimum JINC parameters for the three TolTEC bands; that is
+  a separate scientific tranche requiring an explicit objective and evidence;
+- define JINC coadd, empirical noise/significance, filtering, source fitting,
+  Beammap, Pointing/OOF or fruit-loop science;
+- inspect, audit, repair, optimize or refactor Citlali;
+- inspect schemas, tests, reductions, Unity, generated products or production
+  behavior; or
+- assert implementation conformity, validation, achieved response/covariance
+  fidelity, photometric accuracy, numerical reproducibility, performance,
+  readiness or production authorization.
 
-## 9. Allowed References
+## 14. Remaining Owner Decisions And Stop Gate
 
-The proposed implementation-blind author may open only the exact logical
-items content-bound in
-[`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md):
-
-1. the owner-approved bytes of this Scope Brief;
-2. the exact frozen independent core at
-   `fe201b69be2764dc47dc0a1957bfc8e493f2905a:doc/audits/packages/SCI-MAP-002_INDEPENDENT_CORE.tex`,
-   paired with
-   [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md); and
-3. [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md).
-
-No web or external paper is proposed. If the owner later supplies the missing
-underlying JINC memo or a replacement analytic authority, it requires exact
-identity, classification, a renewed Scope Brief review, and a new manifest.
-
-## 10. Owner Decisions And Remaining Ambiguities
-
-The approved historical JINC decisions and current open questions are listed
-with stable identity, authority, consequence, and affected artifacts in
+The exact ledger is
 [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md).
+Before author dispatch, the owner must:
 
-For Stage A approval, the owner must decide whether to:
+1. supply the exact TolTEC per-array scale and parameter source
+   (`SCI-JINC-ODQ-102B`); the generic analytic method is now content-bound;
+2. select/version the exact JINC-facing coefficient family and QC/profile
+   bindings (`SCI-JINC-ODQ-101`);
+3. decide the center/tie/phase/cache/error-bound policy
+   (`SCI-JINC-ODQ-109`);
+4. decide the outside-center overlapping-square edge rule
+   (`SCI-JINC-ODQ-110`);
+5. approve the exact Schloerb method excerpt and cover, PTC/AST boundaries,
+   admission profile, grouping/product table, response/covariance table and
+   inherited-decision table;
+6. authorize a versioned VAL registry binding; and
+7. approve every exact author-packet byte and SHA-256 value.
 
-1. approve this observation-level boundary and its explicit exclusions;
-2. approve the proposed use of the core plus supersession cover rather than a
-   new derivation;
-3. approve the sanitized upstream/downstream ownership extract;
-4. confirm the abstract destination-ownership invariant while leaving all
-   historical evidence outside authorship;
-5. disposition any open question that would materially change the author's
-   task; and
-6. approve the exact content hashes in the author manifest.
-
-Owner approval of Stage A will authorize only later implementation-blind
-authorship. It will not approve the returned scientific substance or any
-implementation/evidence claim.
-
-## 11. Independence Statement
-
-This brief defines a scientific problem and ownership boundary without
-prescribing current Citlali source, storage schemas, defaults, or observed
-products as the answer. The proposed author packet contains only this brief,
-one implementation-independent predecessor core under an explicit
-supersession cover, and one sanitized conventions/ownership extract.
-
-The implementation, audit, repair, re-audit, test, validation, Unity,
-integration, achieved-performance, readiness, and production materials used
-for Stage A discovery are not author inputs. If the packet is insufficient,
-the future author must return a precise scientific question rather than search
-the repository or infer from model memory.
+The requested Stage A repairs and exact proposed packet are recorded in
+[`STAGE_A_CHANGE_LOG.md`](STAGE_A_CHANGE_LOG.md) and
+[`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md). Stage B has **not**
+been launched. If allowed material remains insufficient, a future author must
+return one precise scientific question rather than search excluded sources or
+infer from software/model memory.

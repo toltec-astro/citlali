@@ -180,13 +180,23 @@ The package links the program charter, downstream roadmap, and frozen SCI-MAP
 predecessor; recovers and classifies the frozen SCI-MAP-002 independent core,
 all eight JINC owner decisions, later destination-ownership work, and later
 integration/validation history; records exact revisions and content digests;
-and preserves the unrecovered underlying JINC memo as unavailable rather than
-reconstructing it. The proposed author packet reuses the signed-estimator core
-under a sanitized supersession cover, keeps square-cache/point-phase and all
-other owner decisions explicit, and quarantines implementation, audit, repair,
-re-audit, Unity, validation, achieved-performance, readiness, and production
-evidence. The scientist-readable Scope Brief, open-question ledger, and exact
-content-bound packet now await scientific-owner review. No implementation-
+and preserved the unidentified memo behind the historical alignment note as
+unavailable rather than reconstructing it. Later on `2026-08-28`, the owner
+supplied F. Peter Schloerb's exact LMT OTF/JINC memo as an authoritative
+generic-method reference; it is not asserted byte-identical to that unnamed
+historical source. The package preserves the 42-page original,
+admits only a verified pages-15--19 generic-method excerpt under an explicit
+cover, and uses it to close the generic two-JINC plus envelope formula. The
+memo is geared to 3-mm spectroscopic receivers: its FCRAO parameter values,
+simulations, scales, optimization and performance claims are not TolTEC
+authority. Exact `a1100`/`a1400`/`a2000` radial scales and per-array parameter
+provenance remain open. The repaired packet also adds PTC/AST boundary
+candidates, a JINC admission-profile candidate, collision-free notation,
+geometry, grouping/product, response/covariance and inherited-decision tables,
+while quarantining implementation, audit, repair, re-audit, Unity, validation,
+achieved-performance, readiness, and production evidence. The repaired Scope
+Brief, open-question ledger, and exact content-bound packet await renewed
+scientific-owner review. No implementation-
 blind Stage B rationale or engineering conformance contract has been
 commissioned or drafted, and frozen SCI-MAP authority is unchanged.
 

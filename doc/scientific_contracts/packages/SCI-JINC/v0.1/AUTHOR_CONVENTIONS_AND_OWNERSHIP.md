@@ -91,11 +91,11 @@ Exact source set at
 
 ## Units And Statistical Labels
 
-- The JINC spatial coefficient `c_ip` is dimensionless under its declared
+- The JINC spatial coefficient `kappa_ip` is dimensionless under its declared
   analytic and pixel/array scale convention.
 - Signal and a unit-source response companion carry the admitted signal unit
   when the response is a unit-bearing transformed template.
-- The upstream coefficient `q_i` carries its producer-declared unit and
+- The upstream coefficient `omega_i` carries its producer-declared unit and
   normalization. An inverse-square signal unit does not prove inverse variance,
   independence, or full covariance authority.
 - `N/C` carries the signal unit when numerator and denominator are constructed
@@ -103,9 +103,11 @@ Exact source set at
 - Conditional covariance carries the square of the signal unit. `C^2/Q` is a
   formal diagonal inverse variance only under the exact stated upstream
   coefficient and independence/covariance assumptions.
-- `T_c2=sum(c^2/f_s)` carries seconds and means coefficient-squared effective
-  integration time. It is not geometric exposure, detector-seconds, wall time,
-  hits, precision, confidence, or validity.
+- `jinc_coefficient_squared_time=sum(kappa^2/f_s)` carries seconds. It squares
+  only the dimensionless analytic JINC coefficient and is method-specific
+  accounting. It is not physical acquired exposure, valid-original exposure,
+  complete temporal support, normalized influence, white-noise-equivalent
+  time, hits, precision, confidence, validity, or significance.
 - Support and validity states are dimensionless logical facts.
 - Signal multiplied by the square root of a formal weight is a formal
   standardized signal. `sig2noise` is reserved for an empirically calibrated
@@ -195,12 +197,15 @@ significance.
 
 ## Explicitly Unavailable Boundary Facts
 
-The following are not supplied by this sanitized extract:
+The following are supplied by separate proposed sanitized packet items rather
+than by this extract: the generic analytic family, exact PTC/AST boundary
+candidates, admission profile candidate, grouping/product roles and response/
+covariance family table. The following remain unavailable:
 
-- a frozen `SCI-PTC_TO_SCI-JINC` boundary;
 - a selected JINC-facing PTC coefficient family;
-- a complete content-bound analytic JINC function/scale/parameter map;
-- a JINC-owned admission/profile registration;
+- exact TolTEC `a1100`/`a1400`/`a2000` radial scales and per-array parameter
+  values/provenance;
+- a frozen SCI-VAL registration of `SCI-JINC:upstream_admission@1`;
 - a JINC observation-coadd contract;
 - numerical parameter values, summation/phase tolerances, or production
   thresholds; and
@@ -210,4 +215,3 @@ The following are not supplied by this sanitized extract:
 This proposed extract is content-bound in
 [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md) and may enter Stage B
 only after scientific-owner approval.
-

@@ -18,6 +18,8 @@ Launch date: `2026-08-28`
 | `JINC-PROCESS-D006` | Separate scientific authority from implementation/audit/repair/validation evidence and preserve exact revisions and digests where available. |
 | `JINC-PROCESS-D007` | Stop for scientific-owner approval before commissioning or drafting implementation-blind Stage B scientific rationale or engineering conformance content. |
 | `JINC-PROCESS-D008` | Make no implementation-conformity, representation-fidelity, validation, achieved-performance, readiness, or production claim and do not push. |
+| `JINC-PROCESS-D009` | Apply the exact owner-supplied final Stage A scope-repair feedback, attachment SHA-256 `a537afc8cac35bcb1e2bf9809e74850bd2582a3f4354faf8eb0e4c7d8d3dca49`; return repaired artifacts and packet for a new exact-byte owner gate without launching Stage B. |
+| `JINC-PROCESS-D010` | Intake F. Peter Schloerb's exact LMT OTF/JINC memo as owner-designated generic method authority. Because it is geared to 3-mm spectroscopic receivers rather than TolTEC, admit only a page-exact method excerpt under a cover and do not treat its FCRAO parameters, simulations, scales, optimization or performance as TolTEC authority. |
 
 ## Recovered Scientific Decisions Applied To The Proposed Packet
 
@@ -47,9 +49,12 @@ and integration axes are not applied here.
 | `JINC-SCOPE-D002` | Abstract the accepted destination-ownership work to one representation-independent invariant: unique complete destination identity is resolved before mutation or the operation fails atomically. Raw repair/audit/test evidence remains excluded. |
 | `JINC-SCOPE-D003` | Treat the recovered observation-level estimator as in scope. Do not import an observation-coadd rule until the owner explicitly approves one. |
 | `JINC-SCOPE-D004` | Keep inverse-variance, covariance, and significance meaning conditional on an exact upstream coefficient family and its evidence. |
-| `JINC-SCOPE-D005` | Treat the missing underlying JINC memo as unavailable. Do not reconstruct its contents from implementation or memory. |
+| `JINC-SCOPE-D005` | Treat the unnamed historical JINC memo underlying the March alignment note as unavailable. Do not reconstruct its contents from implementation or memory. |
+| `JINC-SCOPE-D006` | The owner later supplied an authoritative generic-method reference, `Schloerb_JINC_memo_v1.1.pdf`, SHA-256 `835fb02e842c9109c2c7ad3f03288882dfac283e63bfcd0f818c7d5379e7e5cd`. It closes the generic analytic-method gap without being asserted byte-identical to the unnamed historical memo; D005 therefore continues to govern that unidentified source. |
+| `JINC-SCOPE-D007` | Normalize the memo's `2 jinc_memo(x)` to the package peak-normalized `J(x)=2J_1(x)/x`, preserving Equation 9 exactly as `J(2 pi r'/a) exp[-(2r'/b)^c] J(3.831706 r'/RMAX)`. Apply square-support and point-phase owner supersessions. |
+| `JINC-SCOPE-D008` | Keep TolTEC `a1100`/`a1400`/`a2000` effective radial scales and parameter values/provenance unresolved. A three-band optimum-parameter derivation is a separate downstream scientific tranche. |
 
-`JINC-SCOPE-D001--D005` are proposed packet boundary statements and become
+`JINC-SCOPE-D001--D008` are proposed packet boundary statements and become
 author inputs only if the scientific owner approves the exact Scope Brief and
 manifest.
 
@@ -65,4 +70,3 @@ The owner must approve or revise:
 
 No approval of these Stage A controls would by itself approve the future
 Stage B substance or any implementation/evidence claim.
-

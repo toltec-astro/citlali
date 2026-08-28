@@ -30,6 +30,9 @@ Starting authority and exact refs examined:
   `f541d81a266fce0f7baed58e9ec275dadba260ee`;
 - later convergence and targeted-evidence records through
   `cdf65cbcce0c77db585e1ac483893fefd4a01ff8`; and
+- owner-supplied F. Peter Schloerb LMT OTF/JINC memo, exact repository source
+  `references/LMT_JINC_OTF_MAPMAKING_MEMO/Schloerb_JINC_memo_v1.1.pdf`;
+  and
 - frozen predecessor-package sources reachable at the starting library
   authority.
 
@@ -47,14 +50,15 @@ re-verified:
   inventory;
 - topic refs and history containing `JINC`, `jinc`, `SCI-MAP-002`, and
   destination ownership after the registry snapshot;
-- the March 2026 JINC memo-alignment note, the internal draft noise memo's JINC
-  equations, the naive/JINC comparison, and later targeted JINC evidence;
+- the March 2026 JINC memo-alignment note, the newly supplied Schloerb LMT
+  OTF/JINC memo, the internal draft noise memo's JINC equations, the
+  naive/JINC comparison, and later targeted JINC evidence;
 - the current implementation/config/product surfaces only far enough to define
   Stage A scope and firewall exclusions;
 - frozen SCI-ALIGN, SCI-AST, SCI-RTC, SCI-CAL, SCI-PTC, SCI-VAL, and SCI-MAP
   boundaries relevant to JINC inputs and ownership; and
-- the absence of a recoverable underlying scientific memo named by the March
-  memo-alignment note.
+- the absence of a repository-recoverable underlying memo at initial launch,
+  followed by exact owner-supplied intake of the Schloerb memo on `2026-08-28`.
 
 No Unity system was contacted. No reduction, source audit, validation run,
 numerical parameter study, scientific derivation, or implementation-
@@ -93,6 +97,8 @@ to scientific authority.
 | Exact ordinary `SCI-PTC_TO_SCI-MAP v0.1/r0.1` boundary | `a499c59afb69eefda74a5b131ad37afd165213b99324c8b67a6de1d20793c9b7` |
 | Frozen SCI-ALIGN source manifest | `26285329635c722cb9161d383ad1b95f56a03b782c101bcd89d8785a3575faac` |
 | Frozen SCI-AST source manifest | `b54b6013750540f28aad02339a60bf36078980dc53b132beab73069d66ef3601` |
+| Schloerb original LMT memo PDF | `835fb02e842c9109c2c7ad3f03288882dfac283e63bfcd0f818c7d5379e7e5cd` |
+| Page-exact Schloerb method excerpt, original pages 15--19 | `a065843b4b83c21aabb25233c588817e998773a5d6a7bd389874eab50c9a88e9` |
 
 All eight D003 decisions and the third-successor acceptance are read from
 `8c581bfb26f01b187f4f1e0565f4457bcc25f099` at the exact paths named below.
@@ -104,6 +110,7 @@ All eight D003 decisions and the third-successor acceptance are read from
 | Program charter, pilot review, and downstream roadmap at `731f8219...` | Governing program authority | Recovery-first workflow, Stage A/B firewall, exact packet gate, JINC sequencing, and no-fold boundary | Process authority, not JINC science | **Adopt** |
 | Frozen SCI-MAP v0.1/r0.7.1 at `731f8219...`, promoted from `bd010e20...` | Governing adjacent scientific authority | Ordinary positive-coefficient MAP explicitly excludes JINC and leaves JINC contribution/product availability to its own package | Its estimator, one-hot placement, F010 bundle, profiles, and coadd rules are ordinary-MAP-only | **Adopt** the negative boundary; **exclude** ordinary predicates from JINC |
 | `fe201b69...:SCI-MAP-002_INDEPENDENT_CORE.tex` | Reusable implementation-independent scientific reference | Signed `N/C` estimator; distinct `N`, `C`, `Q`; conditional `C^2/Q`; response and pixel covariance; support/edge distinctions; array identity; lifecycle; downstream product responsibilities; falsification cases | Its radial cutoff and pixel-area-integrated target were later superseded; inverse-variance language depends on upstream coefficient evidence not supplied by frozen PTC | **Cite** with a binding sanitized supersession cover; do not rederive |
+| F. Peter Schloerb, *Spectral Line Data Reduction at the Large Millimeter Telescope* (`2019-07-23`), exact PDF and intake record above | Owner-designated reusable scientific reference | Aperture/spatial-frequency motivation; peak-normalized JINC convention; complete two-JINC plus generalized-exponential analytic family; `(a,b,c,RMAX)` ordering and roles; `r'=r/(lambda/D)` convention; second-factor first zero | Geared to 3-mm spectroscopic receivers; radial cutoff conflicts with later square support; FCRAO values and 86-GHz simulations are not TolTEC authority | **Adopt** generic method through notation/supersession cover; **cite** page-exact method excerpt; **defer** TolTEC scale/parameters; **exclude** full memo, simulations and instrument-specific conclusions from authorship |
 | Core radial-support and pixel-area-integration branches | Superseded scientific material | A coherent earlier reference model | Conflicts directly with D003 support/subpixel decisions | **Supersede** explicitly; retain as history, not current JINC convention |
 | `8c581bfb...:SCI-MAP-002_SUPPORT_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | Square cache is the support; `r_max` also fixes the second-JINC first zero; corners beyond radial `r_max` remain in response | Does not independently supply the complete analytic parameter map | **Adopt** through the sanitized cover |
 | `8c581bfb...:SCI-MAP-002_SUBPIXEL_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | Phase-quantized point evaluation after rounded center and phase binning; not pixel-area integration | Exact tie/bin-edge and convergence bound still require explicit contract treatment | **Adopt** through the sanitized cover |
@@ -171,6 +178,14 @@ product roles, and twenty falsification cases. Its exact content digest is
 The proposed packet supplies it once, paired with a cover that applies every
 later owner decision and current frozen-predecessor restriction.
 
+The Schloerb memo supplies the missing generic analytic filter family. In the
+memo's notation `2 jinc(x)=2J_1(x)/x`; normalized package notation therefore
+gives
+`J(2 pi r'/a) exp[-(2r'/b)^c] J(3.831706 r'/RMAX)`, with `J(0)=1`.
+Later owner decisions supersede radial truncation with square-cache support and
+continuous sampling with point-phase evaluation. The memo's 3-mm parameter
+values and simulations are excluded from TolTEC authority.
+
 The internal draft noise memo independently repeats the central normalization
 and formal-variance equations. Supplying both would create duplicate authority,
 so it is retained as a recovery citation and routed to SCI-NOI rather than
@@ -184,10 +199,12 @@ added to the author packet.
    exact JINC-facing coefficient family. Formal-weight and covariance claims
    must remain conditional until a JINC-specific handoff identifies the exact
    coefficient, unit, normalization, support, and covariance evidence.
-3. The complete analytic JINC factor/scale/parameter mapping appears in mixed
-   source-audit material, but no implementation-independent owner-approved
-   content-bound analytic specification beyond the recovered core and D003
-   decisions was found. The missing underlying “memo” cannot fill this gap.
+3. The owner-supplied Schloerb memo closes the generic two-JINC formula,
+   Bessel convention, zero limit, amplitude, envelope, parameter ordering and
+   dimensionless `lambda/D` scale convention. It does not define the exact
+   effective scale or parameter source for broad-band TolTEC `a1100`, `a1400`,
+   or `a2000`; those remain `SCI-JINC-ODQ-102B` and cannot be inferred from
+   the memo's 3-mm examples.
 4. The accepted owner decisions cover the observation estimator. They do not
    independently freeze a JINC observation-coaddition rule. Ordinary MAP
    coaddition cannot be imported silently.
@@ -236,14 +253,18 @@ smallest legitimate new work is to:
 
 ## Proposed Author Reference Packet
 
-The proposed minimal packet is exactly:
+The repaired proposed packet consists only of the exact sanitized controls
+listed in [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md), including:
 
 1. the owner-approved successor bytes of [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md);
 2. the pair consisting of
    [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md) and
    `fe201b69be2764dc47dc0a1957bfc8e493f2905a:doc/audits/packages/SCI-MAP-002_INDEPENDENT_CORE.tex`;
+3. the Schloerb method excerpt paired with
+   [`AUTHOR_LMT_JINC_REFERENCE_COVER.md`](AUTHOR_LMT_JINC_REFERENCE_COVER.md);
    and
-3. [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md).
+4. the exact repaired decision, boundary, notation, geometry, product-role,
+   response/covariance, and ownership artifacts admitted by the manifest.
 
 The exact current candidate hashes and prohibited-input rules are in
 [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md). The packet is
@@ -255,6 +276,9 @@ Prior work was recovered and classified before any new derivation was
 commissioned. The proposed package reuses the frozen signed-estimator science,
 applies later owner decisions without rewriting them, preserves the frozen
 ordinary SCI-MAP boundary, and quarantines implementation and evidence. No
-implementation behavior was promoted to scientific authority, no underlying
-memo was invented, and no Stage B rationale or engineering contract was
-drafted.
+implementation behavior was promoted to scientific authority. An authoritative
+generic-method memo was supplied by the owner, preserved byte-for-byte,
+classified with exact scope, and sanitized to a page-exact method excerpt; it
+was not reconstructed from software. It is not asserted to be byte-identical
+to the unnamed historical memo behind the March alignment note, whose identity
+remains unavailable. No Stage B rationale or engineering contract was drafted.
