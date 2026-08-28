@@ -27,6 +27,7 @@ endif()
 
 execute_process(
     COMMAND "${git_executable}" describe --tags --always --broken
+        --match "v[0-9]*"
     WORKING_DIRECTORY "${CITLALI_GIT_SOURCE_DIR}"
     RESULT_VARIABLE version_result
     OUTPUT_VARIABLE version

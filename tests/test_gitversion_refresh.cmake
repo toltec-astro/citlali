@@ -65,6 +65,7 @@ run_checked("${GIT_EXECUTABLE}" -C "${source_dir}"
     -c user.name=Citlali-Test
     -c user.email=citlali-test@example.invalid
     commit -m first)
+run_checked("${GIT_EXECUTABLE}" -C "${source_dir}" tag v4.0.0)
 run_checked("${CMAKE_COMMAND}" -S "${source_dir}" -B "${build_dir}")
 run_checked("${CMAKE_COMMAND}" --build "${build_dir}"
     --target gitversion_probe)
@@ -104,6 +105,8 @@ run_checked("${GIT_EXECUTABLE}" -C "${source_dir}"
     -c user.name=Citlali-Test
     -c user.email=citlali-test@example.invalid
     commit -m second)
+run_checked("${GIT_EXECUTABLE}" -C "${source_dir}"
+    tag wp7-timestream-integration-test)
 run_checked("${CMAKE_COMMAND}" --build "${build_dir}"
     --target gitversion_probe)
 
@@ -126,4 +129,15 @@ if(NOT second_reported_revision STREQUAL second_revision)
     message(FATAL_ERROR
         "Build-only executable revision mismatch after HEAD advance: "
         "expected ${second_revision}, got ${second_reported_revision}")
+endif()
+
+file(READ "${header}" refreshed_header)
+string(REGEX MATCH
+    "#define CITLALI_GIT_VERSION \"([^\"]*)\""
+    version_match "${refreshed_header}")
+set(reported_version "${CMAKE_MATCH_1}")
+if(NOT reported_version MATCHES "^v4\\.0\\.0-1-g[0-9a-f]+$")
+    message(FATAL_ERROR
+        "Non-release tag changed the operational Git version: "
+        "expected a v4.0.0 successor, got ${reported_version}")
 endif()

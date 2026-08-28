@@ -100,7 +100,7 @@ execute_process(
     ERROR_QUIET
 )
 execute_process(
-    COMMAND git describe --tags --always --dirty
+    COMMAND git describe --tags --always --dirty --match "v[0-9]*"
     WORKING_DIRECTORY "${CITLALI_SOURCE_ROOT}"
     OUTPUT_VARIABLE CITLALI_GIT_VERSION
     OUTPUT_STRIP_TRAILING_WHITESPACE

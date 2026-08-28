@@ -112,7 +112,7 @@ _citlali_refactor_refresh_citlali_gitversion_header() {
   local revision
   local version
   revision="$(git -C "${repo}" rev-parse --short HEAD)"
-  version="$(git -C "${repo}" describe --tags --always --broken)"
+  version="$(git -C "${repo}" describe --tags --always --broken --match 'v[0-9]*')"
 
   local current_revision
   local current_version

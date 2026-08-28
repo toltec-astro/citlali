@@ -2,6 +2,30 @@
 
 ## 2026-08-28 Unity Build Acceptance And V2 Science-Kit Repair
 
+The successor-build acceptance was repeated at exact application commit
+`7087d9bb3316afd68c992e1a5e5fe4bb97d823fd`. Unity Slurm job `63723415`
+exited zero, all 832 runnable CTests passed, and only the established disabled
+`MapFitterLifecycle.ExactProductSequence` test remained not run. The installed
+executable has SHA-256
+`1859affb1f46123bb52c414586e3809c5ef29c9b7d9fc8e056ab021c515d3594`
+and reports Spack DAG `nuefnc6fkaul2m5x7l2x6qbblvsxezoe`, lock
+`84d22da445fc89dde76e3cb57efb435aaa075633c8a21d8e1b46c3cf3b830625`,
+profile `unity-gcc13`, and `binding=dag-match`.
+
+The first V2 raw-only Beammap-baseline submission, job `63724470`, then stopped
+inside TolTECA's pre-launch update check before Citlali executed. The legacy
+checker reduced the nearer operational tag
+`wp7-timestream-integration-20260826-36-g7087d9bb` to the nonexistent revision
+`wp7` and failed its repository log query. This is a version-presentation
+compatibility defect, not a Beammap, configuration, or application-runtime
+failure. Git-version generation now restricts describe candidates to release
+tags matching `v[0-9]*` in the established build, Spack build, and Unity
+refresh helper. Exact commit identity remains in the resulting
+`v4.0.0-<distance>-g<revision>` string. The build-refresh regression creates a
+nearer non-release tag and proves that it cannot displace the release-line
+identity. Unity rebuild and acceptance remain required for this repair commit
+before the Beammap bootstrap is resubmitted.
+
 The owner-run Unity Spack acceptance completed at exact application commit
 `81681ded16d71cac9bbd2c46d03c2fda57c6666a`. Slurm job `63693972` exited
 zero, all 832 runnable CTests passed, and the one established disabled test
