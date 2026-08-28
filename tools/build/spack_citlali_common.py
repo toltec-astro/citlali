@@ -30,7 +30,8 @@ EXPECTED_PACKAGES = {
 }
 
 _VERSION_SOURCE_REVISION = re.compile(
-    r"^(?:v\S*?-g)?([0-9a-f]{7,40})(?:-dirty)?(?:\s|$)", re.MULTILINE
+    r"^(?:(?:\S+)-\d+-g)?([0-9a-f]{7,40})(?:-dirty)?(?:\s|$)",
+    re.MULTILINE,
 )
 
 

@@ -142,6 +142,15 @@ class SpackCitlaliSourceRevisionTest(unittest.TestCase):
         )
         self.assertEqual(reported, "34b83df5")
 
+    def test_accepts_non_version_git_describe_tag(self) -> None:
+        reported = require_matching_source_revision(
+            "wp7-timestream-integration-20260826-35-g34b83df5 "
+            "(2026-08-28T14:01:44)\n"
+            "kids 3.1.0 (spack-package)\n",
+            self.source_revision,
+        )
+        self.assertEqual(reported, "34b83df5")
+
     def test_accepts_longer_matching_abbreviation(self) -> None:
         reported = require_matching_source_revision(
             "v4.0.0-3642-g34b83df51484-dirty (2026-08-14T11:16:05)",
