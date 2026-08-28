@@ -1,6 +1,6 @@
 # SCI-MAP v0.1 Scientific-Owner Decision Ledger
 
-Document revision: `r0.6`
+Document revision: `r0.7`
 
 Scientific owner: Grant Wilson
 
@@ -36,13 +36,18 @@ recommended-range, authority, and failure questions.
 | SCI-MAP-OD-008 | **RESOLVED** | 2026-08-27 | Authorize `SCI-MAP:one_hot_containing_pixel@1` with exact half-open boundary behavior; defer fractional projection. | REQ-005, REQ-011, REQ-015, REQ-016, REQ-026, REQ-029--030 and PRED-004/009 amended in place; stable IDs preserved. |
 | SCI-MAP-R06-D001 | **RESOLVED** | 2026-08-27 | Physical exposure is a sum over unique stable originals placed once by each original's own authorized AST coordinate; descendant influence is separate and cannot duplicate or relocate seconds. | REQ-007, REQ-016, REQ-029--030 and PRED-008 specify the own-coordinate construction and multi-descendant ECS fixture. |
 | SCI-MAP-R06-D002 | **RESOLVED** | 2026-08-27 | Register source-current `SCI-MAP:map_upstream_admission@2` and VAL-governed aggregate `SCI-MAP:observation_coadd_admission@1`; retain `@1` as immutable history. | REQ-004 and REQ-039 bind exact four-axis records; no VAL policy authorship is inferred. |
-| SCI-MAP-R06-D003 | **RESOLVED** | 2026-08-27 | Separate fixed-state linear response, PTC full-procedure finite differences, and whole-chain re-resolved procedure response. | REQ-008/017/040 and PRED-005--007/013 use role-qualified response and forbid hidden response subsets. |
+| SCI-MAP-R06-D003 | **RESOLVED** | 2026-08-27 | Separate fixed-state linear response, PTC full-procedure finite differences, and re-resolved procedure response. | Superseded in terminology, not substance, by SCI-MAP-R07-D003 below. |
+| SCI-MAP-R07-D001 | **RESOLVED** | 2026-08-28 | Coefficient availability is structural and does not require finiteness; MAP alone owns positive/zero/negative/non-finite/unrepresentable numerical classification. The PTC coefficient/QC pass is requested/applicable/eligible/realized under its exact PTC-owned profile and cannot grant or rescue MAP admission. | REQ-004/006/010/034 and PRED-010/011 separate producer truth, MAP admission, safe classification, and arithmetic. |
+| SCI-MAP-R07-D002 | **RESOLVED** | 2026-08-28 | Use one exact operator identity \(A_{{\rm MAP},\Pi}\equiv A_{\rm out}\equiv D_{Q,{\rm out}}^{-1}J_{\rm out}G\Omega\) for signal and every named fixed linear companion. | REQ-016/019/051 and response/covariance equations bind exact domains, coefficient generation, projection, support, WCS, parents, and lifecycle. |
+| SCI-MAP-R07-D003 | **RESOLVED** | 2026-08-28 | Name the three available response levels fixed-state, PTC full-procedure, and PTC+MAP re-resolved procedure response. Reserve whole-chain RTC-to-CAL-to-PTC-to-MAP for a separately authorized complete rerun; it is unavailable here. | REQ-008/017/046 and PRED-005--007/013 use exact family/domain names; the PTC state-change record is \(\Delta\mathcal S_{{\rm PTC}\text{-}{\rm FP}}\), not covariance notation. |
+| SCI-MAP-R07-D004 | **RESOLVED** | 2026-08-28 | Original-footprint exposure uses each stable original's own layered AST ALIGN-grid coordinate in the target MAP WCS through `SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE v0.1/r0.1`; it is distinct from descendant RTC coordinates, causal influence, temporal support, effective integration time, and precision. | REQ-007/029/030/046, the exposure equations, and ECS fixtures bind exact original identity and coordinate failure behavior. |
 
 ## Blocking-scope classification
 
 - **A — numerical single-observation map:** PTC coefficient family and
   `coverage_cut` numerical domain remain open. MAP admission, exact same-`n`
-  join, one-hot projection, and exposure role are closed by r0.6. No generally
+  join, one-hot projection, and original-footprint exposure role are closed by
+  r0.7. No generally
   authorized ordinary numerical route is claimed.
 - **B — response/uncertainty:** OD-003 and OD-004 remain open, together with
   upstream full-procedure response inputs/domain.

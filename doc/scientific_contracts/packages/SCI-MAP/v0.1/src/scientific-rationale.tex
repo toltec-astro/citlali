@@ -17,7 +17,7 @@
 \definecolor{MapGoldPale}{HTML}{FFF7E6}
 \definecolor{MapGray}{HTML}{53606B}
 \hypersetup{colorlinks=true,linkcolor=MapBlue,urlcolor=MapBlue,citecolor=MapBlue,
-  pdftitle={SCI-MAP v0.1 TolTEC Ordinary Mapmaking and Observation Coaddition - Science-Team Rationale r0.6 Draft},
+  pdftitle={SCI-MAP v0.1 TolTEC Ordinary Mapmaking and Observation Coaddition - Science-Team Rationale r0.7 Draft},
   pdfauthor={SCI-MAP scientific-owner review revision}}
 \setlength{\emergencystretch}{3em}
 \setlength{\parindent}{0pt}
@@ -33,11 +33,11 @@
 % Import the same canonical core as the formal and engineering views. This
 % rationale renders only the scientist-facing equations and grouped crosswalk;
 % it does not expand the full requirement or prediction inventories.
-\input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.1.tex}
+\input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.tex}
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small\color{MapGray}SCI-MAP v0.1 -- Science-Team Rationale r0.6 DRAFT}
+\fancyhead[L]{\small\color{MapGray}SCI-MAP v0.1 -- Science-Team Rationale r0.7 DRAFT}
 \fancyfoot[L]{\small\color{MapGray}Science-team circulation | DRAFT}
 \fancyfoot[R]{\small\color{MapGray}Page \thepage}
 
@@ -49,9 +49,9 @@
 {\LARGE\color{MapNavy}\textbf{and Observation Coaddition}}\\[0.10in]
 {\Large\color{MapBlue}\textbf{Scientific Basis, Response, and Validity}}\\[0.38in]
 {\large Scientific contract version: v0.1}\\[0.06in]
-{\large Science-team rationale revision: r0.6}\\[0.06in]
+{\large Science-team rationale revision: r0.7}\\[0.06in]
 {\large Status: integrated scientific authority draft}\\[0.08in]
-{\large 2026-08-27}\\[0.42in]
+{\large 2026-08-28}\\[0.42in]
 \fcolorbox{MapBlue}{MapPale}{\begin{minipage}{0.80\linewidth}\centering\small
 This document explains the map estimator, its response and uncertainty, the
 meaning of support and validity, and the scope of observation coaddition for
@@ -75,9 +75,11 @@ using only realized PTC samples that are available under PTC's declared
 identity and scope, have valid ALIGN/AST coordinates, and pass MAP's admission
 conditions. Here \(G_{pi}\) describes how
 sample \(i\) is placed in its unique containing pixel, and \(\gamma_i\) is the
-exact PTC-owner-selected MAP-facing coefficient. No such family is yet
-selected, so r0.6 defines the route but withholds ordinary numerical MAP
-production until that upstream gate closes. Pixels without adequate valid support
+exact PTC-owner-selected MAP-facing coefficient. No MAP-facing coefficient
+family is selected by frozen SCI-PTC v0.1/r0.5 or bound in the SCI-MAP r0.7
+source packet; MAP does not select this PTC-owned family. This revision
+therefore defines the route but withholds ordinary numerical MAP production
+until that upstream gate closes. Pixels without adequate valid support
 are unavailable; they are not measurements of zero sky brightness.
 
 For compatible observation maps on one common grid, the v0.1 coadd is
@@ -114,7 +116,7 @@ joint model or resampling result.
 \midrule
 Conditional estimator & Defined & Equations and scientific meanings only.\\
 Numerical observation map & Unavailable & PTC coefficient family and admitted numerical \code{coverage_cut} state.\\
-Response-bearing map & Product-dependent & Exact sufficient fixed-state, PTC procedure, or full-chain response.\\
+Response-bearing map & Product-dependent & Exact sufficient fixed-state, PTC full-procedure, or PTC+MAP re-resolved response; whole-chain RTC-to-CAL-to-PTC-to-MAP is unavailable.\\
 Uncertainty-qualified map & Product-dependent & Exact required covariance representation and terms.\\
 Compatible-grid coadd & Conditional & Source-closed admitted observation maps and exact coadd profile.\\
 Reprojection/mosaic & Not authorized & Separate owner decision and contract.\\
@@ -148,11 +150,16 @@ For one exact frozen upstream and MAP state, the linear response is the
 fixed-state sky-to-PTC operator followed once by the map operator. Writing the
 selected processed-sample vector as \(\boldsymbol z=(z_i)\),
 \begin{equation}
+ A_{{\rm MAP},\Pi}\equiv A_{\rm out}
+ =D_{Q,{\rm out}}^{-1}J_{\rm out}G\Omega,\qquad
  \widehat{\boldsymbol m}=A_{{\rm MAP},\Pi}\boldsymbol z,\qquad
  R_{{\rm fixed},\Theta}=A_{{\rm MAP},\Pi}H_{{\rm fixed},\Theta},
  \label{eq:response}
 \end{equation}
-where \(H_{{\rm fixed},\Theta}\) binds source domain, processed-sample
+where the one MAP operator binds the admitted PTC-sample input domain,
+support-authorized output rows, coefficient generation, one-hot projection,
+support policy, WCS/grid, parents, and lifecycle generation, while
+\(H_{{\rm fixed},\Theta}\) binds source domain, processed-sample
 codomain, units, parent, membership, support, coefficient state, and response
 basis. Preserving a constant \emph{sample vector}
 does not prove preservation of a constant sky mode: an upstream baseline,
@@ -203,7 +210,11 @@ MAP therefore does not infer unity, loading, sensitivity, scatter, or inverse
 variance: no ordinary numerical MAP route exists until the PTC/scientific
 owner selects and versions one exact family. A later coefficient generation
 does not modify an earlier transformed product, and cross-generation use needs
-an explicit compatibility decision.
+an explicit compatibility decision. Coefficient availability establishes the
+family and generation, index/broadcast relation, transformed-product
+compatibility, readable payload presence, typed state, and cause; it does not
+claim finiteness. MAP alone classifies an authorized payload as finite
+strictly positive, exact zero, negative finite, non-finite, or unrepresentable.
 
 The representation-independent handoff is
 \code{SCI-PTC_TO_SCI-MAP v0.1/r0.1}. MAP owns the occurrence-level policy
@@ -219,14 +230,21 @@ For a future compatible coefficient family the effective contribution is
 \(G_{pi}\gamma_i\). Membership is the conjunction of ten separately typed
 Boolean pass predicates derived from ten retained typed gate records:
 transformed-signal availability; PTC output retention; coefficient
-availability; PTC coefficient/QC disposition; MAP upstream admission; AST
+availability; PTC coefficient/QC proposition; MAP upstream admission; AST
 coordinate validity; finite transformed signal; finite positive coefficient;
 admitted projection/boundary; and MAP-local contribution plus required
 companions. Unknown, conflict, ineligible, unavailable, invalid, and
 not-requested all project to estimator nonmembership where applicable while
-their full T/F/U/C or VAL request/applicability/eligibility/realization record,
-causes, provenance, and failure scope remain intact. The payload is never
-screened by multiplication with a numeric zero mask. MAP then accumulates
+their full T/F/U/C or request/applicability/eligibility/realization record,
+immutable reason, causes, provenance, and failure scope remain intact. For
+every four-axis gate, only requested/applicable/eligible/realized passes. The
+PTC coefficient/QC pass says only that this tuple holds under the exact
+PTC-owned coefficient/QC profile; it cannot grant or rescue MAP admission.
+Evaluation is ordered: structural binding; safe retrieval and classification
+of only structurally admitted \(z_i\) and \(\gamma_i\); coordinate, placement,
+and companion gates; membership; then accumulation. All gates pass before
+payload arithmetic. The payload is never screened by multiplication with a
+numeric zero mask. MAP then accumulates
 \begin{equation}
  N_p=\sum_{i\in\mathcal C_p}G_{pi}\gamma_i z_i,\qquad
  Q_p=\sum_{i\in\mathcal C_p}G_{pi}\gamma_i.
@@ -243,22 +261,25 @@ MAP-route-candidate incidence additionally requires the realized route and
 upstream admission; estimator contribution adds every remaining numerical and
 MAP-local gate.
 
-Fixed-state, PTC full-procedure, and full-chain response are different
+Fixed-state, PTC full-procedure, and PTC+MAP re-resolved response are different
 scientific objects. The fixed-state family uses Equation~\eqref{eq:response}
 with every upstream and MAP choice frozen. PTC full-procedure response instead
 compares two complete PTC runs,
 \[
- \Delta\boldsymbol z_{\rm FP}(\delta\boldsymbol s;\alpha)
+ \Delta\boldsymbol z_{{\rm PTC}\text{-}{\rm FP}}(\delta\boldsymbol s;\alpha)
  =\mathcal P_{\rm PTC}(\boldsymbol s+\delta\boldsymbol s;\alpha)
   -\mathcal P_{\rm PTC}(\boldsymbol s;\alpha),
 \]
-and separately records changes in masks, groups, rank, loading subspace,
+and separately records those changes in
+\(\Delta\mathcal S_{{\rm PTC}\text{-}{\rm FP}}\): masks, groups, rank, loading subspace,
 classifications, coefficient state, stop cause, and support. The parameter
 \(\alpha\) binds amplitude, perturbation side, source state, location, and
 domain. If MAP membership, coefficient, projection, and support stay fixed,
-MAP may apply \(A_{{\rm MAP},\Pi}\) to that finite difference. If MAP is
-re-resolved, the result is a separately named full-chain procedure response,
-not one fixed \(H\) matrix.
+MAP applies the same \(A_{{\rm MAP},\Pi}\) to that finite difference. If MAP
+is re-resolved, the result is the separately named PTC+MAP re-resolved
+procedure response, not one fixed \(H\) matrix. The name whole-chain is
+reserved for a separately authorized RTC-to-CAL-to-PTC-to-MAP rerun from
+exact immutable parents; that response is unavailable and not claimed here.
 
 A realized PTC-grid companion starts at MAP and receives the fixed MAP
 operator exactly once. If any signal member lacks a required exact companion,
@@ -270,7 +291,7 @@ component \(\widehat U_{\rm corr}\), total removed component
 \(U_{{\rm total},\Theta}\), realized removed-subspace identity, fixed-state
 null space, and any full-procedure invariant/unidentifiable modes are separate
 facts. They are not automatically residual bias. The fixed-state perturbation
-statement is Equation~\eqref{eq:response}; r0.6 makes no unnamed \(\mu_0\) or
+statement is Equation~\eqref{eq:response}; r0.7 makes no unnamed \(\mu_0\) or
 residual conditional-bias claim.
 
 \clearpage
@@ -338,8 +359,8 @@ Did a valid AST coordinate reach this pixel? & AST-geometric incidence & Geometr
 Did an occurrence have the realized PTC route and pass upstream admission? & MAP-route-candidate incidence & Route/use policy before local numerical gates.\\
 How many admitted weighted occurrences entered the estimator? & Estimator contribution & Exact contribution count.\\
 How many complete observations entered this coadd pixel? & Contributing observation count & Observation bundles, not samples.\\
-What detector-time was available before estimator-specific rejection? & Upstream-eligible exposure & Eligible detector-time accounting.\\
-How much detector-time was retained by the estimator? & Retained exposure & Retained accounting, not precision.\\
+Which unique original acquisition footprints were upstream eligible? & Upstream-eligible original-footprint exposure & Own-coordinate footprint accounting; not complete temporal support.\\
+Which unique original acquisition footprints were retained? & Retained original-footprint exposure & Retained footprint accounting; not precision or effective integration time.\\
 Was the denominator large enough to normalize? & Numerical support & Lower support threshold.\\
 Is the pixel inside the adopted science region? & Science-policy support & Stricter policy threshold.\\
 Is the base MAP value scientifically valid under MAP's own contract? & MAP-local base-product validity & Required conjunction of identity, support, finite value, and no MAP-product failure; not downstream eligibility.\\
@@ -355,9 +376,14 @@ are unavailable, not zero sky.
 Exposure begins with ALIGN-owned \(e_{\rm acq}\) and \(e_{\rm vo}\), measured
 in seconds on stable original occurrences. RTC, CAL, and PTC preserve those
 facts, lineage, and causes. MAP deduplicates by observation, detector
-occurrence/UID, native original occurrence, and ALIGN mapping generation. It
-places each positive-\(e_{\rm vo}\) original exactly once using that original's
-own authorized AST coordinate and the one-hot half-open rule.
+occurrence/UID, stable original/native occurrence, stable ALIGN slot, and
+ALIGN mapping generation. Under
+\code{SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE v0.1/r0.1}, it places
+each positive-\(e_{\rm vo}\) original exactly once using that original's own
+AST ALIGN-grid direction/tangent/continuous-pixel parent in the exact target
+MAP WCS and the one-hot half-open rule. Geometry/pointing realization, frame,
+coordinate validity, boundary state, parent, and version are part of the
+identity. A descendant RTC-output coordinate is never substituted.
 
 This is deliberately different from causal influence. One original may
 influence several RTC/PTC outputs at different map pixels; the influence graph
@@ -370,7 +396,10 @@ original identities after atomic admission. Replacement, synthesis, donor
 reuse, overlapping filters, decimation, duration, cadence, sample count,
 hits, \(Q\), \(\gamma\), and formal precision cannot create or reconstruct
 exposure. Missing original lineage or own-coordinate authority makes the
-exposure role unavailable.
+exposure role unavailable. These products map unique original acquisition
+footprints; they are not complete temporal support, effective map integration
+time, precision, or normalized-map influence. Causal influence and
+representative RTC occurrence are published separately.
 
 \PolicyBox{\textbf{Provisional two-threshold policy.} A lower threshold permits
 numerically safe normalization; a stricter threshold defines the adopted
@@ -545,7 +574,7 @@ OD-008 is resolved: the sole base projection is
 upper-exclusive cells, outer-upper-boundary loss, no wrap or clamp, and
 fractional projection deferred. Eight MAP-local decisions remain open.
 
-Rationale r0.6 completes the targeted scientific-closure pass.
+Rationale r0.7 completes the final targeted closure and freeze-preflight pass.
 Further revisions should follow an owner decision, a normative contract
 change, new validation evidence, or a newly identified scientific
 inconsistency--not stylistic churn.
@@ -553,12 +582,12 @@ inconsistency--not stylistic churn.
 \addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
 \section*{References}
 \begin{enumerate}[label={[\arabic*]},leftmargin=*]
-\item \emph{SCI-MAP v0.1 Formal Scientific/Engineering Contract}, canonical shared authority and r0.6 formal view.
-\item Frozen \emph{SCI-PTC v0.1/r0.5} and the WP-7 scientific-owner dispositions bound by \code{SOURCE_MANIFEST_R0.6.md}.
-\item Current \emph{SCI-CAL v0.1}, \emph{SCI-AST v0.1/r0.3}, and \emph{SCI-VAL v0.1/r0.3} Core/Registry/source bindings listed in that manifest.
-\item \code{SCI-PTC_TO_SCI-MAP v0.1/r0.1}; the source-current MAP
-upstream-admission and observation-coadd-admission profiles listed in the
-manifest.
+\item \emph{SCI-MAP v0.1 Formal Scientific/Engineering Contract}, canonical shared r0.7 authority and formal view.
+\item Frozen \emph{SCI-PTC v0.1/r0.5}, SCI-CAL v0.1 science r0.5/engineering r0.4, and SCI-AST v0.1/r0.3 with the exact digests in \code{SOURCE_MANIFEST_R0.7.md}.
+\item SCI-VAL Core v0.1/r0.3 plus the exact continuing Registry and Source-Binding Register revisions enumerated in that immutable manifest.
+\item \code{SCI-PTC_TO_SCI-MAP v0.1/r0.1},
+\code{SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE v0.1/r0.1}, and the
+exact MAP upstream-admission and observation-coadd-admission records.
 \item \emph{Citlali Scientific Conventions} and ADR 0009, including its WCS/FITS persistence amendment.
 \end{enumerate}
 
@@ -605,7 +634,7 @@ OD-009 & Common-grid preparation and future mosaicking & Odd-difference inputs r
 \end{longtable}
 
 \section{Document authority}
-Rationale revision r0.6 integrates the targeted scientific closure and
+Rationale revision r0.7 integrates the final targeted closure and
 retains the scientific-owner disposition of SCI-MAP-CI-001. The scientific contract
 remains v0.1, with 52 canonical requirement IDs and 25 canonical prediction
 IDs unchanged. Their bounded amended clauses now classify

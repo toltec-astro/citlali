@@ -2,7 +2,7 @@
 
 Profile identity: `SCI-MAP:map_upstream_admission@2`
 
-Status: MAP-owned r0.6 source-current profile registered in the continuing SCI-VAL Registry;
+Status: MAP-owned r0.7 source-bound profile registered in the continuing SCI-VAL Registry;
 implementation evaluation and conformity not assessed
 
 Scientific-policy owner: Grant Wilson
@@ -11,9 +11,11 @@ The authoritative registry record is in
 `SCI-VAL/v0.1/PROFILE_REGISTRY.md`. This package copy is the scientist-readable
 MAP view and shall remain semantically identical.
 
-Version `@1` remains an immutable r0.5 record and is not a compatibility alias.
-Version `@2` is required because the exact owner-directive, boundary, shared
-MAP authority, and continuing VAL source bindings changed.
+Version `@1` remains an immutable historical r0.5 record and is not a
+compatibility alias. Version `@2` is required because the exact owner
+directive, boundary digest, shared MAP authority, contribution-gate semantics,
+and continuing VAL source bindings differ. A consumer shall not substitute
+`@1` by name similarity, object shape, or a numerically equal decision.
 
 ## Decision
 
@@ -25,13 +27,15 @@ generation, segment, array/network/group, and complete ancestry.
 Applicability requires the requested ordinary positive-rank PTC-to-MAP route.
 The exact PTC product must exist; `SCI-PTC:output_retention@1` must be eligible;
 the transformed signal must be available; an exact PTC-owner-selected
-MAP-facing coefficient and coefficient/QC permission must be available; and
+MAP-facing coefficient must be typed available; its PTC coefficient/QC
+decision must be requested, applicable, eligible, and realized under the exact
+PTC-owned coefficient/QC profile for the declared family; and
 the exact AST RTC-grid coordinate for the same `n` and parent chain must be
 structurally bound.
 
 PTC-disabled, no-product, direct CAL input, inferred no-op PTC, PTC retention
 ineligibility, direct synthesized/replaced representative signal origin,
-incompatible parents/generations, or coefficient/QC exclusion is decisive.
+incompatible parents/generations, or coefficient/QC nonpass is decisive.
 CAL `engineering-only` classification may remain a candidate only when PTC
 retains it and the classification remains explicit; no science qualification
 is created. Transitive influence and other causes are preserved but are not
@@ -52,6 +56,9 @@ conflicting applicability, identity, generation, parent, permission,
 coefficient, or coordinate facts yields `applicability_unknown` and
 `decision_unavailable`; a decisive false predicate yields `ineligible`; every
 required predicate true yields `eligible`.
+
+The PTC coefficient/QC decision establishes only producer-owned coefficient
+truth. It never grants, replaces, or rescues this MAP-owned upstream decision.
 
 The result is occurrence-level and atomic-only. `eligible` creates a MAP-route
 candidate, not a pixel contribution. MAP still owns `G_pi`, boundary,

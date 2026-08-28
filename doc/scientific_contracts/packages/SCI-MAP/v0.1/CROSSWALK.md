@@ -1,6 +1,6 @@
 # SCI-MAP v0.1 Contract Crosswalk
 
-Document revision: `r0.6`
+Document revision: `r0.7`
 
 Status: author-draft traceability aid; it does not assert implementation,
 validation, or production status.
@@ -18,7 +18,7 @@ validation, or production status.
 - **CO**: owner-approved `AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`, SHA-256
   `2d478cb6c5e897308d19614b8b01663318744971850c67459f84c7ddcd57c5c9`.
 - **HC**: owner-authorized 2026-08-26 PTC-to-MAP handoff correction,
-  content-bound by `CHANGE_LOG_R0.6.md`.
+  preserved as historical authority in the r0.7 source manifest.
 - **R05**: owner directive `SCI-MAP v0.1 r0.5 TARGETED PTC-TO-MAP
   CROSS-PACKAGE CLOSURE DIRECTIVE`, SHA-256
   `210e8beafe26381a7d35cf38bacab9a9d959646055635a7c1179e0729a3cfa9a`,
@@ -28,12 +28,17 @@ validation, or production status.
   `d57e90f8ed4407b0f727cd2ac981318e02101ddd9f73abac7e2772b66dac2c84`,
   plus the exact boundary, `SCI-MAP:map_upstream_admission@2`,
   `SCI-MAP:observation_coadd_admission@1`, and shared r0.6 authority.
+- **R07**: owner directive `SCI-MAP v0.1 r0.7 FINAL TARGETED CLOSURE AND
+  FREEZE-PREFLIGHT DIRECTIVE`, SHA-256
+  `f7747eea28710d524e12c818b872ac3fcc49f413271f83c0644ae129949a8c8c`,
+  plus the exact PTC/MAP boundary, AST original-footprint-coordinate boundary,
+  r0.7 shared authority, Registry/source-binding rows, and owner dispositions.
 
 The canonical requirement and prediction text lives only in
 `src/common/requirements.tex` and `src/common/edge_cases.tex`, with notation,
 definitions, equations, and assumptions in the adjacent common modules. The
-retained `src/SCI-MAP-v0.1_SHARED_AUTHORITY_r0.1.tex` is only a compatibility
-wrapper. The formal and engineering PDFs render the full common authority;
+exact `src/SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.tex` is the shared wrapper. The
+formal and engineering PDFs render the full common authority;
 the science-team rationale imports the same authority but does not expand the
 full inventories.
 Section names below are navigation aids, not a second normative wording.

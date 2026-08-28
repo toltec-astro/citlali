@@ -18,7 +18,9 @@
 
 % A stable original occurrence u is the ALIGN-owned acquisition occurrence,
 % keyed by observation, detector occurrence/UID, native occurrence identity,
-% and exact ALIGN mapping generation.  Its own AST coordinate parent, not the
-% coordinates of RTC/PTC descendants it influences, places its physical
-% valid-original exposure.  The causal influence graph remains a separate
-% support fact and never duplicates detector-seconds.
+% stable ALIGN slot, and exact ALIGN mapping generation.  Its own coordinate
+% is the layered AST ALIGN-grid direction/tangent/continuous-pixel role bound
+% to the target MAP WCS through SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE
+% v0.1/r0.1.  It is never a descendant RTC-output coordinate.  The causal
+% influence graph remains a separate support fact and never duplicates
+% detector-seconds.

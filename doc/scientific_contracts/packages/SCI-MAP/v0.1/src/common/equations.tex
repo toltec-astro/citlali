@@ -13,6 +13,11 @@
  b_g(i,p)&=\operatorname{pass}_g\!\left(\sigma_g(i,p)\right)
  \in\{0,1\},\qquad g\in\mathcal G,
  \label{eq:typed-gate-projection}\\
+ \operatorname{pass}_{\gamma,{\rm QC}}(i)&=
+ \boldsymbol 1\!\left[
+ (r,a,e,\ell)_i=(\texttt{requested},\texttt{applicable},
+ \texttt{eligible},\texttt{realized})\right],
+ \label{eq:gamma-qc-four-axis-projection}\\
  \mathcal C_p&=\left\{i:\bigwedge_{g\in\mathcal G}b_g(i,p)=1\right\},
  \label{eq:contribution-set}\\
  \mathcal S_{\rm out}(\Pi_{\rm eff})
@@ -34,35 +39,37 @@
  &J_{\rm out}\boldsymbol v&=(v_p)_{p\in\mathcal S_{\rm out}},
  &D_{Q,{\rm out}}&=J_{\rm out}D_QJ_{\rm out}^{\mathsf T},
  \label{eq:output-row-selection}\\
- A_{\rm out}&=D_{Q,{\rm out}}^{-1}J_{\rm out}G\Omega,
- &\widehat{\boldsymbol m}_{\rm out}&=A_{\rm out}\boldsymbol z,
+ A_{{\rm MAP},\Pi}&\equiv A_{\rm out}
+   \equiv D_{Q,{\rm out}}^{-1}J_{\rm out}G\Omega,
+ &\widehat{\boldsymbol m}_{\rm out}&=A_{{\rm MAP},\Pi}\boldsymbol z,
  \label{eq:map-operator}\\
  \delta\boldsymbol m_{\rm out}
    &=A_{{\rm MAP},\Pi}H_{{\rm fixed},\Theta}\,\delta\boldsymbol s,
  &R_{{\rm fixed},\Theta}&=A_{{\rm MAP},\Pi}H_{{\rm fixed},\Theta},
- &C_{m,{\rm out}}&=A_{\rm out} N_{\rm PTC} A_{\rm out}^{\mathsf T}.
+ &C_{m,{\rm out}}&=A_{{\rm MAP},\Pi} N_{\rm PTC}
+                          A_{{\rm MAP},\Pi}^{\mathsf T}.
  \label{eq:response-covariance}
 \end{align}}
 
 \newcommand{\SCIMapProcedureResponseEquations}{%
 \begin{align}
- \Delta\boldsymbol z_{\rm FP}(\delta\boldsymbol s;\alpha)
+ \Delta\boldsymbol z_{{\rm PTC}\text{-}{\rm FP}}(\delta\boldsymbol s;\alpha)
  &=\mathcal P_{\rm PTC}(\boldsymbol s+\delta\boldsymbol s;\alpha)
    -\mathcal P_{\rm PTC}(\boldsymbol s;\alpha),
  \label{eq:ptc-full-procedure-response}\\
- \Delta\Sigma_{\rm FP}
+ \Delta\mathcal S_{{\rm PTC}\text{-}{\rm FP}}
  &=\operatorname{state}_{\rm PTC}(\boldsymbol s+\delta\boldsymbol s;\alpha)
    \ominus\operatorname{state}_{\rm PTC}(\boldsymbol s;\alpha),
  \label{eq:ptc-full-procedure-state}\\
- \Delta\boldsymbol m_{\rm FP}
- &=A_{{\rm MAP},\Pi}\,\Delta\boldsymbol z_{\rm FP},
+ \Delta\boldsymbol m_{{\rm PTC}\text{-}{\rm FP}}
+ &=A_{{\rm MAP},\Pi}\,\Delta\boldsymbol z_{{\rm PTC}\text{-}{\rm FP}},
  \qquad\text{only when MAP state }\Pi\text{ is held fixed},
  \label{eq:map-of-ptc-full-procedure}\\
- \Delta\boldsymbol m_{\rm chain}
+ \Delta\boldsymbol m_{{\rm PTC+MAP}\text{-}{\rm RR}}
  &=\mathcal M\!\left(\mathcal P_{\rm PTC}(\boldsymbol s+\delta\boldsymbol s;\alpha);
                        \Pi_{+}\right)
   -\mathcal M\!\left(\mathcal P_{\rm PTC}(\boldsymbol s;\alpha);\Pi_{0}\right),
- \label{eq:full-chain-procedure-response}
+ \label{eq:ptc-map-reresolved-procedure-response}
 \end{align}}
 
 \newcommand{\SCIMapExposureEquations}{%
@@ -71,12 +78,14 @@
  &=\left\{u:e^{\rm vo}_u>0,\ G^{u}_{p}=1,\
    \exists i\in\mathcal I_{\rm route}:u\leadsto i\right\},
  \label{eq:upstream-original-population}\\
- E^{\rm original}_p&=\sum_{u\in\mathcal U^{\rm up}_p}e^{\rm vo}_u,
+ E^{{\rm up},{\rm footprint}}_p
+ &=\sum_{u\in\mathcal U^{\rm up}_p}e^{\rm vo}_u,
  \label{eq:original-exposure}\\
  \mathcal U^{\rm ret}_p
  &=\left\{u:e^{\rm vo}_u>0,\ G^{u}_{p}=1,\
    \exists i\in\mathcal C:u\leadsto i\right\},
- &E^{\rm ret}_p&=\sum_{u\in\mathcal U^{\rm ret}_p}e^{\rm vo}_u,
+ &E^{{\rm ret},{\rm footprint}}_p
+ &=\sum_{u\in\mathcal U^{\rm ret}_p}e^{\rm vo}_u,
  \label{eq:retained-exposure}\\
  \mathcal U^c_p&=\bigcup_{o\in\mathcal O_p}\{(o,u):u\in\mathcal U^{\rm ret}_{op}\},
  &E^c_p&=\sum_{(o,u)\in\mathcal U^c_p}e^{\rm vo}_{ou}.

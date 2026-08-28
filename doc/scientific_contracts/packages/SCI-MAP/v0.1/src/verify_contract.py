@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
 PDF = ROOT / "pdf"
 
-SHARED = SRC / "SCI-MAP-v0.1_SHARED_AUTHORITY_r0.1.tex"
+SHARED = SRC / "SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.tex"
 COMMON = SRC / "common"
 COMMON_MODULES = (
     COMMON / "notation.tex",
@@ -31,9 +31,9 @@ ENG_TEX = SRC / "engineering-conformance.tex"
 FORMAL_PDF = PDF / "SCI-MAP-FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT-v0.1.pdf"
 RATIONALE_PDF = PDF / "SCI-MAP-SCIENTIFIC-RATIONALE-v0.1.pdf"
 ENG_PDF = PDF / "SCI-MAP-ENGINEERING-CONFORMANCE-v0.1.pdf"
-FORMAL_REV_PDF = PDF / "SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.6-DRAFT.pdf"
-RATIONALE_REV_PDF = PDF / "SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.6-DRAFT.pdf"
-ENG_REV_PDF = PDF / "SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.6-DRAFT.pdf"
+FORMAL_REV_PDF = PDF / "SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.7-DRAFT.pdf"
+RATIONALE_REV_PDF = PDF / "SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.7-DRAFT.pdf"
+ENG_REV_PDF = PDF / "SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.7-DRAFT.pdf"
 CROSSWALK = ROOT / "CROSSWALK.md"
 SCIENTIST_CROSSWALK = ROOT / "SCIENTIST_CROSSWALK_R0.3.md"
 OWNER_LEDGER = ROOT / "SCIENTIFIC_OWNER_DECISION_LEDGER.md"
@@ -81,7 +81,7 @@ for module in COMMON_MODULES:
     assert f"common/{module.name}" in shared_wrapper
 
 for source in (formal_tex, rationale_tex, eng_tex):
-    assert source.count(r"\input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.1.tex}") == 1
+    assert source.count(r"\input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.tex}") == 1
 
 for source in (formal_tex, eng_tex):
     assert source.count(r"\SCIMapRequirements") == 1
@@ -121,10 +121,10 @@ for required_support_token in (
     r"\mathcal G",
     r"\sigma_g(i,p)",
     r"\operatorname{pass}_g",
-    r"\gamma_{\rm QC}",
+    r"\operatorname{pass}_{\gamma,{\rm QC}}",
     r"H_{{\rm fixed},\Theta}",
-    r"\Delta\boldsymbol z_{\rm FP}",
-    r"E^{\rm original}_p",
+    r"\Delta\boldsymbol z_{{\rm PTC}\text{-}{\rm FP}}",
+    r"E^{{\rm up},{\rm footprint}}_p",
 ):
     assert required_support_token in shared, f"missing support-domain token: {required_support_token}"
 
@@ -159,11 +159,16 @@ assert "SCI-MAP-CI-001" in rationale_tex
 assert "SCI-MAP:map_upstream_admission@2" in shared
 assert "SCI-MAP:observation_coadd_admission@1" in shared
 assert "SCI-PTC_TO_SCI-MAP v0.1/r0.1" in formal_tex
+assert "SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE v0.1/r0.1" in shared
+assert r"A_{{\rm MAP},\Pi}\equiv A_{\rm out}" in shared
+assert "PTC+MAP re-resolved" in shared
+assert "whole-chain RTC-to-CAL-to-PTC-to-MAP" in shared
 assert "eight map-local decisions remain open" in formal_tex.lower()
 for stale in (
     "raw-invalid", "raw validity", "raw-valid", "raw parentage",
     "raw bundle", "immutable raw parent", "raw accumulators", "C_x",
     r"Q_\gamma", "Any The PTC", "nine MAP decisions remain unresolved",
+    r"\Delta\Sigma", "full-chain re-resolved", "SCI-PTC_TO_SCI-MAPv0.1/r0.1",
 ):
     assert stale.lower() not in (shared + formal_tex + rationale_tex + eng_tex + crosswalk + ledger).lower(), (
         f"stale r0.6 term remains: {stale}"

@@ -129,6 +129,25 @@ numerical route. No implementation conformity, validation, response fidelity,
 observational performance, freeze, readiness, or production authorization is
 claimed.
 
+On `2026-08-28` the final targeted SCI-MAP r0.7 closure packet completed its
+content, mechanical, and rendered-document preflight for scientific-owner
+review. It preserves all 52 requirement IDs, 25 prediction IDs, and nine
+owner-decision IDs; imports one canonical shared authority into all three
+views; binds the exact `SCI-PTC_TO_SCI-MAP v0.1/r0.1` source; and treats PTC
+coefficient availability as structural while leaving coefficient finiteness
+to MAP's numerical gate. The packet records the ordered A--E contribution DAG,
+the single operator identity
+`A_MAP,Pi = A_out = D_Q,out^-1 J_out G Omega`, fixed-state/PTC-full-procedure/
+PTC+MAP-re-resolved response families, and original-footprint exposure at the
+stable original's layered AST ALIGN-grid coordinate in the exact target WCS.
+The two installed PTC/MAP boundary copies and every stable/r0.7 PDF pair are
+byte-identical. The durable verifier passes, and all 65 PDF pages passed
+Poppler inspection. The ordinary numerical route remains blocked by the
+missing exact PTC MAP-facing coefficient family and unresolved admitted
+numerical `coverage_cut` domain. This is an owner-review closure packet, not
+implementation conformity, validation, achieved response or performance,
+scientific-authority freeze, readiness, or production authorization.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later
