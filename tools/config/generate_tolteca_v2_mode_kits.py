@@ -22,7 +22,7 @@ from tolteca_mode_kit import (
 
 
 SCHEMA_VERSION = "citlali-tolteca-mode-kit-manifest-v2"
-KIT_VERSION = "phase4.1-v2.2"
+KIT_VERSION = "phase4.1-v2.3"
 
 RUNTIME_PATHS = (
     "runtime.n_threads",
@@ -527,6 +527,15 @@ def generate_mode(
             policy,
             "timestream.fruit_loops.source_center_mode",
             "auto",
+        )
+        # The accepted V1 policy predates the explicit fruit-loop activation
+        # contract. A nonzero S/N gate consumes empirical noise products, so
+        # the V2 science kit must produce them. This also matches the completed
+        # Stage 7 NGC4449 configuration while leaving the 2.5 threshold intact.
+        set_path(
+            policy,
+            "noise_maps.products.enabled",
+            True,
         )
     if spec.mode == "oof":
         # OOF Gaussian fits are diagnostic products. The PSF-preserving map

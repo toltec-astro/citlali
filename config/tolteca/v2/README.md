@@ -85,7 +85,9 @@ $HOME/tolteca/bin/python tools/config/tolteca_mode_kit.py merge \
 The full config preflight additionally enforces user/expert classification,
 mode-inapplicable control exclusion, file-size bounds, non-overlapping defaults
 and products, exact versioned policy hashes, and byte-for-byte generator
-reproduction.
+reproduction. The science kit also enforces the cross-file activation contract:
+its nonzero fruit-loop S/N gate requires enabled noise maps, a positive
+realization count, and enabled empirical noise products.
 
 ## Regeneration And TolPROJ
 

@@ -16,6 +16,7 @@ from tools.config.tolteca_mode_kit import (
     extract_low_level,
     flatten_leaves,
     merge_files,
+    numbered_yaml_files,
     normalized_path,
     policy_sha256,
     recursive_update,
@@ -379,6 +380,20 @@ class V2AuthoringModeKitsTest(unittest.TestCase):
                 expected[mode],
                 mode,
             )
+
+    def test_science_snr_fruit_loop_has_noise_product_prerequisites(self) -> None:
+        merged, _, _ = merge_files(
+            numbered_yaml_files(self.v2_root / "science")
+        )
+        policy = extract_low_level(merged)
+        fruit_loops = policy["timestream"]["fruit_loops"]
+        noise_maps = policy["noise_maps"]
+
+        self.assertTrue(fruit_loops["enabled"])
+        self.assertNotEqual(fruit_loops["sig2noise_limit"], 0)
+        self.assertTrue(noise_maps["enabled"])
+        self.assertGreater(noise_maps["n_noise_maps"], 0)
+        self.assertTrue(noise_maps["products"]["enabled"])
 
     def test_mode_specific_surfaces_exclude_inapplicable_controls(self) -> None:
         for mode in ("point", "oof"):

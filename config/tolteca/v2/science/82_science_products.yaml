@@ -16,7 +16,7 @@ reduce:
             enabled: true
             n_noise_maps: 10
             products:
-              enabled: false
+              enabled: true
 
           # Filtered maps, source catalogs, and source fits
           post_processing:

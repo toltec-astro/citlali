@@ -1,5 +1,38 @@
 # Citlali Refactor Status
 
+## 2026-08-28 Unity Build Acceptance And V2 Science-Kit Repair
+
+The owner-run Unity Spack acceptance completed at exact application commit
+`81681ded16d71cac9bbd2c46d03c2fda57c6666a`. Slurm job `63693972` exited
+zero, all 832 runnable CTests passed, and the one established disabled test
+remained not run. The installed executable reports `81681ded1`, Spack DAG
+`it7gtnz5gnwnemku6qwa54thijcajuu2`, deployment profile `unity-gcc13`, and
+lock identity `f7614af652c5799de3049075ecd7e559a906ba6d6d0115759332608e5cc3a2ea`;
+its SHA-256 is
+`01ab39211d4dde0ad157aba415a07a7b566979886ea8dd0fbe465bbee0989686`.
+The owner accepted the repeatable point-case build-stack differences as
+scientifically negligible for that bounded case only. This does not establish
+an all-mode successor baseline or authorize an accepted-run entry.
+
+The subsequent V1 NGC4449 science submission, Unity job `63719161`, reached
+the exact installed executable but exited with code 1 during configuration
+validation before science processing. The frozen V1 policy combines a
+nonzero fruit-loop S/N gate (`sig2noise_limit: 2.5`) with
+`noise_maps.products.enabled: false`; the explicit activation contract
+correctly rejects that combination because the gate consumes empirical noise
+products. V1 and the failed job remain immutable historical evidence.
+
+The canonical successor kit is now `phase4.1-v2.3`. Its science policy enables
+empirical noise products while preserving the 2.5 S/N threshold, matching the
+completed Stage 7 NGC4449 configuration rather than weakening the activation
+gate. A focused cross-file regression test now requires enabled noise maps, a
+positive realization count, and enabled empirical products whenever that
+canonical science S/N gate is active. The full config preflight passes 130
+Python tests, all four mode-kit policy checks, all eight compatibility cases,
+and every boundary audit. TolPROJ must vendor this exact hash-checked kit before
+a fresh V2 validation-suite root is initialized on Unity. No scientific
+algorithm, accepted-run ledger, or intended-science-change ledger is changed.
+
 ## 2026-08-26 Spack Build-Modernization Integration
 
 The owner directed the completed successor-build work into application

@@ -136,7 +136,7 @@ reduce:
           enabled: true
           n_noise_maps: 10
           products:
-            enabled: false
+            enabled: true
           randomize_dets: false
         post_processing:
           map_filtering:
