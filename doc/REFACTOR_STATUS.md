@@ -2,7 +2,11 @@
 
 ## 2026-08-28 WP-7 Identity RTC First Vertical Increment
 
-Implementation is now in progress on the bounded WP-7 identity RTC increment.
+The bounded WP-7 identity RTC increment is now locally implemented and has
+passed its representative real-paired-data execution gate. The exact
+acceptance executable source is
+`4d0ec46ee19267b351b8a3ca015964e0400cdfd4`; the executable binary SHA-256 is
+`72fd95236a63d2aca0d1f85877a49933f9b65b953f19bcf4f02d285d2373fafc`.
 The clean base merge retains exact accepted design commit `46824f7de` and exact
 ALIGN strict-half repair `d55deefb3` as separate ancestors. The first three
 reviewable code boundaries establish paired native `x/r` ingress and product
@@ -24,12 +28,24 @@ consumer but makes no pointing-completion claim. No CAL, VAL, PTC, MAP,
 persistent RTC TOD schema, legacy-route activation, or scientific-method
 expansion is included.
 
-Focused synthetic and existing ALIGN gates pass locally. Representative real
-paired-data execution remains an acceptance gate and is pending owner run under
-[the dated acceptance package](../handoff/WP7_IDENTITY_RTC_ACCEPTANCE_PACKAGE_2026-08-28.md).
-Until that evidence and a fresh independent read-only conformance review pass,
-the increment is not accepted for production readiness or activation and the
-legacy route remains authoritative.
+Focused synthetic and existing ALIGN gates pass locally. The owner-directed
+observation 152390 gate used all 11 admitted networks, 5,518 detectors, and
+2,048 native rows. It compared 22,579,656 paired `x/r` values and checked
+identity, support, pair decisions, causal evidence, selected time, and native
+correspondence across 11,289,828 aligned detector occurrences. The full route
+and two engineering partitions had zero scientific mismatches, zero
+out-of-scope AST/CAL/VAL/PTC/MAP calls, zero unexpected error-level records,
+and zero RTC-owned numerical bytes. Paired ingress owned 226,608,108 logical
+bytes; measured peak RSS was 629,358,592 bytes and paired-ingress-through-
+publication wall time was 4.497 seconds. The exact record is
+[retained with the handoff](../handoff/WP7_IDENTITY_RTC_ACCEPTANCE_152390_2026-08-28.json)
+and passes the repository validator; its SHA-256 is
+`10ef712c4f2a4ad79d227a1cf376cc0ff4f51090baea03455a681ec7befe9a26`.
+
+Fresh independent read-only conformance review of the exact implementation and
+evidence remains the next gate. Until it passes, the increment is not accepted
+for production readiness or activation and the legacy route remains
+authoritative. No accepted-run or intended-science-change ledger entry is made.
 
 ## 2026-08-26 WP-7 Timestream Successor Baseline
 

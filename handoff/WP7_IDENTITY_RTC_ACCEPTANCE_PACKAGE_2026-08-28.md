@@ -2,13 +2,16 @@
 
 ## Status
 
-The bounded implementation is locally constructed and synthetic gates pass.
-An opt-in local executable now performs the representative real paired-data
-gate without adding a production route or persistent TOD schema. Exact-revision
-execution evidence remains **pending** until the executable is built from a
-clean committed candidate and its record passes the validator. This package
-does not claim implementation conformity, observational performance, science
-qualification, production readiness, or successor activation.
+The bounded implementation is locally constructed, synthetic gates pass, and
+the owner-directed representative real paired-data gate **passes** at exact
+source revision `4d0ec46ee19267b351b8a3ca015964e0400cdfd4`. The retained
+[observation 152390 evidence record](WP7_IDENTITY_RTC_ACCEPTANCE_152390_2026-08-28.json)
+passes the repository validator and has SHA-256
+`10ef712c4f2a4ad79d227a1cf376cc0ff4f51090baea03455a681ec7befe9a26`.
+This package establishes representative
+execution evidence only; it does not claim independent implementation
+conformity, science qualification, production readiness, or successor
+activation.
 
 The implementation branch must retain both accepted inputs as exact ancestors:
 
@@ -112,7 +115,7 @@ native correspondence must not.
 
 ## Required comparisons
 
-The acceptance record must demonstrate:
+The focused suite plus acceptance record must demonstrate:
 
 - all required networks and detector identities came from the admitted
   participant inventory;
@@ -130,6 +133,29 @@ The acceptance record must demonstrate:
   completion;
 - no AST interpolation and no CAL, VAL, PTC, or MAP operation was invoked; and
 - no unexpected error- or critical-level record occurred.
+
+The representative 152390 slice contains 227,106 ineligible pairs, all caused
+by validity evidence present on both `x` and `r`; it does not happen to contain
+a one-sided invalid pair. The focused identity-RTC tests therefore remain the
+evidence for the required asymmetric `r`-to-`x` and `x`-to-`r` conservative
+consequences and retained member-local causes. The real-data record verifies
+the same pair-wide resolution and cause carriage exhaustively for the evidence
+origins actually present in this slice.
+
+## Recorded execution
+
+The retained exact-revision run covers 11 networks, 5,518 detectors, 2,048
+native rows, 11,300,864 native detector occurrences, and 11,289,828 aligned
+detector occurrences. It compared 22,579,656 paired values and performed
+11,289,828 comparisons each for identity, support, pair decision, and causal
+evidence. All scientific, chunk-partition, selected-time, native-
+correspondence, and out-of-scope call mismatch counts are zero.
+
+Paired ingress reports 226,608,108 logical owned bytes, including the two
+180,813,824-byte numerical planes. RTC owns zero numerical bytes. Measured
+paired-ingress-through-publication time is 4.497 seconds wall and 4.411 seconds
+CPU, with peak RSS 629,358,592 bytes. These are one representative local run,
+not a general performance qualification.
 
 ## Evidence record
 
