@@ -119,8 +119,8 @@ All eight D003 decisions and the third-successor acceptance are read from
 | F. Peter Schloerb, *Spectral Line Data Reduction at the Large Millimeter Telescope* (`2019-07-23`), exact PDF and intake record above | Owner-designated reusable scientific reference | Aperture/spatial-frequency motivation; peak-normalized JINC convention; complete two-JINC plus generalized-exponential analytic family; `(a,b,c,RMAX)` ordering and roles; `r'=r/(lambda/D)` convention; second-factor first zero | Geared to 3-mm spectroscopic receivers; radial cutoff conflicts with later square support; FCRAO values and 86-GHz simulations are not TolTEC authority | **Adopt** generic method and diffraction-scale precedent through notation/supersession cover; **cite** page-exact method excerpt; **defer** TolTEC numerical realization; **exclude** full memo, simulations and instrument-specific conclusions from authorship |
 | Core radial-support and pixel-area-integration branches | Superseded scientific material | A coherent earlier reference model | Conflicts directly with D003 support/subpixel decisions | **Supersede** explicitly; retain as history, not current JINC convention |
 | `8c581bfb...:SCI-MAP-002_SUPPORT_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | Square cache is the support; `r_max` also fixes the second-JINC first zero; corners beyond radial `r_max` remain in response | Does not independently supply the complete analytic parameter map | **Adopt** through the sanitized cover |
-| `8c581bfb...:SCI-MAP-002_SUBPIXEL_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | Phase-quantized point evaluation after rounded center and phase binning; not pixel-area integration | Exact tie/bin-edge and convergence bound still require explicit contract treatment | **Adopt** through the sanitized cover |
-| `8c581bfb...:SCI-MAP-002_CONDITIONING_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | Finite-positive `Q`, nonzero `C`, dimensionless cancellation ratio, summation-dependent error bound, and no unit-bearing floor | Exact realized summation method/error bound is not a scientific constant and is not supplied here | **Adopt**; expose the unsupplied realized bound honestly |
+| `8c581bfb...:SCI-MAP-002_SUBPIXEL_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | Phase-quantized point evaluation after rounded center and phase binning; not pixel-area integration | Later ODQ-109 closes numerical adequacy and makes adequate tie/bin choices engineering realizations rather than owner-selected science | **Adopt** through the sanitized cover; **supersede** only its unresolved exact-choice implication through ODQ-109 |
+| `8c581bfb...:SCI-MAP-002_CONDITIONING_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | Finite-positive `Q`, nonzero `C`, dimensionless cancellation ratio, summation-dependent error bound, and no unit-bearing floor | Later ODQ-109 preserves the scientific conditioning semantics but replaces the machine-specific bound/serialization clause with instrument-relevant numerical adequacy | **Adopt** the invariant science; **supersede** the machine-specific clause through ODQ-109 |
 | `8c581bfb...:SCI-MAP-002_PARAMETER_ADMISSION_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | Finite positive `a,b,c,r_max`, pixel size, and array scale; stable array identity; signed finite lobes; fail on non-finite coefficient | The full analytic factor/scale convention is not independently content-bound and it selects no TolTEC values | **Adopt** admission semantics; combine with ODQ-102B typed numerical unavailability |
 | `8c581bfb...:SCI-MAP-002_VALIDITY_MASK_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | Formal-support validity requires finite signal/formal weight, positive formal weight, and all admission/conditioning gates; empirical policy can downgrade but never promote | Historical product name is representation-specific and need not control the abstract contract | **Adopt** the meaning; **abstract** away the file/schema name |
 | `8c581bfb...:SCI-MAP-002_COVERAGE_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | `T_c2=sum(c_i^2/f_s,i)` seconds is coefficient-squared effective integration time, distinct from exposure, hits, and validity | It is not ordinary MAP exposure and does not close sample-frequency lineage | **Adopt** with exact identity and limitations |
@@ -154,10 +154,12 @@ All eight D003 decisions and the third-successor acceptance are read from
 4. **Subpixel response.** The owner accepted rounded-center, phase-binned,
    point-evaluated response. Increasing `subpixel_n` refines that realized
    point-phase representation, not a pixel-area integral.
-5. **Conditioning.** Admission is unit-invariant and based on finite state,
-   positive `Q`, nonzero `C`, and the dimensionless cancellation ratio against
-   a documented summation-error bound. A fixed absolute `C` or `Q` floor is not
-   authority.
+5. **Conditioning.** The recovered decision made admission unit-invariant and
+   based on finite state, positive `Q`, nonzero `C`, and a dimensionless
+   cancellation ratio rather than an absolute `C` or `Q` floor. The later
+   owner-approved ODQ-109 successor replaces its machine-specific summation-
+   error-bound clause with numerical error negligible against the
+   approximately `10^-3` relative instrument-fidelity scale.
 6. **Parameter/coefficient admission.** Stable array identity and finite
    strictly positive physical parameters are required; finite negative lobes
    are valid; non-finite coefficients fail the selected JINC product.
@@ -267,9 +269,12 @@ added to the author packet.
 5. A JINC-specific PTC signal/coordinate/validity/admission/exposure handoff is
    not frozen. The ordinary `SCI-PTC_TO_SCI-MAP` artifact is useful boundary
    evidence but is not a JINC contract.
-6. The realized floating-point summation policy and cancellation error bound,
-   exact point-phase tie/bin rules, finite-edge sample-center behavior, and
-   supported grouping/cardinality set remain unsupplied or owner-controlled.
+6. At recovery time, the realized floating-point policy, exact point-phase
+   tie/bin rules, finite-edge sample-center behavior, and grouping/cardinality
+   were unsupplied. ODQ-105--107 later close grouping/products, and ODQ-109
+   closes scientific numerical adequacy without prescribing machine-specific
+   algorithms or exact adequate tie/bin choices. The finite-edge sample-center
+   behavior remains open under ODQ-110.
 7. Historical integration and validation records disagree in ancestry and
    scope with the current library authority. They are later conformity inputs,
    not a contradiction in scientific authority.

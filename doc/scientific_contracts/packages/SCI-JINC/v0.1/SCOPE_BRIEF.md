@@ -1,6 +1,6 @@
 # SCI-JINC — Signed-Coefficient JINC Observation Mapmaker Scope Brief
 
-Status: ODQ-101/102B/103/104/105/106/107 Stage A successor candidate; predecessor Stage A bytes
+Status: ODQ-101/102B/103/104/105/106/107/109 Stage A successor candidate; predecessor Stage A bytes
 owner-approved; successor requires renewed exact-byte approval; Stage B blocked
 
 Scientific owner: Grant Wilson
@@ -67,7 +67,7 @@ which remains unchanged.
 The raw recovery record, owner feedback, decision conversations and all
 implementation/evidence material remain outside the implementation-blind
 author channel. The predecessor Stage A packet was owner-approved at
-`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`; this ODQ-101/102B/103/104/105/106/107 successor changes
+`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`; this ODQ-101/102B/103/104/105/106/107/109 successor changes
 allowed input bytes and has **not** received renewed exact-byte approval. No
 Stage B author is commissioned.
 
@@ -255,11 +255,15 @@ contract-defined zero are ordinary no-contribution results, while a negative
 coefficient is normal. Every coupled JINC accumulator uses the same admitted
 sample-pixel pair and coefficient identity.
 
-The exact tie rule, phase-bin edges/representatives, cache-index rounding,
-effective `subpixel_n` realization and convergence/error bound remain open
-under `SCI-JINC-ODQ-109`. The case where the rounded center is outside but the
-square overlaps the map remains open under `SCI-JINC-ODQ-110`; the owner must
-select center-required, overlap-admitted, or another exact rule. See
+ODQ-109 requires every center/phase/cache realization to be single-valued,
+preserve the accepted point-phase and square-support operator, and keep its
+total numerical error negligible compared with the approximately `10^-3`
+relative fidelity relevant to the instrument. Exact adequate tie, bin,
+representative, cache-rounding and accumulation choices are engineering
+realizations rather than separate scientific-owner decisions. The case where
+the rounded center is outside but the square overlaps the map remains open
+under `SCI-JINC-ODQ-110`; the owner must select center-required, overlap-
+admitted, or another exact rule. See
 [`GEOMETRY_DECISION_TABLE.md`](GEOMETRY_DECISION_TABLE.md).
 
 ## 7. Signed Normalization And Support
@@ -271,12 +275,14 @@ sky. Define the dimensionless cancellation statistic
 rho_p = abs(C_p) / sum_i I_ip abs(omega_i kappa_ip).
 ```
 
-Admission requires finite contributors, finite `C_p` and `Q_p`, `Q_p>0`,
-`C_p!=0`, and `rho_p` not below a documented floating-point error bound
-derived from the realized summation method and contributor count. The bound,
-method and policy belong to the exact JINC realization, not a separate
-provenance product. The exact bound identity remains
-open under `SCI-JINC-ODQ-109`; no unit-bearing `C` or `Q` floor is permitted.
+Admission requires finite contributors, finite `C_p` and `Q_p`, `Q_p>0`, and
+`C_p!=0`. `rho_p` remains a dimensionless conditioning indicator. A finite
+nonzero result is usable only when total numerical error is demonstrably
+negligible compared with the approximately `10^-3` relative fidelity relevant
+to the instrument. If near-cancellation prevents that showing, the pixel is
+locally invalid. ODQ-109 prescribes no universal `rho_p` cutoff, contributor-
+count/machine-epsilon formula, exact reduction order or unit-bearing `C`/`Q`
+floor.
 
 Algebraic membership, resolved numerical conditioning, formal JINC support,
 final product validity and downstream eligibility are separate. An empirical
@@ -394,13 +400,21 @@ policy and preserves direct and transitive causes.
 
 ## 12. Scientific Numerical Adequacy
 
-The scientific authority may require exact discrete identity/membership,
-explicit conditioning, a preregistered accumulation-error bound, no silent
-coefficient thresholding and operation-count/conditioning-aware sequential/
-parallel agreement. It does not prescribe a summation algorithm, cache
-layout, thread order or optimization. Candidate procedures and pass/fail
-evidence belong in the later Engineering Conformance Specification and
-subsequent assessment.
+Numerical error from finite arithmetic, accumulation/reduction order,
+analytic-function evaluation, phase quantization and cache/index realization
+must remain negligible compared with the approximately `10^-3` relative
+fidelity relevant to the instrument. This is the complete scientific accuracy
+principle for base v0.1: no stronger precision, bitwise reproducibility, fixed
+reduction order, prescribed summation algorithm, contributor-count floating-
+point formula or exact sequential/parallel identity is required.
+
+The realization must still be single-valued, preserve the scientifically
+specified membership semantics and accepted point-phase/square-support
+operator, avoid silent coefficient thresholding, and establish adequate
+conditioning before a local map value is supported. Candidate algorithms,
+test constructions, and handling of comparisons near zero belong in the later
+Engineering Conformance Specification and subsequent assessment. This Stage A
+decision establishes no conformity or achieved-fidelity claim.
 
 ## 13. Non-Goals And Claim Boundary
 
@@ -454,19 +468,23 @@ while local invalid support does not. No general availability, detailed-cause,
 optional/conditional-role or provenance framework is authorized.
 `SCI-JINC-ODQ-108` response/covariance products are deferred by ODQ-107 until
 a concrete scientific use is separately authorized.
+`SCI-JINC-ODQ-109` is resolved: scientific conditioning retains finite
+`C_p`/`Q_p`, `Q_p>0`, `C_p!=0`, exact-cancellation rejection, finite-negative
+normalization and dimensionless `rho_p`, while numerical error must be
+negligible compared with the approximately `10^-3` relative instrument-
+fidelity scale. It requires no machine-specific error formula, exact
+summation/tie/bin/cache choice, bitwise reproducibility or stronger precision.
 
 Before author dispatch, the owner must:
 
-1. decide the center/tie/phase/cache/error-bound policy
-   (`SCI-JINC-ODQ-109`);
-2. decide the outside-center overlapping-square edge rule
+1. decide the outside-center overlapping-square edge rule
    (`SCI-JINC-ODQ-110`);
-3. approve the exact Schloerb method excerpt and cover, controlled PTC
+2. approve the exact Schloerb method excerpt and cover, controlled PTC
    coefficient-registry source/cover, PTC/AST boundaries,
    admission profile, fixed grouping/product table and inherited-decision
    table;
-4. authorize a versioned VAL registry binding; and
-5. approve every exact successor author-packet byte and SHA-256 value.
+3. authorize a versioned VAL registry binding; and
+4. approve every exact successor author-packet byte and SHA-256 value.
 
 The requested Stage A repairs and exact proposed packet are recorded in
 [`STAGE_A_CHANGE_LOG.md`](STAGE_A_CHANGE_LOG.md) and

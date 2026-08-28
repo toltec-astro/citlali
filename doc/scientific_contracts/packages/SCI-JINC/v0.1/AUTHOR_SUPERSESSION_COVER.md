@@ -44,13 +44,20 @@ core is broader, earlier, or ambiguous:
 5. **Point-phase response supersedes pixel averaging.** The sample center is
    rounded, residual phase is binned, and one precomputed point-evaluated
    matrix is selected. Increasing `subpixel_n` refines this realized
-   point-phase representation; it is not pixel-area integration.
-6. **Unit-invariant conditioning.** Require finite contributors, finite `C`
-   and `Q`, `Q>0`, and nonzero `C`. Define
-   `rho=abs(sum_i omega_i kappa_i)/sum_i abs(omega_i kappa_i)`. Exact cancellation is invalid;
-   unresolved near-cancellation is determined only by a documented
-   floating-point error bound tied to the realized summation method and
-   contributor count. No absolute unit-bearing `C` or `Q` floor is authority.
+   point-phase representation; it is not pixel-area integration. Specific
+   tie, bin-edge, representative and cache-rounding choices are engineering
+   realizations when they are single-valued, preserve this operator, and meet
+   the ODQ-109 scientific-accuracy rule.
+6. **Unit-invariant conditioning and sufficient numerical accuracy.** Require
+   finite contributors, finite `C` and `Q`, `Q>0`, and nonzero `C`. Define
+   `rho=abs(sum_i omega_i kappa_i)/sum_i abs(omega_i kappa_i)` as a
+   dimensionless conditioning indicator. Exact cancellation is invalid; a
+   finite nonzero result is usable only when numerical error is demonstrably
+   negligible compared with the approximately `10^-3` relative fidelity
+   relevant to the instrument. No absolute unit-bearing `C` or `Q` floor,
+   universal `rho` cutoff, prescribed summation algorithm, contributor-count
+   floating-point formula, bitwise reproducibility, or stronger precision is
+   scientific authority.
 7. **Fail-closed parameter and coefficient admission.** Stable array identity
    must be present. Define `r'_a=r/s_a`, with angular, array-associated `s_a`;
    `a_a`, `b_a`, `c_a`, and `(r_max)_a` are dimensionless and may be array-
@@ -134,8 +141,8 @@ This cover does not itself supply:
 - final owner approval of the proposed AST coordinate boundary, JINC admission
   profile, or fixed grouping/product table; response/covariance products are
   deferred under ODQ-107;
-- the realized summation algorithm/error bound, phase tie/bin rule, or
-  finite-map center-outside behavior; or
+- a prescribed summation algorithm, machine-specific error formula, exact
+  tie/bin/cache realization, or finite-map center-outside behavior; or
 - any numerical parameter value, threshold, default, storage schema,
   implementation mapping, validation result, or production policy.
 

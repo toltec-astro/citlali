@@ -1,6 +1,6 @@
 # SCI-JINC v0.1 — Observation Grouping And Product Roles
 
-Status: ODQ-105/106/107 owner-approved Stage A successor candidate; awaiting
+Status: ODQ-105/106/107/109 owner-approved Stage A successor candidate; awaiting
 renewed exact-byte approval
 
 Prepared: `2026-08-28`
@@ -79,11 +79,14 @@ make a whole role unavailable. No placeholder role is synthesized.
 | `jinc_map` | `m_p=N_p/C_p` on accepted local JINC support | Published signal-unit map with its local pixel support/validity state; that state is not a separate role-availability object. | **Required** |
 | `jinc_coefficient_squared_time` | `T_p^(kappa^2)=sum_i I_ip kappa_ip^2/f_s,i` | Authorized method-specific temporal-support product in seconds; not physical exposure, precision or validity. | **Required** |
 
-The accepted cancellation test still evaluates
-`rho_p=abs(C_p)/sum_i I_ip abs(omega_i kappa_ip)` against the realized
-summation/count error bound. Its absolute-term sum, contributor count, bound
-and diagnostic value are construction state, not persistent bundle roles;
-their exact policy remains `SCI-JINC-ODQ-109`.
+The accepted cancellation treatment retains
+`rho_p=abs(C_p)/sum_i I_ip abs(omega_i kappa_ip)` as a dimensionless
+conditioning indicator. ODQ-109 requires the total numerical error to remain
+negligible compared with the approximately `10^-3` relative fidelity relevant
+to the instrument. Any absolute-term sum, count, error estimate or diagnostic
+used to demonstrate that adequacy is construction state, not a persistent
+bundle role; no prescribed summation algorithm or machine-specific bound is a
+scientific requirement.
 
 The observation, stable array, exact JINC realization, destination geometry
 and lifecycle identify the bundle under ODQ-106. They are not additional

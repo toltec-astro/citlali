@@ -1,6 +1,6 @@
 # SCI-JINC v0.1 — Proposed Sanitized Conventions And Ownership
 
-Status: ODQ-101/102B/103/104/105/106/107 sanitized successor candidate; renewed exact-byte
+Status: ODQ-101/102B/103/104/105/106/107/109 sanitized successor candidate; renewed exact-byte
 approval
 required
 
@@ -163,9 +163,11 @@ Exact source set at
 - Geometric square support, nonzero coefficient support, numerical/formal
   support, temporal support, empirical policy support, and final product
   validity are distinct.
-- Exact cancellation is invalid. Near-cancellation is judged by the
-  dimensionless ratio of absolute signed sum to absolute-term sum against a
-  documented realized summation-error bound, not a unit-bearing threshold.
+- Exact cancellation is invalid. The dimensionless ratio of absolute signed
+  sum to absolute-term sum remains a conditioning indicator. A finite nonzero
+  result is usable only when numerical error is demonstrably negligible
+  compared with the approximately `10^-3` relative fidelity relevant to the
+  instrument; no unit-bearing threshold or universal `rho` cutoff is used.
 - A finite value is not proof of validity. Invalid inputs are rejected before
   numerical payload use; multiplying a non-finite value by zero is not masking.
 
@@ -212,10 +214,10 @@ Exact source set at
 - Contributions with different stable-array or destination-map identities are
   never merged. No additional per-contribution provenance or synthetic empty-
   array product is required.
-- The cancellation absolute-term sum, contributor count, realized error bound
-  and diagnostics needed during construction are not persistent bundle roles.
-  Their exact numerical policy remains ODQ-109. Debug logging is not a
-  scientific product.
+- Any absolute-term sum, contributor count, error estimate or diagnostic used
+  to demonstrate adequate conditioning is construction state, not a
+  persistent bundle role. ODQ-109 prescribes no particular algorithm or
+  machine-specific bound. Debug logging is not a scientific product.
 
 ## Producer–Transformer–Consumer Responsibilities
 

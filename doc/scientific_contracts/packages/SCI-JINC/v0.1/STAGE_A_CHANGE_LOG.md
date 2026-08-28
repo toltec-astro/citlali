@@ -22,7 +22,7 @@ The raw feedback file is scope-control provenance and is not an author input.
 | Owner-supplied LMT method memo | Intake preserves F. Peter Schloerb's exact `2019-07-23` 42-page PDF, SHA-256 `835fb02e842c9109c2c7ad3f03288882dfac283e63bfcd0f818c7d5379e7e5cd`. A visually verified page-exact pages-15--19 excerpt and [`AUTHOR_LMT_JINC_REFERENCE_COVER.md`](AUTHOR_LMT_JINC_REFERENCE_COVER.md) now close the generic two-JINC formula, Bessel convention, amplitude, envelope and parameter roles while excluding 3-mm/FCRAO values and simulations from TolTEC authority. |
 | Notation/algebra/units | Added [`NOTATION_AND_UNITS.md`](NOTATION_AND_UNITS.md) using `kappa_ip`, `omega_i`, and `w_ip`, exact `N/C/Q`, covariance, response and coefficient-squared-time equations, plus both dimensionless and inverse-square coefficient unit cases. |
 | Signed cancellation | Scope and tables now permit finite negative `C_p`, reject exact/unresolved cancellation with cause, use the dimensionless ratio, separate support/validity layers and list required predictions. Exact realized error-bound identity remains open. |
-| Geometry | Added [`GEOMETRY_DECISION_TABLE.md`](GEOMETRY_DECISION_TABLE.md). Square support, point-phase target and crop are bound; tie/bin/cache rounding and outside-center overlap remain explicit blockers. |
+| Geometry | Added [`GEOMETRY_DECISION_TABLE.md`](GEOMETRY_DECISION_TABLE.md). Square support, point-phase target and crop are bound. ODQ-109 makes numerically adequate tie/bin/cache choices engineering realizations; only outside-center overlap remains a scientific blocker. |
 | PTC handoff | Added [`SCI-PTC_TO_SCI-JINC_BOUNDARY.md`](SCI-PTC_TO_SCI-JINC_BOUNDARY.md), identity `SCI-PTC_TO_SCI-JINC v0.1/r0.1`. No coefficient family is inferred; numerical production remains unavailable. |
 | AST role | ODQ-103 advances [`SCI-AST_TO_SCI-JINC_BOUNDARY.md`](SCI-AST_TO_SCI-JINC_BOUNDARY.md) to r0.2: AST supplies authoritative coordinate facts and exact parent-sample association for the same processed realization entering JINC; JINC owns local geometry/support/coefficient use; scientific association is normative but its data-model mechanism is not. |
 | Admission | ODQ-103 selects the one JINC-owned key `SCI-JINC:jinc_map_contribution@1`, separates sample admission from sample-pixel support, preserves signed zero/negative no-defect semantics, couples all contribution accumulators to one pair/coefficient identity, and adds no per-contribution provenance system. It remains unusable pending exact-byte approval and a versioned SCI-VAL registry successor; frozen VAL was not edited. |
@@ -30,6 +30,7 @@ The raw feedback file is scope-control provenance and is not an author input.
 | Observation/coadd boundary | ODQ-105 makes the base contract observation-only while permitting same-observation streaming/chunk accumulation under one exact realization and bundle identity. It authorizes no cross-observation algebra; any future JINC coadd requires a separate boundary over complete observation bundles. |
 | Per-array grouping and cardinality | ODQ-106 authorizes zero through three produced bundles per observation, at most one per admitted/requested stable array and exact destination identity. Missing, unavailable or unrequested arrays create no placeholder and do not invalidate another bundle; different array/destination contributions never merge and no per-contribution provenance is added. |
 | Fixed minimal product schema | ODQ-107 replaces the broad product-availability framework with required `N_p`, `C_p`, `Q_p`, derived `m_p` carrying local support/validity, and `jinc_coefficient_squared_time`. Whole-product failure suppresses the bundle; local invalid pixels remain ordinary content. Every other role, including ODQ-108 response/covariance products, is outside/deferred; the response/covariance table leaves the author manifest. |
+| Scientific conditioning and numerical adequacy | ODQ-109 preserves unit-invariant signed conditioning, exact-cancellation rejection, finite-negative normalization, `Q_p>0`, `C_p!=0`, dimensionless `rho_p`, point-phase evaluation and square support. It replaces machine-specific summation/count bounds and exact tie/bin/cache/reproducibility demands with total numerical error negligible compared with the approximately `10^-3` relative instrument-fidelity scale. Adequate algorithms and tests remain engineering-conformance choices. |
 | Response/covariance | Added [`RESPONSE_AND_COVARIANCE_FAMILIES.md`](RESPONSE_AND_COVARIANCE_FAMILIES.md) with four response families, `A C_PTC A^T`, conditional shortcuts, overlap/edge effects and omitted terms. |
 | Observation/group/product boundary | Added [`GROUPING_AND_PRODUCT_ROLES.md`](GROUPING_AND_PRODUCT_ROLES.md): observation-only base, independent `a1100`/`a1400`/`a2000` bundles, no cross-array/coadd product, scientific destination identity and required/conditional/optional role table. |
 | Numerical adequacy | Scientific identity/bounds are separated from algorithm, cache, thread and optimization choices. No implementation procedure or evidence is admitted. |
@@ -43,10 +44,8 @@ Stage B remains prohibited until the owner supplies or explicitly dispositions:
    family and compatible payload/QC; ODQ-101 closes ownership but not source
    availability;
 2. a versioned SCI-VAL registration binding for the JINC admission profile;
-3. exact point-center tie, phase-bin, cache-extent and scientific numerical
-   error-bound identities (`SCI-JINC-ODQ-109`);
-4. the outside-center/overlapping-square edge rule (`SCI-JINC-ODQ-110`); and
-5. exact owner approval of every successor author-packet byte
+3. the outside-center/overlapping-square edge rule (`SCI-JINC-ODQ-110`); and
+4. exact owner approval of every successor author-packet byte
    (`SCI-JINC-STAGE-A-Q002`).
 
 No Stage B rationale, conformance contract or PDF was drafted. No

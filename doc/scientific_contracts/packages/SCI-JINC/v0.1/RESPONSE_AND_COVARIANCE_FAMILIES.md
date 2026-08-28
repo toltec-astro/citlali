@@ -55,10 +55,10 @@ empirical covariance/weight and significance remain SCI-NOI authority.
 
 ## Scientific Numerical Adequacy Versus Execution Choice
 
-The future scientific contract may require exact discrete membership and
-identity, explicit conditioning, a preregistered accumulation-error bound, no
-silent coefficient thresholding and operation-count/conditioning-aware
-sequential/parallel agreement. It does not prescribe a summation algorithm,
-cache layout, thread order or optimization. Candidate procedures and evidence
-belong in the future Engineering Conformance Specification and later
-assessment, not in the scientific response/covariance authority.
+ODQ-109 requires explicit conditioning and total numerical error negligible
+compared with the approximately `10^-3` relative fidelity relevant to the
+instrument. It does not prescribe a summation algorithm, contributor-count
+bound, cache layout, thread order, bitwise reproducibility or stronger
+precision. Candidate procedures and evidence belong in the future Engineering
+Conformance Specification and later assessment, not in the scientific
+response/covariance authority.

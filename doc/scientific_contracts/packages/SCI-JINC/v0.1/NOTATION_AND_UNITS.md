@@ -48,11 +48,13 @@ contribution uses the same admitted sample-pixel pair and the same
 
 ODQ-107 fixes the complete published numerical schema to distinct `N_p`,
 `C_p`, `Q_p`, derived `m_p` with its local support/validity state, and
-`T_p^(kappa^2)`. The absolute-term sum and contributor count needed to apply
-the accepted `rho_p` cancellation test are construction state under ODQ-109,
-not persistent bundle roles. Formal weight/variance, covariance, response,
-standalone support/availability, diagnostics and generalized provenance are
-outside or deferred from base v0.1.
+`T_p^(kappa^2)`. ODQ-109 retains `rho_p` as a dimensionless conditioning
+indicator and requires numerical error negligible against the approximately
+`10^-3` relative instrument-fidelity scale. Any absolute-term sum, contributor
+count, error estimate or diagnostic used to demonstrate that adequacy is
+construction state, not a persistent bundle role. Formal weight/variance,
+covariance, response, standalone support/availability, diagnostics and
+generalized provenance are outside or deferred from base v0.1.
 
 ## Exact Retained Algebra
 

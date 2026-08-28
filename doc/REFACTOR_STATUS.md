@@ -318,6 +318,23 @@ refreshed 16-object ODQ-101/102B/103/104/105/106/107 packet still awaits
 scientific-owner question is `SCI-JINC-ODQ-109`, the exact summation/count
 error bound, deterministic accumulation and phase/cache numerical policy.
 
+Grant Wilson then resolved `SCI-JINC-ODQ-109` on `2026-08-28` by recasting it
+around scientific conditioning and sufficient instrument-relevant numerical
+accuracy. Finite-state requirements, `Q_p>0`, `C_p!=0`, exact-cancellation
+rejection, finite-negative normalization, unit/common-scale invariance and
+dimensionless `rho_p` remain. Total numerical error from arithmetic,
+accumulation/reduction order, function evaluation, phase quantization and
+cache/index realization must be negligible compared with the approximately
+`10^-3` relative fidelity relevant to the instrument. No prescribed summation
+algorithm, contributor-count/machine-epsilon bound, universal `rho` cutoff,
+exact adequate tie/bin/cache choice, bitwise reproducibility or stronger
+precision is a scientific requirement; adequate realization and test design
+belong to later engineering conformance. The refreshed 16-object successor
+packet still awaits `SCI-JINC-STAGE-A-Q002`; Stage B remains unlaunched. The
+next unresolved scientific-owner question is `SCI-JINC-ODQ-110`, the rule for
+a rounded sample center outside the finite map whose square support overlaps
+the map.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later
