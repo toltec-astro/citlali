@@ -1,8 +1,8 @@
 # SCI-MAP — Ordinary Mapmaking And Observation Coaddition
 
-Status: bounded r0.7.1 freeze-only errata packet; exact boundaries and
-source-bound atomic/aggregate MAP profiles authored; hard numerical gates
-remain visible; scientific authority not frozen
+Status: **SCI-MAP v0.1/r0.7.1 scientific authority frozen by Grant Wilson on
+`2026-08-28`; implementation conformity and validation not assessed under
+this contract.**
 
 Scientific contract scope: `v0.1`, owner-approved (`2026-08-16`)
 
@@ -98,6 +98,10 @@ and two rendered views. The first scientific editing round found the formal
 science strong but required the SCI-CAL house-model genre separation. The
 package now exposes:
 
+- [`SCIENTIFIC_OWNER_FREEZE_R0.7.1.md`](SCIENTIFIC_OWNER_FREEZE_R0.7.1.md),
+  promoting exact candidate commit `bd010e20e` to frozen scientific authority;
+- [`FREEZE_VERIFICATION_R0.7.1.md`](FREEZE_VERIFICATION_R0.7.1.md), recording
+  the status-only promotion, exact hashes, durable checks, and claim boundary;
 - [formal scientific/engineering contract r0.7.1](pdf/SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.7.1-DRAFT.pdf),
   preserving all canonical equations, 52 requirements, 25 predictions, exact
   support/state semantics, provenance, decision register, and conformance
@@ -196,10 +200,12 @@ reduction, Unity execution, or production-status decision was performed.
 
 ## Stopping Rule And Next Gate
 
-Revision r0.7.1 is the freeze-only errata packet. It does not claim
-implementation conformity, validation, freeze, response achievement,
-observational performance, production authorization, or readiness. Eight MAP
-owner decisions remain open; OD-008 is resolved. The ordinary numerical route
-is still hard-blocked by the missing PTC MAP-facing coefficient family and the
-unresolved exact owner-admitted numerical `coverage_cut` state/value. The next
-gate is scientific-owner review of the r0.7.1 PDFs and closure records.
+Revision r0.7.1 is the frozen scientific authority. Freeze changes no
+scientific content and does not claim implementation conformity, validation,
+response achievement, observational performance, production authorization,
+or readiness. Eight MAP owner decisions remain open; OD-008 is resolved. The
+ordinary numerical route remains hard-blocked by the missing PTC MAP-facing
+coefficient family and unresolved exact owner-admitted numerical
+`coverage_cut` state/value. The next work is implementation-conformity planning
+against this frozen authority and separately versioned owner action on any
+open scientific decision. Frozen r0.7.1 content shall not be silently edited.

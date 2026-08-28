@@ -160,6 +160,19 @@ semantics are unchanged. This is an author-artifact closure record only and
 makes no implementation, conformity, validation, performance, freeze,
 readiness, production, or route-availability claim.
 
+On `2026-08-28` Grant Wilson authorized the status-only freeze of the exact
+SCI-MAP v0.1/r0.7.1 candidate at commit `bd010e20e`. The scientific-owner
+freeze record binds the externally hashed source manifest, the 52 requirements,
+25 predictions, exact boundary/profile/Registry identities, owner ledger, and
+three canonical PDFs without changing their scientific or rendered bytes.
+Eight MAP owner decisions and the two hard numerical gates remain explicitly
+open; the source-closed numerical MAP route therefore remains unavailable.
+The freeze establishes scientific authority only and makes no implementation
+conformity, representation-fidelity, validation, response-achievement,
+performance, readiness, or production claim. Future substantive changes
+require explicit owner authority and a versioned successor or formally
+reopened revision.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later
