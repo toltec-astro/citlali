@@ -335,6 +335,20 @@ next unresolved scientific-owner question is `SCI-JINC-ODQ-110`, the rule for
 a rounded sample center outside the finite map whose square support overlaps
 the map.
 
+Grant Wilson then resolved `SCI-JINC-ODQ-110` on `2026-08-28` with the center-
+admission rule. The resolved rounded center used for JINC cache placement must
+lie in the finite destination domain before footprint evaluation. An outside
+center sets `I_ip=0` for every destination pixel and changes none of `N_p`,
+`C_p`, `Q_p` or `T_p^(kappa^2)`, even when its square overlaps the map. An
+admitted in-map center retains ordinary cropped square membership without
+wrap, completion, renormalization or edge correction. JINC-then-crop
+equivalence is not required, and no added edge cause, provenance or diagnostic
+product follows. No unresolved numbered scientific-scope ODQ remains. The
+next scientific-owner decision is `SCI-JINC-STAGE-A-Q002`, exact-byte approval
+or revision of the 16-object successor packet; the versioned VAL registry
+binding remains a separate Stage B dispatch prerequisite. Stage B remains
+unlaunched.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

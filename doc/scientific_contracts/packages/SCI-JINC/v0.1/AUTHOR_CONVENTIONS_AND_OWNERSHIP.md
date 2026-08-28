@@ -1,6 +1,6 @@
 # SCI-JINC v0.1 — Proposed Sanitized Conventions And Ownership
 
-Status: ODQ-101/102B/103/104/105/106/107/109 sanitized successor candidate; renewed exact-byte
+Status: ODQ-101/102B/103/104/105/106/107/109/110 sanitized successor candidate; renewed exact-byte
 approval
 required
 
@@ -194,6 +194,15 @@ Exact source set at
   results, not causes. A negative coefficient is normal. An unavailable or
   ambiguous AST coordinate prevents geometry evaluation and is not outside
   support.
+- After upstream sample admission and coordinate association, JINC resolves
+  the rounded center used for cache placement and applies ODQ-110 before any
+  sample-pixel support test. A center outside the finite destination domain
+  contributes to no pixel, even when its square overlaps the map. This is
+  ordinary no-contribution and requires no edge-specific cause, provenance or
+  diagnostic product.
+- For an admitted in-map center, outside-map square pixels are cropped without
+  wrap, reflection, footprint completion, interior renormalization or edge
+  correction. JINC-then-crop equivalence is not required.
 - All required accumulators derived from one contribution use the same
   admitted sample-pixel pair and signed-coefficient identity.
 - A required whole-product formation or publication failure propagates. A

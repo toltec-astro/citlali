@@ -2,7 +2,7 @@
 
 Boundary identity: `SCI-AST_TO_SCI-JINC v0.1/r0.2`
 
-Status: ODQ-103/107 Stage A successor boundary candidate; exact-byte owner
+Status: ODQ-103/107/110 Stage A successor boundary candidate; exact-byte owner
 approval required
 
 Prepared: `2026-08-28`
@@ -86,9 +86,12 @@ The canonical scientific boundary statement is:
   manufacture a general JINC-valid flag, or encode JINC kernel semantics.
 - AST may provide an optional nominal containing pixel only under its exact
   half-open rule, but SCI-JINC may not silently substitute that role for its
-  still-unresolved rounded-center and phase convention.
-- AST out-of-bounds state does not by itself decide whether an overlapping
-  JINC square is admitted. `SCI-JINC-ODQ-110` must select the JINC edge rule.
+  ODQ-109-compliant rounded-center and phase realization.
+- AST continuous-coordinate out-of-bounds state does not itself substitute for
+  the JINC center gate. SCI-JINC applies ODQ-110 to the resolved rounded center
+  used for cache placement: an outside rounded center contributes nowhere,
+  even when its square overlaps the map; an in-map center proceeds to ordinary
+  sample-pixel support and finite-map crop.
 - Missing or invalid RTC-parent facts make this dependent role unavailable.
   JINC does not borrow an ALIGN-grid coordinate, filter angles as signal, or
   reconstruct a coordinate from the PTC payload.
@@ -100,8 +103,13 @@ The canonical scientific boundary statement is:
   admission result or validity mask, or an upstream producer's conclusion
   about JINC usability.
 - JINC sample admission decides whether an upstream sample may be considered.
-  JINC kernel support separately decides whether that admitted sample
-  contributes to a particular destination pixel.
+  JINC next applies the rounded-center finite-map occurrence gate. Only an
+  admitted in-map center proceeds to kernel support, which separately decides
+  whether the occurrence contributes to a particular destination pixel.
+- A rounded center outside the finite destination domain sets `I_ip=0` for all
+  pixels. This is ordinary no-contribution, not an upstream validity failure,
+  a bundle failure, or a request for edge provenance/diagnostics. Footprint-
+  overlap admission is prohibited.
 - Outside finite JINC support and a contract-defined zero coefficient are
   ordinary no-contribution results, not upstream validity failures or defect
   causes. A finite negative coefficient is scientifically normal and is not an
@@ -126,8 +134,9 @@ The canonical scientific boundary statement is:
 Compatibility requires frozen AST v0.1/r0.3, the exact role name, exact same-
 processed-sample association, compatible ancestry/generations, the exact
 target JINC WCS, `SCI-JINC:jinc_map_contribution@1`, and all typed validity/
-uncertainty causes. A missing, duplicate, ambiguous, or conflicting required
+uncertainty causes, plus the ODQ-110 rounded-center domain rule. A missing,
+duplicate, ambiguous, or conflicting required
 coordinate association prevents the affected contribution and required
 dependent product from realized success. A changed coordinate role,
-projection authority, scientific association, admission identity, ownership,
-or missing/conflict rule requires a versioned successor.
+projection authority, scientific association, center-admission rule,
+ownership, or missing/conflict rule requires a versioned successor.

@@ -1,6 +1,6 @@
 # SCI-JINC — Signed-Coefficient JINC Observation Mapmaker
 
-Status: ODQ-101, ODQ-102B, ODQ-103--107 and ODQ-109 owner
+Status: ODQ-101, ODQ-102B, ODQ-103--107 and ODQ-109--110 owner
 dispositions incorporated
 into a bounded Stage A successor candidate; renewed exact-byte approval
 required; Stage B not commissioned
@@ -44,7 +44,7 @@ Work began with the package's reviewed
   JINC by analogy.
 
 The predecessor author inputs were approved at
-`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`. The ODQ-101/102B/103/104/105/106/107/109 successor candidate
+`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`. The ODQ-101/102B/103/104/105/106/107/109/110 successor candidate
 updates the scientist-readable
 [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md), the frozen independent core paired with
 [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md), the page-exact
@@ -68,7 +68,7 @@ author channel.
 Grant Wilson approved the exact predecessor Stage A candidate at
 `6639bff3d94b92ace8faf3e407ccaefd5a38ea1f` on `2026-08-28`; see
 [`SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md`](SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md).
-The ODQ-101, ODQ-102B, ODQ-103--107 and ODQ-109 owner
+The ODQ-101, ODQ-102B, ODQ-103--107 and ODQ-109--110 owner
 dispositions now change allowed author-input bytes. Those
 successor bytes require renewed approval under `SCI-JINC-STAGE-A-Q002`.
 Stage B is not commissioned.
@@ -106,6 +106,15 @@ Stage B is not commissioned.
   the approximately `10^-3` relative instrument-fidelity scale. No prescribed
   summation/count formula, exact adequate tie/bin/cache choice, bitwise
   reproducibility or stronger precision is scientifically required.
+- ODQ-110 finite-map center-admission disposition: owner-approved and
+  incorporated; an occurrence contributes only when its resolved rounded
+  cache center is in the finite destination domain. An outside center
+  contributes nowhere even if its square overlaps the map; ordinary in-map
+  edge crop remains and JINC-then-crop equivalence is not required.
+- Numbered scientific-scope ODQs: complete for this Stage A candidate. The
+  next scientific-owner gate is exact-byte approval under
+  `SCI-JINC-STAGE-A-Q002`; the versioned VAL registry binding remains a
+  separate Stage B dispatch prerequisite.
 - Sanitized Scope Brief: successor candidate; renewed approval required.
 - Exact author-input manifest: successor candidate content-bound; renewed
   approval and dispatch authorization required.
@@ -177,6 +186,9 @@ authorities.
 - [`SCIENTIFIC_OWNER_ODQ_109_DECISION_2026-08-28.md`](SCIENTIFIC_OWNER_ODQ_109_DECISION_2026-08-28.md):
   owner-approved scientific-conditioning and instrument-relevant numerical-
   adequacy disposition
+- [`SCIENTIFIC_OWNER_ODQ_110_DECISION_2026-08-28.md`](SCIENTIFIC_OWNER_ODQ_110_DECISION_2026-08-28.md):
+  owner-approved finite-map center-admission and no-overlap-fallback
+  disposition
 - [`SCI-PTC_TO_SCI-JINC_BOUNDARY.md`](SCI-PTC_TO_SCI-JINC_BOUNDARY.md) and
   [`SCI-AST_TO_SCI-JINC_BOUNDARY.md`](SCI-AST_TO_SCI-JINC_BOUNDARY.md): exact
   proposed upstream quantity and coordinate boundaries
@@ -185,7 +197,7 @@ authorities.
 - [`NOTATION_AND_UNITS.md`](NOTATION_AND_UNITS.md),
   [`GEOMETRY_DECISION_TABLE.md`](GEOMETRY_DECISION_TABLE.md),
   and [`GROUPING_AND_PRODUCT_ROLES.md`](GROUPING_AND_PRODUCT_ROLES.md): exact
-  sanitized author tables and remaining blockers
+  sanitized author tables and resolved numerical/finite-map policies
 - [`RESPONSE_AND_COVARIANCE_FAMILIES.md`](RESPONSE_AND_COVARIANCE_FAMILIES.md):
   recovered manager-side scientific reference deferred by ODQ-107 and excluded
   from the base-v0.1 author packet
@@ -195,7 +207,8 @@ authorities.
 - [`DECISION_LOG.md`](DECISION_LOG.md): applied Stage A decisions and approval
   gate
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md):
-  recovered decisions and unresolved owner questions
+  recovered decisions, completed numbered scope ODQs and remaining approval
+  gate
 - [`SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md`](SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md):
   exact candidate binding, approved scope, and preserved dispatch blockers
 - [`CROSSWALK.md`](CROSSWALK.md): reserved Stage B traceability surface
@@ -204,7 +217,7 @@ authorities.
 
 ## Stop Boundary
 
-Predecessor Stage A byte approval is recorded; the ODQ-101/102B/103/104/105/106/107/109 successor packet is
+Predecessor Stage A byte approval is recorded; the ODQ-101/102B/103/104/105/106/107/109/110 successor packet is
 not yet approved. Stop before commissioning or drafting the
 implementation-blind scientific rationale, shared normative core, engineering
 conformance specification, or PDFs until the successor manifest receives

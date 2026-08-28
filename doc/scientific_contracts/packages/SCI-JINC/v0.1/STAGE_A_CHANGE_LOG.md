@@ -31,6 +31,7 @@ The raw feedback file is scope-control provenance and is not an author input.
 | Per-array grouping and cardinality | ODQ-106 authorizes zero through three produced bundles per observation, at most one per admitted/requested stable array and exact destination identity. Missing, unavailable or unrequested arrays create no placeholder and do not invalidate another bundle; different array/destination contributions never merge and no per-contribution provenance is added. |
 | Fixed minimal product schema | ODQ-107 replaces the broad product-availability framework with required `N_p`, `C_p`, `Q_p`, derived `m_p` carrying local support/validity, and `jinc_coefficient_squared_time`. Whole-product failure suppresses the bundle; local invalid pixels remain ordinary content. Every other role, including ODQ-108 response/covariance products, is outside/deferred; the response/covariance table leaves the author manifest. |
 | Scientific conditioning and numerical adequacy | ODQ-109 preserves unit-invariant signed conditioning, exact-cancellation rejection, finite-negative normalization, `Q_p>0`, `C_p!=0`, dimensionless `rho_p`, point-phase evaluation and square support. It replaces machine-specific summation/count bounds and exact tie/bin/cache/reproducibility demands with total numerical error negligible compared with the approximately `10^-3` relative instrument-fidelity scale. Adequate algorithms and tests remain engineering-conformance choices. |
+| Finite-map center admission | ODQ-110 requires the resolved rounded cache center to be in the finite destination domain before any footprint evaluation. An outside center contributes to no pixel or fixed accumulator even when its square overlaps the map. In-map centers retain ordinary edge crop; no JINC-then-crop equivalence, edge correction, added cause vocabulary, provenance or diagnostic is required. |
 | Response/covariance | Added [`RESPONSE_AND_COVARIANCE_FAMILIES.md`](RESPONSE_AND_COVARIANCE_FAMILIES.md) with four response families, `A C_PTC A^T`, conditional shortcuts, overlap/edge effects and omitted terms. |
 | Observation/group/product boundary | Added [`GROUPING_AND_PRODUCT_ROLES.md`](GROUPING_AND_PRODUCT_ROLES.md): observation-only base, independent `a1100`/`a1400`/`a2000` bundles, no cross-array/coadd product, scientific destination identity and required/conditional/optional role table. |
 | Numerical adequacy | Scientific identity/bounds are separated from algorithm, cache, thread and optimization choices. No implementation procedure or evidence is admitted. |
@@ -44,8 +45,7 @@ Stage B remains prohibited until the owner supplies or explicitly dispositions:
    family and compatible payload/QC; ODQ-101 closes ownership but not source
    availability;
 2. a versioned SCI-VAL registration binding for the JINC admission profile;
-3. the outside-center/overlapping-square edge rule (`SCI-JINC-ODQ-110`); and
-4. exact owner approval of every successor author-packet byte
+3. exact owner approval of every successor author-packet byte
    (`SCI-JINC-STAGE-A-Q002`).
 
 No Stage B rationale, conformance contract or PDF was drafted. No

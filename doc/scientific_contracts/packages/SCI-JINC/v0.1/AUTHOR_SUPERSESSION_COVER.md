@@ -121,7 +121,15 @@ core is broader, earlier, or ambiguous:
     coadd requires a separately authorized boundary over complete observation
     bundles and may not inherit ordinary MAP coadd or infer a rule from
     accumulator or normalized-map algebra.
-14. **Claim separation.** Algebraic contract correctness, implementation
+14. **Finite-map center admission.** The resolved rounded center used for JINC
+    cache placement must lie within the finite destination pixel domain before
+    any footprint evaluation. An outside center sets `I_ip=0` for every pixel
+    and contributes to no fixed accumulator, even when its square overlaps the
+    map. For an admitted in-map center, ordinary edge crop applies without
+    wrap, footprint completion, renormalization or edge correction. JINC-then-
+    crop equivalence is not required, and no edge provenance or diagnostic
+    product is introduced.
+15. **Claim separation.** Algebraic contract correctness, implementation
     conformity, representation/response fidelity, numerical or observational
     validation, achieved performance, readiness, and production authorization
     are distinct. The recovered core and owner decisions establish none of the
@@ -141,13 +149,14 @@ This cover does not itself supply:
 - final owner approval of the proposed AST coordinate boundary, JINC admission
   profile, or fixed grouping/product table; response/covariance products are
   deferred under ODQ-107;
-- a prescribed summation algorithm, machine-specific error formula, exact
-  tie/bin/cache realization, or finite-map center-outside behavior; or
+- a prescribed summation algorithm, machine-specific error formula, or exact
+  tie/bin/cache realization; or
 - any numerical parameter value, threshold, default, storage schema,
   implementation mapping, validation result, or production policy.
 
-Those are explicit owner questions or later conformance matters. The author
-must not fill them from remembered implementation behavior.
+Those are source-availability, exact-approval or later conformance matters,
+not unresolved numbered scientific-scope ODQs. The author must not fill them
+from remembered implementation behavior.
 
 ## Permitted Use
 

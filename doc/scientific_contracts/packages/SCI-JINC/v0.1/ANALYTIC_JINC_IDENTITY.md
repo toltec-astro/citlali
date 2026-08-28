@@ -84,7 +84,9 @@ branch:
 - no radial membership predicate remains;
 - square corners at radii greater than `r_max` are evaluated with the same
   analytic continuation and remain part of the fixed accumulator membership;
-- finite-map crop alone removes outside-map square pixels; and
+- the ODQ-110 center-domain gate first rejects every occurrence whose resolved
+  rounded center lies outside the finite map; for an admitted in-map center,
+  finite-map crop removes outside-map square pixels; and
 - the coefficient is point-evaluated at an exact quantized sample phase, not
   pixel-area integrated.
 

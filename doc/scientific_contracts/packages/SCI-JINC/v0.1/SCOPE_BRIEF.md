@@ -1,6 +1,6 @@
 # SCI-JINC — Signed-Coefficient JINC Observation Mapmaker Scope Brief
 
-Status: ODQ-101/102B/103/104/105/106/107/109 Stage A successor candidate; predecessor Stage A bytes
+Status: ODQ-101/102B/103/104/105/106/107/109/110 Stage A successor candidate; predecessor Stage A bytes
 owner-approved; successor requires renewed exact-byte approval; Stage B blocked
 
 Scientific owner: Grant Wilson
@@ -67,7 +67,7 @@ which remains unchanged.
 The raw recovery record, owner feedback, decision conversations and all
 implementation/evidence material remain outside the implementation-blind
 author channel. The predecessor Stage A packet was owner-approved at
-`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`; this ODQ-101/102B/103/104/105/106/107/109 successor changes
+`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`; this ODQ-101/102B/103/104/105/106/107/109/110 successor changes
 allowed input bytes and has **not** received renewed exact-byte approval. No
 Stage B author is commissioned.
 
@@ -241,9 +241,10 @@ The binding geometry is:
 - every resolved square pixel is evaluated, including corners beyond radial
   `r_max`; no circular cutoff survives;
 - no pixel-area-integration branch survives; and
-- finite-map crop removes outside pixels without wrap, reflection or an
-  interior normalizer. Response and covariance use the actual retained
-  membership.
+- the resolved rounded center must first lie in the finite destination domain;
+  an outside center contributes nowhere. For an admitted in-map center,
+  finite-map crop removes outside pixels without wrap, reflection, completion,
+  interior normalization or edge correction.
 
 JINC owns sample admission for `SCI-JINC:jinc_map_contribution@1` and, for
 each considered destination pixel, owns local offset/radial geometry,
@@ -260,10 +261,13 @@ preserve the accepted point-phase and square-support operator, and keep its
 total numerical error negligible compared with the approximately `10^-3`
 relative fidelity relevant to the instrument. Exact adequate tie, bin,
 representative, cache-rounding and accumulation choices are engineering
-realizations rather than separate scientific-owner decisions. The case where
-the rounded center is outside but the square overlaps the map remains open
-under `SCI-JINC-ODQ-110`; the owner must select center-required, overlap-
-admitted, or another exact rule. See
+realizations rather than separate scientific-owner decisions. ODQ-110 applies
+the finite-map boundary at occurrence admission: the resolved rounded center
+used for cache placement must lie within the finite destination domain before
+any footprint evaluation. An outside center makes `I_ip=0` for every `p`, even
+when its square would overlap the map. For an admitted in-map center, ordinary
+finite-map crop removes outside square pixels without completion,
+renormalization or edge correction. See
 [`GEOMETRY_DECISION_TABLE.md`](GEOMETRY_DECISION_TABLE.md).
 
 ## 7. Signed Normalization And Support
@@ -474,17 +478,23 @@ normalization and dimensionless `rho_p`, while numerical error must be
 negligible compared with the approximately `10^-3` relative instrument-
 fidelity scale. It requires no machine-specific error formula, exact
 summation/tie/bin/cache choice, bitwise reproducibility or stronger precision.
+`SCI-JINC-ODQ-110` is resolved: an occurrence contributes only when its
+resolved rounded cache center lies in the finite destination domain. An
+outside center contributes zero to every fixed accumulator for every pixel;
+overlapping-footprint admission is prohibited. In-map centers retain ordinary
+edge crop, and JINC-then-crop equivalence is not required. No edge correction,
+provenance or diagnostic product follows.
 
-Before author dispatch, the owner must:
+No unresolved numbered scientific-scope ODQ remains. Before author dispatch,
+the owner or governing registry authority must:
 
-1. decide the outside-center overlapping-square edge rule
-   (`SCI-JINC-ODQ-110`);
-2. approve the exact Schloerb method excerpt and cover, controlled PTC
+1. approve the exact Schloerb method excerpt and cover, controlled PTC
    coefficient-registry source/cover, PTC/AST boundaries,
    admission profile, fixed grouping/product table and inherited-decision
    table;
-3. authorize a versioned VAL registry binding; and
-4. approve every exact successor author-packet byte and SHA-256 value.
+2. authorize a versioned VAL registry binding; and
+3. approve every exact successor author-packet byte and SHA-256 value under
+   `SCI-JINC-STAGE-A-Q002`.
 
 The requested Stage A repairs and exact proposed packet are recorded in
 [`STAGE_A_CHANGE_LOG.md`](STAGE_A_CHANGE_LOG.md) and

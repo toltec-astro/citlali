@@ -1,6 +1,6 @@
 # SCI-JINC v0.1 — Observation Grouping And Product Roles
 
-Status: ODQ-105/106/107/109 owner-approved Stage A successor candidate; awaiting
+Status: ODQ-105/106/107/109/110 owner-approved Stage A successor candidate; awaiting
 renewed exact-byte approval
 
 Prepared: `2026-08-28`
@@ -93,6 +93,13 @@ and lifecycle identify the bundle under ODQ-106. They are not additional
 numerical roles or a general provenance product. Existing sample admission,
 support, validity and causes govern accumulator contents. Operational
 diagnostics may be logged for debugging but are not required products.
+
+ODQ-110 applies one occurrence-level center-domain gate before sample-pixel
+support. If the rounded cache center is outside the finite destination map,
+`I_ip=0` for all `p`, so that occurrence changes none of the four fixed
+accumulators. An admitted in-map center uses ordinary cropped square
+membership. No overlap admission, edge correction, role, provenance or
+diagnostic is added, and JINC-then-crop equivalence is not required.
 
 ## Outside Or Deferred
 

@@ -30,6 +30,13 @@ Numerical error must instead remain negligible compared with the approximately
 `10^-3` relative fidelity relevant to the instrument; no stronger precision
 or reproducibility guarantee is scientifically required.
 
+`SCI-JINC-ODQ-110` controls finite-map occurrence admission. The resolved
+rounded center used for cache placement must lie in the finite destination
+domain before sample-pixel support is evaluated. An outside center contributes
+to no fixed accumulator for any pixel, even if its square overlaps the map;
+footprint-overlap admission and JINC-then-crop equivalence are not authorized
+requirements.
+
 ## Inherited Decision Table
 
 | Stable ID | Exact approved rule | Mathematical and product consequence | Affected objects | Unavailable behavior | Exact predecessor clause superseded | Compatibility / supersession rule |
@@ -61,6 +68,10 @@ task:
 - One complete destination identity is resolved before mutation; ambiguity or
   failure prevents atomic publication. Workers, threads, processes,
   containers, and filenames are not scientific product identity.
+- The finite-map boundary first applies to the resolved rounded cache center.
+  An outside center makes `I_ip=0` for all `p`; an in-map center then uses the
+  ordinary cropped square. No edge correction, provenance or diagnostic
+  product follows.
 
 ## Exact Source Bindings
 

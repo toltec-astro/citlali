@@ -2,7 +2,7 @@
 
 Profile identity: `SCI-PTC_TO_SCI-JINC v0.1/r0.3`
 
-Status: ODQ-101/103/107 Stage A successor boundary candidate; exact-byte
+Status: ODQ-101/103/107/110 Stage A successor boundary candidate; exact-byte
 owner approval required; numerical JINC route unavailable until a registered,
 JINC-permitted family is selected and realized
 
@@ -103,19 +103,23 @@ For one route candidate, the following remain separately typed:
 6. AST coordinate validity and exact same-processed-sample association;
 7. finite `z_i`;
 8. finite positive `omega_i`;
-9. sample-pixel finite support;
-10. signed-kernel placement and finite `kappa_ip`, including normal zero and
+9. rounded-center finite-map occurrence admission;
+10. sample-pixel finite support;
+11. signed-kernel placement and finite `kappa_ip`, including normal zero and
     negative coefficients;
-11. cancellation and formal JINC support; and
-12. final fixed-bundle validity.
+12. cancellation and formal JINC support; and
+13. final fixed-bundle validity.
 
-Passing the profile admits only the sample for JINC consideration. Sample-
-pixel support is a separate JINC decision. All pixel-local gates pass before
-payload accumulation, and every coupled accumulator uses the same admitted
-sample-pixel pair and coefficient identity. Outside support and contract-
-defined zero are ordinary no-contribution results; a finite negative
-coefficient is normal. A producer flag or cause has no universal action unless
-an exact restriction names it.
+Passing the profile admits only the upstream sample for JINC consideration.
+JINC then resolves the rounded cache center and applies ODQ-110 before any
+sample-pixel support test. An outside center sets `I_ip=0` for every `p`, with
+no footprint-overlap admission; it is ordinary no-contribution rather than a
+bundle failure. An in-map center proceeds to the separate sample-pixel support
+decision. All pixel-local gates pass before payload accumulation, and every
+coupled accumulator uses the same admitted sample-pixel pair and coefficient
+identity. Outside support and contract-defined zero are ordinary no-
+contribution results; a finite negative coefficient is normal. A producer
+flag or cause has no universal action unless an exact restriction names it.
 
 ## Disabled, Missing, And Failure Routes
 

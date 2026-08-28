@@ -10,7 +10,7 @@ Prepared: `2026-08-28`
 | --- | --- | --- | --- |
 | `i` | Exact admitted PTC occurrence on stable RTC output sample `n` | identity | — |
 | `p` | Target JINC map pixel in one exact WCS | identity | — |
-| `I_ip` | Complete Boolean sample-pixel membership after JINC sample admission, exact same-processed-sample AST association, local geometry, finite support, square placement, and pixel-local gates | `0` or `1` | 1 |
+| `I_ip` | Complete Boolean sample-pixel membership after JINC sample admission, exact same-processed-sample AST association, ODQ-110 rounded-center map-domain admission, local geometry, finite support, square placement, and pixel-local gates | `0` or `1` | 1 |
 | `z_i` | Exact transformed signal, `Z_i^PTC` | finite when admitted | signal unit `U` |
 | `kappa_ip` | Signed dimensionless analytic JINC kernel coefficient at the selected point phase | finite; positive, zero, or negative | 1 |
 | `omega_i` | Positive producer-supplied JINC-facing analysis coefficient | finite and `>0` after JINC-local admission | either 1 or `U^-2`, according to its exact family |
@@ -38,11 +38,13 @@ identities are distinct; absence of an authorized set makes the numerical
 route unavailable without a hidden default.
 
 `SCI-JINC:jinc_map_contribution@1` sample admission does not itself set
-`I_ip=1`: sample-pixel support is a later JINC-owned decision. Outside support
-and a contract-defined `kappa_ip=0` are ordinary no-contribution states, while
-finite negative `kappa_ip` is normal. Every accumulator term for one
-contribution uses the same admitted sample-pixel pair and the same
-`kappa_ip` identity.
+`I_ip=1`. JINC next resolves the rounded center used for cache placement. If
+that center is outside the finite destination domain, ODQ-110 sets `I_ip=0`
+for every `p`; no overlapping footprint is admitted. For an in-map center,
+sample-pixel support is a later JINC-owned decision. Outside support and a
+contract-defined `kappa_ip=0` are ordinary no-contribution states, while finite
+negative `kappa_ip` is normal. Every accumulator term for one contribution
+uses the same admitted sample-pixel pair and the same `kappa_ip` identity.
 
 ## Fixed Base-V0.1 Bundle
 
@@ -141,5 +143,8 @@ separate authority beyond base v0.1.
   `T_p^(kappa^2)` while remaining distinguishable from outside support.
 - A finite negative lobe retains its sign in `N_p` and `C_p`, enters `Q_p` and
   `T_p^(kappa^2)` quadratically, and may produce a finite negative `C_p`.
+- A rounded center outside the finite destination map changes none of `N_p`,
+  `C_p`, `Q_p`, or `T_p^(kappa^2)` for any pixel, even when its square would
+  overlap the map. JINC-then-crop equivalence is not required.
 - Exact `C_p=0` or numerically unresolved cancellation is unavailable, never
   zero sky. A resolved finite negative `C_p` is admissible.

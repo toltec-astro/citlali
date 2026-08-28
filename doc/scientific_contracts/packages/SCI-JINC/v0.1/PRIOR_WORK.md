@@ -273,8 +273,9 @@ added to the author packet.
    tie/bin rules, finite-edge sample-center behavior, and grouping/cardinality
    were unsupplied. ODQ-105--107 later close grouping/products, and ODQ-109
    closes scientific numerical adequacy without prescribing machine-specific
-   algorithms or exact adequate tie/bin choices. The finite-edge sample-center
-   behavior remains open under ODQ-110.
+   algorithms or exact adequate tie/bin choices. ODQ-110 later closes finite-
+   edge sample-center behavior with in-map rounded-center admission and no
+   outside-center overlap route.
 7. Historical integration and validation records disagree in ancestry and
    scope with the current library authority. They are later conformity inputs,
    not a contradiction in scientific authority.

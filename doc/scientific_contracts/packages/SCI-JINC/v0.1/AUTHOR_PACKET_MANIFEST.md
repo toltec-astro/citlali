@@ -1,6 +1,6 @@
 # SCI-JINC v0.1 — Proposed Sanitized Author Packet Manifest
 
-Status: ODQ-101/102B/103/104/105/106/107/109 exact-byte Stage A successor candidate; predecessor
+Status: ODQ-101/102B/103/104/105/106/107/109/110 exact-byte Stage A successor candidate; predecessor
 manifest owner-approved; successor bytes not owner-approved; not launchable
 
 Scientific owner: Grant Wilson
@@ -30,20 +30,20 @@ single logical inputs; neither source may be read without its cover.
 
 | # | Logical input | Exact source | Content SHA-256 |
 | --- | --- | --- | --- |
-| 1 | ODQ-101/102B/103/104/105/106/107/109 successor Scope Brief | `SCOPE_BRIEF.md` | `ae7878d5452df0261e910c80dd6dad0d229a1629e83c7fb9fb85a3122e57aedd` |
-| 2a | Frozen-core supersession cover | `AUTHOR_SUPERSESSION_COVER.md` | `2718af09e03ead6a5aab2c6a2024ef4d84b9783604a5e4b4ddd16a1425bfe906` |
+| 1 | ODQ-101/102B/103/104/105/106/107/109/110 successor Scope Brief | `SCOPE_BRIEF.md` | `5f2505c2760fc5cb07506249f33f449651aca67cccc9c444305b059674f0ddbd` |
+| 2a | Frozen-core supersession cover | `AUTHOR_SUPERSESSION_COVER.md` | `5be650ce4e25f161211955f60696033a18adb83d7ff0c9155a776b4e184d601e` |
 | 2b | Frozen signed-estimator core, readable only with 2a | `fe201b69be2764dc47dc0a1957bfc8e493f2905a:doc/audits/packages/SCI-MAP-002_INDEPENDENT_CORE.tex` | `2c1f9ff95f65422a098846f747ed165d5aeddc5bedd854678bfa7faeebba4e24` |
 | 3a | LMT-method reference cover | `AUTHOR_LMT_JINC_REFERENCE_COVER.md` | `9b32095fc7e1773e13e70b4c21d4f402b0c7376aff0b776d41fa9f5a263b7c4f` |
 | 3b | Page-exact Schloerb method excerpt, original pages 15--19, readable only with 3a | `references/LMT_JINC_OTF_MAPMAKING_MEMO/Schloerb_JINC_memo_v1.1_METHOD_EXCERPT_pp15-19.pdf` | `a065843b4b83c21aabb25233c588817e998773a5d6a7bd389874eab50c9a88e9` |
-| 4 | Recovered decisions and ownership | `AUTHOR_DECISIONS_AND_OWNERSHIP.md` | `2a006ba6e3490fb825c6e2cb2c76bedd89f99fb7190c97b97b5bcc97003e4ad8` |
-| 5 | Conventions and ownership | `AUTHOR_CONVENTIONS_AND_OWNERSHIP.md` | `b1d04c38b617a41fd8692f41a379c95a35e2713268161a0e492588c691a6a2bb` |
-| 6 | Generic analytic identity and TolTEC numerical-unavailability semantics | `ANALYTIC_JINC_IDENTITY.md` | `537a8c18fe5cb2b36094b5b46aabea8d5c3a756b5cd13d8e37769a17b8c48da6` |
-| 7 | PTC-to-JINC r0.3 successor boundary | `SCI-PTC_TO_SCI-JINC_BOUNDARY.md` | `f9d9d28825d7d2ff2fa94d91124e60d916217b6574d9e83d6ceae924a9d5d313` |
-| 8 | AST-to-JINC r0.2 successor boundary | `SCI-AST_TO_SCI-JINC_BOUNDARY.md` | `04521b5953b33aa2e092f752542a8d054a617bb28b7e8a95cdc8ee974ecbeede` |
-| 9 | JINC map-contribution admission profile candidate | `SCI-JINC_UPSTREAM_ADMISSION_PROFILE.md` | `f634621eee1d04fb6f6a56ae2318f4144577e0308ad4bb98e5fea45db14dd8a8` |
-| 10 | Collision-free notation and units | `NOTATION_AND_UNITS.md` | `7fb91e87921d562a1d40005872588ef88805a6f4ad720b36e0851b803bdc2ab5` |
-| 11 | Geometry decision table | `GEOMETRY_DECISION_TABLE.md` | `d5e285b0aa599239c39440a700d1553f883a370000e730f45a323b21b86136bb` |
-| 12 | Fixed grouping and product roles | `GROUPING_AND_PRODUCT_ROLES.md` | `e8b1771ffabfa398d9513d013143aed9f1b8c12fdfe942d2ac053eebacfb4424` |
+| 4 | Recovered decisions and ownership | `AUTHOR_DECISIONS_AND_OWNERSHIP.md` | `8398f679bd487e07f80b0ac1db240cc639150d7b0328a8b79545d76d45a3cb9d` |
+| 5 | Conventions and ownership | `AUTHOR_CONVENTIONS_AND_OWNERSHIP.md` | `6819454e7fbbab9bfd25442f25c4ea920ef41245951a38d31bb1d28ca74d628e` |
+| 6 | Generic analytic identity and TolTEC numerical-unavailability semantics | `ANALYTIC_JINC_IDENTITY.md` | `5346085c2fdc677012217ca879ebd7cfb29e723656af337aa5694d0ef6909bed` |
+| 7 | PTC-to-JINC r0.3 successor boundary | `SCI-PTC_TO_SCI-JINC_BOUNDARY.md` | `5769d413460e931745e0d401ea432b12d1077c15466247c49caa71b997d4ab1e` |
+| 8 | AST-to-JINC r0.2 successor boundary | `SCI-AST_TO_SCI-JINC_BOUNDARY.md` | `efffa7059b59c89793fa1d523fb3bb48235f1ab55f7d55060af1600cbfd470a5` |
+| 9 | JINC map-contribution admission profile candidate | `SCI-JINC_UPSTREAM_ADMISSION_PROFILE.md` | `2db95da7e5d1b980df79993907d45ac0ababc3aa05c189bfb62dcf04ff2c2e8a` |
+| 10 | Collision-free notation and units | `NOTATION_AND_UNITS.md` | `2dd9d1e5e1414ea3bb9befd7ed28c25a2d140fe62ba506e2921181dce09d5ec0` |
+| 11 | Geometry decision table | `GEOMETRY_DECISION_TABLE.md` | `b811bb0ff53a4679a0a1f7538b64ffa4a3292c88445d065af348dfbaea1697cb` |
+| 12 | Fixed grouping and product roles | `GROUPING_AND_PRODUCT_ROLES.md` | `02c14c03821b5f00d0665f31b9f8bc6aed63781efb938dc6bfdfd38c98429bb9` |
 | 14a | PTC coefficient-registry successor cover | `AUTHOR_PTC_COEFFICIENT_REGISTRY_COVER.md` | `941671d0f9113c94a15bf2de6b69bd9b21a528b41d745b6bbdb936e8e8d8646f` |
 | 14b | Exact post-freeze PTC registry predecessor, readable only with 14a and only in the admitted sections | `54475956f6aefb839d43b2f0fb019a142cb64310:doc/scientific_contracts/packages/SCI-MAP/v0.1/POST_FREEZE_SCIENTIFIC_OWNER_DECISIONS_2026-08-28.md` | `4d2b857b7ec9efe489fe065f464df4ecd23b57a4c1320cda6a10a56592825d1c` |
 
@@ -59,9 +59,7 @@ author may be commissioned until the owner resolves or explicitly types:
 
 1. the versioned VAL Registry successor binding for
    `SCI-JINC:jinc_map_contribution@1`;
-2. `SCI-JINC-ODQ-110`: the outside-center but overlapping-square edge rule;
-   and
-3. `SCI-JINC-STAGE-A-Q002`: approval of every exact successor object and
+2. `SCI-JINC-STAGE-A-Q002`: approval of every exact successor object and
    digest in this manifest plus its information firewall.
 
 `SCI-JINC-ODQ-101` is resolved for registry ownership, consumer permission,
@@ -118,6 +116,20 @@ reproducibility or stronger precision is a scientific requirement. Adequate
 realization and test design belong to the future Engineering Conformance
 Specification and do not establish achieved fidelity here.
 
+`SCI-JINC-ODQ-110` is resolved: the resolved rounded cache center must be in
+the finite destination domain before any footprint evaluation. An outside
+center sets `I_ip=0` for every `p`, so it changes none of `N_p`, `C_p`, `Q_p`
+or `T_p^(kappa^2)`, even if its square overlaps the map. An admitted in-map
+center uses ordinary cropped square membership. Footprint-overlap admission,
+wrap, completion, renormalization, edge correction and JINC-then-crop
+equivalence are not authorized requirements. This creates no new cause,
+provenance or diagnostic product.
+
+No unresolved numbered scientific-scope ODQ remains. The next scientific-
+owner decision is `SCI-JINC-STAGE-A-Q002`, exact-byte approval or revision of
+this complete successor packet and firewall. The versioned SCI-VAL registry
+binding remains a separate dispatch prerequisite.
+
 The separate downstream derivation of optimum parameters for TolTEC's three
 bands is explicitly deferred. It is not a prerequisite to describe a typed
 no-numerical-route v0.1, but no per-band numerical JINC route, default,
@@ -139,6 +151,7 @@ The future author must not open:
   [`SCIENTIFIC_OWNER_ODQ_106_DECISION_2026-08-28.md`](SCIENTIFIC_OWNER_ODQ_106_DECISION_2026-08-28.md),
   [`SCIENTIFIC_OWNER_ODQ_107_DECISION_2026-08-28.md`](SCIENTIFIC_OWNER_ODQ_107_DECISION_2026-08-28.md),
   [`SCIENTIFIC_OWNER_ODQ_109_DECISION_2026-08-28.md`](SCIENTIFIC_OWNER_ODQ_109_DECISION_2026-08-28.md),
+  [`SCIENTIFIC_OWNER_ODQ_110_DECISION_2026-08-28.md`](SCIENTIFIC_OWNER_ODQ_110_DECISION_2026-08-28.md),
   [`RESPONSE_AND_COVARIANCE_FAMILIES.md`](RESPONSE_AND_COVARIANCE_FAMILIES.md),
   [`STAGE_A_CHANGE_LOG.md`](STAGE_A_CHANGE_LOG.md), the package README, the
   reference intake record, or this package's raw owner-feedback material;
