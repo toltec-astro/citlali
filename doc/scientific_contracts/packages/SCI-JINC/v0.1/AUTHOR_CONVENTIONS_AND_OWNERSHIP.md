@@ -1,6 +1,6 @@
 # SCI-JINC v0.1 — Proposed Sanitized Conventions And Ownership
 
-Status: ODQ-101/102B/103 sanitized successor candidate; renewed exact-byte
+Status: ODQ-101/102B/103/104/105 sanitized successor candidate; renewed exact-byte
 approval
 required
 
@@ -189,6 +189,15 @@ Exact source set at
 - New response, covariance, coefficient, or policy generations produce new
   immutable derived products and do not retroactively change an earlier map's
   claims.
+- Base v0.1 groups and publishes one complete JINC bundle per observation and
+  array. Observation is not an implementation-memory or chunk boundary:
+  same-observation samples/chunks may accumulate incrementally only under the
+  same exact JINC realization and bundle identity. No chunk is a separate
+  scientific product.
+- Cross-observation combination is outside base v0.1. A future JINC coadd
+  requires a separately authorized boundary over complete observation bundles;
+  no ordinary MAP coadd, accumulator-addition rule or normalized-map
+  combination is inherited or inferred.
 
 ## Producer–Transformer–Consumer Responsibilities
 

@@ -272,6 +272,20 @@ remains unlaunched. The next unresolved scientific-owner question is
 `SCI-JINC-ODQ-105`, whether base v0.1 is observation-only with any future JINC
 coadd requiring a separately authorized boundary over complete JINC bundles.
 
+Grant Wilson then resolved `SCI-JINC-ODQ-105` on `2026-08-28`. SCI-JINC v0.1
+defines the estimator and complete product bundle for one observation and
+authorizes no cross-observation combination semantics. Observation is the
+scientific grouping boundary rather than a streaming, chunking, process or
+memory boundary, so same-observation samples/chunks may accumulate
+incrementally only under one exact array/JINC realization/bundle identity.
+Any future JINC coadd requires a separately authorized boundary over complete
+observation bundles and may not inherit ordinary MAP or infer accumulator-
+addition or normalized-map algebra. The refreshed ODQ-101/102B/103/104/105
+packet still awaits `SCI-JINC-STAGE-A-Q002`; Stage B remains unlaunched. The
+next unresolved scientific-owner question is `SCI-JINC-ODQ-106`, the
+independent per-array observation-bundle, missing/unrequested-array
+cardinality and residual destination-identity disposition.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

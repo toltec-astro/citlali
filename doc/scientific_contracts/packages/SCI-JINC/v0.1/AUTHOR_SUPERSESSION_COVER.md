@@ -92,9 +92,15 @@ core is broader, earlier, or ambiguous:
     thread, process, container and filename are not scientific identity.
     Ambiguous or aliased destinations fail without partial result. This is an
     identity/lifecycle invariant, not a performance or race-freedom claim.
-13. **Observation scope.** The recovered authority controls the direct
-    observation estimator. No observation-coaddition rule is admitted unless
-    the scientific owner adds an exact separately identified boundary.
+13. **Observation scope.** Base v0.1 defines the estimator and complete product
+    bundle for one observation. Observation is a scientific grouping boundary,
+    not a streaming, chunking, process or memory boundary: same-observation
+    samples or chunks may accumulate incrementally only under one exact
+    observation, array, JINC realization, target WCS and lifecycle identity.
+    No cross-observation combination semantics are admitted. Any future JINC
+    coadd requires a separately authorized boundary over complete observation
+    bundles and may not inherit ordinary MAP coadd or infer a rule from
+    accumulator or normalized-map algebra.
 14. **Claim separation.** Algebraic contract correctness, implementation
     conformity, representation/response fidelity, numerical or observational
     validation, achieved performance, readiness, and production authorization

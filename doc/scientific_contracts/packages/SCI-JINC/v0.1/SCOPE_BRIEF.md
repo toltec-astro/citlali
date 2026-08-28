@@ -1,6 +1,6 @@
 # SCI-JINC — Signed-Coefficient JINC Observation Mapmaker Scope Brief
 
-Status: ODQ-101/102B/103/104 Stage A successor candidate; predecessor Stage A bytes
+Status: ODQ-101/102B/103/104/105 Stage A successor candidate; predecessor Stage A bytes
 owner-approved; successor requires renewed exact-byte approval; Stage B blocked
 
 Scientific owner: Grant Wilson
@@ -66,7 +66,7 @@ which remains unchanged.
 The raw recovery record, owner feedback, decision conversations and all
 implementation/evidence material remain outside the implementation-blind
 author channel. The predecessor Stage A packet was owner-approved at
-`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`; this ODQ-101/102B/103/104 successor changes
+`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`; this ODQ-101/102B/103/104/105 successor changes
 allowed input bytes and has **not** received renewed exact-byte approval. No
 Stage B author is commissioned.
 
@@ -102,9 +102,21 @@ published atomically with every required product, identity, join and cause or
 has been declared unavailable/failed. Required failure suppresses realized
 success.
 
-Base v0.1 defines no JINC coadd. A future JINC coadd requires a separately
-authorized boundary over complete JINC bundles. Ordinary MAP coadd is not a
-candidate default.
+Base v0.1 defines the estimator and complete product bundle for one
+observation and authorizes no cross-observation JINC combination semantics. A
+future JINC coadd requires a separately authorized boundary whose inputs are
+complete observation-level JINC bundles. That boundary must define
+compatibility, the object combined, exact algebra, response, covariance,
+support, validity, provenance and failure semantics. It may not import
+ordinary MAP coadd or infer that accumulator-plane addition or normalized-map
+combination is authorized.
+
+Observation is the scientific grouping boundary, not a streaming, chunking,
+process or memory boundary. Samples or processing chunks from the same
+observation may accumulate incrementally into its one complete array bundle
+only under the same exact observation, array, JINC plan/realization, target
+WCS, admission/parameter/coefficient state and lifecycle generation. A chunk
+does not create a product or coadd identity.
 
 ## 3. Legitimate Inputs
 
@@ -333,6 +345,11 @@ threads, processes, containers and filenames are not identity. Complete
 destination identity is resolved before mutation or the bundle fails
 atomically.
 
+Same-observation streaming or chunk accumulation may realize that one bundle
+when the complete scientific identity and realized JINC state remain the
+same. Cross-observation combination is outside base v0.1 and no coadd
+arithmetic is implied by the observation accumulators.
+
 [`GROUPING_AND_PRODUCT_ROLES.md`](GROUPING_AND_PRODUCT_ROLES.md) defines exact
 population and required, conditional-required, optional and outside roles.
 Required roles include signal, `N/C/Q`, formal support, WCS/operator/parameter
@@ -415,21 +432,23 @@ and cause policy. It prescribes no data-model join mechanism.
 `SCI-JINC-ODQ-104` is resolved: `jinc_coefficient_squared_time` is the sole
 base-v0.1 time-support product, and a separate physical-exposure product is
 deferred until a scientific use requires and authorizes it.
+`SCI-JINC-ODQ-105` is resolved: base v0.1 is observation-only, same-observation
+incremental accumulation is permitted under one exact JINC realization, and
+any cross-observation combination requires a separately authorized boundary
+over complete observation bundles.
 
 Before author dispatch, the owner must:
 
-1. decide the observation-only base-v0.1 boundary and separately authorize or
-   defer any future JINC coadd (`SCI-JINC-ODQ-105`);
-2. decide the center/tie/phase/cache/error-bound policy
+1. decide the center/tie/phase/cache/error-bound policy
    (`SCI-JINC-ODQ-109`);
-3. decide the outside-center overlapping-square edge rule
+2. decide the outside-center overlapping-square edge rule
    (`SCI-JINC-ODQ-110`);
-4. approve the exact Schloerb method excerpt and cover, controlled PTC
+3. approve the exact Schloerb method excerpt and cover, controlled PTC
    coefficient-registry source/cover, PTC/AST boundaries,
    admission profile, grouping/product table, response/covariance table and
    inherited-decision table;
-5. authorize a versioned VAL registry binding; and
-6. approve every exact successor author-packet byte and SHA-256 value.
+4. authorize a versioned VAL registry binding; and
+5. approve every exact successor author-packet byte and SHA-256 value.
 
 The requested Stage A repairs and exact proposed packet are recorded in
 [`STAGE_A_CHANGE_LOG.md`](STAGE_A_CHANGE_LOG.md) and

@@ -1,6 +1,6 @@
 # SCI-JINC — Signed-Coefficient JINC Gridding And Response
 
-Status: ODQ-101, ODQ-102B, ODQ-103 and ODQ-104 owner decisions incorporated
+Status: ODQ-101, ODQ-102B, ODQ-103, ODQ-104 and ODQ-105 owner decisions incorporated
 into a bounded Stage A successor candidate; renewed exact-byte approval
 required; Stage B not commissioned
 
@@ -43,7 +43,7 @@ Work began with the package's reviewed
   JINC by analogy.
 
 The predecessor author inputs were approved at
-`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`. The ODQ-101/102B/103/104 successor candidate
+`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`. The ODQ-101/102B/103/104/105 successor candidate
 updates the scientist-readable
 [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md), the frozen independent core paired with
 [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md), the page-exact
@@ -66,7 +66,7 @@ author channel.
 Grant Wilson approved the exact predecessor Stage A candidate at
 `6639bff3d94b92ace8faf3e407ccaefd5a38ea1f` on `2026-08-28`; see
 [`SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md`](SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md).
-The ODQ-101, ODQ-102B, ODQ-103 and ODQ-104 owner decisions now change allowed author-input bytes. Those
+The ODQ-101, ODQ-102B, ODQ-103, ODQ-104 and ODQ-105 owner decisions now change allowed author-input bytes. Those
 successor bytes require renewed approval under `SCI-JINC-STAGE-A-Q002`.
 Stage B is not commissioned.
 
@@ -86,6 +86,10 @@ Stage B is not commissioned.
 - ODQ-104 time-support disposition: owner-approved and incorporated;
   `jinc_coefficient_squared_time` is the sole base-v0.1 time-support product,
   while physical exposure is deferred until an identified scientific use.
+- ODQ-105 observation/coadd disposition: owner-approved and incorporated;
+  base v0.1 defines one complete observation bundle, permits incremental
+  same-observation accumulation under one exact realization, and defines no
+  cross-observation combination semantics.
 - Sanitized Scope Brief: successor candidate; renewed approval required.
 - Exact author-input manifest: successor candidate content-bound; renewed
   approval and dispatch authorization required.
@@ -143,6 +147,9 @@ authorities.
 - [`SCIENTIFIC_OWNER_ODQ_104_DECISION_2026-08-28.md`](SCIENTIFIC_OWNER_ODQ_104_DECISION_2026-08-28.md):
   owner-approved sole base-v0.1 time-support product and deferred physical-
   exposure disposition
+- [`SCIENTIFIC_OWNER_ODQ_105_DECISION_2026-08-28.md`](SCIENTIFIC_OWNER_ODQ_105_DECISION_2026-08-28.md):
+  owner-approved observation-only base, same-observation incremental
+  accumulation and future complete-bundle coadd-boundary disposition
 - [`SCI-PTC_TO_SCI-JINC_BOUNDARY.md`](SCI-PTC_TO_SCI-JINC_BOUNDARY.md) and
   [`SCI-AST_TO_SCI-JINC_BOUNDARY.md`](SCI-AST_TO_SCI-JINC_BOUNDARY.md): exact
   proposed upstream quantity and coordinate boundaries
@@ -168,7 +175,7 @@ authorities.
 
 ## Stop Boundary
 
-Predecessor Stage A byte approval is recorded; the ODQ-101/102B/103/104 successor packet is
+Predecessor Stage A byte approval is recorded; the ODQ-101/102B/103/104/105 successor packet is
 not yet approved. Stop before commissioning or drafting the
 implementation-blind scientific rationale, shared normative core, engineering
 conformance specification, or PDFs until the successor manifest receives

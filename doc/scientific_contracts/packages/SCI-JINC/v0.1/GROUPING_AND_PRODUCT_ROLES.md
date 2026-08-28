@@ -6,9 +6,12 @@ Prepared: `2026-08-28`
 
 ## Observation-Level Grouping
 
-Base v0.1 is bounded to one observation-level bundle and defines no JINC
-coadd. A future coadd requires a separately authorized boundary over complete
-JINC bundles; no ordinary SCI-MAP coaddition rule is imported.
+Base v0.1 defines the estimator and complete product bundle for one
+observation and authorizes no cross-observation JINC combination semantics. A
+future coadd requires a separately authorized boundary over complete
+observation-level JINC bundles; no ordinary SCI-MAP coaddition rule,
+accumulator-plane addition or normalized-map combination is imported or
+inferred.
 
 The base scientific bundle identity is
 
@@ -25,6 +28,14 @@ The supported array identities are exactly `a1100`, `a1400`, and `a2000`.
 Base v0.1 produces independent observation bundles for each requested present
 array. Cross-array, frequency-combined, or network-combined JINC products are
 unavailable unless separately authorized.
+
+Observation is the scientific grouping boundary, not a streaming, processing-
+chunk, process, container or memory boundary. Samples or chunks from the same
+observation may accumulate incrementally into the one observation bundle only
+when the exact observation, stable array, JINC plan and realization, target
+WCS, admission/parameter/coefficient state and lifecycle generation match.
+Chunk identity neither creates a JINC product nor licenses cross-observation
+combination.
 
 For one array bundle, the population is the union of exact occurrence
 candidates whose stable array identity equals the bundle array and whose
