@@ -121,6 +121,31 @@ add_executable(citlali_sci_align_test EXCLUDE_FROM_ALL
     test_sci_align_pca_placeholder_invariance.cpp
     test_sci_align_native_scatter.cpp
 )
+
+add_executable(citlali_wp7_timestream_test EXCLUDE_FROM_ALL
+    paired_readout_header.cpp
+    test_paired_readout.cpp
+)
+set_source_files_properties(
+    paired_readout_header.cpp
+    PROPERTIES SKIP_PRECOMPILE_HEADERS ON
+)
+set_target_properties(citlali_wp7_timestream_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+target_link_libraries(citlali_wp7_timestream_test
+    PRIVATE
+        citlali::citlali
+        GTest::gtest_main
+)
+add_dependencies(check citlali_wp7_timestream_test)
+gtest_discover_tests(
+    citlali_wp7_timestream_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        TEST_PREFIX "citlali::wp7::"
+        DISCOVERY_MODE PRE_TEST
+)
 set_source_files_properties(
     canonical_apt_detector_relation_v2_header.cpp
     native_observation_carriers_header.cpp
