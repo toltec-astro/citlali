@@ -65,12 +65,15 @@ core is broader, earlier, or ambiguous:
    passes. A named empirical policy may only downgrade this state, never
    promote it.
 9. **JINC coefficient-squared time.** The method-specific accounting product
-   is `jinc_coefficient_squared_time`,
+   and sole base-v0.1 time-support product is `jinc_coefficient_squared_time`,
    `T_p^(kappa^2)=sum_i kappa_ip^2/f_s,i` seconds for eligible samples. The
    squared object is the signed dimensionless analytic kernel coefficient,
    not `omega_i` or the complete `omega_i kappa_ip` contribution. It is not
    physical exposure, complete temporal support, hits, normalized influence,
    white-noise-equivalent time, precision, validity, or significance.
+   A separate physical-exposure product is deferred until an identified
+   scientific use requires and separately authorizes its exact original-
+   occurrence lineage and semantics.
 10. **Realized response.** The response companion is the upstream
     processing-filtered source-template response transformed through the same
     JINC coefficients and normalized by `C`. It is not a bare analytic JINC,

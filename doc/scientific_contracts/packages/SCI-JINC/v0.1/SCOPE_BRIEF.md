@@ -1,6 +1,6 @@
 # SCI-JINC — Signed-Coefficient JINC Observation Mapmaker Scope Brief
 
-Status: ODQ-101/102B/103 Stage A successor candidate; predecessor Stage A bytes
+Status: ODQ-101/102B/103/104 Stage A successor candidate; predecessor Stage A bytes
 owner-approved; successor requires renewed exact-byte approval; Stage B blocked
 
 Scientific owner: Grant Wilson
@@ -66,7 +66,7 @@ which remains unchanged.
 The raw recovery record, owner feedback, decision conversations and all
 implementation/evidence material remain outside the implementation-blind
 author channel. The predecessor Stage A packet was owner-approved at
-`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`; this ODQ-101/102B/103 successor changes
+`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`; this ODQ-101/102B/103/104 successor changes
 allowed input bytes and has **not** received renewed exact-byte approval. No
 Stage B author is commissioned.
 
@@ -278,7 +278,8 @@ rescaling, common coefficient rescaling and edge truncation.
 
 ## 8. Coefficient-Squared Time
 
-The normative product name is `jinc_coefficient_squared_time`:
+The owner-authorized sole base-v0.1 time-support product is
+`jinc_coefficient_squared_time`:
 
 ```text
 T_p^(kappa^2) = sum_i I_ip kappa_ip^2/f_s,i.
@@ -289,9 +290,11 @@ seconds. This is method-specific accounting, not physical acquired exposure,
 valid-original exposure, complete temporal support, normalized influence,
 white-noise-equivalent time, formal precision, validity or significance.
 
-No physical-exposure product is required in base v0.1. A future need must
-import exact original-occurrence exposure lineage as a distinct product; it
-must not distribute one physical integration through every JINC lobe.
+A separate physical-exposure product is deferred until an identified
+scientific use requires it. That future authority must define a distinct
+product with exact original-occurrence exposure lineage and semantics; it must
+not reinterpret coefficient-squared time or distribute one physical
+integration through every JINC lobe.
 
 ## 9. Response And Covariance
 
@@ -409,11 +412,14 @@ separately authorized TolTEC parameter set exist.
 association, JINC-owned map-contribution admission, AST/JINC geometry
 ownership, sample-admission/support separation, coupled-accumulator identity,
 and cause policy. It prescribes no data-model join mechanism.
+`SCI-JINC-ODQ-104` is resolved: `jinc_coefficient_squared_time` is the sole
+base-v0.1 time-support product, and a separate physical-exposure product is
+deferred until a scientific use requires and authorizes it.
 
 Before author dispatch, the owner must:
 
-1. decide the coefficient-squared-time-only base-v0.1 disposition and defer or
-   authorize a distinct physical-exposure role (`SCI-JINC-ODQ-104`);
+1. decide the observation-only base-v0.1 boundary and separately authorize or
+   defer any future JINC coadd (`SCI-JINC-ODQ-105`);
 2. decide the center/tie/phase/cache/error-bound policy
    (`SCI-JINC-ODQ-109`);
 3. decide the outside-center overlapping-square edge rule

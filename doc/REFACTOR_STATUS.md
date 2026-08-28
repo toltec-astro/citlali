@@ -260,6 +260,18 @@ next unresolved scientific-owner question is `SCI-JINC-ODQ-104`, whether base
 v0.1 adopts only `jinc_coefficient_squared_time` and defers or authorizes a
 distinct physical-exposure role.
 
+Grant Wilson then resolved `SCI-JINC-ODQ-104` on `2026-08-28`:
+`jinc_coefficient_squared_time=sum_i I_ip kappa_ip^2/f_s,i` is the sole
+base-v0.1 time-support product. Its method-specific seconds meaning and
+prohibited physical-exposure, precision, validity and significance
+interpretations remain explicit. A separate physical-exposure product is
+deferred until an identified scientific use requires and separately
+authorizes exact original-occurrence lineage and semantics. The refreshed
+ODQ-101/102B/103/104 packet still awaits `SCI-JINC-STAGE-A-Q002`; Stage B
+remains unlaunched. The next unresolved scientific-owner question is
+`SCI-JINC-ODQ-105`, whether base v0.1 is observation-only with any future JINC
+coadd requiring a separately authorized boundary over complete JINC bundles.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

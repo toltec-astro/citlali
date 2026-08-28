@@ -22,6 +22,7 @@ Launch date: `2026-08-28`
 | `JINC-PROCESS-D010` | Intake F. Peter Schloerb's exact LMT OTF/JINC memo as owner-designated generic method authority. Because it is geared to 3-mm spectroscopic receivers rather than TolTEC, admit only a page-exact method excerpt under a cover and do not treat its FCRAO parameters, simulations, scales, optimization or performance as TolTEC authority. |
 | `JINC-PROCESS-D011` | Apply only the owner-approved ODQ-102B Stage A delta. Preserve inherited TolTEC values and history as quarantined evidence, update affected sanitized parameter controls and hashes, do not optimize or derive values, and return the successor bytes to the existing exact-byte gate. |
 | `JINC-PROCESS-D012` | Apply only the owner-approved ODQ-103 Stage A delta, exact directive attachment SHA-256 `39bd1cb9d0bf45ecf5a6c336dc3da04f5e978cc0228e4ba73e5f01926fd2c75e`. Express exact sample-coordinate association scientifically without prescribing a key/join architecture; establish one JINC-owned map-contribution profile; preserve admission/support, signed-coefficient, cause and provenance boundaries; refresh affected hashes and return to the existing exact-byte gate. |
+| `JINC-PROCESS-D013` | Apply only the owner-approved ODQ-104 Stage A delta: authorize coefficient-squared time as the sole base-v0.1 time-support product, defer physical exposure until an identified scientific use requires it, refresh affected controls/hashes, and return to the existing exact-byte gate without launching Stage B. |
 
 ## Recovered Scientific Decisions Applied To The Proposed Packet
 
@@ -57,8 +58,9 @@ and integration axes are not applied here.
 | `JINC-SCOPE-D008` | Before ODQ-102B, keep TolTEC `a1100`/`a1400`/`a2000` effective radial scales and parameter values/provenance unresolved. A three-band optimum-parameter derivation is a separate downstream scientific tranche. |
 | `JINC-SCOPE-D009` | ODQ-102B preserves `r'_a=r/s_a` with explicit array-associated angular `s_a`, makes the Schloerb `s=lambda/D` convention precedent rather than TolTEC authorization, permits array association for all scientifically appropriate shape/extent parameters, and types every TolTEC numerical route unavailable absent a separately authorized parameter set. Inherited `lambda_a/(45 m)`, shape, and mode `r_max` values remain evidence only; no hidden default or physical interpretation of `45 m` is authorized. |
 | `JINC-SCOPE-D010` | ODQ-103 binds AST's authoritative coordinate and parent-sample association to the same processed realization entering JINC, while leaving representation mechanics to engineering. JINC owns `SCI-JINC:jinc_map_contribution@1`, local geometry/support/signed coefficient, sample-admission versus sample-pixel support, coupled-accumulator identity and JINC-local causes. No MAP admission/validity inheritance, inferred association fallback, producer JINC-usability decision, or new per-contribution provenance system is admitted. |
+| `JINC-SCOPE-D011` | ODQ-104 authorizes `jinc_coefficient_squared_time=sum I_ip kappa_ip^2/f_s,i` as the sole base-v0.1 time-support product and defers a separate physical-exposure product until an identified scientific use separately authorizes its original-occurrence lineage and semantics. No exposure, precision, validity or significance interpretation follows. |
 
-`JINC-SCOPE-D001--D010` are proposed packet boundary statements and become
+`JINC-SCOPE-D001--D011` are proposed packet boundary statements and become
 author inputs only if the scientific owner approves the exact Scope Brief and
 manifest.
 

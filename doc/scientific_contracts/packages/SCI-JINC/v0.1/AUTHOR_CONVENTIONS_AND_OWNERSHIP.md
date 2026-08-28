@@ -130,13 +130,17 @@ Exact source set at
   coefficient and independence/covariance assumptions.
 - `jinc_coefficient_squared_time=sum(kappa^2/f_s)` carries seconds. It squares
   only the dimensionless analytic JINC coefficient and is method-specific
-  accounting. It is not physical acquired exposure, valid-original exposure,
+  accounting. It is the sole base-v0.1 time-support product. It is not
+  physical acquired exposure, valid-original exposure,
   complete temporal support, normalized influence, white-noise-equivalent
   time, hits, precision, confidence, validity, or significance.
 - Support and validity states are dimensionless logical facts.
 - Signal multiplied by the square root of a formal weight is a formal
   standardized signal. `sig2noise` is reserved for an empirically calibrated
   estimator owned by SCI-NOI or another approved authority.
+- A separate physical-exposure product is deferred until an identified
+  scientific use separately authorizes its exact original-occurrence lineage,
+  membership, units, semantics, availability, provenance and consumer meaning.
 
 ## Signed Coefficients, Support, And Conditioning
 
