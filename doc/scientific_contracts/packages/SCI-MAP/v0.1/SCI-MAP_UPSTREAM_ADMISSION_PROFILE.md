@@ -1,8 +1,8 @@
 # SCI-MAP Upstream-Admission Profile
 
-Profile identity: `SCI-MAP:map_upstream_admission@1`
+Profile identity: `SCI-MAP:map_upstream_admission@2`
 
-Status: MAP-owned r0.5 profile registered in the continuing SCI-VAL Registry;
+Status: MAP-owned r0.6 source-current profile registered in the continuing SCI-VAL Registry;
 implementation evaluation and conformity not assessed
 
 Scientific-policy owner: Grant Wilson
@@ -10,6 +10,10 @@ Scientific-policy owner: Grant Wilson
 The authoritative registry record is in
 `SCI-VAL/v0.1/PROFILE_REGISTRY.md`. This package copy is the scientist-readable
 MAP view and shall remain semantically identical.
+
+Version `@1` remains an immutable r0.5 record and is not a compatibility alias.
+Version `@2` is required because the exact owner-directive, boundary, shared
+MAP authority, and continuing VAL source bindings changed.
 
 ## Decision
 
@@ -32,6 +36,14 @@ CAL `engineering-only` classification may remain a candidate only when PTC
 retains it and the classification remains explicit; no science qualification
 is created. Transitive influence and other causes are preserved but are not
 universal vetoes unless a required predicate names them.
+
+The decision retains four independent axes: request is `requested` or
+`not_requested`; applicability is `applicable`, `inapplicable`, or
+`applicability_unknown`; eligibility is `eligible`, `ineligible`, or
+`decision_unavailable`; and realization is `realized`, `incomplete`, `failed`,
+or `not_produced`. Only requested, applicable, eligible, and realized projects
+to the MAP upstream-admission pass predicate. Every other tuple is estimator
+nonmembership while its complete state and causes remain preserved.
 
 Response and uncertainty are advisory for base numerical signal admission.
 Their exact class, state, domain, limitations, and causes remain carried. A

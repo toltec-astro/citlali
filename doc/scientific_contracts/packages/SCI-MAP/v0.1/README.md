@@ -1,8 +1,8 @@
 # SCI-MAP — Ordinary Mapmaking And Observation Coaddition
 
-Status: targeted r0.5 PTC-to-MAP cross-package closure draft; exact boundary
-and MAP profiles authored; hard numerical gates remain visible; scientific
-authority not frozen
+Status: targeted r0.6 scientific-closure draft; exact boundary and
+source-current atomic/aggregate MAP profiles authored; hard numerical gates
+remain visible; scientific authority not frozen
 
 Scientific contract scope: `v0.1`, owner-approved (`2026-08-16`)
 
@@ -91,40 +91,47 @@ A fresh implementation-blind GPT-5.6 Ultra author was dispatched from the
 content-bound packet on `2026-08-16`. Scope approval did not approve the
 resulting contract.
 
-## Targeted Cross-Package Closure r0.5
+## Targeted Scientific Closure r0.6
 
 The manager-reviewed r0.1 draft supplied one shared canonical LaTeX authority
 and two rendered views. The first scientific editing round found the formal
 science strong but required the SCI-CAL house-model genre separation. The
 package now exposes:
 
-- [formal scientific/engineering contract r0.5](pdf/SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.5-DRAFT.pdf),
+- [formal scientific/engineering contract r0.6](pdf/SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.6-DRAFT.pdf),
   preserving all canonical equations, 52 requirements, 25 predictions, exact
   support/state semantics, provenance, decision register, and conformance
   routing;
-- [science-team rationale r0.5](pdf/SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.5-DRAFT.pdf),
+- [science-team rationale r0.6](pdf/SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.6-DRAFT.pdf),
   a scientist-facing account of the estimator, response, uncertainty,
   support/validity, coaddition, WCS, products, and validation without the full
   requirement or prediction inventories;
-- [engineering conformance specification r0.5](pdf/SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.5-DRAFT.pdf);
+- [engineering conformance specification r0.6](pdf/SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.6-DRAFT.pdf);
 - [`SCI-PTC_TO_SCI-MAP_BOUNDARY.md`](SCI-PTC_TO_SCI-MAP_BOUNDARY.md),
   profile `SCI-PTC_TO_SCI-MAP v0.1/r0.1`;
 - [`SCI-MAP_UPSTREAM_ADMISSION_PROFILE.md`](SCI-MAP_UPSTREAM_ADMISSION_PROFILE.md),
-  the MAP-authored profile registered by SCI-VAL;
+  source-current `SCI-MAP:map_upstream_admission@2`, registered by SCI-VAL;
 - [`SCIENTIFIC_OWNER_DISPOSITIONS_R0.5.md`](SCIENTIFIC_OWNER_DISPOSITIONS_R0.5.md),
   including the withheld PTC coefficient, selected one-hot projection,
   exposure carriage, response notation, and coadd choices;
-- [`SCI-MAP_COADD_PROFILES_R0.5.md`](SCI-MAP_COADD_PROFILES_R0.5.md),
+- [`SCI-MAP_COADD_PROFILES_R0.6.md`](SCI-MAP_COADD_PROFILES_R0.6.md),
   the uniform observation coefficient and atomic admission profiles;
-- [`SOURCE_MANIFEST_R0.5.md`](SOURCE_MANIFEST_R0.5.md), exact PTC/WP-7/CAL/
+- [`SOURCE_MANIFEST_R0.6.md`](SOURCE_MANIFEST_R0.6.md), exact PTC/WP-7/CAL/
   AST/VAL/boundary and shared-authority digest binding;
-- [`FORMAL_PARITY_REPORT_R0.5.md`](FORMAL_PARITY_REPORT_R0.5.md) and
-  [`REQUIREMENT_EQUATION_PREDICTION_CHANGE_MAP_R0.5.md`](REQUIREMENT_EQUATION_PREDICTION_CHANGE_MAP_R0.5.md),
+- [`FORMAL_PARITY_REPORT_R0.6.md`](FORMAL_PARITY_REPORT_R0.6.md) and
+  [`REQUIREMENT_EQUATION_PREDICTION_CHANGE_MAP_R0.6.md`](REQUIREMENT_EQUATION_PREDICTION_CHANGE_MAP_R0.6.md),
   recording one shared authority and stable-ID semantic changes;
-- [`HORIZONTAL_AUDIT_R0.5.md`](HORIZONTAL_AUDIT_R0.5.md), the clean
-  implementation-blind PTC/VAL/AST/MAP/boundary audit with two explicit hard
-  gates; and
-- [`PDF_VISUAL_QA_R0.5.md`](PDF_VISUAL_QA_R0.5.md), documenting all-page
+- [`OWNER_DECISION_PARITY_R0.6.md`](OWNER_DECISION_PARITY_R0.6.md) and
+  [`OPEN_GATE_READINESS_LEVELS_R0.6.md`](OPEN_GATE_READINESS_LEVELS_R0.6.md),
+  separating OD-008 closure and six distinct route levels;
+- [`TYPED_CONTRIBUTION_GATE_LEGEND_R0.6.md`](TYPED_CONTRIBUTION_GATE_LEGEND_R0.6.md),
+  [`EXPOSURE_DOMAIN_DECISION_R0.6.md`](EXPOSURE_DOMAIN_DECISION_R0.6.md), and
+  [`RESPONSE_CROSSWALK_R0.6.md`](RESPONSE_CROSSWALK_R0.6.md), documenting the
+  three principal scientific closures;
+- [`HORIZONTAL_AUDIT_R0.6.md`](HORIZONTAL_AUDIT_R0.6.md), the clean
+  implementation-blind PTC/VAL/AST/MAP/boundary audit with route-specific
+  dispositions; and
+- [`PDF_VISUAL_QA_R0.6.md`](PDF_VISUAL_QA_R0.6.md), documenting all-page
   Poppler review and exact metadata;
 - [`src/common/`](src/common/), containing the required canonical
   `notation`, `definitions`, `equations`, `assumptions`, `requirements`, and
@@ -170,10 +177,10 @@ reduction, Unity execution, or production-status decision was performed.
 
 ## Stopping Rule And Next Gate
 
-Revision r0.5 is the current owner-review draft. It does not claim
+Revision r0.6 is the current owner-review draft. It does not claim
 implementation conformity, validation, freeze, response achievement,
 observational performance, production authorization, or readiness. Eight MAP
 owner decisions remain open; OD-008 is resolved. The ordinary numerical route
 is still hard-blocked by the missing PTC MAP-facing coefficient family and the
 unresolved admitted numerical `coverage_cut` domain. The next gate is
-scientific-owner review of the r0.5 PDFs and closure records.
+scientific-owner review of the r0.6 PDFs and closure records.

@@ -24,7 +24,7 @@ What response information must the original v0.1 MAP product provide for each re
 Report the actual response state, meaning, domain, and limits; fabricate neither zero nor identity response. Make no unsupported response-dependent claim. Permit later response or corrected-map products only with new versioned identity bound to the original MAP product and processing identity.\\
 \addlinespace[0.35em]
 \texttt{SCI-MAP-OD-004}\\\textbf{OPEN} &
-What minimum covariance representation must persist in a raw bundle, and what may remain resolvable through lineage? &
+What minimum covariance representation must persist in a base/unfiltered MAP bundle, and what may remain resolvable through lineage? &
 Report what uncertainty/covariance information exists, with meaning, domain, assumptions, limitations, omissions, and lineage. Do not promote normalization, hits, exposure, or diagnostic weight. Permit later estimates as new versioned products bound to the original.\\
 \addlinespace[0.35em]
 \texttt{SCI-MAP-OD-005}\\\textbf{OPEN} &
@@ -41,7 +41,7 @@ Assert no general numerical domain. Require the exact numerical value to be expl
 \addlinespace[0.35em]
 \texttt{SCI-MAP-OD-008}\\\textbf{RESOLVED} &
 Which sample-to-pixel projection classes are authorized for ordinary SCI-MAP v0.1, what normalization applies to MAP-owned \texttt{G\_pi}, and how is boundary loss represented? &
-Authorize only \texttt{SCI-MAP:one\_hot\_containing\_pixel@1} with half-open cells, unity on the unique finite in-grid containing pixel, outer-upper-boundary loss, no wrap/clamp, and fractional projection deferred.\\
+Authorize only \texttt{SCI-MAP:one\_hot\_containing\_pixel@1} with lower-inclusive, upper-exclusive cells; \texttt{G\_pi=1} only for the unique finite in-grid containing pixel and zero elsewhere; outer-upper-boundary and out-of-grid loss; no wrap or clamp; fractional projection deferred.\\
 \addlinespace[0.35em]
 \texttt{SCI-MAP-OD-009}\\\textbf{OPEN} &
 Is upstream crop or pad to a canonical common grid an authorized preparation for v0.1 observation coaddition, which package owns it, and which future package owns reprojection or mosaicking beyond centered-integer placement? &

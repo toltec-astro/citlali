@@ -113,6 +113,22 @@ Poppler visual inspection. This remains an owner-review document result only,
 not implementation conformity, validation, achieved response/performance,
 freeze, readiness, or production authorization.
 
+The owner-approved SCI-MAP r0.6 targeted scientific-closure pass was completed
+on `2026-08-27`. It preserves all 52 requirement IDs, 25 prediction IDs, nine
+owner-decision IDs, and eight open MAP-local decisions while correcting OD-008
+parity; typing all ten contribution gates; defining unique-original exposure
+at each original's own AST coordinate; separating fixed-state, PTC
+full-procedure, and whole-chain response; and registering source-current
+`SCI-MAP:map_upstream_admission@2` plus VAL-governed aggregate
+`SCI-MAP:observation_coadd_admission@1`. The exact
+`SCI-PTC_TO_SCI-MAP v0.1/r0.1` artifact is byte-identical in both packets. The
+durable verifier passes and all 60 rendered PDF pages passed Poppler visual
+inspection. The conditional estimator is coherent, but the PTC coefficient
+family and admitted numerical `coverage_cut` state still block a source-closed
+numerical route. No implementation conformity, validation, response fidelity,
+observational performance, freeze, readiness, or production authorization is
+claimed.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

@@ -1,10 +1,11 @@
 # SCI-VAL v0.1 — Owner-Bound Profile Registry
 
 Status: r0.3 continuing contract registry; mandatory canonical atomic profile,
-five SCI-PTC named-use profiles, and one SCI-MAP named-use profile registered;
-two broad SCI-PTC identities explicitly unsupported
+five SCI-PTC named-use profiles, two versioned SCI-MAP upstream records, and
+one SCI-MAP aggregate coadd profile registered; two broad SCI-PTC identities
+explicitly unsupported
 
-Last updated: `2026-08-27`
+Last updated: `2026-08-27` (SCI-MAP r0.6 closure)
 
 ## Registry Rule
 
@@ -203,6 +204,47 @@ complete proposition.
 | Lifecycle and consumer action | Evaluation binds requested, effective, observation-resolved, applied, and realized identities plus exact source/profile versions. `eligible` creates a MAP-route candidate only. MAP still evaluates signal finiteness, positive coefficient, `G_pi`, boundary, support, required companions, and final contribution; VAL performs no pixel placement or accumulation |
 | Aggregation and propagation compatibility | `atomic_only`; no pixel, detector, observation, exposure, or coadd aggregate is implied. No reverse propagation or producer-fact rewrite is authorized |
 | Supersession | Any changed source digest, occurrence domain, restriction, exception, response/uncertainty role, lifecycle, or direct/inherited influence rule requires a new immutable profile version and evaluation generation; prior decisions remain unchanged |
+
+The `@1` record remains immutable for replay of r0.5 decisions. It is not a
+compatibility alias for the current r0.6 source binding.
+
+### `SCI-MAP:map_upstream_admission@2`
+
+| Field | Binding |
+| --- | --- |
+| Registry key | `SCI-MAP:map_upstream_admission@2` |
+| Named use and action | `map_upstream_admission`; decide whether one exact realized PTC occurrence may enter the MAP-route-candidate population before pixel-specific placement and local numerical contribution gates |
+| Scientific owner | Grant Wilson, SCI-MAP scientific-policy owner |
+| Authoritative source | SCI-MAP r0.6 targeted scientific-closure directive SHA-256 `d57e90f8ed4407b0f727cd2ac981318e02101ddd9f73abac7e2772b66dac2c84`; `SCI-PTC_TO_SCI-MAP v0.1/r0.1` SHA-256 `9a8a51a8c2201ea59b5d62cca9d4fad6206ef130e305006187e5a17c9ec522d6`; MAP scientist-readable profile SHA-256 `4451e0aa35a60a19b2adb273b552691fe655d4e265d944f6189bcaf8a5d27e20`; shared MAP r0.6 authority SHA-256 `bb8c9601d6bfe828fff2d7193fcca5a297e14b11fd22c13b2afd05377936b72d`; frozen SCI-PTC v0.1/r0.5 freeze-record SHA-256 `8357961a49272adc40e27a8aa9e760e0d01ff2419ae2c88a62c0f93c9f959e66`; frozen SCI-AST v0.1/r0.3 source-manifest SHA-256 `b54b6013750540f28aad02339a60bf36078980dc53b132beab73069d66ef3601`; frozen SCI-CAL v0.1/r0.5-r0.4 freeze-record SHA-256 `413426f49edf1249f751a05bb8c6e9fd907b11e8da0530fe2da39814885efb22`; SCI-VAL Core r0.3 plus this continuing Registry and Source-Binding Register SHA-256 `ba070b0cf2e82568cf263d1ed7c8b0a48295d6d8c25d6d5bd685da75f6ee413d` |
+| Applicability and object | Requested ordinary positive-rank PTC-to-MAP route; one exact occurrence binding observation, detector occurrence/UID, stable RTC output sample `n`, PTC product/application generation, segment, array/network/group, and complete PTC/AST/CAL/RTC/ALIGN parent chain |
+| Required permissions | Exact realized PTC product exists; `SCI-PTC:output_retention@1` is `eligible`; transformed signal and source identity are available; an exact PTC-owner-selected MAP-facing coefficient family/value is available and its coefficient/QC disposition permits this use; exact AST RTC-grid coordinate for the same `n` and parent chain is structurally bound; all required boundary, source, and lifecycle bindings are compatible |
+| Decisive exclusions | PTC-disabled, no-product, direct CAL input, inferred no-op PTC, retention `ineligible`, direct synthesized or replaced representative source for the MAP signal use, incompatible signal/coordinate parents, incompatible generations, coefficient/QC exclusion, or boundary/profile/source-version mismatch |
+| Classification and influence behavior | CAL `engineering-only` may remain a route candidate only when PTC retained it and the classification is preserved; this creates no science-qualification claim. Direct synthesized/replaced origin is decisive for this profile. Transitive influence and all other causes are preserved but have no universal veto unless an exact required restriction names them |
+| Response/uncertainty roles | `advisory` for base numerical MAP signal admission. Exact fixed-state, full-procedure, or full-chain response class/state and conditional covariance limitations remain carried. A stronger product role applies its own exact requirement; this profile neither fabricates nor upgrades response or uncertainty |
+| Exceptions | None for exact occurrence/parent/generation binding, realized positive-rank PTC route, output-retention permission, direct synthesized/replaced exclusion, coefficient identity/QC permission, same-`n` AST binding, or exact boundary/source/profile identity |
+| Four decision axes and pass projection | Request: `requested`/`not_requested`; applicability: `applicable`/`inapplicable`/`applicability_unknown`; eligibility: `eligible`/`ineligible`/`decision_unavailable`; realization: `realized`/`incomplete`/`failed`/`not_produced`. Only `(requested, applicable, eligible, realized)` projects to Boolean MAP upstream-admission pass. Every other tuple is estimator nonmembership with complete causes retained |
+| Missing/conflicting behavior | Missing or conflicting applicability, identity, parent, generation, required permission, coefficient family/value/QC state, coordinate, boundary, source, or profile binding yields `applicability_unknown` and `decision_unavailable` where evaluable. A decisive false restriction yields `ineligible`; all restrictions true yields `eligible`. Realization remains independent |
+| Lifecycle and consumer action | Evaluation binds requested, effective, observation-resolved, applied, and realized identities plus exact source/profile versions. Passing creates a MAP-route candidate only. MAP still evaluates finiteness, positive coefficient, `G_pi`, boundary, support, required companions, and final contribution; VAL performs no pixel placement or accumulation |
+| Aggregation and propagation compatibility | `atomic_only`; no pixel, detector, observation, exposure, or coadd aggregate is implied. No reverse propagation or producer-fact rewrite is authorized |
+| Supersession | Any changed source digest, occurrence domain, restriction, exception, response/uncertainty role, lifecycle, or direct/inherited influence rule requires a new immutable profile version and evaluation generation; prior decisions remain unchanged |
+
+### `SCI-MAP:observation_coadd_admission@1`
+
+| Field | Binding |
+| --- | --- |
+| Registry key | `SCI-MAP:observation_coadd_admission@1` |
+| Named use and action | `observation_coadd_admission`; atomically decide whether one complete base/unfiltered observation MAP bundle may enter the centered-integer equal-observation coadd before any coadd-owned state changes |
+| Scientific owner | Grant Wilson, SCI-MAP scientific-policy owner |
+| Authoritative source | SCI-MAP r0.6 directive SHA-256 `d57e90f8ed4407b0f727cd2ac981318e02101ddd9f73abac7e2772b66dac2c84`; `SCI-MAP_COADD_PROFILES_R0.6.md` SHA-256 `45b676b1257c71608df36fb9bd9689e150c5ede60af4cd7b39ee4b28c5e8d056`; shared MAP r0.6 authority SHA-256 `bb8c9601d6bfe828fff2d7193fcca5a297e14b11fd22c13b2afd05377936b72d`; exact sources and boundary bound by the continuing Source-Binding Register SHA-256 `ba070b0cf2e82568cf263d1ed7c8b0a48295d6d8c25d6d5bd685da75f6ee413d` |
+| Source atomic profile and aggregate population | Source-current atomic MAP identity `SCI-MAP:map_upstream_admission@2`; aggregate object is one immutable complete observation MAP bundle, its exact support-authorized rows, and one requested centered-integer coadd plan. No aggregate rewrites atomic decisions |
+| Four decision axes | Request: `requested`/`not_requested`; applicability: `applicable`/`inapplicable`/`applicability_unknown`; eligibility: `eligible`/`ineligible`/`decision_unavailable`; realization: `realized`/`incomplete`/`failed`/`not_produced`. Eligibility never substitutes for realization |
+| Required restrictions | Compatible nonpolarimetric quantity and exact nominal beam; realized PTC route/application generation; source-current MAP profile; complete AST frame/WCS and identical grid; centered-integer shape/reference-pixel relation; support policy and admitted `coverage_cut`; exact uniform observation coefficient; role-qualified response/covariance state; compatible null/additive-reference and removed-subspace state; exposure convention; required companions; lifecycle; and immutable parentage |
+| Response and uncertainty roles | Response is `advisory` and unavailable-compatible for `SCI-MAP:base_signal_coadd_without_required_response@1`; it is `required_permission` for a response-bearing role with exact compatible source domain, basis, class, units, normalization, parent, and rows for every member. Covariance may be partial/unavailable for the base signal role; a covariance-qualified role requires every named block. No hidden subset, zero response, zero unknown block, or inferred independence is permitted |
+| Exceptions | None for quantity/beam identity, exact grid/frame, centered-integer relation, required companions, source/profile generation, atomicity, or any restriction named required by the selected product role |
+| Missing/conflicting behavior | Missing/conflicting object, plan, parent, source, profile, identity, or required role fact yields `applicability_unknown` and `decision_unavailable` where evaluable. A decisive incompatibility yields `ineligible`. Rejection preserves every cause and changes no coadd state |
+| Aggregation and propagation compatibility | Authorizes only the centered-integer equal-observation aggregate and forward propagation of exact compatible companions. It authorizes no reverse propagation, crop, pad, interpolation, reprojection, GLS, or mosaic. Physical exposure uses observation-scoped unique-original union and own-coordinate placement; influence does not duplicate seconds |
+| Lifecycle and consumer action | A realized eligible decision permits MAP to perform centered-integer placement, equal-observation accumulation, support resolution, exposure union, and MAP-local coadd validity. VAL performs no arithmetic and authors no MAP policy |
+| Supersession | Any changed source digest, population, role, restriction, exception, aggregation rule, or missing/conflict behavior requires a new immutable profile version and decision generation; prior decisions remain unchanged |
 
 ## Aggregate Profile Rule
 

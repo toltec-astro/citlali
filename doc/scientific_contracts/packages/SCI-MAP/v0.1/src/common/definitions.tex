@@ -5,6 +5,8 @@
 \providecommand{\SCIMapSignalRole}{calibrated-\(x\)-derived nonpolarimetric total-intensity-equivalent quantity}
 \providecommand{\SCIMapResponseIdentity}{support-restricted realized response}
 \providecommand{\SCIMapValidityIdentity}{MAP-local base-product scientific validity}
+\providecommand{\SCIMapUpstreamProfile}{\texttt{SCI-MAP:map\_upstream\_admission@2}}
+\providecommand{\SCIMapCoaddProfile}{\texttt{SCI-MAP:observation\_coadd\_admission@1}}
 
 % The exact occurrence i is not a tuple of time and detector. It binds the
 % observation; detector occurrence and UID; stable RTC output index n; exact
@@ -13,3 +15,10 @@
 % locators only.  z_i=Z_i^PTC is the transformed signal; gamma_i is the exact
 % PTC-selected MAP-facing coefficient, when such a family exists.  x and r
 % remain reserved for the paired upstream KID readout coordinates.
+
+% A stable original occurrence u is the ALIGN-owned acquisition occurrence,
+% keyed by observation, detector occurrence/UID, native occurrence identity,
+% and exact ALIGN mapping generation.  Its own AST coordinate parent, not the
+% coordinates of RTC/PTC descendants it influences, places its physical
+% valid-original exposure.  The causal influence graph remains a separate
+% support fact and never duplicates detector-seconds.

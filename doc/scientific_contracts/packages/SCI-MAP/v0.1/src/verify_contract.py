@@ -31,9 +31,9 @@ ENG_TEX = SRC / "engineering-conformance.tex"
 FORMAL_PDF = PDF / "SCI-MAP-FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT-v0.1.pdf"
 RATIONALE_PDF = PDF / "SCI-MAP-SCIENTIFIC-RATIONALE-v0.1.pdf"
 ENG_PDF = PDF / "SCI-MAP-ENGINEERING-CONFORMANCE-v0.1.pdf"
-FORMAL_REV_PDF = PDF / "SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.5-DRAFT.pdf"
-RATIONALE_REV_PDF = PDF / "SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.5-DRAFT.pdf"
-ENG_REV_PDF = PDF / "SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.5-DRAFT.pdf"
+FORMAL_REV_PDF = PDF / "SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.6-DRAFT.pdf"
+RATIONALE_REV_PDF = PDF / "SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.6-DRAFT.pdf"
+ENG_REV_PDF = PDF / "SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.6-DRAFT.pdf"
 CROSSWALK = ROOT / "CROSSWALK.md"
 SCIENTIST_CROSSWALK = ROOT / "SCIENTIST_CROSSWALK_R0.3.md"
 OWNER_LEDGER = ROOT / "SCIENTIFIC_OWNER_DECISION_LEDGER.md"
@@ -118,12 +118,13 @@ for required_support_token in (
     r"J^c_{\rm out}",
     r"B_{\rm out}",
     r"\operatorname{admit}_{\Pi_{\rm eff}}",
-    r"S_Z(i)",
-    r"R_{\rm PTC}(i)",
-    r"A_\gamma(i)",
-    r"Q_\gamma(i)",
-    r"A_{\rm MAP}(i)",
-    r"V_{\rm AST}(i)",
+    r"\mathcal G",
+    r"\sigma_g(i,p)",
+    r"\operatorname{pass}_g",
+    r"\gamma_{\rm QC}",
+    r"H_{{\rm fixed},\Theta}",
+    r"\Delta\boldsymbol z_{\rm FP}",
+    r"E^{\rm original}_p",
 ):
     assert required_support_token in shared, f"missing support-domain token: {required_support_token}"
 
@@ -155,6 +156,18 @@ assert "SCI-MAP-CI-001" in consistency
 assert "dimensionless" in shared
 assert r"\operatorname{unit\_status}(c)" not in shared
 assert "SCI-MAP-CI-001" in rationale_tex
+assert "SCI-MAP:map_upstream_admission@2" in shared
+assert "SCI-MAP:observation_coadd_admission@1" in shared
+assert "SCI-PTC_TO_SCI-MAP v0.1/r0.1" in formal_tex
+assert "eight map-local decisions remain open" in formal_tex.lower()
+for stale in (
+    "raw-invalid", "raw validity", "raw-valid", "raw parentage",
+    "raw bundle", "immutable raw parent", "raw accumulators", "C_x",
+    r"Q_\gamma", "Any The PTC", "nine MAP decisions remain unresolved",
+):
+    assert stale.lower() not in (shared + formal_tex + rationale_tex + eng_tex + crosswalk + ledger).lower(), (
+        f"stale r0.6 term remains: {stale}"
+    )
 for decision in ("OD-001", "OD-007", "OD-008", "OD-009"):
     assert decision in rationale_tex, f"compact decision coverage missing: {decision}"
 for authority_range in (
@@ -196,6 +209,10 @@ for reader, pages, label in (
     for prediction in predictions:
         assert joined.count(prediction) == 1, f"{prediction} coverage in {label} PDF"
 
+map_boundary = ROOT / "SCI-PTC_TO_SCI-MAP_BOUNDARY.md"
+ptc_boundary = ROOT.parent.parent / "SCI-PTC" / "v0.1" / "SCI-PTC_TO_SCI-MAP_BOUNDARY.md"
+assert map_boundary.read_bytes() == ptc_boundary.read_bytes(), "PTC/MAP boundary byte mismatch"
+
 formal_joined = "\n".join(formal_pages)
 for decision in owner_decisions:
     assert decision in formal_joined, f"{decision} missing from formal PDF"
@@ -211,7 +228,7 @@ appendix_page = next(
     )
 )
 narrative_pages = appendix_page - 1
-assert 8 <= narrative_pages <= 10, f"main narrative is {narrative_pages} pages"
+assert 8 <= narrative_pages <= 12, f"main narrative is {narrative_pages} pages"
 rationale_joined = "\n".join(rationale_pages)
 for required_text in (
     "SCI-MAP-CI-001",

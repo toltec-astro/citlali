@@ -4,10 +4,16 @@
 \begin{align}
  a_{pi} &= G_{pi}\,\gamma_i,
  \label{eq:effective-coefficient}\\
- \mathcal C_p&=\{i:S_Z(i)\land R_{\rm PTC}(i)\land A_\gamma(i)
- \land Q_\gamma(i)\land A_{\rm MAP}(i)\land V_{\rm AST}(i)\notag\\
- &\hspace{4.5em}\land F_Z(i)\land P_\gamma(i)\land
- P_G(i,p)\land L_{\rm MAP}(i,p)\},
+ \mathcal G&=\{Z_{\rm avail},{\rm PTC}_{\rm ret},\gamma_{\rm avail},
+ \gamma_{\rm QC},{\rm MAP}_{\rm adm},
+ \nonumber\\[-2pt]
+ &\hspace{2.4em}{\rm AST}_{\rm coord},Z_{\rm finite},\gamma_{>0},
+ G_{\rm place},{\rm MAP}_{\rm local}\},
+ \label{eq:contribution-gate-family}\\
+ b_g(i,p)&=\operatorname{pass}_g\!\left(\sigma_g(i,p)\right)
+ \in\{0,1\},\qquad g\in\mathcal G,
+ \label{eq:typed-gate-projection}\\
+ \mathcal C_p&=\left\{i:\bigwedge_{g\in\mathcal G}b_g(i,p)=1\right\},
  \label{eq:contribution-set}\\
  \mathcal S_{\rm out}(\Pi_{\rm eff})
  &=\{p:\operatorname{authorize}_{\Pi_{\rm eff}}(p)=1\},
@@ -25,17 +31,56 @@
 \newcommand{\SCIMapOperatorEquations}{%
 \begin{align}
  D_Q&=\operatorname{diag}(G\Omega\boldsymbol 1),
- &J_{\rm out}\boldsymbol z&=(z_p)_{p\in\mathcal S_{\rm out}},
+ &J_{\rm out}\boldsymbol v&=(v_p)_{p\in\mathcal S_{\rm out}},
  &D_{Q,{\rm out}}&=J_{\rm out}D_QJ_{\rm out}^{\mathsf T},
  \label{eq:output-row-selection}\\
  A_{\rm out}&=D_{Q,{\rm out}}^{-1}J_{\rm out}G\Omega,
  &\widehat{\boldsymbol m}_{\rm out}&=A_{\rm out}\boldsymbol z,
  \label{eq:map-operator}\\
- R_{\rm out}&=A_{\rm out}H,
- &\delta\mathbb E[\widehat{\boldsymbol m}_{\rm out}\mid\Theta]
-   &=R_{\rm out}\,\delta\boldsymbol s,
+ \delta\boldsymbol m_{\rm out}
+   &=A_{{\rm MAP},\Pi}H_{{\rm fixed},\Theta}\,\delta\boldsymbol s,
+ &R_{{\rm fixed},\Theta}&=A_{{\rm MAP},\Pi}H_{{\rm fixed},\Theta},
  &C_{m,{\rm out}}&=A_{\rm out} N_{\rm PTC} A_{\rm out}^{\mathsf T}.
  \label{eq:response-covariance}
+\end{align}}
+
+\newcommand{\SCIMapProcedureResponseEquations}{%
+\begin{align}
+ \Delta\boldsymbol z_{\rm FP}(\delta\boldsymbol s;\alpha)
+ &=\mathcal P_{\rm PTC}(\boldsymbol s+\delta\boldsymbol s;\alpha)
+   -\mathcal P_{\rm PTC}(\boldsymbol s;\alpha),
+ \label{eq:ptc-full-procedure-response}\\
+ \Delta\Sigma_{\rm FP}
+ &=\operatorname{state}_{\rm PTC}(\boldsymbol s+\delta\boldsymbol s;\alpha)
+   \ominus\operatorname{state}_{\rm PTC}(\boldsymbol s;\alpha),
+ \label{eq:ptc-full-procedure-state}\\
+ \Delta\boldsymbol m_{\rm FP}
+ &=A_{{\rm MAP},\Pi}\,\Delta\boldsymbol z_{\rm FP},
+ \qquad\text{only when MAP state }\Pi\text{ is held fixed},
+ \label{eq:map-of-ptc-full-procedure}\\
+ \Delta\boldsymbol m_{\rm chain}
+ &=\mathcal M\!\left(\mathcal P_{\rm PTC}(\boldsymbol s+\delta\boldsymbol s;\alpha);
+                       \Pi_{+}\right)
+  -\mathcal M\!\left(\mathcal P_{\rm PTC}(\boldsymbol s;\alpha);\Pi_{0}\right),
+ \label{eq:full-chain-procedure-response}
+\end{align}}
+
+\newcommand{\SCIMapExposureEquations}{%
+\begin{align}
+ \mathcal U^{\rm up}_p
+ &=\left\{u:e^{\rm vo}_u>0,\ G^{u}_{p}=1,\
+   \exists i\in\mathcal I_{\rm route}:u\leadsto i\right\},
+ \label{eq:upstream-original-population}\\
+ E^{\rm original}_p&=\sum_{u\in\mathcal U^{\rm up}_p}e^{\rm vo}_u,
+ \label{eq:original-exposure}\\
+ \mathcal U^{\rm ret}_p
+ &=\left\{u:e^{\rm vo}_u>0,\ G^{u}_{p}=1,\
+   \exists i\in\mathcal C:u\leadsto i\right\},
+ &E^{\rm ret}_p&=\sum_{u\in\mathcal U^{\rm ret}_p}e^{\rm vo}_u,
+ \label{eq:retained-exposure}\\
+ \mathcal U^c_p&=\bigcup_{o\in\mathcal O_p}\{(o,u):u\in\mathcal U^{\rm ret}_{op}\},
+ &E^c_p&=\sum_{(o,u)\in\mathcal U^c_p}e^{\rm vo}_{ou}.
+ \label{eq:coadd-exposure}
 \end{align}}
 
 \newcommand{\SCIMapFormalWeightEquations}{%
@@ -93,7 +138,7 @@
  \label{eq:coadd-accumulators}\\
  \widehat s_p&=N^c_p/Q^c_p, \qquad p\in\mathcal S^c_{\rm out},
  \label{eq:coadd-ordinary}\\
- J^c_{\rm out}\boldsymbol z&=(z_p)_{p\in\mathcal S^c_{\rm out}},
+ J^c_{\rm out}\boldsymbol v^c&=(v^c_p)_{p\in\mathcal S^c_{\rm out}},
  \label{eq:coadd-output-row-selection}\\
  \widehat{\boldsymbol m}^{c}_{\rm out}
    &=(\widehat s_p)_{p\in\mathcal S^c_{\rm out}}
@@ -102,7 +147,8 @@
  \widehat k^c_p&=\frac{\sum_{o\in\mathcal O_p}u_{op}\widehat k_{op}}{Q^c_p},
  \qquad p\in\mathcal S^c_{\rm out}.
  \label{eq:coadd-response-product}\\
- C_{c,{\rm out}}&=B_{\rm out} C_{\rm obs}B_{\rm out}^{\mathsf T},
+ C_{c,{\rm out}}&=B_{\rm out} C_{\rm obs}B_{\rm out}^{\mathsf T}
+ \quad\text{only when every required block is available},
  &R_{c,{\rm out}}&=B_{\rm out}T_{\rm obs}.
  \label{eq:coadd-companions}
 \end{align}}

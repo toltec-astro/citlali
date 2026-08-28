@@ -70,6 +70,9 @@ SCI-PTC does not repair or complete an unavailable upstream RTC or CAL state.
   owner freeze, retained open states, claim boundary, and change-control rule
 - [`FREEZE_VERIFICATION_R0.5.md`](FREEZE_VERIFICATION_R0.5.md): status-only
   source/PDF verification and all-page visual-QA record
+- [`SCI-PTC_TO_SCI-MAP_BOUNDARY.md`](SCI-PTC_TO_SCI-MAP_BOUNDARY.md): exact
+  byte-identical copy of `SCI-PTC_TO_SCI-MAP v0.1/r0.1` consumed by MAP r0.6;
+  this integration artifact does not amend or reopen frozen PTC r0.5 authority
 - [`SCIENTIFIC_OWNER_FREEZE_R0.4.md`](SCIENTIFIC_OWNER_FREEZE_R0.4.md):
   superseded r0.4 freeze retained for provenance
 - `src/common/`: the six-file shared canonical notation, definition, equation,

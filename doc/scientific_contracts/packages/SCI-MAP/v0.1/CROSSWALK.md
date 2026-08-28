@@ -1,6 +1,6 @@
 # SCI-MAP v0.1 Contract Crosswalk
 
-Document revision: `r0.5`
+Document revision: `r0.6`
 
 Status: author-draft traceability aid; it does not assert implementation,
 validation, or production status.
@@ -17,12 +17,17 @@ validation, or production status.
   `13dd5922bd492e381afcc3b015284216dde1ccc2199ece3d070ee577c7324381`.
 - **CO**: owner-approved `AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`, SHA-256
   `2d478cb6c5e897308d19614b8b01663318744971850c67459f84c7ddcd57c5c9`.
-- **HC**: owner-authorized 2026-08-26 PTC-to-MAP handoff correction, recorded
-  in `CHANGE_LOG_R0.4.md`.
+- **HC**: owner-authorized 2026-08-26 PTC-to-MAP handoff correction,
+  content-bound by `CHANGE_LOG_R0.6.md`.
 - **R05**: owner directive `SCI-MAP v0.1 r0.5 TARGETED PTC-TO-MAP
   CROSS-PACKAGE CLOSURE DIRECTIVE`, SHA-256
   `210e8beafe26381a7d35cf38bacab9a9d959646055635a7c1179e0729a3cfa9a`,
   plus `SCI-PTC_TO_SCI-MAP v0.1/r0.1` and the exact registered MAP profiles.
+- **R06**: owner directive `SCI-MAP v0.1 r0.6 TARGETED SCIENTIFIC-CLOSURE
+  DIRECTIVE`, SHA-256
+  `d57e90f8ed4407b0f727cd2ac981318e02101ddd9f73abac7e2772b66dac2c84`,
+  plus the exact boundary, `SCI-MAP:map_upstream_admission@2`,
+  `SCI-MAP:observation_coadd_admission@1`, and shared r0.6 authority.
 
 The canonical requirement and prediction text lives only in
 `src/common/requirements.tex` and `src/common/edge_cases.tex`, with notation,
@@ -125,7 +130,7 @@ OD-009 covers canonical-grid preparation and future reprojection/mosaicking.
 | SCI-MAP-PRED-020 | REQ-016, REQ-023, REQ-046, REQ-051 | Fixed row-selected operator realization |
 | SCI-MAP-PRED-021 | REQ-051--052 | Sequential/parallel comparison |
 | SCI-MAP-PRED-022 | REQ-013, REQ-021, REQ-024, REQ-050, REQ-052 | Prohibited-label challenge |
-| SCI-MAP-PRED-023 | REQ-033, REQ-049--050, REQ-052 | Raw-validity promotion challenge |
+| SCI-MAP-PRED-023 | REQ-033, REQ-049--050, REQ-052 | MAP-local-validity promotion challenge |
 | SCI-MAP-PRED-024 | REQ-002, REQ-042, REQ-044, REQ-052 | Method-boundary challenge |
 | SCI-MAP-PRED-025 | REQ-012, REQ-033--034, REQ-047--048 | Aggregate/index/publication failure injection |
 

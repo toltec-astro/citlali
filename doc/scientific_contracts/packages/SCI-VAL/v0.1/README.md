@@ -134,10 +134,12 @@ profile. Structural and non-gating conflicts, exception conflicts, and the
 four owner-supplied response/uncertainty roles have deterministic semantics.
 
 The continuing source register binds the exact frozen ALIGN, AST, RTC, CAL,
-and PTC timestream authorities. On `2026-08-27` it added the separately
-owner-authorized SCI-MAP r0.5 source/boundary binding, and the continuing
-profile registry added exact `SCI-MAP:map_upstream_admission@1`. MAP owns that
-policy; VAL only registers and evaluates it. The continuing
+and PTC timestream authorities. On `2026-08-27` it preserved immutable MAP
+`SCI-MAP:map_upstream_admission@1` history and added the separately
+owner-authorized SCI-MAP r0.6 source/boundary binding, source-current
+`SCI-MAP:map_upstream_admission@2`, and aggregate
+`SCI-MAP:observation_coadd_admission@1`. MAP owns both policies; VAL only
+registers and evaluates them. The continuing
 profile registry binds five exact owner-approved PTC propositions for basis
 fit, loading fit, frozen operator application, ordinary output retention, and
 the existing tracked-kernel response companion. The broad coefficient/QC and

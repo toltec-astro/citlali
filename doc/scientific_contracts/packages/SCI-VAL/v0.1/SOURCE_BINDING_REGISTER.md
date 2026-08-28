@@ -1,7 +1,7 @@
 # SCI-VAL v0.1 — Adjacent Scientific Source-Binding Register
 
-Status: continuing r0.3 source-binding authority updated under approved
-`WP5-OWNER-D001`; availability limits preserved
+Status: continuing r0.3 source-binding authority updated for the owner-approved
+SCI-MAP r0.6 closure; availability limits preserved
 
 Last updated: `2026-08-27`
 
@@ -25,7 +25,7 @@ bindings without requiring a rewrite of SCI-VAL Core narrative.
 | SCI-CAL | Frozen SCI-CAL v0.1 science-rationale r0.5 / engineering-conformance r0.4. Freeze-record SHA-256 `413426f49edf1249f751a05bb8c6e9fd907b11e8da0530fe2da39814885efb22`; WP-3 source-manifest SHA-256 `d407228bfbbdbe8be994e7e84e4945fc6868365c2d045c18ac7ce1e5c40ae9aa` | Calibration availability/domain, detector binding, applied-calibration state, engineering-only/science-qualification classification, response, uncertainty, and typed causes | CAL classifications remain producer facts rather than universal eligibility decisions. Each PTC use profile must state its own consequence; no identity response or missing numerical policy is inferred |
 | SCI-PTC | Frozen SCI-PTC v0.1/r0.5. Freeze-record SHA-256 `8357961a49272adc40e27a8aa9e760e0d01ff2419ae2c88a62c0f93c9f959e66` | Distinct basis/loading fit, application, output, coefficient/QC, response, empirical/simulation, support, and staged lifecycle roles | Source binding does not register a policy. Every reserved PTC profile remains unavailable until an exact PTC-owned profile record is registered. A new binding never rewrites an earlier VAL decision |
 | Tune/readout and telescope inputs | Exact approved `TUNE_READOUT_NATIVE_XR_PRODUCER_INTERFACE v0.1/r0.1`, SHA-256 `f9659b34a49a07d4287c4a70db798cdd2ec30049531da603fcca1e9d1fdd5969`; producer-interface-manifest SHA-256 `a417fb3d22aa46ad7d7f1134b6d804b9d3c3f5a7f601dbb53c19f10a23e72912`. Observation telescope records remain runtime parents referenced through ALIGN/AST/RTC/CAL facts | Native paired-\(x/r\) identity and producer-owned mapping validity; telescope/time/observing facts only through their owning package facts | VAL does not reinterpret Tune/readout or telescope records and does not copy their payloads into a profile. A missing upstream owner fact remains unavailable at the dependent scope |
-| SCI-MAP | SCI-MAP v0.1/r0.5 targeted closure under owner directive SHA-256 `210e8beafe26381a7d35cf38bacab9a9d959646055635a7c1179e0729a3cfa9a`; exact boundary `SCI-PTC_TO_SCI-MAP v0.1/r0.1`; exact MAP profile `SCI-MAP:map_upstream_admission@1`; frozen PTC/CAL/AST sources and WP-7 closure bound by the MAP r0.5 source manifest | MAP-owned occurrence-level upstream admission, exact PTC/AST identity join, projection/contribution separation, exposure roles, response/covariance disclosure, coadd policy, and MAP-local base-product validity | `SCI-MAP:map_upstream_admission@1` is registered and evaluable only under its exact immutable source/profile binding. VAL evaluates the MAP-owned rule and preserves causes; it does not choose the missing PTC MAP-facing coefficient, place pixels, accumulate maps, or author MAP policy |
+| SCI-MAP | SCI-MAP v0.1/r0.6 targeted closure under owner directive SHA-256 `d57e90f8ed4407b0f727cd2ac981318e02101ddd9f73abac7e2772b66dac2c84`; exact boundary `SCI-PTC_TO_SCI-MAP v0.1/r0.1`; source-current occurrence profile `SCI-MAP:map_upstream_admission@2`; aggregate profile `SCI-MAP:observation_coadd_admission@1`; frozen PTC/CAL/AST sources and owner-approved WP-7 dispositions bound by the MAP r0.6 source manifest | MAP-owned occurrence-level upstream admission, exact PTC/AST identity join, typed contribution gates, unique-original exposure, fixed-state/full-procedure response roles, coadd compatibility, response/covariance disclosure, and MAP-local base-product validity | `SCI-MAP:map_upstream_admission@1` remains immutable history. `@2` and `SCI-MAP:observation_coadd_admission@1` are evaluable only under their exact records and source bindings. VAL evaluates MAP-authored rules and preserves causes; it does not select the missing PTC MAP-facing coefficient, place pixels, accumulate maps, allocate exposure, or author MAP policy |
 
 ## Binding Rule
 
@@ -35,7 +35,8 @@ compatible binding or return the owner-declared unavailable result. It must
 not silently substitute “current” adjacent meaning. In particular, this
 register supplies no MAP predicate, threshold, or exception of its own. The
 MAP predicate is evaluable only through the separately owner-authored and
-registered `SCI-MAP:map_upstream_admission@1` record.
+registered `SCI-MAP:map_upstream_admission@2` or
+`SCI-MAP:observation_coadd_admission@1` record.
 
 The adjacent-source tables embedded in the r0.3 rationale and engineering view
 remain historical snapshots. This continuing register supersedes their source

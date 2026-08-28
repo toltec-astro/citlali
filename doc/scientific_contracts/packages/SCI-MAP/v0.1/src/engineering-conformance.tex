@@ -15,23 +15,24 @@
 \definecolor{EngPale}{HTML}{EAF5F3}
 \definecolor{EngGray}{HTML}{58636D}
 \hypersetup{colorlinks=true,linkcolor=EngTeal,urlcolor=EngTeal,
-  pdftitle={SCI-MAP v0.1 Engineering Conformance Specification, r0.5},
+  pdftitle={SCI-MAP v0.1 Engineering Conformance Specification, r0.6},
   pdfauthor={Independent Stage B scientific-contract author}}
 \setlength{\emergencystretch}{3em}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.45em}
 \setlist{nosep,leftmargin=1.5em}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
 
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small\color{EngGray}SCI-MAP v0.1 | Engineering Conformance Specification}
-\fancyhead[R]{\small\color{EngGray}Document r0.5}
+\fancyhead[R]{\small\color{EngGray}Document r0.6}
 \fancyfoot[L]{\small\color{EngGray}Procedure only | conformance unassessed}
 \fancyfoot[R]{\small\color{EngGray}Page \thepage}
 
 \input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.1.tex}
-\renewcommand{\SCIMapDocumentRevision}{r0.5}
+\renewcommand{\SCIMapDocumentRevision}{r0.6}
 
 \newcommand{\ProcedureBox}[1]{%
   \begin{center}\fcolorbox{EngTeal}{EngPale}{\parbox{0.92\linewidth}{#1}}\end{center}}
@@ -43,15 +44,12 @@
   \ifcsname SCIMapPredictionBreak#1\endcsname
     \csname SCIMapPredictionBreak#1\endcsname
   \fi}
-\expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-007\endcsname{\clearpage}
 \expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-013\endcsname{\clearpage}
 \expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-019\endcsname{\clearpage}
 \expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-025\endcsname{\clearpage}
-\expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-031\endcsname{\clearpage}
 \expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-036\endcsname{\clearpage}
 \expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-040\endcsname{\clearpage}
 \expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-043\endcsname{\clearpage}
-\expandafter\def\csname SCIMapRequirementBreakSCI-MAP-REQ-049\endcsname{\clearpage}
 \expandafter\def\csname SCIMapPredictionBreakSCI-MAP-PRED-008\endcsname{\clearpage}
 \expandafter\def\csname SCIMapPredictionBreakSCI-MAP-PRED-015\endcsname{\clearpage}
 \expandafter\def\csname SCIMapPredictionBreakSCI-MAP-PRED-022\endcsname{\clearpage}
@@ -98,7 +96,8 @@ parallel modes;
 \item required product list, representation paths, log policy, and completion
 criteria; and
 \item the shared-authority digest, contract version, this document revision,
-and owner-decision ledger revision.
+owner-decision ledger revision, exact byte-identical PTC-to-MAP boundary
+digest, source-current MAP profile versions, and coadd Registry record.
 \end{itemize}
 
 Evidence from a different candidate, configuration, or science-authority
@@ -179,24 +178,37 @@ the exact admitted value and unit status of every policy parameter), WCS, and
 required-product plan.
 \item Separately verify PTC-owned source facts, ALIGN/AST-owned coordinate
 facts, and MAP-owned projection/coefficient/boundary/support/use conditions
-before arithmetic. Verify that VAL, if used, evaluates the named rule without
-authoring it and that no layer rescues a failed condition in another.
+before arithmetic. For all ten contribution gates, retain the full typed
+record and independently verify its exact Boolean pass projection; never
+conjoin T/F/U/C or VAL axes directly. Verify that VAL evaluates
+\code{SCI-MAP:map_upstream_admission@2} without authoring it and that no layer
+rescues a failed condition in another.
 \item Compare exact scientific output-row identity and cardinality, plus
 one-pixel, one-hot half-open-boundary, prohibited-fractional, covariance,
-response, and distinct-fact
+fixed-state response, procedure-response typing, and distinct-fact
 observation outputs, to independent expected values; retained storage rows do
 not count as scientific output rows.
+\item Exercise exposure fixtures where one original occurrence influences
+multiple RTC/PTC descendants at different pixels. Verify exact original-key
+deduplication, placement only at the original's own AST coordinate, separate
+influence edges, donor/synthesis behavior, decimation/overlap nonduplication,
+boundary loss, and coadd union.
 \item Verify complete immutable observation-bundle construction.
 \item Snapshot coadd-owned state; test every compatibility failure; require
 atomic nonmutation.
-\item Exercise admitted centered-integer coaddition, exact coadd output-row
-identity, and companion placement.
+\item Evaluate all four axes of the registered aggregate profile
+\code{SCI-MAP:observation_coadd_admission@1}; then exercise admitted
+centered-integer coaddition, exact coadd output-row identity, and companion
+placement.
 \item Round-trip all required representations and reconstruct each
 row-selected operator from provenance.
-\item Exercise honest response/covariance disclosure, including partial and
-unavailable states that leave the map valid, and verify versioned binding for
-later response, covariance, or corrected-map products.
-\item Exercise consumer claim boundaries and immutable raw parentage without
+\item Exercise fixed-state, PTC full-procedure, and full-chain re-resolved
+response families; an already realized PTC-grid companion applied exactly
+once; and honest response/covariance disclosure. For coadd covariance, require
+every named block before accepting the complete numerical propagation and
+otherwise require partial, symbolic, summarized, lineage-resolvable, or
+unavailable state. Verify versioned binding for later derivative products.
+\item Exercise consumer claim boundaries and immutable base/unfiltered MAP parentage without
 assuming a closed-world registry of all future scientific uses.
 \item Repeat supported execution modes under the preregistered floating-point
 policy, while requiring exact discrete facts.
