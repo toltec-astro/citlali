@@ -2,7 +2,7 @@
 
 Boundary identity: `SCI-AST_TO_SCI-JINC v0.1/r0.2`
 
-Status: ODQ-103 Stage A successor boundary candidate; exact-byte owner
+Status: ODQ-103/107 Stage A successor boundary candidate; exact-byte owner
 approval required
 
 Prepared: `2026-08-28`
@@ -79,7 +79,9 @@ The canonical scientific boundary statement is:
 - AST determines the coordinate facts. SCI-JINC owns local offset geometry,
   radial coordinate, dimensionless radius, center rounding, residual phase,
   phase bin, finite square support, signed kernel coefficient, edge crop,
-  normalization, conditioning, response, covariance and accumulation.
+  normalization, conditioning and the fixed five-role accumulation. Response
+  and covariance remain deferred scientific questions rather than base-v0.1
+  bundle roles.
 - AST does not decide JINC support, calculate or authorize a JINC coefficient,
   manufacture a general JINC-valid flag, or encode JINC kernel semantics.
 - AST may provide an optional nominal containing pixel only under its exact

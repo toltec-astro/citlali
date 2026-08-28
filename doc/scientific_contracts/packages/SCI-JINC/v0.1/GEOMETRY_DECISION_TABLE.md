@@ -1,6 +1,7 @@
 # SCI-JINC v0.1 — Square Cache, Point Phase, And Edge Decisions
 
-Status: final Stage A repair candidate; unresolved rows block Stage B
+Status: ODQ-107 fixed-bundle disposition incorporated; unresolved rows block
+Stage B
 
 Prepared: `2026-08-28`
 
@@ -18,7 +19,7 @@ Prepared: `2026-08-28`
 | Analytic coefficient | **Generic family and semantics bound:** the Schloerb method excerpt supplies `J(2 pi r'/a) exp[-(2r'/b)^c] J(3.831706 r'/RMAX)`, with `r'_a=r/s_a`; point evaluation of finite signed `kappa_ip`; analytic zeros and negative lobes are valid. | `s_a` is an explicit array-associated angular scale and all shape parameters may be array-associated. No TolTEC numerical realization is authorized in v0.1 and no hidden default is permitted. |
 | Radial cutoff | **Unavailable.** | The independent core's radial predicate is superseded. No circular mask or `radius <= r_max` test survives. |
 | Pixel-area integration | **Unavailable.** | The independent core's pixel-average branch is superseded. No pixel quadrature or pixel-integrated convergence claim survives. |
-| In-map edge crop | **Bound:** square pixels outside the finite map are absent; no wrap, reflection or full-interior normalizer. | Retained pixels use their actual `N_p`, `C_p`, `Q_p`, response and covariance. Truncation can make response/covariance asymmetric and must be recorded. |
+| In-map edge crop | **Bound:** square pixels outside the finite map are absent; no wrap, reflection or full-interior normalizer. | Retained pixels use their actual `N_p`, `C_p`, `Q_p` and `T_p^(kappa^2)` membership. Any later authorized response or covariance product must use the same membership; neither is a base-v0.1 bundle role. |
 | Rounded center outside but square overlaps map | **Unresolved owner decision `SCI-JINC-ODQ-110`.** | Select exactly one: **A** center-required, occurrence contributes nowhere; **B** overlap-admitted, every exact overlapping square pixel is evaluated; or a fully specified successor rule. Stage B cannot choose. |
 
 ## Required Geometry Predictions
@@ -30,8 +31,9 @@ just below, exactly at and just above every half-pixel tie; phase-bin edges;
 edge with overlapping square support; and equality at every cache-extent
 rounding boundary.
 
-For every retained edge pixel, fixed-state response and covariance use the
-same truncated membership as the signal. A rejected occurrence or unavailable
-pixel has no finite substitute response/covariance; each requested role is
-typed unavailable with the same primary cause and its role-specific
-consequence.
+For every retained edge pixel, all fixed-bundle accumulators use the same
+truncated membership. Zero, insufficient or invalid local support is recorded
+within the `jinc_map` role under the JINC support and validity rules; it does
+not make a whole product role unavailable. A required whole-product
+accumulator that cannot be formed prevents publication of the complete bundle;
+no placeholder role is synthesized.

@@ -1,6 +1,6 @@
-# SCI-JINC — Signed-Coefficient JINC Gridding And Response
+# SCI-JINC — Signed-Coefficient JINC Observation Mapmaker
 
-Status: ODQ-101, ODQ-102B, ODQ-103, ODQ-104, ODQ-105 and ODQ-106 owner
+Status: ODQ-101, ODQ-102B and ODQ-103--107 owner
 dispositions incorporated
 into a bounded Stage A successor candidate; renewed exact-byte approval
 required; Stage B not commissioned
@@ -44,7 +44,7 @@ Work began with the package's reviewed
   JINC by analogy.
 
 The predecessor author inputs were approved at
-`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`. The ODQ-101/102B/103/104/105/106 successor candidate
+`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`. The ODQ-101/102B/103/104/105/106/107 successor candidate
 updates the scientist-readable
 [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md), the frozen independent core paired with
 [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md), the page-exact
@@ -52,8 +52,9 @@ Schloerb method excerpt paired with
 [`AUTHOR_LMT_JINC_REFERENCE_COVER.md`](AUTHOR_LMT_JINC_REFERENCE_COVER.md),
 the exact PTC registry predecessor paired with
 [`AUTHOR_PTC_COEFFICIENT_REGISTRY_COVER.md`](AUTHOR_PTC_COEFFICIENT_REGISTRY_COVER.md),
-and the exact sanitized decision, boundary, notation, geometry, grouping,
-product, response/covariance and ownership artifacts. The successor byte
+and the exact sanitized decision, boundary, notation, geometry, fixed product
+and ownership artifacts. The recovered response/covariance table is now a
+deferred manager-side reference excluded from author inputs. The successor byte
 identities and complete firewall are recorded in
 [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).
 
@@ -67,7 +68,7 @@ author channel.
 Grant Wilson approved the exact predecessor Stage A candidate at
 `6639bff3d94b92ace8faf3e407ccaefd5a38ea1f` on `2026-08-28`; see
 [`SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md`](SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md).
-The ODQ-101, ODQ-102B, ODQ-103, ODQ-104, ODQ-105 and ODQ-106 owner
+The ODQ-101, ODQ-102B and ODQ-103--107 owner
 dispositions now change allowed author-input bytes. Those
 successor bytes require renewed approval under `SCI-JINC-STAGE-A-Q002`.
 Stage B is not commissioned.
@@ -96,6 +97,10 @@ Stage B is not commissioned.
   incorporated; an observation may produce zero through three independent
   bundles, absent arrays create no placeholders, and contributions never merge
   across array or destination identities.
+- ODQ-107 fixed product-schema disposition: owner-approved and incorporated;
+  every produced bundle contains only required `N_p`, `C_p`, `Q_p`, derived
+  `m_p` with local support/validity and `jinc_coefficient_squared_time`.
+  ODQ-108 response/covariance products and every other role are deferred.
 - Sanitized Scope Brief: successor candidate; renewed approval required.
 - Exact author-input manifest: successor candidate content-bound; renewed
   approval and dispatch authorization required.
@@ -110,10 +115,12 @@ Stage B is not commissioned.
 SCI-JINC owns a distinct signed-coefficient observation-map estimator. PTC
 owns the positive analysis/gridding coefficient registry and each family's
 named-consumer permission. SCI-JINC authority includes its signed spatial
-coefficient, signed deposition,
-normalization, response, support, unit-invariant conditioning, conditional
-covariance, formal-support validity, coefficient-squared temporal accounting,
-product identity, and one-way provenance.
+coefficient, signed deposition, normalization, support, unit-invariant
+conditioning, formal-support validity, coefficient-squared temporal
+accounting, fixed five-role bundle and atomic whole-bundle publication.
+Recovered response/covariance mathematics is deferred future science, not a
+base-v0.1 product. No general product-availability or provenance framework is
+authorized.
 
 It does not inherit ordinary SCI-MAP's positive-coefficient contribution
 predicate, one-hot placement, F010 product bundle, coaddition rule, support
@@ -159,6 +166,9 @@ authorities.
 - [`SCIENTIFIC_OWNER_ODQ_106_DECISION_2026-08-28.md`](SCIENTIFIC_OWNER_ODQ_106_DECISION_2026-08-28.md):
   owner-approved per-array bundle identity, zero-through-three cardinality,
   absent-array and no-cross-destination-merge disposition
+- [`SCIENTIFIC_OWNER_ODQ_107_DECISION_2026-08-28.md`](SCIENTIFIC_OWNER_ODQ_107_DECISION_2026-08-28.md):
+  owner-approved fixed five-role schema, whole-product fail-closed rule and
+  deferral of ODQ-108 response/covariance and every other companion role
 - [`SCI-PTC_TO_SCI-JINC_BOUNDARY.md`](SCI-PTC_TO_SCI-JINC_BOUNDARY.md) and
   [`SCI-AST_TO_SCI-JINC_BOUNDARY.md`](SCI-AST_TO_SCI-JINC_BOUNDARY.md): exact
   proposed upstream quantity and coordinate boundaries
@@ -166,9 +176,11 @@ authorities.
   JINC-owned profile draft awaiting a versioned VAL registry binding
 - [`NOTATION_AND_UNITS.md`](NOTATION_AND_UNITS.md),
   [`GEOMETRY_DECISION_TABLE.md`](GEOMETRY_DECISION_TABLE.md),
-  [`GROUPING_AND_PRODUCT_ROLES.md`](GROUPING_AND_PRODUCT_ROLES.md), and
-  [`RESPONSE_AND_COVARIANCE_FAMILIES.md`](RESPONSE_AND_COVARIANCE_FAMILIES.md):
-  exact Stage A scientific tables and remaining blockers
+  and [`GROUPING_AND_PRODUCT_ROLES.md`](GROUPING_AND_PRODUCT_ROLES.md): exact
+  sanitized author tables and remaining blockers
+- [`RESPONSE_AND_COVARIANCE_FAMILIES.md`](RESPONSE_AND_COVARIANCE_FAMILIES.md):
+  recovered manager-side scientific reference deferred by ODQ-107 and excluded
+  from the base-v0.1 author packet
 - [`STAGE_A_CHANGE_LOG.md`](STAGE_A_CHANGE_LOG.md): owner-feedback repair map
 - [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): exact proposed
   successor allowed and prohibited inputs
@@ -184,7 +196,7 @@ authorities.
 
 ## Stop Boundary
 
-Predecessor Stage A byte approval is recorded; the ODQ-101/102B/103/104/105/106 successor packet is
+Predecessor Stage A byte approval is recorded; the ODQ-101/102B/103/104/105/106/107 successor packet is
 not yet approved. Stop before commissioning or drafting the
 implementation-blind scientific rationale, shared normative core, engineering
 conformance specification, or PDFs until the successor manifest receives

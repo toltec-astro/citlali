@@ -300,6 +300,24 @@ next unresolved scientific-owner question is `SCI-JINC-ODQ-107`, the required,
 conditional-required, optional and outside product-role disposition plus exact
 cause vocabulary and unavailable-role representation.
 
+Grant Wilson then resolved `SCI-JINC-ODQ-107` on `2026-08-28` by rejecting the
+broad product-availability/provenance framework and fixing one closed per-
+array bundle schema: required `N_p`, `C_p`, `Q_p`, derived `m_p` with its local
+support/validity state, and `jinc_coefficient_squared_time`. Failure to form
+any required whole-product role suppresses the complete bundle; ordinary
+pixel-level invalid support does not make a role unavailable and creates no
+role-availability record. No generic optional/conditional machinery, detailed
+missing-product cause vocabulary, per-pixel/per-contribution provenance,
+operational-reason archive, placeholder or required diagnostic is authorized.
+The cancellation absolute-term sum/count/bound remains nonpersistent
+construction state governed by ODQ-109. Every other role is outside/deferred;
+ODQ-108 response/covariance products are deferred pending a concrete
+scientific use, and their reference table is removed from author inputs. The
+refreshed 16-object ODQ-101/102B/103/104/105/106/107 packet still awaits
+`SCI-JINC-STAGE-A-Q002`; Stage B remains unlaunched. The next unresolved
+scientific-owner question is `SCI-JINC-ODQ-109`, the exact summation/count
+error bound, deterministic accumulation and phase/cache numerical policy.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

@@ -1,6 +1,6 @@
 # SCI-JINC v0.1 — Proposed Sanitized Conventions And Ownership
 
-Status: ODQ-101/102B/103/104/105/106 sanitized successor candidate; renewed exact-byte
+Status: ODQ-101/102B/103/104/105/106/107 sanitized successor candidate; renewed exact-byte
 approval
 required
 
@@ -74,7 +74,8 @@ Exact source set at
   join mechanism is engineering choice.
 - A JINC map identity includes observation, array/group, quantity/component,
   estimator version, WCS/grid, support/phase/conditioning convention, response
-  parent, product role, and lifecycle generation.
+  parent when a future response product is authorized, product role, and
+  lifecycle generation. The base-v0.1 fixed bundle requires no response parent.
 - For one observation, SCI-JINC may produce at most one bundle for each stable
   array admitted and requested under the exact JINC realization. Every produced
   bundle has an independent identity bound to observation, stable array, JINC
@@ -131,9 +132,10 @@ Exact source set at
   permission for another named consumer does not transfer.
 - `N/C` carries the signal unit when numerator and denominator are constructed
   from the same admitted membership and signed coefficient convention.
-- Conditional covariance carries the square of the signal unit. `C^2/Q` is a
-  formal diagonal inverse variance only under the exact stated upstream
-  coefficient and independence/covariance assumptions.
+- The recovered conditional covariance has the square of the signal unit.
+  `C^2/Q` has a formal diagonal inverse-variance interpretation only under the
+  exact stated upstream coefficient and independence/covariance assumptions;
+  ODQ-107 authorizes neither as a separate base-v0.1 product.
 - `jinc_coefficient_squared_time=sum(kappa^2/f_s)` carries seconds. It squares
   only the dimensionless analytic JINC coefficient and is method-specific
   accounting. It is the sole base-v0.1 time-support product. It is not
@@ -141,9 +143,9 @@ Exact source set at
   complete temporal support, normalized influence, white-noise-equivalent
   time, hits, precision, confidence, validity, or significance.
 - Support and validity states are dimensionless logical facts.
-- Signal multiplied by the square root of a formal weight is a formal
-  standardized signal. `sig2noise` is reserved for an empirically calibrated
-  estimator owned by SCI-NOI or another approved authority.
+- Signal multiplied by the square root of a formally justified weight would
+  be a formal standardized signal, not `sig2noise`; neither is a base-v0.1
+  product. Empirical significance remains SCI-NOI or other approved authority.
 - A separate physical-exposure product is deferred until an identified
   scientific use separately authorizes its exact original-occurrence lineage,
   membership, units, semantics, availability, provenance and consumer meaning.
@@ -167,34 +169,37 @@ Exact source set at
 - A finite value is not proof of validity. Invalid inputs are rejected before
   numerical payload use; multiplying a non-finite value by zero is not masking.
 
-## Availability, Missing Data, Failure, And Lifecycle
+## Whole-Bundle Failure, Local Support, And Lifecycle
 
-- Missing, disabled, automatic, known-but-not-supplied, unavailable,
-  unsupported, invalid, and failed are semantic states, not undocumented
-  numerical sentinels.
-- Every unavailable required input, response, covariance term, or product has
-  an owning authority and preserved cause. Unknown is not zero.
+- Base v0.1 defines no general product-availability or unavailable-role
+  framework. Every produced bundle contains exactly `N_p`, `C_p`, `Q_p`,
+  derived `m_p` with local support/validity, and
+  `jinc_coefficient_squared_time`.
+- Failure to form any required whole-product role suppresses the affected
+  bundle. No partial bundle or placeholder role is published, and no new
+  detailed missing-product cause vocabulary is required.
+- Pixel-level zero, insufficient, cancelled or otherwise invalid support is
+  ordinary content governed by existing JINC support/validity rules. It does
+  not make the whole role unavailable and creates no role-availability object.
 - An unavailable scientifically authorized JINC parameter set makes the
-  affected numerical route unavailable. No inherited value, shared-field
-  assumption, or hidden default supplies it.
+  affected numerical route produce no bundle. No inherited value,
+  shared-field assumption, hidden default or placeholder supplies it.
 - Upstream retention/eligibility, JINC admission, JINC numerical support,
-  empirical consumer policy, and final product validity are separate decisions.
+  empirical consumer policy, and final product validity remain separate
+  decisions governing contents, not a generic product-availability schema.
 - JINC sample admission and sample-pixel support are separate. Outside finite
   support and a contract-defined zero coefficient are ordinary no-contribution
   results, not causes. A negative coefficient is normal. An unavailable or
   ambiguous AST coordinate prevents geometry evaluation and is not outside
   support.
-- All accumulators derived from one contribution use the same admitted sample-
-  pixel pair and signed-coefficient identity, even when their contract-defined
-  algebraic functions differ.
-- A required product, companion, join, or write failure propagates. A
-  completion marker cannot override missing required output.
-- Configuration/provenance flows one way: requested to effective to resolved
-  to realized. Execution cannot rewrite the accepted request or an earlier
-  product generation.
-- New response, covariance, coefficient, or policy generations produce new
-  immutable derived products and do not retroactively change an earlier map's
-  claims.
+- All required accumulators derived from one contribution use the same
+  admitted sample-pixel pair and signed-coefficient identity.
+- A required whole-product formation or publication failure propagates. A
+  completion marker cannot override a missing member of the fixed bundle.
+- Requested, effective, observation-resolved and realized scientific input
+  states remain distinct where already authorized. ODQ-107 does not turn them
+  into a generalized provenance product or require preservation of every
+  operational reason.
 - Base v0.1 groups and publishes one complete JINC bundle per observation and
   array. Observation is not an implementation-memory or chunk boundary:
   same-observation samples/chunks may accumulate incrementally only under the
@@ -205,9 +210,12 @@ Exact source set at
   no ordinary MAP coadd, accumulator-addition rule or normalized-map
   combination is inherited or inferred.
 - Contributions with different stable-array or destination-map identities are
-  never merged. Array absence and failure facts remain at existing plan/bundle
-  provenance granularity; no additional per-contribution provenance or
-  synthetic empty-array product is required.
+  never merged. No additional per-contribution provenance or synthetic empty-
+  array product is required.
+- The cancellation absolute-term sum, contributor count, realized error bound
+  and diagnostics needed during construction are not persistent bundle roles.
+  Their exact numerical policy remains ODQ-109. Debug logging is not a
+  scientific product.
 
 ## Producer–Transformer–Consumer Responsibilities
 
@@ -238,10 +246,11 @@ Exact source set at
 SCI-JINC consumes the same positive PTC-produced `omega_i` only when its exact
 family/version permits `SCI-JINC`. It owns the signed `kappa_ip` and
 `w_ip=kappa_ip omega_i`, spatial support/phase convention, normalization,
-cancellation conditioning, conditional covariance, transformed response,
-coefficient-squared temporal support, local formal support, destination/
-product identity, and JINC provenance. It applies upstream facts without
-redefining their meaning.
+cancellation conditioning, `N_p`, `C_p`, `Q_p`, derived `m_p`, coefficient-
+squared temporal support, local formal support and destination/product
+identity. Recovered response/covariance semantics remain future scientific
+reference but create no base-v0.1 product. SCI-JINC applies upstream facts
+without redefining their meaning.
 
 For JINC map contribution, producer facts and causes cross the boundary but a
 producer-owned JINC-usability decision does not. JINC adds local causes only
@@ -263,15 +272,16 @@ existing product granularity; no per-contribution provenance system is added.
 
 Consumers may not reconstruct a JINC response from defaults, reinterpret
 coefficient-squared time, promote a formally invalid pixel, erase signed-
-coefficient lineage, or convert conditional formal precision into empirical
+coefficient meaning, or convert conditional formal precision into empirical
 significance.
 
 ## Explicitly Unavailable Boundary Facts
 
 The following are supplied by separate proposed sanitized packet items rather
 than by this extract: the generic analytic family, exact PTC/AST boundary
-candidates, admission profile candidate, grouping/product roles and response/
-covariance family table. The following remain unavailable:
+candidates, admission profile candidate and fixed grouping/product roles. The
+response/covariance family table is excluded from the base-v0.1 author packet
+under ODQ-107. The following remain unavailable:
 
 - a registered and realized JINC-permitted PTC coefficient family/payload;
 - any scientifically authorized TolTEC `a1100`/`a1400`/`a2000` numerical
@@ -279,6 +289,8 @@ covariance family table. The following remain unavailable:
   state only;
 - a frozen SCI-VAL registration of `SCI-JINC:jinc_map_contribution@1`;
 - a JINC observation-coadd contract;
+- base-v0.1 response, covariance/formal-weight, standalone support/
+  availability, diagnostic or generalized provenance products;
 - numerical parameter values, parameter optimization, summation/phase
   tolerances, or production
   thresholds; and

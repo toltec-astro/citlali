@@ -1,6 +1,6 @@
 # SCI-JINC v0.1 — Observation Grouping And Product Roles
 
-Status: ODQ-105/106 owner-approved Stage A successor candidate; awaiting
+Status: ODQ-105/106/107 owner-approved Stage A successor candidate; awaiting
 renewed exact-byte approval
 
 Prepared: `2026-08-28`
@@ -63,34 +63,45 @@ network order are not product identity. One complete destination identity is
 resolved before mutation. Ambiguous, duplicate or conflicting destination
 ownership fails the affected bundle atomically; it does not select a winner.
 
-## Product-Role Table
+## Fixed Closed Product Schema
 
-“Required” means absence or publication/join failure prevents realized bundle
-success. “Conditional required” means the role becomes required when the
-exact JINC plan requests it or a named consumer contract requires it.
-Requirements in this table apply to a produced bundle; they do not require a
-placeholder for an array that produces no bundle under the rule above.
+Every produced bundle contains exactly the five scientific roles below.
+“Required” is a whole-product rule: failure to form any role suppresses the
+entire affected bundle. Pixel-level zero, insufficient, cancelled or invalid
+support is ordinary content under existing support/validity rules and does not
+make a whole role unavailable. No placeholder role is synthesized.
 
-| Role | Requirement | Exact meaning and publication rule | Failure scope |
+| Role | Mathematical quantity | Participation | Status |
 | --- | --- | --- | --- |
-| Normalized signal `m_p` | Required | Publish `N_p/C_p` in `U` only on formal JINC support, with typed unavailable state elsewhere. | Affected array observation bundle cannot realize success without the signal role. |
-| Numerator `N_p` | Required | Publish the distinct signed signal numerator or an exact lossless role from which its value and unit are available; never alias it to signal or normalization. | Missing/join failure blocks the bundle. |
-| Normalization `C_p` | Required | Publish the signed normalization, including finite negative values on accepted pixels and typed cancellation state; never require positivity. | Missing/join failure blocks the bundle. |
-| Quadratic accumulator `Q_p` | Required | Publish the nonnegative quadratic accumulator separately from `C_p`, formal weight and time accounting. | Missing/join failure blocks the bundle. |
-| Formal-support state | Required | Publish the authoritative JINC formal-support proposition and exact cause, distinct from upstream admission, AST validity, time accounting and empirical policy. | Missing/join failure blocks the bundle. |
-| WCS/operator/parameter identity | Required | Publish exact array, plan, WCS/frame, analytic identity/version, ordered array-associated parameter-set identity/source, point-phase, square extent, edge rule, conditioning policy and lifecycle generation. | Any missing scientifically authorized numerical parameter set makes the numerical route unavailable; no hidden default may complete the bundle. |
-| Upstream cause and lineage | Required | Publish exact PTC/AST parents, retention/coefficient/admission evaluations, direct/transitive causes and immutable joins. | Missing/conflicting parent or join blocks the bundle. |
-| `jinc_coefficient_squared_time` | Required; sole base-v0.1 time-support product | Publish `sum I_ip kappa_ip^2/f_s,i` in seconds with coefficient/phase/frequency provenance and its prohibited interpretations. | Missing requested plane or join blocks the bundle; it never substitutes for formal support or physical exposure. |
-| Coupled-contribution identity | Required | Signal, normalization, quadratic/time, response, covariance, and related accumulators use the same admitted sample-pixel pair, AST coordinate realization, and signed `kappa_ip` identity while applying only their own contract-defined algebra. | Inconsistent admission, coordinate, or coefficient realization blocks the affected required bundle; no new per-contribution provenance payload is implied. |
-| Fixed-state response | Conditional required | When requested, publish the processing-filtered source-template response transformed by the exact fixed JINC operator once. Otherwise publish typed `not_requested`/unavailable state, not a default kernel. | Failure blocks only a plan that requires this role; base signal may coexist with an explicitly optional unavailable response. |
-| Covariance / conditional formal weight | Conditional required | Publish exact `A C_PTC A^T` domain when available and any permitted diagonal view with assumptions/omissions. If the coefficient family or covariance evidence is insufficient, publish typed unavailable; never substitute `Q`, time or hits. | Failure blocks claims/plans that require uncertainty, but not an explicitly uncertainty-optional signal role. |
-| Response/covariance limitation record | Required | Publish the family, domain, assumptions, edge membership and every omitted or unavailable calibration, correlation, selection, nuisance, response and parameter term. | Missing limitation identity blocks any response/covariance publication. |
-| Requested/effective/resolved/realized provenance | Required | One compact atomic record with exact product identities, destinations, joins and failure state; no per-sample/pixel payload required. | Required publication failure suppresses realized success. |
-| Diagnostics | Optional | Contributor counts, cancellation summaries and numerical diagnostics may be published only under named identities; they never control validity by existence alone. | Optional absence does not block unless a plan promotes an exact diagnostic to required. |
-| Empirical noise/significance | Outside SCI-JINC | SCI-NOI-owned future companion only. SCI-JINC publishes no substitute. | No effect on base JINC signal validity; downstream claim remains unavailable. |
-| Physical exposure | Deferred outside base v0.1 | No product is defined until an identified scientific use separately authorizes exact original-occurrence lineage, membership, units, semantics, availability, provenance and consumer meaning. | Never reinterpret `jinc_coefficient_squared_time` or distribute one physical integration through JINC lobes. |
+| `jinc_signal_numerator` | `N_p=sum_i I_ip omega_i kappa_ip z_i` | Signed numerator used with `C_p` to construct the map. | **Required** |
+| `jinc_signed_normalization` | `C_p=sum_i I_ip omega_i kappa_ip` | Signed denominator of `m_p=N_p/C_p`; negative finite values remain admissible. | **Required** |
+| `jinc_quadratic_accumulator` | `Q_p=sum_i I_ip omega_i kappa_ip^2` | Required by formal support (`Q_p>0`) and preserves the accepted distinct quadratic statistic; it is not automatically precision, variance, exposure or validity. | **Required** |
+| `jinc_map` | `m_p=N_p/C_p` on accepted local JINC support | Published signal-unit map with its local pixel support/validity state; that state is not a separate role-availability object. | **Required** |
+| `jinc_coefficient_squared_time` | `T_p^(kappa^2)=sum_i I_ip kappa_ip^2/f_s,i` | Authorized method-specific temporal-support product in seconds; not physical exposure, precision or validity. | **Required** |
 
-An optional unavailable companion may coexist with valid signal only under the
-exact role above and with its cause. A requested-required companion, atomic
-join, or destination failure prevents realized success. Required roles are
-published as one coherent bundle generation; partial output is not success.
+The accepted cancellation test still evaluates
+`rho_p=abs(C_p)/sum_i I_ip abs(omega_i kappa_ip)` against the realized
+summation/count error bound. Its absolute-term sum, contributor count, bound
+and diagnostic value are construction state, not persistent bundle roles;
+their exact policy remains `SCI-JINC-ODQ-109`.
+
+The observation, stable array, exact JINC realization, destination geometry
+and lifecycle identify the bundle under ODQ-106. They are not additional
+numerical roles or a general provenance product. Existing sample admission,
+support, validity and causes govern accumulator contents. Operational
+diagnostics may be logged for debugging but are not required products.
+
+## Outside Or Deferred
+
+| Role or family | Base-v0.1 disposition |
+| --- | --- |
+| Standalone formal-support, per-role availability or detailed-cause products | **Outside/deferred.** Local support/validity stays with `jinc_map` and the accumulator contents; no general availability framework is authorized. |
+| Formal weight/variance and covariance products | **Outside/deferred.** `Q_p` remains required, but `C_p^2/Q_p`, `Q_p/C_p^2` and `A C_PTC A^T` are not base products. |
+| Response companions | **Outside/deferred.** Recovered response mathematics is preserved for a future concrete scientific use. |
+| Physical exposure | **Outside/deferred.** ODQ-104 authorizes only coefficient-squared time. |
+| Empirical noise, weight or significance | **Outside/deferred.** These remain SCI-NOI or other separately approved authority. |
+| Diagnostics, optional companions and generalized provenance | **Outside/deferred.** No generic optional/conditional-required machinery, persistent operational-reason archive, per-pixel/per-contribution provenance or placeholder product is authorized. |
+
+This table is closed for base v0.1. A new role requires a concrete scientific
+use and explicit successor authority; implementation convenience is
+insufficient.

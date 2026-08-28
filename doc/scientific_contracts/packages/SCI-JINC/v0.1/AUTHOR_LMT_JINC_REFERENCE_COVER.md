@@ -62,12 +62,15 @@ their scopes intersect:
    including radii greater than `RMAX`, remain in the operator.
 2. **Point phase:** the kernel is point-evaluated at the selected quantized
    sample phase. It is not pixel-area integrated.
-3. **Signed estimator:** the coefficient is `kappa_ip` and enters the retained
-   `N_p/C_p` estimator, `Q_p`, response, covariance and coefficient-squared
-   time under the package's collision-free equations.
-4. **Conditioning and products:** the memo supplies no SCI-JINC cancellation,
-   covariance, formal-support, atomic-product or provenance policy; the
-   sanitized inherited-decision table controls those subjects.
+3. **Signed estimator and fixed bundle:** the coefficient is `kappa_ip` and
+   enters the retained `N_p/C_p` estimator, `Q_p` and coefficient-squared time
+   under the package's collision-free equations. ODQ-107 fixes the complete
+   base-v0.1 bundle and authorizes no response or covariance product.
+4. **Conditioning and deferred subjects:** the memo supplies no SCI-JINC
+   cancellation, covariance, formal-support, atomic-product or provenance
+   policy. The sanitized successor controls the fixed bundle; recovered
+   response/covariance mathematics remains deferred from the author packet
+   until a concrete scientific use is authorized.
 
 The memo's statements that convolution ends at `RMAX` and its figure language
 describing radial truncation are unavailable for SCI-JINC support.

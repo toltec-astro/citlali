@@ -38,8 +38,10 @@ For SCI-JINC, the owner-approved successor rule is:
   `omega_i` with separately typed availability/QC, identity, normalization,
   support, provenance and covariance meaning;
 - JINC alone applies `kappa_ip` and owns signed
-  `w_ip=kappa_ip omega_i`, normalization, conditioning, support, response,
-  covariance and JINC product semantics; and
+  `w_ip=kappa_ip omega_i`, normalization, conditioning, support and fixed
+  JINC bundle semantics; response and covariance remain JINC-owned questions
+  if a later concrete scientific use authorizes those products, but neither is
+  a base-v0.1 role under ODQ-107; and
 - missing selection without an authorized default, an unregistered family,
   absent JINC permission, or unavailable/mismatched payload makes the affected
   route unavailable with no hidden unity or alternate-family fallback.

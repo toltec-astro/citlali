@@ -35,6 +35,8 @@ core is broader, earlier, or ambiguous:
    family for JINC. The controlled ODQ-101 successor supplies a consumer-
    permission registry architecture, not a registered family or statistical
    interpretation; dimensional units or historical names are insufficient.
+   `Q_p` remains a required accumulator, but base v0.1 publishes no separate
+   formal-weight, variance or covariance role.
 4. **Square support supersedes radial support.** `r_max` sets the first zero of
    the second JINC factor and the half-width of a fully populated square
    deposition cache. Square corners beyond radial `r_max` are part of the
@@ -63,7 +65,9 @@ core is broader, earlier, or ambiguous:
    when normalized signal and formal weight are finite, formal weight is
    strictly positive, and every required JINC admission and conditioning gate
    passes. A named empirical policy may only downgrade this state, never
-   promote it.
+   promote it. Base v0.1 carries this as local support/validity state of the
+   published `jinc_map`, not as a standalone support or role-availability
+   product.
 9. **JINC coefficient-squared time.** The method-specific accounting product
    and sole base-v0.1 time-support product is `jinc_coefficient_squared_time`,
    `T_p^(kappa^2)=sum_i kappa_ip^2/f_s,i` seconds for eligible samples. The
@@ -74,18 +78,20 @@ core is broader, earlier, or ambiguous:
    A separate physical-exposure product is deferred until an identified
    scientific use requires and separately authorizes its exact original-
    occurrence lineage and semantics.
-10. **Realized response.** The response companion is the upstream
-    processing-filtered source-template response transformed through the same
-    JINC coefficients and normalized by `C`. It is not a bare analytic JINC,
-    unfiltered template, measured PSF, or generic beam. Its exact template,
-    processing/operator, mask, parameter, conditioning, WCS, unit, and product
-    parents remain bound.
-11. **Four-stage provenance.** Requested, effective, resolved, and realized
-    JINC states are distinct and flow one way. The compact realized record
-    binds operator/parameter/support/phase/conditioning state, rejection
-    summaries, response/covariance/support products, array/group identity,
-    parent generations, and publication joins. Required failure prevents a
-    realized-success record.
+10. **Recovered response semantics, deferred product.** If a future concrete
+    scientific use authorizes a response companion, the recovered response is
+    the upstream processing-filtered source template transformed through the
+    same JINC coefficients and normalized by `C`; it is not a bare analytic
+    JINC, unfiltered template, measured PSF, or generic beam. ODQ-107 defers
+    every response companion from the fixed base-v0.1 bundle.
+11. **Atomic bundle without a general provenance framework.** Requested,
+    effective, resolved, and realized state remains one-way where those states
+    govern scientific input resolution. ODQ-107 requires only the ODQ-106
+    observation/array/JINC-realization/destination identity and atomic
+    publication of the fixed five-role bundle. Failure to form one required
+    whole-product role suppresses the bundle. No general provenance product,
+    detailed operational-reason archive, per-role availability object, or
+    per-pixel/per-contribution provenance is a base-v0.1 role.
 12. **Unambiguous destination ownership.** Each admitted bounded population
     resolves one unique complete scientific destination identity before
     allocation, mutation, output side effects, or parallel execution. Worker,
@@ -126,7 +132,8 @@ This cover does not itself supply:
 - a registered, selected and realized JINC-permitted PTC coefficient family or
   unconditional inverse-variance interpretation;
 - final owner approval of the proposed AST coordinate boundary, JINC admission
-  profile, grouping/product table, or response/covariance families;
+  profile, or fixed grouping/product table; response/covariance products are
+  deferred under ODQ-107;
 - the realized summation algorithm/error bound, phase tie/bin rule, or
   finite-map center-outside behavior; or
 - any numerical parameter value, threshold, default, storage schema,
@@ -138,8 +145,10 @@ must not fill them from remembered implementation behavior.
 ## Permitted Use
 
 The implementation-blind author may reuse, reorganize, and explain the core's
-definitions, equations, conditional covariance reasoning, support taxonomy,
-limiting cases, and falsification cases under the decisions above. The author
+definitions, `N/C/Q` equations, local support taxonomy, limiting cases, and
+falsification cases under the decisions above. Conditional response/covariance
+reasoning may be identified only as deferred future science, not a base-v0.1
+product. The author
 must not repeat the signed-estimator derivation merely to appear new, weaken a
 decision to match an implementation, or consult any excluded source.
 

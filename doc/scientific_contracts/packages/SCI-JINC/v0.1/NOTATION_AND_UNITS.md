@@ -44,6 +44,16 @@ finite negative `kappa_ip` is normal. Every accumulator term for one
 contribution uses the same admitted sample-pixel pair and the same
 `kappa_ip` identity.
 
+## Fixed Base-V0.1 Bundle
+
+ODQ-107 fixes the complete published numerical schema to distinct `N_p`,
+`C_p`, `Q_p`, derived `m_p` with its local support/validity state, and
+`T_p^(kappa^2)`. The absolute-term sum and contributor count needed to apply
+the accepted `rho_p` cancellation test are construction state under ODQ-109,
+not persistent bundle roles. Formal weight/variance, covariance, response,
+standalone support/availability, diagnostics and generalized provenance are
+outside or deferred from base v0.1.
+
 ## Exact Retained Algebra
 
 For every pixel with a positive membership population,
@@ -56,7 +66,9 @@ m_p = N_p / C_p
 A_pi = I_ip omega_i kappa_ip / C_p
 ```
 
-If and only if the exact coefficient family establishes
+The following conditional equations preserve recovered mathematics for future
+scientific use; ODQ-107 authorizes no separate formal-weight, covariance or
+response product in base v0.1. If and only if the exact coefficient family establishes
 `omega_i=Var(z_i)^-1` for mutually independent admitted occurrences,
 
 ```text
@@ -110,9 +122,9 @@ in this time product.
 
 Inverse-square units alone do not prove inverse variance, independence,
 precision, or significance. If `omega_i` is dimensionless, the algebraic
-`Q_p/C_p^2` and `C_p^2/Q_p` factors may be published only under a separately
-named relative/statistical interpretation; they are not signal variance or
-formal inverse variance.
+`Q_p/C_p^2` and `C_p^2/Q_p` factors are not signal variance or formal inverse
+variance. Any future product carrying such an interpretation requires
+separate authority beyond base v0.1.
 
 ## Scaling Predictions
 

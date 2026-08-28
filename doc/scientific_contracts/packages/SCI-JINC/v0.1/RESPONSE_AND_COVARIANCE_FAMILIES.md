@@ -1,8 +1,15 @@
 # SCI-JINC v0.1 — Response And Covariance Families
 
-Status: final Stage A repair candidate; awaiting scientific-owner approval
+Status: recovered Stage A scientific reference; base-v0.1 products deferred by
+SCI-JINC-ODQ-107; excluded from the implementation-blind author packet
 
 Prepared: `2026-08-28`
+
+ODQ-107 preserves the mathematics below for a future concrete scientific use
+but authorizes no response, covariance, formal-weight or limitation-record
+product in the fixed base-v0.1 bundle. This file is not a base-v0.1 author
+input and must not be used to introduce conditional or optional product-role
+machinery.
 
 ## Response Families
 

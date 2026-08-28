@@ -13,6 +13,15 @@ The exact source objects and SHA-256 values are recorded below. A compatible
 successor preserves every listed consequence; a change requires explicit
 scientific-owner authority and a versioned successor.
 
+`SCI-JINC-ODQ-107` is the controlling base-v0.1 product-scope disposition.
+The inherited rows preserve scientific semantics, but they do not create a
+general availability/provenance framework or require every historically
+described companion as a base product. Base v0.1 publishes only distinct
+`N_p`, `C_p`, `Q_p`, derived `m_p` with local support/validity state, and
+`jinc_coefficient_squared_time`. Response, covariance/formal-weight,
+standalone support/availability, diagnostics and generalized provenance
+products are outside or deferred pending a concrete scientific use.
+
 ## Inherited Decision Table
 
 | Stable ID | Exact approved rule | Mathematical and product consequence | Affected objects | Unavailable behavior | Exact predecessor clause superseded | Compatibility / supersession rule |
@@ -34,6 +43,10 @@ task:
 - The owner-accepted estimator keeps distinct `N_p`, `C_p`, and `Q_p`, uses
   `m_p=N_p/C_p`, and permits `C_p^2/Q_p` as a conditional formal weight only
   under the exact upstream coefficient and covariance assumptions.
+- ODQ-107 requires `N_p`, `C_p`, `Q_p`, `m_p` with its local support/validity
+  state, and `jinc_coefficient_squared_time` as the fixed closed bundle. The
+  conditional formal-weight interpretation does not create a base-v0.1
+  formal-weight product.
 - SCI-JINC is a sibling alternative observation mapmaker. It starts after the
   SCI-MAP freeze, consumes exact PTC and AST parents, consumes no SCI-MAP
   product, and inherits no ordinary MAP rule by analogy.

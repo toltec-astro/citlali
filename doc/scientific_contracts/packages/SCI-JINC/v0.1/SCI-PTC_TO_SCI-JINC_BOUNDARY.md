@@ -2,8 +2,8 @@
 
 Profile identity: `SCI-PTC_TO_SCI-JINC v0.1/r0.3`
 
-Status: ODQ-101/103 Stage A successor boundary candidate; exact-byte owner
-approval required; numerical JINC route unavailable until a registered,
+Status: ODQ-101/103/107 Stage A successor boundary candidate; exact-byte
+owner approval required; numerical JINC route unavailable until a registered,
 JINC-permitted family is selected and realized
 
 Prepared: `2026-08-28`
@@ -50,10 +50,10 @@ state and cause:
 | JINC-facing coefficient | Exact single-registry identity/version and PTC owner; exact family/version and explicit `SCI-JINC` permission; requested, effective, observation-resolved and realized selection identities; user selection or exact versioned mode-policy default; generation; detector, sample, or detector-to-sample broadcast index; compatibility with `z_i`; payload availability/cause; statistic and factors; unit; normalization operator/domain; estimation population; support; lifecycle; coefficient/QC profile/evaluation; covariance meaning/assumptions; uncertainty; and prohibited interpretations. Availability alone makes no finiteness or positivity claim. |
 | PTC transform state | Nonrestored additive reference; fitted correlated removed component; total removed component; realized removed/null-subspace identity; fixed-state null space; full-procedure invariant/unidentifiable modes when claimed; and exact causes. |
 | Influence and cause | Direct causes and complete transitive influence preserved without inventing a universal downstream veto. |
-| Response | Exact response family and state: fixed-state upstream-to-PTC; PTC full-procedure finite difference; JINC re-resolved procedure; separately authorized whole-chain RTC-to-CAL-to-PTC-to-JINC; another named family; or typed unavailable. A realized PTC-grid companion starts at JINC and receives the JINC operator exactly once. |
-| Covariance and uncertainty | Conditional PTC-domain covariance when available, with exact conditioning state, domain/axes, units, support, approximation, omitted terms, response uncertainty, selection/nuisance/parameter uncertainty, and typed unavailable components. Unknown is not zero. |
+| Response | Exact upstream response family and state remain producer facts when present. ODQ-107 does not authorize a base-v0.1 JINC response product or a response-role availability object. |
+| Covariance and uncertainty | Exact upstream covariance/uncertainty meaning remains a producer fact when present. ODQ-107 does not authorize a base-v0.1 JINC covariance, uncertainty or formal-weight product. Unknown is not zero. |
 | Coordinate association | Exact frozen AST role `SCI-AST:rtc_output_grid_coordinates@1` associated with the same processed sample realization entering JINC, under [`SCI-AST_TO_SCI-JINC_BOUNDARY.md`](SCI-AST_TO_SCI-JINC_BOUNDARY.md). The scientific association is exact; its data-model realization is not prescribed here. |
-| Admission and failure | Exact JINC-owned `SCI-JINC:jinc_map_contribution@1` evaluation, all input facts and per-predicate outcomes, cause union, missing/conflict behavior, failure scope, and immutable provenance. Ordinary MAP admission/validity and producer-owned JINC-usability decisions do not cross this boundary. |
+| Admission and failure | Exact JINC-owned `SCI-JINC:jinc_map_contribution@1` evaluation and its established input, decision and cause semantics. Ordinary MAP admission/validity and producer-owned JINC-usability decisions do not cross this boundary. These facts do not create a JINC bundle-role availability or provenance product. |
 
 ## Approved Registry And Conditional Numerical Route
 
@@ -84,8 +84,10 @@ produce the profile-defined nonmembership or failure with cause. A new
 coefficient generation never mutates an earlier transformed product.
 
 SCI-JINC alone applies the signed point-phase coefficient `kappa_ip` and owns
-`w_ip=kappa_ip omega_i`, signed normalization, conditioning, support,
-response, covariance and JINC product semantics. No MAP projection,
+`w_ip=kappa_ip omega_i`, signed normalization, conditioning, support and the
+fixed JINC bundle semantics. Response and covariance remain SCI-JINC-owned
+scientific questions if a later concrete use authorizes corresponding
+products; ODQ-107 does not include them in base v0.1. No MAP projection,
 normalization, support, exposure, coadd, response, covariance or validity rule
 is inherited.
 
@@ -104,9 +106,8 @@ For one route candidate, the following remain separately typed:
 9. sample-pixel finite support;
 10. signed-kernel placement and finite `kappa_ip`, including normal zero and
     negative coefficients;
-11. cancellation and formal JINC support;
-12. required-companion availability; and
-13. final JINC product validity.
+11. cancellation and formal JINC support; and
+12. final fixed-bundle validity.
 
 Passing the profile admits only the sample for JINC consideration. Sample-
 pixel support is a separate JINC decision. All pixel-local gates pass before
@@ -124,8 +125,8 @@ duplicate, or ambiguous exact signal-coordinate association; missing
 selection with no authorized mode default;
 unregistered family; missing `SCI-JINC` permission; missing coefficient value
 or QC; unavailable or mismatched payload; incompatible generation; or
-unresolved required lifecycle/provenance makes the affected JINC route
-unavailable with cause. There is no direct CAL fallback, inferred no-op PTC,
+unresolved required lifecycle/provenance prevents formation and publication
+of the affected complete JINC bundle. There is no direct CAL fallback, inferred no-op PTC,
 zero substitution, hidden unity/alternate-family fallback, neighboring-product
 borrowing, coefficient reconstruction or generation repair.
 
@@ -137,7 +138,7 @@ sample AST boundary, exact `SCI-JINC:jinc_map_contribution@1` identity,
 registry/family versions,
 explicit JINC permission, requested/effective/observation-resolved/realized
 selection identities, exact coefficient/QC profile, and preservation of typed
-quantity, causes, response/covariance states, lifecycle and failure scopes.
+quantity, causes, upstream response/covariance meaning, lifecycle and failure scopes.
 Any changed registry, consumer permission, selection/default rule, quantity,
 identity, coefficient, response class, profile or missing/conflict rule
 requires a versioned successor. No prior product or evaluation is rewritten.
