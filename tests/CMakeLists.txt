@@ -125,12 +125,15 @@ add_executable(citlali_sci_align_test EXCLUDE_FROM_ALL
 add_executable(citlali_wp7_timestream_test EXCLUDE_FROM_ALL
     paired_readout_header.cpp
     identity_rtc_header.cpp
+    rtc_only_route_header.cpp
     test_paired_readout.cpp
     test_identity_rtc.cpp
+    test_rtc_only_route.cpp
 )
 set_source_files_properties(
     paired_readout_header.cpp
     identity_rtc_header.cpp
+    rtc_only_route_header.cpp
     PROPERTIES SKIP_PRECOMPILE_HEADERS ON
 )
 set_target_properties(citlali_wp7_timestream_test

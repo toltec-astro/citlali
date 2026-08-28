@@ -1,5 +1,36 @@
 # Citlali Refactor Status
 
+## 2026-08-28 WP-7 Identity RTC First Vertical Increment
+
+Implementation is now in progress on the bounded WP-7 identity RTC increment.
+The clean base merge retains exact accepted design commit `46824f7de` and exact
+ALIGN strict-half repair `d55deefb3` as separate ancestors. The first three
+reviewable code boundaries establish paired native `x/r` ingress and product
+semantics; explicit identity RTC learn-consider-apply; and an RTC-only
+in-memory terminal route with atomic publication and compact diagnostics.
+
+The paired product preserves independent per-network native occurrence axes,
+primitive occurrence intervals, member-local validity and causes, pair queries,
+mapping/unit identity, and contiguous numerical storage. The RTC relation
+references the separately owned ALIGN common-slot admission without copying
+the numerical planes or immutable axes. Identity consideration applies
+bidirectional conservative pair consequences while retaining direct `x`,
+direct `r`, combined, and alignment-absence evidence origins. Apply is factor
+one, retains paired conditioned `x/r`, and owns no duplicate timestream plane.
+
+AST is not invoked or published by this RTC-only route. The product preserves
+the occurrence, selected-time, support, and parent facts needed by a later AST
+consumer but makes no pointing-completion claim. No CAL, VAL, PTC, MAP,
+persistent RTC TOD schema, legacy-route activation, or scientific-method
+expansion is included.
+
+Focused synthetic and existing ALIGN gates pass locally. Representative real
+paired-data execution remains an acceptance gate and is pending owner run under
+[the dated acceptance package](../handoff/WP7_IDENTITY_RTC_ACCEPTANCE_PACKAGE_2026-08-28.md).
+Until that evidence and a fresh independent read-only conformance review pass,
+the increment is not accepted for production readiness or activation and the
+legacy route remains authoritative.
+
 ## 2026-08-26 WP-7 Timestream Successor Baseline
 
 The project has accepted the name **Citlali WP-7 Timestream Successor
