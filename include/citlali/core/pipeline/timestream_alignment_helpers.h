@@ -192,7 +192,7 @@ std::vector<Eigen::VectorXi> build_common_time_grid_masks(
             const int idx =
                 static_cast<int>(std::round((time - max_init_time) / dt));
             if (idx >= 0 && idx < t_common.size() &&
-                std::abs(time - t_common(idx)) <= tol) {
+                std::abs(time - t_common(idx)) < tol) {
                 mask(idx) = 1;
             }
         }

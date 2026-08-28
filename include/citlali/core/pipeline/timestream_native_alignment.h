@@ -455,10 +455,10 @@ make_direct_native_slot_associations(
     return result;
 }
 
-// Preserve the established gap association exactly: std::round selects the
-// single candidate slot (half-way cases away from zero), the edge is inclusive
-// at abs(delta) == dt/2, and the result must have exact presence parity with
-// the compatibility mask.
+// Preserve the established gap association except at the corrected scientific
+// boundary: std::round selects the single candidate slot (half-way cases away
+// from zero), and admission requires abs(delta) < dt/2.  The result must have
+// exact presence parity with the compatibility mask.
 inline std::vector<NativeSlotAssociation>
 make_gap_native_slot_associations(
     const NativeNetworkAlignment &network,
@@ -513,7 +513,7 @@ make_gap_native_slot_associations(
             continue;
         }
         const auto slot = static_cast<Eigen::Index>(rounded);
-        if (std::abs(value - common_slot_reference_times(slot)) >
+        if (std::abs(value - common_slot_reference_times(slot)) >=
             tolerance) {
             continue;
         }
