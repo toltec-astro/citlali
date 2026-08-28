@@ -1,6 +1,6 @@
 # SCI-MAP — Ordinary Mapmaking And Observation Coaddition
 
-Status: final targeted r0.7 closure packet; exact boundaries and
+Status: bounded r0.7.1 freeze-only errata packet; exact boundaries and
 source-bound atomic/aggregate MAP profiles authored; hard numerical gates
 remain visible; scientific authority not frozen
 
@@ -91,22 +91,22 @@ A fresh implementation-blind GPT-5.6 Ultra author was dispatched from the
 content-bound packet on `2026-08-16`. Scope approval did not approve the
 resulting contract.
 
-## Final Targeted Closure r0.7
+## Freeze-Only Errata r0.7.1
 
 The manager-reviewed r0.1 draft supplied one shared canonical LaTeX authority
 and two rendered views. The first scientific editing round found the formal
 science strong but required the SCI-CAL house-model genre separation. The
 package now exposes:
 
-- [formal scientific/engineering contract r0.7](pdf/SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.7-DRAFT.pdf),
+- [formal scientific/engineering contract r0.7.1](pdf/SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.7.1-DRAFT.pdf),
   preserving all canonical equations, 52 requirements, 25 predictions, exact
   support/state semantics, provenance, decision register, and conformance
   routing;
-- [science-team rationale r0.7](pdf/SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.7-DRAFT.pdf),
+- [science-team rationale r0.7.1](pdf/SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.7.1-DRAFT.pdf),
   a scientist-facing account of the estimator, response, uncertainty,
   support/validity, coaddition, WCS, products, and validation without the full
   requirement or prediction inventories;
-- [engineering conformance specification r0.7](pdf/SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.7-DRAFT.pdf);
+- [engineering conformance specification r0.7.1](pdf/SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.7.1-DRAFT.pdf);
 - [`SCI-PTC_TO_SCI-MAP_BOUNDARY.md`](SCI-PTC_TO_SCI-MAP_BOUNDARY.md),
   profile `SCI-PTC_TO_SCI-MAP v0.1/r0.1`;
 - [`SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE_BOUNDARY.md`](SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE_BOUNDARY.md),
@@ -119,18 +119,26 @@ package now exposes:
   exposure carriage, response notation, and coadd choices;
 - [`SCI-MAP_COADD_PROFILES_R0.7.md`](SCI-MAP_COADD_PROFILES_R0.7.md),
   the uniform observation coefficient and atomic admission profiles;
-- the continuing SCI-VAL
+- exact SCI-VAL Registry revision
+  `SCI-VAL_PROFILE_REGISTRY v0.1/r0.3-map-r0.7.1-2026-08-28` and source-binding
+  revision `SCI-VAL_SOURCE_BINDING_REGISTER
+  v0.1/r0.3-map-r0.7.1-2026-08-28`, SHA-256
+  `7b91a324f35196a8c8a6e23c8abbbf5322fc601798e36d4ac821907a6090eadf`, in
   [`PROFILE_REGISTRY.md`](../../SCI-VAL/v0.1/PROFILE_REGISTRY.md) and
   [`SOURCE_BINDING_REGISTER.md`](../../SCI-VAL/v0.1/SOURCE_BINDING_REGISTER.md),
-  containing the exact source-current atomic and aggregate rows;
+  containing the exact manifest-bound atomic and aggregate rows;
 - [`SOURCE_MANIFEST_R0.7.md`](SOURCE_MANIFEST_R0.7.md), exact PTC/WP-7/CAL/
-  AST/VAL/boundary and shared-authority digest binding;
-- [`BYTE_EQUALITY_AND_SHARED_AUTHORITY_REPORT_R0.7.md`](BYTE_EQUALITY_AND_SHARED_AUTHORITY_REPORT_R0.7.md),
+  AST/VAL/boundary and shared-authority digest binding, externally bound by
+  [`SOURCE_MANIFEST_R0.7.sha256`](SOURCE_MANIFEST_R0.7.sha256);
+- [`FREEZE_ONLY_ERRATA_R0.7.1.md`](FREEZE_ONLY_ERRATA_R0.7.1.md) and
+  [`CHANGE_LOG_R0.7.1.md`](CHANGE_LOG_R0.7.1.md), recording the exact bounded
+  owner directive and its nonsemantic delta;
+- [`BYTE_EQUALITY_AND_SHARED_AUTHORITY_REPORT_R0.7.1.md`](BYTE_EQUALITY_AND_SHARED_AUTHORITY_REPORT_R0.7.1.md),
   recording exact packet-copy and shared-wrapper equality;
-- [`RATIONALE_FORMAL_ECS_PARITY_R0.7.md`](RATIONALE_FORMAL_ECS_PARITY_R0.7.md) and
+- [`RATIONALE_FORMAL_ECS_PARITY_R0.7.1.md`](RATIONALE_FORMAL_ECS_PARITY_R0.7.1.md) and
   [`REQUIREMENT_EQUATION_PREDICTION_CHANGE_MAP_R0.7.md`](REQUIREMENT_EQUATION_PREDICTION_CHANGE_MAP_R0.7.md),
   recording one shared authority and stable-ID semantic changes;
-- [`OWNER_DECISION_PARITY_R0.7.md`](OWNER_DECISION_PARITY_R0.7.md) and
+- [`OWNER_DECISION_PARITY_R0.7.1.md`](OWNER_DECISION_PARITY_R0.7.1.md) and
   [`OPEN_GATE_READINESS_LEVELS_R0.6.md`](OPEN_GATE_READINESS_LEVELS_R0.6.md),
   separating OD-008 closure and six distinct route levels;
 - [`TYPED_CONTRIBUTION_GATE_AND_DAG_R0.7.md`](TYPED_CONTRIBUTION_GATE_AND_DAG_R0.7.md),
@@ -140,7 +148,7 @@ package now exposes:
 - [`HORIZONTAL_AUDIT_R0.7.md`](HORIZONTAL_AUDIT_R0.7.md), the clean
   implementation-blind PTC/VAL/AST/MAP/boundary audit with route-specific
   dispositions; and
-- [`PDF_VISUAL_QA_R0.7.md`](PDF_VISUAL_QA_R0.7.md), documenting all-page
+- [`PDF_VISUAL_QA_R0.7.1.md`](PDF_VISUAL_QA_R0.7.1.md), documenting all-page
   Poppler review and exact metadata;
 - [`CHANGE_LOG_R0.7.md`](CHANGE_LOG_R0.7.md), recording the bounded semantic
   delta from r0.6;
@@ -168,7 +176,7 @@ package now exposes:
   author choices without silently resolving owner authority.
 
 The six common modules define 52 stable requirements and 25 falsifiable
-predictions. `src/SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.tex` is the exact shared
+predictions. `src/SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.1.tex` is the exact shared
 wrapper over those modules. Normalized map and coadd vectors contain exactly the rows
 authorized by the effective support policy; unsupported full-grid storage is
 not promoted to zero-valued scientific output. The engineering view imports
@@ -188,10 +196,10 @@ reduction, Unity execution, or production-status decision was performed.
 
 ## Stopping Rule And Next Gate
 
-Revision r0.7 is the owner-review closure packet. It does not claim
+Revision r0.7.1 is the freeze-only errata packet. It does not claim
 implementation conformity, validation, freeze, response achievement,
 observational performance, production authorization, or readiness. Eight MAP
 owner decisions remain open; OD-008 is resolved. The ordinary numerical route
 is still hard-blocked by the missing PTC MAP-facing coefficient family and the
-unresolved admitted numerical `coverage_cut` domain. The next gate is
-scientific-owner review of the r0.7 PDFs and closure records.
+unresolved exact owner-admitted numerical `coverage_cut` state/value. The next
+gate is scientific-owner review of the r0.7.1 PDFs and closure records.

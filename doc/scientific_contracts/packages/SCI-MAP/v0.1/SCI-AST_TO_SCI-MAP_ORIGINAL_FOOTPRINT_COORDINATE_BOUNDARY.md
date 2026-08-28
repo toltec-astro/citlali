@@ -2,7 +2,11 @@
 
 Boundary identity: `SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE v0.1/r0.1`
 
-Status: implementation-blind scientific source binding for SCI-MAP v0.1/r0.7;
+Canonical identifier spelling is exactly
+`SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE v0.1/r0.1`; the single
+space before `v0.1/r0.1` is part of the identity.
+
+Status: implementation-blind scientific source binding for SCI-MAP v0.1/r0.7.1;
 no implementation conformity, validation, response fidelity, freeze,
 readiness, numerical-route availability, or production claim
 

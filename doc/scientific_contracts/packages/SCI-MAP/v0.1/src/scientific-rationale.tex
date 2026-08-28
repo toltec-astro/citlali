@@ -17,7 +17,7 @@
 \definecolor{MapGoldPale}{HTML}{FFF7E6}
 \definecolor{MapGray}{HTML}{53606B}
 \hypersetup{colorlinks=true,linkcolor=MapBlue,urlcolor=MapBlue,citecolor=MapBlue,
-  pdftitle={SCI-MAP v0.1 TolTEC Ordinary Mapmaking and Observation Coaddition - Science-Team Rationale r0.7 Draft},
+  pdftitle={SCI-MAP v0.1 TolTEC Ordinary Mapmaking and Observation Coaddition - Science-Team Rationale r0.7.1 Draft},
   pdfauthor={SCI-MAP scientific-owner review revision}}
 \setlength{\emergencystretch}{3em}
 \setlength{\parindent}{0pt}
@@ -33,11 +33,11 @@
 % Import the same canonical core as the formal and engineering views. This
 % rationale renders only the scientist-facing equations and grouped crosswalk;
 % it does not expand the full requirement or prediction inventories.
-\input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.tex}
+\input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.1.tex}
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small\color{MapGray}SCI-MAP v0.1 -- Science-Team Rationale r0.7 DRAFT}
+\fancyhead[L]{\small\color{MapGray}SCI-MAP v0.1 -- Science-Team Rationale r0.7.1 DRAFT}
 \fancyfoot[L]{\small\color{MapGray}Science-team circulation | DRAFT}
 \fancyfoot[R]{\small\color{MapGray}Page \thepage}
 
@@ -49,8 +49,8 @@
 {\LARGE\color{MapNavy}\textbf{and Observation Coaddition}}\\[0.10in]
 {\Large\color{MapBlue}\textbf{Scientific Basis, Response, and Validity}}\\[0.38in]
 {\large Scientific contract version: v0.1}\\[0.06in]
-{\large Science-team rationale revision: r0.7}\\[0.06in]
-{\large Status: integrated scientific authority draft}\\[0.08in]
+{\large Science-team rationale revision: r0.7.1}\\[0.06in]
+{\large Status: freeze-only errata draft}\\[0.08in]
 {\large 2026-08-28}\\[0.42in]
 \fcolorbox{MapBlue}{MapPale}{\begin{minipage}{0.80\linewidth}\centering\small
 This document explains the map estimator, its response and uncertainty, the
@@ -76,7 +76,7 @@ identity and scope, have valid ALIGN/AST coordinates, and pass MAP's admission
 conditions. Here \(G_{pi}\) describes how
 sample \(i\) is placed in its unique containing pixel, and \(\gamma_i\) is the
 exact PTC-owner-selected MAP-facing coefficient. No MAP-facing coefficient
-family is selected by frozen SCI-PTC v0.1/r0.5 or bound in the SCI-MAP r0.7
+family is selected by frozen SCI-PTC v0.1/r0.5 or bound in the SCI-MAP r0.7.1
 source packet; MAP does not select this PTC-owned family. This revision
 therefore defines the route but withholds ordinary numerical MAP production
 until that upstream gate closes. Pixels without adequate valid support
@@ -103,7 +103,7 @@ joint model or resampling result.
 
 \StatusBox{\begin{tabularx}{\linewidth}{@{}L{0.31\linewidth}Y@{}}
 \textbf{Intended scientific estimator} & Positive-coefficient ordinary map and compatible common-grid observation coadd, Equations~\eqref{eq:map}--\eqref{eq:coadd}.\\
-\textbf{Upstream input status} & MAP always consumes a realized positive-rank PTC r0.5 product; there is no CAL fallback, PTC-disabled MAP route, or inferred no-op PTC product. The exact PTC coefficient family and admitted numerical \code{coverage_cut} domain remain hard blockers, so no ordinary numerical route is generally authorized by this draft.\\
+\textbf{Upstream input status} & MAP always consumes a realized positive-rank PTC r0.5 product; there is no CAL fallback, PTC-disabled MAP route, or inferred no-op PTC product. The exact PTC coefficient family and exact owner-admitted numerical \code{coverage_cut} state/value remain hard blockers, so no ordinary numerical route is generally authorized by this draft.\\
 \textbf{Implementation conformance} & Not assessed in this authorship revision.\\
 \textbf{Response/representation validation} & Not established; response injections and WCS round trips remain required evidence.\\
 \textbf{Observational validation} & Not established; amplitude, shape, position, covariance, and repeatability require astronomical controls.\\
@@ -115,7 +115,7 @@ joint model or resampling result.
 \toprule Route level & Status & Principal remaining gate \\
 \midrule
 Conditional estimator & Defined & Equations and scientific meanings only.\\
-Numerical observation map & Unavailable & PTC coefficient family and admitted numerical \code{coverage_cut} state.\\
+Numerical observation map & Unavailable & PTC coefficient family and exact owner-admitted numerical \code{coverage_cut} state/value.\\
 Response-bearing map & Product-dependent & Exact sufficient fixed-state, PTC full-procedure, or PTC+MAP re-resolved response; whole-chain RTC-to-CAL-to-PTC-to-MAP is unavailable.\\
 Uncertainty-qualified map & Product-dependent & Exact required covariance representation and terms.\\
 Compatible-grid coadd & Conditional & Source-closed admitted observation maps and exact coadd profile.\\
@@ -190,11 +190,11 @@ An occurrence \(i\) is not merely time and detector. It binds the observation,
 detector occurrence and UID, stable RTC output sample \(n\), exact PTC
 product/application generation, segment, and array/network/group. Time is an
 attribute; input-column, row, and container positions are locators. The AST
-coordinate is exactly \code{SCI-AST:rtc_output_grid_coordinates@1} for the
+coordinate is exactly \SCIMapASTRTCGridProfile{} for the
 same \(n\) and parent chain. MAP never joins signal and coordinate by time,
 row, cardinality, or numerical coordinate equality.
 
-MAP owns \code{SCI-MAP:one_hot_containing_pixel@1}. A finite coordinate inside
+MAP owns \SCIMapOneHotProfile. A finite coordinate inside
 the target extent belongs to the unique pixel whose cell contains it under
 half-open lower-inclusive, upper-exclusive bounds. There \(G_{pi}=1\); it is
 zero for every other pixel. An internal upper edge belongs to the adjacent
@@ -217,8 +217,8 @@ claim finiteness. MAP alone classifies an authorized payload as finite
 strictly positive, exact zero, negative finite, non-finite, or unrepresentable.
 
 The representation-independent handoff is
-\code{SCI-PTC_TO_SCI-MAP v0.1/r0.1}. MAP owns the occurrence-level policy
-\code{SCI-MAP:map_upstream_admission@2}; the continuing VAL Registry binds it
+\SCIMapPTCMapBoundaryId. MAP owns the occurrence-level policy
+\SCIMapUpstreamProfile; the exact manifest-bound SCI-VAL Registry revision binds it
 and VAL Core evaluates it. The policy requires the exact PTC output-retention
 permission and preserved ancestry, excludes direct synthesized/replaced
 representatives and unresolved required facts for this use, carries inherited
@@ -237,8 +237,9 @@ companions. Unknown, conflict, ineligible, unavailable, invalid, and
 not-requested all project to estimator nonmembership where applicable while
 their full T/F/U/C or request/applicability/eligibility/realization record,
 immutable reason, causes, provenance, and failure scope remain intact. For
-every four-axis gate, only requested/applicable/eligible/realized passes. The
-PTC coefficient/QC pass says only that this tuple holds under the exact
+every gate with named request, applicability, eligibility, and realization
+fields, only requested/applicable/eligible/realized passes. The PTC
+coefficient/QC pass says only that this field combination holds under the exact
 PTC-owned coefficient/QC profile; it cannot grant or rescue MAP admission.
 Evaluation is ordered: structural binding; safe retrieval and classification
 of only structurally admitted \(z_i\) and \(\gamma_i\); coordinate, placement,
@@ -291,7 +292,7 @@ component \(\widehat U_{\rm corr}\), total removed component
 \(U_{{\rm total},\Theta}\), realized removed-subspace identity, fixed-state
 null space, and any full-procedure invariant/unidentifiable modes are separate
 facts. They are not automatically residual bias. The fixed-state perturbation
-statement is Equation~\eqref{eq:response}; r0.7 makes no unnamed \(\mu_0\) or
+statement is Equation~\eqref{eq:response}; r0.7.1 makes no unnamed \(\mu_0\) or
 residual conditional-bias claim.
 
 \clearpage
@@ -378,7 +379,7 @@ in seconds on stable original occurrences. RTC, CAL, and PTC preserve those
 facts, lineage, and causes. MAP deduplicates by observation, detector
 occurrence/UID, stable original/native occurrence, stable ALIGN slot, and
 ALIGN mapping generation. Under
-\code{SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE v0.1/r0.1}, it places
+\SCIMapASTFootprintBoundaryId, it places
 each positive-\(e_{\rm vo}\) original exactly once using that original's own
 AST ALIGN-grid direction/tangent/continuous-pixel parent in the exact target
 MAP WCS and the one-hot half-open rule. Geometry/pointing realization, frame,
@@ -458,14 +459,14 @@ reprojection or mosaicking, are not fixed by the admitted authority and are
 recorded as SCI-MAP-OD-009. Until then, SCI-MAP performs neither operation.
 
 The coadd-admission profile is
-\code{SCI-MAP:observation_coadd_admission@1}. It is a MAP-authored,
+\SCIMapCoaddProfile. It is a MAP-authored,
 VAL-governed aggregate profile with separate request, applicability,
 eligibility, and realization axes. It requires compatible quantity
 and nominal-beam convention, PTC route/product role, response class, complete
 AST WCS/grid, support policy, coefficient family, covariance disclosure,
 null/additive-reference state, required companions, lifecycle, and parentage.
 The coefficient family is
-\code{SCI-MAP:uniform_observation_coadd_coefficient@1}: \(u_{op}=1\),
+\SCIMapUniformCoaddProfile: \(u_{op}=1\),
 dimensionless, on every admitted observation row. It is an equal-observation
 coefficient and has no inverse-variance interpretation.
 
@@ -496,7 +497,7 @@ outside this positive-coefficient branch.
 SCI-MAP receives its scale and unit convention only through the realized PTC
 product; there is no direct SCI-CAL fallback. It preserves the coordinates,
 exact frame metadata, geometry, and coordinate validity supplied by ALIGN/AST
-through \code{SCI-AST:rtc_output_grid_coordinates@1} for the same stable RTC
+through \SCIMapASTRTCGridProfile{} for the same stable RTC
 sample and parent chain. It records the complete declared frame identity---
 including the actual reference system, equinox/epoch, time scale, topology,
 WCS, axes, signs, and handedness---and does not replace it with ``J2000.'' PTC
@@ -570,11 +571,11 @@ The compact register in Appendix~\ref{app:decisions} preserves OD-001 through
 OD-009. SCI-MAP-CI-001 is resolved: \code{coverage_cut} is dimensionless.
 OD-007 remains open only for its numerical domain and failure behavior.
 OD-008 is resolved: the sole base projection is
-\code{SCI-MAP:one_hot_containing_pixel@1}, with lower-inclusive,
+\SCIMapOneHotProfile, with lower-inclusive,
 upper-exclusive cells, outer-upper-boundary loss, no wrap or clamp, and
 fractional projection deferred. Eight MAP-local decisions remain open.
 
-Rationale r0.7 completes the final targeted closure and freeze-preflight pass.
+Rationale r0.7.1 applies freeze-only errata to the final targeted closure.
 Further revisions should follow an owner decision, a normative contract
 change, new validation evidence, or a newly identified scientific
 inconsistency--not stylistic churn.
@@ -582,11 +583,11 @@ inconsistency--not stylistic churn.
 \addtocontents{toc}{\protect\setcounter{tocdepth}{-1}}
 \section*{References}
 \begin{enumerate}[label={[\arabic*]},leftmargin=*]
-\item \emph{SCI-MAP v0.1 Formal Scientific/Engineering Contract}, canonical shared r0.7 authority and formal view.
+\item \emph{SCI-MAP v0.1 Formal Scientific/Engineering Contract}, canonical shared r0.7.1 authority and formal view.
 \item Frozen \emph{SCI-PTC v0.1/r0.5}, SCI-CAL v0.1 science r0.5/engineering r0.4, and SCI-AST v0.1/r0.3 with the exact digests in \code{SOURCE_MANIFEST_R0.7.md}.
-\item SCI-VAL Core v0.1/r0.3 plus the exact continuing Registry and Source-Binding Register revisions enumerated in that immutable manifest.
-\item \code{SCI-PTC_TO_SCI-MAP v0.1/r0.1},
-\code{SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE v0.1/r0.1}, and the
+\item SCI-VAL Core v0.1/r0.3 plus the exact manifest-bound Registry and Source-Binding Register revision identities and digests enumerated in that immutable manifest.
+\item \SCIMapPTCMapBoundaryId,
+\SCIMapASTFootprintBoundaryId, and the
 exact MAP upstream-admission and observation-coadd-admission records.
 \item \emph{Citlali Scientific Conventions} and ADR 0009, including its WCS/FITS persistence amendment.
 \end{enumerate}
@@ -634,7 +635,7 @@ OD-009 & Common-grid preparation and future mosaicking & Odd-difference inputs r
 \end{longtable}
 
 \section{Document authority}
-Rationale revision r0.7 integrates the final targeted closure and
+Rationale revision r0.7.1 applies freeze-only errata to the final targeted closure and
 retains the scientific-owner disposition of SCI-MAP-CI-001. The scientific contract
 remains v0.1, with 52 canonical requirement IDs and 25 canonical prediction
 IDs unchanged. Their bounded amended clauses now classify

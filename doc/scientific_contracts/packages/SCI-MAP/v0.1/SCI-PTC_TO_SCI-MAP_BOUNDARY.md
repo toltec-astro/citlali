@@ -2,6 +2,9 @@
 
 Profile identity: `SCI-PTC_TO_SCI-MAP v0.1/r0.1`
 
+Canonical identifier spelling is exactly `SCI-PTC_TO_SCI-MAP v0.1/r0.1`;
+the single space before `v0.1/r0.1` is part of the identity.
+
 Status: targeted owner-review boundary authority; implementation conformity,
 validation, performance, readiness, and production authorization not assessed
 
@@ -12,7 +15,7 @@ Scientific owner: Grant Wilson
 ## Purpose
 
 This boundary defines the representation-independent logical handoff from the
-frozen SCI-PTC v0.1/r0.5 transformed product to SCI-MAP v0.1/r0.7. It neither
+frozen SCI-PTC v0.1/r0.5 transformed product to SCI-MAP v0.1/r0.7.1. It neither
 prescribes a class or persistence format nor authorizes a numerical MAP while
 an exact PTC MAP-facing coefficient family or another hard gate remains open.
 

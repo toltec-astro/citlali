@@ -15,7 +15,7 @@
 \definecolor{EngPale}{HTML}{EAF5F3}
 \definecolor{EngGray}{HTML}{58636D}
 \hypersetup{colorlinks=true,linkcolor=EngTeal,urlcolor=EngTeal,
-  pdftitle={SCI-MAP v0.1 Engineering Conformance Specification, r0.7},
+  pdftitle={SCI-MAP v0.1 Engineering Conformance Specification, r0.7.1},
   pdfauthor={Independent Stage B scientific-contract author}}
 \setlength{\emergencystretch}{3em}
 \setlength{\parindent}{0pt}
@@ -27,12 +27,12 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small\color{EngGray}SCI-MAP v0.1 | Engineering Conformance Specification}
-\fancyhead[R]{\small\color{EngGray}Document r0.7}
+\fancyhead[R]{\small\color{EngGray}Document r0.7.1}
 \fancyfoot[L]{\small\color{EngGray}Procedure only | conformance unassessed}
 \fancyfoot[R]{\small\color{EngGray}Page \thepage}
 
-\input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.tex}
-\renewcommand{\SCIMapDocumentRevision}{r0.7}
+\input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.1.tex}
+\renewcommand{\SCIMapDocumentRevision}{r0.7.1}
 
 \newcommand{\ProcedureBox}[1]{%
   \begin{center}\fcolorbox{EngTeal}{EngPale}{\parbox{0.92\linewidth}{#1}}\end{center}}
@@ -71,7 +71,7 @@ Target implementation: & \textbf{Not selected in this document}
 
 \ProcedureBox{\textbf{No independent science.} Every normative scientific
 clause and every prediction printed here is rendered from
-\texttt{SCI-MAP-v0.1\_SHARED\_AUTHORITY\_r0.7.tex}. This document adds only
+\texttt{SCI-MAP-v0.1\_SHARED\_AUTHORITY\_r0.7.1.tex}. This document adds only
 evidence-recording, execution, traceability, and pass/fail procedure. If an
 engineering observation appears to require changing science, record a
 deviation and return it to scientific-owner review; do not edit the expected
@@ -188,7 +188,7 @@ For every VAL-evaluated gate retain request, applicability, eligibility, and
 realization axes, source binding, immutable reason, cause, and failure scope.
 Only requested/applicable/eligible/realized passes. Verify separately that the
 PTC coefficient/QC pass uses its exact PTC-owned profile and neither replaces
-nor rescues \code{SCI-MAP:map_upstream_admission@2}.
+nor rescues \SCIMapUpstreamProfile.
 \item \textbf{Stages D and E---membership then accumulation.} Construct
 membership only after Stages A--C and perform no payload arithmetic until all
 required gates pass. Verify no numeric-zero mask, late masking, or aggregate
@@ -210,7 +210,7 @@ influence edges, and no precision or temporal-support promotion.
 \item Snapshot coadd-owned state; test every compatibility failure; require
 atomic nonmutation.
 \item Evaluate all four axes of the registered aggregate profile
-\code{SCI-MAP:observation_coadd_admission@1}; then exercise admitted
+\SCIMapCoaddProfile; then exercise admitted
 centered-integer coaddition, exact coadd output-row identity, and companion
 placement.
 \item Round-trip all required representations and reconstruct each

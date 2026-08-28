@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import re
+import hashlib
 import subprocess
 import sys
 from pathlib import Path
@@ -15,7 +16,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "src"
 PDF = ROOT / "pdf"
 
-SHARED = SRC / "SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.tex"
+SHARED = SRC / "SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.1.tex"
 COMMON = SRC / "common"
 COMMON_MODULES = (
     COMMON / "notation.tex",
@@ -31,9 +32,9 @@ ENG_TEX = SRC / "engineering-conformance.tex"
 FORMAL_PDF = PDF / "SCI-MAP-FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT-v0.1.pdf"
 RATIONALE_PDF = PDF / "SCI-MAP-SCIENTIFIC-RATIONALE-v0.1.pdf"
 ENG_PDF = PDF / "SCI-MAP-ENGINEERING-CONFORMANCE-v0.1.pdf"
-FORMAL_REV_PDF = PDF / "SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.7-DRAFT.pdf"
-RATIONALE_REV_PDF = PDF / "SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.7-DRAFT.pdf"
-ENG_REV_PDF = PDF / "SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.7-DRAFT.pdf"
+FORMAL_REV_PDF = PDF / "SCI-MAP-v0.1_FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT_r0.7.1-DRAFT.pdf"
+RATIONALE_REV_PDF = PDF / "SCI-MAP-v0.1_SCIENCE-TEAM-RATIONALE_r0.7.1-DRAFT.pdf"
+ENG_REV_PDF = PDF / "SCI-MAP-v0.1_ENGINEERING-CONFORMANCE_r0.7.1-DRAFT.pdf"
 CROSSWALK = ROOT / "CROSSWALK.md"
 SCIENTIST_CROSSWALK = ROOT / "SCIENTIST_CROSSWALK_R0.3.md"
 OWNER_LEDGER = ROOT / "SCIENTIFIC_OWNER_DECISION_LEDGER.md"
@@ -42,6 +43,50 @@ INCONSISTENCY = ROOT / "CONTRACT_INCONSISTENCY_AND_PROPOSED_AMENDMENT_R0.2.md"
 CONSISTENCY = ROOT / "SCIENTIFIC_FORMAL_CONSISTENCY_R0.3.md"
 OWNER_REGISTER = SRC / "SCI-MAP-v0.1_OWNER_DECISION_REGISTER_r0.1.tex"
 OWNER_REGISTER_GENERATOR = SRC / "generate_owner_decision_register.py"
+MANIFEST = ROOT / "SOURCE_MANIFEST_R0.7.md"
+MANIFEST_BINDING = ROOT / "SOURCE_MANIFEST_R0.7.sha256"
+VAL_ROOT = ROOT.parent.parent / "SCI-VAL" / "v0.1"
+VAL_REGISTRY = VAL_ROOT / "PROFILE_REGISTRY.md"
+VAL_SOURCE_BINDING = VAL_ROOT / "SOURCE_BINDING_REGISTER.md"
+PTC_BOUNDARY = ROOT.parent.parent / "SCI-PTC" / "v0.1" / "SCI-PTC_TO_SCI-MAP_BOUNDARY.md"
+MAP_BOUNDARY = ROOT / "SCI-PTC_TO_SCI-MAP_BOUNDARY.md"
+AST_FOOTPRINT_BOUNDARY = ROOT / "SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE_BOUNDARY.md"
+MAP_ADMISSION_PROFILE = ROOT / "SCI-MAP_UPSTREAM_ADMISSION_PROFILE.md"
+MAP_COADD_PROFILE = ROOT / "SCI-MAP_COADD_PROFILES_R0.7.md"
+PARITY_REPORTS = (
+    ROOT / "RATIONALE_FORMAL_ECS_PARITY_R0.7.1.md",
+    ROOT / "OWNER_DECISION_PARITY_R0.7.1.md",
+)
+BYTE_REPORT = ROOT / "BYTE_EQUALITY_AND_SHARED_AUTHORITY_REPORT_R0.7.1.md"
+
+
+def sha256_bytes(payload: bytes) -> str:
+    return hashlib.sha256(payload).hexdigest()
+
+
+def sha256_file(path: Path) -> str:
+    return sha256_bytes(path.read_bytes())
+
+
+def markdown_section_bytes(path: Path, heading: str) -> bytes:
+    payload = path.read_bytes()
+    marker = (heading + "\n").encode()
+    start = payload.index(marker)
+    level = len(heading) - len(heading.lstrip("#"))
+    candidates = []
+    for next_level in range(1, level + 1):
+        pos = payload.find(b"\n" + (b"#" * next_level) + b" ", start + len(marker))
+        if pos >= 0:
+            candidates.append(pos + 1)
+    end = min(candidates) if candidates else len(payload)
+    return payload[start:end]
+
+
+def markdown_row_bytes(path: Path, row_label: str) -> bytes:
+    for line in path.read_bytes().splitlines(keepends=True):
+        if line.startswith(("| " + row_label + " |").encode()):
+            return line
+    raise AssertionError(f"missing source-binding row: {row_label}")
 
 
 def expect_sequence(found: list[str], prefix: str, count: int) -> None:
@@ -81,7 +126,7 @@ for module in COMMON_MODULES:
     assert f"common/{module.name}" in shared_wrapper
 
 for source in (formal_tex, rationale_tex, eng_tex):
-    assert source.count(r"\input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.tex}") == 1
+    assert source.count(r"\input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.1.tex}") == 1
 
 for source in (formal_tex, eng_tex):
     assert source.count(r"\SCIMapRequirements") == 1
@@ -156,14 +201,24 @@ assert "SCI-MAP-CI-001" in consistency
 assert "dimensionless" in shared
 assert r"\operatorname{unit\_status}(c)" not in shared
 assert "SCI-MAP-CI-001" in rationale_tex
-assert "SCI-MAP:map_upstream_admission@2" in shared
-assert "SCI-MAP:observation_coadd_admission@1" in shared
-assert "SCI-PTC_TO_SCI-MAP v0.1/r0.1" in formal_tex
-assert "SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE v0.1/r0.1" in shared
+assert r"\providecommand{\SCIMapUpstreamProfile}" in shared
+assert r"\providecommand{\SCIMapCoaddProfile}" in shared
+assert r"\SCIMapPTCMapBoundaryId" in formal_tex
+assert r"\providecommand{\SCIMapASTFootprintBoundaryId}" in shared
 assert r"A_{{\rm MAP},\Pi}\equiv A_{\rm out}" in shared
 assert "PTC+MAP re-resolved" in shared
 assert "whole-chain RTC-to-CAL-to-PTC-to-MAP" in shared
 assert "eight map-local decisions remain open" in formal_tex.lower()
+assert "exact owner-admitted numerical \\code{coverage_cut} state/value" in rationale_tex
+assert "operatorname{request}_{\\gamma,{\\rm QC}}" in shared
+assert "operatorname{applicability}_{\\gamma,{\\rm QC}}" in shared
+assert "operatorname{eligibility}_{\\gamma,{\\rm QC}}" in shared
+assert "operatorname{realization}_{\\gamma,{\\rm QC}}" in shared
+assert "(r,a,e" not in shared and "(r, a, e" not in shared
+assert r"upstream\_eligible\_original\_footprint\_exposure" in shared
+assert r"retained\_original\_footprint\_exposure" in shared
+assert "ordinary nonpassing field value is not thereby a structural failure" in shared
+assert "structural source- or profile-binding failure is recorded only" in shared.lower()
 for stale in (
     "raw-invalid", "raw validity", "raw-valid", "raw parentage",
     "raw bundle", "immutable raw parent", "raw accumulators", "C_x",
@@ -191,6 +246,71 @@ for authority_range in (
 ):
     assert authority_range in scientist_crosswalk, f"scientist crosswalk gap: {authority_range}"
 
+assert MAP_BOUNDARY.read_bytes() == PTC_BOUNDARY.read_bytes(), "PTC/MAP boundary byte mismatch"
+for exact_path in (
+    MAP_BOUNDARY,
+    PTC_BOUNDARY,
+    AST_FOOTPRINT_BOUNDARY,
+    MAP_ADMISSION_PROFILE,
+    MAP_COADD_PROFILE,
+    VAL_REGISTRY,
+    VAL_SOURCE_BINDING,
+    OWNER_LEDGER,
+    *PARITY_REPORTS,
+    BYTE_REPORT,
+):
+    assert exact_path.is_file(), f"missing manifest-bound artifact: {exact_path}"
+
+manifest_text = MANIFEST.read_text(encoding="utf-8")
+manifest_digest = sha256_file(MANIFEST)
+binding_fields = MANIFEST_BINDING.read_text(encoding="utf-8").strip().split()
+assert binding_fields[0] == manifest_digest, "source-manifest companion digest mismatch"
+assert binding_fields[-1] == "SOURCE_MANIFEST_R0.7.md", "source-manifest companion path mismatch"
+
+for label, exact_path in (
+    ("MAP PTC-to-MAP boundary copy", MAP_BOUNDARY),
+    ("PTC PTC-to-MAP boundary copy", PTC_BOUNDARY),
+    ("Original-footprint-coordinate boundary", AST_FOOTPRINT_BOUNDARY),
+    ("MAP upstream-admission profile", MAP_ADMISSION_PROFILE),
+    ("MAP coadd profiles", MAP_COADD_PROFILE),
+    ("SCI-VAL Profile Registry", VAL_REGISTRY),
+    ("SCI-VAL Source-Binding Register", VAL_SOURCE_BINDING),
+    ("Owner-decision ledger", OWNER_LEDGER),
+    ("Rationale/formal/ECS parity report", PARITY_REPORTS[0]),
+    ("Owner-decision parity report", PARITY_REPORTS[1]),
+    ("Byte-equality/shared-authority report", BYTE_REPORT),
+):
+    matching_lines = [line for line in manifest_text.splitlines() if line.startswith(f"| {label}")]
+    assert len(matching_lines) == 1 and f"`{sha256_file(exact_path)}`" in matching_lines[0], (
+        f"manifest digest missing or stale: {label}"
+    )
+
+shared_aggregate = b"".join(path.read_bytes() for path in (SHARED, *COMMON_MODULES))
+assert f"| Shared r0.7.1 authority aggregate | `{sha256_bytes(shared_aggregate)}` |" in manifest_text
+
+for label, heading in (
+    ("Registry record `SCI-MAP:map_upstream_admission@2`", "### `SCI-MAP:map_upstream_admission@2`"),
+    ("Registry record `SCI-MAP:observation_coadd_admission@1`", "### `SCI-MAP:observation_coadd_admission@1`"),
+):
+    digest = sha256_bytes(markdown_section_bytes(VAL_REGISTRY, heading))
+    assert f"| {label} | `{digest}` |" in manifest_text, f"stale {label} digest"
+
+for row_label in (
+    "SCI-ALIGN",
+    "SCI-AST",
+    "SCI-RTC",
+    "SCI-CAL",
+    "SCI-PTC",
+    "Tune/readout and telescope inputs",
+    "SCI-MAP",
+):
+    digest = sha256_bytes(markdown_row_bytes(VAL_SOURCE_BINDING, row_label))
+    assert f"| SCI-VAL source-binding row `{row_label}` | `{digest}` |" in manifest_text
+
+for source_text in (shared, formal_tex, rationale_tex, eng_tex):
+    assert "SCI-PTC_TO_SCI-MAPv0.1/r0.1" not in source_text
+    assert "SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATEv0.1/r0.1" not in source_text
+
 formal_reader, formal_pages = pdf_text(FORMAL_PDF)
 rationale_reader, rationale_pages = pdf_text(RATIONALE_PDF)
 eng_reader, eng_pages = pdf_text(ENG_PDF)
@@ -213,10 +333,6 @@ for reader, pages, label in (
         assert joined.count(requirement) == 1, f"{requirement} coverage in {label} PDF"
     for prediction in predictions:
         assert joined.count(prediction) == 1, f"{prediction} coverage in {label} PDF"
-
-map_boundary = ROOT / "SCI-PTC_TO_SCI-MAP_BOUNDARY.md"
-ptc_boundary = ROOT.parent.parent / "SCI-PTC" / "v0.1" / "SCI-PTC_TO_SCI-MAP_BOUNDARY.md"
-assert map_boundary.read_bytes() == ptc_boundary.read_bytes(), "PTC/MAP boundary byte mismatch"
 
 formal_joined = "\n".join(formal_pages)
 for decision in owner_decisions:
@@ -279,4 +395,6 @@ print("rationale_inventory_separation=PASS")
 print("dimensional_inconsistency_record=PASS")
 print("ci_001_owner_resolution_and_amendment=PASS")
 print("revision_bearing_pdf_aliases=PASS")
+print("manifest_external_sha256_binding=PASS")
+print("registry_record_and_source_row_binding=PASS")
 print("latex_warning_check=PASS")

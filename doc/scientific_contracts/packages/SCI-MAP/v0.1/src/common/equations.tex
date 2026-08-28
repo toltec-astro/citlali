@@ -14,10 +14,13 @@
  \in\{0,1\},\qquad g\in\mathcal G,
  \label{eq:typed-gate-projection}\\
  \operatorname{pass}_{\gamma,{\rm QC}}(i)&=
- \boldsymbol 1\!\left[
- (r,a,e,\ell)_i=(\texttt{requested},\texttt{applicable},
- \texttt{eligible},\texttt{realized})\right],
- \label{eq:gamma-qc-four-axis-projection}\\
+ \boldsymbol 1\!\left[\begin{gathered}
+ \operatorname{request}_{\gamma,{\rm QC}}(i)=\texttt{requested},\\[-2pt]
+ \operatorname{applicability}_{\gamma,{\rm QC}}(i)=\texttt{applicable},\\[-2pt]
+ \operatorname{eligibility}_{\gamma,{\rm QC}}(i)=\texttt{eligible},\\[-2pt]
+ \operatorname{realization}_{\gamma,{\rm QC}}(i)=\texttt{realized}
+ \end{gathered}\right],
+ \label{eq:gamma-qc-named-field-projection}\\
  \mathcal C_p&=\left\{i:\bigwedge_{g\in\mathcal G}b_g(i,p)=1\right\},
  \label{eq:contribution-set}\\
  \mathcal S_{\rm out}(\Pi_{\rm eff})

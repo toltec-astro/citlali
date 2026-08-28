@@ -148,6 +148,18 @@ numerical `coverage_cut` domain. This is an owner-review closure packet, not
 implementation conformity, validation, achieved response or performance,
 scientific-authority freeze, readiness, or production authorization.
 
+On `2026-08-28` the owner-directed SCI-MAP r0.7.1 freeze-only errata replaced
+the symbolic decision tuple with named request/applicability/eligibility/
+realization fields, corrected the exact `coverage_cut` wording, canonicalized
+boundary/profile identifiers, defined exact original-footprint exposure
+aliases, narrowed REQ-010 structural-failure grammar, and bound the exact
+Registry/source-binding records and reports through an externally SHA-bound
+source manifest. All 52 requirement IDs and 25 prediction IDs remain stable;
+estimator, response, exposure, support, covariance, coadd, and lifecycle
+semantics are unchanged. This is an author-artifact closure record only and
+makes no implementation, conformity, validation, performance, freeze,
+readiness, production, or route-availability claim.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

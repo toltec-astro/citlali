@@ -5,8 +5,16 @@
 \providecommand{\SCIMapSignalRole}{calibrated-\(x\)-derived nonpolarimetric total-intensity-equivalent quantity}
 \providecommand{\SCIMapResponseIdentity}{support-restricted realized response}
 \providecommand{\SCIMapValidityIdentity}{MAP-local base-product scientific validity}
-\providecommand{\SCIMapUpstreamProfile}{\texttt{SCI-MAP:map\_upstream\_admission@2}}
-\providecommand{\SCIMapCoaddProfile}{\texttt{SCI-MAP:observation\_coadd\_admission@1}}
+% Canonical exact boundary/profile identities. Each renderer is one
+% unbreakable box so spacing and punctuation cannot drift at a line break.
+\providecommand{\SCIMapPTCMapBoundaryId}{\mbox{\footnotesize\texttt{SCI-PTC\_TO\_SCI-MAP v0.1/r0.1}}}
+\providecommand{\SCIMapASTFootprintBoundaryId}{\mbox{\footnotesize\texttt{SCI-AST\_TO\_SCI-MAP\_ORIGINAL\_FOOTPRINT\_COORDINATE v0.1/r0.1}}}
+\providecommand{\SCIMapASTRTCGridProfile}{\mbox{\footnotesize\texttt{SCI-AST:rtc\_output\_grid\_coordinates@1}}}
+\providecommand{\SCIMapUpstreamProfileHistorical}{\mbox{\footnotesize\texttt{SCI-MAP:map\_upstream\_admission@1}}}
+\providecommand{\SCIMapUpstreamProfile}{\mbox{\footnotesize\texttt{SCI-MAP:map\_upstream\_admission@2}}}
+\providecommand{\SCIMapOneHotProfile}{\mbox{\footnotesize\texttt{SCI-MAP:one\_hot\_containing\_pixel@1}}}
+\providecommand{\SCIMapCoaddProfile}{\mbox{\footnotesize\texttt{SCI-MAP:observation\_coadd\_admission@1}}}
+\providecommand{\SCIMapUniformCoaddProfile}{\mbox{\footnotesize\texttt{SCI-MAP:uniform\_observation\_coadd\_coefficient@1}}}
 
 % The exact occurrence i is not a tuple of time and detector. It binds the
 % observation; detector occurrence and UID; stable RTC output index n; exact

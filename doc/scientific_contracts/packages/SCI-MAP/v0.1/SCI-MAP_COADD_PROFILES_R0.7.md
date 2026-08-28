@@ -1,12 +1,15 @@
-# SCI-MAP v0.1/r0.7 Coadd Coefficient And Admission Profiles
+# SCI-MAP v0.1/r0.7.1 Coadd Coefficient And Admission Profiles
 
-Status: owner-approved scientific-policy disposition carried into the r0.7
-freeze-preflight draft; no
+Status: owner-approved scientific-policy disposition carried into the r0.7.1
+freeze-only errata draft; no
 implementation, validation, response-fidelity, readiness, or production claim
 
 Scientific owner: Grant Wilson
 
 ## `SCI-MAP:uniform_observation_coadd_coefficient@1`
+
+Canonical identifier spelling is exactly
+`SCI-MAP:uniform_observation_coadd_coefficient@1`.
 
 - **Index/domain:** exact observation-output row `(o,p)` after centered-integer
   placement and atomic coadd admission.
@@ -24,9 +27,13 @@ Scientific owner: Grant Wilson
 
 ## `SCI-MAP:observation_coadd_admission@1`
 
-This is a MAP-authored, VAL-governed aggregate profile. The continuing
-SCI-VAL Registry contains the immutable evaluable record; VAL supplies no
-policy content.
+Canonical identifier spelling is exactly
+`SCI-MAP:observation_coadd_admission@1`.
+
+This is a MAP-authored, VAL-governed aggregate profile. Exact Registry
+revision `SCI-VAL_PROFILE_REGISTRY
+v0.1/r0.3-map-r0.7.1-2026-08-28` contains the immutable evaluable record;
+VAL supplies no policy content.
 
 - **Scientific-policy owner:** Grant Wilson, SCI-MAP scientific-policy owner;
   VAL registers and evaluates but does not author this rule.
@@ -46,15 +53,19 @@ policy content.
   no decisive false exists but a required fact is unknown or conflicting.
 - **Realization axis:** `realized`, `incomplete`, `failed`, or `not_produced`
   describes the decision artifact, never the eligibility meaning.
-- **Source versions and compatibility:** exact SCI-MAP v0.1/r0.7 shared
+- **Source versions and compatibility:** exact SCI-MAP v0.1/r0.7.1 shared
   authority and source manifest; `SCI-MAP:map_upstream_admission@2`; frozen
   SCI-PTC v0.1/r0.5; frozen SCI-CAL v0.1 science r0.5/engineering r0.4;
-  frozen SCI-AST v0.1/r0.3; SCI-VAL Core v0.1/r0.3 plus the exact continuing
-  Registry and Source-Binding Register. A digest or compatibility mismatch is
+  frozen SCI-AST v0.1/r0.3; SCI-VAL Core v0.1/r0.3 plus exact Registry revision
+  `SCI-VAL_PROFILE_REGISTRY v0.1/r0.3-map-r0.7.1-2026-08-28` and exact
+  source-binding revision `SCI-VAL_SOURCE_BINDING_REGISTER
+  v0.1/r0.3-map-r0.7.1-2026-08-28`, SHA-256
+  `7b91a324f35196a8c8a6e23c8abbbf5322fc601798e36d4ac821907a6090eadf`.
+  A digest or compatibility mismatch is
   unavailable and is not repaired by similar naming.
 - **Required compatibility:** quantity role; `mJy/beam` and exact
   fixed-nominal-beam/template identity; realized PTC route and compatible
-  product/application generation; exact source-current MAP profile; complete
+  product/application generation; exact manifest-bound MAP profile; complete
   AST frame/WCS and identical grid; centered-integer shape/reference-pixel
   relation; support policy and admitted `coverage_cut` state; exact uniform
   coadd coefficient; response/covariance role; null/additive-reference and

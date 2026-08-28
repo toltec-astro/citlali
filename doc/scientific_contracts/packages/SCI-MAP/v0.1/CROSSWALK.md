@@ -1,6 +1,6 @@
 # SCI-MAP v0.1 Contract Crosswalk
 
-Document revision: `r0.7`
+Document revision: `r0.7.1`
 
 Status: author-draft traceability aid; it does not assert implementation,
 validation, or production status.
@@ -32,12 +32,13 @@ validation, or production status.
   FREEZE-PREFLIGHT DIRECTIVE`, SHA-256
   `f7747eea28710d524e12c818b872ac3fcc49f413271f83c0644ae129949a8c8c`,
   plus the exact PTC/MAP boundary, AST original-footprint-coordinate boundary,
-  r0.7 shared authority, Registry/source-binding rows, and owner dispositions.
+  r0.7.1 shared authority, exact manifest-bound Registry/source-binding rows,
+  and owner dispositions.
 
 The canonical requirement and prediction text lives only in
 `src/common/requirements.tex` and `src/common/edge_cases.tex`, with notation,
 definitions, equations, and assumptions in the adjacent common modules. The
-exact `src/SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.tex` is the shared wrapper. The
+exact `src/SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.1.tex` is the shared wrapper. The
 formal and engineering PDFs render the full common authority;
 the science-team rationale imports the same authority but does not expand the
 full inventories.
