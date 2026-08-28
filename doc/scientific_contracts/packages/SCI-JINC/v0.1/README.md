@@ -1,6 +1,7 @@
 # SCI-JINC — Signed-Coefficient JINC Gridding And Response
 
-Status: Stage A owner-review candidate; Stage B not commissioned
+Status: exact Stage A scope and sanitized packet owner-approved on
+`2026-08-28`; Stage B not commissioned and dispatch blockers remain
 
 Version: `v0.1`
 
@@ -37,7 +38,7 @@ Work began with the package's reviewed
 - excludes ordinary positive-coefficient SCI-MAP predicates and products from
   JINC by analogy.
 
-The repaired proposed author inputs include the scientist-readable
+The approved author inputs include the scientist-readable
 [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md), the frozen independent core paired with
 [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md), the page-exact
 Schloerb method excerpt paired with
@@ -54,17 +55,21 @@ rendering the retained science in the library's shared two-view house form.
 Implementation-derived material remains outside the implementation-blind
 author channel.
 
-This opening has not yet received scientific-owner approval. No Stage B
-scientific author may be commissioned until Grant Wilson approves the exact
-Scope Brief, owner-question disposition, and content-bound packet.
+Grant Wilson approved the exact repaired Stage A candidate at
+`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f` on `2026-08-28`; see
+[`SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md`](SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md).
+The approved author-input bytes remain unchanged. Stage B is not commissioned:
+the approval record preserves the manifest's unresolved dispatch blockers and
+requires a separate launch.
 
 ## Current Gate
 
 - Program, roadmap, and frozen-predecessor adherence: documented.
 - Package-specific prior-work recovery: complete for Stage A owner review.
 - Implementation-informed internal dossier: complete and quarantined.
-- Sanitized Scope Brief: proposed; not owner-approved.
-- Exact author-input manifest: proposed and content-bound; not approved.
+- Sanitized Scope Brief: exact candidate owner-approved.
+- Exact author-input manifest: exact candidate owner-approved and content-
+  bound; dispatch not yet authorized.
 - Implementation-blind scientific rationale: not commissioned and not drafted.
 - Engineering conformance specification: not commissioned and not drafted.
 - Scientific authority: not frozen.
@@ -92,11 +97,11 @@ authorities.
   dispositions, and non-repetition synthesis
 - [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md): quarantined implementation-
   informed scope evidence
-- [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md): proposed scientist-readable Stage B input
-- [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md): proposed
+- [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md): approved scientist-readable Stage B input
+- [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md): approved
   owner-decision cover for the recovered core
 - [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md):
-  proposed sanitized upstream/downstream boundary extract
+  approved sanitized upstream/downstream boundary extract
 - [`AUTHOR_DECISIONS_AND_OWNERSHIP.md`](AUTHOR_DECISIONS_AND_OWNERSHIP.md):
   exact sanitized table of eight inherited owner decisions
 - [`AUTHOR_LMT_JINC_REFERENCE_COVER.md`](AUTHOR_LMT_JINC_REFERENCE_COVER.md)
@@ -114,21 +119,24 @@ authorities.
   [`RESPONSE_AND_COVARIANCE_FAMILIES.md`](RESPONSE_AND_COVARIANCE_FAMILIES.md):
   exact Stage A scientific tables and remaining blockers
 - [`STAGE_A_CHANGE_LOG.md`](STAGE_A_CHANGE_LOG.md): owner-feedback repair map
-- [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): exact proposed
+- [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): exact approved
   allowed and prohibited inputs
 - [`DECISION_LOG.md`](DECISION_LOG.md): applied Stage A decisions and approval
   gate
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md):
   recovered decisions and unresolved owner questions
+- [`SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md`](SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md):
+  exact candidate binding, approved scope, and preserved dispatch blockers
 - [`CROSSWALK.md`](CROSSWALK.md): reserved Stage B traceability surface
 - `src/` and `pdf/`: canonical package paths reserved without normative or
   rendered Stage B content
 
 ## Stop Boundary
 
-Stop after presenting these Stage A artifacts for owner review. Do not
-commission or draft the implementation-blind scientific rationale, shared
-normative core, engineering conformance specification, or PDFs before explicit
-owner approval. Do not inspect an implementation candidate for conformity or
-make any implementation-conformity, validation, achieved-performance,
-readiness, or production claim under this launch.
+Stage A byte approval is recorded. Stop before commissioning or drafting the
+implementation-blind scientific rationale, shared normative core, engineering
+conformance specification, or PDFs until the approval record's dispatch
+blockers are resolved and the owner separately launches Stage B with any
+required model/effort authorization. Do not inspect an implementation candidate
+for conformity or make any implementation-conformity, validation, achieved-
+performance, readiness, or production claim under this approval.

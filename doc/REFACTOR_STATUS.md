@@ -195,10 +195,20 @@ candidates, a JINC admission-profile candidate, collision-free notation,
 geometry, grouping/product, response/covariance and inherited-decision tables,
 while quarantining implementation, audit, repair, re-audit, Unity, validation,
 achieved-performance, readiness, and production evidence. The repaired Scope
-Brief, open-question ledger, and exact content-bound packet await renewed
-scientific-owner review. No implementation-
-blind Stage B rationale or engineering conformance contract has been
-commissioned or drafted, and frozen SCI-MAP authority is unchanged.
+Brief, open-question ledger, and exact content-bound packet were returned for
+renewed scientific-owner review. No implementation-blind Stage B rationale or
+engineering conformance contract was commissioned or drafted, and frozen
+SCI-MAP authority is unchanged.
+
+Grant Wilson approved the exact repaired SCI-JINC Stage A candidate at
+`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f` on `2026-08-28`. The separate
+approval record binds the manifest and Scope Brief hashes without changing any
+approved author input. This closes only the exact-byte owner gate. The PTC
+coefficient family, TolTEC per-array scale/parameter authority, VAL successor,
+numerical phase/cache/error policy, outside-center edge rule, and residual
+ledger gaps remain unresolved or require typed disposition. Stage B remains
+unlaunched; Ultra use was not authorized; no implementation, validation,
+performance, readiness, production or push claim follows.
 
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
