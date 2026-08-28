@@ -141,6 +141,18 @@ TEST(paired_readout,
     EXPECT_EQ(network.mapping_identity_handle()->r_raw_unit_id, "raw-r:0");
 }
 
+TEST(paired_readout, accepts_zero_as_a_canonical_nonnegative_output_uid) {
+    auto solved = solver_result(2, 2, 1.0, 101.0);
+    auto network = pipeline::take_paired_kids_solver_result(
+        pipeline::PairedReadoutNetworkIngress{
+            axis(0, 40, {10.0, 11.0}, {100, 101}),
+            detectors(0, 0, 2), mapping(), states(4), states(4)},
+        std::move(solved));
+
+    EXPECT_EQ(network.detector(0).output_uid, 0);
+    EXPECT_EQ(network.detector(1).output_uid, 1);
+}
+
 TEST(paired_readout,
      preserves_independent_member_validity_and_derives_pair_wide_causes) {
     auto solved = solver_result(2, 1, 1.0, 101.0);

@@ -18,6 +18,14 @@ PRODUCER_SHA256 = (
 )
 DESIGN_COMMIT = "46824f7de"
 ALIGN_REPAIR_COMMIT = "d55deefb3"
+KIDSCPP_REVISION = "04088da182622c3e879f04314974a7c0d60ee2d6"
+KIDSCPP_PATCH_SHA256 = (
+    "98ed435199078e758f1cfe55dceeddbc9d4f623ce6406e84077e6dde04db4d96"
+)
+TULA_REVISION = "f30f81d97c44bd79618273bb842302ef839c6ab1"
+TULA_PATCH_SHA256 = (
+    "c331a9aeb61aa3171efb85cc5bc2b50f1a34b243d44c25c5d4a97c2250e70b4a"
+)
 HEX40 = re.compile(r"^[0-9a-f]{40}$")
 
 
@@ -76,6 +84,21 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError(
             "executable_revision must contain the source revision's first nine hex digits"
         )
+    executable_sha256 = require_string(record, "executable_sha256")
+    if not re.fullmatch(r"[0-9a-f]{64}", executable_sha256):
+        raise AcceptanceError("executable_sha256 must be one lowercase SHA-256")
+    if record.get("kidscpp_revision") != KIDSCPP_REVISION:
+        raise AcceptanceError(f"kidscpp_revision must be {KIDSCPP_REVISION}")
+    if record.get("kidscpp_build_patch_sha256") != KIDSCPP_PATCH_SHA256:
+        raise AcceptanceError(
+            f"kidscpp_build_patch_sha256 must be {KIDSCPP_PATCH_SHA256}"
+        )
+    if record.get("tula_revision") != TULA_REVISION:
+        raise AcceptanceError(f"tula_revision must be {TULA_REVISION}")
+    if record.get("tula_build_patch_sha256") != TULA_PATCH_SHA256:
+        raise AcceptanceError(
+            f"tula_build_patch_sha256 must be {TULA_PATCH_SHA256}"
+        )
     if record.get("design_commit") != DESIGN_COMMIT:
         raise AcceptanceError(f"design_commit must be {DESIGN_COMMIT}")
     if record.get("align_repair_commit") != ALIGN_REPAIR_COMMIT:
@@ -84,10 +107,16 @@ def validate(record: dict[str, Any]) -> None:
     require_true(record, "align_repair_is_ancestor")
     require_true(record, "owner_run")
     require_true(record, "real_paired_data")
+    require_true(record, "apt_bundle_verified")
+    require_true(record, "raw_sources_verified")
+    require_true(record, "tune_bindings_verified")
+    require_true(record, "tune_accumulation_explicit")
     require_true(record, "product_inspected_in_memory")
     require_true(record, "publication_complete")
     require_string(record, "representative_dataset_id")
     require_integer(record, "observation", 1)
+    require_integer(record, "first_native_row")
+    native_row_count = require_integer(record, "native_row_count", 2048)
     require_string(record, "mapping_instance_id")
     if record.get("producer_interface_id") != PRODUCER_INTERFACE:
         raise AcceptanceError(
@@ -101,12 +130,76 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError("terminal_state must be 'complete'")
 
     metrics = require_object(record.get("metrics"), "metrics")
-    require_integer(metrics, "network_count", 1)
-    require_integer(metrics, "detector_count", 1)
+    network_count = require_integer(metrics, "network_count", 1)
+    detector_count = require_integer(metrics, "detector_count", 1)
+    native_occurrences = require_integer(metrics, "native_occurrence_count", 1)
+    if native_occurrences != network_count * native_row_count:
+        raise AcceptanceError(
+            "native_occurrence_count must cover every network and native row"
+        )
+    detector_occurrences = require_integer(
+        metrics, "native_detector_occurrence_count", 1
+    )
+    if detector_occurrences != detector_count * native_row_count:
+        raise AcceptanceError(
+            "native_detector_occurrence_count must cover every detector and native row"
+        )
+    paired_numeric_bytes = require_integer(
+        metrics, "paired_numeric_payload_bytes", 1
+    )
+    if paired_numeric_bytes != 2 * detector_occurrences * 8:
+        raise AcceptanceError(
+            "paired_numeric_payload_bytes must contain exactly two float64 planes"
+        )
+    member_state_bytes = require_integer(metrics, "paired_member_state_bytes", 1)
+    occurrence_interval_bytes = require_integer(
+        metrics, "paired_occurrence_interval_bytes", 1
+    )
+    detector_axis_bytes = require_integer(metrics, "paired_detector_axis_bytes", 1)
+    identity_text_bytes = require_integer(metrics, "paired_identity_text_bytes", 1)
+    if require_integer(metrics, "paired_logical_owned_bytes", 1) != sum(
+        (
+            paired_numeric_bytes,
+            member_state_bytes,
+            occurrence_interval_bytes,
+            detector_axis_bytes,
+            identity_text_bytes,
+        )
+    ):
+        raise AcceptanceError(
+            "paired_logical_owned_bytes must equal its compact storage components"
+        )
+    if require_integer(metrics, "referenced_native_axis_count", 1) != network_count:
+        raise AcceptanceError(
+            "referenced_native_axis_count must equal network_count"
+        )
     aligned_cells = require_integer(metrics, "aligned_cell_count", 1)
     mapped_cells = require_integer(metrics, "mapped_cell_count", 1)
     if mapped_cells > aligned_cells:
         raise AcceptanceError("mapped_cell_count cannot exceed aligned_cell_count")
+    evidence_events = require_integer(metrics, "evidence_event_count")
+    direct_x_events = require_integer(metrics, "direct_x_event_count")
+    direct_r_events = require_integer(metrics, "direct_r_event_count")
+    both_events = require_integer(metrics, "x_and_r_event_count")
+    alignment_absences = require_integer(metrics, "alignment_absence_event_count")
+    ineligible_cells = require_integer(metrics, "pair_ineligible_cell_count")
+    if evidence_events != ineligible_cells:
+        raise AcceptanceError(
+            "identity RTC requires one causal evidence event per ineligible pair"
+        )
+    if (
+        both_events > direct_x_events
+        or both_events > direct_r_events
+        or alignment_absences > evidence_events
+        or ineligible_cells > aligned_cells
+    ):
+        raise AcceptanceError("RTC evidence summary counts are inconsistent")
+    if require_integer(metrics, "x_numerically_valid_cell_count") > mapped_cells:
+        raise AcceptanceError("x valid cell count cannot exceed mapped cells")
+    if require_integer(metrics, "r_numerically_valid_cell_count") > mapped_cells:
+        raise AcceptanceError("r valid cell count cannot exceed mapped cells")
+    require_integer(metrics, "derived_evidence_bytes")
+    require_integer(metrics, "derived_plan_bytes")
     compared_values = require_integer(metrics, "paired_value_comparison_count", 1)
     if compared_values != 2 * mapped_cells:
         raise AcceptanceError(
@@ -124,6 +217,13 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError(
             "pair_decision_comparison_count must cover every aligned cell"
         )
+    if (
+        require_integer(metrics, "pair_causal_evidence_comparison_count", 1)
+        != aligned_cells
+    ):
+        raise AcceptanceError(
+            "pair_causal_evidence_comparison_count must cover every aligned cell"
+        )
     require_integer(metrics, "chunk_partition_count", 2)
     require_number(metrics, "wall_time_sec")
     require_number(metrics, "cpu_time_sec")
@@ -136,8 +236,11 @@ def validate(record: dict[str, Any]) -> None:
         "identity_mismatch_count",
         "support_mismatch_count",
         "pair_decision_mismatch_count",
+        "pair_causal_evidence_mismatch_count",
         "member_cause_mismatch_count",
         "chunk_scientific_mismatch_count",
+        "selected_time_mismatch_count",
+        "representative_native_mismatch_count",
         "ast_interpolation_call_count",
         "cal_call_count",
         "val_call_count",

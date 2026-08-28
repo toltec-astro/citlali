@@ -3,16 +3,19 @@
 ## Status
 
 The bounded implementation is locally constructed and synthetic gates pass.
-Representative real paired-data acceptance is **pending owner execution**. This
-package does not claim implementation conformity, observational performance,
-science qualification, production readiness, or successor activation.
+An opt-in local executable now performs the representative real paired-data
+gate without adding a production route or persistent TOD schema. Exact-revision
+execution evidence remains **pending** until the executable is built from a
+clean committed candidate and its record passes the validator. This package
+does not claim implementation conformity, observational performance, science
+qualification, production readiness, or successor activation.
 
 The implementation branch must retain both accepted inputs as exact ancestors:
 
 - WP-7 design commit `46824f7de`;
 - ALIGN strict-half repair `d55deefb3`.
 
-The three review boundaries are the base merge, paired native ingress/product
+The four review boundaries are the base merge, paired native ingress/product
 semantics, identity RTC learn-consider-apply, and RTC-only in-memory route and
 publication. The paired product retains each network's native occurrence axis.
 Only the separately owned ALIGN relation supplies RTC's common-slot admission.
@@ -27,7 +30,9 @@ git merge-base --is-ancestor 46824f7de HEAD
 git merge-base --is-ancestor d55deefb3 HEAD
 cmake --build build --target citlali_cli -j 8
 cmake --build build --target citlali_wp7_timestream_test citlali_sci_align_test -j 8
+cmake --build build --target citlali_wp7_identity_rtc_acceptance -j 8
 ctest --test-dir build --output-on-failure -R '^citlali::(wp7|sci_align)::'
+$HOME/tolteca/bin/python tools/wp7/test_verify_identity_rtc_acceptance.py
 $HOME/tolteca/bin/python tools/config/run_config_preflight.py --require-all
 build/bin/citlali --version
 git rev-parse HEAD
@@ -37,21 +42,56 @@ The executable revision must match exact `HEAD`. Skipped required data, an
 unexpected error-level record, a partial product, or a synthetic-only run does
 not satisfy the representative-data gate.
 
-## Owner-run invocation
+## Owner-directed local invocation
 
 Use a representative real observation whose Tune/readout producer can supply
 the exact approved
 `TUNE_READOUT_NATIVE_XR_PRODUCER_INTERFACE v0.1/r0.1` binding (artifact SHA-256
 `f9659b34a49a07d4287c4a70db798cdd2ec30049531da603fcca1e9d1fdd5969`).
-Observation 152390 is a useful workload candidate because its existing
-operational evidence covers all TolTEC networks, but the owner must confirm
-that the run supplies the approved paired mapping and primitive occurrence
-facts; finite arrays or matching shapes are not a substitute.
+The opt-in `citlali_wp7_identity_rtc_acceptance` target performs this binding
+for observation 152390. It verifies the canonical APT bundle and exact raw-file
+byte counts and SHA-256 digests; discovers and hashes each Tune fit report from
+the raw KIDs metadata; verifies the Tune observation, network, and acquisition
+metadata; binds both the Tune and science-readout accumulation lengths into a
+temporary metadata-normalized view so Kidscpp does not consult its legacy
+default; reconstructs native timing from raw packet facts; runs the configured
+sequential `gainlintrend` KIDs transform; atomically moves each solver's paired
+`x/r` result into `PairedReadout`; and runs the identity RTC route as one full
+partition and two chunks. The normalized Tune view preserves the original
+numeric rows and is removed after execution; the mapping identity retains the
+original Tune hash, both accumulation lengths, the adapter revision, and the
+Kidscpp revision. The local Kidscpp and Tula checkouts intentionally carry the
+repository's tracked macOS build overlays, so the runner also verifies both
+patch artifacts and records their SHA-256 values, the full dependency base
+revisions, and the acceptance executable's own SHA-256. The runner rejects any
+source other than observation 152390 and requires the approved
+producer-interface artifact at its recorded SHA-256.
 
-At the application seam, construct one `PairedReadout` from each atomic KIDs
-solver `x/r` result, preserving the producer mapping handle, detector binding,
-native timing, primitive occurrence intervals, independent member validity,
-and support. Then invoke:
+Build the target from a clean exact candidate revision, then invoke it with the
+local observation 152390 paths:
+
+```sh
+candidate_revision=$(git rev-parse HEAD)
+build/bin/citlali_wp7_identity_rtc_acceptance \
+  --data-dir /Users/gwilson/work_toltec/local_data/2025-C1-COM-01/data \
+  --apt-manifest /Users/gwilson/work_toltec/local_data/2026-refactor/projects/SCI_ALIGN_STAGE7_NGC4449_152390/apts/v2/apt_152390_matched.apt-v2/manifest.ecsv \
+  --config /Users/gwilson/work_toltec/local_data/2026-refactor/projects/SCI_ALIGN_STAGE7_NGC4449_152390/toltec_umass_edu/NGC4449/reduced/redu04/citlali_merged_config.yaml \
+  --producer-interface-artifact /Users/gwilson/Documents/Codex/2026-08-26/wp7-1-clean-room-audit/work/packet/WP7_TIMESTREAM_CLEAN_ROOM_170ECEA9D/sources/doc/scientific_contracts/producer_interfaces/v0.1/TUNE_READOUT_NATIVE_XR_PRODUCER_INTERFACE.md \
+  --kidscpp-build-patch patches/local/kidscpp-local-build.patch \
+  --tula-build-patch patches/local/tula-local-build.patch \
+  --output acceptance.json \
+  --source-revision "$candidate_revision" \
+  --owner-run --design-is-ancestor --align-repair-is-ancestor
+```
+
+The default representative slice is native rows 20000 through 22047. The
+`--first-native-row` and `--native-row-count` options exist for bounded
+diagnostic runs; a smaller smoke run is not acceptance evidence.
+
+At the application seam, the runner constructs one `PairedReadout` from each
+atomic KIDs solver `x/r` result, preserving the producer mapping handle,
+detector binding, native timing, primitive occurrence intervals, independent
+member validity, and support. It then invokes:
 
 ```cpp
 citlali::pipeline::RtcOnlyProductSlot publication;
@@ -79,8 +119,8 @@ The acceptance record must demonstrate:
 - both `x` and `r` were compared bitwise with their native mapped parent at
   every mapped detector occurrence;
 - occurrence identity, primitive support, member-local causes, pair-wide
-  decisions, selected time, and representative native occurrence were checked
-  at every aligned detector occurrence;
+  decisions and causal evidence, selected time, and representative native
+  occurrence were checked at every aligned detector occurrence;
 - direct `r` evidence can make `x` ineligible, direct `x` evidence can make `r`
   ineligible, and the member-local cause remains on its true coordinate;
 - the identity operator has factor one, diagonal coefficients one, and cross

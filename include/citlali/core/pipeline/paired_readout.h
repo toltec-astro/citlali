@@ -372,7 +372,7 @@ public:
         std::set<std::int64_t> output_uids;
         for (std::size_t index = 0; index < detectors.size(); ++index) {
             const auto &detector = detectors[index];
-            if (detector.output_uid <= 0 || detector.array_id < 0 ||
+            if (detector.output_uid < 0 || detector.array_id < 0 ||
                 detector.network_id != occurrence_axis->network_id() ||
                 detector.raw_source_uid < 0 || detector.raw_channel < 0 ||
                 detector.raw_channel >= x_values.cols() ||

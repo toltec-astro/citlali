@@ -129,6 +129,21 @@ if (CITLALI_STANDALONE)
     if (CITLALI_BUILD_DOC)
         include(docxgen_target)
     endif()
+
+    # This is an explicit, opt-in representative-data gate.  It is not part
+    # of the production CLI and deliberately publishes no persistent TOD.
+    add_executable(citlali_wp7_identity_rtc_acceptance EXCLUDE_FROM_ALL
+        "tools/wp7/identity_rtc_acceptance.cpp"
+    )
+    target_link_libraries(citlali_wp7_identity_rtc_acceptance
+        PRIVATE citlali::citlali
+    )
+    target_include_directories(citlali_wp7_identity_rtc_acceptance
+        PRIVATE "include"
+    )
+    set_target_properties(citlali_wp7_identity_rtc_acceptance
+        PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    )
 endif()
 
 # Create config headers
