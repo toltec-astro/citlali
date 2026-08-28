@@ -16,6 +16,11 @@ namespace {
 
 namespace pipeline = citlali::pipeline;
 
+struct SilentAlignmentLogger {
+    template <class... Args>
+    void warn(Args &&...) const {}
+};
+
 Eigen::VectorXd values(std::initializer_list<double> input) {
     Eigen::VectorXd result(static_cast<Eigen::Index>(input.size()));
     Eigen::Index index = 0;
@@ -127,19 +132,60 @@ TEST(sci_align_native_carriers,
 }
 
 TEST(sci_align_native_carriers,
-     pins_round_half_away_from_zero_and_inclusive_half_dt_edge) {
-    const auto aligned = network(0, 5, {1.0}, {10});
-    Eigen::VectorXi legacy_mask(2);
-    legacy_mask << 0, 1;
-    const auto associations =
-        pipeline::make_gap_native_slot_associations(
-            aligned, values({0.0, 2.0}), legacy_mask, 2.0);
-    ASSERT_EQ(associations.size(), 2U);
-    EXPECT_FALSE(associations[0].mapped());
-    EXPECT_EQ(associations[1].native_row, 5);
-    EXPECT_DOUBLE_EQ(std::abs(
-        aligned.identity(5).reconstructed_time_unix_sec() - 2.0), 1.0);
+     admits_only_residuals_strictly_below_half_cadence) {
+    constexpr double cadence_sec = 2.0;
+    constexpr double half_cadence_sec = cadence_sec / 2.0;
+    const double below_half = std::nextafter(2.0, 3.0);
+    constexpr double exact_half = 2.0;
+    const double above_half = std::nextafter(2.0, 0.0);
+    const auto common_times = values({0.0, 3.0});
 
+    EXPECT_LT(std::abs(below_half - common_times(1)),
+              half_cadence_sec);
+    EXPECT_DOUBLE_EQ(std::abs(exact_half - common_times(1)),
+                     half_cadence_sec);
+    EXPECT_GT(std::abs(above_half - common_times(1)),
+              half_cadence_sec);
+
+    const std::vector<Eigen::VectorXd> native_times{
+        values({below_half}), values({exact_half}), values({above_half})};
+    const auto masks = pipeline::build_common_time_grid_masks(
+        native_times, common_times, 0.0, cadence_sec,
+        half_cadence_sec,
+        std::make_shared<SilentAlignmentLogger>());
+    ASSERT_EQ(masks.size(), 3U);
+    EXPECT_EQ(masks[0](0), 0);
+    EXPECT_EQ(masks[0](1), 1);
+    EXPECT_EQ(masks[1].sum(), 0);
+    EXPECT_EQ(masks[2].sum(), 0);
+
+    const auto below_associations =
+        pipeline::make_gap_native_slot_associations(
+            network(0, 5, {below_half}, {10}), common_times,
+            masks[0], cadence_sec);
+    ASSERT_EQ(below_associations.size(), 2U);
+    EXPECT_FALSE(below_associations[0].mapped());
+    EXPECT_EQ(below_associations[1].native_row, 5);
+
+    const auto exact_associations =
+        pipeline::make_gap_native_slot_associations(
+            network(0, 6, {exact_half}, {11}), common_times,
+            masks[1], cadence_sec);
+    ASSERT_EQ(exact_associations.size(), 2U);
+    EXPECT_FALSE(exact_associations[0].mapped());
+    EXPECT_FALSE(exact_associations[1].mapped());
+
+    const auto above_associations =
+        pipeline::make_gap_native_slot_associations(
+            network(0, 7, {above_half}, {12}), common_times,
+            masks[2], cadence_sec);
+    ASSERT_EQ(above_associations.size(), 2U);
+    EXPECT_FALSE(above_associations[0].mapped());
+    EXPECT_FALSE(above_associations[1].mapped());
+}
+
+TEST(sci_align_native_carriers,
+     rejects_slot_collisions_and_presence_mask_disagreement) {
     Eigen::VectorXi collision_mask(2);
     collision_mask << 1, 0;
     const auto collision = network(0, 0, {0.8, 0.9}, {1, 2});
