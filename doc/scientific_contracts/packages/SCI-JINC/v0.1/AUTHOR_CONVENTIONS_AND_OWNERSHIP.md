@@ -1,6 +1,7 @@
 # SCI-JINC v0.1 — Proposed Sanitized Conventions And Ownership
 
-Status: ODQ-101/102B sanitized successor candidate; renewed exact-byte approval
+Status: ODQ-101/102B/103 sanitized successor candidate; renewed exact-byte
+approval
 required
 
 Prepared: `2026-08-28`
@@ -68,8 +69,9 @@ Exact source set at
   segment, and array/network/group. Sample time is an attribute, not the
   identity by itself.
 - Artifact-local detector UID or row number is not a persistent universal
-  detector namespace. A cross-product join requires an explicit occurrence-
-  and generation-scoped relation.
+  detector namespace. A cross-product association requires an explicit
+  occurrence- and generation-scoped scientific relation; its serialization or
+  join mechanism is engineering choice.
 - A JINC map identity includes observation, array/group, quantity/component,
   estimator version, WCS/grid, support/phase/conditioning convention, response
   parent, product role, and lifecycle generation.
@@ -90,11 +92,18 @@ Exact source set at
   their own authority.
 - FITS/WCS, when used, is the persisted pixel-to-coordinate authority. Memory
   order does not determine axis sign, handedness, orientation, or wrapping.
-- The JINC signal coordinate must be an AST-owned coordinate for the same
-  admitted occurrence and exact target JINC WCS. Time, row, shape, or numeric
-  equality is not a valid substitute for the parent join.
+- The JINC signal coordinate must be the AST-owned coordinate realization
+  associated with the same processed sample realization entering JINC and the
+  exact target JINC WCS. That association remains exact across alignment,
+  filtering, decimation, or other realization changes. Row order, nearest-
+  time/tolerance matching, detector ordering, shape, or numerical equality is
+  not a substitute. Its data-model mechanism is an engineering choice.
 - The ordinary MAP one-hot coordinate/exposure boundary is not a JINC default.
-  A JINC-specific coordinate/admission/exposure boundary must be approved.
+  JINC owns the single `SCI-JINC:jinc_map_contribution@1` admission profile.
+- AST supplies coordinate facts and their producer causes. JINC owns local
+  offset/radial geometry, dimensionless radius, finite support, signed
+  coefficient, and their use relative to destination pixels. AST does not
+  author JINC support, coefficient, admission, or general JINC validity.
 
 ## Units And Statistical Labels
 
@@ -160,6 +169,14 @@ Exact source set at
   assumption, or hidden default supplies it.
 - Upstream retention/eligibility, JINC admission, JINC numerical support,
   empirical consumer policy, and final product validity are separate decisions.
+- JINC sample admission and sample-pixel support are separate. Outside finite
+  support and a contract-defined zero coefficient are ordinary no-contribution
+  results, not causes. A negative coefficient is normal. An unavailable or
+  ambiguous AST coordinate prevents geometry evaluation and is not outside
+  support.
+- All accumulators derived from one contribution use the same admitted sample-
+  pixel pair and signed-coefficient identity, even when their contract-defined
+  algebraic functions differ.
 - A required product, companion, join, or write failure propagates. A
   completion marker cannot override missing required output.
 - Configuration/provenance flows one way: requested to effective to resolved
@@ -176,7 +193,8 @@ Exact source set at
 - **SCI-ALIGN** owns stable occurrence alignment, physical/valid-original
   exposure facts, and their causes.
 - **SCI-AST** owns coordinate roles, frame/WCS transformations, parentage,
-  coordinate validity, and astrometric uncertainty.
+  exact sample association, coordinate validity/support facts, producer
+  causes, and astrometric uncertainty.
 - **SCI-RTC** owns raw-timestream conditioning, response, causal influence,
   masks/flags within its scope, and immutable lineage.
 - **SCI-CAL** owns calibrated quantity/unit meaning, calibration transfer,
@@ -201,6 +219,11 @@ cancellation conditioning, conditional covariance, transformed response,
 coefficient-squared temporal support, local formal support, destination/
 product identity, and JINC provenance. It applies upstream facts without
 redefining their meaning.
+
+For JINC map contribution, producer facts and causes cross the boundary but a
+producer-owned JINC-usability decision does not. JINC adds local causes only
+for genuine JINC failures and uses established cause/support mechanisms at the
+existing product granularity; no per-contribution provenance system is added.
 
 ### Adjacent and downstream packages
 
@@ -231,7 +254,7 @@ covariance family table. The following remain unavailable:
 - any scientifically authorized TolTEC `a1100`/`a1400`/`a2000` numerical
   parameter-set realization; v0.1 supplies semantics and a typed unavailable
   state only;
-- a frozen SCI-VAL registration of `SCI-JINC:upstream_admission@1`;
+- a frozen SCI-VAL registration of `SCI-JINC:jinc_map_contribution@1`;
 - a JINC observation-coadd contract;
 - numerical parameter values, parameter optimization, summation/phase
   tolerances, or production

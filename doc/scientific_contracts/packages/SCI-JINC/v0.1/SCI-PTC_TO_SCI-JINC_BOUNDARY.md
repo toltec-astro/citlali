@@ -1,8 +1,8 @@
 # SCI-PTC To SCI-JINC Boundary
 
-Profile identity: `SCI-PTC_TO_SCI-JINC v0.1/r0.2`
+Profile identity: `SCI-PTC_TO_SCI-JINC v0.1/r0.3`
 
-Status: ODQ-101 Stage A successor boundary candidate; exact-byte owner
+Status: ODQ-101/103 Stage A successor boundary candidate; exact-byte owner
 approval required; numerical JINC route unavailable until a registered,
 JINC-permitted family is selected and realized
 
@@ -52,8 +52,8 @@ state and cause:
 | Influence and cause | Direct causes and complete transitive influence preserved without inventing a universal downstream veto. |
 | Response | Exact response family and state: fixed-state upstream-to-PTC; PTC full-procedure finite difference; JINC re-resolved procedure; separately authorized whole-chain RTC-to-CAL-to-PTC-to-JINC; another named family; or typed unavailable. A realized PTC-grid companion starts at JINC and receives the JINC operator exactly once. |
 | Covariance and uncertainty | Conditional PTC-domain covariance when available, with exact conditioning state, domain/axes, units, support, approximation, omitted terms, response uncertainty, selection/nuisance/parameter uncertainty, and typed unavailable components. Unknown is not zero. |
-| Coordinate join | Exact frozen AST role `SCI-AST:rtc_output_grid_coordinates@1` for the same stable RTC `n` and complete parent chain, under [`SCI-AST_TO_SCI-JINC_BOUNDARY.md`](SCI-AST_TO_SCI-JINC_BOUNDARY.md). |
-| Admission and failure | Exact `SCI-JINC:upstream_admission@1` evaluation, all input facts and per-predicate outcomes, cause union, missing/conflict behavior, failure scope, and immutable provenance. |
+| Coordinate association | Exact frozen AST role `SCI-AST:rtc_output_grid_coordinates@1` associated with the same processed sample realization entering JINC, under [`SCI-AST_TO_SCI-JINC_BOUNDARY.md`](SCI-AST_TO_SCI-JINC_BOUNDARY.md). The scientific association is exact; its data-model realization is not prescribed here. |
+| Admission and failure | Exact JINC-owned `SCI-JINC:jinc_map_contribution@1` evaluation, all input facts and per-predicate outcomes, cause union, missing/conflict behavior, failure scope, and immutable provenance. Ordinary MAP admission/validity and producer-owned JINC-usability decisions do not cross this boundary. |
 
 ## Approved Registry And Conditional Numerical Route
 
@@ -97,24 +97,31 @@ For one route candidate, the following remain separately typed:
 2. PTC output-retention disposition;
 3. coefficient-family/value availability;
 4. PTC coefficient/QC disposition;
-5. JINC upstream-admission disposition;
-6. same-parent AST coordinate validity;
+5. JINC map-contribution sample-admission disposition;
+6. AST coordinate validity and exact same-processed-sample association;
 7. finite `z_i`;
 8. finite positive `omega_i`;
-9. signed-kernel placement and finite `kappa_ip`;
-10. cancellation and formal JINC support;
-11. required-companion availability; and
-12. final JINC product validity.
+9. sample-pixel finite support;
+10. signed-kernel placement and finite `kappa_ip`, including normal zero and
+    negative coefficients;
+11. cancellation and formal JINC support;
+12. required-companion availability; and
+13. final JINC product validity.
 
-Passing the upstream profile creates only a JINC route candidate. All
-pixel-local gates pass before payload accumulation. A producer flag or cause
-has no universal action unless an exact restriction names it.
+Passing the profile admits only the sample for JINC consideration. Sample-
+pixel support is a separate JINC decision. All pixel-local gates pass before
+payload accumulation, and every coupled accumulator uses the same admitted
+sample-pixel pair and coefficient identity. Outside support and contract-
+defined zero are ordinary no-contribution results; a finite negative
+coefficient is normal. A producer flag or cause has no universal action unless
+an exact restriction names it.
 
 ## Disabled, Missing, And Failure Routes
 
 PTC-disabled terminates on the RTC-terminal export route and supplies no PTC
-product or JINC product. Missing positive-rank PTC realization; missing exact
-signal/coordinate join; missing selection with no authorized mode default;
+product or JINC product. Missing positive-rank PTC realization; unavailable,
+duplicate, or ambiguous exact signal-coordinate association; missing
+selection with no authorized mode default;
 unregistered family; missing `SCI-JINC` permission; missing coefficient value
 or QC; unavailable or mismatched payload; incompatible generation; or
 unresolved required lifecycle/provenance makes the affected JINC route
@@ -124,9 +131,10 @@ borrowing, coefficient reconstruction or generation repair.
 
 ## Compatibility And Change
 
-Compatibility requires this exact r0.2 boundary identity, frozen PTC r0.5
-semantics plus the controlled ODQ-101 successor, the same-`n` AST boundary,
-exact `SCI-JINC:upstream_admission@1` identity, registry/family versions,
+Compatibility requires this exact r0.3 boundary identity, frozen PTC r0.5
+semantics plus the controlled ODQ-101 successor, the exact same-processed-
+sample AST boundary, exact `SCI-JINC:jinc_map_contribution@1` identity,
+registry/family versions,
 explicit JINC permission, requested/effective/observation-resolved/realized
 selection identities, exact coefficient/QC profile, and preservation of typed
 quantity, causes, response/covariance states, lifecycle and failure scopes.

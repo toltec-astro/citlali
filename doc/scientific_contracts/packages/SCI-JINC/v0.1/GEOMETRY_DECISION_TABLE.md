@@ -6,7 +6,8 @@ Prepared: `2026-08-28`
 
 | Geometry facet | Stage A disposition | Consequence / blocker |
 | --- | --- | --- |
-| Coordinate input | **Bound:** frozen `SCI-AST:rtc_output_grid_coordinates@1` continuous FITS pixel for the same RTC `n` and exact target JINC WCS. | [`SCI-AST_TO_SCI-JINC_BOUNDARY.md`](SCI-AST_TO_SCI-JINC_BOUNDARY.md) controls identity, validity and provenance. |
+| Coordinate input | **Bound:** frozen `SCI-AST:rtc_output_grid_coordinates@1` continuous FITS pixel associated with the exact same processed sample realization entering JINC and the exact target JINC WCS. | [`SCI-AST_TO_SCI-JINC_BOUNDARY.md`](SCI-AST_TO_SCI-JINC_BOUNDARY.md) controls scientific association, identity, validity, causes and provenance without prescribing a data-model join. |
+| Sample admission vs pixel support | **Bound:** `SCI-JINC:jinc_map_contribution@1` admits a sample for consideration; JINC finite support separately decides each sample-pixel contribution. | Outside support and contract-defined zero are ordinary no-contribution states. Missing/ambiguous AST association prevents geometry evaluation; finite negative `kappa_ip` is valid. |
 | Center rule | **Partly bound:** the inherited decision says the sample center is rounded before residual phase is binned. | Exact nearest-center expression and relation between one-based FITS coordinates and zero-based local indices are unresolved under `SCI-JINC-ODQ-109`. |
 | Half-pixel tie | **Unresolved.** | Owner must select the exact tie direction or a content-bound symmetric rule. Implementation behavior may not decide it. |
 | Subpixel phase | **Partly bound:** residual between continuous coordinate and rounded center, evaluated separately on each axis. | Exact phase interval, wrapping at interval ends and sign/order convention are unresolved under `SCI-JINC-ODQ-109`. |

@@ -243,6 +243,23 @@ unresolved scientific-owner question is `SCI-JINC-ODQ-103`, the exact AST
 coordinate-role/parent join, JINC admission/profile identity, boundary rule,
 and cause policy.
 
+Grant Wilson then resolved `SCI-JINC-ODQ-103` on `2026-08-28`. AST owns the
+authoritative coordinate realization, its parent-sample association, validity/
+support facts and producer causes; JINC consumes the coordinate associated
+with the same processed sample realization entering its estimator. The
+association is scientific authority, while any key, table join, index or
+object mechanism is engineering choice. JINC owns the single profile
+`SCI-JINC:jinc_map_contribution@1`, local geometry, sample-pixel support,
+signed coefficient, coupled-accumulator identity and local cause policy. No
+row/order/time/tolerance/detector fallback, ordinary MAP validity inheritance,
+producer-owned JINC-usability decision or new per-contribution provenance
+system is admitted. The successor boundaries are AST-to-JINC r0.2 and PTC-to-
+JINC r0.3; frozen AST/MAP/PTC remain unchanged. The refreshed ODQ-101/102B/103
+packet still awaits `SCI-JINC-STAGE-A-Q002`; Stage B remains unlaunched. The
+next unresolved scientific-owner question is `SCI-JINC-ODQ-104`, whether base
+v0.1 adopts only `jinc_coefficient_squared_time` and defers or authorizes a
+distinct physical-exposure role.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

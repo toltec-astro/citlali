@@ -1,6 +1,6 @@
 # SCI-JINC — Signed-Coefficient JINC Observation Mapmaker Scope Brief
 
-Status: ODQ-101/102B Stage A successor candidate; predecessor Stage A bytes
+Status: ODQ-101/102B/103 Stage A successor candidate; predecessor Stage A bytes
 owner-approved; successor requires renewed exact-byte approval; Stage B blocked
 
 Scientific owner: Grant Wilson
@@ -66,7 +66,7 @@ which remains unchanged.
 The raw recovery record, owner feedback, decision conversations and all
 implementation/evidence material remain outside the implementation-blind
 author channel. The predecessor Stage A packet was owner-approved at
-`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`; this ODQ-101/102B successor changes
+`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`; this ODQ-101/102B/103 successor changes
 allowed input bytes and has **not** received renewed exact-byte approval. No
 Stage B author is commissioned.
 
@@ -88,13 +88,14 @@ must remain visible in normalization, conditioning, response and covariance.
 
 ## 2. Observation-Level Scientific Boundary
 
-The operation begins with one exact PTC occurrence `i` and the same-parent AST
-RTC-output-grid continuous coordinate, under:
+The operation begins with one exact PTC occurrence `i` and the AST RTC-output-
+grid continuous coordinate associated with the same processed sample
+realization, under:
 
-- [`SCI-PTC_TO_SCI-JINC v0.1/r0.2`](SCI-PTC_TO_SCI-JINC_BOUNDARY.md);
-- [`SCI-AST_TO_SCI-JINC v0.1/r0.1`](SCI-AST_TO_SCI-JINC_BOUNDARY.md); and
+- [`SCI-PTC_TO_SCI-JINC v0.1/r0.3`](SCI-PTC_TO_SCI-JINC_BOUNDARY.md);
+- [`SCI-AST_TO_SCI-JINC v0.1/r0.2`](SCI-AST_TO_SCI-JINC_BOUNDARY.md); and
 - proposed profile
-  [`SCI-JINC:upstream_admission@1`](SCI-JINC_UPSTREAM_ADMISSION_PROFILE.md).
+  [`SCI-JINC:jinc_map_contribution@1`](SCI-JINC_UPSTREAM_ADMISSION_PROFILE.md).
 
 It ends after one requested array observation bundle has either been
 published atomically with every required product, identity, join and cause or
@@ -120,8 +121,9 @@ For occurrence `i` and target pixel `p`, the contract may use only:
   uncertainty and prohibited meanings;
 - stable observation, detector occurrence/UID, RTC sample `n`, PTC segment,
   stable array (`a1100`, `a1400`, or `a2000`) and exact group parents;
-- frozen AST role `SCI-AST:rtc_output_grid_coordinates@1` for the same `n`,
-  exact target JINC WCS, validity, bounds, uncertainty and provenance;
+- frozen AST role `SCI-AST:rtc_output_grid_coordinates@1` associated with the
+  same processed sample realization entering JINC, exact target JINC WCS,
+  validity, bounds, uncertainty, causes and provenance;
 - exact upstream response and covariance roles, each with domain, codomain,
   parents, support, approximation, omitted terms, lifecycle and causes;
 - an exact scientifically authorized, array-associated parameter-set identity
@@ -218,7 +220,9 @@ optimize TolTEC values from the memo or software.
 
 The binding geometry is:
 
-- AST supplies the exact continuous pixel coordinate and WCS;
+- AST supplies the authoritative coordinate realization, parent-sample
+  identity, validity/support facts, causes, and WCS for the same processed
+  sample realization entering JINC;
 - SCI-JINC rounds the sample center, bins residual phase and point-evaluates
   one phase-quantized kernel matrix;
 - `r_max` fixes the second-factor first zero and square-cache half-width;
@@ -228,6 +232,16 @@ The binding geometry is:
 - finite-map crop removes outside pixels without wrap, reflection or an
   interior normalizer. Response and covariance use the actual retained
   membership.
+
+JINC owns sample admission for `SCI-JINC:jinc_map_contribution@1` and, for
+each considered destination pixel, owns local offset/radial geometry,
+dimensionless radius, finite support and signed `kappa_ip`. It never associates
+signal and coordinate by row/order/time/tolerance/detector fallback. Missing,
+duplicate, or ambiguous association makes the coordinate unavailable. Sample
+admission is distinct from sample-pixel support: outside support and a
+contract-defined zero are ordinary no-contribution results, while a negative
+coefficient is normal. Every coupled JINC accumulator uses the same admitted
+sample-pixel pair and coefficient identity.
 
 The exact tie rule, phase-bin edges/representatives, cache-index rounding,
 effective `subpixel_n` realization and convergence/error bound remain open
@@ -327,7 +341,9 @@ a requested-required failure suppresses success.
 ## 11. Producer, Transformer And Consumer Ownership
 
 - ALIGN/AST own occurrence/time identity, RTC-grid coordinates, frame/WCS,
-  coordinate validity and coordinate uncertainty.
+  exact parent-sample association, coordinate validity/support facts,
+  coordinate uncertainty and producer causes. They do not decide JINC support,
+  coefficient, admission, or general JINC validity.
 - RTC owns conditioned signal-grid meaning, response, influence, validity and
   lineage.
 - CAL owns calibrated quantity/unit, response/uncertainty, quality and
@@ -344,7 +360,7 @@ a requested-required failure suppresses success.
   covariance, formal support, grouping, destination and atomic products.
 - VAL Registry binds the owner-authored profile and VAL Core evaluates it; VAL
   does not author JINC policy. Frozen VAL is unchanged, so registration of
-  `SCI-JINC:upstream_admission@1` requires a versioned successor.
+  `SCI-JINC:jinc_map_contribution@1` requires a versioned successor.
 - NOI owns empirical noise/covariance/weight/significance; FLT owns filtering
   and filtered response; BEAM/SRC/MODE own science interpretation; FRUIT owns
   recurrence/feedback/iteration.
@@ -389,11 +405,15 @@ or realize a family. `SCI-JINC-ODQ-102B` is resolved for generic parameter
 semantics and typed numerical unavailability, not numerical values. Numerical
 production remains unavailable until both a compatible PTC family and a
 separately authorized TolTEC parameter set exist.
+`SCI-JINC-ODQ-103` is resolved for exact scientific sample-coordinate
+association, JINC-owned map-contribution admission, AST/JINC geometry
+ownership, sample-admission/support separation, coupled-accumulator identity,
+and cause policy. It prescribes no data-model join mechanism.
 
 Before author dispatch, the owner must:
 
-1. resolve the exact AST coordinate-role/parent join, JINC admission/profile
-   identity, boundary rule, and cause policy (`SCI-JINC-ODQ-103`);
+1. decide the coefficient-squared-time-only base-v0.1 disposition and defer or
+   authorize a distinct physical-exposure role (`SCI-JINC-ODQ-104`);
 2. decide the center/tie/phase/cache/error-bound policy
    (`SCI-JINC-ODQ-109`);
 3. decide the outside-center overlapping-square edge rule
