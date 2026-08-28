@@ -23,7 +23,9 @@ COMPLETE_PACKAGES = {
     "SCI-ALIGN": "v0.1",
     "SCI-AST": "v0.1",
 }
-STAGE_A_PACKAGES = {}
+STAGE_A_PACKAGES = {
+    "SCI-JINC": "v0.1",
+}
 FROZEN_R03_PACKAGES = {
     "SCI-BEAM": "v0.1",
 }

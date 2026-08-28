@@ -173,6 +173,23 @@ performance, readiness, or production claim. Future substantive changes
 require explicit owner authority and a versioned successor or formally
 reopened revision.
 
+On `2026-08-28` the scientific owner launched SCI-JINC v0.1 as the next
+downstream Stage A tranche from exact scientific-contract library authority
+`codex/scientific-contract-library@731f821954d4321509765720c6ba1838c95eff3d`.
+The package links the program charter, downstream roadmap, and frozen SCI-MAP
+predecessor; recovers and classifies the frozen SCI-MAP-002 independent core,
+all eight JINC owner decisions, later destination-ownership work, and later
+integration/validation history; records exact revisions and content digests;
+and preserves the unrecovered underlying JINC memo as unavailable rather than
+reconstructing it. The proposed author packet reuses the signed-estimator core
+under a sanitized supersession cover, keeps square-cache/point-phase and all
+other owner decisions explicit, and quarantines implementation, audit, repair,
+re-audit, Unity, validation, achieved-performance, readiness, and production
+evidence. The scientist-readable Scope Brief, open-question ledger, and exact
+content-bound packet now await scientific-owner review. No implementation-
+blind Stage B rationale or engineering conformance contract has been
+commissioned or drafted, and frozen SCI-MAP authority is unchanged.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

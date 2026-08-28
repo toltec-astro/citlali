@@ -2,6 +2,8 @@
 
 Date: `2026-08-26`
 
+Updated: `2026-08-28` for the owner-directed SCI-JINC Stage A launch
+
 Status: scientific-owner-approved program sequencing record
 
 This record preserves the agreed progression after the frozen ALIGN-through-PTC
@@ -113,7 +115,15 @@ Every tranche follows the Scientific Contract Library Program:
 
 ## Immediate Authorized Action
 
-Launch a bounded SCI-MAP Stage A reopening focused on the PTC-to-MAP handoff.
-The launch record is
-[`MAP_PTC_HANDOFF_STAGE_A_LAUNCH_2026-08-26.md`](packages/SCI-MAP/v0.1/MAP_PTC_HANDOFF_STAGE_A_LAUNCH_2026-08-26.md).
-No later tranche is launched by this document.
+The bounded SCI-MAP reopening named in the original `2026-08-26` roadmap has
+completed and SCI-MAP v0.1/r0.7.1 is frozen under its own exact owner record.
+The scientific owner's `2026-08-28` successor direction launches bounded
+SCI-JINC v0.1 Stage A at
+[`packages/SCI-JINC/v0.1/`](packages/SCI-JINC/v0.1/).
+
+This launch authorizes prior-work recovery, implementation-informed scope
+investigation, a quarantined dossier, a sanitized Scope Brief, decision
+records, and an exact proposed author packet only. Implementation-blind Stage B
+authorship remains blocked until the scientific owner approves the exact
+Scope Brief and packet. No implementation, conformity, validation, achieved-
+performance, readiness, production, Unity, or later-tranche action follows.

@@ -64,6 +64,16 @@ and cross-package handoffs are valuable recovery inputs.
 
 ### MAP And Coaddition
 
+- Package-specific JINC recovery:
+  [`packages/SCI-JINC/v0.1/PRIOR_WORK.md`](packages/SCI-JINC/v0.1/PRIOR_WORK.md)
+  at `2026-08-28`. It resolves the frozen `SCI-MAP-002` independent core,
+  all eight D003 owner decisions, third-successor owner acceptance, later
+  destination-ownership work, the March memo-alignment note, the internal
+  draft noise derivation, and post-registry convergence/validation records.
+  It proposes reuse of the core under a sanitized supersession cover, records
+  the unrecovered underlying JINC memo as unavailable, and excludes all
+  implementation, audit, repair, re-audit, Unity, validation, achieved-
+  performance, readiness, and production evidence from authorship.
 - Package-specific recovery:
   [packages/SCI-MAP/v0.1/PRIOR_WORK.md](packages/SCI-MAP/v0.1/PRIOR_WORK.md)
   at 2026-08-16. It separates the reusable ordinary MAP-001 core and later
