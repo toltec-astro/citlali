@@ -61,7 +61,38 @@ path conforms to the proposed scientific authority.
 | Provenance | D003 provenance decision defines four one-way stages and joins | Current YAML/header/schema classes and repair history |
 | Destination ownership | Owner-directed Stage A recovery retains unique resolved destination ownership | Parallel worker code, repair diff, re-audit, thread-count tests |
 
-## Historical Memo And Analytic-Identity Gap
+## Inherited TolTEC Numerical Realization — Evidence Only
+
+At implementation revision
+`fbfdc3479e7e61e2618bdf5ab81f6634df476e4c`, `jinc_mm.h` realizes the
+dimensionless radius with nominal array wavelength divided by `45 m`:
+
+| Array | Current `s_a` | Current `(a,b,c)` |
+| --- | --- | --- |
+| `a1100` | `(1.1 mm)/(45 m) = 5.042028597151 arcsec` | `(1.1,1.67,2.0)` |
+| `a1400` | `(1.4 mm)/(45 m) = 6.417127305465 arcsec` | `(1.1,2.17,2.0)` |
+| `a2000` | `(2.0 mm)/(45 m) = 9.167324722093 arcsec` | `(1.1,3.17,2.0)` |
+
+Science and Beammap mode material currently carries `r_max=3.0`; Pointing and
+OOF material carries `r_max=1.5`. The exact current source/config digests and
+development revisions are preserved in `PRIOR_WORK.md`. The trace reaches the
+initial `50 m` realization, later per-array representation, array-specific `b`
+change, first recovered Pointing/OOF `1.5` occurrence, `50 m` to `45 m` change,
+and typed-config adoption.
+
+Classification: inherited implementation defaults with partially recoverable
+development history; not current TolTEC scientific authority. Comments such
+as `b (beam-size/3)`, “optimal (hopefully),” and “jinc optimization” are clues,
+not authorization. No recovered scientific source authorizes the values for
+TolTEC, and `45 m` has no approved interpretation as effective aperture,
+illumination diameter, beam-derived diameter, or another physical quantity.
+
+A future optimization study may test whether the inherited `b` values and the
+`50 m` to `45 m` change attempted to track an effective TolTEC/LMT angular
+response. This dossier does not adopt that hypothesis or derive a rule from
+the values.
+
+## Historical Memo And Analytic-Identity Disposition
 
 `handoff/DEBUG_NOTES_2026-03-09_JINC_MEMO_ALIGNMENT.md` records a deliberate
 move from a matched-amplitude-like normalization to “memo-style” signed
@@ -69,12 +100,12 @@ gridding and separates formal quadratic propagation from downstream filtering.
 It also recommends later parameter tuning. The named underlying memo was not
 found in reachable Git objects or the current workspace.
 
-The source audit contains a complete formula for the observed analytic kernel,
-but that formula is implementation-derived. The frozen independent core uses a
-generic JINC family, and the owner decisions bind the square/phase/parameter
-properties without independently content-binding the full analytic mapping.
-Stage A therefore records the complete analytic identity as an owner/source
-gap. It does not sanitize source behavior into scientific authority by fiat.
+The subsequently supplied Schloerb memo content-binds the generic analytic
+family and provides `s=lambda/D` precedent. ODQ-102B preserves the more general
+`r'_a=r/s_a` concept, with explicit array-associated angular `s_a`, while
+typing the TolTEC numerical realization unavailable and deferring optimization.
+Neither the source audit nor current behavior is sanitized into scientific
+authority by fiat.
 
 ## Current Frozen-Chain Boundary
 
@@ -145,4 +176,3 @@ audit/findings/repairs/re-audits/tests, the March memo note, the internal noise
 memo, reductions, Unity evidence, comparisons, integration state, branch
 history, or production status. If a scientific fact is missing, the author
 must ask the owner rather than inspect excluded material.
-

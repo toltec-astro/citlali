@@ -228,6 +228,21 @@ realized. The bounded successor packet now awaits exact-byte approval under
 `SCI-JINC-ODQ-102B`, the exact TolTEC per-array radial scale and parameter
 source/value disposition.
 
+Grant Wilson then resolved `SCI-JINC-ODQ-102B` on `2026-08-28` by a semantic/
+no-numerical-route disposition. SCI-JINC preserves `r'_a=r/s_a`, with `s_a`
+an explicit array-associated angular scale; the Schloerb `s=lambda/D`
+realization is precedent but does not authorize current TolTEC values. The
+inherited `lambda_a/(45 m)`, `(a,b,c)`, and mode-dependent `r_max` values remain
+quarantined implementation evidence with partially recoverable history, not
+TolTEC scientific authority, and no physical interpretation of `45 m` or
+hidden default is admitted. Stage B may define parameter semantics and typed
+unavailability, while a three-array numerical optimization is deferred to a
+separate scientific exercise. The refreshed ODQ-101/102B successor packet
+still awaits `SCI-JINC-STAGE-A-Q002`; Stage B remains unlaunched. The next
+unresolved scientific-owner question is `SCI-JINC-ODQ-103`, the exact AST
+coordinate-role/parent join, JINC admission/profile identity, boundary rule,
+and cause policy.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

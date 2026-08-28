@@ -1,6 +1,6 @@
 # SCI-JINC v0.1 — Proposed Sanitized Conventions And Ownership
 
-Status: ODQ-101 sanitized successor candidate; renewed exact-byte approval
+Status: ODQ-101/102B sanitized successor candidate; renewed exact-byte approval
 required
 
 Prepared: `2026-08-28`
@@ -100,6 +100,12 @@ Exact source set at
 
 - The JINC spatial coefficient `kappa_ip` is dimensionless under its declared
   analytic and pixel/array scale convention.
+- The radial coordinate is `r'_a=r/s_a`, where `s_a` is an explicit angular
+  scale associated with stable array `a`. The generic `s=lambda/D` precedent
+  does not select a TolTEC realization.
+- `a_a`, `b_a`, `c_a`, and `(r_max)_a` are dimensionless and may be array-
+  associated where scientifically appropriate. Their requested, effective,
+  observation-resolved, and realized parameter-set identities are distinct.
 - Signal and a unit-source response companion carry the admitted signal unit
   when the response is a unit-bearing transformed template.
 - The upstream coefficient `omega_i` carries its producer-declared unit and
@@ -149,6 +155,9 @@ Exact source set at
   numerical sentinels.
 - Every unavailable required input, response, covariance term, or product has
   an owning authority and preserved cause. Unknown is not zero.
+- An unavailable scientifically authorized JINC parameter set makes the
+  affected numerical route unavailable. No inherited value, shared-field
+  assumption, or hidden default supplies it.
 - Upstream retention/eligibility, JINC admission, JINC numerical support,
   empirical consumer policy, and final product validity are separate decisions.
 - A required product, companion, join, or write failure propagates. A
@@ -219,11 +228,13 @@ candidates, admission profile candidate, grouping/product roles and response/
 covariance family table. The following remain unavailable:
 
 - a registered and realized JINC-permitted PTC coefficient family/payload;
-- exact TolTEC `a1100`/`a1400`/`a2000` radial scales and per-array parameter
-  values/provenance;
+- any scientifically authorized TolTEC `a1100`/`a1400`/`a2000` numerical
+  parameter-set realization; v0.1 supplies semantics and a typed unavailable
+  state only;
 - a frozen SCI-VAL registration of `SCI-JINC:upstream_admission@1`;
 - a JINC observation-coadd contract;
-- numerical parameter values, summation/phase tolerances, or production
+- numerical parameter values, parameter optimization, summation/phase
+  tolerances, or production
   thresholds; and
 - implementation conformity, representation fidelity, validation, achieved
   response/performance, readiness, or production evidence.

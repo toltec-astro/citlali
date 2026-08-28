@@ -87,9 +87,13 @@ not import:
 - any achieved response, noise, flux, resolution, SNR, validation, readiness
   or production conclusion.
 
-The exact TolTEC `a1100`, `a1400` and `a2000` scale convention and per-array
-parameter source remain owner questions. A future parameter optimization is a
-separate scientific tranche with an explicit TolTEC objective and evidence.
+SCI-JINC preserves `r'_a=r/s_a`, with `s_a` an explicit array-associated
+angular scale, but the memo's `s=lambda/D` does not authorize a TolTEC
+realization. No TolTEC numerical parameter set is scientifically authorized
+for v0.1; the affected numerical route is typed unavailable without a hidden
+default. A future parameter optimization is a separate scientific tranche
+with an explicit TolTEC objective and appropriate beam, response, and/or noise
+evidence.
 
 ## Firewall
 

@@ -50,8 +50,13 @@ core is broader, earlier, or ambiguous:
    floating-point error bound tied to the realized summation method and
    contributor count. No absolute unit-bearing `C` or `Q` floor is authority.
 7. **Fail-closed parameter and coefficient admission.** Stable array identity
-   must be present. `a`, `b`, `c`, `r_max`, pixel size, and array scale are
-   finite and strictly positive; effective `subpixel_n>=1`. A non-finite
+   must be present. Define `r'_a=r/s_a`, with angular, array-associated `s_a`;
+   `a_a`, `b_a`, `c_a`, and `(r_max)_a` are dimensionless and may be array-
+   associated where scientifically appropriate. A numerical route requires
+   one exact scientifically authorized parameter-set identity whose values
+   and pixel size are finite and strictly positive, plus effective
+   `subpixel_n>=1`. Missing authority makes the route unavailable without an
+   inherited or hidden default. A non-finite
    coefficient fails the requested JINC product before deposition; a finite
    negative coefficient is valid.
 8. **Formal support is not temporal support.** A pixel is formally valid only
@@ -99,8 +104,9 @@ This cover does not itself supply:
 
 - the complete analytic function, which is supplied separately by the exact
   Schloerb method excerpt and its author reference cover;
-- the exact TolTEC `a1100`/`a1400`/`a2000` radial-scale authority or per-array
-  parameter values/provenance;
+- any scientifically authorized TolTEC `a1100`/`a1400`/`a2000` numerical
+  parameter-set realization; the generic semantics and typed no-route state
+  are supplied, while optimization is a separate downstream exercise;
 - a registered, selected and realized JINC-permitted PTC coefficient family or
   unconditional inverse-variance interpretation;
 - final owner approval of the proposed AST coordinate boundary, JINC admission

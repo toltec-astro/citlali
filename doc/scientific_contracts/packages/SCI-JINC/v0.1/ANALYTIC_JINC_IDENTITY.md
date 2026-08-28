@@ -1,7 +1,7 @@
-# SCI-JINC v0.1 — Analytic Identity And TolTEC Scale Gap
+# SCI-JINC v0.1 — Analytic Identity And TolTEC Parameter Semantics
 
-Status: final Stage A repair candidate; generic method content-bound; TolTEC
-array-specific scale/parameter authority unresolved; Stage B blocked
+Status: ODQ-102B semantic/no-numerical-route disposition incorporated; exact
+TolTEC numerical realization unavailable; Stage B blocked
 
 Scientific owner: Grant Wilson
 
@@ -41,14 +41,17 @@ J(0) = 1,
 where `J_1` is the first-order Bessel function of the first kind. This is an
 exact notation normalization, not a change of function or amplitude.
 
-For physical angular separation `r` and an owner-approved array scale `s_a`,
+For physical angular separation `r` and an explicit array-associated angular
+scale `s_a`,
 define
 
 ```text
 r'_a = r/s_a >= 0.
 ```
 
-The memo uses `s=lambda/D`. Its Equation 9 then content-binds the generic
+The memo uses `s=lambda/D`. That is scientific precedent for a diffraction-
+scale realization, not authorization of any TolTEC realization. Its Equation
+9 then content-binds the generic
 dimensionless analytic coefficient family as
 
 ```text
@@ -89,35 +92,39 @@ Thus `r_max` is not a strict maximum evaluated radius. The memo's continuous
 formula supplies the coefficient at every resolved square-cache point,
 including points beyond the second factor's first zero.
 
-## TolTEC-Specific Authority Still Missing
+## Owner-Approved Parameter Semantics And Unavailability
 
 The memo closes the generic formula, Bessel convention, zero limit, amplitude,
 envelope, parameter ordering/roles/units and second-factor relation to
-`r_max`. It does **not** supply:
+`r_max`. `SCI-JINC-ODQ-102B` preserves `r'_a=r/s_a` and establishes that:
 
-1. the exact effective `s_a` definition for broad-band TolTEC arrays
-   `a1100`, `a1400`, and `a2000`;
-2. the named owner/source/version for effective wavelength, illumination or
-   any other quantity used to realize each `s_a`;
-3. owner-approved per-array `(a,b,c,r_max)` values or their provenance; or
-4. a TolTEC-specific optimization objective, evidence set or optimum.
+1. `s_a` is an angular quantity associated with stable array `a`;
+2. `a_a`, `b_a`, `c_a`, and `(r_max)_a` are dimensionless kernel parameters
+   whose array association is explicit rather than inferred from a shared
+   implementation field;
+3. every numerical realization binds the parameter-set owner, source,
+   version, units, array association, admissibility, and requested/effective/
+   observation-resolved/realized identities; and
+4. absent a scientifically authorized parameter set, the affected numerical
+   route is unavailable, with no hidden default or inherited fallback.
 
 The memo's FCRAO values `a=1.1`, `b=4.75`, `c=2.0`, `RMAX=3` and Appendix C
 86-GHz/3.4-mm simulations are explicitly unavailable as TolTEC values or
 performance evidence.
 
-## Remaining Owner Question
+Inherited implementation scales and shape/extent values are not scientific
+authority and are not author inputs. No physical interpretation or normative
+rule may be inferred from them.
 
-`SCI-JINC-ODQ-102B`:
+## Deferred TolTEC Numerical Realization
 
-> Supply or approve one exact TolTEC authority defining the effective
-> dimensionless radial scale `r'_a=r/s_a` for each of `a1100`, `a1400`, and
-> `a2000`, including the physical quantity, unit, band/effective-wavelength or
-> beam convention, owner, source/version and lifecycle; and separately supply
-> or type unavailable the per-array `(a,b,c,r_max)` parameter set and its
-> provenance. Do not infer either from the 3-mm memo or from software.
+Selecting or optimizing TolTEC numerical values is a separate downstream
+scientific exercise. It must name an objective and use appropriate TolTEC/LMT
+beam, response, and/or noise evidence. SCI-JINC v0.1 neither performs that
+study nor prejudges whether it will retain, approximate, or replace inherited
+implementation values.
 
-The generic analytic identity is now recoverable without implementation.
-Stage B nevertheless remains blocked until `SCI-JINC-ODQ-102B` is answered or
-explicitly deferred with a contractually typed no-numerical-route consequence,
-and until all other Stage A blockers and exact packet bytes are approved.
+The generic analytic identity and parameter semantics are recoverable without
+implementation. Stage B remains blocked by the other Stage A dispatch gates
+and exact packet approval; it may describe typed numerical unavailability but
+may not select TolTEC values.

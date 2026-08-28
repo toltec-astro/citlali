@@ -31,7 +31,7 @@ numerical JINC route exists.
 | Exceptions | None for exact occurrence/parent/generation binding, realized PTC route, output-retention permission, direct synthesized/replaced exclusion, registry/family identity, JINC consumer permission, coefficient identity/QC permission, same-`n` AST binding, stable array identity, or exact source/profile identity. |
 | Four decision fields | Request: `requested`/`not_requested`; applicability: `applicable`/`inapplicable`/`applicability_unknown`; eligibility: `eligible`/`ineligible`/`decision_unavailable`; realization: `realized`/`incomplete`/`failed`/`not_produced`. Only requested + applicable + eligible + realized projects to upstream-admission pass. |
 | Missing/conflicting behavior | Missing or conflicting applicability, identity, parent, generation, selection/default authority, registration, named-consumer permission, coefficient family/value/QC, coordinate, boundary, source or registry binding yields `applicability_unknown` and `decision_unavailable` where evaluable. A decisive false restriction yields `ineligible`; all restrictions true yields `eligible`. Causes and scopes remain exact. No alternate-family or unity fallback is permitted. |
-| Lifecycle and consumer action | The evaluation binds requested, effective, observation-resolved, applied and realized identities plus exact source/profile versions. Pass creates a JINC route candidate only. JINC still evaluates payload finiteness, positive `omega_i`, point-phase `kappa_ip`, square placement, edge policy, conditioning, required companions and final bundle validity. |
+| Lifecycle and consumer action | The evaluation binds requested, effective, observation-resolved, applied and realized identities plus exact source/profile versions. Pass creates a JINC route candidate only. JINC still requires an exact scientifically authorized array-associated parameter-set identity and evaluates payload finiteness, positive `omega_i`, point-phase `kappa_ip`, square placement, edge policy, conditioning, required companions and final bundle validity. Missing parameter-set authority makes the numerical route unavailable without a hidden default; it does not retroactively change upstream admission. |
 | Aggregation and propagation | `atomic_only`. No pixel, detector, observation, exposure or coadd aggregate and no reverse propagation are implied. Producer facts and earlier decisions are immutable. |
 | Supersession | Any changed source digest, occurrence domain, restriction, exception, response/uncertainty role, lifecycle, direct/inherited influence rule or consumer action requires a new immutable profile version and evaluation generation. |
 
@@ -47,10 +47,11 @@ The profile does not collapse the following propositions:
 6. AST coordinate validity;
 7. finite signal;
 8. finite positive upstream coefficient;
-9. finite signed-kernel placement;
-10. cancellation and formal JINC support;
-11. required-companion availability; and
-12. final JINC product validity.
+9. authorized array-associated JINC parameter-set availability;
+10. finite signed-kernel placement;
+11. cancellation and formal JINC support;
+12. required-companion availability; and
+13. final JINC product validity.
 
 An optional unavailable companion may coexist with an available base signal
 only when the exact JINC product-role table permits it. A requested-required

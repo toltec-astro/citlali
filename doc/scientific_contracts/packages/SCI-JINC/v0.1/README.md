@@ -1,7 +1,8 @@
 # SCI-JINC — Signed-Coefficient JINC Gridding And Response
 
-Status: ODQ-101 owner decision incorporated into a bounded Stage A successor
-candidate; renewed exact-byte approval required; Stage B not commissioned
+Status: ODQ-101 and ODQ-102B owner decisions incorporated into a bounded Stage
+A successor candidate; renewed exact-byte approval required; Stage B not
+commissioned
 
 Version: `v0.1`
 
@@ -42,7 +43,7 @@ Work began with the package's reviewed
   JINC by analogy.
 
 The predecessor author inputs were approved at
-`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`. The ODQ-101 successor candidate
+`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`. The ODQ-101/102B successor candidate
 updates the scientist-readable
 [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md), the frozen independent core paired with
 [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md), the page-exact
@@ -65,7 +66,7 @@ author channel.
 Grant Wilson approved the exact predecessor Stage A candidate at
 `6639bff3d94b92ace8faf3e407ccaefd5a38ea1f` on `2026-08-28`; see
 [`SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md`](SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md).
-The ODQ-101 owner decision now changes allowed author-input bytes. Those
+The ODQ-101 and ODQ-102B owner decisions now change allowed author-input bytes. Those
 successor bytes require renewed approval under `SCI-JINC-STAGE-A-Q002`.
 Stage B is not commissioned.
 
@@ -76,6 +77,9 @@ Stage B is not commissioned.
 - Implementation-informed internal dossier: complete and quarantined.
 - ODQ-101 coefficient ownership/permission/selection architecture: owner-
   approved and incorporated; no exact family is registered here.
+- ODQ-102B parameter semantics/no-numerical-route disposition: owner-approved
+  and incorporated; inherited TolTEC values remain quarantined evidence and
+  parameter optimization is deferred.
 - Sanitized Scope Brief: successor candidate; renewed approval required.
 - Exact author-input manifest: successor candidate content-bound; renewed
   approval and dispatch authorization required.
@@ -118,12 +122,15 @@ authorities.
   exact sanitized table of eight inherited owner decisions
 - [`AUTHOR_LMT_JINC_REFERENCE_COVER.md`](AUTHOR_LMT_JINC_REFERENCE_COVER.md)
   and [`ANALYTIC_JINC_IDENTITY.md`](ANALYTIC_JINC_IDENTITY.md): generic
-  Schloerb formula, notation reconciliation, SCI-JINC supersessions and the
-  remaining TolTEC per-array scale/parameter gap
+  Schloerb formula, notation reconciliation, SCI-JINC supersessions, parameter
+  semantics, and typed TolTEC numerical unavailability
 - [`AUTHOR_PTC_COEFFICIENT_REGISTRY_COVER.md`](AUTHOR_PTC_COEFFICIENT_REGISTRY_COVER.md):
   controlled author use of the exact post-freeze PTC registry predecessor
 - [`SCIENTIFIC_OWNER_ODQ_101_DECISION_2026-08-28.md`](SCIENTIFIC_OWNER_ODQ_101_DECISION_2026-08-28.md):
   owner-approved registry, permission, selection and no-fallback disposition
+- [`SCIENTIFIC_OWNER_ODQ_102B_DECISION_2026-08-28.md`](SCIENTIFIC_OWNER_ODQ_102B_DECISION_2026-08-28.md):
+  owner-approved generic-scale, parameter-semantics, evidence-only baseline,
+  no-hidden-default and deferred-optimization disposition
 - [`SCI-PTC_TO_SCI-JINC_BOUNDARY.md`](SCI-PTC_TO_SCI-JINC_BOUNDARY.md) and
   [`SCI-AST_TO_SCI-JINC_BOUNDARY.md`](SCI-AST_TO_SCI-JINC_BOUNDARY.md): exact
   proposed upstream quantity and coordinate boundaries
@@ -149,7 +156,7 @@ authorities.
 
 ## Stop Boundary
 
-Predecessor Stage A byte approval is recorded; the ODQ-101 successor packet is
+Predecessor Stage A byte approval is recorded; the ODQ-101/102B successor packet is
 not yet approved. Stop before commissioning or drafting the
 implementation-blind scientific rationale, shared normative core, engineering
 conformance specification, or PDFs until the successor manifest receives

@@ -7,7 +7,8 @@ This recovery record follows the
 It is an internal Stage A artifact and is not part of the proposed scientific-
 author packet.
 
-Status: reviewed Stage A recovery; awaiting scientific-owner review
+Status: reviewed Stage A recovery; ODQ-102B evidence baseline and owner
+disposition incorporated
 
 Investigator/date: Codex manager, `2026-08-28`
 
@@ -99,6 +100,11 @@ to scientific authority.
 | Frozen SCI-AST source manifest | `b54b6013750540f28aad02339a60bf36078980dc53b132beab73069d66ef3601` |
 | Schloerb original LMT memo PDF | `835fb02e842c9109c2c7ad3f03288882dfac283e63bfcd0f818c7d5379e7e5cd` |
 | Page-exact Schloerb method excerpt, original pages 15--19 | `a065843b4b83c21aabb25233c588817e998773a5d6a7bd389874eab50c9a88e9` |
+| Current `jinc_mm.h` at `fbfdc3479e7e61e2618bdf5ab81f6634df476e4c` | `65fd41b97e06048d2b4b2b0a6d6ecd175a22f1b415d1b52d925a7ec0da4c9e5b` |
+| Current `include/citlali/core/config/mapmaking_config.h` at that revision | `cecaac0c195fc4399bd3dc66350424bf1eef7d6aa0f3c381ed44d395689edad0` |
+| Current legacy `data/config.yaml` at that revision | `649ccb369327a29a1ea121a3f899d8715a655ba1b0dd339cf898c37ba29310eb` |
+| Current `config/tolteca/science/70_pipeline.yaml` / `beammap/70_pipeline.yaml` | `273c1582ecb0e2cd906e90bad58ce8f328cee59b97570734329d5d3aeedfba52` / `8bab688427884051ce608688b12a755e46d7125bf0740c0506824bea103f1732` |
+| Current `config/tolteca/point/70_pipeline.yaml` / `oof/70_pipeline.yaml` | `a47989ad900db690353ae02d90981cd9606af3156f492c761d02822efb928eab` / `bc608f70b662bb256bfa82ad83733ddd5d3cfb456acbb13a51c74e464611e72e` |
 
 All eight D003 decisions and the third-successor acceptance are read from
 `8c581bfb26f01b187f4f1e0565f4457bcc25f099` at the exact paths named below.
@@ -110,12 +116,12 @@ All eight D003 decisions and the third-successor acceptance are read from
 | Program charter, pilot review, and downstream roadmap at `731f8219...` | Governing program authority | Recovery-first workflow, Stage A/B firewall, exact packet gate, JINC sequencing, and no-fold boundary | Process authority, not JINC science | **Adopt** |
 | Frozen SCI-MAP v0.1/r0.7.1 at `731f8219...`, promoted from `bd010e20...` | Governing adjacent scientific authority | Ordinary positive-coefficient MAP explicitly excludes JINC and leaves JINC contribution/product availability to its own package | Its estimator, one-hot placement, F010 bundle, profiles, and coadd rules are ordinary-MAP-only | **Adopt** the negative boundary; **exclude** ordinary predicates from JINC |
 | `fe201b69...:SCI-MAP-002_INDEPENDENT_CORE.tex` | Reusable implementation-independent scientific reference | Signed `N/C` estimator; distinct `N`, `C`, `Q`; conditional `C^2/Q`; response and pixel covariance; support/edge distinctions; array identity; lifecycle; downstream product responsibilities; falsification cases | Its radial cutoff and pixel-area-integrated target were later superseded; inverse-variance language depends on upstream coefficient evidence not supplied by frozen PTC | **Cite** with a binding sanitized supersession cover; do not rederive |
-| F. Peter Schloerb, *Spectral Line Data Reduction at the Large Millimeter Telescope* (`2019-07-23`), exact PDF and intake record above | Owner-designated reusable scientific reference | Aperture/spatial-frequency motivation; peak-normalized JINC convention; complete two-JINC plus generalized-exponential analytic family; `(a,b,c,RMAX)` ordering and roles; `r'=r/(lambda/D)` convention; second-factor first zero | Geared to 3-mm spectroscopic receivers; radial cutoff conflicts with later square support; FCRAO values and 86-GHz simulations are not TolTEC authority | **Adopt** generic method through notation/supersession cover; **cite** page-exact method excerpt; **defer** TolTEC scale/parameters; **exclude** full memo, simulations and instrument-specific conclusions from authorship |
+| F. Peter Schloerb, *Spectral Line Data Reduction at the Large Millimeter Telescope* (`2019-07-23`), exact PDF and intake record above | Owner-designated reusable scientific reference | Aperture/spatial-frequency motivation; peak-normalized JINC convention; complete two-JINC plus generalized-exponential analytic family; `(a,b,c,RMAX)` ordering and roles; `r'=r/(lambda/D)` convention; second-factor first zero | Geared to 3-mm spectroscopic receivers; radial cutoff conflicts with later square support; FCRAO values and 86-GHz simulations are not TolTEC authority | **Adopt** generic method and diffraction-scale precedent through notation/supersession cover; **cite** page-exact method excerpt; **defer** TolTEC numerical realization; **exclude** full memo, simulations and instrument-specific conclusions from authorship |
 | Core radial-support and pixel-area-integration branches | Superseded scientific material | A coherent earlier reference model | Conflicts directly with D003 support/subpixel decisions | **Supersede** explicitly; retain as history, not current JINC convention |
 | `8c581bfb...:SCI-MAP-002_SUPPORT_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | Square cache is the support; `r_max` also fixes the second-JINC first zero; corners beyond radial `r_max` remain in response | Does not independently supply the complete analytic parameter map | **Adopt** through the sanitized cover |
 | `8c581bfb...:SCI-MAP-002_SUBPIXEL_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | Phase-quantized point evaluation after rounded center and phase binning; not pixel-area integration | Exact tie/bin-edge and convergence bound still require explicit contract treatment | **Adopt** through the sanitized cover |
 | `8c581bfb...:SCI-MAP-002_CONDITIONING_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | Finite-positive `Q`, nonzero `C`, dimensionless cancellation ratio, summation-dependent error bound, and no unit-bearing floor | Exact realized summation method/error bound is not a scientific constant and is not supplied here | **Adopt**; expose the unsupplied realized bound honestly |
-| `8c581bfb...:SCI-MAP-002_PARAMETER_ADMISSION_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | Finite positive `a,b,c,r_max`, pixel size, and array scale; stable array identity; signed finite lobes; fail on non-finite coefficient | The full analytic factor/scale convention is not independently content-bound | **Adopt**; retain the analytic-map gap as an owner question |
+| `8c581bfb...:SCI-MAP-002_PARAMETER_ADMISSION_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | Finite positive `a,b,c,r_max`, pixel size, and array scale; stable array identity; signed finite lobes; fail on non-finite coefficient | The full analytic factor/scale convention is not independently content-bound and it selects no TolTEC values | **Adopt** admission semantics; combine with ODQ-102B typed numerical unavailability |
 | `8c581bfb...:SCI-MAP-002_VALIDITY_MASK_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | Formal-support validity requires finite signal/formal weight, positive formal weight, and all admission/conditioning gates; empirical policy can downgrade but never promote | Historical product name is representation-specific and need not control the abstract contract | **Adopt** the meaning; **abstract** away the file/schema name |
 | `8c581bfb...:SCI-MAP-002_COVERAGE_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | `T_c2=sum(c_i^2/f_s,i)` seconds is coefficient-squared effective integration time, distinct from exposure, hits, and validity | It is not ordinary MAP exposure and does not close sample-frequency lineage | **Adopt** with exact identity and limitations |
 | `8c581bfb...:SCI-MAP-002_KERNEL_IDENTITY_OWNER_DECISION_2026-08-03.md` | Approved scientific decision | `K/C` is the realized processing-filtered source-template response projected through JINC, with exact parent/operator provenance | Not an analytic JINC, measured PSF, generic beam, or achieved response-fidelity result | **Adopt** the conditional response identity |
@@ -127,7 +133,7 @@ All eight D003 decisions and the third-successor acceptance are read from
 | `handoff/DEBUG_NOTES_2026-03-09_JINC_MEMO_ALIGNMENT.md` at `731f8219...` | Mixed historical design and implementation note | Records the intended distinction between signed memo-style gridding, quadratic formal-weight propagation, and downstream filtering | The underlying named memo was not recoverable; note includes implementation changes and recommends unapproved tuning | **Abstract** the anti-conflation question only; **exclude** the note from authorship |
 | `doc/citlali_noise_estimation_plan.tex` at `731f8219...` | Reusable scientific candidate mixed with a broader internal draft | Independently restates `N/C` and conditional `C^2/Q` and warns about correlations | Duplicates the frozen core; primarily belongs to future SCI-NOI; status is internal draft | **Cite** in recovery; **exclude** from packet to avoid repetition and boundary leakage |
 | `7555d5fe...:audit/mapmaking/NAIVE_JINC_COMPARISON.md` and all accepted-run/campaign material | Historical validation evidence | Reproducible method-difference and execution observations under exact corpora | No injected truth or transfer-function authority; implementation contaminated | **Defer** and **exclude** |
-| Current architecture, configuration, products, `jinc_mm.h`, writers, tests, and debug notes at `731f8219...` | Implementation-informed scope evidence | Identifies present inputs, product families, consumers, lifecycle surfaces, and apparent gaps | Current behavior cannot choose correct science | Quarantine in [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md); **exclude** |
+| Current architecture, configuration, products, `jinc_mm.h`, writers, tests, and debug notes, with exact parameter-baseline digests above | Implementation-informed scope evidence | Identifies present inputs, product families, consumers, lifecycle surfaces, apparent gaps, and a reproducible inherited numerical baseline | Current behavior and historical comments cannot choose correct science or authorize TolTEC values | **Defer** numerical study; quarantine in [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md); **exclude** from authorship |
 | Frozen ALIGN/AST/RTC/CAL/PTC/VAL authorities at `731f8219...` | Governing adjacent scientific authorities | Own occurrence/time/coordinate, conditioning, calibration, transformed signal, validity evaluation, response/covariance state, and lineage | No exact `SCI-PTC_TO_SCI-JINC` or JINC-specific VAL/admission profile is frozen; ordinary MAP boundary cannot be copied silently | **Cite/abstract** only stable roles; require an explicit JINC boundary |
 | OOF/MAP-003, maximum likelihood, NOI, FLT, BEAM, SRC/MODE, and FRUIT material | Adjacent or later-package material | Establishes separate ownership and future consumer questions | Different estimands, responses, uncertainty, or feedback | **Exclude** from local JINC science except named interfaces |
 
@@ -167,6 +173,57 @@ All eight D003 decisions and the third-successor acceptance are read from
 10. **Destination ownership.** The recovered bounded route requires
     unambiguous worker-to-destination ownership before any mutation. This is an
     execution/identity boundary, not evidence for scientific performance.
+11. **Parameter semantics without numerical authorization.** ODQ-102B
+    preserves `r'_a=r/s_a`, with angular, array-associated `s_a`; permits the
+    shape parameters and `r_max` to be array-associated; and makes a numerical
+    route unavailable when no scientifically authorized parameter set exists.
+    It approves no inherited TolTEC value or hidden default.
+
+### Inherited TolTEC numerical baseline — evidence only
+
+At implementation revision
+`fbfdc3479e7e61e2618bdf5ab81f6634df476e4c`, current source realizes
+`s_a=lambda_a/(45 m)`. The resulting implementation scales are:
+
+| Array | Nominal `lambda_a` | Current `s_a` in radians | Current `s_a` in arcseconds | Current `(a,b,c)` |
+| --- | --- | --- | --- | --- |
+| `a1100` | `1.1 mm` | `2.44444444444444e-5` | `5.042028597151` | `(1.1,1.67,2.0)` |
+| `a1400` | `1.4 mm` | `3.11111111111111e-5` | `6.417127305465` | `(1.1,2.17,2.0)` |
+| `a2000` | `2.0 mm` | `4.44444444444444e-5` | `9.167324722093` | `(1.1,3.17,2.0)` |
+
+The current science and Beammap mode configurations use `r_max=3.0`; the
+current Pointing and OOF mode configurations use `r_max=1.5`. Thus the arrays
+actually differ in `s_a` and `b`, while `a` and `c` are common in the present
+representation; `r_max` differs by mode rather than array. These observations
+are not a normative association rule.
+
+Recoverable development history is:
+
+- `9ae43178722a5ac19a4895641633630608805bc8` (`2023-01-29`) introduced
+  JINC with a common `(1.1,4.75,2.0)` shape, `r_max=3.0`, and nominal
+  wavelengths divided by `50 m`;
+- `748a169ea38097f22c2df52fed5c7014f5d8e508` (`2023-05-23`) represented
+  the shape as three initially identical array tuples;
+- `8342960a427a8e8df194f6c1461311013852f8e2` (`2023-08-16`) introduced
+  `b=(1.67,2.17,3.17)`, with provenance clues “optimal (hopefully)” and
+  `b (beam-size/3)`;
+- `dc04b8783a8174688814071dc309d7d33cf216df:scSS-49517544.out`
+  (`2025-12-04`) is the earliest recovered repository occurrence of
+  `r_max=1.5` in Pointing/OOF-related output evidence;
+- `a611c7d271e4483e6aaa6ebbdfec139a76710fb0` (`2026-02-12`) changed the
+  denominator from `50 m` to `45 m` under the message “jinc optimization”;
+- `5c8f5eb4c06b4203f7edfc3aee0ac6a4f9ae1d27` (`2026-07-13`) copied the
+  inherited values into the typed implementation configuration; and
+- mode-kit revisions `d9e6d5d93cc3601cb5a001e87e66d56a41bc21d8` and
+  `6b6be9f57085caa1d4bb27f4d3ca5791003bca90` preserve the mode-specific
+  baseline later represented by the exact current file digests above.
+
+Classification: **inherited implementation defaults with partially
+recoverable development history; not current TolTEC scientific authority**.
+No recovered scientific source explicitly authorizes these values for TolTEC.
+The hypothesis that the `b` choices and `50 m` to `45 m` change attempted to
+track an effective TolTEC/LMT angular response is plausible future-study input,
+but available provenance is insufficient to adopt it.
 
 ### Reusable definitions, equations, and reasoning
 
@@ -199,12 +256,11 @@ added to the author packet.
    exact JINC-facing coefficient family. Formal-weight and covariance claims
    must remain conditional until a JINC-specific handoff identifies the exact
    coefficient, unit, normalization, support, and covariance evidence.
-3. The owner-supplied Schloerb memo closes the generic two-JINC formula,
-   Bessel convention, zero limit, amplitude, envelope, parameter ordering and
-   dimensionless `lambda/D` scale convention. It does not define the exact
-   effective scale or parameter source for broad-band TolTEC `a1100`, `a1400`,
-   or `a2000`; those remain `SCI-JINC-ODQ-102B` and cannot be inferred from
-   the memo's 3-mm examples.
+3. The owner-supplied Schloerb memo closes the generic two-JINC formula and
+   supplies diffraction-scale precedent. ODQ-102B preserves generic
+   `r'_a=r/s_a` semantics but does not authorize `lambda_a/(45 m)` or any
+   inherited TolTEC shape/extent value. Numerical realization is unavailable
+   pending a separate authorized study.
 4. The accepted owner decisions cover the observation estimator. They do not
    independently freeze a JINC observation-coaddition rule. Ordinary MAP
    coaddition cannot be imported silently.
@@ -245,10 +301,12 @@ smallest legitimate new work is to:
 3. state the exact conditional covariance and response claims supported for a
    declared upstream coefficient family and type every unavailable stronger
    claim;
-4. specify JINC-local admission, output availability, edge, grouping,
+4. define parameter meaning, units, array association, identity, provenance,
+   admissibility, and typed numerical unavailability without choosing values;
+5. specify JINC-local admission, output availability, edge, grouping,
    destination, and failure semantics only after the listed owner choices are
    resolved; and
-5. define falsifiable predictions for algebraic and representation behavior
+6. define falsifiable predictions for algebraic and representation behavior
    without running or claiming validation.
 
 ## Proposed Author Reference Packet

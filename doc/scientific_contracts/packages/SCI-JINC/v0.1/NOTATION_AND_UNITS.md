@@ -15,7 +15,9 @@ Prepared: `2026-08-28`
 | `kappa_ip` | Signed dimensionless analytic JINC kernel coefficient at the selected point phase | finite; positive, zero, or negative | 1 |
 | `omega_i` | Positive producer-supplied JINC-facing analysis coefficient | finite and `>0` after JINC-local admission | either 1 or `U^-2`, according to its exact family |
 | `w_ip` | Complete effective signed pixel contribution coefficient, `kappa_ip omega_i` | finite; signed | same unit as `omega_i` |
-| `theta_a` | Ordered kernel parameter tuple for stable TolTEC array `a` | elements finite and positive | component-specific; unresolved pending `SCI-JINC-ODQ-102B` |
+| `s_a` | Explicit angular radial scale associated with stable TolTEC array `a` | finite and `>0` for a numerical route | angle |
+| `r'_a` | Dimensionless radial coordinate, `r/s_a` | finite and `>=0` | 1 |
+| `theta_a` | Ordered kernel realization `(s_a,a_a,b_a,c_a,(r_max)_a)` for stable TolTEC array `a` | every component finite and positive for a numerical route; exact scientifically authorized identity otherwise unavailable | `s_a`: angle; remaining components: 1 |
 | `C_p` | Signed normalization, `sum I_ip w_ip` | finite; may be negative; never accepted at exact zero | same unit as `omega_i` |
 | `Q_p` | Quadratic accumulator, `sum I_ip omega_i kappa_ip^2` | finite and `>0` for formal support | same unit as `omega_i` |
 | `N_p` | Signed signal numerator, `sum I_ip w_ip z_i` | finite | `U` times the unit of `omega_i` |
@@ -28,6 +30,12 @@ Prepared: `2026-08-28`
 The symbol `c` is reserved, if ultimately approved, for one named component
 of `theta_a`. It is never reused for the analytic coefficient, effective
 pixel coefficient, normalization, or coefficient-squared time.
+
+The generic parameter semantics do not supply TolTEC numerical values.
+Parameters may be array-associated where scientifically appropriate.
+Requested, effective, observation-resolved, and realized parameter-set
+identities are distinct; absence of an authorized set makes the numerical
+route unavailable without a hidden default.
 
 ## Exact Retained Algebra
 

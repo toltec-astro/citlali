@@ -1,8 +1,7 @@
 # SCI-JINC — Signed-Coefficient JINC Observation Mapmaker Scope Brief
 
-Status: ODQ-101 Stage A successor candidate; predecessor Stage A bytes
-owner-approved; this delta requires renewed exact-byte approval; Stage B
-blocked
+Status: ODQ-101/102B Stage A successor candidate; predecessor Stage A bytes
+owner-approved; successor requires renewed exact-byte approval; Stage B blocked
 
 Scientific owner: Grant Wilson
 
@@ -56,17 +55,18 @@ which remains unchanged.
   fail-closed no-fallback semantics, using the exact post-freeze source only
   through
   [`AUTHOR_PTC_COEFFICIENT_REGISTRY_COVER.md`](AUTHOR_PTC_COEFFICIENT_REGISTRY_COVER.md)
-- Genuinely new work: bind the exact TolTEC per-array radial scale and
-  parameter source, register and realize at least one exact JINC-permitted PTC
-  family before any numerical route, close the listed geometry/numerical owner
-  choices, then render the recovered science in the program's two-view form
+- Genuinely new work: define exact parameter semantics and typed numerical
+  unavailability without selecting TolTEC values, register and realize at
+  least one exact JINC-permitted PTC family before any numerical route, close
+  the listed geometry/numerical owner choices, then render the recovered
+  science in the program's two-view form
 - Proposed sanitized packet: the exact items in
   [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md)
 
 The raw recovery record, owner feedback, decision conversations and all
 implementation/evidence material remain outside the implementation-blind
 author channel. The predecessor Stage A packet was owner-approved at
-`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`; this ODQ-101 successor changes
+`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`; this ODQ-101/102B successor changes
 allowed input bytes and has **not** received renewed exact-byte approval. No
 Stage B author is commissioned.
 
@@ -124,8 +124,10 @@ For occurrence `i` and target pixel `p`, the contract may use only:
   exact target JINC WCS, validity, bounds, uncertainty and provenance;
 - exact upstream response and covariance roles, each with domain, codomain,
   parents, support, approximation, omitted terms, lifecycle and causes;
-- finite positive kernel parameters, pixel size, array scale and `r_max`, plus
-  effective integer `subpixel_n>=1`, all under one complete analytic identity;
+- an exact scientifically authorized, array-associated parameter-set identity
+  containing angular `s_a` and dimensionless `a_a`, `b_a`, `c_a`, and
+  `(r_max)_a`, plus finite positive pixel size and effective integer
+  `subpixel_n>=1`, all under one complete analytic identity;
 - an exact processed source-template companion when response is requested;
   and
 - finite positive processed sample frequency `f_s,i` for
@@ -196,12 +198,21 @@ places the second factor's first zero. The peak is one. Analytic zeros and
 finite signed lobes are retained.
 
 The memo is geared to 3-mm spectroscopic receivers. Its FCRAO values and
-86-GHz simulations are not TolTEC authority. The exact effective scale `s_a`
-and per-array parameter source for `a1100`, `a1400`, and `a2000` remain open as
-`SCI-JINC-ODQ-102B`. See
+86-GHz simulations are not TolTEC authority. `SCI-JINC-ODQ-102B` preserves
+`r'_a=r/s_a`, where `s_a` is an explicit array-associated angular scale, and
+permits every kernel parameter to be array-associated where scientifically
+appropriate. The memo's `s=lambda/D` is precedent, not TolTEC authorization.
+
+No TolTEC numerical parameter set is scientifically authorized for v0.1.
+Without one, the affected numerical route is unavailable; no inherited value,
+hidden default, or fallback may be used. Selecting or optimizing TolTEC values
+is explicitly deferred to a separate scientific exercise with a stated
+objective and appropriate TolTEC/LMT beam, response, and/or noise evidence. See
 [`ANALYTIC_JINC_IDENTITY.md`](ANALYTIC_JINC_IDENTITY.md) and
 [`AUTHOR_LMT_JINC_REFERENCE_COVER.md`](AUTHOR_LMT_JINC_REFERENCE_COVER.md).
-Codex may not infer TolTEC scale or parameters from the memo or software.
+Stage B may define parameter meaning, units, association, admissibility,
+identity, provenance, and unavailable-state behavior; it may not infer or
+optimize TolTEC values from the memo or software.
 
 ## 6. Square Cache, Point Phase And Edges
 
@@ -374,13 +385,15 @@ The exact ledger is
 [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md).
 `SCI-JINC-ODQ-101` is resolved for registry ownership, named-consumer
 permission, selection lifecycle and fail-closed behavior. It does not register
-or realize a family; numerical production remains typed unavailable until that
-separate PTC successor work exists.
+or realize a family. `SCI-JINC-ODQ-102B` is resolved for generic parameter
+semantics and typed numerical unavailability, not numerical values. Numerical
+production remains unavailable until both a compatible PTC family and a
+separately authorized TolTEC parameter set exist.
 
 Before author dispatch, the owner must:
 
-1. supply the exact TolTEC per-array scale and parameter source
-   (`SCI-JINC-ODQ-102B`); the generic analytic method is now content-bound;
+1. resolve the exact AST coordinate-role/parent join, JINC admission/profile
+   identity, boundary rule, and cause policy (`SCI-JINC-ODQ-103`);
 2. decide the center/tie/phase/cache/error-bound policy
    (`SCI-JINC-ODQ-109`);
 3. decide the outside-center overlapping-square edge rule
