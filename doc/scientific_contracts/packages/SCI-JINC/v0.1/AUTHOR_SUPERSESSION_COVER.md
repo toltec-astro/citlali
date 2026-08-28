@@ -91,7 +91,14 @@ core is broader, earlier, or ambiguous:
     allocation, mutation, output side effects, or parallel execution. Worker,
     thread, process, container and filename are not scientific identity.
     Ambiguous or aliased destinations fail without partial result. This is an
-    identity/lifecycle invariant, not a performance or race-freedom claim.
+    identity/lifecycle invariant, not a performance or race-freedom claim. For
+    one observation, at most one bundle may be produced for each stable array
+    admitted/requested under the exact JINC realization. Each produced bundle
+    is independently bound to its observation, array, JINC realization and
+    exact destination map geometry. Contributions with different array or
+    destination identities must not merge. Missing, unavailable or unrequested
+    arrays create no placeholder and do not invalidate a different produced
+    bundle; no additional per-contribution provenance is implied.
 13. **Observation scope.** Base v0.1 defines the estimator and complete product
     bundle for one observation. Observation is a scientific grouping boundary,
     not a streaming, chunking, process or memory boundary: same-observation

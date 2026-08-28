@@ -1,6 +1,6 @@
 # SCI-JINC v0.1 — Proposed Sanitized Conventions And Ownership
 
-Status: ODQ-101/102B/103/104/105 sanitized successor candidate; renewed exact-byte
+Status: ODQ-101/102B/103/104/105/106 sanitized successor candidate; renewed exact-byte
 approval
 required
 
@@ -75,6 +75,12 @@ Exact source set at
 - A JINC map identity includes observation, array/group, quantity/component,
   estimator version, WCS/grid, support/phase/conditioning convention, response
   parent, product role, and lifecycle generation.
+- For one observation, SCI-JINC may produce at most one bundle for each stable
+  array admitted and requested under the exact JINC realization. Every produced
+  bundle has an independent identity bound to observation, stable array, JINC
+  realization, exact destination map geometry and lifecycle generation.
+- Missing, unavailable or unrequested arrays produce no placeholder or empty-
+  array product and do not invalidate a different produced bundle.
 - A destination index is a local locator. Unique destination ownership is
   resolved from the full product identity before numerical mutation.
 - In-memory indices are zero-based. Persisted FITS/WCS pixel coordinates are
@@ -198,6 +204,10 @@ Exact source set at
   requires a separately authorized boundary over complete observation bundles;
   no ordinary MAP coadd, accumulator-addition rule or normalized-map
   combination is inherited or inferred.
+- Contributions with different stable-array or destination-map identities are
+  never merged. Array absence and failure facts remain at existing plan/bundle
+  provenance granularity; no additional per-contribution provenance or
+  synthetic empty-array product is required.
 
 ## Producer–Transformer–Consumer Responsibilities
 

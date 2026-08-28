@@ -286,6 +286,20 @@ next unresolved scientific-owner question is `SCI-JINC-ODQ-106`, the
 independent per-array observation-bundle, missing/unrequested-array
 cardinality and residual destination-identity disposition.
 
+Grant Wilson then resolved `SCI-JINC-ODQ-106` on `2026-08-28`. For one
+observation, JINC may produce zero through three independent bundles, with at
+most one for each stable array admitted/requested under the exact JINC
+realization and destination geometry. Missing, unavailable or unrequested
+arrays create no placeholder or empty product and do not invalidate a
+different produced bundle. Same-identity contributions may accumulate under
+ODQ-105, while contributions with different array or destination identities
+must not merge. Existing plan/bundle provenance remains sufficient; no per-
+contribution provenance is added. The refreshed ODQ-101/102B/103/104/105/106
+packet still awaits `SCI-JINC-STAGE-A-Q002`; Stage B remains unlaunched. The
+next unresolved scientific-owner question is `SCI-JINC-ODQ-107`, the required,
+conditional-required, optional and outside product-role disposition plus exact
+cause vocabulary and unavailable-role representation.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

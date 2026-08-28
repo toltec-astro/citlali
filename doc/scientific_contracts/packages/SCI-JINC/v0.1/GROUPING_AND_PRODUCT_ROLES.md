@@ -1,6 +1,7 @@
 # SCI-JINC v0.1 — Observation Grouping And Product Roles
 
-Status: final Stage A base-v0.1 candidate; awaiting scientific-owner approval
+Status: ODQ-105/106 owner-approved Stage A successor candidate; awaiting
+renewed exact-byte approval
 
 Prepared: `2026-08-28`
 
@@ -25,8 +26,13 @@ x lifecycle generation.
 ```
 
 The supported array identities are exactly `a1100`, `a1400`, and `a2000`.
-Base v0.1 produces independent observation bundles for each requested present
-array. Cross-array, frequency-combined, or network-combined JINC products are
+For one observation, base v0.1 may produce at most one bundle for each stable
+array admitted and requested under the exact JINC realization. The produced-
+bundle cardinality is zero through three; this is not a requirement to
+synthesize all three. Missing, unavailable, or unrequested arrays produce no
+placeholder bundle, empty-array product, or synthetic failure product, and
+their absence does not invalidate a different produced bundle. Cross-array,
+frequency-combined, network-combined, or shared-destination JINC products are
 unavailable unless separately authorized.
 
 Observation is the scientific grouping boundary, not a streaming, processing-
@@ -36,6 +42,12 @@ when the exact observation, stable array, JINC plan and realization, target
 WCS, admission/parameter/coefficient state and lifecycle generation match.
 Chunk identity neither creates a JINC product nor licenses cross-observation
 combination.
+
+Each produced bundle is scientifically independent. Contributions whose
+stable array or exact destination map identity differs must not be merged.
+Requested/effective/resolved/realized state and any absence cause remain at
+the existing plan/bundle provenance granularity; no additional per-
+contribution provenance is required.
 
 For one array bundle, the population is the union of exact occurrence
 candidates whose stable array identity equals the bundle array and whose
@@ -56,6 +68,8 @@ ownership fails the affected bundle atomically; it does not select a winner.
 “Required” means absence or publication/join failure prevents realized bundle
 success. “Conditional required” means the role becomes required when the
 exact JINC plan requests it or a named consumer contract requires it.
+Requirements in this table apply to a produced bundle; they do not require a
+placeholder for an array that produces no bundle under the rule above.
 
 | Role | Requirement | Exact meaning and publication rule | Failure scope |
 | --- | --- | --- | --- |

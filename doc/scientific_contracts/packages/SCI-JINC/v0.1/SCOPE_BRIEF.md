@@ -1,6 +1,6 @@
 # SCI-JINC — Signed-Coefficient JINC Observation Mapmaker Scope Brief
 
-Status: ODQ-101/102B/103/104/105 Stage A successor candidate; predecessor Stage A bytes
+Status: ODQ-101/102B/103/104/105/106 Stage A successor candidate; predecessor Stage A bytes
 owner-approved; successor requires renewed exact-byte approval; Stage B blocked
 
 Scientific owner: Grant Wilson
@@ -66,7 +66,7 @@ which remains unchanged.
 The raw recovery record, owner feedback, decision conversations and all
 implementation/evidence material remain outside the implementation-blind
 author channel. The predecessor Stage A packet was owner-approved at
-`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`; this ODQ-101/102B/103/104/105 successor changes
+`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f`; this ODQ-101/102B/103/104/105/106 successor changes
 allowed input bytes and has **not** received renewed exact-byte approval. No
 Stage B author is commissioned.
 
@@ -339,16 +339,27 @@ observation x TolTEC array x JINC plan x target WCS
 x product role x lifecycle generation.
 ```
 
-Base v0.1 produces independent `a1100`, `a1400` and `a2000` observation
-bundles. Cross-array/network-combined products are unavailable. Workers,
-threads, processes, containers and filenames are not identity. Complete
-destination identity is resolved before mutation or the bundle fails
+For one observation, base v0.1 may produce at most one independent bundle for
+each stable array admitted and requested under the exact JINC realization.
+The produced cardinality is zero through three over `a1100`, `a1400` and
+`a2000`. Missing, unavailable, or unrequested arrays produce no placeholder or
+empty-array product and do not invalidate a different produced bundle. Cross-
+array/network-combined or shared-destination products are unavailable.
+Workers, threads, processes, containers and filenames are not identity.
+Complete destination identity is resolved before mutation or the bundle fails
 atomically.
 
 Same-observation streaming or chunk accumulation may realize that one bundle
 when the complete scientific identity and realized JINC state remain the
 same. Cross-observation combination is outside base v0.1 and no coadd
 arithmetic is implied by the observation accumulators.
+
+Each produced bundle is bound independently to its exact observation, stable
+array, JINC realization, destination map geometry and lifecycle generation.
+Contributions with different array or destination identities must not be
+merged. Existing plan/bundle provenance records absence and failure facts; no
+additional per-contribution provenance or synthetic empty-array product is
+required.
 
 [`GROUPING_AND_PRODUCT_ROLES.md`](GROUPING_AND_PRODUCT_ROLES.md) defines exact
 population and required, conditional-required, optional and outside roles.
@@ -436,6 +447,10 @@ deferred until a scientific use requires and authorizes it.
 incremental accumulation is permitted under one exact JINC realization, and
 any cross-observation combination requires a separately authorized boundary
 over complete observation bundles.
+`SCI-JINC-ODQ-106` is resolved: an observation may produce at most one
+independent bundle for each admitted/requested stable array, absent arrays
+produce no placeholders and do not invalidate produced bundles, and
+contributions with different array or destination identities must not merge.
 
 Before author dispatch, the owner must:
 
