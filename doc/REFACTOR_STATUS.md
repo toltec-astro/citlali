@@ -349,6 +349,22 @@ or revision of the 16-object successor packet; the versioned VAL registry
 binding remains a separate Stage B dispatch prerequisite. Stage B remains
 unlaunched.
 
+Grant Wilson then approved `SCI-JINC-STAGE-A-Q002` on `2026-08-28` for the
+complete exclusive Stage A successor packet represented by the author-packet
+manifest at commit `88dcce8b0f7b1d78053b25831b39cf370afd47cc`, manifest
+SHA-256 `52a8e843456a8cb033b7593d9b9f67fb83b0ee565c91c141d8e16d46b906140e`.
+All sixteen allowed-object digests and the information firewall are approved;
+the approved input bytes remain unchanged. Stage A is closed, no additional
+JINC scientific-owner question remains, and Stage B authorship is authorized
+from the controlled packet but was not dispatched in this closure increment.
+The sole dispatch prerequisite is a versioned SCI-VAL source/profile registry
+binding for `SCI-JINC:jinc_map_contribution@1`. Frozen SCI-VAL v0.1/r0.3
+expressly preserves continuing registries, and the approved JINC profile
+already supplies the owning policy, so this is an administrative/interface
+successor rather than a reopened scientific choice. No Stage B normative
+content, PDF, implementation-conformity, validation, performance, numerical-
+readiness, production-readiness, or remote-push claim follows.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

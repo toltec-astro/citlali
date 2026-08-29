@@ -1,7 +1,7 @@
 # SCI-JINC v0.1 — Final Stage A Scope-Repair Change Log
 
-Status: repair candidate returned for scientific-owner review; Stage B not
-launched
+Status: exact repair/successor packet approved under Q002; Stage A closed;
+Stage B not dispatched pending the versioned SCI-VAL registry binding
 
 Prepared: `2026-08-28`
 
@@ -37,16 +37,23 @@ The raw feedback file is scope-control provenance and is not an author input.
 | Numerical adequacy | Scientific identity/bounds are separated from algorithm, cache, thread and optimization choices. No implementation procedure or evidence is admitted. |
 | Packet control | The revised manifest content-binds only sanitized owner-review artifacts and the exact independent core. Raw recovery, feedback, frozen adjacent packages and implementation/evidence remain excluded. |
 
-## Remaining Hard Blockers
+## Stage A Closure And Remaining Dispatch Prerequisite
 
-Stage B remains prohibited until the owner supplies or explicitly dispositions:
+The scientific owner approved every exact successor author-packet byte and the
+information firewall under `SCI-JINC-STAGE-A-Q002` at commit
+`88dcce8b0f7b1d78053b25831b39cf370afd47cc`. The manifest and every approved
+author input remain byte-identical.
 
-1. one exact registered, selected, realized JINC-permitted PTC coefficient
-   family and compatible payload/QC; ODQ-101 closes ownership but not source
-   availability;
-2. a versioned SCI-VAL registration binding for the JINC admission profile;
-3. exact owner approval of every successor author-packet byte
-   (`SCI-JINC-STAGE-A-Q002`).
+Stage B dispatch now has one remaining prerequisite: a versioned SCI-VAL
+source/profile registry binding for `SCI-JINC:jinc_map_contribution@1`. Frozen
+SCI-VAL v0.1/r0.3 authorizes continuing registries, and the exact JINC policy
+is owner-approved, so the binding is an administrative/interface successor
+rather than a new scientific-owner question.
+
+An exact registered, selected and realized JINC-permitted PTC coefficient
+family remains required for a numerical route. Its absence is already an
+approved typed-unavailability state and does not block Stage B authorship;
+Stage B may not supply a hidden default or invent the missing authority.
 
 No Stage B rationale, conformance contract or PDF was drafted. No
 implementation, schemas, tests, reductions, audits, repairs, validation,

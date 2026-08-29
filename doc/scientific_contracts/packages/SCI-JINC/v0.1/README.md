@@ -1,9 +1,8 @@
 # SCI-JINC — Signed-Coefficient JINC Observation Mapmaker
 
-Status: ODQ-101, ODQ-102B, ODQ-103--107 and ODQ-109--110 owner
-dispositions incorporated
-into a bounded Stage A successor candidate; renewed exact-byte approval
-required; Stage B not commissioned
+Status: complete exact-byte Stage A successor packet approved under
+`SCI-JINC-STAGE-A-Q002`; Stage A closed; Stage B authorship authorized but not
+dispatched pending the versioned SCI-VAL registry binding
 
 Version: `v0.1`
 
@@ -68,10 +67,13 @@ author channel.
 Grant Wilson approved the exact predecessor Stage A candidate at
 `6639bff3d94b92ace8faf3e407ccaefd5a38ea1f` on `2026-08-28`; see
 [`SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md`](SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md).
-The ODQ-101, ODQ-102B, ODQ-103--107 and ODQ-109--110 owner
-dispositions now change allowed author-input bytes. Those
-successor bytes require renewed approval under `SCI-JINC-STAGE-A-Q002`.
-Stage B is not commissioned.
+Grant Wilson then approved the complete exact successor packet represented by
+the manifest at commit `88dcce8b0f7b1d78053b25831b39cf370afd47cc`
+under `SCI-JINC-STAGE-A-Q002`; see
+[`SCIENTIFIC_OWNER_STAGE_A_Q002_APPROVAL_2026-08-28.md`](SCIENTIFIC_OWNER_STAGE_A_Q002_APPROVAL_2026-08-28.md).
+The approved author-input bytes remain unchanged. Stage B authorship is
+authorized from those controlled inputs but has not been dispatched because
+the versioned SCI-VAL registry binding remains outstanding.
 
 ## Current Gate
 
@@ -111,13 +113,17 @@ Stage B is not commissioned.
   cache center is in the finite destination domain. An outside center
   contributes nowhere even if its square overlaps the map; ordinary in-map
   edge crop remains and JINC-then-crop equivalence is not required.
-- Numbered scientific-scope ODQs: complete for this Stage A candidate. The
-  next scientific-owner gate is exact-byte approval under
-  `SCI-JINC-STAGE-A-Q002`; the versioned VAL registry binding remains a
-  separate Stage B dispatch prerequisite.
-- Sanitized Scope Brief: successor candidate; renewed approval required.
-- Exact author-input manifest: successor candidate content-bound; renewed
-  approval and dispatch authorization required.
+- Numbered scientific-scope ODQs: complete.
+- Exact-byte Stage A owner gate: closed by `SCI-JINC-STAGE-A-Q002` for commit
+  `88dcce8b0f7b1d78053b25831b39cf370afd47cc` and manifest SHA-256
+  `52a8e843456a8cb033b7593d9b9f67fb83b0ee565c91c141d8e16d46b906140e`.
+- Sanitized Scope Brief: approved exact author input.
+- Exact author-input manifest and firewall: approved; all sixteen object
+  digests verified.
+- Remaining Stage B dispatch prerequisite: versioned SCI-VAL source/profile
+  registry binding for `SCI-JINC:jinc_map_contribution@1`. This is an
+  administrative/interface successor under already approved SCI-VAL
+  authority, not an open JINC scientific-owner question.
 - Implementation-blind scientific rationale: not commissioned and not drafted.
 - Engineering conformance specification: not commissioned and not drafted.
 - Scientific authority: not frozen.
@@ -211,17 +217,21 @@ authorities.
   gate
 - [`SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md`](SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md):
   exact candidate binding, approved scope, and preserved dispatch blockers
+- [`SCIENTIFIC_OWNER_STAGE_A_Q002_APPROVAL_2026-08-28.md`](SCIENTIFIC_OWNER_STAGE_A_Q002_APPROVAL_2026-08-28.md):
+  exact successor-packet approval, firewall interpretation, and bounded
+  SCI-VAL registry-binding assessment
 - [`CROSSWALK.md`](CROSSWALK.md): reserved Stage B traceability surface
 - `src/` and `pdf/`: canonical package paths reserved without normative or
   rendered Stage B content
 
 ## Stop Boundary
 
-Predecessor Stage A byte approval is recorded; the ODQ-101/102B/103/104/105/106/107/109/110 successor packet is
-not yet approved. Stop before commissioning or drafting the
+The exact ODQ-101/102B/103/104/105/106/107/109/110 successor packet is approved
+under Q002 without changing its bytes. Do not dispatch or draft the
 implementation-blind scientific rationale, shared normative core, engineering
-conformance specification, or PDFs until the successor manifest receives
-exact-byte approval, the remaining dispatch blockers are resolved, and the
-owner separately launches Stage B. Do not inspect an implementation candidate
-for conformity or make any implementation-conformity, validation, achieved-
+conformance specification, or PDFs until the versioned SCI-VAL binding is
+recorded in a separate increment. No further JINC scientific-owner question or
+wholesale Stage A review is required unless that binding cannot preserve the
+approved semantics exactly. Do not inspect an implementation candidate for
+conformity or make any implementation-conformity, validation, achieved-
 performance, readiness, or production claim under this delta.

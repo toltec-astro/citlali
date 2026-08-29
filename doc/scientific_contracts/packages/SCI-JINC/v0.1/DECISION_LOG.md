@@ -1,6 +1,7 @@
 # SCI-JINC v0.1 — Decision Log
 
-Status: Stage A launch decisions applied; Scope Brief and packet awaiting owner approval
+Status: complete exact-byte Stage A successor packet approved; Stage B not
+dispatched pending versioned SCI-VAL registry binding
 
 Scientific owner: Grant Wilson
 
@@ -28,6 +29,7 @@ Launch date: `2026-08-28`
 | `JINC-PROCESS-D016` | Apply only the owner-approved ODQ-107 Stage A delta: replace the broad availability/product framework with a fixed closed five-role bundle derived from recovered mathematics, distinguish whole-product failure from local support, defer every other role including ODQ-108 response/covariance products, remove the response/covariance table from author inputs, refresh affected controls/hashes, and return to the existing exact-byte gate without launching Stage B. |
 | `JINC-PROCESS-D017` | Apply only the owner-approved ODQ-109 Stage A delta: recast numerical policy around scientific conditioning and error negligible against the approximately `10^-3` relative instrument-fidelity scale; remove machine-specific bound, exact tie/bin/cache, bitwise and stronger-precision requirements as scientific blockers; preserve the accepted estimator/operator; refresh affected controls/hashes and return to the existing exact-byte gate without launching Stage B. |
 | `JINC-PROCESS-D018` | Apply only the owner-approved ODQ-110 Stage A delta: admit an occurrence to a finite map only when its resolved rounded cache center is in-domain; reject every overlapping footprint from an outside center; retain ordinary in-map edge crop; require no JINC-then-crop equivalence, edge correction, provenance or diagnostic; refresh affected controls/hashes and return to the exact-byte gate without launching Stage B. |
+| `JINC-PROCESS-D019` | Record Q002 approval of the complete exclusive packet represented by the manifest at `88dcce8b0f7b1d78053b25831b39cf370afd47cc`, manifest SHA-256 `52a8e843456a8cb033b7593d9b9f67fb83b0ee565c91c141d8e16d46b906140e`. Preserve all approved author-input bytes unchanged; close Stage A; treat the remaining versioned SCI-VAL binding as an administrative/interface prerequisite; create no Stage B normative content or PDF. |
 
 ## Recovered Scientific Decisions Applied To The Proposed Packet
 
@@ -70,19 +72,16 @@ and integration axes are not applied here.
 | `JINC-SCOPE-D015` | ODQ-109 closes scientific conditioning/numerical policy with one instrument-relevant requirement: total numerical error must be negligible compared with approximately `10^-3` relative fidelity. Finite-state, `Q_p>0`, `C_p!=0`, exact-cancellation, finite-negative and scale-invariance semantics remain; adequate summation/tie/bin/cache algorithms and tests are engineering choices, with no bitwise or stronger-precision requirement. |
 | `JINC-SCOPE-D016` | ODQ-110 applies the finite-map boundary first to the resolved rounded cache center. An outside center makes `I_ip=0` for every pixel and changes no fixed accumulator even when its square overlaps the map. An in-map center uses ordinary cropped square membership. Footprint-overlap admission and JINC-then-crop equivalence are not required; no edge correction, provenance or diagnostic product follows. |
 
-`JINC-SCOPE-D001--D016` are proposed packet boundary statements and become
-author inputs only if the scientific owner approves the exact Scope Brief and
-manifest.
+`JINC-SCOPE-D001--D016` are approved author-input boundary statements under
+`SCI-JINC-STAGE-A-Q002` for the exact packet at
+`88dcce8b0f7b1d78053b25831b39cf370afd47cc`.
 
-## Pending Owner Gate
+## Stage A Approval State
 
-The owner must approve or revise:
-
-- the scientific boundary and non-goals in `SCOPE_BRIEF.md`;
-- the recovered decision/supersession mapping;
-- the open-question disposition in
-  `SCIENTIFIC_OWNER_DECISION_LEDGER.md`; and
-- every exact content hash in `AUTHOR_PACKET_MANIFEST.md`.
-
-No approval of these Stage A controls would by itself approve the future
-Stage B substance or any implementation/evidence claim.
+Q002 approves the exact Scope Brief, recovered decision/supersession mapping,
+closed owner ledger, every author-packet digest, and the information firewall.
+The approved bytes remain unchanged. The versioned SCI-VAL source/profile
+registry binding for `SCI-JINC:jinc_map_contribution@1` is the remaining Stage
+B dispatch prerequisite; it is not an open JINC scientific-owner question.
+The approval establishes no future Stage B substance or implementation/
+evidence claim.

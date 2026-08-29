@@ -1,8 +1,7 @@
 # SCI-JINC v0.1 — Scientific-Owner Decision Ledger
 
-Status: ODQ-101, ODQ-102B, ODQ-103--107 and ODQ-109--110 decided; ODQ-108 deferred;
-bounded Stage A
-successor bytes awaiting exact owner approval
+Status: ODQ-101, ODQ-102B, ODQ-103--107 and ODQ-109--110 decided; ODQ-108
+deferred; exact Stage A successor bytes approved under Q002
 
 Scientific owner: Grant Wilson
 
@@ -47,7 +46,7 @@ No unresolved numbered scientific-scope ODQ remains in this Stage A ledger.
 | ID | Owning authority | State | Evidence or decision required | Exact blocked claim or output | Resolution authority | Resolution date | Affected documents |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `SCI-JINC-STAGE-A-Q001` | Scientific Contract Library owner | decided for predecessor bytes | Exact repaired Stage A candidate at `6639bff3d94b92ace8faf3e407ccaefd5a38ea1f` approved; manifest SHA-256 `771f04ce97b0cd08681f24959f1365cdd6673a77415638be6bb299769e8f97b6` | None for the immutable predecessor packet; changed allowed bytes require Q002 | Grant Wilson | `2026-08-28` | `SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-28.md` |
-| `SCI-JINC-STAGE-A-Q002` | Scientific Contract Library owner | open | Approve or revise the exact ODQ-101/102B/103/104/105/106/107/109/110 successor Scope Brief, registry source/cover, PTC-to-JINC r0.3 and AST-to-JINC r0.2 boundaries, parameter/association/time-support/observation/grouping/fixed-product/numerical-adequacy/center-admission controls, `SCI-JINC:jinc_map_contribution@1`, conventions extract, ledger dispositions, response/covariance exclusion and recomputed author-packet hashes | Commissioning any implementation-blind Stage B author from the successor packet | Grant Wilson | — | README; Scope; packet manifest; ODQ-101, ODQ-102B, ODQ-103--107 and ODQ-109--110 decision records; ODQ-108 deferral |
+| `SCI-JINC-STAGE-A-Q002` | Scientific Contract Library owner | decided for exact successor bytes | Complete exclusive Stage A successor packet at `88dcce8b0f7b1d78053b25831b39cf370afd47cc` approved; manifest SHA-256 `52a8e843456a8cb033b7593d9b9f67fb83b0ee565c91c141d8e16d46b906140e`; all sixteen object digests and the information firewall accepted without changing the approved bytes | None for authoring scope; Stage B dispatch still requires the separately versioned SCI-VAL binding for `SCI-JINC:jinc_map_contribution@1` | Grant Wilson | `2026-08-28` | `SCIENTIFIC_OWNER_STAGE_A_Q002_APPROVAL_2026-08-28.md`; immutable packet at approved commit |
 
 Implementation conformity, representation fidelity, validation, achieved
 response/performance, readiness, and production state are not owner questions
