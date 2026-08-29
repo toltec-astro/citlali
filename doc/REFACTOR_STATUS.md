@@ -60,8 +60,15 @@ associations from source times with the exact `< h/2` predicate; callers cannot
 inject associations. Relation cells retain the relation identity, and an
 explicit participant subset neither admits nor exposes unrequested networks.
 
-Local validation for the repaired implementation passes all 132 focused WP-7
-and SCI-ALIGN CTests, including 13 network-timing/common-analysis tests; all 864
+The first re-review of repair `b1d5c48c8` confirmed closure of the original
+availability, validity, identity, and admission defects but retained HOLD for a
+public full-parent handle that escaped the participant-bounded view and for
+missing executable ambiguity/collision evidence. The follow-up removes that
+handle, guards its absence at source level, and exercises fail-closed rejection
+when one source satisfies two slots or two sources satisfy one slot.
+
+Local validation for the repaired implementation passes all 133 focused WP-7
+and SCI-ALIGN CTests, including 14 network-timing/common-analysis tests; all 865
 repository CTests; all 207 baseline-tool tests; all 17 identity-acceptance
 validator tests; and all 129 required config unit tests plus downstream audits.
 A fresh read-only exact-SHA re-review is the next gate. No RTC terminal

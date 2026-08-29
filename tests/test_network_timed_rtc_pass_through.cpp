@@ -620,6 +620,15 @@ TEST(common_analysis_grid_paired_readout,
     EXPECT_TRUE(view->mapped(7, 0));
     EXPECT_THROW(view->network(8), std::out_of_range);
     EXPECT_THROW(view->mapped(8, 0), std::out_of_range);
+
+    const auto header =
+        std::filesystem::path{__FILE__}.parent_path().parent_path() /
+        "include/citlali/core/pipeline/common_analysis_grid_paired_readout.h";
+    std::ifstream stream(header);
+    ASSERT_TRUE(stream) << header;
+    std::ostringstream content;
+    content << stream.rdbuf();
+    EXPECT_EQ(content.str().find("native_parent_handle"), std::string::npos);
 }
 
 TEST(common_analysis_grid_paired_readout,
@@ -657,6 +666,45 @@ TEST(common_analysis_grid_paired_readout,
     const auto above = make_relation(82, above_half);
     EXPECT_FALSE(above->association(7, 0).mapped());
     EXPECT_FALSE(above->association(7, 1).mapped());
+}
+
+TEST(common_analysis_grid_paired_readout,
+     relation_rejects_ambiguous_slot_support_and_source_collision) {
+    const pipeline::NativeObservationScope scope{152390, 0, 4};
+    const auto request = [&](std::uint64_t identity, std::string epoch_set) {
+        return pipeline::CommonAnalysisGridRequest::admit(
+            {identity}, scope, "array-wide-ptc-pca", {0, 7},
+            std::move(epoch_set), 2, 2.0,
+            pipeline::CommonAnalysisGridAdmissionRule::strict_half_cadence,
+            pipeline::CommonAnalysisGridSupportPolicy::
+                preserve_partial_network_support,
+            pipeline::CommonAnalysisGridFailurePolicy::fail_closed);
+    };
+
+    constexpr double first_epoch = 1.0e9;
+    double second_epoch = first_epoch + 2.0;
+    for (int index = 0; index < 8; ++index)
+        second_epoch = std::nextafter(second_epoch, first_epoch);
+    double ambiguous_time = first_epoch + 1.0;
+    for (int index = 0; index < 4; ++index)
+        ambiguous_time = std::nextafter(ambiguous_time, first_epoch);
+    ASSERT_LT(std::abs(ambiguous_time - first_epoch), 1.0);
+    ASSERT_LT(std::abs(ambiguous_time - second_epoch), 1.0);
+    EXPECT_THROW(pipeline::CommonAnalysisGridRelation::admit(
+                     {{90}, 91}, request(90, "ambiguous-epochs"),
+                     std::vector<pipeline::NativeNetworkAlignment>{
+                         {0, 0, vector({ambiguous_time}), {10}},
+                         {7, 0, vector({first_epoch}), {20}}},
+                     vector({first_epoch, second_epoch})),
+                 std::logic_error);
+
+    EXPECT_THROW(pipeline::CommonAnalysisGridRelation::admit(
+                     {{92}, 93}, request(92, "collision-epochs"),
+                     std::vector<pipeline::NativeNetworkAlignment>{
+                         {0, 0, vector({0.1, 0.2}), {10, 11}},
+                         {7, 0, vector({3.0}), {20}}},
+                     vector({0.0, 3.0})),
+                 std::logic_error);
 }
 
 TEST(network_timed_rtc_pass_through,

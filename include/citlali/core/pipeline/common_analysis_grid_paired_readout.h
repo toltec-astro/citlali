@@ -456,10 +456,6 @@ public:
                 view_cell_count, mapped_cell_count});
     }
 
-    const std::shared_ptr<const PairedReadout> &
-    native_parent_handle() const noexcept {
-        return native_parent_;
-    }
     const std::shared_ptr<const CommonAnalysisGridRelation> &
     relation_handle() const noexcept {
         return relation_;
