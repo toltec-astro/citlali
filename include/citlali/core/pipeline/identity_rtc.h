@@ -489,14 +489,15 @@ public:
     }
     RtcPairDecision decision(
         TimestreamNetworkId network_id, TimestreamNativeRow native_row,
-        Eigen::Index detector_index) const noexcept {
+        Eigen::Index detector_index) const {
+        require_cell(network_id, native_row, detector_index);
         return evidence_->find_index(network_id, native_row, detector_index)
                    ? RtcPairDecision::ineligible
                    : RtcPairDecision::eligible;
     }
     const RtcEvidenceEvent *causal_evidence(
         TimestreamNetworkId network_id, TimestreamNativeRow native_row,
-        Eigen::Index detector_index) const noexcept {
+        Eigen::Index detector_index) const {
         return decision(network_id, native_row, detector_index) ==
                        RtcPairDecision::ineligible
                    ? evidence_->find(network_id, native_row,
@@ -511,6 +512,18 @@ private:
     RtcPlan(RtcPlanIdentity identity,
             std::shared_ptr<const RtcEvidence> evidence)
         : identity_{identity}, evidence_{std::move(evidence)} {}
+
+    void require_cell(
+        TimestreamNetworkId network_id, TimestreamNativeRow native_row,
+        Eigen::Index detector_index) const {
+        const auto &network_span = input_handle()->span(network_id);
+        if (native_row < network_span.first_native_row ||
+            native_row >= network_span.past_last_native_row) {
+            throw std::out_of_range(
+                "native row is outside RTC plan support");
+        }
+        (void)input_handle()->network(network_id).detector(detector_index);
+    }
 
     RtcPlanIdentity identity_;
     std::shared_ptr<const RtcEvidence> evidence_;

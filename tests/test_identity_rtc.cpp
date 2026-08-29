@@ -296,6 +296,27 @@ TEST(identity_rtc, apply_rejects_a_plan_bound_to_another_input_instance) {
 }
 
 TEST(identity_rtc,
+     pair_decision_queries_fail_closed_outside_the_plan_bound_domain) {
+    const auto fixture = identity_fixture();
+    const auto plan = identity_plan(fixture.view);
+    const auto result = pipeline::apply_identity_rtc(plan, fixture.view);
+
+    EXPECT_THROW(plan->decision(1, 10, 0), std::out_of_range);
+    EXPECT_THROW(plan->decision(0, 9, 0), std::out_of_range);
+    EXPECT_THROW(plan->decision(0, 14, 0), std::out_of_range);
+    EXPECT_THROW(plan->decision(0, 10, -1), std::out_of_range);
+    EXPECT_THROW(plan->decision(0, 10, 2), std::out_of_range);
+    EXPECT_THROW(plan->causal_evidence(0, 10, 2), std::out_of_range);
+
+    EXPECT_THROW(result.product->pair_decision(0, 10, -1),
+                 std::out_of_range);
+    EXPECT_THROW(result.product->pair_decision(0, 10, 2),
+                 std::out_of_range);
+    EXPECT_THROW(result.product->pair_causal_evidence(0, 10, 2),
+                 std::out_of_range);
+}
+
+TEST(identity_rtc,
      scientific_results_are_invariant_to_engineering_chunk_partition) {
     const auto full = identity_fixture();
     const auto first_chunk = pipeline::NativePairedReadoutView::admit(
