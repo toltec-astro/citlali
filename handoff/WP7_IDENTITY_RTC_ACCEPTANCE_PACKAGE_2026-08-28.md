@@ -6,22 +6,22 @@ The bounded implementation and repository-local gates are available. The
 project owner has assigned reconstructed native event time provisionally to
 the integration center, with primitive duration given by raw
 `AccumLen / FpgaFreq`. This is an engineering convention for the first route,
-not a claim that the producer's true timestamp semantics are known. Calibration
-remains explicitly pending. The representative real paired-data gate **passes**
-under that assignment at exact source revision
-`e75e635cb0f9372fdd58ef60b8c62dea66dfb6ba`. The retained
-[v2 observation 152390 record](WP7_IDENTITY_RTC_ACCEPTANCE_152390_V2_2026-08-28.json)
+not a claim that the producer's true timestamp semantics are known.
+Calibration remains explicitly pending.
+
+The representative real paired-data gate **passes** under that assignment at
+exact source revision `45b1948e041ce3a709e2d63b5dd63cf2b0cd24a2`.
+The retained
+[v3 observation 152390 record](WP7_IDENTITY_RTC_ACCEPTANCE_152390_V3_2026-08-29.json)
 passes the repository validator and has SHA-256
-`4d7aadaafcc5cd792d007c7ae110d29961e15c3004a41be7be99671177661dbb`.
-The previously retained
-[observation 152390 record](WP7_IDENTITY_RTC_ACCEPTANCE_152390_2026-08-28.json)
-used a locally constructed midpoint interval and is therefore superseded as
-acceptance evidence. It remains useful as historical execution diagnostics,
-but the v2 validator intentionally rejects it.
+`cb300ca36b9a9552d075311d3bf19df4ba68c5186ee92351918002e5e7f46a96`.
+The earlier v1 and v2 records remain historical execution diagnostics but are
+superseded because they projected the identity RTC product through ALIGN's
+common grid.
 
 The exact provisional policy is the
 [support assignment](WP7_NATIVE_OCCURRENCE_SUPPORT_ASSIGNMENT_2026-08-28.yaml).
-The v2 evidence record must preserve its SHA-256, provisional status, and
+The v3 evidence record must preserve its SHA-256, provisional status, and
 calibration disposition. This package can therefore produce representative
 execution evidence while the timing calibration is investigated; it does not
 turn the assignment into producer authority and still will not by itself
@@ -35,9 +35,10 @@ The implementation branch must retain both accepted inputs as exact ancestors:
 
 The four review boundaries are the base merge, paired native ingress/product
 semantics, identity RTC learn-consider-apply, and RTC-only in-memory route and
-publication. The paired product retains each network's native occurrence axis.
-Only the separately owned ALIGN relation supplies RTC's common-slot admission.
-No AST, CAL, VAL, PTC, or MAP operation belongs to this acceptance run.
+publication. The paired product and RTC terminal product retain each network's
+native occurrence axis. This route does not consume, invoke, or publish an
+ALIGN common-slot association. No AST, CAL, VAL, PTC, or MAP operation belongs
+to this acceptance run.
 
 ## Local exact-revision gates
 
@@ -50,7 +51,9 @@ cmake --build build --target citlali_cli -j 8
 cmake --build build --target citlali_wp7_timestream_test citlali_sci_align_test -j 8
 cmake --build build --target citlali_wp7_identity_rtc_acceptance -j 8
 ctest --test-dir build --output-on-failure -R '^citlali::(wp7|sci_align)::'
-$HOME/tolteca/bin/python tools/wp7/test_verify_identity_rtc_acceptance.py
+ctest --test-dir build --output-on-failure
+$HOME/tolteca/bin/python -m unittest discover -s tools/baseline -p 'test_*.py'
+$HOME/tolteca/bin/python -m unittest tools.wp7.test_verify_identity_rtc_acceptance
 $HOME/tolteca/bin/python tools/config/run_config_preflight.py --require-all
 build/bin/citlali --version
 git rev-parse HEAD
@@ -79,8 +82,10 @@ metadata; binds both the Tune and science-readout accumulation lengths into a
 temporary metadata-normalized view so Kidscpp does not consult its legacy
 default; reconstructs native timing from raw packet facts; runs the configured
 sequential `gainlintrend` KIDs transform; atomically moves each solver's paired
-`x/r` result into `PairedReadout`; and runs the identity RTC route as one full
-partition and two chunks. The normalized Tune view preserves the original
+`x/r` result into `PairedReadout`; and runs the identity RTC route directly on
+each network's native occurrence support as one full partition and two chunks.
+It does not construct or pass an ALIGN common-slot plan. The normalized Tune
+view preserves the original
 numeric rows and is removed after execution; the mapping identity retains the
 original Tune hash, both accumulation lengths, the adapter revision, and the
 Kidscpp revision. The local Kidscpp and Tula checkouts intentionally carry the
@@ -119,8 +124,10 @@ member validity, and support. It then invokes:
 
 ```cpp
 citlali::pipeline::RtcOnlyProductSlot publication;
+const auto native_spans =
+    citlali::pipeline::full_native_occurrence_spans(*paired_readout);
 const auto outcome = citlali::pipeline::run_identity_rtc_only(
-    {{run_id}, paired_readout, align_plan, first_slot, past_last_slot},
+    {{run_id}, paired_readout, native_spans},
     publication);
 ```
 
@@ -131,8 +138,8 @@ paired-ingress-through-publication route, not only the identity view creation.
 Run at least two engineering chunk partitions over the same scientific
 occurrences. Product, buffer, plan-instance, and transaction identities may
 differ. The exact scientific occurrence identities, `x/r` values, primitive
-support, local causes, pair decisions, selected times, and representative
-native correspondence must not.
+support, local causes, pair decisions, native reconstructed times, and
+representative native correspondence must not.
 
 ## Required comparisons
 
@@ -142,11 +149,12 @@ The focused suite plus acceptance record must demonstrate:
   participant inventory;
 - every native occurrence interval was bound to the explicit provisional
   event-time assignment and raw duration relation;
-- both `x` and `r` were compared bitwise with their native mapped parent at
-  every mapped detector occurrence;
+- both `x` and `r` were compared bitwise at paired ingress and again through
+  the RTC product at every native detector occurrence;
 - occurrence identity, primitive support, member-local causes, pair-wide
-  decisions and causal evidence, selected time, and representative native
-  occurrence were checked at every aligned detector occurrence;
+  decisions and causal evidence were checked at every native detector
+  occurrence, while native time, support, and representative correspondence
+  were checked at every native occurrence;
 - direct `r` evidence can make `x` ineligible, direct `x` evidence can make `r`
   ineligible, and the member-local cause remains on its true coordinate;
 - the identity operator has factor one, diagonal coefficients one, and cross
@@ -154,10 +162,12 @@ The focused suite plus acceptance record must demonstrate:
 - `RtcTimestream` owns no duplicate numerical plane;
 - RTC-only completion is published exactly once and failure publishes no false
   completion;
-- no AST interpolation and no CAL, VAL, PTC, or MAP operation was invoked; and
+- the route entered native admission, Learn, Consider, Apply, and publication
+  exactly once, while compile-time dependencies and source guards exclude
+  common-grid, AST, CAL, VAL, PTC, and MAP entry points; and
 - no unexpected error- or critical-level record occurred.
 
-The representative 152390 slice contains 227,106 ineligible pairs, all caused
+The representative 152390 slice contains 227,328 ineligible pairs, all caused
 by validity evidence present on both `x` and `r`; it does not happen to contain
 a one-sided invalid pair. The focused identity-RTC tests therefore remain the
 evidence for the required asymmetric `r`-to-`x` and `x`-to-`r` conservative
@@ -165,23 +175,31 @@ consequences and retained member-local causes. The real-data record verifies
 the same pair-wide resolution and cause carriage exhaustively for the evidence
 origins actually present in this slice.
 
-## Recorded provisional-assignment execution
+## Recorded native-axis provisional-assignment execution
 
-The passing v2 run covers 11 networks, 5,518 detectors, 2,048 native rows,
-22,528 native occurrences, 11,300,864 native detector occurrences, and
-11,289,828 aligned detector occurrences. All native occurrences match the
-provisional support assignment. It compared 22,579,656 paired values and
-performed 11,289,828 comparisons each for identity, support, pair decision,
-and causal evidence. All scientific, chunk-partition, selected-time,
-native-correspondence, assigned-support, and out-of-scope call mismatch counts
+The passing v3 run covers 11 networks, 5,518 detectors, 2,048 rows per
+network, 22,528 native occurrences, and 11,300,864 native detector
+occurrences. Every native occurrence is retained and matches the provisional
+support assignment. The runner compared 22,601,728 values at paired ingress
+and another 22,601,728 values through the RTC product. It checked identity,
+decision, local causes, and causal evidence at all 11,300,864 native detector
+occurrences, and checked native time, support, and representative native
+correspondence at all 22,528 native occurrences. All scientific,
+chunk-partition, timing, correspondence, and assigned-support mismatch counts
 are zero.
 
 Paired ingress reports 226,608,108 logical owned bytes. Compact RTC evidence
-owns 3,633,696 bytes for 227,106 events, the plan owns 3,633,696 bytes, and RTC
-owns zero numerical bytes. Measured paired-ingress-through-publication time is
-4.026 seconds wall and 3.923 seconds CPU, with peak RSS 617,414,656 bytes.
-These measurements characterize this representative local run rather than a
-general performance qualification.
+owns 3,637,248 bytes for 227,328 events. The identity plan owns no dynamic
+bytes and RTC owns zero numerical bytes. Measured paired-ingress-through-
+publication time is 2.650 seconds wall and 2.559 seconds CPU, with peak RSS
+608,501,760 bytes. These measurements characterize this representative local
+run rather than a general performance qualification.
+
+The superseded v2 run selected 11,289,828 detector occurrences through an
+ALIGN common grid and therefore omitted 11,036 native detector occurrences
+from the RTC product. Its otherwise useful zero-mismatch measurements remain
+historical diagnostics, not acceptance evidence for the corrected native-axis
+claim.
 
 ## Prior v1 diagnostic execution (superseded as acceptance)
 
@@ -204,13 +222,14 @@ not a general performance qualification.
 ## Evidence record
 
 Write one JSON record with schema
-`citlali-wp7-identity-rtc-acceptance-v2` and the fields required by
+`citlali-wp7-identity-rtc-acceptance-v3` and the fields required by
 [`tools/wp7/verify_identity_rtc_acceptance.py`](../tools/wp7/verify_identity_rtc_acceptance.py).
 The validator intentionally requires real paired data, an owner run, exact
 ancestry, the provisional support assignment and its SHA-256, an explicit
 calibration-pending disposition, complete assigned-support binding, full-cell
-comparisons, at least two chunk partitions, positive timing and RSS
-measurements, and zero scientific mismatches or out-of-scope calls.
+native-axis comparisons, at least two chunk partitions, positive timing and
+RSS measurements, exact allowed-stage entry counts, zero plan and RTC numeric
+allocation, and zero scientific mismatches.
 
 Validate it with:
 
@@ -219,7 +238,7 @@ $HOME/tolteca/bin/python tools/wp7/verify_identity_rtc_acceptance.py acceptance.
 ```
 
 A passing record is representative execution evidence for this bounded
-identity route. Fresh independent read-only conformance review remains a
-separate gate on the completed vertical increment and must assess the exact
-implementation revision plus this evidence. Legacy activation and retirement
-remain separate owner decisions.
+identity route. Fresh independent read-only re-review remains a separate gate
+on the completed vertical increment and must assess exact implementation
+revision `45b1948e041ce3a709e2d63b5dd63cf2b0cd24a2` plus the v3 record.
+Legacy activation and retirement remain separate owner decisions.
