@@ -49,7 +49,7 @@ artifact after exact-byte approval. This manager ledger is not an author input.
 | `SCI-NOI-ODQ-103` | Source-imprint/cancellation target and claim | Decision artifact ODQ-103 | **decided — randomization intends source suppression but does not by construction establish source-free maps; exact Stage-B terminology delegated** |
 | `SCI-NOI-ODQ-104` | Consequential fixed/relearned state classification per method | Decision artifact ODQ-104 | **decided by explicit owner approval — every consequential adjacent state classified; relearned stages and resulting changed state named; no exhaustive implementation-provenance requirement** |
 | `SCI-NOI-ODQ-105A` | Enabled/disabled and partial-completion behavior | Decision artifact ODQ-105A | **decided — rejected design candidates are not members/failures; any admitted-member failure fails the ensemble closed for every UNC use; no survivor ensemble** |
-| `SCI-NOI-ODQ-105B` | Initial UNC target, center, estimator, correction, missingness, and effective information | Decision artifact ODQ-105B | open |
+| `SCI-NOI-ODQ-105B` | Initial UNC target, center, estimator, correction, domain, and effective information | Decision artifact ODQ-105B | **decided — zero-centered design-weighted conditional randomization second moment on common all-member domain; no empirical recentering, `B-1`, or physical-noise interpretation** |
 | `SCI-NOI-ODQ-106` | Covariance representations, domain, rank, null space, and unavailable policy | Decision artifact row 106 | open |
 | `SCI-NOI-ODQ-107` | Marginal inverse variance, precision, and consumer-effective weights | Decision artifact row 107 | open |
 | `SCI-NOI-ODQ-108` | STD numerator, scale transformation, compatibility, identity, and claim | Decision artifact row 108 | open |

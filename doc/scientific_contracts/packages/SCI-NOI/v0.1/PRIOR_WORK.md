@@ -192,10 +192,13 @@ tolerance-conditioned construction is nonbinding guidance. The route's
 numerical gates remain unavailable. ODQ-104 is explicitly owner-approved:
 every GEN method classifies scientifically consequential adjacent state, and a
 relearned method names its consequential rerun/relearn stages and resulting
-changed state without requiring exhaustive implementation provenance. The next owner question is
-`SCI-NOI-ODQ-105B`, the initial UNC target law and estimator. ODQ-103 approves
+changed state without requiring exhaustive implementation provenance. The next
+owner question is `SCI-NOI-ODQ-106`, covariance representation and rank.
+ODQ-103 approves
 the source-suppression intent and no-source-free-by-construction boundary while
 delegating exact terminology to the Stage-B scientific author. ODQ-105A now
 fails GEN closed for UNC if any admitted member fails; rejected design
 candidates are not members, and completed survivors cannot form a partial
-ensemble.
+ensemble. ODQ-105B approves a zero-centered, exact-design-weighted conditional
+randomization second moment on the common all-member domain, without empirical
+recentering, `B-1`, or physical repeated-noise meaning.

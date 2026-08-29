@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Product Role And Lifecycle Table
 
-Artifact identity: `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.3`
+Artifact identity: `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.4`
 
 Status: proposed sanitized Stage A scientific input; exact bytes await owner
 approval
@@ -14,7 +14,7 @@ approval
 | GEN ensemble | Exact admitted member identities, joint design, all distinct counts, complement/equivalence/duplicate state, design rank, all-member completion, source imprint, persistence/reconstruction, lifecycle | Not variance/covariance merely by existence; one admitted-member failure fails the ensemble for UNC and survivors do not form a partial ensemble |
 | UNC member admission | Named-use decision consuming immutable GEN completion/QC facts for one exact UNC method | Cannot redefine completion, clear producer causes, or admit the ensemble by itself |
 | UNC ensemble admission | One exact completed design admitted to one exact target/estimator/domain | Not a universal covariance or consumer permission |
-| UNC center/second moment | Exact target/reference, design weights, centering, and finite correction | Not covariance unless exact target/design conditions establish it |
+| UNC zero-centered conditional second moment | `V_hat_cond(p)=sum_b omega_b M_b(p)^2` on the common all-member domain; known zero center; exact normalized design weights; no empirical recentering or `B-1`; dependence/rank/effective-information and estimator-uncertainty state | Squared signal units; not automatically physical-noise variance, MAP covariance, precision, or significance; square root and later transformations are separate |
 | UNC variance/covariance | Target law, estimator, representation, common/missing-data domain, rank/null, units, omitted terms, uncertainty/calibration, lifecycle | Not precision, exposure, MAP coefficient, or significance |
 | UNC marginal inverse variance | Inverse of one authorized positive marginal variance on its valid domain | Not a full precision matrix |
 | UNC precision | Exact inverse/generalized inverse on a declared subspace | Not `1/diag(C)` by default |

@@ -96,6 +96,10 @@ def main() -> None:
         "Candidate assignments rejected during finite-design construction",
         "fails the complete GEN ensemble",
         "survivor or partial design",
+        "V_hat_cond(p) = sum_b omega_b M_b(p)^2",
+        "finite ensemble mean is not subtracted",
+        "no `B-1` correction",
+        "common all-member domain",
     ]
     for token in required:
         if token not in package_text:

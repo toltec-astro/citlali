@@ -243,6 +243,21 @@ precision. Realization count is not exposure or independent astronomical
 sample count, and increasing it does not reduce parent-map noise as
 `1/sqrt(B)`.
 
+ODQ-105B approves the initial pointwise estimand on the exact domain where
+every admitted realization supplies a valid finite value:
+
+```text
+V_hat_cond(p) = sum_b omega_b M_b(p)^2,
+sum_b omega_b = 1.
+```
+
+The exact finite design supplies the nonnegative weights. The declared center
+is zero, the finite ensemble mean is not subtracted, and no `B-1` correction
+applies. The result is a conditional randomization second moment that retains
+source imprint and structured residual content; it is not automatically
+physical-noise variance or MAP covariance. Locations outside the common all-
+member domain are unavailable for this initial method.
+
 No full pixel covariance is universally required. The representation must be
 adequate only for its exact claim and honest about rank, null space, domain,
 regularization, and omissions.
@@ -393,7 +408,8 @@ tolerance-conditioned construction is a nonbinding suggestion, not advance
 approval. ODQ-103 approves the source-suppression intent and no-source-free-by-
 construction boundary while delegating exact terminology to the Stage-B
 scientific author. ODQ-105A approves fail-closed completion for every admitted
-member. The next walkthrough question is `SCI-NOI-ODQ-105B`. Every later
+member. ODQ-105B approves the initial zero-centered conditional randomization
+second moment. The next walkthrough question is `SCI-NOI-ODQ-106`. Every later
 decision and the artifact's final hash still require explicit owner review.
 
 ## 13. Non-Goals And Claim Boundary

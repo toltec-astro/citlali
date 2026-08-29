@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Finite-Design UNC Estimator And Covariance Table
 
-Artifact identity: `SCI-NOI_FINITE_DESIGN_UNC_TABLE v0.1/r0.2`
+Artifact identity: `SCI-NOI_FINITE_DESIGN_UNC_TABLE v0.1/r0.3`
 
 Status: proposed sanitized Stage A scientific input; exact bytes await owner
 approval
@@ -22,19 +22,33 @@ Every `NOI-UNC` method binds one complete row set below. No universal `1/B`,
 | Calibration and omissions | External calibration/overlap/independence state; response, nuisance, source leakage, learning/selection, and other omitted terms | “Empirical” does not mean calibrated or physical |
 | Claim and use | Exact conditional/empirical meaning, allowed consumers/statistics, and use-specific adequacy | One-use adequacy does not authorize another covariance or tail claim |
 
-## Initial Representation Candidate
+## Approved Initial Estimand
 
-The Stage A recommendation, still awaiting owner disposition, is:
+ODQ-105B authorizes a zero-centered conditional detector-sign-randomization
+second moment. For one exact all-members-successful ensemble, define
 
-- permit diagonal conditional variance and exact fixed-projection uncertainty
-  when their complete estimators are approved;
-- permit retained-ensemble or structured covariance only as separately named
-  method-specific products;
-- permit covariance to remain unavailable with exact cause and consequence;
-- require common completed membership or the exact missing-data properties in
-  the table; and
-- require rank, null-space, regularization, effective-information, and omitted-
-  term disclosure for every numerical representation.
+```text
+D_common = {p : every admitted realization M_b supplies a valid finite value at p},
+V_hat_cond(p) = sum_b omega_b M_b(p)^2,
+sum_b omega_b = 1.
+```
+
+The finite design supplies the exact nonnegative `omega_b`; equal weights are
+not inferred. The center is the known design target zero, so the finite
+ensemble mean is not subtracted and no `B-1` correction applies. Residual source
+imprint and structured nonzero content therefore remain in the second moment.
+Outside `D_common`, the initial estimator is unavailable; it does not silently
+use a smaller member subset.
+
+The product records assignment dependence, complement structure, every member
+count, exact design rank, use-specific effective information, and uncertainty
+of `V_hat_cond` or an explicit unavailable state. It has squared signal units
+and is not automatically physical-noise variance or MAP covariance. A square
+root, projection, off-diagonal covariance, inverse, weight, or standardized
+signal is a separately identified transformation/product.
+
+ODQ-106 still governs additional covariance representations, domains, rank,
+null space, and unavailable states.
 
 Pseudo-realization count is not exposure, independent astronomical count, or
 evidence that parent-map noise falls as `1/sqrt(B)`. Additional members may

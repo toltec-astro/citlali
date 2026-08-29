@@ -494,8 +494,22 @@ cause/context without exhaustive implementation provenance. Disabled remains
 explicit zero-member/no-work; inability to resolve the required admitted design
 is a design-resolution failure rather than an individual candidate failure.
 
-The next walkthrough question is `SCI-NOI-ODQ-105B`, the initial UNC target law
-and estimator. Later granular decisions, exact packet bytes/hashes, and
+Grant Wilson approved `SCI-NOI-ODQ-105B` on `2026-08-29`. The initial UNC
+estimand is the zero-centered conditional detector-sign-randomization second
+moment `V_hat_cond(p)=sum_b omega_b M_b(p)^2`, using exact normalized
+finite-design weights on the common domain where every admitted realization
+has a valid finite value. The ensemble mean is not subtracted and no `B-1`
+correction applies. Dependence, complement structure, counts, design rank,
+effective information, and estimator uncertainty/unavailability must be
+reported; realization count is not independent astronomical count or exposure.
+The squared-signal-unit result retains source imprint and structured nonzero
+content and is not automatically physical-noise variance or MAP covariance.
+Square root, projection, off-diagonal covariance, inverse, weight, and STD
+transformations remain separately governed. Numerical availability remains
+blocked on the existing GEN/design/domain/adequacy gates.
+
+The next walkthrough question is `SCI-NOI-ODQ-106`, covariance representation
+and rank. Later granular decisions, exact packet bytes/hashes, and
 required source/profile Registry bindings remain under owner review.
 MAP/pre-MAP numerical parents remain
 unavailable pending the exact PTC MAP-facing coefficient and owner-admitted

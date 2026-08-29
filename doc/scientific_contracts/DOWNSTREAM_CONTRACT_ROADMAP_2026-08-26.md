@@ -155,7 +155,10 @@ suppression but does not by construction establish source-free maps; exact
 terminology is delegated to the Stage-B scientific author. ODQ-105A now fails
 GEN closed for every UNC use if any admitted realization fails; rejected design
 candidates are not members/failures and completed survivors cannot form a
-partial ensemble. ODQ-105B, the initial UNC target law and estimator, is next.
+partial ensemble. ODQ-105B now approves a zero-centered, exact-design-weighted
+conditional randomization second moment on the common all-member domain, with
+no empirical recentering, `B-1`, or physical-noise interpretation. ODQ-106,
+covariance representation and rank, is next.
 Conditional Stage B remains blocked on exact
 bytes/hashes, granular owner decisions or explicit unavailability, and required
 source/profile bindings. The frozen MAP/pre-MAP

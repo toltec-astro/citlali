@@ -1,8 +1,8 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.9`
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.10`
 
-Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, and ODQ-105A owner-approved; exact
+Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, ODQ-105A, and ODQ-105B owner-approved; exact
 finite-design mechanics delegated to the scientific-contract author under
 ODQ-102D; later decisions remain open; not yet an allowed Stage B authority
 
@@ -246,19 +246,27 @@ not approve another decision or make an unresolved numerical route available.
 - **Exact question:** What target law, center, moment/covariance estimator,
   normalization, finite-design correction, and effective-information meaning
   define the first UNC method?
-- **Recommended disposition:** authorize conditional assignment-law scatter
-  for one completed design, with center and estimator selected from the UNC
-  table; infer neither a universal `1/B` or `1/(B-1)` formula nor physical
-  repeated-observation noise.
+- **Approved disposition:** authorize the zero-centered conditional detector-
+  sign-randomization second moment for one exact all-members-successful design.
+  On the common domain where every admitted realization supplies a valid finite
+  `M_b(p)`, use `V_hat_cond(p)=sum_b omega_b M_b(p)^2`, with exact nonnegative
+  normalized weights supplied by the finite design. Do not subtract the finite
+  ensemble mean and use no `B-1` correction. Report design dependence, rank,
+  effective information, and estimator uncertainty/unavailability; infer
+  neither independent observations nor physical repeated-observation noise.
 - **Alternatives:** fixed projected uncertainty, second moment about a known
   center, empirical covariance, or unavailable.
 - **Scientific consequences:** determines the exact estimated quantity and
   downstream claim ceiling.
-- **Conservative state while open:** all numerical UNC estimators unavailable.
+- **Conservative state:** the estimand is approved but numerically unavailable
+  until GEN, finite-design/weight, all-member-completion, common-domain, and
+  use-specific adequacy gates are realized.
 - **Affected artifacts:** UNC table/taxonomy/products, ensemble-admission
   profile, STD eligibility.
-- **Exact bytes changed by approval:** target, center, estimator, correction,
-  missingness/dependence, and uncertainty-of-uncertainty fields.
+- **Exact bytes changed by approval:** conditional assignment-law target; known
+  zero center; weighted second-moment estimator; no empirical recentering or
+  `B-1`; common all-member domain; dependence/rank/effective-information and
+  uncertainty-of-estimate reporting; and physical-noise/covariance claim limit.
 
 ### `SCI-NOI-ODQ-106` — covariance representation and rank
 

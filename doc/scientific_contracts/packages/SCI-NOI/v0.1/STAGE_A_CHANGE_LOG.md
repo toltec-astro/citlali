@@ -180,6 +180,25 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
     product/lifecycle table, r0.2 of the finite-design UNC table, and r0.9
     packet/decision records without changing numerical availability.
 
+## ODQ-105B Initial UNC Estimand Update
+
+52. Approved the zero-centered conditional detector-sign-randomization second
+    moment with exact normalized finite-design weights.
+53. Required the common domain where every admitted realization supplies a
+    valid finite value; prohibited silent per-location member subsets.
+54. Prohibited empirical-mean subtraction and `B-1`; required source imprint
+    and structured nonzero content to remain in the second moment.
+55. Required dependence, complement structure, counts, exact design rank,
+    use-specific effective information, and estimator-uncertainty or explicit
+    unavailability disclosure without treating members as independent
+    astronomical observations.
+56. Preserved squared-signal-unit, conditional-randomization meaning and made
+    square root, projection, off-diagonal covariance, inverse, weight, and STD
+    transformations separate later methods.
+57. Advanced the walkthrough to ODQ-106 and published r0.3 of the finite-design
+    UNC table, r0.4 of the product/lifecycle table, r0.2 of the STD table, and
+    r0.10 packet/decision records without creating numerical availability.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance

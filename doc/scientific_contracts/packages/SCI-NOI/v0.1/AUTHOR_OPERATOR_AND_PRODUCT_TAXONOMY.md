@@ -1,7 +1,7 @@
 # SCI-NOI v0.1 — Collision-Free Operator And Product Taxonomy
 
-Status: proposed sanitized Stage B author input; ODQ-101, ODQ-102A/B/C, and ODQ-104
-incorporated; exact bytes await owner approval
+Status: proposed sanitized Stage B author input; ODQ-101, ODQ-102A/B/C,
+ODQ-103/104/105A/105B incorporated; exact bytes await owner approval
 
 The semantic prefixes are:
 
@@ -46,6 +46,7 @@ MAP owns only conforming application within frozen ordinary accumulation.
 
 | Candidate family | Logical role | Explicit limit |
 | --- | --- | --- |
+| `NOI-UNC/CONDITIONAL-RANDOMIZATION-SECOND-MOMENT` | Owner-approved zero-centered, design-weighted pointwise second moment on the common all-member domain | Conditional assignment-law quantity in squared signal units; not automatically physical-noise variance, covariance, precision, or significance; numerical realization remains gated |
 | `NOI-UNC/EMPIRICAL-SCALE` | One declared scalar or projected scale and uncertainty-of-scale state | Not covariance or significance by existence |
 | `NOI-UNC/DIAGONAL-VARIANCE` | Marginal variance diagonal on an exact domain | No off-diagonal or precision claim |
 | `NOI-UNC/STRUCTURED-COVARIANCE` | Stationary/kernel, block, spectral, low-rank, sparse, or another exact structure | Representation and regularization are method identity |

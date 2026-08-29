@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — STD Numerator, Scale, And Claim Table
 
-Artifact identity: `SCI-NOI_STD_NUMERATOR_SCALE_CLAIM v0.1/r0.1`
+Artifact identity: `SCI-NOI_STD_NUMERATOR_SCALE_CLAIM v0.1/r0.2`
 
 Status: proposed sanitized Stage A scientific input; exact bytes await owner
 approval
@@ -34,4 +34,7 @@ The Stage A numerator/scale pair remains an owner decision. A normalized MAP
 signal or a numerically realized `jinc_map` is a candidate numerator; a
 standard deviation, standard error, projected uncertainty, calibrated scale,
 or another transformed positive signal-unit UNC quantity is a candidate scale.
-No candidate pairing becomes available by appearing in this table.
+ODQ-105B's `V_hat_cond` has squared signal units and is not a direct
+denominator. Its square root would require an exact authorized transformation,
+compatibility/domain rule, and later ODQ-108 pairing. No candidate pairing
+becomes available by appearing in this table.

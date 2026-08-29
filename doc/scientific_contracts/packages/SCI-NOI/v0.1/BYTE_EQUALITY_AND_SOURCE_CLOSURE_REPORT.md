@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Byte-Equality And Source-Closure Report
 
-Report identity: `SCI-NOI_STAGE_A_SOURCE_CLOSURE v0.1/r0.9`
+Report identity: `SCI-NOI_STAGE_A_SOURCE_CLOSURE v0.1/r0.10`
 
 Prepared: `2026-08-29`
 
@@ -25,6 +25,7 @@ excluded from this file.
 | `SCIENTIFIC_OWNER_ODQ_103_APPROVAL_2026-08-29.md` | `fab5a83e4e8039d7efa949d1eb43df5697eb640e5097adff7bcc4cafd940b864` | Source-suppression scientific content approval and Stage-B terminology delegation; manager-facing, not admitted to the future author |
 | `SCIENTIFIC_OWNER_ODQ_104_APPROVAL_2026-08-29.md` | `28d9327eb5a466750cc755c8716545a71c6eb96be3f30863d80df5d405dcefb1` | Consequential-state method-definition approval and exhaustive-provenance limit; manager-facing, not admitted to the future author |
 | `SCIENTIFIC_OWNER_ODQ_105A_APPROVAL_2026-08-29.md` | `fde0f05551fd7595b2d3d178efc0bb077409cb4ed054fec567563e4d35612ce1` | Candidate/admission distinction, ensemble-wide fail-closed completion, and bounded diagnostic reporting; manager-facing, not admitted to the future author |
+| `SCIENTIFIC_OWNER_ODQ_105B_APPROVAL_2026-08-29.md` | `6216c03e89739a12e0bffc74b7552f267baf8fd716782e9aedaae7bdd3e7e2cb` | Initial zero-centered conditional randomization second-moment approval; manager-facing, not admitted to the future author |
 
 ## Required Stage A Closure Packet
 
@@ -34,21 +35,21 @@ bytes close.
 
 | Directive item | Exact object and identity | SHA-256 | Authority/compatibility state |
 | --- | --- | --- | --- |
-| 1 | `SCOPE_BRIEF.md` | `467092ed0ec5437857a4b72c7093c76f99e87c2460c3759f72e6ac9da28a84ef` | ODQ-101/102A/102B/102C/103/104/105A incorporated; ODQ-102D author-delegated; exact mechanics conditional |
-| 2 | `SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`, `SCI-NOI_OWNER_DECISIONS v0.1/r0.9` | `4f9e904eea5ca10f6f981083fddd20d80e1bb44b0bb153aa2662e82690a97087` | ODQ-101/102A/102B/102C/103/104/105A explicitly owner-approved; exact terminology and mechanics delegated |
+| 1 | `SCOPE_BRIEF.md` | `e5eeaeb8f951c63434fb457471ffdaff01ea83f2a68d03fab0a6a6e7b53c4447` | ODQ-101/102A/102B/102C/103/104/105A/105B incorporated; ODQ-102D author-delegated; exact mechanics conditional |
+| 2 | `SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`, `SCI-NOI_OWNER_DECISIONS v0.1/r0.10` | `e5c7ea0b083a782a938174db3291aa5a03feeea9498a085bc826e39d9c668230` | ODQ-101/102A/102B/102C/103/104/105A/105B explicitly owner-approved; exact terminology and mechanics delegated |
 | 3 | `SCI-MAP_TO_SCI-NOI_BOUNDARY.md`, `SCI-MAP_TO_SCI-NOI v0.1/r0.2` | `42e4449cef69f8f362ccb064c48ec6bb30fcee94a9f285eda4a96e1a25a2458d` | Sanitized exact-source extract; realized-MAP route unselected |
 | 4 | `SCI-JINC_TO_SCI-NOI_BOUNDARY.md`, `SCI-JINC_TO_SCI-NOI v0.1/r0.2` | `3bdf5f620940eae213dfd82edd8e421e343b4e64b4e721d3fdef2530f857cd99` | Sanitized exact-source extract; JINC routes unselected |
 | 5 | `SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md`, `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.6` | `0a6484058569930cee62e80e04ca2045c107fde67603f662473ae471406f905c` | MAP route/coherence/network balance and source-suppression claim boundary selected; exact design author-delegated and unavailable; JINC host unselected |
 | 6 | `NOI_GEN_PARENT_OPERATOR_GRAPH.md`, `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.6` | `09ec524a46bde9c6085069e92f4f25b543bd99bfed90939f63195294473d0059` | Approved conditioning, route, coherence, balance, and consequential-state definition; exact mechanics author-delegated; five identities distinct |
 | 7 | `ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT_SPECIFICATION.md`, `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.6` | `6c92b04265ece3f70e4568d5a902ae8ad67713df18b31ee32533cbdc2f22a13a` | Coherence, balance, source-suppression claim boundary, and fail-closed admitted-member completion approved; mechanics and terminology author-delegated |
-| 8 | `FINITE_DESIGN_UNC_ESTIMATOR_AND_COVARIANCE_TABLE.md`, `SCI-NOI_FINITE_DESIGN_UNC_TABLE v0.1/r0.2` | `1a4e83216a2d30d7d05675fced53a7a386e852cd10dc826fabf4240f420f99da` | Candidate decision surface; failed GEN ensembles and survivors unavailable to UNC; numerical UNC unavailable |
-| 9 | `STD_NUMERATOR_SCALE_AND_CLAIM_TABLE.md`, `SCI-NOI_STD_NUMERATOR_SCALE_CLAIM v0.1/r0.1` | `960e46273ca1653272bd6078bc5715f880909a3978357842a024cf90a0593a98` | Unit `1`; numerical STD unavailable |
-| 10 | `SCI-NOI_VAL_PROFILE_DRAFTS.md` | `11748c5f583f105a1759eb396e2a3584c722a8c8a63c711322a87ac0aa4814ae` | Four NOI-owned drafts; fail-closed ensemble admission plus selected route/coherence/balance/source boundary proposed; unapproved/unregistered |
+| 8 | `FINITE_DESIGN_UNC_ESTIMATOR_AND_COVARIANCE_TABLE.md`, `SCI-NOI_FINITE_DESIGN_UNC_TABLE v0.1/r0.3` | `74b3235f93ce7f4399a138ccc33cc5a9e394e26f67694b718418ce3d0249f35d` | Initial zero-centered design-weighted conditional second moment approved; additional covariance representations open; numerical UNC unavailable |
+| 9 | `STD_NUMERATOR_SCALE_AND_CLAIM_TABLE.md`, `SCI-NOI_STD_NUMERATOR_SCALE_CLAIM v0.1/r0.2` | `e04739ca05f112b80d0767aa30a7ff224e6b4ab68afdacf67b12ef6a494f057b` | Unit `1`; ODQ-105B result is not a direct denominator; numerical STD unavailable |
+| 10 | `SCI-NOI_VAL_PROFILE_DRAFTS.md` | `0d3d8667e596b827135c2b482097affa9895cd9b401a64b7f2970329fa5e7d52` | Four NOI-owned drafts; fail-closed GEN and ODQ-105B estimator/domain restrictions proposed; unapproved/unregistered |
 | 11 | `FILTER_AND_FRUIT_SCOPE.md` | `de02815792bf9bdcf19651abd8163659c79c8ad6c3cbbfaf41210b17973e9f97` | FLT/Wiener/FRUIT decisions separate; routes unavailable |
-| 12 | `PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md`, `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.3` | `e6bde930a2e4c1ee03d0db7d9aebc3f9b6d6afb18e41378b5ee4d8b3461f7b8d` | GEN completion, modifier, realization-map ownership, and fail-closed ensemble lifecycle explicit |
+| 12 | `PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md`, `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.4` | `5ab5608809d0c8759b158559f208389361dee56754687f9b362babcec0d18ba1` | GEN completion, fail-closed ensemble lifecycle, and initial conditional second-moment role explicit |
 | 13 | Sanitized inherited/owner decision table in item 2 | same as item 2 | Single canonical decision artifact; no divergent copy |
-| 14 | `STAGE_A_CHANGE_LOG.md` | `f0c1bdf24e399fd154310a9d522b8cbe941bc1c5fc47f6588326ad5d051094a6` | Manager-facing closure/ODQ history; not an author input |
-| 15 | `AUTHOR_PACKET_MANIFEST.md`, `SCI-NOI_AUTHOR_PACKET_MANIFEST v0.1/r0.9` | `4ad2eb0e0ed98a8102d7c436076e72bb7acf23b944fc48ff25d455bbca3ce811` | Exactly 17 admitted author objects; firewall complete |
+| 14 | `STAGE_A_CHANGE_LOG.md` | `c924a86b4d0827c4e19674188af1f8e65f69958e9308f5a786f1126e697cd781` | Manager-facing closure/ODQ history; not an author input |
+| 15 | `AUTHOR_PACKET_MANIFEST.md`, `SCI-NOI_AUTHOR_PACKET_MANIFEST v0.1/r0.10` | `0dc2d36f0d37b67c20eedd4ee590c4bf8528f3bf0890a563ce7e4982a7965aba` | Exactly 17 admitted author objects; firewall complete |
 | 16 | `BYTE_EQUALITY_AND_SOURCE_CLOSURE_REPORT.md`, this report | externally bound | Verification evidence only; not an author input |
 
 ## Author-Packet Equality
@@ -94,7 +95,7 @@ reduction, generated product, Unity, accepted run, default, historical
 behavior, or production-status source was admitted or inspected during this
 closure. The future author packet contains only the 17 manifest-listed objects.
 
-ODQ-101, ODQ-102A/B/C, ODQ-103, ODQ-104, and ODQ-105A are incorporated without conflict.
+ODQ-101, ODQ-102A/B/C, ODQ-103, ODQ-104, and ODQ-105A/B are incorporated without conflict.
 ODQ-103 requires the source-suppression intent and no-source-free-by-
 construction boundary while delegating exact terminology to Stage B. ODQ-104
 requires complete classification of scientifically consequential adjacent
@@ -102,13 +103,15 @@ state and complete consequential rerun/relearn identity while explicitly not
 requiring exhaustive implementation provenance. ODQ-105A distinguishes rejected
 design candidates from admitted members and fails the whole GEN ensemble closed
 for UNC on any admitted-member failure; no completed survivor subset is
-admissible. ODQ-102D delegates
+admissible. ODQ-105B authorizes the zero-centered, exact-design-weighted
+conditional randomization second moment on the common all-member domain, with
+no empirical recentering, `B-1`, or physical-noise interpretation. ODQ-102D delegates
 exact finite-design selection and rationale to the implementation-blind
 scientific-contract author and preserves the tolerance-conditioned construction
 as nonbinding guidance only. The ordinary PTC-to-frozen-MAP route, detector
 coherence, and network-stratified coefficient-balance family are selected, but
 the route remains numerically unavailable at its frozen gates and pending
-later acceptance of authored exact mechanics. ODQ-105B and later granular
+later acceptance of authored exact mechanics. ODQ-106 and later granular
 decisions remain open; every dependent numerical method is typed unavailable.
 NOI profile bytes remain unapproved/unregistered, and required SCI-VAL
 Registry/source-binding successors do not yet exist. Stage B was not launched.
