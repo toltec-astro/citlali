@@ -57,8 +57,15 @@ and binds executable SHA-256
 The exact-package validator passes with both expected identities and direct
 executable-byte verification. The updated
 [terminal acceptance package](../handoff/WP7_NETWORK_TIMED_RTC_TERMINAL_ACCEPTANCE_PACKAGE_2026-08-29.md)
-is ready for fresh exact-SHA re-review. The v7 claim remains superseded and
-readiness remains pending that disposition.
+was independently re-reviewed at evidence/status revision
+`7eef3b7bc6a8d65529d81aebb8db345e3a9755e0`. The reviewer reconciled the
+local and pushed branch, exact implementation and executable identities,
+required ancestry, retained v8 record, focused tests, and full CTest inventory.
+Both prior findings are closed, with no new BLOCKER, MAJOR, or MINOR finding,
+and the bounded network-timed identity-RTC terminal-publication increment
+receives PASS. The v7 claim remains superseded. This acceptance does not
+authorize production activation or any nonidentity RTC method, and the native
+interval assignment remains explicitly calibration-pending.
 
 ## 2026-08-29 WP-7 Network-Timed RTC Terminal Publication
 

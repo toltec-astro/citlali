@@ -5,8 +5,10 @@
 The bounded network-timed RTC terminal-publication implementation is complete
 at exact source revision
 `cddfea28f89d3ca51ba52930a82f51c270905874`. Its local repository gates and
-representative observation 152390 execution pass. This package is ready for
-the required fresh independent exact-SHA read-only review.
+representative observation 152390 execution pass. Fresh independent exact-SHA
+read-only review at evidence/status revision
+`7eef3b7bc6a8d65529d81aebb8db345e3a9755e0` returned PASS with no BLOCKER,
+MAJOR, or MINOR finding.
 
 The first review of implementation `ff00ff4a6` and its v7 record returned
 HOLD because finalization admitted a replay from a different context with the
@@ -139,11 +141,11 @@ The command rejects a substituted source revision or record hash even when the
 record remains internally self-consistent, and rejects an executable whose
 bytes do not match the exact package expectation.
 
-## Independent review boundary
+## Independent review disposition
 
-The fresh reviewer should evaluate exact implementation revision
+The fresh reviewer evaluated exact implementation revision
 `cddfea28f89d3ca51ba52930a82f51c270905874` together with the v8 record and
-this package. The review should determine whether:
+this package, including whether:
 
 1. terminal completion is truthfully context-bound and fail-closed;
 2. publication is atomic, no-replace, in-memory, and inspectable;
@@ -156,5 +158,24 @@ this package. The review should determine whether:
 6. failure behavior, exact source/dependency binding, memory claims, and
    unchanged out-of-scope behavior are adequately covered.
 
-Acceptance and readiness remain pending until that exact-SHA independent
-review returns its disposition.
+The reviewer reconciled HEAD, the local branch, and the pushed branch at full
+evidence/status revision `7eef3b7bc6a8d65529d81aebb8db345e3a9755e0`;
+verified the required design and ALIGN ancestry; reproduced the exact-package
+validator with direct executable-byte verification; and passed all 22
+validator tests and all 139 focused WP-7/SCI-ALIGN tests. The inventory of 871
+registered CTests reconciles to the recorded 870 runnable tests plus the one
+established disabled test.
+
+The prior finalization-binding BLOCKER is closed: route finalization and
+publication retain and compare the exact immutable context handle and run
+identity, and focused tests reject both a foreign same-request,
+same-cardinality context and a stale run identity without hashing or copying
+scientific planes. The prior exact-package-validator MAJOR finding is closed:
+the v8 validator pins the complete representative witness and rejects source,
+executable, dataset, slice, and cardinality substitutions.
+
+No BLOCKER, MAJOR, or MINOR finding remains. Final disposition: **PASS** for
+the bounded network-timed identity-RTC terminal-publication increment. This
+does not authorize production activation, a persistent RTC TOD schema, or any
+nonidentity RTC method; the provisional interval assignment remains
+calibration-pending.
