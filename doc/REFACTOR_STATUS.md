@@ -1,5 +1,34 @@
 # Citlali Refactor Status
 
+## 2026-08-29 WP-7 Fixed-Decimation Authority Preparation
+
+The accepted network-timed identity-RTC terminal-publication increment is
+closed at `0574d9a50fe6df6f7ded07c1d229bcb8ca04309d`. The next proposed RTC
+operation is a network-local fixed-mode phase-zero decimation witness, but
+frozen SCI-RTC owner entries still make every factor beyond `M=1` unavailable
+until its exact factor, prefilter, boundary, validity, response, and
+application-context policies are selected.
+
+The proposed
+[fixed-decimation owner-decision packet](WP7_RTC_FIXED_DECIMATION_OWNER_DECISION_PACKET_2026-08-29.md)
+records the exact authority dependencies, inspects the incumbent implementation,
+and binds representative observation 152390 facts. All 11 retained networks
+declare `122.0703125 Hz`; an `M=2` output has Nyquist
+`30.517578125 Hz`, below the legacy configuration's `32 Hz` filter edge. The
+legacy configuration therefore cannot be silently promoted into a conforming
+anti-alias plan.
+
+The packet recommends a bounded `{1, 2}` factor set, one immutable centered
+symmetric `float64` FIR artifact, network-local output identities and selected
+times, complete transitive support, typed no-recovery handling, identical
+paired ordinary operators, compact realization, and RTC-only in-memory
+termination. These are proposals, not effective scientific authority. The
+exact retained passband, transition, stopband, ripple, attenuation, design
+authority, maximum support, and claim tier remain an explicit owner decision.
+No nonidentity code implementation, CAL, AST, VAL, PTC, MAP/JINC, common-grid
+relation, persistent TOD schema, production activation, or legacy-route change
+is authorized by this preparation.
+
 ## 2026-08-29 WP-7 Terminal-Publication Review Closure
 
 Fresh independent exact-SHA review of terminal implementation
