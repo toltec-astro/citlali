@@ -40,14 +40,34 @@ enum class RtcEvidenceClass : std::uint8_t {
     input_admission,
 };
 
-// A sparse derived record.  Immutable timing, detector, mapping, validity,
-// support, and payload facts remain in the referenced aligned parent.
+// A compact parent-local handle.  It locates immutable scientific identity,
+// timing, validity, cause, and support facts in the aligned parent without
+// copying those facts into every sparse evidence event.
+struct RtcEvidenceCellHandle {
+    TimestreamNetworkId network_id = -1;
+    std::uint32_t common_slot = 0;
+    std::uint32_t detector_index = 0;
+
+    friend bool operator==(const RtcEvidenceCellHandle &,
+                           const RtcEvidenceCellHandle &) = default;
+    friend bool operator<(const RtcEvidenceCellHandle &lhs,
+                          const RtcEvidenceCellHandle &rhs) noexcept {
+        if (lhs.network_id != rhs.network_id) {
+            return lhs.network_id < rhs.network_id;
+        }
+        if (lhs.common_slot != rhs.common_slot) {
+            return lhs.common_slot < rhs.common_slot;
+        }
+        return lhs.detector_index < rhs.detector_index;
+    }
+};
+
+// A sparse derived record.  Only the event classification and its bounded
+// parent locator are owned here.
 struct RtcEvidenceEvent {
-    AlignedReadoutCellIdentity identity;
+    RtcEvidenceCellHandle cell;
     RtcEvidenceOrigin origin = RtcEvidenceOrigin::none;
     RtcEvidenceClass evidence_class = RtcEvidenceClass::input_admission;
-    PairedReadoutCause member_local_causes = PairedReadoutCause::none;
-    std::optional<CoincidenceAbsenceReason> alignment_absence;
 
     bool direct_x() const noexcept {
         return has_origin(origin, RtcEvidenceOrigin::x);
@@ -62,6 +82,9 @@ struct RtcEvidenceEvent {
     friend bool operator==(const RtcEvidenceEvent &,
                            const RtcEvidenceEvent &) = default;
 };
+
+static_assert(sizeof(RtcEvidenceEvent) <= 16,
+              "RTC evidence event must remain a compact parent handle");
 
 struct RtcEvidenceIdentity {
     std::uint64_t attempt = 0;
@@ -107,22 +130,55 @@ public:
         return {events_.size() * sizeof(RtcEvidenceEvent), 1};
     }
     std::optional<std::size_t> find_index(
-        const AlignedReadoutCellIdentity &identity) const noexcept {
+        TimestreamNetworkId network_id, std::size_t common_slot,
+        Eigen::Index detector_index) const noexcept {
+        if (common_slot > std::numeric_limits<std::uint32_t>::max() ||
+            detector_index < 0 ||
+            static_cast<std::uint64_t>(detector_index) >
+                std::numeric_limits<std::uint32_t>::max()) {
+            return std::nullopt;
+        }
+        const RtcEvidenceCellHandle cell{
+            network_id, static_cast<std::uint32_t>(common_slot),
+            static_cast<std::uint32_t>(detector_index)};
         const auto found = std::lower_bound(
-            events_.begin(), events_.end(), identity,
+            events_.begin(), events_.end(), cell,
             [](const RtcEvidenceEvent &event,
-               const AlignedReadoutCellIdentity &candidate) {
-                return event.identity < candidate;
+               const RtcEvidenceCellHandle &candidate) {
+                return event.cell < candidate;
             });
-        if (found == events_.end() || !(found->identity == identity)) {
+        if (found == events_.end() || !(found->cell == cell)) {
             return std::nullopt;
         }
         return static_cast<std::size_t>(found - events_.begin());
     }
     const RtcEvidenceEvent *find(
-        const AlignedReadoutCellIdentity &identity) const noexcept {
-        const auto index = find_index(identity);
+        TimestreamNetworkId network_id, std::size_t common_slot,
+        Eigen::Index detector_index) const noexcept {
+        const auto index = find_index(network_id, common_slot,
+                                      detector_index);
         return index ? &events_[*index] : nullptr;
+    }
+    AlignedReadoutCellIdentity scientific_identity(
+        const RtcEvidenceEvent &event) const {
+        return input_->identity(
+            event.cell.network_id, event.cell.common_slot,
+            static_cast<Eigen::Index>(event.cell.detector_index));
+    }
+    PairedReadoutCause member_local_causes(
+        const RtcEvidenceEvent &event) const {
+        if (event.joint_alignment()) return PairedReadoutCause::none;
+        return input_->native_pair_causes(
+                         event.cell.network_id, event.cell.common_slot,
+                         static_cast<Eigen::Index>(
+                             event.cell.detector_index))
+            .value_or(PairedReadoutCause::none);
+    }
+    std::optional<CoincidenceAbsenceReason> alignment_absence(
+        const RtcEvidenceEvent &event) const {
+        if (!event.joint_alignment()) return std::nullopt;
+        return input_->absence_reason(event.cell.network_id,
+                                      event.cell.common_slot);
     }
 
 private:
@@ -153,6 +209,11 @@ inline std::shared_ptr<const RtcEvidence> learn_identity_rtc(
     RtcEvidenceSummary summary;
     summary.examined_cell_count = input->aligned_cell_count();
     summary.mapped_cell_count = input->mapped_cell_count();
+    if (input->past_last_common_slot() - 1 >
+        std::numeric_limits<std::uint32_t>::max()) {
+        throw std::length_error(
+            "identity RTC common-slot handle exceeds compact range");
+    }
     std::vector<RtcEvidenceEvent> events;
     events.reserve(summary.examined_cell_count - summary.mapped_cell_count);
 
@@ -164,14 +225,18 @@ inline std::shared_ptr<const RtcEvidence> learn_identity_rtc(
             const auto mapped = input->mapped(network_id, slot);
             for (Eigen::Index detector = 0;
                  detector < network.detector_count(); ++detector) {
-                const auto identity = input->identity(
-                    network_id, slot, detector);
+                if (static_cast<std::uint64_t>(detector) >
+                    std::numeric_limits<std::uint32_t>::max()) {
+                    throw std::length_error(
+                        "identity RTC detector handle exceeds compact range");
+                }
+                const RtcEvidenceCellHandle cell{
+                    network_id, static_cast<std::uint32_t>(slot),
+                    static_cast<std::uint32_t>(detector)};
                 if (!mapped) {
                     events.push_back(RtcEvidenceEvent{
-                        identity, RtcEvidenceOrigin::alignment,
-                        RtcEvidenceClass::input_admission,
-                        PairedReadoutCause::none,
-                        input->absence_reason(network_id, slot)});
+                        cell, RtcEvidenceOrigin::alignment,
+                        RtcEvidenceClass::input_admission});
                     ++summary.alignment_absence_event_count;
                     continue;
                 }
@@ -188,15 +253,18 @@ inline std::shared_ptr<const RtcEvidence> learn_identity_rtc(
                 if (x_event) origin = origin | RtcEvidenceOrigin::x;
                 if (r_event) origin = origin | RtcEvidenceOrigin::r;
                 events.push_back(RtcEvidenceEvent{
-                    identity, origin, RtcEvidenceClass::input_admission,
-                    *input->native_pair_causes(network_id, slot, detector),
-                    std::nullopt});
+                    cell, origin, RtcEvidenceClass::input_admission});
                 if (x_event) ++summary.direct_x_event_count;
                 if (r_event) ++summary.direct_r_event_count;
                 if (x_event && r_event) ++summary.x_and_r_event_count;
             }
         }
     }
+    std::sort(events.begin(), events.end(),
+              [](const RtcEvidenceEvent &lhs,
+                 const RtcEvidenceEvent &rhs) {
+                  return lhs.cell < rhs.cell;
+              });
     summary.accepted_event_count = events.size();
 
     return std::shared_ptr<const RtcEvidence>(new RtcEvidence{
@@ -267,8 +335,10 @@ public:
         return {actions_.size() * sizeof(RtcPairAction), 1};
     }
     RtcPairDecision decision(
-        const AlignedReadoutCellIdentity &identity) const noexcept {
-        const auto evidence_index = evidence_->find_index(identity);
+        TimestreamNetworkId network_id, std::size_t common_slot,
+        Eigen::Index detector_index) const noexcept {
+        const auto evidence_index = evidence_->find_index(
+            network_id, common_slot, detector_index);
         if (!evidence_index) return RtcPairDecision::eligible;
         const auto action = std::lower_bound(
             actions_.begin(), actions_.end(), *evidence_index,
@@ -281,9 +351,12 @@ public:
                    : action->decision;
     }
     const RtcEvidenceEvent *causal_evidence(
-        const AlignedReadoutCellIdentity &identity) const noexcept {
-        return decision(identity) == RtcPairDecision::ineligible
-                   ? evidence_->find(identity)
+        TimestreamNetworkId network_id, std::size_t common_slot,
+        Eigen::Index detector_index) const noexcept {
+        return decision(network_id, common_slot, detector_index) ==
+                       RtcPairDecision::ineligible
+                   ? evidence_->find(network_id, common_slot,
+                                     detector_index)
                    : nullptr;
     }
 
@@ -412,14 +485,13 @@ public:
     RtcPairDecision pair_decision(
         TimestreamNetworkId network_id, std::size_t common_slot,
         Eigen::Index detector_index) const {
-        return plan_->decision(
-            identity(network_id, common_slot, detector_index));
+        return plan_->decision(network_id, common_slot, detector_index);
     }
     const RtcEvidenceEvent *pair_causal_evidence(
         TimestreamNetworkId network_id, std::size_t common_slot,
         Eigen::Index detector_index) const {
-        return plan_->causal_evidence(
-            identity(network_id, common_slot, detector_index));
+        return plan_->causal_evidence(network_id, common_slot,
+                                      detector_index);
     }
     RtcTimestreamMemoryEvidence memory_evidence() const noexcept {
         return {0, 0, 1};
@@ -474,10 +546,16 @@ inline RtcApplyResult apply_identity_rtc(
             "identity RTC plan binding or operator is inconsistent");
     }
 
+    const auto pair_ineligible_cell_count =
+        static_cast<std::size_t>(std::count_if(
+            plan->actions().begin(), plan->actions().end(),
+            [](const RtcPairAction &action) {
+                return action.decision == RtcPairDecision::ineligible;
+            }));
     RtcRealization realization{
         plan->identity(), RtcCompletionState::complete,
         input->common_slot_count(), input->aligned_cell_count(),
-        plan->actions().size(), 0, 0, 1};
+        pair_ineligible_cell_count, 0, 0, 1};
     for (const auto network_id :
          input->alignment_handle()->participant_network_ids()) {
         const auto &network = input->network(network_id);

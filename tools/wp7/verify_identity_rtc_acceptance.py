@@ -11,7 +11,13 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA = "citlali-wp7-identity-rtc-acceptance-v1"
+SCHEMA = "citlali-wp7-identity-rtc-acceptance-v2"
+OCCURRENCE_SUPPORT_AUTHORITY_SCHEMA = (
+    "citlali-native-occurrence-support-authority-v1"
+)
+OCCURRENCE_SUPPORT_DURATION_RELATION = (
+    "Header.Toltec.AccumLen / Header.Toltec.FpgaFreq"
+)
 PRODUCER_INTERFACE = "TUNE_READOUT_NATIVE_XR_PRODUCER_INTERFACE v0.1/r0.1"
 PRODUCER_SHA256 = (
     "f9659b34a49a07d4287c4a70db798cdd2ec30049531da603fcca1e9d1fdd5969"
@@ -27,6 +33,10 @@ TULA_PATCH_SHA256 = (
     "c331a9aeb61aa3171efb85cc5bc2b50f1a34b243d44c25c5d4a97c2250e70b4a"
 )
 HEX40 = re.compile(r"^[0-9a-f]{40}$")
+HEX64 = re.compile(r"^[0-9a-f]{64}$")
+UTC_SECONDS = re.compile(
+    r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+)
 
 
 class AcceptanceError(ValueError):
@@ -85,7 +95,7 @@ def validate(record: dict[str, Any]) -> None:
             "executable_revision must contain the source revision's first nine hex digits"
         )
     executable_sha256 = require_string(record, "executable_sha256")
-    if not re.fullmatch(r"[0-9a-f]{64}", executable_sha256):
+    if not HEX64.fullmatch(executable_sha256):
         raise AcceptanceError("executable_sha256 must be one lowercase SHA-256")
     if record.get("kidscpp_revision") != KIDSCPP_REVISION:
         raise AcceptanceError(f"kidscpp_revision must be {KIDSCPP_REVISION}")
@@ -114,7 +124,8 @@ def validate(record: dict[str, Any]) -> None:
     require_true(record, "product_inspected_in_memory")
     require_true(record, "publication_complete")
     require_string(record, "representative_dataset_id")
-    require_integer(record, "observation", 1)
+    if require_integer(record, "observation", 1) != 152390:
+        raise AcceptanceError("observation must be 152390")
     require_integer(record, "first_native_row")
     native_row_count = require_integer(record, "native_row_count", 2048)
     require_string(record, "mapping_instance_id")
@@ -126,8 +137,51 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError(
             f"producer_interface_sha256 must be {PRODUCER_SHA256}"
         )
+    if (
+        record.get("occurrence_support_authority_schema")
+        != OCCURRENCE_SUPPORT_AUTHORITY_SCHEMA
+    ):
+        raise AcceptanceError(
+            "occurrence_support_authority_schema must be the approved schema"
+        )
+    require_string(record, "occurrence_support_authority_id")
+    authority_sha256 = require_string(
+        record, "occurrence_support_authority_sha256"
+    )
+    if not HEX64.fullmatch(authority_sha256):
+        raise AcceptanceError(
+            "occurrence_support_authority_sha256 must be one lowercase SHA-256"
+        )
+    require_true(record, "occurrence_support_authority_approved")
+    require_string(record, "occurrence_support_authority_approved_by")
+    approved_at = require_string(
+        record, "occurrence_support_authority_approved_at_utc"
+    )
+    if not UTC_SECONDS.fullmatch(approved_at):
+        raise AcceptanceError(
+            "occurrence_support_authority_approved_at_utc must be exact UTC seconds"
+        )
+    if record.get("occurrence_support_event_time_role") not in {
+        "integration_start",
+        "integration_center",
+        "integration_end",
+    }:
+        raise AcceptanceError(
+            "occurrence_support_event_time_role must be an approved role"
+        )
+    if (
+        record.get("occurrence_support_duration_relation")
+        != OCCURRENCE_SUPPORT_DURATION_RELATION
+    ):
+        raise AcceptanceError(
+            "occurrence_support_duration_relation must use approved raw facts"
+        )
     if record.get("terminal_state") != "complete":
         raise AcceptanceError("terminal_state must be 'complete'")
+    if record.get("terminal_failure_cause") != "none":
+        raise AcceptanceError("terminal_failure_cause must be 'none'")
+    if record.get("terminal_failure_detail") != "":
+        raise AcceptanceError("terminal_failure_detail must be empty")
 
     metrics = require_object(record.get("metrics"), "metrics")
     network_count = require_integer(metrics, "network_count", 1)
@@ -198,7 +252,11 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError("x valid cell count cannot exceed mapped cells")
     if require_integer(metrics, "r_numerically_valid_cell_count") > mapped_cells:
         raise AcceptanceError("r valid cell count cannot exceed mapped cells")
-    require_integer(metrics, "derived_evidence_bytes")
+    derived_evidence_bytes = require_integer(metrics, "derived_evidence_bytes")
+    if derived_evidence_bytes > 16 * evidence_events:
+        raise AcceptanceError(
+            "derived_evidence_bytes exceeds the compact event bound"
+        )
     require_integer(metrics, "derived_plan_bytes")
     compared_values = require_integer(metrics, "paired_value_comparison_count", 1)
     if compared_values != 2 * mapped_cells:
@@ -212,6 +270,13 @@ def validate(record: dict[str, Any]) -> None:
     if require_integer(metrics, "support_comparison_count", 1) != aligned_cells:
         raise AcceptanceError(
             "support_comparison_count must cover every aligned cell"
+        )
+    if (
+        require_integer(metrics, "producer_support_binding_count", 1)
+        != native_occurrences
+    ):
+        raise AcceptanceError(
+            "producer_support_binding_count must cover every native occurrence"
         )
     if require_integer(metrics, "pair_decision_comparison_count", 1) != aligned_cells:
         raise AcceptanceError(
@@ -235,6 +300,7 @@ def validate(record: dict[str, Any]) -> None:
         "r_bitwise_mismatch_count",
         "identity_mismatch_count",
         "support_mismatch_count",
+        "producer_support_binding_mismatch_count",
         "pair_decision_mismatch_count",
         "pair_causal_evidence_mismatch_count",
         "member_cause_mismatch_count",

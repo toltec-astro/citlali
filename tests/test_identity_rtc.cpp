@@ -29,7 +29,9 @@ struct IdentityRtcFixture {
 };
 
 IdentityRtcFixture identity_fixture(std::size_t first_slot = 0,
-                                    std::size_t past_last_slot = 5) {
+                                    std::size_t past_last_slot = 5,
+                                    std::int64_t first_output_uid = 500,
+                                    std::int64_t second_output_uid = 501) {
     constexpr pipeline::TimestreamNetworkId network_id = 0;
     constexpr pipeline::TimestreamNativeRow first_native_row = 10;
     const pipeline::NativeObservationScope scope{152390, 0, 4};
@@ -51,8 +53,8 @@ IdentityRtcFixture identity_fixture(std::size_t first_slot = 0,
                 "producer:0", "tune:0", "mapping:0", "iq-to-xr:0",
                 "raw-x:0", "raw-r:0"});
     std::vector<pipeline::PairedReadoutDetectorIdentity> detectors{
-        {500, 0, network_id, 1000, 0},
-        {501, 0, network_id, 1000, 1}};
+        {first_output_uid, 0, network_id, 1000, 0},
+        {second_output_uid, 0, network_id, 1000, 1}};
 
     pipeline::PairedReadoutMatrix x(4, 2);
     pipeline::PairedReadoutMatrix r(4, 2);
@@ -152,14 +154,10 @@ TEST(identity_rtc,
     EXPECT_EQ(evidence->summary().x_and_r_event_count, 1U);
     EXPECT_EQ(evidence->summary().alignment_absence_event_count, 2U);
 
-    const auto *x_event = evidence->find(
-        fixture.aligned->identity(0, 1, 0));
-    const auto *r_event = evidence->find(
-        fixture.aligned->identity(0, 2, 0));
-    const auto *both_event = evidence->find(
-        fixture.aligned->identity(0, 4, 0));
-    const auto *absence = evidence->find(
-        fixture.aligned->identity(0, 3, 1));
+    const auto *x_event = evidence->find(0, 1, 0);
+    const auto *r_event = evidence->find(0, 2, 0);
+    const auto *both_event = evidence->find(0, 4, 0);
+    const auto *absence = evidence->find(0, 3, 1);
     ASSERT_NE(x_event, nullptr);
     ASSERT_NE(r_event, nullptr);
     ASSERT_NE(both_event, nullptr);
@@ -170,17 +168,52 @@ TEST(identity_rtc,
     EXPECT_TRUE(r_event->direct_r());
     EXPECT_EQ(both_event->origin, pipeline::RtcEvidenceOrigin::x_and_r);
     EXPECT_TRUE(pipeline::has_cause(
-        x_event->member_local_causes,
+        evidence->member_local_causes(*x_event),
         pipeline::PairedReadoutCause::x_original_invalid));
     EXPECT_FALSE(pipeline::has_cause(
-        x_event->member_local_causes,
+        evidence->member_local_causes(*x_event),
         pipeline::PairedReadoutCause::r_original_invalid));
     EXPECT_TRUE(pipeline::has_cause(
-        r_event->member_local_causes,
+        evidence->member_local_causes(*r_event),
         pipeline::PairedReadoutCause::r_original_invalid));
     EXPECT_TRUE(absence->joint_alignment());
-    EXPECT_EQ(absence->alignment_absence,
+    EXPECT_EQ(evidence->alignment_absence(*absence),
               pipeline::CoincidenceAbsenceReason::no_candidate);
+    EXPECT_EQ(evidence->scientific_identity(*r_event),
+              fixture.aligned->identity(0, 2, 0));
+    EXPECT_LE(sizeof(pipeline::RtcEvidenceEvent), 16U);
+    EXPECT_EQ(evidence->memory_evidence().derived_event_bytes,
+              evidence->events().size() *
+                  sizeof(pipeline::RtcEvidenceEvent));
+}
+
+TEST(identity_rtc,
+     lookup_and_pair_consequence_are_independent_of_output_uid_order) {
+    const auto fixture = identity_fixture(0, 5, 501, 500);
+    const auto evidence = pipeline::learn_identity_rtc(fixture.aligned, 4);
+    const auto result = pipeline::apply_identity_rtc(
+        pipeline::consider_identity_rtc(evidence, 5), fixture.aligned);
+
+    EXPECT_EQ(fixture.aligned->identity(0, 3, 0).detector_uid, 501);
+    EXPECT_EQ(fixture.aligned->identity(0, 3, 1).detector_uid, 500);
+    ASSERT_EQ(evidence->events().size(), 5U);
+    for (const auto &event : evidence->events()) {
+        const auto detector = static_cast<Eigen::Index>(
+            event.cell.detector_index);
+        EXPECT_EQ(result.product->pair_decision(
+                      event.cell.network_id, event.cell.common_slot,
+                      detector),
+                  pipeline::RtcPairDecision::ineligible);
+        const auto *cause = result.product->pair_causal_evidence(
+            event.cell.network_id, event.cell.common_slot, detector);
+        ASSERT_NE(cause, nullptr);
+        EXPECT_EQ(evidence->scientific_identity(*cause),
+                  fixture.aligned->identity(
+                      event.cell.network_id, event.cell.common_slot,
+                      detector));
+    }
+    EXPECT_EQ(result.realization.pair_ineligible_cell_count,
+              evidence->events().size());
 }
 
 TEST(identity_rtc,

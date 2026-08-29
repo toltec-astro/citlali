@@ -7,6 +7,7 @@
 #include <memory>
 #include <mutex>
 #include <stdexcept>
+#include <string>
 #include <utility>
 
 namespace citlali::pipeline {
@@ -46,6 +47,43 @@ constexpr const char *rtc_only_terminal_state_name(
     return "unknown";
 }
 
+enum class RtcOnlyFailureCause : std::uint8_t {
+    none,
+    invalid_run_identity,
+    input_contract_rejected,
+    learning_contract_rejected,
+    consideration_contract_rejected,
+    apply_contract_rejected,
+    publication_candidate_incomplete,
+    publication_slot_occupied,
+    publication_contract_rejected,
+};
+
+constexpr const char *rtc_only_failure_cause_name(
+    RtcOnlyFailureCause cause) noexcept {
+    switch (cause) {
+        case RtcOnlyFailureCause::none:
+            return "none";
+        case RtcOnlyFailureCause::invalid_run_identity:
+            return "invalid_run_identity";
+        case RtcOnlyFailureCause::input_contract_rejected:
+            return "input_contract_rejected";
+        case RtcOnlyFailureCause::learning_contract_rejected:
+            return "learning_contract_rejected";
+        case RtcOnlyFailureCause::consideration_contract_rejected:
+            return "consideration_contract_rejected";
+        case RtcOnlyFailureCause::apply_contract_rejected:
+            return "apply_contract_rejected";
+        case RtcOnlyFailureCause::publication_candidate_incomplete:
+            return "publication_candidate_incomplete";
+        case RtcOnlyFailureCause::publication_slot_occupied:
+            return "publication_slot_occupied";
+        case RtcOnlyFailureCause::publication_contract_rejected:
+            return "publication_contract_rejected";
+    }
+    return "unknown";
+}
+
 struct RtcOnlyDiagnostics {
     std::size_t network_count = 0;
     std::size_t detector_count = 0;
@@ -68,6 +106,8 @@ struct RtcOnlyTerminalResult {
     RtcOnlyRunIdentity identity;
     RtcOnlyTerminalState state =
         RtcOnlyTerminalState::input_admission_failed;
+    RtcOnlyFailureCause failure_cause = RtcOnlyFailureCause::none;
+    std::string failure_detail;
     RtcOnlyDiagnostics diagnostics;
 
     bool complete() const noexcept {
@@ -170,6 +210,10 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
     terminal.identity = request.identity;
     if (request.identity.run == 0) {
         terminal.state = RtcOnlyTerminalState::input_admission_failed;
+        terminal.failure_cause =
+            RtcOnlyFailureCause::invalid_run_identity;
+        terminal.failure_detail =
+            "RTC-only route requires a nonzero run identity";
         return {terminal, nullptr};
     }
 
@@ -188,8 +232,11 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
             aligned->aligned_cell_count();
         terminal.diagnostics.mapped_cell_count =
             aligned->mapped_cell_count();
-    } catch (const std::exception &) {
+    } catch (const std::exception &error) {
         terminal.state = RtcOnlyTerminalState::input_admission_failed;
+        terminal.failure_cause =
+            RtcOnlyFailureCause::input_contract_rejected;
+        terminal.failure_detail = error.what();
         return {terminal, nullptr};
     }
 
@@ -209,8 +256,11 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
             summary.alignment_absence_event_count;
         terminal.diagnostics.derived_evidence_bytes =
             evidence->memory_evidence().logical_owned_bytes();
-    } catch (const std::exception &) {
+    } catch (const std::exception &error) {
         terminal.state = RtcOnlyTerminalState::learning_failed;
+        terminal.failure_cause =
+            RtcOnlyFailureCause::learning_contract_rejected;
+        terminal.failure_detail = error.what();
         return {terminal, nullptr};
     }
 
@@ -219,8 +269,11 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
         plan = consider_identity_rtc(evidence, request.identity.run);
         terminal.diagnostics.derived_plan_bytes =
             plan->memory_evidence().logical_owned_bytes();
-    } catch (const std::exception &) {
+    } catch (const std::exception &error) {
         terminal.state = RtcOnlyTerminalState::consideration_failed;
+        terminal.failure_cause =
+            RtcOnlyFailureCause::consideration_contract_rejected;
+        terminal.failure_detail = error.what();
         return {terminal, nullptr};
     }
 
@@ -235,8 +288,11 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
             applied.realization.r_numerically_valid_cell_count;
         terminal.diagnostics.rtc_owned_numeric_bytes =
             applied.product->memory_evidence().owned_numeric_bytes;
-    } catch (const std::exception &) {
+    } catch (const std::exception &error) {
         terminal.state = RtcOnlyTerminalState::apply_failed;
+        terminal.failure_cause =
+            RtcOnlyFailureCause::apply_contract_rejected;
+        terminal.failure_detail = error.what();
         return {terminal, nullptr};
     }
 
@@ -245,8 +301,23 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
         new RtcOnlyTerminalProduct{std::move(applied), terminal});
     try {
         publication.publish(candidate);
-    } catch (const std::exception &) {
+    } catch (const std::invalid_argument &error) {
         terminal.state = RtcOnlyTerminalState::publication_failed;
+        terminal.failure_cause =
+            RtcOnlyFailureCause::publication_candidate_incomplete;
+        terminal.failure_detail = error.what();
+        return {terminal, nullptr};
+    } catch (const std::logic_error &error) {
+        terminal.state = RtcOnlyTerminalState::publication_failed;
+        terminal.failure_cause =
+            RtcOnlyFailureCause::publication_slot_occupied;
+        terminal.failure_detail = error.what();
+        return {terminal, nullptr};
+    } catch (const std::exception &error) {
+        terminal.state = RtcOnlyTerminalState::publication_failed;
+        terminal.failure_cause =
+            RtcOnlyFailureCause::publication_contract_rejected;
+        terminal.failure_detail = error.what();
         return {terminal, nullptr};
     }
     return {terminal, std::move(candidate)};

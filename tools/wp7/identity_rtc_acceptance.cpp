@@ -60,7 +60,11 @@ namespace pipeline = citlali::pipeline;
 namespace apt = citlali::pipeline::canonical_apt_v2;
 
 constexpr std::string_view acceptance_schema =
-    "citlali-wp7-identity-rtc-acceptance-v1";
+    "citlali-wp7-identity-rtc-acceptance-v2";
+constexpr std::string_view occurrence_support_authority_schema =
+    "citlali-native-occurrence-support-authority-v1";
+constexpr std::string_view occurrence_support_duration_relation =
+    "Header.Toltec.AccumLen / Header.Toltec.FpgaFreq";
 constexpr std::string_view producer_interface =
     "TUNE_READOUT_NATIVE_XR_PRODUCER_INTERFACE v0.1/r0.1";
 constexpr std::string_view producer_interface_sha256 =
@@ -81,6 +85,7 @@ struct Arguments {
     fs::path apt_manifest;
     fs::path config;
     fs::path producer_interface_artifact;
+    fs::path occurrence_support_authority_artifact;
     fs::path kidscpp_build_patch;
     fs::path tula_build_patch;
     fs::path output;
@@ -108,6 +113,7 @@ std::string usage() {
         "Usage: citlali_wp7_identity_rtc_acceptance\n"
         "  --data-dir PATH --apt-manifest PATH --config PATH\n"
         "  --producer-interface-artifact PATH\n"
+        "  --occurrence-support-authority PATH\n"
         "  --kidscpp-build-patch PATH --tula-build-patch PATH\n"
         "  --output PATH\n"
         "  --source-revision FULL_SHA --owner-run\n"
@@ -148,6 +154,9 @@ Arguments parse_arguments(int argc, char **argv) {
             result.config = next(index, option);
         } else if (option == "--producer-interface-artifact") {
             result.producer_interface_artifact = next(index, option);
+        } else if (option == "--occurrence-support-authority") {
+            result.occurrence_support_authority_artifact =
+                next(index, option);
         } else if (option == "--kidscpp-build-patch") {
             result.kidscpp_build_patch = next(index, option);
         } else if (option == "--tula-build-patch") {
@@ -177,6 +186,8 @@ Arguments parse_arguments(int argc, char **argv) {
     require(!result.config.empty(), "--config is required");
     require(!result.producer_interface_artifact.empty(),
             "--producer-interface-artifact is required");
+    require(!result.occurrence_support_authority_artifact.empty(),
+            "--occurrence-support-authority is required");
     require(!result.kidscpp_build_patch.empty(),
             "--kidscpp-build-patch is required");
     require(!result.tula_build_patch.empty(),
@@ -196,6 +207,101 @@ bool full_lowercase_git_sha(std::string_view value) {
            std::all_of(value.begin(), value.end(), [](unsigned char ch) {
                return (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f');
            });
+}
+
+enum class NativeEventTimeRole : std::uint8_t {
+    integration_start,
+    integration_center,
+    integration_end,
+};
+
+constexpr const char *native_event_time_role_name(
+    NativeEventTimeRole role) noexcept {
+    switch (role) {
+        case NativeEventTimeRole::integration_start:
+            return "integration_start";
+        case NativeEventTimeRole::integration_center:
+            return "integration_center";
+        case NativeEventTimeRole::integration_end:
+            return "integration_end";
+    }
+    return "unknown";
+}
+
+struct NativeOccurrenceSupportAuthority {
+    std::string authority_id;
+    std::string approved_by;
+    std::string approved_at_utc;
+    std::int64_t scope_observation = 0;
+    NativeEventTimeRole event_time_role =
+        NativeEventTimeRole::integration_center;
+    std::string artifact_sha256;
+};
+
+NativeOccurrenceSupportAuthority load_occurrence_support_authority(
+    const fs::path &path) {
+    require(fs::is_regular_file(path),
+            "occurrence-support authority is not a regular file");
+    const auto root = YAML::LoadFile(path.string());
+    require(root.IsMap(),
+            "occurrence-support authority must be a YAML map");
+    const std::set<std::string> required{
+        "schema", "authority_id", "approval_status", "approved_by",
+        "approved_at_utc", "scope_observation", "producer_interface_id",
+        "producer_interface_sha256", "event_time_role",
+        "duration_relation"};
+    require(root.size() == required.size(),
+            "occurrence-support authority has an open or incomplete schema");
+    for (const auto &entry : root) {
+        require(entry.first.IsScalar() &&
+                    required.contains(entry.first.as<std::string>()),
+                "occurrence-support authority has an unknown field");
+    }
+    const auto scalar = [&](const char *name) {
+        const auto value = root[name];
+        require(value && value.IsScalar(),
+                std::string{"occurrence-support authority lacks scalar "} +
+                    name);
+        return value.as<std::string>();
+    };
+    require(scalar("schema") == occurrence_support_authority_schema,
+            "occurrence-support authority schema is not approved");
+    NativeOccurrenceSupportAuthority result;
+    result.authority_id = scalar("authority_id");
+    require(!result.authority_id.empty(),
+            "occurrence-support authority id is empty");
+    require(scalar("approval_status") == "owner_approved",
+            "occurrence-support authority is not owner approved");
+    result.approved_by = scalar("approved_by");
+    result.approved_at_utc = scalar("approved_at_utc");
+    require(!result.approved_by.empty() &&
+                std::regex_match(
+                    result.approved_at_utc,
+                    std::regex{
+                        R"(^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$)"}),
+            "occurrence-support authority approval identity or UTC is invalid");
+    result.scope_observation = root["scope_observation"].as<std::int64_t>();
+    require(result.scope_observation == 152390,
+            "occurrence-support authority is outside observation 152390");
+    require(scalar("producer_interface_id") == producer_interface &&
+                scalar("producer_interface_sha256") ==
+                    producer_interface_sha256,
+            "occurrence-support authority names a different producer interface");
+    const auto role = scalar("event_time_role");
+    if (role == "integration_start") {
+        result.event_time_role = NativeEventTimeRole::integration_start;
+    } else if (role == "integration_center") {
+        result.event_time_role = NativeEventTimeRole::integration_center;
+    } else if (role == "integration_end") {
+        result.event_time_role = NativeEventTimeRole::integration_end;
+    } else {
+        fail("occurrence-support authority event-time role is not approved");
+    }
+    require(scalar("duration_relation") ==
+                occurrence_support_duration_relation,
+            "occurrence-support authority duration relation is not approved");
+    result.artifact_sha256 = citlali::utils::sha256_file(path);
+    return result;
 }
 
 std::string json_escape(std::string_view value) {
@@ -611,7 +717,7 @@ std::shared_ptr<const pipeline::NativeReadoutMappingIdentity> mapping_identity(
 
 std::shared_ptr<const pipeline::PairedReadoutOccurrenceAxis> occurrence_axis(
     const NetworkInput &input, std::int64_t first_native_row,
-    std::int64_t native_row_count) {
+    std::int64_t native_row_count, NativeEventTimeRole event_time_role) {
     const double duration =
         static_cast<double>(input.accumulation_length) /
         input.fpga_frequency_hz;
@@ -621,8 +727,18 @@ std::shared_ptr<const pipeline::PairedReadoutOccurrenceAxis> occurrence_axis(
         const auto row = first_native_row + offset;
         const double event = input.native_timing->identity(row)
                                  .reconstructed_time_unix_sec();
-        intervals.push_back({event - duration / 2.0,
-                             event + duration / 2.0});
+        switch (event_time_role) {
+            case NativeEventTimeRole::integration_start:
+                intervals.push_back({event, event + duration});
+                break;
+            case NativeEventTimeRole::integration_center:
+                intervals.push_back({event - duration / 2.0,
+                                     event + duration / 2.0});
+                break;
+            case NativeEventTimeRole::integration_end:
+                intervals.push_back({event - duration, event});
+                break;
+        }
     }
     return std::make_shared<const pipeline::PairedReadoutOccurrenceAxis>(
         input.native_timing, first_native_row, std::move(intervals));
@@ -634,6 +750,7 @@ struct ComparisonMetrics {
     std::size_t support_comparison_count = 0;
     std::size_t pair_decision_comparison_count = 0;
     std::size_t pair_causal_evidence_comparison_count = 0;
+    std::size_t producer_support_binding_count = 0;
     std::size_t x_bitwise_mismatch_count = 0;
     std::size_t r_bitwise_mismatch_count = 0;
     std::size_t identity_mismatch_count = 0;
@@ -644,7 +761,41 @@ struct ComparisonMetrics {
     std::size_t selected_time_mismatch_count = 0;
     std::size_t representative_native_mismatch_count = 0;
     std::size_t chunk_scientific_mismatch_count = 0;
+    std::size_t producer_support_binding_mismatch_count = 0;
 };
+
+pipeline::NativeOccurrenceInterval authoritative_occurrence_interval(
+    double event, double duration, NativeEventTimeRole event_time_role) {
+    switch (event_time_role) {
+        case NativeEventTimeRole::integration_start:
+            return {event, event + duration};
+        case NativeEventTimeRole::integration_center:
+            return {event - duration / 2.0, event + duration / 2.0};
+        case NativeEventTimeRole::integration_end:
+            return {event - duration, event};
+    }
+    fail("unsupported native event-time role");
+}
+
+void compare_occurrence_axis_to_authority(
+    const pipeline::PairedReadoutOccurrenceAxis &axis,
+    const NetworkInput &input, NativeEventTimeRole event_time_role,
+    ComparisonMetrics &metrics) {
+    const double duration =
+        static_cast<double>(input.accumulation_length) /
+        input.fpga_frequency_hz;
+    for (auto row = axis.first_native_row();
+         row < axis.past_last_native_row(); ++row) {
+        ++metrics.producer_support_binding_count;
+        const auto event = input.native_timing->identity(row)
+                               .reconstructed_time_unix_sec();
+        const auto expected = authoritative_occurrence_interval(
+            event, duration, event_time_role);
+        if (!(axis.interval(row) == expected)) {
+            ++metrics.producer_support_binding_mismatch_count;
+        }
+    }
+}
 
 struct NativeValueOracle {
     std::vector<std::tuple<pipeline::TimestreamNativeRow, Eigen::Index,
@@ -786,6 +937,7 @@ PairedBuildResult build_paired_readout(
     const pipeline::CanonicalAptDetectorRelationV2 &relation,
     const std::vector<NetworkInput> &inputs,
     const RuntimeConfig &config,
+    const NativeOccurrenceSupportAuthority &support_authority,
     const std::shared_ptr<const pipeline::NativeAlignmentPlan> &alignment) {
     std::vector<pipeline::PairedReadoutNetwork> networks;
     std::vector<pipeline::TimestreamNetworkId> inventory;
@@ -825,9 +977,13 @@ PairedBuildResult build_paired_readout(
         auto mapping = mapping_identity(input, config);
         mapping_digest.update(mapping->producer_instance_id);
         mapping_digest.update(mapping->mapping_revision);
+        auto axis = occurrence_axis(
+            input, arguments.first_native_row,
+            arguments.native_row_count, support_authority.event_time_role);
+        compare_occurrence_axis_to_authority(
+            *axis, input, support_authority.event_time_role, metrics);
         pipeline::PairedReadoutNetworkIngress ingress{
-            occurrence_axis(input, arguments.first_native_row,
-                            arguments.native_row_count),
+            std::move(axis),
             detector_axis(relation, input), mapping,
             member_states(solved.data_out.xs.data, input.tune_valid),
             member_states(solved.data_out.rs.data, input.tune_valid)};
@@ -863,6 +1019,7 @@ void compare_full_product_to_parent(
     const pipeline::RtcTimestream &product,
     ComparisonMetrics &metrics) {
     const auto &aligned = *product.input_handle();
+    const auto &evidence = *product.plan_handle()->evidence_handle();
     const auto &alignment = *aligned.alignment_handle();
     const auto &paired = *aligned.native_parent_handle();
     for (const auto network_id : alignment.participant_network_ids()) {
@@ -974,9 +1131,9 @@ void compare_full_product_to_parent(
                     if (!actual_evidence->joint_alignment() ||
                         actual_evidence->direct_x() ||
                         actual_evidence->direct_r() ||
-                        actual_evidence->member_local_causes !=
+                        evidence.member_local_causes(*actual_evidence) !=
                             pipeline::PairedReadoutCause::none ||
-                        actual_evidence->alignment_absence !=
+                        evidence.alignment_absence(*actual_evidence) !=
                             aligned.absence_reason(network_id, slot)) {
                         ++metrics.pair_causal_evidence_mismatch_count;
                     }
@@ -990,10 +1147,11 @@ void compare_full_product_to_parent(
                     if (actual_evidence->direct_x() != !x_valid ||
                         actual_evidence->direct_r() != !r_valid ||
                         actual_evidence->joint_alignment() ||
-                        actual_evidence->member_local_causes !=
+                        evidence.member_local_causes(*actual_evidence) !=
                             native.pair_causes(
                                 association.native_row, detector) ||
-                        actual_evidence->alignment_absence.has_value()) {
+                        evidence.alignment_absence(
+                            *actual_evidence).has_value()) {
                         ++metrics.pair_causal_evidence_mismatch_count;
                     }
                 }
@@ -1084,6 +1242,7 @@ AcceptanceRun execute_acceptance(
     const pipeline::CanonicalAptDetectorRelationV2 &relation,
     const std::vector<NetworkInput> &inputs,
     const RuntimeConfig &config,
+    const NativeOccurrenceSupportAuthority &support_authority,
     const std::shared_ptr<spdlog::logger> &logger) {
     const auto &observation = relation.observation();
     const pipeline::NativeObservationScope scope{
@@ -1094,7 +1253,8 @@ AcceptanceRun execute_acceptance(
 
     auto alignment = make_alignment_plan(scope, inputs, logger);
     auto paired_build = build_paired_readout(
-        arguments, scope, relation, inputs, config, alignment);
+        arguments, scope, relation, inputs, config, support_authority,
+        alignment);
     const auto native_cardinality = paired_build.paired->cardinality();
     const auto native_memory = paired_build.paired->memory_evidence();
 
@@ -1105,6 +1265,10 @@ AcceptanceRun execute_acceptance(
     require(full.complete() &&
                 full_publication.snapshot() == full.published_product,
             "full identity RTC route did not publish exactly one completion");
+    require(full.terminal.failure_cause ==
+                    pipeline::RtcOnlyFailureCause::none &&
+                full.terminal.failure_detail.empty(),
+            "successful identity RTC route retained a failure cause");
     require(full.published_product->timestream_handle()
                     ->memory_evidence()
                     .owned_numeric_bytes == 0,
@@ -1146,13 +1310,18 @@ AcceptanceRun execute_acceptance(
     require(!second_publish.complete() &&
                 second_publish.terminal.state ==
                     pipeline::RtcOnlyTerminalState::publication_failed &&
+                second_publish.terminal.failure_cause ==
+                    pipeline::RtcOnlyFailureCause::publication_slot_occupied &&
                 full_publication.snapshot() == full.published_product,
             "second publication did not preserve the committed product");
     pipeline::RtcOnlyProductSlot failed_publication;
     const auto failed = run_route(
         5, paired_build.paired, alignment, 0,
         alignment->slot_count() + 1, failed_publication);
-    require(!failed.complete() && !failed_publication.snapshot(),
+    require(!failed.complete() &&
+                failed.terminal.failure_cause ==
+                    pipeline::RtcOnlyFailureCause::input_contract_rejected &&
+                !failed_publication.snapshot(),
             "failed route published a false completion");
 
     const auto cpu_end = std::clock();
@@ -1171,6 +1340,8 @@ AcceptanceRun execute_acceptance(
 }
 
 void write_acceptance_record(const Arguments &arguments,
+                             const NativeOccurrenceSupportAuthority
+                                 &support_authority,
                              const AcceptanceRun &run,
                              const LogCounts &logs) {
     require(run.comparisons.paired_value_comparison_count ==
@@ -1182,6 +1353,9 @@ void write_acceptance_record(const Arguments &arguments,
     require(run.comparisons.support_comparison_count ==
                 run.terminal.diagnostics.aligned_cell_count,
             "support comparison count is incomplete");
+    require(run.comparisons.producer_support_binding_count ==
+                run.native_cardinality.native_occurrence_count,
+            "producer-support binding count is incomplete");
     require(run.comparisons.pair_decision_comparison_count ==
                 run.terminal.diagnostics.aligned_cell_count,
             "pair-decision comparison count is incomplete");
@@ -1243,9 +1417,30 @@ void write_acceptance_record(const Arguments &arguments,
            << ",\n"
            << "  \"producer_interface_sha256\": "
            << q(producer_interface_sha256) << ",\n"
+           << "  \"occurrence_support_authority_schema\": "
+           << q(occurrence_support_authority_schema) << ",\n"
+           << "  \"occurrence_support_authority_id\": "
+           << q(support_authority.authority_id) << ",\n"
+           << "  \"occurrence_support_authority_sha256\": "
+           << q(support_authority.artifact_sha256) << ",\n"
+           << "  \"occurrence_support_authority_approved\": true,\n"
+           << "  \"occurrence_support_authority_approved_by\": "
+           << q(support_authority.approved_by) << ",\n"
+           << "  \"occurrence_support_authority_approved_at_utc\": "
+           << q(support_authority.approved_at_utc) << ",\n"
+           << "  \"occurrence_support_event_time_role\": "
+           << q(native_event_time_role_name(
+                    support_authority.event_time_role)) << ",\n"
+           << "  \"occurrence_support_duration_relation\": "
+           << q(occurrence_support_duration_relation) << ",\n"
            << "  \"terminal_state\": "
            << q(pipeline::rtc_only_terminal_state_name(run.terminal.state))
            << ",\n"
+           << "  \"terminal_failure_cause\": "
+           << q(pipeline::rtc_only_failure_cause_name(
+                    run.terminal.failure_cause)) << ",\n"
+           << "  \"terminal_failure_detail\": "
+           << q(run.terminal.failure_detail) << ",\n"
            << "  \"metrics\": {\n"
            << "    \"network_count\": "
            << run.terminal.diagnostics.network_count << ",\n"
@@ -1301,6 +1496,8 @@ void write_acceptance_record(const Arguments &arguments,
            << run.comparisons.identity_comparison_count << ",\n"
            << "    \"support_comparison_count\": "
            << run.comparisons.support_comparison_count << ",\n"
+           << "    \"producer_support_binding_count\": "
+           << run.comparisons.producer_support_binding_count << ",\n"
            << "    \"pair_decision_comparison_count\": "
            << run.comparisons.pair_decision_comparison_count << ",\n"
            << "    \"pair_causal_evidence_comparison_count\": "
@@ -1319,6 +1516,9 @@ void write_acceptance_record(const Arguments &arguments,
            << run.comparisons.identity_mismatch_count << ",\n"
            << "    \"support_mismatch_count\": "
            << run.comparisons.support_mismatch_count << ",\n"
+           << "    \"producer_support_binding_mismatch_count\": "
+           << run.comparisons.producer_support_binding_mismatch_count
+           << ",\n"
            << "    \"pair_decision_mismatch_count\": "
            << run.comparisons.pair_decision_mismatch_count << ",\n"
            << "    \"pair_causal_evidence_mismatch_count\": "
@@ -1368,6 +1568,9 @@ int main(int argc, char **argv) {
                     arguments.producer_interface_artifact) ==
                     producer_interface_sha256,
                 "producer interface artifact SHA-256 is not approved");
+        const auto support_authority =
+            load_occurrence_support_authority(
+                arguments.occurrence_support_authority_artifact);
         require(std::string_view{KIDSCPP_GIT_REVISION} ==
                     kidscpp_revision.substr(0,
                         std::string_view{KIDSCPP_GIT_REVISION}.size()) &&
@@ -1400,10 +1603,11 @@ int main(int argc, char **argv) {
         const auto inputs = resolve_network_inputs(
             arguments, relation, config);
         const auto run = execute_acceptance(
-            arguments, relation, inputs, config, logger);
+            arguments, relation, inputs, config, support_authority, logger);
         require(log_counts->errors == 0 && log_counts->criticals == 0,
                 "acceptance route emitted unexpected error-level records");
-        write_acceptance_record(arguments, run, *log_counts);
+        write_acceptance_record(
+            arguments, support_authority, run, *log_counts);
         std::cout << "WP-7 identity RTC acceptance record: "
                   << arguments.output << '\n';
         return 0;

@@ -97,6 +97,9 @@ TEST(rtc_only_route,
 
     ASSERT_TRUE(outcome.complete());
     ASSERT_NE(outcome.published_product, nullptr);
+    EXPECT_EQ(outcome.terminal.failure_cause,
+              pipeline::RtcOnlyFailureCause::none);
+    EXPECT_TRUE(outcome.terminal.failure_detail.empty());
     EXPECT_EQ(publication.snapshot(), outcome.published_product);
     const auto &bundle = *outcome.published_product;
     EXPECT_EQ(bundle.terminal_result().identity.run, 42U);
@@ -152,6 +155,10 @@ TEST(rtc_only_route,
     EXPECT_FALSE(outcome.complete());
     EXPECT_EQ(outcome.terminal.state,
               pipeline::RtcOnlyTerminalState::input_admission_failed);
+    EXPECT_EQ(outcome.terminal.failure_cause,
+              pipeline::RtcOnlyFailureCause::input_contract_rejected);
+    EXPECT_EQ(outcome.terminal.failure_detail,
+              "aligned paired readout parent or slot interval is incomplete");
     EXPECT_EQ(outcome.published_product, nullptr);
     EXPECT_EQ(publication.snapshot(), nullptr);
 }
@@ -170,9 +177,30 @@ TEST(rtc_only_route,
     EXPECT_FALSE(second.complete());
     EXPECT_EQ(second.terminal.state,
               pipeline::RtcOnlyTerminalState::publication_failed);
+    EXPECT_EQ(second.terminal.failure_cause,
+              pipeline::RtcOnlyFailureCause::publication_slot_occupied);
+    EXPECT_EQ(second.terminal.failure_detail,
+              "RTC-only product slot already contains a completion");
     EXPECT_EQ(second.published_product, nullptr);
     EXPECT_EQ(publication.snapshot(), committed);
     EXPECT_EQ(publication.snapshot()->terminal_result().identity.run, 1U);
+}
+
+TEST(rtc_only_route, invalid_run_identity_has_an_exact_terminal_cause) {
+    const auto fixture = route_fixture();
+    pipeline::RtcOnlyProductSlot publication;
+
+    const auto outcome = pipeline::run_identity_rtc_only(
+        route_request(fixture, 0), publication);
+
+    EXPECT_FALSE(outcome.complete());
+    EXPECT_EQ(outcome.terminal.state,
+              pipeline::RtcOnlyTerminalState::input_admission_failed);
+    EXPECT_EQ(outcome.terminal.failure_cause,
+              pipeline::RtcOnlyFailureCause::invalid_run_identity);
+    EXPECT_EQ(outcome.terminal.failure_detail,
+              "RTC-only route requires a nonzero run identity");
+    EXPECT_EQ(publication.snapshot(), nullptr);
 }
 
 TEST(rtc_only_route,
