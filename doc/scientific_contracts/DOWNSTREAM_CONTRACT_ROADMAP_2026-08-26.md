@@ -168,7 +168,11 @@ moment as an inverse conditional second-moment scale, not inverse variance or
 precision. Unavailable inputs remain unavailable rather than numerical zero,
 regularization is separate, other inverse/precision/consumer weights remain
 distinct, and no PTC/MAP promotion follows. ODQ-108, STD numerator and scale,
-is next.
+now selects the exact immutable normalized MAP signal divided by canonical
+`sqrt(V_hat_cond)` on the exact compatible finite-positive intersection. The
+unit-`1` output claims conditional-scale standardization only, keeps dependence
+explicit, makes no significance claim, and leaves JINC separate. ODQ-109,
+persistence and exact regeneration, is next.
 Conditional Stage B remains blocked on exact
 bytes/hashes, granular owner decisions or explicit unavailability, and required
 source/profile bindings. The frozen MAP/pre-MAP

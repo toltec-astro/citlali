@@ -80,17 +80,17 @@ replaced by one generic pass bit.
 
 | Field | Draft binding |
 | --- | --- |
-| Object/domain | One exact immutable signal numerator and one exact authorized UNC scale presented to one STD method |
-| Exact source packages | Exact approved MAP or JINC parent boundary, exact UNC product/method generation, and exact STD method identity |
-| Required facts | Signal estimand/product/generation; UNC scale product and transformation; positive signal-unit denominator; parent and method compatibility; numerator/denominator units and beam; response reference; WCS/support/validity/lifecycle compatibility; dependence state; local zero/nonfinite/unavailable behavior; output support and claim class |
-| Decisive exclusions | Incomplete/unavailable signal parent; numerical JINC unavailability; use of variance/covariance/inverse variance/precision/weight directly as a denominator; nonpositive or nonfinite scale; incompatible estimator, response, unit/beam, WCS, support, validity, lifecycle, or generation; or missing claim identity |
+| Object/domain | For the initial method, one exact immutable normalized real-observation MAP signal and its exact compatible ODQ-105B conditional second moment presented to `NOI-STD/MAP-CONDITIONAL-SECOND-MOMENT-SCALE@1` |
+| Exact source packages | Exact approved MAP parent boundary, exact `V_hat_cond` UNC product/method generation, canonical square-root transformation, and exact STD method identity; JINC requires a separate future method/profile revision |
+| Required facts | Exact MAP signal estimand/product/generation and same-frozen-operator relation; exact `V_hat_cond` method/generation; `sigma_cond=sqrt(V_hat_cond)`; finite strictly positive direct denominator in the MAP signal unit; exact valid-domain intersection; parent/method, unit/beam, response, WCS/support/validity/lifecycle compatibility; numerator/scale dependence; local invalid/unavailable behavior; output unit `1`; and exact conditional-scale-standardized claim |
+| Decisive exclusions | Incomplete/unavailable MAP parent; JINC or substituted numerator; direct use of variance/covariance/inverse scale/precision/weight as denominator; algebraic inverse-scale route treated as an implicit second method; nonpositive/nonfinite/unavailable scale; interpolation or domain extension; incompatible estimator, response, unit/beam, WCS, support, validity, lifecycle, or generation; or absent dependence/claim identity |
 | Exception authority | None for direct denominator positivity, unit compatibility, exact parent/method identity, or immutable parentage. Stronger statistical claims require a separately versioned policy and authority |
 | Source-imprint role | Signal and scale source-imprint/dependence states remain explicit; standardization does not remove source leakage |
 | Response/uncertainty role | The scale's exact UNC target and transformation are required; standardization creates neither a new uncertainty estimate nor a MAP/JINC covariance/response product |
 | Missing/conflict behavior | Missing/conflicting required facts yield `applicability_unknown` and `decision_unavailable`; local invalid scale yields unavailable on its exact domain, never numeric zero or infinity |
 | Aggregation/propagation | Exact numerator/scale rows only. No automatic interpolation, domain extension, aggregate pass, or reverse change to either parent |
 | Lifecycle | Binds exact signal, UNC, and STD requested/effective/applied/realized generations plus immutable parent joins |
-| Exact consumer action | Permit construction of `empirical_scale_standardized_signal` with unit `1` on the exact compatible domain with claim “standardized by the stated empirical scale” only |
+| Exact consumer action | Permit construction of `S_cond=q_MAP/sqrt(V_hat_cond)` as `empirical_scale_standardized_signal`, unit `1`, on the exact compatible finite-positive intersection with claim “MAP signal standardized by the stated conditional randomization second-moment scale” only |
 
 ## Supersession And Claim Boundary
 

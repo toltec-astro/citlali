@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Product Role And Lifecycle Table
 
-Artifact identity: `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.6`
+Artifact identity: `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.7`
 
 Status: proposed sanitized Stage A scientific input; exact bytes await owner
 approval
@@ -22,7 +22,7 @@ approval
 | UNC precision | Exact inverse/generalized inverse of an authorized covariance on a declared subspace, with rank/null/conditioning/regularization state | Not `1/diag(C)` by default |
 | UNC consumer-effective weight | One exact named estimator/projection/response/domain | Not portable to another estimator or consumer and not a PTC/MAP coefficient without explicit future authority |
 | STD admission | Exact numerator/positive-scale compatibility decision for one STD use | Not scale construction or statistical calibration |
-| STD standardized signal | Exact numerator, transformed positive scale, compatibility, dependence, support, unit `1`, claim, lifecycle | Not uncertainty, Gaussian significance, probability, or catalog authority |
+| STD MAP conditional-scale standardized signal | `NOI-STD/MAP-CONDITIONAL-SECOND-MOMENT-SCALE@1`; exact immutable normalized real-observation MAP numerator; canonical `sqrt(V_hat_cond)` denominator; exact compatible finite-positive intersection; dependence; unit `1`; lifecycle | Means only MAP signal standardized by the stated conditional randomization second-moment scale; not uncertainty, Gaussian/Student/z/N-sigma significance, probability, detection, completeness, purity, or catalog authority; JINC and algebraic alternate routes are not implicit |
 | Persistence/reconstruction record | Persisted/transient/streamed state, exact regeneration capability, sufficient statistics, audit limitation | Not statistical adequacy |
 
 Every requested operation publishes its complete required atomic product or a

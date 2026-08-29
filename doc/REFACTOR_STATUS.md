@@ -535,7 +535,22 @@ and consumer-effective weight is exact-use-specific. None is validity,
 support, exposure, a PTC/MAP coefficient, or a parent-mutation instruction.
 Cross-boundary use requires explicit future scientific authority.
 
-The next walkthrough question is `SCI-NOI-ODQ-108`, STD numerator and scale.
+Grant Wilson approved `SCI-NOI-ODQ-108` on `2026-08-29`. The first STD method,
+`NOI-STD/MAP-CONDITIONAL-SECOND-MOMENT-SCALE@1`, divides the exact immutable
+normalized real-observation MAP signal associated with the same frozen MAP
+operator state by canonical `sqrt(V_hat_cond)` on their exact compatible
+finite-positive valid-domain intersection. Exact estimator/generation,
+parent, response, unit/beam, WCS, support, validity, lifecycle, transformation,
+and numerator/scale dependence are bound. Invalid or incompatible scale is
+unavailable rather than zero/infinity; interpolation, substitution, and an
+implicit algebraic inverse-scale route are prohibited. The unit-`1` output
+claims only MAP signal standardized by the stated conditional randomization
+second-moment scale—never significance, probability, detection, completeness,
+purity, or catalog authority. JINC remains a separate future method with a
+JINC-specific compatible scale.
+
+The next walkthrough question is `SCI-NOI-ODQ-109`, persistence and exact
+regeneration.
 Later granular decisions, exact packet bytes/hashes, and
 required source/profile Registry bindings remain under owner review.
 MAP/pre-MAP numerical parents remain

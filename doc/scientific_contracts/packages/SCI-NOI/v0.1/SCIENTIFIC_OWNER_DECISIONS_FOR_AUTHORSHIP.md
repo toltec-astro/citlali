@@ -1,8 +1,8 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.12`
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.13`
 
-Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, ODQ-105A, ODQ-105B, ODQ-106, and ODQ-107 owner-approved; exact
+Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, ODQ-105A, ODQ-105B, ODQ-106, ODQ-107, and ODQ-108 owner-approved; exact
 finite-design mechanics delegated to the scientific-contract author under
 ODQ-102D; later decisions remain open; not yet an allowed Stage B authority
 
@@ -347,20 +347,37 @@ not approve another decision or make an unresolved numerical route available.
 
 - **Exact question:** Which immutable signal numerator and authorized positive
   same-unit empirical scale define the first NOI-STD method?
-- **Recommended disposition:** use one exact immutable normalized MAP signal,
-  or `jinc_map` only when realized, joined to one compatible standard
-  deviation, standard error, projected uncertainty, calibrated scale, or other
-  authorized signal-unit scale after explicit transformation. Output
-  `empirical_scale_standardized_signal` has unit `1` and claims only
-  “standardized by the stated empirical scale.”
+- **Approved disposition:** select
+  `NOI-STD/MAP-CONDITIONAL-SECOND-MOMENT-SCALE@1`. Use the exact immutable
+  normalized real-observation MAP signal associated with the same frozen MAP
+  operator state as numerator. On the exact compatible valid-domain
+  intersection where `V_hat_cond` is finite and strictly positive, define
+  `sigma_cond=sqrt(V_hat_cond)` and `S_cond=q_MAP/sigma_cond`. Bind exact MAP
+  estimator/generation, immutable parent, response, unit/beam, WCS, support,
+  validity, lifecycle, UNC method/generation, and transformation. Do not
+  interpolate, extend domains, or substitute parents/responses/generations.
+  Invalid, unavailable, incompatible, or nonpositive scale makes STD
+  unavailable, not zero or infinity. `sqrt(V_hat_cond)` is the canonical
+  initial scale route; algebraic `1/sqrt(W_hat_cond)` does not create another
+  implicit method. Record numerator/scale dependence. Output
+  `empirical_scale_standardized_signal` has unit `1` and means only “MAP signal
+  standardized by the stated conditional randomization second-moment scale.”
+  It is not Gaussian/Student/z/N-sigma significance, probability, completeness,
+  purity, or catalog authority. `jinc_map` requires a separately identified
+  future method and exact compatible JINC-specific scale; it cannot inherit the
+  MAP route by analogy.
 - **Alternatives:** MAP, JINC, or another exact numerator; a different
   authorized scale; or unavailable.
 - **Scientific consequences:** dimensionless output remains neither an
   uncertainty estimate nor Gaussian/Student/z/N-sigma/detection significance.
-- **Conservative state while open:** no numerical STD product available.
+- **Conservative state:** the initial MAP STD method is approved but numerically
+  unavailable until all MAP, GEN/UNC, compatibility, finite-positive-domain,
+  and admission gates pass. JINC STD remains unselected and unavailable.
 - **Affected artifacts:** STD table/products/profile and MAP/JINC boundary.
-- **Exact bytes changed by approval:** numerator, scale/transformation,
-  compatibility, support, failure behavior, and claim.
+- **Exact bytes changed by approval:** initial method and MAP numerator
+  identity; canonical square-root scale/formula/domain; exact compatibility and
+  unavailable behavior; inverse-route non-duplication; dependence disclosure;
+  unit/claim ceiling; and separately unavailable JINC method.
 
 ### `SCI-NOI-ODQ-109` — persistence and exact regeneration
 

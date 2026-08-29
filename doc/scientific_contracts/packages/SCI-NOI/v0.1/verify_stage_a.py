@@ -110,6 +110,12 @@ def main() -> None:
         "It shall not substitute a numerical zero",
         "not inverse variance or precision",
         "cross-boundary use requires explicit scientific authority",
+        "NOI-STD/MAP-CONDITIONAL-SECOND-MOMENT-SCALE@1",
+        "sigma_cond(p) = sqrt(V_hat_cond(p))",
+        "S_cond(p) = q_MAP(p) / sigma_cond(p)",
+        "MAP signal standardized by the stated conditional randomization",
+        "does not create a second implicit STD method identity",
+        "JINC standardization remains a separate future method",
     ]
     for token in required:
         if token not in package_text:

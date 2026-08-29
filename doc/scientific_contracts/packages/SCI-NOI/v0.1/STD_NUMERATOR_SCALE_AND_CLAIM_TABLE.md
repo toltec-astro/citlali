@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — STD Numerator, Scale, And Claim Table
 
-Artifact identity: `SCI-NOI_STD_NUMERATOR_SCALE_CLAIM v0.1/r0.3`
+Artifact identity: `SCI-NOI_STD_NUMERATOR_SCALE_CLAIM v0.1/r0.4`
 
 Status: proposed sanitized Stage A scientific input; exact bytes await owner
 approval
@@ -30,16 +30,36 @@ N-sigma significance, detection probability, false-alarm rate, completeness,
 purity, and catalog eligibility require separately authorized null, selection,
 search, multiplicity, decision, and validation authority.
 
-The Stage A numerator/scale pair remains an owner decision. A normalized MAP
-signal or a numerically realized `jinc_map` is a candidate numerator; a
-standard deviation, standard error, projected uncertainty, calibrated scale,
-or another transformed positive signal-unit UNC quantity is a candidate scale.
-ODQ-105B's `V_hat_cond` has squared signal units and is not a direct
-denominator. Its square root would require an exact authorized transformation,
-compatibility/domain rule, and later ODQ-108 pairing. ODQ-107's
-`inverse_conditional_second_moment_scale` has inverse squared signal units and
-is also not a direct denominator. Reciprocal square-root or another conversion
-back to a signal-unit scale requires an exact separately identified
-transformation under ODQ-108. Numerical weight-like appearance cannot select
-that transformation or a significance claim. No candidate pairing becomes
-available by appearing in this table.
+## Approved Initial MAP Method
+
+ODQ-108 selects `NOI-STD/MAP-CONDITIONAL-SECOND-MOMENT-SCALE@1`. Let `q_MAP`
+be the exact immutable normalized real-observation MAP signal associated with
+the same frozen MAP operator state used for the NOI ensemble. Define
+
+```text
+D_STD = exact valid-domain intersection of q_MAP and V_hat_cond,
+        restricted to finite strictly positive V_hat_cond,
+sigma_cond(p) = sqrt(V_hat_cond(p)),
+S_cond(p) = q_MAP(p) / sigma_cond(p).
+```
+
+The method binds exact MAP estimator/generation, immutable parent relation,
+response reference, signal unit/beam, WCS, support, validity, lifecycle, UNC
+method/generation, scale transformation, and numerator/scale dependence. No
+interpolation, domain extension, parent/response/generation substitution, or
+implicit regularization is permitted. Invalid, unavailable, incompatible, or
+nonpositive scale makes the STD product unavailable, never zero or infinity.
+
+The output role is `empirical_scale_standardized_signal`, unit `1`, and its
+claim is only “MAP signal standardized by the stated conditional randomization
+second-moment scale.” It is not Gaussian/Student/z/N-sigma significance,
+probability, completeness, purity, detection, or catalog authority.
+
+`sqrt(V_hat_cond)` is the canonical initial denominator route. Although
+`1/sqrt(W_hat_cond)` is algebraically equal on the exact reciprocal domain, it
+does not create a second implicit STD method identity. Any alternative route
+requires its own exact identity and equivalence/domain proof.
+
+`jinc_map` remains a candidate only for a future separately identified STD
+method with an exact compatible JINC-specific signal-unit uncertainty scale.
+It cannot inherit the MAP scale or method by analogy and is unavailable here.

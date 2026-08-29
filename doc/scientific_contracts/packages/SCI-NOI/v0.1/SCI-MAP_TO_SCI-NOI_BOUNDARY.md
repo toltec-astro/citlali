@@ -1,8 +1,8 @@
 # SCI-MAP To SCI-NOI Boundary
 
-Boundary identity: `SCI-MAP_TO_SCI-NOI v0.1/r0.2`
+Boundary identity: `SCI-MAP_TO_SCI-NOI v0.1/r0.3`
 
-Canonical spelling is exactly `SCI-MAP_TO_SCI-NOI v0.1/r0.2`.
+Canonical spelling is exactly `SCI-MAP_TO_SCI-NOI v0.1/r0.3`.
 
 Status: proposed sanitized Stage A boundary; exact bytes await owner approval;
 no numerical parent is created or declared available
@@ -71,8 +71,13 @@ this realized-MAP route. This route remains unselected and unavailable.
 - UNC may attach a versioned empirical uncertainty companion to the exact MAP
   parent or to a declared GEN ensemble. It does not rewrite MAP covariance,
   response, validity, support, or coefficient claims.
-- STD may use the exact MAP normalized signal product as numerator only with an
-  authorized compatible positive signal-unit UNC scale.
+- ODQ-108 selects the exact immutable normalized real-observation MAP signal
+  product as numerator for
+  `NOI-STD/MAP-CONDITIONAL-SECOND-MOMENT-SCALE@1`. It uses canonical
+  `sqrt(V_hat_cond)` only on the exact compatible finite-positive valid-domain
+  intersection and records numerator/scale dependence. The output is unit `1`
+  and claims only MAP signal standardized by the stated conditional
+  randomization second-moment scale; it is not significance or probability.
 
 For a fixed-state claim, signal and realization paths use the same exact
 eligibility, membership, projection, grouping, coefficient family/generation,
@@ -94,8 +99,9 @@ numerical MAP parent is typed unavailable for NOI. This boundary does not infer
 unity, loading, sensitivity, scatter, inverse variance, precision, or a
 `coverage_cut` value, and it does not synthesize a map.
 
-The realized-MAP GEN route remains unavailable as an unselected, scientifically
-incomplete route independently of parent availability.
+The selected MAP STD method remains numerically unavailable with its MAP and
+UNC parents. The realized-MAP GEN route remains unavailable as an unselected,
+scientifically incomplete route independently of parent availability.
 
 ## Fail-Closed Compatibility
 

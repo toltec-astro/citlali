@@ -1,7 +1,7 @@
 # SCI-NOI v0.1 — Collision-Free Operator And Product Taxonomy
 
 Status: proposed sanitized Stage B author input; ODQ-101, ODQ-102A/B/C,
-ODQ-103/104/105A/105B/106/107 incorporated; exact bytes await owner approval
+ODQ-103/104/105A/105B/106/107/108 incorporated; exact bytes await owner approval
 
 The semantic prefixes are:
 
@@ -62,10 +62,14 @@ effective-information fields are in
 
 ## STD Operator Family
 
-`NOI-STD/EMPIRICAL-SCALE-STANDARDIZED-SIGNAL` combines one exact immutable
-signal numerator with one authorized finite positive scale in the numerator's
-signal unit. Its output is `empirical_scale_standardized_signal` with unit `1`.
-It means only “standardized by the stated empirical scale.”
+The selected initial method
+`NOI-STD/MAP-CONDITIONAL-SECOND-MOMENT-SCALE@1` combines the exact immutable
+normalized real-observation MAP signal with canonical `sqrt(V_hat_cond)` on
+their exact compatible finite-positive valid-domain intersection. Its output
+is `empirical_scale_standardized_signal` with unit `1`. It means only “MAP
+signal standardized by the stated conditional randomization second-moment
+scale.” The algebraic inverse-scale route is not a second implicit method, and
+JINC standardization remains separately identified and unavailable.
 
 Exact numerator, transformation, compatibility, dependence, local behavior,
 unit, and prohibited claim fields are in

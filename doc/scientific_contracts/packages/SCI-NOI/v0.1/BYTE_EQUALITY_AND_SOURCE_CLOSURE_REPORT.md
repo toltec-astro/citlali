@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Byte-Equality And Source-Closure Report
 
-Report identity: `SCI-NOI_STAGE_A_SOURCE_CLOSURE v0.1/r0.12`
+Report identity: `SCI-NOI_STAGE_A_SOURCE_CLOSURE v0.1/r0.13`
 
 Prepared: `2026-08-29`
 
@@ -28,6 +28,7 @@ excluded from this file.
 | `SCIENTIFIC_OWNER_ODQ_105B_APPROVAL_2026-08-29.md` | `6216c03e89739a12e0bffc74b7552f267baf8fd716782e9aedaae7bdd3e7e2cb` | Initial zero-centered conditional randomization second-moment approval; manager-facing, not admitted to the future author |
 | `SCIENTIFIC_OWNER_ODQ_106_APPROVAL_2026-08-29.md` | `e3db8c29a3a9d2087778b311fd314a9583c12aa530bda21e0e4a02968c1fd8c9` | Covariance-representation, rank, missing/unreported-covariance, and no-inverse-implication approval; manager-facing, not admitted to the future author |
 | `SCIENTIFIC_OWNER_ODQ_107_APPROVAL_2026-08-29.md` | `975d8248f1012692eaa5a92e8f10dedc7ce15f73d36b720108a9b186bb21d4d2` | Initial inverse-scale, unavailable-not-zero, inverse-role separation, and PTC/MAP non-promotion approval; manager-facing, not admitted to the future author |
+| `SCIENTIFIC_OWNER_ODQ_108_APPROVAL_2026-08-29.md` | `897f29688dce56329ef55da8258df4df1a89365ddea8281bed5a5dcbdde5b575` | Initial MAP standardized-signal formula, conditional-scale claim, and JINC separation approval; manager-facing, not admitted to the future author |
 
 ## Required Stage A Closure Packet
 
@@ -37,21 +38,21 @@ bytes close.
 
 | Directive item | Exact object and identity | SHA-256 | Authority/compatibility state |
 | --- | --- | --- | --- |
-| 1 | `SCOPE_BRIEF.md` | `a5fb4a3c38ba70905bb884c636cd3144b58b5f7684569b34153d5053628ae7ef` | ODQ-101/102A/102B/102C/103/104/105A/105B/106/107 incorporated; ODQ-102D author-delegated; exact mechanics conditional |
-| 2 | `SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`, `SCI-NOI_OWNER_DECISIONS v0.1/r0.12` | `65ba1ba36bc5cb354d48daa05bb52076ded7aaf3c52cf293de28b95eb0e88640` | ODQ-101/102A/102B/102C/103/104/105A/105B/106/107 explicitly owner-approved; exact terminology and mechanics delegated |
-| 3 | `SCI-MAP_TO_SCI-NOI_BOUNDARY.md`, `SCI-MAP_TO_SCI-NOI v0.1/r0.2` | `42e4449cef69f8f362ccb064c48ec6bb30fcee94a9f285eda4a96e1a25a2458d` | Sanitized exact-source extract; realized-MAP route unselected |
-| 4 | `SCI-JINC_TO_SCI-NOI_BOUNDARY.md`, `SCI-JINC_TO_SCI-NOI v0.1/r0.2` | `3bdf5f620940eae213dfd82edd8e421e343b4e64b4e721d3fdef2530f857cd99` | Sanitized exact-source extract; JINC routes unselected |
+| 1 | `SCOPE_BRIEF.md` | `d41bc7a51002e47b51bb9fb551cd9f0c0b75ea718d8b551e0ec7813e26973050` | ODQ-101/102A/102B/102C/103/104/105A/105B/106/107/108 incorporated; ODQ-102D author-delegated; exact mechanics conditional |
+| 2 | `SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`, `SCI-NOI_OWNER_DECISIONS v0.1/r0.13` | `2bab8120e8fd21ff354e5c94505e3e8909756f6da9e4cbbc87e0b2d1ce2cac32` | ODQ-101/102A/102B/102C/103/104/105A/105B/106/107/108 explicitly owner-approved; exact terminology and mechanics delegated |
+| 3 | `SCI-MAP_TO_SCI-NOI_BOUNDARY.md`, `SCI-MAP_TO_SCI-NOI v0.1/r0.3` | `4273c5a75ff10d00506e5aa8732690cd3f398ff5afbaa561af8f1434ec467e29` | Sanitized exact-source extract; initial MAP STD selected but numerically unavailable; realized-MAP GEN unselected |
+| 4 | `SCI-JINC_TO_SCI-NOI_BOUNDARY.md`, `SCI-JINC_TO_SCI-NOI v0.1/r0.3` | `7bf0ff489957943cee5abcd581b6b6b1fea0840969d62ced4d73072cff8b51f8` | Sanitized exact-source extract; JINC STD/GEN routes separate, unselected, and unavailable |
 | 5 | `SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md`, `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.6` | `0a6484058569930cee62e80e04ca2045c107fde67603f662473ae471406f905c` | MAP route/coherence/network balance and source-suppression claim boundary selected; exact design author-delegated and unavailable; JINC host unselected |
 | 6 | `NOI_GEN_PARENT_OPERATOR_GRAPH.md`, `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.6` | `09ec524a46bde9c6085069e92f4f25b543bd99bfed90939f63195294473d0059` | Approved conditioning, route, coherence, balance, and consequential-state definition; exact mechanics author-delegated; five identities distinct |
 | 7 | `ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT_SPECIFICATION.md`, `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.6` | `6c92b04265ece3f70e4568d5a902ae8ad67713df18b31ee32533cbdc2f22a13a` | Coherence, balance, source-suppression claim boundary, and fail-closed admitted-member completion approved; mechanics and terminology author-delegated |
 | 8 | `FINITE_DESIGN_UNC_ESTIMATOR_AND_COVARIANCE_TABLE.md`, `SCI-NOI_FINITE_DESIGN_UNC_TABLE v0.1/r0.5` | `cad960d438810942ee630b63dff05211ad831977d3fcd81fb8ab40042b820976` | Initial second moment, covariance/rank policy, and inverse conditional second-moment scale approved; numerical UNC/inverse unavailable |
-| 9 | `STD_NUMERATOR_SCALE_AND_CLAIM_TABLE.md`, `SCI-NOI_STD_NUMERATOR_SCALE_CLAIM v0.1/r0.3` | `4b31ff856ab7a318c9f626c11a171a300ad141f88f9b3e2fe575a094e96c6400` | Unit `1`; squared and inverse-squared approved products are not direct denominators; numerical STD unavailable |
-| 10 | `SCI-NOI_VAL_PROFILE_DRAFTS.md` | `3db6d966413c160a4de610639ee1291c81d3362286ad2d41eaec7892f1be5771` | Four NOI-owned drafts; fail-closed GEN, estimator/covariance, inverse-domain, and PTC/MAP non-promotion restrictions proposed; unapproved/unregistered |
+| 9 | `STD_NUMERATOR_SCALE_AND_CLAIM_TABLE.md`, `SCI-NOI_STD_NUMERATOR_SCALE_CLAIM v0.1/r0.4` | `ff24c6946104d0653469fe0f2921efcda39fbbc2a431e673528ce622f388d28e` | Initial MAP numerator/canonical square-root scale and unit-1 claim approved; numerical STD unavailable |
+| 10 | `SCI-NOI_VAL_PROFILE_DRAFTS.md` | `e97a6164ba9f057c30d5eb81dc35007d6e9a8914c46e9673522a9fcc056eba53` | Four NOI-owned drafts; exact initial MAP STD compatibility/action and claim restrictions proposed; unapproved/unregistered |
 | 11 | `FILTER_AND_FRUIT_SCOPE.md` | `de02815792bf9bdcf19651abd8163659c79c8ad6c3cbbfaf41210b17973e9f97` | FLT/Wiener/FRUIT decisions separate; routes unavailable |
-| 12 | `PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md`, `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.6` | `3024074657e77a26081e2a5cead300296d8a7165ea64138a97c347662a34a963` | GEN lifecycle plus distinct second-moment, covariance, inverse-scale, inverse-variance, precision, and consumer-weight roles explicit |
+| 12 | `PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md`, `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.7` | `3809349ca590da370e6dd2c7860e876597eb359b57f95ce70f68c24ccc541b70` | GEN/UNC lifecycle plus exact initial MAP conditional-scale standardized-signal role explicit |
 | 13 | Sanitized inherited/owner decision table in item 2 | same as item 2 | Single canonical decision artifact; no divergent copy |
-| 14 | `STAGE_A_CHANGE_LOG.md` | `8daefbcbd3f46086a4c4de183617589b8a9b2f30331cf8269db6a21bc678cd8b` | Manager-facing closure/ODQ history; not an author input |
-| 15 | `AUTHOR_PACKET_MANIFEST.md`, `SCI-NOI_AUTHOR_PACKET_MANIFEST v0.1/r0.12` | `3a1ff77c475f6337bf2cbf1b25686889354f9b7f5fa451aa251aa3edad16b386` | Exactly 17 admitted author objects; firewall complete |
+| 14 | `STAGE_A_CHANGE_LOG.md` | `431c9dab63ec60127ca9a89b434170888bbbb91d367684033ec9d5179fc56ca8` | Manager-facing closure/ODQ history; not an author input |
+| 15 | `AUTHOR_PACKET_MANIFEST.md`, `SCI-NOI_AUTHOR_PACKET_MANIFEST v0.1/r0.13` | `0a96d791283774dcaa2c02a593844fbe4d83623627dc60518488e8e9f8eeea01` | Exactly 17 admitted author objects; firewall complete |
 | 16 | `BYTE_EQUALITY_AND_SOURCE_CLOSURE_REPORT.md`, this report | externally bound | Verification evidence only; not an author input |
 
 ## Author-Packet Equality
@@ -97,7 +98,7 @@ reduction, generated product, Unity, accepted run, default, historical
 behavior, or production-status source was admitted or inspected during this
 closure. The future author packet contains only the 17 manifest-listed objects.
 
-ODQ-101, ODQ-102A/B/C, ODQ-103, ODQ-104, ODQ-105A/B, ODQ-106, and ODQ-107 are incorporated without conflict.
+ODQ-101, ODQ-102A/B/C, ODQ-103, ODQ-104, ODQ-105A/B, ODQ-106, ODQ-107, and ODQ-108 are incorporated without conflict.
 ODQ-103 requires the source-suppression intent and no-source-free-by-
 construction boundary while delegating exact terminology to Stage B. ODQ-104
 requires complete classification of scientifically consequential adjacent
@@ -119,13 +120,18 @@ positive parent domain as an inverse conditional second-moment scale, not
 inverse variance or precision. Unavailable input does not become a numerical
 zero, implicit regularization is prohibited, other inverse/precision/consumer-
 weight roles remain separate, and no PTC/MAP coefficient promotion follows.
+ODQ-108 selects the exact immutable normalized real-observation MAP signal
+divided by canonical `sqrt(V_hat_cond)` on the exact compatible finite-positive
+intersection. The unit-`1` result claims conditional-scale standardization
+only; dependence remains explicit, significance is prohibited, the algebraic
+inverse-scale route is not an implicit second method, and JINC remains separate.
 ODQ-102D delegates
 exact finite-design selection and rationale to the implementation-blind
 scientific-contract author and preserves the tolerance-conditioned construction
 as nonbinding guidance only. The ordinary PTC-to-frozen-MAP route, detector
 coherence, and network-stratified coefficient-balance family are selected, but
 the route remains numerically unavailable at its frozen gates and pending
-later acceptance of authored exact mechanics. ODQ-108 and later granular
+later acceptance of authored exact mechanics. ODQ-109 and later granular
 decisions remain open; every dependent numerical method is typed unavailable.
 NOI profile bytes remain unapproved/unregistered, and required SCI-VAL
 Registry/source-binding successors do not yet exist. Stage B was not launched.

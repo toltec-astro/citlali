@@ -1,8 +1,8 @@
 # SCI-JINC To SCI-NOI Boundary
 
-Boundary identity: `SCI-JINC_TO_SCI-NOI v0.1/r0.2`
+Boundary identity: `SCI-JINC_TO_SCI-NOI v0.1/r0.3`
 
-Canonical spelling is exactly `SCI-JINC_TO_SCI-NOI v0.1/r0.2`.
+Canonical spelling is exactly `SCI-JINC_TO_SCI-NOI v0.1/r0.3`.
 
 Status: proposed sanitized Stage A boundary; exact bytes await owner approval;
 the numerical JINC route remains typed unavailable
@@ -70,9 +70,12 @@ unselected and unavailable.
   parent or declared ensemble. It cannot relabel
   `jinc_quadratic_accumulator`, `jinc_signed_normalization`, or
   `jinc_coefficient_squared_time` as variance, precision, exposure, or weight.
-- STD may use `jinc_map` as numerator only when the complete parent exists and
-  an exact compatible positive signal-unit UNC scale is authorized. It does
-  not alter JINC local support or create a JINC response/covariance product.
+- ODQ-108 does not select `jinc_map` for the initial STD method. A future JINC
+  STD method may use it only when the complete parent exists and an exact
+  compatible JINC-specific positive signal-unit UNC scale is authorized. It
+  requires separate method identity, cannot inherit the MAP scale by analogy,
+  does not alter JINC local support, and creates no JINC response/covariance
+  product.
 
 ## Current Numerical Availability
 

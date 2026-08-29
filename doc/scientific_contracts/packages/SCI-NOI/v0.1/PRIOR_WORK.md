@@ -193,7 +193,7 @@ numerical gates remain unavailable. ODQ-104 is explicitly owner-approved:
 every GEN method classifies scientifically consequential adjacent state, and a
 relearned method names its consequential rerun/relearn stages and resulting
 changed state without requiring exhaustive implementation provenance. The next
-owner question is `SCI-NOI-ODQ-108`, STD numerator and scale.
+owner question is `SCI-NOI-ODQ-109`, persistence and exact regeneration.
 ODQ-103 approves
 the source-suppression intent and no-source-free-by-construction boundary while
 delegating exact terminology to the Stage-B scientific author. ODQ-105A now
@@ -214,3 +214,9 @@ Unavailable inputs remain unavailable rather than becoming numerical zero;
 regularization is separate; marginal inverse variance, precision, and
 consumer-effective weights remain distinct; and no such product is promoted
 to validity, support, exposure, or a PTC/MAP coefficient.
+ODQ-108 selects the exact immutable normalized real-observation MAP signal and
+canonical `sqrt(V_hat_cond)` as the first STD numerator/scale pair on their
+exact compatible finite-positive intersection. Its unit-`1` output claims only
+MAP signal standardized by the stated conditional randomization second-moment
+scale; dependence remains explicit, significance is not claimed, algebraic
+inverse-scale duplication is prohibited, and JINC requires a separate method.

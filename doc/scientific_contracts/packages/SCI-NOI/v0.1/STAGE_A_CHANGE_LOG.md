@@ -239,6 +239,26 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
     UNC table, r0.6 of the product/lifecycle table, r0.3 of the STD table, and
     r0.12 packet/decision records without creating numerical availability.
 
+## ODQ-108 Initial Standardized-Signal Update
+
+69. Selected `NOI-STD/MAP-CONDITIONAL-SECOND-MOMENT-SCALE@1` with the exact
+    immutable normalized real-observation MAP signal as numerator and canonical
+    `sqrt(V_hat_cond)` as denominator.
+70. Restricted the formula to the exact compatible finite-positive valid-
+    domain intersection; required full parent/response/unit/WCS/support/
+    validity/lifecycle compatibility and numerator/scale dependence.
+71. Typed invalid, unavailable, incompatible, or nonpositive scale as
+    unavailable rather than zero/infinity and prohibited interpolation, domain
+    extension, substitution, or an implicit algebraic inverse-scale route.
+72. Fixed the unit-`1` claim to MAP signal standardized by the stated
+    conditional randomization second-moment scale; preserved every significance,
+    probability, detection, completeness, purity, and catalog prohibition.
+73. Kept JINC standardization as a separately identified future method with a
+    compatible JINC-specific scale.
+74. Advanced the walkthrough to ODQ-109 and published r0.4 of the STD table,
+    r0.7 of the product/lifecycle table, r0.3 MAP/JINC boundaries, and r0.13
+    packet/decision records without creating numerical STD availability.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance

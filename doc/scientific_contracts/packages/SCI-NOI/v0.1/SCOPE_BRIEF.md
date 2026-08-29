@@ -115,9 +115,9 @@ unavailable until its frozen PTC/MAP coefficient and exact numerical
 The author packet includes three sanitized exact boundaries:
 
 - [`SCI-MAP_TO_SCI-NOI_BOUNDARY.md`](SCI-MAP_TO_SCI-NOI_BOUNDARY.md), identity
-  `SCI-MAP_TO_SCI-NOI v0.1/r0.2`;
+  `SCI-MAP_TO_SCI-NOI v0.1/r0.3`;
 - [`SCI-JINC_TO_SCI-NOI_BOUNDARY.md`](SCI-JINC_TO_SCI-NOI_BOUNDARY.md), identity
-  `SCI-JINC_TO_SCI-NOI v0.1/r0.2`; and
+  `SCI-JINC_TO_SCI-NOI v0.1/r0.3`; and
 - [`SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md`](SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md),
   identity `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.6`, containing separately
   identified PTC-to-frozen-MAP and PTC-to-frozen-JINC candidates.
@@ -294,6 +294,27 @@ and consumer-effective weight is use-specific. None is validity, support,
 exposure, a PTC/MAP coefficient, or a parent-mutation instruction. Future
 cross-boundary use requires explicit scientific authority.
 
+ODQ-108 selects `NOI-STD/MAP-CONDITIONAL-SECOND-MOMENT-SCALE@1`. The exact
+immutable normalized real-observation MAP signal associated with the same
+frozen MAP operator state is divided by canonical `sqrt(V_hat_cond)` on their
+exact compatible finite-positive valid-domain intersection:
+
+```text
+sigma_cond(p) = sqrt(V_hat_cond(p)),
+S_cond(p) = q_MAP(p) / sigma_cond(p).
+```
+
+The output `empirical_scale_standardized_signal` has unit `1` and means only
+“MAP signal standardized by the stated conditional randomization second-moment
+scale.” Exact estimator/generation, parent, response, unit/beam, WCS, support,
+validity, lifecycle, UNC generation, transformation, and numerator/scale
+dependence are bound. No interpolation, domain extension, substitution, or
+implicit alternate route applies. Invalid or incompatible scale yields
+unavailable rather than zero or infinity. Algebraic `1/sqrt(W_hat_cond)` is
+not a second implicit method. No Gaussian/Student/z/N-sigma significance,
+probability, detection, completeness, purity, or catalog claim follows. JINC
+standardization remains a separate future method with a JINC-specific scale.
+
 ## 7. STD: Numerator, Positive Scale, And Claim
 
 Every STD method binds:
@@ -444,7 +465,8 @@ member. ODQ-105B approves the initial zero-centered conditional randomization
 second moment. ODQ-106 approves the covariance representation and rank policy,
 and ODQ-107 approves the initial inverse conditional second-moment scale while
 keeping inverse variance, precision, and consumer weights separately typed.
-The next walkthrough question is `SCI-NOI-ODQ-108`. Every later
+ODQ-108 approves the initial MAP standardized-signal method and keeps JINC
+separate. The next walkthrough question is `SCI-NOI-ODQ-109`. Every later
 decision and the artifact's final hash still require explicit owner review.
 
 ## 13. Non-Goals And Claim Boundary
