@@ -2,9 +2,9 @@
 
 Date: `2026-08-29`
 
-Status: implementation-blind Stage B author-draft mechanical report; not
-scientific-owner acceptance, implementation conformity, validation, freeze,
-readiness, or production authorization
+Status: final implementation-blind freeze-parity evidence; not implementation
+conformity, representation fidelity, validation, achieved performance,
+readiness, production, or production authorization
 
 ## Shared Scientific Authority
 
@@ -20,17 +20,17 @@ once and in this identical order:
 6. `src/common/edge_cases.tex`
 
 The SHA-256 of the byte concatenation in that order is
-`f26803a2ff5edee4f6de4d5cdfcd6b5314622d68ca67cc0faa6caae1fb781348`.
+`ca6650743af30e34940b7360a92c66f6638e993e07648b329e05f107b3b9e657`.
 The individual source hashes are:
 
 | Shared module | SHA-256 |
 | --- | --- |
-| `src/common/notation.tex` | `1881cd9f5c77997eb70d22525653013ae53beea51f53679a5e8668baaffb3751` |
-| `src/common/definitions.tex` | `aa1fc097b7821b6d98ed0f8cc81968061259a60ec2ca5bb50a8ff0b45c884bdc` |
-| `src/common/equations.tex` | `d618e578c331da801c8a73ea2e22b932ab70fabddd2a4df26e0cd01a952b2c33` |
-| `src/common/assumptions.tex` | `5a8c8e9e17d93954ba9c3e6ffce828e2ca312609948c5636bc45d7cd1c373c25` |
-| `src/common/requirements.tex` | `4b36a33b9f3ef26204c7ca5abdd5b6c713c504e8f25db2e1331685d86c41da91` |
-| `src/common/edge_cases.tex` | `a1b0cfca3e61e60d82a8a5b2cc8d34fefd018213f425f2add6a62cfa0dc74be8` |
+| `src/common/notation.tex` | `fed76501dfc57540a4f383bf329d35118508f1e96a143b1cde8e09078d6dade1` |
+| `src/common/definitions.tex` | `9e6f3ff015c753c879ff03be65fe981ac4f6ad2fc572d4a2f13f8a5240a12e1e` |
+| `src/common/equations.tex` | `2b1870e92f9a0e6141fdda1a8865babae41208aafb73fc233f4befc0e1b665c1` |
+| `src/common/assumptions.tex` | `15b811ab6ace92aa2d1713ae19b92454cb865e8862b82a599f94eca1003a1765` |
+| `src/common/requirements.tex` | `207a85acb31a4f381b289781706c9f14058d330ff847e99023e9e5714c4d4dff` |
+| `src/common/edge_cases.tex` | `815c70e925f103d989e4ec015a64d69ac0710c1a0c57789a4dfe754bdb81bd2d` |
 
 The scientist-facing and engineering-facing prose introduce no competing
 normative module. If their prose is narrower or less detailed, the shared
@@ -45,11 +45,11 @@ module controls.
 | Crosswalk | PASS: 44 requirement rows |
 | Assumptions | PASS: shared `SCI-JINC-ASM-001`--`009` in both views |
 | Numbered equations | PASS: 29 shared labels in one sequence in both views |
-| Equation 24 | PASS: `kappa-time` remains Equation 24 and its formula is unchanged; the Disposition-A even-lattice center consequence is unnumbered |
+| Equation 24 | PASS: `kappa-time` remains Equation 24 and its formula is unchanged; the `SCI-JINC-DEC-PHASE-CENTER-001` even-lattice center consequence is unnumbered |
 | Labels and references | PASS: no undefined, multiply defined, or duplicate-label diagnostic in either final compile log |
 | Layout diagnostics | PASS: no overfull box in either final compile log |
-| Revision identity | PASS: both source views and PDF metadata report `v0.1/r0.3` |
-| Phase decision | PASS: one owner-approved Disposition-A state and paired positive-axis center-tie state in notation, definitions, equations, assumptions, requirements, and `SCI-JINC-PRED-017` |
+| Revision and owner identity | PASS: both source views and PDF metadata report `v0.1/r0.3`; both covers state `Scientific owner: Grant Wilson`, and PDF Author is `Grant Wilson` |
+| Phase/center decision | PASS: `SCI-JINC-DEC-PHASE-CENTER-001` binds the separately approved phase-lattice and center-tie statements in notation, definitions, equations, assumptions, requirements, and predictions |
 | Numerical claim boundary | PASS: a certificate pass is limited to finite-precision fidelity to the exact selected discrete oracle; other claim layers remain separate |
 | Admission semantics | PASS: canonical human-readable term is JINC upstream-occurrence admission; immutable Registry identity `SCI-JINC:jinc_map_contribution@1` is retained |
 | Source lifecycle | PASS: exact-source-lock model A is stated; ambient current-Registry substitution is explicitly prohibited |
@@ -63,11 +63,11 @@ not a moving source reference.
 
 | Artifact | SHA-256 |
 | --- | --- |
-| `src/scientific-rationale.tex` | `280d2553224d7ab39d06b1b8aaefe5c662811e0f899640358e4229e3adb4271b` |
-| `src/engineering-conformance.tex` | `9462d4048970c691c6bfa5a4ce2c78a7040bf3a5cab39feba4577703d5e99234` |
-| `CROSSWALK.md` | `18cb475388859fa5dafe7bed3d7c13aa5894fee5da14afb20e89ba539acd6ae4` |
-| `pdf/SCI-JINC-SCIENTIFIC-RATIONALE-v0.1.pdf` | `b9b561ced6ce7a7e2cc5fe997937fcdf15563249c2f47d19590c41e27f45a0a3` |
-| `pdf/SCI-JINC-ENGINEERING-CONFORMANCE-v0.1.pdf` | `12d3b3ae8265c86a4f2781302f7fdb6b0a353811db7020706fd837e257cca925` |
+| `src/scientific-rationale.tex` | `7cabea85eaa5ad9afbb0914c585d2fe7917806c9919964a465c0d9742fdb55e2` |
+| `src/engineering-conformance.tex` | `a8cc9b66d22f1c4c0e9dc53c46724721f38fa2b2d267f74e7341b359874c19aa` |
+| `CROSSWALK.md` | `df2bbb1f8eec53c91497d52b85591e66f86639f76c63686688367c96e309d2e5` |
+| `pdf/SCI-JINC-SCIENTIFIC-RATIONALE-v0.1.pdf` | `53ed941658ae1205950a8bc533d569cc85b246a40bb6e448fbbc6d7f0509a7b8` |
+| `pdf/SCI-JINC-ENGINEERING-CONFORMANCE-v0.1.pdf` | `6b78e80bb485815292972c5de60c444954d7bb62902799d6fa4c3f421766114a` |
 
 These results establish internal source/view parity only. They do not assess
 an implementation candidate, representation, numerical realization,

@@ -1,8 +1,7 @@
 # SCI-JINC v0.1 Implementation-Blind Author-Draft Decision Record
 
-Status: final targeted owner-review Stage B repair draft `r0.3`; the `r0.2`
-architecture is owner-approved as the basis for this revision, while final
-consistency review, Stage B acceptance, and freeze remain pending
+Status: completed implementation-blind Stage B author record for frozen,
+conditional, implementation-independent authority `SCI-JINC v0.1/r0.3`
 
 Prepared: `2026-08-29`
 
@@ -24,13 +23,18 @@ directive with SHA-256
 The bounded `r0.3` repair is governed by the final targeted owner-review
 directive with SHA-256
 `4878e1745e085b4e33d2e71f1190299d72f2cfd7b2215e36a9e8405a977bd207`
-and by the owner's exact statement `I approve disposition A`, whose literal
-text has SHA-256
+and the final owner-review/freeze-preflight directive with SHA-256
+`958cffeac67c11e916527c0f78e9c80d648f68d5eec38a0607fc4af1511dddec`.
+The phase rule is approved by the owner's exact statement `I approve
+disposition A`, whose literal text has SHA-256
 `9a70cbc63c0c79a7db70ad9796481fb0fe3f1f4c2d7524820b54cec68b8b1620`.
-That direct disposition retains every positive `n_sub`, the half-open
-upper-bin convention and its even-lattice positive midpoint at exact phase
-zero, and the paired positive-axis half-pixel center tie requested in the
-directive.
+The center rule is approved separately by the owner's exact submitted
+statement `I approve the positive-axis half-pixel center-tie convention
+\\(c=\lfloor u+\tfrac12\rfloor\\) as part of SCI-JINC v0.1.`, whose literal
+UTF-8 text without a trailing newline has SHA-256
+`3b79351f7661e2432a5426fba3a16e9710c2fae0b34fd9b8f60dd45bca837ecb`.
+The two statements are bound by stable decision
+`SCI-JINC-DEC-PHASE-CENTER-001`; neither is inferred from the other.
 
 For this bounded repair, exact owner-approved Stage A process records and the
 exact SCI-VAL JINC source/profile binding were opened only to resolve the
@@ -38,7 +42,7 @@ output-scope discrepancy, source-close the upstream interfaces, and record
 current workflow status. Those process-only records did not become normative
 scientific input and supplied no additional scientific content. Normative
 scientific conclusions remain grounded in the admitted Q002 packet, the two
-targeted repair directives, and the direct owner disposition. The exact
+targeted repair directives, and the two separate owner statements. The exact
 records and their roles are listed in
 `STAGE_A_SCOPE_PARITY_REPORT_R0.2.md`.
 
@@ -61,14 +65,15 @@ prohibited manager, prior-work, and internal records. That output was
 discarded immediately; no author surface, decision, inference, or scientific
 statement was changed in response. The check was rerun only on authorized
 outputs. The normative scientific-information firewall therefore remains the
-admitted packet plus the two targeted repair directives and direct owner
-Disposition A.
+admitted packet, the two targeted repair directives, the final
+freeze-preflight directive in its owner-status/process role, and the two exact
+owner statements in their separate scientific-decision roles.
 
 ## Author Decisions And Returned States
 
 | ID | State | Author disposition | Consequence |
 | --- | --- | --- | --- |
-| `SCI-JINC-AD-001` | decided | The exact approved packet, targeted `r0.2` and `r0.3` directives, direct owner Disposition A, and bounded owner/Registry closure records are sufficient for an `r0.3` Stage B draft. | No scientific insufficiency blocks completion of this author draft. Final Stage B acceptance and freeze remain pending, and missing numerical authority is represented explicitly as typed unavailability rather than inferred. |
+| `SCI-JINC-AD-001` | decided and frozen | The exact approved packet, targeted `r0.2` and `r0.3` directives, final freeze-preflight directive, separately approved phase and center rules, and bounded owner/Registry closure records are sufficient for `SCI-JINC v0.1/r0.3`. | The owner accepted and froze the conditional implementation-independent authority. Missing numerical authority remains explicit typed unavailability rather than inferred. |
 | `SCI-JINC-AD-002` | retained | Reuse the recovered signed `N_p/C_p` estimator and distinct `N_p`, `C_p`, and `Q_p` authority. | The repair does not repeat the derivation, introduce another denominator, or import ordinary SCI-MAP algebra. |
 | `SCI-JINC-AD-003` | not admitted or supplied by this source packet | No scientifically authorized TolTEC array parameter set is present. | Every numerical route remains typed unavailable; no inherited 45 m denominator, inherited shape values, mode-dependent `r_max`, memo values, hidden default, recommendation, or optimum is authorized. |
 | `SCI-JINC-AD-004` | not admitted or supplied by this source packet | The packet supplies the PTC coefficient-registry architecture but no registered, selected, and realized JINC-permitted family and payload. | No numerical route may infer unity, ordinary MAP permission, an alternate family, inverse variance, precision, sensitivity, or significance. |
@@ -78,16 +83,16 @@ Disposition A.
 | `SCI-JINC-AD-008` | excluded | No generic availability, optional-role, detailed-cause, diagnostic, response/covariance-product, or generalized provenance framework is added. | The fixed five-role bundle remains complete. Exact producer facts and compact bundle-level replay metadata remain bindings, not additional numerical product roles. |
 | `SCI-JINC-AD-009` | implementation unassessed | No implementation candidate or representation was inspected. | No implementation-conformity or representation-fidelity statement is available. |
 | `SCI-JINC-AD-010` | validation not performed | No numerical execution, observational validation, performance assessment, readiness review, or production authorization was performed. | No achieved numerical, response, covariance, photometric, performance, readiness, or production claim is available. |
-| `SCI-JINC-AD-011` | revised draft structure | The two views use the same six canonical LaTeX modules. Stable requirements `SCI-JINC-REQ-001`--`042` and predictions `SCI-JINC-PRED-001`--`032` retain their identifiers; source-closure/replay requirements `043`--`044` and predictions `033`--`036` are appended. | The repaired draft has 44 sequential requirements and 36 sequential predictions with one shared authority and a complete crosswalk. |
-| `SCI-JINC-AD-012` | draft status | Contract version remains `v0.1`; both repaired Stage B documents are revision `r0.3`. | Compilation, mechanical checks, and visual inspection do not freeze or approve the draft. |
+| `SCI-JINC-AD-011` | frozen authority structure | The two views use the same six canonical LaTeX modules. Stable requirements `SCI-JINC-REQ-001`--`042` and predictions `SCI-JINC-PRED-001`--`032` retain their identifiers; source-closure/replay requirements `043`--`044` and predictions `033`--`036` are appended. | The frozen authority has 44 sequential requirements and 36 sequential predictions with one shared authority and a complete crosswalk. |
+| `SCI-JINC-AD-012` | frozen authority status | Contract version remains `v0.1`; both Stage B documents are revision `r0.3`. | Owner acceptance plus the superseding freeze manifest freezes these exact scientific bytes. Compilation, mechanical checks, and visual inspection remain verification evidence only. |
 | `SCI-JINC-AD-013` | owner-approved Stage A scope | The admitted successor Scope Brief records ODQ-107 as fixing the complete numerical output schema to exactly five required roles, and Q002 approved the exact packet bytes that incorporate that narrowing. | The repair records the authority chain and does not restore the predecessor Scope Brief's broader response/covariance/availability product language or request another Stage A amendment. The separate ODQ-107 record is process-only corroboration, not normative author input. |
-| `SCI-JINC-AD-014` | owner-approved operator convention | Base v0.1 uses one exact positive-axis FITS-center tie, every positive integer `n_sub`, half-open upper phase bins, midpoint representatives, a square cache, and an affine tangent-plane square-pixel WCS class. | Disposition A makes the even-`n_sub` exact-zero-phase offset and corresponding nonzero nominal-center kernel radius intentional. The discrete operator is uniquely reproducible; storage, Bessel evaluation, and accumulation implementation remain engineering choices. |
+| `SCI-JINC-AD-014` | owner-approved operator convention | Base v0.1 uses one exact positive-axis FITS-center tie, every positive integer `n_sub`, half-open upper phase bins, midpoint representatives, a square cache, and an affine tangent-plane square-pixel WCS class. | `SCI-JINC-DEC-PHASE-CENTER-001` makes the separately approved center tie and even-`n_sub` exact-zero-phase offset, including the corresponding nonzero nominal-center kernel radius, intentional. The discrete operator is uniquely reproducible; storage, Bessel evaluation, and accumulation implementation remain engineering choices. |
 | `SCI-JINC-AD-015` | incompatible route typed unavailable | A target WCS whose tangent-plane metric is anisotropic or skewed is incompatible with the base-v0.1 operator. | A scalar pixel size never silently stands for a general two-axis metric. Such a route needs a separately authorized successor. |
 | `SCI-JINC-AD-016` | not admitted or supplied by this source packet | No exact owner-approved numerical-adequacy profile or matching realization-bound certificate is present. | Algebraic support remains finite required inputs, `Q_p>0`, and `C_p!=0`; numerical adequacy and numerical near-cancellation support are typed unavailable. The approximate `10^-3` phrase is not a pass/fail predicate. |
 | `SCI-JINC-AD-017` | exact analytic identity | The second JINC factor uses `j_{1,1}=min{x>0:J_1(x)=0}`. | `3.831706` may appear only as a nonnormative decimal approximation and cannot define the exact analytic zero. |
 | `SCI-JINC-AD-018` | source closed | The approved upstream boundaries are `SCI-PTC_TO_SCI-JINC v0.1/r0.3` and `SCI-AST_TO_SCI-JINC v0.1/r0.2`; the immutable profile remains `SCI-JINC:jinc_map_contribution@1`, with canonical human-readable term "JINC upstream-occurrence admission." | No superseded boundary label, renamed profile, inferred alias, or ambient current-Registry substitution is authorized. The exact complete binding and JINC-specific successor snapshot files are locked; changing any bound object requires a versioned SCI-JINC successor. |
 | `SCI-JINC-AD-019` | compact replay required | One compact bundle-level generative record binds exact parents, admissions, selections, parameter and coefficient identities, WCS/operator state, local conditioning/certification state, lifecycle, completion, and required-role dispositions. | Replayability is restored without a sixth numerical role, response/covariance information-state record, dense per-contribution payload, generalized provenance product, or operational-reason archive. |
-| `SCI-JINC-AD-020` | owner-approved Disposition A | Retain every positive integer `n_sub`, left-closed/right-open bins with upper-bin interior ties, and the positive-axis half-pixel center tie. For even `n_sub`, exact zero phase on both axes at central offset has radius `Delta/(sqrt(2) n_sub)` and the exact analytic coefficient at dimensionless radius `Delta/(sqrt(2) n_sub s_a)`. | No parity restriction, symmetric zero-centered replacement, zero-phase special case, or imposed `kappa(0)=1` is authorized. `SCI-JINC-PRED-017` is amended without adding or renumbering an identifier. |
+| `SCI-JINC-AD-020` | owner-approved `SCI-JINC-DEC-PHASE-CENTER-001` | The phase statement retains every positive integer `n_sub` and left-closed/right-open bins with upper-bin interior ties. The separate center statement approves the positive-axis half-pixel center tie. For even `n_sub`, exact zero phase on both axes at central offset has radius `Delta/(sqrt(2) n_sub)` and the exact analytic coefficient at dimensionless radius `Delta/(sqrt(2) n_sub s_a)`. | No parity restriction, symmetric zero-centered replacement, zero-phase special case, alternate center tie, or imposed `kappa(0)=1` is authorized. `SCI-JINC-PRED-017` retains its identifier. |
 | `SCI-JINC-AD-021` | claim boundary fixed | A passing `P_NA`/`E_p` pair establishes only finite-precision fidelity to the exact selected discrete SCI-JINC oracle over its declared domain. | It establishes none of parameter, phase-count, truncation, response/beam, photometric/astrometric, optimality, observational, response/covariance, readiness, or production adequacy; TolTEC parameter qualification remains a separate program. |
 | `SCI-JINC-AD-022` | identity retained, semantic name fixed | Retain immutable Registry identity `SCI-JINC:jinc_map_contribution@1` and use "JINC upstream-occurrence admission (Registry identity `SCI-JINC:jinc_map_contribution@1`)" as its canonical human-readable term. | No profile rename or supersession is invented. The identity authorizes only upstream-occurrence consideration; all downstream gates remain separate. |
 | `SCI-JINC-AD-023` | exact-source-lock lifecycle | Apply lifecycle model A to the exact PTC, AST, admission-profile, VAL-binding, and JINC-specific source/profile Registry snapshot files. | No ambient current Registry or nearby successor may substitute. A change to any bound object requires a versioned SCI-JINC successor. |
@@ -100,7 +105,9 @@ Disposition A.
 | Approved Q002 packet | commit `88dcce8b0f7b1d78053b25831b39cf370afd47cc`; manifest `52a8e843456a8cb033b7593d9b9f67fb83b0ee565c91c141d8e16d46b906140e` | Exclusive original author packet and exact Stage A scope bytes |
 | Targeted `r0.2` repair directive | `c07505861d91459f69e7d0989f11551e2a14265c916cd5772ea48a86bb186ed2` | Owner-authorized repair input; its resulting architecture is approved as the `r0.3` basis |
 | Final targeted `r0.3` directive | `4878e1745e085b4e33d2e71f1190299d72f2cfd7b2215e36a9e8405a977bd207` | Normative final repair scope and claim boundaries |
-| Direct owner Disposition A | Exact literal `I approve disposition A`; `9a70cbc63c0c79a7db70ad9796481fb0fe3f1f4c2d7524820b54cec68b8b1620` | Owner decision retaining every positive phase count, the upper-bin lattice, its even-lattice zero-phase behavior, and the paired positive-axis center tie |
+| Final owner-review/freeze-preflight directive | `958cffeac67c11e916527c0f78e9c80d648f68d5eec38a0607fc4af1511dddec` | Owner acceptance, bounded freeze controls, and requirement for separate center-tie authority |
+| `SCI-JINC-DEC-PHASE-CENTER-001`, phase statement | Exact literal `I approve disposition A`; `9a70cbc63c0c79a7db70ad9796481fb0fe3f1f4c2d7524820b54cec68b8b1620` | Retains every positive phase count, the upper-bin lattice, and its even-lattice zero-phase behavior |
+| `SCI-JINC-DEC-PHASE-CENTER-001`, center statement | Exact submitted literal shown above; `3b79351f7661e2432a5426fba3a16e9710c2fae0b34fd9b8f60dd45bca837ecb` | Separately approves `c=floor(u+1/2)` and the positive-axis half-pixel tie; no inference from the phase statement |
 | ODQ-107 decision record | `b10768b0d264f936e1076353d15a0b1cfcee8409dfa0cef0d429851be2aa0e24` | Process-only corroboration that the owner made the narrowing already encoded in the admitted Scope Brief; not normative scientific input |
 | Q002 approval record | commit `ebc0e907fe96163e48818fec99e42cc272b2cfb4`; `c70e8216e816a7f98486b4c61236acc49713a5ce1d6f5ba722ad6e015e0c7e9f` | Process-only approval status for the exact packet incorporating ODQ-107; not additional scientific content |
 | PTC-to-JINC boundary | `SCI-PTC_TO_SCI-JINC v0.1/r0.3`; `5769d413460e931745e0d401ea432b12d1077c15466247c49caa71b997d4ab1e` | Exact transformed-signal/coefficient/parent handoff |
@@ -114,8 +121,8 @@ Disposition A.
 
 | Claim layer | `r0.3` draft state |
 | --- | --- |
-| Internal algebraic and discrete contract | Revised author draft; phase lattice and center tie owner-dispositioned; final Stage B acceptance and freeze pending |
-| Source and view parity | Mechanically checked on final authored bytes; this is not approval or freeze |
+| Internal algebraic and discrete contract | Frozen conditional implementation-independent authority; phase lattice and center tie separately owner-approved under `SCI-JINC-DEC-PHASE-CENTER-001` |
+| Source and view parity | Mechanically checked on frozen authored bytes; this is verification evidence, not an implementation claim |
 | Implementation conformity | Not assessed |
 | Representation fidelity | Not assessed |
 | Finite-precision oracle fidelity | Typed unavailable; no profile or certificate admitted or supplied |
@@ -129,7 +136,8 @@ Disposition A.
 
 This record is an implementation-blind author artifact. It does not modify,
 supersede, or reinterpret the approved Stage A packet. It records only the
-owner approval expressly supplied: the `r0.2` architecture as the basis for
-`r0.3` and phase-lattice Disposition A with its paired center-tie convention.
-It does not record final scientific-owner acceptance or freeze of the `r0.3`
-Stage B draft.
+authority expressly supplied: the `r0.2` architecture as the basis for
+`r0.3`, the separate phase and center statements, and final owner acceptance
+and freeze of the conditional implementation-independent `r0.3` authority.
+Any later scientific correction requires a versioned successor and shall not
+modify the frozen bytes.

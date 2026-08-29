@@ -60,7 +60,8 @@ shall retain the exact profile-defined disposition and cause.}
 authorized array-associated parameter-set identity containing finite positive
 $s_a$, $a_a$, $b_a$, $c_a$, $(r_{\max})_a$, effective integer
 \texttt{subpixel\_n}$\ge1$ with no parity restriction under the
-owner-approved upper-bin phase-lattice disposition, and compatibility with the exact target-WCS
+upper-bin phase-lattice rule in
+\texttt{SCI-JINC-DEC-PHASE-CENTER-001}, and compatibility with the exact target-WCS
 metric.  Base v0.1 requires an affine tangent-plane WCS whose exact pixel
 matrix obeys Equation~\eqref{eq:square-wcs-metric}.  A scalar pixel size shall
 not represent an anisotropic or skewed geometry.  The exact frame, tangent
@@ -91,8 +92,9 @@ $+1/(2n_{\mathrm{sub}})$ under the bound WCS axis orientation.  The selected
 nominal central offset shall therefore use
 the exact even-lattice center formulas following
 Equation~\eqref{eq:discrete-radius}, not the zero-radius limit.  The
-positive-axis half-pixel center tie and upper-bin phase convention are
-scientific-owner-intended parts of the operator.  The selected
+positive-axis half-pixel center tie and upper-bin phase convention are the
+scientific-owner-approved parts of
+\texttt{SCI-JINC-DEC-PHASE-CENTER-001}.  The selected
 kernel matrix shall be point evaluated and shall not be replaced by pixel-area
 integration.}
 
@@ -318,8 +320,8 @@ and separate algebraic correctness from implementation conformity,
 representation/response fidelity, numerical and observational validation,
 achieved performance, readiness, and production authorization.  A passing
 profile/certificate pair shall be reported only as exact-discrete-oracle
-finite-precision fidelity under \texttt{SCI-JINC-REQ-023}.  This Stage B draft
-establishes none of those later claims.}
+finite-precision fidelity under \texttt{SCI-JINC-REQ-023}.  This frozen
+implementation-independent authority establishes none of those later claims.}
 
 \JincReq{043}{Every claimed SCI-JINC contract realization shall bind byte
 identically to \path{SCI-PTC_TO_SCI-JINC} \texttt{v0.1/r0.3} (SHA-256
@@ -359,8 +361,8 @@ joins; admission evaluation; coefficient family, selection, generation, and
 payload identity; parameter-set identity; target WCS and metric; center, phase,
 bin, representative, cache, square, and edge rules; cancellation and numerical-
 adequacy state; destination identity; requested, effective, resolved, and
-realized lifecycle; the owner-approved upper-bin phase-lattice and
-positive-axis half-tie dispositions; the exact-source-lock identities; every
+realized lifecycle; decision
+\texttt{SCI-JINC-DEC-PHASE-CENTER-001}; the exact-source-lock identities; every
 required-role state; failure; and completion.  The
 record shall use immutable references and bounded plan/bundle information
 state, not dense per-contribution provenance or a new product role.}

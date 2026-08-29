@@ -2,9 +2,10 @@
 
 Date: `2026-08-29`
 
-Status: implementation-blind Stage B author-draft rendering report; visual QA
-is not scientific validation, implementation conformity, achieved
-performance, readiness, freeze, or production authorization
+Status: final implementation-blind freeze rendering evidence; visual QA is
+not scientific validation, implementation conformity, representation or
+response/covariance fidelity, achieved performance, readiness, production, or
+production authorization
 
 ## Toolchain
 
@@ -25,15 +26,15 @@ not clip or overlap content.
 | Field | Scientific Rationale | Engineering Conformance Specification |
 | --- | --- | --- |
 | Canonical PDF | `pdf/SCI-JINC-SCIENTIFIC-RATIONALE-v0.1.pdf` | `pdf/SCI-JINC-ENGINEERING-CONFORMANCE-v0.1.pdf` |
-| SHA-256 | `b9b561ced6ce7a7e2cc5fe997937fcdf15563249c2f47d19590c41e27f45a0a3` | `12d3b3ae8265c86a4f2781302f7fdb6b0a353811db7020706fd837e257cca925` |
+| SHA-256 | `53ed941658ae1205950a8bc533d569cc85b246a40bb6e448fbbc6d7f0509a7b8` | `6b78e80bb485815292972c5de60c444954d7bb62902799d6fa4c3f421766114a` |
 | Pages | 35 | 23 |
 | Page size | US Letter, 612 x 792 pt | US Letter, 612 x 792 pt |
 | Rotation | 0 degrees | 0 degrees |
 | PDF version | 1.5 | 1.5 |
 | Title | `SCI-JINC Scientific Rationale and Contract v0.1 r0.3` | `SCI-JINC Engineering Conformance Specification v0.1 r0.3` |
-| Author | `Implementation-blind Stage B scientific author` | same |
+| Author | `Grant Wilson` | same |
 | Subject | `Signed-coefficient JINC observation mapmaker scientific contract` | `Engineering conformance view of the SCI-JINC scientific contract` |
-| Keywords | `SCI-JINC, JINC, scientific contract, Stage B draft` | `SCI-JINC, JINC, engineering conformance, Stage B draft` |
+| Keywords | `SCI-JINC, JINC, scientific contract, frozen authority` | `SCI-JINC, JINC, engineering conformance, frozen authority` |
 | Encryption/forms/JavaScript | none/none/no | none/none/no |
 
 ## Complete Visual Inspection
@@ -42,7 +43,10 @@ Every canonical PDF page was rasterized at 120 dpi. The 35 rationale pages
 were inspected in contact sheets covering pages `1--4`, `5--8`, `9--12`,
 `13--16`, `17--20`, `21--24`, `25--28`, `29--32`, and `33--35`. The 23 ECS
 pages were inspected in contact sheets covering pages `1--4`, `5--8`,
-`9--12`, `13--16`, `17--20`, and `21--23`.
+`9--12`, `13--16`, `17--20`, and `21--23`. After the final bounded source
+label correction, all 58 pages were rerendered from the exact canonical PDFs:
+55 rendered pages were byte-identical to the inspected render, and the three
+reflowed rationale pages were separately inspected at full resolution.
 
 Results:
 
@@ -50,6 +54,8 @@ Results:
 - title pages, revision headers, footers, tables of contents, section starts,
   equations, long tables, requirements, predictions, cross-reference table,
   source-closure appendix, references, and blank-result template are visible;
+- both title pages state `Scientific owner: Grant Wilson`, carry frozen
+  `v0.1/r0.3` status, and bind `SCI-JINC-DEC-PHASE-CENTER-001`;
 - table continuations are coherent across page boundaries;
 - the rationale narrative ends before its appendix begins on page 13;
 - Equation 24 is visibly the unchanged coefficient-squared temporal-accounting
