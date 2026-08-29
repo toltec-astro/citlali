@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Ensemble Design And Source-Imprint Specification
 
-Artifact identity: `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.1`
+Artifact identity: `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.2`
 
 Status: proposed sanitized Stage A scientific input; exact bytes await owner
 approval
@@ -31,6 +31,22 @@ The design identity includes:
 - exact design-rank definition, matrix/operator, weights, and domain.
 
 ## Stable Ordering And Canonical Key
+
+### Approved ordinary coherence partition
+
+ODQ-102B defines one coherence unit as one stable realized detector/channel
+within one exact observation. For member `b`, its assignment applies to every
+admitted PTC occurrence of that detector throughout that observation. Scan,
+subscan, chunk, sample/time, traversal, worker, container, and MAP accumulation
+order do not split or change the unit. The same stable detector identity in a
+different observation is a different coherence unit.
+
+The ordinary unit identity is exactly the canonical observation UID joined to
+the stable realized detector/channel UID. Units are ordered lexicographically
+by those canonical serialized fields, never numerical container position or
+encounter order. ODQ-102B does not select the sign law, probabilities, balance,
+complements, cross-observation dependence, or finite design; ODQ-102C owns
+those choices.
 
 Each coherence unit `g` has an owner-supplied stable scientific identity. The
 design order is the lexicographic order of its canonical serialized identity,

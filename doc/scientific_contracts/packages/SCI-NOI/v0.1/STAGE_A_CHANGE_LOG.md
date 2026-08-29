@@ -84,6 +84,22 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
     GEN graph, and product-role table, plus r0.3 owner-decision and packet
     records; frozen adjacent boundary identities remain unchanged.
 
+## ODQ-102B Owner Walkthrough Update
+
+24. Recorded ODQ-102B approval: one coherence unit is one stable realized
+    detector/channel within one exact observation.
+25. Required one member assignment to remain constant over every admitted PTC
+    occurrence of that detector throughout the observation; scan, subscan,
+    chunk, sample/time, traversal, worker, container, and accumulation order do
+    not split it.
+26. Kept the same detector identity in different observations as different
+    coherence units and bound canonical ordering by observation UID then stable
+    realized detector/channel UID.
+27. Left probabilities, independence, balance, complements, replacement,
+    duplicates, key algorithm, count, and rank open under ODQ-102C.
+28. Published r0.3 successors of the selected PTC-to-NOI boundary and GEN graph,
+    r0.2 of the design specification, and r0.4 packet/decision records.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance

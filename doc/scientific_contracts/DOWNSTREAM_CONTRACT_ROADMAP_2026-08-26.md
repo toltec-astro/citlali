@@ -137,8 +137,11 @@ selected no numerical route. ODQ-102A then selected the ordinary
 PTC-to-frozen-MAP route: the NOI modifier may be applied inline by MAP at the
 numerical boundary, but NOI retains design and realization-product ownership
 and the output is not ordinary MAP science. The route remains unavailable at
-its coefficient and numerical `coverage_cut` gates. ODQ-102B, initial
-coherence-unit family, is next. Conditional Stage B remains blocked on exact
+its coefficient and numerical `coverage_cut` gates. ODQ-102B then fixed one
+assignment per stable realized detector/channel for all of that detector's
+admitted samples throughout one observation; the same detector in another
+observation is a different unit. ODQ-102C, exact sign law and finite design, is
+next. Conditional Stage B remains blocked on exact
 bytes/hashes, granular owner decisions or explicit unavailability, and required
 source/profile bindings. The frozen MAP/pre-MAP
 and JINC numerical-parent unavailability states remain unchanged. No

@@ -184,4 +184,5 @@ methods separate and never mixed. ODQ-102A subsequently selected the
 PTC-to-frozen-MAP boundary route, allowed conforming inline MAP application,
 and classified the output as an NOI realization map rather than ordinary MAP
 science. The route's numerical gates remain unavailable. The next owner
-question is `SCI-NOI-ODQ-102B`, initial coherence-unit family.
+question is `SCI-NOI-ODQ-102C`, after ODQ-102B fixed one detector assignment
+across all of that detector's admitted samples in an observation.

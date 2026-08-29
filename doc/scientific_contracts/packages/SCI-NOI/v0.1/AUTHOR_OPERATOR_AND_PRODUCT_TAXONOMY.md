@@ -1,7 +1,7 @@
 # SCI-NOI v0.1 — Collision-Free Operator And Product Taxonomy
 
-Status: proposed sanitized Stage B author input; ODQ-101 and ODQ-102A
-incorporated; exact bytes await owner approval
+Status: proposed sanitized Stage B author input; ODQ-101, ODQ-102A, and
+ODQ-102B incorporated; exact bytes await owner approval
 
 The semantic prefixes are:
 
@@ -25,7 +25,7 @@ The route-specific method candidates remain distinct:
 
 | Candidate identity | Scientific role | Present state |
 | --- | --- | --- |
-| `NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1` | Apply the NOI-owned modifier at the exact PTC-to-MAP numerical boundary, inline or equivalently materialized, before one frozen MAP operator; output is an NOI realization map, not ordinary MAP science | **Selected ordinary route; numerically unavailable** pending MAP numerical gates |
+| `NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1` | One observation-scoped detector assignment applies to all its admitted samples at the PTC-to-MAP boundary, inline or equivalently materialized, before one frozen MAP operator; output is an NOI realization map, not ordinary MAP science | **Selected ordinary route/coherence; numerically unavailable** pending ODQ-102C and MAP numerical gates |
 | `NOI-GEN/PTC-TO-FROZEN-JINC-CONDITIONAL-SIGN@1` | Randomize exact PTC parent quantities before one frozen JINC operator | Unselected and unavailable under JINC numerical gates |
 | `NOI-GEN/REALIZED-MAP-CONDITIONAL-SIGN@1` | Randomize an exact already realized MAP product under a declared map-product coherence law | Unavailable pending exact method and parent authority |
 | `NOI-GEN/REALIZED-JINC-CONDITIONAL-SIGN@1` | Randomize an exact complete realized JINC product under a declared role/coherence law | Unavailable pending exact method and numerical JINC parent |

@@ -116,7 +116,7 @@ The author packet includes three sanitized exact boundaries:
 - [`SCI-JINC_TO_SCI-NOI_BOUNDARY.md`](SCI-JINC_TO_SCI-NOI_BOUNDARY.md), identity
   `SCI-JINC_TO_SCI-NOI v0.1/r0.2`; and
 - [`SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md`](SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md),
-  identity `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.2`, containing separately
+  identity `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.3`, containing separately
   identified PTC-to-frozen-MAP and PTC-to-frozen-JINC candidates.
 
 Each boundary binds exact package/revision, product/application generation,
@@ -155,6 +155,14 @@ serialization; the `B_unique` equivalence relation; complement treatment for
 every count and rank; exact duplicate detection; exact design-rank definition
 and domain; and exact algorithm/version reconstruction identity. Worker count,
 scheduling, traversal, and container order cannot change the design.
+
+For the ordinary route, ODQ-102B fixes the coherence partition: one unit is one
+stable realized detector/channel within one exact observation. A member's
+assignment applies to every admitted PTC occurrence of that detector throughout
+the observation. Scan, subscan, chunk, sample/time, traversal, worker,
+container, and accumulation order cannot change it. The same detector identity
+in another observation is a different unit. ODQ-102C still owns the sign law
+and finite design.
 
 The following remain distinct:
 
@@ -354,10 +362,10 @@ the following scientifically independent choices separate:
 - deterministic FLT, Wiener, and FRUIT scope; and
 - NOI-owned VAL identities and exact actions.
 
-ODQ-101 and ODQ-102A are approved. The next walkthrough question is
-`SCI-NOI-ODQ-102B`: select the initial stable coherence-unit family for the
-approved route. Every later decision and the artifact's final hash still
-require explicit owner review.
+ODQ-101, ODQ-102A, and ODQ-102B are approved. The next walkthrough question is
+`SCI-NOI-ODQ-102C`: select the exact sign law and finite assignment design for
+the approved route and coherence unit. Every later decision and the artifact's
+final hash still require explicit owner review.
 
 ## 13. Non-Goals And Claim Boundary
 

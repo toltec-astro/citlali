@@ -1,8 +1,8 @@
 # SCI-PTC To SCI-NOI-GEN Boundary
 
-Boundary identity: `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.2`
+Boundary identity: `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.3`
 
-Canonical spelling is exactly `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.2`.
+Canonical spelling is exactly `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.3`.
 
 Status: proposed sanitized Stage A pre-mapmaking boundary; ODQ-102A selects the
 PTC-to-frozen-MAP route, which remains numerically unavailable pending its
@@ -72,6 +72,21 @@ assignments are numerically equal. Each input also binds:
 - the exact GEN method, assignment design, member ID, source-imprint state,
   and persistence/reconstruction plan.
 
+## Approved Ordinary Coherence Unit
+
+For the selected PTC-to-frozen-MAP route, one coherence unit is one stable
+realized detector/channel within one exact observation. Once member `b` assigns
+a modifier to that detector, the same modifier applies to every one of its
+admitted PTC occurrences throughout that observation. Scan, subscan, chunk,
+sample/time, traversal, worker, container, and accumulation order do not split
+or alter the assignment. The same detector identity in another observation is
+a different coherence unit.
+
+Canonical unit identity and ordering use observation UID followed by stable
+realized detector/channel UID. Row, column, detector position, or encounter
+order cannot substitute. ODQ-102B selects no probability, balance, complement,
+replacement, cross-observation dependence, or finite-design law.
+
 ## Separate Fixed-State Route Identities
 
 The owner-selected ordinary route is
@@ -129,6 +144,9 @@ applicable numerical-adequacy authority and remains unselected. Missing parent
 or gate authority is typed unavailable.
 No unity, loading, sensitivity, scatter, inverse variance, precision,
 coefficient, `coverage_cut`, coordinate, or no-op fallback may be inferred.
+
+The selected MAP-hosted route also remains unavailable until ODQ-102C approves
+its exact sign law and finite assignment design.
 
 ## Fail-Closed Compatibility
 

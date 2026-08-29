@@ -439,8 +439,15 @@ result is not an ordinary MAP science product. The route remains numerically
 unavailable until its exact PTC coefficient and numerical `coverage_cut` gates
 are realized; all other routes remain unselected and unavailable.
 
-The next walkthrough question is `SCI-NOI-ODQ-102B`, the initial stable
-coherence-unit family. Later granular decisions, exact packet bytes/hashes, and
+Grant Wilson then approved `SCI-NOI-ODQ-102B` on `2026-08-29`: once a detector
+receives its member assignment, that assignment applies to all admitted samples
+of that stable realized detector/channel throughout the observation. Scan,
+subscan, chunk, sample/time, traversal, worker, container, and MAP accumulation
+order cannot change it; the same detector identity in another observation is a
+different coherence unit.
+
+The next walkthrough question is `SCI-NOI-ODQ-102C`, the exact sign law and
+finite design. Later granular decisions, exact packet bytes/hashes, and
 required source/profile Registry bindings remain under owner review.
 MAP/pre-MAP numerical parents remain
 unavailable pending the exact PTC MAP-facing coefficient and owner-admitted

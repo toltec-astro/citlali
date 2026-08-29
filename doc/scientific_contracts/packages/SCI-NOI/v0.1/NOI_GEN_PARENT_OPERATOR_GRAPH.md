@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — NOI-GEN Parent And Operator Graph
 
-Artifact identity: `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.2`
+Artifact identity: `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.3`
 
 Status: ODQ-101 conditioning class and ODQ-102A ordinary route approved; the
 selected route remains numerically unavailable pending its frozen boundary
@@ -36,7 +36,7 @@ and failure.
 
 | Method identity | Earliest immutable parent and randomized quantity | Assignment insertion and host operator | Output | Scientific selection and numerical state |
 | --- | --- | --- | --- | --- |
-| `NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1` | Exact retained PTC occurrences carrying `Z_i^PTC` | NOI-defined assignment modifier at the exact PTC-to-MAP numerical boundary, consumed inline by MAP or represented materially, followed by the same frozen MAP accumulation operator | Atomic NOI realization-map product in the route-declared inherited `mJy/beam`, beam, WCS/support, and response domain; not an ordinary MAP science product | **Selected ordinary route by ODQ-102A; numerically unavailable** pending the exact PTC MAP-facing coefficient family/value/QC and numerical `coverage_cut` state/value/failure policy |
+| `NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1` | Exact retained PTC occurrences carrying `Z_i^PTC`; one coherence unit per observation-scoped stable realized detector/channel | One NOI-defined assignment modifier applies to all admitted occurrences of that detector throughout the observation at the exact PTC-to-MAP boundary; MAP consumes it inline or through an equivalent materialization, then uses the same frozen accumulation | Atomic NOI realization-map product in the route-declared inherited `mJy/beam`, beam, WCS/support, and response domain; not an ordinary MAP science product | **Route and coherence selected by ODQ-102A/B; numerically unavailable** pending ODQ-102C design plus exact PTC MAP-facing coefficient family/value/QC and numerical `coverage_cut` state/value/failure policy |
 | `NOI-GEN/PTC-TO-FROZEN-JINC-CONDITIONAL-SIGN@1` | Exact retained JINC-admissible PTC occurrences carrying `Z_i^PTC` | Sign at the exact PTC occurrence/coherence unit, followed by one frozen JINC operator | Exact complete five-role JINC realization bundle when scientifically defined | Unselected and unavailable: JINC coefficient, TolTEC parameter, and applicable numerical-adequacy authority remain unavailable |
 | `NOI-GEN/REALIZED-MAP-CONDITIONAL-SIGN@1` | One exact realized MAP observation or coadd product, with the exact randomized map quantity/coherence partition declared | Sign after MAP realization; no claim of equivalence to pre-MAP assignment | Exact realization product on the inherited MAP unit/WCS/support | Unavailable until the exact parent class, randomized quantity, coherence law, and scientific use are owner-approved and the parent exists |
 | `NOI-GEN/REALIZED-JINC-CONDITIONAL-SIGN@1` | One exact complete realized JINC observation bundle, with exact randomized role/coherence partition | Sign after JINC realization; no claim of equivalence to pre-JINC assignment | Exact realization product over the declared JINC role/domain | Unavailable until the exact role, coherence law, scientific use, and numerical JINC parent are authorized |
@@ -44,6 +44,11 @@ and failure.
 
 Parent numerical coincidence, equal arrays, equal WCS, equal signs, or one
 shared assignment law never merges these identities.
+
+ODQ-102B fixes the selected route's coherence map: all admitted PTC occurrences
+for one stable realized detector/channel in one observation map to the same
+assignment variable. A scan, subscan, sample, time, worker, traversal, or
+accumulation boundary cannot change that assignment.
 
 For the selected route, inline application and materialized randomized
 timestream application are scientifically equivalent representations only when

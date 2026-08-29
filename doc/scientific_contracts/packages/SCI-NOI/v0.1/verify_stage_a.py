@@ -78,8 +78,10 @@ def main() -> None:
         "unit(empirical_scale_standardized_signal) = 1",
         "SCI-NOI-ODQ-102A",
         "SCI-NOI-ODQ-102B",
+        "SCI-NOI-ODQ-102C",
         "materialized randomized timestream",
         "not an ordinary MAP science product",
+        "throughout the observation",
     ]
     for token in required:
         if token not in package_text:

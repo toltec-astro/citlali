@@ -65,6 +65,7 @@ Launch date: `2026-08-29`
 | Decision | Applied substance |
 | --- | --- |
 | `SCI-NOI-ODQ-102A` | Select `NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1` as the ordinary route. Apply the NOI-owned assignment modifier at the exact PTC-to-MAP numerical boundary; MAP may consume it inline during frozen accumulation and no randomized-timestream materialization is required. NOI owns design and realization identity/product; MAP owns conforming application only. The output is an NOI realization map, not ordinary MAP science. Existing coefficient and numerical `coverage_cut` gates remain unavailable. |
+| `SCI-NOI-ODQ-102B` | Define one ordinary coherence unit as one stable realized detector/channel within one observation. Once assigned for a member, its modifier applies to every admitted sample of that detector throughout the observation; sample/scan/subscan/chunk/order boundaries do not change it. Sign law and finite design remain ODQ-102C. |
 
 ## Pending Owner Gate
 

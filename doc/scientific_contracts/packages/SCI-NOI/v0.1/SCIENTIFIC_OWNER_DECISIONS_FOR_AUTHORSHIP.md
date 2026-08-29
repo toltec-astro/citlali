@@ -1,9 +1,9 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.3`
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.4`
 
-Status: ODQ-101 and ODQ-102A owner-approved; later decisions remain open; not
-yet an allowed Stage B authority
+Status: ODQ-101, ODQ-102A, and ODQ-102B owner-approved; later decisions remain
+open; not yet an allowed Stage B authority
 
 Scientific owner: Grant Wilson
 
@@ -29,8 +29,9 @@ not approve another decision or make an unresolved numerical route available.
 - **Scientific consequences:** ordinary GEN estimates variation under its
   declared assignment design conditional on realized learned state; it omits
   learning-procedure variation.
-- **Conservative state:** approved conditioning family, but no numerical route
-  selected; every unresolved route remains unavailable.
+- **Conservative state:** approved conditioning family; ODQ-102A separately
+  selects its ordinary route, which remains numerically unavailable at its
+  declared gates.
 - **Affected artifacts:** GEN graph, Scope Brief, taxonomy, decision ledger,
   parent boundaries, manifest.
 - **Exact bytes changed by approval:** the ODQ-101 approval record and explicit
@@ -71,7 +72,7 @@ not approve another decision or make an unresolved numerical route available.
 
 - **Exact question:** Which stable coherence partition is initially admitted
   for the selected GEN route?
-- **Recommended disposition:** use one observation-scoped realized
+- **Approved disposition:** use one observation-scoped realized
   detector/channel as each coherence unit. One assignment value is constant
   over every admitted PTC occurrence belonging to that detector/channel within
   that observation. Order units lexicographically by canonical observation UID
@@ -83,22 +84,34 @@ not approve another decision or make an unresolved numerical route available.
   temporal structure while allowing detector contributions to be randomized.
   It does not by itself specify independence, balance, or the sign law, and it
   does not preserve detector-detector correlations under every later law.
-- **Conservative state while open:** no coherence partition or numerical design
-  is admitted.
+- **Conservative availability state:** the coherence partition is approved;
+  numerical assignment remains unavailable until ODQ-102C supplies an exact
+  sign law and finite design and the selected route's numerical gates pass.
 - **Affected artifacts:** design specification, selected boundary, GEN graph,
   GEN admission profile.
-- **Exact bytes changed by approval:** canonical partition identity, stable
-  unit ordering, applicability, and route compatibility.
+- **Exact bytes changed by approval:** canonical observation-scoped
+  detector/channel partition, constant-within-observation rule, stable unit
+  identity/order, applicability, route compatibility, and next-question state.
 
 ### `SCI-NOI-ODQ-102C` — sign law and finite design
 
 - **Exact question:** What assignment probability/design-weight law,
   balance/complement/replacement law, canonical key, equivalence, duplicate
   rule, and rank definition govern the initial finite design?
-- **Recommended disposition:** adopt a scheduling-independent deterministic
-  design keyed by the exact canonical fields in the design specification, with
-  equal sign probability unless a deterministic balanced design is selected;
-  bind complement treatment separately for each count and rank.
+- **Recommended disposition:** for each observation, detector coherence unit,
+  and member, draw a centered Rademacher assignment (`-1` or `+1`, each with
+  exact probability `1/2`) from the scheduling-independent canonical key and a
+  declared counter-based algorithm/version. Declare the target joint law as
+  product-Rademacher across detector units, members, and observations, while
+  recording that the realized finite design is deterministic conditional on
+  its immutable seed/key. Use independent key namespaces for different
+  observations. Impose no within-member balance and no forced
+  complement pairing in ordinary v0.1. Assignment vectors are equivalent only
+  by byte-equal canonical vector identity; global complements remain distinct
+  unless deliberately generated as a declared pair. Detect and retain
+  duplicates as design facts. Define design rank as the exact rank of the
+  empirically centered admitted-member by ordered-detector assignment matrix
+  on its declared real-valued domain.
 - **Alternatives:** independent Bernoulli, balanced sampling, exhaustive
   enumeration, paired complements, unequal weighted design, or unavailable.
 - **Scientific consequences:** determines target law, uniqueness, dependence,
