@@ -33,8 +33,10 @@ The v6 evidence record must preserve its exact SHA-256, identity, provisional
 status, integration-center role, and calibration disposition. This package can
 therefore produce representative
 execution evidence while the timing calibration is investigated; it does not
-turn the assignment into producer authority and still will not by itself
-claim independent implementation conformity, science qualification,
+turn the assignment into producer authority. Fresh independent read-only
+review accepts the bounded first vertical increment at exact implementation
+revision `dd06fc27251ad8925a3cf2bdfd82661edfec6a43` with this v6 evidence.
+That disposition does not claim complete-successor science qualification,
 production readiness, or successor activation.
 
 The implementation branch must retain both accepted inputs as exact ancestors:
@@ -273,7 +275,11 @@ $HOME/tolteca/bin/python tools/wp7/verify_identity_rtc_acceptance.py acceptance.
 ```
 
 A passing record is representative execution evidence for this bounded
-identity route. Fresh independent read-only re-review remains a separate gate
-on the completed vertical increment and must assess exact implementation
-revision `dd06fc27251ad8925a3cf2bdfd82661edfec6a43` plus the v6 record.
-Legacy activation and retirement remain separate owner decisions.
+identity route. Fresh independent read-only review found no BLOCKER or MAJOR
+finding and returned **ACCEPT** for the first bounded vertical increment at
+exact implementation revision
+`dd06fc27251ad8925a3cf2bdfd82661edfec6a43` plus the v6 record. Its one
+documentation-only MINOR—stale canonical architecture navigation—is corrected
+with this disposition update. Complete-successor qualification, activation,
+and legacy retirement remain separate owner decisions; D19 calibration remains
+open.

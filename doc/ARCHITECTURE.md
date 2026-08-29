@@ -332,18 +332,29 @@ motivation and a successor validation record when behavior changes.
 
 ## Accepted WP-7 Successor Direction
 
-The scientific data flow above describes the current authoritative route. A
-new WP-7 execution spine is accepted as architecture but is not yet implemented
-or production-active. This work is a **bounded subsystem succession** inside
+The scientific data flow above describes the current production-authoritative
+legacy route. A new WP-7 execution spine is accepted as architecture and its
+first bounded native-axis identity RTC increment is implemented and
+independently accepted, but the complete successor remains in progress and is
+not production-active. This work is a **bounded subsystem succession** inside
 the existing Citlali application, not a continuation of broad structural
 refactoring and not a clean-slate replacement of the application.
 
 The accepted route is:
 
 ```text
-native paired x/r -> ALIGN/AST -> RTC -> RTC-only output
-                                  \-> CAL -> PTC with VAL -> downstream consumers
+native paired x/r
+  +-> native-axis identity RTC
+  |    `-> explicit RTC-only terminal completion
+  `-> ALIGN common-slot projection -> required AST roles -> complete RTC
+       `-> CAL -> PTC with VAL-owned decisions -> downstream consumers
 ```
+
+The identity RTC-only branch consumes reconstructed native network timing and
+retains each network's native occurrence support. It does not consume, invoke,
+or publish ALIGN common-slot association or AST pointing. ALIGN remains the
+sole owner of common-slot projection for a later operator that actually
+requires cross-network simultaneity.
 
 It retains the application shell, configuration boundary, lifecycle,
 publication, and downstream product contracts while replacing the internal
@@ -359,6 +370,9 @@ adoption policy, and evidence gates are in
 [WP-7 Timestream Successor Implementation Baseline](WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md).
 Exact external scientific and implementation-review authorities are bound by
 [`validation/wp7_timestream_successor_authority.json`](../validation/wp7_timestream_successor_authority.json).
+The accepted first-increment implementation and representative evidence are
+recorded in [current status](REFACTOR_STATUS.md) and the
+[WP-7 identity RTC acceptance package](../handoff/WP7_IDENTITY_RTC_ACCEPTANCE_PACKAGE_2026-08-28.md).
 
 ## Configuration Architecture
 
