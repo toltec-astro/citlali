@@ -1,2 +1,83 @@
-% Reserved for implementation-blind Stage B; no normative definitions exist.
+\section{Normative definitions and boundary}
+\label{sec:definitions}
 
+\begin{description}[style=nextline,leftmargin=0pt,labelindent=0pt]
+\item[SCI-JINC observation estimator.]
+A signed spatial-kernel transformer that consumes exact PTC signal occurrences
+and their exact AST coordinates and forms at most one complete JINC bundle for
+each admitted and requested stable array in one observation.  It is a sibling
+alternative to ordinary SCI-MAP, not a downstream stage of SCI-MAP.
+
+\item[Exact occurrence.]
+The scientific identity that jointly fixes observation, detector occurrence
+and UID, stable RTC output sample, PTC product and application generation, PTC
+segment, stable array/group, time attribute, and immutable parent chain.  Row
+position, nearest time, tolerance, shape, detector order, or numerical equality
+is not a substitute.
+
+\item[Exact AST association.]
+The relation binding $z_i$ to the AST-owned
+\texttt{SCI-AST:rtc\_output\_grid\_coordinates@1} continuous coordinate for the
+same processed sample realization in the exact target JINC WCS.  Its data-model
+join is an engineering choice; its scientific identity is not.
+
+\item[JINC sample admission.]
+The decision of the immutable
+\texttt{SCI-JINC:jinc\_map\_contribution@1} profile that one exact upstream
+occurrence may be considered by JINC.  It neither implies rounded-center
+domain admission nor pixel support.
+
+\item[Rounded-center domain admission.]
+The JINC-owned occurrence-level gate applied after center rounding and before
+any footprint evaluation.  The resolved rounded center must lie within the
+finite destination pixel domain.  An outside center makes $I_{ip}=0$ for every
+$p$, even when the square footprint would overlap the map.
+
+\item[Point phase.]
+The single-valued residual between the exact continuous sample coordinate and
+the resolved rounded center, quantized on each axis to select one
+point-evaluated kernel matrix.  It is not a pixel-area average.
+
+\item[Square support.]
+The fully populated square cache whose half-width is fixed by $(r_{\max})_a$.
+Every resolved square pixel is evaluated, including corners with radius larger
+than $(r_{\max})_a$; there is no circular membership predicate.
+
+\item[Sample-pixel membership.]
+The Boolean proposition $I_{ip}=1$ after sample admission, exact coordinate
+association, rounded-center domain admission, square placement, finite local
+geometry, and every pixel-local precondition.  A contract-defined analytic
+zero is a member with zero contribution; outside support is nonmembership; a
+finite negative coefficient is an ordinary signed member.
+
+\item[Local formal support.]
+The state in which the required inputs and accumulators are finite, $Q_p>0$,
+$C_p\ne0$, and cancellation is resolved with total numerical error negligible
+relative to the approximately $10^{-3}$ instrument-fidelity scale.  A named
+empirical policy may narrow this state but never promote it.
+
+\item[Complete observation bundle.]
+The atomic fixed-role product for one observation, stable array, exact JINC
+plan and realization, target WCS, and lifecycle generation.  It contains
+exactly $N_p$, $C_p$, $Q_p$, derived $m_p$ with local support/validity, and
+$T_p^{(\kappa^2)}$.
+
+\item[Whole-bundle failure.]
+Failure to form or publish any required whole-product role.  It suppresses the
+affected bundle without a partial role, placeholder, synthetic empty-array
+product, or completion override.  Pixel-local invalid support is ordinary
+bundle content and is not whole-bundle failure.
+
+\item[Typed numerical unavailability.]
+The fail-closed state in which a numerical JINC route cannot be realized
+because an exact authorized TolTEC kernel parameter set or an exact registered,
+selected, realized, JINC-permitted PTC coefficient family/payload is absent.
+It is not repaired by a hidden default, unity coefficient, alternate family,
+ordinary MAP permission, inherited scale, or implementation value.
+
+\item[Scientific destination identity.]
+The product identity formed from observation, stable array, exact JINC plan and
+realization, target WCS, product role, and lifecycle generation.  Worker,
+thread, process, container, filename, vector position, and network order are
+not scientific identity.
+\end{description}

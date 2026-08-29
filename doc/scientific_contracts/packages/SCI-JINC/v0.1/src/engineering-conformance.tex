@@ -1,3 +1,288 @@
-% Stage A placeholder: this file contains no normative science.
-% Implementation-blind Stage B has not been commissioned.
+\documentclass[10pt]{article}
 
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.82in,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{array,booktabs,longtable,tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\definecolor{JincBlue}{HTML}{174A6E}
+\definecolor{JincLight}{HTML}{EDF4F8}
+\definecolor{JincGray}{HTML}{4B5563}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=JincBlue,
+  citecolor=JincBlue,
+  urlcolor=JincBlue,
+  pdftitle={SCI-JINC Engineering Conformance Specification v0.1 r0.1},
+  pdfauthor={Implementation-blind Stage B scientific author},
+  pdfsubject={Engineering conformance view of the SCI-JINC scientific contract},
+  pdfkeywords={SCI-JINC, JINC, engineering conformance, Stage B draft}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{JincGray}{SCI-JINC v0.1}}
+\fancyhead[R]{\small\textcolor{JincGray}{Engineering Conformance r0.1 - Stage B Draft}}
+\fancyfoot[C]{\small\textcolor{JincGray}{\thepage\ / \pageref*{LastPage}}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\setlength{\emergencystretch}{2em}
+\setlist{nosep,leftmargin=*}
+
+\newcommand{\ContractVersion}{v0.1}
+\newcommand{\DocumentRevision}{r0.1}
+\newcommand{\DocumentDate}{2026-08-28}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries\textcolor{JincBlue}{SCI-JINC}}\\[0.35em]
+  {\LARGE\bfseries Engineering Conformance Specification}\\[0.65em]
+  {\large Contract \ContractVersion{} / document \DocumentRevision{}}\\[0.25em]
+  {\large \DocumentDate}
+\end{center}
+
+\vspace{0.5em}
+\noindent\fcolorbox{JincBlue}{JincLight}{%
+\begin{minipage}{0.94\textwidth}
+\textbf{Status.} Implementation-blind Stage B author draft.  This document
+expresses the same shared scientific authority as the companion rationale.  It
+contains no implementation mapping and assesses no implementation candidate.
+A compiling specification is not evidence of conformity, representation
+fidelity, validation, achieved performance, readiness, or production status.
+\end{minipage}}
+
+\vspace{0.8em}
+\begin{tabularx}{\textwidth}{@{}>{\bfseries}p{0.22\textwidth}X@{}}
+\toprule
+Contract identity & \texttt{SCI-JINC v0.1} \\
+Document identity & Engineering Conformance Specification \texttt{r0.1} \\
+Companion view & Scientific Rationale and Contract \texttt{v0.1/r0.1} \\
+Normative core & The six shared modules under \texttt{src/common/} included
+verbatim in both views \\
+Requirements & \texttt{SCI-JINC-REQ-001} through
+\texttt{SCI-JINC-REQ-042}, sequential with no gaps \\
+Predictions & \texttt{SCI-JINC-PRED-001} through
+\texttt{SCI-JINC-PRED-032}, sequential with no gaps \\
+Present assessment & \textbf{Not assessed}; no implementation candidate was
+inspected \\
+\bottomrule
+\end{tabularx}
+
+\tableofcontents
+\clearpage
+
+\section{Purpose and normative use}
+\label{sec:eng-purpose}
+
+This specification turns the shared SCI-JINC scientific authority into a
+future conformance-review surface.  It does not introduce independent science.
+If prose in this engineering introduction appears broader than the shared
+definitions, equations, assumptions, requirements, or predictions, the shared
+module controls and the broader engineering reading is invalid.
+
+The conformance object is one claimed realization of the SCI-JINC observation
+estimator under one exact contract version, parameter-set identity,
+coefficient-family identity, target WCS, array, observation, and lifecycle
+generation.  A future assessment must bind that object before drawing any
+conclusion.  This author draft binds no implementation, schema, interface,
+file, function, algorithm, or execution.
+
+Conformance is evaluated requirement by requirement.  Each result is exactly
+one of \emph{pass}, \emph{fail}, \emph{not assessed}, or \emph{not
+applicable under a contract-authorized condition}.  Missing evidence is
+\emph{not assessed}, never pass.  A pass at one layer does not promote a claim
+at another layer.
+
+\section{Applicability and fail-closed preconditions}
+\label{sec:eng-applicability}
+
+A numerical conformance route exists only when all scientific identities and
+inputs required by the shared core are available.  In particular:
+
+\begin{enumerate}
+\item the exact transformed signal occurrence and exact same-processed-sample
+AST coordinate association are available;
+\item one exact PTC coefficient family/version explicitly permits SCI-JINC,
+is selected under the authorized lifecycle, and supplies compatible realized
+payload and QC;
+\item one exact scientifically authorized TolTEC array-associated kernel
+parameter set is resolved; and
+\item target WCS, pixel size, effective \texttt{subpixel\_n}, processed-sample
+frequency, observation, array, plan, destination, and lifecycle identities are
+complete and mutually compatible.
+\end{enumerate}
+
+Absence of a coefficient route or TolTEC parameter set is a typed unavailable
+state.  It cannot be converted into an executable route by unity, a MAP family,
+an alternate family, an inherited 45~m denominator, inherited shape values,
+mode-dependent $r_{\max}$, or any other hidden implementation default.  A
+future assessment may test fail-closed behavior without claiming a scientifically
+authorized numerical production route.
+
+\section{Future conformance procedure}
+\label{sec:eng-procedure}
+
+A later authorized assessor should proceed in the following order:
+
+\begin{enumerate}
+\item \textbf{Bind identity.} Record the exact SCI-JINC contract, candidate,
+observation, stable array, plan/realization, target WCS, coefficient family,
+parameter set, destination, and lifecycle generation.
+\item \textbf{Check source availability.} Confirm that every producer-owned
+fact is present under the exact boundary and that no excluded fallback or
+ordinary MAP inheritance is used.
+\item \textbf{Check algebra and membership.} Establish the exact occurrence
+population, AST association, center-domain decision, square membership,
+point-phase coefficient, and coupled accumulator equations.
+\item \textbf{Check units and limits.} Exercise the zero limit, signed lobes,
+coefficient classes, scaling predictions, cancellation states, and
+coefficient-squared-time unit.
+\item \textbf{Check grouping and publication.} Exercise array cardinality,
+destination uniqueness, same-observation chunking, bundle atomicity, and
+absence of unauthorized roles or coaddition.
+\item \textbf{Disclose numerical policy.} State the function-evaluation,
+phase/cache, accumulation/reduction, and comparison policies and demonstrate
+combined error negligible relative to the approximately $10^{-3}$ scale.
+\item \textbf{Run every prediction.} Record construction, expected result,
+observed result, tolerance rationale, and pass/fail/not-assessed state for each
+stable prediction identifier.
+\item \textbf{Separate conclusions.} Report algebraic conformance separately
+from representation fidelity, numerical and observational validation, achieved
+performance, readiness, and production authorization.
+\end{enumerate}
+
+This sequence is not an implementation architecture.  It is an evidence
+ordering intended to prevent a successful compile, one numerical example, or
+one stored product from being mistaken for complete scientific conformance.
+
+\section{Minimum future evidence record}
+\label{sec:eng-evidence}
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.23\textwidth}
+                        >{\raggedright\arraybackslash}p{0.46\textwidth}
+                        >{\raggedright\arraybackslash}p{0.21\textwidth}@{}}
+\caption{Evidence categories for a later authorized assessment.}\label{tab:evidence}\\
+\toprule
+Category & Minimum record & Related requirements \\
+\midrule
+\endfirsthead
+\toprule
+Category & Minimum record & Related requirements \\
+\midrule
+\endhead
+Authority and identity & Exact contract/candidate identifiers; observation,
+array, plan, WCS, coefficient family, parameter set, destination, and lifecycle
+bindings. & 001--007, 030--035 \\
+Producer boundaries & Exact PTC signal/coefficient/QC and AST coordinate
+association with immutable parentage and dispositions. & 002--006, 035--037 \\
+Analytic operator & Zero limit, parameter roles, point phase, square extent,
+center gate, crop, and finite signed coefficient behavior. & 007--015 \\
+Accumulator algebra & Exact membership and separate $N_p$, $C_p$, $Q_p$,
+$m_p$, $A_{pi}$, and $T_p^{(\kappa^2)}$ computations. & 016--020, 026--027 \\
+Conditioning and numerical adequacy & $D_p$, $\rho_p$, error budget, comparison
+policy, and accepted/rejected cancellation constructions. & 019--023 \\
+Units and statistical claims & Unit table, scale transformations, coefficient
+meaning, and proof that conditional formulas are not promoted. & 024--025,
+038 \\
+Bundle and lifecycle & Five-role schema, local versus whole failure,
+zero-through-three arrays, unique destination, same-observation chunking, and
+no cross-observation route. & 028--034 \\
+Excluded products and defaults & Demonstration that no forbidden fallback,
+inherited parameter, extra role, diagnostic/provenance framework, or MAP rule
+is silently introduced. & 005, 038--041 \\
+Prediction results & Complete result for each
+\texttt{SCI-JINC-PRED-NNN}, including disclosed tolerance and evidence
+locator. & 042 and prediction trace \\
+Claim register & Separate states for conformance, representation fidelity,
+validation, achieved performance, readiness, and production authorization. &
+042 \\
+\bottomrule
+\end{longtable}
+
+\section{Required output-role interpretation}
+\label{sec:eng-output-view}
+
+The fixed schema is closed.  $N_p$, $C_p$, and $Q_p$ are distinct primary
+accumulators.  $m_p$ is derived only on accepted local support.
+$T_p^{(\kappa^2)}$ is method-specific temporal accounting.  No role may be
+renamed or reinterpreted so that $Q_p$ becomes precision, $C_p$ becomes
+exposure, coefficient-squared time becomes acquired time, or local map support
+becomes a standalone availability product.
+
+Whole-bundle and local-pixel outcomes must remain separate.  A required
+whole-role formation or publication failure suppresses the bundle.  A local
+zero, cancellation, or inadequate-support state remains content in a complete
+map role.  A completion marker cannot override a missing required role.
+
+\section{Claim discipline}
+\label{sec:eng-claims}
+
+The following conclusions require separate evidence and separate authority:
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.28\textwidth}
+                        >{\raggedright\arraybackslash}p{0.62\textwidth}@{}}
+\toprule
+Claim & Required basis \\
+\midrule
+\endhead
+Algebraic scientific conformance & Complete requirement and prediction
+assessment under the exact contract identity. \\
+Representation fidelity & Evidence that persisted or transmitted identities,
+units, states, and roles preserve the conformant scientific objects. \\
+Numerical validation & Authorized profiles establishing realized error and
+conditioning adequacy; contract text alone is insufficient. \\
+Response/covariance fidelity & Separately authorized products and validation;
+base v0.1 supplies neither. \\
+Observational performance & Named observational evidence and acceptance
+authority. \\
+Readiness and production & Explicit operational qualification and owner
+authorization. \\
+\bottomrule
+\end{longtable}
+
+At document revision \DocumentRevision{}, every layer beyond draft algebraic
+specification remains not assessed or not performed.
+
+\clearpage
+\input{common/notation}
+\input{common/definitions}
+\input{common/equations}
+\input{common/assumptions}
+\input{common/requirements}
+\input{common/edge_cases}
+
+\clearpage
+\section{Blank conformance-result template}
+\label{sec:eng-template}
+
+The following fields are intentionally blank until a separately authorized
+assessment binds a candidate.  Their presence creates no assessment claim.
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.30\textwidth}
+                        >{\raggedright\arraybackslash}p{0.60\textwidth}@{}}
+\toprule
+Field & Future assessment value \\
+\midrule
+Candidate identity & Not assessed \\
+Contract and source binding & Not assessed \\
+Coefficient family and permission & Not assessed \\
+TolTEC parameter-set identity & Not assessed \\
+Observation, array, WCS, and destination & Not assessed \\
+Requirement results & Not assessed \\
+Prediction results & Not assessed \\
+Numerical acceptance policy & Not assessed \\
+Representation-fidelity result & Not assessed \\
+Validation result & Not performed \\
+Achieved-performance result & No claim \\
+Readiness/production authorization & No claim \\
+\bottomrule
+\end{longtable}
+
+\end{document}

@@ -1,2 +1,71 @@
-% Reserved for implementation-blind Stage B; no normative notation exists.
+\section{Canonical notation and units}
+\label{sec:notation}
 
+The symbols in Table~\ref{tab:notation} are normative in both views of this
+contract.  The generic signal unit is denoted by $U$.  The admitted upstream
+boundary presently names a nonpolarimetric total-intensity-equivalent quantity
+in \texttt{mJy/beam}; the symbol $U$ keeps the algebra explicit and does not
+turn a component token into a physical Stokes assertion.
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.18\textwidth}
+                        >{\raggedright\arraybackslash}p{0.50\textwidth}
+                        >{\raggedright\arraybackslash}p{0.23\textwidth}@{}}
+\caption{Canonical notation.}\label{tab:notation}\\
+\toprule
+Symbol & Meaning and domain & Unit \\
+\midrule
+\endfirsthead
+\toprule
+Symbol & Meaning and domain & Unit \\
+\midrule
+\endhead
+$a$ & Stable TolTEC array identity, exactly one of \texttt{a1100},
+\texttt{a1400}, or \texttt{a2000}. & identity \\
+$i$ & Exact admitted PTC occurrence on stable RTC output sample $n$, with
+observation, detector occurrence/UID, PTC application generation, segment,
+array, and immutable parents. & identity \\
+$p$ & Target pixel in one exact JINC destination WCS. & identity \\
+$z_i$ & Exact finite transformed signal $Z_i^{\mathrm{PTC}}$. & $U$ \\
+$\omega_i$ & Positive, finite, PTC-produced analysis/gridding coefficient
+from one exact registered family/version that permits SCI-JINC. & $1$ or
+$U^{-2}$, as declared by its family \\
+$\kappa_{ip}$ & Signed, dimensionless analytic JINC coefficient at the
+selected point phase.  Finite positive, exact-zero, and finite negative values
+are distinct legitimate analytic results. & $1$ \\
+$w_{ip}$ & Complete signed contribution coefficient,
+$w_{ip}=\omega_i\kappa_{ip}$. & unit of $\omega_i$ \\
+$I_{ip}$ & Boolean membership after sample admission, exact AST association,
+rounded-center domain admission, local square geometry, and all pixel-local
+gates. & $1$ \\
+$s_a$ & Explicit angular radial scale associated with stable array $a$;
+finite and strictly positive in any numerical realization. & angle \\
+$r$ & Angular separation between the realized sample phase and destination
+pixel evaluation point in the target WCS. & angle \\
+$r'_a$ & Dimensionless radius $r/s_a$, finite and nonnegative. & $1$ \\
+$a_a,\allowbreak b_a,\allowbreak c_a,\allowbreak (r_{\max})_a$ & Ordered, dimensionless analytic shape tuple for
+array $a$; every member is finite and strictly positive in an authorized
+numerical realization. & $1$ \\
+$\boldsymbol{\theta}_a$ & Complete kernel parameter identity
+$(s_a,a_a,b_a,c_a,(r_{\max})_a)$, including owner, source, version, units,
+array association, and lifecycle state. & mixed, as above \\
+$N_p$ & Signed signal numerator. & $U[\omega]$ \\
+$C_p$ & Signed normalization; it may be finite and negative, but exact zero is
+never accepted. & $[\omega]$ \\
+$Q_p$ & Quadratic accumulator; finite and strictly positive on accepted local
+support. & $[\omega]$ \\
+$m_p$ & Normalized estimate $N_p/C_p$ on accepted local support. & $U$ \\
+$D_p$ & Absolute-term sum $\sum_i I_{ip}|\omega_i\kappa_{ip}|$, used only as
+construction state for conditioning. & $[\omega]$ \\
+$\rho_p$ & Dimensionless cancellation statistic $|C_p|/D_p$. & $1$ \\
+$A_{pi}$ & Fixed-state normalized linear operator row
+$I_{ip}\omega_i\kappa_{ip}/C_p$. & $1$ \\
+$f_{s,i}$ & Effective processed-sample frequency, finite and strictly
+positive. & $\mathrm{s}^{-1}$ \\
+$T_p^{(\kappa^2)}$ & Required \texttt{jinc\_coefficient\_squared\_time}
+accumulator. & $\mathrm{s}$ \\
+\bottomrule
+\end{longtable}
+
+In-memory indices are zero-based.  Persisted FITS/WCS pixel coordinates are
+one-based.  Memory order never supplies axis sign, handedness, orientation, or
+wrapping.

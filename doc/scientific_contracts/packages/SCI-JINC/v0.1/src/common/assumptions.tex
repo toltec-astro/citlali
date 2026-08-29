@@ -1,2 +1,89 @@
-% Reserved for implementation-blind Stage B; no normative assumptions exist.
+\section{Assumptions, validity classes, and explicit unavailability}
+\label{sec:assumptions}
 
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.21\textwidth}
+                        >{\raggedright\arraybackslash}p{0.69\textwidth}@{}}
+\caption{Normative assumptions and boundary states.}\label{tab:assumptions}\\
+\toprule
+ID & Statement \\
+\midrule
+\endfirsthead
+\toprule
+ID & Statement \\
+\midrule
+\endhead
+\texttt{SCI-JINC-ASM-001} & The contract concerns one observation at a time
+and a nonpolarimetric total-intensity-equivalent transformed signal.  It does
+not authorize a physical Stokes interpretation from a component token. \\
+\texttt{SCI-JINC-ASM-002} & PTC and AST meanings, identities, validity facts,
+causes, uncertainty, and immutable ancestry are producer-owned facts.  JINC
+uses them without reconstructing or redefining them. \\
+\texttt{SCI-JINC-ASM-003} & An admitted $\omega_i$ is finite and strictly
+positive and comes from one exact PTC family/version that explicitly permits
+SCI-JINC.  No registered family or realized payload is supplied by the
+scientific author packet. \\
+\texttt{SCI-JINC-ASM-004} & Equations~\eqref{eq:conditional-variance}--
+\eqref{eq:general-covariance} are conditional identities only.  Their
+assumptions are not inferred from units, names, or another consumer's
+permission. \\
+\texttt{SCI-JINC-ASM-005} & The analytic family and parameter meanings are
+approved, but no TolTEC numerical realization of $s_a$, $a_a$, $b_a$, $c_a$,
+$(r_{\max})_a$, pixel size, or \texttt{subpixel\_n} is scientifically supplied
+or recommended by this contract. \\
+\texttt{SCI-JINC-ASM-006} & Point-phase evaluation and fully populated square
+support are the scientific operator.  Pixel-area integration, a circular
+cutoff, footprint-overlap admission, and JINC-then-crop equivalence are not
+alternative branches. \\
+\texttt{SCI-JINC-ASM-007} & Total numerical error includes finite arithmetic,
+accumulation/reduction order, analytic-function evaluation, phase
+quantization, and cache/index realization.  Adequacy is judged against the
+approximately $10^{-3}$ relative instrument-fidelity scale; no stronger
+universal precision claim follows. \\
+\texttt{SCI-JINC-ASM-008} & Same-observation chunking may be an engineering
+realization of one bundle, but a chunk is not a scientific product identity.
+Cross-observation combination is outside base v0.1. \\
+\texttt{SCI-JINC-ASM-009} & This Stage B draft has inspected no implementation
+candidate, configuration, product, test, audit, validation, reduction, or
+production evidence. \\
+\bottomrule
+\end{longtable}
+
+Every presently missing fact is classified exactly once in
+Table~\ref{tab:missing-facts}.
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.23\textwidth}
+                        >{\raggedright\arraybackslash}p{0.40\textwidth}
+                        >{\raggedright\arraybackslash}p{0.28\textwidth}@{}}
+\caption{Missing-fact classification.}\label{tab:missing-facts}\\
+\toprule
+Class & Fact & Consequence \\
+\midrule
+\endfirsthead
+\toprule
+Class & Fact & Consequence \\
+\midrule
+\endhead
+Approved & Generic analytic identity, signed estimator, point-phase square
+operator, center-domain gate, conditioning principle, fixed bundle, grouping,
+and ownership boundary. & These are normative in v0.1. \\
+Known but not supplied & A registered, selected, and realized
+JINC-permitted PTC coefficient family and payload. & No numerical bundle is
+formed without it; no unity or alternate-family fallback. \\
+Known but not supplied & A scientifically authorized TolTEC array-associated
+numerical parameter set. & No numerical bundle is formed; no inherited scale,
+shape, extent, or mode-dependent value is used. \\
+Unresolved decision & None within the approved base-v0.1 scientific scope. &
+No owner question is raised by this draft. \\
+Implementation unassessed & Representation, interfaces, algorithms, storage,
+parallel realization, and implementation behavior. & No conformity or
+representation-fidelity claim. \\
+Validation not performed & Algebraic execution, numerical adequacy,
+observational response, covariance, photometry, performance, readiness, and
+production operation. & No achieved result, readiness, or production claim. \\
+\bottomrule
+\end{longtable}
+
+Response, covariance, formal weight, physical exposure, cross-observation
+coaddition, standalone support or availability, diagnostics, and generalized
+provenance are deferred or outside base v0.1, rather than silently missing
+members of the fixed bundle.

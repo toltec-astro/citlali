@@ -1,2 +1,141 @@
-% Reserved for implementation-blind Stage B; no normative edge cases exist.
+\section{Falsifiable predictions and edge cases}
+\label{sec:predictions}
 
+These predictions are normative tests for a future authorized conformance
+program.  Listing them is not evidence that they have been executed or passed.
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.22\textwidth}
+                        >{\raggedright\arraybackslash}p{0.68\textwidth}@{}}
+\caption{Stable SCI-JINC predictions.}\label{tab:predictions}\\
+\toprule
+Prediction & Falsifiable expected result \\
+\midrule
+\endfirsthead
+\toprule
+Prediction & Falsifiable expected result \\
+\midrule
+\endhead
+\texttt{SCI-JINC-PRED-001} & A constant finite input $z_i=z_0$ returns
+$m_p=z_0$ on every accepted local support, including a cropped edge pixel. \\
+\texttt{SCI-JINC-PRED-002} & One admitted contributor with nonzero finite
+$\kappa_{ip}$ returns $m_p=z_i$, whether the coefficient is positive or
+negative. \\
+\texttt{SCI-JINC-PRED-003} & A hand-computed two-contributor case with unequal
+$z_i$, $\omega_i$, and signed $\kappa_{ip}$ matches the separate $N_p$, $C_p$,
+$Q_p$, $m_p$, and $T_p^{(\kappa^2)}$ equations. \\
+\texttt{SCI-JINC-PRED-004} & Multiplying every $\omega_i$ by the same positive
+factor scales $N_p$, $C_p$, and $Q_p$ together and leaves $m_p$, $\rho_p$, and
+$A_{pi}$ unchanged. \\
+\texttt{SCI-JINC-PRED-005} & Under a true inverse-variance family, rescaling
+$z_i\mapsto\lambda z_i$ and $\omega_i\mapsto\omega_i/\lambda^2$ produces
+$m_p\mapsto\lambda m_p$ and conditional formal weight
+$W_{\mathrm{formal},p}\mapsto W_{\mathrm{formal},p}/\lambda^2$. \\
+\texttt{SCI-JINC-PRED-006} & The analytic evaluator returns
+$\kappa_a(0)=1$ through the removable limit, not a non-finite value or an
+implementation-dependent substitute. \\
+\texttt{SCI-JINC-PRED-007} & An analytic $\kappa_{ip}=0$ changes none of
+$N_p$, $C_p$, $Q_p$, or $T_p^{(\kappa^2)}$ while remaining distinguishable
+from outside square support. \\
+\texttt{SCI-JINC-PRED-008} & A finite negative lobe retains its sign in $N_p$
+and $C_p$, enters $Q_p$ and $T_p^{(\kappa^2)}$ quadratically, and is not
+clipped, absolutized, omitted, or flagged solely for being negative. \\
+\texttt{SCI-JINC-PRED-009} & Exact cancellation $C_p=0$ yields local invalid
+support and no finite substitute, even when $N_p$ and $Q_p$ are finite. \\
+\texttt{SCI-JINC-PRED-010} & A finite negative $C_p$ with otherwise adequate
+support yields the signed normalized estimate and is not rejected merely for
+the denominator sign. \\
+\texttt{SCI-JINC-PRED-011} & A near-cancellation construction whose numerical
+error is demonstrated negligible relative to the $10^{-3}$ scale remains
+eligible; no universal $\rho_p$ cutoff rejects it. \\
+\texttt{SCI-JINC-PRED-012} & A near-cancellation construction lacking that
+adequacy demonstration is locally invalid, even when finite arithmetic happens
+to return a nonzero $C_p$. \\
+\texttt{SCI-JINC-PRED-013} & A non-finite required signal, geometry,
+coefficient evaluation, accumulator, or sample frequency cannot be masked by
+multiplication by zero or silently skipped; the exact local or whole-bundle
+failure rule applies. \\
+\texttt{SCI-JINC-PRED-014} & Square-cache corners whose radius exceeds
+$(r_{\max})_a$ are evaluated by Equation~\eqref{eq:analytic-kernel} and may
+contribute. \\
+\texttt{SCI-JINC-PRED-015} & Two points on opposite sides of a hypothetical
+circular $r_{\max}$ boundary but inside the same resolved square are both
+governed by square membership; no radial cutoff appears. \\
+\texttt{SCI-JINC-PRED-016} & Effective \texttt{subpixel\_n}$=1$ selects one
+single-valued point-phase matrix and does not become a pixel-area average. \\
+\texttt{SCI-JINC-PRED-017} & Coordinates immediately around every half-pixel
+tie and phase-bin edge select a single-valued realization whose total error
+meets the numerical-adequacy requirement; no bitwise cross-realization identity
+is presumed. \\
+\texttt{SCI-JINC-PRED-018} & A rounded center immediately outside each map
+edge or corner changes none of the four accumulators for any pixel, even when
+its square footprint overlaps the map. \\
+\texttt{SCI-JINC-PRED-019} & A rounded center immediately inside an edge uses
+only retained square pixels with no wrap, reflection, completion,
+renormalization, or edge correction. \\
+\texttt{SCI-JINC-PRED-020} & A supported constant field at an in-map cropped
+edge still returns the constant through the actual retained $N_p/C_p$ terms. \\
+\texttt{SCI-JINC-PRED-021} & $T_p^{(\kappa^2)}$ is unchanged by changing
+$\omega_i$ alone, receives zero from an analytic zero, and receives a positive
+term from either sign of nonzero $\kappa_{ip}$. \\
+\texttt{SCI-JINC-PRED-022} & Missing coefficient selection without an
+authorized default, an unregistered family, missing JINC permission, or an
+unavailable/mismatched payload prevents the affected numerical bundle without
+unity or alternate-family fallback. \\
+\texttt{SCI-JINC-PRED-023} & Absence of an authorized TolTEC parameter set
+prevents the numerical bundle; no inherited 45~m denominator, shape values,
+mode-dependent $r_{\max}$, or other implementation value is substituted. \\
+\texttt{SCI-JINC-PRED-024} & Permuting arrays, networks, detector rows, map
+groups, or container positions does not change array-to-parameter or
+array-to-bundle identity; a missing array creates no placeholder and does not
+invalidate another array. \\
+\texttt{SCI-JINC-PRED-025} & Ambiguous, duplicate, or aliased destination
+ownership fails the affected bundle before mutation and produces no partial
+winner. \\
+\texttt{SCI-JINC-PRED-026} & Valid decompositions of the same observation into
+chunks select the same scientific memberships and equations and agree within
+the disclosed numerical-adequacy policy; bitwise equality is not required. \\
+\texttt{SCI-JINC-PRED-027} & An attempted cross-observation accumulator or map
+combination is rejected as outside base v0.1 rather than being assigned an
+inferred coadd rule. \\
+\texttt{SCI-JINC-PRED-028} & A missing, duplicate, or ambiguous exact
+signal-coordinate association prevents the affected contribution and is not
+reclassified as ordinary outside support. \\
+\texttt{SCI-JINC-PRED-029} & Failure to form any one of the five required
+whole-product roles suppresses the bundle, whereas a locally invalid pixel
+does not suppress an otherwise complete role. \\
+\texttt{SCI-JINC-PRED-030} & The base bundle contains no response, covariance,
+formal-weight, physical-exposure, standalone availability/support, diagnostic,
+generalized provenance, or placeholder product. \\
+\texttt{SCI-JINC-PRED-031} & With dimensionless $\omega_i$,
+$Q_p/C_p^2$ remains dimensionless and is not reported as signal variance or
+used to create a formal-weight product. \\
+\texttt{SCI-JINC-PRED-032} & The JINC route consumes no SCI-MAP product and no
+ordinary MAP admission, validity, exposure, support, response, covariance, or
+coaddition decision is substituted for a JINC-owned decision. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Prediction-to-requirement trace}
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.25\textwidth}
+                        >{\raggedright\arraybackslash}p{0.65\textwidth}@{}}
+\toprule
+Predictions & Governing requirements \\
+\midrule
+\endhead
+001--003 & 016--020, 026 \\
+004--005 & 024--025 \\
+006--008 & 008--009, 015, 017, 026 \\
+009--012 & 019--023 \\
+013 & 003, 006--007, 015, 019, 026, 029 \\
+014--017 & 010--012, 023 \\
+018--020 & 013--014, 016--020 \\
+021 & 026--027 \\
+022--023 & 004--007, 041 \\
+024--027 & 030--034 \\
+028 & 002, 035--036 \\
+029--030 & 028--029, 038--040 \\
+031 & 024--025, 038 \\
+032 & 001, 035--038 \\
+\bottomrule
+\end{longtable}

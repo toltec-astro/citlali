@@ -1,2 +1,241 @@
-% Reserved for implementation-blind Stage B; no normative requirements exist.
+\section{Binding scientific requirements}
+\label{sec:requirements}
 
+The key words \emph{shall}, \emph{shall not}, \emph{required}, and
+\emph{unavailable} are normative.  These requirements define scientific
+conformance; they do not assert that any implementation satisfies them.
+
+\newcommand{\JincReq}[2]{%
+  \par\medskip\noindent\phantomsection
+  \hypertarget{SCI-JINC-REQ-#1}{}%
+  \textbf{\texttt{SCI-JINC-REQ-#1}.} #2\par}
+
+\JincReq{001}{SCI-JINC shall define a signed spatial-kernel estimator for one
+observation and stable array.  It shall consume exact PTC and AST parents
+directly, consume no SCI-MAP product, and inherit no ordinary SCI-MAP
+normalization, support, exposure, validity, response, covariance, product, or
+coaddition rule by analogy.}
+
+\JincReq{002}{Every candidate contribution shall bind one exact occurrence and
+the AST continuous coordinate associated with the same processed sample
+realization in the exact target JINC WCS.  Row order, detector order, nearest
+time, tolerance, shape, cardinality, or numerical coordinate equality shall
+not establish that association.}
+
+\JincReq{003}{The transformed signal $z_i$ shall retain its exact PTC quantity,
+unit, availability, application generation, retention state, immutable
+parents, and producer causes.  SCI-JINC shall spatially transform that quantity
+without creating calibration, conditioning, astrometry, empirical noise, or
+source interpretation.}
+
+\JincReq{004}{Every $\omega_i$ shall come from one exact family/version in the
+single PTC-owned positive analysis/gridding coefficient registry.  The family
+shall explicitly permit \texttt{SCI-JINC}, and its requested, effective,
+observation-resolved, and realized identities, payload, QC, normalization,
+support, provenance, covariance meaning, uncertainty, and prohibited meanings
+shall remain bound.}
+
+\JincReq{005}{A numerical route shall fail closed when coefficient selection is
+missing without an authorized versioned mode default, the family is
+unregistered, JINC permission is absent, or the payload/QC/identity is absent,
+unavailable, incompatible, duplicate, or ambiguous.  SCI-JINC shall not infer
+unity, another family, ordinary MAP permission, \texttt{sens}, loading,
+scatter, inverse variance, precision, or significance.}
+
+\JincReq{006}{After the producer-owned coefficient decision, SCI-JINC shall
+admit only a finite strictly positive $\omega_i$.  Zero, negative, non-finite,
+or unrepresentable upstream coefficient values shall not be deposited and
+shall retain the exact profile-defined disposition and cause.}
+
+\JincReq{007}{Every numerical kernel route shall bind one exact scientifically
+authorized array-associated parameter-set identity containing finite positive
+$s_a$, $a_a$, $b_a$, $c_a$, $(r_{\max})_a$, finite positive pixel size, and
+effective integer \texttt{subpixel\_n}$\ge1$.  Missing authority shall make
+the affected route unavailable without fallback.}
+
+\JincReq{008}{The peak-normalized analytic primitive shall be
+$\mathcal{J}(x)=2J_1(x)/x$ for $x\ne0$ with the removable limit
+$\mathcal{J}(0)=1$, as in Equation~\eqref{eq:peak-jinc}.}
+
+\JincReq{009}{The analytic coefficient shall follow
+Equation~\eqref{eq:analytic-kernel}, including its fixed parameter ordering and
+$r'_a=r/s_a$.  It shall have peak one, preserve
+analytic zeros, and preserve every finite positive and negative lobe of the
+complete product.}
+
+\JincReq{010}{The sample center shall be resolved by a single-valued rounding
+rule, its two-axis residual phase shall be quantized, and one point-evaluated
+kernel matrix shall be selected.  This operator shall not be represented as or
+replaced by pixel-area integration.}
+
+\JincReq{011}{Tie handling, phase intervals, bin edges, representatives,
+cache-index rounding, analytic-function evaluation, and accumulation order may
+be engineering choices only when they are single-valued, preserve the accepted
+point-phase operator, and meet the numerical-adequacy requirement.}
+
+\JincReq{012}{$(r_{\max})_a$ shall place the first zero of the second JINC
+factor and fix the fully populated square-cache half-width.  Every resolved
+square pixel, including a corner with radius greater than $(r_{\max})_a$, shall
+be evaluated; no circular cutoff or radial membership predicate shall be
+applied.}
+
+\JincReq{013}{Before any footprint evaluation, the resolved rounded cache
+center shall lie within the finite destination pixel domain.  An outside center
+shall set $I_{ip}=0$ for every pixel, even when its square would overlap the
+map; footprint-overlap admission is prohibited.}
+
+\JincReq{014}{For an admitted in-map center, square pixels outside the finite
+map shall be absent.  The route shall not wrap, reflect, complete the footprint,
+substitute an interior normalizer, renormalize the edge, or require
+JINC-then-crop equivalence.}
+
+\JincReq{015}{Every evaluated $\kappa_{ip}$ shall be finite.  A finite negative
+coefficient is normal and shall retain its sign; an analytic zero is a
+contract-defined zero contribution distinct from outside support; a non-finite
+coefficient shall fail the affected required bundle before deposition rather
+than be clipped, skipped, or zero-filled.}
+
+\JincReq{016}{All coupled accumulator terms for one contribution shall use the
+same exact occurrence, AST association, sample-admission decision,
+rounded-center decision, sample-pixel membership, phase, and $\kappa_{ip}$
+identity.}
+
+\JincReq{017}{The required accumulators shall be distinct and shall obey
+Equations~\eqref{eq:numerator}--\eqref{eq:quadratic}.  Negative lobes shall keep
+their sign in $N_p$ and $C_p$ and enter $Q_p$ quadratically.}
+
+\JincReq{018}{The published signal estimate shall be $m_p=N_p/C_p$ and the
+fixed-state normalized operator shall be Equation~\eqref{eq:operator}.  No
+$Q_p$ denominator or other local measurement model shall be substituted.}
+
+\JincReq{019}{Local formal support shall require finite admitted inputs,
+finite $N_p$, $C_p$, and $Q_p$, $Q_p>0$, $C_p\ne0$, and numerically adequate
+resolved cancellation.  A rejected pixel shall carry local invalid support in
+the \texttt{jinc\_map} role and shall not receive a finite substitute.}
+
+\JincReq{020}{A finite negative $C_p$ shall be admissible.  Exact $C_p=0$ shall
+be locally invalid and unavailable, never interpreted as zero sky, infinity,
+or a valid non-finite map value.}
+
+\JincReq{021}{SCI-JINC shall retain the dimensionless conditioning statistic
+$\rho_p$ of Equation~\eqref{eq:cancellation-ratio}.  A finite nonzero result
+shall be supported only when total numerical error is demonstrably negligible
+relative to the approximately $10^{-3}$ instrument-fidelity scale; otherwise
+near cancellation shall be locally invalid.}
+
+\JincReq{022}{No universal $\rho_p$ cutoff, unit-bearing $C_p$ or $Q_p$ floor,
+contributor-count/machine-epsilon formula, prescribed summation algorithm,
+fixed reduction order, bitwise reproducibility, or stronger precision shall be
+treated as scientific authority.}
+
+\JincReq{023}{Total numerical error from finite arithmetic, accumulation and
+reduction order, analytic-function evaluation, phase quantization, and
+cache/index realization shall remain negligible relative to the approximately
+$10^{-3}$ instrument-fidelity scale while preserving exact membership and the
+point-phase square operator.}
+
+\JincReq{024}{The unit relations in Table~\ref{tab:notation} and the two
+allowed $\omega_i$ unit classes shall be preserved.  Common positive scaling of
+all $\omega_i$ shall leave $m_p$, $\rho_p$, and $A_{pi}$ invariant; signal-unit
+rescaling shall transform the estimator consistently.}
+
+\JincReq{025}{Equations~\eqref{eq:conditional-variance}--
+\eqref{eq:general-covariance} may receive a formal statistical interpretation
+only when the exact PTC family and covariance assumptions establish it.
+Inverse-square units or historical labels alone shall not establish variance,
+precision, covariance, or significance.}
+
+\JincReq{026}{The required time-support product shall be exactly
+Equation~\eqref{eq:kappa-time}.  It shall square $\kappa_{ip}$, not $\omega_i$
+or $w_{ip}$, and shall have unit seconds.}
+
+\JincReq{027}{\texttt{jinc\_coefficient\_squared\_time} shall be described only
+as method-specific coefficient-squared temporal accounting.  It shall not be
+interpreted as physical acquired exposure, valid-original exposure, complete
+temporal support, hits, normalized influence, white-noise-equivalent time,
+precision, validity, confidence, or significance.}
+
+\JincReq{028}{Every produced base-v0.1 bundle shall contain exactly five
+required roles: \path{jinc_signal_numerator},
+\path{jinc_signed_normalization}, \path{jinc_quadratic_accumulator}, derived
+\path{jinc_map} with local support/validity, and
+\path{jinc_coefficient_squared_time}.}
+
+\JincReq{029}{Failure to form or publish any required whole-product role shall
+suppress the affected bundle atomically.  Pixel-local zero, insufficient,
+cancelled, or otherwise invalid support shall remain ordinary bundle content
+and shall not suppress an otherwise complete role or create a role-availability
+object.}
+
+\JincReq{030}{One observation may produce zero through three independent
+bundles, with at most one for each stable array admitted and requested under
+the exact JINC realization.  A missing, unavailable, or unrequested array shall
+create no placeholder or empty-array product and shall not invalidate another
+array's bundle.}
+
+\JincReq{031}{Each bundle shall be independently identified by observation,
+stable array, exact JINC plan and realization, target WCS, product role, and
+lifecycle generation.  Contributions with different array or destination
+identities shall never merge.}
+
+\JincReq{032}{The complete destination identity shall be resolved before
+allocation, numerical mutation, output side effects, or parallel execution.
+Ambiguous, duplicate, or aliased destination ownership shall fail the affected
+bundle without selecting a winner or publishing a partial result.}
+
+\JincReq{033}{Same-observation samples or chunks may accumulate incrementally
+only when observation, stable array, JINC plan and realization, target WCS,
+admission/parameter/coefficient state, destination, and lifecycle generation
+are identical.  Chunk, worker, process, container, filename, and vector
+position shall not create product identity.}
+
+\JincReq{034}{Base v0.1 shall authorize no cross-observation combination.
+Any future JINC coadd shall require a separately authorized boundary over
+complete observation bundles and shall not infer accumulator addition,
+normalized-map combination, or ordinary SCI-MAP coaddition.}
+
+\JincReq{035}{The immutable
+\texttt{SCI-JINC:jinc\_map\_contribution@1} evaluation shall remain distinct
+from PTC signal availability, PTC retention, coefficient availability/QC, AST
+coordinate validity and association, finite signal, finite positive
+$\omega_i$, parameter availability, rounded-center admission, pixel support,
+finite $\kappa_{ip}$, cancellation, and final bundle validity.}
+
+\JincReq{036}{Only a fact named by an exact restriction shall control JINC
+admission.  Producer causes and transitive influence shall be preserved, but a
+generic flag or cause shall have no universal veto.  Outside support, an
+analytic zero, or an outside rounded center shall be ordinary no-contribution;
+a finite negative lobe shall not create a cause.}
+
+\JincReq{037}{ALIGN/AST, RTC, CAL, PTC, and VAL shall retain the meanings they
+own.  SCI-JINC shall own only its admission use, local geometry, point phase,
+square support, signed coefficient, normalization, conditioning, fixed
+accumulators, local support, grouping, destination, and atomic bundle
+publication.}
+
+\JincReq{038}{Base v0.1 shall publish no response, variance, formal-weight,
+covariance, empirical-noise, or significance product.  The conditional
+mathematics in Section~\ref{sec:conditional-math} shall remain preserved for a
+future concrete scientific use without being promoted to a present role.}
+
+\JincReq{039}{Base v0.1 shall publish no physical-exposure product.  Any
+future exposure role shall require separate authority for exact original-
+occurrence lineage and semantics and shall not reinterpret
+$T_p^{(\kappa^2)}$.}
+
+\JincReq{040}{Base v0.1 shall create no standalone support or availability
+role, generic optional or conditionally required role mechanism, detailed operational-cause
+archive, diagnostic role, generalized provenance product, or per-pixel or
+per contribution provenance system.}
+
+\JincReq{041}{No TolTEC numerical parameter realization, recommendation,
+optimum, hidden default, or fallback is authorized by v0.1.  In particular, an
+inherited 45~m denominator, inherited shape values, or mode-dependent
+$r_{\max}$ values shall not be treated as scientific authority.}
+
+\JincReq{042}{A future conformance assessment shall exercise every prediction
+in Section~\ref{sec:predictions}, disclose its numerical acceptance policy, and
+separate algebraic correctness from implementation conformity,
+representation/response fidelity, numerical and observational validation,
+achieved performance, readiness, and production authorization.  This Stage B
+draft establishes none of those later claims.}
