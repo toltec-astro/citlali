@@ -86,8 +86,52 @@ one established disabled test unchanged; all 207 baseline-tool tests; all 12
 acceptance-validator tests; and all 129 required config unit tests plus
 downstream audits.
 
+That v4 package then underwent fresh independent read-only re-review. The
+review found that engineering chunks were being treated as independently
+complete products instead of an exact execution partition of one declared
+logical domain. It also found that the dependency-state verifier omitted
+staged additions, ignored files, and recursively dirty submodules; that the
+record validator did not enforce the exact evidence/cause/validity count
+identities; and that non-finite timing could pass its positivity checks.
+
+Exact implementation revision
+`a0626bd9b6db1fcaf0f83c21f3476b2065907eb8` closes those findings without
+changing the bounded identity operator. `RtcOnlyRouteRequest` now declares the
+complete logical native support separately from an ordered engineering
+partition schedule. Admission requires the schedule to cover that domain
+exactly once; Learn and Apply operate across the partitions but Consider,
+finalization, and publication occur once for the logical product. Missing,
+overlapping, or repeated support fails without publication. The clean-state
+gate now includes staged additions, ignored content, and recursively dirty
+submodules. The v5 validator requires finite timing, exact causal count
+identities, and complete single-versus-partitioned scientific comparison
+coverage.
+
+Fresh representative observation 152390 evidence at that exact implementation
+revision again covers 11 networks, 5,518 detectors, 22,528 native occurrences,
+and 11,300,864 detector occurrences. The two-partition execution compared the
+complete detector-occurrence domain with the one-partition execution and has
+zero identity, value, support, decision, cause, timing, or correspondence
+mismatches. An intentionally incomplete partition schedule failed with no
+publication. The primary route measured 0.343 seconds wall, 0.218 seconds CPU,
+and 606,470,144 bytes process-lifetime peak RSS. The
+[v5 acceptance record](../handoff/WP7_IDENTITY_RTC_ACCEPTANCE_152390_V5_2026-08-29.json)
+has SHA-256
+`754181bd5e25fcfa103ab6280748c212c7c893b1a9a55023d8b19b571608591b`,
+binds executable SHA-256
+`46bacc633da088d24a16663d197754eab2b3e7c7f83f18e92f8cae271480833f`,
+and passes the v5 repository validator. V4 and all earlier records are retained
+as historical evidence only.
+
+Exact-revision local validation passes: all 122 focused WP-7 and ALIGN tests;
+all 850 runnable repository CTests with the one established disabled test
+unchanged; all 207 baseline-tool tests; all 15 acceptance-validator tests; and
+all 129 required config unit tests plus downstream audits. The exact clean
+acceptance target also rebuilds successfully with the strengthened dependency
+verifier.
+
 The repaired representative execution package is ready for fresh independent
-read-only re-review of exact implementation revision `434919a84` and the v4
+read-only re-review of exact implementation revision `a0626bd9b` and the v5
 record. D19 calibration remains open and limits the timing-role claim; it does
 not weaken the identity arithmetic, pair decisions, native support retention,
 or execution evidence. Until re-review passes, the increment is not accepted
