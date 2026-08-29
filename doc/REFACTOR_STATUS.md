@@ -31,14 +31,35 @@ payload coverage, and explicit absence of common-grid and persistent-TOD
 claims. Calibration of the provisional integration-center timing relation
 remains pending and is not promoted to a known scientific fact.
 
-Pre-commit local validation passes all 139 focused WP-7 and SCI-ALIGN CTests,
-all 870 runnable repository CTests with the one established disabled test
-unchanged, all 207 baseline-tool tests, all 19 v7 acceptance-validator tests,
-and all 129 required config unit tests plus downstream audits. The modified
-representative acceptance translation unit also compiles through its generated
-build rule. The required observation 152390 execution remains pending until
-this bounded implementation is committed and rebuilt under its exact clean
-source identity; acceptance and readiness are not yet claimed.
+Exact implementation revision
+`ff00ff4a6b13a89a73f5a5148c60d3c6b1abf4dd` passes all 139 focused WP-7
+and SCI-ALIGN CTests, all 870 runnable repository CTests with the one
+established disabled test unchanged, all 207 baseline-tool tests, all 19 v7
+acceptance-validator tests, and all 129 required config unit tests plus
+downstream audits. Its exact clean-source and dependency-state acceptance
+target also passes.
+
+The required representative observation 152390 run then completed through the
+new terminal route. All 11 networks, 5,518 detectors, 22,528 native
+occurrences, and 11,300,864 native detector occurrences are retained.
+Paired-ingress and terminal-product checks each compare all 22,601,728
+`x/r` values bitwise; exhaustive identity, state, decision, cause, support,
+timing, representative correspondence, realized-operator, and chunk-partition
+checks have zero mismatches. Compact evidence occupies 3,637,248 bytes and RTC
+owns zero numerical bytes. The primary route measured 0.342 seconds wall and
+0.221 seconds CPU; process-lifetime peak RSS was 608,550,912 bytes and is not
+misrepresented as route-local allocation.
+
+The
+[v7 acceptance record](../handoff/WP7_NETWORK_TIMED_IDENTITY_RTC_ACCEPTANCE_152390_V7_2026-08-29.json)
+has SHA-256
+`e0c8efee3ef6d26ab86f5be225387d7ddfdcbf1037abb69735eba09816d4c9d8`,
+binds executable SHA-256
+`62f0596d1e7e429d23c07d10fa0f626854794253fbb8c293d32b2b4e1d3a3fc3`,
+and passes the v7 repository validator. The complete
+[terminal acceptance package](../handoff/WP7_NETWORK_TIMED_RTC_TERMINAL_ACCEPTANCE_PACKAGE_2026-08-29.md)
+is ready for the required fresh independent exact-SHA read-only review.
+Acceptance and readiness remain pending that disposition.
 
 ## 2026-08-29 WP-7 Network-Timing Owner Correction
 
