@@ -4,22 +4,32 @@
 
 The bounded network-timed RTC terminal-publication implementation is complete
 at exact source revision
-`ff00ff4a6b13a89a73f5a5148c60d3c6b1abf4dd`. Its local repository gates and
+`cddfea28f89d3ca51ba52930a82f51c270905874`. Its local repository gates and
 representative observation 152390 execution pass. This package is ready for
 the required fresh independent exact-SHA read-only review.
+
+The first review of implementation `ff00ff4a6` and its v7 record returned
+HOLD because finalization admitted a replay from a different context with the
+same scalar identity and cardinalities, and because the validator did not pin
+the exact package SHA, executable bytes, dataset slice, and representative
+cardinalities. The repaired finalization retains the exact immutable context
+handle and run identity. The v8 validator hard-pins the complete observation
+152390 witness and requires explicit expected source and executable hashes;
+it can also hash the executable file directly. The v7 record is therefore
+historical and superseded.
 
 This is not complete-successor qualification, production activation, or
 authorization for a nonidentity RTC method. The provisional
 integration-center native timing assignment remains calibration-pending.
 
 The retained
-[v7 observation 152390 record](WP7_NETWORK_TIMED_IDENTITY_RTC_ACCEPTANCE_152390_V7_2026-08-29.json)
+[v8 observation 152390 record](WP7_NETWORK_TIMED_IDENTITY_RTC_ACCEPTANCE_152390_V8_2026-08-29.json)
 has SHA-256
-`e0c8efee3ef6d26ab86f5be225387d7ddfdcbf1037abb69735eba09816d4c9d8`
+`c54004c9ec64a9a4a83d0e0c2abd5889efc8d3c827db505b8b3c7bd64556d3d4`
 and passes
 [`verify_identity_rtc_acceptance.py`](../tools/wp7/verify_identity_rtc_acceptance.py).
 The executable has SHA-256
-`62f0596d1e7e429d23c07d10fa0f626854794253fbb8c293d32b2b4e1d3a3fc3`.
+`82585320cff3c12df04a2b61b377d55f81932f9cca3defbde77fcd346a4bba13`.
 
 ## Bounded claim
 
@@ -33,8 +43,9 @@ For the exact `M=1`, no-despike, no-level-shift, no-filter witness:
   time, primitive interval, detector identity, `x/r` values, support,
   independent member validity and causes, and conservative pair-wide
   disposition;
-- a compact finalization binds completion to the admitted context and exact
-  logical occurrence and detector-occurrence cardinalities;
+- a compact finalization binds completion to the exact admitted context
+  handle, run identity, and logical occurrence and detector-occurrence
+  cardinalities;
 - a compact realization records what the immutable plan realized;
 - one complete product is atomically published to an inspectable, no-replace,
   in-memory slot; and
@@ -70,12 +81,13 @@ The run reports:
   correspondence, operator, or chunk-partition mismatches.
 
 The primary paired-ingress-through-terminal-publication execution measured
-0.342 seconds wall and 0.221 seconds CPU. Process-lifetime peak RSS was
-608,550,912 bytes; that is a harness/process measurement, not route-local
+0.363 seconds wall and 0.226 seconds CPU. Process-lifetime peak RSS was
+607,567,872 bytes; that is a harness/process measurement, not route-local
 allocation.
 
 The record explicitly states:
 
+- `exact_context_handle_binding_verified = true`;
 - `rtc_timing_scope = network-specific`;
 - `common_analysis_grid_requested = false`;
 - `persistent_rtc_tod_published = false`;
@@ -97,7 +109,7 @@ The exact implementation revision passed:
 - all 870 runnable repository CTests, with the one established disabled test
   unchanged;
 - all 207 baseline-tool unit tests;
-- all 19 v7 acceptance-validator unit tests;
+- all 22 v8 acceptance-validator unit tests;
 - all 129 required config unit tests and the complete config preflight audits;
 - public-header isolation compilation; and
 - the exact clean-source and dependency-state acceptance build gate.
@@ -117,13 +129,20 @@ Validate the retained record with:
 
 ```sh
 $HOME/tolteca/bin/python -B tools/wp7/verify_identity_rtc_acceptance.py \
-  handoff/WP7_NETWORK_TIMED_IDENTITY_RTC_ACCEPTANCE_152390_V7_2026-08-29.json
+  handoff/WP7_NETWORK_TIMED_IDENTITY_RTC_ACCEPTANCE_152390_V8_2026-08-29.json \
+  --expected-source-revision cddfea28f89d3ca51ba52930a82f51c270905874 \
+  --expected-executable-sha256 82585320cff3c12df04a2b61b377d55f81932f9cca3defbde77fcd346a4bba13 \
+  --executable build/bin/citlali_wp7_identity_rtc_acceptance
 ```
+
+The command rejects a substituted source revision or record hash even when the
+record remains internally self-consistent, and rejects an executable whose
+bytes do not match the exact package expectation.
 
 ## Independent review boundary
 
 The fresh reviewer should evaluate exact implementation revision
-`ff00ff4a6b13a89a73f5a5148c60d3c6b1abf4dd` together with the v7 record and
+`cddfea28f89d3ca51ba52930a82f51c270905874` together with the v8 record and
 this package. The review should determine whether:
 
 1. terminal completion is truthfully context-bound and fail-closed;

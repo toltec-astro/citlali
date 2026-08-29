@@ -32,14 +32,33 @@ executable SHA-256 and can additionally hash the executable bytes directly.
 Negative tests substitute each package identity, dataset/slice fact, and
 cardinality independently.
 
-Pre-commit repair validation passes all 139 focused WP-7 and SCI-ALIGN CTests,
-all 870 runnable repository CTests with the one established disabled test
-unchanged, all 207 baseline-tool tests, all 22 v8 validator tests, and all 129
-required config unit tests plus downstream audits. The modified acceptance
-translation unit compiles through its generated build rule. A new exact clean
-implementation commit, regenerated v8 observation 152390 record, and fresh
-independent re-review remain required; the v7 acceptance claim is superseded
-and readiness remains pending.
+Exact repair revision
+`cddfea28f89d3ca51ba52930a82f51c270905874` passes all 139 focused WP-7
+and SCI-ALIGN CTests, all 870 runnable repository CTests with the one
+established disabled test unchanged, all 207 baseline-tool tests, all 22 v8
+validator tests, and all 129 required config unit tests plus downstream
+audits. Its exact clean-source and dependency-state acceptance target passes.
+
+The regenerated v8 observation 152390 run retains all 11 networks, 5,518
+detectors, 22,528 native occurrences, and 11,300,864 native detector
+occurrences. All 22,601,728 terminal `x/r` value comparisons and exhaustive
+identity, state, decision, cause, support, timing, correspondence, operator,
+and chunk checks again have zero mismatches. Compact evidence remains
+3,637,248 bytes and RTC owns zero numerical bytes. The primary route measured
+0.363 seconds wall and 0.226 seconds CPU; process-lifetime peak RSS was
+607,567,872 bytes and remains a harness/process measurement.
+
+The
+[v8 acceptance record](../handoff/WP7_NETWORK_TIMED_IDENTITY_RTC_ACCEPTANCE_152390_V8_2026-08-29.json)
+has SHA-256
+`c54004c9ec64a9a4a83d0e0c2abd5889efc8d3c827db505b8b3c7bd64556d3d4`
+and binds executable SHA-256
+`82585320cff3c12df04a2b61b377d55f81932f9cca3defbde77fcd346a4bba13`.
+The exact-package validator passes with both expected identities and direct
+executable-byte verification. The updated
+[terminal acceptance package](../handoff/WP7_NETWORK_TIMED_RTC_TERMINAL_ACCEPTANCE_PACKAGE_2026-08-29.md)
+is ready for fresh exact-SHA re-review. The v7 claim remains superseded and
+readiness remains pending that disposition.
 
 ## 2026-08-29 WP-7 Network-Timed RTC Terminal Publication
 
