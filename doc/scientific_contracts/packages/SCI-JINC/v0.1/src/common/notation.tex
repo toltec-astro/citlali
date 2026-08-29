@@ -33,11 +33,14 @@ $\boldsymbol{\phi}_i$ & Exact residual phase
 $\boldsymbol{u}_i-\boldsymbol{c}_i$ in
 $[-\tfrac12,\tfrac12)^2$. & pixel \\
 $n_{\mathrm{sub}}$ & Effective integer phase resolution represented by
-\texttt{subpixel\_n}; $n_{\mathrm{sub}}\ge1$. & $1$ \\
+\texttt{subpixel\_n}; every $n_{\mathrm{sub}}\ge1$ is permitted under the
+owner-approved upper-bin phase-lattice disposition. & $1$ \\
 $\boldsymbol{q}_i$ & Two-axis phase-bin index in
 $\{0,\ldots,n_{\mathrm{sub}}-1\}^2$. & index \\
 $\widehat{\boldsymbol{\phi}}_i$ & Midpoint representative of the exact
-half-open phase bin selected by $\boldsymbol{q}_i$. & pixel \\
+half-open phase bin selected by $\boldsymbol{q}_i$; for even
+$n_{\mathrm{sub}}$, exact zero phase selects $+1/(2n_{\mathrm{sub}})$ on
+each applicable WCS axis. & pixel \\
 $\beta_i$ & Exact axis-1-fast linear phase index
 $q_{i1}+n_{\mathrm{sub}}q_{i2}$. & index \\
 $\mathcal{K}_{i\boldsymbol d}$ & Logical coefficient-cache key
@@ -92,9 +95,12 @@ construction state for conditioning. & $[\omega]$ \\
 $\rho_p$ & Dimensionless cancellation statistic $|C_p|/D_p$. & $1$ \\
 $\mathcal{P}_{\mathrm{NA}}$ & Exact owner-approved numerical-adequacy
 profile, including its observable, norm, domain, error treatment, exact
-inequality, uncertainty rule, lifecycle, and provenance. & identity \\
+inequality, uncertainty rule, lifecycle, provenance, and explicit
+exact-discrete-oracle-only claim boundary. & identity \\
 $\mathcal{E}_p$ & Exact numerical-adequacy certificate for pixel $p$ under
-$\mathcal{P}_{\mathrm{NA}}$. & identity \\
+$\mathcal{P}_{\mathrm{NA}}$; a passing certificate establishes only the
+declared finite-precision fidelity to the exact selected discrete oracle. &
+identity \\
 $G_a$ & Compact bundle-level generative record for one observation and array;
 it identifies immutable parents, selections, joins, operator state, lifecycle,
 and completion without storing dense per-contribution provenance. & identity \\
@@ -102,8 +108,9 @@ $A_{pi}$ & Fixed-state normalized linear operator row
 $I_{ip}\omega_i\kappa_{ip}/C_p$. & $1$ \\
 $f_{s,i}$ & Effective processed-sample frequency, finite and strictly
 positive. & $\mathrm{s}^{-1}$ \\
-$T_p^{(\kappa^2)}$ & Required \texttt{jinc\_coefficient\_squared\_time}
-accumulator. & $\mathrm{s}$ \\
+$T_p^{(\kappa^2)}$ & Required
+\texttt{jinc\_coefficient\_squared\_time} coefficient-squared
+temporal-accounting accumulator. & $\mathrm{s}$ \\
 \bottomrule
 \end{longtable}
 

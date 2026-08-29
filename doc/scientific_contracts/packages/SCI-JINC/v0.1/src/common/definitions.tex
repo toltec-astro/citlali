@@ -21,13 +21,14 @@ The relation binding $z_i$ to the AST-owned
 same processed sample realization in the exact target JINC WCS.  Its data-model
 join is an engineering choice; its scientific identity is not.
 
-\item[JINC sample admission.]
-The decision of the immutable
-\texttt{SCI-JINC:jinc\_map\_contribution@1} profile that one exact upstream
-occurrence may be considered by JINC.  The registered name is narrower than
-it may appear: this is upstream-sample admission only.  It neither authorizes
-rounded-center admission, sample-pixel membership, cancellation support,
-numerical contribution, nor bundle publication.
+\item[JINC upstream-occurrence admission.]
+The canonical human-readable term for the decision that one exact upstream
+occurrence may be considered by JINC.  Its immutable Registry identity is
+\texttt{SCI-JINC:jinc\_map\_contribution@1}; the identity remains fixed, but
+its name shall not be used as shorthand for arithmetic contribution.  This
+decision neither authorizes rounded-center admission, sample-pixel
+membership, cancellation support, numerical contribution, nor bundle
+publication.
 
 \item[Rounded-center domain admission.]
 The JINC-owned occurrence-level gate applied after center rounding and before
@@ -41,6 +42,11 @@ rounded center of Equation~\eqref{eq:rounded-center}.  Equations~
 \eqref{eq:phase-bin}--\eqref{eq:phase-representative} select a half-open bin
 and its midpoint representative independently on each axis.  The resulting
 kernel matrix is point evaluated and is not a pixel-area average.
+Under the owner-approved upper-bin disposition, every positive
+$n_{\mathrm{sub}}$ remains permitted.  For even $n_{\mathrm{sub}}$, exact
+zero phase selects the positive midpoint on each applicable WCS axis; no
+zero-phase special case replaces that representative.  The positive-axis
+half-pixel center tie is likewise intentional.
 
 \item[Square support.]
 The fully populated integer-offset cache of Equation~\eqref{eq:square-offsets},
@@ -71,6 +77,18 @@ pass/fail inequality, uncertainty, lifecycle, and provenance, and the
 certificate passes that inequality.  No such profile or certificate is
 admitted or supplied by this source packet, so numerical-realization adequacy
 is presently typed unavailable rather than approximated by prose.
+A passing pair establishes only finite-precision fidelity to the exact
+selected discrete SCI-JINC oracle over its declared domain.  It does not
+qualify the selected parameters, phase resolution, square truncation,
+scientific response, performance, validation, readiness, or production use.
+
+\item[Exact-source lock.]
+The base-v0.1 compatibility rule that binds the complete exact PTC boundary,
+AST boundary, admission-profile object, SCI-VAL binding, and JINC-specific
+source/profile successor snapshot bytes named by
+\texttt{SCI-JINC-REQ-043}.  Ambient or merely current Registry state is not a
+substitute.  Any changed bound object requires a versioned SCI-JINC
+successor; numerical or textual similarity cannot establish compatibility.
 
 \item[Complete observation bundle.]
 The atomic fixed-role product for one observation, stable array, exact JINC

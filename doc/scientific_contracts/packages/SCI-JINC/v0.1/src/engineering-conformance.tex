@@ -19,7 +19,7 @@
   linkcolor=JincBlue,
   citecolor=JincBlue,
   urlcolor=JincBlue,
-  pdftitle={SCI-JINC Engineering Conformance Specification v0.1 r0.2},
+  pdftitle={SCI-JINC Engineering Conformance Specification v0.1 r0.3},
   pdfauthor={Implementation-blind Stage B scientific author},
   pdfsubject={Engineering conformance view of the SCI-JINC scientific contract},
   pdfkeywords={SCI-JINC, JINC, engineering conformance, Stage B draft}
@@ -28,7 +28,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small\textcolor{JincGray}{SCI-JINC v0.1}}
-\fancyhead[R]{\small\textcolor{JincGray}{Engineering Conformance r0.2 - Stage B Draft}}
+\fancyhead[R]{\small\textcolor{JincGray}{Engineering Conformance r0.3 - Stage B Draft}}
 \fancyfoot[C]{\small\textcolor{JincGray}{\thepage\ / \pageref*{LastPage}}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.5em}
@@ -36,7 +36,7 @@
 \setlist{nosep,leftmargin=*}
 
 \newcommand{\ContractVersion}{v0.1}
-\newcommand{\DocumentRevision}{r0.2}
+\newcommand{\DocumentRevision}{r0.3}
 \newcommand{\DocumentDate}{2026-08-29}
 \newcommand{\Digest}[2]{\texttt{#1}\allowbreak\texttt{#2}}
 
@@ -65,8 +65,8 @@ readiness, or production authorization.
 \begin{tabularx}{\textwidth}{@{}>{\bfseries}p{0.22\textwidth}X@{}}
 \toprule
 Contract identity & \texttt{SCI-JINC v0.1} \\
-Document identity & Engineering Conformance Specification \texttt{r0.2} \\
-Companion view & Scientific Rationale and Contract \texttt{v0.1/r0.2} \\
+Document identity & Engineering Conformance Specification \texttt{r0.3} \\
+Companion view & Scientific Rationale and Contract \texttt{v0.1/r0.3} \\
 Normative core & Six shared modules, included once in identical order in both
 views \\
 Requirements & \texttt{SCI-JINC-REQ-001} through
@@ -124,6 +124,13 @@ Author-packet manifest & Commit
 Targeted r0.2 repair directive & SHA-256
 \Digest{c07505861d91459f69e7d0989f11551e}{2a14265c916cd5772ea48a86bb186ed2}.
 & Byte-equal \\
+Final targeted r0.3 directive & SHA-256
+\Digest{4878e1745e085b4e33d2e71f1190299}{d72f2cfd7b2215e36a9e8405a977bd207}.
+& Byte-equal \\
+Owner disposition A & Exact statement ``\texttt{I approve disposition A}'',
+SHA-256
+\Digest{9a70cbc63c0c79a7db70ad9796481fb0}{fe3f1f4c2d7524820b54cec68b8b1620}.
+& Bound \\
 Manifest objects & Exactly sixteen entries, each equal to its manifest
 SHA-256 before use. & 16/16 \\
 Successor Scope Brief & SHA-256
@@ -135,7 +142,7 @@ PTC boundary & \texttt{SCI-PTC\_TO\_SCI-JINC v0.1/r0.3}; SHA-256
 AST boundary & \texttt{SCI-AST\_TO\_SCI-JINC v0.1/r0.2}; SHA-256
 \Digest{efffa7059b59c89793fa1d523fb3bb482}{35f1ab55f7d55060af1600cbfd470a5}.
 & Byte-equal \\
-Admission profile & Immutable
+JINC upstream-occurrence admission & Immutable Registry identity
 \texttt{SCI-JINC:jinc\_map\_contribution@1}; SHA-256
 \Digest{2db95da7e5d1b980df79993907d45ac0}{ababc3aa05c189bfb62dcf04ff2c2e8a}.
 & Byte-equal \\
@@ -146,12 +153,16 @@ VAL binding and successors & Binding SHA-256
 \Digest{0e7ca29ee2e9cd02fb1b76cf87cc64fc}{e6164407a7801f9b9a105ca646317e88};
 \path{SCI-VAL_PROFILE_REGISTRY} successor with the same version, SHA-256
 \Digest{4b9a1ebecfc847c83b59da772afd9b03}{1ab1830e8febbb12d1a47f70ce5a1110}.
-& Exact process bindings \\
+& Exact process bindings under the base-v0.1 exact-source lock \\
 \bottomrule
 \end{longtable}
 
 No unlisted package file, implementation, schema, configuration, test, audit,
 validation product, reduction, status document, or web source may fill a gap.
+The complete exact PTC, AST, profile, binding, and JINC-specific SCI-VAL
+successor snapshot files named above are locked sources.  No ambient current
+Registry substitution is allowed; a changed bound object requires a versioned
+SCI-JINC successor.
 
 \section{ODQ-107 scope-parity control}
 \label{sec:eng-scope-parity}
@@ -159,7 +170,7 @@ validation product, reduction, status document, or web source may fill a gap.
 The admitted successor Scope Brief records an owner-approved ODQ-107 amendment
 that closes base v0.1 to five numerical roles and defers response, covariance,
 formal weight, generalized companion availability, and generalized provenance
-products.  The r0.1 scope therefore matched its admitted Stage A authority.
+products.  The pre-repair scope therefore matched its admitted Stage A authority.
 The targeted directive's conditional broadening branch does not apply because
 that exact owner amendment already exists.  No new amendment is needed to
 retain REQ-038--040.  Any future broadening needs a bounded successor Stage A
@@ -232,7 +243,7 @@ $\boldsymbol u_i$, resolve componentwise
  c_{i\mu}=\lfloor u_{i\mu}+\tfrac12\rfloor,\qquad
  \phi_{i\mu}=u_{i\mu}-c_{i\mu}\in[-\tfrac12,\tfrac12).
 \]
-An exact half tie selects the larger integer.  For
+The owner-approved positive-axis half tie selects the larger integer.  For
 $n_{\mathrm{sub}}=\texttt{subpixel\_n}\in\mathbb N_{>0}$,
 \[
  q_{i\mu}=\lfloor n_{\mathrm{sub}}(\phi_{i\mu}+\tfrac12)\rfloor,\qquad
@@ -241,7 +252,9 @@ $n_{\mathrm{sub}}=\texttt{subpixel\_n}\in\mathbb N_{>0}$,
 \]
 Bins are left closed and right open, and an interior-boundary tie selects the
 upper bin.  No parity restriction exists.  With even $n_{\mathrm{sub}}$, exact
-$\phi=0$ maps to $+1/(2n_{\mathrm{sub}})$.  WCS axis order and orientation are
+$\phi=0$ maps to $+1/(2n_{\mathrm{sub}})$.  Owner-approved disposition A
+retains this rule for every positive $n_{\mathrm{sub}}$ with no zero-phase
+special case.  WCS axis order and orientation are
 normative.  The logical cache key is
 $(q_{i1},q_{i2},d_1,d_2)$; storage may differ only by a proven
 value-preserving bijection.
@@ -274,6 +287,18 @@ The exact second-factor root is
 $j_{1,1}=\min\{x>0:J_1(x)=0\}$; a rounded decimal is nonnormative.  The shared
 kernel and estimator equations then control.  Outer rows and corners remain
 evaluated beyond the first-zero radius.
+
+For an exact integer-center occurrence with even $n_{\mathrm{sub}}$, zero
+phase on both axes and $\boldsymbol d=\boldsymbol0$ shall give
+\[
+ \widehat r_{i\boldsymbol0}=\frac{\Delta}{\sqrt{2}n_{\mathrm{sub}}},
+ \qquad
+ \kappa_{i,\boldsymbol c_i}=\kappa_a\!\left(
+ \frac{\Delta}{\sqrt{2}n_{\mathrm{sub}}s_a};
+ a_a,b_a,c_a,(r_{\max})_a\right).
+\]
+The expected coefficient is the exact nonzero-radius oracle value, not an
+imposed $\kappa_a(0)=1$.
 
 \section{Numerical profile and certificate}
 \label{sec:eng-numerical-profile}
@@ -317,6 +342,14 @@ certified denominator interval.  The profile must provide any additional
 map-error inequality.  A profile alone, certificate alone, successful run,
 two agreeing realizations, or finite nonzero machine result is not a pass.
 
+A passing pair establishes only finite-precision fidelity to the exact
+selected discrete SCI-JINC oracle on its declared domain.  It does not
+establish parameter or phase-count adequacy, square-truncation adequacy,
+source-response or beam fidelity, photometric or astrometric performance,
+optimality, observational validation, response/covariance fidelity,
+readiness, or production authority.  TolTEC parameter-set qualification is a
+separate scientific and observational program.
+
 No exact owner-approved profile or matching certificate is admitted or
 supplied.  Numerical adequacy and near-cancellation support are therefore
 \textbf{typed unavailable}, not tested, failed, or achieved.
@@ -330,10 +363,11 @@ A future assessor shall:
 \item verify all source bytes and bind requested, effective, resolved, and
 realized contract, plan, observation, array, destination, and lifecycle;
 \item reconstruct the occurrence population from immutable PTC/AST parents
-and the named admission decision;
+and JINC upstream-occurrence admission under its exact Registry identity;
 \item bind coefficient permission/generation/payload/QC, parameter set, WCS
 metric, phase count, and sample frequency;
-\item reapply rounding, ties, bins, midpoints, square extent, centre gate,
+\item reapply the owner-approved upper-bin lattice and positive-axis tie,
+bins, midpoints, square extent, centre gate,
 edge crop, and point-centre radius;
 \item evaluate the exact discrete kernel and coupled $N_p$, $C_p$, $Q_p$,
 $m_p$, and $T_p^{(\kappa^2)}$ equations;
@@ -346,8 +380,8 @@ relation, recording every mismatch without fallback.
 
 The compact generative record binds every item above, including source,
 parentage, coefficient, parameter, WCS, geometry, cancellation,
-profile/certificate, destination, ODQ-107 scope identity, required-role state,
-failure, and completion.  It contains no per-bundle response/covariance
+profile/certificate, destination, ODQ-107 scope identity, exact-source lock,
+required-role state, failure, and completion.  It contains no per-bundle response/covariance
 information-state record.
 It is plan/bundle lineage, not a generalized provenance product or dense
 per-contribution archive.

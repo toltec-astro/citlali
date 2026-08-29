@@ -59,7 +59,8 @@ shall retain the exact profile-defined disposition and cause.}
 \JincReq{007}{Every numerical kernel route shall bind one exact scientifically
 authorized array-associated parameter-set identity containing finite positive
 $s_a$, $a_a$, $b_a$, $c_a$, $(r_{\max})_a$, effective integer
-\texttt{subpixel\_n}$\ge1$ with no parity restriction, and compatibility with the exact target-WCS
+\texttt{subpixel\_n}$\ge1$ with no parity restriction under the
+owner-approved upper-bin phase-lattice disposition, and compatibility with the exact target-WCS
 metric.  Base v0.1 requires an affine tangent-plane WCS whose exact pixel
 matrix obeys Equation~\eqref{eq:square-wcs-metric}.  A scalar pixel size shall
 not represent an anisotropic or skewed geometry.  The exact frame, tangent
@@ -87,6 +88,11 @@ be exactly Equations~\eqref{eq:rounded-center}--
 Every positive integer $n_{\mathrm{sub}}$ is permitted.  For even
 $n_{\mathrm{sub}}$, exact zero phase shall select the positive representative
 $+1/(2n_{\mathrm{sub}})$ under the bound WCS axis orientation.  The selected
+nominal central offset shall therefore use
+the exact even-lattice center formulas following
+Equation~\eqref{eq:discrete-radius}, not the zero-radius limit.  The
+positive-axis half-pixel center tie and upper-bin phase convention are
+scientific-owner-intended parts of the operator.  The selected
 kernel matrix shall be point evaluated and shall not be replaced by pixel-area
 integration.}
 
@@ -174,7 +180,13 @@ reference magnitude or norm; parameter, source, and pixel domain; numerator
 and denominator error treatment; near-zero behavior; simultaneous or
 worst-case interpretation; exact pass/fail inequality; uncertainty; lifecycle;
 and provenance.  No such profile or certificate is admitted or supplied by
-this source packet, so no numerical-support result is presently authorized.}
+this source packet, so no numerical-support result is presently authorized.
+A passing pair shall establish only finite-precision fidelity to the exact
+selected discrete SCI-JINC oracle over its declared domain.  It shall not
+establish scientific adequacy of the kernel parameters, $n_{\mathrm{sub}}$,
+or square truncation; source-response or beam fidelity; photometric or
+astrometric performance; optimality; observational validation;
+response/covariance fidelity; readiness; or production authority.}
 
 \JincReq{024}{The unit relations in Table~\ref{tab:notation} and the two
 allowed $\omega_i$ unit classes shall be preserved.  Common positive scaling of
@@ -190,7 +202,8 @@ exactly typed as complete numerical, partial, symbolic, summarized,
 lineage-resolvable, or unavailable, shall declare omitted terms, and shall
 never interpret missing covariance as zero or independence.}
 
-\JincReq{026}{The required time-support product shall be exactly
+\JincReq{026}{The required coefficient-squared temporal-accounting product
+\path{jinc_coefficient_squared_time} shall be exactly
 Equation~\eqref{eq:kappa-time}.  It shall square $\kappa_{ip}$, not $\omega_i$
 or $w_{ip}$, and shall have unit seconds.}
 
@@ -244,17 +257,19 @@ Any future JINC coadd shall require a separately authorized boundary over
 complete observation bundles and shall not infer accumulator addition,
 normalized-map combination, or ordinary SCI-MAP coaddition.}
 
-\JincReq{035}{The immutable
-\texttt{SCI-JINC:jinc\_map\_contribution@1} evaluation shall remain distinct
+\JincReq{035}{JINC upstream-occurrence admission, whose immutable Registry
+identity is \path{SCI-JINC:jinc_map_contribution@1}, shall remain distinct
 from PTC signal availability, PTC retention, coefficient availability/QC, AST
 coordinate validity and association, finite signal, finite positive
 $\omega_i$, parameter availability, rounded-center admission, pixel support,
-finite $\kappa_{ip}$, cancellation, numerical adequacy, and final bundle
-validity.  Despite its registered name, the profile shall mean only that one
-exact upstream occurrence may be considered by JINC.}
+finite $\kappa_{ip}$, cancellation, numerical adequacy, arithmetic
+contribution, and final bundle validity.  The immutable Registry identity
+shall not routinely be described as a ``map contribution'' decision; its
+canonical human-readable meaning is only that one exact upstream occurrence
+may be considered by JINC.}
 
 \JincReq{036}{Only a fact named by an exact restriction shall control JINC
-admission.  Producer causes and transitive influence shall be preserved, but a
+upstream-occurrence admission.  Producer causes and transitive influence shall be preserved, but a
 generic flag or cause shall have no universal veto.  Outside support, an
 analytic zero, or an outside rounded center shall be ordinary no-contribution;
 a finite negative lobe shall not create a cause.  Profile pass shall not imply
@@ -266,8 +281,9 @@ own.  SCI-JINC shall own only its admission use, local geometry, point phase,
 square support, signed coefficient, normalization, conditioning, fixed
 accumulators, local support, grouping, destination, and atomic bundle
 publication.  The exact PTC r0.3 and AST r0.2 boundaries, immutable admission
-profile, and SCI-VAL successor binding shall control compatibility and
-supersession; SCI-JINC shall not reconstruct their producer facts.}
+profile, and JINC-specific SCI-VAL successor snapshots shall control
+compatibility under the exact-source lock of \texttt{SCI-JINC-REQ-043};
+SCI-JINC shall not reconstruct their producer facts.}
 
 \JincReq{038}{Base v0.1 shall publish no response, variance, formal-weight,
 covariance, empirical-noise, or significance product.  The conditional
@@ -300,8 +316,10 @@ in Section~\ref{sec:predictions}, bind any exact owner-approved numerical-
 adequacy profile and certificate rather than an approximate acceptance phrase,
 and separate algebraic correctness from implementation conformity,
 representation/response fidelity, numerical and observational validation,
-achieved performance, readiness, and production authorization.  This Stage B
-draft establishes none of those later claims.}
+achieved performance, readiness, and production authorization.  A passing
+profile/certificate pair shall be reported only as exact-discrete-oracle
+finite-precision fidelity under \texttt{SCI-JINC-REQ-023}.  This Stage B draft
+establishes none of those later claims.}
 
 \JincReq{043}{Every claimed SCI-JINC contract realization shall bind byte
 identically to \path{SCI-PTC_TO_SCI-JINC} \texttt{v0.1/r0.3} (SHA-256
@@ -327,9 +345,13 @@ with SHA-256\linebreak
 The SCI-VAL successor identities and hashes shall be process bindings of the
 exact source/profile bytes only; they shall create no SCI-JINC scientific
 content, PTC coefficient family, TolTEC parameter set, or numerical-adequacy
-profile.
-A byte, identity, version, compatibility, or supersession mismatch shall make
-the affected route unavailable rather than select a nearby source.}
+profile.  Base v0.1 uses an exact-source-lock lifecycle: the complete exact
+files named above, including the JINC-stage-A-Q002 source/profile successor
+snapshots, are the bound objects.  No ambient ``current Registry'' or nearby
+row/profile is consulted, and an unrelated Registry state does not replace
+these snapshot bytes.  Any changed bound byte, identity, version,
+compatibility, or supersession fact shall make the affected route unavailable
+and requires a versioned SCI-JINC successor before use.}
 
 \JincReq{044}{Every complete bundle shall contain one compact generative record
 $G_a$ sufficient to replay its exact input population and immutable PTC/AST
@@ -337,6 +359,8 @@ joins; admission evaluation; coefficient family, selection, generation, and
 payload identity; parameter-set identity; target WCS and metric; center, phase,
 bin, representative, cache, square, and edge rules; cancellation and numerical-
 adequacy state; destination identity; requested, effective, resolved, and
-realized lifecycle; every required-role state; failure; and completion.  The
+realized lifecycle; the owner-approved upper-bin phase-lattice and
+positive-axis half-tie dispositions; the exact-source-lock identities; every
+required-role state; failure; and completion.  The
 record shall use immutable references and bounded plan/bundle information
 state, not dense per-contribution provenance or a new product role.}

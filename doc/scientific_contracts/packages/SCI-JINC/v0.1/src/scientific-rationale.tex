@@ -19,7 +19,7 @@
   linkcolor=JincBlue,
   citecolor=JincBlue,
   urlcolor=JincBlue,
-  pdftitle={SCI-JINC Scientific Rationale and Contract v0.1 r0.2},
+  pdftitle={SCI-JINC Scientific Rationale and Contract v0.1 r0.3},
   pdfauthor={Implementation-blind Stage B scientific author},
   pdfsubject={Signed-coefficient JINC observation mapmaker scientific contract},
   pdfkeywords={SCI-JINC, JINC, scientific contract, Stage B draft}
@@ -28,7 +28,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small\textcolor{JincGray}{SCI-JINC v0.1}}
-\fancyhead[R]{\small\textcolor{JincGray}{Scientific Rationale r0.2 - Stage B Draft}}
+\fancyhead[R]{\small\textcolor{JincGray}{Scientific Rationale r0.3 - Stage B Draft}}
 \fancyfoot[C]{\small\textcolor{JincGray}{\thepage\ / \pageref*{LastPage}}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.55em}
@@ -36,7 +36,7 @@
 \setlist{nosep,leftmargin=*}
 
 \newcommand{\ContractVersion}{v0.1}
-\newcommand{\DocumentRevision}{r0.2}
+\newcommand{\DocumentRevision}{r0.3}
 \newcommand{\DocumentDate}{2026-08-29}
 \newcommand{\Digest}[2]{\texttt{#1}\allowbreak\texttt{#2}}
 
@@ -52,9 +52,11 @@
 \vspace{0.5em}
 \noindent\fcolorbox{JincBlue}{JincLight}{%
 \begin{minipage}{0.94\textwidth}
-\textbf{Status.} Implementation-blind Stage B author draft.  The scientific
-substance has not yet completed manager review, scientific-owner review,
-implementation-blind consistency review, or freeze.  No implementation
+\textbf{Status.} Implementation-blind Stage B author draft.  The r0.2
+architecture is owner-approved as the basis for this revision, and
+Disposition A with the paired center tie is owner-approved.  Final Stage B
+acceptance, implementation-blind consistency review, and freeze remain
+pending.  No implementation
 conformity, representation fidelity, validation, achieved performance,
 numerical readiness, production readiness, or production claim is made.
 \end{minipage}}
@@ -98,12 +100,13 @@ pilot process controls, and the owner-approved downstream sequence recorded by
 the sanitized Scope Brief.  It begins after the frozen SCI-MAP scientific
 authority without altering it.  The author received only the exact approved
 SCI-JINC packet, the exact external objects admitted through packet covers,
-and the exact targeted r0.2 repair directive supplied for this revision.
+the exact targeted r0.2 repair directive, the exact final targeted r0.3
+owner-review directive, and the owner's explicit disposition-A approval.
 No implementation, configuration, test, audit, repair, validation, reduction,
 status, production, or manager-side record supplied normative scientific
 content.  Non-packet records were restricted to process and exact-byte
-closure; the admitted packet plus the targeted directive remain the complete
-scientific authority for this repair.
+closure.  The admitted packet, the two targeted directives, and the exact
+owner disposition remain the complete scientific authority for this repair.
 
 Prior work is reused rather than repeated.  The recovered signed estimator
 with distinct numerator, signed normalization, and quadratic accumulator is
@@ -174,7 +177,8 @@ infer a coordinate from row order, time tolerance, detector order, shape, or
 numerical equality.  It consumes the AST coordinate only after the exact
 same-processed-sample relation is established.
 
-SCI-JINC owns the named map-contribution admission use, local offset and radial
+SCI-JINC owns JINC upstream-occurrence admission (Registry identity
+\path{SCI-JINC:jinc_map_contribution@1}), local offset and radial
 geometry, center rounding, point phase, square membership, signed coefficient,
 normalization, cancellation conditioning, fixed accumulators, local map
 support, grouping, destination identity, and atomic publication.  It applies
@@ -202,7 +206,9 @@ continuous pixel coordinates.  Centre resolution is componentwise:
  \qquad \mu\in\{1,2\}.
 \]
 An exact half-pixel tie therefore selects the larger integer and has residual
-phase $-1/2$.  The resolved WCS axis order and signs are normative: reflecting
+phase $-1/2$.  The scientific owner retains this positive-axis directional
+tie as an intended part of the discrete operator.  The resolved WCS axis
+order and signs are normative: reflecting
 or reindexing an axis creates a different target-WCS identity rather than an
 alternative interpretation of this tie rule.
 
@@ -221,7 +227,10 @@ Thus $q_{i\mu}\in\{0,\ldots,n_{\mathrm{sub}}-1\}$, and a phase exactly on an int
 bin boundary selects the upper bin.  No parity restriction is imposed.  In
 particular, an even $n_{\mathrm{sub}}$ maps $\phi=0$ to the representative
 $+1/(2n_{\mathrm{sub}})$; that result is disclosed and normative, not repaired by a
-hidden special case.  The mathematical cache key is the pair of bin indices
+hidden special case.  The scientific owner approved disposition A: the
+upper-bin convention and every positive integer $n_{\mathrm{sub}}$ are
+retained, including this one-sided exact-boundary phase offset.  The
+mathematical cache key is the pair of bin indices
 and the two integer offsets.  Physical cache layout is an engineering choice
 only when it preserves that exact logical mapping.
 
@@ -261,6 +270,20 @@ and Equation~\eqref{eq:analytic-kernel} is evaluated at that radius.  The
 unquantized continuous phase is not a hidden reference oracle; the midpoint-
 quantized operator above is the scientific operator.  Its exact-real-arithmetic
 evaluation is the oracle for a later numerical certificate.
+
+The disposition is directly observable at an exact integer pixel center.
+For even $n_{\mathrm{sub}}$, zero phase on both axes has representative
+$(1/(2n_{\mathrm{sub}}),1/(2n_{\mathrm{sub}}))$.  At the nominal central
+offset $\boldsymbol d=\boldsymbol0$, square-pixel orthogonality gives
+\[
+ \widehat r_{i\boldsymbol0}=\frac{\Delta}{\sqrt{2}n_{\mathrm{sub}}},
+ \qquad
+ \kappa_{i,\boldsymbol c_i}=\kappa_a\!\left(
+ \frac{\Delta}{\sqrt{2}n_{\mathrm{sub}}s_a};
+ a_a,b_a,c_a,(r_{\max})_a\right).
+\]
+This is the intended discrete scientific operator.  The nominal central
+cache element is not replaced by the zero-radius limit $\kappa_a(0)=1$.
 
 The exact constant in the second JINC factor is
 $j_{1,1}=\min\{x>0:J_1(x)=0\}$.  A rounded decimal is at most nonnormative
@@ -315,6 +338,17 @@ from the exact profile; this contract does not invent one.  A profile without
 a matching certificate, or a certificate without its exact profile, cannot
 establish adequacy.
 
+A passing $\mathcal P_{\mathrm{NA}}$/$\mathcal E_p$ pair has a deliberately
+narrow claim boundary: it establishes only finite-precision fidelity to the
+exact selected discrete SCI-JINC oracle over the declared domain.  It does
+not establish scientific adequacy of $s_a$, $a_a$, $b_a$, $c_a$,
+$(r_{\max})_a$, $n_{\mathrm{sub}}$, or square truncation; source-response or
+beam fidelity; photometric or astrometric performance; optimality;
+observational validation; response/covariance fidelity; readiness; or
+production authority.  Qualifying a TolTEC parameter set remains a separate
+scientific and observational program with its own objective, evidence,
+authority, and lifecycle.
+
 No exact owner-approved numerical-adequacy profile or matching certificate is
 admitted or supplied by this source packet.  Numerical-adequacy state, and in
 particular numerical near-cancellation support, is therefore typed
@@ -329,8 +363,10 @@ that absent authority.
 Every produced bundle has exactly five required roles.  Three are primary
 accumulator planes: $N_p$, $C_p$, and $Q_p$.  The fourth is derived $m_p$ with
 its local support/validity state.  The fifth is
-$T_p^{(\kappa^2)}$, coefficient-squared time.  This time product accounts for
-the squared analytic coefficient divided by processed-sample frequency.  It
+$T_p^{(\kappa^2)}$, the
+\texttt{jinc\_coefficient\_squared\_time} coefficient-squared
+temporal-accounting product.  It accounts for the squared analytic
+coefficient divided by processed-sample frequency.  It
 is not acquired exposure, complete temporal support, precision, validity, or
 significance.
 
@@ -376,8 +412,8 @@ successor Scope Brief admitted by the manifest, rather than with an earlier or
 unlisted scope statement.  That exact source records the owner-approved
 ODQ-107 amendment: the base bundle is the closed five-role numerical schema
 above, while response, covariance, formal weight, generalized companion
-availability, and generalized provenance products are deferred.  The r0.1
-draft's narrowed product list was therefore not an author-created departure
+availability, and generalized provenance products are deferred.  The
+pre-repair draft's narrowed product list was therefore not an author-created departure
 from its admitted Stage A authority.
 
 The targeted directive's conditional broadening branch does not apply because
@@ -385,7 +421,7 @@ the exact scientific-owner amendment already exists in the admitted successor
 Scope Brief and Q002-approved bytes.  No new Stage A amendment is needed to
 retain REQ-038--040.  Any future decision to replace ODQ-107 would require a
 bounded successor Stage A amendment and renewed exact-byte owner approval.
-This r0.2 draft retains the conditional mathematics and records the static
+This r0.3 draft retains the conditional mathematics and records the static
 deferred scope honestly in Appendix~\ref{app:deferred-companions}.  Fixed-state,
 PTC-procedure, JINC-re-resolved, and whole-chain response remain distinct;
 covariance and formal-weight identities remain conditional.  None is a
@@ -709,7 +745,16 @@ information firewall. \\
 Targeted r0.2 repair directive & SHA-256
 \Digest{c07505861d91459f69e7d0989f11551e}{2a14265c916cd5772ea48a86bb186ed2}.
 & Bounded repair instructions and exact operator choices; the admitted
-ODQ-107 amendment controls the conditional scope branch. \\
+ODQ-107 amendment controls the conditional scope branch.  The resulting r0.2
+architecture is owner-approved as the basis for r0.3. \\
+Final targeted r0.3 owner-review directive & SHA-256
+\Digest{4878e1745e085b4e33d2e71f1190299}{d72f2cfd7b2215e36a9e8405a977bd207}.
+& Normative final repair scope and claim boundaries. \\
+Owner phase-lattice disposition & Exact statement
+``\texttt{I approve disposition A}'', SHA-256
+\Digest{9a70cbc63c0c79a7db70ad9796481fb0}{fe3f1f4c2d7524820b54cec68b8b1620}.
+& Retains every positive $n_{\mathrm{sub}}$, the upper-bin even-lattice
+zero-phase offset, and the paired positive-axis center-tie convention. \\
 Successor Scope Brief & SHA-256
 \Digest{5f2505c2760fc5cb07506249f33f4496}{51aca67cccc9c444305b059674f0ddbd}.
 & Scientific scope, including ODQ-107. \\
@@ -729,7 +774,7 @@ PTC-to-JINC boundary & \texttt{SCI-PTC\_TO\_SCI-JINC v0.1/r0.3}; SHA-256
 AST-to-JINC boundary & \texttt{SCI-AST\_TO\_SCI-JINC v0.1/r0.2}; SHA-256
 \Digest{efffa7059b59c89793fa1d523fb3bb482}{35f1ab55f7d55060af1600cbfd470a5}.
 & Same-processed-sample continuous-coordinate boundary. \\
-JINC admission profile & Immutable
+JINC upstream-occurrence admission & Immutable Registry identity
 \texttt{SCI-JINC:jinc\_map\_contribution@1}; packet-object SHA-256
 \Digest{2db95da7e5d1b980df79993907d45ac0}{ababc3aa05c189bfb62dcf04ff2c2e8a}.
 & Upstream occurrence consideration only, never pixel support. \\
@@ -741,7 +786,9 @@ VAL Registry binding and successors & Binding SHA-256
 \path{SCI-VAL_PROFILE_REGISTRY} successor with the same version, SHA-256
 \Digest{4b9a1ebecfc847c83b59da772afd9b03}{1ab1830e8febbb12d1a47f70ce5a1110}.
 & Exact process bindings only; they create no JINC coefficient family,
-TolTEC parameter set, or numerical-adequacy profile. \\
+TolTEC parameter set, or numerical-adequacy profile.  These JINC-specific
+snapshot files are exact-source locked; no ambient current Registry is
+substituted. \\
 \bottomrule
 \end{longtable}
 

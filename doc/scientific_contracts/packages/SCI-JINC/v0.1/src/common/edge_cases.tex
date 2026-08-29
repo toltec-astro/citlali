@@ -50,7 +50,12 @@ the denominator sign. \\
 \texttt{SCI-JINC-PRED-011} & A near-cancellation construction is numerically
 eligible only when a certificate $\mathcal{E}_p$ passes the exact inequality
 and complete domain rules of the bound owner-approved
-$\mathcal{P}_{\mathrm{NA}}$; $\rho_p$ alone neither promotes nor rejects it. \\
+$\mathcal{P}_{\mathrm{NA}}$; $\rho_p$ alone neither promotes nor rejects it.
+A pass establishes only finite-precision fidelity to the exact selected
+discrete oracle on that domain and establishes none of the parameter,
+truncation, response, beam, photometric, astrometric, optimality, validation,
+fidelity, readiness, or production claims excluded by
+\texttt{SCI-JINC-REQ-023}. \\
 \texttt{SCI-JINC-PRED-012} & With no exact owner-approved
 $\mathcal{P}_{\mathrm{NA}}$ and matching $\mathcal{E}_p$, numerical adequacy is
 typed unavailable, even when algebraic support holds and finite arithmetic
@@ -74,8 +79,14 @@ tie and phase-bin edge select the exact centers, half-open bins, indices, and
 midpoint representatives of Equations~\eqref{eq:rounded-center}--
 \eqref{eq:phase-representative}.  For even $n_{\mathrm{sub}}$, exact
 $\phi=0$ selects the positive representative $+1/(2n_{\mathrm{sub}})$ in the
-bound WCS axis orientation; no parity restriction or alternate tie rule is
-permitted. \\
+bound WCS axis orientation.  With zero phase on both axes and
+$\boldsymbol d=\boldsymbol0$, the exact radius is
+$\Delta/(\sqrt{2}n_{\mathrm{sub}})$ and the coefficient is
+the exact even-lattice center formula following
+Equation~\eqref{eq:discrete-radius}, not an imposed
+$\kappa_a(0)=1$.  An exact positive half-pixel coordinate tie selects the
+larger center and residual phase $-1/2$.  No parity restriction, zero-phase
+special case, or alternate center-tie rule is permitted. \\
 \texttt{SCI-JINC-PRED-018} & The exact rounded center immediately outside each map
 edge or corner changes none of the four accumulators for any pixel, even when
 its square footprint overlaps the map. \\
@@ -128,16 +139,20 @@ used to create a formal-weight product. \\
 \texttt{SCI-JINC-PRED-032} & The JINC route consumes no SCI-MAP product and no
 ordinary MAP admission, validity, exposure, support, response, covariance, or
 coaddition decision is substituted for a JINC-owned decision.  A pass from
-\texttt{SCI-JINC:jinc\_map\_contribution@1} means only upstream occurrence
-admission for consideration. \\
+JINC upstream-occurrence admission (Registry identity
+\texttt{SCI-JINC:jinc\_map\_contribution@1}) means only that the occurrence
+may be considered. \\
 \texttt{SCI-JINC-PRED-033} & A changed byte, identity, version, compatibility,
 or supersession fact for the exact PTC r0.3 boundary, AST r0.2 boundary,
 admission profile, SCI-VAL binding, source-register successor, or profile-
 registry successor makes the affected route unavailable; no nearby source or
-name match is accepted.  Matching SCI-VAL process bindings creates no new
+name match is accepted.  No ambient ``current Registry'' state is accepted;
+any changed bound object requires a versioned SCI-JINC successor.  Matching
+SCI-VAL process bindings creates no new
 scientific content, coefficient family, parameter set, or adequacy profile. \\
 \texttt{SCI-JINC-PRED-034} & Passing
-\texttt{SCI-JINC:jinc\_map\_contribution@1} leaves rounded-center admission,
+JINC upstream-occurrence admission (Registry identity
+\texttt{SCI-JINC:jinc\_map\_contribution@1}) leaves rounded-center admission,
 sample-pixel membership, cancellation support, numerical adequacy, numerical
 contribution, and bundle publication to their separate exact gates. \\
 \texttt{SCI-JINC-PRED-035} & A target WCS whose pixel matrix is anisotropic or

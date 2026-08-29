@@ -47,6 +47,8 @@ The exact rounded cache center is
   \label{eq:rounded-center}
 \end{equation}
 Thus an exact half-pixel tie rounds toward the positive coordinate axis.  The
+scientific owner retains this directional convention as part of the selected
+discrete operator.  The
 residual phase is
 \begin{equation}
   \boldsymbol{\phi}_i=\boldsymbol{u}_i-\boldsymbol{c}_i
@@ -68,11 +70,13 @@ For $n_{\mathrm{sub}}\ge1$, each axis uses the exact half-open bins
 \end{align}
 The two axis indices form $\boldsymbol{q}_i$, and their midpoint
 representatives form $\widehat{\boldsymbol{\phi}}_i$.  Every positive integer
-$n_{\mathrm{sub}}$ is permitted.  The half-open upper-bin convention is
-observable: when $n_{\mathrm{sub}}$ is even, an exact $\phi=0$ selects
+$n_{\mathrm{sub}}$ is permitted under the owner-approved upper-bin
+phase-lattice disposition.  The half-open upper-bin convention is observable:
+when $n_{\mathrm{sub}}$ is even, an exact $\phi=0$ selects
 $q=n_{\mathrm{sub}}/2$ and
 $\widehat\phi=+1/(2n_{\mathrm{sub}})$, with the sign interpreted in the exact
-target-WCS axis orientation.
+target-WCS axis orientation.  No special case substitutes a zero
+representative.
 The exact logical cache mapping is
 \begin{equation}
   \beta_i=q_{i1}+n_{\mathrm{sub}}q_{i2},\qquad
@@ -115,6 +119,24 @@ $\widehat r'_{i\boldsymbol{d}}$.  The occurrence passes the center-domain gate
 only when $\boldsymbol{c}_i\in\mathcal{D}$; a square pixel is retained only
 when $\boldsymbol{p}\in\mathcal{D}$.  These integer-domain predicates, rather
 than footprint overlap or a radial cutoff, determine geometry membership.
+
+For an occurrence at an exact integer pixel center, both residual-phase
+components are zero.  When $n_{\mathrm{sub}}$ is even, the owner-approved
+upper-bin rule and Equation~\eqref{eq:square-wcs-metric} therefore give, at
+the nominal central offset $\boldsymbol d=\boldsymbol0$,
+\begin{align*}
+  \widehat r_{i\boldsymbol0}
+    &=\frac{\Delta}{\sqrt{2}\,n_{\mathrm{sub}}},\\
+  \kappa_{i,\boldsymbol c_i}
+    &=\kappa_a\!\left(
+       \frac{\Delta}{\sqrt{2}\,n_{\mathrm{sub}}s_a};
+       a_a,b_a,c_a,(r_{\max})_a\right).
+\end{align*}
+The nominal central cache element is thus evaluated at this exact nonzero
+radius and shall not be replaced by the zero-radius limit
+$\kappa_a(0)=1$.  For odd $n_{\mathrm{sub}}$, exact zero phase has midpoint
+representative zero and the nominal central offset evaluates the analytic
+limit at zero.
 
 \subsection{Signed estimator}
 \label{sec:signed-estimator}
@@ -173,11 +195,20 @@ Equation~\eqref{eq:numerical-adequacy} is presently typed unavailable.  In
 particular, no approximate fidelity scale promotes a near-cancellation pixel.
 $D_p$ remains construction state rather than a numerical map-plane role; any
 future certificate is referenced by the compact generative record $G_a$.
+A passing $\mathcal{P}_{\mathrm{NA}}$/$\mathcal{E}_p$ pair establishes only
+finite-precision fidelity to the exact selected discrete SCI-JINC oracle over
+the profile's declared domain.  It does not establish scientific adequacy of
+$s_a$, $a_a$, $b_a$, $c_a$, $(r_{\max})_a$, $n_{\mathrm{sub}}$, or square
+truncation; source-response or beam fidelity; photometric or astrometric
+performance; optimality; observational validation; response/covariance
+fidelity; readiness; or production authority.  Qualification of a TolTEC
+parameter set is a separate scientific and observational program.
 
-\subsection{Coefficient-squared time}
+\subsection{Coefficient-squared temporal accounting}
 \label{sec:coefficient-time}
 
-The sole authorized base-v0.1 time-support product is
+The sole authorized base-v0.1 coefficient-squared temporal-accounting product
+is \path{jinc_coefficient_squared_time}, defined by
 \begin{equation}
   T_p^{(\kappa^2)}
   =\sum_i I_{ip}\frac{\kappa_{ip}^{2}}{f_{s,i}}.

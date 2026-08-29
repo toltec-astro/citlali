@@ -32,15 +32,22 @@ $(r_{\max})_a$, target-WCS metric, pixel scale, or
 \texttt{subpixel\_n} is scientifically admitted, supplied, or recommended by
 this source packet. \\
 \texttt{SCI-JINC-ASM-006} & Point-phase evaluation and fully populated square
-support are the scientific operator.  Pixel-area integration, a circular
-cutoff, footprint-overlap admission, and JINC-then-crop equivalence are not
-alternative branches. \\
+support are the scientific operator.  The owner-approved upper-bin phase
+lattice admits every positive $n_{\mathrm{sub}}$, retains the positive
+midpoint for exact zero phase when $n_{\mathrm{sub}}$ is even, and retains
+positive-axis half-pixel center ties.  Pixel-area integration, a zero-phase
+special case, a circular cutoff, footprint-overlap admission, and
+JINC-then-crop equivalence are not alternative branches. \\
 \texttt{SCI-JINC-ASM-007} & Numerical-realization adequacy requires one exact
 owner-approved $\mathcal{P}_{\mathrm{NA}}$ and a matching certificate
 $\mathcal{E}_p$.  Neither is admitted or supplied by this source packet.
 Finite arithmetic, analytic-function, phase/cache, and accumulation errors
 therefore have no authorized approximate substitute, and numerical support is
-typed unavailable even though exact-arithmetic algebraic support is defined. \\
+typed unavailable even though exact-arithmetic algebraic support is defined.
+A future passing profile/certificate pair establishes only finite-precision
+fidelity to its exact selected discrete oracle; it does not qualify TolTEC
+parameters, phase resolution, square truncation, response, performance,
+validation, readiness, or production use. \\
 \texttt{SCI-JINC-ASM-008} & Same-observation chunking may be an engineering
 realization of one bundle, but a chunk is not a scientific product identity.
 Cross-observation combination is outside base v0.1. \\
