@@ -179,8 +179,8 @@ struct NativeOccurrenceInterval {
 };
 
 // The axis references ALIGN-owned native timing and owns only the primitive
-// acquisition intervals absent from that carrier.  It contains no common-slot
-// association or AST coordinate.
+// acquisition intervals absent from that carrier. It contains no requested
+// cross-network common-analysis-grid association or AST coordinate.
 class PairedReadoutOccurrenceAxis {
 public:
     PairedReadoutOccurrenceAxis(

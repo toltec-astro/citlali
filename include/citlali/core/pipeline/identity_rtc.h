@@ -17,7 +17,7 @@ namespace citlali::pipeline {
 
 // Engineering partitions retain absolute native occurrence identity. A span
 // is a bounded view over one network's immutable PairedReadout axis; it is not
-// a common-grid association or a new scientific occurrence identity.
+// a common-analysis-grid association or a new scientific occurrence identity.
 struct NativeOccurrenceSpan {
     TimestreamNetworkId network_id = -1;
     TimestreamNativeRow first_native_row = -1;

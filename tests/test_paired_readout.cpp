@@ -194,7 +194,7 @@ TEST(paired_readout,
 }
 
 TEST(paired_readout,
-     preserves_native_per_network_axes_without_common_grid_projection) {
+     preserves_native_per_network_axes_without_common_analysis_grid_projection) {
     const pipeline::NativeObservationScope scope{152390, 0, 4};
     std::vector<pipeline::PairedReadoutNetwork> networks;
     networks.push_back(

@@ -98,7 +98,7 @@ std::shared_ptr<const pipeline::RtcPlan> identity_plan(
 }
 
 TEST(identity_rtc,
-     native_view_references_parent_axes_without_common_grid_projection) {
+     native_view_references_parent_axes_without_common_analysis_grid_projection) {
     const auto fixture = identity_fixture();
     const auto &native_network = fixture.native->network(0);
 

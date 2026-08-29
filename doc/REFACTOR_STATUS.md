@@ -17,15 +17,38 @@ and its frozen-clause
 partially supersedes only ADR 0014's timing-placement language. Unrelated
 SCI-ALIGN, SCI-RTC, SCI-AST, and SCI-PTC decisions remain unchanged.
 
-The common-grid pass-through revisions `ced568d3a` and `e96efc6d5` remain a
-design spike on `codex/wp7-complete-rtc-second-increment`; they are not accepted
-as the RTC increment and their terminal scaffold is not advanced. The bounded
-repair branch `codex/wp7-network-timed-rtc-repair` starts exactly at accepted
-identity-RTC tip `641f75ad8`. Its first implementation target is an immutable
-network-timed `M=1` pass-through lifecycle with no common-slot dependency,
-followed by focused and full local gates and a fresh exact-SHA review. No RTC
-terminal publication or nonidentity numerical method is authorized before
-that review.
+The common-analysis-grid pass-through revisions `ced568d3a` and `e96efc6d5`
+remain a design spike on `codex/wp7-complete-rtc-second-increment`; they are not
+accepted as the RTC increment and their terminal scaffold is not advanced. The
+bounded repair branch `codex/wp7-network-timed-rtc-repair` starts exactly at
+accepted identity-RTC tip `641f75ad8`. Authority correction `50aa0409e` is a
+separate first commit on that base.
+
+The bounded implementation now provides an immutable application-context,
+evidence, plan, apply, product, and compact-realization lifecycle for the exact
+network-timed `M=1`, no-despike, no-level-shift, no-filter witness. It reuses
+the accepted sparse identity evidence and conservative pair-wide decision,
+references all immutable producer facts through the native paired view, and
+retains distinct network occurrences, times, intervals, values, validity, and
+local causes without an owned numerical plane. A two-network witness preserves
+`1000.0000` on `nw0` and `1000.0025` on `nw7` bitwise. A gap in `nw7` does not
+create support or absence in `nw0`, and one- versus two-partition executions
+are scientifically identical.
+
+The former unused `AlignedPairedReadout` successor wrapper is replaced by an
+explicit, opt-in `CommonAnalysisGridRelation` and
+`CommonAnalysisGridPairedReadoutView`. That derived non-destructive view keeps
+both grid time and source-network occurrence, time, interval, validity, causes,
+origin, and support. An ordinary-RTC source guard forbids this view, its header,
+the legacy shared-slot carrier, common-slot names, and the old wrapper from the
+ordinary RTC dependency closure.
+
+Local validation for this implementation passes all 128 focused WP-7 and
+SCI-ALIGN CTests, including nine new network-timing/common-analysis tests; all
+860 repository CTests; all 207 baseline-tool tests; all 17 identity-acceptance
+validator tests; and all 129 required config unit tests plus downstream audits.
+A fresh read-only exact-SHA review is the next gate. No RTC terminal publication
+or nonidentity numerical method is authorized before that review.
 
 ## 2026-08-29 WP-7 Identity RTC Native-Axis Conformance Repair
 
@@ -41,9 +64,9 @@ inherited common-slot association from the existing adapter even though its
 scientific operator requires only reconstructed native network timing.
 Revision `45b1948e041ce3a709e2d63b5dd63cf2b0cd24a2` removes that
 dependency. The route now retains one bounded span on every participant
-network's native occurrence axis and neither invokes nor publishes common-grid
-projection. ALIGN continues to own strict-half common-slot admission for the
-first later consumer that actually requires cross-network simultaneity.
+network's native occurrence axis and does not invoke or publish a cross-network
+common analysis grid. ALIGN continues to own strict-half admission to that grid
+for the first later consumer that actually requires cross-network simultaneity.
 
 `RtcEvidence` owns only compact derived event records and resolves identity,
 timing, support, validity, and local causes through the immutable native
@@ -54,7 +77,7 @@ duplicate numerical or state plane. The in-memory terminal product and compact
 realization remain inspectable without adding a persistent RTC TOD schema.
 Focused tests prove bidirectional pair consequence, local-cause preservation,
 chunk-partition invariance, and independence from two conflicting external
-common-slot assignments. Route-source guards exclude common-grid and
+common-analysis-grid assignments. Route-source guards exclude that grid and
 AST/CAL/VAL/PTC/MAP dependencies, while acceptance diagnostics record actual
 entry into each allowed stage rather than unobserved zero counters.
 
@@ -105,7 +128,7 @@ binds executable SHA-256
 and passes the strengthened repository validator. The v3 record remains a
 historical native-axis diagnostic but is superseded because its gate did not
 prove those bindings and independent expectations. V1 and v2 also remain
-historical diagnostics and used the superseded ALIGN common grid.
+historical diagnostics and used the superseded ALIGN common analysis grid.
 
 Exact-revision local validation passes: all 117 focused WP-7 and ALIGN tests
 plus two exact-build-state tests; all 848 runnable repository CTests with the

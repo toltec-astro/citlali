@@ -288,7 +288,7 @@ TEST(rtc_only_route, invalid_run_identity_has_an_exact_terminal_cause) {
 }
 
 TEST(rtc_only_route,
-     identity_result_is_independent_of_external_common_slot_assignments) {
+     identity_result_is_independent_of_external_common_analysis_grid_assignments) {
     const auto fixture = route_fixture();
     std::vector<pipeline::NativeSlotAssociation> first_associations(4);
     first_associations[0].native_row = 10;
@@ -348,7 +348,7 @@ TEST(rtc_only_route,
 }
 
 TEST(rtc_only_route,
-     native_route_carrier_headers_exclude_common_grid_and_later_stages) {
+     native_route_carrier_headers_exclude_common_analysis_grid_and_later_stages) {
     namespace fs = std::filesystem;
     const auto repository = fs::path{__FILE__}.parent_path().parent_path();
     const std::vector<fs::path> headers{
