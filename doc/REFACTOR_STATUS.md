@@ -407,24 +407,30 @@ the time being; any later scientific correction requires an explicitly
 authorized versioned successor and shall not modify the tagged bytes.
 
 On `2026-08-29` Grant Wilson launched SCI-NOI v0.1 as a recovery-first Stage A
-effort at high reasoning effort. The returned candidate uses one package with
-hard typed boundaries among realization-ensemble generation, empirical
-uncertainty inference, and a separately identified standardized-signal
-operation. It recovers both earlier implementation-independent NOI cores,
-their approved owner-policy content, the internal noise derivation, current
-implementation surfaces, and downstream dependencies without promoting
-implementation or validation evidence to science. Fixed-state and relearned
-generation remain distinct possible methods and are not mixed or selected as
-ordinary authority. MAP and JINC parents remain immutable; empirical NOI
-weights do not become MAP-facing PTC coefficients; covariance may be diagonal,
-structured, projected, ensemble-backed, full, or unavailable; and persistence
-is plan-controlled with explicit reconstruction limitations. The exact Scope
-Brief, recovered-core cover, conventions extract, taxonomy, owner ledger, and
-content-bound author packet await scientific-owner review. Stage B,
-implementation, frozen-package modification, conformity, validation,
-performance, readiness, and production claims remain prohibited. The first
-walkthrough question is `SCI-NOI-ODQ-101`, the ordinary fixed-state/relearned
-method disposition.
+effort at high reasoning effort. The recovered candidate was then subjected to
+the owner-directed final Stage A scope repair without further implementation,
+configuration, schema, test, audit, validation, reduction, Unity, default, or
+historical-behavior inspection. The repaired packet uses collision-free
+`NOI-GEN`, `NOI-UNC`, and `NOI-STD` roles; exact fixed-state and relearned
+operator DAGs; explicit finite assignment design, source-imprint,
+target/estimator/rank/covariance, STD compatibility, and atomic lifecycle
+semantics; exact sanitized MAP, JINC, and conditional pre-MAP PTC boundaries;
+four NOI-owned VAL profile drafts; and a bounded FLT/Wiener/FRUIT record. One
+sanitized decision candidate now contains all ODQ-101--110 recommendations,
+and the exclusive author packet binds ten logical items plus both recovered
+cores by SHA-256.
+
+Stage B has not been launched. Every ODQ-101--110 row, exact repaired byte/hash,
+conditional PTC-route inclusion, and required source/profile binding awaits
+scientific-owner approval. The first walkthrough question remains
+`SCI-NOI-ODQ-101`: approve or revise fixed-state conditional-sign as the
+ordinary GEN method while relearned GEN stays separately unavailable until a
+complete exact graph is approved. MAP/pre-MAP numerical parents remain
+unavailable pending the exact PTC MAP-facing coefficient and owner-admitted
+numerical `coverage_cut`; JINC numerical parents remain unavailable under its
+frozen gates. No frozen parent was modified, and no implementation conformity,
+empirical calibration, physical-noise validity, significance, achieved
+performance, readiness, or production claim is made.
 
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.

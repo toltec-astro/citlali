@@ -197,12 +197,17 @@ and cross-package handoffs are valuable recovery inputs.
   cores, their owner decisions and historical application evidence, the
   internal noise derivation, current generation/inference/persistence
   surfaces, and the frozen MAP/JINC boundary. The proposed packet reuses both
-  cores under one supersession cover, replaces the old two-package split with
-  typed Family G/U/Z roles, retains fixed and relearned generation as distinct
-  unresolved methods, and prevents empirical NOI weights or standardized
-  signal from being promoted into MAP coefficients, uncertainty, or
-  significance by analogy. Implementation, audits, repairs, validation, and
-  defaults remain excluded from authorship.
+  cores under one supersession cover and replaces the old two-package split
+  with collision-free `NOI-GEN`/`NOI-UNC`/`NOI-STD` roles. The final Stage A
+  repair adds exact fixed/relearned DAGs, ensemble-design and source-imprint
+  semantics, target/estimator/rank/covariance and STD tables, sanitized MAP,
+  JINC, and conditional pre-MAP PTC boundaries, four NOI-owned VAL profile
+  drafts, a FLT/FRUIT deferral record, and one complete ODQ-101--110 decision
+  candidate. The exclusive author packet remains implementation-blind and
+  SHA-bound. Empirical NOI weights or standardized signal cannot be promoted
+  into MAP coefficients, uncertainty, or significance by analogy.
+  Implementation, audits, repairs, validation, and defaults remain excluded
+  from authorship; Stage B remains unlaunched.
 - Current shared authority plus `MAIN:doc/NOISE_PRODUCTS_CONFIG_AUTHORITY.md`.
 - Existing noise integration and filter-amendment decisions under `MAIN` and
   the `codex/coordinate-sci-flt-001-amendment` topic branch.

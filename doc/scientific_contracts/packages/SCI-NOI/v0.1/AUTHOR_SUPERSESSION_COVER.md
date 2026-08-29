@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Recovered-Core Supersession Cover
 
-Status: proposed sanitized Stage B author input; not owner-approved
+Status: proposed sanitized Stage B author input; exact bytes await owner approval
 
 This cover must accompany both recovered mathematical cores:
 
@@ -17,88 +17,79 @@ Neither core may be read alone as current SCI-NOI authority.
 
 Retain and reconcile, without needless rederivation:
 
-- coherence-unit, sign-law, assignment-design, and conditional-moment
+- coherence-unit, sign-law, finite assignment-design, and conditional-moment
   mathematics;
-- the distinction between randomization covariance and repeated physical-
-  noise covariance;
+- randomization covariance versus repeated physical-noise covariance;
 - deterministic-signal/source-leakage and scan-mode imprint reasoning;
 - fixed observation/coadd/filter propagation and the changed problem when an
   operator is re-estimated;
 - finite-stack centering, second moment, covariance, cross-realization
-  dependence, rank, inversion, and use-specific effective-information results;
+  dependence, rank, inversion, and use-specific effective information;
 - covariance-domain and projected-estimator reasoning;
 - compact exact regeneration and lifecycle provenance;
-- use-specific adequacy and the separation of standardization from
-  significance; and
-- analytic limiting and falsification cases that remain compatible with this
-  cover.
+- use-specific adequacy and standardization versus significance; and
+- compatible analytic limiting and falsification cases.
 
 ## Binding Supersessions
 
-1. **One package, internal families.** Replace the old SCI-NOI-001/002 package
-   ownership split with one SCI-NOI package containing Family G generation,
-   Family U empirical inference, and Family Z standardized signal. Retain hard
-   interfaces between them.
-2. **Generation is not inference.** Any core language that begins with a
-   “noise” or “jackknife” ensemble is shorthand for a declared realization
-   ensemble only. It does not establish a physical-noise or uncertainty target.
-3. **Fixed and relearned are separate method families.** The NOI-001 fixed-
-   state derivation remains valid for `NOI-G/FIXED-STATE`; it is not the only
-   possible method and is not selected as the ordinary baseline. A relearned
-   method reruns exact named learning steps and requires a separate joint-
-   method derivation and identity.
+1. **One package, collision-free roles.** Replace the old package split with
+   `NOI-GEN`, `NOI-UNC`, and `NOI-STD`. Bare NOI family symbols `G`, `U`, and
+   `Z` are prohibited; `Z_i^PTC` remains the PTC transformed sample.
+2. **Generation is not inference.** “Noise” or “jackknife” ensemble language
+   means only a declared realization ensemble until an exact UNC method admits
+   it. It establishes no physical-noise or uncertainty target by existence.
+3. **Exact operator graph.** Fixed-state means
+   `realization_b = O_Theta0(R_b(parent))`. Relearned means
+   `Theta_b = LearnResolve_b(R_b(parent))` followed by
+   `realization_b = O_Theta_b(R_b(parent))`. The earliest immutable parent,
+   insertion point, full graph, and changed-state record are method identity.
 4. **No mixed ensemble.** Fixed-state and relearned members, or relearned
-   methods with different rerun plans, shall not be pooled under one ensemble
-   identity.
-5. **Standardized signal is a separate derived role.** `sig2noise` or another
-   standardized signal is not an uncertainty estimate. It must bind an
-   immutable signal parent and an authorized uncertainty/scale product through
-   a separate method/product identity.
-6. **Truthful claim ceiling.** Without exact null, selection, search,
-   multiplicity, and validation authority, the claim is only “standardized by
-   the stated empirical scale,” not Gaussian significance, detection
-   probability, completeness, or purity.
-7. **No MAP coefficient promotion.** The frozen ordinary MAP coefficient is
-   nonprecision. Empirical variance, inverse variance, precision, or scale from
-   NOI cannot become a PTC/MAP gridding or coadd coefficient without a
-   separately authorized successor/feedback boundary.
-8. **Immutable parents.** MAP and JINC parents and their original claims remain
-   unchanged. NOI products attach as new versioned companions.
-9. **Honest covariance plurality.** No dense full covariance is mandatory.
-   Diagonal, stationary/kernel, structured, projected, retained-ensemble, and
-   unavailable states are all admissible when their domains and limitations
-   are explicit.
-10. **Plan-controlled persistence.** Persisted members, transient exact
-    regeneration, and mathematically equivalent streaming sufficient
-    statistics are distinct supported plans. Record audit/reconstruction
-    limitations; do not require every sign or per-sample provenance when exact
-    regeneration is available.
+   methods with different replay graphs, cannot share one ensemble identity.
+5. **Finite design is explicit.** Requested, resolved, completed, unique,
+   UNC-admitted counts and design rank are separate. Balance, complement pairs,
+   duplicates, and large count never prove independence.
+6. **Source imprint is explicit.** Global sign balance does not imply pixelwise
+   cancellation under changing support or operator state. The base claim is
+   `source_imprinted_conditional_randomization_ensemble`, not physical noise.
+7. **Estimator is target-specific.** No universal `1/B` or `1/(B-1)` divisor
+   is inherited. Centering, design correction, missingness, rank, covariance
+   domain, effective information, regularization, and uncertainty of the
+   uncertainty are method facts.
+8. **Standardized signal is separate.** `sig2noise` is not a scientific
+   identity. `NOI-STD` binds an immutable numerator and a transformed positive
+   scale in the numerator unit; variance, covariance, inverse variance,
+   precision, and weight are not direct denominators.
+9. **Truthful claim ceiling.** Without exact null, selection, search,
+   multiplicity, and validation authority, a STD product is only “standardized
+   by the stated empirical scale.”
+10. **No MAP coefficient promotion.** NOI variance, inverse variance,
+    precision, scale, or weight cannot become a PTC/MAP gridding or coadd
+    coefficient without separately authorized successor/feedback authority.
+11. **Immutable parents.** MAP and JINC products and their original claims are
+    unchanged. NOI products attach as new versioned companions.
+12. **Honest covariance plurality.** Diagonal, stationary/kernel, structured,
+    projected, retained-ensemble, full, and unavailable states are all allowed
+    when domain, rank, null space, omitted terms, and limitations are explicit.
+13. **Plan-controlled persistence.** Persisted members, exact regeneration,
+    and streaming sufficient statistics are distinct plans. Audit limitations
+    are recorded; dense signs or per-sample provenance are not universally
+    required.
+14. **Exact parent routes and profiles.** Only the manifest-bound sanitized
+    MAP, JINC, pre-MAP PTC, FLT/FRUIT, and NOI-owned admission/profile artifacts
+    may supply adjacent authority. No full adjacent package is imported.
 
-## Historical Decisions Retained Only As Sanitized Constraints
-
-The future contract may retain these stable prior decisions without opening
-their implementation/audit records:
+## Sanitized Inherited Constraints
 
 - compact deterministic assignments may be reconstructed from exact identity,
   algorithm/version, seed/key derivation, partition, and completed membership;
-- enabled generation requires positive effective/completed membership, while
-  disabled is an explicit zero-ensemble state;
+- enabled GEN requires a positive resolved and method-valid completed design;
+  disabled is explicit zero-member/no-work;
 - the historical source-imprinted fixed-state stack is a conditional
-  diagnostic and cannot by itself support physical-noise, precision, or
-  significance claims;
-- distinct S/N-like formulae require distinct identities and invalid
-  denominators are unavailable rather than numeric zero; and
-- package-level provenance with stable product joins is acceptable when
-  detached products retain enough identity/restriction information to prevent
-  misuse.
+  diagnostic and cannot establish physical-noise, precision, or significance;
+- distinct standardized-signal formulae require distinct identities and
+  invalid denominators yield unavailable rather than numeric zero; and
+- package-level provenance is acceptable when detached products retain enough
+  exact identity and restriction information to prevent misuse.
 
-These constraints do not select an estimator, count, default, implementation,
-validation plan, or production policy.
-
-## Deliberately Unresolved
-
-The cover does not decide the ordinary fixed/relearned method, coherence and
-balance families, source-suppression target, finite correction, covariance
-representation, empirical-weight role, standardized numerator, persistence
-default, or mode/filter/FRUIT method set. Those decisions remain in the owner
-ledger.
+These constraints do not establish implementation conformity, a validated
+count, calibration, performance, readiness, or production authorization.

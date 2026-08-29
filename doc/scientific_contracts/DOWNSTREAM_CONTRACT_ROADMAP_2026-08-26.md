@@ -2,8 +2,8 @@
 
 Date: `2026-08-26`
 
-Updated: `2026-08-29` for SCI-JINC closure and the owner-directed SCI-NOI
-Stage A launch
+Updated: `2026-08-29` for SCI-JINC closure and the repaired SCI-NOI Stage A
+owner-review gate
 
 Status: scientific-owner-approved program sequencing record
 
@@ -121,12 +121,21 @@ owner records. The scientific owner's `2026-08-29` direction launches bounded
 SCI-NOI v0.1 Stage A at
 [`packages/SCI-NOI/v0.1/`](packages/SCI-NOI/v0.1/).
 
-The launch authorizes recovery and classification of prior NOI science,
-implementation-informed scope investigation, a quarantined dossier, typed
-ownership and product/operator taxonomy, a sanitized Scope Brief, a bounded
-owner-question ledger, and an exact proposed author packet. It selects no
-fixed-state or relearned ordinary method. Implementation-blind Stage B remains
-blocked until the scientific owner reviews the owner decisions and approves
-the exact Scope Brief and packet. No implementation, conformity, validation,
-achieved-performance, readiness, production, Unity, filtering, source/mode,
-or FRUIT action follows.
+The recovery-first launch produced a quarantined dossier and was followed by a
+final implementation-blind Stage A scope repair. The repaired candidate now
+contains collision-free `NOI-GEN`, `NOI-UNC`, and `NOI-STD` roles; exact
+fixed-state/relearned graphs; ensemble-design, source-imprint,
+target/estimator/rank/covariance, and STD tables; exact sanitized MAP, JINC,
+and conditional pre-MAP PTC boundaries; four NOI-owned VAL profile drafts;
+the FLT/Wiener/FRUIT deferral record; one ODQ-101--110 decision candidate; and
+an exclusive SHA-bound author packet.
+
+Implementation-blind Stage B has not been launched. It remains blocked until
+the scientific owner approves or revises every ODQ-101--110 row, exact repaired
+bytes and hashes, conditional pre-MAP inclusion, and required source/profile
+bindings. The first question is ODQ-101: whether fixed-state conditional-sign
+GEN is the ordinary base method while relearned GEN remains separate and
+unavailable without a complete approved rerun graph. The frozen MAP/pre-MAP
+and JINC numerical-parent unavailability states remain unchanged. No
+implementation, conformity, validation, achieved-performance, readiness,
+production, Unity, filtering, source/mode, or FRUIT action follows.

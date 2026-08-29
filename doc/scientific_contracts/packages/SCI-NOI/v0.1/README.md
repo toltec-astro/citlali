@@ -1,6 +1,6 @@
 # SCI-NOI — Noise Realizations And Empirical Uncertainty
 
-Status: Stage A owner-review candidate; Stage B not commissioned
+Status: repaired Stage A owner-review candidate; Stage B not commissioned
 
 Version: `v0.1`
 
@@ -29,10 +29,11 @@ classified:
 - historical tests and validation strictly as implementation evidence, never
   as scientific authority.
 
-The proposed Stage B packet reuses the two independent cores under one
+The repaired proposed Stage B packet reuses the two independent cores under one
 [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md). The cover keeps
 their mathematics while superseding their old two-package organization,
-fixed-state-only premise, and any language that could conflate realization
+fixed-state-only premise, collision-prone bare family symbols, and any language
+that could conflate realization
 generation, uncertainty inference, empirical weights, standardized signal,
 or statistical significance. Exact allowed inputs and the information
 firewall are in [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).
@@ -40,16 +41,24 @@ firewall are in [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).
 This opening has not yet received scientific-owner approval. No Stage B
 scientific author may be commissioned until Grant Wilson approves the exact
 Scope Brief, proposed taxonomy, unresolved-question disposition, and
-content-bound author packet.
+content-bound author packet. The final Stage A repair was performed only from
+the supplied owner directive and existing scientific-authority/Stage A records;
+it did not inspect implementation, configuration, schemas, tests, audits,
+validation, reductions, Unity, defaults, or historical behavior.
 
 ## Current Gate
 
 - Program, roadmap, and frozen-parent adherence: documented.
 - Package-specific prior-work recovery: complete for Stage A owner review.
 - Implementation-informed inventory: complete and quarantined.
-- Ownership and typed-boundary classification: proposed.
-- Initial operator/product taxonomy: proposed.
-- Sanitized Scope Brief and author packet: proposed; not owner-approved.
+- Ownership and typed-boundary classification: repaired and proposed.
+- Collision-free operator/product taxonomy and exact DAGs: proposed.
+- Exact MAP, JINC, and conditional pre-MAP PTC boundaries: proposed; numerical
+  availability remains fail-closed.
+- NOI-owned GEN/member/UNC/STD profile drafts: proposed; not registered.
+- Sanitized owner-decision artifact: complete candidate; no row yet approved.
+- Sanitized Scope Brief and author packet: repaired and content-bound candidate;
+  not owner-approved.
 - Implementation-blind scientific rationale: not commissioned and not
   drafted.
 - Engineering conformance specification: not commissioned and not drafted.
@@ -59,12 +68,12 @@ content-bound author packet.
 
 ## Scientific Boundary
 
-SCI-NOI contains two primary scientific families and one separately identified
+SCI-NOI contains two primary scientific roles and one separately identified
 derived operation:
 
-1. generation of a declared realization ensemble;
-2. empirical uncertainty inference from that exact ensemble; and
-3. construction of a standardized-signal companion from an immutable MAP or
+1. `NOI-GEN`: generation of a declared realization ensemble;
+2. `NOI-UNC`: empirical uncertainty inference from that exact ensemble; and
+3. `NOI-STD`: construction of a standardized-signal companion from an immutable MAP or
    JINC parent and an authorized uncertainty product.
 
 The boundaries are hard and typed. An ensemble does not become variance,
@@ -79,6 +88,10 @@ with exact parent, method, conditioning, domain, support, and availability
 identity. An empirical NOI weight is not a PTC/MAP gridding coefficient and
 cannot cross that boundary without explicit future authority.
 
+The current frozen authorities do not supply a generally authorized numerical
+MAP, pre-MAP-to-MAP, or JINC parent route. The exact boundary artifacts preserve
+those typed unavailable states and do not create numerical products.
+
 ## Stage A Contents
 
 - [`SCIENTIFIC_OWNER_STAGE_A_DIRECTION_2026-08-29.md`](SCIENTIFIC_OWNER_STAGE_A_DIRECTION_2026-08-29.md): durable owner launch direction
@@ -92,25 +105,43 @@ cannot cross that boundary without explicit future authority.
 - [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md):
   sanitized parent, ownership, and typed-boundary extract
 - [`AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md`](AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md):
-  proposed initial method and product taxonomy
+  collision-free roles, exact operator DAGs, ensemble/source-imprint,
+  estimator/covariance, STD, and atomic lifecycle tables
+- [`SCI-MAP_TO_SCI-NOI_BOUNDARY.md`](SCI-MAP_TO_SCI-NOI_BOUNDARY.md): exact
+  sanitized MAP parent boundary
+- [`SCI-JINC_TO_SCI-NOI_BOUNDARY.md`](SCI-JINC_TO_SCI-NOI_BOUNDARY.md): exact
+  sanitized JINC parent boundary and numerical-unavailability state
+- [`SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md`](SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md):
+  conditional exact pre-MAP GEN boundary
+- [`SCI-NOI_VAL_PROFILE_DRAFTS.md`](SCI-NOI_VAL_PROFILE_DRAFTS.md): four
+  NOI-owned use-specific VAL policy drafts
+- [`FILTER_AND_FRUIT_SCOPE.md`](FILTER_AND_FRUIT_SCOPE.md): deterministic FLT,
+  Wiener, and FRUIT inclusion/deferral record
+- [`SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`](SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md):
+  one sanitized ODQ-101--110 decision candidate for owner walkthrough
 - [`OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md`](OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md):
   complete Stage A ownership matrix
 - [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): exact proposed
   allowed and prohibited inputs
+- [`AUTHOR_PACKET_MANIFEST.sha256`](AUTHOR_PACKET_MANIFEST.sha256): external
+  SHA-256 binding for the manifest bytes
 - [`DECISION_LOG.md`](DECISION_LOG.md): launch decisions and applied recovery
-  dispositions
+  and final-repair dispositions
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md):
   recovered decisions and bounded genuine owner questions
 - [`CROSSWALK.md`](CROSSWALK.md): reserved Stage B traceability surface
+- [`STAGE_A_CHANGE_LOG.md`](STAGE_A_CHANGE_LOG.md): exact final repair and
+  preserved claim boundary
 - `src/` and `pdf/`: canonical paths reserved without normative or rendered
   Stage B content
 
 ## Stop Boundary
 
-Stop after presenting these Stage A artifacts for owner review and opening the
-owner-decision walkthrough. Do not draft the implementation-blind scientific
+Stop after presenting these repaired Stage A artifacts for owner review and
+opening the owner-decision walkthrough at `SCI-NOI-ODQ-101`. Do not draft the implementation-blind scientific
 rationale, shared normative core, engineering conformance specification, or
-PDFs before explicit owner approval. Do not implement or modify SCI-NOI
-algorithms, and do not alter frozen MAP, JINC, or PTC contracts. Make no
+PDFs before explicit approval of every ODQ-101--110 row, every exact packet
+byte/hash, and the required source/profile bindings. Do not implement or modify
+SCI-NOI algorithms, and do not alter frozen MAP, JINC, or PTC contracts. Make no
 implementation-conformity, validation, achieved-performance, readiness, or
 production claim under this launch.
