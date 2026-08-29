@@ -40,47 +40,65 @@ before resolving eligibility. Focused coverage now rejects unknown networks,
 rows on both sides of plan support, negative detector indices, and detector
 indices past the bound axis through both plan and product query surfaces.
 
-The representative observation 152390 gate passes under the owner-approved
-provisional integration-center support assignment; calibration remains pending
-and may replace or correct that timing relation. Exact source revision
-`bb969448006ea4c3befd33f6404f875eb14232a2` used all 11 networks,
-5,518 detectors, and 2,048 rows per network. All 22,528 native occurrences and
-11,300,864 native detector occurrences were retained. The runner performed
-22,601,728 bitwise paired-ingress comparisons, 22,601,728 bitwise RTC-product
-comparisons, and exhaustive native identity, support, timing, decision, cause,
-and chunk comparisons with zero mismatches. RTC evidence contains 227,328
-compact events using 3,637,248 bytes; the immutable identity plan owns zero
-dynamic bytes and RTC owns zero numerical bytes. Paired-ingress-through-
-publication execution measured 3.084 seconds wall, 2.951 seconds CPU, and
-611,696,640 bytes peak RSS.
+The formal independent review of `bb9694480` found no further bounded-route
+implementation defect, but held acceptance on three evidence defects: the
+executable admitted only an abbreviated source revision and did not prove the
+complete dirty dependency state; the validator did not require the exact
+approved support-assignment artifact, identity, and integration-center role;
+and detector, member-state, decision, and cause expectations were derived
+circularly from the admitted parent. Revision
+`434919a84406ef84afaaebc1169cf0430accf3f3` corrects all three without changing
+the scientific operator. Its target-specific build gate requires a clean exact
+Citlali commit and proves Kidscpp and Tula as exact approved-base-plus-patch Git
+trees. The runner rejects any support artifact other than the owner-approved
+bytes and derives ingress/product expectations independently from APT binding,
+Tune validity, solver finiteness, and raw native timing facts.
 
-The [v3 acceptance record](../handoff/WP7_IDENTITY_RTC_ACCEPTANCE_152390_V3_2026-08-29.json)
+The refreshed representative observation 152390 gate passes under the same
+owner-approved provisional integration-center support assignment; calibration
+remains pending and may replace or correct that timing relation. Exact source
+revision `434919a84406ef84afaaebc1169cf0430accf3f3` used all 11 networks, 5,518
+detectors, and 2,048 rows per network. All 22,528 native occurrences and
+11,300,864 native detector occurrences were retained. In addition to
+22,601,728 paired-ingress and 22,601,728 RTC-product bitwise value comparisons,
+the runner independently checked all 5,518 admitted detector bindings and
+22,601,728 admitted member states. Exhaustive native identity, support, timing,
+decision, cause, and chunk comparisons have zero mismatches. RTC evidence
+contains 227,328 compact events using 3,637,248 bytes; the immutable identity
+plan owns zero dynamic bytes and RTC owns zero numerical bytes. The corrected
+primary paired-ingress-through-publication timer measured 0.318 seconds wall
+and 0.222 seconds CPU. Process-lifetime peak RSS was 610,385,920 bytes and is
+not mislabeled as route-local allocation.
+
+The [v4 acceptance record](../handoff/WP7_IDENTITY_RTC_ACCEPTANCE_152390_V4_2026-08-29.json)
 has SHA-256
-`cb99161b16a84798206e9e070e379131cf922fc3159ccf8940dd9b13a5dd0aaa`
-and passes the repository validator. The earlier v1 and v2 records remain
-historical diagnostics but are superseded because they represented the RTC
-product on an ALIGN-selected common grid.
+`0c2f96047419af086656e46bd3b2922474e83f02ae1c450c466cc7b5a6839ff4`,
+binds executable SHA-256
+`1138dfe185dbe1d05e4d7bab7d20f70cc785042fca3f76a5bcd22dd0840b5a21`,
+and passes the strengthened repository validator. The v3 record remains a
+historical native-axis diagnostic but is superseded because its gate did not
+prove those bindings and independent expectations. V1 and v2 also remain
+historical diagnostics and used the superseded ALIGN common grid.
 
-Exact-revision local validation passes: all 117 focused WP-7 and ALIGN tests;
-847 runnable repository CTests with the one established disabled test
-unchanged; all 207 baseline-tool tests; all 8 acceptance-validator tests; and
-all 129 required config unit tests plus downstream audits. The CLI and
-acceptance executable are version-stamped from the exact candidate revision.
+Exact-revision local validation passes: all 117 focused WP-7 and ALIGN tests
+plus two exact-build-state tests; all 848 runnable repository CTests with the
+one established disabled test unchanged; all 207 baseline-tool tests; all 12
+acceptance-validator tests; and all 129 required config unit tests plus
+downstream audits.
 
-The representative execution gate is closed for this bounded native-axis
-identity route under the declared provisional assignment. Fresh independent
-read-only re-review of exact revision `bb9694480` and the v3 record remains the
-next acceptance gate. D19 calibration remains open and limits the timing-role
-claim; it does not weaken the identity arithmetic, pair decisions, native
-support retention, or execution evidence. Until re-review passes, the
-increment is not accepted for production readiness or activation, the legacy
-route remains authoritative, and no accepted-run or intended-science-change
-ledger entry is made.
+The repaired representative execution package is ready for fresh independent
+read-only re-review of exact implementation revision `434919a84` and the v4
+record. D19 calibration remains open and limits the timing-role claim; it does
+not weaken the identity arithmetic, pair decisions, native support retention,
+or execution evidence. Until re-review passes, the increment is not accepted
+for production readiness or activation, the legacy route remains
+authoritative, and no accepted-run or intended-science-change ledger entry is
+made.
 
 ## 2026-08-28 WP-7 Identity RTC First Vertical Increment (Superseded)
 
 This section records the earlier common-grid v1/v2 implementation and evidence.
-It is superseded by the native-axis correction and v3 evidence above.
+It is superseded by the native-axis correction and v4 evidence above.
 
 The bounded WP-7 identity RTC implementation remains on a clean base that
 retains accepted design commit `46824f7de` and ALIGN strict-half repair
