@@ -83,24 +83,26 @@ def valid_record() -> dict[str, object]:
             "paired_identity_text_bytes": 100,
             "paired_logical_owned_bytes": 434676,
             "referenced_native_axis_count": 2,
-            "aligned_cell_count": 100,
-            "mapped_cell_count": 90,
+            "rtc_native_occurrence_count": 4096,
+            "rtc_detector_occurrence_count": 20480,
             "evidence_event_count": 5,
             "direct_x_event_count": 3,
             "direct_r_event_count": 4,
             "x_and_r_event_count": 2,
-            "alignment_absence_event_count": 0,
             "pair_ineligible_cell_count": 5,
             "x_numerically_valid_cell_count": 80,
             "r_numerically_valid_cell_count": 80,
             "derived_evidence_bytes": 80,
-            "derived_plan_bytes": 40,
-            "paired_value_comparison_count": 180,
-            "identity_comparison_count": 100,
-            "support_comparison_count": 100,
+            "derived_plan_bytes": 0,
+            "paired_ingress_value_comparison_count": 40960,
+            "rtc_product_value_comparison_count": 40960,
+            "identity_comparison_count": 20480,
+            "support_comparison_count": 4096,
+            "native_time_comparison_count": 4096,
+            "representative_native_comparison_count": 4096,
             "assigned_support_binding_count": 4096,
-            "pair_decision_comparison_count": 100,
-            "pair_causal_evidence_comparison_count": 100,
+            "pair_decision_comparison_count": 20480,
+            "pair_causal_evidence_comparison_count": 20480,
             "chunk_partition_count": 2,
             "wall_time_sec": 1.0,
             "cpu_time_sec": 0.5,
@@ -117,11 +119,11 @@ def valid_record() -> dict[str, object]:
             "chunk_scientific_mismatch_count": 0,
             "selected_time_mismatch_count": 0,
             "representative_native_mismatch_count": 0,
-            "ast_interpolation_call_count": 0,
-            "cal_call_count": 0,
-            "val_call_count": 0,
-            "ptc_call_count": 0,
-            "map_call_count": 0,
+            "native_admission_entry_count": 1,
+            "learn_entry_count": 1,
+            "consider_entry_count": 1,
+            "apply_entry_count": 1,
+            "publication_entry_count": 1,
             "unexpected_error_count": 0,
             "unexpected_critical_count": 0,
         },
@@ -134,7 +136,7 @@ class AcceptanceValidatorTest(unittest.TestCase):
 
     def test_rejects_unchecked_pair_causal_evidence(self) -> None:
         record = valid_record()
-        record["metrics"]["pair_causal_evidence_comparison_count"] = 99
+        record["metrics"]["pair_causal_evidence_comparison_count"] = 20479
         with self.assertRaisesRegex(
             validator.AcceptanceError,
             "pair_causal_evidence_comparison_count",
@@ -177,6 +179,24 @@ class AcceptanceValidatorTest(unittest.TestCase):
         with self.assertRaisesRegex(
             validator.AcceptanceError,
             "assigned_support_binding_count",
+        ):
+            validator.validate(record)
+
+    def test_rejects_partial_native_product_comparison(self) -> None:
+        record = valid_record()
+        record["metrics"]["rtc_product_value_comparison_count"] = 40958
+        with self.assertRaisesRegex(
+            validator.AcceptanceError,
+            "rtc_product_value_comparison_count",
+        ):
+            validator.validate(record)
+
+    def test_rejects_unobserved_route_stage_trace(self) -> None:
+        record = valid_record()
+        record["metrics"]["apply_entry_count"] = 0
+        with self.assertRaisesRegex(
+            validator.AcceptanceError,
+            "apply_entry_count",
         ):
             validator.validate(record)
 

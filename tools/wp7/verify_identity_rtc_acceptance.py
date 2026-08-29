@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA = "citlali-wp7-identity-rtc-acceptance-v2"
+SCHEMA = "citlali-wp7-identity-rtc-acceptance-v3"
 OCCURRENCE_SUPPORT_ASSIGNMENT_SCHEMA = (
     "citlali-native-occurrence-support-assignment-v1"
 )
@@ -245,15 +245,24 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError(
             "referenced_native_axis_count must equal network_count"
         )
-    aligned_cells = require_integer(metrics, "aligned_cell_count", 1)
-    mapped_cells = require_integer(metrics, "mapped_cell_count", 1)
-    if mapped_cells > aligned_cells:
-        raise AcceptanceError("mapped_cell_count cannot exceed aligned_cell_count")
+    if (
+        require_integer(metrics, "rtc_native_occurrence_count", 1)
+        != native_occurrences
+    ):
+        raise AcceptanceError(
+            "rtc_native_occurrence_count must cover every native occurrence"
+        )
+    if (
+        require_integer(metrics, "rtc_detector_occurrence_count", 1)
+        != detector_occurrences
+    ):
+        raise AcceptanceError(
+            "rtc_detector_occurrence_count must cover every native detector occurrence"
+        )
     evidence_events = require_integer(metrics, "evidence_event_count")
     direct_x_events = require_integer(metrics, "direct_x_event_count")
     direct_r_events = require_integer(metrics, "direct_r_event_count")
     both_events = require_integer(metrics, "x_and_r_event_count")
-    alignment_absences = require_integer(metrics, "alignment_absence_event_count")
     ineligible_cells = require_integer(metrics, "pair_ineligible_cell_count")
     if evidence_events != ineligible_cells:
         raise AcceptanceError(
@@ -262,33 +271,59 @@ def validate(record: dict[str, Any]) -> None:
     if (
         both_events > direct_x_events
         or both_events > direct_r_events
-        or alignment_absences > evidence_events
-        or ineligible_cells > aligned_cells
+        or ineligible_cells > detector_occurrences
     ):
         raise AcceptanceError("RTC evidence summary counts are inconsistent")
-    if require_integer(metrics, "x_numerically_valid_cell_count") > mapped_cells:
-        raise AcceptanceError("x valid cell count cannot exceed mapped cells")
-    if require_integer(metrics, "r_numerically_valid_cell_count") > mapped_cells:
-        raise AcceptanceError("r valid cell count cannot exceed mapped cells")
+    if (
+        require_integer(metrics, "x_numerically_valid_cell_count")
+        > detector_occurrences
+    ):
+        raise AcceptanceError("x valid cell count cannot exceed native cells")
+    if (
+        require_integer(metrics, "r_numerically_valid_cell_count")
+        > detector_occurrences
+    ):
+        raise AcceptanceError("r valid cell count cannot exceed native cells")
     derived_evidence_bytes = require_integer(metrics, "derived_evidence_bytes")
     if derived_evidence_bytes > 16 * evidence_events:
         raise AcceptanceError(
             "derived_evidence_bytes exceeds the compact event bound"
         )
-    require_integer(metrics, "derived_plan_bytes")
-    compared_values = require_integer(metrics, "paired_value_comparison_count", 1)
-    if compared_values != 2 * mapped_cells:
+    require_zero(metrics, "derived_plan_bytes")
+    compared_values = require_integer(
+        metrics, "paired_ingress_value_comparison_count", 1
+    )
+    if compared_values != 2 * detector_occurrences:
         raise AcceptanceError(
-            "paired_value_comparison_count must cover x and r for every mapped cell"
+            "paired_ingress_value_comparison_count must cover x and r for every native cell"
         )
-    if require_integer(metrics, "identity_comparison_count", 1) != aligned_cells:
+    product_values = require_integer(
+        metrics, "rtc_product_value_comparison_count", 1
+    )
+    if product_values != 2 * detector_occurrences:
         raise AcceptanceError(
-            "identity_comparison_count must cover every aligned cell"
+            "rtc_product_value_comparison_count must cover x and r for every native cell"
         )
-    if require_integer(metrics, "support_comparison_count", 1) != aligned_cells:
+    if (
+        require_integer(metrics, "identity_comparison_count", 1)
+        != detector_occurrences
+    ):
         raise AcceptanceError(
-            "support_comparison_count must cover every aligned cell"
+            "identity_comparison_count must cover every native detector occurrence"
         )
+    if (
+        require_integer(metrics, "support_comparison_count", 1)
+        != native_occurrences
+    ):
+        raise AcceptanceError(
+            "support_comparison_count must cover every native occurrence"
+        )
+    for name in (
+        "native_time_comparison_count",
+        "representative_native_comparison_count",
+    ):
+        if require_integer(metrics, name, 1) != native_occurrences:
+            raise AcceptanceError(f"{name} must cover every native occurrence")
     if (
         require_integer(metrics, "assigned_support_binding_count", 1)
         != native_occurrences
@@ -296,22 +331,34 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError(
             "assigned_support_binding_count must cover every native occurrence"
         )
-    if require_integer(metrics, "pair_decision_comparison_count", 1) != aligned_cells:
+    if (
+        require_integer(metrics, "pair_decision_comparison_count", 1)
+        != detector_occurrences
+    ):
         raise AcceptanceError(
-            "pair_decision_comparison_count must cover every aligned cell"
+            "pair_decision_comparison_count must cover every native detector occurrence"
         )
     if (
         require_integer(metrics, "pair_causal_evidence_comparison_count", 1)
-        != aligned_cells
+        != detector_occurrences
     ):
         raise AcceptanceError(
-            "pair_causal_evidence_comparison_count must cover every aligned cell"
+            "pair_causal_evidence_comparison_count must cover every native detector occurrence"
         )
     require_integer(metrics, "chunk_partition_count", 2)
     require_number(metrics, "wall_time_sec")
     require_number(metrics, "cpu_time_sec")
     require_integer(metrics, "peak_rss_bytes", 1)
     require_zero(metrics, "rtc_owned_numeric_bytes")
+    for name in (
+        "native_admission_entry_count",
+        "learn_entry_count",
+        "consider_entry_count",
+        "apply_entry_count",
+        "publication_entry_count",
+    ):
+        if require_integer(metrics, name, 1) != 1:
+            raise AcceptanceError(f"{name} must be exactly one")
 
     for name in (
         "x_bitwise_mismatch_count",
@@ -325,11 +372,6 @@ def validate(record: dict[str, Any]) -> None:
         "chunk_scientific_mismatch_count",
         "selected_time_mismatch_count",
         "representative_native_mismatch_count",
-        "ast_interpolation_call_count",
-        "cal_call_count",
-        "val_call_count",
-        "ptc_call_count",
-        "map_call_count",
         "unexpected_error_count",
         "unexpected_critical_count",
     ):

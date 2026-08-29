@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace citlali::pipeline {
 
@@ -87,19 +88,23 @@ constexpr const char *rtc_only_failure_cause_name(
 struct RtcOnlyDiagnostics {
     std::size_t network_count = 0;
     std::size_t detector_count = 0;
-    std::size_t aligned_cell_count = 0;
-    std::size_t mapped_cell_count = 0;
+    std::size_t native_occurrence_count = 0;
+    std::size_t detector_occurrence_count = 0;
     std::size_t evidence_event_count = 0;
     std::size_t direct_x_event_count = 0;
     std::size_t direct_r_event_count = 0;
     std::size_t x_and_r_event_count = 0;
-    std::size_t alignment_absence_event_count = 0;
     std::size_t pair_ineligible_cell_count = 0;
     std::size_t x_numerically_valid_cell_count = 0;
     std::size_t r_numerically_valid_cell_count = 0;
     std::size_t derived_evidence_bytes = 0;
     std::size_t derived_plan_bytes = 0;
     std::size_t rtc_owned_numeric_bytes = 0;
+    std::size_t native_admission_entry_count = 0;
+    std::size_t learn_entry_count = 0;
+    std::size_t consider_entry_count = 0;
+    std::size_t apply_entry_count = 0;
+    std::size_t publication_entry_count = 0;
 };
 
 struct RtcOnlyTerminalResult {
@@ -185,14 +190,12 @@ private:
 };
 
 // This is an explicit application-boundary request, not a YAML or persistent
-// TOD schema.  The caller supplies the already-authoritative native pair and
-// ALIGN relation; the route invokes no AST, CAL, VAL, PTC, or MAP service.
+// TOD schema. The caller supplies the already-authoritative native pair and
+// one engineering partition over its per-network native occurrence axes.
 struct RtcOnlyRouteRequest {
     RtcOnlyRunIdentity identity;
     std::shared_ptr<const PairedReadout> native_input;
-    std::shared_ptr<const NativeAlignmentPlan> alignment;
-    std::size_t first_common_slot = 0;
-    std::size_t past_last_common_slot = 0;
+    std::vector<NativeOccurrenceSpan> native_spans;
 };
 
 struct RtcOnlyRouteOutcome {
@@ -217,21 +220,17 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
         return {terminal, nullptr};
     }
 
-    std::shared_ptr<const AlignedPairedReadout> aligned;
+    std::shared_ptr<const NativePairedReadoutView> native_view;
     try {
-        aligned = AlignedPairedReadout::admit(
-            request.native_input, request.alignment,
-            request.first_common_slot, request.past_last_common_slot);
-        const auto native_cardinality =
-            request.native_input->cardinality();
-        terminal.diagnostics.network_count =
-            native_cardinality.network_count;
-        terminal.diagnostics.detector_count =
-            native_cardinality.detector_count;
-        terminal.diagnostics.aligned_cell_count =
-            aligned->aligned_cell_count();
-        terminal.diagnostics.mapped_cell_count =
-            aligned->mapped_cell_count();
+        ++terminal.diagnostics.native_admission_entry_count;
+        native_view = NativePairedReadoutView::admit(
+            request.native_input, request.native_spans);
+        terminal.diagnostics.network_count = native_view->network_count();
+        terminal.diagnostics.detector_count = native_view->detector_count();
+        terminal.diagnostics.native_occurrence_count =
+            native_view->native_occurrence_count();
+        terminal.diagnostics.detector_occurrence_count =
+            native_view->detector_occurrence_count();
     } catch (const std::exception &error) {
         terminal.state = RtcOnlyTerminalState::input_admission_failed;
         terminal.failure_cause =
@@ -242,7 +241,8 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
 
     std::shared_ptr<const RtcEvidence> evidence;
     try {
-        evidence = learn_identity_rtc(aligned, request.identity.run);
+        ++terminal.diagnostics.learn_entry_count;
+        evidence = learn_identity_rtc(native_view, request.identity.run);
         const auto &summary = evidence->summary();
         terminal.diagnostics.evidence_event_count =
             summary.accepted_event_count;
@@ -252,8 +252,6 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
             summary.direct_r_event_count;
         terminal.diagnostics.x_and_r_event_count =
             summary.x_and_r_event_count;
-        terminal.diagnostics.alignment_absence_event_count =
-            summary.alignment_absence_event_count;
         terminal.diagnostics.derived_evidence_bytes =
             evidence->memory_evidence().logical_owned_bytes();
     } catch (const std::exception &error) {
@@ -266,6 +264,7 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
 
     std::shared_ptr<const RtcPlan> plan;
     try {
+        ++terminal.diagnostics.consider_entry_count;
         plan = consider_identity_rtc(evidence, request.identity.run);
         terminal.diagnostics.derived_plan_bytes =
             plan->memory_evidence().logical_owned_bytes();
@@ -279,7 +278,8 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
 
     RtcApplyResult applied;
     try {
-        applied = apply_identity_rtc(plan, aligned);
+        ++terminal.diagnostics.apply_entry_count;
+        applied = apply_identity_rtc(plan, native_view);
         terminal.diagnostics.pair_ineligible_cell_count =
             applied.realization.pair_ineligible_cell_count;
         terminal.diagnostics.x_numerically_valid_cell_count =
@@ -297,6 +297,7 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
     }
 
     terminal.state = RtcOnlyTerminalState::complete;
+    ++terminal.diagnostics.publication_entry_count;
     auto candidate = std::shared_ptr<const RtcOnlyTerminalProduct>(
         new RtcOnlyTerminalProduct{std::move(applied), terminal});
     try {

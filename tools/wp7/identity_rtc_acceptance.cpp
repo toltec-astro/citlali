@@ -3,7 +3,6 @@
 #include <citlali/core/pipeline/observation_setup_validation.h>
 #include <citlali/core/pipeline/paired_readout_kids_adapter.h>
 #include <citlali/core/pipeline/rtc_only_route.h>
-#include <citlali/core/pipeline/timestream_alignment_helpers.h>
 #include <citlali/core/utils/sha256.h>
 
 #include <citlali_config/gitversion.h>
@@ -38,7 +37,6 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
-#include <map>
 #include <memory>
 #include <optional>
 #include <random>
@@ -60,7 +58,7 @@ namespace pipeline = citlali::pipeline;
 namespace apt = citlali::pipeline::canonical_apt_v2;
 
 constexpr std::string_view acceptance_schema =
-    "citlali-wp7-identity-rtc-acceptance-v2";
+    "citlali-wp7-identity-rtc-acceptance-v3";
 constexpr std::string_view occurrence_support_assignment_schema =
     "citlali-native-occurrence-support-assignment-v1";
 constexpr std::string_view occurrence_support_duration_relation =
@@ -627,47 +625,6 @@ std::vector<NetworkInput> resolve_network_inputs(
     return result;
 }
 
-std::shared_ptr<const pipeline::NativeAlignmentPlan> make_alignment_plan(
-    const pipeline::NativeObservationScope &scope,
-    const std::vector<NetworkInput> &inputs,
-    const std::shared_ptr<spdlog::logger> &logger) {
-    std::vector<Eigen::VectorXd> times;
-    times.reserve(inputs.size());
-    double reference_sample_frequency_hz = -1.0;
-    for (const auto &input : inputs) {
-        times.push_back(input.native_timing->reconstructed_times_unix_sec());
-        reference_sample_frequency_hz =
-            pipeline::reconcile_sample_rate_hz(
-                reference_sample_frequency_hz, input.sample_frequency_hz,
-                input.source.network);
-    }
-    const auto overlap = pipeline::find_common_timestream_overlap(
-        times, "WP-7 identity RTC acceptance");
-    const double dt = 1.0 / reference_sample_frequency_hz;
-    auto common_times = pipeline::build_common_gap_time_grid(
-        overlap.max_start, overlap.min_end, dt,
-        "WP-7 identity RTC acceptance");
-    require(common_times.size() >= 4,
-            "representative slice has too few common ALIGN slots");
-    const auto masks = pipeline::build_common_time_grid_masks(
-        times, common_times, overlap.max_start, dt, dt / 2.0, logger);
-    std::vector<pipeline::NativeNetworkAlignment> networks;
-    std::map<pipeline::TimestreamNetworkId,
-             std::vector<pipeline::NativeSlotAssociation>> associations;
-    networks.reserve(inputs.size());
-    for (std::size_t index = 0; index < inputs.size(); ++index) {
-        networks.push_back(*inputs[index].native_timing);
-        associations.emplace(
-            inputs[index].source.network,
-            pipeline::make_gap_native_slot_associations(
-                *inputs[index].native_timing, common_times,
-                masks.at(index), dt));
-    }
-    return std::make_shared<const pipeline::NativeAlignmentPlan>(
-        scope, std::move(networks), std::move(common_times),
-        std::move(associations));
-}
-
 std::vector<pipeline::PairedReadoutDetectorIdentity> detector_axis(
     const pipeline::CanonicalAptDetectorRelationV2 &relation,
     const NetworkInput &input) {
@@ -753,9 +710,12 @@ std::shared_ptr<const pipeline::PairedReadoutOccurrenceAxis> occurrence_axis(
 }
 
 struct ComparisonMetrics {
-    std::size_t paired_value_comparison_count = 0;
+    std::size_t paired_ingress_value_comparison_count = 0;
+    std::size_t rtc_product_value_comparison_count = 0;
     std::size_t identity_comparison_count = 0;
     std::size_t support_comparison_count = 0;
+    std::size_t native_time_comparison_count = 0;
+    std::size_t representative_native_comparison_count = 0;
     std::size_t pair_decision_comparison_count = 0;
     std::size_t pair_causal_evidence_comparison_count = 0;
     std::size_t assigned_support_binding_count = 0;
@@ -811,21 +771,17 @@ struct NativeValueOracle {
 };
 
 NativeValueOracle make_native_value_oracle(
-    const pipeline::NativeAlignmentPlan &alignment,
-    pipeline::TimestreamNetworkId network,
     const kids::TimeStreamSolverResult &result,
     std::int64_t first_native_row) {
     NativeValueOracle oracle;
     const auto &x = result.data_out.xs.data;
     const auto &r = result.data_out.rs.data;
-    for (std::size_t slot = 0; slot < alignment.slot_count(); ++slot) {
-        const auto &association = alignment.association(network, slot);
-        if (!association.mapped()) continue;
-        const auto local = static_cast<Eigen::Index>(
-            association.native_row - first_native_row);
+    for (Eigen::Index local = 0; local < x.rows(); ++local) {
+        const auto native_row = first_native_row +
+            static_cast<pipeline::TimestreamNativeRow>(local);
         for (Eigen::Index detector = 0; detector < x.cols(); ++detector) {
             oracle.cells.emplace_back(
-                association.native_row, detector,
+                native_row, detector,
                 std::bit_cast<std::uint64_t>(x(local, detector)),
                 std::bit_cast<std::uint64_t>(r(local, detector)));
         }
@@ -838,12 +794,12 @@ void compare_moved_native_values(
     const pipeline::PairedReadoutNetwork &network,
     ComparisonMetrics &metrics) {
     for (const auto &[row, detector, x_bits, r_bits] : oracle.cells) {
-        ++metrics.paired_value_comparison_count;
+        ++metrics.paired_ingress_value_comparison_count;
         if (std::bit_cast<std::uint64_t>(network.value(
                 pipeline::ReadoutMember::x, row, detector)) != x_bits) {
             ++metrics.x_bitwise_mismatch_count;
         }
-        ++metrics.paired_value_comparison_count;
+        ++metrics.paired_ingress_value_comparison_count;
         if (std::bit_cast<std::uint64_t>(network.value(
                 pipeline::ReadoutMember::r, row, detector)) != r_bits) {
             ++metrics.r_bitwise_mismatch_count;
@@ -945,8 +901,7 @@ PairedBuildResult build_paired_readout(
     const pipeline::CanonicalAptDetectorRelationV2 &relation,
     const std::vector<NetworkInput> &inputs,
     const RuntimeConfig &config,
-    const NativeOccurrenceSupportAssignment &support_assignment,
-    const std::shared_ptr<const pipeline::NativeAlignmentPlan> &alignment) {
+    const NativeOccurrenceSupportAssignment &support_assignment) {
     std::vector<pipeline::PairedReadoutNetwork> networks;
     std::vector<pipeline::TimestreamNetworkId> inventory;
     ComparisonMetrics metrics;
@@ -980,8 +935,7 @@ PairedBuildResult build_paired_readout(
                         solved.data_out.xs.data.cols(),
                 "KIDs solver did not produce the exact paired native shape");
         auto oracle = make_native_value_oracle(
-            *alignment, input.source.network, solved,
-            arguments.first_native_row);
+            solved, arguments.first_native_row);
         auto mapping = mapping_identity(input, config);
         mapping_digest.update(mapping->producer_instance_id);
         mapping_digest.update(mapping->mapping_revision);
@@ -1009,211 +963,175 @@ PairedBuildResult build_paired_readout(
 pipeline::RtcOnlyRouteOutcome run_route(
     std::uint64_t run,
     const std::shared_ptr<const pipeline::PairedReadout> &paired,
-    const std::shared_ptr<const pipeline::NativeAlignmentPlan> &alignment,
-    std::size_t first_slot, std::size_t past_slot,
+    std::vector<pipeline::NativeOccurrenceSpan> spans,
     pipeline::RtcOnlyProductSlot &publication) {
     return pipeline::run_identity_rtc_only(
-        {{run}, paired, alignment, first_slot, past_slot}, publication);
-}
-
-bool same_optional_double(std::optional<double> lhs,
-                          std::optional<double> rhs) {
-    if (lhs.has_value() != rhs.has_value()) return false;
-    return !lhs || std::bit_cast<std::uint64_t>(*lhs) ==
-                       std::bit_cast<std::uint64_t>(*rhs);
+        {{run}, paired, std::move(spans)}, publication);
 }
 
 void compare_full_product_to_parent(
     const pipeline::RtcTimestream &product,
     ComparisonMetrics &metrics) {
-    const auto &aligned = *product.input_handle();
+    const auto &view = *product.input_handle();
+    const auto &paired = *product.native_parent_handle();
     const auto &evidence = *product.plan_handle()->evidence_handle();
-    const auto &alignment = *aligned.alignment_handle();
-    const auto &paired = *aligned.native_parent_handle();
-    for (const auto network_id : alignment.participant_network_ids()) {
-        const auto &native = paired.network(network_id);
-        for (std::size_t slot = product.first_common_slot();
-             slot < product.past_last_common_slot(); ++slot) {
-            const auto &association = alignment.association(network_id, slot);
-            if (std::bit_cast<std::uint64_t>(product.output_time_unix_sec(slot)) !=
+    for (const auto &span : product.network_spans()) {
+        const auto &native = paired.network(span.network_id);
+        const auto &axis = *native.occurrence_axis_handle();
+        for (auto row = span.first_native_row;
+             row < span.past_last_native_row; ++row) {
+            ++metrics.native_time_comparison_count;
+            if (std::bit_cast<std::uint64_t>(
+                    product.output_time_unix_sec(span.network_id, row)) !=
                 std::bit_cast<std::uint64_t>(
-                    alignment.common_slot_reference_times_unix_sec()(
-                        static_cast<Eigen::Index>(slot)))) {
+                    axis.identity(row).reconstructed_time_unix_sec())) {
                 ++metrics.selected_time_mismatch_count;
             }
+            ++metrics.representative_native_comparison_count;
+            if (!(product.representative_native_identity(
+                      span.network_id, row) == axis.identity(row))) {
+                ++metrics.representative_native_mismatch_count;
+            }
+            ++metrics.support_comparison_count;
+            if (!(product.representative_interval(span.network_id, row) ==
+                  axis.interval(row))) {
+                ++metrics.support_mismatch_count;
+            }
+
             for (Eigen::Index detector = 0;
                  detector < native.detector_count(); ++detector) {
                 ++metrics.identity_comparison_count;
-                const auto actual_identity =
-                    product.identity(network_id, slot, detector);
-                const pipeline::AlignedReadoutCellIdentity expected_identity{
-                    network_id, slot, native.detector(detector).output_uid,
-                    association.mapped() ? association.native_row : -1};
-                if (!(actual_identity == expected_identity)) {
+                const pipeline::RtcNativeCellIdentity expected_identity{
+                    span.network_id, row,
+                    native.detector(detector).output_uid};
+                if (!(product.identity(span.network_id, row, detector) ==
+                      expected_identity)) {
                     ++metrics.identity_mismatch_count;
                 }
 
-                ++metrics.support_comparison_count;
-                const auto actual_interval =
-                    product.representative_interval(network_id, slot);
-                const auto actual_native =
-                    product.representative_native_identity(network_id, slot);
-                if (!association.mapped()) {
-                    if (actual_interval || actual_native) {
-                        ++metrics.support_mismatch_count;
-                        ++metrics.representative_native_mismatch_count;
-                    }
-                    for (const auto member :
-                         {pipeline::ReadoutMember::x,
-                          pipeline::ReadoutMember::r}) {
-                        if (product.value(member, network_id, slot,
-                                          detector) ||
-                            product.member_local_causes(
-                                member, network_id, slot, detector) !=
-                                pipeline::ReadoutMemberCause::
-                                    producer_unavailable) {
-                            ++metrics.member_cause_mismatch_count;
+                for (const auto member :
+                     {pipeline::ReadoutMember::x,
+                      pipeline::ReadoutMember::r}) {
+                    ++metrics.rtc_product_value_comparison_count;
+                    const auto actual = product.value(
+                        member, span.network_id, row, detector);
+                    const auto expected = native.value(
+                        member, row, detector);
+                    if (std::bit_cast<std::uint64_t>(actual) !=
+                        std::bit_cast<std::uint64_t>(expected)) {
+                        if (member == pipeline::ReadoutMember::x) {
+                            ++metrics.x_bitwise_mismatch_count;
+                        } else {
+                            ++metrics.r_bitwise_mismatch_count;
                         }
                     }
-                } else {
-                    const auto expected_interval =
-                        native.occurrence_axis_handle()->interval(
-                            association.native_row);
-                    const auto expected_native =
-                        native.occurrence_axis_handle()->identity(
-                            association.native_row);
-                    if (!actual_interval ||
-                        !(*actual_interval == expected_interval)) {
-                        ++metrics.support_mismatch_count;
-                    }
-                    if (!actual_native || !(*actual_native == expected_native)) {
-                        ++metrics.representative_native_mismatch_count;
-                    }
-                    for (const auto member :
-                         {pipeline::ReadoutMember::x,
-                          pipeline::ReadoutMember::r}) {
-                        const auto value = product.value(
-                            member, network_id, slot, detector);
-                        require(value.has_value(),
-                                "mapped RTC cell lacks a numerical member");
-                        const auto expected = native.value(
-                            member, association.native_row, detector);
-                        if (std::bit_cast<std::uint64_t>(*value) !=
-                            std::bit_cast<std::uint64_t>(expected)) {
-                            if (member == pipeline::ReadoutMember::x) {
-                                ++metrics.x_bitwise_mismatch_count;
-                            } else {
-                                ++metrics.r_bitwise_mismatch_count;
-                            }
-                        }
-                        const auto causes = product.member_local_causes(
-                            member, network_id, slot, detector);
-                        if (causes != native.state(
-                                member, association.native_row, detector)
-                                          .causes()) {
-                            ++metrics.member_cause_mismatch_count;
-                        }
+                    if (product.member_local_causes(
+                            member, span.network_id, row, detector) !=
+                        native.state(member, row, detector).causes()) {
+                        ++metrics.member_cause_mismatch_count;
                     }
                 }
 
                 ++metrics.pair_decision_comparison_count;
-                const auto expected_decision =
-                    association.mapped() && native.pair_valid(
-                        association.native_row, detector)
-                        ? pipeline::RtcPairDecision::eligible
-                        : pipeline::RtcPairDecision::ineligible;
-                if (product.pair_decision(network_id, slot, detector) !=
-                    expected_decision) {
+                const auto expected_decision = native.pair_valid(row, detector)
+                    ? pipeline::RtcPairDecision::eligible
+                    : pipeline::RtcPairDecision::ineligible;
+                if (product.pair_decision(
+                        span.network_id, row, detector) != expected_decision) {
                     ++metrics.pair_decision_mismatch_count;
                 }
+
                 ++metrics.pair_causal_evidence_comparison_count;
                 const auto *actual_evidence = product.pair_causal_evidence(
-                    network_id, slot, detector);
+                    span.network_id, row, detector);
                 if (expected_decision == pipeline::RtcPairDecision::eligible) {
                     if (actual_evidence != nullptr) {
                         ++metrics.pair_causal_evidence_mismatch_count;
                     }
-                } else if (actual_evidence == nullptr) {
+                    continue;
+                }
+                const auto x_valid = native.state(
+                    pipeline::ReadoutMember::x, row, detector).valid();
+                const auto r_valid = native.state(
+                    pipeline::ReadoutMember::r, row, detector).valid();
+                if (actual_evidence == nullptr ||
+                    actual_evidence->direct_x() != !x_valid ||
+                    actual_evidence->direct_r() != !r_valid ||
+                    evidence.scientific_identity(*actual_evidence) !=
+                        expected_identity ||
+                    evidence.member_local_causes(*actual_evidence) !=
+                        native.pair_causes(row, detector)) {
                     ++metrics.pair_causal_evidence_mismatch_count;
-                } else if (!association.mapped()) {
-                    if (!actual_evidence->joint_alignment() ||
-                        actual_evidence->direct_x() ||
-                        actual_evidence->direct_r() ||
-                        evidence.member_local_causes(*actual_evidence) !=
-                            pipeline::PairedReadoutCause::none ||
-                        evidence.alignment_absence(*actual_evidence) !=
-                            aligned.absence_reason(network_id, slot)) {
-                        ++metrics.pair_causal_evidence_mismatch_count;
-                    }
-                } else {
-                    const auto x_valid = native.state(
-                        pipeline::ReadoutMember::x,
-                        association.native_row, detector).valid();
-                    const auto r_valid = native.state(
-                        pipeline::ReadoutMember::r,
-                        association.native_row, detector).valid();
-                    if (actual_evidence->direct_x() != !x_valid ||
-                        actual_evidence->direct_r() != !r_valid ||
-                        actual_evidence->joint_alignment() ||
-                        evidence.member_local_causes(*actual_evidence) !=
-                            native.pair_causes(
-                                association.native_row, detector) ||
-                        evidence.alignment_absence(
-                            *actual_evidence).has_value()) {
-                        ++metrics.pair_causal_evidence_mismatch_count;
-                    }
                 }
             }
         }
     }
+    require(view.detector_occurrence_count() ==
+                metrics.identity_comparison_count,
+            "native RTC view comparison cardinality drifted");
 }
 
 void compare_chunk_to_full(const pipeline::RtcTimestream &chunk,
                            const pipeline::RtcTimestream &full,
                            ComparisonMetrics &metrics) {
-    const auto &alignment = *full.input_handle()->alignment_handle();
-    for (const auto network_id : alignment.participant_network_ids()) {
-        const auto &network = full.input_handle()->network(network_id);
-        for (std::size_t slot = chunk.first_common_slot();
-             slot < chunk.past_last_common_slot(); ++slot) {
-            if (std::bit_cast<std::uint64_t>(chunk.output_time_unix_sec(slot)) !=
-                std::bit_cast<std::uint64_t>(full.output_time_unix_sec(slot))) {
+    const auto &chunk_evidence =
+        *chunk.plan_handle()->evidence_handle();
+    const auto &full_evidence =
+        *full.plan_handle()->evidence_handle();
+    for (const auto &span : chunk.network_spans()) {
+        const auto &network = chunk.input_handle()->network(span.network_id);
+        for (auto row = span.first_native_row;
+             row < span.past_last_native_row; ++row) {
+            if (std::bit_cast<std::uint64_t>(
+                    chunk.output_time_unix_sec(span.network_id, row)) !=
+                    std::bit_cast<std::uint64_t>(
+                        full.output_time_unix_sec(span.network_id, row)) ||
+                !(chunk.representative_native_identity(
+                      span.network_id, row) ==
+                  full.representative_native_identity(
+                      span.network_id, row)) ||
+                !(chunk.representative_interval(span.network_id, row) ==
+                  full.representative_interval(span.network_id, row))) {
                 ++metrics.chunk_scientific_mismatch_count;
             }
             for (Eigen::Index detector = 0;
                  detector < network.detector_count(); ++detector) {
-                if (!(chunk.identity(network_id, slot, detector) ==
-                      full.identity(network_id, slot, detector)) ||
-                    chunk.representative_native_identity(network_id, slot) !=
-                        full.representative_native_identity(network_id, slot) ||
-                    chunk.representative_interval(network_id, slot) !=
-                        full.representative_interval(network_id, slot) ||
-                    chunk.pair_decision(network_id, slot, detector) !=
-                        full.pair_decision(network_id, slot, detector)) {
-                    ++metrics.chunk_scientific_mismatch_count;
-                }
-                const auto *chunk_evidence = chunk.pair_causal_evidence(
-                    network_id, slot, detector);
-                const auto *full_evidence = full.pair_causal_evidence(
-                    network_id, slot, detector);
-                if ((chunk_evidence == nullptr) !=
-                        (full_evidence == nullptr) ||
-                    (chunk_evidence != nullptr &&
-                     !(*chunk_evidence == *full_evidence))) {
+                if (!(chunk.identity(span.network_id, row, detector) ==
+                      full.identity(span.network_id, row, detector)) ||
+                    chunk.pair_decision(span.network_id, row, detector) !=
+                        full.pair_decision(
+                            span.network_id, row, detector)) {
                     ++metrics.chunk_scientific_mismatch_count;
                 }
                 for (const auto member :
                      {pipeline::ReadoutMember::x,
                       pipeline::ReadoutMember::r}) {
-                    if (!same_optional_double(
-                            chunk.value(member, network_id, slot, detector),
-                            full.value(member, network_id, slot, detector)) ||
+                    if (std::bit_cast<std::uint64_t>(chunk.value(
+                            member, span.network_id, row, detector)) !=
+                            std::bit_cast<std::uint64_t>(full.value(
+                                member, span.network_id, row, detector)) ||
                         chunk.member_local_causes(
-                            member, network_id, slot, detector) !=
+                            member, span.network_id, row, detector) !=
                             full.member_local_causes(
-                                member, network_id, slot, detector)) {
+                                member, span.network_id, row, detector)) {
                         ++metrics.chunk_scientific_mismatch_count;
                     }
+                }
+                const auto *chunk_cause = chunk.pair_causal_evidence(
+                    span.network_id, row, detector);
+                const auto *full_cause = full.pair_causal_evidence(
+                    span.network_id, row, detector);
+                if ((chunk_cause == nullptr) != (full_cause == nullptr)) {
+                    ++metrics.chunk_scientific_mismatch_count;
+                } else if (chunk_cause != nullptr &&
+                           (chunk_cause->origin != full_cause->origin ||
+                            chunk_cause->evidence_class !=
+                                full_cause->evidence_class ||
+                            chunk_evidence.scientific_identity(*chunk_cause) !=
+                                full_evidence.scientific_identity(*full_cause) ||
+                            chunk_evidence.member_local_causes(*chunk_cause) !=
+                                full_evidence.member_local_causes(*full_cause))) {
+                    ++metrics.chunk_scientific_mismatch_count;
                 }
             }
         }
@@ -1250,8 +1168,7 @@ AcceptanceRun execute_acceptance(
     const pipeline::CanonicalAptDetectorRelationV2 &relation,
     const std::vector<NetworkInput> &inputs,
     const RuntimeConfig &config,
-    const NativeOccurrenceSupportAssignment &support_assignment,
-    const std::shared_ptr<spdlog::logger> &logger) {
+    const NativeOccurrenceSupportAssignment &support_assignment) {
     const auto &observation = relation.observation();
     const pipeline::NativeObservationScope scope{
         observation.observation, observation.subobservation,
@@ -1259,16 +1176,16 @@ AcceptanceRun execute_acceptance(
     const auto wall_begin = std::chrono::steady_clock::now();
     const auto cpu_begin = std::clock();
 
-    auto alignment = make_alignment_plan(scope, inputs, logger);
     auto paired_build = build_paired_readout(
-        arguments, scope, relation, inputs, config, support_assignment,
-        alignment);
+        arguments, scope, relation, inputs, config, support_assignment);
     const auto native_cardinality = paired_build.paired->cardinality();
     const auto native_memory = paired_build.paired->memory_evidence();
 
     pipeline::RtcOnlyProductSlot full_publication;
+    const auto full_spans =
+        pipeline::full_native_occurrence_spans(*paired_build.paired);
     const auto full = run_route(
-        1, paired_build.paired, alignment, 0, alignment->slot_count(),
+        1, paired_build.paired, full_spans,
         full_publication);
     require(full.complete() &&
                 full_publication.snapshot() == full.published_product,
@@ -1292,17 +1209,27 @@ AcceptanceRun execute_acceptance(
     compare_full_product_to_parent(
         *full.published_product->timestream_handle(), comparisons);
 
-    const auto midpoint = alignment->slot_count() / 2;
-    require(midpoint > 0 && midpoint < alignment->slot_count(),
-            "common slot range cannot be divided into two chunks");
+    auto first_spans = full_spans;
+    auto second_spans = full_spans;
+    for (std::size_t index = 0; index < full_spans.size(); ++index) {
+        const auto &span = full_spans[index];
+        const auto midpoint = span.first_native_row +
+            static_cast<pipeline::TimestreamNativeRow>(
+                span.occurrence_count() / 2);
+        require(midpoint > span.first_native_row &&
+                    midpoint < span.past_last_native_row,
+                "native occurrence span cannot be divided into two chunks");
+        first_spans[index].past_last_native_row = midpoint;
+        second_spans[index].first_native_row = midpoint;
+    }
     pipeline::RtcOnlyProductSlot first_publication;
     pipeline::RtcOnlyProductSlot second_publication;
     const auto first = run_route(
-        2, paired_build.paired, alignment, 0, midpoint,
+        2, paired_build.paired, std::move(first_spans),
         first_publication);
     const auto second = run_route(
-        3, paired_build.paired, alignment, midpoint,
-        alignment->slot_count(), second_publication);
+        3, paired_build.paired, std::move(second_spans),
+        second_publication);
     require(first.complete() && second.complete(),
             "two-chunk identity RTC route did not complete");
     compare_chunk_to_full(
@@ -1313,7 +1240,7 @@ AcceptanceRun execute_acceptance(
         *full.published_product->timestream_handle(), comparisons);
 
     const auto second_publish = run_route(
-        4, paired_build.paired, alignment, 0, alignment->slot_count(),
+        4, paired_build.paired, full_spans,
         full_publication);
     require(!second_publish.complete() &&
                 second_publish.terminal.state ==
@@ -1323,9 +1250,11 @@ AcceptanceRun execute_acceptance(
                 full_publication.snapshot() == full.published_product,
             "second publication did not preserve the committed product");
     pipeline::RtcOnlyProductSlot failed_publication;
+    auto invalid_spans = full_spans;
+    ++invalid_spans.front().past_last_native_row;
     const auto failed = run_route(
-        5, paired_build.paired, alignment, 0,
-        alignment->slot_count() + 1, failed_publication);
+        5, paired_build.paired, std::move(invalid_spans),
+        failed_publication);
     require(!failed.complete() &&
                 failed.terminal.failure_cause ==
                     pipeline::RtcOnlyFailureCause::input_contract_rejected &&
@@ -1352,24 +1281,40 @@ void write_acceptance_record(const Arguments &arguments,
                                  &support_assignment,
                              const AcceptanceRun &run,
                              const LogCounts &logs) {
-    require(run.comparisons.paired_value_comparison_count ==
-                2 * run.terminal.diagnostics.mapped_cell_count,
-            "paired parent comparison count is incomplete");
+    require(run.comparisons.paired_ingress_value_comparison_count ==
+                2 * run.native_cardinality.detector_occurrence_count,
+            "paired ingress comparison count is incomplete");
+    require(run.comparisons.rtc_product_value_comparison_count ==
+                2 * run.native_cardinality.detector_occurrence_count,
+            "RTC product comparison count is incomplete");
     require(run.comparisons.identity_comparison_count ==
-                run.terminal.diagnostics.aligned_cell_count,
+                run.native_cardinality.detector_occurrence_count,
             "identity comparison count is incomplete");
     require(run.comparisons.support_comparison_count ==
-                run.terminal.diagnostics.aligned_cell_count,
+                run.native_cardinality.native_occurrence_count,
             "support comparison count is incomplete");
+    require(run.comparisons.native_time_comparison_count ==
+                run.native_cardinality.native_occurrence_count,
+            "native-time comparison count is incomplete");
+    require(run.comparisons.representative_native_comparison_count ==
+                run.native_cardinality.native_occurrence_count,
+            "representative-native comparison count is incomplete");
     require(run.comparisons.assigned_support_binding_count ==
                 run.native_cardinality.native_occurrence_count,
             "assigned-support binding count is incomplete");
     require(run.comparisons.pair_decision_comparison_count ==
-                run.terminal.diagnostics.aligned_cell_count,
+                run.native_cardinality.detector_occurrence_count,
             "pair-decision comparison count is incomplete");
     require(run.comparisons.pair_causal_evidence_comparison_count ==
-                run.terminal.diagnostics.aligned_cell_count,
+                run.native_cardinality.detector_occurrence_count,
             "pair causal-evidence comparison count is incomplete");
+    const auto &diagnostics = run.terminal.diagnostics;
+    require(diagnostics.native_admission_entry_count == 1 &&
+                diagnostics.learn_entry_count == 1 &&
+                diagnostics.consider_entry_count == 1 &&
+                diagnostics.apply_entry_count == 1 &&
+                diagnostics.publication_entry_count == 1,
+            "successful RTC-only route did not enter its exact allowed stages once");
     std::ofstream output(arguments.output, std::ios::binary | std::ios::trunc);
     require(static_cast<bool>(output),
             "unable to create acceptance JSON: " + arguments.output.string());
@@ -1476,10 +1421,10 @@ void write_acceptance_record(const Arguments &arguments,
            << run.native_memory.logical_owned_bytes() << ",\n"
            << "    \"referenced_native_axis_count\": "
            << run.native_memory.referenced_native_axis_count << ",\n"
-           << "    \"aligned_cell_count\": "
-           << run.terminal.diagnostics.aligned_cell_count << ",\n"
-           << "    \"mapped_cell_count\": "
-           << run.terminal.diagnostics.mapped_cell_count << ",\n"
+           << "    \"rtc_native_occurrence_count\": "
+           << run.terminal.diagnostics.native_occurrence_count << ",\n"
+           << "    \"rtc_detector_occurrence_count\": "
+           << run.terminal.diagnostics.detector_occurrence_count << ",\n"
            << "    \"evidence_event_count\": "
            << run.terminal.diagnostics.evidence_event_count << ",\n"
            << "    \"direct_x_event_count\": "
@@ -1488,8 +1433,6 @@ void write_acceptance_record(const Arguments &arguments,
            << run.terminal.diagnostics.direct_r_event_count << ",\n"
            << "    \"x_and_r_event_count\": "
            << run.terminal.diagnostics.x_and_r_event_count << ",\n"
-           << "    \"alignment_absence_event_count\": "
-           << run.terminal.diagnostics.alignment_absence_event_count << ",\n"
            << "    \"pair_ineligible_cell_count\": "
            << run.terminal.diagnostics.pair_ineligible_cell_count << ",\n"
            << "    \"x_numerically_valid_cell_count\": "
@@ -1502,12 +1445,18 @@ void write_acceptance_record(const Arguments &arguments,
            << run.terminal.diagnostics.derived_evidence_bytes << ",\n"
            << "    \"derived_plan_bytes\": "
            << run.terminal.diagnostics.derived_plan_bytes << ",\n"
-           << "    \"paired_value_comparison_count\": "
-           << run.comparisons.paired_value_comparison_count << ",\n"
+           << "    \"paired_ingress_value_comparison_count\": "
+           << run.comparisons.paired_ingress_value_comparison_count << ",\n"
+           << "    \"rtc_product_value_comparison_count\": "
+           << run.comparisons.rtc_product_value_comparison_count << ",\n"
            << "    \"identity_comparison_count\": "
            << run.comparisons.identity_comparison_count << ",\n"
            << "    \"support_comparison_count\": "
            << run.comparisons.support_comparison_count << ",\n"
+           << "    \"native_time_comparison_count\": "
+           << run.comparisons.native_time_comparison_count << ",\n"
+           << "    \"representative_native_comparison_count\": "
+           << run.comparisons.representative_native_comparison_count << ",\n"
            << "    \"assigned_support_binding_count\": "
            << run.comparisons.assigned_support_binding_count << ",\n"
            << "    \"pair_decision_comparison_count\": "
@@ -1543,11 +1492,16 @@ void write_acceptance_record(const Arguments &arguments,
            << run.comparisons.selected_time_mismatch_count << ",\n"
            << "    \"representative_native_mismatch_count\": "
            << run.comparisons.representative_native_mismatch_count << ",\n"
-           << "    \"ast_interpolation_call_count\": 0,\n"
-           << "    \"cal_call_count\": 0,\n"
-           << "    \"val_call_count\": 0,\n"
-           << "    \"ptc_call_count\": 0,\n"
-           << "    \"map_call_count\": 0,\n"
+           << "    \"native_admission_entry_count\": "
+           << run.terminal.diagnostics.native_admission_entry_count << ",\n"
+           << "    \"learn_entry_count\": "
+           << run.terminal.diagnostics.learn_entry_count << ",\n"
+           << "    \"consider_entry_count\": "
+           << run.terminal.diagnostics.consider_entry_count << ",\n"
+           << "    \"apply_entry_count\": "
+           << run.terminal.diagnostics.apply_entry_count << ",\n"
+           << "    \"publication_entry_count\": "
+           << run.terminal.diagnostics.publication_entry_count << ",\n"
            << "    \"unexpected_error_count\": " << logs.errors << ",\n"
            << "    \"unexpected_critical_count\": " << logs.criticals
            << "\n"
@@ -1614,8 +1568,9 @@ int main(int argc, char **argv) {
         const auto config = load_runtime_config(arguments.config);
         const auto inputs = resolve_network_inputs(
             arguments, relation, config);
+        (void)logger;
         const auto run = execute_acceptance(
-            arguments, relation, inputs, config, support_assignment, logger);
+            arguments, relation, inputs, config, support_assignment);
         require(log_counts->errors == 0 && log_counts->criticals == 0,
                 "acceptance route emitted unexpected error-level records");
         write_acceptance_record(

@@ -1,10 +1,10 @@
 # WP-7 Timestream Successor Implementation Baseline
 
-Status: accepted implementation baseline; implementation not started
+Status: accepted design and implementation-prompt basis; implementation in progress
 
-Version: 1
+Version: 2
 
-Recorded: 2026-08-26
+Recorded: 2026-08-29
 
 Work name: **Citlali WP-7 Timestream Successor Implementation**
 Work classification: **bounded subsystem succession**
@@ -30,20 +30,35 @@ The contract is closed for its approved scope. Implementation work tests
 conformity and may not broaden intentionally unavailable response, covariance,
 stronger-tier, generic-exposure, or external-consumer capabilities.
 
+Scientific authority and implementation evidence are deliberately distinct.
+The WP-7 scientific contracts, owner decisions, validated scientific
+semantics, and accepted audit results are authoritative constraints. Language
+mode, physical layout, typed-view form, workspace organization, parallel
+runtime, numerical libraries, and the earlier S0-S6 decomposition are prior
+design work and evidence. Retain them only when current workload and benchmark
+evidence still support them.
+
 ## Goal
 
 Build one conforming CPU reference route with explicit products and owners:
 
 ```text
 native paired x/r
-  -> ALIGN paired occurrence and required AST coordinates
-  -> RTC conditioned raw-coordinate product
-       +-> explicit RTC-only terminal completion
-       `-> CAL calibrated ordinary x with retained raw-r parentage
+  +-> native-axis identity RTC
+  |    `-> explicit RTC-only terminal completion
+  `-> ALIGN common-slot projection and required AST coordinates
+       `-> complete RTC conditioned raw-coordinate product
+            -> CAL calibrated ordinary x with retained raw-r parentage
             -> VAL decisions for each exact PTC use
             -> PTC configured-rank group-local product
                  -> existing downstream application boundary
 ```
+
+The identity RTC-only route reconstructs and preserves each participant
+network's native occurrence/time identity. It does not consume, invoke, or
+publish common-slot association. ALIGN owns that separate projection and its
+strict-half admission rule when an actual consumer requires a synchronous
+cross-network or cross-detector operator.
 
 The first success criterion is scientific and implementation conformity, not
 maximum portability or peak hardware performance. Performance, memory, and
@@ -55,7 +70,9 @@ correct reference design does not accumulate avoidable hot-path debt.
 The successor owns the reachable WP-7 route through:
 
 - native paired-`x/r` production and admission;
-- ALIGN occurrence mapping and the AST roles required on ALIGN and RTC grids;
+- reconstructed native network timing for the first identity RTC-only route;
+- ALIGN common-slot projection and the AST roles required by later synchronous
+  consumers, without making that projection a blanket ingress prerequisite;
 - RTC evidence, immutable planning, apply state, causes, stable segments,
   filtering, transfer, phase-zero selection, and logical completion;
 - the explicit RTC-only terminal route;
@@ -93,7 +110,8 @@ The implementation separates three categories.
 The scientific carrier owns the minimum state that must survive a package
 boundary. Its logical content includes:
 
-- `x` and `r` numerical planes with common occurrence identity;
+- paired `x` and `r` numerical planes sharing detector and native-occurrence
+  identity within each KIDs solver result;
 - coordinate-local payload availability and validity;
 - typed `x`-local, `r`-local, and pair-wide causes;
 - representative origin and replacement state;
@@ -108,18 +126,22 @@ typed fixed-width masks or another equally compact representation, but cause
 accumulation must remain distinct from scientific admission. A VAL decision is
 not encoded as a producer cause.
 
-The baseline uses aligned contiguous structure-of-arrays storage. The first
-implementation selects one explicit physical layout after a focused prototype
-of the RTC and PTC hot kernels. Detector-major, time-contiguous storage is the
-initial candidate, not a frozen decision. A full CAL-to-PTC repack or tiled
-layout is added only after end-to-end evidence shows a net benefit.
+Use compact axes and contiguous numerical storage as the default data-oriented
+shape. Select the physical layout from the access pattern of each complete
+route, not from the earlier baseline alone. Structure-of-arrays,
+detector-major/time-contiguous storage, a bounded repack, or a tiled layout are
+all implementation choices; retain or introduce one only when focused and
+representative end-to-end evidence shows a net benefit after movement and
+allocation costs.
 
 ### Scratch workspaces
 
-Explicit execution-lifetime workspaces own filter scratch, FFT arrays and
-plans, PTC matrices, decompositions, coefficient vectors, and other reusable
-temporaries. They resize at cold boundaries and are reused within their
-declared worker, run, or observation lifetime.
+When demonstrably useful, explicit execution-lifetime workspaces own filter
+scratch, FFT arrays and plans, PTC matrices, decompositions, coefficient
+vectors, and other reusable temporaries. They resize at cold boundaries and
+are reused within their declared worker, run, or observation lifetime. A
+workspace is not required when a direct bounded value or view is clearer and
+equally efficient.
 
 `std::pmr`, a general allocation framework, and a global workspace cache are
 not baseline requirements. They require allocation-profile evidence and a
@@ -127,12 +149,12 @@ bounded owner before introduction.
 
 ### Numerical views
 
-Kernels receive small Citlali-owned typed views that state value type,
-constness, shape, indexing, and supported layout. A C++20-compatible `mdspan`
-implementation or a small private view may implement those types after a
-toolchain probe. `std::mdspan` itself waits for an application C++23 decision.
-A standard-library facility is an implementation choice and does not become
-the scientific API.
+Kernels receive small typed views or stable handles that state value type,
+constness, shape, indexing, and supported layout. With the successor direction
+of at least C++23, `std::mdspan` is a candidate where multidimensional access
+actually benefits from it; a simpler `std::span` or bounded private view is
+preferred when it communicates the data more directly. A standard-library
+facility is an implementation choice and does not become the scientific API.
 
 Hot kernels should normally know their unit-stride dimension. A completely
 general runtime-stride abstraction is not imposed on every loop.
@@ -142,7 +164,8 @@ general runtime-stride abstraction is not imposed on every loop.
 Engineering chunks are storage and scheduling partitions only. They do not
 redefine:
 
-- native or aligned occurrence identity;
+- native occurrence identity, or aligned occurrence identity after an
+  explicit ALIGN projection has actually been requested;
 - RTC plan evidence or accepted level shifts;
 - stable-segment boundaries and filter reset state;
 - phase-zero representative selection;
@@ -155,45 +178,40 @@ chunk partitions must satisfy the contract's chunk-boundary-invariance rule.
 Chunk-owned allocation is permitted; chunk-relative scientific semantics are
 not.
 
-## Execution baseline
+## Execution direction
 
-The initial execution backend is OpenMP with one controlled parallel layer.
-The public scientific interfaces do not encode an OpenMP schedule or work-unit
-choice.
+Parallelism follows the measured work decomposition. Public scientific
+interfaces do not encode an OpenMP schedule, work-unit choice, or any other
+threading runtime. Begin with the simplest serial or stage-local implementation
+that provides a correct reference; compare plausible parallel policies on
+representative complete-route workloads before selecting one.
 
-The first implementation shall use:
-
-- ordinary ordered stages with stage-local data-parallel loops;
-- no nested OpenMP regions;
-- Eigen, BLAS, and FFTW single-threaded inside an active outer parallel
-  region;
-- explicit effective and realized thread policy;
-- stable partition and merge order where floating-point accumulation depends
-  on order; and
-- no allocation, virtual dispatch, logging, YAML access, or string policy in
-  established sample loops.
-
-GRPPI is not part of the successor execution spine. Whether separate OpenMP
-regions or one persistent team is faster is a measured private implementation
-choice.
+Every selected implementation records effective and realized thread policy,
+uses stable partition and merge order where floating-point accumulation
+depends on order, prevents accidental nested library thread teams, and keeps
+allocation, virtual dispatch, logging, YAML access, and string policy out of
+established sample loops. OpenMP remains available because it is mature and
+already integrated, but it is neither sacred nor a fixed architecture.
 
 ## Numerical-library baseline
 
-### Eigen
+### Linear algebra
 
-Eigen remains the default linear-algebra implementation. Implement the correct
-PTC operation in Eigen first. Distinguish large covariance or matrix products
-from the many bounded time-local normal solves. An external BLAS/LAPACK
-provider is evaluated only for a measured large operation; it is not a new
-baseline dependency and does not introduce nested threading.
+Eigen is the incumbent and is a sensible first reference for many bounded
+operations, but it is retained operation by operation. Distinguish large
+covariance or matrix products from the many bounded time-local normal solves.
+Compare an external BLAS/LAPACK provider, a smaller direct implementation, or
+another mature library when the representative operation justifies it, and
+include conversion, allocation, and threading costs in the comparison.
 
 Factorization reuse keyed by admission masks is not assumed. Instrument mask
 diversity, identical-mask run length, factorization time, solve time, and all
 matrix dependencies before proposing a cache.
 
-### FFTW
+### Transforms
 
-FFTW remains the transform implementation. Each RTC worker or execution
+FFTW is the incumbent transform implementation and remains the reference while
+it is the best measured fit. If retained, each RTC worker or execution
 workspace owns the small explicit set of compatible plans it needs. Plans are
 created and destroyed at cold lifetime boundaries and reused for compatible
 detectors and chunks.
@@ -207,17 +225,20 @@ plan cache is not part of the baseline.
 
 | Category | Meaning | Current contents |
 | --- | --- | --- |
-| **Baseline** | Required in the first conforming implementation | current application C++20 mode; aligned contiguous structure-of-arrays storage; Citlali typed views; explicit workspaces; one OpenMP layer; Eigen; FFTW; focused and end-to-end measurements |
-| **Permitted** | May be used without changing the architecture when locally justified | a C++20-compatible `mdspan` implementation behind Citlali views; fixed-width typed cause masks; exact deployment CPU target; explicit aligned allocation |
-| **Measure** | Prototype against a named workload before adoption | physical layout; repack/tile strategy; persistent OpenMP team; BLAS/LAPACK provider; FFTW sharing or batching; factorization reuse; ThinLTO |
+| **Direction** | Expected successor foundation | at least C++23; explicit ownership and lifetime; compact axes; contiguous storage where advantageous; lightweight views/handles; focused and representative end-to-end measurements |
+| **Retain when justified** | Mature incumbent choices, not design authority | structure-of-arrays layouts; reusable workspaces; OpenMP; Eigen; FFTW |
+| **Measure** | Prototype against a named workload before adoption or retention | physical layout; repack/tile strategy; parallel work decomposition; persistent teams; BLAS/LAPACK provider; FFT implementation and sharing/batching; factorization reuse; ThinLTO |
+| **Permitted** | May be used when locally justified | `std::span`; `std::mdspan`; fixed-width typed cause masks; exact deployment CPU target; explicit aligned allocation |
 | **Deferred** | Do not implement until an observed trigger exists | Highway or other explicit SIMD; Kokkos/GPU; PGO; bit-packed primary validity; `std::pmr`; general task graph; multiple numerical backends |
 | **Rejected for the initial route** | Inconsistent with the accepted baseline | new implementation language; general tensor framework; mixed-precision scientific arithmetic; `-ffast-math`; multiple competing task runtimes; silent legacy fallback |
 
 Moving an item between categories requires a dated baseline revision with the
 measurement, affected boundary, validation result, and owner.
 
-C++23 adoption is governed as an application/toolchain compatibility decision.
-It is not required to implement or optimize this route.
+C++23 migration is coordinated with the application/toolchain build lane. A
+bounded increment need not invent a C++23 abstraction when its direct data
+model is already clear, but new successor architecture must not assume C++20
+is the long-term language ceiling.
 
 ## Determinism and numerical policy
 
@@ -272,9 +293,20 @@ Retain wall time, CPU time, peak RSS, throughput, stage totals, input/config
 identity, compiler/dependency identity, effective/realized threads, success,
 serious-log counts, and scientific comparison results.
 
-## Implementation slices and gates
+## Implementation increments and gates
 
-Slices are dependency-ordered and remain independently reviewable.
+The earlier S0-S6 labels remain dependency and planning history, not frozen
+implementation architecture. The accepted first vertical increment is one
+scientific unit with three coherent review boundaries:
+
+1. paired ingress and native product semantics;
+2. explicit identity RTC learn-consider-apply; and
+3. RTC-only route and in-memory publication integration.
+
+Representative real-data execution and fresh independent conformance review
+gate the completed vertical increment; they are not separate scientific
+milestones. Later work may regroup the historical slices when complete-route
+design and measurements show a clearer boundary.
 
 ### S0: executable seam and measurement scaffold
 
@@ -288,6 +320,8 @@ Slices are dependency-ordered and remain independently reviewable.
 - construct exact native `x/r` atomically;
 - carry independent member validity, pair causes, identity, support, origin,
   and exposure facts;
+- retain each network's native occurrence axis without invoking a common-grid
+  projection or AST;
 - implement the exact identity/pass-through RTC witness; and
 - finalize the explicit RTC-only route without entering CAL, PTC, or MAP.
 
@@ -308,6 +342,8 @@ Slices are dependency-ordered and remain independently reviewable.
 
 ### S4: VAL and contract PTC
 
+- request an explicit ALIGN common-grid projection before the first operator
+  that requires cross-network simultaneity;
 - implement immutable registry/source binding and the five named PTC uses;
 - construct exact fit, loading, application, response, and output supports;
 - implement configured positive rank, centering, mask-aware time-local solve,

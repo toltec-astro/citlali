@@ -1,6 +1,6 @@
 # ADR 0014: WP-7 timestream successor implementation
 
-Status: accepted 2026-08-26; implementation not started
+Status: accepted 2026-08-26; implementation in progress
 
 Decision owners: Citlali project owner, scientific owner, and engineering
 
@@ -41,17 +41,26 @@ succession**: a new implementation of the scientific execution spine inside
 the existing Citlali application, not a whole-application rewrite and not a
 behavior-preserving refactor of the legacy timestream processors.
 
-The successor owns this ordered scientific route:
+The successor owns two explicit routes from the same native paired product:
 
 ```text
 native paired x/r
-  -> ALIGN and required AST roles
-  -> RTC
-       -> explicit RTC-only terminal completion
-       -> CAL
-       -> PTC with VAL-owned named-use decisions
-       -> existing downstream application boundary
+  +-> native-axis identity RTC
+  |    `-> explicit RTC-only terminal completion
+  `-> ALIGN common-slot projection and required AST roles
+       `-> complete RTC
+            -> CAL
+            -> PTC with VAL-owned named-use decisions
+            -> existing downstream application boundary
 ```
+
+The first identity RTC witness consumes reconstructed native network timing,
+not common-slot admission. It retains each network's exact native occurrence
+axis and must not invoke or publish a cross-network projection. ALIGN remains
+the sole owner of common-slot association and its strict half-cadence rule;
+that projection becomes a prerequisite only for an operation whose scientific
+operator requires cross-network simultaneity, such as PTC PCA or a future
+cross-detector RTC learner.
 
 The successor implementation shall:
 
@@ -77,38 +86,32 @@ boundary. Scientific products, temporary workspaces, and non-owning numerical
 views have distinct lifetimes. Engineering chunks must not redefine
 occurrence identity, retained support, filter state, or exposure lineage.
 
-## Initial technology baseline
+## Implementation-technology direction
 
-The first conforming implementation uses a deliberately small technology set:
+The scientific contracts, owner decisions, validated semantics, and accepted
+audit results are fixed authority. The implementation choices recorded by the
+earlier WP-7 baseline are design evidence, not immutable architecture.
 
-- the application's current C++20 language mode;
-- simple aligned contiguous structure-of-arrays storage;
-- Citlali-owned typed multidimensional views;
-- explicit reusable worker or stage workspaces;
-- one controlled OpenMP parallel layer;
-- Eigen for the applicable linear algebra;
-- FFTW with explicitly owned reusable plans; and
-- focused kernel benchmarks plus representative end-to-end performance and
-  scientific-conformance measurements.
+The successor direction is at least C++23. Adopt the language/toolchain change
+through the application build lane, while allowing a bounded increment that
+uses no C++23-only facility to remain source-compatible with the current build
+during migration. Use clean data-oriented ownership, compact axes, contiguous
+numerical storage where it benefits the workload, and explicit immutable
+views or stable handles for referenced producer facts. Do not duplicate heavy
+identity, support, pointing, or provenance per detector-sample cell.
 
-A compatible `mdspan` implementation may back a Citlali view after a toolchain
-probe, but is not exposed as the scientific contract. `std::mdspan` itself
-waits for an application C++23 decision. GRPPI is not an execution dependency
-of the new spine. Nested OpenMP, Eigen, BLAS, and FFTW thread teams are not
-allowed by default.
-
-Alternative physical layouts, a CAL-to-PTC repack, external BLAS/LAPACK,
-explicit SIMD, Highway, Kokkos or GPU execution, generalized FFTW caches,
-factorization caches, bit-packed validity, polymorphic allocation, ThinLTO,
-and PGO remain evidence-triggered experiments. None is an implementation
-prerequisite or architectural promise.
-
-C++23 adoption is a separate application and toolchain decision, not a
-successor performance prerequisite.
+Physical layout, typed-view form, workspace lifetime, allocation strategy,
+parallel decomposition, and numerical-library selection remain measured
+implementation decisions. Reusable workspaces are retained when they reduce
+allocation and clarify ownership. Eigen, FFTW, OpenMP, BLAS/LAPACK, explicit
+SIMD, or another mature implementation is selected only where representative
+kernel and end-to-end evidence shows it remains the best fit. Public scientific
+interfaces do not encode a particular threading runtime or library.
 
 Mixed-precision scientific arithmetic, `-ffast-math`, a new implementation
-language, a general tensor framework, and multiple competing task runtimes are
-outside the accepted initial direction.
+language, a general tensor framework, and multiple competing task runtimes
+remain outside the accepted initial direction absent a separately approved
+scientific and operational case.
 
 The detailed living implementation guidance is
 [`../WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md`](../WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md).
@@ -172,8 +175,9 @@ this decision.
   themselves create one coherent paired product and stage-ownership model.
 - **Adopt an accelerator framework before the CPU reference route:** solves an
   unselected hardware problem before implementation conformity exists.
-- **Replace Eigen or FFTW as a modernization goal:** no measured successor
-  bottleneck justifies that dependency change.
+- **Replace or retain a numerical library without workload evidence:** a
+  modernization label or prior use alone does not justify the dependency
+  choice.
 - **Activate the successor incrementally through silent fallbacks:** permits
   one request to mix incompatible scientific authorities.
 

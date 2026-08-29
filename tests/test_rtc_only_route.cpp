@@ -4,8 +4,12 @@
 
 #include <bit>
 #include <cstdint>
+#include <filesystem>
+#include <fstream>
 #include <map>
 #include <memory>
+#include <sstream>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -22,7 +26,7 @@ Eigen::VectorXd vector(std::initializer_list<double> values) {
 
 struct RtcOnlyFixture {
     std::shared_ptr<const pipeline::PairedReadout> native;
-    std::shared_ptr<const pipeline::NativeAlignmentPlan> alignment;
+    std::shared_ptr<const pipeline::NativeNetworkAlignment> timing;
 };
 
 RtcOnlyFixture route_fixture() {
@@ -65,27 +69,13 @@ RtcOnlyFixture route_fixture() {
     auto native = pipeline::PairedReadout::admit(
         scope, {network_id}, std::move(networks));
 
-    std::vector<pipeline::NativeSlotAssociation> associations(4);
-    associations[0].native_row = 10;
-    associations[1].native_row = 11;
-    associations[2].absence_reason =
-        pipeline::CoincidenceAbsenceReason::no_candidate;
-    associations[3].native_row = 12;
-    std::map<pipeline::TimestreamNetworkId,
-             std::vector<pipeline::NativeSlotAssociation>> by_network;
-    by_network.emplace(network_id, std::move(associations));
-    auto alignment =
-        std::make_shared<const pipeline::NativeAlignmentPlan>(
-            scope,
-            std::vector<pipeline::NativeNetworkAlignment>{*timing},
-            vector({100.0, 101.0, 102.0, 103.0}),
-            std::move(by_network));
-    return {std::move(native), std::move(alignment)};
+    return {std::move(native), std::move(timing)};
 }
 
 pipeline::RtcOnlyRouteRequest route_request(
     const RtcOnlyFixture &fixture, std::uint64_t run = 1) {
-    return {{run}, fixture.native, fixture.alignment, 0, 4};
+    return {{run}, fixture.native,
+            pipeline::full_native_occurrence_spans(*fixture.native)};
 }
 
 TEST(rtc_only_route,
@@ -107,40 +97,43 @@ TEST(rtc_only_route,
     EXPECT_EQ(bundle.plan_handle()->identity().resolution, 42U);
     EXPECT_EQ(bundle.realization().completion,
               pipeline::RtcCompletionState::complete);
-    EXPECT_EQ(bundle.timestream_handle()->output_slot_count(), 4U);
-    EXPECT_EQ(bundle.timestream_handle()->output_cell_count(), 4U);
+    EXPECT_EQ(bundle.timestream_handle()->output_native_occurrence_count(), 3U);
+    EXPECT_EQ(bundle.timestream_handle()->output_cell_count(), 3U);
 
     const auto &diagnostics = outcome.terminal.diagnostics;
     EXPECT_EQ(diagnostics.network_count, 1U);
     EXPECT_EQ(diagnostics.detector_count, 1U);
-    EXPECT_EQ(diagnostics.aligned_cell_count, 4U);
-    EXPECT_EQ(diagnostics.mapped_cell_count, 3U);
-    EXPECT_EQ(diagnostics.evidence_event_count, 2U);
+    EXPECT_EQ(diagnostics.native_occurrence_count, 3U);
+    EXPECT_EQ(diagnostics.detector_occurrence_count, 3U);
+    EXPECT_EQ(diagnostics.evidence_event_count, 1U);
     EXPECT_EQ(diagnostics.direct_x_event_count, 0U);
     EXPECT_EQ(diagnostics.direct_r_event_count, 1U);
     EXPECT_EQ(diagnostics.x_and_r_event_count, 0U);
-    EXPECT_EQ(diagnostics.alignment_absence_event_count, 1U);
-    EXPECT_EQ(diagnostics.pair_ineligible_cell_count, 2U);
+    EXPECT_EQ(diagnostics.pair_ineligible_cell_count, 1U);
     EXPECT_EQ(diagnostics.x_numerically_valid_cell_count, 3U);
     EXPECT_EQ(diagnostics.r_numerically_valid_cell_count, 2U);
     EXPECT_GT(diagnostics.derived_evidence_bytes, 0U);
-    EXPECT_GT(diagnostics.derived_plan_bytes, 0U);
+    EXPECT_EQ(diagnostics.derived_plan_bytes, 0U);
     EXPECT_EQ(diagnostics.rtc_owned_numeric_bytes, 0U);
+    EXPECT_EQ(diagnostics.native_admission_entry_count, 1U);
+    EXPECT_EQ(diagnostics.learn_entry_count, 1U);
+    EXPECT_EQ(diagnostics.consider_entry_count, 1U);
+    EXPECT_EQ(diagnostics.apply_entry_count, 1U);
+    EXPECT_EQ(diagnostics.publication_entry_count, 1U);
 
     for (const auto member :
          {pipeline::ReadoutMember::x, pipeline::ReadoutMember::r}) {
         const auto published = bundle.timestream_handle()->value(
-            member, 0, 3, 0);
-        ASSERT_TRUE(published);
-        EXPECT_EQ(std::bit_cast<std::uint64_t>(*published),
+            member, 0, 12, 0);
+        EXPECT_EQ(std::bit_cast<std::uint64_t>(published),
                   std::bit_cast<std::uint64_t>(
                       fixture.native->network(0).value(member, 12, 0)));
     }
-    EXPECT_EQ(bundle.timestream_handle()->pair_decision(0, 1, 0),
+    EXPECT_EQ(bundle.timestream_handle()->pair_decision(0, 11, 0),
               pipeline::RtcPairDecision::ineligible);
     EXPECT_TRUE(bundle.timestream_handle()
                     ->member_numerically_valid(
-                        pipeline::ReadoutMember::x, 0, 1, 0));
+                        pipeline::ReadoutMember::x, 0, 11, 0));
 }
 
 TEST(rtc_only_route,
@@ -148,7 +141,7 @@ TEST(rtc_only_route,
     const auto fixture = route_fixture();
     pipeline::RtcOnlyProductSlot publication;
     auto request = route_request(fixture);
-    request.past_last_common_slot = 5;
+    request.native_spans.front().past_last_native_row = 14;
     const auto outcome =
         pipeline::run_identity_rtc_only(request, publication);
 
@@ -158,7 +151,7 @@ TEST(rtc_only_route,
     EXPECT_EQ(outcome.terminal.failure_cause,
               pipeline::RtcOnlyFailureCause::input_contract_rejected);
     EXPECT_EQ(outcome.terminal.failure_detail,
-              "aligned paired readout parent or slot interval is incomplete");
+              "native RTC view span is incomplete or outside parent support");
     EXPECT_EQ(outcome.published_product, nullptr);
     EXPECT_EQ(publication.snapshot(), nullptr);
 }
@@ -204,28 +197,87 @@ TEST(rtc_only_route, invalid_run_identity_has_an_exact_terminal_cause) {
 }
 
 TEST(rtc_only_route,
-     absent_or_unavailable_ast_state_is_not_consumed_and_cannot_change_result) {
-    struct AstStateProbe {
-        bool available = false;
-        std::size_t interpolation_calls = 0;
-    } ast;
+     identity_result_is_independent_of_external_common_slot_assignments) {
     const auto fixture = route_fixture();
-    pipeline::RtcOnlyProductSlot publication;
+    std::vector<pipeline::NativeSlotAssociation> first_associations(4);
+    first_associations[0].native_row = 10;
+    first_associations[1].native_row = 11;
+    first_associations[2].absence_reason =
+        pipeline::CoincidenceAbsenceReason::no_candidate;
+    first_associations[3].native_row = 12;
+    std::map<pipeline::TimestreamNetworkId,
+             std::vector<pipeline::NativeSlotAssociation>> first_by_network;
+    first_by_network.emplace(0, std::move(first_associations));
+    const pipeline::NativeAlignmentPlan first_alignment{
+        fixture.native->scope(), {*fixture.timing},
+        vector({100.0, 101.0, 102.0, 103.0}),
+        std::move(first_by_network)};
 
-    const auto outcome = pipeline::run_identity_rtc_only(
-        route_request(fixture), publication);
+    std::vector<pipeline::NativeSlotAssociation> second_associations(3);
+    second_associations[0].native_row = 12;
+    second_associations[1].native_row = 10;
+    second_associations[2].native_row = 11;
+    std::map<pipeline::TimestreamNetworkId,
+             std::vector<pipeline::NativeSlotAssociation>> second_by_network;
+    second_by_network.emplace(0, std::move(second_associations));
+    const pipeline::NativeAlignmentPlan second_alignment{
+        fixture.native->scope(), {*fixture.timing},
+        vector({99.5, 100.5, 103.5}), std::move(second_by_network)};
+    ASSERT_NE(first_alignment.slot_count(), second_alignment.slot_count());
+    ASSERT_NE(first_alignment.association(0, 0).native_row,
+              second_alignment.association(0, 0).native_row);
 
-    EXPECT_TRUE(outcome.complete());
-    EXPECT_FALSE(ast.available);
-    EXPECT_EQ(ast.interpolation_calls, 0U);
-    EXPECT_DOUBLE_EQ(
-        outcome.published_product->timestream_handle()
-            ->output_time_unix_sec(3),
-        103.0);
-    EXPECT_EQ(outcome.published_product->timestream_handle()
-                  ->representative_native_identity(0, 3)
-                  ->native_row(),
-              12);
+    pipeline::RtcOnlyProductSlot first_publication;
+    pipeline::RtcOnlyProductSlot second_publication;
+    const auto first = pipeline::run_identity_rtc_only(
+        route_request(fixture, 1), first_publication);
+    const auto second = pipeline::run_identity_rtc_only(
+        route_request(fixture, 2), second_publication);
+
+    ASSERT_TRUE(first.complete());
+    ASSERT_TRUE(second.complete());
+    for (pipeline::TimestreamNativeRow row = 10; row < 13; ++row) {
+        EXPECT_EQ(first.published_product->timestream_handle()
+                      ->identity(0, row, 0),
+                  second.published_product->timestream_handle()
+                      ->identity(0, row, 0));
+        EXPECT_DOUBLE_EQ(first.published_product->timestream_handle()
+                             ->output_time_unix_sec(0, row),
+                         second.published_product->timestream_handle()
+                             ->output_time_unix_sec(0, row));
+        EXPECT_DOUBLE_EQ(first.published_product->timestream_handle()
+                             ->value(pipeline::ReadoutMember::x, 0, row, 0),
+                         second.published_product->timestream_handle()
+                             ->value(pipeline::ReadoutMember::x, 0, row, 0));
+        EXPECT_EQ(first.published_product->timestream_handle()
+                      ->pair_decision(0, row, 0),
+                  second.published_product->timestream_handle()
+                      ->pair_decision(0, row, 0));
+    }
+}
+
+TEST(rtc_only_route,
+     route_and_identity_headers_exclude_common_grid_and_later_stage_entries) {
+    namespace fs = std::filesystem;
+    const auto repository = fs::path{__FILE__}.parent_path().parent_path();
+    const std::vector<fs::path> headers{
+        repository / "include/citlali/core/pipeline/identity_rtc.h",
+        repository / "include/citlali/core/pipeline/rtc_only_route.h"};
+    const std::vector<std::string> forbidden{
+        "AlignedPairedReadout", "NativeAlignmentPlan", "common_slot",
+        "alignment_absence", "timestream_native_pointing.h",
+        "telescope_pointing_operations.h", "calib.h", "ptc/", "mapmaking/"};
+
+    for (const auto &header : headers) {
+        std::ifstream stream(header);
+        ASSERT_TRUE(stream) << header;
+        std::ostringstream content;
+        content << stream.rdbuf();
+        for (const auto &token : forbidden) {
+            EXPECT_EQ(content.str().find(token), std::string::npos)
+                << header << " contains forbidden route dependency " << token;
+        }
+    }
 }
 
 }  // namespace
