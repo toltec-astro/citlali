@@ -1,5 +1,49 @@
 # Citlali Refactor Status
 
+## 2026-08-29 Native Runtime Memory Architecture Repair
+
+The owner-run V2 NGC4449 science job `63757963` reached 100.93 GiB MaxRSS
+with 16 workers before stopping at the separately diagnosed lowpass-only
+Wiener-template policy gate. The realized map dimensions were about 409 by
+455 pixels and each ten-realization, three-array noise cube reported only
+about 0.04 GB. Source inspection established that WP-7 retained several
+structured representations per detector sample: cell bindings with copied
+support and strings, prepared and processed cell records, per-cell update
+batches, and a node-based revision/value ledger. That state narrated every
+deterministic operation while duplicating the dense numerical matrices and
+compact masks that already owned the calculation.
+
+The project owner explicitly rejected that retention model without requiring
+another pre-repair reduction. ADR 0016 now supersedes the runtime-ledger clause
+of ADR 0013. The repair retains established dense numerical state, compact
+validity/exclusion masks, row/network identity anchors, detector-scope causes,
+and one bounded issue/commit gate per scan stage. It removes the per-cell
+bindings, update collection, revision histories, node-based value map,
+projection-cell copy, transient RTC-to-PTC cell cohort, and the unreachable
+historical sample-ledger/cohort API. Historical v2 provenance and bounded
+opt-in debug tracing reconstruct selected transitions on demand from the
+authoritative matrices and natural-scope metadata.
+
+This is an ownership and resource correctness repair; it does not intentionally
+change RTC, PTC, mapmaking, JINC, Wiener, weight, or fruit-loop arithmetic. No
+accepted-run or intended-science-change ledger entry is authorized by the
+structural repair. Local focused equivalence, append-only-mask, atomic-failure,
+bounded-provenance, deterministic-thread-count, and header-isolation gates are
+required before commit. Operational acceptance remains pending one exact-SHA
+Unity NGC4449 replacement run using the already selected full-Wiener policy;
+that run must record Slurm MaxRSS, exit state, zero unexpected error-level
+records, complete products, and the existing reduction audit.
+
+Local repair validation completed with all 94 focused sci-align tests and all
+832 runnable CTests passing; only the established disabled
+`MapFitterLifecycle.ExactProductSequence` test was not run. The full config
+preflight passed 130 Python tests, all four mode kits, all eight compatibility
+cases, and every boundary audit. The baseline-tool suite passed 207 tests;
+validation-ledger, intended-science-change-ledger, validation-profile,
+Phase 5 readiness, generated-schema, header-isolation/link, and session-exit
+checks all validated without unexpected error-level output. Phase 5 remains
+in its existing `preparing` state for reasons unrelated to this repair.
+
 ## 2026-08-28 Unity Build Acceptance And V2 Science-Kit Repair
 
 The successor-build acceptance was repeated at exact application commit

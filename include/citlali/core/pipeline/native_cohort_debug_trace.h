@@ -108,36 +108,34 @@ inline NativeCohortDebugTraceV1 make_native_cohort_debug_trace_v1(
         for (Eigen::Index row = 0; row < group.slot_count(); ++row) {
             for (Eigen::Index local = 0;
                  local < group.detector_count(); ++local) {
-                const auto &cell = group.cell(row, local);
-                if (!cell.identity) continue;
+                const auto &identity = group.identity(row, local);
                 const auto detector = group.detector_columns().at(
                     static_cast<std::size_t>(local));
                 if (!request.networks.empty() &&
                     !request.networks.contains(
-                        cell.identity->network_id())) continue;
+                        identity.network_id())) continue;
                 if (!request.detector_columns.empty() &&
                     !request.detector_columns.contains(detector)) continue;
                 if (request.first_native_row &&
-                    (cell.identity->native_row() <
+                    (identity.native_row() <
                          *request.first_native_row ||
-                     cell.identity->native_row() >=
+                     identity.native_row() >=
                          *request.past_last_native_row)) continue;
                 ++trace.matching_record_count;
                 if (trace.records.size() >= request.max_records) {
                     trace.truncated = true;
                     continue;
                 }
-                const auto current = ledger.record(
-                    {cell.identity->key(), detector});
-                const bool invalid = cell.state ==
+                const bool invalid = group.initial_state(row, local) ==
                     CoincidenceCellState::mapped_invalid;
                 trace.records.push_back({
                     prepared.operation().scan_index,
-                    cell.identity->network_id(),
-                    cell.identity->native_row(), detector,
-                    cell.delivered_flag_bits,
-                    cell.operation_exclusion_bits, cell.apt_flag,
-                    cell.expected_revision, current.revision,
+                    identity.network_id(), identity.native_row(), detector,
+                    group.delivered_flag_bits()(row, local),
+                    group.operation_exclusion_bits(local),
+                    group.detector_apt_flags().at(
+                        static_cast<std::size_t>(local)),
+                    0, 1,
                     invalid ? "preserved_pca_invalid"
                             : group.role() == NativePtcGroupRole::pass_through
                                 ? "preserved_pass_through"

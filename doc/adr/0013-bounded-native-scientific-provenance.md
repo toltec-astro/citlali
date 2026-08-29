@@ -1,7 +1,7 @@
 # ADR 0013: Bounded native scientific provenance
 
-Status: accepted and implemented; bounded native-gap replay complete,
-production JINC exact-SHA replay pending
+Status: accepted for persisted provenance; runtime-ledger retention superseded
+by ADR 0016
 
 ## Context
 
@@ -52,9 +52,11 @@ scope:
   and validation state, and makes no canonical product index visible until
   every required output and the bounded sidecar validate.
 
-Runtime sample masks and revision ledgers remain in memory and retain their
-existing fail-closed contracts. They are neither weakened nor inferred from
-the sidecar. Canonical digests may bind authoritative inputs, bounded
+Runtime sample masks remain in memory and retain their existing fail-closed
+contracts. ADR 0016 supersedes the original runtime revision-ledger retention:
+one bounded stage gate now commits the complete dense result without retaining
+a detector-by-sample operation narrative. Neither runtime state is inferred
+from the sidecar. Canonical digests may bind authoritative inputs, bounded
 natural-scope summaries, detector-scope decisions, and final products. They
 must not bind an exhaustive detector-by-sample history under another
 encoding.

@@ -404,7 +404,7 @@ TEST(sci_align_measured_scan,
 }
 
 TEST(sci_align_measured_scan,
-     retains_existing_matrix_owners_and_seeds_fresh_identity_ledger) {
+     retains_existing_matrix_owners_and_uses_bounded_operation_gate) {
     const InputFixture inputs;
     const auto scan = admitted_scan(inputs);
     EXPECT_EQ(scan->network_input(0).measured_values_handle().get(),
@@ -417,16 +417,15 @@ TEST(sci_align_measured_scan,
     pipeline::NativeMeasuredDetectorLedger ledger{scan};
     EXPECT_EQ(ledger.size(), 12U);
     const pipeline::NativeDetectorSampleKey key{{7, 70}, 2};
-    const auto record = ledger.record(key);
-    EXPECT_EQ(record.identity.network_id(), 7);
-    EXPECT_EQ(record.identity.native_row(), 70);
-    EXPECT_EQ(record.detector_column, 2);
-    EXPECT_DOUBLE_EQ(record.measured_value, 700.0);
-    EXPECT_DOUBLE_EQ(record.current_value, 700.0);
-    EXPECT_EQ(record.original_flag_bits, 0U);
-    EXPECT_EQ(record.revision, 0U);
+    EXPECT_EQ(scan->sample_identity(key).network_id(), 7);
+    EXPECT_EQ(scan->sample_identity(key).native_row(), 70);
+    EXPECT_DOUBLE_EQ(scan->measured_value(key), 700.0);
+    EXPECT_EQ(scan->original_flag_bits(key), 0U);
+    EXPECT_FALSE(ledger.last_operation().has_value());
+    EXPECT_FALSE(ledger.last_committed_operation().has_value());
     EXPECT_THROW(
-        ledger.record(pipeline::NativeDetectorSampleKey{{0, 10}, 2}),
+        scan->sample_identity(
+            pipeline::NativeDetectorSampleKey{{0, 10}, 2}),
         std::invalid_argument);
 }
 
@@ -490,7 +489,7 @@ TEST(sci_align_measured_scan,
 }
 
 TEST(sci_align_measured_scan,
-     commit_rollback_and_retry_reset_ledger_and_operation_sequence) {
+     commit_rollback_and_retry_reset_operation_gate_and_sequence) {
     const InputFixture inputs;
     pipeline::NativeMeasuredScanTransaction transaction{scan_scope()};
     transaction.admit(carriers_fixture(), relation_fixture(), 0, 4,

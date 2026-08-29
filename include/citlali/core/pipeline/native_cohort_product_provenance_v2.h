@@ -650,22 +650,16 @@ make_native_cohort_scan_provenance_v2(
         for (Eigen::Index row = 0; row < group.slot_count(); ++row) {
             for (Eigen::Index local = 0;
                  local < group.detector_count(); ++local) {
-                const auto &cell = group.cell(row, local);
-                if (!cell.identity) {
-                    throw std::logic_error(
-                        "native cohort PTC lineage lost its measured identity");
-                }
+                const auto &identity = group.identity(row, local);
                 const auto detector = group.detector_columns().at(
                     static_cast<std::size_t>(local));
                 const NativeDetectorSampleKey key{
-                    cell.identity->key(), detector};
-                const auto current = ledger.record(key);
-                if (!(current.identity == *cell.identity) ||
-                    current.revision != cell.expected_revision + 1) {
+                    identity.key(), detector};
+                if (!(mapping->sample_identity(key) == identity)) {
                     throw std::logic_error(
                         "native cohort revision lineage is stale or partial");
                 }
-                const auto action = cell.state ==
+                const auto action = group.initial_state(row, local) ==
                         CoincidenceCellState::mapped_invalid
                     ? NativeMeasuredDetectorLedger::RevisionAction::
                           preserved_pca_invalid
@@ -676,9 +670,11 @@ make_native_cohort_scan_provenance_v2(
                               replaced_by_pca_result;
                 revisions.push_back({
                     key,
-                    {*cell.identity, detector, cell.expected_revision,
-                     current.revision, cell.delivered_flag_bits,
-                     cell.operation_exclusion_bits, cell.apt_flag,
+                    {identity, detector, 0, 1,
+                     group.delivered_flag_bits()(row, local),
+                     group.operation_exclusion_bits(local),
+                     group.detector_apt_flags().at(
+                         static_cast<std::size_t>(local)),
                      action}});
             }
         }

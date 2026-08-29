@@ -15,8 +15,8 @@ namespace citlali::pipeline {
 
 // One scan/chunk owner carried beside the compatibility TCData. Numerical
 // matrices remain owned by their established processors; this object owns
-// only the exact native mapping, revision ledger, and immutable adapter
-// results needed for transactional publication.
+// only the exact native mapping, bounded operation gate, and immutable
+// adapter results needed for transactional publication.
 class NativeScanRuntimeState {
 public:
     explicit NativeScanRuntimeState(

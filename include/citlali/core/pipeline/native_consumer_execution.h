@@ -663,15 +663,21 @@ NativeRtcDispatchResult run_native_rtc_numerical_bodies(
     Eigen::Index row = 0;
     for (const auto &cohort : cohorts) {
         for (const auto &cohort_row : cohort.rows) {
-            for (std::size_t detector = 0;
-                 detector < cohort_row.detector_samples.size(); ++detector) {
-                const auto &sample = cohort_row.detector_samples[detector];
-                if (!sample) {
+            for (const auto &[network, run_ptr] : cohort.network_runs) {
+                (void)network;
+                if (run_ptr == nullptr) {
                     throw std::logic_error(
-                        "native RTC trace contains an absent complete-cohort cell");
+                        "native RTC trace contains an absent network run");
                 }
-                rtc_flags(row, static_cast<Eigen::Index>(detector)) =
-                    sample->delivered_flag_bits != 0;
+                const auto &run = *run_ptr;
+                for (std::size_t local = 0;
+                     local < run.input.detector_columns.size(); ++local) {
+                    const auto detector = run.input.detector_columns[local];
+                    rtc_flags(row, detector) =
+                        run.ored_flag_bits(
+                            cohort_row.segment_output_row,
+                            static_cast<Eigen::Index>(local)) != 0;
+                }
             }
             ++row;
         }
@@ -737,15 +743,11 @@ Eigen::VectorXI populate_native_ptc_group_pointing(
                 y_t(detector), binding.apt_flag)};
         local_map_indices(local) = map_indices(detector);
         for (Eigen::Index row = 0; row < group.slot_count(); ++row) {
-            const auto &cell = group.cell(row, local);
-            if (!cell.identity) {
-                throw std::logic_error(
-                    "native fruit-loop group cell lacks exact identity");
-            }
+            const auto &identity = group.identity(row, local);
             const auto [latitude, longitude] =
                 native_science_projection_detail::project_native_pointing(
                     native_pointing.network(binding.network_id),
-                    *cell.identity, projection,
+                    identity, projection,
                     engine.telescope.pixel_axes,
                     active_map_grouping_name(engine));
             latitudes(row, local) = latitude;
@@ -847,28 +849,18 @@ NativePtcExecutionResult run_native_ptc_numerical_bodies(
         throw std::logic_error(
             "native PTC lacks exact duplicate-tone detector state");
     }
-    for (const auto &run : rtc.runs) {
-        for (const auto &support : run.support) {
-            for (const auto detector : support.detector_columns) {
-                if (duplicate->second(detector) == 0.0) continue;
-                const auto &binding =
-                    runtime.mapping_handle()->binding(detector);
-                if (!binding.apt_flag.has_value() ||
-                    *binding.apt_flag != 0) {
-                    continue;
-                }
-                const NativeDetectorSampleKey key{
-                    support.selected_anchor.key(), detector};
-                if (!request.operation_exclusion_bits
-                         .emplace(
-                             key,
-                             native_duplicate_tone_exclusion_bit_v2)
-                         .second) {
-                    throw std::logic_error(
-                        "native duplicate-tone exclusion repeats a detector sample");
-                }
-            }
+    for (std::size_t detector_index = 0;
+         detector_index < runtime.mapping_handle()->detector_count();
+         ++detector_index) {
+        const auto detector = static_cast<TimestreamDetectorColumn>(
+            detector_index);
+        if (duplicate->second(detector) == 0.0) continue;
+        const auto &binding = runtime.mapping_handle()->binding(detector);
+        if (!binding.apt_flag.has_value() || *binding.apt_flag != 0) {
+            continue;
         }
+        request.operation_exclusion_bits.emplace(
+            detector, native_duplicate_tone_exclusion_bit_v2);
     }
     request.corr_grouping_enabled =
         engine.ptcproc.cleaner.corr_grouping.enabled;
@@ -1137,8 +1129,6 @@ NativePtcExecutionResult run_native_ptc_numerical_bodies(
                 preclean_flags,
                 std::move(data.flags.data)};
         }, true);
-    scatter_native_ptc_results_transactionally(
-        runtime.ledger(), prepared, processed);
     mean_facts.emplace_back(
         "operation_sequence", std::to_string(prepared.operation().sequence));
     pca_facts.emplace_back(
@@ -1273,6 +1263,8 @@ NativePtcExecutionResult run_native_ptc_numerical_bodies(
     else {
         runtime.kernel.reset();
     }
+    scatter_native_ptc_results_transactionally(
+        runtime.ledger(), prepared, processed);
     return NativePtcExecutionResult{
         std::move(prepared),
         aggregate_native_second_pass_weight_summaries(

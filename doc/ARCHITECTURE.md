@@ -471,9 +471,13 @@ A successful reduction has:
 ### Bounded native Science provenance
 
 ADR 0013 separates native runtime sample state from canonical provenance and
-diagnostic tracing. The scan-owned measured ledger, masks, exclusions,
-revisions, weights, and intermediate arrays remain exact in-memory execution
-authority. The canonical successor
+diagnostic tracing, and ADR 0016 bounds that runtime state at natural stage
+scope. Established dense matrices and compact masks remain exact in-memory
+execution authority. Row/network anchors preserve support and identity, while
+one scan operation gate commits a complete validated stage. No per-cell
+binding, update batch, revision vector, node-based value map, invalidity
+string, or projection record is retained as an operation narrative. The
+canonical successor
 `citlali-native-cohort-product-provenance-v3` does not copy those rectangular
 objects into a permanent detector-by-sample history.
 

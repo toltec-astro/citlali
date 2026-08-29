@@ -45,22 +45,6 @@ struct NativeScienceProjectionRequest {
     std::vector<NativeScienceDetectorProjection> detectors;
 };
 
-struct NativeScienceProjectionCell {
-    CoincidenceCellState state = CoincidenceCellState::absent;
-    std::size_t segment_ordinal = 0;
-    Eigen::Index segment_output_row = -1;
-    std::vector<std::size_t> exact_common_slots;
-    NativeSampleIdentity identity;
-    TimestreamNativeRevision revision = 0;
-    double value = 0.0;
-    double latitude_rad = 0.0;
-    double longitude_rad = 0.0;
-
-    bool projects() const noexcept {
-        return state == CoincidenceCellState::mapped_valid;
-    }
-};
-
 namespace native_science_projection_detail {
 
 inline bool exact_double_equal(double lhs, double rhs) noexcept {
@@ -136,7 +120,7 @@ inline std::pair<double, double> project_native_pointing(
 
 }  // namespace native_science_projection_detail
 
-// Immutable, operation-bound bridge from the committed native PTC ledger to
+// Immutable, operation-bound bridge from the committed native PTC stage to
 // science consumers. Relational rows only organize the rectangular calling
 // surface; every cell retains its own network-native identity and pointing.
 class NativeScienceProjection {
@@ -166,13 +150,6 @@ public:
         const noexcept {
         return detectors_;
     }
-    const NativeScienceProjectionCell &cell(
-        Eigen::Index row, Eigen::Index detector) const {
-        require_cell(row, detector);
-        return cells_.at(static_cast<std::size_t>(row) *
-                             static_cast<std::size_t>(detector_count()) +
-                         static_cast<std::size_t>(detector));
-    }
     std::tuple<Eigen::VectorXd, Eigen::VectorXd> detector_pointing(
         Eigen::Index detector) const {
         if (detector < 0 || detector >= detector_count()) {
@@ -200,25 +177,10 @@ public:
             throw std::logic_error(
                 "native science deterministic state transform is incomplete, nonfinite, or removes an exclusion");
         }
-        auto cells = cells_;
-        for (Eigen::Index row = 0; row < row_count(); ++row) {
-            for (Eigen::Index detector = 0;
-                 detector < detector_count(); ++detector) {
-                auto &cell = cells.at(
-                    static_cast<std::size_t>(row) *
-                        static_cast<std::size_t>(detector_count()) +
-                    static_cast<std::size_t>(detector));
-                cell.value = values(row, detector);
-                if (flags(row, detector)) {
-                    cell.state = CoincidenceCellState::mapped_invalid;
-                }
-            }
-        }
         return NativeScienceProjection{
             operation_, scope_, pixel_axes_, map_grouping_, detectors_,
             std::move(values), std::move(flags), latitudes_rad_,
-            longitudes_rad_,
-            std::move(cells)};
+            longitudes_rad_};
     }
 
     Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic>
@@ -234,11 +196,12 @@ public:
         for (Eigen::Index row = 0; row < row_count(); ++row) {
             for (Eigen::Index detector = 0;
                  detector < detector_count(); ++detector) {
-                const auto &candidate = cell(row, detector);
-                if (!candidate.projects()) continue;
+                if (flags_(row, detector)) continue;
                 result(row, detector) =
-                    candidate.latitude_rad * candidate.latitude_rad +
-                        candidate.longitude_rad * candidate.longitude_rad <=
+                    latitudes_rad_(row, detector) *
+                            latitudes_rad_(row, detector) +
+                        longitudes_rad_(row, detector) *
+                            longitudes_rad_(row, detector) <=
                     radius2;
             }
         }
@@ -328,24 +291,14 @@ private:
         std::vector<NativeScienceDetectorProjection> detectors,
         Eigen::MatrixXd values,
         Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> flags,
-        Eigen::MatrixXd latitudes_rad, Eigen::MatrixXd longitudes_rad,
-        std::vector<NativeScienceProjectionCell> cells)
+        Eigen::MatrixXd latitudes_rad, Eigen::MatrixXd longitudes_rad)
         : operation_{operation}, scope_{std::move(scope)},
           pixel_axes_{std::move(pixel_axes)},
           map_grouping_{std::move(map_grouping)},
           detectors_{std::move(detectors)}, values_{std::move(values)},
           flags_{std::move(flags)},
           latitudes_rad_{std::move(latitudes_rad)},
-          longitudes_rad_{std::move(longitudes_rad)},
-          cells_{std::move(cells)} {}
-
-    void require_cell(Eigen::Index row, Eigen::Index detector) const {
-        if (row < 0 || detector < 0 || row >= row_count() ||
-            detector >= detector_count()) {
-            throw std::out_of_range(
-                "native science projection cell is out of range");
-        }
-    }
+          longitudes_rad_{std::move(longitudes_rad)} {}
 
     NativeOperationIdentity operation_;
     NativeScanChunkScope scope_;
@@ -356,7 +309,6 @@ private:
     Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> flags_;
     Eigen::MatrixXd latitudes_rad_;
     Eigen::MatrixXd longitudes_rad_;
-    std::vector<NativeScienceProjectionCell> cells_;
 };
 
 inline NativeScienceProjection make_native_science_projection(
@@ -464,8 +416,9 @@ inline NativeScienceProjection make_native_science_projection(
         throw std::length_error(
             "native science projection cell inventory overflows");
     }
-    std::vector<std::optional<NativeScienceProjectionCell>> staged(
-        static_cast<std::size_t>(total_rows) * mapping->detector_count());
+    Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> staged(
+        total_rows, detector_count);
+    staged.setConstant(false);
     std::set<NativeDetectorSampleKey> destinations;
     std::vector<std::optional<std::vector<std::size_t>>> row_support(
         static_cast<std::size_t>(total_rows));
@@ -484,90 +437,76 @@ inline NativeScienceProjection make_native_science_projection(
             const auto &detector = request.detectors.at(
                 static_cast<std::size_t>(detector_column));
             for (Eigen::Index row = 0; row < group.slot_count(); ++row) {
-                const auto &source = group.cell(row, local);
+                const auto &row_binding = group.row_binding(row);
+                const auto &identity = group.identity(row, local);
                 const Eigen::Index output_row =
                     row_offsets[group.segment_ordinal()] + row;
-                const auto index = static_cast<std::size_t>(output_row) *
-                        mapping->detector_count() +
-                    static_cast<std::size_t>(detector_column);
-                if (staged[index].has_value() ||
-                    !source.identity.has_value() ||
-                    source.segment_ordinal != group.segment_ordinal() ||
-                    source.segment_output_row != row ||
-                    source.exact_common_slots.empty()) {
+                if (staged(output_row, detector_column) ||
+                    row_binding.segment_ordinal != group.segment_ordinal() ||
+                    row_binding.segment_output_row != row ||
+                    row_binding.exact_common_slots.empty()) {
                     throw std::logic_error(
                         "native science PTC candidate is duplicate or incomplete");
                 }
                 auto &support = row_support.at(
                     static_cast<std::size_t>(output_row));
-                if (!support.has_value()) support = source.exact_common_slots;
-                if (*support != source.exact_common_slots) {
+                if (!support.has_value()) {
+                    support = row_binding.exact_common_slots;
+                }
+                if (*support != row_binding.exact_common_slots) {
                     throw std::logic_error(
                         "native science PTC relational support is unequal");
                 }
                 const NativeDetectorSampleKey key{
-                    source.identity->key(), detector_column};
+                    identity.key(), detector_column};
                 if (!destinations.insert(key).second) {
                     throw std::logic_error(
                         "native science PTC destination is duplicated");
                 }
-                const auto record = ledger.record(key);
-                if (!(record.identity == *source.identity) ||
-                    source.expected_revision ==
-                        std::numeric_limits<TimestreamNativeRevision>::max() ||
-                    record.revision != source.expected_revision + 1 ||
-                    !std::isfinite(record.current_value)) {
+                if (!(mapping->sample_identity(key) == identity) ||
+                    !std::isfinite(group.values()(row, local))) {
                     throw std::logic_error(
                         "native science PTC cell is stale, unequal, or nonfinite");
                 }
                 const bool valid =
-                    source.state == CoincidenceCellState::mapped_valid;
-                const bool invalid =
-                    source.state == CoincidenceCellState::mapped_invalid;
-                if ((!valid && !invalid) ||
-                    (valid && (source.delivered_flag_bits != 0 ||
-                               source.operation_exclusion_bits != 0 ||
-                               !source.apt_flag.has_value() ||
-                               *source.apt_flag != 0)) ||
-                    (invalid && source.delivered_flag_bits == 0 &&
-                               source.operation_exclusion_bits == 0 &&
-                               source.apt_flag.has_value() &&
-                               *source.apt_flag == 0)) {
+                    !group.initial_exclusion_flags()(row, local);
+                const auto delivered =
+                    group.delivered_flag_bits()(row, local);
+                const auto operation =
+                    group.operation_exclusion_bits(local);
+                const auto &apt = group.detector_apt_flags().at(
+                    static_cast<std::size_t>(local));
+                if (valid && (delivered != 0 || operation != 0 ||
+                              !apt.has_value() || *apt != 0)) {
                     throw std::logic_error(
                         "native science PTC validity authority is unequal");
                 }
                 const auto [latitude, longitude] =
                     native_science_projection_detail::project_native_pointing(
                         pointing_plan.network(
-                            source.identity->network_id()),
-                        *source.identity, detector, request.pixel_axes,
+                            identity.network_id()),
+                        identity, detector, request.pixel_axes,
                         request.map_grouping);
-                values(output_row, detector_column) = record.current_value;
+                values(output_row, detector_column) =
+                    group.values()(row, local);
                 flags(output_row, detector_column) = !valid;
                 latitudes(output_row, detector_column) = latitude;
                 longitudes(output_row, detector_column) = longitude;
-                staged[index] = NativeScienceProjectionCell{
-                    source.state, source.segment_ordinal,
-                    source.segment_output_row, source.exact_common_slots,
-                    *source.identity, record.revision,
-                    record.current_value, latitude, longitude};
+                staged(output_row, detector_column) = true;
             }
         }
     }
-    if (destinations.size() != staged.size() ||
-        std::any_of(staged.begin(), staged.end(),
-                    [](const auto &cell) { return !cell.has_value(); })) {
+    if (destinations.size() !=
+            static_cast<std::size_t>(staged.size()) ||
+        !staged.array().all()) {
         throw std::logic_error(
             "native science PTC detector/sample partition is incomplete");
     }
-    std::vector<NativeScienceProjectionCell> cells;
-    cells.reserve(staged.size());
-    for (auto &cell : staged) cells.push_back(std::move(*cell));
     return NativeScienceProjection{
         prepared.operation(), mapping->scope(),
         std::move(request.pixel_axes), std::move(request.map_grouping),
         std::move(request.detectors), std::move(values), std::move(flags),
-        std::move(latitudes), std::move(longitudes), std::move(cells)};
+        std::move(latitudes), std::move(longitudes)};
 }
 
 }  // namespace citlali::pipeline

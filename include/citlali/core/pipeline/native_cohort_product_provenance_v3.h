@@ -1,9 +1,9 @@
 #pragma once
 
-// Bounded canonical SCI-ALIGN provenance. Runtime sample masks and revision
-// ledgers remain authoritative in memory; this product records authorities,
+// Bounded canonical SCI-ALIGN provenance. Dense runtime numerical state and
+// masks remain authoritative in memory; this product records authorities,
 // natural-scope causes, reconciled populations, and deterministic identities
-// without serializing detector-by-sample execution history. See ADR 0013.
+// without retaining or serializing detector-by-sample execution history.
 
 #include <citlali/core/pipeline/native_cohort_product_provenance_v2.h>
 #include <citlali/core/pipeline/native_fruit_loop_feedback.h>
@@ -744,22 +744,16 @@ make_native_cohort_scan_provenance_v3(
         for (Eigen::Index row = 0; row < group.slot_count(); ++row) {
             for (Eigen::Index local = 0;
                  local < group.detector_count(); ++local) {
-                const auto &cell = group.cell(row, local);
-                if (!cell.identity) {
+                const auto detector = group.detector_columns().at(
+                    static_cast<std::size_t>(local));
+                const auto &identity = group.identity(row, local);
+                if (!(mapping->sample_identity(
+                          {identity.key(), detector}) == identity)) {
                     throw std::logic_error(
                         "bounded native PTC summary lost measured identity");
                 }
-                const auto detector = group.detector_columns().at(
-                    static_cast<std::size_t>(local));
-                const auto current = ledger.record(
-                    {cell.identity->key(), detector});
-                if (!(current.identity == *cell.identity) ||
-                    current.revision != cell.expected_revision + 1) {
-                    throw std::logic_error(
-                        "bounded native revision summary is stale");
-                }
-                const bool invalid = cell.state ==
-                    CoincidenceCellState::mapped_invalid;
+                const bool invalid =
+                    group.initial_exclusion_flags()(row, local);
                 if (invalid) {
                     ++result.population.mapped_invalid_sample_count;
                     ++result.population.preserved_pca_invalid_sample_count;
@@ -774,9 +768,15 @@ make_native_cohort_scan_provenance_v3(
                         ++result.population.replaced_by_pca_sample_count;
                     }
                 }
-                if (cell.delivered_flag_bits != 0) {
+                const auto delivered_flag_bits =
+                    group.delivered_flag_bits()(row, local);
+                const auto operation_exclusion_bits =
+                    group.operation_exclusion_bits(local);
+                const auto &apt_flag = group.detector_apt_flags().at(
+                    static_cast<std::size_t>(local));
+                if (delivered_flag_bits != 0) {
                     ++result.population.delivered_flagged_sample_count;
-                    const auto raw_bits = cell.delivered_flag_bits &
+                    const auto raw_bits = delivered_flag_bits &
                         ~(native_cohort_rtc_processing_flag_bit_v3 |
                           native_cohort_learned_rtc_exclusion_bit_v3);
                     if (raw_bits != 0) {
@@ -792,7 +792,7 @@ make_native_cohort_scan_provenance_v3(
                         ++cause.affected_count;
                         cause.detector_columns.push_back(detector);
                     }
-                    if ((cell.delivered_flag_bits &
+                    if ((delivered_flag_bits &
                          native_cohort_rtc_processing_flag_bit_v3) != 0) {
                         ++result.population
                               .rtc_processing_flagged_sample_count;
@@ -809,7 +809,7 @@ make_native_cohort_scan_provenance_v3(
                         ++cause.affected_count;
                         cause.detector_columns.push_back(detector);
                     }
-                    if ((cell.delivered_flag_bits &
+                    if ((delivered_flag_bits &
                          native_cohort_learned_rtc_exclusion_bit_v3) != 0) {
                         ++result.population
                               .learned_rtc_excluded_sample_count;
@@ -827,26 +827,26 @@ make_native_cohort_scan_provenance_v3(
                         cause.detector_columns.push_back(detector);
                     }
                 }
-                if (cell.operation_exclusion_bits != 0) {
+                if (operation_exclusion_bits != 0) {
                     ++result.population.operation_excluded_sample_count;
-                    if (cell.operation_exclusion_bits !=
+                    if (operation_exclusion_bits !=
                         native_cohort_duplicate_tone_exclusion_bit_v3) {
                         throw std::logic_error(
                             "native operation exclusion lacks a named bounded cause");
                     }
                     auto &cause = causes[{
                         "duplicate_tone",
-                        cell.operation_exclusion_bits}];
+                        operation_exclusion_bits}];
                     cause.scope = "scan_summary";
                     cause.authority =
                         "citlali.native_duplicate_tone_policy_v2";
                     cause.cause = "duplicate_tone";
                     cause.count_unit = "detector_samples";
-                    cause.flag_bits = cell.operation_exclusion_bits;
+                    cause.flag_bits = operation_exclusion_bits;
                     ++cause.affected_count;
                     cause.detector_columns.push_back(detector);
                 }
-                if (!cell.apt_flag.has_value() || *cell.apt_flag != 0) {
+                if (!apt_flag.has_value() || *apt_flag != 0) {
                     ++result.population.apt_excluded_sample_count;
                 }
             }

@@ -53,13 +53,9 @@ LineageFixture make_lineage_fixture(bool mapmaking_enabled = true,
         {}, {}, false, false};
     if (operation_exclusion) {
         const auto &first_run = rtc.runs.front();
-        for (const auto &support : first_run.support) {
-            ptc_request.operation_exclusion_bits.emplace(
-                pipeline::NativeDetectorSampleKey{
-                    support.selected_anchor.key(),
-                    first_run.input.detector_columns.front()},
-                pipeline::native_cohort_duplicate_tone_exclusion_bit_v3);
-        }
+        ptc_request.operation_exclusion_bits.emplace(
+            first_run.input.detector_columns.front(),
+            pipeline::native_cohort_duplicate_tone_exclusion_bit_v3);
     }
     auto prepared = pipeline::prepare_native_ptc_cohorts(
         ledger, rtc, ptc_request);

@@ -102,7 +102,7 @@ CommittedProjection make_committed_projection(
     const auto rtc = identity_rtc(*scan);
     auto prepared = pipeline::prepare_native_ptc_cohorts(
         ledger, rtc, ptc_request());
-    const auto processed = pipeline::run_native_ptc_groups(
+    auto processed = pipeline::run_native_ptc_groups(
         prepared, [](const auto &group) { return group.values(); });
     pipeline::scatter_native_ptc_results_transactionally(
         ledger, prepared, processed);
@@ -318,21 +318,20 @@ TEST(sci_align_native_science_projection,
     for (Eigen::Index row = 0; row < projection.row_count(); ++row) {
         for (Eigen::Index detector = 0;
              detector < projection.detector_count(); ++detector) {
-            const auto &cell = projection.cell(row, detector);
-            EXPECT_EQ(all_measured(row, detector), cell.projects());
-            EXPECT_DOUBLE_EQ(
-                projection.latitudes_rad()(row, detector),
-                cell.latitude_rad);
-            EXPECT_DOUBLE_EQ(
-                projection.longitudes_rad()(row, detector),
-                cell.longitude_rad);
-            EXPECT_EQ(projection.flags()(row, detector), !cell.projects());
+            EXPECT_EQ(all_measured(row, detector),
+                      !projection.flags()(row, detector));
+            EXPECT_TRUE(std::isfinite(
+                projection.latitudes_rad()(row, detector)));
+            EXPECT_TRUE(std::isfinite(
+                projection.longitudes_rad()(row, detector)));
         }
     }
     // The same relational row retains distinct exact network-native times.
     EXPECT_NE(
-        projection.cell(0, 0).identity.reconstructed_time_unix_sec(),
-        projection.cell(0, 1).identity.reconstructed_time_unix_sec());
+        committed.prepared.groups().front()
+            .identity(0, 0).reconstructed_time_unix_sec(),
+        committed.prepared.groups().front()
+            .identity(0, 1).reconstructed_time_unix_sec());
     EXPECT_NE(projection.latitudes_rad()(0, 0),
               projection.latitudes_rad()(0, 1));
 }

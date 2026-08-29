@@ -619,85 +619,12 @@ private:
 
 class NativeMeasuredDetectorLedger {
 public:
+    // Historical type name retained for source compatibility. This object is
+    // now a bounded scan operation gate and owns no detector-sample ledger.
     enum class RevisionAction {
         replaced_by_pca_result,
         preserved_pca_invalid,
         preserved_pass_through,
-    };
-
-    class Update {
-    public:
-        static Update replacement(
-            NativeSampleIdentity identity,
-            TimestreamDetectorColumn detector_column,
-            TimestreamNativeRevision expected_revision,
-            double value) {
-            return Update{std::move(identity), detector_column,
-                          expected_revision,
-                          RevisionAction::replaced_by_pca_result, value};
-        }
-
-        static Update preserve_invalid(
-            NativeSampleIdentity identity,
-            TimestreamDetectorColumn detector_column,
-            TimestreamNativeRevision expected_revision,
-            double preserved_value) {
-            return Update{std::move(identity), detector_column,
-                          expected_revision,
-                          RevisionAction::preserved_pca_invalid,
-                          preserved_value};
-        }
-
-        static Update preserve_pass_through(
-            NativeSampleIdentity identity,
-            TimestreamDetectorColumn detector_column,
-            TimestreamNativeRevision expected_revision,
-            double preserved_value) {
-            return Update{std::move(identity), detector_column,
-                          expected_revision,
-                          RevisionAction::preserved_pass_through,
-                          preserved_value};
-        }
-
-        const NativeSampleIdentity &identity() const noexcept {
-            return identity_;
-        }
-        TimestreamDetectorColumn detector_column() const noexcept {
-            return detector_column_;
-        }
-        TimestreamNativeRevision expected_revision() const noexcept {
-            return expected_revision_;
-        }
-        RevisionAction action() const noexcept { return action_; }
-        const std::optional<double> &replacement_value() const noexcept {
-            return replacement_value_;
-        }
-
-    private:
-        Update(NativeSampleIdentity identity,
-               TimestreamDetectorColumn detector_column,
-               TimestreamNativeRevision expected_revision,
-               RevisionAction action,
-               std::optional<double> replacement_value)
-            : identity_{std::move(identity)},
-              detector_column_{detector_column},
-              expected_revision_{expected_revision}, action_{action},
-              replacement_value_{replacement_value} {}
-
-        NativeSampleIdentity identity_;
-        TimestreamDetectorColumn detector_column_;
-        TimestreamNativeRevision expected_revision_;
-        RevisionAction action_;
-        std::optional<double> replacement_value_;
-    };
-
-    struct RecordView {
-        NativeSampleIdentity identity;
-        TimestreamDetectorColumn detector_column = -1;
-        double measured_value = 0.0;
-        double current_value = 0.0;
-        NativeDetectorFlagBits original_flag_bits = 0;
-        TimestreamNativeRevision revision = 0;
     };
 
     explicit NativeMeasuredDetectorLedger(
@@ -707,23 +634,14 @@ public:
             throw std::invalid_argument(
                 "native measured detector ledger requires its scan mapping");
         }
-        revisions_.assign(mapping_->measured_sample_count(), 0);
     }
 
     const std::shared_ptr<const NativeMeasuredDetectorScan> &mapping_handle()
         const noexcept {
         return mapping_;
     }
-    std::size_t size() const noexcept { return revisions_.size(); }
-    RecordView record(const NativeDetectorSampleKey &key) const {
-        const auto index = mapping_->dense_sample_index(key);
-        const double measured = mapping_->measured_value(key);
-        const auto current = current_values_.find(index);
-        return RecordView{
-            mapping_->sample_identity(key), key.detector_column, measured,
-            current == current_values_.end() ? measured : current->second,
-            mapping_->original_flag_bits(key),
-            revisions_.at(index)};
+    std::size_t size() const noexcept {
+        return mapping_->measured_sample_count();
     }
     const std::optional<NativeOperationIdentity> &last_operation() const
         noexcept {
@@ -754,79 +672,26 @@ public:
         return operation;
     }
 
-    // Validate and stage the complete affected detector set before swapping
-    // either current values or revisions. A rejected batch can therefore be
-    // corrected and retried with the same issued operation identity.
-    void apply_transaction(
-        const NativeOperationIdentity &operation,
-        const std::vector<Update> &updates) {
+    // Commit only the natural-scope operation identity after the complete
+    // numerical result and detector partition have been validated. Sample
+    // values and masks remain in dense processor-owned matrices; this gate
+    // deliberately does not retain a detector-by-sample revision narrative.
+    void commit_operation(const NativeOperationIdentity &operation) {
         if (!last_operation_.has_value() ||
             !(*last_operation_ == operation)) {
             throw std::logic_error(
-                "native measured scatter operation was not issued by this ledger");
+                "native measured operation was not issued by this gate");
         }
         if (last_committed_operation_.has_value() &&
             operation.sequence <= last_committed_operation_->sequence) {
             throw std::logic_error(
-                "native measured scatter operation is stale or already committed");
+                "native measured operation is stale or already committed");
         }
-
-        std::set<NativeDetectorSampleKey> destinations;
-        struct LocatedUpdate {
-            std::size_t index = 0;
-            const Update *update = nullptr;
-        };
-        std::vector<LocatedUpdate> located;
-        located.reserve(updates.size());
-        for (const auto &update : updates) {
-            const NativeDetectorSampleKey key{
-                update.identity().key(), update.detector_column()};
-            if (!destinations.insert(key).second) {
-                throw std::logic_error(
-                    "native measured scatter repeats a detector destination");
-            }
-            const auto record_before = record(key);
-            if (!(record_before.identity == update.identity())) {
-                throw std::logic_error(
-                    "native measured scatter identity or timestamp changed");
-            }
-            if (record_before.revision != update.expected_revision()) {
-                throw std::logic_error(
-                    "native measured scatter expected revision is stale");
-            }
-            if (record_before.revision ==
-                std::numeric_limits<TimestreamNativeRevision>::max()) {
-                throw std::overflow_error(
-                    "native measured detector revision would overflow");
-            }
-            if (!update.replacement_value().has_value()) {
-                throw std::logic_error(
-                    "native measured scatter update has no projected value");
-            }
-            if (!std::isfinite(*update.replacement_value())) {
-                throw std::logic_error(
-                    "native measured projected value must be finite");
-            }
-            located.push_back(
-                {mapping_->dense_sample_index(key), &update});
-        }
-
-        auto candidate_values = current_values_;
-        auto candidate_revisions = revisions_;
-        for (const auto &candidate : located) {
-            candidate_values[candidate.index] =
-                *candidate.update->replacement_value();
-            ++candidate_revisions.at(candidate.index);
-        }
-        current_values_.swap(candidate_values);
-        revisions_.swap(candidate_revisions);
         last_committed_operation_ = operation;
     }
 
 private:
     std::shared_ptr<const NativeMeasuredDetectorScan> mapping_;
-    std::vector<TimestreamNativeRevision> revisions_;
-    std::map<std::size_t, double> current_values_;
     std::uint64_t next_operation_sequence_ = 0;
     bool operation_sequence_exhausted_ = false;
     std::optional<NativeOperationIdentity> last_operation_;
@@ -834,8 +699,8 @@ private:
 };
 
 // One mutable scan/chunk owner. Admission builds the immutable mapping and
-// fresh ledger completely before publication; commit, rollback, or boundary
-// exit destroys both and their operation sequence.
+// fresh bounded operation gate before publication; commit, rollback, or
+// boundary exit destroys both and their operation sequence.
 class NativeMeasuredScanTransaction {
 public:
     explicit NativeMeasuredScanTransaction(NativeScanChunkScope scope)

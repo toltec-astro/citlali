@@ -30,37 +30,38 @@ enum class NativePtcGroupRole {
     pass_through,
 };
 
-struct NativePtcCellBinding {
-    CoincidenceCellState state = CoincidenceCellState::absent;
+struct NativePtcRowBinding {
     std::size_t segment_ordinal = 0;
     Eigen::Index segment_output_row = -1;
     std::vector<std::size_t> exact_common_slots;
-    std::optional<NativeSampleIdentity> identity;
-    TimestreamNativeRevision expected_revision = 0;
-    NativeDetectorFlagBits delivered_flag_bits = 0;
-    NativeDetectorFlagBits operation_exclusion_bits = 0;
-    std::optional<std::int64_t> apt_flag;
-    double preserved_input_value = 0.0;
-    std::string invalidity_reason;
-};
-
-struct NativePtcRtcSample {
-    NativeSampleIdentity identity;
-    double value = 0.0;
-    NativeDetectorFlagBits delivered_flag_bits = 0;
-    std::optional<double> kernel_value;
+    std::vector<std::pair<TimestreamNetworkId, NativeSampleIdentity>>
+        network_anchors;
 };
 
 struct NativePtcRtcCohortRow {
     std::size_t segment_ordinal = 0;
     Eigen::Index segment_output_row = -1;
     std::vector<std::size_t> exact_common_slots;
-    std::vector<std::optional<NativePtcRtcSample>> detector_samples;
 };
 
 struct NativePtcRtcCohortSegment {
     std::size_t segment_ordinal = 0;
     std::vector<NativePtcRtcCohortRow> rows;
+    std::vector<std::pair<TimestreamNetworkId,
+                          const NativeRtcRunResult *>> network_runs;
+
+    const NativeRtcRunResult &run(TimestreamNetworkId network_id) const {
+        const auto found = std::find_if(
+            network_runs.begin(), network_runs.end(),
+            [network_id](const auto &candidate) {
+                return candidate.first == network_id;
+            });
+        if (found == network_runs.end() || found->second == nullptr) {
+            throw std::logic_error(
+                "native PTC segment lacks its RTC network run");
+        }
+        return *found->second;
+    }
 };
 
 namespace detail {
@@ -247,9 +248,7 @@ make_native_ptc_rtc_cohort_segments(
             }
             rows.push_back(NativePtcRtcCohortRow{
                 segment_ordinal, row,
-                reference_support.exact_common_slots,
-                std::vector<std::optional<NativePtcRtcSample>>(
-                    scan.detector_count())});
+                reference_support.exact_common_slots});
         }
 
         std::vector<bool> detector_seen(scan.detector_count(), false);
@@ -346,25 +345,6 @@ make_native_ptc_rtc_cohort_segments(
                 }
                 detector_seen[static_cast<std::size_t>(detector_column)] =
                     true;
-                for (Eigen::Index row = 0; row < output_rows; ++row) {
-                    const auto &support = run.support.at(
-                        static_cast<std::size_t>(row));
-                    rows.at(static_cast<std::size_t>(row))
-                        .detector_samples.at(
-                            static_cast<std::size_t>(detector_column)) =
-                        NativePtcRtcSample{
-                            support.selected_anchor,
-                            run.selected_values(
-                                row, static_cast<Eigen::Index>(local)),
-                            run.ored_flag_bits(
-                                row, static_cast<Eigen::Index>(local)),
-                            has_kernel
-                                ? std::optional<double>{
-                                      (*run.selected_kernel_values)(
-                                          row,
-                                          static_cast<Eigen::Index>(local))}
-                                : std::optional<double>{}};
-                }
             }
         }
         if (!std::all_of(detector_seen.begin(), detector_seen.end(),
@@ -372,17 +352,15 @@ make_native_ptc_rtc_cohort_segments(
             throw std::logic_error(
                 "native PTC RTC detector partition is incomplete");
         }
-        for (const auto &row : rows) {
-            if (!std::all_of(
-                    row.detector_samples.begin(),
-                    row.detector_samples.end(),
-                    [](const auto &sample) { return sample.has_value(); })) {
-                throw std::logic_error(
-                    "native PTC RTC cohort row is incomplete");
-            }
+        std::vector<std::pair<TimestreamNetworkId,
+                              const NativeRtcRunResult *>> segment_runs;
+        segment_runs.reserve(participant_networks.size());
+        for (const auto network_id : participant_networks) {
+            segment_runs.emplace_back(
+                network_id, network_runs.at(network_id));
         }
-        result.push_back(
-            NativePtcRtcCohortSegment{segment_ordinal, std::move(rows)});
+        result.push_back(NativePtcRtcCohortSegment{
+            segment_ordinal, std::move(rows), std::move(segment_runs)});
     }
     return result;
 }
@@ -412,6 +390,10 @@ public:
     const std::vector<std::int64_t> &detector_uids() const noexcept {
         return detector_uids_;
     }
+    const std::vector<std::optional<std::int64_t>> &detector_apt_flags()
+        const noexcept {
+        return detector_apt_flags_;
+    }
     const Eigen::MatrixXd &values() const noexcept { return values_; }
     const std::optional<Eigen::MatrixXd> &kernel_values() const noexcept {
         return kernel_values_;
@@ -419,24 +401,89 @@ public:
     const NativePtcExclusionMatrix &exclusion_flags() const noexcept {
         return exclusion_flags_;
     }
+    const NativePtcExclusionMatrix &initial_exclusion_flags() const noexcept {
+        return initial_exclusion_flags_;
+    }
     const Eigen::VectorXi &apt_exclusion_flags() const noexcept {
         return apt_exclusion_flags_;
+    }
+    const NativeDetectorFlagBitsMatrix &delivered_flag_bits() const noexcept {
+        return delivered_flag_bits_;
+    }
+    NativeDetectorFlagBits operation_exclusion_bits(
+        Eigen::Index detector) const {
+        if (detector < 0 || detector >= detector_count()) {
+            throw std::out_of_range(
+                "native PTC detector exclusion is out of range");
+        }
+        return detector_operation_exclusion_bits_.at(
+            static_cast<std::size_t>(detector));
+    }
+    const std::vector<NativePtcRowBinding> &row_bindings() const noexcept {
+        return row_bindings_;
     }
     Eigen::Index slot_count() const noexcept { return values_.rows(); }
     Eigen::Index detector_count() const noexcept {
         return values_.cols();
     }
-    const NativePtcCellBinding &cell(Eigen::Index row,
-                                     Eigen::Index detector) const {
+    const NativePtcRowBinding &row_binding(Eigen::Index row) const {
+        if (row < 0 || row >= slot_count()) {
+            throw std::out_of_range(
+                "native PTC working row is out of range");
+        }
+        return row_bindings_.at(static_cast<std::size_t>(row));
+    }
+    const NativeSampleIdentity &identity(Eigen::Index row,
+                                         Eigen::Index detector) const {
         if (row < 0 || detector < 0 || row >= slot_count() ||
             detector >= detector_count()) {
             throw std::out_of_range(
                 "native PTC working cell is out of range");
         }
-        return cells_.at(
-            static_cast<std::size_t>(row) *
-                static_cast<std::size_t>(detector_count()) +
+        const auto network = detector_network_ids_.at(
             static_cast<std::size_t>(detector));
+        const auto &anchors = row_binding(row).network_anchors;
+        const auto found = std::find_if(
+            anchors.begin(), anchors.end(),
+            [network](const auto &candidate) {
+                return candidate.first == network;
+            });
+        if (found == anchors.end()) {
+            throw std::logic_error(
+                "native PTC row lacks its detector-network anchor");
+        }
+        return found->second;
+    }
+    CoincidenceCellState initial_state(Eigen::Index row,
+                                       Eigen::Index detector) const {
+        return initial_exclusion_flags_(row, detector)
+            ? CoincidenceCellState::mapped_invalid
+            : CoincidenceCellState::mapped_valid;
+    }
+    double input_value(Eigen::Index row, Eigen::Index detector) const {
+        return input_values_(row, detector);
+    }
+    std::string invalidity_reason(Eigen::Index row,
+                                  Eigen::Index detector) const {
+        const auto delivered = delivered_flag_bits_(row, detector);
+        const auto operation = operation_exclusion_bits(detector);
+        const auto &apt = detector_apt_flags_.at(
+            static_cast<std::size_t>(detector));
+        std::string result;
+        if (initial_state(row, detector) ==
+            CoincidenceCellState::mapped_invalid) {
+            if (delivered != 0) result = "RTC-delivered detector flag support";
+            if (operation != 0) {
+                if (!result.empty()) result += "; ";
+                result += "actual PTC operation exclusion bits";
+            }
+            if (!apt.has_value() || *apt != 0) {
+                if (!result.empty()) result += "; ";
+                result += apt.has_value() ? "typed APT detector exclusion"
+                                          : "typed APT detector flag missing";
+            }
+        }
+        return result;
     }
 
     NativePtcGroupWorkingSet(
@@ -445,21 +492,60 @@ public:
         std::size_t subgroup_index, NativePtcGroupRole role,
         std::vector<TimestreamDetectorColumn> detector_columns,
         std::vector<std::int64_t> detector_uids,
+        std::vector<TimestreamNetworkId> detector_network_ids,
+        std::vector<std::optional<std::int64_t>> detector_apt_flags,
         Eigen::MatrixXd values,
+        Eigen::MatrixXd input_values,
         NativePtcExclusionMatrix exclusion_flags,
+        NativeDetectorFlagBitsMatrix delivered_flag_bits,
+        std::vector<NativeDetectorFlagBits>
+            detector_operation_exclusion_bits,
         Eigen::VectorXi apt_exclusion_flags,
-        std::vector<NativePtcCellBinding> cells,
+        std::vector<NativePtcRowBinding> row_bindings,
         std::optional<Eigen::MatrixXd> kernel_values = {})
         : operation_{operation}, segment_ordinal_{segment_ordinal},
           effective_grouping_{std::move(effective_grouping)},
           group_key_{group_key}, subgroup_index_{subgroup_index},
           role_{role}, detector_columns_{std::move(detector_columns)},
           detector_uids_{std::move(detector_uids)},
+          detector_network_ids_{std::move(detector_network_ids)},
+          detector_apt_flags_{std::move(detector_apt_flags)},
           values_{std::move(values)},
+          input_values_{std::move(input_values)},
+          initial_exclusion_flags_{exclusion_flags},
           exclusion_flags_{std::move(exclusion_flags)},
+          delivered_flag_bits_{std::move(delivered_flag_bits)},
+          detector_operation_exclusion_bits_{
+              std::move(detector_operation_exclusion_bits)},
           apt_exclusion_flags_{std::move(apt_exclusion_flags)},
-          cells_{std::move(cells)},
+          row_bindings_{std::move(row_bindings)},
           kernel_values_{std::move(kernel_values)} {}
+
+    void commit_processed_values(
+        Eigen::MatrixXd values,
+        NativePtcExclusionMatrix exclusion_flags) {
+        if (values.rows() != slot_count() ||
+            values.cols() != detector_count() ||
+            !values.array().isFinite().all() ||
+            exclusion_flags.rows() != slot_count() ||
+            exclusion_flags.cols() != detector_count() ||
+            (exclusion_flags_.array() &&
+             !exclusion_flags.array()).any()) {
+            throw std::logic_error(
+                "native PTC committed numerical state is incomplete or removes an exclusion");
+        }
+        for (Eigen::Index row = 0; row < slot_count(); ++row) {
+            for (Eigen::Index detector = 0;
+                 detector < detector_count(); ++detector) {
+                if (exclusion_flags(row, detector) ||
+                    role_ == NativePtcGroupRole::pass_through) {
+                    values(row, detector) = input_values_(row, detector);
+                }
+            }
+        }
+        values_ = std::move(values);
+        exclusion_flags_ = std::move(exclusion_flags);
+    }
 
 private:
     NativeOperationIdentity operation_;
@@ -470,17 +556,24 @@ private:
     NativePtcGroupRole role_ = NativePtcGroupRole::pca_clean;
     std::vector<TimestreamDetectorColumn> detector_columns_;
     std::vector<std::int64_t> detector_uids_;
+    std::vector<TimestreamNetworkId> detector_network_ids_;
+    std::vector<std::optional<std::int64_t>> detector_apt_flags_;
     Eigen::MatrixXd values_;
+    Eigen::MatrixXd input_values_;
+    NativePtcExclusionMatrix initial_exclusion_flags_;
     NativePtcExclusionMatrix exclusion_flags_;
+    NativeDetectorFlagBitsMatrix delivered_flag_bits_;
+    std::vector<NativeDetectorFlagBits>
+        detector_operation_exclusion_bits_;
     Eigen::VectorXi apt_exclusion_flags_;
-    std::vector<NativePtcCellBinding> cells_;
+    std::vector<NativePtcRowBinding> row_bindings_;
     std::optional<Eigen::MatrixXd> kernel_values_;
 };
 
 struct NativePtcCohortRequest {
     std::string grouping;
     FinitePcaPlaceholder excluded_placeholder;
-    std::map<NativeDetectorSampleKey, NativeDetectorFlagBits>
+    std::map<TimestreamDetectorColumn, NativeDetectorFlagBits>
         operation_exclusion_bits;
     PcaCompatibilityInputs optional_modes;
     bool corr_grouping_enabled = false;
@@ -530,6 +623,9 @@ public:
     const std::vector<NativePtcGroupWorkingSet> &groups() const noexcept {
         return groups_;
     }
+    std::vector<NativePtcGroupWorkingSet> &groups_for_commit() noexcept {
+        return groups_;
+    }
     const std::shared_ptr<const NativeMeasuredDetectorScan> &mapping_handle()
         const noexcept {
         return mapping_;
@@ -564,13 +660,12 @@ private:
 
 inline NativePtcGroupWorkingSet make_native_ptc_group(
     const NativeMeasuredDetectorScan &scan,
-    const NativeMeasuredDetectorLedger &ledger,
     const NativePtcRtcCohortSegment &segment,
     NativeOperationIdentity operation, std::string effective_grouping,
     std::int64_t group_key, std::size_t subgroup_index,
     NativePtcGroupRole role,
     std::vector<TimestreamDetectorColumn> detector_columns,
-    const std::map<NativeDetectorSampleKey, NativeDetectorFlagBits> &
+    const std::map<TimestreamDetectorColumn, NativeDetectorFlagBits> &
         operation_exclusion_bits,
     FinitePcaPlaceholder excluded_placeholder) {
     if (segment.rows.empty() || detector_columns.empty()) {
@@ -581,18 +676,26 @@ inline NativePtcGroupWorkingSet make_native_ptc_group(
     const auto columns =
         static_cast<Eigen::Index>(detector_columns.size());
     Eigen::MatrixXd values(rows, columns);
-    const bool has_kernel = segment.rows.front()
-        .detector_samples.front()->kernel_value.has_value();
+    Eigen::MatrixXd input_values(rows, columns);
+    const bool has_kernel = segment.network_runs.front()
+        .second->selected_kernel_values.has_value();
     std::optional<Eigen::MatrixXd> kernel_values;
     if (has_kernel) kernel_values.emplace(rows, columns);
     NativePtcExclusionMatrix exclusions(rows, columns);
     exclusions.setConstant(true);
+    NativeDetectorFlagBitsMatrix delivered_flag_bits(rows, columns);
+    delivered_flag_bits.setZero();
+    std::vector<NativeDetectorFlagBits> detector_operation_bits;
+    detector_operation_bits.reserve(detector_columns.size());
     Eigen::VectorXi apt_exclusions(columns);
     std::vector<std::int64_t> detector_uids;
     detector_uids.reserve(detector_columns.size());
-    std::vector<NativePtcCellBinding> cells;
-    cells.reserve(static_cast<std::size_t>(rows) *
-                  static_cast<std::size_t>(columns));
+    std::vector<TimestreamNetworkId> detector_network_ids;
+    detector_network_ids.reserve(detector_columns.size());
+    std::vector<std::optional<std::int64_t>> detector_apt_flags;
+    detector_apt_flags.reserve(detector_columns.size());
+    std::vector<NativePtcRowBinding> row_bindings;
+    row_bindings.reserve(static_cast<std::size_t>(rows));
     std::set<TimestreamDetectorColumn> seen_columns;
 
     for (Eigen::Index local = 0; local < columns; ++local) {
@@ -604,6 +707,14 @@ inline NativePtcGroupWorkingSet make_native_ptc_group(
         }
         const auto &binding = scan.binding(detector_column);
         detector_uids.push_back(binding.output_uid);
+        detector_network_ids.push_back(binding.network_id);
+        detector_apt_flags.push_back(binding.apt_flag);
+        const auto operation = operation_exclusion_bits.find(
+            detector_column);
+        detector_operation_bits.push_back(
+            operation == operation_exclusion_bits.end()
+                ? NativeDetectorFlagBits{0}
+                : operation->second);
         apt_exclusions(local) =
             binding.apt_flag.has_value() && *binding.apt_flag == 0 ? 0 : 1;
     }
@@ -611,78 +722,81 @@ inline NativePtcGroupWorkingSet make_native_ptc_group(
     for (Eigen::Index row = 0; row < rows; ++row) {
         const auto &cohort_row = segment.rows.at(
             static_cast<std::size_t>(row));
+        NativePtcRowBinding row_binding{
+            segment.segment_ordinal, cohort_row.segment_output_row,
+            cohort_row.exact_common_slots, {}};
         for (Eigen::Index local = 0; local < columns; ++local) {
             const auto detector_column = detector_columns.at(
                 static_cast<std::size_t>(local));
             const auto &binding = scan.binding(detector_column);
-            const auto &sample = *cohort_row.detector_samples.at(
-                static_cast<std::size_t>(detector_column));
-            if (sample.kernel_value.has_value() != has_kernel ||
-                (sample.kernel_value &&
-                 !std::isfinite(*sample.kernel_value))) {
+            const auto &run = segment.run(binding.network_id);
+            const auto detector_it = std::find(
+                run.input.detector_columns.begin(),
+                run.input.detector_columns.end(), detector_column);
+            if (detector_it == run.input.detector_columns.end()) {
+                throw std::logic_error(
+                    "native PTC RTC run lacks its detector column");
+            }
+            const auto run_local = static_cast<Eigen::Index>(
+                std::distance(
+                    run.input.detector_columns.begin(), detector_it));
+            const auto &support = run.support.at(
+                static_cast<std::size_t>(row));
+            const auto &sample_identity = support.selected_anchor;
+            const auto sample_value = run.selected_values(row, run_local);
+            const auto sample_delivered_flag_bits =
+                run.ored_flag_bits(row, run_local);
+            if (run.selected_kernel_values.has_value() != has_kernel) {
                 throw std::logic_error(
                     "native PTC RTC kernel inventory is inconsistent");
             }
             if (kernel_values) {
-                (*kernel_values)(row, local) = *sample.kernel_value;
+                (*kernel_values)(row, local) =
+                    (*run.selected_kernel_values)(row, run_local);
             }
             const NativeDetectorSampleKey key{
-                sample.identity.key(), detector_column};
-            const auto operation_bits = [&]() {
-                const auto found = operation_exclusion_bits.find(key);
-                return found == operation_exclusion_bits.end()
-                    ? NativeDetectorFlagBits{0}
-                    : found->second;
-            }();
-            const auto record = ledger.record(key);
-            if (!(record.identity == sample.identity)) {
+                sample_identity.key(), detector_column};
+            const auto operation_bits = detector_operation_bits.at(
+                static_cast<std::size_t>(local));
+            if (!(scan.sample_identity(key) == sample_identity)) {
                 throw std::logic_error(
-                    "native PTC RTC anchor differs from the scan ledger");
+                    "native PTC RTC anchor differs from the admitted scan");
             }
-            const bool valid = sample.delivered_flag_bits == 0 &&
+            const auto anchor = std::find_if(
+                row_binding.network_anchors.begin(),
+                row_binding.network_anchors.end(),
+                [&](const auto &candidate) {
+                    return candidate.first == binding.network_id;
+                });
+            if (anchor == row_binding.network_anchors.end()) {
+                row_binding.network_anchors.emplace_back(
+                    binding.network_id, sample_identity);
+            }
+            else if (!(anchor->second == sample_identity)) {
+                throw std::logic_error(
+                    "native PTC row has unequal detector-network anchors");
+            }
+            const bool valid = sample_delivered_flag_bits == 0 &&
                 operation_bits == 0 && binding.apt_flag.has_value() &&
                 *binding.apt_flag == 0;
-            NativePtcCellBinding frozen;
-            frozen.state = valid ? CoincidenceCellState::mapped_valid
-                                 : CoincidenceCellState::mapped_invalid;
-            frozen.segment_ordinal = segment.segment_ordinal;
-            frozen.segment_output_row = cohort_row.segment_output_row;
-            frozen.exact_common_slots = cohort_row.exact_common_slots;
-            frozen.identity = sample.identity;
-            frozen.expected_revision = record.revision;
-            frozen.delivered_flag_bits = sample.delivered_flag_bits;
-            frozen.operation_exclusion_bits = operation_bits;
-            frozen.apt_flag = binding.apt_flag;
-            frozen.preserved_input_value = sample.value;
+            input_values(row, local) = sample_value;
+            delivered_flag_bits(row, local) =
+                sample_delivered_flag_bits;
             if (!valid) {
-                if (sample.delivered_flag_bits != 0) {
-                    frozen.invalidity_reason =
-                        "RTC-delivered detector flag support";
-                }
-                if (operation_bits != 0) {
-                    if (!frozen.invalidity_reason.empty()) {
-                        frozen.invalidity_reason += "; ";
-                    }
-                    frozen.invalidity_reason +=
-                        "actual PTC operation exclusion bits";
-                }
-                if (!binding.apt_flag.has_value() ||
-                    *binding.apt_flag != 0) {
-                    if (!frozen.invalidity_reason.empty()) {
-                        frozen.invalidity_reason += "; ";
-                    }
-                    frozen.invalidity_reason += binding.apt_flag.has_value()
-                        ? "typed APT detector exclusion"
-                        : "typed APT detector flag missing";
-                }
                 values(row, local) = excluded_placeholder.value();
             }
             else {
                 exclusions(row, local) = false;
-                values(row, local) = sample.value;
+                values(row, local) = sample_value;
             }
-            cells.push_back(std::move(frozen));
         }
+        std::sort(
+            row_binding.network_anchors.begin(),
+            row_binding.network_anchors.end(),
+            [](const auto &lhs, const auto &rhs) {
+                return lhs.first < rhs.first;
+            });
+        row_bindings.push_back(std::move(row_binding));
     }
     if (!values.array().isFinite().all()) {
         throw std::logic_error(
@@ -692,8 +806,11 @@ inline NativePtcGroupWorkingSet make_native_ptc_group(
         operation, segment.segment_ordinal,
         std::move(effective_grouping), group_key, subgroup_index, role,
         std::move(detector_columns), std::move(detector_uids),
-        std::move(values), std::move(exclusions),
-        std::move(apt_exclusions), std::move(cells),
+        std::move(detector_network_ids), std::move(detector_apt_flags),
+        std::move(values), std::move(input_values),
+        std::move(exclusions), std::move(delivered_flag_bits),
+        std::move(detector_operation_bits), std::move(apt_exclusions),
+        std::move(row_bindings),
         std::move(kernel_values)};
 }
 
@@ -720,41 +837,27 @@ inline NativePtcPreparedOperation prepare_native_ptc_cohorts(
     const auto segments =
         detail::make_native_ptc_rtc_cohort_segments(scan, rtc);
 
-    std::set<NativeDetectorSampleKey> candidate_keys;
-    bool has_excluded_cells = false;
-    for (const auto &segment : segments) {
-        for (const auto &row : segment.rows) {
-            for (std::size_t detector = 0;
-                 detector < scan.detector_count(); ++detector) {
-                const auto column =
-                    static_cast<TimestreamDetectorColumn>(detector);
-                const auto &sample = *row.detector_samples[detector];
-                const NativeDetectorSampleKey key{
-                    sample.identity.key(), column};
-                if (!candidate_keys.insert(key).second) {
-                    throw std::logic_error(
-                        "native PTC RTC anchor destination is duplicated");
-                }
-                const auto operation =
-                    request.operation_exclusion_bits.find(key);
-                const auto operation_bits =
-                    operation == request.operation_exclusion_bits.end()
-                        ? NativeDetectorFlagBits{0}
-                        : operation->second;
-                const auto &binding = scan.binding(column);
-                if (sample.delivered_flag_bits != 0 ||
-                    operation_bits != 0 ||
-                    !binding.apt_flag.has_value() ||
-                    *binding.apt_flag != 0) {
-                    has_excluded_cells = true;
-                }
-            }
-        }
-    }
-    for (const auto &[key, bits] : request.operation_exclusion_bits) {
-        if (bits == 0 || !candidate_keys.contains(key)) {
+    bool has_excluded_cells = !request.operation_exclusion_bits.empty();
+    for (const auto &[detector, bits] :
+         request.operation_exclusion_bits) {
+        if (bits == 0 || detector < 0 ||
+            static_cast<std::size_t>(detector) >=
+                scan.detector_count()) {
             throw std::invalid_argument(
                 "native PTC operation exclusion is zero or foreign");
+        }
+    }
+    for (std::size_t detector = 0;
+         detector < scan.detector_count(); ++detector) {
+        const auto &binding = scan.binding(
+            static_cast<TimestreamDetectorColumn>(detector));
+        if (!binding.apt_flag.has_value() || *binding.apt_flag != 0) {
+            has_excluded_cells = true;
+        }
+    }
+    for (const auto &run : rtc.runs) {
+        if ((run.ored_flag_bits.array() != 0).any()) {
+            has_excluded_cells = true;
         }
     }
     require_pca_compatibility(classify_pca_compatibility(
@@ -790,7 +893,7 @@ inline NativePtcPreparedOperation prepare_native_ptc_cohorts(
             }
             for (const auto &[network, columns] : ordinary_groups) {
                 const auto base = make_native_ptc_group(
-                    scan, ledger, segment, operation, effective, network,
+                    scan, segment, operation, effective, network,
                     0, NativePtcGroupRole::pca_clean, columns,
                     request.operation_exclusion_bits,
                     request.excluded_placeholder);
@@ -817,7 +920,7 @@ inline NativePtcPreparedOperation prepare_native_ptc_cohorts(
                             columns.at(static_cast<std::size_t>(local)));
                     }
                     groups.push_back(make_native_ptc_group(
-                        scan, ledger, segment, operation, effective,
+                        scan, segment, operation, effective,
                         network, subgroup_index++,
                         NativePtcGroupRole::pca_clean,
                         std::move(subgroup),
@@ -833,7 +936,7 @@ inline NativePtcPreparedOperation prepare_native_ptc_cohorts(
                 }
                 if (!pass_through.empty()) {
                     groups.push_back(make_native_ptc_group(
-                        scan, ledger, segment, operation, effective,
+                        scan, segment, operation, effective,
                         network, subgroup_index,
                         NativePtcGroupRole::pass_through,
                         std::move(pass_through),
@@ -845,7 +948,7 @@ inline NativePtcPreparedOperation prepare_native_ptc_cohorts(
         else {
             for (const auto &[key, columns] : ordinary_groups) {
                 groups.push_back(make_native_ptc_group(
-                    scan, ledger, segment, operation, effective, key, 0,
+                    scan, segment, operation, effective, key, 0,
                     NativePtcGroupRole::pca_clean, columns,
                     request.operation_exclusion_bits,
                     request.excluded_placeholder));
@@ -951,6 +1054,16 @@ public:
         return preclean_exclusion_flags_;
     }
     Eigen::MatrixXd &mutable_values_for_retry() noexcept { return values_; }
+    Eigen::MatrixXd take_values_for_commit() noexcept {
+        return std::move(values_);
+    }
+    NativePtcExclusionMatrix take_exclusion_flags_for_commit() {
+        if (!exclusion_flags_) {
+            throw std::logic_error(
+                "native PTC processed group lacks final exclusions");
+        }
+        return std::move(*exclusion_flags_);
+    }
 
 private:
     std::size_t segment_ordinal_ = 0;
@@ -1041,15 +1154,14 @@ NativePtcProcessedOperation run_native_ptc_groups(
 
 inline void scatter_native_ptc_results_transactionally(
     NativeMeasuredDetectorLedger &ledger,
-    const NativePtcPreparedOperation &prepared,
-    const NativePtcProcessedOperation &processed) {
+    NativePtcPreparedOperation &prepared,
+    NativePtcProcessedOperation &processed) {
     if (!(processed.operation() == prepared.operation()) ||
         processed.groups().size() != prepared.groups().size()) {
         throw std::logic_error(
             "native PTC processed operation identity or group count changed");
     }
 
-    std::vector<NativeMeasuredDetectorLedger::Update> updates;
     for (std::size_t group_index = 0;
          group_index < prepared.groups().size(); ++group_index) {
         const auto &source = prepared.groups()[group_index];
@@ -1069,44 +1181,21 @@ inline void scatter_native_ptc_results_transactionally(
             throw std::logic_error(
                 "native PTC processed group contains nonfinite values");
         }
-        for (Eigen::Index row = 0; row < source.slot_count(); ++row) {
-            for (Eigen::Index local = 0;
-                 local < source.detector_count(); ++local) {
-                const auto &cell = source.cell(row, local);
-                if (!cell.identity.has_value()) {
-                    throw std::logic_error(
-                        "native PTC cell lost its RTC anchor identity");
-                }
-                const auto detector_column = source.detector_columns().at(
-                    static_cast<std::size_t>(local));
-                if (cell.state == CoincidenceCellState::mapped_invalid) {
-                    updates.push_back(
-                        NativeMeasuredDetectorLedger::Update::
-                            preserve_invalid(
-                                *cell.identity, detector_column,
-                                cell.expected_revision,
-                                cell.preserved_input_value));
-                }
-                else if (source.role() ==
-                         NativePtcGroupRole::pass_through) {
-                    updates.push_back(
-                        NativeMeasuredDetectorLedger::Update::
-                            preserve_pass_through(
-                                *cell.identity, detector_column,
-                                cell.expected_revision,
-                                cell.preserved_input_value));
-                }
-                else {
-                    updates.push_back(
-                        NativeMeasuredDetectorLedger::Update::replacement(
-                            *cell.identity, detector_column,
-                            cell.expected_revision,
-                            result.values()(row, local)));
-                }
-            }
-        }
     }
-    ledger.apply_transaction(prepared.operation(), updates);
+
+    // All identities, shapes, flags, and finite values are validated before
+    // any working group is changed. The commit then replaces dense numerical
+    // state as a whole and records one operation identity; no per-cell update
+    // batch or revision history is retained.
+    for (std::size_t group_index = 0;
+         group_index < prepared.groups().size(); ++group_index) {
+        auto &source = prepared.groups_for_commit()[group_index];
+        auto &result = processed.mutable_group_for_retry(group_index);
+        source.commit_processed_values(
+            result.take_values_for_commit(),
+            result.take_exclusion_flags_for_commit());
+    }
+    ledger.commit_operation(prepared.operation());
 }
 
 }  // namespace citlali::pipeline

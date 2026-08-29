@@ -19,14 +19,7 @@ namespace {
 
 using citlali::pipeline::PcaCompatibilityHazard;
 using citlali::pipeline::PcaCompatibilityInputs;
-using citlali::pipeline::CoincidenceAbsenceReason;
-using citlali::pipeline::CoincidenceCohortBuilder;
-using citlali::pipeline::FinitePcaPlaceholder;
-using citlali::pipeline::NativeOperationIdentity;
-using citlali::pipeline::NativeSampleIdentity;
-using citlali::pipeline::NativeSampleLedger;
 using citlali::pipeline::classify_pca_compatibility;
-using citlali::pipeline::make_pca_rectangular_working_set;
 using citlali::pipeline::require_pca_compatibility;
 
 std::shared_ptr<spdlog::logger> ensure_sci_align_logger() {
@@ -236,42 +229,18 @@ TEST(sci_align_pca_placeholder,
 
 TEST(sci_align_pca_placeholder,
      optional_modes_with_exclusions_are_classified_fail_closed) {
-    const NativeSampleIdentity valid_identity{0, 0, 30.0};
-    NativeSampleLedger<double> valid_ledger{{{valid_identity, 1.0}}};
-    CoincidenceCohortBuilder valid_builder{
-        NativeOperationIdentity{20, 0}, {0}, 1};
-    valid_builder.assign_mapped_valid(0, 0, valid_identity, 0);
-    auto valid_cohort = std::move(valid_builder).finish();
-    const auto valid_working = make_pca_rectangular_working_set(
-        valid_ledger, valid_cohort,
-        FinitePcaPlaceholder::checked(123.0));
-
-    NativeSampleLedger<double> excluded_ledger{
-        std::vector<NativeSampleLedger<double>::Seed>{}};
-    CoincidenceCohortBuilder excluded_builder{
-        NativeOperationIdentity{21, 0}, {0}, 1};
-    excluded_builder.assign_absent(
-        0, 0, CoincidenceAbsenceReason::no_candidate);
-    auto excluded_cohort = std::move(excluded_builder).finish();
-    const auto excluded_working = make_pca_rectangular_working_set(
-        excluded_ledger, excluded_cohort,
-        FinitePcaPlaceholder::checked(123.0));
-
     PcaCompatibilityInputs ordinary;
-    EXPECT_TRUE(classify_pca_compatibility(
-                    excluded_working, ordinary)
-                    .compatible());
+    EXPECT_TRUE(classify_pca_compatibility(true, ordinary).compatible());
 
     PcaCompatibilityInputs unbanded_mp = ordinary;
     unbanded_mp.marchenko_pastur_active_for_operation = true;
-    EXPECT_TRUE(classify_pca_compatibility(
-                    excluded_working, unbanded_mp)
-                    .compatible());
+    EXPECT_TRUE(
+        classify_pca_compatibility(true, unbanded_mp).compatible());
 
     PcaCompatibilityInputs null_only = ordinary;
     null_only.null_model_active_for_operation = true;
     const auto null_classification =
-        classify_pca_compatibility(excluded_working, null_only);
+        classify_pca_compatibility(true, null_only);
     EXPECT_FALSE(null_classification.compatible());
     EXPECT_TRUE(null_classification.has(PcaCompatibilityHazard::null_model));
     EXPECT_THROW(
@@ -280,7 +249,7 @@ TEST(sci_align_pca_placeholder,
     PcaCompatibilityInputs adaptive_only = ordinary;
     adaptive_only.adaptive_selector_active_for_operation = true;
     const auto adaptive_classification =
-        classify_pca_compatibility(excluded_working, adaptive_only);
+        classify_pca_compatibility(true, adaptive_only);
     EXPECT_FALSE(adaptive_classification.compatible());
     EXPECT_TRUE(adaptive_classification.has(
         PcaCompatibilityHazard::adaptive_selector));
@@ -291,7 +260,7 @@ TEST(sci_align_pca_placeholder,
     PcaCompatibilityInputs banded_mp_only = unbanded_mp;
     banded_mp_only.marchenko_pastur_band_requested = true;
     const auto banded_mp_classification =
-        classify_pca_compatibility(excluded_working, banded_mp_only);
+        classify_pca_compatibility(true, banded_mp_only);
     EXPECT_FALSE(banded_mp_classification.compatible());
     EXPECT_TRUE(banded_mp_classification.has(
         PcaCompatibilityHazard::band_limited_marchenko_pastur));
@@ -305,7 +274,7 @@ TEST(sci_align_pca_placeholder,
     incompatible.marchenko_pastur_active_for_operation = true;
     incompatible.marchenko_pastur_band_requested = true;
     const auto classification =
-        classify_pca_compatibility(excluded_working, incompatible);
+        classify_pca_compatibility(true, incompatible);
     EXPECT_FALSE(classification.compatible());
     EXPECT_TRUE(classification.has(PcaCompatibilityHazard::null_model));
     EXPECT_TRUE(
@@ -316,7 +285,7 @@ TEST(sci_align_pca_placeholder,
         require_pca_compatibility(classification), std::logic_error);
 
     EXPECT_NO_THROW(require_pca_compatibility(
-        classify_pca_compatibility(valid_working, incompatible)));
+        classify_pca_compatibility(false, incompatible)));
 }
 
 }  // namespace

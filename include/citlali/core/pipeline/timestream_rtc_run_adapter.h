@@ -334,7 +334,7 @@ inline std::vector<NativeRtcOutputRowSupport> native_rtc_support(
 
 // Build the complete candidate before invoking a numerical body. This keeps
 // malformed, absent, nonfinite, or cross-run requests atomic with respect to
-// the scan mapping, ledger, and body invocation count.
+// the scan mapping, bounded operation gate, and body invocation count.
 inline std::vector<NativeRtcRunInput> prepare_native_rtc_runs(
     const NativeMeasuredDetectorScan &scan,
     const NativeRtcDispatchRequest &request) {

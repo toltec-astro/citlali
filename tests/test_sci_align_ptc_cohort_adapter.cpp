@@ -187,9 +187,9 @@ TEST(sci_align_ptc_cohort_adapter,
 
     pipeline::NativeMeasuredDetectorLedger low_ledger{scan};
     pipeline::NativeMeasuredDetectorLedger high_ledger{scan};
-    const auto low = pipeline::prepare_native_ptc_cohorts(
+    auto low = pipeline::prepare_native_ptc_cohorts(
         low_ledger, rtc, request_for("all", -1000.0));
-    const auto high = pipeline::prepare_native_ptc_cohorts(
+    auto high = pipeline::prepare_native_ptc_cohorts(
         high_ledger, rtc, request_for("all", 900000.0));
     ASSERT_EQ(low.groups().size(), 2U);
     ASSERT_EQ(high.groups().size(), 2U);
@@ -200,10 +200,17 @@ TEST(sci_align_ptc_cohort_adapter,
         const auto &low_group = group_with_key(low, segment, 0);
         const auto &high_group = group_with_key(high, segment, 0);
         ASSERT_EQ(low_group.slot_count(), 2);
+        ASSERT_EQ(low_group.row_bindings().size(),
+                  static_cast<std::size_t>(low_group.slot_count()));
+        for (const auto &row_binding : low_group.row_bindings()) {
+            // Identity/support metadata scales by row and participating
+            // network, never by row times detector.
+            EXPECT_EQ(row_binding.network_anchors.size(), 2U);
+        }
         EXPECT_TRUE((low_group.exclusion_flags().array() ==
                      high_group.exclusion_flags().array()).all());
         for (Eigen::Index row = 0; row < low_group.slot_count(); ++row) {
-            EXPECT_EQ(low_group.cell(row, 0).exact_common_slots,
+            EXPECT_EQ(low_group.row_binding(row).exact_common_slots,
                       (std::vector<std::size_t>{
                           expected_slots[segment][
                               static_cast<std::size_t>(row)]}));
@@ -223,9 +230,9 @@ TEST(sci_align_ptc_cohort_adapter,
         }
     }
 
-    const auto low_result = pipeline::run_native_ptc_groups(
+    auto low_result = pipeline::run_native_ptc_groups(
         low, placeholder_ignoring_body);
-    const auto high_result = pipeline::run_native_ptc_groups(
+    auto high_result = pipeline::run_native_ptc_groups(
         high, placeholder_ignoring_body);
     pipeline::scatter_native_ptc_results_transactionally(
         low_ledger, low, low_result);
@@ -235,47 +242,34 @@ TEST(sci_align_ptc_cohort_adapter,
         for (Eigen::Index row = 0; row < group.slot_count(); ++row) {
             for (Eigen::Index local = 0;
                  local < group.detector_count(); ++local) {
-                const auto &cell = group.cell(row, local);
-                if (cell.state !=
+                if (group.initial_state(row, local) !=
                     pipeline::CoincidenceCellState::mapped_invalid) {
                     continue;
                 }
-                const auto detector = group.detector_columns().at(
-                    static_cast<std::size_t>(local));
-                const auto record = low_ledger.record(
-                    {cell.identity->key(), detector});
-                EXPECT_DOUBLE_EQ(record.current_value,
-                                 cell.preserved_input_value);
+                EXPECT_DOUBLE_EQ(group.values()(row, local),
+                                 group.input_value(row, local));
             }
         }
     }
-    std::set<pipeline::NativeDetectorSampleKey> anchor_keys;
-    for (const auto &run : rtc.runs) {
-        for (const auto &support : run.support) {
-            for (const auto detector : run.input.detector_columns) {
-                anchor_keys.insert(
-                    {support.selected_anchor.key(), detector});
+    for (std::size_t group_index = 0;
+         group_index < low.groups().size(); ++group_index) {
+        const auto &low_group = low.groups()[group_index];
+        const auto &high_group = high.groups()[group_index];
+        ASSERT_EQ(low_group.values().rows(), high_group.values().rows());
+        ASSERT_EQ(low_group.values().cols(), high_group.values().cols());
+        for (Eigen::Index row = 0; row < low_group.slot_count(); ++row) {
+            for (Eigen::Index local = 0;
+                 local < low_group.detector_count(); ++local) {
+                EXPECT_EQ(
+                    std::bit_cast<std::uint64_t>(
+                        low_group.values()(row, local)),
+                    std::bit_cast<std::uint64_t>(
+                        high_group.values()(row, local)));
             }
         }
     }
-    for (std::size_t slot = 0; slot < scan->relational_slot_count(); ++slot) {
-        for (std::size_t detector = 0; detector < scan->detector_count();
-             ++detector) {
-            const auto cell = scan->cell(
-                scan->first_common_slot() + slot,
-                static_cast<Eigen::Index>(detector));
-            if (!cell.mapped()) continue;
-            const pipeline::NativeDetectorSampleKey key{
-                cell.identity()->key(), static_cast<Eigen::Index>(detector)};
-            const auto low_record = low_ledger.record(key);
-            const auto high_record = high_ledger.record(key);
-            EXPECT_EQ(std::bit_cast<std::uint64_t>(low_record.current_value),
-                      std::bit_cast<std::uint64_t>(high_record.current_value));
-            const auto expected_revision = anchor_keys.contains(key) ? 1U : 0U;
-            EXPECT_EQ(low_record.revision, expected_revision);
-            EXPECT_EQ(high_record.revision, expected_revision);
-        }
-    }
+    ASSERT_TRUE(low_ledger.last_committed_operation().has_value());
+    ASSERT_TRUE(high_ledger.last_committed_operation().has_value());
 }
 
 TEST(sci_align_ptc_cohort_adapter,
@@ -287,7 +281,7 @@ TEST(sci_align_ptc_cohort_adapter,
     auto request = request_for("corr_nw", 0.0);
     request.corr_grouping_enabled = true;
     std::size_t grouping_calls = 0;
-    const auto prepared = pipeline::prepare_native_ptc_cohorts(
+    auto prepared = pipeline::prepare_native_ptc_cohorts(
         ledger, rtc, request,
         pipeline::NativePtcCorrGroupingBody{
             [&](const pipeline::NativePtcGroupWorkingSet &base) {
@@ -310,7 +304,7 @@ TEST(sci_align_ptc_cohort_adapter,
               pipeline::NativePtcGroupRole::pass_through);
 
     std::size_t cleaner_calls = 0;
-    const auto processed = pipeline::run_native_ptc_groups(
+    auto processed = pipeline::run_native_ptc_groups(
         prepared, [&](const pipeline::NativePtcGroupWorkingSet &group) {
             ++cleaner_calls;
             return (group.values().array() + 5.0).matrix();
@@ -329,20 +323,11 @@ TEST(sci_align_ptc_cohort_adapter,
         (prepared.groups()[1].values().array() + 3.0).matrix(), 0.0));
     pipeline::scatter_native_ptc_results_transactionally(
         ledger, prepared, processed);
-    for (std::size_t slot = 0; slot < 5; ++slot) {
-        const auto pass = scan->cell(slot, 0);
-        const auto clean = scan->cell(slot, 1);
-        const auto pass_record = ledger.record(
-            {pass.identity()->key(), 0});
-        const auto clean_record = ledger.record(
-            {clean.identity()->key(), 1});
-        EXPECT_DOUBLE_EQ(pass_record.current_value,
-                         *pass.measured_value() + 2.0);
-        EXPECT_DOUBLE_EQ(clean_record.current_value,
-                         *clean.measured_value() + 7.0);
-        EXPECT_EQ(pass_record.revision, 1U);
-        EXPECT_EQ(clean_record.revision, 1U);
-    }
+    ASSERT_TRUE(ledger.last_committed_operation().has_value());
+    EXPECT_TRUE(prepared.groups()[0].values().isApprox(
+        (transformed.groups()[0].values().array() + 2.0).matrix(), 0.0));
+    EXPECT_TRUE(prepared.groups()[1].values().isApprox(
+        (transformed.groups()[1].values().array() - 3.0).matrix(), 0.0));
 }
 
 TEST(sci_align_ptc_cohort_adapter,
@@ -362,11 +347,8 @@ TEST(sci_align_ptc_cohort_adapter,
 
     auto request = request_for("corr_nw", 0.0);
     request.corr_grouping_enabled = true;
-    const auto &first_run = rtc.runs.front();
     request.operation_exclusion_bits.emplace(
-        pipeline::NativeDetectorSampleKey{
-            first_run.support.front().selected_anchor.key(),
-            first_run.input.detector_columns.front()},
+        rtc.runs.front().input.detector_columns.front(),
         0x20U);
     request.optional_modes.null_model_active_for_operation = true;
     std::size_t grouping_calls = 0;
@@ -411,10 +393,10 @@ TEST(sci_align_ptc_cohort_adapter,
     const auto scan = fixture::materialize_native_gap_measured_scan(loaded);
     const auto rtc = identity_rtc(*scan);
     pipeline::NativeMeasuredDetectorLedger ledger{scan};
-    const auto prepared = pipeline::prepare_native_ptc_cohorts(
+    auto prepared = pipeline::prepare_native_ptc_cohorts(
         ledger, rtc, request_for("nw", 0.0));
 
-    const auto processed = pipeline::run_native_ptc_groups(
+    auto processed = pipeline::run_native_ptc_groups(
         prepared, [](const pipeline::NativePtcGroupWorkingSet &group) {
             auto flags = group.exclusion_flags();
             bool added = false;
@@ -473,18 +455,16 @@ TEST(sci_align_ptc_cohort_adapter,
 }
 
 TEST(sci_align_ptc_cohort_adapter,
-     stale_duplicate_and_nonfinite_scatter_reject_atomically_and_retry) {
+     nonfinite_stage_commit_rejects_atomically_and_allows_retry) {
     const auto loaded = complete_identical_time_fixture();
     const auto scan = fixture::materialize_native_gap_measured_scan(loaded);
     const auto rtc = identity_rtc(*scan);
     pipeline::NativeMeasuredDetectorLedger ledger{scan};
-    const auto prepared = pipeline::prepare_native_ptc_cohorts(
+    auto prepared = pipeline::prepare_native_ptc_cohorts(
         ledger, rtc, request_for("all", 0.0));
     auto processed = pipeline::run_native_ptc_groups(
         prepared, [](const auto &group) { return group.values(); });
-    const auto first_cell = scan->cell(0, 0);
-    const pipeline::NativeDetectorSampleKey first_key{
-        first_cell.identity()->key(), 0};
+    const double original = prepared.groups()[0].values()(0, 0);
     processed.mutable_group_for_retry(0)
         .mutable_values_for_retry()(0, 0) =
         std::numeric_limits<double>::quiet_NaN();
@@ -493,14 +473,13 @@ TEST(sci_align_ptc_cohort_adapter,
             ledger, prepared, processed),
         std::logic_error);
     EXPECT_FALSE(ledger.last_committed_operation().has_value());
-    EXPECT_EQ(ledger.record(first_key).revision, 0U);
+    EXPECT_DOUBLE_EQ(prepared.groups()[0].values()(0, 0), original);
 
     processed.mutable_group_for_retry(0)
         .mutable_values_for_retry()(0, 0) = 123.5;
     pipeline::scatter_native_ptc_results_transactionally(
         ledger, prepared, processed);
-    EXPECT_DOUBLE_EQ(ledger.record(first_key).current_value, 123.5);
-    EXPECT_EQ(ledger.record(first_key).revision, 1U);
+    EXPECT_DOUBLE_EQ(prepared.groups()[0].values()(0, 0), 123.5);
     ASSERT_TRUE(ledger.last_committed_operation().has_value());
     EXPECT_EQ(ledger.last_committed_operation()->sequence, 0U);
 
@@ -508,23 +487,7 @@ TEST(sci_align_ptc_cohort_adapter,
         pipeline::scatter_native_ptc_results_transactionally(
             ledger, prepared, processed),
         std::logic_error);
-    EXPECT_DOUBLE_EQ(ledger.record(first_key).current_value, 123.5);
-    EXPECT_EQ(ledger.record(first_key).revision, 1U);
-
-    pipeline::NativeMeasuredDetectorLedger duplicate_ledger{scan};
-    const auto operation = duplicate_ledger.issue_operation();
-    const auto identity = scan->sample_identity(first_key);
-    const auto update =
-        pipeline::NativeMeasuredDetectorLedger::Update::replacement(
-            identity, 0, 0, 44.0);
-    EXPECT_THROW(
-        duplicate_ledger.apply_transaction(operation, {update, update}),
-        std::logic_error);
-    EXPECT_FALSE(duplicate_ledger.last_committed_operation().has_value());
-    EXPECT_EQ(duplicate_ledger.record(first_key).revision, 0U);
-    duplicate_ledger.apply_transaction(operation, {update});
-    EXPECT_DOUBLE_EQ(duplicate_ledger.record(first_key).current_value,
-                     44.0);
+    EXPECT_DOUBLE_EQ(prepared.groups()[0].values()(0, 0), 123.5);
 }
 
 TEST(sci_align_ptc_cohort_adapter,
@@ -533,7 +496,7 @@ TEST(sci_align_ptc_cohort_adapter,
     const auto scan = fixture::materialize_native_gap_measured_scan(loaded);
     const auto rtc = identity_rtc(*scan);
     pipeline::NativeMeasuredDetectorLedger ledger{scan};
-    const auto prepared = pipeline::prepare_native_ptc_cohorts(
+    auto prepared = pipeline::prepare_native_ptc_cohorts(
         ledger, rtc, request_for("nw", -77.0));
 
     timestream::Cleaner native_cleaner;
@@ -541,7 +504,7 @@ TEST(sci_align_ptc_cohort_adapter,
     native_cleaner.stddev_limit = 0.0;
     native_cleaner.n_calc = 0;
     native_cleaner.standard_pca.enabled = true;
-    const auto processed = pipeline::run_native_ptc_groups(
+    auto processed = pipeline::run_native_ptc_groups(
         prepared, [&](const auto &group) {
             return ordinary_pca_body(native_cleaner, group);
         });
@@ -566,18 +529,23 @@ TEST(sci_align_ptc_cohort_adapter,
 
     pipeline::scatter_native_ptc_results_transactionally(
         ledger, prepared, processed);
-    for (Eigen::Index row = 0; row < 5; ++row) {
-        for (Eigen::Index detector = 0; detector < 4; ++detector) {
-            const auto cell = scan->cell(
-                static_cast<std::size_t>(row), detector);
-            const auto record = ledger.record(
-                {cell.identity()->key(), detector});
-            EXPECT_EQ(std::bit_cast<std::uint64_t>(record.current_value),
-                      std::bit_cast<std::uint64_t>(
-                          expected(row, detector)));
-            EXPECT_EQ(record.revision, 1U);
+    Eigen::MatrixXd actual(5, 4);
+    for (const auto &group : prepared.groups()) {
+        for (Eigen::Index local = 0;
+             local < group.detector_count(); ++local) {
+            actual.col(group.detector_columns().at(
+                static_cast<std::size_t>(local))) =
+                group.values().col(local);
         }
     }
+    for (Eigen::Index row = 0; row < 5; ++row) {
+        for (Eigen::Index detector = 0; detector < 4; ++detector) {
+            EXPECT_EQ(std::bit_cast<std::uint64_t>(actual(row, detector)),
+                      std::bit_cast<std::uint64_t>(
+                          expected(row, detector)));
+        }
+    }
+    ASSERT_TRUE(ledger.last_committed_operation().has_value());
 }
 
 using DeterminismRow =
@@ -598,9 +566,9 @@ TEST(sci_align_ptc_cohort_adapter,
         (void)thread_count;
 #endif
         pipeline::NativeMeasuredDetectorLedger ledger{scan};
-        const auto prepared = pipeline::prepare_native_ptc_cohorts(
+        auto prepared = pipeline::prepare_native_ptc_cohorts(
             ledger, rtc, request_for("array", 0.0));
-        const auto processed = pipeline::run_native_ptc_groups(
+        auto processed = pipeline::run_native_ptc_groups(
             prepared, [](const auto &group) {
                 Eigen::MatrixXd result = group.values();
                 for (Eigen::Index row = 0; row < result.rows(); ++row) {
@@ -616,17 +584,21 @@ TEST(sci_align_ptc_cohort_adapter,
         pipeline::scatter_native_ptc_results_transactionally(
             ledger, prepared, processed);
         std::vector<DeterminismRow> current;
-        for (std::size_t slot = 0; slot < 5; ++slot) {
-            for (Eigen::Index detector = 0; detector < 4; ++detector) {
-                const auto cell = scan->cell(slot, detector);
-                const auto record = ledger.record(
-                    {cell.identity()->key(), detector});
-                current.emplace_back(
-                    cell.identity()->key(), detector,
-                    std::bit_cast<std::uint64_t>(record.current_value),
-                    record.revision);
+        for (const auto &group : prepared.groups()) {
+            for (Eigen::Index row = 0; row < group.slot_count(); ++row) {
+                for (Eigen::Index local = 0;
+                     local < group.detector_count(); ++local) {
+                    const auto detector = group.detector_columns().at(
+                        static_cast<std::size_t>(local));
+                    current.emplace_back(
+                        group.identity(row, local).key(), detector,
+                        std::bit_cast<std::uint64_t>(
+                            group.values()(row, local)),
+                        1U);
+                }
             }
         }
+        std::sort(current.begin(), current.end());
         if (!reference.has_value()) reference = current;
         EXPECT_EQ(current, *reference);
     }

@@ -773,11 +773,10 @@ TEST(SciAlignNativeConsumerExecution,
         for (Eigen::Index local = 0;
              local < group.detector_count(); ++local) {
             for (Eigen::Index row = 0; row < group.slot_count(); ++row) {
-                const auto &cell = group.cell(row, local);
                 const auto detector = group.detector_columns().at(
                     static_cast<std::size_t>(local));
                 EXPECT_EQ(
-                    cell.operation_exclusion_bits,
+                    group.operation_exclusion_bits(local),
                     detector == 0
                         ? pipeline::native_duplicate_tone_exclusion_bit_v2
                         : 0U);

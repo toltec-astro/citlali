@@ -745,6 +745,15 @@ typed domain explicitly models another state. Missing, disabled, automatic,
 and unavailable are semantic states; new code must not invent NaN, zero, or a
 negative value as an undocumented replacement for one of them.
 
+Runtime reproducibility does not require retaining a narrative record for
+every deterministic detector-sample operation. Exact numerical matrices and
+compact validity/exclusion masks remain authoritative at their processing
+stage; native identity is retained at row/network and detector scope, and a
+bounded scan/stage gate commits only a completely validated result. Inputs,
+compact-v2 APT, effective configuration, source/build identity, policy,
+bounded natural-scope provenance, and verified outputs supply the information
+needed to reproduce and audit the process. See ADR 0016.
+
 Persisted scientific products use these current validity rules:
 
 - Timestream flags identify invalid samples. Detector/APT flags identify
