@@ -179,6 +179,49 @@ private:
     std::size_t detector_occurrence_count_ = 0;
 };
 
+class IncompleteNativePartitionSchedule : public std::invalid_argument {
+public:
+    using std::invalid_argument::invalid_argument;
+};
+
+inline void require_exact_native_partition_schedule(
+    const NativePairedReadoutView &logical_input,
+    std::span<const std::shared_ptr<const NativePairedReadoutView>>
+        partitions) {
+    if (partitions.empty()) {
+        throw IncompleteNativePartitionSchedule(
+            "native RTC requires at least one engineering partition");
+    }
+    for (const auto &partition : partitions) {
+        if (!partition ||
+            partition->parent_handle().get() !=
+                logical_input.parent_handle().get() ||
+            !(partition->scope() == logical_input.scope()) ||
+            partition->network_count() != logical_input.network_count()) {
+            throw IncompleteNativePartitionSchedule(
+                "native RTC partition is not bound to the logical input");
+        }
+    }
+    for (const auto &logical_span : logical_input.spans()) {
+        auto next_native_row = logical_span.first_native_row;
+        for (const auto &partition : partitions) {
+            const auto &partition_span =
+                partition->span(logical_span.network_id);
+            if (partition_span.first_native_row != next_native_row ||
+                partition_span.past_last_native_row >
+                    logical_span.past_last_native_row) {
+                throw IncompleteNativePartitionSchedule(
+                    "engineering partitions do not exactly cover declared logical support");
+            }
+            next_native_row = partition_span.past_last_native_row;
+        }
+        if (next_native_row != logical_span.past_last_native_row) {
+            throw IncompleteNativePartitionSchedule(
+                "engineering partitions do not exactly cover declared logical support");
+        }
+    }
+}
+
 struct RtcNativeCellIdentity {
     TimestreamNetworkId network_id = -1;
     TimestreamNativeRow native_row = -1;
@@ -368,6 +411,11 @@ public:
 private:
     friend std::shared_ptr<const RtcEvidence> learn_identity_rtc(
         std::shared_ptr<const NativePairedReadoutView>, std::uint64_t);
+    friend std::shared_ptr<const RtcEvidence>
+    learn_identity_rtc_partitioned(
+        std::shared_ptr<const NativePairedReadoutView>,
+        std::span<const std::shared_ptr<const NativePairedReadoutView>>,
+        std::uint64_t);
 
     RtcEvidence(RtcEvidenceIdentity identity,
                 std::shared_ptr<const NativePairedReadoutView> input,
@@ -382,51 +430,70 @@ private:
     RtcEvidenceSummary summary_;
 };
 
-inline std::shared_ptr<const RtcEvidence> learn_identity_rtc(
-    std::shared_ptr<const NativePairedReadoutView> input,
+inline std::shared_ptr<const RtcEvidence> learn_identity_rtc_partitioned(
+    std::shared_ptr<const NativePairedReadoutView> logical_input,
+    std::span<const std::shared_ptr<const NativePairedReadoutView>> partitions,
     std::uint64_t attempt) {
-    if (!input || attempt == 0) {
+    if (!logical_input || attempt == 0) {
         throw std::invalid_argument(
             "identity RTC learning requires input and an attempt identity");
     }
+    require_exact_native_partition_schedule(*logical_input, partitions);
 
     RtcEvidenceSummary summary;
-    summary.examined_cell_count = input->detector_occurrence_count();
+    summary.examined_cell_count =
+        logical_input->detector_occurrence_count();
     std::vector<RtcEvidenceEvent> events;
-    for (const auto &network_span : input->spans()) {
-        const auto &network = input->network(network_span.network_id);
-        for (auto row = network_span.first_native_row;
-             row < network_span.past_last_native_row; ++row) {
-            const auto offset = static_cast<std::uint32_t>(
-                row - network_span.first_native_row);
-            for (Eigen::Index detector = 0;
-                 detector < network.detector_count(); ++detector) {
-                const auto &x_state = network.state(
-                    ReadoutMember::x, row, detector);
-                const auto &r_state = network.state(
-                    ReadoutMember::r, row, detector);
-                const bool x_event = !x_state.valid();
-                const bool r_event = !r_state.valid();
-                if (!x_event && !r_event) continue;
+    for (const auto &logical_span : logical_input->spans()) {
+        const auto &network =
+            logical_input->network(logical_span.network_id);
+        for (const auto &partition : partitions) {
+            const auto &partition_span =
+                partition->span(logical_span.network_id);
+            for (auto row = partition_span.first_native_row;
+                 row < partition_span.past_last_native_row; ++row) {
+                const auto offset = static_cast<std::uint32_t>(
+                    row - logical_span.first_native_row);
+                for (Eigen::Index detector = 0;
+                     detector < network.detector_count(); ++detector) {
+                    const auto &x_state = network.state(
+                        ReadoutMember::x, row, detector);
+                    const auto &r_state = network.state(
+                        ReadoutMember::r, row, detector);
+                    const bool x_event = !x_state.valid();
+                    const bool r_event = !r_state.valid();
+                    if (!x_event && !r_event) continue;
 
-                RtcEvidenceOrigin origin = RtcEvidenceOrigin::none;
-                if (x_event) origin = origin | RtcEvidenceOrigin::x;
-                if (r_event) origin = origin | RtcEvidenceOrigin::r;
-                events.push_back(RtcEvidenceEvent{
-                    {network_span.network_id, offset,
-                     static_cast<std::uint32_t>(detector)},
-                    origin, RtcEvidenceClass::input_admission});
-                if (x_event) ++summary.direct_x_event_count;
-                if (r_event) ++summary.direct_r_event_count;
-                if (x_event && r_event) ++summary.x_and_r_event_count;
+                    RtcEvidenceOrigin origin = RtcEvidenceOrigin::none;
+                    if (x_event) origin = origin | RtcEvidenceOrigin::x;
+                    if (r_event) origin = origin | RtcEvidenceOrigin::r;
+                    events.push_back(RtcEvidenceEvent{
+                        {logical_span.network_id, offset,
+                         static_cast<std::uint32_t>(detector)},
+                        origin, RtcEvidenceClass::input_admission});
+                    if (x_event) ++summary.direct_x_event_count;
+                    if (r_event) ++summary.direct_r_event_count;
+                    if (x_event && r_event) {
+                        ++summary.x_and_r_event_count;
+                    }
+                }
             }
         }
     }
     summary.accepted_event_count = events.size();
 
     return std::shared_ptr<const RtcEvidence>(new RtcEvidence{
-        RtcEvidenceIdentity{attempt}, std::move(input), std::move(events),
-        summary});
+        RtcEvidenceIdentity{attempt}, std::move(logical_input),
+        std::move(events), summary});
+}
+
+inline std::shared_ptr<const RtcEvidence> learn_identity_rtc(
+    std::shared_ptr<const NativePairedReadoutView> input,
+    std::uint64_t attempt) {
+    const std::vector<std::shared_ptr<const NativePairedReadoutView>>
+        partitions{input};
+    return learn_identity_rtc_partitioned(
+        std::move(input), partitions, attempt);
 }
 
 enum class RtcPairDecision : std::uint8_t {
@@ -667,6 +734,10 @@ private:
     friend RtcApplyResult apply_identity_rtc(
         std::shared_ptr<const RtcPlan>,
         std::shared_ptr<const NativePairedReadoutView>);
+    friend RtcApplyResult apply_identity_rtc_partitioned(
+        std::shared_ptr<const RtcPlan>,
+        std::shared_ptr<const NativePairedReadoutView>,
+        std::span<const std::shared_ptr<const NativePairedReadoutView>>);
 
     RtcTimestream(std::shared_ptr<const RtcPlan> plan,
                   std::shared_ptr<const NativePairedReadoutView> input)
@@ -709,40 +780,47 @@ struct RtcApplyResult {
     RtcRealization realization;
 };
 
-inline RtcApplyResult apply_identity_rtc(
+inline RtcApplyResult apply_identity_rtc_partitioned(
     std::shared_ptr<const RtcPlan> plan,
-    std::shared_ptr<const NativePairedReadoutView> input) {
-    if (!plan || !input || plan->input_handle().get() != input.get()) {
+    std::shared_ptr<const NativePairedReadoutView> logical_input,
+    std::span<const std::shared_ptr<const NativePairedReadoutView>>
+        partitions) {
+    if (!plan || !logical_input ||
+        plan->input_handle().get() != logical_input.get()) {
         throw std::invalid_argument(
             "identity RTC apply requires the exact plan-bound input");
     }
-    if (!(plan->input_handle()->scope() == input->scope()) ||
+    if (!(plan->input_handle()->scope() == logical_input->scope()) ||
         plan->operator_spec().sampling_factor != 1 ||
         plan->operator_spec().sampling_phase != 0) {
         throw std::logic_error(
             "identity RTC plan binding or operator is inconsistent");
     }
+    require_exact_native_partition_schedule(*logical_input, partitions);
 
     const auto pair_ineligible_cell_count =
         plan->evidence_handle()->events().size();
     RtcRealization realization{
         plan->identity(), RtcCompletionState::complete,
-        input->native_occurrence_count(),
-        input->detector_occurrence_count(),
+        logical_input->native_occurrence_count(),
+        logical_input->detector_occurrence_count(),
         pair_ineligible_cell_count, 0, 0, 1};
-    for (const auto &network_span : input->spans()) {
-        const auto &network = input->network(network_span.network_id);
-        for (auto row = network_span.first_native_row;
-             row < network_span.past_last_native_row; ++row) {
-            for (Eigen::Index detector = 0;
-                 detector < network.detector_count(); ++detector) {
-                if (network.state(
-                        ReadoutMember::x, row, detector).valid()) {
-                    ++realization.x_numerically_valid_cell_count;
-                }
-                if (network.state(
-                        ReadoutMember::r, row, detector).valid()) {
-                    ++realization.r_numerically_valid_cell_count;
+    for (const auto &partition : partitions) {
+        for (const auto &network_span : partition->spans()) {
+            const auto &network =
+                logical_input->network(network_span.network_id);
+            for (auto row = network_span.first_native_row;
+                 row < network_span.past_last_native_row; ++row) {
+                for (Eigen::Index detector = 0;
+                     detector < network.detector_count(); ++detector) {
+                    if (network.state(
+                            ReadoutMember::x, row, detector).valid()) {
+                        ++realization.x_numerically_valid_cell_count;
+                    }
+                    if (network.state(
+                            ReadoutMember::r, row, detector).valid()) {
+                        ++realization.r_numerically_valid_cell_count;
+                    }
                 }
             }
         }
@@ -750,8 +828,18 @@ inline RtcApplyResult apply_identity_rtc(
 
     return RtcApplyResult{
         std::shared_ptr<const RtcTimestream>(
-            new RtcTimestream{std::move(plan), std::move(input)}),
+            new RtcTimestream{
+                std::move(plan), std::move(logical_input)}),
         realization};
+}
+
+inline RtcApplyResult apply_identity_rtc(
+    std::shared_ptr<const RtcPlan> plan,
+    std::shared_ptr<const NativePairedReadoutView> input) {
+    const std::vector<std::shared_ptr<const NativePairedReadoutView>>
+        partitions{input};
+    return apply_identity_rtc_partitioned(
+        std::move(plan), std::move(input), partitions);
 }
 
 }  // namespace citlali::pipeline

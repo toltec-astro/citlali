@@ -81,6 +81,18 @@ function(verify_dependency label source_dir approved_revision patch_path
             "${label} dependency worktree contains unapproved untracked content: "
             "${untracked} ${untracked_error}")
     endif()
+    execute_process(
+        COMMAND "${git_executable}" -C "${source_dir}"
+            ls-files --others --ignored --exclude-standard
+        RESULT_VARIABLE ignored_result
+        OUTPUT_VARIABLE ignored
+        ERROR_VARIABLE ignored_error
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if(NOT ignored_result EQUAL 0 OR NOT ignored STREQUAL "")
+        message(FATAL_ERROR
+            "${label} dependency worktree contains unapproved ignored content: "
+            "${ignored} ${ignored_error}")
+    endif()
 
     string(TOLOWER "${label}" label_lower)
     set(expected_index "${state_dir}/${label_lower}-expected.index")
@@ -121,7 +133,7 @@ function(verify_dependency label source_dir approved_revision patch_path
     execute_process(
         COMMAND "${CMAKE_COMMAND}" -E env
             "GIT_INDEX_FILE=${actual_index}"
-            "${git_executable}" -C "${source_dir}" add -u -- .
+            "${git_executable}" -C "${source_dir}" add -A -- .
         COMMAND_ERROR_IS_FATAL ANY)
     execute_process(
         COMMAND "${CMAKE_COMMAND}" -E env
@@ -135,6 +147,52 @@ function(verify_dependency label source_dir approved_revision patch_path
             "${label} dependency worktree is not exactly its approved base plus patch: "
             "expected tree ${expected_tree}, actual tree ${actual_tree}")
     endif()
+
+    execute_process(
+        COMMAND "${git_executable}" -C "${source_dir}"
+            submodule status --recursive
+        RESULT_VARIABLE submodule_status_result
+        OUTPUT_VARIABLE submodule_status
+        ERROR_VARIABLE submodule_status_error
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if(NOT submodule_status_result EQUAL 0 OR
+       submodule_status MATCHES "(^|\n)[-+U]")
+        message(FATAL_ERROR
+            "${label} dependency submodule identity is incomplete: "
+            "${submodule_status} ${submodule_status_error}")
+    endif()
+    execute_process(
+        COMMAND "${git_executable}" -C "${source_dir}"
+            submodule foreach --recursive --quiet "echo \"$displaypath\""
+        RESULT_VARIABLE submodule_paths_result
+        OUTPUT_VARIABLE submodule_paths_output
+        ERROR_VARIABLE submodule_paths_error
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    if(NOT submodule_paths_result EQUAL 0)
+        message(FATAL_ERROR
+            "${label} dependency submodule inventory failed: "
+            "${submodule_paths_error}")
+    endif()
+    string(REPLACE "\n" ";" submodule_paths "${submodule_paths_output}")
+    foreach(submodule_path IN LISTS submodule_paths)
+        if(submodule_path STREQUAL "")
+            continue()
+        endif()
+        execute_process(
+            COMMAND "${git_executable}"
+                -C "${source_dir}/${submodule_path}"
+                status --porcelain=v1 --untracked-files=all --ignored=matching
+            RESULT_VARIABLE submodule_dirty_result
+            OUTPUT_VARIABLE submodule_dirty
+            ERROR_VARIABLE submodule_dirty_error
+            OUTPUT_STRIP_TRAILING_WHITESPACE)
+        if(NOT submodule_dirty_result EQUAL 0 OR
+           NOT submodule_dirty STREQUAL "")
+            message(FATAL_ERROR
+                "${label} dependency submodule ${submodule_path} is not clean: "
+                "${submodule_dirty} ${submodule_dirty_error}")
+        endif()
+    endforeach()
 
     file(SHA256 "${patch_path}" patch_sha)
     set("${revision_variable}" "${revision}" PARENT_SCOPE)

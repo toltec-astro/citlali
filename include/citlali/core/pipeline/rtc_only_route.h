@@ -52,6 +52,7 @@ enum class RtcOnlyFailureCause : std::uint8_t {
     none,
     invalid_run_identity,
     input_contract_rejected,
+    incomplete_logical_support,
     learning_contract_rejected,
     consideration_contract_rejected,
     apply_contract_rejected,
@@ -69,6 +70,8 @@ constexpr const char *rtc_only_failure_cause_name(
             return "invalid_run_identity";
         case RtcOnlyFailureCause::input_contract_rejected:
             return "input_contract_rejected";
+        case RtcOnlyFailureCause::incomplete_logical_support:
+            return "incomplete_logical_support";
         case RtcOnlyFailureCause::learning_contract_rejected:
             return "learning_contract_rejected";
         case RtcOnlyFailureCause::consideration_contract_rejected:
@@ -87,6 +90,7 @@ constexpr const char *rtc_only_failure_cause_name(
 
 struct RtcOnlyDiagnostics {
     std::size_t network_count = 0;
+    std::size_t engineering_partition_count = 0;
     std::size_t detector_count = 0;
     std::size_t native_occurrence_count = 0;
     std::size_t detector_occurrence_count = 0;
@@ -190,12 +194,14 @@ private:
 };
 
 // This is an explicit application-boundary request, not a YAML or persistent
-// TOD schema. The caller supplies the already-authoritative native pair and
-// one engineering partition over its per-network native occurrence axes.
+// TOD schema. Logical spans declare the complete scientific domain.
+// Engineering partitions are only an ordered, exact-cover execution schedule
+// for that domain; they never become separately complete publications.
 struct RtcOnlyRouteRequest {
     RtcOnlyRunIdentity identity;
     std::shared_ptr<const PairedReadout> native_input;
-    std::vector<NativeOccurrenceSpan> native_spans;
+    std::vector<NativeOccurrenceSpan> logical_spans;
+    std::vector<std::vector<NativeOccurrenceSpan>> engineering_partitions;
 };
 
 struct RtcOnlyRouteOutcome {
@@ -220,17 +226,34 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
         return {terminal, nullptr};
     }
 
-    std::shared_ptr<const NativePairedReadoutView> native_view;
+    std::shared_ptr<const NativePairedReadoutView> logical_view;
+    std::vector<std::shared_ptr<const NativePairedReadoutView>>
+        partition_views;
     try {
         ++terminal.diagnostics.native_admission_entry_count;
-        native_view = NativePairedReadoutView::admit(
-            request.native_input, request.native_spans);
-        terminal.diagnostics.network_count = native_view->network_count();
-        terminal.diagnostics.detector_count = native_view->detector_count();
+        logical_view = NativePairedReadoutView::admit(
+            request.native_input, request.logical_spans);
+        partition_views.reserve(request.engineering_partitions.size());
+        for (const auto &partition : request.engineering_partitions) {
+            partition_views.push_back(NativePairedReadoutView::admit(
+                request.native_input, partition));
+        }
+        require_exact_native_partition_schedule(
+            *logical_view, partition_views);
+        terminal.diagnostics.network_count = logical_view->network_count();
+        terminal.diagnostics.engineering_partition_count =
+            partition_views.size();
+        terminal.diagnostics.detector_count = logical_view->detector_count();
         terminal.diagnostics.native_occurrence_count =
-            native_view->native_occurrence_count();
+            logical_view->native_occurrence_count();
         terminal.diagnostics.detector_occurrence_count =
-            native_view->detector_occurrence_count();
+            logical_view->detector_occurrence_count();
+    } catch (const IncompleteNativePartitionSchedule &error) {
+        terminal.state = RtcOnlyTerminalState::input_admission_failed;
+        terminal.failure_cause =
+            RtcOnlyFailureCause::incomplete_logical_support;
+        terminal.failure_detail = error.what();
+        return {terminal, nullptr};
     } catch (const std::exception &error) {
         terminal.state = RtcOnlyTerminalState::input_admission_failed;
         terminal.failure_cause =
@@ -242,7 +265,8 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
     std::shared_ptr<const RtcEvidence> evidence;
     try {
         ++terminal.diagnostics.learn_entry_count;
-        evidence = learn_identity_rtc(native_view, request.identity.run);
+        evidence = learn_identity_rtc_partitioned(
+            logical_view, partition_views, request.identity.run);
         const auto &summary = evidence->summary();
         terminal.diagnostics.evidence_event_count =
             summary.accepted_event_count;
@@ -279,7 +303,8 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
     RtcApplyResult applied;
     try {
         ++terminal.diagnostics.apply_entry_count;
-        applied = apply_identity_rtc(plan, native_view);
+        applied = apply_identity_rtc_partitioned(
+            plan, logical_view, partition_views);
         terminal.diagnostics.pair_ineligible_cell_count =
             applied.realization.pair_ineligible_cell_count;
         terminal.diagnostics.x_numerically_valid_cell_count =

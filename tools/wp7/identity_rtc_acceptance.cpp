@@ -59,7 +59,7 @@ namespace pipeline = citlali::pipeline;
 namespace apt = citlali::pipeline::canonical_apt_v2;
 
 constexpr std::string_view acceptance_schema =
-    "citlali-wp7-identity-rtc-acceptance-v4";
+    "citlali-wp7-identity-rtc-acceptance-v5";
 constexpr std::string_view occurrence_support_assignment_schema =
     "citlali-native-occurrence-support-assignment-v1";
 constexpr std::string_view occurrence_support_duration_relation =
@@ -734,6 +734,7 @@ struct ComparisonMetrics {
     std::size_t member_cause_mismatch_count = 0;
     std::size_t selected_time_mismatch_count = 0;
     std::size_t representative_native_mismatch_count = 0;
+    std::size_t chunk_scientific_comparison_count = 0;
     std::size_t chunk_scientific_mismatch_count = 0;
     std::size_t assigned_support_binding_mismatch_count = 0;
 };
@@ -1076,10 +1077,14 @@ PairedBuildResult build_paired_readout(
 pipeline::RtcOnlyRouteOutcome run_route(
     std::uint64_t run,
     const std::shared_ptr<const pipeline::PairedReadout> &paired,
-    std::vector<pipeline::NativeOccurrenceSpan> spans,
+    std::vector<pipeline::NativeOccurrenceSpan> logical_spans,
+    std::vector<std::vector<pipeline::NativeOccurrenceSpan>>
+        engineering_partitions,
     pipeline::RtcOnlyProductSlot &publication) {
     return pipeline::run_identity_rtc_only(
-        {{run}, paired, std::move(spans)}, publication);
+        {{run}, paired, std::move(logical_spans),
+         std::move(engineering_partitions)},
+        publication);
 }
 
 const NetworkInput &producer_input(
@@ -1230,65 +1235,74 @@ void compare_full_product_to_producer_facts(
             "native RTC view comparison cardinality drifted");
 }
 
-void compare_chunk_to_full(const pipeline::RtcTimestream &chunk,
-                           const pipeline::RtcTimestream &full,
-                           ComparisonMetrics &metrics) {
-    const auto &chunk_evidence =
-        *chunk.plan_handle()->evidence_handle();
+void compare_partitioned_to_single(const pipeline::RtcTimestream &partitioned,
+                                   const pipeline::RtcTimestream &single,
+                                   ComparisonMetrics &metrics) {
+    const auto &partitioned_evidence =
+        *partitioned.plan_handle()->evidence_handle();
     const auto &full_evidence =
-        *full.plan_handle()->evidence_handle();
-    for (const auto &span : chunk.network_spans()) {
-        const auto &network = chunk.input_handle()->network(span.network_id);
+        *single.plan_handle()->evidence_handle();
+    for (const auto &span : partitioned.network_spans()) {
+        const auto &network =
+            partitioned.input_handle()->network(span.network_id);
         for (auto row = span.first_native_row;
              row < span.past_last_native_row; ++row) {
             if (std::bit_cast<std::uint64_t>(
-                    chunk.output_time_unix_sec(span.network_id, row)) !=
+                    partitioned.output_time_unix_sec(span.network_id, row)) !=
                     std::bit_cast<std::uint64_t>(
-                        full.output_time_unix_sec(span.network_id, row)) ||
-                !(chunk.representative_native_identity(
+                        single.output_time_unix_sec(span.network_id, row)) ||
+                !(partitioned.representative_native_identity(
                       span.network_id, row) ==
-                  full.representative_native_identity(
+                  single.representative_native_identity(
                       span.network_id, row)) ||
-                !(chunk.representative_interval(span.network_id, row) ==
-                  full.representative_interval(span.network_id, row))) {
+                !(partitioned.representative_interval(
+                      span.network_id, row) ==
+                  single.representative_interval(span.network_id, row))) {
                 ++metrics.chunk_scientific_mismatch_count;
             }
             for (Eigen::Index detector = 0;
                  detector < network.detector_count(); ++detector) {
-                if (!(chunk.identity(span.network_id, row, detector) ==
-                      full.identity(span.network_id, row, detector)) ||
-                    chunk.pair_decision(span.network_id, row, detector) !=
-                        full.pair_decision(
+                ++metrics.chunk_scientific_comparison_count;
+                if (!(partitioned.identity(
+                          span.network_id, row, detector) ==
+                      single.identity(span.network_id, row, detector)) ||
+                    partitioned.pair_decision(
+                        span.network_id, row, detector) !=
+                        single.pair_decision(
                             span.network_id, row, detector)) {
                     ++metrics.chunk_scientific_mismatch_count;
                 }
                 for (const auto member :
                      {pipeline::ReadoutMember::x,
                       pipeline::ReadoutMember::r}) {
-                    if (std::bit_cast<std::uint64_t>(chunk.value(
+                    if (std::bit_cast<std::uint64_t>(partitioned.value(
                             member, span.network_id, row, detector)) !=
-                            std::bit_cast<std::uint64_t>(full.value(
+                            std::bit_cast<std::uint64_t>(single.value(
                                 member, span.network_id, row, detector)) ||
-                        chunk.member_local_causes(
+                        partitioned.member_local_causes(
                             member, span.network_id, row, detector) !=
-                            full.member_local_causes(
+                            single.member_local_causes(
                                 member, span.network_id, row, detector)) {
                         ++metrics.chunk_scientific_mismatch_count;
                     }
                 }
-                const auto *chunk_cause = chunk.pair_causal_evidence(
+                const auto *partitioned_cause =
+                    partitioned.pair_causal_evidence(
+                        span.network_id, row, detector);
+                const auto *full_cause = single.pair_causal_evidence(
                     span.network_id, row, detector);
-                const auto *full_cause = full.pair_causal_evidence(
-                    span.network_id, row, detector);
-                if ((chunk_cause == nullptr) != (full_cause == nullptr)) {
+                if ((partitioned_cause == nullptr) !=
+                    (full_cause == nullptr)) {
                     ++metrics.chunk_scientific_mismatch_count;
-                } else if (chunk_cause != nullptr &&
-                           (chunk_cause->origin != full_cause->origin ||
-                            chunk_cause->evidence_class !=
+                } else if (partitioned_cause != nullptr &&
+                           (partitioned_cause->origin != full_cause->origin ||
+                            partitioned_cause->evidence_class !=
                                 full_cause->evidence_class ||
-                            chunk_evidence.scientific_identity(*chunk_cause) !=
+                            partitioned_evidence.scientific_identity(
+                                *partitioned_cause) !=
                                 full_evidence.scientific_identity(*full_cause) ||
-                            chunk_evidence.member_local_causes(*chunk_cause) !=
+                            partitioned_evidence.member_local_causes(
+                                *partitioned_cause) !=
                                 full_evidence.member_local_causes(*full_cause))) {
                     ++metrics.chunk_scientific_mismatch_count;
                 }
@@ -1318,6 +1332,7 @@ struct AcceptanceRun {
     double wall_time_sec = 0.0;
     double cpu_time_sec = 0.0;
     std::uint64_t peak_rss = 0;
+    std::size_t chunk_partition_count = 0;
     bool product_inspected_in_memory = false;
     bool publication_complete = false;
 };
@@ -1344,7 +1359,7 @@ AcceptanceRun execute_acceptance(
     const auto full_spans =
         pipeline::full_native_occurrence_spans(*paired_build.paired);
     const auto full = run_route(
-        1, paired_build.paired, full_spans,
+        1, paired_build.paired, full_spans, {full_spans},
         full_publication);
     const auto primary_cpu_end = std::clock();
     const auto primary_wall_end = std::chrono::steady_clock::now();
@@ -1384,25 +1399,44 @@ AcceptanceRun execute_acceptance(
         first_spans[index].past_last_native_row = midpoint;
         second_spans[index].first_native_row = midpoint;
     }
-    pipeline::RtcOnlyProductSlot first_publication;
-    pipeline::RtcOnlyProductSlot second_publication;
-    const auto first = run_route(
-        2, paired_build.paired, std::move(first_spans),
-        first_publication);
-    const auto second = run_route(
-        3, paired_build.paired, std::move(second_spans),
-        second_publication);
-    require(first.complete() && second.complete(),
-            "two-chunk identity RTC route did not complete");
-    compare_chunk_to_full(
-        *first.published_product->timestream_handle(),
-        *full.published_product->timestream_handle(), comparisons);
-    compare_chunk_to_full(
-        *second.published_product->timestream_handle(),
+    pipeline::RtcOnlyProductSlot partitioned_publication;
+    const auto partitioned = run_route(
+        2, paired_build.paired, full_spans,
+        {std::move(first_spans), std::move(second_spans)},
+        partitioned_publication);
+    const auto &partitioned_diagnostics = partitioned.terminal.diagnostics;
+    require(partitioned.complete() &&
+                partitioned_publication.snapshot() ==
+                    partitioned.published_product &&
+                partitioned_diagnostics.engineering_partition_count == 2 &&
+                partitioned_diagnostics.native_admission_entry_count == 1 &&
+                partitioned_diagnostics.learn_entry_count == 1 &&
+                partitioned_diagnostics.consider_entry_count == 1 &&
+                partitioned_diagnostics.apply_entry_count == 1 &&
+                partitioned_diagnostics.publication_entry_count == 1,
+            "two-chunk identity RTC route did not finalize one publication");
+    compare_partitioned_to_single(
+        *partitioned.published_product->timestream_handle(),
         *full.published_product->timestream_handle(), comparisons);
 
+    auto incomplete_partition = full_spans;
+    for (auto &span : incomplete_partition) {
+        span.past_last_native_row = span.first_native_row +
+            static_cast<pipeline::TimestreamNativeRow>(
+                span.occurrence_count() / 2);
+    }
+    pipeline::RtcOnlyProductSlot incomplete_publication;
+    const auto incomplete = run_route(
+        3, paired_build.paired, full_spans, {incomplete_partition},
+        incomplete_publication);
+    require(!incomplete.complete() &&
+                incomplete.terminal.failure_cause ==
+                    pipeline::RtcOnlyFailureCause::incomplete_logical_support &&
+                !incomplete_publication.snapshot(),
+            "missing engineering chunk published a false completion");
+
     const auto second_publish = run_route(
-        4, paired_build.paired, full_spans,
+        4, paired_build.paired, full_spans, {full_spans},
         full_publication);
     require(!second_publish.complete() &&
                 second_publish.terminal.state ==
@@ -1415,7 +1449,7 @@ AcceptanceRun execute_acceptance(
     auto invalid_spans = full_spans;
     ++invalid_spans.front().past_last_native_row;
     const auto failed = run_route(
-        5, paired_build.paired, std::move(invalid_spans),
+        5, paired_build.paired, invalid_spans, {invalid_spans},
         failed_publication);
     require(!failed.complete() &&
                 failed.terminal.failure_cause ==
@@ -1433,7 +1467,7 @@ AcceptanceRun execute_acceptance(
         observation.observation, full.terminal, native_cardinality,
         native_memory, comparisons,
         std::move(paired_build.mapping_instance_id), wall_time, cpu_time,
-        peak_rss_bytes(), true, true};
+        peak_rss_bytes(), 2, true, true};
 }
 
 void write_acceptance_record(const Arguments &arguments,
@@ -1474,6 +1508,10 @@ void write_acceptance_record(const Arguments &arguments,
     require(run.comparisons.pair_causal_evidence_comparison_count ==
                 run.native_cardinality.detector_occurrence_count,
             "pair causal-evidence comparison count is incomplete");
+    require(run.chunk_partition_count == 2 &&
+                run.comparisons.chunk_scientific_comparison_count ==
+                    run.native_cardinality.detector_occurrence_count,
+            "partitioned route did not compare the complete logical domain");
     require(run.comparisons.x_bitwise_mismatch_count == 0 &&
                 run.comparisons.r_bitwise_mismatch_count == 0 &&
                 run.comparisons.paired_ingress_identity_mismatch_count == 0 &&
@@ -1660,7 +1698,10 @@ void write_acceptance_record(const Arguments &arguments,
            << run.comparisons.pair_decision_comparison_count << ",\n"
            << "    \"pair_causal_evidence_comparison_count\": "
            << run.comparisons.pair_causal_evidence_comparison_count << ",\n"
-           << "    \"chunk_partition_count\": 2,\n"
+           << "    \"chunk_partition_count\": "
+           << run.chunk_partition_count << ",\n"
+           << "    \"chunk_scientific_comparison_count\": "
+           << run.comparisons.chunk_scientific_comparison_count << ",\n"
            << "    \"wall_time_sec\": " << run.wall_time_sec << ",\n"
            << "    \"cpu_time_sec\": " << run.cpu_time_sec << ",\n"
            << "    \"process_peak_rss_bytes\": " << run.peak_rss << ",\n"

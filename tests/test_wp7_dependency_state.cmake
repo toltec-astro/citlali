@@ -29,7 +29,12 @@ function(make_dependency name revision_variable patch_variable)
     file(MAKE_DIRECTORY "${source_dir}")
     file(WRITE "${source_dir}/payload.txt" "base\n")
     run_checked("${GIT_EXECUTABLE}" init "${source_dir}")
-    run_checked("${GIT_EXECUTABLE}" -C "${source_dir}" add payload.txt)
+    if(ARGC GREATER 3)
+        run_checked("${GIT_EXECUTABLE}"
+            -c protocol.file.allow=always
+            -C "${source_dir}" submodule add "${ARGV3}" tula_cmake)
+    endif()
+    run_checked("${GIT_EXECUTABLE}" -C "${source_dir}" add -A)
     run_checked("${GIT_EXECUTABLE}" -C "${source_dir}"
         -c user.name=Citlali-Test
         -c user.email=citlali-test@example.invalid
@@ -48,8 +53,18 @@ function(make_dependency name revision_variable patch_variable)
     set("${patch_variable}" "${patch}" PARENT_SCOPE)
 endfunction()
 
+set(nested_source "${TEST_ROOT}/nested-source")
+file(MAKE_DIRECTORY "${nested_source}")
+file(WRITE "${nested_source}/nested.txt" "nested base\n")
+run_checked("${GIT_EXECUTABLE}" init "${nested_source}")
+run_checked("${GIT_EXECUTABLE}" -C "${nested_source}" add nested.txt)
+run_checked("${GIT_EXECUTABLE}" -C "${nested_source}"
+    -c user.name=Citlali-Test
+    -c user.email=citlali-test@example.invalid
+    commit -m nested-base)
+
 make_dependency(kidscpp kidscpp_revision kidscpp_patch)
-make_dependency(tula tula_revision tula_patch)
+make_dependency(tula tula_revision tula_patch "${nested_source}")
 set(citlali_source "${TEST_ROOT}/citlali")
 file(MAKE_DIRECTORY "${citlali_source}")
 file(WRITE "${citlali_source}/source.txt" "clean\n")
@@ -98,6 +113,31 @@ if(untracked_result EQUAL 0)
 endif()
 file(REMOVE "${TEST_ROOT}/kidscpp/untracked.txt")
 
+file(APPEND "${TEST_ROOT}/kidscpp/.git/info/exclude" "ignored.txt\n")
+file(WRITE "${TEST_ROOT}/kidscpp/ignored.txt" "unapproved ignored input\n")
+execute_process(
+    COMMAND ${verify_command}
+    RESULT_VARIABLE ignored_result
+    OUTPUT_QUIET ERROR_QUIET)
+if(ignored_result EQUAL 0)
+    message(FATAL_ERROR "Ignored dependency content was accepted")
+endif()
+file(REMOVE "${TEST_ROOT}/kidscpp/ignored.txt")
+
+file(WRITE "${TEST_ROOT}/tula/staged-addition.txt" "unapproved staged input\n")
+run_checked("${GIT_EXECUTABLE}" -C "${TEST_ROOT}/tula"
+    add staged-addition.txt)
+execute_process(
+    COMMAND ${verify_command}
+    RESULT_VARIABLE staged_addition_result
+    OUTPUT_QUIET ERROR_QUIET)
+if(staged_addition_result EQUAL 0)
+    message(FATAL_ERROR "Staged dependency addition was accepted")
+endif()
+run_checked("${GIT_EXECUTABLE}" -C "${TEST_ROOT}/tula"
+    rm --cached -- staged-addition.txt)
+file(REMOVE "${TEST_ROOT}/tula/staged-addition.txt")
+
 file(APPEND "${TEST_ROOT}/tula/payload.txt" "extra\n")
 execute_process(
     COMMAND ${verify_command}
@@ -105,4 +145,14 @@ execute_process(
     OUTPUT_QUIET ERROR_QUIET)
 if(extra_diff_result EQUAL 0)
     message(FATAL_ERROR "Unapproved tracked dependency content was accepted")
+endif()
+file(WRITE "${TEST_ROOT}/tula/payload.txt" "base\napproved\n")
+
+file(APPEND "${TEST_ROOT}/tula/tula_cmake/nested.txt" "dirty\n")
+execute_process(
+    COMMAND ${verify_command}
+    RESULT_VARIABLE dirty_submodule_result
+    OUTPUT_QUIET ERROR_QUIET)
+if(dirty_submodule_result EQUAL 0)
+    message(FATAL_ERROR "Dirty dependency submodule content was accepted")
 endif()

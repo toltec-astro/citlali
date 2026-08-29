@@ -5,13 +5,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 import sys
 from pathlib import Path
 from typing import Any
 
 
-SCHEMA = "citlali-wp7-identity-rtc-acceptance-v4"
+SCHEMA = "citlali-wp7-identity-rtc-acceptance-v5"
 OCCURRENCE_SUPPORT_ASSIGNMENT_SCHEMA = (
     "citlali-native-occurrence-support-assignment-v1"
 )
@@ -80,7 +81,7 @@ def require_number(record: dict[str, Any], name: str, minimum: float = 0.0) -> f
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         raise AcceptanceError(f"{name} must be numeric")
     result = float(value)
-    if result <= minimum:
+    if not math.isfinite(result) or result <= minimum:
         raise AcceptanceError(f"{name} must be > {minimum}")
     return result
 
@@ -277,9 +278,27 @@ def validate(record: dict[str, Any]) -> None:
     direct_r_events = require_integer(metrics, "direct_r_event_count")
     both_events = require_integer(metrics, "x_and_r_event_count")
     ineligible_cells = require_integer(metrics, "pair_ineligible_cell_count")
+    x_valid_cells = require_integer(
+        metrics, "x_numerically_valid_cell_count"
+    )
+    r_valid_cells = require_integer(
+        metrics, "r_numerically_valid_cell_count"
+    )
     if evidence_events != ineligible_cells:
         raise AcceptanceError(
             "identity RTC requires one causal evidence event per ineligible pair"
+        )
+    if direct_x_events + direct_r_events - both_events != evidence_events:
+        raise AcceptanceError(
+            "direct x/r evidence union must equal evidence_event_count"
+        )
+    if direct_x_events != detector_occurrences - x_valid_cells:
+        raise AcceptanceError(
+            "direct_x_event_count must equal numerically invalid x cells"
+        )
+    if direct_r_events != detector_occurrences - r_valid_cells:
+        raise AcceptanceError(
+            "direct_r_event_count must equal numerically invalid r cells"
         )
     if (
         both_events > direct_x_events
@@ -288,13 +307,11 @@ def validate(record: dict[str, Any]) -> None:
     ):
         raise AcceptanceError("RTC evidence summary counts are inconsistent")
     if (
-        require_integer(metrics, "x_numerically_valid_cell_count")
-        > detector_occurrences
+        x_valid_cells > detector_occurrences
     ):
         raise AcceptanceError("x valid cell count cannot exceed native cells")
     if (
-        require_integer(metrics, "r_numerically_valid_cell_count")
-        > detector_occurrences
+        r_valid_cells > detector_occurrences
     ):
         raise AcceptanceError("r valid cell count cannot exceed native cells")
     derived_evidence_bytes = require_integer(metrics, "derived_evidence_bytes")
@@ -375,6 +392,13 @@ def validate(record: dict[str, Any]) -> None:
             "pair_causal_evidence_comparison_count must cover every native detector occurrence"
         )
     require_integer(metrics, "chunk_partition_count", 2)
+    if (
+        require_integer(metrics, "chunk_scientific_comparison_count", 1)
+        != detector_occurrences
+    ):
+        raise AcceptanceError(
+            "chunk_scientific_comparison_count must cover the complete logical domain"
+        )
     require_number(metrics, "wall_time_sec")
     require_number(metrics, "cpu_time_sec")
     require_integer(metrics, "process_peak_rss_bytes", 1)

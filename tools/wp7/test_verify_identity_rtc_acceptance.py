@@ -99,8 +99,8 @@ def valid_record() -> dict[str, object]:
             "direct_r_event_count": 4,
             "x_and_r_event_count": 2,
             "pair_ineligible_cell_count": 5,
-            "x_numerically_valid_cell_count": 80,
-            "r_numerically_valid_cell_count": 80,
+            "x_numerically_valid_cell_count": 20477,
+            "r_numerically_valid_cell_count": 20476,
             "derived_evidence_bytes": 80,
             "derived_plan_bytes": 0,
             "paired_ingress_value_comparison_count": 40960,
@@ -115,6 +115,7 @@ def valid_record() -> dict[str, object]:
             "pair_decision_comparison_count": 20480,
             "pair_causal_evidence_comparison_count": 20480,
             "chunk_partition_count": 2,
+            "chunk_scientific_comparison_count": 20480,
             "wall_time_sec": 1.0,
             "cpu_time_sec": 0.5,
             "process_peak_rss_bytes": 1024,
@@ -213,6 +214,46 @@ class AcceptanceValidatorTest(unittest.TestCase):
             "pair_causal_evidence_comparison_count",
         ):
             validator.validate(record)
+
+    def test_rejects_inconsistent_evidence_and_validity_summaries(self) -> None:
+        record = valid_record()
+        for name in (
+            "evidence_event_count",
+            "direct_x_event_count",
+            "direct_r_event_count",
+            "x_and_r_event_count",
+            "pair_ineligible_cell_count",
+        ):
+            record["metrics"][name] = 0
+        with self.assertRaises(validator.AcceptanceError):
+            validator.validate(record)
+
+        record = valid_record()
+        record["metrics"]["x_numerically_valid_cell_count"] = 0
+        with self.assertRaisesRegex(
+            validator.AcceptanceError,
+            "direct_x_event_count must equal numerically invalid x cells",
+        ):
+            validator.validate(record)
+
+    def test_rejects_incomplete_chunk_comparison_coverage(self) -> None:
+        record = valid_record()
+        record["metrics"]["chunk_scientific_comparison_count"] -= 1
+        with self.assertRaisesRegex(
+            validator.AcceptanceError,
+            "chunk_scientific_comparison_count",
+        ):
+            validator.validate(record)
+
+    def test_rejects_nonfinite_measurements(self) -> None:
+        for value in (float("nan"), float("inf"), float("-inf")):
+            with self.subTest(value=value):
+                record = valid_record()
+                record["metrics"]["wall_time_sec"] = value
+                with self.assertRaisesRegex(
+                    validator.AcceptanceError, "wall_time_sec"
+                ):
+                    validator.validate(record)
 
     def test_rejects_diagnostic_smoke_slice_as_acceptance_evidence(self) -> None:
         record = valid_record()

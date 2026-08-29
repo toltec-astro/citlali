@@ -74,8 +74,9 @@ RtcOnlyFixture route_fixture() {
 
 pipeline::RtcOnlyRouteRequest route_request(
     const RtcOnlyFixture &fixture, std::uint64_t run = 1) {
-    return {{run}, fixture.native,
-            pipeline::full_native_occurrence_spans(*fixture.native)};
+    const auto logical_spans =
+        pipeline::full_native_occurrence_spans(*fixture.native);
+    return {{run}, fixture.native, logical_spans, {logical_spans}};
 }
 
 TEST(rtc_only_route,
@@ -102,6 +103,7 @@ TEST(rtc_only_route,
 
     const auto &diagnostics = outcome.terminal.diagnostics;
     EXPECT_EQ(diagnostics.network_count, 1U);
+    EXPECT_EQ(diagnostics.engineering_partition_count, 1U);
     EXPECT_EQ(diagnostics.detector_count, 1U);
     EXPECT_EQ(diagnostics.native_occurrence_count, 3U);
     EXPECT_EQ(diagnostics.detector_occurrence_count, 3U);
@@ -141,7 +143,7 @@ TEST(rtc_only_route,
     const auto fixture = route_fixture();
     pipeline::RtcOnlyProductSlot publication;
     auto request = route_request(fixture);
-    request.native_spans.front().past_last_native_row = 14;
+    request.logical_spans.front().past_last_native_row = 14;
     const auto outcome =
         pipeline::run_identity_rtc_only(request, publication);
 
@@ -152,6 +154,92 @@ TEST(rtc_only_route,
               pipeline::RtcOnlyFailureCause::input_contract_rejected);
     EXPECT_EQ(outcome.terminal.failure_detail,
               "native RTC view span is incomplete or outside parent support");
+    EXPECT_EQ(outcome.published_product, nullptr);
+    EXPECT_EQ(publication.snapshot(), nullptr);
+}
+
+TEST(rtc_only_route,
+     multi_chunk_execution_finalizes_one_complete_logical_product) {
+    const auto fixture = route_fixture();
+    pipeline::RtcOnlyProductSlot single_publication;
+    pipeline::RtcOnlyProductSlot partitioned_publication;
+    const auto single = pipeline::run_identity_rtc_only(
+        route_request(fixture, 1), single_publication);
+    auto partitioned_request = route_request(fixture, 2);
+    partitioned_request.engineering_partitions = {
+        {{0, 10, 11}}, {{0, 11, 13}}};
+    const auto partitioned = pipeline::run_identity_rtc_only(
+        partitioned_request, partitioned_publication);
+
+    ASSERT_TRUE(single.complete());
+    ASSERT_TRUE(partitioned.complete());
+    EXPECT_EQ(partitioned_publication.snapshot(),
+              partitioned.published_product);
+    EXPECT_EQ(partitioned.terminal.diagnostics.engineering_partition_count,
+              2U);
+    EXPECT_EQ(partitioned.terminal.diagnostics.native_admission_entry_count,
+              1U);
+    EXPECT_EQ(partitioned.terminal.diagnostics.learn_entry_count, 1U);
+    EXPECT_EQ(partitioned.terminal.diagnostics.consider_entry_count, 1U);
+    EXPECT_EQ(partitioned.terminal.diagnostics.apply_entry_count, 1U);
+    EXPECT_EQ(partitioned.terminal.diagnostics.publication_entry_count, 1U);
+    EXPECT_EQ(partitioned.published_product->timestream_handle()
+                  ->output_native_occurrence_count(),
+              3U);
+
+    const auto &single_product =
+        *single.published_product->timestream_handle();
+    const auto &partitioned_product =
+        *partitioned.published_product->timestream_handle();
+    for (pipeline::TimestreamNativeRow row = 10; row < 13; ++row) {
+        EXPECT_EQ(partitioned_product.representative_native_identity(
+                      0, row),
+                  single_product.representative_native_identity(0, row));
+        EXPECT_EQ(partitioned_product.representative_interval(0, row),
+                  single_product.representative_interval(0, row));
+        EXPECT_EQ(partitioned_product.identity(0, row, 0),
+                  single_product.identity(0, row, 0));
+        EXPECT_EQ(partitioned_product.pair_decision(0, row, 0),
+                  single_product.pair_decision(0, row, 0));
+        for (const auto member :
+             {pipeline::ReadoutMember::x, pipeline::ReadoutMember::r}) {
+            EXPECT_EQ(std::bit_cast<std::uint64_t>(
+                          partitioned_product.value(member, 0, row, 0)),
+                      std::bit_cast<std::uint64_t>(
+                          single_product.value(member, 0, row, 0)));
+            EXPECT_EQ(partitioned_product.member_local_causes(
+                          member, 0, row, 0),
+                      single_product.member_local_causes(
+                          member, 0, row, 0));
+        }
+        const auto *partitioned_cause =
+            partitioned_product.pair_causal_evidence(0, row, 0);
+        const auto *single_cause =
+            single_product.pair_causal_evidence(0, row, 0);
+        ASSERT_EQ(partitioned_cause == nullptr, single_cause == nullptr);
+        if (partitioned_cause) {
+            EXPECT_EQ(partitioned_cause->origin, single_cause->origin);
+        }
+    }
+}
+
+TEST(rtc_only_route,
+     missing_engineering_chunk_fails_without_partial_publication) {
+    const auto fixture = route_fixture();
+    auto request = route_request(fixture);
+    request.engineering_partitions = {{{0, 10, 12}}};
+    pipeline::RtcOnlyProductSlot publication;
+
+    const auto outcome =
+        pipeline::run_identity_rtc_only(request, publication);
+
+    EXPECT_FALSE(outcome.complete());
+    EXPECT_EQ(outcome.terminal.state,
+              pipeline::RtcOnlyTerminalState::input_admission_failed);
+    EXPECT_EQ(outcome.terminal.failure_cause,
+              pipeline::RtcOnlyFailureCause::incomplete_logical_support);
+    EXPECT_EQ(outcome.terminal.failure_detail,
+              "engineering partitions do not exactly cover declared logical support");
     EXPECT_EQ(outcome.published_product, nullptr);
     EXPECT_EQ(publication.snapshot(), nullptr);
 }
