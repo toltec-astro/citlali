@@ -1,8 +1,8 @@
 # SCI-PTC To SCI-NOI-GEN Boundary
 
-Boundary identity: `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.3`
+Boundary identity: `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.4`
 
-Canonical spelling is exactly `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.3`.
+Canonical spelling is exactly `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.4`.
 
 Status: proposed sanitized Stage A pre-mapmaking boundary; ODQ-102A selects the
 PTC-to-frozen-MAP route, which remains numerically unavailable pending its
@@ -84,8 +84,35 @@ a different coherence unit.
 
 Canonical unit identity and ordering use observation UID followed by stable
 realized detector/channel UID. Row, column, detector position, or encounter
-order cannot substitute. ODQ-102B selects no probability, balance, complement,
-replacement, cross-observation dependence, or finite-design law.
+order cannot substitute.
+
+## Approved Ordinary Balance Family
+
+ODQ-102C selects a network-stratified, coefficient-balanced randomized sign
+family. For each exact observation and stable readout network, NOI derives
+
+```text
+B_d = sum_p sum_{i in C_p, detector(i)=d} a_pi,
+a_pi = G_pi gamma_i > 0,
+```
+
+from the exact frozen MAP-admitted contribution population. The sign design
+balances `B_d` separately within each network. No cross-network, cross-array,
+or cross-observation cancellation may satisfy that balance rule.
+
+The admissible assignment law is complement-symmetric: an admitted assignment
+and its global complement have equal probability, preserving marginal sign
+probability `1/2` for every detector. Network-local balance creates dependence;
+detector independence and equal positive/negative detector counts are not
+claimed.
+
+`B_d` is an NOI-owned design coefficient derived from the exact frozen host
+route. It is not precision, inverse variance, empirical NOI weight, exposure,
+validity, or a replacement for the PTC-owned `gamma_i`. Changed coefficient,
+admitted population, network, observation, or MAP plan changes the design
+identity. Exact numerical balance, search/key/count/failure,
+pairing/replacement, equivalence/duplicate, and rank mechanics remain open
+under ODQ-102D.
 
 ## Separate Fixed-State Route Identities
 
@@ -145,8 +172,8 @@ or gate authority is typed unavailable.
 No unity, loading, sensitivity, scatter, inverse variance, precision,
 coefficient, `coverage_cut`, coordinate, or no-op fallback may be inferred.
 
-The selected MAP-hosted route also remains unavailable until ODQ-102C approves
-its exact sign law and finite assignment design.
+The selected MAP-hosted route also remains unavailable until ODQ-102D approves
+the exact finite mechanics for the ODQ-102C balance family.
 
 ## Fail-Closed Compatibility
 

@@ -116,7 +116,7 @@ The author packet includes three sanitized exact boundaries:
 - [`SCI-JINC_TO_SCI-NOI_BOUNDARY.md`](SCI-JINC_TO_SCI-NOI_BOUNDARY.md), identity
   `SCI-JINC_TO_SCI-NOI v0.1/r0.2`; and
 - [`SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md`](SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md),
-  identity `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.3`, containing separately
+  identity `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.4`, containing separately
   identified PTC-to-frozen-MAP and PTC-to-frozen-JINC candidates.
 
 Each boundary binds exact package/revision, product/application generation,
@@ -161,8 +161,21 @@ stable realized detector/channel within one exact observation. A member's
 assignment applies to every admitted PTC occurrence of that detector throughout
 the observation. Scan, subscan, chunk, sample/time, traversal, worker,
 container, and accumulation order cannot change it. The same detector identity
-in another observation is a different unit. ODQ-102C still owns the sign law
-and finite design.
+in another observation is a different unit.
+
+ODQ-102C selects a network-stratified, coefficient-balanced randomized sign
+family. Within each stable readout network and exact observation, the design
+balances detector coefficient masses
+`B_d = sum_p sum_{i in C_p, detector(i)=d} G_pi gamma_i` derived from the exact
+frozen MAP-admitted positive contributions. One network, array, or observation
+cannot balance another. Admissibility and probability are complement-symmetric,
+so each detector retains marginal sign probability `1/2`; detector signs are
+not product-independent after balance conditioning, and equal detector counts
+are not required. `B_d` is an NOI design coefficient, not precision, empirical
+uncertainty weight, exposure, validity, or a replacement MAP-facing
+coefficient. Exact tolerance, sampling/search, count, failure, member
+dependence, pairing, duplicate/equivalence, and rank mechanics remain open
+under ODQ-102D, so numerical design remains unavailable.
 
 The following remain distinct:
 
@@ -346,12 +359,12 @@ covariance does not invalidate the parent or prohibit later analysis.
 
 [`SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`](SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md)
 is the one sanitized decision candidate. It records approved ODQ-101 and
-ODQ-102A and keeps
+ODQ-102A/B/C and keeps
 the following scientifically independent choices separate:
 
 - exact ordinary numerical route, ownership, and inline/materialized
   representation rule;
-- initial coherence family and finite assignment law;
+- initial coherence and balance families plus exact finite assignment mechanics;
 - source-imprint claim;
 - fixed state and replay graph;
 - initial UNC targets/estimators;
@@ -362,10 +375,11 @@ the following scientifically independent choices separate:
 - deterministic FLT, Wiener, and FRUIT scope; and
 - NOI-owned VAL identities and exact actions.
 
-ODQ-101, ODQ-102A, and ODQ-102B are approved. The next walkthrough question is
-`SCI-NOI-ODQ-102C`: select the exact sign law and finite assignment design for
-the approved route and coherence unit. Every later decision and the artifact's
-final hash still require explicit owner review.
+ODQ-101 and ODQ-102A/B/C are approved. The next walkthrough question is
+`SCI-NOI-ODQ-102D`: select the exact network-local imbalance, tolerance,
+conditional randomization/search, canonical key, count/failure, dependence,
+pairing/replacement, duplicate/equivalence, and rank mechanics. Every later
+decision and the artifact's final hash still require explicit owner review.
 
 ## 13. Non-Goals And Claim Boundary
 

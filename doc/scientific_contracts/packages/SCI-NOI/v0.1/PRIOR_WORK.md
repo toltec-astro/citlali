@@ -183,6 +183,8 @@ conditional-sign as the ordinary conditioning family while keeping relearned
 methods separate and never mixed. ODQ-102A subsequently selected the
 PTC-to-frozen-MAP boundary route, allowed conforming inline MAP application,
 and classified the output as an NOI realization map rather than ordinary MAP
-science. The route's numerical gates remain unavailable. The next owner
-question is `SCI-NOI-ODQ-102C`, after ODQ-102B fixed one detector assignment
-across all of that detector's admitted samples in an observation.
+science. ODQ-102B fixed one detector assignment across all of that detector's
+admitted samples in an observation. ODQ-102C then selected network-stratified
+coefficient-balanced randomized signs without count balance or cross-network
+cancellation. The route's numerical gates remain unavailable. The next owner
+question is `SCI-NOI-ODQ-102D`, the exact finite balance mechanics.

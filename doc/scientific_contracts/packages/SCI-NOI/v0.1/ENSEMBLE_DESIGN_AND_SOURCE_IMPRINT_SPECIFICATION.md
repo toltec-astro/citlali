@@ -1,9 +1,10 @@
 # SCI-NOI v0.1 — Ensemble Design And Source-Imprint Specification
 
-Artifact identity: `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.2`
+Artifact identity: `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.3`
 
-Status: proposed sanitized Stage A scientific input; exact bytes await owner
-approval
+Status: ordinary coherence and network-stratified coefficient-balance family
+owner-approved; exact finite-design mechanics and source-imprint claim remain
+open
 
 ## Finite Assignment-Design Identity
 
@@ -44,9 +45,8 @@ different observation is a different coherence unit.
 The ordinary unit identity is exactly the canonical observation UID joined to
 the stable realized detector/channel UID. Units are ordered lexicographically
 by those canonical serialized fields, never numerical container position or
-encounter order. ODQ-102B does not select the sign law, probabilities, balance,
-complements, cross-observation dependence, or finite design; ODQ-102C owns
-those choices.
+encounter order. ODQ-102B does not select the sign law or finite design;
+ODQ-102C separately selects the balance family below.
 
 Each coherence unit `g` has an owner-supplied stable scientific identity. The
 design order is the lexicographic order of its canonical serialized identity,
@@ -74,8 +74,48 @@ leading zero except `0`; Boolean and unavailable states use fixed lowercase
 tokens; no locale, whitespace normalization, platform path, floating-point
 display, container index, or implicit absent value participates. The complete
 serialized bytes and algorithm/version determine the scheduling-independent
-assignment. This serialization remains an owner decision under ODQ-102C; no
+assignment. This serialization remains an owner decision under ODQ-102D; no
 implementation is selected by proposing it.
+
+## Approved Ordinary Balance Family
+
+ODQ-102C selects detector assignments `s_bd` in `{-1,+1}` under a
+network-stratified, coefficient-balanced randomized design. For one exact
+observation and stable readout network `h`, let `D_h` be its ordered admitted
+detector population and define
+
+```text
+B_d = sum_p sum_{i in C_p, detector(i)=d} a_pi,
+a_pi = G_pi gamma_i > 0.
+```
+
+`C_p`, `G_pi`, and `gamma_i` are the exact frozen MAP contribution population,
+projection, and PTC-owner-selected MAP-facing coefficient used by the ordinary
+host route. The design balances the signed totals `sum_{d in D_h} s_bd B_d`
+separately for every network. Cross-network, cross-array, and
+cross-observation cancellation cannot satisfy a network's balance rule.
+
+The admissible assignment set and probabilities are complement-symmetric: if
+`s_b` is admitted, `-s_b` is admitted with equal probability. Each detector
+therefore retains marginal sign probability `1/2`, while detector signs are
+not asserted independent after conditioning on network-local balance. Equal
+numbers of positive and negative detectors are not required.
+
+`B_d` is an NOI design coefficient derived from exact frozen MAP numerical
+influence. It is not inverse variance, precision, empirical NOI weight,
+exposure, support, validity, or a replacement for `gamma_i`. Changed parent,
+observation, network, admitted population, coefficient family/generation, or
+MAP plan changes the design identity.
+
+ODQ-102C authorizes no exact imbalance norm, tolerance, feasibility rule,
+candidate/search algorithm, retry cap, failure behavior, count, forced
+complement pairing, replacement, equivalence, duplicate treatment, or rank
+definition. Those exact finite-design mechanics remain ODQ-102D. Until they
+are approved, the selected balance family is numerically unavailable.
+
+Observation-global, detector-count, pixel-vector, source-template,
+complement-paired, and other balance families remain possible only as
+separately named future methods.
 
 ## Counts, Equivalence, Duplicates, And Rank
 

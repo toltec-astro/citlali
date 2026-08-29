@@ -446,8 +446,19 @@ subscan, chunk, sample/time, traversal, worker, container, and MAP accumulation
 order cannot change it; the same detector identity in another observation is a
 different coherence unit.
 
-The next walkthrough question is `SCI-NOI-ODQ-102C`, the exact sign law and
-finite design. Later granular decisions, exact packet bytes/hashes, and
+Grant Wilson then approved `SCI-NOI-ODQ-102C` on `2026-08-29`: the ordinary
+route uses network-stratified, coefficient-balanced randomized detector signs.
+Detector coefficient mass is derived from exact frozen MAP-admitted positive
+contributions and balanced separately inside each stable readout network; no
+network, array, or observation balances another. Complement-symmetric
+admission/probability preserves marginal detector sign probability `1/2`;
+equal detector counts and post-conditioning independence are not claimed. The
+derived design coefficient is not precision, empirical NOI weight, exposure,
+validity, or a replacement MAP-facing coefficient.
+
+The next walkthrough question is `SCI-NOI-ODQ-102D`, the exact network-local
+imbalance, tolerance, sampling/search/key/count/failure, dependence,
+pairing/replacement, equivalence/duplicate, and rank mechanics. Later granular decisions, exact packet bytes/hashes, and
 required source/profile Registry bindings remain under owner review.
 MAP/pre-MAP numerical parents remain
 unavailable pending the exact PTC MAP-facing coefficient and owner-admitted

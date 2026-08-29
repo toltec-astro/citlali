@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Byte-Equality And Source-Closure Report
 
-Report identity: `SCI-NOI_STAGE_A_SOURCE_CLOSURE v0.1/r0.4`
+Report identity: `SCI-NOI_STAGE_A_SOURCE_CLOSURE v0.1/r0.5`
 
 Prepared: `2026-08-29`
 
@@ -20,6 +20,7 @@ excluded from this file.
 | `SCIENTIFIC_OWNER_ODQ_101_APPROVAL_2026-08-29.md` | `7b965426ea6b44ecb4a310347ab4a51fa8ff584063693998fd43ee6ef923984d` | ODQ-101 approval and explicit no-conflict record; manager-facing, not admitted to the future author |
 | `SCIENTIFIC_OWNER_ODQ_102A_APPROVAL_2026-08-29.md` | `90e63847abba01c738f0393836d418ad3a108c32fb7154eca9296449c4b49b85` | Ordinary route, inline application, ownership, and NOI product-class approval; manager-facing, not admitted to the future author |
 | `SCIENTIFIC_OWNER_ODQ_102B_APPROVAL_2026-08-29.md` | `529342fb1a53fe669f327382cf58cd9998e1d22f620efd329cd14d6f2fb9b1a7` | Observation-scoped detector coherence approval; manager-facing, not admitted to the future author |
+| `SCIENTIFIC_OWNER_ODQ_102C_APPROVAL_2026-08-29.md` | `9913ea7a4e502b3e6fadec95ee21be2c21f4f5a358c3378f07703dd1a9070b8e` | Network-stratified coefficient-balance-family approval; manager-facing, not admitted to the future author |
 
 ## Required Stage A Closure Packet
 
@@ -29,21 +30,21 @@ bytes close.
 
 | Directive item | Exact object and identity | SHA-256 | Authority/compatibility state |
 | --- | --- | --- | --- |
-| 1 | `SCOPE_BRIEF.md` | `c6698e2622ee2a3bae377139331e4ba3225a225e200b2d16dd82d23f32f4ce4a` | ODQ-101/102A/102B incorporated; selected design conditional |
-| 2 | `SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`, `SCI-NOI_OWNER_DECISIONS v0.1/r0.4` | `8675347837ec2187124687ed2c78d30efb46c5728eae1b1d1d70396e5c26a334` | ODQ-101/102A/102B/104 decided; ODQ-102C recommendation exact |
+| 1 | `SCOPE_BRIEF.md` | `70375f3f2515e006d4b4d2eb9ef4a71942771d3f9ca41ab5284bd1167ce3d2e0` | ODQ-101/102A/102B/102C incorporated; exact finite mechanics conditional |
+| 2 | `SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`, `SCI-NOI_OWNER_DECISIONS v0.1/r0.5` | `eac9c1e05e4d92e5be2e31a0bf6d1bd7bfae774eaa07e358177f37f7c22df076` | ODQ-101/102A/102B/102C/104 decided; ODQ-102D recommendation bounded |
 | 3 | `SCI-MAP_TO_SCI-NOI_BOUNDARY.md`, `SCI-MAP_TO_SCI-NOI v0.1/r0.2` | `42e4449cef69f8f362ccb064c48ec6bb30fcee94a9f285eda4a96e1a25a2458d` | Sanitized exact-source extract; realized-MAP route unselected |
 | 4 | `SCI-JINC_TO_SCI-NOI_BOUNDARY.md`, `SCI-JINC_TO_SCI-NOI v0.1/r0.2` | `3bdf5f620940eae213dfd82edd8e421e343b4e64b4e721d3fdef2530f857cd99` | Sanitized exact-source extract; JINC routes unselected |
-| 5 | `SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md`, `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.3` | `1ddc38d7d9bb6872154bfbea3d7792f27e460f5a5c3e8bbb074149b094b28074` | MAP route/coherence selected but numerically unavailable; JINC host unselected |
-| 6 | `NOI_GEN_PARENT_OPERATOR_GRAPH.md`, `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.3` | `4cf5661ebe8cb1a8269e20cd4a76473d7203c65aab21b630c76e3a2aecca302a` | Approved conditioning, route, and coherence; five identities distinct |
-| 7 | `ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT_SPECIFICATION.md`, `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.2` | `7f9c3702dbe1dc2613e7fa9e88f57fd249a687e87fe1639408d6096294217a81` | Coherence approved; sign law/design and imprint open |
+| 5 | `SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md`, `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.4` | `e44a17f6fed54f9c27074c15f0f75a2163aae62afd2e6fbf4441393eb7d2d6a3` | MAP route/coherence/network balance selected but numerically unavailable; JINC host unselected |
+| 6 | `NOI_GEN_PARENT_OPERATOR_GRAPH.md`, `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.4` | `77a2a0fa5300fdcd587eb234c261998a376331d59a1709466c120f1529489786` | Approved conditioning, route, coherence, and balance family; five identities distinct |
+| 7 | `ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT_SPECIFICATION.md`, `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.3` | `bc14c2bae6d63cb679d253e9a0df019ab2de797a488200df91b01019e4291527` | Coherence and balance family approved; exact finite mechanics and imprint open |
 | 8 | `FINITE_DESIGN_UNC_ESTIMATOR_AND_COVARIANCE_TABLE.md`, `SCI-NOI_FINITE_DESIGN_UNC_TABLE v0.1/r0.1` | `c349394d3de36ab8d3044bd12ddb3ee9ea9f73dc6c3d16e8b6b207f53775360d` | Candidate decision surface; numerical UNC unavailable |
 | 9 | `STD_NUMERATOR_SCALE_AND_CLAIM_TABLE.md`, `SCI-NOI_STD_NUMERATOR_SCALE_CLAIM v0.1/r0.1` | `960e46273ca1653272bd6078bc5715f880909a3978357842a024cf90a0593a98` | Unit `1`; numerical STD unavailable |
-| 10 | `SCI-NOI_VAL_PROFILE_DRAFTS.md` | `345fbefaaea5fcb9b0abb9df5d3e396b07cd6c99f590f6b45ae94d198238cd70` | Four NOI-owned drafts; selected route/coherence proposed; unapproved/unregistered |
+| 10 | `SCI-NOI_VAL_PROFILE_DRAFTS.md` | `5f0f686c1b9825e3b365dc6f2cd9118b26b736f0af3c873d697c54edd00601c8` | Four NOI-owned drafts; selected route/coherence/network balance proposed; unapproved/unregistered |
 | 11 | `FILTER_AND_FRUIT_SCOPE.md` | `de02815792bf9bdcf19651abd8163659c79c8ad6c3cbbfaf41210b17973e9f97` | FLT/Wiener/FRUIT decisions separate; routes unavailable |
 | 12 | `PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md`, `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.2` | `3c822403fc038302fc17e59695e4bae81145618f7d6d18d652fd59eb4bc79961` | GEN completion, modifier, and realization-map ownership explicit |
 | 13 | Sanitized inherited/owner decision table in item 2 | same as item 2 | Single canonical decision artifact; no divergent copy |
-| 14 | `STAGE_A_CHANGE_LOG.md` | `eed161bc8f11c670cbceb24983818f0205b418a3950372995d7c04a7db75a364` | Manager-facing closure/ODQ history; not an author input |
-| 15 | `AUTHOR_PACKET_MANIFEST.md`, `SCI-NOI_AUTHOR_PACKET_MANIFEST v0.1/r0.4` | `9a9d44daec17aa797ea3b1414a370594370e9192483b5484dd8681b675cd091c` | Exactly 17 admitted author objects; firewall complete |
+| 14 | `STAGE_A_CHANGE_LOG.md` | `4fa1876f85624d4ffa28d7c71afeaf9f0c93ce28c832ec1c19d2db30e529dcd8` | Manager-facing closure/ODQ history; not an author input |
+| 15 | `AUTHOR_PACKET_MANIFEST.md`, `SCI-NOI_AUTHOR_PACKET_MANIFEST v0.1/r0.5` | `b471f593d275f39ed17685968e2919726059d5efe4677b102241565af89cbdd0` | Exactly 17 admitted author objects; firewall complete |
 | 16 | `BYTE_EQUALITY_AND_SOURCE_CLOSURE_REPORT.md`, this report | externally bound | Verification evidence only; not an author input |
 
 ## Author-Packet Equality
@@ -89,9 +90,11 @@ reduction, generated product, Unity, accepted run, default, historical
 behavior, or production-status source was admitted or inspected during this
 closure. The future author packet contains only the 17 manifest-listed objects.
 
-ODQ-101, ODQ-102A, and ODQ-102B are incorporated without conflict. The ordinary
-PTC-to-frozen-MAP route is selected but remains numerically unavailable at its
-frozen gates and pending exact design. ODQ-102C and later granular decisions remain open; every
-dependent numerical method is typed unavailable.
+ODQ-101 and ODQ-102A/B/C are incorporated without conflict. The ordinary
+PTC-to-frozen-MAP route, detector coherence, and network-stratified
+coefficient-balance family are selected, but the route remains numerically
+unavailable at its frozen gates and pending exact ODQ-102D mechanics. ODQ-102D
+and later granular decisions remain open; every dependent numerical method is
+typed unavailable.
 NOI profile bytes remain unapproved/unregistered, and required SCI-VAL
 Registry/source-binding successors do not yet exist. Stage B was not launched.

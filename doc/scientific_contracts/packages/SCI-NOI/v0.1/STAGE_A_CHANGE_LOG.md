@@ -100,6 +100,26 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
 28. Published r0.3 successors of the selected PTC-to-NOI boundary and GEN graph,
     r0.2 of the design specification, and r0.4 packet/decision records.
 
+## ODQ-102C Owner Walkthrough Update
+
+29. Recorded ODQ-102C approval selecting network-stratified,
+    coefficient-balanced randomized detector signs for the ordinary route.
+30. Defined each detector's balance coefficient from its exact frozen
+    MAP-admitted positive `G_pi gamma_i` contributions and prohibited
+    cross-network, cross-array, and cross-observation balancing.
+31. Required complement-symmetric admissibility/probability with marginal
+    detector sign probability `1/2`; required no equal detector counts and
+    claimed no post-conditioning detector independence.
+32. Kept the derived balance coefficient distinct from precision, empirical
+    NOI uncertainty weight, exposure, validity, and the PTC-owned MAP-facing
+    coefficient.
+33. Preserved exact tolerance, candidate/search/key/count/failure,
+    member-dependence, pairing/replacement, equivalence/duplicate, and rank
+    mechanics as the next bounded decision, ODQ-102D; no numerical design was
+    made available.
+34. Published r0.4 successors of the selected PTC-to-NOI boundary and GEN graph,
+    r0.3 of the design specification, and r0.5 packet/decision records.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance

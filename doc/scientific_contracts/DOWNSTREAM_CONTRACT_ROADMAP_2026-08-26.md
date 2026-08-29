@@ -140,8 +140,11 @@ and the output is not ordinary MAP science. The route remains unavailable at
 its coefficient and numerical `coverage_cut` gates. ODQ-102B then fixed one
 assignment per stable realized detector/channel for all of that detector's
 admitted samples throughout one observation; the same detector in another
-observation is a different unit. ODQ-102C, exact sign law and finite design, is
-next. Conditional Stage B remains blocked on exact
+observation is a different unit. ODQ-102C then selected network-stratified,
+coefficient-balanced randomized signs, with balance evaluated separately
+inside each readout network, complement-symmetric marginal `1/2`, no count
+balance, and no cross-network cancellation. ODQ-102D, exact balanced
+finite-design mechanics, is next. Conditional Stage B remains blocked on exact
 bytes/hashes, granular owner decisions or explicit unavailability, and required
 source/profile bindings. The frozen MAP/pre-MAP
 and JINC numerical-parent unavailability states remain unchanged. No

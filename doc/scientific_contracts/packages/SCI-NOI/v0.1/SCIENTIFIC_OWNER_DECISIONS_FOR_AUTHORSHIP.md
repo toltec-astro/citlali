@@ -1,9 +1,10 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.4`
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.5`
 
-Status: ODQ-101, ODQ-102A, and ODQ-102B owner-approved; later decisions remain
-open; not yet an allowed Stage B authority
+Status: ODQ-101, ODQ-102A, ODQ-102B, and ODQ-102C owner-approved; exact
+finite-design mechanics and later decisions remain open; not yet an allowed
+Stage B authority
 
 Scientific owner: Grant Wilson
 
@@ -93,35 +94,69 @@ not approve another decision or make an unresolved numerical route available.
   detector/channel partition, constant-within-observation rule, stable unit
   identity/order, applicability, route compatibility, and next-question state.
 
-### `SCI-NOI-ODQ-102C` — sign law and finite design
+### `SCI-NOI-ODQ-102C` — ordinary sign and balance family
 
-- **Exact question:** What assignment probability/design-weight law,
-  balance/complement/replacement law, canonical key, equivalence, duplicate
-  rule, and rank definition govern the initial finite design?
-- **Recommended disposition:** for each observation, detector coherence unit,
-  and member, draw a centered Rademacher assignment (`-1` or `+1`, each with
-  exact probability `1/2`) from the scheduling-independent canonical key and a
-  declared counter-based algorithm/version. Declare the target joint law as
-  product-Rademacher across detector units, members, and observations, while
-  recording that the realized finite design is deterministic conditional on
-  its immutable seed/key. Use independent key namespaces for different
-  observations. Impose no within-member balance and no forced
-  complement pairing in ordinary v0.1. Assignment vectors are equivalent only
-  by byte-equal canonical vector identity; global complements remain distinct
-  unless deliberately generated as a declared pair. Detect and retain
-  duplicates as design facts. Define design rank as the exact rank of the
-  empirically centered admitted-member by ordered-detector assignment matrix
-  on its declared real-valued domain.
+- **Exact question:** What detector sign range and marginal law, balance
+  quantity and domain, detector-count relation, and future-family allowance
+  govern the ordinary design? The earlier aggregate design question was
+  decomposed before approval; ODQ-102D owns its exact finite mechanics.
+- **Approved disposition:** use a network-stratified,
+  coefficient-balanced randomized sign family. For each exact observation,
+  derive detector coefficient mass
+  `B_d = sum_p sum_{i in C_p, detector(i)=d} a_pi` from exact frozen
+  MAP-admitted positive contributions `a_pi = G_pi gamma_i`. Balance the
+  positive- and negative-sign coefficient totals separately inside every
+  stable readout network; no network, array, or observation may balance
+  another. The admissible design is complement-symmetric and gives
+  complementary assignments equal probability, preserving marginal detector
+  sign probability `1/2`. Detector-count balance is not additionally required.
+  `B_d` is an NOI design coefficient, not precision, empirical uncertainty
+  weight, exposure, validity, or a replacement MAP-facing coefficient.
 - **Alternatives:** independent Bernoulli, balanced sampling, exhaustive
-  enumeration, paired complements, unequal weighted design, or unavailable.
-- **Scientific consequences:** determines target law, uniqueness, dependence,
-  finite-design correction, effective information, and reproducibility.
-- **Conservative state while open:** no design is numerically realizable;
-  serialization and rank semantics remain candidate bytes.
+  enumeration, count balance, observation-global coefficient balance,
+  pixel-vector or source-template balance, paired complements, or unavailable.
+- **Scientific consequences:** reduces declared network-local MAP coefficient
+  imbalance without claiming pixelwise source cancellation. Assignments are
+  not product-independent, so later UNC must consume the realized design and
+  dependence rather than assume independent draws. Future design families
+  remain available as separately named studies.
+- **Conservative state:** the balance family is approved, but no numerical
+  design is realizable until ODQ-102D selects its exact mechanics.
 - **Affected artifacts:** design specification, GEN graph, UNC table, profiles,
   persistence identity.
-- **Exact bytes changed by approval:** law/weights, ordering, key fields and
-  serialization, complement/equivalence/duplicate rules, and rank domain.
+- **Exact bytes changed by approval:** detector sign range and marginal law;
+  network-local coefficient-mass definition and balance domain; complement
+  symmetry; no count-balance requirement; non-promotion of the design
+  coefficient; future-family allowance; conditional-dependence and claim
+  boundary; and next-question state.
+
+### `SCI-NOI-ODQ-102D` — exact balanced finite-design mechanics
+
+- **Exact question:** What network-local imbalance functional and tolerance,
+  conditional randomization/search algorithm, canonical key/version,
+  requested/resolved count, retry/failure rule, member dependence,
+  complement-pairing, replacement, equivalence, duplicate, and rank rules make
+  the approved ODQ-102C family numerically realizable?
+- **Recommended disposition:** sample scheduling-independent candidate sign
+  vectors from a declared symmetric base law; admit only candidates satisfying
+  one exact dimensionless network-local imbalance rule; preserve equal
+  probability for complements; bind the candidate/search algorithm and cap;
+  fail closed when the requested design cannot be realized; retain duplicates
+  and dependencies as facts; and define rank on the exact admitted centered
+  member-by-detector design matrix. Exact tolerance and count remain for owner
+  selection.
+- **Alternatives:** exact optimum partition, best-of-fixed-candidate pool,
+  tolerance-conditioned sampling, deterministic balanced block design, or
+  unavailable.
+- **Scientific consequences:** completes numerical reproducibility, finite
+  dependence, failure, rank, and effective-information semantics.
+- **Conservative state while open:** no numerical assignments or completed
+  design; the ODQ-102C family remains scientifically selected but unavailable.
+- **Affected artifacts:** design specification, GEN graph, UNC table, profiles,
+  persistence identity.
+- **Exact bytes changed by approval:** numerical balance rule and tolerance;
+  key/search/count/failure bytes; complement/member dependence; equivalence,
+  duplicates, and rank domain.
 
 ### `SCI-NOI-ODQ-103` — source imprint and cancellation claim
 

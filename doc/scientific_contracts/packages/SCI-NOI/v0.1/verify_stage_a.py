@@ -79,9 +79,13 @@ def main() -> None:
         "SCI-NOI-ODQ-102A",
         "SCI-NOI-ODQ-102B",
         "SCI-NOI-ODQ-102C",
+        "SCI-NOI-ODQ-102D",
         "materialized randomized timestream",
         "not an ordinary MAP science product",
         "throughout the observation",
+        "network-stratified",
+        "cross-network",
+        "marginal sign probability `1/2`",
     ]
     for token in required:
         if token not in package_text:
