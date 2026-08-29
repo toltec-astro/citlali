@@ -20,25 +20,27 @@ causes, uncertainty, and immutable ancestry are producer-owned facts.  JINC
 uses them without reconstructing or redefining them. \\
 \texttt{SCI-JINC-ASM-003} & An admitted $\omega_i$ is finite and strictly
 positive and comes from one exact PTC family/version that explicitly permits
-SCI-JINC.  No registered family or realized payload is supplied by the
-scientific author packet. \\
-\texttt{SCI-JINC-ASM-004} & Equations~\eqref{eq:conditional-variance}--
+SCI-JINC.  No registered family or realized payload is admitted or supplied by
+this source packet. \\
+\texttt{SCI-JINC-ASM-004} & Equations~\eqref{eq:fixed-state-response}--
 \eqref{eq:general-covariance} are conditional identities only.  Their
 assumptions are not inferred from units, names, or another consumer's
 permission. \\
 \texttt{SCI-JINC-ASM-005} & The analytic family and parameter meanings are
 approved, but no TolTEC numerical realization of $s_a$, $a_a$, $b_a$, $c_a$,
-$(r_{\max})_a$, pixel size, or \texttt{subpixel\_n} is scientifically supplied
-or recommended by this contract. \\
+$(r_{\max})_a$, target-WCS metric, pixel scale, or
+\texttt{subpixel\_n} is scientifically admitted, supplied, or recommended by
+this source packet. \\
 \texttt{SCI-JINC-ASM-006} & Point-phase evaluation and fully populated square
 support are the scientific operator.  Pixel-area integration, a circular
 cutoff, footprint-overlap admission, and JINC-then-crop equivalence are not
 alternative branches. \\
-\texttt{SCI-JINC-ASM-007} & Total numerical error includes finite arithmetic,
-accumulation/reduction order, analytic-function evaluation, phase
-quantization, and cache/index realization.  Adequacy is judged against the
-approximately $10^{-3}$ relative instrument-fidelity scale; no stronger
-universal precision claim follows. \\
+\texttt{SCI-JINC-ASM-007} & Numerical-realization adequacy requires one exact
+owner-approved $\mathcal{P}_{\mathrm{NA}}$ and a matching certificate
+$\mathcal{E}_p$.  Neither is admitted or supplied by this source packet.
+Finite arithmetic, analytic-function, phase/cache, and accumulation errors
+therefore have no authorized approximate substitute, and numerical support is
+typed unavailable even though exact-arithmetic algebraic support is defined. \\
 \texttt{SCI-JINC-ASM-008} & Same-observation chunking may be an engineering
 realization of one bundle, but a chunk is not a scientific product identity.
 Cross-observation combination is outside base v0.1. \\
@@ -48,7 +50,7 @@ production evidence. \\
 \bottomrule
 \end{longtable}
 
-Every presently missing fact is classified exactly once in
+Every missing fact material to this draft is classified in
 Table~\ref{tab:missing-facts}.
 
 \begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.23\textwidth}
@@ -63,17 +65,21 @@ Class & Fact & Consequence \\
 Class & Fact & Consequence \\
 \midrule
 \endhead
-Approved & Generic analytic identity, signed estimator, point-phase square
-operator, center-domain gate, conditioning principle, fixed bundle, grouping,
-and ownership boundary. & These are normative in v0.1. \\
-Known but not supplied & A registered, selected, and realized
+Normatively specified in this draft & Generic analytic identity, signed
+estimator, exact point-phase square operator, center-domain gate, algebraic
+support, fixed five-plane bundle, grouping, and ownership boundary. & These
+are binding draft content in v0.1 but are not implementation or validation
+claims. \\
+Not admitted or supplied by this source packet & A registered, selected, and realized
 JINC-permitted PTC coefficient family and payload. & No numerical bundle is
 formed without it; no unity or alternate-family fallback. \\
-Known but not supplied & A scientifically authorized TolTEC array-associated
+Not admitted or supplied by this source packet & A scientifically authorized TolTEC array-associated
 numerical parameter set. & No numerical bundle is formed; no inherited scale,
 shape, extent, or mode-dependent value is used. \\
-Unresolved decision & None within the approved base-v0.1 scientific scope. &
-No owner question is raised by this draft. \\
+Not admitted or supplied by this source packet & An exact owner-approved
+numerical-adequacy profile and a matching lifecycle-bound certificate. &
+Algebraic support remains defined, but numerical-realization adequacy,
+including near-cancellation support, is typed unavailable. \\
 Implementation unassessed & Representation, interfaces, algorithms, storage,
 parallel realization, and implementation behavior. & No conformity or
 representation-fidelity claim. \\
@@ -84,6 +90,9 @@ production operation. & No achieved result, readiness, or production claim. \\
 \end{longtable}
 
 Response, covariance, formal weight, physical exposure, cross-observation
-coaddition, standalone support or availability, diagnostics, and generalized
-provenance are deferred or outside base v0.1, rather than silently missing
-members of the fixed bundle.
+coaddition, standalone support or availability, diagnostics, dense
+per-contribution provenance, and generalized provenance products are deferred
+or outside base v0.1, rather than silently missing members of the fixed
+five-plane bundle.  The compact replay record $G_a$ is required bundle-level
+information state, not an additional product role or generalized provenance
+framework.

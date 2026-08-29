@@ -24,8 +24,10 @@ join is an engineering choice; its scientific identity is not.
 \item[JINC sample admission.]
 The decision of the immutable
 \texttt{SCI-JINC:jinc\_map\_contribution@1} profile that one exact upstream
-occurrence may be considered by JINC.  It neither implies rounded-center
-domain admission nor pixel support.
+occurrence may be considered by JINC.  The registered name is narrower than
+it may appear: this is upstream-sample admission only.  It neither authorizes
+rounded-center admission, sample-pixel membership, cancellation support,
+numerical contribution, nor bundle publication.
 
 \item[Rounded-center domain admission.]
 The JINC-owned occurrence-level gate applied after center rounding and before
@@ -34,14 +36,18 @@ finite destination pixel domain.  An outside center makes $I_{ip}=0$ for every
 $p$, even when the square footprint would overlap the map.
 
 \item[Point phase.]
-The single-valued residual between the exact continuous sample coordinate and
-the resolved rounded center, quantized on each axis to select one
-point-evaluated kernel matrix.  It is not a pixel-area average.
+The residual between the exact continuous sample coordinate and the exact
+rounded center of Equation~\eqref{eq:rounded-center}.  Equations~
+\eqref{eq:phase-bin}--\eqref{eq:phase-representative} select a half-open bin
+and its midpoint representative independently on each axis.  The resulting
+kernel matrix is point evaluated and is not a pixel-area average.
 
 \item[Square support.]
-The fully populated square cache whose half-width is fixed by $(r_{\max})_a$.
-Every resolved square pixel is evaluated, including corners with radius larger
-than $(r_{\max})_a$; there is no circular membership predicate.
+The fully populated integer-offset cache of Equation~\eqref{eq:square-offsets},
+with exact half-width
+$h_a=\lceil s_a(r_{\max})_a/\Delta\rceil$.  Every resolved square pixel is
+evaluated, including corners with radius larger than $(r_{\max})_a$; there is
+no circular membership predicate.
 
 \item[Sample-pixel membership.]
 The Boolean proposition $I_{ip}=1$ after sample admission, exact coordinate
@@ -50,17 +56,30 @@ geometry, and every pixel-local precondition.  A contract-defined analytic
 zero is a member with zero contribution; outside support is nonmembership; a
 finite negative coefficient is an ordinary signed member.
 
-\item[Local formal support.]
-The state in which the required inputs and accumulators are finite, $Q_p>0$,
-$C_p\ne0$, and cancellation is resolved with total numerical error negligible
-relative to the approximately $10^{-3}$ instrument-fidelity scale.  A named
-empirical policy may narrow this state but never promote it.
+\item[Algebraic local support.]
+The exact-arithmetic state in which the required inputs and accumulators are
+finite, $Q_p>0$, and $C_p\ne0$.  It establishes that $N_p/C_p$ is
+algebraically defined; it does not certify a finite-precision realization.
+
+\item[Certified numerical-realization adequacy.]
+The state in which an exact owner-approved profile
+$\mathcal{P}_{\mathrm{NA}}$ and a matching certificate $\mathcal{E}_p$ bind
+the scientific observable, absolute or relative form, reference norm,
+parameter/source/pixel domain, numerator and denominator error treatment,
+near-zero behavior, simultaneous or worst-case interpretation, exact
+pass/fail inequality, uncertainty, lifecycle, and provenance, and the
+certificate passes that inequality.  No such profile or certificate is
+admitted or supplied by this source packet, so numerical-realization adequacy
+is presently typed unavailable rather than approximated by prose.
 
 \item[Complete observation bundle.]
 The atomic fixed-role product for one observation, stable array, exact JINC
 plan and realization, target WCS, and lifecycle generation.  It contains
-exactly $N_p$, $C_p$, $Q_p$, derived $m_p$ with local support/validity, and
-$T_p^{(\kappa^2)}$.
+exactly five numerical map-plane roles: $N_p$, $C_p$, $Q_p$, derived $m_p$
+with local support/validity, and $T_p^{(\kappa^2)}$.  Its compact bundle-level
+generative record $G_a$ is required information state at the existing
+plan/bundle provenance granularity; it is not a sixth product role, a dense
+per-contribution archive, or generalized provenance machinery.
 
 \item[Whole-bundle failure.]
 Failure to form or publish any required whole-product role.  It suppresses the
@@ -72,8 +91,10 @@ bundle content and is not whole-bundle failure.
 The fail-closed state in which a numerical JINC route cannot be realized
 because an exact authorized TolTEC kernel parameter set or an exact registered,
 selected, realized, JINC-permitted PTC coefficient family/payload is absent.
-It is not repaired by a hidden default, unity coefficient, alternate family,
-ordinary MAP permission, inherited scale, or implementation value.
+The same state applies when an exact owner-approved numerical-adequacy profile
+and matching certificate are required but absent.  It is not repaired by a
+hidden default, unity coefficient, alternate family, ordinary MAP permission,
+inherited scale, implementation value, or approximate fidelity phrase.
 
 \item[Scientific destination identity.]
 The product identity formed from observation, stable array, exact JINC plan and

@@ -25,6 +25,35 @@ $i$ & Exact admitted PTC occurrence on stable RTC output sample $n$, with
 observation, detector occurrence/UID, PTC application generation, segment,
 array, and immutable parents. & identity \\
 $p$ & Target pixel in one exact JINC destination WCS. & identity \\
+$\boldsymbol{u}_i=(x_i,y_i)$ & Exact finite AST continuous FITS pixel
+coordinate for occurrence $i$ in the target JINC WCS. & pixel \\
+$\boldsymbol{c}_i$ & Integer FITS pixel-center coordinate selected from
+$\boldsymbol{u}_i$ by Equation~\eqref{eq:rounded-center}. & pixel \\
+$\boldsymbol{\phi}_i$ & Exact residual phase
+$\boldsymbol{u}_i-\boldsymbol{c}_i$ in
+$[-\tfrac12,\tfrac12)^2$. & pixel \\
+$n_{\mathrm{sub}}$ & Effective integer phase resolution represented by
+\texttt{subpixel\_n}; $n_{\mathrm{sub}}\ge1$. & $1$ \\
+$\boldsymbol{q}_i$ & Two-axis phase-bin index in
+$\{0,\ldots,n_{\mathrm{sub}}-1\}^2$. & index \\
+$\widehat{\boldsymbol{\phi}}_i$ & Midpoint representative of the exact
+half-open phase bin selected by $\boldsymbol{q}_i$. & pixel \\
+$\beta_i$ & Exact axis-1-fast linear phase index
+$q_{i1}+n_{\mathrm{sub}}q_{i2}$. & index \\
+$\mathcal{K}_{i\boldsymbol d}$ & Logical coefficient-cache key
+$(\beta_i,d_1,d_2)$, equivalent to $(q_{i1},q_{i2},d_1,d_2)$. & identity \\
+$\mathbf{M}$ & Exact two-by-two affine tangent-plane pixel matrix of the
+target WCS, including axis order, signs, rotation, and handedness. &
+angle per pixel \\
+$\Delta$ & Positive target-pixel angular scale satisfying
+$\mathbf{M}^{\mathsf T}\mathbf{M}=\Delta^2\mathbf{I}$ for the base-v0.1
+square-pixel WCS class. & angle per pixel \\
+$\mathcal{D}$ & Finite destination pixel-center domain
+$\{1,\ldots,N_x\}\mathbin{\times}\{1,\ldots,N_y\}$. & identity \\
+$h_a$ & Integer square-cache half-width
+$\lceil s_a(r_{\max})_a/\Delta\rceil$. & pixel \\
+$\boldsymbol{d}$ & Integer cache offset in
+$\{-h_a,\ldots,h_a\}^2$. & pixel \\
 $z_i$ & Exact finite transformed signal $Z_i^{\mathrm{PTC}}$. & $U$ \\
 $\omega_i$ & Positive, finite, PTC-produced analysis/gridding coefficient
 from one exact registered family/version that permits SCI-JINC. & $1$ or
@@ -39,9 +68,13 @@ rounded-center domain admission, local square geometry, and all pixel-local
 gates. & $1$ \\
 $s_a$ & Explicit angular radial scale associated with stable array $a$;
 finite and strictly positive in any numerical realization. & angle \\
-$r$ & Angular separation between the realized sample phase and destination
-pixel evaluation point in the target WCS. & angle \\
+$r$ & Generic angular separation used by the analytic family. & angle \\
+$\widehat r_{i\boldsymbol d}$ & Exact discrete angular separation between the
+representative sample phase and destination pixel center for cache offset
+$\boldsymbol d$, from Equation~\eqref{eq:discrete-radius}. & angle \\
 $r'_a$ & Dimensionless radius $r/s_a$, finite and nonnegative. & $1$ \\
+$j_{1,1}$ & Exact first positive zero
+$\min\{x>0:J_1(x)=0\}$ of the first-order Bessel function. & $1$ \\
 $a_a,\allowbreak b_a,\allowbreak c_a,\allowbreak (r_{\max})_a$ & Ordered, dimensionless analytic shape tuple for
 array $a$; every member is finite and strictly positive in an authorized
 numerical realization. & $1$ \\
@@ -57,6 +90,14 @@ $m_p$ & Normalized estimate $N_p/C_p$ on accepted local support. & $U$ \\
 $D_p$ & Absolute-term sum $\sum_i I_{ip}|\omega_i\kappa_{ip}|$, used only as
 construction state for conditioning. & $[\omega]$ \\
 $\rho_p$ & Dimensionless cancellation statistic $|C_p|/D_p$. & $1$ \\
+$\mathcal{P}_{\mathrm{NA}}$ & Exact owner-approved numerical-adequacy
+profile, including its observable, norm, domain, error treatment, exact
+inequality, uncertainty rule, lifecycle, and provenance. & identity \\
+$\mathcal{E}_p$ & Exact numerical-adequacy certificate for pixel $p$ under
+$\mathcal{P}_{\mathrm{NA}}$. & identity \\
+$G_a$ & Compact bundle-level generative record for one observation and array;
+it identifies immutable parents, selections, joins, operator state, lifecycle,
+and completion without storing dense per-contribution provenance. & identity \\
 $A_{pi}$ & Fixed-state normalized linear operator row
 $I_{ip}\omega_i\kappa_{ip}/C_p$. & $1$ \\
 $f_{s,i}$ & Effective processed-sample frequency, finite and strictly
@@ -66,6 +107,7 @@ accumulator. & $\mathrm{s}$ \\
 \bottomrule
 \end{longtable}
 
-In-memory indices are zero-based.  Persisted FITS/WCS pixel coordinates are
-one-based.  Memory order never supplies axis sign, handedness, orientation, or
-wrapping.
+In-memory indices are zero-based.  Persisted FITS/WCS pixel coordinates and
+the mathematical coordinates in Equations~\eqref{eq:rounded-center}--
+\eqref{eq:discrete-radius} are one-based at integer pixel centers.  Memory
+order never supplies axis sign, handedness, orientation, or wrapping.
