@@ -136,11 +136,13 @@ add_executable(citlali_wp7_timestream_test EXCLUDE_FROM_ALL
     paired_readout_header.cpp
     identity_rtc_header.cpp
     network_timed_rtc_pass_through_header.cpp
+    network_timed_rtc_only_route_header.cpp
     common_analysis_grid_paired_readout_header.cpp
     rtc_only_route_header.cpp
     test_paired_readout.cpp
     test_identity_rtc.cpp
     test_network_timed_rtc_pass_through.cpp
+    test_network_timed_rtc_only_route.cpp
     test_rtc_only_route.cpp
 )
 set_source_files_properties(
@@ -149,6 +151,7 @@ set_source_files_properties(
     paired_readout_header.cpp
     identity_rtc_header.cpp
     network_timed_rtc_pass_through_header.cpp
+    network_timed_rtc_only_route_header.cpp
     common_analysis_grid_paired_readout_header.cpp
     rtc_only_route_header.cpp
     PROPERTIES SKIP_PRECOMPILE_HEADERS ON

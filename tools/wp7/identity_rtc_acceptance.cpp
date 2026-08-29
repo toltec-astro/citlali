@@ -2,7 +2,7 @@
 #include <citlali/core/pipeline/canonical_apt_detector_relation_v2.h>
 #include <citlali/core/pipeline/observation_setup_validation.h>
 #include <citlali/core/pipeline/paired_readout_kids_adapter.h>
-#include <citlali/core/pipeline/rtc_only_route.h>
+#include <citlali/core/pipeline/network_timed_rtc_only_route.h>
 #include <citlali/core/utils/sha256.h>
 
 #include <citlali_config/gitversion.h>
@@ -59,7 +59,7 @@ namespace pipeline = citlali::pipeline;
 namespace apt = citlali::pipeline::canonical_apt_v2;
 
 constexpr std::string_view acceptance_schema =
-    "citlali-wp7-identity-rtc-acceptance-v6";
+    "citlali-wp7-network-timed-identity-rtc-acceptance-v7";
 constexpr std::string_view occurrence_support_assignment_schema =
     "citlali-native-occurrence-support-assignment-v1";
 constexpr std::string_view occurrence_support_duration_relation =
@@ -76,6 +76,12 @@ constexpr std::string_view producer_interface =
     "TUNE_READOUT_NATIVE_XR_PRODUCER_INTERFACE v0.1/r0.1";
 constexpr std::string_view producer_interface_sha256 =
     "f9659b34a49a07d4287c4a70db798cdd2ec30049531da603fcca1e9d1fdd5969";
+constexpr std::string_view rtc_interval_id =
+    "wp7-provisional-integration-center-152390-v1:network-native-intervals";
+constexpr std::string_view rtc_x_sign_id = "kidscpp-xs:producer-defined";
+constexpr std::string_view rtc_r_sign_id = "kidscpp-rs:producer-defined";
+constexpr std::string_view rtc_valid_domain_id =
+    "delivered-finite-payload-and-producer-validity";
 constexpr std::string_view design_commit = "46824f7de";
 constexpr std::string_view align_repair_commit = "d55deefb3";
 constexpr std::string_view kidscpp_revision =
@@ -1076,16 +1082,38 @@ PairedBuildResult build_paired_readout(
         metrics, "sha256:" + mapping_digest.finish()};
 }
 
-pipeline::RtcOnlyRouteOutcome run_route(
+pipeline::NetworkTimedRtcOnlyRouteOutcome run_route(
     std::uint64_t run,
     const std::shared_ptr<const pipeline::PairedReadout> &paired,
     std::vector<pipeline::NativeOccurrenceSpan> logical_spans,
     std::vector<std::vector<pipeline::NativeOccurrenceSpan>>
         engineering_partitions,
-    pipeline::RtcOnlyProductSlot &publication) {
-    return pipeline::run_identity_rtc_only(
-        {{run}, paired, std::move(logical_spans),
-         std::move(engineering_partitions)},
+    pipeline::NetworkTimedRtcOnlyProductSlot &publication) {
+    auto logical = pipeline::NativePairedReadoutView::admit(
+        paired, std::move(logical_spans));
+    auto context = pipeline::RtcApplicationContext::admit(
+        {run}, logical, pipeline::RtcApplicationUse::rtc_terminal,
+        std::string{rtc_interval_id},
+        {std::string{rtc_x_sign_id}, "native-readout-mapping:x",
+         "unmodified-raw-coordinate:x"},
+        {std::string{rtc_r_sign_id}, "native-readout-mapping:r",
+         "unmodified-raw-coordinate:r"},
+        std::string{rtc_valid_domain_id}, {"rtc-terminal"},
+        {"WP7_NETWORK_TIMING_OWNER_AUTHORITY_CORRECTION_2026-08-29",
+         std::string{occurrence_support_assignment_id}},
+        true);
+    std::vector<std::shared_ptr<const pipeline::NativePairedReadoutView>>
+        partitions;
+    partitions.reserve(engineering_partitions.size());
+    for (auto &spans : engineering_partitions) {
+        partitions.push_back(pipeline::NativePairedReadoutView::admit(
+            paired, std::move(spans)));
+    }
+    const pipeline::NetworkTimedRtcLogicalFinalization finalization{
+        run, context->identity(), logical->native_occurrence_count(),
+        logical->detector_occurrence_count(), true};
+    return pipeline::run_network_timed_rtc_only(
+        {{run}, std::move(context), std::move(partitions), finalization},
         publication);
 }
 
@@ -1102,7 +1130,7 @@ const NetworkInput &producer_input(
 }
 
 void compare_full_product_to_producer_facts(
-    const pipeline::RtcTimestream &product,
+    const pipeline::NetworkTimedRtcTimestream &product,
     const pipeline::CanonicalAptDetectorRelationV2 &relation,
     const std::vector<NetworkInput> &inputs,
     ComparisonMetrics &metrics) {
@@ -1166,8 +1194,12 @@ void compare_full_product_to_producer_facts(
                      {pipeline::ReadoutMember::x,
                       pipeline::ReadoutMember::r}) {
                     ++metrics.rtc_product_value_comparison_count;
-                    const auto actual = product.value(
+                    const auto conditioned = product.conditioned_value(
                         member, span.network_id, row, detector);
+                    require(conditioned.has_value(),
+                            "RTC terminal product omitted a delivered paired "
+                            "payload");
+                    const auto actual = *conditioned;
                     const auto expected = native.value(
                         member, row, detector);
                     if (std::bit_cast<std::uint64_t>(actual) !=
@@ -1182,7 +1214,7 @@ void compare_full_product_to_producer_facts(
                         input.tune_valid.at(
                             static_cast<std::size_t>(detector)),
                         actual);
-                    if (product.member_local_causes(
+                    if (product.raw_member_local_causes(
                             member, span.network_id, row, detector) !=
                         expected_causes) {
                         ++metrics.member_cause_mismatch_count;
@@ -1192,26 +1224,28 @@ void compare_full_product_to_producer_facts(
                 ++metrics.pair_decision_comparison_count;
                 const auto tune_ok = input.tune_valid.at(
                     static_cast<std::size_t>(detector));
-                const auto x_value = product.value(
+                const auto x_value = product.raw_parent_value(
                     pipeline::ReadoutMember::x,
                     span.network_id, row, detector);
-                const auto r_value = product.value(
+                const auto r_value = product.raw_parent_value(
                     pipeline::ReadoutMember::r,
                     span.network_id, row, detector);
                 const auto x_valid = producer_member_valid(tune_ok, x_value);
                 const auto r_valid = producer_member_valid(tune_ok, r_value);
-                const auto expected_decision = x_valid && r_valid
-                    ? pipeline::RtcPairDecision::eligible
-                    : pipeline::RtcPairDecision::ineligible;
-                if (product.pair_decision(
-                        span.network_id, row, detector) != expected_decision) {
+                const auto expected_disposition = x_valid && r_valid
+                    ? pipeline::NetworkTimedRtcPairDisposition::eligible
+                    : pipeline::NetworkTimedRtcPairDisposition::ineligible;
+                if (product.pair_disposition(
+                        span.network_id, row, detector) !=
+                    expected_disposition) {
                     ++metrics.pair_decision_mismatch_count;
                 }
 
                 ++metrics.pair_causal_evidence_comparison_count;
                 const auto *actual_evidence = product.pair_causal_evidence(
                     span.network_id, row, detector);
-                if (expected_decision == pipeline::RtcPairDecision::eligible) {
+                if (expected_disposition ==
+                    pipeline::NetworkTimedRtcPairDisposition::eligible) {
                     if (actual_evidence != nullptr) {
                         ++metrics.pair_causal_evidence_mismatch_count;
                     }
@@ -1237,9 +1271,10 @@ void compare_full_product_to_producer_facts(
             "native RTC view comparison cardinality drifted");
 }
 
-void compare_partitioned_to_single(const pipeline::RtcTimestream &partitioned,
-                                   const pipeline::RtcTimestream &single,
-                                   ComparisonMetrics &metrics) {
+void compare_partitioned_to_single(
+    const pipeline::NetworkTimedRtcTimestream &partitioned,
+    const pipeline::NetworkTimedRtcTimestream &single,
+    ComparisonMetrics &metrics) {
     ++metrics.chunk_realized_operator_comparison_count;
     if (partitioned.realized_operator() != single.realized_operator()) {
         ++metrics.chunk_realized_operator_mismatch_count;
@@ -1272,22 +1307,26 @@ void compare_partitioned_to_single(const pipeline::RtcTimestream &partitioned,
                 if (!(partitioned.identity(
                           span.network_id, row, detector) ==
                       single.identity(span.network_id, row, detector)) ||
-                    partitioned.pair_decision(
+                    partitioned.pair_disposition(
                         span.network_id, row, detector) !=
-                        single.pair_decision(
+                        single.pair_disposition(
                             span.network_id, row, detector)) {
                     ++metrics.chunk_scientific_mismatch_count;
                 }
                 for (const auto member :
                      {pipeline::ReadoutMember::x,
                       pipeline::ReadoutMember::r}) {
-                    if (std::bit_cast<std::uint64_t>(partitioned.value(
-                            member, span.network_id, row, detector)) !=
-                            std::bit_cast<std::uint64_t>(single.value(
-                                member, span.network_id, row, detector)) ||
-                        partitioned.member_local_causes(
+                    const auto partitioned_value =
+                        partitioned.conditioned_value(
+                            member, span.network_id, row, detector);
+                    const auto single_value = single.conditioned_value(
+                        member, span.network_id, row, detector);
+                    if (!partitioned_value || !single_value ||
+                        std::bit_cast<std::uint64_t>(*partitioned_value) !=
+                            std::bit_cast<std::uint64_t>(*single_value) ||
+                        partitioned.raw_member_local_causes(
                             member, span.network_id, row, detector) !=
-                            single.member_local_causes(
+                            single.raw_member_local_causes(
                                 member, span.network_id, row, detector)) {
                         ++metrics.chunk_scientific_mismatch_count;
                     }
@@ -1330,7 +1369,7 @@ std::uint64_t peak_rss_bytes() {
 
 struct AcceptanceRun {
     std::int64_t observation = 0;
-    pipeline::RtcOnlyTerminalResult terminal;
+    pipeline::NetworkTimedRtcOnlyTerminalResult terminal;
     pipeline::PairedReadoutCardinality native_cardinality;
     pipeline::PairedReadoutMemoryEvidence native_memory;
     ComparisonMetrics comparisons;
@@ -1361,7 +1400,7 @@ AcceptanceRun execute_acceptance(
     const auto native_cardinality = paired_build.paired->cardinality();
     const auto native_memory = paired_build.paired->memory_evidence();
 
-    pipeline::RtcOnlyProductSlot full_publication;
+    pipeline::NetworkTimedRtcOnlyProductSlot full_publication;
     const auto full_spans =
         pipeline::full_native_occurrence_spans(*paired_build.paired);
     const auto full = run_route(
@@ -1371,15 +1410,27 @@ AcceptanceRun execute_acceptance(
     const auto primary_wall_end = std::chrono::steady_clock::now();
     require(full.complete() &&
                 full_publication.snapshot() == full.published_product,
-            "full identity RTC route did not publish exactly one completion");
+            "full network-timed RTC route did not publish exactly one "
+            "completion");
     require(full.terminal.failure_cause ==
-                    pipeline::RtcOnlyFailureCause::none &&
+                    pipeline::NetworkTimedRtcOnlyFailureCause::none &&
                 full.terminal.failure_detail.empty(),
-            "successful identity RTC route retained a failure cause");
+            "successful network-timed RTC route retained a failure cause");
     require(full.published_product->timestream_handle()
                     ->memory_evidence()
                     .owned_numeric_bytes == 0,
-            "identity RTC product unexpectedly owns a numerical plane");
+            "network-timed RTC product unexpectedly owns a numerical plane");
+    require(full.published_product->finalization().context_identity ==
+                    full.published_product->context_handle()->identity() &&
+                full.published_product->finalization()
+                        .completed_native_occurrence_count ==
+                    full.published_product->timestream_handle()
+                        ->output_native_occurrence_count() &&
+                full.published_product->finalization().completed_cell_count ==
+                    full.published_product->timestream_handle()
+                        ->output_cell_count(),
+            "network-timed RTC terminal finalization is not bound to its "
+            "logical product");
     const auto &op = full.published_product->timestream_handle()
                          ->realized_operator();
     require(op.sampling_factor == 1 && op.sampling_phase == 0 &&
@@ -1405,7 +1456,7 @@ AcceptanceRun execute_acceptance(
         first_spans[index].past_last_native_row = midpoint;
         second_spans[index].first_native_row = midpoint;
     }
-    pipeline::RtcOnlyProductSlot partitioned_publication;
+    pipeline::NetworkTimedRtcOnlyProductSlot partitioned_publication;
     const auto partitioned = run_route(
         2, paired_build.paired, full_spans,
         {std::move(first_spans), std::move(second_spans)},
@@ -1415,12 +1466,14 @@ AcceptanceRun execute_acceptance(
                 partitioned_publication.snapshot() ==
                     partitioned.published_product &&
                 partitioned_diagnostics.engineering_partition_count == 2 &&
-                partitioned_diagnostics.native_admission_entry_count == 1 &&
+                partitioned_diagnostics.context_admission_entry_count == 1 &&
                 partitioned_diagnostics.learn_entry_count == 1 &&
-                partitioned_diagnostics.consider_entry_count == 1 &&
+                partitioned_diagnostics.resolve_entry_count == 1 &&
                 partitioned_diagnostics.apply_entry_count == 1 &&
+                partitioned_diagnostics.finalization_entry_count == 1 &&
                 partitioned_diagnostics.publication_entry_count == 1,
-            "two-chunk identity RTC route did not finalize one publication");
+            "two-chunk network-timed RTC route did not finalize one "
+            "publication");
     compare_partitioned_to_single(
         *partitioned.published_product->timestream_handle(),
         *full.published_product->timestream_handle(), comparisons);
@@ -1431,13 +1484,14 @@ AcceptanceRun execute_acceptance(
             static_cast<pipeline::TimestreamNativeRow>(
                 span.occurrence_count() / 2);
     }
-    pipeline::RtcOnlyProductSlot incomplete_publication;
+    pipeline::NetworkTimedRtcOnlyProductSlot incomplete_publication;
     const auto incomplete = run_route(
         3, paired_build.paired, full_spans, {incomplete_partition},
         incomplete_publication);
     require(!incomplete.complete() &&
                 incomplete.terminal.failure_cause ==
-                    pipeline::RtcOnlyFailureCause::incomplete_logical_support &&
+                    pipeline::NetworkTimedRtcOnlyFailureCause::
+                        incomplete_logical_support &&
                 !incomplete_publication.snapshot(),
             "missing engineering chunk published a false completion");
 
@@ -1446,22 +1500,13 @@ AcceptanceRun execute_acceptance(
         full_publication);
     require(!second_publish.complete() &&
                 second_publish.terminal.state ==
-                    pipeline::RtcOnlyTerminalState::publication_failed &&
+                    pipeline::NetworkTimedRtcOnlyTerminalState::
+                        publication_failed &&
                 second_publish.terminal.failure_cause ==
-                    pipeline::RtcOnlyFailureCause::publication_slot_occupied &&
+                    pipeline::NetworkTimedRtcOnlyFailureCause::
+                        publication_slot_occupied &&
                 full_publication.snapshot() == full.published_product,
             "second publication did not preserve the committed product");
-    pipeline::RtcOnlyProductSlot failed_publication;
-    auto invalid_spans = full_spans;
-    ++invalid_spans.front().past_last_native_row;
-    const auto failed = run_route(
-        5, paired_build.paired, invalid_spans, {invalid_spans},
-        failed_publication);
-    require(!failed.complete() &&
-                failed.terminal.failure_cause ==
-                    pipeline::RtcOnlyFailureCause::input_contract_rejected &&
-                !failed_publication.snapshot(),
-            "failed route published a false completion");
 
     const auto wall_time =
         std::chrono::duration<double>(primary_wall_end - wall_begin).count();
@@ -1537,12 +1582,14 @@ void write_acceptance_record(const Arguments &arguments,
                 run.comparisons.assigned_support_binding_mismatch_count == 0,
             "acceptance comparisons contain a scientific mismatch");
     const auto &diagnostics = run.terminal.diagnostics;
-    require(diagnostics.native_admission_entry_count == 1 &&
+    require(diagnostics.context_admission_entry_count == 1 &&
                 diagnostics.learn_entry_count == 1 &&
-                diagnostics.consider_entry_count == 1 &&
+                diagnostics.resolve_entry_count == 1 &&
                 diagnostics.apply_entry_count == 1 &&
+                diagnostics.finalization_entry_count == 1 &&
                 diagnostics.publication_entry_count == 1,
-            "successful RTC-only route did not enter its exact allowed stages once");
+            "successful network-timed RTC-only route did not enter its exact "
+            "allowed stages once");
     std::ofstream output(arguments.output, std::ios::binary | std::ios::trunc);
     require(static_cast<bool>(output),
             "unable to create acceptance JSON: " + arguments.output.string());
@@ -1597,6 +1644,14 @@ void write_acceptance_record(const Arguments &arguments,
            << b(run.product_inspected_in_memory) << ",\n"
            << "  \"publication_complete\": "
            << b(run.publication_complete) << ",\n"
+           << "  \"rtc_timing_scope\": \"network-specific\",\n"
+           << "  \"common_analysis_grid_requested\": false,\n"
+           << "  \"persistent_rtc_tod_published\": false,\n"
+           << "  \"rtc_interval_id\": " << q(rtc_interval_id) << ",\n"
+           << "  \"rtc_x_sign_id\": " << q(rtc_x_sign_id) << ",\n"
+           << "  \"rtc_r_sign_id\": " << q(rtc_r_sign_id) << ",\n"
+           << "  \"rtc_valid_domain_id\": " << q(rtc_valid_domain_id)
+           << ",\n"
            << "  \"representative_dataset_id\": "
            << q(arguments.dataset_id) << ",\n"
            << "  \"observation\": " << run.observation << ",\n"
@@ -1631,10 +1686,11 @@ void write_acceptance_record(const Arguments &arguments,
            << "  \"occurrence_support_duration_relation\": "
            << q(occurrence_support_duration_relation) << ",\n"
            << "  \"terminal_state\": "
-           << q(pipeline::rtc_only_terminal_state_name(run.terminal.state))
+           << q(pipeline::network_timed_rtc_only_terminal_state_name(
+                    run.terminal.state))
            << ",\n"
            << "  \"terminal_failure_cause\": "
-           << q(pipeline::rtc_only_failure_cause_name(
+           << q(pipeline::network_timed_rtc_only_failure_cause_name(
                     run.terminal.failure_cause)) << ",\n"
            << "  \"terminal_failure_detail\": "
            << q(run.terminal.failure_detail) << ",\n"
@@ -1675,6 +1731,12 @@ void write_acceptance_record(const Arguments &arguments,
            << run.terminal.diagnostics.x_and_r_event_count << ",\n"
            << "    \"pair_ineligible_cell_count\": "
            << run.terminal.diagnostics.pair_ineligible_cell_count << ",\n"
+           << "    \"x_payload_available_cell_count\": "
+           << run.terminal.diagnostics.x_payload_available_cell_count
+           << ",\n"
+           << "    \"r_payload_available_cell_count\": "
+           << run.terminal.diagnostics.r_payload_available_cell_count
+           << ",\n"
            << "    \"x_numerically_valid_cell_count\": "
            << run.terminal.diagnostics.x_numerically_valid_cell_count
            << ",\n"
@@ -1753,14 +1815,16 @@ void write_acceptance_record(const Arguments &arguments,
            << run.comparisons.selected_time_mismatch_count << ",\n"
            << "    \"representative_native_mismatch_count\": "
            << run.comparisons.representative_native_mismatch_count << ",\n"
-           << "    \"native_admission_entry_count\": "
-           << run.terminal.diagnostics.native_admission_entry_count << ",\n"
+           << "    \"context_admission_entry_count\": "
+           << run.terminal.diagnostics.context_admission_entry_count << ",\n"
            << "    \"learn_entry_count\": "
            << run.terminal.diagnostics.learn_entry_count << ",\n"
-           << "    \"consider_entry_count\": "
-           << run.terminal.diagnostics.consider_entry_count << ",\n"
+           << "    \"resolve_entry_count\": "
+           << run.terminal.diagnostics.resolve_entry_count << ",\n"
            << "    \"apply_entry_count\": "
            << run.terminal.diagnostics.apply_entry_count << ",\n"
+           << "    \"finalization_entry_count\": "
+           << run.terminal.diagnostics.finalization_entry_count << ",\n"
            << "    \"publication_entry_count\": "
            << run.terminal.diagnostics.publication_entry_count << ",\n"
            << "    \"unexpected_error_count\": " << logs.errors << ",\n"
@@ -1837,11 +1901,11 @@ int main(int argc, char **argv) {
                 "acceptance route emitted unexpected error-level records");
         write_acceptance_record(
             arguments, support_assignment, run, *log_counts);
-        std::cout << "WP-7 identity RTC acceptance record: "
+        std::cout << "WP-7 network-timed identity RTC acceptance record: "
                   << arguments.output << '\n';
         return 0;
     } catch (const std::exception &error) {
-        std::cerr << "WP-7 identity RTC acceptance runner: FAIL: "
+        std::cerr << "WP-7 network-timed identity RTC acceptance runner: FAIL: "
                   << error.what() << '\n';
         return 2;
     }

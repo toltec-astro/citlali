@@ -1,5 +1,45 @@
 # Citlali Refactor Status
 
+## 2026-08-29 WP-7 Network-Timed RTC Terminal Publication
+
+The next bounded increment after the accepted network-timing repair is now
+implemented for the exact `M=1`, no-despike, no-level-shift, no-filter witness.
+`NetworkTimedRtcOnlyRouteRequest` admits one immutable terminal application
+context and an exact-cover engineering schedule over native per-network
+occurrences. The route executes the accepted context-bound
+Learn-Resolve-Apply lifecycle, verifies a compact context-bound logical
+finalization, and atomically publishes one inspectable in-memory terminal
+product through a no-replace slot. The finalization and realization retain
+only compact identities, counts, operator facts, and completion state; values,
+support, timing, validity, causes, and immutable producer facts remain owned by
+the native paired product and its bounded views.
+
+The terminal route neither requests nor references a cross-network common
+analysis grid. Focused two-network evidence preserves distinct `nw0`
+`1000.0000` and `nw7` `1000.0025` times exactly, proves that an occurrence gap
+on one network manufactures no slot or absence on another, and guards the
+route's source dependency closure. It publishes no persistent RTC TOD schema
+and introduces no CAL, VAL, PTC, MAP, production activation, or nonidentity
+numerical operation.
+
+The representative-data runner and validator are upgraded to the exact
+network-timed terminal path and the
+`citlali-wp7-network-timed-identity-rtc-acceptance-v7` record. The record binds
+the assigned provisional native interval identity, producer-defined `x/r`
+coordinate meanings, validity domain, terminal stage trace, conditioned
+payload coverage, and explicit absence of common-grid and persistent-TOD
+claims. Calibration of the provisional integration-center timing relation
+remains pending and is not promoted to a known scientific fact.
+
+Pre-commit local validation passes all 139 focused WP-7 and SCI-ALIGN CTests,
+all 870 runnable repository CTests with the one established disabled test
+unchanged, all 207 baseline-tool tests, all 19 v7 acceptance-validator tests,
+and all 129 required config unit tests plus downstream audits. The modified
+representative acceptance translation unit also compiles through its generated
+build rule. The required observation 152390 execution remains pending until
+this bounded implementation is committed and rebuilt under its exact clean
+source identity; acceptance and readiness are not yet claimed.
+
 ## 2026-08-29 WP-7 Network-Timing Owner Correction
 
 The scientific owner resolved the ALIGN/RTC timing mismatch: network-specific

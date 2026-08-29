@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate one owner-run WP-7 identity RTC acceptance record."""
+"""Validate one owner-run WP-7 network-timed identity RTC record."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA = "citlali-wp7-identity-rtc-acceptance-v6"
+SCHEMA = "citlali-wp7-network-timed-identity-rtc-acceptance-v7"
 OCCURRENCE_SUPPORT_ASSIGNMENT_SCHEMA = (
     "citlali-native-occurrence-support-assignment-v1"
 )
@@ -33,6 +33,12 @@ PRODUCER_INTERFACE = "TUNE_READOUT_NATIVE_XR_PRODUCER_INTERFACE v0.1/r0.1"
 PRODUCER_SHA256 = (
     "f9659b34a49a07d4287c4a70db798cdd2ec30049531da603fcca1e9d1fdd5969"
 )
+RTC_INTERVAL_ID = (
+    "wp7-provisional-integration-center-152390-v1:network-native-intervals"
+)
+RTC_X_SIGN_ID = "kidscpp-xs:producer-defined"
+RTC_R_SIGN_ID = "kidscpp-rs:producer-defined"
+RTC_VALID_DOMAIN_ID = "delivered-finite-payload-and-producer-validity"
 DESIGN_COMMIT = "46824f7de"
 ALIGN_REPAIR_COMMIT = "d55deefb3"
 KIDSCPP_REVISION = "04088da182622c3e879f04314974a7c0d60ee2d6"
@@ -91,6 +97,11 @@ def require_true(record: dict[str, Any], name: str) -> None:
         raise AcceptanceError(f"{name} must be true")
 
 
+def require_false(record: dict[str, Any], name: str) -> None:
+    if record.get(name) is not False:
+        raise AcceptanceError(f"{name} must be false")
+
+
 def require_zero(record: dict[str, Any], name: str) -> None:
     if require_integer(record, name) != 0:
         raise AcceptanceError(f"{name} must be zero")
@@ -142,6 +153,20 @@ def validate(record: dict[str, Any]) -> None:
     require_true(record, "tune_accumulation_explicit")
     require_true(record, "product_inspected_in_memory")
     require_true(record, "publication_complete")
+    if record.get("rtc_timing_scope") != "network-specific":
+        raise AcceptanceError("rtc_timing_scope must be 'network-specific'")
+    require_false(record, "common_analysis_grid_requested")
+    require_false(record, "persistent_rtc_tod_published")
+    if record.get("rtc_interval_id") != RTC_INTERVAL_ID:
+        raise AcceptanceError(f"rtc_interval_id must be {RTC_INTERVAL_ID!r}")
+    if record.get("rtc_x_sign_id") != RTC_X_SIGN_ID:
+        raise AcceptanceError(f"rtc_x_sign_id must be {RTC_X_SIGN_ID!r}")
+    if record.get("rtc_r_sign_id") != RTC_R_SIGN_ID:
+        raise AcceptanceError(f"rtc_r_sign_id must be {RTC_R_SIGN_ID!r}")
+    if record.get("rtc_valid_domain_id") != RTC_VALID_DOMAIN_ID:
+        raise AcceptanceError(
+            f"rtc_valid_domain_id must be {RTC_VALID_DOMAIN_ID!r}"
+        )
     require_string(record, "representative_dataset_id")
     if require_integer(record, "observation", 1) != 152390:
         raise AcceptanceError("observation must be 152390")
@@ -289,6 +314,20 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError(
             "identity RTC requires one causal evidence event per ineligible pair"
         )
+    if (
+        require_integer(metrics, "x_payload_available_cell_count", 1)
+        != detector_occurrences
+    ):
+        raise AcceptanceError(
+            "x_payload_available_cell_count must cover every detector occurrence"
+        )
+    if (
+        require_integer(metrics, "r_payload_available_cell_count", 1)
+        != detector_occurrences
+    ):
+        raise AcceptanceError(
+            "r_payload_available_cell_count must cover every detector occurrence"
+        )
     if direct_x_events + direct_r_events - both_events != evidence_events:
         raise AcceptanceError(
             "direct x/r evidence union must equal evidence_event_count"
@@ -411,10 +450,11 @@ def validate(record: dict[str, Any]) -> None:
     require_integer(metrics, "process_peak_rss_bytes", 1)
     require_zero(metrics, "rtc_owned_numeric_bytes")
     for name in (
-        "native_admission_entry_count",
+        "context_admission_entry_count",
         "learn_entry_count",
-        "consider_entry_count",
+        "resolve_entry_count",
         "apply_entry_count",
+        "finalization_entry_count",
         "publication_entry_count",
     ):
         if require_integer(metrics, name, 1) != 1:
@@ -455,9 +495,12 @@ def main() -> int:
     try:
         validate(load_record(args.record))
     except (AcceptanceError, json.JSONDecodeError, OSError) as error:
-        print(f"WP-7 identity RTC acceptance: FAIL: {error}", file=sys.stderr)
+        print(
+            f"WP-7 network-timed identity RTC acceptance: FAIL: {error}",
+            file=sys.stderr,
+        )
         return 1
-    print("WP-7 identity RTC acceptance: PASS")
+    print("WP-7 network-timed identity RTC acceptance: PASS")
     return 0
 
 

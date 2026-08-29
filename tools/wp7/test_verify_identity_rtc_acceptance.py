@@ -47,6 +47,13 @@ def valid_record() -> dict[str, object]:
         "tune_accumulation_explicit": True,
         "product_inspected_in_memory": True,
         "publication_complete": True,
+        "rtc_timing_scope": "network-specific",
+        "common_analysis_grid_requested": False,
+        "persistent_rtc_tod_published": False,
+        "rtc_interval_id": validator.RTC_INTERVAL_ID,
+        "rtc_x_sign_id": validator.RTC_X_SIGN_ID,
+        "rtc_r_sign_id": validator.RTC_R_SIGN_ID,
+        "rtc_valid_domain_id": validator.RTC_VALID_DOMAIN_ID,
         "representative_dataset_id": "SCI_ALIGN_STAGE7_NGC4449_152390",
         "observation": 152390,
         "first_native_row": 20000,
@@ -100,6 +107,8 @@ def valid_record() -> dict[str, object]:
             "direct_r_event_count": 4,
             "x_and_r_event_count": 2,
             "pair_ineligible_cell_count": 5,
+            "x_payload_available_cell_count": 20480,
+            "r_payload_available_cell_count": 20480,
             "x_numerically_valid_cell_count": 20477,
             "r_numerically_valid_cell_count": 20476,
             "derived_evidence_bytes": 80,
@@ -136,10 +145,11 @@ def valid_record() -> dict[str, object]:
             "chunk_scientific_mismatch_count": 0,
             "selected_time_mismatch_count": 0,
             "representative_native_mismatch_count": 0,
-            "native_admission_entry_count": 1,
+            "context_admission_entry_count": 1,
             "learn_entry_count": 1,
-            "consider_entry_count": 1,
+            "resolve_entry_count": 1,
             "apply_entry_count": 1,
+            "finalization_entry_count": 1,
             "publication_entry_count": 1,
             "unexpected_error_count": 0,
             "unexpected_critical_count": 0,
@@ -194,6 +204,18 @@ class AcceptanceValidatorTest(unittest.TestCase):
             ("occurrence_support_assignment_id", "different"),
             ("occurrence_support_assignment_sha256", "0" * 64),
             ("occurrence_support_event_time_role", "integration_start"),
+        ):
+            with self.subTest(name=name):
+                record = valid_record()
+                record[name] = value
+                with self.assertRaises(validator.AcceptanceError):
+                    validator.validate(record)
+
+    def test_rejects_cross_network_or_persistent_terminal_claims(self) -> None:
+        for name, value in (
+            ("rtc_timing_scope", "common-analysis-grid"),
+            ("common_analysis_grid_requested", True),
+            ("persistent_rtc_tod_published", True),
         ):
             with self.subTest(name=name):
                 record = valid_record()
@@ -329,11 +351,22 @@ class AcceptanceValidatorTest(unittest.TestCase):
             validator.validate(record)
 
     def test_rejects_unobserved_route_stage_trace(self) -> None:
+        for name in ("apply_entry_count", "finalization_entry_count"):
+            with self.subTest(name=name):
+                record = valid_record()
+                record["metrics"][name] = 0
+                with self.assertRaisesRegex(
+                    validator.AcceptanceError,
+                    name,
+                ):
+                    validator.validate(record)
+
+    def test_rejects_missing_conditioned_payload_coverage(self) -> None:
         record = valid_record()
-        record["metrics"]["apply_entry_count"] = 0
+        record["metrics"]["r_payload_available_cell_count"] -= 1
         with self.assertRaisesRegex(
             validator.AcceptanceError,
-            "apply_entry_count",
+            "r_payload_available_cell_count",
         ):
             validator.validate(record)
 
