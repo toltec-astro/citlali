@@ -2,16 +2,12 @@
 
 ## 2026-08-28 WP-7 Identity RTC First Vertical Increment
 
-The bounded WP-7 identity RTC increment is now locally implemented and has
-passed its representative real-paired-data execution gate. The exact
-acceptance executable source is
-`4d0ec46ee19267b351b8a3ca015964e0400cdfd4`; the executable binary SHA-256 is
-`72fd95236a63d2aca0d1f85877a49933f9b65b953f19bcf4f02d285d2373fafc`.
-The clean base merge retains exact accepted design commit `46824f7de` and exact
-ALIGN strict-half repair `d55deefb3` as separate ancestors. The first three
-reviewable code boundaries establish paired native `x/r` ingress and product
-semantics; explicit identity RTC learn-consider-apply; and an RTC-only
-in-memory terminal route with atomic publication and compact diagnostics.
+The bounded WP-7 identity RTC implementation remains on a clean base that
+retains accepted design commit `46824f7de` and ALIGN strict-half repair
+`d55deefb3` as separate ancestors. Its three reviewable code boundaries
+establish paired native `x/r` ingress and product semantics; explicit identity
+RTC learn-consider-apply; and an RTC-only in-memory terminal route with atomic
+publication and compact diagnostics.
 
 The paired product preserves independent per-network native occurrence axes,
 primitive occurrence intervals, member-local validity and causes, pair queries,
@@ -28,24 +24,40 @@ consumer but makes no pointing-completion claim. No CAL, VAL, PTC, MAP,
 persistent RTC TOD schema, legacy-route activation, or scientific-method
 expansion is included.
 
-Focused synthetic and existing ALIGN gates pass locally. The owner-directed
-observation 152390 gate used all 11 admitted networks, 5,518 detectors, and
-2,048 native rows. It compared 22,579,656 paired `x/r` values and checked
-identity, support, pair decisions, causal evidence, selected time, and native
-correspondence across 11,289,828 aligned detector occurrences. The full route
-and two engineering partitions had zero scientific mismatches, zero
-out-of-scope AST/CAL/VAL/PTC/MAP calls, zero unexpected error-level records,
-and zero RTC-owned numerical bytes. Paired ingress owned 226,608,108 logical
-bytes; measured peak RSS was 629,358,592 bytes and paired-ingress-through-
-publication wall time was 4.497 seconds. The exact record is
-[retained with the handoff](../handoff/WP7_IDENTITY_RTC_ACCEPTANCE_152390_2026-08-28.json)
-and passes the repository validator; its SHA-256 is
-`10ef712c4f2a4ad79d227a1cf376cc0ff4f51090baea03455a681ec7befe9a26`.
+A corrective review found that evidence lookup depended accidentally on
+monotonic detector output UIDs, sparse evidence duplicated immutable parent
+facts, terminal failures lost their exact causes, and the representative-data
+runner constructed midpoint support without an independent producer authority.
+The implementation now uses a compact parent-local evidence handle keyed by
+network, absolute slot, and detector column; resolves immutable identity,
+causes, and ALIGN absence through the parent; proves reversed-UID behavior;
+and reports typed terminal failure causes with exact contract messages.
 
-Fresh independent read-only conformance review of the exact implementation and
-evidence remains the next gate. Until it passes, the increment is not accepted
-for production readiness or activation and the legacy route remains
-authoritative. No accepted-run or intended-science-change ledger entry is made.
+The previously retained
+[observation 152390 record](../handoff/WP7_IDENTITY_RTC_ACCEPTANCE_152390_2026-08-28.json)
+is superseded as acceptance evidence. Its execution measurements and zero
+mismatch counts remain historical diagnostics, but its support comparison was
+circular. Acceptance schema v2 now fails closed unless an observation-scoped,
+owner-approved artifact states whether reconstructed native event time is the
+integration start, center, or end and binds duration to raw
+`AccumLen / FpgaFreq`. The deliberately unapproved template and exact rerun
+procedure are in the
+[acceptance package](../handoff/WP7_IDENTITY_RTC_ACCEPTANCE_PACKAGE_2026-08-28.md).
+
+Repository-local validation passes on the corrective tree: the CLI and
+acceptance executable build; all 115 focused WP-7 and ALIGN tests pass; all 845
+enabled repository CTests pass with the one established disabled test not run;
+all 207 baseline-tool tests pass; the acceptance-validator suite passes 6/6;
+and the required config preflight passes all 129 unit tests and downstream
+audits. The unapproved authority template is rejected before data execution,
+and the old v1 record is rejected by the v2 validator.
+
+The representative observation 152390 gate remains pending only the producer
+support-authority decision and a new exact-revision owner run. Fresh independent
+read-only conformance review follows that evidence. Until both gates pass, the
+increment is not accepted for production readiness or activation and the
+legacy route remains authoritative. No accepted-run or intended-science-change
+ledger entry is made.
 
 ## 2026-08-26 WP-7 Timestream Successor Baseline
 
