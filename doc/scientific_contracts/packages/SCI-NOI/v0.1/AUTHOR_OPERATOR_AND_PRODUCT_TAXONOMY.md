@@ -1,7 +1,7 @@
 # SCI-NOI v0.1 — Collision-Free Operator And Product Taxonomy
 
 Status: proposed sanitized Stage B author input; ODQ-101, ODQ-102A/B/C,
-ODQ-103/104/105A/105B/106 incorporated; exact bytes await owner approval
+ODQ-103/104/105A/105B/106/107 incorporated; exact bytes await owner approval
 
 The semantic prefixes are:
 
@@ -51,7 +51,10 @@ MAP owns only conforming application within frozen ordinary accumulation.
 | `NOI-UNC/DIAGONAL-VARIANCE` | Separately authorized marginal variance diagonal on an exact domain | Not supplied by the initial second moment by shape; no off-diagonal or precision claim |
 | `NOI-UNC/STRUCTURED-COVARIANCE` | Separately authorized stationary/kernel, block, spectral, low-rank, sparse, or another exact structure | Representation, member population, rank/null space, omissions, and regularization are method identity; missing entries are not zero |
 | `NOI-UNC/PROJECTED-UNCERTAINTY` | Uncertainty for one exact fixed statistic/operator | Not portable to another statistic |
-| `NOI-UNC/EMPIRICAL-INVERSE-OR-WEIGHT` | Marginal inverse variance, precision, or consumer-effective weight after an exact authorized transform | Every meaning is separate; none is a PTC/MAP coefficient |
+| `NOI-UNC/INVERSE-CONDITIONAL-SECOND-MOMENT-SCALE` | Owner-approved `W_hat_cond=1/V_hat_cond` on the finite strictly positive parent domain | Inverse squared signal units; not inverse variance, precision, validity, support, exposure, or a PTC/MAP coefficient; unavailable outside domain; regularization is separate |
+| `NOI-UNC/MARGINAL-INVERSE-VARIANCE` | Reciprocal of a separately authorized finite positive marginal variance | Initial conditional second moment is not an eligible variance parent by shape |
+| `NOI-UNC/PRECISION` | Exact inverse/generalized inverse of an authorized covariance on a declared domain/subspace | Reciprocal covariance diagonal is not precision by default; rank/null/conditioning/regularization are identity |
+| `NOI-UNC/CONSUMER-EFFECTIVE-WEIGHT` | Weight for one exact named estimator/projection/response/domain | Not portable, not a PTC/MAP coefficient, and not an instruction to mutate a parent |
 
 Exact target, estimator, design, domain, covariance, rank, null-space, and
 effective-information fields are in

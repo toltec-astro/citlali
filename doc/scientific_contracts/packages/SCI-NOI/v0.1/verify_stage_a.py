@@ -105,6 +105,11 @@ def main() -> None:
         "Unreported off-diagonal entries",
         "not zero or independent",
         "No representation implies invertibility",
+        "NOI-UNC/INVERSE-CONDITIONAL-SECOND-MOMENT-SCALE",
+        "W_hat_cond(p) = 1 / V_hat_cond(p)",
+        "It shall not substitute a numerical zero",
+        "not inverse variance or precision",
+        "cross-boundary use requires explicit scientific authority",
     ]
     for token in required:
         if token not in package_text:

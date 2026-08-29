@@ -221,6 +221,24 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
     table, and r0.11 packet/decision records without creating numerical
     covariance availability.
 
+## ODQ-107 Empirical Inverse And Weight Update
+
+64. Approved `W_hat_cond=1/V_hat_cond` on the exact finite strictly positive
+    parent domain as an inverse conditional second-moment scale with inverse
+    squared signal units.
+65. Prohibited inverse-variance or precision relabeling, numerical-zero
+    substitution for unavailable input, and implicit flooring, clipping,
+    epsilon, shrinkage, or other regularization.
+66. Kept marginal inverse variance, covariance precision, and consumer-
+    effective weights as separately typed products with exact parent, domain,
+    subspace, projection, and portability restrictions.
+67. Preserved validity, support, exposure, PTC/MAP coefficient, and immutable-
+    parent boundaries; required explicit future scientific authority for any
+    cross-boundary use.
+68. Advanced the walkthrough to ODQ-108 and published r0.5 of the finite-design
+    UNC table, r0.6 of the product/lifecycle table, r0.3 of the STD table, and
+    r0.12 packet/decision records without creating numerical availability.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance

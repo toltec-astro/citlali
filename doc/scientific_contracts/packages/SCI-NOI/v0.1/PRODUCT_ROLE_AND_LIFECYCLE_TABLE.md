@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Product Role And Lifecycle Table
 
-Artifact identity: `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.5`
+Artifact identity: `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.6`
 
 Status: proposed sanitized Stage A scientific input; exact bytes await owner
 approval
@@ -17,9 +17,10 @@ approval
 | UNC zero-centered conditional second moment | Ordinary primary representation `V_hat_cond(p)=sum_b omega_b M_b(p)^2` on the common all-member domain; known zero center; exact normalized design weights; no empirical recentering or `B-1`; dependence/rank/effective-information and estimator-uncertainty state | Squared signal units; pointwise/diagonal-like shape does not make it physical-noise variance or covariance; not precision or significance; square root and later transformations are separate |
 | UNC retained ensemble | Exact immutable member population, design, parent/operator state, persistence/reconstruction state, and lifecycle | A covariance-estimator input/representation, not automatically an estimated covariance |
 | UNC variance/covariance | Separately identified target law, estimator, member population, representation, exact domain/support/response, rank/null or rank limit, regularization/approximation, units, omissions, uncertainty/calibration, lifecycle | Unreported entries are unknown/unavailable rather than zero/independent; not precision, exposure, MAP coefficient, or significance; cannot rescue an admitted-member failure |
-| UNC marginal inverse variance | Inverse of one authorized positive marginal variance on its valid domain | Not a full precision matrix |
-| UNC precision | Exact inverse/generalized inverse on a declared subspace | Not `1/diag(C)` by default |
-| UNC consumer-effective weight | Inverse projected variance for one named operator/statistic | Not portable to another estimator or to PTC/MAP |
+| UNC inverse conditional second-moment scale | `W_hat_cond=1/V_hat_cond` on the exact finite strictly positive parent domain; inverse squared signal units; unavailability preserved; no implicit regularization | Not inverse variance, precision, probability, validity, support, exposure, or a PTC/MAP coefficient; consumer-side zero omission is not an estimated inverse value |
+| UNC marginal inverse variance | Inverse of one separately authorized finite positive marginal variance on its valid domain | Initial conditional second moment is not a variance parent by shape; not a full precision matrix |
+| UNC precision | Exact inverse/generalized inverse of an authorized covariance on a declared subspace, with rank/null/conditioning/regularization state | Not `1/diag(C)` by default |
+| UNC consumer-effective weight | One exact named estimator/projection/response/domain | Not portable to another estimator or consumer and not a PTC/MAP coefficient without explicit future authority |
 | STD admission | Exact numerator/positive-scale compatibility decision for one STD use | Not scale construction or statistical calibration |
 | STD standardized signal | Exact numerator, transformed positive scale, compatibility, dependence, support, unit `1`, claim, lifecycle | Not uncertainty, Gaussian significance, probability, or catalog authority |
 | Persistence/reconstruction record | Persisted/transient/streamed state, exact regeneration capability, sufficient statistics, audit limitation | Not statistical adequacy |

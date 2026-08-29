@@ -1,8 +1,8 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.11`
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.12`
 
-Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, ODQ-105A, ODQ-105B, and ODQ-106 owner-approved; exact
+Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, ODQ-105A, ODQ-105B, ODQ-106, and ODQ-107 owner-approved; exact
 finite-design mechanics delegated to the scientific-contract author under
 ODQ-102D; later decisions remain open; not yet an allowed Stage B authority
 
@@ -308,18 +308,40 @@ not approve another decision or make an unresolved numerical route available.
 
 - **Exact question:** Which inverse-variance, precision, or consumer-effective
   weight products, if any, are authorized?
-- **Recommended disposition:** marginal inverse variance requires authorized
-  finite positive marginal variance; precision requires an exact inverse or
-  generalized inverse on a declared subspace; consumer weight requires one
-  named projection. None is a PTC/MAP coefficient, exposure, or support.
+- **Approved disposition:** authorize
+  `NOI-UNC/INVERSE-CONDITIONAL-SECOND-MOMENT-SCALE` with
+  `W_hat_cond(p)=1/V_hat_cond(p)` only where the exact ODQ-105B parent is
+  available, finite, and strictly positive. Its role is
+  `inverse_conditional_second_moment_scale`, with inverse squared signal units;
+  it is not inverse variance or precision. Zero, negative, nonfinite,
+  unavailable, or outside-parent-domain input yields unavailable, not a
+  numerical zero. Any floor, cap, clipping, epsilon, shrinkage, or other
+  regularization is a separately identified method. Marginal inverse variance
+  requires a separately authorized finite positive marginal variance.
+  Precision requires an authorized covariance and an exact inverse or
+  generalized inverse on a declared domain/subspace with rank, null,
+  conditioning, and regularization semantics; reciprocal covariance diagonals
+  are not precision by default. Consumer-effective weight requires one exact
+  named estimator/projection/response/domain and is not portable. None is
+  sample validity, support, exposure, a PTC/MAP coefficient, or a parent-
+  mutation instruction. Cross-boundary use requires explicit scientific
+  authority. A consumer-side numerical zero may represent omission only under
+  an authorized application contract that preserves unavailability; it is not
+  an estimated inverse value.
 - **Alternatives:** authorize a subset, none, or defer to consumers.
 - **Scientific consequences:** numerical resemblance cannot create a false
   ownership or coefficient join.
-- **Conservative state while open:** all inverse/weight products unavailable.
+- **Conservative state:** the initial reciprocal method identity is approved
+  but numerically unavailable until its parent and strictly-positive-domain
+  gates pass. All other inverse, precision, and consumer-effective-weight
+  methods remain unavailable until exactly defined and admitted.
 - **Affected artifacts:** UNC products, role table, consumer profiles, PTC/MAP
   non-promotion boundary.
-- **Exact bytes changed by approval:** product identities, transforms, domains,
-  projections, and claim restrictions.
+- **Exact bytes changed by approval:** initial inverse-scale identity,
+  reciprocal transform/domain/unit; unavailable-not-zero and no-implicit-
+  regularization behavior; separately typed inverse-variance, precision, and
+  consumer-effective-weight requirements; consumer-side omission distinction;
+  and PTC/MAP non-promotion/cross-boundary restrictions.
 
 ### `SCI-NOI-ODQ-108` — STD numerator and scale
 

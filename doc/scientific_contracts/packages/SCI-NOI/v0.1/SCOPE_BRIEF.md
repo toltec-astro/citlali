@@ -276,6 +276,24 @@ unresolved modes, regularization/approximation, omissions, and uncertainty/
 calibration state. Unreported covariance is unknown or unavailable rather than
 zero or independence. No representation implies an inverse or precision.
 
+ODQ-107 authorizes the exact finite-positive reciprocal
+
+```text
+D_inv = {p in D_common : V_hat_cond(p) is finite and strictly positive},
+W_hat_cond(p) = 1 / V_hat_cond(p),
+```
+
+as `NOI-UNC/INVERSE-CONDITIONAL-SECOND-MOMENT-SCALE`. The result has inverse
+squared signal units and is not inverse variance or precision. Zero, negative,
+nonfinite, unavailable, and outside-parent-domain input yields unavailable, not
+a numerical zero. Any floor, cap, clipping, epsilon, shrinkage, or other
+regularization is a separately identified method. Marginal inverse variance
+requires separately authorized marginal variance; precision requires an
+authorized covariance inverse/generalized inverse on an exact domain/subspace;
+and consumer-effective weight is use-specific. None is validity, support,
+exposure, a PTC/MAP coefficient, or a parent-mutation instruction. Future
+cross-boundary use requires explicit scientific authority.
+
 ## 7. STD: Numerator, Positive Scale, And Claim
 
 Every STD method binds:
@@ -423,8 +441,10 @@ approval. ODQ-103 approves the source-suppression intent and no-source-free-by-
 construction boundary while delegating exact terminology to the Stage-B
 scientific author. ODQ-105A approves fail-closed completion for every admitted
 member. ODQ-105B approves the initial zero-centered conditional randomization
-second moment. ODQ-106 approves the covariance representation and rank policy.
-The next walkthrough question is `SCI-NOI-ODQ-107`. Every later
+second moment. ODQ-106 approves the covariance representation and rank policy,
+and ODQ-107 approves the initial inverse conditional second-moment scale while
+keeping inverse variance, precision, and consumer weights separately typed.
+The next walkthrough question is `SCI-NOI-ODQ-108`. Every later
 decision and the artifact's final hash still require explicit owner review.
 
 ## 13. Non-Goals And Claim Boundary

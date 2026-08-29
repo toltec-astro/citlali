@@ -162,7 +162,13 @@ establishes that pointwise field as the ordinary primary representation without
 promoting it to covariance; optional covariance methods remain separately
 identified, dense full covariance is not universally required, unknown
 covariance is not zero, and exact domain/rank/null/regularization disclosure is
-required. ODQ-107, empirical inverse and weight products, is next.
+required.
+ODQ-107 now authorizes a finite-positive reciprocal of the initial second
+moment as an inverse conditional second-moment scale, not inverse variance or
+precision. Unavailable inputs remain unavailable rather than numerical zero,
+regularization is separate, other inverse/precision/consumer weights remain
+distinct, and no PTC/MAP promotion follows. ODQ-108, STD numerator and scale,
+is next.
 Conditional Stage B remains blocked on exact
 bytes/hashes, granular owner decisions or explicit unavailability, and required
 source/profile bindings. The frozen MAP/pre-MAP

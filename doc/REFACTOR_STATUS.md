@@ -522,8 +522,21 @@ its common-all-member rule and cannot use pairwise populations, survivor
 subsets, or generic missing-data estimators to rescue failure. No covariance
 representation implies an inverse or precision.
 
-The next walkthrough question is `SCI-NOI-ODQ-107`, empirical inverse and
-weight products. Later granular decisions, exact packet bytes/hashes, and
+Grant Wilson approved `SCI-NOI-ODQ-107` on `2026-08-29`. The initial derived
+inverse product is `W_hat_cond=1/V_hat_cond` on the exact finite strictly
+positive parent domain. Its role is an inverse conditional second-moment scale
+with inverse squared signal units, not inverse variance or precision. Zero,
+negative, nonfinite, unavailable, or outside-parent-domain input yields
+unavailable rather than a numerical zero; any floor, cap, clipping, epsilon,
+shrinkage, or other regularization is a separate method. Marginal inverse
+variance requires separately authorized marginal variance; precision requires
+an authorized covariance inverse/generalized inverse on a declared subspace;
+and consumer-effective weight is exact-use-specific. None is validity,
+support, exposure, a PTC/MAP coefficient, or a parent-mutation instruction.
+Cross-boundary use requires explicit future scientific authority.
+
+The next walkthrough question is `SCI-NOI-ODQ-108`, STD numerator and scale.
+Later granular decisions, exact packet bytes/hashes, and
 required source/profile Registry bindings remain under owner review.
 MAP/pre-MAP numerical parents remain
 unavailable pending the exact PTC MAP-facing coefficient and owner-admitted

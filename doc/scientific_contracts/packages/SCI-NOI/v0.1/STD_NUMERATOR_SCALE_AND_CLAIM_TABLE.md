@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — STD Numerator, Scale, And Claim Table
 
-Artifact identity: `SCI-NOI_STD_NUMERATOR_SCALE_CLAIM v0.1/r0.2`
+Artifact identity: `SCI-NOI_STD_NUMERATOR_SCALE_CLAIM v0.1/r0.3`
 
 Status: proposed sanitized Stage A scientific input; exact bytes await owner
 approval
@@ -36,5 +36,10 @@ standard deviation, standard error, projected uncertainty, calibrated scale,
 or another transformed positive signal-unit UNC quantity is a candidate scale.
 ODQ-105B's `V_hat_cond` has squared signal units and is not a direct
 denominator. Its square root would require an exact authorized transformation,
-compatibility/domain rule, and later ODQ-108 pairing. No candidate pairing
-becomes available by appearing in this table.
+compatibility/domain rule, and later ODQ-108 pairing. ODQ-107's
+`inverse_conditional_second_moment_scale` has inverse squared signal units and
+is also not a direct denominator. Reciprocal square-root or another conversion
+back to a signal-unit scale requires an exact separately identified
+transformation under ODQ-108. Numerical weight-like appearance cannot select
+that transformation or a significance claim. No candidate pairing becomes
+available by appearing in this table.

@@ -193,7 +193,7 @@ numerical gates remain unavailable. ODQ-104 is explicitly owner-approved:
 every GEN method classifies scientifically consequential adjacent state, and a
 relearned method names its consequential rerun/relearn stages and resulting
 changed state without requiring exhaustive implementation provenance. The next
-owner question is `SCI-NOI-ODQ-107`, empirical inverse and weight products.
+owner question is `SCI-NOI-ODQ-108`, STD numerator and scale.
 ODQ-103 approves
 the source-suppression intent and no-source-free-by-construction boundary while
 delegating exact terminology to the Stage-B scientific author. ODQ-105A now
@@ -208,3 +208,9 @@ separately named projected, structured, or full covariance methods remain
 possible without a universal dense-covariance requirement; each must disclose
 exact member/domain/rank/null/regularization/omission semantics, unknown
 covariance is not zero, and no inverse or precision follows.
+ODQ-107 authorizes a finite-positive reciprocal of the initial second moment as
+an inverse conditional second-moment scale, not inverse variance or precision.
+Unavailable inputs remain unavailable rather than becoming numerical zero;
+regularization is separate; marginal inverse variance, precision, and
+consumer-effective weights remain distinct; and no such product is promoted
+to validity, support, exposure, or a PTC/MAP coefficient.

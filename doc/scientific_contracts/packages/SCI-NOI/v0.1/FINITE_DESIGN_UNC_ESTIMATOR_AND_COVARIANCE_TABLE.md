@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Finite-Design UNC Estimator And Covariance Table
 
-Artifact identity: `SCI-NOI_FINITE_DESIGN_UNC_TABLE v0.1/r0.4`
+Artifact identity: `SCI-NOI_FINITE_DESIGN_UNC_TABLE v0.1/r0.5`
 
 Status: proposed sanitized Stage A scientific input; exact bytes await owner
 approval
@@ -72,6 +72,35 @@ missingness treatment without overriding ODQ-105A.
 No representation implies invertibility. Numerical inversion is not
 automatically statistical precision; inverse and weight products remain under
 ODQ-107.
+
+## Approved Initial Inverse Scale And Weight Separation
+
+ODQ-107 authorizes one pointwise reciprocal method:
+
+```text
+D_inv = {p in D_common : V_hat_cond(p) is finite and strictly positive},
+W_hat_cond(p) = 1 / V_hat_cond(p).
+```
+
+Its identity is `NOI-UNC/INVERSE-CONDITIONAL-SECOND-MOMENT-SCALE`; the product
+role is `inverse_conditional_second_moment_scale` with inverse squared signal
+units. It is not inverse variance or precision. Zero, negative, nonfinite,
+unavailable, and outside-parent-domain input yields unavailable rather than a
+numerical zero. Floor, cap, clipping, epsilon, shrinkage, or other
+regularization requires a separately identified method.
+
+Marginal inverse variance requires a separately authorized finite positive
+marginal variance. Precision requires an authorized covariance and exact
+inverse or generalized inverse on a declared domain/subspace with rank, null,
+conditioning, and regularization semantics; reciprocal covariance diagonal
+entries are not precision by default. Consumer-effective weight binds one
+exact estimator/projection/response/domain and is not portable.
+
+No inverse or weight product is sample validity, support, exposure, a PTC/MAP
+coefficient, or a parent-mutation instruction. Any cross-boundary use requires
+explicit scientific authority. Consumer-side zero used to omit an unavailable
+location remains an application representation of unavailability, not an
+estimated inverse value.
 
 Pseudo-realization count is not exposure, independent astronomical count, or
 evidence that parent-map noise falls as `1/sqrt(B)`. Additional members may
