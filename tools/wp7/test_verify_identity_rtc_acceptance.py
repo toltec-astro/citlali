@@ -26,6 +26,7 @@ def valid_record() -> dict[str, object]:
         "executable_revision": source_revision,
         "executable_version": f"candidate-g{source_revision[:9]}",
         "citlali_source_clean": True,
+        "citlali_ignored_source_state_verified": True,
         "executable_sha256": "a" * 64,
         "dependency_state_verified": True,
         "kidscpp_revision": validator.KIDSCPP_REVISION,
@@ -115,6 +116,7 @@ def valid_record() -> dict[str, object]:
             "pair_decision_comparison_count": 20480,
             "pair_causal_evidence_comparison_count": 20480,
             "chunk_partition_count": 2,
+            "chunk_realized_operator_comparison_count": 1,
             "chunk_scientific_comparison_count": 20480,
             "wall_time_sec": 1.0,
             "cpu_time_sec": 0.5,
@@ -130,6 +132,7 @@ def valid_record() -> dict[str, object]:
             "pair_decision_mismatch_count": 0,
             "pair_causal_evidence_mismatch_count": 0,
             "member_cause_mismatch_count": 0,
+            "chunk_realized_operator_mismatch_count": 0,
             "chunk_scientific_mismatch_count": 0,
             "selected_time_mismatch_count": 0,
             "representative_native_mismatch_count": 0,
@@ -176,6 +179,15 @@ class AcceptanceValidatorTest(unittest.TestCase):
                 record[name] = value
                 with self.assertRaises(validator.AcceptanceError):
                     validator.validate(record)
+
+    def test_rejects_unverified_ignored_source_state(self) -> None:
+        record = valid_record()
+        record["citlali_ignored_source_state_verified"] = False
+        with self.assertRaisesRegex(
+            validator.AcceptanceError,
+            "citlali_ignored_source_state_verified must be true",
+        ):
+            validator.validate(record)
 
     def test_rejects_different_support_assignment(self) -> None:
         for name, value in (
@@ -244,6 +256,19 @@ class AcceptanceValidatorTest(unittest.TestCase):
             "chunk_scientific_comparison_count",
         ):
             validator.validate(record)
+
+    def test_rejects_missing_or_mismatched_realized_operator_comparison(
+        self,
+    ) -> None:
+        for name, value in (
+            ("chunk_realized_operator_comparison_count", 0),
+            ("chunk_realized_operator_mismatch_count", 1),
+        ):
+            with self.subTest(name=name):
+                record = valid_record()
+                record["metrics"][name] = value
+                with self.assertRaisesRegex(validator.AcceptanceError, name):
+                    validator.validate(record)
 
     def test_rejects_nonfinite_measurements(self) -> None:
         for value in (float("nan"), float("inf"), float("-inf")):

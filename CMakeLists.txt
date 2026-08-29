@@ -142,6 +142,7 @@ if (CITLALI_STANDALONE)
     add_custom_target(citlali_wp7_identity_rtc_acceptance_build_identity
         COMMAND "${CMAKE_COMMAND}"
             "-DWP7_CITLALI_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
+            "-DWP7_CITLALI_BINARY_DIR=${CMAKE_BINARY_DIR}"
             "-DWP7_KIDSCPP_SOURCE_DIR=${kidscpp_SOURCE_DIR}"
             "-DWP7_KIDSCPP_REVISION=04088da182622c3e879f04314974a7c0d60ee2d6"
             "-DWP7_KIDSCPP_PATCH=${CMAKE_CURRENT_SOURCE_DIR}/patches/local/kidscpp-local-build.patch"

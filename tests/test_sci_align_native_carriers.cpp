@@ -1,5 +1,6 @@
 #include <citlali/core/pipeline/native_observation_carriers.h>
 #include <citlali/core/pipeline/telescope_pointing_operations.h>
+#include <citlali/core/pipeline/timestream_alignment_helpers.h>
 
 #include <gtest/gtest.h>
 

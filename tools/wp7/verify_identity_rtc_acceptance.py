@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA = "citlali-wp7-identity-rtc-acceptance-v5"
+SCHEMA = "citlali-wp7-identity-rtc-acceptance-v6"
 OCCURRENCE_SUPPORT_ASSIGNMENT_SCHEMA = (
     "citlali-native-occurrence-support-assignment-v1"
 )
@@ -107,6 +107,7 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError("executable_revision must equal source_revision exactly")
     require_string(record, "executable_version")
     require_true(record, "citlali_source_clean")
+    require_true(record, "citlali_ignored_source_state_verified")
     executable_sha256 = require_string(record, "executable_sha256")
     if not HEX64.fullmatch(executable_sha256):
         raise AcceptanceError("executable_sha256 must be one lowercase SHA-256")
@@ -392,6 +393,12 @@ def validate(record: dict[str, Any]) -> None:
             "pair_causal_evidence_comparison_count must cover every native detector occurrence"
         )
     require_integer(metrics, "chunk_partition_count", 2)
+    if require_integer(
+        metrics, "chunk_realized_operator_comparison_count", 1
+    ) != 1:
+        raise AcceptanceError(
+            "chunk_realized_operator_comparison_count must be exactly one"
+        )
     if (
         require_integer(metrics, "chunk_scientific_comparison_count", 1)
         != detector_occurrences
@@ -424,6 +431,7 @@ def validate(record: dict[str, Any]) -> None:
         "pair_decision_mismatch_count",
         "pair_causal_evidence_mismatch_count",
         "member_cause_mismatch_count",
+        "chunk_realized_operator_mismatch_count",
         "chunk_scientific_mismatch_count",
         "selected_time_mismatch_count",
         "representative_native_mismatch_count",

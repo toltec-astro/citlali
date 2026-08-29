@@ -131,6 +131,8 @@ add_executable(citlali_sci_align_test EXCLUDE_FROM_ALL
 )
 
 add_executable(citlali_wp7_timestream_test EXCLUDE_FROM_ALL
+    timestream_native_identity_header.cpp
+    timestream_native_timing_header.cpp
     paired_readout_header.cpp
     identity_rtc_header.cpp
     rtc_only_route_header.cpp
@@ -139,6 +141,8 @@ add_executable(citlali_wp7_timestream_test EXCLUDE_FROM_ALL
     test_rtc_only_route.cpp
 )
 set_source_files_properties(
+    timestream_native_identity_header.cpp
+    timestream_native_timing_header.cpp
     paired_readout_header.cpp
     identity_rtc_header.cpp
     rtc_only_route_header.cpp

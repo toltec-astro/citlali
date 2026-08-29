@@ -59,7 +59,7 @@ namespace pipeline = citlali::pipeline;
 namespace apt = citlali::pipeline::canonical_apt_v2;
 
 constexpr std::string_view acceptance_schema =
-    "citlali-wp7-identity-rtc-acceptance-v5";
+    "citlali-wp7-identity-rtc-acceptance-v6";
 constexpr std::string_view occurrence_support_assignment_schema =
     "citlali-native-occurrence-support-assignment-v1";
 constexpr std::string_view occurrence_support_duration_relation =
@@ -734,6 +734,8 @@ struct ComparisonMetrics {
     std::size_t member_cause_mismatch_count = 0;
     std::size_t selected_time_mismatch_count = 0;
     std::size_t representative_native_mismatch_count = 0;
+    std::size_t chunk_realized_operator_comparison_count = 0;
+    std::size_t chunk_realized_operator_mismatch_count = 0;
     std::size_t chunk_scientific_comparison_count = 0;
     std::size_t chunk_scientific_mismatch_count = 0;
     std::size_t assigned_support_binding_mismatch_count = 0;
@@ -1238,6 +1240,10 @@ void compare_full_product_to_producer_facts(
 void compare_partitioned_to_single(const pipeline::RtcTimestream &partitioned,
                                    const pipeline::RtcTimestream &single,
                                    ComparisonMetrics &metrics) {
+    ++metrics.chunk_realized_operator_comparison_count;
+    if (partitioned.realized_operator() != single.realized_operator()) {
+        ++metrics.chunk_realized_operator_mismatch_count;
+    }
     const auto &partitioned_evidence =
         *partitioned.plan_handle()->evidence_handle();
     const auto &full_evidence =
@@ -1509,6 +1515,8 @@ void write_acceptance_record(const Arguments &arguments,
                 run.native_cardinality.detector_occurrence_count,
             "pair causal-evidence comparison count is incomplete");
     require(run.chunk_partition_count == 2 &&
+                run.comparisons.chunk_realized_operator_comparison_count ==
+                    1 &&
                 run.comparisons.chunk_scientific_comparison_count ==
                     run.native_cardinality.detector_occurrence_count,
             "partitioned route did not compare the complete logical domain");
@@ -1523,6 +1531,8 @@ void write_acceptance_record(const Arguments &arguments,
                 run.comparisons.member_cause_mismatch_count == 0 &&
                 run.comparisons.selected_time_mismatch_count == 0 &&
                 run.comparisons.representative_native_mismatch_count == 0 &&
+                run.comparisons.chunk_realized_operator_mismatch_count ==
+                    0 &&
                 run.comparisons.chunk_scientific_mismatch_count == 0 &&
                 run.comparisons.assigned_support_binding_mismatch_count == 0,
             "acceptance comparisons contain a scientific mismatch");
@@ -1553,6 +1563,7 @@ void write_acceptance_record(const Arguments &arguments,
                 KIDSCPP_GIT_VERSION + " tula=" + TULA_GIT_VERSION)
            << ",\n"
            << "  \"citlali_source_clean\": true,\n"
+           << "  \"citlali_ignored_source_state_verified\": true,\n"
            << "  \"executable_sha256\": "
            << q(arguments.executable_sha256) << ",\n"
            << "  \"dependency_state_verified\": true,\n"
@@ -1700,6 +1711,9 @@ void write_acceptance_record(const Arguments &arguments,
            << run.comparisons.pair_causal_evidence_comparison_count << ",\n"
            << "    \"chunk_partition_count\": "
            << run.chunk_partition_count << ",\n"
+           << "    \"chunk_realized_operator_comparison_count\": "
+           << run.comparisons.chunk_realized_operator_comparison_count
+           << ",\n"
            << "    \"chunk_scientific_comparison_count\": "
            << run.comparisons.chunk_scientific_comparison_count << ",\n"
            << "    \"wall_time_sec\": " << run.wall_time_sec << ",\n"
@@ -1730,6 +1744,9 @@ void write_acceptance_record(const Arguments &arguments,
            << run.comparisons.pair_causal_evidence_mismatch_count << ",\n"
            << "    \"member_cause_mismatch_count\": "
            << run.comparisons.member_cause_mismatch_count << ",\n"
+           << "    \"chunk_realized_operator_mismatch_count\": "
+           << run.comparisons.chunk_realized_operator_mismatch_count
+           << ",\n"
            << "    \"chunk_scientific_mismatch_count\": "
            << run.comparisons.chunk_scientific_mismatch_count << ",\n"
            << "    \"selected_time_mismatch_count\": "
@@ -1762,6 +1779,7 @@ int main(int argc, char **argv) {
         require(full_lowercase_git_sha(arguments.source_revision),
                 "source revision must be one full lowercase Git SHA");
         require(CITLALI_WP7_SOURCE_STATE_VERIFIED == 1 &&
+                    CITLALI_WP7_IGNORED_SOURCE_STATE_VERIFIED == 1 &&
                     arguments.source_revision == CITLALI_WP7_SOURCE_REVISION,
                 "source revision does not match the compiled Citlali revision");
         require(arguments.owner_run, "owner-run authorization is required");

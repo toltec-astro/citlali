@@ -68,16 +68,22 @@ make_dependency(tula tula_revision tula_patch "${nested_source}")
 set(citlali_source "${TEST_ROOT}/citlali")
 file(MAKE_DIRECTORY "${citlali_source}")
 file(WRITE "${citlali_source}/source.txt" "clean\n")
+file(WRITE "${citlali_source}/.gitignore" "/build/\n")
 run_checked("${GIT_EXECUTABLE}" init "${citlali_source}")
-run_checked("${GIT_EXECUTABLE}" -C "${citlali_source}" add source.txt)
+run_checked("${GIT_EXECUTABLE}" -C "${citlali_source}"
+    add source.txt .gitignore)
 run_checked("${GIT_EXECUTABLE}" -C "${citlali_source}"
     -c user.name=Citlali-Test
     -c user.email=citlali-test@example.invalid
     commit -m source)
+set(citlali_binary "${citlali_source}/build")
+file(MAKE_DIRECTORY "${citlali_binary}")
+file(WRITE "${citlali_binary}/generated-output.txt" "allowed output\n")
 set(identity_header "${TEST_ROOT}/generated/identity.h")
 set(verify_command
     "${CMAKE_COMMAND}"
     "-DWP7_CITLALI_SOURCE_DIR=${citlali_source}"
+    "-DWP7_CITLALI_BINARY_DIR=${citlali_binary}"
     "-DWP7_KIDSCPP_SOURCE_DIR=${TEST_ROOT}/kidscpp"
     "-DWP7_KIDSCPP_REVISION=${kidscpp_revision}"
     "-DWP7_KIDSCPP_PATCH=${kidscpp_patch}"
@@ -92,6 +98,9 @@ file(READ "${identity_header}" identity)
 if(NOT identity MATCHES "CITLALI_WP7_DEPENDENCY_STATE_VERIFIED 1")
     message(FATAL_ERROR "Verified dependency identity header is incomplete")
 endif()
+if(NOT identity MATCHES "CITLALI_WP7_IGNORED_SOURCE_STATE_VERIFIED 1")
+    message(FATAL_ERROR "Ignored Citlali source verification is incomplete")
+endif()
 
 file(APPEND "${citlali_source}/source.txt" "dirty\n")
 execute_process(
@@ -102,6 +111,17 @@ if(dirty_source_result EQUAL 0)
     message(FATAL_ERROR "Dirty Citlali source content was accepted")
 endif()
 file(WRITE "${citlali_source}/source.txt" "clean\n")
+
+file(APPEND "${citlali_source}/.git/info/exclude" "ignored-source.cpp\n")
+file(WRITE "${citlali_source}/ignored-source.cpp" "unapproved ignored input\n")
+execute_process(
+    COMMAND ${verify_command}
+    RESULT_VARIABLE ignored_source_result
+    OUTPUT_QUIET ERROR_QUIET)
+if(ignored_source_result EQUAL 0)
+    message(FATAL_ERROR "Ignored Citlali source content was accepted")
+endif()
+file(REMOVE "${citlali_source}/ignored-source.cpp")
 
 file(WRITE "${TEST_ROOT}/kidscpp/untracked.txt" "unapproved\n")
 execute_process(

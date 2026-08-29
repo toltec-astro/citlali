@@ -1,4 +1,5 @@
 #include <citlali/core/pipeline/rtc_only_route.h>
+#include <citlali/core/pipeline/timestream_native_alignment.h>
 
 #include <gtest/gtest.h>
 
@@ -191,6 +192,8 @@ TEST(rtc_only_route,
         *single.published_product->timestream_handle();
     const auto &partitioned_product =
         *partitioned.published_product->timestream_handle();
+    EXPECT_EQ(partitioned_product.realized_operator(),
+              single_product.realized_operator());
     for (pipeline::TimestreamNativeRow row = 10; row < 13; ++row) {
         EXPECT_EQ(partitioned_product.representative_native_identity(
                       0, row),
@@ -345,15 +348,22 @@ TEST(rtc_only_route,
 }
 
 TEST(rtc_only_route,
-     route_and_identity_headers_exclude_common_grid_and_later_stage_entries) {
+     native_route_carrier_headers_exclude_common_grid_and_later_stages) {
     namespace fs = std::filesystem;
     const auto repository = fs::path{__FILE__}.parent_path().parent_path();
     const std::vector<fs::path> headers{
+        repository /
+            "include/citlali/core/pipeline/timestream_native_identity.h",
+        repository /
+            "include/citlali/core/pipeline/timestream_native_timing.h",
+        repository / "include/citlali/core/pipeline/paired_readout.h",
         repository / "include/citlali/core/pipeline/identity_rtc.h",
         repository / "include/citlali/core/pipeline/rtc_only_route.h"};
     const std::vector<std::string> forbidden{
         "AlignedPairedReadout", "NativeAlignmentPlan", "common_slot",
-        "alignment_absence", "timestream_native_pointing.h",
+        "alignment_absence", "timestream_native_alignment.h",
+        "timestream_coincidence_cohort.h", "timestream_native_sample.h",
+        "timestream_native_pointing.h",
         "telescope_pointing_operations.h", "calib.h", "ptc/", "mapmaking/"};
 
     for (const auto &header : headers) {

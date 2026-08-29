@@ -1,6 +1,6 @@
 #pragma once
 
-#include <citlali/core/pipeline/timestream_native_alignment.h>
+#include <citlali/core/pipeline/timestream_native_timing.h>
 
 #include <Eigen/Core>
 

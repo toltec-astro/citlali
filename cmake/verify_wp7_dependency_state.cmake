@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 foreach(required_variable
         WP7_CITLALI_SOURCE_DIR
+        WP7_CITLALI_BINARY_DIR
         WP7_KIDSCPP_SOURCE_DIR
         WP7_KIDSCPP_REVISION
         WP7_KIDSCPP_PATCH
@@ -45,6 +46,63 @@ if(NOT citlali_status_result EQUAL 0 OR NOT citlali_status STREQUAL "")
     message(FATAL_ERROR
         "WP-7 acceptance requires a clean Citlali source worktree: "
         "${citlali_status} ${citlali_status_error}")
+endif()
+
+file(REAL_PATH "${WP7_CITLALI_SOURCE_DIR}" citlali_source_real)
+file(REAL_PATH "${WP7_CITLALI_BINARY_DIR}" citlali_binary_real)
+file(RELATIVE_PATH citlali_binary_relative
+    "${citlali_source_real}" "${citlali_binary_real}")
+if(citlali_binary_relative STREQUAL ".")
+    message(FATAL_ERROR
+        "WP-7 acceptance binary directory cannot be the Citlali source root")
+endif()
+set(citlali_binary_is_inside_source TRUE)
+if(citlali_binary_relative MATCHES "^\\.\\.(/|$)" OR
+   IS_ABSOLUTE "${citlali_binary_relative}")
+    set(citlali_binary_is_inside_source FALSE)
+endif()
+
+execute_process(
+    COMMAND "${git_executable}" -C "${WP7_CITLALI_SOURCE_DIR}"
+        ls-files --others --ignored --exclude-standard
+    RESULT_VARIABLE citlali_ignored_result
+    OUTPUT_VARIABLE citlali_ignored
+    ERROR_VARIABLE citlali_ignored_error
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+if(NOT citlali_ignored_result EQUAL 0)
+    message(FATAL_ERROR
+        "Unable to inspect ignored Citlali source content: "
+        "${citlali_ignored_error}")
+endif()
+string(REPLACE "\\" "/" citlali_binary_relative
+    "${citlali_binary_relative}")
+string(REPLACE "\n" ";" citlali_ignored_paths "${citlali_ignored}")
+set(unapproved_citlali_ignored_paths)
+foreach(ignored_path IN LISTS citlali_ignored_paths)
+    if(ignored_path STREQUAL "")
+        continue()
+    endif()
+    set(allowed_generated_output FALSE)
+    if(citlali_binary_is_inside_source)
+        if(ignored_path STREQUAL citlali_binary_relative)
+            set(allowed_generated_output TRUE)
+        else()
+            string(FIND "${ignored_path}"
+                "${citlali_binary_relative}/" generated_prefix_position)
+            if(generated_prefix_position EQUAL 0)
+                set(allowed_generated_output TRUE)
+            endif()
+        endif()
+    endif()
+    if(NOT allowed_generated_output)
+        list(APPEND unapproved_citlali_ignored_paths "${ignored_path}")
+    endif()
+endforeach()
+if(unapproved_citlali_ignored_paths)
+    list(JOIN unapproved_citlali_ignored_paths ", " ignored_summary)
+    message(FATAL_ERROR
+        "WP-7 acceptance requires no ignored Citlali source content outside "
+        "the declared binary directory: ${ignored_summary}")
 endif()
 
 function(verify_dependency label source_dir approved_revision patch_path
@@ -210,6 +268,7 @@ verify_dependency(
 set(header_content
     "#pragma once\n\n"
     "#define CITLALI_WP7_SOURCE_STATE_VERIFIED 1\n"
+    "#define CITLALI_WP7_IGNORED_SOURCE_STATE_VERIFIED 1\n"
     "#define CITLALI_WP7_SOURCE_REVISION \"${citlali_revision}\"\n"
     "#define CITLALI_WP7_DEPENDENCY_STATE_VERIFIED 1\n"
     "#define CITLALI_WP7_KIDSCPP_REVISION \"${kidscpp_revision}\"\n"
