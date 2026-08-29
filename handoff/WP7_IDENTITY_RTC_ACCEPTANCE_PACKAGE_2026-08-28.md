@@ -10,14 +10,18 @@ not a claim that the producer's true timestamp semantics are known.
 Calibration remains explicitly pending.
 
 The representative real paired-data gate **passes** under that assignment at
-exact source revision `a0626bd9b6db1fcaf0f83c21f3476b2065907eb8`.
+exact source revision `dd06fc27251ad8925a3cf2bdfd82661edfec6a43`.
 The retained
-[v5 observation 152390 record](WP7_IDENTITY_RTC_ACCEPTANCE_152390_V5_2026-08-29.json)
+[v6 observation 152390 record](WP7_IDENTITY_RTC_ACCEPTANCE_152390_V6_2026-08-29.json)
 passes the repository validator and has SHA-256
-`754181bd5e25fcfa103ab6280748c212c7c893b1a9a55023d8b19b571608591b`.
-The v4 record remains historical because its route treated engineering chunks
-as separately complete product domains and its dependency-state and validator
-gates were not fully fail-closed. The v3 record remains a historical
+`96961f9a69e479aa083327050aed9008f8917aaac8479a1afd615b1fc3e0d702`.
+The v5 record remains historical because its Citlali clean-source check did not
+enumerate ignored files, its paired-ingress include boundary still exposed
+common-slot types transitively, and its partition comparison did not bind the
+realized operator directly. The v4 record remains historical because its route
+treated engineering chunks as separately complete product domains and its
+dependency-state and validator gates were not fully fail-closed. The v3 record
+remains a historical
 native-axis diagnostic whose gate did not prove exact source/dependency state
 or independent ingress expectations. The earlier v1 and v2 records also
 remain historical diagnostics and projected the identity RTC product through
@@ -25,9 +29,9 @@ ALIGN's common grid.
 
 The exact provisional policy is the
 [support assignment](WP7_NATIVE_OCCURRENCE_SUPPORT_ASSIGNMENT_2026-08-28.yaml).
-The v5 evidence record must preserve its exact SHA-256, identity, provisional
-status, integration-center role, and
-calibration disposition. This package can therefore produce representative
+The v6 evidence record must preserve its exact SHA-256, identity, provisional
+status, integration-center role, and calibration disposition. This package can
+therefore produce representative
 execution evidence while the timing calibration is investigated; it does not
 turn the assignment into producer authority and still will not by itself
 claim independent implementation conformity, science qualification,
@@ -65,11 +69,13 @@ git rev-parse HEAD
 ```
 
 The acceptance target refuses a dirty Citlali source tree, including staged
-additions and ignored files; a dependency tree other than the exact approved
-base plus checked-in patch, including recursively dirty submodules; or an
-executable revision different from exact `HEAD`. Skipped required data, an
-unexpected error-level record, a partial product, or a synthetic-only run does
-not satisfy the representative-data gate.
+additions. It separately enumerates ignored source content and permits only
+generated output below the declared binary directory. It also refuses a
+dependency tree other than the exact approved base plus checked-in patch,
+including recursively dirty submodules; or an executable revision different
+from exact `HEAD`. Skipped required data, an unexpected error-level record, a
+partial product, or a synthetic-only run does not satisfy the
+representative-data gate.
 
 ## Owner-directed local invocation
 
@@ -154,7 +160,8 @@ one-partition execution. Product, buffer, plan-instance, and transaction
 identities may differ. The exact scientific occurrence identities, `x/r`
 values, primitive support, local causes, pair decisions, native reconstructed
 times, and representative native correspondence must not. A missing, repeated,
-or overlapping partition must fail before finalization and publication.
+or overlapping partition must fail before finalization and publication. The
+compact realized operator must also compare exactly across the two executions.
 
 ## Required comparisons
 
@@ -175,7 +182,8 @@ The focused suite plus acceptance record must demonstrate:
 - direct `r` evidence can make `x` ineligible, direct `x` evidence can make `r`
   ineligible, and the member-local cause remains on its true coordinate;
 - the identity operator has factor one, diagonal coefficients one, and cross
-  coefficients zero;
+  coefficients zero, and the partitioned and single-partition executions
+  realize exactly the same operator;
 - `RtcTimestream` owns no duplicate numerical plane;
 - each RTC-only logical-domain execution is finalized and published exactly
   once, and an incomplete partition schedule or other failure publishes no
@@ -195,7 +203,7 @@ origins actually present in this slice.
 
 ## Recorded native-axis provisional-assignment execution
 
-The passing v5 run covers 11 networks, 5,518 detectors, 2,048 rows per
+The passing v6 run covers 11 networks, 5,518 detectors, 2,048 rows per
 network, 22,528 native occurrences, and 11,300,864 native detector
 occurrences. Every native occurrence is retained and matches the provisional
 support assignment. The runner compared 22,601,728 values at paired ingress,
@@ -206,14 +214,15 @@ occurrences, and checked native time, support, and representative native
 correspondence at all 22,528 native occurrences. All scientific,
 chunk-partition, timing, correspondence, and assigned-support mismatch counts
 are zero. The two-partition execution compared all 11,300,864 detector
-occurrences with the one-partition execution. A deliberately incomplete
+occurrences and the realized operator with the one-partition execution, with
+zero operator mismatches. A deliberately incomplete
 partition schedule failed with no publication.
 
 Paired ingress reports 226,608,108 logical owned bytes. Compact RTC evidence
 owns 3,637,248 bytes for 227,328 events. The identity plan owns no dynamic
 bytes and RTC owns zero numerical bytes. Measured paired-ingress-through-
-publication time is 0.343 seconds wall and 0.218 seconds CPU. Process-lifetime
-peak RSS is 606,470,144 bytes. These measurements characterize this
+publication time is 0.334 seconds wall and 0.218 seconds CPU. Process-lifetime
+peak RSS is 604,536,832 bytes. These measurements characterize this
 representative local harness run rather than a general performance
 qualification or route-local allocation claim.
 
@@ -244,7 +253,7 @@ not a general performance qualification.
 ## Evidence record
 
 Write one JSON record with schema
-`citlali-wp7-identity-rtc-acceptance-v5` and the fields required by
+`citlali-wp7-identity-rtc-acceptance-v6` and the fields required by
 [`tools/wp7/verify_identity_rtc_acceptance.py`](../tools/wp7/verify_identity_rtc_acceptance.py).
 The validator intentionally requires real paired data, an owner run, exact
 ancestry, exact clean source and dependency-tree bindings, the one approved
@@ -254,7 +263,8 @@ assigned-support binding, full-cell native-axis comparisons, at least two chunk
 partitions covering the declared logical domain, full single-versus-partitioned
 scientific comparisons, exact cause/validity count identities, finite positive
 timing and process-RSS measurements, exact allowed-stage entry counts, zero
-plan and RTC numeric allocation, and zero scientific mismatches.
+plan and RTC numeric allocation, one exact realized-operator comparison, and
+zero scientific mismatches.
 
 Validate it with:
 
@@ -265,5 +275,5 @@ $HOME/tolteca/bin/python tools/wp7/verify_identity_rtc_acceptance.py acceptance.
 A passing record is representative execution evidence for this bounded
 identity route. Fresh independent read-only re-review remains a separate gate
 on the completed vertical increment and must assess exact implementation
-revision `a0626bd9b6db1fcaf0f83c21f3476b2065907eb8` plus the v5 record.
+revision `dd06fc27251ad8925a3cf2bdfd82661edfec6a43` plus the v6 record.
 Legacy activation and retirement remain separate owner decisions.

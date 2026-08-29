@@ -130,14 +130,52 @@ all 129 required config unit tests plus downstream audits. The exact clean
 acceptance target also rebuilds successfully with the strengthened dependency
 verifier.
 
+The next independent review gave the bounded scientific route and v5 numerical
+evidence internal PASS dispositions but retained an overall HOLD. It found that
+Citlali's clean-source verifier still could not see ignored files, that the
+paired-ingress header reached common-slot types through a mixed native ALIGN
+header, and that partition invariance did not compare the realized operator
+directly.
+
+Exact implementation revision
+`dd06fc27251ad8925a3cf2bdfd82661edfec6a43` closes those findings without
+changing the bounded identity operator. The clean-state verifier now enumerates
+ignored source content and permits it only below the declared binary directory.
+Native occurrence identity and timing carriers are separated from ALIGN's
+common-slot association types, and the paired route imports only the native
+timing boundary. Header-isolation and route-source tests enforce that boundary.
+The partitioned execution now compares its realized operator directly with the
+single-partition execution and records the comparison and mismatch counts.
+
+Fresh representative observation 152390 evidence at that exact revision again
+covers all 11 networks, 5,518 detectors, 22,528 native occurrences, and
+11,300,864 detector occurrences. The direct realized-operator comparison and
+all 11,300,864 partitioned scientific comparisons have zero mismatches. The
+primary route measured 0.334 seconds wall, 0.218 seconds CPU, and 604,536,832
+bytes process-lifetime peak RSS. The
+[v6 acceptance record](../handoff/WP7_IDENTITY_RTC_ACCEPTANCE_152390_V6_2026-08-29.json)
+has SHA-256
+`96961f9a69e479aa083327050aed9008f8917aaac8479a1afd615b1fc3e0d702`,
+binds executable SHA-256
+`67bf31873a313a1d91e411b59ac578ee59fc726ed06d7a56d2863dc9fc7ffb56`,
+and passes the v6 repository validator. V5 and all earlier records are retained
+as historical evidence only.
+
+Exact-revision local validation passes: the CLI and acceptance executable
+build; all 120 focused WP-7, ALIGN, and dependency-state CTests; all 850 runnable
+repository CTests with the one established disabled test unchanged; all 207
+baseline-tool tests; all 17 acceptance-validator tests; and all 129 required
+config unit tests plus downstream audits. The acceptance executable was built
+only after the exact clean revision passed the strengthened ignored-source and
+dependency-state verifier.
+
 The repaired representative execution package is ready for fresh independent
-read-only re-review of exact implementation revision `a0626bd9b` and the v5
+read-only re-review of exact implementation revision `dd06fc272` and the v6
 record. D19 calibration remains open and limits the timing-role claim; it does
 not weaken the identity arithmetic, pair decisions, native support retention,
 or execution evidence. Until re-review passes, the increment is not accepted
-for production readiness or activation, the legacy route remains
-authoritative, and no accepted-run or intended-science-change ledger entry is
-made.
+for production readiness or activation, the legacy route remains authoritative,
+and no accepted-run or intended-science-change ledger entry is made.
 
 ## 2026-08-28 WP-7 Identity RTC First Vertical Increment (Superseded)
 
