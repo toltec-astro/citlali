@@ -1,9 +1,9 @@
-# SCI-NOI v0.1 — Stage A Final Scope-Repair Change Log
+# SCI-NOI v0.1 — Stage A Final Owner-Review Closure Change Log
 
 Date: `2026-08-29`
 
-Status: repaired packet prepared for exact-byte scientific-owner review; Stage
-B not launched
+Status: complete Stage A closure candidate prepared for exact-byte
+scientific-owner review; Stage B not launched
 
 ## Repair Source And Firewall
 
@@ -14,6 +14,10 @@ schema, configuration, test, audit, repair, validation, reduction, Unity,
 accepted-run, default, or historical-behavior source was inspected. Only the
 existing Stage A packet and frozen scientific-authority/boundary records needed
 to construct sanitized exact extracts were used.
+
+The subsequent closure implements `SCI-NOI v0.1 — FINAL STAGE A OWNER-REVIEW
+AND AUTHOR-PACKET CLOSURE DIRECTIVE` under the same firewall. It incorporates
+the separately supplied and conflict-checked ODQ-101 owner approval.
 
 ## Applied Changes
 
@@ -36,13 +40,32 @@ to construct sanitized exact extracts were used.
 8. Added exact STD numerator/scale/transformation/compatibility/dependence/
    local-behavior/claim fields and canonical
    `empirical_scale_standardized_signal` identity.
-9. Added NOI-owned drafts for generation input, realization-member completion,
-   uncertainty-ensemble, and standardization admission.
+9. Added NOI-owned drafts for generation input, uncertainty-member admission,
+   uncertainty-ensemble admission, and standardization admission.
 10. Added the deterministic-FLT, Wiener, and FRUIT inclusion/deferral record
     and successor-generation feedback rule.
 11. Added one sanitized ODQ-101--110 decision candidate; no row was marked
     owner-approved by preparation.
 12. Expanded the exact author-packet firewall and SHA-256 manifest.
+
+## Closure Changes
+
+13. Recast fixed-state conditional-sign as the owner-approved ordinary
+    conditioning family, not a complete route, and separated five candidate
+    route identities; all remain numerically unavailable.
+14. Replaced `SCI-NOI:realization_member_completion@1` with
+    `SCI-NOI:uncertainty_member_admission@1`; GEN owns completion truth, NOI
+    owns the named-use policy, and VAL only binds/evaluates it.
+15. Completed the finite assignment-design identity with stable ordering,
+    probabilities/design weights, canonical scheduling-independent keys,
+    equivalence/complement/duplicate rules, and exact rank/domain.
+16. Made `unit(empirical_scale_standardized_signal) = 1` explicit without
+    creating any significance claim.
+17. Decomposed the owner walkthrough into stable granular decisions beginning
+    next with ODQ-102A; ODQ-101 and its route-classification consequence
+    ODQ-104 are recorded decided.
+18. Added exact GEN graph, design/imprint, UNC, STD, and product-lifecycle
+    artifacts plus a complete hash manifest and source-closure report.
 
 ## Preserved Boundaries
 

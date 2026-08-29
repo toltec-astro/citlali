@@ -28,7 +28,7 @@ Launch date: `2026-08-29`
 | Decision | Stage A treatment |
 | --- | --- |
 | `SCI-NOI-RECOVERY-D001` | Reuse both recovered implementation-independent cores once, under one binding supersession cover. |
-| `SCI-NOI-RECOVERY-D002` | Preserve the NOI-001 fixed-state mathematics as one method family, not as the selected ordinary method. |
+| `SCI-NOI-RECOVERY-D002` | Preserve the NOI-001 fixed-state mathematics as one conditioning family; ODQ-101 later selected that family as ordinary without selecting a complete numerical route. |
 | `SCI-NOI-RECOVERY-D003` | Preserve NOI-002 finite-design and covariance mathematics without inheriting its old package split or source-imprinted-only premise. |
 | `SCI-NOI-RECOVERY-D004` | Abstract stable historical owner policies into sanitized author controls; exclude raw audit/repair/integration records. |
 | `SCI-NOI-RECOVERY-D005` | Treat the internal noise plan as mixed reusable reasoning and recommendations; abstract estimator-dependent uncertainty and streaming ideas, supersede coefficient/significance conflicts, and exclude the source. |
@@ -48,6 +48,18 @@ Launch date: `2026-08-29`
 | `SCI-NOI-REPAIR-D007` | Keep deterministic FLT conditional on a future exact boundary and type re-estimated Wiener and FRUIT routes unavailable. |
 | `SCI-NOI-REPAIR-D008` | Do not launch Stage B until the owner approves every decision, exact repaired bytes, source/profile bindings, and final author-packet hashes. |
 
+## Final Owner-Review Closure Dispositions
+
+| Decision | Stage A treatment |
+| --- | --- |
+| `SCI-NOI-CLOSURE-D001` | Record owner-approved ODQ-101: fixed-state conditional-sign is the ordinary conditioning family; relearned methods remain separate and may never be mixed with fixed-state members in one UNC estimate. |
+| `SCI-NOI-CLOSURE-D002` | Keep PTC-to-frozen-MAP, PTC-to-frozen-JINC, realized-MAP, realized-JINC, and filtered routes as distinct complete methods; ODQ-101 selects none, so every route remains unavailable pending ODQ-102A and its scientific gates. |
+| `SCI-NOI-CLOSURE-D003` | Restore GEN ownership of member completion truth and replace the former completion profile with `SCI-NOI:uncertainty_member_admission@1`. |
+| `SCI-NOI-CLOSURE-D004` | Complete finite-design identity with stable ordering, probabilities/weights, scheduling-independent canonical keys, equivalence/complement/duplicate rules, and rank definition/domain. |
+| `SCI-NOI-CLOSURE-D005` | State exact STD unit `1` while retaining the empirical-scale-only claim ceiling. |
+| `SCI-NOI-CLOSURE-D006` | Decompose later owner choices into stable granular IDs; open decisions keep dependent products unavailable. |
+| `SCI-NOI-CLOSURE-D007` | Bind the complete admitted author packet and the separate Stage A closure packet by SHA-256 and verify source bytes without inspecting prohibited evidence. |
+
 ## Pending Owner Gate
 
 Owner approval must cover or revise:
@@ -55,7 +67,8 @@ Owner approval must cover or revise:
 - the exact Scope Brief, supersession cover, conventions extract, and taxonomy;
 - the three exact sanitized parent boundaries;
 - the NOI-owned VAL profile drafts and FLT/FRUIT record;
-- every row of the single sanitized owner-decision artifact;
+- every decision after ODQ-101, either approved or explicitly open with its
+  dependent method unavailable;
 - the Stage A change log and firewall; and
 - every exact content hash in the author manifest.
 

@@ -127,15 +127,16 @@ contains collision-free `NOI-GEN`, `NOI-UNC`, and `NOI-STD` roles; exact
 fixed-state/relearned graphs; ensemble-design, source-imprint,
 target/estimator/rank/covariance, and STD tables; exact sanitized MAP, JINC,
 and conditional pre-MAP PTC boundaries; four NOI-owned VAL profile drafts;
-the FLT/Wiener/FRUIT deferral record; one ODQ-101--110 decision candidate; and
-an exclusive SHA-bound author packet.
+the FLT/Wiener/FRUIT deferral record; one granular decision candidate; and an
+exclusive SHA-bound author packet plus closure report.
 
-Implementation-blind Stage B has not been launched. It remains blocked until
-the scientific owner approves or revises every ODQ-101--110 row, exact repaired
-bytes and hashes, conditional pre-MAP inclusion, and required source/profile
-bindings. The first question is ODQ-101: whether fixed-state conditional-sign
-GEN is the ordinary base method while relearned GEN remains separate and
-unavailable without a complete approved rerun graph. The frozen MAP/pre-MAP
+Implementation-blind Stage B has not been launched. ODQ-101 is approved:
+fixed-state conditional-sign is the ordinary conditioning family, relearned
+methods are separate, and the two member classes cannot be mixed. That approval
+selected no numerical route. The next question is ODQ-102A: select one exact
+ordinary parent/insertion route or keep every route unavailable. Conditional
+Stage B remains blocked on the exact repaired bytes/hashes, granular owner
+decisions or explicit unavailability, and required source/profile bindings. The frozen MAP/pre-MAP
 and JINC numerical-parent unavailability states remain unchanged. No
 implementation, conformity, validation, achieved-performance, readiness,
 production, Unity, filtering, source/mode, or FRUIT action follows.

@@ -24,8 +24,9 @@ implementation-blind authorship. It is not an implementation map.
 - NOI owns ensemble design, realization identity, empirical uncertainty
   inference, and derived standardization. Rerunning an adjacent operator does
   not transfer ownership of that operator to NOI.
-- SCI-VAL Registry binds exact NOI-owned profiles and VAL Core evaluates them.
-  Neither authors NOI method, target, adequacy, or publication policy.
+- GEN owns member completion and terminal-state truth. NOI owns the policy for
+  admission to a named UNC use. SCI-VAL Registry binds exact NOI-owned profiles
+  and VAL Core evaluates them; VAL authors neither producer facts nor policy.
 
 NOI preserves parent meanings and causes. Its work may begin after MAP/JINC
 scientific freeze while a numerical GEN route begins at an earlier immutable
@@ -51,7 +52,8 @@ description.
 - Assignments and correlation objects are dimensionless. A realization has its
   parent signal unit. Variance/covariance has squared signal unit.
   Inverse-variance/precision has inverse-squared signal unit. Standardized
-  signal is dimensionless. Equal units never establish equal scientific role.
+  signal has unit exactly `1` and is dimensionless. Equal units never establish
+  equal scientific role or statistical significance.
 - Bare NOI family symbols `G`, `U`, and `Z` are prohibited. Use `NOI-GEN`,
   `NOI-UNC`, and `NOI-STD`. `Z_i^PTC` is reserved for the PTC transformed
   sample; MAP projection notation remains MAP-owned.
@@ -92,7 +94,7 @@ later uncertainty mutates or validates `UNC_k` retroactively.
 ## Validity, Support, And Profiles
 
 Sample validity, parent named-use eligibility, GEN input admission,
-realization-member completion/QC, UNC ensemble admission, estimator validity,
+GEN-owned realization-member completion/QC, UNC member admission, UNC ensemble admission, estimator validity,
 covariance-domain support, and STD admission are separate. Assignment cannot
 clear a cause, make a missing occurrence valid, or create support. A finite
 payload, completed member, generic flag, or pass for another use has no

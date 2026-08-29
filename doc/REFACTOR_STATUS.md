@@ -416,16 +416,23 @@ operator DAGs; explicit finite assignment design, source-imprint,
 target/estimator/rank/covariance, STD compatibility, and atomic lifecycle
 semantics; exact sanitized MAP, JINC, and conditional pre-MAP PTC boundaries;
 four NOI-owned VAL profile drafts; and a bounded FLT/Wiener/FRUIT record. One
-sanitized decision candidate now contains all ODQ-101--110 recommendations,
-and the exclusive author packet binds ten logical items plus both recovered
-cores by SHA-256.
+sanitized decision artifact now separates every consequential choice, and the
+exclusive author packet plus closure report bind exact bytes by SHA-256.
 
-Stage B has not been launched. Every ODQ-101--110 row, exact repaired byte/hash,
-conditional PTC-route inclusion, and required source/profile binding awaits
-scientific-owner approval. The first walkthrough question remains
-`SCI-NOI-ODQ-101`: approve or revise fixed-state conditional-sign as the
-ordinary GEN method while relearned GEN stays separately unavailable until a
-complete exact graph is approved. MAP/pre-MAP numerical parents remain
+Stage B has not been launched. Grant Wilson approved `SCI-NOI-ODQ-101` on
+`2026-08-29`: fixed-state conditional-sign is the ordinary conditioning family;
+relearned methods are separate and unavailable pending complete approved
+graphs; fixed and relearned members cannot be mixed in one uncertainty
+estimate. The closure repair does not treat that family as one method:
+PTC-to-frozen-MAP, PTC-to-frozen-JINC, realized-MAP, realized-JINC, and
+filtered routes have distinct identities and all remain unavailable. GEN owns
+member completion truth; the corrected NOI profile governs only UNC member
+admission; the assignment-design identity and STD unit `1` are explicit.
+
+The next walkthrough question is `SCI-NOI-ODQ-102A`: select one exact ordinary
+parent/insertion route or retain explicit route unavailability. Later granular
+decisions, exact packet bytes/hashes, and required source/profile Registry
+bindings remain under owner review. MAP/pre-MAP numerical parents remain
 unavailable pending the exact PTC MAP-facing coefficient and owner-admitted
 numerical `coverage_cut`; JINC numerical parents remain unavailable under its
 frozen gates. No frozen parent was modified, and no implementation conformity,

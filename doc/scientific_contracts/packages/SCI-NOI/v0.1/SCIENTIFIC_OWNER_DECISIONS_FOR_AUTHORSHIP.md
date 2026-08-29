@@ -1,63 +1,322 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Status: complete decision candidate for owner walkthrough; **not yet
-owner-approved and not yet an allowed Stage B authority**
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.2`
+
+Status: ODQ-101 owner-approved; every later decision remains open; not yet an
+allowed Stage B authority
 
 Scientific owner: Grant Wilson
 
 Prepared: `2026-08-29`
 
-This is the one proposed sanitized decision artifact for a future
-implementation-blind author. It contains no implementation, schema, default,
-test, audit, validation, reduction, performance, readiness, or production
-evidence. Each row must be expressly approved or revised by the scientific
-owner. Stage B remains blocked until every row and the final file hash are
-approved.
+This is the sanitized decision artifact for a future implementation-blind
+author. Approval of one decision changes only the bytes listed for it. It does
+not approve another decision or make an unresolved numerical route available.
 
-## Decision Candidate
+## Walkthrough Order And Stable IDs
 
-| ID | Proposed bounded v0.1 disposition | Scientific consequence | Approval state |
-| --- | --- | --- | --- |
-| `SCI-NOI-ODQ-101` | Make `NOI-GEN/FIXED-STATE-CONDITIONAL-SIGN` the ordinary GEN method. Keep every relearned procedure a separate method, typed numerically unavailable until a complete exact rerun DAG is owner-authorized. Never mix fixed and relearned members. | Ordinary GEN estimates only the declared assignment law conditional on realized learned state; relearned variation is not silently included | **Owner decision required — first walkthrough item** |
-| `SCI-NOI-ODQ-102` | Permit, as separately named GEN methods, exact conditional sign assignments at pre-MAP PTC insertion over declared detector/channel, scan, subscan/block, or observation coherence partitions, plus a separately named observation-map assignment before fixed MAP coaddition. Require each method to bind balance, complement, replacement, duplicate, and cross-observation law. Admit no hidden coherence default, residual/FRUIT route, replacement/resampling method, or cross-observation coupling in base v0.1. | A closed initial method vocabulary is available without conflating distinct randomization laws | Owner decision required |
-| `SCI-NOI-ODQ-103` | Give ordinary GEN the claim `source_imprinted_conditional_randomization_ensemble`. Require exact source content, cancellation target, assumptions, finite balance residual, variable support/operator state, scan-synchronous residual, source-model error, and leakage. Authorize no physical-noise, source-free-null, or calibrated-null claim. | Generation remains scientifically useful and honestly limited | Owner decision required |
-| `SCI-NOI-ODQ-104` | For ordinary fixed-state GEN, hold RTC, CAL, PTC, AST, MAP/JINC, deterministic FLT when admitted, source model, coadd, support/mask, and consumer-selection state fixed or identically prescribed under one exact graph. A relearned route is unavailable until it names earliest parent, every rerun stage, `Theta_b`, changed-state record, response, lifecycle, and failure. | “Relearned” cannot be inferred from successful rerun or partial replay | Owner decision required |
-| `SCI-NOI-ODQ-105` | Initial UNC authority targets conditional assignment-law scatter/covariance or a fixed consumer-projected uncertainty only. Each method declares known versus estimated center, second moment versus covariance, exact finite-design correction, completed membership, missingness/dependence treatment, effective information, and uncertainty of the uncertainty. No universal `1/B` or `1/(B-1)` divisor is selected. | UNC estimates exactly its declared conditional law and no broader physical-noise target | Owner decision required |
-| `SCI-NOI-ODQ-106` | Require an honest covariance state, domain, rank, null space, and omitted-term disclosure. Permit diagonal variance and fixed projected uncertainty as initial numerical representations when their exact estimators are authorized; permit retained ensemble or structured covariance as optional method-specific products; allow unavailable. Do not require dense full covariance. Multivariate products require common completed membership or an exact missing-data method with symmetry/PSD/rank/domain properties. | Products can remain useful without fabricating covariance completeness or invertibility | Owner decision required |
-| `SCI-NOI-ODQ-107` | Permit separately identified marginal inverse variance only as the inverse of an authorized positive marginal variance on its valid domain. Precision requires an exact inverse/generalized inverse on a declared subspace. Consumer-effective weight requires one named projection. None is a PTC/MAP coefficient, exposure, support, or universally portable weight. | Numerically weight-like products retain distinct scientific roles | Owner decision required |
-| `SCI-NOI-ODQ-108` | Permit `NOI-STD/EMPIRICAL-SCALE-STANDARDIZED-SIGNAL` with numerator exactly an immutable normalized MAP signal product or, only when numerically realized, `jinc_map`. The denominator is an exact authorized positive standard deviation, standard error, projected uncertainty, calibrated scale, or other signal-unit scale after any explicit transform. The product identity is `empirical_scale_standardized_signal`; claim only “standardized by the stated empirical scale.” | `sig2noise`, Gaussian significance, probability, and catalog claims remain outside ordinary authority | Owner decision required |
-| `SCI-NOI-ODQ-109` | Make persistence plan-controlled. Permit individually persisted members, exact transient regeneration, or mathematically equivalent streaming sufficient statistics. Bind immutable parents, algorithm/version, keys/configuration, exact completed membership, estimator state, and audit/reconstruction limitation. A failed-member ensemble is usable only when its method defines the completed design as valid. | Dense sign cubes and per-sample provenance are not mandatory, but unreconstructible omissions are explicit | Owner decision required |
-| `SCI-NOI-ODQ-110` | Permit a deterministic held-fixed FLT only through an exact content-bound boundary with signal/realization operator parity. Keep re-estimated Wiener, fixed FRUIT residual, and partial/full relearned FRUIT routes unavailable until their exact boundaries exist. A feedback chain creates successor generations and cannot validate its own input uncertainty. | Filter and feedback science stays with its owner and causal reuse is explicit | Owner decision required |
+### `SCI-NOI-ODQ-101` — ordinary conditioning family
 
-## Inherited Decisions Preserved
+- **Exact question:** Shall fixed-state conditional-sign GEN be the ordinary
+  base-v0.1 conditioning family, with every relearned method kept separate?
+- **Approved disposition:** Yes. Reduce the real observation first; freeze the
+  state learned by Citlali; generate the ordinary noise ensemble through that
+  fixed reduction. A method that relearns any pipeline state is separately
+  identified. Fixed-state and relearned members shall never be combined in one
+  uncertainty estimate.
+- **Alternatives:** make relearning ordinary; mix both member classes; or leave
+  the conditioning family unspecified.
+- **Scientific consequences:** ordinary GEN estimates variation under its
+  declared assignment design conditional on realized learned state; it omits
+  learning-procedure variation.
+- **Conservative state:** approved conditioning family, but no numerical route
+  selected; every unresolved route remains unavailable.
+- **Affected artifacts:** GEN graph, Scope Brief, taxonomy, decision ledger,
+  parent boundaries, manifest.
+- **Exact bytes changed by approval:** the ODQ-101 approval record and explicit
+  `ODQ-101 approved` dispositions only. No route, estimator, or profile byte is
+  approved by implication.
 
-The decision candidate also preserves the already owner-directed package
-architecture:
+### `SCI-NOI-ODQ-102A` — exact ordinary parent and insertion route
 
-- one package with separate `NOI-GEN`, `NOI-UNC`, and `NOI-STD` operations;
-- no automatic GEN-to-UNC-to-STD realization;
-- distinct validity, coefficient, assignment, member-QC, covariance/inverse,
-  weight, and standardized-signal roles;
-- immutable MAP/JINC parents and versioned NOI companions;
-- no mandatory dense covariance or dense sign provenance;
-- plan-controlled persistence;
-- enabled-positive and disabled-zero GEN cardinality; and
-- no implementation-conformity, calibration, significance, performance,
-  readiness, or production implication.
+- **Exact question:** Which complete parent/insertion route, if any, is the
+  ordinary numerical GEN route?
+- **Recommended disposition:** select
+  `NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1` when its exact PTC parent and
+  frozen MAP operator are authorized; keep PTC-to-frozen-JINC, realized-MAP,
+  realized-JINC, and filtered routes separately identified and unavailable
+  unless later approved.
+- **Alternatives:** select another single route, several separately named
+  routes, or none.
+- **Scientific consequences:** fixes randomized quantity, insertion point,
+  host, output/unit/WCS, support, response, imprint, and conditioning claim.
+- **Conservative state while open:** all candidate numerical routes are
+  unavailable; fixed-state conditional-sign is only a conditioning family.
+- **Affected artifacts:** three parent boundaries, GEN graph, Scope Brief,
+  taxonomy, profile inputs, products.
+- **Exact bytes changed by approval:** selected method availability,
+  ordinary-route label, and its parent/insertion/host/output fields only.
 
-## Source, Compatibility, And Supersession
+### `SCI-NOI-ODQ-102B` — initial coherence-unit family
 
-The exact author packet may use this artifact only with the exact approved
-versions of:
+- **Exact question:** Which stable coherence partition is initially admitted
+  for the selected GEN route?
+- **Recommended disposition:** admit exactly one explicitly ordered,
+  route-compatible partition; create no hidden coherence default.
+- **Alternatives:** detector/channel, scan, subscan/block, observation, or no
+  admitted partition.
+- **Scientific consequences:** defines shared assignments, randomized
+  dependence, and attainable design rank.
+- **Conservative state while open:** no coherence partition or numerical design
+  is admitted.
+- **Affected artifacts:** design specification, selected boundary, GEN graph,
+  GEN admission profile.
+- **Exact bytes changed by approval:** canonical partition identity, stable
+  unit ordering, applicability, and route compatibility.
 
-- `SCI-MAP_TO_SCI-NOI v0.1/r0.1`;
-- `SCI-JINC_TO_SCI-NOI v0.1/r0.1`;
-- `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.1` if ODQ-102 admits the pre-MAP route;
-- the NOI-owned profile drafts after exact owner approval and SCI-VAL Registry
-  binding; and
-- the FLT/Wiener/FRUIT scope record.
+### `SCI-NOI-ODQ-102C` — sign law and finite design
 
-Any changed decision, source digest, parent compatibility, profile meaning, or
-method availability requires a versioned successor. Approval of this artifact
-would authorize only its scientific dispositions as Stage B inputs. It would
-not approve a later draft or any implementation/evidence claim.
+- **Exact question:** What assignment probability/design-weight law,
+  balance/complement/replacement law, canonical key, equivalence, duplicate
+  rule, and rank definition govern the initial finite design?
+- **Recommended disposition:** adopt a scheduling-independent deterministic
+  design keyed by the exact canonical fields in the design specification, with
+  equal sign probability unless a deterministic balanced design is selected;
+  bind complement treatment separately for each count and rank.
+- **Alternatives:** independent Bernoulli, balanced sampling, exhaustive
+  enumeration, paired complements, unequal weighted design, or unavailable.
+- **Scientific consequences:** determines target law, uniqueness, dependence,
+  finite-design correction, effective information, and reproducibility.
+- **Conservative state while open:** no design is numerically realizable;
+  serialization and rank semantics remain candidate bytes.
+- **Affected artifacts:** design specification, GEN graph, UNC table, profiles,
+  persistence identity.
+- **Exact bytes changed by approval:** law/weights, ordering, key fields and
+  serialization, complement/equivalence/duplicate rules, and rank domain.
+
+### `SCI-NOI-ODQ-103` — source imprint and cancellation claim
+
+- **Exact question:** What source content and cancellation claim may accompany
+  ordinary GEN?
+- **Recommended disposition:** use
+  `source_imprinted_conditional_randomization_ensemble`; bind source content,
+  cancellation target, finite residual, varying support/operator effects,
+  scan-synchronous residual, source-model error, and leakage. Claim no
+  physical-noise ensemble, source-free null, or calibrated null.
+- **Alternatives:** narrower route-specific imprint, separately demonstrated
+  source suppression, or unavailable.
+- **Scientific consequences:** balance alone cannot imply pixelwise source
+  cancellation or null calibration.
+- **Conservative state while open:** imprint interpretation unavailable; no
+  null claim.
+- **Affected artifacts:** design/imprint specification, GEN graph/products,
+  UNC claim ceiling, VAL facts.
+- **Exact bytes changed by approval:** imprint label and exact target,
+  assumptions, residual, and leakage fields.
+
+### `SCI-NOI-ODQ-104` — fixed/relearned state classification
+
+- **Exact question:** Must every route classify adjacent state as fixed,
+  rerun/relearned, not applicable, or unavailable, with a complete graph?
+- **Approved disposition:** Yes, as the route-specific consequence of
+  ODQ-101. A relearned route names every rerun stage and changed-state record;
+  no generic or partial “relearned” label is sufficient.
+- **Alternatives:** infer state from execution, permit partial replay under the
+  fixed label, or share one identity across different replay graphs.
+- **Scientific consequences:** different conditioning questions cannot share
+  an ensemble identity or be mixed in one UNC estimator.
+- **Conservative state:** any route without the complete classification and
+  graph is unavailable.
+- **Affected artifacts:** GEN graph, all route boundaries, taxonomy.
+- **Exact bytes changed by approval:** only the four-state classification and
+  complete-graph requirement; exact route selection remains ODQ-102A.
+
+### `SCI-NOI-ODQ-105A` — enabled, disabled, and partial completion
+
+- **Exact question:** What completed design is valid when GEN is enabled,
+  disabled, or only partly completes?
+- **Recommended disposition:** disabled is explicit zero-member/no-work;
+  enabled requires positive resolved design; GEN alone authors terminal and
+  completion facts; partial completion is admissible only when the exact
+  design declares the survivor set valid and records counts, equivalence,
+  duplicates, rank, and causes.
+- **Alternatives:** fail every partial design; allow a declared minimum/rank;
+  or give no base partial authority.
+- **Scientific consequences:** finite payload or VAL admission cannot fabricate
+  producer completion.
+- **Conservative state while open:** partial designs are unavailable to UNC.
+- **Affected artifacts:** product-role table, design specification, GEN
+  products, UNC-member-admission profile.
+- **Exact bytes changed by approval:** enabled/disabled terminal rules and
+  exact survivor-design admissibility rule.
+
+### `SCI-NOI-ODQ-105B` — initial UNC target law and estimator
+
+- **Exact question:** What target law, center, moment/covariance estimator,
+  normalization, finite-design correction, and effective-information meaning
+  define the first UNC method?
+- **Recommended disposition:** authorize conditional assignment-law scatter
+  for one completed design, with center and estimator selected from the UNC
+  table; infer neither a universal `1/B` or `1/(B-1)` formula nor physical
+  repeated-observation noise.
+- **Alternatives:** fixed projected uncertainty, second moment about a known
+  center, empirical covariance, or unavailable.
+- **Scientific consequences:** determines the exact estimated quantity and
+  downstream claim ceiling.
+- **Conservative state while open:** all numerical UNC estimators unavailable.
+- **Affected artifacts:** UNC table/taxonomy/products, ensemble-admission
+  profile, STD eligibility.
+- **Exact bytes changed by approval:** target, center, estimator, correction,
+  missingness/dependence, and uncertainty-of-uncertainty fields.
+
+### `SCI-NOI-ODQ-106` — covariance representation and rank
+
+- **Exact question:** Which covariance representation, domain, rank,
+  null-space, regularization, and unavailable states are authorized?
+- **Recommended disposition:** permit diagonal variance and named fixed
+  projection only with authorized estimators; allow retained ensemble,
+  stationary/kernel, structured, full, or unavailable states; never require
+  dense full covariance. Multivariate covariance requires common completed
+  membership or an exact missing-data estimator.
+- **Alternatives:** diagonal-only, retained ensemble, structured, dense, or
+  unavailable.
+- **Scientific consequences:** useful limited products do not imply
+  completeness, invertibility, or zero missing blocks.
+- **Conservative state while open:** covariance unavailable; no inverse or
+  precision claim.
+- **Affected artifacts:** UNC table/products, profiles, STD compatibility,
+  consumer claims.
+- **Exact bytes changed by approval:** representation, domain, rank/null-space,
+  regularization, missing-data, and inverse-domain fields.
+
+### `SCI-NOI-ODQ-107` — empirical inverse and weight products
+
+- **Exact question:** Which inverse-variance, precision, or consumer-effective
+  weight products, if any, are authorized?
+- **Recommended disposition:** marginal inverse variance requires authorized
+  finite positive marginal variance; precision requires an exact inverse or
+  generalized inverse on a declared subspace; consumer weight requires one
+  named projection. None is a PTC/MAP coefficient, exposure, or support.
+- **Alternatives:** authorize a subset, none, or defer to consumers.
+- **Scientific consequences:** numerical resemblance cannot create a false
+  ownership or coefficient join.
+- **Conservative state while open:** all inverse/weight products unavailable.
+- **Affected artifacts:** UNC products, role table, consumer profiles, PTC/MAP
+  non-promotion boundary.
+- **Exact bytes changed by approval:** product identities, transforms, domains,
+  projections, and claim restrictions.
+
+### `SCI-NOI-ODQ-108` — STD numerator and scale
+
+- **Exact question:** Which immutable signal numerator and authorized positive
+  same-unit empirical scale define the first NOI-STD method?
+- **Recommended disposition:** use one exact immutable normalized MAP signal,
+  or `jinc_map` only when realized, joined to one compatible standard
+  deviation, standard error, projected uncertainty, calibrated scale, or other
+  authorized signal-unit scale after explicit transformation. Output
+  `empirical_scale_standardized_signal` has unit `1` and claims only
+  “standardized by the stated empirical scale.”
+- **Alternatives:** MAP, JINC, or another exact numerator; a different
+  authorized scale; or unavailable.
+- **Scientific consequences:** dimensionless output remains neither an
+  uncertainty estimate nor Gaussian/Student/z/N-sigma/detection significance.
+- **Conservative state while open:** no numerical STD product available.
+- **Affected artifacts:** STD table/products/profile and MAP/JINC boundary.
+- **Exact bytes changed by approval:** numerator, scale/transformation,
+  compatibility, support, failure behavior, and claim.
+
+### `SCI-NOI-ODQ-109` — persistence and exact regeneration
+
+- **Exact question:** Which persisted-member, transient-regeneration, or
+  streaming-sufficient-statistic modes are admitted, with what audit limits?
+- **Recommended disposition:** plan-control persistence; bind immutable
+  parents, method/version, canonical key/configuration, completed membership,
+  estimator state, and reconstruction limitation. Dense signs and per-sample
+  provenance are unnecessary when exact regeneration is sufficient.
+- **Alternatives:** require all members, regeneration-only, streaming-only,
+  selected modes, or unavailable.
+- **Scientific consequences:** bounded storage without overstated
+  reproducibility.
+- **Conservative state while open:** transient/streaming products cannot claim
+  exact reconstruction.
+- **Affected artifacts:** GEN/UNC lifecycle, role table, profile, provenance.
+- **Exact bytes changed by approval:** modes, reconstruction identity,
+  estimator state, and limitations.
+
+### `SCI-NOI-ODQ-110A` — held-fixed deterministic FLT
+
+- **Exact question:** May an exact deterministic FLT be held fixed across
+  signal and realization paths?
+- **Recommended disposition:** yes, only through a content-bound FLT boundary
+  proving exact operator parity.
+- **Alternatives:** exclude FLT, admit named subsets, or keep unavailable.
+- **Scientific consequences:** filtering becomes route identity and response,
+  not implicit post-processing.
+- **Conservative state while open:** every filtered route unavailable.
+- **Affected artifacts:** filter scope, GEN graph, route, response, imprint,
+  profiles.
+- **Exact bytes changed by approval:** exact FLT boundary requirement and
+  permitted held-fixed route state.
+
+### `SCI-NOI-ODQ-110B` — Wiener scope
+
+- **Exact question:** Is any fixed or re-estimated Wiener route admitted?
+- **Recommended disposition:** keep re-estimated Wiener unavailable until a
+  complete inference/feedback contract exists; a fixed Wiener operator must
+  first satisfy ODQ-110A.
+- **Alternatives:** exclude all, admit one fixed operator, or authorize a
+  versioned feedback/relearning method.
+- **Scientific consequences:** uncertainty cannot be circular evidence for the
+  filter that generated it.
+- **Conservative state while open:** Wiener routes unavailable.
+- **Affected artifacts:** filter scope, graph, lifecycle, response boundaries.
+- **Exact bytes changed by approval:** Wiener class, causal graph, availability.
+
+### `SCI-NOI-ODQ-110C` — FRUIT scope
+
+- **Exact question:** Is a fixed FRUIT residual or partly/fully relearned FRUIT
+  route admitted?
+- **Recommended disposition:** keep them separate and unavailable until an
+  exact FRUIT boundary and complete route graph exist.
+- **Alternatives:** fixed residual only, one relearning graph, exclude FRUIT,
+  or retain unavailability.
+- **Scientific consequences:** source-model residual sampling is not merged
+  with learning-procedure variation.
+- **Conservative state while open:** all FRUIT routes unavailable.
+- **Affected artifacts:** FRUIT scope, graph, imprint, lifecycle, profiles.
+- **Exact bytes changed by approval:** method, parent/rerun graph, state,
+  response, and availability.
+
+### `SCI-NOI-ODQ-111` — VAL profile identities and actions
+
+- **Exact question:** Are the four NOI-owned profile identities and one exact
+  consumer action each approved for later Registry binding?
+- **Recommended disposition:** approve `generation_input_admission`,
+  `uncertainty_member_admission`, `uncertainty_ensemble_admission`, and
+  `standardization_admission` at `@1`. GEN owns completion truth; NOI policy
+  owns use admission; VAL binds/evaluates but authors neither fact nor policy.
+- **Alternatives:** revise identity/action, split a profile, or leave
+  unavailable.
+- **Scientific consequences:** producer facts, policy, and evaluation remain
+  separate and use-specific.
+- **Conservative state while open:** drafts unregistered and unevaluable; every
+  dependent use unavailable.
+- **Affected artifacts:** profile drafts, role table, GEN/UNC/STD gates, future
+  SCI-VAL Registry/source bindings.
+- **Exact bytes changed by approval:** profile identity and exact consumer
+  action bytes only; Registry binding remains separate.
+
+## Preserved Architecture And Stage B Gate
+
+The three operator roles remain separate; no GEN-to-UNC-to-STD implication is
+allowed; validity, coefficients, assignments, member QC, covariance/inverses,
+weights, and standardized signal remain distinct; parents remain immutable;
+and no implementation, calibration, significance, performance, readiness, or
+production claim is made.
+
+A conditional Stage B contract may be authored while named routes remain
+unavailable. Dispatch nevertheless requires approval of the Scope Brief and
+every decision either as approved or explicitly open with its dependent method
+unavailable; exact parent-boundary binding; approved profile bytes; exact
+SCI-VAL Registry/source-binding successors; a complete manifest-bound packet;
+and a clean implementation-evidence firewall.

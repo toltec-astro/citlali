@@ -84,10 +84,18 @@ and failure are member identity. Fixed and relearned methods answer different
 questions and cannot share an ensemble. A later UNC calculation, filtering
 choice, or selection cannot change an earlier GEN member.
 
-The proposed bounded ordinary method is fixed-state conditional-sign GEN.
-Relearned GEN remains a separate possible method and is numerically unavailable
-until the scientific owner approves a complete rerun graph. This proposed
-disposition is the first owner-review item; it is not yet approved.
+The scientific owner approved fixed-state conditional-sign GEN as the ordinary
+base-v0.1 **conditioning family** in `SCI-NOI-ODQ-101`. Relearned GEN remains a
+separate method class and is numerically unavailable until a complete rerun
+graph is owner-approved. Fixed-state and relearned members shall never be
+combined in one uncertainty estimate.
+
+That conditioning family is not one complete numerical method. Each exact
+parent/insertion/host combination has a separate method identity. The complete
+candidate graph in [`NOI_GEN_PARENT_OPERATOR_GRAPH.md`](NOI_GEN_PARENT_OPERATOR_GRAPH.md)
+separates PTC-to-frozen-MAP, PTC-to-frozen-JINC, realized-MAP,
+realized-JINC, and filtered routes. ODQ-101 selected none of them. Until
+`SCI-NOI-ODQ-102A` is resolved, every numerical route remains unavailable.
 
 ## 3. Exact Parent Boundaries And Current Availability
 
@@ -98,8 +106,8 @@ The author packet includes three sanitized exact boundaries:
 - [`SCI-JINC_TO_SCI-NOI_BOUNDARY.md`](SCI-JINC_TO_SCI-NOI_BOUNDARY.md), identity
   `SCI-JINC_TO_SCI-NOI v0.1/r0.1`; and
 - [`SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md`](SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md),
-  identity `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.1`, conditional on owner admission
-  of pre-MAP GEN.
+  identity `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.1`, containing separately
+  identified PTC-to-frozen-MAP and PTC-to-frozen-JINC candidates.
 
 Each boundary binds exact package/revision, product/application generation,
 observation/detector/array/group identity, stable RTC `n` where applicable,
@@ -129,9 +137,14 @@ Every GEN method binds
 S = {s_bg},  b = 1,...,B,  g in the declared coherence-unit set,
 ```
 
-including marginal and joint assignment law; coherence partition; balance,
-complement, replacement, duplicate, and cross-observation rules; and exact
-algorithm/version and seed/key reconstruction identity.
+including marginal and joint assignment law; exact probabilities or
+deterministic design weights; coherence partition and stable coherence-unit
+ordering; balance, complement, replacement, duplicate, and cross-observation
+rules; scheduling-independent key derivation; exact key fields and canonical
+serialization; the `B_unique` equivalence relation; complement treatment for
+every count and rank; exact duplicate detection; exact design-rank definition
+and domain; and exact algorithm/version reconstruction identity. Worker count,
+scheduling, traversal, and container order cannot change the design.
 
 The following remain distinct:
 
@@ -141,6 +154,9 @@ The following remain distinct:
 - `B_unique`;
 - `B_admitted_for_UNC`; and
 - applicable design rank.
+
+Complement-pair count and effective information are additional distinct
+quantities. None may be substituted for another.
 
 Enabled GEN requires a positive resolved design and a method-valid completed
 design. Disabled GEN is explicit zero-member/no-work. A specific UNC method
@@ -212,7 +228,13 @@ The direct denominator is an authorized positive scale in the numerator's
 signal unit. Variance, covariance, inverse variance, precision, and consumer
 weight are not direct denominators without an exact method-specific transform.
 The proposed product identity is `empirical_scale_standardized_signal`, with
-the ordinary claim “standardized by the stated empirical scale.”
+the ordinary claim “standardized by the stated empirical scale,” and
+
+```text
+unit(empirical_scale_standardized_signal) = 1.
+```
+
+It is dimensionless. Dimensionlessness does not strengthen the claim.
 
 `sig2noise` is not a scientific identity. Studentized statistics, Gaussian
 z-scores, N-sigma claims, detection probability, false-alarm rate,
@@ -226,7 +248,7 @@ The contract keeps separate:
 1. producer-owned sample validity and causes;
 2. PTC/MAP analysis or gridding coefficients;
 3. GEN assignments;
-4. member completion, availability, support, and QC;
+4. GEN-owned member completion, availability, support, and QC;
 5. empirical variance/covariance;
 6. marginal inverse variance, precision, and consumer-effective weight; and
 7. standardized signal.
@@ -239,7 +261,7 @@ Each realization member is atomic. GEN publishes a complete method/plan,
 design, member inventory, requested/resolved/completed/unique/UNC-admitted
 counts, terminal states, source imprint, QC, persistence/reconstruction,
 lifecycle, failure, and provenance—or types the required result unavailable or
-failed. An ensemble with failed members is usable only if its method defines
+failed. GEN owns completion truth. An ensemble with failed members is usable only if its method defines
 the remaining completed design as valid.
 
 UNC and STD likewise publish their complete exact role or a typed
@@ -251,7 +273,7 @@ success, and no product automatically realizes the next operation.
 [`SCI-NOI_VAL_PROFILE_DRAFTS.md`](SCI-NOI_VAL_PROFILE_DRAFTS.md) proposes:
 
 - `SCI-NOI:generation_input_admission@1`;
-- `SCI-NOI:realization_member_completion@1`;
+- `SCI-NOI:uncertainty_member_admission@1`;
 - `SCI-NOI:uncertainty_ensemble_admission@1`; and
 - `SCI-NOI:standardization_admission@1`.
 
@@ -262,6 +284,12 @@ restrictions, exceptions, source-imprint/response/uncertainty roles,
 missing/conflict behavior, aggregation, lifecycle, and one exact consumer
 action. A generic flag, finite payload, completed realization, or another-use
 pass has no universal veto or rescue effect.
+
+The member-admission policy consumes GEN completion, failure,
+duplicate/equivalence, support, source-imprint, QC,
+persistence/reconstruction, and lifecycle facts without redefining them. GEN
+owns completion truth; NOI's named-use policy owns admission to the exact UNC
+use; VAL binds and evaluates that policy but authors neither fact nor policy.
 
 The drafts are not registered or evaluable. Registry binding is a Stage B
 dispatch prerequisite after owner approval, not scientific approval by VAL.
@@ -299,24 +327,25 @@ covariance does not invalidate the parent or prohibit later analysis.
 ## 12. Scientific-Owner Decisions And Stage A Gate
 
 [`SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`](SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md)
-is the one sanitized decision candidate. It contains the recommended bounded
-base-v0.1 dispositions for:
+is the one sanitized decision candidate. It records approved ODQ-101 and keeps
+the following scientifically independent choices separate:
 
-- ordinary fixed/relearned availability;
-- initial randomization/coherence methods and assignment law;
+- exact ordinary numerical route;
+- initial coherence family and finite assignment law;
 - source-imprint claim;
 - fixed state and replay graph;
 - initial UNC targets/estimators;
 - covariance and rank policy;
 - empirical inverse/weight products;
 - STD numerator/scale/claim;
-- persistence/reconstruction; and
-- deterministic FLT, Wiener, and FRUIT scope.
+- persistence/reconstruction;
+- deterministic FLT, Wiener, and FRUIT scope; and
+- NOI-owned VAL identities and exact actions.
 
-Every row and the artifact's final hash require explicit owner approval. The
-first walkthrough question is `SCI-NOI-ODQ-101`: approve or revise fixed-state
-conditional-sign GEN as the ordinary base method, with relearned GEN separate
-and unavailable until its complete graph is approved.
+ODQ-101 is approved. The next walkthrough question is
+`SCI-NOI-ODQ-102A`: select one exact ordinary parent/insertion route, or keep
+all numerical routes explicitly unavailable. Every later decision and the
+artifact's final hash still require explicit owner review.
 
 ## 13. Non-Goals And Claim Boundary
 
@@ -335,8 +364,10 @@ Stage A does not:
 - claim implementation conformity, representation fidelity, empirical
   calibration, achieved performance, readiness, or production authorization.
 
-Stage B may begin only after Grant Wilson approves the exact repaired packet
-bytes, decisions, boundaries, profiles, and manifest, and after required
-source/profile Registry bindings are exact. If the allowed packet is
+Conditional Stage B authorship may begin only after Grant Wilson approves the
+exact repaired Scope Brief and packet bytes; every decision is either approved
+or explicitly open with its dependent method unavailable; boundaries are
+content-bound; profile bytes are approved; required source/profile Registry
+successors are exact; and the manifest firewall is verified. If the packet is
 insufficient, the future author must return one precise scientific question
 rather than inspect prohibited material or fill a gap from memory.

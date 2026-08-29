@@ -11,6 +11,10 @@ Status: proposed sanitized Stage A disposition; exact bytes await owner approval
 | Fixed source-residual GEN | Unavailable | Requires an exact source/FRUIT residual-parent boundary and truthful residual/source-leakage state |
 | Full or partial relearned FRUIT GEN | Unavailable | Requires an exact FRUIT boundary naming subtraction/add-back, learned state, recurrence, stopping, restart, selection, response, and failure for every member |
 
+These rows remain separate owner decisions: deterministic FLT is
+`SCI-NOI-ODQ-110A`, Wiener is `SCI-NOI-ODQ-110B`, and fixed or relearned FRUIT
+is `SCI-NOI-ODQ-110C`. Sharing this artifact does not combine their approvals.
+
 No FLT or FRUIT source, audit, validation, or implementation material enters the
 Stage B author packet. A deterministic FLT route is not numerically admitted
 until its own exact boundary is content-bound and owner-approved.

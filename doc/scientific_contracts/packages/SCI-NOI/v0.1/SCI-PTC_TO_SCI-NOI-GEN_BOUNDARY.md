@@ -4,8 +4,9 @@ Boundary identity: `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.1`
 
 Canonical spelling is exactly `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.1`.
 
-Status: proposed sanitized Stage A pre-MAP generation boundary; exact bytes and
-pre-MAP admission await owner approval; no numerical MAP parent is created
+Status: proposed sanitized Stage A pre-mapmaking generation boundary; exact
+bytes and route admission await owner approval; no numerical MAP or JINC parent
+is created
 
 Scientific owner: Grant Wilson
 
@@ -26,6 +27,17 @@ v0.1/r0.5`, freeze candidate commit
   SHA-256
   `68acf81d6c27788495cc680a1819da5f269616493b9aba5a6e0a1d1058ba5fa7`.
 
+The distinct PTC-to-frozen-JINC candidate additionally binds frozen SCI-JINC
+v0.1/r0.3 sources:
+
+- JINC freeze manifest SHA-256
+  `ff4b79e7cca3950831eda95a16ec6a535597f543c4676378d2fc2f01d50faed2`;
+- JINC PTC boundary SHA-256
+  `5769d413460e931745e0d401ea432b12d1077c15466247c49caa71b997d4ab1e`;
+  and
+- JINC upstream-contribution profile SHA-256
+  `2db95da7e5d1b980df79993907d45ac0ababc3aa05c189bfb62dcf04ff2c2e8a`.
+
 These sources remain PTC/MAP authority. This file is the only pre-MAP PTC
 extract proposed for the future NOI author packet.
 
@@ -38,9 +50,10 @@ segment, stable array/network/group, CAL/PTC ancestry, and time as an attribute.
 Row, column, container position, shape, or numerical time equality cannot
 establish the join.
 
-The pre-MAP GEN insertion point applies the member assignment to this exact PTC
-occurrence population before one exact held-fixed MAP observation/coadd
-operator. Each input also binds:
+The GEN insertion point applies the member assignment to this exact PTC
+occurrence population before one exact held-fixed host operator. The MAP and
+JINC hosts are different methods even if their inputs or assignments are
+numerically equal. Each input also binds:
 
 - `SCI-PTC:output_retention@1` and exact producer causes;
 - exact PTC-owner-selected MAP-facing coefficient family/value/QC state when
@@ -53,19 +66,29 @@ operator. Each input also binds:
 - the exact GEN method, assignment design, member ID, source-imprint state,
   and persistence/reconstruction plan.
 
-## Fixed-State Graph And Ownership
+## Separate Fixed-State Route Identities
 
-For member `b`, the proposed ordinary graph is
+The PTC-to-frozen-MAP candidate is
+`NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1`. Its host is the complete fixed
+MAP observation/coadd operator and its output is the exact declared MAP-domain
+realization product.
+
+The PTC-to-frozen-JINC candidate is
+`NOI-GEN/PTC-TO-FROZEN-JINC-CONDITIONAL-SIGN@1`. Its host is the complete fixed
+JINC observation-map operator and its output is the exact declared JINC-domain
+realization product.
+
+For either route, member `b` has
 
 ```text
 realization_b = O_Theta0(R_b({Z_i^PTC})),
 ```
 
 where `R_b` applies assignments to the exact declared PTC coherence units and
-`O_Theta0` is the complete fixed PTC-to-MAP/coadd operator after the insertion
-point. PTC, AST, MAP, and any admitted deterministic FLT retain ownership of
-their operators. NOI owns only the assignment design, member/ensemble identity,
-and later UNC/STD companions.
+`O_Theta0` is the complete route-specific frozen MAP or JINC operator after the
+insertion point. PTC, AST, MAP, JINC, and any admitted deterministic FLT retain
+ownership of their operators. NOI owns only the assignment design,
+member/ensemble identity, and later UNC/STD companions.
 
 The fixed-state claim requires exact identity of eligibility, membership,
 projection, grouping, coefficient, normalization, support-authorized rows,
@@ -85,12 +108,14 @@ weight, or significance product.
 
 ## Current Numerical Availability
 
-This candidate route is not currently numerically realizable because frozen
-PTC/MAP authority supplies no selected numerical MAP-facing coefficient family
-and frozen MAP lacks the exact owner-admitted numerical `coverage_cut`
-state/value. Missing parent or gate authority is typed unavailable. No unity,
-loading, sensitivity, scatter, inverse variance, precision, coefficient,
-`coverage_cut`, coordinate, or no-op fallback may be inferred.
+Neither candidate route is currently numerically realizable. The MAP-hosted
+route lacks a selected numerical PTC MAP-facing coefficient family and the
+exact owner-admitted numerical `coverage_cut` state/value. The JINC-hosted
+route lacks its required PTC coefficient, TolTEC array parameter, and
+applicable numerical-adequacy authority. ODQ-101 did not select either route;
+ODQ-102A remains open. Missing parent or gate authority is typed unavailable.
+No unity, loading, sensitivity, scatter, inverse variance, precision,
+coefficient, `coverage_cut`, coordinate, or no-op fallback may be inferred.
 
 ## Fail-Closed Compatibility
 

@@ -10,6 +10,12 @@ approved immutable bytes, and VAL Core may evaluate them. SCI-VAL does not
 author, broaden, aggregate, or execute these policies. Until owner approval and
 exact Registry binding, applicability and decisions are unavailable.
 
+GEN owns realization-member completion, terminal state, duplicate/equivalence,
+support, source-imprint, QC, persistence/reconstruction, lifecycle, cause, and
+failure facts. NOI's named-use policy owns admission of those immutable facts
+to one exact UNC use. VAL binds and evaluates that policy but authors neither
+the producer fact nor the NOI policy.
+
 Every profile preserves four separately named fields:
 
 - request: `requested` or `not_requested`;
@@ -37,28 +43,29 @@ replaced by one generic pass bit.
 | Lifecycle | Evaluation binds requested/effective/observation-resolved/applied/realized GEN and parent generations plus exact profile/source versions |
 | Exact consumer action | Admit the exact object as a GEN-route candidate only. Assignment, operator execution, member completion/QC, ensemble completion, and UNC admission remain separate |
 
-## `SCI-NOI:realization_member_completion@1`
+## `SCI-NOI:uncertainty_member_admission@1`
 
 | Field | Draft binding |
 | --- | --- |
-| Object/domain | One atomic GEN realization member `b` under one exact ensemble design `S` and operator graph |
-| Exact source packages | Exact GEN method, parent boundary, generation-input profile evaluation, operator graph, assignment algorithm/version, and immutable parent identities |
-| Required facts | Exact member/ensemble IDs; assignment row and reconstruction identity; earliest parent; fixed `Theta_0` or relearned `Theta_b`; all required externally owned operator terminal states; payload or authorized sufficient-statistic/reconstruction state; unit/WCS/support; source-imprint disclosure; requested/resolved lifecycle; causes, failure scope, and provenance |
-| Decisive exclusions | Missing/ambiguous member or parent identity; assignment collision not allowed by the design; required operator failure; unavailable required payload/reconstruction state; incompatible unit/WCS/support; incomplete changed-state record for relearned methods; or false completion marker |
-| Exception authority | Only an exact GEN method may declare a still-valid completed design after named member failures. It cannot relabel a failed member completed |
-| Source-imprint role | Member retains the method's source-imprint state and leakage limitations; completion is not source cancellation |
-| Response/uncertainty role | Response is exact operator/member state; completion supplies no variance, covariance, physical-noise, or adequacy claim |
-| Missing/conflict behavior | Missing/conflicting required facts yield `applicability_unknown` and `decision_unavailable`; terminal execution failure yields `failed`; no finite-payload or scheduling-success fallback |
-| Aggregation/propagation | Atomic member only. Ensemble completion is derived from exact member states under the declared design; no member pass rescues another member or an invalid input |
-| Lifecycle | Records request, applicability, eligibility, and terminal realization separately; member completion is immutable within its ensemble generation |
-| Exact consumer action | Admit this member to the exact completed-member set. It does not admit the ensemble to UNC |
+| Object/domain | One atomic GEN realization member `b`, with immutable GEN-owned completion/QC facts, presented to one exact UNC method/use |
+| Exact source packages | Exact GEN route-specific method/generation, parent boundary, generation-input profile evaluation, operator graph, assignment design/version, GEN product identity, and proposed UNC method identity |
+| Required producer facts consumed without redefinition | Exact member/ensemble IDs; GEN completion and terminal state; assignment/equivalence/duplicate state; earliest parent; fixed `Theta_0` or relearned `Theta_b`; required operator terminal states; payload or authorized reconstruction/sufficient-statistic state; unit/WCS/support; source-imprint/QC; persistence; lifecycle; causes, failure scope, and provenance |
+| Named-use restrictions | The exact UNC method's permitted terminal states, equivalence/duplicate treatment, domain/support, source-imprint class, QC, persistence/reconstruction, response reference, lifecycle, and parent/method compatibility |
+| Decisive exclusions | GEN reports incomplete/failed/unavailable when the UNC use requires completed; missing/ambiguous member or parent identity; disallowed duplicate/equivalence state; incompatible unit/WCS/support/response; missing source-imprint/QC/persistence facts; mixed method generation; or false/missing source binding |
+| Exception authority | Only the exact UNC-owned policy may admit a named producer limitation for that UNC use. It cannot relabel completion, failure, duplicate/equivalence, support, QC, or lifecycle facts |
+| Source-imprint role | Consumed exactly from GEN; admission creates no source-cancellation, physical-noise, or calibrated-null claim |
+| Response/uncertainty role | GEN response state is consumed as a compatibility fact. Member admission supplies no variance, covariance, physical-noise, or adequacy claim |
+| Missing/conflict behavior | Missing/conflicting required facts yield `applicability_unknown` and `decision_unavailable`; a decisive named-use restriction yields `ineligible`; no finite-payload, completion, generic-QC, or another-use-pass rescue |
+| Aggregation/propagation | Atomic member-to-one-UNC-use only. No ensemble admission, producer-fact change, universal veto/rescue, or reverse propagation is implied |
+| Lifecycle | Evaluation binds immutable GEN completion generation, requested UNC method/use, and exact profile/source versions; the evaluation has its own request/applicability/eligibility/realization fields |
+| Exact consumer action | Admit this exact GEN member as a candidate member for the named UNC method. Ensemble-design admission remains separately required |
 
 ## `SCI-NOI:uncertainty_ensemble_admission@1`
 
 | Field | Draft binding |
 | --- | --- |
 | Object/domain | One exact GEN ensemble presented to one exact UNC method and target/domain |
-| Exact source packages | Exact GEN method/generation, approved parent boundary, member-completion profile bytes/evaluations, and proposed UNC method identity |
+| Exact source packages | Exact GEN method/generation, approved parent boundary, `SCI-NOI:uncertainty_member_admission@1` bytes/evaluations, and proposed UNC method identity |
 | Required facts | `S={s_bg}` and joint law; exact completed membership; `B_requested`, `B_resolved`, `B_completed`, `B_unique`, proposed `B_admitted_for_UNC`, design rank; complement/duplicate/dependence state; fixed/relearned graph; source-imprint state; common domain or exact missing-data plan; target, center, estimator, finite correction, representation, support, response reference, rank/null, calibration, limitations, lifecycle, and provenance |
 | Decisive exclusions | Mixed fixed/relearned graph; mixed parent/method generation; method-invalid completed design; below the UNC method's positive minimum cardinality/rank; unhandled missingness; incompatible unit/WCS/response/support; unavailable target/estimator identity; or missing source-imprint disclosure |
 | Exception authority | Only the exact UNC method may admit a declared incomplete-but-valid design or exact missing-data estimator; it must state resulting symmetry, PSD, rank, and domain properties |
@@ -83,7 +90,7 @@ replaced by one generic pass bit.
 | Missing/conflict behavior | Missing/conflicting required facts yield `applicability_unknown` and `decision_unavailable`; local invalid scale yields unavailable on its exact domain, never numeric zero or infinity |
 | Aggregation/propagation | Exact numerator/scale rows only. No automatic interpolation, domain extension, aggregate pass, or reverse change to either parent |
 | Lifecycle | Binds exact signal, UNC, and STD requested/effective/applied/realized generations plus immutable parent joins |
-| Exact consumer action | Permit construction of `empirical_scale_standardized_signal` on the exact compatible domain with claim “standardized by the stated empirical scale” only |
+| Exact consumer action | Permit construction of `empirical_scale_standardized_signal` with unit `1` on the exact compatible domain with claim “standardized by the stated empirical scale” only |
 
 ## Supersession And Claim Boundary
 

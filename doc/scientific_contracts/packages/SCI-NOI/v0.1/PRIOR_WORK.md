@@ -178,5 +178,8 @@ then ask the author to reconcile them with the owner-approved three-operation
 taxonomy and resolved owner decisions. The implementation inventory is useful
 only for ensuring that the scope asks the right questions.
 
-Stage B remains blocked. The first owner question is
-`SCI-NOI-ODQ-101`, the ordinary fixed-state/relearned method disposition.
+Stage B remains unlaunched. ODQ-101 subsequently approved fixed-state
+conditional-sign as the ordinary conditioning family while keeping relearned
+methods separate and never mixed. It selected no numerical route. The next
+owner question is `SCI-NOI-ODQ-102A`, exact ordinary route or explicit route
+unavailability.

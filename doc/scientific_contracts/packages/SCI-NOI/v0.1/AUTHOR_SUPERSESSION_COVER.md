@@ -43,11 +43,18 @@ Retain and reconcile, without needless rederivation:
    `Theta_b = LearnResolve_b(R_b(parent))` followed by
    `realization_b = O_Theta_b(R_b(parent))`. The earliest immutable parent,
    insertion point, full graph, and changed-state record are method identity.
+   ODQ-101 approves fixed-state conditional-sign only as a conditioning family;
+   PTC-to-frozen-MAP, PTC-to-frozen-JINC, realized-MAP, realized-JINC, and
+   filtered routes always retain separate complete identities.
 4. **No mixed ensemble.** Fixed-state and relearned members, or relearned
    methods with different replay graphs, cannot share one ensemble identity.
-5. **Finite design is explicit.** Requested, resolved, completed, unique,
-   UNC-admitted counts and design rank are separate. Balance, complement pairs,
-   duplicates, and large count never prove independence.
+5. **Finite design is explicit.** Stable coherence ordering, exact
+   probabilities/design weights, scheduling-independent canonical key,
+   `B_unique` equivalence, complement treatment, exact duplicate detection,
+   and rank definition/domain are bound. Requested, resolved, completed,
+   unique, complement-pair, UNC-admitted counts, design rank, and effective
+   information are distinct. Balance, complements, duplicates, and large count
+   never prove independence.
 6. **Source imprint is explicit.** Global sign balance does not imply pixelwise
    cancellation under changing support or operator state. The base claim is
    `source_imprinted_conditional_randomization_ensemble`, not physical noise.
@@ -58,7 +65,8 @@ Retain and reconcile, without needless rederivation:
 8. **Standardized signal is separate.** `sig2noise` is not a scientific
    identity. `NOI-STD` binds an immutable numerator and a transformed positive
    scale in the numerator unit; variance, covariance, inverse variance,
-   precision, and weight are not direct denominators.
+   precision, and weight are not direct denominators. The output unit is
+   exactly `1`; dimensionlessness does not establish significance.
 9. **Truthful claim ceiling.** Without exact null, selection, search,
    multiplicity, and validation authority, a STD product is only “standardized
    by the stated empirical scale.”
@@ -77,6 +85,10 @@ Retain and reconcile, without needless rederivation:
 14. **Exact parent routes and profiles.** Only the manifest-bound sanitized
     MAP, JINC, pre-MAP PTC, FLT/FRUIT, and NOI-owned admission/profile artifacts
     may supply adjacent authority. No full adjacent package is imported.
+15. **Completion truth stays with GEN.** The
+    `SCI-NOI:uncertainty_member_admission@1` policy consumes GEN completion and
+    terminal facts for a named UNC use. VAL binds/evaluates policy but authors
+    neither producer fact nor NOI policy.
 
 ## Sanitized Inherited Constraints
 

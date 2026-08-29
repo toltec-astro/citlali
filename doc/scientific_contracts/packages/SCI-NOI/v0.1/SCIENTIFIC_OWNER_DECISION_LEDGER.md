@@ -41,22 +41,28 @@ artifact after exact-byte approval. This manager ledger is not an author input.
 
 | ID | Topic | Recommended disposition location | State |
 | --- | --- | --- | --- |
-| `SCI-NOI-ODQ-101` | Ordinary fixed-state/relearned availability | Decision artifact row 101 | **open — first walkthrough question** |
-| `SCI-NOI-ODQ-102` | Initial coherence/randomization methods and assignment law | Decision artifact row 102 | open |
+| `SCI-NOI-ODQ-101` | Ordinary fixed-state/relearned conditioning family | Decision artifact ODQ-101 | **decided — fixed-state conditional-sign ordinary; relearned separate; never mixed** |
+| `SCI-NOI-ODQ-102A` | Exact ordinary parent/insertion route | Decision artifact ODQ-102A | **open — next walkthrough question; all routes unavailable** |
+| `SCI-NOI-ODQ-102B` | Initial coherence-unit family | Decision artifact ODQ-102B | open |
+| `SCI-NOI-ODQ-102C` | Sign law and complete finite assignment design | Decision artifact ODQ-102C | open |
 | `SCI-NOI-ODQ-103` | Source-imprint/cancellation target and claim | Decision artifact row 103 | open |
-| `SCI-NOI-ODQ-104` | Exact fixed state and any rerun graph | Decision artifact row 104 | open |
-| `SCI-NOI-ODQ-105` | Initial UNC target, center, estimator, correction, missingness, and effective information | Decision artifact row 105 | open |
+| `SCI-NOI-ODQ-104` | Complete fixed/relearned state classification per route | Decision artifact ODQ-104 | decided as route-specific consequence of ODQ-101; exact route remains open |
+| `SCI-NOI-ODQ-105A` | Enabled/disabled and partial-completion behavior | Decision artifact ODQ-105A | open |
+| `SCI-NOI-ODQ-105B` | Initial UNC target, center, estimator, correction, missingness, and effective information | Decision artifact ODQ-105B | open |
 | `SCI-NOI-ODQ-106` | Covariance representations, domain, rank, null space, and unavailable policy | Decision artifact row 106 | open |
 | `SCI-NOI-ODQ-107` | Marginal inverse variance, precision, and consumer-effective weights | Decision artifact row 107 | open |
 | `SCI-NOI-ODQ-108` | STD numerator, scale transformation, compatibility, identity, and claim | Decision artifact row 108 | open |
 | `SCI-NOI-ODQ-109` | Persistence/reconstruction and incomplete-design behavior | Decision artifact row 109 | open |
-| `SCI-NOI-ODQ-110` | Deterministic FLT, Wiener, and FRUIT scope | Decision artifact row 110 | open |
+| `SCI-NOI-ODQ-110A` | Held-fixed deterministic FLT scope | Decision artifact ODQ-110A | open |
+| `SCI-NOI-ODQ-110B` | Wiener scope | Decision artifact ODQ-110B | open |
+| `SCI-NOI-ODQ-110C` | FRUIT scope | Decision artifact ODQ-110C | open |
+| `SCI-NOI-ODQ-111` | VAL profile identities and exact consumer actions | Decision artifact ODQ-111 | open |
 
 ## Exact Stage A Gate
 
 | ID | State | Decision required | Blocked action |
 | --- | --- | --- | --- |
-| `SCI-NOI-STAGE-A-Q001` | open | Approve every ODQ-101--110 disposition and exact repaired Scope, cover, conventions, taxonomy, three parent boundaries, four profile drafts, FLT/FRUIT record, change log, firewall, and final manifest hashes | Launch of a fresh implementation-blind Stage B author |
+| `SCI-NOI-STAGE-A-Q001` | open | Approve the exact repaired Scope and packet; approve each granular decision or leave it explicitly open with dependent methods unavailable; approve profile bytes; complete exact source/Registry bindings and manifest hashes | Launch of a fresh implementation-blind Stage B author |
 
 The parent boundaries also retain independent numerical unavailability: MAP and
 pre-MAP routes lack the exact PTC MAP-facing coefficient and owner-admitted

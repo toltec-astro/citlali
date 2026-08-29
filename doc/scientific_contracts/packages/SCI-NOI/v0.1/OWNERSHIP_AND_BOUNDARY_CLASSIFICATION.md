@@ -13,7 +13,7 @@ Status: proposed Stage A classification; awaiting scientific-owner review
 | MAP ordinary estimator, base/coadd validity, response/covariance disclosure | SCI-MAP | Immutable parent and possible fixed operator | NOI cannot rewrite MAP claims or use an empirical result as retroactive MAP authority |
 | JINC signed estimator and product limits | SCI-JINC | Immutable parent when an exact realized route exists | NOI cannot infer missing JINC coefficient, response, or covariance state |
 | Randomization unit, sign/assignment law, balance, seed/key, membership | `NOI-GEN` | Owned | These facts do not establish uncertainty |
-| Realization availability, support, QC, persistence/reconstruction | `NOI-GEN` | Owned | Availability is not sample validity or covariance adequacy |
+| Realization completion, terminal state, availability, support, QC, persistence/reconstruction | `NOI-GEN` | Producer-owned immutable truth | VAL admission cannot author or revise completion; availability is not sample validity or covariance adequacy |
 | Target law, centering, finite correction, covariance domain, calibration | `NOI-UNC` | Owned | “Empirical” does not mean physical or calibrated |
 | Empirical variance/covariance | `NOI-UNC` | Owned versioned companion | It does not become a formal MAP/JINC covariance retroactively |
 | Marginal inverse variance, precision, consumer-effective weight | `NOI-UNC`, each as a distinct role | Owned when separately authorized | They are not interchangeable and are not PTC/MAP coefficients |
@@ -22,7 +22,8 @@ Status: proposed Stage A classification; awaiting scientific-owner review
 | Wiener/noise-inferred filter operator | SCI-FLT plus its noise-model boundary | Fixed or named re-estimated dependency | Same ensemble cannot automatically fit and validate the operator |
 | Beammap, source fitting, Pointing, OOF interpretation | SCI-BEAM / future SCI-SRC or SCI-MODE | Named consumer dependency | Their historical ratios cannot be relabeled generic NOI S/N |
 | FRUIT subtraction/add-back, learning, recurrence, stopping | SCI-FRUIT | Fixed residual state or full-replay dependency | NOI cannot authorize adaptive inference or convergence |
-| Policy registration/evaluation | SCI-VAL | Evaluate owner-authored exact profiles | VAL does not author NOI target, adequacy, or publication policy |
+| UNC-member admission policy | SCI-NOI | Own use-specific interpretation of immutable GEN facts | Policy cannot redefine completion or terminal state |
+| Policy registration/evaluation | SCI-VAL | Bind and evaluate owner-authored exact profiles | VAL authors neither GEN facts nor NOI policy, target, adequacy, or publication rule |
 
 ## Boundary Consequences
 
@@ -37,3 +38,5 @@ Status: proposed Stage A classification; awaiting scientific-owner review
 6. Persistence, reconstruction, and statistical adequacy are separate axes.
 7. An exact route boundary never creates an unavailable MAP, JINC, PTC, FLT,
    or FRUIT numerical parent.
+8. PTC-to-frozen-MAP, PTC-to-frozen-JINC, realized-MAP, realized-JINC,
+   filtered, and relearned paths always have distinct complete method identities.
