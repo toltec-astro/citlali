@@ -365,6 +365,22 @@ successor rather than a reopened scientific choice. No Stage B normative
 content, PDF, implementation-conformity, validation, performance, numerical-
 readiness, production-readiness, or remote-push claim follows.
 
+The SCI-JINC Stage B registry prerequisite was then satisfied on `2026-08-28`
+through new immutable SCI-VAL continuing-registry successors. The source-
+binding identity is `SCI-VAL_SOURCE_BINDING_REGISTER
+v0.1/r0.3-map-r0.7.1-jinc-stage-a-q002-2026-08-28`, SHA-256
+`0e7ca29ee2e9cd02fb1b76cf87cc64fce6164407a7801f9b9a105ca646317e88`;
+the profile identity is `SCI-VAL_PROFILE_REGISTRY
+v0.1/r0.3-map-r0.7.1-jinc-stage-a-q002-2026-08-28`, SHA-256
+`4b9a1ebecfc847c83b59da772afd9b031ab1830e8febbb12d1a47f70ce5a1110`.
+They register the exact JINC-owned atomic profile with neutral-preserved
+`advisory` response/uncertainty roles. The existing MAP-bound registry files
+remain byte-identical, so frozen MAP authority and verification are unchanged.
+All SCI-JINC Stage B dispatch prerequisites are now satisfied; a fresh
+implementation-blind Ultra author may launch from the exact approved manifest.
+The registry binding itself is not an author input and creates no numerical
+route, conformity, validation, performance, readiness or production claim.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

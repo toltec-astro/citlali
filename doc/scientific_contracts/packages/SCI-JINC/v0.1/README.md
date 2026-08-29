@@ -1,8 +1,8 @@
 # SCI-JINC — Signed-Coefficient JINC Observation Mapmaker
 
 Status: complete exact-byte Stage A successor packet approved under
-`SCI-JINC-STAGE-A-Q002`; Stage A closed; Stage B authorship authorized but not
-dispatched pending the versioned SCI-VAL registry binding
+`SCI-JINC-STAGE-A-Q002`; Stage A closed; versioned SCI-VAL binding satisfied;
+fresh implementation-blind Stage B dispatch authorized but not yet recorded
 
 Version: `v0.1`
 
@@ -71,9 +71,11 @@ Grant Wilson then approved the complete exact successor packet represented by
 the manifest at commit `88dcce8b0f7b1d78053b25831b39cf370afd47cc`
 under `SCI-JINC-STAGE-A-Q002`; see
 [`SCIENTIFIC_OWNER_STAGE_A_Q002_APPROVAL_2026-08-28.md`](SCIENTIFIC_OWNER_STAGE_A_Q002_APPROVAL_2026-08-28.md).
-The approved author-input bytes remain unchanged. Stage B authorship is
-authorized from those controlled inputs but has not been dispatched because
-the versioned SCI-VAL registry binding remains outstanding.
+The approved author-input bytes remain unchanged. The separately versioned
+SCI-VAL binding is recorded in
+[`SCI_VAL_REGISTRY_BINDING_2026-08-28.md`](SCI_VAL_REGISTRY_BINDING_2026-08-28.md).
+All Stage B dispatch prerequisites are satisfied; no Stage B normative content
+has yet been created in this manager increment.
 
 ## Current Gate
 
@@ -120,10 +122,13 @@ the versioned SCI-VAL registry binding remains outstanding.
 - Sanitized Scope Brief: approved exact author input.
 - Exact author-input manifest and firewall: approved; all sixteen object
   digests verified.
-- Remaining Stage B dispatch prerequisite: versioned SCI-VAL source/profile
-  registry binding for `SCI-JINC:jinc_map_contribution@1`. This is an
-  administrative/interface successor under already approved SCI-VAL
-  authority, not an open JINC scientific-owner question.
+- SCI-VAL source/profile registry binding: satisfied by immutable successors
+  `SCI-VAL_SOURCE_BINDING_REGISTER
+  v0.1/r0.3-map-r0.7.1-jinc-stage-a-q002-2026-08-28` and
+  `SCI-VAL_PROFILE_REGISTRY
+  v0.1/r0.3-map-r0.7.1-jinc-stage-a-q002-2026-08-28`.
+- Stage B dispatch gate: open; fresh implementation-blind Ultra authorship is
+  authorized from the exact approved packet without another owner question.
 - Implementation-blind scientific rationale: not commissioned and not drafted.
 - Engineering conformance specification: not commissioned and not drafted.
 - Scientific authority: not frozen.
@@ -220,6 +225,9 @@ authorities.
 - [`SCIENTIFIC_OWNER_STAGE_A_Q002_APPROVAL_2026-08-28.md`](SCIENTIFIC_OWNER_STAGE_A_Q002_APPROVAL_2026-08-28.md):
   exact successor-packet approval, firewall interpretation, and bounded
   SCI-VAL registry-binding assessment
+- [`SCI_VAL_REGISTRY_BINDING_2026-08-28.md`](SCI_VAL_REGISTRY_BINDING_2026-08-28.md):
+  immutable successor identities, hashes, firewall treatment, and Stage B
+  dispatch consequence
 - [`CROSSWALK.md`](CROSSWALK.md): reserved Stage B traceability surface
 - `src/` and `pdf/`: canonical package paths reserved without normative or
   rendered Stage B content
@@ -229,9 +237,9 @@ authorities.
 The exact ODQ-101/102B/103/104/105/106/107/109/110 successor packet is approved
 under Q002 without changing its bytes. Do not dispatch or draft the
 implementation-blind scientific rationale, shared normative core, engineering
-conformance specification, or PDFs until the versioned SCI-VAL binding is
-recorded in a separate increment. No further JINC scientific-owner question or
-wholesale Stage A review is required unless that binding cannot preserve the
-approved semantics exactly. Do not inspect an implementation candidate for
-conformity or make any implementation-conformity, validation, achieved-
-performance, readiness, or production claim under this delta.
+conformance specification, or PDFs in the registry-binding increment. The
+binding is now recorded, so a fresh isolated Ultra Stage B author may be
+dispatched from the exact approved manifest without another scientific-owner
+question. Do not inspect an implementation candidate for conformity or make
+any implementation-conformity, validation, achieved-performance, readiness,
+or production claim under this delta.

@@ -3,7 +3,8 @@
 Producer facts and use-specific eligibility; not final map validity.
 
 Status: v0.1/r0.3 scientific authority frozen by Grant Wilson on `2026-08-24`;
-implementation conformity and validation not assessed
+continuing immutable registry successor binds owner-approved SCI-JINC Stage A
+Q002; implementation conformity and validation not assessed
 
 Scientific contract version: `v0.1`
 
@@ -102,6 +103,10 @@ Producer and consumer ownership remains explicit:
   profile records and reserved package-qualified profile names
 - [`SOURCE_BINDING_REGISTER.md`](SOURCE_BINDING_REGISTER.md): exact admitted
   adjacent scientific source/version bindings and change consequences
+- [`SOURCE_BINDING_REGISTER_JINC_STAGE_A_Q002_2026-08-28.md`](SOURCE_BINDING_REGISTER_JINC_STAGE_A_Q002_2026-08-28.md):
+  immutable SCI-JINC source-binding successor preserving the MAP-bound base
+- [`PROFILE_REGISTRY_JINC_STAGE_A_Q002_2026-08-28.md`](PROFILE_REGISTRY_JINC_STAGE_A_Q002_2026-08-28.md):
+  immutable successor registering `SCI-JINC:jinc_map_contribution@1`
 - [`AUTHOR_DRAFT_DECISIONS.md`](AUTHOR_DRAFT_DECISIONS.md): eight first-pass
   derivation decisions, r0.2/r0.3 dispositions, and layered resolution of the
   six bounded questions
@@ -146,6 +151,15 @@ the existing tracked-kernel response companion. The broad coefficient/QC and
 empirical/simulation identities are explicitly unsupported rather than
 represented by vacuous profiles. These registry updates do not rewrite VAL
 Core or the r0.3 source-table snapshots embedded in the two views.
+
+On `2026-08-28`, the continuing-registry authority was applied through new
+immutable successor files to bind the owner-approved SCI-JINC Stage A Q002
+profile `SCI-JINC:jinc_map_contribution@1`. The earlier canonical MAP-bound
+registry files remain byte-identical for frozen SCI-MAP replay. The JINC
+successor registers only the JINC-authored atomic admission rule, with response
+and uncertainty neutral-preserved as `advisory`; it does not authorize a PTC
+coefficient family, TolTEC numerical parameters, footprint placement,
+accumulation, implementation conformity, validation, performance or readiness.
 
 The scientist-facing rationale is a standalone 8-page narrative with the
 worked occurrence table on physical page 2. The 20-page engineering view
