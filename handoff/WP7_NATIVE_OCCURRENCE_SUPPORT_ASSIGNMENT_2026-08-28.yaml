@@ -1,0 +1,14 @@
+# Provisional engineering assignment authorized by the project owner.  This is
+# not a claim about the producer's true timestamp semantics.  Replace or
+# correct it when the native timing calibration becomes available.
+schema: citlali-native-occurrence-support-assignment-v1
+assignment_id: wp7-provisional-integration-center-152390-v1
+assignment_status: provisional_calibration_pending
+assigned_by: project-owner
+assigned_at_utc: 2026-08-29T02:33:24Z
+scope_observation: 152390
+producer_interface_id: TUNE_READOUT_NATIVE_XR_PRODUCER_INTERFACE v0.1/r0.1
+producer_interface_sha256: f9659b34a49a07d4287c4a70db798cdd2ec30049531da603fcca1e9d1fdd5969
+event_time_role: integration_center
+duration_relation: Header.Toltec.AccumLen / Header.Toltec.FpgaFreq
+calibration_disposition: replace_with_calibrated_producer_relation_when_available

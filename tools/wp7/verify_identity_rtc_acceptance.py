@@ -12,11 +12,15 @@ from typing import Any
 
 
 SCHEMA = "citlali-wp7-identity-rtc-acceptance-v2"
-OCCURRENCE_SUPPORT_AUTHORITY_SCHEMA = (
-    "citlali-native-occurrence-support-authority-v1"
+OCCURRENCE_SUPPORT_ASSIGNMENT_SCHEMA = (
+    "citlali-native-occurrence-support-assignment-v1"
 )
+OCCURRENCE_SUPPORT_ASSIGNMENT_STATUS = "provisional_calibration_pending"
 OCCURRENCE_SUPPORT_DURATION_RELATION = (
     "Header.Toltec.AccumLen / Header.Toltec.FpgaFreq"
+)
+OCCURRENCE_SUPPORT_CALIBRATION_DISPOSITION = (
+    "replace_with_calibrated_producer_relation_when_available"
 )
 PRODUCER_INTERFACE = "TUNE_READOUT_NATIVE_XR_PRODUCER_INTERFACE v0.1/r0.1"
 PRODUCER_SHA256 = (
@@ -138,28 +142,42 @@ def validate(record: dict[str, Any]) -> None:
             f"producer_interface_sha256 must be {PRODUCER_SHA256}"
         )
     if (
-        record.get("occurrence_support_authority_schema")
-        != OCCURRENCE_SUPPORT_AUTHORITY_SCHEMA
+        record.get("occurrence_support_assignment_schema")
+        != OCCURRENCE_SUPPORT_ASSIGNMENT_SCHEMA
     ):
         raise AcceptanceError(
-            "occurrence_support_authority_schema must be the approved schema"
+            "occurrence_support_assignment_schema must be the supported schema"
         )
-    require_string(record, "occurrence_support_authority_id")
-    authority_sha256 = require_string(
-        record, "occurrence_support_authority_sha256"
+    require_string(record, "occurrence_support_assignment_id")
+    assignment_sha256 = require_string(
+        record, "occurrence_support_assignment_sha256"
     )
-    if not HEX64.fullmatch(authority_sha256):
+    if not HEX64.fullmatch(assignment_sha256):
         raise AcceptanceError(
-            "occurrence_support_authority_sha256 must be one lowercase SHA-256"
+            "occurrence_support_assignment_sha256 must be one lowercase SHA-256"
         )
-    require_true(record, "occurrence_support_authority_approved")
-    require_string(record, "occurrence_support_authority_approved_by")
-    approved_at = require_string(
-        record, "occurrence_support_authority_approved_at_utc"
-    )
-    if not UTC_SECONDS.fullmatch(approved_at):
+    if (
+        record.get("occurrence_support_assignment_status")
+        != OCCURRENCE_SUPPORT_ASSIGNMENT_STATUS
+    ):
         raise AcceptanceError(
-            "occurrence_support_authority_approved_at_utc must be exact UTC seconds"
+            "occurrence_support_assignment_status must remain calibration pending"
+        )
+    require_string(record, "occurrence_support_assigned_by")
+    assigned_at = require_string(
+        record, "occurrence_support_assigned_at_utc"
+    )
+    if not UTC_SECONDS.fullmatch(assigned_at):
+        raise AcceptanceError(
+            "occurrence_support_assigned_at_utc must be exact UTC seconds"
+        )
+    require_true(record, "occurrence_support_calibration_pending")
+    if (
+        record.get("occurrence_support_calibration_disposition")
+        != OCCURRENCE_SUPPORT_CALIBRATION_DISPOSITION
+    ):
+        raise AcceptanceError(
+            "occurrence_support_calibration_disposition must preserve recalibration"
         )
     if record.get("occurrence_support_event_time_role") not in {
         "integration_start",
@@ -272,11 +290,11 @@ def validate(record: dict[str, Any]) -> None:
             "support_comparison_count must cover every aligned cell"
         )
     if (
-        require_integer(metrics, "producer_support_binding_count", 1)
+        require_integer(metrics, "assigned_support_binding_count", 1)
         != native_occurrences
     ):
         raise AcceptanceError(
-            "producer_support_binding_count must cover every native occurrence"
+            "assigned_support_binding_count must cover every native occurrence"
         )
     if require_integer(metrics, "pair_decision_comparison_count", 1) != aligned_cells:
         raise AcceptanceError(
@@ -300,7 +318,7 @@ def validate(record: dict[str, Any]) -> None:
         "r_bitwise_mismatch_count",
         "identity_mismatch_count",
         "support_mismatch_count",
-        "producer_support_binding_mismatch_count",
+        "assigned_support_binding_mismatch_count",
         "pair_decision_mismatch_count",
         "pair_causal_evidence_mismatch_count",
         "member_cause_mismatch_count",

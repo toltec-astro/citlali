@@ -37,10 +37,11 @@ The previously retained
 [observation 152390 record](../handoff/WP7_IDENTITY_RTC_ACCEPTANCE_152390_2026-08-28.json)
 is superseded as acceptance evidence. Its execution measurements and zero
 mismatch counts remain historical diagnostics, but its support comparison was
-circular. Acceptance schema v2 now fails closed unless an observation-scoped,
-owner-approved artifact states whether reconstructed native event time is the
-integration start, center, or end and binds duration to raw
-`AccumLen / FpgaFreq`. The deliberately unapproved template and exact rerun
+circular. The owner has now authorized a provisional integration-center
+assignment with duration from raw `AccumLen / FpgaFreq`; calibration remains
+pending and may replace or correct this relation. Acceptance schema v2 records
+the assignment, its SHA-256, and its calibration-pending disposition rather
+than mislabeling it as producer authority. The assignment and exact rerun
 procedure are in the
 [acceptance package](../handoff/WP7_IDENTITY_RTC_ACCEPTANCE_PACKAGE_2026-08-28.md).
 
@@ -49,15 +50,15 @@ acceptance executable build; all 115 focused WP-7 and ALIGN tests pass; all 845
 enabled repository CTests pass with the one established disabled test not run;
 all 207 baseline-tool tests pass; the acceptance-validator suite passes 6/6;
 and the required config preflight passes all 129 unit tests and downstream
-audits. The unapproved authority template is rejected before data execution,
-and the old v1 record is rejected by the v2 validator.
+audits. An assignment that hides pending calibration is rejected, and the old
+v1 record is rejected by the v2 validator.
 
-The representative observation 152390 gate remains pending only the producer
-support-authority decision and a new exact-revision owner run. Fresh independent
-read-only conformance review follows that evidence. Until both gates pass, the
-increment is not accepted for production readiness or activation and the
-legacy route remains authoritative. No accepted-run or intended-science-change
-ledger entry is made.
+The representative observation 152390 gate now requires a new exact-revision
+owner run under the checked-in assignment. Fresh independent read-only
+conformance review follows that evidence. Until both gates pass, the increment
+is not accepted for production readiness or activation and the legacy route
+remains authoritative. No accepted-run or intended-science-change ledger entry
+is made.
 
 ## 2026-08-26 WP-7 Timestream Successor Baseline
 

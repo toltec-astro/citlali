@@ -3,19 +3,22 @@
 ## Status
 
 The bounded implementation and repository-local gates are available. The
-representative real paired-data acceptance gate is **pending** an explicit
-producer-authoritative decision that states whether reconstructed native event
-time denotes integration start, center, or end. The previously retained
+project owner has assigned reconstructed native event time provisionally to
+the integration center, with primitive duration given by raw
+`AccumLen / FpgaFreq`. This is an engineering convention for the first route,
+not a claim that the producer's true timestamp semantics are known. Calibration
+remains explicitly pending. The previously retained
 [observation 152390 record](WP7_IDENTITY_RTC_ACCEPTANCE_152390_2026-08-28.json)
 used a locally constructed midpoint interval and is therefore superseded as
 acceptance evidence. It remains useful as historical execution diagnostics,
 but the v2 validator intentionally rejects it.
 
-The owner-decision input begins with the deliberately unapproved
-[authority template](WP7_NATIVE_OCCURRENCE_SUPPORT_AUTHORITY_TEMPLATE_2026-08-28.yaml.example).
-Do not change its approval status until the producer timing relation is
-scientifically established. Once that bounded authority exists, this package
-can produce representative execution evidence; it still will not by itself
+The exact provisional policy is the
+[support assignment](WP7_NATIVE_OCCURRENCE_SUPPORT_ASSIGNMENT_2026-08-28.yaml).
+The v2 evidence record must preserve its SHA-256, provisional status, and
+calibration disposition. This package can therefore produce representative
+execution evidence while the timing calibration is investigated; it does not
+turn the assignment into producer authority and still will not by itself
 claim independent implementation conformity, science qualification,
 production readiness, or successor activation.
 
@@ -57,12 +60,11 @@ Use a representative real observation whose Tune/readout producer can supply
 the exact approved
 `TUNE_READOUT_NATIVE_XR_PRODUCER_INTERFACE v0.1/r0.1` binding (artifact SHA-256
 `f9659b34a49a07d4287c4a70db798cdd2ec30049531da603fcca1e9d1fdd5969`).
-It must also supply an owner-approved
-`citlali-native-occurrence-support-authority-v1` artifact scoped to observation
-152390. That artifact binds the reconstructed native event time to exactly one
-of `integration_start`, `integration_center`, or `integration_end`, and binds
-primitive duration to
-`Header.Toltec.AccumLen / Header.Toltec.FpgaFreq`.
+It must also supply the checked-in
+`citlali-native-occurrence-support-assignment-v1` artifact scoped to observation
+152390. That artifact assigns `integration_center`, binds primitive duration to
+`Header.Toltec.AccumLen / Header.Toltec.FpgaFreq`, and states that calibration
+is pending and may replace or correct the relation.
 The opt-in `citlali_wp7_identity_rtc_acceptance` target performs this binding
 for observation 152390. It verifies the canonical APT bundle and exact raw-file
 byte counts and SHA-256 digests; discovers and hashes each Tune fit report from
@@ -92,7 +94,7 @@ build/bin/citlali_wp7_identity_rtc_acceptance \
   --apt-manifest /Users/gwilson/work_toltec/local_data/2026-refactor/projects/SCI_ALIGN_STAGE7_NGC4449_152390/apts/v2/apt_152390_matched.apt-v2/manifest.ecsv \
   --config /Users/gwilson/work_toltec/local_data/2026-refactor/projects/SCI_ALIGN_STAGE7_NGC4449_152390/toltec_umass_edu/NGC4449/reduced/redu04/citlali_merged_config.yaml \
   --producer-interface-artifact /Users/gwilson/Documents/Codex/2026-08-26/wp7-1-clean-room-audit/work/packet/WP7_TIMESTREAM_CLEAN_ROOM_170ECEA9D/sources/doc/scientific_contracts/producer_interfaces/v0.1/TUNE_READOUT_NATIVE_XR_PRODUCER_INTERFACE.md \
-  --occurrence-support-authority /absolute/path/to/owner-approved-native-occurrence-support-authority.yaml \
+  --occurrence-support-assignment handoff/WP7_NATIVE_OCCURRENCE_SUPPORT_ASSIGNMENT_2026-08-28.yaml \
   --kidscpp-build-patch patches/local/kidscpp-local-build.patch \
   --tula-build-patch patches/local/tula-local-build.patch \
   --output acceptance.json \
@@ -132,8 +134,8 @@ The focused suite plus acceptance record must demonstrate:
 
 - all required networks and detector identities came from the admitted
   participant inventory;
-- every native occurrence interval was bound to the separately approved
-  producer event-time role and raw duration relation;
+- every native occurrence interval was bound to the explicit provisional
+  event-time assignment and raw duration relation;
 - both `x` and `r` were compared bitwise with their native mapped parent at
   every mapped detector occurrence;
 - occurrence identity, primitive support, member-local causes, pair-wide
@@ -180,10 +182,10 @@ Write one JSON record with schema
 `citlali-wp7-identity-rtc-acceptance-v2` and the fields required by
 [`tools/wp7/verify_identity_rtc_acceptance.py`](../tools/wp7/verify_identity_rtc_acceptance.py).
 The validator intentionally requires real paired data, an owner run, exact
-ancestry, an approved support-authority artifact and its SHA-256, complete
-native support binding, full-cell comparisons, at least two chunk partitions,
-positive timing and RSS measurements, and zero scientific mismatches or
-out-of-scope calls.
+ancestry, the provisional support assignment and its SHA-256, an explicit
+calibration-pending disposition, complete assigned-support binding, full-cell
+comparisons, at least two chunk partitions, positive timing and RSS
+measurements, and zero scientific mismatches or out-of-scope calls.
 
 Validate it with:
 

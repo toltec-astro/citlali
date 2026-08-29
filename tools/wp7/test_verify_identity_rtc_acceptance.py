@@ -48,15 +48,21 @@ def valid_record() -> dict[str, object]:
         "mapping_instance_id": "sha256:mapping",
         "producer_interface_id": validator.PRODUCER_INTERFACE,
         "producer_interface_sha256": validator.PRODUCER_SHA256,
-        "occurrence_support_authority_schema": (
-            validator.OCCURRENCE_SUPPORT_AUTHORITY_SCHEMA
+        "occurrence_support_assignment_schema": (
+            validator.OCCURRENCE_SUPPORT_ASSIGNMENT_SCHEMA
         ),
-        "occurrence_support_authority_id": "owner-decision:152390:1",
-        "occurrence_support_authority_sha256": "b" * 64,
-        "occurrence_support_authority_approved": True,
-        "occurrence_support_authority_approved_by": "project-owner",
-        "occurrence_support_authority_approved_at_utc": (
+        "occurrence_support_assignment_id": "wp7-provisional-center:152390:1",
+        "occurrence_support_assignment_sha256": "b" * 64,
+        "occurrence_support_assignment_status": (
+            validator.OCCURRENCE_SUPPORT_ASSIGNMENT_STATUS
+        ),
+        "occurrence_support_assigned_by": "project-owner",
+        "occurrence_support_assigned_at_utc": (
             "2026-08-28T12:00:00Z"
+        ),
+        "occurrence_support_calibration_pending": True,
+        "occurrence_support_calibration_disposition": (
+            validator.OCCURRENCE_SUPPORT_CALIBRATION_DISPOSITION
         ),
         "occurrence_support_event_time_role": "integration_center",
         "occurrence_support_duration_relation": (
@@ -92,7 +98,7 @@ def valid_record() -> dict[str, object]:
             "paired_value_comparison_count": 180,
             "identity_comparison_count": 100,
             "support_comparison_count": 100,
-            "producer_support_binding_count": 4096,
+            "assigned_support_binding_count": 4096,
             "pair_decision_comparison_count": 100,
             "pair_causal_evidence_comparison_count": 100,
             "chunk_partition_count": 2,
@@ -104,7 +110,7 @@ def valid_record() -> dict[str, object]:
             "r_bitwise_mismatch_count": 0,
             "identity_mismatch_count": 0,
             "support_mismatch_count": 0,
-            "producer_support_binding_mismatch_count": 0,
+            "assigned_support_binding_mismatch_count": 0,
             "pair_decision_mismatch_count": 0,
             "pair_causal_evidence_mismatch_count": 0,
             "member_cause_mismatch_count": 0,
@@ -156,21 +162,21 @@ class AcceptanceValidatorTest(unittest.TestCase):
                 ):
                     validator.validate(record)
 
-    def test_rejects_unapproved_occurrence_support_authority(self) -> None:
+    def test_rejects_assignment_that_hides_pending_calibration(self) -> None:
         record = valid_record()
-        record["occurrence_support_authority_approved"] = False
+        record["occurrence_support_calibration_pending"] = False
         with self.assertRaisesRegex(
             validator.AcceptanceError,
-            "occurrence_support_authority_approved must be true",
+            "occurrence_support_calibration_pending must be true",
         ):
             validator.validate(record)
 
-    def test_rejects_incomplete_producer_support_binding(self) -> None:
+    def test_rejects_incomplete_assigned_support_binding(self) -> None:
         record = valid_record()
-        record["metrics"]["producer_support_binding_count"] = 4095
+        record["metrics"]["assigned_support_binding_count"] = 4095
         with self.assertRaisesRegex(
             validator.AcceptanceError,
-            "producer_support_binding_count",
+            "assigned_support_binding_count",
         ):
             validator.validate(record)
 

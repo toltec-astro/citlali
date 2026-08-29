@@ -61,10 +61,14 @@ namespace apt = citlali::pipeline::canonical_apt_v2;
 
 constexpr std::string_view acceptance_schema =
     "citlali-wp7-identity-rtc-acceptance-v2";
-constexpr std::string_view occurrence_support_authority_schema =
-    "citlali-native-occurrence-support-authority-v1";
+constexpr std::string_view occurrence_support_assignment_schema =
+    "citlali-native-occurrence-support-assignment-v1";
 constexpr std::string_view occurrence_support_duration_relation =
     "Header.Toltec.AccumLen / Header.Toltec.FpgaFreq";
+constexpr std::string_view occurrence_support_assignment_status =
+    "provisional_calibration_pending";
+constexpr std::string_view occurrence_support_calibration_disposition =
+    "replace_with_calibrated_producer_relation_when_available";
 constexpr std::string_view producer_interface =
     "TUNE_READOUT_NATIVE_XR_PRODUCER_INTERFACE v0.1/r0.1";
 constexpr std::string_view producer_interface_sha256 =
@@ -85,7 +89,7 @@ struct Arguments {
     fs::path apt_manifest;
     fs::path config;
     fs::path producer_interface_artifact;
-    fs::path occurrence_support_authority_artifact;
+    fs::path occurrence_support_assignment_artifact;
     fs::path kidscpp_build_patch;
     fs::path tula_build_patch;
     fs::path output;
@@ -113,7 +117,7 @@ std::string usage() {
         "Usage: citlali_wp7_identity_rtc_acceptance\n"
         "  --data-dir PATH --apt-manifest PATH --config PATH\n"
         "  --producer-interface-artifact PATH\n"
-        "  --occurrence-support-authority PATH\n"
+        "  --occurrence-support-assignment PATH\n"
         "  --kidscpp-build-patch PATH --tula-build-patch PATH\n"
         "  --output PATH\n"
         "  --source-revision FULL_SHA --owner-run\n"
@@ -154,8 +158,8 @@ Arguments parse_arguments(int argc, char **argv) {
             result.config = next(index, option);
         } else if (option == "--producer-interface-artifact") {
             result.producer_interface_artifact = next(index, option);
-        } else if (option == "--occurrence-support-authority") {
-            result.occurrence_support_authority_artifact =
+        } else if (option == "--occurrence-support-assignment") {
+            result.occurrence_support_assignment_artifact =
                 next(index, option);
         } else if (option == "--kidscpp-build-patch") {
             result.kidscpp_build_patch = next(index, option);
@@ -186,8 +190,8 @@ Arguments parse_arguments(int argc, char **argv) {
     require(!result.config.empty(), "--config is required");
     require(!result.producer_interface_artifact.empty(),
             "--producer-interface-artifact is required");
-    require(!result.occurrence_support_authority_artifact.empty(),
-            "--occurrence-support-authority is required");
+    require(!result.occurrence_support_assignment_artifact.empty(),
+            "--occurrence-support-assignment is required");
     require(!result.kidscpp_build_patch.empty(),
             "--kidscpp-build-patch is required");
     require(!result.tula_build_patch.empty(),
@@ -228,65 +232,66 @@ constexpr const char *native_event_time_role_name(
     return "unknown";
 }
 
-struct NativeOccurrenceSupportAuthority {
-    std::string authority_id;
-    std::string approved_by;
-    std::string approved_at_utc;
+struct NativeOccurrenceSupportAssignment {
+    std::string assignment_id;
+    std::string assigned_by;
+    std::string assigned_at_utc;
     std::int64_t scope_observation = 0;
     NativeEventTimeRole event_time_role =
         NativeEventTimeRole::integration_center;
     std::string artifact_sha256;
 };
 
-NativeOccurrenceSupportAuthority load_occurrence_support_authority(
+NativeOccurrenceSupportAssignment load_occurrence_support_assignment(
     const fs::path &path) {
     require(fs::is_regular_file(path),
-            "occurrence-support authority is not a regular file");
+            "occurrence-support assignment is not a regular file");
     const auto root = YAML::LoadFile(path.string());
     require(root.IsMap(),
-            "occurrence-support authority must be a YAML map");
+            "occurrence-support assignment must be a YAML map");
     const std::set<std::string> required{
-        "schema", "authority_id", "approval_status", "approved_by",
-        "approved_at_utc", "scope_observation", "producer_interface_id",
+        "schema", "assignment_id", "assignment_status", "assigned_by",
+        "assigned_at_utc", "scope_observation", "producer_interface_id",
         "producer_interface_sha256", "event_time_role",
-        "duration_relation"};
+        "duration_relation", "calibration_disposition"};
     require(root.size() == required.size(),
-            "occurrence-support authority has an open or incomplete schema");
+            "occurrence-support assignment has an open or incomplete schema");
     for (const auto &entry : root) {
         require(entry.first.IsScalar() &&
                     required.contains(entry.first.as<std::string>()),
-                "occurrence-support authority has an unknown field");
+                "occurrence-support assignment has an unknown field");
     }
     const auto scalar = [&](const char *name) {
         const auto value = root[name];
         require(value && value.IsScalar(),
-                std::string{"occurrence-support authority lacks scalar "} +
+                std::string{"occurrence-support assignment lacks scalar "} +
                     name);
         return value.as<std::string>();
     };
-    require(scalar("schema") == occurrence_support_authority_schema,
-            "occurrence-support authority schema is not approved");
-    NativeOccurrenceSupportAuthority result;
-    result.authority_id = scalar("authority_id");
-    require(!result.authority_id.empty(),
-            "occurrence-support authority id is empty");
-    require(scalar("approval_status") == "owner_approved",
-            "occurrence-support authority is not owner approved");
-    result.approved_by = scalar("approved_by");
-    result.approved_at_utc = scalar("approved_at_utc");
-    require(!result.approved_by.empty() &&
+    require(scalar("schema") == occurrence_support_assignment_schema,
+            "occurrence-support assignment schema is not supported");
+    NativeOccurrenceSupportAssignment result;
+    result.assignment_id = scalar("assignment_id");
+    require(!result.assignment_id.empty(),
+            "occurrence-support assignment id is empty");
+    require(scalar("assignment_status") ==
+                occurrence_support_assignment_status,
+            "occurrence-support assignment must remain calibration pending");
+    result.assigned_by = scalar("assigned_by");
+    result.assigned_at_utc = scalar("assigned_at_utc");
+    require(!result.assigned_by.empty() &&
                 std::regex_match(
-                    result.approved_at_utc,
+                    result.assigned_at_utc,
                     std::regex{
                         R"(^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$)"}),
-            "occurrence-support authority approval identity or UTC is invalid");
+            "occurrence-support assignment identity or UTC is invalid");
     result.scope_observation = root["scope_observation"].as<std::int64_t>();
     require(result.scope_observation == 152390,
-            "occurrence-support authority is outside observation 152390");
+            "occurrence-support assignment is outside observation 152390");
     require(scalar("producer_interface_id") == producer_interface &&
                 scalar("producer_interface_sha256") ==
                     producer_interface_sha256,
-            "occurrence-support authority names a different producer interface");
+            "occurrence-support assignment names a different producer interface");
     const auto role = scalar("event_time_role");
     if (role == "integration_start") {
         result.event_time_role = NativeEventTimeRole::integration_start;
@@ -295,11 +300,14 @@ NativeOccurrenceSupportAuthority load_occurrence_support_authority(
     } else if (role == "integration_end") {
         result.event_time_role = NativeEventTimeRole::integration_end;
     } else {
-        fail("occurrence-support authority event-time role is not approved");
+        fail("occurrence-support assignment event-time role is unsupported");
     }
     require(scalar("duration_relation") ==
                 occurrence_support_duration_relation,
-            "occurrence-support authority duration relation is not approved");
+            "occurrence-support assignment duration relation is unsupported");
+    require(scalar("calibration_disposition") ==
+                occurrence_support_calibration_disposition,
+            "occurrence-support assignment calibration disposition is unsupported");
     result.artifact_sha256 = citlali::utils::sha256_file(path);
     return result;
 }
@@ -750,7 +758,7 @@ struct ComparisonMetrics {
     std::size_t support_comparison_count = 0;
     std::size_t pair_decision_comparison_count = 0;
     std::size_t pair_causal_evidence_comparison_count = 0;
-    std::size_t producer_support_binding_count = 0;
+    std::size_t assigned_support_binding_count = 0;
     std::size_t x_bitwise_mismatch_count = 0;
     std::size_t r_bitwise_mismatch_count = 0;
     std::size_t identity_mismatch_count = 0;
@@ -761,10 +769,10 @@ struct ComparisonMetrics {
     std::size_t selected_time_mismatch_count = 0;
     std::size_t representative_native_mismatch_count = 0;
     std::size_t chunk_scientific_mismatch_count = 0;
-    std::size_t producer_support_binding_mismatch_count = 0;
+    std::size_t assigned_support_binding_mismatch_count = 0;
 };
 
-pipeline::NativeOccurrenceInterval authoritative_occurrence_interval(
+pipeline::NativeOccurrenceInterval assigned_occurrence_interval(
     double event, double duration, NativeEventTimeRole event_time_role) {
     switch (event_time_role) {
         case NativeEventTimeRole::integration_start:
@@ -777,7 +785,7 @@ pipeline::NativeOccurrenceInterval authoritative_occurrence_interval(
     fail("unsupported native event-time role");
 }
 
-void compare_occurrence_axis_to_authority(
+void compare_occurrence_axis_to_assignment(
     const pipeline::PairedReadoutOccurrenceAxis &axis,
     const NetworkInput &input, NativeEventTimeRole event_time_role,
     ComparisonMetrics &metrics) {
@@ -786,13 +794,13 @@ void compare_occurrence_axis_to_authority(
         input.fpga_frequency_hz;
     for (auto row = axis.first_native_row();
          row < axis.past_last_native_row(); ++row) {
-        ++metrics.producer_support_binding_count;
+        ++metrics.assigned_support_binding_count;
         const auto event = input.native_timing->identity(row)
                                .reconstructed_time_unix_sec();
-        const auto expected = authoritative_occurrence_interval(
+        const auto expected = assigned_occurrence_interval(
             event, duration, event_time_role);
         if (!(axis.interval(row) == expected)) {
-            ++metrics.producer_support_binding_mismatch_count;
+            ++metrics.assigned_support_binding_mismatch_count;
         }
     }
 }
@@ -937,7 +945,7 @@ PairedBuildResult build_paired_readout(
     const pipeline::CanonicalAptDetectorRelationV2 &relation,
     const std::vector<NetworkInput> &inputs,
     const RuntimeConfig &config,
-    const NativeOccurrenceSupportAuthority &support_authority,
+    const NativeOccurrenceSupportAssignment &support_assignment,
     const std::shared_ptr<const pipeline::NativeAlignmentPlan> &alignment) {
     std::vector<pipeline::PairedReadoutNetwork> networks;
     std::vector<pipeline::TimestreamNetworkId> inventory;
@@ -979,9 +987,9 @@ PairedBuildResult build_paired_readout(
         mapping_digest.update(mapping->mapping_revision);
         auto axis = occurrence_axis(
             input, arguments.first_native_row,
-            arguments.native_row_count, support_authority.event_time_role);
-        compare_occurrence_axis_to_authority(
-            *axis, input, support_authority.event_time_role, metrics);
+            arguments.native_row_count, support_assignment.event_time_role);
+        compare_occurrence_axis_to_assignment(
+            *axis, input, support_assignment.event_time_role, metrics);
         pipeline::PairedReadoutNetworkIngress ingress{
             std::move(axis),
             detector_axis(relation, input), mapping,
@@ -1242,7 +1250,7 @@ AcceptanceRun execute_acceptance(
     const pipeline::CanonicalAptDetectorRelationV2 &relation,
     const std::vector<NetworkInput> &inputs,
     const RuntimeConfig &config,
-    const NativeOccurrenceSupportAuthority &support_authority,
+    const NativeOccurrenceSupportAssignment &support_assignment,
     const std::shared_ptr<spdlog::logger> &logger) {
     const auto &observation = relation.observation();
     const pipeline::NativeObservationScope scope{
@@ -1253,7 +1261,7 @@ AcceptanceRun execute_acceptance(
 
     auto alignment = make_alignment_plan(scope, inputs, logger);
     auto paired_build = build_paired_readout(
-        arguments, scope, relation, inputs, config, support_authority,
+        arguments, scope, relation, inputs, config, support_assignment,
         alignment);
     const auto native_cardinality = paired_build.paired->cardinality();
     const auto native_memory = paired_build.paired->memory_evidence();
@@ -1340,8 +1348,8 @@ AcceptanceRun execute_acceptance(
 }
 
 void write_acceptance_record(const Arguments &arguments,
-                             const NativeOccurrenceSupportAuthority
-                                 &support_authority,
+                             const NativeOccurrenceSupportAssignment
+                                 &support_assignment,
                              const AcceptanceRun &run,
                              const LogCounts &logs) {
     require(run.comparisons.paired_value_comparison_count ==
@@ -1353,9 +1361,9 @@ void write_acceptance_record(const Arguments &arguments,
     require(run.comparisons.support_comparison_count ==
                 run.terminal.diagnostics.aligned_cell_count,
             "support comparison count is incomplete");
-    require(run.comparisons.producer_support_binding_count ==
+    require(run.comparisons.assigned_support_binding_count ==
                 run.native_cardinality.native_occurrence_count,
-            "producer-support binding count is incomplete");
+            "assigned-support binding count is incomplete");
     require(run.comparisons.pair_decision_comparison_count ==
                 run.terminal.diagnostics.aligned_cell_count,
             "pair-decision comparison count is incomplete");
@@ -1417,20 +1425,24 @@ void write_acceptance_record(const Arguments &arguments,
            << ",\n"
            << "  \"producer_interface_sha256\": "
            << q(producer_interface_sha256) << ",\n"
-           << "  \"occurrence_support_authority_schema\": "
-           << q(occurrence_support_authority_schema) << ",\n"
-           << "  \"occurrence_support_authority_id\": "
-           << q(support_authority.authority_id) << ",\n"
-           << "  \"occurrence_support_authority_sha256\": "
-           << q(support_authority.artifact_sha256) << ",\n"
-           << "  \"occurrence_support_authority_approved\": true,\n"
-           << "  \"occurrence_support_authority_approved_by\": "
-           << q(support_authority.approved_by) << ",\n"
-           << "  \"occurrence_support_authority_approved_at_utc\": "
-           << q(support_authority.approved_at_utc) << ",\n"
+           << "  \"occurrence_support_assignment_schema\": "
+           << q(occurrence_support_assignment_schema) << ",\n"
+           << "  \"occurrence_support_assignment_id\": "
+           << q(support_assignment.assignment_id) << ",\n"
+           << "  \"occurrence_support_assignment_sha256\": "
+           << q(support_assignment.artifact_sha256) << ",\n"
+           << "  \"occurrence_support_assignment_status\": "
+           << q(occurrence_support_assignment_status) << ",\n"
+           << "  \"occurrence_support_assigned_by\": "
+           << q(support_assignment.assigned_by) << ",\n"
+           << "  \"occurrence_support_assigned_at_utc\": "
+           << q(support_assignment.assigned_at_utc) << ",\n"
+           << "  \"occurrence_support_calibration_pending\": true,\n"
+           << "  \"occurrence_support_calibration_disposition\": "
+           << q(occurrence_support_calibration_disposition) << ",\n"
            << "  \"occurrence_support_event_time_role\": "
            << q(native_event_time_role_name(
-                    support_authority.event_time_role)) << ",\n"
+                    support_assignment.event_time_role)) << ",\n"
            << "  \"occurrence_support_duration_relation\": "
            << q(occurrence_support_duration_relation) << ",\n"
            << "  \"terminal_state\": "
@@ -1496,8 +1508,8 @@ void write_acceptance_record(const Arguments &arguments,
            << run.comparisons.identity_comparison_count << ",\n"
            << "    \"support_comparison_count\": "
            << run.comparisons.support_comparison_count << ",\n"
-           << "    \"producer_support_binding_count\": "
-           << run.comparisons.producer_support_binding_count << ",\n"
+           << "    \"assigned_support_binding_count\": "
+           << run.comparisons.assigned_support_binding_count << ",\n"
            << "    \"pair_decision_comparison_count\": "
            << run.comparisons.pair_decision_comparison_count << ",\n"
            << "    \"pair_causal_evidence_comparison_count\": "
@@ -1516,8 +1528,8 @@ void write_acceptance_record(const Arguments &arguments,
            << run.comparisons.identity_mismatch_count << ",\n"
            << "    \"support_mismatch_count\": "
            << run.comparisons.support_mismatch_count << ",\n"
-           << "    \"producer_support_binding_mismatch_count\": "
-           << run.comparisons.producer_support_binding_mismatch_count
+           << "    \"assigned_support_binding_mismatch_count\": "
+           << run.comparisons.assigned_support_binding_mismatch_count
            << ",\n"
            << "    \"pair_decision_mismatch_count\": "
            << run.comparisons.pair_decision_mismatch_count << ",\n"
@@ -1568,9 +1580,9 @@ int main(int argc, char **argv) {
                     arguments.producer_interface_artifact) ==
                     producer_interface_sha256,
                 "producer interface artifact SHA-256 is not approved");
-        const auto support_authority =
-            load_occurrence_support_authority(
-                arguments.occurrence_support_authority_artifact);
+        const auto support_assignment =
+            load_occurrence_support_assignment(
+                arguments.occurrence_support_assignment_artifact);
         require(std::string_view{KIDSCPP_GIT_REVISION} ==
                     kidscpp_revision.substr(0,
                         std::string_view{KIDSCPP_GIT_REVISION}.size()) &&
@@ -1603,11 +1615,11 @@ int main(int argc, char **argv) {
         const auto inputs = resolve_network_inputs(
             arguments, relation, config);
         const auto run = execute_acceptance(
-            arguments, relation, inputs, config, support_authority, logger);
+            arguments, relation, inputs, config, support_assignment, logger);
         require(log_counts->errors == 0 && log_counts->criticals == 0,
                 "acceptance route emitted unexpected error-level records");
         write_acceptance_record(
-            arguments, support_authority, run, *log_counts);
+            arguments, support_assignment, run, *log_counts);
         std::cout << "WP-7 identity RTC acceptance record: "
                   << arguments.output << '\n';
         return 0;
