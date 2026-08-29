@@ -1,10 +1,11 @@
 # SCI-JINC — Signed-Coefficient JINC Observation Mapmaker
 
-Status: complete exact-byte Stage A successor packet approved under
-`SCI-JINC-STAGE-A-Q002`; Stage A closed; versioned SCI-VAL binding satisfied;
-fresh implementation-blind Stage B dispatch authorized but not yet recorded
+Status: **Scientific authority frozen; implementation conformity not yet
+assessed under this contract.**
 
 Version: `v0.1`
+
+Frozen revision: `r0.3`
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -57,12 +58,12 @@ deferred manager-side reference excluded from author inputs. The successor byte
 identities and complete firewall are recorded in
 [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).
 
-Genuinely new work is limited to reconciling the recovered JINC authority with
-the now-frozen upstream quantity, coordinate, validity, response, and
-covariance boundaries; resolving the explicitly listed owner questions; and
-rendering the retained science in the library's shared two-view house form.
-Implementation-derived material remains outside the implementation-blind
-author channel.
+The completed Stage B work was limited to reconciling the recovered JINC
+authority with the frozen upstream quantity, coordinate, validity, response,
+and covariance boundaries; resolving the explicitly listed owner questions;
+and rendering the retained science in the library's shared two-view house
+form. Implementation-derived material remained outside the
+implementation-blind author channel.
 
 Grant Wilson approved the exact predecessor Stage A candidate at
 `6639bff3d94b92ace8faf3e407ccaefd5a38ea1f` on `2026-08-28`; see
@@ -74,8 +75,11 @@ under `SCI-JINC-STAGE-A-Q002`; see
 The approved author-input bytes remain unchanged. The separately versioned
 SCI-VAL binding is recorded in
 [`SCI_VAL_REGISTRY_BINDING_2026-08-28.md`](SCI_VAL_REGISTRY_BINDING_2026-08-28.md).
-All Stage B dispatch prerequisites are satisfied; no Stage B normative content
-has yet been created in this manager increment.
+The implementation-blind Stage B authoring, bounded owner repairs, independent
+two-view consistency checks, exact center-tie approval, freeze, mechanical
+verification, and post-freeze horizontal audit are complete. The controlling
+entry point is
+[`FREEZE_AUTHORITY_MANIFEST_R0.3.md`](FREEZE_AUTHORITY_MANIFEST_R0.3.md).
 
 ## Current Gate
 
@@ -106,10 +110,10 @@ has yet been created in this manager increment.
   `m_p` with local support/validity and `jinc_coefficient_squared_time`.
   ODQ-108 response/covariance products and every other role are deferred.
 - ODQ-109 scientific-conditioning/numerical-adequacy disposition: owner-
-  approved and incorporated; total numerical error must be negligible against
-  the approximately `10^-3` relative instrument-fidelity scale. No prescribed
-  summation/count formula, exact adequate tie/bin/cache choice, bitwise
-  reproducibility or stronger precision is scientifically required.
+  approved and incorporated through the exact-discrete-oracle-only certificate
+  boundary. The upper-bin phase lattice and positive-axis half-pixel center
+  tie are separately bound by `SCI-JINC-DEC-PHASE-CENTER-001`; no numerical-
+  adequacy profile or matching certificate is supplied by this package.
 - ODQ-110 finite-map center-admission disposition: owner-approved and
   incorporated; an occurrence contributes only when its resolved rounded
   cache center is in the finite destination domain. An outside center
@@ -127,13 +131,44 @@ has yet been created in this manager increment.
   v0.1/r0.3-map-r0.7.1-jinc-stage-a-q002-2026-08-28` and
   `SCI-VAL_PROFILE_REGISTRY
   v0.1/r0.3-map-r0.7.1-jinc-stage-a-q002-2026-08-28`.
-- Stage B dispatch gate: open; fresh implementation-blind Ultra authorship is
-  authorized from the exact approved packet without another owner question.
-- Implementation-blind scientific rationale: not commissioned and not drafted.
-- Engineering conformance specification: not commissioned and not drafted.
-- Scientific authority: not frozen.
+- Stage B implementation-blind authorship and bounded owner review: complete.
+- Shared canonical authority: frozen at `SCI-JINC v0.1/r0.3`, with 44 stable
+  requirements and 36 stable predictions shared by both views.
+- Scientific rationale and engineering conformance specification: complete,
+  compiled, mechanically checked, and visually inspected.
+- Scientific authority: frozen at commit
+  `a9f43877e01a661db13bd85b2e7f34ea5ac82fb7` and tag
+  `sci-jinc-v0.1-r0.3`; later scientific correction requires a versioned
+  successor and shall not change the tagged bytes.
+- Post-freeze horizontal authority audit: complete with no material finding;
+  no successor opened.
+- Numerical TolTEC JINC route: typed unavailable pending the separately owned
+  JINC-permitted PTC coefficient family, TolTEC array parameter set, and,
+  where numerical support is claimed, exact adequacy profile and matching
+  certificate.
 - Implementation conformity, representation fidelity, validation, achieved
   response/performance, readiness, and production state: not assessed.
+
+## Frozen Stage B Authority And Evidence
+
+- [`FREEZE_AUTHORITY_MANIFEST_R0.3.md`](FREEZE_AUTHORITY_MANIFEST_R0.3.md):
+  single controlling manifest for the complete frozen authority set
+- [`AUTHOR_DRAFT_DECISION_RECORD.md`](AUTHOR_DRAFT_DECISION_RECORD.md):
+  implementation-blind author and owner-review disposition record
+- [`PHASE_LATTICE_OWNER_DISPOSITION_R0.3.md`](PHASE_LATTICE_OWNER_DISPOSITION_R0.3.md):
+  stable `SCI-JINC-DEC-PHASE-CENTER-001` decision binding
+- [`CROSSWALK.md`](CROSSWALK.md): 44-row frozen requirement traceability
+- [`src/scientific-rationale.tex`](src/scientific-rationale.tex) and
+  [`src/engineering-conformance.tex`](src/engineering-conformance.tex): two
+  views importing one six-module shared authority
+- [`pdf/SCI-JINC-SCIENTIFIC-RATIONALE-v0.1.pdf`](pdf/SCI-JINC-SCIENTIFIC-RATIONALE-v0.1.pdf)
+  and
+  [`pdf/SCI-JINC-ENGINEERING-CONFORMANCE-v0.1.pdf`](pdf/SCI-JINC-ENGINEERING-CONFORMANCE-v0.1.pdf):
+  canonical frozen renderings
+- [`FREEZE_VERIFICATION_R0.3.md`](FREEZE_VERIFICATION_R0.3.md): exact hashes,
+  identifier/reference checks, PDF metadata, render, and visual verification
+- [`HORIZONTAL_AUTHORITY_COHERENCE_AUDIT_R0.3.md`](HORIZONTAL_AUTHORITY_COHERENCE_AUDIT_R0.3.md):
+  post-freeze read-only audit with no material finding
 
 ## Scientific Boundary
 
@@ -204,7 +239,8 @@ authorities.
   [`SCI-AST_TO_SCI-JINC_BOUNDARY.md`](SCI-AST_TO_SCI-JINC_BOUNDARY.md): exact
   proposed upstream quantity and coordinate boundaries
 - [`SCI-JINC_UPSTREAM_ADMISSION_PROFILE.md`](SCI-JINC_UPSTREAM_ADMISSION_PROFILE.md):
-  JINC-owned profile draft awaiting a versioned VAL registry binding
+  exact JINC-owned upstream-occurrence profile bound by the immutable SCI-VAL
+  successor records
 - [`NOTATION_AND_UNITS.md`](NOTATION_AND_UNITS.md),
   [`GEOMETRY_DECISION_TABLE.md`](GEOMETRY_DECISION_TABLE.md),
   and [`GROUPING_AND_PRODUCT_ROLES.md`](GROUPING_AND_PRODUCT_ROLES.md): exact
@@ -228,18 +264,20 @@ authorities.
 - [`SCI_VAL_REGISTRY_BINDING_2026-08-28.md`](SCI_VAL_REGISTRY_BINDING_2026-08-28.md):
   immutable successor identities, hashes, firewall treatment, and Stage B
   dispatch consequence
-- [`CROSSWALK.md`](CROSSWALK.md): reserved Stage B traceability surface
-- `src/` and `pdf/`: canonical package paths reserved without normative or
-  rendered Stage B content
+- [`CROSSWALK.md`](CROSSWALK.md): final 44-row frozen requirement traceability
+- `src/` and `pdf/`: frozen shared authority, both source views, and canonical
+  rendered Stage B PDFs
 
 ## Stop Boundary
 
-The exact ODQ-101/102B/103/104/105/106/107/109/110 successor packet is approved
-under Q002 without changing its bytes. Do not dispatch or draft the
-implementation-blind scientific rationale, shared normative core, engineering
-conformance specification, or PDFs in the registry-binding increment. The
-binding is now recorded, so a fresh isolated Ultra Stage B author may be
-dispatched from the exact approved manifest without another scientific-owner
-question. Do not inspect an implementation candidate for conformity or make
-any implementation-conformity, validation, achieved-performance, readiness,
-or production claim under this delta.
+SCI-JINC v0.1/r0.3 is complete and at rest as conditional,
+implementation-independent scientific authority. Do not modify the bytes
+bound by tag `sci-jinc-v0.1-r0.3`; a later scientific correction requires an
+explicitly authorized versioned successor.
+
+Any implementation-conformity audit, parameter/family authorization,
+numerical-adequacy exercise, validation program, readiness decision, or
+production decision is separate future work and requires its own authority.
+Until then, do not inspect an implementation candidate under this package or
+claim implementation conformity, numerical-route availability, validation,
+achieved performance, readiness, or production authorization.

@@ -12,8 +12,11 @@ Status: governing program charter
 
 Canonical package and branch provenance is recorded in the
 [2026-08-22 consolidation ledger](CONSOLIDATION_LEDGER_2026-08-22.md). That
-ledger is the pre-audit inventory for the current eight-package library; it
-does not replace any package's scientific authority or decision ledger.
+ledger remains the historical pre-audit inventory for the original
+eight-package baseline; it does not replace any package's scientific authority
+or decision ledger. The current nine-package library also contains the frozen
+[`SCI-JINC v0.1/r0.3`](packages/SCI-JINC/v0.1/README.md) authority, whose exact
+provenance is bound by its package-local freeze manifest and Git tag.
 
 Scientific owner: Grant Wilson
 

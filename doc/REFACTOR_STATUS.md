@@ -381,6 +381,31 @@ implementation-blind Ultra author may launch from the exact approved manifest.
 The registry binding itself is not an author input and creates no numerical
 route, conformity, validation, performance, readiness or production claim.
 
+On `2026-08-29` the implementation-blind SCI-JINC Stage B authoring and bounded
+owner-review sequence completed. The two final views import one six-module
+shared authority containing 44 stable requirements and 36 stable predictions.
+Grant Wilson separately approved the positive-axis half-pixel center-tie rule,
+which is bound with the phase-lattice disposition under stable decision
+`SCI-JINC-DEC-PHASE-CENTER-001` without inferring one approval from the other.
+SCI-JINC v0.1/r0.3 is frozen at commit
+`a9f43877e01a661db13bd85b2e7f34ea5ac82fb7` and tag
+`sci-jinc-v0.1-r0.3`; the superseding freeze-manifest SHA-256 is
+`ff4b79e7cca3950831eda95a16ec6a535597f543c4676378d2fc2f01d50faed2`.
+All source/hash, parity, identifier, reference, PDF reopen, metadata, render,
+and visual checks passed. A post-freeze implementation-blind horizontal audit
+over the exact frozen PTC/JINC/AST/VAL authorities found no material
+incoherence and opened no successor. The verification evidence is committed at
+`d6240cc5a6d3f617e60dc907f7f714c8e0212973`, and the consolidated
+`codex/scientific-contract-library` branch contains that record. The numerical
+TolTEC JINC route remains typed unavailable pending the separately owned
+JINC-permitted PTC coefficient family, authorized TolTEC array parameter set,
+and, where numerical support is claimed, exact adequacy profile with matching
+certificate. No implementation candidate was inspected, and no conformity,
+representation-fidelity, validation, achieved-performance, readiness,
+production, or production-authorization claim is made. SCI-JINC is closed for
+the time being; any later scientific correction requires an explicitly
+authorized versioned successor and shall not modify the tagged bytes.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later
