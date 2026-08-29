@@ -45,6 +45,19 @@ than mislabeling it as producer authority. The assignment and exact rerun
 procedure are in the
 [acceptance package](../handoff/WP7_IDENTITY_RTC_ACCEPTANCE_PACKAGE_2026-08-28.md).
 
+The exact-revision v2 representative run now passes under that provisional
+assignment. Source revision `e75e635cb0f9372fdd58ef60b8c62dea66dfb6ba`
+used all 11 networks, 5,518 detectors, and 2,048 native rows. All 22,528 native
+occurrences matched the assignment; 22,579,656 paired values and 11,289,828
+aligned-cell identity, support, decision, and causal-evidence comparisons had
+zero mismatches. The full route and two chunks had zero scientific mismatches,
+zero out-of-scope calls, zero unexpected error-level records, and zero
+RTC-owned numerical bytes. Compact evidence used 3,633,696 bytes for 227,106
+events. The [v2 record](../handoff/WP7_IDENTITY_RTC_ACCEPTANCE_152390_V2_2026-08-28.json)
+has SHA-256
+`4d7aadaafcc5cd792d007c7ae110d29961e15c3004a41be7be99671177661dbb`
+and passes the repository validator.
+
 Repository-local validation passes on the corrective tree: the CLI and
 acceptance executable build; all 115 focused WP-7 and ALIGN tests pass; all 845
 enabled repository CTests pass with the one established disabled test not run;
@@ -53,12 +66,14 @@ and the required config preflight passes all 129 unit tests and downstream
 audits. An assignment that hides pending calibration is rejected, and the old
 v1 record is rejected by the v2 validator.
 
-The representative observation 152390 gate now requires a new exact-revision
-owner run under the checked-in assignment. Fresh independent read-only
-conformance review follows that evidence. Until both gates pass, the increment
-is not accepted for production readiness or activation and the legacy route
-remains authoritative. No accepted-run or intended-science-change ledger entry
-is made.
+The representative observation 152390 execution gate is closed for the bounded
+identity route under the declared provisional assignment. Fresh independent
+read-only conformance review is now the next increment gate. D19 calibration
+remains open and limits the support-timing claim; it does not invalidate the
+identity arithmetic, pair decisions, or route-execution evidence. Until the
+independent review passes, the increment is not accepted for production
+readiness or activation and the legacy route remains authoritative. No
+accepted-run or intended-science-change ledger entry is made.
 
 ## 2026-08-26 WP-7 Timestream Successor Baseline
 

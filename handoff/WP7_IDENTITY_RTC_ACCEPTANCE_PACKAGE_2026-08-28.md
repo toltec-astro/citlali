@@ -7,7 +7,13 @@ project owner has assigned reconstructed native event time provisionally to
 the integration center, with primitive duration given by raw
 `AccumLen / FpgaFreq`. This is an engineering convention for the first route,
 not a claim that the producer's true timestamp semantics are known. Calibration
-remains explicitly pending. The previously retained
+remains explicitly pending. The representative real paired-data gate **passes**
+under that assignment at exact source revision
+`e75e635cb0f9372fdd58ef60b8c62dea66dfb6ba`. The retained
+[v2 observation 152390 record](WP7_IDENTITY_RTC_ACCEPTANCE_152390_V2_2026-08-28.json)
+passes the repository validator and has SHA-256
+`4d7aadaafcc5cd792d007c7ae110d29961e15c3004a41be7be99671177661dbb`.
+The previously retained
 [observation 152390 record](WP7_IDENTITY_RTC_ACCEPTANCE_152390_2026-08-28.json)
 used a locally constructed midpoint interval and is therefore superseded as
 acceptance evidence. It remains useful as historical execution diagnostics,
@@ -159,7 +165,25 @@ consequences and retained member-local causes. The real-data record verifies
 the same pair-wide resolution and cause carriage exhaustively for the evidence
 origins actually present in this slice.
 
-## Prior diagnostic execution (superseded as acceptance)
+## Recorded provisional-assignment execution
+
+The passing v2 run covers 11 networks, 5,518 detectors, 2,048 native rows,
+22,528 native occurrences, 11,300,864 native detector occurrences, and
+11,289,828 aligned detector occurrences. All native occurrences match the
+provisional support assignment. It compared 22,579,656 paired values and
+performed 11,289,828 comparisons each for identity, support, pair decision,
+and causal evidence. All scientific, chunk-partition, selected-time,
+native-correspondence, assigned-support, and out-of-scope call mismatch counts
+are zero.
+
+Paired ingress reports 226,608,108 logical owned bytes. Compact RTC evidence
+owns 3,633,696 bytes for 227,106 events, the plan owns 3,633,696 bytes, and RTC
+owns zero numerical bytes. Measured paired-ingress-through-publication time is
+4.026 seconds wall and 3.923 seconds CPU, with peak RSS 617,414,656 bytes.
+These measurements characterize this representative local run rather than a
+general performance qualification.
+
+## Prior v1 diagnostic execution (superseded as acceptance)
 
 The retained v1 run covers 11 networks, 5,518 detectors, 2,048
 native rows, 11,300,864 native detector occurrences, and 11,289,828 aligned
@@ -167,8 +191,9 @@ detector occurrences. It compared 22,579,656 paired values and performed
 11,289,828 comparisons each for identity, support, pair decision, and causal
 evidence. All scientific, chunk-partition, selected-time, native-
 correspondence, and out-of-scope call mismatch counts are zero. It did not bind
-primitive occurrence support to an independent producer-authoritative timing
-relation, so these otherwise useful results do not close the gate.
+primitive occurrence support to an explicit declared assignment or record the
+pending calibration disposition, so these otherwise useful results do not
+close the revised gate.
 
 Paired ingress reports 226,608,108 logical owned bytes, including the two
 180,813,824-byte numerical planes. RTC owns zero numerical bytes. Measured
