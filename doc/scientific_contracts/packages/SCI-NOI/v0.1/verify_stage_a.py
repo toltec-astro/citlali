@@ -100,6 +100,11 @@ def main() -> None:
         "finite ensemble mean is not subtracted",
         "no `B-1` correction",
         "common all-member domain",
+        "not covariance merely because it is pointwise or diagonal-like",
+        "A retained ensemble is a representation",
+        "Unreported off-diagonal entries",
+        "not zero or independent",
+        "No representation implies invertibility",
     ]
     for token in required:
         if token not in package_text:

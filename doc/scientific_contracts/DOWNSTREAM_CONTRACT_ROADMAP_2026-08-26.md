@@ -157,8 +157,12 @@ GEN closed for every UNC use if any admitted realization fails; rejected design
 candidates are not members/failures and completed survivors cannot form a
 partial ensemble. ODQ-105B now approves a zero-centered, exact-design-weighted
 conditional randomization second moment on the common all-member domain, with
-no empirical recentering, `B-1`, or physical-noise interpretation. ODQ-106,
-covariance representation and rank, is next.
+no empirical recentering, `B-1`, or physical-noise interpretation. ODQ-106 now
+establishes that pointwise field as the ordinary primary representation without
+promoting it to covariance; optional covariance methods remain separately
+identified, dense full covariance is not universally required, unknown
+covariance is not zero, and exact domain/rank/null/regularization disclosure is
+required. ODQ-107, empirical inverse and weight products, is next.
 Conditional Stage B remains blocked on exact
 bytes/hashes, granular owner decisions or explicit unavailability, and required
 source/profile bindings. The frozen MAP/pre-MAP

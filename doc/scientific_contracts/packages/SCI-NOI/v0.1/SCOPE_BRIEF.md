@@ -236,10 +236,12 @@ Every UNC method defines or types unavailable:
 - exact conditional/empirical claim ceiling.
 
 No universal `1/B` or `1/(B-1)` rule is authorized. A multivariate covariance
-requires common completed membership or an exact missing-data estimator with
-declared symmetry, positive-semidefinite, rank, and domain properties. Missing
-blocks are unknown, not zero. A numerical inverse is not automatically
-precision. Realization count is not exposure or independent astronomical
+requires common completed membership under its exact estimator. A future
+separately authorized method may define an exact within-product/domain
+missingness estimator with declared member population, symmetry, positive-
+semidefinite, rank, and domain properties, but it cannot rescue an admitted-
+member failure or create a survivor ensemble. Missing blocks are unknown, not
+zero. A numerical inverse is not automatically precision. Realization count is not exposure or independent astronomical
 sample count, and increasing it does not reduce parent-map noise as
 `1/sqrt(B)`.
 
@@ -261,6 +263,18 @@ member domain are unavailable for this initial method.
 No full pixel covariance is universally required. The representation must be
 adequate only for its exact claim and honest about rank, null space, domain,
 regularization, and omissions.
+
+ODQ-106 establishes the initial pointwise field above as the ordinary primary
+uncertainty representation, not as covariance by virtue of its pointwise or
+diagonal-like shape. Retained ensembles and separately identified fixed-
+projection, stationary/kernel, block/spectral/sparse/low-rank or other
+structured, and full covariance methods are permitted; no dense full
+covariance is universally required. A retained ensemble is not automatically
+an estimated covariance. Every covariance method declares exact estimator,
+member population, domain/support/response, rank or rank limit, null or
+unresolved modes, regularization/approximation, omissions, and uncertainty/
+calibration state. Unreported covariance is unknown or unavailable rather than
+zero or independence. No representation implies an inverse or precision.
 
 ## 7. STD: Numerator, Positive Scale, And Claim
 
@@ -409,7 +423,8 @@ approval. ODQ-103 approves the source-suppression intent and no-source-free-by-
 construction boundary while delegating exact terminology to the Stage-B
 scientific author. ODQ-105A approves fail-closed completion for every admitted
 member. ODQ-105B approves the initial zero-centered conditional randomization
-second moment. The next walkthrough question is `SCI-NOI-ODQ-106`. Every later
+second moment. ODQ-106 approves the covariance representation and rank policy.
+The next walkthrough question is `SCI-NOI-ODQ-107`. Every later
 decision and the artifact's final hash still require explicit owner review.
 
 ## 13. Non-Goals And Claim Boundary

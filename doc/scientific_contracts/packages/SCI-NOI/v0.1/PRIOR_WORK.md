@@ -193,7 +193,7 @@ numerical gates remain unavailable. ODQ-104 is explicitly owner-approved:
 every GEN method classifies scientifically consequential adjacent state, and a
 relearned method names its consequential rerun/relearn stages and resulting
 changed state without requiring exhaustive implementation provenance. The next
-owner question is `SCI-NOI-ODQ-106`, covariance representation and rank.
+owner question is `SCI-NOI-ODQ-107`, empirical inverse and weight products.
 ODQ-103 approves
 the source-suppression intent and no-source-free-by-construction boundary while
 delegating exact terminology to the Stage-B scientific author. ODQ-105A now
@@ -202,3 +202,9 @@ candidates are not members, and completed survivors cannot form a partial
 ensemble. ODQ-105B approves a zero-centered, exact-design-weighted conditional
 randomization second moment on the common all-member domain, without empirical
 recentering, `B-1`, or physical repeated-noise meaning.
+ODQ-106 establishes that pointwise second moment as the ordinary primary
+representation without promoting it to covariance. Retained ensembles and
+separately named projected, structured, or full covariance methods remain
+possible without a universal dense-covariance requirement; each must disclose
+exact member/domain/rank/null/regularization/omission semantics, unknown
+covariance is not zero, and no inverse or precision follows.

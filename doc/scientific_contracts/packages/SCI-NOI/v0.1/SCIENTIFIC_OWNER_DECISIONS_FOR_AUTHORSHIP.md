@@ -1,8 +1,8 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.10`
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.11`
 
-Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, ODQ-105A, and ODQ-105B owner-approved; exact
+Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, ODQ-105A, ODQ-105B, and ODQ-106 owner-approved; exact
 finite-design mechanics delegated to the scientific-contract author under
 ODQ-102D; later decisions remain open; not yet an allowed Stage B authority
 
@@ -272,21 +272,37 @@ not approve another decision or make an unresolved numerical route available.
 
 - **Exact question:** Which covariance representation, domain, rank,
   null-space, regularization, and unavailable states are authorized?
-- **Recommended disposition:** permit diagonal variance and named fixed
-  projection only with authorized estimators; allow retained ensemble,
-  stationary/kernel, structured, full, or unavailable states; never require
-  dense full covariance. Multivariate covariance requires common completed
-  membership or an exact missing-data estimator.
+- **Approved disposition:** the ordinary initial representation is the
+  ODQ-105B pointwise conditional randomization second-moment field; it is not
+  covariance merely because it is pointwise or diagonal-like. Permit retained
+  ensemble, named fixed projection, stationary/kernel, block/spectral/sparse/
+  low-rank or other exact structured covariance, full covariance, and explicit
+  unavailable states as separately identified methods. Never universally
+  require dense full covariance. Every covariance method declares its exact
+  estimator, member population, domain/support/response, rank or rank limit,
+  null space/unresolved modes, regularization/approximation, omissions, and
+  uncertainty/calibration state. A retained ensemble is not automatically an
+  estimated covariance. Unreported off-diagonal entries or blocks are unknown
+  or unavailable, not zero or independence. The ordinary initial method keeps
+  common all-member membership and cannot use pairwise populations, survivor
+  subsets, or a generic missing-data estimator to rescue a failed member or
+  unavailable location. A future separately authorized method may govern exact
+  within-product/domain missingness without overriding ODQ-105A.
 - **Alternatives:** diagonal-only, retained ensemble, structured, dense, or
   unavailable.
 - **Scientific consequences:** useful limited products do not imply
   completeness, invertibility, or zero missing blocks.
-- **Conservative state while open:** covariance unavailable; no inverse or
-  precision claim.
+- **Conservative state:** the initial second-moment representation is approved
+  but numerically unavailable at its existing gates. Every additional
+  covariance method is unavailable until exactly defined and admitted. No
+  inverse or precision claim follows.
 - **Affected artifacts:** UNC table/products, profiles, STD compatibility,
   consumer claims.
-- **Exact bytes changed by approval:** representation, domain, rank/null-space,
-  regularization, missing-data, and inverse-domain fields.
+- **Exact bytes changed by approval:** initial representation classification;
+  optional additional representation families; retained-ensemble non-meaning;
+  exact covariance method fields; common-membership and missingness limits;
+  unknown-not-zero off-diagonal policy; rank/null/regularization disclosure;
+  and no-inverse implication.
 
 ### `SCI-NOI-ODQ-107` — empirical inverse and weight products
 

@@ -508,8 +508,22 @@ Square root, projection, off-diagonal covariance, inverse, weight, and STD
 transformations remain separately governed. Numerical availability remains
 blocked on the existing GEN/design/domain/adequacy gates.
 
-The next walkthrough question is `SCI-NOI-ODQ-106`, covariance representation
-and rank. Later granular decisions, exact packet bytes/hashes, and
+Grant Wilson approved `SCI-NOI-ODQ-106` on `2026-08-29`. The ODQ-105B
+pointwise conditional second moment is the ordinary primary uncertainty
+representation but is not covariance merely because it is pointwise or
+diagonal-like. Retained ensembles and separately identified projected,
+stationary/kernel, structured, full, or unavailable covariance methods are
+permitted; dense full covariance is never universally required. Every
+covariance method must declare exact estimator/member population, domain,
+support/response, rank or rank limit, null/unresolved modes, regularization,
+omissions, and uncertainty/calibration state. Unreported covariance is unknown
+or unavailable rather than zero or independence. The initial method retains
+its common-all-member rule and cannot use pairwise populations, survivor
+subsets, or generic missing-data estimators to rescue failure. No covariance
+representation implies an inverse or precision.
+
+The next walkthrough question is `SCI-NOI-ODQ-107`, empirical inverse and
+weight products. Later granular decisions, exact packet bytes/hashes, and
 required source/profile Registry bindings remain under owner review.
 MAP/pre-MAP numerical parents remain
 unavailable pending the exact PTC MAP-facing coefficient and owner-admitted

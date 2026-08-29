@@ -199,6 +199,28 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
     UNC table, r0.4 of the product/lifecycle table, r0.2 of the STD table, and
     r0.10 packet/decision records without creating numerical availability.
 
+## ODQ-106 Covariance Representation And Rank Update
+
+58. Established the ODQ-105B pointwise conditional second moment as the
+    ordinary primary uncertainty representation without promoting its
+    pointwise or diagonal-like shape to covariance.
+59. Permitted retained ensembles and separately identified projected,
+    stationary/kernel, structured, full, and unavailable covariance methods;
+    preserved the rule that dense full covariance is never universally
+    required.
+60. Required every covariance method to declare exact estimator and member
+    population, domain/support/response, rank or rank limit, null or unresolved
+    modes, regularization/approximation, omissions, and uncertainty/calibration
+    state.
+61. Made unreported covariance unknown or unavailable rather than zero or
+    independence; prohibited missing-data, pairwise-population, or survivor
+    substitutions from overriding ODQ-105A/B in the initial method.
+62. Preserved inversion, precision, marginal inverse, and consumer-effective
+    weights as separate ODQ-107 decisions and advanced the walkthrough there.
+63. Published r0.4 of the finite-design UNC table, r0.5 of the product/lifecycle
+    table, and r0.11 packet/decision records without creating numerical
+    covariance availability.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance

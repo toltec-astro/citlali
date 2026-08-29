@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Finite-Design UNC Estimator And Covariance Table
 
-Artifact identity: `SCI-NOI_FINITE_DESIGN_UNC_TABLE v0.1/r0.3`
+Artifact identity: `SCI-NOI_FINITE_DESIGN_UNC_TABLE v0.1/r0.4`
 
 Status: proposed sanitized Stage A scientific input; exact bytes await owner
 approval
@@ -16,7 +16,7 @@ Every `NOI-UNC` method binds one complete row set below. No universal `1/B`,
 | Estimator | Second moment versus covariance; exact design probabilities/weights; finite-design normalization/correction; missingness and dependence treatment; uncertainty of the estimate | No universal `1/B` or `1/(B-1)` |
 | Design adequacy | `B_admitted_for_UNC`, `B_unique`, complement-pair count, exact design rank, null space, effective information, and method-specific minimum cardinality | Count, balance, complements, or uniqueness do not prove independence |
 | Common domain | Exact member population for every covariance entry, pixel/row identities, WCS, support, response reference, unit/beam, and lifecycle | Pairwise numerical availability cannot silently create different entry populations |
-| Missing-data method | When common membership is absent: exact estimator, symmetry rule, PSD property, rank/domain behavior, weighting, and unavailable entries | Missing covariance is not zero or independence |
+| Missing-data method | For a future separately authorized method addressing within-product/domain missingness: exact estimator, member population, symmetry rule, PSD property, rank/domain behavior, weighting, and unavailable entries | Cannot rescue admitted-member failure, create a survivor ensemble, or change the ordinary common all-member population; missing covariance is not zero or independence |
 | Representation | Retained ensemble, diagonal variance, stationary/kernel, block/spectral/low-rank/sparse structured covariance, fixed projection, full covariance, or unavailable | No representation is promoted by storage shape |
 | Rank and inverse | Exact rank/null space, unresolved modes, regularization, inverse/generalized-inverse operator and subspace, inverse-bias treatment, and conditioning | A numerical inverse is not automatically statistical precision |
 | Calibration and omissions | External calibration/overlap/independence state; response, nuisance, source leakage, learning/selection, and other omitted terms | “Empirical” does not mean calibrated or physical |
@@ -47,8 +47,31 @@ and is not automatically physical-noise variance or MAP covariance. A square
 root, projection, off-diagonal covariance, inverse, weight, or standardized
 signal is a separately identified transformation/product.
 
-ODQ-106 still governs additional covariance representations, domains, rank,
-null space, and unavailable states.
+## Approved Representation And Rank Policy
+
+ODQ-106 establishes `V_hat_cond` as the ordinary initial pointwise conditional
+second-moment representation. It is not covariance merely because it is
+pointwise or diagonal-like. A retained ensemble is a representation and
+possible estimator input, not automatically an estimated covariance.
+
+Named fixed projection, stationary/kernel, block/spectral/sparse/low-rank or
+other exact structured covariance, full covariance, and explicit unavailable
+states are permitted only as separately identified methods. Dense full
+covariance is never universally required. Every numerical covariance method
+declares its exact estimator, member population, domain/support/response,
+representation, rank or rank limit, null space or unresolved modes,
+regularization/approximation, omissions, and uncertainty/calibration state.
+
+Unreported off-diagonal entries, blocks, modes, or regions are unknown or
+unavailable, not zero or independent. The ordinary initial method retains the
+common all-member domain: pairwise populations, survivor subsets, and generic
+missing-data estimators cannot rescue a failed member or unavailable location.
+A future separately authorized method may define exact within-product/domain
+missingness treatment without overriding ODQ-105A.
+
+No representation implies invertibility. Numerical inversion is not
+automatically statistical precision; inverse and weight products remain under
+ODQ-107.
 
 Pseudo-realization count is not exposure, independent astronomical count, or
 evidence that parent-map noise falls as `1/sqrt(B)`. Additional members may

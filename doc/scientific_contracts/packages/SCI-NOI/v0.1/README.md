@@ -136,8 +136,8 @@ those typed unavailable states and do not create numerical products.
 - [`FILTER_AND_FRUIT_SCOPE.md`](FILTER_AND_FRUIT_SCOPE.md): deterministic FLT,
   Wiener, and FRUIT inclusion/deferral record
 - [`SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`](SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md):
-  one granular sanitized decision artifact with ODQ-101 and ODQ-102A/B/C
-  approved
+  one granular sanitized decision artifact with ODQ-101, ODQ-102A/B/C,
+  ODQ-103/104/105A/105B/106 approved and ODQ-102D author-delegated
 - [`SCIENTIFIC_OWNER_ODQ_101_APPROVAL_2026-08-29.md`](SCIENTIFIC_OWNER_ODQ_101_APPROVAL_2026-08-29.md):
   durable manager-facing owner approval and conflict check
 - [`SCIENTIFIC_OWNER_ODQ_102A_APPROVAL_2026-08-29.md`](SCIENTIFIC_OWNER_ODQ_102A_APPROVAL_2026-08-29.md):
@@ -159,6 +159,9 @@ those typed unavailable states and do not create numerical products.
   completion rule
 - [`SCIENTIFIC_OWNER_ODQ_105B_APPROVAL_2026-08-29.md`](SCIENTIFIC_OWNER_ODQ_105B_APPROVAL_2026-08-29.md):
   durable zero-centered conditional randomization second-moment definition
+- [`SCIENTIFIC_OWNER_ODQ_106_APPROVAL_2026-08-29.md`](SCIENTIFIC_OWNER_ODQ_106_APPROVAL_2026-08-29.md):
+  durable covariance-representation, rank, missing-covariance, and no-inverse-
+  implication policy
 - [`OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md`](OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md):
   complete Stage A ownership matrix
 - [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): exact proposed
@@ -182,8 +185,8 @@ those typed unavailable states and do not create numerical products.
 ## Stop Boundary
 
 Stop after presenting these final Stage A closure artifacts and continue the
-owner-decision walkthrough at `SCI-NOI-ODQ-106`; ODQ-101, ODQ-102A/B/C,
-ODQ-103, ODQ-104, and ODQ-105A/B are approved and ODQ-102D is delegated to the scientific-contract author. Do not
+owner-decision walkthrough at `SCI-NOI-ODQ-107`; ODQ-101, ODQ-102A/B/C,
+ODQ-103, ODQ-104, ODQ-105A/B, and ODQ-106 are approved and ODQ-102D is delegated to the scientific-contract author. Do not
 draft the implementation-blind scientific rationale, shared normative core,
 engineering conformance specification, or PDFs until the exact conditional
 Stage B gate in the Scope Brief is satisfied. Do not implement or modify
