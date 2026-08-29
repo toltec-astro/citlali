@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import importlib.util
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -17,9 +19,12 @@ assert SPEC is not None and SPEC.loader is not None
 validator = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(validator)
 
+EXPECTED_SOURCE_REVISION = "0123456789abcdef0123456789abcdef01234567"
+EXPECTED_EXECUTABLE_SHA256 = "a" * 64
+
 
 def valid_record() -> dict[str, object]:
-    source_revision = "0123456789abcdef0123456789abcdef01234567"
+    source_revision = EXPECTED_SOURCE_REVISION
     return {
         "schema": validator.SCHEMA,
         "source_revision": source_revision,
@@ -27,7 +32,7 @@ def valid_record() -> dict[str, object]:
         "executable_version": f"candidate-g{source_revision[:9]}",
         "citlali_source_clean": True,
         "citlali_ignored_source_state_verified": True,
-        "executable_sha256": "a" * 64,
+        "executable_sha256": EXPECTED_EXECUTABLE_SHA256,
         "dependency_state_verified": True,
         "kidscpp_revision": validator.KIDSCPP_REVISION,
         "kidscpp_build_patch_sha256": validator.KIDSCPP_PATCH_SHA256,
@@ -47,6 +52,7 @@ def valid_record() -> dict[str, object]:
         "tune_accumulation_explicit": True,
         "product_inspected_in_memory": True,
         "publication_complete": True,
+        "exact_context_handle_binding_verified": True,
         "rtc_timing_scope": "network-specific",
         "common_analysis_grid_requested": False,
         "persistent_rtc_tod_published": False,
@@ -54,10 +60,10 @@ def valid_record() -> dict[str, object]:
         "rtc_x_sign_id": validator.RTC_X_SIGN_ID,
         "rtc_r_sign_id": validator.RTC_R_SIGN_ID,
         "rtc_valid_domain_id": validator.RTC_VALID_DOMAIN_ID,
-        "representative_dataset_id": "SCI_ALIGN_STAGE7_NGC4449_152390",
-        "observation": 152390,
-        "first_native_row": 20000,
-        "native_row_count": 2048,
+        "representative_dataset_id": validator.REPRESENTATIVE_DATASET_ID,
+        "observation": validator.REPRESENTATIVE_OBSERVATION,
+        "first_native_row": validator.REPRESENTATIVE_FIRST_NATIVE_ROW,
+        "native_row_count": validator.REPRESENTATIVE_NATIVE_ROW_COUNT,
         "mapping_instance_id": "sha256:mapping",
         "producer_interface_id": validator.PRODUCER_INTERFACE,
         "producer_interface_sha256": validator.PRODUCER_SHA256,
@@ -89,44 +95,86 @@ def valid_record() -> dict[str, object]:
         "terminal_failure_cause": "none",
         "terminal_failure_detail": "",
         "metrics": {
-            "network_count": 2,
-            "detector_count": 10,
-            "native_occurrence_count": 4096,
-            "native_detector_occurrence_count": 20480,
-            "paired_numeric_payload_bytes": 327680,
-            "paired_member_state_bytes": 40960,
-            "paired_occurrence_interval_bytes": 65536,
-            "paired_detector_axis_bytes": 400,
-            "paired_identity_text_bytes": 100,
-            "paired_logical_owned_bytes": 434676,
-            "referenced_native_axis_count": 2,
-            "rtc_native_occurrence_count": 4096,
-            "rtc_detector_occurrence_count": 20480,
+            "network_count": validator.REPRESENTATIVE_NETWORK_COUNT,
+            "detector_count": validator.REPRESENTATIVE_DETECTOR_COUNT,
+            "native_occurrence_count": (
+                validator.REPRESENTATIVE_NATIVE_OCCURRENCE_COUNT
+            ),
+            "native_detector_occurrence_count": (
+                validator.REPRESENTATIVE_DETECTOR_OCCURRENCE_COUNT
+            ),
+            "paired_numeric_payload_bytes": 180813824,
+            "paired_member_state_bytes": 45203456,
+            "paired_occurrence_interval_bytes": 360448,
+            "paired_detector_axis_bytes": 220720,
+            "paired_identity_text_bytes": 9660,
+            "paired_logical_owned_bytes": 226608108,
+            "referenced_native_axis_count": (
+                validator.REPRESENTATIVE_NETWORK_COUNT
+            ),
+            "rtc_native_occurrence_count": (
+                validator.REPRESENTATIVE_NATIVE_OCCURRENCE_COUNT
+            ),
+            "rtc_detector_occurrence_count": (
+                validator.REPRESENTATIVE_DETECTOR_OCCURRENCE_COUNT
+            ),
             "evidence_event_count": 5,
             "direct_x_event_count": 3,
             "direct_r_event_count": 4,
             "x_and_r_event_count": 2,
             "pair_ineligible_cell_count": 5,
-            "x_payload_available_cell_count": 20480,
-            "r_payload_available_cell_count": 20480,
-            "x_numerically_valid_cell_count": 20477,
-            "r_numerically_valid_cell_count": 20476,
+            "x_payload_available_cell_count": (
+                validator.REPRESENTATIVE_DETECTOR_OCCURRENCE_COUNT
+            ),
+            "r_payload_available_cell_count": (
+                validator.REPRESENTATIVE_DETECTOR_OCCURRENCE_COUNT
+            ),
+            "x_numerically_valid_cell_count": (
+                validator.REPRESENTATIVE_DETECTOR_OCCURRENCE_COUNT - 3
+            ),
+            "r_numerically_valid_cell_count": (
+                validator.REPRESENTATIVE_DETECTOR_OCCURRENCE_COUNT - 4
+            ),
             "derived_evidence_bytes": 80,
             "derived_plan_bytes": 0,
-            "paired_ingress_value_comparison_count": 40960,
-            "paired_ingress_identity_comparison_count": 10,
-            "paired_ingress_member_state_comparison_count": 40960,
-            "rtc_product_value_comparison_count": 40960,
-            "identity_comparison_count": 20480,
-            "support_comparison_count": 4096,
-            "native_time_comparison_count": 4096,
-            "representative_native_comparison_count": 4096,
-            "assigned_support_binding_count": 4096,
-            "pair_decision_comparison_count": 20480,
-            "pair_causal_evidence_comparison_count": 20480,
+            "paired_ingress_value_comparison_count": (
+                2 * validator.REPRESENTATIVE_DETECTOR_OCCURRENCE_COUNT
+            ),
+            "paired_ingress_identity_comparison_count": (
+                validator.REPRESENTATIVE_DETECTOR_COUNT
+            ),
+            "paired_ingress_member_state_comparison_count": (
+                2 * validator.REPRESENTATIVE_DETECTOR_OCCURRENCE_COUNT
+            ),
+            "rtc_product_value_comparison_count": (
+                2 * validator.REPRESENTATIVE_DETECTOR_OCCURRENCE_COUNT
+            ),
+            "identity_comparison_count": (
+                validator.REPRESENTATIVE_DETECTOR_OCCURRENCE_COUNT
+            ),
+            "support_comparison_count": (
+                validator.REPRESENTATIVE_NATIVE_OCCURRENCE_COUNT
+            ),
+            "native_time_comparison_count": (
+                validator.REPRESENTATIVE_NATIVE_OCCURRENCE_COUNT
+            ),
+            "representative_native_comparison_count": (
+                validator.REPRESENTATIVE_NATIVE_OCCURRENCE_COUNT
+            ),
+            "assigned_support_binding_count": (
+                validator.REPRESENTATIVE_NATIVE_OCCURRENCE_COUNT
+            ),
+            "pair_decision_comparison_count": (
+                validator.REPRESENTATIVE_DETECTOR_OCCURRENCE_COUNT
+            ),
+            "pair_causal_evidence_comparison_count": (
+                validator.REPRESENTATIVE_DETECTOR_OCCURRENCE_COUNT
+            ),
             "chunk_partition_count": 2,
             "chunk_realized_operator_comparison_count": 1,
-            "chunk_scientific_comparison_count": 20480,
+            "chunk_scientific_comparison_count": (
+                validator.REPRESENTATIVE_DETECTOR_OCCURRENCE_COUNT
+            ),
             "wall_time_sec": 1.0,
             "cpu_time_sec": 0.5,
             "process_peak_rss_bytes": 1024,
@@ -159,7 +207,62 @@ def valid_record() -> dict[str, object]:
 
 class AcceptanceValidatorTest(unittest.TestCase):
     def test_accepts_complete_zero_mismatch_record(self) -> None:
-        validator.validate(valid_record())
+        record = valid_record()
+        validator.validate(record)
+        validator.validate_exact_package(
+            record,
+            expected_source_revision=EXPECTED_SOURCE_REVISION,
+            expected_executable_sha256=EXPECTED_EXECUTABLE_SHA256,
+        )
+
+    def test_exact_package_rejects_source_or_hash_substitution(self) -> None:
+        record = valid_record()
+        substituted_source = "f" * 40
+        record["source_revision"] = substituted_source
+        record["executable_revision"] = substituted_source
+        with self.assertRaisesRegex(
+            validator.AcceptanceError, "exact package expectation"
+        ):
+            validator.validate_exact_package(
+                record,
+                expected_source_revision=EXPECTED_SOURCE_REVISION,
+                expected_executable_sha256=EXPECTED_EXECUTABLE_SHA256,
+            )
+
+        record = valid_record()
+        record["executable_sha256"] = "b" * 64
+        with self.assertRaisesRegex(
+            validator.AcceptanceError, "exact package expectation"
+        ):
+            validator.validate_exact_package(
+                record,
+                expected_source_revision=EXPECTED_SOURCE_REVISION,
+                expected_executable_sha256=EXPECTED_EXECUTABLE_SHA256,
+            )
+
+    def test_exact_package_can_verify_executable_bytes(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            executable = Path(directory) / "acceptance-runner"
+            executable.write_bytes(b"exact candidate bytes")
+            expected_hash = hashlib.sha256(executable.read_bytes()).hexdigest()
+            record = valid_record()
+            record["executable_sha256"] = expected_hash
+            validator.validate_exact_package(
+                record,
+                expected_source_revision=EXPECTED_SOURCE_REVISION,
+                expected_executable_sha256=expected_hash,
+                executable=str(executable),
+            )
+            executable.write_bytes(b"substituted bytes")
+            with self.assertRaisesRegex(
+                validator.AcceptanceError, "executable file"
+            ):
+                validator.validate_exact_package(
+                    record,
+                    expected_source_revision=EXPECTED_SOURCE_REVISION,
+                    expected_executable_sha256=expected_hash,
+                    executable=str(executable),
+                )
 
     def test_rejects_prefix_only_or_dirty_source_binding(self) -> None:
         record = valid_record()
@@ -213,6 +316,7 @@ class AcceptanceValidatorTest(unittest.TestCase):
 
     def test_rejects_cross_network_or_persistent_terminal_claims(self) -> None:
         for name, value in (
+            ("exact_context_handle_binding_verified", False),
             ("rtc_timing_scope", "common-analysis-grid"),
             ("common_analysis_grid_requested", True),
             ("persistent_rtc_tod_published", True),
@@ -242,7 +346,7 @@ class AcceptanceValidatorTest(unittest.TestCase):
 
     def test_rejects_unchecked_pair_causal_evidence(self) -> None:
         record = valid_record()
-        record["metrics"]["pair_causal_evidence_comparison_count"] = 20479
+        record["metrics"]["pair_causal_evidence_comparison_count"] -= 1
         with self.assertRaisesRegex(
             validator.AcceptanceError,
             "pair_causal_evidence_comparison_count",
@@ -310,6 +414,23 @@ class AcceptanceValidatorTest(unittest.TestCase):
         ):
             validator.validate(record)
 
+    def test_rejects_substituted_dataset_slice_or_cardinality(self) -> None:
+        substitutions = (
+            ("record", "representative_dataset_id", "different-dataset"),
+            ("record", "first_native_row", 20001),
+            ("metrics", "network_count", 10),
+            ("metrics", "detector_count", 5517),
+            ("metrics", "native_occurrence_count", 22527),
+            ("metrics", "native_detector_occurrence_count", 11300863),
+        )
+        for scope, name, value in substitutions:
+            with self.subTest(scope=scope, name=name):
+                record = valid_record()
+                target = record if scope == "record" else record["metrics"]
+                target[name] = value
+                with self.assertRaisesRegex(validator.AcceptanceError, name):
+                    validator.validate(record)
+
     def test_rejects_selected_time_or_native_identity_mismatch(self) -> None:
         for name in (
             "selected_time_mismatch_count",
@@ -334,7 +455,7 @@ class AcceptanceValidatorTest(unittest.TestCase):
 
     def test_rejects_incomplete_assigned_support_binding(self) -> None:
         record = valid_record()
-        record["metrics"]["assigned_support_binding_count"] = 4095
+        record["metrics"]["assigned_support_binding_count"] -= 1
         with self.assertRaisesRegex(
             validator.AcceptanceError,
             "assigned_support_binding_count",
@@ -343,7 +464,7 @@ class AcceptanceValidatorTest(unittest.TestCase):
 
     def test_rejects_partial_native_product_comparison(self) -> None:
         record = valid_record()
-        record["metrics"]["rtc_product_value_comparison_count"] = 40958
+        record["metrics"]["rtc_product_value_comparison_count"] -= 2
         with self.assertRaisesRegex(
             validator.AcceptanceError,
             "rtc_product_value_comparison_count",

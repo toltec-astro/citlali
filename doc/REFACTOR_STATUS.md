@@ -1,5 +1,46 @@
 # Citlali Refactor Status
 
+## 2026-08-29 WP-7 Terminal-Publication Review Closure
+
+Fresh independent exact-SHA review of terminal implementation
+`ff00ff4a6b13a89a73f5a5148c60d3c6b1abf4dd` and its v7 observation 152390
+package returned HOLD. The reviewer confirmed the network-specific timing,
+common-grid exclusion, compact ownership, chunk invariance, real-data record
+contents, and unchanged out-of-scope behavior, but found two acceptance
+defects. A caller-supplied scalar context identity plus equal cardinalities did
+not prevent a foreign finalization from another context from publishing false
+completion, and the record validator checked source and data facts
+relationally without binding the exact package SHA, executable bytes, dataset
+slice, and representative cardinalities.
+
+The bounded repair retains the exact immutable application-context handle and
+run identity in the compact finalization. Route finalization and publication
+both require those bindings in addition to the already verified logical
+counts. A focused collision witness constructs two distinct contexts with the
+same request identity and cardinalities but different native times, then
+proves that replaying the first finalization into the second fails before
+publication. A stale run identity also fails. The retained handle adds no
+content hash, per-cell identity, copied scientific plane, support copy, or
+general lineage mechanism.
+
+The acceptance runner and validator advance to v8. The record now states that
+the exact context-handle binding was exercised. The validator hard-pins
+observation 152390, dataset identity, rows 20000--22047, 11 networks, 5,518
+detectors, 22,528 native occurrences, and 11,300,864 native detector
+occurrences. Its command requires the expected full implementation SHA and
+executable SHA-256 and can additionally hash the executable bytes directly.
+Negative tests substitute each package identity, dataset/slice fact, and
+cardinality independently.
+
+Pre-commit repair validation passes all 139 focused WP-7 and SCI-ALIGN CTests,
+all 870 runnable repository CTests with the one established disabled test
+unchanged, all 207 baseline-tool tests, all 22 v8 validator tests, and all 129
+required config unit tests plus downstream audits. The modified acceptance
+translation unit compiles through its generated build rule. A new exact clean
+implementation commit, regenerated v8 observation 152390 record, and fresh
+independent re-review remain required; the v7 acceptance claim is superseded
+and readiness remains pending.
+
 ## 2026-08-29 WP-7 Network-Timed RTC Terminal Publication
 
 The next bounded increment after the accepted network-timing repair is now

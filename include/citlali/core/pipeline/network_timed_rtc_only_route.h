@@ -22,16 +22,19 @@ struct NetworkTimedRtcOnlyRunIdentity {
 };
 
 // Compact application-owned completion facts for one logical network-timed
-// product. They bind finalization to the admitted context and are checked
-// against the immutable product before publication. They do not duplicate
-// occurrence axes, support, values, or provenance history.
+// product. The stable handle and run identity bind finalization to the exact
+// admitted in-memory context without hashing or copying its scientific facts.
+// Counts are checked against the immutable product before publication.
 struct NetworkTimedRtcLogicalFinalization {
   std::uint64_t finalization = 0;
-  RtcApplicationContextIdentity context_identity;
+  NetworkTimedRtcOnlyRunIdentity run_identity;
+  std::shared_ptr<const RtcApplicationContext> context_handle;
   std::size_t completed_native_occurrence_count = 0;
   std::size_t completed_cell_count = 0;
   bool observation_facts_finalized = false;
 };
+
+static_assert(sizeof(NetworkTimedRtcLogicalFinalization) <= 64);
 
 enum class NetworkTimedRtcOnlyTerminalState : std::uint8_t {
   complete,
@@ -228,8 +231,10 @@ private:
             NetworkTimedRtcCompletionState::complete ||
         candidate->finalization().finalization == 0 ||
         !candidate->finalization().observation_facts_finalized ||
-        candidate->finalization().context_identity !=
-            candidate->context_handle()->identity()) {
+        candidate->finalization().run_identity !=
+            candidate->terminal_result().identity ||
+        candidate->finalization().context_handle !=
+            candidate->context_handle()) {
       throw std::invalid_argument(
           "network-timed RTC-only publication candidate is incomplete");
     }
@@ -387,12 +392,13 @@ run_network_timed_rtc_only(const NetworkTimedRtcOnlyRouteRequest &request,
         "network-timed RTC-only observation facts are incomplete";
     return {terminal, nullptr};
   }
-  if (request.finalization.context_identity != request.context->identity()) {
+  if (request.finalization.run_identity != request.identity ||
+      request.finalization.context_handle != request.context) {
     terminal.failure_cause =
         NetworkTimedRtcOnlyFailureCause::finalization_identity_mismatch;
     terminal.failure_detail =
-        "network-timed RTC-only finalization does not bind the admitted "
-        "context";
+        "network-timed RTC-only finalization does not bind the exact admitted "
+        "run and context";
     return {terminal, nullptr};
   }
   if (request.finalization.completed_native_occurrence_count !=

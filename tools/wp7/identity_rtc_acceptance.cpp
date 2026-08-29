@@ -59,7 +59,7 @@ namespace pipeline = citlali::pipeline;
 namespace apt = citlali::pipeline::canonical_apt_v2;
 
 constexpr std::string_view acceptance_schema =
-    "citlali-wp7-network-timed-identity-rtc-acceptance-v7";
+    "citlali-wp7-network-timed-identity-rtc-acceptance-v8";
 constexpr std::string_view occurrence_support_assignment_schema =
     "citlali-native-occurrence-support-assignment-v1";
 constexpr std::string_view occurrence_support_duration_relation =
@@ -1110,7 +1110,7 @@ pipeline::NetworkTimedRtcOnlyRouteOutcome run_route(
             paired, std::move(spans)));
     }
     const pipeline::NetworkTimedRtcLogicalFinalization finalization{
-        run, context->identity(), logical->native_occurrence_count(),
+        run, {run}, context, logical->native_occurrence_count(),
         logical->detector_occurrence_count(), true};
     return pipeline::run_network_timed_rtc_only(
         {{run}, std::move(context), std::move(partitions), finalization},
@@ -1420,8 +1420,10 @@ AcceptanceRun execute_acceptance(
                     ->memory_evidence()
                     .owned_numeric_bytes == 0,
             "network-timed RTC product unexpectedly owns a numerical plane");
-    require(full.published_product->finalization().context_identity ==
-                    full.published_product->context_handle()->identity() &&
+    require(full.published_product->finalization().run_identity ==
+                    full.published_product->terminal_result().identity &&
+                full.published_product->finalization().context_handle ==
+                    full.published_product->context_handle() &&
                 full.published_product->finalization()
                         .completed_native_occurrence_count ==
                     full.published_product->timestream_handle()
@@ -1644,6 +1646,7 @@ void write_acceptance_record(const Arguments &arguments,
            << b(run.product_inspected_in_memory) << ",\n"
            << "  \"publication_complete\": "
            << b(run.publication_complete) << ",\n"
+           << "  \"exact_context_handle_binding_verified\": true,\n"
            << "  \"rtc_timing_scope\": \"network-specific\",\n"
            << "  \"common_analysis_grid_requested\": false,\n"
            << "  \"persistent_rtc_tod_published\": false,\n"

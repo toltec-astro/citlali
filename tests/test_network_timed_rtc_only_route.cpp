@@ -82,14 +82,18 @@ struct NetworkTimedRtcOnlyFixture {
       split_partitions;
 };
 
-NetworkTimedRtcOnlyFixture route_fixture() {
+NetworkTimedRtcOnlyFixture route_fixture(double time_offset = 0.0) {
   std::vector<pipeline::PairedReadoutNetwork> networks;
   networks.push_back(route_network(
-      0, 10, {1000.0000, 1000.0100, 1000.0200, 1000.0300}, {100, 101, 102, 103},
-      500, 1.0, 101.0, 2, pipeline::ReadoutMember::r));
-  networks.push_back(route_network(7, 70, {1000.0025, 1000.0125, 1000.0325},
-                                   {700, 701, 703}, 700, 11.0, 111.0, 1,
-                                   pipeline::ReadoutMember::x));
+      0, 10,
+      {1000.0000 + time_offset, 1000.0100 + time_offset,
+       1000.0200 + time_offset, 1000.0300 + time_offset},
+      {100, 101, 102, 103}, 500, 1.0, 101.0, 2, pipeline::ReadoutMember::r));
+  networks.push_back(route_network(
+      7, 70,
+      {1000.0025 + time_offset, 1000.0125 + time_offset,
+       1000.0325 + time_offset},
+      {700, 701, 703}, 700, 11.0, 111.0, 1, pipeline::ReadoutMember::x));
   auto native = pipeline::PairedReadout::admit(
       pipeline::NativeObservationScope{152390, 0, 4}, {0, 7},
       std::move(networks));
@@ -116,16 +120,20 @@ std::shared_ptr<const pipeline::RtcApplicationContext> route_context(
 
 pipeline::NetworkTimedRtcLogicalFinalization route_finalization(
     const std::shared_ptr<const pipeline::RtcApplicationContext> &context,
-    std::uint64_t identity = 11) {
-  return {identity, context->identity(),
+    std::uint64_t run, std::uint64_t identity = 11) {
+  return {identity,
+          {run},
+          context,
           context->input_handle()->native_occurrence_count(),
-          context->input_handle()->detector_occurrence_count(), true};
+          context->input_handle()->detector_occurrence_count(),
+          true};
 }
 
 pipeline::NetworkTimedRtcOnlyRouteRequest
 route_request(const NetworkTimedRtcOnlyFixture &data, std::uint64_t run = 13) {
   auto context = route_context(data);
-  return {{run}, context, data.split_partitions, route_finalization(context)};
+  return {
+      {run}, context, data.split_partitions, route_finalization(context, run)};
 }
 
 TEST(network_timed_rtc_only_route,
@@ -146,8 +154,9 @@ TEST(network_timed_rtc_only_route,
             pipeline::NetworkTimedRtcOnlyFailureCause::none);
   EXPECT_TRUE(bundle.terminal_result().failure_detail.empty());
   EXPECT_EQ(bundle.context_handle()->identity().request, 7U);
-  EXPECT_EQ(bundle.finalization().context_identity,
-            bundle.context_handle()->identity());
+  EXPECT_EQ(bundle.finalization().run_identity,
+            bundle.terminal_result().identity);
+  EXPECT_EQ(bundle.finalization().context_handle, bundle.context_handle());
   EXPECT_EQ(bundle.plan_handle()->identity(),
             bundle.realization().plan_identity);
   EXPECT_EQ(bundle.evidence_handle(), bundle.plan_handle()->evidence_handle());
@@ -219,11 +228,29 @@ TEST(network_timed_rtc_only_route,
 TEST(network_timed_rtc_only_route,
      finalization_is_context_bound_and_required_content_is_fail_closed) {
   const auto data = route_fixture();
-  auto wrong_identity = route_request(data);
-  wrong_identity.finalization.context_identity.request = 999;
-  pipeline::NetworkTimedRtcOnlyProductSlot wrong_identity_publication;
-  const auto identity_outcome = pipeline::run_network_timed_rtc_only(
-      wrong_identity, wrong_identity_publication);
+  const auto foreign_data = route_fixture(10.0);
+  auto replayed = route_request(foreign_data);
+  const auto original = route_request(data);
+  ASSERT_EQ(original.context->identity(), replayed.context->identity());
+  ASSERT_EQ(original.context->input_handle()->native_occurrence_count(),
+            replayed.context->input_handle()->native_occurrence_count());
+  ASSERT_EQ(original.context->input_handle()->detector_occurrence_count(),
+            replayed.context->input_handle()->detector_occurrence_count());
+  ASSERT_NE(original.context, replayed.context);
+  ASSERT_NE(original.context->input_handle()
+                ->network(0)
+                .occurrence_axis_handle()
+                ->identity(10)
+                .reconstructed_time_unix_sec(),
+            replayed.context->input_handle()
+                ->network(0)
+                .occurrence_axis_handle()
+                ->identity(10)
+                .reconstructed_time_unix_sec());
+  replayed.finalization = original.finalization;
+  pipeline::NetworkTimedRtcOnlyProductSlot replayed_publication;
+  const auto identity_outcome =
+      pipeline::run_network_timed_rtc_only(replayed, replayed_publication);
   EXPECT_FALSE(identity_outcome.complete());
   EXPECT_EQ(identity_outcome.terminal.state,
             pipeline::NetworkTimedRtcOnlyTerminalState::finalization_failed);
@@ -231,9 +258,20 @@ TEST(network_timed_rtc_only_route,
             pipeline::NetworkTimedRtcOnlyFailureCause::
                 finalization_identity_mismatch);
   EXPECT_EQ(identity_outcome.terminal.failure_detail,
-            "network-timed RTC-only finalization does not bind the admitted "
-            "context");
-  EXPECT_EQ(wrong_identity_publication.snapshot(), nullptr);
+            "network-timed RTC-only finalization does not bind the exact "
+            "admitted run and context");
+  EXPECT_EQ(replayed_publication.snapshot(), nullptr);
+
+  auto stale_run = route_request(data);
+  stale_run.finalization.run_identity.run = 999;
+  pipeline::NetworkTimedRtcOnlyProductSlot stale_run_publication;
+  const auto stale_run_outcome =
+      pipeline::run_network_timed_rtc_only(stale_run, stale_run_publication);
+  EXPECT_FALSE(stale_run_outcome.complete());
+  EXPECT_EQ(stale_run_outcome.terminal.failure_cause,
+            pipeline::NetworkTimedRtcOnlyFailureCause::
+                finalization_identity_mismatch);
+  EXPECT_EQ(stale_run_publication.snapshot(), nullptr);
 
   auto incomplete = route_request(data);
   --incomplete.finalization.completed_native_occurrence_count;
@@ -267,7 +305,7 @@ TEST(network_timed_rtc_only_route,
   auto nonterminal = route_request(data);
   nonterminal.context =
       route_context(data, pipeline::RtcApplicationUse::sci_cal_handoff, 21);
-  nonterminal.finalization = route_finalization(nonterminal.context);
+  nonterminal.finalization = route_finalization(nonterminal.context, 13);
   pipeline::NetworkTimedRtcOnlyProductSlot nonterminal_publication;
   const auto nonterminal_outcome = pipeline::run_network_timed_rtc_only(
       nonterminal, nonterminal_publication);

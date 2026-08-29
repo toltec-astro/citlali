@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import re
@@ -12,7 +13,15 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA = "citlali-wp7-network-timed-identity-rtc-acceptance-v7"
+SCHEMA = "citlali-wp7-network-timed-identity-rtc-acceptance-v8"
+REPRESENTATIVE_DATASET_ID = "SCI_ALIGN_STAGE7_NGC4449_152390"
+REPRESENTATIVE_OBSERVATION = 152390
+REPRESENTATIVE_FIRST_NATIVE_ROW = 20000
+REPRESENTATIVE_NATIVE_ROW_COUNT = 2048
+REPRESENTATIVE_NETWORK_COUNT = 11
+REPRESENTATIVE_DETECTOR_COUNT = 5518
+REPRESENTATIVE_NATIVE_OCCURRENCE_COUNT = 22528
+REPRESENTATIVE_DETECTOR_OCCURRENCE_COUNT = 11300864
 OCCURRENCE_SUPPORT_ASSIGNMENT_SCHEMA = (
     "citlali-native-occurrence-support-assignment-v1"
 )
@@ -153,6 +162,7 @@ def validate(record: dict[str, Any]) -> None:
     require_true(record, "tune_accumulation_explicit")
     require_true(record, "product_inspected_in_memory")
     require_true(record, "publication_complete")
+    require_true(record, "exact_context_handle_binding_verified")
     if record.get("rtc_timing_scope") != "network-specific":
         raise AcceptanceError("rtc_timing_scope must be 'network-specific'")
     require_false(record, "common_analysis_grid_requested")
@@ -167,11 +177,26 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError(
             f"rtc_valid_domain_id must be {RTC_VALID_DOMAIN_ID!r}"
         )
-    require_string(record, "representative_dataset_id")
-    if require_integer(record, "observation", 1) != 152390:
-        raise AcceptanceError("observation must be 152390")
-    require_integer(record, "first_native_row")
-    native_row_count = require_integer(record, "native_row_count", 2048)
+    if record.get("representative_dataset_id") != REPRESENTATIVE_DATASET_ID:
+        raise AcceptanceError(
+            f"representative_dataset_id must be {REPRESENTATIVE_DATASET_ID!r}"
+        )
+    if require_integer(record, "observation", 1) != REPRESENTATIVE_OBSERVATION:
+        raise AcceptanceError(
+            f"observation must be {REPRESENTATIVE_OBSERVATION}"
+        )
+    if (
+        require_integer(record, "first_native_row")
+        != REPRESENTATIVE_FIRST_NATIVE_ROW
+    ):
+        raise AcceptanceError(
+            f"first_native_row must be {REPRESENTATIVE_FIRST_NATIVE_ROW}"
+        )
+    native_row_count = require_integer(record, "native_row_count", 1)
+    if native_row_count != REPRESENTATIVE_NATIVE_ROW_COUNT:
+        raise AcceptanceError(
+            f"native_row_count must be {REPRESENTATIVE_NATIVE_ROW_COUNT}"
+        )
     require_string(record, "mapping_instance_id")
     if record.get("producer_interface_id") != PRODUCER_INTERFACE:
         raise AcceptanceError(
@@ -243,8 +268,21 @@ def validate(record: dict[str, Any]) -> None:
 
     metrics = require_object(record.get("metrics"), "metrics")
     network_count = require_integer(metrics, "network_count", 1)
+    if network_count != REPRESENTATIVE_NETWORK_COUNT:
+        raise AcceptanceError(
+            f"network_count must be {REPRESENTATIVE_NETWORK_COUNT}"
+        )
     detector_count = require_integer(metrics, "detector_count", 1)
+    if detector_count != REPRESENTATIVE_DETECTOR_COUNT:
+        raise AcceptanceError(
+            f"detector_count must be {REPRESENTATIVE_DETECTOR_COUNT}"
+        )
     native_occurrences = require_integer(metrics, "native_occurrence_count", 1)
+    if native_occurrences != REPRESENTATIVE_NATIVE_OCCURRENCE_COUNT:
+        raise AcceptanceError(
+            "native_occurrence_count must equal the exact representative "
+            f"cardinality {REPRESENTATIVE_NATIVE_OCCURRENCE_COUNT}"
+        )
     if native_occurrences != network_count * native_row_count:
         raise AcceptanceError(
             "native_occurrence_count must cover every network and native row"
@@ -252,6 +290,12 @@ def validate(record: dict[str, Any]) -> None:
     detector_occurrences = require_integer(
         metrics, "native_detector_occurrence_count", 1
     )
+    if detector_occurrences != REPRESENTATIVE_DETECTOR_OCCURRENCE_COUNT:
+        raise AcceptanceError(
+            "native_detector_occurrence_count must equal the exact "
+            "representative cardinality "
+            f"{REPRESENTATIVE_DETECTOR_OCCURRENCE_COUNT}"
+        )
     if detector_occurrences != detector_count * native_row_count:
         raise AcceptanceError(
             "native_detector_occurrence_count must cover every detector and native row"
@@ -488,12 +532,71 @@ def load_record(path: str) -> dict[str, Any]:
         return require_object(json.load(stream), "acceptance record")
 
 
+def sha256_file(path: str) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as stream:
+        while chunk := stream.read(1024 * 1024):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def validate_exact_package(
+    record: dict[str, Any],
+    *,
+    expected_source_revision: str,
+    expected_executable_sha256: str,
+    executable: str | None = None,
+) -> None:
+    validate(record)
+    if not HEX40.fullmatch(expected_source_revision):
+        raise AcceptanceError(
+            "expected_source_revision must be one full lowercase Git SHA"
+        )
+    if not HEX64.fullmatch(expected_executable_sha256):
+        raise AcceptanceError(
+            "expected_executable_sha256 must be one lowercase SHA-256"
+        )
+    if record.get("source_revision") != expected_source_revision:
+        raise AcceptanceError(
+            "source_revision does not match the exact package expectation"
+        )
+    if record.get("executable_sha256") != expected_executable_sha256:
+        raise AcceptanceError(
+            "executable_sha256 does not match the exact package expectation"
+        )
+    if executable is not None:
+        actual_sha256 = sha256_file(executable)
+        if actual_sha256 != expected_executable_sha256:
+            raise AcceptanceError(
+                "executable file does not match expected_executable_sha256"
+            )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("record", help="acceptance JSON path, or - for stdin")
+    parser.add_argument(
+        "--expected-source-revision",
+        required=True,
+        help="exact full Citlali implementation SHA admitted by this package",
+    )
+    parser.add_argument(
+        "--expected-executable-sha256",
+        required=True,
+        help="exact acceptance executable SHA-256 admitted by this package",
+    )
+    parser.add_argument(
+        "--executable",
+        help="optional executable file whose bytes must match the expected hash",
+    )
     args = parser.parse_args()
     try:
-        validate(load_record(args.record))
+        validate_exact_package(
+            load_record(args.record),
+            expected_source_revision=args.expected_source_revision,
+            expected_executable_sha256=args.expected_executable_sha256,
+            executable=args.executable,
+        )
     except (AcceptanceError, json.JSONDecodeError, OSError) as error:
         print(
             f"WP-7 network-timed identity RTC acceptance: FAIL: {error}",
