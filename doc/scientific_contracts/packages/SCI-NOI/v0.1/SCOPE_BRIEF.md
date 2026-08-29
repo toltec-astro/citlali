@@ -91,22 +91,32 @@ graph is owner-approved. Fixed-state and relearned members shall never be
 combined in one uncertainty estimate.
 
 That conditioning family is not one complete numerical method. Each exact
-parent/insertion/host combination has a separate method identity. The complete
-candidate graph in [`NOI_GEN_PARENT_OPERATOR_GRAPH.md`](NOI_GEN_PARENT_OPERATOR_GRAPH.md)
-separates PTC-to-frozen-MAP, PTC-to-frozen-JINC, realized-MAP,
-realized-JINC, and filtered routes. ODQ-101 selected none of them. Until
-`SCI-NOI-ODQ-102A` is resolved, every numerical route remains unavailable.
+parent/insertion/host combination has a separate method identity. ODQ-102A
+selects `NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1` as the ordinary route:
+NOI applies its assignment at the exact PTC-to-MAP numerical boundary, and MAP
+may consume the modifier inline during otherwise ordinary frozen accumulation.
+No materialized randomized timestream is required. NOI owns assignment,
+ensemble design, realization identity, and the resulting NOI realization map;
+MAP owns only conforming application of the modifier. The result is not an
+ordinary MAP science product.
+
+The complete graph in
+[`NOI_GEN_PARENT_OPERATOR_GRAPH.md`](NOI_GEN_PARENT_OPERATOR_GRAPH.md)
+keeps PTC-to-frozen-JINC, realized-MAP, realized-JINC, and filtered routes
+separate and unselected. The selected ordinary route remains numerically
+unavailable until its frozen PTC/MAP coefficient and exact numerical
+`coverage_cut` state/value and failure-policy gates are realized.
 
 ## 3. Exact Parent Boundaries And Current Availability
 
 The author packet includes three sanitized exact boundaries:
 
 - [`SCI-MAP_TO_SCI-NOI_BOUNDARY.md`](SCI-MAP_TO_SCI-NOI_BOUNDARY.md), identity
-  `SCI-MAP_TO_SCI-NOI v0.1/r0.1`;
+  `SCI-MAP_TO_SCI-NOI v0.1/r0.2`;
 - [`SCI-JINC_TO_SCI-NOI_BOUNDARY.md`](SCI-JINC_TO_SCI-NOI_BOUNDARY.md), identity
-  `SCI-JINC_TO_SCI-NOI v0.1/r0.1`; and
+  `SCI-JINC_TO_SCI-NOI v0.1/r0.2`; and
 - [`SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md`](SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md),
-  identity `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.1`, containing separately
+  identity `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.2`, containing separately
   identified PTC-to-frozen-MAP and PTC-to-frozen-JINC candidates.
 
 Each boundary binds exact package/revision, product/application generation,
@@ -117,9 +127,9 @@ response/covariance/availability, operator state, source/filter state,
 lifecycle, failure, and immutable provenance.
 
 A boundary describes a route only when its exact parent is scientifically
-realized. It never creates a numerical parent. Presently:
+realized. Selecting route identity never creates a numerical parent. Presently:
 
-- ordinary numerical MAP and pre-MAP-to-MAP routes remain unavailable because
+- the selected ordinary pre-MAP-to-frozen-MAP route remains unavailable because
   no exact PTC MAP-facing coefficient family and no exact owner-admitted
   numerical `coverage_cut` state/value are bound; and
 - the numerical JINC route remains unavailable because its required PTC
@@ -327,10 +337,12 @@ covariance does not invalidate the parent or prohibit later analysis.
 ## 12. Scientific-Owner Decisions And Stage A Gate
 
 [`SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`](SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md)
-is the one sanitized decision candidate. It records approved ODQ-101 and keeps
+is the one sanitized decision candidate. It records approved ODQ-101 and
+ODQ-102A and keeps
 the following scientifically independent choices separate:
 
-- exact ordinary numerical route;
+- exact ordinary numerical route, ownership, and inline/materialized
+  representation rule;
 - initial coherence family and finite assignment law;
 - source-imprint claim;
 - fixed state and replay graph;
@@ -342,10 +354,10 @@ the following scientifically independent choices separate:
 - deterministic FLT, Wiener, and FRUIT scope; and
 - NOI-owned VAL identities and exact actions.
 
-ODQ-101 is approved. The next walkthrough question is
-`SCI-NOI-ODQ-102A`: select one exact ordinary parent/insertion route, or keep
-all numerical routes explicitly unavailable. Every later decision and the
-artifact's final hash still require explicit owner review.
+ODQ-101 and ODQ-102A are approved. The next walkthrough question is
+`SCI-NOI-ODQ-102B`: select the initial stable coherence-unit family for the
+approved route. Every later decision and the artifact's final hash still
+require explicit owner review.
 
 ## 13. Non-Goals And Claim Boundary
 

@@ -32,7 +32,7 @@ replaced by one generic pass bit.
 | Field | Draft binding |
 | --- | --- |
 | Object/domain | One exact input occurrence or complete parent bundle named by one requested GEN method, including earliest immutable parent and insertion point |
-| Exact source packages | The exact approved `SCI-MAP_TO_SCI-NOI v0.1/r0.1`, `SCI-JINC_TO_SCI-NOI v0.1/r0.1`, or `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.1` route selected by the method; no adjacent package by analogy |
+| Exact source packages | For the ODQ-102A ordinary route, exact proposed `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.2` and its bound frozen `SCI-PTC_TO_SCI-MAP v0.1/r0.1` source; another separately approved method uses only its exact boundary, never an adjacent package by analogy |
 | Required facts | Exact parent package/version, product/application generation, observation and stable detector/array/group identity, signal quantity/unit/beam, response/WCS/frame, coefficient/projection/normalization/support/boundary, parent validity/causes/influence, lifecycle, operator route, assignment-method identity, and immutable provenance required by the selected boundary |
 | Decisive exclusions | Nonexistent or incomplete parent; typed parent unavailability; incompatible ancestry/generation; missing exact route/profile identity; unresolved required MAP/JINC numerical gate; absent required signal/support/coordinate/permission; or a parent restriction explicitly prohibiting the GEN use |
 | Exception authority | None for exact identity, ancestry, required parent completion, source binding, quantity/unit/beam, WCS/frame, lifecycle, or route compatibility. Any other exception requires a versioned NOI profile successor |
@@ -41,7 +41,7 @@ replaced by one generic pass bit.
 | Missing/conflict behavior | Missing/conflicting required facts yield `applicability_unknown` and `decision_unavailable`; a decisive false restriction yields `ineligible`; no row/time/shape/filename/unit-only fallback |
 | Aggregation/propagation | Atomic only. No detector, observation, ensemble, or reverse-propagated decision is implied. A generic flag or another-use pass has no veto or rescue effect |
 | Lifecycle | Evaluation binds requested/effective/observation-resolved/applied/realized GEN and parent generations plus exact profile/source versions |
-| Exact consumer action | Admit the exact object as a GEN-route candidate only. Assignment, operator execution, member completion/QC, ensemble completion, and UNC admission remain separate |
+| Exact consumer action | Admit the exact object as a candidate occurrence for `NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1` only. NOI assignment, MAP's conforming inline or materialized application, GEN completion/QC, ensemble completion, and UNC admission remain separate |
 
 ## `SCI-NOI:uncertainty_member_admission@1`
 
@@ -49,7 +49,7 @@ replaced by one generic pass bit.
 | --- | --- |
 | Object/domain | One atomic GEN realization member `b`, with immutable GEN-owned completion/QC facts, presented to one exact UNC method/use |
 | Exact source packages | Exact GEN route-specific method/generation, parent boundary, generation-input profile evaluation, operator graph, assignment design/version, GEN product identity, and proposed UNC method identity |
-| Required producer facts consumed without redefinition | Exact member/ensemble IDs; GEN completion and terminal state; assignment/equivalence/duplicate state; earliest parent; fixed `Theta_0` or relearned `Theta_b`; required operator terminal states; payload or authorized reconstruction/sufficient-statistic state; unit/WCS/support; source-imprint/QC; persistence; lifecycle; causes, failure scope, and provenance |
+| Required producer facts consumed without redefinition | Exact member/ensemble IDs; GEN completion and terminal state; assignment/equivalence/duplicate state; earliest parent; fixed `Theta_0` or relearned `Theta_b`; required operator terminal states; NOI realization-product identity; inline/materialized representation state when applicable; payload or authorized reconstruction/sufficient-statistic state; unit/WCS/support; source-imprint/QC; persistence; lifecycle; causes, failure scope, and provenance |
 | Named-use restrictions | The exact UNC method's permitted terminal states, equivalence/duplicate treatment, domain/support, source-imprint class, QC, persistence/reconstruction, response reference, lifecycle, and parent/method compatibility |
 | Decisive exclusions | GEN reports incomplete/failed/unavailable when the UNC use requires completed; missing/ambiguous member or parent identity; disallowed duplicate/equivalence state; incompatible unit/WCS/support/response; missing source-imprint/QC/persistence facts; mixed method generation; or false/missing source binding |
 | Exception authority | Only the exact UNC-owned policy may admit a named producer limitation for that UNC use. It cannot relabel completion, failure, duplicate/equivalence, support, QC, or lifecycle facts |

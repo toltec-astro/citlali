@@ -13,6 +13,7 @@ Status: proposed Stage A classification; awaiting scientific-owner review
 | MAP ordinary estimator, base/coadd validity, response/covariance disclosure | SCI-MAP | Immutable parent and possible fixed operator | NOI cannot rewrite MAP claims or use an empirical result as retroactive MAP authority |
 | JINC signed estimator and product limits | SCI-JINC | Immutable parent when an exact realized route exists | NOI cannot infer missing JINC coefficient, response, or covariance state |
 | Randomization unit, sign/assignment law, balance, seed/key, membership | `NOI-GEN` | Owned | These facts do not establish uncertainty |
+| Application of the NOI modifier at the selected PTC-to-MAP boundary | SCI-MAP | Conforming inline or materialized execution within the frozen accumulation operator | MAP does not own the assignment/design or reclassify the output as ordinary MAP science |
 | Realization completion, terminal state, availability, support, QC, persistence/reconstruction | `NOI-GEN` | Producer-owned immutable truth | VAL admission cannot author or revise completion; availability is not sample validity or covariance adequacy |
 | Target law, centering, finite correction, covariance domain, calibration | `NOI-UNC` | Owned | “Empirical” does not mean physical or calibrated |
 | Empirical variance/covariance | `NOI-UNC` | Owned versioned companion | It does not become a formal MAP/JINC covariance retroactively |
@@ -40,3 +41,5 @@ Status: proposed Stage A classification; awaiting scientific-owner review
    or FRUIT numerical parent.
 8. PTC-to-frozen-MAP, PTC-to-frozen-JINC, realized-MAP, realized-JINC,
    filtered, and relearned paths always have distinct complete method identities.
+9. The selected ordinary route may apply the NOI modifier inline in MAP without
+   materializing a randomized timestream; the product remains NOI-owned.

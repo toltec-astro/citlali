@@ -1,8 +1,8 @@
 # SCI-JINC To SCI-NOI Boundary
 
-Boundary identity: `SCI-JINC_TO_SCI-NOI v0.1/r0.1`
+Boundary identity: `SCI-JINC_TO_SCI-NOI v0.1/r0.2`
 
-Canonical spelling is exactly `SCI-JINC_TO_SCI-NOI v0.1/r0.1`.
+Canonical spelling is exactly `SCI-JINC_TO_SCI-NOI v0.1/r0.2`.
 
 Status: proposed sanitized Stage A boundary; exact bytes await owner approval;
 the numerical JINC route remains typed unavailable
@@ -59,8 +59,9 @@ The realized-JINC GEN route has complete candidate method identity
 `NOI-GEN/REALIZED-JINC-CONDITIONAL-SIGN@1`. It randomizes an exact realized
 complete JINC bundle at the method's declared insertion point. It is distinct
 from randomizing PTC occurrences before a frozen JINC operator, even if an
-output happens to be numerically equal. ODQ-101 does not select or make this
-route available.
+output happens to be numerically equal. ODQ-102A selects the separate
+PTC-to-frozen-MAP route, not this realized-JINC route. This route remains
+unselected and unavailable.
 
 - GEN may use only an exact realized complete JINC bundle or a separately
   authorized earlier insertion route with a complete DAG. No ordinary MAP
@@ -88,8 +89,8 @@ Absent any of these, the numerical parent is typed unavailable. This boundary
 does not import a MAP coefficient, hidden parameter/default, ordinary MAP
 permission, response, covariance, exposure, or approximate certificate.
 
-ODQ-102A remains open, so the realized-JINC GEN route is also unavailable as an
-ordinary numerical route independently of parent availability.
+The realized-JINC GEN route remains unavailable as an unselected,
+scientifically incomplete route independently of parent availability.
 
 ## Fail-Closed Compatibility
 

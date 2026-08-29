@@ -1,9 +1,9 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.2`
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.3`
 
-Status: ODQ-101 owner-approved; every later decision remains open; not yet an
-allowed Stage B authority
+Status: ODQ-101 and ODQ-102A owner-approved; later decisions remain open; not
+yet an allowed Stage B authority
 
 Scientific owner: Grant Wilson
 
@@ -41,32 +41,48 @@ not approve another decision or make an unresolved numerical route available.
 
 - **Exact question:** Which complete parent/insertion route, if any, is the
   ordinary numerical GEN route?
-- **Recommended disposition:** select
-  `NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1` when its exact PTC parent and
-  frozen MAP operator are authorized; keep PTC-to-frozen-JINC, realized-MAP,
-  realized-JINC, and filtered routes separately identified and unavailable
-  unless later approved.
+- **Approved disposition:** select
+  `NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1`. Apply the NOI-defined
+  realization assignment at the exact PTC-to-MAP numerical boundary. MAP may
+  consume and apply the modifier inline during ordinary frozen accumulation;
+  no materialized randomized timestream is required. NOI owns assignment,
+  ensemble design, member/ensemble identity, and the realization product. MAP
+  owns only conforming application within its ordinary accumulation arithmetic.
+  The output is an NOI realization map produced through the frozen MAP
+  operator, not an ordinary MAP science product.
 - **Alternatives:** select another single route, several separately named
   routes, or none.
 - **Scientific consequences:** fixes randomized quantity, insertion point,
-  host, output/unit/WCS, support, response, imprint, and conditioning claim.
-- **Conservative state while open:** all candidate numerical routes are
-  unavailable; fixed-state conditional-sign is only a conditioning family.
+  frozen host, output/unit/WCS, support, response, ownership, and product class;
+  materialized versus inline modifier application is representation only.
+- **Conservative availability state:** the route identity is approved but
+  remains numerically unavailable until the selected PTC MAP-facing
+  coefficient family/value/QC and exact numerical `coverage_cut` state/value
+  and failure policy are realized. Other routes remain unselected and
+  unavailable.
 - **Affected artifacts:** three parent boundaries, GEN graph, Scope Brief,
   taxonomy, profile inputs, products.
-- **Exact bytes changed by approval:** selected method availability,
-  ordinary-route label, and its parent/insertion/host/output fields only.
+- **Exact bytes changed by approval:** selected ordinary method identity;
+  PTC-to-MAP insertion and optional inline-application representation; NOI/MAP
+  ownership; NOI realization-product classification; route-specific
+  availability wording; and downstream next-question status only.
 
 ### `SCI-NOI-ODQ-102B` — initial coherence-unit family
 
 - **Exact question:** Which stable coherence partition is initially admitted
   for the selected GEN route?
-- **Recommended disposition:** admit exactly one explicitly ordered,
-  route-compatible partition; create no hidden coherence default.
-- **Alternatives:** detector/channel, scan, subscan/block, observation, or no
-  admitted partition.
-- **Scientific consequences:** defines shared assignments, randomized
-  dependence, and attainable design rank.
+- **Recommended disposition:** use one observation-scoped realized
+  detector/channel as each coherence unit. One assignment value is constant
+  over every admitted PTC occurrence belonging to that detector/channel within
+  that observation. Order units lexicographically by canonical observation UID
+  and stable realized detector/channel UID; never by container position.
+- **Alternatives:** detector-by-scan, one scan/chunk shared across detectors,
+  subscan/residual block, whole observation, per-sample, or no admitted
+  partition.
+- **Scientific consequences:** preserves each detector's within-observation
+  temporal structure while allowing detector contributions to be randomized.
+  It does not by itself specify independence, balance, or the sign law, and it
+  does not preserve detector-detector correlations under every later law.
 - **Conservative state while open:** no coherence partition or numerical design
   is admitted.
 - **Affected artifacts:** design specification, selected boundary, GEN graph,

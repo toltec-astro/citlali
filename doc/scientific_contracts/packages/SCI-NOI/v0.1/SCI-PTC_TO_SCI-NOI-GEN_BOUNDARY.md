@@ -1,12 +1,12 @@
 # SCI-PTC To SCI-NOI-GEN Boundary
 
-Boundary identity: `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.1`
+Boundary identity: `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.2`
 
-Canonical spelling is exactly `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.1`.
+Canonical spelling is exactly `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.2`.
 
-Status: proposed sanitized Stage A pre-mapmaking generation boundary; exact
-bytes and route admission await owner approval; no numerical MAP or JINC parent
-is created
+Status: proposed sanitized Stage A pre-mapmaking boundary; ODQ-102A selects the
+PTC-to-frozen-MAP route, which remains numerically unavailable pending its
+frozen PTC/MAP gates; no numerical MAP or JINC parent is created
 
 Scientific owner: Grant Wilson
 
@@ -50,10 +50,16 @@ segment, stable array/network/group, CAL/PTC ancestry, and time as an attribute.
 Row, column, container position, shape, or numerical time equality cannot
 establish the join.
 
-The GEN insertion point applies the member assignment to this exact PTC
-occurrence population before one exact held-fixed host operator. The MAP and
-JINC hosts are different methods even if their inputs or assignments are
-numerically equal. Each input also binds:
+For the selected ordinary route, the GEN insertion point is the exact
+PTC-to-MAP numerical boundary. The NOI-defined member assignment modifier is
+applied to the admitted PTC occurrence before that occurrence enters the
+frozen MAP accumulation arithmetic. MAP may consume the modifier inline; no
+materialized randomized timestream is required. If a materialized
+representation is used, it must be scientifically identical to the inline
+application at this boundary.
+
+The MAP and JINC hosts remain different methods even if their inputs or
+assignments are numerically equal. Each input also binds:
 
 - `SCI-PTC:output_retention@1` and exact producer causes;
 - exact PTC-owner-selected MAP-facing coefficient family/value/QC state when
@@ -68,10 +74,13 @@ numerically equal. Each input also binds:
 
 ## Separate Fixed-State Route Identities
 
-The PTC-to-frozen-MAP candidate is
-`NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1`. Its host is the complete fixed
-MAP observation/coadd operator and its output is the exact declared MAP-domain
-realization product.
+The owner-selected ordinary route is
+`NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1`. Its host is the complete frozen
+MAP observation/coadd accumulation operator. Its output is an atomic NOI
+realization-map product in the exact declared MAP-domain quantity, unit, beam,
+WCS/frame, support, and response domain. It is not an ordinary MAP science
+product and does not acquire ordinary MAP product identity by using MAP
+arithmetic.
 
 The PTC-to-frozen-JINC candidate is
 `NOI-GEN/PTC-TO-FROZEN-JINC-CONDITIONAL-SIGN@1`. Its host is the complete fixed
@@ -84,11 +93,13 @@ For either route, member `b` has
 realization_b = O_Theta0(R_b({Z_i^PTC})),
 ```
 
-where `R_b` applies assignments to the exact declared PTC coherence units and
-`O_Theta0` is the complete route-specific frozen MAP or JINC operator after the
-insertion point. PTC, AST, MAP, JINC, and any admitted deterministic FLT retain
-ownership of their operators. NOI owns only the assignment design,
-member/ensemble identity, and later UNC/STD companions.
+where `R_b` is the NOI-owned assignment modifier over exact declared PTC
+coherence units and `O_Theta0` is the complete route-specific frozen MAP or
+JINC operator after the insertion point. NOI owns `R_b`, ensemble design,
+member/ensemble identity, and the NOI realization product. MAP owns only the
+conforming application of `R_b` within its otherwise ordinary frozen
+accumulation arithmetic. PTC, AST, MAP, JINC, and any admitted deterministic
+FLT retain ownership of their own operators.
 
 The fixed-state claim requires exact identity of eligibility, membership,
 projection, grouping, coefficient, normalization, support-authorized rows,
@@ -108,12 +119,14 @@ weight, or significance product.
 
 ## Current Numerical Availability
 
-Neither candidate route is currently numerically realizable. The MAP-hosted
-route lacks a selected numerical PTC MAP-facing coefficient family and the
-exact owner-admitted numerical `coverage_cut` state/value. The JINC-hosted
+The MAP-hosted route is scientifically selected by ODQ-102A but is not yet
+numerically realizable. It lacks a selected numerical PTC MAP-facing
+coefficient family/value/QC and the
+exact owner-admitted numerical `coverage_cut` state/value and failure policy.
+The JINC-hosted
 route lacks its required PTC coefficient, TolTEC array parameter, and
-applicable numerical-adequacy authority. ODQ-101 did not select either route;
-ODQ-102A remains open. Missing parent or gate authority is typed unavailable.
+applicable numerical-adequacy authority and remains unselected. Missing parent
+or gate authority is typed unavailable.
 No unity, loading, sensitivity, scatter, inverse variance, precision,
 coefficient, `coverage_cut`, coordinate, or no-op fallback may be inferred.
 

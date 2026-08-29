@@ -67,6 +67,23 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
 18. Added exact GEN graph, design/imprint, UNC, STD, and product-lifecycle
     artifacts plus a complete hash manifest and source-closure report.
 
+## ODQ-102A Owner Walkthrough Update
+
+19. Recorded ODQ-102A approval selecting the exact PTC-to-frozen-MAP ordinary
+    route while preserving its unresolved numerical gates.
+20. Bound the NOI modifier at the PTC-to-MAP numerical boundary and permitted
+    inline MAP consumption during frozen ordinary accumulation; no materialized
+    randomized timestream is required.
+21. Kept ownership explicit: NOI owns assignment, ensemble design, realization
+    identity, and the NOI realization map; MAP owns conforming modifier
+    application only. The output is not an ordinary MAP science product.
+22. Left coherence family, sign law/design, source imprint, UNC, covariance,
+    weights, STD, persistence, filtering, FRUIT, and VAL choices unchanged and
+    open.
+23. Published r0.2 successors of the three sanitized NOI parent boundaries,
+    GEN graph, and product-role table, plus r0.3 owner-decision and packet
+    records; frozen adjacent boundary identities remain unchanged.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance

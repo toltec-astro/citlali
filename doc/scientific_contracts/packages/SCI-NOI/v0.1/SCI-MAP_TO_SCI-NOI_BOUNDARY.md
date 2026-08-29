@@ -1,8 +1,8 @@
 # SCI-MAP To SCI-NOI Boundary
 
-Boundary identity: `SCI-MAP_TO_SCI-NOI v0.1/r0.1`
+Boundary identity: `SCI-MAP_TO_SCI-NOI v0.1/r0.2`
 
-Canonical spelling is exactly `SCI-MAP_TO_SCI-NOI v0.1/r0.1`.
+Canonical spelling is exactly `SCI-MAP_TO_SCI-NOI v0.1/r0.2`.
 
 Status: proposed sanitized Stage A boundary; exact bytes await owner approval;
 no numerical parent is created or declared available
@@ -62,7 +62,8 @@ The realized-MAP GEN route has complete candidate method identity
 `NOI-GEN/REALIZED-MAP-CONDITIONAL-SIGN@1`. It randomizes the exact realized MAP
 quantity at the boundary named by that method. It is distinct from randomizing
 PTC occurrences before a frozen MAP operator, even if an output happens to be
-numerically equal. ODQ-101 does not select or make this route available.
+numerically equal. ODQ-102A selects the separate PTC-to-frozen-MAP route, not
+this realized-MAP route. This route remains unselected and unavailable.
 
 - GEN may attach to an exact MAP observation bundle, or may apply assignments
   to exact observation-map members before the frozen MAP coadd operator, only
@@ -93,8 +94,8 @@ numerical MAP parent is typed unavailable for NOI. This boundary does not infer
 unity, loading, sensitivity, scatter, inverse variance, precision, or a
 `coverage_cut` value, and it does not synthesize a map.
 
-ODQ-102A remains open, so the realized-MAP GEN route is also unavailable as an
-ordinary numerical route independently of parent availability.
+The realized-MAP GEN route remains unavailable as an unselected, scientifically
+incomplete route independently of parent availability.
 
 ## Fail-Closed Compatibility
 

@@ -429,10 +429,20 @@ filtered routes have distinct identities and all remain unavailable. GEN owns
 member completion truth; the corrected NOI profile governs only UNC member
 admission; the assignment-design identity and STD unit `1` are explicit.
 
-The next walkthrough question is `SCI-NOI-ODQ-102A`: select one exact ordinary
-parent/insertion route or retain explicit route unavailability. Later granular
-decisions, exact packet bytes/hashes, and required source/profile Registry
-bindings remain under owner review. MAP/pre-MAP numerical parents remain
+Grant Wilson then approved `SCI-NOI-ODQ-102A` on `2026-08-29`. The ordinary
+route applies the NOI-defined realization assignment at the exact PTC-to-MAP
+numerical boundary. MAP may consume the modifier inline during its frozen
+ordinary accumulation, so a materialized randomized timestream is not
+required. NOI owns assignment, ensemble design, realization identity, and the
+resulting NOI realization map; MAP owns only conforming application. The
+result is not an ordinary MAP science product. The route remains numerically
+unavailable until its exact PTC coefficient and numerical `coverage_cut` gates
+are realized; all other routes remain unselected and unavailable.
+
+The next walkthrough question is `SCI-NOI-ODQ-102B`, the initial stable
+coherence-unit family. Later granular decisions, exact packet bytes/hashes, and
+required source/profile Registry bindings remain under owner review.
+MAP/pre-MAP numerical parents remain
 unavailable pending the exact PTC MAP-facing coefficient and owner-admitted
 numerical `coverage_cut`; JINC numerical parents remain unavailable under its
 frozen gates. No frozen parent was modified, and no implementation conformity,

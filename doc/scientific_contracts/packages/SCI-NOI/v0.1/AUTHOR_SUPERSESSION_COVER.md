@@ -46,6 +46,9 @@ Retain and reconcile, without needless rederivation:
    ODQ-101 approves fixed-state conditional-sign only as a conditioning family;
    PTC-to-frozen-MAP, PTC-to-frozen-JINC, realized-MAP, realized-JINC, and
    filtered routes always retain separate complete identities.
+   ODQ-102A selects PTC-to-frozen-MAP as ordinary: NOI's modifier is applied at
+   the exact numerical boundary, inline by MAP or equivalently materialized.
+   NOI owns the realization product; it is not ordinary MAP science.
 4. **No mixed ensemble.** Fixed-state and relearned members, or relearned
    methods with different replay graphs, cannot share one ensemble identity.
 5. **Finite design is explicit.** Stable coherence ordering, exact

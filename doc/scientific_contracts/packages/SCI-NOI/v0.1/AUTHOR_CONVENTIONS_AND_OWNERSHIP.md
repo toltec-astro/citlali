@@ -34,6 +34,14 @@ parent. Every method therefore names both its earliest immutable parent and
 its insertion point. No exact realized numerical parent is created by a route
 description.
 
+ODQ-102A selects the ordinary fixed-state route at the exact PTC-to-MAP
+numerical boundary. NOI owns the assignment modifier, ensemble design,
+realization identity, and resulting NOI realization map. MAP may apply that
+modifier inline within its frozen ordinary accumulation arithmetic; MAP owns
+only conformance of that application. Materializing a randomized timestream is
+not required, and use of MAP arithmetic does not create an ordinary MAP science
+product.
+
 ## Stable Identity And Unit Conventions
 
 - Array identity is `a1100`, `a1400`, or `a2000`, never a container position.

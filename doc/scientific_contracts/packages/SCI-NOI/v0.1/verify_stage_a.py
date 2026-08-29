@@ -77,6 +77,9 @@ def main() -> None:
         "SCI-NOI:uncertainty_member_admission@1",
         "unit(empirical_scale_standardized_signal) = 1",
         "SCI-NOI-ODQ-102A",
+        "SCI-NOI-ODQ-102B",
+        "materialized randomized timestream",
+        "not an ordinary MAP science product",
     ]
     for token in required:
         if token not in package_text:

@@ -1,7 +1,7 @@
 # SCI-NOI v0.1 — Collision-Free Operator And Product Taxonomy
 
-Status: proposed sanitized Stage B author input; ODQ-101 incorporated; exact
-bytes await owner approval
+Status: proposed sanitized Stage B author input; ODQ-101 and ODQ-102A
+incorporated; exact bytes await owner approval
 
 The semantic prefixes are:
 
@@ -16,16 +16,17 @@ sample. `Z_i^PTC` remains reserved exclusively for the transformed PTC sample.
 ## Conditioning Class Is Not Complete Method Identity
 
 ODQ-101 approves fixed-state conditional-sign GEN as the ordinary v0.1
-conditioning class. Relearned GEN is a separate class and is unavailable until
-its complete rerun graph is owner-approved. Neither class is one complete
-method across different parents or insertion points.
+conditioning class. ODQ-102A selects the PTC-to-frozen-MAP method as the
+ordinary route. Relearned GEN is a separate class and is unavailable until its
+complete rerun graph is owner-approved. Neither conditioning class spans
+different parents or insertion points.
 
 The route-specific method candidates remain distinct:
 
 | Candidate identity | Scientific role | Present state |
 | --- | --- | --- |
-| `NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1` | Randomize exact PTC parent quantities before one frozen MAP operator | Unavailable pending route choice and MAP numerical gates |
-| `NOI-GEN/PTC-TO-FROZEN-JINC-CONDITIONAL-SIGN@1` | Randomize exact PTC parent quantities before one frozen JINC operator | Unavailable pending route choice and JINC numerical gates |
+| `NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1` | Apply the NOI-owned modifier at the exact PTC-to-MAP numerical boundary, inline or equivalently materialized, before one frozen MAP operator; output is an NOI realization map, not ordinary MAP science | **Selected ordinary route; numerically unavailable** pending MAP numerical gates |
+| `NOI-GEN/PTC-TO-FROZEN-JINC-CONDITIONAL-SIGN@1` | Randomize exact PTC parent quantities before one frozen JINC operator | Unselected and unavailable under JINC numerical gates |
 | `NOI-GEN/REALIZED-MAP-CONDITIONAL-SIGN@1` | Randomize an exact already realized MAP product under a declared map-product coherence law | Unavailable pending exact method and parent authority |
 | `NOI-GEN/REALIZED-JINC-CONDITIONAL-SIGN@1` | Randomize an exact complete realized JINC product under a declared role/coherence law | Unavailable pending exact method and numerical JINC parent |
 | `NOI-GEN/FIXED-FLT-CONDITIONAL-SIGN@1` | Use an exact fixed deterministic filter route | Unavailable pending a content-bound FLT boundary |
@@ -34,6 +35,10 @@ The route-specific method candidates remain distinct:
 The exact DAG and required route-specific identity are in
 [`NOI_GEN_PARENT_OPERATOR_GRAPH.md`](NOI_GEN_PARENT_OPERATOR_GRAPH.md). Parent
 numerical coincidence or a shared sign law never merges method identities.
+
+Inline consumption by MAP is a permitted representation, not transfer of
+scientific ownership. NOI owns assignment/design and realization identity;
+MAP owns only conforming application within frozen ordinary accumulation.
 
 ## UNC Operator Families
 

@@ -42,8 +42,8 @@ artifact after exact-byte approval. This manager ledger is not an author input.
 | ID | Topic | Recommended disposition location | State |
 | --- | --- | --- | --- |
 | `SCI-NOI-ODQ-101` | Ordinary fixed-state/relearned conditioning family | Decision artifact ODQ-101 | **decided — fixed-state conditional-sign ordinary; relearned separate; never mixed** |
-| `SCI-NOI-ODQ-102A` | Exact ordinary parent/insertion route | Decision artifact ODQ-102A | **open — next walkthrough question; all routes unavailable** |
-| `SCI-NOI-ODQ-102B` | Initial coherence-unit family | Decision artifact ODQ-102B | open |
+| `SCI-NOI-ODQ-102A` | Exact ordinary parent/insertion route | Decision artifact ODQ-102A | decided — NOI modifier at PTC-to-MAP boundary; inline MAP application permitted; output is NOI realization map; numerical gates remain unavailable |
+| `SCI-NOI-ODQ-102B` | Initial coherence-unit family | Decision artifact ODQ-102B | **open — next walkthrough question** |
 | `SCI-NOI-ODQ-102C` | Sign law and complete finite assignment design | Decision artifact ODQ-102C | open |
 | `SCI-NOI-ODQ-103` | Source-imprint/cancellation target and claim | Decision artifact row 103 | open |
 | `SCI-NOI-ODQ-104` | Complete fixed/relearned state classification per route | Decision artifact ODQ-104 | decided as route-specific consequence of ODQ-101; exact route remains open |

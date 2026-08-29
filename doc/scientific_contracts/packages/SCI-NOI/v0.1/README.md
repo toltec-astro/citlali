@@ -53,13 +53,14 @@ validation, reductions, Unity, defaults, or historical behavior.
 - Implementation-informed inventory: complete and quarantined.
 - Ownership and typed-boundary classification: repaired and proposed.
 - Collision-free operator/product taxonomy and exact DAGs: proposed; ODQ-101
-  conditioning family approved, all numerical routes unavailable.
+  conditioning family and ODQ-102A PTC-to-frozen-MAP ordinary route approved;
+  the selected route remains numerically unavailable at its frozen gates.
 - Exact MAP, JINC, and conditional pre-MAP PTC boundaries: proposed; numerical
   availability remains fail-closed.
 - NOI-owned GEN/UNC-member/UNC-ensemble/STD profile drafts: proposed; not
   registered; GEN completion ownership repaired.
-- Sanitized owner-decision artifact: ODQ-101 approved; granular route and later
-  decisions remain open.
+- Sanitized owner-decision artifact: ODQ-101 and ODQ-102A approved; coherence
+  and later decisions remain open.
 - Sanitized Scope Brief and author packet: repaired and content-bound candidate;
   not owner-approved.
 - Implementation-blind scientific rationale: not commissioned and not
@@ -131,9 +132,12 @@ those typed unavailable states and do not create numerical products.
 - [`FILTER_AND_FRUIT_SCOPE.md`](FILTER_AND_FRUIT_SCOPE.md): deterministic FLT,
   Wiener, and FRUIT inclusion/deferral record
 - [`SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`](SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md):
-  one granular sanitized decision artifact with ODQ-101 approved
+  one granular sanitized decision artifact with ODQ-101 and ODQ-102A approved
 - [`SCIENTIFIC_OWNER_ODQ_101_APPROVAL_2026-08-29.md`](SCIENTIFIC_OWNER_ODQ_101_APPROVAL_2026-08-29.md):
   durable manager-facing owner approval and conflict check
+- [`SCIENTIFIC_OWNER_ODQ_102A_APPROVAL_2026-08-29.md`](SCIENTIFIC_OWNER_ODQ_102A_APPROVAL_2026-08-29.md):
+  durable selected-route, inline-application, ownership, and product-class
+  decision
 - [`OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md`](OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md):
   complete Stage A ownership matrix
 - [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): exact proposed
@@ -157,7 +161,7 @@ those typed unavailable states and do not create numerical products.
 ## Stop Boundary
 
 Stop after presenting these final Stage A closure artifacts and continue the
-owner-decision walkthrough at `SCI-NOI-ODQ-102A`; ODQ-101 is approved. Do not
+owner-decision walkthrough at `SCI-NOI-ODQ-102B`; ODQ-101 and ODQ-102A are approved. Do not
 draft the implementation-blind scientific rationale, shared normative core,
 engineering conformance specification, or PDFs until the exact conditional
 Stage B gate in the Scope Brief is satisfied. Do not implement or modify

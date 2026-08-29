@@ -180,6 +180,8 @@ only for ensuring that the scope asks the right questions.
 
 Stage B remains unlaunched. ODQ-101 subsequently approved fixed-state
 conditional-sign as the ordinary conditioning family while keeping relearned
-methods separate and never mixed. It selected no numerical route. The next
-owner question is `SCI-NOI-ODQ-102A`, exact ordinary route or explicit route
-unavailability.
+methods separate and never mixed. ODQ-102A subsequently selected the
+PTC-to-frozen-MAP boundary route, allowed conforming inline MAP application,
+and classified the output as an NOI realization map rather than ordinary MAP
+science. The route's numerical gates remain unavailable. The next owner
+question is `SCI-NOI-ODQ-102B`, initial coherence-unit family.

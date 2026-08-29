@@ -133,10 +133,14 @@ exclusive SHA-bound author packet plus closure report.
 Implementation-blind Stage B has not been launched. ODQ-101 is approved:
 fixed-state conditional-sign is the ordinary conditioning family, relearned
 methods are separate, and the two member classes cannot be mixed. That approval
-selected no numerical route. The next question is ODQ-102A: select one exact
-ordinary parent/insertion route or keep every route unavailable. Conditional
-Stage B remains blocked on the exact repaired bytes/hashes, granular owner
-decisions or explicit unavailability, and required source/profile bindings. The frozen MAP/pre-MAP
+selected no numerical route. ODQ-102A then selected the ordinary
+PTC-to-frozen-MAP route: the NOI modifier may be applied inline by MAP at the
+numerical boundary, but NOI retains design and realization-product ownership
+and the output is not ordinary MAP science. The route remains unavailable at
+its coefficient and numerical `coverage_cut` gates. ODQ-102B, initial
+coherence-unit family, is next. Conditional Stage B remains blocked on exact
+bytes/hashes, granular owner decisions or explicit unavailability, and required
+source/profile bindings. The frozen MAP/pre-MAP
 and JINC numerical-parent unavailability states remain unchanged. No
 implementation, conformity, validation, achieved-performance, readiness,
 production, Unity, filtering, source/mode, or FRUIT action follows.
