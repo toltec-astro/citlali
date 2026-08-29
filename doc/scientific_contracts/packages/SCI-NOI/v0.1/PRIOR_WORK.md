@@ -193,6 +193,9 @@ numerical gates remain unavailable. ODQ-104 is explicitly owner-approved:
 every GEN method classifies scientifically consequential adjacent state, and a
 relearned method names its consequential rerun/relearn stages and resulting
 changed state without requiring exhaustive implementation provenance. The next owner question is
-`SCI-NOI-ODQ-105A`, enabled, disabled, and partial-completion behavior. ODQ-103
-now approves the source-suppression intent and no-source-free-by-construction
-boundary while delegating exact terminology to the Stage-B scientific author.
+`SCI-NOI-ODQ-105B`, the initial UNC target law and estimator. ODQ-103 approves
+the source-suppression intent and no-source-free-by-construction boundary while
+delegating exact terminology to the Stage-B scientific author. ODQ-105A now
+fails GEN closed for UNC if any admitted member fails; rejected design
+candidates are not members, and completed survivors cannot form a partial
+ensemble.

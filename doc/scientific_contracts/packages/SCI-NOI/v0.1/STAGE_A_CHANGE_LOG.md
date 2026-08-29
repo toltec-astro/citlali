@@ -164,6 +164,22 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
     the design/source-imprint specification, r0.6 of the PTC boundary, and r0.8
     packet/decision records without changing numerical availability.
 
+## ODQ-105A Fail-Closed Completion Update
+
+47. Separated finite-design candidate rejection from admitted realization
+    failure: rejected candidates are neither failures nor ensemble members.
+48. Required every admitted realization to complete through the declared frozen
+    operator and made any admitted-member failure fail the complete GEN
+    ensemble closed for every UNC use.
+49. Prohibited silent survivor/partial-ensemble reinterpretation; diagnostically
+    retained completed artifacts remain bound to the failed ensemble and carry
+    no UNC authority.
+50. Required scientifically useful failure cause/context without exhaustive
+    implementation provenance and advanced the walkthrough to ODQ-105B.
+51. Published r0.6 of the design/source-imprint specification, r0.3 of the
+    product/lifecycle table, r0.2 of the finite-design UNC table, and r0.9
+    packet/decision records without changing numerical availability.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance

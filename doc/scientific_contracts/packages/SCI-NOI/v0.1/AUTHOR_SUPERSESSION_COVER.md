@@ -102,6 +102,9 @@ Retain and reconcile, without needless rederivation:
   algorithm/version, seed/key derivation, partition, and completed membership;
 - enabled GEN requires a positive resolved and method-valid completed design;
   disabled is explicit zero-member/no-work;
+- rejected finite-design candidates are not members or failures; after
+  admission, any member failure fails the ensemble for all UNC use and no
+  completed survivors form a partial ensemble;
 - the historical source-imprinted fixed-state stack is a conditional
   diagnostic and cannot establish physical-noise, precision, or significance;
 - distinct standardized-signal formulae require distinct identities and

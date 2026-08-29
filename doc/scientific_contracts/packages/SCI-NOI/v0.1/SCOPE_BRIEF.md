@@ -300,8 +300,12 @@ Each realization member is atomic. GEN publishes a complete method/plan,
 design, member inventory, requested/resolved/completed/unique/UNC-admitted
 counts, terminal states, source imprint, QC, persistence/reconstruction,
 lifecycle, failure, and provenance—or types the required result unavailable or
-failed. GEN owns completion truth. An ensemble with failed members is usable only if its method defines
-the remaining completed design as valid.
+failed. GEN owns completion truth. Rejected finite-design candidates are not
+failures or members. Once an assignment is admitted, every requested member
+must complete through the declared frozen operator. Failure of any admitted
+member fails the ensemble closed for all UNC use; completed survivors cannot be
+reinterpreted as a partial ensemble. Diagnostic cause reporting is required,
+but exhaustive implementation provenance is not.
 
 UNC and STD likewise publish their complete exact role or a typed
 unavailable/failed state. No partial or finite payload creates false realized
@@ -388,9 +392,9 @@ selection and rationale to the implementation-blind contract author; its
 tolerance-conditioned construction is a nonbinding suggestion, not advance
 approval. ODQ-103 approves the source-suppression intent and no-source-free-by-
 construction boundary while delegating exact terminology to the Stage-B
-scientific author. The next walkthrough question is `SCI-NOI-ODQ-105A`.
-Every later decision and the artifact's final hash still require explicit owner
-review.
+scientific author. ODQ-105A approves fail-closed completion for every admitted
+member. The next walkthrough question is `SCI-NOI-ODQ-105B`. Every later
+decision and the artifact's final hash still require explicit owner review.
 
 ## 13. Non-Goals And Claim Boundary
 

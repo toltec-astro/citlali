@@ -484,8 +484,18 @@ long label is nonbinding and may not be replaced by terminology implying
 guaranteed source removal. No achieved suppression or numerical availability
 follows.
 
-The next walkthrough question is `SCI-NOI-ODQ-105A`, enabled, disabled, and
-partial-completion behavior. Later granular decisions, exact packet bytes/hashes, and
+Grant Wilson approved `SCI-NOI-ODQ-105A` on `2026-08-29`. Candidate assignments
+rejected during finite-design construction are search outcomes, not failures or
+members. Once admitted, every requested realization must complete through the
+declared frozen operator. Any admitted-member failure fails the entire GEN
+ensemble closed for every UNC use; completed survivors cannot be silently
+retained as a partial ensemble. GEN reports diagnostically sufficient failure
+cause/context without exhaustive implementation provenance. Disabled remains
+explicit zero-member/no-work; inability to resolve the required admitted design
+is a design-resolution failure rather than an individual candidate failure.
+
+The next walkthrough question is `SCI-NOI-ODQ-105B`, the initial UNC target law
+and estimator. Later granular decisions, exact packet bytes/hashes, and
 required source/profile Registry bindings remain under owner review.
 MAP/pre-MAP numerical parents remain
 unavailable pending the exact PTC MAP-facing coefficient and owner-admitted

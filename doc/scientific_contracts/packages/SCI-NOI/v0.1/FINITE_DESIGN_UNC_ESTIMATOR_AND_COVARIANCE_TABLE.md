@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Finite-Design UNC Estimator And Covariance Table
 
-Artifact identity: `SCI-NOI_FINITE_DESIGN_UNC_TABLE v0.1/r0.1`
+Artifact identity: `SCI-NOI_FINITE_DESIGN_UNC_TABLE v0.1/r0.2`
 
 Status: proposed sanitized Stage A scientific input; exact bytes await owner
 approval
@@ -11,7 +11,7 @@ Every `NOI-UNC` method binds one complete row set below. No universal `1/B`,
 | Field | Required exact declaration | Unavailable or prohibited inference |
 | --- | --- | --- |
 | Target law | Conditional assignment-law scatter/covariance, repeated physical-noise uncertainty, calibrated empirical null, fixed consumer projection, or another named target | GEN mechanism or filename cannot select the target |
-| Admitted ensemble | Exact route-specific GEN method/generation, earliest parent and operator graph, completed member set, design, source imprint, and member-admission evaluations | Requested or merely completed members are not automatically admitted |
+| Admitted ensemble | Exact route-specific GEN method/generation, earliest parent and operator graph, complete admitted-member set with every member successfully realized, design, source imprint, and member-admission evaluations | Rejected construction candidates are not members; requested or merely completed survivors from a failed GEN ensemble cannot be admitted |
 | Center | Known target center, estimated empirical center, fitted center, or another exact reference | Centering cannot be inferred from a divisor |
 | Estimator | Second moment versus covariance; exact design probabilities/weights; finite-design normalization/correction; missingness and dependence treatment; uncertainty of the estimate | No universal `1/B` or `1/(B-1)` |
 | Design adequacy | `B_admitted_for_UNC`, `B_unique`, complement-pair count, exact design rank, null space, effective information, and method-specific minimum cardinality | Count, balance, complements, or uniqueness do not prove independence |
@@ -44,4 +44,6 @@ new astronomical data or reduce the immutable parent's realized noise.
 Every UNC product is an atomic versioned companion. It either publishes the
 complete stated target/estimator/domain/representation/lifecycle or is typed
 unavailable/failed. It never modifies the GEN ensemble or its MAP/JINC/PTC
-parent.
+parent. Missing-data estimators may address exact within-product domain
+missingness only when authorized; they cannot rescue an admitted-member failure
+or construct a survivor ensemble.

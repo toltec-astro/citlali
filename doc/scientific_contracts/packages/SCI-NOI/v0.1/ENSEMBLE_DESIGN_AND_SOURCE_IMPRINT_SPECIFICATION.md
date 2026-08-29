@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Ensemble Design And Source-Imprint Specification
 
-Artifact identity: `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.5`
+Artifact identity: `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.6`
 
 Status: ordinary coherence, network-stratified coefficient-balance family, and
 source-suppression claim boundary owner-approved; exact finite-design mechanics
@@ -154,17 +154,27 @@ A changed scheduling order, container order, worker count, traversal, or
 parallel decomposition shall not change ordering, key bytes, assignments,
 equivalence, duplicates, counts, or rank.
 
-## Completion And Partial Designs
+## Admission And Fail-Closed Completion
 
 GEN owns each member's completion and terminal state. Enabled GEN requires a
 positive resolved design. Disabled GEN is explicit zero-member/no-work.
-Failed, incomplete, duplicate, or unavailable members remain exact facts.
+Candidate assignments rejected during finite-design construction are search
+outcomes, not failures or ensemble members. Failure to resolve the required
+positive admitted design under the bounded construction is a design-resolution
+failure, not an individual candidate failure.
 
-An ensemble with failed members is eligible for a named UNC method only when
-that exact method admits the resulting completed design and recomputes all
-counts, probabilities/weights, equivalence, rank, null space, and effective
-information on the admitted population. Otherwise the ensemble is unavailable
-for that UNC use. A VAL evaluation does not author completion truth.
+Every admitted assignment is one requested member and must complete through
+the full declared frozen operator. Any incomplete, failed, or unavailable
+admitted member fails the complete GEN ensemble and makes it unavailable for
+every UNC use. Completed members from that failed ensemble cannot be admitted
+as a survivor or partial design. If retained diagnostically, they remain bound
+to the failed ensemble and carry no UNC authority. A retry or replacement uses
+a new exact generation/design identity.
+
+GEN records sufficient failed ensemble/member identity, scientifically
+meaningful stage, terminal state, cause category, and diagnostic context to
+investigate the run without requiring exhaustive implementation provenance. A
+VAL evaluation neither authors completion truth nor rescues a failed ensemble.
 
 ## Source-Imprint Identity
 

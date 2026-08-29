@@ -108,11 +108,14 @@ later uncertainty mutates or validates `UNC_k` retroactively.
 ## Validity, Support, And Profiles
 
 Sample validity, parent named-use eligibility, GEN input admission,
-GEN-owned realization-member completion/QC, UNC member admission, UNC ensemble admission, estimator validity,
-covariance-domain support, and STD admission are separate. Assignment cannot
-clear a cause, make a missing occurrence valid, or create support. A finite
-payload, completed member, generic flag, or pass for another use has no
-universal veto or rescue effect.
+GEN-owned realization-member completion/QC, UNC member admission, UNC ensemble
+admission, estimator validity, covariance-domain support, and STD admission are
+separate. Assignment cannot clear a cause, make a missing occurrence valid, or
+create support. A finite payload, completed member, generic flag, or pass for
+another use has no universal veto or rescue effect. Rejected design candidates
+are not members or failures; once admitted, failure of any member fails the
+ensemble for all UNC use and completed survivors cannot be admitted as a
+partial ensemble.
 
 Every NOI-owned profile retains named request, applicability, eligibility, and
 realization fields. Only the exact profile's projection authorizes its exact

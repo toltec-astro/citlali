@@ -1,8 +1,8 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.8`
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.9`
 
-Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, and ODQ-104 owner-approved; exact
+Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, and ODQ-105A owner-approved; exact
 finite-design mechanics delegated to the scientific-contract author under
 ODQ-102D; later decisions remain open; not yet an allowed Stage B authority
 
@@ -220,20 +220,26 @@ not approve another decision or make an unresolved numerical route available.
 
 - **Exact question:** What completed design is valid when GEN is enabled,
   disabled, or only partly completes?
-- **Recommended disposition:** disabled is explicit zero-member/no-work;
-  enabled requires positive resolved design; GEN alone authors terminal and
-  completion facts; partial completion is admissible only when the exact
-  design declares the survivor set valid and records counts, equivalence,
-  duplicates, rank, and causes.
-- **Alternatives:** fail every partial design; allow a declared minimum/rank;
-  or give no base partial authority.
+- **Approved disposition:** disabled is explicit zero-member/no-work and enabled
+  requires a positive resolved admitted design. Candidate assignments rejected
+  during finite-design construction are not failures and never become members.
+  Once admitted, every requested realization must complete through the declared
+  frozen operator. Failure of any admitted member fails the whole GEN ensemble
+  closed for every NOI-UNC use; surviving members cannot be retained as a
+  partial ensemble. GEN reports enough cause/context for diagnosis without
+  exhaustive implementation provenance.
+- **Alternatives:** admit a declared survivor minimum/rank, allow a UNC method
+  to reconstruct a partial design, or treat candidate rejection as failure.
 - **Scientific consequences:** finite payload or VAL admission cannot fabricate
   producer completion.
-- **Conservative state while open:** partial designs are unavailable to UNC.
+- **Conservative state:** approved fail-closed completion; no partial ensemble
+  is available to UNC.
 - **Affected artifacts:** product-role table, design specification, GEN
   products, UNC-member-admission profile.
-- **Exact bytes changed by approval:** enabled/disabled terminal rules and
-  exact survivor-design admissibility rule.
+- **Exact bytes changed by approval:** enabled/disabled terminal rules;
+  candidate-versus-admitted boundary; all-admitted-member completion rule;
+  ensemble-wide UNC invalidation; no survivor reinterpretation; and bounded
+  diagnostic cause reporting without exhaustive implementation provenance.
 
 ### `SCI-NOI-ODQ-105B` — initial UNC target law and estimator
 

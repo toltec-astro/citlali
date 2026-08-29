@@ -93,6 +93,9 @@ def main() -> None:
         "randomization is intended to suppress source signal",
         "does not, by construction alone, establish",
         "nonbinding terminology suggestion",
+        "Candidate assignments rejected during finite-design construction",
+        "fails the complete GEN ensemble",
+        "survivor or partial design",
     ]
     for token in required:
         if token not in package_text:

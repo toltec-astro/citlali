@@ -152,8 +152,11 @@ relearned method identifies consequential rerun/relearn stages and resulting
 changed state without an exhaustive implementation-provenance requirement.
 ODQ-103 now approves the scientific boundary that randomization intends source
 suppression but does not by construction establish source-free maps; exact
-terminology is delegated to the Stage-B scientific author. ODQ-105A, enabled,
-disabled, and partial-completion behavior, is next. Conditional Stage B remains blocked on exact
+terminology is delegated to the Stage-B scientific author. ODQ-105A now fails
+GEN closed for every UNC use if any admitted realization fails; rejected design
+candidates are not members/failures and completed survivors cannot form a
+partial ensemble. ODQ-105B, the initial UNC target law and estimator, is next.
+Conditional Stage B remains blocked on exact
 bytes/hashes, granular owner decisions or explicit unavailability, and required
 source/profile bindings. The frozen MAP/pre-MAP
 and JINC numerical-parent unavailability states remain unchanged. No
