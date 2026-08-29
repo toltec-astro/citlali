@@ -1,5 +1,32 @@
 # Citlali Refactor Status
 
+## 2026-08-29 WP-7 Network-Timing Owner Correction
+
+The scientific owner resolved the ALIGN/RTC timing mismatch: network-specific
+timing is authoritative by default, and a cross-network common analysis grid is
+introduced only for a named operation whose output estimate at an analysis
+epoch jointly depends on measurements from more than one network. Ordinary
+RTC, CAL, AST association, MAP/JINC accumulation, and network-level PTC/PCA are
+network-timed. Array-wide PTC/PCA and an explicitly authorized cross-network
+RTC method may request an ALIGN-owned derived common-analysis relation.
+
+The exact bounded authority is recorded in
+[`WP7_NETWORK_TIMING_OWNER_AUTHORITY_CORRECTION_2026-08-29.md`](WP7_NETWORK_TIMING_OWNER_AUTHORITY_CORRECTION_2026-08-29.md)
+and its frozen-clause
+[`crosswalk`](WP7_NETWORK_TIMING_AUTHORITY_CROSSWALK_2026-08-29.md). ADR 0015
+partially supersedes only ADR 0014's timing-placement language. Unrelated
+SCI-ALIGN, SCI-RTC, SCI-AST, and SCI-PTC decisions remain unchanged.
+
+The common-grid pass-through revisions `ced568d3a` and `e96efc6d5` remain a
+design spike on `codex/wp7-complete-rtc-second-increment`; they are not accepted
+as the RTC increment and their terminal scaffold is not advanced. The bounded
+repair branch `codex/wp7-network-timed-rtc-repair` starts exactly at accepted
+identity-RTC tip `641f75ad8`. Its first implementation target is an immutable
+network-timed `M=1` pass-through lifecycle with no common-slot dependency,
+followed by focused and full local gates and a fresh exact-SHA review. No RTC
+terminal publication or nonidentity numerical method is authorized before
+that review.
+
 ## 2026-08-29 WP-7 Identity RTC Native-Axis Conformance Repair
 
 The bounded WP-7 identity RTC implementation remains on a clean base with

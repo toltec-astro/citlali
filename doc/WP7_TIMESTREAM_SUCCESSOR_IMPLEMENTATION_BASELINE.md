@@ -43,22 +43,23 @@ evidence still support them.
 Build one conforming CPU reference route with explicit products and owners:
 
 ```text
-native paired x/r
-  +-> native-axis identity RTC
-  |    `-> explicit RTC-only terminal completion
-  `-> ALIGN common-slot projection and required AST coordinates
-       `-> complete RTC conditioned raw-coordinate product
-            -> CAL calibrated ordinary x with retained raw-r parentage
-            -> VAL decisions for each exact PTC use
-            -> PTC configured-rank group-local product
-                 -> existing downstream application boundary
+network-native paired x/r -> network-timed ALIGN relation
+  -> network-keyed RTC conditioned raw-coordinate product
+       +-> explicit RTC-only terminal completion
+       `-> CAL / ordinary AST / MAP-JINC / network-level PTC-PCA
+
+network-keyed product
+  -> explicitly requested ALIGN common-analysis-grid relation
+  -> array-wide PTC-PCA or an authorized cross-network RTC method
 ```
 
-The identity RTC-only route reconstructs and preserves each participant
-network's native occurrence/time identity. It does not consume, invoke, or
-publish common-slot association. ALIGN owns that separate projection and its
-strict-half admission rule when an actual consumer requires a synchronous
-cross-network or cross-detector operator.
+Ordinary RTC reconstructs and preserves each participant network's
+occurrence/time identity. It does not consume, invoke, or publish a
+cross-network common-analysis-grid association. ALIGN owns that separate
+derived view and its strict-half admission rule when an actual consumer's
+mathematics couples simultaneous measurements from more than one network.
+Processing multiple networks or multiple detectors within one network is not
+by itself such a requirement.
 
 The first success criterion is scientific and implementation conformity, not
 maximum portability or peak hardware performance. Performance, memory, and
@@ -70,9 +71,11 @@ correct reference design does not accumulate avoidable hot-path debt.
 The successor owns the reachable WP-7 route through:
 
 - native paired-`x/r` production and admission;
-- reconstructed native network timing for the first identity RTC-only route;
-- ALIGN common-slot projection and the AST roles required by later synchronous
-  consumers, without making that projection a blanket ingress prerequisite;
+- reconstructed network timing for ordinary ALIGN, RTC, CAL, AST, MAP/JINC,
+  and network-level PTC/PCA;
+- an explicit ALIGN common-analysis-grid relation only for a named synchronous
+  cross-network consumer, without making that relation a blanket ingress
+  prerequisite;
 - RTC evidence, immutable planning, apply state, causes, stable segments,
   filtering, transfer, phase-zero selection, and logical completion;
 - the explicit RTC-only terminal route;
@@ -328,6 +331,9 @@ design and measurements show a clearer boundary.
 ### S2: complete RTC plan and apply
 
 - add immutable evidence, resolved plan, apply, and realized record;
+- retain network-keyed occurrence, time, gap, and support axes through every
+  ordinary operation, creating a new per-network output relation when sampling
+  changes;
 - implement paired pathology, transition guards, stable segments, reset, and
   replacement semantics; and
 - port only conforming filter, notch, transfer, and decimation kernels.
@@ -342,8 +348,10 @@ design and measurements show a clearer boundary.
 
 ### S4: VAL and contract PTC
 
-- request an explicit ALIGN common-grid projection before the first operator
-  that requires cross-network simultaneity;
+- keep network-level PTC/PCA on each network's time axis;
+- request an explicit ALIGN common-analysis-grid relation before array-wide
+  PTC/PCA or another named operator whose estimates mathematically couple
+  simultaneous measurements from more than one network;
 - implement immutable registry/source binding and the five named PTC uses;
 - construct exact fit, loading, application, response, and output supports;
 - implement configured positive rank, centering, mask-aware time-local solve,

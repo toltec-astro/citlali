@@ -340,21 +340,28 @@ not production-active. This work is a **bounded subsystem succession** inside
 the existing Citlali application, not a continuation of broad structural
 refactoring and not a clean-slate replacement of the application.
 
-The accepted route is:
+The accepted network-timed route is:
 
 ```text
-native paired x/r
-  +-> native-axis identity RTC
-  |    `-> explicit RTC-only terminal completion
-  `-> ALIGN common-slot projection -> required AST roles -> complete RTC
-       `-> CAL -> PTC with VAL-owned decisions -> downstream consumers
+network-native paired x/r -> network-timed ALIGN relation
+  -> network-keyed RTC -> CAL / ordinary AST / MAP-JINC
+  -> network-level PTC-PCA
+
+network-keyed product
+  -> explicitly requested ALIGN common-analysis-grid relation
+  -> array-wide PTC-PCA or an authorized cross-network RTC method
 ```
 
-The identity RTC-only branch consumes reconstructed native network timing and
-retains each network's native occurrence support. It does not consume, invoke,
-or publish ALIGN common-slot association or AST pointing. ALIGN remains the
-sole owner of common-slot projection for a later operator that actually
-requires cross-network simultaneity.
+Every ordinary RTC branch consumes reconstructed network timing and retains
+each network's occurrence support. For `M=1`, output occurrence identity and
+time equal that network's input exactly. Ordinary RTC does not consume, invoke,
+or publish a cross-network common-analysis-grid relation. ALIGN remains the
+sole owner of that derived, non-destructive relation for a named operation whose
+output estimate mathematically depends on simultaneous measurements from more
+than one network. Shared configuration, pooled statistics, rectangular storage,
+and processing multiple networks do not establish that need. Network-level
+PTC/PCA remains network-timed; array-wide PTC/PCA requires the explicit
+relation.
 
 It retains the application shell, configuration boundary, lifecycle,
 publication, and downstream product contracts while replacing the internal
@@ -364,10 +371,15 @@ explicit and fails closed, and the legacy route stays authoritative until the
 successor passes its activation gates. Conan 2 build adaptation remains a
 separate workstream.
 
-The governing decision is [ADR 0014](adr/0014-wp7-timestream-successor.md).
+The governing decisions are
+[ADR 0014](adr/0014-wp7-timestream-successor.md) and its bounded timing
+correction [ADR 0015](adr/0015-network-specific-timing-and-common-analysis-grid.md).
 The implementation slices, storage and execution baseline, performance-tool
 adoption policy, and evidence gates are in
 [WP-7 Timestream Successor Implementation Baseline](WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md).
+The exact scientific-owner timing correction and frozen-clause mapping are in
+[the network-timing authority correction](WP7_NETWORK_TIMING_OWNER_AUTHORITY_CORRECTION_2026-08-29.md)
+and [crosswalk](WP7_NETWORK_TIMING_AUTHORITY_CROSSWALK_2026-08-29.md).
 Exact external scientific and implementation-review authorities are bound by
 [`validation/wp7_timestream_successor_authority.json`](../validation/wp7_timestream_successor_authority.json).
 The accepted first-increment implementation and representative evidence are

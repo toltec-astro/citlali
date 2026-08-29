@@ -26,7 +26,8 @@ duplicate changing implementation inventories or validation snapshots.
 | [0011](0011-canonical-observation-apt-contract.md) | Accepted; candidate implementation unactivated | Replace row-position correspondence with occurrence-scoped target/seed relations and publish one observation-specific canonical ECSV plus receipt, with complete target/relation records embedded |
 | [0012](0012-canonical-apt-v2-compact-normalization.md) | Accepted owner-directed repair; Citlali verified locally, cross-repository gates pending | Supersede new v1 issuance with compact normalized ECSV bundles, occurrence-scoped TolAPT matching, v2-only guardians, and one root receipt |
 | [0013](0013-bounded-native-scientific-provenance.md) | Accepted owner-directed Stage 7 revision; implementation and bounded frozen 152390 replay complete | Separate runtime sample state, bounded canonical native provenance, and opt-in bounded debug tracing; regenerate deterministic per-sample consequences instead of serializing them |
-| [0014](0014-wp7-timestream-successor.md) | Accepted; first native-axis identity RTC increment independently accepted, successor inactive | Implement the approved paired x/r WP-7 route as bounded subsystem succession inside the existing application |
+| [0014](0014-wp7-timestream-successor.md) | Accepted; timing placement partially superseded by 0015 | Implement the approved paired x/r WP-7 route as bounded subsystem succession inside the existing application |
+| [0015](0015-network-specific-timing-and-common-analysis-grid.md) | Accepted owner-directed correction; implementation repair in progress | Make network timing authoritative by default and construct a cross-network common analysis grid only for an explicitly synchronous operation |
 
 Numbers are never reused. A materially different decision adds a new ADR and
 marks the old record superseded; do not rewrite the historical rationale.

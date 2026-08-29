@@ -129,6 +129,33 @@ for one observation or intermediate object. Products carry the network ID when
 the identity must survive ordering or subset changes. New code must not infer a
 network ID from a container position.
 
+### Network Timing And Common Analysis Grids
+
+Network-specific timing is authoritative by default. An ordinary detector
+occurrence is scoped by observation and network and carries its exact
+reconstructed time; equal row positions or nearby times in different networks
+do not establish one occurrence. Paired `x/r` values share the same occurrence
+on their originating network axis.
+
+Ordinary RTC, CAL, AST association, MAP/JINC accumulation, and network-level
+PTC/PCA use network-keyed time. An `M=1` RTC product preserves each network's
+input occurrence identities and times exactly. A gap in one network creates no
+ordinary-RTC slot or absence state in another network.
+
+A **common analysis grid** is an explicit derived cross-network relation used
+only when one named operation's output at an analysis epoch depends jointly on
+measurements from more than one network. ALIGN owns its construction and
+preserves both analysis-grid time and every source-network occurrence, time,
+validity, cause, origin, and support fact. Array-wide PTC/PCA may require this
+relation; network-level PTC/PCA does not. A shared container, common
+configuration, pooled statistic, or implementation convenience is not a
+scientific request for one.
+
+The governing correction and exact supersession map are
+[`WP7_NETWORK_TIMING_OWNER_AUTHORITY_CORRECTION_2026-08-29.md`](WP7_NETWORK_TIMING_OWNER_AUTHORITY_CORRECTION_2026-08-29.md)
+and
+[`WP7_NETWORK_TIMING_AUTHORITY_CROSSWALK_2026-08-29.md`](WP7_NETWORK_TIMING_AUTHORITY_CROSSWALK_2026-08-29.md).
+
 ### Detectors
 
 In canonical baseline APT v1, `uid` is an exact nonnegative `int64`
