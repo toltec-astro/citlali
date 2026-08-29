@@ -10,11 +10,11 @@ not a claim that the producer's true timestamp semantics are known.
 Calibration remains explicitly pending.
 
 The representative real paired-data gate **passes** under that assignment at
-exact source revision `45b1948e041ce3a709e2d63b5dd63cf2b0cd24a2`.
+exact source revision `bb969448006ea4c3befd33f6404f875eb14232a2`.
 The retained
 [v3 observation 152390 record](WP7_IDENTITY_RTC_ACCEPTANCE_152390_V3_2026-08-29.json)
 passes the repository validator and has SHA-256
-`cb300ca36b9a9552d075311d3bf19df4ba68c5186ee92351918002e5e7f46a96`.
+`cb99161b16a84798206e9e070e379131cf922fc3159ccf8940dd9b13a5dd0aaa`.
 The earlier v1 and v2 records remain historical execution diagnostics but are
 superseded because they projected the identity RTC product through ALIGN's
 common grid.
@@ -191,8 +191,8 @@ are zero.
 Paired ingress reports 226,608,108 logical owned bytes. Compact RTC evidence
 owns 3,637,248 bytes for 227,328 events. The identity plan owns no dynamic
 bytes and RTC owns zero numerical bytes. Measured paired-ingress-through-
-publication time is 2.650 seconds wall and 2.559 seconds CPU, with peak RSS
-608,501,760 bytes. These measurements characterize this representative local
+publication time is 3.084 seconds wall and 2.951 seconds CPU, with peak RSS
+611,696,640 bytes. These measurements characterize this representative local
 run rather than a general performance qualification.
 
 The superseded v2 run selected 11,289,828 detector occurrences through an
@@ -240,5 +240,5 @@ $HOME/tolteca/bin/python tools/wp7/verify_identity_rtc_acceptance.py acceptance.
 A passing record is representative execution evidence for this bounded
 identity route. Fresh independent read-only re-review remains a separate gate
 on the completed vertical increment and must assess exact implementation
-revision `45b1948e041ce3a709e2d63b5dd63cf2b0cd24a2` plus the v3 record.
+revision `bb969448006ea4c3befd33f6404f875eb14232a2` plus the v3 record.
 Legacy activation and retirement remain separate owner decisions.

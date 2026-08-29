@@ -31,10 +31,19 @@ common-slot assignments. Route-source guards exclude common-grid and
 AST/CAL/VAL/PTC/MAP dependencies, while acceptance diagnostics record actual
 entry into each allowed stage rather than unobserved zero counters.
 
+A subsequent read-only re-review found one fail-closed defect: a pair-decision
+query outside the plan-bound network, native-row, or detector domain was
+mistaken for an eligible cell because absence of evidence was not distinguished
+from absence of a scientific coordinate. Corrective revision
+`bb969448006ea4c3befd33f6404f875eb14232a2` validates the full coordinate
+before resolving eligibility. Focused coverage now rejects unknown networks,
+rows on both sides of plan support, negative detector indices, and detector
+indices past the bound axis through both plan and product query surfaces.
+
 The representative observation 152390 gate passes under the owner-approved
 provisional integration-center support assignment; calibration remains pending
 and may replace or correct that timing relation. Exact source revision
-`45b1948e041ce3a709e2d63b5dd63cf2b0cd24a2` used all 11 networks,
+`bb969448006ea4c3befd33f6404f875eb14232a2` used all 11 networks,
 5,518 detectors, and 2,048 rows per network. All 22,528 native occurrences and
 11,300,864 native detector occurrences were retained. The runner performed
 22,601,728 bitwise paired-ingress comparisons, 22,601,728 bitwise RTC-product
@@ -42,25 +51,25 @@ comparisons, and exhaustive native identity, support, timing, decision, cause,
 and chunk comparisons with zero mismatches. RTC evidence contains 227,328
 compact events using 3,637,248 bytes; the immutable identity plan owns zero
 dynamic bytes and RTC owns zero numerical bytes. Paired-ingress-through-
-publication execution measured 2.650 seconds wall, 2.559 seconds CPU, and
-608,501,760 bytes peak RSS.
+publication execution measured 3.084 seconds wall, 2.951 seconds CPU, and
+611,696,640 bytes peak RSS.
 
 The [v3 acceptance record](../handoff/WP7_IDENTITY_RTC_ACCEPTANCE_152390_V3_2026-08-29.json)
 has SHA-256
-`cb300ca36b9a9552d075311d3bf19df4ba68c5186ee92351918002e5e7f46a96`
+`cb99161b16a84798206e9e070e379131cf922fc3159ccf8940dd9b13a5dd0aaa`
 and passes the repository validator. The earlier v1 and v2 records remain
 historical diagnostics but are superseded because they represented the RTC
 product on an ALIGN-selected common grid.
 
-Exact-revision local validation passes: all 116 focused WP-7 and ALIGN tests;
-846 runnable repository CTests with the one established disabled test
+Exact-revision local validation passes: all 117 focused WP-7 and ALIGN tests;
+847 runnable repository CTests with the one established disabled test
 unchanged; all 207 baseline-tool tests; all 8 acceptance-validator tests; and
 all 129 required config unit tests plus downstream audits. The CLI and
 acceptance executable are version-stamped from the exact candidate revision.
 
 The representative execution gate is closed for this bounded native-axis
 identity route under the declared provisional assignment. Fresh independent
-read-only re-review of exact revision `45b1948e0` and the v3 record remains the
+read-only re-review of exact revision `bb9694480` and the v3 record remains the
 next acceptance gate. D19 calibration remains open and limits the timing-role
 claim; it does not weaken the identity arithmetic, pair decisions, native
 support retention, or execution evidence. Until re-review passes, the
