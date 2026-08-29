@@ -69,14 +69,18 @@ product.
 
 ## Fixed Versus Relearned State
 
-Every GEN method enumerates RTC, CAL, PTC, AST, MAP/JINC, filtering,
-source-model, coadd, mask/support, and consumer-selection state as exactly one
-of:
+Every GEN method classifies every scientifically consequential adjacent
+reduction state as exactly one of:
 
 - immutable/fixed from an exact parent;
 - rerun/relearned by an exact named procedure;
 - not applicable; or
 - unavailable/unknown with its consequence.
+
+The method names the applicable adjacent stages; examples can include RTC,
+CAL, PTC, AST, MAP/JINC, filtering, source-model, coadd, mask/support, and
+consumer-selection state, but this is not an exhaustive implementation-
+provenance checklist.
 
 For fixed-state generation, `realization_b = O_Theta0(R_b(parent))`. For a
 relearned method, `Theta_b = LearnResolve_b(R_b(parent))` and
@@ -84,7 +88,9 @@ relearned method, `Theta_b = LearnResolve_b(R_b(parent))` and
 methods that rerun different stages, training subsets, masks, weights,
 convergence rules, or perturbations have different identities. Fixed-state and
 relearned members cannot be pooled without a separately authorized mixture
-estimand.
+estimand. A relearned method identifies the consequential stages it reruns or
+relearns and the resulting state that may differ from the real-observation
+reduction; it need not trace scientifically irrelevant implementation details.
 
 ## Same-Operator Boundary
 

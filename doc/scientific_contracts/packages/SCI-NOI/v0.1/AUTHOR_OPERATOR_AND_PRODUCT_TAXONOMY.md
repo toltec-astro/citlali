@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Collision-Free Operator And Product Taxonomy
 
-Status: proposed sanitized Stage B author input; ODQ-101 and ODQ-102A/B/C
+Status: proposed sanitized Stage B author input; ODQ-101, ODQ-102A/B/C, and ODQ-104
 incorporated; exact bytes await owner approval
 
 The semantic prefixes are:
@@ -18,7 +18,9 @@ sample. `Z_i^PTC` remains reserved exclusively for the transformed PTC sample.
 ODQ-101 approves fixed-state conditional-sign GEN as the ordinary v0.1
 conditioning class. ODQ-102A selects the PTC-to-frozen-MAP method as the
 ordinary route. Relearned GEN is a separate class and is unavailable until its
-complete rerun graph is owner-approved. Neither conditioning class spans
+scientifically consequential rerun/relearn graph and changed resulting state
+are fully specified. This is scientific method identity, not exhaustive
+implementation provenance. Neither conditioning class spans
 different parents or insertion points.
 
 The route-specific method candidates remain distinct:
@@ -30,7 +32,7 @@ The route-specific method candidates remain distinct:
 | `NOI-GEN/REALIZED-MAP-CONDITIONAL-SIGN@1` | Randomize an exact already realized MAP product under a declared map-product coherence law | Unavailable pending exact method and parent authority |
 | `NOI-GEN/REALIZED-JINC-CONDITIONAL-SIGN@1` | Randomize an exact complete realized JINC product under a declared role/coherence law | Unavailable pending exact method and numerical JINC parent |
 | `NOI-GEN/FIXED-FLT-CONDITIONAL-SIGN@1` | Use an exact fixed deterministic filter route | Unavailable pending a content-bound FLT boundary |
-| `NOI-GEN/RELEARNED@1` | Replay a complete exact owner-approved learn/resolve graph per member | Unavailable; no complete graph approved |
+| `NOI-GEN/RELEARNED@1` | Replay an exact authorized learn/resolve graph that identifies all scientifically consequential rerun/relearned stages and resulting changed state per member | Unavailable; no consequential-state graph approved |
 
 The exact DAG and required route-specific identity are in
 [`NOI_GEN_PARENT_OPERATOR_GRAPH.md`](NOI_GEN_PARENT_OPERATOR_GRAPH.md). Parent

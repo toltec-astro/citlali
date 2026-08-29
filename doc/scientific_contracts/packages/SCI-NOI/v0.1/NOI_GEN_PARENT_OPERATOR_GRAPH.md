@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — NOI-GEN Parent And Operator Graph
 
-Artifact identity: `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.5`
+Artifact identity: `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.6`
 
 Status: ODQ-101 conditioning class, ODQ-102A route, ODQ-102B coherence, and
 ODQ-102C network-stratified coefficient-balance family approved; ODQ-102D
@@ -30,9 +30,11 @@ operator. NOI owns the assignment design and GEN product identity.
 
 ODQ-101 approves fixed-state conditional-sign as the ordinary conditioning
 class. ODQ-102A selects the exact PTC-to-frozen-MAP route below as ordinary.
-Relearned GEN remains unavailable until an owner-approved graph names every
-replayed stage, input, learned state, changed-state record, response, lifecycle,
-and failure.
+Under owner-approved ODQ-104, relearned GEN remains unavailable until its
+scientific method graph names every scientifically consequential rerun or
+relearned stage and the resulting state that may differ from the real-
+observation reduction. This is not a requirement for exhaustive implementation
+provenance.
 
 ## Distinct Route-Specific Method Candidates
 
@@ -78,8 +80,9 @@ Every route-specific method binds:
 2. earliest immutable parent package/version/product/application generation;
 3. randomized quantity and stable coherence-unit population;
 4. exact sign insertion point and assignment-design generation;
-5. complete host operator and frozen `Theta_0`, or complete replay graph and
-   member-specific `Theta_b`;
+5. every scientifically consequential adjacent reduction state classified as
+   fixed, rerun/relearned, not applicable, or unavailable, including the
+   consequential replay graph and member-specific `Theta_b` when relearned;
 6. output quantity, unit, nominal-beam identity, WCS/frame, shape/indexing, and
    support;
 7. source content, cancellation target, source-imprint/leakage interpretation;
@@ -90,4 +93,6 @@ Every route-specific method binds:
 
 No later UNC, filter, selection, or STD operation changes an earlier GEN graph
 or member. No route description creates a missing parent or upgrades an
-unavailable numerical state.
+unavailable numerical state. This scientific method identity does not require
+exhaustive implementation provenance or tracing of scientifically irrelevant
+internal operations.

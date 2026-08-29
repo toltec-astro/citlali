@@ -1,8 +1,8 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.6`
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.7`
 
-Status: ODQ-101, ODQ-102A, ODQ-102B, and ODQ-102C owner-approved; exact
+Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, and ODQ-104 owner-approved; exact
 finite-design mechanics delegated to the scientific-contract author under
 ODQ-102D; later decisions remain open; not yet an allowed Stage B authority
 
@@ -187,20 +187,26 @@ not approve another decision or make an unresolved numerical route available.
 
 ### `SCI-NOI-ODQ-104` — fixed/relearned state classification
 
-- **Exact question:** Must every route classify adjacent state as fixed,
-  rerun/relearned, not applicable, or unavailable, with a complete graph?
-- **Approved disposition:** Yes, as the route-specific consequence of
-  ODQ-101. A relearned route names every rerun stage and changed-state record;
-  no generic or partial “relearned” label is sufficient.
+- **Exact question:** Must every route classify scientifically consequential
+  adjacent reduction state as fixed, rerun/relearned, not applicable, or
+  unavailable?
+- **Approved disposition:** Yes, by explicit owner approval. A relearned method
+  identifies the scientifically consequential stages it reruns or relearns and
+  the resulting state that may differ from the real-observation reduction. No
+  generic or partially specified “relearned” label defines an authorized NOI
+  method. This is a scientific method-definition requirement, not a requirement
+  for exhaustive implementation provenance.
 - **Alternatives:** infer state from execution, permit partial replay under the
   fixed label, or share one identity across different replay graphs.
 - **Scientific consequences:** different conditioning questions cannot share
   an ensemble identity or be mixed in one UNC estimator.
-- **Conservative state:** any route without the complete classification and
-  graph is unavailable.
+- **Conservative state:** any route without the complete consequential-state
+  classification and scientific rerun/relearn graph is unavailable.
 - **Affected artifacts:** GEN graph, all route boundaries, taxonomy.
-- **Exact bytes changed by approval:** only the four-state classification and
-  complete-graph requirement; exact route selection remains ODQ-102A.
+- **Exact bytes changed by approval:** explicit owner approval; the four-state
+  classification; consequential rerun/relearn stage and resulting-state
+  identity; and the limit against exhaustive implementation-provenance scope.
+  Exact ordinary route selection remains ODQ-102A.
 
 ### `SCI-NOI-ODQ-105A` — enabled, disabled, and partial completion
 

@@ -134,6 +134,21 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
     r0.5 successors of the selected boundary and graph, r0.4 of the design
     specification, and r0.6 packet/decision records.
 
+## ODQ-104 Explicit Owner-Approval Update
+
+39. Replaced the inferred ODQ-104 disposition with explicit scientific-owner
+    approval.
+40. Required each GEN method to classify every scientifically consequential
+    adjacent reduction state as fixed, rerun/relearned, not applicable, or
+    unavailable.
+41. Required relearned methods to identify consequential rerun/relearned stages
+    and resulting state that may differ from the real-observation reduction;
+    generic or partially specified `relearned` labels are insufficient.
+42. Bounded this as scientific method definition, not exhaustive implementation
+    provenance, and published r0.6 of the GEN graph and r0.7 packet/decision
+    records without changing route availability or advancing the walkthrough
+    beyond ODQ-103.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance

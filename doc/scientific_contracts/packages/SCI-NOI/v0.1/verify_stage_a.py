@@ -88,6 +88,8 @@ def main() -> None:
         "marginal sign probability `1/2`",
         "approved only as a suggestion",
         "implementation-blind scientific-contract author",
+        "scientifically consequential adjacent reduction state",
+        "does not require exhaustive implementation provenance",
     ]
     for token in required:
         if token not in package_text:

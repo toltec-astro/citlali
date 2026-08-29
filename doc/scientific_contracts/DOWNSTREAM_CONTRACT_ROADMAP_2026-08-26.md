@@ -146,7 +146,11 @@ inside each readout network, complement-symmetric marginal `1/2`, no count
 balance, and no cross-network cancellation. ODQ-102D, exact balanced
 finite-design mechanics, is delegated to the implementation-blind scientific-
 contract author; the tolerance-conditioned construction is nonbinding guidance
-and creates no advance acceptance. ODQ-103, source imprint and cancellation
+and creates no advance acceptance. ODQ-104 is explicitly approved: every GEN
+method classifies scientifically consequential adjacent state, and each
+relearned method identifies consequential rerun/relearn stages and resulting
+changed state without an exhaustive implementation-provenance requirement.
+ODQ-103, source imprint and cancellation
 claim, is next. Conditional Stage B remains blocked on exact
 bytes/hashes, granular owner decisions or explicit unavailability, and required
 source/profile bindings. The frozen MAP/pre-MAP

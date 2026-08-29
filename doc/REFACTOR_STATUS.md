@@ -464,6 +464,15 @@ suggestion that the author may adopt, revise, or reject within ODQ-102A/B/C.
 No numerical availability or advance owner acceptance follows; the author must
 supply complete exact mechanics or return one precise question.
 
+Grant Wilson explicitly approved `SCI-NOI-ODQ-104` on `2026-08-29`. Every GEN
+method must classify every scientifically consequential adjacent reduction
+state as fixed, rerun/relearned, not applicable, or unavailable. A relearned
+method must identify the consequential stages rerun/relearned and the resulting
+state that may differ from the real-observation reduction; a generic or partial
+`relearned` label is insufficient. This is scientific method definition, not a
+requirement for exhaustive implementation provenance. It selects no relearned
+method and does not change the ODQ-102A ordinary route or its availability.
+
 The next walkthrough question is `SCI-NOI-ODQ-103`, the exact source-imprint/
 cancellation target and claim. Later granular decisions, exact packet bytes/hashes, and
 required source/profile Registry bindings remain under owner review.

@@ -79,15 +79,18 @@ Theta_b       = LearnResolve_b(R_b(parent))
 realization_b = O_Theta_b(R_b(parent)).
 ```
 
-The exact rerun stages, `Theta_b`, changed-state record, response, lifecycle,
-and failure are member identity. Fixed and relearned methods answer different
+The scientifically consequential rerun/relearn stages, `Theta_b`, and resulting
+state that may differ from the real-observation reduction are method/member
+identity. This method-definition requirement does not require exhaustive
+implementation provenance. Fixed and relearned methods answer different
 questions and cannot share an ensemble. A later UNC calculation, filtering
 choice, or selection cannot change an earlier GEN member.
 
 The scientific owner approved fixed-state conditional-sign GEN as the ordinary
 base-v0.1 **conditioning family** in `SCI-NOI-ODQ-101`. Relearned GEN remains a
-separate method class and is numerically unavailable until a complete rerun
-graph is owner-approved. Fixed-state and relearned members shall never be
+separate method class and is numerically unavailable until its consequential
+rerun/relearn graph and resulting changed-state identity are fully specified.
+Fixed-state and relearned members shall never be
 combined in one uncertainty estimate.
 
 That conditioning family is not one complete numerical method. Each exact

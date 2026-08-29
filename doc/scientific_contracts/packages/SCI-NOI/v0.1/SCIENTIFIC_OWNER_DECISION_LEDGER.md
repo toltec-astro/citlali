@@ -47,7 +47,7 @@ artifact after exact-byte approval. This manager ledger is not an author input.
 | `SCI-NOI-ODQ-102C` | Ordinary sign and balance family | Decision artifact ODQ-102C | decided — network-stratified coefficient-balanced randomized signs; complement-symmetric marginal `1/2`; no detector-count balance or cross-network balancing |
 | `SCI-NOI-ODQ-102D` | Exact balanced finite-design mechanics | Decision artifact ODQ-102D | decided — exact selection/rationale delegated to the implementation-blind scientific-contract author; tolerance-conditioned construction is nonbinding guidance; no advance acceptance or numerical availability |
 | `SCI-NOI-ODQ-103` | Source-imprint/cancellation target and claim | Decision artifact row 103 | **open — next walkthrough question** |
-| `SCI-NOI-ODQ-104` | Complete fixed/relearned state classification per route | Decision artifact ODQ-104 | decided as route-specific consequence of ODQ-101; exact route remains open |
+| `SCI-NOI-ODQ-104` | Consequential fixed/relearned state classification per method | Decision artifact ODQ-104 | **decided by explicit owner approval — every consequential adjacent state classified; relearned stages and resulting changed state named; no exhaustive implementation-provenance requirement** |
 | `SCI-NOI-ODQ-105A` | Enabled/disabled and partial-completion behavior | Decision artifact ODQ-105A | open |
 | `SCI-NOI-ODQ-105B` | Initial UNC target, center, estimator, correction, missingness, and effective information | Decision artifact ODQ-105B | open |
 | `SCI-NOI-ODQ-106` | Covariance representations, domain, rank, null space, and unavailable policy | Decision artifact row 106 | open |
