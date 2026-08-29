@@ -2,7 +2,8 @@
 
 Date: `2026-08-26`
 
-Updated: `2026-08-28` for the owner-directed SCI-JINC Stage A launch
+Updated: `2026-08-29` for SCI-JINC closure and the owner-directed SCI-NOI
+Stage A launch
 
 Status: scientific-owner-approved program sequencing record
 
@@ -115,15 +116,17 @@ Every tranche follows the Scientific Contract Library Program:
 
 ## Immediate Authorized Action
 
-The bounded SCI-MAP reopening named in the original `2026-08-26` roadmap has
-completed and SCI-MAP v0.1/r0.7.1 is frozen under its own exact owner record.
-The scientific owner's `2026-08-28` successor direction launches bounded
-SCI-JINC v0.1 Stage A at
-[`packages/SCI-JINC/v0.1/`](packages/SCI-JINC/v0.1/).
+SCI-MAP v0.1/r0.7.1 and SCI-JINC v0.1/r0.3 are frozen under their own exact
+owner records. The scientific owner's `2026-08-29` direction launches bounded
+SCI-NOI v0.1 Stage A at
+[`packages/SCI-NOI/v0.1/`](packages/SCI-NOI/v0.1/).
 
-This launch authorizes prior-work recovery, implementation-informed scope
-investigation, a quarantined dossier, a sanitized Scope Brief, decision
-records, and an exact proposed author packet only. Implementation-blind Stage B
-authorship remains blocked until the scientific owner approves the exact
-Scope Brief and packet. No implementation, conformity, validation, achieved-
-performance, readiness, production, Unity, or later-tranche action follows.
+The launch authorizes recovery and classification of prior NOI science,
+implementation-informed scope investigation, a quarantined dossier, typed
+ownership and product/operator taxonomy, a sanitized Scope Brief, a bounded
+owner-question ledger, and an exact proposed author packet. It selects no
+fixed-state or relearned ordinary method. Implementation-blind Stage B remains
+blocked until the scientific owner reviews the owner decisions and approves
+the exact Scope Brief and packet. No implementation, conformity, validation,
+achieved-performance, readiness, production, Unity, filtering, source/mode,
+or FRUIT action follows.

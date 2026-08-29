@@ -191,6 +191,18 @@ and cross-package handoffs are valuable recovery inputs.
 
 ### Noise And Filtering
 
+- Package-specific NOI recovery:
+  [`packages/SCI-NOI/v0.1/PRIOR_WORK.md`](packages/SCI-NOI/v0.1/PRIOR_WORK.md)
+  at `2026-08-29`. It locates both earlier implementation-independent NOI
+  cores, their owner decisions and historical application evidence, the
+  internal noise derivation, current generation/inference/persistence
+  surfaces, and the frozen MAP/JINC boundary. The proposed packet reuses both
+  cores under one supersession cover, replaces the old two-package split with
+  typed Family G/U/Z roles, retains fixed and relearned generation as distinct
+  unresolved methods, and prevents empirical NOI weights or standardized
+  signal from being promoted into MAP coefficients, uncertainty, or
+  significance by analogy. Implementation, audits, repairs, validation, and
+  defaults remain excluded from authorship.
 - Current shared authority plus `MAIN:doc/NOISE_PRODUCTS_CONFIG_AUTHORITY.md`.
 - Existing noise integration and filter-amendment decisions under `MAIN` and
   the `codex/coordinate-sci-flt-001-amendment` topic branch.

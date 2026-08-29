@@ -406,6 +406,26 @@ production, or production-authorization claim is made. SCI-JINC is closed for
 the time being; any later scientific correction requires an explicitly
 authorized versioned successor and shall not modify the tagged bytes.
 
+On `2026-08-29` Grant Wilson launched SCI-NOI v0.1 as a recovery-first Stage A
+effort at high reasoning effort. The returned candidate uses one package with
+hard typed boundaries among realization-ensemble generation, empirical
+uncertainty inference, and a separately identified standardized-signal
+operation. It recovers both earlier implementation-independent NOI cores,
+their approved owner-policy content, the internal noise derivation, current
+implementation surfaces, and downstream dependencies without promoting
+implementation or validation evidence to science. Fixed-state and relearned
+generation remain distinct possible methods and are not mixed or selected as
+ordinary authority. MAP and JINC parents remain immutable; empirical NOI
+weights do not become MAP-facing PTC coefficients; covariance may be diagonal,
+structured, projected, ensemble-backed, full, or unavailable; and persistence
+is plan-controlled with explicit reconstruction limitations. The exact Scope
+Brief, recovered-core cover, conventions extract, taxonomy, owner ledger, and
+content-bound author packet await scientific-owner review. Stage B,
+implementation, frozen-package modification, conformity, validation,
+performance, readiness, and production claims remain prohibited. The first
+walkthrough question is `SCI-NOI-ODQ-101`, the ordinary fixed-state/relearned
+method disposition.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later
