@@ -10,6 +10,14 @@ add_test(
         -P "${CMAKE_CURRENT_LIST_DIR}/test_gitversion_refresh.cmake"
 )
 
+add_test(
+    NAME citlali::wp7_dependency_state
+    COMMAND "${CMAKE_COMMAND}"
+        "-DTEST_ROOT=${CMAKE_CURRENT_BINARY_DIR}/wp7_dependency_state_test"
+        "-DVERIFY_SCRIPT=${CMAKE_SOURCE_DIR}/cmake/verify_wp7_dependency_state.cmake"
+        -P "${CMAKE_CURRENT_LIST_DIR}/test_wp7_dependency_state.cmake"
+)
+
 add_executable(citlali_test EXCLUDE_FROM_ALL)
 set_target_properties(citlali_test
     PROPERTIES

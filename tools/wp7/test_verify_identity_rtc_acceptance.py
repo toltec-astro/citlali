@@ -23,12 +23,17 @@ def valid_record() -> dict[str, object]:
     return {
         "schema": validator.SCHEMA,
         "source_revision": source_revision,
-        "executable_revision": f"candidate-g{source_revision[:9]}",
+        "executable_revision": source_revision,
+        "executable_version": f"candidate-g{source_revision[:9]}",
+        "citlali_source_clean": True,
         "executable_sha256": "a" * 64,
+        "dependency_state_verified": True,
         "kidscpp_revision": validator.KIDSCPP_REVISION,
         "kidscpp_build_patch_sha256": validator.KIDSCPP_PATCH_SHA256,
+        "kidscpp_tree": validator.KIDSCPP_TREE,
         "tula_revision": validator.TULA_REVISION,
         "tula_build_patch_sha256": validator.TULA_PATCH_SHA256,
+        "tula_tree": validator.TULA_TREE,
         "design_commit": validator.DESIGN_COMMIT,
         "align_repair_commit": validator.ALIGN_REPAIR_COMMIT,
         "design_is_ancestor": True,
@@ -51,8 +56,12 @@ def valid_record() -> dict[str, object]:
         "occurrence_support_assignment_schema": (
             validator.OCCURRENCE_SUPPORT_ASSIGNMENT_SCHEMA
         ),
-        "occurrence_support_assignment_id": "wp7-provisional-center:152390:1",
-        "occurrence_support_assignment_sha256": "b" * 64,
+        "occurrence_support_assignment_id": (
+            validator.OCCURRENCE_SUPPORT_ASSIGNMENT_ID
+        ),
+        "occurrence_support_assignment_sha256": (
+            validator.OCCURRENCE_SUPPORT_ASSIGNMENT_SHA256
+        ),
         "occurrence_support_assignment_status": (
             validator.OCCURRENCE_SUPPORT_ASSIGNMENT_STATUS
         ),
@@ -95,6 +104,8 @@ def valid_record() -> dict[str, object]:
             "derived_evidence_bytes": 80,
             "derived_plan_bytes": 0,
             "paired_ingress_value_comparison_count": 40960,
+            "paired_ingress_identity_comparison_count": 10,
+            "paired_ingress_member_state_comparison_count": 40960,
             "rtc_product_value_comparison_count": 40960,
             "identity_comparison_count": 20480,
             "support_comparison_count": 4096,
@@ -106,10 +117,12 @@ def valid_record() -> dict[str, object]:
             "chunk_partition_count": 2,
             "wall_time_sec": 1.0,
             "cpu_time_sec": 0.5,
-            "peak_rss_bytes": 1024,
+            "process_peak_rss_bytes": 1024,
             "rtc_owned_numeric_bytes": 0,
             "x_bitwise_mismatch_count": 0,
             "r_bitwise_mismatch_count": 0,
+            "paired_ingress_identity_mismatch_count": 0,
+            "paired_ingress_member_state_mismatch_count": 0,
             "identity_mismatch_count": 0,
             "support_mismatch_count": 0,
             "assigned_support_binding_mismatch_count": 0,
@@ -133,6 +146,64 @@ def valid_record() -> dict[str, object]:
 class AcceptanceValidatorTest(unittest.TestCase):
     def test_accepts_complete_zero_mismatch_record(self) -> None:
         validator.validate(valid_record())
+
+    def test_rejects_prefix_only_or_dirty_source_binding(self) -> None:
+        record = valid_record()
+        record["executable_revision"] = (
+            record["source_revision"][:9] + "f" * 31
+        )
+        with self.assertRaisesRegex(
+            validator.AcceptanceError, "must equal source_revision exactly"
+        ):
+            validator.validate(record)
+
+        record = valid_record()
+        record["citlali_source_clean"] = False
+        with self.assertRaisesRegex(
+            validator.AcceptanceError, "citlali_source_clean must be true"
+        ):
+            validator.validate(record)
+
+    def test_rejects_unbound_dependency_state(self) -> None:
+        for name, value in (
+            ("dependency_state_verified", False),
+            ("kidscpp_tree", "0" * 40),
+            ("tula_tree", "0" * 40),
+        ):
+            with self.subTest(name=name):
+                record = valid_record()
+                record[name] = value
+                with self.assertRaises(validator.AcceptanceError):
+                    validator.validate(record)
+
+    def test_rejects_different_support_assignment(self) -> None:
+        for name, value in (
+            ("occurrence_support_assignment_id", "different"),
+            ("occurrence_support_assignment_sha256", "0" * 64),
+            ("occurrence_support_event_time_role", "integration_start"),
+        ):
+            with self.subTest(name=name):
+                record = valid_record()
+                record[name] = value
+                with self.assertRaises(validator.AcceptanceError):
+                    validator.validate(record)
+
+    def test_rejects_circular_or_incomplete_ingress_checks(self) -> None:
+        record = valid_record()
+        record["metrics"]["paired_ingress_member_state_comparison_count"] -= 1
+        with self.assertRaisesRegex(
+            validator.AcceptanceError,
+            "paired_ingress_member_state_comparison_count",
+        ):
+            validator.validate(record)
+
+        record = valid_record()
+        record["metrics"]["paired_ingress_identity_mismatch_count"] = 1
+        with self.assertRaisesRegex(
+            validator.AcceptanceError,
+            "paired_ingress_identity_mismatch_count must be zero",
+        ):
+            validator.validate(record)
 
     def test_rejects_unchecked_pair_causal_evidence(self) -> None:
         record = valid_record()

@@ -135,11 +135,31 @@ if (CITLALI_STANDALONE)
     add_executable(citlali_wp7_identity_rtc_acceptance EXCLUDE_FROM_ALL
         "tools/wp7/identity_rtc_acceptance.cpp"
     )
+    set(wp7_dependency_identity_dir
+        "${CMAKE_BINARY_DIR}/generated")
+    set(wp7_dependency_identity_header
+        "${wp7_dependency_identity_dir}/citlali_wp7/acceptance_build_identity.h")
+    add_custom_target(citlali_wp7_identity_rtc_acceptance_build_identity
+        COMMAND "${CMAKE_COMMAND}"
+            "-DWP7_CITLALI_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
+            "-DWP7_KIDSCPP_SOURCE_DIR=${kidscpp_SOURCE_DIR}"
+            "-DWP7_KIDSCPP_REVISION=04088da182622c3e879f04314974a7c0d60ee2d6"
+            "-DWP7_KIDSCPP_PATCH=${CMAKE_CURRENT_SOURCE_DIR}/patches/local/kidscpp-local-build.patch"
+            "-DWP7_TULA_SOURCE_DIR=${tula_SOURCE_DIR}"
+            "-DWP7_TULA_REVISION=f30f81d97c44bd79618273bb842302ef839c6ab1"
+            "-DWP7_TULA_PATCH=${CMAKE_CURRENT_SOURCE_DIR}/patches/local/tula-local-build.patch"
+            "-DWP7_DEPENDENCY_IDENTITY_HEADER=${wp7_dependency_identity_header}"
+            -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/verify_wp7_dependency_state.cmake"
+        COMMENT "Verify exact WP-7 acceptance dependency state"
+        VERBATIM
+    )
+    add_dependencies(citlali_wp7_identity_rtc_acceptance
+        citlali_wp7_identity_rtc_acceptance_build_identity)
     target_link_libraries(citlali_wp7_identity_rtc_acceptance
         PRIVATE citlali::citlali
     )
     target_include_directories(citlali_wp7_identity_rtc_acceptance
-        PRIVATE "include"
+        PRIVATE "include" "${wp7_dependency_identity_dir}"
     )
     set_target_properties(citlali_wp7_identity_rtc_acceptance
         PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"

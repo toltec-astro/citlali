@@ -6,6 +6,7 @@
 #include <citlali/core/utils/sha256.h>
 
 #include <citlali_config/gitversion.h>
+#include <citlali_wp7/acceptance_build_identity.h>
 #include <kidscpp_config/gitversion.h>
 #include <tula_config/gitversion.h>
 
@@ -58,13 +59,17 @@ namespace pipeline = citlali::pipeline;
 namespace apt = citlali::pipeline::canonical_apt_v2;
 
 constexpr std::string_view acceptance_schema =
-    "citlali-wp7-identity-rtc-acceptance-v3";
+    "citlali-wp7-identity-rtc-acceptance-v4";
 constexpr std::string_view occurrence_support_assignment_schema =
     "citlali-native-occurrence-support-assignment-v1";
 constexpr std::string_view occurrence_support_duration_relation =
     "Header.Toltec.AccumLen / Header.Toltec.FpgaFreq";
 constexpr std::string_view occurrence_support_assignment_status =
     "provisional_calibration_pending";
+constexpr std::string_view occurrence_support_assignment_id =
+    "wp7-provisional-integration-center-152390-v1";
+constexpr std::string_view occurrence_support_assignment_sha256 =
+    "6fc4e9009b98190c42cc3f6e7e030fa317e8ae5f9e707cd968110a696fac2b6c";
 constexpr std::string_view occurrence_support_calibration_disposition =
     "replace_with_calibrated_producer_relation_when_available";
 constexpr std::string_view producer_interface =
@@ -76,11 +81,11 @@ constexpr std::string_view align_repair_commit = "d55deefb3";
 constexpr std::string_view kidscpp_revision =
     "04088da182622c3e879f04314974a7c0d60ee2d6";
 constexpr std::string_view kidscpp_patch_sha256 =
-    "98ed435199078e758f1cfe55dceeddbc9d4f623ce6406e84077e6dde04db4d96";
+    CITLALI_WP7_KIDSCPP_PATCH_SHA256;
 constexpr std::string_view tula_revision =
     "f30f81d97c44bd79618273bb842302ef839c6ab1";
 constexpr std::string_view tula_patch_sha256 =
-    "c331a9aeb61aa3171efb85cc5bc2b50f1a34b243d44c25c5d4a97c2250e70b4a";
+    CITLALI_WP7_TULA_PATCH_SHA256;
 
 struct Arguments {
     fs::path data_directory;
@@ -290,16 +295,11 @@ NativeOccurrenceSupportAssignment load_occurrence_support_assignment(
                 scalar("producer_interface_sha256") ==
                     producer_interface_sha256,
             "occurrence-support assignment names a different producer interface");
-    const auto role = scalar("event_time_role");
-    if (role == "integration_start") {
-        result.event_time_role = NativeEventTimeRole::integration_start;
-    } else if (role == "integration_center") {
-        result.event_time_role = NativeEventTimeRole::integration_center;
-    } else if (role == "integration_end") {
-        result.event_time_role = NativeEventTimeRole::integration_end;
-    } else {
-        fail("occurrence-support assignment event-time role is unsupported");
-    }
+    require(result.assignment_id == occurrence_support_assignment_id,
+            "occurrence-support assignment id is not the approved assignment");
+    require(scalar("event_time_role") == "integration_center",
+            "occurrence-support assignment must use integration center");
+    result.event_time_role = NativeEventTimeRole::integration_center;
     require(scalar("duration_relation") ==
                 occurrence_support_duration_relation,
             "occurrence-support assignment duration relation is unsupported");
@@ -307,6 +307,8 @@ NativeOccurrenceSupportAssignment load_occurrence_support_assignment(
                 occurrence_support_calibration_disposition,
             "occurrence-support assignment calibration disposition is unsupported");
     result.artifact_sha256 = citlali::utils::sha256_file(path);
+    require(result.artifact_sha256 == occurrence_support_assignment_sha256,
+            "occurrence-support assignment artifact SHA-256 is not approved");
     return result;
 }
 
@@ -711,6 +713,8 @@ std::shared_ptr<const pipeline::PairedReadoutOccurrenceAxis> occurrence_axis(
 
 struct ComparisonMetrics {
     std::size_t paired_ingress_value_comparison_count = 0;
+    std::size_t paired_ingress_identity_comparison_count = 0;
+    std::size_t paired_ingress_member_state_comparison_count = 0;
     std::size_t rtc_product_value_comparison_count = 0;
     std::size_t identity_comparison_count = 0;
     std::size_t support_comparison_count = 0;
@@ -721,6 +725,8 @@ struct ComparisonMetrics {
     std::size_t assigned_support_binding_count = 0;
     std::size_t x_bitwise_mismatch_count = 0;
     std::size_t r_bitwise_mismatch_count = 0;
+    std::size_t paired_ingress_identity_mismatch_count = 0;
+    std::size_t paired_ingress_member_state_mismatch_count = 0;
     std::size_t identity_mismatch_count = 0;
     std::size_t support_mismatch_count = 0;
     std::size_t pair_decision_mismatch_count = 0;
@@ -766,16 +772,91 @@ void compare_occurrence_axis_to_assignment(
 }
 
 struct NativeValueOracle {
+    std::vector<pipeline::PairedReadoutDetectorIdentity> detectors;
     std::vector<std::tuple<pipeline::TimestreamNativeRow, Eigen::Index,
                            std::uint64_t, std::uint64_t>> cells;
 };
 
+pipeline::PairedReadoutDetectorIdentity producer_detector_identity(
+    const pipeline::CanonicalAptDetectorRelationV2 &relation,
+    const NetworkInput &input, Eigen::Index detector) {
+    require(detector >= 0 && detector < input.source.channel_count,
+            "producer detector oracle index is outside the raw channel axis");
+    const auto found = std::find_if(
+        relation.bindings().begin(), relation.bindings().end(),
+        [&](const auto &binding) {
+            return binding.network == input.source.network &&
+                   binding.raw_source_uid == input.source.source_uid &&
+                   binding.channel == detector;
+        });
+    require(found != relation.bindings().end(),
+            "producer detector oracle lacks an APT binding");
+    require(std::find_if(std::next(found), relation.bindings().end(),
+                [&](const auto &binding) {
+                    return binding.network == input.source.network &&
+                           binding.raw_source_uid == input.source.source_uid &&
+                           binding.channel == detector;
+                }) == relation.bindings().end(),
+            "producer detector oracle has an ambiguous APT binding");
+    return {found->output_uid, found->array,
+            static_cast<pipeline::TimestreamNetworkId>(found->network),
+            found->raw_source_uid,
+            static_cast<Eigen::Index>(found->channel)};
+}
+
+pipeline::ReadoutMemberCause producer_member_causes(
+    bool tune_valid, double value) {
+    const bool finite = std::isfinite(value);
+    auto causes = pipeline::ReadoutMemberCause::none;
+    if (!(tune_valid && finite)) {
+        causes = causes | pipeline::ReadoutMemberCause::producer_invalid;
+    }
+    if (!finite) {
+        causes = causes | pipeline::ReadoutMemberCause::nonfinite_payload;
+    }
+    return causes;
+}
+
+bool producer_member_valid(bool tune_valid, double value) {
+    return tune_valid && std::isfinite(value);
+}
+
+pipeline::PairedReadoutCause producer_pair_causes(
+    pipeline::ReadoutMemberCause x_causes,
+    pipeline::ReadoutMemberCause r_causes) {
+    auto causes = pipeline::PairedReadoutCause::none;
+    if (pipeline::has_cause(
+            x_causes, pipeline::ReadoutMemberCause::producer_invalid)) {
+        causes = causes | pipeline::PairedReadoutCause::x_original_invalid;
+    }
+    if (pipeline::has_cause(
+            r_causes, pipeline::ReadoutMemberCause::producer_invalid)) {
+        causes = causes | pipeline::PairedReadoutCause::r_original_invalid;
+    }
+    if (pipeline::has_cause(
+            x_causes, pipeline::ReadoutMemberCause::nonfinite_payload)) {
+        causes = causes | pipeline::PairedReadoutCause::x_nonfinite;
+    }
+    if (pipeline::has_cause(
+            r_causes, pipeline::ReadoutMemberCause::nonfinite_payload)) {
+        causes = causes | pipeline::PairedReadoutCause::r_nonfinite;
+    }
+    return causes;
+}
+
 NativeValueOracle make_native_value_oracle(
     const kids::TimeStreamSolverResult &result,
-    std::int64_t first_native_row) {
+    std::int64_t first_native_row,
+    const pipeline::CanonicalAptDetectorRelationV2 &relation,
+    const NetworkInput &input) {
     NativeValueOracle oracle;
     const auto &x = result.data_out.xs.data;
     const auto &r = result.data_out.rs.data;
+    oracle.detectors.reserve(static_cast<std::size_t>(x.cols()));
+    for (Eigen::Index detector = 0; detector < x.cols(); ++detector) {
+        oracle.detectors.push_back(
+            producer_detector_identity(relation, input, detector));
+    }
     for (Eigen::Index local = 0; local < x.rows(); ++local) {
         const auto native_row = first_native_row +
             static_cast<pipeline::TimestreamNativeRow>(local);
@@ -789,10 +870,23 @@ NativeValueOracle make_native_value_oracle(
     return oracle;
 }
 
-void compare_moved_native_values(
+void compare_moved_native_ingress(
     const NativeValueOracle &oracle,
     const pipeline::PairedReadoutNetwork &network,
+    const std::vector<bool> &tune_valid,
     ComparisonMetrics &metrics) {
+    require(oracle.detectors.size() ==
+                static_cast<std::size_t>(network.detector_count()) &&
+            tune_valid.size() == oracle.detectors.size(),
+            "producer oracle does not cover the admitted detector axis");
+    for (Eigen::Index detector = 0;
+         detector < network.detector_count(); ++detector) {
+        ++metrics.paired_ingress_identity_comparison_count;
+        if (!(network.detector(detector) ==
+              oracle.detectors[static_cast<std::size_t>(detector)])) {
+            ++metrics.paired_ingress_identity_mismatch_count;
+        }
+    }
     for (const auto &[row, detector, x_bits, r_bits] : oracle.cells) {
         ++metrics.paired_ingress_value_comparison_count;
         if (std::bit_cast<std::uint64_t>(network.value(
@@ -803,6 +897,24 @@ void compare_moved_native_values(
         if (std::bit_cast<std::uint64_t>(network.value(
                 pipeline::ReadoutMember::r, row, detector)) != r_bits) {
             ++metrics.r_bitwise_mismatch_count;
+        }
+        const auto tune_ok = tune_valid.at(
+            static_cast<std::size_t>(detector));
+        for (const auto [member, value_bits] :
+             {std::pair{pipeline::ReadoutMember::x, x_bits},
+              std::pair{pipeline::ReadoutMember::r, r_bits}}) {
+            ++metrics.paired_ingress_member_state_comparison_count;
+            const auto value = std::bit_cast<double>(value_bits);
+            const auto &state = network.state(member, row, detector);
+            const auto expected_valid = producer_member_valid(tune_ok, value);
+            const auto expected_causes = producer_member_causes(tune_ok, value);
+            if (!state.available() || !state.in_acquisition_support() ||
+                state.origin() != pipeline::ReadoutMemberOrigin::measured ||
+                state.original_valid() != expected_valid ||
+                state.valid() != expected_valid ||
+                state.causes() != expected_causes) {
+                ++metrics.paired_ingress_member_state_mismatch_count;
+            }
         }
     }
 }
@@ -935,7 +1047,7 @@ PairedBuildResult build_paired_readout(
                         solved.data_out.xs.data.cols(),
                 "KIDs solver did not produce the exact paired native shape");
         auto oracle = make_native_value_oracle(
-            solved, arguments.first_native_row);
+            solved, arguments.first_native_row, relation, input);
         auto mapping = mapping_identity(input, config);
         mapping_digest.update(mapping->producer_instance_id);
         mapping_digest.update(mapping->mapping_revision);
@@ -951,7 +1063,8 @@ PairedBuildResult build_paired_readout(
             member_states(solved.data_out.rs.data, input.tune_valid)};
         auto network = pipeline::take_paired_kids_solver_result(
             std::move(ingress), std::move(solved));
-        compare_moved_native_values(oracle, network, metrics);
+        compare_moved_native_ingress(
+            oracle, network, input.tune_valid, metrics);
         networks.push_back(std::move(network));
     }
     return {
@@ -969,41 +1082,74 @@ pipeline::RtcOnlyRouteOutcome run_route(
         {{run}, paired, std::move(spans)}, publication);
 }
 
-void compare_full_product_to_parent(
+const NetworkInput &producer_input(
+    const std::vector<NetworkInput> &inputs,
+    pipeline::TimestreamNetworkId network_id) {
+    const auto found = std::find_if(
+        inputs.begin(), inputs.end(), [&](const auto &input) {
+            return input.source.network == network_id;
+        });
+    require(found != inputs.end(),
+            "RTC product network lacks immutable producer facts");
+    return *found;
+}
+
+void compare_full_product_to_producer_facts(
     const pipeline::RtcTimestream &product,
+    const pipeline::CanonicalAptDetectorRelationV2 &relation,
+    const std::vector<NetworkInput> &inputs,
     ComparisonMetrics &metrics) {
     const auto &view = *product.input_handle();
     const auto &paired = *product.native_parent_handle();
     const auto &evidence = *product.plan_handle()->evidence_handle();
     for (const auto &span : product.network_spans()) {
         const auto &native = paired.network(span.network_id);
-        const auto &axis = *native.occurrence_axis_handle();
+        const auto &input = producer_input(inputs, span.network_id);
+        const auto duration =
+            static_cast<double>(input.accumulation_length) /
+            input.fpga_frequency_hz;
+        require(native.detector_count() == input.source.channel_count,
+                "RTC product detector axis disagrees with producer facts");
+        std::vector<pipeline::PairedReadoutDetectorIdentity>
+            expected_detectors;
+        expected_detectors.reserve(
+            static_cast<std::size_t>(native.detector_count()));
+        for (Eigen::Index detector = 0;
+             detector < native.detector_count(); ++detector) {
+            expected_detectors.push_back(
+                producer_detector_identity(relation, input, detector));
+        }
         for (auto row = span.first_native_row;
              row < span.past_last_native_row; ++row) {
+            const auto expected_native = input.native_timing->identity(row);
+            const auto expected_interval = assigned_occurrence_interval(
+                expected_native.reconstructed_time_unix_sec(), duration,
+                NativeEventTimeRole::integration_center);
             ++metrics.native_time_comparison_count;
             if (std::bit_cast<std::uint64_t>(
                     product.output_time_unix_sec(span.network_id, row)) !=
                 std::bit_cast<std::uint64_t>(
-                    axis.identity(row).reconstructed_time_unix_sec())) {
+                    expected_native.reconstructed_time_unix_sec())) {
                 ++metrics.selected_time_mismatch_count;
             }
             ++metrics.representative_native_comparison_count;
             if (!(product.representative_native_identity(
-                      span.network_id, row) == axis.identity(row))) {
+                      span.network_id, row) == expected_native)) {
                 ++metrics.representative_native_mismatch_count;
             }
             ++metrics.support_comparison_count;
             if (!(product.representative_interval(span.network_id, row) ==
-                  axis.interval(row))) {
+                  expected_interval)) {
                 ++metrics.support_mismatch_count;
             }
 
             for (Eigen::Index detector = 0;
                  detector < native.detector_count(); ++detector) {
                 ++metrics.identity_comparison_count;
+                const auto &expected_detector = expected_detectors.at(
+                    static_cast<std::size_t>(detector));
                 const pipeline::RtcNativeCellIdentity expected_identity{
-                    span.network_id, row,
-                    native.detector(detector).output_uid};
+                    span.network_id, row, expected_detector.output_uid};
                 if (!(product.identity(span.network_id, row, detector) ==
                       expected_identity)) {
                     ++metrics.identity_mismatch_count;
@@ -1025,15 +1171,29 @@ void compare_full_product_to_parent(
                             ++metrics.r_bitwise_mismatch_count;
                         }
                     }
+                    const auto expected_causes = producer_member_causes(
+                        input.tune_valid.at(
+                            static_cast<std::size_t>(detector)),
+                        actual);
                     if (product.member_local_causes(
                             member, span.network_id, row, detector) !=
-                        native.state(member, row, detector).causes()) {
+                        expected_causes) {
                         ++metrics.member_cause_mismatch_count;
                     }
                 }
 
                 ++metrics.pair_decision_comparison_count;
-                const auto expected_decision = native.pair_valid(row, detector)
+                const auto tune_ok = input.tune_valid.at(
+                    static_cast<std::size_t>(detector));
+                const auto x_value = product.value(
+                    pipeline::ReadoutMember::x,
+                    span.network_id, row, detector);
+                const auto r_value = product.value(
+                    pipeline::ReadoutMember::r,
+                    span.network_id, row, detector);
+                const auto x_valid = producer_member_valid(tune_ok, x_value);
+                const auto r_valid = producer_member_valid(tune_ok, r_value);
+                const auto expected_decision = x_valid && r_valid
                     ? pipeline::RtcPairDecision::eligible
                     : pipeline::RtcPairDecision::ineligible;
                 if (product.pair_decision(
@@ -1050,17 +1210,16 @@ void compare_full_product_to_parent(
                     }
                     continue;
                 }
-                const auto x_valid = native.state(
-                    pipeline::ReadoutMember::x, row, detector).valid();
-                const auto r_valid = native.state(
-                    pipeline::ReadoutMember::r, row, detector).valid();
+                const auto expected_pair_causes = producer_pair_causes(
+                    producer_member_causes(tune_ok, x_value),
+                    producer_member_causes(tune_ok, r_value));
                 if (actual_evidence == nullptr ||
                     actual_evidence->direct_x() != !x_valid ||
                     actual_evidence->direct_r() != !r_valid ||
                     evidence.scientific_identity(*actual_evidence) !=
                         expected_identity ||
                     evidence.member_local_causes(*actual_evidence) !=
-                        native.pair_causes(row, detector)) {
+                        expected_pair_causes) {
                     ++metrics.pair_causal_evidence_mismatch_count;
                 }
             }
@@ -1187,6 +1346,8 @@ AcceptanceRun execute_acceptance(
     const auto full = run_route(
         1, paired_build.paired, full_spans,
         full_publication);
+    const auto primary_cpu_end = std::clock();
+    const auto primary_wall_end = std::chrono::steady_clock::now();
     require(full.complete() &&
                 full_publication.snapshot() == full.published_product,
             "full identity RTC route did not publish exactly one completion");
@@ -1206,8 +1367,9 @@ AcceptanceRun execute_acceptance(
             "realized RTC operator is not exact paired identity");
 
     auto comparisons = paired_build.ingress_comparisons;
-    compare_full_product_to_parent(
-        *full.published_product->timestream_handle(), comparisons);
+    compare_full_product_to_producer_facts(
+        *full.published_product->timestream_handle(), relation, inputs,
+        comparisons);
 
     auto first_spans = full_spans;
     auto second_spans = full_spans;
@@ -1261,11 +1423,9 @@ AcceptanceRun execute_acceptance(
                 !failed_publication.snapshot(),
             "failed route published a false completion");
 
-    const auto cpu_end = std::clock();
-    const auto wall_end = std::chrono::steady_clock::now();
     const auto wall_time =
-        std::chrono::duration<double>(wall_end - wall_begin).count();
-    const auto cpu_time = static_cast<double>(cpu_end - cpu_begin) /
+        std::chrono::duration<double>(primary_wall_end - wall_begin).count();
+    const auto cpu_time = static_cast<double>(primary_cpu_end - cpu_begin) /
                           static_cast<double>(CLOCKS_PER_SEC);
     require(wall_time > 0.0 && cpu_time > 0.0,
             "acceptance timing measurements are not positive");
@@ -1284,6 +1444,12 @@ void write_acceptance_record(const Arguments &arguments,
     require(run.comparisons.paired_ingress_value_comparison_count ==
                 2 * run.native_cardinality.detector_occurrence_count,
             "paired ingress comparison count is incomplete");
+    require(run.comparisons.paired_ingress_identity_comparison_count ==
+                run.native_cardinality.detector_count,
+            "paired ingress detector-identity comparison count is incomplete");
+    require(run.comparisons.paired_ingress_member_state_comparison_count ==
+                2 * run.native_cardinality.detector_occurrence_count,
+            "paired ingress member-state comparison count is incomplete");
     require(run.comparisons.rtc_product_value_comparison_count ==
                 2 * run.native_cardinality.detector_occurrence_count,
             "RTC product comparison count is incomplete");
@@ -1308,6 +1474,20 @@ void write_acceptance_record(const Arguments &arguments,
     require(run.comparisons.pair_causal_evidence_comparison_count ==
                 run.native_cardinality.detector_occurrence_count,
             "pair causal-evidence comparison count is incomplete");
+    require(run.comparisons.x_bitwise_mismatch_count == 0 &&
+                run.comparisons.r_bitwise_mismatch_count == 0 &&
+                run.comparisons.paired_ingress_identity_mismatch_count == 0 &&
+                run.comparisons.paired_ingress_member_state_mismatch_count == 0 &&
+                run.comparisons.identity_mismatch_count == 0 &&
+                run.comparisons.support_mismatch_count == 0 &&
+                run.comparisons.pair_decision_mismatch_count == 0 &&
+                run.comparisons.pair_causal_evidence_mismatch_count == 0 &&
+                run.comparisons.member_cause_mismatch_count == 0 &&
+                run.comparisons.selected_time_mismatch_count == 0 &&
+                run.comparisons.representative_native_mismatch_count == 0 &&
+                run.comparisons.chunk_scientific_mismatch_count == 0 &&
+                run.comparisons.assigned_support_binding_mismatch_count == 0,
+            "acceptance comparisons contain a scientific mismatch");
     const auto &diagnostics = run.terminal.diagnostics;
     require(diagnostics.native_admission_entry_count == 1 &&
                 diagnostics.learn_entry_count == 1 &&
@@ -1328,18 +1508,29 @@ void write_acceptance_record(const Arguments &arguments,
            << "  \"source_revision\": " << q(arguments.source_revision)
            << ",\n"
            << "  \"executable_revision\": "
+           << q(CITLALI_WP7_SOURCE_REVISION)
+           << ",\n"
+           << "  \"executable_version\": "
            << q(std::string{CITLALI_GIT_VERSION} + " kids=" +
                 KIDSCPP_GIT_VERSION + " tula=" + TULA_GIT_VERSION)
            << ",\n"
+           << "  \"citlali_source_clean\": true,\n"
            << "  \"executable_sha256\": "
            << q(arguments.executable_sha256) << ",\n"
-           << "  \"kidscpp_revision\": " << q(kidscpp_revision)
+           << "  \"dependency_state_verified\": true,\n"
+           << "  \"kidscpp_revision\": "
+           << q(CITLALI_WP7_KIDSCPP_REVISION)
            << ",\n"
            << "  \"kidscpp_build_patch_sha256\": "
            << q(kidscpp_patch_sha256) << ",\n"
-           << "  \"tula_revision\": " << q(tula_revision) << ",\n"
+           << "  \"kidscpp_tree\": "
+           << q(CITLALI_WP7_KIDSCPP_TREE) << ",\n"
+           << "  \"tula_revision\": "
+           << q(CITLALI_WP7_TULA_REVISION) << ",\n"
            << "  \"tula_build_patch_sha256\": "
            << q(tula_patch_sha256) << ",\n"
+           << "  \"tula_tree\": "
+           << q(CITLALI_WP7_TULA_TREE) << ",\n"
            << "  \"design_commit\": " << q(design_commit) << ",\n"
            << "  \"align_repair_commit\": " << q(align_repair_commit)
            << ",\n"
@@ -1447,6 +1638,12 @@ void write_acceptance_record(const Arguments &arguments,
            << run.terminal.diagnostics.derived_plan_bytes << ",\n"
            << "    \"paired_ingress_value_comparison_count\": "
            << run.comparisons.paired_ingress_value_comparison_count << ",\n"
+           << "    \"paired_ingress_identity_comparison_count\": "
+           << run.comparisons.paired_ingress_identity_comparison_count
+           << ",\n"
+           << "    \"paired_ingress_member_state_comparison_count\": "
+           << run.comparisons.paired_ingress_member_state_comparison_count
+           << ",\n"
            << "    \"rtc_product_value_comparison_count\": "
            << run.comparisons.rtc_product_value_comparison_count << ",\n"
            << "    \"identity_comparison_count\": "
@@ -1466,13 +1663,19 @@ void write_acceptance_record(const Arguments &arguments,
            << "    \"chunk_partition_count\": 2,\n"
            << "    \"wall_time_sec\": " << run.wall_time_sec << ",\n"
            << "    \"cpu_time_sec\": " << run.cpu_time_sec << ",\n"
-           << "    \"peak_rss_bytes\": " << run.peak_rss << ",\n"
+           << "    \"process_peak_rss_bytes\": " << run.peak_rss << ",\n"
            << "    \"rtc_owned_numeric_bytes\": "
            << run.terminal.diagnostics.rtc_owned_numeric_bytes << ",\n"
            << "    \"x_bitwise_mismatch_count\": "
            << run.comparisons.x_bitwise_mismatch_count << ",\n"
            << "    \"r_bitwise_mismatch_count\": "
            << run.comparisons.r_bitwise_mismatch_count << ",\n"
+           << "    \"paired_ingress_identity_mismatch_count\": "
+           << run.comparisons.paired_ingress_identity_mismatch_count
+           << ",\n"
+           << "    \"paired_ingress_member_state_mismatch_count\": "
+           << run.comparisons.paired_ingress_member_state_mismatch_count
+           << ",\n"
            << "    \"identity_mismatch_count\": "
            << run.comparisons.identity_mismatch_count << ",\n"
            << "    \"support_mismatch_count\": "
@@ -1517,7 +1720,8 @@ int main(int argc, char **argv) {
         auto arguments = parse_arguments(argc, argv);
         require(full_lowercase_git_sha(arguments.source_revision),
                 "source revision must be one full lowercase Git SHA");
-        require(arguments.source_revision.starts_with(CITLALI_GIT_REVISION),
+        require(CITLALI_WP7_SOURCE_STATE_VERIFIED == 1 &&
+                    arguments.source_revision == CITLALI_WP7_SOURCE_REVISION,
                 "source revision does not match the compiled Citlali revision");
         require(arguments.owner_run, "owner-run authorization is required");
         require(arguments.design_is_ancestor &&
@@ -1537,13 +1741,12 @@ int main(int argc, char **argv) {
         const auto support_assignment =
             load_occurrence_support_assignment(
                 arguments.occurrence_support_assignment_artifact);
-        require(std::string_view{KIDSCPP_GIT_REVISION} ==
-                    kidscpp_revision.substr(0,
-                        std::string_view{KIDSCPP_GIT_REVISION}.size()) &&
-                    std::string_view{TULA_GIT_REVISION} ==
-                    tula_revision.substr(
-                        0, std::string_view{TULA_GIT_REVISION}.size()),
-                "compiled numerical dependency base revision is not approved");
+        require(CITLALI_WP7_DEPENDENCY_STATE_VERIFIED == 1 &&
+                    std::string_view{CITLALI_WP7_KIDSCPP_REVISION} ==
+                        kidscpp_revision &&
+                    std::string_view{CITLALI_WP7_TULA_REVISION} ==
+                        tula_revision,
+                "compiled numerical dependency state is not approved");
         require(fs::is_regular_file(arguments.kidscpp_build_patch) &&
                     citlali::utils::sha256_file(
                         arguments.kidscpp_build_patch) ==

@@ -11,11 +11,17 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA = "citlali-wp7-identity-rtc-acceptance-v3"
+SCHEMA = "citlali-wp7-identity-rtc-acceptance-v4"
 OCCURRENCE_SUPPORT_ASSIGNMENT_SCHEMA = (
     "citlali-native-occurrence-support-assignment-v1"
 )
 OCCURRENCE_SUPPORT_ASSIGNMENT_STATUS = "provisional_calibration_pending"
+OCCURRENCE_SUPPORT_ASSIGNMENT_ID = (
+    "wp7-provisional-integration-center-152390-v1"
+)
+OCCURRENCE_SUPPORT_ASSIGNMENT_SHA256 = (
+    "6fc4e9009b98190c42cc3f6e7e030fa317e8ae5f9e707cd968110a696fac2b6c"
+)
 OCCURRENCE_SUPPORT_DURATION_RELATION = (
     "Header.Toltec.AccumLen / Header.Toltec.FpgaFreq"
 )
@@ -32,10 +38,12 @@ KIDSCPP_REVISION = "04088da182622c3e879f04314974a7c0d60ee2d6"
 KIDSCPP_PATCH_SHA256 = (
     "98ed435199078e758f1cfe55dceeddbc9d4f623ce6406e84077e6dde04db4d96"
 )
+KIDSCPP_TREE = "81569aacea2b6e1831dc5af20d6bf8a4ca78332f"
 TULA_REVISION = "f30f81d97c44bd79618273bb842302ef839c6ab1"
 TULA_PATCH_SHA256 = (
     "c331a9aeb61aa3171efb85cc5bc2b50f1a34b243d44c25c5d4a97c2250e70b4a"
 )
+TULA_TREE = "7ae84231a485c67e58134d9aa759b2c5b987c844"
 HEX40 = re.compile(r"^[0-9a-f]{40}$")
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
 UTC_SECONDS = re.compile(
@@ -94,25 +102,30 @@ def validate(record: dict[str, Any]) -> None:
     if not HEX40.fullmatch(source_revision):
         raise AcceptanceError("source_revision must be one full lowercase Git SHA")
     executable_revision = require_string(record, "executable_revision")
-    if source_revision[:9] not in executable_revision:
-        raise AcceptanceError(
-            "executable_revision must contain the source revision's first nine hex digits"
-        )
+    if executable_revision != source_revision:
+        raise AcceptanceError("executable_revision must equal source_revision exactly")
+    require_string(record, "executable_version")
+    require_true(record, "citlali_source_clean")
     executable_sha256 = require_string(record, "executable_sha256")
     if not HEX64.fullmatch(executable_sha256):
         raise AcceptanceError("executable_sha256 must be one lowercase SHA-256")
+    require_true(record, "dependency_state_verified")
     if record.get("kidscpp_revision") != KIDSCPP_REVISION:
         raise AcceptanceError(f"kidscpp_revision must be {KIDSCPP_REVISION}")
     if record.get("kidscpp_build_patch_sha256") != KIDSCPP_PATCH_SHA256:
         raise AcceptanceError(
             f"kidscpp_build_patch_sha256 must be {KIDSCPP_PATCH_SHA256}"
         )
+    if record.get("kidscpp_tree") != KIDSCPP_TREE:
+        raise AcceptanceError(f"kidscpp_tree must be {KIDSCPP_TREE}")
     if record.get("tula_revision") != TULA_REVISION:
         raise AcceptanceError(f"tula_revision must be {TULA_REVISION}")
     if record.get("tula_build_patch_sha256") != TULA_PATCH_SHA256:
         raise AcceptanceError(
             f"tula_build_patch_sha256 must be {TULA_PATCH_SHA256}"
         )
+    if record.get("tula_tree") != TULA_TREE:
+        raise AcceptanceError(f"tula_tree must be {TULA_TREE}")
     if record.get("design_commit") != DESIGN_COMMIT:
         raise AcceptanceError(f"design_commit must be {DESIGN_COMMIT}")
     if record.get("align_repair_commit") != ALIGN_REPAIR_COMMIT:
@@ -148,13 +161,17 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError(
             "occurrence_support_assignment_schema must be the supported schema"
         )
-    require_string(record, "occurrence_support_assignment_id")
-    assignment_sha256 = require_string(
-        record, "occurrence_support_assignment_sha256"
-    )
-    if not HEX64.fullmatch(assignment_sha256):
+    if record.get("occurrence_support_assignment_id") != (
+        OCCURRENCE_SUPPORT_ASSIGNMENT_ID
+    ):
         raise AcceptanceError(
-            "occurrence_support_assignment_sha256 must be one lowercase SHA-256"
+            "occurrence_support_assignment_id must be the approved assignment"
+        )
+    if record.get("occurrence_support_assignment_sha256") != (
+        OCCURRENCE_SUPPORT_ASSIGNMENT_SHA256
+    ):
+        raise AcceptanceError(
+            "occurrence_support_assignment_sha256 must bind the approved artifact"
         )
     if (
         record.get("occurrence_support_assignment_status")
@@ -179,13 +196,9 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError(
             "occurrence_support_calibration_disposition must preserve recalibration"
         )
-    if record.get("occurrence_support_event_time_role") not in {
-        "integration_start",
-        "integration_center",
-        "integration_end",
-    }:
+    if record.get("occurrence_support_event_time_role") != "integration_center":
         raise AcceptanceError(
-            "occurrence_support_event_time_role must be an approved role"
+            "occurrence_support_event_time_role must be integration_center"
         )
     if (
         record.get("occurrence_support_duration_relation")
@@ -297,6 +310,22 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError(
             "paired_ingress_value_comparison_count must cover x and r for every native cell"
         )
+    if (
+        require_integer(metrics, "paired_ingress_identity_comparison_count", 1)
+        != detector_count
+    ):
+        raise AcceptanceError(
+            "paired_ingress_identity_comparison_count must cover every detector"
+        )
+    if (
+        require_integer(
+            metrics, "paired_ingress_member_state_comparison_count", 1
+        )
+        != 2 * detector_occurrences
+    ):
+        raise AcceptanceError(
+            "paired_ingress_member_state_comparison_count must cover x and r state for every native cell"
+        )
     product_values = require_integer(
         metrics, "rtc_product_value_comparison_count", 1
     )
@@ -348,7 +377,7 @@ def validate(record: dict[str, Any]) -> None:
     require_integer(metrics, "chunk_partition_count", 2)
     require_number(metrics, "wall_time_sec")
     require_number(metrics, "cpu_time_sec")
-    require_integer(metrics, "peak_rss_bytes", 1)
+    require_integer(metrics, "process_peak_rss_bytes", 1)
     require_zero(metrics, "rtc_owned_numeric_bytes")
     for name in (
         "native_admission_entry_count",
@@ -363,6 +392,8 @@ def validate(record: dict[str, Any]) -> None:
     for name in (
         "x_bitwise_mismatch_count",
         "r_bitwise_mismatch_count",
+        "paired_ingress_identity_mismatch_count",
+        "paired_ingress_member_state_mismatch_count",
         "identity_mismatch_count",
         "support_mismatch_count",
         "assigned_support_binding_mismatch_count",
