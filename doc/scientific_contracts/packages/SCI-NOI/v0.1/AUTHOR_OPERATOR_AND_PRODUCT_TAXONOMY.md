@@ -25,7 +25,7 @@ The route-specific method candidates remain distinct:
 
 | Candidate identity | Scientific role | Present state |
 | --- | --- | --- |
-| `NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1` | One observation-scoped detector assignment applies to all its admitted samples at the PTC-to-MAP boundary; detector coefficient mass is balanced separately within each readout network before one frozen MAP operator; output is an NOI realization map, not ordinary MAP science | **Selected ordinary route/coherence/balance family; numerically unavailable** pending ODQ-102D and MAP numerical gates |
+| `NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1` | One observation-scoped detector assignment applies to all its admitted samples at the PTC-to-MAP boundary; detector coefficient mass is balanced separately within each readout network before one frozen MAP operator; output is an NOI realization map, not ordinary MAP science | **Selected ordinary route/coherence/balance family; numerically unavailable** pending exact Stage B mechanics delegated under ODQ-102D and later accepted, plus MAP numerical gates |
 | `NOI-GEN/PTC-TO-FROZEN-JINC-CONDITIONAL-SIGN@1` | Randomize exact PTC parent quantities before one frozen JINC operator | Unselected and unavailable under JINC numerical gates |
 | `NOI-GEN/REALIZED-MAP-CONDITIONAL-SIGN@1` | Randomize an exact already realized MAP product under a declared map-product coherence law | Unavailable pending exact method and parent authority |
 | `NOI-GEN/REALIZED-JINC-CONDITIONAL-SIGN@1` | Randomize an exact complete realized JINC product under a declared role/coherence law | Unavailable pending exact method and numerical JINC parent |

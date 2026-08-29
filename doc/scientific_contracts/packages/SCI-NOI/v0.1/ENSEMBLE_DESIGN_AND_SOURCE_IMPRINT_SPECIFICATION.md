@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Ensemble Design And Source-Imprint Specification
 
-Artifact identity: `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.3`
+Artifact identity: `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.4`
 
 Status: ordinary coherence and network-stratified coefficient-balance family
 owner-approved; exact finite-design mechanics and source-imprint claim remain
@@ -110,8 +110,11 @@ MAP plan changes the design identity.
 ODQ-102C authorizes no exact imbalance norm, tolerance, feasibility rule,
 candidate/search algorithm, retry cap, failure behavior, count, forced
 complement pairing, replacement, equivalence, duplicate treatment, or rank
-definition. Those exact finite-design mechanics remain ODQ-102D. Until they
-are approved, the selected balance family is numerically unavailable.
+definition. ODQ-102D delegates those selections and their scientific rationale
+to the implementation-blind contract author. Its tolerance-conditioned scheme
+is a nonbinding suggestion, not approved normative mechanics. Until exact
+Stage B mechanics are authored and later owner-accepted, the selected balance
+family is numerically unavailable.
 
 Observation-global, detector-count, pixel-vector, source-template,
 complement-paired, and other balance families remain possible only as

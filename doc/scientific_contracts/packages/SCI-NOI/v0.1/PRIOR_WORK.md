@@ -186,5 +186,8 @@ and classified the output as an NOI realization map rather than ordinary MAP
 science. ODQ-102B fixed one detector assignment across all of that detector's
 admitted samples in an observation. ODQ-102C then selected network-stratified
 coefficient-balanced randomized signs without count balance or cross-network
-cancellation. The route's numerical gates remain unavailable. The next owner
-question is `SCI-NOI-ODQ-102D`, the exact finite balance mechanics.
+cancellation. ODQ-102D delegates exact finite balance mechanics and rationale
+to the implementation-blind scientific-contract author; the proposed
+tolerance-conditioned construction is nonbinding guidance. The route's
+numerical gates remain unavailable. The next owner question is
+`SCI-NOI-ODQ-103`, the source-imprint/cancellation target and claim.

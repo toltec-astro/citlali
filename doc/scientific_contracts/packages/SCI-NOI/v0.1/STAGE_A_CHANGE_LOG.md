@@ -120,6 +120,20 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
 34. Published r0.4 successors of the selected PTC-to-NOI boundary and GEN graph,
     r0.3 of the design specification, and r0.5 packet/decision records.
 
+## ODQ-102D Authorship-Delegation Update
+
+35. Recorded that the exact finite-design mechanics are the scientific-contract
+    author's job, not a further owner-selected algorithm.
+36. Preserved the tolerance-conditioned network-local construction as a
+    nonbinding suggestion that the author may adopt, revise, or reject while
+    preserving ODQ-102A/B/C.
+37. Required the author to supply exact mechanics and scientific rationale or
+    return one precise question; created no numerical availability or advance
+    owner acceptance.
+38. Advanced the one-at-a-time owner walkthrough to ODQ-103 and published
+    r0.5 successors of the selected boundary and graph, r0.4 of the design
+    specification, and r0.6 packet/decision records.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance

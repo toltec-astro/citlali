@@ -1,11 +1,12 @@
 # SCI-NOI v0.1 — NOI-GEN Parent And Operator Graph
 
-Artifact identity: `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.4`
+Artifact identity: `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.5`
 
 Status: ODQ-101 conditioning class, ODQ-102A route, ODQ-102B coherence, and
-ODQ-102C network-stratified coefficient-balance family approved; exact finite
-design and frozen boundary gates remain unavailable; other route-specific
-methods remain unselected and unavailable
+ODQ-102C network-stratified coefficient-balance family approved; ODQ-102D
+delegates exact finite-design authorship; exact design and frozen boundary
+gates remain unavailable; other route-specific methods remain unselected and
+unavailable
 
 ## Conditioning Classes
 
@@ -37,7 +38,7 @@ and failure.
 
 | Method identity | Earliest immutable parent and randomized quantity | Assignment insertion and host operator | Output | Scientific selection and numerical state |
 | --- | --- | --- | --- | --- |
-| `NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1` | Exact retained PTC occurrences carrying `Z_i^PTC`; one coherence unit per observation-scoped stable realized detector/channel | One NOI-defined assignment modifier applies to all admitted occurrences of that detector throughout the observation at the exact PTC-to-MAP boundary; network-local balance uses exact frozen admitted MAP coefficient mass; MAP consumes the modifier inline or through an equivalent materialization, then uses the same frozen accumulation | Atomic NOI realization-map product in the route-declared inherited `mJy/beam`, beam, WCS/support, and response domain; not an ordinary MAP science product | **Route, coherence, and network-stratified coefficient-balance family selected by ODQ-102A/B/C; numerically unavailable** pending ODQ-102D finite mechanics plus exact PTC MAP-facing coefficient family/value/QC and numerical `coverage_cut` state/value/failure policy |
+| `NOI-GEN/PTC-TO-FROZEN-MAP-CONDITIONAL-SIGN@1` | Exact retained PTC occurrences carrying `Z_i^PTC`; one coherence unit per observation-scoped stable realized detector/channel | One NOI-defined assignment modifier applies to all admitted occurrences of that detector throughout the observation at the exact PTC-to-MAP boundary; network-local balance uses exact frozen admitted MAP coefficient mass; MAP consumes the modifier inline or through an equivalent materialization, then uses the same frozen accumulation | Atomic NOI realization-map product in the route-declared inherited `mJy/beam`, beam, WCS/support, and response domain; not an ordinary MAP science product | **Route, coherence, and network-stratified coefficient-balance family selected by ODQ-102A/B/C; numerically unavailable** pending exact Stage B mechanics authored under ODQ-102D and later accepted, plus exact PTC MAP-facing coefficient family/value/QC and numerical `coverage_cut` state/value/failure policy |
 | `NOI-GEN/PTC-TO-FROZEN-JINC-CONDITIONAL-SIGN@1` | Exact retained JINC-admissible PTC occurrences carrying `Z_i^PTC` | Sign at the exact PTC occurrence/coherence unit, followed by one frozen JINC operator | Exact complete five-role JINC realization bundle when scientifically defined | Unselected and unavailable: JINC coefficient, TolTEC parameter, and applicable numerical-adequacy authority remain unavailable |
 | `NOI-GEN/REALIZED-MAP-CONDITIONAL-SIGN@1` | One exact realized MAP observation or coadd product, with the exact randomized map quantity/coherence partition declared | Sign after MAP realization; no claim of equivalence to pre-MAP assignment | Exact realization product on the inherited MAP unit/WCS/support | Unavailable until the exact parent class, randomized quantity, coherence law, and scientific use are owner-approved and the parent exists |
 | `NOI-GEN/REALIZED-JINC-CONDITIONAL-SIGN@1` | One exact complete realized JINC observation bundle, with exact randomized role/coherence partition | Sign after JINC realization; no claim of equivalence to pre-JINC assignment | Exact realization product over the declared JINC role/domain | Unavailable until the exact role, coherence law, scientific use, and numerical JINC parent are authorized |
@@ -58,7 +59,9 @@ balances signed totals within that network only. Cross-network, cross-array,
 and cross-observation cancellation is forbidden. The admissible law is
 complement-symmetric with detector marginal sign probability `1/2`; count
 balance and detector independence after conditioning are not claimed. Exact
-finite-design mechanics remain ODQ-102D.
+finite-design mechanics are delegated under ODQ-102D. Its proposed
+tolerance-conditioned construction is author guidance only, not normative
+mechanics or advance owner acceptance.
 
 For the selected route, inline application and materialized randomized
 timestream application are scientifically equivalent representations only when

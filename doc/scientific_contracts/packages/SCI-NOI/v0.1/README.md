@@ -56,13 +56,15 @@ validation, reductions, Unity, defaults, or historical behavior.
   conditioning family, ODQ-102A PTC-to-frozen-MAP route, and ODQ-102B
   observation-scoped detector coherence approved; ODQ-102C selects
   network-stratified coefficient-balanced randomized signs; numerical
-  assignment remains unavailable pending ODQ-102D and frozen route gates.
+  assignment remains unavailable pending exact Stage B mechanics delegated
+  under ODQ-102D and later accepted, plus frozen route gates.
 - Exact MAP, JINC, and conditional pre-MAP PTC boundaries: proposed; numerical
   availability remains fail-closed.
 - NOI-owned GEN/UNC-member/UNC-ensemble/STD profile drafts: proposed; not
   registered; GEN completion ownership repaired.
-- Sanitized owner-decision artifact: ODQ-101 and ODQ-102A/B/C approved; exact
-  balanced finite-design mechanics and later decisions remain open.
+- Sanitized owner-decision artifact: ODQ-101 and ODQ-102A/B/C approved;
+  ODQ-102D delegates exact balanced finite-design authorship and preserves its
+  proposed construction as nonbinding guidance; later decisions remain open.
 - Sanitized Scope Brief and author packet: repaired and content-bound candidate;
   not owner-approved.
 - Implementation-blind scientific rationale: not commissioned and not
@@ -145,6 +147,8 @@ those typed unavailable states and do not create numerical products.
   durable observation-scoped detector-coherence decision
 - [`SCIENTIFIC_OWNER_ODQ_102C_APPROVAL_2026-08-29.md`](SCIENTIFIC_OWNER_ODQ_102C_APPROVAL_2026-08-29.md):
   durable network-stratified coefficient-balance-family decision
+- [`SCIENTIFIC_OWNER_ODQ_102D_AUTHORSHIP_DELEGATION_2026-08-29.md`](SCIENTIFIC_OWNER_ODQ_102D_AUTHORSHIP_DELEGATION_2026-08-29.md):
+  durable finite-design authorship delegation and nonbinding suggestion
 - [`OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md`](OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md):
   complete Stage A ownership matrix
 - [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): exact proposed
@@ -168,8 +172,8 @@ those typed unavailable states and do not create numerical products.
 ## Stop Boundary
 
 Stop after presenting these final Stage A closure artifacts and continue the
-owner-decision walkthrough at `SCI-NOI-ODQ-102D`; ODQ-101 and ODQ-102A/B/C are
-approved. Do not
+owner-decision walkthrough at `SCI-NOI-ODQ-103`; ODQ-101 and ODQ-102A/B/C are
+approved and ODQ-102D is delegated to the scientific-contract author. Do not
 draft the implementation-blind scientific rationale, shared normative core,
 engineering conformance specification, or PDFs until the exact conditional
 Stage B gate in the Scope Brief is satisfied. Do not implement or modify

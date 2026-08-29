@@ -45,8 +45,8 @@ artifact after exact-byte approval. This manager ledger is not an author input.
 | `SCI-NOI-ODQ-102A` | Exact ordinary parent/insertion route | Decision artifact ODQ-102A | decided — NOI modifier at PTC-to-MAP boundary; inline MAP application permitted; output is NOI realization map; numerical gates remain unavailable |
 | `SCI-NOI-ODQ-102B` | Initial coherence-unit family | Decision artifact ODQ-102B | decided — one observation-scoped detector/channel assignment applies to every admitted sample throughout that observation |
 | `SCI-NOI-ODQ-102C` | Ordinary sign and balance family | Decision artifact ODQ-102C | decided — network-stratified coefficient-balanced randomized signs; complement-symmetric marginal `1/2`; no detector-count balance or cross-network balancing |
-| `SCI-NOI-ODQ-102D` | Exact balanced finite-design mechanics | Decision artifact ODQ-102D | **open — next walkthrough question** |
-| `SCI-NOI-ODQ-103` | Source-imprint/cancellation target and claim | Decision artifact row 103 | open |
+| `SCI-NOI-ODQ-102D` | Exact balanced finite-design mechanics | Decision artifact ODQ-102D | decided — exact selection/rationale delegated to the implementation-blind scientific-contract author; tolerance-conditioned construction is nonbinding guidance; no advance acceptance or numerical availability |
+| `SCI-NOI-ODQ-103` | Source-imprint/cancellation target and claim | Decision artifact row 103 | **open — next walkthrough question** |
 | `SCI-NOI-ODQ-104` | Complete fixed/relearned state classification per route | Decision artifact ODQ-104 | decided as route-specific consequence of ODQ-101; exact route remains open |
 | `SCI-NOI-ODQ-105A` | Enabled/disabled and partial-completion behavior | Decision artifact ODQ-105A | open |
 | `SCI-NOI-ODQ-105B` | Initial UNC target, center, estimator, correction, missingness, and effective information | Decision artifact ODQ-105B | open |

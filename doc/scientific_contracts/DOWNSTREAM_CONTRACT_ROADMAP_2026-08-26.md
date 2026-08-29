@@ -144,7 +144,10 @@ observation is a different unit. ODQ-102C then selected network-stratified,
 coefficient-balanced randomized signs, with balance evaluated separately
 inside each readout network, complement-symmetric marginal `1/2`, no count
 balance, and no cross-network cancellation. ODQ-102D, exact balanced
-finite-design mechanics, is next. Conditional Stage B remains blocked on exact
+finite-design mechanics, is delegated to the implementation-blind scientific-
+contract author; the tolerance-conditioned construction is nonbinding guidance
+and creates no advance acceptance. ODQ-103, source imprint and cancellation
+claim, is next. Conditional Stage B remains blocked on exact
 bytes/hashes, granular owner decisions or explicit unavailability, and required
 source/profile bindings. The frozen MAP/pre-MAP
 and JINC numerical-parent unavailability states remain unchanged. No

@@ -116,7 +116,7 @@ The author packet includes three sanitized exact boundaries:
 - [`SCI-JINC_TO_SCI-NOI_BOUNDARY.md`](SCI-JINC_TO_SCI-NOI_BOUNDARY.md), identity
   `SCI-JINC_TO_SCI-NOI v0.1/r0.2`; and
 - [`SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md`](SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md),
-  identity `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.4`, containing separately
+  identity `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.5`, containing separately
   identified PTC-to-frozen-MAP and PTC-to-frozen-JINC candidates.
 
 Each boundary binds exact package/revision, product/application generation,
@@ -174,8 +174,10 @@ not product-independent after balance conditioning, and equal detector counts
 are not required. `B_d` is an NOI design coefficient, not precision, empirical
 uncertainty weight, exposure, validity, or a replacement MAP-facing
 coefficient. Exact tolerance, sampling/search, count, failure, member
-dependence, pairing, duplicate/equivalence, and rank mechanics remain open
-under ODQ-102D, so numerical design remains unavailable.
+dependence, pairing, duplicate/equivalence, and rank mechanics are delegated
+under ODQ-102D to the implementation-blind contract author. The proposed
+tolerance-conditioned construction is nonbinding guidance only, so numerical
+design remains unavailable until exact Stage B mechanics are later accepted.
 
 The following remain distinct:
 
@@ -375,11 +377,12 @@ the following scientifically independent choices separate:
 - deterministic FLT, Wiener, and FRUIT scope; and
 - NOI-owned VAL identities and exact actions.
 
-ODQ-101 and ODQ-102A/B/C are approved. The next walkthrough question is
-`SCI-NOI-ODQ-102D`: select the exact network-local imbalance, tolerance,
-conditional randomization/search, canonical key, count/failure, dependence,
-pairing/replacement, duplicate/equivalence, and rank mechanics. Every later
-decision and the artifact's final hash still require explicit owner review.
+ODQ-101 and ODQ-102A/B/C are approved. ODQ-102D delegates exact finite-design
+selection and rationale to the implementation-blind contract author; its
+tolerance-conditioned construction is a nonbinding suggestion, not advance
+approval. The next walkthrough question is `SCI-NOI-ODQ-103`, the exact
+source-imprint/cancellation target and claim. Every later decision and the
+artifact's final hash still require explicit owner review.
 
 ## 13. Non-Goals And Claim Boundary
 

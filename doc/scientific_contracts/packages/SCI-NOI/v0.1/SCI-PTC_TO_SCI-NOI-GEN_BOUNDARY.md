@@ -1,8 +1,8 @@
 # SCI-PTC To SCI-NOI-GEN Boundary
 
-Boundary identity: `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.4`
+Boundary identity: `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.5`
 
-Canonical spelling is exactly `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.4`.
+Canonical spelling is exactly `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.5`.
 
 Status: proposed sanitized Stage A pre-mapmaking boundary; ODQ-102A selects the
 PTC-to-frozen-MAP route, which remains numerically unavailable pending its
@@ -110,9 +110,10 @@ claimed.
 route. It is not precision, inverse variance, empirical NOI weight, exposure,
 validity, or a replacement for the PTC-owned `gamma_i`. Changed coefficient,
 admitted population, network, observation, or MAP plan changes the design
-identity. Exact numerical balance, search/key/count/failure,
-pairing/replacement, equivalence/duplicate, and rank mechanics remain open
-under ODQ-102D.
+identity. ODQ-102D delegates exact numerical balance,
+search/key/count/failure, pairing/replacement, equivalence/duplicate, and rank
+mechanics to the implementation-blind contract author. Its
+tolerance-conditioned construction is a nonbinding suggestion only.
 
 ## Separate Fixed-State Route Identities
 
@@ -172,8 +173,9 @@ or gate authority is typed unavailable.
 No unity, loading, sensitivity, scatter, inverse variance, precision,
 coefficient, `coverage_cut`, coordinate, or no-op fallback may be inferred.
 
-The selected MAP-hosted route also remains unavailable until ODQ-102D approves
-the exact finite mechanics for the ODQ-102C balance family.
+The selected MAP-hosted route also remains unavailable until exact finite
+mechanics for the ODQ-102C balance family are authored under ODQ-102D and later
+owner-accepted.
 
 ## Fail-Closed Compatibility
 

@@ -1,10 +1,10 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.5`
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.6`
 
 Status: ODQ-101, ODQ-102A, ODQ-102B, and ODQ-102C owner-approved; exact
-finite-design mechanics and later decisions remain open; not yet an allowed
-Stage B authority
+finite-design mechanics delegated to the scientific-contract author under
+ODQ-102D; later decisions remain open; not yet an allowed Stage B authority
 
 Scientific owner: Grant Wilson
 
@@ -137,26 +137,33 @@ not approve another decision or make an unresolved numerical route available.
   requested/resolved count, retry/failure rule, member dependence,
   complement-pairing, replacement, equivalence, duplicate, and rank rules make
   the approved ODQ-102C family numerically realizable?
-- **Recommended disposition:** sample scheduling-independent candidate sign
-  vectors from a declared symmetric base law; admit only candidates satisfying
-  one exact dimensionless network-local imbalance rule; preserve equal
-  probability for complements; bind the candidate/search algorithm and cap;
-  fail closed when the requested design cannot be realized; retain duplicates
-  and dependencies as facts; and define rank on the exact admitted centered
-  member-by-detector design matrix. Exact tolerance and count remain for owner
-  selection.
+- **Owner disposition:** delegate selection and justification of the exact
+  mechanics to the implementation-blind scientific-contract author. The
+  tolerance-conditioned scheme below is approved only as a suggestion, not as
+  normative mechanics. The author may adopt, revise, or reject it while
+  preserving every ODQ-102A/B/C boundary and claim restriction, and shall
+  return one precise scientific question if the admitted packet is
+  insufficient.
+- **Nonbinding author suggestion:** use
+  `Delta_h = abs(sum_{d in h} s_d B_d) / sum_{d in h} B_d`; generate symmetric
+  candidates independently within each network; require every network to meet
+  an explicitly requested tolerance with no inferred value; bind a
+  deterministic versioned counter-based generator and retry cap; fail closed
+  rather than relax tolerance; force neither complement pairs nor detector-
+  count balance; and retain duplicates and realized rank as design facts.
 - **Alternatives:** exact optimum partition, best-of-fixed-candidate pool,
   tolerance-conditioned sampling, deterministic balanced block design, or
   unavailable.
 - **Scientific consequences:** completes numerical reproducibility, finite
   dependence, failure, rank, and effective-information semantics.
-- **Conservative state while open:** no numerical assignments or completed
-  design; the ODQ-102C family remains scientifically selected but unavailable.
+- **Conservative state:** the authorship disposition is decided, but no
+  numerical assignments or completed design exist. The ODQ-102C family remains
+  unavailable until exact Stage B mechanics are authored and later accepted.
 - **Affected artifacts:** design specification, GEN graph, UNC table, profiles,
   persistence identity.
-- **Exact bytes changed by approval:** numerical balance rule and tolerance;
-  key/search/count/failure bytes; complement/member dependence; equivalence,
-  duplicates, and rank domain.
+- **Exact bytes changed by this disposition:** author-selection authority;
+  nonbinding suggested mechanics; required author disclosures and preserved
+  constraints; precise-question fallback; and no-advance-acceptance state.
 
 ### `SCI-NOI-ODQ-103` — source imprint and cancellation claim
 

@@ -456,9 +456,16 @@ equal detector counts and post-conditioning independence are not claimed. The
 derived design coefficient is not precision, empirical NOI weight, exposure,
 validity, or a replacement MAP-facing coefficient.
 
-The next walkthrough question is `SCI-NOI-ODQ-102D`, the exact network-local
-imbalance, tolerance, sampling/search/key/count/failure, dependence,
-pairing/replacement, equivalence/duplicate, and rank mechanics. Later granular decisions, exact packet bytes/hashes, and
+Grant Wilson then resolved `SCI-NOI-ODQ-102D` on `2026-08-29` as an authorship
+delegation. Exact finite-design mechanics and scientific rationale belong to
+the implementation-blind scientific-contract author. The proposed tolerance-
+conditioned network-local construction is approved only as a nonbinding
+suggestion that the author may adopt, revise, or reject within ODQ-102A/B/C.
+No numerical availability or advance owner acceptance follows; the author must
+supply complete exact mechanics or return one precise question.
+
+The next walkthrough question is `SCI-NOI-ODQ-103`, the exact source-imprint/
+cancellation target and claim. Later granular decisions, exact packet bytes/hashes, and
 required source/profile Registry bindings remain under owner review.
 MAP/pre-MAP numerical parents remain
 unavailable pending the exact PTC MAP-facing coefficient and owner-admitted
