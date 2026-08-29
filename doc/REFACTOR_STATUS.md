@@ -43,12 +43,29 @@ origin, and support. An ordinary-RTC source guard forbids this view, its header,
 the legacy shared-slot carrier, common-slot names, and the old wrapper from the
 ordinary RTC dependency closure.
 
-Local validation for this implementation passes all 128 focused WP-7 and
-SCI-ALIGN CTests, including nine new network-timing/common-analysis tests; all
-860 repository CTests; all 207 baseline-tool tests; all 17 identity-acceptance
+The first independent exact-SHA review of implementation `80425128e` correctly
+returned HOLD. It found that the wrapper had collapsed payload availability
+into numerical validity and that the explicit common-analysis relation lacked
+a bound request/relation identity and admitted caller-supplied associations
+without enforcing ALIGN's strict-half rule. The bounded conformance repair
+separates payload availability, numerical validity, raw state, exact value,
+local causes, and pair disposition. Its compact realization records distinct
+availability and validity counts.
+
+The repaired common-analysis API binds a named consumer, observation scope,
+participant inventory, stable epoch-set identity and cardinality, strict-half
+admission cadence/rule, support policy, failure policy, request identity, and
+ALIGN plan identity. It requires at least two requested networks and derives
+associations from source times with the exact `< h/2` predicate; callers cannot
+inject associations. Relation cells retain the relation identity, and an
+explicit participant subset neither admits nor exposes unrequested networks.
+
+Local validation for the repaired implementation passes all 132 focused WP-7
+and SCI-ALIGN CTests, including 13 network-timing/common-analysis tests; all 864
+repository CTests; all 207 baseline-tool tests; all 17 identity-acceptance
 validator tests; and all 129 required config unit tests plus downstream audits.
-A fresh read-only exact-SHA review is the next gate. No RTC terminal publication
-or nonidentity numerical method is authorized before that review.
+A fresh read-only exact-SHA re-review is the next gate. No RTC terminal
+publication or nonidentity numerical method is authorized before that review.
 
 ## 2026-08-29 WP-7 Identity RTC Native-Axis Conformance Repair
 

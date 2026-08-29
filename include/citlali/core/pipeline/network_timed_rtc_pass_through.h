@@ -343,9 +343,20 @@ public:
                        ->input_handle()
                        ->network(network_id)
                        .state(member, native_row, detector_index)
-                       .valid()
+                       .available()
                    ? NetworkTimedRtcMemberAvailability::available
                    : NetworkTimedRtcMemberAvailability::unavailable;
+    }
+    bool member_numerically_valid(ReadoutMember member,
+                                  TimestreamNetworkId network_id,
+                                  TimestreamNativeRow native_row,
+                                  Eigen::Index detector_index) const {
+        require_cell(network_id, native_row, detector_index);
+        return context_handle()
+            ->input_handle()
+            ->network(network_id)
+            .state(member, native_row, detector_index)
+            .valid();
     }
     NetworkTimedRtcPairCauseRole
     pair_cause_role(ReadoutMember member, TimestreamNetworkId network_id,
@@ -484,6 +495,13 @@ public:
         return plan_->member_availability(member, network_id, native_row,
                                           detector_index);
     }
+    bool member_numerically_valid(ReadoutMember member,
+                                  TimestreamNetworkId network_id,
+                                  TimestreamNativeRow native_row,
+                                  Eigen::Index detector_index) const {
+        return plan_->member_numerically_valid(member, network_id, native_row,
+                                               detector_index);
+    }
     NetworkTimedRtcPairCauseRole
     pair_cause_role(ReadoutMember member, TimestreamNetworkId network_id,
                     TimestreamNativeRow native_row,
@@ -515,6 +533,14 @@ public:
         TimestreamNativeRow native_row, Eigen::Index detector_index) const {
         return identity_product_->member_local_causes(
             member, network_id, native_row, detector_index);
+    }
+    ReadoutMemberState raw_member_state(ReadoutMember member,
+                                        TimestreamNetworkId network_id,
+                                        TimestreamNativeRow native_row,
+                                        Eigen::Index detector_index) const {
+        return input_handle()
+            ->network(network_id)
+            .state(member, native_row, detector_index);
     }
     const RtcEvidenceEvent *
     pair_causal_evidence(TimestreamNetworkId network_id,
@@ -556,8 +582,10 @@ struct NetworkTimedRtcRealization {
     std::size_t output_native_occurrence_count = 0;
     std::size_t output_cell_count = 0;
     std::size_t pair_ineligible_cell_count = 0;
-    std::size_t x_available_cell_count = 0;
-    std::size_t r_available_cell_count = 0;
+    std::size_t x_payload_available_cell_count = 0;
+    std::size_t r_payload_available_cell_count = 0;
+    std::size_t x_numerically_valid_cell_count = 0;
+    std::size_t r_numerically_valid_cell_count = 0;
     std::size_t realized_sampling_factor = 1;
     bool conditioned_r_requested = false;
 };
@@ -587,6 +615,19 @@ inline NetworkTimedRtcApplyResult apply_network_timed_rtc_pass_through(
         plan->identity_plan_handle(), plan->context_handle()->input_handle(),
         partitions);
     const auto identity_realization = applied.realization;
+    std::size_t x_unavailable_cell_count = 0;
+    std::size_t r_unavailable_cell_count = 0;
+    for (const auto &event : plan->evidence_handle()->events()) {
+        const auto causes = plan->evidence_handle()->member_local_causes(event);
+        if (has_cause(causes, PairedReadoutCause::x_unavailable))
+            ++x_unavailable_cell_count;
+        if (has_cause(causes, PairedReadoutCause::r_unavailable))
+            ++r_unavailable_cell_count;
+    }
+    const auto x_payload_available_cell_count =
+        identity_realization.output_cell_count - x_unavailable_cell_count;
+    const auto r_payload_available_cell_count =
+        identity_realization.output_cell_count - r_unavailable_cell_count;
     NetworkTimedRtcRealization realization{
         plan->identity(),
         NetworkTimedRtcCompletionState::complete,
@@ -594,10 +635,10 @@ inline NetworkTimedRtcApplyResult apply_network_timed_rtc_pass_through(
         identity_realization.output_native_occurrence_count,
         identity_realization.output_cell_count,
         identity_realization.pair_ineligible_cell_count,
+        x_payload_available_cell_count,
+        r_payload_available_cell_count,
         identity_realization.x_numerically_valid_cell_count,
-        plan->conditioned_r_requested()
-            ? identity_realization.r_numerically_valid_cell_count
-            : 0,
+        identity_realization.r_numerically_valid_cell_count,
         identity_realization.realized_sampling_factor,
         plan->conditioned_r_requested()};
     return {std::shared_ptr<const NetworkTimedRtcTimestream>(

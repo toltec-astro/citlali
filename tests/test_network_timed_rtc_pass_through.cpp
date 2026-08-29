@@ -4,6 +4,7 @@
 #include <gtest/gtest.h>
 
 #include <bit>
+#include <cmath>
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
@@ -45,7 +46,9 @@ network(pipeline::TimestreamNetworkId network_id,
         std::vector<pipeline::TimestreamPacketCounter> counters,
         std::int64_t detector_uid, double x_base, double r_base,
         std::optional<std::size_t> x_invalid_offset = std::nullopt,
-        std::optional<std::size_t> r_invalid_offset = std::nullopt) {
+        std::optional<std::size_t> r_invalid_offset = std::nullopt,
+        std::optional<std::size_t> x_unavailable_offset = std::nullopt,
+        std::optional<std::size_t> r_unavailable_offset = std::nullopt) {
     auto timing = std::make_shared<const pipeline::NativeNetworkAlignment>(
         network_id, first_native_row, vector(times), std::move(counters));
     std::vector<pipeline::NativeOccurrenceInterval> intervals;
@@ -68,12 +71,18 @@ network(pipeline::TimestreamNetworkId network_id,
         pipeline::ReadoutMemberState::measured(true, true, true, true);
     const auto invalid =
         pipeline::ReadoutMemberState::measured(true, false, true, true);
+    const auto unavailable =
+        pipeline::ReadoutMemberState::measured(false, false, true, true);
     std::vector<pipeline::ReadoutMemberState> x_states(times.size(), valid);
     std::vector<pipeline::ReadoutMemberState> r_states(times.size(), valid);
     if (x_invalid_offset)
         x_states.at(*x_invalid_offset) = invalid;
     if (r_invalid_offset)
         r_states.at(*r_invalid_offset) = invalid;
+    if (x_unavailable_offset)
+        x_states.at(*x_unavailable_offset) = unavailable;
+    if (r_unavailable_offset)
+        r_states.at(*r_unavailable_offset) = unavailable;
     return pipeline::PairedReadoutNetwork::admit(
         std::move(axis), std::move(detectors), mapping(network_id),
         std::move(x), std::move(r), std::move(x_states), std::move(r_states));
@@ -245,8 +254,10 @@ TEST(network_timed_rtc_pass_through,
     EXPECT_EQ(applied.realization.output_native_occurrence_count, 7U);
     EXPECT_EQ(applied.realization.output_cell_count, 7U);
     EXPECT_EQ(applied.realization.pair_ineligible_cell_count, 2U);
-    EXPECT_EQ(applied.realization.x_available_cell_count, 6U);
-    EXPECT_EQ(applied.realization.r_available_cell_count, 6U);
+    EXPECT_EQ(applied.realization.x_payload_available_cell_count, 7U);
+    EXPECT_EQ(applied.realization.r_payload_available_cell_count, 7U);
+    EXPECT_EQ(applied.realization.x_numerically_valid_cell_count, 6U);
+    EXPECT_EQ(applied.realization.r_numerically_valid_cell_count, 6U);
     EXPECT_EQ(applied.realization.realized_sampling_factor, 1U);
     EXPECT_TRUE(applied.realization.conditioned_r_requested);
     EXPECT_EQ(applied.product->memory_evidence().logical_owned_bytes(), 0U);
@@ -266,7 +277,11 @@ TEST(network_timed_rtc_pass_through,
               pipeline::NetworkTimedRtcMemberAvailability::available);
     EXPECT_EQ(applied.product->member_availability(pipeline::ReadoutMember::r,
                                                    0, 12, 0),
-              pipeline::NetworkTimedRtcMemberAvailability::unavailable);
+              pipeline::NetworkTimedRtcMemberAvailability::available);
+    EXPECT_TRUE(applied.product->member_numerically_valid(
+        pipeline::ReadoutMember::x, 0, 12, 0));
+    EXPECT_FALSE(applied.product->member_numerically_valid(
+        pipeline::ReadoutMember::r, 0, 12, 0));
     EXPECT_EQ(
         applied.product->pair_cause_role(pipeline::ReadoutMember::x, 0, 12, 0),
         pipeline::NetworkTimedRtcPairCauseRole::inferred_from_r);
@@ -282,8 +297,15 @@ TEST(network_timed_rtc_pass_through,
                             pipeline::ReadoutMemberCause::producer_invalid));
     EXPECT_TRUE(applied.product->conditioned_value(pipeline::ReadoutMember::x,
                                                    0, 12, 0));
-    EXPECT_FALSE(applied.product->conditioned_value(pipeline::ReadoutMember::r,
-                                                    0, 12, 0));
+    ASSERT_TRUE(applied.product->conditioned_value(pipeline::ReadoutMember::r,
+                                                   0, 12, 0));
+    EXPECT_DOUBLE_EQ(
+        *applied.product->conditioned_value(pipeline::ReadoutMember::r, 0, 12,
+                                            0),
+        data.native->network(0).value(pipeline::ReadoutMember::r, 12, 0));
+    EXPECT_FALSE(
+        applied.product->raw_member_state(pipeline::ReadoutMember::r, 0, 12, 0)
+            .original_valid());
 
     EXPECT_EQ(applied.product->pair_disposition(7, 71, 0),
               pipeline::NetworkTimedRtcPairDisposition::ineligible);
@@ -292,6 +314,48 @@ TEST(network_timed_rtc_pass_through,
         pipeline::NetworkTimedRtcPairCauseRole::inferred_from_x);
     EXPECT_TRUE(applied.product->conditioned_value(pipeline::ReadoutMember::r,
                                                    7, 71, 0));
+    EXPECT_FALSE(applied.product->member_numerically_valid(
+        pipeline::ReadoutMember::x, 7, 71, 0));
+}
+
+TEST(network_timed_rtc_pass_through,
+     payload_availability_validity_and_exact_value_remain_distinct) {
+    const pipeline::NativeObservationScope scope{152390, 0, 4};
+    std::vector<pipeline::PairedReadoutNetwork> networks;
+    networks.push_back(network(0, 0, {1000.0, 1000.01}, {10, 11}, 500, 1.0,
+                               101.0, 0, std::nullopt, 1));
+    NetworkTimedRtcFixture data;
+    data.native =
+        pipeline::PairedReadout::admit(scope, {0}, std::move(networks));
+    data.logical = pipeline::NativePairedReadoutView::full(data.native);
+    const std::vector<std::shared_ptr<const pipeline::NativePairedReadoutView>>
+        partitions{data.logical};
+    const auto applied = pipeline::apply_network_timed_rtc_pass_through(
+        plan(context(data), partitions), partitions);
+
+    EXPECT_EQ(applied.product->member_availability(pipeline::ReadoutMember::x,
+                                                   0, 0, 0),
+              pipeline::NetworkTimedRtcMemberAvailability::available);
+    EXPECT_FALSE(applied.product->member_numerically_valid(
+        pipeline::ReadoutMember::x, 0, 0, 0));
+    ASSERT_TRUE(applied.product->conditioned_value(pipeline::ReadoutMember::x,
+                                                   0, 0, 0));
+    EXPECT_DOUBLE_EQ(*applied.product->conditioned_value(
+                         pipeline::ReadoutMember::x, 0, 0, 0),
+                     1.0);
+
+    EXPECT_EQ(applied.product->member_availability(pipeline::ReadoutMember::x,
+                                                   0, 1, 0),
+              pipeline::NetworkTimedRtcMemberAvailability::unavailable);
+    EXPECT_FALSE(applied.product->member_numerically_valid(
+        pipeline::ReadoutMember::x, 0, 1, 0));
+    EXPECT_FALSE(applied.product->conditioned_value(pipeline::ReadoutMember::x,
+                                                    0, 1, 0));
+    EXPECT_DOUBLE_EQ(
+        applied.product->raw_parent_value(pipeline::ReadoutMember::x, 0, 1, 0),
+        2.0);
+    EXPECT_EQ(applied.realization.x_payload_available_cell_count, 1U);
+    EXPECT_EQ(applied.realization.x_numerically_valid_cell_count, 0U);
 }
 
 TEST(network_timed_rtc_pass_through,
@@ -357,10 +421,14 @@ TEST(network_timed_rtc_pass_through,
               split_result.realization.output_cell_count);
     EXPECT_EQ(one_result.realization.pair_ineligible_cell_count,
               split_result.realization.pair_ineligible_cell_count);
-    EXPECT_EQ(one_result.realization.x_available_cell_count,
-              split_result.realization.x_available_cell_count);
-    EXPECT_EQ(one_result.realization.r_available_cell_count,
-              split_result.realization.r_available_cell_count);
+    EXPECT_EQ(one_result.realization.x_payload_available_cell_count,
+              split_result.realization.x_payload_available_cell_count);
+    EXPECT_EQ(one_result.realization.r_payload_available_cell_count,
+              split_result.realization.r_payload_available_cell_count);
+    EXPECT_EQ(one_result.realization.x_numerically_valid_cell_count,
+              split_result.realization.x_numerically_valid_cell_count);
+    EXPECT_EQ(one_result.realization.r_numerically_valid_cell_count,
+              split_result.realization.r_numerically_valid_cell_count);
     for (const auto &span : data.logical->spans()) {
         for (auto row = span.first_native_row; row < span.past_last_native_row;
              ++row) {
@@ -379,6 +447,14 @@ TEST(network_timed_rtc_pass_through,
                 EXPECT_EQ(one_result.product->conditioned_value(
                               member, span.network_id, row, 0),
                           split_result.product->conditioned_value(
+                              member, span.network_id, row, 0));
+                EXPECT_EQ(one_result.product->member_availability(
+                              member, span.network_id, row, 0),
+                          split_result.product->member_availability(
+                              member, span.network_id, row, 0));
+                EXPECT_EQ(one_result.product->member_numerically_valid(
+                              member, span.network_id, row, 0),
+                          split_result.product->member_numerically_valid(
                               member, span.network_id, row, 0));
                 EXPECT_EQ(one_result.product->pair_cause_role(
                               member, span.network_id, row, 0),
@@ -414,21 +490,13 @@ TEST(network_timed_rtc_pass_through,
 TEST(common_analysis_grid_paired_readout,
      explicit_view_preserves_grid_time_source_time_and_native_absence) {
     const auto data = fixture();
-    std::map<pipeline::TimestreamNetworkId,
-             std::vector<pipeline::NativeSlotAssociation>>
-        associations;
-    std::vector<pipeline::NativeSlotAssociation> nw0(4);
-    for (std::size_t slot = 0; slot < nw0.size(); ++slot) {
-        nw0[slot].native_row =
-            10 + static_cast<pipeline::TimestreamNativeRow>(slot);
-    }
-    associations.emplace(0, std::move(nw0));
-    std::vector<pipeline::NativeSlotAssociation> nw7(4);
-    nw7[0].native_row = 70;
-    nw7[1].native_row = 71;
-    nw7[2].absence_reason = pipeline::CoincidenceAbsenceReason::no_candidate;
-    nw7[3].native_row = 72;
-    associations.emplace(7, std::move(nw7));
+    const auto request = pipeline::CommonAnalysisGridRequest::admit(
+        {60}, data.native->scope(), "array-wide-ptc-pca", {0, 7},
+        "analysis-epochs:1000.0000:4", 4, 0.01,
+        pipeline::CommonAnalysisGridAdmissionRule::strict_half_cadence,
+        pipeline::CommonAnalysisGridSupportPolicy::
+            preserve_partial_network_support,
+        pipeline::CommonAnalysisGridFailurePolicy::fail_closed);
     const auto nw0_timing = data.native->network(0)
                                 .occurrence_axis_handle()
                                 ->native_timing_handle();
@@ -436,13 +504,19 @@ TEST(common_analysis_grid_paired_readout,
                                 .occurrence_axis_handle()
                                 ->native_timing_handle();
     const auto relation = pipeline::CommonAnalysisGridRelation::admit(
-        data.native->scope(),
+        {{60}, 61}, request,
         std::vector<pipeline::NativeNetworkAlignment>{*nw0_timing, *nw7_timing},
-        vector({1000.0000, 1000.0100, 1000.0200, 1000.0300}),
-        std::move(associations));
+        vector({1000.0000, 1000.0100, 1000.0200, 1000.0300}));
     const auto view = pipeline::CommonAnalysisGridPairedReadoutView::admit(
         data.native, relation, 0, 4);
 
+    EXPECT_EQ(relation->identity(),
+              (pipeline::CommonAnalysisGridRelationIdentity{{60}, 61}));
+    EXPECT_EQ(relation->request_handle(), request);
+    EXPECT_EQ(request->consuming_method_id(), "array-wide-ptc-pca");
+    EXPECT_EQ(request->analysis_epoch_set_id(), "analysis-epochs:1000.0000:4");
+    EXPECT_EQ(request->admission_rule(),
+              pipeline::CommonAnalysisGridAdmissionRule::strict_half_cadence);
     EXPECT_EQ(view->analysis_slot_count(), 4U);
     EXPECT_EQ(view->view_cell_count(), 8U);
     EXPECT_EQ(view->mapped_cell_count(), 7U);
@@ -455,6 +529,7 @@ TEST(common_analysis_grid_paired_readout,
     EXPECT_NEAR(*view->source_time_residual_sec(7, 0), 0.0025, 1e-12);
     ASSERT_TRUE(view->representative_native_identity(7, 0));
     EXPECT_EQ(view->representative_native_identity(7, 0)->native_row(), 70);
+    EXPECT_EQ(view->identity(7, 0, 0).relation, relation->identity());
     ASSERT_NE(view->source_occurrence_interval(7, 0), nullptr);
     EXPECT_EQ(*view->source_occurrence_interval(7, 0),
               data.native->network(7).occurrence_axis_handle()->interval(70));
@@ -476,6 +551,112 @@ TEST(common_analysis_grid_paired_readout,
                   *view->value(pipeline::ReadoutMember::x, 7, 3, 0)),
               std::bit_cast<std::uint64_t>(data.native->network(7).value(
                   pipeline::ReadoutMember::x, 72, 0)));
+}
+
+TEST(common_analysis_grid_paired_readout,
+     request_binds_consumer_participants_epochs_policy_and_relation_identity) {
+    const pipeline::NativeObservationScope scope{152390, 0, 4};
+    EXPECT_THROW(
+        pipeline::CommonAnalysisGridRequest::admit(
+            {70}, scope, "array-wide-ptc-pca", {0}, "analysis-epochs", 2, 2.0,
+            pipeline::CommonAnalysisGridAdmissionRule::strict_half_cadence,
+            pipeline::CommonAnalysisGridSupportPolicy::
+                preserve_partial_network_support,
+            pipeline::CommonAnalysisGridFailurePolicy::fail_closed),
+        std::invalid_argument);
+
+    const auto request = pipeline::CommonAnalysisGridRequest::admit(
+        {71}, scope, "array-wide-ptc-pca", {7, 0}, "analysis-epochs", 2, 2.0,
+        pipeline::CommonAnalysisGridAdmissionRule::strict_half_cadence,
+        pipeline::CommonAnalysisGridSupportPolicy::
+            preserve_partial_network_support,
+        pipeline::CommonAnalysisGridFailurePolicy::fail_closed);
+    EXPECT_EQ(request->participant_network_ids()[0], 0);
+    EXPECT_EQ(request->participant_network_ids()[1], 7);
+    const std::vector<pipeline::NativeNetworkAlignment> timings{
+        {0, 0, vector({0.0}), {10}}, {7, 0, vector({3.0}), {20}}};
+    EXPECT_THROW(pipeline::CommonAnalysisGridRelation::admit(
+                     {{72}, 73}, request, timings, vector({0.0, 3.0})),
+                 std::invalid_argument);
+    EXPECT_THROW(pipeline::CommonAnalysisGridRelation::admit(
+                     {{71}, 73}, request, timings, vector({0.0})),
+                 std::invalid_argument);
+    EXPECT_THROW(pipeline::CommonAnalysisGridRelation::admit(
+                     {{71}, 73}, request, timings, vector({0.0, 1.0})),
+                 std::invalid_argument);
+}
+
+TEST(common_analysis_grid_paired_readout,
+     explicit_participant_subset_does_not_admit_unrequested_networks) {
+    const pipeline::NativeObservationScope scope{152390, 0, 4};
+    std::vector<pipeline::PairedReadoutNetwork> networks;
+    networks.push_back(network(0, 0, {1000.0000}, {10}, 500, 1.0, 101.0));
+    networks.push_back(network(7, 0, {1000.0025}, {20}, 700, 2.0, 102.0));
+    networks.push_back(network(8, 0, {1000.0030}, {30}, 800, 3.0, 103.0));
+    const auto parent =
+        pipeline::PairedReadout::admit(scope, {0, 7, 8}, std::move(networks));
+    const auto request = pipeline::CommonAnalysisGridRequest::admit(
+        {75}, scope, "cross-network-rtc-method", {0, 7},
+        "analysis-epoch:1000.0000", 1, 0.01,
+        pipeline::CommonAnalysisGridAdmissionRule::strict_half_cadence,
+        pipeline::CommonAnalysisGridSupportPolicy::
+            preserve_partial_network_support,
+        pipeline::CommonAnalysisGridFailurePolicy::fail_closed);
+    const auto relation = pipeline::CommonAnalysisGridRelation::admit(
+        {{75}, 76}, request,
+        std::vector<pipeline::NativeNetworkAlignment>{
+            *parent->network(0)
+                 .occurrence_axis_handle()
+                 ->native_timing_handle(),
+            *parent->network(7)
+                 .occurrence_axis_handle()
+                 ->native_timing_handle()},
+        vector({1000.0000}));
+    const auto view = pipeline::CommonAnalysisGridPairedReadoutView::admit(
+        parent, relation, 0, 1);
+
+    EXPECT_EQ(view->detector_count(), 2U);
+    EXPECT_TRUE(view->mapped(0, 0));
+    EXPECT_TRUE(view->mapped(7, 0));
+    EXPECT_THROW(view->network(8), std::out_of_range);
+    EXPECT_THROW(view->mapped(8, 0), std::out_of_range);
+}
+
+TEST(common_analysis_grid_paired_readout,
+     relation_derives_strict_below_exact_and_above_half_admission) {
+    const pipeline::NativeObservationScope scope{152390, 0, 4};
+    constexpr double cadence_sec = 2.0;
+    const double below_half = std::nextafter(2.0, 3.0);
+    constexpr double exact_half = 2.0;
+    const double above_half = std::nextafter(2.0, 0.0);
+    const auto make_relation = [&](std::uint64_t request_id,
+                                   double network_time) {
+        const auto request = pipeline::CommonAnalysisGridRequest::admit(
+            {request_id}, scope, "array-wide-ptc-pca", {0, 7},
+            "analysis-epochs:strict-half", 2, cadence_sec,
+            pipeline::CommonAnalysisGridAdmissionRule::strict_half_cadence,
+            pipeline::CommonAnalysisGridSupportPolicy::
+                preserve_partial_network_support,
+            pipeline::CommonAnalysisGridFailurePolicy::fail_closed);
+        return pipeline::CommonAnalysisGridRelation::admit(
+            {{request_id}, request_id + 100}, request,
+            std::vector<pipeline::NativeNetworkAlignment>{
+                {0, 0, vector({0.0}), {10}},
+                {7, 0, vector({network_time}), {20}}},
+            vector({0.0, 3.0}));
+    };
+
+    const auto below = make_relation(80, below_half);
+    EXPECT_FALSE(below->association(7, 0).mapped());
+    EXPECT_EQ(below->association(7, 1).native_row, 0);
+
+    const auto exact = make_relation(81, exact_half);
+    EXPECT_FALSE(exact->association(7, 0).mapped());
+    EXPECT_FALSE(exact->association(7, 1).mapped());
+
+    const auto above = make_relation(82, above_half);
+    EXPECT_FALSE(above->association(7, 0).mapped());
+    EXPECT_FALSE(above->association(7, 1).mapped());
 }
 
 TEST(network_timed_rtc_pass_through,

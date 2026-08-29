@@ -1,7 +1,7 @@
 # ADR 0015: Network-specific timing and explicit common analysis grids
 
-Status: accepted 2026-08-29; bounded implementation complete, exact-SHA review
-pending
+Status: accepted 2026-08-29; bounded implementation conformance repair
+complete, exact-SHA re-review pending
 
 Decision owners: Citlali project owner and scientific owner
 
