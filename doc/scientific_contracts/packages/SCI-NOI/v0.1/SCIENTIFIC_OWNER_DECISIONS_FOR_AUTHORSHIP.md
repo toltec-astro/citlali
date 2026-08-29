@@ -1,8 +1,8 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.7`
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.8`
 
-Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, and ODQ-104 owner-approved; exact
+Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, and ODQ-104 owner-approved; exact
 finite-design mechanics delegated to the scientific-contract author under
 ODQ-102D; later decisions remain open; not yet an allowed Stage B authority
 
@@ -169,21 +169,29 @@ not approve another decision or make an unresolved numerical route available.
 
 - **Exact question:** What source content and cancellation claim may accompany
   ordinary GEN?
-- **Recommended disposition:** use
-  `source_imprinted_conditional_randomization_ensemble`; bind source content,
-  cancellation target, finite residual, varying support/operator effects,
-  scan-synchronous residual, source-model error, and leakage. Claim no
-  physical-noise ensemble, source-free null, or calibrated null.
+- **Approved scientific disposition:** randomization is intended to suppress
+  source signal; it does not, by construction alone, establish that the
+  resulting maps are source-free. Bind source content, suppression/cancellation
+  target and assumptions, finite residual, consequential support/operator
+  effects, structured residuals, source-model error, and leakage. Claim no
+  physical-noise ensemble, source-free null, or calibrated null absent separate
+  scientific authority and evidence.
+- **Terminology disposition:** the Stage-B scientific author may select less
+  painful scientist-readable terminology. The provisional
+  `source_imprinted_conditional_randomization_ensemble` phrase is nonbinding;
+  any replacement must preserve the approved scientific meaning and must not
+  imply guaranteed source removal.
 - **Alternatives:** narrower route-specific imprint, separately demonstrated
   source suppression, or unavailable.
 - **Scientific consequences:** balance alone cannot imply pixelwise source
   cancellation or null calibration.
-- **Conservative state while open:** imprint interpretation unavailable; no
-  null claim.
+- **Conservative state:** scientific interpretation approved; exact Stage-B
+  terminology and numerical realization remain unavailable.
 - **Affected artifacts:** design/imprint specification, GEN graph/products,
   UNC claim ceiling, VAL facts.
-- **Exact bytes changed by approval:** imprint label and exact target,
-  assumptions, residual, and leakage fields.
+- **Exact bytes changed by approval:** source-suppression intent; no-source-free-
+  by-construction boundary; exact disclosure fields; prohibited claim ceiling;
+  and Stage-B terminology freedom without semantic weakening.
 
 ### `SCI-NOI-ODQ-104` — fixed/relearned state classification
 

@@ -150,8 +150,10 @@ and creates no advance acceptance. ODQ-104 is explicitly approved: every GEN
 method classifies scientifically consequential adjacent state, and each
 relearned method identifies consequential rerun/relearn stages and resulting
 changed state without an exhaustive implementation-provenance requirement.
-ODQ-103, source imprint and cancellation
-claim, is next. Conditional Stage B remains blocked on exact
+ODQ-103 now approves the scientific boundary that randomization intends source
+suppression but does not by construction establish source-free maps; exact
+terminology is delegated to the Stage-B scientific author. ODQ-105A, enabled,
+disabled, and partial-completion behavior, is next. Conditional Stage B remains blocked on exact
 bytes/hashes, granular owner decisions or explicit unavailability, and required
 source/profile bindings. The frozen MAP/pre-MAP
 and JINC numerical-parent unavailability states remain unchanged. No

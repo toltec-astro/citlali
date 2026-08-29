@@ -1,10 +1,10 @@
 # SCI-NOI v0.1 — Ensemble Design And Source-Imprint Specification
 
-Artifact identity: `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.4`
+Artifact identity: `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.5`
 
-Status: ordinary coherence and network-stratified coefficient-balance family
-owner-approved; exact finite-design mechanics and source-imprint claim remain
-open
+Status: ordinary coherence, network-stratified coefficient-balance family, and
+source-suppression claim boundary owner-approved; exact finite-design mechanics
+remain unavailable and Stage-B terminology remains to be authored
 
 ## Finite Assignment-Design Identity
 
@@ -180,9 +180,13 @@ Every GEN method declares:
 8. known or bounded leakage; and
 9. permitted and prohibited claims.
 
-Global sign balance is not pixelwise source cancellation when support,
-coefficients, projection, filtering, or membership varies. Unless stronger
-authority is separately approved, the ordinary claim is
-`source_imprinted_conditional_randomization_ensemble`. It is not a repeated
-physical-noise ensemble, source-free null, calibrated null, variance,
-covariance, precision, or significance product.
+The randomization is intended to suppress source signal. Global sign balance
+does not, by construction alone, establish source-free maps or pixelwise source
+cancellation, especially when support, coefficients, projection, filtering, or
+membership varies. Unless stronger authority is separately approved, the
+product is not a repeated physical-noise ensemble, source-free null, calibrated
+null, variance, covariance, precision, or significance product.
+
+The Stage-B scientific author shall select exact scientist-readable terminology
+that preserves this meaning. `source_imprinted_conditional_randomization_ensemble`
+is a nonbinding terminology suggestion only; it is not a required product name.

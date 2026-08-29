@@ -149,6 +149,21 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
     records without changing route availability or advancing the walkthrough
     beyond ODQ-103.
 
+## ODQ-103 Scientific-Content Approval Update
+
+43. Recorded the owner-approved invariant: randomization is intended to
+    suppress source signal, but does not by construction alone establish that
+    resulting maps are source-free.
+44. Preserved exact source-content, suppression/cancellation-target,
+    assumption, finite-residual, consequential operator-effect, structured-
+    residual, source-model-error, leakage, and prohibited-claim disclosures.
+45. Delegated exact scientist-readable terminology to the Stage-B scientific
+    author and made `source_imprinted_conditional_randomization_ensemble` a
+    nonbinding terminology suggestion rather than a required name.
+46. Advanced the one-at-a-time walkthrough to ODQ-105A and published r0.5 of
+    the design/source-imprint specification, r0.6 of the PTC boundary, and r0.8
+    packet/decision records without changing numerical availability.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance

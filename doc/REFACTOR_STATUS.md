@@ -473,8 +473,19 @@ state that may differ from the real-observation reduction; a generic or partial
 requirement for exhaustive implementation provenance. It selects no relearned
 method and does not change the ODQ-102A ordinary route or its availability.
 
-The next walkthrough question is `SCI-NOI-ODQ-103`, the exact source-imprint/
-cancellation target and claim. Later granular decisions, exact packet bytes/hashes, and
+Grant Wilson approved the scientific content of `SCI-NOI-ODQ-103` on
+`2026-08-29`: randomization is intended to suppress source signal, but does not
+by construction alone establish that the resulting maps are source-free. The
+full source-content, target, assumption, finite-residual, consequential-
+operator-effect, structured-residual, source-model-error, leakage, and
+prohibited-claim disclosures remain required. Exact scientist-readable
+terminology is delegated to the Stage-B scientific author; the provisional
+long label is nonbinding and may not be replaced by terminology implying
+guaranteed source removal. No achieved suppression or numerical availability
+follows.
+
+The next walkthrough question is `SCI-NOI-ODQ-105A`, enabled, disabled, and
+partial-completion behavior. Later granular decisions, exact packet bytes/hashes, and
 required source/profile Registry bindings remain under owner review.
 MAP/pre-MAP numerical parents remain
 unavailable pending the exact PTC MAP-facing coefficient and owner-admitted

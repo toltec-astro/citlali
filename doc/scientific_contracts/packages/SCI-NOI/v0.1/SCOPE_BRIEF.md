@@ -119,7 +119,7 @@ The author packet includes three sanitized exact boundaries:
 - [`SCI-JINC_TO_SCI-NOI_BOUNDARY.md`](SCI-JINC_TO_SCI-NOI_BOUNDARY.md), identity
   `SCI-JINC_TO_SCI-NOI v0.1/r0.2`; and
 - [`SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md`](SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md),
-  identity `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.5`, containing separately
+  identity `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.6`, containing separately
   identified PTC-to-frozen-MAP and PTC-to-frozen-JINC candidates.
 
 Each boundary binds exact package/revision, product/application generation,
@@ -207,8 +207,11 @@ variation, scan-synchronous residual, source-model use/error, known leakage,
 and resulting claim limits. Global assignment balance is not pixelwise source
 cancellation under varying operator support or membership.
 
-The proposed ordinary label is
-`source_imprinted_conditional_randomization_ensemble`. It establishes neither
+The randomization is intended to suppress source signal; it does not, by
+construction alone, establish that the resulting maps are source-free. The
+Stage-B scientific author may select clear terminology preserving that exact
+meaning. `source_imprinted_conditional_randomization_ensemble` is a nonbinding
+terminology suggestion, not a required name. The product establishes neither
 repeated physical-noise sampling nor a calibrated/source-free null. A fixed
 source-residual ensemble and a full relearned FRUIT procedure remain different
 methods.
@@ -383,9 +386,11 @@ the following scientifically independent choices separate:
 ODQ-101 and ODQ-102A/B/C are approved. ODQ-102D delegates exact finite-design
 selection and rationale to the implementation-blind contract author; its
 tolerance-conditioned construction is a nonbinding suggestion, not advance
-approval. The next walkthrough question is `SCI-NOI-ODQ-103`, the exact
-source-imprint/cancellation target and claim. Every later decision and the
-artifact's final hash still require explicit owner review.
+approval. ODQ-103 approves the source-suppression intent and no-source-free-by-
+construction boundary while delegating exact terminology to the Stage-B
+scientific author. The next walkthrough question is `SCI-NOI-ODQ-105A`.
+Every later decision and the artifact's final hash still require explicit owner
+review.
 
 ## 13. Non-Goals And Claim Boundary
 

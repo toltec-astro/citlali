@@ -59,8 +59,11 @@ Retain and reconcile, without needless rederivation:
    information are distinct. Balance, complements, duplicates, and large count
    never prove independence.
 6. **Source imprint is explicit.** Global sign balance does not imply pixelwise
-   cancellation under changing support or operator state. The base claim is
-   `source_imprinted_conditional_randomization_ensemble`, not physical noise.
+   cancellation under changing support or operator state. Randomization is
+   intended to suppress source signal, but does not by construction alone
+   establish source-free maps. The Stage-B author selects exact terminology;
+   `source_imprinted_conditional_randomization_ensemble` is a nonbinding
+   suggestion, not physical-noise or source-free-null authority.
 7. **Estimator is target-specific.** No universal `1/B` or `1/(B-1)` divisor
    is inherited. Centering, design correction, missingness, rank, covariance
    domain, effective information, regularization, and uncertainty of the

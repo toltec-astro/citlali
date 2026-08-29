@@ -193,4 +193,6 @@ numerical gates remain unavailable. ODQ-104 is explicitly owner-approved:
 every GEN method classifies scientifically consequential adjacent state, and a
 relearned method names its consequential rerun/relearn stages and resulting
 changed state without requiring exhaustive implementation provenance. The next owner question is
-`SCI-NOI-ODQ-103`, the source-imprint/cancellation target and claim.
+`SCI-NOI-ODQ-105A`, enabled, disabled, and partial-completion behavior. ODQ-103
+now approves the source-suppression intent and no-source-free-by-construction
+boundary while delegating exact terminology to the Stage-B scientific author.

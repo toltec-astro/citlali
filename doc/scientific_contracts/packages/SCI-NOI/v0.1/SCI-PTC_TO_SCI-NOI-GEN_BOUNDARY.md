@@ -1,8 +1,8 @@
 # SCI-PTC To SCI-NOI-GEN Boundary
 
-Boundary identity: `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.5`
+Boundary identity: `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.6`
 
-Canonical spelling is exactly `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.5`.
+Canonical spelling is exactly `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.6`.
 
 Status: proposed sanitized Stage A pre-mapmaking boundary; ODQ-102A selects the
 PTC-to-frozen-MAP route, which remains numerically unavailable pending its
@@ -153,10 +153,13 @@ different named GEN method with its own graph and changed-state record.
 ## Source And Claim Boundary
 
 The parent may contain astronomical source signal and structured residuals.
-Assignment balance does not imply pixelwise cancellation when occurrence
-support, coefficient, projection, filtering, or membership differs. Unless
-separately established, the generated product is a
-`source_imprinted_conditional_randomization_ensemble`, not a repeated
+Randomization is intended to suppress source signal. Assignment balance does
+not, by construction alone, establish source-free maps or pixelwise
+cancellation, especially when occurrence support, coefficient, projection,
+filtering, or membership differs. The Stage-B scientific author selects exact
+terminology preserving that boundary; the provisional
+`source_imprinted_conditional_randomization_ensemble` phrase is nonbinding.
+Unless separately established, the generated product is not a repeated
 physical-noise ensemble, source-free null, variance, covariance, calibrated
 weight, or significance product.
 

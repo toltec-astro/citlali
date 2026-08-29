@@ -90,6 +90,9 @@ def main() -> None:
         "implementation-blind scientific-contract author",
         "scientifically consequential adjacent reduction state",
         "does not require exhaustive implementation provenance",
+        "randomization is intended to suppress source signal",
+        "does not, by construction alone, establish",
+        "nonbinding terminology suggestion",
     ]
     for token in required:
         if token not in package_text:
