@@ -147,6 +147,7 @@ add_executable(citlali_wp7_timestream_test EXCLUDE_FROM_ALL
     test_network_timed_rtc_only_route.cpp
     test_rtc_only_route.cpp
     test_ast_scan_motion.cpp
+    test_rtc_filter_fixture_census.cpp
 )
 set_source_files_properties(
     ast_scan_motion_header.cpp
@@ -169,6 +170,9 @@ target_link_libraries(citlali_wp7_timestream_test
     PRIVATE
         citlali::citlali
         GTest::gtest_main
+)
+target_include_directories(citlali_wp7_timestream_test
+    PRIVATE "${CMAKE_SOURCE_DIR}/tools/wp7"
 )
 add_dependencies(check citlali_wp7_timestream_test)
 gtest_discover_tests(

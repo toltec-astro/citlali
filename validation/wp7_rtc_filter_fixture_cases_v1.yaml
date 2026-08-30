@@ -1,0 +1,154 @@
+schema: citlali-wp7-rtc-filter-fixture-cases-v1
+data_root_contract: paths are relative to a caller-supplied local data root
+cases:
+  - id: beammap-148670
+    role: primary-beammap
+    observation: 148670
+    subobservation: 0
+    scan: 2
+    raw_data_directory: citlali-validation/v1/beammaps/data
+    telescope: citlali-validation/v1/beammaps/data/tel_toltec_2026-01-13_148670_00_0002.nc
+    apt_manifest: citlali-validation/v2/beammaps/3c273/reduced/redu00/148670/raw/apt_commissioning_beammap_148670_citlali.apt-v2/manifest.ecsv
+    config: citlali-validation/v2/beammaps/3c273/reduced/citlali_o148670_0_2_c1.yaml
+    auxiliary_inputs:
+      - role: housekeeping
+        pattern: citlali-validation/v1/beammaps/data/toltec_hk_*_148670_00_0002.nc
+        minimum_count: 1
+      - role: tune
+        pattern: citlali-validation/v1/beammaps/data/toltec*_148670_000_0001_*_tune.nc
+        minimum_count: 11
+      - role: tune-report
+        pattern: citlali-validation/v1/beammaps/data/toltec*_148670_000_0001_*_tune.txt
+        minimum_count: 11
+      - role: tune-processed
+        pattern: citlali-validation/v1/beammaps/data/toltec*_148670_000_0001_*_tune_processed.nc
+        minimum_count: 11
+
+  - id: oof-152385
+    role: supplemental-oof
+    observation: 152385
+    subobservation: 0
+    scan: 1
+    raw_data_directory: citlali-validation/v1/oof/data
+    telescope: citlali-validation/v1/oof/data/tel_toltec_2026-02-19_152385_00_0001.nc
+    apt_manifest: citlali-validation/v2/oof/apts/v2/apt_152385_matched.apt-v2/manifest.ecsv
+    config: citlali-validation/v2/oof/refactor/1146+399/reduced/citlali_o152385_0_1_c3.yaml
+    auxiliary_inputs:
+      - role: housekeeping
+        pattern: citlali-validation/v1/oof/data/toltec_hk_*_152385_00_0001.nc
+        minimum_count: 1
+      - role: hwpr
+        pattern: citlali-validation/v1/oof/data/hwpr_152385_000_0001_*.nc
+        minimum_count: 1
+
+  - id: oof-152386
+    role: supplemental-oof
+    observation: 152386
+    subobservation: 0
+    scan: 1
+    raw_data_directory: citlali-validation/v1/oof/data
+    telescope: citlali-validation/v1/oof/data/tel_toltec_2026-02-19_152386_00_0001.nc
+    apt_manifest: citlali-validation/v2/oof/apts/v2/apt_152386_matched.apt-v2/manifest.ecsv
+    config: citlali-validation/v2/oof/refactor/1146+399/reduced/citlali_o152385_0_1_c3.yaml
+    auxiliary_inputs:
+      - role: housekeeping
+        pattern: citlali-validation/v1/oof/data/toltec_hk_*_152386_00_0001.nc
+        minimum_count: 1
+      - role: hwpr
+        pattern: citlali-validation/v1/oof/data/hwpr_152386_000_0001_*.nc
+        minimum_count: 1
+
+  - id: oof-152387
+    role: supplemental-oof
+    observation: 152387
+    subobservation: 0
+    scan: 1
+    raw_data_directory: citlali-validation/v1/oof/data
+    telescope: citlali-validation/v1/oof/data/tel_toltec_2026-02-19_152387_00_0001.nc
+    apt_manifest: citlali-validation/v2/oof/apts/v2/apt_152387_matched.apt-v2/manifest.ecsv
+    config: citlali-validation/v2/oof/refactor/1146+399/reduced/citlali_o152385_0_1_c3.yaml
+    auxiliary_inputs:
+      - role: housekeeping
+        pattern: citlali-validation/v1/oof/data/toltec_hk_*_152387_00_0001.nc
+        minimum_count: 1
+      - role: hwpr
+        pattern: citlali-validation/v1/oof/data/hwpr_152387_000_0001_*.nc
+        minimum_count: 1
+
+  - id: science-152390
+    role: primary-science
+    observation: 152390
+    subobservation: 0
+    scan: 2
+    raw_data_directory: citlali-validation/v1/science/data
+    telescope: citlali-validation/v1/science/data/tel_toltec_2026-02-19_152390_00_0002.nc
+    apt_manifest: citlali-validation/v2/science/apts/v2/apt_152390_matched.apt-v2/manifest.ecsv
+    config: citlali-validation/v2/science/refactor/NGC4449/reduced/citlali_o152390_0_2_c2.yaml
+    auxiliary_inputs:
+      - role: housekeeping
+        pattern: citlali-validation/v1/science/data/toltec_hk_*_152390_00_0002.nc
+        minimum_count: 1
+      - role: hwpr
+        pattern: citlali-validation/v1/science/data/hwpr_152390_000_0002_*.nc
+        minimum_count: 1
+      - role: tune
+        pattern: citlali-validation/v1/science/data/toltec*_152390_000_0001_*_tune.nc
+        minimum_count: 11
+      - role: tune-report
+        pattern: citlali-validation/v1/science/data/toltec*_152390_000_0001_*_tune.txt
+        minimum_count: 11
+      - role: tune-processed
+        pattern: citlali-validation/v1/science/data/toltec*_152390_000_0001_*_tune_processed.nc
+        minimum_count: 11
+
+  - id: pointing-152391
+    role: supporting-pointing
+    observation: 152391
+    subobservation: 0
+    scan: 2
+    raw_data_directory: citlali-validation/v1/science/data
+    telescope: citlali-validation/v1/science/data/tel_toltec_2026-02-19_152391_00_0002.nc
+    apt_manifest: citlali-validation/v2/science/apts/v2/apt_152391_matched.apt-v2/manifest.ecsv
+    config: citlali-validation/v2/science/refactor/NGC4449/reduced/citlali_o152390_0_2_c2.yaml
+    auxiliary_inputs:
+      - role: housekeeping
+        pattern: citlali-validation/v1/science/data/toltec_hk_*_152391_00_0002.nc
+        minimum_count: 1
+      - role: hwpr
+        pattern: citlali-validation/v1/science/data/hwpr_152391_000_0002_*.nc
+        minimum_count: 1
+      - role: tune
+        pattern: citlali-validation/v1/science/data/toltec*_152391_000_0001_*_tune.nc
+        minimum_count: 11
+      - role: tune-report
+        pattern: citlali-validation/v1/science/data/toltec*_152391_000_0001_*_tune.txt
+        minimum_count: 11
+      - role: tune-processed
+        pattern: citlali-validation/v1/science/data/toltec*_152391_000_0001_*_tune_processed.nc
+        minimum_count: 11
+
+  - id: science-152392
+    role: primary-science
+    observation: 152392
+    subobservation: 0
+    scan: 2
+    raw_data_directory: citlali-validation/v1/science/data
+    telescope: citlali-validation/v1/science/data/tel_toltec_2026-02-19_152392_00_0002.nc
+    apt_manifest: citlali-validation/v2/science/apts/v2/apt_152392_matched.apt-v2/manifest.ecsv
+    config: citlali-validation/v2/science/refactor/NGC4449/reduced/citlali_o152390_0_2_c2.yaml
+    auxiliary_inputs:
+      - role: housekeeping
+        pattern: citlali-validation/v1/science/data/toltec_hk_*_152392_00_0002.nc
+        minimum_count: 1
+      - role: hwpr
+        pattern: citlali-validation/v1/science/data/hwpr_152392_000_0002_*.nc
+        minimum_count: 1
+      - role: tune
+        pattern: citlali-validation/v1/science/data/toltec*_152392_000_0001_*_tune.nc
+        minimum_count: 11
+      - role: tune-report
+        pattern: citlali-validation/v1/science/data/toltec*_152392_000_0001_*_tune.txt
+        minimum_count: 11
+      - role: tune-processed
+        pattern: citlali-validation/v1/science/data/toltec*_152392_000_0001_*_tune_processed.nc
+        minimum_count: 11

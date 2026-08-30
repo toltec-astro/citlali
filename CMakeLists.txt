@@ -185,6 +185,23 @@ if (CITLALI_STANDALONE)
     set_target_properties(citlali_wp7_ast_scan_motion_acceptance
         PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
     )
+
+    # Offline D0/D1 measurement tool for the approved WP-7 filter and
+    # downsampling certification program. It reconstructs network-native
+    # timing and AST evidence but activates no RTC route and publishes no
+    # scientific product.
+    add_executable(citlali_wp7_rtc_filter_fixture_census EXCLUDE_FROM_ALL
+        "tools/wp7/rtc_filter_fixture_census.cpp"
+    )
+    target_link_libraries(citlali_wp7_rtc_filter_fixture_census
+        PRIVATE citlali::citlali
+    )
+    target_include_directories(citlali_wp7_rtc_filter_fixture_census
+        PRIVATE "include" "tools/wp7"
+    )
+    set_target_properties(citlali_wp7_rtc_filter_fixture_census
+        PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    )
 endif()
 
 # Create config headers
