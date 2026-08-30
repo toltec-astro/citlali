@@ -1,5 +1,36 @@
 # Citlali Refactor Status
 
+## 2026-08-30 WP-7 Filtering and Downsampling Certification Plan
+
+The project owner selected Beammap `148670` and the standard science sequence
+`152390`--`152392` as the primary real-data cases for resolving the remaining
+RTC filter/downsampling uncertainties. The bounded
+[certification test plan](WP7_RTC_FILTER_DOWNSAMPLING_CERTIFICATION_TEST_PLAN_2026-08-30.md)
+now separates fixed scientific authority from the cadence, PSD-envelope,
+line-ordering, filter-family, factor, phase, support, product-transfer, and
+performance facts that must be measured. It uses a native-rate reference and
+filtered/decimated candidate from identical raw bytes, with diagnostic arms to
+separate filtering from sample removal.
+
+The raw detector/telescope inputs for Beammap `148670`, science/pointing
+`152390`--`152392`, and OOF `152385`--`152387` are present locally. The OOF
+sequence remains a narrow supplemental route gate because the approved v2
+authority explicitly requires OOF/fruitloops evidence; the two primary cases
+remain the discovery and regression corpus. Existing reductions are context,
+not native references for the new comparison.
+
+The plan also records a current integration risk: the legacy model-protected
+line audit is applied to PTC residuals after RTC processing, so its existence
+does not demonstrate that a foldable line is mitigated before information-
+losing decimation. A factor is withheld when a line can fold unless the
+established line strategy is shown to be effective before sample removal. No
+line algorithm is redesigned here.
+
+The next bounded implementation is the fixture/census harness: exact input and
+build manifests, network-local cadence/AST inventory, analytic factor
+eligibility, and deterministic timing/support fixtures. This plan does not
+authorize nonidentity RTC implementation or production activation.
+
 ## 2026-08-30 WP-7 AST Scan-Motion Representative Gate
 
 The scientific owner approved
