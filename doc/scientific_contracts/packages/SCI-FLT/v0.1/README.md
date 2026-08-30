@@ -1,93 +1,87 @@
 # SCI-FLT — Map-Domain Filtering Tranche
 
-Status: recovery-first Stage A packet complete; scientific-owner walkthrough
-required; implementation-blind Stage B not authorized
+Status: final repaired SCI-FLT-FIXED Stage A candidate complete; exact-byte
+owner approval required; implementation-blind Stage B not authorized
 
 Version: `v0.1`
 
 ## Program Adherence And Prior-Work Recovery
 
 This package follows the
-[Citlali Scientific Contract Library Program](../../../README.md), the
-[pilot process review](../../../PILOT_PROCESS_REVIEW_2026-08-16.md), and the
+[Scientific Contract Library Program](../../../README.md),
+[pilot process](../../../PILOT_PROCESS_REVIEW_2026-08-16.md), and
 [owner-approved downstream roadmap](../../../DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md).
-It begins from the current frozen and approved upstream authority line without
-modifying SCI-PTC, SCI-MAP, SCI-JINC, SCI-VAL, RTC, CAL, ALIGN, AST, or the
-approved SCI-NOI Stage A records.
+It begins from the current frozen/approved SCI-PTC, SCI-MAP, SCI-JINC,
+SCI-VAL, RTC, CAL, ALIGN, AST, SCI-BEAM, and SCI-NOI Stage A authority without
+modifying them.
 
-Recovery began with the package-specific [`PRIOR_WORK.md`](PRIOR_WORK.md) and
-the implementation-informed, author-quarantined
-[`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md). It separately classified:
+Recovery and classification are recorded in [`PRIOR_WORK.md`](PRIOR_WORK.md).
+Implementation-informed evidence remains quarantined in
+[`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md) and is excluded from future
+authorship. Current SCI-NOI Stage B draft material is also excluded; approved
+SCI-NOI Stage A controls the transformation/uncertainty boundary.
 
-- fixed deterministic map-domain convolution and low-pass transformations;
-- Wiener transformations whose realized operator depends on a noise model,
-  weights, regularization, or other learned state;
-- matched, template-sensitive, source-sensitive, and data-thresholded methods
-  whose estimand or operator identity can differ from convolution;
-- requested, effective, observation-resolved, applied, and realized lifecycle
-  facts;
-- transformed signal, response/kernel, support, validity, uncertainty, and
-  lineage products; and
-- historical audit, repair, test, and validation records as evidence only.
+## Owner-Resolved Package Architecture
 
-No dedicated approved Wiener or general low-pass scientific contract was
-recovered. The earlier Convolve document is mixed scientific and
-implementation/audit material. Its reusable fixed-transformation mathematics
-has therefore been abstracted into a sanitized candidate rather than passed
-through to a future author.
+- `SCI-FLT` remains the tranche name.
+- `SCI-FLT-FIXED` is the first package; `SCI-FLT-DET` is rejected because of
+  the detector-namespace collision.
+- `SCI-FLT-INF` is a non-authoritative holding tranche only. It has no combined
+  Stage B authority.
+- Wiener, matched/template-amplitude, source-learned, data-derived selection,
+  automatic method selection, and per-member relearning remain separate
+  inference-bearing work.
 
-## Stage A Result
+## SCI-FLT-FIXED v0.1 Scope
 
-The initial taxonomy recommends that `SCI-FLT` remain the tranche name but not
-the name of one monolithic Stage B contract. Before Stage B, the owner should
-split at least:
+The first contract contains one scientific object:
 
-1. a fixed deterministic transformation package, provisionally
-   `SCI-FLT-DET`; and
-2. an inference-bearing tranche, provisionally `SCI-FLT-INF`, whose Wiener,
-   matched-estimator, source-learned, and data-thresholded methods remain
-   distinct until their estimands, priors, learned state, response, and
-   uncertainty meanings show that any can share one contract.
+\[
+  y = J_{\rm full}L_\Theta m,
+\]
 
-That recommendation is not yet scientific authority. It is the first owner
-decision in [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md).
+a strict-linear, same-grid, externally resolved fixed map-domain
+transformation with fixed convolution as its concrete family. A fixed-low-pass-
+convolution subtype is admitted only as a complete qualified transfer claim.
+Full-footprint-only convolution is the sole v0.1 edge/missing method. Affine
+offsets, boundary extension, truncation, support renormalization, reprojection,
+adaptive/inference-bearing state, and coaddition are excluded.
 
-The sanitized scientist-readable Stage A set is:
+## Repaired Stage A Artifacts
 
-- [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md);
-- [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md);
-- [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md);
-- [`AUTHOR_BOUNDARY_INPUTS.md`](AUTHOR_BOUNDARY_INPUTS.md);
-- [`AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md`](AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md);
-- [`AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md`](AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md); and
-- the presently unavailable, owner-content-bound
-  [`SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`](SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md).
+The owner-review set includes:
 
-The proposed exact future author packet and its information firewall are in
-[`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md). It is intentionally
-not releasable while owner decisions remain open.
+- revised [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md);
+- package/tranche and operator/product taxonomy in
+  [`AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md`](AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md);
+- exact MAP, JINC, and NOI boundaries;
+- strict-linear operator/convolution specification;
+- WCS/kernel/discretization, edge/missing, normalization/unit/beam,
+  response/null-space/covariance, and observation/coadd tables;
+- FLT-owned VAL profile drafts and the atomic product/lifecycle table;
+- content-bound
+  [`SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`](SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md);
+- [`STAGE_A_CHANGE_LOG.md`](STAGE_A_CHANGE_LOG.md); and
+- the exact SHA-bound 17-object
+  [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).
 
 ## Controlling NOI Boundary
 
-SCI-FLT owns the exact transformation: purpose, method identity, parameters,
-fixed or learned state, order, domain, support, edge and missing-data behavior,
-normalization, units, response, lifecycle, and failure policy. Under approved
-SCI-NOI Stage A authority, NOI may apply that exact transformation to every
-compatible admitted randomization to estimate uncertainty for the exact
-transformed scientific product. NOI neither chooses nor defines the filter.
-Fixed-state and per-member-relearned routes are different methods and may not
-be mixed. The current SCI-NOI Stage B material is draft and was excluded from
-this recovery.
+SCI-FLT-FIXED owns the exact transformation, local response, support/validity,
+deterministic covariance state, lifecycle, and failure. NOI applies the exact
+same `J_full L_Theta` to every compatible admitted randomization and owns the
+resulting empirical uncertainty. NOI neither chooses nor defines the filter.
+Per-member state resolution is a separate inference-bearing method and cannot
+mix with fixed-state members.
 
 ## Current Gate And Nonclaims
 
-- Prior-work and implementation recovery: complete for Stage A owner review.
-- Ownership, boundary, and initial typed taxonomy: proposed.
-- Package split and other scientific choices: owner decisions open.
-- Future implementation-blind author inputs: enumerated but not released.
-- Stage B authorship: not begun and not authorized.
+All bounded Stage A scope decisions are resolved. The exact repaired bytes and
+hashes now require scientific-owner approval. Only a later explicit record may
+launch one fresh implementation-blind SCI-FLT-FIXED Stage B author. No
+SCI-FLT-INF Stage B task is authorized.
 
-This package makes no implementation-conformity, validation, calibration,
-performance, readiness, production, or freeze claim. It changes no algorithm
-and authorizes no algorithm change, evidence campaign, reduction, Unity work,
-or downstream implementation action.
+This package changes no algorithm or frozen authority and makes no
+implementation-conformity, validation, calibration, response/covariance
+fidelity, performance, readiness, scientific-freeze, production, or Unity
+claim.

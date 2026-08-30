@@ -1,6 +1,7 @@
 # SCI-FLT v0.1 Author Conventions And Ownership
 
-Status: proposed sanitized future author input; owner approval required
+Status: sanitized SCI-FLT-FIXED author input; exact-packet owner approval and
+Stage B launch required
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -9,7 +10,7 @@ must not inspect or infer from Citlali implementation, configuration, schemas,
 tests, audits, repairs, validation, reductions, defaults, historical behavior,
 the internal dossier, or current draft NOI Stage B material.
 
-The task is fresh scientific authorship, not repair of an existing algorithm.
+The future task is fresh scientific authorship, not repair of an existing algorithm.
 Recovered mathematics is a candidate to evaluate, not a required conclusion.
 
 ## Required Conventions
@@ -41,7 +42,7 @@ Recovered mathematics is a candidate to evaluate, not a required conclusion.
 - MAP/JINC own the parent estimand and parent product claims.
 - CAL owns absolute calibration, passband/color correction, and calibration
   covariance.
-- The selected FLT method package owns the exact transformation/estimator,
+- SCI-FLT-FIXED owns the exact strict-linear transformation,
   response, transformed support/validity, lifecycle, and failure policy.
 - SCI-NOI owns randomization design and empirical uncertainty/covariance/
   standardized-signal inference. NOI applies but never chooses the filter.

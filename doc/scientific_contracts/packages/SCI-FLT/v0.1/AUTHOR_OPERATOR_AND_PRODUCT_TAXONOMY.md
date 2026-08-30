@@ -1,179 +1,102 @@
-# SCI-FLT v0.1 Initial Operator And Product Taxonomy
+# SCI-FLT-FIXED v0.1 Operator And Product Taxonomy
 
-Status: sanitized Stage A proposal; not scientific authority
+Status: sanitized Stage A author candidate awaiting exact-byte owner approval
 
-## Program Adherence And Prior-Work Recovery
+## Package Identity
 
-This taxonomy is the scientist-readable result of prior-work recovery. It is
-implementation-blind: it names scientific distinctions without exposing
-current algorithms, configuration labels, test results, audits, repairs, or
-validation. A future author may use it only after the owner approves the exact
-packet.
+`SCI-FLT` is the tranche. `SCI-FLT-FIXED` is the first package. `SCI-FLT-INF`
+is only a holding tranche and has no combined Stage B authority.
 
-## Classification Tests
+## Admitted Operator Family
 
-A method belongs to the fixed deterministic family only when all coefficients,
-offsets, template/kernel state, domain, boundary treatment, normalization,
-support, and missing-data rules are fixed before application to the admitted
-parent random field. A method is inference-bearing when any of these is chosen,
-estimated, updated, or conditioned using:
+### `FLT-FIXED-LINEAR`
 
-- a noise or covariance model;
-- a prior or regularization rule;
-- the target data or a related learned state;
-- a source model, source location, morphology, or response estimate; or
-- an objective that changes the estimand from transformed map amplitude to a
-  fitted/template amplitude.
-
-An inference-bearing method can later publish a frozen realized operator. That
-does not make the learning method deterministic; it creates a fixed-state
-application phase with explicit learned-state lineage.
-
-## Operator Families
-
-### `FLT-DET-AFFINE`
-
-A fixed affine map-domain transformation
+One complete externally resolved fixed linear same-grid operator:
 
 \[
-  y = A x + c,
+  y = J_{\rm full}L_\Theta m.
 \]
 
-with exact content-bound `A`, `c`, parent domain, output domain, units,
-support, validity, and response. Fixed convolution is a structured special
-case. A low-pass transformation belongs here only when its transfer and all
-state are fixed.
+Every coefficient, parameter, grid/domain fact, normalization, support rule,
+and lifecycle state is frozen before application. No additive term exists.
 
-### `FLT-DET-CONV`
+### `FLT-FIXED-CONV`
 
-A fixed convolution-like transformation with a named discrete kernel,
-centering, grid, padding/edge policy, missing-data policy, normalization, and
-declared support footprint. Method subtypes may include smoothing, resolution
-matching, or another explicit purpose; a common formula does not erase those
-product identities.
+A structured `FLT-FIXED-LINEAR` method in which `L_Theta` is constructed from
+one exact finite sampled convolution kernel. The complete finite operator and
+full-footprint row selection remain the scientific transformation.
 
-### `FLT-INF-WIENER`
+### `FLT-FIXED-CONV-LOWPASS`
 
-A Wiener-family map transformation with an explicit target estimand, signal
-and noise model, prior/regularization, template, weights, learned-state source,
-fixed/relearned lifecycle, transfer/response, bias conditions, and uncertainty
-meaning. An unavailable model input cannot silently select a different method.
+A qualified subtype of `FLT-FIXED-CONV`. The low-pass claim exists only when
+the exact frequency domain/metric, DC gain, passband, transition, stopband or
+attenuation, phase, anisotropy, finite-grid/edge limitations, kernel,
+normalization, and parameter provenance are complete. Without them, the
+operator remains fixed convolution and low-pass is unavailable.
 
-### `FLT-INF-MATCH`
+## Deferred Inference-Bearing Identities
 
-A matched or generalized least-squares template-amplitude estimator. It names
-the amplitude estimand, template normalization, background/nuisance model,
-noise/covariance model, position/grid, support, estimator response, bias, and
-uncertainty. It is not synonymous with convolving a map by a source-shaped
-kernel.
+The following are not SCI-FLT-FIXED methods and do not share one contract by
+default:
 
-### `FLT-INF-SOURCE`
+- Wiener reconstruction/transformation;
+- matched or generalized least-squares template-amplitude estimation;
+- source-learned operation;
+- data-derived spectral/mode selection or map-domain destriping;
+- automatic method selection; and
+- per-member relearning.
 
-A transformation or selection whose state depends on learned source position,
-morphology, mask, model, or subtraction. The source model and learning state
-must be explicit. This family must not absorb source-fitting or FRUIT ownership;
-it only covers a filtering method the owner deliberately assigns to FLT.
+A frozen realized operator remains outside SCI-FLT-FIXED when its scientific
+method/estimand depends on an inferred signal/noise model, prior,
+regularization, learned state, or latent/template amplitude.
 
-### `FLT-INF-SPECTRAL-SELECT`
+## Parent Roles
 
-A map-domain spectral selection whose retained modes or thresholds are derived
-from the input spectrum. Its target artifact/contaminant, selection statistic,
-threshold rule, response, bias, and uncertainty must be explicit. It is
-scientifically distinct from RTC temporal filtering.
-
-## State Classes
-
-Every method declares one of these state identities:
-
-| State class | Meaning |
+| Role | Parent |
 | --- | --- |
-| `fixed_external` | Complete operator state supplied independently of the parent product and frozen before application. |
-| `fixed_parent_bound` | Complete operator state frozen and content-bound to this parent or a named predecessor, but not relearned during application. Dependence and source imprint remain explicit. |
-| `learn_then_freeze` | A named learning procedure produces an immutable operator-state generation; application uses only that generation. |
-| `successor_update` | New information selects or updates state, producing a new transformation and science-product generation. |
-| `per_member_relearned` | The method relearns for each admitted NOI member under its own scientific definition. It cannot mix with fixed-state members. |
+| `FLT-PARENT-MAP-OBS` | One complete base/unfiltered MAP observation bundle |
+| `FLT-PARENT-MAP-COADD` | One complete base/unfiltered MAP centered-integer coadd bundle |
+| `FLT-PARENT-JINC-OBS` | One complete atomic JINC observation bundle |
 
-The classification is part of method identity, not optional provenance.
+Each method binds exactly one role. Shape or WCS equality cannot substitute
+roles. SCI-FLT-FIXED does not coadd.
 
 ## Product Roles
 
-### `FLT-PARENT`
+| Role | Meaning |
+| --- | --- |
+| `FLT-PLAN` | Requested purpose, effective selection, and exact externally resolved fixed-linear plan |
+| `FLT-OPERATOR` | Complete finite `J_full L_Theta`, including kernel/coefficients and generation |
+| `FLT-SIG` | Transformed parent-map quantity on exact `S_out`; not automatic photometry or fitted amplitude |
+| `FLT-UNIT-BEAM` | Output-unit derivation plus originating nominal-beam identity |
+| `FLT-TRANSFER` | Local sampled transfer where scientifically defined, or unavailable |
+| `FLT-RSP` | Exact transformed compatible parent response, or unavailable |
+| `FLT-MODE` | Null, attenuated, invariant, and phase state |
+| `FLT-INFLUENCE` | Parent-row influence; not physical exposure |
+| `FLT-SUP` | Numerical and complete-footprint support facts |
+| `FLT-VALID` | FLT-local validity/causes; not parent or downstream validity |
+| `FLT-COV-FORMAL` | Complete, structured, partial, marginal, or unavailable deterministic covariance state |
+| `NOI-UNC[FLT-SIG]` | Separately owned NOI empirical uncertainty attachment |
+| `FLT-LINEAGE` | Immutable parent/plan/operator/output/companion/lifecycle/failure binding |
 
-The immutable admitted MAP or JINC bundle, including parent estimand, units,
-grid/frame, response identity, support/validity, covariance availability, and
-content identity.
+## Identity Rules
 
-### `FLT-STATE`
+Changing the parent role/generation, requested or effective purpose, operator/
+kernel, parameter, transfer qualification, normalization, WCS/grid/domain, row
+selection, support/validity, response/covariance role, lifecycle, or failure
+policy creates a different transformation and product generation.
 
-The immutable applied transformation state: family/method, purpose, parameters,
-kernel/template/prior/noise model, learned-state generation, order, input and
-output domain, edge/padding/missing policy, normalization, response convention,
-support footprint, units rule, lifecycle, and failure policy.
+Disabled, unavailable, failed, realized identity, and realized zero are
+different states. Disabled produces no product. Identity and zero operators
+produce separately parented realized FLT products.
 
-### `FLT-SIG`
+## Forbidden Collisions
 
-The transformed scientific amplitude. It preserves or changes units only as
-declared by `FLT-STATE`. It is not automatically a flux, fitted amplitude,
-statistical significance, or uncertainty-normalized field.
-
-### `FLT-RSP`
-
-The exact response object associated with `FLT-SIG`. Depending on the method,
-this may be an identically transformed unit-source kernel, a transfer function,
-a response operator, or a declared honest absence. Peak response, signed
-integral, aperture response, beam solid angle, and frequency transfer are
-distinct quantities.
-
-### `FLT-SUP` and `FLT-VALID`
-
-Filter-specific numerical support and scientific validity. They remain
-distinct from parent exposure/coverage, parent validity, finite storage,
-nonzero weight, and confidence. Parent coverage is carried as a parent fact;
-it is not silently rewritten as filter support or transformed validity.
-Edge/fill/padding influence and missing data are explicit.
-
-### `FLT-COV-FORMAL`
-
-An optional covariance or second-moment object obtained by applying a fixed
-declared operator to an available declared parent covariance model. A diagonal
-variance plane is labeled as such and is not full covariance. When parent
-covariance is unavailable, the propagated object is unavailable rather than
-zero.
-
-### `NOI-UNC[FLT-SIG]`
-
-An SCI-NOI-owned conditional uncertainty/covariance attachment produced by
-applying the exact `FLT-STATE` method to every compatible admitted
-randomization. It is not an FLT-authored uncertainty and cannot define the
-filter.
-
-### `FLT-LINEAGE`
-
-The immutable binding among parent, transformation state, response, support,
-validity, learned-state generation, output, and any attached NOI product.
-
-## Product-Identity Rules
-
-1. Changing the parent, method family, estimand, template/kernel, prior/noise
-   model, learned state, normalization, edge/missing rule, support/validity,
-   response convention, or application order creates a different product
-   identity.
-2. A requested method name cannot substitute for the realized transformation
-   identity.
-3. A fallback to another transformation creates a different method/product or
-   fails; it cannot retain the requested method identity.
-4. Filtering an observation and filtering a coadd are different parent/product
-   identities.
-5. A downstream source fit or FRUIT iteration creates a downstream product,
-   not a mutation of `FLT-SIG`.
-6. Fixed-state and per-member-relearned NOI routes create different method and
-   uncertainty identities.
-
-## Initial Package Recommendation
-
-Use `SCI-FLT` only as the Stage A tranche. Commission `SCI-FLT-DET` first for
-fixed deterministic transformations. Hold inference-bearing work in the
-`SCI-FLT-INF` tranche and commission separate Wiener, matched-estimator,
-source-learned, or spectral-selection contracts whenever their identities do
-not satisfy the same scientific questions. This recommendation awaits owner
-decision FLT-ODQ-101.
+- `DET` is not used as the package abbreviation.
+- Low-pass is not a synonym for smoothing.
+- A source-shaped convolution is not a matched estimator.
+- A kernel is not automatically a source response or PSF.
+- A denominator/weight is not automatically precision.
+- A marginal variance plane is not full covariance.
+- FLT-local validity is not downstream eligibility.
+- Influence is not exposure.

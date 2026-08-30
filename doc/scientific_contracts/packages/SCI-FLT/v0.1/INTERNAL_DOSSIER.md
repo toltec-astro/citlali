@@ -30,10 +30,10 @@ operations:
 - RTC temporal filters and FRUIT feedback operations that belong to other
   scientific owners despite sharing filter-like vocabulary.
 
-These cannot safely enter one generic contract. The core Stage A recommendation
-is a deterministic/inference-bearing split before Stage B, followed by further
-method splits wherever estimand, prior, learned state, response, uncertainty,
-or lifecycle differs.
+These cannot safely enter one generic contract. Final owner disposition names
+the first strict-linear package `SCI-FLT-FIXED`, retains `SCI-FLT-INF` only as
+a holding tranche, and requires further recovery and method splits wherever
+estimand, prior, learned state, response, uncertainty, or lifecycle differs.
 
 ## Current Configuration And Lifecycle Inventory
 
@@ -317,8 +317,8 @@ Approved SCI-NOI Stage A controls empirical uncertainty:
 - a partial surviving ensemble cannot silently replace the admitted ensemble.
 
 The historical FLT-D003 placement of a robust global empirical scale inside
-FLT is therefore deferred pending owner reconciliation. It cannot be imported
-unchanged.
+FLT is superseded by approved SCI-NOI Stage A and owner decision FLT-ODQ-106.
+It cannot be imported unchanged.
 
 ## Parent, Product, And Consumer Inventory
 
@@ -384,8 +384,10 @@ correctly, or is ready for scientific or production use.
 
 ## Recovery Conclusion
 
-Stage A recovery is sufficient to present a bounded owner-decision walkthrough
-and a sanitized candidate author set. It is not sufficient to launch Stage B.
-The first unresolved scientific question is whether the tranche is split into
-a fixed deterministic package and an inference-bearing tranche before any
-fresh authorship begins.
+Stage A recovery and the later owner scope repair are sufficient to prepare the
+sanitized exact 17-object SCI-FLT-FIXED candidate author set. The bounded scope
+questions are resolved: base v0.1 is strict-linear, fixed low-pass is a
+qualified convolution subtype, and full-footprint-only is the sole edge/
+missing method. Stage B remains stopped until the scientific owner approves
+the exact repaired bytes and explicitly launches fresh implementation-blind
+authorship.

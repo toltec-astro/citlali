@@ -1,21 +1,26 @@
-# SCI-FLT v0.1 Stage A Crosswalk
+# SCI-FLT-FIXED v0.1 Stage A Crosswalk
 
-Status: Stage A recovery crosswalk; no conformity or validation claim
+Status: repaired Stage A crosswalk; no conformity or validation claim
 
-| Required Stage A outcome | Artifact |
+| Required returned artifact/outcome | Exact file |
 | --- | --- |
-| Program adherence and recovery-first start | [`README.md`](README.md), [`PRIOR_WORK.md`](PRIOR_WORK.md) |
-| Recovered prior-work and implementation inventory | [`PRIOR_WORK.md`](PRIOR_WORK.md), [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md) |
-| Deterministic Convolve/low-pass separated from Wiener/inference-bearing work | [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md), [`AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md`](AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md) |
-| Placement relative to MAP, JINC, observations, coaddition, NOI, and FRUIT | [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md), [`AUTHOR_BOUNDARY_INPUTS.md`](AUTHOR_BOUNDARY_INPUTS.md) |
-| Requested/effective/resolved/applied/realized lifecycle | [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md), [`AUTHOR_CONVENTIONS_AND_OWNERSHIP.md`](AUTHOR_CONVENTIONS_AND_OWNERSHIP.md) |
-| Kernel/template/prior/learned-state identity | [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md), [`AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md`](AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md) |
-| Parent/output, units, response, estimand, support, edge/missing, uncertainty, covariance, fixed/relearned, source-imprint recovery | [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md), [`AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md`](AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md) |
-| Beammap, Pointing, OOF, source fitting, NOI, and FRUIT dependencies | [`OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md`](OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md), [`AUTHOR_BOUNDARY_INPUTS.md`](AUTHOR_BOUNDARY_INPUTS.md) |
-| Historical validation used only as evidence | [`PRIOR_WORK.md`](PRIOR_WORK.md), [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md) |
-| Conflicts, ambiguities, and unavailable states | [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md) |
-| Initial operator/product taxonomy | [`AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md`](AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md) |
-| One-package versus split recommendation | [`README.md`](README.md), [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md), FLT-ODQ-101 |
-| Bounded owner decisions and first walkthrough question | [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md) |
-| Exact proposed sanitized future Stage B input set | [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md) |
-| Stage B stop | [`README.md`](README.md), [`SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`](SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md) |
+| Revised Scope Brief | [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md) |
+| Package-name and tranche-split decision | [`SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`](SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md), ODQ-101 |
+| Fixed-versus-inference estimand taxonomy | [`AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md`](AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md) |
+| Strict-linear scope and affine deferral | [`SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`](SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md), ODQ-102A |
+| MAP-to-FLT boundary | [`SCI-MAP_TO_SCI-FLT-FIXED_BOUNDARY.md`](SCI-MAP_TO_SCI-FLT-FIXED_BOUNDARY.md) |
+| JINC-to-FLT boundary | [`SCI-JINC_TO_SCI-FLT-FIXED_BOUNDARY.md`](SCI-JINC_TO_SCI-FLT-FIXED_BOUNDARY.md) |
+| FLT-to-NOI fixed boundary | [`SCI-FLT-FIXED_TO_SCI-NOI_BOUNDARY.md`](SCI-FLT-FIXED_TO_SCI-NOI_BOUNDARY.md) |
+| Exact operator/convolution specification | [`FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md`](FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md) |
+| WCS/kernel/discretization table | [`WCS_KERNEL_DISCRETIZATION_DECISION_TABLE.md`](WCS_KERNEL_DISCRETIZATION_DECISION_TABLE.md) |
+| Edge/missing/non-finite table | [`EDGE_MISSING_NONFINITE_METHOD_DECISION_TABLE.md`](EDGE_MISSING_NONFINITE_METHOD_DECISION_TABLE.md) |
+| Normalization/unit/beam table | [`NORMALIZATION_UNIT_BEAM_DECISION_TABLE.md`](NORMALIZATION_UNIT_BEAM_DECISION_TABLE.md) |
+| Response/null-space/covariance table | [`RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md`](RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md) |
+| Observation/coadd noncommutation table | [`OBSERVATION_COADD_NONCOMMUTATION_TABLE.md`](OBSERVATION_COADD_NONCOMMUTATION_TABLE.md) |
+| FLT-owned VAL profile drafts | [`SCI_FLT_VAL_PROFILE_DRAFTS.md`](SCI_FLT_VAL_PROFILE_DRAFTS.md) |
+| Atomic product/lifecycle table | [`FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md`](FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md) |
+| Sanitized owner decisions | [`SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`](SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md) |
+| Stage A change log | [`STAGE_A_CHANGE_LOG.md`](STAGE_A_CHANGE_LOG.md) |
+| Exact author manifest and SHA-256 values | [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md), [`AUTHOR_PACKET_MANIFEST.sha256`](AUTHOR_PACKET_MANIFEST.sha256) |
+| Stage B not launched | [`README.md`](README.md), [`pdf/README.md`](pdf/README.md), [`SCIENTIFIC_OWNER_FINAL_STAGE_A_SCOPE_DIRECTION_2026-08-30.md`](SCIENTIFIC_OWNER_FINAL_STAGE_A_SCOPE_DIRECTION_2026-08-30.md) |
+| Recovery inventory and firewall | [`PRIOR_WORK.md`](PRIOR_WORK.md), [`INTERNAL_DOSSIER.md`](INTERNAL_DOSSIER.md), [`AUTHOR_SUPERSESSION_COVER.md`](AUTHOR_SUPERSESSION_COVER.md) |

@@ -1,4 +1,4 @@
-# SCI-FLT v0.1 Deterministic Transformation Science Extract
+# SCI-FLT-FIXED v0.1 Linear Transformation Science Extract
 
 Status: sanitized recovered candidate; not scientific authority
 
@@ -21,7 +21,6 @@ Let:
 - `x` be the admitted parent scientific amplitude on an explicit input domain;
 - `C_x` be its available declared covariance, or honestly unavailable;
 - `A` be a fixed linear operator;
-- `c` be a fixed offset independent of the parent random field;
 - `y` be the transformed amplitude on an explicit output domain; and
 - `r` be a named unit-source or other response object on a compatible domain.
 
@@ -29,29 +28,28 @@ All objects require units, frame/grid, indexing, support, missing/non-finite
 policy, and content identity. “Fixed” means fixed before application to the
 admitted parent random field, not merely unchanged inside one numerical call.
 
-## Fixed Affine Transformation
+## Fixed Linear Transformation
 
-For
+Base v0.1 admits only
 
 \[
-  y = A x + c,
+  y = A x.
 \]
 
-the mean and covariance, when the required moments exist and `A` and `c` are
-fixed, satisfy
+The mean and covariance, when the required moments exist and `A` is fixed,
+satisfy
 
 \[
-  \mathrm{E}[y] = A\,\mathrm{E}[x] + c,
+  \mathrm{E}[y] = A\,\mathrm{E}[x],
   \qquad
   C_y = A C_x A^{\mathsf T}.
 \]
 
-The offset changes the mean but not the covariance only under the fixed-offset
-assumption. If an apparent fill or offset is estimated from the input,
-`c = Hx + d`, the effective stochastic operator is `A + H` (or the exact
-composed equivalent), and the covariance must follow that total mapping. A
-data-derived offset cannot be treated as fixed without an explicit
-conditioning statement.
+Affine transformations `y=Ax+c`, fixed offsets, background/template
+subtraction, and additive correction are outside base v0.1. They require a
+versioned successor that distinguishes signal output, perturbation operator,
+response, covariance, additive-term parent/unit/support/uncertainty, absolute-
+reference consequences, NOI treatment, lifecycle, and failure.
 
 ## Fixed Discrete Convolution
 
@@ -59,7 +57,7 @@ For a fixed kernel with coefficients `k_{ij}` mapping admitted input pixels
 `j` to output pixel `i`,
 
 \[
-  y_i = \sum_j k_{ij} x_j + c_i.
+  y_i = \sum_j k_{ij} x_j.
 \]
 
 With a declared diagonal parent covariance

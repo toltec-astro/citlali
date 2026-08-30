@@ -629,11 +629,10 @@ performance, readiness, or production claim is made.
 On `2026-08-30` Grant Wilson launched
 [`SCI-FLT v0.1`](scientific_contracts/packages/SCI-FLT/v0.1/README.md) as a
 recovery-first Stage A scientific-contract effort from that authority line.
-The completed owner-review packet includes a package-specific prior-work
+The initial owner-review packet included a package-specific prior-work
 record, quarantined implementation-informed dossier, sanitized Scope Brief,
 ownership/boundary classification, deterministic-transform science extract,
-typed operator/product taxonomy, eight bounded owner questions, and the exact
-proposed seven-object future author set. It separately classifies fixed
+typed operator/product taxonomy, and eight bounded owner questions. It separately classifies fixed
 deterministic convolution/low-pass, Wiener/noise-model-dependent,
 matched/template-amplitude, source-sensitive, data-thresholded map-domain, RTC
 temporal, and FRUIT feedback operations. Approved SCI-NOI Stage A controls:
@@ -642,13 +641,19 @@ randomizations for uncertainty of the exact transformed product; fixed-state,
 successor-generation, and per-member-relearned routes remain distinct. Current
 SCI-NOI Stage B draft material was excluded.
 
-The Stage A recommendation is to retain `SCI-FLT` only as the tranche name,
-commission provisional `SCI-FLT-DET` first, and hold inference-bearing methods
-in a separate `SCI-FLT-INF` tranche with further method splits wherever
-estimand, prior/learned state, response, uncertainty, or lifecycle differs.
-`FLT-ODQ-101--108` remain open; the owner walkthrough begins with the package-
-split decision. The future author packet is not releasable and Stage B has not
-begun. No algorithm or frozen authority changed, and no implementation
+The final owner scope repair on `2026-08-30` retains `SCI-FLT` as the tranche,
+selects `SCI-FLT-FIXED` as the first package, rejects `SCI-FLT-DET` because of
+the detector-namespace collision, and retains `SCI-FLT-INF` only as a non-
+authoritative holding tranche. Base v0.1 is strict-linear same-grid
+`y=J_full L_Theta m`, fixed convolution is its concrete family, fixed low-pass
+is a qualified subtype only with complete transfer facts, and full-footprint-
+only is the sole edge/missing method. Affine offsets, boundary extension,
+truncation, support renormalization, reprojection, inference-bearing state, and
+coaddition are deferred. Exact MAP/JINC/NOI boundaries, decision tables, VAL
+profile drafts, product/lifecycle roles, and a content-bound owner record now
+form the repaired 17-object SHA-bound author candidate. All bounded Stage A
+scope decisions are resolved. The exact bytes require owner approval and Stage
+B has not begun. No algorithm or frozen authority changed, and no implementation
 conformity, validation, calibration, achieved response/performance, readiness,
 production, freeze, Unity, source/mode, NOI, or FRUIT action is claimed or
 authorized.

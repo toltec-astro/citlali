@@ -53,10 +53,10 @@ No Unity system was queried.
 | Current SCI-NOI `stage_b/` material | `exclude` | Draft, not frozen authority, and outside the user-authorized starting authority line. |
 | Frozen SCI-BEAM v0.1 | `cite` | Owns Beammap effective-PSF, source-fit, and related product interpretation; possible template/response producer, not FLT authority. |
 | Frozen RTC/PTC/CAL/VAL/ALIGN/AST authorities | `cite` | Retain their own temporal filtering, transformed-timestream, calibration, policy-evaluation, frame, and astrometric ownership. |
-| Historical Convolve mixed document at `codex/convolve-contract-audit@800e8ae433f87d3fb7521fcb1a7fdf1d32532949` | `abstract` and `exclude` | Abstract only fixed affine/convolution, response, support, and covariance identities. Exclude source inspection, findings, verdicts, repairs, tests, validation, and historical product claims. |
+| Historical Convolve mixed document at `codex/convolve-contract-audit@800e8ae433f87d3fb7521fcb1a7fdf1d32532949` | `abstract` and `exclude` | Abstract only fixed linear/convolution, response, support, and covariance identities. Exclude affine scope, source inspection, findings, verdicts, repairs, tests, validation, and historical product claims. |
 | Historical FLT-D001 fill-boundary decision | `cite` as prior owner direction | Candidate for reaffirmation: numerical fill is outside scientific admission and admitted support is eroded by the operator footprint. It is not silently promoted to current SCI-FLT authority. |
 | Historical FLT-D002 aperture-response decision | `cite` as prior owner direction | Candidate for reaffirmation: transformed map amplitude is not automatic photometry; identically transformed unit-source response can support user-applied response correction subject to CAL. |
-| Historical FLT-D003 empirical-calibration decision | `defer` | Its placement of empirical calibration inside FLT must be reconciled with approved SCI-NOI ownership before use. It is not in the proposed author packet. |
+| Historical FLT-D003 empirical-calibration decision | `supersede` | Approved SCI-NOI Stage A and FLT-ODQ-106 supersede its placement of empirical uncertainty calibration inside FLT. It is not in the author packet. |
 | Historical CAL-to-FLT handoff `SCI-FLT-001-XAUD-001` | `exclude` from authorship; `cite` internally | Audit-era dependency evidence, not current CAL scientific authority. It reinforces that unit labels alone do not establish response, covariance, or absolute calibration. |
 | Internal `citlali_noise_estimation_plan.tex` | `abstract` only through approved NOI Stage A | Useful historical derivation, but old ensemble estimators and product recommendations are superseded wherever they differ from approved NOI Stage A. |
 | FRUIT checkpoint/convergence and source/mode planning records | `cite` internally | Establish current ownership and lifecycle boundaries only. They are not FLT scientific inputs. |
@@ -83,8 +83,10 @@ uncertainty meaning, validity rule, or acceptable behavior.
 ## Package-Specific Recovery Results
 
 1. `Convolve` and the current `lowpass_only` route share a fixed-kernel
-   convolution mechanism when all operator state is fixed, but their purposes
-   and method identities are not yet scientifically specified.
+   convolution mechanism when all operator state is fixed. Final owner scope
+   nevertheless types fixed convolution as the concrete family and low-pass
+   only as a qualified subtype with a complete transfer specification;
+   implementation sharing supplies no authority for that classification.
 2. Full Wiener construction depends on a noise spectrum, map weights,
    template, denominator rules, and regularization/truncation choices. It is
    inference-bearing even when the resulting realized operator is later
@@ -106,8 +108,9 @@ uncertainty meaning, validity rule, or acceptable behavior.
 
 Only the fixed-transformation mathematics in
 [`AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md`](AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md)
-was abstracted from the mixed historical Convolve record. Current authority
-boundaries were restated without implementation details in
-[`AUTHOR_BOUNDARY_INPUTS.md`](AUTHOR_BOUNDARY_INPUTS.md). All other recovered
-implementation, audit, repair, validation, historical verdict, and draft NOI
-Stage B material is excluded from the proposed future author packet.
+was abstracted from the mixed historical Convolve record. The retained
+[`AUTHOR_BOUNDARY_INPUTS.md`](AUTHOR_BOUNDARY_INPUTS.md) synthesis is
+superseded for authorship by the three exact MAP/JINC/NOI boundary objects.
+All other recovered implementation, audit, repair, validation, historical
+verdict, and draft NOI Stage B material is excluded from the exact 17-object
+candidate author packet.

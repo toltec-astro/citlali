@@ -202,13 +202,16 @@ production, Unity, filtering, source/mode, or FRUIT action follows.
 The scientific owner's later `2026-08-30` direction launches recovery-first
 SCI-FLT v0.1 Stage A at
 [`packages/SCI-FLT/v0.1/`](packages/SCI-FLT/v0.1/). Recovery is complete for
-owner review: it quarantines the implementation-informed inventory, separates
-fixed deterministic convolution/low-pass from Wiener, matched/source-sensitive,
-and other inference-bearing families, restates the approved SCI-NOI boundary,
-and proposes `SCI-FLT-DET` plus a separate `SCI-FLT-INF` tranche before Stage
-B. The exact proposed seven-object sanitized future author set is identified
-but not releasable because `FLT-ODQ-101--108` remain open. The next action is
-the owner walkthrough beginning with the package-split question. Stage B has
-not begun. No algorithm, frozen package, implementation, conformity,
+owner review: it quarantines the implementation-informed inventory and
+separates fixed transformation from Wiener, matched/source-sensitive, and
+other inference-bearing families. The final owner scope repair selects
+`SCI-FLT-FIXED`, retains `SCI-FLT-INF` only as a non-authoritative holding
+tranche, narrows base v0.1 to strict-linear same-grid
+`y=J_full L_Theta m`, admits fixed low-pass only as a qualified convolution
+subtype, and makes full-footprint-only the sole edge/missing method. All
+bounded Stage A scope decisions are resolved. The exact repaired 17-object
+author candidate is SHA-bound but not releasable until scientific-owner
+exact-byte approval and explicit launch. Stage B has not begun. No algorithm,
+frozen package, implementation, conformity,
 validation, calibration, achieved performance, readiness, production, Unity,
 source/mode, NOI, or FRUIT action follows.

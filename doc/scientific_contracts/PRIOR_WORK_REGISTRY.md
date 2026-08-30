@@ -197,13 +197,15 @@ and cross-package handoffs are valuable recovery inputs.
   Wiener/noise-model-dependent, matched/template-amplitude, source-sensitive,
   data-thresholded map-domain, RTC temporal, and FRUIT feedback operations.
   The implementation-informed dossier is quarantined. The sanitized Stage A
-  set abstracts only fixed affine/convolution mathematics from the mixed
+  set abstracts only fixed linear/convolution mathematics from the mixed
   historical Convolve document, restates approved parent/NOI/consumer
   boundaries, proposes a typed operator/product taxonomy, and recommends
-  `SCI-FLT-DET` plus an initially separate `SCI-FLT-INF` tranche before Stage
-  B. Eight bounded owner questions remain open. The exact proposed seven-
-  object future author set is identified but not releasable; Stage B has not
-  begun.
+  `SCI-FLT-FIXED` plus an `SCI-FLT-INF` holding tranche. Final owner scope
+  decisions select strict linearity, fixed low-pass only as a qualified
+  convolution subtype, and full-footprint-only as the sole v0.1 edge method.
+  All bounded questions are resolved. The repaired exact 17-object future
+  author set is SHA-bound but not releasable until exact-byte owner approval;
+  Stage B has not begun.
 - Package-specific NOI recovery:
   [`packages/SCI-NOI/v0.1/PRIOR_WORK.md`](packages/SCI-NOI/v0.1/PRIOR_WORK.md)
   at `2026-08-29`. It locates both earlier implementation-independent NOI

@@ -1,6 +1,7 @@
 # SCI-FLT v0.1 Sanitized Boundary Inputs
 
-Status: proposed future author input; scientific-owner approval required
+Status: retained Stage A synthesis; superseded in the exact future author
+packet by the three dedicated MAP/JINC/NOI boundaries
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -63,7 +64,9 @@ The following approved Stage A rules control:
    admitted randomization.
 4. No commutation, relocation, substitution, or same-name equivalence may be
    inferred. Exact owner authority and transformation parity must be bound.
-5. An owner-frozen Wiener transformation can enter this fixed-state route.
+5. An owner-frozen Wiener transformation can enter NOI's fixed-state parity
+   route, but remains outside SCI-FLT-FIXED because its method depends on an
+   inferred signal/noise model or prior.
 6. Learning, selecting, or updating a transformation with NOI information
    creates an immutable successor transformation, science, GEN, and UNC
    generation.

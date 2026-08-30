@@ -1,6 +1,7 @@
 # SCI-FLT v0.1 Author Supersession And Exclusion Cover
 
-Status: proposed sanitized future author input; owner approval required
+Status: sanitized SCI-FLT-FIXED author input; exact-packet owner approval and
+Stage B launch required
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -10,7 +11,7 @@ implementation-blind authorship.
 ## Reusable Candidate
 
 Only [`AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md`](AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md)
-abstracts the reusable mathematics of fixed affine/convolution transformations,
+abstracts the reusable mathematics of fixed linear/convolution transformations,
 response propagation, support/edge validity, covariance propagation, and
 ordering. The author must independently evaluate it.
 
@@ -29,28 +30,27 @@ The following recovered material is not author input:
   labels;
 - historical ensemble estimators, including centering or `B-1` rules that
   differ from approved SCI-NOI Stage A;
-- the old placement of empirical uncertainty calibration inside FLT pending
-  owner reconciliation with SCI-NOI;
+- the old placement of empirical uncertainty calibration inside FLT, which is
+  superseded by approved SCI-NOI Stage A and owner decision ODQ-106;
 - current SCI-NOI Stage B drafts; and
 - any unapproved Wiener, matched, source-sensitive, destripe, or FRUIT science.
 
 ## Prior Owner Decisions
 
-Historical FLT-D001 and FLT-D002 are recovery evidence of prior owner intent,
-not automatic current authority. Their candidate scientific content is posed
-for explicit reaffirmation in the current owner ledger. Historical FLT-D003 is
-not transcribed because its ownership assignment may conflict with the
-approved SCI-NOI boundary.
+Historical FLT-D001 and FLT-D002 were recovery evidence and are superseded by
+the exact current owner decisions. Historical FLT-D003 is superseded where it
+placed empirical uncertainty calibration inside FLT; approved SCI-NOI
+authority controls that inference.
 
 Only decisions recorded in the content-bound
 [`SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`](SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md)
-after this walkthrough may enter the final author packet.
+enter the exact author packet.
 
 ## Resulting Fresh-Author Task
 
-The future author is asked to derive a contract from the approved scientific
-scope and boundaries, not to make current code pass, reproduce a historical
-artifact, preserve a default, or ratify past validation. If the owner approves
-the recommended split, the first task is limited to fixed deterministic
-transformations; inference-bearing families receive separate recovery and
-authorship.
+After exact-byte approval and launch, the future author is asked to derive a
+contract from the approved scientific scope and boundaries, not to make
+current code pass, reproduce a historical artifact, preserve a default, or
+ratify past validation. The first task is limited to SCI-FLT-FIXED
+strict-linear transformations; inference-bearing families require separate
+recovery and authorship.

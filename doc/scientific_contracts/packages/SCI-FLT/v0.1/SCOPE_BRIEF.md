@@ -1,134 +1,118 @@
-# SCI-FLT v0.1 Stage A Scope Brief
+# SCI-FLT-FIXED v0.1 Stage A Scope Brief
 
-Status: sanitized scientist-readable owner-review packet; Stage B not
-authorized
+Status: final repaired scientist-readable Stage A candidate; exact-byte owner
+approval required; Stage B not authorized
 
 ## Program Adherence And Prior-Work Recovery
 
 This Scope Brief follows the Scientific Contract Library Program, pilot
-process, and owner-approved downstream roadmap. Recovery and classification
-preceded this brief. Implementation, configuration, schema, audit, repair,
-test, validation, reduction, and performance material is quarantined outside
-this packet.
+process, and owner-approved downstream roadmap. Prior-work and implementation
+recovery preceded the brief. Implementation, configuration, schemas, tests,
+audits, repairs, validation, reductions, generated products, defaults,
+historical behavior, and production state remain outside the future author
+packet.
 
-The prior scientific candidate is not supplied wholesale. Only fixed affine
-and convolution identities have been abstracted into
+The raw historical Convolve record is withheld. Only sanitized fixed-linear
+mathematics appears in
 [`AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md`](AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md).
-Applicable frozen/approved boundaries are restated in
-[`AUTHOR_BOUNDARY_INPUTS.md`](AUTHOR_BOUNDARY_INPUTS.md). Historical
-implementation findings, verdicts, repair requirements, and old uncertainty
-estimators are excluded.
+Exact MAP, JINC, and NOI boundaries are supplied as dedicated compact objects.
 
-## Scientific Purpose
+## Package And Tranche Decision
 
-Define scientifically typed map-domain transformations and successor products
-without treating every operation called a filter as one method. Preserve exact
-parent, transformation, response, support, validity, uncertainty, and lifecycle
-identity so downstream users know what quantity was produced and what claims
-it can support.
+`SCI-FLT` remains the recovery tranche. The first scientific contract is
+`SCI-FLT-FIXED v0.1`. The name `SCI-FLT-DET` is rejected because of the
+detector-namespace collision.
 
-## Recommended Contract Split
+`SCI-FLT-INF` is a non-authoritative holding tranche only. No combined
+SCI-FLT-INF Stage B contract is authorized. Wiener, matched/template-amplitude,
+source-learned, data-derived spectral/mode selection, automatic method
+selection, and per-member relearning remain separate pending Stage A work.
 
-Before Stage B, split the tranche into:
+## Base Scientific Object
 
-- `SCI-FLT-DET`, for fully fixed deterministic map-domain transformations; and
-- `SCI-FLT-INF`, as a holding tranche for inference-bearing methods.
+Base v0.1 defines one fixed linear same-grid map-domain transformation:
 
-Within `SCI-FLT-INF`, Wiener transformation, matched/template-amplitude
-estimation, source-learned filtering, and data-derived spectral selection
-should remain distinct unless the owner establishes that they share the same
-estimand, prior/learned-state semantics, response, uncertainty, and lifecycle.
+\[
+  y = J_{\rm full}L_\Theta m,
+\]
 
-The first proposed Stage B assignment is `SCI-FLT-DET`, not the whole tranche.
-That assignment remains blocked on the owner decisions.
+where `m` is one exact admitted parent, `L_Theta` is the complete externally
+resolved fixed operator, and `J_full` selects exactly the rows whose complete
+kernel footprint is admitted and finite. There is no additive term.
 
-## In Scope For `SCI-FLT-DET` v0.1
+Fixed convolution is the concrete transformation family. A fixed-low-pass-
+convolution subtype is a qualified scientific claim only when its complete
+transfer specification is bound. It is not a second generic operator class.
 
-- exact immutable parent-product identity for MAP or an explicitly admitted
-  JINC route;
-- a fixed affine operator and fixed convolution as a structured subtype;
-- scientifically named method purpose, including any approved fixed low-pass
-  subtype;
-- kernel/template identity, units, sampling, centering, normalization, support,
-  and provenance;
-- operator order and whether the parent is an observation or a coadd;
-- edge, padding, fill, missing, non-finite, and partial-support behavior;
-- stored transformed-amplitude identity and units;
-- transformed unit-source response or another exact response/transfer object,
-  including honest absence;
-- numerical support and scientific validity as distinct products;
-- deterministic propagation of an available declared covariance model,
-  including off-diagonal consequences and honest absence;
-- fixed-state attachment to SCI-NOI uncertainty for the exact transformed
-  product; and
-- immutable requested/effective/resolved/applied/realized lineage sufficient
-  to identify the exact transformation without prescribing an engineering
-  schema.
+## In Scope
 
-## Deferred To Separate Inference-Bearing Stage A Work
+- one immutable MAP observation, MAP coadd, or JINC observation parent role;
+- exact parent package/revision/product/application generation and lineage;
+- strict linearity with `c_Theta = 0`;
+- a fixed same-grid finite operator and fixed convolution construction;
+- a qualified fixed-low-pass-convolution subtype;
+- exact WCS/frame/topology/grid/metric/shape/row-domain identity;
+- sampled kernel/coefficient identity, units, pixel-area factors, center,
+  extent/tie, phase, orientation, support, normalization, and provenance;
+- full-footprint-only output admission and typed unavailable edge rows;
+- transformed signal, output units, originating nominal-beam identity, local
+  transfer, transformed response, null/mode state, influence, support,
+  FLT-local validity, covariance state, causes, lifecycle, and failure;
+- deterministic transformation of an available exact parent covariance;
+- exact fixed-state application to compatible NOI realizations; and
+- separate observation, coadd, and JINC product identities with no assumed
+  filter/coadd commutation.
 
-- Wiener estimand, signal/noise model, prior, regularization, learned-state
-  source, transfer/response, bias, and uncertainty;
-- matched or generalized least-squares template-amplitude estimation;
+## Explicitly Deferred Or Excluded
+
+- affine offsets, template/background subtraction, and additive correction;
+- reprojection, resampling, mosaicking, and deconvolution;
+- fixed boundary extension, periodic wrapping, truncated-unrenormalized
+  convolution, support renormalization, inpainting, and edge completion;
+- data-derived kernel/cutoff/support/normalization or automatic selection;
+- Wiener signal/noise-model or prior-based transformation;
+- matched/generalized-least-squares template-amplitude estimation;
 - source-learned templates, positions, masks, morphologies, or subtraction;
-- input-data-derived spectral/mode selection and map-domain destriping;
-- per-member relearning and other adaptive uncertainty methods; and
-- automatic selection among deterministic and inference-bearing methods.
+- data-derived spectral/mode selection and map-domain destriping;
+- per-member operator re-resolution or relearning;
+- SCI-FLT coaddition;
+- RTC temporal/timestream filtering;
+- source-fit, Beammap, Pointing, OOF, catalog, or FRUIT use policy; and
+- SCI-NOI ensemble design or empirical uncertainty inference.
 
-The deterministic author may name these boundaries but must not derive or
-select their science.
+## Ownership
 
-## Outside SCI-FLT Ownership
+- MAP/JINC own the parent estimand and parent facts.
+- CAL owns absolute calibration, passband/color correction, and calibration
+  covariance.
+- SCI-FLT-FIXED owns the exact local transformation, output product, response,
+  support/validity, deterministic covariance state, lifecycle, and failure.
+- SCI-NOI owns realization ensembles and empirical uncertainty and applies the
+  exact FLT transformation to compatible members.
+- SCI-BEAM and future source/mode contracts own physical source/beam and
+  Pointing/OOF interpretations.
+- SCI-FRUIT owns iterative feedback science.
+- FLT owns FLT-use policy; VAL binds/evaluates but does not author it.
 
-- RTC temporal/timestream filtering and related flags;
-- MAP/JINC parent estimator and parent validity;
-- CAL absolute calibration, passband/color correction, and calibration
-  covariance;
-- SCI-NOI generation, uncertainty/covariance inference, inverse conditional
-  scale, and standardized-signal semantics;
-- Beammap/source-fit amplitudes, morphologies, source positions, and mode-
-  specific Pointing/OOF interpretation;
-- FRUIT source modeling, recurrence, learning, stopping, restart, and
-  downstream admission; and
-- VAL policy authorship.
+## Parent And Numerical Availability
 
-## Required Scientific Outputs Of Future Stage B
+MAP observation and MAP coadd roles are distinct. JINC is observation-only.
+An unavailable MAP or JINC numerical parent remains unavailable; this contract
+does not manufacture one from algebra. Frozen MAP/JINC response/covariance
+absence remains honest absence in the transformed product.
 
-If the owner approves `SCI-FLT-DET`, the implementation-blind author must
-produce a shared normative core and scientist-facing/formal views that state:
+## Required Stage B Deliverable
 
-1. exact estimand and parent-product compatibility;
-2. operator, parameter, kernel/template, order, domain, and lifecycle identity;
-3. units, normalization, response/transfer, and source-imprint assumptions;
-4. support, validity, edge/padding/missing/non-finite rules;
-5. covariance propagation and honest absence, separated from NOI inference;
-6. fixed-state NOI transformation-parity requirements;
-7. observation versus coadd product identities and any noncommutation; and
-8. explicit edge cases, unavailable states, failure conditions, requirements,
-   and testable predictions without implementation knowledge.
+After exact-byte owner approval and explicit launch, one fresh
+implementation-blind author may produce the SCI-FLT-FIXED normative core,
+scientist rationale, engineering-conformance view, requirements, predictions,
+traceability, and draft PDFs from only the exact manifest objects. The author
+must return one precise question and stop if the packet is insufficient.
 
-## Dependencies And Availability
+## Current Gate And Nonclaims
 
-- SCI-MAP and SCI-JINC parent claims remain exactly as frozen, including any
-  unavailable numerical, response, or covariance state.
-- SCI-NOI Stage A controls the transformation/uncertainty boundary; its draft
-  Stage B material is not an input.
-- CAL, Beammap, source/mode, and FRUIT claims remain conditional on their own
-  exact authorities.
-- No filtered JINC, Wiener, matched, source-learned, destripe, or FRUIT route is
-  made available by this brief.
-
-## Owner Decisions Required Before Authorship
-
-The bounded decision set is in
-[`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md).
-The first question is the package split. No future author receives this packet
-until all decisions that affect their scope are transcribed into the dedicated
-owner-authorship record and the packet hashes are finalized.
-
-## Nonclaims
-
-This Stage A brief does not define final scientific truth, authorize Stage B,
-select a numerical route, modify an algorithm, establish implementation
-conformity, validate a product, establish calibration or achieved response,
-approve performance, or claim readiness, production use, or freeze.
+The Stage A decisions are complete, but the repaired bytes and hashes have not
+yet been owner-approved. Stage B has not been launched. This brief selects no
+numerical kernel, cutoff, WCS, or implementation and establishes no algorithm
+change, conformity, validation, calibration, response/covariance fidelity,
+performance, readiness, freeze, production, or Unity authority.
