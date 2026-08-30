@@ -3,8 +3,10 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import importlib.util
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -20,6 +22,14 @@ SPEC.loader.exec_module(validator)
 
 SOURCE_REVISION = "0123456789abcdef0123456789abcdef01234567"
 EXECUTABLE_SHA256 = "a" * 64
+
+
+def encode_record(record: dict[str, object]) -> bytes:
+    return json.dumps(record, sort_keys=True, separators=(",", ":")).encode()
+
+
+def record_sha256(record_bytes: bytes) -> str:
+    return hashlib.sha256(record_bytes).hexdigest()
 
 
 def participant(network: int) -> dict[str, object]:
@@ -156,8 +166,10 @@ class AcceptanceValidatorTest(unittest.TestCase):
     def test_accepts_complete_record_and_exact_package(self) -> None:
         record = valid_record()
         validator.validate(record)
+        encoded = encode_record(record)
         validator.validate_exact_package(
-            record,
+            encoded,
+            expected_record_sha256=record_sha256(encoded),
             expected_source_revision=SOURCE_REVISION,
             expected_executable_sha256=EXECUTABLE_SHA256,
         )
@@ -172,11 +184,13 @@ class AcceptanceValidatorTest(unittest.TestCase):
                 record[name] = value
                 if name == "source_revision":
                     record["executable_revision"] = value
+                encoded = encode_record(record)
                 with self.assertRaisesRegex(
                     validator.AcceptanceError, "exact package expectation"
                 ):
                     validator.validate_exact_package(
-                        record,
+                        encoded,
+                        expected_record_sha256=record_sha256(encoded),
                         expected_source_revision=SOURCE_REVISION,
                         expected_executable_sha256=EXECUTABLE_SHA256,
                     )
@@ -188,8 +202,10 @@ class AcceptanceValidatorTest(unittest.TestCase):
             digest = hashlib.sha256(executable.read_bytes()).hexdigest()
             record = valid_record()
             record["executable_sha256"] = digest
+            encoded = encode_record(record)
             validator.validate_exact_package(
-                record,
+                encoded,
+                expected_record_sha256=record_sha256(encoded),
                 expected_source_revision=SOURCE_REVISION,
                 expected_executable_sha256=digest,
                 executable=str(executable),
@@ -199,11 +215,69 @@ class AcceptanceValidatorTest(unittest.TestCase):
                 validator.AcceptanceError, "executable file"
             ):
                 validator.validate_exact_package(
-                    record,
+                    encoded,
+                    expected_record_sha256=record_sha256(encoded),
                     expected_source_revision=SOURCE_REVISION,
                     expected_executable_sha256=digest,
                     executable=str(executable),
                 )
+
+    def test_exact_package_rejects_material_record_substitution(self) -> None:
+        trusted = valid_record()
+        trusted_bytes = encode_record(trusted)
+        trusted_sha256 = record_sha256(trusted_bytes)
+        mutations = (
+            ("raw maximum", "raw_product", "maximum_speed_arcsec_per_sec", 216.0),
+            ("maximizing record", "raw_product", "maximizing_record", 30001),
+            ("derived bytes", "raw_product", "derived_record_bytes", 1),
+            ("APT manifest", "apt_bundle", "manifest_sha256", "e" * 64),
+            (
+                "APT semantic identity",
+                "apt_bundle",
+                "semantic_sha256",
+                "sha256:" + "e" * 64,
+            ),
+            (
+                "APT envelope identity",
+                "apt_bundle",
+                "envelope_sha256",
+                "sha256:" + "f" * 64,
+            ),
+            ("mapped bytes", "network_mapping", "mapped_owned_bytes", 1),
+        )
+        for name, section, field, value in mutations:
+            with self.subTest(name=name):
+                record = copy.deepcopy(trusted)
+                record[section][field] = value
+                validator.validate(record)
+                with self.assertRaisesRegex(
+                    validator.AcceptanceError, "record bytes disagree"
+                ):
+                    validator.validate_exact_package(
+                        encode_record(record),
+                        expected_record_sha256=trusted_sha256,
+                        expected_source_revision=SOURCE_REVISION,
+                        expected_executable_sha256=EXECUTABLE_SHA256,
+                    )
+
+        participant_mutations = (
+            ("participant SHA", "sha256", "f" * 64),
+            ("participant bytes", "byte_count", 999999),
+        )
+        for name, field, value in participant_mutations:
+            with self.subTest(name=name):
+                record = copy.deepcopy(trusted)
+                record["network_mapping"]["participants"][0][field] = value
+                validator.validate(record)
+                with self.assertRaisesRegex(
+                    validator.AcceptanceError, "record bytes disagree"
+                ):
+                    validator.validate_exact_package(
+                        encode_record(record),
+                        expected_record_sha256=trusted_sha256,
+                        expected_source_revision=SOURCE_REVISION,
+                        expected_executable_sha256=EXECUTABLE_SHA256,
+                    )
 
     def test_rejects_telescope_or_scientific_boundary_mutation(self) -> None:
         mutations = (

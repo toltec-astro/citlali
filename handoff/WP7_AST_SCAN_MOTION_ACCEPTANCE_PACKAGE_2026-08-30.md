@@ -4,10 +4,13 @@
 
 The bounded `wp7-ast-scan-motion-v1` implementation passes its representative
 observation-152390 execution gate at exact implementation revision
-`f2bf3f1e00226d6e7f63e99d4da61d37ea4ddf3d`. Fresh independent exact-SHA
-read-only review remains pending. This package therefore closes the
-representative-execution prerequisite but does not yet authorize AST as an RTC
-planning input or authorize any nonidentity RTC method.
+`f2bf3f1e00226d6e7f63e99d4da61d37ea4ddf3d`. The first independent exact-SHA
+review of package snapshot `b0e5dde2ac532a7a36e141bf22c7560e0fbbc8a1`
+returned `HOLD` solely because the validator did not enforce the documented
+record digest. This bounded repair closes that finding; fresh exact-SHA
+re-review remains pending. The package therefore closes the representative-
+execution prerequisite but does not yet authorize AST as an RTC planning input
+or authorize any nonidentity RTC method.
 
 The retained
 [v1 evidence record](WP7_AST_SCAN_MOTION_ACCEPTANCE_152390_V1_2026-08-30.json)
@@ -93,18 +96,21 @@ Validate the retained record and exact executable bytes with:
 ```sh
 $HOME/tolteca/bin/python -B tools/wp7/verify_ast_scan_motion_acceptance.py \
   handoff/WP7_AST_SCAN_MOTION_ACCEPTANCE_152390_V1_2026-08-30.json \
+  --expected-record-sha256 9b1652fc158de6aa17732213d25333316b95045e96d4d2fa97737e6edf9015fe \
   --expected-source-revision f2bf3f1e00226d6e7f63e99d4da61d37ea4ddf3d \
   --expected-executable-sha256 376879038ef10f950f997eb82224ded119767bbd7efc94b0c40bf071e6fa279c \
   --executable build/bin/citlali_wp7_ast_scan_motion_acceptance
 ```
 
-The validator hard-pins the observation scope, exact telescope identity and
-cardinality, owner defect records, derivative cardinality, maximum envelope,
-11-network APT relation, participant sums, distinct network times, compact
-ownership facts, and every zero-mismatch requirement. Its focused mutation
-tests reject source/executable substitution, mutated scientific boundaries,
-chunk or mapping mismatches, network-time collapse, inconsistent participant
-totals, a common-grid claim, and persistent AST publication.
+Before parsing JSON, the validator hashes the raw record bytes and requires the
+exact digest printed above. It then hard-pins the observation scope, exact
+telescope identity and cardinality, owner defect records, derivative
+cardinality, maximum envelope, 11-network APT relation, participant sums,
+distinct network times, compact ownership facts, and every zero-mismatch
+requirement. Its focused mutation tests reject record/source/executable
+substitution, mutated scientific boundaries, chunk or mapping mismatches,
+network-time collapse, inconsistent participant totals, a common-grid claim,
+and persistent AST publication.
 
 The implementation and evidence snapshot pass:
 
@@ -113,11 +119,29 @@ The implementation and evidence snapshot pass:
 - all 882 runnable repository CTests, with the one established disabled test
   unchanged out of 883 registered tests;
 - all 207 baseline-tool unit tests;
-- all seven acceptance-validator mutation tests;
+- all eight acceptance-validator mutation tests;
 - all 129 required config unit tests and every downstream preflight audit;
 - public-header isolation compilation through the two dedicated AST header
   translation units; and
 - the local `citlali_cli` build.
+
+## First review disposition and bounded repair
+
+The first independent review of exact package snapshot
+`b0e5dde2ac532a7a36e141bf22c7560e0fbbc8a1` returned `HOLD` with one `MAJOR`
+finding and no `BLOCKER` or `MINOR` findings. The scientific implementation,
+representative results, network timing, compactness, scope, recorded hashes,
+and repository gates otherwise conformed. The finding was that the package
+documented the retained record SHA-256 but `validate_exact_package()` accepted
+an already-parsed object and therefore did not enforce that digest. Material
+substitutions to otherwise structurally valid result, APT, participant, and
+memory fields could consequently pass exact-package validation.
+
+The bounded repair requires the expected record SHA-256, hashes the exact raw
+JSON bytes before parsing, and adds mutation coverage for every demonstrated
+substitution class. It does not alter or regenerate the retained record, runner
+executable, representative result, scientific contract, or implementation.
+Fresh exact-SHA re-review of this repaired package remains required.
 
 ## Independent review request
 

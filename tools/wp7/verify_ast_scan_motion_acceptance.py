@@ -341,12 +341,22 @@ def validate(record: dict[str, Any]) -> None:
 
 
 def validate_exact_package(
-    record: dict[str, Any],
+    record_bytes: bytes,
     *,
+    expected_record_sha256: str,
     expected_source_revision: str,
     expected_executable_sha256: str,
     executable: str | None = None,
-) -> None:
+) -> dict[str, Any]:
+    if not isinstance(record_bytes, bytes):
+        raise AcceptanceError("record bytes must be supplied as bytes")
+    if not HEX64.fullmatch(expected_record_sha256):
+        raise AcceptanceError("expected record hash must be one lowercase SHA-256")
+    record_digest = hashlib.sha256(record_bytes).hexdigest()
+    if record_digest != expected_record_sha256:
+        raise AcceptanceError("record bytes disagree with exact package expectation")
+    loaded = json.loads(record_bytes)
+    record = require_object(loaded, "acceptance record")
     validate(record)
     if not HEX40.fullmatch(expected_source_revision):
         raise AcceptanceError("expected source revision must be one full lowercase SHA")
@@ -363,20 +373,21 @@ def validate_exact_package(
         digest = hashlib.sha256(path.read_bytes()).hexdigest()
         if digest != expected_executable_sha256:
             raise AcceptanceError("executable file disagrees with exact package expectation")
+    return record
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("record", type=Path)
+    parser.add_argument("--expected-record-sha256", required=True)
     parser.add_argument("--expected-source-revision", required=True)
     parser.add_argument("--expected-executable-sha256", required=True)
     parser.add_argument("--executable")
     arguments = parser.parse_args()
     try:
-        loaded = json.loads(arguments.record.read_text())
-        record = require_object(loaded, "acceptance record")
         validate_exact_package(
-            record,
+            arguments.record.read_bytes(),
+            expected_record_sha256=arguments.expected_record_sha256,
             expected_source_revision=arguments.expected_source_revision,
             expected_executable_sha256=arguments.expected_executable_sha256,
             executable=arguments.executable,

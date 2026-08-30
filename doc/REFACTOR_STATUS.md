@@ -42,9 +42,16 @@ mismatch counts are zero across 1,666,908 occurrences on 11 independent
 network axes. No common analysis grid or persistent AST product is introduced.
 
 This closes the representative-execution gate, not fresh conformance review.
-The immediate next action is independent exact-SHA read-only review of the
-implementation and evidence/status snapshot. Until that passes, the measured
-maximum is not an authorized RTC planning input. Filter-bank/PSD and
+The first independent review of exact package snapshot
+`b0e5dde2ac532a7a36e141bf22c7560e0fbbc8a1` returned `HOLD` with one `MAJOR`
+finding and no `BLOCKER` or `MINOR` findings: the validator did not enforce the
+documented acceptance-record digest before parsing. The bounded repair now
+requires and verifies the exact raw-record SHA-256 and covers materially
+substituted but structurally valid result, APT, participant, and memory fields.
+It leaves the retained JSON, runner, representative result, scientific
+contract, and implementation unchanged. The immediate next action is fresh
+exact-SHA read-only re-review of the repaired package. Until that passes, the
+measured maximum is not an authorized RTC planning input. Filter-bank/PSD and
 native-rate versus filtered naive/JINC and OOF/fruitloops certification remain
 separate prerequisites. No nonidentity RTC numerical method or terminal
 publication is activated.
