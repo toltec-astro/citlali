@@ -1,7 +1,7 @@
 # ADR 0016: Stage-boundary native runtime state
 
-Status: accepted owner-directed correctness and resource repair; local
-implementation complete, Unity science acceptance pending
+Status: accepted owner-directed correctness and resource repair; Unity science
+acceptance complete 2026-08-30
 
 ## Context
 
@@ -62,6 +62,31 @@ fruit-loop numerical algorithms. It changes ownership and retention only.
 6. An exact repaired executable must complete the existing NGC4449 successor
    science gate on Unity with Slurm MaxRSS recorded before this resource repair
    receives operational acceptance.
+
+## Validation
+
+Exact repair commit `187df04b21e942701cf41e6d9c50883922fd65aa`
+completed Unity Spack acceptance in job `63760739`: all 832 runnable CTests
+passed, the one established disabled lifecycle test was not run, and the
+installed executable SHA-256 is
+`8ba17d8ca03668f7a56f76fc15243c984469028955cda698d2a0a168fc4424fb`.
+The executable reported the exact repair revision, the accepted Unity GCC 13
+Spack DAG, the expected lock digest, and `binding=dag-match`.
+
+Unity NGC4449 job `63763140` used that exact executable and completed four
+fruit-loop iterations for observations 152390 and 152392 with zero unexpected
+error-level records. Slurm recorded 55,654,124 KiB MaxRSS (53.08 GiB), versus
+100.93 GiB for the superseded design: a 47.4% reduction under the same
+16-worker science workload. Both observations completed 124 scans; all 248
+bounded scan records were populated and finite, and the recorded policy
+explicitly disabled detector-sample expansion.
+
+The final `redu03` science audit exited zero. Every required provenance family
+was valid, and all 26 comparable products were stable. The final index SHA-256
+is `7288bf4dc983e0c7018af9b9a91c5ecf37fcca3cd37ffcc46325c91474026ab3`.
+This validates the ownership/resource decision. It does not accept a new
+scientific baseline or attribute numerical differences to the memory repair;
+the run also used the independently selected full-Wiener policy.
 
 ## Compatibility and migration
 

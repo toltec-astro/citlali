@@ -29,10 +29,7 @@ change RTC, PTC, mapmaking, JINC, Wiener, weight, or fruit-loop arithmetic. No
 accepted-run or intended-science-change ledger entry is authorized by the
 structural repair. Local focused equivalence, append-only-mask, atomic-failure,
 bounded-provenance, deterministic-thread-count, and header-isolation gates are
-required before commit. Operational acceptance remains pending one exact-SHA
-Unity NGC4449 replacement run using the already selected full-Wiener policy;
-that run must record Slurm MaxRSS, exit state, zero unexpected error-level
-records, complete products, and the existing reduction audit.
+required before commit.
 
 Local repair validation completed with all 94 focused sci-align tests and all
 832 runnable CTests passing; only the established disabled
@@ -43,6 +40,32 @@ validation-ledger, intended-science-change-ledger, validation-profile,
 Phase 5 readiness, generated-schema, header-isolation/link, and session-exit
 checks all validated without unexpected error-level output. Phase 5 remains
 in its existing `preparing` state for reasons unrelated to this repair.
+
+Unity operational acceptance is complete for exact repair commit
+`187df04b21e942701cf41e6d9c50883922fd65aa`. Spack job `63760739` exited zero,
+all 832 runnable CTests passed, and only the established disabled lifecycle
+test was not run. The installed executable reports
+`v4.0.0-3754-g187df04b`, DAG `nuefnc6fkaul2m5x7l2x6qbblvsxezoe`, lock
+`84d22da445fc89dde76e3cb57efb435aaa075633c8a21d8e1b46c3cf3b830625`,
+and `binding=dag-match`; its SHA-256 is
+`8ba17d8ca03668f7a56f76fc15243c984469028955cda698d2a0a168fc4424fb`.
+
+The owner-run replacement NGC4449 job `63763140` then completed all four
+fruit-loop iterations for observations 152390 and 152392 in 02:47:37 with
+zero unexpected error-level records. MaxRSS was 55,654,124 KiB (53.08 GiB),
+47.4% below the superseded design's 100.93 GiB result. Each observation
+completed 124 scans; all 248 bounded scan records are populated and finite,
+and both products explicitly record `detector_sample_expansion: false`. The
+final `redu03` audit exited zero with every required science provenance family
+valid, 51 files, 26 comparable products, and all 26 comparable products stable.
+The final index SHA-256 is
+`7288bf4dc983e0c7018af9b9a91c5ecf37fcca3cd37ffcc46325c91474026ab3`;
+the audit JSON and Markdown SHA-256 values are respectively
+`3c904153bbf2732a7e8c8e2c650d2e7a9bcc7a3bba807e11e09eb3c24f5a9d93`
+and `79872c3c22c29dca070402b45646b1d3c61a9d1f5f727401f0ec613c2bb1f4b3`.
+The separately selected full-Wiener policy was used to let the run finish; this
+evidence accepts the resource repair, not a new numerical or scientific
+baseline.
 
 ## 2026-08-28 Unity Build Acceptance And V2 Science-Kit Repair
 
