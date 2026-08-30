@@ -346,6 +346,28 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
 98. Advanced the walkthrough to ODQ-111 and published r0.9 of the GEN graph,
     r0.11 of the product/lifecycle table, and r0.17 packet/decision records.
 
+## ODQ-111 VAL Profile Identity And Action Update
+
+99. Approved the four exact NOI-owned profile identities
+    `SCI-NOI:generation_input_admission@1`,
+    `SCI-NOI:uncertainty_member_admission@1`,
+    `SCI-NOI:uncertainty_ensemble_admission@1`, and
+    `SCI-NOI:standardization_admission@1`.
+100. Bound each profile to one exact candidate/admission/construction action
+     and prohibited implicit realization of the next GEN, UNC, or STD
+     operation.
+101. Preserved producer ownership of scientific facts, NOI ownership of each
+     named-use policy/action, and SCI-VAL's binding/evaluation-only role.
+102. Preserved distinct request, applicability, eligibility, and realization
+     fields; only their exact positive conjunction projects the named action,
+     with no generic pass or cross-use veto/rescue rule.
+103. Kept the approved bytes unregistered and unevaluable pending exact
+     versioned SCI-VAL Registry/source successors; created no numerical method,
+     implementation, validation, calibration, or readiness claim.
+104. Closed the bounded owner-decision walkthrough and published r0.18 packet/
+     decision records. Exact Registry/source bindings and owner approval of the
+     final packet bytes/hashes remain prerequisites to Stage B dispatch.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance
@@ -357,5 +379,5 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
 - no estimator, coefficient, count, default, physical-noise calibration,
   significance, performance, readiness, or production claim was established;
   and
-- Stage B remains unlaunched pending exact owner approval and required
-  SCI-VAL/source bindings.
+- Stage B remains unlaunched pending owner approval of the exact final packet
+  bytes/hashes and required SCI-VAL Registry/source bindings.

@@ -187,10 +187,11 @@ numerical Wiener route remains gated. ODQ-110C now preserves FRUIT ownership,
 limits fixed residual/terminal-product uncertainty to frozen-state conditional
 meaning, separates NOI-informed successor generations from per-member ODQ-104
 replay, and prohibits fixed/replayed mixing. All numerical FRUIT routes remain
-gated. ODQ-111, NOI-owned VAL profile identities and actions, is next.
-Conditional Stage B remains blocked on exact
-bytes/hashes, granular owner decisions or explicit unavailability, and required
-source/profile bindings. The frozen MAP/pre-MAP
+gated. ODQ-111 now approves the four NOI-owned VAL profile identities and exact
+consumer actions while leaving their Registry/source bindings and evaluations
+unavailable. All bounded Stage A owner decisions are complete. Conditional
+Stage B remains blocked on owner approval of exact final bytes/hashes and
+required source/profile bindings. The frozen MAP/pre-MAP
 and JINC numerical-parent unavailability states remain unchanged. No
 implementation, conformity, validation, achieved-performance, readiness,
 production, Unity, filtering, source/mode, or FRUIT action follows.

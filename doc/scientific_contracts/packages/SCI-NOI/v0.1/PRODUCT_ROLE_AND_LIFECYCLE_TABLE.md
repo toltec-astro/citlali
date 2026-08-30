@@ -2,8 +2,8 @@
 
 Artifact identity: `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.11`
 
-Status: proposed sanitized Stage A scientific input; exact bytes await owner
-approval
+Status: proposed sanitized Stage A scientific input with ODQ-111 profile/action
+roles incorporated; exact final packet bytes await owner approval
 
 | Atomic role | Required identity and lifecycle | Explicit non-meaning |
 | --- | --- | --- |

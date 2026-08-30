@@ -1,6 +1,7 @@
 # SCI-NOI — Noise Realizations, Empirical Uncertainty, And Standardization Scope Brief
 
-Status: repaired Stage A owner-review candidate; exact bytes not owner-approved
+Status: repaired Stage A candidate with all owner decisions complete; exact
+final packet bytes/hashes not yet owner-approved
 
 Scientific owner: Grant Wilson
 
@@ -9,7 +10,7 @@ Version/date: `v0.1`, `2026-08-29`
 Starting source identifier:
 `codex/scientific-contract-library@5f206cf46bb2868aadb00f37dbbbc3944ac4ec8c`
 
-Approved source identifier: unavailable until owner approval
+Approved source identifier: unavailable until exact final-packet approval
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -381,7 +382,8 @@ success, and no product automatically realizes the next operation.
 
 ## 9. NOI-Owned VAL Profiles
 
-[`SCI-NOI_VAL_PROFILE_DRAFTS.md`](SCI-NOI_VAL_PROFILE_DRAFTS.md) proposes:
+[`SCI-NOI_VAL_PROFILE_DRAFTS.md`](SCI-NOI_VAL_PROFILE_DRAFTS.md) records the
+four ODQ-111-approved NOI policy/action byte sets:
 
 - `SCI-NOI:generation_input_admission@1`;
 - `SCI-NOI:uncertainty_member_admission@1`;
@@ -402,8 +404,10 @@ persistence/reconstruction, and lifecycle facts without redefining them. GEN
 owns completion truth; NOI's named-use policy owns admission to the exact UNC
 use; VAL binds and evaluates that policy but authors neither fact nor policy.
 
-The drafts are not registered or evaluable. Registry binding is a Stage B
-dispatch prerequisite after owner approval, not scientific approval by VAL.
+The file remains a draft only with respect to Registry/source integration. Its
+policy identities and exact consumer actions are owner-approved, but they are
+not registered or evaluable. Registry/source binding is a Stage B dispatch
+prerequisite, not scientific approval by VAL.
 
 ## 10. FLT, Wiener, And FRUIT Boundary
 
@@ -517,8 +521,11 @@ new immutable generation when NOI products inform owner learning/update, and
 keeps per-member learning separate under ODQ-104. ODQ-110C preserves FRUIT
 ownership, separates fixed-state conditional uncertainty from NOI-informed
 successor generations and per-member replay, and prohibits fixed/replayed
-mixing. The next walkthrough question is `SCI-NOI-ODQ-111`. Every later
-decision and the artifact's final hash still require explicit owner review.
+mixing. ODQ-111 approves the four NOI-owned VAL profile identities and their
+exact consumer actions while leaving Registry/source binding and evaluability
+unavailable. All bounded Stage A owner decisions are now complete. The exact
+final packet bytes/hashes and required Registry/source successors still require
+explicit review before Stage B dispatch.
 
 ## 13. Non-Goals And Claim Boundary
 

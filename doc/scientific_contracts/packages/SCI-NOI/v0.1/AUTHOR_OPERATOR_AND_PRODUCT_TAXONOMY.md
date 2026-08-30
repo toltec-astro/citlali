@@ -1,7 +1,8 @@
 # SCI-NOI v0.1 — Collision-Free Operator And Product Taxonomy
 
 Status: proposed sanitized Stage B author input; ODQ-101, ODQ-102A/B/C,
-ODQ-103/104/105A/105B/106/107/108/109/110A/110B/110C incorporated; exact bytes await owner approval
+ODQ-103/104/105A/105B/106/107/108/109/110A/110B/110C/111 incorporated;
+exact final packet bytes await owner approval
 
 The semantic prefixes are:
 

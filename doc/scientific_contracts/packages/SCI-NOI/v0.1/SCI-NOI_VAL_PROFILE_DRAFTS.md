@@ -1,14 +1,16 @@
 # SCI-NOI v0.1 — NOI-Owned VAL Profile Drafts
 
-Status: proposed sanitized Stage A profiles; exact bytes await scientific-owner
-approval and later versioned SCI-VAL Registry binding
+Status: scientific-owner-approved sanitized Stage A policy/action bytes; exact
+versioned SCI-VAL Registry/source binding remains unavailable
 
 Scientific-policy owner: Grant Wilson for SCI-NOI
 
-SCI-NOI owns every policy below. A future SCI-VAL Registry successor may bind
-approved immutable bytes, and VAL Core may evaluate them. SCI-VAL does not
-author, broaden, aggregate, or execute these policies. Until owner approval and
-exact Registry binding, applicability and decisions are unavailable.
+SCI-NOI owns every policy below. ODQ-111 approves the exact identities and
+consumer actions recorded here. A future SCI-VAL Registry successor may bind
+these immutable bytes, and VAL Core may then evaluate them. SCI-VAL does not
+author, broaden, aggregate, combine, replace, or execute these policies. Until
+exact Registry/source binding exists, applicability and decisions remain
+unavailable.
 
 GEN owns realization-member completion, terminal state, duplicate/equivalence,
 support, source-imprint, QC, persistence/reconstruction, lifecycle, cause, and
@@ -29,7 +31,7 @@ replaced by one generic pass bit.
 
 ## `SCI-NOI:generation_input_admission@1`
 
-| Field | Draft binding |
+| Field | Owner-approved binding |
 | --- | --- |
 | Object/domain | One exact input occurrence or complete parent bundle named by one requested GEN method, including earliest immutable parent and insertion point |
 | Exact source packages | For the ODQ-102A/B/C ordinary route, exact proposed `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.6` and its bound frozen `SCI-PTC_TO_SCI-MAP v0.1/r0.1` source; another separately approved method uses only its exact boundary, never an adjacent package by analogy |
@@ -45,7 +47,7 @@ replaced by one generic pass bit.
 
 ## `SCI-NOI:uncertainty_member_admission@1`
 
-| Field | Draft binding |
+| Field | Owner-approved binding |
 | --- | --- |
 | Object/domain | One atomic GEN realization member `b`, with immutable GEN-owned completion/QC facts, presented to one exact UNC method/use |
 | Exact source packages | Exact GEN route-specific method/generation, parent boundary, generation-input profile evaluation, operator graph, assignment design/version, GEN product identity, and proposed UNC method identity |
@@ -62,7 +64,7 @@ replaced by one generic pass bit.
 
 ## `SCI-NOI:uncertainty_ensemble_admission@1`
 
-| Field | Draft binding |
+| Field | Owner-approved binding |
 | --- | --- |
 | Object/domain | One exact GEN ensemble presented to one exact UNC method and target/domain |
 | Exact source packages | Exact GEN method/generation, approved parent boundary, `SCI-NOI:uncertainty_member_admission@1` bytes/evaluations, and proposed UNC method identity |
@@ -78,7 +80,7 @@ replaced by one generic pass bit.
 
 ## `SCI-NOI:standardization_admission@1`
 
-| Field | Draft binding |
+| Field | Owner-approved binding |
 | --- | --- |
 | Object/domain | For the initial method, one exact immutable normalized real-observation MAP signal and its exact compatible ODQ-105B conditional second moment presented to `NOI-STD/MAP-CONDITIONAL-SECOND-MOMENT-SCALE@1` |
 | Exact source packages | Exact approved MAP parent boundary, exact `V_hat_cond` UNC product/method generation, canonical square-root transformation, and exact STD method identity; JINC requires a separate future method/profile revision |

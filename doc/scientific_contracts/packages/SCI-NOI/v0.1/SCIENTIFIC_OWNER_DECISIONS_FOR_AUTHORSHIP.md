@@ -1,10 +1,12 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.17`
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.18`
 
-Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, ODQ-105A, ODQ-105B, ODQ-106, ODQ-107, ODQ-108, ODQ-109, ODQ-110A, ODQ-110B, and ODQ-110C owner-approved; exact
+Status: all Stage A owner decisions ODQ-101 through ODQ-111 owner-approved,
+with ODQ-102D resolved as scientific-author delegation; exact
 finite-design mechanics delegated to the scientific-contract author under
-ODQ-102D; later decisions remain open; not yet an allowed Stage B authority
+ODQ-102D; no bounded Stage A owner decision remains open; not yet an allowed
+Stage B authority
 
 Scientific owner: Grant Wilson
 
@@ -507,20 +509,29 @@ not approve another decision or make an unresolved numerical route available.
 
 - **Exact question:** Are the four NOI-owned profile identities and one exact
   consumer action each approved for later Registry binding?
-- **Recommended disposition:** approve `generation_input_admission`,
-  `uncertainty_member_admission`, `uncertainty_ensemble_admission`, and
-  `standardization_admission` at `@1`. GEN owns completion truth; NOI policy
-  owns use admission; VAL binds/evaluates but authors neither fact nor policy.
-- **Alternatives:** revise identity/action, split a profile, or leave
-  unavailable.
+- **Approved disposition:** approve
+  `SCI-NOI:generation_input_admission@1`,
+  `SCI-NOI:uncertainty_member_admission@1`,
+  `SCI-NOI:uncertainty_ensemble_admission@1`, and
+  `SCI-NOI:standardization_admission@1` with the exact consumer actions in the
+  owner-approved profile artifact. Producer facts remain producer-owned; NOI
+  owns each use-specific policy/action; SCI-VAL may bind and evaluate but
+  authors neither fact nor policy.
+- **Alternatives rejected:** generic pass state; merged profile/action;
+  implicit propagation to the next operation; VAL-authored policy or producer
+  facts; or cross-use veto/rescue.
 - **Scientific consequences:** producer facts, policy, and evaluation remain
-  separate and use-specific.
-- **Conservative state while open:** drafts unregistered and unevaluable; every
-  dependent use unavailable.
+  separate and use-specific; request, applicability, eligibility, and
+  realization remain named fields and only their exact positive conjunction
+  projects to one action.
+- **Conservative availability state:** profile bytes are owner-approved but
+  remain unregistered and unevaluable until exact SCI-VAL Registry/source-
+  binding successors exist; every dependent numerical use remains unavailable.
 - **Affected artifacts:** profile drafts, role table, GEN/UNC/STD gates, future
   SCI-VAL Registry/source bindings.
-- **Exact bytes changed by approval:** profile identity and exact consumer
-  action bytes only; Registry binding remains separate.
+- **Exact bytes changed by approval:** four profile identities, exact consumer
+  actions, ownership/evaluation boundary, no-implicit-propagation rule, and
+  approved-but-unregistered state; Registry binding remains separate.
 
 ## Preserved Architecture And Stage B Gate
 

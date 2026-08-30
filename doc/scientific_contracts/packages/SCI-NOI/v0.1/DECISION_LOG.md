@@ -1,6 +1,7 @@
 # SCI-NOI v0.1 — Decision Log
 
-Status: Stage A launch decisions applied; packet awaiting owner approval
+Status: all bounded Stage A owner decisions applied; exact final packet and
+Registry/source closure awaiting owner approval
 
 Scientific owner: Grant Wilson
 
@@ -79,6 +80,7 @@ Launch date: `2026-08-29`
 | `SCI-NOI-ODQ-110A` | Keep deterministic-transformation scientific authority with the appropriate upstream/downstream process. NOI neither chooses nor defines the transformation; it binds and applies exactly the owner-defined transformation to every admitted compatible randomization when estimating uncertainty for the exact transformed scientific product. Prohibit silent omission, substitution, relocation, or cross-product reuse; separately identify any member-specific relearning under ODQ-104. |
 | `SCI-NOI-ODQ-110B` | Treat an owner-defined Wiener transformation frozen before realization application under ODQ-110A even when initially data-derived. If an NOI product is used to learn/select/update the Wiener transformation, create a new immutable owner-defined transformation, scientific-product, GEN, and UNC generation; prior UNC is an input, not independent validation. Treat per-realization Wiener learning as a separate ODQ-104 method, prohibit fixed/relearned mixing without an authorized estimand, and retain numerical unavailability pending exact owner contracts and NOI boundaries. |
 | `SCI-NOI-ODQ-110C` | Preserve FRUIT ownership of source modeling, subtraction/add-back, recurrence, learning, stopping/restart/selection, response, and interpretation. Permit only conditional fixed-state uncertainty for an exact immutable FRUIT residual/terminal product under ODQ-110A parity; classify NOI-informed continuation as a new immutable FRUIT/science/GEN/UNC generation and per-realization replay as a separate ODQ-104 method. Prohibit fixed/replayed mixing, disclose omitted learning/residual variation, and retain numerical unavailability pending exact FRUIT and NOI authority. |
+| `SCI-NOI-ODQ-111` | Approve `SCI-NOI:generation_input_admission@1`, `SCI-NOI:uncertainty_member_admission@1`, `SCI-NOI:uncertainty_ensemble_admission@1`, and `SCI-NOI:standardization_admission@1` with their exact one-profile/one-action semantics. Keep producer facts producer-owned, NOI policy/action NOI-owned, and SCI-VAL limited to versioned binding/evaluation; prohibit generic pass, implicit next-operation realization, and cross-use veto/rescue. Profiles remain unregistered and unevaluable pending exact Registry/source binding. |
 
 ## Pending Owner Gate
 

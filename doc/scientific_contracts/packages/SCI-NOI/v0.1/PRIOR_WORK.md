@@ -245,5 +245,10 @@ An exact fixed residual or terminal transform supports only uncertainty
 conditional on frozen FRUIT state. NOI-informed continuation creates a new
 immutable FRUIT/science/GEN/UNC generation; partial or complete per-member
 replay is a distinct ODQ-104 method. Fixed and replayed members cannot mix, and
-all numerical FRUIT routes remain gated. The next owner question is
-`SCI-NOI-ODQ-111`, VAL profile identities and actions.
+all numerical FRUIT routes remain gated. ODQ-111 then approved the four exact
+NOI-owned VAL profile identities and consumer actions while preserving
+producer-fact ownership, NOI policy/action ownership, and VAL's binding/
+evaluation-only role. The profile bytes remain unregistered and unevaluable
+until exact versioned Registry/source successors exist. No bounded Stage A
+owner question remains open; exact final packet/hash and Registry/source
+closure are the next gates.

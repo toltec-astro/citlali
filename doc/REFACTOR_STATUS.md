@@ -604,10 +604,15 @@ FRUIT replay is a distinct ODQ-104 method. Fixed and replayed members cannot
 mix without an authorized mixture estimand. All numerical FRUIT routes remain
 unavailable pending exact FRUIT-owner and NOI boundaries.
 
-The next walkthrough question is `SCI-NOI-ODQ-111`, NOI-owned VAL profile
-identities and exact consumer actions.
-Later granular decisions, exact packet bytes/hashes, and
-required source/profile Registry bindings remain under owner review.
+Grant Wilson approved `SCI-NOI-ODQ-111` on `2026-08-30`. The four exact NOI-
+owned GEN-input, UNC-member, UNC-ensemble, and STD admission profile identities
+and consumer actions are approved. Producer facts remain producer-owned, NOI
+owns each named-use policy/action, and SCI-VAL may only bind and evaluate the
+approved immutable bytes. No generic pass, implicit next-operation realization,
+or cross-use veto/rescue follows. All bounded SCI-NOI Stage A owner decisions
+are complete. The approved profile bytes remain unregistered and unevaluable;
+exact packet bytes/hashes and required versioned source/profile Registry
+bindings remain under owner review before Stage B dispatch.
 MAP/pre-MAP numerical parents remain
 unavailable pending the exact PTC MAP-facing coefficient and owner-admitted
 numerical `coverage_cut`; JINC numerical parents remain unavailable under its
