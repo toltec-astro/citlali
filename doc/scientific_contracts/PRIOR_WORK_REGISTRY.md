@@ -191,6 +191,19 @@ and cross-package handoffs are valuable recovery inputs.
 
 ### Noise And Filtering
 
+- Inference-bearing FLT holding-study recovery:
+  [`studies/SCI-FLT-INF_STAGE_A_2026-08-30/PRIOR_WORK.md`](studies/SCI-FLT-INF_STAGE_A_2026-08-30/PRIOR_WORK.md)
+  at `2026-08-30`. It starts from exact SCI-FLT Stage A commit
+  `cd55752e716051383da54356833ef0fac20b083a` and binds frozen SCI-NOI
+  authority at `f28d7a2617160febca85c1c40e6f7ba7494e266e`. It separates
+  normalized template-amplitude, genuine posterior/Wiener, source/catalog
+  amplitude, learned-once and per-member-relearned state, data-thresholded
+  mode selection, selector/fallback, adaptive edge, and NOI-based coefficient
+  families. The result is a non-authoritative holding study, not a combined
+  package or Stage B packet; the first owner question is the existing full
+  path's intended estimand. Implementation/config/schema/history remain in a
+  quarantined dossier, and the protected SCI-FLT-FIXED author bytes are
+  unchanged.
 - Package-specific FLT recovery:
   [`packages/SCI-FLT/v0.1/PRIOR_WORK.md`](packages/SCI-FLT/v0.1/PRIOR_WORK.md)
   at `2026-08-30`. It separately classifies fixed convolution/low-pass,

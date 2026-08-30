@@ -1,0 +1,120 @@
+# SCI-FLT-INF Stage A Scope Brief
+
+Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.1`
+
+Status: sanitized owner-review candidate for a holding study; not approved
+scope and not an author input
+
+## Program adherence and prior-work recovery
+
+This brief is governed by the
+[Scientific Contract Library Program](../../README.md). The recovery record
+in [`PRIOR_WORK.md`](PRIOR_WORK.md) was completed before this brief was
+drafted. The program roadmap requires deterministic filtering to be separated
+from Wiener or other inference-bearing methods whenever estimand, prior,
+transfer, or uncertainty meaning differs.
+
+## Assignment
+
+Determine the smallest scientifically coherent future contract packages for
+inference-bearing map-domain operations currently or historically grouped
+under filtering. For each candidate family, identify without selecting:
+
+1. the estimand and scientific claim;
+2. the exact parent product and observation/coadd grouping;
+3. fixed parameters, priors, learned state, and their provenance;
+4. the operator or estimator and its order relative to other transformations;
+5. response, transfer, normalization, units, beam meaning, and null space;
+6. uncertainty/covariance meaning and whether any denominator is merely a
+   normalization coefficient;
+7. support, edge, missing/nonfinite, validity, and failure rules;
+8. product identities and atomic lifecycle;
+9. fixed-state versus successor-generation versus per-member-relearned NOI
+   parity; and
+10. package ownership and cross-package dependencies.
+
+## Candidate families in scope
+
+- the active noise-PSD- and template-dependent full map path;
+- a genuine Wiener/posterior reconstruction if that is scientifically
+  intended;
+- matched or generalized least-squares template-amplitude estimation;
+- map-, noise-, source-, or externally learned state frozen before use;
+- per-member state relearning as a distinct NOI-GEN method;
+- data-derived Fourier-mode selection/destriping;
+- automatic method selection, fallback, or substitution;
+- data-derived edge, support, taper, and background-fill conditioning;
+- NOI-derived coefficient calibration and standardized products; and
+- source-conditioned or source-learned map-domain transformations.
+
+## Required distinctions
+
+The study shall not merge two cases merely because they reuse FFTs, a template,
+a noise spectrum, or the same numerical class. Separate identities are
+required whenever any of the following differs:
+
+- reconstructed field versus local/scalar template amplitude;
+- prior-bearing posterior versus frequentist/GLS estimator;
+- declared fixed state versus state learned from the parent or from NOI;
+- one frozen state applied to all NOI members versus state relearned per member;
+- observation parent versus coadd parent;
+- fixed operator versus input-dependent mode/support selection;
+- response-preserving transformation versus response-corrected estimator;
+- direct map product versus derived coefficient, uncertainty, or standardized
+  product; or
+- fail-closed unavailability versus a named alternative-method selection.
+
+## Included authorities
+
+- exact program and manager documents at the study base;
+- frozen MAP and JINC scientific authorities only through their exact
+  established parent/boundary facts;
+- frozen SCI-NOI authority at
+  `f28d7a2617160febca85c1c40e6f7ba7494e266e`, with exact object bindings;
+- immutable SCI-FLT-FIXED Stage A objects only as protected neighboring scope
+  and byte-preservation references;
+- recovered implementation-independent mathematics after explicit
+  sanitization and disposition; and
+- implementation/config/schema/history evidence only in the quarantined
+  manager dossier.
+
+## Exclusions
+
+- all active SCI-FLT-FIXED Stage B task/worktree/branch/draft/output material;
+- any edit to the 17 SCI-FLT-FIXED author objects or their manifest;
+- implementation or algorithm changes;
+- fresh numerical derivation presented as authority before recovery and owner
+  scope approval;
+- Unity access or validation;
+- FRUIT recurrence, learning, stopping, restart, or source-model science;
+- RTC temporal filtering/destriping;
+- source catalog/detection significance, completeness, purity, or morphology;
+- absolute CAL authority, passband/color correction, or cross-band covariance;
+- inferred MAP/JINC precision or covariance;
+- production defaults, observed behavior, or historical labels promoted into
+  science; and
+- a combined `SCI-FLT-INF` contract solely for administrative convenience.
+
+## Intended output of this Stage A study
+
+The intended output is a recovery packet and an ordered owner-decision
+walkthrough. It may recommend multiple successor package identities and may
+declare some families too immature for a Stage B author. It shall not contain
+an exclusive author manifest, Stage B assignment, normative requirements,
+falsifiable acceptance predictions, implementation mapping, or freeze record.
+
+## Stage A completion test
+
+This study is ready for owner walkthrough when:
+
+- every recovered family has a recorded disposition;
+- the existing full path's apparent algebra and actual scientific ambiguity
+  are stated separately;
+- exact frozen-NOI parity constraints are content-bound;
+- inferred, proposed, unavailable, and authoritative statements are visibly
+  distinct;
+- contradictions and absent authorities are not repaired by invention;
+- a package split and ordered decision ledger are present;
+- proposed sanitized author material contains no implementation facts; and
+- the fixed-filter author packet and manifest verify byte-identical to
+  `cd55752e716051383da54356833ef0fac20b083a`.

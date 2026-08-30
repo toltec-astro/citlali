@@ -658,6 +658,27 @@ conformity, validation, calibration, achieved response/performance, readiness,
 production, freeze, Unity, source/mode, NOI, or FRUIT action is claimed or
 authorized.
 
+Also on `2026-08-30`, a separate recovery-first
+[`SCI-FLT-INF holding study`](scientific_contracts/studies/SCI-FLT-INF_STAGE_A_2026-08-30/README.md)
+was prepared from exact SCI-FLT Stage A commit
+`cd55752e716051383da54356833ef0fac20b083a`, with frozen SCI-NOI authority
+`f28d7a2617160febca85c1c40e6f7ba7494e266e` available only through exact
+read-only object bindings. No later SCI-FLT-FIXED authoring artifact was used
+or modified, and all 17 protected SCI-FLT-FIXED Stage A author objects plus
+their manifest remain byte-identical to the base.
+Recovery concludes that `SCI-FLT-INF` should not become one combined contract:
+normalized template-amplitude estimation, any genuine posterior/Wiener
+reconstruction, selected-source/catalog amplitude estimation, learned-state
+lifecycle variants, data-thresholded mode selection, method selection/fallback,
+adaptive edge/background conditioning, and NOI-derived coefficient/
+standardized products have different estimands, state graphs, response,
+covariance, support, or ownership. The first owner gate is the intended
+estimand of the existing full path. This is a Stage A study and decision
+walkthrough only; no successor package, author packet, Stage B launch,
+algorithm change, implementation conformity, validation, calibration,
+performance, readiness, production, freeze, or Unity action is claimed or
+authorized.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

@@ -215,3 +215,19 @@ exact-byte approval and explicit launch. Stage B has not begun. No algorithm,
 frozen package, implementation, conformity,
 validation, calibration, achieved performance, readiness, production, Unity,
 source/mode, NOI, or FRUIT action follows.
+
+A separate recovery-first holding study now inventories the deferred
+inference-bearing material at
+[`studies/SCI-FLT-INF_STAGE_A_2026-08-30/`](studies/SCI-FLT-INF_STAGE_A_2026-08-30/).
+It starts from exact SCI-FLT Stage A commit
+`cd55752e716051383da54356833ef0fac20b083a`, uses frozen SCI-NOI authority
+`f28d7a2617160febca85c1c40e6f7ba7494e266e` read-only, and changes none of
+the protected SCI-FLT-FIXED author bytes. Recovery separates a normalized
+template-amplitude field from any genuine posterior/Wiener reconstruction,
+source/catalog amplitude estimation, learned-state lifecycle variants,
+data-thresholded mode selection, method selection/fallback, adaptive edge
+conditioning, and NOI-based coefficient/standardized products. The study
+recommends against one combined `SCI-FLT-INF` contract. Its first owner gate is
+the intended estimand of the existing full path. No successor package, author
+packet, Stage B launch, algorithm change, conformity, validation, calibration,
+performance, readiness, production, freeze, or Unity action follows.
