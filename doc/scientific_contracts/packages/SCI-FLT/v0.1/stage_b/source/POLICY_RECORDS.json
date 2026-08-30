@@ -1,0 +1,233 @@
+{
+  "schema_version": "1.0",
+  "document_identity": "SCI-FLT-FIXED-POLICY-RECORDS v0.1/draft-r0.2",
+  "status": "implementation-blind unregistered Stage B policy drafts; scientific-owner and Registry approval required",
+  "scientific_policy_owner": "Grant Wilson",
+  "registry_binding_status": "not_owner_approved_not_registered_not_evaluated",
+  "source_bindings": {
+    "normative_core": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.2",
+    "author_packet_manifest": "SCI-FLT-FIXED_AUTHOR_PACKET v0.1/r0.1",
+    "map_boundary": "SCI-MAP_TO_SCI-FLT-FIXED boundary admitted by the author packet",
+    "jinc_boundary": "SCI-JINC_TO_SCI-FLT-FIXED boundary admitted by the author packet",
+    "noi_boundary": "SCI-FLT-FIXED_TO_SCI-NOI boundary admitted by the author packet",
+    "val_profile_source": "SCI_FLT_VAL_PROFILE_DRAFTS.md admitted by the author packet",
+    "r0_2_owner_directive": "OWNER_DIRECTIVE_R0_2.txt"
+  },
+  "profiles": [
+    {
+      "identity": "SCI-FLT-FIXED:input_bundle_admission@1",
+      "domain": "one exact request, one complete immutable parent bundle, and one exact resolved FLT-owned plan",
+      "request": [
+        "not_requested",
+        "base_signal",
+        "response_qualified",
+        "covariance_qualified",
+        "response_and_covariance_qualified"
+      ],
+      "applicability": [
+        "applicable",
+        "not_applicable",
+        "applicability_unknown"
+      ],
+      "eligibility": [
+        "eligible",
+        "ineligible",
+        "no_eligibility_proposition",
+        "decision_unavailable"
+      ],
+      "realization": [
+        "not_started",
+        "realization_pending",
+        "realization_failed",
+        "complete_candidate_possible"
+      ],
+      "restrictions": [
+        "exactly one supported MAP-observation, MAP-coadd, or JINC-observation parent role",
+        "complete applicable parent and boundary identity",
+        "FLT-FIXED-CONV only",
+        "same grid",
+        "one exact resolved sampled convolution",
+        "full-footprint-only",
+        "no data-derived selection or relearning"
+      ],
+      "decisive_exclusions": [
+        "structural identity or source conflict",
+        "partial parent bundle",
+        "unsupported family",
+        "reprojection or resampling",
+        "deferred edge or missing-data method",
+        "unresolved plan fact"
+      ],
+      "exceptions": [
+        "base signal may carry typed unavailable response or covariance state",
+        "qualified requests require their named available compatible companion"
+      ],
+      "missing_or_conflict_behavior": {
+        "structural_identity_or_source_conflict": [
+          "applicability_unknown",
+          "decision_unavailable"
+        ],
+        "known_applicable_failed_restriction": [
+          "applicable",
+          "ineligible"
+        ],
+        "not_requested_or_disabled": [
+          "no_eligibility_proposition",
+          "not_produced"
+        ]
+      },
+      "lifecycle": [
+        "requested",
+        "effective",
+        "resolved_or_disabled_or_unavailable"
+      ],
+      "consumer_action": "admit the exact bundle to row admission, or fail closed with typed causes; perform no payload arithmetic"
+    },
+    {
+      "identity": "SCI-FLT-FIXED:input_row_admission@1",
+      "domain": "one candidate output row under one eligible bundle, frozen plan, immutable parent domain, and exact K_req",
+      "request": [
+        "not_requested",
+        "row_evaluation_requested"
+      ],
+      "applicability": [
+        "applicable",
+        "not_applicable",
+        "applicability_unknown"
+      ],
+      "eligibility": [
+        "eligible_row",
+        "ineligible_row",
+        "no_eligibility_proposition",
+        "decision_unavailable"
+      ],
+      "realization": [
+        "selected_into_J_full",
+        "excluded_from_J_full",
+        "selection_unavailable"
+      ],
+      "restrictions": [
+        "every K_req location lies in the exact parent domain",
+        "every K_req location is admitted for this FLT use",
+        "every K_req value is available and finite",
+        "every required predicate passes",
+        "J_full is frozen before payload arithmetic"
+      ],
+      "decisive_exclusions": [
+        "boundary extension",
+        "wrapping",
+        "truncation",
+        "support renormalization",
+        "replacement",
+        "selector re-resolution"
+      ],
+      "exceptions": [
+        "identity uses K_req equal to the singleton zero offset",
+        "zero uses its declared inherited admitted parent-support row domain and never a vacuous empty-footprint domain"
+      ],
+      "missing_or_conflict_behavior": {
+        "structural_identity_or_source_conflict": [
+          "applicability_unknown",
+          "decision_unavailable"
+        ],
+        "known_failed_row_restriction": [
+          "applicable",
+          "ineligible_row",
+          "excluded_from_J_full"
+        ],
+        "member_failure_after_selector_freeze": [
+          "row_unavailable_for_member",
+          "do_not_reselect"
+        ]
+      },
+      "lifecycle": [
+        "resolved",
+        "selector_candidate",
+        "selector_frozen"
+      ],
+      "consumer_action": "construct the one immutable J_full or return typed row and decision causes; perform no payload arithmetic"
+    },
+    {
+      "identity": "SCI-FLT-FIXED:output_publication@1",
+      "domain": "one eligible complete SCI-FLT-FIXED publication candidate after application",
+      "request": [
+        "not_requested",
+        "base_signal",
+        "response_qualified",
+        "covariance_qualified",
+        "response_and_covariance_qualified"
+      ],
+      "applicability": [
+        "applicable",
+        "not_applicable",
+        "applicability_unknown"
+      ],
+      "eligibility": [
+        "eligible",
+        "ineligible",
+        "no_eligibility_proposition",
+        "decision_unavailable"
+      ],
+      "realization": [
+        "publication_pending",
+        "realized",
+        "realized_identity",
+        "realized_zero",
+        "realization_failed",
+        "not_produced"
+      ],
+      "restrictions": [
+        "complete candidate contains every required FLT role",
+        "base signal contains exact response and covariance state records, which may be unavailable",
+        "response-qualified candidate has an available exact compatible response",
+        "covariance-qualified candidate has the exact declared compatible covariance representation",
+        "jointly qualified candidate satisfies both companion qualifications",
+        "NOI attachment state is a relation record and an NOI product is not required"
+      ],
+      "decisive_exclusions": [
+        "partial candidate",
+        "placeholder or inferred role",
+        "qualification-specific unavailable companion",
+        "failed application",
+        "identity mismatch"
+      ],
+      "exceptions": [
+        "optional companion unavailability does not block a base signal request",
+        "identity and zero use the same complete-candidate and publication sequence"
+      ],
+      "missing_or_conflict_behavior": {
+        "structural_identity_or_source_conflict": [
+          "applicability_unknown",
+          "decision_unavailable"
+        ],
+        "known_applicable_failed_restriction": [
+          "applicable",
+          "ineligible"
+        ],
+        "not_requested_or_disabled": [
+          "no_eligibility_proposition",
+          "not_produced"
+        ],
+        "eligible_transformation_failure": [
+          "eligible",
+          "realization_failed"
+        ]
+      },
+      "lifecycle": [
+        "applied",
+        "complete_publication_candidate",
+        "publication_decision",
+        "realized_or_failed_or_not_produced"
+      ],
+      "consumer_action": "publish exactly one immutable realized FLT product after successful action, or publish no product and preserve typed causes"
+    }
+  ],
+  "nonclaims": [
+    "Registry approval",
+    "Registry evaluation",
+    "numerical route",
+    "implementation conformity",
+    "validation",
+    "production authorization"
+  ]
+}

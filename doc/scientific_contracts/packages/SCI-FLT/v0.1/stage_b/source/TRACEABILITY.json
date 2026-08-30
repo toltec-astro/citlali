@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
-  "document_identity": "SCI-FLT-FIXED-TRACEABILITY v0.1/draft-r0.1",
-  "normative_core_identity": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.1",
-  "authority_rule": "Every scientific source is one of the 17 exact objects admitted by AUTHOR_PACKET_MANIFEST.md; the manifest supplies identity binding only.",
+  "document_identity": "SCI-FLT-FIXED-TRACEABILITY v0.1/draft-r0.2",
+  "normative_core_identity": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.2",
+  "authority_rule": "The 17 exact objects admitted by AUTHOR_PACKET_MANIFEST.md remain the Stage A scientific authority; OWNER_DIRECTIVE_R0_2.txt supplies the exact r0.2 closure decisions; no other scientific source is admitted.",
   "entries": [
     {
       "id": "SCI-FLT-FIXED-REQ-001",
@@ -288,9 +288,81 @@
       "id": "SCI-FLT-FIXED-REQ-036",
       "kind": "requirement",
       "core_section": "SCI-FLT-FIXED-REQ-036 - Excluded methods and nonclaims",
-      "rationale_section": "12. Stage B nonclaims",
+      "rationale_section": "13. Stage B nonclaims",
       "conformance_section": "8. Requirement conformance matrix",
       "stage_a_sources": ["SCOPE_BRIEF.md#Explicitly Deferred Or Excluded", "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#Preserved Limits"]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-037",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-037 - Frozen-selector conditioning",
+      "rationale_section": "2. Why strict linearity is the base object",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": ["FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Full-Footprint Scientific Domain", "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Fixed Linear Transformation"],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#2. MAKE LINEARITY CONDITIONAL ON ONE FROZEN REALIZED SELECTOR"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-038",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-038 - Required-dependency support",
+      "rationale_section": "4. Why the full-footprint rule is the sole v0.1 edge method",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": ["FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Full-Footprint Scientific Domain", "EDGE_MISSING_NONFINITE_METHOD_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Edge, Missing, And Non-Finite Method Table"],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#3. DEFINE REQUIRED FOOTPRINT AND ZERO-COEFFICIENT SEMANTICS"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-039",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-039 - Typed policy and companion qualification",
+      "rationale_section": "10. Use and ownership limits",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": ["SCI_FLT_VAL_PROFILE_DRAFTS.md#SCI-FLT-FIXED:input_admission@1", "SCI_FLT_VAL_PROFILE_DRAFTS.md#SCI-FLT-FIXED:output_publication@1"],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#6. TYPE INPUT, ROW, AND PUBLICATION POLICIES"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-040",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-040 - Response-family separation",
+      "rationale_section": "6. Response, beam, transfer, and modes",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": ["AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Response Propagation", "RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md#SCI-FLT-FIXED v0.1 Response, Null-Space, And Covariance Product Table"],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#7. TYPE RESPONSE FAMILIES AND ZERO-OPERATOR CLAIMS"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-041",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-041 - Single-convolution composition",
+      "rationale_section": "3. Fixed convolution and the low-pass qualification",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": ["FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Fixed Convolution Family", "AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md#FLT-FIXED-CONV"],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#10. DEFINE OPERATOR ORDER AND COMPOSITION"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-042",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-042 - Numerical-comparison policy",
+      "rationale_section": "12. Resolution ownership and numerical evidence",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": ["AUTHOR_CONVENTIONS_AND_OWNERSHIP.md#Required Conventions", "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions"],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#11. ADD NUMERICAL-CONFORMANCE POLICY"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-043",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-043 - Exposure lineage",
+      "rationale_section": "6. Response, beam, transfer, and modes",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": ["SCI-MAP_TO_SCI-FLT-FIXED_BOUNDARY.md#Quantity, Units, Beam, And Exposure", "RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md#SCI-FLT-FIXED v0.1 Response, Null-Space, And Covariance Product Table"],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#12. EXPOSURE, TERMINOLOGY, AND OWNER METADATA"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-044",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-044 - External-resolution ownership",
+      "rationale_section": "12. Resolution ownership and numerical evidence",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": ["AUTHOR_CONVENTIONS_AND_OWNERSHIP.md#Ownership Rules", "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Complete Realized Operator"],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#12. EXPOSURE, TERMINOLOGY, AND OWNER METADATA"
     },
     {
       "id": "SCI-FLT-FIXED-PRED-001",
@@ -459,6 +531,33 @@
       "rationale_section": "3. Fixed convolution and the low-pass qualification",
       "conformance_section": "9. Falsifiable prediction suite",
       "stage_a_sources": ["FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Qualified Fixed-Low-Pass-Convolution Subtype", "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-102B - Fixed Low-Pass Scope"]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-022",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-022 - Exact-zero coefficient dependency",
+      "rationale_section": "4. Why the full-footprint rule is the sole v0.1 edge method",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": ["FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Full-Footprint Scientific Domain", "EDGE_MISSING_NONFINITE_METHOD_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Edge, Missing, And Non-Finite Method Table"],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#3. DEFINE REQUIRED FOOTPRINT AND ZERO-COEFFICIENT SEMANTICS"
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-023",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-023 - Zero-operator row support",
+      "rationale_section": "4. Why the full-footprint rule is the sole v0.1 edge method",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": ["FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions", "FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md#Lifecycle States"],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#3. DEFINE REQUIRED FOOTPRINT AND ZERO-COEFFICIENT SEMANTICS"
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-024",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-024 - Independent low-pass transfer check",
+      "rationale_section": "3. Fixed convolution and the low-pass qualification",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": ["FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Qualified Fixed-Low-Pass-Convolution Subtype", "NORMALIZATION_UNIT_BEAM_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Normalization, Unit, Beam, And Low-Pass Table"],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#9. COMPLETE LOW-PASS, WCS, AND TRANSFER SEMANTICS"
     }
   ]
 }

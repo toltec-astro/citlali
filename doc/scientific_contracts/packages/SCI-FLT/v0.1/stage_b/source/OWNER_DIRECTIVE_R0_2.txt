@@ -1,0 +1,520 @@
+SCI-FLT-FIXED v0.1 r0.2 — TARGETED STAGE B
+FORMAL-CLOSURE AND CROSS-PACKAGE-BOUNDARY DIRECTIVE
+
+The SCI-FLT-FIXED r0.1 architecture is approved as the basis for the next
+targeted revision.
+
+Preserve:
+
+- SCI-FLT-FIXED as the package name;
+- SCI-FLT-INF as a non-authored recovery/holding tranche only;
+- strict linearity with no additive term;
+- y = J_full L_Theta m as the organizing applied relation;
+- fixed convolution as the first concrete family;
+- fixed low-pass convolution only as a qualified fixed-convolution subtype;
+- full-footprint-only as the sole v0.1 edge method;
+- no extension, wrapping, truncation, support renormalization, replacement,
+  reprojection, resampling, deconvolution, or data-derived selection;
+- exact MAP-observation, MAP-coadd, and JINC-observation parent roles;
+- no assumed filter/coadd commutation;
+- transformed parent-unit amplitude rather than fitted/template amplitude;
+- no automatic filtered-beam or calibration claim;
+- exact response and covariance composition when compatible parent objects
+  exist;
+- honest unavailable companion states;
+- fixed-state NOI parity;
+- disabled, identity, zero, unavailable, failed, and realized distinctions;
+- all stable requirement and prediction identifiers;
+- implementation-blind authorship and every existing nonclaim.
+
+Do not inspect implementation, schemas, configuration, tests, audits, repairs,
+validation, reductions, generated products, defaults, historical behavior, or
+production state.
+
+Do not renumber SCI-FLT-FIXED-REQ-001--036 or
+SCI-FLT-FIXED-PRED-001--021. Append identifiers only for genuinely new
+normative clauses.
+
+======================================================================
+1. CLOSE GENERAL-LINEAR VERSUS CONVOLUTION SCOPE
+======================================================================
+
+The r0.1 core defines a general finite same-grid L_Theta but defines scientific
+support and edge behavior only through a convolution offset set K_Theta.
+
+Return one exact owner disposition.
+
+Preferred v0.1 disposition:
+
+    The only numerically admitted base family is FLT-FIXED-CONV.
+
+    L_Theta is the complete matrix representation of that exact realized
+    sampled convolution. It is not a separately selectable arbitrary dense
+    linear-operator family.
+
+    FLT-FIXED-CONV-LOWPASS is a qualified subtype of FLT-FIXED-CONV.
+
+If a general fixed-linear family is retained instead, generalize every
+support, edge, influence, response, covariance, impulse, and null-space rule
+using an exact row-specific required dependency set:
+
+    K_p^req = {q required by row p}.
+
+Do not leave a generic L family governed by convolution-only footprint
+semantics.
+
+======================================================================
+2. MAKE LINEARITY CONDITIONAL ON ONE FROZEN REALIZED SELECTOR
+======================================================================
+
+Separate:
+
+- the externally resolved fixed operator plan L_Theta;
+- the parent-state-dependent but immutable realized row selector J_full;
+- the complete applied operator A_Theta,J.
+
+Use:
+
+    J_full
+      = J(plan,
+          immutable parent domain,
+          FLT input admission,
+          availability,
+          finiteness,
+          support,
+          required predicates)
+
+resolved before payload arithmetic;
+
+    A_Theta,J = J_full L_Theta;
+
+    y = A_Theta,J m.
+
+State:
+
+- strict linearity is conditional on fixed parent membership and J_full;
+- response, covariance, noise realizations, and NOI members receive the same
+  A_Theta,J;
+- J_full is never re-resolved for a response perturbation, covariance draw, or
+  fixed-state NOI member;
+- a member failing a required frozen footprint becomes unavailable rather than
+  receiving another selector;
+- selection/support uncertainty is not included in conditional
+  L C L^T propagation unless separately supplied.
+
+Update the rationale so “strict linearity” cannot be interpreted as global
+linearity across parents with different support or validity.
+
+======================================================================
+3. DEFINE REQUIRED FOOTPRINT AND ZERO-COEFFICIENT SEMANTICS
+======================================================================
+
+Define separately:
+
+    K_geom   = declared geometric/storage footprint;
+    K_nonzero = exact nonzero sampled-coefficient support;
+    K_req    = exact parent locations scientifically required by the method.
+
+Use K_req in S_out.
+
+State the relation among these sets for every admitted kernel family. Exact
+zero is established by the declared coefficient representation, not a floating
+threshold.
+
+Owner-disposition these special cases:
+
+A. identity operator:
+       K_req = {0};
+       S_out equals the exact admitted finite parent-row domain;
+
+B. zero operator:
+       it shall not obtain all storage rows through a vacuous empty-footprint
+       predicate;
+       it inherits an exact declared parent-support row domain, preferably the
+       admitted finite parent rows, while producing numerical zero there;
+
+C. geometric zeros:
+       state whether zero-valued stored coefficients require a parent row.
+
+Preserve geometric, signed, absolute, squared, and required-dependency support
+as distinct objects.
+
+Add predictions for exact-zero coefficients and zero-operator row support.
+
+======================================================================
+4. REPAIR PUBLICATION LIFECYCLE CIRCULARITY
+======================================================================
+
+Do not require a realized bundle before output-publication policy can apply.
+
+Introduce a pre-publication state such as:
+
+    applied_complete_candidate
+
+or:
+
+    publication_candidate.
+
+Use the lifecycle:
+
+    requested
+      -> effective
+      -> resolved
+      -> applied
+      -> complete publication candidate
+      -> publication decision
+      -> realized | failed | not_produced.
+
+SCI-FLT-FIXED:output_publication@1 applies to the complete candidate.
+
+A successful realized publication decision creates the realized product.
+
+Disabled remains not produced. Identity and zero become realized products only
+after the same complete sequence.
+
+======================================================================
+5. REMOVE NOI PRODUCT FROM FLT ATOMIC COMPLETION
+======================================================================
+
+The actual separately owned NOI-UNC[FLT-SIG] product shall not be a required
+member of the atomic FLT bundle.
+
+Replace that entry with an optional relation/state such as:
+
+    FLT-NOI-COMPATIBILITY
+    FLT-NOI-ATTACHMENT-STATE
+
+containing:
+
+- exact FLT product identity;
+- compatible fixed operator and row-domain identity;
+- whether a NOI attachment was requested;
+- attached NOI product identity if later realized;
+- typed unavailable/not-requested/failed state.
+
+The actual NOI product remains a separately parented, separately realized
+product and never changes whether the FLT bundle was complete or realized.
+
+======================================================================
+6. TYPE INPUT, ROW, AND PUBLICATION POLICIES
+======================================================================
+
+Define exact policy object domains.
+
+Preferred separation:
+
+    SCI-FLT-FIXED:input_bundle_admission@1
+    SCI-FLT-FIXED:input_row_admission@1
+    SCI-FLT-FIXED:output_publication@1.
+
+Every profile shall bind:
+
+- scientific-policy owner;
+- exact source and boundary versions;
+- request;
+- applicability;
+- eligibility;
+- realization;
+- restrictions;
+- decisive exclusions;
+- exceptions;
+- missing/conflict behavior;
+- lifecycle;
+- exact consumer action.
+
+Use VAL-congruent states:
+
+- structural identity/source conflict:
+      applicability_unknown / decision_unavailable;
+
+- known applicable failed restriction:
+      ineligible;
+
+- not requested or effectively disabled:
+      no eligibility proposition / not_produced;
+
+- eligible but failed transformation:
+      eligible / realization_failed;
+
+- eligible complete publication candidate:
+      realized only after successful publication action.
+
+Companion qualification shall be request-specific:
+
+A. base signal request:
+   requires exact response/covariance state records but may permit those states
+   to be unavailable;
+
+B. response-qualified request:
+   requires an available exact compatible response;
+
+C. covariance-qualified request:
+   requires the exact declared compatible covariance representation;
+
+D. response-and-covariance-qualified request:
+   requires both.
+
+Do not block an otherwise valid signal-only product merely because an optional
+companion is honestly unavailable.
+
+Do not claim Registry evaluation until the profile bytes and source bindings
+are owner-approved and registered.
+
+======================================================================
+7. TYPE RESPONSE FAMILIES AND ZERO-OPERATOR CLAIMS
+======================================================================
+
+Define separately:
+
+1. fixed-state linear parent response:
+
+       R_out^fixed = A_Theta,J R_parent^fixed;
+
+2. already realized parent-grid response companion:
+
+       apply A_Theta,J exactly once;
+
+3. parent full-procedure finite difference with FLT fixed:
+
+       Delta y_parent-FP
+         = A_Theta,J Delta m_parent-FP,
+
+   while retaining the parent state-change record separately;
+
+4. FLT re-resolved procedure response:
+
+   outside SCI-FLT-FIXED whenever kernel, cutoff, normalization, support,
+   selector, edge state, or method is re-resolved.
+
+No response family shall be silently represented by another.
+
+Owner-disposition the exact zero operator:
+
+- its local fixed-state derivative is zero;
+- its parent-payload conditional covariance contribution is zero;
+- the complete source-domain response may remain unavailable when source basis,
+  domain, or parent-response identity is unavailable;
+- total systematic uncertainty remains separately typed.
+
+Do not collapse local zero response into an unsupported complete sky-response
+claim, but do not hide a mathematically established local zero derivative.
+
+======================================================================
+8. REPAIR COVARIANCE TYPES AND NOTATION
+======================================================================
+
+Separate two axes.
+
+Parent stochastic authority:
+
+- complete covariance;
+- explicit independent-diagonal model;
+- marginal variances only;
+- structured or partial model;
+- unavailable.
+
+Output representation:
+
+- complete matrix;
+- exact linear/operator representation;
+- structured representation;
+- marginal plane;
+- summary only;
+- unavailable.
+
+Every result shall state:
+
+- the parent model it is conditional on;
+- output representation;
+- domain and ordering;
+- rank and null space;
+- omitted terms;
+- supported operations;
+- selection, kernel, beam, WCS, calibration, and model uncertainty exclusions.
+
+Replace undefined k[i,j] covariance notation with:
+
+    A_ij = (J_full L_Theta)_ij
+
+    Var(y_i) = sum_j A_ij^2 V_j
+
+    Cov(y_i,y_l) = sum_j A_ij A_lj V_j.
+
+A full matrix propagated from a declared independent-diagonal parent model may
+be complete relative to that conditional model, but shall not imply that
+unknown real parent cross terms are zero.
+
+======================================================================
+9. COMPLETE LOW-PASS, WCS, AND TRANSFER SEMANTICS
+======================================================================
+
+For every convolution declare whether it is:
+
+- pixel-index-domain;
+- affine tangent-plane angular-domain;
+- or another exact coordinate-domain method.
+
+A fixed shift-invariant pixel kernel shall not be called one spatially uniform
+angular kernel over a WCS for which that relation is not established.
+
+For angular-frequency low-pass qualification, require either:
+
+A. one exact affine/constant tangent-plane pixel metric; or
+
+B. another exact method proving the stated angular transfer.
+
+Separate:
+
+- sampled-kernel or interior translation-invariant transfer;
+- complete finite row-restricted operator A_Theta,J.
+
+Do not claim that the complete finite operator has one global Fourier transfer
+unless an exact theorem establishes it.
+
+Append a low-pass numerical prediction that independently evaluates the exact
+sampled transfer and checks:
+
+- DC gain;
+- passband bounds;
+- transition;
+- stopband attenuation;
+- phase;
+- anisotropy;
+- exact frequency grid and metric.
+
+PRED-021 metadata completeness remains necessary but is not sufficient.
+
+======================================================================
+10. DEFINE OPERATOR ORDER AND COMPOSITION
+======================================================================
+
+Return one exact base-v0.1 rule.
+
+Preferred narrow rule:
+
+    One SCI-FLT-FIXED product applies one exact resolved sampled convolution.
+
+A plan may supply a final kernel that was constructed elsewhere, but the FLT
+product makes no intermediate transformation claim.
+
+If ordered composition is admitted, bind:
+
+- every constituent operator;
+- exact application order and count;
+- every intermediate row selector and support state;
+- intermediate versus final normalization;
+- final composed operator;
+- response, covariance, influence, mode, and NOI propagation through the same
+  order.
+
+Do not assume:
+
+    J2 L2 J1 L1 = Jfinal L2 L1
+
+or reorder finite operators because ideal convolution kernels commute.
+
+======================================================================
+11. ADD NUMERICAL-CONFORMANCE POLICY
+======================================================================
+
+Preserve exact operator coefficients and scientific identity.
+
+For future finite-precision implementation evidence, require one preregistered
+numerical comparison policy defining:
+
+- independent exact or high-precision oracle;
+- absolute, relative, and near-zero behavior;
+- signed-cancellation and zero-sum cases;
+- conditioning and operation-count dependence;
+- covariance comparison;
+- sequential/parallel agreement;
+- overflow, underflow, and non-finite handling;
+- simultaneous row-level comparison;
+- lifecycle and provenance;
+- prohibition on changing bounds after observing a failure.
+
+The numerical policy authors no new filter science and supplies no validation
+or performance claim.
+
+======================================================================
+12. EXPOSURE, TERMINOLOGY, AND OWNER METADATA
+======================================================================
+
+Add an explicit inherited exposure-lineage role or state.
+
+It shall state:
+
+- exact parent exposure product or typed absence;
+- that FLT creates no physical exposure;
+- that FLT-INFLUENCE is not exposure;
+- that convolving an exposure plane is not authorized as filtered-signal
+  physical exposure.
+
+Define or remove the currently unexplained “confidence” state.
+
+Clarify that “externally resolved” means resolved before application under one
+exact FLT-owned plan; it does not transfer FLT policy or transformation
+ownership to an unnamed producer.
+
+Add:
+
+    Scientific owner: Grant Wilson
+
+to the core, rationale, and ECS covers and PDF author metadata.
+
+======================================================================
+13. SOURCE-PACKET CLOSURE
+======================================================================
+
+Return the actual exact bytes of:
+
+- SCI-FLT-FIXED_AUTHOR_PACKET v0.1/r0.1;
+- all 17 admitted source objects;
+- scientific-owner decision artifact;
+- SCI-MAP_TO_SCI-FLT-FIXED boundary;
+- SCI-JINC_TO_SCI-FLT-FIXED boundary;
+- SCI-FLT-FIXED_TO_SCI-NOI boundary;
+- all profile drafts;
+- TRACEABILITY.json;
+- BUILD_BINDING.json;
+- exact normative source;
+- rationale/ECS source;
+- build recipe and tools;
+- source-byte, parity, rebuild, and visual-QA reports.
+
+Reproduce every SHA-256 printed by the PDFs.
+
+If a claimed boundary, decision, policy, or byte-equality result cannot be
+reproduced, return only its dependent route to typed unavailability rather than
+modifying unrelated fixed-filter science.
+
+======================================================================
+14. DELIVERABLES
+======================================================================
+
+Return:
+
+1. revised SCI-FLT-FIXED Normative Core r0.2;
+2. revised Scientist Rationale r0.2;
+3. revised Engineering Conformance Specification r0.2;
+4. exact admitted source packet and manifest;
+5. fixed-family scope disposition;
+6. conditional-row-selector amendment;
+7. required-footprint and zero-operator disposition;
+8. publication-lifecycle amendment;
+9. NOI attachment-boundary amendment;
+10. exact profile records and VAL binding status;
+11. response-family crosswalk;
+12. covariance type/representation table;
+13. WCS/low-pass/transfer decision;
+14. operator-composition decision;
+15. numerical-conformance policy draft;
+16. equation/requirement/prediction semantic-change map;
+17. owner-decision parity report;
+18. core/rationale/ECS parity report;
+19. PDF visual-QA and metadata report.
+
+Do not claim implementation conformity, achieved response or covariance,
+numerical adequacy, validation, calibration, observational performance,
+readiness, scientific freeze, production suitability, production
+authorization, or Unity activity.

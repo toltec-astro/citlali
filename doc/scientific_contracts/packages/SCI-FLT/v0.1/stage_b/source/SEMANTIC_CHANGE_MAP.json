@@ -1,0 +1,240 @@
+{
+  "schema_version": "1.0",
+  "document_identity": "SCI-FLT-FIXED-SEMANTIC-CHANGE-MAP v0.1/draft-r0.2",
+  "from_identity": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.1",
+  "to_identity": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.2",
+  "owner_directive": "OWNER_DIRECTIVE_R0_2.txt",
+  "equation_changes": [
+    {
+      "subject": "complete applied operator",
+      "r0_1": "y = J_full L_Theta m",
+      "r0_2": "A_Theta,J = J_full L_Theta; y = A_Theta,J m",
+      "disposition": "clarified",
+      "meaning": "strict linearity is conditional on one parent-state-dependent selector frozen before payload arithmetic"
+    },
+    {
+      "subject": "selector",
+      "r0_1": "J_full selects complete required footprints",
+      "r0_2": "J_full = J(plan, immutable parent domain, FLT input admission, availability, finiteness, support, required predicates)",
+      "disposition": "closed",
+      "meaning": "selector inputs and freeze timing are explicit"
+    },
+    {
+      "subject": "convolution support",
+      "r0_1": "one K_Theta served arithmetic and footprint roles",
+      "r0_2": "K_geom, K_nonzero, and K_req are distinct; base v0.1 uses K_req = K_geom",
+      "disposition": "repaired",
+      "meaning": "exact-zero coefficients and zero operator cannot obtain accidental admission semantics"
+    },
+    {
+      "subject": "covariance propagation",
+      "r0_1": "C_out = J_full L_Theta C_parent transpose(L_Theta) transpose(J_full)",
+      "r0_2": "C_out = A_Theta,J C_parent transpose(A_Theta,J)",
+      "disposition": "notation_closed",
+      "meaning": "the same complete frozen applied operator is explicit on both sides"
+    },
+    {
+      "subject": "independent-diagonal covariance",
+      "r0_1": "k[i,j] notation was undefined",
+      "r0_2": "A_ij = (J_full L_Theta)_ij; Var(y_i) = sum_j A_ij^2 V_j; Cov(y_i,y_l) = sum_j A_ij A_lj V_j",
+      "disposition": "repaired",
+      "meaning": "row selection, domain, and operator entries are explicit"
+    },
+    {
+      "subject": "parent full-procedure response with FLT fixed",
+      "r0_1": "not separately typed",
+      "r0_2": "Delta y_parent-FP = A_Theta,J Delta m_parent-FP",
+      "disposition": "added",
+      "meaning": "parent state change remains separate and FLT does not re-resolve"
+    }
+  ],
+  "requirement_changes": {
+    "clarified_without_renumbering": [
+      "SCI-FLT-FIXED-REQ-001",
+      "SCI-FLT-FIXED-REQ-002",
+      "SCI-FLT-FIXED-REQ-007",
+      "SCI-FLT-FIXED-REQ-008",
+      "SCI-FLT-FIXED-REQ-009",
+      "SCI-FLT-FIXED-REQ-010",
+      "SCI-FLT-FIXED-REQ-011",
+      "SCI-FLT-FIXED-REQ-012",
+      "SCI-FLT-FIXED-REQ-017",
+      "SCI-FLT-FIXED-REQ-018",
+      "SCI-FLT-FIXED-REQ-019",
+      "SCI-FLT-FIXED-REQ-020",
+      "SCI-FLT-FIXED-REQ-021",
+      "SCI-FLT-FIXED-REQ-022",
+      "SCI-FLT-FIXED-REQ-023",
+      "SCI-FLT-FIXED-REQ-025",
+      "SCI-FLT-FIXED-REQ-027",
+      "SCI-FLT-FIXED-REQ-028",
+      "SCI-FLT-FIXED-REQ-029",
+      "SCI-FLT-FIXED-REQ-030",
+      "SCI-FLT-FIXED-REQ-032",
+      "SCI-FLT-FIXED-REQ-033",
+      "SCI-FLT-FIXED-REQ-034"
+    ],
+    "preserved_without_semantic_change": [
+      "SCI-FLT-FIXED-REQ-003",
+      "SCI-FLT-FIXED-REQ-004",
+      "SCI-FLT-FIXED-REQ-005",
+      "SCI-FLT-FIXED-REQ-006",
+      "SCI-FLT-FIXED-REQ-013",
+      "SCI-FLT-FIXED-REQ-014",
+      "SCI-FLT-FIXED-REQ-015",
+      "SCI-FLT-FIXED-REQ-016",
+      "SCI-FLT-FIXED-REQ-024",
+      "SCI-FLT-FIXED-REQ-026",
+      "SCI-FLT-FIXED-REQ-031",
+      "SCI-FLT-FIXED-REQ-035",
+      "SCI-FLT-FIXED-REQ-036"
+    ],
+    "appended": [
+      "SCI-FLT-FIXED-REQ-037",
+      "SCI-FLT-FIXED-REQ-038",
+      "SCI-FLT-FIXED-REQ-039",
+      "SCI-FLT-FIXED-REQ-040",
+      "SCI-FLT-FIXED-REQ-041",
+      "SCI-FLT-FIXED-REQ-042",
+      "SCI-FLT-FIXED-REQ-043",
+      "SCI-FLT-FIXED-REQ-044"
+    ],
+    "renumbered": []
+  },
+  "prediction_changes": {
+    "clarified_without_renumbering": [
+      "SCI-FLT-FIXED-PRED-001",
+      "SCI-FLT-FIXED-PRED-002",
+      "SCI-FLT-FIXED-PRED-003",
+      "SCI-FLT-FIXED-PRED-006",
+      "SCI-FLT-FIXED-PRED-009",
+      "SCI-FLT-FIXED-PRED-012",
+      "SCI-FLT-FIXED-PRED-013",
+      "SCI-FLT-FIXED-PRED-014",
+      "SCI-FLT-FIXED-PRED-017",
+      "SCI-FLT-FIXED-PRED-019",
+      "SCI-FLT-FIXED-PRED-021"
+    ],
+    "preserved_without_semantic_change": [
+      "SCI-FLT-FIXED-PRED-004",
+      "SCI-FLT-FIXED-PRED-005",
+      "SCI-FLT-FIXED-PRED-007",
+      "SCI-FLT-FIXED-PRED-008",
+      "SCI-FLT-FIXED-PRED-010",
+      "SCI-FLT-FIXED-PRED-011",
+      "SCI-FLT-FIXED-PRED-015",
+      "SCI-FLT-FIXED-PRED-016",
+      "SCI-FLT-FIXED-PRED-018",
+      "SCI-FLT-FIXED-PRED-020"
+    ],
+    "appended": [
+      "SCI-FLT-FIXED-PRED-022",
+      "SCI-FLT-FIXED-PRED-023",
+      "SCI-FLT-FIXED-PRED-024"
+    ],
+    "renumbered": []
+  },
+  "owner_directive_routes": {
+    "1. CLOSE GENERAL-LINEAR VERSUS CONVOLUTION SCOPE": [
+      "SCI-FLT-FIXED-REQ-001",
+      "SCI-FLT-FIXED-REQ-009",
+      "SCI-FLT-FIXED-REQ-010",
+      "SCI-FLT-FIXED-REQ-041"
+    ],
+    "2. MAKE LINEARITY CONDITIONAL ON ONE FROZEN REALIZED SELECTOR": [
+      "SCI-FLT-FIXED-REQ-002",
+      "SCI-FLT-FIXED-REQ-007",
+      "SCI-FLT-FIXED-REQ-017",
+      "SCI-FLT-FIXED-REQ-021",
+      "SCI-FLT-FIXED-REQ-025",
+      "SCI-FLT-FIXED-REQ-037",
+      "SCI-FLT-FIXED-PRED-003",
+      "SCI-FLT-FIXED-PRED-006",
+      "SCI-FLT-FIXED-PRED-012",
+      "SCI-FLT-FIXED-PRED-017"
+    ],
+    "3. DEFINE REQUIRED FOOTPRINT AND ZERO-COEFFICIENT SEMANTICS": [
+      "SCI-FLT-FIXED-REQ-009",
+      "SCI-FLT-FIXED-REQ-012",
+      "SCI-FLT-FIXED-REQ-020",
+      "SCI-FLT-FIXED-REQ-029",
+      "SCI-FLT-FIXED-REQ-038",
+      "SCI-FLT-FIXED-PRED-001",
+      "SCI-FLT-FIXED-PRED-002",
+      "SCI-FLT-FIXED-PRED-009",
+      "SCI-FLT-FIXED-PRED-022",
+      "SCI-FLT-FIXED-PRED-023"
+    ],
+    "4. REPAIR PUBLICATION LIFECYCLE CIRCULARITY": [
+      "SCI-FLT-FIXED-REQ-027",
+      "SCI-FLT-FIXED-REQ-028",
+      "SCI-FLT-FIXED-REQ-029",
+      "SCI-FLT-FIXED-REQ-033",
+      "SCI-FLT-FIXED-PRED-001",
+      "SCI-FLT-FIXED-PRED-002",
+      "SCI-FLT-FIXED-PRED-019"
+    ],
+    "5. REMOVE NOI PRODUCT FROM FLT ATOMIC COMPLETION": [
+      "SCI-FLT-FIXED-REQ-024",
+      "SCI-FLT-FIXED-REQ-027",
+      "SCI-FLT-FIXED-REQ-030"
+    ],
+    "6. TYPE INPUT, ROW, AND PUBLICATION POLICIES": [
+      "SCI-FLT-FIXED-REQ-032",
+      "SCI-FLT-FIXED-REQ-033",
+      "SCI-FLT-FIXED-REQ-034",
+      "SCI-FLT-FIXED-REQ-039",
+      "SCI-FLT-FIXED-PRED-014"
+    ],
+    "7. TYPE RESPONSE FAMILIES AND ZERO-OPERATOR CLAIMS": [
+      "SCI-FLT-FIXED-REQ-017",
+      "SCI-FLT-FIXED-REQ-040",
+      "SCI-FLT-FIXED-PRED-002",
+      "SCI-FLT-FIXED-PRED-006",
+      "SCI-FLT-FIXED-PRED-014"
+    ],
+    "8. REPAIR COVARIANCE TYPES AND NOTATION": [
+      "SCI-FLT-FIXED-REQ-021",
+      "SCI-FLT-FIXED-REQ-022",
+      "SCI-FLT-FIXED-REQ-023",
+      "SCI-FLT-FIXED-PRED-012",
+      "SCI-FLT-FIXED-PRED-013"
+    ],
+    "9. COMPLETE LOW-PASS, WCS, AND TRANSFER SEMANTICS": [
+      "SCI-FLT-FIXED-REQ-008",
+      "SCI-FLT-FIXED-REQ-011",
+      "SCI-FLT-FIXED-REQ-018",
+      "SCI-FLT-FIXED-PRED-021",
+      "SCI-FLT-FIXED-PRED-024"
+    ],
+    "10. DEFINE OPERATOR ORDER AND COMPOSITION": [
+      "SCI-FLT-FIXED-REQ-010",
+      "SCI-FLT-FIXED-REQ-041"
+    ],
+    "11. ADD NUMERICAL-CONFORMANCE POLICY": [
+      "SCI-FLT-FIXED-REQ-042"
+    ],
+    "12. EXPOSURE, TERMINOLOGY, AND OWNER METADATA": [
+      "SCI-FLT-FIXED-REQ-019",
+      "SCI-FLT-FIXED-REQ-020",
+      "SCI-FLT-FIXED-REQ-043",
+      "SCI-FLT-FIXED-REQ-044"
+    ],
+    "13. SOURCE-PACKET CLOSURE": [
+      "artifact_and_report_binding"
+    ],
+    "14. DELIVERABLES": [
+      "artifact_inventory"
+    ]
+  },
+  "preserved_boundaries": [
+    "MAP parent identity and upstream availability",
+    "JINC atomic five-role parent identity and upstream availability",
+    "NOI scientific ownership and fixed-state parity",
+    "VAL evaluates but does not author producer facts or FLT policy",
+    "response and covariance remain conditional on compatible parent objects",
+    "full-footprint-only edge method",
+    "no coaddition or filter/coadd commutation claim",
+    "implementation-blind nonclaims"
+  ]
+}
