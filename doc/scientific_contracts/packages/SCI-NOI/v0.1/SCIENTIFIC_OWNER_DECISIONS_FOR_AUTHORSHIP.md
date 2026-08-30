@@ -1,8 +1,8 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.15`
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.16`
 
-Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, ODQ-105A, ODQ-105B, ODQ-106, ODQ-107, ODQ-108, ODQ-109, and ODQ-110A owner-approved; exact
+Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, ODQ-105A, ODQ-105B, ODQ-106, ODQ-107, ODQ-108, ODQ-109, ODQ-110A, and ODQ-110B owner-approved; exact
 finite-design mechanics delegated to the scientific-contract author under
 ODQ-102D; later decisions remain open; not yet an allowed Stage B authority
 
@@ -450,17 +450,31 @@ not approve another decision or make an unresolved numerical route available.
 
 ### `SCI-NOI-ODQ-110B` — Wiener scope
 
-- **Exact question:** Is any fixed or re-estimated Wiener route admitted?
-- **Recommended disposition:** keep re-estimated Wiener unavailable until a
-  complete inference/feedback contract exists; a fixed Wiener operator must
-  first satisfy ODQ-110A.
-- **Alternatives:** exclude all, admit one fixed operator, or authorize a
-  versioned feedback/relearning method.
-- **Scientific consequences:** uncertainty cannot be circular evidence for the
-  filter that generated it.
-- **Conservative state while open:** Wiener routes unavailable.
+- **Exact question:** How does NOI treat a Wiener transformation that is fixed,
+  learned from prior NOI products, or relearned for individual realizations?
+- **Approved disposition:** an exact owner-defined Wiener transformation frozen
+  before application to randomizations is governed by ODQ-110A, even if its
+  owner originally derived it from data. A Wiener transformation learned,
+  selected, or updated from an NOI product begins a separately versioned
+  successor scientific-product/GEN/UNC generation. Per-realization learning is
+  a separate ODQ-104 relearned method. NOI owns none of these transformation or
+  learning definitions.
+- **Alternatives rejected:** NOI-owned Wiener selection/definition; treating
+  data-derived as necessarily per-member relearned; same-generation feedback;
+  mutation of prior UNC; or mixing fixed and relearned members without an
+  authorized mixture estimand.
+- **Scientific consequences:** `UNC_k` may be a declared input to the owner-
+  defined successor transformation but is not independent evidence validating
+  that transformation or `UNC_(k+1)`. Exact transformation/product/generation
+  identity and dependence are preserved.
+- **Conservative availability state:** a fixed Wiener route remains unavailable
+  pending ODQ-110A owner authority/parity; feedback or per-member routes remain
+  unavailable pending complete owner-authored inference/relearning contracts
+  and exact NOI boundaries.
 - **Affected artifacts:** filter scope, graph, lifecycle, response boundaries.
-- **Exact bytes changed by approval:** Wiener class, causal graph, availability.
+- **Exact bytes changed by approval:** fixed-state classification; external
+  authority; successor-generation graph; dependence/nonvalidation rule;
+  per-realization separation; and typed unavailability.
 
 ### `SCI-NOI-ODQ-110C` — FRUIT scope
 

@@ -303,6 +303,27 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
 86. Advanced the walkthrough to ODQ-110B and published r0.7 of the GEN graph,
     r0.9 of the product/lifecycle table, and r0.15 packet/decision records.
 
+## ODQ-110B Wiener Scope Update
+
+87. Classified a data-derived Wiener transformation learned once by its owner
+    and frozen before realization application as an ODQ-110A fixed-state
+    transformation rather than an automatically relearned NOI method.
+88. Required an NOI-informed Wiener learning/selection/update to begin a new
+    immutable owner-transformation, transformed-science, GEN, and UNC
+    generation with explicit prior-input dependence.
+89. Prohibited mutation of prior UNC, same-generation feedback, or use of the
+    prior uncertainty as independent evidence validating the successor
+    transformation or uncertainty.
+90. Kept per-realization Wiener learning as a distinct ODQ-104 method and
+    prohibited fixed/relearned member mixing without an authorized mixture
+    estimand.
+91. Preserved numerical unavailability pending exact transformation-owner,
+    inference/relearning, and NOI boundaries; established no validity,
+    covariance, source-cancellation, calibration, significance, conformity,
+    performance, readiness, or production claim.
+92. Advanced the walkthrough to ODQ-110C and published r0.8 of the GEN graph,
+    r0.10 of the product/lifecycle table, and r0.16 packet/decision records.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance

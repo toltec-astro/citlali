@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Byte-Equality And Source-Closure Report
 
-Report identity: `SCI-NOI_STAGE_A_SOURCE_CLOSURE v0.1/r0.15`
+Report identity: `SCI-NOI_STAGE_A_SOURCE_CLOSURE v0.1/r0.16`
 
 Prepared: `2026-08-29`
 
@@ -31,6 +31,7 @@ excluded from this file.
 | `SCIENTIFIC_OWNER_ODQ_108_APPROVAL_2026-08-29.md` | `897f29688dce56329ef55da8258df4df1a89365ddea8281bed5a5dcbdde5b575` | Initial MAP standardized-signal formula, conditional-scale claim, and JINC separation approval; manager-facing, not admitted to the future author |
 | `SCIENTIFIC_OWNER_ODQ_109_APPROVAL_2026-08-29.md` | `0084cc70d7d43ed0ad68574de906c47debd435d65f5a1f831e8eca7390732b6c` | Plan-controlled persistence/regeneration/streaming, reproducibility, sufficiency, and fail-closed audit approval; manager-facing, not admitted to the future author |
 | `SCIENTIFIC_OWNER_ODQ_110A_APPROVAL_2026-08-29.md` | `3b478fce710f226be157602b0ee6e8e197fb6d4a003737a856b309bde3a5c5aa` | External transformation ownership, exact realization parity, and transformed-product-only uncertainty scope; manager-facing, not admitted to the future author |
+| `SCIENTIFIC_OWNER_ODQ_110B_APPROVAL_2026-08-29.md` | `4a438e1a4500e5fc94d26ac1bd46ccaf4be7a912054046eb3b3b573b663e88ba` | Wiener fixed-state classification, immutable successor-generation graph, dependence/nonvalidation, and per-member relearning separation; manager-facing, not admitted to the future author |
 
 ## Required Stage A Closure Packet
 
@@ -40,21 +41,21 @@ bytes close.
 
 | Directive item | Exact object and identity | SHA-256 | Authority/compatibility state |
 | --- | --- | --- | --- |
-| 1 | `SCOPE_BRIEF.md` | `d8fb5218096df193fec32bca3510133e7a4dc174d130e1fb8a6554f6c915eb45` | ODQ-101/102A/102B/102C/103/104/105A/105B/106/107/108/109/110A incorporated; ODQ-102D author-delegated; exact mechanics conditional |
-| 2 | `SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`, `SCI-NOI_OWNER_DECISIONS v0.1/r0.15` | `a82d38f44a4f001e30f276825e6ff0436e2ef72ff9444544f01e8c8118e1627f` | ODQ-101/102A/102B/102C/103/104/105A/105B/106/107/108/109/110A explicitly owner-approved; exact terminology and mechanics delegated |
+| 1 | `SCOPE_BRIEF.md` | `eebd1876a46808af5212cce981b2b6ba44b066b237445e1a2f31318c92d05d10` | ODQ-101/102A/102B/102C/103/104/105A/105B/106/107/108/109/110A/110B incorporated; ODQ-102D author-delegated; exact mechanics conditional |
+| 2 | `SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md`, `SCI-NOI_OWNER_DECISIONS v0.1/r0.16` | `67547a88056a80fe886536fcb5d78243e467e9bc1cc1c3d71bf7584c73c7ec31` | ODQ-101/102A/102B/102C/103/104/105A/105B/106/107/108/109/110A/110B explicitly owner-approved; exact terminology and mechanics delegated |
 | 3 | `SCI-MAP_TO_SCI-NOI_BOUNDARY.md`, `SCI-MAP_TO_SCI-NOI v0.1/r0.3` | `4273c5a75ff10d00506e5aa8732690cd3f398ff5afbaa561af8f1434ec467e29` | Sanitized exact-source extract; initial MAP STD selected but numerically unavailable; realized-MAP GEN unselected |
 | 4 | `SCI-JINC_TO_SCI-NOI_BOUNDARY.md`, `SCI-JINC_TO_SCI-NOI v0.1/r0.3` | `7bf0ff489957943cee5abcd581b6b6b1fea0840969d62ced4d73072cff8b51f8` | Sanitized exact-source extract; JINC STD/GEN routes separate, unselected, and unavailable |
 | 5 | `SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md`, `SCI-PTC_TO_SCI-NOI-GEN v0.1/r0.6` | `0a6484058569930cee62e80e04ca2045c107fde67603f662473ae471406f905c` | MAP route/coherence/network balance and source-suppression claim boundary selected; exact design author-delegated and unavailable; JINC host unselected |
-| 6 | `NOI_GEN_PARENT_OPERATOR_GRAPH.md`, `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.7` | `f8a4ec9f1f48f409bb08d7377ab1b858020506d4f0f9efadbba7230a2f1b15e3` | Approved conditioning, route, coherence, balance, consequential-state definition, and external transformation ownership/parity; exact mechanics author-delegated; five identities distinct |
+| 6 | `NOI_GEN_PARENT_OPERATOR_GRAPH.md`, `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.8` | `88aa7531d636d7917537bce429115d7176b48547b72c612f877a6286dc0a479c` | Approved conditioning, route, coherence, balance, external transformation ownership/parity, and Wiener fixed/successor/relearned separation; exact mechanics author-delegated |
 | 7 | `ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT_SPECIFICATION.md`, `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.7` | `f0927dad70bb8487cbdd798efb1c7d82f35755721cbcf49f24dcbd3c62e89b9f` | Design/claim boundary plus fail-closed plan-controlled persistence/regeneration modes approved; mechanics and terminology author-delegated |
 | 8 | `FINITE_DESIGN_UNC_ESTIMATOR_AND_COVARIANCE_TABLE.md`, `SCI-NOI_FINITE_DESIGN_UNC_TABLE v0.1/r0.5` | `cad960d438810942ee630b63dff05211ad831977d3fcd81fb8ab40042b820976` | Initial second moment, covariance/rank policy, and inverse conditional second-moment scale approved; numerical UNC/inverse unavailable |
 | 9 | `STD_NUMERATOR_SCALE_AND_CLAIM_TABLE.md`, `SCI-NOI_STD_NUMERATOR_SCALE_CLAIM v0.1/r0.4` | `ff24c6946104d0653469fe0f2921efcda39fbbc2a431e673528ce622f388d28e` | Initial MAP numerator/canonical square-root scale and unit-1 claim approved; numerical STD unavailable |
-| 10 | `SCI-NOI_VAL_PROFILE_DRAFTS.md` | `039f0a419c4492e7e587033aa26e9ef4dc22e9af52062f88bd9da8e1c2cc37c6` | Four NOI-owned drafts; persistence, fail-closed, and transformed-product parity restrictions proposed; unapproved/unregistered |
-| 11 | `FILTER_AND_FRUIT_SCOPE.md` | `f7374d3570aa424b6b8a0c86ae395799a15c324b5bbe9256d1c6f1fe0dd3fd93` | ODQ-110A ownership/parity approved; transformed routes unavailable pending exact owner authority; Wiener/FRUIT open |
-| 12 | `PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md`, `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.9` | `1ff5db6e1ae42bdf30d56ffc2123867a551c1ede3d3902ed5cff695a80a6cfc7` | GEN/UNC/STD lifecycle plus externally owned transformation, transformed realization, and persistence records explicit |
+| 10 | `SCI-NOI_VAL_PROFILE_DRAFTS.md` | `8c4ef256477d68d738873f2362947fef4dd7d445454970dc1103c162348ca153` | Four NOI-owned drafts; transformed-product and Wiener-successor parity/dependence restrictions proposed; unapproved/unregistered |
+| 11 | `FILTER_AND_FRUIT_SCOPE.md` | `2def8fe676b7ee0e4ff99e016ffa09ad5fcd241dc59ac6d8536d755dccb9628b` | ODQ-110A/B ownership, parity, and immutable Wiener successor rules approved; numerical routes gated; FRUIT open |
+| 12 | `PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md`, `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.10` | `936e1a4d3d039012dc0ff9764458aa91fb01e2375efa7228d464a177bb296209` | GEN/UNC/STD lifecycle plus external transformation, Wiener successor, and persistence records explicit |
 | 13 | Sanitized inherited/owner decision table in item 2 | same as item 2 | Single canonical decision artifact; no divergent copy |
-| 14 | `STAGE_A_CHANGE_LOG.md` | `52563c06568ee323e450a90bc5b7ad414bcf328a52ceeb0626cd3e461768ade7` | Manager-facing closure/ODQ history; not an author input |
-| 15 | `AUTHOR_PACKET_MANIFEST.md`, `SCI-NOI_AUTHOR_PACKET_MANIFEST v0.1/r0.15` | `c57d35ad098b0e6bbeb5666477a781128fb09b4632354372d0e8da9159fa0413` | Exactly 17 admitted author objects; firewall complete |
+| 14 | `STAGE_A_CHANGE_LOG.md` | `9e17298adcc818a8838b634be2e286648c395f433c67881962e3dce2a65eda5b` | Manager-facing closure/ODQ history; not an author input |
+| 15 | `AUTHOR_PACKET_MANIFEST.md`, `SCI-NOI_AUTHOR_PACKET_MANIFEST v0.1/r0.16` | `1571ad934cb90d53523263b96528661c0072a8f39de81809f93afa72f3691a0f` | Exactly 17 admitted author objects; firewall complete |
 | 16 | `BYTE_EQUALITY_AND_SOURCE_CLOSURE_REPORT.md`, this report | externally bound | Verification evidence only; not an author input |
 
 ## Author-Packet Equality
@@ -101,7 +102,7 @@ behavior, or production-status source was admitted or inspected during this
 closure. The future author packet contains only the 17 manifest-listed objects.
 
 ODQ-101, ODQ-102A/B/C, ODQ-103, ODQ-104, ODQ-105A/B, ODQ-106, ODQ-107,
-ODQ-108, ODQ-109, and ODQ-110A are incorporated without conflict.
+ODQ-108, ODQ-109, ODQ-110A, and ODQ-110B are incorporated without conflict.
 ODQ-103 requires the source-suppression intent and no-source-free-by-
 construction boundary while delegating exact terminology to Stage B. ODQ-104
 requires complete classification of scientifically consequential adjacent
@@ -141,13 +142,22 @@ regularize, replace, move, simplify, reinterpret, or silently omit the
 transformation. Missing/conflicting owner authority or parity makes the route
 unavailable; member-specific transformation relearning is a distinct ODQ-104
 method, and transformed uncertainty cannot be attached to another product.
+ODQ-110B treats an owner-defined Wiener transformation learned once and frozen
+before realization application as an ODQ-110A fixed-state transformation. If
+an NOI product informs owner learning, selection, or update, the prior NOI
+input, owner-learning generation, transformation, transformed science product,
+GEN, and successor UNC retain separate immutable identities and explicit
+dependence; the prior product is not independent validation and is not mutated.
+Per-member Wiener learning is a distinct ODQ-104 method and cannot mix with
+fixed members without an authorized mixture estimand. All numerical Wiener
+routes remain gated on exact owner and NOI boundaries.
 ODQ-102D delegates
 exact finite-design selection and rationale to the implementation-blind
 scientific-contract author and preserves the tolerance-conditioned construction
 as nonbinding guidance only. The ordinary PTC-to-frozen-MAP route, detector
 coherence, and network-stratified coefficient-balance family are selected, but
 the route remains numerically unavailable at its frozen gates and pending
-later acceptance of authored exact mechanics. ODQ-110B and later granular
+later acceptance of authored exact mechanics. ODQ-110C and later granular
 decisions remain open; every dependent numerical method is typed unavailable.
 NOI profile bytes remain unapproved/unregistered, and required SCI-VAL
 Registry/source-binding successors do not yet exist. Stage B was not launched.

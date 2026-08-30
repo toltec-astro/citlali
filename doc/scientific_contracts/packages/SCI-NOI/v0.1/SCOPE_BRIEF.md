@@ -407,7 +407,7 @@ dispatch prerequisite after owner approval, not scientific approval by VAL.
 
 ## 10. FLT, Wiener, And FRUIT Boundary
 
-The ODQ-110A-approved ownership/parity rule and the still-open ODQ-110B/C
+The ODQ-110A/B-approved ownership/parity and Wiener rules and the still-open ODQ-110C
 dispositions are recorded exactly in
 [`FILTER_AND_FRUIT_SCOPE.md`](FILTER_AND_FRUIT_SCOPE.md):
 
@@ -417,15 +417,21 @@ dispositions are recorded exactly in
   estimating uncertainty for the exact transformed scientific product;
 - the transformed route remains unavailable until the owner process supplies a
   content-bound authority with complete transformation and realization parity;
-- re-estimated Wiener filtering is unavailable without a complete inference/
-  feedback contract; and
+- an owner-defined Wiener transformation learned once and frozen before
+  realization application follows ODQ-110A, while use of an NOI product to
+  learn/select/update it creates a separate successor transformation/science/
+  GEN/UNC generation and per-member learning is a separate ODQ-104 method;
+- every numerical Wiener route remains unavailable until its exact owner
+  authority, inference/relearning contract where applicable, and NOI boundary
+  exist; and
 - fixed FRUIT residual and complete relearned FRUIT methods remain separate and
   unavailable until an exact FRUIT boundary exists.
 
-If `UNC_k` selects or constructs a later filter, the successor graph is
-`UNC_k -> FLT_(k+1) -> GEN_(k+1) -> UNC_(k+1)`. It does not mutate or validate
-`UNC_k`, and an uncertainty input to a Wiener operator is not independent
-evidence validating that operator in the same generation.
+If the transformation owner uses `UNC_k` to learn, select, or update a Wiener
+transformation, `UNC_k` is an immutable dependent input to a new owner-
+transformation, transformed-science, GEN, and UNC generation. It is not
+independent evidence validating the successor, and the successor cannot mutate
+or retroactively validate it.
 
 ## 11. Persistence And Immutable Companions
 
@@ -494,7 +500,10 @@ separate. ODQ-109 approves the three plan-controlled persistence/regeneration
 modes and their fail-closed/audit limits. ODQ-110A keeps transformation
 definition with the appropriate scientific process and requires exact
 application to admitted randomizations for transformed-product uncertainty.
-The next walkthrough question is `SCI-NOI-ODQ-110B`. Every later
+ODQ-110B classifies owner-frozen Wiener transforms under ODQ-110A, requires a
+new immutable generation when NOI products inform owner learning/update, and
+keeps per-member learning separate under ODQ-104. The next walkthrough question
+is `SCI-NOI-ODQ-110C`. Every later
 decision and the artifact's final hash still require explicit owner review.
 
 ## 13. Non-Goals And Claim Boundary

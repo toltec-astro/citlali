@@ -1,7 +1,7 @@
 # SCI-NOI v0.1 — Collision-Free Operator And Product Taxonomy
 
 Status: proposed sanitized Stage B author input; ODQ-101, ODQ-102A/B/C,
-ODQ-103/104/105A/105B/106/107/108/109/110A incorporated; exact bytes await owner approval
+ODQ-103/104/105A/105B/106/107/108/109/110A/110B incorporated; exact bytes await owner approval
 
 The semantic prefixes are:
 
@@ -37,6 +37,14 @@ The route-specific method candidates remain distinct:
 The exact DAG and required route-specific identity are in
 [`NOI_GEN_PARENT_OPERATOR_GRAPH.md`](NOI_GEN_PARENT_OPERATOR_GRAPH.md). Parent
 numerical coincidence or a shared sign law never merges method identities.
+
+ODQ-110B creates no NOI-owned Wiener algorithm identity. An exact Wiener
+transformation frozen by its scientific owner follows the owner-transformed
+candidate above. Owner learning/selection/update from a prior NOI product
+creates a separately versioned successor transformation, science-product,
+GEN, and UNC generation. Per-member Wiener learning is a distinct
+`NOI-GEN/RELEARNED@1` method. Every numerical Wiener route remains unavailable
+pending its exact owner authority and route-specific boundary.
 
 Inline consumption by MAP is a permitted representation, not transfer of
 scientific ownership. NOI owns assignment/design and realization identity;

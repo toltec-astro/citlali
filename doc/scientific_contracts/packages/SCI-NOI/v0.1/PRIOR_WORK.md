@@ -230,4 +230,13 @@ exactly that transformation to every admitted compatible randomization only to
 estimate uncertainty for the exact transformed product; it neither owns the
 transformation nor may substitute, move, omit, or relearn it inside the fixed-
 state method. The route remains unavailable pending exact owner authority and
-parity. The next owner question is `SCI-NOI-ODQ-110B`, Wiener scope.
+parity.
+ODQ-110B classifies an owner-defined Wiener transformation learned once and
+frozen before realization application under ODQ-110A. If an NOI product informs
+owner learning, selection, or update, the prior UNC input, transformation,
+transformed science product, GEN, and successor UNC remain separate immutable
+generations with explicit dependence and no independent-validation claim.
+Per-member Wiener learning is a distinct ODQ-104 method; fixed and relearned
+members cannot mix without a separately authorized estimand. All numerical
+Wiener routes remain gated. The next owner question is `SCI-NOI-ODQ-110C`,
+FRUIT scope.

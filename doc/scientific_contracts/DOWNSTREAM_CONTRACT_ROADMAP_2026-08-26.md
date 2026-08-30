@@ -179,8 +179,11 @@ ODQ-110A now keeps deterministic-transformation selection and definition with
 the appropriate upstream/downstream scientific process and requires NOI to
 apply exactly that transformation to every admitted compatible randomization
 when estimating uncertainty for the exact transformed product. The route
-remains unavailable until exact owner authority and parity are bound. ODQ-110B,
-Wiener scope, is next.
+remains unavailable until exact owner authority and parity are bound. ODQ-110B
+now treats an owner-frozen Wiener transformation under ODQ-110A, makes any NOI-
+informed owner learning/update a new immutable transformation/science/GEN/UNC
+generation, and keeps per-member learning separate under ODQ-104. Every
+numerical Wiener route remains gated. ODQ-110C, FRUIT scope, is next.
 Conditional Stage B remains blocked on exact
 bytes/hashes, granular owner decisions or explicit unavailability, and required
 source/profile bindings. The frozen MAP/pre-MAP

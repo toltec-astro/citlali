@@ -1,10 +1,11 @@
 # SCI-NOI v0.1 — NOI-GEN Parent And Operator Graph
 
-Artifact identity: `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.7`
+Artifact identity: `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.8`
 
 Status: ODQ-101 conditioning class, ODQ-102A route, ODQ-102B coherence,
 ODQ-102C network-stratified coefficient-balance family, ODQ-104 consequential-
-state identity, and ODQ-110A external transformation ownership/parity approved;
+state identity, ODQ-110A external transformation ownership/parity, and
+ODQ-110B Wiener fixed/successor/relearned separation approved;
 ODQ-102D delegates exact finite-design authorship; exact design and frozen
 boundary gates remain unavailable; other route-specific methods remain
 unselected and unavailable
@@ -58,6 +59,15 @@ uncertainty use. It may not choose, tune, regularize, replace, move, simplify,
 or reinterpret the transformation. The uncertainty applies only to the exact
 transformed product. If the transformation is rerun or relearned per member,
 the result is a distinct ODQ-104 method rather than this fixed-state route.
+
+For ODQ-110B, a Wiener transformation learned once by its owner and frozen
+before application to randomizations is an ODQ-110A owner-transformed route.
+If an NOI product helps the owner learn, select, or update the transformation,
+the exact prior NOI input, owner learning generation, resulting transformation,
+transformed science product, transformed GEN, and successor UNC have separate
+immutable identities and explicit dependence. A transformation learned per
+member is a distinct relearned method. No Wiener label transfers transformation
+or learning authority to NOI.
 
 ODQ-102B fixes the selected route's coherence map: all admitted PTC occurrences
 for one stable realized detector/channel in one observation map to the same

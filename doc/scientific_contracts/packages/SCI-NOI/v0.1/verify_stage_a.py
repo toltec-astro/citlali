@@ -126,6 +126,11 @@ def main() -> None:
         "appropriate upstream/downstream scientific process",
         "every admitted compatible randomization",
         "exact transformed scientific product",
+        "may be data-derived and still be fixed-state for NOI",
+        "begins a new scientific-product and NOI generation",
+        "`UNC_k` is an input to the successor transformation",
+        "not independent evidence validating",
+        "Learning or selecting a distinct Wiener operator for each realization",
     ]
     for token in required:
         if token not in package_text:

@@ -578,7 +578,20 @@ method. Every transformed route remains numerically unavailable until its owner
 supplies exact content-bound authority and the NOI parity interface is
 satisfied.
 
-The next walkthrough question is `SCI-NOI-ODQ-110B`, Wiener scope.
+Grant Wilson approved `SCI-NOI-ODQ-110B` on `2026-08-29`. A Wiener
+transformation learned once by its scientific owner and frozen before
+application to randomizations follows ODQ-110A even when data-derived. If an
+NOI product is used by that owner to learn, select, or update the
+transformation, the prior UNC input, owner-learning generation, resulting
+transformation, transformed science product, transformed GEN, and successor UNC
+are separate immutable generations with explicit dependence. The prior UNC is
+not independent evidence validating the successor and cannot be mutated.
+Per-realization Wiener learning is a distinct ODQ-104 method and cannot mix
+with fixed-Wiener members without an authorized mixture estimand. All numerical
+Wiener routes remain unavailable pending their exact owner authority,
+inference/relearning contract where applicable, and NOI boundary.
+
+The next walkthrough question is `SCI-NOI-ODQ-110C`, FRUIT scope.
 Later granular decisions, exact packet bytes/hashes, and
 required source/profile Registry bindings remain under owner review.
 MAP/pre-MAP numerical parents remain

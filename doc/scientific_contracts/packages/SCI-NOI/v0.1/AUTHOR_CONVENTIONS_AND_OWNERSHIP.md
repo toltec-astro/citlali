@@ -113,9 +113,20 @@ product. It may not infer, tune, substitute, relocate, simplify, or silently
 omit the transformation. Missing or conflicting parity makes the route
 unavailable.
 
-If `UNC_k` selects or constructs a later filter, the immutable successor graph
-is `UNC_k -> FLT_(k+1) -> GEN_(k+1) -> UNC_(k+1)`. Neither the later filter nor
-later uncertainty mutates or validates `UNC_k` retroactively.
+Under ODQ-110B, a Wiener transformation learned, selected, or updated by its
+owning process using `UNC_k` begins a new immutable generation:
+
+```text
+UNC_k -> TRANSFORM_OWNER:LearnSelect_(k+1) -> T_(k+1)
+science_parent -> T_(k+1) -> transformed_science_(k+1)
+GEN_base_(k+1) -> T_(k+1) -> GEN_transformed_(k+1) -> UNC_(k+1)
+```
+
+Neither `T_(k+1)` nor `UNC_(k+1)` mutates or validates `UNC_k`
+retroactively. `UNC_k` is a declared dependent input, not independent evidence
+for the successor. A Wiener transformation learned once by its owner and frozen
+before realization application follows ODQ-110A. A separately learned
+transformation per member is a distinct ODQ-104 method.
 
 ## Validity, Support, And Profiles
 
