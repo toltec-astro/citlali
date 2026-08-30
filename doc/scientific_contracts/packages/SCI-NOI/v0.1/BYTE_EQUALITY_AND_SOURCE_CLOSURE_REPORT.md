@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Byte-Equality And Source-Closure Report
 
-Report identity: `SCI-NOI_STAGE_A_SOURCE_CLOSURE v0.1/r0.18`
+Report identity: `SCI-NOI_STAGE_A_SOURCE_CLOSURE v0.1/r0.19`
 
 Prepared: `2026-08-29`; updated: `2026-08-30`
 
@@ -35,6 +35,22 @@ excluded from this file.
 | `SCIENTIFIC_OWNER_ODQ_110C_APPROVAL_2026-08-30.md` | `1f9c48dfb61994fa04a4e4b464850541a779e2d2922f32dd562892a262e20d98` | FRUIT ownership, fixed-state conditional scope, immutable successor generation, per-member replay separation, and no-mixing rule; manager-facing, not admitted to the future author |
 | `SCIENTIFIC_OWNER_ODQ_111_APPROVAL_2026-08-30.md` | `4e377dba46f8aead91ce14291ff6ae41de46476ff6cf3eab732d3aa29b503e67` | Four NOI-owned profile identities/actions, producer/NOI/VAL ownership, exact field conjunction, and no implicit action propagation approved; manager-facing, not admitted to the future author |
 
+## Exact SCI-VAL Registry And Source Closure
+
+The process-only Registry prerequisite is satisfied by three immutable
+objects outside the 17-object author packet:
+
+| Object | Exact identity | SHA-256 | Consequence |
+| --- | --- | --- | --- |
+| `../../SCI-VAL/v0.1/SOURCE_BINDING_REGISTER_NOI_STAGE_A_R0_18_2026-08-30.md` | `SCI-VAL_SOURCE_BINDING_REGISTER v0.1/r0.3-map-r0.7.1-jinc-stage-a-q002-noi-stage-a-r0.18-2026-08-30` | `04eca2da9ce76afacf18ae90dc2dbcb702fedbf55e03acb28e14e7dbc459a7c3` | Preserves all prior MAP/JINC rows and binds exact SCI-NOI r0.18 sources and unavailable states |
+| `../../SCI-VAL/v0.1/PROFILE_REGISTRY_NOI_STAGE_A_R0_18_2026-08-30.md` | `SCI-VAL_PROFILE_REGISTRY v0.1/r0.3-map-r0.7.1-jinc-stage-a-q002-noi-stage-a-r0.18-2026-08-30` | `5994f4dff49dff3a9c9da6fbb494671b14a2f926f325f1c7c4a9603a6c2a38c1` | Preserves all prior records and registers four exact NOI-owned `@1` profiles |
+| `SCI_VAL_REGISTRY_BINDING_2026-08-30.md` | Process-only SCI-NOI binding record | `739b5c7d7818a4292ae4b0beeab5a2d0356d77f0525bd0198e67181ae6d28a2e` | Records prerequisite closure without altering the author packet or launching Stage B |
+
+The earlier canonical and JINC successor files remain unchanged. Registration
+makes the supplied policy records evaluable only when exact request, source,
+applicability, eligibility and realization prerequisites exist; it does not
+make a missing numerical route or parent available.
+
 ## Required Stage A Closure Packet
 
 The exact local bytes requested by the closure directive reproduce the
@@ -52,11 +68,11 @@ bytes close.
 | 7 | `ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT_SPECIFICATION.md`, `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.7` | `f0927dad70bb8487cbdd798efb1c7d82f35755721cbcf49f24dcbd3c62e89b9f` | Design/claim boundary plus fail-closed plan-controlled persistence/regeneration modes approved; mechanics and terminology author-delegated |
 | 8 | `FINITE_DESIGN_UNC_ESTIMATOR_AND_COVARIANCE_TABLE.md`, `SCI-NOI_FINITE_DESIGN_UNC_TABLE v0.1/r0.5` | `cad960d438810942ee630b63dff05211ad831977d3fcd81fb8ab40042b820976` | Initial second moment, covariance/rank policy, and inverse conditional second-moment scale approved; numerical UNC/inverse unavailable |
 | 9 | `STD_NUMERATOR_SCALE_AND_CLAIM_TABLE.md`, `SCI-NOI_STD_NUMERATOR_SCALE_CLAIM v0.1/r0.4` | `ff24c6946104d0653469fe0f2921efcda39fbbc2a431e673528ce622f388d28e` | Initial MAP numerator/canonical square-root scale and unit-1 claim approved; numerical STD unavailable |
-| 10 | `SCI-NOI_VAL_PROFILE_DRAFTS.md` | `c89883d8c20f72aea05f0ae62464daee3a3ee6e81543ff313888ac318a192d6b` | Four exact NOI-owned policy identities/actions owner-approved; unregistered and unevaluable pending exact Registry/source binding |
+| 10 | `SCI-NOI_VAL_PROFILE_DRAFTS.md` | `c89883d8c20f72aea05f0ae62464daee3a3ee6e81543ff313888ac318a192d6b` | Four exact NOI-owned policy identities/actions owner-approved; this immutable pre-binding author object is now bound by the separate process-only successors above |
 | 11 | `FILTER_AND_FRUIT_SCOPE.md` | `08eba55f840e8f8aa265e1d2f1a981e16351a1c2460e74907cb4beb5ccb7df77` | ODQ-110A/B/C transformation, Wiener, and FRUIT ownership/generation rules approved; numerical routes gated |
 | 12 | `PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md`, `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.11` | `3d138d769c9629f93b0a493955d5a76f537d2d832c2b58de33fae595653e6212` | GEN/UNC/STD lifecycle plus ODQ-111 admission roles, external transformation, and Wiener/FRUIT successor/replay records explicit |
 | 13 | Sanitized inherited/owner decision table in item 2 | same as item 2 | Single canonical decision artifact; no divergent copy |
-| 14 | `STAGE_A_CHANGE_LOG.md` | `18a3eb1d28a28d445157256e135d25be8b184c9de1a8ebed213e48ea7313a6fe` | Manager-facing closure/ODQ history; not an author input |
+| 14 | `STAGE_A_CHANGE_LOG.md` | `bd89615c8ab7a2273b268d6dfcaf20c94e56c9b35063e4d82873635e436a64f6` | Manager-facing closure/ODQ and Registry/source history; not an author input |
 | 15 | `AUTHOR_PACKET_MANIFEST.md`, `SCI-NOI_AUTHOR_PACKET_MANIFEST v0.1/r0.18` | `b6f8e7252e7f61f4506899cb3e8e26cf939887bb48464852713f8ce81ac77ca0` | Exactly 17 admitted author objects; firewall complete |
 | 16 | `BYTE_EQUALITY_AND_SOURCE_CLOSURE_REPORT.md`, this report | externally bound | Verification evidence only; not an author input |
 
@@ -177,7 +193,8 @@ coherence, and network-stratified coefficient-balance family are selected, but
 the route remains numerically unavailable at its frozen gates and pending
 later acceptance of authored exact mechanics. No bounded Stage A owner decision
 remains open; every dependent numerical method is typed unavailable. The NOI
-profile policy/action bytes are owner-approved but unregistered and
-unevaluable, and required SCI-VAL Registry/source-binding successors do not yet
-exist. Exact final packet bytes/hashes remain unapproved. Stage B was not
-launched.
+profile policy/action bytes are owner-approved and bound by the exact process-
+only SCI-VAL Registry/source successors above. Evaluation remains conditional
+on exact inputs and every dependent numerical method remains unavailable at
+its declared gate. Exact final packet bytes/hashes remain unapproved. Stage B
+was not launched.

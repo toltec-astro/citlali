@@ -368,6 +368,32 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
      decision records. Exact Registry/source bindings and owner approval of the
      final packet bytes/hashes remain prerequisites to Stage B dispatch.
 
+## SCI-VAL Registry And Source-Binding Closure
+
+105. Preserved the existing MAP/JINC Registry and source-register files byte-
+     identically and created paired immutable SCI-NOI successor objects.
+106. Bound SCI-NOI Stage A r0.18 commit, author manifest, four owner-approved
+     policy/action records, sanitized decisions, ODQ-111 approval, three
+     boundary extracts, and frozen adjacent authorities in
+     `SCI-VAL_SOURCE_BINDING_REGISTER
+     v0.1/r0.3-map-r0.7.1-jinc-stage-a-q002-noi-stage-a-r0.18-2026-08-30`,
+     SHA-256
+     `04eca2da9ce76afacf18ae90dc2dbcb702fedbf55e03acb28e14e7dbc459a7c3`.
+107. Registered the four SCI-NOI `@1` profiles in
+     `SCI-VAL_PROFILE_REGISTRY
+     v0.1/r0.3-map-r0.7.1-jinc-stage-a-q002-noi-stage-a-r0.18-2026-08-30`,
+     SHA-256
+     `5994f4dff49dff3a9c9da6fbb494671b14a2f926f325f1c7c4a9603a6c2a38c1`,
+     without transferring producer-fact or NOI-policy ownership to VAL.
+108. Added process-only `SCI_VAL_REGISTRY_BINDING_2026-08-30.md`, SHA-256
+     `739b5c7d7818a4292ae4b0beeab5a2d0356d77f0525bd0198e67181ae6d28a2e`;
+     all 17 author-input objects and manifest r0.18 remain byte-identical.
+109. Preserved every typed numerical-unavailability gate and established no
+     implementation, validation, calibration, covariance-completeness,
+     significance, performance, readiness or production claim.
+110. Satisfied the process-only Registry/source prerequisite. Final exact-
+     packet owner approval and a separate Stage B launch remain required.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance
@@ -380,4 +406,5 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
   significance, performance, readiness, or production claim was established;
   and
 - Stage B remains unlaunched pending owner approval of the exact final packet
-  bytes/hashes and required SCI-VAL Registry/source bindings.
+  bytes/hashes and a separate launch; the process-only SCI-VAL Registry/source
+  prerequisite is satisfied.

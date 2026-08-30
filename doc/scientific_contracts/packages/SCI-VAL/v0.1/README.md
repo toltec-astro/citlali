@@ -3,8 +3,9 @@
 Producer facts and use-specific eligibility; not final map validity.
 
 Status: v0.1/r0.3 scientific authority frozen by Grant Wilson on `2026-08-24`;
-continuing immutable registry successor binds owner-approved SCI-JINC Stage A
-Q002; implementation conformity and validation not assessed
+continuing immutable registry successors bind owner-approved SCI-JINC Stage A
+Q002 and SCI-NOI Stage A r0.18 profiles; implementation conformity and
+validation not assessed
 
 Scientific contract version: `v0.1`
 
@@ -107,6 +108,10 @@ Producer and consumer ownership remains explicit:
   immutable SCI-JINC source-binding successor preserving the MAP-bound base
 - [`PROFILE_REGISTRY_JINC_STAGE_A_Q002_2026-08-28.md`](PROFILE_REGISTRY_JINC_STAGE_A_Q002_2026-08-28.md):
   immutable successor registering `SCI-JINC:jinc_map_contribution@1`
+- [`SOURCE_BINDING_REGISTER_NOI_STAGE_A_R0_18_2026-08-30.md`](SOURCE_BINDING_REGISTER_NOI_STAGE_A_R0_18_2026-08-30.md):
+  immutable SCI-NOI source-binding successor preserving MAP/JINC history
+- [`PROFILE_REGISTRY_NOI_STAGE_A_R0_18_2026-08-30.md`](PROFILE_REGISTRY_NOI_STAGE_A_R0_18_2026-08-30.md):
+  immutable successor registering four owner-approved SCI-NOI profiles
 - [`AUTHOR_DRAFT_DECISIONS.md`](AUTHOR_DRAFT_DECISIONS.md): eight first-pass
   derivation decisions, r0.2/r0.3 dispositions, and layered resolution of the
   six bounded questions
@@ -160,6 +165,15 @@ successor registers only the JINC-authored atomic admission rule, with response
 and uncertainty neutral-preserved as `advisory`; it does not authorize a PTC
 coefficient family, TolTEC numerical parameters, footprint placement,
 accumulation, implementation conformity, validation, performance or readiness.
+
+On `2026-08-30`, a further paired immutable successor bound the owner-approved
+SCI-NOI Stage A r0.18 source packet and registered its generation-input,
+uncertainty-member, uncertainty-ensemble, and standardization `@1` profiles.
+The prior MAP/JINC Registry files remain byte-identical. Producer facts remain
+producer-owned, NOI retains each policy/action, and VAL only binds/evaluates.
+Registration makes no missing finite-design mechanic, PTC MAP coefficient,
+numerical `coverage_cut`, MAP/JINC parent, transformed route, implementation,
+validation, performance or readiness state available.
 
 The scientist-facing rationale is a standalone 8-page narrative with the
 worked occurrence table on physical page 2. The 20-page engineering view

@@ -610,9 +610,11 @@ and consumer actions are approved. Producer facts remain producer-owned, NOI
 owns each named-use policy/action, and SCI-VAL may only bind and evaluate the
 approved immutable bytes. No generic pass, implicit next-operation realization,
 or cross-use veto/rescue follows. All bounded SCI-NOI Stage A owner decisions
-are complete. The approved profile bytes remain unregistered and unevaluable;
-exact packet bytes/hashes and required versioned source/profile Registry
-bindings remain under owner review before Stage B dispatch.
+are complete. Paired immutable SCI-VAL successors dated `2026-08-30` now bind
+the exact r0.18 source packet and register the four profiles while preserving
+all earlier MAP/JINC records. The process-only Registry/source prerequisite is
+satisfied; exact final packet bytes/hashes remain under owner review before a
+separate Stage B launch.
 MAP/pre-MAP numerical parents remain
 unavailable pending the exact PTC MAP-facing coefficient and owner-admitted
 numerical `coverage_cut`; JINC numerical parents remain unavailable under its

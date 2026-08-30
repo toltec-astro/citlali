@@ -1,7 +1,8 @@
 # SCI-NOI — Noise Realizations And Empirical Uncertainty
 
-Status: repaired Stage A candidate with all bounded owner decisions complete;
-final exact packet/Registry closure pending; Stage B not commissioned
+Status: repaired Stage A candidate with all bounded owner decisions and exact
+Registry/source closure complete; final exact-packet owner approval pending;
+Stage B not commissioned
 
 Version: `v0.1`
 
@@ -42,8 +43,9 @@ firewall are in [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).
 The bounded Stage A scientific decisions are owner-approved through ODQ-111,
 with ODQ-102D delegated to the implementation-blind scientific-contract
 author. No Stage B scientific author may be commissioned until Grant Wilson
-approves the exact final Scope Brief and content-bound packet, and the required
-SCI-VAL Registry/source successors are exact. The final Stage A repair was performed only from
+approves the exact final Scope Brief and content-bound packet. The required
+SCI-VAL Registry/source successors are now exact and process-only. The final
+Stage A repair was performed only from
 the supplied owner directive and existing scientific-authority/Stage A records;
 it did not inspect implementation, configuration, schemas, tests, audits,
 validation, reductions, Unity, defaults, or historical behavior.
@@ -63,8 +65,9 @@ validation, reductions, Unity, defaults, or historical behavior.
 - Exact MAP, JINC, and conditional pre-MAP PTC boundaries: proposed; numerical
   availability remains fail-closed.
 - NOI-owned GEN/UNC-member/UNC-ensemble/STD profile policy/action bytes:
-  owner-approved under ODQ-111; not registered or evaluable; GEN completion
-  ownership repaired.
+  owner-approved under ODQ-111 and registered/evaluable only through the exact
+  `2026-08-30` successors; GEN completion ownership repaired; numerical routes
+  remain unavailable at their declared gates.
 - Sanitized owner-decision artifact: all bounded decisions ODQ-101 through
   ODQ-111 approved; ODQ-102D delegates exact balanced finite-design authorship
   and preserves its proposed construction as nonbinding guidance.
@@ -185,6 +188,9 @@ those typed unavailable states and do not create numerical products.
 - [`SCIENTIFIC_OWNER_ODQ_111_APPROVAL_2026-08-30.md`](SCIENTIFIC_OWNER_ODQ_111_APPROVAL_2026-08-30.md):
   durable approval of four NOI-owned VAL profile identities and exact consumer
   actions
+- [`SCI_VAL_REGISTRY_BINDING_2026-08-30.md`](SCI_VAL_REGISTRY_BINDING_2026-08-30.md):
+  exact process-only SCI-VAL source/profile successor binding; author-input
+  bytes unchanged
 - [`OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md`](OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md):
   complete Stage A ownership matrix
 - [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): exact proposed
@@ -209,9 +215,9 @@ those typed unavailable states and do not create numerical products.
 
 Stop after presenting the exact final Stage A closure artifacts. All bounded
 owner decisions ODQ-101 through ODQ-111 are approved, and ODQ-102D is
-delegated to the scientific-contract author. The next gates are exact versioned
-SCI-VAL Registry/source bindings and owner approval of the final packet
-bytes/hashes. Do not
+delegated to the scientific-contract author. Exact versioned SCI-VAL Registry/
+source successors now exist; the remaining gate is owner approval of the final
+packet bytes/hashes and a separate Stage B launch. Do not
 draft the implementation-blind scientific rationale, shared normative core,
 engineering conformance specification, or PDFs until the exact conditional
 Stage B gate in the Scope Brief is satisfied. Do not implement or modify
