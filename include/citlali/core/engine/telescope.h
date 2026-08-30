@@ -62,8 +62,12 @@ public:
         {"Data.TelescopeBackend.TelDecAct", "TelDec"},
         {"Data.TelescopeBackend.SourceLAct", "TelL"},
         {"Data.TelescopeBackend.SourceBAct", "TelB"},
-        {"Data.TelescopeBackend.SourceRaAct", "TelRa"},
-        {"Data.TelescopeBackend.SourceDecAct", "TelDec"},
+        // Preserve the exact realized-source fields independently for the
+        // bounded SCI-AST scan-motion role. TelRa/TelDec retain their legacy
+        // TelRaAct/TelDecAct meaning and therefore remain behaviorally
+        // unchanged for established consumers.
+        {"Data.TelescopeBackend.SourceRaAct", "SourceRaAct"},
+        {"Data.TelescopeBackend.SourceDecAct", "SourceDecAct"},
         {"Data.TelescopeBackend.TelAzAct", "TelAzAct"},
         {"Data.TelescopeBackend.TelElAct", "TelElAct"},
         {"Data.TelescopeBackend.SourceAz", "SourceAz"},

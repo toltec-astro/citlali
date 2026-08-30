@@ -211,10 +211,12 @@ is `(observation, subobservation, scan)`, realized motion uses
 strictly-greater-than-2-arcsec result of the approved eleven-record robust
 position test, and velocity is the norm of the approved eleven-record quadratic
 J2000 tangent derivative. AST owns the compact raw maximum; ALIGN supplies
-network-specific mapped views without a common grid. The implementation and
-conformance described by [ADR 0018](adr/0018-ast-scan-motion-velocity-and-validity.md),
-PSD/filter-bank certification, and the remaining gates must pass before any
-nonidentity implementation is available. Governing structural authority is
+network-specific mapped views without a common grid. The bounded raw product
+and mapped-view implementation described by
+[ADR 0018](adr/0018-ast-scan-motion-velocity-and-validity.md) passes local
+synthetic and repository gates. Representative AST conformance, PSD/filter-bank
+certification, and the remaining gates must pass before any nonidentity
+implementation is available. Governing structural authority is
 [`WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md`](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
 and its
 [`crosswalk`](WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md).

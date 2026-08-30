@@ -1,6 +1,6 @@
 # Citlali Refactor Status
 
-## 2026-08-30 WP-7 AST Scan-Motion Authority Approval
+## 2026-08-30 WP-7 AST Scan-Motion Bounded Implementation
 
 The scientific owner approved
 [`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md),
@@ -15,21 +15,36 @@ quadratic derivative, scalar velocity, typed validity/causes, compact raw scan
 maximum, and network-specific mapped motion views. It preserves independent
 network timing and does not request a common analysis grid.
 
-Approval authorizes the bounded AST implementation; it does not establish that
-implementation's conformance or authorize nonidentity RTC by itself. The
-retained observation-152390 telescope file remains diagnostic evidence: two
+The bounded raw product and independent ALIGN network-mapped views are now
+implemented in
+[`ast_scan_motion.h`](../include/citlali/core/pipeline/ast_scan_motion.h) and
+[`ast_scan_motion_alignment.h`](../include/citlali/core/pipeline/ast_scan_motion_alignment.h).
+The implementation moves the exact `TelTime`, `SourceRaAct`, and `SourceDecAct`
+producer planes into one immutable source carrier, owns one contiguous compact
+derived-record plane, preserves exact global telescope-record and physical-scan
+identity, and retains network-native occurrence/time through typed ALIGN
+handles. Ordinary AST has no common-analysis-grid dependency. The established
+legacy `TelRaAct`/`TelDecAct` aliases remain unchanged while the exact realized-
+source fields are now retained separately for this role.
+
+The candidate passes all 12 focused AST/ALIGN synthetic and dependency cases,
+all 882 runnable repository CTests with the one established disabled test
+unchanged, all 207 baseline-tool tests, the full required config gate with all
+129 unit tests and downstream audits, public-header isolation compilation, and
+the local `citlali_cli` build. These local gates do not establish representative
+conformance or authorize nonidentity RTC by themselves. The retained
+observation-152390 telescope file remains diagnostic evidence: two
 isolated approximately 28--29 arcsec one-record discontinuities must be typed
 as defects while sustained, locally corroborated motion above 200 arcsec/s
 remains eligible. The evidence-only candidate maximum of approximately
 221.405 arcsec/s is not an accepted AST product or RTC planning input until the
-implementation, representative evidence, repository gates, and fresh exact-SHA
-review pass.
+representative evidence and fresh exact-SHA review pass.
 
-The immediate next action is the compact immutable raw AST scan-motion product
-and network-specific mapped views, followed by the packet's focused synthetic,
-two-network, chunk-invariance, representative-152390, repository, and
-independent-review gates. Filter-bank/PSD and native-rate versus filtered
-naive/JINC and OOF/fruitloops certification remain separate prerequisites.
+The immediate next action is a clean observation-152390 AST evidence package,
+followed by fresh independent exact-SHA conformance review. Filter-bank/PSD and
+native-rate versus filtered naive/JINC and OOF/fruitloops certification remain
+separate prerequisites. No nonidentity RTC numerical method or terminal
+publication is activated.
 
 ## 2026-08-30 WP-7 RTC Filter-Bank Policy Correction
 
@@ -73,9 +88,10 @@ semantics, centered phase, DC bound, binary64 arithmetic, safety margins,
 network timing, paired `x/r` semantics, and inadequate-input `M=1` disposition
 remain unchanged. The AST velocity/validity authority is now closed by
 [`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md);
-its implementation/conformance and the versioned PSD/filter-bank plus
-naive/JINC and OOF/fruitloops certification artifacts remain prerequisites. No
-nonidentity RTC implementation or production activation is authorized yet.
+its bounded implementation now passes local gates. Representative conformance,
+the versioned PSD/filter-bank, and naive/JINC and OOF/fruitloops certification
+artifacts remain prerequisites. No nonidentity RTC implementation or
+production activation is authorized yet.
 
 The authority-only correction passes its v2 link/manifest consistency guard,
 the local `citlali_cli` build, all 870 runnable CTests with the one established
@@ -113,16 +129,17 @@ they estimate array-specific factors `M=2`, `M=3`, and `M=4`, but those tap
 counts are not certified coefficient artifacts. Observation 152390 still
 cannot supply an authoritative realized plan: its Lissajous header scale is
 consistent with 50 arcsec/s while its unit attribute conflicts, and no accepted
-AST product yet supplies science-scan membership, derivative validity/causes,
-telemetry-defect disposition, and the required actual maximum. No derivative
-or smoothing rule is invented here.
+representative AST product yet supplies science-scan membership, derivative
+validity/causes, telemetry-defect disposition, and the required actual maximum.
+No derivative or smoothing rule is invented here.
 
 At v1 approval, the next bounded authority task was the AST velocity/validity
 prerequisite. That authority is now closed by `wp7-ast-scan-motion-v1`; its
-implementation and conformance remain pending. V2 additionally requires the
-offline PSD, filter-bank, naive/JINC, and OOF/fruitloops certification described
-above. No common grid, persistent RTC TOD schema, production activation, CAL,
-VAL, or PTC/PCA expansion is opened.
+bounded implementation passes local gates while representative conformance
+remains pending. V2 additionally requires the offline PSD, filter-bank,
+naive/JINC, and OOF/fruitloops certification described above. No common grid,
+persistent RTC TOD schema, production activation, CAL, VAL, or PTC/PCA
+expansion is opened.
 
 At preparation revision `8051cc51ec0b3e7a5ce33a76c1172fe3c3faf832`, the
 candidate JSON regenerated byte-for-byte, its six focused tests passed, and the

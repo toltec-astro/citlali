@@ -2,7 +2,8 @@
 
 Status: accepted scientific structure 2026-08-29; numerical-policy portion
 partially superseded by ADR 0017 on 2026-08-30; AST authority closed by ADR
-0018; AST implementation, certified filter bank, and RTC implementation pending
+0018; bounded AST implementation locally gated; representative AST
+conformance, certified filter bank, and RTC implementation pending
 
 Decision owners: Citlali project owner and scientific owner
 

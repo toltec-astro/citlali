@@ -1,7 +1,7 @@
 # ADR 0018: AST scan-motion velocity and validity
 
-Status: accepted bounded scientific-owner authority 2026-08-30;
-implementation and conformance pending
+Status: accepted bounded scientific-owner authority 2026-08-30; bounded
+implementation passes local gates; representative-data conformance pending
 
 Decision owners: Citlali project owner and scientific owner
 
@@ -63,9 +63,9 @@ Changing them requires a named successor authority and new evidence.
 ## Consequences
 
 - The bounded AST scientific-authority prerequisite in ADRs 0016 and 0017 is
-  closed. Its implementation, representative-data evidence, and independent
-  exact-SHA conformance review remain required before nonidentity RTC consumes
-  the role.
+  closed. The raw product and network-specific mapped views pass local gates;
+  representative-data evidence and independent exact-SHA conformance review
+  remain required before nonidentity RTC consumes the role.
 - The observation-152390 value near `221.405 arcsec/s` remains diagnostic
   evidence, not an accepted product or planning input, until those gates pass.
 - Independent network timing under ADR 0015 remains unchanged. A synchronous
@@ -85,3 +85,5 @@ Changing them requires a named successor authority and new evidence.
 - [Network-specific timing decision](0015-network-specific-timing-and-common-analysis-grid.md)
 - [Scan/array RTC planning decision](0016-scan-array-rtc-bandwidth-planning.md)
 - [Pre-certified filter-bank decision](0017-precertified-rtc-filter-bank-and-science-error-budgets.md)
+- [`AstScanMotionProduct` public contract](../../include/citlali/core/pipeline/ast_scan_motion.h)
+- [ALIGN network-mapped view contract](../../include/citlali/core/pipeline/ast_scan_motion_alignment.h)

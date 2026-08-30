@@ -7,8 +7,9 @@ Scientific owner: Grant Wilson
 Authority identity: `wp7-rtc-scan-array-numerical-policy-v2`
 
 Status: **approved bounded correction; AST authority closed by
-`wp7-ast-scan-motion-v1`; AST implementation, certified filter-bank artifacts,
-RTC implementation, and acceptance evidence pending**
+`wp7-ast-scan-motion-v1`; bounded AST implementation locally gated;
+representative AST conformance, certified filter-bank artifacts, RTC
+implementation, and acceptance evidence pending**
 
 Supersedes only the response-budget, alias-budget, and runtime-filter-design
 clauses of

@@ -4,9 +4,10 @@ Date: 2026-08-30
 
 Scientific owner: Grant Wilson
 
-Status: approved bounded scientific-owner authority 2026-08-30; AST
-implementation and conformance pending; no nonidentity RTC implementation
-authorized by this packet alone
+Status: approved bounded scientific-owner authority 2026-08-30; bounded AST
+implementation passes local gates, with representative-data conformance and
+exact-SHA review pending; no nonidentity RTC implementation authorized by this
+packet alone
 
 Authority identity: `wp7-ast-scan-motion-v1`
 

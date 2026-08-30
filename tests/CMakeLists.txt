@@ -131,6 +131,8 @@ add_executable(citlali_sci_align_test EXCLUDE_FROM_ALL
 )
 
 add_executable(citlali_wp7_timestream_test EXCLUDE_FROM_ALL
+    ast_scan_motion_header.cpp
+    ast_scan_motion_alignment_header.cpp
     timestream_native_identity_header.cpp
     timestream_native_timing_header.cpp
     paired_readout_header.cpp
@@ -144,8 +146,11 @@ add_executable(citlali_wp7_timestream_test EXCLUDE_FROM_ALL
     test_network_timed_rtc_pass_through.cpp
     test_network_timed_rtc_only_route.cpp
     test_rtc_only_route.cpp
+    test_ast_scan_motion.cpp
 )
 set_source_files_properties(
+    ast_scan_motion_header.cpp
+    ast_scan_motion_alignment_header.cpp
     timestream_native_identity_header.cpp
     timestream_native_timing_header.cpp
     paired_readout_header.cpp
