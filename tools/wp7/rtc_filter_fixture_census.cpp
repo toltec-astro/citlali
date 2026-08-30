@@ -45,7 +45,7 @@ namespace apt = citlali::pipeline::canonical_apt_v2;
 namespace fixture = citlali::wp7::rtc_filter_fixture;
 
 constexpr std::string_view schema =
-    "citlali-wp7-rtc-filter-fixture-census-v1";
+    "citlali-wp7-rtc-filter-fixture-census-v2";
 constexpr double maximum_cadence_fractional_uncertainty = 1.0e-4;
 
 [[noreturn]] void fail(const std::string &message) {
@@ -575,9 +575,17 @@ ProductEvidence build_product_evidence(
     return result;
 }
 
+struct NetworkMotionEvidence {
+    std::vector<double> mapped_speeds_arcsec_per_sec;
+    std::vector<std::uint8_t> continues_previous;
+};
+
 struct MappingEvidence {
     std::map<std::int64_t, std::size_t> available_by_network;
     std::map<std::int64_t, std::size_t> unavailable_by_network;
+    std::map<std::int64_t, std::map<std::uint32_t, std::size_t>>
+        unavailable_causes_by_network;
+    std::map<std::int64_t, NetworkMotionEvidence> motion_by_network;
     std::size_t identity_mismatch_count = 0;
     std::size_t missing_support_count = 0;
 };
@@ -596,16 +604,39 @@ MappingEvidence map_ast_to_networks(
         const auto &view = views->network(input.network);
         result.available_by_network.try_emplace(input.network, 0);
         result.unavailable_by_network.try_emplace(input.network, 0);
+        result.unavailable_causes_by_network.try_emplace(input.network);
+        auto [motion_position, inserted] =
+            result.motion_by_network.try_emplace(input.network);
+        require(inserted, "AST mapping repeats a participant network");
+        auto &motion = motion_position->second;
+        motion.mapped_speeds_arcsec_per_sec.assign(
+            view.occurrence_count(),
+            std::numeric_limits<double>::quiet_NaN());
+        motion.continues_previous.assign(view.occurrence_count(), 0U);
         for (pipeline::TimestreamNativeRow row = view.first_native_row();
              row < view.past_last_native_row(); ++row) {
+            const auto local = static_cast<std::size_t>(
+                row - view.first_native_row());
             result.identity_mismatch_count +=
                 !(view.identity(row) == input.timing->identity(row));
+            if (local != 0U) {
+                const auto &counters = input.timing->packet_counters();
+                motion.continues_previous[local] =
+                    pipeline::packet_counters_are_contiguous(
+                        counters[local - 1U], counters[local])
+                    ? 1U
+                    : 0U;
+            }
             const auto &record = view.record(row);
             if (record.available()) {
                 ++result.available_by_network[input.network];
                 result.missing_support_count += !view.support(row).has_value();
+                motion.mapped_speeds_arcsec_per_sec[local] =
+                    record.scalar_speed_arcsec_per_sec();
             } else {
                 ++result.unavailable_by_network[input.network];
+                ++result.unavailable_causes_by_network[input.network]
+                      [static_cast<std::uint32_t>(record.causes())];
             }
         }
     }
@@ -643,6 +674,62 @@ std::vector<CadenceGroup> cadence_groups(
         result.push_back(std::move(group));
     }
     return result;
+}
+
+const NetworkInput &network_input(
+    const std::vector<NetworkInput> &inputs, std::int64_t network) {
+    const auto position = std::find_if(
+        inputs.begin(), inputs.end(), [network](const auto &input) {
+            return input.network == network;
+        });
+    require(position != inputs.end(),
+            "cadence group names an absent participant network");
+    return *position;
+}
+
+void write_occurrence_admission(
+    std::ostream &output, const NetworkInput &input,
+    const NetworkMotionEvidence &motion,
+    double upper_speed_ceiling_arcsec_per_sec) {
+    const auto admission = fixture::summarize_occurrence_admission(
+        motion.mapped_speeds_arcsec_per_sec,
+        motion.continues_previous,
+        upper_speed_ceiling_arcsec_per_sec);
+    const double primitive_occurrence_duration_sec =
+        static_cast<double>(input.accumulation_length) /
+        input.fpga_frequency_hz;
+    const auto duration = [&](std::size_t count) {
+        return static_cast<double>(count) *
+            primitive_occurrence_duration_sec;
+    };
+    output << "{\"network\": " << input.network
+           << ", \"occurrence_count\": " << admission.occurrence_count
+           << ", \"ast_unavailable_count\": "
+           << admission.ast_unavailable_count
+           << ", \"ast_unavailable_duration_sec\": "
+           << duration(admission.ast_unavailable_count)
+           << ", \"below_minimum_science_scan_speed_count\": "
+           << admission.below_minimum_science_speed_count
+           << ", \"below_minimum_science_scan_speed_duration_sec\": "
+           << duration(admission.below_minimum_science_speed_count)
+           << ", \"base_admitted_count\": "
+           << admission.base_admitted_count
+           << ", \"base_admitted_duration_sec\": "
+           << duration(admission.base_admitted_count)
+           << ", \"upper_speed_admitted_count\": "
+           << admission.upper_speed_admitted_count
+           << ", \"upper_speed_admitted_duration_sec\": "
+           << duration(admission.upper_speed_admitted_count)
+           << ", \"scan_speed_above_mode_support_count\": "
+           << admission.scan_speed_above_mode_support_count
+           << ", \"scan_speed_above_mode_support_duration_sec\": "
+           << duration(admission.scan_speed_above_mode_support_count)
+           << ", \"retained_run_count\": "
+           << admission.retained_run_count
+           << ", \"longest_retained_run_occurrences\": "
+           << admission.longest_retained_run_occurrences
+           << ", \"longest_retained_run_duration_sec\": "
+           << duration(admission.longest_retained_run_occurrences) << '}';
 }
 
 void write_file(std::ostream &output, const FileEvidence &file) {
@@ -696,7 +783,10 @@ void write_record(
            << "    \"ast_engineering_partition_count\": 3,\n"
            << "    \"rtc_arithmetic_controls\": \"not-applicable-no-rtc-operator\"\n"
            << "  },\n"
-           << "  \"policy_id\": \"" << fixture::policy_id << "\",\n"
+           << "  \"numerical_policy_id\": \""
+           << fixture::numerical_policy_id << "\",\n"
+           << "  \"speed_admission_policy_id\": \""
+           << fixture::speed_admission_policy_id << "\",\n"
            << "  \"observation\": " << scope.observation << ",\n"
            << "  \"subobservation\": " << scope.subobservation << ",\n"
            << "  \"scan\": " << scope.scan << ",\n"
@@ -815,6 +905,9 @@ void write_record(
                << input.fpga_frequency_hz
                << ", \"accumulation_length\": "
                << input.accumulation_length
+               << ", \"primitive_occurrence_duration_sec\": "
+               << static_cast<double>(input.accumulation_length) /
+                      input.fpga_frequency_hz
                << ", \"contiguous_run_count\": " << input.runs.size()
                << ", \"shortest_run_occurrences\": " << shortest_run
                << ", \"longest_run_occurrences\": " << longest_run
@@ -834,7 +927,16 @@ void write_record(
                << ", \"mapped_ast_available_count\": "
                << mapping.available_by_network.at(input.network)
                << ", \"mapped_ast_unavailable_count\": "
-               << mapping.unavailable_by_network.at(input.network) << '}';
+               << mapping.unavailable_by_network.at(input.network)
+               << ", \"mapped_ast_unavailable_causes\": {";
+        const auto &cause_counts =
+            mapping.unavailable_causes_by_network.at(input.network);
+        std::size_t cause_index = 0;
+        for (const auto &[cause, count] : cause_counts) {
+            if (cause_index++ != 0U) output << ", ";
+            output << '\"' << cause << "\": " << count;
+        }
+        output << "}}";
         if (index + 1 != inputs.size()) output << ',';
         output << '\n';
     }
@@ -845,7 +947,7 @@ void write_record(
            << mapping.identity_mismatch_count << ",\n"
            << "    \"missing_support_count\": "
            << mapping.missing_support_count << "\n  },\n"
-           << "  \"cadence_domains\": [\n";
+           << "  \"candidate_mode_domains\": [\n";
     for (std::size_t group_index = 0; group_index < groups.size();
          ++group_index) {
         const auto &group = groups[group_index];
@@ -860,49 +962,75 @@ void write_record(
         output << "], \"cadence_uncertainty_within_100ppm\": "
                << (group.cadence_uncertainty_within_margin
                        ? "true" : "false")
-               << ", \"factor_eligibility\": [\n";
+               << ", \"duration_basis\": "
+                  "\"occurrence-count-times-accumulation-length-divided-by-fpga-frequency\""
+               << ", \"automatic_factor_selection_authorized\": false"
+               << ", \"factor_candidates\": [\n";
         for (int factor = fixture::minimum_factor;
              factor <= fixture::maximum_factor; ++factor) {
-            output << "      {\"factor\": " << factor;
-            if (!summary.maximum_available) {
-                output << ", \"status\": \"ast_maximum_unavailable\"";
-            } else if (!group.cadence_uncertainty_within_margin) {
-                output << ", \"status\": "
-                          "\"cadence_uncertainty_exceeds_margin\"";
-            } else {
-                const auto evidence = fixture::evaluate_factor(
-                    group.array, group.sample_frequency_hz,
-                    summary.maximum_speed_arcsec_per_sec, factor);
-                std::string_view status = "sampling_ineligible";
-                if (evidence.sampling_eligible()) {
-                    status = factor == 1
-                        ? "identity_sampling_eligible"
-                        : "sampling_eligible_filter_certification_pending";
-                } else if (factor == 1) {
-                    status =
-                        "input_cadence_inadequate_for_science_band";
-                }
-                output << ", \"status\": \"" << status
-                       << "\", \"safe_output_sample_rate_hz\": "
-                       << evidence.safe_output_sample_rate_hz
-                       << ", \"safe_output_nyquist_hz\": "
-                       << evidence.safe_output_nyquist_hz
-                       << ", \"planned_speed_arcsec_per_sec\": "
-                       << evidence.planned_speed_arcsec_per_sec
-                       << ", \"airy_fwhm_arcsec\": "
-                       << evidence.airy_fwhm_arcsec
-                       << ", \"science_cutoff_hz\": "
-                       << evidence.science_cutoff_hz
-                       << ", \"output_samples_per_airy_fwhm\": "
-                       << evidence.output_samples_per_airy_fwhm
-                       << ", \"science_band_sampling_adequate\": "
-                       << (evidence.science_band_sampling_adequate
-                               ? "true" : "false")
-                       << ", \"beam_sampling_adequate\": "
-                       << (evidence.beam_sampling_adequate
-                               ? "true" : "false");
+            const auto evidence = fixture::evaluate_structural_mode(
+                group.array, group.sample_frequency_hz, factor);
+            std::string_view status =
+                evidence.has_science_speed_domain()
+                ? "structural-upper-bound-available"
+                : "structural-domain-below-minimum-science-speed";
+            if (!group.cadence_uncertainty_within_margin) {
+                status = "cadence-uncertainty-exceeds-margin";
             }
-            output << '}';
+            output << "      {\"factor\": " << factor
+                   << ", \"status\": \"" << status
+                   << "\", \"ceiling_status\": "
+                      "\"structural-upper-bound-pending-filter-certification\""
+                   << ", \"output_sample_rate_hz\": "
+                   << evidence.output_sample_rate_hz
+                   << ", \"safe_output_sample_rate_hz\": "
+                   << evidence.safe_output_sample_rate_hz
+                   << ", \"safe_output_nyquist_hz\": "
+                   << evidence.safe_output_nyquist_hz
+                   << ", \"wavelength_m\": " << evidence.wavelength_m
+                   << ", \"airy_fwhm_arcsec\": "
+                   << evidence.airy_fwhm_arcsec
+                   << ", \"science_band_ceiling_arcsec_per_sec\": "
+                   << evidence.science_band_ceiling_arcsec_per_sec
+                   << ", \"beam_sampling_ceiling_arcsec_per_sec\": "
+                   << evidence.beam_sampling_ceiling_arcsec_per_sec
+                   << ", \"upper_speed_ceiling_arcsec_per_sec\": "
+                   << evidence.upper_speed_ceiling_arcsec_per_sec
+                   << ", \"upper_boundary_inclusive\": true"
+                   << ", \"governing_constraint\": \""
+                   << fixture::constraint_name(
+                          evidence.governing_constraint)
+                   << "\", \"minimum_science_speed_arcsec_per_sec\": "
+                   << fixture::minimum_science_speed_arcsec_per_sec
+                   << ", \"upper_speed_typed_cause\": "
+                      "\"scan_speed_above_mode_support\""
+                   << ", \"occurrence_admission_by_network\": [\n";
+            for (std::size_t network_index = 0;
+                 network_index < group.networks.size(); ++network_index) {
+                const auto network = group.networks[network_index];
+                output << "        ";
+                write_occurrence_admission(
+                    output, network_input(inputs, network),
+                    mapping.motion_by_network.at(network),
+                    evidence.upper_speed_ceiling_arcsec_per_sec);
+                if (network_index + 1U != group.networks.size()) {
+                    output << ',';
+                }
+                output << '\n';
+            }
+            output << "      ], \"support_erosion\": {";
+            if (factor == 1) {
+                output << "\"status\": "
+                          "\"exact-occurrence-local-m1-no-filter\", "
+                          "\"support_eroded_output_count\": 0, "
+                          "\"support_eroded_output_duration_sec\": 0";
+            } else {
+                output << "\"status\": "
+                          "\"pending-exact-filter-coefficients-and-half-support\", "
+                          "\"support_eroded_output_count\": null, "
+                          "\"support_eroded_output_duration_sec\": null";
+            }
+            output << "}}";
             if (factor != fixture::maximum_factor) output << ',';
             output << '\n';
         }
@@ -915,6 +1043,7 @@ void write_record(
            << (arguments.source_clean && matched_relation_available
                    ? "true" : "false") << ",\n"
            << "  \"structural_screen_only\": true,\n"
+           << "  \"automatic_factor_selection_authorized\": false,\n"
            << "  \"filter_bank_certified\": false,\n"
            << "  \"unexpected_error_count\": 0\n"
            << "}\n";

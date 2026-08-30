@@ -9,6 +9,7 @@
 #include <array>
 #include <cmath>
 #include <cstdint>
+#include <limits>
 #include <vector>
 
 namespace {
@@ -72,89 +73,105 @@ TEST(RtcFilterFixtureCensus, GapRemainsLocalToItsOriginatingNetwork) {
 }
 
 TEST(RtcFilterFixtureCensus, UsesExactApprovedArrayModel) {
-    const auto evidence = fixture::evaluate_factor(
-        fixture::Array::a1100, 1000.0, 1.0, 1);
+    const auto evidence = fixture::evaluate_structural_mode(
+        fixture::Array::a1100, 1000.0, 1);
 
     EXPECT_DOUBLE_EQ(evidence.wavelength_m, 299792458.0 / 272.0e9);
     EXPECT_NEAR(evidence.airy_fwhm_arcsec, 4.6786413788, 5.0e-11);
     EXPECT_DOUBLE_EQ(evidence.safe_input_sample_rate_hz, 999.9);
-    EXPECT_TRUE(evidence.sampling_eligible());
+    EXPECT_EQ(evidence.governing_constraint,
+              fixture::StructuralCeilingConstraint::beam_sampling);
+    EXPECT_TRUE(evidence.has_science_speed_domain());
 }
 
-TEST(RtcFilterFixtureCensus, ScreensEveryFactorWithoutCertifyingAFilter) {
+TEST(RtcFilterFixtureCensus,
+     DerivesStructuralCeilingsWithoutUsingTheScanMaximum) {
     constexpr double sample_rate_hz = 122.0703125;
-    constexpr double accepted_152390_maximum_arcsec_per_sec =
-        221.40490828695155;
 
-    const auto a1100 = fixture::evaluate_factor(
-        fixture::Array::a1100, sample_rate_hz,
-        accepted_152390_maximum_arcsec_per_sec, 1);
-    const auto a1400 = fixture::evaluate_factor(
-        fixture::Array::a1400, sample_rate_hz,
-        accepted_152390_maximum_arcsec_per_sec, 1);
-    const auto a2000 = fixture::evaluate_factor(
-        fixture::Array::a2000, sample_rate_hz,
-        accepted_152390_maximum_arcsec_per_sec, 1);
+    const auto a1100 = fixture::evaluate_structural_mode(
+        fixture::Array::a1100, sample_rate_hz, 1);
+    const auto a1400 = fixture::evaluate_structural_mode(
+        fixture::Array::a1400, sample_rate_hz, 1);
+    const auto a2000 = fixture::evaluate_structural_mode(
+        fixture::Array::a2000, sample_rate_hz, 1);
 
-    EXPECT_TRUE(a1100.science_band_sampling_adequate);
-    EXPECT_FALSE(a1100.beam_sampling_adequate);
-    EXPECT_FALSE(a1100.sampling_eligible());
-    EXPECT_TRUE(a1400.science_band_sampling_adequate);
-    EXPECT_FALSE(a1400.beam_sampling_adequate);
-    EXPECT_FALSE(a1400.sampling_eligible());
-    EXPECT_TRUE(a2000.science_band_sampling_adequate);
-    EXPECT_TRUE(a2000.beam_sampling_adequate);
-    EXPECT_TRUE(a2000.sampling_eligible());
+    EXPECT_NEAR(a1100.upper_speed_ceiling_arcsec_per_sec,
+                135.9681197283374, 1.0e-12);
+    EXPECT_NEAR(a1400.upper_speed_ceiling_arcsec_per_sec,
+                172.8192923649896, 1.0e-12);
+    EXPECT_NEAR(a2000.upper_speed_ceiling_arcsec_per_sec,
+                246.55552377405178, 1.0e-12);
+    EXPECT_EQ(a1100.governing_constraint,
+              fixture::StructuralCeilingConstraint::beam_sampling);
+    EXPECT_LT(a1100.upper_speed_ceiling_arcsec_per_sec,
+              a1400.upper_speed_ceiling_arcsec_per_sec);
+    EXPECT_LT(a1400.upper_speed_ceiling_arcsec_per_sec,
+              a2000.upper_speed_ceiling_arcsec_per_sec);
 
+    double previous_ceiling =
+        std::numeric_limits<double>::infinity();
     for (int factor = fixture::minimum_factor;
          factor <= fixture::maximum_factor; ++factor) {
-        const auto evidence = fixture::evaluate_factor(
-            fixture::Array::a2000, sample_rate_hz,
-            accepted_152390_maximum_arcsec_per_sec, factor);
-        if (factor == 1) {
-            EXPECT_TRUE(evidence.sampling_eligible());
-        } else {
-            EXPECT_FALSE(evidence.sampling_eligible());
-        }
+        const auto evidence = fixture::evaluate_structural_mode(
+            fixture::Array::a2000, sample_rate_hz, factor);
+        EXPECT_LT(evidence.upper_speed_ceiling_arcsec_per_sec,
+                  previous_ceiling);
+        previous_ceiling = evidence.upper_speed_ceiling_arcsec_per_sec;
     }
+    EXPECT_FALSE(fixture::evaluate_structural_mode(
+                     fixture::Array::a2000, sample_rate_hz,
+                     fixture::maximum_factor)
+                     .has_science_speed_domain());
 }
 
-TEST(RtcFilterFixtureCensus, IncludesTheExactSamplingBoundary) {
-    constexpr double maximum_speed_arcsec_per_sec = 12.3;
-    constexpr int factor = 7;
-    const double minimum_input =
-        fixture::minimum_safe_output_sample_rate_hz(
-            fixture::Array::a1100, maximum_speed_arcsec_per_sec) *
-        factor / fixture::cadence_margin;
+TEST(RtcFilterFixtureCensus, IncludesTheExactUpperSpeedBoundary) {
+    constexpr double ceiling = 12.3;
+    EXPECT_TRUE(fixture::upper_speed_admitted(
+        std::nextafter(ceiling, 0.0), ceiling));
+    EXPECT_TRUE(fixture::upper_speed_admitted(ceiling, ceiling));
+    EXPECT_FALSE(fixture::upper_speed_admitted(
+        std::nextafter(ceiling,
+                       std::numeric_limits<double>::infinity()),
+        ceiling));
+}
 
-    const auto below = fixture::evaluate_factor(
-        fixture::Array::a1100, minimum_input * (1.0 - 1.0e-12),
-        maximum_speed_arcsec_per_sec, factor);
-    const auto exact = fixture::evaluate_factor(
-        fixture::Array::a1100, minimum_input,
-        maximum_speed_arcsec_per_sec, factor);
-    const auto above = fixture::evaluate_factor(
-        fixture::Array::a1100, minimum_input * (1.0 + 1.0e-12),
-        maximum_speed_arcsec_per_sec, factor);
+TEST(RtcFilterFixtureCensus,
+     CountsOccurrenceCausesAndBreaksRetainedRunsExactly) {
+    const std::vector<double> speeds{
+        std::numeric_limits<double>::quiet_NaN(), 0.5, 5.0, 10.0,
+        std::nextafter(10.0, std::numeric_limits<double>::infinity()),
+        6.0, 7.0};
+    const std::vector<std::uint8_t> continues_previous{
+        0U, 1U, 1U, 1U, 1U, 1U, 0U};
 
-    EXPECT_FALSE(below.sampling_eligible());
-    EXPECT_TRUE(exact.sampling_eligible());
-    EXPECT_TRUE(above.sampling_eligible());
-    EXPECT_DOUBLE_EQ(exact.output_samples_per_airy_fwhm, 4.0);
+    const auto result = fixture::summarize_occurrence_admission(
+        speeds, continues_previous, 10.0);
+
+    EXPECT_EQ(result.occurrence_count, 7U);
+    EXPECT_EQ(result.ast_unavailable_count, 1U);
+    EXPECT_EQ(result.below_minimum_science_speed_count, 1U);
+    EXPECT_EQ(result.base_admitted_count, 5U);
+    EXPECT_EQ(result.upper_speed_admitted_count, 4U);
+    EXPECT_EQ(result.scan_speed_above_mode_support_count, 1U);
+    EXPECT_EQ(result.retained_run_count, 3U);
+    EXPECT_EQ(result.longest_retained_run_occurrences, 2U);
 }
 
 TEST(RtcFilterFixtureCensus, RejectsInvalidStructuralInputs) {
     EXPECT_THROW(
-        fixture::evaluate_factor(fixture::Array::a1100, 0.0, 1.0, 1),
+        fixture::evaluate_structural_mode(
+            fixture::Array::a1100, 0.0, 1),
         std::invalid_argument);
     EXPECT_THROW(
-        fixture::evaluate_factor(fixture::Array::a1100, 100.0, 0.0, 1),
+        fixture::evaluate_structural_mode(
+            fixture::Array::a1100, 100.0, 0),
         std::invalid_argument);
     EXPECT_THROW(
-        fixture::evaluate_factor(fixture::Array::a1100, 100.0, 1.0, 0),
+        fixture::evaluate_structural_mode(
+            fixture::Array::a1100, 100.0, 257),
         std::invalid_argument);
     EXPECT_THROW(
-        fixture::evaluate_factor(fixture::Array::a1100, 100.0, 1.0, 257),
+        fixture::summarize_occurrence_admission({}, {}, 1.0),
         std::invalid_argument);
 }
 

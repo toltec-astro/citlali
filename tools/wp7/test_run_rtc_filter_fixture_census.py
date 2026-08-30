@@ -21,6 +21,55 @@ SPEC.loader.exec_module(runner)
 
 
 class FixtureCensusRunnerTest(unittest.TestCase):
+    @staticmethod
+    def valid_record() -> dict:
+        factors = []
+        for factor in range(1, 257):
+            factors.append(
+                {
+                    "factor": factor,
+                    "upper_speed_ceiling_arcsec_per_sec": 100.0 / factor,
+                    "upper_boundary_inclusive": True,
+                    "upper_speed_typed_cause": "scan_speed_above_mode_support",
+                    "occurrence_admission_by_network": [
+                        {
+                            "base_admitted_count": 5,
+                            "upper_speed_admitted_count": 4,
+                            "scan_speed_above_mode_support_count": 1,
+                        }
+                    ],
+                    "support_erosion": {
+                        "status": (
+                            "exact-occurrence-local-m1-no-filter"
+                            if factor == 1
+                            else "pending-exact-filter-coefficients-and-half-support"
+                        ),
+                        "support_eroded_output_count": 0 if factor == 1 else None,
+                    },
+                }
+            )
+        return {
+            "schema": runner.RESULT_SCHEMA,
+            "numerical_policy_id": runner.NUMERICAL_POLICY_ID,
+            "speed_admission_policy_id": runner.SPEED_ADMISSION_POLICY_ID,
+            "observation": 10,
+            "subobservation": 0,
+            "scan": 2,
+            "common_analysis_grid_requested": False,
+            "rtc_route_activated": False,
+            "automatic_factor_selection_authorized": False,
+            "mapping_checks": {
+                "identity_mismatch_count": 0,
+                "missing_support_count": 0,
+            },
+            "candidate_mode_domains": [
+                {
+                    "automatic_factor_selection_authorized": False,
+                    "factor_candidates": factors,
+                }
+            ],
+        }
+
     def test_manifest_requires_unique_case_ids(self) -> None:
         document = {
             "schema": "citlali-wp7-rtc-filter-fixture-cases-v1",
@@ -59,17 +108,7 @@ class FixtureCensusRunnerTest(unittest.TestCase):
             "subobservation": 0,
             "scan": 2,
         }
-        record = {
-            "observation": 10,
-            "subobservation": 0,
-            "scan": 2,
-            "common_analysis_grid_requested": False,
-            "rtc_route_activated": False,
-            "mapping_checks": {
-                "identity_mismatch_count": 0,
-                "missing_support_count": 0,
-            },
-        }
+        record = self.valid_record()
         runner.validate_case_result(case, record)
         record["common_analysis_grid_requested"] = True
         with self.assertRaisesRegex(RuntimeError, "common grid"):
@@ -77,6 +116,25 @@ class FixtureCensusRunnerTest(unittest.TestCase):
         record["common_analysis_grid_requested"] = False
         record["observation"] = 11
         with self.assertRaisesRegex(RuntimeError, "output scope"):
+            runner.validate_case_result(case, record)
+
+    def test_result_rejects_selection_or_guessed_filter_support(self) -> None:
+        case = {
+            "id": "fixture",
+            "observation": 10,
+            "subobservation": 0,
+            "scan": 2,
+        }
+        record = self.valid_record()
+        record["automatic_factor_selection_authorized"] = True
+        with self.assertRaisesRegex(RuntimeError, "factor selection"):
+            runner.validate_case_result(case, record)
+
+        record = self.valid_record()
+        record["candidate_mode_domains"][0]["factor_candidates"][1][
+            "support_erosion"
+        ]["support_eroded_output_count"] = 3
+        with self.assertRaisesRegex(RuntimeError, "guessed M>1"):
             runner.validate_case_result(case, record)
 
 

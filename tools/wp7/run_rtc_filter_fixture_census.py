@@ -13,7 +13,10 @@ import sys
 import yaml
 
 
-SCHEMA = "citlali-wp7-rtc-filter-fixture-corpus-v1"
+SCHEMA = "citlali-wp7-rtc-filter-fixture-corpus-v2"
+RESULT_SCHEMA = "citlali-wp7-rtc-filter-fixture-census-v2"
+NUMERICAL_POLICY_ID = "wp7-rtc-scan-array-numerical-policy-v2"
+SPEED_ADMISSION_POLICY_ID = "wp7-rtc-occurrence-speed-admission-v1"
 
 
 def sha256_file(path: pathlib.Path) -> str:
@@ -91,6 +94,12 @@ def auxiliary_inputs(data_root: pathlib.Path, case: dict) -> list[tuple[str, pat
 
 
 def validate_case_result(case: dict, record: dict) -> None:
+    if record.get("schema") != RESULT_SCHEMA:
+        raise RuntimeError(f"{case['id']} output schema is not supported")
+    if record.get("numerical_policy_id") != NUMERICAL_POLICY_ID:
+        raise RuntimeError(f"{case['id']} numerical policy identity changed")
+    if record.get("speed_admission_policy_id") != SPEED_ADMISSION_POLICY_ID:
+        raise RuntimeError(f"{case['id']} speed-admission policy identity changed")
     expected = (case["observation"], case["subobservation"], case["scan"])
     actual = (record["observation"], record["subobservation"], record["scan"])
     if actual != expected:
@@ -103,6 +112,47 @@ def validate_case_result(case: dict, record: dict) -> None:
         raise RuntimeError(f"{case['id']} lost native timing identity")
     if record.get("mapping_checks", {}).get("missing_support_count") != 0:
         raise RuntimeError(f"{case['id']} lost available AST support")
+    if record.get("automatic_factor_selection_authorized") is not False:
+        raise RuntimeError(f"{case['id']} unexpectedly authorized factor selection")
+    domains = record.get("candidate_mode_domains")
+    if not isinstance(domains, list) or not domains:
+        raise RuntimeError(f"{case['id']} has no candidate mode domains")
+    for domain in domains:
+        if domain.get("automatic_factor_selection_authorized") is not False:
+            raise RuntimeError(
+                f"{case['id']} candidate domain authorized factor selection"
+            )
+        factors = domain.get("factor_candidates")
+        if not isinstance(factors, list) or [item.get("factor") for item in factors] != list(range(1, 257)):
+            raise RuntimeError(f"{case['id']} factor census is not exactly 1..256")
+        for candidate in factors:
+            if "planned_speed_arcsec_per_sec" in candidate:
+                raise RuntimeError(f"{case['id']} retained scan-maximum planning")
+            ceiling = candidate.get("upper_speed_ceiling_arcsec_per_sec")
+            if not isinstance(ceiling, (int, float)) or ceiling <= 0:
+                raise RuntimeError(f"{case['id']} has an invalid structural ceiling")
+            if candidate.get("upper_boundary_inclusive") is not True:
+                raise RuntimeError(f"{case['id']} made the upper boundary exclusive")
+            if candidate.get("upper_speed_typed_cause") != "scan_speed_above_mode_support":
+                raise RuntimeError(f"{case['id']} changed the upper-speed cause")
+            networks = candidate.get("occurrence_admission_by_network")
+            if not isinstance(networks, list) or not networks:
+                raise RuntimeError(f"{case['id']} lacks network occurrence evidence")
+            for network in networks:
+                if (
+                    network.get("base_admitted_count")
+                    != network.get("upper_speed_admitted_count", 0)
+                    + network.get("scan_speed_above_mode_support_count", 0)
+                ):
+                    raise RuntimeError(
+                        f"{case['id']} occurrence admission does not partition the base"
+                    )
+            support = candidate.get("support_erosion", {})
+            if candidate["factor"] == 1:
+                if support.get("status") != "exact-occurrence-local-m1-no-filter" or support.get("support_eroded_output_count") != 0:
+                    raise RuntimeError(f"{case['id']} M=1 support accounting is not exact")
+            elif support.get("status") != "pending-exact-filter-coefficients-and-half-support" or support.get("support_eroded_output_count", "absent") is not None:
+                raise RuntimeError(f"{case['id']} guessed M>1 support erosion")
 
 
 def main() -> int:
@@ -176,6 +226,14 @@ def main() -> int:
                 for item in record["network_native_census"]
             ),
             "auxiliary_input_count": len(auxiliaries),
+            "candidate_mode_domain_count": len(record["candidate_mode_domains"]),
+            "m1_raw_upper_speed_excluded_by_array": {
+                domain["array"]: sum(
+                    network["scan_speed_above_mode_support_count"]
+                    for network in domain["factor_candidates"][0]["occurrence_admission_by_network"]
+                )
+                for domain in record["candidate_mode_domains"]
+            },
         })
 
     corpus = {
@@ -188,6 +246,7 @@ def main() -> int:
         "case_manifest_sha256": sha256_file(args.case_manifest.resolve()),
         "common_analysis_grid_requested": False,
         "rtc_route_activated": False,
+        "automatic_factor_selection_authorized": False,
         "case_count": len(summaries),
         "cases": summaries,
     }
