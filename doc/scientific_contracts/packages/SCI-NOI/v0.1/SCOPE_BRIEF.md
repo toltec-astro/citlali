@@ -407,8 +407,8 @@ dispatch prerequisite after owner approval, not scientific approval by VAL.
 
 ## 10. FLT, Wiener, And FRUIT Boundary
 
-The ODQ-110A/B-approved ownership/parity and Wiener rules and the still-open ODQ-110C
-dispositions are recorded exactly in
+The ODQ-110A/B/C-approved transformation, Wiener, and FRUIT rules are recorded
+exactly in
 [`FILTER_AND_FRUIT_SCOPE.md`](FILTER_AND_FRUIT_SCOPE.md):
 
 - NOI does not choose or define a deterministic transformation; the appropriate
@@ -424,14 +424,26 @@ dispositions are recorded exactly in
 - every numerical Wiener route remains unavailable until its exact owner
   authority, inference/relearning contract where applicable, and NOI boundary
   exist; and
-- fixed FRUIT residual and complete relearned FRUIT methods remain separate and
-  unavailable until an exact FRUIT boundary exists.
+- an exact fixed FRUIT residual or terminal transform may support only
+  uncertainty conditional on frozen FRUIT state under ODQ-110A parity;
+- NOI-informed FRUIT continuation creates a new immutable FRUIT/science/GEN/UNC
+  generation, and partial or complete per-member replay is a separate ODQ-104
+  method; and
+- fixed and replayed FRUIT members cannot mix, while every numerical FRUIT
+  route remains unavailable pending exact FRUIT-owner and NOI boundaries.
 
 If the transformation owner uses `UNC_k` to learn, select, or update a Wiener
 transformation, `UNC_k` is an immutable dependent input to a new owner-
 transformation, transformed-science, GEN, and UNC generation. It is not
 independent evidence validating the successor, and the successor cannot mutate
 or retroactively validate it.
+
+The same rule applies when `UNC_k` informs later FRUIT continuation. FRUIT owns
+the recurrence, learning, stopping/restart/selection, source model, response,
+and successor product. The prior NOI input remains immutable dependent input,
+not independent validation. Fixed-residual uncertainty does not include FRUIT
+learning, convergence, selection, restart, residual-bias, or source-leakage
+variation unless a separately authorized method targets it.
 
 ## 11. Persistence And Immutable Companions
 
@@ -502,8 +514,10 @@ definition with the appropriate scientific process and requires exact
 application to admitted randomizations for transformed-product uncertainty.
 ODQ-110B classifies owner-frozen Wiener transforms under ODQ-110A, requires a
 new immutable generation when NOI products inform owner learning/update, and
-keeps per-member learning separate under ODQ-104. The next walkthrough question
-is `SCI-NOI-ODQ-110C`. Every later
+keeps per-member learning separate under ODQ-104. ODQ-110C preserves FRUIT
+ownership, separates fixed-state conditional uncertainty from NOI-informed
+successor generations and per-member replay, and prohibits fixed/replayed
+mixing. The next walkthrough question is `SCI-NOI-ODQ-111`. Every later
 decision and the artifact's final hash still require explicit owner review.
 
 ## 13. Non-Goals And Claim Boundary

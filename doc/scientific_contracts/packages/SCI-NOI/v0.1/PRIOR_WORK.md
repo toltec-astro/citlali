@@ -238,5 +238,12 @@ transformed science product, GEN, and successor UNC remain separate immutable
 generations with explicit dependence and no independent-validation claim.
 Per-member Wiener learning is a distinct ODQ-104 method; fixed and relearned
 members cannot mix without a separately authorized estimand. All numerical
-Wiener routes remain gated. The next owner question is `SCI-NOI-ODQ-110C`,
-FRUIT scope.
+Wiener routes remain gated.
+ODQ-110C preserves FRUIT ownership of source modeling, subtraction/add-back,
+recurrence, learning, stopping/restart/selection, response, and interpretation.
+An exact fixed residual or terminal transform supports only uncertainty
+conditional on frozen FRUIT state. NOI-informed continuation creates a new
+immutable FRUIT/science/GEN/UNC generation; partial or complete per-member
+replay is a distinct ODQ-104 method. Fixed and replayed members cannot mix, and
+all numerical FRUIT routes remain gated. The next owner question is
+`SCI-NOI-ODQ-111`, VAL profile identities and actions.

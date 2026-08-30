@@ -1,7 +1,7 @@
 # SCI-NOI v0.1 — Collision-Free Operator And Product Taxonomy
 
 Status: proposed sanitized Stage B author input; ODQ-101, ODQ-102A/B/C,
-ODQ-103/104/105A/105B/106/107/108/109/110A/110B incorporated; exact bytes await owner approval
+ODQ-103/104/105A/105B/106/107/108/109/110A/110B/110C incorporated; exact bytes await owner approval
 
 The semantic prefixes are:
 
@@ -45,6 +45,15 @@ creates a separately versioned successor transformation, science-product,
 GEN, and UNC generation. Per-member Wiener learning is a distinct
 `NOI-GEN/RELEARNED@1` method. Every numerical Wiener route remains unavailable
 pending its exact owner authority and route-specific boundary.
+
+ODQ-110C likewise creates no NOI-owned FRUIT algorithm identity. An exact fixed
+FRUIT residual or terminal transformation uses the owner-transformed candidate
+and estimates uncertainty only conditional on frozen FRUIT state. NOI-informed
+FRUIT continuation creates separate immutable FRUIT/science/GEN/UNC
+generations. Partial or complete per-member replay is a distinct
+`NOI-GEN/RELEARNED@1` method, never an implicit extension of a fixed ensemble.
+All numerical FRUIT routes remain unavailable pending exact FRUIT-owner and NOI
+boundaries.
 
 Inline consumption by MAP is a permitted representation, not transfer of
 scientific ownership. NOI owns assignment/design and realization identity;

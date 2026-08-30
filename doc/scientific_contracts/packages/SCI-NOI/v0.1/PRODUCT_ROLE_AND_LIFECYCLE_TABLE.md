@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Product Role And Lifecycle Table
 
-Artifact identity: `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.10`
+Artifact identity: `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.11`
 
 Status: proposed sanitized Stage A scientific input; exact bytes await owner
 approval
@@ -15,6 +15,8 @@ approval
 | Externally owned transformation authority | Appropriate upstream/downstream scientific process defines exact transformed scientific product, algorithm/operator/state/parameters/order, domain/support/edge/missing-data rules, normalization/units/response, validity/lifecycle/failure | Not selected, defined, tuned, regularized, simplified, relocated, or scientifically reinterpreted by NOI |
 | Transformed realization | NOI binds and applies exactly the owner-defined transformation to one admitted compatible randomization with exact parity and resulting transformed quantity/domain identity | Not authority over the transformation; not portable to an untransformed or differently transformed product; member-specific transformation relearning is another method |
 | Wiener successor transformation generation | Exact immutable prior NOI input, external scientific owner and learning/selection/update generation, resulting transformation identity, transformed science product, transformed GEN, successor UNC, and complete dependence/lifecycle relation | Prior UNC is not mutated or independent validation; no same-generation feedback; no NOI ownership of Wiener definition or learning |
+| Fixed FRUIT residual/terminal transformation | Exact FRUIT-owned source-model/subtraction/add-back/learned/recurrence/stopping/restart/selection/response state, immutable product, ODQ-110A parity, transformed realizations, and conditional uncertainty identity | Does not include FRUIT learning, convergence, selection, restart, residual-bias, or source-leakage variation by existence; no NOI ownership of FRUIT |
+| FRUIT successor/replay generation | Exact immutable prior NOI input and FRUIT-owned successor graph, or exact ODQ-104 member-specific partial/complete replay graph, with separate science/GEN/UNC identities and dependence | Prior product is not mutated or independent validation; fixed and replayed members do not mix without an authorized mixture estimand |
 | UNC member admission | Named-use decision consuming immutable GEN completion/QC facts for one exact UNC method | Cannot redefine completion, clear producer causes, or admit the ensemble by itself |
 | UNC ensemble admission | One exact completed design admitted to one exact target/estimator/domain | Not a universal covariance or consumer permission |
 | UNC zero-centered conditional second moment | Ordinary primary representation `V_hat_cond(p)=sum_b omega_b M_b(p)^2` on the common all-member domain; known zero center; exact normalized design weights; no empirical recentering or `B-1`; dependence/rank/effective-information and estimator-uncertainty state | Squared signal units; pointwise/diagonal-like shape does not make it physical-noise variance or covariance; not precision or significance; square root and later transformations are separate |

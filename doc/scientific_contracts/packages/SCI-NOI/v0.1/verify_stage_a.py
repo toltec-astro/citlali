@@ -131,6 +131,11 @@ def main() -> None:
         "`UNC_k` is an input to the successor transformation",
         "not independent evidence validating",
         "Learning or selecting a distinct Wiener operator for each realization",
+        "FRUIT owns its source model, subtraction and add-back",
+        "conditional on the frozen FRUIT state",
+        "FRUIT_OWNER:LearnIterate_(k+1)",
+        "Partial or complete FRUIT replay for each realization",
+        "Fixed-residual, fixed-terminal-transform, partial-replay, and complete-replay",
     ]
     for token in required:
         if token not in package_text:

@@ -324,6 +324,28 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
 92. Advanced the walkthrough to ODQ-110C and published r0.8 of the GEN graph,
     r0.10 of the product/lifecycle table, and r0.16 packet/decision records.
 
+## ODQ-110C FRUIT Scope Update
+
+93. Preserved FRUIT ownership of source models, subtraction/add-back,
+    recurrence/iteration, learning, stopping/restart/selection, response,
+    support, validity, lifecycle, failure, and scientific interpretation.
+94. Limited a fixed FRUIT residual or terminal transformed-product route to
+    uncertainty conditional on exact frozen FRUIT state under ODQ-110A parity;
+    learning/convergence/selection/restart/residual/source-leakage variation is
+    not included by implication.
+95. Required NOI-informed FRUIT continuation to create new immutable prior-
+    input, FRUIT-learning, science-product, GEN, and UNC generations with
+    explicit dependence and no independent-validation or mutation claim.
+96. Classified partial or complete per-realization FRUIT replay as a distinct
+    ODQ-104 method requiring complete member-specific state and prohibited
+    fixed/replayed mixing without an authorized mixture estimand.
+97. Preserved numerical unavailability pending exact FRUIT-owner and NOI
+    boundaries; established no FRUIT validity, source recovery/cancellation,
+    residual unbiasedness, covariance, calibration, significance, conformity,
+    performance, readiness, or production claim.
+98. Advanced the walkthrough to ODQ-111 and published r0.9 of the GEN graph,
+    r0.11 of the product/lifecycle table, and r0.17 packet/decision records.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance

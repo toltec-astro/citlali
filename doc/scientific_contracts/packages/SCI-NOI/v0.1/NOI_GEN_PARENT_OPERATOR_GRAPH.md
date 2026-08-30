@@ -1,11 +1,11 @@
 # SCI-NOI v0.1 — NOI-GEN Parent And Operator Graph
 
-Artifact identity: `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.8`
+Artifact identity: `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.9`
 
 Status: ODQ-101 conditioning class, ODQ-102A route, ODQ-102B coherence,
 ODQ-102C network-stratified coefficient-balance family, ODQ-104 consequential-
 state identity, ODQ-110A external transformation ownership/parity, and
-ODQ-110B Wiener fixed/successor/relearned separation approved;
+ODQ-110B Wiener and ODQ-110C FRUIT fixed/successor/relearned separation approved;
 ODQ-102D delegates exact finite-design authorship; exact design and frozen
 boundary gates remain unavailable; other route-specific methods remain
 unselected and unavailable
@@ -68,6 +68,15 @@ transformed science product, transformed GEN, and successor UNC have separate
 immutable identities and explicit dependence. A transformation learned per
 member is a distinct relearned method. No Wiener label transfers transformation
 or learning authority to NOI.
+
+For ODQ-110C, FRUIT owns source modeling, subtraction/add-back, recurrence,
+learning, stopping/restart/selection, response, and terminal product meaning.
+An exact fixed residual or terminal transformation follows ODQ-110A and gives
+uncertainty only conditional on frozen FRUIT state. An NOI-informed later
+iteration creates separately versioned immutable prior-input, FRUIT-learning,
+transformation, science-product, GEN, and UNC identities. Partial or complete
+per-member replay is a distinct ODQ-104 relearned method. Fixed and replayed
+members never mix by implication.
 
 ODQ-102B fixes the selected route's coherence map: all admitted PTC occurrences
 for one stable realized detector/channel in one observation map to the same

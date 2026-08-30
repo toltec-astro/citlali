@@ -591,7 +591,21 @@ with fixed-Wiener members without an authorized mixture estimand. All numerical
 Wiener routes remain unavailable pending their exact owner authority,
 inference/relearning contract where applicable, and NOI boundary.
 
-The next walkthrough question is `SCI-NOI-ODQ-110C`, FRUIT scope.
+Grant Wilson approved `SCI-NOI-ODQ-110C` on `2026-08-30`. FRUIT retains
+scientific authority over source modeling, subtraction/add-back, recurrence,
+learning, stopping/restart/selection, response, support, validity, lifecycle,
+failure, and interpretation. An exact fixed FRUIT residual or terminal
+transformation may support only uncertainty conditional on frozen FRUIT state
+under ODQ-110A parity. If an NOI product informs later FRUIT continuation, the
+prior input, FRUIT-learning generation, transformation, science product, GEN,
+and successor UNC remain separate immutable generations; the prior product is
+dependent input, not independent validation. Partial or complete per-member
+FRUIT replay is a distinct ODQ-104 method. Fixed and replayed members cannot
+mix without an authorized mixture estimand. All numerical FRUIT routes remain
+unavailable pending exact FRUIT-owner and NOI boundaries.
+
+The next walkthrough question is `SCI-NOI-ODQ-111`, NOI-owned VAL profile
+identities and exact consumer actions.
 Later granular decisions, exact packet bytes/hashes, and
 required source/profile Registry bindings remain under owner review.
 MAP/pre-MAP numerical parents remain

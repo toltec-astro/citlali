@@ -175,6 +175,9 @@ those typed unavailable states and do not create numerical products.
   durable external transformation ownership and exact realization-parity rule
 - [`SCIENTIFIC_OWNER_ODQ_110B_APPROVAL_2026-08-29.md`](SCIENTIFIC_OWNER_ODQ_110B_APPROVAL_2026-08-29.md):
   durable Wiener fixed-state, successor-generation, and relearning boundary
+- [`SCIENTIFIC_OWNER_ODQ_110C_APPROVAL_2026-08-30.md`](SCIENTIFIC_OWNER_ODQ_110C_APPROVAL_2026-08-30.md):
+  durable FRUIT ownership, fixed-state, successor-generation, and replay
+  boundary
 - [`OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md`](OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md):
   complete Stage A ownership matrix
 - [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): exact proposed
@@ -198,9 +201,9 @@ those typed unavailable states and do not create numerical products.
 ## Stop Boundary
 
 Stop after presenting these final Stage A closure artifacts and continue the
-owner-decision walkthrough at `SCI-NOI-ODQ-110C`; ODQ-101, ODQ-102A/B/C,
+owner-decision walkthrough at `SCI-NOI-ODQ-111`; ODQ-101, ODQ-102A/B/C,
 ODQ-103, ODQ-104, ODQ-105A/B, ODQ-106, ODQ-107, ODQ-108, ODQ-109, and
-ODQ-110A/B are approved and ODQ-102D is delegated to the scientific-contract author. Do not
+ODQ-110A/B/C are approved and ODQ-102D is delegated to the scientific-contract author. Do not
 draft the implementation-blind scientific rationale, shared normative core,
 engineering conformance specification, or PDFs until the exact conditional
 Stage B gate in the Scope Brief is satisfied. Do not implement or modify

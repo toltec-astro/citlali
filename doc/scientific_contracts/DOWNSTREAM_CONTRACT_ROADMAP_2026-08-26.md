@@ -2,8 +2,8 @@
 
 Date: `2026-08-26`
 
-Updated: `2026-08-29` for SCI-JINC closure and the repaired SCI-NOI Stage A
-owner-review gate
+Updated: `2026-08-30` for SCI-JINC closure and the repaired SCI-NOI Stage A
+owner-review gate through ODQ-110C
 
 Status: scientific-owner-approved program sequencing record
 
@@ -183,7 +183,11 @@ remains unavailable until exact owner authority and parity are bound. ODQ-110B
 now treats an owner-frozen Wiener transformation under ODQ-110A, makes any NOI-
 informed owner learning/update a new immutable transformation/science/GEN/UNC
 generation, and keeps per-member learning separate under ODQ-104. Every
-numerical Wiener route remains gated. ODQ-110C, FRUIT scope, is next.
+numerical Wiener route remains gated. ODQ-110C now preserves FRUIT ownership,
+limits fixed residual/terminal-product uncertainty to frozen-state conditional
+meaning, separates NOI-informed successor generations from per-member ODQ-104
+replay, and prohibits fixed/replayed mixing. All numerical FRUIT routes remain
+gated. ODQ-111, NOI-owned VAL profile identities and actions, is next.
 Conditional Stage B remains blocked on exact
 bytes/hashes, granular owner decisions or explicit unavailability, and required
 source/profile bindings. The frozen MAP/pre-MAP

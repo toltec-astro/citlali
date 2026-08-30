@@ -1,14 +1,14 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.16`
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.17`
 
-Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, ODQ-105A, ODQ-105B, ODQ-106, ODQ-107, ODQ-108, ODQ-109, ODQ-110A, and ODQ-110B owner-approved; exact
+Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, ODQ-105A, ODQ-105B, ODQ-106, ODQ-107, ODQ-108, ODQ-109, ODQ-110A, ODQ-110B, and ODQ-110C owner-approved; exact
 finite-design mechanics delegated to the scientific-contract author under
 ODQ-102D; later decisions remain open; not yet an allowed Stage B authority
 
 Scientific owner: Grant Wilson
 
-Prepared: `2026-08-29`
+Prepared: `2026-08-29`; updated: `2026-08-30`
 
 This is the sanitized decision artifact for a future implementation-blind
 author. Approval of one decision changes only the bytes listed for it. It does
@@ -478,18 +478,30 @@ not approve another decision or make an unresolved numerical route available.
 
 ### `SCI-NOI-ODQ-110C` — FRUIT scope
 
-- **Exact question:** Is a fixed FRUIT residual or partly/fully relearned FRUIT
-  route admitted?
-- **Recommended disposition:** keep them separate and unavailable until an
-  exact FRUIT boundary and complete route graph exist.
-- **Alternatives:** fixed residual only, one relearning graph, exclude FRUIT,
-  or retain unavailability.
-- **Scientific consequences:** source-model residual sampling is not merged
-  with learning-procedure variation.
-- **Conservative state while open:** all FRUIT routes unavailable.
+- **Exact question:** How does NOI treat a fixed FRUIT residual/terminal
+  transformation, an NOI-informed later FRUIT iteration, and partial or full
+  per-realization FRUIT replay?
+- **Approved disposition:** FRUIT owns the source model, subtraction/add-back,
+  recurrence, learning, stopping/restart/selection, response, and scientific
+  interpretation. An exact fixed residual or terminal transform may support
+  uncertainty conditional on frozen FRUIT state under ODQ-110A parity. An NOI-
+  informed later iteration creates a new immutable FRUIT/science/GEN/UNC
+  generation. Per-realization replay is a distinct ODQ-104 relearned method.
+- **Alternatives rejected:** NOI-owned FRUIT definition; treating fixed-state
+  uncertainty as learning variation; same-generation feedback or mutation;
+  generic “FRUIT-relearned” identity; or pooling fixed and replayed members
+  without an authorized mixture estimand.
+- **Scientific consequences:** fixed-state uncertainty is scoped only to the
+  exact fixed FRUIT product and omits learning/convergence/selection/restart
+  variation and unmodeled residual/source leakage unless separately targeted.
+  Prior NOI input to a successor is dependent input, not independent validation.
+- **Conservative availability state:** every numerical FRUIT route remains
+  unavailable until exact FRUIT-owner authority, route graph, and content-bound
+  NOI interface exist.
 - **Affected artifacts:** FRUIT scope, graph, imprint, lifecycle, profiles.
-- **Exact bytes changed by approval:** method, parent/rerun graph, state,
-  response, and availability.
+- **Exact bytes changed by approval:** FRUIT ownership; fixed-state conditional
+  scope; immutable successor graph; partial/complete replay identity; no-mixing
+  rule; omitted-variation disclosure; and typed unavailability.
 
 ### `SCI-NOI-ODQ-111` — VAL profile identities and actions
 

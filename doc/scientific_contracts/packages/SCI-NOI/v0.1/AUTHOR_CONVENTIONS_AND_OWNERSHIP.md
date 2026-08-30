@@ -128,6 +128,16 @@ for the successor. A Wiener transformation learned once by its owner and frozen
 before realization application follows ODQ-110A. A separately learned
 transformation per member is a distinct ODQ-104 method.
 
+ODQ-110C applies the same ownership and generation discipline to FRUIT. FRUIT
+owns its source model, subtraction/add-back, learned state, recurrence,
+iteration, stopping, restart, selection, response, support, validity,
+lifecycle, and failure. An exact fixed residual or terminal transform supports
+only uncertainty conditional on frozen FRUIT state under ODQ-110A parity. An
+NOI-informed continuation begins a new immutable FRUIT/science/GEN/UNC
+generation; partial or complete per-member replay is a distinct ODQ-104
+relearned method. Fixed and replayed members cannot mix without an authorized
+mixture estimand.
+
 ## Validity, Support, And Profiles
 
 Sample validity, parent named-use eligibility, GEN input admission,
@@ -177,8 +187,8 @@ consuming method and cannot retroactively modify an immutable parent.
 NOI may apply an exact content-bound owner-defined transformation to admitted
 randomizations or provide declared companions to consumers. This does not
 transfer transformation authority to NOI or validate a consumer merely because
-the consumer used an NOI product. Re-estimated Wiener and FRUIT routes remain
-unavailable without their exact inference/feedback boundaries.
+the consumer used an NOI product. Fixed, successor, and relearned Wiener/FRUIT
+routes remain unavailable without their exact owner and NOI boundaries.
 
 ## Claim Separation
 
