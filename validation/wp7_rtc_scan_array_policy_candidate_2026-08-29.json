@@ -1,0 +1,348 @@
+{
+  "array_models": {
+    "a1100": {
+      "airy_intensity_fwhm_arcsec": 4.678641378758944,
+      "array": "a1100",
+      "center_frequency_ghz": 272.0,
+      "lambda_over_d_arcsec": 4.546811269390498,
+      "optical_cutoff_hz_per_arcsec_per_sec": 0.2199343541554234,
+      "wavelength_mm": 1.1021781544117648
+    },
+    "a1400": {
+      "airy_intensity_fwhm_arcsec": 5.9466843692637035,
+      "array": "a1400",
+      "center_frequency_ghz": 214.0,
+      "lambda_over_d_arcsec": 5.779124604085118,
+      "optical_cutoff_hz_per_arcsec_per_sec": 0.17303658746051695,
+      "wavelength_mm": 1.400899336448598
+    },
+    "a2000": {
+      "airy_intensity_fwhm_arcsec": 8.483936366816216,
+      "array": "a2000",
+      "center_frequency_ghz": 150.0,
+      "lambda_over_d_arcsec": 8.244884435161435,
+      "optical_cutoff_hz_per_arcsec_per_sec": 0.12128732765924087,
+      "wavelength_mm": 1.9986163866666664
+    }
+  },
+  "candidate_policy": {
+    "aperture_m": 50.0,
+    "cadence_fractional_margin": 0.0001,
+    "folded_alias_power_gain": 1e-06,
+    "input_sample_rate_hz": 122.0703125,
+    "maximum_factor": 256,
+    "maximum_filter_half_support_sec": 5.0,
+    "minimum_factor": 1,
+    "minimum_samples_per_airy_fwhm": 4.0,
+    "passband_amplitude_ripple": 0.0001,
+    "velocity_fractional_margin": 0.05
+  },
+  "constants": {
+    "airy_intensity_fwhm_coefficient": 1.028993969962188,
+    "arcsec_per_radian": 206264.80624709636,
+    "speed_of_light_m_per_sec": 299792458.0
+  },
+  "method": {
+    "beam": "uniformly_illuminated unobscured circular-aperture Airy intensity profile",
+    "factor_selection": "largest factor whose conservative cadence, beam sampling, transition, alias-amplitude allocation, and estimated Kaiser half-support satisfy the candidate limits",
+    "filter_warning": "Kaiser order and beta are feasibility estimates only; no coefficient artifact or certified response is produced",
+    "science_passband": "full one-dimensional temporal support of the scanned Airy profile: f_sci = v_plan D / lambda"
+  },
+  "representative_observation": {
+    "disposition": "representative workload evidence only; the stored value and unit attribute disagree, and no accepted AST-valid v_max product is available",
+    "header_scan_program": "Lissajous",
+    "header_scan_rate_attribute_unit": "arcsec/sec",
+    "header_scan_rate_if_interpreted_as_radian_per_sec_arcsec_per_sec": 50.0,
+    "header_scan_rate_stored_value": 0.00024240684055476798,
+    "observation": 152390
+  },
+  "schema": "citlali-wp7-rtc-scan-array-policy-candidate-v1",
+  "status": "evidence_only_not_scientific_authority",
+  "synthetic_speed_sweep": [
+    {
+      "arrays": {
+        "a1100": {
+          "alias_stopband_start_hz": 0.7455337718868054,
+          "attenuation_db_estimate": 80.93421685162235,
+          "disposition": "prototype_decimation_candidate",
+          "half_support_sec_estimate": 4.939776,
+          "input_samples_per_airy_fwhm": 543.8724789133496,
+          "kaiser_beta_estimate": 7.960210697048783,
+          "normalized_transition_width": 0.008431250637186841,
+          "output_sample_rate_hz": 0.97646484375,
+          "output_samples_per_airy_fwhm": 4.350979831306796,
+          "per_image_stopband_amplitude_bound": 8.980265101338745e-05,
+          "planning_speed_arcsec_per_sec": 1.05,
+          "safe_sample_rate_hz": 122.05810546875,
+          "science_passband_hz": 0.23093107186319456,
+          "selected_factor": 125,
+          "speed_arcsec_per_sec": 1.0,
+          "tap_count_estimate": 1207
+        },
+        "a1400": {
+          "alias_stopband_start_hz": 0.6964274498481118,
+          "attenuation_db_estimate": 81.39879086401237,
+          "disposition": "prototype_decimation_candidate",
+          "half_support_sec_estimate": 4.972544,
+          "input_samples_per_airy_fwhm": 691.2771694599583,
+          "kaiser_beta_estimate": 8.011406753214164,
+          "normalized_transition_width": 0.008433484316910697,
+          "output_sample_rate_hz": 0.8781158666816546,
+          "output_samples_per_airy_fwhm": 4.973217046474519,
+          "per_image_stopband_amplitude_bound": 8.512565307587486e-05,
+          "planning_speed_arcsec_per_sec": 1.05,
+          "safe_sample_rate_hz": 122.05810546875,
+          "science_passband_hz": 0.1816884168335428,
+          "selected_factor": 139,
+          "speed_arcsec_per_sec": 1.0,
+          "tap_count_estimate": 1215
+        },
+        "a2000": {
+          "alias_stopband_start_hz": 0.6451679608233034,
+          "attenuation_db_estimate": 81.95899652409233,
+          "disposition": "prototype_decimation_candidate",
+          "half_support_sec_estimate": 4.980736,
+          "input_samples_per_airy_fwhm": 986.222095096207,
+          "kaiser_beta_estimate": 8.073141416954975,
+          "normalized_transition_width": 0.00848390171494155,
+          "output_sample_rate_hz": 0.7725196548655063,
+          "output_samples_per_airy_fwhm": 6.241911994279792,
+          "per_image_stopband_amplitude_bound": 7.980868844676221e-05,
+          "planning_speed_arcsec_per_sec": 1.05,
+          "safe_sample_rate_hz": 122.05810546875,
+          "science_passband_hz": 0.12735169404220292,
+          "selected_factor": 158,
+          "speed_arcsec_per_sec": 1.0,
+          "tap_count_estimate": 1217
+        }
+      },
+      "speed_arcsec_per_sec": 1.0
+    },
+    {
+      "arrays": {
+        "a1100": {
+          "alias_stopband_start_hz": 7.079774317425747,
+          "attenuation_db_estimate": 80.0,
+          "disposition": "prototype_decimation_candidate",
+          "half_support_sec_estimate": 0.53248,
+          "input_samples_per_airy_fwhm": 54.38724789133496,
+          "kaiser_beta_estimate": 7.85726,
+          "normalized_transition_width": 0.07815927560263765,
+          "output_sample_rate_hz": 9.389085036057692,
+          "output_samples_per_airy_fwhm": 4.183634453179612,
+          "per_image_stopband_amplitude_bound": 0.00028867513459481284,
+          "planning_speed_arcsec_per_sec": 10.5,
+          "safe_sample_rate_hz": 122.05810546875,
+          "science_passband_hz": 2.3093107186319455,
+          "selected_factor": 13,
+          "speed_arcsec_per_sec": 10.0,
+          "tap_count_estimate": 131
+        },
+        "a1400": {
+          "alias_stopband_start_hz": 5.363004388649866,
+          "attenuation_db_estimate": 80.0,
+          "disposition": "prototype_decimation_candidate",
+          "half_support_sec_estimate": 0.712704,
+          "input_samples_per_airy_fwhm": 69.12771694599583,
+          "kaiser_beta_estimate": 7.85726,
+          "normalized_transition_width": 0.05809963368963175,
+          "output_sample_rate_hz": 7.179888556985294,
+          "output_samples_per_airy_fwhm": 4.0663362909409315,
+          "per_image_stopband_amplitude_bound": 0.00025,
+          "planning_speed_arcsec_per_sec": 10.5,
+          "safe_sample_rate_hz": 122.05810546875,
+          "science_passband_hz": 1.816884168335428,
+          "selected_factor": 17,
+          "speed_arcsec_per_sec": 10.0,
+          "tap_count_estimate": 175
+        },
+        "a2000": {
+          "alias_stopband_start_hz": 3.812237454109221,
+          "attenuation_db_estimate": 80.0,
+          "disposition": "prototype_decimation_candidate",
+          "half_support_sec_estimate": 0.991232,
+          "input_samples_per_airy_fwhm": 98.6222095096207,
+          "kaiser_beta_estimate": 7.85726,
+          "normalized_transition_width": 0.041594396896250954,
+          "output_sample_rate_hz": 5.08575439453125,
+          "output_samples_per_airy_fwhm": 4.10925872956753,
+          "per_image_stopband_amplitude_bound": 0.00020851441405707476,
+          "planning_speed_arcsec_per_sec": 10.5,
+          "safe_sample_rate_hz": 122.05810546875,
+          "science_passband_hz": 1.273516940422029,
+          "selected_factor": 24,
+          "speed_arcsec_per_sec": 10.0,
+          "tap_count_estimate": 243
+        }
+      },
+      "speed_arcsec_per_sec": 10.0
+    },
+    {
+      "arrays": {
+        "a1100": {
+          "alias_stopband_start_hz": 18.638344297170136,
+          "attenuation_db_estimate": 80.0,
+          "disposition": "prototype_decimation_candidate",
+          "half_support_sec_estimate": 0.196608,
+          "input_samples_per_airy_fwhm": 21.754899156533984,
+          "kaiser_beta_estimate": 7.85726,
+          "normalized_transition_width": 0.210781265929671,
+          "output_sample_rate_hz": 24.41162109375,
+          "output_samples_per_airy_fwhm": 4.350979831306797,
+          "per_image_stopband_amplitude_bound": 0.0005,
+          "planning_speed_arcsec_per_sec": 26.25,
+          "safe_sample_rate_hz": 122.05810546875,
+          "science_passband_hz": 5.7732767965798635,
+          "selected_factor": 5,
+          "speed_arcsec_per_sec": 25.0,
+          "tap_count_estimate": 49
+        },
+        "a1400": {
+          "alias_stopband_start_hz": 15.80080715728643,
+          "attenuation_db_estimate": 80.0,
+          "disposition": "prototype_decimation_candidate",
+          "half_support_sec_estimate": 0.229376,
+          "input_samples_per_airy_fwhm": 27.65108677839833,
+          "kaiser_beta_estimate": 7.85726,
+          "normalized_transition_width": 0.18446084892996173,
+          "output_sample_rate_hz": 20.343017578125,
+          "output_samples_per_airy_fwhm": 4.608514463066388,
+          "per_image_stopband_amplitude_bound": 0.00044721359549995795,
+          "planning_speed_arcsec_per_sec": 26.25,
+          "safe_sample_rate_hz": 122.05810546875,
+          "science_passband_hz": 4.54221042083857,
+          "selected_factor": 6,
+          "speed_arcsec_per_sec": 25.0,
+          "tap_count_estimate": 57
+        },
+        "a2000": {
+          "alias_stopband_start_hz": 10.378219367694927,
+          "attenuation_db_estimate": 80.0,
+          "disposition": "prototype_decimation_candidate",
+          "half_support_sec_estimate": 0.352256,
+          "input_samples_per_airy_fwhm": 39.44888380384828,
+          "kaiser_beta_estimate": 7.85726,
+          "normalized_transition_width": 0.11787349224062735,
+          "output_sample_rate_hz": 13.56201171875,
+          "output_samples_per_airy_fwhm": 4.383209311538699,
+          "per_image_stopband_amplitude_bound": 0.00035355339059327376,
+          "planning_speed_arcsec_per_sec": 26.25,
+          "safe_sample_rate_hz": 122.05810546875,
+          "science_passband_hz": 3.183792351055073,
+          "selected_factor": 9,
+          "speed_arcsec_per_sec": 25.0,
+          "tap_count_estimate": 87
+        }
+      },
+      "speed_arcsec_per_sec": 25.0
+    },
+    {
+      "arrays": {
+        "a1100": {
+          "alias_stopband_start_hz": 49.48249914121527,
+          "attenuation_db_estimate": 80.0,
+          "disposition": "prototype_decimation_candidate",
+          "half_support_sec_estimate": 0.073728,
+          "input_samples_per_airy_fwhm": 10.877449578266992,
+          "kaiser_beta_estimate": 7.85726,
+          "normalized_transition_width": 0.621542531859342,
+          "output_sample_rate_hz": 61.029052734375,
+          "output_samples_per_airy_fwhm": 5.438724789133496,
+          "per_image_stopband_amplitude_bound": 0.001,
+          "planning_speed_arcsec_per_sec": 52.5,
+          "safe_sample_rate_hz": 122.05810546875,
+          "science_passband_hz": 11.546553593159727,
+          "selected_factor": 2,
+          "speed_arcsec_per_sec": 50.0,
+          "tap_count_estimate": 19
+        },
+        "a1400": {
+          "alias_stopband_start_hz": 31.60161431457286,
+          "attenuation_db_estimate": 80.0,
+          "disposition": "prototype_decimation_candidate",
+          "half_support_sec_estimate": 0.114688,
+          "input_samples_per_airy_fwhm": 13.825543389199165,
+          "kaiser_beta_estimate": 7.85726,
+          "normalized_transition_width": 0.36892169785992346,
+          "output_sample_rate_hz": 40.68603515625,
+          "output_samples_per_airy_fwhm": 4.608514463066388,
+          "per_image_stopband_amplitude_bound": 0.0007071067811865475,
+          "planning_speed_arcsec_per_sec": 52.5,
+          "safe_sample_rate_hz": 122.05810546875,
+          "science_passband_hz": 9.08442084167714,
+          "selected_factor": 3,
+          "speed_arcsec_per_sec": 50.0,
+          "tap_count_estimate": 29
+        },
+        "a2000": {
+          "alias_stopband_start_hz": 24.146941665077353,
+          "attenuation_db_estimate": 80.0,
+          "disposition": "prototype_decimation_candidate",
+          "half_support_sec_estimate": 0.147456,
+          "input_samples_per_airy_fwhm": 19.72444190192414,
+          "kaiser_beta_estimate": 7.85726,
+          "normalized_transition_width": 0.2912969844812547,
+          "output_sample_rate_hz": 30.5145263671875,
+          "output_samples_per_airy_fwhm": 4.931110475481035,
+          "per_image_stopband_amplitude_bound": 0.0005773502691896257,
+          "planning_speed_arcsec_per_sec": 52.5,
+          "safe_sample_rate_hz": 122.05810546875,
+          "science_passband_hz": 6.367584702110146,
+          "selected_factor": 4,
+          "speed_arcsec_per_sec": 50.0,
+          "tap_count_estimate": 37
+        }
+      },
+      "speed_arcsec_per_sec": 50.0
+    },
+    {
+      "arrays": {
+        "a1100": {
+          "disposition": "identity_fallback_candidate",
+          "half_support_sec_estimate": 0.0,
+          "input_samples_per_airy_fwhm": 5.438724789133496,
+          "output_sample_rate_hz": 122.05810546875,
+          "output_samples_per_airy_fwhm": 5.438724789133496,
+          "planning_speed_arcsec_per_sec": 105.0,
+          "safe_sample_rate_hz": 122.05810546875,
+          "science_passband_hz": 23.093107186319454,
+          "selected_factor": 1,
+          "speed_arcsec_per_sec": 100.0,
+          "tap_count_estimate": 1
+        },
+        "a1400": {
+          "disposition": "identity_fallback_candidate",
+          "half_support_sec_estimate": 0.0,
+          "input_samples_per_airy_fwhm": 6.9127716945995825,
+          "output_sample_rate_hz": 122.05810546875,
+          "output_samples_per_airy_fwhm": 6.9127716945995825,
+          "planning_speed_arcsec_per_sec": 105.0,
+          "safe_sample_rate_hz": 122.05810546875,
+          "science_passband_hz": 18.16884168335428,
+          "selected_factor": 1,
+          "speed_arcsec_per_sec": 100.0,
+          "tap_count_estimate": 1
+        },
+        "a2000": {
+          "alias_stopband_start_hz": 48.293883330154706,
+          "attenuation_db_estimate": 80.0,
+          "disposition": "prototype_decimation_candidate",
+          "half_support_sec_estimate": 0.073728,
+          "input_samples_per_airy_fwhm": 9.86222095096207,
+          "kaiser_beta_estimate": 7.85726,
+          "normalized_transition_width": 0.5825939689625094,
+          "output_sample_rate_hz": 61.029052734375,
+          "output_samples_per_airy_fwhm": 4.931110475481035,
+          "per_image_stopband_amplitude_bound": 0.001,
+          "planning_speed_arcsec_per_sec": 105.0,
+          "safe_sample_rate_hz": 122.05810546875,
+          "science_passband_hz": 12.735169404220292,
+          "selected_factor": 2,
+          "speed_arcsec_per_sec": 100.0,
+          "tap_count_estimate": 19
+        }
+      },
+      "speed_arcsec_per_sec": 100.0
+    }
+  ]
+}

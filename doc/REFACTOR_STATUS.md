@@ -1,5 +1,51 @@
 # Citlali Refactor Status
 
+## 2026-08-29 WP-7 Scan/Array RTC Numerical-Closure Preparation
+
+The exact pushed structural-authority revision
+`38644343a4f8cfa213c8cab87c06753377704e12` remains controlling and
+nonidentity implementation remains stopped. The bounded
+[numerical-closure packet](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md)
+now gives one explicit proposed value or rule for every open array, response,
+alias, sampling, factor, realization, support, arithmetic, and uncertainty
+field. It also exposes the necessary inadequate-input edge case: `M=1` cannot
+claim preservation when the source cadence itself fails the science-band or
+beam-sampling requirement.
+
+The proposal uses the current calibration-software 272/214/150 GHz
+center-frequency convention, a 50 m ideal circular Airy beam, the full
+ideal-aperture optical temporal support, independent `1e-3`
+astronomical-product limits, `1e-4`
+passband ripple, `1e-6` folded alias power gain, four samples per Airy FWHM,
+integer factors 1--256, a deterministic centered symmetric Kaiser FIR rule,
+five-second maximum half-support, binary64 ordered arithmetic, a 5% velocity
+margin, and a 100 ppm conservative cadence margin. These are recommendations,
+not scientific authority, until exact owner disposition.
+
+An evidence-only local calculator and checked JSON show feasibility across
+synthetic admitted speeds. At a representative nominal 50 arcsec/s and the
+exact 122.0703125 Hz detector cadence it estimates array-specific factors
+`M=2`, `M=3`, and `M=4`; the estimated tap counts are not certified filter
+artifacts. Observation 152390 cannot yet supply an authoritative realized
+plan: its Lissajous header value has a scale consistent with 50 arcsec/s but a
+contradictory unit attribute, and no accepted AST product currently supplies
+science-scan membership, derivative validity/causes, and the required actual
+maximum. The packet does not invent a derivative or smoothing rule.
+
+Next authority is the owner's exact numerical disposition. After that, the
+first real nonidentity route still requires conforming AST velocity facts,
+certified coefficient/response evidence, focused and repository gates, a
+representative-data package, and fresh exact-SHA review. No common grid,
+persistent RTC TOD schema, production activation, CAL, VAL, PTC, or MAP/JINC
+work is opened.
+
+The candidate JSON regenerates byte-for-byte from the evidence calculator and
+its six focused tests pass. The unchanged repository passes all 870 runnable
+CTests with the one established disabled test unchanged, all 207 baseline-tool
+tests, and the full required config gate with all 129 unit tests and downstream
+audits. These engineering gates do not turn the proposed numerical values or
+the estimated Kaiser tap counts into scientific authority.
+
 ## 2026-08-29 WP-7 Scan/Array RTC Planning Authority
 
 The scientific owner superseded the fixed-`M=2` recommendation prepared at
