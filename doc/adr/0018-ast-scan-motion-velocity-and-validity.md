@@ -69,9 +69,10 @@ Changing them requires a named successor authority and new evidence.
   `abb33fdb9e45352190d2e55592cc5eba967993f2` passed fresh independent
   exact-SHA conformance review with no findings.
 - The observation `(152390, 0, 2)` value `221.40490828695155 arcsec/s` at
-  telescope record `16973` is an authorized RTC planning input for that exact
-  bounded scope. It is not a default or substitute for producing authoritative
-  AST motion for another scan.
+  telescope record `16973` is an authorized truthful AST diagnostic for that
+  exact bounded scope. ADR 0019 supersedes using it as a whole-scan RTC
+  admission value. It is not a default or substitute for producing
+  authoritative AST motion for another scan.
 - Independent network timing under ADR 0015 remains unchanged. A synchronous
   cross-network consumer must separately request an ALIGN-owned common-analysis-
   grid relation.

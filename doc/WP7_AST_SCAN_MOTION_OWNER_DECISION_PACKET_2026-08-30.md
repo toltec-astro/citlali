@@ -217,16 +217,22 @@ Two related reductions remain distinct:
    speed below the threshold receives the RTC cause
    `below_minimum_science_scan_speed`; that state is not an AST defect.
 
-The raw scan summary prevents the plan from depending on which detector
-network happened to sample the continuous telescope path nearest its maximum.
-The existing approved 5% planning-velocity margin remains an RTC/filter-bank
-policy and is applied after AST publishes the uninflated actual maximum.
+The later approved occurrence-speed authority additionally applies each
+array/cadence/mode's inclusive physical upper ceiling per network occurrence,
+with RTC cause `scan_speed_above_mode_support` above it. This does not change
+the AST product, validity, or maximum.
+
+The raw scan summary preserves a network-independent truthful diagnostic. It no
+longer selects or rejects an ordinary RTC mode. The existing 5% velocity margin
+remains an RTC/filter-bank policy and is applied when deriving each mode's
+physical upper-speed ceiling.
 
 If the AST candidate set is empty, the maximum is unavailable with an exact
 cause. If a required portion of the physical scan lacks motion authority, AST
 may publish partial local facts and diagnostics, but it may not label an
-incomplete maximum as the scan maximum. RTC then forms no ordinary
-astronomical plan for that scan.
+incomplete maximum as the scan maximum. Complete valid mapped occurrences may
+still enter candidate-specific RTC admission; final product usability depends
+on retained support rather than availability of a scan-wide maximum.
 
 ## Typed validity and causes
 

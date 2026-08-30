@@ -168,25 +168,35 @@ slews, and non-science motion retain distinct causes. A scan without a nonempty
 admitted run has no admitted ordinary astronomical timestream product.
 
 AST owns the realized trajectory, scalar on-sky velocity, scan membership,
-validity, and defect facts. The planning speed is the actual maximum over the
-admitted scan trajectory, never a detector-derived estimate or percentile.
-Admitted occurrences form bounded filtering runs; support may not cross a
-slow, invalid, gap, slew, or non-science boundary.
+validity, defect facts, and truthful raw physical-scan maximum. The maximum is
+a diagnostic fact, never a detector-derived estimate or percentile, but it no
+longer forces one RTC disposition on the entire scan. Each array, exact cadence
+family, and certified RTC mode declares an inclusive physical upper-speed
+ceiling after the approved margins. A network occurrence above that ceiling is
+unavailable for that mode with pair-wide RTC cause
+`scan_speed_above_mode_support`; AST validity and member-local causes remain
+unchanged. Admitted occurrences form bounded filtering runs; support may not
+cross a slow, upper-speed-excluded, invalid, gap, slew, or non-science
+boundary.
 
-RTC bandwidth and integer-factor selection is deterministic per scan, array,
-and exact input cadence. The astronomical response uses a circular
+RTC candidate bandwidth and integer-factor evidence is deterministic per scan,
+array, mode, and exact input cadence. The astronomical response uses a circular
 diffraction-limited reference beam at the array's approved nominal center
-frequency. The selected plan is the largest permitted factor whose simplest
-approved realization satisfies the complete product-level passband, phase,
-alias, beam-sampling, support, edge, and identical paired-operator constraints.
-If none above one passes, the plan uses factor `M=1` without sampling change
-only when the input cadence itself still meets the approved science-band and
-four-samples-per-Airy-FWHM requirements. Otherwise there is no admitted
-ordinary astronomical product and the exact cause is
-`input_cadence_inadequate_for_science_band`. The planner retains its
+frequency. Every candidate must satisfy the complete product-level passband,
+phase, alias, beam-sampling, support, edge, and identical paired-operator
+constraints for its declared upper-speed domain. For `M=1`, upper-speed
+admission is occurrence-local. For a filtering or sampling-changing mode, an
+output is available only when its complete source footprint is admitted; no
+replacement or support renormalization is permitted. The planner retains all
 occurrence-admission dispositions and never narrows the science band to admit a
-preferred factor. This does not alter the separate accepted identity-RTC
-conformance context.
+preferred factor.
+
+The former scan-maximum failure and largest-certified-factor rules are
+superseded. Candidate-specific loss after support erosion, including weighted
+exposure and spatial coverage, must be measured before a later owner decision
+closes automatic factor selection and the final no-product cause. Neither a
+velocity percentile nor an arbitrary retained-sample fraction is authority.
+This does not alter the separate accepted identity-RTC conformance context.
 
 Different arrays may therefore have different filters, factors, and output
 cadences in one scan. Outputs remain network-scoped timed streams. This is not
@@ -195,13 +205,15 @@ a common-analysis-grid request. Exact current numerical authority is
 approved 2026-08-30. It retains the 272/214/150 GHz center frequencies, 50.0 m
 unobscured Airy beam, full optical temporal support, four samples per Airy
 FWHM, integer-factor universe 1--256, five-second half-support, centered zero
-phase, `1e-12` DC error, binary64 ordered arithmetic, 5% velocity margin,
-100 ppm cadence margin, and inadequate-input `M=1` rule. It requires no more
-than `1%` additional mapped astronomical distortion and `1%` additional
-retained broadband-noise variance, certified offline through naive, JINC, and
-OOF/fruitloops. Production selects a pre-certified filter-bank entry; filter
-family and tap count are engineering outputs, and the v1 Kaiser sweep is
-historical evidence only. Narrow sub-input-Nyquist lines are handled by the
+phase, `1e-12` DC error, binary64 ordered arithmetic, 5% velocity margin, and
+100 ppm cadence margin. It requires no more than `1%` additional mapped
+astronomical distortion and `1%` additional retained broadband-noise variance,
+certified offline through naive, JINC, and OOF/fruitloops. Filter family and tap
+count are engineering outputs, and the v1 Kaiser sweep is historical evidence
+only. Automatic production entry selection is pending the retained-support
+evidence and owner closure required by
+[`wp7-rtc-occurrence-speed-admission-v1`](WP7_RTC_OCCURRENCE_SPEED_ADMISSION_OWNER_AUTHORITY_2026-08-30.md).
+Narrow sub-input-Nyquist lines are handled by the
 line-detection/mitigation strategy rather than the generic broadband filter
 budget. The bounded AST prerequisite is scientifically closed by
 [`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md):

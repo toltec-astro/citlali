@@ -6,10 +6,10 @@ Scientific owner: Grant Wilson
 
 Authority identity: `wp7-rtc-scan-array-numerical-policy-v2`
 
-Status: **approved bounded correction; AST authority closed by
-`wp7-ast-scan-motion-v1`; bounded AST implementation passes local,
-representative-data, and fresh exact-SHA conformance gates; certified filter-
-bank artifacts, RTC implementation, and acceptance evidence pending**
+Status: **approved bounded response/alias correction; scan-maximum lookup
+superseded by `wp7-rtc-occurrence-speed-admission-v1`; AST authority closed;
+certified filter-bank artifacts, selection policy, RTC implementation, and
+acceptance evidence pending**
 
 Supersedes only the response-budget, alias-budget, and runtime-filter-design
 clauses of
@@ -26,9 +26,11 @@ decimation factor, RTC shall:
 2. add no more than `1%` to the variance of the broadband noise expected to
    survive timestream cleaning.
 
-Production Citlali selects a versioned precomputed and pre-certified filter-bank
-entry. It does not synthesize a filter, estimate its order, optimize its
-frequency response, or estimate a detector PSD during an ordinary reduction.
+Citlali may use only a versioned precomputed and pre-certified filter-bank
+entry. Automatic entry selection remains pending the retained-support evidence
+and owner closure required by the later occurrence-speed authority. Citlali
+does not synthesize a filter, estimate its order, optimize its frequency
+response, or estimate a detector PSD during an ordinary reduction.
 
 ## Astronomical-response budget
 
@@ -133,7 +135,8 @@ least:
 - array identity;
 - native sample-rate family and admitted cadence interval;
 - integer factor `M`;
-- maximum admitted scan velocity, including the approved velocity margin;
+- inclusive maximum admitted realized speed, with the approved velocity and
+  cadence margins incorporated;
 - coefficient bit patterns and numerical operator identity;
 - phase, DC response, support, edge, and arithmetic policy;
 - point-source, naive, JINC, OOF, and fruitloops certification results;
@@ -146,12 +149,13 @@ historical design evidence but are no longer scientific authority. A Kaiser
 entry may be retained if it is the simplest well-performing certified choice;
 it is not retained merely for v1 conformance.
 
-At scan setup, for each array and exact native cadence, Citlali obtains the
-authoritative `v_max`, applies the approved margins, and selects the largest
-permitted factor having a certified bank entry that admits the resulting
-velocity and cadence. This is a bounded table lookup, not runtime filter
-design. If no larger entry applies, the unchanged v1 `M=1` and
-`input_cadence_inadequate_for_science_band` disposition governs.
+Under
+[`wp7-rtc-occurrence-speed-admission-v1`](WP7_RTC_OCCURRENCE_SPEED_ADMISSION_OWNER_AUTHORITY_2026-08-30.md),
+each entry admits network occurrences against its inclusive physical speed
+ceiling. The raw AST maximum remains diagnostic. Automatic largest-factor
+selection and the scan-wide `M=1` failure disposition are superseded pending
+representative support-loss evidence and a later owner decision. Runtime
+filter design remains prohibited.
 
 The permitted factor universe remains every integer in `[1, 256]`; the bank
 need contain only the combinations that have actually passed certification.
@@ -172,8 +176,11 @@ The correction does not change:
 - binary64 coefficient/data/arithmetic policy;
 - the 5% velocity and 100 ppm cadence margins;
 - network-specific timing, paired `x/r` operator/support behavior, and chunk
-  invariance; or
-- the inadequate-input `M=1` disposition and exact typed cause.
+  invariance.
+
+The later occurrence-speed authority changes only the scan-wide use of the
+velocity maximum, the upper-speed consequence, and automatic selection. It
+does not change the numerical budgets above.
 
 ## Evidence and implementation boundary
 
@@ -185,12 +192,14 @@ Before a nonidentity RTC route can be accepted, the project still needs:
 1. a conforming implementation of the approved
    [`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
    science-scan membership, velocity, validity, and cause authority;
-2. representative broadband PSD envelopes appropriate to cleaned products;
-3. versioned filter-bank entries and independent numerical certification;
-4. native-rate versus filtered naive, JINC, and OOF/fruitloops evidence;
-5. bounded learn-consider-apply implementation and repository gates;
-6. representative paired-data acceptance evidence; and
-7. fresh independent exact-SHA conformance review.
+2. representative occurrence/support-loss evidence;
+3. representative broadband PSD envelopes appropriate to cleaned products;
+4. versioned filter-bank entries and independent numerical certification;
+5. native-rate versus filtered naive, JINC, and OOF/fruitloops evidence;
+6. owner closure of automatic factor selection;
+7. bounded learn-consider-apply implementation and repository gates;
+8. representative paired-data acceptance evidence; and
+9. fresh independent exact-SHA conformance review.
 
 No common analysis grid, persistent RTC TOD schema, production activation,
 CAL, VAL, PTC/PCA expansion, or new MAP/JINC algorithm is authorized here.

@@ -382,13 +382,18 @@ circular diffraction-limited beam and product-level scientific tolerances.
 Different arrays may retain different network-local output cadences; this does
 not request a common analysis grid.
 [ADR 0017](adr/0017-precertified-rtc-filter-bank-and-science-error-budgets.md)
-makes filter design an offline certification activity and production planning
-a bounded bank lookup. The current scientific-owner authority is
+makes filter design an offline certification activity and limits production to
+pre-certified entries. [ADR 0019](adr/0019-occurrence-level-rtc-upper-speed-admission.md)
+retains the truthful AST maximum as a diagnostic while admitting upper speed
+per network occurrence against an array/cadence/mode physical ceiling. It
+suspends automatic largest-factor selection until representative retained-
+support evidence supports a later owner decision. The current numerical
+scientific-owner authority is
 [`wp7-rtc-scan-array-numerical-policy-v2`](WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md).
 It bounds additional mapped astronomical distortion and broadband retained-
 noise variance at `1%`, requires offline naive/JINC and OOF/fruitloops
-certification, and makes production planning a pre-certified filter-bank
-lookup. Sub-input-Nyquist lines remain owned by line detection/mitigation.
+certification. Sub-input-Nyquist lines remain owned by line
+detection/mitigation.
 The bounded AST science-scan velocity/validity authority is now accepted as
 [`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
 and [ADR 0018](adr/0018-ast-scan-motion-velocity-and-validity.md). Its compact
@@ -396,9 +401,10 @@ raw product and independent network-mapped views now pass local implementation
 gates in
 [`ast_scan_motion.h`](../include/citlali/core/pipeline/ast_scan_motion.h) and
 [`ast_scan_motion_alignment.h`](../include/citlali/core/pipeline/ast_scan_motion_alignment.h).
-Representative AST conformance, representative PSD envelopes, certified bank
-artifacts, and their remaining gates are pending. The v1 Kaiser factor/tap
-sweep is historical evidence only.
+Representative AST conformance passes. Occurrence/support-loss evidence,
+representative PSD envelopes, certified bank artifacts, automatic-selection
+closure, and their remaining gates are pending. The v1 Kaiser factor/tap sweep
+is historical evidence only.
 The implementation slices, storage and execution baseline, performance-tool
 adoption policy, and evidence gates are in
 [WP-7 Timestream Successor Implementation Baseline](WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md).
@@ -410,6 +416,8 @@ The scan/array planning authority and its frozen-entry mapping are in
 and [crosswalk](WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md),
 with exact current numerical authority in the
 [v2 filter-bank policy](WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md)
+and occurrence-level admission authority in the
+[upper-speed correction](WP7_RTC_OCCURRENCE_SPEED_ADMISSION_OWNER_AUTHORITY_2026-08-30.md),
 and historical v1 detail retained in the
 [superseded packet](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md).
 Exact external scientific and implementation-review authorities are bound by

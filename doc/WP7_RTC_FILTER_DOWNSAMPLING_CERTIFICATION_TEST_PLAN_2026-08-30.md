@@ -2,18 +2,20 @@
 
 Date: 2026-08-30
 
-Status: **proposed bounded execution plan; no scientific authority changed; no
-nonidentity RTC implementation or production activation authorized by this
-document**
+Status: **accepted bounded execution plan, corrected for occurrence-level
+upper-speed admission; no nonidentity RTC implementation or production
+activation authorized by this document**
 
 Governing authority:
 
 - [`wp7-rtc-scan-array-numerical-policy-v2`](WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md)
 - [`wp7-rtc-scan-array-planning-v1`](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
+- [`wp7-rtc-occurrence-speed-admission-v1`](WP7_RTC_OCCURRENCE_SPEED_ADMISSION_OWNER_AUTHORITY_2026-08-30.md)
 - [`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
 - [ADR 0016](adr/0016-scan-array-rtc-bandwidth-planning.md)
 - [ADR 0017](adr/0017-precertified-rtc-filter-bank-and-science-error-budgets.md)
 - [ADR 0018](adr/0018-ast-scan-motion-velocity-and-validity.md)
+- [ADR 0019](adr/0019-occurrence-level-rtc-upper-speed-admission.md)
 
 ## Purpose and bounded outcome
 
@@ -21,7 +23,8 @@ This plan determines the engineering facts still needed to construct and
 certify the first nonidentity, network-timed RTC filter/downsampling bank. It
 does not revisit the approved science budgets. It converts the remaining
 unknowns into measurements, names the exact primary observations, and defines
-the evidence needed before production Citlali may select a bank entry.
+the evidence needed before the scientific owner can close automatic bank-entry
+selection and production Citlali may use it.
 
 The two primary end-to-end cases are the project owner's proposed cases:
 
@@ -40,14 +43,15 @@ narrow route-completeness witness. This is not an expansion of the scientific
 scope: OOF/fruitloops evidence is already an explicit prerequisite of the
 approved filter-bank authority.
 
-The bounded outcome is one of:
+The bounded outcome is:
 
 - a small set of versioned, certified bank entries for the exact cadence,
-  array, and velocity domains demonstrated by the evidence;
-- a documented `M=1` disposition for a domain in which no larger factor passes;
-  or
-- a typed finding that the native input cadence itself is inadequate under the
-  approved rule.
+  array, factor, and inclusive physical upper-speed domains demonstrated by
+  the evidence;
+- candidate-specific raw and support-eroded occurrence, duration, weighted-
+  exposure, spatial-coverage, response, noise, and performance evidence; and
+- an owner packet closing automatic factor selection and the final no-product
+  disposition before any production bank is frozen.
 
 Passing these cases does not silently certify unmeasured cadence families or
 velocity domains.
@@ -63,11 +67,14 @@ The following are fixed inputs, not free parameters in the experiment:
 - at least four output samples per Airy FWHM;
 - integer factors `M` in `[1, 256]`;
 - per-scan, per-array planning on network-specific native timing axes;
-- the inclusive `1 arcsec/s` science-motion threshold and exact AST validity,
-  cause, derivative, and maximum-velocity rules;
+- the inclusive `1 arcsec/s` lower threshold, occurrence-level inclusive
+  physical upper-speed ceilings, exact cause
+  `scan_speed_above_mode_support`, and unchanged AST validity, derivative,
+  cause, and raw-maximum rules;
 - a 5% velocity margin and 100 ppm cadence margin;
 - centered zero phase, unit DC, and DC-gain error no larger than `1e-12`;
-- no filter support across invalid, slow, gap, or physical-run boundaries;
+- no filter support across invalid, slow, upper-speed-excluded, gap, or
+  physical-run boundaries;
 - no more than five seconds of half-support;
 - binary64 coefficients, samples, and declared ordered arithmetic;
 - identical filter and support for paired `x` and `r`;
@@ -79,8 +86,9 @@ The following are fixed inputs, not free parameters in the experiment:
   more than a `1%` map-noise variance increment through either naive or JINC;
 - narrow-line detection and mitigation remaining owned by the established line
   strategy; and
-- production selection by immutable table lookup, with no runtime filter
-  synthesis, order search, or PSD estimation.
+- immutable pre-certified bank entries, with no runtime filter synthesis,
+  order search, or PSD estimation. Automatic entry selection is explicitly
+  not fixed until the measured owner-closure gate.
 
 A design target tighter than these bounds may be used when inexpensive, but a
 test result shall not promote it to scientific authority.
@@ -90,14 +98,14 @@ test result shall not promote it to scientific authority.
 | ID | Unknown or uncertainty | Evidence that resolves it | Consequence |
 | --- | --- | --- | --- |
 | U1 | Exact network cadence families, jitter, gaps, and run lengths in the representative observations | Native occurrence/time census for every participating network | Defines candidate bank domains and detects unsupported cadence families |
-| U2 | Maximum valid science-scan velocity by scan | Approved AST product using the exact owner rules | Sets the margin-adjusted velocity admitted by each entry |
-| U3 | Which decimation factors remain feasible by array | Analytic sweep of all `M=1..256` using U1, U2, beam sampling, science-band, and support rules | Restricts expensive filter design and replay to eligible factors |
+| U2 | Valid velocity distribution and native-occurrence mapping by scan/network | Approved AST product and exact ALIGN mapped views | Preserves the truthful maximum and supplies occurrence-level candidate admission without using a percentile |
+| U3 | Physical upper-speed and retained-support consequences for each array/cadence/factor | Analytic sweep of `M=1..256`, then exact support erosion once a filter exists | Restricts design/replay candidates and supplies the later selection trade rather than choosing a factor |
 | U4 | Appropriate broadband PSDs for noise expected to survive cleaning | Native-rate residual PSD measurements on Beammap and science, with source masks, established cleaning, line masks, and detector/network summaries | Produces versioned PSD-envelope candidates rather than using raw removable atmosphere |
 | U5 | Sensitivity to the PSD aggregation rule | Compare per-detector worst cases, robust array envelopes, and observation-to-observation variation without selecting an unapproved rule implicitly | Identifies whether an owner choice is still needed before freezing the envelope |
 | U6 | Whether a detected line can fold for a candidate factor and whether effective mitigation precedes decimation | Line inventory, selected output Nyquist, and execution-order trace/replay | Withhold that factor unless the established strategy demonstrably protects it before sample removal |
 | U7 | Simplest filter family and tap count that meet all budgets | Offline comparison of a small set of mature symmetric linear-phase FIR designs | Engineering selection for each certified entry |
 | U8 | Response extrema between a convenient frequency or source-phase grid | Adaptive frequency extremum search plus full sub-output-sample point-source phase sweep | Prevents certification from depending on a lucky grid |
-| U9 | Filter-only versus sample-removal effects | Diagnostic native-output filtering arm and filtered/decimated arm against one native control | Localizes failures and avoids redesigning the wrong component |
+| U9 | Admission/support versus filter versus sample-removal effects | Complete-native R0, mode-matched native Rm, filter-only F, and filtered/decimated D arms | Keeps support cost outside the transfer budget and localizes numerical failures |
 | U10 | Paired `x/r`, validity, cause, support, and native-axis correctness | Exact timestream contract comparisons, including gaps and member-local failures | Proves the numerical method preserves the accepted RTC semantics |
 | U11 | Map and calibration effects in real reductions | Native versus candidate Beammap and standard-science reductions through naive and JINC | Closes point, beam, profile, centroid, integrated response, transfer, and noise gates |
 | U12 | OOF and fruitloops effects | Controlled OOF template plus the `152385`--`152387` route witness | Closes the separately required iterative OOF route without inventing a new OOF tolerance |
@@ -173,15 +181,19 @@ non-RTC settings are held fixed.
 
 | Arm | Purpose | Scientific status |
 | --- | --- | --- |
-| R: native reference | Accepted identity RTC, `M=1`, no candidate filtering or sample removal | Sole reference for filter/downsampling change |
+| R0: complete native reference | Accepted identity RTC over all AST-valid lower-speed-admitted native occurrences, with no candidate upper-speed exclusion, filtering, or sample removal | Reference for admission/support cost |
+| Rm: mode-matched native reference | Native-rate evaluation with the candidate's upper-speed admission and equivalent complete-support domain, but no candidate filtering or decimation | Reference for numerical filter/downsampling change |
 | F: filter-only diagnostic | Apply the exact candidate centered operator but evaluate it at every supported native occurrence | Diagnostic decomposition only; not a production bank product |
 | D: filtered/decimated candidate | Apply the candidate operator and retain its declared network-native output occurrences | Proposed production behavior |
 | E: execution-equivalence diagnostic | Compare the straightforward ordered reference evaluator with any optimized direct/polyphase realization | Engineering evidence only; each differing operator identity must be declared |
 
-Arm F separates distortion introduced by the low-pass response from distortion
-introduced by reduced sampling. Arm E is run only after a coefficient set
-passes the scientific screens. It does not authorize a numerically different
-fast path merely because its aggregate map looks similar.
+R0 versus Rm measures the scientific support removed by mode admission and
+filter-footprint erosion. Rm versus D measures the candidate numerical change
+without hiding admission loss inside the `1%` transfer budgets. Arm F separates
+distortion introduced by the low-pass response from distortion introduced by
+reduced sampling. Arm E is run only after a coefficient set passes the
+scientific screens. It does not authorize a numerically different fast path
+merely because its aggregate map looks similar.
 
 The legacy fixed-rate filter/downsampler may be measured as historical context,
 but it is not an acceptance reference and cannot select a bank entry.
@@ -199,13 +211,21 @@ For every scan and network:
 2. classify cadence intervals and jitter without projecting networks to a
    common analysis grid;
 3. map the approved AST velocity/validity product to each native axis;
-4. form admitted runs and exact support boundaries;
-5. apply the approved cadence and velocity margins; and
-6. screen all integer factors `1..256` using output sampling, Airy-beam,
-   science-band, and maximum-half-support constraints.
+4. form the AST-valid, lower-speed-admitted base runs;
+5. derive each factor's structural inclusive upper-speed ceiling using the
+   approved cadence/velocity margins, output sampling, Airy beam, full optical
+   band, and native Nyquist constraints;
+6. classify every mapped occurrence below, exactly at, or above that ceiling
+   with exact typed cause accounting; and
+7. report raw excluded count/duration and retained run lengths for all factors
+   `1..256` without selecting one.
 
-The output is a compact eligibility table. It contains no filter coefficients
-and makes no runtime decision.
+Before a filter is certified, the structural ceiling is an upper bound on a
+future entry's admitted domain; passband, response, alias, and support evidence
+may lower it. F0 can report exact M=1 occurrence-local consequences. Filter-
+footprint erosion for `M>1` is added only after F1 supplies exact coefficients
+and half-support. The compact table contains no filter coefficients and makes
+no runtime decision.
 
 ### F1: bounded filter-family comparison
 
@@ -216,7 +236,7 @@ Start with three mature, centered, symmetric FIR construction families:
 - Parks--McClellan/equiripple linear-phase FIR; and
 - weighted least-squares linear-phase FIR.
 
-For each eligible array/cadence/velocity/factor domain, find the shortest
+For each candidate array/cadence/factor/upper-speed domain, find the shortest
 credible designs near the pass/fail boundary, then verify rather than trust the
 designer's sampled response. The comparison records:
 
@@ -240,8 +260,8 @@ An independent verifier that does not call the design routine shall:
 - search frequency-response extrema with dense bracketing and local refinement;
 - integrate the exact real-data alias images using the bound PSD artifact;
 - test constant, impulse, sinusoid, and source-phase fixtures;
-- test point-source and OOF response at the exact maximum velocity claimed by
-  each proposed entry;
+- test point-source and OOF response at the exact inclusive upper-speed ceiling
+  claimed by each proposed entry;
 - verify no unavailable source occurrence contributes to an output;
 - verify the stable native-axis ordinal and output-center convention;
 - verify exact support, cause, and boundary accounting; and
@@ -252,13 +272,13 @@ artifacts from checked inputs.
 
 ### F3: timestream replay
 
-Replay R, F, and D over selected whole-network scans from all three cases.
+Replay R0, Rm, F, and D over selected whole-network scans from all three cases.
 Measure before committing to full reductions:
 
 - native and output occurrence/time identities by network;
 - paired `x/r` values, validity, causes, and support;
-- retained and unavailable counts by cause;
-- edge exposure lost in samples and seconds;
+- raw upper-speed-excluded and support-eroded counts/durations by cause;
+- retained weighted exposure, run lengths, edge loss, and spatial coverage;
 - science-band transfer on natural and injected sources;
 - input, filtered, aliased, and cleaned residual PSDs;
 - line inventory and fold status; and
@@ -272,14 +292,14 @@ pilot cannot certify the bank.
 Only candidates passing F0--F3 enter full A/B reductions. The required matrix
 is:
 
-| Route | Native reference | Candidate | Required comparisons |
+| Route | References | Candidate | Required comparisons |
 | --- | --- | --- | --- |
-| Beammap `148670`, naive | R | D | detector identities/flags; peak, integral, profile, FWHM, centroid, calibration transfer; signal, weight, kernel, sensitivity; source-crossing TOD; support loss |
-| Beammap `148670`, JINC or controlled JINC point-source replay | R | D | same approved RTC response metrics and map-noise variance; if full detector-group Beammap JINC is not an authorized route, use the common controlled template rather than inventing a product |
-| Science `152390` and `152392`, naive | R | D | observation and coadd maps; injected-source response; extended structure; coverage/weight; residual/noise-map variance; spatial residuals and power |
-| Science `152390` and `152392`, JINC | R | D | the same response/noise gates through the established JINC route, including kernel/support products |
-| Controlled OOF template, naive and JINC | R | D | mapped response, phase dependence, and recovered template behavior |
-| OOF `152385`--`152387` with its established mapmaker and fruitloops | R | D | existing OOF acceptance criteria, iteration trajectory, final solution, and coherent residual-bias audit |
+| Beammap `148670`, naive | R0 and Rm | D | admission/support cost from R0/Rm; detector identities/flags; peak, integral, profile, FWHM, centroid, calibration transfer; signal, weight, kernel, sensitivity; source-crossing TOD |
+| Beammap `148670`, JINC or controlled JINC point-source replay | R0 and Rm | D | admission/support cost plus the approved RTC response metrics and map-noise variance; if full detector-group Beammap JINC is not an authorized route, use the common controlled template rather than inventing a product |
+| Science `152390` and `152392`, naive | R0 and Rm | D | admission/support cost; observation and coadd maps; injected-source response; extended structure; coverage/weight; residual/noise-map variance; spatial residuals and power |
+| Science `152390` and `152392`, JINC | R0 and Rm | D | admission/support cost plus the same response/noise gates through the established JINC route, including kernel/support products |
+| Controlled OOF template, naive and JINC | R0 and Rm | D | admission/support cost, mapped response, phase dependence, and recovered template behavior |
+| OOF `152385`--`152387` with its established mapmaker and fruitloops | R0 and Rm | D | admission/support cost, existing OOF acceptance criteria, iteration trajectory, final solution, and coherent residual-bias audit |
 
 The existing product-contract and scientific-equivalence machinery remains a
 structural and regression gate. Its historical OG/refactor tolerances are not
@@ -294,9 +314,10 @@ substituted for the WP-7 filter/downsampling budgets. In particular:
 WP-7-specific comparators shall add the approved `1%` response and noise
 questions directly.
 
-The controlled point-source and OOF-template cases run at the exact cadence
-and maximum velocity claimed by each entry. A real observation at a lower
-velocity cannot by itself certify a higher-velocity bank domain.
+The controlled point-source and OOF-template cases run at the exact cadence and
+inclusive upper-speed ceiling claimed by each entry. A real observation whose
+retained occurrences do not reach that ceiling cannot by itself certify the
+higher-velocity bank domain.
 
 ## PSD and alias protocol
 
@@ -443,7 +464,8 @@ scalar tolerance passes.
 
 For every network:
 
-- R output occurrence and time equal the native input exactly for `M=1`;
+- R0 and Rm occurrence/time equal their admitted native inputs exactly for
+  `M=1`;
 - D declares a new network-specific output occurrence, time, and complete
   primitive-source support relation;
 - no common analysis grid is constructed or invoked;
@@ -452,11 +474,14 @@ For every network:
 - no source from another network contributes to the output;
 - all source samples required by both `x` and `r` are available before the pair
   is admitted;
+- below/equal/above upper-speed admission is exact and inclusive at equality,
+  with pair-wide cause `scan_speed_above_mode_support` only above it;
 - the same coefficient/operator/support is applied to `x` and `r`;
 - member-local causes remain inspectable and pair-wide consequences are
   conservative in both directions;
 - gaps in one network manufacture neither a slot nor an absence in another;
-- filter support crosses no invalid, slow, gap, or physical-scan boundary; and
+- filter support crosses no invalid, slow, upper-speed-excluded, gap, or
+  physical-scan boundary; and
 - leading/trailing unavailable outputs and their causes are exact under at
   least three materially different engineering chunk partitions.
 
@@ -496,13 +521,13 @@ are committed.
 | Gate | Required result | Stop condition |
 | --- | --- | --- |
 | D0: fixture identity | Complete hashed raw/config/APT/build manifest for all required cases | Missing, ambiguous, duplicate, or changed inputs |
-| D1: native census | Network-local cadence, AST motion, gaps, validity, and run inventory | Common-grid dependency, unresolved cadence family, or nonconforming AST mapping |
+| D1: native census | Network-local cadence, AST motion, structural mode ceilings, occurrence admission, gaps, validity, and run inventory | Common-grid dependency, unresolved cadence family, nonconforming AST mapping, percentile substitution, or implicit factor selection |
 | D2: PSD/line evidence | Reproducible residual PSD candidates and separate line/fold inventory | Removable atmosphere hides alias; material envelope choice unresolved; foldable line lacks pre-decimation protection |
 | D3: analytic/synthetic certification | Independent response, DC, phase, alias, support, pairing, and chunk gates pass | Any fixed authority bound fails or verifier disagrees |
 | D4: representative replay | Whole-network R/F/D replay passes timing, support, cause, response, and memory checks | Pair semantics, native axes, boundaries, or declared arithmetic differ |
 | D5: full products | Beammap and science native/candidate comparisons pass naive and JINC; OOF/fruitloops witness passes | Any independent response/noise limit or existing route contract fails |
-| D6: performance selection | Simplest scientific survivor chosen with measured runtime/memory evidence | Faster candidate changes scientific operator without separate certification |
-| D7: frozen package | Byte-stable bank/PSD artifacts, exact result record, full repository gates, representative paired-data run, and fresh exact-SHA review | Artifact drift, incomplete gate, or unresolved finding |
+| D6: selection evidence | Scientific survivors characterized by support loss, products, runtime, and memory; owner packet prepared | Any candidate hides admission loss or a faster realization changes the scientific operator |
+| D7: owner selection closure and frozen package | Owner-approved selection policy; byte-stable bank/PSD artifacts, exact result record, full repository gates, representative paired-data run, and fresh exact-SHA review | Missing selection authority, artifact drift, incomplete gate, or unresolved finding |
 
 Additional stop rules:
 
@@ -512,6 +537,8 @@ Additional stop rules:
 - Do not treat a skipped required route or missing real-data product as pass.
 - Do not use old reduction differences to excuse a new R-versus-D failure.
 - Do not certify a velocity or cadence outside the artifact's admitted domain.
+- Do not select a factor from raw sample fraction, a velocity percentile, or
+  merely nonzero retained data.
 - Do not proceed to production implementation while the PSD envelope or
   line-before-decimation ordering remains materially unresolved.
 
@@ -522,7 +549,7 @@ The final review package contains:
 1. the D0 input/build manifest and raw-input digests;
 2. network cadence, gap, and AST velocity census;
 3. source/validity/line masks and versioned PSD-envelope artifacts;
-4. the factor-eligibility table for `M=1..256`;
+4. the `M=1..256` structural-ceiling and raw/support-eroded occurrence table;
 5. rejected and surviving design summaries;
 6. exact bank-entry coefficient and operator artifacts;
 7. independent numerical-verifier results;
@@ -540,10 +567,11 @@ The result record distinguishes `pass`, `fail`, `indeterminate`, and
 
 ## Decision boundary during execution
 
-Once this plan is accepted, the fixture manifest, native census, synthetic
-harness, bounded FIR comparison, PSD measurements, and diagnostic replays can
-proceed without another scientific decision. Evidence returns to the owner
-before a bank is frozen when any of the following occurs:
+The fixture manifest, native census, synthetic harness, bounded FIR comparison,
+PSD measurements, and diagnostic replays can proceed without another
+scientific decision. Evidence always returns to the owner before a selection
+policy or bank is frozen. It also returns earlier when any of the following
+occurs:
 
 - plausible PSD-envelope aggregation rules materially change factor or filter
   eligibility;
@@ -554,18 +582,20 @@ before a bank is frozen when any of the following occurs:
 - a mapmaker-specific filter would be preferred;
 - the desired production domain extends beyond measured cadence, velocity, or
   PSD evidence; or
-- no candidate, including the governed `M=1` disposition, supports an ordinary
+- no candidate, including occurrence-local `M=1`, supports an ordinary
   astronomical product.
 
 Filter family, tap count, direct/polyphase organization, and workspace use are
 engineering selections when all fixed scientific and evidence gates pass.
+Factor selection is not: it awaits the explicit owner closure above.
 
 ## Reviewable execution sequence
 
 The recommended bounded sequence is:
 
 1. **Fixture/census harness:** D0 manifests, native cadence/AST census,
-   analytic factor eligibility, and synthetic timing/support fixtures.
+   occurrence-level structural ceilings and raw admission, and synthetic
+   timing/support fixtures, with no factor selection.
 2. **PSD and line evidence:** native-rate residual PSD extraction, aggregation
    sensitivity study, line/fold inventory, and an explicit owner packet only if
    the evidence leaves a material scientific choice.
@@ -576,9 +606,10 @@ The recommended bounded sequence is:
 5. **End-to-end evidence:** Beammap `148670`, standard science
    `152390`--`152392` through naive/JINC, and the minimal OOF
    `152385`--`152387` fruitloops gate.
-6. **Bank freeze and implementation prompt:** select the simplest survivors,
-   freeze artifacts, then prepare the bounded learn-consider-apply production
-   increment and its exact acceptance gates.
+6. **Owner selection and bank freeze:** return support/product/performance
+   tradeoffs for a bounded factor-selection decision, freeze only the approved
+   survivors, then prepare the learn-consider-apply production increment and
+   its exact acceptance gates.
 
 The first actionable increment is item 1. It constructs measurement and
 fixture tooling only. It does not yet add nonidentity RTC to an executable

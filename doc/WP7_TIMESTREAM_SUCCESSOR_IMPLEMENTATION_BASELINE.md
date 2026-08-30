@@ -336,15 +336,14 @@ design and measurements show a clearer boundary.
   changes;
 - for the first nonidentity sampling method, consume immutable AST-valid
   science-scan motion, admit occurrences at `v >= 1 arcsec/s`, and isolate
-  bounded runs so slow or invalid support cannot influence retained outputs;
-- derive immutable filter/factor plans per scan, TolTEC array, and exact input
-  cadence from the authoritative circular diffraction-limited beam and the
-  approved product-level passband, phase, alias, sampling, support, and edge
-  limits; select the largest conforming factor and use `M=1` without sampling
-  change, but with the new admission dispositions, when none above one passes
-  and the input cadence remains adequate; otherwise produce no admitted
-  ordinary astronomical product with
-  `input_cadence_inadequate_for_science_band`;
+  bounded runs so slow, mode-upper-speed-excluded, or invalid support cannot
+  influence retained outputs;
+- derive candidate filter/factor evidence per scan, TolTEC array, exact input
+  cadence, and inclusive physical upper-speed domain from the authoritative
+  circular diffraction-limited beam and approved passband, phase, alias,
+  sampling, support, and edge limits; enumerate raw and support-eroded
+  consequences without selecting a factor until the owner closes selection
+  from representative evidence;
 - preserve per-network outputs when arrays realize different filters, factors,
   or cadences; this does not request a common analysis grid;
 - implement paired pathology, transition guards, stable segments, reset, and
@@ -355,13 +354,16 @@ The scan/array structure, corrected
 [`wp7-rtc-scan-array-numerical-policy-v2`](WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md)
 and bounded
 [`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
+and
+[`wp7-rtc-occurrence-speed-admission-v1`](WP7_RTC_OCCURRENCE_SPEED_ADMISSION_OWNER_AUTHORITY_2026-08-30.md)
 authority are accepted. The AST implementation now passes local,
 representative-data, and fresh exact-SHA conformance gates. Nonidentity RTC
-still requires representative cleaned-noise PSD envelopes,
+still requires occurrence/support-loss evidence and automatic-selection owner
+closure, representative cleaned-noise PSD envelopes,
 immutable pre-certified filter-bank artifacts, native-rate versus filtered
 naive/JINC and OOF/fruitloops certification, and the bounded implementation
-gates. Production performs a bank lookup and no runtime filter
-synthesis, optimization, or detector-PSD estimation. Narrow sub-input-Nyquist
+gates. Production may use only a certified bank entry and performs no runtime
+filter synthesis, optimization, or detector-PSD estimation. Narrow sub-input-Nyquist
 lines remain owned by line detection/mitigation. Legacy frequency/FWHM
 constants, the historical `32 Hz` filter, and v1 Kaiser factor/tap estimates are
 evidence, not defaults. See ADRs 0016 and 0017 and the 2026-08-29 RTC scan/array

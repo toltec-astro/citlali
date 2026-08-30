@@ -1,5 +1,47 @@
 # Citlali Refactor Status
 
+## 2026-08-30 WP-7 Occurrence-Level Upper-Speed Admission
+
+The scientific owner approved
+[`wp7-rtc-occurrence-speed-admission-v1`](WP7_RTC_OCCURRENCE_SPEED_ADMISSION_OWNER_AUTHORITY_2026-08-30.md),
+recorded durably in [ADR 0019](adr/0019-occurrence-level-rtc-upper-speed-admission.md).
+The accepted AST velocity product and truthful raw physical-scan maximum remain
+unchanged. The maximum is diagnostic; it no longer binds or rejects every RTC
+occurrence in a scan.
+
+Each array, exact cadence family, and certified mode instead declares an
+inclusive physical upper-speed ceiling after the accepted velocity/cadence
+margins. A network occurrence above that ceiling is unavailable for that mode
+with pair-wide cause `scan_speed_above_mode_support`, while AST validity,
+realized velocity, member-local `x/r` validity, and local causes remain intact.
+For `M=1` the consequence is occurrence-local. Filtered or decimated outputs
+require complete admitted source support and may not interpolate, pad, or
+renormalize across an upper-speed boundary.
+
+The former scan-wide `1.05 v_max` admission/failure rule and automatic largest-
+factor lookup are superseded. No percentile or arbitrary retained-sample
+fraction replaces them. The certification program must separately report raw
+admission loss, filter-support erosion, weighted exposure, spatial coverage,
+mapped response/noise, and performance. Automatic factor selection and the
+final no-product cause return for a bounded owner decision after that evidence.
+
+For observation 152390, the accepted estimator has 62,067 derivative-valid
+telescope records and a truthful maximum of
+`221.40490828695155 arcsec/s`, but only 62 records exceed `200 arcsec/s` and
+five exceed `220 arcsec/s`. At the observed `122.0703125 Hz` cadence, the
+structural `M=1` realized-speed ceilings are approximately `135.97`, `172.82`,
+and `246.56 arcsec/s` for a1100, a1400, and a2000. The corresponding raw
+telescope-record exclusions are approximately `1.903%`, `0.329%`, and `0%`
+before network mapping or support erosion. These are discovery facts, not a
+factor choice or sensitivity claim.
+
+The next bounded work is to repair the existing D0/D1 fixture census so it
+enumerates occurrence-level structural ceilings and raw admission for
+`M=1..256` without selecting a factor. The already collected custody, cadence,
+AST, and network-mapping evidence remains valid; its scan-maximum factor
+dispositions are superseded diagnostics. PSD/filter research remains after the
+repaired census, and nonidentity production activation remains unavailable.
+
 ## 2026-08-30 WP-7 Filtering and Downsampling Certification Plan
 
 The project owner selected Beammap `148670` and the standard science sequence
@@ -8,9 +50,9 @@ RTC filter/downsampling uncertainties. The bounded
 [certification test plan](WP7_RTC_FILTER_DOWNSAMPLING_CERTIFICATION_TEST_PLAN_2026-08-30.md)
 now separates fixed scientific authority from the cadence, PSD-envelope,
 line-ordering, filter-family, factor, phase, support, product-transfer, and
-performance facts that must be measured. It uses a native-rate reference and
-filtered/decimated candidate from identical raw bytes, with diagnostic arms to
-separate filtering from sample removal.
+performance facts that must be measured. It uses complete-native and mode-
+matched native references plus a filtered/decimated candidate from identical
+raw bytes, separating admission/support loss, filtering, and sample removal.
 
 The raw detector/telescope inputs for Beammap `148670`, science/pointing
 `152390`--`152392`, and OOF `152385`--`152387` are present locally. The OOF
@@ -26,10 +68,11 @@ losing decimation. A factor is withheld when a line can fold unless the
 established line strategy is shown to be effective before sample removal. No
 line algorithm is redesigned here.
 
-The next bounded implementation is the fixture/census harness: exact input and
-build manifests, network-local cadence/AST inventory, analytic factor
-eligibility, and deterministic timing/support fixtures. This plan does not
-authorize nonidentity RTC implementation or production activation.
+The first fixture/census harness now supplies exact input/build manifests and
+network-local cadence/AST inventory. Its factor screen requires the bounded
+occurrence-level repair described above before it can govern subsequent
+filter research. This plan does not authorize nonidentity RTC implementation
+or production activation.
 
 ## 2026-08-30 WP-7 AST Scan-Motion Representative Gate
 
@@ -85,11 +128,11 @@ exact repair SHA `abb33fdb9e45352190d2e55592cc5eba967993f2` returned `PASS`
 with no findings, closing the prior `MAJOR`. All eight focused validator tests
 and retained-record validation passed; the isolated review worktree lacked the
 unchanged runner binary, so executable-byte hashing was not repeated. The
-exact `221.40490828695155 arcsec/s` maximum at telescope record `16973` is now
-an authorized RTC planning input for bounded observation `(152390, 0, 2)` and
-is not a default for another scan. Filter-bank/PSD and native-rate versus
-filtered naive/JINC and OOF/fruitloops certification remain separate
-prerequisites. No nonidentity RTC numerical method or terminal publication is
+exact `221.40490828695155 arcsec/s` maximum at telescope record `16973` is an
+authorized truthful AST diagnostic for bounded observation `(152390, 0, 2)`
+and is not a default or a whole-scan RTC admission value. Filter-bank/PSD and
+native-rate versus filtered naive/JINC and OOF/fruitloops certification remain
+separate prerequisites. No nonidentity RTC numerical method or terminal publication is
 activated.
 
 ## 2026-08-30 WP-7 RTC Filter-Bank Policy Correction
@@ -113,13 +156,13 @@ detector, readout, and residual-atmosphere PSD envelopes rather than being
 dominated by removable raw atmospheric variance.
 
 Candidate filters are designed and certified offline against native-rate
-references through naive MAP, JINC MAP, and the OOF/fruitloops route. Production
-Citlali only looks up the largest immutable certified entry admitting the
-array, exact cadence, and margin-adjusted authoritative scan speed. It does not
-synthesize or optimize filters or estimate detector PSDs during a reduction.
+references through naive MAP, JINC MAP, and the OOF/fruitloops route. V2
+originally called for largest-entry lookup from the margin-adjusted scan
+maximum; the later occurrence-speed authority supersedes that lookup and
+defers automatic selection pending retained-support evidence. Runtime filter
+synthesis, optimization, and detector-PSD estimation remain prohibited.
 Filter family and tap count are engineering results; the v1 Kaiser rule,
-candidate factors, and tap counts are historical feasibility evidence and do
-not select a v2 plan.
+candidate factors, and tap counts are historical feasibility evidence.
 
 Narrow lines below native input Nyquist are intentionally excluded from the
 representative broadband alias envelope. The established line-detection/
@@ -131,8 +174,10 @@ line algorithm.
 The array frequencies, Airy planning beam, full optical temporal support,
 four-samples-per-FWHM rule, integer-factor universe, support and boundary
 semantics, centered phase, DC bound, binary64 arithmetic, safety margins,
-network timing, paired `x/r` semantics, and inadequate-input `M=1` disposition
-remain unchanged. The AST velocity/validity authority is now closed by
+network timing, and paired `x/r` semantics remain unchanged. The later
+occurrence-speed authority changes the scan-wide `M=1` consequence and entry
+selection without changing those numerical budgets. The AST velocity/validity
+authority is now closed by
 [`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md);
 its bounded implementation now passes local, representative-data, and fresh
 exact-SHA conformance gates. The versioned PSD/filter-bank and native-rate
@@ -149,11 +194,13 @@ config gate with all 129 unit tests and downstream audits.
 
 The scientific owner originally approved the complete
 [`wp7-rtc-scan-array-numerical-policy-v1`](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md),
-including the inadequate-input `M=1` disposition. This originally closed every
+including the then-current inadequate-input `M=1` disposition. This originally closed every
 numerical field left open by structural-authority revision
 `38644343a4f8cfa213c8cab87c06753377704e12` without starting nonidentity RTC
-implementation. Later on 2026-08-30, v2 superseded only the response, alias,
-and runtime-filter-design clauses summarized above.
+implementation. Later on 2026-08-30, v2 superseded the response, alias, and
+runtime-filter-design clauses summarized above; ADR 0019 then superseded v1
+items 13--14 as scan-wide admission/failure rules while retaining their
+physical constants and margins.
 
 The historical v1 policy fixed exact 272/214/150 GHz center frequencies, a 50.0 m
 ideal circular Airy beam with coefficient `1.028993969962188`, full
@@ -164,26 +211,25 @@ FWHM, every integer factor 1--256, a deterministic centered symmetric Kaiser
 FIR rule, five-second maximum half-support, binary64 ordered arithmetic, a 5%
 velocity margin, and a 100 ppm conservative cadence margin.
 
-If no factor above one passes, `M=1` is admitted only when the input cadence
-itself still satisfies the science-band and beam-sampling requirements.
-Otherwise no ordinary astronomical product is admitted and the exact cause is
-`input_cadence_inadequate_for_science_band`. This edge case does not change the
-separate accepted identity-RTC conformance context.
+Historically, no passing factor above one triggered a scan-wide `M=1` cadence
+test and possible `input_cadence_inadequate_for_science_band` result. ADR 0019
+supersedes that scan-wide consequence with occurrence-level physical ceilings;
+the separate accepted identity-RTC conformance context remains unchanged.
 
 The evidence-only calculator and checked JSON remain historical feasibility
 evidence. At a nominal 50 arcsec/s and exact 122.0703125 Hz detector cadence
 they estimate array-specific factors `M=2`, `M=3`, and `M=4`, but those tap
-counts are not certified coefficient artifacts. Observation 152390 still
-cannot supply an authoritative realized plan: its Lissajous header scale is
-consistent with 50 arcsec/s while its unit attribute conflicts, and no accepted
-representative AST product yet supplies science-scan membership, derivative
-validity/causes, telemetry-defect disposition, and the required actual maximum.
-No derivative or smoothing rule is invented here.
+counts are not certified coefficient artifacts. Observation 152390 could not
+then supply an authoritative realized plan from its conflicting Lissajous
+header. The later accepted AST product supplies the truthful velocity
+distribution and maximum without inventing a local derivative or smoothing
+rule; ADR 0019 makes the maximum diagnostic rather than a whole-scan RTC
+admission value.
 
 At v1 approval, the next bounded authority task was the AST velocity/validity
 prerequisite. That authority is now closed by `wp7-ast-scan-motion-v1`; its
-bounded implementation passes local and representative-data gates while fresh
-exact-SHA conformance review remains pending. V2 additionally requires the
+bounded implementation passes local, representative-data, and fresh exact-SHA
+gates. The current program additionally requires occurrence/support-loss,
 offline PSD, filter-bank, naive/JINC, and OOF/fruitloops certification
 described above. No common grid, persistent RTC TOD schema, production
 activation, CAL, VAL, or PTC/PCA expansion is opened.
@@ -222,19 +268,13 @@ admitted run publishes no admitted ordinary astronomical timestream product.
 Admitted runs are filter-isolated so inadmissible occurrences cannot influence
 retained outputs.
 
-AST owns the science-scan trajectory, derivative validity, and scalar speed.
-The plan uses the actual maximum admitted speed, not a percentile or detector
-content. For every scan and TolTEC array, it scans an authoritative circular
-diffraction-limited beam at that speed, derives the astronomical band from
-product-level peak, flux, shape, centroid, and calibration-transfer tolerances,
-and selects the largest allowed integer factor whose simplest approved
-realization satisfies passband, phase, alias, beam-sampling, support, edge, and
-identical paired-operator constraints. If no factor above one passes, the
-planner selects `M=1` without sampling change only when the input cadence
-itself still meets the science-band and beam-sampling rules; otherwise no
-ordinary astronomical product is admitted with exact cause
-`input_cadence_inadequate_for_science_band`. The separate accepted identity
-conformance route is unchanged. The science band is never narrowed to force a
+AST owns the science-scan trajectory, derivative validity, scalar speed, and
+truthful maximum. The original decision used that maximum to select the largest
+factor and govern scan-wide `M=1` failure. ADR 0019 now supersedes those
+consequences: each array/cadence/mode has an inclusive physical ceiling,
+upper-speed admission is occurrence-level, and automatic factor selection
+awaits measured retained-support evidence and owner closure. The separate
+identity route is unchanged, and the science band is never narrowed to force a
 factor.
 
 Different arrays may realize different filters, factors, and cadences within a
@@ -246,8 +286,9 @@ records the design and implementation gates.
 
 The corrected 2026-08-30 v2 numerical policy fixes the array model, `1%`
 mapped-response and retained broadband-noise-variance budgets, beam sampling,
-factor universe, pre-certified bank lookup, support, arithmetic, margins, and
-inadequate-input disposition. Existing implementation constants, the legacy
+factor universe, pre-certified entries, support, arithmetic, and margins. ADR
+0019 governs occurrence-level admission and defers entry selection. Existing
+implementation constants, the legacy
 `32 Hz` setting, and v1 Kaiser factor/tap estimates are not promoted.
 Nonidentity implementation remains unavailable until the approved AST role is
 implemented and conforming, representative PSD and filter-bank certification

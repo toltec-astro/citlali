@@ -1,7 +1,7 @@
 # ADR 0017: Pre-certified RTC filter bank and science error budgets
 
-Status: accepted scientific-owner correction 2026-08-30; artifacts and
-implementation pending
+Status: accepted scientific-owner budgets 2026-08-30; scan-maximum lookup
+superseded by ADR 0019; artifacts and implementation pending
 
 Decision owners: Citlali project owner and scientific owner
 
@@ -45,10 +45,11 @@ by line detection/mitigation; any line that could alias must be effectively
 mitigated before decimation.
 
 Filter family, design method, and tap count are offline engineering choices.
-Production Citlali performs a bounded lookup of the largest certified factor
-whose immutable entry admits the array, exact cadence, and margin-adjusted scan
-velocity. It does not synthesize or optimize a filter or estimate PSDs during
-an ordinary reduction.
+Each immutable entry declares an array, exact cadence domain, factor, and
+margin-aware physical upper-speed ceiling. ADR 0019 supersedes scan-maximum
+lookup and suspends automatic largest-factor selection pending representative
+retained-support evidence. Production still may not synthesize or optimize a
+filter or estimate PSDs during an ordinary reduction.
 
 All unlisted ADR 0016 and v1 authority remains unchanged, including the array
 beam, full optical temporal support, factor universe, beam sampling, support,
@@ -69,6 +70,9 @@ input `M=1` disposition.
   implementation remains a prerequisite.
 - The line path remains a distinct scientific and implementation concern; this
   decision changes neither its algorithm nor its source-protection semantics.
+- ADR 0019 separates candidate occurrence/support loss from numerical transfer
+  and defers automatic factor selection; the response and alias budgets here
+  remain unchanged.
 
 ## Supersedes
 
@@ -84,3 +88,4 @@ specific output timing, and its other unmodified decisions.
 - [Scan/array planning owner authority](../WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
 - [Network-timing decision](0015-network-specific-timing-and-common-analysis-grid.md)
 - [AST scan-motion decision](0018-ast-scan-motion-velocity-and-validity.md)
+- [Occurrence-level upper-speed decision](0019-occurrence-level-rtc-upper-speed-admission.md)

@@ -3,11 +3,13 @@
 Prepared: 2026-08-29
 
 Scientific-owner disposition: historically approved 2026-08-30; partially
-superseded later 2026-08-30
+superseded later 2026-08-30 by the v2 filter policy and occurrence-level
+upper-speed admission
 
 Authority identity: `wp7-rtc-scan-array-numerical-policy-v1`
 
-Status: **historical v1 authority; current policy is v2**
+Status: **historical v1 authority; current numerical budgets are v2 and items
+13--14 are superseded by occurrence-level upper-speed authority**
 
 Current authority:
 [`wp7-rtc-scan-array-numerical-policy-v2`](WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md)
@@ -17,8 +19,16 @@ astronomical-response budget is `1%`, the broadband alias budget is a
 noise-weighted `1%` retained-variance increment, and production selects an
 immutable pre-certified filter-bank entry. The v1 Kaiser construction,
 spectrum-independent folded-alias norm, and prototype factors/tap counts are
-historical design evidence only. V2 preserves every unlisted v1 clause,
-including the inadequate-input `M=1` disposition.
+historical design evidence only. At its approval, V2 preserved every unlisted
+v1 clause, including the then-current inadequate-input `M=1` disposition.
+
+The later approved
+[`wp7-rtc-occurrence-speed-admission-v1`](WP7_RTC_OCCURRENCE_SPEED_ADMISSION_OWNER_AUTHORITY_2026-08-30.md)
+supersedes items 13--14 where they use `1.05 v_max` to bind or reject the whole
+scan. The constants and safety margins remain authoritative; they are now used
+to derive each array/cadence/mode's inclusive occurrence-level speed ceiling.
+Automatic factor selection and the final no-product cause remain pending
+representative retained-support evidence and owner closure.
 
 Controlling structural authority:
 [WP-7 RTC Scan/Array Planning Scientific-Owner Authority](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
@@ -65,19 +75,20 @@ explicitly named clauses and provides the required new policy identity.
     Disable contraction changes and reassociation outside that declared
     operation. Compare admission and plan boundaries directly in binary64
     after applying the declared safety margins.
-13. Plan with `v_plan = 1.05 v_max` and
+13. **Superseded as a whole-scan rule by occurrence-speed authority.** The
+    historical rule planned with `v_plan = 1.05 v_max` and
     `f_sample,safe = 0.9999 f_sample,in`. A source whose accepted uncertainty
     exceeds either allowance fails planning instead of silently receiving a
     wider margin.
-14. Select `M=1` only when the input cadence itself still meets the science
-    passband and four-samples-per-FWHM requirements. Otherwise publish no
-    admitted ordinary astronomical product and use typed cause
-    `input_cadence_inadequate_for_science_band`.
+14. **Superseded as a whole-scan rule by occurrence-speed authority.** The
+    historical rule selected `M=1` only when the input cadence itself met the
+    science passband and four-samples-per-FWHM requirements, otherwise using
+    `input_cadence_inadequate_for_science_band` for the scan.
 
-Item 14 closes a necessary edge case in the earlier fallback language. An
-identity operator cannot recover beam bandwidth or sampling absent from its
-input. Treating every `M=1` fallback as conforming without this check would
-make the preservation claim false at sufficiently high scan speed.
+Historical item 14 correctly identified that an identity operator cannot
+recover beam bandwidth or sampling absent from its input. The successor rule
+preserves that physical fact by excluding unsupported occurrences rather than
+using one rare maximum to reject every otherwise supportable occurrence.
 
 ## Array-model consequence
 
