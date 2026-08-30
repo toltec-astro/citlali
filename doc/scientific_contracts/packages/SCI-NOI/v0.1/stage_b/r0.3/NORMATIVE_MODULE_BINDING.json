@@ -1,0 +1,32 @@
+{
+  "binding_identity": "SCI-NOI_NORMATIVE_MODULE_BINDING v0.1/r0.3",
+  "scientific_owner": "Grant Wilson",
+  "status": "implementation-blind Stage B draft authority; not frozen",
+  "owner_decision_supplement_sha256": "4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5",
+  "ordered_modules": [
+    {
+      "path": "normative/NOTATION.md",
+      "sha256": "0c6d574b84ffa481caa42e0dec25e83b6da7aab14128eddd9625aec3cc315f94"
+    },
+    {
+      "path": "normative/DEFINITIONS.md",
+      "sha256": "722e2b03c0f3dce4c8ecf463b1679fbef4cd0edc1ccdcedaa2c7efbe20f7ad73"
+    },
+    {
+      "path": "normative/EQUATIONS.md",
+      "sha256": "bcf817ca126644b34e9955556716926eeb79342b5aacc06e80ada341cd3895d6"
+    },
+    {
+      "path": "normative/ASSUMPTIONS.md",
+      "sha256": "b26828a2c1beb1f20f4818c1c9ce2680b33a7308db4944fabf835b0f7eac7b8a"
+    },
+    {
+      "path": "normative/REQUIREMENTS.md",
+      "sha256": "186dacae86ba09a3a3a896d2b80274486e45248de5236522003f5b1f76f63e72"
+    },
+    {
+      "path": "normative/PREDICTIONS.md",
+      "sha256": "7cfbe6bf8234bd25d6f9a6650ff1b1b8cecac5017d713f2c60c38f7a594d67f4"
+    }
+  ]
+}
