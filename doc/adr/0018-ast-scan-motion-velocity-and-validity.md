@@ -1,8 +1,8 @@
 # ADR 0018: AST scan-motion velocity and validity
 
 Status: accepted bounded scientific-owner authority 2026-08-30; bounded
-implementation passes local and representative-data gates; fresh exact-SHA
-conformance review pending
+implementation passes local, representative-data, and fresh exact-SHA
+conformance gates
 
 Decision owners: Citlali project owner and scientific owner
 
@@ -65,11 +65,13 @@ Changing them requires a named successor authority and new evidence.
 
 - The bounded AST scientific-authority prerequisite in ADRs 0016 and 0017 is
   closed. The raw product and network-specific mapped views pass local and
-  representative-data gates; independent exact-SHA conformance review remains
-  required before nonidentity RTC consumes the role.
-- The observation-152390 value `221.40490828695155 arcsec/s` is retained in the
-  representative evidence package but is not an authorized planning input
-  until the independent review passes.
+  representative-data gates, and exact repair SHA
+  `abb33fdb9e45352190d2e55592cc5eba967993f2` passed fresh independent
+  exact-SHA conformance review with no findings.
+- The observation `(152390, 0, 2)` value `221.40490828695155 arcsec/s` at
+  telescope record `16973` is an authorized RTC planning input for that exact
+  bounded scope. It is not a default or substitute for producing authoritative
+  AST motion for another scan.
 - Independent network timing under ADR 0015 remains unchanged. A synchronous
   cross-network consumer must separately request an ALIGN-owned common-analysis-
   grid relation.

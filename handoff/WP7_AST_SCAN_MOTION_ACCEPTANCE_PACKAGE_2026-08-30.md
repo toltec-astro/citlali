@@ -7,10 +7,12 @@ observation-152390 execution gate at exact implementation revision
 `f2bf3f1e00226d6e7f63e99d4da61d37ea4ddf3d`. The first independent exact-SHA
 review of package snapshot `b0e5dde2ac532a7a36e141bf22c7560e0fbbc8a1`
 returned `HOLD` solely because the validator did not enforce the documented
-record digest. This bounded repair closes that finding; fresh exact-SHA
-re-review remains pending. The package therefore closes the representative-
-execution prerequisite but does not yet authorize AST as an RTC planning input
-or authorize any nonidentity RTC method.
+record digest. The bounded repair at exact SHA
+`abb33fdb9e45352190d2e55592cc5eba967993f2` then passed fresh independent
+exact-SHA re-review with no findings. The representative-execution and
+conformance prerequisites are therefore closed. For the exact bounded
+observation/scan scope, the measured AST maximum is authorized as an RTC
+planning input; this does not authorize any nonidentity RTC method.
 
 The retained
 [v1 evidence record](WP7_AST_SCAN_MOTION_ACCEPTANCE_152390_V1_2026-08-30.json)
@@ -141,27 +143,29 @@ The bounded repair requires the expected record SHA-256, hashes the exact raw
 JSON bytes before parsing, and adds mutation coverage for every demonstrated
 substitution class. It does not alter or regenerate the retained record, runner
 executable, representative result, scientific contract, or implementation.
-Fresh exact-SHA re-review of this repaired package remains required.
+Fresh exact-SHA re-review of this repaired package passed as recorded below.
 
-## Independent review request
+## Exact-SHA re-review disposition
 
-Review the exact implementation revision, retained record, validator, and the
-evidence/status snapshot containing this package. Return `PASS`, `HOLD`, or
-`FAIL` with findings graded `BLOCKER`, `MAJOR`, or `MINOR`. In particular,
-verify that:
+Fresh independent read-only review of exact repair SHA
+`abb33fdb9e45352190d2e55592cc5eba967993f2` returned `PASS` with no `BLOCKER`,
+`MAJOR`, or `MINOR` findings. The reviewer verified that:
 
-1. the runner exercises the production AST and ALIGN contracts rather than a
-   circular duplicate algorithm;
-2. the representative record truthfully binds exact source, executable,
-   dependencies, telescope, APT, and raw participants;
-3. the defect, derivative, maximum, support, validity/cause, and chunk claims
-   follow `wp7-ast-scan-motion-v1` exactly;
-4. network-specific timing remains authoritative and no common-grid machinery
-   enters ordinary AST mapping;
-5. immutable inputs are referenced rather than duplicated into the evidence
-   or product; and
-6. the package does not broaden the accepted scientific or implementation
-   scope.
+- raw record bytes are authenticated against the mandatory expected SHA-256
+  before JSON parsing;
+- the CLI requires and forwards the record digest;
+- all demonstrated structurally valid result, APT, participant, and memory
+  substitutions are rejected by exact-package validation;
+- all eight focused validator tests and retained-record validation pass;
+- the retained JSON and scientific implementation are unchanged; and
+- the documented record and runner identities remain unchanged.
 
-Until that review passes, the exact `221.40490828695155 arcsec/s` result is a
-representative candidate product value, not an authorized RTC planning input.
+The isolated review worktree did not contain the runner binary, so the closure
+review did not repeat executable-byte hashing. This was non-blocking because
+the runner identity and source were unchanged by the validator-only repair and
+had already conformed in the first review.
+
+The prior `MAJOR` is closed. The exact `221.40490828695155 arcsec/s` maximum at
+telescope record `16973` is now an authorized RTC planning input for bounded
+observation `(152390, 0, 2)` under `wp7-ast-scan-motion-v1`; it is not a default
+or substitute for producing authoritative AST motion for another scan.

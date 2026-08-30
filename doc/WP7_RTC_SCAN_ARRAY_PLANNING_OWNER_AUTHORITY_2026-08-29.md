@@ -6,9 +6,9 @@ Scientific owner: Grant Wilson
 
 Status: approved bounded successor authority; numerical policy corrected to v2
 by scientific-owner disposition 2026-08-30; AST authority closed by
-`wp7-ast-scan-motion-v1`; bounded AST implementation locally gated;
-representative AST conformance, certified filter bank, and nonidentity RTC
-implementation remain pending
+`wp7-ast-scan-motion-v1`; bounded AST implementation passes local,
+representative-data, and fresh exact-SHA conformance gates; certified filter
+bank and nonidentity RTC implementation remain pending
 
 This decision supersedes only the fixed or observation-common planning
 interpretations identified in the

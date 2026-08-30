@@ -355,9 +355,9 @@ The scan/array structure, corrected
 [`wp7-rtc-scan-array-numerical-policy-v2`](WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md)
 and bounded
 [`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
-authority are accepted. The locally gated AST implementation still requires
-representative conformance and exact-SHA review before nonidentity RTC,
-followed by representative cleaned-noise PSD envelopes,
+authority are accepted. The AST implementation now passes local,
+representative-data, and fresh exact-SHA conformance gates. Nonidentity RTC
+still requires representative cleaned-noise PSD envelopes,
 immutable pre-certified filter-bank artifacts, native-rate versus filtered
 naive/JINC and OOF/fruitloops certification, and the bounded implementation
 gates. Production performs a bank lookup and no runtime filter

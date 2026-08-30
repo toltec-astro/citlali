@@ -49,12 +49,17 @@ documented acceptance-record digest before parsing. The bounded repair now
 requires and verifies the exact raw-record SHA-256 and covers materially
 substituted but structurally valid result, APT, participant, and memory fields.
 It leaves the retained JSON, runner, representative result, scientific
-contract, and implementation unchanged. The immediate next action is fresh
-exact-SHA read-only re-review of the repaired package. Until that passes, the
-measured maximum is not an authorized RTC planning input. Filter-bank/PSD and
-native-rate versus filtered naive/JINC and OOF/fruitloops certification remain
-separate prerequisites. No nonidentity RTC numerical method or terminal
-publication is activated.
+contract, and implementation unchanged. Fresh independent read-only review of
+exact repair SHA `abb33fdb9e45352190d2e55592cc5eba967993f2` returned `PASS`
+with no findings, closing the prior `MAJOR`. All eight focused validator tests
+and retained-record validation passed; the isolated review worktree lacked the
+unchanged runner binary, so executable-byte hashing was not repeated. The
+exact `221.40490828695155 arcsec/s` maximum at telescope record `16973` is now
+an authorized RTC planning input for bounded observation `(152390, 0, 2)` and
+is not a default for another scan. Filter-bank/PSD and native-rate versus
+filtered naive/JINC and OOF/fruitloops certification remain separate
+prerequisites. No nonidentity RTC numerical method or terminal publication is
+activated.
 
 ## 2026-08-30 WP-7 RTC Filter-Bank Policy Correction
 
@@ -98,10 +103,11 @@ semantics, centered phase, DC bound, binary64 arithmetic, safety margins,
 network timing, paired `x/r` semantics, and inadequate-input `M=1` disposition
 remain unchanged. The AST velocity/validity authority is now closed by
 [`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md);
-its bounded implementation now passes local and representative-data gates.
-Fresh exact-SHA review, the versioned PSD/filter-bank, and naive/JINC and
-OOF/fruitloops certification artifacts remain prerequisites. No nonidentity
-RTC implementation or production activation is authorized yet.
+its bounded implementation now passes local, representative-data, and fresh
+exact-SHA conformance gates. The versioned PSD/filter-bank and native-rate
+versus filtered naive/JINC and OOF/fruitloops certification artifacts remain
+prerequisites. No nonidentity RTC implementation or production activation is
+authorized yet.
 
 The authority-only correction passes its v2 link/manifest consistency guard,
 the local `citlali_cli` build, all 870 runnable CTests with the one established

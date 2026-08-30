@@ -70,10 +70,12 @@ Numerical authority is corrected, but no nonidentity implementation is
 authorized by this crosswalk alone. The scientific owner has approved the
 missing AST facts as
 [`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md),
-recorded in [ADR 0018](adr/0018-ast-scan-motion-velocity-and-validity.md), but
-the conforming AST product and mapped views must exist before the first real
-plan can be formed. Representative broadband PSD envelopes, versioned filter-
-bank entries, naive/JINC and OOF/fruitloops certification, implementation,
-representative-data evidence, and fresh exact-SHA review also remain pending.
-The v1 feasibility sweep's factors/tap counts, the nominal observation-152390
-header speed, and its evidence-only candidate maximum are not promoted.
+recorded in [ADR 0018](adr/0018-ast-scan-motion-velocity-and-validity.md). The
+conforming AST product and mapped views now pass local, representative-data,
+and fresh exact-SHA gates. Its exact `221.40490828695155 arcsec/s` maximum is
+authorized for bounded observation `(152390, 0, 2)`, not as a default for
+another scan. Representative broadband PSD envelopes, versioned filter-bank
+entries, naive/JINC and OOF/fruitloops certification, nonidentity RTC
+implementation, its representative-data evidence, and its fresh exact-SHA
+review remain pending. The v1 feasibility sweep's factors/tap counts and the
+nominal observation-152390 header speed are not promoted.
