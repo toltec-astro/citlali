@@ -394,6 +394,18 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
 110. Satisfied the process-only Registry/source prerequisite. Final exact-
      packet owner approval and a separate Stage B launch remain required.
 
+## Final Stage A Approval And Stage B Launch
+
+111. Grant Wilson approved the exact r0.18 17-object author manifest, r0.19
+     closure report, paired SCI-VAL source/profile successors, and process-only
+     binding record on `2026-08-30`.
+112. Preserved every approved author-input byte and recorded the approval in a
+     manager-facing artifact excluded from the implementation-blind packet.
+113. Authorized a fresh implementation-blind Stage B author at high reasoning
+     effort with access only to the manifest and its 17 exact objects.
+114. Preserved all numerical-unavailability, no-implementation, no-validation,
+     no-performance, no-readiness, and no-production boundaries.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance
@@ -405,6 +417,6 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
 - no estimator, coefficient, count, default, physical-noise calibration,
   significance, performance, readiness, or production claim was established;
   and
-- Stage B remains unlaunched pending owner approval of the exact final packet
-  bytes/hashes and a separate launch; the process-only SCI-VAL Registry/source
-  prerequisite is satisfied.
+- Stage B launch is authorized only through the exact implementation-blind
+  firewall above; no Stage B result, implementation, validation, performance,
+  readiness or production claim follows from launch.

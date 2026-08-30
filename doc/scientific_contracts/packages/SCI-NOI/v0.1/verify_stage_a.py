@@ -15,6 +15,8 @@ MANIFEST = ROOT / "AUTHOR_PACKET_MANIFEST.md"
 VAL_ROOT = ROOT.parent.parent / "SCI-VAL" / "v0.1"
 
 PROCESS_BINDINGS = {
+    ROOT / "SCIENTIFIC_OWNER_STAGE_A_FINAL_APPROVAL_2026-08-30.md":
+        "49377d1596c9e47a6e2328e890ebcd6b25f42af3781b533b5bd8c2cded08fa6b",
     ROOT / "SCI_VAL_REGISTRY_BINDING_2026-08-30.md":
         "739b5c7d7818a4292ae4b0beeab5a2d0356d77f0525bd0198e67181ae6d28a2e",
     VAL_ROOT / "SOURCE_BINDING_REGISTER_NOI_STAGE_A_R0_18_2026-08-30.md":
@@ -208,6 +210,8 @@ def main() -> None:
         "FRUIT_OWNER:LearnIterate_(k+1)",
         "Partial or complete FRUIT replay for each realization",
         "Fixed-residual, fixed-terminal-transform, partial-replay, and complete-replay",
+        "Stage B at high reasoning effort",
+        "only `AUTHOR_PACKET_MANIFEST.md` and its 17 exact admitted objects",
     ]
     for token in required:
         if token not in package_text:

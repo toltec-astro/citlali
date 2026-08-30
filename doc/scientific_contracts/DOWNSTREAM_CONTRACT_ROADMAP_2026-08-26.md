@@ -130,7 +130,8 @@ and conditional pre-MAP PTC boundaries; four NOI-owned VAL profile drafts;
 the FLT/Wiener/FRUIT deferral record; one granular decision candidate; and an
 exclusive SHA-bound author packet plus closure report.
 
-Implementation-blind Stage B has not been launched. ODQ-101 is approved:
+At that Stage A checkpoint, implementation-blind Stage B had not been
+launched. ODQ-101 is approved:
 fixed-state conditional-sign is the ordinary conditioning family, relearned
 methods are separate, and the two member classes cannot be mixed. That approval
 selected no numerical route. ODQ-102A then selected the ordinary
@@ -192,8 +193,8 @@ consumer actions. Paired immutable `2026-08-30` SCI-VAL successors bind the
 exact r0.18 sources and register all four profiles without altering prior MAP/
 JINC records or numerical availability. All bounded Stage A owner decisions
 and the process-only Registry/source prerequisite are complete. Conditional
-Stage B remains blocked on owner approval of exact final bytes/hashes and a
-separate launch. The frozen MAP/pre-MAP
+Stage B was owner-authorized on `2026-08-30` at high reasoning effort from only
+the exact 17-object implementation-blind author packet. The frozen MAP/pre-MAP
 and JINC numerical-parent unavailability states remain unchanged. No
 implementation, conformity, validation, achieved-performance, readiness,
 production, Unity, filtering, source/mode, or FRUIT action follows.

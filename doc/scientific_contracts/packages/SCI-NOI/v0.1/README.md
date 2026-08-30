@@ -1,8 +1,7 @@
 # SCI-NOI — Noise Realizations And Empirical Uncertainty
 
-Status: repaired Stage A candidate with all bounded owner decisions and exact
-Registry/source closure complete; final exact-packet owner approval pending;
-Stage B not commissioned
+Status: exact Stage A set owner-approved on `2026-08-30`; implementation-blind
+Stage B launch authorized at high reasoning effort
 
 Version: `v0.1`
 
@@ -42,10 +41,9 @@ firewall are in [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).
 
 The bounded Stage A scientific decisions are owner-approved through ODQ-111,
 with ODQ-102D delegated to the implementation-blind scientific-contract
-author. No Stage B scientific author may be commissioned until Grant Wilson
-approves the exact final Scope Brief and content-bound packet. The required
-SCI-VAL Registry/source successors are now exact and process-only. The final
-Stage A repair was performed only from
+author. Grant Wilson's exact final approval record satisfies the content-bound
+packet and process-only SCI-VAL Registry/source gates and authorizes the fresh
+Stage B task. The final Stage A repair was performed only from
 the supplied owner directive and existing scientific-authority/Stage A records;
 it did not inspect implementation, configuration, schemas, tests, audits,
 validation, reductions, Unity, defaults, or historical behavior.
@@ -71,11 +69,12 @@ validation, reductions, Unity, defaults, or historical behavior.
 - Sanitized owner-decision artifact: all bounded decisions ODQ-101 through
   ODQ-111 approved; ODQ-102D delegates exact balanced finite-design authorship
   and preserves its proposed construction as nonbinding guidance.
-- Sanitized Scope Brief and author packet: repaired and content-bound candidate;
-  exact final bytes/hashes not yet owner-approved.
-- Implementation-blind scientific rationale: not commissioned and not
-  drafted.
-- Engineering conformance specification: not commissioned and not drafted.
+- Sanitized Scope Brief and author packet: exact final bytes/hashes
+  owner-approved.
+- Implementation-blind scientific rationale: commissioned in a fresh task;
+  no Stage B result is present in this Stage A branch at launch.
+- Engineering conformance specification: commissioned under the same firewall;
+  no Stage B result is present in this Stage A branch at launch.
 - Scientific authority: not frozen.
 - Implementation conformity, representation fidelity, validation, achieved
   uncertainty/performance, readiness, and production state: not assessed.
@@ -191,6 +190,8 @@ those typed unavailable states and do not create numerical products.
 - [`SCI_VAL_REGISTRY_BINDING_2026-08-30.md`](SCI_VAL_REGISTRY_BINDING_2026-08-30.md):
   exact process-only SCI-VAL source/profile successor binding; author-input
   bytes unchanged
+- [`SCIENTIFIC_OWNER_STAGE_A_FINAL_APPROVAL_2026-08-30.md`](SCIENTIFIC_OWNER_STAGE_A_FINAL_APPROVAL_2026-08-30.md):
+  exact final Stage A approval and bounded Stage B launch authority
 - [`OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md`](OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md):
   complete Stage A ownership matrix
 - [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): exact proposed
@@ -213,14 +214,10 @@ those typed unavailable states and do not create numerical products.
 
 ## Stop Boundary
 
-Stop after presenting the exact final Stage A closure artifacts. All bounded
-owner decisions ODQ-101 through ODQ-111 are approved, and ODQ-102D is
-delegated to the scientific-contract author. Exact versioned SCI-VAL Registry/
-source successors now exist; the remaining gate is owner approval of the final
-packet bytes/hashes and a separate Stage B launch. Do not
-draft the implementation-blind scientific rationale, shared normative core,
-engineering conformance specification, or PDFs until the exact conditional
-Stage B gate in the Scope Brief is satisfied. Do not implement or modify
+Stage A is closed by the exact approval record above. A fresh
+implementation-blind author may now draft the scientific rationale, shared
+normative core, engineering conformance specification, traceability, and PDFs
+from only the 17 manifest-admitted objects. Do not implement or modify
 SCI-NOI algorithms, and do not alter frozen MAP, JINC, or PTC contracts. Make no
 implementation-conformity, validation, achieved-performance, readiness, or
 production claim under this launch.

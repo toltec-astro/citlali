@@ -419,7 +419,8 @@ four NOI-owned VAL profile drafts; and a bounded FLT/Wiener/FRUIT record. One
 sanitized decision artifact now separates every consequential choice, and the
 exclusive author packet plus closure report bind exact bytes by SHA-256.
 
-Stage B has not been launched. Grant Wilson approved `SCI-NOI-ODQ-101` on
+At that Stage A checkpoint, Stage B had not been launched. Grant Wilson
+approved `SCI-NOI-ODQ-101` on
 `2026-08-29`: fixed-state conditional-sign is the ordinary conditioning family;
 relearned methods are separate and unavailable pending complete approved
 graphs; fixed and relearned members cannot be mixed in one uncertainty
@@ -613,8 +614,11 @@ or cross-use veto/rescue follows. All bounded SCI-NOI Stage A owner decisions
 are complete. Paired immutable SCI-VAL successors dated `2026-08-30` now bind
 the exact r0.18 source packet and register the four profiles while preserving
 all earlier MAP/JINC records. The process-only Registry/source prerequisite is
-satisfied; exact final packet bytes/hashes remain under owner review before a
-separate Stage B launch.
+satisfied. Grant Wilson approved the exact r0.18 author manifest, r0.19 closure
+report, paired Registry successors, and binding record on `2026-08-30`, and
+authorized a fresh implementation-blind SCI-NOI Stage B author at high
+reasoning effort. The author is restricted to the 17 manifest-admitted objects;
+no implementation, evidence, manager record, or unlisted source is admitted.
 MAP/pre-MAP numerical parents remain
 unavailable pending the exact PTC MAP-facing coefficient and owner-admitted
 numerical `coverage_cut`; JINC numerical parents remain unavailable under its
