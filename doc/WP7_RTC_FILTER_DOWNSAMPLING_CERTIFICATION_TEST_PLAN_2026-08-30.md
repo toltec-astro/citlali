@@ -227,6 +227,15 @@ footprint erosion for `M>1` is added only after F1 supplies exact coefficients
 and half-support. The compact table contains no filter coefficients and makes
 no runtime decision.
 
+The first exact-SHA execution of this step is recorded in the
+[D0/F0 occurrence-speed evidence package](../handoff/WP7_RTC_OCCURRENCE_SPEED_CENSUS_EVIDENCE_2026-08-30.md).
+It completes the authorized Science/Lissajous motion census and exposes two
+remaining prerequisites rather than weakening the gate: Beammap 148670 lacks
+a matched detector relation, and the accepted AST authority does not supply
+motion for Beammap or OOF route families. Their motion-admission evidence
+remains indeterminate pending explicit closure; zero reported upper-speed
+counts in those cases are not interpreted as zero loss.
+
 ### F1: bounded filter-family comparison
 
 Start with three mature, centered, symmetric FIR construction families:

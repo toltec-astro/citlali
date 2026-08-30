@@ -1,7 +1,7 @@
 # ADR 0019: Occurrence-level RTC upper-speed admission
 
-Status: accepted scientific-owner correction 2026-08-30; evidence and
-implementation pending
+Status: accepted scientific-owner correction 2026-08-30; census harness
+conforming; representative evidence partial; production implementation pending
 
 Decision owners: Citlali project owner and scientific owner
 
@@ -50,8 +50,11 @@ sample fraction here.
 - A bounded high-speed tail does not by itself cause
   `input_cadence_inadequate_for_science_band`; the final no-product cause and
   selection policy remain pending evidence and owner closure.
-- The next harness increment enumerates occurrence-level candidate support; it
-  does not activate a numerical RTC route or select a production factor.
+- The conforming harness enumerates occurrence-level structural bounds and raw
+  admission without activating a numerical RTC route or selecting a production
+  factor. Its first exact-SHA execution completes the authorized Science/
+  Lissajous motion census and truthfully leaves Beammap/OOF motion evidence
+  pending.
 
 ## Evidence and authority
 
@@ -60,3 +63,4 @@ sample fraction here.
 - [Filter-bank numerical policy](../WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md)
 - [AST scan-motion decision](0018-ast-scan-motion-velocity-and-validity.md)
 - [Network timing decision](0015-network-specific-timing-and-common-analysis-grid.md)
+- [First exact-SHA D0/F0 evidence](../../handoff/WP7_RTC_OCCURRENCE_SPEED_CENSUS_EVIDENCE_2026-08-30.md)

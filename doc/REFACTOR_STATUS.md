@@ -25,22 +25,39 @@ admission loss, filter-support erosion, weighted exposure, spatial coverage,
 mapped response/noise, and performance. Automatic factor selection and the
 final no-product cause return for a bounded owner decision after that evidence.
 
-For observation 152390, the accepted estimator has 62,067 derivative-valid
-telescope records and a truthful maximum of
-`221.40490828695155 arcsec/s`, but only 62 records exceed `200 arcsec/s` and
-five exceed `220 arcsec/s`. At the observed `122.0703125 Hz` cadence, the
-structural `M=1` realized-speed ceilings are approximately `135.97`, `172.82`,
-and `246.56 arcsec/s` for a1100, a1400, and a2000. The corresponding raw
-telescope-record exclusions are approximately `1.903%`, `0.329%`, and `0%`
-before network mapping or support erosion. These are discovery facts, not a
-factor choice or sensitivity claim.
+The repaired D0/F0 census at exact clean harness revision
+`b9589d28a85c1f348f02416d230cb4db1555dd98` now enumerates all factors
+`M=1..256` without accepting a scan maximum as an eligibility input or
+selecting a factor. The exact seven-case evidence and bounded disposition are
+recorded in the
+[occurrence-speed census package](../handoff/WP7_RTC_OCCURRENCE_SPEED_CENSUS_EVIDENCE_2026-08-30.md).
+All 77 network inputs preserve native timing with zero identity mismatch and
+zero missing mapped support; all measured cadence uncertainty is within the
+accepted 100 ppm margin; and no common grid, RTC route, filter, or persistent
+product is activated.
 
-The next bounded work is to repair the existing D0/D1 fixture census so it
-enumerates occurrence-level structural ceilings and raw admission for
-`M=1..256` without selecting a factor. The already collected custody, cadence,
-AST, and network-mapping evidence remains valid; its scan-maximum factor
-dispositions are superseded diagnostics. PSD/filter research remains after the
-repaired census, and nonidentity production activation remains unavailable.
+At `122.0703125 Hz`, the exact structural `M=1` ceilings are
+`135.9681197283374`, `172.81929236498959`, and
+`246.55552377405178 arcsec/s` for a1100, a1400, and a2000. Network-mapped
+observation 152390 excludes respectively 17,313 of 904,402 base a1100
+occurrences (`1.914304%`), 1,514 of 452,208 a1400 occurrences (`0.334802%`),
+and no a2000 occurrence. Observation 152392 excludes 12,960 (`1.428307%`),
+1,688 (`0.372066%`), and 90 (`0.029757%`) respectively. These are
+network-native occurrence counts, not telescope-record or detector-cell
+counts, and remain discovery evidence rather than a factor or sensitivity
+claim.
+
+The complete D0/F0 gate remains open. Beammap 148670 has a verified baseline
+APT inventory but no matched detector relation. More importantly, the accepted
+AST authority supplies mapped motion only for Science/Lissajous; Beammap, OOF,
+and Pointing correctly report AST-unavailable occurrences. Their zero
+upper-speed counts are therefore indeterminate, not zero loss. Before the
+complete required Beammap/OOF route matrix can govern filter research, the
+project must close the Beammap D0 relation and resolve authorized route-family
+motion/admission semantics without inventing a local velocity estimator or
+silently broadening `wp7-ast-scan-motion-v1`. `M>1` filter-support erosion,
+weighted exposure, spatial coverage, PSD/filter research, and nonidentity
+production activation remain pending.
 
 ## 2026-08-30 WP-7 Filtering and Downsampling Certification Plan
 
@@ -68,11 +85,13 @@ losing decimation. A factor is withheld when a line can fold unless the
 established line strategy is shown to be effective before sample removal. No
 line algorithm is redesigned here.
 
-The first fixture/census harness now supplies exact input/build manifests and
-network-local cadence/AST inventory. Its factor screen requires the bounded
-occurrence-level repair described above before it can govern subsequent
-filter research. This plan does not authorize nonidentity RTC implementation
-or production activation.
+The repaired fixture/census harness now supplies exact input/build manifests,
+network-local cadence/AST inventory, fixed structural ceilings, and raw
+occurrence admission for every factor without selection. The first exact-SHA
+execution closes the Science/Lissajous portion and identifies rather than
+hides the outstanding Beammap APT and Beammap/OOF motion-authority gaps. This
+plan does not authorize nonidentity RTC implementation or production
+activation.
 
 ## 2026-08-30 WP-7 AST Scan-Motion Representative Gate
 
