@@ -175,7 +175,12 @@ explicit, makes no significance claim, and leaves JINC separate.
 ODQ-109 now admits plan-selected persisted, compact-regeneration, and streaming-
 sufficient-statistic modes with exact mode/reproducibility/sufficiency/audit
 identity, no default or silent fallback, and unchanged fail-closed completion.
-ODQ-110A, held-fixed deterministic filtering, is next.
+ODQ-110A now keeps deterministic-transformation selection and definition with
+the appropriate upstream/downstream scientific process and requires NOI to
+apply exactly that transformation to every admitted compatible randomization
+when estimating uncertainty for the exact transformed product. The route
+remains unavailable until exact owner authority and parity are bound. ODQ-110B,
+Wiener scope, is next.
 Conditional Stage B remains blocked on exact
 bytes/hashes, granular owner decisions or explicit unavailability, and required
 source/profile bindings. The frozen MAP/pre-MAP

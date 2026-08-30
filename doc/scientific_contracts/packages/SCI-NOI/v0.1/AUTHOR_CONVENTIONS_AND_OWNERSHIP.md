@@ -92,14 +92,26 @@ estimand. A relearned method identifies the consequential stages it reruns or
 relearns and the resulting state that may differ from the real-observation
 reduction; it need not trace scientifically irrelevant implementation details.
 
-## Same-Operator Boundary
+## Same-Operator And Externally Owned Transformation Boundary
 
-For a fixed-state realization to use the same MAP, coadd, or deterministic-FLT
-operator as its signal parent, exact membership, projection, grouping,
+For a fixed-state realization to use the same MAP, coadd, or externally owned
+deterministic transformation as its signal parent, exact membership,
+projection, grouping,
 coefficients, normalization, support-authorized row selection, boundary/edge
 treatment, response handling, and publication domain are fixed or identically
 prescribed. Re-estimation or selection from a realization creates another
 method and changes the inference target.
+
+Under ODQ-110A, NOI never chooses or defines the transformation. The
+appropriate upstream/downstream scientific process owns its purpose,
+algorithm, operator, parameters/learned state, operation order, domain,
+support/edge/missing-data behavior, normalization, units, response/transfer
+meaning, validity, lifecycle, and failure semantics. NOI binds that exact
+authority and applies exactly that transformation to every admitted compatible
+randomization when estimating uncertainty for the exact transformed scientific
+product. It may not infer, tune, substitute, relocate, simplify, or silently
+omit the transformation. Missing or conflicting parity makes the route
+unavailable.
 
 If `UNC_k` selects or constructs a later filter, the immutable successor graph
 is `UNC_k -> FLT_(k+1) -> GEN_(k+1) -> UNC_(k+1)`. Neither the later filter nor
@@ -141,18 +153,20 @@ An empirical NOI inverse or weight remains a companion result. Any future
 mapmaking, coadd, filter-fitting, or adaptive use requires an explicit
 consuming method and cannot retroactively modify an immutable parent.
 
-## Downstream Ownership
+## Adjacent Scientific-Process Ownership
 
-- FLT owns deterministic and inference-bearing filter transfer, response,
-  support, edges, covariance transformation, and local validity.
+- The appropriate upstream/downstream scientific process owns each
+  deterministic or inference-bearing transformation, including transfer,
+  response, support, edges, covariance transformation, and local validity.
 - SRC/MODE/BEAM own source, Pointing, OOF, and Beammap estimators and their
   consumer-specific qualification.
 - FRUIT owns source subtraction/add-back, feedback, learning, recurrence,
   convergence, restart, and adaptive selection.
 
-NOI may use a content-bound deterministic fixed FLT operator or provide
-declared companions to consumers. It does not validate a consumer merely
-because the consumer used them. Re-estimated Wiener and FRUIT routes remain
+NOI may apply an exact content-bound owner-defined transformation to admitted
+randomizations or provide declared companions to consumers. This does not
+transfer transformation authority to NOI or validate a consumer merely because
+the consumer used an NOI product. Re-estimated Wiener and FRUIT routes remain
 unavailable without their exact inference/feedback boundaries.
 
 ## Claim Separation

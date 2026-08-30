@@ -1,7 +1,7 @@
 # SCI-NOI v0.1 — Collision-Free Operator And Product Taxonomy
 
 Status: proposed sanitized Stage B author input; ODQ-101, ODQ-102A/B/C,
-ODQ-103/104/105A/105B/106/107/108/109 incorporated; exact bytes await owner approval
+ODQ-103/104/105A/105B/106/107/108/109/110A incorporated; exact bytes await owner approval
 
 The semantic prefixes are:
 
@@ -31,7 +31,7 @@ The route-specific method candidates remain distinct:
 | `NOI-GEN/PTC-TO-FROZEN-JINC-CONDITIONAL-SIGN@1` | Randomize exact PTC parent quantities before one frozen JINC operator | Unselected and unavailable under JINC numerical gates |
 | `NOI-GEN/REALIZED-MAP-CONDITIONAL-SIGN@1` | Randomize an exact already realized MAP product under a declared map-product coherence law | Unavailable pending exact method and parent authority |
 | `NOI-GEN/REALIZED-JINC-CONDITIONAL-SIGN@1` | Randomize an exact complete realized JINC product under a declared role/coherence law | Unavailable pending exact method and numerical JINC parent |
-| `NOI-GEN/FIXED-FLT-CONDITIONAL-SIGN@1` | Use an exact fixed deterministic filter route | Unavailable pending a content-bound FLT boundary |
+| `NOI-GEN/OWNER-TRANSFORMED-CONDITIONAL-SIGN@1` | Apply exactly the deterministic transformation defined by the appropriate upstream/downstream scientific process to every admitted compatible randomization; NOI owns binding/application, not transformation choice or definition | ODQ-110A ownership/parity rule selected; unavailable pending an exact owner-supplied transformation authority and parity interface |
 | `NOI-GEN/RELEARNED@1` | Replay an exact authorized learn/resolve graph that identifies all scientifically consequential rerun/relearned stages and resulting changed state per member | Unavailable; no consequential-state graph approved |
 
 The exact DAG and required route-specific identity are in

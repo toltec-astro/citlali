@@ -1,12 +1,13 @@
 # SCI-NOI v0.1 — NOI-GEN Parent And Operator Graph
 
-Artifact identity: `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.6`
+Artifact identity: `SCI-NOI_GEN_PARENT_OPERATOR_GRAPH v0.1/r0.7`
 
-Status: ODQ-101 conditioning class, ODQ-102A route, ODQ-102B coherence, and
-ODQ-102C network-stratified coefficient-balance family approved; ODQ-102D
-delegates exact finite-design authorship; exact design and frozen boundary
-gates remain unavailable; other route-specific methods remain unselected and
-unavailable
+Status: ODQ-101 conditioning class, ODQ-102A route, ODQ-102B coherence,
+ODQ-102C network-stratified coefficient-balance family, ODQ-104 consequential-
+state identity, and ODQ-110A external transformation ownership/parity approved;
+ODQ-102D delegates exact finite-design authorship; exact design and frozen
+boundary gates remain unavailable; other route-specific methods remain
+unselected and unavailable
 
 ## Conditioning Classes
 
@@ -25,8 +26,9 @@ realization_b = O_Theta_b(R_b(parent)).
 
 `parent` is the earliest immutable object to which assignment operator `R_b`
 is applied. `O_Theta0` or `O_Theta_b` is the complete host-operator graph after
-that insertion point. Adjacent packages retain ownership of every host
-operator. NOI owns the assignment design and GEN product identity.
+that insertion point. Adjacent scientific processes retain ownership of every
+host operator and transformation. NOI owns the assignment design and GEN
+product identity.
 
 ODQ-101 approves fixed-state conditional-sign as the ordinary conditioning
 class. ODQ-102A selects the exact PTC-to-frozen-MAP route below as ordinary.
@@ -44,10 +46,18 @@ provenance.
 | `NOI-GEN/PTC-TO-FROZEN-JINC-CONDITIONAL-SIGN@1` | Exact retained JINC-admissible PTC occurrences carrying `Z_i^PTC` | Sign at the exact PTC occurrence/coherence unit, followed by one frozen JINC operator | Exact complete five-role JINC realization bundle when scientifically defined | Unselected and unavailable: JINC coefficient, TolTEC parameter, and applicable numerical-adequacy authority remain unavailable |
 | `NOI-GEN/REALIZED-MAP-CONDITIONAL-SIGN@1` | One exact realized MAP observation or coadd product, with the exact randomized map quantity/coherence partition declared | Sign after MAP realization; no claim of equivalence to pre-MAP assignment | Exact realization product on the inherited MAP unit/WCS/support | Unavailable until the exact parent class, randomized quantity, coherence law, and scientific use are owner-approved and the parent exists |
 | `NOI-GEN/REALIZED-JINC-CONDITIONAL-SIGN@1` | One exact complete realized JINC observation bundle, with exact randomized role/coherence partition | Sign after JINC realization; no claim of equivalence to pre-JINC assignment | Exact realization product over the declared JINC role/domain | Unavailable until the exact role, coherence law, scientific use, and numerical JINC parent are authorized |
-| `NOI-GEN/FIXED-FLT-CONDITIONAL-SIGN@1` | Exact parent admitted by a content-bound FLT-to-NOI boundary | Sign at the boundary-declared insertion point, followed by the same deterministic held-fixed FLT operator used for signal | Filtered realization with exact inherited unit/WCS/support/response | Unavailable until an exact FLT boundary and route-specific method are owner-approved |
+| `NOI-GEN/OWNER-TRANSFORMED-CONDITIONAL-SIGN@1` | Exact underlying GEN parent plus immutable transformed scientific product admitted by the content-bound authority of the appropriate upstream/downstream scientific process | NOI does not select or define the transformation; exactly the owner-defined transformation, state, parameters, insertion/order, domain/support/edge/missing-data rules, normalization, response, lifecycle, and failure policy are applied to every admitted compatible randomization | Transformed NOI realization with exact inherited/transformed quantity, unit/WCS/support/response and transformation identity | ODQ-110A ownership/parity rule selected; numerically unavailable until an exact owner-supplied transformation authority and complete parity interface exist |
 
 Parent numerical coincidence, equal arrays, equal WCS, equal signs, or one
 shared assignment law never merges these identities.
+
+For the ODQ-110A transformed route, the scientific process that creates the
+transformed science product owns the transformation. NOI owns only its exact
+binding and conforming application to admitted randomizations for the named
+uncertainty use. It may not choose, tune, regularize, replace, move, simplify,
+or reinterpret the transformation. The uncertainty applies only to the exact
+transformed product. If the transformation is rerun or relearned per member,
+the result is a distinct ODQ-104 method rather than this fixed-state route.
 
 ODQ-102B fixes the selected route's coherence map: all admitted PTC occurrences
 for one stable realized detector/channel in one observation map to the same
@@ -91,7 +101,7 @@ Every route-specific method binds:
 10. failure scope, persistence/reconstruction, and immutable provenance; and
 11. exact parent-boundary and NOI-owned policy identities.
 
-No later UNC, filter, selection, or STD operation changes an earlier GEN graph
+No later UNC, transformation, selection, or STD operation changes an earlier GEN graph
 or member. No route description creates a missing parent or upgrades an
 unavailable numerical state. This scientific method identity does not require
 exhaustive implementation provenance or tracing of scientifically irrelevant

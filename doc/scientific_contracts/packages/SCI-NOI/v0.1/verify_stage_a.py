@@ -73,7 +73,7 @@ def main() -> None:
         "NOI-GEN/PTC-TO-FROZEN-JINC-CONDITIONAL-SIGN@1",
         "NOI-GEN/REALIZED-MAP-CONDITIONAL-SIGN@1",
         "NOI-GEN/REALIZED-JINC-CONDITIONAL-SIGN@1",
-        "NOI-GEN/FIXED-FLT-CONDITIONAL-SIGN@1",
+        "NOI-GEN/OWNER-TRANSFORMED-CONDITIONAL-SIGN@1",
         "SCI-NOI:uncertainty_member_admission@1",
         "unit(empirical_scale_standardized_signal) = 1",
         "SCI-NOI-ODQ-102A",
@@ -122,6 +122,10 @@ def main() -> None:
         "mathematically sufficient for every exact published product and claim",
         "partial streaming state carries no UNC authority",
         "Failure of plan-required persistence fails that product",
+        "NOI does not choose or define a deterministic transformation",
+        "appropriate upstream/downstream scientific process",
+        "every admitted compatible randomization",
+        "exact transformed scientific product",
     ]
     for token in required:
         if token not in package_text:

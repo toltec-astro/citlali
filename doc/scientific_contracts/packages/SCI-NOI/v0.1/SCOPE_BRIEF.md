@@ -407,11 +407,16 @@ dispatch prerequisite after owner approval, not scientific approval by VAL.
 
 ## 10. FLT, Wiener, And FRUIT Boundary
 
-The proposed base disposition is recorded exactly in
+The ODQ-110A-approved ownership/parity rule and the still-open ODQ-110B/C
+dispositions are recorded exactly in
 [`FILTER_AND_FRUIT_SCOPE.md`](FILTER_AND_FRUIT_SCOPE.md):
 
-- a deterministic held-fixed FLT may be used only through a future exact
-  content-bound FLT boundary with complete signal/realization parity;
+- NOI does not choose or define a deterministic transformation; the appropriate
+  upstream/downstream scientific process owns it, and NOI must apply exactly
+  that transformation to every admitted compatible randomization when
+  estimating uncertainty for the exact transformed scientific product;
+- the transformed route remains unavailable until the owner process supplies a
+  content-bound authority with complete transformation and realization parity;
 - re-estimated Wiener filtering is unavailable without a complete inference/
   feedback contract; and
 - fixed FRUIT residual and complete relearned FRUIT methods remain separate and
@@ -486,8 +491,10 @@ and ODQ-107 approves the initial inverse conditional second-moment scale while
 keeping inverse variance, precision, and consumer weights separately typed.
 ODQ-108 approves the initial MAP standardized-signal method and keeps JINC
 separate. ODQ-109 approves the three plan-controlled persistence/regeneration
-modes and their fail-closed/audit limits. The next walkthrough question is
-`SCI-NOI-ODQ-110A`. Every later
+modes and their fail-closed/audit limits. ODQ-110A keeps transformation
+definition with the appropriate scientific process and requires exact
+application to admitted randomizations for transformed-product uncertainty.
+The next walkthrough question is `SCI-NOI-ODQ-110B`. Every later
 decision and the artifact's final hash still require explicit owner review.
 
 ## 13. Non-Goals And Claim Boundary

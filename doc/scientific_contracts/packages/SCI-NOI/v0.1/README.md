@@ -171,6 +171,8 @@ those typed unavailable states and do not create numerical products.
 - [`SCIENTIFIC_OWNER_ODQ_109_APPROVAL_2026-08-29.md`](SCIENTIFIC_OWNER_ODQ_109_APPROVAL_2026-08-29.md):
   durable plan-controlled persisted/regenerated/streaming modes and audit/
   fail-closed limitations
+- [`SCIENTIFIC_OWNER_ODQ_110A_APPROVAL_2026-08-29.md`](SCIENTIFIC_OWNER_ODQ_110A_APPROVAL_2026-08-29.md):
+  durable external transformation ownership and exact realization-parity rule
 - [`OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md`](OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md):
   complete Stage A ownership matrix
 - [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): exact proposed
@@ -194,8 +196,9 @@ those typed unavailable states and do not create numerical products.
 ## Stop Boundary
 
 Stop after presenting these final Stage A closure artifacts and continue the
-owner-decision walkthrough at `SCI-NOI-ODQ-110A`; ODQ-101, ODQ-102A/B/C,
-ODQ-103, ODQ-104, ODQ-105A/B, ODQ-106, ODQ-107, ODQ-108, and ODQ-109 are approved and ODQ-102D is delegated to the scientific-contract author. Do not
+owner-decision walkthrough at `SCI-NOI-ODQ-110B`; ODQ-101, ODQ-102A/B/C,
+ODQ-103, ODQ-104, ODQ-105A/B, ODQ-106, ODQ-107, ODQ-108, ODQ-109, and
+ODQ-110A are approved and ODQ-102D is delegated to the scientific-contract author. Do not
 draft the implementation-blind scientific rationale, shared normative core,
 engineering conformance specification, or PDFs until the exact conditional
 Stage B gate in the Scope Brief is satisfied. Do not implement or modify

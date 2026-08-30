@@ -192,8 +192,7 @@ tolerance-conditioned construction is nonbinding guidance. The route's
 numerical gates remain unavailable. ODQ-104 is explicitly owner-approved:
 every GEN method classifies scientifically consequential adjacent state, and a
 relearned method names its consequential rerun/relearn stages and resulting
-changed state without requiring exhaustive implementation provenance. The next
-owner question is `SCI-NOI-ODQ-110A`, held-fixed deterministic filtering.
+changed state without requiring exhaustive implementation provenance.
 ODQ-103 approves
 the source-suppression intent and no-source-free-by-construction boundary while
 delegating exact terminology to the Stage-B scientific author. ODQ-105A now
@@ -225,3 +224,10 @@ regeneration, and streaming-sufficient-statistic modes with no default or
 silent fallback. It requires exact reproducibility or mathematical sufficiency
 and explicit audit/reanalysis limitations, preserves all-member fail-closed
 completion, and makes required-persistence failure a product failure.
+ODQ-110A keeps deterministic-transformation selection and definition with the
+appropriate upstream/downstream scientific process. NOI binds and applies
+exactly that transformation to every admitted compatible randomization only to
+estimate uncertainty for the exact transformed product; it neither owns the
+transformation nor may substitute, move, omit, or relearn it inside the fixed-
+state method. The route remains unavailable pending exact owner authority and
+parity. The next owner question is `SCI-NOI-ODQ-110B`, Wiener scope.

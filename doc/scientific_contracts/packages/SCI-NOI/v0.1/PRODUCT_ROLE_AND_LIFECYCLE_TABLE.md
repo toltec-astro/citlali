@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Product Role And Lifecycle Table
 
-Artifact identity: `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.8`
+Artifact identity: `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.9`
 
 Status: proposed sanitized Stage A scientific input; exact bytes await owner
 approval
@@ -12,6 +12,8 @@ approval
 | GEN member completion truth | Producer-owned ensemble/member ID, exact parent and operator state, admitted assignment, payload/reconstruction state, unit/domain/support, completed/incomplete/failed terminal state, bounded diagnostic cause/context, QC, and provenance | Not authored by VAL; not UNC admission; not a physical-noise draw by default; rejected construction candidates are not members |
 | GEN realization map | NOI-owned atomic realization product produced through the frozen MAP operator with exact inherited route quantity/unit/beam/WCS/support/response identity | Not an ordinary MAP science product; use of MAP arithmetic does not transfer product ownership |
 | GEN ensemble | Exact admitted member identities, joint design, all distinct counts, complement/equivalence/duplicate state, design rank, all-member completion, source imprint, persistence/reconstruction, lifecycle | Not variance/covariance merely by existence; one admitted-member failure fails the ensemble for UNC and survivors do not form a partial ensemble |
+| Externally owned transformation authority | Appropriate upstream/downstream scientific process defines exact transformed scientific product, algorithm/operator/state/parameters/order, domain/support/edge/missing-data rules, normalization/units/response, validity/lifecycle/failure | Not selected, defined, tuned, regularized, simplified, relocated, or scientifically reinterpreted by NOI |
+| Transformed realization | NOI binds and applies exactly the owner-defined transformation to one admitted compatible randomization with exact parity and resulting transformed quantity/domain identity | Not authority over the transformation; not portable to an untransformed or differently transformed product; member-specific transformation relearning is another method |
 | UNC member admission | Named-use decision consuming immutable GEN completion/QC facts for one exact UNC method | Cannot redefine completion, clear producer causes, or admit the ensemble by itself |
 | UNC ensemble admission | One exact completed design admitted to one exact target/estimator/domain | Not a universal covariance or consumer permission |
 | UNC zero-centered conditional second moment | Ordinary primary representation `V_hat_cond(p)=sum_b omega_b M_b(p)^2` on the common all-member domain; known zero center; exact normalized design weights; no empirical recentering or `B-1`; dependence/rank/effective-information and estimator-uncertainty state | Squared signal units; pointwise/diagonal-like shape does not make it physical-noise variance or covariance; not precision or significance; square root and later transformations are separate |

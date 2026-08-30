@@ -1,8 +1,8 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.14`
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.15`
 
-Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, ODQ-105A, ODQ-105B, ODQ-106, ODQ-107, ODQ-108, and ODQ-109 owner-approved; exact
+Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, ODQ-105A, ODQ-105B, ODQ-106, ODQ-107, ODQ-108, ODQ-109, and ODQ-110A owner-approved; exact
 finite-design mechanics delegated to the scientific-contract author under
 ODQ-102D; later decisions remain open; not yet an allowed Stage B authority
 
@@ -420,20 +420,33 @@ not approve another decision or make an unresolved numerical route available.
   disclosures; required-persistence failure; fail-closed partial-state rule;
   and no-adequacy implications.
 
-### `SCI-NOI-ODQ-110A` — held-fixed deterministic FLT
+### `SCI-NOI-ODQ-110A` — externally owned deterministic transformation parity
 
-- **Exact question:** May an exact deterministic FLT be held fixed across
-  signal and realization paths?
-- **Recommended disposition:** yes, only through a content-bound FLT boundary
-  proving exact operator parity.
-- **Alternatives:** exclude FLT, admit named subsets, or keep unavailable.
-- **Scientific consequences:** filtering becomes route identity and response,
-  not implicit post-processing.
-- **Conservative state while open:** every filtered route unavailable.
+- **Exact question:** When an upstream or downstream scientific process defines
+  a deterministic transformation of a scientific product, what does NOI own
+  when estimating uncertainty for that transformed product?
+- **Approved disposition:** NOI neither chooses nor defines the transformation.
+  The appropriate scientific process owns and defines it. NOI binds that exact
+  owner-defined transformation and applies exactly it to every admitted
+  compatible randomization used to estimate uncertainty for the exact
+  transformed scientific product.
+- **Alternatives rejected:** NOI selection or definition of the transformation;
+  approximate/substitute transformation; assumed commutation or relocation;
+  silent omission; or attachment of transformed uncertainty to another parent.
+- **Scientific consequences:** transformation ownership remains external to
+  NOI; exact owner/version/state/parameter/order/domain/support/edge/response/
+  lifecycle/failure parity is method identity. A member-specific rerun or
+  relearning is a separate ODQ-104 method.
+- **Conservative availability state:** every transformed-product uncertainty
+  route remains unavailable until the owning scientific process supplies an
+  exact content-bound authority and the NOI method satisfies its parity
+  interface.
 - **Affected artifacts:** filter scope, GEN graph, route, response, imprint,
   profiles.
-- **Exact bytes changed by approval:** exact FLT boundary requirement and
-  permitted held-fixed route state.
+- **Exact bytes changed by approval:** external transformation ownership;
+  exact realization-parity requirement; fixed/relearned separation;
+  transformed-product-only uncertainty scope; and unavailable-until-bound
+  state.
 
 ### `SCI-NOI-ODQ-110B` — Wiener scope
 

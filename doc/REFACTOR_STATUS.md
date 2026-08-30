@@ -564,8 +564,21 @@ Persistence/regeneration establishes no adequacy, covariance completeness,
 calibration, significance, conformity, performance, readiness, or production
 authority.
 
-The next walkthrough question is `SCI-NOI-ODQ-110A`, held-fixed deterministic
-filtering.
+Grant Wilson approved `SCI-NOI-ODQ-110A` on `2026-08-29`. NOI does not choose
+or define a deterministic filter or other scientific transformation. The
+appropriate upstream/downstream scientific process owns the transformation and
+the transformed scientific product. NOI must bind and apply exactly that
+transformation to every admitted compatible randomization when estimating
+uncertainty for that exact transformed product. Transformation authority,
+version/state/parameters/order/domain/support/edge/missing-data/normalization/
+unit/response/lifecycle/failure identity and parity are mandatory; omission,
+substitution, relocation, inferred equivalence, and cross-product reuse are
+prohibited. Member-specific transformation relearning is a separate ODQ-104
+method. Every transformed route remains numerically unavailable until its owner
+supplies exact content-bound authority and the NOI parity interface is
+satisfied.
+
+The next walkthrough question is `SCI-NOI-ODQ-110B`, Wiener scope.
 Later granular decisions, exact packet bytes/hashes, and
 required source/profile Registry bindings remain under owner review.
 MAP/pre-MAP numerical parents remain

@@ -281,6 +281,28 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
     imprint specification, r0.8 of the product/lifecycle table, and r0.14
     packet/decision records without selecting a storage default.
 
+## ODQ-110A External Transformation Ownership Update
+
+81. Approved that NOI neither chooses nor defines a deterministic filter or
+    other scientific transformation; the appropriate upstream/downstream
+    scientific process retains that authority.
+82. Required NOI to bind and apply exactly the owner-defined transformation to
+    every admitted compatible randomization when estimating uncertainty for
+    the exact transformed scientific product.
+83. Bound owner/version/state/parameters/order/domain/support/edge/missing-data/
+    normalization/unit/response/lifecycle/failure parity and prohibited silent
+    omission, substitution, relocation, simplification, or inferred
+    equivalence.
+84. Kept member-specific transformation rerunning/relearning as a distinct
+    ODQ-104 method and prohibited attaching transformed uncertainty to an
+    untransformed or differently transformed product.
+85. Preserved numerical unavailability until the transformation-owning process
+    supplies exact content-bound authority; established no transformation
+    validity, source cancellation, covariance, calibration, significance,
+    conformity, performance, readiness, or production claim.
+86. Advanced the walkthrough to ODQ-110B and published r0.7 of the GEN graph,
+    r0.9 of the product/lifecycle table, and r0.15 packet/decision records.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance
