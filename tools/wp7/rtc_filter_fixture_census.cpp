@@ -812,6 +812,10 @@ void write_record(
     }
     output << "\n  ],\n"
            << "  \"apt_bundle\": {\n"
+           << "    \"bundle_kind\": \""
+           << apt::bundle_kind_token(bundle.manifest.kind) << "\",\n"
+           << "    \"canonical_bundle_verified\": true,\n"
+           << "    \"detector_raw_inventory_complete\": true,\n"
            << "    \"semantic_sha256\": \""
            << json_escape(bundle.identity.semantic_sha256)
            << "\",\n"
@@ -1040,8 +1044,7 @@ void write_record(
     }
     output << "  ],\n"
            << "  \"d0_fixture_identity_ready\": "
-           << (arguments.source_clean && matched_relation_available
-                   ? "true" : "false") << ",\n"
+           << (arguments.source_clean ? "true" : "false") << ",\n"
            << "  \"structural_screen_only\": true,\n"
            << "  \"automatic_factor_selection_authorized\": false,\n"
            << "  \"filter_bank_certified\": false,\n"

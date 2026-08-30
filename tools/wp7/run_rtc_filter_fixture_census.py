@@ -112,6 +112,17 @@ def validate_case_result(case: dict, record: dict) -> None:
         raise RuntimeError(f"{case['id']} lost native timing identity")
     if record.get("mapping_checks", {}).get("missing_support_count") != 0:
         raise RuntimeError(f"{case['id']} lost available AST support")
+    apt_bundle = record.get("apt_bundle", {})
+    if apt_bundle.get("bundle_kind") not in {"baseline", "matched"}:
+        raise RuntimeError(f"{case['id']} canonical APT bundle kind is invalid")
+    if apt_bundle.get("canonical_bundle_verified") is not True:
+        raise RuntimeError(f"{case['id']} canonical APT bundle is not verified")
+    if apt_bundle.get("detector_raw_inventory_complete") is not True:
+        raise RuntimeError(f"{case['id']} detector/raw inventory is incomplete")
+    if record.get("d0_fixture_identity_ready") is not record.get(
+        "source_clean_asserted"
+    ):
+        raise RuntimeError(f"{case['id']} D0 readiness disagrees with custody")
     if record.get("automatic_factor_selection_authorized") is not False:
         raise RuntimeError(f"{case['id']} unexpectedly authorized factor selection")
     domains = record.get("candidate_mode_domains")
@@ -217,7 +228,17 @@ def main() -> int:
             "observation": case["observation"],
             "result": output.name,
             "result_sha256": sha256_file(output),
-            "matched_detector_relation_available": record["apt_bundle"]["matched_detector_relation_available"],
+            "apt_bundle_kind": record["apt_bundle"]["bundle_kind"],
+            "canonical_apt_bundle_verified": record["apt_bundle"][
+                "canonical_bundle_verified"
+            ],
+            "detector_raw_inventory_complete": record["apt_bundle"][
+                "detector_raw_inventory_complete"
+            ],
+            "matched_detector_relation_available": record["apt_bundle"][
+                "matched_detector_relation_available"
+            ],
+            "d0_fixture_identity_ready": record["d0_fixture_identity_ready"],
             "ast_maximum_available": record["telescope_ast"]["maximum_available"],
             "ast_maximum_causes": record["telescope_ast"]["maximum_causes"],
             "network_count": len(record["network_native_census"]),

@@ -58,6 +58,14 @@ class FixtureCensusRunnerTest(unittest.TestCase):
             "common_analysis_grid_requested": False,
             "rtc_route_activated": False,
             "automatic_factor_selection_authorized": False,
+            "source_clean_asserted": True,
+            "apt_bundle": {
+                "bundle_kind": "baseline",
+                "canonical_bundle_verified": True,
+                "detector_raw_inventory_complete": True,
+                "matched_detector_relation_available": False,
+            },
+            "d0_fixture_identity_ready": True,
             "mapping_checks": {
                 "identity_mismatch_count": 0,
                 "missing_support_count": 0,
@@ -135,6 +143,36 @@ class FixtureCensusRunnerTest(unittest.TestCase):
             "support_erosion"
         ]["support_eroded_output_count"] = 3
         with self.assertRaisesRegex(RuntimeError, "guessed M>1"):
+            runner.validate_case_result(case, record)
+
+    def test_verified_baseline_bundle_does_not_require_matched_relation(self) -> None:
+        case = {
+            "id": "fixture",
+            "observation": 10,
+            "subobservation": 0,
+            "scan": 2,
+        }
+        record = self.valid_record()
+        self.assertFalse(
+            record["apt_bundle"]["matched_detector_relation_available"]
+        )
+        runner.validate_case_result(case, record)
+
+    def test_result_rejects_unverified_or_incomplete_apt_inventory(self) -> None:
+        case = {
+            "id": "fixture",
+            "observation": 10,
+            "subobservation": 0,
+            "scan": 2,
+        }
+        record = self.valid_record()
+        record["apt_bundle"]["canonical_bundle_verified"] = False
+        with self.assertRaisesRegex(RuntimeError, "not verified"):
+            runner.validate_case_result(case, record)
+
+        record = self.valid_record()
+        record["apt_bundle"]["detector_raw_inventory_complete"] = False
+        with self.assertRaisesRegex(RuntimeError, "inventory is incomplete"):
             runner.validate_case_result(case, record)
 
 
