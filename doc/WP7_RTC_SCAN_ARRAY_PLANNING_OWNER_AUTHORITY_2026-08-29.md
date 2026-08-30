@@ -4,9 +4,9 @@ Date: 2026-08-29
 
 Scientific owner: Grant Wilson
 
-Status: approved bounded successor authority; numerical policy closed by
-scientific-owner disposition 2026-08-30; AST prerequisite and nonidentity
-implementation remain pending
+Status: approved bounded successor authority; numerical policy corrected to v2
+by scientific-owner disposition 2026-08-30; AST prerequisite, certified filter
+bank, and nonidentity implementation remain pending
 
 This decision supersedes only the fixed or observation-common planning
 interpretations identified in the
@@ -122,32 +122,34 @@ one produced by the relevant array beam at `v_min`.
 ## Automatic factor and filter selection
 
 For each scan and array, and for each exact input cadence to which the plan is
-bound, evaluate the approved finite set of integer factors. For candidate
-`M`,
+bound, inspect the applicable entries in the approved finite, pre-certified
+filter bank. For candidate factor `M`,
 
 ```text
 f_Nyq,out = f_sample,in / (2 * M)
 ```
 
-Select the largest allowed `M` for which the simplest approved low-pass
-realization simultaneously provides:
+Select the largest allowed `M` whose immutable certified entry simultaneously
+provides:
 
 1. the complete science passband through `f_sci,a,s`;
 2. the approved passband amplitude and phase behavior;
 3. a realizable transition band;
-4. stopband behavior meeting the alias-error budget before output Nyquist;
+4. broadband behavior meeting the noise-weighted alias budget;
 5. the approved minimum sampling of the diffraction-limited beam;
 6. bounded support and acceptable edge loss; and
 7. one identical numerical operator, occurrence selection, and support
    relation for paired `x` and requested conditioned `r`.
 
-The required stopband attenuation is derived from the alias-error budget; it
-is not a conventional decibel default. The transition and support are selected
-by a deterministic tie rule as the simplest permitted realization meeting all
-constraints. If no `M > 1` passes, select `M=1` with no sampling change only
-when the input cadence itself still meets the approved science-band and
-beam-sampling requirements. Otherwise publish no admitted ordinary
-astronomical product with typed cause
+Filter design, response evaluation, noise-envelope integration, and end-to-end
+map/OOF comparison occur offline. Ordinary Citlali performs no filter synthesis,
+order estimation, response optimization, or detector-PSD estimation. Narrow
+lines below input Nyquist are handled by the separate line-detection/mitigation
+strategy and do not set the generic filter-bank attenuation or factor. If no
+certified `M > 1` entry applies, select `M=1` with no sampling change only when
+the input cadence itself still meets the approved science-band and beam-sampling
+requirements. Otherwise publish no admitted ordinary astronomical product with
+typed cause
 `input_cadence_inadequate_for_science_band`. The new planner's
 occurrence-admission dispositions still apply; this fallback does not rewrite
 the separate accepted identity-RTC conformance context. Never reduce
@@ -171,36 +173,40 @@ them in `RtcEvidence`.
 
 `RtcPlan` records the complete deterministic scan/array decision before Apply:
 admission-policy identity, scan and array identity, exact input cadence,
-`v_max,s`, beam-model identity, `f_sci,a,s`, factor, filter/coefficient identity,
-response and alias bounds, phase, output-occurrence rule, run/boundary policy,
-support, precision, and all policy identities. The plan cannot change by chunk
-or by detector data.
+`v_max,s`, beam-model identity, `f_sci,a,s`, factor, certified bank-entry and
+coefficient identities, response and noise-weighted alias bounds, phase,
+output-occurrence rule, run/boundary policy, support, precision, and all policy
+identities. The plan cannot change by chunk or by detector data.
 
 Apply uses the same occurrence action and ordinary operator for paired `x/r`
 while retaining member-local availability, validity, and causes. The compact
 realization records what the immutable plan actually realized; it does not
 duplicate the product, support planes, input axes, or provenance history.
 
-## Approved numerical closure
+## Corrected numerical closure
 
-The scientific owner approved
-[`wp7-rtc-scan-array-numerical-policy-v1`](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md)
-on 2026-08-30. That authority fixes the nominal array frequencies, aperture
-and Airy profile, full optical temporal support, independent astronomical
-product tolerances, passband/phase/DC rules, folded-alias norm, output beam
-sampling, integer-factor set, deterministic Kaiser FIR construction and tie
-rule, support/edge behavior, arithmetic, uncertainty margins, and the
-inadequate-input `M=1` disposition.
+The scientific owner approved v1 and then narrowly superseded it with
+[`wp7-rtc-scan-array-numerical-policy-v2`](WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md)
+on 2026-08-30. V2 retains the nominal array frequencies, aperture and Airy
+profile, full optical temporal support, output beam sampling, integer-factor
+universe, support/edge behavior, arithmetic, uncertainty margins, and
+inadequate-input `M=1` disposition. It replaces the v1 product/ripple and
+spectrum-independent alias bounds with independent `1%` mapped-response limits
+and a noise-weighted `1%` retained-variance alias limit, and it replaces runtime
+Kaiser synthesis with lookup of a pre-certified filter-bank entry.
 
-The packet's synthetic factor and tap-count sweep remains feasibility evidence,
-not approved coefficient artifacts or an observation-152390 plan. Exact
-coefficient construction and certification remain implementation gates.
+The v1 synthetic factor and tap-count sweep is historical feasibility evidence,
+not a v2 plan, approved coefficient artifact, or observation-152390 result.
+Representative PSD, naive/JINC, OOF/fruitloops, and coefficient certification
+remain acceptance gates.
 
 ## Scope and claims
 
 This authority does not authorize despiking, level shifts, detector-informed
-sampling learning, CAL, VAL, PTC, MAP/JINC, persistent TOD publication,
-production activation, or legacy-route retirement. It does not claim
+sampling learning, CAL, VAL, PTC, runtime MAP/JINC planning, persistent TOD
+publication, production activation, or legacy-route retirement. Offline
+naive/JINC and OOF/fruitloops certification is an acceptance requirement, not
+authorization to change those algorithms. This authority does not claim
 astronomical transfer, observational performance, or implementation
 conformance. The accepted `M=1` network-timed terminal route remains unchanged
 and available while the AST prerequisite and nonidentity implementation are

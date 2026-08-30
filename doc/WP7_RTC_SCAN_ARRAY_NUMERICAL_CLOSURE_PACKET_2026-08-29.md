@@ -2,29 +2,38 @@
 
 Prepared: 2026-08-29
 
-Scientific-owner disposition: approved 2026-08-30
+Scientific-owner disposition: historically approved 2026-08-30; partially
+superseded later 2026-08-30
 
 Authority identity: `wp7-rtc-scan-array-numerical-policy-v1`
 
-Status: **approved numerical authority; nonidentity RTC implementation remains
-blocked on conforming AST velocity/validity authority and implementation
-gates**
+Status: **historical v1 authority; current policy is v2**
+
+Current authority:
+[`wp7-rtc-scan-array-numerical-policy-v2`](WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md)
+
+V2 supersedes v1 items 5--7 and item 10's runtime-design consequence: the
+astronomical-response budget is `1%`, the broadband alias budget is a
+noise-weighted `1%` retained-variance increment, and production selects an
+immutable pre-certified filter-bank entry. The v1 Kaiser construction,
+spectrum-independent folded-alias norm, and prototype factors/tap counts are
+historical design evidence only. V2 preserves every unlisted v1 clause,
+including the inadequate-input `M=1` disposition.
 
 Controlling structural authority:
 [WP-7 RTC Scan/Array Planning Scientific-Owner Authority](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
 at `38644343a4f8cfa213c8cab87c06753377704e12`
 
-This packet fixes one explicit owner-approved value or rule for every numerical
-field left open by the controlling decision. It does not alter the accepted
-network-timed `M=1` route, promote the feasibility filter estimates to
-certified coefficients, or construct the nonidentity RTC method.
+This packet records the originally approved v1 value or rule for every
+numerical field left open by the controlling decision. It does not alter the
+accepted network-timed `M=1` route, promote the feasibility filter estimates
+to certified coefficients, or construct the nonidentity RTC method.
 
-## Approved owner disposition
+## Historical v1 owner disposition
 
 The scientific owner approved the following as version 1 of the bounded TolTEC
-RTC scan/array numerical policy. A change to any value below requires a new
-policy identity; it must not appear as a software default or observation-local
-override.
+RTC scan/array numerical policy. The later v2 authority changes only the
+explicitly named clauses and provides the required new policy identity.
 
 1. Use exact nominal center frequencies `272 GHz`, `214 GHz`, and `150 GHz`
    for `a1100`, `a1400`, and `a2000`, respectively.
@@ -253,12 +262,12 @@ Therefore:
 The synthetic 50 arcsec/s row shows a plausible expected plan but is not an
 accepted observation-152390 result.
 
-## Scope of owner approval
+## Historical scope of v1 owner approval
 
-The approval closes the twelve numerical fields listed by the controlling
-authority and the inadequate-input `M=1` edge case. It authorizes engineering
-to prepare exact array/policy artifacts and the bounded nonidentity
-learn-consider-apply increment only after the AST prerequisite is conforming.
+The original approval closed the twelve numerical fields listed by the
+controlling authority and the inadequate-input `M=1` edge case. V2 now governs
+filter-bank artifacts and any bounded nonidentity learn-consider-apply
+increment after the AST prerequisite is conforming.
 
 It does not approve the prototype tap counts, waive coefficient certification,
 claim 152390 `v_max`, introduce a common analysis grid, add a persistent TOD

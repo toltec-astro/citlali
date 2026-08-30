@@ -3,7 +3,7 @@
   "authority_id": "wp7-timestream-successor-2026-08-26",
   "recorded_date": "2026-08-26",
   "last_updated_date": "2026-08-30",
-  "status": "identity_rtc_accepted_scan_array_numerical_policy_approved_ast_pending",
+  "status": "identity_rtc_accepted_scan_array_filter_policy_v2_approved_ast_and_certification_pending",
   "identity_policy": "Artifact identity is filename plus SHA-256. Archive paths are convenience locators and are not identity.",
   "repository_authority": {
     "decision": "doc/adr/0014-wp7-timestream-successor.md",
@@ -12,19 +12,33 @@
     "network_timing_owner_correction": "doc/WP7_NETWORK_TIMING_OWNER_AUTHORITY_CORRECTION_2026-08-29.md",
     "network_timing_crosswalk": "doc/WP7_NETWORK_TIMING_AUTHORITY_CROSSWALK_2026-08-29.md",
     "rtc_scan_array_planning_decision": "doc/adr/0016-scan-array-rtc-bandwidth-planning.md",
+    "rtc_filter_bank_decision": "doc/adr/0017-precertified-rtc-filter-bank-and-science-error-budgets.md",
     "rtc_scan_array_planning_owner_authority": "doc/WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md",
     "rtc_scan_array_planning_crosswalk": "doc/WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md",
     "rtc_scan_array_planning_packet": "doc/WP7_RTC_FIXED_DECIMATION_OWNER_DECISION_PACKET_2026-08-29.md",
-    "rtc_scan_array_numerical_policy": "doc/WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md",
+    "rtc_scan_array_numerical_policy": "doc/WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md",
+    "rtc_scan_array_numerical_policy_v1_historical": "doc/WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md",
     "architecture": "doc/ARCHITECTURE.md",
     "living_status": "doc/REFACTOR_STATUS.md"
   },
   "rtc_scan_array_numerical_policy": {
-    "policy_id": "wp7-rtc-scan-array-numerical-policy-v1",
-    "scientific_owner_disposition": "approved",
+    "policy_id": "wp7-rtc-scan-array-numerical-policy-v2",
+    "scientific_owner_disposition": "approved_bounded_correction",
     "approved_date": "2026-08-30",
-    "implementation_status": "blocked_on_ast_velocity_validity_authority",
+    "supersedes_policy_id": "wp7-rtc-scan-array-numerical-policy-v1",
+    "superseded_clauses": [
+      "astronomical_response_budget",
+      "generic_folded_alias_bound",
+      "runtime_filter_construction"
+    ],
+    "implementation_status": "blocked_on_ast_velocity_validity_and_filter_bank_certification",
+    "maximum_additional_mapped_response_error": 0.01,
+    "maximum_broadband_alias_to_retained_noise_variance_ratio": 0.01,
+    "runtime_filter_design": false,
+    "runtime_filter_bank_lookup": true,
+    "sub_input_nyquist_line_owner": "line_detection_and_mitigation_strategy",
     "prototype_tap_counts_authoritative": false,
+    "prototype_factor_predictions_authoritative": false,
     "observation_152390_vmax_authoritative": false
   },
   "scientific_packet": {

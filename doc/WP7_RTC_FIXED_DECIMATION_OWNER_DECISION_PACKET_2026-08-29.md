@@ -1,11 +1,12 @@
 # WP-7 RTC Scan/Array Decimation Authority Packet
 
-Status: **scientific structure and numerical policy approved; AST prerequisite
-and implementation pending**
+Status: **scientific structure and corrected v2 numerical policy approved; AST
+prerequisite, certified filter bank, and implementation pending**
 
 Prepared: 2026-08-29
 
-Revised by owner decisions: 2026-08-29 and 2026-08-30
+Revised by owner decisions: 2026-08-29 and 2026-08-30, including the v2
+filter-bank correction
 
 Accepted identity-RTC base:
 `0574d9a50fe6df6f7ded07c1d229bcb8ca04309d`
@@ -27,14 +28,16 @@ bounded successor authority is recorded in:
 
 - [scan/array planning owner authority](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md);
 - [frozen-entry crosswalk](WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md);
-- [approved numerical policy](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md);
+- [current v2 numerical policy](WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md);
+- [historical v1 numerical packet](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md);
 - [ADR 0016](adr/0016-scan-array-rtc-bandwidth-planning.md); and
 - [ADR 0015](adr/0015-network-specific-timing-and-common-analysis-grid.md)
   for network timing and explicit common-analysis grids.
 
-The approved numerical policy now closes the exact values formerly left open
-by this packet. Its prototype factor/tap sweep remains evidence only; no
-nonidentity code should be constructed from those estimated tap counts.
+The corrected v2 numerical policy closes the science budgets formerly left
+open by this packet. The v1 prototype factor/tap sweep remains historical
+evidence only; no nonidentity code should be constructed from those estimated
+factors or tap counts.
 
 ## Retained implementation and data evidence
 
@@ -162,26 +165,32 @@ approved finite integer-factor set. Candidate `M` has
 f_Nyq,out = f_sample,in / (2 * M)
 ```
 
-Select the largest allowed `M` for which the simplest permitted realization
-satisfies all of:
+Select the largest allowed `M` having an immutable pre-certified bank entry
+that satisfies all of:
 
 1. complete passband through `f_sci,a,s`;
 2. approved amplitude and phase behavior;
 3. realizable transition;
-4. alias-budget-derived stopband behavior before output Nyquist;
+4. the noise-weighted broadband alias budget;
 5. approved minimum beam sampling;
 6. support and edge-loss limits; and
 7. identical numerical transformation, output selection, and support for
    paired `x/r`.
 
-If no `M > 1` passes, select `M=1` without a sampling change only when the input
-cadence itself still meets the approved science-band and beam-sampling
-requirements. Otherwise publish no admitted ordinary astronomical product
-with typed cause `input_cadence_inadequate_for_science_band`. Retain the
-planner's occurrence-admission dispositions. This does not alter the separate
-accepted identity-RTC conformance context. Never reduce the science band to
-admit a desired factor. Different arrays may produce different filters,
-factors, and cadences in one scan.
+Filter design, PSD integration, response analysis, and native-rate versus
+filtered naive/JINC and OOF/fruitloops comparisons occur offline. Runtime
+selection is a bounded table lookup; it does not synthesize or optimize a
+filter or estimate a detector PSD. Narrow sub-input-Nyquist lines remain owned
+by the established line-detection/mitigation strategy and do not set the
+generic broadband filter length or factor. If no `M > 1` bank entry applies,
+select `M=1` without a sampling change only when the input cadence itself still
+meets the approved science-band and beam-sampling requirements. Otherwise
+publish no admitted ordinary astronomical product with typed cause
+`input_cadence_inadequate_for_science_band`. Retain the planner's
+occurrence-admission dispositions. This does not alter the separate accepted
+identity-RTC conformance context. Never reduce the science band to admit a
+desired factor. Different arrays may produce different filters, factors, and
+cadences in one scan.
 
 Every sampling-changing product remains a network-keyed timed stream with a new
 network occurrence/time/support relation. The planner neither requests nor
@@ -207,29 +216,34 @@ immutable plan actually realized; it does not copy full products, axes,
 support planes, or provenance history. No persistent RTC TOD schema is added
 without an approved immediate consumer.
 
-## Numerical authority closure
+## Numerical authority correction
 
-The scientific owner approved
-[`wp7-rtc-scan-array-numerical-policy-v1`](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md)
-on 2026-08-30, including its inadequate-input `M=1` disposition. That policy,
-not a software default, legacy constant, approximate wavelength label, nominal
-observation header, or prototype tap estimate, now binds the twelve numerical
-fields formerly listed here.
+The scientific owner approved v1 and then narrowly superseded its response,
+alias, and runtime-filter-design clauses with
+[`wp7-rtc-scan-array-numerical-policy-v2`](WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md)
+on 2026-08-30. V2 binds the `1%` mapped astronomical-response budget, the
+noise-weighted `1%` retained-variance alias budget, offline naive/JINC and
+OOF/fruitloops certification, pre-certified bank lookup, and separate line
+ownership. All unlisted v1 clauses, including its inadequate-input `M=1`
+disposition, remain authoritative.
 
 The scan/array planner remains unavailable until conforming AST velocity and
 validity authority exists and the bounded implementation and certification
 gates pass. The separate accepted identity RTC remains available unchanged.
 
-## Evidence study under the approved numerical policy
+## Evidence study under the corrected numerical policy
 
-Generate the exact array-model and universal-policy artifacts first. Then, for
-representative scans including observation 152390:
+Generate the exact array-model, representative cleaned-noise PSD envelopes,
+and candidate filter-bank artifacts first. Then, for representative scans
+including observation 152390:
 
 - verify AST-valid admitted runs and the exact `1 arcsec/s` equality boundary;
-- report `v_max,s`, `f_sci,a,s`, every factor disposition, and the selected
-  filter per scan/array;
-- compute temporal point-source peak, flux, width/shape, centroid, calibration,
-  passband, phase, and folded-alias errors independently of the planner;
+- report `v_max,s`, `f_sci,a,s`, every certified-entry disposition, and the
+  selected bank identity per scan/array;
+- compare native-rate and filtered point-source and OOF products through naive,
+  JINC, and the applicable OOF/fruitloops route;
+- compute peak, flux, width/shape, centroid, calibration, passband, phase, and
+  broadband noise-weighted alias results independently of runtime selection;
 - compare direct symmetric FIR/polyphase and FFT overlap-save only where
   realized support and segment sizes make them plausible;
 - measure complete paired-route time, allocation, memory movement, and RSS on
@@ -243,7 +257,7 @@ baseline conformance.
 
 ## Required implementation gates
 
-Under the approved numerical policy, the bounded increment must prove at least:
+Under the corrected numerical policy, the bounded increment must prove at least:
 
 - accepted `M=1` behavior remains bitwise and semantically unchanged;
 - below/exact/above `1 arcsec/s` admission and typed-cause behavior;
@@ -251,7 +265,8 @@ Under the approved numerical policy, the bounded increment must prove at least:
 - invalid spikes, slow turnarounds, slews, and telemetry defects cannot set
   `v_max,s` or the plan;
 - filter support cannot cross an inadmissible run boundary;
-- every candidate factor is evaluated and the largest conforming one is chosen;
+- the largest applicable certified bank entry is selected without runtime
+  synthesis, optimization, or PSD estimation;
 - `M=1` is selected without science-band relaxation when no larger factor
   passes and the input cadence is adequate;
 - inadequate input cadence produces no admitted ordinary astronomical product
@@ -260,6 +275,11 @@ Under the approved numerical policy, the bounded increment must prove at least:
 - new network occurrence, time, representative-source, and transitive-support
   relations are exact;
 - paired `x/r` use an identical operator with member-local availability;
+- every accepted entry passes the independent `1%` mapped-response metrics and
+  the `1%` retained broadband-noise-variance alias limit through its required
+  naive, JINC, and OOF/fruitloops certification matrix;
+- sub-input-Nyquist lines remain routed to line detection/mitigation, with any
+  anti-alias-relevant mitigation effective before decimation;
 - one-segment and supported multi-chunk results agree under the declared
   arithmetic behavior;
 - stale AST, beam, policy, plan, coefficient, context, or run identity fails
@@ -274,8 +294,10 @@ Under the approved numerical policy, the bounded increment must prove at least:
 ## Current stop condition
 
 The owner has approved both the scientific planning model and
-`wp7-rtc-scan-array-numerical-policy-v1`, superseding the fixed-`M=2`
-recommendation. The next bounded action is closure of the AST velocity and
-validity authority needed to form `v_max,s`; nonidentity RTC implementation
-does not begin before that prerequisite conforms. Production activation, CAL,
-VAL, PTC, MAP/JINC, and legacy-route retirement remain outside scope.
+`wp7-rtc-scan-array-numerical-policy-v2`, superseding the fixed-`M=2`
+recommendation and v1 runtime Kaiser design. The next bounded actions are
+closure of the AST velocity/validity authority needed to form `v_max,s` and
+preparation of the offline PSD/filter-bank certification evidence; nonidentity
+RTC implementation does not begin before those prerequisites conform.
+Production activation, CAL, VAL, PTC/PCA expansion, runtime MAP/JINC planning,
+and legacy-route retirement remain outside scope.

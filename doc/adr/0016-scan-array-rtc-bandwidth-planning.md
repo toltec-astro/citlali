@@ -1,7 +1,8 @@
 # ADR 0016: Scan/array RTC bandwidth and decimation planning
 
-Status: accepted scientific structure 2026-08-29; numerical policy approved
-2026-08-30; AST prerequisite and implementation pending
+Status: accepted scientific structure 2026-08-29; numerical-policy portion
+partially superseded by ADR 0017 on 2026-08-30; AST prerequisite, certified
+filter bank, and implementation pending
 
 Decision owners: Citlali project owner and scientific owner
 
@@ -54,13 +55,15 @@ grid; ADR 0015 continues to govern explicit cross-network relations.
 
 ## Numerical policy
 
-The scientific owner approved
+The scientific owner originally approved
 [`wp7-rtc-scan-array-numerical-policy-v1`](../WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md)
-on 2026-08-30. It fixes the complete array model and universal response,
-alias, sampling, factor, FIR, support, arithmetic, margin, and inadequate-input
-rules. Existing code constants and the legacy `32 Hz` cutoff remain evidence
-only. Prototype tap counts remain uncertified evidence rather than coefficient
-authority.
+on 2026-08-30. Later that day,
+[ADR 0017](0017-precertified-rtc-filter-bank-and-science-error-budgets.md)
+and
+[`wp7-rtc-scan-array-numerical-policy-v2`](../WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md)
+superseded v1's astronomical-response budget, generic folded-alias bound, and
+runtime filter-construction rule. V1 remains historical authority for the
+unchanged clauses named by v2; its prototype tap counts are evidence only.
 
 ## Consequences
 
@@ -76,13 +79,14 @@ authority.
 - A deterministic planner may share compact immutable plans and reusable
   workspaces, but architecture and kernel choices remain benchmark-driven.
 - No nonidentity numerical implementation begins until conforming AST
-  velocity/validity authority is present and the bounded implementation gates
-  are satisfied.
+  velocity/validity authority, the v2 certified-bank prerequisites, and the
+  bounded implementation gates are satisfied.
 
 ## Evidence and authority
 
 - [Scan/array planning owner authority](../WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
 - [Scan/array planning authority crosswalk](../WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md)
-- [Approved numerical policy](../WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md)
+- [Current v2 filter-bank policy](../WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md)
+- [Historical v1 numerical packet](../WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md)
 - [Network-timing decision](0015-network-specific-timing-and-common-analysis-grid.md)
 - [Revised RTC planning packet](../WP7_RTC_FIXED_DECIMATION_OWNER_DECISION_PACKET_2026-08-29.md)

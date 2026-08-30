@@ -1,15 +1,66 @@
 # Citlali Refactor Status
 
-## 2026-08-30 WP-7 Scan/Array RTC Numerical-Policy Approval
+## 2026-08-30 WP-7 RTC Filter-Bank Policy Correction
 
-The scientific owner approved the complete
+The scientific owner narrowly reopened the generic response, alias, and
+runtime-filter-design clauses of the just-approved v1 scan/array policy.
+[ADR 0017](adr/0017-precertified-rtc-filter-bank-and-science-error-budgets.md)
+and
+[`wp7-rtc-scan-array-numerical-policy-v2`](WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md)
+now govern those clauses. V1 remains historical authority only for the
+unchanged provisions explicitly preserved by v2.
+
+The current scientific claim is directly tied to the products: filtering and
+decimation may add no more than `1%` to independently evaluated mapped
+point-source peak, integrated response, profile, FWHM, centroid, and
+calibration-transfer metrics, and broadband residual aliasing may add no more
+than `1%` to the noise variance expected to survive cleaning. A `1%` passband-
+magnitude bound is a conservative engineering surrogate, not a separate
+tighter science requirement. The noise denominator uses representative photon,
+detector, readout, and residual-atmosphere PSD envelopes rather than being
+dominated by removable raw atmospheric variance.
+
+Candidate filters are designed and certified offline against native-rate
+references through naive MAP, JINC MAP, and the OOF/fruitloops route. Production
+Citlali only looks up the largest immutable certified entry admitting the
+array, exact cadence, and margin-adjusted authoritative scan speed. It does not
+synthesize or optimize filters or estimate detector PSDs during a reduction.
+Filter family and tap count are engineering results; the v1 Kaiser rule,
+candidate factors, and tap counts are historical feasibility evidence and do
+not select a v2 plan.
+
+Narrow lines below native input Nyquist are intentionally excluded from the
+representative broadband alias envelope. The established line-detection/
+mitigation strategy owns them. When a line could fold across the selected
+output Nyquist, its effective mitigation must precede information-losing
+decimation; this correction does not redesign or independently approve the
+line algorithm.
+
+The array frequencies, Airy planning beam, full optical temporal support,
+four-samples-per-FWHM rule, integer-factor universe, support and boundary
+semantics, centered phase, DC bound, binary64 arithmetic, safety margins,
+network timing, paired `x/r` semantics, and inadequate-input `M=1` disposition
+remain unchanged. The next prerequisites are conforming AST velocity/validity
+authority and versioned PSD/filter-bank plus naive/JINC and OOF/fruitloops
+certification artifacts. No nonidentity RTC implementation or production
+activation is authorized yet.
+
+The authority-only correction passes its v2 link/manifest consistency guard,
+the local `citlali_cli` build, all 870 runnable CTests with the one established
+disabled test unchanged, all 207 baseline-tool tests, and the full required
+config gate with all 129 unit tests and downstream audits.
+
+## 2026-08-30 WP-7 Scan/Array RTC Numerical-Policy V1 Approval (Partially Superseded)
+
+The scientific owner originally approved the complete
 [`wp7-rtc-scan-array-numerical-policy-v1`](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md),
-including the inadequate-input `M=1` disposition. This closes every numerical
-field left open by structural-authority revision
+including the inadequate-input `M=1` disposition. This originally closed every
+numerical field left open by structural-authority revision
 `38644343a4f8cfa213c8cab87c06753377704e12` without starting nonidentity RTC
-implementation.
+implementation. Later on 2026-08-30, v2 superseded only the response, alias,
+and runtime-filter-design clauses summarized above.
 
-The approved policy fixes exact 272/214/150 GHz center frequencies, a 50.0 m
+The historical v1 policy fixed exact 272/214/150 GHz center frequencies, a 50.0 m
 ideal circular Airy beam with coefficient `1.028993969962188`, full
 ideal-aperture optical temporal support, independent `1e-3`
 astronomical-product limits, `1e-4` passband ripple, centered zero phase,
@@ -24,7 +75,7 @@ Otherwise no ordinary astronomical product is admitted and the exact cause is
 `input_cadence_inadequate_for_science_band`. This edge case does not change the
 separate accepted identity-RTC conformance context.
 
-The evidence-only calculator and checked JSON remain useful feasibility
+The evidence-only calculator and checked JSON remain historical feasibility
 evidence. At a nominal 50 arcsec/s and exact 122.0703125 Hz detector cadence
 they estimate array-specific factors `M=2`, `M=3`, and `M=4`, but those tap
 counts are not certified coefficient artifacts. Observation 152390 still
@@ -34,12 +85,11 @@ AST product yet supplies science-scan membership, derivative validity/causes,
 telemetry-defect disposition, and the required actual maximum. No derivative
 or smoothing rule is invented here.
 
-The next bounded authority task is the AST velocity/validity prerequisite.
-After it conforms, exact coefficient certification, the nonidentity
-learn-consider-apply implementation, focused and repository gates,
-representative-data evidence, and fresh exact-SHA review remain. No common
-grid, persistent RTC TOD schema, production activation, CAL, VAL, PTC, or
-MAP/JINC work is opened.
+At v1 approval, the next bounded authority task was the AST velocity/validity
+prerequisite. V2 retains that prerequisite and additionally requires the
+offline PSD, filter-bank, naive/JINC, and OOF/fruitloops certification described
+above. No common grid, persistent RTC TOD schema, production activation, CAL,
+VAL, or PTC/PCA expansion is opened.
 
 At preparation revision `8051cc51ec0b3e7a5ce33a76c1172fe3c3faf832`, the
 candidate JSON regenerated byte-for-byte, its six focused tests passed, and the
@@ -97,15 +147,16 @@ restriction; it does not request an ALIGN common analysis grid. The revised
 [planning packet](WP7_RTC_FIXED_DECIMATION_OWNER_DECISION_PACKET_2026-08-29.md)
 records the design and implementation gates.
 
-The 2026-08-30 numerical-policy approval fixes the array model, product and
-response limits, alias norm, beam sampling, factor set, FIR construction/tie
-rule, support, arithmetic, margins, and inadequate-input disposition. Existing
-implementation constants, the legacy `32 Hz` setting, and prototype tap
-estimates are not promoted. Nonidentity implementation remains unavailable
-until conforming AST authority and implementation gates are present. The
-accepted network-timed `M=1` route is unchanged; no CAL, VAL, PTC, MAP/JINC,
-persistent RTC TOD schema, production activation, or legacy-route change is
-authorized.
+The corrected 2026-08-30 v2 numerical policy fixes the array model, `1%`
+mapped-response and retained broadband-noise-variance budgets, beam sampling,
+factor universe, pre-certified bank lookup, support, arithmetic, margins, and
+inadequate-input disposition. Existing implementation constants, the legacy
+`32 Hz` setting, and v1 Kaiser factor/tap estimates are not promoted.
+Nonidentity implementation remains unavailable until conforming AST authority,
+representative PSD and filter-bank certification, and implementation gates are
+present. The accepted network-timed `M=1` route is unchanged; no CAL, VAL,
+PTC/PCA expansion, runtime MAP/JINC planning, persistent RTC TOD schema,
+production activation, or legacy-route change is authorized.
 
 ## 2026-08-29 WP-7 Terminal-Publication Review Closure
 

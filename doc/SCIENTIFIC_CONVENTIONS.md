@@ -190,17 +190,22 @@ conformance context.
 
 Different arrays may therefore have different filters, factors, and output
 cadences in one scan. Outputs remain network-scoped timed streams. This is not
-a common-analysis-grid request. Exact numerical authority is
-[`wp7-rtc-scan-array-numerical-policy-v1`](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md),
-approved 2026-08-30. It fixes 272/214/150 GHz center frequencies, a 50.0 m
-unobscured Airy beam, full optical temporal support, independent `1e-3`
-astronomical-product limits, `1e-4` passband ripple, `1e-6` folded-alias power,
-four samples per Airy FWHM, integer factors 1--256, the deterministic symmetric
-Kaiser FIR rule, five-second half-support, binary64 ordered arithmetic, and the
-5% velocity plus 100 ppm cadence margins. Prototype tap estimates are not
-coefficient authority. No nonidentity implementation is available until the
-AST velocity/validity prerequisite and implementation gates conform. Governing
-structural authority is
+a common-analysis-grid request. Exact current numerical authority is
+[`wp7-rtc-scan-array-numerical-policy-v2`](WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md),
+approved 2026-08-30. It retains the 272/214/150 GHz center frequencies, 50.0 m
+unobscured Airy beam, full optical temporal support, four samples per Airy
+FWHM, integer-factor universe 1--256, five-second half-support, centered zero
+phase, `1e-12` DC error, binary64 ordered arithmetic, 5% velocity margin,
+100 ppm cadence margin, and inadequate-input `M=1` rule. It requires no more
+than `1%` additional mapped astronomical distortion and `1%` additional
+retained broadband-noise variance, certified offline through naive, JINC, and
+OOF/fruitloops. Production selects a pre-certified filter-bank entry; filter
+family and tap count are engineering outputs, and the v1 Kaiser sweep is
+historical evidence only. Narrow sub-input-Nyquist lines are handled by the
+line-detection/mitigation strategy rather than the generic broadband filter
+budget. No nonidentity implementation is available until the AST
+velocity/validity prerequisite, PSD/filter-bank certification, and
+implementation gates conform. Governing structural authority is
 [`WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md`](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
 and its
 [`crosswalk`](WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md).

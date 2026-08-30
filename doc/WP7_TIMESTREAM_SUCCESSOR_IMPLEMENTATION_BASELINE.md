@@ -351,14 +351,18 @@ design and measurements show a clearer boundary.
   replacement semantics; and
 - port only conforming filter, notch, transfer, and decimation kernels.
 
-The scan/array structure and
-[`wp7-rtc-scan-array-numerical-policy-v1`](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md)
-are accepted. Conforming AST science-scan velocity/validity authority remains
-a hard gate on nonidentity implementation, followed by exact coefficient
-certification and the bounded implementation gates. Legacy frequency/FWHM
-constants, the historical `32 Hz` filter, and prototype tap estimates are
-evidence, not defaults. See ADR 0016 and the 2026-08-29 RTC scan/array owner
-authority.
+The scan/array structure and corrected
+[`wp7-rtc-scan-array-numerical-policy-v2`](WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md)
+are accepted. Conforming AST science-scan velocity/validity authority remains a
+hard gate on nonidentity implementation, followed by representative cleaned-
+noise PSD envelopes, immutable pre-certified filter-bank artifacts, native-rate
+versus filtered naive/JINC and OOF/fruitloops certification, and the bounded
+implementation gates. Production performs a bank lookup and no runtime filter
+synthesis, optimization, or detector-PSD estimation. Narrow sub-input-Nyquist
+lines remain owned by line detection/mitigation. Legacy frequency/FWHM
+constants, the historical `32 Hz` filter, and v1 Kaiser factor/tap estimates are
+evidence, not defaults. See ADRs 0016 and 0017 and the 2026-08-29 RTC scan/array
+owner authority.
 
 ### S3: distinct CAL
 
