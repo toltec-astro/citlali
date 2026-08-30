@@ -1,5 +1,35 @@
 # Citlali Refactor Status
 
+## 2026-08-30 Post-Integration Readiness And Repository Hygiene
+
+Application mainline is clean and synchronized at
+`f0f423827ab321640e0cbcb003f7bf015368f694`, the exact target of annotated tag
+`wp7-native-memory-integration-20260830`. The Stage 7, first WP-7 integration,
+and exact Unity-tested memory-repair identities remain separately tag-pinned.
+The 13 bounded source-disposition targets remain absent; no additional source
+or header cleanup is authorized by this administrative pass.
+
+The executable Phase 5 readiness record was reevaluated on 2026-08-30. It now
+names the integrated Spack Adapt path rather than the superseded Conan 2 path
+and records that native macOS and Unity GCC 13 build, test, installed-consumer,
+and deployment-identity gates pass. Phase 5 remains `preparing`: immutable
+release source/recipe archives, accepted profile locks, final release
+composition, and the same-SHA four-mode candidate matrix remain open. The
+completed V2 campaign is preserved as mixed-SHA operational evidence—point,
+OOF, and Beammap at `c31a60a0`, science at `187df04b`—and is not relabeled as
+an accepted successor baseline.
+
+The post-integration ref/worktree census is
+[`REPOSITORY_REF_WORKTREE_INVENTORY_2026-08-30.md`](../handoff/REPOSITORY_REF_WORKTREE_INVENTORY_2026-08-30.md).
+It preserves all divergent lanes, tags, stashes, Codex-managed refs, dirty
+worktrees, untracked user material, and reflog-only commits. One stale
+administrative worktree entry for the already absent
+`/private/tmp/citlali-legacy-apt-dispatch` directory was pruned with no live
+path or file removal; 25 live worktrees remain. Twenty-one contained,
+unattached local branches and 19 corresponding remote branches are classified
+as optional retirement targets, but no branch was deleted without a separate
+explicit owner decision.
+
 ## 2026-08-29 Native Runtime Memory Architecture Repair
 
 The owner-run V2 NGC4449 science job `63757963` reached 100.93 GiB MaxRSS

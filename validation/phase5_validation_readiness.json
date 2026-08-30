@@ -2,7 +2,7 @@
   "schema_version": "citlali-phase5-validation-readiness-v1",
   "epoch_id": "phase5-v2.1-candidate-2026-07-24",
   "status": "preparing",
-  "evaluated_on": "2026-08-26",
+  "evaluated_on": "2026-08-30",
   "config_binding_policy_id": "tolteca-native-project-bindings-v1",
   "fixtures": [
     {
@@ -86,13 +86,13 @@
   "global_blockers": [
     {
       "blocker_id": "same-sha-four-mode-matrix",
-      "description": "Point, OOF, science, and Beammap have not yet been run with one frozen Citlali commit and one unchanged dependency environment.",
+      "description": "The completed V2 operational campaign is mixed-SHA: point, OOF, and Beammap use c31a60a0 while science uses 187df04b. Point, OOF, science, and Beammap have not yet been run with one frozen Citlali commit and one unchanged dependency environment.",
       "exit_condition": "All four promotion-candidate runs record the same full Citlali SHA and pass their prepared profiles."
     },
     {
       "blocker_id": "build-integration-review",
-      "description": "The Conan 2 Adapt path is selected, but its successor build, dependency, packaging, and external-consumer gates are not yet complete.",
-      "exit_condition": "Complete and record the bounded build-integration gates and exact dependency identity required by the adopted review."
+      "description": "The Spack Adapt path is integrated and its native macOS and Unity GCC 13 build, test, installed-consumer, and deployment-identity gates pass. Immutable release source and recipe archives, accepted profile locks, and final release composition remain open.",
+      "exit_condition": "Complete and verify the immutable release bundle and source-based profile locks required by ADR 0015 and the adopted Spack review."
     },
     {
       "blocker_id": "accepted-successor-baselines",
