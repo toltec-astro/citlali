@@ -1,5 +1,32 @@
 # Citlali Refactor Status
 
+## 2026-08-30 WP-7 AST Scan-Motion Authority Proposal
+
+The next prerequisite now has a decision-ready bounded packet:
+[WP-7 AST Scan-Motion Velocity And Validity Owner Decision Packet](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md).
+It proposes authority identity `wp7-ast-scan-motion-v1` for the exact realized
+J2000 trajectory fields, physical DCS science-scan identity, 50 Hz continuity,
+a deterministic position-domain telemetry-defect test, an eleven-record local
+quadratic derivative, scalar velocity, typed validity/causes, compact raw scan
+maximum, and network-specific mapped motion views. The proposal preserves
+independent network timing and does not request a common analysis grid.
+
+The packet is not yet scientific authority and no AST or nonidentity RTC code
+is authorized from it. The retained observation-152390 telescope file shows
+why the decision is necessary: two isolated approximately 28--29 arcsec
+one-record discontinuities must be typed as defects, while sustained,
+locally corroborated motion above 200 arcsec/s must remain eligible to set the
+actual maximum. Direct differences exceed 1,400 arcsec/s, the historical
+header scale is not realized-velocity authority, and percentile clipping would
+erase the required distinction. Under the proposed evidence-only operator the
+candidate maximum is approximately 221.405 arcsec/s; it is not an accepted AST
+product until implementation, representative evidence, and exact-SHA review
+pass.
+
+The immediate next action is scientific-owner disposition of the packet.
+Filter-bank/PSD and native-rate versus filtered naive/JINC and OOF/fruitloops
+certification remain separate prerequisites after AST authority closes.
+
 ## 2026-08-30 WP-7 RTC Filter-Bank Policy Correction
 
 The scientific owner narrowly reopened the generic response, alias, and
