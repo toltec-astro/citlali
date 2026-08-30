@@ -1,42 +1,41 @@
-# WP-7 RTC Fixed-Decimation Owner-Decision Packet
+# WP-7 RTC Scan/Array Decimation Authority Packet
 
-Status: **proposed; not scientific authority; implementation not authorized**
+Status: **scientific structure approved; numerical closure and implementation
+not yet authorized**
 
 Prepared: 2026-08-29
 
-Implementation base:
+Revised by owner decision: 2026-08-29
+
+Accepted identity-RTC base:
 `0574d9a50fe6df6f7ded07c1d229bcb8ca04309d`
 
-## Purpose
+Historical preparation commit:
+`6f59f0a13d3fa3090fc55155ec1e4d30d6e2b815`
 
-This packet isolates the smallest scientific-owner decision needed before the
-WP-7 successor can implement a nonidentity RTC operation. It proposes one
-explicit, network-local, fixed-mode, phase-zero decimation witness. It neither
-changes frozen SCI-RTC v0.1/r0.12 nor imports a numerical policy from the
-legacy implementation.
+## Disposition of the original proposal
 
-Until the owner approves a complete numerical disposition, fixed
-downsampling beyond `M=1` remains unavailable. The accepted network-timed
-identity RTC route remains unchanged.
+The historical preparation proposed one fixed, network-local `M=2` conformance
+witness. Its inspection of representative observation 152390, legacy `32 Hz`
+configuration, incumbent decimator, paired support, edge behavior, compact
+lifecycle, and implementation candidates remains design evidence.
 
-## Governing authority
+The fixed-factor recommendation is superseded. The scientific owner selected a
+deterministic scan/array planner because the required temporal bandwidth is set
+by realized science-scan velocity and each array's authoritative beam. The
+bounded successor authority is recorded in:
 
-The proposal is subordinate to:
+- [scan/array planning owner authority](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md);
+- [frozen-entry crosswalk](WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md);
+- [ADR 0016](adr/0016-scan-array-rtc-bandwidth-planning.md); and
+- [ADR 0015](adr/0015-network-specific-timing-and-common-analysis-grid.md)
+  for network timing and explicit common-analysis grids.
 
-- frozen SCI-RTC v0.1/r0.12, especially DEF-015, DEF-018, DEF-023--024,
-  DEF-039--040, DEF-046, EQ-011, EQ-014, EQ-040--042, REQ-021--031, and
-  REQ-037--041;
-- resolved OWNER-024, OWNER-077--081, OWNER-084--089, and OWNER-090--103;
-- open OWNER-002, OWNER-007--009, OWNER-031--034, OWNER-036, and OWNER-052;
-- the network-specific timing correction in ADR 0015 and the WP-7 network
-  timing owner correction; and
-- the accepted identity-RTC implementation and its exact-SHA PASS package.
+This revised packet separates the approved scientific structure from the exact
+numerical values still requiring owner disposition. No nonidentity code should
+be constructed from placeholders.
 
-The frozen ledger's exact unavailable-state rule controls. A software default,
-legacy coefficient set, or convenient sentinel cannot resolve an open owner
-entry.
-
-## Observed implementation and data facts
+## Retained implementation and data evidence
 
 ### Representative observation 152390
 
@@ -47,280 +46,240 @@ declare:
 - `Header.Toltec.AccumLen = 2097152`; and
 - `Header.Toltec.SampleFreq = 122.0703125 Hz`.
 
-Therefore a fixed `M=2` plan would have:
+At that exact cadence, an `M=2` output would have rate `61.03515625 Hz` and
+Nyquist `30.517578125 Hz`. The retained `redu04` configuration disables
+downsampling with factor `1`, while its enabled legacy RTC filter uses
+`freq_high_Hz: 32.0`, `n_terms: 32`, and `a_gibbs: 50.0`. That `32 Hz` edge is
+above the `M=2` output Nyquist and cannot be adopted unchanged as the
+anti-alias authority.
 
-- output rate `61.03515625 Hz`; and
-- output Nyquist frequency `30.517578125 Hz`.
+These are exact input and configuration facts for one representative workload.
+They do not set an array's astronomical band, an alias budget, or a universal
+factor.
 
-The accepted `redu04` merged configuration has downsampling disabled with
-`factor: 1`, while its legacy RTC filter is enabled with
-`freq_high_Hz: 32.0`, `n_terms: 32`, and `a_gibbs: 50.0`. The configured
-`32 Hz` edge is above the `M=2` output Nyquist. It therefore cannot be adopted
-unchanged as an anti-alias plan for this witness.
+### Incumbent implementation
 
-These are observed configuration and input facts, not evidence that `32 Hz`
-is the scientifically required retained band.
+The legacy `timestream::Downsampler` selects rows `0, M, 2M, ...` and ORs flags
+over the following block of at most `M` rows. The surrounding path separately
+downsamples telescope, pointing, polarization, and kernel containers. The
+legacy FIR leaves edge cells outside its convolution body unchanged and does
+not normalize the generated coefficient sum.
 
-### Incumbent downsampler
+That code is not a conforming successor planner or operator. It lacks the
+complete scan/array scientific decision, network-scoped successor identity,
+transitive filter support, typed coordinate availability, canonical paired
+operator, response/alias statement, and chunk-independent scientific run
+semantics. None of its factor, filter, flag, or edge choices is promoted by
+this packet.
 
-The legacy `timestream::Downsampler` selects input rows `0, M, 2M, ...` and
-ORs flags over the following block of at most `M` rows. The surrounding legacy
-RTC path separately downsamples telescope, pointing, polarization, and kernel
-containers.
+### Existing array constants
 
-That numerical point selection agrees with the phase-zero index sequence, but
-the complete legacy behavior is not a conforming successor operator because
-it does not itself provide:
+The repository contains legacy wavelength-derived frequency and expected-FWHM
+maps. They are implementation evidence only. They do not state the approved
+nominal-frequency convention, telescope aperture convention, diffraction
+coefficient/profile, precision, artifact identity, or change authority needed
+by the new planner.
 
-- a network-scoped successor output occurrence identity;
-- complete prefilter and transitive input support;
-- coordinate-local availability with typed causes;
-- the canonical identical paired `x/r` operator;
-- an exact response and alias statement;
-- chunk-independent phase anchored to the scientific segment; or
-- a compact immutable resolved plan and realized record.
+## Approved planning rule
 
-The incumbent FIR also leaves edge cells outside its valid convolution body
-unchanged and does not normalize its generated coefficient sum. Neither
-behavior is adopted by this packet.
+### Science occurrence admission
 
-## Proposed bounded context
-
-The first fixed-decimation operation should be a new explicit context named
-`wp7-rtc-fixed-decimation-conformance-v1` with these boundaries:
-
-- it is requested explicitly and is never a default or fallback;
-- the admitted factor set is `{1, 2}`;
-- `M=1` is the already accepted identity plan;
-- `M=2` is the only new numerical witness;
-- it operates independently on each network's coherent native occurrence
-  segments;
-- required conditioned `x` and requested conditioned `r` use one identical
-  ordinary filter-and-selection operator;
-- it terminates through the existing inspectable in-memory RTC-only route;
-- it does not enter CAL, AST, VAL, PTC, MAP/JINC, or a common analysis grid;
-- it publishes no persistent TOD schema; and
-- it claims algebraic and implementation conformity only, not astronomical
-  transfer, observational performance, production readiness, or external
-  consumer acceptance.
-
-This context is proposed because it exercises the first sampling-changing RTC
-relation without prematurely coupling the work to pointing, calibration, PCA,
-or mapmaking.
-
-## Proposed owner decisions
-
-The following items are recommendations for owner disposition. They are not
-effective merely because they appear in this file.
-
-### D1. Factor and plan selection
-
-Admit exactly `M in {1, 2}` for this context. Reject every other integer,
-frequency-derived request, learned-factor request, and silent fallback before
-Apply. The resolved plan records the exact input rate, output rate, factor,
-zero phase, coefficient artifact, segment policy, response policy, and context
-identity.
-
-Rationale: `M=2` is the smallest nonidentity witness and avoids inventing a
-general factor framework before another factor has a named workload.
-
-### D2. Prefilter form
-
-Use one immutable, finite, symmetric, real `float64` FIR coefficient artifact
-applied as a centered zero-phase operation before phase-zero selection. Store
-the exact coefficient sequence, coefficient-production procedure and version,
-sum/DC gain, pass/stop metrics, rate, precision, impulse support, and SHA-256.
-
-The coefficient artifact is scientific input. It is not generated or adjusted
-during Apply. Direct symmetric convolution, a polyphase realization, and an
-FFT overlap-save realization are permitted implementation candidates only if
-they reproduce the declared arithmetic policy and support.
-
-No coefficient sequence is proposed yet. Its passband, transition, stopband,
-ripple, attenuation, and equality boundaries require the unresolved owner
-choice in D8.
-
-### D3. Network-local output identity and timing
-
-For each network and each coherent segment of length `N`, define candidate
-output indices by SCI-RTC-EQ-011:
+Use the exact inclusive boundary
 
 ```text
-input_index(n) = M * n
-output_count = 0                         when N = 0
-output_count = 1 + floor((N - 1) / M)   when N > 0
+v_min = 1 arcsec/s
+admitted when valid science-scan speed v >= v_min
 ```
 
-Each output has a new stable RTC occurrence identity scoped by observation,
-network, plan, segment, and `n`. Its representative source occurrence and time
-are exactly the network input occurrence and time at `M*n`. A gap, segment
-boundary, or missing occurrence on one network manufactures no occurrence or
-absence state on another network.
+This is not a filter cutoff floor. Valid occurrences below the boundary are
+excluded as independent astronomical measurements with typed cause
+`below_minimum_science_scan_speed`. Invalid telescope state, derivative, or
+telemetry and non-science motion keep their distinct causes. A scan with no
+nonempty admitted run produces no admitted ordinary astronomical timestream
+product.
 
-No cross-network common analysis relation is requested or constructed.
+The exclusion is a conservative pair-wide astronomical action because `x` and
+`r` share the same network occurrence, while member-local producer validity,
+availability, and causes remain distinct. RTC neither erases those facts nor
+uses detector values to make the motion decision.
 
-### D4. Scientific support and edges
+Admitted runs stop at slow, invalid, gap, slew, or non-science occurrences.
+Filter support may not cross such a boundary. A candidate output lacking
+complete approved input support is unavailable with a typed support cause;
+engineering chunks do not create or remove these boundaries.
 
-Retain every phase-zero candidate output occurrence. Its RTC-local support is
-the exact transitive union of the admitted source occurrences in the realized
-FIR footprint, not the selected center and not the block `[M*n, M*n+M)`.
+### Velocity authority
 
-Do not extend, reflect, repeat, wrap, or zero-pad beyond a coherent segment.
-If the complete centered FIR footprint is unavailable, retain the output grid
-location but mark the affected coordinate unavailable with a typed
-`incomplete_filter_support` cause. A short nonempty segment therefore retains
-its phase-zero grid even when every numerical output is unavailable. An empty
-segment produces zero outputs.
+AST supplies the immutable science-scan membership, reconstructed on-sky
+trajectory, scalar velocity, and their validity/cause facts. For scan `s`, form
+the admitted set `S_s` and use the actual maximum
 
-Engineering chunks may supply overlap and workspace state, but they never
-create resets, edges, identities, support, or phase.
+```text
+v_max,s = max(v(q) for q in S_s)
+```
 
-### D5. Validity and non-finite behavior
+with no percentile substitution. An invalid velocity spike must be rejected or
+flagged by AST and cannot set the RTC plan. The plan is fixed before Apply and
+cannot vary by detector content or streaming chunk.
 
-Use the already admitted producer availability, producer validity, and finite
-payload facts as inputs. Do not repair, interpolate, fill, or coerce a
-non-finite or invalid cell in this increment.
+### Array beam and science band
 
-If any required input for one coordinate is invalid, unavailable, or
-non-finite within an output's exact FIR support, that coordinate's output and
-response are unavailable with the accumulated typed causes over that output.
-Pair-action and ordinary-operator support remain common, while numerical
-availability remains coordinate-local. Unavailable conditioned `r` never
-invalidates otherwise conforming conditioned `x`.
+Use one circular diffraction-limited reference beam per TolTEC array:
 
-This is a bounded no-recovery policy for this context; it does not resolve a
-general recovery policy for other RTC operations.
+```text
+theta_DL,a = C_beam * c / (D * nu_0,a)
+```
 
-### D6. Paired arithmetic and response
+The future authoritative array artifact binds exact array identity, nominal
+center frequency, aperture value/convention, beam coefficient/width convention,
+normalized circular profile, precision, version, and artifact identity. Do not
+use scan-direction projections, per-detector fits, empirical ellipticity, or
+observation-local effective PSFs for RTC planning.
 
-Apply exactly the same masks, FIR coefficients, `float64` arithmetic policy,
-support, boundaries, phase-zero selection, representative occurrences, and
-output grid to `x` and requested `r`. Fixed-state cross-coordinate numerical
-derivatives remain zero.
+For every array `a` and scan `s`, scan that beam at `v_max,s` and derive
+`f_sci,a,s` from approved astronomical distortion tolerances. These tolerances
+must constrain the applicable point-source peak, integrated flux, beam shape or
+broadening, centroid, and calibration transfer. A conventional crossing,
+half-power, `3 dB`, or historical cutoff is not the criterion.
 
-Record the complete realized local FIR-plus-selection response or a typed
-unavailable response. State amplitude and power response, phase, group delay,
-input/output rates, Fourier convention, impulse support, coefficient
-precision, and every folded alias image. The centered symmetric FIR has zero
-nominal temporal displacement under this proposed context; AST is not invoked
-to manufacture or correct a shifted time.
+The realized response must satisfy
 
-Do not claim a bounded-alias, astronomical-transfer, covariance, uncertainty,
-or total-response result until its separately required authority exists.
+```text
+1 - delta_p,a,s <= |H_a,s(f)| <= 1 + delta_p,a,s
+for 0 <= |f| <= f_sci,a,s
+```
 
-### D7. Compact result and diagnostics
+plus the approved phase/centroid behavior. Since occurrences below `v_min` are
+not admitted, the planner never narrows the science band to retain them.
 
-Extend the existing context/evidence/plan/apply/result/realization lifecycle
-without copying immutable input axes or full support planes into evidence,
-plan, or realization. The scientific output necessarily owns its new
-downsampled numerical product and compact per-network output axes.
+### Factor and filter selection
 
-Retain compact summaries sufficient to reconcile:
+For every scan, array, and exact input cadence, evaluate every member of the
+approved finite integer-factor set. Candidate `M` has
 
-- input/output occurrences and detector-occurrences by network;
-- available/unavailable `x` and requested `r` outputs by cause;
-- full-support and edge-unavailable populations;
-- factor, coefficient artifact, segment, and response identities;
-- stage entry and completion counts;
-- owned bytes, allocations where measurable, wall/CPU time, and peak RSS; and
-- chunk-partition comparisons.
+```text
+f_Nyq,out = f_sample,in / (2 * M)
+```
 
-Do not add a full event manifest, generalized lineage system, per-cell
-identity, or persistent RTC TOD product.
+Select the largest allowed `M` for which the simplest permitted realization
+satisfies all of:
 
-### D8. Required numerical owner selection
+1. complete passband through `f_sci,a,s`;
+2. approved amplitude and phase behavior;
+3. realizable transition;
+4. alias-budget-derived stopband behavior before output Nyquist;
+5. approved minimum beam sampling;
+6. support and edge-loss limits; and
+7. identical numerical transformation, output selection, and support for
+   paired `x/r`.
 
-The owner must select the exact application-domain filter envelope before D2
-can produce a coefficient artifact:
+If no `M > 1` passes, select `M=1` without a sampling change while retaining
+the planner's occurrence-admission dispositions. This does not alter the
+separate accepted identity-RTC conformance context. Never reduce the science
+band to admit a desired factor. Different arrays may produce different filters,
+factors, and cadences in one scan.
 
-1. retained input passband and equality convention;
-2. transition band;
-3. stopband start, including its relation to the `30.517578125 Hz` `M=2`
-   output Nyquist for observation 152390;
-4. maximum passband ripple;
-5. minimum stopband attenuation and alias metric;
-6. coefficient-design authority and deterministic tie rule;
-7. maximum FIR support/edge loss; and
-8. whether this first context makes only an algebraic conformance claim or a
-   named astronomical-transfer claim.
+Every sampling-changing product remains a network-keyed timed stream with a new
+network occurrence/time/support relation. The planner neither requests nor
+constructs a common analysis grid. Equal plan values across networks do not
+synchronize their axes.
 
-The observed legacy `32 Hz` setting cannot answer these questions because it
-is above the `M=2` output Nyquist. Choosing a lower passband is a scientific
-decision, not an implementation repair.
+## Lifecycle and product consequences
 
-## Entries deliberately not resolved
+Extend the accepted immutable context/evidence/plan/apply/result/realization
+lifecycle. `RtcEvidence` references rather than duplicates network timing, AST,
+array-model, producer validity, and support facts. It owns only derived compact
+evidence such as admitted-run summaries and velocity extrema.
 
-This packet does not request learned sampling, so OWNER-011--020 and OWNER-029
-remain open. It does not select despiking, donors, level shifts, notches,
-high-pass filtering, atmosphere templates, covariance, source/beam response,
-or external consumers. Their owner entries remain unchanged.
+`RtcPlan` is bound to the scan, array, exact input cadence, source networks,
+admission policy, AST facts, beam artifact, universal policy, selected factor,
+coefficient/realization artifact, response, phase, alias, run/boundary,
+occurrence, support, and arithmetic identities. Selection completes before
+Apply.
 
-OWNER-032 and OWNER-036 remain open if an astronomical-transfer or
-observational-performance claim is requested. The recommended first context
-can close algebraic implementation conformance without making either claim.
-OWNER-051 remains open because this increment neither changes native mapping
-families nor makes a cross-revision or native-end-to-end response claim.
+The numerical product owns its new network-scoped axes and contiguous paired
+data where required. `RtcRealization` remains a compact account of the
+immutable plan actually realized; it does not copy full products, axes,
+support planes, or provenance history. No persistent RTC TOD schema is added
+without an approved immediate consumer.
 
-## Implementation choices left open
+## Exact owner values still required
 
-After owner approval and coefficient-artifact construction, compare at least:
+The following numerical authority is not present in the owner response and
+must be fixed before implementation:
 
-1. a direct symmetric FIR with explicit phase-zero gathering;
-2. a direct polyphase decimator that avoids computing discarded outputs; and
-3. FFT overlap-save only if the realized filter length and segment sizes make
-   it plausible.
+1. exact nominal center frequency for `a1100`, `a1400`, and `a2000`;
+2. telescope aperture value and convention;
+3. diffraction beam coefficient, width convention, and normalized profile;
+4. point-source peak, integrated-flux, shape/broadening, centroid, and
+   calibration-transfer tolerances and their aggregation;
+5. passband ripple and phase/centroid limits derived from those tolerances;
+6. retained-band alias-error budget and evaluation norm;
+7. minimum output samples per declared beam width;
+8. finite allowed integer-factor set;
+9. permitted realization families and deterministic simplest-plan tie rule;
+10. maximum impulse support and edge loss;
+11. arithmetic and coefficient precision/comparison rule; and
+12. velocity, cadence, and numerical uncertainty margins.
 
-Measure the complete paired route, including cause/support propagation and
-output construction, on synthetic edge/pathology fixtures and the full
-representative observation 152390 workload. Include allocation and memory
-movement. Eigen, FFTW, OpenMP, a reusable workspace, and a new C++23 view are
-implementation candidates, not scientific authority or required architecture.
+A software default, legacy constant, or convenient benchmark candidate cannot
+fill one of these fields. Until they are bound, the separate accepted identity
+RTC remains the only available execution plan; the scan/array planner is not
+partially activated.
 
-Choose one reference implementation from end-to-end evidence. Do not retain
-the legacy Eigen stride map or FIR body merely because it already exists.
+## Evidence study after numerical closure
 
-## Required implementation gates after approval
+Generate the exact array-model and universal-policy artifacts first. Then, for
+representative scans including observation 152390:
 
-The eventual code increment must prove:
+- verify AST-valid admitted runs and the exact `1 arcsec/s` equality boundary;
+- report `v_max,s`, `f_sci,a,s`, every factor disposition, and the selected
+  filter per scan/array;
+- compute temporal point-source peak, flux, width/shape, centroid, calibration,
+  passband, phase, and folded-alias errors independently of the planner;
+- compare direct symmetric FIR/polyphase and FFT overlap-save only where
+  realized support and segment sizes make them plausible;
+- measure complete paired-route time, allocation, memory movement, and RSS on
+  representative network/detector/occurrence sizes; and
+- retain distinct network times and verify that a gap or slow run on one
+  network manufactures no ordinary-RTC state on another.
 
-- `M=1` remains bitwise and semantically identical to the accepted route;
-- exact `M=2` cardinality for empty, singleton, even, and odd segments;
-- exact per-network representative identity and time at `2*n`;
-- distinct network time vectors remain distinct;
-- no common-analysis-grid dependency or AST invocation;
-- complete FIR support and typed edge/non-finite unavailability;
-- identical paired ordinary operators with independent coordinate
-  availability;
-- a gap or reset in one network has no effect on another;
-- one-segment and allowed multi-chunk execution agree under the declared
-  arithmetic policy;
-- stale plan/context/coefficient identities fail before publication;
-- failure publishes no false completion;
-- no persistent TOD schema or later scientific stage appears;
-- focused public-header and dependency guards pass;
-- all repository gates and legacy behavior pass unchanged;
-- exact clean-SHA observation 152390 evidence is retained; and
-- a fresh independent exact-SHA conformance review returns PASS.
+Eigen, FFTW, OpenMP, a reusable workspace, and any particular C++23 view remain
+implementation candidates. Choose among them from end-to-end evidence, not
+baseline conformance.
 
-Representative real-data acceptance must use all 11 retained networks and the
-same exact dataset/slice binding discipline as the accepted v8 identity route.
-The numerical record must add exact factor, coefficient-artifact, response,
-support, edge, availability, performance, and output-cardinality facts.
+## Required implementation gates
 
-## Owner disposition requested
+After numerical closure, the bounded increment must prove at least:
 
-No code implementation should begin until the scientific owner records one of
-these outcomes:
+- accepted `M=1` behavior remains bitwise and semantically unchanged;
+- below/exact/above `1 arcsec/s` admission and typed-cause behavior;
+- no admitted scan product when no valid run reaches the threshold;
+- invalid spikes, slow turnarounds, slews, and telemetry defects cannot set
+  `v_max,s` or the plan;
+- filter support cannot cross an inadmissible run boundary;
+- every candidate factor is evaluated and the largest conforming one is chosen;
+- `M=1` is selected without science-band relaxation when no larger factor
+  passes;
+- exact per-array differences are preserved without a common grid;
+- new network occurrence, time, representative-source, and transitive-support
+  relations are exact;
+- paired `x/r` use an identical operator with member-local availability;
+- one-segment and supported multi-chunk results agree under the declared
+  arithmetic behavior;
+- stale AST, beam, policy, plan, coefficient, context, or run identity fails
+  before publication;
+- failure publishes no false completion or persistent TOD schema;
+- focused dependency, public-header, and scientific tests pass;
+- all repository and unchanged-legacy gates pass;
+- representative real-data evidence uses the accepted exact dataset/SHA
+  discipline; and
+- a fresh independent exact-SHA review returns PASS.
 
-1. approve D1--D7 and supply or approve the exact D8 numerical envelope;
-2. approve the structure but request a named change before numerical
-   selection;
-3. authorize an evidence-only design study to compare explicitly bounded D8
-   candidates without producing an accepted RTC scientific product; or
-4. defer fixed decimation and keep `M=1` as the only available RTC sampling
-   plan.
+## Current stop condition
 
-Approval of this packet would authorize only the bounded fixed-decimation
-vertical increment and its evidence. It would not authorize despiking, level
-shifts, learned sampling, CAL, AST, VAL, PTC, MAP/JINC, production activation,
-or legacy-route retirement.
+The owner has approved the scientific planning model and superseded the fixed
+`M=2` recommendation. The next authorized action is numerical authority
+closure or a strictly evidence-only study explicitly bounded by candidate
+values. It is not nonidentity RTC product implementation, production
+activation, CAL, VAL, PTC, MAP/JINC, or legacy-route retirement.

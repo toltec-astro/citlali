@@ -374,12 +374,23 @@ separate workstream.
 The governing decisions are
 [ADR 0014](adr/0014-wp7-timestream-successor.md) and its bounded timing
 correction [ADR 0015](adr/0015-network-specific-timing-and-common-analysis-grid.md).
+The first nonidentity RTC planning structure is governed by
+[ADR 0016](adr/0016-scan-array-rtc-bandwidth-planning.md): science occurrences
+are admitted at valid realized on-sky speed `>= 1 arcsec/s`, and filter/factor
+plans are derived deterministically per scan and array from an authoritative
+circular diffraction-limited beam and product-level scientific tolerances.
+Different arrays may retain different network-local output cadences; this does
+not request a common analysis grid. Exact array-model and universal numerical
+policy values remain an implementation gate.
 The implementation slices, storage and execution baseline, performance-tool
 adoption policy, and evidence gates are in
 [WP-7 Timestream Successor Implementation Baseline](WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md).
 The exact scientific-owner timing correction and frozen-clause mapping are in
 [the network-timing authority correction](WP7_NETWORK_TIMING_OWNER_AUTHORITY_CORRECTION_2026-08-29.md)
 and [crosswalk](WP7_NETWORK_TIMING_AUTHORITY_CROSSWALK_2026-08-29.md).
+The scan/array planning authority and its frozen-entry mapping are in
+[the RTC planning owner authority](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
+and [crosswalk](WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md).
 Exact external scientific and implementation-review authorities are bound by
 [`validation/wp7_timestream_successor_authority.json`](../validation/wp7_timestream_successor_authority.json).
 The accepted first-increment implementation and representative evidence are

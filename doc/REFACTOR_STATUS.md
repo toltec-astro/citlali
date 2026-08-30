@@ -1,33 +1,54 @@
 # Citlali Refactor Status
 
-## 2026-08-29 WP-7 Fixed-Decimation Authority Preparation
+## 2026-08-29 WP-7 Scan/Array RTC Planning Authority
 
-The accepted network-timed identity-RTC terminal-publication increment is
-closed at `0574d9a50fe6df6f7ded07c1d229bcb8ca04309d`. The next proposed RTC
-operation is a network-local fixed-mode phase-zero decimation witness, but
-frozen SCI-RTC owner entries still make every factor beyond `M=1` unavailable
-until its exact factor, prefilter, boundary, validity, response, and
-application-context policies are selected.
+The scientific owner superseded the fixed-`M=2` recommendation prepared at
+`6f59f0a13d3fa3090fc55155ec1e4d30d6e2b815`. Its representative observation
+152390 and incumbent-implementation inspection remains design evidence, but a
+factor chosen independently of scan velocity and array beam is not the next
+scientific RTC plan.
 
-The proposed
-[fixed-decimation owner-decision packet](WP7_RTC_FIXED_DECIMATION_OWNER_DECISION_PACKET_2026-08-29.md)
-records the exact authority dependencies, inspects the incumbent implementation,
-and binds representative observation 152390 facts. All 11 retained networks
-declare `122.0703125 Hz`; an `M=2` output has Nyquist
-`30.517578125 Hz`, below the legacy configuration's `32 Hz` filter edge. The
-legacy configuration therefore cannot be silently promoted into a conforming
-anti-alias plan.
+[ADR 0016](adr/0016-scan-array-rtc-bandwidth-planning.md), the
+[owner-authority record](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md),
+and its
+[frozen-entry crosswalk](WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md)
+now govern the bounded successor. The exact inclusive science occurrence
+boundary is valid realized on-sky speed `>= 1 arcsec/s`. A valid slower
+occurrence is not an independent astronomical measurement and carries typed
+cause `below_minimum_science_scan_speed`; invalid derivatives, telemetry
+defects, slews, and non-science motion retain distinct causes. A scan with no
+admitted run publishes no admitted ordinary astronomical timestream product.
+Admitted runs are filter-isolated so inadmissible occurrences cannot influence
+retained outputs.
 
-The packet recommends a bounded `{1, 2}` factor set, one immutable centered
-symmetric `float64` FIR artifact, network-local output identities and selected
-times, complete transitive support, typed no-recovery handling, identical
-paired ordinary operators, compact realization, and RTC-only in-memory
-termination. These are proposals, not effective scientific authority. The
-exact retained passband, transition, stopband, ripple, attenuation, design
-authority, maximum support, and claim tier remain an explicit owner decision.
-No nonidentity code implementation, CAL, AST, VAL, PTC, MAP/JINC, common-grid
-relation, persistent TOD schema, production activation, or legacy-route change
-is authorized by this preparation.
+AST owns the science-scan trajectory, derivative validity, and scalar speed.
+The plan uses the actual maximum admitted speed, not a percentile or detector
+content. For every scan and TolTEC array, it scans an authoritative circular
+diffraction-limited beam at that speed, derives the astronomical band from
+product-level peak, flux, shape, centroid, and calibration-transfer tolerances,
+and selects the largest allowed integer factor whose simplest approved
+realization satisfies passband, phase, alias, beam-sampling, support, edge, and
+identical paired-operator constraints. If no factor above one passes, the
+planner selects `M=1` without sampling change while retaining its occurrence
+admission; the separate accepted identity conformance route is unchanged. The
+science band is never narrowed to force a factor.
+
+Different arrays may realize different filters, factors, and cadences within a
+scan while every product remains on its network-specific timing axis. This
+explicitly reopens and supersedes the frozen one-common-observation-plan
+restriction; it does not request an ALIGN common analysis grid. The revised
+[planning packet](WP7_RTC_FIXED_DECIMATION_OWNER_DECISION_PACKET_2026-08-29.md)
+records the design and implementation gates.
+
+The owner decision fixes scientific structure but does not provide exact array
+center frequencies, aperture and diffraction convention/profile, product
+distortion limits, alias budget, beam-sampling minimum, factor set, realization
+families/tie rule, support/edge bound, precision, or uncertainty margins.
+Existing implementation constants and the legacy `32 Hz` setting are not
+promoted. Nonidentity implementation remains unavailable until those values are
+bound. The accepted network-timed `M=1` route is unchanged; no CAL, VAL, PTC,
+MAP/JINC, persistent RTC TOD schema, production activation, or legacy-route
+change is authorized.
 
 ## 2026-08-29 WP-7 Terminal-Publication Review Closure
 

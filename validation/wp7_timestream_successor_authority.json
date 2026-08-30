@@ -2,7 +2,7 @@
   "schema_version": "citlali-wp7-timestream-successor-authority-v1",
   "authority_id": "wp7-timestream-successor-2026-08-26",
   "recorded_date": "2026-08-26",
-  "status": "accepted_architecture_network_timing_repair_in_progress",
+  "status": "identity_rtc_accepted_scan_array_nonidentity_numerical_closure_pending",
   "identity_policy": "Artifact identity is filename plus SHA-256. Archive paths are convenience locators and are not identity.",
   "repository_authority": {
     "decision": "doc/adr/0014-wp7-timestream-successor.md",
@@ -10,6 +10,10 @@
     "implementation_baseline": "doc/WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md",
     "network_timing_owner_correction": "doc/WP7_NETWORK_TIMING_OWNER_AUTHORITY_CORRECTION_2026-08-29.md",
     "network_timing_crosswalk": "doc/WP7_NETWORK_TIMING_AUTHORITY_CROSSWALK_2026-08-29.md",
+    "rtc_scan_array_planning_decision": "doc/adr/0016-scan-array-rtc-bandwidth-planning.md",
+    "rtc_scan_array_planning_owner_authority": "doc/WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md",
+    "rtc_scan_array_planning_crosswalk": "doc/WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md",
+    "rtc_scan_array_planning_packet": "doc/WP7_RTC_FIXED_DECIMATION_OWNER_DECISION_PACKET_2026-08-29.md",
     "architecture": "doc/ARCHITECTURE.md",
     "living_status": "doc/REFACTOR_STATUS.md"
   },

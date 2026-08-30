@@ -156,6 +156,43 @@ The governing correction and exact supersession map are
 and
 [`WP7_NETWORK_TIMING_AUTHORITY_CROSSWALK_2026-08-29.md`](WP7_NETWORK_TIMING_AUTHORITY_CROSSWALK_2026-08-29.md).
 
+### RTC Science-Motion Admission And Planning
+
+The exact minimum independently admissible science-scan speed is
+`1 arcsec/s`. An occurrence is admitted at equality when its realized on-sky
+telescope state and derivative are valid and it belongs to the science scan.
+A valid occurrence below the boundary retains its producer facts but is
+unavailable as an independent astronomical RTC measurement with typed cause
+`below_minimum_science_scan_speed`. Invalid derivatives, telemetry defects,
+slews, and non-science motion retain distinct causes. A scan without a nonempty
+admitted run has no admitted ordinary astronomical timestream product.
+
+AST owns the realized trajectory, scalar on-sky velocity, scan membership,
+validity, and defect facts. The planning speed is the actual maximum over the
+admitted scan trajectory, never a detector-derived estimate or percentile.
+Admitted occurrences form bounded filtering runs; support may not cross a
+slow, invalid, gap, slew, or non-science boundary.
+
+RTC bandwidth and integer-factor selection is deterministic per scan, array,
+and exact input cadence. The astronomical response uses a circular
+diffraction-limited reference beam at the array's approved nominal center
+frequency. The selected plan is the largest permitted factor whose simplest
+approved realization satisfies the complete product-level passband, phase,
+alias, beam-sampling, support, edge, and identical paired-operator constraints.
+If none above one passes, the plan uses factor `M=1` without sampling change
+but retains the planner's occurrence-admission dispositions; the science band
+is never narrowed to admit a preferred factor. This does not alter the separate
+accepted identity-RTC conformance context.
+
+Different arrays may therefore have different filters, factors, and output
+cadences in one scan. Outputs remain network-scoped timed streams. This is not
+a common-analysis-grid request. The exact array-model artifact and universal
+numerical tolerances are not yet fixed, so no nonidentity implementation is
+available. Governing authority is
+[`WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md`](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
+and its
+[`crosswalk`](WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md).
+
 ### Detectors
 
 In canonical baseline APT v1, `uid` is an exact nonnegative `int64`

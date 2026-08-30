@@ -334,9 +334,24 @@ design and measurements show a clearer boundary.
 - retain network-keyed occurrence, time, gap, and support axes through every
   ordinary operation, creating a new per-network output relation when sampling
   changes;
+- for the first nonidentity sampling method, consume immutable AST-valid
+  science-scan motion, admit occurrences at `v >= 1 arcsec/s`, and isolate
+  bounded runs so slow or invalid support cannot influence retained outputs;
+- derive immutable filter/factor plans per scan, TolTEC array, and exact input
+  cadence from the authoritative circular diffraction-limited beam and the
+  approved product-level passband, phase, alias, sampling, support, and edge
+  limits; select the largest conforming factor and use `M=1` without sampling
+  change, but with the new admission dispositions, when none above one passes;
+- preserve per-network outputs when arrays realize different filters, factors,
+  or cadences; this does not request a common analysis grid;
 - implement paired pathology, transition guards, stable segments, reset, and
   replacement semantics; and
 - port only conforming filter, notch, transfer, and decimation kernels.
+
+The scan/array structure above is accepted, but exact array-model and universal
+numerical-policy artifacts remain a hard gate on nonidentity implementation.
+Legacy frequency/FWHM constants and the historical `32 Hz` filter are evidence,
+not defaults. See ADR 0016 and the 2026-08-29 RTC scan/array owner authority.
 
 ### S3: distinct CAL
 
