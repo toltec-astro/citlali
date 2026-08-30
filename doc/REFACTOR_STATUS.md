@@ -26,7 +26,7 @@ mapped response/noise, and performance. Automatic factor selection and the
 final no-product cause return for a bounded owner decision after that evidence.
 
 The repaired D0/F0 census at exact clean harness revision
-`b9589d28a85c1f348f02416d230cb4db1555dd98` now enumerates all factors
+`f6de0fa297bc0cc4571d99ed5cca4aec1cea4a19` now enumerates all factors
 `M=1..256` without accepting a scan maximum as an eligibility input or
 selecting a factor. The exact seven-case evidence and bounded disposition are
 recorded in the
@@ -47,17 +47,18 @@ network-native occurrence counts, not telescope-record or detector-cell
 counts, and remain discovery evidence rather than a factor or sensitivity
 claim.
 
-The complete D0/F0 gate remains open. Beammap 148670 has a verified baseline
-APT inventory but no matched detector relation. More importantly, the accepted
+D0 fixture identity is now closed for all seven cases. Beammap 148670's
+verified baseline APT v2 bundle provides complete detector-to-raw inventory;
+its lack of an optional matched detector relation is recorded independently
+and is not a D0 failure. The complete F0 gate remains open because the accepted
 AST authority supplies mapped motion only for Science/Lissajous; Beammap, OOF,
-and Pointing correctly report AST-unavailable occurrences. Their zero
-upper-speed counts are therefore indeterminate, not zero loss. Before the
-complete required Beammap/OOF route matrix can govern filter research, the
-project must close the Beammap D0 relation and resolve authorized route-family
-motion/admission semantics without inventing a local velocity estimator or
-silently broadening `wp7-ast-scan-motion-v1`. `M>1` filter-support erosion,
-weighted exposure, spatial coverage, PSD/filter research, and nonidentity
-production activation remain pending.
+and Pointing correctly report AST-unavailable occurrences. Their zero upper-
+speed counts are therefore indeterminate, not zero loss. Before the complete
+required Beammap/OOF route matrix can govern filter research, the project must
+resolve authorized route-family motion/admission semantics without inventing a
+local velocity estimator or silently broadening `wp7-ast-scan-motion-v1`.
+`M>1` filter-support erosion, weighted exposure, spatial coverage, PSD/filter
+research, and nonidentity production activation remain pending.
 
 ## 2026-08-30 WP-7 Filtering and Downsampling Certification Plan
 

@@ -5,7 +5,7 @@ Date: 2026-08-30
 Authority: `wp7-rtc-occurrence-speed-admission-v1`
 
 Harness source revision:
-`b9589d28a85c1f348f02416d230cb4db1555dd98`
+`f6de0fa297bc0cc4571d99ed5cca4aec1cea4a19`
 
 Status: **exact-SHA custody/cadence census complete; F0 motion census complete
 for the authorized Science/Lissajous cases; Beammap and OOF motion evidence
@@ -34,19 +34,19 @@ Beammap, MAP/JINC, OOF/fruitloops, response, noise, alias, or performance gate.
 The complete local corpus is at:
 
 ```text
-/Users/gwilson/work_toltec/local_data/citlali-validation/wp7/rtc-filter-census/b9589d28a85c1f348f02416d230cb4db1555dd98
+/Users/gwilson/work_toltec/local_data/citlali-validation/wp7/rtc-filter-census/f6de0fa297bc0cc4571d99ed5cca4aec1cea4a19
 ```
 
 Its compact root record is `corpus.json` with SHA-256:
 
 ```text
-90443f6490764b938f7c9c0e3c4e3635eaa0eecc777431b4974d106c5fa1cc33
+f16bee6f5de743ce966292284dcd55fe897e6645d10a89fb6ee21529f53952d3
 ```
 
 The exact census executable SHA-256 is:
 
 ```text
-da93313d673516cdcb67c54093aecce6ce5449215c153adf1b47bf7245b46cf0
+586143f56ecca3a9266195d8d15f066fbe10490678564526a0cfaf5167b41766
 ```
 
 The corpus declares `source_clean: true`, contains seven cases, and binds each
@@ -82,7 +82,7 @@ diagnostic.
 
 | Case | Networks | Native occurrences | Detectors | Matched APT relation | Accepted mapped motion | D0 identity ready |
 | --- | ---: | ---: | ---: | --- | --- | --- |
-| Beammap 148670 | 11 | 4,220,705 | 5,234 | no | unavailable | no |
+| Beammap 148670 | 11 | 4,220,705 | 5,234 | no | unavailable | yes |
 | OOF 152385 | 11 | 86,468 | 5,518 | yes | unavailable | yes |
 | OOF 152386 | 11 | 86,742 | 5,518 | yes | unavailable | yes |
 | OOF 152387 | 11 | 86,559 | 5,518 | yes | unavailable | yes |
@@ -106,10 +106,16 @@ counts in Beammap, OOF, and Pointing are not evidence of slow motion: every
 mapped occurrence is AST-unavailable, and those route families remain
 indeterminate for F0 motion admission.
 
-Beammap's verified baseline compact-v2 APT bundle supplies the required source,
-network, array, and detector inventory, but it has no matched detector relation.
-The harness therefore truthfully records `d0_fixture_identity_ready: false` for
-that case.
+Beammap's verified baseline compact-v2 APT bundle supplies the complete source,
+network, array, detector, and detector-to-raw inventory required by D0. It has
+no matched detector relation because that optional relation belongs to the
+distinct observation-to-baseline matching product. The harness records both
+facts independently and truthfully records `d0_fixture_identity_ready: true`.
+
+This corpus supersedes the earlier exact-SHA corpus at revision
+`b9589d28a85c1f348f02416d230cb4db1555dd98` for D0 readiness. Direct comparison
+of all 18 scientific result sections in every case found zero differences; the
+replacement changes custody/readiness metadata only.
 
 ## Structural domains
 
@@ -156,11 +162,13 @@ yet exist.
 
 ## Verification
 
-Exact harness revision `b9589d28a85c1f348f02416d230cb4db1555dd98`
+Exact harness revision `f6de0fa297bc0cc4571d99ed5cca4aec1cea4a19`
 passes:
 
 - all 63 focused WP-7 timestream/AST/census tests;
-- all four fail-closed Python orchestrator tests;
+- all six fail-closed Python orchestrator tests, including acceptance of a
+  verified baseline APT without a matched relation and rejection of an
+  unverified or incomplete inventory;
 - all 889 runnable repository CTests, with the one established disabled test
   unchanged;
 - the required config preflight, including all 129 unit tests and downstream
@@ -170,22 +178,20 @@ passes:
 
 ## Disposition and next prerequisites
 
-This execution closes the harness correction and the available Science/
-Lissajous portion of F0. It does not close the complete D0/F0 gate for the
-declared certification corpus.
+This execution closes D0 fixture identity for all seven cases, the harness
+correction, and the available Science/Lissajous portion of F0. It does not
+close complete F0 motion admission for the declared certification corpus.
 
 Before filter-family research can govern the complete required route matrix:
 
-1. Beammap 148670 needs a matched detector relation or an explicitly approved
-   equivalent D0 identity closure.
-2. The owner must resolve how the already-required Beammap and OOF route tests
+1. The owner must resolve how the already-required Beammap and OOF route tests
    obtain authorized occurrence-level motion/admission evidence without
    contradicting the accepted physical-scan membership of
    `wp7-ast-scan-motion-v1`. No local velocity estimator or silent family
    broadening is authorized.
-3. `M>1` support erosion remains pending F1 coefficients and exact
+2. `M>1` support erosion remains pending F1 coefficients and exact
    half-support.
-4. Weighted exposure and spatial coverage remain pending their existing
+3. Weighted exposure and spatial coverage remain pending their existing
    scientific products and definitions.
 
 Science-case PSD and line discovery can be measured separately, but no bank
