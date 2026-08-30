@@ -1,7 +1,8 @@
 # ADR 0018: AST scan-motion velocity and validity
 
 Status: accepted bounded scientific-owner authority 2026-08-30; bounded
-implementation passes local gates; representative-data conformance pending
+implementation passes local and representative-data gates; fresh exact-SHA
+conformance review pending
 
 Decision owners: Citlali project owner and scientific owner
 
@@ -63,11 +64,12 @@ Changing them requires a named successor authority and new evidence.
 ## Consequences
 
 - The bounded AST scientific-authority prerequisite in ADRs 0016 and 0017 is
-  closed. The raw product and network-specific mapped views pass local gates;
-  representative-data evidence and independent exact-SHA conformance review
-  remain required before nonidentity RTC consumes the role.
-- The observation-152390 value near `221.405 arcsec/s` remains diagnostic
-  evidence, not an accepted product or planning input, until those gates pass.
+  closed. The raw product and network-specific mapped views pass local and
+  representative-data gates; independent exact-SHA conformance review remains
+  required before nonidentity RTC consumes the role.
+- The observation-152390 value `221.40490828695155 arcsec/s` is retained in the
+  representative evidence package but is not an authorized planning input
+  until the independent review passes.
 - Independent network timing under ADR 0015 remains unchanged. A synchronous
   cross-network consumer must separately request an ALIGN-owned common-analysis-
   grid relation.
@@ -87,3 +89,4 @@ Changing them requires a named successor authority and new evidence.
 - [Pre-certified filter-bank decision](0017-precertified-rtc-filter-bank-and-science-error-budgets.md)
 - [`AstScanMotionProduct` public contract](../../include/citlali/core/pipeline/ast_scan_motion.h)
 - [ALIGN network-mapped view contract](../../include/citlali/core/pipeline/ast_scan_motion_alignment.h)
+- [Representative acceptance package](../../handoff/WP7_AST_SCAN_MOTION_ACCEPTANCE_PACKAGE_2026-08-30.md)
