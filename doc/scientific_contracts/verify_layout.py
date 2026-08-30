@@ -26,6 +26,7 @@ COMPLETE_PACKAGES = {
 }
 STAGE_A_PACKAGES = {
     "SCI-NOI": "v0.1",
+    "SCI-FLT": "v0.1",
 }
 FROZEN_R03_PACKAGES = {
     "SCI-BEAM": "v0.1",

@@ -626,6 +626,33 @@ frozen gates. No frozen parent was modified, and no implementation conformity,
 empirical calibration, physical-noise validity, significance, achieved
 performance, readiness, or production claim is made.
 
+On `2026-08-30` Grant Wilson launched
+[`SCI-FLT v0.1`](scientific_contracts/packages/SCI-FLT/v0.1/README.md) as a
+recovery-first Stage A scientific-contract effort from that authority line.
+The completed owner-review packet includes a package-specific prior-work
+record, quarantined implementation-informed dossier, sanitized Scope Brief,
+ownership/boundary classification, deterministic-transform science extract,
+typed operator/product taxonomy, eight bounded owner questions, and the exact
+proposed seven-object future author set. It separately classifies fixed
+deterministic convolution/low-pass, Wiener/noise-model-dependent,
+matched/template-amplitude, source-sensitive, data-thresholded map-domain, RTC
+temporal, and FRUIT feedback operations. Approved SCI-NOI Stage A controls:
+FLT defines the exact transformation and NOI applies it to compatible admitted
+randomizations for uncertainty of the exact transformed product; fixed-state,
+successor-generation, and per-member-relearned routes remain distinct. Current
+SCI-NOI Stage B draft material was excluded.
+
+The Stage A recommendation is to retain `SCI-FLT` only as the tranche name,
+commission provisional `SCI-FLT-DET` first, and hold inference-bearing methods
+in a separate `SCI-FLT-INF` tranche with further method splits wherever
+estimand, prior/learned state, response, uncertainty, or lifecycle differs.
+`FLT-ODQ-101--108` remain open; the owner walkthrough begins with the package-
+split decision. The future author packet is not releasable and Stage B has not
+begun. No algorithm or frozen authority changed, and no implementation
+conformity, validation, calibration, achieved response/performance, readiness,
+production, freeze, Unity, source/mode, NOI, or FRUIT action is claimed or
+authorized.
+
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
 The recovery reuses the frozen implementation-independent CAL core and later

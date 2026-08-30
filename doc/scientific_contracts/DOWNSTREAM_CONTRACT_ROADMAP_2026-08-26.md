@@ -2,8 +2,8 @@
 
 Date: `2026-08-26`
 
-Updated: `2026-08-30` for SCI-JINC closure and the repaired SCI-NOI Stage A
-owner-review gate through ODQ-110C
+Updated: `2026-08-30` for SCI-JINC closure, SCI-NOI Stage A/Stage B handoff,
+and the recovery-first SCI-FLT Stage A launch
 
 Status: scientific-owner-approved program sequencing record
 
@@ -198,3 +198,17 @@ the exact 17-object implementation-blind author packet. The frozen MAP/pre-MAP
 and JINC numerical-parent unavailability states remain unchanged. No
 implementation, conformity, validation, achieved-performance, readiness,
 production, Unity, filtering, source/mode, or FRUIT action follows.
+
+The scientific owner's later `2026-08-30` direction launches recovery-first
+SCI-FLT v0.1 Stage A at
+[`packages/SCI-FLT/v0.1/`](packages/SCI-FLT/v0.1/). Recovery is complete for
+owner review: it quarantines the implementation-informed inventory, separates
+fixed deterministic convolution/low-pass from Wiener, matched/source-sensitive,
+and other inference-bearing families, restates the approved SCI-NOI boundary,
+and proposes `SCI-FLT-DET` plus a separate `SCI-FLT-INF` tranche before Stage
+B. The exact proposed seven-object sanitized future author set is identified
+but not releasable because `FLT-ODQ-101--108` remain open. The next action is
+the owner walkthrough beginning with the package-split question. Stage B has
+not begun. No algorithm, frozen package, implementation, conformity,
+validation, calibration, achieved performance, readiness, production, Unity,
+source/mode, NOI, or FRUIT action follows.
