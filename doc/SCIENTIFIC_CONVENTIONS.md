@@ -180,15 +180,27 @@ frequency. The selected plan is the largest permitted factor whose simplest
 approved realization satisfies the complete product-level passband, phase,
 alias, beam-sampling, support, edge, and identical paired-operator constraints.
 If none above one passes, the plan uses factor `M=1` without sampling change
-but retains the planner's occurrence-admission dispositions; the science band
-is never narrowed to admit a preferred factor. This does not alter the separate
-accepted identity-RTC conformance context.
+only when the input cadence itself still meets the approved science-band and
+four-samples-per-Airy-FWHM requirements. Otherwise there is no admitted
+ordinary astronomical product and the exact cause is
+`input_cadence_inadequate_for_science_band`. The planner retains its
+occurrence-admission dispositions and never narrows the science band to admit a
+preferred factor. This does not alter the separate accepted identity-RTC
+conformance context.
 
 Different arrays may therefore have different filters, factors, and output
 cadences in one scan. Outputs remain network-scoped timed streams. This is not
-a common-analysis-grid request. The exact array-model artifact and universal
-numerical tolerances are not yet fixed, so no nonidentity implementation is
-available. Governing authority is
+a common-analysis-grid request. Exact numerical authority is
+[`wp7-rtc-scan-array-numerical-policy-v1`](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md),
+approved 2026-08-30. It fixes 272/214/150 GHz center frequencies, a 50.0 m
+unobscured Airy beam, full optical temporal support, independent `1e-3`
+astronomical-product limits, `1e-4` passband ripple, `1e-6` folded-alias power,
+four samples per Airy FWHM, integer factors 1--256, the deterministic symmetric
+Kaiser FIR rule, five-second half-support, binary64 ordered arithmetic, and the
+5% velocity plus 100 ppm cadence margins. Prototype tap estimates are not
+coefficient authority. No nonidentity implementation is available until the
+AST velocity/validity prerequisite and implementation gates conform. Governing
+structural authority is
 [`WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md`](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
 and its
 [`crosswalk`](WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md).

@@ -1,50 +1,58 @@
 # Citlali Refactor Status
 
-## 2026-08-29 WP-7 Scan/Array RTC Numerical-Closure Preparation
+## 2026-08-30 WP-7 Scan/Array RTC Numerical-Policy Approval
 
-The exact pushed structural-authority revision
-`38644343a4f8cfa213c8cab87c06753377704e12` remains controlling and
-nonidentity implementation remains stopped. The bounded
-[numerical-closure packet](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md)
-now gives one explicit proposed value or rule for every open array, response,
-alias, sampling, factor, realization, support, arithmetic, and uncertainty
-field. It also exposes the necessary inadequate-input edge case: `M=1` cannot
-claim preservation when the source cadence itself fails the science-band or
-beam-sampling requirement.
+The scientific owner approved the complete
+[`wp7-rtc-scan-array-numerical-policy-v1`](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md),
+including the inadequate-input `M=1` disposition. This closes every numerical
+field left open by structural-authority revision
+`38644343a4f8cfa213c8cab87c06753377704e12` without starting nonidentity RTC
+implementation.
 
-The proposal uses the current calibration-software 272/214/150 GHz
-center-frequency convention, a 50 m ideal circular Airy beam, the full
+The approved policy fixes exact 272/214/150 GHz center frequencies, a 50.0 m
+ideal circular Airy beam with coefficient `1.028993969962188`, full
 ideal-aperture optical temporal support, independent `1e-3`
-astronomical-product limits, `1e-4`
-passband ripple, `1e-6` folded alias power gain, four samples per Airy FWHM,
-integer factors 1--256, a deterministic centered symmetric Kaiser FIR rule,
-five-second maximum half-support, binary64 ordered arithmetic, a 5% velocity
-margin, and a 100 ppm conservative cadence margin. These are recommendations,
-not scientific authority, until exact owner disposition.
+astronomical-product limits, `1e-4` passband ripple, centered zero phase,
+`1e-12` DC-gain error, `1e-6` folded-alias power gain, four samples per Airy
+FWHM, every integer factor 1--256, a deterministic centered symmetric Kaiser
+FIR rule, five-second maximum half-support, binary64 ordered arithmetic, a 5%
+velocity margin, and a 100 ppm conservative cadence margin.
 
-An evidence-only local calculator and checked JSON show feasibility across
-synthetic admitted speeds. At a representative nominal 50 arcsec/s and the
-exact 122.0703125 Hz detector cadence it estimates array-specific factors
-`M=2`, `M=3`, and `M=4`; the estimated tap counts are not certified filter
-artifacts. Observation 152390 cannot yet supply an authoritative realized
-plan: its Lissajous header value has a scale consistent with 50 arcsec/s but a
-contradictory unit attribute, and no accepted AST product currently supplies
-science-scan membership, derivative validity/causes, and the required actual
-maximum. The packet does not invent a derivative or smoothing rule.
+If no factor above one passes, `M=1` is admitted only when the input cadence
+itself still satisfies the science-band and beam-sampling requirements.
+Otherwise no ordinary astronomical product is admitted and the exact cause is
+`input_cadence_inadequate_for_science_band`. This edge case does not change the
+separate accepted identity-RTC conformance context.
 
-Next authority is the owner's exact numerical disposition. After that, the
-first real nonidentity route still requires conforming AST velocity facts,
-certified coefficient/response evidence, focused and repository gates, a
-representative-data package, and fresh exact-SHA review. No common grid,
-persistent RTC TOD schema, production activation, CAL, VAL, PTC, or MAP/JINC
-work is opened.
+The evidence-only calculator and checked JSON remain useful feasibility
+evidence. At a nominal 50 arcsec/s and exact 122.0703125 Hz detector cadence
+they estimate array-specific factors `M=2`, `M=3`, and `M=4`, but those tap
+counts are not certified coefficient artifacts. Observation 152390 still
+cannot supply an authoritative realized plan: its Lissajous header scale is
+consistent with 50 arcsec/s while its unit attribute conflicts, and no accepted
+AST product yet supplies science-scan membership, derivative validity/causes,
+telemetry-defect disposition, and the required actual maximum. No derivative
+or smoothing rule is invented here.
 
-The candidate JSON regenerates byte-for-byte from the evidence calculator and
-its six focused tests pass. The unchanged repository passes all 870 runnable
-CTests with the one established disabled test unchanged, all 207 baseline-tool
-tests, and the full required config gate with all 129 unit tests and downstream
-audits. These engineering gates do not turn the proposed numerical values or
-the estimated Kaiser tap counts into scientific authority.
+The next bounded authority task is the AST velocity/validity prerequisite.
+After it conforms, exact coefficient certification, the nonidentity
+learn-consider-apply implementation, focused and repository gates,
+representative-data evidence, and fresh exact-SHA review remain. No common
+grid, persistent RTC TOD schema, production activation, CAL, VAL, PTC, or
+MAP/JINC work is opened.
+
+At preparation revision `8051cc51ec0b3e7a5ce33a76c1172fe3c3faf832`, the
+candidate JSON regenerated byte-for-byte, its six focused tests passed, and the
+unchanged repository passed all 870 runnable CTests with the one established
+disabled test unchanged, all 207 baseline-tool tests, and the full required
+config gate with all 129 unit tests and downstream audits. Those evidence gates
+do not promote the estimated Kaiser tap counts.
+
+The 2026-08-30 authority-record update independently regenerated the candidate
+JSON byte-for-byte and passed the same six focused calculator tests, all 207
+baseline-tool tests, all 870 runnable CTests with the one established disabled
+test unchanged, and the full required config gate with all 129 unit tests and
+downstream audits.
 
 ## 2026-08-29 WP-7 Scan/Array RTC Planning Authority
 
@@ -75,9 +83,12 @@ product-level peak, flux, shape, centroid, and calibration-transfer tolerances,
 and selects the largest allowed integer factor whose simplest approved
 realization satisfies passband, phase, alias, beam-sampling, support, edge, and
 identical paired-operator constraints. If no factor above one passes, the
-planner selects `M=1` without sampling change while retaining its occurrence
-admission; the separate accepted identity conformance route is unchanged. The
-science band is never narrowed to force a factor.
+planner selects `M=1` without sampling change only when the input cadence
+itself still meets the science-band and beam-sampling rules; otherwise no
+ordinary astronomical product is admitted with exact cause
+`input_cadence_inadequate_for_science_band`. The separate accepted identity
+conformance route is unchanged. The science band is never narrowed to force a
+factor.
 
 Different arrays may realize different filters, factors, and cadences within a
 scan while every product remains on its network-specific timing axis. This
@@ -86,15 +97,15 @@ restriction; it does not request an ALIGN common analysis grid. The revised
 [planning packet](WP7_RTC_FIXED_DECIMATION_OWNER_DECISION_PACKET_2026-08-29.md)
 records the design and implementation gates.
 
-The owner decision fixes scientific structure but does not provide exact array
-center frequencies, aperture and diffraction convention/profile, product
-distortion limits, alias budget, beam-sampling minimum, factor set, realization
-families/tie rule, support/edge bound, precision, or uncertainty margins.
-Existing implementation constants and the legacy `32 Hz` setting are not
-promoted. Nonidentity implementation remains unavailable until those values are
-bound. The accepted network-timed `M=1` route is unchanged; no CAL, VAL, PTC,
-MAP/JINC, persistent RTC TOD schema, production activation, or legacy-route
-change is authorized.
+The 2026-08-30 numerical-policy approval fixes the array model, product and
+response limits, alias norm, beam sampling, factor set, FIR construction/tie
+rule, support, arithmetic, margins, and inadequate-input disposition. Existing
+implementation constants, the legacy `32 Hz` setting, and prototype tap
+estimates are not promoted. Nonidentity implementation remains unavailable
+until conforming AST authority and implementation gates are present. The
+accepted network-timed `M=1` route is unchanged; no CAL, VAL, PTC, MAP/JINC,
+persistent RTC TOD schema, production activation, or legacy-route change is
+authorized.
 
 ## 2026-08-29 WP-7 Terminal-Publication Review Closure
 

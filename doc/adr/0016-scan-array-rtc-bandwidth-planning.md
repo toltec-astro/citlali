@@ -1,7 +1,7 @@
 # ADR 0016: Scan/array RTC bandwidth and decimation planning
 
-Status: accepted scientific structure 2026-08-29; numerical closure and
-implementation pending
+Status: accepted scientific structure 2026-08-29; numerical policy approved
+2026-08-30; AST prerequisite and implementation pending
 
 Decision owners: Citlali project owner and scientific owner
 
@@ -38,10 +38,13 @@ For each scan, array, and exact input cadence, select the largest factor from
 an approved finite integer set for which the simplest permitted low-pass
 realization satisfies the complete astronomical passband, phase, alias,
 sampling, support, edge, and paired-operator constraints. If no factor greater
-than one passes, select `M=1` without a sampling change while retaining the
-planner's occurrence-admission dispositions; never narrow the required science
-band to make a factor fit. The separate accepted identity-RTC conformance
-context remains unchanged.
+than one passes, select `M=1` without a sampling change only when the input
+cadence itself still meets the approved science-band and beam-sampling
+requirements. Otherwise produce no admitted ordinary astronomical product
+with typed cause `input_cadence_inadequate_for_science_band`. Retain the
+planner's occurrence-admission dispositions and never narrow the required
+science band to make a factor fit. The separate accepted identity-RTC
+conformance context remains unchanged.
 
 Plans are immutable before Apply and independent of detector values and chunk
 partitions. Different arrays may realize different factors, filters, and
@@ -49,14 +52,15 @@ cadences. Every sampling-changing result creates a new network-scoped
 occurrence/time/support relation. Equal plan values do not create a common
 grid; ADR 0015 continues to govern explicit cross-network relations.
 
-## Numerical gate
+## Numerical policy
 
-This ADR approves the structure, not numerical defaults. Implementation awaits
-an authoritative array-model artifact and exact universal values for
-astronomical distortion, phase/centroid, alias error, beam sampling, factor
-set, filter families/tie rule, support/edge loss, arithmetic precision, and
-uncertainty margins. Existing code constants and the legacy `32 Hz` cutoff are
-evidence only.
+The scientific owner approved
+[`wp7-rtc-scan-array-numerical-policy-v1`](../WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md)
+on 2026-08-30. It fixes the complete array model and universal response,
+alias, sampling, factor, FIR, support, arithmetic, margin, and inadequate-input
+rules. Existing code constants and the legacy `32 Hz` cutoff remain evidence
+only. Prototype tap counts remain uncertified evidence rather than coefficient
+authority.
 
 ## Consequences
 
@@ -71,12 +75,14 @@ evidence only.
   scientific availability, not hidden padding or chunk behavior.
 - A deterministic planner may share compact immutable plans and reusable
   workspaces, but architecture and kernel choices remain benchmark-driven.
-- No nonidentity numerical implementation begins until the numerical gate is
-  closed.
+- No nonidentity numerical implementation begins until conforming AST
+  velocity/validity authority is present and the bounded implementation gates
+  are satisfied.
 
 ## Evidence and authority
 
 - [Scan/array planning owner authority](../WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
 - [Scan/array planning authority crosswalk](../WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md)
+- [Approved numerical policy](../WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md)
 - [Network-timing decision](0015-network-specific-timing-and-common-analysis-grid.md)
 - [Revised RTC planning packet](../WP7_RTC_FIXED_DECIMATION_OWNER_DECISION_PACKET_2026-08-29.md)

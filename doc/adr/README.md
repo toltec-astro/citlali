@@ -28,7 +28,7 @@ duplicate changing implementation inventories or validation snapshots.
 | [0013](0013-bounded-native-scientific-provenance.md) | Accepted owner-directed Stage 7 revision; implementation and bounded frozen 152390 replay complete | Separate runtime sample state, bounded canonical native provenance, and opt-in bounded debug tracing; regenerate deterministic per-sample consequences instead of serializing them |
 | [0014](0014-wp7-timestream-successor.md) | Accepted; timing placement partially superseded by 0015 | Implement the approved paired x/r WP-7 route as bounded subsystem succession inside the existing application |
 | [0015](0015-network-specific-timing-and-common-analysis-grid.md) | Accepted owner-directed correction; bounded implementation and exact-SHA review passed | Make network timing authoritative by default and construct a cross-network common analysis grid only for an explicitly synchronous operation |
-| [0016](0016-scan-array-rtc-bandwidth-planning.md) | Accepted scientific structure; numerical closure and implementation pending | Admit science motion at `v >= 1 arcsec/s` and derive RTC bandwidth, filter, and factor per scan and array from the authoritative beam and product tolerances |
+| [0016](0016-scan-array-rtc-bandwidth-planning.md) | Accepted structure and numerical policy; AST prerequisite and implementation pending | Admit science motion at `v >= 1 arcsec/s` and derive RTC bandwidth, filter, and factor per scan and array from the authoritative beam and product tolerances |
 
 Numbers are never reused. A materially different decision adds a new ADR and
 marks the old record superseded; do not rewrite the historical rationale.

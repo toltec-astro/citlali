@@ -4,8 +4,9 @@ Date: 2026-08-29
 
 Scientific owner: Grant Wilson
 
-Status: approved bounded successor authority; numerical policy closure and
-nonidentity implementation remain pending
+Status: approved bounded successor authority; numerical policy closed by
+scientific-owner disposition 2026-08-30; AST prerequisite and nonidentity
+implementation remain pending
 
 This decision supersedes only the fixed or observation-common planning
 interpretations identified in the
@@ -143,10 +144,14 @@ realization simultaneously provides:
 The required stopband attenuation is derived from the alias-error budget; it
 is not a conventional decibel default. The transition and support are selected
 by a deterministic tie rule as the simplest permitted realization meeting all
-constraints. If no `M > 1` passes, select `M=1` with no sampling change. The
-new planner's occurrence-admission dispositions still apply; this fallback does
-not rewrite the separate accepted identity-RTC conformance context. Never
-reduce `f_sci,a,s` to make a preferred factor pass.
+constraints. If no `M > 1` passes, select `M=1` with no sampling change only
+when the input cadence itself still meets the approved science-band and
+beam-sampling requirements. Otherwise publish no admitted ordinary
+astronomical product with typed cause
+`input_cadence_inadequate_for_science_band`. The new planner's
+occurrence-admission dispositions still apply; this fallback does not rewrite
+the separate accepted identity-RTC conformance context. Never reduce
+`f_sci,a,s` to make a preferred factor pass.
 
 Different arrays in one scan may have different filters, factors, and output
 cadences. Each realization remains bound to its source network axis and creates
@@ -176,28 +181,20 @@ while retaining member-local availability, validity, and causes. The compact
 realization records what the immutable plan actually realized; it does not
 duplicate the product, support planes, input axes, or provenance history.
 
-## Numerical closure still required
+## Approved numerical closure
 
-This decision fixes the scientific structure but intentionally does not invent
-the following values. Nonidentity code construction is not authorized until a
-successor owner disposition binds them exactly:
+The scientific owner approved
+[`wp7-rtc-scan-array-numerical-policy-v1`](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md)
+on 2026-08-30. That authority fixes the nominal array frequencies, aperture
+and Airy profile, full optical temporal support, independent astronomical
+product tolerances, passband/phase/DC rules, folded-alias norm, output beam
+sampling, integer-factor set, deterministic Kaiser FIR construction and tie
+rule, support/edge behavior, arithmetic, uncertainty margins, and the
+inadequate-input `M=1` disposition.
 
-1. nominal center frequency for each array;
-2. aperture value and convention;
-3. beam coefficient, width convention, and normalized circular profile;
-4. astronomical peak, flux, beam-shape, centroid, and calibration-transfer
-   tolerances and their aggregation rule;
-5. passband-ripple and phase/centroid bounds derived from those tolerances;
-6. retained-band alias-error budget and its evaluation norm;
-7. minimum beam samples per declared width;
-8. allowed integer factor set;
-9. permitted filter families and deterministic simplest-realization tie rule;
-10. maximum impulse support and edge loss;
-11. arithmetic/coefficient precision and comparison behavior; and
-12. safety margins for trajectory, cadence, and numerical uncertainty.
-
-The repository's representative observation 152390 cadence and legacy `32 Hz`
-setting remain useful evidence, but neither supplies these universal values.
+The packet's synthetic factor and tap-count sweep remains feasibility evidence,
+not approved coefficient artifacts or an observation-152390 plan. Exact
+coefficient construction and certification remain implementation gates.
 
 ## Scope and claims
 
@@ -206,4 +203,5 @@ sampling learning, CAL, VAL, PTC, MAP/JINC, persistent TOD publication,
 production activation, or legacy-route retirement. It does not claim
 astronomical transfer, observational performance, or implementation
 conformance. The accepted `M=1` network-timed terminal route remains unchanged
-and available while numerical closure is pending.
+and available while the AST prerequisite and nonidentity implementation are
+pending.

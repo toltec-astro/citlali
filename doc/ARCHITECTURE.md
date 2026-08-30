@@ -380,8 +380,11 @@ are admitted at valid realized on-sky speed `>= 1 arcsec/s`, and filter/factor
 plans are derived deterministically per scan and array from an authoritative
 circular diffraction-limited beam and product-level scientific tolerances.
 Different arrays may retain different network-local output cadences; this does
-not request a common analysis grid. Exact array-model and universal numerical
-policy values remain an implementation gate.
+not request a common analysis grid. The scientific owner approved
+[`wp7-rtc-scan-array-numerical-policy-v1`](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md)
+on 2026-08-30. Conforming AST science-scan velocity/validity authority, exact
+coefficient certification, and the bounded implementation gates remain; the
+prototype factor/tap sweep is evidence only.
 The implementation slices, storage and execution baseline, performance-tool
 adoption policy, and evidence gates are in
 [WP-7 Timestream Successor Implementation Baseline](WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md).
@@ -390,7 +393,9 @@ The exact scientific-owner timing correction and frozen-clause mapping are in
 and [crosswalk](WP7_NETWORK_TIMING_AUTHORITY_CROSSWALK_2026-08-29.md).
 The scan/array planning authority and its frozen-entry mapping are in
 [the RTC planning owner authority](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
-and [crosswalk](WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md).
+and [crosswalk](WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md),
+with exact numerical authority in the
+[approved policy](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md).
 Exact external scientific and implementation-review authorities are bound by
 [`validation/wp7_timestream_successor_authority.json`](../validation/wp7_timestream_successor_authority.json).
 The accepted first-increment implementation and representative evidence are

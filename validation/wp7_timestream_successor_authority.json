@@ -2,7 +2,8 @@
   "schema_version": "citlali-wp7-timestream-successor-authority-v1",
   "authority_id": "wp7-timestream-successor-2026-08-26",
   "recorded_date": "2026-08-26",
-  "status": "identity_rtc_accepted_scan_array_nonidentity_numerical_closure_pending",
+  "last_updated_date": "2026-08-30",
+  "status": "identity_rtc_accepted_scan_array_numerical_policy_approved_ast_pending",
   "identity_policy": "Artifact identity is filename plus SHA-256. Archive paths are convenience locators and are not identity.",
   "repository_authority": {
     "decision": "doc/adr/0014-wp7-timestream-successor.md",
@@ -14,8 +15,17 @@
     "rtc_scan_array_planning_owner_authority": "doc/WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md",
     "rtc_scan_array_planning_crosswalk": "doc/WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md",
     "rtc_scan_array_planning_packet": "doc/WP7_RTC_FIXED_DECIMATION_OWNER_DECISION_PACKET_2026-08-29.md",
+    "rtc_scan_array_numerical_policy": "doc/WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md",
     "architecture": "doc/ARCHITECTURE.md",
     "living_status": "doc/REFACTOR_STATUS.md"
+  },
+  "rtc_scan_array_numerical_policy": {
+    "policy_id": "wp7-rtc-scan-array-numerical-policy-v1",
+    "scientific_owner_disposition": "approved",
+    "approved_date": "2026-08-30",
+    "implementation_status": "blocked_on_ast_velocity_validity_authority",
+    "prototype_tap_counts_authoritative": false,
+    "observation_152390_vmax_authoritative": false
   },
   "scientific_packet": {
     "scope": "closed bounded WP-7.1 ordinary native-paired-readout-to-PTC route and RTC-only terminal route",

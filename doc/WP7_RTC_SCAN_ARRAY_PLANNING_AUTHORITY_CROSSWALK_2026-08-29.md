@@ -5,6 +5,10 @@ Date: 2026-08-29
 Controlling decision:
 [WP-7 RTC Scan/Array Planning Scientific-Owner Authority](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
 
+Controlling numerical policy:
+[`wp7-rtc-scan-array-numerical-policy-v1`](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md),
+approved by the scientific owner on 2026-08-30
+
 Source authority is the frozen SCI-RTC v0.1/r0.12 package bound by
 `validation/wp7_timestream_successor_authority.json`, plus the accepted
 network-timing correction. Frozen text remains historical and is not silently
@@ -14,20 +18,20 @@ edited. This crosswalk states only the bounded successor dispositions.
 
 | Frozen entry or topic | Bounded successor disposition |
 | --- | --- |
-| OWNER-002 fixed factor/filter mode | The accepted `M=1` identity mode remains. A single fixed `M=2` witness independent of scan and array is not the next scientific plan. Nonidentity factor/filter selection is deterministic per scan and array after numerical closure. |
-| OWNER-011 candidate factors and filter families | Structure resolved: use an approved finite integer-factor set and permitted realization families. Exact set, families, and tie rule remain numerically open. |
-| OWNER-012 beam aggregation/model | Resolved to one circular diffraction-limited reference beam per array at nominal center frequency. Exact frequencies, aperture, coefficient/convention, and normalized profile remain numerically open. |
+| OWNER-002 fixed factor/filter mode | The accepted `M=1` identity mode remains. A single fixed `M=2` witness independent of scan and array is not the next scientific plan. Nonidentity factor/filter selection is deterministic per scan and array under the approved numerical policy. |
+| OWNER-011 candidate factors and filter families | Resolved to every integer `M` in `[1, 256]` and the one approved centered symmetric Type-I Kaiser-windowed-sinc FIR family with the exact construction and smallest-odd-tap tie rule. |
+| OWNER-012 beam aggregation/model | Resolved to the approved 272/214/150 GHz array frequencies, exact 50.0 m clear circular aperture, normalized unobscured Airy intensity profile, and coefficient `1.028993969962188`. |
 | OWNER-013 scan speed statistic | Resolved to scalar valid realized on-sky speed and the actual maximum over admitted science occurrences. The exact admission boundary is `v >= 1 arcsec/s`; no percentile is permitted. |
-| OWNER-014 passband criterion | Resolved structurally to product-level peak, flux, beam-shape, centroid, and calibration-transfer tolerances on the scanned authoritative beam. Exact tolerances and aggregation remain open. |
-| OWNER-015 alias criterion | Resolved structurally: stopband attenuation derives from an approved retained-band alias-error budget. Exact budget and norm remain open. |
-| OWNER-016 beam sampling | Resolved structurally to minimum output sampling of the authoritative diffraction-limited beam. Exact samples-per-width and width convention remain open. |
-| OWNER-017 automatic realization | Resolved structurally to the simplest permitted realization satisfying every constraint. Permitted families, precision, support bound, and deterministic tie rule remain open. |
+| OWNER-014 passband criterion | Resolved to full Airy temporal support at `v_plan`, independent `1e-3` peak/flux/shape/FWHM/centroid/calibration limits, `1e-4` passband ripple, centered zero phase, and `1e-12` DC-gain error. |
+| OWNER-015 alias criterion | Resolved to a worst-retained-frequency total folded-alias power-gain bound of `1e-6`, with the exact image-sum norm and per-image design allocation in the numerical policy. |
+| OWNER-016 beam sampling | Resolved to at least four output samples per approved Airy intensity FWHM. |
+| OWNER-017 automatic realization | Resolved to the approved Kaiser family, smallest certified odd tap count, five-second maximum half-support, and declared binary64 construction and ordered accumulation. Prototype tap estimates are not coefficient authority. |
 | OWNER-018 output cadence | Superseded where it required one ordinary observation-wide cadence. Arrays may differ by scan; every output remains network-timed. A common analysis cadence requires a named synchronous consumer under ADR 0015. |
-| OWNER-019 fallback/failure | If no `M > 1` passes, use factor `M=1` without sampling change while retaining the new planner's occurrence-admission dispositions. This does not alter the separate accepted identity conformance route. If a scan has no admitted run at or above `1 arcsec/s`, it has no admitted ordinary astronomical timestream product. No science-band relaxation is permitted. |
+| OWNER-019 fallback/failure | If no `M > 1` passes, use factor `M=1` without sampling change only when the input cadence still meets the science-band and four-samples-per-FWHM requirements. Otherwise publish no admitted ordinary astronomical product with `input_cadence_inadequate_for_science_band`. This does not alter the separate accepted identity conformance route. If a scan has no admitted run at or above `1 arcsec/s`, it has no admitted ordinary astronomical timestream product. No science-band relaxation is permitted. |
 | OWNER-020 plan stability | The plan is immutable per scan, array, and exact cadence before Apply. It is invariant to detector values and engineering chunks; an observation-common plan is not required. |
 | OWNER-026 deferred per-array/per-scan factors and heterogeneous grids | Explicitly reopened and superseded. Per-scan/per-array filters and factors are the ordinary model. Their products retain independent network axes; heterogeneous cadences do not imply a common grid. |
 | OWNER-029 planning population | Planning consumes only admitted AST-valid science-scan trajectory occurrences and immutable array/cadence/policy facts. Detector timestream values are excluded. |
-| OWNER-031--034 response, beam, and passband policy | Structural authority is now the scanned circular diffraction-limited beam, product-level distortion limits, explicit response inequality, and phase/alias constraints. Exact numerical values remain open. |
+| OWNER-031--034 response, beam, and passband policy | Resolved by `wp7-rtc-scan-array-numerical-policy-v1`, including full ideal-aperture temporal support, exact product/response bounds, and the 5% velocity plus 100 ppm cadence margins. |
 | OWNER-036 observational qualification | Unchanged and open. Structural approval does not establish observational performance or production readiness. |
 | OWNER-052 low-speed and paired validity consequences | `v < 1 arcsec/s` is a pair-wide astronomical occurrence exclusion with typed cause `below_minimum_science_scan_speed`. It does not erase or merge member-local producer validity and causes. Distinct invalid AST/telemetry facts retain distinct causes. |
 
@@ -43,7 +47,7 @@ edited. This crosswalk states only the bounded successor dispositions.
 - Unlisted SCI-RTC requirements, equations, predictions, and owner-ledger
   entries retain their prior state.
 
-## New implementation obligations after numerical closure
+## Implementation obligations under the closed numerical policy
 
 | Owner consequence | Implementation obligation |
 | --- | --- |
@@ -57,8 +61,11 @@ edited. This crosswalk states only the bounded successor dispositions.
 
 ## Still unavailable
 
-No nonidentity implementation is authorized by this crosswalk alone. The
-numerical array model and universal tolerances enumerated by the controlling
-decision must first receive exact owner disposition. A software default,
-legacy constant, approximate wavelength label, or benchmark candidate cannot
-close them.
+Numerical authority is closed, but no nonidentity implementation is authorized
+by this crosswalk alone. Conforming AST science-scan membership, scalar
+velocity, derivative validity and cause, telemetry-defect disposition, and
+actual-maximum authority must be present before the first real plan can be
+formed. Exact coefficient construction/certification, implementation,
+representative-data evidence, and fresh exact-SHA review also remain pending.
+The feasibility sweep's tap counts and nominal observation-152390 header speed
+are not promoted.

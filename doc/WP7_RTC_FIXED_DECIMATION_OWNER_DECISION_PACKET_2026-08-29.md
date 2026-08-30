@@ -1,11 +1,11 @@
 # WP-7 RTC Scan/Array Decimation Authority Packet
 
-Status: **scientific structure approved; numerical closure and implementation
-not yet authorized**
+Status: **scientific structure and numerical policy approved; AST prerequisite
+and implementation pending**
 
 Prepared: 2026-08-29
 
-Revised by owner decision: 2026-08-29
+Revised by owner decisions: 2026-08-29 and 2026-08-30
 
 Accepted identity-RTC base:
 `0574d9a50fe6df6f7ded07c1d229bcb8ca04309d`
@@ -27,13 +27,14 @@ bounded successor authority is recorded in:
 
 - [scan/array planning owner authority](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md);
 - [frozen-entry crosswalk](WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md);
+- [approved numerical policy](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md);
 - [ADR 0016](adr/0016-scan-array-rtc-bandwidth-planning.md); and
 - [ADR 0015](adr/0015-network-specific-timing-and-common-analysis-grid.md)
   for network timing and explicit common-analysis grids.
 
-This revised packet separates the approved scientific structure from the exact
-numerical values still requiring owner disposition. No nonidentity code should
-be constructed from placeholders.
+The approved numerical policy now closes the exact values formerly left open
+by this packet. Its prototype factor/tap sweep remains evidence only; no
+nonidentity code should be constructed from those estimated tap counts.
 
 ## Retained implementation and data evidence
 
@@ -173,10 +174,13 @@ satisfies all of:
 7. identical numerical transformation, output selection, and support for
    paired `x/r`.
 
-If no `M > 1` passes, select `M=1` without a sampling change while retaining
-the planner's occurrence-admission dispositions. This does not alter the
-separate accepted identity-RTC conformance context. Never reduce the science
-band to admit a desired factor. Different arrays may produce different filters,
+If no `M > 1` passes, select `M=1` without a sampling change only when the input
+cadence itself still meets the approved science-band and beam-sampling
+requirements. Otherwise publish no admitted ordinary astronomical product
+with typed cause `input_cadence_inadequate_for_science_band`. Retain the
+planner's occurrence-admission dispositions. This does not alter the separate
+accepted identity-RTC conformance context. Never reduce the science band to
+admit a desired factor. Different arrays may produce different filters,
 factors, and cadences in one scan.
 
 Every sampling-changing product remains a network-keyed timed stream with a new
@@ -203,31 +207,20 @@ immutable plan actually realized; it does not copy full products, axes,
 support planes, or provenance history. No persistent RTC TOD schema is added
 without an approved immediate consumer.
 
-## Exact owner values still required
+## Numerical authority closure
 
-The following numerical authority is not present in the owner response and
-must be fixed before implementation:
+The scientific owner approved
+[`wp7-rtc-scan-array-numerical-policy-v1`](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md)
+on 2026-08-30, including its inadequate-input `M=1` disposition. That policy,
+not a software default, legacy constant, approximate wavelength label, nominal
+observation header, or prototype tap estimate, now binds the twelve numerical
+fields formerly listed here.
 
-1. exact nominal center frequency for `a1100`, `a1400`, and `a2000`;
-2. telescope aperture value and convention;
-3. diffraction beam coefficient, width convention, and normalized profile;
-4. point-source peak, integrated-flux, shape/broadening, centroid, and
-   calibration-transfer tolerances and their aggregation;
-5. passband ripple and phase/centroid limits derived from those tolerances;
-6. retained-band alias-error budget and evaluation norm;
-7. minimum output samples per declared beam width;
-8. finite allowed integer-factor set;
-9. permitted realization families and deterministic simplest-plan tie rule;
-10. maximum impulse support and edge loss;
-11. arithmetic and coefficient precision/comparison rule; and
-12. velocity, cadence, and numerical uncertainty margins.
+The scan/array planner remains unavailable until conforming AST velocity and
+validity authority exists and the bounded implementation and certification
+gates pass. The separate accepted identity RTC remains available unchanged.
 
-A software default, legacy constant, or convenient benchmark candidate cannot
-fill one of these fields. Until they are bound, the separate accepted identity
-RTC remains the only available execution plan; the scan/array planner is not
-partially activated.
-
-## Evidence study after numerical closure
+## Evidence study under the approved numerical policy
 
 Generate the exact array-model and universal-policy artifacts first. Then, for
 representative scans including observation 152390:
@@ -250,7 +243,7 @@ baseline conformance.
 
 ## Required implementation gates
 
-After numerical closure, the bounded increment must prove at least:
+Under the approved numerical policy, the bounded increment must prove at least:
 
 - accepted `M=1` behavior remains bitwise and semantically unchanged;
 - below/exact/above `1 arcsec/s` admission and typed-cause behavior;
@@ -260,7 +253,9 @@ After numerical closure, the bounded increment must prove at least:
 - filter support cannot cross an inadmissible run boundary;
 - every candidate factor is evaluated and the largest conforming one is chosen;
 - `M=1` is selected without science-band relaxation when no larger factor
-  passes;
+  passes and the input cadence is adequate;
+- inadequate input cadence produces no admitted ordinary astronomical product
+  and exact cause `input_cadence_inadequate_for_science_band`;
 - exact per-array differences are preserved without a common grid;
 - new network occurrence, time, representative-source, and transitive-support
   relations are exact;
@@ -278,8 +273,9 @@ After numerical closure, the bounded increment must prove at least:
 
 ## Current stop condition
 
-The owner has approved the scientific planning model and superseded the fixed
-`M=2` recommendation. The next authorized action is numerical authority
-closure or a strictly evidence-only study explicitly bounded by candidate
-values. It is not nonidentity RTC product implementation, production
-activation, CAL, VAL, PTC, MAP/JINC, or legacy-route retirement.
+The owner has approved both the scientific planning model and
+`wp7-rtc-scan-array-numerical-policy-v1`, superseding the fixed-`M=2`
+recommendation. The next bounded action is closure of the AST velocity and
+validity authority needed to form `v_max,s`; nonidentity RTC implementation
+does not begin before that prerequisite conforms. Production activation, CAL,
+VAL, PTC, MAP/JINC, and legacy-route retirement remain outside scope.

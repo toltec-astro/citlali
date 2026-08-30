@@ -1,24 +1,30 @@
 # WP-7 RTC Scan/Array Numerical-Closure Packet
 
-Date: 2026-08-29
+Prepared: 2026-08-29
 
-Status: **proposed owner disposition; evidence only; nonidentity RTC
-implementation is not authorized by this packet**
+Scientific-owner disposition: approved 2026-08-30
+
+Authority identity: `wp7-rtc-scan-array-numerical-policy-v1`
+
+Status: **approved numerical authority; nonidentity RTC implementation remains
+blocked on conforming AST velocity/validity authority and implementation
+gates**
 
 Controlling structural authority:
 [WP-7 RTC Scan/Array Planning Scientific-Owner Authority](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
 at `38644343a4f8cfa213c8cab87c06753377704e12`
 
-This packet makes one explicit recommendation for every numerical field left
-open by the controlling decision. It does not alter the accepted network-timed
-`M=1` route, promote the feasibility filter estimates to certified
-coefficients, or construct the nonidentity RTC method.
+This packet fixes one explicit owner-approved value or rule for every numerical
+field left open by the controlling decision. It does not alter the accepted
+network-timed `M=1` route, promote the feasibility filter estimates to
+certified coefficients, or construct the nonidentity RTC method.
 
-## Recommended owner disposition
+## Approved owner disposition
 
-Approve the following as version 1 of the bounded TolTEC RTC scan/array
-numerical policy. A change to any value below requires a new policy identity;
-it must not appear as a software default or observation-local override.
+The scientific owner approved the following as version 1 of the bounded TolTEC
+RTC scan/array numerical policy. A change to any value below requires a new
+policy identity; it must not appear as a software default or observation-local
+override.
 
 1. Use exact nominal center frequencies `272 GHz`, `214 GHz`, and `150 GHz`
    for `a1100`, `a1400`, and `a2000`, respectively.
@@ -66,7 +72,7 @@ make the preservation claim false at sufficiently high scan speed.
 
 ## Array-model consequence
 
-Use the exact SI speed of light `c = 299792458 m/s`. The proposed array artifact
+Use the exact SI speed of light `c = 299792458 m/s`. The approved array artifact
 therefore contains:
 
 | Array | `nu_0` (GHz) | `lambda` (mm) | `lambda/D` (arcsec) | Airy intensity FWHM (arcsec) | temporal cutoff per `1 arcsec/s` (Hz) |
@@ -79,7 +85,7 @@ The 50 m telescope and the 1.1/1.4/2.0 mm bands are established instrument
 facts in the [NIST TolTEC instrument publication](https://www.nist.gov/publications/millimeter-wave-polarimeters-using-kinetic-inductance-detectors-toltec-and-beyond).
 The original optical design describes 150/220/280 GHz focal planes in
 [Bryan et al. 2018](https://arxiv.org/abs/1807.00097). Current TolTEC beammap
-calibration code consistently uses 272/214/150 GHz. This proposal selects that
+calibration code consistently uses 272/214/150 GHz. This policy selects that
 current calibration-software convention exactly; the historical optical-design
 values remain evidence and are not silently mixed into the artifact.
 
@@ -106,7 +112,7 @@ Compare the realized, sampled and filtered temporal point-source response with
 the unfiltered authoritative Airy response at the same output epochs. Every
 metric is a separate maximum bound:
 
-| Metric | Proposed bound |
+| Metric | Approved bound |
 | --- | ---: |
 | relative point-source peak error | `1e-3` |
 | relative integrated-flux error | `1e-3` |
@@ -142,7 +148,7 @@ delta_s,M = sqrt(1e-6 / (M - 1)).
 The final candidate must be checked against the summed norm; the per-image
 bound is a design allocation, not a replacement for that check.
 
-## Exact proposed FIR rule
+## Exact approved FIR rule
 
 For every candidate `M > 1`:
 
@@ -207,7 +213,7 @@ The evidence-only calculator
 [`tools/wp7/analyze_rtc_scan_array_policy_candidate.py`](../tools/wp7/analyze_rtc_scan_array_policy_candidate.py)
 and its checked result
 [`validation/wp7_rtc_scan_array_policy_candidate_2026-08-29.json`](../validation/wp7_rtc_scan_array_policy_candidate_2026-08-29.json)
-apply the proposed values to the exact representative detector cadence
+apply the approved policy values to the exact representative detector cadence
 `122.0703125 Hz`. They use the conventional Kaiser order estimate only; tap
 counts are not certified artifacts and can change when exact response and
 point-source tests are performed.
@@ -247,9 +253,9 @@ Therefore:
 The synthetic 50 arcsec/s row shows a plausible expected plan but is not an
 accepted observation-152390 result.
 
-## What owner approval would and would not authorize
+## Scope of owner approval
 
-Approval closes the twelve numerical fields listed by the controlling
+The approval closes the twelve numerical fields listed by the controlling
 authority and the inadequate-input `M=1` edge case. It authorizes engineering
 to prepare exact array/policy artifacts and the bounded nonidentity
 learn-consider-apply increment only after the AST prerequisite is conforming.
@@ -259,12 +265,10 @@ claim 152390 `v_max`, introduce a common analysis grid, add a persistent TOD
 schema, activate production, retire the identity route, or begin despiking,
 level shifts, CAL, VAL, PTC, MAP/JINC, or another numerical RTC method.
 
-The requested owner response is either:
+The exact owner disposition received on 2026-08-30 was:
 
 ```text
-Approve the WP-7 RTC scan/array numerical policy proposed in
+I Approve the WP-7 RTC scan/array numerical policy proposed in
 WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md, including the
 input-cadence-inadequate M=1 disposition.
 ```
-
-or an exact replacement for each value or rule to be changed.

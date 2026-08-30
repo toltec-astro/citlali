@@ -341,17 +341,24 @@ design and measurements show a clearer boundary.
   cadence from the authoritative circular diffraction-limited beam and the
   approved product-level passband, phase, alias, sampling, support, and edge
   limits; select the largest conforming factor and use `M=1` without sampling
-  change, but with the new admission dispositions, when none above one passes;
+  change, but with the new admission dispositions, when none above one passes
+  and the input cadence remains adequate; otherwise produce no admitted
+  ordinary astronomical product with
+  `input_cadence_inadequate_for_science_band`;
 - preserve per-network outputs when arrays realize different filters, factors,
   or cadences; this does not request a common analysis grid;
 - implement paired pathology, transition guards, stable segments, reset, and
   replacement semantics; and
 - port only conforming filter, notch, transfer, and decimation kernels.
 
-The scan/array structure above is accepted, but exact array-model and universal
-numerical-policy artifacts remain a hard gate on nonidentity implementation.
-Legacy frequency/FWHM constants and the historical `32 Hz` filter are evidence,
-not defaults. See ADR 0016 and the 2026-08-29 RTC scan/array owner authority.
+The scan/array structure and
+[`wp7-rtc-scan-array-numerical-policy-v1`](WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md)
+are accepted. Conforming AST science-scan velocity/validity authority remains
+a hard gate on nonidentity implementation, followed by exact coefficient
+certification and the bounded implementation gates. Legacy frequency/FWHM
+constants, the historical `32 Hz` filter, and prototype tap estimates are
+evidence, not defaults. See ADR 0016 and the 2026-08-29 RTC scan/array owner
+authority.
 
 ### S3: distinct CAL
 
