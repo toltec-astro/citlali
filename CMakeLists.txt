@@ -167,6 +167,24 @@ if (CITLALI_STANDALONE)
     set_target_properties(citlali_wp7_identity_rtc_acceptance
         PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
     )
+
+    # This independent representative-data gate exercises the production
+    # AST scan-motion product and network-specific ALIGN views. It publishes
+    # only a compact evidence record, never a scientific TOD product.
+    add_executable(citlali_wp7_ast_scan_motion_acceptance EXCLUDE_FROM_ALL
+        "tools/wp7/ast_scan_motion_acceptance.cpp"
+    )
+    add_dependencies(citlali_wp7_ast_scan_motion_acceptance
+        citlali_wp7_identity_rtc_acceptance_build_identity)
+    target_link_libraries(citlali_wp7_ast_scan_motion_acceptance
+        PRIVATE citlali::citlali
+    )
+    target_include_directories(citlali_wp7_ast_scan_motion_acceptance
+        PRIVATE "include" "${wp7_dependency_identity_dir}"
+    )
+    set_target_properties(citlali_wp7_ast_scan_motion_acceptance
+        PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    )
 endif()
 
 # Create config headers
