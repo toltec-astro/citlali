@@ -389,9 +389,12 @@ It bounds additional mapped astronomical distortion and broadband retained-
 noise variance at `1%`, requires offline naive/JINC and OOF/fruitloops
 certification, and makes production planning a pre-certified filter-bank
 lookup. Sub-input-Nyquist lines remain owned by line detection/mitigation.
-Conforming AST science-scan velocity/validity authority, representative PSD
-envelopes, certified bank artifacts, and the bounded implementation gates
-remain; the v1 Kaiser factor/tap sweep is historical evidence only.
+The bounded AST science-scan velocity/validity authority is now accepted as
+[`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
+and [ADR 0018](adr/0018-ast-scan-motion-velocity-and-validity.md). Its compact
+raw product and independent network-mapped views, representative PSD envelopes,
+certified bank artifacts, and the bounded implementation gates remain; the v1
+Kaiser factor/tap sweep is historical evidence only.
 The implementation slices, storage and execution baseline, performance-tool
 adoption policy, and evidence gates are in
 [WP-7 Timestream Successor Implementation Baseline](WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md).

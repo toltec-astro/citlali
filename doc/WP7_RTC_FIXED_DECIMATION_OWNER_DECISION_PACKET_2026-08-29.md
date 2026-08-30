@@ -227,9 +227,11 @@ OOF/fruitloops certification, pre-certified bank lookup, and separate line
 ownership. All unlisted v1 clauses, including its inadequate-input `M=1`
 disposition, remain authoritative.
 
-The scan/array planner remains unavailable until conforming AST velocity and
-validity authority exists and the bounded implementation and certification
-gates pass. The separate accepted identity RTC remains available unchanged.
+The scan/array planner remains unavailable until the approved
+[`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
+velocity/validity role is implemented and conforming and the bounded
+implementation and certification gates pass. The separate accepted identity
+RTC remains available unchanged.
 
 ## Evidence study under the corrected numerical policy
 
@@ -295,9 +297,11 @@ Under the corrected numerical policy, the bounded increment must prove at least:
 
 The owner has approved both the scientific planning model and
 `wp7-rtc-scan-array-numerical-policy-v2`, superseding the fixed-`M=2`
-recommendation and v1 runtime Kaiser design. The next bounded actions are
-closure of the AST velocity/validity authority needed to form `v_max,s` and
-preparation of the offline PSD/filter-bank certification evidence; nonidentity
-RTC implementation does not begin before those prerequisites conform.
+recommendation and v1 runtime Kaiser design. The AST velocity/validity
+authority needed to form `v_max,s` is now closed by
+`wp7-ast-scan-motion-v1`. The next bounded actions are its conforming
+implementation and preparation of the offline PSD/filter-bank certification
+evidence; nonidentity RTC implementation does not begin before those
+prerequisites conform.
 Production activation, CAL, VAL, PTC/PCA expansion, runtime MAP/JINC planning,
 and legacy-route retirement remain outside scope.

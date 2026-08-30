@@ -6,8 +6,9 @@ Scientific owner: Grant Wilson
 
 Authority identity: `wp7-rtc-scan-array-numerical-policy-v2`
 
-Status: **approved bounded correction; AST authority, certified filter-bank
-artifacts, implementation, and acceptance evidence pending**
+Status: **approved bounded correction; AST authority closed by
+`wp7-ast-scan-motion-v1`; AST implementation, certified filter-bank artifacts,
+RTC implementation, and acceptance evidence pending**
 
 Supersedes only the response-budget, alias-budget, and runtime-filter-design
 clauses of
@@ -180,8 +181,9 @@ select a v2 plan. They may be retained as historical design evidence only.
 
 Before a nonidentity RTC route can be accepted, the project still needs:
 
-1. conforming AST science-scan membership, velocity, validity, and cause
-   authority;
+1. a conforming implementation of the approved
+   [`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
+   science-scan membership, velocity, validity, and cause authority;
 2. representative broadband PSD envelopes appropriate to cleaned products;
 3. versioned filter-bank entries and independent numerical certification;
 4. native-rate versus filtered naive, JINC, and OOF/fruitloops evidence;

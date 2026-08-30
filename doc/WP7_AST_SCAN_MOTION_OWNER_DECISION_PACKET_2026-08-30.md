@@ -4,26 +4,29 @@ Date: 2026-08-30
 
 Scientific owner: Grant Wilson
 
-Status: proposed bounded authority; scientific-owner decision required; no AST
-or nonidentity RTC implementation authorized by this packet
+Status: approved bounded scientific-owner authority 2026-08-30; AST
+implementation and conformance pending; no nonidentity RTC implementation
+authorized by this packet alone
 
-Proposed authority identity: `wp7-ast-scan-motion-v1`
+Authority identity: `wp7-ast-scan-motion-v1`
 
-## Decision requested
+## Approved decision
 
-Approve or revise the bounded rules below for the AST product that supplies
-science-scan motion to the already-approved WP-7 RTC scan/array planner. The
-decision closes only the missing trajectory-field, physical-scan membership,
-scalar-velocity, derivative-support, and telescope-telemetry validity authority
-needed by the first nonidentity RTC increment. It does not reopen the RTC
-filter-bank policy, ordinary AST coordinate realization, pointing corrections,
-CAL, VAL, PTC, MAP/JINC, or a common analysis grid.
+The scientific owner approved the bounded rules below on 2026-08-30 for the
+AST product that supplies science-scan motion to the already-approved WP-7 RTC
+scan/array planner. The decision closes only the missing trajectory-field,
+physical-scan membership, scalar-velocity, derivative-support, and telescope-
+telemetry validity authority needed by the first nonidentity RTC increment. It
+does not reopen the RTC filter-bank policy, ordinary AST coordinate
+realization, pointing corrections, CAL, VAL, PTC, MAP/JINC, or a common
+analysis grid.
 
-The recommended disposition is to approve `wp7-ast-scan-motion-v1` as written,
-implement it as a compact immutable AST role, and treat the numerical defect
-threshold and local derivative operator as versioned v1 assignments. They may
-be recalibrated only through a named successor authority and new representative
-evidence; calibration may not silently change an existing plan.
+The approved disposition establishes `wp7-ast-scan-motion-v1` as written and
+authorizes its bounded implementation as a compact immutable AST role. The
+numerical defect threshold and local derivative operator are versioned v1
+assignments. They may be recalibrated only through a named successor authority
+and new representative evidence; calibration may not silently change an
+existing plan.
 
 ## Authority gap being closed
 
@@ -286,8 +289,8 @@ by the independent elevation encoder; the other is contradicted by the smooth
 commanded trajectory. They are telemetry-defect evidence, not permission to
 clip high speeds.
 
-The proposed eleven-record robust defect test separates those two events from
-the retained trajectory in this file. The proposed quadratic derivative then
+The approved eleven-record robust defect test separates those two events from
+the retained trajectory in this file. The approved quadratic derivative then
 retains sustained, locally corroborated speeds above 200 arcsec/s and gives an
 evidence-only candidate maximum of approximately `221.405 arcsec/s`. This is
 materially different from treating the mislabeled
@@ -331,7 +334,7 @@ and OOF/fruitloops gates remain separate and pending.
 
 This packet does not claim that:
 
-- the proposed threshold is a universal LMT hardware specification;
+- the approved v1 threshold is a universal LMT hardware specification;
 - the 152390 candidate maximum is already authoritative;
 - command or desired pointing is realized motion;
 - direct horizon-coordinate velocity is celestial scan speed;
@@ -342,9 +345,9 @@ This packet does not claim that:
   implemented or activated; or
 - production readiness or observational performance is established.
 
-## Proposed owner disposition
+## Scientific-owner disposition
 
-The exact approval text may be:
+The scientific owner supplied the following exact approval on 2026-08-30:
 
 ```text
 I approve the bounded WP-7 AST scan-motion velocity and validity authority
@@ -354,4 +357,3 @@ membership, 30 ms continuity boundary, 2 arcsec telemetry-defect boundary,
 eleven-record quadratic derivative, typed causes, raw scan maximum, and
 network-specific mapped-view semantics.
 ```
-

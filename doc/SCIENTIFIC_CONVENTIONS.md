@@ -203,9 +203,18 @@ OOF/fruitloops. Production selects a pre-certified filter-bank entry; filter
 family and tap count are engineering outputs, and the v1 Kaiser sweep is
 historical evidence only. Narrow sub-input-Nyquist lines are handled by the
 line-detection/mitigation strategy rather than the generic broadband filter
-budget. No nonidentity implementation is available until the AST
-velocity/validity prerequisite, PSD/filter-bank certification, and
-implementation gates conform. Governing structural authority is
+budget. The bounded AST prerequisite is scientifically closed by
+[`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md):
+for its exact real Science/Lissajous J2000 input family, physical scan identity
+is `(observation, subobservation, scan)`, realized motion uses
+`SourceRaAct/SourceDecAct`, continuity admits `dt <= 30 ms`, defects are the
+strictly-greater-than-2-arcsec result of the approved eleven-record robust
+position test, and velocity is the norm of the approved eleven-record quadratic
+J2000 tangent derivative. AST owns the compact raw maximum; ALIGN supplies
+network-specific mapped views without a common grid. The implementation and
+conformance described by [ADR 0018](adr/0018-ast-scan-motion-velocity-and-validity.md),
+PSD/filter-bank certification, and the remaining gates must pass before any
+nonidentity implementation is available. Governing structural authority is
 [`WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md`](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
 and its
 [`crosswalk`](WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md).

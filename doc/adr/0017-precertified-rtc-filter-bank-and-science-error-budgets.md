@@ -65,7 +65,8 @@ input `M=1` disposition.
 - The runtime planner is simpler, but the project must build and version the
   representative PSD, map/OOF comparison, and coefficient-certification
   artifacts before nonidentity RTC acceptance.
-- Conforming AST velocity/validity authority remains a prerequisite.
+- ADR 0018 closes AST velocity/validity authority; its conforming
+  implementation remains a prerequisite.
 - The line path remains a distinct scientific and implementation concern; this
   decision changes neither its algorithm nor its source-protection semantics.
 
@@ -82,3 +83,4 @@ specific output timing, and its other unmodified decisions.
 - [Historical v1 numerical packet](../WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md)
 - [Scan/array planning owner authority](../WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
 - [Network-timing decision](0015-network-specific-timing-and-common-analysis-grid.md)
+- [AST scan-motion decision](0018-ast-scan-motion-velocity-and-validity.md)

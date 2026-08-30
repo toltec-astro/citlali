@@ -3,7 +3,7 @@
   "authority_id": "wp7-timestream-successor-2026-08-26",
   "recorded_date": "2026-08-26",
   "last_updated_date": "2026-08-30",
-  "status": "identity_rtc_accepted_scan_array_filter_policy_v2_approved_ast_scan_motion_decision_pending",
+  "status": "identity_rtc_accepted_ast_scan_motion_v1_approved_implementation_and_filter_certification_pending",
   "identity_policy": "Artifact identity is filename plus SHA-256. Archive paths are convenience locators and are not identity.",
   "repository_authority": {
     "decision": "doc/adr/0014-wp7-timestream-successor.md",
@@ -18,7 +18,9 @@
     "rtc_scan_array_planning_packet": "doc/WP7_RTC_FIXED_DECIMATION_OWNER_DECISION_PACKET_2026-08-29.md",
     "rtc_scan_array_numerical_policy": "doc/WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md",
     "rtc_scan_array_numerical_policy_v1_historical": "doc/WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md",
+    "ast_scan_motion_decision": "doc/adr/0018-ast-scan-motion-velocity-and-validity.md",
     "ast_scan_motion_owner_decision_packet": "doc/WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md",
+    "ast_scan_motion_crosswalk": "doc/WP7_AST_SCAN_MOTION_AUTHORITY_CROSSWALK_2026-08-30.md",
     "architecture": "doc/ARCHITECTURE.md",
     "living_status": "doc/REFACTOR_STATUS.md"
   },
@@ -32,7 +34,7 @@
       "generic_folded_alias_bound",
       "runtime_filter_construction"
     ],
-    "implementation_status": "blocked_on_ast_velocity_validity_and_filter_bank_certification",
+    "implementation_status": "blocked_on_ast_scan_motion_implementation_and_filter_bank_certification",
     "maximum_additional_mapped_response_error": 0.01,
     "maximum_broadband_alias_to_retained_noise_variance_ratio": 0.01,
     "runtime_filter_design": false,
@@ -43,10 +45,12 @@
     "observation_152390_vmax_authoritative": false
   },
   "ast_scan_motion_authority": {
-    "proposed_policy_id": "wp7-ast-scan-motion-v1",
-    "scientific_owner_disposition": "pending",
-    "implementation_authorized": false,
-    "supported_input_family_proposed": "real_toltec_science_lissajous_50hz_j2000",
+    "policy_id": "wp7-ast-scan-motion-v1",
+    "scientific_owner_disposition": "approved_bounded_authority",
+    "approved_date": "2026-08-30",
+    "bounded_implementation_authorized": true,
+    "implementation_status": "not_started",
+    "supported_input_family": "real_toltec_science_lissajous_50hz_j2000",
     "observation_152390_candidate_vmax_authoritative": false
   },
   "scientific_packet": {

@@ -1,31 +1,35 @@
 # Citlali Refactor Status
 
-## 2026-08-30 WP-7 AST Scan-Motion Authority Proposal
+## 2026-08-30 WP-7 AST Scan-Motion Authority Approval
 
-The next prerequisite now has a decision-ready bounded packet:
-[WP-7 AST Scan-Motion Velocity And Validity Owner Decision Packet](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md).
-It proposes authority identity `wp7-ast-scan-motion-v1` for the exact realized
-J2000 trajectory fields, physical DCS science-scan identity, 50 Hz continuity,
-a deterministic position-domain telemetry-defect test, an eleven-record local
+The scientific owner approved
+[`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md),
+with the durable decision recorded in
+[ADR 0018](adr/0018-ast-scan-motion-velocity-and-validity.md) and the frozen-to-
+successor dispositions recorded in the
+[authority crosswalk](WP7_AST_SCAN_MOTION_AUTHORITY_CROSSWALK_2026-08-30.md).
+The bounded authority fixes the exact realized J2000 trajectory fields,
+physical DCS science-scan identity, inclusive 30 ms continuity boundary,
+strictly-greater-than-2-arcsec telemetry-defect boundary, eleven-record local
 quadratic derivative, scalar velocity, typed validity/causes, compact raw scan
-maximum, and network-specific mapped motion views. The proposal preserves
-independent network timing and does not request a common analysis grid.
+maximum, and network-specific mapped motion views. It preserves independent
+network timing and does not request a common analysis grid.
 
-The packet is not yet scientific authority and no AST or nonidentity RTC code
-is authorized from it. The retained observation-152390 telescope file shows
-why the decision is necessary: two isolated approximately 28--29 arcsec
-one-record discontinuities must be typed as defects, while sustained,
-locally corroborated motion above 200 arcsec/s must remain eligible to set the
-actual maximum. Direct differences exceed 1,400 arcsec/s, the historical
-header scale is not realized-velocity authority, and percentile clipping would
-erase the required distinction. Under the proposed evidence-only operator the
-candidate maximum is approximately 221.405 arcsec/s; it is not an accepted AST
-product until implementation, representative evidence, and exact-SHA review
-pass.
+Approval authorizes the bounded AST implementation; it does not establish that
+implementation's conformance or authorize nonidentity RTC by itself. The
+retained observation-152390 telescope file remains diagnostic evidence: two
+isolated approximately 28--29 arcsec one-record discontinuities must be typed
+as defects while sustained, locally corroborated motion above 200 arcsec/s
+remains eligible. The evidence-only candidate maximum of approximately
+221.405 arcsec/s is not an accepted AST product or RTC planning input until the
+implementation, representative evidence, repository gates, and fresh exact-SHA
+review pass.
 
-The immediate next action is scientific-owner disposition of the packet.
-Filter-bank/PSD and native-rate versus filtered naive/JINC and OOF/fruitloops
-certification remain separate prerequisites after AST authority closes.
+The immediate next action is the compact immutable raw AST scan-motion product
+and network-specific mapped views, followed by the packet's focused synthetic,
+two-network, chunk-invariance, representative-152390, repository, and
+independent-review gates. Filter-bank/PSD and native-rate versus filtered
+naive/JINC and OOF/fruitloops certification remain separate prerequisites.
 
 ## 2026-08-30 WP-7 RTC Filter-Bank Policy Correction
 
@@ -67,10 +71,11 @@ The array frequencies, Airy planning beam, full optical temporal support,
 four-samples-per-FWHM rule, integer-factor universe, support and boundary
 semantics, centered phase, DC bound, binary64 arithmetic, safety margins,
 network timing, paired `x/r` semantics, and inadequate-input `M=1` disposition
-remain unchanged. The next prerequisites are conforming AST velocity/validity
-authority and versioned PSD/filter-bank plus naive/JINC and OOF/fruitloops
-certification artifacts. No nonidentity RTC implementation or production
-activation is authorized yet.
+remain unchanged. The AST velocity/validity authority is now closed by
+[`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md);
+its implementation/conformance and the versioned PSD/filter-bank plus
+naive/JINC and OOF/fruitloops certification artifacts remain prerequisites. No
+nonidentity RTC implementation or production activation is authorized yet.
 
 The authority-only correction passes its v2 link/manifest consistency guard,
 the local `citlali_cli` build, all 870 runnable CTests with the one established
@@ -113,7 +118,8 @@ telemetry-defect disposition, and the required actual maximum. No derivative
 or smoothing rule is invented here.
 
 At v1 approval, the next bounded authority task was the AST velocity/validity
-prerequisite. V2 retains that prerequisite and additionally requires the
+prerequisite. That authority is now closed by `wp7-ast-scan-motion-v1`; its
+implementation and conformance remain pending. V2 additionally requires the
 offline PSD, filter-bank, naive/JINC, and OOF/fruitloops certification described
 above. No common grid, persistent RTC TOD schema, production activation, CAL,
 VAL, or PTC/PCA expansion is opened.
@@ -179,9 +185,10 @@ mapped-response and retained broadband-noise-variance budgets, beam sampling,
 factor universe, pre-certified bank lookup, support, arithmetic, margins, and
 inadequate-input disposition. Existing implementation constants, the legacy
 `32 Hz` setting, and v1 Kaiser factor/tap estimates are not promoted.
-Nonidentity implementation remains unavailable until conforming AST authority,
-representative PSD and filter-bank certification, and implementation gates are
-present. The accepted network-timed `M=1` route is unchanged; no CAL, VAL,
+Nonidentity implementation remains unavailable until the approved AST role is
+implemented and conforming, representative PSD and filter-bank certification
+exists, and implementation gates pass. The accepted network-timed `M=1` route
+is unchanged; no CAL, VAL,
 PTC/PCA expansion, runtime MAP/JINC planning, persistent RTC TOD schema,
 production activation, or legacy-route change is authorized.
 

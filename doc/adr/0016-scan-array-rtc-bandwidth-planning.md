@@ -1,8 +1,8 @@
 # ADR 0016: Scan/array RTC bandwidth and decimation planning
 
 Status: accepted scientific structure 2026-08-29; numerical-policy portion
-partially superseded by ADR 0017 on 2026-08-30; AST prerequisite, certified
-filter bank, and implementation pending
+partially superseded by ADR 0017 on 2026-08-30; AST authority closed by ADR
+0018; AST implementation, certified filter bank, and RTC implementation pending
 
 Decision owners: Citlali project owner and scientific owner
 
@@ -78,9 +78,9 @@ unchanged clauses named by v2; its prototype tap counts are evidence only.
   scientific availability, not hidden padding or chunk behavior.
 - A deterministic planner may share compact immutable plans and reusable
   workspaces, but architecture and kernel choices remain benchmark-driven.
-- No nonidentity numerical implementation begins until conforming AST
-  velocity/validity authority, the v2 certified-bank prerequisites, and the
-  bounded implementation gates are satisfied.
+- No nonidentity numerical implementation begins until the approved ADR 0018
+  AST role is implemented and conforming, the v2 certified-bank prerequisites
+  are satisfied, and the bounded implementation gates pass.
 
 ## Evidence and authority
 
@@ -89,4 +89,5 @@ unchanged clauses named by v2; its prototype tap counts are evidence only.
 - [Current v2 filter-bank policy](../WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md)
 - [Historical v1 numerical packet](../WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md)
 - [Network-timing decision](0015-network-specific-timing-and-common-analysis-grid.md)
+- [AST scan-motion decision](0018-ast-scan-motion-velocity-and-validity.md)
 - [Revised RTC planning packet](../WP7_RTC_FIXED_DECIMATION_OWNER_DECISION_PACKET_2026-08-29.md)

@@ -67,11 +67,13 @@ edited. This crosswalk states only the bounded successor dispositions.
 ## Still unavailable
 
 Numerical authority is corrected, but no nonidentity implementation is
-authorized by this crosswalk alone. Conforming AST science-scan membership,
-scalar velocity, derivative validity and cause, telemetry-defect disposition,
-and actual-maximum authority must be present before the first real plan can be
-formed. Representative broadband PSD envelopes, versioned filter-bank entries,
-naive/JINC and OOF/fruitloops certification, implementation,
+authorized by this crosswalk alone. The scientific owner has approved the
+missing AST facts as
+[`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md),
+recorded in [ADR 0018](adr/0018-ast-scan-motion-velocity-and-validity.md), but
+the conforming AST product and mapped views must exist before the first real
+plan can be formed. Representative broadband PSD envelopes, versioned filter-
+bank entries, naive/JINC and OOF/fruitloops certification, implementation,
 representative-data evidence, and fresh exact-SHA review also remain pending.
-The v1 feasibility sweep's factors/tap counts and nominal observation-152390
-header speed are not promoted.
+The v1 feasibility sweep's factors/tap counts, the nominal observation-152390
+header speed, and its evidence-only candidate maximum are not promoted.

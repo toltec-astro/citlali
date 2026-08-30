@@ -5,8 +5,9 @@ Date: 2026-08-29
 Scientific owner: Grant Wilson
 
 Status: approved bounded successor authority; numerical policy corrected to v2
-by scientific-owner disposition 2026-08-30; AST prerequisite, certified filter
-bank, and nonidentity implementation remain pending
+by scientific-owner disposition 2026-08-30; AST authority closed by
+`wp7-ast-scan-motion-v1`; AST implementation, certified filter bank, and
+nonidentity RTC implementation remain pending
 
 This decision supersedes only the fixed or observation-common planning
 interpretations identified in the
@@ -209,5 +210,6 @@ naive/JINC and OOF/fruitloops certification is an acceptance requirement, not
 authorization to change those algorithms. This authority does not claim
 astronomical transfer, observational performance, or implementation
 conformance. The accepted `M=1` network-timed terminal route remains unchanged
-and available while the AST prerequisite and nonidentity implementation are
-pending.
+and available while the approved
+[`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
+role and nonidentity RTC implementation are pending conformance.
