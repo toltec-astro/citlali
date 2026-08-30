@@ -1,10 +1,11 @@
 # SCI-NOI v0.1 — Ensemble Design And Source-Imprint Specification
 
-Artifact identity: `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.6`
+Artifact identity: `SCI-NOI_ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT v0.1/r0.7`
 
 Status: ordinary coherence, network-stratified coefficient-balance family, and
 source-suppression claim boundary owner-approved; exact finite-design mechanics
-remain unavailable and Stage-B terminology remains to be authored
+remain unavailable, Stage-B terminology remains to be authored, and
+plan-controlled persistence/regeneration modes are owner-approved
 
 ## Finite Assignment-Design Identity
 
@@ -175,6 +176,42 @@ GEN records sufficient failed ensemble/member identity, scientifically
 meaningful stage, terminal state, cause category, and diagnostic context to
 investigate the run without requiring exhaustive implementation provenance. A
 VAL evaluation neither authors completion truth nor rescues a failed ensemble.
+
+## Approved Persistence And Regeneration Modes
+
+ODQ-109 admits three plan-selected modes with distinct requested, effective,
+applied, and realized state: persisted ensemble, compact deterministic
+regeneration, and streaming sufficient statistics. There is no universal
+default and no silent fallback among them.
+
+Persisted mode retains every required completed member with exact ensemble,
+parent, method, operator, assignment/design, domain/support/response,
+lifecycle, and provenance identity. Compact mode may omit member payloads only
+when immutable parents, exact method/algorithm versions, frozen operator state,
+canonical unit ordering, finite design, admitted membership, assignment
+key/seed/counter, and full configuration reconstruct every assignment and
+declared scientific product under an explicit byte-identical or numerical
+reproducibility contract. Dense signs, per-sample sign provenance, randomized
+timestreams, and realization maps are not universally required.
+
+Streaming mode may consume members transiently only when the retained state is
+mathematically sufficient for every exact published product and claim. The
+initial second moment requires its exact design-weighted accumulation, common-
+all-member availability/domain state, and every dependence/design quantity
+needed for effective-information and estimator-uncertainty reporting. The
+record lists every unsupported later reconstruction or reanalysis and cannot
+claim a retained ensemble.
+
+ODQ-105A remains absolute in every mode. Every admitted member completes;
+non-persistence cannot create a survivor ensemble. Any admitted-member failure
+fails the ensemble for UNC, and partial streaming accumulators carry no UNC
+authority. Failure of plan-required persistence fails that product; planned
+transience is not failure. Completion/membership/mode/audit truth remains
+immutable even without payload persistence.
+
+Persistence, regeneration, or retained sufficient statistics establish no
+adequacy, covariance completeness, calibration, significance, conformity,
+performance, readiness, or production authority.
 
 ## Source-Imprint Identity
 

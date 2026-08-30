@@ -171,8 +171,11 @@ distinct, and no PTC/MAP promotion follows. ODQ-108, STD numerator and scale,
 now selects the exact immutable normalized MAP signal divided by canonical
 `sqrt(V_hat_cond)` on the exact compatible finite-positive intersection. The
 unit-`1` output claims conditional-scale standardization only, keeps dependence
-explicit, makes no significance claim, and leaves JINC separate. ODQ-109,
-persistence and exact regeneration, is next.
+explicit, makes no significance claim, and leaves JINC separate.
+ODQ-109 now admits plan-selected persisted, compact-regeneration, and streaming-
+sufficient-statistic modes with exact mode/reproducibility/sufficiency/audit
+identity, no default or silent fallback, and unchanged fail-closed completion.
+ODQ-110A, held-fixed deterministic filtering, is next.
 Conditional Stage B remains blocked on exact
 bytes/hashes, granular owner decisions or explicit unavailability, and required
 source/profile bindings. The frozen MAP/pre-MAP

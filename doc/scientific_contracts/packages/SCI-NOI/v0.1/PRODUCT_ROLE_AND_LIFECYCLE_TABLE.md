@@ -1,6 +1,6 @@
 # SCI-NOI v0.1 — Product Role And Lifecycle Table
 
-Artifact identity: `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.7`
+Artifact identity: `SCI-NOI_PRODUCT_ROLE_AND_LIFECYCLE v0.1/r0.8`
 
 Status: proposed sanitized Stage A scientific input; exact bytes await owner
 approval
@@ -23,7 +23,10 @@ approval
 | UNC consumer-effective weight | One exact named estimator/projection/response/domain | Not portable to another estimator or consumer and not a PTC/MAP coefficient without explicit future authority |
 | STD admission | Exact numerator/positive-scale compatibility decision for one STD use | Not scale construction or statistical calibration |
 | STD MAP conditional-scale standardized signal | `NOI-STD/MAP-CONDITIONAL-SECOND-MOMENT-SCALE@1`; exact immutable normalized real-observation MAP numerator; canonical `sqrt(V_hat_cond)` denominator; exact compatible finite-positive intersection; dependence; unit `1`; lifecycle | Means only MAP signal standardized by the stated conditional randomization second-moment scale; not uncertainty, Gaussian/Student/z/N-sigma significance, probability, detection, completeness, purity, or catalog authority; JINC and algebraic alternate routes are not implicit |
-| Persistence/reconstruction record | Persisted/transient/streamed state, exact regeneration capability, sufficient statistics, audit limitation | Not statistical adequacy |
+| Persistence plan/realization | Plan-selected persisted ensemble, compact deterministic regeneration, or streaming sufficient statistics; distinct requested/effective/applied/realized mode; no universal default or silent fallback | Not member completion, statistical adequacy, or permission to change mode after failure |
+| Persisted-ensemble record | Every required completed member payload with exact ensemble/parent/method/operator/design/domain/support/response/lifecycle identity | Payload presence does not establish adequacy, covariance, or calibration; required persistence failure is product failure |
+| Compact-regeneration record | Immutable parents; exact method/algorithm versions; frozen operator state; canonical unit order; finite design/admitted membership; key/seed/counter/configuration; byte-identical or numerical reproducibility class and limitation | Dense signs, per-sample provenance, randomized timestreams, and member maps are not universally required; reconstruction cannot change identity/state |
+| Streaming-sufficient-statistic record | Exact target/claim; mathematically sufficient retained state; common-member/domain and dependence state; unsupported reconstruction/reanalysis list; immutable completion/membership truth | Not a retained ensemble; no alternative estimator/covariance/projection claim beyond retained sufficiency; partial failed accumulation has no UNC authority |
 
 Every requested operation publishes its complete required atomic product or a
 typed unavailable/failed state. No product automatically realizes the next
@@ -35,3 +38,8 @@ fails the ensemble for all UNC use, and no profile can admit its completed
 survivors as a partial ensemble. Later UNC, STD, filtering, or selection
 products are new generations and never mutate an earlier product or parent
 claim.
+
+The persistence mode never weakens all-admitted-member completion. Planned
+transience is not failure, but failure of plan-required persistence fails that
+product. No survivor product or partial streaming estimate may be published
+after an admitted-member failure.

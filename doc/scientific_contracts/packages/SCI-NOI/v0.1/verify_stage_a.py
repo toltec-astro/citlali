@@ -116,6 +116,12 @@ def main() -> None:
         "MAP signal standardized by the stated conditional randomization",
         "does not create a second implicit STD method identity",
         "JINC standardization remains a separate future method",
+        "Plan-selected persisted ensemble, compact deterministic regeneration, or streaming sufficient statistics",
+        "no universal default or silent fallback",
+        "byte-identical or numerical reproducibility",
+        "mathematically sufficient for every exact published product and claim",
+        "partial streaming state carries no UNC authority",
+        "Failure of plan-required persistence fails that product",
     ]
     for token in required:
         if token not in package_text:

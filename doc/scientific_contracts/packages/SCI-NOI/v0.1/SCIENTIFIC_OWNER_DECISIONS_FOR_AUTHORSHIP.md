@@ -1,8 +1,8 @@
 # SCI-NOI v0.1 — Sanitized Scientific-Owner Decisions For Authorship
 
-Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.13`
+Artifact identity: `SCI-NOI_OWNER_DECISIONS v0.1/r0.14`
 
-Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, ODQ-105A, ODQ-105B, ODQ-106, ODQ-107, and ODQ-108 owner-approved; exact
+Status: ODQ-101, ODQ-102A, ODQ-102B, ODQ-102C, ODQ-103, ODQ-104, ODQ-105A, ODQ-105B, ODQ-106, ODQ-107, ODQ-108, and ODQ-109 owner-approved; exact
 finite-design mechanics delegated to the scientific-contract author under
 ODQ-102D; later decisions remain open; not yet an allowed Stage B authority
 
@@ -383,19 +383,42 @@ not approve another decision or make an unresolved numerical route available.
 
 - **Exact question:** Which persisted-member, transient-regeneration, or
   streaming-sufficient-statistic modes are admitted, with what audit limits?
-- **Recommended disposition:** plan-control persistence; bind immutable
-  parents, method/version, canonical key/configuration, completed membership,
-  estimator state, and reconstruction limitation. Dense signs and per-sample
-  provenance are unnecessary when exact regeneration is sufficient.
+- **Approved disposition:** admit three plan-selected modes: persisted
+  ensemble, compact deterministic regeneration, and streaming sufficient
+  statistics. Record requested/effective/applied/realized mode with no silent
+  fallback and no universal default. Persisted mode retains every required
+  completed member with exact identity. Compact mode binds immutable parents,
+  exact method/algorithm versions, frozen operator state, canonical unit
+  ordering, finite design, admitted membership, assignment key/seed/counter,
+  and full configuration; it declares byte-identical or exact numerical
+  reproducibility class and limitation. Dense signs, per-sample sign
+  provenance, randomized timestreams, and realization maps are unnecessary
+  when that compact record reconstructs the approved assignments/product.
+  Streaming mode retains mathematically sufficient state for every published
+  product/claim, including initial weighted second-moment accumulation, common-
+  member domain, and required dependence/effective-information/estimator-
+  uncertainty state, and declares every unavailable later reconstruction or
+  reanalysis. ODQ-105A remains absolute: every admitted member completes,
+  failed ensembles yield no survivor or partial streaming estimate, and
+  partial accumulators carry no UNC authority. Required persistence failure is
+  product failure; planned transience is not. All modes retain immutable
+  completion/membership/mode/audit identity. Persistence or regenerability
+  establishes no adequacy, covariance, calibration, significance, conformity,
+  performance, readiness, or production claim.
 - **Alternatives:** require all members, regeneration-only, streaming-only,
   selected modes, or unavailable.
 - **Scientific consequences:** bounded storage without overstated
   reproducibility.
-- **Conservative state while open:** transient/streaming products cannot claim
-  exact reconstruction.
+- **Conservative state:** all three mode families are approved but no mode is
+  realized until an exact plan and its required identity/sufficiency record
+  exist. Missing mode or reconstruction facts make the affected product
+  unavailable.
 - **Affected artifacts:** GEN/UNC lifecycle, role table, profile, provenance.
-- **Exact bytes changed by approval:** modes, reconstruction identity,
-  estimator state, and limitations.
+- **Exact bytes changed by approval:** three mode families; requested/effective/
+  applied/realized state; no-default/no-fallback rules; compact regeneration
+  identity and reproducibility class; streaming sufficiency and limitation
+  disclosures; required-persistence failure; fail-closed partial-state rule;
+  and no-adequacy implications.
 
 ### `SCI-NOI-ODQ-110A` — held-fixed deterministic FLT
 

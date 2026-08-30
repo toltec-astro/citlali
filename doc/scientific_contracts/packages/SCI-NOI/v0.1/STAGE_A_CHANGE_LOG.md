@@ -259,6 +259,28 @@ the separately supplied and conflict-checked ODQ-101 owner approval.
     r0.7 of the product/lifecycle table, r0.3 MAP/JINC boundaries, and r0.13
     packet/decision records without creating numerical STD availability.
 
+## ODQ-109 Persistence And Regeneration Update
+
+75. Approved plan-selected persisted-ensemble, compact deterministic-
+    regeneration, and streaming-sufficient-statistic modes with distinct
+    requested/effective/applied/realized state, no default, and no silent
+    fallback.
+76. Required compact regeneration to bind immutable parents, exact method/
+    algorithm/operator/design/membership/key/configuration identity and an
+    explicit byte-identical or numerical reproducibility class/limitation.
+77. Required streaming state to be mathematically sufficient for every exact
+    published product/claim and to disclose unsupported member, estimator,
+    covariance, projection, diagnostic, and reanalysis capabilities.
+78. Preserved ODQ-105A in every mode: all admitted members complete, partial
+    streaming accumulators carry no UNC authority, and required-persistence
+    failure is product failure while planned transience is not.
+79. Preserved the claim firewall: storage/regeneration/sufficiency establishes
+    no adequacy, covariance completeness, calibration, significance,
+    conformity, performance, readiness, or production authority.
+80. Advanced the walkthrough to ODQ-110A and published r0.7 of the design/
+    imprint specification, r0.8 of the product/lifecycle table, and r0.14
+    packet/decision records without selecting a storage default.
+
 ## Preserved Boundaries
 
 - no implementation-blind rationale, normative core, engineering conformance

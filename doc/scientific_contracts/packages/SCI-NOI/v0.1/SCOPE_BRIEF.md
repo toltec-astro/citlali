@@ -424,12 +424,31 @@ evidence validating that operator in the same generation.
 
 ## 11. Persistence And Immutable Companions
 
-Individual members may be persisted, generated transiently with exact
-regeneration, or reduced through mathematically equivalent streaming sufficient
-statistics. The plan records exact immutable parents, algorithm/version,
-seed/key/configuration, completed membership, estimator state, and resulting
-audit/reconstruction limitation. Dense signs and per-sample provenance are not
-universally required.
+ODQ-109 admits three plan-selected modes: persisted ensemble, compact
+deterministic regeneration, and streaming sufficient statistics. The plan
+records requested/effective/applied/realized mode; there is no universal
+default or silent fallback. Persisted mode retains every required member with
+exact identity. Compact mode binds immutable parents, exact method/algorithm
+versions, frozen operator state, canonical unit ordering, finite design,
+admitted membership, assignment key/seed/counter, and full configuration, plus
+its byte-identical or numerical reproducibility class and limitation. Dense
+signs, per-sample sign provenance, randomized timestreams, and member maps are
+not universally required when the compact identity reconstructs the declared
+scientific product.
+
+Streaming mode retains mathematically sufficient state for every published
+product and claim. For the initial second moment this includes exact weighted
+accumulation, common-all-member domain/availability, and required design/
+dependence/effective-information/estimator-uncertainty state. It declares every
+unsupported later member diagnostic, estimator, covariance, projection, or
+reanalysis and does not claim a retained ensemble.
+
+ODQ-105A applies in all modes: every admitted member completes, failed
+ensembles yield no survivor or partial streaming estimate, and partial
+accumulators carry no UNC authority. Plan-required persistence failure is
+product failure; planned transience is not. Persistence/regeneration does not
+establish adequacy, covariance completeness, calibration, significance,
+conformity, performance, readiness, or production authority.
 
 MAP and JINC parents remain immutable. NOI products attach as new versioned
 companions with exact parent and method identity. Absence of complete
@@ -466,7 +485,9 @@ second moment. ODQ-106 approves the covariance representation and rank policy,
 and ODQ-107 approves the initial inverse conditional second-moment scale while
 keeping inverse variance, precision, and consumer weights separately typed.
 ODQ-108 approves the initial MAP standardized-signal method and keeps JINC
-separate. The next walkthrough question is `SCI-NOI-ODQ-109`. Every later
+separate. ODQ-109 approves the three plan-controlled persistence/regeneration
+modes and their fail-closed/audit limits. The next walkthrough question is
+`SCI-NOI-ODQ-110A`. Every later
 decision and the artifact's final hash still require explicit owner review.
 
 ## 13. Non-Goals And Claim Boundary

@@ -549,8 +549,23 @@ second-moment scale—never significance, probability, detection, completeness,
 purity, or catalog authority. JINC remains a separate future method with a
 JINC-specific compatible scale.
 
-The next walkthrough question is `SCI-NOI-ODQ-109`, persistence and exact
-regeneration.
+Grant Wilson approved `SCI-NOI-ODQ-109` on `2026-08-29`. SCI-NOI admits three
+plan-selected modes: persisted ensemble, compact deterministic regeneration,
+and streaming sufficient statistics. Requested/effective/applied/realized mode
+is explicit; there is no universal default or silent fallback. Compact mode
+binds exact parent/method/algorithm/operator/design/membership/key/configuration
+identity and declares byte-identical or numerical reproducibility. Streaming
+mode retains mathematically sufficient state for every published product/claim
+and declares unsupported later reconstruction/reanalysis. ODQ-105A remains
+absolute: every admitted member completes, failed ensembles yield no survivor
+or partial streaming estimate, and partial accumulators carry no UNC authority.
+Required persistence failure is product failure; planned transience is not.
+Persistence/regeneration establishes no adequacy, covariance completeness,
+calibration, significance, conformity, performance, readiness, or production
+authority.
+
+The next walkthrough question is `SCI-NOI-ODQ-110A`, held-fixed deterministic
+filtering.
 Later granular decisions, exact packet bytes/hashes, and
 required source/profile Registry bindings remain under owner review.
 MAP/pre-MAP numerical parents remain

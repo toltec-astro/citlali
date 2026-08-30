@@ -1,7 +1,7 @@
 # SCI-NOI v0.1 — Collision-Free Operator And Product Taxonomy
 
 Status: proposed sanitized Stage B author input; ODQ-101, ODQ-102A/B/C,
-ODQ-103/104/105A/105B/106/107/108 incorporated; exact bytes await owner approval
+ODQ-103/104/105A/105B/106/107/108/109 incorporated; exact bytes await owner approval
 
 The semantic prefixes are:
 
@@ -81,7 +81,9 @@ unit, and prohibited claim fields are in
   controls assignment design, stable ordering, canonical key identity,
   equivalence, duplicate detection, design rank, completion, and source imprint.
 - [`PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md`](PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md)
-  controls atomic GEN, UNC, and STD roles and producer/policy ownership.
+  controls atomic GEN, UNC, and STD roles, producer/policy ownership, and the
+  plan-selected persisted, compact-regeneration, or streaming-sufficient-
+  statistic lifecycle without silent fallback.
 - [`SCI-NOI_VAL_PROFILE_DRAFTS.md`](SCI-NOI_VAL_PROFILE_DRAFTS.md) contains the
   NOI-owned use-specific profile candidates.
 

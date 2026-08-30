@@ -193,7 +193,7 @@ numerical gates remain unavailable. ODQ-104 is explicitly owner-approved:
 every GEN method classifies scientifically consequential adjacent state, and a
 relearned method names its consequential rerun/relearn stages and resulting
 changed state without requiring exhaustive implementation provenance. The next
-owner question is `SCI-NOI-ODQ-109`, persistence and exact regeneration.
+owner question is `SCI-NOI-ODQ-110A`, held-fixed deterministic filtering.
 ODQ-103 approves
 the source-suppression intent and no-source-free-by-construction boundary while
 delegating exact terminology to the Stage-B scientific author. ODQ-105A now
@@ -220,3 +220,8 @@ exact compatible finite-positive intersection. Its unit-`1` output claims only
 MAP signal standardized by the stated conditional randomization second-moment
 scale; dependence remains explicit, significance is not claimed, algebraic
 inverse-scale duplication is prohibited, and JINC requires a separate method.
+ODQ-109 admits plan-selected persisted-ensemble, compact deterministic-
+regeneration, and streaming-sufficient-statistic modes with no default or
+silent fallback. It requires exact reproducibility or mathematical sufficiency
+and explicit audit/reanalysis limitations, preserves all-member fail-closed
+completion, and makes required-persistence failure a product failure.
