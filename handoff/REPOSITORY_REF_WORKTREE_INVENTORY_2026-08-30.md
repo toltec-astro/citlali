@@ -61,12 +61,13 @@ different-tip names are retained. In particular, the clean attached local
 `build-adaptation` worktree is not retired merely because its older remote tip
 is now contained by mainline.
 
-## Guarded Local Retirement Set
+## Completed Local Retirement Set
 
-The following 21 branches are ancestors of `f0f423827`, have no live attached
-worktree after the one stale worktree record is pruned, and lose no commit
-reachability when deleted. `repair-native-consumer-extinction` is additionally
-pinned by the exact Stage 7 tag.
+Following explicit owner confirmation, the following 21 branches were deleted
+locally. Each was proven to be an ancestor of both `f0f423827` and
+administrative descendant `9ef0b52d6`, each had no live attached worktree, and
+none lost commit reachability. `repair-native-consumer-extinction` is
+additionally pinned by the exact Stage 7 tag.
 
 ```text
 codex/converge-apt-align-jinc
@@ -92,6 +93,11 @@ codex/repair-sci-noi-002
 codex/restore-legacy-apt-admission
 ```
 
+The guarded deletion completed with 112 local branches remaining: one current
+mainline, five retained ancestors, and 106 divergent branches. The five
+retained ancestor branches are the two attached lanes and three intentional
+historical/forensic pointers listed below.
+
 Retain these other merged local refs:
 
 - `codex/refactor-mainline` is the integrated authority;
@@ -105,12 +111,15 @@ Retain these other merged local refs:
 ## User-Controlled Remote Retirement Set
 
 Nineteen of the local retirement names also have contained remote refs. The
-user may remove exactly these after verifying that remote mainline is still
-`f0f423827ab321640e0cbcb003f7bf015368f694`:
+user may remove exactly these after verifying that remote mainline equals the
+current local mainline and still contains the validated integration identity:
 
 ```bash
-expected=f0f423827ab321640e0cbcb003f7bf015368f694
-test "$(git ls-remote --heads origin refs/heads/codex/refactor-mainline | awk '{print $1}')" = "$expected"
+validated=f0f423827ab321640e0cbcb003f7bf015368f694
+local_mainline="$(git rev-parse refs/heads/codex/refactor-mainline)"
+remote_mainline="$(git ls-remote --heads origin refs/heads/codex/refactor-mainline | awk '{print $1}')"
+test "$remote_mainline" = "$local_mainline"
+git merge-base --is-ancestor "$validated" "$remote_mainline"
 
 git push origin --delete \
   codex/converge-apt-align-jinc \
@@ -175,9 +184,10 @@ the August 26 preservation cycle.
 
 The guarded cleanup completed with
 `git worktree prune --expire now`; the stale entry is gone and 25 live
-worktrees remain. No live path or file was removed. The 21 local branches and
-19 remote branches classified above were not deleted: branch removal remains
-an explicit follow-up owner decision.
+worktrees remain. No live path or file was removed. Following a separate
+explicit owner confirmation, the 21 local branches classified above were
+deleted. The 19 corresponding remote branches remain unchanged and
+user-controlled.
 
 The 25 live paths include 12 detached Codex worktrees and 13 branch worktrees.
 Ten detached Codex worktrees are clean; close or archive their app tasks before

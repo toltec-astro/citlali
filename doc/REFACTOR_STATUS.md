@@ -2,12 +2,13 @@
 
 ## 2026-08-30 Post-Integration Readiness And Repository Hygiene
 
-Application mainline is clean and synchronized at
+Validated application integration identity remains
 `f0f423827ab321640e0cbcb003f7bf015368f694`, the exact target of annotated tag
-`wp7-native-memory-integration-20260830`. The Stage 7, first WP-7 integration,
-and exact Unity-tested memory-repair identities remain separately tag-pinned.
-The 13 bounded source-disposition targets remain absent; no additional source
-or header cleanup is authorized by this administrative pass.
+`wp7-native-memory-integration-20260830`. Its documentation-only administrative
+descendants do not change the tested application tree. The Stage 7, first WP-7
+integration, and exact Unity-tested memory-repair identities remain separately
+tag-pinned. The 13 bounded source-disposition targets remain absent; no
+additional source or header cleanup is authorized by this administrative pass.
 
 The executable Phase 5 readiness record was reevaluated on 2026-08-30. It now
 names the integrated Spack Adapt path rather than the superseded Conan 2 path
@@ -26,9 +27,11 @@ worktrees, untracked user material, and reflog-only commits. One stale
 administrative worktree entry for the already absent
 `/private/tmp/citlali-legacy-apt-dispatch` directory was pruned with no live
 path or file removal; 25 live worktrees remain. Twenty-one contained,
-unattached local branches and 19 corresponding remote branches are classified
-as optional retirement targets, but no branch was deleted without a separate
-explicit owner decision.
+unattached local branches and 19 corresponding remote branches were classified
+as optional retirement targets. Following separate explicit owner
+confirmation, all 21 local branches were deleted with ancestry and worktree
+guards; 112 local branches remain. The 19 corresponding remote branches remain
+unchanged and user-controlled.
 
 ## 2026-08-29 Native Runtime Memory Architecture Repair
 
