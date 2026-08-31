@@ -1,6 +1,6 @@
 # SCI-FLT-INF frozen-authority and source binding
 
-Binding identity: `SCI-FLT-INF-SOURCE-BINDING v0.1/r0.1`
+Binding identity: `SCI-FLT-INF-SOURCE-BINDING v0.1/r0.2`
 
 Status: exact Stage A provenance record; not an author packet or scientific
 freeze
@@ -17,6 +17,16 @@ freeze
 All Git blob OIDs below use Git's native object hashing. SHA-256 values are
 hashes of the exact file bytes produced by `git show <commit>:<path>` or of the
 byte-identical working-tree file at the base.
+
+## Current scientific-owner decision
+
+[`SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md`](SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md)
+is the exact current owner source closing `SCI-FLT-INF-ODQ-001`. It selects the
+optimal matched-template amplitude-field estimand, excludes posterior/Wiener
+sky reconstruction for the historical path, and distinguishes the estimator
+from ordinary kernel convolution. Its exact bytes are bound by
+[`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md); later decisions
+must use separate exact owner artifacts.
 
 ## Frozen SCI-NOI authority
 

@@ -1,12 +1,12 @@
 # SCI-FLT-INF contradictions, ambiguities, and unavailable states
 
-Record identity: `SCI-FLT-INF-GAPS v0.1/r0.1`
+Record identity: `SCI-FLT-INF-GAPS v0.1/r0.2`
 
 Status: Stage A owner-review record; absence is preserved rather than repaired
 
 ## Contradictions
 
-### `wiener_filter` label versus apparent estimand
+### Resolved: `wiener_filter` label versus scientific estimand
 
 The active full path publishes a normalized numerator/denominator field built
 from a template, parent weights, and a shaped inverse spectral model. That is
@@ -14,9 +14,11 @@ implementation-consistent with a local template-amplitude estimator. No exact
 signal prior or posterior covariance was recovered. The historical/internal
 mathematics also groups “matched or Wiener” approximations together.
 
-Disposition: do not decide from naming. The scientific owner must choose
-template amplitude, posterior reconstruction, both as separate methods, or a
-different exact estimand.
+Owner disposition under ODQ-001: the historical path is an **optimal matched-
+template amplitude estimator**, not a posterior/Wiener reconstruction. The
+historical implementation label may remain where compatibility requires it,
+but it is not the scientific identity. A genuine posterior reconstruction is
+a separate future method and contract.
 
 ### Requested full method versus realized lowpass substitution
 
@@ -131,9 +133,9 @@ amplitude, and catalog inference is not authoritative.
 
 | State | Reason unavailable | Consequence |
 | --- | --- | --- |
-| exact active full-path estimand | no owner selection or independent contract | no package name or product claim |
+| exact active full-path estimand | **available at identity level**: ODQ-001 selects an optimal matched-template amplitude field; exact method realization remains open | package name and numerical product remain unavailable pending ODQ-002 onward |
 | genuine Wiener/posterior method | no complete prior/likelihood/operator/posterior specification recovered | no posterior reconstruction product |
-| template-amplitude method | reusable GLS core exists, but parent covariance/template/support/response are unresolved | no scientific amplitude field or scalar |
+| matched-template amplitude method realization | owner-selected estimand and unbiased-normalization requirement exist, but parent covariance/template/support/response/operator are unresolved | no authorized numerical amplitude field or scalar |
 | parent covariance/inverse-noise | MAP/JINC do not supply the inferred precision needed by implementation naming | denominator cannot be called Fisher information or inverse variance |
 | template scientific identity | normalization, beam/source role, calibration, and learned/fixed status unresolved | response and units unavailable |
 | approximation-qualified operator | no owner-approved truncation/convergence/floor error policy | exact method route unavailable |
@@ -154,8 +156,9 @@ amplitude, and catalog inference is not authoritative.
 | Recovery conclusion | Confidence | Basis |
 | --- | --- | --- |
 | one combined `SCI-FLT-INF` contract is scientifically incoherent | high | roadmap split rule plus distinct estimand/state/response/lifecycle families |
-| active full path is structurally template-amplitude-like | medium-high | direct algebra inspection; scientific intent absent |
-| active full path is a complete posterior/Wiener reconstruction | low | no explicit signal prior or posterior covariance recovered |
+| active full path is structurally template-amplitude-like | medium-high as implementation observation | direct algebra inspection; implementation conformity remains unassessed |
+| owner-selected scientific identity of the historical full path is matched-template amplitude | authoritative | exact ODQ-001 owner approval |
+| active full path is a complete posterior/Wiener reconstruction | excluded as scientific identity | exact ODQ-001 owner approval; no explicit signal prior or posterior covariance recovered |
 | current NOI-member application is learned-once/fixed-state | high as implementation observation | state is resolved from real parent and reused for members |
 | per-member relearning is currently active | low/negative recovery result | no active route found; absence limited to inspected base |
 | adaptive edge operation is scientifically consequential | high | mask/background/window are parent-derived and alter signal/weight/kernel |
@@ -166,7 +169,7 @@ amplitude, and catalog inference is not authoritative.
 
 Stage B must not be commissioned while:
 
-- ODQ-001 has no owner answer;
+- ODQ-002 package ownership and split has no owner answer;
 - multiple selected estimands remain in one proposed package;
 - required parent covariance, template, or prior authority is absent;
 - method substitution can occur without explicit realized identity;

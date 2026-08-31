@@ -200,10 +200,13 @@ and cross-package handoffs are valuable recovery inputs.
   amplitude, learned-once and per-member-relearned state, data-thresholded
   mode selection, selector/fallback, adaptive edge, and NOI-based coefficient
   families. The result is a non-authoritative holding study, not a combined
-  package or Stage B packet; the first owner question is the existing full
-  path's intended estimand. Implementation/config/schema/history remain in a
-  quarantined dossier, and the protected SCI-FLT-FIXED author bytes are
-  unchanged.
+  package or Stage B packet. Grant Wilson approved ODQ-001 on `2026-08-30`:
+  the historical full path is an optimal matched-template amplitude estimator
+  with amplitude-unbiased normalization for a matching supplied template, not
+  a posterior/Wiener sky reconstruction or ordinary source-shaped
+  convolution. ODQ-002 package ownership is next. Implementation/config/
+  schema/history remain in a quarantined dossier, and the protected
+  SCI-FLT-FIXED author bytes are unchanged.
 - Package-specific FLT recovery:
   [`packages/SCI-FLT/v0.1/PRIOR_WORK.md`](packages/SCI-FLT/v0.1/PRIOR_WORK.md)
   at `2026-08-30`. It separately classifies fixed convolution/low-pass,

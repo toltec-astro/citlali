@@ -1,9 +1,9 @@
 # SCI-FLT-INF candidate family split matrix
 
-Matrix identity: `SCI-FLT-INF-FAMILY-SPLIT v0.1/r0.1`
+Matrix identity: `SCI-FLT-INF-FAMILY-SPLIT v0.1/r0.2`
 
 Status: Stage A recommendation for owner review; names are provisional and no
-row is an approved package or method
+row is an approved package or complete method
 
 ## Split rule
 
@@ -17,8 +17,8 @@ the operator and estimand remain exact and the dependency graph is explicit.
 
 | ID | Provisional family | Estimand/claim | State and dependence | Recommended disposition | Readiness |
 | --- | --- | --- | --- | --- | --- |
-| `INF-A` | normalized template-amplitude field | local amplitude of one declared template under one declared inverse-noise/weight model | template, parent coefficient field, spectral model, approximation and support; may be learned on the real parent then frozen | candidate first package if ODQ-001 selects this estimand; provisional name `SCI-FLT-TAMP` or owner-selected source/estimator name | not Stage B ready |
-| `INF-B` | Wiener/posterior sky reconstruction | posterior mean or other explicitly named reconstructed sky field | exact signal prior, noise likelihood/covariance, hyperparameters, boundary, regularization and posterior state | separate package from `INF-A`; retain only if owner confirms this is a desired scientific product | no recovered complete method; not ready |
+| `INF-A` | **owner-selected optimal matched-template amplitude field** | amplitude of one exact supplied template as a function of admitted map position; point-source-response kernel yields matched point-source amplitude; normalization is unbiased for a matching amplitude under declared assumptions | template, parent coefficient field, exact noise model, approximation and support; may be learned on the real parent then frozen | selected scientific family for recovery of the historical full path; package ownership/name remains ODQ-002 | not Stage B ready |
+| `INF-B` | genuine Wiener/posterior sky reconstruction | posterior mean or other explicitly named reconstructed sky field | exact signal prior, noise likelihood/covariance, hyperparameters, boundary, regularization and posterior state | expressly not the historical path; separate future package only if later desired | unselected; no recovered complete method; not ready |
 | `INF-C` | matched/GLS scalar or catalog amplitude | scalar/source-local amplitude and covariance for a declared template/location or fit domain | fixed template/covariance or separately learned source state; catalog/location selection may be external | likely SRC/estimator-owned successor rather than generic map filter; may share sanitized GLS math with `INF-A` but not product identity | partial reusable math; boundary not ready |
 | `INF-D1` | externally declared fixed state | exact `INF-A`, `INF-B`, or `INF-C` operator with state fixed before parent use | state from immutable external authority, not learned on target parent | lifecycle variant of selected base method; bind exact state source | operator-dependent |
 | `INF-D2` | parent-learned then frozen state | conditional product under state learned from the real observation/coadd parent | immutable learning generation followed by one frozen application generation | separate versioned method/generation graph; not a free mode toggle | not ready |
@@ -36,15 +36,17 @@ the operator and estimand remain exact and the dependency graph is explicit.
 The study recommends against approving `SCI-FLT-INF` as one combined package.
 After owner decisions:
 
-1. create one base package for the selected primary estimand (`INF-A` or
-   `INF-B`, or both as separate packages);
+1. create one base package for owner-selected `INF-A` after ODQ-002 resolves
+   ownership/name;
 2. place source-local/catalog amplitude estimation (`INF-C`) at an explicit
    FLT/SRC ownership boundary;
 3. encode fixed, parent-learned, NOI-informed, and per-member-relearned cases
    as exact lifecycle/method variants rather than a generic `learned` flag;
 4. leave `INF-E`, `INF-F`, and `INF-G` as separate packages or explicit
    preprocessing/selection authorities; and
-5. route `INF-H` through a frozen-NOI-compatible derived-product contract.
+5. route `INF-H` through a frozen-NOI-compatible derived-product contract; and
+6. leave `INF-B` outside the historical path, requiring a wholly separate
+   future recovery/contract if ever requested.
 
 ## Why the split matters
 
@@ -60,8 +62,8 @@ coefficient is not precision by construction.
 
 ## Cross-row non-equivalences
 
-- `INF-A != INF-B` unless a future derivation proves an exact equivalence for
-  one explicit model and preserves both product claims.
+- `INF-A != INF-B`; ODQ-001 expressly selects matched-template amplitude and
+  excludes a posterior-sky estimand for the historical path.
 - `INF-A != INF-C` when one is a whole-map field and the other is a selected
   source/catalog scalar, even if their local algebra matches.
 - `INF-D2 != INF-D4`; learning once on the real parent and relearning per

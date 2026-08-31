@@ -27,6 +27,7 @@ REQUIRED_STUDY_OBJECTS = (
     "CONTRADICTIONS_AMBIGUITIES_UNAVAILABLE_STATES.md",
     "PROPOSED_SANITIZED_AUTHOR_INPUTS.md",
     "SCIENTIFIC_OWNER_DECISION_LEDGER.md",
+    "SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md",
     "FROZEN_AUTHORITY_AND_SOURCE_BINDING.md",
     "STAGE_A_SOURCE_MANIFEST.md",
     "STAGE_A_SOURCE_MANIFEST.sha256",
@@ -193,12 +194,16 @@ def main() -> int:
                 fail("Stage A source-manifest pointer mismatch", failures)
 
     required_phrases = {
-        "README.md": ("not an approved package", "first owner question"),
+        "README.md": ("not an approved package", "next owner question"),
         "SCOPE_BRIEF.md": ("Program adherence and prior-work recovery", "Exclusions"),
         "PRIOR_WORK.md": ("Genuinely new scientific work remaining", "Unavailable"),
         "FAMILY_SPLIT_MATRIX.md": ("INF-A", "INF-J"),
         "SCIENTIFIC_OWNER_DECISION_LEDGER.md": (
-            "SCI-FLT-INF-ODQ-001", "all questions open",
+            "SCI-FLT-INF-ODQ-001", "approved and closed",
+        ),
+        "SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md": (
+            "optimal matched-template amplitude estimator",
+            "not a posterior or Wiener reconstruction",
         ),
         "CROSS_PACKAGE_AND_NOI_BOUNDARIES.md": (
             "fixed-state and relearned members cannot be mixed", "FRUIT boundary",
@@ -217,7 +222,7 @@ def main() -> int:
 
     print("SCI-FLT-INF Stage A verification passed")
     print(f"study objects: {len(REQUIRED_STUDY_OBJECTS)}")
-    print(f"protected SCI-FLT-FIXED objects: {len(PROTECTED) + 1}")
+    print(f"protected SCI-FLT-FIXED paths: {len(PROTECTED) + 1}")
     print(f"frozen SCI-NOI objects: {len(NOI_OBJECTS)}")
     return 0
 

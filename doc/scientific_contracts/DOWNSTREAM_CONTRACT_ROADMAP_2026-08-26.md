@@ -227,7 +227,12 @@ template-amplitude field from any genuine posterior/Wiener reconstruction,
 source/catalog amplitude estimation, learned-state lifecycle variants,
 data-thresholded mode selection, method selection/fallback, adaptive edge
 conditioning, and NOI-based coefficient/standardized products. The study
-recommends against one combined `SCI-FLT-INF` contract. Its first owner gate is
-the intended estimand of the existing full path. No successor package, author
-packet, Stage B launch, algorithm change, conformity, validation, calibration,
-performance, readiness, production, freeze, or Unity action follows.
+recommends against one combined `SCI-FLT-INF` contract. Grant Wilson approved
+and closed ODQ-001 on `2026-08-30`: the historical full path is an optimal
+matched-template amplitude estimator, not a posterior/Wiener sky
+reconstruction or ordinary source-shaped convolution, and its normalization
+must be unbiased for a matching supplied template under the declared
+assumptions. ODQ-002 package ownership is the next gate. No successor package,
+author packet, Stage B launch, algorithm change, conformity, validation,
+calibration, performance, readiness, production, freeze, or Unity action
+follows.

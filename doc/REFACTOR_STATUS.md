@@ -672,12 +672,18 @@ reconstruction, selected-source/catalog amplitude estimation, learned-state
 lifecycle variants, data-thresholded mode selection, method selection/fallback,
 adaptive edge/background conditioning, and NOI-derived coefficient/
 standardized products have different estimands, state graphs, response,
-covariance, support, or ownership. The first owner gate is the intended
-estimand of the existing full path. This is a Stage A study and decision
-walkthrough only; no successor package, author packet, Stage B launch,
-algorithm change, implementation conformity, validation, calibration,
-performance, readiness, production, freeze, or Unity action is claimed or
-authorized.
+covariance, support, or ownership. Grant Wilson approved and closed
+`SCI-FLT-INF-ODQ-001` on `2026-08-30`: the historical full path is an
+**optimal matched-template amplitude estimator**, with unbiased normalization
+for a matching supplied template under the declared assumptions. The ordinary
+point-source-response kernel yields a matched point-source amplitude field;
+other scientifically defined kernels yield their corresponding template-
+amplitude fields. This is not a posterior/Wiener sky reconstruction and is
+not ordinary source-shaped convolution. Package ownership under ODQ-002 is
+the next gate. This is a Stage A study and decision walkthrough only; no
+successor package, author packet, Stage B launch, algorithm change,
+implementation conformity, validation, calibration, performance, readiness,
+production, freeze, or Unity action is claimed or authorized.
 
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.

@@ -1,6 +1,6 @@
 # SCI-FLT-INF proposed sanitized author inputs
 
-Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.1`
+Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.2`
 
 Status: proposed material only; not approved, not exhaustive, not SHA-bound as
 an author packet, and not permission to launch Stage B
@@ -32,23 +32,35 @@ author-input list.
 - required bundle failure propagates; unavailable does not become zero or a
   silent alternative.
 
-## Candidate estimator extract: fixed-template amplitude
+## Owner-approved estimator identity for future sanitization
 
-For a selected package whose estimand is the amplitude `A` of an exact
-template `t` in a parent `m` with exact admitted covariance `C`, an author may
-start from
+ODQ-001 authorizes the scientific identity **optimal matched-template
+amplitude estimator** for the historical full path. For a future selected
+package whose estimand is the local amplitude `A` of an exact supplied
+template `t_x` in a parent `m` with exact admitted covariance `C`, an author
+may start from
 
 ```text
-N = t^T C^{-1} m
-D = t^T C^{-1} t
-A_hat = N / D
+N(x) = t_x^T C^{-1} m
+D(x) = t_x^T C^{-1} t_x
+A_hat(x) = N(x) / D(x)
 ```
 
 subject to exact declarations of domain, support, location/indexing, template
 normalization, parent beam/response, covariance authority, null space, and
-regularization. Under a complete authorized linear model with fixed `t` and
-`C`, `Var(A_hat | t,C)=D^{-1}` may be derived. Without those assumptions, `D`
-is only a normalization coefficient.
+regularization. Under the exact authorized zero-mean model
+`m = A t_x + n`, its normalization must give `E[A_hat(x)] = A` for a matching
+signal, subject to all declared noise, support, edge, missing/nonfinite,
+validity, and response assumptions. Under a complete authorized linear model
+with fixed `t_x` and `C`, `Var(A_hat | t_x,C)=D(x)^{-1}` may be derived.
+Without those assumptions, `D` is only a normalization coefficient. The
+author must state the precise optimality criterion and its conditions.
+
+A point-source-response kernel yields a matched point-source amplitude field;
+another scientifically defined kernel yields the amplitude field of that
+specified template or shape. This estimator is not ordinary convolution with
+the same kernel because convolution lacks the exact noise-weighted,
+amplitude-unbiased matched-estimator normalization.
 
 A map of local amplitudes and a selected-source/catalog scalar remain distinct
 products even if the local equation is shared.
@@ -64,6 +76,9 @@ template-amplitude equation or an implementation label as a Wiener
 specification.
 
 No exact TolTEC posterior method is currently proposed for author admission.
+ODQ-001 excludes posterior/Wiener reconstruction as an interpretation of the
+historical full path; a future posterior method requires a separate recovery
+and scientific contract.
 
 ## Candidate learning-generation extract
 
@@ -136,8 +151,8 @@ required/conditional/optional role:
 - retained diagnostics versus public science roles; and
 - permitted named consumers.
 
-No current product table is proposed because ODQ-001 and the package split are
-open.
+No current product table is proposed because ODQ-002 package ownership and the
+later product decisions remain open.
 
 ## Material that must remain excluded
 
@@ -147,14 +162,15 @@ open.
 - current output names and historical science labels;
 - historical validation, adverse results, re-audit gates, and production use;
 - historical owner decisions not re-admitted under a current exact cover;
-- manager's inference that the active full path is amplitude-like;
+- implementation-derived claims about why the active path is amplitude-like;
 - active SCI-FLT-FIXED Stage B material; and
 - any unapproved default, template, prior, covariance, threshold, selection
   law, edge rule, response, or uncertainty interpretation.
 
 ## Author-packet construction gate
 
-After owner decisions, create a new package directory and a package-specific
+After ODQ-002 and the required package-local owner decisions, create a new
+package directory and a package-specific
 `PRIOR_WORK.md`, sanitized `SCOPE_BRIEF.md`, exact boundary objects, operator/
 product/lifecycle tables, owner decision record, and exclusive SHA-bound
 author manifest. If the selected package still needs implementation evidence

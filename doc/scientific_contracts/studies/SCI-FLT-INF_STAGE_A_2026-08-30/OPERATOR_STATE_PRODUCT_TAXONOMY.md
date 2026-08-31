@@ -1,8 +1,9 @@
 # SCI-FLT-INF operator, state, and product taxonomy
 
-Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.1`
+Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.2`
 
-Status: proposed Stage A vocabulary; not normative science
+Status: Stage A vocabulary updated for approved ODQ-001; remaining details are
+not normative science
 
 ## Identity tuple
 
@@ -34,22 +35,36 @@ level estimator products.
 
 ## Estimand families
 
-### Template-amplitude estimator
+### Owner-selected optimal matched-template amplitude estimator
 
-For a declared parent vector `m`, template `t`, and admitted covariance or
-inverse-noise operator `C`, a reusable candidate is
+ODQ-001 selects the amplitude of the exact supplied template as the estimand
+of the historical full path. For a declared parent vector `m`, location-
+indexed supplied template `t_x`, and exact admitted noise covariance `C`, the
+canonical generalized least-squares form is
 
 ```text
-N = t^T C^{-1} m
-D = t^T C^{-1} t
-A = N / D
+N(x) = t_x^T C^{-1} m
+D(x) = t_x^T C^{-1} t_x
+A_hat(x) = N(x) / D(x)
 ```
 
-or a location-indexed/spatially varying analogue. This estimates a declared
-template amplitude only under its model. `D` is a normalization coefficient.
-`D^{-1}` is a conditional variance only if the exact covariance, linear model,
-fixed state, domain, and regularity assumptions are authorized. A code field
-called `weight` does not supply that authority.
+or an exactly declared equivalent for spatially varying noise, response, and
+support. Under the authorized zero-mean model `m = A t_x + n`, exact template,
+noise, support, edge, validity, and regularity assumptions, the normalization
+must satisfy `E[A_hat(x)] = A` for a matching signal of amplitude `A`.
+
+When `t_x` is the point-source response, the estimand is a matched point-source
+amplitude field. Another scientifically defined supplied kernel yields the
+amplitude field of that specified template or shape. `D` is a normalization
+coefficient. `D^{-1}` is a conditional variance only if the exact covariance,
+linear model, fixed state, domain, and regularity assumptions authorize that
+interpretation. A code field called `weight` does not supply that authority.
+The exact criterion under which the estimator is `optimal` remains an ODQ-004
+through ODQ-006 contract question; the owner term is not an unconditional
+achieved-performance claim.
+
+This estimator is not ordinary convolution with `t_x`: convolution alone does
+not apply the declared noise weighting and amplitude-unbiased normalization.
 
 ### Posterior/Wiener reconstruction
 
@@ -65,7 +80,9 @@ or a mathematically equivalent declared form. The estimand is a posterior
 field, not template amplitude. Prior-conditioned response, posterior
 covariance, regularization, null space, and bias/coverage interpretation must
 be explicit. This equation is illustrative scope vocabulary, not a proposed
-TolTEC method.
+TolTEC method. ODQ-001 explicitly excludes this interpretation for the
+historical Citlali full path. Any genuine Wiener/posterior sky reconstruction
+would require a separate future scientific contract.
 
 ### Data-selected transformation
 

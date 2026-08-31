@@ -1,6 +1,6 @@
 # SCI-FLT-INF implementation-informed dossier
 
-Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.1`
+Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.2`
 
 Status: quarantined Stage A manager evidence; forbidden to any future
 implementation-blind scientific author
@@ -49,12 +49,19 @@ nonzero, and numerical zero otherwise. The published `weight` field becomes
 the denominator. The kernel response is separately passed through the full
 path under forced uniform weights.
 
-Manager inference: this shape is closer to a local normalized template-
-amplitude or generalized matched estimator than to a posterior mean sky-field
-reconstruction. That inference is the reason for `SCI-FLT-INF-ODQ-001`; it is
-not an adopted scientific interpretation. No independently specified signal
-prior, posterior distribution, or posterior covariance was recovered for the
-active path.
+Manager recovery inference: this shape is closer to a local normalized
+template-amplitude or generalized matched estimator than to a posterior mean
+sky-field reconstruction. ODQ-001 subsequently supplied independent owner
+authority: the scientific identity is an optimal matched-template amplitude
+estimator, not a posterior/Wiener sky reconstruction. The implementation
+observation did not establish that identity and still establishes no
+conformity. No independently specified signal prior, posterior distribution,
+or posterior covariance was recovered for the active path.
+
+The owner also distinguishes the estimator from ordinary source-shaped
+convolution and requires unbiased normalization for a matching amplitude under
+the eventual exact noise, support, edge, and validity assumptions. This
+dossier supplies none of those remaining scientific definitions or proofs.
 
 ## Noise-spectrum state and fallback
 

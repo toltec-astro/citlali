@@ -1,6 +1,6 @@
 # SCI-FLT-INF prior-work recovery
 
-Recovery identity: `SCI-FLT-INF-PRIOR-WORK v0.1/r0.1`
+Recovery identity: `SCI-FLT-INF-PRIOR-WORK v0.1/r0.2`
 
 Status: reviewed Stage A recovery record; implementation and evidence entries
 remain quarantined from authorship
@@ -49,23 +49,32 @@ performed.
 
 ### Reusable scientific core
 
-The recoverable implementation-independent core is limited:
+The recoverable implementation-independent core is limited. The owner has now
+selected the first item below as the scientific identity of the historical
+full path:
 
+- the historical full path is an **optimal matched-template amplitude
+  estimator**, with the point-source-response kernel as its ordinary point-
+  source specialization and other exact scientific kernels defining other
+  template/shape-amplitude fields;
 - a declared linear estimator `a^T m` has variance `a^T C a` when `C` is the
   covariance of the declared parent population;
 - a fixed-template GLS amplitude estimator has numerator
   `t^T C^{-1} m`, denominator `t^T C^{-1} t`, amplitude equal to their ratio,
   and conditional variance equal to the reciprocal denominator only under the
   complete admitted covariance/model assumptions;
-- a posterior/Wiener reconstruction instead requires an explicit signal prior
-  and has a different estimand and posterior covariance;
+- a posterior/Wiener reconstruction instead requires an explicit signal prior,
+  has a different estimand and posterior covariance, and is expressly not the
+  scientific identity of the historical full path;
 - source-response correction requires the response of the exact estimator,
   not the name of a kernel or filter; and
 - applying an owner-frozen method to NOI members estimates uncertainty
   conditional on that frozen state, whereas relearning per member defines a
   different generation method.
 
-These statements are candidates for sanitization, not an approved contract.
+ODQ-001 approves the matched-template estimand and exclusions, not the exact
+operator, covariance/noise authority, template instance, package, response,
+uncertainty, or contract.
 
 ### Superseded or nonportable material
 
@@ -82,8 +91,8 @@ These statements are candidates for sanitization, not an approved contract.
 
 ## Genuinely new scientific work remaining
 
-Fresh scientific derivation is needed only after the owner selects the
-estimand/package split. The unresolved work includes the exact operator,
+Fresh scientific derivation is needed only after the owner selects the package
+split. The unresolved work includes the exact operator,
 prior/covariance model, state-learning graph, template identity,
 normalization/response, support/null space, approximation/regularization,
 uncertainty/covariance, product bundle, and NOI parity for each selected

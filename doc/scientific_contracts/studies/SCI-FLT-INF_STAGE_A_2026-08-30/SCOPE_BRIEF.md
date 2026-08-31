@@ -1,9 +1,9 @@
 # SCI-FLT-INF Stage A Scope Brief
 
-Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.1`
+Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.2`
 
-Status: sanitized owner-review candidate for a holding study; not approved
-scope and not an author input
+Status: sanitized owner-review holding study; ODQ-001 estimand approved;
+package split and remaining scope not approved; not an author input
 
 ## Program adherence and prior-work recovery
 
@@ -18,7 +18,8 @@ transfer, or uncertainty meaning differs.
 
 Determine the smallest scientifically coherent future contract packages for
 inference-bearing map-domain operations currently or historically grouped
-under filtering. For each candidate family, identify without selecting:
+under filtering. Preserve the owner-selected ODQ-001 estimand and, for each
+remaining candidate family, identify without selecting:
 
 1. the estimand and scientific claim;
 2. the exact parent product and observation/coadd grouping;
@@ -46,6 +47,23 @@ under filtering. For each candidate family, identify without selecting:
 - data-derived edge, support, taper, and background-fill conditioning;
 - NOI-derived coefficient calibration and standardized products; and
 - source-conditioned or source-learned map-domain transformations.
+
+## Owner-selected estimand
+
+`SCI-FLT-INF-ODQ-001` is approved. Recovery of the historical full path shall
+use the scientific identity **optimal matched-template amplitude estimator**.
+The estimator uses the supplied kernel as the expected template response and
+the declared noise model to estimate the template amplitude at each admitted
+map position. The point-source-response kernel is the ordinary point-source
+specialization; another scientifically defined kernel defines another
+template-amplitude specialization.
+
+The exact normalization must be unbiased for a matching signal's amplitude
+under the declared model, support, edge, missing/nonfinite, validity, response,
+and other assumptions. The future package must make the optimality criterion
+explicit. The method is not a posterior/Wiener reconstruction of the sky, and
+source-shaped convolution alone is not the matched estimator. Any genuine
+posterior reconstruction remains a separate future method.
 
 ## Required distinctions
 

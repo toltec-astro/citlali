@@ -1,6 +1,6 @@
 # SCI-FLT-INF cross-package and NOI boundaries
 
-Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.1`
+Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.2`
 
 Status: Stage A owner-review candidate; it changes no frozen authority
 
@@ -21,6 +21,14 @@ source is admitted.
 The ordinary numerical MAP route remains unavailable at its frozen PTC
 coefficient and numerical `coverage_cut` gates. This study does not bypass
 those gates.
+
+ODQ-001 identifies the historical full path as an optimal matched-template
+amplitude estimator. Its map-domain output is the amplitude of the exact
+supplied template as a function of position; a point-source-response kernel
+specializes this to a matched point-source amplitude field. The normalization
+must be unbiased for a matching amplitude under the exact declared model and
+support assumptions. This identity supplies neither the required parent
+covariance nor a numerical route.
 
 ## JINC to inference-bearing method
 
@@ -44,6 +52,12 @@ If a future INF method consumes a fixed-filter product, the exact fixed
 operator, parent, response, covariance, support, order, and product generation
 must be bound. If a future fixed operator consumes an INF product, that is a
 different ordered chain. No commutation or response reuse is presumed.
+
+Ordinary source-shaped convolution remains SCI-FLT-FIXED-like deterministic
+transformation science when it otherwise satisfies that package's scope. It
+is not the owner-selected matched estimator merely because the same kernel is
+used: the matched estimator additionally requires its exact noise weighting,
+normalization, estimand, and validity contract.
 
 ## Frozen SCI-NOI boundary
 
@@ -109,6 +123,11 @@ fitted-parameter meaning, detection/significance claims, completeness, purity,
 and mode-specific interpretations. An INF method may own a map-domain
 template-amplitude field, but a selected source amplitude or catalog row needs
 an explicit handoff.
+
+ODQ-001 fixes the map-field estimand but does not resolve that package
+ownership. ODQ-002 must place the full matched-template amplitude field on one
+side of this boundary and keep later selected-source/catalog inference
+explicitly SRC-owned or otherwise owner-assigned.
 
 If source fits learn a later filter/template state, the source model and fit
 generation remain SRC-owned inputs to a new INF generation. No active

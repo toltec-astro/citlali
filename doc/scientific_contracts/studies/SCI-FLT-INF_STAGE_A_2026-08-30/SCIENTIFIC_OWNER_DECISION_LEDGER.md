@@ -1,39 +1,41 @@
 # SCI-FLT-INF scientific-owner decision ledger
 
-Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.1`
+Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.2`
 
-Status: proposed ordered owner walkthrough; all questions open
+Status: proposed ordered owner walkthrough; ODQ-001 approved and closed;
+ODQ-002 through ODQ-013 open
 
 ## Decision discipline
 
 Questions are ordered by scientific consequence. Later questions must not be
 answered in a way that presumes an earlier answer. Each approved answer should
 be recorded in a separate exact owner artifact before a package-local Stage A
-packet is built. This holding study does not approve any proposed answer.
+packet is built. This holding study records the exact approved ODQ-001 answer
+but does not approve any proposed answer for ODQ-002 onward.
 
 ## `SCI-FLT-INF-ODQ-001` — estimand of the existing full path
 
-What scientific quantity is the existing template/noise/weight-dependent full
-map path intended to estimate?
+Status: **approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md`](SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md).
 
-1. **Normalized template-amplitude field**: at each admitted location, the
-   amplitude of one exact template under one exact weighting/covariance model.
-2. **Posterior/Wiener reconstructed sky field**: an explicitly prior-bearing
-   posterior quantity with exact likelihood, prior, response, and posterior
-   covariance.
-3. **Both, as separate methods/products**: retain a template-amplitude method
-   and commission a distinct posterior method.
-4. **Neither**: retain the current path only as non-authoritative diagnostic or
-   retire it from future scientific-contract scope.
+The historical Citlali full path is scientifically an **optimal matched-
+template amplitude estimator**. It estimates the supplied template's amplitude
+as a function of map position using the declared noise model. With a
+point-source-response kernel it yields a matched point-source amplitude field;
+with another scientifically defined kernel it yields the amplitude field of
+that specified template/shape. Exact normalization must return an unbiased
+estimate of a matching signal's amplitude, subject to the stated noise,
+support, edge, missing/nonfinite, validity, response, and method assumptions.
 
-Manager recommendation: select option 1 for recovery of the existing path,
-because its apparent numerator/denominator structure is amplitude-estimator-
-like, and reserve any genuine Wiener/posterior product for option 3 as a
-separate future package. This is an implementation-informed recommendation,
-not evidence sufficient to approve the science.
+It is not a prior-bearing posterior/Wiener sky reconstruction. Historical
+`Wiener filter` terminology may remain only where compatibility requires it.
+Ordinary source-shaped convolution is a separate deterministic operation, not
+the noise-weighted normalized matched estimator. Any future genuine
+Wiener/posterior reconstruction requires its own scientific contract.
 
-Consequence: no package name, operator derivation, response, uncertainty, or
-product table can be finalized before this answer.
+This decision selects the estimand, not a package name, numerical operator,
+noise/covariance model, template instance, optimality proof, support rule,
+response, uncertainty, product bundle, or Stage B launch.
 
 ## `SCI-FLT-INF-ODQ-002` — package ownership and split
 
@@ -224,7 +226,7 @@ ODQ-001 estimand
                        -> ODQ-013 product/VAL/lifecycle
 ```
 
-ODQ-004 and ODQ-005 may be discussed in parallel after ODQ-003. Package-local
-Stage A is blocked until ODQ-001 and ODQ-002 are approved. Stage B is blocked
-until all decisions needed by that one selected package have exact owner
-answers and an exclusive implementation-blind author packet.
+ODQ-004 and ODQ-005 may be discussed in parallel after ODQ-003. ODQ-001 is
+closed. Package-local Stage A is blocked until ODQ-002 is approved. Stage B is
+blocked until all decisions needed by that one selected package have exact
+owner answers and an exclusive implementation-blind author packet.
