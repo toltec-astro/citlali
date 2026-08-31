@@ -13,8 +13,9 @@ application
 **Timestream Successor** is the enduring implementation-program name. The
 existing names `WP-7.1 Timestream Successor Program`, `WP7-REPLAY-*`, and
 `codex/wp7-*` remain searchable historical, scientific-packet, work-order, or
-branch provenance. New durable branches, work orders, and implementation
-generations MUST NOT use bare `WP-7` or `WP7` as the program name.
+branch provenance. New durable branches, governance documents, work orders,
+and implementation generations MUST NOT use bare `WP-7` or `WP7` as the
+program name.
 
 The scientific authority remains precisely the **WP-7.1 Timestream Contract
 Baseline**:

@@ -207,6 +207,18 @@ single-candidate review identity, clean-tree evidence, and branch/WIP inventory.
 Mechanical checks MUST NOT decide scientific authority or infer branch safety
 from names alone.
 
+```text
+MECHANICAL CHECK PLAN / RESULT
+Check identity and owner:
+Exact inputs / base / candidate:
+Deterministic command or rule:
+Expected result:
+Actual result and artifact identity:
+Known limitations:
+Scientific-authority decision: NOT PERFORMED
+Branch-safety or deletion decision: NOT PERFORMED
+```
+
 ## Adversarial examples
 
 ### Scientific glue proposed in `Engine`
