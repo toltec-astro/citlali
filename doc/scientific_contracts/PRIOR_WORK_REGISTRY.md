@@ -204,9 +204,13 @@ and cross-package handoffs are valuable recovery inputs.
   the historical full path is an optimal matched-template amplitude estimator
   with amplitude-unbiased normalization for a matching supplied template, not
   a posterior/Wiener sky reconstruction or ordinary source-shaped
-  convolution. ODQ-002 package ownership is next. Implementation/config/
-  schema/history remain in a quarantined dossier, and the protected
-  SCI-FLT-FIXED author bytes are unchanged.
+  convolution. Grant Wilson approved ODQ-002 on `2026-08-30`: the selected
+  package is a map-domain filter whose signal output is a matched-filtered map,
+  not source detection, candidate, peak, fitted-source, deblending, or catalog
+  behavior; no SRC ownership boundary is introduced. Posterior reconstruction
+  remains separate and deferred. ODQ-003 parent/grouping is next.
+  Implementation/config/schema/history remain in a quarantined dossier, and
+  the protected SCI-FLT-FIXED author bytes are unchanged.
 - Package-specific FLT recovery:
   [`packages/SCI-FLT/v0.1/PRIOR_WORK.md`](packages/SCI-FLT/v0.1/PRIOR_WORK.md)
   at `2026-08-30`. It separately classifies fixed convolution/low-pass,

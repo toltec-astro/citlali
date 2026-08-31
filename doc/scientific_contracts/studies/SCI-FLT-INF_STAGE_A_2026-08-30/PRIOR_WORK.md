@@ -1,6 +1,6 @@
 # SCI-FLT-INF prior-work recovery
 
-Recovery identity: `SCI-FLT-INF-PRIOR-WORK v0.1/r0.2`
+Recovery identity: `SCI-FLT-INF-PRIOR-WORK v0.1/r0.3`
 
 Status: reviewed Stage A recovery record; implementation and evidence entries
 remain quarantined from authorship
@@ -43,7 +43,7 @@ performed.
 | Post-processing and noise-products config authorities | current at base | requested/effective/realized lifecycle and one-way adapter boundary | **Cite** as architectural lifecycle precedent, not scientific method authority |
 | RTC temporal filtering and AltAz destriping | frozen/active RTC-owned domain | timestream-domain cleaning before mapmaking | **Exclude** from map-domain INF scope; preserve RTC ownership |
 | FRUIT records | separate future tranche | source-model feedback, iteration, learning, stopping, restart, lineage | **Defer** to SCI-FRUIT; retain only the frozen NOI boundary for conditional/replayed cases |
-| Source fitting/finding surfaces | later downstream operation; no dedicated frozen SRC contract recovered | Gaussian fitting and catalog-facing products after filtering | **Defer** to SRC/MODE; no active source-learned filter-state route was recovered at the base commit |
+| Source fitting/finding surfaces | later downstream operation; no dedicated frozen source-analysis contract recovered | Gaussian fitting and catalog-facing products after filtering | **Exclude** from the selected matched-filter package; make no current ownership assignment; a future independent contract may consume filtered maps; no active source-learned filter-state route was recovered at the base commit |
 
 ## Prior-work recovery conclusions
 
@@ -56,7 +56,9 @@ full path:
 - the historical full path is an **optimal matched-template amplitude
   estimator**, with the point-source-response kernel as its ordinary point-
   source specialization and other exact scientific kernels defining other
-  template/shape-amplitude fields;
+  template/shape-amplitude fields; under ODQ-002 its published product role is
+  a matched-filtered map preserving applicable parent map-domain structure and
+  semantics, not a source estimate or catalog-facing product;
 - a declared linear estimator `a^T m` has variance `a^T C a` when `C` is the
   covariance of the declared parent population;
 - a fixed-template GLS amplitude estimator has numerator
@@ -72,9 +74,10 @@ full path:
   conditional on that frozen state, whereas relearning per member defines a
   different generation method.
 
-ODQ-001 approves the matched-template estimand and exclusions, not the exact
-operator, covariance/noise authority, template instance, package, response,
-uncertainty, or contract.
+ODQ-001 approves the matched-template estimand and ODQ-002 approves map-domain
+filtering ownership plus the filtered-map product role. They do not approve
+the exact parent, operator, covariance/noise authority, template instance,
+final package name, response, uncertainty, or contract.
 
 ### Superseded or nonportable material
 
@@ -91,9 +94,9 @@ uncertainty, or contract.
 
 ## Genuinely new scientific work remaining
 
-Fresh scientific derivation is needed only after the owner selects the package
-split. The unresolved work includes the exact operator,
-prior/covariance model, state-learning graph, template identity,
+Fresh scientific derivation is needed only after ODQ-003 selects the exact
+parent and grouping. The unresolved work includes the exact operator,
+noise/covariance model, state-learning graph, template identity,
 normalization/response, support/null space, approximation/regularization,
 uncertainty/covariance, product bundle, and NOI parity for each selected
 family. No recovered source can answer those questions by itself.

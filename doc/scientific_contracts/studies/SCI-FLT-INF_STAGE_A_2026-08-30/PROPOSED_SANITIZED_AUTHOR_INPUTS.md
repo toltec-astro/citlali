@@ -1,6 +1,6 @@
 # SCI-FLT-INF proposed sanitized author inputs
 
-Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.2`
+Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.3`
 
 Status: proposed material only; not approved, not exhaustive, not SHA-bound as
 an author packet, and not permission to launch Stage B
@@ -8,8 +8,9 @@ an author packet, and not permission to launch Stage B
 ## Firewall
 
 Any future author packet must be rebuilt package-locally after the owner
-selects one estimand and resolves the blocking decisions. The future author
-must not receive this study's implementation dossier, code/config/schema,
+resolves the remaining blocking decisions for the selected matched-filter map
+operation. The future author must not receive this study's implementation
+dossier, code/config/schema,
 history, audit/repair/evidence, manager inferences, validation, defaults,
 production behavior, or active neighboring work.
 
@@ -62,17 +63,22 @@ specified template or shape. This estimator is not ordinary convolution with
 the same kernel because convolution lacks the exact noise-weighted,
 amplitude-unbiased matched-estimator normalization.
 
-A map of local amplitudes and a selected-source/catalog scalar remain distinct
-products even if the local equation is shared.
+Under ODQ-002, the published signal product is a matched-filtered version of
+the exact admitted parent map, preserving its applicable map-domain structure
+and semantics. Its local estimator identity does not create detected sources,
+selected candidates, interpreted peaks, deblended or fitted objects, or
+catalog rows. Those behaviors are excluded without introducing a current SRC
+ownership boundary.
 
-## Candidate posterior-reconstruction extract
+## Deferred posterior-family exclusion
 
-If the owner separately selects a posterior sky-field estimand, the author
-must receive the exact signal prior, measurement/response operator, noise
-likelihood/covariance, hyperparameters, boundary/support, regularization and
-posterior quantity. The author must derive the posterior response and
-covariance from those exact inputs. The author must not inherit the
-template-amplitude equation or an implementation label as a Wiener
+No posterior-reconstruction material belongs in the selected matched-filter
+author packet. If an owner later commissions a separate posterior sky-field
+method, that future package and author would require the exact signal prior,
+measurement/response operator, noise likelihood/covariance, hyperparameters,
+boundary/support, regularization, and posterior quantity. It must derive the
+posterior response and covariance from those exact inputs and must not inherit
+the template-amplitude equation or an implementation label as a Wiener
 specification.
 
 No exact TolTEC posterior method is currently proposed for author admission.
@@ -131,7 +137,6 @@ implementation facts:
 - the protected SCI-FLT-FIXED parent/order identity if composition is selected;
 - the frozen NOI transformation-owner and fixed/relearned generation rules;
 - CAL ownership of signal transfer/calibration/covariance;
-- SRC/MODE ownership of selected-source/catalog/significance claims;
 - VAL's evaluator/registry-only role; and
 - FRUIT/RTC/PTC exclusions.
 
@@ -151,8 +156,10 @@ required/conditional/optional role:
 - retained diagnostics versus public science roles; and
 - permitted named consumers.
 
-No current product table is proposed because ODQ-002 package ownership and the
-later product decisions remain open.
+No current detailed product table is proposed because ODQ-003 parent/grouping
+and the later units, response, uncertainty, validity, and lifecycle decisions
+remain open. Its top-level signal role is already fixed as a matched-filtered
+map.
 
 ## Material that must remain excluded
 
@@ -163,14 +170,16 @@ later product decisions remain open.
 - historical validation, adverse results, re-audit gates, and production use;
 - historical owner decisions not re-admitted under a current exact cover;
 - implementation-derived claims about why the active path is amplitude-like;
+- source detection, candidate selection, peak interpretation, deblending,
+  source fitting, catalog construction, or an SRC ownership boundary;
 - active SCI-FLT-FIXED Stage B material; and
 - any unapproved default, template, prior, covariance, threshold, selection
   law, edge rule, response, or uncertainty interpretation.
 
 ## Author-packet construction gate
 
-After ODQ-002 and the required package-local owner decisions, create a new
-package directory and a package-specific
+After ODQ-003 onward supplies the required package-local owner decisions,
+create a new package directory and a package-specific
 `PRIOR_WORK.md`, sanitized `SCOPE_BRIEF.md`, exact boundary objects, operator/
 product/lifecycle tables, owner decision record, and exclusive SHA-bound
 author manifest. If the selected package still needs implementation evidence

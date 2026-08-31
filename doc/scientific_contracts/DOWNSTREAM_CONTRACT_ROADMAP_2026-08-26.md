@@ -232,7 +232,14 @@ and closed ODQ-001 on `2026-08-30`: the historical full path is an optimal
 matched-template amplitude estimator, not a posterior/Wiener sky
 reconstruction or ordinary source-shaped convolution, and its normalization
 must be unbiased for a matching supplied template under the declared
-assumptions. ODQ-002 package ownership is the next gate. No successor package,
-author packet, Stage B launch, algorithm change, conformity, validation,
-calibration, performance, readiness, production, freeze, or Unity action
-follows.
+assumptions. Grant Wilson then approved ODQ-002 on `2026-08-30`: a narrow map-
+domain filtering package owns the operation and publishes a matched-filtered
+version of its exact admitted input map product or products, preserving
+applicable parent map-domain structure and semantics. Source detection,
+candidate selection, catalogs, peak interpretation, deblending, fitting, and
+other source analysis are excluded without introducing an SRC ownership
+boundary. A future independent contract may consume the map if separately
+authorized. Genuine posterior/Wiener reconstruction remains separate and
+deferred. ODQ-003 parent/grouping is next. No successor package, author
+packet, Stage B launch, algorithm change, conformity, validation, calibration,
+performance, readiness, production, freeze, or Unity action follows.

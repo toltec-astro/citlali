@@ -39,18 +39,20 @@ identities. It inventories and separates:
 
 - noise-weighted template-amplitude estimation;
 - any genuine Wiener or posterior reconstruction method;
-- matched or generalized least-squares source-amplitude estimation;
+- matched or generalized least-squares source-amplitude estimation as a
+  recovered but now excluded future family;
 - learned-then-frozen and per-member-relearned state lifecycles;
 - data-thresholded spectral mode selection;
 - automatic method selection or fallback;
 - input-derived edge/background conditioning;
 - empirical NOI-based coefficient rescaling and standardized products; and
-- source-learned or source-conditioned variants.
+- source-learned or source-conditioned variants as excluded future families.
 
 The study also records parent, order, response, covariance, support, validity,
-failure, and NOI parity consequences. ODQ-001 now selects the historical
-path's scientific estimand; the study does not yet select a package name,
-rename an existing product, authorize a numerical route, or modify an
+failure, and NOI parity consequences. ODQ-001 selects the historical path's
+scientific estimand, and ODQ-002 assigns it to a map-domain filtering package
+whose published signal role is a matched-filtered map. The study does not yet
+select a final package name, authorize a numerical route, or modify an
 algorithm.
 
 ## Stage A packet
@@ -62,11 +64,12 @@ algorithm.
 | [`IMPLEMENTATION_INFORMED_DOSSIER.md`](IMPLEMENTATION_INFORMED_DOSSIER.md) | quarantined implementation/config/product inventory |
 | [`FAMILY_SPLIT_MATRIX.md`](FAMILY_SPLIT_MATRIX.md) | candidate method/package separation |
 | [`OPERATOR_STATE_PRODUCT_TAXONOMY.md`](OPERATOR_STATE_PRODUCT_TAXONOMY.md) | estimand, operator, state, response, product, and lifecycle vocabulary |
-| [`CROSS_PACKAGE_AND_NOI_BOUNDARIES.md`](CROSS_PACKAGE_AND_NOI_BOUNDARIES.md) | MAP/JINC/NOI/SRC/VAL/FRUIT boundaries and parity cases |
+| [`CROSS_PACKAGE_AND_NOI_BOUNDARIES.md`](CROSS_PACKAGE_AND_NOI_BOUNDARIES.md) | MAP/JINC/NOI/VAL/FRUIT boundaries, deferred source-analysis exclusion, and parity cases |
 | [`CONTRADICTIONS_AMBIGUITIES_UNAVAILABLE_STATES.md`](CONTRADICTIONS_AMBIGUITIES_UNAVAILABLE_STATES.md) | explicit unresolved and unavailable states |
 | [`PROPOSED_SANITIZED_AUTHOR_INPUTS.md`](PROPOSED_SANITIZED_AUTHOR_INPUTS.md) | material that could be sanitized after owner decisions |
 | [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md) | ordered consequential owner questions |
 | [`SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md`](SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md) | exact matched-template estimand approval |
+| [`SCIENTIFIC_OWNER_ODQ_002_APPROVAL_2026-08-30.md`](SCIENTIFIC_OWNER_ODQ_002_APPROVAL_2026-08-30.md) | exact map-domain ownership and filtered-map product-role approval |
 | [`FROZEN_AUTHORITY_AND_SOURCE_BINDING.md`](FROZEN_AUTHORITY_AND_SOURCE_BINDING.md) | exact base, frozen NOI, historical, and evidence bindings |
 | [`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md) | content-bound Stage A study objects; not an author manifest |
 | [`verify_stage_a.py`](verify_stage_a.py) | study and protected-byte verifier |
@@ -83,15 +86,24 @@ defined kernel yields the amplitude field of that specified template. The
 normalization must be unbiased for a matching signal under the declared
 method assumptions.
 
+ODQ-002 assigns the method to a narrow map-domain filtering package. Its
+published scientific signal product is a matched-filtered version of its exact
+admitted input map product or products, preserving their applicable map-domain
+structure and semantics. The estimator's local amplitude identity does not
+turn that output into a source-detection, candidate, peak, fitted-source,
+deblending, or catalog product, and this tranche introduces no SRC ownership
+boundary. A future independent source-analysis contract may consume the
+filtered map only if separately authorized.
+
 The method is not a posterior/Wiener sky reconstruction, and ordinary source-
 shaped convolution remains a distinct deterministic operation. A genuine
-posterior reconstruction would be a separate future package. Adaptive edge
-conditioning, data-thresholded mode selection, automatic fallback, empirical
-coefficient calibration, and member-specific relearning also remain distinct
-scientific identities or lifecycle policies.
+posterior reconstruction would be a separate deferred method and contract.
+Adaptive edge conditioning, data-thresholded mode selection, automatic
+fallback, empirical coefficient calibration, and member-specific relearning
+also remain distinct scientific identities or lifecycle policies.
 
-The next owner question is package ownership and split under
-`SCI-FLT-INF-ODQ-002`. No package naming or Stage B scope is approved.
+The next owner question is exact admitted input map parent and grouping under
+`SCI-FLT-INF-ODQ-003`. No final package naming or Stage B scope is approved.
 
 ## Nonclaims and stop rule
 
@@ -101,7 +113,8 @@ significance, performance, readiness, production, Unity, or scientific-freeze
 claim. It creates no default and authorizes no method substitution.
 
 Do not create an implementation-blind author packet until the scientific owner
-has resolved `SCI-FLT-INF-ODQ-002` and the later package-specific operator,
+has resolved `SCI-FLT-INF-ODQ-003` and the later package-specific operator,
 state, response, covariance, product, and lifecycle gates identified in the
-decision ledger. Create separate package-local Stage A records rather than
-converting this holding directory into a combined package.
+decision ledger. Create a package-local Stage A record for the matched-filter
+map operation rather than converting this holding directory into a combined
+package.

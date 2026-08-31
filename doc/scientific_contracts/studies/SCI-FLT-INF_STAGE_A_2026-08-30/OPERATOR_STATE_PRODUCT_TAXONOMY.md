@@ -1,6 +1,6 @@
 # SCI-FLT-INF operator, state, and product taxonomy
 
-Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.2`
+Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.3`
 
 Status: Stage A vocabulary updated for approved ODQ-001; remaining details are
 not normative science
@@ -27,7 +27,7 @@ not the same method realization even if they share code or filenames.
 | `P_MAP_COADD` | one immutable normalized ordinary-MAP coadd bundle | binds exact contributing observation set and coadd authority |
 | `P_JINC_OBS` | one immutable per-array JINC observation bundle | separate signed estimator, support, response, and covariance status |
 | `P_FIXED_DERIVED` | an exact immutable SCI-FLT-FIXED successor | binds the exact fixed operator and order before inference |
-| `P_INF_DERIVED` | an exact immutable inference product used by a later fixed or source operation | cannot be treated as its own raw parent |
+| `P_INF_DERIVED` | an exact immutable matched-filtered map used by a later independently authorized operation | cannot be treated as its own raw parent |
 
 Observation and coadd parents are separate identities. An estimator learned or
 applied after coaddition is not presumed equivalent to combining observation-
@@ -65,6 +65,12 @@ achieved-performance claim.
 
 This estimator is not ordinary convolution with `t_x`: convolution alone does
 not apply the declared noise weighting and amplitude-unbiased normalization.
+
+ODQ-002 fixes the published product role as a matched-filtered map: a filtered
+version of the exact admitted parent map product that preserves its applicable
+map-domain structure and semantics. The local estimator identity does not
+create source detections, candidates, fitted-source or peak interpretations,
+deblended objects, or catalog rows.
 
 ### Posterior/Wiener reconstruction
 
@@ -106,7 +112,6 @@ Both identities and the generation boundary are required.
 | `PARENT_LEARNED_FROZEN` | learned from the target real parent, then frozen for application | learning and application are distinct immutable generations; uncertainty is conditional unless relearning is included |
 | `NOI_INFORMED_SUCCESSOR` | learned/selected/updated using a prior NOI product | prior UNC, learning, new state, science product, new GEN, and successor UNC remain distinct; prior UNC is dependent input, not validation |
 | `MEMBER_RELEARNED` | the complete declared learning graph runs separately for every admitted NOI member | separate NOI-GEN method and member population; no mixing with fixed-state members |
-| `SOURCE_LEARNED` | learned from source fit/model/selection | requires exact SRC authority, selection effects, response, calibration, and covariance boundary |
 | `UNAVAILABLE` | required state authority or realization absent | no numerical output for that method; no silent substitute |
 
 `Learned` without one of these exact graphs is insufficient.
@@ -138,7 +143,6 @@ T_INF(P_MAP_OBS)
 T_INF(P_MAP_COADD)
 T_INF(T_FIXED(P))
 T_FIXED(T_INF(P))
-T_SRC(T_INF(P))
 T_INF(P; state learned from NOI(P))
 ```
 
@@ -152,7 +156,6 @@ full ordered chain.
 | --- | --- |
 | `R_MODE` | transfer/response to declared spatial modes for exact state and support |
 | `R_TEMPLATE` | response to the exact admitted template, location, subpixel phase, and boundary state |
-| `R_SOURCE` | response to an exact source model including parent beam and calibration identity |
 | `R_LEARNING` | full-procedure response when the state-learning graph is rerun |
 | `R_FIXED_STATE` | response conditional on one frozen learned/declared state |
 
@@ -167,7 +170,7 @@ centering, support, normalization, and parent-beam convention.
 | `C_PARENT` | exact covariance/uncertainty authority of the admitted parent; unknown remains unknown |
 | `C_COND` | uncertainty conditional on fixed declared/learned state |
 | `C_FULLPROC` | uncertainty including declared learning/reselection/re-estimation |
-| `C_POST` | posterior covariance for a posterior estimand |
+| `C_POST` | posterior covariance for the separate deferred posterior family; not a selected-package role |
 | `C_EMP` | exact NOI-defined empirical conditional product |
 | `K_NORM` | estimator normalization coefficient; not covariance or precision by shape/name |
 | `W_USE` | consumer-specific effective weight; requires exact use-specific authority |
@@ -201,7 +204,8 @@ For any selected future method, the smallest candidate atomic bundle is:
 1. immutable parent reference and digest;
 2. requested/effective/observation-resolved/realized method identity;
 3. exact state artifact references and dependence graph;
-4. output signal/estimand product;
+4. output matched-filtered map and its applicable inherited map-domain
+   structure/semantics;
 5. normalization/denominator product if it carries scientific meaning;
 6. response/transfer identity and availability;
 7. support, validity, null, edge, and missing-state products;

@@ -1,9 +1,10 @@
 # SCI-FLT-INF Stage A Scope Brief
 
-Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.2`
+Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.3`
 
-Status: sanitized owner-review holding study; ODQ-001 estimand approved;
-package split and remaining scope not approved; not an author input
+Status: sanitized owner-review holding study; ODQ-001 estimand and ODQ-002
+map-domain ownership/product role approved; remaining scope not approved; not
+an author input
 
 ## Program adherence and prior-work recovery
 
@@ -23,7 +24,7 @@ remaining candidate family, identify without selecting:
 
 1. the estimand and scientific claim;
 2. the exact parent product and observation/coadd grouping;
-3. fixed parameters, priors, learned state, and their provenance;
+3. fixed parameters, noise-model state, learned state, and their provenance;
 4. the operator or estimator and its order relative to other transformations;
 5. response, transfer, normalization, units, beam meaning, and null space;
 6. uncertainty/covariance meaning and whether any denominator is merely a
@@ -32,23 +33,25 @@ remaining candidate family, identify without selecting:
 8. product identities and atomic lifecycle;
 9. fixed-state versus successor-generation versus per-member-relearned NOI
    parity; and
-10. package ownership and cross-package dependencies.
+10. package ownership, product role, exclusions, and cross-package
+    dependencies.
 
 ## Candidate families in scope
 
 - the active noise-PSD- and template-dependent full map path;
-- a genuine Wiener/posterior reconstruction if that is scientifically
-  intended;
+- a genuine Wiener/posterior reconstruction only as a separate deferred
+  family excluded from the selected package;
 - matched or generalized least-squares template-amplitude estimation;
-- map-, noise-, source-, or externally learned state frozen before use;
+- map-, noise-, or externally learned state frozen before use;
 - per-member state relearning as a distinct NOI-GEN method;
 - data-derived Fourier-mode selection/destriping;
 - automatic method selection, fallback, or substitution;
 - data-derived edge, support, taper, and background-fill conditioning;
 - NOI-derived coefficient calibration and standardized products; and
-- source-conditioned or source-learned map-domain transformations.
+- source-conditioned or source-learned transformations only as recovered
+  families to exclude from the selected package.
 
-## Owner-selected estimand
+## Owner-selected estimand, ownership, and product role
 
 `SCI-FLT-INF-ODQ-001` is approved. Recovery of the historical full path shall
 use the scientific identity **optimal matched-template amplitude estimator**.
@@ -64,6 +67,19 @@ and other assumptions. The future package must make the optimality criterion
 explicit. The method is not a posterior/Wiener reconstruction of the sky, and
 source-shaped convolution alone is not the matched estimator. Any genuine
 posterior reconstruction remains a separate future method.
+
+`SCI-FLT-INF-ODQ-002` is also approved. The selected method belongs to a
+narrow map-domain filtering package, and its published signal product is a
+matched-filtered version of the exact admitted input map product or products.
+It preserves the applicable map-domain structure and semantics of its parent;
+the exact parent, units, response, uncertainty, validity, and bundle facts
+remain later decisions.
+
+The package does not perform or require source detection, candidate selection,
+catalog construction, peak interpretation, deblending, source fitting, or any
+other source-analysis behavior. This Stage A study introduces no source-
+estimation package or SRC ownership boundary. A later independent scientific
+contract may consume matched-filtered maps if separately authorized.
 
 ## Required distinctions
 
@@ -106,7 +122,9 @@ required whenever any of the following differs:
 - Unity access or validation;
 - FRUIT recurrence, learning, stopping, restart, or source-model science;
 - RTC temporal filtering/destriping;
-- source catalog/detection significance, completeness, purity, or morphology;
+- source detection, candidate selection, catalog construction, peak
+  interpretation, deblending, fitting, significance, completeness, purity,
+  morphology, or other source-analysis behavior;
 - absolute CAL authority, passband/color correction, or cross-band covariance;
 - inferred MAP/JINC precision or covariance;
 - production defaults, observed behavior, or historical labels promoted into

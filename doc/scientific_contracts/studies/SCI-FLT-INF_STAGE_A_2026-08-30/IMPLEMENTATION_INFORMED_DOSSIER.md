@@ -1,6 +1,6 @@
 # SCI-FLT-INF implementation-informed dossier
 
-Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.2`
+Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.3`
 
 Status: quarantined Stage A manager evidence; forbidden to any future
 implementation-blind scientific author
@@ -153,7 +153,7 @@ is nonlinear as a parent-to-output operation. Its sole call site is commented
 out at the base commit. No exact threshold policy, response, support,
 uncertainty, product, or failure authority was recovered.
 
-## Source-conditioned and source-learned cases
+## Downstream source-analysis observations
 
 Templates can be configured analytically or derived from the parent mapmaking
 kernel. Filtered source finding and Gaussian fitting occur downstream. No
@@ -162,10 +162,12 @@ filter template or spectral state. Therefore:
 
 - configured or kernel-derived templates remain method state whose scientific
   identity is unresolved;
-- matched/template-amplitude use is scientifically source-sensitive even when
-  no state is learned from a detected source; and
-- any future source-learned update must be a new immutable generation with an
-  explicit SRC-to-FLT boundary, not an inferred current behavior.
+- the existence of downstream source-finding code does not change the filter's
+  published product role; and
+- ODQ-002 excludes detection, selection, peak interpretation, deblending,
+  fitting, catalog construction, and source-learned state from the selected
+  package without creating an SRC ownership boundary. Any future method is an
+  independent scientific contract and is not inferred from current behavior.
 
 ## Parent and order observations
 

@@ -1,6 +1,6 @@
 # SCI-FLT-INF cross-package and NOI boundaries
 
-Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.2`
+Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.3`
 
 Status: Stage A owner-review candidate; it changes no frozen authority
 
@@ -29,6 +29,12 @@ specializes this to a matched point-source amplitude field. The normalization
 must be unbiased for a matching amplitude under the exact declared model and
 support assumptions. This identity supplies neither the required parent
 covariance nor a numerical route.
+
+For any MAP parent admitted under ODQ-003, ODQ-002 fixes the published product
+role as a matched-filtered map: a filtered version of that exact MAP product
+that preserves its applicable map-domain structure and semantics. Exact
+inheritance, units, response, uncertainty, validity, and bundle details remain
+later decisions.
 
 ## JINC to inference-bearing method
 
@@ -114,25 +120,22 @@ analogy.
 Any standardized product must bind the exact immutable numerator, exact NOI
 scale, compatible response/unit/WCS/support/domain, and dependence. It cannot
 claim significance, detection probability, completeness, purity, or catalog
-authority without separate SRC/MODE science.
+authority. Those behaviors are outside this package and require a future
+independent scientific contract if ever pursued.
 
-## SRC/MODE boundary
+## Deferred source-analysis exclusion
 
-SRC/MODE owns source selection, location/catalog identity, source model or
-fitted-parameter meaning, detection/significance claims, completeness, purity,
-and mode-specific interpretations. An INF method may own a map-domain
-template-amplitude field, but a selected source amplitude or catalog row needs
-an explicit handoff.
+The selected package has no source-estimation or SRC ownership boundary. It
+owns a map-domain matched-filter operation and publishes matched-filtered maps.
+It does not detect sources, select candidates, construct catalogs, interpret
+peaks, deblend, fit sources, or assign significance, completeness, purity, or
+morphology.
 
-ODQ-001 fixes the map-field estimand but does not resolve that package
-ownership. ODQ-002 must place the full matched-template amplitude field on one
-side of this boundary and keep later selected-source/catalog inference
-explicitly SRC-owned or otherwise owner-assigned.
-
-If source fits learn a later filter/template state, the source model and fit
-generation remain SRC-owned inputs to a new INF generation. No active
-source-learned base route was recovered, so this boundary is deferred rather
-than invented.
+A future independently governed source-analysis method may consume an exact
+matched-filtered map if later authorized. That possibility creates no current
+dependency, ownership assignment, product role, handoff, or validation
+profile. Source-learned filter/template state is likewise outside the selected
+package.
 
 ## VAL boundary
 
@@ -145,8 +148,7 @@ fallback policy. At least separate future profiles are likely for:
 - learned-state admission;
 - public signal/estimand publication;
 - uncertainty/covariance use;
-- standardized-product use; and
-- source/catalog consumption.
+- standardized-product use.
 
 No profile identity or rule is approved by this study.
 
@@ -155,8 +157,8 @@ No profile identity or rule is approved by this study.
 CAL owns calibrated signal transfer, unit/beam basis, atmosphere/passband/
 color corrections, and calibration covariance. INF may not recover missing
 CAL authority from a template, response kernel, or signal-unit label.
-Cross-band source/amplitude inference remains conditional on exact CAL
-authority and covariance.
+Any future cross-band amplitude inference remains outside this package and
+conditional on exact CAL authority and covariance.
 
 ## RTC and PTC boundary
 

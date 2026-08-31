@@ -1,6 +1,6 @@
 # SCI-FLT-INF contradictions, ambiguities, and unavailable states
 
-Record identity: `SCI-FLT-INF-GAPS v0.1/r0.2`
+Record identity: `SCI-FLT-INF-GAPS v0.1/r0.3`
 
 Status: Stage A owner-review record; absence is preserved rather than repaired
 
@@ -123,33 +123,39 @@ response.
 Runtime chooses observation filtering or coadd filtering from the coadd mode.
 No science establishes equivalence, selection rationale, or a composition rule.
 
-### Source/product boundary
+### Resolved: map product versus source-analysis product
 
 Point-source-named planes and downstream Gaussian fits exist, but the boundary
 between a map-domain amplitude field, response correction, selected source
 amplitude, and catalog inference is not authoritative.
 
+Owner disposition under ODQ-002: the selected package publishes a matched-
+filtered map and performs no source detection, selection, peak interpretation,
+deblending, fitting, or catalog construction. No SRC ownership boundary is
+introduced. Any future source analysis is an independent contract that may
+consume the filtered map if later authorized.
+
 ## Unavailable scientific states
 
 | State | Reason unavailable | Consequence |
 | --- | --- | --- |
-| exact active full-path estimand | **available at identity level**: ODQ-001 selects an optimal matched-template amplitude field; exact method realization remains open | package name and numerical product remain unavailable pending ODQ-002 onward |
+| exact active full-path estimand and top-level product role | **available at identity level**: ODQ-001 selects an optimal matched-template amplitude estimator and ODQ-002 selects a map-domain matched-filtering package with matched-filtered-map output | final package name and numerical product remain unavailable pending ODQ-003 onward |
 | genuine Wiener/posterior method | no complete prior/likelihood/operator/posterior specification recovered | no posterior reconstruction product |
-| matched-template amplitude method realization | owner-selected estimand and unbiased-normalization requirement exist, but parent covariance/template/support/response/operator are unresolved | no authorized numerical amplitude field or scalar |
+| matched-template map-filter realization | owner-selected estimator and filtered-map product role exist, but parent covariance/template/support/response/operator are unresolved | no authorized numerical matched-filtered map |
 | parent covariance/inverse-noise | MAP/JINC do not supply the inferred precision needed by implementation naming | denominator cannot be called Fisher information or inverse variance |
 | template scientific identity | normalization, beam/source role, calibration, and learned/fixed status unresolved | response and units unavailable |
 | approximation-qualified operator | no owner-approved truncation/convergence/floor error policy | exact method route unavailable |
 | adaptive edge method | current behavior and old policy are not current scientific authority | edge-conditioned scientific support unavailable |
 | data-thresholded mode selection | inactive implementation fragment and no method contract | no route or product |
 | automatic fallback | no selector authority or realized-method product identity | requested-primary output fails closed |
-| source-learned filter | no active route or frozen SRC authority recovered | deferred |
+| source detection, selection, fitting, catalog, or source-learned filter | excluded from selected package; no independent current contract or active route recovered | deferred without present ownership assignment |
 | observation/coadd equivalence | no commutation or population result | separate methods/parents only |
 | fixed-state transformed NOI | exact INF owner authority and parity absent | transformed UNC unavailable |
 | per-member-relearned NOI | complete learning graph and member method absent | separate method unavailable |
 | NOI-informed successor | owner learning/update rule absent | no successor generation route |
 | empirical coefficient promotion | frozen NOI boundary not satisfied | no precision/inverse-variance/consumer-weight claim |
-| standardized significance | frozen NOI permits only exact conditional-scale standardization and SRC/MODE owns significance | no significance/detection claim |
-| public product bundle/VAL profiles | estimand and named uses unresolved | publication unavailable |
+| standardized significance | frozen NOI permits only exact conditional-scale standardization; significance/detection is outside the selected package | no significance/detection claim |
+| detailed public product bundle/VAL profiles | top-level matched-filtered-map role is selected, but exact units/response/uncertainty/validity/lifecycle and named uses remain unresolved | publication unavailable |
 
 ## Confidence assessment
 
@@ -169,7 +175,7 @@ amplitude, and catalog inference is not authoritative.
 
 Stage B must not be commissioned while:
 
-- ODQ-002 package ownership and split has no owner answer;
+- ODQ-003 admitted parent and grouping has no owner answer;
 - multiple selected estimands remain in one proposed package;
 - required parent covariance, template, or prior authority is absent;
 - method substitution can occur without explicit realized identity;

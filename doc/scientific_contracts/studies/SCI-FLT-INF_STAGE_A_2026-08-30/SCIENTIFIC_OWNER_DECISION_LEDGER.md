@@ -1,17 +1,17 @@
 # SCI-FLT-INF scientific-owner decision ledger
 
-Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.2`
+Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.3`
 
-Status: proposed ordered owner walkthrough; ODQ-001 approved and closed;
-ODQ-002 through ODQ-013 open
+Status: proposed ordered owner walkthrough; ODQ-001 and ODQ-002 approved and
+closed; ODQ-003 through ODQ-013 open
 
 ## Decision discipline
 
 Questions are ordered by scientific consequence. Later questions must not be
 answered in a way that presumes an earlier answer. Each approved answer should
 be recorded in a separate exact owner artifact before a package-local Stage A
-packet is built. This holding study records the exact approved ODQ-001 answer
-but does not approve any proposed answer for ODQ-002 onward.
+packet is built. This holding study records the exact approved ODQ-001 and
+ODQ-002 answers but does not approve any proposed answer for ODQ-003 onward.
 
 ## `SCI-FLT-INF-ODQ-001` — estimand of the existing full path
 
@@ -39,17 +39,28 @@ response, uncertainty, product bundle, or Stage B launch.
 
 ## `SCI-FLT-INF-ODQ-002` — package ownership and split
 
-For each estimand selected in ODQ-001, which package owns it?
+Status: **approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_002_APPROVAL_2026-08-30.md`](SCIENTIFIC_OWNER_ODQ_002_APPROVAL_2026-08-30.md).
 
-- a map-domain FLT package;
-- a source/template-amplitude estimator package at the FLT/SRC boundary;
-- a posterior-reconstruction package separate from both; or
-- deferred/unavailable.
+The selected method belongs to a narrow map-domain filtering package. It owns
+the matched-filter operation and publishes a matched-filtered version of the
+exact admitted input map product or products, preserving their applicable
+map-domain structure and semantics. The local mathematical identity remains
+the ODQ-001 optimal matched-template amplitude estimator, including exact
+noise weighting and amplitude-unbiased normalization under the declared
+assumptions; the published product role is nevertheless a filtered map.
 
-Manager recommendation: do not approve `SCI-FLT-INF` as a combined package.
-Use a narrow owner-selected identity for template-amplitude fields and put
-selected-source/catalog estimates behind an explicit SRC boundary. Use a
-separate package for a genuine posterior reconstruction.
+This package does not own or require source detection, candidate selection,
+catalog construction, peak interpretation, deblending, source fitting, or
+other source-analysis behavior. No source-estimation package or SRC ownership
+boundary is introduced. A later independent source-analysis contract may
+consume matched-filtered maps if separately authorized.
+
+A genuine prior-bearing Wiener/posterior reconstruction remains a distinct
+deferred method and must not enter this package. ODQ-002 selects ownership and
+the top-level product role, not the final package name, parent, operator,
+template, noise model, support, response, uncertainty, lifecycle, or Stage B
+launch.
 
 ## `SCI-FLT-INF-ODQ-003` — admitted parent and grouping
 
@@ -87,18 +98,18 @@ Manager recommendation: treat the current parent coefficient and shaped PSD
 as scientifically unavailable until an exact authority identifies them. Do
 not call the denominator inverse variance merely because a GLS form is desired.
 
-## `SCI-FLT-INF-ODQ-005` — template, prior, and source-model identity
+## `SCI-FLT-INF-ODQ-005` — template and kernel identity
 
-For a template-amplitude method, specify the exact template source,
+For the matched-filter method, specify the exact template source,
 normalization, unit-source convention, parent-beam relation, grid/WCS,
 centering/subpixel phase, support, truncation/tail, array dependence, and
-calibration. For a posterior method, specify the exact signal prior and
-hyperparameters. Is state declared fixed, learned from the parent, learned
-from a source model, or externally supplied?
+calibration. Is template state declared fixed, learned from the parent, or
+externally supplied?
 
 Manager recommendation: do not combine kernel-derived, analytic Gaussian/
-Airy, high-pass, and source-learned cases in one base method unless an exact
-parameterized family preserves one estimand and all response/unit semantics.
+Airy, and high-pass cases in one base method unless an exact parameterized
+family preserves one estimand and all response/unit semantics. Source fitting
+and source-learned template state are outside this package.
 
 ## `SCI-FLT-INF-ODQ-006` — exact operator, approximation, and regularization
 
@@ -126,9 +137,10 @@ owner record, after resolving member parity.
 ## `SCI-FLT-INF-ODQ-008` — response, units, beam, and output interpretation
 
 What is the response of the exact selected estimator to declared modes,
-templates, source models, state learning, and boundaries? Does the output
-retain parent signal units, represent template amplitude, or represent a
-posterior field? What beam/effective transfer and calibration covariance apply?
+templates, state learning, and boundaries? Which applicable parent map-domain
+semantics are preserved, and what signal units or template-amplitude units,
+beam/effective transfer, and calibration covariance apply to the filtered
+map?
 
 Manager recommendation: distinguish fixed-state response from full-procedure
 response. Do not use a uniformly processed kernel as universal response for a
@@ -139,7 +151,6 @@ spatially varying estimator without an exact proof and domain.
 Which uncertainty is required:
 
 - conditional analytic covariance for fixed exact state;
-- posterior covariance;
 - frozen-state empirical NOI product;
 - full-procedure/relearned empirical product;
 - projected/structured covariance; or
@@ -151,7 +162,8 @@ nonprecision?
 
 Manager recommendation: v0.1 may publish signal with typed covariance
 unavailable if that is scientifically useful and honest. Never infer
-independent-pixel aperture uncertainty.
+independent-pixel aperture uncertainty. Posterior covariance is outside the
+selected package.
 
 ## `SCI-FLT-INF-ODQ-010` — learned-state and NOI generation graph
 
@@ -187,8 +199,8 @@ Defer inactive data-thresholded destriping to its own Stage A package.
 May a NOI-derived global scalar create a new versioned normalization/
 coefficient product? If yes, what exact parent coefficient and NOI estimand
 does it calibrate, what region/statistic defines it, and what does it not mean?
-Which standardized numerator/scale pair is authorized, and which significance
-or source claims remain outside?
+Which standardized numerator/scale pair is authorized, and which significance,
+detection, peak, or catalog claims remain outside?
 
 Manager recommendation: route this as a separate FLT/NOI derived-product
 contract. Preserve immutable formal/parent coefficients, create a successor
@@ -212,7 +224,7 @@ for a missing required scientific role.
 
 ```text
 ODQ-001 estimand
-  -> ODQ-002 package split
+  -> ODQ-002 map-domain package and filtered-map role
      -> ODQ-003 parent/grouping
         -> ODQ-004 covariance/noise
         -> ODQ-005 template/prior
@@ -226,7 +238,7 @@ ODQ-001 estimand
                        -> ODQ-013 product/VAL/lifecycle
 ```
 
-ODQ-004 and ODQ-005 may be discussed in parallel after ODQ-003. ODQ-001 is
-closed. Package-local Stage A is blocked until ODQ-002 is approved. Stage B is
-blocked until all decisions needed by that one selected package have exact
-owner answers and an exclusive implementation-blind author packet.
+ODQ-001 and ODQ-002 are closed. ODQ-003 is the next gate. ODQ-004 and ODQ-005
+may be discussed in parallel after ODQ-003. Stage B is blocked until all
+decisions needed by the selected map-domain filtering package have exact owner
+answers and an exclusive implementation-blind author packet.
