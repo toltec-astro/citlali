@@ -1,0 +1,430 @@
+{
+  "schema_version": "citlali-wp7-timestream-successor-authority-v2",
+  "authority_id": "wp7-timestream-successor-canonical-reconciliation-2026-08-31",
+  "recorded_date": "2026-08-31",
+  "last_updated_date": "2026-08-31",
+  "status": "governance_reconciliation_active_application_implementation_held",
+  "identity_policy": "Application and contract identities are exact Git commits; artifact identities are filename plus SHA-256. Branch names and filesystem paths are locators, never identities.",
+  "repository_authority": {
+    "application_baselines": "doc/APPLICATION_BASELINES.md",
+    "successor_program": "doc/WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md",
+    "decision": "doc/adr/0017-wp7-timestream-successor.md",
+    "timing_decision": "doc/adr/0018-network-specific-timing-and-common-analysis-grid.md",
+    "rtc_scan_array_planning_decision": "doc/adr/0019-scan-array-rtc-bandwidth-planning.md",
+    "rtc_filter_bank_decision": "doc/adr/0020-precertified-rtc-filter-bank-and-science-error-budgets.md",
+    "ast_scan_motion_decision": "doc/adr/0021-ast-scan-motion-velocity-and-validity.md",
+    "rtc_occurrence_speed_decision": "doc/adr/0022-occurrence-level-rtc-upper-speed-admission.md",
+    "ast_route_family_decision": "doc/adr/0023-ast-route-family-motion-membership.md",
+    "implementation_baseline_historical": "doc/WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md",
+    "network_timing_owner_correction": "doc/WP7_NETWORK_TIMING_OWNER_AUTHORITY_CORRECTION_2026-08-29.md",
+    "network_timing_crosswalk": "doc/WP7_NETWORK_TIMING_AUTHORITY_CROSSWALK_2026-08-29.md",
+    "rtc_scan_array_planning_owner_authority": "doc/WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md",
+    "rtc_scan_array_planning_crosswalk": "doc/WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md",
+    "rtc_scan_array_planning_packet": "doc/WP7_RTC_FIXED_DECIMATION_OWNER_DECISION_PACKET_2026-08-29.md",
+    "rtc_scan_array_numerical_policy": "doc/WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md",
+    "rtc_scan_array_numerical_policy_v1_historical": "doc/WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md",
+    "rtc_occurrence_speed_owner_authority": "doc/WP7_RTC_OCCURRENCE_SPEED_ADMISSION_OWNER_AUTHORITY_2026-08-30.md",
+    "rtc_filter_downsampling_test_plan": "doc/WP7_RTC_FILTER_DOWNSAMPLING_CERTIFICATION_TEST_PLAN_2026-08-30.md",
+    "ast_scan_motion_owner_decision_packet": "doc/WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md",
+    "ast_route_family_owner_decision_packet": "doc/WP7_AST_ROUTE_FAMILY_MOTION_OWNER_DECISION_PACKET_2026-08-30.md",
+    "ast_scan_motion_crosswalk": "doc/WP7_AST_SCAN_MOTION_AUTHORITY_CROSSWALK_2026-08-30.md",
+    "architecture": "doc/ARCHITECTURE.md",
+    "scientific_conventions": "doc/SCIENTIFIC_CONVENTIONS.md",
+    "adr_index": "doc/adr/README.md",
+    "living_status": "doc/REFACTOR_STATUS.md",
+    "workstream_authority": "doc/INTEGRATION_LEDGER.md"
+  },
+  "rtc_scan_array_numerical_policy": {
+    "policy_id": "wp7-rtc-scan-array-numerical-policy-v2",
+    "scientific_owner_disposition": "approved_bounded_correction",
+    "approved_date": "2026-08-30",
+    "supersedes_policy_id": "wp7-rtc-scan-array-numerical-policy-v1",
+    "superseded_clauses": [
+      "astronomical_response_budget",
+      "generic_folded_alias_bound",
+      "runtime_filter_construction"
+    ],
+    "implementation_status": "blocked_on_d2_psd_line_evidence_selection_closure_and_filter_bank_certification",
+    "maximum_additional_mapped_response_error": 0.01,
+    "maximum_broadband_alias_to_retained_noise_variance_ratio": 0.01,
+    "runtime_filter_design": false,
+    "runtime_filter_bank_lookup": true,
+    "automatic_largest_factor_selection_authorized": false,
+    "sub_input_nyquist_line_owner": "line_detection_and_mitigation_strategy",
+    "prototype_tap_counts_authoritative": false,
+    "prototype_factor_predictions_authoritative": false,
+    "observation_152390_vmax_authoritative": true,
+    "observation_152390_vmax_role": "truthful_ast_diagnostic_not_whole_scan_rtc_admission"
+  },
+  "rtc_occurrence_speed_authority": {
+    "policy_id": "wp7-rtc-occurrence-speed-admission-v1",
+    "scientific_owner_disposition": "approved_bounded_correction",
+    "approved_date": "2026-08-30",
+    "upper_boundary": "inclusive",
+    "upper_exclusion_cause": "scan_speed_above_mode_support",
+    "ast_maximum_unchanged": true,
+    "scan_maximum_selects_mode": false,
+    "velocity_percentile_selects_mode": false,
+    "m1_upper_speed_consequence": "network_occurrence_local",
+    "filtered_output_requires_complete_admitted_support": true,
+    "automatic_factor_selection_authorized": false,
+    "implementation_status": "clean_seven_case_m1_census_passed_independent_review_and_mgt1_support_pending"
+  },
+  "ast_scan_motion_authority": {
+    "policy_id": "wp7-ast-scan-motion-v2",
+    "scientific_owner_disposition": "approved_bounded_authority",
+    "approved_date": "2026-08-30",
+    "supersedes_policy_id": "wp7-ast-scan-motion-v1",
+    "superseded_clauses": [
+      "supported_input_family",
+      "producer_state_interpretation",
+      "physical_scan_membership"
+    ],
+    "preserved_numerical_operator": "wp7-ast-scan-motion-v1",
+    "bounded_implementation_authorized": true,
+    "implementation_status": "bounded_v2_repair_and_seven_case_execution_passed_fresh_independent_exact_sha_review",
+    "implementation_revision": "adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7",
+    "review_package_revision": "37c2adfa84762cb8cef5dc66d5b1fbc6753331f6",
+    "review_disposition": "pass_no_findings",
+    "acceptance_package": "handoff/WP7_AST_ROUTE_FAMILY_MOTION_ACCEPTANCE_PACKAGE_2026-08-30.md",
+    "repair_and_review_handoff": "handoff/WP7_AST_ROUTE_FAMILY_MOTION_REVIEW_REPAIR_2026-08-31.md",
+    "observation_152390_acceptance_record_sha256": "366adc630a03ff3d5fc2bb641ee45c8dc7a76e747bc1d79e93deb5d8d07d5c2c",
+    "observation_152390_acceptance_executable_sha256": "9659d13df686be5370430c069bd02b9df82e625a33df61210ee4d2c33e725b5e",
+    "seven_case_corpus_sha256": "c8dcc459e9df3c84e5f7c7bdaf73bed0672500d381af3acf3ad5b63bc62b1bee",
+    "seven_case_census_executable_sha256": "ebf9b32622e97e32fcc5914a8b32bcfe654d45e47656218b6da8ed94924eac35",
+    "supported_input_families": [
+      "real_toltec_science_lissajous_50hz_j2000",
+      "real_toltec_oof_lissajous_50hz_j2000",
+      "real_toltec_pointing_lissajous_50hz_j2000",
+      "real_toltec_zero_offset_no_hold_during_turns_azimuth_continuous_rectilinear_beammap_50hz_j2000"
+    ],
+    "beammap_membership": "producer_hold_zero_and_inclusive_realized_corrected_horizon_footprint",
+    "short_physical_segments_retained": true,
+    "legacy_first_record_trim_authoritative": false,
+    "legacy_two_second_range_rejection_authoritative": false,
+    "observation_152390_candidate_vmax_authoritative": true,
+    "observation_152390_vmax_role": "truthful_raw_ast_diagnostic"
+  },
+  "scientific_packet": {
+    "scope": "closed bounded WP-7.1 ordinary native-paired-readout-to-PTC route and RTC-only terminal route",
+    "source_commit": "170ecea9de1ee810da7d7e45a489a4545ccd623d",
+    "clean_room_archive_sha256": "c5f6e14b0e918591515ae7db733f2b58d5a10aaaa8abd3027d5a3d369b3609ed",
+    "artifacts": [
+      {
+        "filename": "WP7_SUCCESSOR_INDEPENDENT_SCIENTIFIC_CONTRACT_AUDIT.md",
+        "sha256": "f460c5b1b2f866dda8729895367f9f4341bcae2367e881fc22a323a636e36fe8",
+        "role": "locked independent scientific-contract audit"
+      },
+      {
+        "filename": "WP7_SUCCESSOR_INDEPENDENT_SCENARIO_SUITE.md",
+        "sha256": "7927685239572f72cbbeba5692c5ebb56b80cd7404e2afe622cc36687ebd4284",
+        "role": "locked independent implementation-consequence scenario suite"
+      },
+      {
+        "filename": "WP7_SUCCESSOR_INDEPENDENT_REPORT_SHA256SUMS.txt",
+        "sha256": "7e79c096f396c3e7ea2227da6cb493d4d52344873d2ac82e2f378e098c6c4918",
+        "role": "checksum manifest for the locked independent outputs"
+      },
+      {
+        "filename": "WP7_SUCCESSOR_REGRESSION_COMPARISON_REPORT.md",
+        "sha256": "fd803e859e7b6f1d6155a7b0230ba16732deaf8a003bc831c9c0a53ca547beb5",
+        "role": "locked predecessor-to-successor regression comparison"
+      },
+      {
+        "filename": "WP7_SUCCESSOR_FINDING_CROSSWALK.csv",
+        "sha256": "cff9c68f6cd32451d53dd4d7dc8baa56c96f56bf2c82f5d39a5ad28b47fe6721",
+        "role": "locked regression finding crosswalk"
+      },
+      {
+        "filename": "WP7_SUCCESSOR_COMPARISON_SHA256SUMS.txt",
+        "sha256": "94a2605d4855bccce988ac4abc4909c19a5e4c4da1c1731366ed0014361cb98d",
+        "role": "checksum manifest for the locked comparison outputs"
+      }
+    ],
+    "readiness": {
+      "ready_tiers": [
+        "TS-A",
+        "TS-S",
+        "TS-C"
+      ],
+      "rtc_only_terminal_route": "contract_closed",
+      "regressions": 0,
+      "recurrent_findings": 0,
+      "new_successor_findings": 0,
+      "unresolved_contract_contradictions": 0
+    },
+    "retained_scope_limits": [
+      "conditional_observation_instance_coordinate_parents",
+      "source_or_beam_response_seed",
+      "numerical_covariance_seed_and_stronger_covariance_authority",
+      "stronger_named_scientific_claim",
+      "external_consumer_acceptance",
+      "generic_usable_exposure",
+      "runtime_realization_implementation_conformance_observational_validation_performance_readiness_and_production"
+    ],
+    "closure_commit": "20ba6ae5dcf0b90a24ac3e778a75eff0a1bbe2aa",
+    "source_manifest": {
+      "commit": "20ba6ae5dcf0b90a24ac3e778a75eff0a1bbe2aa",
+      "path": "doc/scientific_contracts/audits/WP7_TIMESTREAM_CLEAN_ROOM_170ECEA9D/SOURCE_MANIFEST.md",
+      "sha256": "6c55ea528c5a646d34f9ee0b1d7eed3b5d3de7ce53e31c622dd992302c4c0890"
+    },
+    "owner_closure": {
+      "commit": "20ba6ae5dcf0b90a24ac3e778a75eff0a1bbe2aa",
+      "path": "doc/scientific_contracts/audits/WP7_TIMESTREAM_CLEAN_ROOM_170ECEA9D/WP7_SCIENTIFIC_OWNER_CLOSURE_2026-08-26.md",
+      "sha256": "18133f105fd790ab12f04ed14dabd3d40bcc0e3479c39ebe2831422d02640d14"
+    }
+  },
+  "implementation_review": {
+    "reviewed_branch": "codex/repair-native-consumer-extinction",
+    "reviewed_commit": "3ebc2a67fc32bad69759ff45638484efabf91773",
+    "disposition": "nonconformant_for_ordinary_wp7_and_rtc_only_routes",
+    "finding_counts": {
+      "blocker": 4,
+      "major": 7,
+      "minor": 0,
+      "mechanical": 0
+    },
+    "artifacts": [
+      {
+        "filename": "WP7_TIMESTREAM_IMPLEMENTATION_REVIEW.md",
+        "sha256": "2d570ad87477e4eda9e108142ccc6fb2b2a02cf13600f48cb838bb770a9199bc",
+        "role": "read-only implementation-conformance review"
+      },
+      {
+        "filename": "WP7_TIMESTREAM_IMPLEMENTATION_CROSSWALK.csv",
+        "sha256": "6dfcf4dab00545a98a34a02a7c0df069f478f95dec7ba993d783d36d093b382c",
+        "role": "contract-to-code and scenario crosswalk"
+      }
+    ],
+    "reviewed_application_commit": "3ebc2a67fc32bad69759ff45638484efabf91773",
+    "application_baseline_name": "Native Integration Baseline predecessor milestone"
+  },
+  "change_control": {
+    "scientific_contract_may_not_be_reopened_by_implementation_convenience": true,
+    "optional_tooling_requires_measured_trigger": true,
+    "intentional_science_change_requires_successor_epoch_and_ledger_entry": true,
+    "legacy_route_retirement_requires_separate_accepted_decision": true,
+    "canonical_replay_requires_exact_source_commit_and_changed_path_inventory": true,
+    "application_implementation_held_until_governance_reconciliation_closes": true
+  },
+  "status_axes": {
+    "native_integration_baseline": {
+      "application_integration": "complete_at_f0f423827ab321640e0cbcb003f7bf015368f694",
+      "scientific_conformance": "not_wp7_1_conformant",
+      "validation_evidence": "substantial_but_august_v2_four_mode_campaign_is_mixed_sha",
+      "production_authorization": "existing_use_only_no_phase5_release_promotion"
+    },
+    "wp7_1_successor_program": {
+      "application_integration": "governance_reconciliation_only",
+      "scientific_conformance": "contract_closed_implementation_conformance_not_claimed",
+      "validation_evidence": "divergent_evidence_preserved_not_canonical_acceptance",
+      "production_authorization": "none"
+    }
+  },
+  "application_lineage": {
+    "legacy_fork_comparator": "376e002238b1f49aeced8a3f33e8742db141634b",
+    "legacy_preserved_gw_dev_head": "ffc6b9070f4744f9778f3db71cdc468846d1da89",
+    "structural_refactor_baseline": "cee74ecbdfb4187756183879163a22ca2b8518f6",
+    "structural_refactor_validation_record": "71b3fd3d33b5b8ff236ea5ceff616ffa199d9208",
+    "native_integration_baseline": "f0f423827ab321640e0cbcb003f7bf015368f694",
+    "canonical_reconciliation_base": "cb3d568c701217ee0248c77f6dccd0bab7deef31",
+    "canonical_program_branch_locator": "codex/wp7-governance-reconciliation",
+    "preserved_divergent_head": "49fe73e757daa1885cd23127e8441cba47e648d2",
+    "preserved_divergent_branch_locator": "codex/wp7-rtc-fixed-decimation-authority",
+    "uncommitted_divergent_work_is_identity": false
+  },
+  "governance_hold": {
+    "issued_date": "2026-08-31",
+    "scope": "further_wp7_successor_application_implementation",
+    "disposition": "preserve_all_divergent_commits_and_uncommitted_work_without_commit_push_discard_or_rebase",
+    "release_condition": "canonical_G0_through_G3_reconciliation_committed_and_reviewed",
+    "contract_authoring_may_continue_independently": true,
+    "mapspace_contract_authoring_may_continue_independently": true
+  },
+  "adr_reconciliation": [
+    {
+      "divergent_number": "0014",
+      "canonical_number": "0017",
+      "divergent_path": "doc/adr/0014-wp7-timestream-successor.md",
+      "canonical_path": "doc/adr/0017-wp7-timestream-successor.md",
+      "introduced_by": "46824f7deeec56af786c877af7c53ae7cd55bef9",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2"
+    },
+    {
+      "divergent_number": "0015",
+      "canonical_number": "0018",
+      "divergent_path": "doc/adr/0015-network-specific-timing-and-common-analysis-grid.md",
+      "canonical_path": "doc/adr/0018-network-specific-timing-and-common-analysis-grid.md",
+      "introduced_by": "50aa0409e559dfd983c236bc6933687c52f9ad03",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2"
+    },
+    {
+      "divergent_number": "0016",
+      "canonical_number": "0019",
+      "divergent_path": "doc/adr/0016-scan-array-rtc-bandwidth-planning.md",
+      "canonical_path": "doc/adr/0019-scan-array-rtc-bandwidth-planning.md",
+      "introduced_by": "38644343a4f8cfa213c8cab87c06753377704e12",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2"
+    },
+    {
+      "divergent_number": "0017",
+      "canonical_number": "0020",
+      "divergent_path": "doc/adr/0017-precertified-rtc-filter-bank-and-science-error-budgets.md",
+      "canonical_path": "doc/adr/0020-precertified-rtc-filter-bank-and-science-error-budgets.md",
+      "introduced_by": "a8c7924e998f29eed9e4b26f965b05eafcae3c7b",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2"
+    },
+    {
+      "divergent_number": "0018",
+      "canonical_number": "0021",
+      "divergent_path": "doc/adr/0018-ast-scan-motion-velocity-and-validity.md",
+      "canonical_path": "doc/adr/0021-ast-scan-motion-velocity-and-validity.md",
+      "introduced_by": "5f0196d147723d56fcc3d4df6e984fdb0db8cb1c",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2"
+    },
+    {
+      "divergent_number": "0019",
+      "canonical_number": "0022",
+      "divergent_path": "doc/adr/0019-occurrence-level-rtc-upper-speed-admission.md",
+      "canonical_path": "doc/adr/0022-occurrence-level-rtc-upper-speed-admission.md",
+      "introduced_by": "4e8eae0237df492a67223fda365980319f3be71a",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2"
+    },
+    {
+      "divergent_number": "0020",
+      "canonical_number": "0023",
+      "divergent_path": "doc/adr/0020-ast-route-family-motion-membership.md",
+      "canonical_path": "doc/adr/0023-ast-route-family-motion-membership.md",
+      "introduced_by": "672f907355a3f15f3ee987d92a5f7e95bbdc38b5",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2"
+    }
+  ],
+  "reconciled_authority_artifacts": [
+    {
+      "path": "doc/WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "cfaead9dda72032d875385b8c8a91f317c984f7bf780e2d1a8e21bdf14ed685a",
+      "canonical_sha256": "e7e950799ebc94e989726c950c91eabb84f11baf768be96ed7a83d1ce2f5f547",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "doc/WP7_NETWORK_TIMING_AUTHORITY_CROSSWALK_2026-08-29.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "acfbe0ad71dc005dd4a665b67789965362c147e90494628b615c3452badb4c41",
+      "canonical_sha256": "acfbe0ad71dc005dd4a665b67789965362c147e90494628b615c3452badb4c41",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "doc/WP7_NETWORK_TIMING_OWNER_AUTHORITY_CORRECTION_2026-08-29.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "890b5a03935fff75bf97f75d9c4370ece30bf23470e6816f7983014f5eaef4ef",
+      "canonical_sha256": "890b5a03935fff75bf97f75d9c4370ece30bf23470e6816f7983014f5eaef4ef",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "doc/WP7_RTC_FILTER_DOWNSAMPLING_CERTIFICATION_TEST_PLAN_2026-08-30.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "673044d0741d1e5521a5a25ce9367c900cca50c1bb389e2a4ce3e2039c919176",
+      "canonical_sha256": "39fcd9771fd40aef7cc6db1387c27b5e28cb616645f6f92a8e486e88247480b2",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "doc/WP7_RTC_FIXED_DECIMATION_OWNER_DECISION_PACKET_2026-08-29.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "0587431c637c7abfff4db0af024ec6e9e15ca9379a73a091400443632db47252",
+      "canonical_sha256": "af1f31d631febd75d406759c680c0d1916ef395b8a21636ed16501415da27bc4",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "doc/WP7_RTC_OCCURRENCE_SPEED_ADMISSION_OWNER_AUTHORITY_2026-08-30.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "5d226cab4b17903181b3ed07464f41adc114d7d517de1f0e9c3c698380f34d7a",
+      "canonical_sha256": "64bb4fc1d96978950677628fc134fdce9590866410568af4ea2acec39c3ad0a9",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "doc/WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "b0b4399a48b22d2efc6c108779df322d5282cf2c744507af708e7ab1508f99b2",
+      "canonical_sha256": "b0b4399a48b22d2efc6c108779df322d5282cf2c744507af708e7ab1508f99b2",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "doc/WP7_RTC_SCAN_ARRAY_NUMERICAL_CLOSURE_PACKET_2026-08-29.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "8a0d69b8ba7638dd09faa7cb902e1f23dacb2698717c4894ab30de1092d4b835",
+      "canonical_sha256": "2215c69d295ad2ccf013656c5953085c3ba37edded81759f2f340f8923e00117",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "doc/WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "7e4c7350d55148cf1c8f29536f193244c30b23fd7799e9ef7538a5f24049d8f8",
+      "canonical_sha256": "feeb8cf31c17d6fc0859575bb75f9b897d576ccb1048e8ee5a59196df2f67523",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "doc/WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "e5838c1b15b7a91862227d86062fe55be27242ab8595c821baa2cbd7b9bc27a8",
+      "canonical_sha256": "2c521dca5f8168989d268a06a3a5ed336c705af94c44bd773e4c814ea8e5834f",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "doc/WP7_AST_ROUTE_FAMILY_MOTION_OWNER_DECISION_PACKET_2026-08-30.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "50a69daa670386ec2adcb365d273e30c00b598b5184c1b41bb6dff8387b5028f",
+      "canonical_sha256": "50a69daa670386ec2adcb365d273e30c00b598b5184c1b41bb6dff8387b5028f",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "doc/WP7_AST_SCAN_MOTION_AUTHORITY_CROSSWALK_2026-08-30.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "62ad057a8a2f2318390acdfabcc29e73951b2e8522076862a2f941f651909e3e",
+      "canonical_sha256": "64397ab46b20a31e18bf9fb66ced585f182ab84c67e35447552661d480941df6",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "doc/WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "8ee71851d75c12177e91414248b0cc5311a0049863b795d02f0dde8a7293c685",
+      "canonical_sha256": "8ee71851d75c12177e91414248b0cc5311a0049863b795d02f0dde8a7293c685",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "handoff/WP7_AST_SCAN_MOTION_ACCEPTANCE_PACKAGE_2026-08-30.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "c2b3d05a35c85a10baed9e2fc7f897fe52e31871101d9e518653523799980189",
+      "canonical_sha256": "c2b3d05a35c85a10baed9e2fc7f897fe52e31871101d9e518653523799980189",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "handoff/WP7_AST_SCAN_MOTION_ACCEPTANCE_152390_V1_2026-08-30.json",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "9b1652fc158de6aa17732213d25333316b95045e96d4d2fa97737e6edf9015fe",
+      "canonical_sha256": "9b1652fc158de6aa17732213d25333316b95045e96d4d2fa97737e6edf9015fe",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "handoff/WP7_RTC_OCCURRENCE_SPEED_CENSUS_EVIDENCE_2026-08-30.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "2997c6646c8c9ce588164578f45b00d4ee6dbdde2f7b6d0be8f1f6c0e624083b",
+      "canonical_sha256": "2997c6646c8c9ce588164578f45b00d4ee6dbdde2f7b6d0be8f1f6c0e624083b",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "handoff/WP7_AST_ROUTE_FAMILY_MOTION_ACCEPTANCE_PACKAGE_2026-08-30.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "01ccbe0608eafbf6b659b3557d266020227d37bec019af37b7741bbc058b2266",
+      "canonical_sha256": "01ccbe0608eafbf6b659b3557d266020227d37bec019af37b7741bbc058b2266",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    },
+    {
+      "path": "handoff/WP7_AST_ROUTE_FAMILY_MOTION_REVIEW_REPAIR_2026-08-31.md",
+      "source_snapshot": "49fe73e757daa1885cd23127e8441cba47e648d2",
+      "source_sha256": "635680c05cbc7445f52aae53bab4e81ff5567d47545da4ef3b4bcee956c37cbc",
+      "canonical_sha256": "635680c05cbc7445f52aae53bab4e81ff5567d47545da4ef3b4bcee956c37cbc",
+      "transformation": "canonical_adr_reference_renumbering_where_present_plus_explicit_canonical_status_and_locator_notes"
+    }
+  ]
+}

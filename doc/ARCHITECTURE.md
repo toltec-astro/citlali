@@ -42,6 +42,11 @@ Use these companion authorities:
 
 - [`REFACTOR_STATUS.md`](REFACTOR_STATUS.md) for the current phase, gates, and
   accepted validation snapshots;
+- [`APPLICATION_BASELINES.md`](APPLICATION_BASELINES.md) for named application
+  and contract landmarks and their independent status axes;
+- [`WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md`](WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md)
+  and `validation/wp7_timestream_successor_authority.json` for the active
+  WP-7.1 canonical-reconciliation boundary;
 - [`SCIENTIFIC_CONVENTIONS.md`](SCIENTIFIC_CONVENTIONS.md) for scientific
   identities, units, coordinate frames, indexing, and validity;
 - [`CANONICAL_APT_V1.md`](CANONICAL_APT_V1.md) for the accepted, currently
@@ -61,6 +66,37 @@ Use these companion authorities:
 A disagreement among this document, executable contracts, and active code is a
 defect to resolve. Historical plans and handoff notes explain how the project
 arrived here but do not override the living status or this architecture map.
+
+## Application Lineage And WP-7.1 Program Boundary
+
+Canonical application ancestry and scientific-contract ancestry are distinct.
+The canonical application authority is `codex/refactor-mainline`, currently at
+`cb3d568c701217ee0248c77f6dccd0bab7deef31`. Exact integrated application
+`f0f423827ab321640e0cbcb003f7bf015368f694` is the Native Integration
+Baseline. It is integrated and substantially validated, but it is not labeled
+WP-7.1-conformant.
+
+The WP-7.1 scientific source
+`170ecea9de1ee810da7d7e45a489a4545ccd623d` and scientific closure
+`20ba6ae5dcf0b90a24ac3e778a75eff0a1bbe2aa` form the separate WP-7.1
+Timestream Contract Baseline. Contract closure does not select application
+ancestry or prove implementation conformance, performance, observational
+validation, readiness, or production authorization.
+
+The active successor program lives on
+`codex/wp7-governance-reconciliation`, based exactly on canonical
+`cb3d568c...`. The divergent branch
+`codex/wp7-rtc-fixed-decimation-authority` is preserved at committed head
+`49fe73e757daa1885cd23127e8441cba47e648d2` as implementation, tooling, and
+evidence input. It is not a second application authority and is not merged or
+rebased wholesale. Its work may enter canonical ancestry only as a bounded
+reviewed replay unit after the governance gates close.
+
+Canonical WP-7 ADRs are 0017--0023. Their former divergent numbers 0014--0020
+are provenance locators only; canonical ADRs 0014--0016 remain the Spack,
+release-bundle, and stage-boundary runtime-state decisions. No runtime path in
+this tree acquires WP-7.1 conformance merely because the authority documents
+are present.
 
 ## System Context
 
@@ -102,10 +138,11 @@ does not reconstruct unavailable upstream overlay history.
 
 ## Active Build And Entry Points
 
-The established CMake graph remains the operational fallback while the
-parallel Spack CMake graph proceeds through final integration and Unity
-acceptance. Both graphs must carry the same production translation-unit set
-and expose the same two production targets:
+The established CMake graph remains the operational fallback. The integrated
+Spack CMake graph has passed its bounded build and Unity acceptance, while
+release composition and the same-SHA four-mode matrix remain open. Both graphs
+must carry the same production translation-unit set and expose the same two
+production targets:
 
 | Target | Role | Active implementation |
 | --- | --- | --- |

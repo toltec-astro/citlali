@@ -64,6 +64,12 @@ The executable authorities are:
 - `validation/intended_science_changes.json` for intentional post-baseline
   scientific changes.
 
+The separate machine-readable
+`validation/wp7_timestream_successor_authority.json` binds the exact WP-7.1
+scientific source/closure and accepted post-closure owner authority used by the
+successor program. It is an authority router, not an accepted-run record or a
+substitute for the product and validation ledgers above.
+
 This document explains those contracts and records conventions that span more
 than one file or subsystem. A disagreement between this document, executable
 metadata, and actual writer behavior is a defect to resolve. It is not
@@ -80,6 +86,38 @@ The accepted observation-specific successor is specified in
 registry entries are likewise `unactivated`: the complete target and relation
 are embedded logical records, while exactly one canonical APT-family ECSV and
 its receipt form the persisted output.
+
+## WP-7.1 Scientific Authority Boundary
+
+The WP-7.1 Timestream Contract Baseline is exact successor source
+`170ecea9de1ee810da7d7e45a489a4545ccd623d` plus exact scientific closure
+`20ba6ae5dcf0b90a24ac3e778a75eff0a1bbe2aa`. It is contract-closed for the
+approved bounded ordinary native-paired-readout-to-PTC route and RTC-only
+terminal route. Its ready tiers are `TS-A`, `TS-S`, and `TS-C`.
+
+Seven limitation groups remain intentional scope boundaries: conditional
+observation-instance coordinate parents; the source/beam response seed; the
+numerical covariance seed and stronger covariance authority; a stronger named
+scientific claim; external-consumer acceptance; generic usable exposure; and
+runtime realization through implementation conformance, observational
+validation, achieved performance, readiness, and production. They are not
+open WP-7 findings and must not be promoted into repair requirements merely
+because a stronger implementation could be built.
+
+Canonical ADRs 0017--0023 and their bound owner packets add the accepted
+post-closure application-facing authority for network-native time axes,
+explicit common analysis grids, scan/array RTC planning, a pre-certified
+filter bank under mapped-response and broadband-alias budgets,
+occurrence-local upper-speed admission, and AST scan-motion/route-family
+membership. These decisions constrain future conformance work; they do not
+assert that the current application has implemented them.
+
+The Native Integration Baseline at
+`f0f423827ab321640e0cbcb003f7bf015368f694` is explicitly not
+WP-7.1-conformant. Current WP-7 application implementation remains held while
+canonical governance is reconciled. Contract closure, implementation
+conformance, validation evidence, and production authorization remain separate
+facts.
 
 ## Capability Boundary
 

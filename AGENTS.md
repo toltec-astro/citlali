@@ -3,27 +3,33 @@
 Read these documents before making architectural changes:
 
 1. `doc/REFACTOR_STATUS.md` - current phase, gates, and next actions.
-2. `doc/PHASE5_PREPARATION_AND_INTEGRATION_PLAN_2026-07-16.md` - active
+2. `doc/APPLICATION_BASELINES.md` - named application and contract landmarks
+   with separate integration, conformance, validation, and production axes.
+3. `doc/WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md` and
+   `validation/wp7_timestream_successor_authority.json` - active WP-7.1
+   canonical-reconciliation gates and exact scientific/implementation
+   authority binding.
+4. `doc/PHASE5_PREPARATION_AND_INTEGRATION_PLAN_2026-07-16.md` - active
    compilation-independent closeout lane and final-candidate discipline.
-3. `doc/TOLTECA_BUILD_INTEGRATION_REQUIREMENTS_2026-07-23.md` - required
+5. `doc/TOLTECA_BUILD_INTEGRATION_REQUIREMENTS_2026-07-23.md` - required
    outcomes and evidence for the build/integration review.
-4. `doc/TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md` - active Spack
+6. `doc/TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md` - active Spack
    evidence, Adapt decision, compatibility gaps, and bounded integration path.
-5. `doc/TOLTECA_BUILD_INTEGRATION_REVIEW_2026-07-26.md` - historical Conan 2
+7. `doc/TOLTECA_BUILD_INTEGRATION_REVIEW_2026-07-26.md` - historical Conan 2
    review superseded for package-manager selection.
-6. `doc/PHASE4_1_TOLTECA_CONFIG_STRUCTURE_PLAN_2026-07-16.md` - completed
+8. `doc/PHASE4_1_TOLTECA_CONFIG_STRUCTURE_PLAN_2026-07-16.md` - completed
    four-mode numbered-YAML authoring work and gates.
-7. `doc/PHASE4_2_TECHNIQUE_PERFORMANCE_REVIEW_PLAN_2026-07-16.md` - completed
+9. `doc/PHASE4_2_TECHNIQUE_PERFORMANCE_REVIEW_PLAN_2026-07-16.md` - completed
    whole-code review rubric, evidence labels, priorities, and stop rules.
-8. `doc/ARCHITECTURE.md` - active components, ownership, dependencies,
+10. `doc/ARCHITECTURE.md` - active components, ownership, dependencies,
    compatibility boundaries, and extension rules.
-9. `doc/SCIENTIFIC_CONVENTIONS.md` - identities, units, frames, validity, and
+11. `doc/SCIENTIFIC_CONVENTIONS.md` - identities, units, frames, validity, and
    validation routing.
-10. `doc/RETAINED_DEBT.md` - deliberate limitations, owners, triggers, and exit
+12. `doc/RETAINED_DEBT.md` - deliberate limitations, owners, triggers, and exit
    conditions.
-11. `handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md` - adopted
+13. `handoff/EXTERNAL_REFACTOR_ARCHITECTURE_REVIEW_2026-07-10.md` - adopted
    independent review and completion criteria.
-12. `doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md` - original goals and history.
+14. `doc/STRUCTURAL_REFACTOR_PLAN_2026-06-29.md` - original goals and history.
 
 The living status document governs sequencing when these documents differ.
 Durable architecture decisions are indexed in `doc/adr/README.md`.
@@ -44,6 +50,14 @@ numerical algorithm changes. Open-ended header subdivision remains paused.
 Do not broaden mature RTC, PTC, JINC, or Wiener-filter algorithms while fixing
 their contracts. Preserve numerical behavior unless a change is named,
 measured, and recorded as intentional.
+
+The WP-7.1 successor is currently in canonical governance reconciliation.
+Further WP-7 application implementation is held until G0--G3 in
+`doc/WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md` are committed, reviewed, and
+explicitly resumed. Preserve the divergent implementation/evidence lane and
+its uncommitted work. Scientific-contract and mapspace-contract authoring may
+continue under the contract-library package index, but contract work does not
+silently edit the application tree.
 
 ## Architectural Rules
 

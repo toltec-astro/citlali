@@ -1,5 +1,62 @@
 # Citlali Refactor Status
 
+## 2026-08-31 Application-Baseline And WP-7.1 Governance Reconciliation
+
+The project owner approved a canonical reorganization around explicit
+application, contract, validation, and work-program identities. The thin
+[`application-baseline router`](APPLICATION_BASELINES.md) now names the Legacy
+Fork Comparator, preserved legacy `gw_dev` head, Structural Refactor Baseline,
+Native Integration Baseline, WP-7.1 Timestream Contract Baseline, and active
+WP-7.1 Timestream Successor Program without inventing retroactive release
+numbers.
+
+The four status axes are independent: application integration, scientific
+conformance, validation evidence, and production authorization. In particular,
+exact integrated application `f0f423827ab321640e0cbcb003f7bf015368f694`
+is the Native Integration Baseline. It contains substantial bounded scientific
+and operational work but is not WP-7.1-conformant. The August V2 campaign
+remains mixed-SHA evidence—point, OOF, and Beammap at `c31a60a0`, science at
+`187df04b`—rather than a relabeled same-SHA successor baseline. Production
+remains `existing_use_only` and Phase 5 remains `preparing`.
+
+The WP-7.1 Timestream Contract Baseline is a separate scientific authority:
+exact successor source
+`170ecea9de1ee810da7d7e45a489a4545ccd623d` and exact closure commit
+`20ba6ae5dcf0b90a24ac3e778a75eff0a1bbe2aa`. Contract closure records zero
+regressions, recurrent findings, new successor findings, or unresolved
+contract contradictions within the bounded scope. It does not establish
+implementation conformance, observational validation, performance, readiness,
+or production authorization.
+
+The active program lane `codex/wp7-governance-reconciliation` was created from
+exact canonical `codex/refactor-mainline`
+`cb3d568c701217ee0248c77f6dccd0bab7deef31`. The divergent implementation and
+evidence lane is preserved at exact committed head
+`49fe73e757daa1885cd23127e8441cba47e648d2`; any later uncommitted work in that
+worktree is preserved but is not an immutable identity. Further WP-7
+application implementation is on hold pending review of this reconciliation.
+Scientific-contract and mapspace-contract authoring continue independently
+under their own package/WIP authority.
+
+Canonical ADR numbering is now prospective and collision-free. The divergent
+WP-7 ADR numbers 0014--0020 map to canonical ADRs 0017--0023, after the
+existing canonical Spack/release/runtime-state ADRs 0014--0016. Every imported
+record preserves its divergent path and introduction commit as provenance.
+The machine-readable
+`validation/wp7_timestream_successor_authority.json` binds the exact contract
+packet and closure, the seven retained scope-limit groups, the nonconformant
+reviewed predecessor application, the accepted post-closure timing, common-
+grid, RTC planning/filter-bank/occurrence-speed, and AST motion/route-family
+authority, and the governance hold.
+
+The next application step is not a new numerical implementation. First review
+and commit this G0--G3 governance package. After an explicit resume, replay the
+preserved divergent work in bounded canonical units with exact source-commit,
+path, authority, and validation bindings. D2 PSD/line tooling at `49fe73e75`
+is preserved as a candidate replay unit; D2 remains open pending a reviewed
+network-native in-memory prefilter/residual producer, and filter design is not
+yet authorized.
+
 ## 2026-08-30 Post-Integration Readiness And Repository Hygiene
 
 Validated application integration identity remains

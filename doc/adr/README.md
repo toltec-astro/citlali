@@ -29,6 +29,18 @@ duplicate changing implementation inventories or validation snapshots.
 | [0014](0014-spack-build-foundation.md) | Accepted | Use Spack as the successor dependency/environment authority while preserving the full refactored application and fallback build |
 | [0015](0015-release-bundle-contract.md) | Accepted | Bind immutable first-party sources to one host-path-free Spack lock per supported platform profile, with explicit evidence and build-cache trust |
 | [0016](0016-stage-boundary-native-runtime-state.md) | Accepted owner-directed repair; local implementation complete, Unity science acceptance pending | Retain exact numerical state and compact masks at stage boundaries without a per-detector-sample operation narrative |
+| [0017](0017-wp7-timestream-successor.md) | Accepted; program active, application implementation held for governance reconciliation | Implement the scientifically closed WP-7.1 timestream contract by bounded replay on canonical application ancestry |
+| [0018](0018-network-specific-timing-and-common-analysis-grid.md) | Accepted; bounded divergent implementation and exact-SHA review passed | Preserve network-specific native timing and make common analysis grids explicit derived relations |
+| [0019](0019-scan-array-rtc-bandwidth-planning.md) | Accepted in part; superseded in part by 0020 and 0022 | Plan RTC bandwidth and decimation at scan/array scope without treating one historical factor as universal |
+| [0020](0020-precertified-rtc-filter-bank-and-science-error-budgets.md) | Accepted scientific budgets; certification artifacts pending | Select only pre-certified RTC filters under mapped-response and broadband-alias budgets |
+| [0021](0021-ast-scan-motion-velocity-and-validity.md) | Accepted numerical authority; family/membership clauses superseded in part by 0023 | Define AST scan-motion velocity, validity, and maximum-speed diagnostics |
+| [0022](0022-occurrence-level-rtc-upper-speed-admission.md) | Accepted; census evidence partial and production implementation pending | Apply upper-speed admission to network occurrences rather than selecting a whole-scan mode from a sparse maximum |
+| [0023](0023-ast-route-family-motion-membership.md) | Accepted bounded authority; divergent conformance review passed | Extend AST scan-motion membership to the approved Pointing, OOF, Science, and Beammap route families |
 
 Numbers are never reused. A materially different decision adds a new ADR and
 marks the old record superseded; do not rewrite the historical rationale.
+
+The WP-7 records above first appeared with colliding numbers 0014--0020 on the
+preserved divergent implementation branch. Their canonical numbers are
+0017--0023. Each record identifies its original path and source commit; the
+historical numbers remain provenance locators and are not canonical aliases.
