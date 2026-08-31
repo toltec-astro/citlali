@@ -20,7 +20,7 @@ application. It owns only the WP-7.1 timestream successor work.
 | WP-7.1 scientific closure | `20ba6ae5dcf0b90a24ac3e778a75eff0a1bbe2aa` | Contract-closed for the approved bounded scope |
 | Divergent implementation/evidence head | `49fe73e757daa1885cd23127e8441cba47e648d2` on `codex/wp7-rtc-fixed-decimation-authority` | Preserved evidence and replay source; not application authority |
 | Canonical governance lane | `codex/wp7-governance-reconciliation` | G0--G3 package accepted by the owner on 2026-08-31 and promoted through canonical ancestry |
-| Active G4 replay lane | `codex/wp7-g4-replay-001` | One bounded replay unit at a time from the accepted canonical governance state |
+| First G4 replay lane | `codex/wp7-g4-replay-001` | `WP7-REPLAY-001` accepted and integrated at exact `f8ba732bc4072e918c2521a013305be354ed7b53`; no active successor unit remains |
 
 The divergent lane is not rebased, force-moved, or discarded. Its commits,
 tests, tools, and evidence remain available for reviewed replay. Uncommitted
@@ -107,14 +107,14 @@ not authorized merely because evidence tooling exists.
 
 ## Current Status
 
-The program is in G4 reviewed replay. `WP7-REPLAY-001` is the only active
-WP-7 application work order. Its D2 PSD/line evidence-tooling candidate from
-exact divergent source `49fe73e757...` is locally verified on
-`codex/wp7-g4-replay-001` and awaits owner-controlled integration. The
-preserved uncommitted producer prototype is outside that source identity and
-outside the first unit. No WP-7.1 application-conformance, same-SHA
-validation, readiness, release, or production claim is made. The status of
-the predecessor application is summarized in
+The program is in G4 reviewed replay. `WP7-REPLAY-001`, sourced from exact
+divergent commit `49fe73e757...`, was owner-accepted and integrated at exact
+canonical commit `f8ba732bc...`. No WP-7 application work order is now active.
+The preserved uncommitted producer prototype is outside that source identity
+and remains unauthorized. No WP-7.1 application-conformance, same-SHA
+validation, readiness, release, or production claim is made. The next bounded
+unit requires explicit owner review before work begins. The status of the
+predecessor application is summarized in
 [`APPLICATION_BASELINES.md`](APPLICATION_BASELINES.md); current actions remain
 governed by [`REFACTOR_STATUS.md`](REFACTOR_STATUS.md) and
 [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md).

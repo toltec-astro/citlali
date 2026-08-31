@@ -1,5 +1,24 @@
 # Citlali Refactor Status
 
+## 2026-08-31 WP7-REPLAY-001 Canonical Integration
+
+The project owner reviewed and accepted exact bounded D2 evidence-tooling
+commit `f8ba732bc4072e918c2521a013305be354ed7b53` and authorized its
+integration into canonical application mainline. Local
+`codex/refactor-mainline` was fast-forwarded from governance closeout
+`f6c9033f80810da255a9bfa987e0fba8a082b785` to that exact commit.
+`WP7-REPLAY-001` is closed and the accepted tooling identity remains
+`f8ba732bc...`; this later administrative record does not change its source or
+scientific scope.
+
+The acceptance covers only the offline PSD/line evidence-tooling increment.
+It does not authorize the preserved producer/prefilter/residual prototype,
+filter design, factor selection, downsampling implementation, route wiring,
+or any additional scientific or architectural choice. No WP-7 application
+work order is active after this integration. The next bounded G4 increment
+must be proposed to and accepted by the owner before any source capture,
+branch creation, implementation, or replay begins.
+
 ## 2026-08-31 WP-7.1 G0--G3 Owner Closure And G4 Resume
 
 The project owner reviewed and accepted the committed G0--G3 governance
@@ -12,13 +31,13 @@ implementation hold is released. This owner gate does not itself establish
 WP-7.1 implementation conformance, same-SHA validation, readiness, release, or
 production authorization.
 
-The only active WP-7 application work order is `WP7-REPLAY-001` on
-`codex/wp7-g4-replay-001`. Its first bounded candidate is the D2 PSD/line
-evidence tooling introduced by exact divergent source commit
-`49fe73e757daa1885cd23127e8441cba47e648d2`. Replay is selective and
-canonical: every source path receives an explicit import, reconciliation, or
-non-import disposition; stale divergent status and ADR references are not
-cherry-picked wholesale.
+The first active G4 work order was `WP7-REPLAY-001` on
+`codex/wp7-g4-replay-001`. Its bounded candidate was the D2 PSD/line evidence
+tooling introduced by exact divergent source commit
+`49fe73e757daa1885cd23127e8441cba47e648d2`; it is now integrated and closed as
+recorded above. Replay remains selective and canonical: every source path
+receives an explicit import, reconciliation, or non-import disposition; stale
+divergent status and ADR references are not cherry-picked wholesale.
 
 The uncommitted four-file D2 prefilter/residual producer prototype remains
 preserved in the divergent worktree but is not an immutable source identity

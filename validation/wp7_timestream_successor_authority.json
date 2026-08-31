@@ -3,7 +3,7 @@
   "authority_id": "wp7-timestream-successor-canonical-reconciliation-2026-08-31",
   "recorded_date": "2026-08-31",
   "last_updated_date": "2026-08-31",
-  "status": "g4_reviewed_replay_active_no_application_conformance",
+  "status": "g4_replay_001_integrated_next_increment_not_authorized",
   "identity_policy": "Application and contract identities are exact Git commits; build-environment identity is the declared profile plus exact environment, lock, and DAG evidence; artifact identities are filename plus SHA-256. Branch names and filesystem paths are locators, never identities.",
   "repository_authority": {
     "application_baselines": "doc/APPLICATION_BASELINES.md",
@@ -219,7 +219,7 @@
       "production_authorization": "existing_use_only_no_phase5_release_promotion"
     },
     "wp7_1_successor_program": {
-      "application_integration": "g4_replay_001_locally_verified_candidate_not_integrated",
+      "application_integration": "g4_replay_001_integrated_at_f8ba732bc4072e918c2521a013305be354ed7b53",
       "scientific_conformance": "contract_closed_implementation_conformance_not_claimed",
       "build_environment": "default_to_accepted_spack_realization_for_reproduction_or_extension_build_changes_separately_governed",
       "validation_evidence": "g4_replay_001_local_tooling_gates_pass_no_observational_validation",
@@ -234,7 +234,8 @@
     "native_integration_baseline": "f0f423827ab321640e0cbcb003f7bf015368f694",
     "canonical_reconciliation_base": "cb3d568c701217ee0248c77f6dccd0bab7deef31",
     "canonical_program_branch_locator": "codex/wp7-governance-reconciliation",
-    "active_g4_replay_branch_locator": "codex/wp7-g4-replay-001",
+    "first_g4_replay_branch_locator": "codex/wp7-g4-replay-001",
+    "canonical_g4_replay_001_integration": "f8ba732bc4072e918c2521a013305be354ed7b53",
     "accepted_governance_package_commits": [
       "e874044c4c562fe672890495a3f4d5064e789d8f",
       "28e9e559b7e74d13e05427c54b13c89e9a6c6f1b"
@@ -259,7 +260,7 @@
     "contract_authoring_may_continue_independently": true,
     "mapspace_contract_authoring_may_continue_independently": true
   },
-  "active_replay_unit": {
+  "replay_unit_001": {
     "work_order": "WP7-REPLAY-001",
     "canonical_base": "f6c9033f80810da255a9bfa987e0fba8a082b785",
     "branch_locator": "codex/wp7-g4-replay-001",
@@ -296,7 +297,25 @@
       "supplemental_cli_identity": "pass_f6c9033f8_kidscpp_04088da_dirty",
       "affected_mode_reduction": "not_triggered_no_application_route_config_numerical_or_product_change"
     },
-    "status": "locally_verified_candidate_owner_controlled_integration_pending"
+    "owner_acceptance_date": "2026-08-31",
+    "canonical_integration_commit": "f8ba732bc4072e918c2521a013305be354ed7b53",
+    "accepted_scope": "offline_d2_psd_line_evidence_tooling_only",
+    "excluded_scope": [
+      "preserved_producer_prefilter_residual_prototype",
+      "filter_design",
+      "downsampling_implementation",
+      "additional_scientific_choice",
+      "additional_architectural_choice"
+    ],
+    "status": "owner_accepted_integrated_complete"
+  },
+  "next_replay_increment_control": {
+    "state": "owner_review_required_no_work_started",
+    "source_capture_authorized": false,
+    "branch_creation_authorized": false,
+    "producer_prototype_authorized": false,
+    "filter_design_authorized": false,
+    "downsampling_implementation_authorized": false
   },
   "adr_reconciliation": [
     {

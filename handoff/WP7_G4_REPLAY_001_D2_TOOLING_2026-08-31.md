@@ -2,9 +2,19 @@
 
 Date: 2026-08-31
 
-Status: **locally verified bounded candidate; owner-controlled canonical
-integration pending; no application route or scientific factor/filter choice
-activated**
+Status: **owner-accepted and canonically integrated at exact
+`f8ba732bc4072e918c2521a013305be354ed7b53`; no application route or scientific
+factor/filter choice activated**
+
+## Owner acceptance and integration
+
+On 2026-08-31 the project owner reviewed this unit's scope and reported
+validation, accepted `WP7-REPLAY-001` at exact commit `f8ba732bc...`, and
+authorized its integration into canonical application mainline. The owner
+explicitly excluded the preserved producer/prefilter/residual prototype,
+filter design, downsampling implementation, and every additional scientific
+or architectural choice. Local `codex/refactor-mainline` was fast-forwarded to
+the accepted commit. No remote push occurred.
 
 ## Authority and identities
 
@@ -98,6 +108,6 @@ post-cleaning residual planes, route-specific source masks, and realized
 pre-decimation line-operator evidence for the required Beammap, Science, and
 OOF corpus.
 
-Owner-controlled integration of this exact unit is the only next application
-action. Do not begin the producer or a filter-design unit merely because these
-offline evidence tools pass their local gates.
+This unit is closed. Do not begin the producer or a filter-design unit merely
+because these offline evidence tools pass their local gates. A next bounded
+G4 increment requires a separate owner-reviewed proposal.
