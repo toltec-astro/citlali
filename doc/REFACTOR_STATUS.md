@@ -1,5 +1,32 @@
 # Citlali Refactor Status
 
+## 2026-08-31 WP-7.1 G0--G3 Owner Closure And G4 Resume
+
+The project owner reviewed and accepted the committed G0--G3 governance
+package at exact commits
+`e874044c4c562fe672890495a3f4d5064e789d8f` and
+`28e9e559b7e74d13e05427c54b13c89e9a6c6f1b`, including the later
+Spack-backed V2 build-environment authority correction, and explicitly resumed
+WP-7 application work at G4 on 2026-08-31. `WP7-GOV-001` is closed and its
+implementation hold is released. This owner gate does not itself establish
+WP-7.1 implementation conformance, same-SHA validation, readiness, release, or
+production authorization.
+
+The only active WP-7 application work order is `WP7-REPLAY-001` on
+`codex/wp7-g4-replay-001`. Its first bounded candidate is the D2 PSD/line
+evidence tooling introduced by exact divergent source commit
+`49fe73e757daa1885cd23127e8441cba47e648d2`. Replay is selective and
+canonical: every source path receives an explicit import, reconciliation, or
+non-import disposition; stale divergent status and ADR references are not
+cherry-picked wholesale.
+
+The uncommitted four-file D2 prefilter/residual producer prototype remains
+preserved in the divergent worktree but is not an immutable source identity
+and is excluded from this first replay unit. D2 remains open until that or a
+replacement producer receives a separate review and canonical work order.
+Neither the evidence tooling nor the resume decision authorizes factor
+selection, FIR design, a nonidentity RTC route, or production activation.
+
 ## 2026-08-31 Spack-Backed V2 Build-Environment Authority Correction
 
 The project owner identifies `citlali-validation/v2` as the most recent
@@ -86,13 +113,13 @@ contract contradictions within the bounded scope. It does not establish
 implementation conformance, observational validation, performance, readiness,
 or production authorization.
 
-The active program lane `codex/wp7-governance-reconciliation` was created from
+The governance program lane `codex/wp7-governance-reconciliation` was created from
 exact canonical `codex/refactor-mainline`
 `cb3d568c701217ee0248c77f6dccd0bab7deef31`. The divergent implementation and
 evidence lane is preserved at exact committed head
 `49fe73e757daa1885cd23127e8441cba47e648d2`; any later uncommitted work in that
-worktree is preserved but is not an immutable identity. Further WP-7
-application implementation is on hold pending review of this reconciliation.
+worktree is preserved but is not an immutable identity. That hold was
+subsequently released by the owner decision recorded above.
 Scientific-contract and mapspace-contract authoring continue independently
 under their own package/WIP authority.
 
@@ -107,11 +134,10 @@ reviewed predecessor application, the accepted post-closure timing, common-
 grid, RTC planning/filter-bank/occurrence-speed, and AST motion/route-family
 authority, and the governance hold.
 
-The next application step is not a new numerical implementation. First review
-and commit this G0--G3 governance package. After an explicit resume, replay the
+The G0--G3 package is now committed and owner-reviewed. G4 replays the
 preserved divergent work in bounded canonical units with exact source-commit,
 path, authority, and validation bindings. D2 PSD/line tooling at `49fe73e75`
-is preserved as a candidate replay unit; D2 remains open pending a reviewed
+is the first candidate replay unit; D2 remains open pending a reviewed
 network-native in-memory prefilter/residual producer, and filter design is not
 yet authorized.
 

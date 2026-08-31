@@ -6,8 +6,8 @@
 > ancestry as ADR 0017.
 > The historical number remains a provenance locator only.
 
-Status: accepted 2026-08-26; canonical program active; application
-implementation held pending governance reconciliation
+Status: accepted 2026-08-26; G0--G3 owner-accepted 2026-08-31; G4 bounded
+reviewed replay active
 
 Decision owners: Citlali project owner, scientific owner, and engineering
 

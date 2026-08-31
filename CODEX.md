@@ -10,7 +10,7 @@ Current architecture and sequencing are defined by:
   and their four independent status axes;
 - `doc/WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md` and
   `validation/wp7_timestream_successor_authority.json` for the active WP-7.1
-  canonical-reconciliation program;
+  G4 reviewed-replay program;
 - `doc/ARCHITECTURE.md` for components, ownership, dependencies, and extension
   rules;
 - `doc/SCIENTIFIC_CONVENTIONS.md` for scientific semantics;

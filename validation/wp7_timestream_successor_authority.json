@@ -3,7 +3,7 @@
   "authority_id": "wp7-timestream-successor-canonical-reconciliation-2026-08-31",
   "recorded_date": "2026-08-31",
   "last_updated_date": "2026-08-31",
-  "status": "governance_reconciliation_active_application_implementation_held",
+  "status": "g4_reviewed_replay_active_no_application_conformance",
   "identity_policy": "Application and contract identities are exact Git commits; build-environment identity is the declared profile plus exact environment, lock, and DAG evidence; artifact identities are filename plus SHA-256. Branch names and filesystem paths are locators, never identities.",
   "repository_authority": {
     "application_baselines": "doc/APPLICATION_BASELINES.md",
@@ -207,7 +207,7 @@
     "intentional_science_change_requires_successor_epoch_and_ledger_entry": true,
     "legacy_route_retirement_requires_separate_accepted_decision": true,
     "canonical_replay_requires_exact_source_commit_and_changed_path_inventory": true,
-    "application_implementation_held_until_governance_reconciliation_closes": true
+    "application_implementation_held_until_governance_reconciliation_closes": false
   },
   "status_axes": {
     "native_integration_baseline": {
@@ -218,7 +218,7 @@
       "production_authorization": "existing_use_only_no_phase5_release_promotion"
     },
     "wp7_1_successor_program": {
-      "application_integration": "governance_reconciliation_only",
+      "application_integration": "g4_reviewed_replay_authorized_no_unit_integrated",
       "scientific_conformance": "contract_closed_implementation_conformance_not_claimed",
       "build_environment": "default_to_accepted_spack_realization_for_reproduction_or_extension_build_changes_separately_governed",
       "validation_evidence": "divergent_evidence_preserved_not_canonical_acceptance",
@@ -233,15 +233,28 @@
     "native_integration_baseline": "f0f423827ab321640e0cbcb003f7bf015368f694",
     "canonical_reconciliation_base": "cb3d568c701217ee0248c77f6dccd0bab7deef31",
     "canonical_program_branch_locator": "codex/wp7-governance-reconciliation",
+    "active_g4_replay_branch_locator": "codex/wp7-g4-replay-001",
+    "accepted_governance_package_commits": [
+      "e874044c4c562fe672890495a3f4d5064e789d8f",
+      "28e9e559b7e74d13e05427c54b13c89e9a6c6f1b"
+    ],
     "preserved_divergent_head": "49fe73e757daa1885cd23127e8441cba47e648d2",
     "preserved_divergent_branch_locator": "codex/wp7-rtc-fixed-decimation-authority",
     "uncommitted_divergent_work_is_identity": false
   },
   "governance_hold": {
     "issued_date": "2026-08-31",
+    "released_date": "2026-08-31",
+    "state": "released_for_g4_reviewed_replay",
     "scope": "further_wp7_successor_application_implementation",
     "disposition": "preserve_all_divergent_commits_and_uncommitted_work_without_commit_push_discard_or_rebase",
     "release_condition": "canonical_G0_through_G3_reconciliation_committed_and_reviewed",
+    "release_condition_satisfied": true,
+    "owner_reviewed_package_commits": [
+      "e874044c4c562fe672890495a3f4d5064e789d8f",
+      "28e9e559b7e74d13e05427c54b13c89e9a6c6f1b"
+    ],
+    "owner_explicit_g4_resume": true,
     "contract_authoring_may_continue_independently": true,
     "mapspace_contract_authoring_may_continue_independently": true
   },

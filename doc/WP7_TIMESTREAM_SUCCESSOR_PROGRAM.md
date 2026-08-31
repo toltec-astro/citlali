@@ -19,7 +19,8 @@ application. It owns only the WP-7.1 timestream successor work.
 | WP-7.1 successor source | `170ecea9de1ee810da7d7e45a489a4545ccd623d` | Exact scientific source packet |
 | WP-7.1 scientific closure | `20ba6ae5dcf0b90a24ac3e778a75eff0a1bbe2aa` | Contract-closed for the approved bounded scope |
 | Divergent implementation/evidence head | `49fe73e757daa1885cd23127e8441cba47e648d2` on `codex/wp7-rtc-fixed-decimation-authority` | Preserved evidence and replay source; not application authority |
-| Canonical program lane | `codex/wp7-governance-reconciliation` | Active governance reconciliation from the exact canonical base |
+| Canonical governance lane | `codex/wp7-governance-reconciliation` | G0--G3 package accepted by the owner on 2026-08-31 and promoted through canonical ancestry |
+| Active G4 replay lane | `codex/wp7-g4-replay-001` | One bounded replay unit at a time from the accepted canonical governance state |
 
 The divergent lane is not rebased, force-moved, or discarded. Its commits,
 tests, tools, and evidence remain available for reviewed replay. Uncommitted
@@ -81,6 +82,11 @@ or new scientific evidence that the approved decision is wrong.
 - Mapspace contract work may proceed in its own packages while timestream
   application implementation is held.
 
+G0--G3 were accepted by the project owner on 2026-08-31 at governance package
+commits `e874044c4c562fe672890495a3f4d5064e789d8f` and
+`28e9e559b7e74d13e05427c54b13c89e9a6c6f1b`. The owner explicitly released
+the application hold and resumed the program at G4.
+
 ### G4 — Reviewed replay
 
 After G0--G3 close, replay divergent work in bounded units. Each unit must:
@@ -101,9 +107,13 @@ not authorized merely because evidence tooling exists.
 
 ## Current Status
 
-The program is in governance reconciliation. No WP-7.1 application-conformance,
-same-SHA validation, readiness, release, or production claim is made. The
-four-axis status of the predecessor application is summarized in
+The program is in G4 reviewed replay. `WP7-REPLAY-001` is the only active
+WP-7 application work order, and its first candidate is the D2 PSD/line
+evidence tooling from exact divergent source `49fe73e757...`. The preserved
+uncommitted producer prototype is outside that source identity and outside the
+first unit. No WP-7.1 application-conformance, same-SHA validation, readiness,
+release, or production claim is made. The status of the predecessor
+application is summarized in
 [`APPLICATION_BASELINES.md`](APPLICATION_BASELINES.md); current actions remain
 governed by [`REFACTOR_STATUS.md`](REFACTOR_STATUS.md) and
 [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md).
