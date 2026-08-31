@@ -152,16 +152,19 @@ tangent_window(const AstScanMotionSource &source, std::size_t center) {
 
 bool supported_beammap_profile(
     const AstBeammapProfileMetadata &profile) noexcept {
+  // Non-finite numeric membership fields are classified per occurrence after
+  // Hold precedence. Finite values outside the bounded profile fail admission.
   return profile.execution_mode == 0 && profile.map_coordinate == "Az" &&
          profile.map_motion == "Continuous" &&
          profile.map_path == "Rectilinear" && profile.hold_during_turns == 0 &&
-         std::isfinite(profile.x_offset_map_lengths) &&
-         profile.x_offset_map_lengths == 0.0 &&
-         std::isfinite(profile.y_offset_map_lengths) &&
-         profile.y_offset_map_lengths == 0.0 &&
-         std::isfinite(profile.x_length_rad) && profile.x_length_rad > 0.0 &&
-         std::isfinite(profile.y_length_rad) && profile.y_length_rad > 0.0 &&
-         std::isfinite(profile.scan_angle_rad);
+         (!std::isfinite(profile.x_offset_map_lengths) ||
+          profile.x_offset_map_lengths == 0.0) &&
+         (!std::isfinite(profile.y_offset_map_lengths) ||
+          profile.y_offset_map_lengths == 0.0) &&
+         (!std::isfinite(profile.x_length_rad) ||
+          profile.x_length_rad > 0.0) &&
+         (!std::isfinite(profile.y_length_rad) ||
+          profile.y_length_rad > 0.0);
 }
 
 struct SourceAdmission {
@@ -248,22 +251,32 @@ MembershipResult beammap_membership_at(const AstScanMotionSource &source,
     return {false, false, AstScanMotionCause::producer_hold_active};
   }
 
-  const std::array<double, 6> values{
+  const std::array<double, 5> profile_values{
+      profile.x_offset_map_lengths, profile.y_offset_map_lengths,
+      profile.x_length_rad, profile.y_length_rad, profile.scan_angle_rad};
+  if (!std::all_of(profile_values.begin(), profile_values.end(),
+                   [](double value) { return std::isfinite(value); })) {
+    return {false, true, AstScanMotionCause::nonfinite_membership_field};
+  }
+
+  const std::array<double, 6> trajectory_values{
       facts.telescope_azimuth_actual_rad(row),
       facts.telescope_elevation_actual_rad(row),
       facts.source_azimuth_rad(row),
       facts.source_elevation_rad(row),
       facts.telescope_azimuth_correction_rad(row),
       facts.telescope_elevation_correction_rad(row)};
-  if (!std::all_of(values.begin(), values.end(),
+  if (!std::all_of(trajectory_values.begin(), trajectory_values.end(),
                    [](double value) { return std::isfinite(value); })) {
     return {false, true, AstScanMotionCause::nonfinite_membership_field};
   }
 
-  const double dx = std::cos(values[1] - values[5]) *
-                        shortest_signed_angle(values[0] - values[2]) -
-                    values[4];
-  const double dy = values[1] - values[3] - values[5];
+  const double dx =
+      std::cos(trajectory_values[1] - trajectory_values[5]) *
+          shortest_signed_angle(trajectory_values[0] - trajectory_values[2]) -
+      trajectory_values[4];
+  const double dy =
+      trajectory_values[1] - trajectory_values[3] - trajectory_values[5];
   const double cosine = std::cos(profile.scan_angle_rad);
   const double sine = std::sin(profile.scan_angle_rad);
   const double x_map = cosine * dx + sine * dy;

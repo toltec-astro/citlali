@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 
+#include <array>
 #include <bit>
 #include <cmath>
 #include <cstdint>
@@ -370,6 +371,49 @@ TEST(ast_scan_motion,
 }
 
 TEST(ast_scan_motion,
+     beammap_nonfinite_profile_membership_fields_preserve_hold_precedence) {
+  using ProfileField = double pipeline::AstBeammapProfileMetadata::*;
+  constexpr std::array<ProfileField, 5> fields{
+      &pipeline::AstBeammapProfileMetadata::x_offset_map_lengths,
+      &pipeline::AstBeammapProfileMetadata::y_offset_map_lengths,
+      &pipeline::AstBeammapProfileMetadata::x_length_rad,
+      &pipeline::AstBeammapProfileMetadata::y_length_rad,
+      &pipeline::AstBeammapProfileMetadata::scan_angle_rad};
+  const std::array<double, 2> nonfinite_values{
+      std::numeric_limits<double>::quiet_NaN(),
+      std::numeric_limits<double>::infinity()};
+
+  std::vector<double> x_offset(21, 0.0);
+  std::vector<int> hold(21, 0);
+  hold[10] = 4;
+  for (const auto field : fields) {
+    for (const double nonfinite : nonfinite_values) {
+      auto metadata = beammap_metadata();
+      (*metadata.beammap_profile).*field = nonfinite;
+      const auto result =
+          product(beammap_source(21, x_offset, hold, std::move(metadata)));
+
+      EXPECT_TRUE(pipeline::has_cause(
+          result->record(100).causes(),
+          pipeline::AstScanMotionCause::nonfinite_membership_field));
+      EXPECT_FALSE(pipeline::has_cause(
+          result->record(100).causes(),
+          pipeline::AstScanMotionCause::unsupported_beammap_profile));
+      EXPECT_TRUE(pipeline::has_cause(
+          result->record(110).causes(),
+          pipeline::AstScanMotionCause::producer_hold_active));
+      EXPECT_FALSE(pipeline::has_cause(
+          result->record(110).causes(),
+          pipeline::AstScanMotionCause::nonfinite_membership_field));
+      EXPECT_FALSE(result->scan_summary().maximum_available);
+      EXPECT_TRUE(pipeline::has_cause(
+          result->scan_summary().causes,
+          pipeline::AstScanMotionCause::scan_maximum_incomplete));
+    }
+  }
+}
+
+TEST(ast_scan_motion,
      beammap_segments_retain_short_physical_facts_and_isolate_support) {
   std::vector<double> x_offset(75, 0.0);
   std::vector<int> hold(75, 0);
@@ -452,6 +496,16 @@ TEST(ast_scan_motion,
       unsupported_result->record(100).causes(),
       pipeline::AstScanMotionCause::unsupported_beammap_profile));
   EXPECT_EQ(unsupported_result->scan_summary().physical_scan_member_count, 0U);
+
+  auto invalid_footprint = beammap_metadata();
+  invalid_footprint.beammap_profile->x_length_rad = 0.0;
+  const auto invalid_footprint_result = product(
+      beammap_source(21, x_offset, hold, std::move(invalid_footprint)));
+  EXPECT_TRUE(pipeline::has_cause(
+      invalid_footprint_result->record(100).causes(),
+      pipeline::AstScanMotionCause::unsupported_beammap_profile));
+  EXPECT_EQ(
+      invalid_footprint_result->scan_summary().physical_scan_member_count, 0U);
 
   auto metadata = beammap_metadata();
   const auto nominal = motion_source(21, 25.0);
