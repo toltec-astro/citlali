@@ -1,6 +1,6 @@
 # SCI-FLT-INF cross-package and NOI boundaries
 
-Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.9`
+Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.10`
 
 Status: Stage A owner-review candidate; it changes no frozen authority
 
@@ -108,6 +108,14 @@ any matched-filter beam/solid angle must be derived from `R_t` under an exact
 convention. MAP does not authorize FLT to relabel shape amplitude as flux or
 to invent response/covariance facts absent from the parent boundary.
 
+ODQ-009 consumes an authoritative matching MAP covariance, when available,
+through `C_cond=L C_parent L^T`; it does not manufacture absent parent or
+coadd cross-covariance blocks. The filtered signal may remain valid with typed
+covariance unavailable. `D^-1` is a marginal conditional variance only under
+exact inverse-covariance GLS premises and never establishes independent output
+locations. The future author must develop shared covariance-representation
+options in both contract views for later owner disposition.
+
 ## JINC to inference-bearing method
 
 SCI-JINC owns a separate signed-coefficient observation estimator and complete
@@ -191,6 +199,14 @@ of the science product. A response derived with state held fixed cannot be
 used as the full-procedure response of a member graph that re-estimates `Q`,
 support, approximation, or selection state. That route remains a distinct
 ODQ-010 population and response identity.
+
+Under ODQ-009, the ordinary exact frozen-NOI product remains the frozen SCI-NOI
+conditional randomization second moment on the common all-member domain. It is
+not `C_cond`, physical-noise variance, precision, calibrated significance, or
+a replacement for missing MAP covariance. Fixed-state and relearned members
+cannot be mixed. Calibration uncertainty and cross-covariance also remain
+separate, and total calibrated uncertainty is unavailable when any material
+term is unavailable.
 
 ## NOI-derived coefficient calibration
 

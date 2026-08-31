@@ -1,12 +1,14 @@
 # SCI-FLT-INF Stage A Scope Brief
 
-Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.9`
+Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.10`
 
 Status: sanitized owner-review holding study; ODQ-001 estimand, ODQ-002 map-
 domain ownership/product role, and ODQ-003 ordinary-MAP parents/grouping
 approved; ODQ-004 option development author-delegated; ODQ-005 template,
 ODQ-006 reference operator/realization policy, and ODQ-007 complete-support
 identity approved; ODQ-008 response/unit/beam interpretation approved;
+ODQ-009 conditional-uncertainty policy approved with representation options
+author-delegated;
 remaining scope not approved; not an author input
 
 ## Program adherence and prior-work recovery
@@ -194,8 +196,17 @@ templates retain shape-amplitude terminology. Parent/template calibration
 dependence is joint, and independence or cancellation may not be assumed.
 Missing calibration covariance remains unavailable and is not supplied by
 `D`. Fixed-state response is distinct from any ODQ-010 full-procedure response;
-the exact persisted response representation remains for ODQ-013, and
-uncertainty remains for ODQ-009.
+the exact persisted response representation remains for ODQ-013.
+
+`SCI-FLT-INF-ODQ-009` selects exact conditional covariance
+`C_cond=L C_parent L^T` when the matching authoritative parent covariance and
+fixed-state premises exist. It permits the signal with typed covariance
+unavailable, never converts missing covariance into zero or independence, and
+permits `D(x)^-1` as marginal conditional variance only under exact inverse-
+covariance GLS premises. Frozen-NOI conditional second moment, calibration
+uncertainty, and full-procedure uncertainty remain distinct. The future author
+must develop shared covariance-representation options in both contract views;
+the owner must later dispose of them before freeze or a numerical route.
 
 ## Required distinctions
 

@@ -1,6 +1,6 @@
 # SCI-FLT-INF prior-work recovery
 
-Recovery identity: `SCI-FLT-INF-PRIOR-WORK v0.1/r0.9`
+Recovery identity: `SCI-FLT-INF-PRIOR-WORK v0.1/r0.10`
 
 Status: reviewed Stage A recovery record; implementation and evidence entries
 remain quarantined from authorship
@@ -46,6 +46,7 @@ performed.
 | Scientific-owner ODQ-006 approval | exact `2026-08-31` owner artifact in this study | exact normalized reference operator conditional on ODQ-004/ODQ-007; approximations only within an owner-selected conformance envelope; quantitative envelope options delegated to both contract views; operator-changing regularization is a distinct method; null normalization is not zero amplitude | **Adopt** as binding operator and realization policy; retain quantitative envelope as later owner disposition |
 | Scientific-owner ODQ-007 approval | exact `2026-08-31` owner artifact in this study | complete-support-only base admission; missing/nonfinite/invalid required inputs unavailable; numerical fill only if excluded by conservative erosion; adaptive edge/background conditioning deferred | **Adopt** as binding base support and edge policy; cite historical D001 only as recovered precedent, not present mechanics |
 | Scientific-owner ODQ-008 approval | exact `2026-08-31` owner artifact in this study | template-amplitude signal units; exact location-indexed fixed-state response; noninheritance of a universal response kernel or parent beam; joint parent/template calibration dependence | **Adopt** as binding output interpretation, response, unit, and beam/calibration policy; retain uncertainty and full-procedure response for ODQ-009/010 |
+| Scientific-owner ODQ-009 approval | exact `2026-08-31` owner artifact in this study | truthful tiered uncertainty state; `C_cond=L C_parent L^T` for authoritative exact fixed-state covariance; conditional-only interpretation of `D^-1`; distinct frozen-NOI second moment and calibration uncertainty; covariance-representation assignment | **Adopt** as binding uncertainty policy; delegate shared representation alternatives to both future contract views; retain the learned/relearned generation graph for ODQ-010 |
 | RTC temporal filtering and AltAz destriping | frozen/active RTC-owned domain | timestream-domain cleaning before mapmaking | **Exclude** from map-domain INF scope; preserve RTC ownership |
 | FRUIT records | separate future tranche | source-model feedback, iteration, learning, stopping, restart, lineage | **Defer** to SCI-FRUIT; retain only the frozen NOI boundary for conditional/replayed cases |
 | Source fitting/finding surfaces | later downstream operation; no dedicated frozen source-analysis contract recovered | Gaussian fitting and catalog-facing products after filtering | **Exclude** from the selected matched-filter package; make no current ownership assignment; a future independent contract may consume filtered maps; no active source-learned filter-state route was recovered at the base commit |
@@ -125,11 +126,16 @@ reference operator and bounded-realization policy while delegating quantitative
 envelope alternatives. ODQ-007 approves complete-support-only base admission
 and defers adaptive edge conditioning. ODQ-008 approves the template-amplitude
 unit and exact fixed-state response while separating inherited parent spatial
-identity from noninherited signal/beam/calibration meanings. These decisions
-do not approve the covariance/noise authority, numerical template instance,
-quantitative
-approximation tolerance, exact support extent, final package name, response
-representation, full-procedure response, uncertainty, or contract.
+identity from noninherited signal/beam/calibration meanings. ODQ-009 approves
+exact conditional covariance propagation when authoritative inputs exist,
+permits typed covariance unavailability without invalidating the signal, and
+prevents `D`, frozen-NOI second moments, or missing cross terms from becoming
+precision or independence claims. It delegates covariance representation
+alternatives to the future author and retains full-procedure uncertainty for
+ODQ-010. These decisions do not approve the covariance/noise authority,
+numerical template instance, quantitative approximation tolerance, exact
+support extent, final package name, response/covariance representation,
+full-procedure response/uncertainty, or contract.
 
 ### Superseded or nonportable material
 

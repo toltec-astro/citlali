@@ -1,6 +1,6 @@
 # SCI-FLT-INF implementation-informed dossier
 
-Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.9`
+Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.10`
 
 Status: quarantined Stage A manager evidence; forbidden to any future
 implementation-blind scientific author
@@ -88,6 +88,14 @@ requires compatible template and CAL/BEAM lineage. Parent/template calibration
 dependence is joint; this dossier supplies no cancellation, covariance, beam,
 or flux authority. These owner facts came from outside the dossier and do not
 establish implementation conformity.
+
+ODQ-009 independently selects the exact fixed-state covariance identity
+`C_cond=L C_parent L^T` when a matching authoritative parent covariance
+exists. Only exact inverse-covariance GLS premises can make `D^-1` a marginal
+conditional variance; the implementation's denominator/weight field supplies
+no such authority. Frozen-NOI second moments, calibration uncertainty, and
+full-procedure uncertainty remain distinct. The future author must develop
+bounded covariance-representation alternatives in both contract views.
 
 ## Noise-spectrum state and fallback
 

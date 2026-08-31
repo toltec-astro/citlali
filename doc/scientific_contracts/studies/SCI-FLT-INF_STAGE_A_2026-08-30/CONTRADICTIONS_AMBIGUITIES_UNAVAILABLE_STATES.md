@@ -1,6 +1,6 @@
 # SCI-FLT-INF contradictions, ambiguities, and unavailable states
 
-Record identity: `SCI-FLT-INF-GAPS v0.1/r0.9`
+Record identity: `SCI-FLT-INF-GAPS v0.1/r0.10`
 
 Status: Stage A owner-review record; absence is preserved rather than repaired
 
@@ -139,6 +139,21 @@ before an approximate route can freeze. An iteration or tail cap is not
 success unless the selected bound is met; outside-envelope operator changes
 are separately versioned methods or unavailable.
 
+### Resolved at policy level: covariance and denominator precision
+
+No universal parent covariance, output covariance representation, or proof
+that the historical denominator is precision was recovered.
+
+Owner disposition under ODQ-009: when a matching authoritative parent
+covariance exists, exact fixed-state covariance is
+`C_cond=L C_parent L^T`. Missing entries and cross blocks remain unavailable,
+not zero or independent. `D(x)^-1` is only a marginal conditional variance
+when ODQ-004 selects exact inverse covariance and every GLS premise holds;
+otherwise `D` is normalization only. Frozen-NOI second moments, calibration
+uncertainty, and full-procedure uncertainty remain separate. Exact persistence
+and representation alternatives are delegated to both future contract views
+for later owner disposition.
+
 ### Resolved for base; deferred for adaptive edge parity
 
 The learned window is shared with members, but the real signal uses an affine
@@ -201,10 +216,11 @@ consume the filtered map if later authorized.
 
 | State | Reason unavailable | Consequence |
 | --- | --- | --- |
-| exact active full-path estimand, product role, admitted parent/grouping, template-response type, reference operator, base support method, and fixed-state response/unit identity | **available at identity level**: ODQ-001 selects an optimal matched-template amplitude estimator, ODQ-002 selects matched-filtered-map output, ODQ-003 selects distinct ordinary-MAP observation/coadd parents, ODQ-005 selects the immutable declared template-response product, ODQ-006 selects the exact normalized `N/D` reference operator, ODQ-007 selects complete-support-only admission, and ODQ-008 selects template-amplitude units plus exact location-indexed fixed-state response | final package name and numerical product remain unavailable pending ODQ-004, the ODQ-006 quantitative-envelope selection, and ODQ-009 onward |
+| exact active full-path estimand, product role, admitted parent/grouping, template-response type, reference operator, base support method, fixed-state response/unit identity, and conditional-uncertainty policy | **available at identity level**: ODQ-001 through ODQ-009 select the matched-template amplitude map method and conditional uncertainty identity, while ODQ-004/006/009 retain bounded author assignments | final package name and numerical product remain unavailable pending ODQ-004, the ODQ-006 quantitative-envelope selection, the ODQ-009 representation selection, and ODQ-010 onward |
 | genuine Wiener/posterior method | no complete prior/likelihood/operator/posterior specification recovered | no posterior reconstruction product |
 | matched-template map-filter realization | owner-selected estimator, filtered-map product role, parent roles, template-response identity, exact reference operator, complete-support rule, and exact fixed-state response/unit identity exist, but weighting/covariance, exact realized influence extent, numerical response representation, and any approximate conformance envelope remain unresolved | no authorized numerical matched-filtered map |
-| parent covariance/inverse-noise | ODQ-004 delegates option development; no option or parent coefficient meaning is selected | denominator cannot be called Fisher information or inverse variance |
+| parent covariance/inverse-noise | ODQ-004 delegates option development; no option or parent coefficient meaning is selected | denominator cannot yet be called Fisher information or inverse variance; numerical `C_cond` is unavailable |
+| covariance representation | ODQ-009 fixes the conditional identity but delegates exact/structured/projected/lineage-resolvable/unavailable options to both future contract views | no numerical covariance product or independent-pixel consumer claim is authorized |
 | exact realized template-response product | product identity/source classes, fixed state, and complete-support consequence are approved, but no numerical instance, selected approximation envelope, or realized influence extent is authorized | numerical application remains unavailable |
 | approximation-qualified operator | ODQ-006 approves the exact reference and bounded-approximation policy, but no quantitative envelope option has been authored and owner-selected | approximate route unavailable; exact evaluation remains conformant in principle but blocked by the other unresolved gates |
 | adaptive edge method | ODQ-007 expressly defers learned support/background/fill/taper to a separate future contract; current behavior and old policy do not define it | edge-conditioned scientific support unavailable |

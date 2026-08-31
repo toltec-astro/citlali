@@ -743,8 +743,17 @@ beam, flux, DC/integral/surface-brightness, extended-source, and calibration-
 covariance meanings do not transfer automatically. Any matched-filter beam or
 solid angle is response-derived, and parent/template calibration dependence is
 joint rather than presumed independent or cancelling. Fixed-state and full-
-procedure response remain distinct. ODQ-009 uncertainty and covariance
-products are the next owner gate. This is a Stage A study and decision
+procedure response remain distinct. Grant Wilson then approved and closed
+`SCI-FLT-INF-ODQ-009` on `2026-08-31`: every matched-filtered map truthfully
+states covariance availability; when matching authoritative fixed-state parent
+covariance exists, `C_cond=L C_parent L^T`. Only exact inverse-covariance GLS
+premises make `D^-1` a marginal conditional variance, never full precision or
+an independence claim. Frozen-NOI conditional second moments, calibration
+uncertainty, and full-procedure uncertainty remain separate, and the signal may
+remain valid with covariance explicitly unavailable. Both future contract
+views must develop the same bounded covariance-representation alternatives for
+later owner disposition before freeze or a numerical covariance route.
+ODQ-010 learned-state and NOI generation is the next owner gate. This is a Stage A study and decision
 walkthrough only; no successor package, author packet, Stage B launch,
 algorithm change, implementation conformity, validation, calibration,
 performance, readiness, production, freeze, or Unity action is claimed or

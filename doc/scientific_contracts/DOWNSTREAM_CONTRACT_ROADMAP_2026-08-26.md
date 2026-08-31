@@ -3,8 +3,8 @@
 Date: `2026-08-26`
 
 Updated: `2026-08-31` for SCI-JINC closure, SCI-NOI Stage A/Stage B handoff,
-SCI-FLT-INF ODQ-001 through ODQ-003 and ODQ-005 through ODQ-008 closure, and
-ODQ-004 plus ODQ-006 quantitative-option author delegation
+SCI-FLT-INF ODQ-001 through ODQ-003 and ODQ-005 through ODQ-009 closure, and
+ODQ-004, ODQ-006, and ODQ-009 option author delegation
 
 Status: scientific-owner-approved program sequencing record
 
@@ -280,7 +280,15 @@ location-indexed operator `L_x` with unity response to the matching template
 on admitted support. No stationary/universal kernel or inherited nominal beam
 is presumed; any matched-filter beam is response-derived, and parent/template
 calibration dependence is joint. Fixed-state response remains distinct from
-full-procedure response. ODQ-009 uncertainty and covariance products are next.
+full-procedure response. Grant Wilson approved ODQ-009 on `2026-08-31`:
+truthful covariance availability is required, exact fixed-state covariance is
+`C_cond=L C_parent L^T` when authoritative matching inputs exist, and
+`D^-1` is only a marginal conditional variance under complete exact GLS
+premises. Frozen-NOI conditional second moments, calibration uncertainty, and
+full-procedure uncertainty remain distinct; covariance may be unavailable
+without invalidating the signal. Both future contract views must develop
+shared covariance-representation alternatives for later owner disposition.
+ODQ-010 learned-state and NOI generation is next.
 No successor package, author packet, Stage B launch, algorithm change,
 conformity, validation, calibration,
 performance, readiness, production, freeze, or Unity action follows.

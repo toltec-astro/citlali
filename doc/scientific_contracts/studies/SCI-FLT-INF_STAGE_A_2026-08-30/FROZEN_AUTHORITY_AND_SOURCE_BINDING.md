@@ -1,6 +1,6 @@
 # SCI-FLT-INF frozen-authority and source binding
 
-Binding identity: `SCI-FLT-INF-SOURCE-BINDING v0.1/r0.9`
+Binding identity: `SCI-FLT-INF-SOURCE-BINDING v0.1/r0.10`
 
 Status: exact Stage A provenance record; not an author packet or scientific
 freeze
@@ -78,8 +78,16 @@ unity response to the exact matching template on admitted support, prohibits
 a universal processed-kernel response without an invariance proof, retains the
 parent nominal beam only as provenance, and requires joint parent/template
 calibration dependence. It separates fixed-state from full-procedure response
-and leaves uncertainty and response representation to later decisions. All
-eight exact owner objects are bound by
+and leaves response representation to ODQ-013.
+
+[`SCIENTIFIC_OWNER_ODQ_009_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_009_APPROVAL_2026-08-31.md)
+is the exact owner source closing `SCI-FLT-INF-ODQ-009`. It selects truthful
+tiered uncertainty disclosure, exact fixed-state covariance propagation when
+authoritative inputs exist, conditional-only interpretation of `D^-1`, and
+separate frozen-NOI, calibration, and full-procedure uncertainty identities.
+It delegates covariance-representation alternatives to both future contract
+views with later owner disposition and authorizes no posterior covariance or
+independent-pixel uncertainty. All nine exact owner objects are bound by
 [`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md); later decisions
 must use separate exact owner artifacts.
 

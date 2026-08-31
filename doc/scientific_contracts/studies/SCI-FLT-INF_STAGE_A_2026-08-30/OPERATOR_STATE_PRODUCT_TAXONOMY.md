@@ -1,9 +1,9 @@
 # SCI-FLT-INF operator, state, and product taxonomy
 
-Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.9`
+Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.10`
 
-Status: Stage A vocabulary updated through approved ODQ-008 and the ODQ-004/
-ODQ-006 author delegations; remaining details are not normative science
+Status: Stage A vocabulary updated through approved ODQ-009 and the ODQ-004/
+ODQ-006/ODQ-009 author delegations; remaining details are not normative science
 
 ## Identity tuple
 
@@ -292,6 +292,28 @@ missing calibration covariance is unavailable, not zero or `D`.
 
 Diagonal-like products do not imply independence. A reciprocal does not imply
 precision. Unreported covariance is unavailable, not zero.
+
+ODQ-009 makes the exact fixed-state identity, when the authoritative matching
+parent covariance exists,
+
+```text
+C_COND = L C_PARENT L^T.
+```
+
+It binds the exact parent/grouping, domain, support, fixed state, response,
+population, rank/null, regularization, approximation, omissions, calibration,
+and lifecycle. Missing entries and cross blocks remain unavailable. Only when
+ODQ-004 selects exact `Q=C_PARENT^-1` and every GLS premise holds is
+`D(x)^-1` the marginal conditional variance; it is not full precision or an
+independence claim. A frozen-NOI `C_EMP` ordinary product remains a conditional
+randomization second moment rather than covariance or physical-noise variance.
+Calibration and full-procedure uncertainty remain separate identities.
+
+The future author must give both contract views the same bounded covariance-
+representation option identities and consequences. Exact explicit,
+structured, projected, lineage-resolvable, and unavailable forms may be
+considered; none is selected here. Owner disposition precedes freeze or a
+numerical covariance route.
 
 ODQ-004 does not select one of these roles. It assigns the future author to
 develop bounded noise/covariance, spectral-weighting, and parent-coefficient

@@ -60,6 +60,11 @@ operator and bounded-approximation policy, while ODQ-007 selects complete-
 support-only base admission and defers adaptive edge/background conditioning.
 ODQ-008 selects template-amplitude output units and the exact location-indexed
 fixed-state response, without inheriting a universal kernel or parent beam.
+ODQ-009 selects truthful tiered uncertainty disclosure and exact fixed-state
+covariance propagation `C_cond=L C_parent L^T` when its authoritative premises
+exist. It permits the filtered signal with typed covariance unavailable,
+separates the frozen-NOI conditional second moment and calibration uncertainty,
+and delegates covariance-representation options to both future contract views.
 
 ## Stage A packet
 
@@ -82,6 +87,7 @@ fixed-state response, without inheriting a universal kernel or parent beam.
 | [`SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md) | exact reference operator, bounded-approximation policy, and conformance-envelope author delegation |
 | [`SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md) | exact complete-support-only base method, numerical-fill exclusion rule, and adaptive-edge deferral |
 | [`SCIENTIFIC_OWNER_ODQ_008_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_008_APPROVAL_2026-08-31.md) | exact template-amplitude unit, fixed-state response, and beam/calibration interpretation approval |
+| [`SCIENTIFIC_OWNER_ODQ_009_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_009_APPROVAL_2026-08-31.md) | exact conditional-uncertainty policy, fixed-state covariance identity, NOI/calibration separation, and two-view representation assignment |
 | [`FROZEN_AUTHORITY_AND_SOURCE_BINDING.md`](FROZEN_AUTHORITY_AND_SOURCE_BINDING.md) | exact base, frozen NOI, historical, and evidence bindings |
 | [`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md) | content-bound Stage A study objects; not an author manifest |
 | [`verify_stage_a.py`](verify_stage_a.py) | study and protected-byte verifier |
@@ -174,8 +180,18 @@ solid angle is derived from the exact response, and parent/template
 calibration dependence is joint rather than presumed independent or
 cancelling.
 
-The next owner question is uncertainty and covariance products under
-`SCI-FLT-INF-ODQ-009`. No final package naming or Stage B scope is approved.
+ODQ-009 makes `C_cond=L C_parent L^T` the exact conditional covariance when an
+authoritative covariance for the same fixed state exists. Only under exact
+inverse-covariance GLS premises is `D(x)^-1` a marginal conditional variance;
+it is never a universal precision or an independence claim. A frozen-NOI
+conditional randomization second moment and calibration uncertainty remain
+separate identities. Covariance may be typed unavailable without invalidating
+the signal, while consumers requiring covariance fail closed. The future
+author must present bounded representation options in both contract views for
+later owner disposition.
+
+The next owner question is the learned-state and NOI generation graph under
+`SCI-FLT-INF-ODQ-010`. No final package naming or Stage B scope is approved.
 
 ## Nonclaims and stop rule
 
@@ -185,9 +201,9 @@ significance, performance, readiness, production, Unity, or scientific-freeze
 claim. It creates no default and authorizes no method substitution.
 
 Do not create an implementation-blind author packet until the scientific owner
-has resolved `SCI-FLT-INF-ODQ-009` and the later package-specific uncertainty,
+has resolved `SCI-FLT-INF-ODQ-010` and the later package-specific state,
 state, product, and lifecycle gates identified in the decision ledger. The
 eventual packet must include the exact ODQ-004 author assignment and ODQ-005
-through ODQ-008 approvals. Create a package-local Stage A record for the
+through ODQ-009 approvals and assignments. Create a package-local Stage A record for the
 matched-filter map operation rather than converting this holding directory
 into a combined package.

@@ -243,8 +243,14 @@ and cross-package handoffs are valuable recovery inputs.
   support; no universal processed-kernel response or inherited parent beam is
   presumed. Any matched-filter beam is response-derived, parent/template
   calibration dependence is joint, and fixed-state response remains distinct
-  from full-procedure response. ODQ-009 uncertainty and covariance products
-  are next.
+  from full-procedure response. Grant Wilson approved ODQ-009 on `2026-08-31`:
+  exact conditional covariance is `C_cond=L C_parent L^T` when matching
+  authoritative fixed-state inputs exist; `D^-1` is only a marginal
+  conditional variance under exact GLS premises; frozen-NOI second moment,
+  calibration uncertainty, and full-procedure uncertainty remain distinct;
+  and covariance may be explicitly unavailable without invalidating the
+  signal. Covariance-representation options are delegated with shared IDs to
+  both future contract views for later owner disposition. ODQ-010 is next.
   Implementation/config/schema/history remain in a quarantined dossier, and
   the protected SCI-FLT-FIXED author bytes are unchanged.
 - Package-specific FLT recovery:

@@ -1,11 +1,12 @@
 # SCI-FLT-INF scientific-owner decision ledger
 
-Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.9`
+Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.10`
 
 Status: proposed ordered owner walkthrough; ODQ-001 through ODQ-003 approved
 and closed; ODQ-004 author-delegated; ODQ-005 approved and closed; ODQ-006
 approved and closed with quantitative conformance-envelope alternatives
-author-delegated; ODQ-007 and ODQ-008 approved and closed; ODQ-009 through
+author-delegated; ODQ-007 through ODQ-009 approved and closed, with ODQ-009
+covariance-representation alternatives author-delegated; ODQ-010 through
 ODQ-013 open
 
 ## Decision discipline
@@ -18,8 +19,9 @@ ODQ-003 and ODQ-005 answers and the exact ODQ-004 author delegation but does
 not approve a noise/covariance option. It also records the exact ODQ-006
 reference-operator decision and quantitative author delegation but does not
 approve a conformance-envelope option. It records the exact ODQ-007 complete-
-support decision and the exact ODQ-008 response/unit/beam decision but does
-not approve any proposed answer for ODQ-009 onward.
+support decision, the exact ODQ-008 response/unit/beam decision, and the exact
+ODQ-009 uncertainty policy and representation assignment. It does not approve
+any proposed answer for ODQ-010 onward.
 
 ## `SCI-FLT-INF-ODQ-001` — estimand of the existing full path
 
@@ -241,22 +243,39 @@ the exact persisted response representation remains for ODQ-013.
 
 ## `SCI-FLT-INF-ODQ-009` — uncertainty and covariance products
 
-Which uncertainty is required:
+Status: **approved and closed at the conditional-uncertainty-policy level;
+covariance-representation alternatives author-delegated** by
+[`SCIENTIFIC_OWNER_ODQ_009_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_009_APPROVAL_2026-08-31.md).
 
-- conditional analytic covariance for fixed exact state;
-- frozen-state empirical NOI product;
-- full-procedure/relearned empirical product;
-- projected/structured covariance; or
-- explicitly unavailable?
+Every matched-filtered map must disclose its uncertainty state truthfully, but
+the signal may remain valid when numerical covariance is explicitly
+unavailable. For exact fixed state and an authoritative matching parent
+covariance, `C_cond = L C_parent L^T`, with exact parent/grouping, domain,
+support, population, rank/null, regularization, approximation, omitted-
+correlation, calibration, and lifecycle bindings. Missing entries or blocks
+are unavailable, never zero or independent.
 
-What is the domain, rank/null space, regularization, dependence, calibration,
-and permitted consumer use? Which normalization/denominator products remain
-nonprecision?
+Only when ODQ-004 selects exact `Q=C_parent^-1` and all GLS premises hold does
+`D(x)^-1` equal the marginal conditional variance. It is not full precision
+and does not establish independent locations. Under weaker premises `D` is
+normalization only. Authorized linear-consumer uncertainty requires the full
+needed operation `g^T C_cond g`; marginal variances alone cannot support
+independent-pixel aperture or integrated uncertainties.
 
-Manager recommendation: v0.1 may publish signal with typed covariance
-unavailable if that is scientifically useful and honest. Never infer
-independent-pixel aperture uncertainty. Posterior covariance is outside the
-selected package.
+An optional exact frozen-SCI-NOI companion retains its identity as a
+conditional randomization second moment, not physical-noise covariance,
+precision, calibrated significance, or a substitute for `C_cond`. Fixed-state
+and relearned populations cannot be mixed; full-procedure uncertainty belongs
+to ODQ-010. Calibration/nuisance terms remain separate, and total calibrated
+uncertainty is unavailable unless all material terms and cross-covariances are
+quantified or inapplicable.
+
+The future implementation-blind author must develop bounded covariance-
+representation options with the same identities in both contract views,
+including exact/structured/projected/lineage-resolvable or unavailable forms
+as warranted. Owner disposition is required before freeze or publication of a
+numerical covariance route. No posterior-sky covariance or source-analysis
+significance is selected.
 
 ## `SCI-FLT-INF-ODQ-010` — learned-state and NOI generation graph
 
@@ -331,11 +350,13 @@ ODQ-001 estimand
                        -> ODQ-013 product/VAL/lifecycle
 ```
 
-ODQ-001 through ODQ-003 and ODQ-005 through ODQ-008 are closed, and ODQ-004 is
+ODQ-001 through ODQ-003 and ODQ-005 through ODQ-009 are closed, and ODQ-004 is
 author-delegated without an option selection. ODQ-006 also delegates
 quantitative conformance-envelope alternatives without selecting one. ODQ-009
-is the next owner gate. Stage B is blocked until all remaining pre-author
+also delegates covariance-representation alternatives without selecting one.
+ODQ-010 is the next owner gate. Stage B is blocked until all remaining pre-author
 decisions have exact owner answers and an exclusive implementation-blind
-author packet containing the ODQ-004 assignment and ODQ-005 through ODQ-008
-approvals. Freeze and numerical authorization remain blocked until the owner
-disposes of the authored ODQ-004 and ODQ-006 option sets.
+author packet containing the ODQ-004 assignment and ODQ-005 through ODQ-009
+approvals and assignments. Freeze and numerical authorization remain blocked
+until the owner disposes of the authored ODQ-004, ODQ-006, and ODQ-009 option
+sets.

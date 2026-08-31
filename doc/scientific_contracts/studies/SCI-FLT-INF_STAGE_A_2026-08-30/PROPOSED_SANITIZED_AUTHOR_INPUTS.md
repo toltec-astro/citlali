@@ -1,6 +1,6 @@
 # SCI-FLT-INF proposed sanitized author inputs
 
-Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.9`
+Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.10`
 
 Status: proposed material only; not approved, not exhaustive, not SHA-bound as
 an author packet, and not permission to launch Stage B
@@ -224,6 +224,30 @@ reruns state estimation or selection. ODQ-010 retains the latter generation
 graph and perturbation family. ODQ-013 retains the exact persisted response
 representation; representation may not weaken the scientific operator.
 
+## Owner-approved uncertainty extract
+
+The author packet must include the exact ODQ-009 approval. Every output bundle
+must state uncertainty availability truthfully. When an authoritative
+`C_parent` matches the exact fixed parent and state,
+`C_cond=L C_parent L^T`; otherwise affected entries, blocks, projections, or
+the whole covariance are limited or unavailable, never zero or independent.
+The signal may remain valid when covariance is unavailable.
+
+Only exact inverse-covariance GLS premises authorize `D(x)^-1` as a marginal
+conditional variance. It is not full precision and does not support
+independent-pixel aperture errors. The frozen-SCI-NOI conditional randomization
+second moment, calibration uncertainty, and ODQ-010 full-procedure uncertainty
+remain distinct products and populations. Total calibrated uncertainty is
+unavailable unless every material term and cross-covariance is quantified or
+inapplicable.
+
+The author must develop the smallest bounded covariance persistence and
+representation option set in both the Scientific Rationale and Contract and
+the Engineering Conformance Specification, with the same option IDs and
+scientific consequences. Exact explicit, structured, projected, lineage-
+resolvable, or unavailable forms may be considered. The owner must dispose of
+the options before freeze or publication of a numerical covariance route.
+
 ## Deferred posterior-family exclusion
 
 No posterior-reconstruction material belongs in the selected matched-filter
@@ -315,14 +339,15 @@ required/conditional/optional role:
 - retained diagnostics versus public science roles; and
 - permitted named consumers.
 
-No current detailed product table is proposed because ODQ-009 and later
-uncertainty, state, validity, and lifecycle decisions remain open. The top-level
+No current detailed product table is proposed because ODQ-010 and later state,
+validity, and lifecycle decisions remain open. The top-level
 signal role, two distinct ordinary-MAP parent/grouping roles, template-response
 identity, exact ODQ-006 reference operator, ODQ-007 complete-support rule, and
-ODQ-008 fixed-state response/unit/beam interpretation are fixed; the ODQ-004
-option set and ODQ-006 quantitative conformance-envelope option set are
-explicit future-author deliverables. The exact response representation remains
-part of the ODQ-013 product decision.
+ODQ-008 fixed-state response/unit/beam interpretation and ODQ-009 conditional-
+uncertainty policy are fixed; the ODQ-004 option set, ODQ-006 quantitative
+conformance-envelope option set, and ODQ-009 covariance-representation option
+set are explicit future-author deliverables. Exact response and covariance
+representations remain part of the ODQ-013 product decision.
 
 ## Material that must remain excluded
 
@@ -351,10 +376,10 @@ part of the ODQ-013 product decision.
 
 ## Author-packet construction gate
 
-After ODQ-009 onward supplies the required package-local owner decisions,
+After ODQ-010 onward supplies the required package-local owner decisions,
 create a new package directory and a package-specific
 `PRIOR_WORK.md`, sanitized `SCOPE_BRIEF.md`, exact boundary objects, operator/
-product/lifecycle tables, the ODQ-004 and ODQ-006 authored option sets, owner
-decision record including ODQ-005 through ODQ-008, and exclusive SHA-bound
+product/lifecycle tables, the ODQ-004, ODQ-006, and ODQ-009 authored option
+sets, owner decision record including ODQ-005 through ODQ-009, and exclusive SHA-bound
 author manifest. If the selected package still needs implementation evidence
 to define its science, stop and return one precise owner question.
