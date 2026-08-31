@@ -131,6 +131,7 @@ REQUIRED_FILES = {
     "SOURCE_IDENTITY_MANIFEST.md",
     "DECISION_LOG.md",
     "SCIENTIFIC_OWNER_RECURRENCE_REVIEW_DIRECTION_2026-08-31.md",
+    "SCIENTIFIC_OWNER_PROVISIONAL_CHOICE_3_DIRECTION_2026-08-31.md",
     "CROSSWALK.md",
     "AUTHOR_PACKET_MANIFEST.md",
     "AUTHOR_SUPERSESSION_COVER.md",
@@ -266,7 +267,7 @@ def verify_packet() -> None:
         ],
         ledger: [
             "SCI-FRUIT-ODQ-001",
-            "open — first review question",
+            "owner provisionally favors Choice 3",
             "SCI-FRUIT-ODQ-001A",
             "SCI-FRUIT-ODQ-001D",
             "SCI-FRUIT-ODQ-012",
@@ -298,6 +299,7 @@ def verify_packet() -> None:
             "ODQ-001A",
             "ODQ-001D",
             "Ordinary additive accumulation",
+            "mandatory compatibility reference and scientific control",
         ],
     }
     for body, tokens in required_tokens.items():

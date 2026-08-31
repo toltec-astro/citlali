@@ -2,7 +2,7 @@
 
 Status: **recovery-first Stage A owner-review candidate; no Stage B launch**
 
-Version: `v0.1-stage-a-r0.2`
+Version: `v0.1-stage-a-r0.3`
 
 Launch base: Git commit
 `7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`
@@ -72,6 +72,7 @@ missing scientific contract.
 | [`SOURCE_IDENTITY_MANIFEST.md`](SOURCE_IDENTITY_MANIFEST.md) | exact launch, authority, provisional, historical, and evidence identities |
 | [`DECISION_LOG.md`](DECISION_LOG.md) | decisions actually made in Stage A |
 | [`SCIENTIFIC_OWNER_RECURRENCE_REVIEW_DIRECTION_2026-08-31.md`](SCIENTIFIC_OWNER_RECURRENCE_REVIEW_DIRECTION_2026-08-31.md) | owner direction to recover history and reframe ODQ-001; not a recurrence choice |
+| [`SCIENTIFIC_OWNER_PROVISIONAL_CHOICE_3_DIRECTION_2026-08-31.md`](SCIENTIFIC_OWNER_PROVISIONAL_CHOICE_3_DIRECTION_2026-08-31.md) | owner provisional preference for intentional new-method development; ODQ-001 remains open |
 | [`CROSSWALK.md`](CROSSWALK.md) | requested deliverable and source crosswalk |
 
 `AUTHOR_PACKET_MANIFEST.md`, `AUTHOR_SUPERSESSION_COVER.md`, and
@@ -114,6 +115,10 @@ only; they contain no normative science and no rendered contract.
 9. Fixed-state uncertainty, successor-generation learning, and per-realization
    replay are distinct NOI methods and must not be pooled without separate
    owner authority.
+10. The owner provisionally favors intentional new-recurrence development
+    (Choice 3), with the historical recurrence retained as the mandatory
+    compatibility reference and scientific control. No candidate law is
+    approved; the estimand and meaning of "better" must be defined first.
 
 ## Stop Rule
 
@@ -124,7 +129,10 @@ through the packet-admission gate. In particular, do not treat the candidate
 scope, proposed recurrence graph, current implementation, or empirical studies
 as scientific authority. The revised first question offers only three honest
 treatments: preserve the recovered recurrence, prove and validate an equivalent
-reformulation, or intentionally adopt and validate a new recurrence.
+reformulation, or intentionally adopt and validate a new recurrence. The owner
+provisionally favors the third treatment, but ODQ-001 remains open until its
+scientific objective, candidate law, differences, compatibility treatment, and
+validation obligations are explicit.
 
 ## Explicit Nonclaims
 

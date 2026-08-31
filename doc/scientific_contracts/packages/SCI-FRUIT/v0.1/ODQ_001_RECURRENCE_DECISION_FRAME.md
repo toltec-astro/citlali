@@ -1,6 +1,7 @@
 # SCI-FRUIT v0.1 — Revised ODQ-001 Recurrence Decision Frame
 
-Status: **Stage A owner question; open; no scientific choice recorded**
+Status: **Stage A owner question; open; owner provisionally favors Choice 3;
+no recurrence approved**
 
 The original ODQ-001 conflated state identity, numerical law, increment
 meaning, and persistence. It is withdrawn and superseded by this frame. The
@@ -89,16 +90,30 @@ Required owner record:
 This choice is scientifically legitimate only when labeled as an intentional
 method change. It must not be justified as cleaner bookkeeping.
 
+## Provisional Owner Direction
+
+The owner provisionally favors Choice 3 as recorded in
+[`SCIENTIFIC_OWNER_PROVISIONAL_CHOICE_3_DIRECTION_2026-08-31.md`](SCIENTIFIC_OWNER_PROVISIONAL_CHOICE_3_DIRECTION_2026-08-31.md).
+This selects the method-development category: seek an intentional, versioned
+new recurrence while retaining the recovered historical recurrence as the
+mandatory compatibility reference and scientific control.
+
+It does not approve a candidate law. ODQ-001 remains open until the scientific
+estimand, meaning of "better," exact transition, expected differences,
+compatibility treatment, and validation obligations are stated. Additive
+accumulation is neither selected nor preferred by this direction.
+
 ## Current Stage A Disposition
 
-`SCI-FRUIT-ODQ-001` is **open — reframed after owner rejection of the original
-cumulative/immutable-increment framing**. The owner's provisional direction is
-to use a versioned `F_k` and the general transition
+`SCI-FRUIT-ODQ-001` is **open — Choice 3 is provisionally favored as a
+method-development category, but no recurrence has been approved**. The
+owner's direction is to use a versioned `F_k` and the general transition
 
 \[
   F_{k+1}=\mathcal U_k(F_k,R_{k+1})
 \]
 
-with the recovered historical recurrence as the v0.1 reference baseline.
-Ordinary additive accumulation, independent scientific meaning for increments,
-and unbounded increment retention remain unauthorized.
+with the recovered historical recurrence as the mandatory v0.1 compatibility
+reference and scientific control. Ordinary additive accumulation, independent
+scientific meaning for increments, and unbounded increment retention remain
+unauthorized.

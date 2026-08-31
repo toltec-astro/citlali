@@ -4,7 +4,7 @@ Status: **Stage A owner-review candidate; not owner-approved**
 
 Scientific owner: Grant Wilson
 
-Version/date: `v0.1-stage-a-r0.2`, `2026-08-31`
+Version/date: `v0.1-stage-a-r0.3`, `2026-08-31`
 
 Approved source identifier: **none**
 
@@ -164,9 +164,13 @@ for explicit owner review and exact-byte binding.
 
 The owner has also directed Stage A to recover the exact historical recurrence,
 use it as the v0.1 reference baseline, separate the four recurrence decisions,
-and re-present ODQ-001 with preserve/equivalent/new choices. That analytical
-direction does not approve a scientific recurrence. All scientific decisions
-remain open and are ordered in
+and re-present ODQ-001 with preserve/equivalent/new choices. After reviewing
+that analysis, the owner provisionally favored Choice 3 as the
+method-development category while retaining the historical recurrence as the
+mandatory compatibility reference and scientific control. This does not
+approve a candidate law or close ODQ-001. The scientific estimand, meaning of
+"better," exact transition, expected differences, compatibility consequences,
+and validation obligations remain open and are ordered in
 [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md).
 
 ## 11. Independence Statement

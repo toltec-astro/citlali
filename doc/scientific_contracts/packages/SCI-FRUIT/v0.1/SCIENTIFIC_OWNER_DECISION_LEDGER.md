@@ -1,14 +1,14 @@
 # SCI-FRUIT v0.1 — Scientific-Owner Decision Ledger
 
-Status: Stage A owner-review queue; original ODQ-001 withdrawn and reframed;
-all scientific questions open
+Status: Stage A owner-review queue; owner provisionally favors ODQ-001 Choice
+3 as a method-development category; all scientific questions remain open
 
 The questions are ordered by consequence. Later questions must not be answered
 in a way that silently fixes an earlier one.
 
 | ID | Owner question | Candidate dispositions to review | Consequence/stop gate | Status |
 | --- | --- | --- | --- | --- |
-| `SCI-FRUIT-ODQ-001` | **Which treatment of the recovered historical recurrence should v0.1 adopt?** | (1) preserve the exact recovered recurrence; (2) adopt a mathematically equivalent reformulation only with the route-specific proof and validation stated in the equivalence analysis; (3) intentionally adopt a new recurrence with scientific motivation, expected differences, compatibility effects, and validation obligations. See `ODQ_001_RECURRENCE_DECISION_FRAME.md`. | Determines method/version compatibility and governs the four separate axes below. No route decision should precede it. | **open — first review question; reframed after owner rejection of prior wording** |
+| `SCI-FRUIT-ODQ-001` | **Which treatment of the recovered historical recurrence should v0.1 adopt?** | (1) preserve the exact recovered recurrence; (2) adopt a mathematically equivalent reformulation only with the route-specific proof and validation stated in the equivalence analysis; (3) intentionally adopt a new recurrence with scientific motivation, expected differences, compatibility effects, and validation obligations. See `ODQ_001_RECURRENCE_DECISION_FRAME.md`. | Determines method/version compatibility and governs the four separate axes below. No route decision should precede it. | **open — owner provisionally favors Choice 3; no law approved; requires estimand and success criteria before closure** |
 | `SCI-FRUIT-ODQ-001A` | What exact versioned feedback state `F_k` is carried from completed iteration `k` to `k+1`? | Approve or replace the historical-baseline relationship: one selected complete route map bundle is the numerical predecessor, while selection/support/projector/response/lineage complete the accepted state. | Defines the state space on which any update or equivalence statement is meaningful. | open; answer separately from update law |
 | `SCI-FRUIT-ODQ-001B` | What exact numerical transition `U_k` maps `(F_k,R_{k+1})` to `F_{k+1}`? | Preserve `U_hist`, approve a proved equivalent form, or approve a labeled new law. Ordinary `F+Delta F` is not a default. | Defines subtraction, residual-only exposure, bypass/rejoin, final response, and recurrence compatibility. | open; general law only |
 | `SCI-FRUIT-ODQ-001C` | What status does each per-iteration update contribution have? | None required; diagnostic difference; lineage/equivalence witness; causal update state; or separately admitted scientific product with its own calibration/response/uncertainty. | Prevents an increment from silently becoming an independently interpretable sky product. | open; no scientific increment status |
@@ -36,6 +36,7 @@ in a way that silently fixes an earlier one.
 | ID | Direction | Effect | Non-effect |
 | --- | --- | --- | --- |
 | `SCI-FRUIT-DIR-2026-08-31-RECURRENCE-BASELINE` | Recover the exact historical recurrence; use it as the v0.1 reference; analyze additive equivalence; separate `001A`–`001D`; return preserve/equivalent/new choices | Supersedes the original ODQ-001 wording and establishes the required Stage A analysis | Does not select any choice, approve historical science, make addition normative, require permanent increment retention, admit a route, or launch Stage B |
+| `SCI-FRUIT-DIR-2026-08-31-CHOICE-3-STUDY` | Provisionally favor Choice 3 as the method-development category; seek an intentional new recurrence while retaining history as the mandatory compatibility reference and scientific control | Directs Stage A to define the scientific estimand, meaning of "better," candidate law, expected differences, compatibility treatment, and validation obligations | Does not close ODQ-001, approve a recurrence or additive law, answer `001A`–`001D`, admit a route, launch Stage B, or authorize implementation |
 
 ## Walkthrough Rule
 
