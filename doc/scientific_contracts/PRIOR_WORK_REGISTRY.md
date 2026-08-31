@@ -203,9 +203,12 @@ and cross-package handoffs are valuable recovery inputs.
   `SCI-FLT-FIXED` plus an `SCI-FLT-INF` holding tranche. Final owner scope
   decisions select strict linearity, fixed low-pass only as a qualified
   convolution subtype, and full-footprint-only as the sole v0.1 edge method.
-  All bounded questions are resolved. The repaired exact 17-object future
-  author set is SHA-bound but not releasable until exact-byte owner approval;
-  Stage B has not begun.
+  All bounded questions are resolved. The later exact SCI-FLT-FIXED candidate
+  is conditionally scientifically frozen by the owner record at commit
+  `7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`; its ordinary MAP/JINC numerical
+  parents and profiles remain unavailable. The matched-filter/inference family
+  remains a separate provisional holding study and is not promoted by that
+  freeze.
 - Package-specific NOI recovery:
   [`packages/SCI-NOI/v0.1/PRIOR_WORK.md`](packages/SCI-NOI/v0.1/PRIOR_WORK.md)
   at `2026-08-29`. It locates both earlier implementation-independent NOI
@@ -249,6 +252,15 @@ and cross-package handoffs are valuable recovery inputs.
 
 ### Fruit Loops
 
+- Package-specific recovery and owner-review artifacts:
+  [`packages/SCI-FRUIT/v0.1/PRIOR_WORK.md`](packages/SCI-FRUIT/v0.1/PRIOR_WORK.md)
+  and [`packages/SCI-FRUIT/v0.1/README.md`](packages/SCI-FRUIT/v0.1/README.md),
+  launched `2026-08-31` from exact commit `7f9307ff...`. The recovery binds the
+  provisional matched-filter study only at exact read-only snapshot
+  `faff97565ee27e375e1337febe5a0a6681507c3b`, keeps implementation/audit/
+  validation evidence quarantined, and treats ordinary MAP, JINC, FLT-FIXED,
+  and FLT-MATCHED as four separately typed candidate routes with no numerical
+  admission.
 - Current iteration, checkpoint, significance, and morphology authority in
   `MAIN:doc/SCIENTIFIC_CONVENTIONS.md` and
   `MAIN:doc/adr/0006-fruit-loop-restart-checkpoint.md`.
@@ -258,8 +270,10 @@ and cross-package handoffs are valuable recovery inputs.
 - Historical evidence under `MAIN:validation/fruit_loop_*` and the
   `codex/fruit-loop-calibration-reference` branch.
 - Package/dependency scope in the `SCI-FRUIT-001` ledger and handoff records.
-- No dedicated approved `SCI-FRUIT-001` contract or production stopping rule
-  was recovered.
+- No dedicated approved `SCI-FRUIT-001` contract, feedback-model/update law,
+  author packet, Stage B launch, numerical route, or production stopping rule
+  was recovered. The Stage A owner walkthrough begins with the primary
+  feedback-model estimand and recurrence.
 
 ## Required Use
 

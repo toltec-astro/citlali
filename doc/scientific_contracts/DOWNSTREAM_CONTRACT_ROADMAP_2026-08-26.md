@@ -2,8 +2,9 @@
 
 Date: `2026-08-26`
 
-Updated: `2026-08-30` for SCI-JINC closure, SCI-NOI Stage A/Stage B handoff,
-and the recovery-first SCI-FLT Stage A launch
+Updated: `2026-08-31` for SCI-JINC closure, SCI-NOI Stage A/Stage B handoff,
+the SCI-FLT-FIXED conditional freeze, and the owner-directed recovery-first
+SCI-FRUIT Stage A launch
 
 Status: scientific-owner-approved program sequencing record
 
@@ -61,19 +62,21 @@ or other inference-bearing filtering. Use distinct contracts when the
 estimand, prior, transfer, or uncertainty meaning differs. Do not treat all
 filtering as one generic operation.
 
-### 5. Establish source and observing-mode contracts
-
-Develop source-fitting science after the map, response, and uncertainty
-interfaces are stable. Develop Pointing and OOF as mode-specific contracts
-whose scientific interpretations remain outside ordinary MAP arithmetic, even
-where they reuse a conforming gridding operator.
-
-### 6. Establish SCI-FRUIT last
+### 5. Establish SCI-FRUIT
 
 Specify fruit-loop feedback, learning, iteration, convergence, restart, and
-lineage only after the single-pass upstream and downstream products have
-stable identities. FRUIT must not become a way to conceal unresolved
-single-pass ownership.
+lineage after the single-pass MAP/JINC/NOI/filtering authority line has stable
+identities. FRUIT must not become a way to conceal unresolved single-pass
+ownership, and the changed ordering does not itself admit a map or filtered
+product as a feedback-model parent.
+
+### 6. Establish source and observing-mode contracts
+
+Develop source-fitting science after the map, response, uncertainty, filtering,
+and FRUIT interfaces have been bounded. Develop Pointing and OOF as
+mode-specific contracts whose scientific interpretations remain outside
+ordinary MAP arithmetic and FRUIT recurrence, even where they reuse a
+conforming gridding operator or consume an exact terminal FRUIT product.
 
 ## Cross-Cutting VAL Lane
 
@@ -209,9 +212,27 @@ other inference-bearing families. The final owner scope repair selects
 tranche, narrows base v0.1 to strict-linear same-grid
 `y=J_full L_Theta m`, admits fixed low-pass only as a qualified convolution
 subtype, and makes full-footprint-only the sole edge/missing method. All
-bounded Stage A scope decisions are resolved. The exact repaired 17-object
-author candidate is SHA-bound but not releasable until scientific-owner
-exact-byte approval and explicit launch. Stage B has not begun. No algorithm,
+bounded Stage A scope decisions are resolved. At that checkpoint, the exact
+repaired 17-object author candidate was SHA-bound but not releasable until
+scientific-owner exact-byte approval and explicit launch; Stage B had not
+begun. No algorithm,
 frozen package, implementation, conformity,
 validation, calibration, achieved performance, readiness, production, Unity,
 source/mode, NOI, or FRUIT action follows.
+
+The owner subsequently conditionally froze the exact SCI-FLT-FIXED v0.1
+candidate by the record at commit
+`7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`. That action preserves the
+candidate's typed unavailable ordinary MAP/JINC parent routes and unregistered
+FLT profiles; it does not authorize SCI-FLT-MATCHED, implementation,
+conformity, validation, calibration, performance, readiness, production, or
+Unity activity.
+
+On `2026-08-31` the scientific owner changed the remaining review order and
+authorized recovery-first SCI-FRUIT v0.1 Stage A at
+[`packages/SCI-FRUIT/v0.1/`](packages/SCI-FRUIT/v0.1/), based exactly on the
+SCI-FLT-FIXED freeze commit above. FRUIT now precedes source fitting and
+Pointing/OOF. This is a sequencing and recovery action only: Stage B remains
+unauthorized, all four candidate parent routes retain their exact unavailable
+or provisional states, and no algorithm, frozen authority, validation,
+production, or Unity action follows.

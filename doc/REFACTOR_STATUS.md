@@ -65,7 +65,10 @@ active ALIGN work.
 
 On 2026-08-26 the scientific owner approved and archived the downstream
 contract sequence from MAP closure through separate JINC, NOI, filtering,
-source/mode, and FRUIT tranches. The owner also approved the horizontal
+source/mode, and FRUIT tranches. On `2026-08-31` the owner changed the remaining
+order so recovery-first SCI-FRUIT follows the completed single-pass
+MAP/JINC/NOI/filtering authority line and precedes source-fitting and
+Pointing/OOF. The owner also approved the horizontal
 ALIGN-to-MAP decisions governing the mandatory PTC-to-MAP route, MAP-owned
 admission policy, honest response and covariance disclosure, versioned later
 derivatives, and coordinate/projection ownership. A bounded SCI-MAP Stage A
@@ -74,6 +77,19 @@ packet. The existing formal MAP clauses, 52 requirement IDs, 25 prediction
 IDs, and local owner-decision ledger remain unchanged at launch; no Stage B
 author, implementation change, conformity finding, validation result, Unity
 work, freeze, performance claim, or readiness claim follows from this status.
+
+The SCI-FRUIT v0.1 Stage A branch begins exactly at the conditionally frozen
+SCI-FLT-FIXED record commit
+`7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`. Its recovery packet classifies
+ordinary MAP, JINC, FLT-FIXED, and the provisional matched-filter snapshot at
+`faff97565ee27e375e1337febe5a0a6681507c3b` as four separate candidate routes;
+none is numerically admitted. The packet includes an iterative DAG, causal
+state/checkpoint and lifecycle taxonomy, response/uncertainty/convergence claim
+matrix, explicit unavailable states, and an ordered owner-decision ledger. Its
+first open question is the feedback-model estimand and recurrence/update law.
+No Stage B author packet, algorithm change, frozen-package edit, validation,
+production, or Unity activity is authorized or claimed.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

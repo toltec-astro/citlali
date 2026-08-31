@@ -1,0 +1,33 @@
+# SCI-FRUIT v0.1 — Operator, State, And Product Taxonomy
+
+Status: Stage A vocabulary candidate; no equation or method is approved
+
+| Candidate term | Bounded meaning | Must not be conflated with |
+| --- | --- | --- |
+| Upstream reduction parent | Exact immutable timestream/reduction state on which one FRUIT generation operates | Candidate map-family parent or mutable work buffer |
+| Candidate map-family parent | Exact ordinary MAP, JINC, FLT-FIXED, or provisional FLT-MATCHED product considered for a route | Feedback model merely because it is map-shaped |
+| Feedback-model estimand | Scientific sky/model quantity FRUIT intends to project and update | Map signal, catalog, fitted source list, or terminal science product by default |
+| Model-construction operator | Exact selection/synthesis mapping from admitted parent/state to feedback model | Forward projector or map estimator |
+| Selection state | Exact support/source/eligibility decisions used to build a model | Formal source catalog or mere validity mask |
+| Forward projector | Mapping from the feedback-model identity into the exact timestream sample domain | Interpolation choice alone, inverse mapmaker, or response correction |
+| Projected model | Realized timestream-domain signal predicted by the feedback model/projector | Observed timestream or residual |
+| Residual input | Exact upstream timestream minus the projected model under declared order | Noise realization or source-free truth |
+| Residual processing | Admitted RTC/PTC operation on the residual input with exact policy/state | FRUIT update law or evidence that signal is absent |
+| Processed residual | Output of residual processing before any owner-selected add-back/update operation | A pure physical-noise sample |
+| Residual map/increment | Map-estimator output intended to update an accumulated model, if selected | Next full feedback model automatically |
+| Add-back | Declared recombination of projected model with processed residual in a named domain/order | Inversion of cleaning or proof of unbiasedness |
+| Update/accumulation operator | Owner-selected recurrence producing immutable next model/state from prior state and new information | File overwrite or loop counter increment |
+| Iteration product | Exact product/state realized at one absolute iteration | Terminal product |
+| Terminal selector | Rule selecting a terminal iteration/product from realized states | Convergence diagnostic, hard maximum, or last file |
+| Fixed-state response | Response conditional on exact frozen model/selection/learned/apply state | Full-procedure response including selection/learning/stopping |
+| Procedure response | Response of the complete iterative/selection/stopping method for a named target population | A single fixed-state Jacobian or injection ratio |
+| Conditional uncertainty | Uncertainty for an exact frozen state/product under a named method | Complete learning/stopping/restart variation |
+| Replay uncertainty | Separate member-specific partial/complete FRUIT replay method | Fixed-state conditional uncertainty |
+| Diagnostic | Causally inert measurement reported for review | Stop criterion unless explicitly admitted |
+| Checkpoint | Complete causal state for exact continuation | Map seed, QA archive, or diagnostic bundle |
+
+## Naming Rule
+
+The future author should assign stable product and method identities only after
+the owner selects the estimand and recurrence. Current configuration terms and
+file labels are implementation evidence and must not determine the taxonomy.
