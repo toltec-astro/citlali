@@ -27,6 +27,44 @@ replacement producer receives a separate review and canonical work order.
 Neither the evidence tooling nor the resume decision authorizes factor
 selection, FIR design, a nonidentity RTC route, or production activation.
 
+### WP7-REPLAY-001 D2 evidence-tooling candidate
+
+The first G4 unit selectively replays the D2 measurement layer from exact
+divergent source `49fe73e757daa1885cd23127e8441cba47e648d2` into canonical
+ancestry. The imported
+[`rtc_filter_psd_line_evidence.py`](../tools/wp7/rtc_filter_psd_line_evidence.py),
+[`rtc_filter_psd_line_corpus.py`](../tools/wp7/rtc_filter_psd_line_corpus.py),
+and explicitly discovery-only
+[`export_legacy_tod_psd_line_discovery.py`](../tools/wp7/export_legacy_tod_psd_line_discovery.py)
+are offline evidence tools. They do not change the executable Citlali route,
+configuration, numerical processing, product publication, or production
+authority.
+
+The tooling reuses the established masked-Welch/line detector, keeps network
+physical runs and fixed frequency grids separate, records median, upper-tail,
+and maximum aggregation alternatives without choosing one, and withholds
+foldable factors unless explicit realized protection precedes decimation.
+Legacy rectangular TODs are structurally excluded from native aggregation.
+The exact ten-path source disposition and canonical validation are recorded in
+the [G4 replay handoff](../handoff/WP7_G4_REPLAY_001_D2_TOOLING_2026-08-31.md).
+
+D2 remains open. A separate reviewed unit must establish an immutable,
+network-native in-memory producer/observer for native-rate prefilter and
+post-cleaning residual planes on each accepted D1 network axis, together with
+route-specific source masks and realized pre-decimation line-operator
+evidence. Only then may the Beammap, Science, and OOF corpus assess envelope
+sensitivity or line/fold eligibility.
+
+Fresh canonical replay verification passes 26 focused D2 tests, Python syntax
+compilation, 130 configuration tests, all four mode kits, 8/8 compact
+compatibility cases, 100% surface coverage, all 207 baseline-tool tests, both
+validation ledgers, the local `citlali_cli` build/version identity gate, and
+all 832 runnable fallback-build CTests with the one established disabled test
+unchanged. The fallback executable and CTest results are supplemental local
+regression evidence, not reproduction of the accepted Spack-backed V2
+campaign. No affected-mode reduction is triggered because this unit changes
+no application route, configuration, numerical operator, or product.
+
 ## 2026-08-31 Spack-Backed V2 Build-Environment Authority Correction
 
 The project owner identifies `citlali-validation/v2` as the most recent

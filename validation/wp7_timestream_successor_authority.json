@@ -18,6 +18,7 @@
     "implementation_baseline_historical": "doc/WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md",
     "build_environment_decision": "doc/adr/0014-spack-build-foundation.md",
     "predecessor_v2_validation_provenance": "validation/citlali_v2_spack_validation_authority.json",
+    "g4_replay_001_record": "handoff/WP7_G4_REPLAY_001_D2_TOOLING_2026-08-31.md",
     "network_timing_owner_correction": "doc/WP7_NETWORK_TIMING_OWNER_AUTHORITY_CORRECTION_2026-08-29.md",
     "network_timing_crosswalk": "doc/WP7_NETWORK_TIMING_AUTHORITY_CROSSWALK_2026-08-29.md",
     "rtc_scan_array_planning_owner_authority": "doc/WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md",
@@ -218,10 +219,10 @@
       "production_authorization": "existing_use_only_no_phase5_release_promotion"
     },
     "wp7_1_successor_program": {
-      "application_integration": "g4_reviewed_replay_authorized_no_unit_integrated",
+      "application_integration": "g4_replay_001_locally_verified_candidate_not_integrated",
       "scientific_conformance": "contract_closed_implementation_conformance_not_claimed",
       "build_environment": "default_to_accepted_spack_realization_for_reproduction_or_extension_build_changes_separately_governed",
-      "validation_evidence": "divergent_evidence_preserved_not_canonical_acceptance",
+      "validation_evidence": "g4_replay_001_local_tooling_gates_pass_no_observational_validation",
       "production_authorization": "none"
     }
   },
@@ -257,6 +258,45 @@
     "owner_explicit_g4_resume": true,
     "contract_authoring_may_continue_independently": true,
     "mapspace_contract_authoring_may_continue_independently": true
+  },
+  "active_replay_unit": {
+    "work_order": "WP7-REPLAY-001",
+    "canonical_base": "f6c9033f80810da255a9bfa987e0fba8a082b785",
+    "branch_locator": "codex/wp7-g4-replay-001",
+    "source_commit": "49fe73e757daa1885cd23127e8441cba47e648d2",
+    "source_parent": "28cbd5daec513588f9553f7e0b34a817c31b1517",
+    "scope": "offline_d2_psd_line_evidence_tooling_only",
+    "source_changed_paths": [
+      "doc/REFACTOR_STATUS.md",
+      "doc/WP7_RTC_FILTER_DOWNSAMPLING_CERTIFICATION_TEST_PLAN_2026-08-30.md",
+      "handoff/WP7_RTC_D2_PSD_LINE_EVIDENCE_TOOLING_2026-08-31.md",
+      "tools/wp7/export_legacy_tod_psd_line_discovery.py",
+      "tools/wp7/rtc_filter_psd_line_corpus.py",
+      "tools/wp7/rtc_filter_psd_line_evidence.py",
+      "tools/wp7/test_export_legacy_tod_psd_line_discovery.py",
+      "tools/wp7/test_rtc_filter_line_order_trace.py",
+      "tools/wp7/test_rtc_filter_psd_line_corpus.py",
+      "tools/wp7/test_rtc_filter_psd_line_evidence.py"
+    ],
+    "path_disposition_record": "handoff/WP7_G4_REPLAY_001_D2_TOOLING_2026-08-31.md",
+    "excluded_divergent_dirty_paths": [
+      "tests/CMakeLists.txt",
+      "include/citlali/core/pipeline/rtc_filter_d2_measurement.h",
+      "tests/rtc_filter_d2_measurement_header.cpp",
+      "tests/test_rtc_filter_d2_measurement.cpp"
+    ],
+    "local_validation": {
+      "focused_python_tests": "pass_26",
+      "python_syntax": "pass",
+      "config_preflight": "pass_130_tests_4_mode_kits_8_of_8_compatibility_100_percent_surface_coverage",
+      "baseline_tool_tests": "pass_207_with_parent_build_bound_into_replay_worktree",
+      "validation_ledger": "pass_60_records",
+      "science_change_ledger": "pass_3_changes_5_integration_commits",
+      "supplemental_fallback_ctest": "pass_832_runnable_1_established_disabled",
+      "supplemental_cli_identity": "pass_f6c9033f8_kidscpp_04088da_dirty",
+      "affected_mode_reduction": "not_triggered_no_application_route_config_numerical_or_product_change"
+    },
+    "status": "locally_verified_candidate_owner_controlled_integration_pending"
   },
   "adr_reconciliation": [
     {

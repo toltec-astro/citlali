@@ -108,12 +108,13 @@ not authorized merely because evidence tooling exists.
 ## Current Status
 
 The program is in G4 reviewed replay. `WP7-REPLAY-001` is the only active
-WP-7 application work order, and its first candidate is the D2 PSD/line
-evidence tooling from exact divergent source `49fe73e757...`. The preserved
-uncommitted producer prototype is outside that source identity and outside the
-first unit. No WP-7.1 application-conformance, same-SHA validation, readiness,
-release, or production claim is made. The status of the predecessor
-application is summarized in
+WP-7 application work order. Its D2 PSD/line evidence-tooling candidate from
+exact divergent source `49fe73e757...` is locally verified on
+`codex/wp7-g4-replay-001` and awaits owner-controlled integration. The
+preserved uncommitted producer prototype is outside that source identity and
+outside the first unit. No WP-7.1 application-conformance, same-SHA
+validation, readiness, release, or production claim is made. The status of
+the predecessor application is summarized in
 [`APPLICATION_BASELINES.md`](APPLICATION_BASELINES.md); current actions remain
 governed by [`REFACTOR_STATUS.md`](REFACTOR_STATUS.md) and
 [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md).
