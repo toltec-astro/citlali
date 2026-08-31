@@ -3,7 +3,7 @@
   "authority_id": "wp7-timestream-successor-canonical-reconciliation-2026-08-31",
   "recorded_date": "2026-08-31",
   "last_updated_date": "2026-08-31",
-  "status": "g4_replay_001_integrated_next_increment_not_authorized",
+  "status": "g4_replay_002a_candidate_awaiting_owner_review_not_integrated",
   "identity_policy": "Application and contract identities are exact Git commits; build-environment identity is the declared profile plus exact environment, lock, and DAG evidence; artifact identities are filename plus SHA-256. Branch names and filesystem paths are locators, never identities.",
   "repository_authority": {
     "application_baselines": "doc/APPLICATION_BASELINES.md",
@@ -19,6 +19,7 @@
     "build_environment_decision": "doc/adr/0014-spack-build-foundation.md",
     "predecessor_v2_validation_provenance": "validation/citlali_v2_spack_validation_authority.json",
     "g4_replay_001_record": "handoff/WP7_G4_REPLAY_001_D2_TOOLING_2026-08-31.md",
+    "g4_replay_002a_record": "handoff/WP7_G4_REPLAY_002A_NATIVE_PAIRED_D1_PRODUCER_2026-08-31.md",
     "network_timing_owner_correction": "doc/WP7_NETWORK_TIMING_OWNER_AUTHORITY_CORRECTION_2026-08-29.md",
     "network_timing_crosswalk": "doc/WP7_NETWORK_TIMING_AUTHORITY_CROSSWALK_2026-08-29.md",
     "rtc_scan_array_planning_owner_authority": "doc/WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md",
@@ -219,10 +220,10 @@
       "production_authorization": "existing_use_only_no_phase5_release_promotion"
     },
     "wp7_1_successor_program": {
-      "application_integration": "g4_replay_001_integrated_at_f8ba732bc4072e918c2521a013305be354ed7b53",
+      "application_integration": "g4_replay_001_integrated_at_f8ba732bc4072e918c2521a013305be354ed7b53_replay_002a_candidate_d7d19bc90d7c994fa767ec2a9fd35e4d8599f032_not_integrated",
       "scientific_conformance": "contract_closed_implementation_conformance_not_claimed",
       "build_environment": "default_to_accepted_spack_realization_for_reproduction_or_extension_build_changes_separately_governed",
-      "validation_evidence": "g4_replay_001_local_tooling_gates_pass_no_observational_validation",
+      "validation_evidence": "g4_replay_001_local_tooling_gates_pass_replay_002a_exact_candidate_local_contract_and_regression_gates_pass_no_observational_validation",
       "production_authorization": "none"
     }
   },
@@ -236,6 +237,10 @@
     "canonical_program_branch_locator": "codex/wp7-governance-reconciliation",
     "first_g4_replay_branch_locator": "codex/wp7-g4-replay-001",
     "canonical_g4_replay_001_integration": "f8ba732bc4072e918c2521a013305be354ed7b53",
+    "second_g4_replay_branch_locator": "codex/wp7-g4-replay-002a",
+    "g4_replay_002a_canonical_parent": "4dc7844e59e03cf2d18a9262fe5b75d3ff078681",
+    "g4_replay_002a_candidate": "d7d19bc90d7c994fa767ec2a9fd35e4d8599f032",
+    "g4_replay_002a_integrated": false,
     "accepted_governance_package_commits": [
       "e874044c4c562fe672890495a3f4d5064e789d8f",
       "28e9e559b7e74d13e05427c54b13c89e9a6c6f1b"
@@ -309,11 +314,74 @@
     ],
     "status": "owner_accepted_integrated_complete"
   },
+  "replay_unit_002a": {
+    "work_order": "WP7-REPLAY-002A",
+    "canonical_base": "4dc7844e59e03cf2d18a9262fe5b75d3ff078681",
+    "branch_locator": "codex/wp7-g4-replay-002a",
+    "implementation_commit": "d7d19bc90d7c994fa767ec2a9fd35e4d8599f032",
+    "implementation_tree": "af8d4d7c6e8f855845590e63d59ae4a3d43d00f5",
+    "scope": "canonical_network_native_paired_d1_product_contract_only",
+    "scientific_authority": {
+      "source_commit": "170ecea9de1ee810da7d7e45a489a4545ccd623d",
+      "closure_commit": "20ba6ae5dcf0b90a24ac3e778a75eff0a1bbe2aa",
+      "interface_artifact_sha256": "f9659b34a49a07d4287c4a70db798cdd2ec30049531da603fcca1e9d1fdd5969",
+      "canonical_decision": "doc/adr/0017-wp7-timestream-successor.md",
+      "network_timing_decision": "doc/adr/0018-network-specific-timing-and-common-analysis-grid.md"
+    },
+    "reviewed_rejected_source": {
+      "capture_commit": "916fa07600cf6c5e9ea7317a396fdce160a6c419",
+      "source_review_commit": "34f609e4b1dc9a04f8157063c7a1662b707d96a7",
+      "source_imported": false,
+      "disposition": "design_evidence_only_failed_canonical_d2_reconstruction_gate"
+    },
+    "changed_paths": [
+      "include/citlali/core/pipeline/timestream_native_paired_readout.h",
+      "tests/CMakeLists.txt",
+      "tests/test_timestream_native_paired_readout.cpp",
+      "tests/timestream_native_paired_readout_header.cpp"
+    ],
+    "path_disposition_record": "handoff/WP7_G4_REPLAY_002A_NATIVE_PAIRED_D1_PRODUCER_2026-08-31.md",
+    "local_validation": {
+      "public_header_cxx23_syntax": "pass",
+      "focused_cpp_tests": "pass_6",
+      "config_preflight": "pass_130_tests_4_mode_kits_8_of_8_compatibility_100_percent_surface_coverage_all_authority_audits",
+      "baseline_tool_tests": "pass_207",
+      "build_tool_tests": "pass_62",
+      "wp7_tool_tests": "pass_26",
+      "validation_ledger": "pass_60_records",
+      "science_change_ledger": "pass_3_changes_5_integration_commits",
+      "supplemental_fallback_ctest": "pass_838_runnable_1_established_disabled",
+      "supplemental_cli_identity": "pass_d7d19bc90_kidscpp_04088da_dirty",
+      "affected_mode_reduction": "not_triggered_unactivated_contract_no_route_config_numerical_or_product_change",
+      "spack_v2_reproduction": false
+    },
+    "excluded_scope": [
+      "producer_adapter",
+      "application_route_wiring",
+      "persistent_tod",
+      "common_analysis_grid",
+      "rtc_ptc_integration",
+      "d2_prefilter_residual_observer",
+      "route_specific_source_masks",
+      "filter_design",
+      "factor_selection",
+      "sample_removal",
+      "downsampling_implementation",
+      "production_activation"
+    ],
+    "owner_acceptance": false,
+    "canonical_integration": false,
+    "status": "candidate_implemented_validated_stopped_awaiting_owner_review"
+  },
   "next_replay_increment_control": {
-    "state": "owner_review_required_no_work_started",
-    "source_capture_authorized": false,
-    "branch_creation_authorized": false,
-    "producer_prototype_authorized": false,
+    "state": "replay_002a_candidate_awaiting_owner_review",
+    "current_work_order": "WP7-REPLAY-002A",
+    "implementation_authorized": true,
+    "implementation_candidate": "d7d19bc90d7c994fa767ec2a9fd35e4d8599f032",
+    "integration_authorized": false,
+    "next_increment_authorized": false,
+    "producer_adapter_authorized": false,
+    "d2_measurement_seam_authorized": false,
     "filter_design_authorized": false,
     "downsampling_implementation_authorized": false
   },

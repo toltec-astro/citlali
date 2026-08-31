@@ -61,12 +61,15 @@ measured, and recorded as intentional.
 The WP-7.1 successor is in G4 reviewed replay after the project owner accepted
 the committed G0--G3 governance package and explicitly resumed application
 work on 2026-08-31. The owner subsequently accepted and integrated bounded D2
-evidence-tooling unit `WP7-REPLAY-001` at exact commit `f8ba732bc...`. No WP-7
-application work order is now active. Preserve the divergent lane and its
-uncommitted producer prototype; that prototype is not an immutable source
-identity and remains unauthorized. Do not begin a producer, prefilter,
-residual, factor-selection, filter-design, downsampling, or route-wiring unit
-until its exact bounded proposal receives owner review. Scientific-contract
+evidence-tooling unit `WP7-REPLAY-001` at exact commit `f8ba732bc...`. The
+separately approved `WP7-REPLAY-002A` native paired D1 product-contract
+candidate is exact `d7d19bc90...` on `codex/wp7-g4-replay-002a`; it is stopped
+pending owner review and is not integrated. It authorizes no producer adapter,
+application route, common grid, RTC/PTC or D2 observer, filtering,
+factor-selection, downsampling, or production activation. Preserve the
+divergent lane and captured prototype; they remain evidence, not application
+authority. Do not extend or integrate the candidate, or begin a next unit,
+without owner disposition and a new bounded authorization. Scientific-contract
 and mapspace-contract authoring may continue under the contract-library
 package index, but contract work does not silently edit the application tree.
 

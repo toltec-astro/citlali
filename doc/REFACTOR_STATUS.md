@@ -1,5 +1,39 @@
 # Citlali Refactor Status
 
+## 2026-08-31 WP7-REPLAY-002A Native Paired D1 Candidate
+
+The project owner approved the bounded canonical network-native paired D1
+producer-contract work order after the `WP7-REPLAY-002` source review rejected
+the captured D2 measurement seam. Exact candidate commit
+`d7d19bc90d7c994fa767ec2a9fd35e4d8599f032`, based on exact canonical parent
+`4dc7844e59e03cf2d18a9262fe5b75d3ff078681` on
+`codex/wp7-g4-replay-002a`, now establishes the in-memory paired x/r contract,
+native occurrence/run and detector identity, coordinate-local state and causes,
+and bounded logical-memory evidence. It is not integrated into canonical
+mainline and awaits owner review.
+
+The candidate was written from canonical authority. No source blob was
+imported from the rejected prototype captured at exact commit
+`916fa07600cf6c5e9ea7317a396fdce160a6c419`; that prototype and its exact
+review record `34f609e4b1dc9a04f8157063c7a1662b707d96a7` remain design evidence only.
+The candidate activates no producer adapter, application route, common grid,
+RTC/PTC operation, prefilter/residual seam, filter, factor, downsampling, or
+production behavior.
+
+Exact-commit validation passes the isolated public-header and all six focused
+contract tests, all 838 runnable CTests with the one established disabled test
+unchanged, the CLI build/version identity gate, 130 configuration tests and all
+mode/compatibility/authority audits, 207 baseline-tool tests, 62 build-tool
+tests, 26 WP-7 tool tests, and both validation ledgers. The fallback local
+build is supplemental evidence, not a reproduction of the accepted
+Spack-backed V2 campaign. The complete exact-path disposition and gate record
+is in the [candidate handoff](../handoff/WP7_G4_REPLAY_002A_NATIVE_PAIRED_D1_PRODUCER_2026-08-31.md).
+
+`WP7-REPLAY-002A` now occupies the single WP-7 application WIP slot in a
+stopped, review-pending state. No integration or next increment is authorized
+until the owner accepts, rejects, or requests repair of exact candidate
+`d7d19bc90...`.
+
 ## 2026-08-31 WP7-REPLAY-001 Canonical Integration
 
 The project owner reviewed and accepted exact bounded D2 evidence-tooling
@@ -12,12 +46,11 @@ integration into canonical application mainline. Local
 scientific scope.
 
 The acceptance covers only the offline PSD/line evidence-tooling increment.
-It does not authorize the preserved producer/prefilter/residual prototype,
+It did not authorize the preserved producer/prefilter/residual prototype,
 filter design, factor selection, downsampling implementation, route wiring,
-or any additional scientific or architectural choice. No WP-7 application
-work order is active after this integration. The next bounded G4 increment
-must be proposed to and accepted by the owner before any source capture,
-branch creation, implementation, or replay begins.
+or any additional scientific or architectural choice. The later, separately
+approved `WP7-REPLAY-002A` contract candidate is recorded above and does not
+expand the scope of `WP7-REPLAY-001` acceptance.
 
 ## 2026-08-31 WP-7.1 G0--G3 Owner Closure And G4 Resume
 
@@ -39,12 +72,14 @@ recorded above. Replay remains selective and canonical: every source path
 receives an explicit import, reconciliation, or non-import disposition; stale
 divergent status and ADR references are not cherry-picked wholesale.
 
-The uncommitted four-file D2 prefilter/residual producer prototype remains
-preserved in the divergent worktree but is not an immutable source identity
-and is excluded from this first replay unit. D2 remains open until that or a
-replacement producer receives a separate review and canonical work order.
-Neither the evidence tooling nor the resume decision authorizes factor
-selection, FIR design, a nonidentity RTC route, or production activation.
+The original four-file D2 prefilter/residual prototype remains preserved in the
+divergent worktree and was later captured at exact immutable commit
+`916fa07600...`. Its canonical reconstruction review failed; no source blob was
+imported. The separately approved `WP7-REPLAY-002A` candidate establishes only
+the prior D1 contract boundary. D2 remains open until a replacement observer
+receives its own review and canonical work order. Neither the evidence tooling,
+the D1 candidate, nor the resume decision authorizes factor selection, FIR
+design, a nonidentity RTC route, or production activation.
 
 ### WP7-REPLAY-001 D2 evidence-tooling candidate
 

@@ -20,7 +20,8 @@ application. It owns only the WP-7.1 timestream successor work.
 | WP-7.1 scientific closure | `20ba6ae5dcf0b90a24ac3e778a75eff0a1bbe2aa` | Contract-closed for the approved bounded scope |
 | Divergent implementation/evidence head | `49fe73e757daa1885cd23127e8441cba47e648d2` on `codex/wp7-rtc-fixed-decimation-authority` | Preserved evidence and replay source; not application authority |
 | Canonical governance lane | `codex/wp7-governance-reconciliation` | G0--G3 package accepted by the owner on 2026-08-31 and promoted through canonical ancestry |
-| First G4 replay lane | `codex/wp7-g4-replay-001` | `WP7-REPLAY-001` accepted and integrated at exact `f8ba732bc4072e918c2521a013305be354ed7b53`; no active successor unit remains |
+| First G4 replay lane | `codex/wp7-g4-replay-001` | `WP7-REPLAY-001` accepted and integrated at exact `f8ba732bc4072e918c2521a013305be354ed7b53`; closed before later `WP7-REPLAY-002A` authorization |
+| Native paired D1 candidate lane | `codex/wp7-g4-replay-002a` based on exact canonical parent `4dc7844e59e03cf2d18a9262fe5b75d3ff078681` | `WP7-REPLAY-002A` implemented at exact `d7d19bc90d7c994fa767ec2a9fd35e4d8599f032`; stopped pending owner review; not integrated |
 
 The divergent lane is not rebased, force-moved, or discarded. Its commits,
 tests, tools, and evidence remain available for reviewed replay. Uncommitted
@@ -101,20 +102,28 @@ After G0--G3 close, replay divergent work in bounded units. Each unit must:
 6. stop before the next unit if evidence or authority is incomplete.
 
 The D2 PSD/line evidence tooling at divergent head `49fe73e757...` is preserved
-as a candidate replay unit. D2 itself remains open until a reviewed
-network-native in-memory prefilter/residual producer exists. Filter design is
-not authorized merely because evidence tooling exists.
+as the source of the completed first replay unit. The later captured D2
+measurement seam failed canonical review, so its first architecture option was
+split into `WP7-REPLAY-002A`: a canonical network-native paired D1 product
+contract. Exact candidate `d7d19bc90...` is stopped for owner review. D2 itself
+remains open until a separately reviewed in-memory prefilter/residual observer
+binds to an accepted D1 product. Filter design is not authorized by either the
+evidence tooling or this D1 candidate.
 
 ## Current Status
 
 The program is in G4 reviewed replay. `WP7-REPLAY-001`, sourced from exact
 divergent commit `49fe73e757...`, was owner-accepted and integrated at exact
-canonical commit `f8ba732bc...`. No WP-7 application work order is now active.
-The preserved uncommitted producer prototype is outside that source identity
-and remains unauthorized. No WP-7.1 application-conformance, same-SHA
-validation, readiness, release, or production claim is made. The next bounded
-unit requires explicit owner review before work begins. The status of the
-predecessor application is summarized in
+canonical commit `f8ba732bc...`. The owner then approved bounded
+`WP7-REPLAY-002A`; exact implementation candidate `d7d19bc90...` establishes
+only the native paired D1 product contract and is now stopped pending owner
+review. It is not integrated. The preserved divergent prototype remains
+unauthorized, and no D2 observer, producer adapter, route, filter, or
+downsampling implementation follows from this candidate. No WP-7.1
+application-conformance, same-SHA observational validation, readiness, release,
+or production claim is made. The next bounded unit cannot begin while this
+candidate awaits disposition. The status of the predecessor application is
+summarized in
 [`APPLICATION_BASELINES.md`](APPLICATION_BASELINES.md); current actions remain
 governed by [`REFACTOR_STATUS.md`](REFACTOR_STATUS.md) and
 [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md).
