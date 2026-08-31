@@ -237,6 +237,14 @@ supply motion for Beammap or OOF route families. Their F0 motion-admission
 evidence remains indeterminate pending explicit closure; zero reported upper-
 speed counts in those cases are not interpreted as zero loss.
 
+The bounded
+[AST route-family motion owner-decision packet](WP7_AST_ROUTE_FAMILY_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
+proposes the exact successor authority needed to close this gap while retaining
+the accepted v1 numerical operator. It is not accepted authority. Its
+counterfactual Beammap/OOF values may guide the decision but may not populate
+F0 or permit F1 to advance until owner approval, conforming implementation,
+clean representative execution, and fresh exact-SHA review.
+
 ### F1: bounded filter-family comparison
 
 Start with three mature, centered, symmetric FIR construction families:

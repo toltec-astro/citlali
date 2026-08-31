@@ -60,6 +60,17 @@ local velocity estimator or silently broadening `wp7-ast-scan-motion-v1`.
 `M>1` filter-support erosion, weighted exposure, spatial coverage, PSD/filter
 research, and nonidentity production activation remain pending.
 
+The bounded
+[AST route-family motion owner-decision packet](WP7_AST_ROUTE_FAMILY_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
+now proposes `wp7-ast-scan-motion-v2` to close that exact gap. It preserves the
+accepted v1 numerical estimator and network-specific mapping, proposes explicit
+Science/OOF/Pointing Lissajous profiles, and defines an exact non-hold realized
+in-footprint membership predicate for the supported rectilinear continuous
+Beammap profile. This packet is **proposed, not accepted**. It changes no
+runtime or scientific authority; its counterfactual measurements cannot be
+used as F0 evidence until owner approval, conforming implementation,
+representative rerun, and fresh exact-SHA review.
+
 ## 2026-08-30 WP-7 Filtering and Downsampling Certification Plan
 
 The project owner selected Beammap `148670` and the standard science sequence
@@ -90,7 +101,8 @@ The repaired fixture/census harness now supplies exact input/build manifests,
 network-local cadence/AST inventory, fixed structural ceilings, and raw
 occurrence admission for every factor without selection. The first exact-SHA
 execution closes the Science/Lissajous portion and identifies rather than
-hides the outstanding Beammap APT and Beammap/OOF motion-authority gaps. This
+hides the outstanding Beammap/OOF motion-authority gap. Beammap APT v2 custody
+and complete detector-to-raw inventory are already closed independently. This
 plan does not authorize nonidentity RTC implementation or production
 activation.
 
