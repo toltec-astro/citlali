@@ -17,9 +17,11 @@ operation authorized or performed**
    `916fa07600cf6c5e9ea7317a396fdce160a6c419` and
    `34f609e4b1dc9a04f8157063c7a1662b707d96a7` as evidence. Do not resume it.
 4. Approve the staged integration sequence and exact existing-object GitHub
-   packet below. A later canonical push for commits that do not yet exist MUST
-   wait until those commits have exact SHAs; this package does not fabricate
-   them.
+   packet below, including a separate remote-creation packet. The M4 checkpoint
+   MUST add the final exact package/census commit and its literal preservation
+   command because a commit cannot contain its own SHA. A later canonical push
+   for commits that do not yet exist MUST wait until those commits have exact
+   SHAs; this package does not fabricate them.
 5. Approve no remote deletions. Close only the clean, proven-redundant
    worktrees after integration, remote preservation, and exact post-operation
    verification.
@@ -390,8 +392,10 @@ thousands of commit records.
    capture is clean at `34f609e4…`.
 2. Recheck branch/ref tips immediately before mutation. A mismatch stops the
    sequence; it is not silently rebased or overwritten.
-3. Run the owner-approved ordinary push packet in section 7. Normal push
-   rejection is a stop signal. No force option is permitted.
+3. Run the owner-approved ordinary-update and remote-creation packets in
+   section 7, including the M4 exact package-preservation command supplied with
+   this committed document. Normal push rejection is a stop signal. No force
+   option is permitted.
 
 ### Phase B — incorporate governance and make it effective
 
@@ -462,14 +466,55 @@ IDs as sources so the proposed content is exact. Cached remote observations
 must be rechecked at execution time; any non-fast-forward rejection stops the
 operation.
 
-| Purpose | Local source / expected SHA | Destination | Exact proposed command | Expected post-push state |
-| --- | --- | --- | --- | --- |
-| synchronize accepted current canonical before new integration | commit `4dc7844e59e03cf2d18a9262fe5b75d3ff078681` | `refs/heads/codex/refactor-mainline` | `git push origin 4dc7844e59e03cf2d18a9262fe5b75d3ff078681:refs/heads/codex/refactor-mainline` | remote canonical fast-forwards from cached `cb3d568c…` to exact `4dc7844e…`, or rejects safely if live state differs |
-| preserve reviewed governance candidate | commit `06a3ade51c1b3f38887295433d913811bf25cd14` | `refs/heads/codex/timestream-successor-governance` | `git push origin 06a3ade51c1b3f38887295433d913811bf25cd14:refs/heads/codex/timestream-successor-governance` | remote candidate ref points exactly to reviewed SHA |
-| preserve paired-D1 implementation and closure | commit `2f1d836c1db122d22015853582133abf3611bc30` | `refs/heads/codex/wp7-g4-replay-002a` | `git push origin 2f1d836c1db122d22015853582133abf3611bc30:refs/heads/codex/wp7-g4-replay-002a` | remote historical alias contains exact `d7d19bc…` implementation and `2f1d836…` closure |
-| preserve rejected D2 capture/review | commit `34f609e4b1dc9a04f8157063c7a1662b707d96a7` | `refs/heads/codex/wp7-d2-producer-source-capture` | `git push origin 34f609e4b1dc9a04f8157063c7a1662b707d96a7:refs/heads/codex/wp7-d2-producer-source-capture` | remote evidence ref contains `916fa076…` capture and `34f609e4…` review |
-| synchronize accepted Spack build lane | commit `d9843e85ed87ba9ac8c42d8cc21f997dacbe1046` | `refs/heads/codex/build-adaptation` | `git push origin d9843e85ed87ba9ac8c42d8cc21f997dacbe1046:refs/heads/codex/build-adaptation` | remote branch ordinarily fast-forwards five commits from cached `4f9c7e55…` to exact accepted input |
-| preserve meaningful annotated build tag | local tag ref; tag object `428865859f330768d4f712077341e1a98c644795`, peeled `d9843e85…` | `refs/tags/spack-build-adaptation-d9843e85` | `git push origin refs/tags/spack-build-adaptation-d9843e85:refs/tags/spack-build-adaptation-d9843e85` | remote tag exists with the exact annotated tag object, or the push rejects rather than overwrites |
+### 7A. Ordinary updates to existing cached remote branches
+
+| Purpose | Local source ref | Expected source object | Destination | Exact proposed command | Expected post-push state |
+| --- | --- | --- | --- | --- | --- |
+| synchronize accepted current canonical before new integration | `refs/heads/codex/refactor-mainline` | `4dc7844e59e03cf2d18a9262fe5b75d3ff078681` | `refs/heads/codex/refactor-mainline` | `git push origin 4dc7844e59e03cf2d18a9262fe5b75d3ff078681:refs/heads/codex/refactor-mainline` | remote canonical fast-forwards from cached `cb3d568c…` to exact `4dc7844e…`, or rejects safely if live state differs |
+| synchronize accepted Spack build lane | `refs/tags/spack-build-adaptation-d9843e85` (peeled) | `d9843e85ed87ba9ac8c42d8cc21f997dacbe1046` | `refs/heads/codex/build-adaptation` | `git push origin d9843e85ed87ba9ac8c42d8cc21f997dacbe1046:refs/heads/codex/build-adaptation` | remote branch ordinarily fast-forwards five commits from cached `4f9c7e55…` to exact accepted input |
+
+### 7B. Remote branch or tag creations/confirmations
+
+The three branch destinations and the tag below are absent from the cached
+remote-ref census. They are therefore proposed remote creations, not ordinary
+updates. A live ref check at execution time MUST confirm that classification;
+an unexpected existing destination is a stop, not permission to overwrite it.
+
+| Purpose | Local source ref | Expected source object | Destination | Exact proposed command | Expected post-push state |
+| --- | --- | --- | --- | --- | --- |
+| preserve reviewed governance candidate | `refs/heads/codex/timestream-successor-governance` (contains the candidate; push is pinned to the object) | `06a3ade51c1b3f38887295433d913811bf25cd14` | `refs/heads/codex/timestream-successor-governance` | `git push origin 06a3ade51c1b3f38887295433d913811bf25cd14:refs/heads/codex/timestream-successor-governance` | remote candidate ref points exactly to reviewed SHA |
+| preserve paired-D1 implementation and closure | `refs/heads/codex/wp7-g4-replay-002a` | `2f1d836c1db122d22015853582133abf3611bc30` | `refs/heads/codex/wp7-g4-replay-002a` | `git push origin 2f1d836c1db122d22015853582133abf3611bc30:refs/heads/codex/wp7-g4-replay-002a` | remote historical alias contains exact `d7d19bc…` implementation and `2f1d836…` closure |
+| preserve rejected D2 capture/review | `refs/heads/codex/wp7-d2-producer-source-capture` | `34f609e4b1dc9a04f8157063c7a1662b707d96a7` | `refs/heads/codex/wp7-d2-producer-source-capture` | `git push origin 34f609e4b1dc9a04f8157063c7a1662b707d96a7:refs/heads/codex/wp7-d2-producer-source-capture` | remote evidence ref contains `916fa076…` capture and `34f609e4…` review |
+| preserve meaningful annotated build tag | `refs/tags/spack-build-adaptation-d9843e85` | tag object `428865859f330768d4f712077341e1a98c644795` (peeled commit `d9843e85…`) | `refs/tags/spack-build-adaptation-d9843e85` | `git push origin refs/tags/spack-build-adaptation-d9843e85:refs/tags/spack-build-adaptation-d9843e85` | remote tag exists with the exact annotated tag object, or the push rejects rather than overwrites |
+
+### 7C. Program-reset package preservation command supplied at M4
+
+This document and the exhaustive census MUST be preserved before the temporary
+governance branch is eligible for cleanup. Their final commit SHA cannot be
+written inside that same commit without a circular identity. The M4 checkpoint
+therefore supplies one additional literal command of this form, with no
+placeholder in the executable command:
+
+- immutable source: the final exact commit containing this document and the
+  census;
+- local source ref: `refs/heads/codex/timestream-successor-governance`, pinned
+  in the final command to the reported immutable package commit;
+- proposed new remote evidence ref:
+  `refs/heads/codex/timestream-successor-program-reset`;
+- expected state: the new remote ref contains the reviewed governance
+  candidate and the complete M3/M4 evidence package; and
+- safety: live absence check, ordinary non-force creation, stop on unexpected
+  existing or rejected destination.
+
+The final M4 response is incomplete unless it states the literal full source
+SHA and exact `git push origin <full-sha>:refs/heads/codex/timestream-successor-program-reset`
+command. That response-level command is part of this packet and supersedes no
+other row.
+
+### 7D. Remote branch renames
+
+**None.** Historical branch locators retain provenance, and no owner-accepted
+remote replacement spelling exists that would justify a rename.
 
 This packet intentionally excludes:
 
@@ -548,3 +593,5 @@ No fetch, pull, push, merge, rebase, cherry-pick into canonical, canonical ref
 movement, branch rename, tag creation, deletion, prune, clean, stash drop, or
 worktree removal was performed. No dirty owner checkout was modified. No new
 scientific or application implementation increment was begun after M0.
+
+PROGRAM RESET PACKAGE READY FOR OWNER REVIEW
