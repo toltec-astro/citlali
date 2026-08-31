@@ -17,15 +17,19 @@ content-bound versions of:
    the recovered baseline if preserved, an exact proof/validity statement if
    reformulated equivalently, or an intentional-new-method rationale and
    compatibility statement;
-5. exact frozen SCI-MAP and SCI-JINC boundary extracts for each owner-admitted
+5. an owner-approved comparative-quality brief defining the exact historical
+   control, scientific metric vector, computational metric vector,
+   non-inferiority constraints, improvement rule, validity domain, uncertainty,
+   and tradeoff policy without implementation or empirical-result leakage;
+6. exact frozen SCI-MAP and SCI-JINC boundary extracts for each owner-admitted
    route, without their implementation/audit history;
-6. exact frozen SCI-PTC ownership/admission boundary required by an admitted
+7. exact frozen SCI-PTC ownership/admission boundary required by an admitted
    recurrence;
-7. the approved SCI-NOI fixed-state/successor/replay boundary;
-8. the exact SCI-FLT-FIXED boundary only if that route is owner-admitted;
-9. a future exact approved FLT-MATCHED boundary only if that package first gains
+8. the approved SCI-NOI fixed-state/successor/replay boundary;
+9. the exact SCI-FLT-FIXED boundary only if that route is owner-admitted;
+10. a future exact approved FLT-MATCHED boundary only if that package first gains
    its own authority and the FRUIT owner then admits the route; and
-10. a supersession cover stating that packet-local owner choices govern any
+11. a supersession cover stating that packet-local owner choices govern any
    conflict with older scope or coordination records.
 
 Every admitted object must have an exact path/ref, byte size, SHA-256, role,

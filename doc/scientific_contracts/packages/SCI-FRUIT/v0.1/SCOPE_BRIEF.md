@@ -4,7 +4,7 @@ Status: **Stage A owner-review candidate; not owner-approved**
 
 Scientific owner: Grant Wilson
 
-Version/date: `v0.1-stage-a-r0.3`, `2026-08-31`
+Version/date: `v0.1-stage-a-r0.4`, `2026-08-31`
 
 Approved source identifier: **none**
 
@@ -120,29 +120,34 @@ response identity; SCI-FRUIT does not perform their inference or calibration.
 2. Will v0.1 preserve the recovered historical recurrence, adopt a proved and
    validated equivalent reformulation, or intentionally adopt a new recurrence?
    Until that choice, use only `F_{k+1}=U_k(F_k,R_{k+1})`.
-3. Does a per-iteration update contribution exist, what scientific or
+3. Relative to which exact historical benchmark profile and using which
+   scientific-quality and computational-performance vectors will a candidate
+   recurrence be judged? Scientific quality must distinguish angular-scale
+   recovery, per-mode flux recovery, nuisance leakage, flux convergence, noise,
+   response, and uncertainty rather than collapse them by default.
+4. Does a per-iteration update contribution exist, what scientific or
    diagnostic status does it have, and is it causal for later output?
-4. What bounded persistence, compaction, reconstruction, lineage, and
+5. What bounded persistence, compaction, reconstruction, lineage, and
    reproducibility rules apply? Stable identity must not imply unbounded
    intermediate retention.
-5. Which candidate parent routes are admitted, for which groupings and
+6. Which candidate parent routes are admitted, for which groupings and
    generations, and how is a parent converted into a feedback model?
-6. What exact forward operator maps the model into timestream sample space;
+7. What exact forward operator maps the model into timestream sample space;
    which operators see only the residual; which does the accepted model bypass;
    where does it rejoin; and what response does it have in the next map?
-7. Which policy is fixed, which state is learned, which state is applied, and
+8. Which policy is fixed, which state is learned, which state is applied, and
    which state may be relearned at each iteration or observation?
-8. What are the response, attenuation/bias, covariance/uncertainty, null-space,
+9. What are the response, attenuation/bias, covariance/uncertainty, null-space,
    support, missing/non-finite, selection, and failure meanings?
-9. Which diagnostics describe amplitude, morphology, centroid, map change,
+10. Which diagnostics describe amplitude, morphology, centroid, map change,
    support/learning, and noise health, and which—if any—enter a stopping rule?
-10. What selects the terminal iteration and product when criteria disagree or
+11. What selects the terminal iteration and product when criteria disagree or
    become measurement-limited?
-11. What complete causal state must an exact checkpoint restore, and what
+12. What complete causal state must an exact checkpoint restore, and what
    compatibility changes require rejection or a new generation?
-12. Which NOI method targets fixed state, complete procedure, or per-member
+13. Which NOI method targets fixed state, complete procedure, or per-member
    replay, and what dependence prevents pooling?
-13. Which products are required, and which downstream claims fail closed when
+14. Which products are required, and which downstream claims fail closed when
     response, covariance, numerical parents, or validation are unavailable?
 
 ## 8. Non-Goals
@@ -170,7 +175,12 @@ method-development category while retaining the historical recurrence as the
 mandatory compatibility reference and scientific control. This does not
 approve a candidate law or close ODQ-001. The scientific estimand, meaning of
 "better," exact transition, expected differences, compatibility consequences,
-and validation obligations remain open and are ordered in
+and validation obligations remain open. The owner has now bounded "better" as
+a controlled comparison with exact historical Citlali using distinct
+scientific-quality and computational-performance metrics. Angular-scale
+recovery, per-mode flux recovery, atmospheric/other residual leakage, and flux
+convergence are required scientific domains; exact definitions, thresholds,
+benchmark profile, and tradeoff policy remain open and are ordered in
 [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md).
 
 ## 11. Independence Statement

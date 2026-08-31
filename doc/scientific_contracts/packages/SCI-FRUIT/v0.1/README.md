@@ -2,7 +2,7 @@
 
 Status: **recovery-first Stage A owner-review candidate; no Stage B launch**
 
-Version: `v0.1-stage-a-r0.3`
+Version: `v0.1-stage-a-r0.4`
 
 Launch base: Git commit
 `7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`
@@ -73,6 +73,8 @@ missing scientific contract.
 | [`DECISION_LOG.md`](DECISION_LOG.md) | decisions actually made in Stage A |
 | [`SCIENTIFIC_OWNER_RECURRENCE_REVIEW_DIRECTION_2026-08-31.md`](SCIENTIFIC_OWNER_RECURRENCE_REVIEW_DIRECTION_2026-08-31.md) | owner direction to recover history and reframe ODQ-001; not a recurrence choice |
 | [`SCIENTIFIC_OWNER_PROVISIONAL_CHOICE_3_DIRECTION_2026-08-31.md`](SCIENTIFIC_OWNER_PROVISIONAL_CHOICE_3_DIRECTION_2026-08-31.md) | owner provisional preference for intentional new-method development; ODQ-001 remains open |
+| [`SCIENTIFIC_OWNER_COMPARATIVE_QUALITY_DIRECTION_2026-08-31.md`](SCIENTIFIC_OWNER_COMPARATIVE_QUALITY_DIRECTION_2026-08-31.md) | owner direction to define better by paired scientific and computational comparison with exact historical Citlali |
+| [`COMPARATIVE_QUALITY_OBJECTIVE_GATE.md`](COMPARATIVE_QUALITY_OBJECTIVE_GATE.md) | candidate metric framework and unresolved acceptance choices; no thresholds approved |
 | [`CROSSWALK.md`](CROSSWALK.md) | requested deliverable and source crosswalk |
 
 `AUTHOR_PACKET_MANIFEST.md`, `AUTHOR_SUPERSESSION_COVER.md`, and
@@ -119,6 +121,11 @@ only; they contain no normative science and no rendered contract.
     (Choice 3), with the historical recurrence retained as the mandatory
     compatibility reference and scientific control. No candidate law is
     approved; the estimand and meaning of "better" must be defined first.
+11. The owner directs that "better" be established relative to an exact,
+    versioned historical Citlali benchmark using separate scientific-quality
+    and computational-performance vectors. Required scientific domains include
+    angular-scale recovery, per-mode flux recovery, nuisance leakage, and flux
+    convergence; exact metrics, tolerances, and tradeoffs remain open.
 
 ## Stop Rule
 
@@ -132,7 +139,8 @@ treatments: preserve the recovered recurrence, prove and validate an equivalent
 reformulation, or intentionally adopt and validate a new recurrence. The owner
 provisionally favors the third treatment, but ODQ-001 remains open until its
 scientific objective, candidate law, differences, compatibility treatment, and
-validation obligations are explicit.
+validation obligations are explicit. The comparative-quality gate must be
+reviewed before candidate recurrences are ranked.
 
 ## Explicit Nonclaims
 

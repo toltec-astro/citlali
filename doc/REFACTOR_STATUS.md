@@ -99,6 +99,18 @@ intentionally adopt a new recurrence. No scientific choice, Stage B author
 packet, algorithm change, frozen-package edit, validation, production, or Unity
 activity is authorized or claimed.
 
+The owner now provisionally favors the intentional-new-method category while
+retaining the recovered historical recurrence as the mandatory compatibility
+reference and scientific control. "Better" is to be established by controlled
+comparison with an exact, versioned existing-Citlali benchmark. Scientific
+quality and computational performance remain separate vectors: required
+scientific domains include recoverable angular scale, recovered flux fraction
+for declared astronomical modes, atmosphere/other residual leakage, and flux
+convergence. The exact benchmark profile, metric definitions, tolerances,
+uncertainty, non-inferiority constraints, improvement rule, and tradeoff policy
+remain open. This direction selects no recurrence and authorizes no Stage B,
+implementation, benchmark execution, validation, production, or Unity work.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

@@ -22,6 +22,8 @@ Status: Stage A recovery record
 | `FRUIT-GAP-016` | NOI can target fixed state, successor learning, or member replay | These are different conditional targets and cannot share one ensemble by convenience | ODQ-010 and approved NOI boundary |
 | `FRUIT-GAP-017` | A stable update-contribution identity may be useful for lineage, diagnostics, or restart | Identity does not establish scientific calibration or causal necessity, and does not imply unbounded retention | Decide ODQ-001C and ODQ-001D separately |
 | `FRUIT-GAP-018` | Literal sample-array add-back could be fused or moved to map space | Execution form may vary, but model removal, residual-only exposure, bypass, rejoin order, support, and next-map response are scientific semantics | ODQ-001B/004; require equivalence for alternative implementation |
+| `FRUIT-GAP-019` | Existing Citlali appears anecdotally strong and is the required comparison control | “Existing Citlali” is not a reproducible benchmark until recurrence, route, policy, data, stopping, build/hardware where relevant, and comparison protocol are bound | ODQ-001E; bind exact historical benchmark profile |
+| `FRUIT-GAP-020` | Scientific quality spans recoverable angular scale, mode flux, leakage, convergence, noise, response, and uncertainty | These quantities can disagree; no scalar score, thresholds, or scientific-versus-performance trade is approved | ODQ-001E; approve vector, constraints, tolerances, and tradeoff rule |
 
 ## Typed Unavailable States
 

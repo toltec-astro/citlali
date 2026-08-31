@@ -132,6 +132,8 @@ REQUIRED_FILES = {
     "DECISION_LOG.md",
     "SCIENTIFIC_OWNER_RECURRENCE_REVIEW_DIRECTION_2026-08-31.md",
     "SCIENTIFIC_OWNER_PROVISIONAL_CHOICE_3_DIRECTION_2026-08-31.md",
+    "SCIENTIFIC_OWNER_COMPARATIVE_QUALITY_DIRECTION_2026-08-31.md",
+    "COMPARATIVE_QUALITY_OBJECTIVE_GATE.md",
     "CROSSWALK.md",
     "AUTHOR_PACKET_MANIFEST.md",
     "AUTHOR_SUPERSESSION_COVER.md",
@@ -244,6 +246,9 @@ def verify_packet() -> None:
     odq001 = (ROOT / "ODQ_001_RECURRENCE_DECISION_FRAME.md").read_text(
         encoding="utf-8"
     )
+    quality = (ROOT / "COMPARATIVE_QUALITY_OBJECTIVE_GATE.md").read_text(
+        encoding="utf-8"
+    )
 
     required_tokens = {
         readme: [
@@ -269,6 +274,7 @@ def verify_packet() -> None:
             "SCI-FRUIT-ODQ-001",
             "owner provisionally favors Choice 3",
             "SCI-FRUIT-ODQ-001A",
+            "SCI-FRUIT-ODQ-001E",
             "SCI-FRUIT-ODQ-001D",
             "SCI-FRUIT-ODQ-012",
             "blocked on prior decisions",
@@ -300,6 +306,15 @@ def verify_packet() -> None:
             "ODQ-001D",
             "Ordinary additive accumulation",
             "mandatory compatibility reference and scientific control",
+        ],
+        quality: [
+            "exact historical benchmark profile",
+            "Angular-scale recovery",
+            "Per-mode flux recovery",
+            "Residual leakage",
+            "Flux convergence",
+            "Computational And Operational Performance Vector",
+            "no acceptance",
         ],
     }
     for body, tokens in required_tokens.items():
@@ -342,9 +357,9 @@ def main() -> None:
     subprocess.check_call(["git", "diff", "--check"], cwd=REPO)
     print(
         "PASS: exact launch/provisional/historical sources, byte-identical "
-        "historical recurrence evidence, revised three-choice ODQ-001, bounded "
-        "edits, four unavailable candidate routes, Stage A firewall, "
-        "placeholders, and local links"
+        "historical recurrence evidence, revised three-choice ODQ-001, "
+        "comparative-quality gate, bounded edits, four unavailable candidate "
+        "routes, Stage A firewall, placeholders, and local links"
     )
 
 

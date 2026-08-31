@@ -103,6 +103,14 @@ estimand, meaning of "better," exact transition, expected differences,
 compatibility treatment, and validation obligations are stated. Additive
 accumulation is neither selected nor preferred by this direction.
 
+The owner has subsequently bounded "better" as a controlled comparison with an
+exact, versioned historical Citlali benchmark. The comparison must keep
+scientific quality separate from computational performance and must resolve at
+least angular-scale recovery, per-mode flux recovery, atmosphere/other residual
+leakage, and flux convergence. The candidate framework and still-open metric,
+tolerance, and tradeoff decisions are recorded in
+[`COMPARATIVE_QUALITY_OBJECTIVE_GATE.md`](COMPARATIVE_QUALITY_OBJECTIVE_GATE.md).
+
 ## Current Stage A Disposition
 
 `SCI-FRUIT-ODQ-001` is **open — Choice 3 is provisionally favored as a
