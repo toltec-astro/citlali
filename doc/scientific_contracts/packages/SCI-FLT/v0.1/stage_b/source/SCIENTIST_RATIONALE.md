@@ -1,15 +1,15 @@
 # SCI-FLT-FIXED v0.1 Scientist Rationale
 
-Document identity: `SCI-FLT-FIXED-SCIENTIST-RATIONALE v0.1/draft-r0.3`
+Document identity: `SCI-FLT-FIXED-SCIENTIST-RATIONALE v0.1/draft-r0.4`
 
 Status: implementation-blind Stage B explanatory draft; scientific-owner review required
 
 Scientific owner: Grant Wilson
 
-Stage B date: `2026-08-30`
+Stage B date: `2026-08-31`
 
 Normative import: the complete
-`SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.3`, source SHA-256
+`SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.4`, source SHA-256
 `{{NORMATIVE_CORE_SHA256}}`, is incorporated without modification. If this
 rationale and that core differ, the core controls.
 
@@ -70,8 +70,13 @@ inside a familiar operation, v0.1 admits no additive term.
 
 The word fixed applies to the entire scientific state, not merely to a
 numerical function call. Coefficients, parameters, support, normalization,
-grid, edge rule, transfer qualification, and the realized selector are frozen
-before the admitted payload or any companion realization is transformed.
+grid, edge rule, and transfer qualification are frozen before application.
+Parent amplitudes never tune those plan facts. The selector is then resolved
+once from declared immutable parent identity and row membership, exact row
+admission, typed availability and finiteness, support, and required
+predicates. Reading an authorized required location solely to classify its
+finite state is structural screening, not plan tuning or convolution
+arithmetic. Every compatible companion reuses that resolved selector.
 
 ## 3. Fixed convolution and the low-pass qualification
 
@@ -84,6 +89,13 @@ The exact
 sampled coefficients, their grid offsets, center, phase, orientation, support,
 and normalization define the transformation. A family label or continuous
 ideal does not.
+
+The base signal, coefficients, and map operator are real-valued. Every
+coefficient must be finite, real, unit-typed, canonically represented, and
+content-bound. Missing, non-finite, complex, unrepresentable, or conflicting
+coefficients stop plan resolution. A complex `H(nu)` may represent the
+frequency response of this real operator; it does not turn the map signal or
+covariance rule into a complex-valued method.
 
 Low-pass is a further scientific claim about that exact sampled operator. Its
 plan binds the transform sign and normalization; coordinate and frequency
@@ -123,12 +135,16 @@ its scientific state is unavailable with a cause. It is not zero. This keeps
 numerical convenience separate from scientific admission.
 
 The owner disposition separates scientific geometry `K_geom_science` from
-nonauthoritative serialization `K_store`. For the ordinary method,
-`K_req = K_nonzero`, where exact nonzero is decided from the canonical
-coefficient representation and never from a tolerance. Dense, sparse, cropped,
-and zero-padded encodings of the same kernel therefore leave `S_out`, response,
-covariance, and identity unchanged. A required zero-valued offset needs a
-separately named scientific method independent of storage.
+nonauthoritative serialization `K_store`. For the ordinary method, convolution
+arithmetic is summed over exactly `K_nonzero = K_req`, where exact nonzero is
+decided from the canonical coefficient representation and never from a
+tolerance. `K_geom_science` describes geometry; it is not the arithmetic
+dependency set. An exact-zero offset contributes no arithmetic term, payload
+dependency, influence, covariance, or row exclusion, and its parent payload is
+never dereferenced. Dense, sparse, cropped, and zero-padded encodings of the
+same kernel therefore leave `S_out`, response, covariance, and identity
+unchanged. A required zero-valued offset needs a separately named scientific
+method independent of storage.
 
 Identity and zero need explicit special cases. Identity requires only the same
 parent row and therefore preserves the exact admitted finite parent domain.
@@ -136,6 +152,13 @@ The zero operator still inherits an exact declared parent-support row domain;
 an empty arithmetic support must not grant it every storage row. Numerical
 zero never erases parent identity, support, lifecycle, or unavailable
 companions.
+
+For a requested nonzero convolution, an empty `S_out` has a different meaning.
+The application records `applied_no_scientific_output_support`, preserves its
+plan, operator, parent, causes, and evidence, and proceeds to a publication
+decision of `not_produced` with cause
+`no_full_footprint_output_rows`. It is not disabled, execution failure,
+identity, the zero operator, or a successfully realized empty product.
 
 ## 5. What the transformed amplitude does and does not mean
 
@@ -206,6 +229,14 @@ independent-diagonal model, marginal-only information, a structured or partial
 model, and unavailable authority each permit different exact results. A
 diagonal-contribution diagnostic is not variance or uncertainty.
 
+There is one exact marginal-only edge case. If an output row has exactly one
+nonzero coefficient `A_ij`, its conditional marginal is
+`A_ij^2 Var(m_j)` without any independence assumption. A row mixing two or
+more parent variables remains unavailable or explicitly partial when parent
+cross terms are unknown. The one-row result authorizes no cross-row covariance;
+the exact-zero row retains its separately typed zero parent-payload
+contribution.
+
 The contract separates the parent stochastic authority from the output
 representation. A complete matrix propagated from an explicitly independent-
 diagonal parent model can be complete relative to that conditional model while
@@ -262,6 +293,9 @@ The SCI-NOI product is not an atomic FLT role. Immutable
 fixed-state compatibility, request, and typed availability. It contains no
 future NOI identity. A later NOI child references FLT; an optional separately
 versioned reverse relation cannot decide, reopen, or mutate FLT completeness.
+A recorded `not_requested_at_FLT_publication` state is only historical
+provenance: it does not bar a later independent NOI request. The child owns its
+own request, applicability, eligibility, realization, generation, and failure.
 
 ## 10. Use and ownership limits
 
@@ -275,9 +309,9 @@ Three policy domains prevent bundle, parent-row, and publication questions
 from being collapsed. Bundle and parent-row profiles decide their named inputs;
 FLT constructs `J_full` and `S_out`. Publication policy defines a disposition
 and action. VAL may produce a decision artifact, but only the FLT publisher
-acts and establishes realization and local validity. These r0.3 profiles are
-not owner-approved Registry entries, and this draft claims no Registry
-evaluation.
+acts and establishes realization and local validity. The r0.3 profile records
+remain unregistered and are not owner-approved Registry entries; this r0.4
+closure binds their amended exact bytes without claiming a Registry evaluation.
 
 The transformed product is therefore not a generic downstream admission
 ticket. A Beammap, Pointing, OOF, source-fit, catalog, NOI, or FRUIT consumer
@@ -287,7 +321,7 @@ policy, but it does not invent producer facts or FLT policy.
 The source-preflight route status is:
 
 ```text
-Route                           r0.3 disposition
+Route                           r0.4 disposition
 generic contract                defined; owner review required
 MAP observation parent          typed route; numerical parent unavailable
 MAP coadd parent                typed route; numerical parent unavailable
@@ -297,6 +331,9 @@ low-pass qualification          conditional on complete exact convention
 response-qualified product      conditional on exact compatible response
 covariance-qualified product    conditional on exact compatible authority
 NOI compatibility               immutable FLT compatibility only
+late NOI request                allowed child route; no FLT mutation
+real coefficient gate           invalid coefficient makes plan unavailable
+empty nonzero output support     not produced with exact typed cause
 profile registration            not registered and not Registry-evaluated
 implementation assessment       not performed and no claim
 ```
@@ -315,7 +352,7 @@ The core predictions turn the contract into observable distinctions:
   similarity;
 - NOI cases test exact fixed-state parity and rejection of relearning;
 - lifecycle cases test disabled, unavailable, identity, zero, realized, and
-  failed distinctions; and
+  failed distinctions;
 - low-pass completeness and an independent sampled-transfer evaluation test
   whether a qualified transfer claim is actually supported;
 - exact-zero/storage invariance and zero-operator support cases test scientific
@@ -323,7 +360,11 @@ The core predictions turn the contract into observable distinctions:
 - non-signal-role rejection tests exact parent-role binding;
 - cross-term sensitivity tests covariance-authority honesty; and
 - NOI nonmutation and full-procedure mismatch test immutable and domain
-  boundaries.
+  boundaries;
+- marginal-only one-sparse, two-sparse, and exact-zero fixtures test the exact
+  covariance-authority edge; and
+- empty-output-support and invalid-coefficient fixtures test the new r0.4
+  lifecycle and plan-resolution closures.
 
 Passing these predictions would be evidence relevant to a later conformity or
 validation activity. This rationale reports no such result.

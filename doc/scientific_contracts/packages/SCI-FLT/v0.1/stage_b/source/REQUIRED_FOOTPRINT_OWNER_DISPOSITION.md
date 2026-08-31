@@ -1,16 +1,16 @@
 # SCI-FLT-FIXED v0.1 Required-Footprint Owner Disposition
 
-Record identity: `SCI-FLT-FIXED-REQUIRED-FOOTPRINT-DISPOSITION v0.1/draft-r0.3`
+Record identity: `SCI-FLT-FIXED-REQUIRED-FOOTPRINT-DISPOSITION v0.1/draft-r0.4`
 
-Status: explicit r0.3 scientific-owner disposition; proposed freeze input
+Status: explicit r0.4 scientific-owner disposition; proposed freeze input
 
 Scientific owner: Grant Wilson
 
-Stage B date: `2026-08-30`
+Stage B date: `2026-08-31`
 
 ## Decision
 
-The r0.3 owner directive's preferred disposition is adopted:
+The r0.4 owner directive's corrected disposition is adopted:
 
 ```text
 K_geom_science = exact representation-invariant scientific geometry
@@ -25,12 +25,23 @@ scientific kernel do not change scientific support, `S_out`, response,
 covariance, or product identity. A required zero-valued offset needs a
 separately named method and a scientific reason independent of storage.
 
+Ordinary arithmetic sums exactly over `K_nonzero = K_req`, not over
+`K_geom_science`. An exact-zero coefficient creates no arithmetic term,
+payload dependency, influence, covariance contribution, or row exclusion, and
+its parent payload is not evaluated or dereferenced.
+
 Identity retains `K_req = {0}`. The exact zero operator inherits one exact
 admitted parent-support row domain and cannot acquire arbitrary storage rows
 through an empty-footprint predicate.
 
+A requested nonzero convolution with no complete admitted footprint is
+`applied_no_scientific_output_support`; publication is `not_produced` with
+cause `no_full_footprint_output_rows`, while its plan, operator, parent,
+causes, and application evidence remain bound.
+
 ## Supersession
 
-This disposition supersedes only the r0.2 rule that made stored geometric
-zeros ordinary required dependencies. It preserves the full-footprint-only
-edge method and every edge, missing, and non-finite exclusion.
+This disposition supersedes the r0.2 rule that made stored geometric zeros
+ordinary required dependencies and corrects any r0.3 equation that summed over
+geometric support. It preserves the full-footprint-only edge method and every
+edge, missing, and non-finite exclusion at exact required nonzero offsets.

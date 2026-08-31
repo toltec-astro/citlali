@@ -1,13 +1,16 @@
-# SCI-FLT-FIXED v0.1 r0.3 Formal-Closure Record
+# SCI-FLT-FIXED v0.1 r0.4 Formal-Closure Record
 
-Document identity: `SCI-FLT-FIXED-FORMAL-CLOSURE v0.1/draft-r0.3`
+Document identity: `SCI-FLT-FIXED-FORMAL-CLOSURE v0.1/draft-r0.4`
 
 Status: implementation-blind Stage B closure draft; scientific-owner review required
 
 Scientific owner: Grant Wilson
 
-Normative authority remains the shared core. This record makes the r0.2/r0.3 owner
-dispositions and cross-package boundaries easy to review; it does not add a
+Stage B date: `2026-08-31`
+
+Normative authority remains the shared core. This record makes the r0.2,
+r0.3, and r0.4 owner dispositions and cross-package boundaries easy to review;
+it does not add a
 scientific rule beyond the core.
 
 ## 1. Fixed-family scope disposition
@@ -24,9 +27,12 @@ The v0.1 disposition is the preferred narrow rule:
 
 ## 2. Conditional-row-selector amendment
 
-`J_full` is resolved once before payload arithmetic from the plan, immutable
-parent membership, bundle and row admission, availability, finiteness,
-`K_req`, and required predicates. The complete applied operator is
+The plan is resolved without parent-amplitude selection, learning, tuning, or
+alteration. `J_full` is resolved once before convolution arithmetic from
+declared immutable parent identity and row membership, bundle and row
+admission, typed availability and finiteness, support, `K_req`, and required
+predicates. Authorized finiteness classification is structural screening, not
+plan tuning. The complete applied operator is
 `A_Theta,J = J_full L_Theta`.
 
 Strict linearity is conditional on that exact frozen parent membership and
@@ -41,7 +47,11 @@ excluded unless separately supplied as typed uncertainty.
 - `K_store` is nonauthoritative serialization footprint.
 - `K_nonzero` is exact canonical nonzero support; exact zero never uses a
   tolerance.
-- The ordinary method uses `K_req = K_nonzero`.
+- The ordinary method sums exactly over `K_nonzero = K_req`, not
+  `K_geom_science`.
+- An exact-zero coefficient creates no arithmetic, payload, influence,
+  covariance, or admission dependency, and its parent payload is not
+  dereferenced.
 - Dense, sparse, cropped, and zero-padded representations preserve all
   scientific support, output, response, covariance, and identity facts.
 - Identity uses `K_req = {0}` and preserves the exact admitted finite parent
@@ -53,7 +63,16 @@ Geometric, storage, nonzero, required-dependency, signed, absolute, and squared
 support are separate objects. A required exact-zero offset needs a separately
 named method and a scientific reason independent of storage.
 
-## 4. Publication-lifecycle amendment
+## 4. Real scalar and coefficient disposition
+
+`m`, `y`, `k_Theta(r)`, `L_Theta`, and `A_Theta,J` are real-valued. Every
+coefficient is finite, real, unit-typed, canonically exactly represented, and
+content-bound. Missing, non-finite, complex, unrepresentable, or conflicting
+coefficients make the plan unavailable and cannot be repaired by numerical
+comparison. Complex `H(nu)` is only a representation of the real operator;
+the base covariance rule remains `A C A^T`.
+
+## 5. Publication-lifecycle amendment
 
 The lifecycle is:
 
@@ -72,7 +91,13 @@ and prescribed action. VAL may produce a decision artifact. Only the FLT
 publisher performs or declines publication and creates realization. Disabled
 is not produced. Identity and zero follow the same sequence.
 
-## 5. Immutable NOI compatibility amendment
+A requested nonzero convolution with empty `S_out` records
+`applied_no_scientific_output_support`, preserves all bound application
+evidence, and proceeds to `not_produced` with cause
+`no_full_footprint_output_rows`. It is not disabled, execution failure, zero,
+identity, or a realized empty product.
+
+## 6. Immutable NOI compatibility amendment
 
 The actual `NOI-UNC[FLT-SIG]` product is outside FLT atomic completion.
 `FLT-NOI-COMPATIBILITY` contains exact FLT/operator/row identity, boundary and
@@ -81,7 +106,11 @@ typed compatibility or unavailability. It contains no future NOI identity. A
 later NOI child references FLT; an optional reverse relation is separately
 versioned and never changes FLT completeness or realization.
 
-## 6. Profile records and VAL status
+`not_requested_at_FLT_publication` is historical provenance only and does not
+bar a later independently requested child. That child owns its request,
+applicability, eligibility, realization, generation, and failure.
+
+## 7. Profile records and VAL status
 
 The exact draft bytes are in `POLICY_RECORDS.json`:
 
@@ -90,12 +119,14 @@ The exact draft bytes are in `POLICY_RECORDS.json`:
 - `SCI-FLT-FIXED:output_publication@1`.
 
 They distinguish base signal, response-qualified, covariance-qualified, and
-jointly qualified requests. Parent-row decisions feed FLT-owned construction
-of `J_full` and `S_out`. Policy defines publication disposition; VAL may return
-a decision artifact; the FLT publisher acts. They are not owner-approved
-Registry entries, and no Registry evaluation is claimed.
+jointly qualified requests and include the exact empty-output-support,
+identity, zero, failure, and late-NOI dispositions. Parent-row decisions feed
+FLT-owned construction of `J_full` and `S_out`. Policy defines publication
+disposition; VAL may return a decision artifact; the FLT publisher acts. The
+r0.3 profile records remain unregistered, are not owner-approved Registry
+entries, and create no Registry-evaluation claim.
 
-## 7. Response-family crosswalk
+## 8. Response-family crosswalk
 
 | Family | Applied relation | Retained state | v0.1 status |
 | --- | --- | --- | --- |
@@ -108,17 +139,18 @@ The zero operator establishes a local zero derivative and zero parent-payload
 conditional covariance contribution. A complete source-domain response may
 remain unavailable, and total systematic uncertainty remains separate.
 
-## 8. Covariance authority and representation table
+## 9. Covariance authority and representation table
 
 `COVARIANCE_COMPATIBILITY_TABLE.md` binds the exact five-row compatibility
 decision. Complete covariance permits exact two-sided propagation; an explicit
 independent-diagonal model permits full model-conditional covariance including
-induced cross rows; marginal-only authority does not infer independence or
-exact mixed-row marginals; structured/partial authority permits only proved-
+induced cross rows; marginal-only authority gives an exact conditional
+marginal only for one-sparse rows and does not infer independence or exact
+mixed-row marginals; structured/partial authority permits only proved-
 exact operations; unavailable authority remains unavailable. The general
 variance identity retains every weighted parent cross term.
 
-## 9. WCS, low-pass, and transfer decision
+## 10. WCS, low-pass, and transfer decision
 
 Every convolution identifies pixel-index, affine tangent-plane angular, or
 another exact coordinate-domain method. `LOWPASS_TRANSFORM_CONVENTION.md`
@@ -127,13 +159,13 @@ Nyquist treatment, grid, response quantity, attenuation, band geometry, phase,
 anisotropy, and WCS relation. The sampled-kernel transfer remains separate from
 complete finite `A_Theta,J`.
 
-## 10. Operator-composition decision
+## 11. Operator-composition decision
 
 The preferred narrow rule is adopted: one product applies one exact resolved
 sampled convolution. Base v0.1 admits no ordered multi-operator composition and
 no identity such as collapsing intermediate selectors into one final selector.
 
-## 11. Numerical-conformance policy disposition
+## 12. Numerical-conformance policy disposition
 
 `NUMERICAL_CONFORMANCE_POLICY.md` is a draft future-evidence policy. It freezes
 an independent oracle, comparison regimes, cancellation and conditioning,
@@ -141,7 +173,7 @@ covariance, sequential and parallel agreement, non-finite handling, row-level
 decisions, lifecycle, and provenance before candidate results. It supplies no
 validation, numerical-adequacy, or performance finding.
 
-## 12. Exposure, terminology, and ownership disposition
+## 13. Exposure, terminology, and ownership disposition
 
 `FLT-EXPOSURE-LINEAGE` records exact parent exposure identity or typed absence.
 FLT creates no physical exposure; influence is not exposure; convolving an
@@ -155,15 +187,16 @@ covariance, weight, or downstream eligibility.
 owned plan. FLT retains policy, selector, application, product, publication,
 and failure ownership.
 
-## 13. Source-packet closure
+## 14. Source-packet closure
 
-`BUILD_BINDING.json` binds the author packet, all 17 admitted objects, both
+`BUILD_BINDING.json` binds the author packet, all 17 admitted objects, all three
 owner directives, every authored source and tool, embedded fonts, and PDFs by
 exact byte count and SHA-256. `AUTHORITY_MANIFEST.json` supersedes manual
 combination by binding the complete final authority, report, source, tool, and
-PDF set. Its external digest is the single proposed-freeze entry point.
+PDF set with role, compatibility or supersession state, and generated-view
+relation. Its external digest is the single proposed-freeze entry point.
 
-## 14. Nonclaims
+## 15. Nonclaims
 
 This closure record makes no implementation-conformity, achieved-response,
 achieved-covariance, numerical-adequacy, validation, calibration, observational

@@ -1,16 +1,16 @@
 # SCI-FLT-FIXED v0.1 Proposed Freeze Disposition
 
-Record identity: `SCI-FLT-FIXED-PROPOSED-FREEZE-DISPOSITION v0.1/draft-r0.3`
+Record identity: `SCI-FLT-FIXED-PROPOSED-FREEZE-DISPOSITION v0.1/draft-r0.4`
 
 Status: proposed scientific-owner review disposition; not a scientific freeze
 
 Scientific owner: Grant Wilson
 
-Stage B date: `2026-08-30`
+Stage B date: `2026-08-31`
 
 ## Disposition
 
-The r0.3 package is eligible to be presented to the scientific owner as one
+The r0.4 package is eligible to be presented to the scientific owner as one
 source-preflight-complete proposed-freeze set only if the durable verifier
 reproduces every authority-manifest byte count and SHA-256, all identifier and
 view parity checks pass, the PDFs rebuild exactly, and every final page passes

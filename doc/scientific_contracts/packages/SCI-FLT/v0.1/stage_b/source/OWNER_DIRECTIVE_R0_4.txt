@@ -1,0 +1,340 @@
+SCI-FLT-FIXED v0.1 r0.4 — FINAL FORMAL-CLOSURE
+AND FREEZE-PREFLIGHT DIRECTIVE
+
+The SCI-FLT-FIXED r0.3 architecture is accepted as the basis for the final
+targeted revision.
+
+Preserve:
+
+- SCI-FLT-FIXED and FLT-FIXED-CONV as the sole base package/family;
+- FLT-FIXED-CONV-LOWPASS only as a qualified convolution subtype;
+- strict linearity with no additive term;
+- one exact sampled convolution applied exactly once;
+- one exact parent signal role;
+- one frozen parent membership and J_full;
+- A_Theta,J = J_full L_Theta;
+- full-footprint-only as the sole v0.1 edge method;
+- K_store as scientifically nonauthoritative;
+- K_req = K_nonzero for the ordinary method;
+- explicit identity and zero-operator support;
+- exact MAP-observation, MAP-coadd, and JINC-observation parent roles;
+- non-signal-role rejection;
+- no filter/coadd commutation claim;
+- transformed parent-map amplitude and inherited nominal-beam lineage;
+- no automatic filtered-beam, source-amplitude, flux, or calibration claim;
+- separate response families;
+- covariance-authority and representation axes;
+- immutable FLT-NOI-COMPATIBILITY;
+- distinct bundle, parent-row, and publication policy domains;
+- candidate-before-publication lifecycle;
+- exposure lineage distinct from influence;
+- prospective numerical-comparison policy;
+- stable requirement and prediction identifiers;
+- every existing nonclaim.
+
+Do not inspect implementation, configuration, schemas, tests, audits, repairs,
+validation, reductions, generated products, defaults, historical behavior, or
+production status.
+
+Do not renumber SCI-FLT-FIXED-REQ-001--051 or
+SCI-FLT-FIXED-PRED-001--028. Amend existing draft wording where the same
+scientific obligation is being corrected. Append identifiers only for
+genuinely new obligations.
+
+======================================================================
+1. REPAIR THE CONVOLUTION SUMMATION DOMAIN
+======================================================================
+
+The current ordinary equation sums over K_geom_science while scientific
+dependency and admission use K_req = K_nonzero.
+
+For the ordinary method use exactly:
+
+    (L_Theta m)_p
+      = sum_{r in K_nonzero}
+          k_Theta(r) m_{p-r}
+
+      = sum_{r in K_req}
+          k_Theta(r) m_{p-r}.
+
+K_geom_science remains a representation-invariant geometric description, not
+the arithmetic dependency set.
+
+K_store remains serialization only.
+
+An exact-zero coefficient:
+
+- contributes no arithmetic term;
+- requires no parent payload;
+- creates no influence or covariance contribution;
+- cannot cause row exclusion;
+- is never classified through a floating threshold.
+
+Do not evaluate or dereference a missing, unavailable, or non-finite parent
+payload at an exact-zero coefficient.
+
+Retain:
+
+- identity K_req = {0};
+- the exact zero operator as an explicitly supported empty arithmetic sum on
+  its inherited admitted parent-support row domain.
+
+Update the main convolution equation, operator definition, REQ-009/010/012/038,
+PRED-005/009/022/023, the rationale, and the ECS.
+
+Add a fixture in which an exact-zero geometric offset has an unavailable or
+non-finite parent payload. The output row and value shall be unchanged. Turning
+that coefficient into any exact nonzero value shall activate the dependency
+and remove the row.
+
+======================================================================
+2. SEPARATE PLAN INDEPENDENCE FROM PARENT-FACT SELECTOR RESOLUTION
+======================================================================
+
+Replace the statement that “no parent data may select ... any selector fact”
+with an exact distinction.
+
+A. Plan and operator resolution
+
+Parent payload amplitudes shall not select, learn, tune, or alter:
+
+- kernel coefficients;
+- cutoff or width;
+- normalization;
+- transfer qualification;
+- edge method;
+- support rule;
+- thresholds;
+- or another plan fact.
+
+No amplitude-thresholded, source-sensitive, spectral-selection, or otherwise
+data-derived method is admitted.
+
+B. J_full resolution
+
+J_full shall be resolved once from only the declared immutable parent facts:
+
+- parent identity and row membership;
+- exact parent-row admission;
+- typed availability;
+- typed finiteness;
+- support;
+- and exact required predicates.
+
+Inspecting an authorized payload only to classify its declared finite or
+non-finite state is structural screening, not convolution arithmetic and not
+permission to tune the plan.
+
+C. Reuse
+
+Response, covariance, NOI members, and other compatible companions reuse the
+same resolved J_full. They never re-resolve it from their own values.
+
+Update Sections 2, 4, and 7, REQ-007/012/037, the rationale, and the ECS so
+that the selector definition and the data-independence prohibition cannot be
+read as contradictory.
+
+======================================================================
+3. DECLARE THE BASE SCALAR FIELD AND COEFFICIENT ADMISSIBILITY
+======================================================================
+
+State explicitly for SCI-FLT-FIXED v0.1:
+
+    m, y, k_Theta(r), L_Theta, A_Theta,J are real-valued.
+
+Every admitted sampled coefficient shall be:
+
+- finite;
+- real;
+- unit-typed;
+- present in one canonical exact representation;
+- and content-bound before application.
+
+A missing, non-finite, complex, unrepresentable, or conflicting coefficient
+makes plan resolution unavailable. It is not repaired by the future numerical
+comparison policy.
+
+The complex quantity H(nu), where used, is a frequency-domain representation
+of a real map operator. It does not authorize a complex-valued FLT signal.
+
+Retain:
+
+    C_out = A C_parent A^T
+
+for this real-valued base contract.
+
+Any future complex-valued method requires a separately named authority with
+complex signal units, conjugation conventions, Hermitian covariance, and
+A C A^dagger propagation.
+
+Add real/finite-kernel requirements and fixtures for non-finite and complex
+coefficient rejection.
+
+======================================================================
+4. OWNER-DISPOSITION EMPTY SCIENTIFIC OUTPUT SUPPORT
+======================================================================
+
+Define the result when a requested nonzero convolution resolves and applies but:
+
+    S_out = empty set.
+
+This may occur when the kernel is wider than the parent or no output row has
+one complete admitted footprint.
+
+Preferred disposition:
+
+- record an exact applied_no_scientific_output_support state;
+- preserve the plan, operator, parent, causes, and application evidence;
+- make the ordinary base-signal publication action not_produced with exact
+  cause no_full_footprint_output_rows;
+- do not call this disabled, failed execution, zero operator, or a successful
+  empty signal product.
+
+If the owner instead authorizes a realized no-support bundle, give that state
+an exact identity and specify:
+
+- FLT-SIG availability;
+- product validity;
+- publication action;
+- downstream admission;
+- response/covariance state;
+- and parent-shaped storage semantics.
+
+Do not leave the disposition to implementation or file-writing behavior.
+
+Identity and zero operators continue to use their explicit inherited-support
+rules.
+
+Add an empty-S_out prediction and publication-policy branch.
+
+======================================================================
+5. COMPLETE THE MARGINAL-ONLY COVARIANCE EDGE CASE
+======================================================================
+
+Retain the rule that marginal parent variances do not authorize independence.
+
+Add:
+
+- when an output row has exactly one nonzero parent coefficient A_ij, the
+  marginal-only parent authority is sufficient for that row's conditional
+  marginal:
+
+      Var(y_i) = A_ij^2 Var(m_j);
+
+- when a row mixes two or more parent variables, unknown cross terms make its
+  exact output marginal unavailable or explicitly partial;
+
+- the zero operator retains its separately typed zero parent-payload
+  contribution;
+
+- no one-row result authorizes cross-row covariance or independence.
+
+Add fixtures for one-sparse, two-sparse with unknown covariance, and exact-zero
+rows.
+
+======================================================================
+6. CLARIFY LATE NOI REQUESTS
+======================================================================
+
+FLT-NOI-COMPATIBILITY may record the request state known at FLT publication,
+but that state is historical provenance only.
+
+State explicitly:
+
+- not_requested_at_FLT_publication does not prohibit a later independently
+  requested SCI-NOI child;
+- the later child owns its own request, applicability, eligibility,
+  realization, generation, and failure;
+- it still requires exact compatible FLT boundary/profile state;
+- no later request or product mutates FLT;
+- FLT-NOI-COMPATIBILITY never contains a future child identity.
+
+Retain PRED-027 and add the late-request case to its fixture set.
+
+======================================================================
+7. COMPLETE SOURCE, PROFILE, AND AUTHORITY PREFLIGHT
+======================================================================
+
+Return the actual exact bytes of:
+
+- the original seventeen-object author packet;
+- AUTHOR_PACKET_MANIFEST.md;
+- the r0.2 and r0.3 owner directives;
+- MAP-to-FLT, JINC-to-FLT, and FLT-to-NOI boundaries;
+- input_bundle_admission profile;
+- input_parent_row_admission profile;
+- output_publication profile;
+- numerical-comparison policy;
+- TRACEABILITY.json;
+- BUILD_BINDING.json;
+- AUTHORITY_MANIFEST.json;
+- source-closure, parity, semantic-change, profile, rebuild, and visual-QA
+  reports;
+- all source documents and rendered PDFs.
+
+Reproduce every quoted SHA-256.
+
+The authority manifest shall bind every path, byte count, digest, scientific or
+process role, compatibility/supersession state, and generated-view relation.
+
+Verify the exact policy disposition for:
+
+- S_out empty;
+- base versus qualified companions;
+- identity and zero;
+- publication failure;
+- late NOI requests.
+
+The r0.3 profile records remain unregistered until separately owner-approved
+and source-bound. No name alone creates a VAL-evaluable route.
+
+Any unreproducible authority shall return only its dependent route or claim to
+typed unavailability.
+
+======================================================================
+8. MECHANICAL AND VISUAL FREEZE PREFLIGHT
+======================================================================
+
+Verify:
+
+- one byte-identical r0.4 normative core imported by the rationale and ECS;
+- one owner-decision state;
+- all source hashes reproduce;
+- REQ-001--REQ-051 remain gap-free;
+- any new requirement receives REQ-052 or later;
+- PRED-001--PRED-028 remain gap-free;
+- any new prediction receives PRED-029 or later;
+- equation, requirement, prediction, route-status, and lifecycle parity;
+- exact profile names and action semantics;
+- no stale r0.1, r0.2, or r0.3 source identity where r0.4 is intended;
+- every PDF opens and renders without clipping, overlap, broken glyphs, or
+  malformed identifiers;
+- title, owner, revision, date, status, and PDF metadata agree.
+
+======================================================================
+9. DELIVERABLES
+======================================================================
+
+Return:
+
+1. revised Normative Core r0.4;
+2. revised Scientist Rationale r0.4;
+3. revised Engineering Conformance Specification r0.4;
+4. corrected convolution equation and support crosswalk;
+5. selector-resolution/data-independence amendment;
+6. real finite scalar/coefficient declaration;
+7. empty-output-support owner disposition;
+8. marginal-only covariance edge-case amendment;
+9. late-NOI-request amendment;
+10. exact complete source packet;
+11. AUTHORITY_MANIFEST.json;
+12. requirement/equation/prediction semantic-change map;
+13. owner-decision parity report;
+14. core/rationale/ECS parity report;
+15. PDF visual-QA and metadata report;
+16. proposed conditional freeze disposition.
+
+Do not claim implementation conformity, achieved response or covariance,
+numerical adequacy, validation, calibration, observational performance,
+readiness, scientific freeze, production suitability, production
+authorization, or Unity activity.

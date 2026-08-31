@@ -1,12 +1,12 @@
 # SCI-FLT-FIXED v0.1 Stage B Verification Report
 
-Report identity: `SCI-FLT-FIXED-STAGE-B-VERIFICATION v0.1/draft-r0.3`
+Report identity: `SCI-FLT-FIXED-STAGE-B-VERIFICATION v0.1/draft-r0.4`
 
-Status: PASS; deterministic r0.3 proposed-freeze preflight only; scientific-owner review required
+Status: PASS; deterministic r0.4 proposed-freeze preflight only; scientific-owner review required
 
-Build binding SHA-256: `578afdad159b4d4330f1cf3e3fb48b302a72c00c3b761467a69b62873a352d72`
+Build binding SHA-256: `316bdd5e4ad48d3444230002d33b1ef86cee000f2954e6f81240af2cc1af257d`
 
-Verifier SHA-256: `9ca23c97a7080015f90e1ec3644b81c49cc0a0d9436f32c5aa65cbdc6a29b5b5`
+Verifier SHA-256: `22e58ea6605938745089b4025af3bc247536bb10124ec2d1a0170ad565ac7d89`
 
 Poppler: `pdftoppm version 26.05.0`
 
@@ -14,19 +14,19 @@ Poppler: `pdftoppm version 26.05.0`
 
 - PASS: packet manifest external SHA-256 matches
 - PASS: all 17 admitted object SHA-256 values match
-- PASS: all authored r0.3 sources are ASCII-clean; both exact owner directives are preserved as UTF-8
-- PASS: all 14 r0.2 and all 10 r0.3 owner-directive sections are present
-- PASS: 51 stable requirement identifiers preserve 001-044 and append 045-051
-- PASS: 28 stable prediction identifiers preserve 001-024 and append 025-028
+- PASS: all authored r0.4 sources are ASCII-clean; all three exact owner directives are preserved as UTF-8
+- PASS: all 14 r0.2, 10 r0.3, and 9 r0.4 owner-directive sections are present
+- PASS: 53 stable requirement identifiers preserve 001-051 and append 052-053
+- PASS: 30 stable prediction identifiers preserve 001-028 and append 029-030
 - PASS: engineering-conformance view routes every stable identifier exactly once
-- PASS: traceability covers every identifier and only the admitted Stage A packet plus the exact r0.2/r0.3 owner directives
+- PASS: traceability covers every identifier and only the admitted Stage A packet plus the exact r0.2/r0.3/r0.4 owner directives
 - PASS: every traced core, rationale, conformance, Stage A, and owner-directive section resolves
-- PASS: both views import one shared normative core SHA-256 98f3966e9d65ad57efcf7c8ba57344d1f9cb5635a05309eb5d068e4ab62ca9e1
+- PASS: both views import one shared normative core SHA-256 43c1a5f57cb72b03cfc4a99628ae4c86fcabdf0a338cac2cdc12e08774010999
 - PASS: parent roles, owner footprint disposition, covariance table, immutable NOI design, policy actors, low-pass convention, response domain, and rationale preflight are closed
-- PASS: all three corrected typed policy domains, actor boundaries, and unregistered VAL status are complete
+- PASS: all three typed policy domains, exact dispositions, actor boundaries, and unregistered VAL status are complete
 - PASS: equation, requirement, and prediction semantic-change partitions are exact and preserve stable IDs
-- PASS: every r0.3 changed or appended identifier routes to an exact r0.3 owner-directive section
-- PASS: launch commit, exact packet bytes, both owner directives, r0.3 sources, date, and build tools match BUILD_BINDING.json
+- PASS: every r0.4 amended or appended identifier routes to an exact r0.4 owner-directive section
+- PASS: launch commit, exact packet bytes, all three owner directives, r0.4 sources, date, and build tools match BUILD_BINDING.json
 - PASS: all embedded font files and SHA-256 values match BUILD_BINDING.json
 - PASS: all three PDF identity blocks, Grant Wilson author metadata, date metadata, hashes, sizes, and page counts match
 - PASS: every PDF page contains extractable text
@@ -37,9 +37,9 @@ Poppler: `pdftoppm version 26.05.0`
 
 ## Bound PDF outputs
 
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf`: 18 pages; 112745 bytes; SHA-256 `ed6d58323b85db7db6c25bebedc1312fec99e8890645e38abdfe0a083556c50b`
-- `SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.3.pdf`: 6 pages; 77602 bytes; SHA-256 `923516fcf18cb5ce29a83092a2eb47b43c841fef17de849b1085b13dd5014c0a`
-- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.3.pdf`: 8 pages; 82610 bytes; SHA-256 `2e9af76177a8ae7f189c9495456ab4fde3b64c0891e20997fed09f65d8d49f12`
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.4.pdf`: 21 pages; 120909 bytes; SHA-256 `39655bd46e90d6125251ec15e2a070e1f31af2e4cfec53cc8b53ae5039cb2a28`
+- `SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.4.pdf`: 7 pages; 80280 bytes; SHA-256 `95b0d274ba6932ead17c6ead6452887086b16e2cb738078404a9ac9b5c05cc60`
+- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.4.pdf`: 9 pages; 85675 bytes; SHA-256 `b72a5c16c13fc977552037c633bda119f26b945f26e9c61daa2133ca95b9bab9`
 
 ## Visual review
 

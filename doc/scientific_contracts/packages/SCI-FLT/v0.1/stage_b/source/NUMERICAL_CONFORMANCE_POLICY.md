@@ -1,6 +1,6 @@
 # SCI-FLT-FIXED v0.1 Numerical-Conformance Policy Draft
 
-Document identity: `SCI-FLT-FIXED-NUMERICAL-CONFORMANCE v0.1/draft-r0.3`
+Document identity: `SCI-FLT-FIXED-NUMERICAL-CONFORMANCE v0.1/draft-r0.4`
 
 Status: future finite-precision evidence-policy draft; not preregistered; no candidate finding
 
@@ -51,6 +51,10 @@ The policy instance must define together:
 
 No single relative tolerance may silently govern exact zero or near-zero
 cases.
+
+This numerical policy cannot repair or admit a missing, non-finite, complex,
+unrepresentable, conflicting, or otherwise scientifically inadmissible kernel
+coefficient. Coefficient admission precedes numerical comparison.
 
 ## 5. Signal and simultaneous row decision
 

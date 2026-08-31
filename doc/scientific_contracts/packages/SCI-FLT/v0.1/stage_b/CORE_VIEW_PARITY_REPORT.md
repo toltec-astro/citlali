@@ -1,20 +1,20 @@
-# SCI-FLT-FIXED v0.1 r0.3 Core/View Parity Report
+# SCI-FLT-FIXED v0.1 r0.4 Core/View Parity Report
 
-Report identity: `SCI-FLT-FIXED-CORE-VIEW-PARITY v0.1/draft-r0.3`
+Report identity: `SCI-FLT-FIXED-CORE-VIEW-PARITY v0.1/draft-r0.4`
 
 Status: PASS; rationale and ECS import one exact normative core; scientific-owner review required
 
-Normative core SHA-256: `98f3966e9d65ad57efcf7c8ba57344d1f9cb5635a05309eb5d068e4ab62ca9e1`
-Scientist rationale source SHA-256: `2db08b169415445569ba06326514a2828d16f3514a6c0228ce70eca8596b440f`
-Engineering-conformance source SHA-256: `0c8f2b29c0111302e31e1e1782ab5df896c4888e1d86ed5078cc9b6e10b3b05a`
+Normative core SHA-256: `43c1a5f57cb72b03cfc4a99628ae4c86fcabdf0a338cac2cdc12e08774010999`
+Scientist rationale source SHA-256: `4f9e3df8830c95e1c4e04c4854257278a09e5f05ea15d16e4dd3a1598ccd133a`
+Engineering-conformance source SHA-256: `6d5d648397f7cb463ffc9117b9a45f89a9918613a67adfaff598e817b34bc471`
 
 ## Results
 
 - PASS: both views contain exactly one normative-core digest token, replaced at build time with the digest above.
 - PASS: the rationale declares the imported core controlling on conflict.
 - PASS: the ECS declares that it adds no scientific rule and the imported core controls.
-- PASS: the ECS routes all 51 requirement identifiers exactly once.
-- PASS: the ECS routes all 28 prediction identifiers exactly once.
+- PASS: the ECS routes all 53 requirement identifiers exactly once.
+- PASS: the ECS routes all 30 prediction identifiers exactly once.
 
 ## Nonclaims
 

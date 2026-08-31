@@ -1,12 +1,12 @@
 # SCI-FLT-FIXED v0.1 Parent Signal-Role Table
 
-Record identity: `SCI-FLT-FIXED-PARENT-SIGNAL-ROLE-TABLE v0.1/draft-r0.3`
+Record identity: `SCI-FLT-FIXED-PARENT-SIGNAL-ROLE-TABLE v0.1/draft-r0.4`
 
 Status: implementation-blind Stage B closure draft; scientific-owner review required
 
 Scientific owner: Grant Wilson
 
-Stage B date: `2026-08-30`
+Stage B date: `2026-08-31`
 
 ## Exact parent roles
 

@@ -1,122 +1,120 @@
 {
   "schema_version": "1.0",
-  "document_identity": "SCI-FLT-FIXED-SEMANTIC-CHANGE-MAP v0.1/draft-r0.3",
-  "from_identity": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.2",
-  "to_identity": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.3",
+  "document_identity": "SCI-FLT-FIXED-SEMANTIC-CHANGE-MAP v0.1/draft-r0.4",
+  "from_identity": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.3",
+  "to_identity": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.4",
   "owner_directives": [
     "OWNER_DIRECTIVE_R0_2.txt",
-    "OWNER_DIRECTIVE_R0_3.txt"
+    "OWNER_DIRECTIVE_R0_3.txt",
+    "OWNER_DIRECTIVE_R0_4.txt"
   ],
   "equation_changes": [
     {
-      "subject": "ordinary required footprint",
-      "r0_2": "K_req = K_geom, including stored exact zeros",
-      "r0_3": "K_geom_science is representation-invariant; K_store is nonauthoritative; K_req = K_nonzero",
-      "disposition": "owner_supersession",
-      "meaning": "scientific support and product identity are invariant under dense, sparse, cropped, or zero-padded storage"
+      "subject": "ordinary convolution summation domain",
+      "r0_3": "ordinary support used K_req = K_nonzero, but the displayed convolution equation summed over K_geom_science",
+      "r0_4": "(L_Theta m)_p is summed exactly over K_nonzero = K_req",
+      "disposition": "formal_correction",
+      "meaning": "K_geom_science is geometric description only; exact-zero geometric offsets create no arithmetic, payload, influence, covariance, or admission dependency"
     },
     {
-      "subject": "general output marginal variance",
-      "r0_2": "independent-diagonal special case only",
-      "r0_3": "Var(y_i) = sum_j A_ij^2 Var(m_j) + 2 sum_{j<k} A_ij A_ik Cov(m_j,m_k)",
-      "disposition": "authority_closed",
-      "meaning": "marginal parent variances alone generally do not determine filtered marginals"
+      "subject": "base scalar field and covariance algebra",
+      "r0_3": "real scalar field was implicit in the map and A C A^T relations",
+      "r0_4": "m, y, k_Theta(r), L_Theta, and A_Theta,J are explicitly real and C_out = A C_parent A^T remains the base rule",
+      "disposition": "field_closed",
+      "meaning": "complex H is representation only; a complex signal method requires separate authority"
     },
     {
-      "subject": "low-pass sampled transform",
-      "r0_2": "exact sampled transfer on a declared grid and metric",
-      "r0_3": "H(nu) = sum_r k(r) exp[-2 pi i nu dot r] is an allowed reference form only when the complete convention is content-bound",
-      "disposition": "convention_closed",
-      "meaning": "PRED-024 must use the identical sign, normalization, units, ordering, Nyquist, response, attenuation, phase, anisotropy, and WCS conventions"
-    },
-    {
-      "subject": "parent full-procedure response",
-      "r0_2": "Delta y_parent-FP = A_Theta,J Delta m_parent-FP",
-      "r0_3": "the same equation is defined only for one exact compatible baseline/perturbed difference on the frozen required domain",
-      "disposition": "domain_closed",
-      "meaning": "membership, availability, WCS, quantity, or support mismatch yields response unavailability without selector re-resolution"
+      "subject": "marginal-only covariance edge",
+      "r0_3": "mixed rows were unavailable or partial under marginal-only authority",
+      "r0_4": "a row with one nonzero A_ij has exact conditional marginal A_ij^2 Var(m_j); mixed rows remain unavailable or partial",
+      "disposition": "edge_case_closed",
+      "meaning": "one-row exactness authorizes neither independence nor cross-row covariance"
     }
   ],
   "requirement_changes": {
-    "clarified_without_renumbering": [
-      "SCI-FLT-FIXED-REQ-003",
-      "SCI-FLT-FIXED-REQ-004",
+    "amended_without_renumbering": [
+      "SCI-FLT-FIXED-REQ-007",
       "SCI-FLT-FIXED-REQ-009",
-      "SCI-FLT-FIXED-REQ-011",
+      "SCI-FLT-FIXED-REQ-010",
       "SCI-FLT-FIXED-REQ-012",
-      "SCI-FLT-FIXED-REQ-017",
-      "SCI-FLT-FIXED-REQ-020",
-      "SCI-FLT-FIXED-REQ-021",
-      "SCI-FLT-FIXED-REQ-022",
-      "SCI-FLT-FIXED-REQ-023",
-      "SCI-FLT-FIXED-REQ-027",
-      "SCI-FLT-FIXED-REQ-028",
-      "SCI-FLT-FIXED-REQ-030",
-      "SCI-FLT-FIXED-REQ-032",
-      "SCI-FLT-FIXED-REQ-033",
-      "SCI-FLT-FIXED-REQ-034",
+      "SCI-FLT-FIXED-REQ-037",
       "SCI-FLT-FIXED-REQ-038",
-      "SCI-FLT-FIXED-REQ-039",
-      "SCI-FLT-FIXED-REQ-040"
+      "SCI-FLT-FIXED-REQ-046",
+      "SCI-FLT-FIXED-REQ-047",
+      "SCI-FLT-FIXED-REQ-051"
     ],
     "preserved_without_semantic_change": [
       "SCI-FLT-FIXED-REQ-001",
       "SCI-FLT-FIXED-REQ-002",
+      "SCI-FLT-FIXED-REQ-003",
+      "SCI-FLT-FIXED-REQ-004",
       "SCI-FLT-FIXED-REQ-005",
       "SCI-FLT-FIXED-REQ-006",
-      "SCI-FLT-FIXED-REQ-007",
       "SCI-FLT-FIXED-REQ-008",
-      "SCI-FLT-FIXED-REQ-010",
+      "SCI-FLT-FIXED-REQ-011",
       "SCI-FLT-FIXED-REQ-013",
       "SCI-FLT-FIXED-REQ-014",
       "SCI-FLT-FIXED-REQ-015",
       "SCI-FLT-FIXED-REQ-016",
+      "SCI-FLT-FIXED-REQ-017",
       "SCI-FLT-FIXED-REQ-018",
       "SCI-FLT-FIXED-REQ-019",
+      "SCI-FLT-FIXED-REQ-020",
+      "SCI-FLT-FIXED-REQ-021",
+      "SCI-FLT-FIXED-REQ-022",
+      "SCI-FLT-FIXED-REQ-023",
       "SCI-FLT-FIXED-REQ-024",
       "SCI-FLT-FIXED-REQ-025",
       "SCI-FLT-FIXED-REQ-026",
+      "SCI-FLT-FIXED-REQ-027",
+      "SCI-FLT-FIXED-REQ-028",
       "SCI-FLT-FIXED-REQ-029",
+      "SCI-FLT-FIXED-REQ-030",
       "SCI-FLT-FIXED-REQ-031",
+      "SCI-FLT-FIXED-REQ-032",
+      "SCI-FLT-FIXED-REQ-033",
+      "SCI-FLT-FIXED-REQ-034",
       "SCI-FLT-FIXED-REQ-035",
       "SCI-FLT-FIXED-REQ-036",
-      "SCI-FLT-FIXED-REQ-037",
+      "SCI-FLT-FIXED-REQ-039",
+      "SCI-FLT-FIXED-REQ-040",
       "SCI-FLT-FIXED-REQ-041",
       "SCI-FLT-FIXED-REQ-042",
       "SCI-FLT-FIXED-REQ-043",
-      "SCI-FLT-FIXED-REQ-044"
-    ],
-    "appended": [
+      "SCI-FLT-FIXED-REQ-044",
       "SCI-FLT-FIXED-REQ-045",
-      "SCI-FLT-FIXED-REQ-046",
-      "SCI-FLT-FIXED-REQ-047",
       "SCI-FLT-FIXED-REQ-048",
       "SCI-FLT-FIXED-REQ-049",
-      "SCI-FLT-FIXED-REQ-050",
-      "SCI-FLT-FIXED-REQ-051"
+      "SCI-FLT-FIXED-REQ-050"
+    ],
+    "appended": [
+      "SCI-FLT-FIXED-REQ-052",
+      "SCI-FLT-FIXED-REQ-053"
     ],
     "renumbered": []
   },
   "prediction_changes": {
-    "clarified_without_renumbering": [
-      "SCI-FLT-FIXED-PRED-006",
+    "amended_without_renumbering": [
+      "SCI-FLT-FIXED-PRED-005",
       "SCI-FLT-FIXED-PRED-009",
-      "SCI-FLT-FIXED-PRED-012",
-      "SCI-FLT-FIXED-PRED-013",
-      "SCI-FLT-FIXED-PRED-014",
       "SCI-FLT-FIXED-PRED-022",
-      "SCI-FLT-FIXED-PRED-024"
+      "SCI-FLT-FIXED-PRED-023",
+      "SCI-FLT-FIXED-PRED-026",
+      "SCI-FLT-FIXED-PRED-027"
     ],
     "preserved_without_semantic_change": [
       "SCI-FLT-FIXED-PRED-001",
       "SCI-FLT-FIXED-PRED-002",
       "SCI-FLT-FIXED-PRED-003",
       "SCI-FLT-FIXED-PRED-004",
-      "SCI-FLT-FIXED-PRED-005",
+      "SCI-FLT-FIXED-PRED-006",
       "SCI-FLT-FIXED-PRED-007",
       "SCI-FLT-FIXED-PRED-008",
       "SCI-FLT-FIXED-PRED-010",
       "SCI-FLT-FIXED-PRED-011",
+      "SCI-FLT-FIXED-PRED-012",
+      "SCI-FLT-FIXED-PRED-013",
+      "SCI-FLT-FIXED-PRED-014",
       "SCI-FLT-FIXED-PRED-015",
       "SCI-FLT-FIXED-PRED-016",
       "SCI-FLT-FIXED-PRED-017",
@@ -124,90 +122,116 @@
       "SCI-FLT-FIXED-PRED-019",
       "SCI-FLT-FIXED-PRED-020",
       "SCI-FLT-FIXED-PRED-021",
-      "SCI-FLT-FIXED-PRED-023"
+      "SCI-FLT-FIXED-PRED-024",
+      "SCI-FLT-FIXED-PRED-025",
+      "SCI-FLT-FIXED-PRED-028"
     ],
     "appended": [
-      "SCI-FLT-FIXED-PRED-025",
-      "SCI-FLT-FIXED-PRED-026",
-      "SCI-FLT-FIXED-PRED-027",
-      "SCI-FLT-FIXED-PRED-028"
+      "SCI-FLT-FIXED-PRED-029",
+      "SCI-FLT-FIXED-PRED-030"
     ],
     "renumbered": []
   },
-  "r0_3_owner_directive_routes": {
-    "1. BIND THE EXACT SIGNAL ROLE OF EVERY PARENT": [
-      "SCI-FLT-FIXED-REQ-003",
-      "SCI-FLT-FIXED-REQ-004",
-      "SCI-FLT-FIXED-REQ-045",
-      "SCI-FLT-FIXED-PRED-025",
-      "PARENT_SIGNAL_ROLE_TABLE.md"
-    ],
-    "2. OWNER-DISPOSITION EXACT-ZERO AND REQUIRED-FOOTPRINT SEMANTICS": [
+  "route_status_changes": [
+    {
+      "route": "ordinary convolution arithmetic",
+      "r0_4": "exactly K_nonzero = K_req; exact-zero parent payload is not dereferenced"
+    },
+    {
+      "route": "plan and selector",
+      "r0_4": "plan is amplitude-independent; J_full uses only declared immutable parent facts and structural finiteness screening"
+    },
+    {
+      "route": "coefficient admission",
+      "r0_4": "missing, non-finite, complex, unrepresentable, or conflicting coefficient makes plan unavailable"
+    },
+    {
+      "route": "empty nonzero S_out",
+      "r0_4": "applied_no_scientific_output_support then not_produced with no_full_footprint_output_rows"
+    },
+    {
+      "route": "marginal-only covariance",
+      "r0_4": "one-sparse conditional marginal exact; multi-sparse unavailable or partial; no cross-row claim"
+    },
+    {
+      "route": "late NOI request",
+      "r0_4": "publication-time not-requested state is provenance only; child owns lifecycle and cannot mutate FLT"
+    },
+    {
+      "route": "profiles",
+      "r0_4": "r0.3-origin profile records remain unregistered until separately owner-approved and source-bound"
+    }
+  ],
+  "lifecycle_changes": [
+    {
+      "condition": "requested nonzero convolution resolves and applies with empty S_out",
+      "path": [
+        "applied",
+        "applied_no_scientific_output_support",
+        "publication_decision",
+        "not_produced"
+      ],
+      "cause": "no_full_footprint_output_rows"
+    }
+  ],
+  "r0_4_owner_directive_routes": {
+    "1. REPAIR THE CONVOLUTION SUMMATION DOMAIN": [
       "SCI-FLT-FIXED-REQ-009",
+      "SCI-FLT-FIXED-REQ-010",
       "SCI-FLT-FIXED-REQ-012",
-      "SCI-FLT-FIXED-REQ-020",
       "SCI-FLT-FIXED-REQ-038",
+      "SCI-FLT-FIXED-PRED-005",
       "SCI-FLT-FIXED-PRED-009",
       "SCI-FLT-FIXED-PRED-022",
-      "REQUIRED_FOOTPRINT_OWNER_DISPOSITION.md"
+      "SCI-FLT-FIXED-PRED-023",
+      "CORRECTED_CONVOLUTION_SUPPORT_CROSSWALK.md"
     ],
-    "3. CLOSE COVARIANCE AUTHORITY / REPRESENTATION COMPATIBILITY": [
-      "SCI-FLT-FIXED-REQ-021",
-      "SCI-FLT-FIXED-REQ-022",
-      "SCI-FLT-FIXED-REQ-023",
+    "2. SEPARATE PLAN INDEPENDENCE FROM PARENT-FACT SELECTOR RESOLUTION": [
+      "SCI-FLT-FIXED-REQ-007",
+      "SCI-FLT-FIXED-REQ-012",
+      "SCI-FLT-FIXED-REQ-037",
+      "SELECTOR_RESOLUTION_DATA_INDEPENDENCE.md"
+    ],
+    "3. DECLARE THE BASE SCALAR FIELD AND COEFFICIENT ADMISSIBILITY": [
+      "SCI-FLT-FIXED-REQ-052",
+      "SCI-FLT-FIXED-PRED-030",
+      "REAL_FINITE_SCALAR_COEFFICIENT_DECLARATION.md"
+    ],
+    "4. OWNER-DISPOSITION EMPTY SCIENTIFIC OUTPUT SUPPORT": [
+      "SCI-FLT-FIXED-REQ-053",
+      "SCI-FLT-FIXED-PRED-029",
+      "EMPTY_OUTPUT_SUPPORT_DISPOSITION.md",
+      "SCI-FLT-FIXED:output_publication@1"
+    ],
+    "5. COMPLETE THE MARGINAL-ONLY COVARIANCE EDGE CASE": [
       "SCI-FLT-FIXED-REQ-046",
-      "SCI-FLT-FIXED-PRED-012",
-      "SCI-FLT-FIXED-PRED-013",
-      "SCI-FLT-FIXED-PRED-014",
       "SCI-FLT-FIXED-PRED-026",
-      "COVARIANCE_COMPATIBILITY_TABLE.md"
+      "MARGINAL_ONLY_COVARIANCE_EDGE_CASE.md"
     ],
-    "4. MAKE NOI COMPATIBILITY AND ATTACHMENT IMMUTABLE": [
-      "SCI-FLT-FIXED-REQ-027",
-      "SCI-FLT-FIXED-REQ-030",
+    "6. CLARIFY LATE NOI REQUESTS": [
       "SCI-FLT-FIXED-REQ-047",
       "SCI-FLT-FIXED-PRED-027",
-      "FLT_NOI_RELATION_DESIGN.md"
+      "LATE_NOI_REQUEST_AMENDMENT.md"
     ],
-    "5. REPAIR POLICY DOMAINS AND THE CONSUMER-ACTION BOUNDARY": [
-      "SCI-FLT-FIXED-REQ-028",
-      "SCI-FLT-FIXED-REQ-032",
-      "SCI-FLT-FIXED-REQ-033",
-      "SCI-FLT-FIXED-REQ-034",
-      "SCI-FLT-FIXED-REQ-039",
-      "SCI-FLT-FIXED-REQ-048",
-      "POLICY_ACTION_ARCHITECTURE.md"
-    ],
-    "6. COMPLETE THE LOW-PASS TRANSFORM CONVENTION": [
-      "SCI-FLT-FIXED-REQ-011",
-      "SCI-FLT-FIXED-REQ-049",
-      "SCI-FLT-FIXED-PRED-024",
-      "LOWPASS_TRANSFORM_CONVENTION.md"
-    ],
-    "7. TIGHTEN FULL-PROCEDURE RESPONSE DOMAIN COMPATIBILITY": [
-      "SCI-FLT-FIXED-REQ-017",
-      "SCI-FLT-FIXED-REQ-040",
-      "SCI-FLT-FIXED-REQ-050",
-      "SCI-FLT-FIXED-PRED-006",
-      "SCI-FLT-FIXED-PRED-028",
-      "RESPONSE_DOMAIN_AMENDMENT.md"
-    ],
-    "8. CONSOLIDATE SOURCE AND AUTHORITY BINDING": [
+    "7. COMPLETE SOURCE, PROFILE, AND AUTHORITY PREFLIGHT": [
       "SCI-FLT-FIXED-REQ-051",
+      "POLICY_RECORDS.json",
       "AUTHORITY_MANIFEST.json",
-      "SOURCE_PACKET_CLOSURE_REPORT.md"
+      "SOURCE_PACKET_CLOSURE_REPORT.md",
+      "PROFILE_REPORT.md"
     ],
-    "9. RATIONALE AND PREFLIGHT": [
-      "SCIENTIST_RATIONALE.md",
+    "8. MECHANICAL AND VISUAL FREEZE PREFLIGHT": [
       "CORE_VIEW_PARITY_REPORT.md",
+      "OWNER_DECISION_PARITY_REPORT.md",
+      "REBUILD_REPORT.md",
       "VISUAL_QA.md"
     ],
-    "10. DELIVERABLES": [
+    "9. DELIVERABLES": [
       "PROPOSED_FREEZE_DISPOSITION.md",
       "artifact_inventory"
     ]
   },
-  "preserved_r0_2_authority": "OWNER_DIRECTIVE_R0_2.txt remains bound; r0.3 supersedes only the exact clauses identified above",
+  "preserved_prior_authority": "OWNER_DIRECTIVE_R0_2.txt and OWNER_DIRECTIVE_R0_3.txt remain bound; r0.4 supersedes or amends only the exact clauses identified above",
   "preserved_boundaries": [
     "MAP parent identity and upstream availability",
     "JINC atomic five-role parent identity and upstream availability",

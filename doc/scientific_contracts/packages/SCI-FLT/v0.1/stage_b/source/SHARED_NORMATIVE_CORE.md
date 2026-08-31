@@ -1,19 +1,20 @@
 # SCI-FLT-FIXED v0.1 Shared Normative Scientific Core
 
-Document identity: `SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.3`
+Document identity: `SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.4`
 
 Status: implementation-blind Stage B scientific-contract draft; scientific-owner review required
 
 Scientific owner: Grant Wilson
 
-Stage B date: `2026-08-30`
+Stage B date: `2026-08-31`
 
 ## 1. Authority, scope, and normative language
 
 This document is the sole shared normative scientific core for the
-SCI-FLT-FIXED v0.1 Stage B draft. Revision r0.3 incorporates the exact r0.2
-formal-closure directive and the exact r0.3 final targeted scientific-closure
-and source-preflight directive bound by the Stage B build record.
+SCI-FLT-FIXED v0.1 Stage B draft. Revision r0.4 incorporates the exact r0.2
+formal-closure directive, the exact r0.3 final targeted scientific-closure and
+source-preflight directive, and the exact r0.4 final formal-closure and
+freeze-preflight directive bound by the Stage B build record.
 It preserves the scientific authority of the exact 17-object
 packet bound by `AUTHOR_PACKET_MANIFEST.md` identity
 `SCI-FLT-FIXED_AUTHOR_PACKET v0.1/r0.1`. The external SHA-256 of that manifest
@@ -45,6 +46,18 @@ A_Theta,J = J_full L_Theta,
 y = A_Theta,J m.
 ```
 
+The base scalar field is real:
+
+```text
+m, y, k_Theta(r), L_Theta, and A_Theta,J are real-valued.
+```
+
+Every admitted sampled coefficient is finite, real, unit-typed, present in one
+canonical exact representation, and content-bound before application. A
+missing, non-finite, complex, unrepresentable, or conflicting coefficient
+makes plan resolution unavailable. The prospective numerical-comparison
+policy cannot repair or admit such a coefficient.
+
 The only numerically admitted base family is `FLT-FIXED-CONV`. `L_Theta` is
 the complete matrix representation of one exact realized sampled convolution;
 it is not a separately selectable arbitrary dense linear-operator family.
@@ -52,11 +65,15 @@ it is not a separately selectable arbitrary dense linear-operator family.
 `FLT-FIXED-CONV`.
 
 `L_Theta` and the externally resolved plan are complete and frozen before
-application to the parent random field. `J_full` is parent-state-dependent but
-is resolved once from immutable parent membership and the listed predicates
-before payload arithmetic. The resulting `A_Theta,J` is the complete applied
-operator. The output `y` is transformed parent-map amplitude on the selected
-row domain. There is no additive term.
+application to the parent random field. Parent payload amplitudes do not
+select, learn, tune, or alter any plan or operator fact. `J_full` is resolved
+once from only declared immutable parent identity and row membership, exact
+parent-row admission, typed availability, typed finiteness, support, and exact
+required predicates. Inspecting an authorized payload solely to classify its
+declared finite or non-finite state is structural screening, not convolution
+arithmetic and not permission to tune the plan. The resulting `A_Theta,J` is
+the complete applied operator. The output `y` is transformed parent-map
+amplitude on the selected row domain. There is no additive term.
 
 Strict linearity is conditional on the exact frozen parent membership and
 `J_full`. It is not a global-linearity claim across parents whose domain,
@@ -138,12 +155,18 @@ The contract distinguishes:
 - realized atomic successor product.
 
 Every coefficient, kernel parameter, cutoff or width, WCS fact, normalization,
-support rule, transfer qualification, and lifecycle fact is resolved before
-application under one exact FLT-owned plan and fixed before use. "Externally
-resolved" describes timing and separation from payload arithmetic; it does not
-transfer FLT policy or transformation ownership to an unnamed producer. No
-parent data, response perturbation, covariance draw, noise realization, or NOI
-member may select, learn, tune, or re-resolve any plan or selector fact.
+support rule, transfer qualification, threshold, and lifecycle fact is
+resolved before application under one exact FLT-owned plan and fixed before
+use. "Externally resolved" describes timing and separation from payload
+arithmetic; it does not transfer FLT policy or transformation ownership to an
+unnamed producer. Parent payload amplitudes MUST NOT select, learn, tune, or
+alter a kernel coefficient, cutoff or width, normalization, transfer
+qualification, edge method, support rule, threshold, or other plan fact. No
+amplitude-thresholded, source-sensitive, spectral-selection, or otherwise
+data-derived method is admitted. `J_full` nevertheless MUST use the declared
+immutable parent facts named in Section 2. Response perturbations, covariance
+draws, noise realizations, NOI members, and other compatible companions reuse
+that resolved selector and MUST NOT re-resolve it from their own values.
 
 ## 5. Same-grid finite operator
 
@@ -182,10 +205,11 @@ finite operator under a preregistered numerical-comparison policy.
 
 ## 6. Fixed convolution and low-pass qualification
 
-For the exact finite offset representation, fixed convolution is
+For the ordinary exact finite offset representation, fixed convolution is
 
 ```text
-(L_Theta m)_p = sum over r in K_geom_science of k_Theta(r) m_(p-r).
+(L_Theta m)_p = sum over r in K_nonzero of k_Theta(r) m_(p-r)
+              = sum over r in K_req of k_Theta(r) m_(p-r).
 ```
 
 The sampled kernel, rather than a continuous ideal or family name, constructs
@@ -198,6 +222,14 @@ the scientific operator. The scientific owner adopts this exact disposition:
 - `K_nonzero`: offsets whose canonical coefficient is exactly nonzero, with
   exact zero decided only from that canonical representation; and
 - `K_req = K_nonzero` for the ordinary fixed-convolution method.
+
+`K_geom_science` is a representation-invariant geometric description, not the
+arithmetic dependency set. `K_store` is serialization only. An exact-zero
+coefficient contributes no arithmetic term, requires no parent payload,
+creates no influence or covariance contribution, cannot cause row exclusion,
+and is never classified through a floating threshold. The ordinary method
+MUST NOT evaluate or dereference a missing, unavailable, or non-finite parent
+payload at an exact-zero coefficient.
 
 Dense, sparse, cropped, or zero-padded storage of one scientific kernel MUST
 NOT change `K_geom_science`, `K_nonzero`, `K_req`, `S_out`, response,
@@ -248,6 +280,12 @@ inferred from this example. If any required fact is unavailable,
 fixed-convolution identity may remain available but low-pass qualification is
 unavailable.
 
+`H(nu)` is a possibly complex frequency-domain representation of the real map
+operator. It does not authorize a complex-valued `FLT-SIG`. A future complex
+signal method requires separately named authority for complex signal units,
+conjugation conventions, Hermitian covariance, and `A C A^dagger`
+propagation.
+
 The sampled-kernel or interior translation-invariant transfer is distinct from
 the complete finite row-restricted operator `A_Theta,J`. Base v0.1 makes no
 global Fourier-transfer claim for that complete finite operator unless an
@@ -266,9 +304,21 @@ S_out = {p: for every r in K_req,
 ```
 
 `K_req`, not `K_store` or `K_geom_science`, governs ordinary
-scientific admission. Rows outside `S_out` are scientifically unavailable, not zero. A stored array
-may preserve parent shape and WCS only if every unavailable row carries its
-typed cause and remains outside the scientific vector.
+scientific admission. Structural finite/non-finite screening uses only
+authorized required parent locations; an exact-zero geometric offset is not a
+required location and its payload MUST NOT be evaluated or dereferenced. Rows
+outside `S_out` are scientifically unavailable, not zero. A stored array may
+preserve parent shape and WCS only if every unavailable row carries its typed
+cause and remains outside the scientific vector.
+
+For a requested nonzero convolution that resolves and applies but has
+`S_out = empty set`, the exact application state is
+`applied_no_scientific_output_support`. The plan, operator, parent, causes, and
+application evidence are preserved. The ordinary base-signal publication
+action is `not_produced` with exact cause
+`no_full_footprint_output_rows`. This is not disabled, failed execution, the
+zero operator, or a successful empty signal product. Identity and zero retain
+their separately declared inherited-support rules.
 
 Base v0.1 admits no boundary extension, periodic wrapping, truncated
 convolution, support-conditioned renormalization, inpainting, reflection,
@@ -381,16 +431,25 @@ complete covariance           exact A C A^T on the complete domain in any
                               mathematically exact declared representation
 independent-diagonal model    full covariance relative to that exact model,
                               including induced off-diagonal terms
-marginal variances only       unavailable or explicitly partial for any row
-                              mixing more than one parent variable
+marginal variances only       exact conditional marginal for a row with
+                              exactly one nonzero parent coefficient;
+                              otherwise unavailable or explicitly partial
 structured or partial model   only operations proved exact for that exact
                               representation and domain
 unavailable                   unavailable, except separately stated local
                               zero-operator parent-payload facts
 ```
 
-Marginal variances alone do not imply independence and generally do not
-determine even output marginals. For a general parent covariance,
+Marginal variances alone do not imply independence. For an output row with
+exactly one nonzero parent coefficient `A_ij`, marginal-only parent authority
+is sufficient for that row's conditional marginal:
+
+```text
+Var(y_i) = A_ij^2 Var(m_j).
+```
+
+When a row mixes two or more parent variables, marginal-only authority does
+not determine its exact output marginal. For a general parent covariance,
 
 ```text
 Var(y_i) = sum_j A_ij^2 Var(m_j)
@@ -411,7 +470,9 @@ Cov(y_i,y_l) = sum_j A_ij A_lj V_j.
 
 The output generally has off-diagonal covariance. A marginal variance plane is
 not full covariance and does not authorize independent-pixel multi-pixel
-inference.
+inference. One exact row marginal authorizes neither cross-row covariance nor
+independence. The zero operator retains its separately typed zero
+parent-payload covariance contribution.
 
 SCI-NOI, not SCI-FLT-FIXED, owns empirical uncertainty, empirical covariance,
 conditional inverse scale, standardized signal, and significance inference.
@@ -464,7 +525,12 @@ the exact FLT product, operator, and row-domain identities; exact
 FLT-to-NOI boundary and profile compatibility; fixed-state transformation
 semantics; request state known at FLT publication; and typed compatibility or
 unavailability. It contains no identity of a future NOI product. A later NOI
-product references the immutable FLT parent. Any optional reverse
+product references the immutable FLT parent. A recorded
+`not_requested_at_FLT_publication` state is historical provenance and does not
+prohibit a later independently requested SCI-NOI child. That child owns its
+own request, applicability, eligibility, realization, generation, and failure,
+and still requires exact compatible FLT boundary and profile state. Any
+optional reverse
 `SCI-FLT-FIXED_TO_SCI-NOI-RELATION` is a separately versioned artifact outside
 FLT atomic completion and MUST NOT mutate the FLT bundle.
 
@@ -478,6 +544,15 @@ requested
   -> complete_publication_candidate
   -> publication_decision
   -> realized | failed | not_produced.
+```
+
+For a requested nonzero convolution with empty `S_out`, the branch is
+
+```text
+applied
+  -> applied_no_scientific_output_support
+  -> publication_decision
+  -> not_produced (cause: no_full_footprint_output_rows).
 ```
 
 `SCI-FLT-FIXED:output_publication@1` evaluates the complete publication
@@ -527,7 +602,10 @@ Structural identity or source conflict yields `applicability_unknown` and
 eligibility proposition and yields `not_produced`. An eligible transformation
 failure yields `eligible` and `realization_failed`. An eligible complete
 publication candidate becomes realized only after successful publication
-action.
+action. An applied nonzero transformation with empty `S_out` yields
+`applied_no_scientific_output_support`; publication policy prescribes
+`not_produced` with cause `no_full_footprint_output_rows` and publishes no
+empty base-signal product.
 
 Companion qualification is request-specific:
 
@@ -543,9 +621,9 @@ product. It does block the corresponding qualified request.
 
 SCI-VAL may bind and evaluate an immutable owner-approved successor of these
 profiles. VAL does not author producer facts, FLT policy, arithmetic, or
-scientific claims. The r0.3 profile bytes and source bindings are drafts, are
-not owner-approved Registry entries, and create no claim that Registry
-evaluation occurred.
+scientific claims. The profile records first drafted at r0.3 and their current
+exact source bindings remain drafts, are not owner-approved Registry entries,
+and create no claim that Registry evaluation occurred.
 
 ## 12. Consumer and ownership boundaries
 
@@ -584,9 +662,9 @@ provenance. Bounds must not be changed after observing a failure.
 
 The policy preserves exact operator coefficients and scientific identity. It
 authors no filter science and supplies no implementation-conformity,
-validation, numerical-adequacy, or performance claim. The r0.3 draft policy is
-bound as a separate Stage B source artifact and is not a preregistered future
-evidence decision.
+validation, numerical-adequacy, or performance claim. The current draft policy
+is bound as a separate Stage B source artifact and is not a preregistered
+future evidence decision.
 
 ## 14. Exclusions and nonclaims
 
@@ -652,9 +730,10 @@ without a separately approved exact bounded relation.
 
 Every operator coefficient, parameter, grid fact, normalization, support rule,
 and transfer qualification MUST be resolved under one exact FLT-owned plan and
-frozen before application. The selector MUST be resolved once before payload
-arithmetic and MUST NOT be re-resolved for response, covariance, noise, or NOI
-members.
+frozen before application. Parent payload amplitudes MUST NOT select, learn,
+tune, or alter any plan fact. The selector MUST be resolved once from only the
+declared immutable parent facts in Section 2 before convolution arithmetic and
+MUST NOT be re-resolved for response, covariance, noise, or NOI members.
 
 ### SCI-FLT-FIXED-REQ-008 - Same-grid boundary
 
@@ -670,15 +749,19 @@ in Sections 5 and 6, including complete canonical sampled coefficients,
 `K_geom_science`, `K_store`, `K_nonzero`, `K_req`, coordinate-domain method,
 and content digest. `K_store` MUST be scientifically nonauthoritative and all
 scientific support sets MUST be representation-invariant. A friendly kernel
-name or continuous ideal is insufficient.
+name or continuous ideal is insufficient. `K_geom_science` MUST NOT be used as
+the ordinary arithmetic dependency set; each admitted coefficient MUST satisfy
+the real, finite, unit-typed, canonical, content-bound conditions in Section 2.
 
 ### SCI-FLT-FIXED-REQ-010 - Fixed convolution construction
 
 A `FLT-FIXED-CONV` method MUST construct the complete finite operator from one
 exact finite sampled kernel and its declared offset sets, orientation, center,
 phase, normalization, coordinate-domain method, and coefficient
-representation. One product MUST apply this convolution exactly once and MUST
-make no intermediate transformation or reordered-composition claim.
+representation. Its ordinary sum MUST range exactly over
+`K_nonzero = K_req`, never `K_geom_science` or `K_store`. One product MUST
+apply this convolution exactly once and MUST make no intermediate
+transformation or reordered-composition claim.
 
 ### SCI-FLT-FIXED-REQ-011 - Low-pass qualification
 
@@ -695,7 +778,9 @@ rows for which every scientifically required parent location is in the parent
 domain, admitted for the exact FLT use, available, finite, and passing every
 required predicate. Exact-zero coefficient status MUST be read from the
 canonical representation, never a floating threshold. Storage layout MUST
-NOT change row admission.
+NOT change row admission. An exact-zero offset MUST require no parent payload,
+MUST create no influence or covariance contribution, MUST NOT remove a row,
+and MUST NOT cause its payload to be evaluated or dereferenced.
 
 ### SCI-FLT-FIXED-REQ-013 - Unavailable row semantics
 
@@ -874,11 +959,14 @@ all Stage B nonclaims in Section 14.
 
 ### SCI-FLT-FIXED-REQ-037 - Frozen-selector conditioning
 
-`J_full` MUST be resolved exactly once before payload arithmetic from the
-immutable parent membership and required predicates. Response perturbations,
-covariance draws, noise realizations, and NOI members MUST reuse the resulting
-`A_Theta,J`; selection and support uncertainty MUST remain excluded unless
-separately supplied as typed uncertainty.
+`J_full` MUST be resolved exactly once before convolution arithmetic from only
+declared immutable parent identity and row membership, exact parent-row
+admission, typed availability, typed finiteness, support, and exact required
+predicates. Structural screening of authorized payload finiteness MUST NOT
+tune the plan. Response perturbations, covariance draws, noise realizations,
+and NOI members MUST reuse the resulting `A_Theta,J`; selection and support
+uncertainty MUST remain excluded unless separately supplied as typed
+uncertainty.
 
 ### SCI-FLT-FIXED-REQ-038 - Required-dependency support
 
@@ -886,8 +974,11 @@ Every kernel MUST distinguish representation-invariant `K_geom_science`,
 nonauthoritative `K_store`, `K_nonzero`, and `K_req` and bind their exact
 relations. The ordinary method MUST use `K_req = K_nonzero`; identity uses
 `K_req = {0}`; and zero inherits a declared admitted parent-support row domain
-rather than a vacuous empty-footprint domain. A zero-valued required offset
-requires a separately named scientific method independent of storage.
+rather than a vacuous empty-footprint domain. An exact-zero ordinary
+coefficient contributes no arithmetic dependency, influence, covariance, or
+row exclusion and its parent payload MUST NOT be dereferenced. A zero-valued
+required offset requires a separately named scientific method independent of
+storage.
 
 ### SCI-FLT-FIXED-REQ-039 - Typed policy and companion qualification
 
@@ -943,8 +1034,10 @@ be transformed as `FLT-SIG` by the ordinary method.
 Every covariance result MUST follow the Section 9 authority/representation
 table. Complete, independent-diagonal, marginal-only, structured or partial,
 and unavailable parent authorities MUST remain distinct. Unknown cross terms
-MUST keep any dependent marginal or covariance result unavailable or explicitly
-partial.
+MUST keep any marginal for a row mixing multiple parent variables, and any
+unsupported cross-row covariance, unavailable or explicitly partial. A row
+with exactly one nonzero parent coefficient MAY publish its exact conditional
+marginal without implying independence.
 
 ### SCI-FLT-FIXED-REQ-047 - Immutable NOI compatibility
 
@@ -952,7 +1045,9 @@ partial.
 identity, boundary/profile compatibility, fixed-state semantics, publication-
 time request state, and typed compatibility or unavailability. It MUST NOT
 contain a future NOI identity. A later NOI child or reverse relation MUST NOT
-mutate FLT.
+mutate FLT. `not_requested_at_FLT_publication` MUST be historical provenance
+only and MUST NOT prohibit a later independently requested compatible SCI-NOI
+child with its own lifecycle.
 
 ### SCI-FLT-FIXED-REQ-048 - Policy actor separation
 
@@ -980,10 +1075,29 @@ response rows unavailable.
 ### SCI-FLT-FIXED-REQ-051 - Consolidated authority preflight
 
 `AUTHORITY_MANIFEST.json`, the proposed-freeze authority manifest, MUST bind the complete Stage A packet,
-both owner directives, every Stage B scientific and policy source, exact build
+all owner directives, every Stage B scientific and policy source, exact build
 and verification records, reports, and rendered PDFs by path, bytes, and
-SHA-256. Any unreproducible dependency MUST route its dependent claim to typed
-unavailability rather than freeze disposition.
+SHA-256, plus role, compatibility or supersession state, and generated-view
+relation. Any unreproducible dependency MUST route its dependent claim to
+typed unavailability rather than freeze disposition.
+
+### SCI-FLT-FIXED-REQ-052 - Real scalar and coefficient admissibility
+
+The base `m`, `y`, `k_Theta(r)`, `L_Theta`, and `A_Theta,J` MUST be real-valued.
+Every sampled coefficient MUST be finite, real, unit-typed, canonically exactly
+represented, and content-bound before application. A missing, non-finite,
+complex, unrepresentable, or conflicting coefficient MUST make plan resolution
+unavailable and MUST NOT be repaired by numerical-comparison policy. Complex
+`H(nu)` MUST remain only a representation of the real map operator.
+
+### SCI-FLT-FIXED-REQ-053 - Empty scientific output support
+
+For a requested nonzero convolution that resolves and applies with
+`S_out = empty set`, FLT MUST record
+`applied_no_scientific_output_support`, preserve its bound evidence, and
+prescribe `not_produced` with cause `no_full_footprint_output_rows`. It MUST NOT
+publish a successful empty signal product or relabel the state as disabled,
+failed execution, identity, or zero.
 
 ## 16. Falsifiable predictions
 
@@ -1026,8 +1140,9 @@ normalization implies it.
 
 An admitted single-pixel unit impulse produces the exact sampled kernel shifted
 according to the declared center, orientation, handedness, phase, and indexing,
-then restricted by `S_out`. Any implicit recentering, interpolation, reversal,
-or periodic copy falsifies the operator identity.
+with arithmetic terms only at exact `K_nonzero = K_req` offsets, then
+restricted by `S_out`. Any implicit recentering, interpolation, reversal,
+periodic copy, or geometric exact-zero term falsifies the operator identity.
 
 ### SCI-FLT-FIXED-PRED-006 - Parent-response composition
 
@@ -1056,7 +1171,9 @@ finite, and predicate-passing, the row is in `S_out`. Removing, invalidating,
 or making non-finite any one required parent location removes every dependent
 output row from `S_out` with an exact cause. Dense, sparse, cropped, and
 zero-padded encodings of the identical canonical kernel produce the identical
-`K_req` and `S_out`.
+`K_req` and `S_out`. An unavailable or non-finite payload at an exact-zero
+geometric offset leaves the row and value unchanged; making that coefficient
+exactly nonzero activates the dependency and removes the row.
 
 ### SCI-FLT-FIXED-PRED-010 - Deferred edge methods
 
@@ -1146,15 +1263,19 @@ low-pass label with an incomplete transfer specification fails the contract.
 For the ordinary method, an exact-zero canonical coefficient is absent from
 `K_nonzero` and `K_req`. Adding or removing serialized zero padding changes
 only `K_store`; it does not change `K_geom_science`, `K_nonzero`, `K_req`,
-`S_out`, response, covariance, or product identity. A floating threshold or
-storage layout that changes this result falsifies the method identity.
+`S_out`, arithmetic, influence, covariance, or product identity. Its parent
+payload is not evaluated or dereferenced. Making that coefficient any exact
+nonzero value activates arithmetic and row dependency. A floating threshold
+or storage layout that changes this result falsifies the method identity.
 
 ### SCI-FLT-FIXED-PRED-023 - Zero-operator row support
 
 The exact zero operator produces rows on its explicitly declared inherited
 admitted parent-support domain and nowhere else. An empty required footprint
 that admits storage rows outside that domain, or a zero array with no parent
-support identity, fails the zero-operator contract.
+support identity, fails the zero-operator contract. Its empty arithmetic sum
+creates no parent-payload covariance contribution and is not the empty
+`S_out` state of a nonzero convolution.
 
 ### SCI-FLT-FIXED-PRED-024 - Independent low-pass transfer check
 
@@ -1179,14 +1300,20 @@ For two compatible parent covariance matrices with identical diagonals and
 different cross terms, any filtered output row that mixes the affected parent
 variables has different variance when the corresponding weighted cross term
 is nonzero. A marginal-only parent selects neither result and leaves the exact
-output marginal unavailable or explicitly partial.
+output marginal unavailable or explicitly partial. In contrast, a row with
+exactly one nonzero coefficient has conditional marginal
+`A_ij^2 Var(m_j)` from marginal-only authority; this authorizes no cross-row
+covariance or independence. The exact-zero row keeps its separately typed zero
+parent-payload contribution.
 
 ### SCI-FLT-FIXED-PRED-027 - NOI child nonmutation
 
 Realizing, replacing, superseding, or removing a later SCI-NOI child or an
 optional reverse relation leaves the immutable FLT bundle bytes, completeness,
 realization, and `FLT-NOI-COMPATIBILITY` unchanged. Any mutation fails the
-atomic product contract.
+atomic product contract. A `not_requested_at_FLT_publication` record does not
+block a later independently requested compatible child; that child owns its
+own request, applicability, eligibility, realization, generation, and failure.
 
 ### SCI-FLT-FIXED-PRED-028 - Full-procedure domain incompatibility
 
@@ -1195,3 +1322,21 @@ differ in row membership, availability, WCS, quantity, or required support,
 the affected transformed full-procedure response is unavailable, `J_full`
 remains frozen, and the parent state-change record remains visible. Producing a
 numerical difference by shape alone fails.
+
+### SCI-FLT-FIXED-PRED-029 - Empty scientific output support
+
+For a requested nonzero convolution wider than its parent, or otherwise having
+no complete admitted footprint, application yields `S_out = empty set` and
+`applied_no_scientific_output_support`. Publication yields `not_produced` with
+cause `no_full_footprint_output_rows`, while preserving plan, operator, parent,
+causes, and application evidence. A disabled, execution-failed, zero-operator,
+or realized empty-signal result fails.
+
+### SCI-FLT-FIXED-PRED-030 - Invalid coefficient rejection
+
+A kernel containing any missing, non-finite, complex, unrepresentable, or
+conflicting coefficient makes plan resolution unavailable before application.
+No numerical-comparison tolerance repairs it. A kernel with all coefficients
+finite, real, unit-typed, canonically represented, and content-bound passes
+this coefficient-admissibility fixture without thereby making any low-pass,
+response, covariance, or implementation claim.
