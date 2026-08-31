@@ -4,7 +4,7 @@
   "recorded_date": "2026-08-31",
   "last_updated_date": "2026-08-31",
   "status": "governance_reconciliation_active_application_implementation_held",
-  "identity_policy": "Application and contract identities are exact Git commits; artifact identities are filename plus SHA-256. Branch names and filesystem paths are locators, never identities.",
+  "identity_policy": "Application and contract identities are exact Git commits; build-environment identity is the declared profile plus exact environment, lock, and DAG evidence; artifact identities are filename plus SHA-256. Branch names and filesystem paths are locators, never identities.",
   "repository_authority": {
     "application_baselines": "doc/APPLICATION_BASELINES.md",
     "successor_program": "doc/WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md",
@@ -16,6 +16,8 @@
     "rtc_occurrence_speed_decision": "doc/adr/0022-occurrence-level-rtc-upper-speed-admission.md",
     "ast_route_family_decision": "doc/adr/0023-ast-route-family-motion-membership.md",
     "implementation_baseline_historical": "doc/WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md",
+    "build_environment_decision": "doc/adr/0014-spack-build-foundation.md",
+    "predecessor_v2_validation_provenance": "validation/citlali_v2_spack_validation_authority.json",
     "network_timing_owner_correction": "doc/WP7_NETWORK_TIMING_OWNER_AUTHORITY_CORRECTION_2026-08-29.md",
     "network_timing_crosswalk": "doc/WP7_NETWORK_TIMING_AUTHORITY_CROSSWALK_2026-08-29.md",
     "rtc_scan_array_planning_owner_authority": "doc/WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md",
@@ -211,12 +213,14 @@
     "native_integration_baseline": {
       "application_integration": "complete_at_f0f423827ab321640e0cbcb003f7bf015368f694",
       "scientific_conformance": "not_wp7_1_conformant",
+      "build_environment": "owner_accepted_v2_generation_used_spack_unity_gcc13_dag_nuefnc6fkaul2m5x7l2x6qbblvsxezoe_lock_sha256_84d22da445fc89dde76e3cb57efb435aaa075633c8a21d8e1b46c3cf3b830625",
       "validation_evidence": "substantial_but_august_v2_four_mode_campaign_is_mixed_sha",
       "production_authorization": "existing_use_only_no_phase5_release_promotion"
     },
     "wp7_1_successor_program": {
       "application_integration": "governance_reconciliation_only",
       "scientific_conformance": "contract_closed_implementation_conformance_not_claimed",
+      "build_environment": "default_to_accepted_spack_realization_for_reproduction_or_extension_build_changes_separately_governed",
       "validation_evidence": "divergent_evidence_preserved_not_canonical_acceptance",
       "production_authorization": "none"
     }

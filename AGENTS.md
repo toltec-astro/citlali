@@ -4,7 +4,8 @@ Read these documents before making architectural changes:
 
 1. `doc/REFACTOR_STATUS.md` - current phase, gates, and next actions.
 2. `doc/APPLICATION_BASELINES.md` - named application and contract landmarks
-   with separate integration, conformance, validation, and production axes.
+   with separate integration, conformance, build-environment, validation, and
+   production axes.
 3. `doc/WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md` and
    `validation/wp7_timestream_successor_authority.json` - active WP-7.1
    canonical-reconciliation gates and exact scientific/implementation
@@ -40,12 +41,18 @@ The refactor follows the roadmap in `doc/REFACTOR_STATUS.md`. Project-owner
 additions Phase 4.1 and Phase 4.2 are complete. The accepted four-mode TolTECA
 numbered-config kits remain opt-in through TolPROJ's `--refactor` path, and the
 whole-code review's untriggered optimization candidates remain governed by the
-retained-debt register. The successor implementation now uses Spack and the
-project retains the bounded **Adapt** path. Phase 5 build integration proceeds
-under `doc/TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md`: preserve the full
-refactored CLI and validation surface, keep the existing build available until
-the successor passes its gates, and do not combine build integration with
-numerical algorithm changes. Open-ended header subdivision remains paused.
+retained-debt register. The successor implementation uses Spack and the
+project retains the bounded **Adapt** path. `citlali-validation/v2`, the most
+recent owner-accepted end-to-end operational/application validation, was built
+and run under the accepted Unity `unity-gcc13` Spack realization.
+Reproduction or extension of that application generation defaults to Spack.
+The established non-Spack build remains compatibility and supplemental
+smoke-test infrastructure, not a substitute for the Spack-backed V2 evidence.
+Conan is historical or explicitly owner-authorized bounded compatibility
+infrastructure only; do not add or repair Conan machinery without such a work
+order. Keep build-environment work separate from scientific/application
+changes and do not combine it with numerical algorithm changes. Open-ended
+header subdivision remains paused.
 
 Do not broaden mature RTC, PTC, JINC, or Wiener-filter algorithms while fixing
 their contracts. Preserve numerical behavior unless a change is named,
@@ -103,6 +110,10 @@ silently edit the application tree.
 - Run focused tests for the behavior touched. CTest, baseline-tool tests, and
   the full config preflight are active gates; skipped required data is not a
   successful validation.
+- Classify a test from the local fallback/ad hoc dependency realization as
+  supplemental compilation or regression evidence. It does not reproduce the
+  accepted Spack-backed V2 campaign unless an authoritative record explicitly
+  binds it to that environment and evidence.
 - The user performs Unity builds and reductions. Do not attempt to use Unity.
 - Do not push. The user controls pushes to GitHub.
 - Leave unrelated dirty files unchanged.

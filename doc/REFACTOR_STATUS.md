@@ -1,5 +1,60 @@
 # Citlali Refactor Status
 
+## 2026-08-31 Spack-Backed V2 Build-Environment Authority Correction
+
+The project owner identifies `citlali-validation/v2` as the most recent
+accepted end-to-end operational/application validation and confirms that it
+was built and run under Spack. This acceptance is not build-environment-neutral.
+Exact machine-readable provenance is in
+`validation/citlali_v2_spack_validation_authority.json`; build policy remains
+owned by [ADR 0014](adr/0014-spack-build-foundation.md), and portable release
+composition remains separately owned by
+[ADR 0015](adr/0015-release-bundle-contract.md).
+
+The campaign is intentionally mixed-SHA. Beammap job `63725492`, OOF job
+`63738161`, and point job `63752439` used exact application
+`c31a60a0b74a7149d03d542966d6e35b77b8091c`, executable SHA-256
+`9d3ce4f31260bbdf3f630dbaa09e0c18eb92b3ebcc8be15eb146024acd6f7f65`.
+Science job `63763140` used exact child application
+`187df04b21e942701cf41e6d9c50883922fd65aa`, executable SHA-256
+`8ba17d8ca03668f7a56f76fc15243c984469028955cda698d2a0a168fc4424fb`.
+Both executables passed their owner-run Unity Spack build gates with all 832
+runnable CTests passing and the one established disabled test not run.
+
+All four reductions used deployment profile `unity-gcc13`, Spack DAG
+`nuefnc6fkaul2m5x7l2x6qbblvsxezoe`, and lock SHA-256
+`84d22da445fc89dde76e3cb57efb435aaa075633c8a21d8e1b46c3cf3b830625`.
+The downloaded campaign manifest has SHA-256
+`c40307c124b77bad7a7377aad73b4b683e16267668296a699aff1ed1fbeb3c45`;
+its eight audit reports are bound by checksum-manifest SHA-256
+`dcc71fbc8dcf66de1a936f05388d6da5be65d3dabd4bc41f996d0f227638b039`.
+Every mode completed with exit `0:0` and valid required provenance. This is
+accepted end-to-end operational/application evidence, not a same-SHA Phase 5
+successor scientific baseline, release promotion, or production expansion;
+the accepted-run and intended-science-change ledgers remain unchanged.
+
+The Spack build lane
+`d9843e85ed87ba9ac8c42d8cc21f997dacbe1046` entered canonical application
+ancestry through merge `4cf8db223cdfc7163bbac91972528d8c0c2dbe78`.
+Both V2 source commits, integrated Native Integration Baseline
+`f0f423827ab321640e0cbcb003f7bf015368f694`, canonical base
+`cb3d568c701217ee0248c77f6dccd0bab7deef31`, and governance parent
+`e874044c4c562fe672890495a3f4d5064e789d8f` form one locally verified ancestry.
+Build adaptation remains a separately governed workstream; that separation
+does not make Spack speculative.
+
+One reproducibility gap remains. The repository retains the exact Unity
+`spack.yaml` definition and its SHA-256
+`d0ea4f244ea4b4b04cef78e83ef3c6c0e7e58fcc21cab0fbd94529d0b1cfcccd`,
+and V2 retains the realized lock digest and DAG, but the `spack.lock` bytes
+matching `84d22d...` are absent from Git and the downloaded campaign. The
+different development-candidate lock/DAG cannot substitute. Reproducing or
+extending this generation therefore defaults to Spack while exact-lock
+reconstruction remains retained debt. Non-Spack builds are supplemental only.
+Conan is legacy or explicitly owner-authorized bounded compatibility
+infrastructure; material new Conan work requires a separate compatibility
+work order.
+
 ## 2026-08-31 Application-Baseline And WP-7.1 Governance Reconciliation
 
 The project owner approved a canonical reorganization around explicit
@@ -10,14 +65,17 @@ Native Integration Baseline, WP-7.1 Timestream Contract Baseline, and active
 WP-7.1 Timestream Successor Program without inventing retroactive release
 numbers.
 
-The four status axes are independent: application integration, scientific
-conformance, validation evidence, and production authorization. In particular,
+The five status axes are independent: application integration, scientific
+conformance, build-environment identity, validation evidence, and production
+authorization. In particular,
 exact integrated application `f0f423827ab321640e0cbcb003f7bf015368f694`
 is the Native Integration Baseline. It contains substantial bounded scientific
-and operational work but is not WP-7.1-conformant. The August V2 campaign
-remains mixed-SHA evidence—point, OOF, and Beammap at `c31a60a0`, science at
-`187df04b`—rather than a relabeled same-SHA successor baseline. Production
-remains `existing_use_only` and Phase 5 remains `preparing`.
+and operational work but is not WP-7.1-conformant. The owner accepts the August
+Spack-backed V2 campaign as the most recent end-to-end operational/application
+validation—point, OOF, and Beammap at `c31a60a0`, science at `187df04b`—while
+preserving that it is mixed-SHA rather than a relabeled same-SHA successor
+scientific baseline. Production remains `existing_use_only` and Phase 5
+remains `preparing`.
 
 The WP-7.1 Timestream Contract Baseline is a separate scientific authority:
 exact successor source
@@ -73,9 +131,10 @@ and records that native macOS and Unity GCC 13 build, test, installed-consumer,
 and deployment-identity gates pass. Phase 5 remains `preparing`: immutable
 release source/recipe archives, accepted profile locks, final release
 composition, and the same-SHA four-mode candidate matrix remain open. The
-completed V2 campaign is preserved as mixed-SHA operational evidence—point,
-OOF, and Beammap at `c31a60a0`, science at `187df04b`—and is not relabeled as
-an accepted successor baseline.
+completed Spack-backed V2 campaign is preserved as the owner-accepted most
+recent end-to-end operational/application validation—point, OOF, and Beammap
+at `c31a60a0`, science at `187df04b`. It is not relabeled as a same-SHA
+successor scientific baseline or Phase 5 release promotion.
 
 The post-integration ref/worktree census is
 [`REPOSITORY_REF_WORKTREE_INVENTORY_2026-08-30.md`](../handoff/REPOSITORY_REF_WORKTREE_INVENTORY_2026-08-30.md).

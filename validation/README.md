@@ -15,6 +15,15 @@ $HOME/tolteca/bin/python tools/baseline/validate_validation_ledger.py
 $HOME/tolteca/bin/python tools/baseline/validation_profiles.py --list
 ```
 
+`citlali_v2_spack_validation_authority.json` is a distinct campaign-level
+provenance binding. It records the owner's acceptance of
+`citlali-validation/v2` as the most recent completed end-to-end
+operational/application validation and binds its mixed application SHAs to the
+exact Unity Spack profile, DAG, lock digest, executable hashes, jobs, and audit
+checksums. It does not add a same-SHA accepted snapshot to
+`accepted_runs.json`, promote the preparing Phase 5 epoch, or define build
+policy; ADR 0014 remains the build authority.
+
 ## Validation Epochs
 
 An accepted snapshot is evidence about a named version of the pipeline, not a

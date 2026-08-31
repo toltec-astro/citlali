@@ -11,6 +11,13 @@ LLVM 20 and Unity GCC 13. Development environments concretize exact graphs, but
 they bind first-party packages to absolute local checkout paths. Their ignored
 `spack.lock` files reproduce an observed workspace, not a portable release.
 
+The later owner-accepted V2 campaign demonstrates the `unity-gcc13` Spack
+realization operationally. It retains exact DAG and lock digests, but the lock
+bytes matching the V2 digest are not checked into Git or present in the
+downloaded campaign. Operational validation and portable release composition
+therefore remain distinct: the former is accepted, while the latter is still
+bounded by this ADR.
+
 Citlali also needs a stable contract that deployment tooling can consume
 without making that external repository authoritative for application source,
 scientific acceptance, or provenance requirements.
@@ -48,6 +55,9 @@ modify that tooling in this lane.
 
 - Current development locks remain valid build evidence but cannot be promoted
   directly to release locks.
+- The V2 lock digest and DAG are accepted validation provenance, but absent
+  lock bytes remain a reproducibility gap and a different observed development
+  lock cannot substitute for them.
 - A development-candidate manifest may be valid while failing the stricter
   release-ready gate.
 - Each supported profile receives its own reviewed lock and compiler policy.
@@ -84,3 +94,4 @@ acceptance evidence.
 - [`../../validation/release_recipe_source_audit_2026-08-14.json`](../../validation/release_recipe_source_audit_2026-08-14.json)
 - [`../TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md`](../TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md)
 - [`../BUILD_TIMING_BASELINE_2026-08-14.md`](../BUILD_TIMING_BASELINE_2026-08-14.md)
+- [`../../validation/citlali_v2_spack_validation_authority.json`](../../validation/citlali_v2_spack_validation_authority.json)

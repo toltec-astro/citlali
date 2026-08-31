@@ -1,0 +1,154 @@
+{
+  "schema_version": "citlali-v2-spack-validation-authority-v1",
+  "authority_id": "citlali-validation-v2-spack-owner-disposition-2026-08-31",
+  "recorded_date": "2026-08-31",
+  "authority_role": "validation_provenance_binding_not_build_policy",
+  "build_authority": "doc/adr/0014-spack-build-foundation.md",
+  "release_bundle_authority": "doc/adr/0015-release-bundle-contract.md",
+  "owner_disposition": {
+    "campaign": "citlali-validation/v2",
+    "status": "accepted_end_to_end_operational_application_validation",
+    "most_recent_accepted_end_to_end_validation": true,
+    "build_environment": "spack",
+    "mixed_application_sha": true,
+    "same_sha_successor_matrix": false,
+    "accepted_successor_scientific_baseline": false,
+    "phase5_release_promotion": false,
+    "production_authorization_changed": false,
+    "accepted_runs_ledger_changed": false,
+    "intended_science_changes_ledger_changed": false,
+    "interpretation": "Owner acceptance applies to the completed end-to-end operational/application campaign. It does not turn the mixed-SHA campaign into a same-SHA scientific baseline, Phase 5 release, or production expansion."
+  },
+  "retained_evidence": {
+    "unity_root": "/work/toltec/citlali-validation/v2",
+    "downloaded_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2",
+    "campaign_manifest": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/evidence/campaign-manifest.json",
+      "sha256": "c40307c124b77bad7a7377aad73b4b683e16267668296a699aff1ed1fbeb3c45"
+    },
+    "audit_checksum_manifest": {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/evidence/SHA256SUMS",
+      "sha256": "dcc71fbc8dcf66de1a936f05388d6da5be65d3dabd4bc41f996d0f227638b039"
+    }
+  },
+  "spack_environment": {
+    "profile": "unity-gcc13",
+    "repository_definition": "spack/environments/citlali-unity-gcc13/spack.yaml",
+    "repository_definition_sha256": "d0ea4f244ea4b4b04cef78e83ef3c6c0e7e58fcc21cab0fbd94529d0b1cfcccd",
+    "realized_unity_path": "/work/toltec/citlali_dev/citlali_refactor/spack/environments/citlali-unity-gcc13",
+    "realized_lock_sha256": "84d22da445fc89dde76e3cb57efb435aaa075633c8a21d8e1b46c3cf3b830625",
+    "realized_root_dag_hash": "nuefnc6fkaul2m5x7l2x6qbblvsxezoe",
+    "lock_contents_retained_in_repository": false,
+    "lock_contents_retained_in_downloaded_campaign": false,
+    "development_candidate_is_substitute_for_v2_lock": false,
+    "development_candidate_observed_lock_sha256": "d2204524bc170cf9e9458a9f83f2730f4e44c78fe628eb01f7d9f8dee0c52f72",
+    "development_candidate_observed_root_dag_hash": "elcot6ah6jtv3onjjmqerxaznnshumqh"
+  },
+  "application_identities": {
+    "v2_mode_smoke": {
+      "commit": "c31a60a0b74a7149d03d542966d6e35b77b8091c",
+      "version": "v4.0.0-3753-gc31a60a0",
+      "executable_sha256": "9d3ce4f31260bbdf3f630dbaa09e0c18eb92b3ebcc8be15eb146024acd6f7f65",
+      "unity_spack_acceptance_job": 63724630,
+      "runnable_ctests_passed": 832,
+      "established_disabled_test_count": 1,
+      "modes": ["beammap", "oof", "point"]
+    },
+    "native_memory_repair": {
+      "commit": "187df04b21e942701cf41e6d9c50883922fd65aa",
+      "version": "v4.0.0-3754-g187df04b",
+      "executable_sha256": "8ba17d8ca03668f7a56f76fc15243c984469028955cda698d2a0a168fc4424fb",
+      "unity_spack_acceptance_job": 63760739,
+      "runnable_ctests_passed": 832,
+      "established_disabled_test_count": 1,
+      "modes": ["science"]
+    }
+  },
+  "commands": {
+    "unity_build_acceptance_workflow": "tools/build/run_unity_spack_acceptance.sh",
+    "unity_build_submission_contract": "EXPECTED_CITLALI_SHA=\"$(git rev-parse HEAD)\" sbatch --export=ALL,WORKSPACE=\"$WORKSPACE\",EXPECTED_CITLALI_SHA=\"$EXPECTED_CITLALI_SHA\" tools/build/run_unity_spack_acceptance.sh",
+    "reduction_command": "tolteca reduce",
+    "beammap_reduction_command": "srun tolteca reduce",
+    "retained_reduction_scripts": [
+      "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/beammaps/3c273/02_redu.sh",
+      "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/oof/refactor/1146+399/02_redu.sh",
+      "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/02_redu.sh",
+      "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/science/refactor/NGC4449/02_redu.sh"
+    ]
+  },
+  "mode_results": {
+    "beammap": {
+      "job_id": 63725492,
+      "slurm_state": "COMPLETED",
+      "exit_code": "0:0",
+      "application_identity": "v2_mode_smoke",
+      "observations": [148670],
+      "audit_json_sha256": "26ae214b57dcf352e6b0e57bd8ed6ab15350cba491fb12d9fdcd6feab8886de7",
+      "required_provenance_valid": true,
+      "file_count": 34,
+      "stable_comparable_product_count": 12
+    },
+    "oof": {
+      "job_id": 63738161,
+      "slurm_state": "COMPLETED",
+      "exit_code": "0:0",
+      "application_identity": "v2_mode_smoke",
+      "observations": [152385, 152386, 152387],
+      "audit_json_sha256": "f5eefa71b8ca2ce9da61a4831dfb6cb90930dc5cdad43968b006d5a0b5f4c06f",
+      "required_provenance_valid": true,
+      "file_count": 79,
+      "stable_comparable_product_count": 30
+    },
+    "point": {
+      "job_id": 63752439,
+      "slurm_state": "COMPLETED",
+      "exit_code": "0:0",
+      "application_identity": "v2_mode_smoke",
+      "observations": [152389],
+      "audit_json_sha256": "dc834c3bf18702727e556284ff795b81e65677bdce6e79a28667c6082c623d86",
+      "required_provenance_valid": true,
+      "file_count": 47,
+      "stable_comparable_product_count": 14
+    },
+    "science": {
+      "job_id": 63763140,
+      "slurm_state": "COMPLETED",
+      "exit_code": "0:0",
+      "application_identity": "native_memory_repair",
+      "observations": [152390, 152392],
+      "fruit_loop_iterations": 4,
+      "bounded_scan_record_count": 248,
+      "detector_sample_expansion": false,
+      "max_rss_gib": 53.08,
+      "final_index_sha256": "7288bf4dc983e0c7018af9b9a91c5ecf37fcca3cd37ffcc46325c91474026ab3",
+      "audit_json_sha256": "3c904153bbf2732a7e8c8e2c650d2e7a9bcc7a3bba807e11e09eb3c24f5a9d93",
+      "required_provenance_valid": true,
+      "file_count": 51,
+      "stable_comparable_product_count": 26
+    }
+  },
+  "canonical_lineage": {
+    "spack_build_lane_head": "d9843e85ed87ba9ac8c42d8cc21f997dacbe1046",
+    "spack_integration_merge": "4cf8db223cdfc7163bbac91972528d8c0c2dbe78",
+    "v2_mode_smoke_commit": "c31a60a0b74a7149d03d542966d6e35b77b8091c",
+    "v2_science_commit": "187df04b21e942701cf41e6d9c50883922fd65aa",
+    "native_integration_baseline": "f0f423827ab321640e0cbcb003f7bf015368f694",
+    "canonical_base": "cb3d568c701217ee0248c77f6dccd0bab7deef31",
+    "governance_parent": "e874044c4c562fe672890495a3f4d5064e789d8f",
+    "all_listed_predecessors_are_ancestors_of_governance_parent": true
+  },
+  "retained_gaps": [
+    "The spack.lock bytes with SHA-256 84d22da445fc89dde76e3cb57efb435aaa075633c8a21d8e1b46c3cf3b830625 are not retained in Git or the downloaded V2 bundle, so the exact V2 concretization is identified but not independently reconstructible from retained bytes.",
+    "The build-job and audit command lines are recoverable only through checked workflow scripts and retained outputs; complete shell transcripts are not retained.",
+    "The campaign is mixed-SHA and therefore does not satisfy the prepared Phase 5 same-SHA promotion matrix."
+  ],
+  "change_control": {
+    "default_reproduction_environment": "accepted_spack_environment",
+    "non_spack_build_is_supplemental_only": true,
+    "conan_role": "legacy_or_explicitly_owner_authorized_bounded_compatibility_only",
+    "new_conan_work_requires_owner_authorized_compatibility_work_order": true,
+    "build_environment_changes_are_separately_governed": true,
+    "scientific_or_application_work_may_not_opportunistically_redesign_build_environment": true,
+    "build_environment_work_may_not_silently_change_scientific_behavior_or_contracts": true
+  }
+}

@@ -44,6 +44,9 @@ Use these companion authorities:
   accepted validation snapshots;
 - [`APPLICATION_BASELINES.md`](APPLICATION_BASELINES.md) for named application
   and contract landmarks and their independent status axes;
+- [ADR 0014](adr/0014-spack-build-foundation.md) for build-environment
+  authority and `validation/citlali_v2_spack_validation_authority.json` for
+  the exact Spack-backed V2 campaign binding;
 - [`WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md`](WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md)
   and `validation/wp7_timestream_successor_authority.json` for the active
   WP-7.1 canonical-reconciliation boundary;
@@ -138,11 +141,15 @@ does not reconstruct unavailable upstream overlay history.
 
 ## Active Build And Entry Points
 
-The established CMake graph remains the operational fallback. The integrated
-Spack CMake graph has passed its bounded build and Unity acceptance, while
-release composition and the same-SHA four-mode matrix remain open. Both graphs
-must carry the same production translation-unit set and expose the same two
-production targets:
+Spack is the current validated dependency/build realization for the Native
+Integration Baseline application generation. The owner-accepted
+`citlali-validation/v2` campaign used the integrated `unity-gcc13` graph; it
+is not build-environment-neutral. The established non-Spack CMake graph
+remains compatibility and supplemental smoke-test infrastructure while release
+composition and rollback decisions remain open. A successful fallback build
+does not reproduce the Spack-backed V2 campaign. Both graphs must carry the
+same production translation-unit set and expose the same two production
+targets:
 
 | Target | Role | Active implementation |
 | --- | --- | --- |
@@ -706,12 +713,14 @@ rewrites. The following rules prevent further textual decomposition:
 6. A compiled-boundary change requires local header/link tests and mode
    validation proportionate to the touched behavior.
 
-Compilation-side modernization follows the Spack Adapt decision in ADR 0014.
-The dedicated integration branch imports that lane only after preserving the
-validated application checkpoint and reconciling the complete current source
-graph. This policy does not authorize numerical changes, removal of the
-fallback build, or release/operational acceptance without the recorded local,
-package-consumer, Unity, provenance, and same-SHA gates.
+Compilation-side modernization follows the accepted Spack decision in ADR
+0014. The dedicated build lane was integrated through exact merge
+`4cf8db223cdfc7163bbac91972528d8c0c2dbe78`; its separate ownership and WIP
+rules remain in force even though Spack is part of accepted application
+history. Build work does not authorize numerical or scientific changes.
+Scientific/application work does not opportunistically redesign the build
+environment. The fallback build remains only until its compatibility,
+rollback, and release-composition disposition is explicit.
 
 ## Active, Transitional, Legacy, And Deferred Paths
 
@@ -771,8 +780,8 @@ boundaries.
 
 ### Explicitly Deferred
 
-- retirement of the established build until the Spack successor passes its
-  operational gates and rollback remains straightforward;
+- retirement of the established compatibility build until release-bundle and
+  rollback policy receive an explicit owner disposition;
 - portable Spack release locks, immutable release archives, and managed
   deployment acceptance until ADR 0015's remaining evidence is complete;
 - production rollout of compact config;
@@ -865,9 +874,10 @@ The following debt remains visible and bounded:
 - Some NetCDF and legacy ECSV products lack complete unit/fill metadata. The
   canonical APT v1 candidate instead carries exact unit, nullability,
   authority, and non-finite declarations.
-- Build and dependency reproducibility is partially closed by the Spack Adapt
-  lane and remains open for portable release artifacts, managed deployment,
-  and the exact-SHA operational validation matrix.
+- Build/dependency validation is operationally closed for the mixed-SHA V2
+  generation by the accepted Spack realization. Reproducibility remains open
+  for the missing exact V2 lock bytes, portable release artifacts, final
+  release composition, and the separate same-SHA promotion matrix.
 - External library consumption and concurrent in-process reductions are not
   accepted requirements.
 

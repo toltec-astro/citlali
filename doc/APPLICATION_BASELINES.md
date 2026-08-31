@@ -9,17 +9,20 @@ in [`REFACTOR_STATUS.md`](REFACTOR_STATUS.md), concurrent workstream authority
 is in [`INTEGRATION_LEDGER.md`](INTEGRATION_LEDGER.md), scientific contract
 status is owned by the scientific-contract library index, and executable
 validation acceptance remains in `validation/accepted_runs.json` and
-`validation/validation_profiles.json`.
+`validation/validation_profiles.json`, and the owner-accepted mixed-SHA V2
+campaign plus its build-environment provenance is bound separately in
+`validation/citlali_v2_spack_validation_authority.json`.
 
-## Four Independent Status Axes
+## Five Independent Status Axes
 
-Every application landmark is described on four axes. A positive result on
+Every application landmark is described on five axes. A positive result on
 one axis does not imply a positive result on another.
 
 | Axis | Question |
 | --- | --- |
 | Application integration | Is this code assembled on the canonical application lineage? |
 | Scientific conformance | Which approved scientific contract, if any, does it conform to? |
+| Build environment | Which exact dependency/build realization, if any, produced the executable evidence? |
 | Validation evidence | What exact builds, datasets, products, and comparisons were actually run? |
 | Production authorization | What operational use has the owner explicitly authorized? |
 
@@ -33,6 +36,8 @@ one axis does not imply a positive result on another.
 - Application integration: historical comparator only.
 - Scientific conformance: carries the legacy behavior present at the fork; it
   is not labeled retroactively with later scientific contracts.
+- Build environment: historical evidence only; no current Spack realization
+  is inferred for this comparator.
 - Validation evidence: the starting side of the refactor comparison program.
 - Production authorization: none created by this designation.
 
@@ -46,6 +51,8 @@ one axis does not imply a positive result on another.
   ancestry.
 - Scientific conformance: historical behavior only; no retroactive WP-7.1
   claim.
+- Build environment: historical checkout-local evidence only; this landmark
+  does not govern current dependency realization.
 - Validation evidence: used by named OG/refactor comparisons where the
   relevant records explicitly cite it.
 - Production authorization: unchanged by this designation.
@@ -60,6 +67,8 @@ one axis does not imply a positive result on another.
   refactor.
 - Scientific conformance: behavior-preserving refactor scope; no later
   WP-7.1 conformance is implied.
+- Build environment: the historical closeout environment remains part of its
+  retained evidence; no Spack-backed V2 claim is projected backward.
 - Validation evidence: the deterministic pointing closeout compared 29-file
   manifests and 21 FITS image HDUs exactly, with NaNs treated as equal. That
   bounded result must not be expanded into a claim that every mode or every
@@ -83,9 +92,15 @@ one axis does not imply a positive result on another.
 - Scientific conformance: substantial bounded scientific-contract work is
   present, but this application is explicitly **not WP-7.1-conformant**. The
   later WP-7.1 contract closure is a separate authority.
+- Build environment: Spack `unity-gcc13` is the validated dependency/build
+  realization for the V2 application generation. Exact V2 environment,
+  executable, and campaign bindings are in
+  `validation/citlali_v2_spack_validation_authority.json`; ADR 0014 remains
+  the build-policy authority.
 - Validation evidence: substantial local and Unity evidence exists, including
-  the Stage 7 and native-memory campaigns. The completed V2 four-mode campaign
-  is mixed-SHA rather than one accepted same-SHA successor matrix.
+  the Stage 7 and native-memory campaigns. The owner accepts the completed V2
+  campaign as the most recent end-to-end operational/application validation.
+  It remains mixed-SHA rather than one accepted same-SHA successor matrix.
 - Production authorization: `existing_use_only`; no production expansion or
   Phase 5 release promotion follows from the integration.
 
@@ -100,6 +115,8 @@ This is a scientific-contract landmark, not an application build.
 - Scientific status: contract-closed for the approved bounded WP-7.1 scope;
   zero regressions, recurrent findings, new successor findings, or unresolved
   contract contradictions were reported by the locked comparison.
+- Build environment: not applicable; this landmark is a scientific contract,
+  not an application executable.
 - Implementation status: separate. Contract closure does not establish
   application conformance, observational validation, performance, readiness,
   or production use.
@@ -115,6 +132,10 @@ completed Citlali product or release.
   `cb3d568c701217ee0248c77f6dccd0bab7deef31`
 - Preserved divergent evidence/tooling head:
   `49fe73e757daa1885cd23127e8441cba47e648d2`
+- Build environment: reproduction and extension of the Native Integration
+  Baseline default to the accepted Spack realization. Build-adaptation changes
+  remain separately governed and may not be folded into WP-7 implementation
+  opportunistically.
 - Current phase: governance, authority, and ancestry reconciliation. Further
   application implementation is held until the gates in
   [`WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md`](WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md)
@@ -122,20 +143,26 @@ completed Citlali product or release.
 
 ## Validation Corpus And Campaign Names
 
-`citlali-validation/v2` names a validation-corpus revision. It is not an
-application version and does not identify one source SHA.
+`citlali-validation/v2` names a validation-corpus and campaign revision. It is
+not an application version and does not identify one source SHA.
 
 The August native closeout is a campaign using that corpus. Point, OOF, and
 Beammap evidence was produced at `c31a60a0b74a7149d03d542966d6e35b77b8091c`;
 science evidence was produced at
 `187df04b21e942701cf41e6d9c50883922fd65aa`. It is therefore intentionally
 described as mixed-SHA operational evidence, not relabeled as a same-SHA
-application baseline.
+application baseline. The owner accepts it as the most recent completed
+end-to-end operational/application validation. Both application identities
+were accepted by Unity Spack jobs and the reductions used profile
+`unity-gcc13`, DAG `nuefnc6fkaul2m5x7l2x6qbblvsxezoe`, and lock SHA-256
+`84d22da445fc89dde76e3cb57efb435aaa075633c8a21d8e1b46c3cf3b830625`.
+That build-environment identity is part of the validation provenance; see
+`validation/citlali_v2_spack_validation_authority.json`.
 
 ## Naming Rule
 
 Use descriptive names plus exact immutable identities. Do not invent
 retroactive release numbers for these landmarks. New release/version names are
 assigned only when a release candidate has one source identity, its required
-scientific contract disposition, its accepted validation matrix, and an
-explicit production authorization.
+scientific contract disposition, an exact build-environment identity, its
+accepted validation matrix, and an explicit production authorization.

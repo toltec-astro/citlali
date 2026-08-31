@@ -1,11 +1,20 @@
 # TolTECA Spack Build Integration Review
 
-Date: 2026-07-31; updated 2026-08-10
+Date: 2026-07-31; updated 2026-08-31
 
-Status: architecture review complete; **Adapt with Spack** selected as the
-successor-build direction. The existing build remains the operational
-fallback. The upstream Spack application is substantial evidence, but it is
-not a drop-in replacement for the full refactored Citlali tree.
+Status: architecture review complete; **Adapt with Spack** selected and
+integrated. Spack is the current validated dependency/build realization for
+the owner-accepted `citlali-validation/v2` application generation. The
+existing non-Spack build remains bounded fallback compatibility and
+supplemental smoke-test infrastructure.
+
+The 2026-08-31 owner correction is governed by
+[ADR 0014](adr/0014-spack-build-foundation.md) and the exact machine-readable
+V2 binding in `validation/citlali_v2_spack_validation_authority.json`. This
+review's earlier future-tense gate descriptions are historical sequencing, not
+evidence that Spack remains experimental. Portable release composition and a
+same-SHA successor matrix remain separate open gates; neither weakens the
+completed Spack-backed V2 validation.
 
 ## Reviewed Revisions
 
