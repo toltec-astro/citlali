@@ -1,6 +1,6 @@
 # SCI-FLT-INF frozen-authority and source binding
 
-Binding identity: `SCI-FLT-INF-SOURCE-BINDING v0.1/r0.8`
+Binding identity: `SCI-FLT-INF-SOURCE-BINDING v0.1/r0.9`
 
 Status: exact Stage A provenance record; not an author packet or scientific
 freeze
@@ -69,8 +69,17 @@ is the exact owner source closing `SCI-FLT-INF-ODQ-007`. It selects complete-
 support-only output admission, makes missing/nonfinite/invalid required inputs
 unavailable, permits numerical fill only when conservative erosion proves no
 admitted output depends on it, and defers adaptive edge/background conditioning
-to a separate future method. It adopts no historical fill mechanics. All seven
-exact owner objects are bound by
+to a separate future method. It adopts no historical fill mechanics.
+
+[`SCIENTIFIC_OWNER_ODQ_008_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_008_APPROVAL_2026-08-31.md)
+is the exact owner source closing `SCI-FLT-INF-ODQ-008`. It selects the exact
+template-amplitude unit and location-indexed fixed-state response, establishes
+unity response to the exact matching template on admitted support, prohibits
+a universal processed-kernel response without an invariance proof, retains the
+parent nominal beam only as provenance, and requires joint parent/template
+calibration dependence. It separates fixed-state from full-procedure response
+and leaves uncertainty and response representation to later decisions. All
+eight exact owner objects are bound by
 [`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md); later decisions
 must use separate exact owner artifacts.
 

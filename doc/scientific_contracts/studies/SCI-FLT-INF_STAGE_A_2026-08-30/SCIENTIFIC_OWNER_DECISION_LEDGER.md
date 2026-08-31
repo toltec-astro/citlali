@@ -1,11 +1,12 @@
 # SCI-FLT-INF scientific-owner decision ledger
 
-Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.8`
+Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.9`
 
 Status: proposed ordered owner walkthrough; ODQ-001 through ODQ-003 approved
 and closed; ODQ-004 author-delegated; ODQ-005 approved and closed; ODQ-006
 approved and closed with quantitative conformance-envelope alternatives
-author-delegated; ODQ-007 approved and closed; ODQ-008 through ODQ-013 open
+author-delegated; ODQ-007 and ODQ-008 approved and closed; ODQ-009 through
+ODQ-013 open
 
 ## Decision discipline
 
@@ -17,8 +18,8 @@ ODQ-003 and ODQ-005 answers and the exact ODQ-004 author delegation but does
 not approve a noise/covariance option. It also records the exact ODQ-006
 reference-operator decision and quantitative author delegation but does not
 approve a conformance-envelope option. It records the exact ODQ-007 complete-
-support decision but does not approve any proposed answer for ODQ-008
-onward.
+support decision and the exact ODQ-008 response/unit/beam decision but does
+not approve any proposed answer for ODQ-009 onward.
 
 ## `SCI-FLT-INF-ODQ-001` — estimand of the existing full path
 
@@ -210,15 +211,33 @@ response, covariance, NOI, validity, lifecycle, and failure authority.
 
 ## `SCI-FLT-INF-ODQ-008` — response, units, beam, and output interpretation
 
-What is the response of the exact selected estimator to declared modes,
-templates, state learning, and boundaries? Which applicable parent map-domain
-semantics are preserved, and what signal units or template-amplitude units,
-beam/effective transfer, and calibration covariance apply to the filtered
-map?
+Status: **approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_008_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_008_APPROVAL_2026-08-31.md).
 
-Manager recommendation: distinguish fixed-state response from full-procedure
-response. Do not use a uniformly processed kernel as universal response for a
-spatially varying estimator without an exact proof and domain.
+The filtered signal is the exact template amplitude, with
+`unit(A_hat)=unit(A)=unit(m)/unit(t)`, not automatic inheritance of the parent
+signal unit. Applicable parent map-domain spatial identity and provenance are
+retained, but parent signal meaning, nominal beam, DC/integral/surface-
+brightness response, extended-source fidelity, and calibration covariance
+are not inherited without exact authority.
+
+For fixed realized state, `L_x u=<t_x,Q_x u_x>/<t_x,Q_x t_x>` is the exact
+response row and `R_t(x,y)=L_x t_y` is the exact location-indexed response to
+the declared unit-amplitude template. At admitted matching locations
+`R_t(y,y)=1`. Off-diagonal response need not be stationary, symmetric,
+isotropic, translation invariant, or reducible to one kernel. A uniformly
+processed kernel is not a universal response without proof of identical
+weighting, complete support/validity, phase, boundary, normalization, and
+translation invariance on the declared domain.
+
+The parent nominal beam remains provenance. A matched-filter beam or solid
+angle must be derived from the exact response. Literal point-source flux
+meaning requires the exact point-source template amplitude convention and
+CAL/BEAM lineage; other templates remain shape amplitudes. Parent/template
+calibration dependence is joint, with no presumed independence or
+cancellation; missing calibration covariance is unavailable and is not `D`.
+Fixed-state response is distinct from ODQ-010 full-procedure response, while
+the exact persisted response representation remains for ODQ-013.
 
 ## `SCI-FLT-INF-ODQ-009` — uncertainty and covariance products
 
@@ -312,11 +331,11 @@ ODQ-001 estimand
                        -> ODQ-013 product/VAL/lifecycle
 ```
 
-ODQ-001 through ODQ-003 and ODQ-005 through ODQ-007 are closed, and ODQ-004 is
+ODQ-001 through ODQ-003 and ODQ-005 through ODQ-008 are closed, and ODQ-004 is
 author-delegated without an option selection. ODQ-006 also delegates
-quantitative conformance-envelope alternatives without selecting one. ODQ-008
+quantitative conformance-envelope alternatives without selecting one. ODQ-009
 is the next owner gate. Stage B is blocked until all remaining pre-author
 decisions have exact owner answers and an exclusive implementation-blind
-author packet containing the ODQ-004 assignment and ODQ-005 through ODQ-007
+author packet containing the ODQ-004 assignment and ODQ-005 through ODQ-008
 approvals. Freeze and numerical authorization remain blocked until the owner
 disposes of the authored ODQ-004 and ODQ-006 option sets.

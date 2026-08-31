@@ -1,8 +1,8 @@
 # SCI-FLT-INF operator, state, and product taxonomy
 
-Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.8`
+Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.9`
 
-Status: Stage A vocabulary updated through approved ODQ-007 and the ODQ-004/
+Status: Stage A vocabulary updated through approved ODQ-008 and the ODQ-004/
 ODQ-006 author delegations; remaining details are not normative science
 
 ## Identity tuple
@@ -74,6 +74,15 @@ from a generic kernel name. `D` is a normalization coefficient. `D^{-1}` is a
 conditional variance only if the exact covariance, linear model, fixed state,
 domain, and regularity assumptions authorize that interpretation. A code field
 called `weight` does not supply that authority.
+
+ODQ-008 fixes the filtered signal unit as
+`unit(A_hat)=unit(A)=unit(m)/unit(t)`. This is not automatically the parent
+signal unit. Applicable parent WCS/frame, location indexing, array/band,
+observation/coadd grouping, parentage, support/validity facts, and calibration
+provenance persist. Parent signal meaning, nominal-beam interpretation, DC
+response, integrated flux, surface brightness, extended-source fidelity, and
+calibration covariance do not persist without exact matched-estimator
+authority.
 
 For each application, the template product binds exact source and immutable
 identity, compatible parent role, units, grid/WCS/frame, centering/subpixel
@@ -233,6 +242,42 @@ for deferred work and are not current package routes.
 filtered kernel is evidence about a response only under its exact unit-source,
 centering, support, normalization, and parent-beam convention.
 
+ODQ-008 defines the exact fixed-state row response, for any declared
+parent-domain perturbation `u`, as
+
+```text
+L_x u = <t_x, Q_x u_x> / <t_x, Q_x t_x>.
+```
+
+Thus `delta A_hat(x)=L_x delta m`, and the exact response to the declared
+unit-amplitude template placed at `y` is
+
+```text
+R_t(x,y) = L_x t_y
+           = <t_x, Q_x t_y> / <t_x, Q_x t_x>.
+```
+
+At every admitted matching location, `R_t(y,y)=1` under the exact fixed state,
+complete support, phase, boundary, and validity assumptions. Off-diagonal
+response may be asymmetric, nonstationary, anisotropic, position dependent,
+or nonlocal. A uniformly processed template is not a universal response unless
+translation invariance, identical weighting, support/validity, centering/
+phase, boundary, and normalization are proved over the declared domain.
+
+The parent nominal beam remains provenance. A matched point-source response
+footprint may be called an effective matched-filter beam only with an explicit
+response-derived definition; any beam area or solid angle requires a declared
+coordinate measure, domain, and normalization. Point-source flux-density
+meaning requires exact template amplitude plus CAL/BEAM lineage. Non-point
+templates retain shape-amplitude terminology.
+
+If `Q`, support, approximation state, selector state, or other consequential
+state is re-estimated under a perturbation, response of the complete procedure
+is `R_LEARNING`, not `L_x`; ODQ-010 retains that learning graph. ODQ-013
+retains the persisted response representation. Parent/template calibration
+dependence must be joint, with no presumed independence or cancellation;
+missing calibration covariance is unavailable, not zero or `D`.
+
 ## Covariance and uncertainty roles
 
 | Role | Meaning |
@@ -284,9 +329,11 @@ For any selected future method, the smallest candidate atomic bundle is:
 2. requested/effective/observation-resolved/realized method identity;
 3. exact state artifact references and dependence graph;
 4. output matched-filtered map and its applicable inherited map-domain
-   structure/semantics;
+   spatial structure/semantics, with exact template-amplitude quantity and
+   unit rather than automatic parent signal-unit inheritance;
 5. normalization/denominator product if it carries scientific meaning;
-6. response/transfer identity and availability;
+6. exact fixed-state response identity, declared representation, beam/solid-
+   angle interpretation if any, and full-procedure-response availability;
 7. support, validity, null, edge, and missing-state products;
 8. covariance/uncertainty identity and availability;
 9. approximation, regularization, and realized stop/selection record;

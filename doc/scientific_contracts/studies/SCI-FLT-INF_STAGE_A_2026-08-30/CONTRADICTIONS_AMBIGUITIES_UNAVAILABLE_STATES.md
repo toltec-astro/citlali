@@ -1,6 +1,6 @@
 # SCI-FLT-INF contradictions, ambiguities, and unavailable states
 
-Record identity: `SCI-FLT-INF-GAPS v0.1/r0.8`
+Record identity: `SCI-FLT-INF-GAPS v0.1/r0.9`
 
 Status: Stage A owner-review record; absence is preserved rather than repaired
 
@@ -152,12 +152,27 @@ and admitted members, while ODQ-010 retains the exact NOI-generation choice.
 Any future adaptive method must separately resolve fixed-state versus
 full-procedure parity and cannot borrow the base identity.
 
-### Kernel-response product
+### Resolved: kernel-response product
 
 The parent kernel is processed under a uniform-weight full path while signal
 uses spatially varying weights. It is unclear which response is intended and
 whether the resulting kernel is adequate for spatially varying source
 response.
+
+Owner disposition under ODQ-008: for fixed realized state the exact response
+row is `L_x u=<t_x,Q_x u_x>/<t_x,Q_x t_x>` and the declared template response
+is `R_t(x,y)=L_x t_y`, with unity matching response at admitted locations. The
+off-diagonal response may be position dependent, asymmetric, anisotropic, or
+nonstationary. A uniformly processed kernel is not a universal response unless
+translation invariance and identical weighting, complete support/validity,
+centering/phase, boundary, and normalization are proved on an exact domain.
+The implementation-produced kernel establishes no such proof or conformity.
+
+ODQ-008 also makes the signal unit the declared template-amplitude unit rather
+than an automatically inherited parent unit. Parent nominal beam identity is
+provenance, and any matched-filter beam/solid angle must be derived from the
+exact response. Parent/template calibration dependence is joint; no
+independence, cancellation, or missing covariance may be inferred.
 
 ### Resolved: observation/coadd parent selection
 
@@ -186,9 +201,9 @@ consume the filtered map if later authorized.
 
 | State | Reason unavailable | Consequence |
 | --- | --- | --- |
-| exact active full-path estimand, product role, admitted parent/grouping, template-response type, reference operator, and base support method | **available at identity level**: ODQ-001 selects an optimal matched-template amplitude estimator, ODQ-002 selects matched-filtered-map output, ODQ-003 selects distinct ordinary-MAP observation/coadd parents, ODQ-005 selects the immutable declared template-response product, ODQ-006 selects the exact normalized `N/D` reference operator, and ODQ-007 selects complete-support-only admission | final package name and numerical product remain unavailable pending ODQ-004, the ODQ-006 quantitative-envelope selection, and ODQ-008 onward |
+| exact active full-path estimand, product role, admitted parent/grouping, template-response type, reference operator, base support method, and fixed-state response/unit identity | **available at identity level**: ODQ-001 selects an optimal matched-template amplitude estimator, ODQ-002 selects matched-filtered-map output, ODQ-003 selects distinct ordinary-MAP observation/coadd parents, ODQ-005 selects the immutable declared template-response product, ODQ-006 selects the exact normalized `N/D` reference operator, ODQ-007 selects complete-support-only admission, and ODQ-008 selects template-amplitude units plus exact location-indexed fixed-state response | final package name and numerical product remain unavailable pending ODQ-004, the ODQ-006 quantitative-envelope selection, and ODQ-009 onward |
 | genuine Wiener/posterior method | no complete prior/likelihood/operator/posterior specification recovered | no posterior reconstruction product |
-| matched-template map-filter realization | owner-selected estimator, filtered-map product role, parent roles, template-response identity, exact reference operator, and complete-support rule exist, but weighting/covariance, exact realized influence extent, response, and any approximate conformance envelope remain unresolved | no authorized numerical matched-filtered map |
+| matched-template map-filter realization | owner-selected estimator, filtered-map product role, parent roles, template-response identity, exact reference operator, complete-support rule, and exact fixed-state response/unit identity exist, but weighting/covariance, exact realized influence extent, numerical response representation, and any approximate conformance envelope remain unresolved | no authorized numerical matched-filtered map |
 | parent covariance/inverse-noise | ODQ-004 delegates option development; no option or parent coefficient meaning is selected | denominator cannot be called Fisher information or inverse variance |
 | exact realized template-response product | product identity/source classes, fixed state, and complete-support consequence are approved, but no numerical instance, selected approximation envelope, or realized influence extent is authorized | numerical application remains unavailable |
 | approximation-qualified operator | ODQ-006 approves the exact reference and bounded-approximation policy, but no quantitative envelope option has been authored and owner-selected | approximate route unavailable; exact evaluation remains conformant in principle but blocked by the other unresolved gates |
@@ -203,7 +218,10 @@ consume the filtered map if later authorized.
 | NOI-informed successor | owner learning/update rule absent | no successor generation route |
 | empirical coefficient promotion | frozen NOI boundary not satisfied | no precision/inverse-variance/consumer-weight claim |
 | standardized significance | frozen NOI permits only exact conditional-scale standardization; significance/detection is outside the selected package | no significance/detection claim |
-| detailed public product bundle/VAL profiles | top-level matched-filtered-map role is selected, but exact units/response/uncertainty/validity/lifecycle and named uses remain unresolved | publication unavailable |
+| full-procedure response | ODQ-008 selects fixed-state response only; exact relearning/re-estimation graph and perturbation family remain for ODQ-010 | no full-procedure response claim |
+| effective matched-filter beam/solid angle | ODQ-008 requires derivation from the exact response under an explicit measure/domain/convention; no numerical response representation or derivation is selected | parent nominal beam remains provenance only |
+| calibration covariance for template amplitude | parent/template dependence must be joint, but numerical dependence/covariance facts are not supplied | missing contribution unavailable, not zero or estimator normalization |
+| detailed public product bundle/VAL profiles | top-level matched-filtered-map role and exact fixed-state response/unit identity are selected, but uncertainty/validity/lifecycle, response representation, and named uses remain unresolved | publication unavailable |
 
 ## Confidence assessment
 
@@ -217,6 +235,7 @@ consume the filtered map if later authorized.
 | base-v0.1 template is one immutable declared response-per-unit-amplitude product | authoritative | exact ODQ-005 owner approval |
 | exact reference estimator is `A_hat=<t,Qm>/<t,Qt>` and approximations require a selected quantitative envelope | authoritative | exact ODQ-006 owner approval |
 | base-v0.1 output admission is complete-support-only and adaptive edge conditioning is deferred | authoritative | exact ODQ-007 owner approval |
+| template-amplitude units and exact location-indexed fixed-state response apply; no universal kernel or inherited parent beam is presumed | authoritative | exact ODQ-008 owner approval |
 | active full path is a complete posterior/Wiener reconstruction | excluded as scientific identity | exact ODQ-001 owner approval; no explicit signal prior or posterior covariance recovered |
 | current NOI-member application is learned-once/fixed-state | high as implementation observation | state is resolved from real parent and reused for members |
 | per-member relearning is currently active | low/negative recovery result | no active route found; absence limited to inspected base |
@@ -228,7 +247,7 @@ consume the filtered map if later authorized.
 
 Stage B must not be commissioned while:
 
-- ODQ-008 and later required pre-author questions have no owner answer;
+- ODQ-009 and later required pre-author questions have no owner answer;
 - multiple selected estimands remain in one proposed package;
 - method substitution can occur without explicit realized identity;
 - fixed-state and relearned NOI graphs are not separated; or

@@ -1,12 +1,13 @@
 # SCI-FLT-INF Stage A Scope Brief
 
-Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.8`
+Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.9`
 
 Status: sanitized owner-review holding study; ODQ-001 estimand, ODQ-002 map-
 domain ownership/product role, and ODQ-003 ordinary-MAP parents/grouping
 approved; ODQ-004 option development author-delegated; ODQ-005 template,
 ODQ-006 reference operator/realization policy, and ODQ-007 complete-support
-identity approved; remaining scope not approved; not an author input
+identity approved; ODQ-008 response/unit/beam interpretation approved;
+remaining scope not approved; not an author input
 
 ## Program adherence and prior-work recovery
 
@@ -161,6 +162,40 @@ output depends on it. If that exclusion cannot be established, the route is
 unavailable. Adaptive edge/background conditioning is deferred to a separate
 future method with its own learned-state, response, covariance, NOI, validity,
 lifecycle, and failure contract.
+
+`SCI-FLT-INF-ODQ-008` selects the template amplitude as the filtered signal
+quantity, with `unit(A_hat)=unit(A)=unit(m)/unit(t)`. The parent signal unit is
+not inherited automatically. The output retains applicable parent map-domain
+spatial structure and identity—WCS/frame, location indexing, array/band,
+observation/coadd grouping, lineage, support/validity facts, and calibration
+provenance—but it does not automatically retain parent signal meaning,
+nominal-beam interpretation, DC response, integrated flux, surface brightness,
+extended-source fidelity, or calibration covariance.
+
+For exact fixed state, define
+
+```text
+L_x u = <t_x, Q_x u_x> / <t_x, Q_x t_x>,
+R_t(x,y) = L_x t_y.
+```
+
+Then `delta A_hat(x)=L_x delta m` for a deterministic declared perturbation
+and `R_t(y,y)=1` for the exact matching template wherever all fixed-state,
+support, phase, boundary, and validity conditions hold. Off-diagonal response
+may be asymmetric, nonstationary, anisotropic, and position dependent. A
+uniformly processed kernel is not a universal response without proof of the
+required invariances and exact domain.
+
+The parent nominal beam remains provenance, not the estimator's effective
+beam. Any matched-filter beam or solid angle must be derived from the exact
+response under an explicit measure and convention. Point-source flux-density
+meaning requires exact template amplitude plus CAL/BEAM lineage; other
+templates retain shape-amplitude terminology. Parent/template calibration
+dependence is joint, and independence or cancellation may not be assumed.
+Missing calibration covariance remains unavailable and is not supplied by
+`D`. Fixed-state response is distinct from any ODQ-010 full-procedure response;
+the exact persisted response representation remains for ODQ-013, and
+uncertainty remains for ODQ-009.
 
 ## Required distinctions
 

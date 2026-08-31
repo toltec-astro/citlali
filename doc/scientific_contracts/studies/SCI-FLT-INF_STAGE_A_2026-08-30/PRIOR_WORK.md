@@ -1,6 +1,6 @@
 # SCI-FLT-INF prior-work recovery
 
-Recovery identity: `SCI-FLT-INF-PRIOR-WORK v0.1/r0.8`
+Recovery identity: `SCI-FLT-INF-PRIOR-WORK v0.1/r0.9`
 
 Status: reviewed Stage A recovery record; implementation and evidence entries
 remain quarantined from authorship
@@ -45,6 +45,7 @@ performed.
 | Scientific-owner ODQ-005 approval | exact `2026-08-31` owner artifact in this study | one immutable declared template-response product per application; exact parent-bound point-source and explicitly supplied scientific-template sources; Gaussian/Airy construction only as a complete product producer; learned templates and high-pass/delta deferred | **Adopt** as binding template identity and base-v0.1 scope |
 | Scientific-owner ODQ-006 approval | exact `2026-08-31` owner artifact in this study | exact normalized reference operator conditional on ODQ-004/ODQ-007; approximations only within an owner-selected conformance envelope; quantitative envelope options delegated to both contract views; operator-changing regularization is a distinct method; null normalization is not zero amplitude | **Adopt** as binding operator and realization policy; retain quantitative envelope as later owner disposition |
 | Scientific-owner ODQ-007 approval | exact `2026-08-31` owner artifact in this study | complete-support-only base admission; missing/nonfinite/invalid required inputs unavailable; numerical fill only if excluded by conservative erosion; adaptive edge/background conditioning deferred | **Adopt** as binding base support and edge policy; cite historical D001 only as recovered precedent, not present mechanics |
+| Scientific-owner ODQ-008 approval | exact `2026-08-31` owner artifact in this study | template-amplitude signal units; exact location-indexed fixed-state response; noninheritance of a universal response kernel or parent beam; joint parent/template calibration dependence | **Adopt** as binding output interpretation, response, unit, and beam/calibration policy; retain uncertainty and full-procedure response for ODQ-009/010 |
 | RTC temporal filtering and AltAz destriping | frozen/active RTC-owned domain | timestream-domain cleaning before mapmaking | **Exclude** from map-domain INF scope; preserve RTC ownership |
 | FRUIT records | separate future tranche | source-model feedback, iteration, learning, stopping, restart, lineage | **Defer** to SCI-FRUIT; retain only the frozen NOI boundary for conditional/replayed cases |
 | Source fitting/finding surfaces | later downstream operation; no dedicated frozen source-analysis contract recovered | Gaussian fitting and catalog-facing products after filtering | **Exclude** from the selected matched-filter package; make no current ownership assignment; a future independent contract may consume filtered maps; no active source-learned filter-state route was recovered at the base commit |
@@ -88,6 +89,18 @@ full path:
 - numerical fill is only a non-scientific device when conservative erosion
   proves that no admitted output depends on it; learned support/background/
   taper conditioning is a deferred separate method;
+- the filtered signal has the template-amplitude unit
+  `unit(A_hat)=unit(m)/unit(t)`, while applicable parent WCS/grouping and
+  provenance remain and the parent signal unit or nominal beam does not
+  transfer automatically;
+- for fixed realized state the exact response row is
+  `L_x u=<t_x,Q_x u_x>/<t_x,Q_x t_x>`, and the template response
+  `R_t(x,y)=L_x t_y` has unity matching-template response at each admitted
+  location but need not be stationary, symmetric, isotropic, or universal;
+- point-source flux and matched-filter beam/solid-angle interpretations require
+  exact template amplitude plus CAL/BEAM lineage or derivation from the exact
+  response; parent/template calibration dependence is joint and missing
+  covariance is unavailable rather than zero;
 - a declared linear estimator `a^T m` has variance `a^T C a` when `C` is the
   covariance of the declared parent population;
 - a fixed-template GLS amplitude estimator has numerator
@@ -110,10 +123,13 @@ development without selecting a model, and ODQ-005 approves the fixed
 template-response product identity and source classes. ODQ-006 approves the
 reference operator and bounded-realization policy while delegating quantitative
 envelope alternatives. ODQ-007 approves complete-support-only base admission
-and defers adaptive edge conditioning. These decisions do not approve the
-covariance/noise authority, numerical template instance, quantitative
-approximation tolerance, exact support extent, final package name, response,
-uncertainty, or contract.
+and defers adaptive edge conditioning. ODQ-008 approves the template-amplitude
+unit and exact fixed-state response while separating inherited parent spatial
+identity from noninherited signal/beam/calibration meanings. These decisions
+do not approve the covariance/noise authority, numerical template instance,
+quantitative
+approximation tolerance, exact support extent, final package name, response
+representation, full-procedure response, uncertainty, or contract.
 
 ### Superseded or nonportable material
 
@@ -134,6 +150,7 @@ Fresh scientific derivation includes the ODQ-004 bounded option set after the
 remaining pre-author decisions are resolved. The unresolved work includes the
 noise/covariance model, quantitative approximation envelope, exact realized
 influence-support extent, non-template state-learning graph, template
-discretization/compatibility consequences, response, uncertainty/covariance,
-product bundle, and NOI parity for each selected family. No recovered source
-can answer those questions by itself.
+discretization/compatibility consequences, full-procedure response,
+uncertainty/covariance, exact response representation, product bundle, and NOI
+parity for each selected family. No recovered source can answer those
+questions by itself.

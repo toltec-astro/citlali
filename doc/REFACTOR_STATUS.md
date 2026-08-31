@@ -731,8 +731,20 @@ affected locations are unavailable rather than zero or partial-support
 renormalized estimates. Numerical padding or fill is permitted only when
 conservative erosion proves that no admitted output depends on it. Learned
 support, background/fill, windows, and tapers are deferred to a separately
-identified future method. ODQ-008 response, units, beam, and output
-interpretation is the next owner gate. This is a Stage A study and decision
+identified future method. Grant Wilson then approved and closed
+`SCI-FLT-INF-ODQ-008` on `2026-08-31`: the filtered signal has the exact
+template-amplitude unit `unit(m)/unit(t)`, and its fixed-state response is the
+location-indexed row `L_x u=<t_x,Q_x u_x>/<t_x,Q_x t_x>`, with unity response
+to the exact matching template at every admitted location. Off-diagonal
+response need not be stationary, symmetric, isotropic, or one universal
+kernel; a uniformly processed kernel requires an exact invariance proof before
+that use. Parent WCS/grouping and provenance persist, but signal-unit, nominal-
+beam, flux, DC/integral/surface-brightness, extended-source, and calibration-
+covariance meanings do not transfer automatically. Any matched-filter beam or
+solid angle is response-derived, and parent/template calibration dependence is
+joint rather than presumed independent or cancelling. Fixed-state and full-
+procedure response remain distinct. ODQ-009 uncertainty and covariance
+products are the next owner gate. This is a Stage A study and decision
 walkthrough only; no successor package, author packet, Stage B launch,
 algorithm change, implementation conformity, validation, calibration,
 performance, readiness, production, freeze, or Unity action is claimed or

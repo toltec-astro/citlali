@@ -1,6 +1,6 @@
 # SCI-FLT-INF cross-package and NOI boundaries
 
-Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.8`
+Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.9`
 
 Status: Stage A owner-review candidate; it changes no frozen authority
 
@@ -91,6 +91,23 @@ global/nonlocal operator must honor that full dependence. Adaptive edge/
 background conditioning is a deferred separate method and supplies no current
 MAP-to-FLT route.
 
+ODQ-008 makes the FLT signal quantity the declared template amplitude, with
+`unit(A_hat)=unit(m)/unit(t)`. FLT retains the parent's exact WCS/frame,
+location indexing, array/band, observation/coadd grouping, lineage, and
+support/validity/calibration provenance, but does not silently inherit the
+parent signal unit, nominal beam, DC/integral/surface-brightness response,
+extended-source fidelity, or calibration covariance.
+
+For fixed state, the exact MAP-to-FLT response row is
+`L_x u=<t_x,Q_x u_x>/<t_x,Q_x t_x>` and the exact template response is
+`R_t(x,y)=L_x t_y`, with `R_t(y,y)=1` at admitted matching locations. A
+uniformly processed kernel is not a universal response absent exact proof of
+translation invariance and identical weighting, support/validity, phase,
+boundary, and normalization. MAP's nominal beam remains parent provenance;
+any matched-filter beam/solid angle must be derived from `R_t` under an exact
+convention. MAP does not authorize FLT to relabel shape amplitude as flux or
+to invent response/covariance facts absent from the parent boundary.
+
 ## JINC to inference-bearing method
 
 SCI-JINC owns a separate signed-coefficient observation estimator and complete
@@ -169,6 +186,12 @@ support and boundary identity. Approximation or support state that is learned
 or updated follows the corresponding frozen-state or relearned-state graph;
 member-specific support learning remains a separate NOI-GEN method.
 
+Every fixed-state member also uses the exact ODQ-008 response/unit convention
+of the science product. A response derived with state held fixed cannot be
+used as the full-procedure response of a member graph that re-estimates `Q`,
+support, approximation, or selection state. That route remains a distinct
+ODQ-010 population and response identity.
+
 ## NOI-derived coefficient calibration
 
 Frozen NOI authority distinguishes conditional second-moment products, their
@@ -217,10 +240,20 @@ No profile identity or rule is approved by this study.
 ## CAL boundary
 
 CAL owns calibrated signal transfer, unit/beam basis, atmosphere/passband/
-color corrections, and calibration covariance. INF may not recover missing
-CAL authority from a template, response kernel, or signal-unit label.
-Any future cross-band amplitude inference remains outside this package and
-conditional on exact CAL authority and covariance.
+color corrections, and calibration covariance. INF owns only the declared
+template-amplitude transformation and its exact response. The parent nominal
+beam and CAL lineage remain provenance, not the matched estimator's automatic
+effective beam or flux label. A point-source amplitude may carry literal
+calibrated flux meaning only when the template amplitude convention and exact
+CAL/BEAM lineage establish it; other templates remain shape amplitudes.
+
+Parent-signal and template calibration dependence must be propagated jointly.
+Shared factors may cancel, remain, or couple, but no independence or
+cancellation is inferred. Missing numerical calibration covariance remains
+unavailable and cannot be recovered from the template, response kernel,
+signal-unit label, or estimator denominator. Any future cross-band amplitude
+inference remains outside this package and conditional on exact CAL authority
+and covariance.
 
 ## RTC and PTC boundary
 

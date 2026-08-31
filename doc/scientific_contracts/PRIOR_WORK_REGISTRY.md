@@ -236,8 +236,15 @@ and cross-package handoffs are valuable recovery inputs.
   influence domain; required missing/nonfinite/invalid inputs make affected
   locations unavailable, numerical fill is allowed only when conservative
   erosion proves it cannot affect admitted output, and learned edge/
-  background/taper conditioning is deferred to a separate method. ODQ-008
-  response, units, beam, and output interpretation is next.
+  background/taper conditioning is deferred to a separate method. Grant
+  Wilson approved ODQ-008 on `2026-08-31`: the filtered signal has the exact
+  template-amplitude unit `unit(m)/unit(t)` and exact location-indexed fixed-
+  state response `L_x`, with unity matching-template response on admitted
+  support; no universal processed-kernel response or inherited parent beam is
+  presumed. Any matched-filter beam is response-derived, parent/template
+  calibration dependence is joint, and fixed-state response remains distinct
+  from full-procedure response. ODQ-009 uncertainty and covariance products
+  are next.
   Implementation/config/schema/history remain in a quarantined dossier, and
   the protected SCI-FLT-FIXED author bytes are unchanged.
 - Package-specific FLT recovery:

@@ -1,6 +1,6 @@
 # SCI-FLT-INF implementation-informed dossier
 
-Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.8`
+Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.9`
 
 Status: quarantined Stage A manager evidence; forbidden to any future
 implementation-blind scientific author
@@ -62,6 +62,32 @@ The owner also distinguishes the estimator from ordinary source-shaped
 convolution and requires unbiased normalization for a matching amplitude under
 the eventual exact noise, support, edge, and validity assumptions. This
 dossier supplies none of those remaining scientific definitions or proofs.
+
+## Kernel-response observation and owner disposition
+
+The implementation processes a kernel through the full path under forced
+uniform weights, while the map signal may use spatially varying weights and
+location-dependent denominator state. As implementation evidence, this does
+not establish that the processed kernel is the response of the signal
+estimator at every location. It also does not establish stationarity,
+translation invariance, identical support, identical subpixel phase, or a
+single effective beam.
+
+ODQ-008 independently selects the exact fixed-state response row
+`L_x u=<t_x,Q_x u_x>/<t_x,Q_x t_x>` and the template response
+`R_t(x,y)=L_x t_y`. The matching response is unity at an admitted location,
+but the off-diagonal response may vary with location, weighting, WCS/phase,
+support, validity, and boundary state. The uniformly processed kernel is not a
+universal response absent an exact proof of all required invariances on a
+declared domain.
+
+ODQ-008 also makes the output unit the template-amplitude unit and retains the
+parent nominal beam only as provenance. A matched-filter beam or solid angle
+must be derived from the exact response, and literal point-source flux meaning
+requires compatible template and CAL/BEAM lineage. Parent/template calibration
+dependence is joint; this dossier supplies no cancellation, covariance, beam,
+or flux authority. These owner facts came from outside the dossier and do not
+establish implementation conformity.
 
 ## Noise-spectrum state and fallback
 

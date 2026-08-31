@@ -58,6 +58,8 @@ distinct grouping identities, and ODQ-005 selects the immutable declared
 template-response product boundary. ODQ-006 selects the exact reference
 operator and bounded-approximation policy, while ODQ-007 selects complete-
 support-only base admission and defers adaptive edge/background conditioning.
+ODQ-008 selects template-amplitude output units and the exact location-indexed
+fixed-state response, without inheriting a universal kernel or parent beam.
 
 ## Stage A packet
 
@@ -79,6 +81,7 @@ support-only base admission and defers adaptive edge/background conditioning.
 | [`SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md) | exact immutable template-response product and admitted-source approval |
 | [`SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md) | exact reference operator, bounded-approximation policy, and conformance-envelope author delegation |
 | [`SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md) | exact complete-support-only base method, numerical-fill exclusion rule, and adaptive-edge deferral |
+| [`SCIENTIFIC_OWNER_ODQ_008_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_008_APPROVAL_2026-08-31.md) | exact template-amplitude unit, fixed-state response, and beam/calibration interpretation approval |
 | [`FROZEN_AUTHORITY_AND_SOURCE_BINDING.md`](FROZEN_AUTHORITY_AND_SOURCE_BINDING.md) | exact base, frozen NOI, historical, and evidence bindings |
 | [`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md) | content-bound Stage A study objects; not an author manifest |
 | [`verify_stage_a.py`](verify_stage_a.py) | study and protected-byte verifier |
@@ -156,9 +159,23 @@ conservative erosion proves that no admitted output depends on it; learned
 support, background, fill, windows, and tapers are deferred to a separate
 future method.
 
-The next owner question is response, units, beam, and output interpretation
-under `SCI-FLT-INF-ODQ-008`. No final package naming or Stage B scope is
-approved.
+ODQ-008 makes the published signal quantity the exact declared template
+amplitude, with `unit(A_hat)=unit(m)/unit(t)` rather than automatic inheritance
+of the parent signal unit. For fixed realized state, the exact response row is
+`L_x u=<t_x,Q_x u_x>/<t_x,Q_x t_x>`, and the location-indexed response to a
+unit template at `y` is `R_t(x,y)=L_x t_y`, with `R_t(y,y)=1` wherever the
+matching template is admitted. The response may be spatially varying,
+asymmetric, anisotropic, or nonstationary; a uniformly filtered kernel is not
+a universal response absent an exact invariance proof. Parent WCS/grouping
+and calibration provenance persist, but the parent nominal beam and literal
+flux-density, DC, integrated-flux, surface-brightness, or extended-source
+interpretations do not transfer automatically. Any matched-filter beam or
+solid angle is derived from the exact response, and parent/template
+calibration dependence is joint rather than presumed independent or
+cancelling.
+
+The next owner question is uncertainty and covariance products under
+`SCI-FLT-INF-ODQ-009`. No final package naming or Stage B scope is approved.
 
 ## Nonclaims and stop rule
 
@@ -168,9 +185,9 @@ significance, performance, readiness, production, Unity, or scientific-freeze
 claim. It creates no default and authorizes no method substitution.
 
 Do not create an implementation-blind author packet until the scientific owner
-has resolved `SCI-FLT-INF-ODQ-008` and the later package-specific response,
-state, covariance, product, and lifecycle gates identified in the decision
-ledger. The eventual packet must include the exact ODQ-004 author assignment
-and ODQ-005 through ODQ-007 approvals. Create a package-local Stage A record
-for the matched-filter map operation rather than converting this holding
-directory into a combined package.
+has resolved `SCI-FLT-INF-ODQ-009` and the later package-specific uncertainty,
+state, product, and lifecycle gates identified in the decision ledger. The
+eventual packet must include the exact ODQ-004 author assignment and ODQ-005
+through ODQ-008 approvals. Create a package-local Stage A record for the
+matched-filter map operation rather than converting this holding directory
+into a combined package.

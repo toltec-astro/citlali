@@ -1,6 +1,6 @@
 # SCI-FLT-INF proposed sanitized author inputs
 
-Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.8`
+Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.9`
 
 Status: proposed material only; not approved, not exhaustive, not SHA-bound as
 an author packet, and not permission to launch Stage B
@@ -183,6 +183,47 @@ receiving historical or current fill mechanics. Learned support, background,
 fill, window, and taper conditioning are deferred to a separately commissioned
 future method and may not appear as base realization options.
 
+## Owner-approved response, unit, beam, and calibration extract
+
+The author packet must include the exact ODQ-008 approval. The filtered
+signal is the declared template amplitude, with
+`unit(A_hat)=unit(A)=unit(m)/unit(t)`, rather than automatic inheritance of the
+parent signal unit. Applicable parent WCS/frame, location indexing,
+array/band, observation/coadd grouping, lineage, support/validity facts, and
+calibration provenance remain attached. Parent signal quantity, nominal beam,
+DC/integral/surface-brightness response, extended-source fidelity, and
+calibration covariance do not transfer without exact authority.
+
+For the exact fixed realized state, the response row and declared-template
+response are
+
+```text
+L_x u = <t_x, Q_x u_x> / <t_x, Q_x t_x>,
+R_t(x,y) = L_x t_y.
+```
+
+The author must preserve `delta A_hat(x)=L_x delta m` and `R_t(y,y)=1` for an
+admitted exact matching template under the complete support, phase, boundary,
+validity, and realization assumptions. Off-diagonal response may be
+asymmetric, nonstationary, anisotropic, position dependent, or nonlocal. A
+uniformly processed kernel is not a universal response unless all required
+translation-invariance, weighting, support/validity, centering/phase,
+boundary, and normalization conditions are proved on the declared domain.
+
+The parent nominal beam remains provenance. Any matched-filter beam or solid
+angle must be derived from `R_t` under an explicit coordinate measure, domain,
+normalization, and validity convention. Literal point-source flux-density
+meaning requires an exact point-source template amplitude convention plus
+compatible CAL/BEAM lineage; other templates remain shape amplitudes.
+Parent/template calibration dependence must be joint, with no assumed
+independence or cancellation. Missing calibration covariance is unavailable,
+not zero and not `D`.
+
+This fixed-state response is distinct from any full-procedure response that
+reruns state estimation or selection. ODQ-010 retains the latter generation
+graph and perturbation family. ODQ-013 retains the exact persisted response
+representation; representation may not weaken the scientific operator.
+
 ## Deferred posterior-family exclusion
 
 No posterior-reconstruction material belongs in the selected matched-filter
@@ -274,13 +315,14 @@ required/conditional/optional role:
 - retained diagnostics versus public science roles; and
 - permitted named consumers.
 
-No current detailed product table is proposed because ODQ-008 and later
-response, uncertainty, validity, and lifecycle decisions remain open. The
-top-level signal role, two distinct ordinary-MAP parent/grouping roles,
-template-response identity, exact ODQ-006 reference operator, and ODQ-007
-complete-support rule are fixed; the ODQ-004 option set and ODQ-006
-quantitative conformance-envelope option set are explicit future-author
-deliverables.
+No current detailed product table is proposed because ODQ-009 and later
+uncertainty, state, validity, and lifecycle decisions remain open. The top-level
+signal role, two distinct ordinary-MAP parent/grouping roles, template-response
+identity, exact ODQ-006 reference operator, ODQ-007 complete-support rule, and
+ODQ-008 fixed-state response/unit/beam interpretation are fixed; the ODQ-004
+option set and ODQ-006 quantitative conformance-envelope option set are
+explicit future-author deliverables. The exact response representation remains
+part of the ODQ-013 product decision.
 
 ## Material that must remain excluded
 
@@ -303,15 +345,16 @@ deliverables.
   case;
 - active SCI-FLT-FIXED Stage B material; and
 - any unapproved default, numerical template instance, prior, covariance,
-  threshold, selection law, edge rule, response, or uncertainty
+  threshold, selection law, edge rule, response representation, beam/solid-
+  angle derivation, or uncertainty
   interpretation.
 
 ## Author-packet construction gate
 
-After ODQ-008 onward supplies the required package-local owner decisions,
+After ODQ-009 onward supplies the required package-local owner decisions,
 create a new package directory and a package-specific
 `PRIOR_WORK.md`, sanitized `SCOPE_BRIEF.md`, exact boundary objects, operator/
 product/lifecycle tables, the ODQ-004 and ODQ-006 authored option sets, owner
-decision record including ODQ-005 through ODQ-007, and exclusive SHA-bound
+decision record including ODQ-005 through ODQ-008, and exclusive SHA-bound
 author manifest. If the selected package still needs implementation evidence
 to define its science, stop and return one precise owner question.
