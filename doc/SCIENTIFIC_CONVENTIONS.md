@@ -216,19 +216,22 @@ evidence and owner closure required by
 Narrow sub-input-Nyquist lines are handled by the
 line-detection/mitigation strategy rather than the generic broadband filter
 budget. The bounded AST prerequisite is scientifically closed by
-[`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md):
-for its exact real Science/Lissajous J2000 input family, physical scan identity
-is `(observation, subobservation, scan)`, realized motion uses
-`SourceRaAct/SourceDecAct`, continuity admits `dt <= 30 ms`, defects are the
-strictly-greater-than-2-arcsec result of the approved eleven-record robust
-position test, and velocity is the norm of the approved eleven-record quadratic
-J2000 tangent derivative. AST owns the compact raw maximum; ALIGN supplies
+[`wp7-ast-scan-motion-v2`](WP7_AST_ROUTE_FAMILY_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
+and [ADR 0020](adr/0020-ast-route-family-motion-membership.md). The v1 numerical
+operator remains unchanged: realized motion uses `SourceRaAct/SourceDecAct`,
+continuity admits `dt <= 30 ms`, defects are the strictly-greater-than-2-arcsec
+result of the approved eleven-record robust position test, and velocity is the
+norm of the approved eleven-record quadratic J2000 tangent derivative. V2
+admits exact Science/OOF/Pointing Lissajous profiles plus the bounded zero-
+offset continuous rectilinear Beammap profile. Beammap physical membership is
+producer `Hold == 0` on the inclusive realized corrected horizon footprint;
+short member segments remain physical facts and derivative support never
+crosses a segment boundary. AST owns the compact raw maximum; ALIGN supplies
 network-specific mapped views without a common grid. The bounded raw product
-and mapped-view implementation described by
-[ADR 0018](adr/0018-ast-scan-motion-velocity-and-validity.md) passes local
-synthetic and repository gates. Representative AST conformance, PSD/filter-bank
-certification, and the remaining gates must pass before any nonidentity
-implementation is available. Governing structural authority is
+and mapped-view implementation preserves the v1 152390 result and passes local
+synthetic and representative-probe gates; clean exact-SHA conformance review,
+PSD/filter-bank certification, and the remaining gates are pending. Governing
+structural authority is
 [`WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md`](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
 and its
 [`crosswalk`](WP7_RTC_SCAN_ARRAY_PLANNING_AUTHORITY_CROSSWALK_2026-08-29.md).

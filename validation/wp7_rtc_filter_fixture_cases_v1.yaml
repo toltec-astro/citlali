@@ -3,6 +3,7 @@ data_root_contract: paths are relative to a caller-supplied local data root
 cases:
   - id: beammap-148670
     role: primary-beammap
+    ast_route_profile: rectilinear-continuous-beammap
     observation: 148670
     subobservation: 0
     scan: 2
@@ -26,6 +27,7 @@ cases:
 
   - id: oof-152385
     role: supplemental-oof
+    ast_route_profile: oof-lissajous
     observation: 152385
     subobservation: 0
     scan: 1
@@ -43,6 +45,7 @@ cases:
 
   - id: oof-152386
     role: supplemental-oof
+    ast_route_profile: oof-lissajous
     observation: 152386
     subobservation: 0
     scan: 1
@@ -60,6 +63,7 @@ cases:
 
   - id: oof-152387
     role: supplemental-oof
+    ast_route_profile: oof-lissajous
     observation: 152387
     subobservation: 0
     scan: 1
@@ -77,6 +81,7 @@ cases:
 
   - id: science-152390
     role: primary-science
+    ast_route_profile: science-lissajous
     observation: 152390
     subobservation: 0
     scan: 2
@@ -103,6 +108,7 @@ cases:
 
   - id: pointing-152391
     role: supporting-pointing
+    ast_route_profile: pointing-lissajous
     observation: 152391
     subobservation: 0
     scan: 2
@@ -129,6 +135,7 @@ cases:
 
   - id: science-152392
     role: primary-science
+    ast_route_profile: science-lissajous
     observation: 152392
     subobservation: 0
     scan: 2

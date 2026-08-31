@@ -3,7 +3,7 @@
   "authority_id": "wp7-timestream-successor-2026-08-26",
   "recorded_date": "2026-08-26",
   "last_updated_date": "2026-08-30",
-  "status": "identity_rtc_and_ast_accepted_occurrence_speed_admission_approved_support_census_and_filter_certification_pending",
+  "status": "identity_rtc_and_ast_v2_route_family_authority_accepted_occurrence_speed_admission_approved_support_census_and_filter_certification_pending",
   "identity_policy": "Artifact identity is filename plus SHA-256. Archive paths are convenience locators and are not identity.",
   "repository_authority": {
     "decision": "doc/adr/0014-wp7-timestream-successor.md",
@@ -23,6 +23,8 @@
     "rtc_filter_downsampling_test_plan": "doc/WP7_RTC_FILTER_DOWNSAMPLING_CERTIFICATION_TEST_PLAN_2026-08-30.md",
     "ast_scan_motion_decision": "doc/adr/0018-ast-scan-motion-velocity-and-validity.md",
     "ast_scan_motion_owner_decision_packet": "doc/WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md",
+    "ast_route_family_decision": "doc/adr/0020-ast-route-family-motion-membership.md",
+    "ast_route_family_owner_decision_packet": "doc/WP7_AST_ROUTE_FAMILY_MOTION_OWNER_DECISION_PACKET_2026-08-30.md",
     "ast_scan_motion_crosswalk": "doc/WP7_AST_SCAN_MOTION_AUTHORITY_CROSSWALK_2026-08-30.md",
     "architecture": "doc/ARCHITECTURE.md",
     "living_status": "doc/REFACTOR_STATUS.md"
@@ -64,12 +66,28 @@
     "implementation_status": "authority_only_occurrence_support_census_repair_pending"
   },
   "ast_scan_motion_authority": {
-    "policy_id": "wp7-ast-scan-motion-v1",
+    "policy_id": "wp7-ast-scan-motion-v2",
     "scientific_owner_disposition": "approved_bounded_authority",
     "approved_date": "2026-08-30",
+    "supersedes_policy_id": "wp7-ast-scan-motion-v1",
+    "superseded_clauses": [
+      "supported_input_family",
+      "producer_state_interpretation",
+      "physical_scan_membership"
+    ],
+    "preserved_numerical_operator": "wp7-ast-scan-motion-v1",
     "bounded_implementation_authorized": true,
-    "implementation_status": "bounded_raw_product_and_network_specific_views_local_representative_and_exact_sha_review_passed",
-    "supported_input_family": "real_toltec_science_lissajous_50hz_j2000",
+    "implementation_status": "bounded_v2_local_and_representative_probe_passed_clean_exact_sha_review_pending",
+    "supported_input_families": [
+      "real_toltec_science_lissajous_50hz_j2000",
+      "real_toltec_oof_lissajous_50hz_j2000",
+      "real_toltec_pointing_lissajous_50hz_j2000",
+      "real_toltec_zero_offset_no_hold_during_turns_azimuth_continuous_rectilinear_beammap_50hz_j2000"
+    ],
+    "beammap_membership": "producer_hold_zero_and_inclusive_realized_corrected_horizon_footprint",
+    "short_physical_segments_retained": true,
+    "legacy_first_record_trim_authoritative": false,
+    "legacy_two_second_range_rejection_authoritative": false,
     "observation_152390_candidate_vmax_authoritative": true,
     "observation_152390_vmax_role": "truthful_raw_ast_diagnostic"
   },

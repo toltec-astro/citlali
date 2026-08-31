@@ -13,9 +13,9 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA = "citlali-wp7-ast-scan-motion-acceptance-v1"
-POLICY_ID = "wp7-ast-scan-motion-v1"
-PRODUCT_ROLE = "SCI-AST:scan_motion_planning@1"
+SCHEMA = "citlali-wp7-ast-scan-motion-acceptance-v2"
+POLICY_ID = "wp7-ast-scan-motion-v2"
+PRODUCT_ROLE = "SCI-AST:scan_motion_planning@2"
 DATASET_ID = "SCI_ALIGN_STAGE7_NGC4449_152390"
 DESIGN_COMMIT = "46824f7de"
 ALIGN_REPAIR_COMMIT = "d55deefb3"
@@ -228,6 +228,8 @@ def validate(record: dict[str, Any]) -> None:
 
     product = require_object(record.get("raw_product"), "raw_product")
     expected_counts = {
+        "physical_scan_member_count": TELESCOPE_RECORD_COUNT,
+        "physical_segment_count": 1,
         "raw_direction_valid_count": EXPECTED_RAW_VALID_COUNT,
         "quality_classified_count": EXPECTED_QUALITY_CLASSIFIED_COUNT,
         "telemetry_defect_count": len(EXPECTED_DEFECT_RECORDS),
@@ -236,10 +238,14 @@ def validate(record: dict[str, Any]) -> None:
         "continuity_run_count": 1,
         "referenced_source_axis_count": 1,
         "referenced_source_direction_plane_count": 2,
+        "referenced_beammap_membership_plane_count": 0,
+        "physical_segment_directory_bytes": 8,
     }
     for name, expected in expected_counts.items():
         if require_integer(product, name) != expected:
             raise AcceptanceError(f"raw_product.{name} must be {expected}")
+    if product.get("route_profile") != "science-lissajous":
+        raise AcceptanceError("raw_product.route_profile must be science-lissajous")
     if product.get("telemetry_defect_records") != EXPECTED_DEFECT_RECORDS:
         raise AcceptanceError(
             f"raw_product.telemetry_defect_records must be {EXPECTED_DEFECT_RECORDS}"

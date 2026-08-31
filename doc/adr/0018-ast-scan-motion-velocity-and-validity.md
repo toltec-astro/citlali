@@ -1,8 +1,7 @@
 # ADR 0018: AST scan-motion velocity and validity
 
-Status: accepted bounded scientific-owner authority 2026-08-30; bounded
-implementation passes local, representative-data, and fresh exact-SHA
-conformance gates
+Status: accepted numerical scientific-owner authority 2026-08-30; supported-
+family and physical-membership clauses partially superseded by ADR 0020
 
 Decision owners: Citlali project owner and scientific owner
 
@@ -60,6 +59,10 @@ The exact field registry, membership rule, continuity boundary, defect
 operator and threshold, derivative, cause vocabulary, scan maximum, mapping,
 and identity binding are versioned together as `wp7-ast-scan-motion-v1`.
 Changing them requires a named successor authority and new evidence.
+
+ADR 0020 supplies that named successor for the supported-family and physical-
+membership clauses only. Its `wp7-ast-scan-motion-v2` authority preserves this
+ADR's numerical operator and all unaffected semantics.
 
 ## Consequences
 

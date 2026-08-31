@@ -11,11 +11,12 @@ Governing authority:
 - [`wp7-rtc-scan-array-numerical-policy-v2`](WP7_RTC_SCAN_ARRAY_FILTER_BANK_OWNER_AUTHORITY_2026-08-30.md)
 - [`wp7-rtc-scan-array-planning-v1`](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
 - [`wp7-rtc-occurrence-speed-admission-v1`](WP7_RTC_OCCURRENCE_SPEED_ADMISSION_OWNER_AUTHORITY_2026-08-30.md)
-- [`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
+- [`wp7-ast-scan-motion-v2`](WP7_AST_ROUTE_FAMILY_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
 - [ADR 0016](adr/0016-scan-array-rtc-bandwidth-planning.md)
 - [ADR 0017](adr/0017-precertified-rtc-filter-bank-and-science-error-budgets.md)
 - [ADR 0018](adr/0018-ast-scan-motion-velocity-and-validity.md)
 - [ADR 0019](adr/0019-occurrence-level-rtc-upper-speed-admission.md)
+- [ADR 0020](adr/0020-ast-route-family-motion-membership.md)
 
 ## Purpose and bounded outcome
 
@@ -239,11 +240,11 @@ speed counts in those cases are not interpreted as zero loss.
 
 The bounded
 [AST route-family motion owner-decision packet](WP7_AST_ROUTE_FAMILY_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
-proposes the exact successor authority needed to close this gap while retaining
-the accepted v1 numerical operator. It is not accepted authority. Its
-counterfactual Beammap/OOF values may guide the decision but may not populate
-F0 or permit F1 to advance until owner approval, conforming implementation,
-clean representative execution, and fresh exact-SHA review.
+is approved as the exact successor authority needed to close this gap while
+retaining the accepted v1 numerical operator. Local synthetic tests and a
+seven-case representative probe pass. Their values may not populate accepted
+F0 or permit F1 to advance until the conforming implementation completes a
+clean representative execution and fresh exact-SHA review.
 
 ### F1: bounded filter-family comparison
 

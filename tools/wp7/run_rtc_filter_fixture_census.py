@@ -13,10 +13,11 @@ import sys
 import yaml
 
 
-SCHEMA = "citlali-wp7-rtc-filter-fixture-corpus-v2"
-RESULT_SCHEMA = "citlali-wp7-rtc-filter-fixture-census-v2"
+SCHEMA = "citlali-wp7-rtc-filter-fixture-corpus-v3"
+RESULT_SCHEMA = "citlali-wp7-rtc-filter-fixture-census-v3"
 NUMERICAL_POLICY_ID = "wp7-rtc-scan-array-numerical-policy-v2"
 SPEED_ADMISSION_POLICY_ID = "wp7-rtc-occurrence-speed-admission-v1"
+AST_POLICY_ID = "wp7-ast-scan-motion-v2"
 
 
 def sha256_file(path: pathlib.Path) -> str:
@@ -49,6 +50,14 @@ def load_cases(path: pathlib.Path) -> list[dict]:
         raise RuntimeError("fixture case id is missing")
     if len(set(ids)) != len(ids):
         raise RuntimeError("fixture case ids are not unique")
+    supported_profiles = {
+        "science-lissajous",
+        "oof-lissajous",
+        "pointing-lissajous",
+        "rectilinear-continuous-beammap",
+    }
+    if any(case.get("ast_route_profile") not in supported_profiles for case in cases):
+        raise RuntimeError("fixture case AST route profile is missing or unsupported")
     return cases
 
 
@@ -100,6 +109,23 @@ def validate_case_result(case: dict, record: dict) -> None:
         raise RuntimeError(f"{case['id']} numerical policy identity changed")
     if record.get("speed_admission_policy_id") != SPEED_ADMISSION_POLICY_ID:
         raise RuntimeError(f"{case['id']} speed-admission policy identity changed")
+    telescope_ast = record.get("telescope_ast", {})
+    if telescope_ast.get("policy_id") != AST_POLICY_ID:
+        raise RuntimeError(f"{case['id']} AST policy identity changed")
+    if telescope_ast.get("route_profile") != case.get("ast_route_profile"):
+        raise RuntimeError(f"{case['id']} AST route profile changed")
+    if telescope_ast.get("maximum_available") is not True:
+        raise RuntimeError(f"{case['id']} lacks a complete AST maximum")
+    if telescope_ast.get("maximum_causes") != 0:
+        raise RuntimeError(f"{case['id']} has unexpected AST maximum causes")
+    if telescope_ast.get("physical_scan_member_count", 0) <= 0:
+        raise RuntimeError(f"{case['id']} has no physical scan members")
+    if telescope_ast.get("physical_segment_count", 0) <= 0:
+        raise RuntimeError(f"{case['id']} has no physical segments")
+    if telescope_ast.get("chunk_record_mismatch_count") != 0 or telescope_ast.get(
+        "chunk_summary_matches"
+    ) is not True:
+        raise RuntimeError(f"{case['id']} AST product is not chunk invariant")
     expected = (case["observation"], case["subobservation"], case["scan"])
     actual = (record["observation"], record["subobservation"], record["scan"])
     if actual != expected:
@@ -239,8 +265,22 @@ def main() -> int:
                 "matched_detector_relation_available"
             ],
             "d0_fixture_identity_ready": record["d0_fixture_identity_ready"],
+            "ast_policy_id": record["telescope_ast"]["policy_id"],
+            "ast_route_profile": record["telescope_ast"]["route_profile"],
             "ast_maximum_available": record["telescope_ast"]["maximum_available"],
             "ast_maximum_causes": record["telescope_ast"]["maximum_causes"],
+            "ast_physical_scan_member_count": record["telescope_ast"][
+                "physical_scan_member_count"
+            ],
+            "ast_physical_segment_count": record["telescope_ast"][
+                "physical_segment_count"
+            ],
+            "ast_derivative_valid_record_count": record["telescope_ast"][
+                "derivative_valid_record_count"
+            ],
+            "ast_maximum_speed_arcsec_per_sec": record["telescope_ast"][
+                "maximum_speed_arcsec_per_sec"
+            ],
             "network_count": len(record["network_native_census"]),
             "all_cadence_uncertainties_within_100ppm": all(
                 item["cadence_uncertainty_within_100ppm"]

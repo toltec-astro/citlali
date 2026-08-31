@@ -112,6 +112,9 @@ def valid_record() -> dict[str, object]:
             "realized": 1523900004,
         },
         "raw_product": {
+            "route_profile": "science-lissajous",
+            "physical_scan_member_count": 62109,
+            "physical_segment_count": 1,
             "raw_direction_valid_count": 62109,
             "quality_classified_count": 62099,
             "telemetry_defect_count": 2,
@@ -127,6 +130,8 @@ def valid_record() -> dict[str, object]:
             "derived_record_bytes": 1000000,
             "referenced_source_axis_count": 1,
             "referenced_source_direction_plane_count": 2,
+            "referenced_beammap_membership_plane_count": 0,
+            "physical_segment_directory_bytes": 8,
         },
         "chunk_invariance": {
             "partition_count": 3,

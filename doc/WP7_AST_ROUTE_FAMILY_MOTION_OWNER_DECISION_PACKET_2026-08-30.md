@@ -1,15 +1,17 @@
 # WP-7 AST Route-Family Motion Owner Decision Packet (2026-08-30)
 
-Status: **proposed; scientific-owner approval required**
+Status: **approved bounded scientific-owner authority 2026-08-30;
+implementation and exact-SHA conformance review pending**
 
-Proposed authority identifier: `wp7-ast-scan-motion-v2`
+Authority identifier: `wp7-ast-scan-motion-v2`
 
-This packet proposes the smallest extension of the accepted
+This packet records the approved smallest extension of the accepted
 [`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
 authority needed to measure the WP-7 filtering/downsampling witness matrix.
-It is not accepted authority, does not change runtime behavior, and cannot be
-used to treat the exploratory values below as F0 results until the scientific
-owner approves it and a conforming implementation is verified.
+The scientific owner approved it exactly as requested on 2026-08-30. Approval
+authorizes the bounded implementation but does not promote the exploratory
+values below to F0 results until a conforming implementation, clean
+representative execution, and fresh exact-SHA review pass.
 
 ## 1. Decision requested
 
@@ -293,9 +295,9 @@ This proposal does not:
 - alter CAL, PTC, MAP/JINC, or legacy Beammap science behavior; or
 - promote the counterfactual measurements to accepted evidence.
 
-## 11. Requested approval text
+## 11. Scientific-owner disposition
 
-If the proposal is accepted without changes, the scientific owner may record:
+The scientific owner supplied the following exact approval on 2026-08-30:
 
 > I approve the bounded WP-7 AST route-family motion authority proposed in
 > `WP7_AST_ROUTE_FAMILY_MOTION_OWNER_DECISION_PACKET_2026-08-30.md` as

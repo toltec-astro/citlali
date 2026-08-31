@@ -66,6 +66,16 @@ class FixtureCensusRunnerTest(unittest.TestCase):
                 "matched_detector_relation_available": False,
             },
             "d0_fixture_identity_ready": True,
+            "telescope_ast": {
+                "policy_id": runner.AST_POLICY_ID,
+                "route_profile": "science-lissajous",
+                "maximum_available": True,
+                "maximum_causes": 0,
+                "physical_scan_member_count": 100,
+                "physical_segment_count": 1,
+                "chunk_record_mismatch_count": 0,
+                "chunk_summary_matches": True,
+            },
             "mapping_checks": {
                 "identity_mismatch_count": 0,
                 "missing_support_count": 0,
@@ -115,6 +125,7 @@ class FixtureCensusRunnerTest(unittest.TestCase):
             "observation": 10,
             "subobservation": 0,
             "scan": 2,
+            "ast_route_profile": "science-lissajous",
         }
         record = self.valid_record()
         runner.validate_case_result(case, record)
@@ -132,6 +143,7 @@ class FixtureCensusRunnerTest(unittest.TestCase):
             "observation": 10,
             "subobservation": 0,
             "scan": 2,
+            "ast_route_profile": "science-lissajous",
         }
         record = self.valid_record()
         record["automatic_factor_selection_authorized"] = True
@@ -151,6 +163,7 @@ class FixtureCensusRunnerTest(unittest.TestCase):
             "observation": 10,
             "subobservation": 0,
             "scan": 2,
+            "ast_route_profile": "science-lissajous",
         }
         record = self.valid_record()
         self.assertFalse(
@@ -164,6 +177,7 @@ class FixtureCensusRunnerTest(unittest.TestCase):
             "observation": 10,
             "subobservation": 0,
             "scan": 2,
+            "ast_route_profile": "science-lissajous",
         }
         record = self.valid_record()
         record["apt_bundle"]["canonical_bundle_verified"] = False

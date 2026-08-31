@@ -394,17 +394,22 @@ It bounds additional mapped astronomical distortion and broadband retained-
 noise variance at `1%`, requires offline naive/JINC and OOF/fruitloops
 certification. Sub-input-Nyquist lines remain owned by line
 detection/mitigation.
-The bounded AST science-scan velocity/validity authority is now accepted as
-[`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
-and [ADR 0018](adr/0018-ast-scan-motion-velocity-and-validity.md). Its compact
-raw product and independent network-mapped views now pass local implementation
-gates in
+The bounded AST science-scan velocity/validity authority is now
+[`wp7-ast-scan-motion-v2`](WP7_AST_ROUTE_FAMILY_MOTION_OWNER_DECISION_PACKET_2026-08-30.md),
+recorded in [ADR 0020](adr/0020-ast-route-family-motion-membership.md) over the
+preserved v1 numerical operator in
+[ADR 0018](adr/0018-ast-scan-motion-velocity-and-validity.md). It admits exact
+Science/OOF/Pointing Lissajous profiles and one bounded zero-offset continuous
+rectilinear Beammap profile. Beammap membership uses non-hold, finite realized
+corrected horizon offsets on the inclusive configured footprint; compact
+physical segments are independent of processing chunks and legacy range trims.
+Its compact raw product and independent network-mapped views are implemented in
 [`ast_scan_motion.h`](../include/citlali/core/pipeline/ast_scan_motion.h) and
 [`ast_scan_motion_alignment.h`](../include/citlali/core/pipeline/ast_scan_motion_alignment.h).
-Representative AST conformance passes. Occurrence/support-loss evidence,
-representative PSD envelopes, certified bank artifacts, automatic-selection
-closure, and their remaining gates are pending. The v1 Kaiser factor/tap sweep
-is historical evidence only.
+Local synthetic and representative-probe gates pass; clean exact-SHA review is
+pending. Occurrence/support-loss evidence, representative PSD envelopes,
+certified bank artifacts, automatic-selection closure, and their remaining
+gates are pending. The v1 Kaiser factor/tap sweep is historical evidence only.
 The implementation slices, storage and execution baseline, performance-tool
 adoption policy, and evidence gates are in
 [WP-7 Timestream Successor Implementation Baseline](WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md).
