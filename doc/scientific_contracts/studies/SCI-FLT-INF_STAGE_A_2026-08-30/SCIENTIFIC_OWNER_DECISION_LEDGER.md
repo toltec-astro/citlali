@@ -1,9 +1,10 @@
 # SCI-FLT-INF scientific-owner decision ledger
 
-Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.5`
+Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.6`
 
 Status: proposed ordered owner walkthrough; ODQ-001 through ODQ-003 approved
-and closed; ODQ-004 author-delegated; ODQ-005 through ODQ-013 open
+and closed; ODQ-004 author-delegated; ODQ-005 approved and closed; ODQ-006
+through ODQ-013 open
 
 ## Decision discipline
 
@@ -11,8 +12,9 @@ Questions are ordered by scientific consequence. Later questions must not be
 answered in a way that presumes an earlier answer. Each approved answer should
 be recorded in a separate exact owner artifact before a package-local Stage A
 packet is built. This holding study records the exact approved ODQ-001 through
-ODQ-003 answers and the exact ODQ-004 author delegation but does not approve a
-noise/covariance option or any proposed answer for ODQ-005 onward.
+ODQ-003 and ODQ-005 answers and the exact ODQ-004 author delegation but does
+not approve a noise/covariance option or any proposed answer for ODQ-006
+onward.
 
 ## `SCI-FLT-INF-ODQ-001` — estimand of the existing full path
 
@@ -114,16 +116,30 @@ are absent.
 
 ## `SCI-FLT-INF-ODQ-005` — template and kernel identity
 
-For the matched-filter method, specify the exact template source,
-normalization, unit-source convention, parent-beam relation, grid/WCS,
-centering/subpixel phase, support, truncation/tail, array dependence, and
-calibration. Is template state declared fixed, learned from the parent, or
-externally supplied?
+Status: **approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md).
 
-Manager recommendation: do not combine kernel-derived, analytic Gaussian/
-Airy, and high-pass cases in one base method unless an exact parameterized
-family preserves one estimand and all response/unit semantics. Source fitting
-and source-learned template state are outside this package.
+Each base-v0.1 application uses one exact immutable, scientifically declared
+template-response product representing expected parent-map response per unit
+of the declared amplitude `A`. Its scaling defines the amplitude convention:
+`unit(t) = unit(m) / unit(A)`. Its identity binds source authority, compatible
+parent, amplitude/signal/template units, grid/WCS/frame, centering/subpixel
+phase, support/truncation/tails, array dependence, parent-beam relationship,
+calibration, validity, and provenance. No peak, integral, flux-density, beam,
+or other amplitude convention is inferred from a generic kernel label.
+
+Admitted sources are the exact point-source-response product bound to the
+immutable parent bundle or another explicitly supplied scientific template-
+response product. Gaussian/Airy construction is admissible only as a producer
+of that same fully specified materialized product before application. Base
+v0.1 excludes template learning/selection from the target parent, sources,
+candidates, populations, or NOI members. The historical high-pass/delta case
+requires a separate future scientific method.
+
+Observation-parent and coadd-parent compatibility remain separately declared;
+no equality or reuse is presumed. Template discretization and approximation
+consequences pass to ODQ-006, while response, beam, calibration covariance,
+uncertainty, edge, and NOI details remain with their later ordered decisions.
 
 ## `SCI-FLT-INF-ODQ-006` — exact operator, approximation, and regularization
 
@@ -252,9 +268,9 @@ ODQ-001 estimand
                        -> ODQ-013 product/VAL/lifecycle
 ```
 
-ODQ-001 through ODQ-003 are closed, and ODQ-004 is author-delegated without an
-option selection. ODQ-005 is the next owner gate. Stage B is blocked until all
-remaining pre-author decisions have exact owner answers and an exclusive
-implementation-blind author packet containing the ODQ-004 assignment. Freeze
-and numerical authorization remain blocked until the owner disposes of the
-authored ODQ-004 options.
+ODQ-001 through ODQ-003 and ODQ-005 are closed, and ODQ-004 is author-delegated
+without an option selection. ODQ-006 is the next owner gate. Stage B is blocked
+until all remaining pre-author decisions have exact owner answers and an
+exclusive implementation-blind author packet containing the ODQ-004 assignment
+and ODQ-005 approval. Freeze and numerical authorization remain blocked until
+the owner disposes of the authored ODQ-004 options.

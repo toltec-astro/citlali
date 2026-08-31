@@ -1,6 +1,6 @@
 # SCI-FLT-INF frozen-authority and source binding
 
-Binding identity: `SCI-FLT-INF-SOURCE-BINDING v0.1/r0.5`
+Binding identity: `SCI-FLT-INF-SOURCE-BINDING v0.1/r0.6`
 
 Status: exact Stage A provenance record; not an author packet or scientific
 freeze
@@ -45,7 +45,15 @@ to both future implementation-blind contract views. It selects no
 noise/covariance option, admits the historical radially symmetrized average
 map noise PSD only as a candidate for analysis, and reserves final option
 selection or disposition to the scientific owner after the rationales are
-available. All four exact owner objects are bound by
+available.
+
+[`SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md)
+is the exact owner source closing `SCI-FLT-INF-ODQ-005`. It selects one
+immutable scientifically declared template-response product per application,
+admits parent-bound point-source and explicitly supplied scientific-template
+sources, treats Gaussian/Airy only as complete-product construction, and
+defers learned templates plus the historical high-pass/delta case. All five
+exact owner objects are bound by
 [`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md); later decisions
 must use separate exact owner artifacts.
 

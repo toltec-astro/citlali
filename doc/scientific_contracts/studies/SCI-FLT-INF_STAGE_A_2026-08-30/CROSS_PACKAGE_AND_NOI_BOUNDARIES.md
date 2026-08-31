@@ -1,6 +1,6 @@
 # SCI-FLT-INF cross-package and NOI boundaries
 
-Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.5`
+Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.6`
 
 Status: Stage A owner-review candidate; it changes no frozen authority
 
@@ -47,6 +47,16 @@ current MAP covariance, stationarity/isotropy proof, default, or precision
 meaning. Observation and coadd candidates remain separately accountable, and
 the MAP coefficient field remains nonprecision/unavailable for estimator
 weighting unless a later owner-selected option supplies exact authority.
+
+ODQ-005 requires one immutable template-response product per application. A
+parent-bound point-source response is admitted only through its exact immutable
+MAP-bundle identity; another scientific template is an explicitly supplied
+FLT input with exact parent compatibility. In either case the template binds
+its amplitude convention and units, grid/WCS/phase, support/tails, array and
+beam/calibration relationship, validity, and provenance. MAP ownership of a
+point-source-response product is not FLT permission to reinterpret or relearn
+it. Observation/coadd compatibility is separate, and missing compatibility is
+typed unavailable rather than repaired by resampling or substitution.
 
 ## JINC to inference-bearing method
 
@@ -109,16 +119,17 @@ The following rules are imported from exact frozen SCI-NOI authority at
 
 | Case | Science state | Member state | UNC meaning | Identity |
 | --- | --- | --- | --- | --- |
-| declared fixed | exact external state fixed before parent/member use | identical state for all members | conditional on state | base method + `DECLARED_FIXED` |
+| declared fixed | exact external or parent-owned state fixed before method application | identical state for all members | conditional on state | base method + `DECLARED_FIXED` |
 | parent-learned frozen | state learned once from real parent | identical frozen state for all members | conditional on learned real-parent state | base method + learning generation |
 | NOI-informed successor | new state learned using prior UNC | identical successor state for successor members unless separately relearned | conditional successor UNC with explicit dependence | new state/science/GEN/UNC generation chain |
 | per-member relearned | real product uses its declared learning graph | each member reruns the exact consequential graph | full-procedure member population, subject to its declared conditioning | separate NOI-GEN method |
 | selector | realized science method chosen by exact policy | selector and/or underlying method applied under an exact declared member graph | depends on whether selection is fixed or rerun per member | separate selector parity identity |
 
-Adaptive edge/background learning, PSD shaping, template learning, method
-selection, convergence selection, and coefficient calibration must each be
-classified in the consequential-state graph; none may hide behind a generic
-`fixed filter` label.
+Adaptive edge/background learning, PSD shaping, any future template learning,
+method selection, convergence selection, and coefficient calibration must
+each be classified in the consequential-state graph; none may hide behind a
+generic `fixed filter` label. ODQ-005 makes the base-v0.1 template declared
+fixed rather than a learning output.
 
 ## NOI-derived coefficient calibration
 

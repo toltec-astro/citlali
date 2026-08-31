@@ -1,6 +1,6 @@
 # SCI-FLT-INF proposed sanitized author inputs
 
-Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.5`
+Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.6`
 
 Status: proposed material only; not approved, not exhaustive, not SHA-bound as
 an author packet, and not permission to launch Stage B
@@ -106,6 +106,30 @@ normalization, window/edge rule, coefficient role, threshold, or numerical
 mechanic may be supplied or inferred. The candidate is not a default,
 covariance authority, or proof of stationarity, isotropy, or optimality.
 
+## Owner-approved template-response extract
+
+The author packet must include the exact ODQ-005 approval. Each base-v0.1
+application uses one immutable scientifically declared template-response
+product: the expected parent-map response per unit of the declared amplitude
+`A`, with `unit(t) = unit(m) / unit(A)`. Its scaling defines the amplitude
+convention; no peak, integral, flux-density, beam, or other convention may be
+inferred from a generic kernel name.
+
+The product must bind source authority and immutable identity, compatible
+parent role, amplitude/signal/template units, grid/WCS/frame, centering and
+subpixel phase, support/truncation/tails, array dependence, parent-beam
+relationship, calibration, validity, missing/null behavior, and provenance.
+Admitted sources are the exact parent-bound point-source response or another
+explicitly supplied scientific template. Gaussian/Airy construction is only a
+producer of this same fully specified materialized product. Target-parent,
+source-, candidate-, population-, and NOI-member-learned templates and the
+historical high-pass/delta case are excluded from base v0.1.
+
+Observation-parent and coadd-parent compatibility remain separate. No shared
+template identity, discretization, response, or reuse may be inferred between
+them. Missing or incompatible template state makes the requested method
+unavailable; it does not authorize an alternate template.
+
 ## Deferred posterior-family exclusion
 
 No posterior-reconstruction material belongs in the selected matched-filter
@@ -135,7 +159,9 @@ must bind `g`, the learning population, inputs, output state, dependence,
 failure, and fixed-state/full-procedure response/covariance. If prior NOI
 informs `Learn`, use a new immutable successor chain. If `Learn` runs per NOI
 member, define a separate NOI-GEN method and do not mix its members with a
-fixed-state ensemble.
+fixed-state ensemble. Under ODQ-005 the base-v0.1 template is a declared fixed
+input to `Apply`, not an output of `Learn`; this graph governs only other
+author-approved learned state.
 
 ## Candidate method-selection extract
 
@@ -193,10 +219,11 @@ required/conditional/optional role:
 - retained diagnostics versus public science roles; and
 - permitted named consumers.
 
-No current detailed product table is proposed because ODQ-005 and later units,
-response, uncertainty, validity, and lifecycle decisions remain open. The
-top-level signal role and two distinct ordinary-MAP parent/grouping roles are
-already fixed; the ODQ-004 option set is an explicit future-author deliverable.
+No current detailed product table is proposed because ODQ-006 and later
+operator, response, uncertainty, validity, and lifecycle decisions remain
+open. The top-level signal role, two distinct ordinary-MAP parent/grouping
+roles, and template-response identity are fixed; the ODQ-004 option set is an
+explicit future-author deliverable.
 
 ## Material that must remain excluded
 
@@ -211,13 +238,16 @@ already fixed; the ODQ-004 option set is an explicit future-author deliverable.
 - implementation-derived claims about why the active path is amplitude-like;
 - source detection, candidate selection, peak interpretation, deblending,
   source fitting, catalog construction, or an SRC ownership boundary;
+- target/source/NOI-learned template routes and the historical high-pass/delta
+  case;
 - active SCI-FLT-FIXED Stage B material; and
-- any unapproved default, template, prior, covariance, threshold, selection
-  law, edge rule, response, or uncertainty interpretation.
+- any unapproved default, numerical template instance, prior, covariance,
+  threshold, selection law, edge rule, response, or uncertainty
+  interpretation.
 
 ## Author-packet construction gate
 
-After ODQ-005 onward supplies the required package-local owner decisions,
+After ODQ-006 onward supplies the required package-local owner decisions,
 create a new package directory and a package-specific
 `PRIOR_WORK.md`, sanitized `SCOPE_BRIEF.md`, exact boundary objects, operator/
 product/lifecycle tables, owner decision record, and exclusive SHA-bound

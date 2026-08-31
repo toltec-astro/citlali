@@ -703,7 +703,16 @@ identities. The historically used radially symmetrized average map noise PSD
 is a candidate for scientific examination, not a selected default, covariance
 authority, or conformity claim. The owner must select or otherwise dispose of
 the authored options before freeze or a numerical route is authorized.
-ODQ-005 template/kernel identity is the next owner gate. This is a Stage A
+Grant Wilson then approved and closed `SCI-FLT-INF-ODQ-005` on `2026-08-31`:
+each base-v0.1 application uses one exact immutable scientifically declared
+template-response product representing parent-map response per unit of the
+declared amplitude. Its scaling and full unit, parent, WCS/phase, support/tail,
+array/beam/calibration, validity, and provenance identity are explicit.
+Admitted sources are an exact parent-bound point-source response or another
+explicitly supplied scientific template; Gaussian/Airy is only complete-
+product construction, while target/source/NOI-learned templates and the
+historical high-pass/delta case are deferred. ODQ-006 exact operator,
+approximation, and regularization is the next owner gate. This is a Stage A
 study and decision walkthrough only; no successor package, author packet,
 Stage B launch, algorithm change, implementation conformity, validation,
 calibration, performance, readiness, production, freeze, or Unity action is

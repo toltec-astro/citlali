@@ -1,8 +1,8 @@
 # SCI-FLT-INF operator, state, and product taxonomy
 
-Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.5`
+Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.6`
 
-Status: Stage A vocabulary updated through approved ODQ-003 and the ODQ-004
+Status: Stage A vocabulary updated through approved ODQ-005 and the ODQ-004
 author delegation; remaining details are not normative science
 
 ## Identity tuple
@@ -45,9 +45,11 @@ No cross-observation combination or commutation identity is admitted.
 ### Owner-selected optimal matched-template amplitude estimator
 
 ODQ-001 selects the amplitude of the exact supplied template as the estimand
-of the historical full path. For a declared parent vector `m`, location-
-indexed supplied template `t_x`, and exact admitted noise covariance `C`, the
-canonical generalized least-squares form is
+of the historical full path. ODQ-005 defines that template as an immutable
+scientifically declared template-response product representing parent-map
+response per unit amplitude `A`. For a declared parent vector `m`, location-
+indexed template `t_x`, and exact admitted noise covariance `C`, the canonical
+generalized least-squares form is
 
 ```text
 N(x) = t_x^T C^{-1} m
@@ -60,12 +62,22 @@ support. Under the authorized zero-mean model `m = A t_x + n`, exact template,
 noise, support, edge, validity, and regularity assumptions, the normalization
 must satisfy `E[A_hat(x)] = A` for a matching signal of amplitude `A`.
 
-When `t_x` is the point-source response, the estimand is a matched point-source
-amplitude field. Another scientifically defined supplied kernel yields the
-amplitude field of that specified template or shape. `D` is a normalization
-coefficient. `D^{-1}` is a conditional variance only if the exact covariance,
-linear model, fixed state, domain, and regularity assumptions authorize that
-interpretation. A code field called `weight` does not supply that authority.
+The template scaling fixes the amplitude convention, with
+`unit(t) = unit(m) / unit(A)`. When `t_x` is the exact parent-bound point-source
+response, the estimand is a matched point-source amplitude field. Another
+explicitly supplied scientific template yields the amplitude field of that
+specified shape. No peak, integral, flux-density, or beam convention follows
+from a generic kernel name. `D` is a normalization coefficient. `D^{-1}` is a
+conditional variance only if the exact covariance, linear model, fixed state,
+domain, and regularity assumptions authorize that interpretation. A code field
+called `weight` does not supply that authority.
+
+For each application, the template product binds exact source and immutable
+identity, compatible parent role, units, grid/WCS/frame, centering/subpixel
+phase, support/truncation/tails, array dependence, parent-beam relationship,
+calibration, validity, and provenance. Gaussian/Airy construction may only
+materialize this complete product. Target/source/NOI-learned templates and the
+historical high-pass/delta case are not base-v0.1 template identities.
 The exact criterion under which the estimator is `optimal` remains an ODQ-004
 through ODQ-006 contract question; the owner term is not an unconditional
 achieved-performance claim.
@@ -115,7 +127,7 @@ Both identities and the generation boundary are required.
 
 | State class | Definition | Consequence |
 | --- | --- | --- |
-| `DECLARED_FIXED` | supplied by exact external scientific authority before the target parent is used | output is conditional on that exact state |
+| `DECLARED_FIXED` | supplied by exact external or parent-owned scientific authority and fixed before this method applies to the target parent | output is conditional on that exact state; an immutable parent-bound template is not learning by this method |
 | `PARENT_LEARNED_FROZEN` | learned from the target real parent, then frozen for application | learning and application are distinct immutable generations; uncertainty is conditional unless relearning is included |
 | `NOI_INFORMED_SUCCESSOR` | learned/selected/updated using a prior NOI product | prior UNC, learning, new state, science product, new GEN, and successor UNC remain distinct; prior UNC is dependent input, not validation |
 | `MEMBER_RELEARNED` | the complete declared learning graph runs separately for every admitted NOI member | separate NOI-GEN method and member population; no mixing with fixed-state members |
@@ -129,7 +141,7 @@ Candidate operator identities must decompose, where applicable, into:
 
 1. parent admission and immutable snapshot;
 2. edge/missing/background conditioning;
-3. template or signal-prior state;
+3. immutable template-response product or signal-prior state;
 4. noise/covariance/spectral state;
 5. fixed conditional apply operator;
 6. normalization and any denominator approximation;

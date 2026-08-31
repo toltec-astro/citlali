@@ -54,7 +54,8 @@ scientific estimand, and ODQ-002 assigns it to a map-domain filtering package
 whose published signal role is a matched-filtered map. The study does not yet
 select a final package name, authorize a numerical route, or modify an
 algorithm. ODQ-003 admits ordinary MAP observation and coadd parents as
-distinct grouping identities.
+distinct grouping identities, and ODQ-005 selects the immutable declared
+template-response product boundary.
 
 ## Stage A packet
 
@@ -73,6 +74,7 @@ distinct grouping identities.
 | [`SCIENTIFIC_OWNER_ODQ_002_APPROVAL_2026-08-30.md`](SCIENTIFIC_OWNER_ODQ_002_APPROVAL_2026-08-30.md) | exact map-domain ownership and filtered-map product-role approval |
 | [`SCIENTIFIC_OWNER_ODQ_003_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_003_APPROVAL_2026-08-31.md) | exact ordinary-MAP observation/coadd parent and grouping approval |
 | [`SCIENTIFIC_OWNER_ODQ_004_AUTHOR_DELEGATION_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_004_AUTHOR_DELEGATION_2026-08-31.md) | exact two-view noise/covariance option-development assignment and historical candidate |
+| [`SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md) | exact immutable template-response product and admitted-source approval |
 | [`FROZEN_AUTHORITY_AND_SOURCE_BINDING.md`](FROZEN_AUTHORITY_AND_SOURCE_BINDING.md) | exact base, frozen NOI, historical, and evidence bindings |
 | [`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md) | content-bound Stage A study objects; not an author manifest |
 | [`verify_stage_a.py`](verify_stage_a.py) | study and protected-byte verifier |
@@ -120,8 +122,19 @@ an admitted candidate for analysis only, not a default or covariance/
 optimality authority. An owner choice is required after the rationales return
 and before freeze or numerical authorization.
 
-The next owner question is exact template/kernel identity under
-`SCI-FLT-INF-ODQ-005`. No final package naming or Stage B scope is approved.
+ODQ-005 selects one exact immutable, scientifically declared template-response
+product for each realized application. It defines the expected parent-map
+response per unit of the declared amplitude `A` and carries its exact amplitude
+convention, units, parent compatibility, grid/WCS, centering/subpixel phase,
+support/tails, array dependence, parent-beam relation, calibration, validity,
+and provenance. An exact parent-bound point-source response or another
+explicitly supplied scientific template is admitted. Gaussian/Airy generation
+is only a way to materialize the same complete product; base-v0.1 template
+learning and the historical high-pass/delta case are deferred.
+
+The next owner question is the exact operator, approximation, and
+regularization policy under `SCI-FLT-INF-ODQ-006`. No final package naming or
+Stage B scope is approved.
 
 ## Nonclaims and stop rule
 
@@ -131,9 +144,9 @@ significance, performance, readiness, production, Unity, or scientific-freeze
 claim. It creates no default and authorizes no method substitution.
 
 Do not create an implementation-blind author packet until the scientific owner
-has resolved `SCI-FLT-INF-ODQ-005` and the later package-specific operator,
+has resolved `SCI-FLT-INF-ODQ-006` and the later package-specific operator,
 state, response, covariance, product, and lifecycle gates identified in the
 decision ledger. The eventual packet must include the exact ODQ-004 author
-assignment. Create a package-local Stage A record for the matched-filter map
-operation rather than converting this holding directory into a combined
-package.
+assignment and ODQ-005 approval. Create a package-local Stage A record for the
+matched-filter map operation rather than converting this holding directory
+into a combined package.

@@ -218,8 +218,14 @@ and cross-package handoffs are valuable recovery inputs.
   with shared stable identities. The historically used radially symmetrized
   average map noise PSD is a candidate for scientific examination only, not a
   selected default or covariance authority. The owner retains the later
-  option-selection/disposition decision. ODQ-005 template/kernel identity is
-  next.
+  option-selection/disposition decision. Grant Wilson approved ODQ-005 on
+  `2026-08-31`: one immutable declared template-response product per base-v0.1
+  application carries the complete amplitude/unit/parent/WCS/phase/support/
+  array/beam/calibration/validity/provenance identity. Parent-bound point-
+  source and explicitly supplied scientific-template sources are admitted;
+  Gaussian/Airy is complete-product construction only, while learned
+  templates and high-pass/delta are deferred. ODQ-006 exact operator,
+  approximation, and regularization is next.
   Implementation/config/schema/history remain in a quarantined dossier, and
   the protected SCI-FLT-FIXED author bytes are unchanged.
 - Package-specific FLT recovery:

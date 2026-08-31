@@ -1,6 +1,6 @@
 # SCI-FLT-INF implementation-informed dossier
 
-Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.5`
+Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.6`
 
 Status: quarantined Stage A manager evidence; forbidden to any future
 implementation-blind scientific author
@@ -167,10 +167,18 @@ uncertainty, product, or failure authority was recovered.
 Templates can be configured analytically or derived from the parent mapmaking
 kernel. Filtered source finding and Gaussian fitting occur downstream. No
 active base-commit route was found that uses a fitted source to relearn the
-filter template or spectral state. Therefore:
+filter template or spectral state.
 
-- configured or kernel-derived templates remain method state whose scientific
-  identity is unresolved;
+ODQ-005 independently selects one immutable, scientifically declared
+template-response product per base-v0.1 application. It admits exact parent-
+bound point-source response and explicitly supplied scientific-template source
+classes, allows Gaussian/Airy construction only as production of that same
+complete product, and defers target/source/NOI-learned template state plus the
+historical high-pass/delta case. Those owner facts came from outside this
+dossier; the observed configuration paths establish no conformity. Therefore:
+
+- configured or kernel-derived templates remain implementation state whose
+  conformance to the exact ODQ-005 product identity is unassessed;
 - the existence of downstream source-finding code does not change the filter's
   published product role; and
 - ODQ-002 excludes detection, selection, peak interpretation, deblending,

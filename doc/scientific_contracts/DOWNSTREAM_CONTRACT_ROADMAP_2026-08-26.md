@@ -3,7 +3,8 @@
 Date: `2026-08-26`
 
 Updated: `2026-08-31` for SCI-JINC closure, SCI-NOI Stage A/Stage B handoff,
-SCI-FLT-INF ODQ-001 through ODQ-003 closure, and ODQ-004 author delegation
+SCI-FLT-INF ODQ-001 through ODQ-003 and ODQ-005 closure, and ODQ-004 author
+delegation
 
 Status: scientific-owner-approved program sequencing record
 
@@ -251,7 +252,13 @@ parent-coefficient options with shared stable identities. The historically
 used radially symmetrized average map noise PSD is a candidate for scientific
 examination only, not a selected default or covariance authority. The owner
 must select or otherwise dispose of the authored options before freeze or a
-numerical route. ODQ-005 template/kernel identity is next. No successor
-package, author packet, Stage B launch, algorithm change, conformity,
-validation, calibration, performance, readiness, production, freeze, or Unity
-action follows.
+numerical route. Grant Wilson approved ODQ-005 on `2026-08-31`: each base-v0.1
+application uses one exact immutable declared template-response product whose
+scaling and complete parent/unit/WCS/phase/support/array/beam/calibration/
+validity/provenance identity define response per unit amplitude. Parent-bound
+point-source and explicitly supplied scientific-template sources are admitted;
+Gaussian/Airy is complete-product construction only, while learned templates
+and high-pass/delta are deferred. ODQ-006 exact operator, approximation, and
+regularization is next. No successor package, author packet, Stage B launch,
+algorithm change, conformity, validation, calibration, performance, readiness,
+production, freeze, or Unity action follows.

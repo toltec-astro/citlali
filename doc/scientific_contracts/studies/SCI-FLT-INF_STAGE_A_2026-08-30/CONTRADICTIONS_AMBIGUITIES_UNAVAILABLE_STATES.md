@@ -1,6 +1,6 @@
 # SCI-FLT-INF contradictions, ambiguities, and unavailable states
 
-Record identity: `SCI-FLT-INF-GAPS v0.1/r0.5`
+Record identity: `SCI-FLT-INF-GAPS v0.1/r0.6`
 
 Status: Stage A owner-review record; absence is preserved rather than repaired
 
@@ -94,12 +94,21 @@ PSD is admitted as a candidate to examine, not as a default, exact covariance,
 stationarity/isotropy proof, optimality proof, or implementation prescription.
 The author must produce the scientific options.
 
-### Template meaning
+### Resolved: template meaning
 
 Available templates include a parent kernel, analytic Gaussian/Airy profiles,
 and a high-pass delta. Their normalization, parent-beam relationship, source
 model, unit-source convention, and use as filter kernel versus estimator
 template are not uniformly specified.
+
+Owner disposition under ODQ-005: base v0.1 uses one exact immutable declared
+template-response product per application, representing parent-map response
+per unit amplitude `A`. It binds its amplitude convention/units, compatible
+parent, grid/WCS/phase, support/tails, array/beam/calibration relationship,
+validity, and provenance. Parent-bound point-source and explicitly supplied
+scientific-template sources are admitted; Gaussian/Airy is only complete-
+product construction. Target/source/NOI-learned templates and high-pass/delta
+are deferred.
 
 ### Denominator meaning
 
@@ -154,11 +163,11 @@ consume the filtered map if later authorized.
 
 | State | Reason unavailable | Consequence |
 | --- | --- | --- |
-| exact active full-path estimand, product role, and admitted parent/grouping | **available at identity level**: ODQ-001 selects an optimal matched-template amplitude estimator, ODQ-002 selects matched-filtered-map output, and ODQ-003 selects distinct ordinary-MAP observation/coadd parents | final package name and numerical product remain unavailable pending ODQ-004 onward |
+| exact active full-path estimand, product role, admitted parent/grouping, and template-response type | **available at identity level**: ODQ-001 selects an optimal matched-template amplitude estimator, ODQ-002 selects matched-filtered-map output, ODQ-003 selects distinct ordinary-MAP observation/coadd parents, and ODQ-005 selects the immutable declared template-response product | final package name and numerical product remain unavailable pending ODQ-004 and ODQ-006 onward |
 | genuine Wiener/posterior method | no complete prior/likelihood/operator/posterior specification recovered | no posterior reconstruction product |
-| matched-template map-filter realization | owner-selected estimator and filtered-map product role exist, but parent covariance/template/support/response/operator are unresolved | no authorized numerical matched-filtered map |
+| matched-template map-filter realization | owner-selected estimator, filtered-map product role, parent roles, and template-response identity exist, but parent covariance, operator, support, and response are unresolved | no authorized numerical matched-filtered map |
 | parent covariance/inverse-noise | ODQ-004 delegates option development; no option or parent coefficient meaning is selected | denominator cannot be called Fisher information or inverse variance |
-| template scientific identity | normalization, beam/source role, calibration, and learned/fixed status unresolved | response and units unavailable |
+| exact realized template-response product | product identity/source classes and fixed state are approved, but no numerical instance or ODQ-006 discretization/approximation consequence is authorized | numerical application remains unavailable |
 | approximation-qualified operator | no owner-approved truncation/convergence/floor error policy | exact method route unavailable |
 | adaptive edge method | current behavior and old policy are not current scientific authority | edge-conditioned scientific support unavailable |
 | data-thresholded mode selection | inactive implementation fragment and no method contract | no route or product |
@@ -182,6 +191,7 @@ consume the filtered map if later authorized.
 | owner-selected scientific identity of the historical full path is matched-template amplitude | authoritative | exact ODQ-001 owner approval |
 | ordinary-MAP observation and coadd parents are both admitted but non-equivalent | authoritative | exact ODQ-003 owner approval |
 | historical radially symmetrized average map noise PSD is the selected model | false/unselected | ODQ-004 admits it only as an author-evaluated candidate |
+| base-v0.1 template is one immutable declared response-per-unit-amplitude product | authoritative | exact ODQ-005 owner approval |
 | active full path is a complete posterior/Wiener reconstruction | excluded as scientific identity | exact ODQ-001 owner approval; no explicit signal prior or posterior covariance recovered |
 | current NOI-member application is learned-once/fixed-state | high as implementation observation | state is resolved from real parent and reused for members |
 | per-member relearning is currently active | low/negative recovery result | no active route found; absence limited to inspected base |
@@ -193,9 +203,8 @@ consume the filtered map if later authorized.
 
 Stage B must not be commissioned while:
 
-- ODQ-005 and later required pre-author questions have no owner answer;
+- ODQ-006 and later required pre-author questions have no owner answer;
 - multiple selected estimands remain in one proposed package;
-- required template authority is absent;
 - method substitution can occur without explicit realized identity;
 - fixed-state and relearned NOI graphs are not separated; or
 - the proposed author inputs contain implementation-derived conclusions.

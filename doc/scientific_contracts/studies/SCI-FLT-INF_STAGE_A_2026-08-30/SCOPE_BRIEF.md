@@ -1,11 +1,11 @@
 # SCI-FLT-INF Stage A Scope Brief
 
-Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.5`
+Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.6`
 
 Status: sanitized owner-review holding study; ODQ-001 estimand, ODQ-002 map-
 domain ownership/product role, and ODQ-003 ordinary-MAP parents/grouping
-approved; ODQ-004 option development author-delegated; remaining scope not
-approved; not an author input
+approved; ODQ-004 option development author-delegated; ODQ-005 template
+identity approved; remaining scope not approved; not an author input
 
 ## Program adherence and prior-work recovery
 
@@ -100,6 +100,21 @@ covariance authority, or proof of stationarity, isotropy, or optimality. The
 owner must dispose of the authored options before freeze or numerical
 authorization.
 
+`SCI-FLT-INF-ODQ-005` selects one exact immutable, scientifically declared
+template-response product for each application. It is the expected parent-map
+response per unit of the declared amplitude `A`; its scaling defines the
+amplitude convention, with `unit(t) = unit(m) / unit(A)`. The product must bind
+its source, immutable identity, compatible parent role, amplitude and signal
+units, grid/WCS/frame, centering/subpixel phase, support/truncation/tails,
+array dependence, parent-beam relation, calibration, validity, and provenance.
+
+An exact point-source response bound to the immutable parent or another
+explicitly supplied scientific template is admitted. Gaussian or Airy
+construction is allowed only when it materializes that same complete product
+before application. Template learning or selection from the target parent,
+sources, candidates, populations, or NOI members is outside base v0.1. The
+historical high-pass/delta case is deferred to a separately authorized method.
+
 ## Required distinctions
 
 The study shall not merge two cases merely because they reuse FFTs, a template,
@@ -144,6 +159,8 @@ required whenever any of the following differs:
 - source detection, candidate selection, catalog construction, peak
   interpretation, deblending, fitting, significance, completeness, purity,
   morphology, or other source-analysis behavior;
+- template learning/selection from a target parent, source, candidate,
+  population, or NOI member, and the historical high-pass/delta case;
 - JINC, SCI-FLT-FIXED-derived, or other derived-map parents in v0.1;
 - absolute CAL authority, passband/color correction, or cross-band covariance;
 - inferred MAP/JINC precision or covariance;
