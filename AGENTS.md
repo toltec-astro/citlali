@@ -1,5 +1,20 @@
 # Citlali Refactor Agent Guide
 
+## Governance Preflight
+
+Before planning or editing governed work, read
+`doc/governance/ENGINEERING_GOVERNANCE.md` and report it in the task
+preflight. For Timestream Successor work, also read and report
+`doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md`. Read
+`doc/governance/REVIEW_AND_CONFORMANCE.md` before selecting gates, requesting
+review, or closing the work. These documents are normative only after their
+accepted exact commit and digests are recorded on canonical integration
+authority; candidate copies do not govern merely because a branch contains
+them.
+
+Do not use a checked-in `AGENTS.override.md` to weaken repository governance.
+Adding or changing one requires an explicit governance amendment.
+
 Read these documents before making architectural changes:
 
 1. `doc/REFACTOR_STATUS.md` - current phase, gates, and next actions.
