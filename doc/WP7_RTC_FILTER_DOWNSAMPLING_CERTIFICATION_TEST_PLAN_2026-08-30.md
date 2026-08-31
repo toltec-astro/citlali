@@ -634,3 +634,12 @@ Item 1 is complete and independently conforming. The first remaining actionable
 increment is item 2. It constructs PSD and line measurement/evidence tooling
 only; it does not add nonidentity RTC to an executable science route or select
 a factor.
+
+The first bounded part of item 2 is implemented and recorded in the
+[D2 PSD/line tooling handoff](../handoff/WP7_RTC_D2_PSD_LINE_EVIDENCE_TOOLING_2026-08-31.md).
+The per-network artifact builder and corpus aggregator are locally verified;
+the legacy-TOD adapter is deliberately discovery-only. D2 remains open until a
+bounded in-memory producer supplies conforming native-rate prefilter and
+post-cleaning residual values, route-specific source masks, and realized
+pre-decimation line-protection evidence for the required Beammap, Science, and
+OOF cases.

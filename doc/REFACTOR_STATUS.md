@@ -20,6 +20,28 @@ line/fold and pre-decimation-ordering audit. It remains measurement/evidence
 work only: no filter bank, factor-selection policy, nonidentity RTC route, or
 persistent product is activated.
 
+The bounded D2 measurement layer is now implemented in
+[`rtc_filter_psd_line_evidence.py`](../tools/wp7/rtc_filter_psd_line_evidence.py),
+[`rtc_filter_psd_line_corpus.py`](../tools/wp7/rtc_filter_psd_line_corpus.py),
+and the explicitly discovery-only
+[`export_legacy_tod_psd_line_discovery.py`](../tools/wp7/export_legacy_tod_psd_line_discovery.py).
+It reuses the established masked-Welch/line detector, holds network physical
+runs and fixed frequency grids separate, records median/upper-tail/maximum
+aggregation alternatives without choosing one, and withholds foldable factors
+unless explicit realized protection precedes decimation. Legacy rectangular
+TODs are structurally excluded from native aggregation. A local pointing-152391
+smoke test confirmed that this exclusion is necessary: the available PTC TOD
+was already filtered and downsampled on the legacy rectangular `TelUTC`
+container and was correctly labeled discovery-only. Exact contract, trace,
+and validation details are in the
+[D2 tooling handoff](../handoff/WP7_RTC_D2_PSD_LINE_EVIDENCE_TOOLING_2026-08-31.md).
+
+D2 remains open. The next task is the bounded in-memory producer/observer for
+native-rate prefilter and post-cleaning residual planes on each accepted D1
+network axis, with route-specific source masks and realized pre-decimation line
+operator evidence. Only then may the Beammap, Science, and OOF corpus be used
+to assess envelope sensitivity or line/fold eligibility.
+
 ## 2026-08-30 WP-7 Occurrence-Level Upper-Speed Admission
 
 The scientific owner approved
