@@ -260,8 +260,11 @@ and cross-package handoffs are valuable recovery inputs.
   [`packages/SCI-FLT-MATCHED/v0.1/PRIOR_WORK.md`](packages/SCI-FLT-MATCHED/v0.1/PRIOR_WORK.md).
   Its exact eight-object author-packet candidate assigns six shared-ID option
   families to both contract views while keeping implementation/config/schema/
-  history quarantined. Exact-byte owner approval and explicit Stage B launch
-  remain pending; protected SCI-FLT-FIXED author bytes are unchanged.
+  history quarantined. Grant Wilson approved the exact eight-object packet at
+  manifest SHA-256
+  `255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8`
+  and authorized a fresh implementation-blind Stage B author on `2026-08-31`;
+  protected SCI-FLT-FIXED author bytes are unchanged.
 - Package-specific FLT recovery:
   [`packages/SCI-FLT/v0.1/PRIOR_WORK.md`](packages/SCI-FLT/v0.1/PRIOR_WORK.md)
   at `2026-08-30`. It separately classifies fixed convolution/low-pass,

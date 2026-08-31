@@ -775,9 +775,12 @@ and Engineering Conformance Specification to carry identical alternatives for
 weighting/noise authority (including the radially symmetrized average map noise
 PSD candidate), quantitative approximation conformance, covariance
 representation, immutable-state persistence, response/product/FLT→FRUIT
-persistence, and VAL profile granularity. Exact-byte owner approval and an
-explicit fresh implementation-blind Stage B launch remain pending; appearing
-in the packet selects no option and authorizes no numerical route.
+persistence, and VAL profile granularity. Grant Wilson approved the exact
+eight-object packet at manifest SHA-256
+`255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8`
+and explicitly authorized a fresh implementation-blind Stage B author on
+`2026-08-31`. The author is restricted to those exact objects and must develop,
+not select, the six option families. Dispatch is the next process action.
 
 This remains Stage A only. No Stage B launch, algorithm change, implementation
 conformity, validation, calibration, performance, readiness, production,

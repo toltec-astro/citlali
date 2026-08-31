@@ -15,6 +15,7 @@ REQUIRED = (
     "AUTHOR_OPERATOR_STATE_AND_PRODUCT_TAXONOMY.md", "AUTHOR_BOUNDARIES.md",
     "REQUIRED_AUTHORED_OPTION_SETS.md", "AUTHOR_PACKET_MANIFEST.md",
     "AUTHOR_PACKET_MANIFEST.sha256", "STAGE_A_CHANGE_LOG.md", "CROSSWALK.md",
+    "SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-31.md",
     "pdf/README.md", "src/scientific-rationale.tex",
     "src/engineering-conformance.tex", "src/common/README.md",
 )
@@ -37,7 +38,7 @@ for relative in REQUIRED:
     assert path.is_file() and path.stat().st_size > 0, f"missing {relative}"
 
 readme = (ROOT / "README.md").read_text()
-assert "Stage B: not authorized" in readme
+assert "fresh implementation-blind Stage B author authorized" in readme
 assert "SCI-FLT-MATCHED" in readme
 
 scope = (ROOT / "SCOPE_BRIEF.md").read_text()
@@ -75,6 +76,10 @@ assert "SELF_HASH_IN_SHA256_SIDECAR" in manifest
 sidecar = (ROOT / "AUTHOR_PACKET_MANIFEST.sha256").read_text().strip()
 assert sidecar == f"{digest(manifest_path)}  AUTHOR_PACKET_MANIFEST.md"
 
+approval = (ROOT / "SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-31.md").read_text()
+assert digest(manifest_path) in approval
+assert "authorize a fresh implementation-blind Stage B author" in approval
+
 for name in AUTHOR_OBJECTS:
     text = (ROOT / name).read_text()
     for forbidden in ("include/citlali/", "src/citlali/", "validation/", "tests/"):
@@ -94,4 +99,4 @@ for markdown in ROOT.rglob("*.md"):
 print("sci_flt_matched_stage_a=PASS")
 print(f"author_packet_objects={len(AUTHOR_OBJECTS) + 1}")
 print(f"author_packet_manifest_sha256={digest(manifest_path)}")
-print("stage_b_authorized=false")
+print("stage_b_authorized=true")
