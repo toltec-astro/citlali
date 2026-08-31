@@ -1,6 +1,6 @@
 # SCI-FLT-FIXED v0.1 Numerical-Conformance Policy Draft
 
-Document identity: `SCI-FLT-FIXED-NUMERICAL-CONFORMANCE v0.1/draft-r0.4`
+Document identity: `SCI-FLT-FIXED-NUMERICAL-CONFORMANCE v0.1/freeze-candidate`
 
 Status: future finite-precision evidence-policy draft; not preregistered; no candidate finding
 

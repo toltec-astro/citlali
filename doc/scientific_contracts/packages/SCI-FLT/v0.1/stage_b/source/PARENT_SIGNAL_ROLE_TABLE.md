@@ -1,6 +1,6 @@
 # SCI-FLT-FIXED v0.1 Parent Signal-Role Table
 
-Record identity: `SCI-FLT-FIXED-PARENT-SIGNAL-ROLE-TABLE v0.1/draft-r0.4`
+Record identity: `SCI-FLT-FIXED-PARENT-SIGNAL-ROLE-TABLE v0.1/freeze-candidate`
 
 Status: implementation-blind Stage B closure draft; scientific-owner review required
 

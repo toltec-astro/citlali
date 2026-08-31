@@ -1,6 +1,6 @@
 # SCI-FLT-FIXED v0.1 Marginal-Only Covariance Edge-Case Amendment
 
-Record identity: `SCI-FLT-FIXED-MARGINAL-COVARIANCE-AMENDMENT v0.1/draft-r0.4`
+Record identity: `SCI-FLT-FIXED-MARGINAL-COVARIANCE-AMENDMENT v0.1/freeze-candidate`
 
 Status: implementation-blind Stage B closure artifact; scientific-owner review required
 

@@ -1,0 +1,421 @@
+SCI-FLT-FIXED v0.1 — FINAL MICRO-REPAIR
+AND CONDITIONAL-FREEZE DIRECTIVE
+
+The SCI-FLT-FIXED r0.4 scientific architecture and all substantive scientific
+dispositions are accepted as the basis for the freeze candidate.
+
+Do not perform another broad scientific derivation.
+
+Preserve:
+
+- SCI-FLT-FIXED as the package;
+- FLT-FIXED-CONV as the sole base numerical family;
+- FLT-FIXED-CONV-LOWPASS only as a qualified subtype;
+- strict real-valued linearity with no additive term;
+- one sampled convolution applied exactly once;
+- one exact parent signal role;
+- one frozen parent membership and J_full;
+- A_Theta,J = J_full L_Theta;
+- K_req = K_nonzero for the ordinary method;
+- exact-zero coefficients as nondependencies;
+- K_store as scientifically nonauthoritative;
+- full-footprint-only as the sole v0.1 edge method;
+- explicit identity and zero-operator support;
+- the empty-nonzero-support not-produced disposition;
+- separate MAP-observation, MAP-coadd, and JINC parent roles;
+- no filter/coadd commutation claim;
+- transformed parent-map amplitude and inherited nominal-beam lineage;
+- no automatic filtered-beam, flux, source-amplitude, or calibration claim;
+- separately typed response families;
+- covariance-authority and representation axes;
+- the one-sparse marginal-only covariance result;
+- immutable FLT-NOI-COMPATIBILITY;
+- late independently requested NOI children;
+- separate bundle, parent-row, and publication policy domains;
+- candidate-before-realization lifecycle;
+- exposure lineage distinct from influence;
+- prospective numerical-comparison policy;
+- every existing exclusion and nonclaim.
+
+Do not inspect implementation, configuration, schemas, tests, audits, repairs,
+validation, reductions, generated products, defaults, historical behavior, or
+production status.
+
+Do not renumber SCI-FLT-FIXED-REQ-001--053 or
+SCI-FLT-FIXED-PRED-001--030.
+
+Amend existing draft wording where the obligation already exists. Append new
+identifiers only for genuinely new normative obligations.
+
+======================================================================
+1. TYPE THE PARENT FACT DOMAIN AND NUMERICAL SIGNAL DOMAIN
+======================================================================
+
+The current text calls m real-valued while also asking whether m_q is available
+and finite.
+
+Define separately:
+
+    S_parent_fact
+      = exact parent row-identity and fact domain;
+
+    D_m
+      = {q in S_parent_fact:
+           an available finite real signal payload exists at q};
+
+    m : D_m -> R.
+
+A missing, unavailable, or non-finite stored payload is a typed row fact and is
+not an element of the scientific numerical function m.
+
+Define the ordinary output domain as:
+
+    S_out
+      = {p:
+           for every r in K_req,
+             p-r is in S_parent_fact,
+             p-r is admitted for the exact FLT use,
+             p-r is in D_m,
+             and every required predicate passes}.
+
+Define:
+
+    y : S_out -> R.
+
+Do not evaluate m_q before establishing q in D_m.
+
+Parent-shaped storage remains a representation containing payload and state
+records; it is not the scientific vector domain.
+
+Update:
+
+- the scientific-object definition;
+- the same-grid operator;
+- S_in/S_out terminology;
+- the selector definition;
+- REQ-002, REQ-007, REQ-012, REQ-037, and REQ-038 as needed;
+- the rationale and ECS.
+
+Append one requirement and prediction only if this cannot be expressed through
+the existing clauses without changing their stable meaning.
+
+======================================================================
+2. TYPE THE ZERO OPERATOR WITHOUT OVERLOADING K_req
+======================================================================
+
+For the exact zero operator use:
+
+    K_nonzero_zero = empty set
+    K_req_zero     = empty set.
+
+Do not describe a parent row domain as a K_req domain.
+
+Define the zero-operator output domain independently:
+
+    S_out_zero
+      = exact admitted finite parent-signal row domain
+        under the zero-operator request and predicates;
+
+    y_p = 0 for p in S_out_zero.
+
+The zero operator:
+
+- does not acquire arbitrary storage rows through a vacuous universal
+  predicate;
+- retains exact parent identity and row support;
+- has local fixed-state derivative zero;
+- has parent-payload conditional covariance contribution zero;
+- may still have unavailable complete source-domain response or systematic
+  uncertainty.
+
+Define “nonzero convolution” exactly as:
+
+    K_nonzero is not empty.
+
+Retain its distinction from a nonzero convolution having empty S_out.
+
+======================================================================
+3. SEPARATE SCIENTIFIC OPERATOR IDENTITY FROM STORAGE REPRESENTATION
+======================================================================
+
+The r0.4 text says K_store is scientifically nonauthoritative and that dense,
+sparse, cropped, or zero-padded encodings do not change product identity.
+It also binds K_store inside operator records and states broadly that operator
+or kernel changes create new scientific generations.
+
+Create two exact identity layers.
+
+A. Scientific operator identity
+
+Bind:
+
+- canonical coordinate-domain offset-to-coefficient relation;
+- canonical exact coefficient values and units;
+- K_geom_science;
+- K_nonzero;
+- K_req;
+- center, orientation, handedness, phase, and subpixel convention;
+- normalization;
+- coordinate/WCS metric;
+- transfer qualification;
+- edge rule;
+- input and output scientific domains;
+- support, response, covariance, and lifecycle science.
+
+Its digest must be independent of dense/sparse/container serialization.
+
+B. Representation identity
+
+Bind separately:
+
+- K_store;
+- dense, sparse, cropped, or padded encoding;
+- field ordering;
+- byte serialization;
+- compression/container representation;
+- representation digest and representation generation.
+
+A representation-only change:
+
+- may create a new representation artifact or representation generation;
+- must retain the same scientific operator identity;
+- must retain the same FLT product identity and scientific generation;
+- must not alter S_out, arithmetic, response, covariance, influence, or claim.
+
+A change to the canonical scientific coefficient map or another scientific
+operator fact creates a new FLT transformation and product generation.
+
+Repair:
+
+- Section 5 operator identity;
+- Section 6 support identities;
+- Section 10 generation identity;
+- REQ-009, REQ-030, and REQ-038;
+- PRED-009 and PRED-022;
+- ECS reconstruction and mutation checks.
+
+Add an exact representation-invariance fixture:
+
+    dense and sparse encodings
+    -> different representation identity
+    -> identical scientific operator and FLT product identity.
+
+======================================================================
+4. CLOSE THE EMPTY-SUPPORT PUBLICATION OBJECT AND FOUR AXES
+======================================================================
+
+The ordinary lifecycle currently requires a complete_publication_candidate,
+while the empty-S_out branch goes directly from
+applied_no_scientific_output_support to publication_decision.
+
+Introduce an exact candidate object for the no-product branch.
+
+Preferred structure:
+
+    complete_publication_disposition_candidate
+
+with variants:
+
+    product_candidate
+    no_output_support_candidate.
+
+The no-output-support candidate shall contain:
+
+- exact request;
+- parent;
+- plan;
+- operator;
+- K_req;
+- attempted output-domain construction;
+- proof that S_out is empty;
+- exact row/cause accounting;
+- application generation;
+- applied_no_scientific_output_support state;
+- prescribed publication cause.
+
+It contains no realized FLT-SIG and is not an atomic FLT product bundle.
+
+SCI-FLT-FIXED:output_publication@1 shall evaluate either exact candidate
+variant.
+
+For a requested nonzero convolution with empty S_out, use the exact
+publication-use axes:
+
+    request       = requested
+    applicability = applicable
+    eligibility   = ineligible
+    realization   = not_produced
+    cause         = no_full_footprint_output_rows.
+
+The earlier input/application use may have been eligible and successfully
+applied. The later publication named use is ineligible because no scientific
+signal rows exist.
+
+Do not call this:
+
+- not requested;
+- disabled;
+- execution failure;
+- decision unavailable;
+- zero operator;
+- realized empty product.
+
+Update:
+
+- Section 10 lifecycle;
+- Section 11 policy semantics;
+- REQ-028, REQ-033, REQ-048, and REQ-053;
+- PRED-029;
+- rationale and ECS.
+
+======================================================================
+5. PRESERVE LATE-NOI AND COVARIANCE CLOSURES
+======================================================================
+
+Retain without weakening:
+
+- not_requested_at_FLT_publication as historical provenance only;
+- later NOI child request/lifecycle ownership;
+- no FLT mutation;
+- exact compatible FLT boundary/profile requirement;
+- exact one-sparse marginal result under marginal-only authority;
+- two-or-more-parent unknown-cross-term unavailability;
+- no inferred cross-row covariance or independence;
+- separately typed zero parent-payload contribution.
+
+No further NOI or covariance-family expansion is authorized.
+
+======================================================================
+6. COMPLETE AUTHORITY AND SOURCE CLOSURE
+======================================================================
+
+Return the exact bytes of:
+
+- the original seventeen-object Stage A packet;
+- AUTHOR_PACKET_MANIFEST.md;
+- all r0.2, r0.3, and r0.4 owner directives;
+- MAP-to-FLT boundary;
+- JINC-to-FLT boundary;
+- FLT-to-NOI boundary;
+- input_bundle_admission profile;
+- input_parent_row_admission profile;
+- output_publication profile;
+- numerical-comparison policy;
+- TRACEABILITY.json;
+- BUILD_BINDING.json;
+- AUTHORITY_MANIFEST.json;
+- source-closure report;
+- owner-decision parity report;
+- core/view parity report;
+- semantic-change report;
+- profile report;
+- clean-rebuild report;
+- visual-QA and metadata report;
+- every source document and rendered PDF.
+
+Reproduce every quoted SHA-256 and byte count.
+
+AUTHORITY_MANIFEST.json shall be the single proposed-freeze entry point. It
+shall bind every object's:
+
+- exact path;
+- byte count;
+- SHA-256;
+- scientific/process/representation role;
+- authority state;
+- compatibility or supersession state;
+- generated-view relation.
+
+The three FLT policy records remain unregistered draft policies until separately
+owner-approved and Registry-bound. Conditional scientific freeze does not make
+them evaluable or make a numerical route available.
+
+Any unreproducible object or binding returns only its dependent claim or route
+to typed unavailability.
+
+======================================================================
+7. FREEZE-CANDIDATE DISPOSITION
+======================================================================
+
+After the formal repairs and exact source closure, return a proposed
+scientific-owner freeze record for:
+
+    SCI-FLT-FIXED v0.1.
+
+The freeze shall be explicitly conditional.
+
+It may establish:
+
+- the fixed-convolution scientific method;
+- exact product, response, covariance, support, lifecycle, and boundary
+  meanings;
+- exact typed unavailable routes.
+
+It shall not establish:
+
+- an available numerical MAP or JINC parent;
+- registered FLT profiles;
+- implementation conformity;
+- numerical adequacy;
+- response or covariance fidelity;
+- validation;
+- observational performance;
+- readiness;
+- production suitability;
+- production authorization;
+- SCI-FLT-INF authority;
+- Unity activity.
+
+Do not launch SCI-FLT-INF.
+
+======================================================================
+8. IDENTIFIERS AND PREFLIGHT
+======================================================================
+
+Preserve:
+
+    SCI-FLT-FIXED-REQ-001--053
+    SCI-FLT-FIXED-PRED-001--030.
+
+If new independent obligations are required, use:
+
+    SCI-FLT-FIXED-REQ-054 and later
+    SCI-FLT-FIXED-PRED-031 and later.
+
+Verify:
+
+- one byte-identical final normative core in all views;
+- one owner-decision state;
+- exact equation/requirement/prediction parity;
+- profile/action parity;
+- source and manifest digests;
+- no stale r0.1--r0.4 identity in the intended freeze candidate;
+- all PDFs reopen and render without clipping, overlap, malformed glyphs, or
+  broken identifiers;
+- title, owner, revision, date, status, and metadata agree.
+
+======================================================================
+9. DELIVERABLES
+======================================================================
+
+Return:
+
+1. final freeze-candidate Normative Core;
+2. final freeze-candidate Scientist Rationale;
+3. final freeze-candidate Engineering Conformance Specification;
+4. numerical-domain and partial-function amendment;
+5. zero-operator domain amendment;
+6. scientific-versus-representation identity amendment;
+7. empty-support publication candidate and four-axis amendment;
+8. complete source packet;
+9. AUTHORITY_MANIFEST.json;
+10. equation/requirement/prediction semantic-change map;
+11. owner-decision parity report;
+12. core/rationale/ECS parity report;
+13. clean-rebuild and visual-QA report;
+14. proposed conditional scientific-owner freeze record.
+
+Do not claim implementation conformity, achieved response or covariance,
+numerical adequacy, validation, calibration, observational performance,
+readiness, production suitability, production authorization, or Unity
+activity.

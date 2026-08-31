@@ -1,6 +1,6 @@
 # SCI-FLT-FIXED v0.1 Low-Pass Transform Convention
 
-Record identity: `SCI-FLT-FIXED-LOWPASS-TRANSFORM-CONVENTION v0.1/draft-r0.4`
+Record identity: `SCI-FLT-FIXED-LOWPASS-TRANSFORM-CONVENTION v0.1/freeze-candidate`
 
 Status: required convention fields, not a realized low-pass plan
 

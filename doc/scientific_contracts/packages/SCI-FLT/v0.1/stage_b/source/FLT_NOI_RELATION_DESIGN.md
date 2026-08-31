@@ -1,6 +1,6 @@
 # SCI-FLT-FIXED v0.1 Immutable FLT/NOI Relation Design
 
-Record identity: `SCI-FLT-FIXED-NOI-RELATION-DESIGN v0.1/draft-r0.4`
+Record identity: `SCI-FLT-FIXED-NOI-RELATION-DESIGN v0.1/freeze-candidate`
 
 Status: implementation-blind Stage B closure draft; scientific-owner review required
 

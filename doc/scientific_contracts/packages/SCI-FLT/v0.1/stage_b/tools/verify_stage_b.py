@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify SCI-FLT-FIXED v0.1 Stage B r0.4 closure and artifacts."""
+"""Verify SCI-FLT-FIXED v0.1 conditional freeze-candidate artifacts."""
 
 from __future__ import annotations
 
@@ -47,6 +47,7 @@ OWNER_DIRECTIVE_PATHS = {
     "r0_2": SOURCE_DIR / "OWNER_DIRECTIVE_R0_2.txt",
     "r0_3": SOURCE_DIR / "OWNER_DIRECTIVE_R0_3.txt",
     "r0_4": SOURCE_DIR / "OWNER_DIRECTIVE_R0_4.txt",
+    "final": SOURCE_DIR / "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt",
 }
 
 EXPECTED_REQUIREMENTS = [
@@ -96,6 +97,18 @@ R0_4_OWNER_DIRECTIVE_SECTIONS = [
     "6. CLARIFY LATE NOI REQUESTS",
     "7. COMPLETE SOURCE, PROFILE, AND AUTHORITY PREFLIGHT",
     "8. MECHANICAL AND VISUAL FREEZE PREFLIGHT",
+    "9. DELIVERABLES",
+]
+
+FINAL_OWNER_DIRECTIVE_SECTIONS = [
+    "1. TYPE THE PARENT FACT DOMAIN AND NUMERICAL SIGNAL DOMAIN",
+    "2. TYPE THE ZERO OPERATOR WITHOUT OVERLOADING K_req",
+    "3. SEPARATE SCIENTIFIC OPERATOR IDENTITY FROM STORAGE REPRESENTATION",
+    "4. CLOSE THE EMPTY-SUPPORT PUBLICATION OBJECT AND FOUR AXES",
+    "5. PRESERVE LATE-NOI AND COVARIANCE CLOSURES",
+    "6. COMPLETE AUTHORITY AND SOURCE CLOSURE",
+    "7. FREEZE-CANDIDATE DISPOSITION",
+    "8. IDENTIFIERS AND PREFLIGHT",
     "9. DELIVERABLES",
 ]
 
@@ -168,25 +181,26 @@ def verify_sources_and_trace(checks: list[str]) -> dict:
             path.read_bytes().decode("ascii")
         except UnicodeDecodeError as error:
             raise VerificationError(f"non-ASCII Stage B source: {path.name}") from error
-    checks.append("all authored r0.4 sources are ASCII-clean; all three exact owner directives are preserved as UTF-8")
+    checks.append("all authored freeze-candidate sources are ASCII-clean; all four exact owner directives are preserved as UTF-8")
 
     directive_sections = {
         "r0_2": R0_2_OWNER_DIRECTIVE_SECTIONS,
         "r0_3": R0_3_OWNER_DIRECTIVE_SECTIONS,
         "r0_4": R0_4_OWNER_DIRECTIVE_SECTIONS,
+        "final": FINAL_OWNER_DIRECTIVE_SECTIONS,
     }
     for revision, path in OWNER_DIRECTIVE_PATHS.items():
         owner_text = path.read_text(encoding="utf-8")
         for section in directive_sections[revision]:
             require(section in owner_text, f"{revision} owner-directive section missing: {section}")
-    checks.append("all 14 r0.2, 10 r0.3, and 9 r0.4 owner-directive sections are present")
+    checks.append("all 14 r0.2, 10 r0.3, 9 r0.4, and 9 final owner-directive sections are present")
 
     requirements = exact_heading_ids(CORE_PATH, "SCI-FLT-FIXED-REQ")
     predictions = exact_heading_ids(CORE_PATH, "SCI-FLT-FIXED-PRED")
     require(requirements == EXPECTED_REQUIREMENTS, "requirement heading sequence mismatch")
     require(predictions == EXPECTED_PREDICTIONS, "prediction heading sequence mismatch")
-    checks.append("53 stable requirement identifiers preserve 001-051 and append 052-053")
-    checks.append("30 stable prediction identifiers preserve 001-028 and append 029-030")
+    checks.append("all 53 stable requirement identifiers remain exactly 001-053 without renumbering or addition")
+    checks.append("all 30 stable prediction identifiers remain exactly 001-030 without renumbering or addition")
 
     conformance_text = CONFORMANCE_PATH.read_text(encoding="ascii")
     for identifier in EXPECTED_IDS:
@@ -264,7 +278,7 @@ def verify_sources_and_trace(checks: list[str]) -> dict:
                     owner_section in sections,
                     f"missing owner-directive heading for {identifier}: {listed_source}",
                 )
-    checks.append("traceability covers every identifier and only the admitted Stage A packet plus the exact r0.2/r0.3/r0.4 owner directives")
+    checks.append("traceability covers every identifier and only the admitted Stage A packet plus the exact r0.2/r0.3/r0.4/final owner directives")
     checks.append("every traced core, rationale, conformance, Stage A, and owner-directive section resolves")
 
     core_sha = sha256(CORE_PATH)
@@ -311,7 +325,17 @@ def verify_closure_sources(checks: list[str]) -> tuple[dict, dict]:
         "K_store",
         "Var(y_i) = sum_j A_ij^2 Var(m_j)",
         "Var(y_i) = A_ij^2 Var(m_j)",
-        "m, y, k_Theta(r), L_Theta, and A_Theta,J are real-valued",
+        "S_parent_fact",
+        "D_m",
+        "m : D_m -> R",
+        "y : S_out -> R",
+        "K_nonzero_zero = empty set",
+        "K_req_zero     = empty set",
+        "S_out_zero",
+        "scientific operator identity",
+        "representation identity",
+        "complete_publication_disposition_candidate",
+        "no_output_support_candidate",
         "applied_no_scientific_output_support",
         "no_full_footprint_output_rows",
         "not_requested_at_FLT_publication",
@@ -320,13 +344,26 @@ def verify_closure_sources(checks: list[str]) -> tuple[dict, dict]:
         "H(nu) = sum over r of k(r) exp[-2 pi i nu dot r]",
         "AUTHORITY_MANIFEST",
     ]:
-        require(required in core_text, f"r0.4 core closure text missing: {required}")
+        require(required in core_text, f"freeze-candidate core closure text missing: {required}")
     require(
         "(L_Theta m)_p = sum over r in K_geom_science" not in core_text,
         "stale geometric-support convolution equation remains",
     )
     require("FLT-NOI-ATTACHMENT-STATE" not in core_text, "mutable NOI attachment role remains in core")
     require("input_row_admission@1" not in core_text, "misnamed row profile remains in core")
+    require(
+        "Inspecting an authorized payload" not in core_text,
+        "payload inspection is still used to establish numerical-domain membership",
+    )
+    require(
+        "complete publication candidate" not in core_text,
+        "stale generic publication-candidate terminology remains",
+    )
+    for path in [CORE_PATH, RATIONALE_PATH, CONFORMANCE_PATH]:
+        require(
+            "v0.1/draft-r0.4" not in path.read_text(encoding="ascii"),
+            f"stale r0.4 current-document identity remains: {path.name}",
+        )
 
     rationale_text = RATIONALE_PATH.read_text(encoding="ascii")
     for required in [
@@ -382,6 +419,11 @@ def verify_closure_sources(checks: list[str]) -> tuple[dict, dict]:
         )
     publication = profiles[2]
     require(
+        set(publication.get("candidate_variants", {}))
+        == {"product_candidate", "no_output_support_candidate"},
+        "publication candidate variants mismatch",
+    )
+    require(
         "performs no publication" in publication["consumer_action"],
         "publication profile must not perform publication",
     )
@@ -392,21 +434,25 @@ def verify_closure_sources(checks: list[str]) -> tuple[dict, dict]:
     dispositions = publication["missing_or_conflict_behavior"]
     require(
         dispositions.get("requested_nonzero_empty_scientific_output_support")
-        == [
-            "applied_no_scientific_output_support",
-            "not_produced",
-            "no_full_footprint_output_rows",
-        ],
+        == {
+            "candidate": "no_output_support_candidate",
+            "application_state": "applied_no_scientific_output_support",
+            "request": "requested",
+            "applicability": "applicable",
+            "eligibility": "ineligible",
+            "realization": "not_produced",
+            "cause": "no_full_footprint_output_rows",
+        },
         "empty-output-support publication disposition mismatch",
     )
     require(
         dispositions.get("identity_operator")
-        == ["complete_publication_candidate", "publisher_action", "realized_identity"],
+        == ["product_candidate", "publisher_action", "realized_identity"],
         "identity publication disposition mismatch",
     )
     require(
         dispositions.get("zero_operator")
-        == ["complete_publication_candidate", "publisher_action", "realized_zero"],
+        == ["product_candidate", "publisher_action", "realized_zero"],
         "zero publication disposition mismatch",
     )
     require(
@@ -449,16 +495,13 @@ def verify_closure_sources(checks: list[str]) -> tuple[dict, dict]:
         require(set(flattened) == set(expected), f"incomplete {label} change-map partition")
         require(groups.get("renumbered") == [], f"{label} identifiers were renumbered")
 
+    require(req_changes.get("appended") == [], "final directive appended a requirement")
+    require(pred_changes.get("appended") == [], "final directive appended a prediction")
+    routes = change_map.get("final_owner_directive_routes", {})
     require(
-        req_changes.get("appended") == EXPECTED_REQUIREMENTS[51:],
-        "appended requirement sequence mismatch",
+        list(routes) == FINAL_OWNER_DIRECTIVE_SECTIONS,
+        "final owner-directive route sequence mismatch",
     )
-    require(
-        pred_changes.get("appended") == EXPECTED_PREDICTIONS[28:],
-        "appended prediction sequence mismatch",
-    )
-    routes = change_map.get("r0_4_owner_directive_routes", {})
-    require(list(routes) == R0_4_OWNER_DIRECTIVE_SECTIONS, "r0.4 owner-directive route sequence mismatch")
     routed_ids = {
         value
         for values in routes.values()
@@ -466,15 +509,13 @@ def verify_closure_sources(checks: list[str]) -> tuple[dict, dict]:
         if value in EXPECTED_IDS
     }
     changed_ids = set(req_changes["amended_without_renumbering"])
-    changed_ids.update(req_changes["appended"])
     changed_ids.update(pred_changes["amended_without_renumbering"])
-    changed_ids.update(pred_changes["appended"])
     require(changed_ids <= routed_ids, "changed identifier lacks an owner-directive route")
-    require(len(change_map.get("equation_changes", [])) == 3, "equation change map mismatch")
-    require(len(change_map.get("route_status_changes", [])) == 7, "route-status change map mismatch")
+    require(len(change_map.get("formal_changes", [])) == 4, "formal change map mismatch")
+    require(len(change_map.get("route_status_changes", [])) == 6, "route-status change map mismatch")
     require(len(change_map.get("lifecycle_changes", [])) == 1, "lifecycle change map mismatch")
     checks.append("equation, requirement, and prediction semantic-change partitions are exact and preserve stable IDs")
-    checks.append("every r0.4 amended or appended identifier routes to an exact r0.4 owner-directive section")
+    checks.append("every final amended identifier routes to an exact final owner-directive section; no identifier was appended or renumbered")
     return policies, change_map
 
 
@@ -557,7 +598,7 @@ def verify_binding_and_pdfs(binding_path: Path, checks: list[str]) -> dict:
         for name, path in buildmod.FONT_FILES.items()
     ]
     require(binding.get("embedded_fonts") == expected_fonts, "embedded-font binding mismatch")
-    checks.append("launch commit, exact packet bytes, all three owner directives, r0.4 sources, date, and build tools match BUILD_BINDING.json")
+    checks.append("launch commit, exact packet bytes, all four owner directives, freeze-candidate sources, date, and build tools match BUILD_BINDING.json")
     checks.append("all embedded font files and SHA-256 values match BUILD_BINDING.json")
 
     output_records = binding.get("outputs", [])
@@ -589,12 +630,15 @@ def verify_binding_and_pdfs(binding_path: Path, checks: list[str]) -> dict:
             buildmod.PACKET_MANIFEST_SHA256,
             sha256(OWNER_DIRECTIVE_PATHS["r0_2"]),
             sha256(OWNER_DIRECTIVE_PATHS["r0_3"]),
+            sha256(OWNER_DIRECTIVE_PATHS["r0_4"]),
+            sha256(OWNER_DIRECTIVE_PATHS["final"]),
             builder_sha,
             "Scientific owner: Grant Wilson",
             f"Stage B date: {buildmod.STAGE_B_DATE}",
         ]
         for value in required_text:
             require(value in text, f"missing PDF identity text in {output_path.name}: {value}")
+        require("v0.1/draft-r0.4" not in text, f"stale r0.4 identity in PDF: {output_path.name}")
         require(buildmod.STAGE_B_DATE in (reader.metadata.subject or ""), f"PDF subject date mismatch: {output_path.name}")
     checks.append("all three PDF identity blocks, Grant Wilson author metadata, date metadata, hashes, sizes, and page counts match")
     checks.append("every PDF page contains extractable text")
@@ -691,11 +735,11 @@ def write_source_closure(report_path: Path, binding: dict) -> None:
     packet = binding["packet"]
     owners = binding["owner_directives"]
     lines = [
-        "# SCI-FLT-FIXED v0.1 r0.4 Source-Packet Closure Report",
+        "# SCI-FLT-FIXED v0.1 Freeze-Candidate Source-Packet Closure Report",
         "",
-        "Report identity: `SCI-FLT-FIXED-SOURCE-PACKET-CLOSURE v0.1/draft-r0.4`",
+        "Report identity: `SCI-FLT-FIXED-SOURCE-PACKET-CLOSURE v0.1/freeze-candidate`",
         "",
-        "Status: PASS; exact repository bytes and SHA-256 values reproduced; scientific-owner review required",
+        "Status: PASS; exact repository bytes and SHA-256 values reproduced; conditional freeze candidate requires owner signature",
         "",
         "## Stage A author packet",
         "",
@@ -745,27 +789,28 @@ def write_source_closure(report_path: Path, binding: dict) -> None:
 
 def write_owner_parity(report_path: Path, change_map: dict) -> None:
     lines = [
-        "# SCI-FLT-FIXED v0.1 r0.4 Owner-Decision Parity Report",
+        "# SCI-FLT-FIXED v0.1 Freeze-Candidate Owner-Decision Parity Report",
         "",
-        "Report identity: `SCI-FLT-FIXED-OWNER-DECISION-PARITY v0.1/draft-r0.4`",
+        "Report identity: `SCI-FLT-FIXED-OWNER-DECISION-PARITY v0.1/freeze-candidate`",
         "",
-        "Status: PASS; every directive section has an exact artifact or identifier route; scientific-owner review required",
+        "Status: PASS; every directive section has an exact artifact or identifier route; owner signature required",
         "",
         f"r0.2 owner directive SHA-256: `{sha256(OWNER_DIRECTIVE_PATHS['r0_2'])}`",
         f"r0.3 owner directive SHA-256: `{sha256(OWNER_DIRECTIVE_PATHS['r0_3'])}`",
         f"r0.4 owner directive SHA-256: `{sha256(OWNER_DIRECTIVE_PATHS['r0_4'])}`",
+        f"final owner directive SHA-256: `{sha256(OWNER_DIRECTIVE_PATHS['final'])}`",
         "",
         "## Directive routes",
         "",
     ]
-    for section, routes in change_map["r0_4_owner_directive_routes"].items():
+    for section, routes in change_map["final_owner_directive_routes"].items():
         lines.append(f"- PASS: `{section}` -> {', '.join(f'`{route}`' for route in routes)}")
     lines.extend(
         [
             "",
             "## Stable-identifier result",
             "",
-            "Requirements 001-051 and predictions 001-028 retain their identifiers. Requirements 052-053 and predictions 029-030 are append-only additions. No identifier was renumbered.",
+            "All requirements 001-053 and predictions 001-030 retain their existing identifiers. The final directive appended and renumbered none.",
             "",
             "## Nonclaims",
             "",
@@ -779,11 +824,11 @@ def write_owner_parity(report_path: Path, change_map: dict) -> None:
 def write_view_parity(report_path: Path) -> None:
     core_sha = sha256(CORE_PATH)
     lines = [
-        "# SCI-FLT-FIXED v0.1 r0.4 Core/View Parity Report",
+        "# SCI-FLT-FIXED v0.1 Freeze-Candidate Core/View Parity Report",
         "",
-        "Report identity: `SCI-FLT-FIXED-CORE-VIEW-PARITY v0.1/draft-r0.4`",
+        "Report identity: `SCI-FLT-FIXED-CORE-VIEW-PARITY v0.1/freeze-candidate`",
         "",
-        "Status: PASS; rationale and ECS import one exact normative core; scientific-owner review required",
+        "Status: PASS; rationale and ECS import one exact normative core; conditional freeze candidate requires owner signature",
         "",
         f"Normative core SHA-256: `{core_sha}`",
         f"Scientist rationale source SHA-256: `{sha256(RATIONALE_PATH)}`",
@@ -807,9 +852,9 @@ def write_view_parity(report_path: Path) -> None:
 
 def write_rebuild_report(report_path: Path, binding: dict, rebuilt: dict[str, str]) -> None:
     lines = [
-        "# SCI-FLT-FIXED v0.1 r0.4 Deterministic Rebuild Report",
+        "# SCI-FLT-FIXED v0.1 Freeze-Candidate Deterministic Rebuild Report",
         "",
-        "Report identity: `SCI-FLT-FIXED-DETERMINISTIC-REBUILD v0.1/draft-r0.4`",
+        "Report identity: `SCI-FLT-FIXED-DETERMINISTIC-REBUILD v0.1/freeze-candidate`",
         "",
         "Status: PASS; a clean temporary rebuild reproduced every bound PDF SHA-256",
         "",
@@ -836,9 +881,9 @@ def write_rebuild_report(report_path: Path, binding: dict, rebuilt: dict[str, st
 
 def write_profile_report(report_path: Path, policies: dict) -> None:
     lines = [
-        "# SCI-FLT-FIXED v0.1 r0.4 Profile Architecture Report",
+        "# SCI-FLT-FIXED v0.1 Freeze-Candidate Profile Architecture Report",
         "",
-        "Report identity: `SCI-FLT-FIXED-PROFILE-ARCHITECTURE v0.1/draft-r0.4`",
+        "Report identity: `SCI-FLT-FIXED-PROFILE-ARCHITECTURE v0.1/freeze-candidate`",
         "",
         "Status: PASS; exact draft identities, dispositions, and actor boundaries reproduced; r0.3-origin profiles remain unregistered and not Registry-evaluated",
         "",
@@ -856,13 +901,13 @@ def write_profile_report(report_path: Path, policies: dict) -> None:
             "",
             "## Actor boundary",
             "",
-            "Parent-row decisions feed FLT-owned construction of `J_full` and `S_out`. VAL may create a decision artifact. The FLT publisher alone performs or declines publication and owns realization and FLT-local validity.",
+            "Parent-row decisions establish `S_parent_fact` and `D_m` facts for FLT-owned construction of `J_full` and `S_out`. VAL may create a decision artifact. The FLT publisher alone performs or declines publication and owns realization and FLT-local validity.",
             "",
-            "## Exact r0.4 dispositions",
+            "## Exact freeze-candidate dispositions",
             "",
-            "- Empty nonzero `S_out`: `applied_no_scientific_output_support` -> `not_produced` (`no_full_footprint_output_rows`).",
+            "- Empty nonzero `S_out`: complete `no_output_support_candidate`; requested, applicable, ineligible, `not_produced` (`no_full_footprint_output_rows`).",
             "- Base versus qualified companions: honest unavailable companions are permitted only for the base request; each qualified request requires its named exact companion.",
-            "- Identity and zero: complete candidate and publisher action precede `realized_identity` or `realized_zero`.",
+            "- Identity and zero: `product_candidate` and publisher action precede `realized_identity` or `realized_zero`.",
             "- Publication failure: eligible transformation failure is `realization_failed` and emits no complete product.",
             "- Late NOI request: publication-time not-requested is provenance; the child owns its lifecycle and cannot mutate FLT.",
             "",
@@ -900,101 +945,115 @@ def authority_inventory() -> list[dict]:
     for item in buildmod.DOCUMENTS:
         classified[(OUTPUT_DIR / item["output"]).resolve()] = "rendered_pdf"
 
-    def descriptors(path: Path, artifact_class: str) -> tuple[str, str, str]:
+    def descriptors(path: Path, artifact_class: str) -> tuple[str, str, str, str]:
         name = path.name
         if artifact_class == "stage_a_author_packet_manifest":
             return (
                 "stage_a_scientific_authority_manifest",
+                "admitted_scientific_authority",
                 "active_exact_packet_binding",
                 "authoritative_input_not_generated",
             )
         if artifact_class == "stage_a_admitted_object":
             return (
                 "stage_a_admitted_scientific_authority",
+                "admitted_scientific_authority",
                 "active_exact_admitted_object",
                 "authoritative_input_not_generated",
             )
         if artifact_class == "build_tool":
             return (
                 "deterministic_pdf_build_process",
-                "active_r0_4_process_recipe",
+                "process_recipe_not_scientific_authority",
+                "active_freeze_candidate_process_recipe",
                 "generates_build_binding_and_three_pdf_views",
             )
         if artifact_class == "verification_tool":
             return (
                 "durable_content_identity_traceability_and_render_verification_process",
-                "active_r0_4_process_recipe",
+                "process_recipe_not_scientific_authority",
+                "active_freeze_candidate_process_recipe",
                 "generates_verification_parity_profile_rebuild_closure_and_authority_records",
             )
         if artifact_class == "build_binding":
             return (
                 "deterministic_build_identity_record",
-                "active_r0_4_generated_evidence",
+                "generated_process_evidence_not_scientific_authority",
+                "active_freeze_candidate_generated_evidence",
                 "generated_by_build_stage_b.py_from_bound_sources_tools_fonts_and_pdfs",
             )
         if artifact_class == "verification_or_parity_report":
             return (
                 "process_verification_or_parity_evidence",
-                "active_r0_4_generated_evidence",
+                "generated_process_evidence_not_scientific_authority",
+                "active_freeze_candidate_generated_evidence",
                 "generated_or_completed_by_verify_stage_b.py_and_bound_to_current_build",
             )
         if artifact_class == "rendered_pdf":
             return (
                 "rendered_stage_b_scientific_view",
-                "active_r0_4_generated_view",
+                "generated_view_of_bound_candidate_source",
+                "active_freeze_candidate_generated_view",
                 "generated_by_build_stage_b.py_from_exact_named_source_and_shared_core",
             )
-        if name.startswith("OWNER_DIRECTIVE_R0_"):
+        if name.startswith("OWNER_DIRECTIVE_"):
             state = (
                 "active_scientific_owner_directive"
-                if name == "OWNER_DIRECTIVE_R0_4.txt"
-                else "preserved_with_exact_r0_4_supersession_or_amendment_only"
+                if name == "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt"
+                else "preserved_with_exact_later_supersession_or_amendment_only"
             )
             return (
                 "scientific_owner_directive",
+                "scientific_owner_authority",
                 state,
                 "owner_authored_input_not_generated",
             )
         if name == "SHARED_NORMATIVE_CORE.md":
             return (
                 "normative_scientific_core_source",
-                "active_draft_r0_4",
+                "conditional_freeze_candidate_normative_authority_pending_owner_signature",
+                "active_freeze_candidate",
                 "single_source_imported_by_rationale_ecs_and_all_pdf_views",
             )
         if name == "SCIENTIST_RATIONALE.md":
             return (
                 "scientist_readable_explanatory_view_source",
-                "active_draft_r0_4_core_subordinate",
+                "core_subordinate_candidate_view",
+                "active_freeze_candidate_core_subordinate",
                 "imports_exact_shared_core_and_generates_scientist_rationale_pdf",
             )
         if name == "ENGINEERING_CONFORMANCE.md":
             return (
                 "engineering_conformance_view_source",
-                "active_draft_r0_4_core_subordinate",
+                "core_subordinate_candidate_view",
+                "active_freeze_candidate_core_subordinate",
                 "imports_exact_shared_core_and_generates_engineering_conformance_pdf",
             )
         if name == "POLICY_RECORDS.json":
             return (
                 "unregistered_scientific_policy_profile_source",
-                "r0_3_origin_records_amended_and_bound_at_r0_4_but_not_owner_approved_registered_or_evaluated",
+                "unregistered_unapproved_draft_policy_not_evaluable",
+                "r0_3_origin_records_amended_and_bound_to_candidate_but_not_owner_approved_registered_or_evaluated",
                 "authored_source_reported_by_profile_and_parity_views",
             )
         if name == "NUMERICAL_CONFORMANCE_POLICY.md":
             return (
                 "prospective_numerical_comparison_policy_source",
+                "prospective_process_policy_not_scientific_result",
                 "draft_not_preregistered_and_no_candidate_finding",
                 "authored_supporting_source_not_a_generated_result",
             )
         return (
             "stage_b_scientific_closure_or_traceability_source",
-            "active_draft_r0_4_or_preserved_exact_supporting_record",
+            "conditional_freeze_candidate_supporting_source",
+            "active_freeze_candidate_or_preserved_exact_supporting_record",
             "authored_source_or_machine_readable_input_to_generated_reports",
         )
 
     rows = []
     for path, artifact_class in classified.items():
         require(path.is_file(), f"authority-manifest input missing: {path}")
-        role, state, relation = descriptors(path, artifact_class)
+        role, authority_state, state, relation = descriptors(path, artifact_class)
         rows.append(
             {
                 "artifact_class": artifact_class,
@@ -1002,6 +1061,7 @@ def authority_inventory() -> list[dict]:
                 "bytes": path.stat().st_size,
                 "sha256": sha256(path),
                 "role": role,
+                "authority_state": authority_state,
                 "compatibility_or_supersession_state": state,
                 "generated_view_relation": relation,
             }
@@ -1013,8 +1073,8 @@ def authority_manifest_record() -> dict:
     entries = authority_inventory()
     return {
         "schema_version": "1.0",
-        "manifest_identity": "SCI-FLT-FIXED-AUTHORITY-MANIFEST v0.1/proposed-freeze-r0.4",
-        "status": "complete proposed-freeze authority inventory; scientific-owner review required; not a scientific freeze",
+        "manifest_identity": "SCI-FLT-FIXED-AUTHORITY-MANIFEST v0.1/freeze-candidate",
+        "status": "single conditional-freeze-candidate entry point; complete exact inventory; owner signature required; no scientific freeze yet established",
         "scientific_owner": "Grant Wilson",
         "stage_b_date": buildmod.STAGE_B_DATE,
         "self_binding": {
@@ -1059,6 +1119,7 @@ def verify_authority_manifest(manifest_path: Path, digest_path: Path) -> None:
         "bytes",
         "sha256",
         "role",
+        "authority_state",
         "compatibility_or_supersession_state",
         "generated_view_relation",
     }
@@ -1083,11 +1144,11 @@ def write_report(
     visual_required: bool,
 ) -> None:
     lines = [
-        "# SCI-FLT-FIXED v0.1 Stage B Verification Report",
+        "# SCI-FLT-FIXED v0.1 Freeze-Candidate Verification Report",
         "",
-        "Report identity: `SCI-FLT-FIXED-STAGE-B-VERIFICATION v0.1/draft-r0.4`",
+        "Report identity: `SCI-FLT-FIXED-STAGE-B-VERIFICATION v0.1/freeze-candidate`",
         "",
-        "Status: PASS; deterministic r0.4 proposed-freeze preflight only; scientific-owner review required",
+        "Status: PASS; deterministic conditional-freeze-candidate preflight; owner signature required; no scientific freeze yet established",
         "",
         f"Build binding SHA-256: `{sha256(binding_path)}`",
         "",
@@ -1164,7 +1225,7 @@ def main() -> int:
             verify_authority_manifest(
                 args.authority_manifest_out.resolve(), args.authority_digest_out.resolve()
             )
-        checks.append("consolidated proposed-freeze authority inventory and external self-binding are complete")
+        checks.append("single conditional-freeze-candidate authority inventory and external self-binding are complete")
         write_source_closure(args.source_closure_out.resolve(), binding)
         write_owner_parity(args.owner_parity_out.resolve(), change_map)
         write_view_parity(args.view_parity_out.resolve())

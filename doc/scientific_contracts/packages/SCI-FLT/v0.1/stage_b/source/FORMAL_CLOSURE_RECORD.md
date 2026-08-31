@@ -1,15 +1,16 @@
-# SCI-FLT-FIXED v0.1 r0.4 Formal-Closure Record
+# SCI-FLT-FIXED v0.1 Freeze-Candidate Formal-Closure Record
 
-Document identity: `SCI-FLT-FIXED-FORMAL-CLOSURE v0.1/draft-r0.4`
+Document identity: `SCI-FLT-FIXED-FORMAL-CLOSURE v0.1/freeze-candidate`
 
-Status: implementation-blind Stage B closure draft; scientific-owner review required
+Status: implementation-blind conditional scientific-owner freeze-candidate closure; owner signature required
 
 Scientific owner: Grant Wilson
 
 Stage B date: `2026-08-31`
 
 Normative authority remains the shared core. This record makes the r0.2,
-r0.3, and r0.4 owner dispositions and cross-package boundaries easy to review;
+r0.3, r0.4, and final micro-repair owner dispositions and cross-package
+boundaries easy to review;
 it does not add a
 scientific rule beyond the core.
 
@@ -29,11 +30,11 @@ The v0.1 disposition is the preferred narrow rule:
 
 The plan is resolved without parent-amplitude selection, learning, tuning, or
 alteration. `J_full` is resolved once before convolution arithmetic from
-declared immutable parent identity and row membership, bundle and row
-admission, typed availability and finiteness, support, `K_req`, and required
-predicates. Authorized finiteness classification is structural screening, not
-plan tuning. The complete applied operator is
-`A_Theta,J = J_full L_Theta`.
+declared immutable `S_parent_fact`, row membership, bundle and row admission,
+typed facts defining `D_m`, support, `K_req`, and required predicates.
+Membership in `D_m` precedes evaluation of `m_q`. Reading declared typed row-
+state facts is structural screening, not evaluation of `m_q` or plan tuning.
+The complete applied operator is `A_Theta,J = J_full L_Theta`.
 
 Strict linearity is conditional on that exact frozen parent membership and
 selector. Response perturbations, covariance draws, noise realizations, and
@@ -52,12 +53,14 @@ excluded unless separately supplied as typed uncertainty.
 - An exact-zero coefficient creates no arithmetic, payload, influence,
   covariance, or admission dependency, and its parent payload is not
   dereferenced.
-- Dense, sparse, cropped, and zero-padded representations preserve all
-  scientific support, output, response, covariance, and identity facts.
+- Dense, sparse, cropped, and zero-padded representations have separately bound
+  representation identities while preserving all scientific support, output,
+  response, covariance, operator, product, and generation identities.
 - Identity uses `K_req = {0}` and preserves the exact admitted finite parent
   row domain.
-- Zero inherits an explicit admitted finite parent-support row domain and does
-  not gain rows from a vacuous empty-footprint predicate.
+- Zero has `K_nonzero_zero = empty set`, `K_req_zero = empty set`, and
+  independently constructed `S_out_zero`, the exact admitted finite parent-
+  signal row domain under its request and predicates.
 
 Geometric, storage, nonzero, required-dependency, signed, absolute, and squared
 support are separate objects. A required exact-zero offset needs a separately
@@ -65,7 +68,8 @@ named method and a scientific reason independent of storage.
 
 ## 4. Real scalar and coefficient disposition
 
-`m`, `y`, `k_Theta(r)`, `L_Theta`, and `A_Theta,J` are real-valued. Every
+`m : D_m -> R` and `y : S_out -> R`; `S_parent_fact`, `D_m`, and `S_out` are
+separately typed. `k_Theta(r)`, `L_Theta`, and `A_Theta,J` are real-valued. Every
 coefficient is finite, real, unit-typed, canonically exactly represented, and
 content-bound. Missing, non-finite, complex, unrepresentable, or conflicting
 coefficients make the plan unavailable and cannot be repaired by numerical
@@ -81,7 +85,8 @@ requested
   -> effective
   -> resolved
   -> applied
-  -> complete_publication_candidate
+  -> complete_publication_disposition_candidate
+       (product_candidate | no_output_support_candidate)
   -> publication_decision
   -> realized | failed | not_produced.
 ```
@@ -93,9 +98,11 @@ is not produced. Identity and zero follow the same sequence.
 
 A requested nonzero convolution with empty `S_out` records
 `applied_no_scientific_output_support`, preserves all bound application
-evidence, and proceeds to `not_produced` with cause
-`no_full_footprint_output_rows`. It is not disabled, execution failure, zero,
-identity, or a realized empty product.
+evidence in a complete `no_output_support_candidate` with no realized
+`FLT-SIG` or atomic bundle, and proceeds with publication axes requested,
+applicable, ineligible, and not produced, with cause
+`no_full_footprint_output_rows`. It is not not-requested, disabled, execution
+failure, decision unavailable, zero, identity, or a realized empty product.
 
 ## 6. Immutable NOI compatibility amendment
 
@@ -189,12 +196,13 @@ and failure ownership.
 
 ## 14. Source-packet closure
 
-`BUILD_BINDING.json` binds the author packet, all 17 admitted objects, all three
+`BUILD_BINDING.json` binds the author packet, all 17 admitted objects, all four
 owner directives, every authored source and tool, embedded fonts, and PDFs by
 exact byte count and SHA-256. `AUTHORITY_MANIFEST.json` supersedes manual
 combination by binding the complete final authority, report, source, tool, and
 PDF set with role, compatibility or supersession state, and generated-view
-relation. Its external digest is the single proposed-freeze entry point.
+relation, including authority state. Its external digest is the single
+conditional-freeze-candidate entry point.
 
 ## 15. Nonclaims
 

@@ -1,15 +1,15 @@
 # SCI-FLT-FIXED v0.1 Scientist Rationale
 
-Document identity: `SCI-FLT-FIXED-SCIENTIST-RATIONALE v0.1/draft-r0.4`
+Document identity: `SCI-FLT-FIXED-SCIENTIST-RATIONALE v0.1/freeze-candidate`
 
-Status: implementation-blind Stage B explanatory draft; scientific-owner review required
+Status: implementation-blind conditional scientific-owner freeze-candidate rationale; owner signature required
 
 Scientific owner: Grant Wilson
 
 Stage B date: `2026-08-31`
 
 Normative import: the complete
-`SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.4`, source SHA-256
+`SCI-FLT-FIXED-NORMATIVE-CORE v0.1/freeze-candidate`, source SHA-256
 `{{NORMATIVE_CORE_SHA256}}`, is incorporated without modification. If this
 rationale and that core differ, the core controls.
 
@@ -27,11 +27,19 @@ A_Theta,J = J_full L_Theta,
 y = A_Theta,J m.
 ```
 
+The parent facts and the numerical signal are not the same domain. The parent
+fact domain `S_parent_fact` contains exact row identity and typed state. The
+scientific function `m : D_m -> R` exists only where an available finite real
+payload exists, and `y : S_out -> R` exists only on admitted output rows. A
+stored missing, unavailable, or non-finite value is therefore a fact, not a
+number that the scientific operator may evaluate.
+
 The restriction `J_full` matters as much as the convolution itself. It is
-resolved once before payload arithmetic from immutable parent membership and
-the exact required dependency footprint. The contract therefore describes a
-conditional linear transformation and the exact domain on which its result is
-scientific.
+resolved once before payload arithmetic from immutable parent membership,
+typed facts establishing `D_m`, and the exact required dependency footprint.
+Membership in `D_m` is established before `m_q` is evaluated. The contract
+therefore describes a conditional linear transformation and the exact domain
+on which its result is scientific.
 
 This is not a general filtering contract. It does not combine deterministic
 convolution with Wiener inference, matched or template-amplitude estimation,
@@ -72,10 +80,10 @@ The word fixed applies to the entire scientific state, not merely to a
 numerical function call. Coefficients, parameters, support, normalization,
 grid, edge rule, and transfer qualification are frozen before application.
 Parent amplitudes never tune those plan facts. The selector is then resolved
-once from declared immutable parent identity and row membership, exact row
-admission, typed availability and finiteness, support, and required
-predicates. Reading an authorized required location solely to classify its
-finite state is structural screening, not plan tuning or convolution
+once from declared immutable `S_parent_fact`, row membership, exact row
+admission, typed facts defining `D_m`, support, and required predicates.
+Reading the declared typed row-state fact for an authorized required location
+is structural screening, not evaluation of `m_q`, plan tuning, or convolution
 arithmetic. Every compatible companion reuses that resolved selector.
 
 ## 3. Fixed convolution and the low-pass qualification
@@ -89,6 +97,14 @@ The exact
 sampled coefficients, their grid offsets, center, phase, orientation, support,
 and normalization define the transformation. A family label or continuous
 ideal does not.
+
+That scientific operator identity is distinct from its serialization. The
+canonical offset-to-coefficient map, scientific domains, support, response,
+covariance, and lifecycle define the scientific digest. `K_store`, dense or
+sparse layout, field order, bytes, compression, and container define a
+separate representation digest and generation. Changing only representation
+may create a new representation artifact, but it leaves the scientific
+operator, FLT product identity, and scientific generation unchanged.
 
 The base signal, coefficients, and map operator are real-valued. Every
 coefficient must be finite, real, unit-typed, canonically represented, and
@@ -142,23 +158,28 @@ tolerance. `K_geom_science` describes geometry; it is not the arithmetic
 dependency set. An exact-zero offset contributes no arithmetic term, payload
 dependency, influence, covariance, or row exclusion, and its parent payload is
 never dereferenced. Dense, sparse, cropped, and zero-padded encodings of the
-same kernel therefore leave `S_out`, response, covariance, and identity
-unchanged. A required zero-valued offset needs a separately named scientific
-method independent of storage.
+same canonical kernel therefore have their own representation identities while
+leaving `S_out`, response, covariance, scientific operator identity, FLT
+product identity, and scientific generation unchanged. A required zero-valued
+offset needs a separately named scientific method independent of storage.
 
 Identity and zero need explicit special cases. Identity requires only the same
-parent row and therefore preserves the exact admitted finite parent domain.
-The zero operator still inherits an exact declared parent-support row domain;
-an empty arithmetic support must not grant it every storage row. Numerical
-zero never erases parent identity, support, lifecycle, or unavailable
-companions.
+parent row and therefore preserves the exact admitted finite parent-signal
+domain. The zero operator has empty `K_nonzero_zero` and `K_req_zero`, while
+its `S_out_zero` is independently the exact admitted finite parent-signal row
+domain under its request and predicates. An empty arithmetic set cannot grant
+it every storage row. Numerical zero never erases parent identity, support,
+lifecycle, or unavailable companions.
 
 For a requested nonzero convolution, an empty `S_out` has a different meaning.
-The application records `applied_no_scientific_output_support`, preserves its
-plan, operator, parent, causes, and evidence, and proceeds to a publication
-decision of `not_produced` with cause
-`no_full_footprint_output_rows`. It is not disabled, execution failure,
-identity, the zero operator, or a successfully realized empty product.
+The application records `applied_no_scientific_output_support` and constructs
+a complete `no_output_support_candidate` containing the attempted-domain proof
+and bound evidence but no realized `FLT-SIG` or atomic bundle. For the
+publication use, request is requested, applicability is applicable,
+eligibility is ineligible, realization is `not_produced`, and the cause is
+`no_full_footprint_output_rows`. It is not not-requested, disabled, execution
+failure, decision unavailable, identity, the zero operator, or a successfully
+realized empty product.
 
 ## 5. What the transformed amplitude does and does not mean
 
@@ -271,15 +292,18 @@ parents.
 
 ## 9. Lifecycle, atomicity, and honest absence
 
-Requested, effective, resolved, applied, complete publication candidate,
-publication decision, and realized are not synonyms. The
+Requested, effective, resolved, applied, complete publication disposition
+candidate, publication decision, and realized are not synonyms. The
 plan may disable the route. Required state may be unavailable. Application may
 fail. A transformed array may exist before its required response, support,
 validity, covariance-state, lineage, and failure records form an atomic bundle.
 
-Publication policy evaluates the complete candidate, not a product that is
-already realized. Disabled yields `not_produced`. Identity and zero operators
-become real separately parented products only after the same candidate and
+Publication policy evaluates either exact candidate variant, not a product
+that is already realized. A `product_candidate` contains the complete atomic
+bundle. A `no_output_support_candidate` contains the exact attempted-domain
+proof and application evidence but no realized `FLT-SIG` and is not an atomic
+bundle. Disabled yields `not_produced`. Identity and zero operators become
+real separately parented products only after the product-candidate and
 publication sequence. A zero signal is not an unavailable row, a disabled
 route, zero total uncertainty, or infinite precision.
 
@@ -309,9 +333,10 @@ Three policy domains prevent bundle, parent-row, and publication questions
 from being collapsed. Bundle and parent-row profiles decide their named inputs;
 FLT constructs `J_full` and `S_out`. Publication policy defines a disposition
 and action. VAL may produce a decision artifact, but only the FLT publisher
-acts and establishes realization and local validity. The r0.3 profile records
-remain unregistered and are not owner-approved Registry entries; this r0.4
-closure binds their amended exact bytes without claiming a Registry evaluation.
+acts and establishes realization and local validity. The profile records first
+drafted at r0.3 remain unregistered and are not owner-approved Registry
+entries; this conditional freeze candidate binds their amended exact bytes
+without claiming a Registry evaluation or numerical route.
 
 The transformed product is therefore not a generic downstream admission
 ticket. A Beammap, Pointing, OOF, source-fit, catalog, NOI, or FRUIT consumer
@@ -321,8 +346,8 @@ policy, but it does not invent producer facts or FLT policy.
 The source-preflight route status is:
 
 ```text
-Route                           r0.4 disposition
-generic contract                defined; owner review required
+Route                           freeze-candidate disposition
+generic contract                conditional owner signature required
 MAP observation parent          typed route; numerical parent unavailable
 MAP coadd parent                typed route; numerical parent unavailable
 JINC parent                     typed route; numerical parent unavailable
@@ -363,8 +388,9 @@ The core predictions turn the contract into observable distinctions:
   boundaries;
 - marginal-only one-sparse, two-sparse, and exact-zero fixtures test the exact
   covariance-authority edge; and
-- empty-output-support and invalid-coefficient fixtures test the new r0.4
-  lifecycle and plan-resolution closures.
+- typed numerical domains, representation invariance, zero-domain, empty-
+  output-support, and invalid-coefficient fixtures test the final formal
+  closures.
 
 Passing these predictions would be evidence relevant to a later conformity or
 validation activity. This rationale reports no such result.
@@ -388,7 +414,8 @@ science or a validation result.
 
 ## 13. Stage B nonclaims
 
-This rationale explains the draft scientific contract only. It makes no
+This rationale explains the conditional freeze-candidate scientific contract
+only. It makes no
 implementation-conformity, algorithm-change, validation, calibration,
 achieved-response, achieved-covariance, numerical-adequacy, performance,
 readiness, scientific-freeze, production, or Unity claim.

@@ -1,6 +1,6 @@
 # SCI-FLT-FIXED v0.1 Full-Procedure Response-Domain Amendment
 
-Record identity: `SCI-FLT-FIXED-RESPONSE-DOMAIN-AMENDMENT v0.1/draft-r0.4`
+Record identity: `SCI-FLT-FIXED-RESPONSE-DOMAIN-AMENDMENT v0.1/freeze-candidate`
 
 Status: implementation-blind Stage B closure draft; scientific-owner review required
 

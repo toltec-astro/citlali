@@ -1,8 +1,8 @@
 # SCI-FLT-FIXED v0.1 Corrected Convolution Equation and Support Crosswalk
 
-Record identity: `SCI-FLT-FIXED-CONVOLUTION-SUPPORT-CROSSWALK v0.1/draft-r0.4`
+Record identity: `SCI-FLT-FIXED-CONVOLUTION-SUPPORT-CROSSWALK v0.1/freeze-candidate`
 
-Status: implementation-blind Stage B closure artifact; scientific-owner review required
+Status: implementation-blind conditional freeze-candidate closure artifact; owner signature required
 
 Scientific owner: Grant Wilson
 
@@ -29,9 +29,12 @@ K_req                ordinary required dependency set, equal to K_nonzero
 An exact-zero coefficient creates no arithmetic term, payload dependency,
 influence, covariance contribution, or row exclusion. Its parent payload is
 not evaluated or dereferenced. Dense, sparse, cropped, and zero-padded
-encodings of one canonical kernel therefore leave the scientific operator and
-row admission unchanged.
+encodings of one canonical kernel therefore leave the scientific operator,
+product identity, scientific generation, and row admission unchanged while
+binding their separate representation identities.
 
-Identity retains `K_req = {0}`. The exact zero operator is an empty arithmetic
-sum on its explicitly inherited admitted parent-support row domain; it is not
-an ordinary nonzero convolution with empty output support.
+Identity retains `K_req = {0}`. The exact zero operator has
+`K_nonzero_zero = empty set`, `K_req_zero = empty set`, and independently
+constructed `S_out_zero`, the exact admitted finite parent-signal row domain
+under its request and predicates. It is not an ordinary nonzero convolution,
+which is defined by nonempty `K_nonzero`, with empty output support.

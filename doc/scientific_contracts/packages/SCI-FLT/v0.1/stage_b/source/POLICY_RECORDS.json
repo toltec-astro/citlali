@@ -1,11 +1,11 @@
 {
   "schema_version": "1.0",
-  "document_identity": "SCI-FLT-FIXED-POLICY-RECORDS v0.1/draft-r0.4",
-  "status": "implementation-blind unregistered Stage B policy drafts; scientific-owner and Registry approval required",
+  "document_identity": "SCI-FLT-FIXED-POLICY-RECORDS v0.1/freeze-candidate",
+  "status": "implementation-blind unregistered policy drafts bound to the conditional freeze candidate; separate scientific-owner and Registry approval required",
   "scientific_policy_owner": "Grant Wilson",
   "registry_binding_status": "not_owner_approved_not_registered_not_evaluated",
   "source_bindings": {
-    "normative_core": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.4",
+    "normative_core": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/freeze-candidate",
     "author_packet_manifest": "SCI-FLT-FIXED_AUTHOR_PACKET v0.1/r0.1",
     "map_boundary": "SCI-MAP_TO_SCI-FLT-FIXED boundary admitted by the author packet",
     "jinc_boundary": "SCI-JINC_TO_SCI-FLT-FIXED boundary admitted by the author packet",
@@ -13,7 +13,8 @@
     "val_profile_source": "SCI_FLT_VAL_PROFILE_DRAFTS.md admitted by the author packet",
     "r0_2_owner_directive": "OWNER_DIRECTIVE_R0_2.txt",
     "r0_3_owner_directive": "OWNER_DIRECTIVE_R0_3.txt",
-    "r0_4_owner_directive": "OWNER_DIRECTIVE_R0_4.txt"
+    "r0_4_owner_directive": "OWNER_DIRECTIVE_R0_4.txt",
+    "final_owner_directive": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt"
   },
   "profiles": [
     {
@@ -52,6 +53,8 @@
         "full-footprint-only",
         "no data-derived selection or relearning",
         "plan facts are independent of parent payload amplitudes",
+        "scientific operator identity is independent of representation identity",
+        "S_parent_fact, D_m, S_out, and S_out_zero are separately typed",
         "every sampled coefficient is finite, real, unit-typed, canonically represented, and content-bound"
       ],
       "decisive_exclusions": [
@@ -61,6 +64,7 @@
         "reprojection or resampling",
         "deferred edge or missing-data method",
         "unresolved plan fact",
+        "representation fact that changes scientific operator identity or behavior",
         "missing, non-finite, complex, unrepresentable, or conflicting coefficient"
       ],
       "exceptions": [
@@ -90,7 +94,7 @@
     },
     {
       "identity": "SCI-FLT-FIXED:input_parent_row_admission@1",
-      "domain": "one exact parent row under one eligible bundle, frozen plan, immutable parent domain, and named FLT use",
+      "domain": "one exact row in S_parent_fact under one eligible bundle, frozen plan, immutable parent facts, and named FLT use",
       "request": [
         "not_requested",
         "parent_row_evaluation_requested"
@@ -112,12 +116,13 @@
         "parent_row_decision_unavailable"
       ],
       "restrictions": [
-        "the parent row lies in the exact parent domain",
+        "the parent row lies in exact S_parent_fact",
         "the parent row is admitted for this named FLT use",
-        "the parent row value is available and finite",
+        "the parent row lies in D_m because an available finite real signal payload exists",
+        "membership in D_m is established before m_q is evaluated",
         "every parent-row predicate passes",
         "the decision supplies exact row admission, availability, finiteness, support, and predicates for FLT construction of J_full and S_out",
-        "authorized finite-state classification is structural screening and cannot tune the plan"
+        "finite-state classification comes from declared typed row facts, is structural screening, does not evaluate m_q, and cannot tune the plan"
       ],
       "decisive_exclusions": [
         "role substitution",
@@ -128,7 +133,7 @@
         "payload transformation"
       ],
       "exceptions": [
-        "none; identity and zero special support belongs to FLT construction after parent-row decisions"
+        "none; identity support and independently constructed S_out_zero belong to FLT after parent-row decisions"
       ],
       "missing_or_conflict_behavior": {
         "structural_identity_or_source_conflict": [
@@ -154,7 +159,11 @@
     },
     {
       "identity": "SCI-FLT-FIXED:output_publication@1",
-      "domain": "one eligible applied SCI-FLT-FIXED route, including either a complete publication candidate or an exact applied-no-support branch",
+      "domain": "one exact complete_publication_disposition_candidate with product_candidate or no_output_support_candidate variant",
+      "candidate_variants": {
+        "product_candidate": "complete atomic FLT product bundle with all required roles",
+        "no_output_support_candidate": "exact request, parent, plan, operator, K_req, attempted S_out construction, empty-domain proof, row/cause accounting, application generation, applied_no_scientific_output_support state, and prescribed cause; no realized FLT-SIG and no atomic bundle"
+      },
       "request": [
         "not_requested",
         "base_signal",
@@ -183,7 +192,8 @@
         "not_produced"
       ],
       "restrictions": [
-        "complete candidate contains every required FLT role",
+        "product_candidate contains every required FLT role",
+        "no_output_support_candidate contains every exact proof and evidence field and no realized FLT-SIG",
         "base signal contains exact response and covariance state records, which may be unavailable",
         "response-qualified candidate has an available exact compatible response",
         "covariance-qualified candidate has the exact declared compatible covariance representation",
@@ -192,7 +202,7 @@
         "a publication-time not-requested NOI state is historical provenance and cannot block a later independently requested compatible child"
       ],
       "decisive_exclusions": [
-        "partial candidate",
+        "partial or wrong-variant candidate",
         "placeholder or inferred role",
         "qualification-specific unavailable companion",
         "failed application",
@@ -200,7 +210,7 @@
       ],
       "exceptions": [
         "optional companion unavailability does not block a base signal request",
-        "identity and zero use the same complete-candidate and publication sequence",
+        "identity and zero use product_candidate and the publication sequence",
         "a requested nonzero convolution with empty S_out retains applied evidence but publishes no base signal"
       ],
       "missing_or_conflict_behavior": {
@@ -220,18 +230,22 @@
           "eligible",
           "realization_failed"
         ],
-        "requested_nonzero_empty_scientific_output_support": [
-          "applied_no_scientific_output_support",
-          "not_produced",
-          "no_full_footprint_output_rows"
-        ],
+        "requested_nonzero_empty_scientific_output_support": {
+          "candidate": "no_output_support_candidate",
+          "application_state": "applied_no_scientific_output_support",
+          "request": "requested",
+          "applicability": "applicable",
+          "eligibility": "ineligible",
+          "realization": "not_produced",
+          "cause": "no_full_footprint_output_rows"
+        },
         "identity_operator": [
-          "complete_publication_candidate",
+          "product_candidate",
           "publisher_action",
           "realized_identity"
         ],
         "zero_operator": [
-          "complete_publication_candidate",
+          "product_candidate",
           "publisher_action",
           "realized_zero"
         ],
@@ -243,7 +257,8 @@
       },
       "lifecycle": [
         "applied",
-        "complete_publication_candidate_or_applied_no_scientific_output_support",
+        "complete_publication_disposition_candidate",
+        "product_candidate_or_no_output_support_candidate",
         "policy_decision_artifact",
         "publisher_action",
         "realized_or_failed_or_not_produced"
