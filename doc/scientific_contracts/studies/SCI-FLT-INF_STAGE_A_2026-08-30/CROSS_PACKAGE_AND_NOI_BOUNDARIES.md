@@ -1,6 +1,6 @@
 # SCI-FLT-INF cross-package and NOI boundaries
 
-Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.4`
+Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.5`
 
 Status: Stage A owner-review candidate; it changes no frozen authority
 
@@ -39,6 +39,14 @@ and coadd generation. The filter performs no independent coaddition, and no
 equivalence or commutation between the two graphs is presumed. Exact
 inheritance, units, response, uncertainty, validity, and bundle details remain
 later decisions.
+
+ODQ-004 delegates the exact noise/covariance, spectral-weighting, and parent-
+coefficient choice to bounded two-view author development. The historical
+radially symmetrized average map noise PSD is a candidate only. It supplies no
+current MAP covariance, stationarity/isotropy proof, default, or precision
+meaning. Observation and coadd candidates remain separately accountable, and
+the MAP coefficient field remains nonprecision/unavailable for estimator
+weighting unless a later owner-selected option supplies exact authority.
 
 ## JINC to inference-bearing method
 

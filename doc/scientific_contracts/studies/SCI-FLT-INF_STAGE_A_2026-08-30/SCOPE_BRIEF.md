@@ -1,10 +1,11 @@
 # SCI-FLT-INF Stage A Scope Brief
 
-Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.4`
+Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.5`
 
 Status: sanitized owner-review holding study; ODQ-001 estimand, ODQ-002 map-
 domain ownership/product role, and ODQ-003 ordinary-MAP parents/grouping
-approved; remaining scope not approved; not an author input
+approved; ODQ-004 option development author-delegated; remaining scope not
+approved; not an author input
 
 ## Program adherence and prior-work recovery
 
@@ -88,6 +89,16 @@ observation-local for an observation parent and coadd-local for a coadd parent.
 No equivalence, commutation, filtered-result coaddition, or cross-observation
 combination is approved. JINC, SCI-FLT-FIXED derivatives, and other derived
 map parents are excluded from v0.1.
+
+`SCI-FLT-INF-ODQ-004` delegates noise/covariance, spectral-weighting, and
+parent-coefficient option development to the future implementation-blind
+contract author. The Scientific Rationale and Contract and Engineering
+Conformance Specification must present the same bounded option identities and
+consequences. Citlali's historical radially symmetrized average map noise PSD
+is admitted only as a candidate to examine; it is not a selected default,
+covariance authority, or proof of stationarity, isotropy, or optimality. The
+owner must dispose of the authored options before freeze or numerical
+authorization.
 
 ## Required distinctions
 

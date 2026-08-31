@@ -1,6 +1,6 @@
 # SCI-FLT-INF contradictions, ambiguities, and unavailable states
 
-Record identity: `SCI-FLT-INF-GAPS v0.1/r0.4`
+Record identity: `SCI-FLT-INF-GAPS v0.1/r0.5`
 
 Status: Stage A owner-review record; absence is preserved rather than repaired
 
@@ -79,11 +79,20 @@ uses it inside an inverse-spectral estimator. Frozen MAP authority does not
 make that field precision by name. The exact covariance model, if any, is not
 identified.
 
+ODQ-004 disposition: a future author must develop bounded coefficient-role
+options in both contract views. No role is selected, and precision/covariance
+meaning remains unavailable.
+
 ### Spectral state meaning
 
 The spectral field is shaped, clamped, radially interpolated, and normalized.
 It is unclear whether it is intended as noise covariance, a relative spectral
 weight, an empirical preconditioner, a transfer mask, or a heuristic.
+
+ODQ-004 disposition: historical use of a radially symmetrized average map noise
+PSD is admitted as a candidate to examine, not as a default, exact covariance,
+stationarity/isotropy proof, optimality proof, or implementation prescription.
+The author must produce the scientific options.
 
 ### Template meaning
 
@@ -148,7 +157,7 @@ consume the filtered map if later authorized.
 | exact active full-path estimand, product role, and admitted parent/grouping | **available at identity level**: ODQ-001 selects an optimal matched-template amplitude estimator, ODQ-002 selects matched-filtered-map output, and ODQ-003 selects distinct ordinary-MAP observation/coadd parents | final package name and numerical product remain unavailable pending ODQ-004 onward |
 | genuine Wiener/posterior method | no complete prior/likelihood/operator/posterior specification recovered | no posterior reconstruction product |
 | matched-template map-filter realization | owner-selected estimator and filtered-map product role exist, but parent covariance/template/support/response/operator are unresolved | no authorized numerical matched-filtered map |
-| parent covariance/inverse-noise | MAP/JINC do not supply the inferred precision needed by implementation naming | denominator cannot be called Fisher information or inverse variance |
+| parent covariance/inverse-noise | ODQ-004 delegates option development; no option or parent coefficient meaning is selected | denominator cannot be called Fisher information or inverse variance |
 | template scientific identity | normalization, beam/source role, calibration, and learned/fixed status unresolved | response and units unavailable |
 | approximation-qualified operator | no owner-approved truncation/convergence/floor error policy | exact method route unavailable |
 | adaptive edge method | current behavior and old policy are not current scientific authority | edge-conditioned scientific support unavailable |
@@ -172,6 +181,7 @@ consume the filtered map if later authorized.
 | active full path is structurally template-amplitude-like | medium-high as implementation observation | direct algebra inspection; implementation conformity remains unassessed |
 | owner-selected scientific identity of the historical full path is matched-template amplitude | authoritative | exact ODQ-001 owner approval |
 | ordinary-MAP observation and coadd parents are both admitted but non-equivalent | authoritative | exact ODQ-003 owner approval |
+| historical radially symmetrized average map noise PSD is the selected model | false/unselected | ODQ-004 admits it only as an author-evaluated candidate |
 | active full path is a complete posterior/Wiener reconstruction | excluded as scientific identity | exact ODQ-001 owner approval; no explicit signal prior or posterior covariance recovered |
 | current NOI-member application is learned-once/fixed-state | high as implementation observation | state is resolved from real parent and reused for members |
 | per-member relearning is currently active | low/negative recovery result | no active route found; absence limited to inspected base |
@@ -183,10 +193,13 @@ consume the filtered map if later authorized.
 
 Stage B must not be commissioned while:
 
-- ODQ-004 noise/covariance and parent-coefficient authority has no owner
-  answer;
+- ODQ-005 and later required pre-author questions have no owner answer;
 - multiple selected estimands remain in one proposed package;
-- required parent covariance, template, or prior authority is absent;
+- required template authority is absent;
 - method substitution can occur without explicit realized identity;
 - fixed-state and relearned NOI graphs are not separated; or
 - the proposed author inputs contain implementation-derived conclusions.
+
+Scientific freeze and every numerical route remain blocked until the owner
+selects or otherwise disposes of the authored ODQ-004 option set. Missing
+noise/covariance authority remains typed unavailable until then.

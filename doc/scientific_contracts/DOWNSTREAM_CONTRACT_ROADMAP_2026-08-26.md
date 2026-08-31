@@ -3,7 +3,7 @@
 Date: `2026-08-26`
 
 Updated: `2026-08-31` for SCI-JINC closure, SCI-NOI Stage A/Stage B handoff,
-and SCI-FLT-INF ODQ-001 through ODQ-003 closure
+SCI-FLT-INF ODQ-001 through ODQ-003 closure, and ODQ-004 author delegation
 
 Status: scientific-owner-approved program sequencing record
 
@@ -245,7 +245,13 @@ ordinary-MAP observation and coadd bundles as distinct observation-local and
 coadd-local parent/grouping identities, without equivalence, commutation, or
 filter-owned cross-observation combination. JINC and derived-map parents stay
 deferred, and frozen MAP numerical gates remain unchanged. ODQ-004
-noise/covariance and parent-coefficient authority is next. No successor
+was author-delegated on `2026-08-31`: both future implementation-blind
+contract views must develop bounded noise/covariance, spectral-weighting, and
+parent-coefficient options with shared stable identities. The historically
+used radially symmetrized average map noise PSD is a candidate for scientific
+examination only, not a selected default or covariance authority. The owner
+must select or otherwise dispose of the authored options before freeze or a
+numerical route. ODQ-005 template/kernel identity is next. No successor
 package, author packet, Stage B launch, algorithm change, conformity,
 validation, calibration, performance, readiness, production, freeze, or Unity
 action follows.

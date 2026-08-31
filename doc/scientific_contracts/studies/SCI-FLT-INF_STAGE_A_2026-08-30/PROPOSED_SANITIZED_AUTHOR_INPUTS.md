@@ -1,6 +1,6 @@
 # SCI-FLT-INF proposed sanitized author inputs
 
-Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.4`
+Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.5`
 
 Status: proposed material only; not approved, not exhaustive, not SHA-bound as
 an author packet, and not permission to launch Stage B
@@ -86,6 +86,25 @@ must not invent a filtered-map coadd, and must not transfer response,
 normalization, support, covariance, uncertainty, state, or validity between
 the ordered graphs. JINC, SCI-FLT-FIXED derivatives, and all other derived-map
 parents are excluded from v0.1.
+
+## Owner-delegated noise/covariance option assignment
+
+The author packet must include the exact ODQ-004 delegation. Without receiving
+implementation or historical mechanics, the author must produce a bounded,
+shared-identity option set in both the Scientific Rationale and Contract and
+the Engineering Conformance Specification. The options must cover the exact
+noise/covariance or weaker spectral-weighting object, parent-coefficient role,
+assumptions, approximation, normalization, optimality/unbiasedness
+consequences, support/validity, response, uncertainty, NOI handling, required
+products, and typed unavailable states for each admitted parent role.
+
+The only historical candidate admitted to that assignment is the owner-
+provided fact that Citlali has used a radially symmetrized average map noise
+PSD. The author must define and examine that candidate scientifically. No
+historical averaging population, radialization order, Fourier convention,
+normalization, window/edge rule, coefficient role, threshold, or numerical
+mechanic may be supplied or inferred. The candidate is not a default,
+covariance authority, or proof of stationarity, isotropy, or optimality.
 
 ## Deferred posterior-family exclusion
 
@@ -174,16 +193,18 @@ required/conditional/optional role:
 - retained diagnostics versus public science roles; and
 - permitted named consumers.
 
-No current detailed product table is proposed because ODQ-004 noise/covariance
-authority and the later units, response, uncertainty, validity, and lifecycle
-decisions remain open. Its top-level signal role and two distinct ordinary-MAP
-parent/grouping roles are already fixed.
+No current detailed product table is proposed because ODQ-005 and later units,
+response, uncertainty, validity, and lifecycle decisions remain open. The
+top-level signal role and two distinct ordinary-MAP parent/grouping roles are
+already fixed; the ODQ-004 option set is an explicit future-author deliverable.
 
 ## Material that must remain excluded
 
 - numerical class/file/function/config/schema/key names;
 - observed fallback or sentinel behavior;
 - current denominator/PSD/edge algorithms and tolerances;
+- historical map-noise PSD mechanics beyond the exact owner-provided candidate
+  statement;
 - current output names and historical science labels;
 - historical validation, adverse results, re-audit gates, and production use;
 - historical owner decisions not re-admitted under a current exact cover;
@@ -196,7 +217,7 @@ parent/grouping roles are already fixed.
 
 ## Author-packet construction gate
 
-After ODQ-004 onward supplies the required package-local owner decisions,
+After ODQ-005 onward supplies the required package-local owner decisions,
 create a new package directory and a package-specific
 `PRIOR_WORK.md`, sanitized `SCOPE_BRIEF.md`, exact boundary objects, operator/
 product/lifecycle tables, owner decision record, and exclusive SHA-bound

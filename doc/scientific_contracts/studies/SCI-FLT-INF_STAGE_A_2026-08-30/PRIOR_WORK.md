@@ -1,6 +1,6 @@
 # SCI-FLT-INF prior-work recovery
 
-Recovery identity: `SCI-FLT-INF-PRIOR-WORK v0.1/r0.4`
+Recovery identity: `SCI-FLT-INF-PRIOR-WORK v0.1/r0.5`
 
 Status: reviewed Stage A recovery record; implementation and evidence entries
 remain quarantined from authorship
@@ -41,6 +41,7 @@ performed.
 | Current implementation at base | exact paths/hashes in `FROZEN_AUTHORITY_AND_SOURCE_BINDING.md` | full PSD/template/weight-dependent path; adaptive edge conditioning; disabled thresholded destripe; fallback; NOI-member application; coefficient rescale; output ordering | **Exclude** from authorship; use only to ensure Stage A does not omit candidate families |
 | Current configuration and product schema at base | exact paths/hashes in the binding record | names and active surfaces for filter type, templates, convergence, edge guard, noise dependency, filtered products and metadata | **Exclude** from scientific authorship and defaults; use only for inventory and later conformity planning |
 | Post-processing and noise-products config authorities | current at base | requested/effective/realized lifecycle and one-way adapter boundary | **Cite** as architectural lifecycle precedent, not scientific method authority |
+| Scientific-owner ODQ-004 direction | exact `2026-08-31` owner artifact in this study | historical use of a radially symmetrized average map noise PSD; requirement for bounded noise/covariance and coefficient-role options in both contract views | **Adopt** the author assignment; **cite** the historical PSD only as a candidate to examine, never as a default, covariance authority, or implementation prescription |
 | RTC temporal filtering and AltAz destriping | frozen/active RTC-owned domain | timestream-domain cleaning before mapmaking | **Exclude** from map-domain INF scope; preserve RTC ownership |
 | FRUIT records | separate future tranche | source-model feedback, iteration, learning, stopping, restart, lineage | **Defer** to SCI-FRUIT; retain only the frozen NOI boundary for conditional/replayed cases |
 | Source fitting/finding surfaces | later downstream operation; no dedicated frozen source-analysis contract recovered | Gaussian fitting and catalog-facing products after filtering | **Exclude** from the selected matched-filter package; make no current ownership assignment; a future independent contract may consume filtered maps; no active source-learned filter-state route was recovered at the base commit |
@@ -63,6 +64,9 @@ full path:
   MAP coadd bundles as distinct observation-local and coadd-local parent/
   grouping identities, with no equivalence, commutation, or filter-owned
   cross-observation combination;
+- the exact noise/covariance and parent-coefficient choice is not recovered as
+  authority; a future author must develop two-view options, with the historical
+  radially symmetrized average map noise PSD admitted only as one candidate;
 - a declared linear estimator `a^T m` has variance `a^T C a` when `C` is the
   covariance of the declared parent population;
 - a fixed-template GLS amplitude estimator has numerator
@@ -80,7 +84,8 @@ full path:
 
 ODQ-001 approves the matched-template estimand, ODQ-002 approves map-domain
 filtering ownership plus the filtered-map product role, and ODQ-003 approves
-the two distinct ordinary-MAP parent/grouping roles. They do not approve the
+the two distinct ordinary-MAP parent/grouping roles. ODQ-004 delegates option
+development without selecting a model. These decisions do not approve the
 operator, covariance/noise authority, template instance, final package name,
 response, uncertainty, or contract.
 
@@ -99,10 +104,9 @@ response, uncertainty, or contract.
 
 ## Genuinely new scientific work remaining
 
-Fresh scientific derivation is needed only after ODQ-004 selects the exact
-noise/covariance and weighting authority. The unresolved work includes the
-exact operator,
-noise/covariance model, state-learning graph, template identity,
+Fresh scientific derivation includes the ODQ-004 bounded option set after the
+remaining pre-author decisions are resolved. The unresolved work includes the
+exact operator, noise/covariance model, state-learning graph, template identity,
 normalization/response, support/null space, approximation/regularization,
 uncertainty/covariance, product bundle, and NOI parity for each selected
 family. No recovered source can answer those questions by itself.

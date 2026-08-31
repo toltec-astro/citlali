@@ -212,8 +212,14 @@ and cross-package handoffs are valuable recovery inputs.
   `2026-08-31`: both ordinary-MAP observation and coadd bundles are admitted
   as distinct observation-local and coadd-local parent/grouping identities,
   with no equivalence, commutation, or filter-owned combination; JINC and
-  derived-map parents remain deferred. ODQ-004 noise/covariance and parent-
-  coefficient authority is next.
+  derived-map parents remain deferred. Grant Wilson author-delegated ODQ-004
+  on `2026-08-31`: both implementation-blind contract views must develop
+  bounded noise/covariance, spectral-weighting, and parent-coefficient options
+  with shared stable identities. The historically used radially symmetrized
+  average map noise PSD is a candidate for scientific examination only, not a
+  selected default or covariance authority. The owner retains the later
+  option-selection/disposition decision. ODQ-005 template/kernel identity is
+  next.
   Implementation/config/schema/history remain in a quarantined dossier, and
   the protected SCI-FLT-FIXED author bytes are unchanged.
 - Package-specific FLT recovery:

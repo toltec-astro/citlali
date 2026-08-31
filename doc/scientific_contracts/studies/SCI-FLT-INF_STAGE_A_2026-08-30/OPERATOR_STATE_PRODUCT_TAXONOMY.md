@@ -1,9 +1,9 @@
 # SCI-FLT-INF operator, state, and product taxonomy
 
-Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.4`
+Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.5`
 
-Status: Stage A vocabulary updated for approved ODQ-001; remaining details are
-not normative science
+Status: Stage A vocabulary updated through approved ODQ-003 and the ODQ-004
+author delegation; remaining details are not normative science
 
 ## Identity tuple
 
@@ -188,6 +188,15 @@ centering, support, normalization, and parent-beam convention.
 
 Diagonal-like products do not imply independence. A reciprocal does not imply
 precision. Unreported covariance is unavailable, not zero.
+
+ODQ-004 does not select one of these roles. It assigns the future author to
+develop bounded noise/covariance, spectral-weighting, and parent-coefficient
+options with common identities in both contract views, separately accountable
+for observation and coadd parents. Historical use of a radially symmetrized
+average map noise PSD is one candidate for examination only. Until an authored
+option is owner-selected, `C_PARENT`, any spectral weighting operator, and any
+precision/variance interpretation of `K_NORM` or a parent coefficient remain
+unavailable.
 
 ## Support, null, and unavailable roles
 

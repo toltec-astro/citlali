@@ -1,6 +1,6 @@
 # SCI-FLT-INF frozen-authority and source binding
 
-Binding identity: `SCI-FLT-INF-SOURCE-BINDING v0.1/r0.4`
+Binding identity: `SCI-FLT-INF-SOURCE-BINDING v0.1/r0.5`
 
 Status: exact Stage A provenance record; not an author packet or scientific
 freeze
@@ -37,8 +37,15 @@ and deferred.
 is the exact owner source closing `SCI-FLT-INF-ODQ-003`. It admits both
 ordinary-MAP observation and coadd bundles as distinct observation-local and
 coadd-local parent/grouping identities, approves no equivalence or filter-owned
-combination, and defers JINC plus derived-map parents. All three exact owner
-objects are bound by
+combination, and defers JINC plus derived-map parents.
+
+[`SCIENTIFIC_OWNER_ODQ_004_AUTHOR_DELEGATION_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_004_AUTHOR_DELEGATION_2026-08-31.md)
+is the exact owner source delegating `SCI-FLT-INF-ODQ-004` option development
+to both future implementation-blind contract views. It selects no
+noise/covariance option, admits the historical radially symmetrized average
+map noise PSD only as a candidate for analysis, and reserves final option
+selection or disposition to the scientific owner after the rationales are
+available. All four exact owner objects are bound by
 [`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md); later decisions
 must use separate exact owner artifacts.
 

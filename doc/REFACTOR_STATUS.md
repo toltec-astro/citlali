@@ -694,12 +694,20 @@ observation bundles and exact ordinary-MAP coadd bundles as distinct
 observation-local and coadd-local parent/grouping identities. No equivalence,
 commutation, filtered-result combination, or filter-owned cross-observation
 operation is approved; JINC and derived-map parents remain deferred. Frozen
-ordinary-MAP numerical gates remain unchanged. ODQ-004 noise/covariance and
-parent-coefficient authority is the next gate. This is a Stage A study and
-decision walkthrough only; no successor package, author packet, Stage B
-launch, algorithm change, implementation conformity, validation, calibration,
-performance, readiness, production, freeze, or Unity action is claimed or
-authorized.
+ordinary-MAP numerical gates remain unchanged. On `2026-08-31`, Grant Wilson
+author-delegated `SCI-FLT-INF-ODQ-004`: a future implementation-blind author
+must develop bounded noise/covariance, spectral-weighting, and parent-
+coefficient options in both the Scientific Rationale and Contract and the
+Engineering Conformance Specification, using the same stable option
+identities. The historically used radially symmetrized average map noise PSD
+is a candidate for scientific examination, not a selected default, covariance
+authority, or conformity claim. The owner must select or otherwise dispose of
+the authored options before freeze or a numerical route is authorized.
+ODQ-005 template/kernel identity is the next owner gate. This is a Stage A
+study and decision walkthrough only; no successor package, author packet,
+Stage B launch, algorithm change, implementation conformity, validation,
+calibration, performance, readiness, production, freeze, or Unity action is
+claimed or authorized.
 
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.

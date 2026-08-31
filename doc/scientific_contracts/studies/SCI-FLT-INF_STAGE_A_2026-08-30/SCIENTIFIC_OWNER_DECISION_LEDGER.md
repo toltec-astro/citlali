@@ -1,9 +1,9 @@
 # SCI-FLT-INF scientific-owner decision ledger
 
-Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.4`
+Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.5`
 
 Status: proposed ordered owner walkthrough; ODQ-001 through ODQ-003 approved
-and closed; ODQ-004 through ODQ-013 open
+and closed; ODQ-004 author-delegated; ODQ-005 through ODQ-013 open
 
 ## Decision discipline
 
@@ -11,7 +11,8 @@ Questions are ordered by scientific consequence. Later questions must not be
 answered in a way that presumes an earlier answer. Each approved answer should
 be recorded in a separate exact owner artifact before a package-local Stage A
 packet is built. This holding study records the exact approved ODQ-001 through
-ODQ-003 answers but does not approve any proposed answer for ODQ-004 onward.
+ODQ-003 answers and the exact ODQ-004 author delegation but does not approve a
+noise/covariance option or any proposed answer for ODQ-005 onward.
 
 ## `SCI-FLT-INF-ODQ-001` — estimand of the existing full path
 
@@ -86,22 +87,30 @@ product details, or Stage B launch.
 
 ## `SCI-FLT-INF-ODQ-004` — covariance/noise and parent-coefficient authority
 
-What exact object supplies the noise/covariance model required by the selected
-estimand?
+Status: **author-delegated; no option selected** by
+[`SCIENTIFIC_OWNER_ODQ_004_AUTHOR_DELEGATION_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_004_AUTHOR_DELEGATION_2026-08-31.md).
 
-- exact parent covariance;
-- an owner-authorized external/NOI covariance or spectral model;
-- a relative spectral weight/preconditioner that does not support covariance
-  claims; or
-- unavailable.
+A future implementation-blind author must develop a bounded option set in both
+the Scientific Rationale and Contract and the Engineering Conformance
+Specification. Both views must share exact option identities and consequences.
+The owner must select or dispose of an authored option before freeze or any
+numerical route is authorized.
 
-Does any parent coefficient field enter, and if so what is its exact
-nonprecision/precision meaning? How are stationarity, isotropy, radialization,
-normalization, mode omissions, rank/null space, and dependence justified?
+The owner supplies one historical candidate for scientific examination:
+Citlali has used a **radially symmetrized average map noise PSD**. This is not a
+selected default, covariance authority, proof of stationarity/isotropy or
+optimality, or permission to inherit historical mechanics. The author must
+define the population/domain, averaging and radialization ordering, Fourier/
+WCS and unit conventions, normalization, support/edge/window behavior,
+missingness, rank/null space, approximation, and state dependence for any
+option using those ideas.
 
-Manager recommendation: treat the current parent coefficient and shaped PSD
-as scientifically unavailable until an exact authority identifies them. Do
-not call the denominator inverse variance merely because a GLS form is desired.
+Options must separately account for observation-map and coadd-map parents,
+classify whether they supply covariance or only a weaker spectral weighting,
+and state whether/how a parent coefficient participates. No coefficient may
+be called precision or covariance from naming, unit, positivity, or historical
+use. Typed unavailability is required when an option's object or assumptions
+are absent.
 
 ## `SCI-FLT-INF-ODQ-005` — template and kernel identity
 
@@ -243,7 +252,9 @@ ODQ-001 estimand
                        -> ODQ-013 product/VAL/lifecycle
 ```
 
-ODQ-001 through ODQ-003 are closed. ODQ-004 is the next ordered gate; ODQ-005
-may now be discussed in parallel. Stage B is blocked until all decisions
-needed by the selected map-domain filtering package have exact owner answers
-and an exclusive implementation-blind author packet.
+ODQ-001 through ODQ-003 are closed, and ODQ-004 is author-delegated without an
+option selection. ODQ-005 is the next owner gate. Stage B is blocked until all
+remaining pre-author decisions have exact owner answers and an exclusive
+implementation-blind author packet containing the ODQ-004 assignment. Freeze
+and numerical authorization remain blocked until the owner disposes of the
+authored ODQ-004 options.

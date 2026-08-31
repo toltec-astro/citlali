@@ -1,6 +1,6 @@
 # SCI-FLT-INF implementation-informed dossier
 
-Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.4`
+Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.5`
 
 Status: quarantined Stage A manager evidence; forbidden to any future
 implementation-blind scientific author
@@ -79,6 +79,15 @@ constant spectrum, described in the log as a lowpass-only response. The
 requested method identity is not changed. This is scientific method
 substitution and must be fail-closed or represented by a separate explicit
 selector/realized-method identity in any future authority.
+
+ODQ-004 subsequently supplied owner direction without selecting a noise or
+covariance model. A future implementation-blind author must develop bounded
+options in both the scientific and engineering contract views. The owner also
+identified a **radially symmetrized average map noise PSD** as a historical
+candidate for scientific examination only. The shaped spectral state observed
+above is quarantined implementation evidence: it is neither the definition of
+that candidate nor an option, default, covariance authority, or conformity
+claim, and none of its numerical mechanics may enter the author packet.
 
 ## Approximation, threshold, and null behavior
 

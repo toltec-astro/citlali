@@ -72,6 +72,7 @@ distinct grouping identities.
 | [`SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md`](SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md) | exact matched-template estimand approval |
 | [`SCIENTIFIC_OWNER_ODQ_002_APPROVAL_2026-08-30.md`](SCIENTIFIC_OWNER_ODQ_002_APPROVAL_2026-08-30.md) | exact map-domain ownership and filtered-map product-role approval |
 | [`SCIENTIFIC_OWNER_ODQ_003_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_003_APPROVAL_2026-08-31.md) | exact ordinary-MAP observation/coadd parent and grouping approval |
+| [`SCIENTIFIC_OWNER_ODQ_004_AUTHOR_DELEGATION_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_004_AUTHOR_DELEGATION_2026-08-31.md) | exact two-view noise/covariance option-development assignment and historical candidate |
 | [`FROZEN_AUTHORITY_AND_SOURCE_BINDING.md`](FROZEN_AUTHORITY_AND_SOURCE_BINDING.md) | exact base, frozen NOI, historical, and evidence bindings |
 | [`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md) | content-bound Stage A study objects; not an author manifest |
 | [`verify_stage_a.py`](verify_stage_a.py) | study and protected-byte verifier |
@@ -111,9 +112,16 @@ that parent/grouping identity. No equivalence or commutation is presumed, the
 package performs no independent coaddition, and JINC plus derived-map parents
 remain deferred. Frozen MAP numerical gates remain unchanged.
 
-The next owner question is exact noise/covariance and parent-coefficient
-authority under `SCI-FLT-INF-ODQ-004`. No final package naming or Stage B scope
-is approved.
+ODQ-004 is author-delegated rather than scientifically selected. The future
+implementation-blind author must develop bounded noise/covariance, spectral-
+weighting, and parent-coefficient options with shared identities in both
+contract views. The historical radially symmetrized average map noise PSD is
+an admitted candidate for analysis only, not a default or covariance/
+optimality authority. An owner choice is required after the rationales return
+and before freeze or numerical authorization.
+
+The next owner question is exact template/kernel identity under
+`SCI-FLT-INF-ODQ-005`. No final package naming or Stage B scope is approved.
 
 ## Nonclaims and stop rule
 
@@ -123,8 +131,9 @@ significance, performance, readiness, production, Unity, or scientific-freeze
 claim. It creates no default and authorizes no method substitution.
 
 Do not create an implementation-blind author packet until the scientific owner
-has resolved `SCI-FLT-INF-ODQ-004` and the later package-specific operator,
+has resolved `SCI-FLT-INF-ODQ-005` and the later package-specific operator,
 state, response, covariance, product, and lifecycle gates identified in the
-decision ledger. Create a package-local Stage A record for the matched-filter
-map operation rather than converting this holding directory into a combined
+decision ledger. The eventual packet must include the exact ODQ-004 author
+assignment. Create a package-local Stage A record for the matched-filter map
+operation rather than converting this holding directory into a combined
 package.
