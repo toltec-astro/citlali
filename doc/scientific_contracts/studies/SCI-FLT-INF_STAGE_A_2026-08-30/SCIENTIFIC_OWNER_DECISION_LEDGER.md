@@ -1,11 +1,11 @@
 # SCI-FLT-INF scientific-owner decision ledger
 
-Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.7`
+Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.8`
 
 Status: proposed ordered owner walkthrough; ODQ-001 through ODQ-003 approved
 and closed; ODQ-004 author-delegated; ODQ-005 approved and closed; ODQ-006
 approved and closed with quantitative conformance-envelope alternatives
-author-delegated; ODQ-007 through ODQ-013 open
+author-delegated; ODQ-007 approved and closed; ODQ-008 through ODQ-013 open
 
 ## Decision discipline
 
@@ -16,7 +16,8 @@ packet is built. This holding study records the exact approved ODQ-001 through
 ODQ-003 and ODQ-005 answers and the exact ODQ-004 author delegation but does
 not approve a noise/covariance option. It also records the exact ODQ-006
 reference-operator decision and quantitative author delegation but does not
-approve a conformance-envelope option or any proposed answer for ODQ-007
+approve a conformance-envelope option. It records the exact ODQ-007 complete-
+support decision but does not approve any proposed answer for ODQ-008
 onward.
 
 ## `SCI-FLT-INF-ODQ-001` — estimand of the existing full path
@@ -183,15 +184,29 @@ caps are not success without the selected bound.
 
 ## `SCI-FLT-INF-ODQ-007` — edge, missing, nonfinite, and learned support
 
-Does v0.1 admit only full-footprint inputs, or a separate adaptive edge method?
-If adaptive conditioning is admitted, define the learning facts, background/
-fill, taper, influence footprint, eroded admitted region, response,
-covariance, validity, member parity, and failure.
+Status: **approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md).
 
-Manager recommendation: keep adaptive edge/background conditioning separate
-from the base estimator. If later admitted, consider re-adopting historical
-fill-as-numerical-device plus eroded-science-region policy under a new exact
-owner record, after resolving member parity.
+Base v0.1 admits only complete-support output locations. The complete declared
+local or nonlocal influence support of the template, weighting operator,
+ODQ-006 realization, and boundary convention must be in the exact parent
+domain, admitted for this use, finite and available where required, and valid
+under every required predicate. The entire stored map need not be globally
+valid for a bounded local operator; support is decided per output location.
+
+Base v0.1 performs no partial-support or truncated estimation, support
+renormalization, boundary extension, interpolation/imputation/replacement,
+background estimation/subtraction, learned taper, or signal-derived support
+selection. Parent-authoritative support/validity facts may be consumed as
+inputs. An affected output is unavailable, never zero or a successful partial
+estimate.
+
+Padding or fill is a numerical device only when conservative erosion over the
+complete influence support establishes that no admitted output depends on an
+invented value. A nonlocal operator cannot claim an unaffected interior from a
+finite guard band without that proof. Adaptive edge/background conditioning is
+deferred to a separately identified future method with complete learning,
+response, covariance, NOI, validity, lifecycle, and failure authority.
 
 ## `SCI-FLT-INF-ODQ-008` — response, units, beam, and output interpretation
 
@@ -297,11 +312,11 @@ ODQ-001 estimand
                        -> ODQ-013 product/VAL/lifecycle
 ```
 
-ODQ-001 through ODQ-003 and ODQ-005/ODQ-006 are closed, and ODQ-004 is author-
-delegated without an option selection. ODQ-006 also delegates quantitative
-conformance-envelope alternatives without selecting one. ODQ-007 is the next
-owner gate. Stage B is blocked until all remaining pre-author decisions have
-exact owner answers and an exclusive implementation-blind author packet
-containing the ODQ-004 assignment and ODQ-005/ODQ-006 approvals. Freeze and
-numerical authorization remain blocked until the owner disposes of the
-authored ODQ-004 and ODQ-006 option sets.
+ODQ-001 through ODQ-003 and ODQ-005 through ODQ-007 are closed, and ODQ-004 is
+author-delegated without an option selection. ODQ-006 also delegates
+quantitative conformance-envelope alternatives without selecting one. ODQ-008
+is the next owner gate. Stage B is blocked until all remaining pre-author
+decisions have exact owner answers and an exclusive implementation-blind
+author packet containing the ODQ-004 assignment and ODQ-005 through ODQ-007
+approvals. Freeze and numerical authorization remain blocked until the owner
+disposes of the authored ODQ-004 and ODQ-006 option sets.

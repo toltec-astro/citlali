@@ -1,6 +1,6 @@
 # SCI-FLT-INF contradictions, ambiguities, and unavailable states
 
-Record identity: `SCI-FLT-INF-GAPS v0.1/r0.7`
+Record identity: `SCI-FLT-INF-GAPS v0.1/r0.8`
 
 Status: Stage A owner-review record; absence is preserved rather than repaired
 
@@ -34,9 +34,11 @@ retains the alternative method identity.
 Small denominators are zeroed and output values at those pixels become zero.
 No authority establishes that the estimand is scientifically zero there.
 
-Disposition: treat interpretation as unavailable pending owner-approved
-support/null/failure semantics. Never sanitize the numerical sentinel as
-science.
+Owner disposition under ODQ-006 and ODQ-007: a nonfinite/nonpositive
+normalization or any missing/nonfinite/invalid required support input makes
+the affected location null, unavailable, or failed. It never establishes a
+scientific amplitude of zero. Parent-shaped numerical storage does not change
+that state.
 
 ### Historical edge-fill direction versus current fixed scope
 
@@ -45,9 +47,12 @@ with a scientifically eroded region. Current SCI-FLT-FIXED Stage A selects
 full-footprint-only and defers fill, taper, truncation, and support
 renormalization.
 
-Disposition: the historical decision is precedent for a distinct adaptive
-edge package; it does not modify the protected fixed package or authorize a
-current INF edge method.
+ODQ-007 independently adopts complete-support-only base admission and permits
+fill solely as a numerical device when conservative erosion proves that no
+admitted output depends on it. It does not adopt historical median fill,
+thresholds, taper, or erosion mechanics. The historical decision remains
+precedent only; adaptive edge/background conditioning is deferred to a
+separate future method and the protected fixed package is unchanged.
 
 ### Historical empirical calibration versus frozen NOI typing
 
@@ -134,12 +139,18 @@ before an approximate route can freeze. An iteration or tail cap is not
 success unless the selected bound is met; outside-envelope operator changes
 are separately versioned methods or unavailable.
 
-### Edge parity
+### Resolved for base; deferred for adaptive edge parity
 
 The learned window is shared with members, but the real signal uses an affine
 background transformation and members are zero-centered/windowed. It is
 unclear what exact transformed-member population corresponds to the published
 science product.
+
+ODQ-007 disposition: none of that learned state is admitted by base v0.1. The
+base complete-support and boundary identity must be consistent between science
+and admitted members, while ODQ-010 retains the exact NOI-generation choice.
+Any future adaptive method must separately resolve fixed-state versus
+full-procedure parity and cannot borrow the base identity.
 
 ### Kernel-response product
 
@@ -175,13 +186,13 @@ consume the filtered map if later authorized.
 
 | State | Reason unavailable | Consequence |
 | --- | --- | --- |
-| exact active full-path estimand, product role, admitted parent/grouping, template-response type, and reference operator | **available at identity level**: ODQ-001 selects an optimal matched-template amplitude estimator, ODQ-002 selects matched-filtered-map output, ODQ-003 selects distinct ordinary-MAP observation/coadd parents, ODQ-005 selects the immutable declared template-response product, and ODQ-006 selects the exact normalized `N/D` reference operator | final package name and numerical product remain unavailable pending ODQ-004, the ODQ-006 quantitative-envelope selection, and ODQ-007 onward |
+| exact active full-path estimand, product role, admitted parent/grouping, template-response type, reference operator, and base support method | **available at identity level**: ODQ-001 selects an optimal matched-template amplitude estimator, ODQ-002 selects matched-filtered-map output, ODQ-003 selects distinct ordinary-MAP observation/coadd parents, ODQ-005 selects the immutable declared template-response product, ODQ-006 selects the exact normalized `N/D` reference operator, and ODQ-007 selects complete-support-only admission | final package name and numerical product remain unavailable pending ODQ-004, the ODQ-006 quantitative-envelope selection, and ODQ-008 onward |
 | genuine Wiener/posterior method | no complete prior/likelihood/operator/posterior specification recovered | no posterior reconstruction product |
-| matched-template map-filter realization | owner-selected estimator, filtered-map product role, parent roles, template-response identity, and exact reference operator exist, but weighting/covariance, support, realized response, and any approximate conformance envelope remain unresolved | no authorized numerical matched-filtered map |
+| matched-template map-filter realization | owner-selected estimator, filtered-map product role, parent roles, template-response identity, exact reference operator, and complete-support rule exist, but weighting/covariance, exact realized influence extent, response, and any approximate conformance envelope remain unresolved | no authorized numerical matched-filtered map |
 | parent covariance/inverse-noise | ODQ-004 delegates option development; no option or parent coefficient meaning is selected | denominator cannot be called Fisher information or inverse variance |
-| exact realized template-response product | product identity/source classes and fixed state are approved, but no numerical instance, selected approximation envelope, or ODQ-007 support consequence is authorized | numerical application remains unavailable |
+| exact realized template-response product | product identity/source classes, fixed state, and complete-support consequence are approved, but no numerical instance, selected approximation envelope, or realized influence extent is authorized | numerical application remains unavailable |
 | approximation-qualified operator | ODQ-006 approves the exact reference and bounded-approximation policy, but no quantitative envelope option has been authored and owner-selected | approximate route unavailable; exact evaluation remains conformant in principle but blocked by the other unresolved gates |
-| adaptive edge method | current behavior and old policy are not current scientific authority | edge-conditioned scientific support unavailable |
+| adaptive edge method | ODQ-007 expressly defers learned support/background/fill/taper to a separate future contract; current behavior and old policy do not define it | edge-conditioned scientific support unavailable |
 | data-thresholded mode selection | inactive implementation fragment and no method contract | no route or product |
 | automatic fallback | no selector authority or realized-method product identity | requested-primary output fails closed |
 | source detection, selection, fitting, catalog, or source-learned filter | excluded from selected package; no independent current contract or active route recovered | deferred without present ownership assignment |
@@ -205,6 +216,7 @@ consume the filtered map if later authorized.
 | historical radially symmetrized average map noise PSD is the selected model | false/unselected | ODQ-004 admits it only as an author-evaluated candidate |
 | base-v0.1 template is one immutable declared response-per-unit-amplitude product | authoritative | exact ODQ-005 owner approval |
 | exact reference estimator is `A_hat=<t,Qm>/<t,Qt>` and approximations require a selected quantitative envelope | authoritative | exact ODQ-006 owner approval |
+| base-v0.1 output admission is complete-support-only and adaptive edge conditioning is deferred | authoritative | exact ODQ-007 owner approval |
 | active full path is a complete posterior/Wiener reconstruction | excluded as scientific identity | exact ODQ-001 owner approval; no explicit signal prior or posterior covariance recovered |
 | current NOI-member application is learned-once/fixed-state | high as implementation observation | state is resolved from real parent and reused for members |
 | per-member relearning is currently active | low/negative recovery result | no active route found; absence limited to inspected base |
@@ -216,7 +228,7 @@ consume the filtered map if later authorized.
 
 Stage B must not be commissioned while:
 
-- ODQ-007 and later required pre-author questions have no owner answer;
+- ODQ-008 and later required pre-author questions have no owner answer;
 - multiple selected estimands remain in one proposed package;
 - method substitution can occur without explicit realized identity;
 - fixed-state and relearned NOI graphs are not separated; or

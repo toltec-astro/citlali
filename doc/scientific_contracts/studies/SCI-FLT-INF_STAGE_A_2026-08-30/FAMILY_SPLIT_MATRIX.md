@@ -1,6 +1,6 @@
 # SCI-FLT-INF candidate family split matrix
 
-Matrix identity: `SCI-FLT-INF-FAMILY-SPLIT v0.1/r0.7`
+Matrix identity: `SCI-FLT-INF-FAMILY-SPLIT v0.1/r0.8`
 
 Status: Stage A recommendation for owner review; names are provisional and no
 row is an approved package or complete method
@@ -17,7 +17,7 @@ the operator and estimand remain exact and the dependency graph is explicit.
 
 | ID | Provisional family | Estimand/claim | State and dependence | Recommended disposition | Readiness |
 | --- | --- | --- | --- | --- | --- |
-| `INF-A` | **owner-selected matched-template map filter** | filtered version of an exact admitted ordinary-MAP observation or coadd product; local samples have the ODQ-001 optimal matched-template amplitude-estimator identity and matching-amplitude unbiasedness under declared assumptions; published role remains a filtered map | ODQ-003 admits observation-local and coadd-local identities separately; ODQ-004 delegates exact noise/covariance, spectral-weighting, and coefficient-role options to both contract views; historical radial-average map PSD is candidate only; ODQ-005 selects one fixed immutable template-response product per application, sourced from the exact parent-bound point-source response or another explicitly supplied scientific template; ODQ-006 selects `A_hat=<t,Qm>/<t,Qt>` as the exact reference operator, permits approximation only inside a later owner-selected quantitative conformance envelope, and makes unresolved/nonpositive normalization null or unavailable; support remains open | selected map-domain filtering package under ODQ-002; final name remains unapproved; no observation/coadd equivalence; exact reference evaluation is conformant and outside-envelope changes are separate methods | not Stage B ready; noise model, quantitative conformance envelope, and support not selected |
+| `INF-A` | **owner-selected matched-template map filter** | filtered version of an exact admitted ordinary-MAP observation or coadd product; local samples have the ODQ-001 optimal matched-template amplitude-estimator identity and matching-amplitude unbiasedness under declared assumptions; published role remains a filtered map | ODQ-003 admits observation-local and coadd-local identities separately; ODQ-004 delegates exact noise/covariance, spectral-weighting, and coefficient-role options to both contract views; historical radial-average map PSD is candidate only; ODQ-005 selects one fixed immutable template-response product per application; ODQ-006 selects `A_hat=<t,Qm>/<t,Qt>` as the exact reference and bounds approximations; ODQ-007 admits only complete-support locations, makes invalid required inputs unavailable, permits numerical fill only when excluded by conservative erosion, and defers learned edge/background conditioning | selected map-domain filtering package under ODQ-002; final name remains unapproved; no observation/coadd equivalence; exact reference evaluation is conformant and outside-envelope or adaptive-edge changes are separate methods | not Stage B ready; noise model, quantitative conformance envelope, exact realized influence extent, response, and later gates not selected |
 | `INF-B` | genuine Wiener/posterior sky reconstruction | posterior mean or other explicitly named reconstructed sky field | exact signal prior, noise likelihood/covariance, hyperparameters, boundary, regularization and posterior state | expressly not the historical path; separate future package only if later desired | unselected; no recovered complete method; not ready |
 | `INF-C` | detected-source, selected-candidate, peak, fitted-source, or catalog inference | source-local or catalog quantity and covariance for a declared selection or fit domain | would require its own selection/model state, calibration, covariance, support, and validity | excluded from the selected matched-filter package with no present ownership assignment; a future independent contract may consume `INF-A` maps | no active Citlali tranche; deferred |
 | `INF-D1` | declared fixed state | exact selected `INF-A` operator with state fixed before method application | state from immutable external or parent-owned authority, not learned from the target by this method | lifecycle variant of selected base method; bind exact state source | operator-dependent |
@@ -26,7 +26,7 @@ the operator and estimand remain exact and the dependency graph is explicit.
 | `INF-D4` | per-member-relearned state | ensemble distribution after each admitted randomization reruns the exact declared learning graph | member-specific state and possibly support/response | separate NOI-GEN method under ODQ-104; cannot mix with fixed-state members | not ready |
 | `INF-E` | data-thresholded spectral mode selection | map after input-dependent selection/removal/retention of Fourier modes | selected modes depend on the parent and threshold law | separate nonlinear/adaptive filtering package if activated; provisional `SCI-FLT-MODESEL` | inactive and scientifically immature |
 | `INF-F` | automatic selector/fallback | output of a declared method-selection policy, including failed-primary handling | request, candidate methods, selection facts and realized method | separate orchestration/policy identity; every realized output retains the selected underlying method identity | current silent substitution is not admissible; not ready |
-| `INF-G` | adaptive edge/background conditioning | parent conditioned by learned support/window/background, or a selected estimator applied after that conditioning | masks from weight/coverage; background from signal; optional taper | separate preprocessing method or explicit component of a selected estimator contract; provisional `SCI-FLT-EDGE-ADAPT` | historical precedent exists; current authority absent |
+| `INF-G` | adaptive edge/background conditioning | parent conditioned by learned support/window/background, or a selected estimator applied after that conditioning | masks from weight/coverage; background from signal; optional taper | ODQ-007 defers this to a separately identified future method or preprocessing contract; provisional `SCI-FLT-EDGE-ADAPT`; it is not a base-estimator option | historical precedent exists; no current method authority |
 | `INF-H` | NOI-based coefficient calibration | empirically scaled normalization/coefficient field and exact dependent standardized products | depends on a frozen NOI ensemble and admitted region; may mutate current runtime weight field | route to NOI/consumer-derived-product contract with an FLT boundary; not part of the base map estimator | frozen NOI prevents automatic promotion; not ready |
 | `INF-I` | source-learned transformation | map or estimator after template/state learned from a fitted source model or selected population | would require an independently governed fit/model generation, selection effects, calibration, and covariance | excluded from the selected package with no present ownership assignment; do not infer from configured analytic templates | no active route recovered; defer |
 | `INF-J` | ordered FIXED/INF composition | output of `T_FIXED o T_INF` or `T_INF o T_FIXED` | binds both exact operators, state generations and order | distinct composition identity; never imply commutation | no active route recovered; defer |
@@ -35,7 +35,7 @@ the operator and estimand remain exact and the dependency graph is explicit.
 
 The study recommends against approving `SCI-FLT-INF` as one combined package.
 Under ODQ-001 through ODQ-003, the ODQ-004 author delegation, and ODQ-005
-through ODQ-006:
+through ODQ-007:
 
 1. create one narrow map-domain filtering package for owner-selected `INF-A`;
    its published signal role is a matched-filtered map and its final name is
@@ -58,16 +58,20 @@ through ODQ-006:
    owner-selected quantitative conformance envelope binding normalization,
    template response, support/null behavior, and uncertainty, and make
    unresolved or nonpositive normalization null/unavailable rather than zero;
-6. exclude source detection, candidate selection, peak interpretation,
+6. admit only complete-support output locations for the base method; make
+   missing/nonfinite/invalid required inputs unavailable, permit numerical
+   fill only if conservative erosion proves it cannot affect admitted output,
+   and defer learned support/background/taper to a separate future method;
+7. exclude source detection, candidate selection, peak interpretation,
    deblending, fitting, and catalog construction without introducing a current
    source-estimation or SRC ownership boundary; a future independent contract
    may consume an exact matched-filtered map;
-7. encode fixed, parent-learned, NOI-informed, and per-member-relearned cases
+8. encode fixed, parent-learned, NOI-informed, and per-member-relearned cases
    as exact lifecycle/method variants rather than a generic `learned` flag;
-8. leave `INF-E`, `INF-F`, and `INF-G` as separate packages or explicit
+9. leave `INF-E`, `INF-F`, and `INF-G` as separate packages or explicit
    preprocessing/selection authorities;
-9. route `INF-H` through a frozen-NOI-compatible derived-product contract; and
-10. leave `INF-B` outside the historical path, requiring a wholly separate
+10. route `INF-H` through a frozen-NOI-compatible derived-product contract; and
+11. leave `INF-B` outside the historical path, requiring a wholly separate
    future recovery/contract if ever requested.
 
 ## Why the split matters

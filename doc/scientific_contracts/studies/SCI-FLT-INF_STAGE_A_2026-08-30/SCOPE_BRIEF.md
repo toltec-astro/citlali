@@ -1,12 +1,12 @@
 # SCI-FLT-INF Stage A Scope Brief
 
-Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.7`
+Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.8`
 
 Status: sanitized owner-review holding study; ODQ-001 estimand, ODQ-002 map-
 domain ownership/product role, and ODQ-003 ordinary-MAP parents/grouping
-approved; ODQ-004 option development author-delegated; ODQ-005 template
-identity and ODQ-006 reference operator/realization policy approved; remaining
-scope not approved; not an author input
+approved; ODQ-004 option development author-delegated; ODQ-005 template,
+ODQ-006 reference operator/realization policy, and ODQ-007 complete-support
+identity approved; remaining scope not approved; not an author input
 
 ## Program adherence and prior-work recovery
 
@@ -138,6 +138,29 @@ regularization that changes the operator or its scientific consequences beyond
 the selected envelope is a separate versioned method or unavailable. A
 nonfinite or nonpositive normalization, unresolved convergence, or unmet bound
 is null/unavailable or failure, never scientific amplitude zero.
+
+`SCI-FLT-INF-ODQ-007` selects complete-support-only output admission for base
+v0.1. At each location, the complete declared influence support of the
+template, weighting operator, exact or conformant approximate realization,
+and boundary convention must lie within the exact parent domain and contain
+only admitted, finite, available inputs satisfying all required predicates.
+The rule is location-based; a bounded local operator does not require the
+entire stored map to be globally valid, while a global operator must honor its
+global influence domain.
+
+Base v0.1 performs no partial-support estimation or renormalization, boundary
+extension, imputation, background estimation/subtraction, learned taper, or
+signal-derived support selection. A parent-authoritative support/validity fact
+may be consumed without becoming filter-owned learning. Any required missing,
+nonfinite, invalid, or out-of-domain input makes the affected location
+unavailable, not zero.
+
+Padding or fill is permitted only as a numerical device when conservative
+erosion over the complete influence support establishes that no admitted
+output depends on it. If that exclusion cannot be established, the route is
+unavailable. Adaptive edge/background conditioning is deferred to a separate
+future method with its own learned-state, response, covariance, NOI, validity,
+lifecycle, and failure contract.
 
 ## Required distinctions
 

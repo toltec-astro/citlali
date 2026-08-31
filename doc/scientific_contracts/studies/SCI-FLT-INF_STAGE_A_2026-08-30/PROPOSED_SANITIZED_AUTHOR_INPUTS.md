@@ -1,6 +1,6 @@
 # SCI-FLT-INF proposed sanitized author inputs
 
-Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.7`
+Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.8`
 
 Status: proposed material only; not approved, not exhaustive, not SHA-bound as
 an author packet, and not permission to launch Stage B
@@ -158,6 +158,31 @@ is a separately versioned method or unavailable. Nonfinite or nonpositive
 null/unavailable/failure state and never establishes the scientific amplitude
 as zero. An iteration or tail cap alone is not success.
 
+## Owner-approved complete-support extract
+
+The author packet must include the exact ODQ-007 approval. Base v0.1 admits an
+output location only when the complete declared influence support of the
+template, weighting operator, ODQ-006 realization, and boundary convention is
+inside the immutable parent domain, admitted for the exact FLT use, finite and
+available wherever required, and valid under every required predicate. The
+influence support may be bounded/local or global/nonlocal and must match the
+exact selected operator rather than an assumed stencil.
+
+Base v0.1 has no partial-support or truncated estimator, support
+renormalization, boundary extension, interpolation/imputation/replacement,
+background estimation/subtraction, learned taper, or signal-derived support
+selection. Parent-authoritative support/validity facts may be consumed as
+exact inputs. Affected output locations are unavailable, not zero or
+successful partial estimates.
+
+Padding or fill may appear only as a numerical device when conservative
+erosion over the complete influence support establishes that no admitted
+output depends on invented values. The author must state this scientific
+exclusion rule and the required support/validity/failure consequences without
+receiving historical or current fill mechanics. Learned support, background,
+fill, window, and taper conditioning are deferred to a separately commissioned
+future method and may not appear as base realization options.
+
 ## Deferred posterior-family exclusion
 
 No posterior-reconstruction material belongs in the selected matched-filter
@@ -206,15 +231,17 @@ A selector is an explicit method with:
 Missing or invalid state must not silently change the method while preserving
 the primary label.
 
-## Candidate adaptive-edge extract
+## Deferred adaptive-edge extract
 
-An adaptive edge method must specify the exact parent facts used to learn
+Adaptive edge/background conditioning is excluded from the base author packet.
+If a future owner separately commissions it, that future method must specify
+the exact parent facts used to learn
 support/window/background, the learned state, conditional apply operator,
 full-procedure response, fill/taper influence region, admitted scientific
 region, missing/nonfinite behavior, covariance/parity, and failure. The
-historical owner preference for fill as a numerical device with an eroded
-scientific region may be offered only under an exact current owner cover; it is
-not automatically admitted.
+ODQ-007 numerical-fill exclusion principle may be cited only where no admitted
+output depends on fill; it does not authorize an adaptive method or historical
+fill mechanics.
 
 ## Candidate parent boundaries
 
@@ -247,12 +274,13 @@ required/conditional/optional role:
 - retained diagnostics versus public science roles; and
 - permitted named consumers.
 
-No current detailed product table is proposed because ODQ-007 and later
-support, response, uncertainty, validity, and lifecycle decisions remain
-open. The top-level signal role, two distinct ordinary-MAP parent/grouping
-roles, template-response identity, and exact ODQ-006 reference operator are
-fixed; the ODQ-004 option set and ODQ-006 quantitative conformance-envelope
-option set are explicit future-author deliverables.
+No current detailed product table is proposed because ODQ-008 and later
+response, uncertainty, validity, and lifecycle decisions remain open. The
+top-level signal role, two distinct ordinary-MAP parent/grouping roles,
+template-response identity, exact ODQ-006 reference operator, and ODQ-007
+complete-support rule are fixed; the ODQ-004 option set and ODQ-006
+quantitative conformance-envelope option set are explicit future-author
+deliverables.
 
 ## Material that must remain excluded
 
@@ -263,6 +291,8 @@ option set are explicit future-author deliverables.
   ODQ-006 owner assignment;
 - historical map-noise PSD mechanics beyond the exact owner-provided candidate
   statement;
+- current or historical fill, taper, coverage-refinement, background, guard-
+  band, or erosion mechanics beyond the exact ODQ-007 exclusion rule;
 - current output names and historical science labels;
 - historical validation, adverse results, re-audit gates, and production use;
 - historical owner decisions not re-admitted under a current exact cover;
@@ -278,10 +308,10 @@ option set are explicit future-author deliverables.
 
 ## Author-packet construction gate
 
-After ODQ-007 onward supplies the required package-local owner decisions,
+After ODQ-008 onward supplies the required package-local owner decisions,
 create a new package directory and a package-specific
 `PRIOR_WORK.md`, sanitized `SCOPE_BRIEF.md`, exact boundary objects, operator/
 product/lifecycle tables, the ODQ-004 and ODQ-006 authored option sets, owner
-decision record, and exclusive SHA-bound author manifest. If the selected
-package still needs implementation evidence to define its science, stop and
-return one precise owner question.
+decision record including ODQ-005 through ODQ-007, and exclusive SHA-bound
+author manifest. If the selected package still needs implementation evidence
+to define its science, stop and return one precise owner question.

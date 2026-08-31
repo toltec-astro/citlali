@@ -722,11 +722,21 @@ must develop matching bounded alternatives in both contract views for later
 scientific-owner selection. Regularization defining `Q` or its null space
 remains ODQ-004 state; an outside-envelope operator is a distinct method or
 unavailable, and unresolved/nonpositive/nonfinite normalization is null or
-unavailable rather than zero amplitude. ODQ-007 support and edge semantics is
-the next owner gate. This is a Stage A study and decision walkthrough only;
-no successor package, author packet, Stage B launch, algorithm change,
-implementation conformity, validation, calibration, performance, readiness,
-production, freeze, or Unity action is claimed or authorized.
+unavailable rather than zero amplitude. Grant Wilson then approved and closed
+`SCI-FLT-INF-ODQ-007` on `2026-08-31`: base v0.1 admits only complete-support
+output locations, evaluated over the exact local or nonlocal influence domain
+of the template, weighting, realization, and boundary convention. Every
+required input must be in-domain, admitted, finite, available, and valid;
+affected locations are unavailable rather than zero or partial-support
+renormalized estimates. Numerical padding or fill is permitted only when
+conservative erosion proves that no admitted output depends on it. Learned
+support, background/fill, windows, and tapers are deferred to a separately
+identified future method. ODQ-008 response, units, beam, and output
+interpretation is the next owner gate. This is a Stage A study and decision
+walkthrough only; no successor package, author packet, Stage B launch,
+algorithm change, implementation conformity, validation, calibration,
+performance, readiness, production, freeze, or Unity action is claimed or
+authorized.
 
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.

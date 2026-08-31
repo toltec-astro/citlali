@@ -1,6 +1,6 @@
 # SCI-FLT-INF frozen-authority and source binding
 
-Binding identity: `SCI-FLT-INF-SOURCE-BINDING v0.1/r0.7`
+Binding identity: `SCI-FLT-INF-SOURCE-BINDING v0.1/r0.8`
 
 Status: exact Stage A provenance record; not an author packet or scientific
 freeze
@@ -62,8 +62,15 @@ quantitative conformance envelope, keeps `Q`-defining regularization under
 ODQ-004, and makes unresolved or nonpositive normalization null/unavailable
 rather than zero amplitude. It delegates development of the quantitative
 envelope alternatives to both future implementation-blind contract views,
-with final selection reserved to the scientific owner. All six exact owner
-objects are bound by
+with final selection reserved to the scientific owner.
+
+[`SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md)
+is the exact owner source closing `SCI-FLT-INF-ODQ-007`. It selects complete-
+support-only output admission, makes missing/nonfinite/invalid required inputs
+unavailable, permits numerical fill only when conservative erosion proves no
+admitted output depends on it, and defers adaptive edge/background conditioning
+to a separate future method. It adopts no historical fill mechanics. All seven
+exact owner objects are bound by
 [`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md); later decisions
 must use separate exact owner artifacts.
 

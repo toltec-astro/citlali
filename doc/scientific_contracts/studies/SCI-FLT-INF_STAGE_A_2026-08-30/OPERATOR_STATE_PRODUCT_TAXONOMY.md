@@ -1,8 +1,8 @@
 # SCI-FLT-INF operator, state, and product taxonomy
 
-Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.7`
+Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.8`
 
-Status: Stage A vocabulary updated through approved ODQ-006 and the ODQ-004/
+Status: Stage A vocabulary updated through approved ODQ-007 and the ODQ-004/
 ODQ-006 author delegations; remaining details are not normative science
 
 ## Identity tuple
@@ -178,6 +178,27 @@ beyond the selected envelope is a separate versioned method rather than an
 implementation detail. Nonfinite `N`/`D`, nonpositive `D`, null templates,
 unresolved convergence, or unmet bounds are null/unavailable/failed and never
 scientific amplitude zero.
+
+## Complete-support identity
+
+ODQ-007 restricts base v0.1 to complete-support output locations. For each
+location, the exact declared influence set includes every parent, template,
+weighting, approximation, and boundary input on which `N`, `D`, or their
+validity depends. That set may be a bounded local footprint or a global/
+nonlocal domain; a finite stencil may not be invented for a nonlocal operator.
+
+Every required element must be in the immutable parent domain, admitted for
+the exact FLT use, finite and available where required, and valid under all
+bound predicates. Failure at any required element makes the output location
+unavailable. The base method has no partial-support/truncated estimator,
+support renormalization, extension, interpolation, imputation, background
+learning, taper learning, or signal-derived support selection.
+
+Numerical padding or fill is outside the scientific vector and is conformant
+only when conservative erosion establishes that no admitted output depends on
+it. Parent-shaped storage does not change the scientific support. A future
+adaptive edge/background operation has a distinct method and learned-state
+identity; it is not a base realization option.
 
 ## Order identities
 

@@ -3,7 +3,7 @@
 Date: `2026-08-26`
 
 Updated: `2026-08-31` for SCI-JINC closure, SCI-NOI Stage A/Stage B handoff,
-SCI-FLT-INF ODQ-001 through ODQ-003 and ODQ-005 through ODQ-006 closure, and
+SCI-FLT-INF ODQ-001 through ODQ-003 and ODQ-005 through ODQ-007 closure, and
 ODQ-004 plus ODQ-006 quantitative-option author delegation
 
 Status: scientific-owner-approved program sequencing record
@@ -267,7 +267,13 @@ Both future contract views must develop the same bounded alternatives for
 later scientific-owner selection. Rules defining `Q` or its null space remain
 ODQ-004 state; outside-envelope operator changes are distinct methods, and
 nonpositive/nonfinite/unresolved normalization is null/unavailable rather than
-zero amplitude. ODQ-007 support and edge semantics is next. No successor
-package, author packet, Stage B launch, algorithm change, conformity,
-validation, calibration, performance, readiness, production, freeze, or Unity
-action follows.
+zero amplitude. Grant Wilson approved ODQ-007 on `2026-08-31`: base v0.1
+admits only complete-support locations over the exact local or nonlocal
+operator influence domain. Missing, nonfinite, invalid, or out-of-domain
+required inputs make affected locations unavailable rather than zero or
+partial-support estimates. Numerical fill is allowed only when conservative
+erosion proves no admitted output depends on it; learned edge/background/
+taper conditioning is deferred to a separate future method. ODQ-008 response,
+units, beam, and output interpretation is next. No successor package, author
+packet, Stage B launch, algorithm change, conformity, validation, calibration,
+performance, readiness, production, freeze, or Unity action follows.

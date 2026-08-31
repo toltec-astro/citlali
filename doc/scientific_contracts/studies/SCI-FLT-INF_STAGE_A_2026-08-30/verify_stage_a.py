@@ -33,6 +33,7 @@ REQUIRED_STUDY_OBJECTS = (
     "SCIENTIFIC_OWNER_ODQ_004_AUTHOR_DELEGATION_2026-08-31.md",
     "SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md",
     "SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md",
+    "SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md",
     "FROZEN_AUTHORITY_AND_SOURCE_BINDING.md",
     "STAGE_A_SOURCE_MANIFEST.md",
     "STAGE_A_SOURCE_MANIFEST.sha256",
@@ -204,7 +205,7 @@ def main() -> int:
         "PRIOR_WORK.md": ("Genuinely new scientific work remaining", "Unavailable"),
         "FAMILY_SPLIT_MATRIX.md": ("INF-A", "INF-J"),
         "SCIENTIFIC_OWNER_DECISION_LEDGER.md": (
-            "SCI-FLT-INF-ODQ-006", "ODQ-007 is the next",
+            "SCI-FLT-INF-ODQ-007", "is the next owner gate",
         ),
         "SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md": (
             "optimal matched-template amplitude estimator",
@@ -229,6 +230,10 @@ def main() -> int:
         "SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md": (
             "authoritative reference estimator",
             "never establishes the scientific amplitude",
+        ),
+        "SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md": (
+            "complete-support",
+            "Adaptive edge/background conditioning is not part of base v0.1",
         ),
         "CROSS_PACKAGE_AND_NOI_BOUNDARIES.md": (
             "fixed-state and relearned members cannot be mixed", "FRUIT boundary",

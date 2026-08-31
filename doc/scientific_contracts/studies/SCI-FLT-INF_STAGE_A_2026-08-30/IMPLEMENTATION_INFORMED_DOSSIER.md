@@ -1,6 +1,6 @@
 # SCI-FLT-INF implementation-informed dossier
 
-Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.7`
+Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.8`
 
 Status: quarantined Stage A manager evidence; forbidden to any future
 implementation-blind scientific author
@@ -131,6 +131,17 @@ zero-centered fields. Parity, conditional meaning, admitted output region,
 and fill influence require scientific authority. Historical FLT D001 approved
 an eroded valid region for a former mixed package, but the current fixed
 package deferred this method.
+
+ODQ-007 independently selects complete-support-only admission for the base
+matched estimator and defers the observed adaptive edge/background path to a
+separate future method. Missing, invalid, nonfinite, or out-of-domain required
+inputs make an affected base output unavailable; partial-support
+renormalization and learned support/background/taper are not base-v0.1
+operations. Numerical fill is allowed only when conservative erosion over the
+complete local or nonlocal influence support proves that no admitted output
+depends on it. The observed masks, median background, dilation, taper, and
+member handling establish no conformity to that decision and may not enter an
+implementation-blind author packet.
 
 ## NOI-member application
 

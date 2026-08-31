@@ -55,7 +55,9 @@ whose published signal role is a matched-filtered map. The study does not yet
 select a final package name, authorize a numerical route, or modify an
 algorithm. ODQ-003 admits ordinary MAP observation and coadd parents as
 distinct grouping identities, and ODQ-005 selects the immutable declared
-template-response product boundary.
+template-response product boundary. ODQ-006 selects the exact reference
+operator and bounded-approximation policy, while ODQ-007 selects complete-
+support-only base admission and defers adaptive edge/background conditioning.
 
 ## Stage A packet
 
@@ -76,6 +78,7 @@ template-response product boundary.
 | [`SCIENTIFIC_OWNER_ODQ_004_AUTHOR_DELEGATION_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_004_AUTHOR_DELEGATION_2026-08-31.md) | exact two-view noise/covariance option-development assignment and historical candidate |
 | [`SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md) | exact immutable template-response product and admitted-source approval |
 | [`SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md) | exact reference operator, bounded-approximation policy, and conformance-envelope author delegation |
+| [`SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md) | exact complete-support-only base method, numerical-fill exclusion rule, and adaptive-edge deferral |
 | [`FROZEN_AUTHORITY_AND_SOURCE_BINDING.md`](FROZEN_AUTHORITY_AND_SOURCE_BINDING.md) | exact base, frozen NOI, historical, and evidence bindings |
 | [`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md) | content-bound Stage A study objects; not an author manifest |
 | [`verify_stage_a.py`](verify_stage_a.py) | study and protected-byte verifier |
@@ -144,8 +147,17 @@ regularization outside the selected envelope is a distinct versioned method,
 and unresolved or nonpositive normalization is null/unavailable rather than
 amplitude zero.
 
-The next owner question is edge, missing, nonfinite, and learned-support policy
-under `SCI-FLT-INF-ODQ-007`. No final package naming or Stage B scope is
+ODQ-007 selects complete-support-only output admission for base v0.1. Every
+required parent, template, weighting, and realization input over the complete
+local or nonlocal influence support must be in-domain, admitted, finite, and
+valid. Affected locations are unavailable rather than zero or partial-support
+renormalized estimates. Padding or fill is only a numerical device when
+conservative erosion proves that no admitted output depends on it; learned
+support, background, fill, windows, and tapers are deferred to a separate
+future method.
+
+The next owner question is response, units, beam, and output interpretation
+under `SCI-FLT-INF-ODQ-008`. No final package naming or Stage B scope is
 approved.
 
 ## Nonclaims and stop rule
@@ -156,9 +168,9 @@ significance, performance, readiness, production, Unity, or scientific-freeze
 claim. It creates no default and authorizes no method substitution.
 
 Do not create an implementation-blind author packet until the scientific owner
-has resolved `SCI-FLT-INF-ODQ-007` and the later package-specific edge,
-state, response, covariance, product, and lifecycle gates identified in the
-decision ledger. The eventual packet must include the exact ODQ-004 author
-assignment and ODQ-005/ODQ-006 approvals. Create a package-local Stage A record
+has resolved `SCI-FLT-INF-ODQ-008` and the later package-specific response,
+state, covariance, product, and lifecycle gates identified in the decision
+ledger. The eventual packet must include the exact ODQ-004 author assignment
+and ODQ-005 through ODQ-007 approvals. Create a package-local Stage A record
 for the matched-filter map operation rather than converting this holding
 directory into a combined package.

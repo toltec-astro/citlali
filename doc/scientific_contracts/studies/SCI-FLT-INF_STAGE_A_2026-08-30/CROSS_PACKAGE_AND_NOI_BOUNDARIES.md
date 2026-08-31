@@ -1,6 +1,6 @@
 # SCI-FLT-INF cross-package and NOI boundaries
 
-Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.7`
+Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.8`
 
 Status: Stage A owner-review candidate; it changes no frozen authority
 
@@ -73,6 +73,23 @@ operator changes outside the selected envelope require a separately versioned
 method. A nonfinite or nonpositive denominator, or failure to establish it on
 admitted support, is typed null/unavailable/failure and never a zero-amplitude
 measurement. This method invents no missing MAP covariance.
+
+ODQ-007 admits only complete-support output locations for base v0.1. The
+complete local or nonlocal influence domain required by the template,
+weighting operator, ODQ-006 realization, and boundary convention must remain
+inside the exact parent domain and contain only admitted, finite, available,
+valid required inputs. MAP-owned support and validity remain MAP facts; FLT
+consumes them and applies its exact use admission without mutating or repairing
+the parent. Missing required state makes affected output unavailable rather
+than zero or a partial-support estimate.
+
+Base FLT performs no boundary extension, imputation, support renormalization,
+background estimation/subtraction, learned taper, or signal-derived support
+selection. Numerical fill is outside scientific support and is permitted only
+when conservative erosion proves that no admitted output depends on it. A
+global/nonlocal operator must honor that full dependence. Adaptive edge/
+background conditioning is a deferred separate method and supplies no current
+MAP-to-FLT route.
 
 ## JINC to inference-bearing method
 
@@ -147,8 +164,10 @@ each be classified in the consequential-state graph; none may hide behind a
 generic `fixed filter` label. ODQ-005 makes the base-v0.1 template declared
 fixed rather than a learning output. Every transformed NOI member must use the
 same ODQ-006 reference operator or the same selected approximation identity
-and bound as the science product. Approximation state that is learned or
-updated follows the corresponding frozen-state or relearned-state graph.
+and bound as the science product, together with the same ODQ-007 complete-
+support and boundary identity. Approximation or support state that is learned
+or updated follows the corresponding frozen-state or relearned-state graph;
+member-specific support learning remains a separate NOI-GEN method.
 
 ## NOI-derived coefficient calibration
 

@@ -231,7 +231,13 @@ and cross-package handoffs are valuable recovery inputs.
   under matching option identities in both future contract views and selected
   by the owner before freeze. `Q`-defining regularization remains ODQ-004
   state, and unresolved or nonpositive normalization is null/unavailable,
-  never zero amplitude. ODQ-007 support and edge semantics is next.
+  never zero amplitude. Grant Wilson approved ODQ-007 on `2026-08-31`: base
+  v0.1 admits only complete-support locations over the exact local or nonlocal
+  influence domain; required missing/nonfinite/invalid inputs make affected
+  locations unavailable, numerical fill is allowed only when conservative
+  erosion proves it cannot affect admitted output, and learned edge/
+  background/taper conditioning is deferred to a separate method. ODQ-008
+  response, units, beam, and output interpretation is next.
   Implementation/config/schema/history remain in a quarantined dossier, and
   the protected SCI-FLT-FIXED author bytes are unchanged.
 - Package-specific FLT recovery:
