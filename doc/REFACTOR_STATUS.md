@@ -762,13 +762,26 @@ interface is first-class while FRUIT remains a separate tranche; and signal
 and qualified companions use tiered role-scoped atomic lifecycles with FLT-
 owned named-use policies evaluated by VAL. Grant also approved
 `SCI-FLT-MATCHED`, **Optimal matched-template map filtering**, as the successor
-package identity. No holding-study owner question remains. Package-local Stage
-A construction and exact-byte author-packet approval are the next gates; Stage
-B remains unauthorized. This is a Stage A study and decision
-walkthrough only; no successor package, author packet, Stage B launch,
-algorithm change, implementation conformity, validation, calibration,
-performance, readiness, production, freeze, or Unity action is claimed or
-authorized.
+package identity. No holding-study owner question remains.
+
+On `2026-08-31`, the package-local
+[`SCI-FLT-MATCHED v0.1`](scientific_contracts/packages/SCI-FLT-MATCHED/v0.1/README.md)
+Stage A candidate was constructed. It contains package-specific recovery, a
+quarantined dossier pointer, sanitized scope, scientific supersession cover,
+owner decisions, operator/state/product taxonomy, adjacent-package boundaries,
+and six stable authored-option families. The exact eight-object author packet
+is SHA-bound and verified. It requires the Scientific Rationale and Contract
+and Engineering Conformance Specification to carry identical alternatives for
+weighting/noise authority (including the radially symmetrized average map noise
+PSD candidate), quantitative approximation conformance, covariance
+representation, immutable-state persistence, response/product/FLT→FRUIT
+persistence, and VAL profile granularity. Exact-byte owner approval and an
+explicit fresh implementation-blind Stage B launch remain pending; appearing
+in the packet selects no option and authorizes no numerical route.
+
+This remains Stage A only. No Stage B launch, algorithm change, implementation
+conformity, validation, calibration, performance, readiness, production,
+freeze, or Unity action is claimed or authorized.
 
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.

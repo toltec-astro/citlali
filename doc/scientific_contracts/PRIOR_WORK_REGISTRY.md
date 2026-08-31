@@ -256,9 +256,12 @@ and cross-package handoffs are valuable recovery inputs.
   FLT→FRUIT interface preserving exact or lineage-reconstructable state without
   importing FRUIT science, and tiered atomic product/lifecycle/VAL policy.
   `SCI-FLT-MATCHED`, **Optimal matched-template map filtering**, is the approved
-  successor package identity. Package-local Stage A construction is next.
-  Implementation/config/schema/history remain in a quarantined dossier, and
-  the protected SCI-FLT-FIXED author bytes are unchanged.
+  successor package identity. Package-local recovery is now recorded in
+  [`packages/SCI-FLT-MATCHED/v0.1/PRIOR_WORK.md`](packages/SCI-FLT-MATCHED/v0.1/PRIOR_WORK.md).
+  Its exact eight-object author-packet candidate assigns six shared-ID option
+  families to both contract views while keeping implementation/config/schema/
+  history quarantined. Exact-byte owner approval and explicit Stage B launch
+  remain pending; protected SCI-FLT-FIXED author bytes are unchanged.
 - Package-specific FLT recovery:
   [`packages/SCI-FLT/v0.1/PRIOR_WORK.md`](packages/SCI-FLT/v0.1/PRIOR_WORK.md)
   at `2026-08-30`. It separately classifies fixed convolution/low-pass,
