@@ -250,7 +250,13 @@ and cross-package handoffs are valuable recovery inputs.
   calibration uncertainty, and full-procedure uncertainty remain distinct;
   and covariance may be explicitly unavailable without invalidating the
   signal. Covariance-representation options are delegated with shared IDs to
-  both future contract views for later owner disposition. ODQ-010 is next.
+  both future contract views for later owner disposition. Grant Wilson then
+  approved ODQ-010 through ODQ-013: fixed or parent-learned-once/frozen state,
+  no fallback/selector, minimal non-mutating derived companions, a first-class
+  FLT→FRUIT interface preserving exact or lineage-reconstructable state without
+  importing FRUIT science, and tiered atomic product/lifecycle/VAL policy.
+  `SCI-FLT-MATCHED`, **Optimal matched-template map filtering**, is the approved
+  successor package identity. Package-local Stage A construction is next.
   Implementation/config/schema/history remain in a quarantined dossier, and
   the protected SCI-FLT-FIXED author bytes are unchanged.
 - Package-specific FLT recovery:

@@ -1,6 +1,6 @@
 # SCI-FLT-INF proposed sanitized author inputs
 
-Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.10`
+Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.11`
 
 Status: proposed material only; not approved, not exhaustive, not SHA-bound as
 an author packet, and not permission to launch Stage B
@@ -248,6 +248,22 @@ scientific consequences. Exact explicit, structured, projected, lineage-
 resolvable, or unavailable forms may be considered. The owner must dispose of
 the options before freeze or publication of a numerical covariance route.
 
+## Owner-approved state, selection, product, and FRUIT-interface extract
+
+The packet must include ODQ-010 through ODQ-013 and the package-identity
+approval. It shall identify the package as `SCI-FLT-MATCHED`, admit only
+declared or exact-parent-learned-once/frozen state, apply identical frozen
+state to admitted NOI members, prohibit automatic fallback, and defer
+data-thresholded modes. It shall permit only minimal non-mutating derived
+companions and preserve the exact owner-approved first-class FLT→FRUIT
+interface without defining FRUIT science.
+
+The author shall develop one role-complete atomic signal bundle plus
+independently atomic qualified companions, the approved lifecycle, FLT-owned
+named-use policies, and matching bounded options across both contract views
+for state/response/covariance persistence, lineage reconstruction, and VAL
+profile granularity.
+
 ## Deferred posterior-family exclusion
 
 No posterior-reconstruction material belongs in the selected matched-filter
@@ -376,10 +392,11 @@ representations remain part of the ODQ-013 product decision.
 
 ## Author-packet construction gate
 
-After ODQ-010 onward supplies the required package-local owner decisions,
-create a new package directory and a package-specific
+The owner decisions are complete. Create the `SCI-FLT-MATCHED` package
+directory and a package-specific
 `PRIOR_WORK.md`, sanitized `SCOPE_BRIEF.md`, exact boundary objects, operator/
-product/lifecycle tables, the ODQ-004, ODQ-006, and ODQ-009 authored option
-sets, owner decision record including ODQ-005 through ODQ-009, and exclusive SHA-bound
+product/lifecycle tables, the ODQ-004, ODQ-006, ODQ-009, ODQ-010, and ODQ-013
+authored option sets, owner decision record including ODQ-005 through ODQ-013,
+and exclusive SHA-bound
 author manifest. If the selected package still needs implementation evidence
 to define its science, stop and return one precise owner question.

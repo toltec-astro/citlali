@@ -1,6 +1,6 @@
 # SCI-FLT-INF Stage A Scope Brief
 
-Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.10`
+Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.11`
 
 Status: sanitized owner-review holding study; ODQ-001 estimand, ODQ-002 map-
 domain ownership/product role, and ODQ-003 ordinary-MAP parents/grouping
@@ -9,6 +9,8 @@ ODQ-006 reference operator/realization policy, and ODQ-007 complete-support
 identity approved; ODQ-008 response/unit/beam interpretation approved;
 ODQ-009 conditional-uncertainty policy approved with representation options
 author-delegated;
+ODQ-010 through ODQ-013 state, selection, derived-product/FRUIT-interface,
+product/lifecycle/VAL decisions approved; `SCI-FLT-MATCHED` identity approved;
 remaining scope not approved; not an author input
 
 ## Program adherence and prior-work recovery
@@ -207,6 +209,15 @@ covariance GLS premises. Frozen-NOI conditional second moment, calibration
 uncertainty, and full-procedure uncertainty remain distinct. The future author
 must develop shared covariance-representation options in both contract views;
 the owner must later dispose of them before freeze or a numerical route.
+
+ODQ-010 admits declared fixed or exact-parent-learned-once/frozen state and
+requires identical frozen-state application to admitted NOI members. ODQ-011
+permits no automatic selector or fallback and defers data-thresholded modes.
+ODQ-012 permits only minimal non-mutating derived companions and requires the
+first-class FLT→FRUIT interface stated in the exact owner artifact, while
+leaving FRUIT science to its own tranche. ODQ-013 selects tiered role-scoped
+atomic bundles, explicit lifecycle, FLT-owned named-use policy, and VAL
+registration/evaluation. The package name is `SCI-FLT-MATCHED`.
 
 ## Required distinctions
 

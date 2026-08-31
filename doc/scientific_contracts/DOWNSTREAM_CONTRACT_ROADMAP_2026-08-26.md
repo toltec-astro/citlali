@@ -3,8 +3,9 @@
 Date: `2026-08-26`
 
 Updated: `2026-08-31` for SCI-JINC closure, SCI-NOI Stage A/Stage B handoff,
-SCI-FLT-INF ODQ-001 through ODQ-003 and ODQ-005 through ODQ-009 closure, and
-ODQ-004, ODQ-006, and ODQ-009 option author delegation
+SCI-FLT-INF ODQ-001 through ODQ-003 and ODQ-005 through ODQ-013 closure, and
+ODQ-004, ODQ-006, ODQ-009, ODQ-010, and ODQ-013 option author delegation;
+ODQ-010 through ODQ-013 closure; and `SCI-FLT-MATCHED` package identity
 
 Status: scientific-owner-approved program sequencing record
 
@@ -288,7 +289,15 @@ premises. Frozen-NOI conditional second moments, calibration uncertainty, and
 full-procedure uncertainty remain distinct; covariance may be unavailable
 without invalidating the signal. Both future contract views must develop
 shared covariance-representation alternatives for later owner disposition.
-ODQ-010 learned-state and NOI generation is next.
+At that point, ODQ-010 learned-state and NOI generation was next.
+Grant Wilson then approved ODQ-010 through ODQ-013: declared or parent-learned-
+once/frozen state with identical NOI application; no automatic selector,
+fallback, or data-thresholded mode; minimal non-mutating derived products and
+a first-class owner-worded FLT→FRUIT interface; and tiered role-scoped atomic
+products/lifecycle with FLT policy ownership and VAL evaluation. FRUIT remains
+a separate future tranche. `SCI-FLT-MATCHED`, **Optimal matched-template map
+filtering**, is the approved package identity. Package-local Stage A packet
+construction and exact-byte launch approval are next.
 No successor package, author packet, Stage B launch, algorithm change,
 conformity, validation, calibration,
 performance, readiness, production, freeze, or Unity action follows.

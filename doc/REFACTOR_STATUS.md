@@ -753,7 +753,18 @@ uncertainty, and full-procedure uncertainty remain separate, and the signal may
 remain valid with covariance explicitly unavailable. Both future contract
 views must develop the same bounded covariance-representation alternatives for
 later owner disposition before freeze or a numerical covariance route.
-ODQ-010 learned-state and NOI generation is the next owner gate. This is a Stage A study and decision
+Grant Wilson subsequently approved and closed ODQ-010 through ODQ-013 on
+`2026-08-31`: application state is declared or learned once from the exact
+parent and frozen for identical NOI-member application; automatic selection,
+fallback, and data-thresholded modes are excluded; only minimal non-mutating
+derived companions are admitted; the exact owner-worded FLT→FRUIT scientific
+interface is first-class while FRUIT remains a separate tranche; and signal
+and qualified companions use tiered role-scoped atomic lifecycles with FLT-
+owned named-use policies evaluated by VAL. Grant also approved
+`SCI-FLT-MATCHED`, **Optimal matched-template map filtering**, as the successor
+package identity. No holding-study owner question remains. Package-local Stage
+A construction and exact-byte author-packet approval are the next gates; Stage
+B remains unauthorized. This is a Stage A study and decision
 walkthrough only; no successor package, author packet, Stage B launch,
 algorithm change, implementation conformity, validation, calibration,
 performance, readiness, production, freeze, or Unity action is claimed or

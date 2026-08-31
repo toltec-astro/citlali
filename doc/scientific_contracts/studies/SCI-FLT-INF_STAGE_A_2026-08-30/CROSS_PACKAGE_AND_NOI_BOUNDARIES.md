@@ -1,6 +1,6 @@
 # SCI-FLT-INF cross-package and NOI boundaries
 
-Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.10`
+Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.11`
 
 Status: Stage A owner-review candidate; it changes no frozen authority
 
@@ -287,3 +287,18 @@ and interpretation. An exact frozen FRUIT terminal/residual product could be a
 future parent under its own boundary. NOI-informed FRUIT continuation and
 per-member replay follow the frozen SCI-NOI generation rules. This study does
 not define FRUIT science.
+
+ODQ-012 strengthens this as a first-class `SCI-FLT-MATCHED` product boundary:
+
+> The FLT product contract shall preserve a first-class FLT→FRUIT scientific
+> interface sufficient for a future FRUIT method to consume the filtered
+> amplitude product without reconstructing undocumented FLT implementation
+> state. At minimum, the interface shall identify the filtered quantity,
+> template, response, valid support, units/calibration, method/state identity,
+> uncertainty availability, and provenance. Additional FLT state required by
+> an authorized FRUIT method shall remain exactly available or reconstructable
+> through the product lineage.
+
+This requirement supplies no FRUIT algorithm, learning, recurrence, stopping,
+restart, uncertainty, or interpretation. Those remain for a separate FRUIT
+contract tranche.

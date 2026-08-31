@@ -65,6 +65,10 @@ covariance propagation `C_cond=L C_parent L^T` when its authoritative premises
 exist. It permits the filtered signal with typed covariance unavailable,
 separates the frozen-NOI conditional second moment and calibration uncertainty,
 and delegates covariance-representation options to both future contract views.
+ODQ-010 through ODQ-013 close the state/NOI graph, fail-closed method policy,
+minimal derived-product and first-class FLT→FRUIT boundary, and tiered atomic
+product/lifecycle/VAL policy. The selected package identity is
+`SCI-FLT-MATCHED`, **Optimal matched-template map filtering**.
 
 ## Stage A packet
 
@@ -88,6 +92,11 @@ and delegates covariance-representation options to both future contract views.
 | [`SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md) | exact complete-support-only base method, numerical-fill exclusion rule, and adaptive-edge deferral |
 | [`SCIENTIFIC_OWNER_ODQ_008_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_008_APPROVAL_2026-08-31.md) | exact template-amplitude unit, fixed-state response, and beam/calibration interpretation approval |
 | [`SCIENTIFIC_OWNER_ODQ_009_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_009_APPROVAL_2026-08-31.md) | exact conditional-uncertainty policy, fixed-state covariance identity, NOI/calibration separation, and two-view representation assignment |
+| [`SCIENTIFIC_OWNER_ODQ_010_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_010_APPROVAL_2026-08-31.md) | exact declared/parent-learned-frozen state and NOI generation policy |
+| [`SCIENTIFIC_OWNER_ODQ_011_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_011_APPROVAL_2026-08-31.md) | exact no-selector, no-fallback, fail-closed policy and mode-selection deferral |
+| [`SCIENTIFIC_OWNER_ODQ_012_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_012_APPROVAL_2026-08-31.md) | exact minimal derived-product boundary and first-class FLT→FRUIT interface |
+| [`SCIENTIFIC_OWNER_ODQ_013_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_013_APPROVAL_2026-08-31.md) | exact tiered atomic bundle, lifecycle, VAL ownership, and failure policy |
+| [`SCIENTIFIC_OWNER_PACKAGE_IDENTITY_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_PACKAGE_IDENTITY_APPROVAL_2026-08-31.md) | exact `SCI-FLT-MATCHED` package identity approval |
 | [`FROZEN_AUTHORITY_AND_SOURCE_BINDING.md`](FROZEN_AUTHORITY_AND_SOURCE_BINDING.md) | exact base, frozen NOI, historical, and evidence bindings |
 | [`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md) | content-bound Stage A study objects; not an author manifest |
 | [`verify_stage_a.py`](verify_stage_a.py) | study and protected-byte verifier |
@@ -190,8 +199,9 @@ the signal, while consumers requiring covariance fail closed. The future
 author must present bounded representation options in both contract views for
 later owner disposition.
 
-The next owner question is the learned-state and NOI generation graph under
-`SCI-FLT-INF-ODQ-010`. No final package naming or Stage B scope is approved.
+All holding-study owner questions are closed. The selected successor package
+identity is `SCI-FLT-MATCHED`. The next gate is package-local Stage A packet
+construction and exact-byte owner approval; Stage B is not yet authorized.
 
 ## Nonclaims and stop rule
 
@@ -200,10 +210,8 @@ validation, calibration, achieved response/covariance, uncertainty,
 significance, performance, readiness, production, Unity, or scientific-freeze
 claim. It creates no default and authorizes no method substitution.
 
-Do not create an implementation-blind author packet until the scientific owner
-has resolved `SCI-FLT-INF-ODQ-010` and the later package-specific state,
-state, product, and lifecycle gates identified in the decision ledger. The
-eventual packet must include the exact ODQ-004 author assignment and ODQ-005
-through ODQ-009 approvals and assignments. Create a package-local Stage A record for the
-matched-filter map operation rather than converting this holding directory
-into a combined package.
+Create a package-local `SCI-FLT-MATCHED` Stage A record rather than converting
+this holding directory into a combined package. Its exclusive author packet
+must include the exact owner approvals and assignments, preserve the FLT→FRUIT
+interface without importing FRUIT science, exclude the quarantined dossier,
+and return for exact-byte owner approval before Stage B dispatch.

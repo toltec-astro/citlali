@@ -1,9 +1,9 @@
 # SCI-FLT-INF operator, state, and product taxonomy
 
-Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.10`
+Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.11`
 
-Status: Stage A vocabulary updated through approved ODQ-009 and the ODQ-004/
-ODQ-006/ODQ-009 author delegations; remaining details are not normative science
+Status: holding-study vocabulary updated through approved ODQ-013 and
+`SCI-FLT-MATCHED` identity; delegated author options remain unselected
 
 ## Identity tuple
 
@@ -18,6 +18,10 @@ Every future inference-bearing method should bind at least
 
 Two outputs with different values in a scientifically consequential field are
 not the same method realization even if they share code or filenames.
+
+The selected package identity for the matched-template family is
+`SCI-FLT-MATCHED`, **Optimal matched-template map filtering**. `SCI-FLT-INF`
+remains only the closed holding-study identity.
 
 ## Parent roles
 
@@ -314,6 +318,14 @@ representation option identities and consequences. Exact explicit,
 structured, projected, lineage-resolvable, and unavailable forms may be
 considered; none is selected here. Owner disposition precedes freeze or a
 numerical covariance route.
+
+ODQ-010 admits declared or exact-parent-learned-once/frozen application state
+and applies the identical state to every admitted NOI member. ODQ-011 admits no
+automatic selector or fallback. ODQ-012 permits only minimal non-mutating
+derived companions and requires a first-class FLT→FRUIT interface with exact
+or lineage-reconstructable authorized state. ODQ-013 makes signal and
+qualified companions independently atomic by role and fixes their lifecycle
+and VAL ownership boundary.
 
 ODQ-004 does not select one of these roles. It assigns the future author to
 develop bounded noise/covariance, spectral-weighting, and parent-coefficient

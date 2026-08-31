@@ -1,6 +1,6 @@
 # SCI-FLT-INF contradictions, ambiguities, and unavailable states
 
-Record identity: `SCI-FLT-INF-GAPS v0.1/r0.10`
+Record identity: `SCI-FLT-INF-GAPS v0.1/r0.11`
 
 Status: Stage A owner-review record; absence is preserved rather than repaired
 
@@ -216,7 +216,7 @@ consume the filtered map if later authorized.
 
 | State | Reason unavailable | Consequence |
 | --- | --- | --- |
-| exact active full-path estimand, product role, admitted parent/grouping, template-response type, reference operator, base support method, fixed-state response/unit identity, and conditional-uncertainty policy | **available at identity level**: ODQ-001 through ODQ-009 select the matched-template amplitude map method and conditional uncertainty identity, while ODQ-004/006/009 retain bounded author assignments | final package name and numerical product remain unavailable pending ODQ-004, the ODQ-006 quantitative-envelope selection, the ODQ-009 representation selection, and ODQ-010 onward |
+| exact matched-template scientific identity and package boundary | **available at identity level**: ODQ-001 through ODQ-013 and the package-identity approval select `SCI-FLT-MATCHED`; delegated author options remain unselected | numerical product remains unavailable pending package-local authorship and owner disposition of the authored options |
 | genuine Wiener/posterior method | no complete prior/likelihood/operator/posterior specification recovered | no posterior reconstruction product |
 | matched-template map-filter realization | owner-selected estimator, filtered-map product role, parent roles, template-response identity, exact reference operator, complete-support rule, and exact fixed-state response/unit identity exist, but weighting/covariance, exact realized influence extent, numerical response representation, and any approximate conformance envelope remain unresolved | no authorized numerical matched-filtered map |
 | parent covariance/inverse-noise | ODQ-004 delegates option development; no option or parent coefficient meaning is selected | denominator cannot yet be called Fisher information or inverse variance; numerical `C_cond` is unavailable |
@@ -237,7 +237,9 @@ consume the filtered map if later authorized.
 | full-procedure response | ODQ-008 selects fixed-state response only; exact relearning/re-estimation graph and perturbation family remain for ODQ-010 | no full-procedure response claim |
 | effective matched-filter beam/solid angle | ODQ-008 requires derivation from the exact response under an explicit measure/domain/convention; no numerical response representation or derivation is selected | parent nominal beam remains provenance only |
 | calibration covariance for template amplitude | parent/template dependence must be joint, but numerical dependence/covariance facts are not supplied | missing contribution unavailable, not zero or estimator normalization |
-| detailed public product bundle/VAL profiles | top-level matched-filtered-map role and exact fixed-state response/unit identity are selected, but uncertainty/validity/lifecycle, response representation, and named uses remain unresolved | publication unavailable |
+| detailed public product bundle/VAL profiles | ODQ-013 fixes tiered atomic roles/lifecycle and FLT policy ownership, while exact persistence and profile-granularity options remain unauthored/unselected | publication unavailable pending package-local contract authorship and owner disposition |
+| package-local Stage A packet and author manifest | holding-study owner decisions and `SCI-FLT-MATCHED` identity are complete, but the package-local recovery/scope/firewall packet has not yet received exact-byte owner approval | Stage B dispatch unavailable |
+| FLT→FRUIT interface | minimum scientific identity is approved by ODQ-012; exact persistence/reconstruction options and any future FRUIT-required additions remain unauthored/unselected | interface must be preserved in FLT; FRUIT science remains unavailable pending its own tranche |
 
 ## Confidence assessment
 
@@ -263,7 +265,7 @@ consume the filtered map if later authorized.
 
 Stage B must not be commissioned while:
 
-- ODQ-009 and later required pre-author questions have no owner answer;
+- the package-local Scope Brief and exact author manifest lack owner approval;
 - multiple selected estimands remain in one proposed package;
 - method substitution can occur without explicit realized identity;
 - fixed-state and relearned NOI graphs are not separated; or

@@ -1,13 +1,13 @@
 # SCI-FLT-INF scientific-owner decision ledger
 
-Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.10`
+Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.11`
 
 Status: proposed ordered owner walkthrough; ODQ-001 through ODQ-003 approved
 and closed; ODQ-004 author-delegated; ODQ-005 approved and closed; ODQ-006
 approved and closed with quantitative conformance-envelope alternatives
 author-delegated; ODQ-007 through ODQ-009 approved and closed, with ODQ-009
 covariance-representation alternatives author-delegated; ODQ-010 through
-ODQ-013 open
+ODQ-013 approved and closed; package identity `SCI-FLT-MATCHED` approved
 
 ## Decision discipline
 
@@ -20,8 +20,9 @@ not approve a noise/covariance option. It also records the exact ODQ-006
 reference-operator decision and quantitative author delegation but does not
 approve a conformance-envelope option. It records the exact ODQ-007 complete-
 support decision, the exact ODQ-008 response/unit/beam decision, and the exact
-ODQ-009 uncertainty policy and representation assignment. It does not approve
-any proposed answer for ODQ-010 onward.
+ODQ-009 uncertainty policy and representation assignment, the exact ODQ-010
+through ODQ-013 decisions, and the exact package identity. All holding-study
+owner questions are closed.
 
 ## `SCI-FLT-INF-ODQ-001` — estimand of the existing full path
 
@@ -279,58 +280,74 @@ significance is selected.
 
 ## `SCI-FLT-INF-ODQ-010` — learned-state and NOI generation graph
 
-For every consequential state component—template/prior, covariance/PSD,
-edge/background/support, approximation/selection, normalization, and method
-choice—classify it as:
+Status: **Option 1 approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_010_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_010_APPROVAL_2026-08-31.md).
 
-- declared fixed;
-- learned once from the real parent and frozen;
-- updated from prior NOI in a new immutable successor generation;
-- relearned separately per admitted member;
-- not applicable; or
-- unavailable.
+Base v0.1 uses one immutable realized application state. Template, externally
+supplied state, method choice, approximation envelope, and tolerances are
+declared fixed. A PSD/`Q` estimated from the exact observation or coadd is
+learned once from that parent and frozen. Support/validity are parent facts
+plus deterministic complete-support admission; `D` is derived fixed-state
+normalization. Observation/coadd state remains separate.
 
-Manager recommendation: start with learned-once/frozen if that matches the
-selected science, because it is the narrowest recoverable current lifecycle.
-Commission a per-member method only with an exact complete rerun graph and a
-separate estimand; never mix the member populations.
+The identical state is applied to all admitted NOI members. Response and
+uncertainty are conditional on it. NOI-informed updates and per-member
+relearning are separate future methods; fixed and relearned populations cannot
+mix. Both contract views must develop matching immutable-state representation
+options where required.
 
 ## `SCI-FLT-INF-ODQ-011` — method selection, fallback, and data-thresholded modes
 
-Does v0.1 permit any automatic alternative selection? If so, define the
-selector and realized-method product identity. What happens when PSD/template/
-parent/learning/approximation is unavailable? Is data-thresholded spectral
-selection/destriping in scope?
+Status: **Option 1 approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_011_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_011_APPROVAL_2026-08-31.md).
 
-Manager recommendation: no silent fallback. Fail the requested method closed
-unless a separately authorized selector realizes a separately named method.
-Defer inactive data-thresholded destriping to its own Stage A package.
+Base v0.1 has no automatic selector or fallback. It realizes the exact
+requested method or records unavailable/failed. Missing or failed parent,
+template, PSD/`Q`, learning, support, normalization, response requirement, or
+approximation qualification cannot select a substitute or retain the primary
+label. Explicitly requesting another authorized method is not fallback.
+Data-thresholded spectral selection and destriping are deferred to separate
+Stage A recovery.
 
 ## `SCI-FLT-INF-ODQ-012` — NOI coefficient calibration and standardized products
 
-May a NOI-derived global scalar create a new versioned normalization/
-coefficient product? If yes, what exact parent coefficient and NOI estimand
-does it calibrate, what region/statistic defines it, and what does it not mean?
-Which standardized numerator/scale pair is authorized, and which significance,
-detection, peak, or catalog claims remain outside?
+Status: **amended Option 1 approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_012_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_012_APPROVAL_2026-08-31.md).
 
-Manager recommendation: route this as a separate FLT/NOI derived-product
-contract. Preserve immutable formal/parent coefficients, create a successor
-coefficient rather than mutation, and prohibit precision/significance labels
-without exact authority.
+Base v0.1 permits only minimal immutable non-mutating FLT/NOI companions. No
+NOI scalar changes `A_hat`, `D`, `Q`, template scaling, a parent coefficient,
+or an existing product. Detailed empirical coefficient and standardized-map
+methods remain for a separate FLT/NOI derived-product contract and carry no
+precision, calibration, significance, detection, or catalog meaning by form.
+
+The FLT contract must preserve a first-class FLT→FRUIT scientific interface
+sufficient for future FRUIT consumption without reconstructing undocumented
+FLT implementation state. It identifies at least quantity, template, response,
+valid support, units/calibration, method/state, uncertainty availability, and
+provenance; additional authorized FRUIT-required FLT state remains exactly
+available or lineage-reconstructable. FRUIT retains its own future tranche and
+all FRUIT science.
 
 ## `SCI-FLT-INF-ODQ-013` — product bundle, lifecycle, VAL, and failure
 
-For each selected method, approve the required/conditional/optional product
-roles, atomic completion, disabled/unavailable/failed/superseded states,
-requested/effective/resolved/realized identities, permitted consumers, and
-owner-authored VAL profiles.
+Status: **Option 1 approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_013_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_013_APPROVAL_2026-08-31.md).
 
-Manager recommendation: require an immutable parent reference, method/state
-identity, output estimand, normalization, response, support/null/validity,
-covariance availability, approximation/selection record, NOI generation, and
-atomic failure record. Diagnostics may remain optional but cannot substitute
-for a missing required scientific role.
+Base v0.1 uses one role-complete atomic signal bundle and independently atomic
+conditional companions. Required records cover immutable parent, all method
+identity stages, state/lineage, matched-filtered amplitude, normalization,
+response, support/validity/null/cause, uncertainty availability,
+approximation/selection, FLT→FRUIT interface, completion, failure, and
+provenance. Numerical covariance, NOI, calibration, beam, and projection
+companions are required only for their named roles.
+
+Atomicity is role-scoped: covariance unavailability does not invalidate a
+signal-only product, while failure of a requested qualified companion fails
+that companion or composite request. Approved lifecycle states are
+`not_requested`, `requested`, `effective`, `disabled`, `unavailable`,
+`resolved`, `applied`, `failed`, `realized`, and `superseded`. FLT authors
+named-use policies; VAL registers/evaluates them. Both contract views must
+develop matching bounded persistence and VAL-profile-granularity options.
 
 ## Decision dependency graph
 
@@ -350,13 +367,15 @@ ODQ-001 estimand
                        -> ODQ-013 product/VAL/lifecycle
 ```
 
-ODQ-001 through ODQ-003 and ODQ-005 through ODQ-009 are closed, and ODQ-004 is
+ODQ-001 through ODQ-003 and ODQ-005 through ODQ-013 are closed, and ODQ-004 is
 author-delegated without an option selection. ODQ-006 also delegates
 quantitative conformance-envelope alternatives without selecting one. ODQ-009
 also delegates covariance-representation alternatives without selecting one.
-ODQ-010 is the next owner gate. Stage B is blocked until all remaining pre-author
-decisions have exact owner answers and an exclusive implementation-blind
-author packet containing the ODQ-004 assignment and ODQ-005 through ODQ-009
-approvals and assignments. Freeze and numerical authorization remain blocked
-until the owner disposes of the authored ODQ-004, ODQ-006, and ODQ-009 option
+The package identity `SCI-FLT-MATCHED` is approved by
+[`SCIENTIFIC_OWNER_PACKAGE_IDENTITY_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_PACKAGE_IDENTITY_APPROVAL_2026-08-31.md).
+No holding-study owner question remains. The next gate is construction and
+exact-byte owner approval of a package-local Stage A packet and exclusive
+implementation-blind author manifest. Stage B dispatch remains unauthorized.
+Freeze and numerical authorization remain blocked until the owner disposes of
+the authored ODQ-004, ODQ-006, ODQ-009, and other explicitly delegated option
 sets.

@@ -1,6 +1,6 @@
 # SCI-FLT-INF prior-work recovery
 
-Recovery identity: `SCI-FLT-INF-PRIOR-WORK v0.1/r0.10`
+Recovery identity: `SCI-FLT-INF-PRIOR-WORK v0.1/r0.11`
 
 Status: reviewed Stage A recovery record; implementation and evidence entries
 remain quarantined from authorship
@@ -47,6 +47,8 @@ performed.
 | Scientific-owner ODQ-007 approval | exact `2026-08-31` owner artifact in this study | complete-support-only base admission; missing/nonfinite/invalid required inputs unavailable; numerical fill only if excluded by conservative erosion; adaptive edge/background conditioning deferred | **Adopt** as binding base support and edge policy; cite historical D001 only as recovered precedent, not present mechanics |
 | Scientific-owner ODQ-008 approval | exact `2026-08-31` owner artifact in this study | template-amplitude signal units; exact location-indexed fixed-state response; noninheritance of a universal response kernel or parent beam; joint parent/template calibration dependence | **Adopt** as binding output interpretation, response, unit, and beam/calibration policy; retain uncertainty and full-procedure response for ODQ-009/010 |
 | Scientific-owner ODQ-009 approval | exact `2026-08-31` owner artifact in this study | truthful tiered uncertainty state; `C_cond=L C_parent L^T` for authoritative exact fixed-state covariance; conditional-only interpretation of `D^-1`; distinct frozen-NOI second moment and calibration uncertainty; covariance-representation assignment | **Adopt** as binding uncertainty policy; delegate shared representation alternatives to both future contract views; retain the learned/relearned generation graph for ODQ-010 |
+| Scientific-owner ODQ-010--013 approvals | exact `2026-08-31` owner artifacts in this study | fixed/parent-learned-frozen lifecycle; no selector/fallback; minimal derived products and first-class FLT→FRUIT interface; tiered atomic product/lifecycle/VAL policy | **Adopt** as binding closeout decisions; retain authored representation/profile alternatives for later owner disposition |
+| Scientific-owner package identity approval | exact `2026-08-31` owner artifact in this study | `SCI-FLT-MATCHED`, Optimal matched-template map filtering | **Adopt** for the package-local successor; retain `SCI-FLT-INF` only as the closed holding-study identity |
 | RTC temporal filtering and AltAz destriping | frozen/active RTC-owned domain | timestream-domain cleaning before mapmaking | **Exclude** from map-domain INF scope; preserve RTC ownership |
 | FRUIT records | separate future tranche | source-model feedback, iteration, learning, stopping, restart, lineage | **Defer** to SCI-FRUIT; retain only the frozen NOI boundary for conditional/replayed cases |
 | Source fitting/finding surfaces | later downstream operation; no dedicated frozen source-analysis contract recovered | Gaussian fitting and catalog-facing products after filtering | **Exclude** from the selected matched-filter package; make no current ownership assignment; a future independent contract may consume filtered maps; no active source-learned filter-state route was recovered at the base commit |
@@ -136,6 +138,13 @@ ODQ-010. These decisions do not approve the covariance/noise authority,
 numerical template instance, quantitative approximation tolerance, exact
 support extent, final package name, response/covariance representation,
 full-procedure response/uncertainty, or contract.
+
+ODQ-010 through ODQ-013 close the remaining lifecycle and product boundary:
+state is declared or parent-learned once and frozen, fallback is prohibited,
+minimal derived products cannot mutate the estimator, the FLT→FRUIT interface
+is first-class without importing FRUIT science, and signal versus qualified
+companions complete atomically by role. The successor package identity is
+`SCI-FLT-MATCHED`.
 
 ### Superseded or nonportable material
 

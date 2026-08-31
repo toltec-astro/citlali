@@ -1,6 +1,6 @@
 # SCI-FLT-INF frozen-authority and source binding
 
-Binding identity: `SCI-FLT-INF-SOURCE-BINDING v0.1/r0.10`
+Binding identity: `SCI-FLT-INF-SOURCE-BINDING v0.1/r0.11`
 
 Status: exact Stage A provenance record; not an author packet or scientific
 freeze
@@ -87,7 +87,19 @@ authoritative inputs exist, conditional-only interpretation of `D^-1`, and
 separate frozen-NOI, calibration, and full-procedure uncertainty identities.
 It delegates covariance-representation alternatives to both future contract
 views with later owner disposition and authorizes no posterior covariance or
-independent-pixel uncertainty. All nine exact owner objects are bound by
+independent-pixel uncertainty.
+
+[`SCIENTIFIC_OWNER_ODQ_010_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_010_APPROVAL_2026-08-31.md)
+through
+[`SCIENTIFIC_OWNER_ODQ_013_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_013_APPROVAL_2026-08-31.md)
+are the exact owner sources closing the state/NOI graph, selector/fallback,
+minimal-derived-product and FLT→FRUIT interface, and tiered atomic
+product/lifecycle/VAL decisions.
+
+[`SCIENTIFIC_OWNER_PACKAGE_IDENTITY_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_PACKAGE_IDENTITY_APPROVAL_2026-08-31.md)
+selects `SCI-FLT-MATCHED`, **Optimal matched-template map filtering**, as the
+package-local successor identity while retaining `SCI-FLT-INF` only as the
+closed holding study. All fourteen exact owner objects are bound by
 [`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md); later decisions
 must use separate exact owner artifacts.
 

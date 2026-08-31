@@ -36,6 +36,11 @@ REQUIRED_STUDY_OBJECTS = (
     "SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md",
     "SCIENTIFIC_OWNER_ODQ_008_APPROVAL_2026-08-31.md",
     "SCIENTIFIC_OWNER_ODQ_009_APPROVAL_2026-08-31.md",
+    "SCIENTIFIC_OWNER_ODQ_010_APPROVAL_2026-08-31.md",
+    "SCIENTIFIC_OWNER_ODQ_011_APPROVAL_2026-08-31.md",
+    "SCIENTIFIC_OWNER_ODQ_012_APPROVAL_2026-08-31.md",
+    "SCIENTIFIC_OWNER_ODQ_013_APPROVAL_2026-08-31.md",
+    "SCIENTIFIC_OWNER_PACKAGE_IDENTITY_APPROVAL_2026-08-31.md",
     "FROZEN_AUTHORITY_AND_SOURCE_BINDING.md",
     "STAGE_A_SOURCE_MANIFEST.md",
     "STAGE_A_SOURCE_MANIFEST.sha256",
@@ -202,12 +207,13 @@ def main() -> int:
                 fail("Stage A source-manifest pointer mismatch", failures)
 
     required_phrases = {
-        "README.md": ("not an approved package", "next owner question"),
+        "README.md": ("not an approved package", "next gate"),
         "SCOPE_BRIEF.md": ("Program adherence and prior-work recovery", "Exclusions"),
         "PRIOR_WORK.md": ("Genuinely new scientific work remaining", "Unavailable"),
         "FAMILY_SPLIT_MATRIX.md": ("INF-A", "INF-J"),
         "SCIENTIFIC_OWNER_DECISION_LEDGER.md": (
-            "SCI-FLT-INF-ODQ-009", "ODQ-010", "is the next owner gate",
+            "SCI-FLT-INF-ODQ-013", "SCI-FLT-MATCHED",
+            "No holding-study owner question remains",
         ),
         "SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md": (
             "optimal matched-template amplitude estimator",
@@ -244,6 +250,26 @@ def main() -> int:
         "SCIENTIFIC_OWNER_ODQ_009_APPROVAL_2026-08-31.md": (
             "C_cond = L C_parent L^T",
             "marginal conditional variance",
+        ),
+        "SCIENTIFIC_OWNER_ODQ_010_APPROVAL_2026-08-31.md": (
+            "one exact immutable realized application state",
+            "Fixed-state and relearned members cannot mix",
+        ),
+        "SCIENTIFIC_OWNER_ODQ_011_APPROVAL_2026-08-31.md": (
+            "no automatic method selector and no fallback",
+            "Data-thresholded spectral selection",
+        ),
+        "SCIENTIFIC_OWNER_ODQ_012_APPROVAL_2026-08-31.md": (
+            "first-class FLT→FRUIT",
+            "FRUIT receives its own future",
+        ),
+        "SCIENTIFIC_OWNER_ODQ_013_APPROVAL_2026-08-31.md": (
+            "role-complete atomic signal bundle",
+            "Atomicity is role-scoped",
+        ),
+        "SCIENTIFIC_OWNER_PACKAGE_IDENTITY_APPROVAL_2026-08-31.md": (
+            "SCI-FLT-MATCHED",
+            "Optimal matched-template map filtering",
         ),
         "CROSS_PACKAGE_AND_NOI_BOUNDARIES.md": (
             "fixed-state and relearned members cannot be mixed", "FRUIT boundary",

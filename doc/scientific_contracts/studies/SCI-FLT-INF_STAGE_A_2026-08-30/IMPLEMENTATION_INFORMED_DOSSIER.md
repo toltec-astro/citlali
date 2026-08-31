@@ -1,6 +1,6 @@
 # SCI-FLT-INF implementation-informed dossier
 
-Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.10`
+Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.11`
 
 Status: quarantined Stage A manager evidence; forbidden to any future
 implementation-blind scientific author
@@ -206,6 +206,12 @@ ensemble, changes a published coefficient product, and currently uses
 historical product identities that frozen SCI-NOI does not automatically
 authorize. It is a separate calibration/derived-product contract problem,
 not a parameter of the map estimator.
+
+ODQ-012 now admits only minimal non-mutating derived companions and makes the
+FLT→FRUIT scientific interface a first-class product requirement. It does not
+adopt the observed empirical rescaling or prescribe FRUIT behavior. ODQ-013
+requires tiered role-scoped atomic products, so best-effort historical plane
+publication establishes no product authority.
 
 ## Data-thresholded spectral selection
 
