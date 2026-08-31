@@ -1,0 +1,115 @@
+% Shared normative core: notation
+\section{Normative notation and interpretation}
+\label{sec:notation}
+
+\newcommand{\ContractID}{\texttt{SCI-FLT-MATCHED}}
+\newcommand{\Req}[1]{\texttt{SCI-FLT-\allowbreak MATCHED-\allowbreak REQ-\allowbreak #1}}
+\newcommand{\Pred}[1]{\texttt{SCI-FLT-\allowbreak MATCHED-\allowbreak PRED-\allowbreak #1}}
+\newcommand{\AO}[1]{\texttt{SCI-FLT-\allowbreak MATCHED-\allowbreak AO-\allowbreak #1}}
+\newcommand{\AOpt}[2]{\texttt{SCI-FLT-\allowbreak MATCHED-\allowbreak AO-\allowbreak #1-\allowbreak #2}}
+\newcommand{\Unavailable}{\textsf{unavailable}}
+\newcommand{\Failed}{\textsf{failed}}
+\newcommand{\Complete}{\textsf{complete}}
+\newcommand{\Disabled}{\textsf{disabled}}
+\newcommand{\Superseded}{\textsf{superseded}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Dom}{\mathcal{D}}
+\newcommand{\Supp}{\mathcal{S}}
+\newcommand{\Null}{\mathcal{N}}
+\newcommand{\Valid}{\mathcal{V}}
+\newcommand{\Lin}{\mathcal{L}}
+
+\subsection{Normative language}
+
+``Shall'' is a contract requirement. ``May'' identifies an allowed form whose
+scientific preconditions still have to be met. ``Exact'' means exact with
+respect to the declared mathematical realization and its declared numerical
+identity; it does not mean that nature, calibration, or the parent data are
+known without uncertainty. ``Unknown'' and ``unavailable'' never mean zero.
+An option in Section~\ref{sec:authored-options} is a decision candidate, not a
+selected route.
+
+\subsection{Objects, domains, and indexing}
+
+An application location is denoted by $x$ and a parent-map sample by $z$.
+Both are coordinates in one declared map-domain chart with an immutable WCS,
+frame, grouping, pixel measure, and indexing order. The admitted parent field
+is real-valued, $m:\Dom_m\rightarrow\R$, and the unit-amplitude template
+centered or anchored at $x$ is real-valued,
+$t_x:\Supp_t(x)\rightarrow\R$. The physical template amplitude $A$, the
+published amplitude $\widehat A$, and the contractions $N$ and $D$ are real
+scalars. Let $\mathcal X_{\rm in}$ be the real vector space of admitted parent
+samples, $\mathcal X_{\rm out}$ the real vector space of published amplitude
+samples, and $\mathcal X_{\rm anc}$ the real vector space indexing template
+anchors. Then $L:\mathcal X_{\rm in}\rightarrow\mathcal X_{\rm out}$ and
+$R_t:\mathcal X_{\rm anc}\rightarrow\mathcal X_{\rm out}$. The restriction
+of any field $u$ to the samples required at $x$ is $u_x$. The realized linear
+weighting operator is a real linear map $Q_x$ on the admitted parent-sample
+space, and its declared null space is $\Null(Q_x)$.
+
+The bracket
+\[
+  \langle a,b\rangle_x
+  = \sum_{z\in\Supp_t(x)} a(z)^{*} b(z)\,\mu(z)
+\]
+denotes the declared discrete inner product. A continuum representation may
+replace the sum by an integral only when the measure, sampling relation, and
+equivalence to the published discrete estimand are declared. Here $\mu(z)$ is
+the declared pixel or quadrature measure. Complex conjugation is explicit so
+the same notation can be used for a complex transform representation. Such a
+representation may use coefficients in $\C$, but it shall preserve the
+conjugate symmetry of real fields, use the Hermitian adjoint for transform-
+domain operators, and induce the same real $Q_x$, $N$, $D$, $L$, and
+$\widehat A$ after inverse transformation. Complex transform coefficients do
+not change the real scientific codomains above. In the real sample basis,
+covariances are real symmetric matrices and ordinary transpose is therefore
+the covariance adjoint. The contract does not assume stationarity, isotropy,
+periodicity, a flat sky, or a Euclidean pixel metric unless the selected
+realization declares and validates it.
+
+\begin{longtable}{p{0.19\linewidth}p{0.71\linewidth}}
+\toprule
+Symbol & Normative meaning \\
+\midrule
+\endhead
+$m$, $m_x$ & Immutable admitted ordinary-MAP observation or coadd parent, and
+its complete restriction needed at $x$. \\
+$t_x$ & Immutable materialized parent-map response for unit template amplitude
+at $x$; its scaling fixes the amplitude convention. \\
+$Q_x$ & Frozen realized weighting operator. It is inverse covariance only
+when exact covariance authority establishes that identity. \\
+$N(x)$ & Weighted template-parent contraction
+$\langle t_x,Q_xm_x\rangle_x$. \\
+$D(x)$ & Weighted template self-contraction
+$\langle t_x,Q_xt_x\rangle_x$; normalization unless exact inverse-covariance
+GLS premises establish a variance interpretation. \\
+$\widehat A(x)$ & Published template-amplitude estimand $N(x)/D(x)$ at an
+admitted location. \\
+$L_x$ & Fixed-state linear functional that maps a compatible parent field to
+$\widehat A(x)$. \\
+$R_t(x,y)$ & Fixed-state response $L_x t_y$ to a unit template anchored at
+$y$. \\
+$C_{\rm parent}$ & Authorized real symmetric parent covariance on
+$\mathcal X_{\rm in}$ for an explicitly named population and conditioning
+state. \\
+$C_{\rm cond}$ & Conditional covariance of the filtered amplitude field,
+$L C_{\rm parent}L^{\mathsf T}$ on $\mathcal X_{\rm out}$, when every premise
+is authorized. \\
+$g$ & Immutable method/state generation. A successor is a distinct identity. \\
+$\Valid$ & Set of locations satisfying every parent, template, support,
+operator, normalization, unit, calibration, and selected-option predicate. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Quantity and unit convention}
+
+The template is the expected parent-map response per unit amplitude. Therefore
+\[
+  [\widehat A] = [m]/[t].
+\]
+A point-source flux interpretation exists only if the template producer and
+CAL/BEAM lineage establish that exact amplitude convention. Otherwise
+$\widehat A$ is a shape amplitude. Parent beam, DC or integral response,
+extended-source fidelity, matched-filter solid angle, and calibration
+covariance are not inherited by implication.

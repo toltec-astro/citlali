@@ -782,9 +782,27 @@ and explicitly authorized a fresh implementation-blind Stage B author on
 `2026-08-31`. The author is restricted to those exact objects and must develop,
 not select, the six option families. Dispatch is the next process action.
 
-This remains Stage A only. No Stage B launch, algorithm change, implementation
-conformity, validation, calibration, performance, readiness, production,
-freeze, or Unity action is claimed or authorized.
+The fresh implementation-blind author subsequently returned the Stage B r0.1
+draft on `2026-08-31` without a blocking question. The shared six-module core
+is imported identically by a 37-page Scientific Rationale and Contract and a
+33-page Engineering Conformance Specification. It contains 39 stable
+requirements, 18 falsifiable predictions, 15 assumptions, a seven-part
+uncertainty budget, 21 exact alternatives across `AO-001` through `AO-006`, a
+complete 78-ID crosswalk, and 17 open scientific-owner questions. The radially
+symmetrized average map-noise PSD appears only as unselected weaker-weighting
+candidate `AO-001-C`; no historical mechanics, covariance authority,
+stationarity, isotropy, optimality, or default is inferred.
+
+Manager review re-verified the approved packet hash, identical shared-source
+imports, complete IDs, source/PDF consistency, clean build logs, and all 70
+rendered pages. The draft is accepted for owner disposition, beginning with
+`SCI-FLT-MATCHED-SODL-001`. It is not frozen scientific authority, and no
+option, numerical route, implementation conformity, validation result,
+performance, readiness, production, or Unity state is selected or claimed.
+
+This remains contract-development work only. No algorithm change,
+implementation conformity, validation, calibration, performance, readiness,
+production, freeze, or Unity action is claimed or authorized.
 
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.

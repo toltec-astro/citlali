@@ -1,7 +1,7 @@
 # SCI-FLT-MATCHED — Optimal Matched-Template Map Filtering
 
-Status: exact eight-object Stage A author packet approved on `2026-08-31`;
-fresh implementation-blind Stage B author authorized
+Status: implementation-blind Stage B r0.1 draft returned and manager-reviewed
+on `2026-08-31`; 17 scientific-owner questions remain open
 
 Version: `v0.1`
 
@@ -33,9 +33,14 @@ separate methods or future packages.
 - Sanitized Scope Brief and exact author packet: candidate prepared.
 - Exact bytes and hashes: owner-approved through
   [`SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-31.md).
-- Stage B: authorized for one fresh implementation-blind author; dispatch is
-  the next process action.
-- Authored option sets: not yet produced or selected.
+- Stage B: fresh implementation-blind author returned the two-view r0.1 draft.
+- Authored option sets: six families and 21 alternatives produced in both
+  views; all remain unselected.
+- Draft inventory: 39 requirements, 18 predictions, 15 assumptions, a
+  seven-part uncertainty budget, a 78-ID crosswalk, and 17 open owner
+  questions.
+- Manager review and build/PDF consistency: passed; see
+  [`STAGE_B_MANAGER_REVIEW_2026-08-31.md`](STAGE_B_MANAGER_REVIEW_2026-08-31.md).
 - Scientific authority, numerical availability, implementation conformity,
   validation, achieved performance, readiness, and production status: not
   established.
@@ -54,9 +59,17 @@ separate methods or future packages.
 - [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): exclusive content-bound author inputs
 - [`SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-31.md): exact-byte approval and launch authority
 - [`verify_stage_a.py`](verify_stage_a.py): packet and firewall verification
+- [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md): 17 open Stage B dispositions
+- [`CROSSWALK.md`](CROSSWALK.md): complete 78-ID source/view traceability
+- [`STAGE_B_MANAGER_REVIEW_2026-08-31.md`](STAGE_B_MANAGER_REVIEW_2026-08-31.md): manager firewall, content, and PDF review
+- [`STAGE_B_DRAFT_MANIFEST.md`](STAGE_B_DRAFT_MANIFEST.md): exact draft source/PDF binding
+- [`DECISION_LOG.md`](DECISION_LOG.md): package process decisions and preserved nonclaims
 
 ## Stop Boundary
 
-The owner has authorized one fresh implementation-blind Stage B author from
-the exact manifest. That author must return the required options in both
-contract views; no option is selected merely by appearing in the drafts.
+The Stage B draft is not scientific authority and no option is selected.
+Scientific-owner disposition starts with `SCI-FLT-MATCHED-SODL-001`; each
+dependent route remains unavailable until its exact option and parameters are
+disposed and the resulting contract bytes are reviewed. No implementation,
+conformity, validation, performance, readiness, production, or freeze claim
+follows from this draft.

@@ -1,0 +1,144 @@
+% Shared normative core: equations
+\section{Reference estimator, response, and uncertainty}
+\label{sec:equations}
+
+\subsection{Authoritative operator}
+
+For every admitted $x\in\Valid$, the scientific reference is
+\begin{align}
+  N(x) &= \langle t_x,Q_xm_x\rangle_x, \\
+  D(x) &= \langle t_x,Q_xt_x\rangle_x, \\
+  \widehat A(x) &= \frac{N(x)}{D(x)}, \\
+  L_xu &= \frac{\langle t_x,Q_xu_x\rangle_x}{D(x)}, \\
+  R_t(x,y) &= L_xt_y.
+\end{align}
+$D(x)$ shall be finite, real to the declared numerical tolerance, and strictly
+positive under the selected realization. Otherwise $x$ is \Unavailable{} or
+the required bundle is \Failed{} according to whether the defect precedes or
+occurs during an authorized attempt. Neither outcome is amplitude zero.
+
+\subsection{Matching-template amplitude and unbiasedness}
+
+Let the admitted parent near $y$ be
+\[
+  m = A t_y+n,
+\]
+where $A$ has the declared template-amplitude unit and the frozen-state noise
+obeys $\operatorname{E}[n\mid\mathrm{state}_g]=0$ on complete influence
+support. Linearity gives
+\[
+  \operatorname{E}[\widehat A(x)\mid\mathrm{state}_g]
+  = A R_t(x,y).
+\]
+At $x=y$ the exact reference operator satisfies
+\[
+  R_t(y,y)=\frac{\langle t_y,Q_yt_y\rangle_y}{D(y)}=1,
+  \qquad
+  \operatorname{E}[\widehat A(y)\mid\mathrm{state}_g]=A.
+\]
+This is conditional fixed-state amplitude unbiasedness for a matching supplied
+template. It does not assert unbiasedness after target-dependent state
+learning, under template mismatch, for incomplete support, or for a different
+sky estimand.
+
+\subsection{Optimality criterion}
+\label{sec:optimality}
+
+``Optimal matched-template map filtering'' is the exact owner-assigned package
+title. Citation of that proper name is not a realization-level optimality
+claim and shall be accompanied by the draft/unselected status until owner
+disposition. Outside that proper-name citation, the unqualified word
+``optimal'' is forbidden before the following criterion is authorized for the
+exact realization.
+
+The allowed exact claim is: among fixed-state linear estimators of the
+declared template amplitude that
+are unbiased for $t_x$, $L_x$ has minimum conditional variance when
+$C_{\rm parent}$ is the exact authorized covariance on the admitted support,
+$Q_x$ is its authorized inverse on the estimable subspace, the null-space and
+constraints are handled identically, and all domain, population, conditioning,
+unit, and regularization premises hold. This is the inverse-covariance
+generalized least-squares (GLS) criterion. Under weaker weighting, the method
+remains normalized and matching-template amplitude-unbiased but no
+minimum-variance or covariance-authority claim follows.
+
+\subsection{Conditional covariance}
+
+When an exact matching parent covariance is authorized, the fixed-state
+conditional covariance is
+\begin{equation}
+  C_{\rm cond}(x,y)
+  = \operatorname{Cov}[\widehat A(x),\widehat A(y)
+      \mid\mathrm{state}_g]
+  = L_x C_{\rm parent} L_y^{\mathsf T}.
+\end{equation}
+Only under the exact inverse-covariance GLS premises above may
+$D(x)^{-1}$ be identified with the marginal conditional variance at $x$.
+Otherwise $D$ is normalization. A diagonal representation of
+$C_{\rm cond}$ does not assert independence; omitted entries remain unknown.
+
+\subsection{Approximation observables}
+\label{sec:approx-metrics}
+
+Let $\widetilde L$, $\widetilde D$, $\widetilde R_t$, and
+$\widetilde C_{\rm cond}$ denote an approximate realization compared with the
+exact reference on a declared test domain $\mathcal{T}\subseteq\Valid$. The
+minimum common observables are
+\begin{align}
+ e_D(x) &:= \frac{|\widetilde D(x)-D(x)|}{D(x)}, \\
+ e_A(x) &:= |\widetilde R_t(x,x)-1|, \\
+ e_R(x,y) &:= |\widetilde R_t(x,y)-R_t(x,y)|, \\
+ \Delta_{\rm supp} &:=
+   \mathbf{1}\{\widetilde\Valid\neq\Valid\}, \\
+ \Delta_{\rm null} &:=
+   \mathbf{1}\{\Null(\widetilde L)\neq\Null(L)\}, \\
+ e_C &:=
+ \frac{\|P_{\rm out}(\widetilde C_{\rm cond}-C_{\rm cond})
+                 P_{\rm out}^{\mathsf T}\|}
+      {\|P_{\rm out}C_{\rm cond}P_{\rm out}^{\mathsf T}\|},
+\end{align}
+where $P_{\rm in}$, $P_{\rm out}$, and $P_{\rm anc}$ are separately declared
+projections (or identity maps) on $\mathcal X_{\rm in}$,
+$\mathcal X_{\rm out}$, and $\mathcal X_{\rm anc}$, respectively. Every norm,
+domain measure or grid, aggregation, unresolved-mode set, projection codomain,
+and zero-denominator rule is declared by the selected \AO{002} option.
+Support and null-space equality are scientific predicates, not merely small
+numeric residuals.
+
+\subsection{Uncertainty budget and non-combinability}
+\label{sec:uncertainty-budget}
+
+The uncertainty budget is role-separated:
+\begin{longtable}{p{0.13\linewidth}p{0.29\linewidth}p{0.48\linewidth}}
+\toprule
+ID & Contribution & Contract treatment \\
+\midrule
+\endhead
+U1 & Parent stochastic covariance & Propagate as
+$LC_{\rm parent}L^{\mathsf T}$ only for the exact authorized population and
+conditioning state. \\
+U2 & Calibration and template-amplitude scale & Preserve joint CAL/BEAM and
+parent-template covariance authority. Missing cross-covariance is
+\Unavailable{}, not zero. \\
+U3 & Learned-state uncertainty & Base products condition on the frozen
+state. Marginalization over state learning requires separate authority and
+cannot be inferred from U1. \\
+U4 & Operator approximation discrepancy & Bound only through a selected
+\AO{002} envelope. An unbounded approximation makes affected uncertainty use
+\Unavailable{}. \\
+U5 & Covariance representation or projection & Declare lost modes, omitted
+correlations, reconstruction fidelity, and consumer limits through
+\AO{003}. \\
+U6 & Frozen-NOI empirical uncertainty & A qualified companion with its own
+population, finite-sample estimator, dependence, and validity. It is not
+automatically $C_{\rm parent}$, $C_{\rm cond}$, significance, or physical
+noise. \\
+U7 & Template mismatch and unmodeled systematics & Outside the base
+matching-template covariance claim. A named extension requires separate
+scientific authority; otherwise affected interpretation is unavailable. \\
+\bottomrule
+\end{longtable}
+
+No scalar ``total uncertainty'' may combine these rows unless every term,
+cross-term, conditioning relation, unit, and population is authorized. The
+absence of a term is disclosed as unavailable, never silently set to zero.

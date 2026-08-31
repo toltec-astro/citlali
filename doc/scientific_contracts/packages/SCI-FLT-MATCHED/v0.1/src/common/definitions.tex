@@ -1,0 +1,206 @@
+% Shared normative core: definitions
+\section{Normative scientific definitions}
+\label{sec:definitions}
+
+\subsection{Method and estimand}
+
+\ContractID{} is an optimal matched-template amplitude estimator only under
+the exact criterion and premises in Section~\ref{sec:optimality}. It estimates
+the local amplitude of one exact declared template in one immutable admitted
+ordinary-MAP parent. It publishes a filtered amplitude map. It does not
+detect, select, fit, deblend, catalog, classify, or interpret sources, and it
+is neither posterior/Wiener sky reconstruction nor ordinary convolution.
+
+Each realization has the immutable scientific identity
+\begin{quote}\small\ttfamily\raggedright
+(method\_id, estimand, parent\_id, parent\_grouping, domain, WCS/frame,
+template\_id, state\_generation, weighting\_object, operator\_realization,
+approximation, response, support/null, units/calibration, covariance,
+NOI\_lifecycle, product\_bundle, validity, failure\_policy, provenance).
+\end{quote}
+Any scientifically consequential change to one of these fields creates a
+different realization, generation, or method as classified by the selected
+\AO{002} and \AO{004} dispositions.
+
+\subsection{Parent classes and application locality}
+
+Exactly one of two parent classes is admitted per application:
+\begin{enumerate}
+  \item one immutable normalized ordinary-MAP observation bundle; or
+  \item one immutable normalized ordinary-MAP coadd bundle with its exact
+  contributing-observation membership.
+\end{enumerate}
+They are distinct local applications. This contract asserts no equality,
+commutation, or interchangeability between ``filter then coadd'' and ``coadd
+then filter'', and owns no coaddition. JINC and other derived parents are not
+admitted. Numerical computability cannot repair a parent that lacks required
+MAP authority.
+
+\subsection{Template-response product}
+
+Each application has exactly one immutable template-response product. It is
+scientifically declared outside target, source, candidate, population, and
+NOI-member learning. The product binds its materialized samples, amplitude
+scaling, anchor and phase convention, parent-map response quantity, WCS/frame,
+sampling, support, CAL/BEAM lineage, validity, and generation. Template
+mismatch is not silently absorbed into amplitude uncertainty or estimator
+normalization.
+
+\subsection{Influence support and validity}
+
+The influence support at $x$ is the complete set of parent samples on which
+$N(x)$, $D(x)$, the realized $Q_x$, the template, any window, and any declared
+nonlocal operation depend. A location is admitted only if that complete set is
+available and valid. No partial-support estimator, edge renormalization,
+extension, imputation, background subtraction, learned taper, or
+signal-derived support belongs to this contract. Numerical fill values may be
+used internally only after exact erosion proves that no admitted output
+depends on them. Affected locations are \Unavailable{}, not zero.
+
+\subsection{Weighting and parent coefficients}
+
+$Q_x$ is a declared frozen weighting object chosen from a later
+owner-disposed \AO{001} alternative. A parent coefficient has only its exact
+declared role in that alternative. Its name, positivity, units, reciprocal,
+or diagonal placement does not make it covariance, precision, independence,
+or inverse variance. Rank, null space, regularization, support, edge behavior,
+state population, and units are part of $Q_x$ identity.
+
+\subsection{Frozen state and generations}
+
+Requested, effective, observation-resolved, realized, and published state are
+distinct objects and shall retain distinct identities and provenance even when
+some fields happen to be numerically equal.
+
+For generation $g$,
+\[
+ \mathrm{state}_g =
+ \operatorname{DeclareOrLearnOnce}(\mathrm{parent}_g,
+                                   \mathrm{external\ inputs}_g),\qquad
+ \mathrm{product}_g =
+ \operatorname{Apply}(\mathrm{parent}_g;\mathrm{state}_g).
+\]
+State is externally declared or learned once from the exact parent and then
+frozen. Observation and coadd states are separate. Every compatible NOI
+realization member receives exactly the same frozen transformation, support,
+normalization, and failure rules. NOI-informed updating produces an immutable
+successor generation. Per-member relearning is a different future method and
+is unavailable here.
+
+\subsection{Fixed-state response}
+
+The response is the complete fixed-state map $R_t(x,y)=L_xt_y$. It may be
+asymmetric, anisotropic, nonstationary, position-dependent, or nonlocal. A
+single response kernel, radial profile, beam, or solid angle is scientifically
+sufficient only when every invariance and measure needed for that reduction
+has been established. Matching-template unit response at admitted positions
+does not establish fidelity to other morphologies.
+
+\subsection{Product roles and atomic lifecycle}
+\label{sec:product-roles}
+
+The required atomic signal bundle contains, as one role-complete unit:
+\begin{enumerate}
+  \item the filtered amplitude field and its quantity and units;
+  \item exact parent identity, class, generation, grouping, WCS/frame,
+  coadd membership when applicable, support, and parent provenance;
+  \item template identity, amplitude convention, response reference, and
+  CAL/BEAM lineage;
+  \item method, state generation, $Q_x$, operator realization,
+  approximation identity, support/null rules, and validity mask;
+  \item uncertainty availability and the identity of any qualified companion;
+  and
+  \item lifecycle state, failure semantics, producer identity, and complete
+  lineage needed to distinguish or reconstruct the realization.
+\end{enumerate}
+Failure of any member fails the whole signal bundle.
+
+Independently atomic qualified companions may represent authorized
+$C_{\rm cond}$, a frozen-NOI uncertainty estimand, response materialization,
+or exact state/lineage required by a named use. Each companion has its own
+estimand, population, unit, support, validity, lifecycle, and policy. Its
+absence or failure is explicit and does not alter the signal estimand or
+retroactively invalidate a complete signal bundle unless an exact named-use
+policy requires it.
+
+No numerator, denominator, kernel, PSD, response slice, inverse scale,
+standardized field, or intermediate is a public science product without an
+exact role, meaning, unit, validity, lifecycle, and policy.
+
+\subsection{Lifecycle states}
+
+\begin{longtable}{p{0.18\linewidth}p{0.72\linewidth}}
+\toprule
+State & Meaning \\
+\midrule
+\endhead
+\Disabled{} & The method or qualified product was explicitly not requested;
+there is no attempted estimand. \\
+\Unavailable{} & A required scientific premise, authority, input, selected
+option, or valid support is absent; no numerical value is asserted. \\
+\Failed{} & An authorized attempt began but a required operation, closure
+check, or atomic member failed. \\
+\Complete{} & Every required member and predicate for the exact role and
+generation is present and passed; this is not a performance or readiness
+claim. \\
+\Superseded{} & An immutable successor exists. The predecessor remains
+identifiable and is not silently rewritten. \\
+\bottomrule
+\end{longtable}
+
+\subsection{First-class FLT to FRUIT handoff}
+
+The product lineage shall let a future separately authorized FRUIT method
+consume the filtered amplitude product without reconstructing undocumented
+FLT implementation state. At minimum it identifies the filtered quantity,
+template, full response reference, valid support, units/calibration,
+method/state identity, uncertainty availability, and provenance. Additional
+authorized FLT state shall be exactly available or reconstructable through
+lineage. This handoff defines no FRUIT source model, subtraction/add-back,
+recurrence, learning, stopping, restart, selection, response, uncertainty, or
+interpretation.
+
+\subsection{Authority layers}
+
+This document is scientific authority for definitions and requirements after
+owner disposition and freeze. An implementation may later claim conformity
+only through auditable evidence against a selected contract. Validation may
+evaluate immutable profiles but does not invent producer facts or policy.
+Measured behavior is achieved performance, not scientific authority.
+Readiness and production are separate governance decisions. No draft, option,
+test result, or lifecycle state collapses these layers.
+
+\subsection{Producer and boundary ownership}
+
+\begin{longtable}{p{0.18\linewidth}p{0.72\linewidth}}
+\toprule
+Owner & Normative boundary \\
+\midrule
+\endhead
+FLT / \ContractID{} & Owns the template-amplitude transformation, declared
+template use, learn-once state definition and realization, resulting response
+and support consequences, product roles, lifecycle, failure semantics,
+named-use policies, fixed transformation supplied to compatible NOI members,
+and preservation of the FLT to FRUIT handoff. \\
+MAP & Owns the immutable admitted parent map bundle, generation, grouping,
+WCS/frame, support/validity, signal quantity and unit, response/calibration
+provenance, and exact contributing-observation membership of a coadd. FLT may
+consume but not rewrite these facts. \\
+Template producer & Owns the exact immutable materialized template-response
+product, including scale, phase, anchor, sampling, support, lineage, and
+validity. \\
+CAL/BEAM & Own calibrated transfer, amplitude-convention inputs, beam lineage,
+and calibration covariance. FLT owns only their declared use and the resulting
+template-amplitude response. \\
+NOI & Owns realization generation and empirical-uncertainty meanings. FLT owns
+the identical frozen transformation applied to compatible members. \\
+VAL & May register and evaluate exact immutable profiles. FLT owns the producer
+facts, named-use policies, required actions, and failure consequences; VAL may
+not invent them. \\
+FRUIT & Owns any future source model, subtraction/add-back, recurrence,
+learning, stopping/restart/selection, response, uncertainty, and interpretation.
+FLT owns only preservation of the first-class scientific handoff. \\
+SRC & No present ownership boundary or dependency is created; source analysis
+is outside scope. \\
+\bottomrule
+\end{longtable}

@@ -1,2 +1,232 @@
-% Reserved for implementation-blind Stage B; contains no normative science.
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=0.86in,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\definecolor{navy}{HTML}{17365D}
+\definecolor{rust}{HTML}{9C3D10}
+\definecolor{pale}{HTML}{F3F6F9}
+\hypersetup{colorlinks=true,linkcolor=navy,urlcolor=navy,
+  pdftitle={SCI-FLT-MATCHED Scientific Rationale and Contract v0.1},
+  pdfauthor={Implementation-blind Stage B scientific-contract author},
+  pdfsubject={Draft scientific contract with unselected authored options}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{3em}
+\setlist{nosep,leftmargin=2em}
+\setlist[description]{style=nextline,leftmargin=0pt,labelindent=0pt,
+  font=\normalfont\bfseries}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small SCI-FLT-MATCHED v0.1}
+\fancyhead[R]{\small Scientific Rationale and Contract}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\newcommand{\StatusBox}{%
+\begin{center}
+\fcolorbox{rust}{pale}{\parbox{0.88\linewidth}{\centering\small
+\textbf{STAGE B DRAFT -- ALL AO-001 THROUGH AO-006 OPTIONS UNSELECTED.}
+No numerical route, implementation, conformity result, validation result,
+achieved performance, readiness, production state, scientific freeze, or
+Unity status is claimed.}}
+\end{center}}
 
+\begin{document}
+\hypersetup{pageanchor=false}
+\begin{titlepage}
+\centering
+\vspace*{1.0in}
+{\Large\color{navy}\textbf{SCI-FLT-MATCHED v0.1}\par}
+\vspace{0.35in}
+{\huge\textbf{Optimal matched-template map filtering}\par}
+{\small\itshape Owner-assigned package title; not a realization-level
+optimality claim\par}
+\vspace{0.22in}
+{\LARGE Scientific Rationale and Contract\par}
+\vspace{0.45in}
+\StatusBox
+\vfill
+{\large Package version: v0.1\par}
+{\large Author-packet date: 2026-08-31\par}
+{\large Scientific owner for later disposition: Grant Wilson\par}
+\vspace{0.25in}
+{\small Shared-core draft derived exclusively from the owner-approved
+eight-object author packet bound by manifest SHA-256\par
+\texttt{255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8}.\par}
+\end{titlepage}
+
+\clearpage
+\hypersetup{pageanchor=true}
+\pagenumbering{roman}
+\StatusBox
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\part{Scientific rationale}
+
+\section{The scientific question}
+
+The method answers one narrow question: at each admitted map location, what is
+the amplitude of one exact, already-declared template in one exact ordinary-MAP
+parent? The answer is a map of template amplitude. The method does not decide
+whether a source exists, choose a candidate, infer a posterior sky, or attach
+catalog meaning to a peak.
+
+The template is not merely a shape used for smoothing. It is the expected
+parent-map response per unit amplitude, including its scale, phase, anchor,
+sampling, support, and calibration/beam lineage. That scaling defines what one
+unit of the answer means. A template whose unit amplitude denotes point-source
+flux can support that interpretation only when the exact CAL/BEAM and parent
+lineages authorize it; another template gives a shape amplitude instead.
+
+\section{Why the estimator is normalized}
+
+The parent is contracted with the template through a frozen weighting object.
+The same weighting is applied to the template itself, producing the
+normalization. Dividing these two contractions makes an exact matching
+template return its supplied amplitude on complete valid support. This unit
+response is the central scientific identity.
+
+Weighting and uncertainty are deliberately not conflated. If the weighting is
+the exact authorized inverse covariance on the same population, support,
+conditioning state, and estimable subspace, the estimator has the familiar
+inverse-covariance GLS minimum-variance property. Under a weaker spectral or
+reliability weight, it can remain matching-template normalized without being
+minimum variance. In that case the denominator is normalization, not a
+variance estimate.
+
+\section{Why state is frozen}
+
+The transformation must mean the same thing for the signal parent and every
+compatible NOI realization member. State is therefore declared externally or
+learned once from the exact parent, assigned an immutable generation, and
+frozen. Learning again from each NOI member would change the ensemble method
+and its uncertainty meaning. New NOI-informed knowledge creates a successor
+generation rather than rewriting an existing one.
+
+Observation and coadd parents also remain scientifically separate. Filtering
+an observation and filtering a coadd are two local applications with different
+parent identities and state generations. This contract neither asserts that
+filtering commutes with coaddition nor owns a coaddition operation.
+
+\section{Why edges are unavailable rather than repaired}
+
+Each amplitude depends on a complete influence support: every parent sample
+used by the template, weighting, window, boundary action, and normalization.
+If one dependency is absent or invalid, the estimator defined here does not
+exist at that location. Filling, extending, renormalizing, fitting a background,
+or learning an edge taper would define another method. Numerical fill is
+harmless only after erosion proves that no admitted output depends on it.
+
+\section{Response and uncertainty are full scientific objects}
+
+Unit self-response does not make the response a single symmetric beam. The
+off-diagonal response can be anisotropic, asymmetric, nonstationary,
+position-dependent, or nonlocal. Reducing it to a kernel, radial profile, or
+solid angle is allowed only after the required invariances, measure, and valid
+domain are established.
+
+Likewise, a conditional covariance product exists only when matching parent
+covariance authority exists. Calibration, learned-state, approximation,
+representation, NOI sampling, and template-mismatch contributions have
+different populations and conditioning. The normative uncertainty budget
+keeps them separate rather than producing an unsupported scalar total.
+
+\section{Product and governance rationale}
+
+The primary science product is one atomic signal bundle: amplitude map plus
+the facts required to know exactly what it means. Covariance, empirical NOI,
+response, and state/lineage products are independently atomic companions.
+Their failure is explicit. Optional failure does not silently alter the signal
+estimand, while failure of a required signal member prevents publication of a
+complete signal bundle.
+
+The product also preserves a first-class FLT to FRUIT handoff. It makes every
+FLT-side scientific fact available or exactly reconstructable without exposing
+undocumented implementation state. It intentionally says nothing about FRUIT's
+future model, iteration, selection, response, uncertainty, or interpretation.
+
+Finally, the contract separates six layers that are often confused:
+scientific authority defines the method; conformity concerns a specific
+implementation; validation evaluates immutable profiles; achieved performance
+is measured behavior; readiness is a governance decision; and production is
+an operational state. Evidence in one layer does not promote another.
+
+\part{Shared normative core}
+
+The following six modules are imported unchanged into both the scientist- and
+engineering-facing documents. They are the single normative source for all
+definitions, equations, assumptions, requirements, predictions, option
+alternatives, failure rules, and validation consequences.
+
+\input{common/notation.tex}
+\input{common/definitions.tex}
+\input{common/equations.tex}
+\input{common/assumptions.tex}
+\input{common/requirements.tex}
+\input{common/edge_cases.tex}
+
+\part{Owner-disposition guide}
+
+\section{What remains for the scientific owner}
+
+This draft develops, but does not select, six decision families. The owner
+must select and fully parameterize them before their dependent routes become
+available; the decision ledger states all 17 exact owner questions.
+
+\begin{longtable}{p{0.20\linewidth}p{0.31\linewidth}p{0.39\linewidth}}
+\toprule
+Family & Decision & Route unavailable before disposition \\
+\midrule
+\endhead
+\AO{001} & Weighting/noise authority for observation and coadd separately;
+all population, coefficient, PSD/model, rank/null, regularization, and numeric
+fields & A weighting realization, any optimality label, and any variance
+meaning derived from the weight. \\
+\AO{002} & Exact, strict-uniform, or named-use approximation envelope and all
+test-domain identity fields & Any approximate-operator conformance claim. \\
+\AO{003} & Explicit, structured, projected, on-demand, or unavailable
+conditional covariance and its consumers & Conditional-covariance publication,
+standardization, or covariance-dependent use. \\
+\AO{004} & Full, compact, or lineage state persistence and reconstruction
+tolerance & State audit/reanalysis and completion of products whose named use
+requires reconstructable state. \\
+\AO{005} & Full, structured-query, or lineage response representation and
+query vocabulary & Response-dependent use and FLT to FRUIT handoff. \\
+\AO{006} & Six-profile, three-layer, or composite-vector VAL granularity &
+Registered producer-policy evaluation and publication/handoff profile claims. \\
+\bottomrule
+\end{longtable}
+
+No option choice alone authorizes a numerical route. After owner disposition,
+an implementation still needs separate conformity evidence; profiles need
+separate validation; measured performance, readiness, and production remain
+separate decisions.
+
+\appendix
+\section{Author-packet basis and firewall statement}
+
+This draft used only these eight admitted objects:
+\begin{itemize}
+\item \nolinkurl{AUTHOR_PACKET_MANIFEST.md} and \nolinkurl{SCOPE_BRIEF.md};
+\item \nolinkurl{AUTHOR_SUPERSESSION_COVER.md} and
+  \nolinkurl{AUTHOR_CONVENTIONS_AND_OWNERSHIP.md};
+\item \nolinkurl{SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md};
+\item \nolinkurl{AUTHOR_OPERATOR_STATE_AND_PRODUCT_TAXONOMY.md}; and
+\item \nolinkurl{AUTHOR_BOUNDARIES.md} and
+  \nolinkurl{REQUIRED_AUTHORED_OPTION_SETS.md}.
+\end{itemize}
+Links in those objects were not
+opened. No implementation, configuration, schema, test, audit, validation,
+reduction, generated product, repository history, neighboring package,
+external source, or model-memory source supplied scientific content.
+
+\end{document}

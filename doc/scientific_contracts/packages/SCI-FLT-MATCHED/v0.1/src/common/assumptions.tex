@@ -1,0 +1,122 @@
+% Shared normative core: assumptions and validity
+\section{Assumptions and validity domain}
+\label{sec:assumptions}
+
+The unbiasedness, response, optimality, and covariance statements are valid
+only on the intersection of the following declared predicates. Every product
+shall identify which predicates were evaluated, by whose authority, and with
+what immutable evidence.
+
+\begin{longtable}{p{0.16\linewidth}p{0.74\linewidth}}
+\toprule
+ID & Assumption or predicate \\
+\midrule
+\endhead
+\texttt{ASM-001} & The parent is exactly one immutable normalized ordinary-MAP
+observation or coadd bundle with authoritative identity, generation, grouping,
+WCS/frame, support, units, calibration provenance, and coadd membership when
+applicable. \\
+\texttt{ASM-002} & Parent, template, physical amplitude, filtered amplitude,
+and sample-basis covariance have the declared real codomains; the chart,
+indexing order, sampling, pixel measure, and coordinate transformations are
+common to parent, template, operator, and response, or an exact declared
+mapping relates them. Any complex transform representation preserves real-
+field conjugacy and uses the corresponding Hermitian adjoint. \\
+\texttt{ASM-003} & $t_x$ is the one immutable template-response product for
+the application and expresses expected parent-map response per unit declared
+amplitude, with fixed scale, anchor, and phase. \\
+\texttt{ASM-004} & The complete influence support is present and valid. No
+admitted output depends on fill, extension, imputation, partial support,
+edge renormalization, adaptive background, learned taper, or signal-derived
+support. \\
+\texttt{ASM-005} & $Q_x$ is the exact frozen realized weighting object named
+by the selected \AO{001} alternative, including domain, population, units,
+rank, null space, regularization, window, and edge rules. \\
+\texttt{ASM-006} & $D(x)$ is finite, real within the declared numerical
+identity tolerance, and strictly positive. \\
+\texttt{ASM-007} & For amplitude unbiasedness, the admitted noise has zero
+conditional mean on the complete support given the frozen state and does not
+induce target-dependent changes in the template or operator. \\
+\texttt{ASM-008} & For the GLS optimality claim, $C_{\rm parent}$ is the exact
+authorized covariance for the population, support, conditioning, and
+constraints, and $Q_x$ is its exact inverse on the same estimable subspace. \\
+\texttt{ASM-009} & For $C_{\rm cond}$, $L$, $C_{\rm parent}$, response,
+support, units, and conditioning state refer to the same realization and
+generation. \\
+\texttt{ASM-010} & The state is externally declared or learned once from the
+exact parent and external inputs, then frozen. It is neither target-updated nor
+NOI-member relearned. \\
+\texttt{ASM-011} & A compatible NOI ensemble member receives the identical
+state, operator, support, normalization, approximation, and failure policy as
+the signal parent. \\
+\texttt{ASM-012} & Any approximate operator satisfies a selected and fully
+parameterized \AO{002} envelope on its complete declared test domain. \\
+\texttt{ASM-013} & Response and uncertainty representations satisfy selected
+\AO{003} and \AO{005} reconstruction, omitted-mode, consumer, and lifecycle
+limits. \\
+\texttt{ASM-014} & Template and parent calibration lineages are compatible;
+any claimed point-source flux meaning or calibration covariance has explicit
+CAL/BEAM authority. \\
+\texttt{ASM-015} & A method option, named-use policy, and lifecycle route are
+explicitly selected; there is no automatic selector, fallback, or silent
+substitution. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Validity table}
+\label{sec:validity-table}
+
+\begin{longtable}{p{0.16\linewidth}p{0.29\linewidth}p{0.25\linewidth}p{0.20\linewidth}}
+\toprule
+Dimension & Admission evidence & Invalid or missing case & Required outcome \\
+\midrule
+\endhead
+Parent identity & Exact bundle identity, class, generation, grouping, WCS/frame,
+support, unit, quantity, calibration lineage, and coadd membership & Missing,
+mutable, derived, or mixed parent & \Unavailable{} before application; no
+FLT repair or coaddition. \\
+Application class & Observation or coadd declared independently & Assumed
+commutation or borrowed state between classes & \Unavailable{}; require a
+distinct realization. \\
+Template & Exact materialized response per unit amplitude with scale, phase,
+anchor, sampling, and lineage & Learned from target/member, mismatched chart,
+ambiguous scale, or missing lineage & \Unavailable{}; no inferred template. \\
+Influence support & Complete dependency closure and erosion proof & Missing,
+invalid, filled, extended, imputed, or partially supported dependency & Mark
+affected locations \Unavailable{}; no partial estimate. \\
+Weighting state & Selected \AO{001}, population, operator, rank/null,
+regularization, coefficients, window and edge rules bound to $g$ & Unknown,
+unselected, incompatible, or changing $Q_x$ & Fail closed; no fallback. \\
+Normalization & Finite, real-to-tolerance, strictly positive $D(x)$ & NaN,
+infinite, complex beyond tolerance, zero, negative, or null-confounded &
+Location \Unavailable{} or attempted bundle \Failed{}; never write zero. \\
+Approximation & Selected \AO{002} and all metrics within bounds on the full
+test domain & Missing exact comparator, uncovered modes, support/null mismatch,
+or any exceeded bound & \Failed{} for that realization; material change is a
+new realization or method. \\
+Response & Full fixed-state response or selected exact reconstruction contract
+& Undocumented kernel, assumed invariance, or unreconstructable response &
+Response-dependent product or handoff \Unavailable{}. \\
+Units and calibration & $[\widehat A]=[m]/[t]$ and compatible joint lineage &
+Unjustified flux, beam, solid angle, DC, extended-source, or covariance meaning
+& Forbid the claim; required named use is \Unavailable{}. \\
+Covariance & Matching authorized $C_{\rm parent}$ and selected \AO{003} &
+Missing population/conditioning, omitted correlations treated as zero, or
+$D^{-1}$ used without GLS & Covariance use \Unavailable{} or companion
+\Failed{}; signal may remain \Complete{}. \\
+NOI parity & Identical frozen transformation for compatible members &
+Per-member relearning, different support, or mixed generation & NOI companion
+\Unavailable{} or \Failed{}; separate method required. \\
+Lifecycle & Atomic membership, named-use policy, and immutable state & Mixed
+status, partial signal bundle, silent mutation, or overwritten predecessor &
+Bundle \Failed{}; retain predecessor and successor identities. \\
+FLT to FRUIT & Selected \AO{005}, documented response/state lineage, and
+handoff profile & Requires undocumented implementation state or supplies FRUIT
+science & Handoff \Unavailable{}; signal product status is unchanged. \\
+\bottomrule
+\end{longtable}
+
+The valid output domain $\Valid$ is the intersection of all location-level
+predicates above. Bundle-level validity additionally requires all atomic
+identity and lifecycle members. Consumer-specific validity is never broader
+than producer validity and may be narrower under a named-use policy.

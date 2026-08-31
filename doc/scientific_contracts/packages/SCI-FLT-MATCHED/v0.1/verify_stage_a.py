@@ -38,7 +38,7 @@ for relative in REQUIRED:
     assert path.is_file() and path.stat().st_size > 0, f"missing {relative}"
 
 readme = (ROOT / "README.md").read_text()
-assert "fresh implementation-blind Stage B author authorized" in readme
+assert "implementation-blind Stage B r0.1 draft returned" in readme
 assert "SCI-FLT-MATCHED" in readme
 
 scope = (ROOT / "SCOPE_BRIEF.md").read_text()

@@ -1,0 +1,112 @@
+% Shared normative core: edge cases and failure semantics
+\section{Edge cases, exclusions, and failure routing}
+\label{sec:edge-cases}
+
+\begin{longtable}{p{0.22\linewidth}p{0.36\linewidth}p{0.32\linewidth}}
+\toprule
+Condition & Scientific meaning & Required handling \\
+\midrule
+\endhead
+Empty or incomplete influence support & No defined reference estimand at the
+affected location & Mark \Unavailable{} before evaluation; no padding,
+extension, imputation, partial estimate, or renormalization. \\
+Numerical fill near an edge & Merely a computational placeholder & Admit an
+output only after exact erosion proves zero dependency on every filled value. \\
+$D=0$, $D<0$, nonfinite $D$, or materially complex $D$ & Template is null,
+weighting is invalid, or numerical identity failed & Typed unavailability or
+attempt failure; never publish zero amplitude, infinite variance, or fallback. \\
+Template lies partly in $\Null(Q_x)$ & Some declared template modes are
+unestimable & Allowed only if the selected option explicitly defines the same
+estimable subspace and $D>0$; record response loss and null space. Otherwise
+unavailable. \\
+Indefinite or non-Hermitian $Q_x$ & Weight is outside declared quadratic-form
+semantics & Fail selected \AO{001} closure unless an exact distinct operator
+and inner product were separately authored; no silent symmetrization. \\
+Zero, negative, or nonfinite PSD bin & No finite declared reciprocal weighting
+for that mode/bin & Apply only owner-declared regularization within the frozen
+state; otherwise exclude as a declared null mode or make route unavailable.
+Never infer infinite precision. \\
+Sparse radial bin or large angular scatter & Radially averaged PSD lacks
+declared information or radial sufficiency & Fail owner-set effective-sample,
+anisotropy, or leakage bounds; no neighboring-bin interpolation unless separately
+authored. \\
+Unknown covariance entry & Scientific knowledge is absent & Preserve unknown;
+do not encode zero, diagonal independence, or a usable inverse. \\
+Available $Q$ but unavailable $C_{\rm parent}$ & Weighting exists without
+covariance authority & Amplitude filtering may proceed under a selected weaker
+option; optimality, $D^{-1}$ variance, and $C_{\rm cond}$ are unavailable. \\
+Available $C_{\rm parent}$ with mismatched population/state & Covariance does
+not describe this realization & Covariance route unavailable; no rescaling or
+population substitution. \\
+Template rescaled by $c\neq0$ & Amplitude convention changes & Create a new
+template/realization identity; $\widehat A$ rescales by $1/c$ and units/lineage
+must follow. \\
+Template phase or anchor changed & Scientific response convention changes &
+New template and realization; never treat as a numeric implementation detail. \\
+Template mismatch to a real signal & Base matching-template estimand does not
+equal an unconstrained source property & Report only response-weighted shape
+amplitude; no bias correction, morphology, or new uncertainty without separate
+authority. \\
+Parent beam or calibration exists & Provenance is present, not inherited
+matched-filter meaning & Preserve lineage; require exact authority before flux,
+matched beam/solid angle, extended-source, or calibration-covariance claim. \\
+Coadd membership changes & Parent identity changes & New coadd parent, state,
+realization, response, and products; do not reuse observation/coadd state by
+implication. \\
+NOI member suggests a new state & Per-member relearning would change the
+ensemble method & Apply the frozen state or mark member incompatible; a learned
+update creates a successor generation outside the current ensemble. \\
+Approximation misses one null or support mode & Estimand/validity differs even
+if aggregate error is small & Fail every \AO{002} alternative; no percentile
+or mean can hide the disagreement. \\
+Iteration/tail cap reached & Work limit, not convergence evidence & Accept only
+if every selected quantitative envelope bound independently passes; otherwise
+fail. \\
+Optional companion fails after signal completion & Companion atomicity failed,
+not necessarily signal science & Mark companion \Failed{}; preserve signal
+\Complete{} unless exact named-use policy made the companion required. \\
+Required signal member fails & Role-complete signal does not exist & Fail the
+entire signal bundle; do not publish a partial bundle as unavailable pixels
+inside an otherwise complete product. \\
+Successor state or option is approved & Scientific identity advances & Create
+immutable successor generation and mark predecessor \Superseded{} only by
+policy; never mutate predecessor facts. \\
+Unselected or unavailable option requested & No authorized route exists & Fail
+closed and name the missing owner disposition; no automatic selector or
+fallback. \\
+Response query is unsupported & Scientific interface does not define that
+quantity & Return typed unavailability; never approximate with a kernel,
+radial profile, parent beam, or zero. \\
+FLT to FRUIT consumer asks for FRUIT behavior & Request crosses package
+authority & Withhold the behavior and require a separate FRUIT contract; the
+FLT signal and handoff facts remain unchanged. \\
+Filtered-map peak is examined & A numerical feature is not an authorized
+source object & No detection, candidate, significance, completeness, purity,
+fit, morphology, catalog, or SRC claim follows. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Explicit method exclusions}
+
+Posterior/Wiener sky reconstruction, ordinary convolution, source or candidate
+learning, data-thresholded destriping, automatic selectors/fallbacks, adaptive
+edge/background behavior, the historical high-pass/delta case, partial-support
+estimation, FLT-owned coaddition, source analysis, and FRUIT algorithms are not
+degenerate settings of this contract. They require separate scientific
+contracts if later commissioned.
+
+\texttt{SCI-FLT-FIXED} remains a separate protected package. This contract
+neither selects, modifies, supersedes, nor supplies scientific authority for
+that method.
+
+The historical compatibility term ``Wiener filter'' may refer to this method
+only when accompanied by the exact \ContractID{} identity and may not imply a
+sky prior, posterior estimand, or Wiener reconstruction.
+
+\subsection{Nonclaim closure}
+
+Passing a scientific prediction or an engineering conformance test establishes
+only that named claim for the exact immutable realization. Validation-profile
+pass is not achieved performance. Achieved performance is not readiness.
+Readiness is not production. None of those layers can select an authored
+option, repair missing scientific authority, or broaden this validity domain.

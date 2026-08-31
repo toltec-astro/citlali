@@ -1,0 +1,9 @@
+# Rebuildable local rendering and TeX intermediates.
+contact/
+contact-*/
+rendered/
+*.aux
+*.out
+*.toc
+*.pdf
+make_contact_sheets.py
