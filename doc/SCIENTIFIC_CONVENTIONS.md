@@ -229,9 +229,10 @@ short member segments remain physical facts and derivative support never
 crosses a segment boundary. AST owns the compact raw maximum; ALIGN supplies
 network-specific mapped views without a common grid. The bounded raw product
 and mapped-view implementation preserves the v1 152390 result and passes local
-synthetic plus clean seven-case exact-SHA execution gates. Fresh independent
-exact-SHA review, PSD/filter-bank certification, and the remaining gates are
-pending. Governing
+synthetic plus clean seven-case exact-SHA execution gates. The first review's
+single non-finite Beammap metadata cause/Hold-precedence finding is repaired at
+`adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7`; exact-SHA re-review,
+PSD/filter-bank certification, and the remaining gates are pending. Governing
 structural authority is
 [`WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md`](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
 and its

@@ -1,8 +1,8 @@
 # ADR 0020: AST route-family motion membership
 
-Status: accepted bounded scientific-owner authority 2026-08-30; clean
-implementation and representative execution pass; exact-SHA conformance
-review pending
+Status: accepted bounded scientific-owner authority 2026-08-30; first
+exact-SHA review held on one typed-cause precedence defect; bounded repair and
+representative replay pass; exact-SHA re-review pending
 
 Decision owners: Citlali project owner and scientific owner
 
@@ -88,3 +88,4 @@ another named authority and representative evidence.
 - [Network-specific timing decision](0015-network-specific-timing-and-common-analysis-grid.md)
 - [Filtering/downsampling certification plan](../WP7_RTC_FILTER_DOWNSAMPLING_CERTIFICATION_TEST_PLAN_2026-08-30.md)
 - [Clean implementation and representative evidence](../../handoff/WP7_AST_ROUTE_FAMILY_MOTION_ACCEPTANCE_PACKAGE_2026-08-30.md)
+- [Independent-review finding and bounded repair evidence](../../handoff/WP7_AST_ROUTE_FAMILY_MOTION_REVIEW_REPAIR_2026-08-31.md)

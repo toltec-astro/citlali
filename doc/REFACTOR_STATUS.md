@@ -52,10 +52,15 @@ verified baseline APT v2 bundle provides complete detector-to-raw inventory;
 its lack of an optional matched detector relation is recorded independently
 and is not a D0 failure. The scientific owner has now closed the Beammap/OOF
 motion-authority gap with `wp7-ast-scan-motion-v2`, preserving the v1 numerical
-operator and adding only exact route profiles and Beammap membership. The
-conforming implementation and clean exact-SHA seven-case execution now pass.
-Local F0 evidence construction is complete; final F0 conformance remains open
-only for the required fresh independent exact-SHA review.
+operator and adding only exact route profiles and Beammap membership. The first
+independent review of package `93de2cd9ca37f3740ceab98bf994ed684e9281ee`
+returned `HOLD` with one `MAJOR` finding and no `BLOCKER` or `MINOR` findings:
+non-finite Beammap footprint/angle metadata was classified during profile
+admission, bypassing occurrence-local Hold-first precedence. Bounded repair
+`adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7` now classifies every non-finite
+numeric membership field per occurrence after Hold and preserves fail-closed
+admission for finite unsupported profiles. Local F0 evidence construction is
+complete; final F0 conformance remains open for exact-SHA re-review.
 `M>1` filter-support erosion, weighted exposure, spatial coverage, PSD/filter
 research, and nonidentity production activation remain pending.
 
@@ -69,10 +74,12 @@ in-footprint membership predicate for the supported rectilinear continuous
 Beammap profile. All focused synthetic tests and the clean seven-case
 representative execution pass, including preservation of the exact 152390
 maximum and the approved Beammap membership census. The exact implementation
-and evidence identities are recorded in the
+and first-review identities are preserved in the
 [AST v2 acceptance package](../handoff/WP7_AST_ROUTE_FAMILY_MOTION_ACCEPTANCE_PACKAGE_2026-08-30.md).
-The resulting values are eligible F0 evidence; independent exact-SHA review
-remains pending before the conformance gate is closed.
+The [bounded review repair](../handoff/WP7_AST_ROUTE_FAMILY_MOTION_REVIEW_REPAIR_2026-08-31.md)
+passes the complete local gate and exact-SHA seven-case replay with unchanged
+scientific payloads. The resulting values are eligible F0 evidence; exact-SHA
+re-review remains pending before the conformance gate is closed.
 
 ## 2026-08-30 WP-7 Filtering and Downsampling Certification Plan
 

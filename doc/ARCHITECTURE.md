@@ -407,8 +407,10 @@ Its compact raw product and independent network-mapped views are implemented in
 [`ast_scan_motion.h`](../include/citlali/core/pipeline/ast_scan_motion.h) and
 [`ast_scan_motion_alignment.h`](../include/citlali/core/pipeline/ast_scan_motion_alignment.h).
 Local synthetic and clean seven-case exact-SHA execution gates pass at
-`672f907355a3f15f3ee987d92a5f7e95bbdc38b5`; fresh independent exact-SHA
-review is pending. M>1 support erosion, weighted exposure/spatial coverage,
+`adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7`. The first independent review
+found one typed-cause/Hold-precedence defect in non-finite Beammap metadata;
+the bounded repair and unchanged representative payloads now await exact-SHA
+re-review. M>1 support erosion, weighted exposure/spatial coverage,
 representative PSD envelopes, certified bank artifacts, automatic-selection
 closure, and their remaining gates are pending. The v1 Kaiser factor/tap sweep
 is historical evidence only.
