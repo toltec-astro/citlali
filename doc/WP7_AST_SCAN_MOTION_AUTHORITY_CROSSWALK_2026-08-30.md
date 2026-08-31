@@ -48,12 +48,12 @@ planning role.
 
 ## Still pending
 
-Authority approval permits the bounded v2 implementation but does not by
-itself establish conformance. Exact synthetic profile/membership boundaries,
-chunk/order invariance, network independence, clean Science/OOF/Pointing/
-Beammap evidence, full repository gates, and a fresh independent exact-SHA
-review remain required. Another map profile, cadence, or simulation family
-requires a later named successor.
+The bounded v2 implementation now passes exact synthetic profile/membership
+boundaries, chunk/order invariance, network independence, clean Science/OOF/
+Pointing/Beammap execution, and the full local repository gates at revision
+`672f907355a3f15f3ee987d92a5f7e95bbdc38b5`. Fresh independent exact-SHA
+review remains required before final conformance. Another map profile,
+cadence, or simulation family requires a later named successor.
 
 The separate versioned PSD/filter-bank, naive/JINC, OOF/fruitloops, and line-
 path prerequisites also remain pending before nonidentity RTC acceptance.

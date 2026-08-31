@@ -5,10 +5,10 @@ Date: 2026-08-30
 Authority: `wp7-rtc-occurrence-speed-admission-v1`
 
 Harness source revision:
-`f6de0fa297bc0cc4571d99ed5cca4aec1cea4a19`
+`672f907355a3f15f3ee987d92a5f7e95bbdc38b5`
 
-Status: **exact-SHA custody/cadence census complete; F0 motion census complete
-for the authorized Science/Lissajous cases; Beammap and OOF motion evidence
+Status: **clean exact-SHA custody/cadence and seven-case F0 motion census
+complete under `wp7-ast-scan-motion-v2`; fresh independent exact-SHA review
 pending; no factor selection, filter certification, RTC route activation, or
 production readiness claim**
 
@@ -34,19 +34,19 @@ Beammap, MAP/JINC, OOF/fruitloops, response, noise, alias, or performance gate.
 The complete local corpus is at:
 
 ```text
-/Users/gwilson/work_toltec/local_data/citlali-validation/wp7/rtc-filter-census/f6de0fa297bc0cc4571d99ed5cca4aec1cea4a19
+/Users/gwilson/work_toltec/local_data/citlali-validation/wp7/rtc-filter-census/672f907355a3f15f3ee987d92a5f7e95bbdc38b5
 ```
 
 Its compact root record is `corpus.json` with SHA-256:
 
 ```text
-f16bee6f5de743ce966292284dcd55fe897e6645d10a89fb6ee21529f53952d3
+4fbb9e62c318d05a839205e3d529cf3fc1f7e6cb31955ce2fa277b6562c62e33
 ```
 
 The exact census executable SHA-256 is:
 
 ```text
-586143f56ecca3a9266195d8d15f066fbe10490678564526a0cfaf5167b41766
+95ce5e852534a476682078339ee730b91ac641a1ffd79f2e5374214349d398ce
 ```
 
 The corpus declares `source_clean: true`, contains seven cases, and binds each
@@ -80,15 +80,15 @@ diagnostic.
 
 ## Fixture and mapping census
 
-| Case | Networks | Native occurrences | Detectors | Matched APT relation | Accepted mapped motion | D0 identity ready |
-| --- | ---: | ---: | ---: | --- | --- | --- |
-| Beammap 148670 | 11 | 4,220,705 | 5,234 | no | unavailable | yes |
-| OOF 152385 | 11 | 86,468 | 5,518 | yes | unavailable | yes |
-| OOF 152386 | 11 | 86,742 | 5,518 | yes | unavailable | yes |
-| OOF 152387 | 11 | 86,559 | 5,518 | yes | unavailable | yes |
-| Science 152390 | 11 | 1,666,908 | 5,518 | yes | available | yes |
-| Pointing 152391 | 11 | 85,661 | 5,518 | yes | unavailable | yes |
-| Science 152392 | 11 | 1,671,366 | 5,518 | yes | available | yes |
+| Case | Networks | Native occurrences | Mapped motion available | Mapped motion unavailable | D0 identity ready |
+| --- | ---: | ---: | ---: | ---: | --- |
+| Beammap 148670 | 11 | 4,220,705 | 1,540,101 | 2,680,604 | yes |
+| OOF 152385 | 11 | 86,468 | 86,468 | 0 | yes |
+| OOF 152386 | 11 | 86,742 | 86,742 | 0 | yes |
+| OOF 152387 | 11 | 86,559 | 86,559 | 0 | yes |
+| Science 152390 | 11 | 1,666,908 | 1,666,171 | 737 | yes |
+| Pointing 152391 | 11 | 85,661 | 85,661 | 0 | yes |
+| Science 152392 | 11 | 1,671,366 | 1,671,366 | 0 | yes |
 
 Across all 77 network inputs:
 
@@ -100,11 +100,11 @@ Across all 77 network inputs:
 - no common analysis grid was requested; and
 - no RTC route or persistent scientific product was activated.
 
-`wp7-ast-scan-motion-v1` intentionally admits physical motion only for the
-approved Science/Lissajous family. Therefore the zero upper-speed exclusion
-counts in Beammap, OOF, and Pointing are not evidence of slow motion: every
-mapped occurrence is AST-unavailable, and those route families remain
-indeterminate for F0 motion admission.
+`wp7-ast-scan-motion-v2` retains the accepted v1 numerical operator while
+admitting the exact approved Science, OOF, Pointing, and rectilinear Beammap
+profiles. Beammap's 2,680,604 mapped-unavailable occurrences are explicit
+consequences of physical membership and segment-bounded estimator support;
+they are not missing slots or cross-network projections.
 
 Beammap's verified baseline compact-v2 APT bundle supplies the complete source,
 network, array, detector, and detector-to-raw inventory required by D0. It has
@@ -113,9 +113,9 @@ distinct observation-to-baseline matching product. The harness records both
 facts independently and truthfully records `d0_fixture_identity_ready: true`.
 
 This corpus supersedes the earlier exact-SHA corpus at revision
-`b9589d28a85c1f348f02416d230cb4db1555dd98` for D0 readiness. Direct comparison
-of all 18 scientific result sections in every case found zero differences; the
-replacement changes custody/readiness metadata only.
+`f6de0fa297bc0cc4571d99ed5cca4aec1cea4a19`. The structural model and the
+previously authorized Science results are unchanged; the new corpus adds the
+approved v2 route-family motion and exact Beammap membership evidence.
 
 ## Structural domains
 
@@ -134,7 +134,7 @@ fact, not a filter rejection or a production factor choice. Every candidate
 ceiling remains an upper bound pending passband, mapped-response, phase, alias,
 support, and edge certification.
 
-## Exact M=1 Science/Lissajous admission
+## Exact M=1 seven-case admission
 
 Counts below are network-native occurrences aggregated only across the
 networks belonging to the named array. They are neither telescope-record
@@ -142,9 +142,24 @@ counts nor detector-occurrence-cell counts.
 
 | Observation | Array | Lower-speed/AST-valid base | Above-ceiling occurrences | Base fraction | Primitive duration (s) |
 | --- | --- | ---: | ---: | ---: | ---: |
+| 148670 | a1100 | 840,056 | 0 | 0% | 0 |
+| 148670 | a1400 | 420,027 | 0 | 0% | 0 |
+| 148670 | a2000 | 280,018 | 0 | 0% | 0 |
+| 152385 | a1100 | 47,128 | 0 | 0% | 0 |
+| 152385 | a1400 | 23,564 | 0 | 0% | 0 |
+| 152385 | a2000 | 15,708 | 0 | 0% | 0 |
+| 152386 | a1100 | 47,225 | 801 | 1.696136% | 6.561792 |
+| 152386 | a1400 | 23,614 | 0 | 0% | 0 |
+| 152386 | a2000 | 15,744 | 0 | 0% | 0 |
+| 152387 | a1100 | 45,815 | 137 | 0.299029% | 1.122304 |
+| 152387 | a1400 | 22,909 | 0 | 0% | 0 |
+| 152387 | a2000 | 15,275 | 0 | 0% | 0 |
 | 152390 | a1100 | 904,402 | 17,313 | 1.914304% | 141.828096 |
 | 152390 | a1400 | 452,208 | 1,514 | 0.334802% | 12.402688 |
 | 152390 | a2000 | 301,465 | 0 | 0% | 0 |
+| 152391 | a1100 | 45,621 | 601 | 1.317376% | 4.923392 |
+| 152391 | a1400 | 22,808 | 0 | 0% | 0 |
+| 152391 | a2000 | 15,203 | 0 | 0% | 0 |
 | 152392 | a1100 | 907,368 | 12,960 | 1.428307% | 106.168320 |
 | 152392 | a1400 | 453,683 | 1,688 | 0.372066% | 13.828096 |
 | 152392 | a2000 | 302,454 | 90 | 0.029757% | 0.737280 |
@@ -162,15 +177,14 @@ yet exist.
 
 ## Verification
 
-Exact harness revision `f6de0fa297bc0cc4571d99ed5cca4aec1cea4a19`
+Exact harness revision `672f907355a3f15f3ee987d92a5f7e95bbdc38b5`
 passes:
 
-- all 63 focused WP-7 timestream/AST/census tests;
-- all six fail-closed Python orchestrator tests, including acceptance of a
-  verified baseline APT without a matched relation and rejection of an
-  unverified or incomplete inventory;
-- all 889 runnable repository CTests, with the one established disabled test
+- all 16 focused AST/ALIGN tests and all 14 census/acceptance verifier tests;
+- all 893 enabled repository CTests, with the one established disabled test
   unchanged;
+- the clean exact dependency and ignored-source gate;
+- all 207 baseline-tool tests;
 - the required config preflight, including all 129 unit tests and downstream
   audits;
 - JSON parsing for every case and the root corpus; and
@@ -178,17 +192,14 @@ passes:
 
 ## Disposition and next prerequisites
 
-This execution closes D0 fixture identity for all seven cases, the harness
-correction, and the available Science/Lissajous portion of F0. It does not
-close complete F0 motion admission for the declared certification corpus.
+This execution closes local construction of D0 fixture identity and the
+complete seven-case F0 motion/admission evidence. Final F0 conformance remains
+pending the required fresh independent exact-SHA review.
 
 Before filter-family research can govern the complete required route matrix:
 
-1. The owner must resolve how the already-required Beammap and OOF route tests
-   obtain authorized occurrence-level motion/admission evidence without
-   contradicting the accepted physical-scan membership of
-   `wp7-ast-scan-motion-v1`. No local velocity estimator or silent family
-   broadening is authorized.
+1. The exact v2 implementation and evidence package must pass independent
+   exact-SHA review.
 2. `M>1` support erosion remains pending F1 coefficients and exact
    half-support.
 3. Weighted exposure and spatial coverage remain pending their existing

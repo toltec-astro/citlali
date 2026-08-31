@@ -25,8 +25,8 @@ admission loss, filter-support erosion, weighted exposure, spatial coverage,
 mapped response/noise, and performance. Automatic factor selection and the
 final no-product cause return for a bounded owner decision after that evidence.
 
-The repaired D0/F0 census at exact clean harness revision
-`f6de0fa297bc0cc4571d99ed5cca4aec1cea4a19` now enumerates all factors
+The repaired D0/F0 census at exact clean implementation revision
+`672f907355a3f15f3ee987d92a5f7e95bbdc38b5` now enumerates all factors
 `M=1..256` without accepting a scan maximum as an eligibility input or
 selecting a factor. The exact seven-case evidence and bounded disposition are
 recorded in the
@@ -53,8 +53,9 @@ its lack of an optional matched detector relation is recorded independently
 and is not a D0 failure. The scientific owner has now closed the Beammap/OOF
 motion-authority gap with `wp7-ast-scan-motion-v2`, preserving the v1 numerical
 operator and adding only exact route profiles and Beammap membership. The
-complete F0 gate remains open until the conforming implementation passes a
-clean exact-SHA seven-case execution and fresh independent review.
+conforming implementation and clean exact-SHA seven-case execution now pass.
+Local F0 evidence construction is complete; final F0 conformance remains open
+only for the required fresh independent exact-SHA review.
 `M>1` filter-support erosion, weighted exposure, spatial coverage, PSD/filter
 research, and nonidentity production activation remain pending.
 
@@ -65,10 +66,13 @@ is approved as `wp7-ast-scan-motion-v2` and recorded durably in
 accepted v1 numerical estimator and network-specific mapping, admits explicit
 Science/OOF/Pointing Lissajous profiles, and defines an exact non-hold realized
 in-footprint membership predicate for the supported rectilinear continuous
-Beammap profile. Local synthetic tests and a seven-case representative probe
-pass, including preservation of the exact 152390 maximum and the expected
-Beammap membership census. Those probe values are not yet accepted F0 evidence;
-the clean exact-SHA rerun and independent review remain pending.
+Beammap profile. All focused synthetic tests and the clean seven-case
+representative execution pass, including preservation of the exact 152390
+maximum and the approved Beammap membership census. The exact implementation
+and evidence identities are recorded in the
+[AST v2 acceptance package](../handoff/WP7_AST_ROUTE_FAMILY_MOTION_ACCEPTANCE_PACKAGE_2026-08-30.md).
+The resulting values are eligible F0 evidence; independent exact-SHA review
+remains pending before the conformance gate is closed.
 
 ## 2026-08-30 WP-7 Filtering and Downsampling Certification Plan
 
@@ -98,11 +102,11 @@ line algorithm is redesigned here.
 
 The repaired fixture/census harness now supplies exact input/build manifests,
 network-local cadence/AST inventory, fixed structural ceilings, and raw
-occurrence admission for every factor without selection. The first exact-SHA
-execution closes the Science/Lissajous portion and identified the now-resolved
-Beammap/OOF motion-authority gap. Beammap APT v2 custody and complete detector-
-to-raw inventory are already closed independently. Clean v2 route-family
-evidence remains pending. This
+occurrence admission for every factor without selection. The clean exact-SHA
+v2 execution now closes local Science, OOF, Pointing, and Beammap motion-
+evidence construction. Beammap APT v2 custody and complete detector-to-raw
+inventory remain closed independently. Fresh exact-SHA review of the v2
+implementation and evidence is pending. This
 plan does not authorize nonidentity RTC implementation or production
 activation.
 

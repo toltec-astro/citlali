@@ -1,7 +1,8 @@
 # WP-7 AST Route-Family Motion Owner Decision Packet (2026-08-30)
 
-Status: **approved bounded scientific-owner authority 2026-08-30;
-implementation and exact-SHA conformance review pending**
+Status: **approved bounded scientific-owner authority 2026-08-30; clean
+implementation and representative execution pass; exact-SHA conformance
+review pending**
 
 Authority identifier: `wp7-ast-scan-motion-v2`
 
@@ -9,9 +10,10 @@ This packet records the approved smallest extension of the accepted
 [`wp7-ast-scan-motion-v1`](WP7_AST_SCAN_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
 authority needed to measure the WP-7 filtering/downsampling witness matrix.
 The scientific owner approved it exactly as requested on 2026-08-30. Approval
-authorizes the bounded implementation but does not promote the exploratory
-values below to F0 results until a conforming implementation, clean
-representative execution, and fresh exact-SHA review pass.
+authorizes the bounded implementation. The conforming implementation and clean
+representative execution now pass as recorded in the
+[acceptance package](../handoff/WP7_AST_ROUTE_FAMILY_MOTION_ACCEPTANCE_PACKAGE_2026-08-30.md).
+Final F0 conformance remains pending fresh exact-SHA review.
 
 ## 1. Decision requested
 

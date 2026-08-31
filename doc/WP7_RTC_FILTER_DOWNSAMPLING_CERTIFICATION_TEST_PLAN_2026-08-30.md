@@ -228,23 +228,23 @@ footprint erosion for `M>1` is added only after F1 supplies exact coefficients
 and half-support. The compact table contains no filter coefficients and makes
 no runtime decision.
 
-The first exact-SHA execution of this step is recorded in the
+The superseded v1 exact-SHA execution and current v2 clean execution of this
+step are recorded in the
 [D0/F0 occurrence-speed evidence package](../handoff/WP7_RTC_OCCURRENCE_SPEED_CENSUS_EVIDENCE_2026-08-30.md).
-It completes the authorized Science/Lissajous motion census and exposes two
-facts without weakening the gate: Beammap 148670's verified baseline APT v2
-bundle closes its D0 custody and complete detector-to-raw inventory without an
-optional matched detector relation, while the accepted AST authority does not
-supply motion for Beammap or OOF route families. Their F0 motion-admission
-evidence remains indeterminate pending explicit closure; zero reported upper-
-speed counts in those cases are not interpreted as zero loss.
+The v2 execution completes local motion/admission evidence construction for
+Science, OOF, Pointing, and Beammap while preserving Beammap 148670's verified
+baseline APT v2 custody and complete detector-to-raw inventory without an
+optional matched detector relation. Final F0 conformance remains pending the
+fresh independent exact-SHA review.
 
 The bounded
 [AST route-family motion owner-decision packet](WP7_AST_ROUTE_FAMILY_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
 is approved as the exact successor authority needed to close this gap while
-retaining the accepted v1 numerical operator. Local synthetic tests and a
-seven-case representative probe pass. Their values may not populate accepted
-F0 or permit F1 to advance until the conforming implementation completes a
-clean representative execution and fresh exact-SHA review.
+retaining the accepted v1 numerical operator. Local synthetic tests and the
+clean seven-case representative execution pass at
+`672f907355a3f15f3ee987d92a5f7e95bbdc38b5`. The values are eligible F0
+evidence but may not permit F1 to advance until fresh independent exact-SHA
+review closes conformance.
 
 ### F1: bounded filter-family comparison
 
