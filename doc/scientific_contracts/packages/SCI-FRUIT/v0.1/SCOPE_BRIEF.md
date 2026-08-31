@@ -4,7 +4,7 @@ Status: **Stage A owner-review candidate; not owner-approved**
 
 Scientific owner: Grant Wilson
 
-Version/date: `v0.1-stage-a-r0.4`, `2026-08-31`
+Version/date: `v0.1-stage-a-r0.5`, `2026-08-31`
 
 Approved source identifier: **none**
 
@@ -180,7 +180,12 @@ a controlled comparison with exact historical Citlali using distinct
 scientific-quality and computational-performance metrics. Angular-scale
 recovery, per-mode flux recovery, atmospheric/other residual leakage, and flux
 convergence are required scientific domains; exact definitions, thresholds,
-benchmark profile, and tradeoff policy remain open and are ordered in
+and benchmark profile remain open. The owner has approved the
+governing constrained multi-objective framework: protected scientific
+non-inferiority plus material improvement in an owner-prioritized scientific
+domain, with computational performance separate absent later explicit trade
+approval. Exact benchmark and metric parameterization remain open under
+ODQ-001F and are ordered in
 [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md).
 
 ## 11. Independence Statement

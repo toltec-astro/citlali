@@ -1,8 +1,8 @@
 # SCI-FRUIT v0.1 — Scientific-Owner Decision Ledger
 
 Status: Stage A owner-review queue; owner provisionally favors ODQ-001 Choice
-3 and has bounded the comparative-quality domains; all scientific questions
-remain open
+3 and has approved the ODQ-001E comparative-quality framework; exact
+parameterization and all other scientific questions remain open
 
 The questions are ordered by consequence. Later questions must not be answered
 in a way that silently fixes an earlier one.
@@ -10,7 +10,8 @@ in a way that silently fixes an earlier one.
 | ID | Owner question | Candidate dispositions to review | Consequence/stop gate | Status |
 | --- | --- | --- | --- | --- |
 | `SCI-FRUIT-ODQ-001` | **Which treatment of the recovered historical recurrence should v0.1 adopt?** | (1) preserve the exact recovered recurrence; (2) adopt a mathematically equivalent reformulation only with the route-specific proof and validation stated in the equivalence analysis; (3) intentionally adopt a new recurrence with scientific motivation, expected differences, compatibility effects, and validation obligations. See `ODQ_001_RECURRENCE_DECISION_FRAME.md`. | Determines method/version compatibility and governs the four separate axes below. No route decision should precede it. | **open — owner provisionally favors Choice 3; no law approved; requires estimand and success criteria before closure** |
-| `SCI-FRUIT-ODQ-001E` | What exact benchmark and multi-objective acceptance rule define a candidate recurrence as better than historical Citlali? | Bind the historical profile and common comparison tuple; define angular-scale recovery, per-mode flux recovery, residual leakage, flux convergence, noise/false structure, response/uncertainty, and computational metrics; select protected non-inferiority dimensions, improvement rule, tolerances, uncertainty, and tradeoff policy. | Must close before candidate recurrences can be ranked; prevents anecdotes, speed, or one favorable metric from deciding scientific quality. | open — owner approved comparison domains, not exact metrics, thresholds, or tradeoffs |
+| `SCI-FRUIT-ODQ-001E` | What governing comparison and acceptance framework defines a candidate recurrence as better than historical Citlali? | Exact historical control; separate scientific and computational vectors; protected scientific non-inferiority; validity/response/restart/failure gates; material improvement in an owner-prioritized scientific domain; no computational compensation without explicit trade approval. | Governs all candidate ranking and prevents anecdotes, speed, or one favorable metric from deciding scientific quality. | **decided — framework approved by `SCI-FRUIT-OD-001E-FRAMEWORK-2026-08-31`** |
+| `SCI-FRUIT-ODQ-001F` | What exact parameterization instantiates the approved ODQ-001E framework? | Bind the historical profile and comparison tuple; signal/nuisance families; validity domain; metric estimators; uncertainty; protected dimensions and tolerances; material-improvement threshold; performance protocol; failure/unavailable rules. | Must close before candidate recurrences can be ranked or an empirical comparison can be interpreted. | open — no exact benchmark profile, metric, tolerance, or protocol approved |
 | `SCI-FRUIT-ODQ-001A` | What exact versioned feedback state `F_k` is carried from completed iteration `k` to `k+1`? | Approve or replace the historical-baseline relationship: one selected complete route map bundle is the numerical predecessor, while selection/support/projector/response/lineage complete the accepted state. | Defines the state space on which any update or equivalence statement is meaningful. | open; answer separately from update law |
 | `SCI-FRUIT-ODQ-001B` | What exact numerical transition `U_k` maps `(F_k,R_{k+1})` to `F_{k+1}`? | Preserve `U_hist`, approve a proved equivalent form, or approve a labeled new law. Ordinary `F+Delta F` is not a default. | Defines subtraction, residual-only exposure, bypass/rejoin, final response, and recurrence compatibility. | open; general law only |
 | `SCI-FRUIT-ODQ-001C` | What status does each per-iteration update contribution have? | None required; diagnostic difference; lineage/equivalence witness; causal update state; or separately admitted scientific product with its own calibration/response/uncertainty. | Prevents an increment from silently becoming an independently interpretable sky product. | open; no scientific increment status |
@@ -32,6 +33,12 @@ in a way that silently fixes an earlier one.
 | ID | Decision | Effect | Non-effect |
 | --- | --- | --- | --- |
 | `SCI-FRUIT-SEQ-2026-08-31` | Launch recovery-first SCI-FRUIT after the single-pass MAP/JINC/NOI/filtering line and before source-fitting and Pointing/OOF | Changes roadmap sequencing and authorizes Stage A recovery on the dedicated branch | Does not approve this packet, any parent, estimator, recurrence, Stage B work, algorithm change, validation, or production action |
+
+## Recorded Scientific Owner Decision
+
+| ID | Decision | Effect | Non-effect |
+| --- | --- | --- | --- |
+| `SCI-FRUIT-OD-001E-FRAMEWORK-2026-08-31` | Approve the constrained multi-objective comparative-quality framework in `COMPARATIVE_QUALITY_OBJECTIVE_GATE.md` | Decides ODQ-001E; requires protected scientific non-inferiority plus material improvement in an owner-prioritized scientific domain; keeps computational performance separate absent explicit trade approval | Does not decide ODQ-001F or approve a benchmark profile, metric parameter, threshold, recurrence, route, Stage B, implementation, validation, production, or Unity work |
 
 ## Recorded Stage A Analytical Direction
 

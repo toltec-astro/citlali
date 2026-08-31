@@ -111,6 +111,18 @@ uncertainty, non-inferiority constraints, improvement rule, and tradeoff policy
 remain open. This direction selects no recurrence and authorizes no Stage B,
 implementation, benchmark execution, validation, production, or Unity work.
 
+The owner subsequently approved the constrained multi-objective comparison
+framework as ODQ-001E: protect designated scientific dimensions with
+non-inferiority constraints; require validity, response/uncertainty honesty,
+exact-restart, and failure-disclosure gates; require material improvement in at
+least one owner-prioritized scientific domain to justify an incompatible new
+recurrence; and report computational performance separately unless an explicit
+trade is later approved. ODQ-001F remains open for the exact benchmark, signal
+and nuisance families, metric estimators, uncertainties, protected dimensions,
+tolerances, material-improvement threshold, performance protocol, and failure
+rules. No recurrence, Stage B, implementation, benchmark execution, validation,
+production, or Unity activity is authorized by this framework approval.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

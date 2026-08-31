@@ -110,6 +110,10 @@ least angular-scale recovery, per-mode flux recovery, atmosphere/other residual
 leakage, and flux convergence. The candidate framework and still-open metric,
 tolerance, and tradeoff decisions are recorded in
 [`COMPARATIVE_QUALITY_OBJECTIVE_GATE.md`](COMPARATIVE_QUALITY_OBJECTIVE_GATE.md).
+The owner has approved that framework by
+[`SCI-FRUIT-OD-001E-FRAMEWORK-2026-08-31`](SCIENTIFIC_OWNER_ODQ_001E_FRAMEWORK_APPROVAL_2026-08-31.md).
+Its exact benchmark, metrics, tolerances, and protocols remain open as
+ODQ-001F.
 
 ## Current Stage A Disposition
 

@@ -17,10 +17,11 @@ content-bound versions of:
    the recovered baseline if preserved, an exact proof/validity statement if
    reformulated equivalently, or an intentional-new-method rationale and
    compatibility statement;
-5. an owner-approved comparative-quality brief defining the exact historical
-   control, scientific metric vector, computational metric vector,
-   non-inferiority constraints, improvement rule, validity domain, uncertainty,
-   and tradeoff policy without implementation or empirical-result leakage;
+5. the owner-approved comparative-quality framework and a future
+   owner-approved ODQ-001F parameterization defining the exact historical
+   control, metric estimators, protected dimensions, tolerances, improvement
+   threshold, validity domain, uncertainty, performance protocol, and failure
+   rules without implementation or empirical-result leakage;
 6. exact frozen SCI-MAP and SCI-JINC boundary extracts for each owner-admitted
    route, without their implementation/audit history;
 7. exact frozen SCI-PTC ownership/admission boundary required by an admitted

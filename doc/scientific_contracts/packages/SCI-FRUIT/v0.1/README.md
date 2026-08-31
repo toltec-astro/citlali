@@ -2,7 +2,7 @@
 
 Status: **recovery-first Stage A owner-review candidate; no Stage B launch**
 
-Version: `v0.1-stage-a-r0.4`
+Version: `v0.1-stage-a-r0.5`
 
 Launch base: Git commit
 `7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`
@@ -74,7 +74,8 @@ missing scientific contract.
 | [`SCIENTIFIC_OWNER_RECURRENCE_REVIEW_DIRECTION_2026-08-31.md`](SCIENTIFIC_OWNER_RECURRENCE_REVIEW_DIRECTION_2026-08-31.md) | owner direction to recover history and reframe ODQ-001; not a recurrence choice |
 | [`SCIENTIFIC_OWNER_PROVISIONAL_CHOICE_3_DIRECTION_2026-08-31.md`](SCIENTIFIC_OWNER_PROVISIONAL_CHOICE_3_DIRECTION_2026-08-31.md) | owner provisional preference for intentional new-method development; ODQ-001 remains open |
 | [`SCIENTIFIC_OWNER_COMPARATIVE_QUALITY_DIRECTION_2026-08-31.md`](SCIENTIFIC_OWNER_COMPARATIVE_QUALITY_DIRECTION_2026-08-31.md) | owner direction to define better by paired scientific and computational comparison with exact historical Citlali |
-| [`COMPARATIVE_QUALITY_OBJECTIVE_GATE.md`](COMPARATIVE_QUALITY_OBJECTIVE_GATE.md) | candidate metric framework and unresolved acceptance choices; no thresholds approved |
+| [`COMPARATIVE_QUALITY_OBJECTIVE_GATE.md`](COMPARATIVE_QUALITY_OBJECTIVE_GATE.md) | owner-approved comparison framework; exact ODQ-001F parameterization remains open |
+| [`SCIENTIFIC_OWNER_ODQ_001E_FRAMEWORK_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_001E_FRAMEWORK_APPROVAL_2026-08-31.md) | owner approval of the comparative-quality framework; exact parameterization remains open |
 | [`CROSSWALK.md`](CROSSWALK.md) | requested deliverable and source crosswalk |
 
 `AUTHOR_PACKET_MANIFEST.md`, `AUTHOR_SUPERSESSION_COVER.md`, and
@@ -126,6 +127,11 @@ only; they contain no normative science and no rendered contract.
     and computational-performance vectors. Required scientific domains include
     angular-scale recovery, per-mode flux recovery, nuisance leakage, and flux
     convergence; exact metrics, tolerances, and tradeoffs remain open.
+12. The owner approves the constrained multi-objective acceptance framework:
+    protected scientific non-inferiority, mandatory validity/response/restart/
+    failure gates, and material improvement in an owner-prioritized scientific
+    domain. Computational performance remains separate unless an explicit
+    trade is later approved. Exact parameterization remains ODQ-001F.
 
 ## Stop Rule
 
@@ -139,8 +145,9 @@ treatments: preserve the recovered recurrence, prove and validate an equivalent
 reformulation, or intentionally adopt and validate a new recurrence. The owner
 provisionally favors the third treatment, but ODQ-001 remains open until its
 scientific objective, candidate law, differences, compatibility treatment, and
-validation obligations are explicit. The comparative-quality gate must be
-reviewed before candidate recurrences are ranked.
+validation obligations are explicit. The comparative-quality framework is
+approved, but ODQ-001F parameterization must close before candidate recurrences
+are ranked.
 
 ## Explicit Nonclaims
 

@@ -134,6 +134,7 @@ REQUIRED_FILES = {
     "SCIENTIFIC_OWNER_PROVISIONAL_CHOICE_3_DIRECTION_2026-08-31.md",
     "SCIENTIFIC_OWNER_COMPARATIVE_QUALITY_DIRECTION_2026-08-31.md",
     "COMPARATIVE_QUALITY_OBJECTIVE_GATE.md",
+    "SCIENTIFIC_OWNER_ODQ_001E_FRAMEWORK_APPROVAL_2026-08-31.md",
     "CROSSWALK.md",
     "AUTHOR_PACKET_MANIFEST.md",
     "AUTHOR_SUPERSESSION_COVER.md",
@@ -275,6 +276,8 @@ def verify_packet() -> None:
             "owner provisionally favors Choice 3",
             "SCI-FRUIT-ODQ-001A",
             "SCI-FRUIT-ODQ-001E",
+            "SCI-FRUIT-ODQ-001F",
+            "SCI-FRUIT-OD-001E-FRAMEWORK-2026-08-31",
             "SCI-FRUIT-ODQ-001D",
             "SCI-FRUIT-ODQ-012",
             "blocked on prior decisions",
@@ -314,7 +317,8 @@ def verify_packet() -> None:
             "Residual leakage",
             "Flux convergence",
             "Computational And Operational Performance Vector",
-            "no acceptance",
+            "Owner-Approved Comparison And Acceptance Logic",
+            "No scientific-versus-resource trade is admissible unless separately approved",
         ],
     }
     for body, tokens in required_tokens.items():
@@ -358,8 +362,9 @@ def main() -> None:
     print(
         "PASS: exact launch/provisional/historical sources, byte-identical "
         "historical recurrence evidence, revised three-choice ODQ-001, "
-        "comparative-quality gate, bounded edits, four unavailable candidate "
-        "routes, Stage A firewall, placeholders, and local links"
+        "owner-approved comparative-quality framework, bounded edits, four "
+        "unavailable candidate routes, Stage A firewall, placeholders, and "
+        "local links"
     )
 
 

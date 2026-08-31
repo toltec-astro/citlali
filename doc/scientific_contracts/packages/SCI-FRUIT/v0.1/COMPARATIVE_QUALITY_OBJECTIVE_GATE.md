@@ -1,7 +1,7 @@
 # SCI-FRUIT v0.1 — Comparative Quality Objective Gate
 
-Status: **Stage A owner-review candidate; metric framework only; no acceptance
-thresholds or recurrence approved**
+Status: **owner-approved Stage A comparison framework; exact metric
+parameterization, thresholds, and recurrence remain open**
 
 ## Purpose
 
@@ -40,16 +40,17 @@ benchmark profile remains an open owner decision.
 
 ## Scientific Quality Vector
 
-No scalar quality score is approved. The minimum comparison vector is:
+No weighted scalar quality score is authorized. The approved minimum
+comparison vector is:
 
 | Dimension | Quantity to define | Required conditioning and disclosure | Current state |
 | --- | --- | --- | --- |
-| Angular-scale recovery | Response as a function of declared angular scale or spatial frequency; any maximum recoverable scale is derived from an owner-approved response threshold | Array/band, two-dimensional mode or morphology, orientation, amplitude, support/edge domain, map response/kernel, and uncertainty | metric family approved for development; exact definition open |
-| Per-mode flux recovery | Recovered-to-input amplitude or integrated-flux ratio for each declared astronomical mode, including bias and dispersion across realizations | Mode basis and normalization, estimator/aperture, input amplitude, crowding/background, response convention, validity, and covariance | metric family approved for development; exact definition open |
-| Residual leakage | Atmospheric-fluctuation and other declared nuisance response in the recovered astronomical product, separated from ordinary noise | Nuisance family/spectrum, coupling metric, scan/array/condition stratum, null/truth construction, support, and uncertainty | metric family approved for development; exact definition open |
-| Flux convergence | Per-mode recovery trajectory versus absolute iteration and terminal result; report bias, stability/oscillation, and iterations or time to an accepted band | Initialization, state/learning policy, stopping rule, measurement floor, missing/non-finite behavior, and terminal selector | metric family approved for development; exact definition open |
-| Noise and false structure | Change in map-noise/covariance behavior and creation or amplification of unsupported astronomical structure | Exact NOI target, conditioning, null space, support, multiple-comparison domain, and uncertainty | required companion dimension; exact definition open |
-| Response and uncertainty honesty | Whether fixed-state and complete-procedure response, bias, null space, and uncertainty are correctly disclosed | Exact generation/state, linearization or ensemble definition, route, support, and unavailable-state policy | required gate; numerical authority unavailable |
+| Angular-scale recovery | Response as a function of declared angular scale or spatial frequency; any maximum recoverable scale is derived from an owner-approved response threshold | Array/band, two-dimensional mode or morphology, orientation, amplitude, support/edge domain, map response/kernel, and uncertainty | owner-approved dimension; exact definition open |
+| Per-mode flux recovery | Recovered-to-input amplitude or integrated-flux ratio for each declared astronomical mode, including bias and dispersion across realizations | Mode basis and normalization, estimator/aperture, input amplitude, crowding/background, response convention, validity, and covariance | owner-approved dimension; exact definition open |
+| Residual leakage | Atmospheric-fluctuation and other declared nuisance response in the recovered astronomical product, separated from ordinary noise | Nuisance family/spectrum, coupling metric, scan/array/condition stratum, null/truth construction, support, and uncertainty | owner-approved dimension; exact definition open |
+| Flux convergence | Per-mode recovery trajectory versus absolute iteration and terminal result; report bias, stability/oscillation, and iterations or time to an accepted band | Initialization, state/learning policy, stopping rule, measurement floor, missing/non-finite behavior, and terminal selector | owner-approved dimension; exact definition open |
+| Noise and false structure | Change in map-noise/covariance behavior and creation or amplification of unsupported astronomical structure | Exact NOI target, conditioning, null space, support, multiple-comparison domain, and uncertainty | owner-approved companion dimension; exact definition open |
+| Response and uncertainty honesty | Whether fixed-state and complete-procedure response, bias, null space, and uncertainty are correctly disclosed | Exact generation/state, linearization or ensemble definition, route, support, and unavailable-state policy | owner-approved gate; numerical authority unavailable |
 
 A "mode" is not sufficiently identified by angular size alone. Its basis,
 normalization, morphology, orientation, support, amplitude, response convention,
@@ -63,7 +64,7 @@ specific mode family and validity domain.
 
 ## Computational And Operational Performance Vector
 
-The computational comparison should include at least total wall time, CPU/GPU
+The computational comparison must include at least total wall time, CPU/GPU
 time where applicable, peak resident memory, read/write volume, checkpoint and
 intermediate storage, and scaling with samples, detectors, observations, map
 size, and iterations. Setup and terminal-product costs must not be silently
@@ -75,9 +76,9 @@ quantity is resource use and elapsed time to reach the same declared scientific
 quality target, together with the result when a method never reaches that
 target.
 
-## Comparison And Acceptance Logic For Owner Review
+## Owner-Approved Comparison And Acceptance Logic
 
-Stage A recommends a constrained, multi-objective comparison rather than a
+The owner approves a constrained, multi-objective comparison rather than a
 weighted scalar score:
 
 1. define protected scientific dimensions and owner-approved non-inferiority
@@ -90,10 +91,11 @@ weighted scalar score:
 4. report computational/operational performance as a separate vector unless
    the owner explicitly approves a scientific-versus-resource trade.
 
-This logic is a recommendation, not an approved acceptance rule. A candidate
-that improves recoverable scale while worsening leakage, flux bias, noise, or
-stability is not simply "better"; the trade must remain visible for owner
-decision.
+This framework is approved; its numerical parameters are not. A candidate that
+improves recoverable scale while worsening leakage, flux bias, noise, or
+stability is not simply "better". Computational performance is reported
+separately and cannot compensate for scientific degradation unless the owner
+later approves that explicit trade.
 
 ## Evidence Layers
 
@@ -110,17 +112,20 @@ decision.
 Each result must identify whether it establishes fixed-state behavior, the
 complete adaptive procedure, or only one realized trajectory.
 
-## Immediate Owner Gate
+## Remaining Parameterization Gate
 
-Before recurrence candidates are derived or ranked, the owner must approve or
-revise:
+Before recurrence candidates are ranked, the owner must approve:
 
-1. the scientific quality vector and the mode/nuisance families it must cover;
-2. the protected non-inferiority dimensions;
-3. the primary improvement objective or Pareto decision rule;
-4. the exact historical benchmark-profile requirements; and
-5. the computational performance vector and whether any resource/science
-   trade is admissible.
+1. the exact historical benchmark profile;
+2. the signal-mode and nuisance families, validity domain, and truth/null
+   construction;
+3. exact metric estimators, uncertainty, missing/failure rules, and protected
+   non-inferiority dimensions and tolerances;
+4. the owner-prioritized improvement domain and material-improvement threshold;
+   and
+5. exact computational metrics, hardware/build controls, and scaling protocol.
+
+No scientific-versus-resource trade is admissible unless separately approved.
 
 No validation execution or algorithm implementation is authorized by this
 gate.
