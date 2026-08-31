@@ -29,6 +29,7 @@ REQUIRED_STUDY_OBJECTS = (
     "SCIENTIFIC_OWNER_DECISION_LEDGER.md",
     "SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md",
     "SCIENTIFIC_OWNER_ODQ_002_APPROVAL_2026-08-30.md",
+    "SCIENTIFIC_OWNER_ODQ_003_APPROVAL_2026-08-31.md",
     "FROZEN_AUTHORITY_AND_SOURCE_BINDING.md",
     "STAGE_A_SOURCE_MANIFEST.md",
     "STAGE_A_SOURCE_MANIFEST.sha256",
@@ -200,7 +201,7 @@ def main() -> int:
         "PRIOR_WORK.md": ("Genuinely new scientific work remaining", "Unavailable"),
         "FAMILY_SPLIT_MATRIX.md": ("INF-A", "INF-J"),
         "SCIENTIFIC_OWNER_DECISION_LEDGER.md": (
-            "SCI-FLT-INF-ODQ-002", "ODQ-003 is the next gate",
+            "SCI-FLT-INF-ODQ-003", "ODQ-004 is the next ordered gate",
         ),
         "SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md": (
             "optimal matched-template amplitude estimator",
@@ -209,6 +210,10 @@ def main() -> int:
         "SCIENTIFIC_OWNER_ODQ_002_APPROVAL_2026-08-30.md": (
             "matched-filtered map",
             "source-estimation package or SRC ownership",
+        ),
+        "SCIENTIFIC_OWNER_ODQ_003_APPROVAL_2026-08-31.md": (
+            "ordinary-MAP **observation bundle**",
+            "No equivalence, commutation, or cross-observation combination",
         ),
         "CROSS_PACKAGE_AND_NOI_BOUNDARIES.md": (
             "fixed-state and relearned members cannot be mixed", "FRUIT boundary",

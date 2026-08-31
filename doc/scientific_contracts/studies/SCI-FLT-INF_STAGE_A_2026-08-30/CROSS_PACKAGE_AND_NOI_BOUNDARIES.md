@@ -1,6 +1,6 @@
 # SCI-FLT-INF cross-package and NOI boundaries
 
-Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.3`
+Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.4`
 
 Status: Stage A owner-review candidate; it changes no frozen authority
 
@@ -30,9 +30,13 @@ must be unbiased for a matching amplitude under the exact declared model and
 support assumptions. This identity supplies neither the required parent
 covariance nor a numerical route.
 
-For any MAP parent admitted under ODQ-003, ODQ-002 fixes the published product
-role as a matched-filtered map: a filtered version of that exact MAP product
-that preserves its applicable map-domain structure and semantics. Exact
+ODQ-003 admits both exact immutable normalized ordinary-MAP observation bundles
+and exact immutable normalized ordinary-MAP coadd bundles. ODQ-002 fixes their
+published product role as a matched-filtered map preserving applicable parent
+map-domain structure and semantics. Observation filtering is observation-local;
+coadd filtering is coadd-local and binds the exact contributing-observation set
+and coadd generation. The filter performs no independent coaddition, and no
+equivalence or commutation between the two graphs is presumed. Exact
 inheritance, units, response, uncertainty, validity, and bundle details remain
 later decisions.
 
@@ -40,9 +44,9 @@ later decisions.
 
 SCI-JINC owns a separate signed-coefficient observation estimator and complete
 per-array bundle. It is not an alternate serialization of ordinary MAP.
-Any INF method over JINC requires a JINC-specific parent, response, support,
-unit/beam, covariance, and product boundary. A method defined for MAP is not
-automatically applicable to JINC.
+Any INF method over JINC would require a JINC-specific parent, response,
+support, unit/beam, covariance, and product boundary. A method defined for MAP
+is not automatically applicable to JINC. ODQ-003 does not admit JINC in v0.1.
 
 JINC's numerical route remains unavailable under its frozen gates. This study
 does not create a JINC numerical route or cross-observation JINC coadd.
@@ -54,7 +58,8 @@ candidate at the base commit. Its exact 17 Stage A author objects and manifest
 are protected. This study neither amends nor interprets any active Stage B
 work.
 
-If a future INF method consumes a fixed-filter product, the exact fixed
+ODQ-003 does not admit SCI-FLT-FIXED derivatives in v0.1. If a future INF
+method consumes a fixed-filter product, the exact fixed
 operator, parent, response, covariance, support, order, and product generation
 must be bound. If a future fixed operator consumes an INF product, that is a
 different ordered chain. No commutation or response reuse is presumed.

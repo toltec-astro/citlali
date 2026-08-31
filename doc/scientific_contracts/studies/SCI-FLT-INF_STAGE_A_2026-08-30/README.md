@@ -53,7 +53,8 @@ failure, and NOI parity consequences. ODQ-001 selects the historical path's
 scientific estimand, and ODQ-002 assigns it to a map-domain filtering package
 whose published signal role is a matched-filtered map. The study does not yet
 select a final package name, authorize a numerical route, or modify an
-algorithm.
+algorithm. ODQ-003 admits ordinary MAP observation and coadd parents as
+distinct grouping identities.
 
 ## Stage A packet
 
@@ -70,6 +71,7 @@ algorithm.
 | [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md) | ordered consequential owner questions |
 | [`SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md`](SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md) | exact matched-template estimand approval |
 | [`SCIENTIFIC_OWNER_ODQ_002_APPROVAL_2026-08-30.md`](SCIENTIFIC_OWNER_ODQ_002_APPROVAL_2026-08-30.md) | exact map-domain ownership and filtered-map product-role approval |
+| [`SCIENTIFIC_OWNER_ODQ_003_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_003_APPROVAL_2026-08-31.md) | exact ordinary-MAP observation/coadd parent and grouping approval |
 | [`FROZEN_AUTHORITY_AND_SOURCE_BINDING.md`](FROZEN_AUTHORITY_AND_SOURCE_BINDING.md) | exact base, frozen NOI, historical, and evidence bindings |
 | [`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md) | content-bound Stage A study objects; not an author manifest |
 | [`verify_stage_a.py`](verify_stage_a.py) | study and protected-byte verifier |
@@ -102,8 +104,16 @@ Adaptive edge conditioning, data-thresholded mode selection, automatic
 fallback, empirical coefficient calibration, and member-specific relearning
 also remain distinct scientific identities or lifecycle policies.
 
-The next owner question is exact admitted input map parent and grouping under
-`SCI-FLT-INF-ODQ-003`. No final package naming or Stage B scope is approved.
+ODQ-003 admits both exact immutable normalized ordinary-MAP observation
+bundles and exact immutable normalized ordinary-MAP coadd bundles. Filtering
+is observation-local or coadd-local, respectively, and every product retains
+that parent/grouping identity. No equivalence or commutation is presumed, the
+package performs no independent coaddition, and JINC plus derived-map parents
+remain deferred. Frozen MAP numerical gates remain unchanged.
+
+The next owner question is exact noise/covariance and parent-coefficient
+authority under `SCI-FLT-INF-ODQ-004`. No final package naming or Stage B scope
+is approved.
 
 ## Nonclaims and stop rule
 
@@ -113,7 +123,7 @@ significance, performance, readiness, production, Unity, or scientific-freeze
 claim. It creates no default and authorizes no method substitution.
 
 Do not create an implementation-blind author packet until the scientific owner
-has resolved `SCI-FLT-INF-ODQ-003` and the later package-specific operator,
+has resolved `SCI-FLT-INF-ODQ-004` and the later package-specific operator,
 state, response, covariance, product, and lifecycle gates identified in the
 decision ledger. Create a package-local Stage A record for the matched-filter
 map operation rather than converting this holding directory into a combined

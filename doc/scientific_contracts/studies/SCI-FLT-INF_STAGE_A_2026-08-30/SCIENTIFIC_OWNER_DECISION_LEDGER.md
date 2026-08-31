@@ -1,17 +1,17 @@
 # SCI-FLT-INF scientific-owner decision ledger
 
-Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.3`
+Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.4`
 
-Status: proposed ordered owner walkthrough; ODQ-001 and ODQ-002 approved and
-closed; ODQ-003 through ODQ-013 open
+Status: proposed ordered owner walkthrough; ODQ-001 through ODQ-003 approved
+and closed; ODQ-004 through ODQ-013 open
 
 ## Decision discipline
 
 Questions are ordered by scientific consequence. Later questions must not be
 answered in a way that presumes an earlier answer. Each approved answer should
 be recorded in a separate exact owner artifact before a package-local Stage A
-packet is built. This holding study records the exact approved ODQ-001 and
-ODQ-002 answers but does not approve any proposed answer for ODQ-003 onward.
+packet is built. This holding study records the exact approved ODQ-001 through
+ODQ-003 answers but does not approve any proposed answer for ODQ-004 onward.
 
 ## `SCI-FLT-INF-ODQ-001` — estimand of the existing full path
 
@@ -64,20 +64,25 @@ launch.
 
 ## `SCI-FLT-INF-ODQ-003` — admitted parent and grouping
 
-For each selected method, which exact parents are in v0.1?
+Status: **approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_003_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_003_APPROVAL_2026-08-31.md).
 
-- ordinary MAP observation bundle;
-- ordinary MAP coadd bundle;
-- JINC observation bundle;
-- an exact SCI-FLT-FIXED derivative; or
-- another immutable derived parent.
+V0.1 admits both one exact immutable normalized ordinary-MAP observation
+bundle and one exact immutable normalized ordinary-MAP coadd bundle. They are
+distinct parent/grouping and realized product identities. Observation-map
+filtering is observation-local; coadd-map filtering is coadd-local and binds
+the exact contributing-observation set and coadd generation.
 
-For each admitted parent, is learning/application observation-local or
-coadd-local? Is any cross-observation combination authorized?
+No equivalence, commutation, or cross-observation combination is approved.
+Filtering a coadd is not presumed equivalent to filtering its contributing
+observations and combining the results. The package performs no independent
+coaddition. JINC observation bundles, SCI-FLT-FIXED derivatives, and other
+derived parents are deferred and unavailable. Frozen PTC coefficient and
+numerical `coverage_cut` gates remain absolute.
 
-Manager recommendation: begin with at most one parent/grouping. Do not claim
-observation/coadd equivalence or MAP/JINC portability. Frozen numerical-parent
-gates remain absolute.
+This decision selects parent roles and grouping, not the noise/covariance
+authority, operator, normalization, state, support, response, uncertainty,
+product details, or Stage B launch.
 
 ## `SCI-FLT-INF-ODQ-004` — covariance/noise and parent-coefficient authority
 
@@ -238,7 +243,7 @@ ODQ-001 estimand
                        -> ODQ-013 product/VAL/lifecycle
 ```
 
-ODQ-001 and ODQ-002 are closed. ODQ-003 is the next gate. ODQ-004 and ODQ-005
-may be discussed in parallel after ODQ-003. Stage B is blocked until all
-decisions needed by the selected map-domain filtering package have exact owner
-answers and an exclusive implementation-blind author packet.
+ODQ-001 through ODQ-003 are closed. ODQ-004 is the next ordered gate; ODQ-005
+may now be discussed in parallel. Stage B is blocked until all decisions
+needed by the selected map-domain filtering package have exact owner answers
+and an exclusive implementation-blind author packet.

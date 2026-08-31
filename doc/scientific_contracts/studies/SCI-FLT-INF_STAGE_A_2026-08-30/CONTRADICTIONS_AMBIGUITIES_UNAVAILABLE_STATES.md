@@ -1,6 +1,6 @@
 # SCI-FLT-INF contradictions, ambiguities, and unavailable states
 
-Record identity: `SCI-FLT-INF-GAPS v0.1/r0.3`
+Record identity: `SCI-FLT-INF-GAPS v0.1/r0.4`
 
 Status: Stage A owner-review record; absence is preserved rather than repaired
 
@@ -118,10 +118,16 @@ uses spatially varying weights. It is unclear which response is intended and
 whether the resulting kernel is adequate for spatially varying source
 response.
 
-### Observation/coadd selection
+### Resolved: observation/coadd parent selection
 
 Runtime chooses observation filtering or coadd filtering from the coadd mode.
 No science establishes equivalence, selection rationale, or a composition rule.
+
+Owner disposition under ODQ-003: both exact ordinary-MAP observation bundles
+and exact ordinary-MAP coadd bundles are admitted as distinct observation-local
+and coadd-local parent/grouping identities. No equivalence, commutation,
+filtered-result combination, or filter-owned cross-observation operation is
+approved. JINC and derived-map parents are deferred.
 
 ### Resolved: map product versus source-analysis product
 
@@ -139,7 +145,7 @@ consume the filtered map if later authorized.
 
 | State | Reason unavailable | Consequence |
 | --- | --- | --- |
-| exact active full-path estimand and top-level product role | **available at identity level**: ODQ-001 selects an optimal matched-template amplitude estimator and ODQ-002 selects a map-domain matched-filtering package with matched-filtered-map output | final package name and numerical product remain unavailable pending ODQ-003 onward |
+| exact active full-path estimand, product role, and admitted parent/grouping | **available at identity level**: ODQ-001 selects an optimal matched-template amplitude estimator, ODQ-002 selects matched-filtered-map output, and ODQ-003 selects distinct ordinary-MAP observation/coadd parents | final package name and numerical product remain unavailable pending ODQ-004 onward |
 | genuine Wiener/posterior method | no complete prior/likelihood/operator/posterior specification recovered | no posterior reconstruction product |
 | matched-template map-filter realization | owner-selected estimator and filtered-map product role exist, but parent covariance/template/support/response/operator are unresolved | no authorized numerical matched-filtered map |
 | parent covariance/inverse-noise | MAP/JINC do not supply the inferred precision needed by implementation naming | denominator cannot be called Fisher information or inverse variance |
@@ -150,6 +156,7 @@ consume the filtered map if later authorized.
 | automatic fallback | no selector authority or realized-method product identity | requested-primary output fails closed |
 | source detection, selection, fitting, catalog, or source-learned filter | excluded from selected package; no independent current contract or active route recovered | deferred without present ownership assignment |
 | observation/coadd equivalence | no commutation or population result | separate methods/parents only |
+| JINC or derived-map parent route | excluded from v0.1 by ODQ-003 | deferred and unavailable |
 | fixed-state transformed NOI | exact INF owner authority and parity absent | transformed UNC unavailable |
 | per-member-relearned NOI | complete learning graph and member method absent | separate method unavailable |
 | NOI-informed successor | owner learning/update rule absent | no successor generation route |
@@ -164,6 +171,7 @@ consume the filtered map if later authorized.
 | one combined `SCI-FLT-INF` contract is scientifically incoherent | high | roadmap split rule plus distinct estimand/state/response/lifecycle families |
 | active full path is structurally template-amplitude-like | medium-high as implementation observation | direct algebra inspection; implementation conformity remains unassessed |
 | owner-selected scientific identity of the historical full path is matched-template amplitude | authoritative | exact ODQ-001 owner approval |
+| ordinary-MAP observation and coadd parents are both admitted but non-equivalent | authoritative | exact ODQ-003 owner approval |
 | active full path is a complete posterior/Wiener reconstruction | excluded as scientific identity | exact ODQ-001 owner approval; no explicit signal prior or posterior covariance recovered |
 | current NOI-member application is learned-once/fixed-state | high as implementation observation | state is resolved from real parent and reused for members |
 | per-member relearning is currently active | low/negative recovery result | no active route found; absence limited to inspected base |
@@ -175,7 +183,8 @@ consume the filtered map if later authorized.
 
 Stage B must not be commissioned while:
 
-- ODQ-003 admitted parent and grouping has no owner answer;
+- ODQ-004 noise/covariance and parent-coefficient authority has no owner
+  answer;
 - multiple selected estimands remain in one proposed package;
 - required parent covariance, template, or prior authority is absent;
 - method substitution can occur without explicit realized identity;

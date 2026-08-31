@@ -1,6 +1,6 @@
 # SCI-FLT-INF candidate family split matrix
 
-Matrix identity: `SCI-FLT-INF-FAMILY-SPLIT v0.1/r0.3`
+Matrix identity: `SCI-FLT-INF-FAMILY-SPLIT v0.1/r0.4`
 
 Status: Stage A recommendation for owner review; names are provisional and no
 row is an approved package or complete method
@@ -17,7 +17,7 @@ the operator and estimand remain exact and the dependency graph is explicit.
 
 | ID | Provisional family | Estimand/claim | State and dependence | Recommended disposition | Readiness |
 | --- | --- | --- | --- | --- | --- |
-| `INF-A` | **owner-selected matched-template map filter** | filtered version of an exact admitted map product; local samples have the ODQ-001 optimal matched-template amplitude-estimator identity and matching-amplitude unbiasedness under declared assumptions; published role remains a filtered map | template, parent coefficient field, exact noise model, approximation and support; may be learned on the real parent then frozen | selected map-domain filtering package under ODQ-002; final name remains unapproved | not Stage B ready |
+| `INF-A` | **owner-selected matched-template map filter** | filtered version of an exact admitted ordinary-MAP observation or coadd product; local samples have the ODQ-001 optimal matched-template amplitude-estimator identity and matching-amplitude unbiasedness under declared assumptions; published role remains a filtered map | ODQ-003 admits observation-local and coadd-local parent/grouping identities separately; template, parent coefficient field, exact noise model, approximation and support remain open; state may be learned on the exact parent then frozen | selected map-domain filtering package under ODQ-002; final name remains unapproved; no observation/coadd equivalence | not Stage B ready |
 | `INF-B` | genuine Wiener/posterior sky reconstruction | posterior mean or other explicitly named reconstructed sky field | exact signal prior, noise likelihood/covariance, hyperparameters, boundary, regularization and posterior state | expressly not the historical path; separate future package only if later desired | unselected; no recovered complete method; not ready |
 | `INF-C` | detected-source, selected-candidate, peak, fitted-source, or catalog inference | source-local or catalog quantity and covariance for a declared selection or fit domain | would require its own selection/model state, calibration, covariance, support, and validity | excluded from the selected matched-filter package with no present ownership assignment; a future independent contract may consume `INF-A` maps | no active Citlali tranche; deferred |
 | `INF-D1` | externally declared fixed state | exact selected `INF-A` operator with state fixed before parent use | state from immutable external authority, not learned on target parent | lifecycle variant of selected base method; bind exact state source | operator-dependent |
@@ -34,21 +34,24 @@ the operator and estimand remain exact and the dependency graph is explicit.
 ## Recommended package structure
 
 The study recommends against approving `SCI-FLT-INF` as one combined package.
-Under ODQ-001 and ODQ-002:
+Under ODQ-001 through ODQ-003:
 
 1. create one narrow map-domain filtering package for owner-selected `INF-A`;
    its published signal role is a matched-filtered map and its final name is
    not yet approved;
-2. exclude source detection, candidate selection, peak interpretation,
+2. admit both ordinary-MAP observation and coadd parents as distinct
+   observation-local and coadd-local identities, with no equivalence,
+   commutation, or filter-owned cross-observation combination;
+3. exclude source detection, candidate selection, peak interpretation,
    deblending, fitting, and catalog construction without introducing a current
    source-estimation or SRC ownership boundary; a future independent contract
    may consume an exact matched-filtered map;
-3. encode fixed, parent-learned, NOI-informed, and per-member-relearned cases
+4. encode fixed, parent-learned, NOI-informed, and per-member-relearned cases
    as exact lifecycle/method variants rather than a generic `learned` flag;
-4. leave `INF-E`, `INF-F`, and `INF-G` as separate packages or explicit
+5. leave `INF-E`, `INF-F`, and `INF-G` as separate packages or explicit
    preprocessing/selection authorities;
-5. route `INF-H` through a frozen-NOI-compatible derived-product contract; and
-6. leave `INF-B` outside the historical path, requiring a wholly separate
+6. route `INF-H` through a frozen-NOI-compatible derived-product contract; and
+7. leave `INF-B` outside the historical path, requiring a wholly separate
    future recovery/contract if ever requested.
 
 ## Why the split matters
@@ -71,6 +74,8 @@ coefficient is not precision by construction.
 - `INF-A != INF-C`: the selected product is a whole matched-filtered map and
   performs no detection, selection, fitting, peak interpretation, or catalog
   inference.
+- observation-local `INF-A(P_MAP_OBS)` is not equivalent to coadd-local
+  `INF-A(P_MAP_COADD)`; no filtering/coaddition commutation is presumed.
 - `INF-D2 != INF-D4`; learning once on the real parent and relearning per
   member target different conditional populations.
 - `INF-E != fixed high-pass`; input-dependent mode selection is not a fixed

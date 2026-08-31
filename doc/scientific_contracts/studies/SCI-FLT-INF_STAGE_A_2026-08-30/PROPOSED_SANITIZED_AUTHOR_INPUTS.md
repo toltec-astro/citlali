@@ -1,6 +1,6 @@
 # SCI-FLT-INF proposed sanitized author inputs
 
-Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.3`
+Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.4`
 
 Status: proposed material only; not approved, not exhaustive, not SHA-bound as
 an author packet, and not permission to launch Stage B
@@ -70,6 +70,23 @@ selected candidates, interpreted peaks, deblended or fitted objects, or
 catalog rows. Those behaviors are excluded without introducing a current SRC
 ownership boundary.
 
+## Owner-approved parent and grouping extract
+
+ODQ-003 admits two exact ordinary-MAP parent roles:
+
+- one immutable normalized observation bundle with observation-local learning
+  and application; and
+- one immutable normalized coadd bundle with coadd-local learning and
+  application, binding its exact contributing-observation set and coadd
+  generation.
+
+They are distinct realized method/product identities. The author must not
+presume that filtering a coadd equals filtering and combining its observations,
+must not invent a filtered-map coadd, and must not transfer response,
+normalization, support, covariance, uncertainty, state, or validity between
+the ordered graphs. JINC, SCI-FLT-FIXED derivatives, and all other derived-map
+parents are excluded from v0.1.
+
 ## Deferred posterior-family exclusion
 
 No posterior-reconstruction material belongs in the selected matched-filter
@@ -131,10 +148,11 @@ not automatically admitted.
 Future sanitized boundary objects may abstract, without copying manager or
 implementation facts:
 
-- the frozen MAP parent identity and its explicit nonprecision/covariance
-  limitations;
-- the frozen JINC parent identity and separate estimator/product semantics;
-- the protected SCI-FLT-FIXED parent/order identity if composition is selected;
+- the frozen MAP observation/coadd parent identities and their explicit
+  nonprecision/covariance limitations;
+- the frozen JINC identity only to state its v0.1 exclusion;
+- the protected SCI-FLT-FIXED identity only to state that derived parents are
+  excluded;
 - the frozen NOI transformation-owner and fixed/relearned generation rules;
 - CAL ownership of signal transfer/calibration/covariance;
 - VAL's evaluator/registry-only role; and
@@ -156,10 +174,10 @@ required/conditional/optional role:
 - retained diagnostics versus public science roles; and
 - permitted named consumers.
 
-No current detailed product table is proposed because ODQ-003 parent/grouping
-and the later units, response, uncertainty, validity, and lifecycle decisions
-remain open. Its top-level signal role is already fixed as a matched-filtered
-map.
+No current detailed product table is proposed because ODQ-004 noise/covariance
+authority and the later units, response, uncertainty, validity, and lifecycle
+decisions remain open. Its top-level signal role and two distinct ordinary-MAP
+parent/grouping roles are already fixed.
 
 ## Material that must remain excluded
 
@@ -178,7 +196,7 @@ map.
 
 ## Author-packet construction gate
 
-After ODQ-003 onward supplies the required package-local owner decisions,
+After ODQ-004 onward supplies the required package-local owner decisions,
 create a new package directory and a package-specific
 `PRIOR_WORK.md`, sanitized `SCOPE_BRIEF.md`, exact boundary objects, operator/
 product/lifecycle tables, owner decision record, and exclusive SHA-bound

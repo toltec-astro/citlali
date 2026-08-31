@@ -1,6 +1,6 @@
 # SCI-FLT-INF operator, state, and product taxonomy
 
-Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.3`
+Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.4`
 
 Status: Stage A vocabulary updated for approved ODQ-001; remaining details are
 not normative science
@@ -32,6 +32,13 @@ not the same method realization even if they share code or filenames.
 Observation and coadd parents are separate identities. An estimator learned or
 applied after coaddition is not presumed equivalent to combining observation-
 level estimator products.
+
+ODQ-003 admits `P_MAP_OBS` and `P_MAP_COADD` for v0.1 and no other parent role.
+For `P_MAP_OBS`, learning/application is observation-local. For
+`P_MAP_COADD`, learning/application is coadd-local and binds the exact
+contributing-observation set and coadd generation. `P_JINC_OBS`,
+`P_FIXED_DERIVED`, `P_INF_DERIVED`, and all other derived parents are deferred.
+No cross-observation combination or commutation identity is admitted.
 
 ## Estimand families
 
@@ -149,6 +156,10 @@ T_INF(P; state learned from NOI(P))
 No commutation is presumed. Any comparison or composition must bind exact
 response, covariance, support, validity, and generation identity after the
 full ordered chain.
+
+For the selected v0.1 parent roles, only `T_INF(P_MAP_OBS)` and
+`T_INF(P_MAP_COADD)` are admitted. The other order identities remain taxonomy
+for deferred work and are not current package routes.
 
 ## Response and transfer roles
 

@@ -1,10 +1,10 @@
 # SCI-FLT-INF Stage A Scope Brief
 
-Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.3`
+Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.4`
 
-Status: sanitized owner-review holding study; ODQ-001 estimand and ODQ-002
-map-domain ownership/product role approved; remaining scope not approved; not
-an author input
+Status: sanitized owner-review holding study; ODQ-001 estimand, ODQ-002 map-
+domain ownership/product role, and ODQ-003 ordinary-MAP parents/grouping
+approved; remaining scope not approved; not an author input
 
 ## Program adherence and prior-work recovery
 
@@ -81,6 +81,14 @@ other source-analysis behavior. This Stage A study introduces no source-
 estimation package or SRC ownership boundary. A later independent scientific
 contract may consume matched-filtered maps if separately authorized.
 
+`SCI-FLT-INF-ODQ-003` admits both exact immutable normalized ordinary-MAP
+observation bundles and exact immutable normalized ordinary-MAP coadd bundles.
+They are distinct parent/grouping identities. Learning and application are
+observation-local for an observation parent and coadd-local for a coadd parent.
+No equivalence, commutation, filtered-result coaddition, or cross-observation
+combination is approved. JINC, SCI-FLT-FIXED derivatives, and other derived
+map parents are excluded from v0.1.
+
 ## Required distinctions
 
 The study shall not merge two cases merely because they reuse FFTs, a template,
@@ -125,6 +133,7 @@ required whenever any of the following differs:
 - source detection, candidate selection, catalog construction, peak
   interpretation, deblending, fitting, significance, completeness, purity,
   morphology, or other source-analysis behavior;
+- JINC, SCI-FLT-FIXED-derived, or other derived-map parents in v0.1;
 - absolute CAL authority, passband/color correction, or cross-band covariance;
 - inferred MAP/JINC precision or covariance;
 - production defaults, observed behavior, or historical labels promoted into

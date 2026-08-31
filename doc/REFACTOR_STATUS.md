@@ -688,11 +688,18 @@ detection, candidate selection, catalog construction, peak interpretation,
 deblending, fitting, or other source analysis, and no SRC ownership boundary
 is introduced. A future independent source-analysis contract may consume the
 filtered map if separately authorized. Genuine posterior/Wiener reconstruction
-remains separate and deferred. ODQ-003 admitted parent and grouping is the
-next gate. This is a Stage A study and decision walkthrough only; no successor
-package, author packet, Stage B launch, algorithm change, implementation
-conformity, validation, calibration, performance, readiness, production,
-freeze, or Unity action is claimed or authorized.
+remains separate and deferred. Grant Wilson approved and closed
+`SCI-FLT-INF-ODQ-003` on `2026-08-31`: v0.1 admits both exact ordinary-MAP
+observation bundles and exact ordinary-MAP coadd bundles as distinct
+observation-local and coadd-local parent/grouping identities. No equivalence,
+commutation, filtered-result combination, or filter-owned cross-observation
+operation is approved; JINC and derived-map parents remain deferred. Frozen
+ordinary-MAP numerical gates remain unchanged. ODQ-004 noise/covariance and
+parent-coefficient authority is the next gate. This is a Stage A study and
+decision walkthrough only; no successor package, author packet, Stage B
+launch, algorithm change, implementation conformity, validation, calibration,
+performance, readiness, production, freeze, or Unity action is claimed or
+authorized.
 
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.

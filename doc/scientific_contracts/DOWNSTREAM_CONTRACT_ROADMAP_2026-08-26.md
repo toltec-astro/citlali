@@ -2,8 +2,8 @@
 
 Date: `2026-08-26`
 
-Updated: `2026-08-30` for SCI-JINC closure, SCI-NOI Stage A/Stage B handoff,
-and the recovery-first SCI-FLT Stage A launch
+Updated: `2026-08-31` for SCI-JINC closure, SCI-NOI Stage A/Stage B handoff,
+and SCI-FLT-INF ODQ-001 through ODQ-003 closure
 
 Status: scientific-owner-approved program sequencing record
 
@@ -240,6 +240,12 @@ candidate selection, catalogs, peak interpretation, deblending, fitting, and
 other source analysis are excluded without introducing an SRC ownership
 boundary. A future independent contract may consume the map if separately
 authorized. Genuine posterior/Wiener reconstruction remains separate and
-deferred. ODQ-003 parent/grouping is next. No successor package, author
-packet, Stage B launch, algorithm change, conformity, validation, calibration,
-performance, readiness, production, freeze, or Unity action follows.
+deferred. Grant Wilson approved ODQ-003 on `2026-08-31`: v0.1 admits both
+ordinary-MAP observation and coadd bundles as distinct observation-local and
+coadd-local parent/grouping identities, without equivalence, commutation, or
+filter-owned cross-observation combination. JINC and derived-map parents stay
+deferred, and frozen MAP numerical gates remain unchanged. ODQ-004
+noise/covariance and parent-coefficient authority is next. No successor
+package, author packet, Stage B launch, algorithm change, conformity,
+validation, calibration, performance, readiness, production, freeze, or Unity
+action follows.

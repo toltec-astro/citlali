@@ -208,7 +208,12 @@ and cross-package handoffs are valuable recovery inputs.
   package is a map-domain filter whose signal output is a matched-filtered map,
   not source detection, candidate, peak, fitted-source, deblending, or catalog
   behavior; no SRC ownership boundary is introduced. Posterior reconstruction
-  remains separate and deferred. ODQ-003 parent/grouping is next.
+  remains separate and deferred. Grant Wilson approved ODQ-003 on
+  `2026-08-31`: both ordinary-MAP observation and coadd bundles are admitted
+  as distinct observation-local and coadd-local parent/grouping identities,
+  with no equivalence, commutation, or filter-owned combination; JINC and
+  derived-map parents remain deferred. ODQ-004 noise/covariance and parent-
+  coefficient authority is next.
   Implementation/config/schema/history remain in a quarantined dossier, and
   the protected SCI-FLT-FIXED author bytes are unchanged.
 - Package-specific FLT recovery:

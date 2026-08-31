@@ -1,6 +1,6 @@
 # SCI-FLT-INF implementation-informed dossier
 
-Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.3`
+Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.4`
 
 Status: quarantined Stage A manager evidence; forbidden to any future
 implementation-blind scientific author
@@ -175,6 +175,13 @@ Filtering runs on observation maps when coaddition is disabled and on the
 coadd map when coaddition is enabled. These are different parents. Adaptive
 state learning, nonlinear selection, spatially varying normalization, and
 uncertainty meaning generally do not commute with coaddition.
+
+ODQ-003 independently authorizes both ordinary-MAP parent roles while keeping
+them distinct: observation-local filtering of one immutable observation bundle
+and coadd-local filtering of one immutable coadd bundle. It authorizes no
+equivalence, commutation, or filter-owned cross-observation combination and
+defers JINC plus derived-map parents. The implementation observation did not
+establish that scientific decision or conformity to it.
 
 The apparent order is:
 

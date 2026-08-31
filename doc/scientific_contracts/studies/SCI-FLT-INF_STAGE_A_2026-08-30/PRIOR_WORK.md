@@ -1,6 +1,6 @@
 # SCI-FLT-INF prior-work recovery
 
-Recovery identity: `SCI-FLT-INF-PRIOR-WORK v0.1/r0.3`
+Recovery identity: `SCI-FLT-INF-PRIOR-WORK v0.1/r0.4`
 
 Status: reviewed Stage A recovery record; implementation and evidence entries
 remain quarantined from authorship
@@ -59,6 +59,10 @@ full path:
   template/shape-amplitude fields; under ODQ-002 its published product role is
   a matched-filtered map preserving applicable parent map-domain structure and
   semantics, not a source estimate or catalog-facing product;
+- v0.1 admits both exact ordinary-MAP observation bundles and exact ordinary-
+  MAP coadd bundles as distinct observation-local and coadd-local parent/
+  grouping identities, with no equivalence, commutation, or filter-owned
+  cross-observation combination;
 - a declared linear estimator `a^T m` has variance `a^T C a` when `C` is the
   covariance of the declared parent population;
 - a fixed-template GLS amplitude estimator has numerator
@@ -74,10 +78,11 @@ full path:
   conditional on that frozen state, whereas relearning per member defines a
   different generation method.
 
-ODQ-001 approves the matched-template estimand and ODQ-002 approves map-domain
-filtering ownership plus the filtered-map product role. They do not approve
-the exact parent, operator, covariance/noise authority, template instance,
-final package name, response, uncertainty, or contract.
+ODQ-001 approves the matched-template estimand, ODQ-002 approves map-domain
+filtering ownership plus the filtered-map product role, and ODQ-003 approves
+the two distinct ordinary-MAP parent/grouping roles. They do not approve the
+operator, covariance/noise authority, template instance, final package name,
+response, uncertainty, or contract.
 
 ### Superseded or nonportable material
 
@@ -94,8 +99,9 @@ final package name, response, uncertainty, or contract.
 
 ## Genuinely new scientific work remaining
 
-Fresh scientific derivation is needed only after ODQ-003 selects the exact
-parent and grouping. The unresolved work includes the exact operator,
+Fresh scientific derivation is needed only after ODQ-004 selects the exact
+noise/covariance and weighting authority. The unresolved work includes the
+exact operator,
 noise/covariance model, state-learning graph, template identity,
 normalization/response, support/null space, approximation/regularization,
 uncertainty/covariance, product bundle, and NOI parity for each selected
