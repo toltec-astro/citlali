@@ -224,8 +224,14 @@ and cross-package handoffs are valuable recovery inputs.
   array/beam/calibration/validity/provenance identity. Parent-bound point-
   source and explicitly supplied scientific-template sources are admitted;
   Gaussian/Airy is complete-product construction only, while learned
-  templates and high-pass/delta are deferred. ODQ-006 exact operator,
-  approximation, and regularization is next.
+  templates and high-pass/delta are deferred. Grant Wilson approved ODQ-006
+  on `2026-08-31`: `A_hat=<t,Qm>/<t,Qt>` is the authoritative exact reference;
+  exact evaluation is conformant and approximate evaluation requires a
+  quantitative normalization/response/support/uncertainty envelope developed
+  under matching option identities in both future contract views and selected
+  by the owner before freeze. `Q`-defining regularization remains ODQ-004
+  state, and unresolved or nonpositive normalization is null/unavailable,
+  never zero amplitude. ODQ-007 support and edge semantics is next.
   Implementation/config/schema/history remain in a quarantined dossier, and
   the protected SCI-FLT-FIXED author bytes are unchanged.
 - Package-specific FLT recovery:

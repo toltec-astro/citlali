@@ -1,6 +1,6 @@
 # SCI-FLT-INF proposed sanitized author inputs
 
-Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.6`
+Record identity: `SCI-FLT-INF-SANITIZATION-CANDIDATE v0.1/r0.7`
 
 Status: proposed material only; not approved, not exhaustive, not SHA-bound as
 an author packet, and not permission to launch Stage B
@@ -38,24 +38,26 @@ author-input list.
 ODQ-001 authorizes the scientific identity **optimal matched-template
 amplitude estimator** for the historical full path. For a future selected
 package whose estimand is the local amplitude `A` of an exact supplied
-template `t_x` in a parent `m` with exact admitted covariance `C`, an author
-may start from
+template `t_x` in a parent `m`, ODQ-006 supplies the authoritative reference
+form
 
 ```text
-N(x) = t_x^T C^{-1} m
-D(x) = t_x^T C^{-1} t_x
+N(x) = <t_x, Q m>
+D(x) = <t_x, Q t_x>
 A_hat(x) = N(x) / D(x)
 ```
 
 subject to exact declarations of domain, support, location/indexing, template
-normalization, parent beam/response, covariance authority, null space, and
-regularization. Under the exact authorized zero-mean model
-`m = A t_x + n`, its normalization must give `E[A_hat(x)] = A` for a matching
-signal, subject to all declared noise, support, edge, missing/nonfinite,
-validity, and response assumptions. Under a complete authorized linear model
-with fixed `t_x` and `C`, `Var(A_hat | t_x,C)=D(x)^{-1}` may be derived.
-Without those assumptions, `D` is only a normalization coefficient. The
-author must state the precise optimality criterion and its conditions.
+normalization, parent beam/response, weighting authority, null space, and
+regularization. `Q` is the exact weighting operator selected through ODQ-004.
+Under the exact authorized zero-mean model `m = A t_x + n`, its normalization
+must give `E[A_hat(x)] = A` for a matching signal, subject to all declared
+noise, support, edge, missing/nonfinite, validity, and response assumptions.
+When `Q=C^-1` under a complete authorized linear model with fixed `t_x` and
+`C`, the generalized-least-squares optimality and
+`Var(A_hat | t_x,C)=D(x)^{-1}` may be derived. Weaker `Q` authority weakens
+those claims. Otherwise `D` is only a normalization coefficient. The author
+must state the precise optimality criterion and its conditions.
 
 A point-source-response kernel yields a matched point-source amplitude field;
 another scientifically defined kernel yields the amplitude field of that
@@ -129,6 +131,32 @@ Observation-parent and coadd-parent compatibility remain separate. No shared
 template identity, discretization, response, or reuse may be inferred between
 them. Missing or incompatible template state makes the requested method
 unavailable; it does not authorize an alternate template.
+
+## Owner-approved reference and owner-delegated conformance envelope
+
+The author packet must include the exact ODQ-006 approval. The `N/D` operator
+above is the scientific authority, conditional on the selected ODQ-004 `Q`
+and ODQ-007 support. Exact evaluation is conformant. Approximation is permitted
+only inside a quantitative conformance envelope that bounds at least
+normalization, matching-template amplitude response, support/null behavior,
+and uncertainty consequences over the declared validity domain.
+
+The future implementation-blind author must develop a bounded alternative set
+for that envelope in both the Scientific Rationale and Contract and the
+Engineering Conformance Specification. The two views must use the same option
+identities, assumptions, observables, tolerances or bounds, failure rules, and
+validation consequences. The scientific owner selects, rejects, or otherwise
+disposes of those options before freeze and before an approximate route is
+available.
+
+FFT evaluation, interpolation, iteration, finite support, or truncation may be
+used only if the selected envelope is satisfied. Floors, pseudoinverse
+cutoffs, mode omissions, or other rules that define `Q` or its null space are
+ODQ-004 scientific state. Any operator change outside the selected envelope
+is a separately versioned method or unavailable. Nonfinite or nonpositive
+`D`, or failure to establish it on admitted support, produces a typed
+null/unavailable/failure state and never establishes the scientific amplitude
+as zero. An iteration or tail cap alone is not success.
 
 ## Deferred posterior-family exclusion
 
@@ -219,17 +247,20 @@ required/conditional/optional role:
 - retained diagnostics versus public science roles; and
 - permitted named consumers.
 
-No current detailed product table is proposed because ODQ-006 and later
-operator, response, uncertainty, validity, and lifecycle decisions remain
+No current detailed product table is proposed because ODQ-007 and later
+support, response, uncertainty, validity, and lifecycle decisions remain
 open. The top-level signal role, two distinct ordinary-MAP parent/grouping
-roles, and template-response identity are fixed; the ODQ-004 option set is an
-explicit future-author deliverable.
+roles, template-response identity, and exact ODQ-006 reference operator are
+fixed; the ODQ-004 option set and ODQ-006 quantitative conformance-envelope
+option set are explicit future-author deliverables.
 
 ## Material that must remain excluded
 
 - numerical class/file/function/config/schema/key names;
 - observed fallback or sentinel behavior;
 - current denominator/PSD/edge algorithms and tolerances;
+- implementation approximation mechanics or tolerances beyond the exact
+  ODQ-006 owner assignment;
 - historical map-noise PSD mechanics beyond the exact owner-provided candidate
   statement;
 - current output names and historical science labels;
@@ -247,9 +278,10 @@ explicit future-author deliverable.
 
 ## Author-packet construction gate
 
-After ODQ-006 onward supplies the required package-local owner decisions,
+After ODQ-007 onward supplies the required package-local owner decisions,
 create a new package directory and a package-specific
 `PRIOR_WORK.md`, sanitized `SCOPE_BRIEF.md`, exact boundary objects, operator/
-product/lifecycle tables, owner decision record, and exclusive SHA-bound
-author manifest. If the selected package still needs implementation evidence
-to define its science, stop and return one precise owner question.
+product/lifecycle tables, the ODQ-004 and ODQ-006 authored option sets, owner
+decision record, and exclusive SHA-bound author manifest. If the selected
+package still needs implementation evidence to define its science, stop and
+return one precise owner question.

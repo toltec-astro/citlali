@@ -1,9 +1,9 @@
 # SCI-FLT-INF operator, state, and product taxonomy
 
-Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.6`
+Taxonomy identity: `SCI-FLT-INF-TAXONOMY v0.1/r0.7`
 
-Status: Stage A vocabulary updated through approved ODQ-005 and the ODQ-004
-author delegation; remaining details are not normative science
+Status: Stage A vocabulary updated through approved ODQ-006 and the ODQ-004/
+ODQ-006 author delegations; remaining details are not normative science
 
 ## Identity tuple
 
@@ -48,19 +48,22 @@ ODQ-001 selects the amplitude of the exact supplied template as the estimand
 of the historical full path. ODQ-005 defines that template as an immutable
 scientifically declared template-response product representing parent-map
 response per unit amplitude `A`. For a declared parent vector `m`, location-
-indexed template `t_x`, and exact admitted noise covariance `C`, the canonical
-generalized least-squares form is
+indexed template `t_x`, and exact realized weighting operator `Q_x`, ODQ-006
+selects the authoritative conditional reference form
 
 ```text
-N(x) = t_x^T C^{-1} m
-D(x) = t_x^T C^{-1} t_x
+N(x) = <t_x, Q_x m_x>
+D(x) = <t_x, Q_x t_x>
 A_hat(x) = N(x) / D(x)
 ```
 
-or an exactly declared equivalent for spatially varying noise, response, and
-support. Under the authorized zero-mean model `m = A t_x + n`, exact template,
-noise, support, edge, validity, and regularity assumptions, the normalization
-must satisfy `E[A_hat(x)] = A` for a matching signal of amplitude `A`.
+or a mathematically identical representation under the exact declared
+discrete inner product, units, indexing, WCS, boundary, and support
+conventions. `Q_x` is supplied by the eventual owner-selected ODQ-004 option;
+ODQ-006 does not define it. Under the authorized zero-mean model
+`m = A t_x + n`, exact template, fixed weighting, support, edge, validity, and
+regularity assumptions, the normalization must satisfy `E[A_hat(x)] = A` for
+a matching signal of amplitude `A`.
 
 The template scaling fixes the amplitude convention, with
 `unit(t) = unit(m) / unit(A)`. When `t_x` is the exact parent-bound point-source
@@ -77,10 +80,11 @@ identity, compatible parent role, units, grid/WCS/frame, centering/subpixel
 phase, support/truncation/tails, array dependence, parent-beam relationship,
 calibration, validity, and provenance. Gaussian/Airy construction may only
 materialize this complete product. Target/source/NOI-learned templates and the
-historical high-pass/delta case are not base-v0.1 template identities.
-The exact criterion under which the estimator is `optimal` remains an ODQ-004
-through ODQ-006 contract question; the owner term is not an unconditional
-achieved-performance claim.
+historical high-pass/delta case are not base-v0.1 template identities. When
+`Q_x` is the admitted inverse covariance, the complete assumptions support the
+optimal GLS matched-estimator claim. A weaker ODQ-004 weighting option must
+weaken optimality and uncertainty claims accordingly; `optimal` is not an
+unconditional achieved-performance claim.
 
 This estimator is not ordinary convolution with `t_x`: convolution alone does
 not apply the declared noise weighting and amplitude-unbiased normalization.
@@ -152,6 +156,28 @@ Candidate operator identities must decompose, where applicable, into:
 
 Omitting a component is permitted only when it is explicitly not applicable,
 not when it is hidden in an implementation step.
+
+## Approximation and regularization roles
+
+ODQ-006 makes the exact normalized reference operator scientific authority.
+An exact numerical evaluation is conformant. FFT evaluation, interpolation,
+iteration, or finite truncation remains a realization technique only when its
+effect on normalization, matching-template amplitude response, support/null
+behavior, and uncertainty lies within an owner-selected scientific conformance
+envelope.
+
+The future author must give the scientific and engineering views the same
+bounded quantitative envelope alternatives. Every approximate realization
+binds its reference operator, approximation identity/parameters, applicability
+domain, bound, envelope result, and completion status. Until an envelope is
+selected, approximate execution is unavailable.
+
+A floor, pseudoinverse cutoff, omitted mode, clipping rule, or regularization
+that defines `Q_x` or its null space is ODQ-004 scientific state. A change
+beyond the selected envelope is a separate versioned method rather than an
+implementation detail. Nonfinite `N`/`D`, nonpositive `D`, null templates,
+unresolved convergence, or unmet bounds are null/unavailable/failed and never
+scientific amplitude zero.
 
 ## Order identities
 

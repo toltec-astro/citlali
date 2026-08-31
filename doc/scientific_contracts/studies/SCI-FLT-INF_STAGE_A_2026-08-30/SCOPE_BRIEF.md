@@ -1,11 +1,12 @@
 # SCI-FLT-INF Stage A Scope Brief
 
-Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.6`
+Scope identity: `SCI-FLT-INF-STAGE-A-SCOPE v0.1/r0.7`
 
 Status: sanitized owner-review holding study; ODQ-001 estimand, ODQ-002 map-
 domain ownership/product role, and ODQ-003 ordinary-MAP parents/grouping
 approved; ODQ-004 option development author-delegated; ODQ-005 template
-identity approved; remaining scope not approved; not an author input
+identity and ODQ-006 reference operator/realization policy approved; remaining
+scope not approved; not an author input
 
 ## Program adherence and prior-work recovery
 
@@ -114,6 +115,29 @@ construction is allowed only when it materializes that same complete product
 before application. Template learning or selection from the target parent,
 sources, candidates, populations, or NOI members is outside base v0.1. The
 historical high-pass/delta case is deferred to a separately authorized method.
+
+`SCI-FLT-INF-ODQ-006` selects the authoritative normalized reference operator
+
+```text
+N(x) = <t_x, Q_x m_x>
+D(x) = <t_x, Q_x t_x>
+A_hat(x) = N(x) / D(x),
+```
+
+conditional on the exact eventual ODQ-004 weighting object and ODQ-007
+support. An exact evaluation is conformant. An approximation is admissible
+only within a scientifically selected envelope bounding its effects on
+normalization, matching-template amplitude response, support/null behavior,
+and any uncertainty claim. The future author must present bounded quantitative
+envelope alternatives with shared identities in both contract views for later
+owner selection before freeze or approximate execution.
+
+Regularization defining `Q_x`, its null space, or admitted modes is declared
+scientific weighting state under ODQ-004. Any other approximation or
+regularization that changes the operator or its scientific consequences beyond
+the selected envelope is a separate versioned method or unavailable. A
+nonfinite or nonpositive normalization, unresolved convergence, or unmet bound
+is null/unavailable or failure, never scientific amplitude zero.
 
 ## Required distinctions
 

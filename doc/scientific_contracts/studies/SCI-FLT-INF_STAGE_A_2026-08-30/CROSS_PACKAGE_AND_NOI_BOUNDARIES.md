@@ -1,6 +1,6 @@
 # SCI-FLT-INF cross-package and NOI boundaries
 
-Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.6`
+Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.7`
 
 Status: Stage A owner-review candidate; it changes no frozen authority
 
@@ -57,6 +57,22 @@ beam/calibration relationship, validity, and provenance. MAP ownership of a
 point-source-response product is not FLT permission to reinterpret or relearn
 it. Observation/coadd compatibility is separate, and missing compatibility is
 typed unavailable rather than repaired by resampling or substitution.
+
+ODQ-006 makes
+`A_hat(x)=<t_x,Q m>/<t_x,Q t_x>` the authoritative reference operator,
+conditional on the exact parent, the ODQ-004 weighting operator `Q`, the
+ODQ-005 template-response product, and the ODQ-007 support. `Q=C^-1` gives
+the optimal generalized-least-squares interpretation only when the complete
+covariance assumptions hold; weaker `Q` authority weakens the optimality and
+uncertainty claim. Exact evaluation is conformant. An approximate realization
+is admissible only inside a quantitative envelope, developed in both future
+contract views and selected by the scientific owner, that bounds
+normalization, template response, support/null behavior, and uncertainty.
+Regularization that defines `Q` or its null space remains ODQ-004 state;
+operator changes outside the selected envelope require a separately versioned
+method. A nonfinite or nonpositive denominator, or failure to establish it on
+admitted support, is typed null/unavailable/failure and never a zero-amplitude
+measurement. This method invents no missing MAP covariance.
 
 ## JINC to inference-bearing method
 
@@ -129,7 +145,10 @@ Adaptive edge/background learning, PSD shaping, any future template learning,
 method selection, convergence selection, and coefficient calibration must
 each be classified in the consequential-state graph; none may hide behind a
 generic `fixed filter` label. ODQ-005 makes the base-v0.1 template declared
-fixed rather than a learning output.
+fixed rather than a learning output. Every transformed NOI member must use the
+same ODQ-006 reference operator or the same selected approximation identity
+and bound as the science product. Approximation state that is learned or
+updated follows the corresponding frozen-state or relearned-state graph.
 
 ## NOI-derived coefficient calibration
 

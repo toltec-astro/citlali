@@ -1,6 +1,6 @@
 # SCI-FLT-INF implementation-informed dossier
 
-Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.6`
+Dossier identity: `SCI-FLT-INF-INTERNAL-DOSSIER v0.1/r0.7`
 
 Status: quarantined Stage A manager evidence; forbidden to any future
 implementation-blind scientific author
@@ -99,6 +99,15 @@ locations are also set to numerical zero. No recovered scientific authority
 defines the approximation error, permitted residual, zero-denominator
 interpretation, or whether zero represents a physical value, a null mode, or
 unavailability.
+
+ODQ-006 independently makes the normalized reference estimator authoritative
+and permits approximation only inside a later owner-selected scientific
+conformance envelope. It makes nonfinite/nonpositive normalization and unmet
+convergence/error bounds null, unavailable, or failed rather than amplitude
+zero. A floor, cutoff, clipping rule, or regularization that changes the
+operator outside the envelope is a distinct method or weighting-state choice,
+not an implementation repair. The implementation observations above establish
+neither a bound nor conformity and may not enter the author packet.
 
 ## Adaptive edge/background conditioning
 

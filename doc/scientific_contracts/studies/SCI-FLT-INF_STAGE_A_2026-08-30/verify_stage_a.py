@@ -32,6 +32,7 @@ REQUIRED_STUDY_OBJECTS = (
     "SCIENTIFIC_OWNER_ODQ_003_APPROVAL_2026-08-31.md",
     "SCIENTIFIC_OWNER_ODQ_004_AUTHOR_DELEGATION_2026-08-31.md",
     "SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md",
+    "SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md",
     "FROZEN_AUTHORITY_AND_SOURCE_BINDING.md",
     "STAGE_A_SOURCE_MANIFEST.md",
     "STAGE_A_SOURCE_MANIFEST.sha256",
@@ -203,7 +204,7 @@ def main() -> int:
         "PRIOR_WORK.md": ("Genuinely new scientific work remaining", "Unavailable"),
         "FAMILY_SPLIT_MATRIX.md": ("INF-A", "INF-J"),
         "SCIENTIFIC_OWNER_DECISION_LEDGER.md": (
-            "SCI-FLT-INF-ODQ-005", "ODQ-006 is the next owner gate",
+            "SCI-FLT-INF-ODQ-006", "ODQ-007 is the next",
         ),
         "SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md": (
             "optimal matched-template amplitude estimator",
@@ -224,6 +225,10 @@ def main() -> int:
         "SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md": (
             "template-response product",
             "historical high-pass/delta case is not admitted",
+        ),
+        "SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md": (
+            "authoritative reference estimator",
+            "never establishes the scientific amplitude",
         ),
         "CROSS_PACKAGE_AND_NOI_BOUNDARIES.md": (
             "fixed-state and relearned members cannot be mixed", "FRUIT boundary",

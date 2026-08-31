@@ -3,8 +3,8 @@
 Date: `2026-08-26`
 
 Updated: `2026-08-31` for SCI-JINC closure, SCI-NOI Stage A/Stage B handoff,
-SCI-FLT-INF ODQ-001 through ODQ-003 and ODQ-005 closure, and ODQ-004 author
-delegation
+SCI-FLT-INF ODQ-001 through ODQ-003 and ODQ-005 through ODQ-006 closure, and
+ODQ-004 plus ODQ-006 quantitative-option author delegation
 
 Status: scientific-owner-approved program sequencing record
 
@@ -258,7 +258,16 @@ scaling and complete parent/unit/WCS/phase/support/array/beam/calibration/
 validity/provenance identity define response per unit amplitude. Parent-bound
 point-source and explicitly supplied scientific-template sources are admitted;
 Gaussian/Airy is complete-product construction only, while learned templates
-and high-pass/delta are deferred. ODQ-006 exact operator, approximation, and
-regularization is next. No successor package, author packet, Stage B launch,
-algorithm change, conformity, validation, calibration, performance, readiness,
-production, freeze, or Unity action follows.
+and high-pass/delta are deferred. Grant Wilson approved ODQ-006 on
+`2026-08-31`: `A_hat=<t,Qm>/<t,Qt>` is the authoritative exact reference
+operator, conditional on the ODQ-004 `Q` and ODQ-007 support. Exact evaluation
+is conformant; approximations require a quantitative envelope bounding
+normalization, template response, support/null behavior, and uncertainty.
+Both future contract views must develop the same bounded alternatives for
+later scientific-owner selection. Rules defining `Q` or its null space remain
+ODQ-004 state; outside-envelope operator changes are distinct methods, and
+nonpositive/nonfinite/unresolved normalization is null/unavailable rather than
+zero amplitude. ODQ-007 support and edge semantics is next. No successor
+package, author packet, Stage B launch, algorithm change, conformity,
+validation, calibration, performance, readiness, production, freeze, or Unity
+action follows.

@@ -711,12 +711,22 @@ array/beam/calibration, validity, and provenance identity are explicit.
 Admitted sources are an exact parent-bound point-source response or another
 explicitly supplied scientific template; Gaussian/Airy is only complete-
 product construction, while target/source/NOI-learned templates and the
-historical high-pass/delta case are deferred. ODQ-006 exact operator,
-approximation, and regularization is the next owner gate. This is a Stage A
-study and decision walkthrough only; no successor package, author packet,
-Stage B launch, algorithm change, implementation conformity, validation,
-calibration, performance, readiness, production, freeze, or Unity action is
-claimed or authorized.
+historical high-pass/delta case are deferred. Grant Wilson then approved and
+closed `SCI-FLT-INF-ODQ-006` on `2026-08-31`:
+`A_hat=<t,Qm>/<t,Qt>` is the authoritative exact reference estimator,
+conditional on the ODQ-004 `Q` and ODQ-007 support. Exact evaluation is
+conformant. Approximate realizations are admitted only inside a quantitative
+conformance envelope bounding normalization, matching-template response,
+support/null behavior, and uncertainty. A future implementation-blind author
+must develop matching bounded alternatives in both contract views for later
+scientific-owner selection. Regularization defining `Q` or its null space
+remains ODQ-004 state; an outside-envelope operator is a distinct method or
+unavailable, and unresolved/nonpositive/nonfinite normalization is null or
+unavailable rather than zero amplitude. ODQ-007 support and edge semantics is
+the next owner gate. This is a Stage A study and decision walkthrough only;
+no successor package, author packet, Stage B launch, algorithm change,
+implementation conformity, validation, calibration, performance, readiness,
+production, freeze, or Unity action is claimed or authorized.
 
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.

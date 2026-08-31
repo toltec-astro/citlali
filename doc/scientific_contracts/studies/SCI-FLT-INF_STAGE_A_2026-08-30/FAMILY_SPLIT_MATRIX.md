@@ -1,6 +1,6 @@
 # SCI-FLT-INF candidate family split matrix
 
-Matrix identity: `SCI-FLT-INF-FAMILY-SPLIT v0.1/r0.6`
+Matrix identity: `SCI-FLT-INF-FAMILY-SPLIT v0.1/r0.7`
 
 Status: Stage A recommendation for owner review; names are provisional and no
 row is an approved package or complete method
@@ -17,7 +17,7 @@ the operator and estimand remain exact and the dependency graph is explicit.
 
 | ID | Provisional family | Estimand/claim | State and dependence | Recommended disposition | Readiness |
 | --- | --- | --- | --- | --- | --- |
-| `INF-A` | **owner-selected matched-template map filter** | filtered version of an exact admitted ordinary-MAP observation or coadd product; local samples have the ODQ-001 optimal matched-template amplitude-estimator identity and matching-amplitude unbiasedness under declared assumptions; published role remains a filtered map | ODQ-003 admits observation-local and coadd-local identities separately; ODQ-004 delegates exact noise/covariance, spectral-weighting, and coefficient-role options to both contract views; historical radial-average map PSD is candidate only; ODQ-005 selects one fixed immutable template-response product per application, sourced from the exact parent-bound point-source response or another explicitly supplied scientific template; approximation and support remain open | selected map-domain filtering package under ODQ-002; final name remains unapproved; no observation/coadd equivalence | not Stage B ready; noise model and operator not selected |
+| `INF-A` | **owner-selected matched-template map filter** | filtered version of an exact admitted ordinary-MAP observation or coadd product; local samples have the ODQ-001 optimal matched-template amplitude-estimator identity and matching-amplitude unbiasedness under declared assumptions; published role remains a filtered map | ODQ-003 admits observation-local and coadd-local identities separately; ODQ-004 delegates exact noise/covariance, spectral-weighting, and coefficient-role options to both contract views; historical radial-average map PSD is candidate only; ODQ-005 selects one fixed immutable template-response product per application, sourced from the exact parent-bound point-source response or another explicitly supplied scientific template; ODQ-006 selects `A_hat=<t,Qm>/<t,Qt>` as the exact reference operator, permits approximation only inside a later owner-selected quantitative conformance envelope, and makes unresolved/nonpositive normalization null or unavailable; support remains open | selected map-domain filtering package under ODQ-002; final name remains unapproved; no observation/coadd equivalence; exact reference evaluation is conformant and outside-envelope changes are separate methods | not Stage B ready; noise model, quantitative conformance envelope, and support not selected |
 | `INF-B` | genuine Wiener/posterior sky reconstruction | posterior mean or other explicitly named reconstructed sky field | exact signal prior, noise likelihood/covariance, hyperparameters, boundary, regularization and posterior state | expressly not the historical path; separate future package only if later desired | unselected; no recovered complete method; not ready |
 | `INF-C` | detected-source, selected-candidate, peak, fitted-source, or catalog inference | source-local or catalog quantity and covariance for a declared selection or fit domain | would require its own selection/model state, calibration, covariance, support, and validity | excluded from the selected matched-filter package with no present ownership assignment; a future independent contract may consume `INF-A` maps | no active Citlali tranche; deferred |
 | `INF-D1` | declared fixed state | exact selected `INF-A` operator with state fixed before method application | state from immutable external or parent-owned authority, not learned from the target by this method | lifecycle variant of selected base method; bind exact state source | operator-dependent |
@@ -34,7 +34,8 @@ the operator and estimand remain exact and the dependency graph is explicit.
 ## Recommended package structure
 
 The study recommends against approving `SCI-FLT-INF` as one combined package.
-Under ODQ-001 through ODQ-003, the ODQ-004 author delegation, and ODQ-005:
+Under ODQ-001 through ODQ-003, the ODQ-004 author delegation, and ODQ-005
+through ODQ-006:
 
 1. create one narrow map-domain filtering package for owner-selected `INF-A`;
    its published signal role is a matched-filtered map and its final name is
@@ -52,16 +53,21 @@ Under ODQ-001 through ODQ-003, the ODQ-004 author delegation, and ODQ-005:
    admit parent-bound point-source and explicitly supplied scientific-template
    sources, treat Gaussian/Airy only as complete-product construction, and
    defer learned templates plus high-pass/delta;
-5. exclude source detection, candidate selection, peak interpretation,
+5. make `A_hat=<t,Qm>/<t,Qt>` the exact reference operator, conditional on
+   the ODQ-004 `Q` and ODQ-007 support; permit approximations only inside an
+   owner-selected quantitative conformance envelope binding normalization,
+   template response, support/null behavior, and uncertainty, and make
+   unresolved or nonpositive normalization null/unavailable rather than zero;
+6. exclude source detection, candidate selection, peak interpretation,
    deblending, fitting, and catalog construction without introducing a current
    source-estimation or SRC ownership boundary; a future independent contract
    may consume an exact matched-filtered map;
-6. encode fixed, parent-learned, NOI-informed, and per-member-relearned cases
+7. encode fixed, parent-learned, NOI-informed, and per-member-relearned cases
    as exact lifecycle/method variants rather than a generic `learned` flag;
-7. leave `INF-E`, `INF-F`, and `INF-G` as separate packages or explicit
+8. leave `INF-E`, `INF-F`, and `INF-G` as separate packages or explicit
    preprocessing/selection authorities;
-8. route `INF-H` through a frozen-NOI-compatible derived-product contract; and
-9. leave `INF-B` outside the historical path, requiring a wholly separate
+9. route `INF-H` through a frozen-NOI-compatible derived-product contract; and
+10. leave `INF-B` outside the historical path, requiring a wholly separate
    future recovery/contract if ever requested.
 
 ## Why the split matters

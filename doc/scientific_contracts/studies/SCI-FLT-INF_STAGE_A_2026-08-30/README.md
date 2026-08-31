@@ -75,6 +75,7 @@ template-response product boundary.
 | [`SCIENTIFIC_OWNER_ODQ_003_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_003_APPROVAL_2026-08-31.md) | exact ordinary-MAP observation/coadd parent and grouping approval |
 | [`SCIENTIFIC_OWNER_ODQ_004_AUTHOR_DELEGATION_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_004_AUTHOR_DELEGATION_2026-08-31.md) | exact two-view noise/covariance option-development assignment and historical candidate |
 | [`SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md) | exact immutable template-response product and admitted-source approval |
+| [`SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md) | exact reference operator, bounded-approximation policy, and conformance-envelope author delegation |
 | [`FROZEN_AUTHORITY_AND_SOURCE_BINDING.md`](FROZEN_AUTHORITY_AND_SOURCE_BINDING.md) | exact base, frozen NOI, historical, and evidence bindings |
 | [`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md) | content-bound Stage A study objects; not an author manifest |
 | [`verify_stage_a.py`](verify_stage_a.py) | study and protected-byte verifier |
@@ -132,9 +133,20 @@ explicitly supplied scientific template is admitted. Gaussian/Airy generation
 is only a way to materialize the same complete product; base-v0.1 template
 learning and the historical high-pass/delta case are deferred.
 
-The next owner question is the exact operator, approximation, and
-regularization policy under `SCI-FLT-INF-ODQ-006`. No final package naming or
-Stage B scope is approved.
+ODQ-006 selects the exact normalized reference estimator
+`A_hat=<t,Qm>/<t,Qt>` conditional on the eventual ODQ-004 weighting object and
+ODQ-007 support. Exact evaluation is conformant; an approximate realization is
+admitted only within a scientifically selected bound on normalization,
+matching-template amplitude response, support/null behavior, and uncertainty.
+The author must develop shared quantitative conformance-envelope alternatives
+in both contract views for later owner selection. Operator-changing
+regularization outside the selected envelope is a distinct versioned method,
+and unresolved or nonpositive normalization is null/unavailable rather than
+amplitude zero.
+
+The next owner question is edge, missing, nonfinite, and learned-support policy
+under `SCI-FLT-INF-ODQ-007`. No final package naming or Stage B scope is
+approved.
 
 ## Nonclaims and stop rule
 
@@ -144,9 +156,9 @@ significance, performance, readiness, production, Unity, or scientific-freeze
 claim. It creates no default and authorizes no method substitution.
 
 Do not create an implementation-blind author packet until the scientific owner
-has resolved `SCI-FLT-INF-ODQ-006` and the later package-specific operator,
+has resolved `SCI-FLT-INF-ODQ-007` and the later package-specific edge,
 state, response, covariance, product, and lifecycle gates identified in the
 decision ledger. The eventual packet must include the exact ODQ-004 author
-assignment and ODQ-005 approval. Create a package-local Stage A record for the
-matched-filter map operation rather than converting this holding directory
-into a combined package.
+assignment and ODQ-005/ODQ-006 approvals. Create a package-local Stage A record
+for the matched-filter map operation rather than converting this holding
+directory into a combined package.

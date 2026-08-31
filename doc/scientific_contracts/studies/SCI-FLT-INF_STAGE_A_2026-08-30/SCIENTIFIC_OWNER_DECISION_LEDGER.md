@@ -1,10 +1,11 @@
 # SCI-FLT-INF scientific-owner decision ledger
 
-Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.6`
+Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.7`
 
 Status: proposed ordered owner walkthrough; ODQ-001 through ODQ-003 approved
 and closed; ODQ-004 author-delegated; ODQ-005 approved and closed; ODQ-006
-through ODQ-013 open
+approved and closed with quantitative conformance-envelope alternatives
+author-delegated; ODQ-007 through ODQ-013 open
 
 ## Decision discipline
 
@@ -13,7 +14,9 @@ answered in a way that presumes an earlier answer. Each approved answer should
 be recorded in a separate exact owner artifact before a package-local Stage A
 packet is built. This holding study records the exact approved ODQ-001 through
 ODQ-003 and ODQ-005 answers and the exact ODQ-004 author delegation but does
-not approve a noise/covariance option or any proposed answer for ODQ-006
+not approve a noise/covariance option. It also records the exact ODQ-006
+reference-operator decision and quantitative author delegation but does not
+approve a conformance-envelope option or any proposed answer for ODQ-007
 onward.
 
 ## `SCI-FLT-INF-ODQ-001` — estimand of the existing full path
@@ -143,14 +146,40 @@ uncertainty, edge, and NOI details remain with their later ordered decisions.
 
 ## `SCI-FLT-INF-ODQ-006` — exact operator, approximation, and regularization
 
-What exact mathematical operator or estimator is authoritative? Which
-approximations are permitted, how is their achieved error bounded, and what
-are the typed consequences of convergence, iteration/tail caps, floors,
-clipping, singularity, or nonpositive normalization?
+Status: **approved and closed at the reference-operator and realization-policy
+level; quantitative conformance-envelope alternatives author-delegated** by
+[`SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md).
 
-Manager recommendation: a numerical zero at an unresolved normalization is
-unavailable/null, not a scientific amplitude zero. Each approximation or
-regularization that changes the estimand or response is a versioned method.
+Conditional on the exact realized ODQ-004 weighting object `Q_x`, ODQ-005
+template `t_x`, ODQ-007 support, and declared discrete conventions, the
+authoritative reference estimator is
+
+```text
+N(x) = <t_x, Q_x m_x>
+D(x) = <t_x, Q_x t_x>
+A_hat(x) = N(x) / D(x).
+```
+
+When `Q_x` is admitted inverse covariance, the complete assumptions support
+the optimal GLS matched-estimator claim. A weaker ODQ-004 weighting object
+requires correspondingly weaker optimality and uncertainty claims; ODQ-006
+selects no noise model.
+
+Exact evaluation is conformant. Approximate evaluation is permitted only
+inside a scientifically selected envelope bounding effects on normalization,
+matching-template amplitude response, support/null behavior, and uncertainty.
+The future implementation-blind author must develop bounded quantitative
+envelope alternatives with shared identities in both contract views. Owner
+disposition is required before freeze or approximate execution.
+
+Regularization defining `Q_x`, its modes, or null space is ODQ-004 scientific
+state. Any approximation or other regularization changing the operator beyond
+the selected envelope is a separate versioned method or unavailable. `N` and
+`D` must be finite and `D` strictly positive on admitted support. Empty/invalid
+support, weighting-null templates, singular/unresolved normalization,
+nonfinite/nonpositive `D`, or an unmet convergence/error bound is typed null,
+unavailable, or failed—never scientific amplitude zero. Iteration and tail
+caps are not success without the selected bound.
 
 ## `SCI-FLT-INF-ODQ-007` — edge, missing, nonfinite, and learned support
 
@@ -268,9 +297,11 @@ ODQ-001 estimand
                        -> ODQ-013 product/VAL/lifecycle
 ```
 
-ODQ-001 through ODQ-003 and ODQ-005 are closed, and ODQ-004 is author-delegated
-without an option selection. ODQ-006 is the next owner gate. Stage B is blocked
-until all remaining pre-author decisions have exact owner answers and an
-exclusive implementation-blind author packet containing the ODQ-004 assignment
-and ODQ-005 approval. Freeze and numerical authorization remain blocked until
-the owner disposes of the authored ODQ-004 options.
+ODQ-001 through ODQ-003 and ODQ-005/ODQ-006 are closed, and ODQ-004 is author-
+delegated without an option selection. ODQ-006 also delegates quantitative
+conformance-envelope alternatives without selecting one. ODQ-007 is the next
+owner gate. Stage B is blocked until all remaining pre-author decisions have
+exact owner answers and an exclusive implementation-blind author packet
+containing the ODQ-004 assignment and ODQ-005/ODQ-006 approvals. Freeze and
+numerical authorization remain blocked until the owner disposes of the
+authored ODQ-004 and ODQ-006 option sets.

@@ -1,6 +1,6 @@
 # SCI-FLT-INF frozen-authority and source binding
 
-Binding identity: `SCI-FLT-INF-SOURCE-BINDING v0.1/r0.6`
+Binding identity: `SCI-FLT-INF-SOURCE-BINDING v0.1/r0.7`
 
 Status: exact Stage A provenance record; not an author packet or scientific
 freeze
@@ -52,8 +52,18 @@ is the exact owner source closing `SCI-FLT-INF-ODQ-005`. It selects one
 immutable scientifically declared template-response product per application,
 admits parent-bound point-source and explicitly supplied scientific-template
 sources, treats Gaussian/Airy only as complete-product construction, and
-defers learned templates plus the historical high-pass/delta case. All five
-exact owner objects are bound by
+defers learned templates plus the historical high-pass/delta case.
+
+[`SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md)
+is the exact owner source closing `SCI-FLT-INF-ODQ-006`. It makes the
+normalized `A_hat=<t,Qm>/<t,Qt>` estimator the authoritative reference,
+permits approximate realizations only inside a later owner-selected
+quantitative conformance envelope, keeps `Q`-defining regularization under
+ODQ-004, and makes unresolved or nonpositive normalization null/unavailable
+rather than zero amplitude. It delegates development of the quantitative
+envelope alternatives to both future implementation-blind contract views,
+with final selection reserved to the scientific owner. All six exact owner
+objects are bound by
 [`STAGE_A_SOURCE_MANIFEST.md`](STAGE_A_SOURCE_MANIFEST.md); later decisions
 must use separate exact owner artifacts.
 

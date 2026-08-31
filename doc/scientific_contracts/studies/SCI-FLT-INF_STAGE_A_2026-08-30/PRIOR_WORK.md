@@ -1,6 +1,6 @@
 # SCI-FLT-INF prior-work recovery
 
-Recovery identity: `SCI-FLT-INF-PRIOR-WORK v0.1/r0.6`
+Recovery identity: `SCI-FLT-INF-PRIOR-WORK v0.1/r0.7`
 
 Status: reviewed Stage A recovery record; implementation and evidence entries
 remain quarantined from authorship
@@ -43,6 +43,7 @@ performed.
 | Post-processing and noise-products config authorities | current at base | requested/effective/realized lifecycle and one-way adapter boundary | **Cite** as architectural lifecycle precedent, not scientific method authority |
 | Scientific-owner ODQ-004 direction | exact `2026-08-31` owner artifact in this study | historical use of a radially symmetrized average map noise PSD; requirement for bounded noise/covariance and coefficient-role options in both contract views | **Adopt** the author assignment; **cite** the historical PSD only as a candidate to examine, never as a default, covariance authority, or implementation prescription |
 | Scientific-owner ODQ-005 approval | exact `2026-08-31` owner artifact in this study | one immutable declared template-response product per application; exact parent-bound point-source and explicitly supplied scientific-template sources; Gaussian/Airy construction only as a complete product producer; learned templates and high-pass/delta deferred | **Adopt** as binding template identity and base-v0.1 scope |
+| Scientific-owner ODQ-006 approval | exact `2026-08-31` owner artifact in this study | exact normalized reference operator conditional on ODQ-004/ODQ-007; approximations only within an owner-selected conformance envelope; quantitative envelope options delegated to both contract views; operator-changing regularization is a distinct method; null normalization is not zero amplitude | **Adopt** as binding operator and realization policy; retain quantitative envelope as later owner disposition |
 | RTC temporal filtering and AltAz destriping | frozen/active RTC-owned domain | timestream-domain cleaning before mapmaking | **Exclude** from map-domain INF scope; preserve RTC ownership |
 | FRUIT records | separate future tranche | source-model feedback, iteration, learning, stopping, restart, lineage | **Defer** to SCI-FRUIT; retain only the frozen NOI boundary for conditional/replayed cases |
 | Source fitting/finding surfaces | later downstream operation; no dedicated frozen source-analysis contract recovered | Gaussian fitting and catalog-facing products after filtering | **Exclude** from the selected matched-filter package; make no current ownership assignment; a future independent contract may consume filtered maps; no active source-learned filter-state route was recovered at the base commit |
@@ -75,6 +76,11 @@ full path:
   admitted sources are an exact parent-bound point-source response or another
   explicitly supplied scientific template, with analytic Gaussian/Airy only
   as a complete-product construction and learned/high-pass templates deferred;
+- the exact reference operator is `A_hat=<t,Qm>/<t,Qt>` conditional on the
+  selected weighting and support; exact evaluation is conformant, approximation
+  requires a selected scientific error envelope, and changes beyond that
+  envelope create a separate method or unavailability; nonpositive/nonfinite
+  normalization is null/unavailable rather than amplitude zero;
 - a declared linear estimator `a^T m` has variance `a^T C a` when `C` is the
   covariance of the declared parent population;
 - a fixed-template GLS amplitude estimator has numerator
@@ -94,8 +100,10 @@ ODQ-001 approves the matched-template estimand, ODQ-002 approves map-domain
 filtering ownership plus the filtered-map product role, and ODQ-003 approves
 the two distinct ordinary-MAP parent/grouping roles. ODQ-004 delegates option
 development without selecting a model, and ODQ-005 approves the fixed
-template-response product identity and source classes. These decisions do not
-approve the operator, covariance/noise authority, numerical template instance,
+template-response product identity and source classes. ODQ-006 approves the
+reference operator and bounded-realization policy while delegating quantitative
+envelope alternatives. These decisions do not approve the covariance/noise
+authority, numerical template instance, quantitative approximation tolerance,
 final package name, response, uncertainty, or contract.
 
 ### Superseded or nonportable material
@@ -115,8 +123,8 @@ final package name, response, uncertainty, or contract.
 
 Fresh scientific derivation includes the ODQ-004 bounded option set after the
 remaining pre-author decisions are resolved. The unresolved work includes the
-exact operator, noise/covariance model, non-template state-learning graph,
-template discretization/compatibility consequences, normalization/response,
-support/null space, approximation/regularization, uncertainty/covariance,
-product bundle, and NOI parity for each selected family. No recovered source
-can answer those questions by itself.
+noise/covariance model, quantitative approximation envelope, non-template
+state-learning graph, template discretization/compatibility consequences,
+response, support/null space, edge behavior, uncertainty/covariance, product
+bundle, and NOI parity for each selected family. No recovered source can answer
+those questions by itself.
