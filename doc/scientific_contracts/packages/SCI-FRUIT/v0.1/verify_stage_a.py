@@ -16,6 +16,8 @@ LAUNCH_TREE = "03b77c9187eb5421488641d2ea1fe4dcb572a9a9"
 PROVISIONAL = "faff97565ee27e375e1337febe5a0a6681507c3b"
 PROVISIONAL_TREE = "0dfa3cdfa8a261bd00878cafd593aafb87394163"
 AUDIT = "8c581bfb26f01b187f4f1e0565f4457bcc25f099"
+HISTORICAL = "f70701ad488444f3e2528c6bbe3e798863c9e301"
+HISTORICAL_TREE = "2009a1397bd67d615a1d6e9a8419e18fc794a81e"
 
 SOURCE_HASHES = {
     (LAUNCH, "doc/scientific_contracts/README.md"):
@@ -66,6 +68,47 @@ SOURCE_HASHES = {
         "8b0919fcfda18e338dbf3f1a8538d86dd29660e9fb0d605e0620373d93b1dd18",
     (AUDIT, "doc/audits/handoffs/SCI-MAP-003/SCI-MAP-003-XAUD-007.yaml"):
         "801928c460745b748163027191d20f5873110db937aa508e95542206e5623498",
+    (HISTORICAL, "include/citlali/core/pipeline/reduction_iteration_loop.h"):
+        "553a33ca0ba0849cb7cb8ce99b7542a0951b76d4ff27ea2a7c78d2c11266d9ef",
+    (HISTORICAL, "include/citlali/core/pipeline/reduction_observation.h"):
+        "328d6c3d5fe2e2a58654869d727e8079b09ebb966d507c245e5ef1bfa0ed8cb0",
+    (HISTORICAL, "include/citlali/core/pipeline/reduction_observation_pipeline.h"):
+        "191d452abdcbee35614623bae996fe62d37cfb7f88d62b61d7bbeaac91671e0a",
+    (HISTORICAL, "include/citlali/core/engine/detail/lali_run_impl.h"):
+        "e76fa90cc5c8a4dae84fdd7a258ee834c62d389e65b323b3010d2f92b7f56341",
+    (HISTORICAL, "include/citlali/core/engine/detail/lali_fruitloop_impl.h"):
+        "fc480b6e64b6108954dfc7f9e6fe129d25db2fbf4d2209b2872492460da32fd8",
+    (HISTORICAL, "include/citlali/core/engine/detail/pointing_run_impl.h"):
+        "0200e17b209023d51e71e34506752d33f51082e4849bee1ab33732a301c85cab",
+    (HISTORICAL, "include/citlali/core/engine/detail/pointing_fruitloop_impl.h"):
+        "eb6ca404a75fa56e04a7e515d1c81c48240fb0050891218bdd165faa8c520945",
+    (HISTORICAL, "include/citlali/core/pipeline/previous_fruit_loop_map_loading.h"):
+        "91f7cd5f0b311693569423bbd6fd28682790f63f675ab4fb364b8d8c398851e4",
+    (HISTORICAL, "include/citlali/core/pipeline/fruit_loop_paths.h"):
+        "45b29b588b51c002c06539d52ee1cad3a2448e47cb9d12ac95957fe4010dde2f",
+    (HISTORICAL, "include/citlali/core/pipeline/fruit_loop_map_io.h"):
+        "3b83959cfbb7771e707a5fc9a3a6b166bd57a5de9fbc58a6b572c7903b41eb23",
+    (HISTORICAL, "include/citlali/core/pipeline/filtered_observation_outputs.h"):
+        "e80906d60e982cc6523d675b8ecda34b7b8372246dfb4b6f38593519c980135e",
+    (HISTORICAL, "include/citlali/core/pipeline/iteration_coadd_outputs.h"):
+        "bd91b1c7271523a492b72b78fb3753f9dd265f26f48a7294129ebfd986b705ec",
+    (HISTORICAL, "include/citlali/core/engine/learning.h"):
+        "7ae32ad060858987bd299f04f7315be215f9a55ad2a3cafe700fcd00c755be4c",
+    (HISTORICAL, "include/citlali/core/pipeline/fruit_loop_restart_lifecycle.h"):
+        "dbc2c46f7992d0b56d96de1d49278ae7c0bb36cfbb47b8184dc38f36227930a1",
+    (HISTORICAL, "src/citlali/core/pipeline/reduction_restart_checkpoint.cpp"):
+        "b1d5b4ba0115ea66e43ea1742967917980b6291dd2e998d02e93c8d26008ea61",
+    (HISTORICAL, "tests/test_fruit_loop_recurrence.cpp"):
+        "1dfaa0677f291187dd88cafd3e26d8a2ccd49f958c1fda1595d3657cb5ba0138",
+    (HISTORICAL, "tests/test_learning_and_fruit_contracts.cpp"):
+        "b7eba3b2fa443b5067a4c2e2532a13958c65d60dc62275f06971672c11912863",
+}
+
+HISTORICAL_LAUNCH_EQUAL_PATHS = {
+    path for ref, path in SOURCE_HASHES if ref == HISTORICAL
+} - {
+    "include/citlali/core/pipeline/filtered_observation_outputs.h",
+    "include/citlali/core/pipeline/iteration_coadd_outputs.h",
 }
 
 REQUIRED_FILES = {
@@ -75,6 +118,9 @@ REQUIRED_FILES = {
     "SCOPE_BRIEF.md",
     "OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md",
     "CANDIDATE_PARENT_ADMISSION_MATRIX.md",
+    "HISTORICAL_RECURRENCE_BASELINE.md",
+    "ADDITIVE_REFORMULATION_EQUIVALENCE_ANALYSIS.md",
+    "ODQ_001_RECURRENCE_DECISION_FRAME.md",
     "ITERATIVE_DAG_AND_STATE_OWNERSHIP.md",
     "RESTART_CHECKPOINT_AND_LIFECYCLE_TAXONOMY.md",
     "RESPONSE_UNCERTAINTY_CONVERGENCE_CLAIM_MATRIX.md",
@@ -84,6 +130,7 @@ REQUIRED_FILES = {
     "SCIENTIFIC_OWNER_DECISION_LEDGER.md",
     "SOURCE_IDENTITY_MANIFEST.md",
     "DECISION_LOG.md",
+    "SCIENTIFIC_OWNER_RECURRENCE_REVIEW_DIRECTION_2026-08-31.md",
     "CROSSWALK.md",
     "AUTHOR_PACKET_MANIFEST.md",
     "AUTHOR_SUPERSESSION_COVER.md",
@@ -131,6 +178,8 @@ def verify_sources() -> None:
         fail("launch commit tree does not match recorded identity")
     if run("git", "rev-parse", f"{PROVISIONAL}^{{tree}}") != PROVISIONAL_TREE:
         fail("provisional FLT-MATCHED tree does not match recorded identity")
+    if run("git", "rev-parse", f"{HISTORICAL}^{{tree}}") != HISTORICAL_TREE:
+        fail("historical recurrence tree does not match recorded identity")
     if subprocess.call(
         ["git", "merge-base", "--is-ancestor", LAUNCH, "HEAD"], cwd=REPO
     ):
@@ -139,6 +188,9 @@ def verify_sources() -> None:
         actual = digest(git_bytes(ref, path))
         if actual != expected:
             fail(f"source identity changed: {ref}:{path}: {actual}")
+    for path in HISTORICAL_LAUNCH_EQUAL_PATHS:
+        if git_bytes(HISTORICAL, path) != git_bytes(LAUNCH, path):
+            fail(f"historical recurrence path differs at launch: {path}")
 
 
 def changed_paths() -> set[str]:
@@ -182,6 +234,15 @@ def verify_packet() -> None:
     )
     manifest = (ROOT / "SOURCE_IDENTITY_MANIFEST.md").read_text(encoding="utf-8")
     author = (ROOT / "AUTHOR_PACKET_MANIFEST.md").read_text(encoding="utf-8")
+    baseline = (ROOT / "HISTORICAL_RECURRENCE_BASELINE.md").read_text(
+        encoding="utf-8"
+    )
+    equivalence = (ROOT / "ADDITIVE_REFORMULATION_EQUIVALENCE_ANALYSIS.md").read_text(
+        encoding="utf-8"
+    )
+    odq001 = (ROOT / "ODQ_001_RECURRENCE_DECISION_FRAME.md").read_text(
+        encoding="utf-8"
+    )
 
     required_tokens = {
         readme: [
@@ -206,11 +267,38 @@ def verify_packet() -> None:
         ledger: [
             "SCI-FRUIT-ODQ-001",
             "open — first review question",
+            "SCI-FRUIT-ODQ-001A",
+            "SCI-FRUIT-ODQ-001D",
             "SCI-FRUIT-ODQ-012",
             "blocked on prior decisions",
         ],
-        manifest: [LAUNCH_TREE, PROVISIONAL_TREE, "not an author-packet"],
+        manifest: [
+            LAUNCH_TREE,
+            PROVISIONAL_TREE,
+            HISTORICAL_TREE,
+            "not an author-packet",
+        ],
         author: ["not approved", "not dispatchable", "No implementation-blind author packet exists"],
+        baseline: [
+            "complete route map bundle",
+            "original observation",
+            "residual-only",
+            "non-authoritative",
+        ],
+        equivalence: [
+            "equivalence not established",
+            "Projection/remapping consistency",
+            "Identical iteration-dependent learning",
+            "stable identity",
+        ],
+        odq001: [
+            "Choice 1 — Preserve The Recovered Historical Recurrence",
+            "Choice 2 — Adopt A Mathematically Equivalent Reformulation",
+            "Choice 3 — Intentionally Adopt A New Recurrence",
+            "ODQ-001A",
+            "ODQ-001D",
+            "Ordinary additive accumulation",
+        ],
     }
     for body, tokens in required_tokens.items():
         for token in tokens:
@@ -251,9 +339,10 @@ def main() -> None:
     verify_links()
     subprocess.check_call(["git", "diff", "--check"], cwd=REPO)
     print(
-        "PASS: exact launch/provisional/historical sources, bounded edits, "
-        "four unavailable candidate routes, Stage A firewall, placeholders, "
-        "and local links"
+        "PASS: exact launch/provisional/historical sources, byte-identical "
+        "historical recurrence evidence, revised three-choice ODQ-001, bounded "
+        "edits, four unavailable candidate routes, Stage A firewall, "
+        "placeholders, and local links"
     )
 
 

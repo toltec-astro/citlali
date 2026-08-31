@@ -4,7 +4,7 @@ Status: **Stage A owner-review candidate; not owner-approved**
 
 Scientific owner: Grant Wilson
 
-Version/date: `v0.1-stage-a-r0.1`, `2026-08-31`
+Version/date: `v0.1-stage-a-r0.2`, `2026-08-31`
 
 Approved source identifier: **none**
 
@@ -22,9 +22,11 @@ This package follows the
   metric taxonomy abstracted; empirical thresholds and calibration deferred;
   code, configuration, audits, repairs, tests, validation, production history,
   and provisional FLT-MATCHED authority excluded
-- Genuinely new scientific work: feedback-model estimand, route admission,
-  recurrence, projection, state/generation, support, stopping, response,
-  uncertainty, checkpoint completeness, and terminal-product decisions
+- Genuinely new scientific work: accepted feedback-state identity, recurrence
+  choice relative to the recovered historical baseline, route admission,
+  projection/bypass semantics, state/generation, update-contribution status,
+  bounded persistence, support, stopping, response, uncertainty, checkpoint
+  completeness, and terminal-product decisions
 - Owner-approved author references: none yet
 - Author-packet exclusions: all implementation-informed and provisional
   material named above
@@ -36,7 +38,8 @@ Confirm that this opening was reviewed before launching scientific authorship:
 
 SCI-FRUIT defines an iterative scientific procedure in which an explicitly
 selected model of recoverable sky signal is forward projected, removed for
-residual processing, and incorporated into a new immutable iteration state.
+residual processing, bypasses named residual-only operators, rejoins at an
+exactly defined point, and contributes to a new versioned iteration state.
 The contract must say what the model estimates, how it is constructed and
 updated, what state can affect the future, when a sequence may terminate, and
 what response and uncertainty claims belong to the resulting products.
@@ -75,8 +78,9 @@ restart are separate inputs with different generation meaning.
 
 The future contract must decide which of the following are required:
 
-- per-iteration feedback-model and/or residual scientific products;
-- the exact model increment and accumulated model, if both exist;
+- per-iteration accepted feedback-model and/or residual scientific products;
+- any update contribution required by the chosen transition, with its status
+  as causal state, diagnostic, equivalence witness, or scientific product;
 - a terminal scientific product and the rule selecting its iteration;
 - exact iteration, generation, parent, grouping, and branch identity;
 - response/transfer, null-space, support, validity, and failure disclosures;
@@ -110,25 +114,35 @@ response identity; SCI-FRUIT does not perform their inference or calibration.
 
 ## 7. Questions The Contract Must Answer
 
-1. What is the normative feedback-model estimand, and is the recurrence
-   additive accumulation, replacement, residual correction, or another law?
-2. Which candidate parent routes are admitted, for which groupings and
+1. What is the versioned accepted feedback state `F_k` passed to the next
+   iteration, including its route, estimand, support, response, grid, and
+   lineage?
+2. Will v0.1 preserve the recovered historical recurrence, adopt a proved and
+   validated equivalent reformulation, or intentionally adopt a new recurrence?
+   Until that choice, use only `F_{k+1}=U_k(F_k,R_{k+1})`.
+3. Does a per-iteration update contribution exist, what scientific or
+   diagnostic status does it have, and is it causal for later output?
+4. What bounded persistence, compaction, reconstruction, lineage, and
+   reproducibility rules apply? Stable identity must not imply unbounded
+   intermediate retention.
+5. Which candidate parent routes are admitted, for which groupings and
    generations, and how is a parent converted into a feedback model?
-3. What exact forward operator maps the model into timestream sample space, and
-   how do subtraction/add-back and PTC/RTC operations compose with it?
-4. Which policy is fixed, which state is learned, which state is applied, and
+6. What exact forward operator maps the model into timestream sample space;
+   which operators see only the residual; which does the accepted model bypass;
+   where does it rejoin; and what response does it have in the next map?
+7. Which policy is fixed, which state is learned, which state is applied, and
    which state may be relearned at each iteration or observation?
-5. What are the response, attenuation/bias, covariance/uncertainty, null-space,
+8. What are the response, attenuation/bias, covariance/uncertainty, null-space,
    support, missing/non-finite, selection, and failure meanings?
-6. Which diagnostics describe amplitude, morphology, centroid, map change,
+9. Which diagnostics describe amplitude, morphology, centroid, map change,
    support/learning, and noise health, and which—if any—enter a stopping rule?
-7. What selects the terminal iteration and product when criteria disagree or
+10. What selects the terminal iteration and product when criteria disagree or
    become measurement-limited?
-8. What complete causal state must an exact checkpoint restore, and what
+11. What complete causal state must an exact checkpoint restore, and what
    compatibility changes require rejection or a new generation?
-9. Which NOI method targets fixed state, complete procedure, or per-member
+12. Which NOI method targets fixed state, complete procedure, or per-member
    replay, and what dependence prevents pooling?
-10. Which products are required, and which downstream claims fail closed when
+13. Which products are required, and which downstream claims fail closed when
     response, covariance, numerical parents, or validation are unavailable?
 
 ## 8. Non-Goals
@@ -148,9 +162,11 @@ for explicit owner review and exact-byte binding.
 
 ## 10. Owner Decisions And Remaining Ambiguities
 
-The only owner decision recorded in this Stage A revision is the sequencing
-decision to launch FRUIT now, before source-fitting and Pointing/OOF. All
-scientific decisions remain open and are ordered in
+The owner has also directed Stage A to recover the exact historical recurrence,
+use it as the v0.1 reference baseline, separate the four recurrence decisions,
+and re-present ODQ-001 with preserve/equivalent/new choices. That analytical
+direction does not approve a scientific recurrence. All scientific decisions
+remain open and are ordered in
 [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md).
 
 ## 11. Independence Statement

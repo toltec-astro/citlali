@@ -13,15 +13,19 @@ content-bound versions of:
    adjacent-package boundaries, and approved terminology;
 3. exact owner decision records for ODQ-001 through the route, state, response,
    stopping, uncertainty, restart, and product gates selected as necessary;
-4. exact frozen SCI-MAP and SCI-JINC boundary extracts for each owner-admitted
+4. an owner-approved, implementation-free statement of the selected recurrence:
+   the recovered baseline if preserved, an exact proof/validity statement if
+   reformulated equivalently, or an intentional-new-method rationale and
+   compatibility statement;
+5. exact frozen SCI-MAP and SCI-JINC boundary extracts for each owner-admitted
    route, without their implementation/audit history;
-5. exact frozen SCI-PTC ownership/admission boundary required by an admitted
+6. exact frozen SCI-PTC ownership/admission boundary required by an admitted
    recurrence;
-6. the approved SCI-NOI fixed-state/successor/replay boundary;
-7. the exact SCI-FLT-FIXED boundary only if that route is owner-admitted;
-8. a future exact approved FLT-MATCHED boundary only if that package first gains
+7. the approved SCI-NOI fixed-state/successor/replay boundary;
+8. the exact SCI-FLT-FIXED boundary only if that route is owner-admitted;
+9. a future exact approved FLT-MATCHED boundary only if that package first gains
    its own authority and the FRUIT owner then admits the route; and
-9. a supersession cover stating that packet-local owner choices govern any
+10. a supersession cover stating that packet-local owner choices govern any
    conflict with older scope or coordination records.
 
 Every admitted object must have an exact path/ref, byte size, SHA-256, role,

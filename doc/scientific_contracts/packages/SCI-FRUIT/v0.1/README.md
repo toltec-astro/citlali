@@ -2,7 +2,7 @@
 
 Status: **recovery-first Stage A owner-review candidate; no Stage B launch**
 
-Version: `v0.1-stage-a-r0.1`
+Version: `v0.1-stage-a-r0.2`
 
 Launch base: Git commit
 `7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`
@@ -37,8 +37,8 @@ separate and type:
 
 - the immutable reduction parent and the feedback-model product;
 - source/model selection from map estimation;
-- forward projection, subtraction, residual processing, add-back, and model
-  accumulation;
+- forward projection, subtraction, residual processing, add-back/rejoin, and
+  model transition;
 - fixed policy, learned state, apply state, observation-resolved state, and
   realized products;
 - iteration, generation, terminal, checkpoint, restart, and branch identity;
@@ -59,7 +59,10 @@ missing scientific contract.
 | [`SCOPE_BRIEF.md`](SCOPE_BRIEF.md) | sanitized candidate scientific boundary; not owner-approved |
 | [`OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md`](OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md) | exact adjacent-package ownership split |
 | [`CANDIDATE_PARENT_ADMISSION_MATRIX.md`](CANDIDATE_PARENT_ADMISSION_MATRIX.md) | separate ordinary MAP, JINC, FLT-FIXED, and provisional FLT-MATCHED routes |
-| [`ITERATIVE_DAG_AND_STATE_OWNERSHIP.md`](ITERATIVE_DAG_AND_STATE_OWNERSHIP.md) | candidate DAG, state owners, and unresolved recurrence |
+| [`HISTORICAL_RECURRENCE_BASELINE.md`](HISTORICAL_RECURRENCE_BASELINE.md) | exact owner-facing historical recurrence recovered from quarantined evidence |
+| [`ADDITIVE_REFORMULATION_EQUIVALENCE_ANALYSIS.md`](ADDITIVE_REFORMULATION_EQUIVALENCE_ANALYSIS.md) | conditions and unavailable proofs for an additive reformulation |
+| [`ODQ_001_RECURRENCE_DECISION_FRAME.md`](ODQ_001_RECURRENCE_DECISION_FRAME.md) | revised three-choice ODQ with four separate decision axes |
+| [`ITERATIVE_DAG_AND_STATE_OWNERSHIP.md`](ITERATIVE_DAG_AND_STATE_OWNERSHIP.md) | historical-baseline DAG, alternative-method gate, and state owners |
 | [`RESTART_CHECKPOINT_AND_LIFECYCLE_TAXONOMY.md`](RESTART_CHECKPOINT_AND_LIFECYCLE_TAXONOMY.md) | map seed versus exact continuation and lifecycle identities |
 | [`RESPONSE_UNCERTAINTY_CONVERGENCE_CLAIM_MATRIX.md`](RESPONSE_UNCERTAINTY_CONVERGENCE_CLAIM_MATRIX.md) | allowable, conditional, unavailable, and forbidden claims |
 | [`CONTRADICTIONS_AMBIGUITIES_UNAVAILABLE_STATES.md`](CONTRADICTIONS_AMBIGUITIES_UNAVAILABLE_STATES.md) | explicit conflicts and typed unavailable states |
@@ -68,6 +71,7 @@ missing scientific contract.
 | [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md) | ordered owner questions and stop gates |
 | [`SOURCE_IDENTITY_MANIFEST.md`](SOURCE_IDENTITY_MANIFEST.md) | exact launch, authority, provisional, historical, and evidence identities |
 | [`DECISION_LOG.md`](DECISION_LOG.md) | decisions actually made in Stage A |
+| [`SCIENTIFIC_OWNER_RECURRENCE_REVIEW_DIRECTION_2026-08-31.md`](SCIENTIFIC_OWNER_RECURRENCE_REVIEW_DIRECTION_2026-08-31.md) | owner direction to recover history and reframe ODQ-001; not a recurrence choice |
 | [`CROSSWALK.md`](CROSSWALK.md) | requested deliverable and source crosswalk |
 
 `AUTHOR_PACKET_MANIFEST.md`, `AUTHOR_SUPERSESSION_COVER.md`, and
@@ -89,10 +93,25 @@ only; they contain no normative science and no rendered contract.
 4. Ordinary MAP, JINC, FLT-FIXED, and provisional FLT-MATCHED are four distinct
    candidate parent routes. At this Stage A snapshot every numerical route is
    unavailable, for route-specific reasons recorded in the admission matrix.
-5. Exact restart must restore all operational state that can change future
+5. The exact historical numerical predecessor is one selected complete raw or
+   filtered observation/coadd map bundle. Each next iteration rereads the
+   original observation, derives and subtracts a selected projected model,
+   processes the residual, restores the accepted model after residual-only
+   operations, and maps a new complete route product. No explicit increment
+   accumulation is present in the recovered transition.
+6. Ordinary additive accumulation is not established as equivalent. Equality
+   requires route-specific proofs for projection/remapping, response, support,
+   WCS/grid, weighting, normalization, masks, filtering, and learning; several
+   conditions are unavailable and historical add-back support can differ after
+   residual flag changes.
+7. Carried-state identity, transition law, update-contribution status, and
+   persistence are separate decisions. A named contribution is not
+   automatically a calibrated sky product and stable identity does not require
+   permanent retention of all intermediates.
+8. Exact restart must restore all operational state that can change future
    scientific output. Diagnostic history is not automatically operational
    state, and a map-only seed is a new generation rather than continuation.
-6. Fixed-state uncertainty, successor-generation learning, and per-realization
+9. Fixed-state uncertainty, successor-generation learning, and per-realization
    replay are distinct NOI methods and must not be pooled without separate
    owner authority.
 
@@ -103,7 +122,9 @@ scientific owner has reviewed the recovery record and answered the ordered
 questions in [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md)
 through the packet-admission gate. In particular, do not treat the candidate
 scope, proposed recurrence graph, current implementation, or empirical studies
-as scientific authority.
+as scientific authority. The revised first question offers only three honest
+treatments: preserve the recovered recurrence, prove and validate an equivalent
+reformulation, or intentionally adopt and validate a new recurrence.
 
 ## Explicit Nonclaims
 

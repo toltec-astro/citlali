@@ -8,13 +8,16 @@ Status: Stage A deliverable/source trace; not a normative requirement crosswalk
 | Exact launch and source identities | `SOURCE_IDENTITY_MANIFEST.md` | Launch commit, frozen/approved parents, exact provisional and historical refs | Exact source binding; no promotion of evidence |
 | Ownership/boundary classification | `OWNERSHIP_AND_BOUNDARY_CLASSIFICATION.md` | Frozen PTC/MAP/JINC, approved NOI boundary, conditional FLT-FIXED freeze | Candidate FRUIT boundary; adjacent authority unchanged |
 | Four separate candidate parent routes | `CANDIDATE_PARENT_ADMISSION_MATRIX.md` | MAP, JINC, FLT-FIXED, exact provisional FLT-MATCHED snapshot | All numerical routes unavailable at launch |
-| Iterative DAG and state ownership | `ITERATIVE_DAG_AND_STATE_OWNERSHIP.md` | Governing lifecycle conventions; abstracted historical/current evidence | Candidate graph; recurrence explicitly unresolved |
+| Exact historical recurrence in owner-facing form | `HISTORICAL_RECURRENCE_BASELINE.md`; `INTERNAL_DOSSIER.md` | Exact `f70701ad...` implementation; byte-identical launch core plus evolved output orchestration; docs/tests/studies | Compatibility baseline only; evidence remains non-authoritative and excluded from authorship |
+| Explicit additive equivalence analysis | `ADDITIVE_REFORMULATION_EQUIVALENCE_ANALYSIS.md` | Historical recurrence, projection/map/output/learning evidence, focused tests/studies | Equivalence unavailable/unproven; no representational-only claim |
+| Four separated decisions and revised three-choice ODQ | `ODQ_001_RECURRENCE_DECISION_FRAME.md`; `SCIENTIFIC_OWNER_DECISION_LEDGER.md` | Owner analytical direction and recovered baseline | Preserve/prove-equivalent/intentional-new choices; no scientific choice recorded |
+| Iterative DAG and state ownership | `ITERATIVE_DAG_AND_STATE_OWNERSHIP.md` | Governing lifecycle conventions; exact abstracted historical evidence | Historical-baseline graph plus explicit equivalent/new gate |
 | Restart/checkpoint/lifecycle taxonomy | `RESTART_CHECKPOINT_AND_LIFECYCLE_TAXONOMY.md` | ADR 0006, conventions, v1/v2 recovery evidence, NOI generation boundary | Map seed and exact restart separated; schema not promoted |
 | Response/uncertainty/convergence claim discipline | `RESPONSE_UNCERTAINTY_CONVERGENCE_CLAIM_MATRIX.md` | Frozen parent boundaries, NOI ODQ-110C, historical diagnostic evidence | No response, covariance, convergence, calibration, or terminal claim |
 | Contradictions and unavailable states | `CONTRADICTIONS_AMBIGUITIES_UNAVAILABLE_STATES.md` | Whole recovery corpus | Explicit gaps; no silent defaults/fallbacks |
 | Operator/product distinctions | `OPERATOR_AND_PRODUCT_TAXONOMY.md` | Scientific conventions and recovered boundaries | Vocabulary candidate only |
 | Proposed sanitized future author inputs | `PROPOSED_SANITIZED_AUTHOR_INPUTS.md`; author placeholders | Reusable frozen/approved authority only | Not content-bound or dispatchable; Stage B prohibited |
-| Ordered owner decisions and walkthrough | `SCIENTIFIC_OWNER_DECISION_LEDGER.md` | Genuine new-work synthesis | ODQ-001 first; all scientific questions open |
+| Ordered owner decisions and walkthrough | `SCIENTIFIC_OWNER_DECISION_LEDGER.md`; `SCIENTIFIC_OWNER_RECURRENCE_REVIEW_DIRECTION_2026-08-31.md` | Genuine new-work synthesis plus direct owner Stage A direction | Revised ODQ-001 first; all scientific choices open |
 | Quarantined implementation/evidence record | `INTERNAL_DOSSIER.md` | Code/config/audits/validation/history | Explicitly prohibited from authorship |
 
 A formal requirement/equation/prediction crosswalk belongs to Stage B and must

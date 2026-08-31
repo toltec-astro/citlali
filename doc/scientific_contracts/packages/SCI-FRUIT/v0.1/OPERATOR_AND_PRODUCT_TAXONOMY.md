@@ -6,6 +6,8 @@ Status: Stage A vocabulary candidate; no equation or method is approved
 | --- | --- | --- |
 | Upstream reduction parent | Exact immutable timestream/reduction state on which one FRUIT generation operates | Candidate map-family parent or mutable work buffer |
 | Candidate map-family parent | Exact ordinary MAP, JINC, FLT-FIXED, or provisional FLT-MATCHED product considered for a route | Feedback model merely because it is map-shaped |
+| Complete route predecessor `Q_k` | Complete raw/filtered observation/coadd map bundle selected from completed iteration `k` in the historical recurrence | Selected projected model, residual, or accumulated increments |
+| Accepted feedback state `F_k` | Versioned state admitted to determine iteration `k+1`, including exact predecessor/model identity, selection/support, response, grid, and lineage | `Q_k` alone unless the contract explicitly equates them |
 | Feedback-model estimand | Scientific sky/model quantity FRUIT intends to project and update | Map signal, catalog, fitted source list, or terminal science product by default |
 | Model-construction operator | Exact selection/synthesis mapping from admitted parent/state to feedback model | Forward projector or map estimator |
 | Selection state | Exact support/source/eligibility decisions used to build a model | Formal source catalog or mere validity mask |
@@ -14,8 +16,8 @@ Status: Stage A vocabulary candidate; no equation or method is approved
 | Residual input | Exact upstream timestream minus the projected model under declared order | Noise realization or source-free truth |
 | Residual processing | Admitted RTC/PTC operation on the residual input with exact policy/state | FRUIT update law or evidence that signal is absent |
 | Processed residual | Output of residual processing before any owner-selected add-back/update operation | A pure physical-noise sample |
-| Residual map/increment | Map-estimator output intended to update an accumulated model, if selected | Next full feedback model automatically |
-| Add-back | Declared recombination of projected model with processed residual in a named domain/order | Inversion of cleaning or proof of unbiasedness |
+| Update contribution | Optional object associated with one transition; status may be diagnostic difference, equivalence witness, causal update, or admitted science product | Independently calibrated sky map or required permanent product by default |
+| Add-back/rejoin semantics | Normative declaration of which model bypasses which residual-only operators, where it rejoins, what later operators act on it, and its next-map response | Literal array addition, inversion of cleaning, or proof of unbiasedness |
 | Update/accumulation operator | Owner-selected recurrence producing immutable next model/state from prior state and new information | File overwrite or loop counter increment |
 | Iteration product | Exact product/state realized at one absolute iteration | Terminal product |
 | Terminal selector | Rule selecting a terminal iteration/product from realized states | Convergence diagnostic, hard maximum, or last file |
@@ -29,5 +31,7 @@ Status: Stage A vocabulary candidate; no equation or method is approved
 ## Naming Rule
 
 The future author should assign stable product and method identities only after
-the owner selects the estimand and recurrence. Current configuration terms and
-file labels are implementation evidence and must not determine the taxonomy.
+the owner selects the estimand and recurrence. A stable identity is compatible
+with bounded retention, exact reconstruction, or compaction when the approved
+causal and reproducibility rules allow it. Current configuration terms and file
+labels are implementation evidence and must not determine the taxonomy.

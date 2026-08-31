@@ -30,6 +30,7 @@ Status: Stage A owner-review candidate
 | `terminal` | Exact iteration/product selected by an approved stopping/selection rule | last file written or maximum reached by coincidence |
 | `checkpoint` | Complete causal state sufficient to continue the same generation exactly | map seed, QA archive, or diagnostic history |
 | `diagnostic_history` | Causally inert record used for review/validation | operational state, unless the stop/update rule consumes it |
+| `update_contribution` | Optional transition-associated object whose diagnostic, causal, equivalence, or scientific status is separately declared | accepted feedback state or permanently retained sky product by default |
 
 ## Exact-Restart Compatibility Classes
 
@@ -47,15 +48,36 @@ state, forward projector, PTC/RTC/map policies and their causal learned state,
 support/validity policy, stop/terminal policy, and completed/next absolute
 iteration. This list is not final until the owner closes the scientific DAG.
 
+For the historical baseline, the restart boundary includes the selected
+complete predecessor route product separately from learned masks, detector
+penalties, and accumulated weight-validation state. A previous residual or all
+prior increments is not a recovered checkpoint requirement.
+
 ## Checkpoint Product Classes
 
 | Class | Examples | Exact-restart treatment |
 | --- | --- | --- |
-| Scientific causal state | feedback model, selection/support state, response-affecting learned state, accumulated validation/weight state, stop-rule history when consumed | Required and content-bound |
+| Scientific causal state | current accepted feedback state, selection/support state, response-affecting learned state, accumulated validation/weight state, stop-rule history when consumed | Required and content-bound |
 | Exact identity/provenance | parents, ordered observations, policy versions, generation/branch/iteration, units/WCS/calibration | Required and compatibility checked |
 | Required external product | prior iteration map/model, upstream coefficient/response products | Required by exact identity or embedded content |
 | Diagnostic-only record | plots, report tables, event history not consumed by later logic | May be excluded only with an explicit causal-inertness claim |
 | QA/validation evidence | comparison metrics, acceptance reports | Never substitutes for operational state |
+
+## Retention Is Separate From Identity
+
+A transition contribution may have a stable identity without being stored
+forever. The future contract must define:
+
+- the minimum causal state for exact continuation;
+- the lineage facts needed to identify predecessor, transition, and successor;
+- whether a contribution must be retained, can be reconstructed exactly, can be
+  compacted into sufficient state, or may expire;
+- the reproducibility horizon and any archive tier; and
+- fail-closed behavior when required content is absent.
+
+Unbounded retention is not a default. Conversely, a storage-saving policy
+cannot discard an object that the approved transition, stopping rule,
+uncertainty method, or exact-restart law later consumes.
 
 ## Failure Semantics To Author
 

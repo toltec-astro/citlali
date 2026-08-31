@@ -20,22 +20,33 @@ recomputation, and an absolute maximum iteration. These names mix requested
 policy, numerical representation, validation hooks, and historical behavior;
 they must not be copied into a scientific contract without owner classification.
 
-## Current Realized Iteration Skeleton
+## Exact Recovered Realized Iteration Skeleton
 
-At a high level, current execution appears to:
+The historical reference `f70701ad...` and launch base `7f9307ff...` are
+byte-identical for the cited core recurrence, observation-rerun, loading,
+learning, restart, and focused-test files. Output orchestration evolved while
+preserving the route ordering described below. The exact recovered execution:
 
 1. resolve iteration geometry before the back edge;
 2. start fruit, weight-validation, learning, map/coadd, pointing, and
    postprocessing lifecycles;
-3. load an initial map seed, exact-restart map, or prior-iteration map;
-4. apply learned masks/exclusions;
-5. project and subtract the loaded map from timestreams;
-6. run PTC processing and calculate source-subtracted weights/noise products;
-7. add the same projected map back;
-8. retain or recompute weights according to requested policy;
-9. remove invalid detectors, collect learning, and produce maps/coadds;
-10. write iteration outputs, summaries, and a required checkpoint; and
-11. increment the absolute iteration.
+3. for every iteration, reconstruct each observation from its original input;
+4. load an initial map seed, exact-restart map, or the prior iteration's
+   selected complete observation/raw, observation/filtered, coadd/raw, or
+   coadd/filtered map bundle;
+5. apply applicable prior learned masks/exclusions, then construct, project, and
+   subtract a threshold/support-selected model from the fresh PTC input;
+6. run PTC processing and residual-only weight/noise operations;
+7. reproject the same selected map model after residual flag/weight changes and
+   restore it, potentially on a slightly different surviving sample set;
+8. retain residual weights or recompute weights after restoration according to
+   requested policy;
+9. remove invalid detectors, collect learning, apply pre-mapmaking exclusions,
+   and produce complete observation/coadd maps;
+10. normalize and optionally filter the maps, selecting the configured complete
+    route product as the next predecessor;
+11. write iteration outputs, summaries, and a required checkpoint; and
+12. increment the absolute iteration.
 
 The observed loop is governed by an absolute maximum and a convergence flag;
 the inspected path does not establish a scientific convergence rule. This is
@@ -50,6 +61,8 @@ weight-validation sums, counts, factors, and validity. The first checkpoint
 format omitted PTC weight-validation state and was found unable to support an
 exact continuation claim.
 
+The checkpoint relies on the completed reduction directory for the selected
+complete predecessor map; it does not embed that map or an increment history.
 Diagnostic histories/vectors are not restored. That is compatible with exact
 restart only if they cannot causally affect later outputs. Stage A must derive
 the completeness criterion from scientific state ownership, not freeze the
@@ -64,9 +77,14 @@ current field list as sufficient.
   operator or response.
 - Loading a map with compatible pixels/WCS does not establish compatible units,
   beam/response, support, validity, calibration, or sky-model meaning.
-- Subtracting and adding back the same numerical map does not answer whether the
-  evolving object is a cumulative model, residual estimate, increment, filtered
-  amplitude field, or selection-dependent source model.
+- Historical storage and loading do answer one narrower question: the carried
+  numerical predecessor is one selected complete route map bundle, and the
+  applied feedback is a selection-dependent model derived from it. They do not
+  establish that this bundle is the scientifically correct `F_k` or that its
+  replacement transition is equivalent to additive residual accumulation.
+- A direct map-domain addition would require a left-identity/response argument
+  for projection plus final weighting/mapmaking/normalization/filtering. No such
+  general proof was recovered.
 
 ## Historical Evidence Summary
 

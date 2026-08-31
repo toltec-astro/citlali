@@ -5,7 +5,7 @@ Status: Stage A recovery record
 | ID | Recovered tension or gap | Why it cannot be silently resolved | Required disposition |
 | --- | --- | --- | --- |
 | `FRUIT-GAP-001` | “Prior map” is used historically where science needs a typed feedback model | MAP, JINC, fixed-filtered, and matched-filtered signals have different estimands and responses | ODQ-001 through ODQ-003 |
-| `FRUIT-GAP-002` | Residual-increment accumulation and add-back/full-map replacement are both plausible readings of recovered behavior | They imply different response, state, and restart laws and are not proven equivalent | ODQ-001 |
+| `FRUIT-GAP-002` | The recovered historical transition carries a new complete route product after subtraction/residual processing/restoration, while the original ODQ proposed explicit residual-increment accumulation | Additivity requires projection/mapmaker identity, common response/support/grid, weight/normalization/filter commutation, and identical learning; these are not proven and some restoration support is known to change | Revised ODQ-001: preserve, prove equivalent, or label intentional new recurrence |
 | `FRUIT-GAP-003` | Four parent families share map-like representations | Common array/WCS does not establish unit, beam, response, covariance, support, selection, or model compatibility | ODQ-002/003; keep all routes unavailable meanwhile |
 | `FRUIT-GAP-004` | JINC interpolation/materialization can exist while numerical JINC science route is unavailable | Numerical code support cannot create missing coefficients, array parameters, or adequacy authority | Preserve `UNAVAILABLE_PARENT_ROUTE` |
 | `FRUIT-GAP-005` | FLT-FIXED is conditionally frozen but its ordinary parents/profiles remain unavailable | A frozen transformation is not a numerically available transformed product and supplies no inverse | Preserve typed unavailable state |
@@ -20,6 +20,8 @@ Status: Stage A recovery record
 | `FRUIT-GAP-014` | Historical audit inventory put FRUIT last and filtered inputs fail-closed; owner now launches after filtering | Sequencing changes review order, not route availability or science meaning | Record owner sequencing decision; decide routes separately |
 | `FRUIT-GAP-015` | Pointing/OOF need an exact terminal map/kernel relation | No owner-approved terminal selector or delivered response exists | ODQ-008/011; downstream remains unavailable |
 | `FRUIT-GAP-016` | NOI can target fixed state, successor learning, or member replay | These are different conditional targets and cannot share one ensemble by convenience | ODQ-010 and approved NOI boundary |
+| `FRUIT-GAP-017` | A stable update-contribution identity may be useful for lineage, diagnostics, or restart | Identity does not establish scientific calibration or causal necessity, and does not imply unbounded retention | Decide ODQ-001C and ODQ-001D separately |
+| `FRUIT-GAP-018` | Literal sample-array add-back could be fused or moved to map space | Execution form may vary, but model removal, residual-only exposure, bypass, rejoin order, support, and next-map response are scientific semantics | ODQ-001B/004; require equivalence for alternative implementation |
 
 ## Typed Unavailable States
 
@@ -28,6 +30,8 @@ The future contract should preserve at least these machine-auditable reasons:
 - `UNAVAILABLE_PARENT_ROUTE`
 - `UNAVAILABLE_MODEL_CONSTRUCTION`
 - `UNAVAILABLE_FORWARD_PROJECTOR`
+- `UNAVAILABLE_RECURRENCE_EQUIVALENCE`
+- `UNAVAILABLE_UPDATE_CONTRIBUTION_STATUS`
 - `UNAVAILABLE_RESPONSE`
 - `UNAVAILABLE_COVARIANCE`
 - `UNAVAILABLE_SUPPORT_OR_VALIDITY`

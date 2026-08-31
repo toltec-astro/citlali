@@ -1,6 +1,6 @@
 # SCI-FRUIT v0.1 — Stage A Source Identity Manifest
 
-Manifest identity: `SCI-FRUIT-STAGE-A-SOURCE-IDENTITY v0.1/r0.1`
+Manifest identity: `SCI-FRUIT-STAGE-A-SOURCE-IDENTITY v0.1/r0.2`
 
 Status: exact recovery-source binding; not an author-packet or scientific
 authority manifest
@@ -65,6 +65,40 @@ Historical fruit-calibration reference commit:
 `f70701ad488444f3e2528c6bbe3e798863c9e301`. It is an ancestor/evidence
 identity, not a scientific authority ref.
 
+Historical reference tree:
+`2009a1397bd67d615a1d6e9a8419e18fc794a81e`.
+
+## Exact Historical Recurrence Implementation And Test Evidence
+
+The following exact `f70701ad...` objects recover the owner-facing recurrence.
+The core recurrence, observation rerun, loading, learning, restart, and focused
+test paths have no byte difference at the launch commit `7f9307ff...`.
+`filtered_observation_outputs.h` and `iteration_coadd_outputs.h` evolved after
+the historical reference and are bound here only for their exact historical
+route-order evidence; the launch versions separately corroborate the same raw/
+filtered route ordering. All are quarantined evidence and are prohibited from
+an implementation-blind author packet.
+
+| Exact historical ref:path | Git blob | SHA-256 | Evidence role |
+| --- | --- | --- | --- |
+| `f70701ad...:include/citlali/core/pipeline/reduction_iteration_loop.h` | `344d8c612603df73796bfe3f89975e62c3a3aa1c` | `553a33ca0ba0849cb7cb8ce99b7542a0951b76d4ff27ea2a7c78d2c11266d9ef` | outer iteration repeats complete reduction |
+| `f70701ad...:include/citlali/core/pipeline/reduction_observation.h` | `dccab3e173261d53a948dc9825eea5898f780244` | `328d6c3d5fe2e2a58654869d727e8079b09ebb966d507c245e5ef1bfa0ed8cb0` | prepares original observation inputs each iteration |
+| `f70701ad...:include/citlali/core/pipeline/reduction_observation_pipeline.h` | `1b88ce14d91821ff99ea71fe0d472def3bdffbcd` | `191d452abdcbee35614623bae996fe62d37cfb7f88d62b61d7bbeaac91671e0a` | predecessor loading before observation pipeline and output |
+| `f70701ad...:include/citlali/core/engine/detail/lali_run_impl.h` | `a950fb3566af85216a52e7483932cdd1bba43144` | `e76fa90cc5c8a4dae84fdd7a258ee834c62d389e65b323b3010d2f92b7f56341` | Lali RTC/masks/subtract/PTC/weights/map order |
+| `f70701ad...:include/citlali/core/engine/detail/lali_fruitloop_impl.h` | `89fa779fbbd66bf4a3aa3604d92ad54518b9d2a4` | `fc480b6e64b6108954dfc7f9e6fe129d25db2fbf4d2209b2872492460da32fd8` | residual weight/noise pass and restoration |
+| `f70701ad...:include/citlali/core/engine/detail/pointing_run_impl.h` | `072e8cdbc31add8cfab4c1080eb6dbd4d3f980d4` | `0200e17b209023d51e71e34506752d33f51082e4849bee1ab33732a301c85cab` | Pointing recurrence order |
+| `f70701ad...:include/citlali/core/engine/detail/pointing_fruitloop_impl.h` | `eac8ad4e7ad58e0ca42915492b9e3f44c0eb0529` | `eb6ca404a75fa56e04a7e515d1c81c48240fb0050891218bdd165faa8c520945` | Pointing subtraction/residual/restoration |
+| `f70701ad...:include/citlali/core/pipeline/previous_fruit_loop_map_loading.h` | `8fa79cdc06a00b648661890ee371b64061edc2ca` | `91f7cd5f0b311693569423bbd6fd28682790f63f675ab4fb364b8d8c398851e4` | previous complete route-product load |
+| `f70701ad...:include/citlali/core/pipeline/fruit_loop_paths.h` | `ce499ecfd61e32e659d0cef792fca77c69d1b47f` | `45b29b588b51c002c06539d52ee1cad3a2448e47cb9d12ac95957fe4010dde2f` | observation/coadd raw/filtered route selection |
+| `f70701ad...:include/citlali/core/pipeline/fruit_loop_map_io.h` | `046d9f5dee6bafc6b663eb108764fbd15d8f0020` | `3b83959cfbb7771e707a5fc9a3a6b166bd57a5de9fbc58a6b572c7903b41eb23` | complete map-bundle load geometry/grouping |
+| `f70701ad...:include/citlali/core/pipeline/filtered_observation_outputs.h` | `d52aeca1c30f604485ba8705df9bdf32d6f474c3` | `e80906d60e982cc6523d675b8ecda34b7b8372246dfb4b6f38593519c980135e` | post-map observation filtering route |
+| `f70701ad...:include/citlali/core/pipeline/iteration_coadd_outputs.h` | `16f33c8ed392f6a257604317100743a2250bfa4b` | `bd91b1c7271523a492b72b78fb3753f9dd265f26f48a7294129ebfd986b705ec` | raw then optional filtered coadd products |
+| `f70701ad...:include/citlali/core/engine/learning.h` | `3bff645da4da41c602ad8b750ff825da1f7795ff` | `7ae32ad060858987bd299f04f7315be215f9a55ad2a3cafe700fcd00c755be4c` | learn/apply phases and cumulative effective masks/penalties |
+| `f70701ad...:include/citlali/core/pipeline/fruit_loop_restart_lifecycle.h` | `91284a1390dec5b64f6db3559a78342f7b581258` | `dbc2c46f7992d0b56d96de1d49278ae7c0bb36cfbb47b8184dc38f36227930a1` | absolute restart and predecessor selection |
+| `f70701ad...:src/citlali/core/pipeline/reduction_restart_checkpoint.cpp` | `50ff8d4d84b64f504b3e72112499c64d70bb786f` | `b1d5b4ba0115ea66e43ea1742967917980b6291dd2e998d02e93c8d26008ea61` | v2 serialized causal state and compatibility checks |
+| `f70701ad...:tests/test_fruit_loop_recurrence.cpp` | `20b695ca049c198f5377f4441e376b6375992a25` | `1dfaa0677f291187dd88cafd3e26d8a2ccd49f958c1fda1595d3657cb5ba0138` | sample round trip and fixed-linear convergence seam |
+| `f70701ad...:tests/test_learning_and_fruit_contracts.cpp` | `0d67ed230dc585f2f0cf862f6fc66f45dac9720c` | `b7eba3b2fa443b5067a4c2e2532a13958c65d60dc62275f06971672c11912863` | learning/weight checkpoint and synthetic continuation tests |
+
 ## Historical Coordination/Audit Snapshot
 
 Snapshot commit: `8c581bfb26f01b187f4f1e0565f4457bcc25f099`
@@ -86,7 +120,9 @@ author reference.
 
 ## Verification Rule
 
-The package verifier checks the launch and provisional commit/tree identities,
-the exact SHA-256 values above, local links, Stage B placeholders, route labels,
-and the absence of an owner-approved/dispatchable Stage B claim. A later source
-change requires a new manifest revision; it must not silently reuse `r0.1`.
+The package verifier checks the launch, historical, and provisional commit/tree
+identities, the exact SHA-256 values above, historical-to-launch core-recurrence
+file equality, local links, Stage B placeholders, route labels, the revised
+preserve/equivalent/new ODQ frame, and the absence of an owner-approved or
+dispatchable Stage B claim. A later source change requires a new manifest
+revision; it must not silently reuse `r0.2`.

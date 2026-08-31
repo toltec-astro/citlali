@@ -1,16 +1,21 @@
 # SCI-FRUIT v0.1 — Scientific-Owner Decision Ledger
 
-Status: Stage A owner-review queue; all scientific questions open
+Status: Stage A owner-review queue; original ODQ-001 withdrawn and reframed;
+all scientific questions open
 
 The questions are ordered by consequence. Later questions must not be answered
 in a way that silently fixes an earlier one.
 
 | ID | Owner question | Candidate dispositions to review | Consequence/stop gate | Status |
 | --- | --- | --- | --- | --- |
-| `SCI-FRUIT-ODQ-001` | **What exact scientific object is iterated, and what is the recurrence/update law?** | (A) cumulative feedback model plus separately persisted residual increments and explicit update `U`; (B) replacement by a new full-model estimate each iteration; (C) another owner-defined estimand/law. State whether sample-domain add-back is normative, derived, or excluded. | Determines DAG, response, state, restart, route admissibility, and what “iteration” means. No route decision should precede it. | **open — first review question** |
+| `SCI-FRUIT-ODQ-001` | **Which treatment of the recovered historical recurrence should v0.1 adopt?** | (1) preserve the exact recovered recurrence; (2) adopt a mathematically equivalent reformulation only with the route-specific proof and validation stated in the equivalence analysis; (3) intentionally adopt a new recurrence with scientific motivation, expected differences, compatibility effects, and validation obligations. See `ODQ_001_RECURRENCE_DECISION_FRAME.md`. | Determines method/version compatibility and governs the four separate axes below. No route decision should precede it. | **open — first review question; reframed after owner rejection of prior wording** |
+| `SCI-FRUIT-ODQ-001A` | What exact versioned feedback state `F_k` is carried from completed iteration `k` to `k+1`? | Approve or replace the historical-baseline relationship: one selected complete route map bundle is the numerical predecessor, while selection/support/projector/response/lineage complete the accepted state. | Defines the state space on which any update or equivalence statement is meaningful. | open; answer separately from update law |
+| `SCI-FRUIT-ODQ-001B` | What exact numerical transition `U_k` maps `(F_k,R_{k+1})` to `F_{k+1}`? | Preserve `U_hist`, approve a proved equivalent form, or approve a labeled new law. Ordinary `F+Delta F` is not a default. | Defines subtraction, residual-only exposure, bypass/rejoin, final response, and recurrence compatibility. | open; general law only |
+| `SCI-FRUIT-ODQ-001C` | What status does each per-iteration update contribution have? | None required; diagnostic difference; lineage/equivalence witness; causal update state; or separately admitted scientific product with its own calibration/response/uncertainty. | Prevents an increment from silently becoming an independently interpretable sky product. | open; no scientific increment status |
+| `SCI-FRUIT-ODQ-001D` | What persistence is required for restart, lineage, and reproducibility? | Define causal minimum, retention horizon, compaction/reconstruction, archive tier, and fail-closed absence. Do not infer permanent retention from identity. | Prevents both incomplete restart and unbounded intermediate-product requirements. | open; causal-completeness rule only |
 | `SCI-FRUIT-ODQ-002` | Which of ordinary MAP, JINC, FLT-FIXED, and future FLT-MATCHED may be candidate parents, for which observation/coadd groupings? | Admit individually, defer, or exclude; preserve numerical unavailable gates and no fallback. | Selects route-specific author boundaries; does not itself construct a feedback model. | open |
 | `SCI-FRUIT-ODQ-003` | How does each admitted parent become the feedback model, including selection, synthesis, support, and calibration? | Owner-select exact model-construction family; delegate bounded alternatives to author only after target estimand is fixed; decide internal selection versus later source-package boundary. | Prevents “map equals model” and source-catalog leakage. | open |
-| `SCI-FRUIT-ODQ-004` | What forward projector and subtraction/add-back order is scientifically intended? | Define exact sample-domain operator and its relation to parent response/grid/units; select residual-increment or full-map path if not closed by ODQ-001. | Required for response, null space, failure, and implementation conformance. | open |
+| `SCI-FRUIT-ODQ-004` | What forward projector and removal/bypass/rejoin order is scientifically intended? | Define which model is removed, which operators see residual only, which operations the accepted model bypasses, where it rejoins, and its response in the next map. Allow a fused or map-domain form only by proof of those semantics. | Required for response, null space, failure, and implementation conformance. | open |
 | `SCI-FRUIT-ODQ-005` | Which policy/state is fixed, learned, applied, carried, reset, or relearned across observations and iterations? | Decide model selection, RTC/PTC, masks, detector penalties, weights, response state, and learning cadence; identify adjacent-owner state. | Defines generation graph and causal checkpoint set. | open |
 | `SCI-FRUIT-ODQ-006` | What response and bias targets must be published? | Separate fixed-state response, complete-procedure response, attenuation/bias, null space, and route-specific validity; allow typed unavailability where justified. | Blocks calibration, correction, and downstream response claims. | open |
 | `SCI-FRUIT-ODQ-007` | What support, selection, edge, missing/non-finite, validity, and failure rules apply? | Complete-support-only, partial-support with exact rule, or route-specific policies; define unavailable versus failed versus absent. | Required before numerical admission and stopping metrics. | open |
@@ -25,6 +30,12 @@ in a way that silently fixes an earlier one.
 | ID | Decision | Effect | Non-effect |
 | --- | --- | --- | --- |
 | `SCI-FRUIT-SEQ-2026-08-31` | Launch recovery-first SCI-FRUIT after the single-pass MAP/JINC/NOI/filtering line and before source-fitting and Pointing/OOF | Changes roadmap sequencing and authorizes Stage A recovery on the dedicated branch | Does not approve this packet, any parent, estimator, recurrence, Stage B work, algorithm change, validation, or production action |
+
+## Recorded Stage A Analytical Direction
+
+| ID | Direction | Effect | Non-effect |
+| --- | --- | --- | --- |
+| `SCI-FRUIT-DIR-2026-08-31-RECURRENCE-BASELINE` | Recover the exact historical recurrence; use it as the v0.1 reference; analyze additive equivalence; separate `001A`–`001D`; return preserve/equivalent/new choices | Supersedes the original ODQ-001 wording and establishes the required Stage A analysis | Does not select any choice, approve historical science, make addition normative, require permanent increment retention, admit a route, or launch Stage B |
 
 ## Walkthrough Rule
 

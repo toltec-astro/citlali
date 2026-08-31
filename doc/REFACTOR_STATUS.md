@@ -83,12 +83,21 @@ SCI-FLT-FIXED record commit
 `7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`. Its recovery packet classifies
 ordinary MAP, JINC, FLT-FIXED, and the provisional matched-filter snapshot at
 `faff97565ee27e375e1337febe5a0a6681507c3b` as four separate candidate routes;
-none is numerically admitted. The packet includes an iterative DAG, causal
-state/checkpoint and lifecycle taxonomy, response/uncertainty/convergence claim
-matrix, explicit unavailable states, and an ordered owner-decision ledger. Its
-first open question is the feedback-model estimand and recurrence/update law.
-No Stage B author packet, algorithm change, frozen-package edit, validation,
-production, or Unity activity is authorized or claimed.
+none is numerically admitted. After the owner rejected the original cumulative
+immutable-increment framing, Stage A recovered the exact historical reference:
+each iteration rereads the original observations, derives and subtracts a model
+from one selected complete predecessor route product, runs residual-only PTC/
+weight/noise operations, restores the accepted model, and carries a newly
+completed raw or filtered observation/coadd product. The revised packet uses
+`F_{k+1}=U_k(F_k,R_{k+1})`, does not make ordinary addition normative, and marks
+the required projection/remapping, response, support, WCS/grid, weighting,
+normalization, mask, filtering, and learning equivalence conditions as
+unavailable or unproven. Revised ODQ-001 separates carried-state identity,
+transition law, contribution status, and bounded persistence, then offers three
+choices: preserve history, prove and validate an equivalent reformulation, or
+intentionally adopt a new recurrence. No scientific choice, Stage B author
+packet, algorithm change, frozen-package edit, validation, production, or Unity
+activity is authorized or claimed.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
