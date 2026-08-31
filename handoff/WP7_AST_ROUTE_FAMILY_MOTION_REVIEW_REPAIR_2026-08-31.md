@@ -8,7 +8,10 @@ Repair implementation revision:
 `adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7`
 
 Status: **bounded repair and clean exact-SHA representative replay pass;
-independent exact-SHA re-review pending**
+fresh independent exact-SHA re-review PASS with no findings**
+
+Reviewed package revision:
+`37c2adfa84762cb8cef5dc66d5b1fbc6753331f6`
 
 ## Reviewed package and finding
 
@@ -132,7 +135,18 @@ the owner authority, select a decimation factor, certify a filter, activate an
 RTC route, publish a persistent product, or alter CAL, PTC, MAP/JINC, legacy
 Beammap, or nonidentity numerical behavior.
 
-The AST v2 conformance gate remains open until a fresh independent exact-SHA
-re-review passes the repaired package. The first reviewed package remains
-preserved as historical evidence; this document is its bounded successor
-handoff.
+Fresh independent read-only re-review of exact package
+`37c2adfa84762cb8cef5dc66d5b1fbc6753331f6`, whose direct parent is repair
+`adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7`, returned `PASS` with zero
+`BLOCKER`, `MAJOR`, or `MINOR` findings. All seven requested non-regression
+questions passed; the four evidence/executable hashes authenticated; the
+seven-case replay changed only declared provenance/build identity fields; and
+all focused, mutation, full-repository, baseline, config-preflight,
+dependency/ignored-source, clean-build, and fresh observation-152390 replay
+gates passed.
+
+The AST v2 conformance prerequisite and D0/F0 native-census gate are closed.
+The first reviewed package remains preserved as historical evidence; this
+document is its bounded successor handoff. The next authorized work is D2
+PSD/line measurement evidence, not factor selection, filter-bank freeze,
+nonidentity RTC activation, or publication.

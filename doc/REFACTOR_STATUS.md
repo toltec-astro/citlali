@@ -1,5 +1,25 @@
 # Citlali Refactor Status
 
+## 2026-08-31 WP-7 AST V2 Conformance Closeout
+
+Fresh independent read-only review of exact package
+`37c2adfa84762cb8cef5dc66d5b1fbc6753331f6`, whose direct implementation
+parent is repair `adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7`, returned `PASS`
+with zero `BLOCKER`, `MAJOR`, or `MINOR` findings. The review authenticated the
+observation-152390 and seven-case evidence and executables, confirmed all seven
+non-regression questions, and independently reproduced the focused, mutation,
+full-repository, baseline, config-preflight, dependency, clean-build, and
+representative-replay gates. The AST v2 conformance prerequisite and D0/F0
+native census are therefore closed. Exact repaired identities and the review
+disposition are recorded in the
+[AST v2 review-repair handoff](../handoff/WP7_AST_ROUTE_FAMILY_MOTION_REVIEW_REPAIR_2026-08-31.md).
+
+The next authorized certification increment is D2: native-rate residual PSD
+measurement, PSD-envelope aggregation sensitivity, and the separate native
+line/fold and pre-decimation-ordering audit. It remains measurement/evidence
+work only: no filter bank, factor-selection policy, nonidentity RTC route, or
+persistent product is activated.
+
 ## 2026-08-30 WP-7 Occurrence-Level Upper-Speed Admission
 
 The scientific owner approved
@@ -59,8 +79,9 @@ non-finite Beammap footprint/angle metadata was classified during profile
 admission, bypassing occurrence-local Hold-first precedence. Bounded repair
 `adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7` now classifies every non-finite
 numeric membership field per occurrence after Hold and preserves fail-closed
-admission for finite unsupported profiles. Local F0 evidence construction is
-complete; final F0 conformance remains open for exact-SHA re-review.
+admission for finite unsupported profiles. Fresh independent review of exact
+package `37c2adfa84762cb8cef5dc66d5b1fbc6753331f6` passed with no findings, so
+local F0 evidence construction and final F0 conformance are closed.
 `M>1` filter-support erosion, weighted exposure, spatial coverage, PSD/filter
 research, and nonidentity production activation remain pending.
 
@@ -78,8 +99,9 @@ and first-review identities are preserved in the
 [AST v2 acceptance package](../handoff/WP7_AST_ROUTE_FAMILY_MOTION_ACCEPTANCE_PACKAGE_2026-08-30.md).
 The [bounded review repair](../handoff/WP7_AST_ROUTE_FAMILY_MOTION_REVIEW_REPAIR_2026-08-31.md)
 passes the complete local gate and exact-SHA seven-case replay with unchanged
-scientific payloads. The resulting values are eligible F0 evidence; exact-SHA
-re-review remains pending before the conformance gate is closed.
+scientific payloads. Fresh independent exact-SHA review of package
+`37c2adfa84762cb8cef5dc66d5b1fbc6753331f6` passed with no findings; the
+resulting values are conforming F0 evidence and the AST v2 gate is closed.
 
 ## 2026-08-30 WP-7 Filtering and Downsampling Certification Plan
 
@@ -112,10 +134,10 @@ network-local cadence/AST inventory, fixed structural ceilings, and raw
 occurrence admission for every factor without selection. The clean exact-SHA
 v2 execution now closes local Science, OOF, Pointing, and Beammap motion-
 evidence construction. Beammap APT v2 custody and complete detector-to-raw
-inventory remain closed independently. Fresh exact-SHA review of the v2
-implementation and evidence is pending. This
-plan does not authorize nonidentity RTC implementation or production
-activation.
+inventory remain closed independently. Fresh exact-SHA review of the repaired
+v2 implementation and evidence passed with no findings. D0/F0 is closed and
+the next authorized work is D2 PSD/line evidence. This plan does not authorize
+nonidentity RTC implementation or production activation.
 
 ## 2026-08-30 WP-7 AST Scan-Motion Representative Gate
 

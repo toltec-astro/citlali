@@ -231,8 +231,10 @@ network-specific mapped views without a common grid. The bounded raw product
 and mapped-view implementation preserves the v1 152390 result and passes local
 synthetic plus clean seven-case exact-SHA execution gates. The first review's
 single non-finite Beammap metadata cause/Hold-precedence finding is repaired at
-`adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7`; exact-SHA re-review,
-PSD/filter-bank certification, and the remaining gates are pending. Governing
+`adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7`. Fresh independent review of exact
+package `37c2adfa84762cb8cef5dc66d5b1fbc6753331f6` passed with no findings,
+closing AST v2 and D0/F0 conformance. PSD/filter-bank certification and the
+remaining gates are pending. Governing
 structural authority is
 [`WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md`](WP7_RTC_SCAN_ARRAY_PLANNING_OWNER_AUTHORITY_2026-08-29.md)
 and its

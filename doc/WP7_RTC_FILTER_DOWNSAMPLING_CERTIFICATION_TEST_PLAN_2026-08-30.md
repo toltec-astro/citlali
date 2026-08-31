@@ -234,17 +234,17 @@ step are recorded in the
 The v2 execution completes local motion/admission evidence construction for
 Science, OOF, Pointing, and Beammap while preserving Beammap 148670's verified
 baseline APT v2 custody and complete detector-to-raw inventory without an
-optional matched detector relation. Final F0 conformance remains pending the
-fresh independent exact-SHA review.
+optional matched detector relation. Fresh independent exact-SHA review passed
+the repaired package with no findings, closing final F0 conformance.
 
 The bounded
 [AST route-family motion owner-decision packet](WP7_AST_ROUTE_FAMILY_MOTION_OWNER_DECISION_PACKET_2026-08-30.md)
 is approved as the exact successor authority needed to close this gap while
 retaining the accepted v1 numerical operator. Local synthetic tests and the
-clean seven-case representative execution pass at
-`672f907355a3f15f3ee987d92a5f7e95bbdc38b5`. The values are eligible F0
-evidence but may not permit F1 to advance until fresh independent exact-SHA
-review closes conformance.
+clean seven-case representative execution and bounded repair pass at
+`adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7`. Fresh independent review of exact
+package `37c2adfa84762cb8cef5dc66d5b1fbc6753331f6` returned `PASS` with no
+findings. The values are conforming F0 evidence and the D0/F0 gate is closed.
 
 ### F1: bounded filter-family comparison
 
@@ -630,6 +630,7 @@ The recommended bounded sequence is:
    survivors, then prepare the learn-consider-apply production increment and
    its exact acceptance gates.
 
-The first actionable increment is item 1. It constructs measurement and
-fixture tooling only. It does not yet add nonidentity RTC to an executable
-science route.
+Item 1 is complete and independently conforming. The first remaining actionable
+increment is item 2. It constructs PSD and line measurement/evidence tooling
+only; it does not add nonidentity RTC to an executable science route or select
+a factor.

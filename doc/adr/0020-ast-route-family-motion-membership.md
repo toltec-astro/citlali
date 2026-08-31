@@ -1,8 +1,8 @@
 # ADR 0020: AST route-family motion membership
 
 Status: accepted bounded scientific-owner authority 2026-08-30; first
-exact-SHA review held on one typed-cause precedence defect; bounded repair and
-representative replay pass; exact-SHA re-review pending
+exact-SHA review held on one typed-cause precedence defect; bounded repair,
+representative replay, and fresh independent exact-SHA re-review pass
 
 Decision owners: Citlali project owner and scientific owner
 
@@ -89,3 +89,10 @@ another named authority and representative evidence.
 - [Filtering/downsampling certification plan](../WP7_RTC_FILTER_DOWNSAMPLING_CERTIFICATION_TEST_PLAN_2026-08-30.md)
 - [Clean implementation and representative evidence](../../handoff/WP7_AST_ROUTE_FAMILY_MOTION_ACCEPTANCE_PACKAGE_2026-08-30.md)
 - [Independent-review finding and bounded repair evidence](../../handoff/WP7_AST_ROUTE_FAMILY_MOTION_REVIEW_REPAIR_2026-08-31.md)
+
+The fresh independent re-review examined exact package
+`37c2adfa84762cb8cef5dc66d5b1fbc6753331f6`, whose direct implementation parent
+is `adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7`. It returned `PASS` with zero
+findings and closed the AST v2 conformance prerequisite and D0/F0 native-census
+gate. This disposition does not certify a filter, select a factor, or activate
+nonidentity RTC.

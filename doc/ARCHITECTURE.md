@@ -409,11 +409,13 @@ Its compact raw product and independent network-mapped views are implemented in
 Local synthetic and clean seven-case exact-SHA execution gates pass at
 `adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7`. The first independent review
 found one typed-cause/Hold-precedence defect in non-finite Beammap metadata;
-the bounded repair and unchanged representative payloads now await exact-SHA
-re-review. M>1 support erosion, weighted exposure/spatial coverage,
-representative PSD envelopes, certified bank artifacts, automatic-selection
-closure, and their remaining gates are pending. The v1 Kaiser factor/tap sweep
-is historical evidence only.
+fresh independent review of exact package
+`37c2adfa84762cb8cef5dc66d5b1fbc6753331f6` passed the bounded repair and
+unchanged representative payloads with no findings. The AST v2 and D0/F0
+conformance gates are closed. M>1 support erosion, weighted exposure/spatial
+coverage, representative PSD envelopes, certified bank artifacts, automatic-
+selection closure, and their remaining gates are pending. The v1 Kaiser
+factor/tap sweep is historical evidence only.
 The implementation slices, storage and execution baseline, performance-tool
 adoption policy, and evidence gates are in
 [WP-7 Timestream Successor Implementation Baseline](WP7_TIMESTREAM_SUCCESSOR_IMPLEMENTATION_BASELINE.md).
