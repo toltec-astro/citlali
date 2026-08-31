@@ -1,13 +1,15 @@
 # SCI-FLT-FIXED v0.1 Scientist Rationale
 
-Document identity: `SCI-FLT-FIXED-SCIENTIST-RATIONALE v0.1/draft-r0.2`
+Document identity: `SCI-FLT-FIXED-SCIENTIST-RATIONALE v0.1/draft-r0.3`
 
 Status: implementation-blind Stage B explanatory draft; scientific-owner review required
 
 Scientific owner: Grant Wilson
 
+Stage B date: `2026-08-30`
+
 Normative import: the complete
-`SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.2`, source SHA-256
+`SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.3`, source SHA-256
 `{{NORMATIVE_CORE_SHA256}}`, is incorporated without modification. If this
 rationale and that core differ, the core controls.
 
@@ -35,6 +37,17 @@ This is not a general filtering contract. It does not combine deterministic
 convolution with Wiener inference, matched or template-amplitude estimation,
 source learning, data-derived mode selection, automatic method selection, or
 per-realization relearning.
+
+The complete scientific route is deliberately one-way:
+
+```text
+exact parent signal role
+  -> exact parent-row admission
+  -> frozen J_full
+  -> one sampled convolution applied once
+  -> immutable FLT bundle with FLT-NOI-COMPATIBILITY
+  -> optional separate SCI-NOI child referencing FLT
+```
 
 ## 2. Why strict linearity is the base object
 
@@ -72,11 +85,12 @@ sampled coefficients, their grid offsets, center, phase, orientation, support,
 and normalization define the transformation. A family label or continuous
 ideal does not.
 
-Low-pass is a further scientific claim about that exact sampled operator. It
-requires an exact coordinate-domain method, a compatible affine angular metric
-or another proof of angular transfer, frequency grid, DC gain, passband,
-transition, stopband or attenuation, phase, anisotropy, finite-grid and edge
-limitations, and complete parameter provenance. If any are absent, it can
+Low-pass is a further scientific claim about that exact sampled operator. Its
+plan binds the transform sign and normalization; coordinate and frequency
+units; origin, ordering, signed and Nyquist treatment; frequency grid;
+response quantity; linear or decibel attenuation; band-region geometry;
+phase branch; anisotropy; WCS metric; DC gain; limitations; and provenance.
+If any fact is absent or a different transform convention is used, it can
 still be honest to say fixed convolution, but not low-pass.
 
 The interior sampled-kernel transfer is also not automatically one global
@@ -108,12 +122,13 @@ footprint. An edge row can remain in parent-shaped storage for alignment, but
 its scientific state is unavailable with a cause. It is not zero. This keeps
 numerical convenience separate from scientific admission.
 
-The closure distinguishes geometric storage footprint `K_geom`, exact
-nonzero-coefficient support `K_nonzero`, and scientifically required dependency
-set `K_req`. Base v0.1 deliberately requires every stored geometric location,
-including an exact-zero coefficient; zero is a representation fact, not a
-floating threshold. This makes the admission rule reproducible and prevents a
-numerical tolerance from silently changing scientific support.
+The owner disposition separates scientific geometry `K_geom_science` from
+nonauthoritative serialization `K_store`. For the ordinary method,
+`K_req = K_nonzero`, where exact nonzero is decided from the canonical
+coefficient representation and never from a tolerance. Dense, sparse, cropped,
+and zero-padded encodings of the same kernel therefore leave `S_out`, response,
+covariance, and identity unchanged. A required zero-valued offset needs a
+separately named scientific method independent of storage.
 
 Identity and zero need explicit special cases. Identity requires only the same
 parent row and therefore preserves the exact admitted finite parent domain.
@@ -146,6 +161,12 @@ difference with FLT fixed can each receive the identical `A_Theta,J` exactly
 once, but they remain different response families. Re-resolving FLT during a
 procedure response leaves SCI-FLT-FIXED.
 
+A full-procedure difference is valid only when baseline and perturbed parent
+products define one exact compatible difference on the frozen domain. A change
+in membership, availability, WCS, quantity, or support makes affected response
+rows unavailable while preserving `J_full` and the parent state-change record;
+equal shape is not enough.
+
 When no compatible basis, domain, or parent response exists, the requested
 transformed response remains unavailable. The kernel cannot stand in for the
 whole source response because the parent response, beam, centering, edge rule,
@@ -172,8 +193,18 @@ C_out = A_Theta,J C_parent transpose(A_Theta,J).
 ```
 
 Even independent parent pixels generally become correlated after convolution
-because neighboring outputs reuse input pixels. A variance plane contains only
-marginals. It is not full covariance, and unknown cross terms are not zero.
+because neighboring outputs reuse input pixels. More generally,
+
+```text
+Var(y_i) = sum_j A_ij^2 Var(m_j)
+           + 2 sum over j<k of A_ij A_ik Cov(m_j,m_k).
+```
+
+Marginal parent variances therefore do not establish independence and usually
+do not determine filtered marginals. Complete covariance, an explicit
+independent-diagonal model, marginal-only information, a structured or partial
+model, and unavailable authority each permit different exact results. A
+diagonal-contribution diagnostic is not variance or uncertainty.
 
 The contract separates the parent stochastic authority from the output
 representation. A complete matrix propagated from an explicitly independent-
@@ -226,9 +257,11 @@ explicit unavailable response or covariance state where the role permits it.
 A response-qualified or covariance-qualified request cannot. Missing required
 records never become placeholders.
 
-The SCI-NOI product is not an atomic FLT role. FLT carries only a typed NOI
-attachment-state relation. A separately parented NOI product may be attached
-later without deciding, reopening, or mutating FLT completeness.
+The SCI-NOI product is not an atomic FLT role. Immutable
+`FLT-NOI-COMPATIBILITY` records only publication-time FLT identity,
+fixed-state compatibility, request, and typed availability. It contains no
+future NOI identity. A later NOI child references FLT; an optional separately
+versioned reverse relation cannot decide, reopen, or mutate FLT completeness.
 
 ## 10. Use and ownership limits
 
@@ -238,9 +271,11 @@ or JINC continues to own the parent estimand. CAL owns absolute calibration.
 SCI-NOI owns empirical uncertainty inference. Beam, source, Pointing, OOF, and
 FRUIT interpretations remain with their respective future or upstream owners.
 
-Three policy domains prevent bundle, row, and publication questions from being
-collapsed. Their draft records use VAL-congruent applicability, eligibility,
-realization, missing/conflict, lifecycle, and consumer-action states. They are
+Three policy domains prevent bundle, parent-row, and publication questions
+from being collapsed. Bundle and parent-row profiles decide their named inputs;
+FLT constructs `J_full` and `S_out`. Publication policy defines a disposition
+and action. VAL may produce a decision artifact, but only the FLT publisher
+acts and establishes realization and local validity. These r0.3 profiles are
 not owner-approved Registry entries, and this draft claims no Registry
 evaluation.
 
@@ -248,6 +283,23 @@ The transformed product is therefore not a generic downstream admission
 ticket. A Beammap, Pointing, OOF, source-fit, catalog, NOI, or FRUIT consumer
 must provide an exact use policy. SCI-VAL may bind and evaluate an approved
 policy, but it does not invent producer facts or FLT policy.
+
+The source-preflight route status is:
+
+```text
+Route                           r0.3 disposition
+generic contract                defined; owner review required
+MAP observation parent          typed route; numerical parent unavailable
+MAP coadd parent                typed route; numerical parent unavailable
+JINC parent                     typed route; numerical parent unavailable
+base signal                     defined for an exact admitted parent
+low-pass qualification          conditional on complete exact convention
+response-qualified product      conditional on exact compatible response
+covariance-qualified product    conditional on exact compatible authority
+NOI compatibility               immutable FLT compatibility only
+profile registration            not registered and not Registry-evaluated
+implementation assessment       not performed and no claim
+```
 
 ## 11. Reading the falsifiable predictions
 
@@ -266,8 +318,12 @@ The core predictions turn the contract into observable distinctions:
   failed distinctions; and
 - low-pass completeness and an independent sampled-transfer evaluation test
   whether a qualified transfer claim is actually supported;
-- exact-zero coefficient and zero-operator support cases test required-
-  dependency semantics independently of arithmetic nonzero support.
+- exact-zero/storage invariance and zero-operator support cases test scientific
+  dependency semantics independently of serialization;
+- non-signal-role rejection tests exact parent-role binding;
+- cross-term sensitivity tests covariance-authority honesty; and
+- NOI nonmutation and full-procedure mismatch test immutable and domain
+  boundaries.
 
 Passing these predictions would be evidence relevant to a later conformity or
 validation activity. This rationale reports no such result.

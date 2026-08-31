@@ -1,64 +1,69 @@
 # SCI-FLT-FIXED v0.1 Stage B Page-By-Page Visual QA
 
-Record identity: `SCI-FLT-FIXED-STAGE-B-VISUAL-QA v0.1/draft-r0.2`
+Record identity: `SCI-FLT-FIXED-STAGE-B-VISUAL-QA v0.1/draft-r0.3`
 
-Status: PASS; exact bound PDFs rendered with Poppler at 144 dpi and inspected page by page
+Status: PASS; exact bound PDFs rendered with Poppler at 144 dpi and inspected page by page on 2026-08-30
 
-Build binding SHA-256: `5bbb0f5d681307fb99a1b21ce9785273ad6d5885da6059598919c07633cc1955`
+Build binding SHA-256: `578afdad159b4d4330f1cf3e3fb48b302a72c00c3b761467a69b62873a352d72`
 
 Review criteria: page size, header and footer, title hierarchy, margins,
 spacing, line wrapping, equations, identifiers, page breaks, clipping,
-overlap, fallback glyphs, and legibility. Embedded-font rendering and full-page
-non-white pixel bounds were also checked for every page.
+overlap, fallback glyphs, and legibility. Every inspection used a complete
+Poppler-rendered page; independently rerendered views confirmed any transient
+preview truncation was external to the PDF bytes.
 
-Metadata and binding check: PASS. Each PDF exposes its exact r0.2 document
+Metadata and binding check: PASS. Each PDF exposes its exact r0.3 document
 identity, its bound source SHA-256, the shared-core SHA-256, the Stage A packet
-manifest SHA-256, the owner-directive SHA-256, and the builder SHA-256. Each PDF
-sets `Author` to `Grant Wilson`; page counts are 16, 6, and 7 as recorded below.
+manifest SHA-256, both owner-directive SHA-256 values, and the builder SHA-256.
+Each PDF sets `Author` to `Grant Wilson`; page counts are 18, 6, and 8 as
+recorded below.
 
 ## Shared normative core
 
-PDF SHA-256: `997fedb40edd0e6513d075effbb1067e349939c2bd813de3b863e65ca2f5bcb7`
+PDF SHA-256: `ed6d58323b85db7db6c25bebedc1312fec99e8890645e38abdfe0a083556c50b`
 
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf` page 1: PASS - cover hierarchy, binding block, owner, status, nonclaim, header, footer, and margins are clean.
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf` page 2: PASS - authority, scope closure, strict-linearity equation, frozen-selector equation, and parent roles are legible and unclipped.
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf` page 3: PASS - parent-role continuation, fixed-plan identity, convolution definition, and full operator record are clean.
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf` page 4: PASS - support-set definitions, full-footprint equation, identity and zero special cases, WCS, and unit boundaries are clean.
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf` page 5: PASS - typed response-family separation, low-pass transfer boundary, beam, mode, and influence text are readable and unclipped.
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf` page 6: PASS - covariance equation, covariance axes, NOI boundary, and atomic product-role list are clean.
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf` page 7: PASS - lifecycle states, publication-candidate sequence, generation rules, and first policy profile are clear.
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf` page 8: PASS - row and publication policies, companion qualification, ownership boundaries, confidence, and exposure boundaries are clean.
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf` page 9: PASS - numerical-policy and nonclaim boundaries plus requirements 001 through 005 are readable and unclipped.
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf` page 10: PASS - requirements 006 through 015 are complete, ordered, evenly spaced, and unclipped.
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf` page 11: PASS - requirements 016 through 025 are complete, ordered, and legible, including covariance notation.
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf` page 12: PASS - requirements 026 through 035 are complete, ordered, evenly spaced, and unclipped.
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf` page 13: PASS - requirements 036 through 044 and the prediction transition are complete with clean page balance.
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf` page 14: PASS - predictions 001 through 010 are complete, ordered, evenly spaced, and unclipped.
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf` page 15: PASS - predictions 011 through 020 are complete, ordered, and legible, including the off-diagonal covariance expression.
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf` page 16: PASS - predictions 021 through 024 are complete, ordered, legible, and followed by deliberate closing whitespace.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 1: PASS - cover hierarchy, exact bindings, owner, date, status, nonclaim, header, footer, and margins are clean.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 2: PASS - authority, scope, strict-linearity equation, frozen-selector equation, and parent roles are legible and unclipped.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 3: PASS - exact MAP and JINC signal roles, five-role JINC bundle, lifecycle boundaries, and fixed-plan identity are clean.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 4: PASS - convolution identity, scientific and storage support sets, ordinary support disposition, and special cases are clean.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 5: PASS - WCS, unit, sampled-transform convention, low-pass qualification, and output-amplitude sections are readable and unclipped.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 6: PASS - response-family separation, full-procedure domain rule, transfer, modes, influence, and covariance transition are clean.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 7: PASS - covariance authority table, cross-term equation, deterministic propagation, and atomic-product transition are legible.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 8: PASS - atomic role continuation, immutable NOI compatibility, lifecycle sequence, and generation rules retain full margins and clean continuation.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 9: PASS - three policy domains, actor separation, companion qualification, and ownership boundaries are clean.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 10: PASS - numerical-policy and nonclaim boundaries plus requirements 001 through 004 are readable and unclipped.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 11: PASS - requirements 005 through 014 are complete, ordered, evenly spaced, and unclipped.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 12: PASS - requirements 015 through 023 are complete, ordered, and legible, including response and covariance notation.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 13: PASS - requirements 024 through 032 are complete, ordered, evenly spaced, and unclipped.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 14: PASS - requirements 033 through 042 are complete, ordered, and legible with clean page balance.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 15: PASS - requirements 043 through 051 are complete, including all r0.3 closure requirements, with deliberate closing whitespace.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 16: PASS - predictions 001 through 009 are complete, ordered, evenly spaced, and unclipped.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 17: PASS - predictions 010 through 019 are complete, ordered, and legible, including covariance expressions.
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf` page 18: PASS - predictions 020 through 028 are complete, including all r0.3 boundary tests, with deliberate closing whitespace.
 
 ## Scientist rationale
 
-PDF SHA-256: `33d3bd8e98c89a3386c47027777e9c8f22a4b98deec9ba8b4d970fd7c513e29c`
+PDF SHA-256: `923516fcf18cb5ce29a83092a2eb47b43c841fef17de849b1085b13dd5014c0a`
 
-- `SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.2.pdf` page 1: PASS - cover hierarchy, exact bindings, owner, status, nonclaim, header, footer, and margins are clean.
-- `SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.2.pdf` page 2: PASS - normative import, scientific question, strict-linearity discussion, and low-pass discussion are readable and unclipped.
-- `SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.2.pdf` page 3: PASS - low-pass continuation, edge/support closure, amplitude, response, and section transitions are clean.
-- `SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.2.pdf` page 4: PASS - response, transfer, exposure, covariance, parent ordering, and lifecycle discussions are legible and unclipped.
-- `SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.2.pdf` page 5: PASS - lifecycle continuation, ownership, policy, prediction guide, and numerical-evidence transition are clean with intact bullets.
-- `SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.2.pdf` page 6: PASS - numerical-evidence continuation and Stage B nonclaims are legible with deliberate closing whitespace.
+- `SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.3.pdf` page 1: PASS - cover hierarchy, exact bindings, owner, date, status, nonclaim, header, footer, and margins are clean.
+- `SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.3.pdf` page 2: PASS - normative import, scientific question, one-way route diagram, and strict-linearity rationale are readable and unclipped.
+- `SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.3.pdf` page 3: PASS - fixed-convolution, complete low-pass convention, support disposition, special cases, and amplitude transition are clean.
+- `SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.3.pdf` page 4: PASS - amplitude continuation, response domains, transfer, exposure, covariance equation, and NOI boundary are legible and unclipped.
+- `SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.3.pdf` page 5: PASS - parent ordering, lifecycle, immutable NOI compatibility, ownership, actors, and route-status table are clean.
+- `SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.3.pdf` page 6: PASS - route-status continuation, prediction guide, resolution ownership, numerical-evidence boundary, and Stage B nonclaims are clean.
 
 ## Engineering-conformance specification
 
-PDF SHA-256: `d27985b3c0f77a45158320dd02d93f80090f561722ee9363cdc6281747d4ded4`
+PDF SHA-256: `2e9af76177a8ae7f189c9495456ab4fde3b64c0891e20997fed09f65d8d49f12`
 
-- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.2.pdf` page 1: PASS - cover hierarchy, exact bindings, owner, status, nonclaim, header, footer, and margins are clean.
-- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.2.pdf` page 2: PASS - normative import, evidence boundary, input records, and operator-record list are readable and unclipped.
-- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.2.pdf` page 3: PASS - operator continuation, admission, signal, response, transfer, covariance, and NOI sections are consistently spaced and legible.
-- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.2.pdf` page 4: PASS - publication lifecycle and requirement routes 001 through 015 are complete, ordered, and readable with intact bullets.
-- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.2.pdf` page 5: PASS - requirement routes 016 through 039 are complete, ordered, evenly spaced, and unclipped.
-- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.2.pdf` page 6: PASS - requirement routes 040 through 044 and prediction routes 001 through 021 are complete and unclipped.
-- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.2.pdf` page 7: PASS - prediction routes 022 through 024, numerical evidence, reproducibility, and nonclaims are legible with balanced closing whitespace.
+- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.3.pdf` page 1: PASS - cover hierarchy, exact bindings, owner, date, status, nonclaim, header, footer, and margins are clean.
+- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.3.pdf` page 2: PASS - normative import, evidence boundary, exact signal roles, JINC role bundle, plan record, and operator transition are readable and unclipped.
+- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.3.pdf` page 3: PASS - operator continuation, admission, support invariance, signal, response-domain, and transfer records are clean.
+- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.3.pdf` page 4: PASS - covariance compatibility, immutable NOI relation, lifecycle actors, and requirement routes 001 through 005 are legible.
+- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.3.pdf` page 5: PASS - requirement routes 006 through 030 are complete, ordered, evenly spaced, and unclipped.
+- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.3.pdf` page 6: PASS - requirement routes 031 through 051 are complete, including every r0.3 closure route, and unclipped.
+- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.3.pdf` page 7: PASS - prediction routes 001 through 028 are complete, ordered, evenly spaced, and unclipped.
+- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.3.pdf` page 8: PASS - numerical evidence, traceability, authority-manifest reproducibility, PDF QA rule, and nonclaims are legible with balanced whitespace.
 
 ## Result and nonclaims
 

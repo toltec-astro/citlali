@@ -1,6 +1,6 @@
-# SCI-FLT-FIXED v0.1 r0.2 Source-Packet Closure Report
+# SCI-FLT-FIXED v0.1 r0.3 Source-Packet Closure Report
 
-Report identity: `SCI-FLT-FIXED-SOURCE-PACKET-CLOSURE v0.1/draft-r0.2`
+Report identity: `SCI-FLT-FIXED-SOURCE-PACKET-CLOSURE v0.1/draft-r0.3`
 
 Status: PASS; exact repository bytes and SHA-256 values reproduced; scientific-owner review required
 
@@ -25,32 +25,42 @@ Status: PASS; exact repository bytes and SHA-256 values reproduced; scientific-o
 - `doc/scientific_contracts/packages/SCI-FLT/v0.1/SCI_FLT_VAL_PROFILE_DRAFTS.md`: 4052 bytes; SHA-256 `9546082e4defcc3d83ce65969b44e35926fed7fe0185d306b9679701c0ce7976`
 - `doc/scientific_contracts/packages/SCI-FLT/v0.1/FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md`: 3730 bytes; SHA-256 `0c10c8e7cf46b80c94bc2454090ab918f7f440bcd0d4bc8b7e94cf53df66efed`
 
-## r0.2 scientific-owner directive
+## Scientific-owner directives
 
 - `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/OWNER_DIRECTIVE_R0_2.txt`: 17046 bytes; SHA-256 `02ca63dcc8ac19e554fa333c20773ff85264336b4f622024605f6514ec1716d1`; owner `Grant Wilson`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/OWNER_DIRECTIVE_R0_3.txt`: 14548 bytes; SHA-256 `c1de5ad5b9f9e5451ec2a3d9d9c18d30f7990eec721497c9d473aaeb2b043551`; owner `Grant Wilson`
 
 ## Stage B sources
 
-- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/SHARED_NORMATIVE_CORE.md`: 46800 bytes; SHA-256 `bbcce3546d895002af8f7bb847f32e734cb23e6b4963132a09e6f54ffe4d6481`
-- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/SCIENTIST_RATIONALE.md`: 15340 bytes; SHA-256 `68b4a32c86fdbe6526af92c726ee5830c5300e7c9b5e2341f8bd43294abaf4eb`
-- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/ENGINEERING_CONFORMANCE.md`: 19551 bytes; SHA-256 `1c26c9986b2ef06f9cd68d21b2454833b8d092d73a167b32cbb89bf4f075b73c`
-- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/TRACEABILITY.json`: 34488 bytes; SHA-256 `7134303db3215e255deb2a232b210ea69c3159e514c3dc8a86723610a28cc3cf`
-- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/FORMAL_CLOSURE_RECORD.md`: 7600 bytes; SHA-256 `0149448e2f50d953fdcd220b90857a0feebc3db3328371c391930a124585cfaf`
-- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/POLICY_RECORDS.json`: 8063 bytes; SHA-256 `86b3556a0d0f82f4701938bd98cb84609a4ee28510f51bad0c3244c3cd201b50`
-- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/NUMERICAL_CONFORMANCE_POLICY.md`: 4022 bytes; SHA-256 `fb562ce03df8e13042608439de7a51f1c2c5d94fe1b8e357e77bb742fea78be7`
-- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/SEMANTIC_CHANGE_MAP.json`: 8078 bytes; SHA-256 `c88b4aa2405323b7b1f846876097bd9a5176d3f9af1814174882a6b7427d9e00`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/SHARED_NORMATIVE_CORE.md`: 56275 bytes; SHA-256 `98f3966e9d65ad57efcf7c8ba57344d1f9cb5635a05309eb5d068e4ab62ca9e1`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/SCIENTIST_RATIONALE.md`: 17873 bytes; SHA-256 `2db08b169415445569ba06326514a2828d16f3514a6c0228ce70eca8596b440f`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/ENGINEERING_CONFORMANCE.md`: 23474 bytes; SHA-256 `0c8f2b29c0111302e31e1e1782ab5df896c4888e1d86ed5078cc9b6e10b3b05a`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/TRACEABILITY.json`: 41013 bytes; SHA-256 `179079a504b4368bb1e62f407090612d5a74a2939c1a8c6fe0db54a83470c354`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/FORMAL_CLOSURE_RECORD.md`: 8179 bytes; SHA-256 `e1ea0581cf8f74eb7ccc8bd4fce96aaac525393dcadc29b4b5225c37dd7e0937`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/POLICY_RECORDS.json`: 8325 bytes; SHA-256 `e9422403061f3c0b5b107d88ecc323eec181ba83a726a34e53a36540fb474e66`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/NUMERICAL_CONFORMANCE_POLICY.md`: 4022 bytes; SHA-256 `36a731b97abe93fb185a88084edf6f93174cd55eea9477ddea54aaf1fdf091e7`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/SEMANTIC_CHANGE_MAP.json`: 7805 bytes; SHA-256 `f3ced9c385f1e47e07d50453593e737719343835454b8fb9d94552fc5a371b50`
 - `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/OWNER_DIRECTIVE_R0_2.txt`: 17046 bytes; SHA-256 `02ca63dcc8ac19e554fa333c20773ff85264336b4f622024605f6514ec1716d1`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/OWNER_DIRECTIVE_R0_3.txt`: 14548 bytes; SHA-256 `c1de5ad5b9f9e5451ec2a3d9d9c18d30f7990eec721497c9d473aaeb2b043551`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/PARENT_SIGNAL_ROLE_TABLE.md`: 1259 bytes; SHA-256 `714565dbd98e3f1d187e336ed41144dbc304cc442fdca0e4a49444d6b367f30e`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/REQUIRED_FOOTPRINT_OWNER_DISPOSITION.md`: 1404 bytes; SHA-256 `55256e457a2e1d3114e0e87efb4a27cadec8fd09743b0ee61f5a31a9a355941c`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/COVARIANCE_COMPATIBILITY_TABLE.md`: 1666 bytes; SHA-256 `b8a10005efdb1946932e30ed48ef11a7000c41370628754f5a3275a0806f1004`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/FLT_NOI_RELATION_DESIGN.md`: 1112 bytes; SHA-256 `0b45c2dca210e02464f5ae1a52264a009ae921de58dd37a65ac06893581b9c9a`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/POLICY_ACTION_ARCHITECTURE.md`: 1317 bytes; SHA-256 `8fdfe58c0f8400ca7c217b2eb1daba00feb45ea3ffb24e702442bb5245fdfdde`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/LOWPASS_TRANSFORM_CONVENTION.md`: 1292 bytes; SHA-256 `49d1f378c8c02ccda19b3c9d934ee911cc0fd8bc5db8477b56f3d84463328da3`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/RESPONSE_DOMAIN_AMENDMENT.md`: 1083 bytes; SHA-256 `7252c166073ff286c1fe58e8d0d052cc9ffb7b9260d4cb777e3ac4f0c826a07f`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/PROPOSED_FREEZE_DISPOSITION.md`: 1128 bytes; SHA-256 `dde0e9cf086194e6e95d03249b1d28d854eaa1c27db525dc16bcb3c6321081cd`
 
 ## Build tools
 
-- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/tools/build_stage_b.py`: 22674 bytes; SHA-256 `97b897beb2638d2b2081737fa8144a7e63d95f13eabde8f3bba774dc38a7cef5`
-- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/tools/verify_stage_b.py`: 31673 bytes; SHA-256 `097d8e52ad0b6e40b019219d7d6f3822330da269e82b7208e98064bc5f375e49`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/tools/build_stage_b.py`: 23392 bytes; SHA-256 `9301558e2b540abed2b09ef583ca0057479ff9850fb42321ecff8bd7b7251ce7`
+- `doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/tools/verify_stage_b.py`: 41980 bytes; SHA-256 `9ca23c97a7080015f90e1ec3644b81c49cc0a0d9436f32c5aa65cbdc6a29b5b5`
 
 ## Bound PDFs
 
-- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf`: 104874 bytes; 16 pages; SHA-256 `997fedb40edd0e6513d075effbb1067e349939c2bd813de3b863e65ca2f5bcb7`
-- `SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.2.pdf`: 75953 bytes; 6 pages; SHA-256 `33d3bd8e98c89a3386c47027777e9c8f22a4b98deec9ba8b4d970fd7c513e29c`
-- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.2.pdf`: 79097 bytes; 7 pages; SHA-256 `d27985b3c0f77a45158320dd02d93f80090f561722ee9363cdc6281747d4ded4`
+- `SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf`: 112745 bytes; 18 pages; SHA-256 `ed6d58323b85db7db6c25bebedc1312fec99e8890645e38abdfe0a083556c50b`
+- `SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.3.pdf`: 77602 bytes; 6 pages; SHA-256 `923516fcf18cb5ce29a83092a2eb47b43c841fef17de849b1085b13dd5014c0a`
+- `SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.3.pdf`: 82610 bytes; 8 pages; SHA-256 `2e9af76177a8ae7f189c9495456ab4fde3b64c0891e20997fed09f65d8d49f12`
 
 ## Result and nonclaims
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the deterministic SCI-FLT-FIXED v0.1 Stage B r0.2 PDF set."""
+"""Build the deterministic SCI-FLT-FIXED v0.1 Stage B r0.3 PDF set."""
 
 from __future__ import annotations
 
@@ -49,7 +49,11 @@ PACKET_MANIFEST_SHA256 = (
     "7f2d03f182258ac9770f7dba869e9ae0b5018efdcdb93b18b299a9b9c6df1e4d"
 )
 STAGE_A_LAUNCH_COMMIT = "cd55752e716051383da54356833ef0fac20b083a"
-OWNER_DIRECTIVE = SOURCE_DIR / "OWNER_DIRECTIVE_R0_2.txt"
+OWNER_DIRECTIVES = [
+    SOURCE_DIR / "OWNER_DIRECTIVE_R0_2.txt",
+    SOURCE_DIR / "OWNER_DIRECTIVE_R0_3.txt",
+]
+STAGE_B_DATE = "2026-08-30"
 
 ADMITTED_OBJECTS = {
     "SCOPE_BRIEF.md": "b66dbca45edc758e1fc29f9f14313deb52473527acec8ed4d8ce93e725e32468",
@@ -74,20 +78,20 @@ ADMITTED_OBJECTS = {
 DOCUMENTS = [
     {
         "source": "SHARED_NORMATIVE_CORE.md",
-        "output": "SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.2.pdf",
-        "identity": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.2",
+        "output": "SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-draft-r0.3.pdf",
+        "identity": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.3",
         "short": "SCI-FLT-FIXED Normative Core",
     },
     {
         "source": "SCIENTIST_RATIONALE.md",
-        "output": "SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.2.pdf",
-        "identity": "SCI-FLT-FIXED-SCIENTIST-RATIONALE v0.1/draft-r0.2",
+        "output": "SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-draft-r0.3.pdf",
+        "identity": "SCI-FLT-FIXED-SCIENTIST-RATIONALE v0.1/draft-r0.3",
         "short": "SCI-FLT-FIXED Scientist Rationale",
     },
     {
         "source": "ENGINEERING_CONFORMANCE.md",
-        "output": "SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.2.pdf",
-        "identity": "SCI-FLT-FIXED-ENGINEERING-CONFORMANCE v0.1/draft-r0.2",
+        "output": "SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-draft-r0.3.pdf",
+        "identity": "SCI-FLT-FIXED-ENGINEERING-CONFORMANCE v0.1/draft-r0.3",
         "short": "SCI-FLT-FIXED Engineering Conformance",
     },
 ]
@@ -99,6 +103,15 @@ SUPPORTING_SOURCES = [
     "NUMERICAL_CONFORMANCE_POLICY.md",
     "SEMANTIC_CHANGE_MAP.json",
     "OWNER_DIRECTIVE_R0_2.txt",
+    "OWNER_DIRECTIVE_R0_3.txt",
+    "PARENT_SIGNAL_ROLE_TABLE.md",
+    "REQUIRED_FOOTPRINT_OWNER_DISPOSITION.md",
+    "COVARIANCE_COMPATIBILITY_TABLE.md",
+    "FLT_NOI_RELATION_DESIGN.md",
+    "POLICY_ACTION_ARCHITECTURE.md",
+    "LOWPASS_TRANSFORM_CONVENTION.md",
+    "RESPONSE_DOMAIN_AMENDMENT.md",
+    "PROPOSED_FREEZE_DISPOSITION.md",
 ]
 
 NAVY = colors.HexColor("#17324D")
@@ -420,7 +433,7 @@ def draw_page(canvas_obj, document, short_title: str) -> None:
     canvas_obj.drawString(0.72 * inch, height - 0.41 * inch, short_title)
     canvas_obj.setFont("StageBSans", 7.1)
     canvas_obj.setFillColor(MID)
-    canvas_obj.drawRightString(width - 0.72 * inch, height - 0.41 * inch, "Stage B r0.2 - owner review required")
+    canvas_obj.drawRightString(width - 0.72 * inch, height - 0.41 * inch, "Stage B r0.3 - owner review required")
     canvas_obj.line(0.72 * inch, 0.48 * inch, width - 0.72 * inch, 0.48 * inch)
     canvas_obj.setFont("StageBSans", 7.2)
     canvas_obj.drawString(0.72 * inch, 0.33 * inch, "SCI-FLT-FIXED v0.1")
@@ -450,7 +463,8 @@ def build_pdf(
         f"Source SHA-256: {source_sha}",
         f"Shared normative core SHA-256: {core_sha}",
         f"Author packet manifest SHA-256: {PACKET_MANIFEST_SHA256}",
-        f"Owner directive SHA-256: {sha256(OWNER_DIRECTIVE)}",
+        f"r0.2 owner directive SHA-256: {sha256(OWNER_DIRECTIVES[0])}",
+        f"r0.3 owner directive SHA-256: {sha256(OWNER_DIRECTIVES[1])}",
         f"Build recipe SHA-256: {builder_sha}",
     ]
 
@@ -460,6 +474,7 @@ def build_pdf(
         Paragraph(inline_markup(identity), styles["cover_identity"]),
         Paragraph(inline_markup(status), styles["cover_status"]),
         Paragraph("Scientific owner: Grant Wilson", styles["cover_owner"]),
+        Paragraph(f"Stage B date: {STAGE_B_DATE}", styles["cover_owner"]),
         Spacer(1, 0.18 * inch),
         Paragraph("<br/>".join(inline_markup(line) for line in binding_lines), styles["binding"]),
         Spacer(1, 0.14 * inch),
@@ -481,9 +496,9 @@ def build_pdf(
         bottomMargin=0.63 * inch,
         title=identity,
         author="Grant Wilson",
-        subject=f"{identity}; source {source_sha}; core {core_sha}",
+        subject=f"{identity}; date {STAGE_B_DATE}; source {source_sha}; core {core_sha}",
         creator="SCI-FLT-FIXED deterministic Stage B builder",
-        keywords="SCI-FLT-FIXED, scientific contract, Stage B draft r0.2",
+        keywords="SCI-FLT-FIXED, scientific contract, Stage B draft r0.3",
     )
     document.build(
         story,
@@ -499,7 +514,7 @@ def build(output_dir: Path, binding_path: Path) -> dict:
     source_paths = [SOURCE_DIR / item["source"] for item in DOCUMENTS]
     source_paths.extend(SOURCE_DIR / name for name in SUPPORTING_SOURCES)
     for path in source_paths:
-        if path == OWNER_DIRECTIVE:
+        if path in OWNER_DIRECTIVES:
             continue
         ensure_ascii(path)
 
@@ -540,9 +555,10 @@ def build(output_dir: Path, binding_path: Path) -> dict:
 
     binding = {
         "schema_version": "1.0",
-        "record_identity": "SCI-FLT-FIXED-STAGE-B-BUILD-BINDING v0.1/draft-r0.2",
-        "status": "deterministic Stage B r0.2 draft build record; scientific-owner review required; no implementation approval claim",
+        "record_identity": "SCI-FLT-FIXED-STAGE-B-BUILD-BINDING v0.1/draft-r0.3",
+        "status": "deterministic Stage B r0.3 draft build record; proposed-freeze preflight only; scientific-owner review required; no implementation approval claim",
         "scientific_owner": "Grant Wilson",
+        "stage_b_date": STAGE_B_DATE,
         "stage_a_launch_commit": STAGE_A_LAUNCH_COMMIT,
         "packet": {
             "manifest": repo_relative(PACKET_MANIFEST),
@@ -559,12 +575,15 @@ def build(output_dir: Path, binding_path: Path) -> dict:
                 for name, digest in ADMITTED_OBJECTS.items()
             ],
         },
-        "r0_2_owner_directive": {
-            "path": repo_relative(OWNER_DIRECTIVE),
-            "sha256": sha256(OWNER_DIRECTIVE),
-            "bytes": OWNER_DIRECTIVE.stat().st_size,
-            "scientific_owner": "Grant Wilson",
-        },
+        "owner_directives": [
+            {
+                "path": repo_relative(path),
+                "sha256": sha256(path),
+                "bytes": path.stat().st_size,
+                "scientific_owner": "Grant Wilson",
+            }
+            for path in OWNER_DIRECTIVES
+        ],
         "sources": [
             {
                 "path": repo_relative(path),

@@ -1,17 +1,18 @@
 {
   "schema_version": "1.0",
-  "document_identity": "SCI-FLT-FIXED-POLICY-RECORDS v0.1/draft-r0.2",
+  "document_identity": "SCI-FLT-FIXED-POLICY-RECORDS v0.1/draft-r0.3",
   "status": "implementation-blind unregistered Stage B policy drafts; scientific-owner and Registry approval required",
   "scientific_policy_owner": "Grant Wilson",
   "registry_binding_status": "not_owner_approved_not_registered_not_evaluated",
   "source_bindings": {
-    "normative_core": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.2",
+    "normative_core": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.3",
     "author_packet_manifest": "SCI-FLT-FIXED_AUTHOR_PACKET v0.1/r0.1",
     "map_boundary": "SCI-MAP_TO_SCI-FLT-FIXED boundary admitted by the author packet",
     "jinc_boundary": "SCI-JINC_TO_SCI-FLT-FIXED boundary admitted by the author packet",
     "noi_boundary": "SCI-FLT-FIXED_TO_SCI-NOI boundary admitted by the author packet",
     "val_profile_source": "SCI_FLT_VAL_PROFILE_DRAFTS.md admitted by the author packet",
-    "r0_2_owner_directive": "OWNER_DIRECTIVE_R0_2.txt"
+    "r0_2_owner_directive": "OWNER_DIRECTIVE_R0_2.txt",
+    "r0_3_owner_directive": "OWNER_DIRECTIVE_R0_3.txt"
   },
   "profiles": [
     {
@@ -81,14 +82,14 @@
         "effective",
         "resolved_or_disabled_or_unavailable"
       ],
-      "consumer_action": "admit the exact bundle to row admission, or fail closed with typed causes; perform no payload arithmetic"
+      "consumer_action": "admit the exact bundle to parent-row admission, or fail closed with typed causes; perform no payload arithmetic"
     },
     {
-      "identity": "SCI-FLT-FIXED:input_row_admission@1",
-      "domain": "one candidate output row under one eligible bundle, frozen plan, immutable parent domain, and exact K_req",
+      "identity": "SCI-FLT-FIXED:input_parent_row_admission@1",
+      "domain": "one exact parent row under one eligible bundle, frozen plan, immutable parent domain, and named FLT use",
       "request": [
         "not_requested",
-        "row_evaluation_requested"
+        "parent_row_evaluation_requested"
       ],
       "applicability": [
         "applicable",
@@ -96,34 +97,33 @@
         "applicability_unknown"
       ],
       "eligibility": [
-        "eligible_row",
-        "ineligible_row",
+        "eligible_parent_row",
+        "ineligible_parent_row",
         "no_eligibility_proposition",
         "decision_unavailable"
       ],
       "realization": [
-        "selected_into_J_full",
-        "excluded_from_J_full",
-        "selection_unavailable"
+        "admitted_for_named_use",
+        "not_admitted_for_named_use",
+        "parent_row_decision_unavailable"
       ],
       "restrictions": [
-        "every K_req location lies in the exact parent domain",
-        "every K_req location is admitted for this FLT use",
-        "every K_req value is available and finite",
-        "every required predicate passes",
-        "J_full is frozen before payload arithmetic"
+        "the parent row lies in the exact parent domain",
+        "the parent row is admitted for this named FLT use",
+        "the parent row value is available and finite",
+        "every parent-row predicate passes",
+        "the decision predates FLT construction of J_full and S_out"
       ],
       "decisive_exclusions": [
-        "boundary extension",
-        "wrapping",
-        "truncation",
-        "support renormalization",
-        "replacement",
-        "selector re-resolution"
+        "role substitution",
+        "source identity conflict",
+        "inferred availability",
+        "inferred finiteness",
+        "output-row arithmetic support",
+        "payload transformation"
       ],
       "exceptions": [
-        "identity uses K_req equal to the singleton zero offset",
-        "zero uses its declared inherited admitted parent-support row domain and never a vacuous empty-footprint domain"
+        "none; identity and zero special support belongs to FLT construction after parent-row decisions"
       ],
       "missing_or_conflict_behavior": {
         "structural_identity_or_source_conflict": [
@@ -132,20 +132,20 @@
         ],
         "known_failed_row_restriction": [
           "applicable",
-          "ineligible_row",
-          "excluded_from_J_full"
+          "ineligible_parent_row",
+          "not_admitted_for_named_use"
         ],
-        "member_failure_after_selector_freeze": [
-          "row_unavailable_for_member",
-          "do_not_reselect"
+        "missing_or_nonfinite_parent_row": [
+          "ineligible_parent_row",
+          "not_admitted_for_named_use"
         ]
       },
       "lifecycle": [
         "resolved",
-        "selector_candidate",
-        "selector_frozen"
+        "parent_row_decision",
+        "decision_bound_for_flt_construction"
       ],
-      "consumer_action": "construct the one immutable J_full or return typed row and decision causes; perform no payload arithmetic"
+      "consumer_action": "return one immutable parent-row decision with typed causes to FLT; do not construct J_full or S_out and perform no payload arithmetic"
     },
     {
       "identity": "SCI-FLT-FIXED:output_publication@1",
@@ -169,7 +169,7 @@
         "decision_unavailable"
       ],
       "realization": [
-        "publication_pending",
+        "publisher_action_pending",
         "realized",
         "realized_identity",
         "realized_zero",
@@ -182,7 +182,7 @@
         "response-qualified candidate has an available exact compatible response",
         "covariance-qualified candidate has the exact declared compatible covariance representation",
         "jointly qualified candidate satisfies both companion qualifications",
-        "NOI attachment state is a relation record and an NOI product is not required"
+        "FLT-NOI-COMPATIBILITY is immutable, contains no future NOI identity, and an NOI product is not required"
       ],
       "decisive_exclusions": [
         "partial candidate",
@@ -216,10 +216,11 @@
       "lifecycle": [
         "applied",
         "complete_publication_candidate",
-        "publication_decision",
+        "policy_decision_artifact",
+        "publisher_action",
         "realized_or_failed_or_not_produced"
       ],
-      "consumer_action": "publish exactly one immutable realized FLT product after successful action, or publish no product and preserve typed causes"
+      "consumer_action": "return disposition and prescribed action to the FLT publisher; the profile or VAL evaluation performs no publication, and the publisher alone realizes or declines the FLT product"
     }
   ],
   "nonclaims": [

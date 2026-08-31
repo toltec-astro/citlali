@@ -1,12 +1,12 @@
-# SCI-FLT-FIXED v0.1 r0.2 Formal-Closure Record
+# SCI-FLT-FIXED v0.1 r0.3 Formal-Closure Record
 
-Document identity: `SCI-FLT-FIXED-FORMAL-CLOSURE v0.1/draft-r0.2`
+Document identity: `SCI-FLT-FIXED-FORMAL-CLOSURE v0.1/draft-r0.3`
 
 Status: implementation-blind Stage B closure draft; scientific-owner review required
 
 Scientific owner: Grant Wilson
 
-Normative authority remains the shared core. This record makes the r0.2 owner
+Normative authority remains the shared core. This record makes the r0.2/r0.3 owner
 dispositions and cross-package boundaries easy to review; it does not add a
 scientific rule beyond the core.
 
@@ -37,18 +37,21 @@ excluded unless separately supplied as typed uncertainty.
 
 ## 3. Required-footprint and zero-operator disposition
 
-- `K_geom` is geometric or storage footprint.
-- `K_nonzero` is exact nonzero sampled-coefficient support; exact zero comes
-  from the declared representation, never a threshold.
-- `K_req` is the exact set of scientifically required parent locations.
-- Base v0.1 uses `K_req = K_geom`; stored geometric zeros require parent rows.
+- `K_geom_science` is representation-invariant scientific geometry.
+- `K_store` is nonauthoritative serialization footprint.
+- `K_nonzero` is exact canonical nonzero support; exact zero never uses a
+  tolerance.
+- The ordinary method uses `K_req = K_nonzero`.
+- Dense, sparse, cropped, and zero-padded representations preserve all
+  scientific support, output, response, covariance, and identity facts.
 - Identity uses `K_req = {0}` and preserves the exact admitted finite parent
   row domain.
 - Zero inherits an explicit admitted finite parent-support row domain and does
   not gain rows from a vacuous empty-footprint predicate.
 
-Geometric, nonzero, required-dependency, signed, absolute, and squared support
-are separate objects.
+Geometric, storage, nonzero, required-dependency, signed, absolute, and squared
+support are separate objects. A required exact-zero offset needs a separately
+named method and a scientific reason independent of storage.
 
 ## 4. Publication-lifecycle amendment
 
@@ -64,29 +67,33 @@ requested
   -> realized | failed | not_produced.
 ```
 
-Publication policy evaluates the complete candidate. Successful action creates
-the realized product. Disabled is not produced. Identity and zero follow the
-same sequence.
+Publication policy evaluates the complete candidate and defines disposition
+and prescribed action. VAL may produce a decision artifact. Only the FLT
+publisher performs or declines publication and creates realization. Disabled
+is not produced. Identity and zero follow the same sequence.
 
-## 5. NOI attachment-boundary amendment
+## 5. Immutable NOI compatibility amendment
 
-The actual `NOI-UNC[FLT-SIG]` product is removed from FLT atomic completion.
-`FLT-NOI-ATTACHMENT-STATE` contains the exact FLT identity, compatible
-operator and row-domain identity, request state, later attached NOI identity
-if separately realized, or typed not-requested, unavailable, or failed state.
-NOI realization never changes FLT completeness or realization.
+The actual `NOI-UNC[FLT-SIG]` product is outside FLT atomic completion.
+`FLT-NOI-COMPATIBILITY` contains exact FLT/operator/row identity, boundary and
+profile compatibility, fixed-state semantics, publication-time request, and
+typed compatibility or unavailability. It contains no future NOI identity. A
+later NOI child references FLT; an optional reverse relation is separately
+versioned and never changes FLT completeness or realization.
 
 ## 6. Profile records and VAL status
 
 The exact draft bytes are in `POLICY_RECORDS.json`:
 
 - `SCI-FLT-FIXED:input_bundle_admission@1`;
-- `SCI-FLT-FIXED:input_row_admission@1`; and
+- `SCI-FLT-FIXED:input_parent_row_admission@1`; and
 - `SCI-FLT-FIXED:output_publication@1`.
 
 They distinguish base signal, response-qualified, covariance-qualified, and
-jointly qualified requests. They are not owner-approved Registry entries, and
-no Registry evaluation is claimed.
+jointly qualified requests. Parent-row decisions feed FLT-owned construction
+of `J_full` and `S_out`. Policy defines publication disposition; VAL may return
+a decision artifact; the FLT publisher acts. They are not owner-approved
+Registry entries, and no Registry evaluation is claimed.
 
 ## 7. Response-family crosswalk
 
@@ -94,7 +101,7 @@ no Registry evaluation is claimed.
 | --- | --- | --- | --- |
 | Fixed-state linear parent response | `R_out^fixed = A_Theta,J R_parent^fixed` | Frozen plan and selector | Admitted when compatible |
 | Realized parent-grid response companion | Apply `A_Theta,J` exactly once | Exact companion identity | Admitted when compatible |
-| Parent full-procedure finite difference, FLT fixed | `Delta y_parent-FP = A_Theta,J Delta m_parent-FP` | Parent state-change record | Admitted when compatible |
+| Parent full-procedure finite difference, FLT fixed | `Delta y_parent-FP = A_Theta,J Delta m_parent-FP` | Exact compatible frozen domain and parent state-change record | Admitted when compatible; otherwise affected rows unavailable without re-selection |
 | FLT re-resolved procedure response | No SCI-FLT-FIXED relation | Re-resolved FLT state | Outside v0.1 |
 
 The zero operator establishes a local zero derivative and zero parent-payload
@@ -103,24 +110,22 @@ remain unavailable, and total systematic uncertainty remains separate.
 
 ## 8. Covariance authority and representation table
 
-| Axis | Allowed states |
-| --- | --- |
-| Parent stochastic authority | Complete covariance; explicit independent-diagonal model; marginal variances only; structured or partial model; unavailable |
-| Output representation | Complete matrix; exact linear or operator representation; structured representation; marginal plane; summary only; unavailable |
-
-Every record also states conditional model, domain, ordering, rank, null space,
-omitted terms, supported operations, and selection, kernel, beam, WCS,
-calibration, and model uncertainty exclusions. A matrix complete relative to a
-declared diagonal model does not set unknown real parent cross terms to zero.
+`COVARIANCE_COMPATIBILITY_TABLE.md` binds the exact five-row compatibility
+decision. Complete covariance permits exact two-sided propagation; an explicit
+independent-diagonal model permits full model-conditional covariance including
+induced cross rows; marginal-only authority does not infer independence or
+exact mixed-row marginals; structured/partial authority permits only proved-
+exact operations; unavailable authority remains unavailable. The general
+variance identity retains every weighted parent cross term.
 
 ## 9. WCS, low-pass, and transfer decision
 
 Every convolution identifies pixel-index, affine tangent-plane angular, or
-another exact coordinate-domain method. Angular-frequency low-pass requires an
-exact affine or constant tangent-plane metric or another proof of the angular
-transfer. The sampled-kernel or interior translation-invariant transfer is
-separate from complete finite `A_Theta,J`; no global Fourier transfer is
-claimed for the latter without an exact theorem.
+another exact coordinate-domain method. `LOWPASS_TRANSFORM_CONVENTION.md`
+binds every required sign, normalization, unit, origin, ordering, signed and
+Nyquist treatment, grid, response quantity, attenuation, band geometry, phase,
+anisotropy, and WCS relation. The sampled-kernel transfer remains separate from
+complete finite `A_Theta,J`.
 
 ## 10. Operator-composition decision
 
@@ -152,10 +157,11 @@ and failure ownership.
 
 ## 13. Source-packet closure
 
-`BUILD_BINDING.json` binds the manifest, all 17 admitted objects, the r0.2
-owner directive, every authored source and tool, embedded fonts, and PDFs by
-exact byte count and SHA-256. `SOURCE_PACKET_CLOSURE_REPORT.md` reproduces those
-bindings. The parity and visual-QA reports are separate durable records.
+`BUILD_BINDING.json` binds the author packet, all 17 admitted objects, both
+owner directives, every authored source and tool, embedded fonts, and PDFs by
+exact byte count and SHA-256. `AUTHORITY_MANIFEST.json` supersedes manual
+combination by binding the complete final authority, report, source, tool, and
+PDF set. Its external digest is the single proposed-freeze entry point.
 
 ## 14. Nonclaims
 
