@@ -26,10 +26,12 @@ conjugacy and uses the Hermitian adjoint. \\
 object for the application and expresses expected parent response per unit
 declared amplitude, with fixed scale, anchor, phase, validity, lineage, and
 query vocabulary in an exact representation. \\
-\texttt{ASM-004} & Complete $\Supp_{\rm apply}(p)$ is present and valid. No
-admitted output depends on fill, extension, imputation, partial support,
-edge renormalization, adaptive background, learned taper, or signal-derived
-support. Template, state, response, and storage support remain distinct. \\
+\texttt{ASM-004} & $\Dom_{\rm loc}(p)$ and $E_p$ are declared before local
+inversion and operator construction; complete final
+$\Supp_{\rm apply}(p)$ is present and valid. No admitted output depends on fill,
+extension, imputation, partial support, edge renormalization, adaptive
+background, learned taper, or signal-derived support. Template, state,
+response, and storage support remain distinct. \\
 \texttt{ASM-005} & $W_p$ is the exact frozen, self-adjoint,
 positive-semidefinite complete coordinate-basis bilinear weight named by the
 selected \AO{001} alternative, including population, units, rank, null,
@@ -39,23 +41,28 @@ regularization, window, support, and edge rules. \\
 conditional mean on the complete support given the frozen state and does not
 induce target-dependent changes in the template or operator. \\
 \texttt{ASM-008} & For GLS optimality, $C_{\rm parent}$ is the exact authorized
-covariance for the population and conditioning; $C_p$ is restricted before
-inversion; $C_{p,E}$ is positive definite on the exact estimable subspace; the
-projected template is identifiable; and the competitor class is identical. \\
-\texttt{ASM-009} & For covariance, the parent law, operator that actually
-produced the field, response, support, units, and conditioning state refer to
-the same realization and generation; reference quantities remain separate. \\
+covariance for the population and conditioning; $C_p$ is restricted to the
+predeclared local domain before inversion; $C_{p,E}$ is positive definite on
+the exact authorized row/covector subspace; the projected template is
+identifiable; and competitors share that domain, subspace, fixed state, and
+unit-response constraint. \\
+\texttt{ASM-009} & For covariance, the parent law, actual fixed-state producing
+map $F_g$, operational response, support, units, frozen template/calibration
+state $\theta$, and conditioning refer to the same realization and generation;
+reference quantities and U1/U2 roles remain separate. \\
 \texttt{ASM-010} & State follows the declared Learn--Resolve--Apply graph and
 is frozen before Apply. It is neither target-updated nor NOI-member relearned. \\
-\texttt{ASM-011} & A compatible NOI ensemble member receives the identical
-state, operator, support, normalization, numerical profile, and failure policy as
-the signal parent. \\
+\texttt{ASM-011} & A candidate NOI member satisfies the frozen pre-Apply
+$K_{\rm NOI}$ predicate in Section~\ref{sec:noi-compatibility} and receives the
+identical state, operator, support, normalization, numerical profile, and
+failure policy as the signal parent. \\
 \texttt{ASM-012} & A realized numerical operator is assessed under one
 preregistered engineering numerical-conformance profile. An intentional
 scientific discrepancy has separate method/realization identity. \\
-\texttt{ASM-013} & Covariance scope and representation, response query
-vocabulary and representation, and state query vocabulary and representation
-satisfy the selected \AO{003}--\AO{005} lifecycle rules. \\
+\texttt{ASM-013} & Each named covariance role has a separate scope and
+representation; response and state query vocabularies and representations
+satisfy selected \AO{003}--\AO{005} lifecycle rules and the finite
+$\mathcal Q_{\rm FLT}^{0.1}$ handoff vocabulary. \\
 \texttt{ASM-014} & Template and parent calibration lineages are compatible;
 any claimed point-source flux meaning or calibration covariance has explicit
 CAL/BEAM authority. \\
@@ -88,10 +95,12 @@ Template & Exact response object per unit amplitude with scale, phase, anchor,
 sampling, lineage, validity, and query vocabulary & Learned from target/member,
 mismatched chart, ambiguous scale, lossy representation, or missing lineage &
 \Unavailable{}; no inferred template. \\
-Application support & Complete nonzero-coefficient payload closure and erosion
-proof, separately typed from state, template, response, and storage support & Missing,
-invalid, filled, extended, imputed, or partially supported dependency & Mark
-affected anchors \Unavailable{}; no partial estimate. \\
+Local domain and application support & Predeclared $\Dom_{\rm loc}(p)$ and
+$E_p$, complete nonzero-coefficient payload closure, and erosion proof,
+separately typed from state, template, response, and storage support & Domain
+inferred from final zeros, or missing, invalid, filled, extended, imputed, or
+partially supported dependency & Fail Resolve for an invalid construction;
+mark affected Apply anchors \Unavailable{}; no partial estimate. \\
 Weighting state & Selected \AO{001}, population, self-adjoint PSD operator,
 rank/null, regularization, coefficients, window and edge rules bound at Resolve
 & Unknown, unselected, incompatible, or changing $W_p$ & Fail closed; no
@@ -112,20 +121,24 @@ Response-dependent product or handoff \Unavailable{}. \\
 Units and calibration & $[\widehat a]=[m]/[t]$ and compatible joint lineage &
 Unjustified flux, beam, solid angle, DC, extended-source, or covariance meaning
 & Forbid the claim; required named use is \Unavailable{}. \\
-Covariance & Matching authorized $C_{\rm parent}$, actual producing operator,
-declared scientific scope, and exact selected representation &
-Missing population/conditioning, omitted correlations treated as zero, or
-$d_p^{-1}$ used without constrained local GLS & Covariance use \Unavailable{} or companion
-\Failed{}; signal may remain \Complete{}. \\
-NOI parity & Identical frozen transformation for compatible members &
-Per-member relearning, different support, or mixed generation & NOI companion
-\Unavailable{} or \Failed{}; separate method required. \\
+Covariance & Matching authorized parent law, actual $F_g$, named U1/U2 role,
+conditioning, scientific scope, and exact selected representation & Missing
+population/conditioning, unproved linear propagation, unnamed calibration
+terms, omitted correlations treated as zero, or $d_p^{-1}$ used without
+constrained local GLS & Covariance use \Unavailable{} or companion \Failed{};
+signal may remain \Complete{}. \\
+NOI parity & Pre-Apply $K_{\rm NOI}$ compatibility and identical frozen
+transformation & Per-member relearning, post-result admission, adapted support,
+or mixed generation & Member/anchor or NOI companion \Unavailable{} or
+\Failed{}; separate method required. \\
 Lifecycle & Atomic membership, named-use policy, and immutable state & Mixed
 status, partial signal bundle, silent mutation, or overwritten predecessor &
 Bundle \Failed{}; retain predecessor and successor identities. \\
-FLT to FRUIT & Selected \AO{005}, documented response/state lineage, and
-handoff profile & Requires undocumented implementation state or supplies FRUIT
-science & Handoff \Unavailable{}; signal product status is unchanged. \\
+FLT to FRUIT & Finite $\mathcal Q_{\rm FLT}^{0.1}$, selected \AO{004} for state
+reconstruction where required, selected \AO{005} for response reconstruction,
+and documented lineage & Requires an unsupported future query, undocumented
+implementation state, or supplies FRUIT science & Handoff/query \Unavailable{};
+require a successor envelope for new queries; signal status is unchanged. \\
 \bottomrule
 \end{longtable}
 

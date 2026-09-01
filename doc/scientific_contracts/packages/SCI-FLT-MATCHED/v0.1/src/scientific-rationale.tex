@@ -14,9 +14,9 @@
 \definecolor{rust}{HTML}{9C3D10}
 \definecolor{pale}{HTML}{F3F6F9}
 \hypersetup{colorlinks=true,linkcolor=navy,urlcolor=navy,
-  pdftitle={SCI-FLT-MATCHED Scientific Rationale and Contract v0.1 r0.2},
-  pdfauthor={Implementation-blind Stage B scientific-contract author},
-  pdfsubject={Targeted mathematical-closure draft with unselected authored options}}
+  pdftitle={SCI-FLT-MATCHED Scientific Rationale and Contract v0.1 r0.3},
+  pdfauthor={Implementation-blind Stage B author basis; owner-authorized review repair},
+  pdfsubject={Independent-review closure draft with unselected scientific options}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
 \setlength{\emergencystretch}{3em}
@@ -54,13 +54,14 @@ optimality claim\par}
 \StatusBox
 \vfill
 {\large Package version: v0.1\par}
-{\large Document revision: r0.2\par}
+{\large Document revision: r0.3\par}
 {\large Author-packet date: 2026-08-31\par}
 {\large Scientific owner for later disposition: Grant Wilson\par}
 \vspace{0.25in}
 {\small Stage B r0.1 was derived exclusively from the owner-approved
-eight-object author packet; r0.2 applies the subsequent scientific-owner
-closure directive. The admitted packet remains bound by SHA-256\par
+eight-object author packet; r0.2 applied the subsequent scientific-owner
+closure directive; r0.3 applies owner-authorized independent-review repairs
+without implementation input. The admitted packet remains bound by SHA-256\par
 \texttt{255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8}.\par}
 \end{titlepage}
 
@@ -107,8 +108,9 @@ response is the central scientific identity.
 Weighting and uncertainty are deliberately not conflated. If the weighting is
 the exact authorized inverse covariance on the same population, support,
 conditioning state, and estimable subspace, the estimator has the familiar
-inverse-covariance GLS minimum-variance property only after covariance is
-restricted to local application support and inverted on an exact identifiable
+inverse-covariance GLS minimum-variance property only after a local operator
+domain is declared before construction, covariance is restricted to that
+domain, and it is inverted on an exact identifiable
 estimable subspace. Under a weaker spectral or
 reliability weight, it can remain matching-template normalized without being
 minimum variance. In that case the denominator is normalization, not a
@@ -117,7 +119,8 @@ variance estimate.
 \section{Why state is explicit and frozen}
 
 The transformation must mean the same thing for the signal parent and every
-compatible NOI realization member. Learn derives candidates and diagnostics
+NOI realization member admitted by the frozen pre-Apply compatibility
+predicate. Learn derives candidates and diagnostics
 from one declared population; Resolve selects the authorized route and freezes
 its identity; Apply uses it unchanged. Externally declared state enters
 Resolve. Learning again from each NOI member would change the ensemble method
@@ -131,8 +134,12 @@ filtering commutes with coaddition nor owns a coaddition operation.
 
 \section{Why edges are unavailable rather than repaired}
 
-Each amplitude depends on complete application support: every parent payload
-row with a nonzero coefficient in its linear functional. Template-query,
+The local domain used to construct covariance, weighting, and normalization is
+declared before the final row exists. Each amplitude then depends on complete
+application support: every parent payload row with a nonzero coefficient in
+that row. A coordinate can influence construction while having a final exact
+zero coefficient; its payload need not be dereferenced, but its causal lineage
+is retained. Template-query,
 state-learning, response-query, and storage supports are recorded separately.
 If one dependency is absent or invalid, the estimator defined here does not
 exist at that location. Filling, extending, renormalizing, fitting a background,
@@ -153,9 +160,12 @@ data-dependent Learn--Resolve procedure. That full-procedure quantity requires
 an authorized rerun or finite difference and is otherwise unavailable.
 
 Likewise, a conditional covariance product exists only when matching parent
-covariance authority exists. A field carries the response and covariance of
-the operator that actually produced it; exact-reference quantities remain
-comparators. Calibration, learned-state, numerical discrepancy,
+law authority exists. Actual finite-precision production is represented by a
+fixed-state map $F_g$, not presumed to be linear. A field carries its
+operational realized response and U1 covariance; matrix propagation is used
+only after fixed-state linearity is established. Exact-reference quantities
+remain comparators. U2 calibration/template uncertainty, learned-state,
+numerical discrepancy,
 representation, NOI sampling, and template-mismatch contributions have
 different populations and conditioning. The normative uncertainty budget
 keeps them separate rather than producing an unsupported scalar total.
@@ -169,10 +179,13 @@ Their failure is explicit. Optional failure does not silently alter the signal
 estimand, while failure of a required signal member prevents publication of a
 complete signal bundle.
 
-The product also preserves a first-class FLT to FRUIT handoff. It makes every
-FLT-side scientific fact available or exactly reconstructable without exposing
-undocumented implementation state. It intentionally says nothing about FRUIT's
-future model, iteration, selection, response, uncertainty, or interpretation.
+The product also preserves a first-class FLT to FRUIT handoff. Its finite v0.1
+query vocabulary makes the named FLT-side scientific facts available or
+exactly reconstructable without exposing undocumented implementation state. A
+future query outside that vocabulary requires a successor FLT envelope rather
+than retroactive overpromising. The handoff intentionally says nothing about
+FRUIT's future model, iteration, selection, response, uncertainty, or
+interpretation.
 
 Finally, the contract separates claim layers that are often confused:
 scientific authority defines the method; conformity concerns a specific
@@ -185,7 +198,7 @@ an operational state. Evidence in one layer does not promote another.
 
 The following six modules are imported unchanged into both the scientist- and
 engineering-facing documents. They are the single normative source for all
-definitions, equations, assumptions, requirements, predictions, option
+definitions, equations, assumptions, requirements, contract consequences, option
 alternatives, failure rules, and validation consequences.
 
 \input{common/notation.tex}
@@ -199,34 +212,37 @@ alternatives, failure rules, and validation consequences.
 
 \section{What remains for the scientific owner}
 
-This draft refactors, but does not select, six decision families. The owner
-must dispose the remaining scientific questions, while one engineering
-numerical profile is separately preregistered, before dependent routes become
-available. The decision ledger records the exact open questions.
+This draft separates scientific-owner decisions, engineering
+preregistration/representation selections, and successor-authorship triggers.
+The owner disposes only the remaining scientific meanings. Engineering selects
+exact representations and one numerical profile after those meanings are
+fixed. The decision ledger records the exact routing.
 
 \begin{longtable}{p{0.20\linewidth}p{0.31\linewidth}p{0.39\linewidth}}
 \toprule
-Family & Decision & Route unavailable before disposition \\
+Family & Authority and decision & Route unavailable before disposition \\
 \midrule
 \endhead
-\AO{001} & Weighting authority for observation and coadd separately;
-all population, coefficient, field/covariance model, rank/null, and regularization
-fields & A weighting realization, any optimality label, and any variance
-meaning derived from the weight. \\
-\AO{002} & Exact-operator numerical profile, separately authorized distinct
-scientific operator, or typed numerical-route unavailability & Any numerical-
-conformance statement. \\
-\AO{003} & Complete, named-projected, or unavailable covariance scope,
-independently from resident or lineage representation & Covariance publication,
-standardization, or covariance-dependent use. \\
-\AO{004} & Full, compact-exact, or lineage state representation preserving one
-query vocabulary & State audit/reanalysis and completion of products whose named use
-requires reconstructable state. \\
-\AO{005} & Response domain/query/validity/consumer scope, then full,
-structured, or lineage representation & Response-dependent use and FLT-to-FRUIT
-producer-envelope use. \\
-\AO{006} & Seven normative role verdicts and dependency graph, represented as
-separate, grouped, or vector records & Registered SCI-VAL named-use evaluation. \\
+\AO{001} & Scientific owner: concrete weighting authority for observation and
+coadd separately. B/D remain successor-authorship triggers until concrete
+$W_p$ objects exist. & A weighting realization, any optimality label, and any
+variance meaning derived from the weight. \\
+\AO{002} & Engineering: preregister one exact-operator numerical profile.
+Scientific owner acts only to commission a concrete distinct successor
+operator. & Any numerical-conformance statement. \\
+\AO{003} & Scientific owner: named covariance role and complete, projected, or
+unavailable scope. Engineering: resident or lineage representation afterward.
+& Covariance publication, standardization, or covariance-dependent use. \\
+\AO{004} & Scientific owner: finite required state-query vocabulary.
+Engineering: full, compact-exact, or lineage representation. & State
+audit/reanalysis and handoff queries requiring reconstructable state. \\
+\AO{005} & Scientific owner: response type, domain, query vocabulary, validity,
+and consumer scope.
+Engineering: full, structured, or lineage representation. & Response-dependent
+use and FLT-to-FRUIT response queries. \\
+\AO{006} & Scientific semantics are decided: seven roles and dependency graph.
+Engineering chooses separate, grouped, or vector layout. & Registered SCI-VAL
+named-use evaluation still awaits its policies and facts. \\
 \bottomrule
 \end{longtable}
 
@@ -250,7 +266,10 @@ Stage B r0.1 used only these eight admitted objects:
   \nolinkurl{REQUIRED_AUTHORED_OPTION_SETS.md}.
 \end{itemize}
 The r0.2 revision additionally used only the scientific owner's exact targeted
-closure directive dated 2026-08-31. Links in the packet were not opened. No
+closure directive dated 2026-08-31. The r0.3 repair used the owner's instruction
+to apply the independent ChatGPT Pro r0.2 document-review findings; the reviewer
+verified the two PDF hashes and inspected no implementation. Links in the
+packet were not opened. No
 implementation, configuration, schema, test, audit, validation,
 reduction, generated product, repository history, neighboring package,
 external source, or model-memory source supplied scientific content.

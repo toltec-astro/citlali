@@ -14,9 +14,9 @@
 \definecolor{rust}{HTML}{9C3D10}
 \definecolor{pale}{HTML}{F3F6F9}
 \hypersetup{colorlinks=true,linkcolor=navy,urlcolor=navy,
-  pdftitle={SCI-FLT-MATCHED Engineering Conformance Specification v0.1 r0.2},
-  pdfauthor={Implementation-blind Stage B scientific-contract author},
-  pdfsubject={Draft engineering conformance specification with unselected options}}
+  pdftitle={SCI-FLT-MATCHED Engineering Conformance Specification v0.1 r0.3},
+  pdfauthor={Implementation-blind Stage B author basis; owner-authorized review repair},
+  pdfsubject={Independent-review closure conformance draft with unselected scientific options}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{4pt}
 \setlength{\emergencystretch}{3em}
@@ -57,13 +57,14 @@ optimality claim\par}
 \StatusBox
 \vfill
 {\large Package version: v0.1\par}
-{\large Document revision: r0.2\par}
+{\large Document revision: r0.3\par}
 {\large Author-packet date: 2026-08-31\par}
 {\large Scientific owner for later disposition: Grant Wilson\par}
 \vspace{0.25in}
 {\small Stage B r0.1 was derived exclusively from the owner-approved
-eight-object author packet; r0.2 applies the subsequent scientific-owner
-closure directive. The admitted packet remains bound by SHA-256\par
+eight-object author packet; r0.2 applied the subsequent scientific-owner
+closure directive; r0.3 applies owner-authorized independent-review repairs
+without implementation input. The admitted packet remains bound by SHA-256\par
 \texttt{255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8}.\par}
 \end{titlepage}
 
@@ -82,9 +83,10 @@ closure directive. The admitted packet remains bound by SHA-256\par
 This specification translates the shared scientific contract into auditable
 evidence obligations without naming or judging an implementation. A future
 conformity claim shall name one immutable realization, the exact frozen
-scientific-contract version, every owner-selected AO alternative and parameter,
+scientific-contract version, every scientific-owner disposition, engineering
+representation declaration and profile,
 the full validity domain, and the evidence bundle. A partial or aggregate pass
-cannot erase a failed requirement, prediction, option consequence, or named-use
+cannot erase a failed requirement, contract consequence, option consequence, or named-use
 profile.
 
 Conformity means that a realization implements the selected exact scientific
@@ -108,17 +110,18 @@ Contract identity & \texttt{SCI-FLT-MATCHED v0.1}, shared-core digest, owner-
 disposed contract digest, and supersession status. \\
 Realization identity & Complete realization tuple from
 Section~\ref{sec:definitions}, including parent class and state generation. \\
-Dispositions & Exact scientific alternatives, representation declarations,
-and the preregistered engineering numerical profile for \texttt{AO-001}
-through \texttt{AO-006}; no inferred defaults. \\
+Dispositions & Exact scientific-owner choices, engineering
+preregistration/representation declarations, and successor-authorship triggers
+across \texttt{AO-001} through \texttt{AO-006}; no inferred defaults or
+representation-selected science. \\
 Validity domain & Parent classes, WCS/frame, indexing, units, template and
 state strata, support/boundary classes, rank/null regimes, and exclusions. \\
-Comparator & Exact $n_p/d_p$ reference identity, actual realized operator,
-covariance authority when any, exact subspace projectors, and response/state
-reconstruction identity. \\
+Comparator & Exact $n_p/d_p$ reference identity, actual fixed-state producing
+map $F_g$, established linear operator identity when any, named covariance-role
+authority, exact subspace projectors, and response/state reconstruction identity. \\
 Evidence identity & Immutable input, expected-result, observed-result,
 environment, tool/procedure, tolerance, uncertainty, and provenance records. \\
-Verdicts & Requirement-, prediction-, option-, and profile-level outcomes using
+Verdicts & Requirement-, consequence-, option-, and profile-level outcomes using
 the complete lifecycle vocabulary, including distinct \textsf{not requested},
 \textsf{disabled}, \textsf{unavailable}, \textsf{failed},
 \textsf{complete publication candidate}, and \textsf{superseded} semantics. \\
@@ -140,6 +143,11 @@ performance, readiness, production, or scientific authority. \\
   \item Expected and observed results shall remain immutable and distinguish
   analytic identities, numerical comparisons, empirical sampling uncertainty,
   and profile-policy evaluation.
+  \item Any empirical covariance study shall preregister the sampling model,
+  draw dependence or ergodic premise, finite-moment assumptions, covariance
+  estimator and normalization, convergence mode/criterion, uncertainty or
+  confidence construction, and coverage. These engineering choices do not
+  alter the exact stochastic identities.
   \item A test oracle shall not use the same undocumented operation as the
   realization under test. Shared scientific inputs are allowed; shared hidden
   state is not.
@@ -153,7 +161,7 @@ performance, readiness, production, or scientific authority. \\
 
 The following modules are imported verbatim by both contract views and are the
 sole normative source for definitions, equations, assumptions, requirements,
-predictions, option alternatives, edge cases, and failure semantics.
+contract consequences, option alternatives, edge cases, and failure semantics.
 
 \input{common/notation.tex}
 \input{common/definitions.tex}
@@ -186,22 +194,25 @@ generation, and assumed commutation/state sharing. \\
 anchor lattice, deterministic phase/ties, exact template object and query
 representation, scaling, lineage, $[\widehat a]=[m]/[t]$, rescaling law, and
 rejection of target/member learning or unsupported flux/beam meaning. \\
-\CT{004} & Exact operator and normalization & Compare $n_p$, $d_p$, $L$,
-amplitude, local restriction/inversion, and matching-template response with an
+\CT{004} & Exact operator and normalization & Compare $\Dom_{\rm loc}(p)$,
+$E_p$, $n_p$, $d_p$, $L$, amplitude, local restriction/inversion, and
+matching-template response with an
 independent exact oracle; test self-adjoint PSD closure and every invalid-$d_p$
 route. \\
-\CT{005} & Support, boundaries, and subspaces & Construct complete, eroded,
-filled, missing, invalid, zero-coefficient, and each distinct covariance/
-excluded/weighting/template-null case; require exact support-family and
-projector equality with no partial estimate or edge renormalization. \\
+\CT{005} & Support, boundaries, and subspaces & Construct predeclared local
+domains and complete, eroded, filled, missing, invalid, final-zero-coefficient,
+and each distinct covariance/excluded/weighting/template-null case; require
+exact domain, support-family, causal-lineage, and projector equality with no
+partial estimate or edge renormalization. \\
 \CT{006} & Weighting option & Instantiate the selected \AO{001} population,
 units, coefficients, rank/null, regularization, window/edge, response,
 uncertainty, products, failure, and option-specific exact closure.
 Test observation and coadd separately. \\
-\CT{007} & Numerical conformance & Evaluate the one preregistered profile over
+\CT{007} & Numerical conformance & Evaluate $F_g$ under the one preregistered profile over
 every declared state, support, boundary, subspace, response, and covariance stratum.
 Keep realized and reference quantities separate; report complete observables
-and coverage without promoting thresholds to scientific authority. \\
+and coverage; use linear-operator comparisons only after linearity is
+established, without promoting thresholds to scientific authority. \\
 \CT{008} & Response & Verify fixed, full-procedure, realized, and reference
 types; unit self-response; general off-diagonal behavior; selected \AO{005}
 domain/query/representation contract; lineage; lifecycle; and unsupported-query
@@ -209,33 +220,77 @@ rejection. \\
 \CT{009} & State and NOI parity & Verify Learn--Resolve--Apply inputs,
 population, protection, diagnostics, freeze, selected \AO{004} exact query
 reproduction, generation
-immutability, successor behavior, identical compatible-NOI transformation, and
-rejection of per-member relearning. \\
-\CT{010} & Covariance and uncertainty & Where authorized, independently
-propagate actual and reference covariance separately and assess selected
-\AO{003} scientific scope and exact representation, units, population,
-subspaces, calibration terms, consumers, and sampling theorem. Otherwise
-verify typed absence and no $d_p^{-1}$ claim. \\
+immutability, successor behavior, pre-Apply $K_{\rm NOI}$ admission, identical
+admitted-member transformation, and rejection of result-dependent admission,
+adapted support, or per-member relearning. \\
+\CT{010} & Covariance and uncertainty & Where authorized, evaluate operational
+$C_{\rm realized}^{(U1)}$ and exact reference covariance separately; assess each
+selected \AO{003} named-role scope and exact representation, units, random
+variables, population, conditioning, subspaces, consumers, and any separately
+authorized U1+U2 joint product. Empirical evidence follows the preregistered
+sampling protocol above. Otherwise verify typed absence and no $d_p^{-1}$ claim. \\
 \CT{011} & Products and lifecycle & Verify atomic signal membership, companion
 independence, the complete lifecycle vocabulary, required/optional failure propagation,
 immutability, supersession, no public unqualified intermediate, and exact
 lineage closure. \\
-\CT{012} & SCI-VAL profiles and actions & Instantiate selected \AO{006}
-representation; exhaust four-axis verdict/dependency/action combinations for
+\CT{012} & SCI-VAL profiles and actions & Instantiate the engineering-declared
+\AO{006} representation of the owner-disposed semantics; exhaust four-axis
+verdict/dependency/action combinations for
 PA, SA, SP, CU, NU, RU, and FH; verify lossless layout, aggregation
 nonconcealment, and VAL's evaluator-only role. \\
 \CT{013} & Boundaries and FLT-to-FRUIT envelope & Verify exact MAP, template,
-NOI, and one-way FRUIT producer-envelope records, route status, and all
-supported response/state queries without undocumented state. Reject FRUIT
-science or unsupported queries without changing the signal verdict. \\
+NOI, and one-way FRUIT producer-envelope records; $K_{\rm NOI}$; finite
+$\mathcal Q_{\rm FLT}^{0.1}$; route status; selected \AO{004} state and
+\AO{005} response reconstruction consequences; and all supported queries
+without undocumented state. Reject FRUIT science or unsupported queries
+without changing the signal verdict. \\
 \CT{014} & Exclusions and fail-closed selection & Attempt every excluded or
 unselected route, automatic fallback, source interpretation, posterior/Wiener
-meaning, convolution equivalence, and unsupported uncertainty claim; require
+meaning, unauthorized generic-convolution semantics, and unsupported
+uncertainty claim; require
 typed rejection with no substituted product. \\
 \CT{015} & Claim-layer separation & Verify records distinguish scientific
 authority, conformity, representation fidelity, SCI-VAL evaluation,
 observational validation, achieved performance, readiness, and
 production, and that no transition is inferred from another layer. \\
+\bottomrule
+\end{longtable}
+
+\section{Engineering representation-selection rationale}
+
+These comparisons do not select science. They become actionable only after the
+scientific role and finite query vocabulary are fixed and exact equivalence is
+demonstrated.
+
+\begin{longtable}{p{0.13\linewidth}p{0.18\linewidth}p{0.17\linewidth}p{0.18\linewidth}p{0.18\linewidth}}
+\toprule
+Choice & Storage and query & Reproduction dependencies & Failure surface &
+Audit burden \\
+\midrule
+\endhead
+\AOpt{003}{D}, \AOpt{004}{A}, \AOpt{005}{A} & Highest resident storage;
+direct supported queries & Lowest reconstruction dependence; immutable object
+reader still required & Corruption, indexing, unit, or schema mismatch &
+Byte/object integrity plus exhaustive query checks. \\
+\AOpt{004}{B}, \AOpt{005}{B} and structured \AOpt{003}{D} & Lower storage;
+queries require exact factorization/object evaluation & Exact structure,
+algorithm identity, and query semantics & Hidden approximation, unsupported
+query, rank/phase loss, or noncanonical factorization & Prove equivalence for
+the complete finite vocabulary and audit factor identity. \\
+\AOpt{003}{E}, \AOpt{004}{C}, \AOpt{005}{C} & Lowest resident result storage;
+potentially highest query latency & Complete immutable lineage, algorithms,
+versions, environment facts, and deterministic reconstruction & Missing or
+mutable lineage, nonreproducible environment, or reconstruction failure &
+Reconstruct representative and boundary queries and verify lineage closure. \\
+\AOpt{006}{A} & Largest verdict-record count; direct role lookup & Seven
+independent records and dependency graph & Cross-record version drift or
+incomplete role set & Audit role completeness and graph consistency. \\
+\AOpt{006}{B} & Moderate record count; layered navigation & Lossless subverdict
+addressing within each layer & Layer summary conceals or overrides a subverdict
+& Audit every subverdict and aggregation nonauthority. \\
+\AOpt{006}{C} & Compact access to one seven-role object & Stable component
+indexing and complete embedded records & Scalarization or component omission &
+Audit all seven components and forbid actionable scalar use. \\
 \bottomrule
 \end{longtable}
 
@@ -283,11 +338,11 @@ and \AO{005} handoff consequences. \\
 \bottomrule
 \end{longtable}
 
-\section{Prediction evidence patterns}
+\section{Contract-consequence evidence patterns}
 
 \begin{longtable}{p{0.23\linewidth}p{0.47\linewidth}p{0.20\linewidth}}
 \toprule
-Predictions & Evidence pattern & Failure effect \\
+Consequence IDs & Evidence pattern & Failure effect \\
 \midrule
 \endhead
 \Pred{001}--\Pred{003} & Exact matching-template injections spanning
@@ -297,12 +352,13 @@ independent analytic expectation and repeated zero-mean ensemble where needed.
 \Pred{004}--\Pred{005} & Deliberate missing support and each invalid-$d_p$ class;
 inspect values, validity, lifecycle, errors, and absence of zero/fallback. &
 Validity or failure contract fails. \\
-\Pred{006}--\Pred{007} & Cross-parent identity comparisons and compatible NOI
+\Pred{006}--\Pred{007} & Cross-parent identity comparisons and $K_{\rm NOI}$-admitted NOI
 member traces/hashes of state, support, $d_p$, $L$, and failure decisions. &
 State/NOI conformity fails. \\
-\Pred{008}--\Pred{010} & Authorized fixed-state ensembles, exact propagated
-covariance, label-removal audit, and full selected-envelope metric bundle. &
-Affected covariance or numerical-conformance route fails. \\
+\Pred{008}--\Pred{010} & Independent exact covariance identity, label-removal
+audit, and full selected-profile metric bundle. Any empirical study separately
+binds the preregistered sampling protocol in the evidence rules. & Affected
+covariance or numerical-conformance route fails. \\
 \Pred{011}--\Pred{013} & Mutation/supersession attempts and atomic failure
 injection for every required and optional member under each named policy. &
 Identity or product lifecycle fails. \\
@@ -315,17 +371,18 @@ Conformance claim fails closed. \\
 \Pred{019}--\Pred{022} & Two-template, constant/gradient background,
 off-diagonal-response, and mismatched-shape constructions compared with
 Equation~\ref{eq:general-sky}. & General-sky response or fit boundary fails. \\
-\Pred{023}--\Pred{024} & Authorized Learn--Resolve perturbation reruns and
-exact-law ensembles transformed by both $L$ and $\widetilde L$, with state
-changes and actual/reference response/covariance kept distinct. & Response-
-family or realized-covariance claim fails. \\
+\Pred{023}--\Pred{024} & Authorized Learn--Resolve perturbation reruns,
+operational $F_g$ response/covariance evaluation, and a fixed-linearity proof
+before any $\widetilde L_g$ matrix oracle, with state changes and
+actual/reference roles kept distinct. & Response-family or realized-covariance
+claim fails. \\
 \bottomrule
 \end{longtable}
 
 \section{Verdict aggregation}
 
 A complete implementation-conformity verdict requires every applicable
-requirement, prediction, selected-option consequence, edge-case rule, and
+requirement, contract consequence, selected-option consequence, edge-case rule, and
 named-use action to be complete on the full declared domain. Unavailable is
 not a pass. Failed is not unavailable. Disabled is not an attempted result.
 Superseded evidence remains immutable and cannot substantiate a successor
@@ -340,7 +397,7 @@ selected \AO{006} alternative and always retains seven distinct role verdicts.
 \section{Audit artifact minimums}
 
 For each instantiated conformance test, retain: test-family ID; requirement,
-prediction, AO, assumption, edge-case, and profile IDs; immutable realization
+contract-consequence, AO, assumption, edge-case, and profile IDs; immutable realization
 and comparator identities; input and expected-output identities; exact units,
 coordinates, support, state, population, rank/null, and calibration facts;
 procedure identity; environment-dependent facts; observed results; complete
@@ -353,8 +410,10 @@ evidence.
 
 Stage B r0.1 used only the exact eight objects named by the approved author
 packet. The r0.2 revision additionally used only the scientific owner's exact
-targeted closure directive dated 2026-08-31. Links were provenance only and
-were not opened. No implementation,
+targeted closure directive dated 2026-08-31. The r0.3 repair used the owner's
+instruction to apply the independent ChatGPT Pro r0.2 document-review findings;
+the reviewer verified the two PDF hashes and inspected no implementation.
+Links were provenance only and were not opened. No implementation,
 configuration, schema, test, audit, validation, reduction, generated product,
 history, neighboring package, external source, or model-memory source supplied
 scientific content. The shared core is identical to the one imported by the

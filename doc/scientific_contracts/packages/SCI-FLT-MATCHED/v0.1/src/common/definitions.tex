@@ -9,14 +9,20 @@ the exact criterion and premises in Section~\ref{sec:optimality}. It publishes
 a filtered amplitude map. At each fixed parent-pixel anchor it performs a
 fixed-template, fixed-anchor, one-parameter linear amplitude estimate. It does
 not select candidates, optimize position, fit morphology or background,
-deblend, infer source existence, or produce a catalog. It is neither
-posterior/Wiener sky reconstruction nor ordinary source-shaped convolution.
+deblend, infer source existence, or produce a catalog. It is not a
+posterior/Wiener sky reconstruction. Ordinary convolution does not acquire
+\ContractID{} identity or amplitude-estimator semantics merely through
+numerical resemblance. A selected realization may coincide numerically with a
+normalized correlation or convolution under proved special conditions; such
+coincidence does not weaken the fixed-template estimand or authorize generic
+convolution semantics.
 
 Each realization has the immutable scientific identity
 \begin{quote}\small\ttfamily\raggedright
 (method\_id, estimand, parent\_id, parent\_class, anchor\_lattice,
 WCS/frame, template\_id, requested/effective/resolved/applied/realized
-generation, weighting\_object, exact\_operator, realized\_operator,
+generation, weighting\_object, exact\_operator, producing\_map,
+established\_linear\_operator,
 numerical\_profile, response\_family, support\_family, units/calibration,
 covariance\_scope, NOI\_lifecycle, product\_bundle, validity,
 failure\_policy, provenance).
@@ -75,6 +81,12 @@ required by the declared response query.
 \item[$\Supp_{\rm store}$.] Representation footprint. It has no scientific
 authority and may change losslessly.
 \end{description}
+The pre-inversion local operator domain $\Dom_{\rm loc}(p)$ is declared before
+$E_p$, $W_p$, $d_p$, or $L_{p,g}$ is constructed. It is not inferred from the
+final exact-zero pattern. Coordinates in
+$\Dom_{\rm loc}(p)\setminus\Supp_{\rm apply}(p)$ may influence local covariance,
+weight, rank, normalization, or state and therefore remain in operator/state
+lineage even though Apply does not dereference their parent payload values.
 An output anchor is admitted only when complete application support is present
 and valid. No partial-support estimator, edge renormalization, extension,
 imputation, background subtraction, learned taper, or signal-derived support
@@ -90,15 +102,20 @@ positive semidefinite. A parent coefficient has only its selected-route role;
 its name, positivity, units, reciprocal, or diagonal placement does not make
 it covariance, precision, or inverse variance.
 
-Local GLS first restricts the authorized parent covariance:
+Local GLS first restricts the authorized parent covariance to the predeclared
+local domain:
 $C_p=E_pC_{\rm parent}E_p^{\mathsf T}$, then inverts it only on the exact
 declared local estimable subspace. In general
 \[
  (E_pC_{\rm parent}E_p^{\mathsf T})^{-1}
  \ne E_pC_{\rm parent}^{-1}E_p^{\mathsf T}.
 \]
-Using a global-precision subblock conditions on outside data and is a different
-method with a different influence domain, response, covariance, and edge rule.
+A global-precision subblock is generally not the inverse of the locally
+marginal covariance. Under additional distributional assumptions it may equal
+a conditional precision, but using that block without the corresponding
+conditional mean and outside-data terms is not a complete conditional
+estimator. It is therefore a separately authored weight and method with a
+different influence domain, response, covariance, and edge rule.
 
 \subsection{Learn--Resolve--Apply state graph}
 \label{sec:state-graph}
@@ -122,6 +139,21 @@ the identical resolved transformation, support, normalization, and failure
 rules. Any update creates a successor; per-member relearning is a different
 future method.
 
+\subsection{NOI compatibility predicate}
+\label{sec:noi-compatibility}
+
+For a signal realization $y$ and a candidate NOI member $z$, FLT evaluates a
+frozen admission predicate $K_{\rm NOI}(z,y)$ before Apply. The predicate uses
+only declared input facts: parent class and quantity; WCS, grid, shape,
+indexing, ordering, and pixel-center convention; units and calibration
+convention; template identity; resolved state generation; local-domain and
+missingness semantics; NOI population and membership authority; numerical
+profile; and failure policy. NOI owns population and membership meaning; FLT
+owns this transformation-compatibility decision. Compatibility never depends
+on whether a transformed value later succeeds. Missing required payload makes
+the affected member or anchor incompatible or unavailable; it never adapts
+support, changes normalization, or triggers member-specific Learn or Resolve.
+
 \subsection{Fixed-state, full-procedure, realized, and reference response}
 \label{sec:response-families}
 
@@ -134,9 +166,14 @@ Resolve after perturbation. The state-change record is retained separately.
 Until such authority exists, $R_{\rm FP}$ is \Unavailable{}; no FLT, FRUIT,
 SRC, or other consumer may call $R_{\rm fixed}$ the full-procedure response.
 
-When the produced amplitude field uses a realized operator $\widetilde L$,
-its actual response is $R_{\rm realized}=\widetilde LT$. The exact scientific
-comparator is $R_{\rm reference}=LT$. These are not interchangeable.
+The actual fixed-state numerical producing map is $F_g$. It may include
+rounding, branches, exceptional-value handling, or typed attempt failure and is
+not presumed exactly linear. Its realized response is therefore the declared
+fixed-state directional derivative or predeclared finite difference of $F_g$
+without rerunning Learn or Resolve. Only after evidence establishes
+$F_g(m)=\widetilde L_gm$ on the declared domain may the matrix identity
+$R_{\rm realized}=\widetilde L_gT$ be used. The exact scientific comparator is
+$R_{\rm reference}=LT$. These are not interchangeable.
 
 \subsection{Product roles and atomic lifecycle}
 \label{sec:product-roles}
@@ -144,7 +181,7 @@ comparator is $R_{\rm reference}=LT$. These are not interchangeable.
 The required atomic signal bundle contains the filtered amplitude field plus
 its quantity/unit, parent and anchor-lattice identity, template convention,
 resolved and realized operator/state identity, application validity, actual
-response reference, uncertainty availability, lifecycle, and complete
+operational-response reference, uncertainty availability, lifecycle, and complete
 provenance. Failure of any required member prevents a complete publication
 candidate.
 
@@ -178,8 +215,9 @@ disposition are immutable for the generation. \\
 \Applied{} & The resolved operator was invoked on an admitted parent. \\
 \Complete{} & Every required member and predicate exists and the bundle is
 eligible for publication; this is not publication, validation, or readiness. \\
-\Realized{} & The declared numerical operator produced the immutable product
-values and their actual response/covariance identities. \\
+\Realized{} & The declared fixed-state producing map generated the immutable
+product values and their operational response/covariance identities; a linear
+operator identity is recorded only when established. \\
 \Failed{} & An authorized attempt began but a required operation or closure
 check failed. \\
 \NotProduced{} & Policy intentionally produced no artifact after a valid
@@ -205,22 +243,29 @@ publication/use (RU), and FLT-to-FRUIT producer-envelope use (FH).
 
 The FLT product contract preserves a first-class interface sufficient for a
 future FRUIT method to consume the filtered amplitude product without
-reconstructing undocumented FLT implementation state. At minimum it identifies
-the filtered quantity, template, response, valid support, units/calibration,
-method/state identity, uncertainty availability, and provenance. Additional
-FLT state required by an authorized FRUIT method remains exactly available or
-reconstructable through product lineage. FLT does not guess the future query
-vocabulary and defines no FRUIT model, recurrence, subtraction/add-back,
-learning, stopping, restart, selection, response, uncertainty, or
-interpretation.
+reconstructing undocumented FLT implementation state. The finite v0.1
+FLT-owned handoff vocabulary $\mathcal Q_{\rm FLT}^{0.1}$ contains exactly:
+filtered quantity and per-anchor value/validity/lifecycle; parent and anchor
+identity/WCS; template identity and amplitude convention; local domain and
+application support; fixed-state scientific and available realized/reference
+response identities; method, resolved state, producing-map, and numerical-
+profile identities; named U1/U2 and companion availability; units/calibration;
+provenance; and the exact supported state/response query declarations. Selected
+\AO{004} representation is required for state reconstruction and selected
+\AO{005} representation for response reconstruction. A future FRUIT method
+requiring a query outside $\mathcal Q_{\rm FLT}^{0.1}$ requires a successor FLT
+envelope or generation; existing signal products remain unchanged. FLT defines
+no FRUIT model, recurrence, subtraction/add-back, learning, stopping, restart,
+selection, response, uncertainty, or interpretation.
 
 \subsection{Producer ownership and claim layers}
 
 MAP owns the immutable parent identity, support, response, covariance, beam,
 calibration, WCS, lifecycle, and provenance. The template producer owns the
 unit-amplitude response object. CAL/BEAM owns calibration and beam authority.
-FLT owns the exact transformation, resolved state, actual response/covariance
-consequences, products, lifecycle, and one-way producer envelope. NOI owns its
+FLT owns the exact transformation, resolved state, operational realized
+response/covariance consequences, products, lifecycle, finite handoff query
+vocabulary, and one-way producer envelope. NOI owns its
 realization population and empirical uncertainty meaning. FRUIT owns any
 future FRUIT science. No SRC boundary is created.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify the content-bound SCI-FLT-MATCHED Stage B r0.2 draft."""
+"""Verify the content-bound SCI-FLT-MATCHED Stage B r0.3 draft."""
 
 from hashlib import sha256
 from pathlib import Path
@@ -15,7 +15,7 @@ def digest(path: Path) -> str:
 
 
 text = MANIFEST.read_text()
-assert "SCI-FLT-MATCHED_STAGE_B_DRAFT v0.1/r0.2" in text
+assert "SCI-FLT-MATCHED_STAGE_B_DRAFT v0.1/r0.3" in text
 rows = re.findall(
     r"^\|\s*(\d+)\s*\|\s*`([^`]+)`\s*\|.*\|\s*`([0-9a-f]{64})`\s*\|$",
     text,
@@ -37,5 +37,5 @@ assert digest(ROOT / "AUTHOR_PACKET_MANIFEST.md") == (
 print("sci_flt_matched_stage_b_draft=PASS")
 print(f"draft_objects={len(rows)}")
 print(f"draft_manifest_sha256={digest(MANIFEST)}")
-print("draft_revision=r0.2")
+print("draft_revision=r0.3")
 print("scientific_authority_frozen=false")

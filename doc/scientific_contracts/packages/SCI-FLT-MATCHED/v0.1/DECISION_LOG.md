@@ -54,3 +54,20 @@
   `255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8`.
 - Recorded the owner instruction that later fresh author/reviewer iterations
   use xhigh effort rather than ultra.
+
+## `2026-09-01` — Independent r0.2 review and owner-authorized r0.3 repair
+
+- Submitted the exact r0.2 scientific and engineering PDFs to a separate
+  ChatGPT Pro review with no implementation or evidence access.
+- The reviewer returned `major repair required`, confidence `0.92`, with no P0
+  finding, eight P1 findings, five P2 findings, and one P3 finding.
+- Grant Wilson authorized the directed changes and a second independent review.
+- r0.3 makes the construction domain acyclic, defines actual production by
+  `F_g`, closes `AO-001-C` through exact `A_p`, `D_p`, and map-domain `W_p`,
+  separates U1 and U2, preregisters empirical covariance evidence, freezes the
+  pre-Apply `K_NOI` predicate, bounds the FLT-to-FRUIT vocabulary, and separates
+  scientific decisions from engineering declarations and successor authorship.
+- Stable counts remain 50 requirements, 24 contract-consequence IDs, 21 AO
+  alternatives, 15 assumptions, 17 SODL entries, and 95 crosswalk IDs. No
+  option, numerical route, implementation, conformity result, validation,
+  performance, readiness, production status, freeze, or Unity state is selected.

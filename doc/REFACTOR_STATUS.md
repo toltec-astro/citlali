@@ -826,6 +826,26 @@ fidelity, observational validation, performance, readiness, production,
 freeze, or Unity state is selected or claimed. Any later fresh author or
 reviewer iteration uses xhigh effort rather than ultra.
 
+On `2026-09-01`, Grant Wilson authorized the directed findings from an
+independent ChatGPT Pro review of the exact r0.2 PDF pair and requested a second
+review after repair. Stage B r0.3 closes the review's F01--F14 findings without
+implementation inspection or a new option selection: construction now begins
+from predeclared `D_loc(p)` rather than final application support; the actual
+producer is the potentially nonlinear `F_g`, with operational response and U1
+covariance primary and matrix forms conditional on established fixed-state
+linearity; radial field-power `AO-001-C` now defines exact `A_p`, `D_p`, and
+`W_p=A_p^dagger D_p A_p`; U1 and U2 are separately authorized; empirical
+sampling is an engineering protocol; `K_NOI` is a frozen pre-Apply admission
+predicate; `Q_FLT^0.1` is a finite FLT-to-FRUIT vocabulary; and scientific,
+engineering, and successor-authorship authority are separated. The two
+shared-core views now render as 36 and 33 pages. Mechanical consistency and
+all-page visual QA pass, and the 43-object r0.3 draft manifest verifies at
+SHA-256
+`2c54d4d89599ae8b36b050aa1716755852b0e83d6b87575b65e6e138f725a880`.
+The approved Stage A manifest remains unchanged. A second independent ChatGPT
+Pro review at xhigh is the next gate; all scientific nonclaims and open SODL
+states remain in force.
+
 This remains contract-development work only. No algorithm change,
 implementation conformity, validation, calibration, performance, readiness,
 production, freeze, or Unity action is claimed or authorized.

@@ -1,6 +1,7 @@
 # SCI-FLT-MATCHED v0.1 Stage B Crosswalk
 
-Status: Stage B r0.2 draft; all weighting, covariance-scope, representation,
+Status: Stage B r0.3 independent-review repair draft; all weighting,
+covariance-role/scope, representation,
 named-use, and numerical routes remain unselected. This crosswalk makes no
 implementation, conformity, response/covariance-fidelity, validation,
 achieved-performance, readiness, production, scientific-freeze, or Unity
@@ -28,6 +29,7 @@ or a reported conformity or validation result.
 | AB | `AUTHOR_BOUNDARIES.md` |
 | RAO | `REQUIRED_AUTHORED_OPTION_SETS.md` |
 | R02 | `SCIENTIFIC_OWNER_R0.2_DIRECTIVE_2026-08-31.md` |
+| R03 | `CHATGPT_PRO_INDEPENDENT_REVIEW_R0.2_2026-08-31.md` plus the owner's instruction to apply its directed repairs |
 
 Links appearing in admitted objects were not opened and are not inputs.
 
@@ -99,8 +101,8 @@ test family adds future evidence routing without reporting a result.
 | `SCI-FLT-MATCHED-PRED-004` | SOD ODQ-007 complete support | Missing-support injections produce no numerical amplitude | CT-005, CT-014 |
 | `SCI-FLT-MATCHED-PRED-005` | SOD ODQ-006 invalid/nonpositive normalization | Each invalid-`D` class yields typed unavailable/failed and no zero | CT-004, CT-005, CT-014 |
 | `SCI-FLT-MATCHED-PRED-006` | SOD ODQ-003/010 parent/state separation | Observation/coadd identity and state-generation comparison | CT-002, CT-009 |
-| `SCI-FLT-MATCHED-PRED-007` | SOD ODQ-010; AB NOI parity | State/operator/support/normalization/failure identity for every compatible NOI member | CT-009 |
-| `SCI-FLT-MATCHED-PRED-008` | SOD ODQ-009 covariance propagation | Empirical fixed-state covariance versus exact propagation with sampling uncertainty | CT-010 |
+| `SCI-FLT-MATCHED-PRED-007` | SOD ODQ-010; AB NOI parity | State/operator/support/normalization/failure identity for every `K_NOI`-admitted NOI member | CT-009 |
+| `SCI-FLT-MATCHED-PRED-008` | SOD ODQ-009 covariance propagation; R03 F05 | Exact fixed-state covariance identity; empirical estimators use a separate preregistered protocol | CT-010 |
 | `SCI-FLT-MATCHED-PRED-009` | SOD ODQ-009 `D^-1` restriction | Label/consumer audit under non-GLS weight with invariant amplitude | CT-006, CT-010 |
 | `SCI-FLT-MATCHED-PRED-010` | SOD ODQ-006; RAO AO-002 | Full selected-envelope metrics, coverage, and support/null equality | CT-005, CT-007 |
 | `SCI-FLT-MATCHED-PRED-011` | ACO immutable identities; OST realization tuple | Mutation/successor attempts preserve old identity and create new generation | CT-007, CT-009, CT-011 |
@@ -116,7 +118,7 @@ test family adds future evidence routing without reporting a result.
 | `SCI-FLT-MATCHED-PRED-021` | R02 off-diagonal response | Unit template at a distinct anchor with nonzero response | CT-004, CT-008 |
 | `SCI-FLT-MATCHED-PRED-022` | R02 mismatch amendment | Mismatched-shape injection and response-weighted amplitude | CT-003, CT-004, CT-008 |
 | `SCI-FLT-MATCHED-PRED-023` | R02 response-family amendment | Authorized Learn--Resolve perturbation rerun and state-change record | CT-008, CT-009 |
-| `SCI-FLT-MATCHED-PRED-024` | R02 realized covariance | Exact-law draws transformed separately by reference and realized operators | CT-007, CT-010 |
+| `SCI-FLT-MATCHED-PRED-024` | R02 realized covariance; R03 F02/F05 | Operational `F_g` covariance; matrix identity only after fixed-state linearity | CT-007, CT-010 |
 
 ## Assumption and uncertainty crosswalk
 
@@ -143,26 +145,26 @@ in `src/common/requirements.tex`, imported by both views.
 | Alternative | Packet assignment | Scientific consequence | Principal validation route | Route unavailable until selected/parameterized |
 | --- | --- | --- | --- | --- |
 | `SCI-FLT-MATCHED-AO-001-A` | SOD ODQ-004/009; RAO AO-001; R02 | Exact constrained local inverse-covariance GLS; sole route eligible for optimality and `d_p^-1` variance | CT-004, CT-006, CT-010 | Exact-GLS weight and associated optimality/variance claim |
-| `SCI-FLT-MATCHED-AO-001-B` | SOD ODQ-004; RAO AO-001; R02 | Exact structured covariance-derived weight; normalized but nonoptimal unless it satisfies AO-001-A exactly | CT-006, CT-010 | Structured weighting realization |
-| `SCI-FLT-MATCHED-AO-001-C` | SOD ODQ-004; ASC; RAO AO-001; R02 | Radially symmetrized field-power spectral weight with truthful source and no implied noise/covariance/isotropy/optimality | CT-006, CT-007 | Field-power weighting and exact conventions |
-| `SCI-FLT-MATCHED-AO-001-D` | SOD ODQ-004; RAO AO-001 | Declared positive-semidefinite weaker weighting with no covariance/optimality claim | CT-006, CT-007 | Weaker weight realization |
+| `SCI-FLT-MATCHED-AO-001-B` | SOD ODQ-004; RAO AO-001; R02; R03 F08 | Nonselectable successor-authorship envelope until one concrete structured covariance-derived `W_p` is supplied | CT-006, CT-010 | Concrete structured weighting authorship and review |
+| `SCI-FLT-MATCHED-AO-001-C` | SOD ODQ-004; ASC; RAO AO-001; R02; R03 F03 | Exact `A_p`, `D_p`, and radially symmetrized field-power `W_p=A_p^dagger D_p A_p`, with truthful source and no implied noise/covariance/isotropy/optimality | CT-006, CT-007 | Field-power weighting and exact conventions |
+| `SCI-FLT-MATCHED-AO-001-D` | SOD ODQ-004; RAO AO-001; R03 F08 | Nonselectable successor-authorship trigger for one concrete weaker PSD `W_p` | CT-006, CT-007 | Concrete weaker-weight authorship and review |
 | `SCI-FLT-MATCHED-AO-002-A` | SOD ODQ-006; RAO AO-002; R02 | One preregistered engineering profile for a numerical realization of the exact operator; no privileged scientific threshold | CT-007 | Numerical-conformance statement |
-| `SCI-FLT-MATCHED-AO-002-B` | R02 | Intentionally distinct scientific operator requiring separate identity and owner-approved scientific error budget | CT-007 | Any scientifically approximate successor |
+| `SCI-FLT-MATCHED-AO-002-B` | R02; R03 F08 | Nonselectable trigger to author an intentionally distinct scientific operator with separate identity and owner-approved error budget | CT-007 | Concrete scientifically distinct successor authorship |
 | `SCI-FLT-MATCHED-AO-002-C` | R02 | Typed numerical-route unavailability when comparator/profile/coverage is absent | CT-007, CT-014 | Every numerical-conformance statement |
-| `SCI-FLT-MATCHED-AO-003-A` | SOD ODQ-009; RAO AO-003; R02 | Complete scientific covariance scope | CT-010, CT-011 | Complete covariance use |
+| `SCI-FLT-MATCHED-AO-003-A` | SOD ODQ-009; RAO AO-003; R02; R03 F04 | Complete covariance scope within one explicitly named role | CT-010, CT-011 | Complete named-role covariance use |
 | `SCI-FLT-MATCHED-AO-003-B` | SOD ODQ-009; RAO AO-003; R02 | Named projected scientific covariance scope; outside correlations unknown | CT-010, CT-012 | Named projected consumer |
 | `SCI-FLT-MATCHED-AO-003-C` | SOD ODQ-009; RAO AO-003; R02 | Typed covariance unavailability while signal may remain complete | CT-010, CT-014 | Every covariance-dependent use |
-| `SCI-FLT-MATCHED-AO-003-D` | R02 | Exact resident explicit or structured representation of the selected covariance scope | CT-010, CT-011 | Resident covariance queries |
-| `SCI-FLT-MATCHED-AO-003-E` | R02 | Exact lineage/on-demand representation of the selected covariance scope | CT-010, CT-011 | On-demand covariance queries |
-| `SCI-FLT-MATCHED-AO-004-A` | SOD ODQ-010/013; RAO AO-004; R02 | Full materialization preserving exact immutable state/query identity | CT-009, CT-011 | Full-state query/reanalysis route |
-| `SCI-FLT-MATCHED-AO-004-B` | SOD ODQ-010/013; RAO AO-004; R02 | Compact exact state preserving the same query identity | CT-009, CT-011 | Compact-state query/reanalysis route |
-| `SCI-FLT-MATCHED-AO-004-C` | SOD ODQ-010/013; RAO AO-004; R02 | Exact lineage reconstruction preserving the same query identity | CT-009, CT-011 | Lineage state query/reanalysis route |
-| `SCI-FLT-MATCHED-AO-005-A` | SOD ODQ-012; RAO AO-005; R02 | Full response representation after domain/query/validity/consumer scope is fixed | CT-008, CT-013 | Full response queries and handoff |
-| `SCI-FLT-MATCHED-AO-005-B` | SOD ODQ-012; RAO AO-005; R02 | Exact structured response preserving the fixed scientific query object | CT-008, CT-013 | Structured response queries and handoff |
-| `SCI-FLT-MATCHED-AO-005-C` | SOD ODQ-012; RAO AO-005; R02 | Exact lineage/on-demand response preserving the fixed scientific query object | CT-008, CT-009, CT-013 | Lineage response queries and handoff |
-| `SCI-FLT-MATCHED-AO-006-A` | SOD ODQ-013; RAO AO-006; R02 | Seven separate role records for one normative dependency graph | CT-012 | SCI-VAL named-use evaluation |
-| `SCI-FLT-MATCHED-AO-006-B` | SOD ODQ-013; RAO AO-006; R02 | Grouped lossless records retaining seven mandatory subverdicts | CT-012 | SCI-VAL named-use evaluation |
-| `SCI-FLT-MATCHED-AO-006-C` | SOD ODQ-013; RAO AO-006; R02 | One seven-role vector; scalar action forbidden | CT-012 | SCI-VAL named-use evaluation |
+| `SCI-FLT-MATCHED-AO-003-D` | R02; R03 F08 | Engineering exact resident explicit or structured representation of the selected named-role covariance scope | CT-010, CT-011 | Resident covariance queries |
+| `SCI-FLT-MATCHED-AO-003-E` | R02; R03 F08 | Engineering exact lineage/on-demand representation of the selected named-role covariance scope | CT-010, CT-011 | On-demand covariance queries |
+| `SCI-FLT-MATCHED-AO-004-A` | SOD ODQ-010/013; RAO AO-004; R02; R03 F08 | Engineering full materialization preserving exact immutable state/query identity | CT-009, CT-011 | Full-state query/reanalysis route |
+| `SCI-FLT-MATCHED-AO-004-B` | SOD ODQ-010/013; RAO AO-004; R02; R03 F08 | Engineering compact exact state preserving the same query identity | CT-009, CT-011 | Compact-state query/reanalysis route |
+| `SCI-FLT-MATCHED-AO-004-C` | SOD ODQ-010/013; RAO AO-004; R02; R03 F08 | Engineering exact lineage reconstruction preserving the same query identity | CT-009, CT-011 | Lineage state query/reanalysis route |
+| `SCI-FLT-MATCHED-AO-005-A` | SOD ODQ-012; RAO AO-005; R02; R03 F08 | Engineering full response representation after domain/query/validity/consumer scope is fixed | CT-008, CT-013 | Full response queries and handoff |
+| `SCI-FLT-MATCHED-AO-005-B` | SOD ODQ-012; RAO AO-005; R02; R03 F08 | Engineering exact structured response preserving the fixed scientific query object | CT-008, CT-013 | Structured response queries and handoff |
+| `SCI-FLT-MATCHED-AO-005-C` | SOD ODQ-012; RAO AO-005; R02; R03 F08 | Engineering exact lineage/on-demand response preserving the fixed scientific query object | CT-008, CT-009, CT-013 | Lineage response queries and handoff |
+| `SCI-FLT-MATCHED-AO-006-A` | SOD ODQ-013; RAO AO-006; R02; R03 F08 | Engineering seven-record layout for one owner-disposed dependency graph | CT-012 | SCI-VAL named-use evaluation |
+| `SCI-FLT-MATCHED-AO-006-B` | SOD ODQ-013; RAO AO-006; R02; R03 F08 | Engineering grouped lossless layout retaining seven mandatory subverdicts | CT-012 | SCI-VAL named-use evaluation |
+| `SCI-FLT-MATCHED-AO-006-C` | SOD ODQ-013; RAO AO-006; R02; R03 F08 | Engineering seven-role vector layout; scalar action forbidden | CT-012 | SCI-VAL named-use evaluation |
 
 ## Product, lifecycle, and claim-layer closure
 

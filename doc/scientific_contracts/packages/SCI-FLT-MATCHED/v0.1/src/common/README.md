@@ -11,5 +11,5 @@ rendered views:
 6. `edge_cases.tex`
 
 The modules contain the shared definitions, equations, assumptions,
-requirements, predictions, option alternatives, consequences, failure rules,
+requirements, falsifiable contract consequences, option alternatives, failure rules,
 and validation consequences. All authored options remain unselected.

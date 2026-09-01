@@ -25,7 +25,8 @@ semantics & Fail selected \AO{001} closure unless an exact distinct operator
 and inner product were separately authored; no silent symmetrization. \\
 Covariance zero-variance mode & Parent law declares deterministic variation in
 that direction & Keep separate from excluded, weighting-null, and template-
-unidentifiable modes; apply only the exact constrained theorem. \\
+unidentifiable modes. It is outside the v0.1 positive-definite-subspace theorem
+unless separately authored; do not broaden the stated optimum. \\
 Excluded or infinite-variance mode & Policy deliberately removes a direction
 from the estimable subspace & Record the exact projector and response loss; do
 not call it a covariance zero mode. \\
@@ -65,9 +66,10 @@ matched beam/solid angle, extended-source, or calibration-covariance claim. \\
 Coadd membership changes & Parent identity changes & New coadd parent, state,
 realization, response, and products; do not reuse observation/coadd state by
 implication. \\
-NOI member suggests a new state & Per-member relearning would change the
-ensemble method & Apply the frozen state or mark member incompatible; a learned
-update creates a successor generation outside the current ensemble. \\
+NOI member fails $K_{\rm NOI}$ or suggests a new state & Admission or per-member
+relearning would change the ensemble method & Mark the member or affected
+anchor incompatible/unavailable before Apply. A learned update creates a
+successor generation; no support adaptation or result-dependent admission. \\
 Approximation misses one null or support mode & Estimand/validity differs even
 if aggregate error is small & Fail the preregistered profile; if intentional,
 assign a distinct scientific identity. No percentile hides the disagreement. \\
@@ -77,8 +79,12 @@ fail. \\
 Optional companion fails after signal completion & Companion atomicity failed,
 not necessarily signal science & Mark companion \Failed{}; preserve signal
 \Complete{} unless exact named-use policy made the companion required. \\
-Required signal member fails & Role-complete signal does not exist & Fail the
-entire signal bundle; do not publish a partial bundle as unavailable pixels
+Normative per-anchor unavailability & The validity rule defined no amplitude at
+that anchor & Preserve the unavailable status inside an otherwise role-complete
+field; this does not by itself make the bundle partial. \\
+Required signal bundle member fails & A required field, mask, identity,
+response reference, lifecycle record, or lineage member is absent & Fail the
+entire signal bundle; do not disguise the missing member as unavailable pixels
 inside an otherwise complete product. \\
 Successor state or option is approved & Scientific identity advances & Create
 immutable successor generation and mark predecessor \Superseded{} only by
@@ -94,10 +100,12 @@ dependence has not been rerun & Return full-procedure response unavailable and
 retain the fixed-state type; no consumer may strengthen it. \\
 Reference response or covariance attached to a realized field & Comparator is
 being mislabeled as the actual product consequence & Fail the companion or
-bundle policy; attach $R_{\rm realized}$ and $C_{\rm realized}$ when authorized. \\
-FLT to FRUIT consumer asks for FRUIT behavior & Request crosses package
-authority & Withhold the behavior and require a separate FRUIT contract; the
-FLT signal and handoff facts remain unchanged. \\
+bundle policy; attach the operational realized response and named-role
+$C_{\rm realized}^{(U1)}$ when authorized. \\
+FLT to FRUIT consumer asks outside $\mathcal Q_{\rm FLT}^{0.1}$ or for FRUIT
+behavior & Request crosses the current envelope or package authority & Return
+typed unavailability and require a successor FLT envelope or separate FRUIT
+contract as applicable; existing FLT signal and handoff facts remain unchanged. \\
 Filtered-map peak is examined & A numerical feature is not an authorized
 source object & No detection, candidate, significance, completeness, purity,
 fit, morphology, catalog, or SRC claim follows. \\
@@ -106,12 +114,14 @@ fit, morphology, catalog, or SRC claim follows. \\
 
 \subsection{Explicit method exclusions}
 
-Posterior/Wiener sky reconstruction, ordinary convolution, source or candidate
-learning, data-thresholded destriping, automatic selectors/fallbacks, adaptive
+Posterior/Wiener sky reconstruction, generic ordinary-convolution semantics,
+source or candidate learning, data-thresholded destriping, automatic selectors/fallbacks, adaptive
 edge/background behavior, the historical high-pass/delta case, partial-support
 estimation, FLT-owned coaddition, source analysis, and FRUIT algorithms are not
-degenerate settings of this contract. They require separate scientific
-contracts if later commissioned.
+authorized by this contract. A proved special-case numerical coincidence with
+normalized correlation/convolution retains the \ContractID{} estimand and does
+not authorize generic convolution semantics. Other methods require separate
+scientific contracts if later commissioned.
 
 \texttt{SCI-FLT-FIXED} remains a separate protected package. This contract
 neither selects, modifies, supersedes, nor supplies scientific authority for
@@ -123,7 +133,7 @@ sky prior, posterior estimand, or Wiener reconstruction.
 
 \subsection{Nonclaim closure}
 
-Passing a scientific prediction or an engineering conformance test establishes
+Passing a scientific contract consequence or an engineering conformance test establishes
 only that named claim for the exact immutable realization. Validation-profile
 pass is not achieved performance. Achieved performance is not readiness.
 Readiness is not production. None of those layers can select an authored

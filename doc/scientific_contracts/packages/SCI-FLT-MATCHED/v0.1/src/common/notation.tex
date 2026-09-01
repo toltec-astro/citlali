@@ -50,13 +50,16 @@ with the same WCS, frame, grid, shape, indexing, ordering, and pixel-center
 convention as the parent apart from exact support restriction. The parent
 signal sample is $m_q$. The expected parent response at row $q$ per unit
 amplitude anchored at $p$ is $t_{pq}$; its complete parent-coordinate vector is
-$t_p^{\rm full}$. The restriction/extraction matrix for application support is
-$E_p$, so
+$t_p^{\rm full}$. Before any local inversion or weight construction, the
+selected route declares the finite local operator domain $\Dom_{\rm loc}(p)$
+and its exact extraction $E_p$, so
 \[
  m_p=E_p m,\qquad t_p=E_p t_p^{\rm full}.
 \]
 The scientific weighting $W_p$ is the complete coordinate-basis bilinear
-operator on those restricted vectors. The fixed-state row functional is
+operator on those restricted vectors. Only after $W_p$, $d_p$, and the row are
+constructed is application support defined by the exact nonzero coefficients
+of that row. The fixed-state row functional is
 $L_{p,g}$, the template matrix whose column $s$ is $t_s^{\rm full}$ is $T$,
 and $R_{\rm fixed}(p,s)=L_{p,g}t_s^{\rm full}$.
 
@@ -74,30 +77,48 @@ Symbol & Normative meaning \\
 $p,q,s$ & Output anchor, parent row/pixel, and independently indexed template
 anchor. \\
 $m$, $m_q$, $m_p$ & Immutable admitted ordinary-MAP parent vector, one parent
-sample, and the complete restriction $E_pm$. \\
+sample, and the complete local-domain restriction $E_pm$. \\
 $t_{pq}$, $t_p$ & Parent response per unit amplitude and its complete
-application-support vector. \\
+local-domain vector. \\
+$\Dom_{\rm loc}(p)$ & Predeclared parent-coordinate domain used to construct the
+local template, weight, normalization, and operator before final application
+support is known. \\
 $E_p$ & Exact extraction/restriction from parent coordinates to
-$\Supp_{\rm apply}(p)$. \\
+$\Dom_{\rm loc}(p)$. \\
+$\Supp_{\rm apply}(p)$ & Parent payload coordinates whose final exact
+$L_{p,g}$ coefficients are nonzero. \\
 $W_p$ & Frozen, self-adjoint, positive-semidefinite complete bilinear weight;
 all measure factors required by the scientific contraction are already in it. \\
 $n_p$ & Weighted template-parent contraction $t_p^{\mathsf T}W_pm_p$. \\
 $d_p$ & Weighted template self-contraction $t_p^{\mathsf T}W_pt_p$; exactly
 real and positive for an admitted anchor. \\
 $\widehat a_p$ & Published fixed-template amplitude $n_p/d_p$. \\
-$L_{p,g}$ & Fixed-state linear functional producing $\widehat a_p$. \\
+$L_{p,g}$ & Exact fixed-state scientific row functional producing
+$\widehat a_p$. \\
+$F_g$ & Actual fixed-state numerical producing map from an admitted parent
+vector to the realized amplitude field; it need not be exactly linear. \\
 $T$ & Full template-response operator over the declared template-anchor domain. \\
 $R_{\rm fixed}(p,s)$ & Fixed-state response $L_{p,g}t_s^{\rm full}$. \\
 $R_{\rm FP}(p,s)$ & Full-procedure response when Learn--Resolve is rerun under
 an authorized perturbation definition; otherwise unavailable. \\
+$R_{\rm realized}(p,s)$ & Operational fixed-state response of $F_g$ under the
+declared directional-derivative or finite-difference definition; a matrix
+form is allowed only after fixed-state linearity is established. \\
 $C_{\rm parent}$ & Authorized coordinate-basis parent covariance for one exact
 population and conditioning state. \\
-$C_p$ & Locally restricted covariance $E_pC_{\rm parent}E_p^{\mathsf T}$. \\
+$C_p$ & Local-domain covariance $E_pC_{\rm parent}E_p^{\mathsf T}$. \\
+$C_{\rm realized}^{(U1)}$ & Operational conditional stochastic covariance
+$\operatorname{Cov}[F_g(m)\mid g,\theta]$ for the exact U1 population. \\
+$\theta$ & Frozen template/calibration state on which U1 conditional stochastic
+covariance is conditioned. \\
 $g$ & Immutable method/state generation, including requested, effective,
 resolved, applied, and realized identities. \\
 $\Valid$ & Anchors satisfying every parent, template, application-support,
 operator, normalization, unit, calibration, response, and selected-route
 predicate. \\
+$\mathcal Q_{\rm FLT}^{0.1}$ & Finite FLT-owned state/response handoff query
+vocabulary for this contract version; queries outside it require a successor
+envelope. \\
 \bottomrule
 \end{longtable}
 

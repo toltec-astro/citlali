@@ -119,7 +119,13 @@ def main() -> int:
         errors.append(f"source prediction ID mismatch: {sorted(pred ^ expected_pred)}")
     if ao != AO_OPTIONS:
         errors.append(f"source option ID mismatch: {sorted(ao ^ AO_OPTIONS)}")
-    for forbidden in [r"Q_x", "DeclareOrLearnOnce", "10^{-3}", "10^{-2}"]:
+    for forbidden in [
+        r"Q_x",
+        "DeclareOrLearnOnce",
+        "10^{-3}",
+        "10^{-2}",
+        "realized\\_operator",
+    ]:
         if forbidden in common_text:
             errors.append(f"superseded r0.1 shared-core term remains: {forbidden}")
 
@@ -139,14 +145,14 @@ def main() -> int:
     if missing_ledger:
         errors.append(f"owner-decision ledger IDs missing: {missing_ledger}")
     for boundary in [
-        "SCI-MAP_TO_SCI-FLT-MATCHED-v0.1-r0.1.md",
-        "SCI-TEMPLATE_TO_SCI-FLT-MATCHED-v0.1-r0.1.md",
-        "SCI-FLT-MATCHED_TO_SCI-NOI-v0.1-r0.1.md",
-        "SCI-FLT-MATCHED_TO_SCI-FRUIT-v0.1-r0.1.md",
+        "SCI-MAP_TO_SCI-FLT-MATCHED-v0.1-r0.3.md",
+        "SCI-TEMPLATE_TO_SCI-FLT-MATCHED-v0.1-r0.3.md",
+        "SCI-FLT-MATCHED_TO_SCI-NOI-v0.1-r0.3.md",
+        "SCI-FLT-MATCHED_TO_SCI-FRUIT-v0.1-r0.3.md",
     ]:
         if not (package / boundary).is_file():
-            errors.append(f"r0.2 boundary draft missing: {boundary}")
-    route_text = (package / "ROUTE_STATUS_R0.2.md").read_text(encoding="utf-8")
+            errors.append(f"r0.3 boundary draft missing: {boundary}")
+    route_text = (package / "ROUTE_STATUS_R0.3.md").read_text(encoding="utf-8")
     for route in [
         "Generic exact estimator",
         "Ordinary-MAP parent realization",
@@ -157,7 +163,24 @@ def main() -> int:
         "Implementation assessment",
     ]:
         if route not in route_text:
-            errors.append(f"r0.2 route status missing: {route}")
+            errors.append(f"r0.3 route status missing: {route}")
+
+    required_repair_terms = {
+        "notation": [r"\Dom_{\rm loc}(p)", r"$F_g$", r"\mathcal Q_{\rm FLT}^{0.1}"],
+        "definitions": [r"K_{\rm NOI}", r"producing\_map", r"operational-response"],
+        "equations": [r"\operatorname{Cov}[F_g(m)\mid g,\theta]", r"R_{\rm realized}"],
+        "requirements": [r"W_p=A_p^{\dagger}D_pA_p", r"B_{pb}"],
+    }
+    repair_sources = {
+        "notation": (src / "common" / "notation.tex").read_text(encoding="utf-8"),
+        "definitions": (src / "common" / "definitions.tex").read_text(encoding="utf-8"),
+        "equations": (src / "common" / "equations.tex").read_text(encoding="utf-8"),
+        "requirements": (src / "common" / "requirements.tex").read_text(encoding="utf-8"),
+    }
+    for source_name, terms in required_repair_terms.items():
+        for term in terms:
+            if term not in repair_sources[source_name]:
+                errors.append(f"r0.3 repair term missing from {source_name}: {term}")
 
     pdf_report: dict[str, object] = {}
     for label, path in pdfs.items():

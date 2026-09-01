@@ -575,7 +575,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 6
-4.
+5.
  (t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
@@ -586,7 +586,7 @@ Package microtype Info: Loading generic protrusion settings for font family
  [1
 
 ]
-Package hyperref Info: Option `pageanchor' set `true' on input line 68.
+Package hyperref Info: Option `pageanchor' set `true' on input line 69.
 
 (scientific-rationale.toc [1
 
@@ -598,7 +598,7 @@ Package hyperref Info: Option `pageanchor' set `true' on input line 68.
 
 ] [2] (common/notation.tex
 LaTeX Font Info:    Trying to load font information for OT1+lmss on input line
-84.
+92.
  (ot1lmss.fd
 File: ot1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
@@ -606,343 +606,402 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmss' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [3]) (common/definitions.tex [4]
+ [3] [4]) (common/definitions.tex [5]
 
 Package enumitem Warning: Negative labelwidth. This does not make much
-(enumitem)                sense, on input line 65.
-
-[5]
-
-Package enumitem Warning: Negative labelwidth. This does not make much
-(enumitem)                sense, on input line 108.
+(enumitem)                sense, on input line 71.
 
 [6]
+
+Package enumitem Warning: Negative labelwidth. This does not make much
+(enumitem)                sense, on input line 125.
+
 LaTeX Font Info:    Trying to load font information for T1+lmss on input line 1
-34.
- (t1lmss.fd
+66.
+(t1lmss.fd
 File: t1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmss' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [7]) (common/equations.tex [8] [9] [10]
-Underfull \hbox (badness 10000) in paragraph at lines 171--173
+ [7] [8]) (common/equations.tex [9] [10] [11]
+Underfull \hbox (badness 10000) in paragraph at lines 210--212
 []|\T1/lmr/m/n/10.95 Base prod-ucts con-di-tion on frozen state.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 171--173
+Underfull \hbox (badness 10000) in paragraph at lines 210--212
 \T1/lmr/m/n/10.95 Marginal-iza-tion over Learn--Resolve needs
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 176--176
+Underfull \hbox (badness 10000) in paragraph at lines 215--215
 []|\T1/lmr/m/n/10.95 Covariance
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 181--181
+Underfull \hbox (badness 10000) in paragraph at lines 220--220
 []|\T1/lmr/m/n/10.95 Template mis-
  []
 
 
-Underfull \hbox (badness 6204) in paragraph at lines 181--181
+Underfull \hbox (badness 6204) in paragraph at lines 220--220
 \T1/lmr/m/n/10.95 match/unmodeled sys-tem-at-
  []
 
-) (common/assumptions.tex [11] [12]
-Underfull \hbox (badness 10000) in paragraph at lines 76--77
+[12]) (common/assumptions.tex [13]
+Underfull \hbox (badness 10000) in paragraph at lines 83--84
 []|\T1/lmr/m/n/10.95 Exact bun-dle iden-tity,
  []
 
 
-Underfull \hbox (badness 2443) in paragraph at lines 76--77
+Underfull \hbox (badness 2443) in paragraph at lines 83--84
 \T1/lmr/m/n/10.95 class, gen-er-a-tion, group-ing,
  []
 
 
-Underfull \hbox (badness 2799) in paragraph at lines 76--77
+Underfull \hbox (badness 2799) in paragraph at lines 83--84
 \T1/lmr/m/n/10.95 WCS/frame, sup-port, unit,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 77--78
+Underfull \hbox (badness 10000) in paragraph at lines 84--85
 []|\T1/lmr/m/n/10.95 Missing, mu-ta-ble, de-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 78--80
+Underfull \hbox (badness 10000) in paragraph at lines 85--87
 []|\T1/lmss/m/n/10.95 unavailable \T1/lmr/m/n/10.95 be-fore
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 80--80
+Underfull \hbox (badness 10000) in paragraph at lines 87--87
 []|\T1/lmr/m/n/10.95 Application
  []
 
 
-Underfull \hbox (badness 7451) in paragraph at lines 80--80
+Underfull \hbox (badness 7451) in paragraph at lines 87--87
 []|\T1/lmr/m/n/10.95 Observation or coadd de-
  []
 
 
-Underfull \hbox (badness 1609) in paragraph at lines 80--81
+Underfull \hbox (badness 1609) in paragraph at lines 87--88
 \T1/lmr/m/n/10.95 bor-rowed state be-tween
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 84--85
+Underfull \hbox (badness 10000) in paragraph at lines 91--92
 []|\T1/lmr/m/n/10.95 Interpolated, sub-pixel,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 84--85
+Underfull \hbox (badness 10000) in paragraph at lines 91--92
 \T1/lmr/m/n/10.95 over-sam-pled, in-de-pen-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 84--85
+Underfull \hbox (badness 10000) in paragraph at lines 91--92
 \T1/lmr/m/n/10.95 dently sam-pled, or
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 86--87
+Underfull \hbox (badness 10000) in paragraph at lines 93--94
 []|\T1/lmss/m/n/10.95 unavailable \T1/lmr/m/n/10.95 un-der
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 86--87
+Underfull \hbox (badness 10000) in paragraph at lines 93--94
 \T1/lmr/m/n/10.95 v0.1; re-quire a
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 86--87
+Underfull \hbox (badness 10000) in paragraph at lines 93--94
 \T1/lmr/m/n/10.95 sep-a-rately named
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--89
+Underfull \hbox (badness 10000) in paragraph at lines 95--96
 []|\T1/lmr/m/n/10.95 Learned from tar-
  []
 
 
-Underfull \hbox (badness 2846) in paragraph at lines 88--89
+Underfull \hbox (badness 2846) in paragraph at lines 95--96
 \T1/lmr/m/n/10.95 chart, am-bigu-ous scale,
  []
 
 
-Underfull \hbox (badness 2326) in paragraph at lines 88--89
+Underfull \hbox (badness 2326) in paragraph at lines 95--96
 \T1/lmr/m/n/10.95 lossy rep-re-sen-ta-tion, or
  []
 
 
-Underfull \hbox (badness 3291) in paragraph at lines 90--91
+Underfull \hbox (badness 3291) in paragraph at lines 97--98
 []|\T1/lmss/m/n/10.95 unavailable\T1/lmr/m/n/10.95 ; no in-
  []
 
 
-Underfull \hbox (badness 1902) in paragraph at lines 91--92
-[]|\T1/lmr/m/n/10.95 Complete nonzero-coefficient
+Underfull \hbox (badness 10000) in paragraph at lines 98--98
+[]|\T1/lmr/m/n/10.95 Local do-main
  []
 
 
-Underfull \hbox (badness 4108) in paragraph at lines 92--93
-\T1/lmr/m/n/10.95 tially sup-ported de-pen-
+Underfull \hbox (badness 1199) in paragraph at lines 98--98
+\T1/lmr/m/n/10.95 and ap-pli-ca-tion
  []
 
 
-Underfull \hbox (badness 6842) in paragraph at lines 93--95
-[]|\T1/lmr/m/n/10.95 Mark af-fected an-
+Underfull \hbox (badness 8151) in paragraph at lines 98--100
+\T1/lmr/m/n/10.95 com-plete nonzero-coefficient
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 95--97
+Underfull \hbox (badness 3579) in paragraph at lines 102--104
+\T1/lmr/m/n/10.95 an-chors \T1/lmss/m/n/10.95 un-avail-able\T1/lmr/m/n/10.95 ;
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 104--106
 []|\T1/lmr/m/n/10.95 Selected \T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 95--97
+Underfull \hbox (badness 10000) in paragraph at lines 104--106
 \T1/lmtt/m/n/10.95 AO-001\T1/lmr/m/n/10.95 , pop-u-la-tion, self-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 95--97
+Underfull \hbox (badness 10000) in paragraph at lines 104--106
 \T1/lmr/m/n/10.95 adjoint PSD op-er-a-tor,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 95--97
+Underfull \hbox (badness 10000) in paragraph at lines 104--106
 \T1/lmr/m/n/10.95 rank/null, reg-u-lar-iza-tion,
  []
 
 
-Underfull \hbox (badness 3168) in paragraph at lines 99--100
+Underfull \hbox (badness 3168) in paragraph at lines 108--109
 []|\T1/lmr/m/n/10.95 NaN, in-fi-nite, com-plex,
  []
 
 
-Underfull \hbox (badness 1845) in paragraph at lines 99--100
+Underfull \hbox (badness 1845) in paragraph at lines 108--109
 \T1/lmr/m/n/10.95 zero, neg-a-tive, or null-
  []
 
 
-Underfull \hbox (badness 2495) in paragraph at lines 101--102
+Underfull \hbox (badness 2495) in paragraph at lines 110--111
 \T1/lmss/m/n/10.95 failed\T1/lmr/m/n/10.95 ; never write
  []
 
 
-Underfull \hbox (badness 4024) in paragraph at lines 102--102
+Underfull \hbox (badness 4024) in paragraph at lines 111--111
 []|\T1/lmr/m/n/10.95 Numerical re-al-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 104--104
+Underfull \hbox (badness 10000) in paragraph at lines 113--113
 []|\T1/lmr/m/n/10.95 Post-hoc pro-file, un-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 104--104
+Underfull \hbox (badness 10000) in paragraph at lines 113--113
 \T1/lmr/m/n/10.95 cov-ered modes, sup-
  []
 
 
-Underfull \hbox (badness 4242) in paragraph at lines 107--108
+Underfull \hbox (badness 4242) in paragraph at lines 116--117
 []|\T1/lmr/m/n/10.95 Fixed, full-procedure, re-al-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 107--108
+Underfull \hbox (badness 10000) in paragraph at lines 116--117
 \T1/lmr/m/n/10.95 do-main/query/representation
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 108--110
+Underfull \hbox (badness 10000) in paragraph at lines 117--119
 []|\T1/lmr/m/n/10.95 Undocumented ker-nel,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 108--110
+Underfull \hbox (badness 10000) in paragraph at lines 117--119
 \T1/lmr/m/n/10.95 as-sumed in-vari-ance,
  []
 
 
-Underfull \hbox (badness 7415) in paragraph at lines 108--110
+Underfull \hbox (badness 7415) in paragraph at lines 117--119
 \T1/lmr/m/n/10.95 strength-ened fixed-state
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 108--110
+Underfull \hbox (badness 10000) in paragraph at lines 117--119
 \T1/lmr/m/n/10.95 mean-ing, or un-re-con-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 111--112
+Underfull \hbox (badness 10000) in paragraph at lines 120--121
 []|\T1/lmr/m/n/10.95 Response-dependent
  []
 
 
-Underfull \hbox (badness 1014) in paragraph at lines 111--112
+Underfull \hbox (badness 1014) in paragraph at lines 120--121
 \T1/lmr/m/n/10.95 prod-uct or hand-off
  []
 
 
-Underfull \hbox (badness 1648) in paragraph at lines 112--112
+Underfull \hbox (badness 1648) in paragraph at lines 121--121
 []|\T1/lmr/m/n/10.95 Units and cal-i-
  []
 
 
-Underfull \hbox (badness 4353) in paragraph at lines 113--114
+Underfull \hbox (badness 4353) in paragraph at lines 122--123
 []|\T1/lmr/m/n/10.95 Unjustified flux, beam,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 113--114
+Underfull \hbox (badness 10000) in paragraph at lines 122--123
 \T1/lmr/m/n/10.95 source, or co-vari-ance
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--118
+Underfull \hbox (badness 1400) in paragraph at lines 124--125
+[]|\T1/lmr/m/n/10.95 Matching au-tho-rized par-ent
+ []
+
+
+Underfull \hbox (badness 1365) in paragraph at lines 124--125
+\T1/lmr/m/n/10.95 role, con-di-tion-ing, sci-en-tific
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 125--128
 []|\T1/lmr/m/n/10.95 Missing pop-u-la-
  []
 
 
-Underfull \hbox (badness 5622) in paragraph at lines 117--118
-\T1/lmr/m/n/10.95 tion/conditioning, omit-
+Underfull \hbox (badness 10000) in paragraph at lines 125--128
+\T1/lmr/m/n/10.95 tion/conditioning, un-
  []
 
 
-Underfull \hbox (badness 2318) in paragraph at lines 117--118
-\T1/lmr/m/n/10.95 ted cor-re-la-tions treated
+Underfull \hbox (badness 10000) in paragraph at lines 125--128
+\T1/lmr/m/n/10.95 proved lin-ear prop-a-ga-
  []
 
 
-Underfull \hbox (badness 4391) in paragraph at lines 117--118
-\T1/lmr/m/n/10.95 as zero, or $\OML/lmm/m/it/10.95 d[]$ \T1/lmr/m/n/10.95 used
+Underfull \hbox (badness 4013) in paragraph at lines 125--128
+\T1/lmr/m/n/10.95 terms, omit-ted cor-re-la-
  []
 
 
-Underfull \hbox (badness 2020) in paragraph at lines 118--120
+Underfull \hbox (badness 7851) in paragraph at lines 125--128
+\T1/lmr/m/n/10.95 tions treated as zero,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 125--128
+\T1/lmr/m/n/10.95 or $\OML/lmm/m/it/10.95 d[]$ \T1/lmr/m/n/10.95 used with-out
+ []
+
+
+Underfull \hbox (badness 2020) in paragraph at lines 128--130
 []|\T1/lmr/m/n/10.95 Covariance use \T1/lmss/m/n/10.95 un-
  []
 
 
-Underfull \hbox (badness 2409) in paragraph at lines 120--120
-[]|\T1/lmr/m/n/10.95 Identical frozen trans-for-ma-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 121--121
+Underfull \hbox (badness 10000) in paragraph at lines 131--132
 []|\T1/lmr/m/n/10.95 Per-member re-learn-ing,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 121--121
-\T1/lmr/m/n/10.95 dif-fer-ent sup-port, or
+Underfull \hbox (badness 10000) in paragraph at lines 131--132
+\T1/lmr/m/n/10.95 post-result ad-mis-sion,
  []
 
 
-Underfull \hbox (badness 8151) in paragraph at lines 121--123
-\T1/lmss/m/n/10.95 avail-able \T1/lmr/m/n/10.95 or \T1/lmss/m/n/10.95 failed\T1
-/lmr/m/n/10.95 ;
+Underfull \hbox (badness 10000) in paragraph at lines 131--132
+\T1/lmr/m/n/10.95 adapted sup-port, or
  []
 
 
-Underfull \hbox (badness 2237) in paragraph at lines 123--123
+Underfull \hbox (badness 10000) in paragraph at lines 132--134
+[]|\T1/lmr/m/n/10.95 Member/anchor or
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 132--134
+\T1/lmr/m/n/10.95 NOI com-pan-ion
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 132--134
+\T1/lmr/m/n/10.95 sep-a-rate method
+ []
+
+
+Underfull \hbox (badness 2237) in paragraph at lines 134--134
 \T1/lmr/m/n/10.95 use pol-icy, and im-mutable
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 126--127
-[]|\T1/lmr/m/n/10.95 Selected \T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-
+Underfull \hbox (badness 10000) in paragraph at lines 137--139
+[]|\T1/lmr/m/n/10.95 Finite $\OMS/lmsy/m/n/10.95 Q[]$\T1/lmr/m/n/10.95 , se-lec
+ted
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 126--127
-\T1/lmtt/m/n/10.95 AO-005\T1/lmr/m/n/10.95 , doc-u-mented re-
+Underfull \hbox (badness 10000) in paragraph at lines 137--139
+\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-AO-004
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 126--127
-\T1/lmr/m/n/10.95 sponse/state lin-eage, and
+Underfull \hbox (badness 2600) in paragraph at lines 137--139
+\T1/lmr/m/n/10.95 re-quired, se-lected \T1/lmtt/m/n/10.95 SCI-FLT-
  []
 
 
-Underfull \hbox (badness 7168) in paragraph at lines 127--128
-[]|\T1/lmr/m/n/10.95 Requires un-doc-u-mented
+Underfull \hbox (badness 10000) in paragraph at lines 137--139
+\T1/lmtt/m/n/10.95 MATCHED-AO-005 \T1/lmr/m/n/10.95 for re-
  []
 
 
-Underfull \hbox (badness 1033) in paragraph at lines 127--128
-\T1/lmr/m/n/10.95 im-ple-men-ta-tion state or
+Underfull \hbox (badness 4303) in paragraph at lines 137--139
+\T1/lmr/m/n/10.95 sponse re-con-struc-tion, and
  []
 
 
-Underfull \hbox (badness 2020) in paragraph at lines 128--129
-\T1/lmr/m/n/10.95 sig-nal prod-uct sta-
+Underfull \hbox (badness 10000) in paragraph at lines 139--140
+\T1/lmr/m/n/10.95 fu-ture query, un-doc-u-
  []
 
-[13]) (common/requirements.tex
+
+Underfull \hbox (badness 10000) in paragraph at lines 139--140
+\T1/lmr/m/n/10.95 mented im-ple-men-ta-tion
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 140--142
+[]|\T1/lmr/m/n/10.95 Handoff/query \T1/lmss/m/n/10.95 un-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 140--142
+\T1/lmr/m/n/10.95 suc-ces-sor en-ve-lope
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 140--142
+\T1/lmr/m/n/10.95 for new queries;
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 140--142
+\T1/lmr/m/n/10.95 sig-nal sta-tus is
+ []
+
+[14] [15]) (common/requirements.tex
 Underfull \hbox (badness 10000) in paragraph at lines 10--10
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
@@ -999,38 +1058,33 @@ Underfull \hbox (badness 10000) in paragraph at lines 36--36
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 39--39
+Underfull \hbox (badness 10000) in paragraph at lines 40--40
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 42--42
+Underfull \hbox (badness 10000) in paragraph at lines 43--43
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 46--46
+Underfull \hbox (badness 10000) in paragraph at lines 48--48
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
-Underfull \hbox (badness 2486) in paragraph at lines 46--49
+Underfull \hbox (badness 2486) in paragraph at lines 48--51
 []|\T1/lmr/m/n/10.95 Every re-al-iza-tion shall iden-tify one owner-selected \T
 1/lmtt/m/n/10.95 SCI-FLT-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 49--49
+Underfull \hbox (badness 10000) in paragraph at lines 51--51
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 52--52
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 55--55
+Underfull \hbox (badness 10000) in paragraph at lines 54--54
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
@@ -1040,27 +1094,22 @@ Underfull \hbox (badness 10000) in paragraph at lines 57--57
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 60--60
+Underfull \hbox (badness 10000) in paragraph at lines 59--59
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 62--62
+Underfull \hbox (badness 10000) in paragraph at lines 63--63
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 64--64
+Underfull \hbox (badness 10000) in paragraph at lines 65--65
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 67--67
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 69--69
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
@@ -1075,8 +1124,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 74--74
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 76--76
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
+Underfull \hbox (badness 1043) in paragraph at lines 74--79
+\T1/lmr/m/n/10.95 separated. U1 con-di-tional stochas-tic co-vari-ance, U2 cal-
+i-bra-
  []
 
 
@@ -1085,12 +1135,17 @@ Underfull \hbox (badness 10000) in paragraph at lines 79--79
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 82--82
+Underfull \hbox (badness 10000) in paragraph at lines 81--81
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 85--85
+Underfull \hbox (badness 10000) in paragraph at lines 83--83
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 86--86
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
@@ -1105,20 +1160,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 92--92
  []
 
 
-Underfull \hbox (badness 7981) in paragraph at lines 92--96
-\T1/lmr/m/n/10.95 lin-ear am-pli-tude es-ti-ma-tion. Can-di-date se-lec-tion, p
-o-si-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 96--96
+Underfull \hbox (badness 10000) in paragraph at lines 97--97
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
- []
-
-
-Underfull \hbox (badness 2111) in paragraph at lines 96--100
-\T1/lmr/m/n/10.95 the his-tor-i-cal high-pass/delta case re-main sep-a-rate met
-h-ods.
  []
 
 
@@ -1127,17 +1170,18 @@ Underfull \hbox (badness 10000) in paragraph at lines 100--100
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 103--103
+Underfull \hbox (badness 7981) in paragraph at lines 100--104
+\T1/lmr/m/n/10.95 lin-ear am-pli-tude es-ti-ma-tion. Can-di-date se-lec-tion, p
+o-si-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 104--104
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 107--107
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 110--110
+Underfull \hbox (badness 10000) in paragraph at lines 109--109
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
@@ -1147,22 +1191,22 @@ Underfull \hbox (badness 10000) in paragraph at lines 113--113
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 116--116
+Underfull \hbox (badness 10000) in paragraph at lines 117--117
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 118--118
+Underfull \hbox (badness 10000) in paragraph at lines 120--120
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 121--121
+Underfull \hbox (badness 10000) in paragraph at lines 123--123
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 125--125
+Underfull \hbox (badness 10000) in paragraph at lines 126--126
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
@@ -1172,32 +1216,39 @@ Underfull \hbox (badness 10000) in paragraph at lines 128--128
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 131--131
+Underfull \hbox (badness 2057) in paragraph at lines 128--132
+[]|\T1/lmr/m/n/10.95 Every prod-uct shall bind ex-act MAP, tem-plate, NOI, and
+ []
+
+
+Underfull \hbox (badness 1205) in paragraph at lines 128--132
+\T1/lmr/m/n/10.95 FLT-to-FRUIT bound-ary records, in-clud-ing $\OML/lmm/m/it/10
+.95 K[]$ \T1/lmr/m/n/10.95 and $\OMS/lmsy/m/n/10.95 Q[]$\T1/lmr/m/n/10.95 ;
+ []
+
+
+Underfull \hbox (badness 1824) in paragraph at lines 128--132
+\T1/lmr/m/n/10.95 the full re-al-iza-tion tu-ple; im-mutable prove-nance; sup-p
+orted
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 132--132
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 134--134
+Underfull \hbox (badness 10000) in paragraph at lines 136--136
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 137--137
+Underfull \hbox (badness 10000) in paragraph at lines 139--139
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 140--140
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 143--143
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 146--146
+Underfull \hbox (badness 10000) in paragraph at lines 144--144
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
@@ -1217,72 +1268,37 @@ Underfull \hbox (badness 10000) in paragraph at lines 155--155
  []
 
 
-Underfull \hbox (badness 1655) in paragraph at lines 155--158
-[]|\T1/lmr/m/n/10.95 Covariance zero-variance modes, ex-cluded or infinite-vari
-ance
+Underfull \hbox (badness 10000) in paragraph at lines 160--160
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
-[14] [15] [16] [17]
-Underfull \hbox (badness 10000) in paragraph at lines 173--173
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
+
+Underfull \hbox (badness 10000) in paragraph at lines 164--164
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 168--168
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 172--172
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 175--175
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-REQ-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 177--177
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
+Underfull \hbox (badness 1655) in paragraph at lines 175--178
+[]|\T1/lmr/m/n/10.95 Covariance zero-variance modes, ex-cluded or infinite-vari
+ance
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 179--179
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 181--181
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 183--183
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 185--185
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 187--187
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 192--192
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 195--195
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 198--198
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 200--200
-[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
- []
-
-
+[16] [17] [18] [19] [20]
 Underfull \hbox (badness 10000) in paragraph at lines 202--202
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
  []
@@ -1313,7 +1329,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 212--212
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 215--215
+Underfull \hbox (badness 10000) in paragraph at lines 214--214
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
  []
 
@@ -1323,68 +1339,128 @@ Underfull \hbox (badness 10000) in paragraph at lines 217--217
  []
 
 
-Underfull \hbox (badness 1242) in paragraph at lines 217--219
+Underfull \hbox (badness 10000) in paragraph at lines 223--223
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 226--226
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 229--229
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 231--231
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 233--233
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 235--235
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 237--237
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 239--239
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 241--241
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 244--244
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 247--247
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 249--249
+[]|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
+ []
+
+
+Underfull \hbox (badness 1242) in paragraph at lines 249--251
 []\OT1/lmr/m/n/10.95 [[]]$ \T1/lmr/m/n/10.95 by ex-actly $\OML/lmm/m/it/10.95 L
 []b$ \T1/lmr/m/n/10.95 when that con-trac-tion is
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 220--220
+Underfull \hbox (badness 10000) in paragraph at lines 252--252
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 222--222
+Underfull \hbox (badness 10000) in paragraph at lines 254--254
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
  []
 
 
-Underfull \hbox (badness 1178) in paragraph at lines 222--223
+Underfull \hbox (badness 1178) in paragraph at lines 254--255
 []|\T1/lmr/m/n/10.95 A mis-matched sig-nal shape re-turns its response-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 224--224
+Underfull \hbox (badness 10000) in paragraph at lines 256--256
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 227--227
+Underfull \hbox (badness 10000) in paragraph at lines 259--259
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-PRED-
  []
 
-[18] [19]
+[21] [22]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 241.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 274.
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 247.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 280.
 
 
 Package enumitem Warning: Negative labelwidth. This does not make much
-(enumitem)                sense, on input line 249.
+(enumitem)                sense, on input line 282.
 
 
 Package enumitem Warning: Negative labelwidth. This does not make much
-(enumitem)                sense, on input line 261.
+(enumitem)                sense, on input line 295.
 
 
 Package enumitem Warning: Negative labelwidth. This does not make much
-(enumitem)                sense, on input line 272.
+(enumitem)                sense, on input line 307.
 
-[20
+[23
 
 ]
 
 Package enumitem Warning: Negative labelwidth. This does not make much
-(enumitem)                sense, on input line 305.
+(enumitem)                sense, on input line 360.
 
-[21] [22]
-Underfull \hbox (badness 1776) in paragraph at lines 393--397
+[24] [25]
+Underfull \hbox (badness 1776) in paragraph at lines 455--461
 \T1/lmr/m/n/10.95 dex/measure, query vo-cab-u-lary, va-lid-ity, units/calibrati
 on, state/operator/template gen-er-a-tion,
  []
 
-[23]) (common/edge_cases.tex
+[26]) (common/edge_cases.tex
 Underfull \hbox (badness 2080) in paragraph at lines 11--13
 \T1/lmr/m/n/10.95 pu-ta-tion, par-tial es-ti-mate, or
  []
@@ -1405,279 +1481,313 @@ Underfull \hbox (badness 3291) in paragraph at lines 26--27
  []
 
 
-Underfull \hbox (badness 2707) in paragraph at lines 27--29
+Underfull \hbox (badness 2707) in paragraph at lines 27--30
 []|\T1/lmr/m/n/10.95 Keep sep-a-rate from ex-cluded,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 27--29
+Underfull \hbox (badness 10000) in paragraph at lines 27--30
 \T1/lmr/m/n/10.95 weighting-null, and template-
  []
 
 
-Underfull \hbox (badness 2884) in paragraph at lines 29--29
+Underfull \hbox (badness 3930) in paragraph at lines 27--30
+\T1/lmr/m/n/10.95 uniden-ti-fi-able modes. It is
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 27--30
+\T1/lmr/m/n/10.95 out-side the v0.1 positive-
+ []
+
+
+Underfull \hbox (badness 5741) in paragraph at lines 27--30
+\T1/lmr/m/n/10.95 sep-a-rately au-thored; do not
+ []
+
+
+Underfull \hbox (badness 2884) in paragraph at lines 30--30
 []|\T1/lmr/m/n/10.95 Excluded or infinite-
  []
 
 
-Underfull \hbox (badness 1194) in paragraph at lines 32--34
+Underfull \hbox (badness 1194) in paragraph at lines 33--35
 \T1/lmr/m/n/10.95 no co-vari-ance mean-ing fol-lows
  []
 
 
-Underfull \hbox (badness 2772) in paragraph at lines 35--37
+Underfull \hbox (badness 2772) in paragraph at lines 36--38
 \T1/lmr/m/n/10.95 Penrose or nor-mal-iza-tion fall-
  []
 
 
-Underfull \hbox (badness 1521) in paragraph at lines 41--41
+Underfull \hbox (badness 1521) in paragraph at lines 42--42
 []|\T1/lmr/m/n/10.95 Sparse ra-dial bin or
  []
 
 
-Underfull \hbox (badness 1803) in paragraph at lines 42--45
+Underfull \hbox (badness 1803) in paragraph at lines 43--46
 []|\T1/lmr/m/n/10.95 Fail owner-set effective-sample,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 45--45
+Underfull \hbox (badness 10000) in paragraph at lines 46--46
 []|\T1/lmr/m/n/10.95 Unknown co-vari-ance
  []
 
 
-Underfull \hbox (badness 2027) in paragraph at lines 48--50
+Underfull \hbox (badness 2027) in paragraph at lines 49--51
 \T1/lmr/m/n/10.95 op-ti-mal-ity, $\OML/lmm/m/it/10.95 d[]$ \T1/lmr/m/n/10.95 va
 ri-ance, and
  []
 
 
-Underfull \hbox (badness 2050) in paragraph at lines 48--50
+Underfull \hbox (badness 2050) in paragraph at lines 49--51
 \T1/lmr/m/n/10.95 con-di-tional co-vari-ance are un-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 50--50
+Underfull \hbox (badness 10000) in paragraph at lines 51--51
 []|\T1/lmr/m/n/10.95 Available $\OML/lmm/m/it/10.95 C[]$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 50--50
+Underfull \hbox (badness 10000) in paragraph at lines 51--51
 \T1/lmr/m/n/10.95 with mis-matched
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 53--56
+Underfull \hbox (badness 10000) in paragraph at lines 54--57
 []|\T1/lmr/m/n/10.95 Create a new tem-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 53--56
+Underfull \hbox (badness 10000) in paragraph at lines 54--57
 \T1/lmr/m/n/10.95 plate/realization iden-tity; $[]$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 56--56
+Underfull \hbox (badness 10000) in paragraph at lines 57--57
 []|\T1/lmr/m/n/10.95 Scientific re-sponse con-ven-tion
  []
 
 
-Underfull \hbox (badness 1603) in paragraph at lines 57--58
+Underfull \hbox (badness 1603) in paragraph at lines 58--59
 []|\T1/lmr/m/n/10.95 New tem-plate and re-al-iza-tion;
  []
 
 
-Underfull \hbox (badness 5274) in paragraph at lines 58--59
+Underfull \hbox (badness 5274) in paragraph at lines 59--60
 []|\T1/lmr/m/n/10.95 Base matching-template es-ti-mand
  []
 
 
-Underfull \hbox (badness 2418) in paragraph at lines 58--59
+Underfull \hbox (badness 2418) in paragraph at lines 59--60
 \T1/lmr/m/n/10.95 does not equal an un-con-strained
  []
 
 
-Underfull \hbox (badness 1789) in paragraph at lines 59--62
+Underfull \hbox (badness 1789) in paragraph at lines 60--63
 []|\T1/lmr/m/n/10.95 Report only response-weighted
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 63--65
+Underfull \hbox (badness 10000) in paragraph at lines 64--66
 \T1/lmr/m/n/10.95 beam/solid an-gle, extended-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 65--65
+Underfull \hbox (badness 10000) in paragraph at lines 66--66
 []|\T1/lmr/m/n/10.95 Coadd mem-ber-ship
  []
 
 
-Underfull \hbox (badness 2547) in paragraph at lines 71--71
+Underfull \hbox (badness 10000) in paragraph at lines 69--69
+[]|\T1/lmr/m/n/10.95 NOI mem-ber fails
+ []
+
+
+Underfull \hbox (badness 2809) in paragraph at lines 69--69
+\OML/lmm/m/it/10.95 K[]$ \T1/lmr/m/n/10.95 or sug-gests a
+ []
+
+
+Underfull \hbox (badness 1147) in paragraph at lines 70--73
+[]|\T1/lmr/m/n/10.95 Mark the mem-ber or af-fected
+ []
+
+
+Underfull \hbox (badness 2547) in paragraph at lines 73--73
 \T1/lmr/m/n/10.95 one null or sup-port
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 74--74
+Underfull \hbox (badness 10000) in paragraph at lines 76--76
 []|\T1/lmr/m/n/10.95 Iteration/tail cap
  []
 
 
-Underfull \hbox (badness 2096) in paragraph at lines 74--77
+Underfull \hbox (badness 2096) in paragraph at lines 76--79
 []|\T1/lmr/m/n/10.95 Accept only if ev-ery se-lected
  []
 
 
-Underfull \hbox (badness 2809) in paragraph at lines 74--77
+Underfull \hbox (badness 2809) in paragraph at lines 76--79
 \T1/lmr/m/n/10.95 de-pen-dently passes; oth-er-wise
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 77--77
+Underfull \hbox (badness 10000) in paragraph at lines 79--79
 []|\T1/lmr/m/n/10.95 Optional com-pan-
  []
 
 
-Underfull \hbox (badness 1448) in paragraph at lines 77--77
+Underfull \hbox (badness 1448) in paragraph at lines 79--79
 \T1/lmr/m/n/10.95 ion fails af-ter sig-nal
  []
 
 
-Underfull \hbox (badness 1436) in paragraph at lines 78--80
+Underfull \hbox (badness 1436) in paragraph at lines 80--82
 \T1/lmss/m/n/10.95 di-date \T1/lmr/m/n/10.95 un-less ex-act named-use
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 90--92
+Underfull \hbox (badness 10000) in paragraph at lines 96--98
 []|\T1/lmr/m/n/10.95 Return typed un-avail-abil-ity;
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 92--92
+Underfull \hbox (badness 10000) in paragraph at lines 98--98
 []|\T1/lmr/m/n/10.95 Fixed-state re-sponse
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 92--92
+Underfull \hbox (badness 10000) in paragraph at lines 98--98
 \T1/lmr/m/n/10.95 re-quested as full-
  []
 
 
-Underfull \hbox (badness 1062) in paragraph at lines 92--93
+Underfull \hbox (badness 1062) in paragraph at lines 98--99
 []|\T1/lmr/m/n/10.95 State-learning de-pen-dence has not
  []
 
 
-Underfull \hbox (badness 1436) in paragraph at lines 93--95
+Underfull \hbox (badness 1436) in paragraph at lines 99--101
 []|\T1/lmr/m/n/10.95 Return full-procedure re-sponse
  []
 
 
-Underfull \hbox (badness 1168) in paragraph at lines 93--95
+Underfull \hbox (badness 1168) in paragraph at lines 99--101
 \T1/lmr/m/n/10.95 state type; no con-sumer may
  []
 
 
-Underfull \hbox (badness 1308) in paragraph at lines 98--98
+Underfull \hbox (badness 1308) in paragraph at lines 105--106
 []|\T1/lmr/m/n/10.95 FLT to FRUIT con-
  []
 
 
-Underfull \hbox (badness 1348) in paragraph at lines 101--101
+Underfull \hbox (badness 10000) in paragraph at lines 105--106
+\T1/lmr/m/n/10.95 sumer asks out-side
+ []
+
+
+Underfull \hbox (badness 1552) in paragraph at lines 105--106
+\OMS/lmsy/m/n/10.95 Q[]$ \T1/lmr/m/n/10.95 or for FRUIT
+ []
+
+
+Underfull \hbox (badness 1112) in paragraph at lines 106--109
+\T1/lmr/m/n/10.95 re-quire a suc-ces-sor FLT en-ve-
+ []
+
+
+Underfull \hbox (badness 1348) in paragraph at lines 109--109
 []|\T1/lmr/m/n/10.95 Filtered-map peak is
  []
 
 
-Underfull \hbox (badness 2547) in paragraph at lines 102--104
+Underfull \hbox (badness 2547) in paragraph at lines 110--112
 \T1/lmr/m/n/10.95 mor-phol-ogy, cat-a-log, or SRC
  []
 
-[24] [25] [26]
-Underfull \hbox (badness 1960) in paragraph at lines 109--115
-\T1/lmr/m/n/10.95 thresholded de-strip-ing, au-to-matic se-lec-tors/fallbacks,
-adap-tive edge/background be-hav-ior, the
- []
-
-)
-Underfull \hbox (badness 10000) in paragraph at lines 212--212
+[27] [28] [29] [30])
+Underfull \hbox (badness 10000) in paragraph at lines 226--226
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-
  []
 
 
-Underfull \hbox (badness 6173) in paragraph at lines 212--214
-[]|\T1/lmr/m/n/10.95 Weighting au-thor-ity for ob-
+Underfull \hbox (badness 10000) in paragraph at lines 226--228
+[]|\T1/lmr/m/n/10.95 Scientific owner: con-crete
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 212--214
-\T1/lmr/m/n/10.95 ser-va-tion and coadd sep-a-
+Underfull \hbox (badness 10000) in paragraph at lines 226--228
+\T1/lmr/m/n/10.95 re-main successor-authorship
  []
 
 
-Underfull \hbox (badness 1735) in paragraph at lines 212--214
-\T1/lmr/m/n/10.95 rately; all pop-u-la-tion, co-ef-fi-
+Underfull \hbox (badness 10000) in paragraph at lines 226--228
+\T1/lmr/m/n/10.95 trig-gers un-til con-crete $\OML/lmm/m/it/10.95 W[]$
  []
 
 
-Underfull \hbox (badness 3525) in paragraph at lines 212--214
-\T1/lmr/m/n/10.95 cient, field/covariance model,
- []
-
-
-Underfull \hbox (badness 3240) in paragraph at lines 212--214
-\T1/lmr/m/n/10.95 rank/null, and reg-u-lar-iza-tion
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 216--216
+Underfull \hbox (badness 10000) in paragraph at lines 230--230
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-
  []
 
 
-Underfull \hbox (badness 1199) in paragraph at lines 216--217
-[]|\T1/lmr/m/n/10.95 Exact-operator nu-mer-i-cal pro-
+Underfull \hbox (badness 2735) in paragraph at lines 230--232
+[]|\T1/lmr/m/n/10.95 Engineering: pre-reg-is-ter one
  []
 
 
-Underfull \hbox (badness 6792) in paragraph at lines 216--217
-\T1/lmr/m/n/10.95 tinct sci-en-tific op-er-a-tor, or
+Underfull \hbox (badness 1275) in paragraph at lines 230--232
+\T1/lmr/m/n/10.95 Sci-en-tific owner acts only to
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 219--219
+Underfull \hbox (badness 10000) in paragraph at lines 233--233
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 222--222
+Underfull \hbox (badness 1127) in paragraph at lines 233--235
+\T1/lmr/m/n/10.95 ance role and com-plete, pro-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 236--236
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 225--225
+Underfull \hbox (badness 10000) in paragraph at lines 237--239
+[]|\T1/lmr/m/n/10.95 State au-dit/reanalysis and hand-off
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 239--239
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 225--226
-[]|\T1/lmr/m/n/10.95 Response do-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 225--226
-\T1/lmr/m/n/10.95 main/query/validity/consumer
- []
-
-
-Underfull \hbox (badness 1577) in paragraph at lines 226--228
+Underfull \hbox (badness 1577) in paragraph at lines 241--243
 []|\T1/lmr/m/n/10.95 Response-dependent use and FLT-to-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 228--228
+Underfull \hbox (badness 10000) in paragraph at lines 243--243
 []|\T1/lmtt/m/n/10.95 SCI-FLT-MATCHED-
  []
 
-[27] [28] (scientific-rationale.aux)
+
+Underfull \hbox (badness 4967) in paragraph at lines 243--244
+\T1/lmr/m/n/10.95 seven roles and de-pen-dency
+ []
+
+[31] [32] (scientific-rationale.aux)
 Package rerunfilecheck Info: File `scientific-rationale.out' has not changed.
-(rerunfilecheck)             Checksum: F0640DD7854D0AFBEB92CB7AD79A7829;20838.
+(rerunfilecheck)             Checksum: 6138A10640891633963B8366974639F7;21035.
  )
-Output written on scientific-rationale.xdv (32 pages, 187588 bytes).
+Output written on scientific-rationale.xdv (36 pages, 208360 bytes).
