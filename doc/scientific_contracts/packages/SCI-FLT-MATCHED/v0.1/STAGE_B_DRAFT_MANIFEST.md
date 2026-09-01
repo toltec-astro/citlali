@@ -1,93 +1,79 @@
-# SCI-FLT-MATCHED v0.1 — Stage B r0.5 Authority Manifest
+# SCI-FLT-MATCHED v0.1 — Stage B r0.6 Conditional-Freeze Preflight Manifest
 
-Manifest identity: `SCI-FLT-MATCHED_STAGE_B_AUTHORITY v0.1/r0.5`
+Manifest identity: `SCI-FLT-MATCHED_STAGE_B_CONDITIONAL_FREEZE_PREFLIGHT v0.1/r0.6`
 
-Status: owner-directed final targeted closure binding for explicit owner
-review; not scientific-owner approval of the r0.5 draft and not scientific
-freeze
+Status: current authority/freeze-candidate binding for exact owner
+disposition; not scientific-owner approval and not scientific freeze
 
-The independent-review records below are process provenance only. Scientific
-authority is carried by the exact owner approval, repair authority, and
-directives identified as such. Pending title and AO packets are recommendations,
-not owner dispositions. The manifest binds the exact bytes, not merely names.
+The object rows are the complete standalone authority-only bundle set.
+Historical anchors below are repository-context provenance, not bundle
+objects and not unresolved bundle-local links.
 
 | # | Object | Version | Bytes | SHA-256 | Authority role | Approval state | Compatibility / supersession | Generated-view relation |
 | ---: | --- | --- | ---: | --- | --- | --- | --- | --- |
-| 1 | `AUTHOR_PACKET_MANIFEST.md` | `Stage A` | 3217 | `255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8` | approved packet identity | owner approved exact bytes | unchanged from approved packet | author input |
-| 2 | `SCOPE_BRIEF.md` | `Stage A` | 4629 | `69e8db020cd8569fe94dd18ef2012c13691fe5b3a2b188201bfc96cc31fa13c3` | admitted scientific scope | owner approved exact bytes | active Stage B basis | author input |
-| 3 | `AUTHOR_SUPERSESSION_COVER.md` | `Stage A` | 1774 | `198ec9c50d5c5dc8cb8e68794dd5034a6aca7aaebf81521726ac371ad9bfc1c3` | supersession authority | owner approved exact bytes | active Stage B basis | author input |
-| 4 | `AUTHOR_CONVENTIONS_AND_OWNERSHIP.md` | `Stage A` | 2121 | `a5d91666a13ea06e39af4356b07a1ef316219559a19847fc81460c9c067446d6` | conventions and ownership authority | owner approved exact bytes | active Stage B basis | author input |
-| 5 | `SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md` | `Stage A` | 4769 | `d7235655bbce52be28714bb637a9d003f1f5bc9947d310bf61d3e5877d6feb9d` | scientific-owner direction | owner approved exact bytes | active Stage B basis | author input |
-| 6 | `AUTHOR_OPERATOR_STATE_AND_PRODUCT_TAXONOMY.md` | `Stage A` | 2266 | `4e47f825d54645dc6e82b34ed4848e0bb656fc385edd61f744ca43c6124eb980` | operator and product authority | owner approved exact bytes | active Stage B basis | author input |
-| 7 | `AUTHOR_BOUNDARIES.md` | `Stage A` | 2629 | `273fa218eb0ff9610e433c99d8f4d30f5a3abe653da375dfb17781148fbcce34` | scientific boundary authority | owner approved exact bytes | active Stage B basis | author input |
-| 8 | `REQUIRED_AUTHORED_OPTION_SETS.md` | `Stage A` | 4289 | `bad539a66199090ba9e32bf22100da708cb3730b02650e0401bdeeee01330cfe` | option-authorship assignment | owner approved exact bytes | active Stage B basis | author input |
-| 9 | `AUTHOR_PACKET_MANIFEST.sha256` | `Stage A` | 92 | `0a6810765c306ed23525f5d1ab90acf895a5485a41c691dcbf4759f768031d43` | packet-manifest digest | owner approved binding | unchanged from approved packet | external digest of packet manifest |
-| 10 | `SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-31.md` | `Stage A` | 2315 | `57cf57c47863969ceefe04bf6ebe5253f2a710543f4494ac73e54c7c0419ad3f` | launch authority | binding owner approval | authorizes exact eight-object packet | authority record |
-| 11 | `SCIENTIFIC_OWNER_R0.2_DIRECTIVE_2026-08-31.md` | `r0.2` | 8291 | `ef03af840c00b9934b04ceab0635be4f7273afe929e65f84eaa1b31985daa155` | targeted closure authority | binding owner directive | supplements Stage A scope | authority record |
-| 12 | `CHATGPT_PRO_INDEPENDENT_REVIEW_R0.2_2026-08-31.md` | `r0.2 review` | 4808 | `fa41cd5fc5b4a38ba254ad03ea5047114fe7511f3747b61beb327fc55a9a070f` | process provenance | review result only | superseded as repair basis by owner r0.3 authority | independent review record |
-| 13 | `SCIENTIFIC_OWNER_R0.3_REPAIR_AUTHORITY_2026-09-01.md` | `r0.3` | 1272 | `354a0647709aa98f331b9a50606b6c08d4e26d61e161d796c62e4e2e819d5e4a` | repair authority | binding owner authorization | authorizes directed r0.3 repair | authority record |
-| 14 | `CHATGPT_PRO_INDEPENDENT_REVIEW_R0.3_2026-09-01.md` | `r0.3 review` | 5499 | `5c93d89544e071bd850176fe309b91a8f911308216de91b06be3c6b37b211958` | process provenance | review result only | superseded as policy authority by owner r0.4 directive | independent review record |
-| 15 | `SCIENTIFIC_OWNER_R0.4_DIRECTIVE_2026-09-01.md` | `r0.4` | 2118 | `ccaca43228f4ac9f719aa93201cc13c37abdd8b2ddc01c65f2733785d12cf408` | covariance-scope and AO-001-C policy authority | binding owner directive | supplements r0.3 repair | authority record |
-| 16 | `SCIENTIFIC_OWNER_R0.5_DIRECTIVE_2026-09-01.md` | `r0.5` | 17610 | `e27c04e62f01fa2997b229cf50d4a5b1c12cfd3d74805f4806bef6dde1261274` | final targeted closure authority | binding owner directive | supersedes r0.4 where explicitly amended | authority record |
-| 17 | `AO_OWNER_DISPOSITION_PACKET_R0.5.md` | `r0.5` | 2214 | `3e8f2553c61b85f0c1213331077685656f1f3b1bfe25d05f85cbbfba5e79b3fa` | author recommendation packet | owner decision pending | no AO selection | presented identically in both views |
-| 18 | `OPTIMALITY_TITLE_OWNER_DISPOSITION_R0.5.md` | `r0.5` | 1313 | `da8c2d0ed3c3224f228892da93e8525cc15accc020722ca910d8cddf4e0fdde8` | author title recommendation packet | owner decision pending | provisional title is not a selection | presented identically in both views |
-| 19 | `SCIENTIFIC_OWNER_DECISION_LEDGER.md` | `r0.5` | 12323 | `e3910e004a38d95cda97e200cb4bc43fc2bcfa02e99e12a536fa3c98270bd9d5` | owner-decision ledger | mixed decided open and superseded states | retains all 17 stable SODL IDs | shared traceability record |
-| 20 | `NUMERICAL_APPLICATION_DOMAIN_AMENDMENT_R0.5.md` | `r0.5` | 1093 | `2e03f1767b17e6997dcf0b74534448ecff2123184571e16ec7ad4affcae93a83` | directed type amendment | authored closure draft | supersedes r0.4 application-domain wording | derived from r0.5 directive and shared core |
-| 21 | `VALIDITY_DOMAIN_CROSSWALK_R0.5.md` | `r0.5` | 1097 | `f6fdcd08a1ee1c2c8a601d22ca3c3d639795940c83c4e770b873ffce1d82b62c` | directed validity amendment | authored closure draft | supersedes undifferentiated validity wording | derived from r0.5 directive and shared core |
-| 22 | `LIFECYCLE_AMENDMENT_R0.5.md` | `r0.5` | 784 | `d6d9807a59098d07af2a52ec82074f69dd7beb797042fa872bd28216d94d78fd` | directed lifecycle amendment | authored closure draft | supersedes incomplete r0.4 lifecycle | derived from r0.5 directive and shared core |
-| 23 | `PRE_DRAW_CONDITIONING_AMENDMENT_R0.5.md` | `r0.5` | 750 | `b4ec29a42fb0f163e8b729163707e0f0856f0cc119db2befe1c7264f9dd3e50f` | directed conditioning amendment | authored closure draft | supersedes outcome-dependent conditioning ambiguity | derived from r0.5 directive and shared core |
-| 24 | `GLS_REFERENCE_AND_OPERATIONAL_COVARIANCE_R0.5.md` | `r0.5` | 1028 | `fffe8a8437a9391cad0a4015856a611c958bf4471ce857176073718561b30ede` | directed covariance-role amendment | authored closure draft | clarifies r0.4 covariance roles | derived from r0.5 directive and shared core |
-| 25 | `TEMPLATE_SOURCE_BOUNDARY_AMENDMENT_R0.5.md` | `r0.5` | 763 | `495c639c7f9046b1d4489719e90af483865fa6a909c1fe28efef85a304e2eb7d` | directed template-authority amendment | authored closure draft | supersedes overbroad outside-source wording | derived from r0.5 directive and shared core |
-| 26 | `DOWNSTREAM_BOUNDARY_REQUEST_AMENDMENT_R0.5.md` | `r0.5` | 555 | `fb0a717a77af351a17299b76413fe9ce849a9cab6bc4936924ec4186fe42382f` | directed downstream-state amendment | authored closure draft | supersedes unconditional companion implications | derived from r0.5 directive and boundaries |
-| 27 | `SEMANTIC_CHANGE_MAP_R0.5.md` | `r0.5` | 1492 | `a6efa3f50394e24b2b76a016924aea44ae0f0783fc100a3d4c40fb75c0a2c1ac` | semantic repair map | authored traceability draft | maps r0.4 to r0.5 | shared source and two-view crosswalk |
-| 28 | `NOTATION_CROSSWALK_R0.5.md` | `r0.5` | 961 | `b5e2a355f76121d29828d33b2e3487be0c0ef300ad5be418cb807ad155fbee64` | notation traceability | authored traceability draft | supersedes r0.4 where amended | shared source crosswalk |
-| 29 | `REPRESENTATION_CROSSWALK_R0.5.md` | `r0.5` | 944 | `f9312a3571dc591609242444ba516f1b8889b29fa5e3141b81065b35657d198b` | science-engineering representation boundary | authored traceability draft | supersedes r0.4 where amended | shared source crosswalk |
-| 30 | `ROUTE_STATUS_R0.5.md` | `r0.5` | 1500 | `f11eb2529904c69b5d41bf7110dbca2162cbfd5e06db157477d7d03aee5f5550` | route availability record | authored status draft | supersedes active r0.4 route status | shared source status view |
-| 31 | `OWNER_DECISION_PARITY_R0.5.md` | `r0.5` | 1318 | `170d3a874c53f459125c589241b5f601415f574c2ec4d8ed7e7c978784165248` | owner-direction parity record | authored traceability draft | supersedes active r0.4 parity | source and two-view parity |
-| 32 | `CROSSWALK.md` | `r0.5` | 22393 | `c8e50a7d3b006fcbaf14108af613296b39615e146ac2a1bea3492afb3f01ac0a` | stable-ID crosswalk | authored traceability draft | 96 active IDs | shared source and both rendered views |
-| 33 | `SCI-MAP_TO_SCI-FLT-MATCHED-v0.1-r0.5.md` | `v0.1 r0.5` | 1530 | `8c25b04dedde1c151e17c0f9d545ee007dd0ab4ec13f51a29b79347f56d09cd3` | MAP producer boundary draft | owner review pending | supersedes r0.4 boundary draft | derived from authority and shared core |
-| 34 | `SCI-TEMPLATE_TO_SCI-FLT-MATCHED-v0.1-r0.5.md` | `v0.1 r0.5` | 1509 | `38fd710b1a956098e18c0cc6ebc410b84f582d7b6a1ff335831c93afb075c273` | template producer boundary draft | owner review pending | supersedes r0.4 boundary draft | derived from authority and shared core |
-| 35 | `SCI-FLT-MATCHED_TO_SCI-NOI-v0.1-r0.5.md` | `v0.1 r0.5` | 1447 | `90344aa221fd4214035059de7339653dec8b47b9ffdbe388d2c553c99526a173` | NOI consumer boundary draft | owner review pending | supersedes r0.4 boundary draft | derived from authority and shared core |
-| 36 | `SCI-FLT-MATCHED_TO_SCI-FRUIT-v0.1-r0.5.md` | `v0.1 r0.5` | 1422 | `d8c239c5999a6fea7c9007d25cb78deb7751f1935cb2f23e7e36a28eaed6c71c` | FRUIT producer-envelope boundary draft | owner review pending | supersedes r0.4 boundary draft | derived from authority and shared core |
-| 37 | `role_profiles/PA_R0.5.md` | `r0.5` | 414 | `f88da57f6922cb74f8655fc26e60fbbe0267a850582ba4eca196f6724124902c` | PA role-policy draft | owner review pending | active r0.5 role profile | derived from shared normative semantics |
-| 38 | `role_profiles/SA_R0.5.md` | `r0.5` | 400 | `e5046e5e0cf090d71d599f28ab9788e44c3770bb9f2f781c1acdbf720ebec030` | SA role-policy draft | owner review pending | active r0.5 role profile | derived from shared normative semantics |
-| 39 | `role_profiles/SP_R0.5.md` | `r0.5` | 422 | `592dcbae18bce496f75fe04b61a2043696e81b874a18c1adc5dc557823a75bda` | SP role-policy draft | owner review pending | active r0.5 role profile | derived from shared normative semantics |
-| 40 | `role_profiles/CU_R0.5.md` | `r0.5` | 429 | `9eb3d4ede6c8df1264c7d96a64c48a77e4087c67a9ce9e48f72a6a37ec60bfce` | CU role-policy draft | owner review pending | active r0.5 role profile | derived from shared normative semantics |
-| 41 | `role_profiles/NU_R0.5.md` | `r0.5` | 413 | `4eb4bf864ccd1ffa129c6e2dae90d13731ff28ae82d019e4a23a3e58c720b03d` | NU role-policy draft | owner review pending | active r0.5 role profile | derived from shared normative semantics |
-| 42 | `role_profiles/RU_R0.5.md` | `r0.5` | 429 | `dbf923d48ef77d1cf7768bc11e7f7d5c45fe6cd5ed887f52fd94b888e4f8a604` | RU role-policy draft | owner review pending | active r0.5 role profile | derived from shared normative semantics |
-| 43 | `role_profiles/FH_R0.5.md` | `r0.5` | 432 | `d3d61c0ce1cd176cfb34fe851ea172291f55b620e37d7538c1d7632333caced6` | FH role-policy draft | owner review pending | active r0.5 role profile | derived from shared normative semantics |
-| 44 | `src/common/README.md` | `r0.5` | 471 | `13c5d2d9124f78ebc7f7235f50e0762ea28f56a361153f7f37bacf5e0fdfb3be` | shared-source module index | authored draft support | active r0.5 module set | describes normative source |
-| 45 | `src/common/notation.tex` | `r0.5` | 10659 | `4343e31819a8d86a4f4380a0c3503de8d9f37be88364616726f9db9cc87cc9d1` | shared normative notation | authored closure draft | supersedes active r0.4 source | imported unchanged by both views |
-| 46 | `src/common/definitions.tex` | `r0.5` | 19056 | `844b94c8ca9eeec6ae244f9e8e433f11f92eedd44aec4e9518db2c5fef3b9a13` | shared normative definitions | authored closure draft | supersedes active r0.4 source | imported unchanged by both views |
-| 47 | `src/common/equations.tex` | `r0.5` | 12306 | `f1c3085efe003402b44d6b46d9999c7cf8b08c28e40781681450863c929e620c` | shared normative equations | authored closure draft | supersedes active r0.4 source | imported unchanged by both views |
-| 48 | `src/common/assumptions.tex` | `r0.5` | 10706 | `deac84b0ba9838cb93567076b9e3551a62bd6d075a8e5e5ecaf4f15f2c175c9a` | shared normative assumptions | authored closure draft | supersedes active r0.4 source | imported unchanged by both views |
-| 49 | `src/common/requirements.tex` | `r0.5` | 33914 | `9daf28b20c78103df97f7eda67fdcd79fabfdc63f68d6813aa21d1af77a36ead` | shared normative requirements and predictions | authored closure draft | REQ-001 through 050 stable and PRED-025 appended | imported unchanged by both views |
-| 50 | `src/common/edge_cases.tex` | `r0.5` | 10553 | `489e12fbd069a95db09e61ec72ae71d13539a0c12c5b3aacf7bf66ea0d2d4829` | shared normative edge and failure cases | authored closure draft | supersedes active r0.4 source | imported unchanged by both views |
-| 51 | `src/scientific-rationale.tex` | `v0.1 r0.5` | 16566 | `1bd13c51d64df1645cf559bc890a0fd7e0a32333e0d7557e64881159c75a4121` | scientific view source | owner review pending | supersedes active r0.4 view source | generated view over exact shared core |
-| 52 | `src/engineering-conformance.tex` | `v0.1 r0.5` | 25930 | `4596f8743f9f78d88e943d899c28dc8e96222eb9373b97e43468f3a8e8b04d04` | engineering view source | owner review pending | supersedes active r0.4 view source | generated view over exact shared core |
-| 53 | `pdf/README.md` | `r0.5` | 426 | `826f53f8e4bba0756a232cb85dd301692aa0406ec07ea52abe6c40d6c9b2fb0e` | rendered-artifact index | authored draft support | active r0.5 PDF set | describes generated views |
-| 54 | `pdf/SCI-FLT-MATCHED-SCIENTIFIC-RATIONALE-v0.1.pdf` | `v0.1 r0.5` | 216096 | `95007fb16de1eeb5a6efaa77e7af8b64981e1d5ff572e9c53e5254a0b7b81876` | canonical scientific rendered view | owner review pending | supersedes active r0.4 rendered view | generated from scientific source and exact shared core |
-| 55 | `pdf/SCI-FLT-MATCHED-ENGINEERING-CONFORMANCE-v0.1.pdf` | `v0.1 r0.5` | 232482 | `cee6476e664af1c47c89e06fc95b279f0cfeb6cea8e0553f0d9343047b338496` | canonical engineering rendered view | owner review pending | supersedes active r0.4 rendered view | generated from engineering source and exact shared core |
-| 56 | `PDF_QA_R0.5.md` | `r0.5` | 2714 | `c50eeaebc289b4b64fa3e4392232ae56d70914c2b50f59f1be7f33341acb9cd8` | PDF visual-QA and metadata evidence | mechanical and human QA passed | supersedes active r0.4 QA | evidence for both generated views |
-| 57 | `build/BUILD_VERIFICATION.md` | `r0.5` | 2317 | `4742a2e9332553c78fbfb1433f06c0de01a0481744b1b413d49e2eb7df5a8103` | build verification record | mechanical verification passed | supersedes active r0.4 build record | evidence for source and rendered views |
-| 58 | `build/consistency-report.json` | `r0.5` | 2968 | `f1bb0d0a6a558949f5a91af14da8d4660adc675ffc8ab7167848a721d5334c69` | machine consistency evidence | mechanical verification passed | active r0.5 report | generated from source and PDFs |
-| 59 | `build/verify_consistency.py` | `r0.5` | 12126 | `f766c77d93887c6882bb78f1e90b99e14c08be2ba1d90feea1268c48b1ad2cf3` | consistency verifier | verification tooling | active r0.5 checks | tests source and generated views |
-| 60 | `build/scientific-rationale.log` | `r0.5` | 58123 | `9205f042e99a24ad87f844ed4f8d00480a0ed5636b454061a4cc197c6a30769a` | scientific build log | clean build evidence | supersedes active r0.4 log | generated while rendering scientific PDF |
-| 61 | `build/engineering-conformance.log` | `r0.5` | 57471 | `380ce1a1452e864700cc1355a43c1a6f997a141c2e24c2559122eb43dc9a02ee` | engineering build log | clean build evidence | supersedes active r0.4 log | generated while rendering engineering PDF |
-| 62 | `build/generate_r0_5_authority.py` | `r0.5` | 16275 | `fd7aa100b07eb1a93cf17058b99640f17be8b94bba38eb59ba4820ac790e3c99` | authority inventory generator | verification tooling | active r0.5 generator | generates report and manifest |
-| 63 | `verify_stage_a.py` | `Stage A` | 4177 | `84e6387f57f799382a3482a5bd2322458ef398538a1338174691572aebb040f5` | approved-packet verifier | verification tooling | unchanged Stage A gate | tests author inputs |
-| 64 | `verify_stage_b_draft.py` | `r0.5` | 1486 | `7a6b047c0200bf3765c3eb6f63792790398ef0f5b0573816f3806a8a2881d34c` | authority-manifest verifier | verification tooling | supersedes r0.4 verifier behavior | tests manifest-bound objects |
-| 65 | `SOURCE_BYTE_REPORT_R0.5.md` | `r0.5` | 8233 | `3f50c09dd9603562842da013080e19492dfe620049116e6908a5a572ba0d669f` | exact source-byte report | mechanical inventory | supersedes active r0.4 source report | inventory of all other bound object bytes |
-| 66 | `README.md` | `r0.5` | 10379 | `58f77d3754cd5b8385950fee71c095b779716fb6d933b012ae4116c314ac22f9` | package gate and index | authored status draft | supersedes active r0.4 package status | indexes authority and generated views |
-| 67 | `DECISION_LOG.md` | `r0.5` | 7447 | `0b9e85fd98041bab33d8e465cc15c8626e145b38a8dc7d5e691aa1bdf0364b9e` | process decision record | authored provenance record | appends r0.5 closure | process provenance |
+| 1 | `SCIENTIFIC_OWNER_R0.6_DIRECTIVE_2026-09-01.md` | `r0.6` | 18916 | `5758640064918b2d3021afc7ea63ffba063ba7b1abbb66dc6d43d945ed73ebd3` | exact scientific-owner micro-repair directive | binding repair authority; not title/AO disposition | accepts r0.5 as repair basis | authority record |
+| 2 | `SCIENTIFIC_OWNER_DECISION_LEDGER.md` | `r0.6` | 12889 | `ff5a0b40a212927320c065853519c50a854278c819a94f333e6f5f7557e86dc8` | stable owner-decision ledger | mixed decided/open/superseded states | retains all 17 SODL IDs | shared traceability |
+| 3 | `STOCHASTIC_MODEL_AND_OBSERVED_PAYLOAD_AMENDMENT_R0.6.md` | `r0.6` | 1083 | `a76147fd50d53e841c8843edbb09da0f375f0b9ab7cfc675b6c3ad022eafa57b` | stochastic/observed type amendment | authored micro-repair | supersedes conflated random/observed notation | derived from exact directive |
+| 4 | `LIFECYCLE_STATE_GRAPH_R0.6.md` | `r0.6` | 822 | `0e841fbde648c7b85cb4ae5da55a9d14926a161a3882192fb17ee77315ab424a` | lifecycle-order amendment | authored micro-repair | supersedes incorrect publication order | derived from exact directive |
+| 5 | `AO001_AUTHORIZATION_MULTIPLICITY_AMENDMENT_R0.6.md` | `r0.6` | 975 | `4350feef6d73d6b5bdbb97486341b8a27a416399e6d0c48b78513dc6e34ddc7f` | authorization multiplicity amendment | authored micro-repair | clarifies package versus realization authority | derived from exact directive |
+| 6 | `AO_OWNER_DISPOSITION_PACKET_R0.6.md` | `r0.6` | 2390 | `08e07e4e9bd3ce2ef294bab16a6b29b31f296ffd6f8d6d564e624157d648b3b0` | AO recommendation packet | owner disposition pending | no AO selection | identical two-view routing basis |
+| 7 | `OPTIMALITY_TITLE_OWNER_DISPOSITION_R0.6.md` | `r0.6` | 1134 | `303536de063ae33bc10b5a72cbb383065fea30054c2c51bb07e74e104698e65c` | title recommendation packet | owner disposition pending | provisional historical title is not a selection | identical two-view routing basis |
+| 8 | `CONDITIONAL_SCIENTIFIC_FREEZE_PROPOSAL_R0.6.md` | `r0.6` | 1523 | `bb9e888d7a9cde2efc10370b9ea23d7e8e02809a93d073a125caf6017de50236` | conditional-freeze gate | proposal unavailable pending exact dispositions | not a scientific freeze | owner-facing gate |
+| 9 | `ROUTE_STATUS_R0.6.md` | `r0.6` | 2134 | `f7db33e6432eb6ff879abd55864bb4406938cabc2ef5d59b0051ae918eb7c965` | route availability record | authored status preflight | supersedes active r0.5 route status | shared status view |
+| 10 | `SEMANTIC_CHANGE_MAP_R0.6.md` | `r0.6` | 1457 | `0a5f094397bb7d5133cfcb5db8643baec52ac0c0ac8e5b29a8fb5c928c8bce1d` | micro-repair map | authored traceability | maps r0.5 to r0.6 only | source/two-view parity |
+| 11 | `OWNER_DECISION_PARITY_R0.6.md` | `r0.6` | 1181 | `708a38eaa502e249ccf2b75fd61722c2276501238773f799d1f765008e22277a` | owner-direction parity record | authored traceability | supersedes active r0.5 parity | source/two-view parity |
+| 12 | `SCI-MAP_TO_SCI-FLT-MATCHED-v0.1-r0.6.md` | `v0.1 r0.6` | 2234 | `1c07164083eadbef988bb0d7258738149044ea340893b0e1988a6022cca646b3` | MAP producer boundary draft | owner review pending | supersedes r0.5 boundary draft | derived current boundary |
+| 13 | `SCI-TEMPLATE_TO_SCI-FLT-MATCHED-v0.1-r0.6.md` | `v0.1 r0.6` | 1642 | `c604e2990a022fa642dbd9a91e8d382a138a5168044c3fef6c03749f6d6170c5` | template producer boundary draft | owner review pending | supersedes r0.5 boundary draft | derived current boundary |
+| 14 | `SCI-FLT-MATCHED_TO_SCI-NOI-v0.1-r0.6.md` | `v0.1 r0.6` | 1868 | `bf0bb7abdd67cd9dddb5ca79296f5fae3fabd607871520cfddc5490b91bfd413` | NOI consumer boundary draft | owner review pending | supersedes r0.5 boundary draft | derived current boundary |
+| 15 | `SCI-FLT-MATCHED_TO_SCI-FRUIT-v0.1-r0.6.md` | `v0.1 r0.6` | 1751 | `f1a241c09bfe75223e9ca8f113f07b92caa62cc9ade98f1ba31db4212ab18154` | FRUIT producer-envelope boundary draft | owner review pending | supersedes r0.5 boundary draft | derived current boundary |
+| 16 | `role_semantics/PA_R0.6.md` | `r0.6` | 623 | `9bc9bd4a035d18ee5e4197da7875fb1178e3a181fc6d3a3a5b24f62a81b634cb` | PA role-semantics draft | unapproved, unregistered, unevaluable | not an executable policy | shared normative semantics |
+| 17 | `role_semantics/SA_R0.6.md` | `r0.6` | 560 | `8a7361f59baeaa539c955cbc4b94c5580e3af86e66c37cb10f2d37448dff03a9` | SA role-semantics draft | unapproved, unregistered, unevaluable | not an executable policy | shared normative semantics |
+| 18 | `role_semantics/SP_R0.6.md` | `r0.6` | 550 | `04891c063b5590abe1367c0b9552668956c289426589a45f1047bdadebfdb47c` | SP role-semantics draft | unapproved, unregistered, unevaluable | not an executable policy | shared normative semantics |
+| 19 | `role_semantics/CU_R0.6.md` | `r0.6` | 596 | `a7a5bdd0f5abc1d67e87f62057b9683302563866b59576e0ef141a487d29cedc` | CU role-semantics draft | unapproved, unregistered, unevaluable | not an executable policy | shared normative semantics |
+| 20 | `role_semantics/NU_R0.6.md` | `r0.6` | 588 | `ef89807b4433f07ea5d2563f4c07fee6281899c5e57badc8f315a9938d69955e` | NU role-semantics draft | unapproved, unregistered, unevaluable | not an executable policy | shared normative semantics |
+| 21 | `role_semantics/RU_R0.6.md` | `r0.6` | 573 | `0dfd49ccb18af9939e08b2a942c4692cc1ca85e0f8ccfff05226c3bf508b798c` | RU role-semantics draft | unapproved, unregistered, unevaluable | not an executable policy | shared normative semantics |
+| 22 | `role_semantics/FH_R0.6.md` | `r0.6` | 582 | `f25b11a6e2160a56a03e5a9c95bc67a391d8675e7b55abbeeb52d11053152989` | FH role-semantics draft | unapproved, unregistered, unevaluable | not an executable policy | shared normative semantics |
+| 23 | `CROSSWALK.md` | `r0.6` | 22782 | `82c83440872e0411e63e0862d1ab7ee1b2ce904aac282d986c1132483b1aa4f4` | 96-ID stable crosswalk | authored traceability | counts unchanged | shared source and both views |
+| 24 | `src/common/README.md` | `r0.6` | 654 | `c86d2cabc20bb4dd7970adcc8dd7725b49e4e5f95bff32d37fc0875eafbf033b` | shared-source module index | authored support | active r0.6 module set | describes shared source |
+| 25 | `src/common/notation.tex` | `r0.6` | 11852 | `fe98a62fc4e271674e3bf7d13a8f33c9de21874ba50a9966e6b4901bec9e2c09` | shared normative notation | authored micro-repair | supersedes active r0.5 source | imported byte-identically by both views |
+| 26 | `src/common/definitions.tex` | `r0.6` | 21638 | `5599f8d62a74b884df991a3f95d22e1cb2942daa77d83cb26948256a81886131` | shared normative definitions | authored micro-repair | supersedes active r0.5 source | imported byte-identically by both views |
+| 27 | `src/common/equations.tex` | `r0.6` | 13114 | `b3a7eef087abd95121edc1f47b84427c35549667bf4207facc7046d3cac63ec6` | shared normative equations | authored micro-repair | supersedes active r0.5 source | imported byte-identically by both views |
+| 28 | `src/common/assumptions.tex` | `r0.6` | 11946 | `d5fd28ee86178d4f72a5fdc88b546119e84a676390b175cac1b62cb497723ac4` | shared normative assumptions | authored micro-repair | supersedes active r0.5 source | imported byte-identically by both views |
+| 29 | `src/common/requirements.tex` | `r0.6` | 35942 | `433fbe0e3cf7851a2f99a1c00f29600f5991d73589950583fbd17696f2bfe934` | shared normative requirements | authored micro-repair | supersedes active r0.5 source | imported byte-identically by both views |
+| 30 | `src/common/edge_cases.tex` | `r0.6` | 11490 | `6b3b89b8e6bc470ea7a4c6565175f97e69d22f69c2088dc0494696376199b054` | shared normative edge_cases | authored micro-repair | supersedes active r0.5 source | imported byte-identically by both views |
+| 31 | `src/scientific-rationale.tex` | `v0.1 r0.6` | 18538 | `77c434f5a78acec02b0f5b083df3e3120e8fe3b984c2da43916d832b407c5e69` | scientific-view source | conditional-freeze preflight | supersedes active r0.5 view source | generated view over shared core |
+| 32 | `src/engineering-conformance.tex` | `v0.1 r0.6` | 28200 | `902306c4cdcfaf58a0c8b57120816d71dd682e3a44f4ef9e06b1012bec86c0b8` | engineering-view source | conditional-freeze preflight | supersedes active r0.5 view source | generated view over shared core |
+| 33 | `pdf/README.md` | `r0.6` | 554 | `11e25909e1886e001c23f94f9bb01ba4d54ae82406ee979976447f43adaf4eb9` | rendered-artifact index | authored support | active r0.6 PDF set | describes generated views |
+| 34 | `pdf/SCI-FLT-MATCHED-SCIENTIFIC-RATIONALE-v0.1.pdf` | `v0.1 r0.6` | 229674 | `a931c946ab83aab36278056106b525638d9f017ce461a1359b5ce95efc3deb3d` | canonical scientific rendered view | owner disposition pending | supersedes active r0.5 PDF | generated from scientific source/shared core |
+| 35 | `pdf/SCI-FLT-MATCHED-ENGINEERING-CONFORMANCE-v0.1.pdf` | `v0.1 r0.6` | 246482 | `e14b5dce8559311e57217f927496bf809042d492fd76a42ac3839ed18f69d861` | canonical engineering rendered view | owner disposition pending | supersedes active r0.5 PDF | generated from engineering source/shared core |
+| 36 | `PDF_QA_R0.6.md` | `r0.6` | 1775 | `36ea5a615b1af3b7e1d67c1acabf787840d71ed82a2525b25a6a1e24831b1ae3` | all-page PDF QA evidence | mechanical and visual QA passed | supersedes active r0.5 QA | evidence for generated views |
+| 37 | `build/BUILD_VERIFICATION.md` | `r0.6` | 2786 | `a6c861200e11d3001b2b6ffa698e7988c19cf9255dfd28bafb11b5d5006e1611` | build verification record | mechanical verification passed | supersedes active r0.5 build record | source/PDF evidence |
+| 38 | `build/consistency-report.json` | `r0.6` | 3085 | `c00fe0376aa65e64da5043a455595601468188045391c2f2fe1ce69385fd6fa2` | machine consistency evidence | mechanical verification passed | active r0.6 report | generated from source/PDFs |
+| 39 | `build/verify_consistency.py` | `r0.6` | 14822 | `fda85087d63f5de43c8c07d1e2ec7e2545baaa5c379c5f8924ebbc6680be31a6` | source/PDF verifier | verification tooling | active r0.6 checks | tests source and views |
+| 40 | `build/audit_bundle_links.py` | `r0.6` | 2792 | `0ccbe9b9122b938972acfee7c38403d3f49893f1acb073f309f155b20d6d55f2` | standalone link auditor | verification tooling | new r0.6 bundle-policy check | tests extracted Markdown tree |
+| 41 | `build/scientific-rationale.log` | `r0.6` | 61748 | `633cc75882e05a890b5835f95b038e9da08d22332a243d715ede0bdf52762573` | scientific build log | clean build evidence | supersedes active r0.5 log | render evidence |
+| 42 | `build/engineering-conformance.log` | `r0.6` | 60253 | `08562eb536c04276c3802c4dc8ae4d53c4fd598c695bdaaeedae233a50b98cc0` | engineering build log | clean build evidence | supersedes active r0.5 log | render evidence |
+| 43 | `build/generate_r0_6_authority.py` | `r0.6` | 12999 | `b2b701737cde0d230c07097d44fcc0cdf0dc235066f2e51f316c1699f354a85a` | authority inventory generator | verification tooling | active r0.6 generator | generates report/manifest |
+| 44 | `verify_stage_b_draft.py` | `r0.6` | 2533 | `883eb18c53bd67d80596a26676e3842e35cd1623c8031110290109a5dd44bd14` | standalone authority verifier | verification tooling | supersedes r0.5 verifier behavior | tests manifest-bound objects |
+| 45 | `SOURCE_BYTE_AND_LINK_CLOSURE_R0.6.md` | `r0.6` | 5991 | `6bdff60cbc89de3f13e61b4251089d3bed5757906f9b261058e521419b79cd87` | exact source/link closure | mechanical inventory passed | current authority-only object set | inventory of all other active objects |
 
+## Historical authority anchors — repository context only
+
+| Role | Repository object | SHA-256 |
+| --- | --- | --- |
+| Stage A approved author-packet manifest | `AUTHOR_PACKET_MANIFEST.md` | `255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8` |
+| r0.2 scientific-owner directive | `SCIENTIFIC_OWNER_R0.2_DIRECTIVE_2026-08-31.md` | `ef03af840c00b9934b04ceab0635be4f7273afe929e65f84eaa1b31985daa155` |
+| r0.3 repair authority | `SCIENTIFIC_OWNER_R0.3_REPAIR_AUTHORITY_2026-09-01.md` | `354a0647709aa98f331b9a50606b6c08d4e26d61e161d796c62e4e2e819d5e4a` |
+| r0.4 scientific-owner directive | `SCIENTIFIC_OWNER_R0.4_DIRECTIVE_2026-09-01.md` | `ccaca43228f4ac9f719aa93201cc13c37abdd8b2ddc01c65f2733785d12cf408` |
+| r0.5 scientific-owner directive | `SCIENTIFIC_OWNER_R0.5_DIRECTIVE_2026-09-01.md` | `e27c04e62f01fa2997b229cf50d4a5b1c12cfd3d74805f4806bef6dde1261274` |
+
+The r0.6 directive is an active object row and has SHA-256
+`5758640064918b2d3021afc7ea63ffba063ba7b1abbb66dc6d43d945ed73ebd3`.
 The external digest in `STAGE_B_DRAFT_MANIFEST.sha256` binds this
-manifest. The exact approved eight-object author packet is rows 1--8;
-row 1 reproduces the owner-approved manifest SHA-256
-`255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8`.
+manifest.
 
-This authority set selects no title, weighting, concrete covariance
-role/scope, representation, named-use profile, or numerical route. It
-establishes no implementation conformity, response/covariance fidelity,
-observational validation, detection performance, readiness, scientific
-freeze, production suitability, production authorization, or Unity claim.
+The title and exact AO owner dispositions are pending. This set establishes
+no available numerical route, registered SCI-VAL profile, implementation
+conformity, response/covariance fidelity, observational validation, achieved
+performance, readiness, scientific freeze, production authorization, or
+Unity claim.

@@ -14,9 +14,9 @@
 \definecolor{rust}{HTML}{9C3D10}
 \definecolor{pale}{HTML}{F3F6F9}
 \hypersetup{colorlinks=true,linkcolor=navy,urlcolor=navy,
-  pdftitle={SCI-FLT-MATCHED Scientific Rationale and Contract v0.1 r0.5},
+  pdftitle={SCI-FLT-MATCHED Scientific Rationale and Contract v0.1 r0.6},
   pdfauthor={Implementation-blind Stage B author basis; owner-authorized review repair},
-  pdfsubject={Final targeted type, lifecycle, covariance-role, and owner-disposition closure draft}}
+  pdfsubject={Final micro-repair and conditional-freeze preflight}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
 \setlength{\emergencystretch}{3em}
@@ -32,7 +32,7 @@
 \newcommand{\StatusBox}{%
 \begin{center}
 \fcolorbox{rust}{pale}{\parbox{0.88\linewidth}{\centering\small
-\textbf{STAGE B DRAFT -- ALL AO-001 THROUGH AO-006 OPTIONS UNSELECTED.}
+\textbf{CONDITIONAL-FREEZE PREFLIGHT -- OWNER DISPOSITIONS PENDING.}
 No numerical route, implementation, conformity result, response or covariance
 fidelity, observational validation, achieved performance, readiness,
 production state, scientific freeze, or Unity status is claimed.}}
@@ -46,7 +46,7 @@ production state, scientific freeze, or Unity status is claimed.}}
 {\Large\color{navy}\textbf{SCI-FLT-MATCHED v0.1}\par}
 \vspace{0.35in}
 {\huge\textbf{Optimal matched-template map filtering}\par}
-{\small\itshape Historical provisional title pending the explicit r0.5 owner
+{\small\itshape Historical provisional title pending the explicit r0.6 owner
 disposition; \texttt{optimality\_status=not\_claimed}\par}
 \vspace{0.22in}
 {\LARGE Scientific Rationale and Contract\par}
@@ -54,7 +54,7 @@ disposition; \texttt{optimality\_status=not\_claimed}\par}
 \StatusBox
 \vfill
 {\large Package version: v0.1\par}
-{\large Document revision: r0.5\par}
+{\large Document revision: r0.6\par}
 {\large Author-packet date: 2026-08-31\par}
 {\large Scientific owner for later disposition: Grant Wilson\par}
 \vspace{0.25in}
@@ -63,9 +63,11 @@ eight-object author packet; r0.2 applied the subsequent scientific-owner
 closure directive; r0.3 applies owner-authorized independent-review repairs
 without implementation input; r0.4 applies the second independent-review
 minor repairs and the owner's covariance-scope and diagnostic-only policy
-dispositions; r0.5 applies the owner's final targeted type, lifecycle,
-covariance-role, and boundary closure directive while leaving the human title
-for explicit owner disposition. The admitted packet remains bound by SHA-256\par
+dispositions; r0.5 applied the owner's targeted type, lifecycle,
+covariance-role, and boundary closure; r0.6 applies only the owner's final
+stochastic-domain, lifecycle-order, route-multiplicity, role-label, and
+standalone-bundle micro-repairs while leaving title and AO authorization for
+explicit owner disposition. The admitted packet remains bound by SHA-256\par
 \texttt{255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8}.\par}
 \end{titlepage}
 
@@ -105,7 +107,8 @@ choose, center, tune, or update it.
 
 \section{Why the estimator is normalized}
 
-The parent is contracted with the template through a frozen complete
+The immutable observed payload $m_{\rm obs}$ is contracted with the template
+through a frozen complete
 coordinate-basis weighting object. Every required pixel or quadrature measure
 is already inside that bilinear object; there is no second unexplained measure.
 The same weighting is applied to the template itself, producing the
@@ -118,7 +121,9 @@ the exact authorized inverse covariance on the same population, support,
 conditioning state, and estimable subspace, the estimator has the familiar
 inverse-covariance GLS minimum-variance property only after a local operator
 domain is declared before construction, covariance is restricted to that
-domain, and it is inverted on an exact identifiable
+domain contained in the authorized stochastic-model domain
+$\mathcal D_{\rm model}$,
+and it is inverted on an exact identifiable
 estimable subspace. Under a weaker spectral or
 reliability weight, it can remain matching-template normalized without being
 minimum variance. In that case the denominator is normalization, not a
@@ -146,8 +151,9 @@ The local domain used to construct covariance, weighting, and normalization is
 declared before the final row exists. Each amplitude then depends on complete
 application support: every parent payload row with a nonzero coefficient in
 that row. A coordinate can influence construction while having a final exact
-zero coefficient; its payload need not be dereferenced, but its causal lineage
-is retained. Template-query,
+zero coefficient; its observed payload need not be dereferenced, but exact
+model/covariance authority is still required there for the local-GLS route and
+its causal lineage is retained. Template-query,
 state-learning, response-query, and storage supports are recorded separately.
 If one dependency is absent or invalid, the estimator defined here does not
 exist at that location. Filling, extending, renormalizing, fitting a background,
@@ -168,10 +174,11 @@ data-dependent Learn--Resolve procedure. That full-procedure quantity requires
 an authorized rerun or finite difference and is otherwise unavailable.
 
 Likewise, an available conditional covariance companion exists only when its
-selected scope, matching parent law, pre-draw frozen condition
+selected scope, matching stochastic parent $M$, pre-draw frozen condition
 $h_{\rm pre}=(g_{\rm resolved},\theta)$, and fixed finite numerical codomain
-are authoritative. Apply outcomes and publication facts are provenance, not
-conditioning variables. Actual
+are authoritative. Numerical values or a digest fixing $m_{\rm obs}$, Apply
+outcomes, draw-dependent identities/domains, and publication facts are
+provenance, not conditioning variables. Actual
 finite-precision production is represented by a fixed-state map $F_g$, not
 presumed to be linear or guaranteed to return a numerical field on every
 draw. A bundle always carries each covariance role's identity and status; an
@@ -193,7 +200,9 @@ the facts required to know exactly what it means. Covariance, empirical NOI,
 response, and state/lineage products are independently atomic companions.
 Their failure is explicit. Optional failure does not silently alter the signal
 estimand, while failure of a required signal member prevents publication of a
-complete signal bundle.
+complete signal bundle. Apply is followed by realization of immutable values,
+then complete-candidate closure, publication-policy decision, and only then
+publication or a not-produced disposition.
 Each role has its own validity domain no broader than signal validity. An
 optional unrequested or unavailable role does not erode the signal domain.
 
@@ -236,6 +245,28 @@ The owner disposes only the remaining scientific meanings. Engineering selects
 exact representations and one numerical profile after those meanings are
 fixed. The decision ledger records the exact routing.
 
+\begin{longtable}{p{0.12\linewidth}p{0.30\linewidth}p{0.48\linewidth}}
+\toprule
+Layer & Disposition authority & Exact effect \\
+\midrule
+\endhead
+A & Scientific owner, package level & Authorize one or more separately named
+method routes, recommended as \AOpt{001}{A} and \AOpt{001}{C}; retain B/D as
+successor triggers. \\
+B & Scientific owner, parent class & Authorize routes independently for
+observation and coadd classes; no commutation or state sharing follows. \\
+C & Scientific owner, named use & State which authorized route identities may
+serve each use and which companions that use requires. \\
+D & Request/realization authority & Bind exactly one authorized method identity;
+no mixing, target-data choice, or fallback. \\
+E & Engineering after science & Declare exact numerical profile and lossless
+state, response, covariance, and verdict representation without selecting
+scientific meaning. \\
+F & Typed route state & Record unavailable or successor-authorship-trigger
+routes explicitly; absence never selects another method. \\
+\bottomrule
+\end{longtable}
+
 \subsection{Human-title and optimality disposition}
 
 The package ID remains \ContractID{}. The recommended human title is
@@ -245,7 +276,7 @@ historical title but requires an explicit \texttt{optimality\_status} on every
 product and boundary. In every option, ``optimal'' is reserved for
 \AOpt{001}{A} with every theorem premise established; \AOpt{001}{C} and every
 weaker route carry \texttt{not\_claimed}. No title, filename, or ID is claim
-evidence. This r0.5 draft retains the historical title provisionally and does
+evidence. This r0.6 preflight retains the historical title provisionally and does
 not select for the owner.
 
 \begin{longtable}{p{0.20\linewidth}p{0.31\linewidth}p{0.39\linewidth}}
@@ -253,8 +284,10 @@ not select for the owner.
 Family & Authority and decision & Route unavailable before disposition \\
 \midrule
 \endhead
-\AO{001} & Scientific owner: concrete weighting authority for observation and
-coadd separately. B/D remain successor-authorship triggers until concrete
+\AO{001} & Scientific owner: package-, parent-class-, and named-use
+authorizations, followed by one exact per-realization request. More than one
+separately named route may be authorized, but no realization mixes or selects
+between them. Observation and coadd remain separate. B/D remain successor-authorship triggers until concrete
 $W_p$ objects exist. The C-route diagnostics are mandatory evidence but are
 not v0.1 validity gates. Recommended: authorize A as the sole exact local-GLS
 optimal/reference-variance route; permit C separately as
@@ -313,7 +346,9 @@ used the second independent ChatGPT Pro review of the exact r0.3 PDF pair and
 the owner's approval of selectable covariance scope plus diagnostics-only
 AO-001-C admission policy. The r0.5 repair used only the exact scientific-owner
 directive dated 2026-09-01 and its resulting owner-facing disposition records;
-it inspected no implementation. Links in the
+the r0.6 micro-repair used only the exact scientific-owner directive dated
+2026-09-01 and retained all implementation firewalls. Neither revision
+inspected implementation. Links in the
 packet were not opened. No
 implementation, configuration, schema, test, audit, validation,
 reduction, generated product, repository history, neighboring package,

@@ -1,9 +1,10 @@
 # SCI-FLT-MATCHED v0.1 Stage B Crosswalk
 
-Status: Stage B r0.5 final targeted type/lifecycle/covariance-role closure
-draft; all weighting,
-covariance-role/scope, representation,
-named-use, and numerical routes remain unselected. This crosswalk makes no
+Status: Stage B r0.6 micro-repair conditional-freeze preflight; title and
+owner authorization/disposition remain pending. A package may authorize
+multiple AO-001 routes, while each request/realization shall bind exactly one
+authorized route without mixing, outcome-dependent selection, or fallback.
+This crosswalk makes no
 implementation, conformity, response/covariance-fidelity, validation,
 achieved-performance, readiness, production, scientific-freeze, or Unity
 claim.
@@ -34,6 +35,7 @@ or a reported conformity or validation result.
 | R04 | `CHATGPT_PRO_INDEPENDENT_REVIEW_R0.3_2026-09-01.md` plus `SCIENTIFIC_OWNER_R0.4_DIRECTIVE_2026-09-01.md` |
 
 | R05 | `SCIENTIFIC_OWNER_R0.5_DIRECTIVE_2026-09-01.md` plus its resulting closure amendments and owner-disposition packets |
+| R06 | `SCIENTIFIC_OWNER_R0.6_DIRECTIVE_2026-09-01.md` plus its stochastic/payload, lifecycle, AO-authorization, role-semantics, and conditional-freeze records |
 
 Links appearing in admitted objects were not opened and are not inputs.
 
@@ -123,7 +125,7 @@ test family adds future evidence routing without reporting a result.
 | `SCI-FLT-MATCHED-PRED-022` | R02 mismatch amendment; R04 C07 | Mismatched-shape injection and response-weighted amplitude | CT-003, CT-004, CT-008 |
 | `SCI-FLT-MATCHED-PRED-023` | R02 response-family amendment | Authorized Learn--Resolve perturbation rerun and state-change record | CT-008, CT-009 |
 | `SCI-FLT-MATCHED-PRED-024` | R02 realized covariance; R03 F02/F05; R04 C01/C02/C07 | Operational `P_C F_g` covariance on one fixed finite codomain; matrix identity only after fixed-state linearity | CT-007, CT-010 |
-| `SCI-FLT-MATCHED-PRED-025` | R05 numerical application-domain closure | Missing construction-only payload with exact-zero final coefficient remains defined; nonzero coefficient activates dependency and unavailability | CT-004, CT-005 |
+| `SCI-FLT-MATCHED-PRED-025` | R05 numerical application-domain closure; R06 stochastic-model/observed-payload repair | Exact-zero observed dependency leaves the sparse observed evaluation defined only when template/model/covariance construction authority is complete; a nonzero coefficient activates the observed-payload dependency | CT-004, CT-005 |
 
 ## Assumption and uncertainty crosswalk
 

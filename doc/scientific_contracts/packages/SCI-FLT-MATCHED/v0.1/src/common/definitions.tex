@@ -20,7 +20,8 @@ convolution semantics.
 
 Each realization has the immutable scientific identity
 \begin{quote}\small\ttfamily\raggedright
-(method\_id, estimand, parent\_id, parent\_class, anchor\_lattice,
+(method\_id, estimand, parent\_id, parent\_class, stochastic\_model\_id,
+model\_domain, observed\_payload\_domain, anchor\_lattice,
 WCS/frame, template\_id, requested/effective/resolved/applied/realized
 generation, weighting\_object, exact\_operator, producing\_map,
 established\_linear\_operator,
@@ -95,10 +96,13 @@ final exact-zero pattern. Coordinates in
 $\Dom_{\rm loc}(p)\setminus\Supp_{\rm apply}(p)$ may influence local covariance,
 weight, rank, normalization, or state and therefore remain in operator/state
 lineage even though Apply does not dereference their parent payload values.
-Every $q\in\Supp_{\rm apply}(p)$ shall lie in $\Dom_m$ and be admitted. A
+For an \AOpt{001}{A} route, every $q\in\Dom_{\rm loc}(p)$ shall lie in the
+authorized stochastic-model domain $\Dom_{\rm model}$. Every
+$q\in\Supp_{\rm apply}(p)$ shall lie in $\Dom_m$ and be admitted. A
 coordinate in $\Dom_{\rm loc}(p)\setminus\Supp_{\rm apply}(p)$ may participate
-in construction without any signal-payload dereference. The shorthand
-$m_p=E_pm$ is permitted only when a complete numerical local vector exists or
+in construction without any observed-payload dereference only when the exact
+template/model/covariance authority exists there. The shorthand
+$m_p=E_pm_{\rm obs}$ is permitted only when a complete numerical local vector exists or
 when an explicit algebraic completion is proved irrelevant outside
 $\Supp_{\rm apply}(p)$. An output anchor is admitted only when complete
 application support is present and valid. No partial-support estimator, edge
@@ -119,7 +123,13 @@ it covariance, precision, or inverse variance.
 Local GLS first restricts the authorized parent covariance, conditional on
 $h_{\rm pre}$, to the predeclared local domain:
 $C_p=E_pC_{\rm parent\mid h_{\rm pre}}E_p^{\mathsf T}$, then inverts it only on the exact
-declared local estimable subspace. In general
+declared local estimable subspace. This requires
+$\Dom_{\rm loc}(p)\subseteq\Dom_{\rm model}$,
+$M_p=E_pM$, and
+$C_p=\operatorname{Cov}[M_p\mid h_{\rm pre}]$. Missing model or covariance
+authority anywhere on $\Dom_{\rm loc}(p)$ makes \AOpt{001}{A}, its optimality
+status, and $v_{{\rm GLS,reference}}=d_p^{-1}$ unavailable, even if a
+separately authorized sparse non-GLS amplitude remains computable. In general
 \[
  (E_pC_{\rm parent\mid h_{\rm pre}}E_p^{\mathsf T})^{-1}
  \ne E_pC_{\rm parent\mid h_{\rm pre}}^{-1}E_p^{\mathsf T}.
@@ -139,20 +149,40 @@ State advances through three explicit operations:
 \item[Learn.] Derive candidate covariance, spectral/reliability information,
 window, rank, null, regularization, and diagnostics from one declared
 population, with source/target protection and state uncertainty recorded.
-\item[Resolve.] Select one owner-authorized \AO{001} method and bind its
+\item[Resolve.] Select exactly one requested, owner-authorized \AO{001} method
+for this realization and bind its
 parameters, support, scientific identity, numerical-conformance policy,
 failure disposition, and immutable generation. Externally declared state
 enters here without observational learning.
 \item[Apply.] Use the resolved state unchanged. No target, candidate, source,
 or NOI-member update occurs during Apply.
 \end{description}
-Requested, effective, learned-candidate, resolved, applied, complete-
-publication-candidate, publication-decided, realized, and published identities
+The package may authorize multiple separately named \AO{001} methods, including
+both \AOpt{001}{A} and \AOpt{001}{C}, but one request and realization binds
+exactly one. There is no automatic selector, target-data-driven choice, route
+mixing, or fallback between them. Requested, effective, learned-candidate,
+resolved, applied, realized, complete-publication-candidate,
+publication-decided, and published identities
 are distinct even when their values happen to agree.
 Observation and coadd states are separate. A compatible NOI member receives
 the identical resolved transformation, support, normalization, and failure
 rules. Any update creates a successor; per-member relearning is a different
 future method.
+
+For a successful requested product route, the exact order is
+\[
+\begin{aligned}
+\Requested&\to\Effective\to\LearnedCandidate\\
+&\to\Resolved\to\Applied\\
+&\to\Realized\to\Complete\to\PublicationDecided\\
+&\to(\Published\ \hbox{or}\ \NotProduced),
+\end{aligned}
+\]
+with \LearnedCandidate{} omitted when Learn does not apply.
+\NotRequested{} is an alternative initial disposition. \Disabled{} and
+\Unavailable{} are pre-application dispositions where applicable. \Failed{}
+may branch from Learn, Resolve, Apply, numerical realization, product closure,
+publication evaluation, or publication action.
 
 \subsection{NOI compatibility predicate}
 \label{sec:noi-compatibility}
@@ -181,35 +211,43 @@ Resolve after perturbation. The state-change record is retained separately.
 Until such authority exists, $R_{\rm FP}$ is \Unavailable{}; no FLT, FRUIT,
 SRC, or other consumer may call $R_{\rm fixed}$ the full-procedure response.
 
-The actual fixed-state numerical producing map is $F_g$. It may include
+The actual fixed-state numerical producing map is $F_g$. It acts on the
+observed payload $m_{\rm obs}$ for one numerical realization and on $M$ when
+defining its stochastic law. It may include
 rounding, branches, exceptional-value handling, or typed attempt failure and is
 not presumed exactly linear. Its realized response is therefore the declared
 fixed-state directional derivative or predeclared finite difference of $F_g$
 without rerunning Learn or Resolve. The general response is
-$R_{\rm realized}^{[\delta,\sigma]}(m;p,s)$, where the response-query domain,
+$R_{\rm realized}^{[\delta,\sigma]}(m_{\rm obs};p,s)$, where the response-query domain,
 reference parent, step $\delta$, and derivative or sidedness scheme $\sigma$
 are fixed before evaluation. Every evaluation entering one derivative or
 finite difference shall return finite numerical values on the same
 predeclared output-query domain; otherwise that response query is
 \Unavailable{}. Conditioning on successful evaluations, censoring failed
 evaluations, or changing the domain defines a separately named response
-experiment. Only after evidence establishes $F_g(m)=\widetilde L_gm$ on the
+experiment. Only after evidence establishes
+$F_g(m_{\rm obs})=\widetilde L_gm_{\rm obs}$ on the
 declared domain may the parent-independent matrix identity
 $R_{\rm realized}=\widetilde L_gT$ be used. The exact scientific comparator is
 $R_{\rm reference}=LT$. These are not interchangeable.
 
 Every fixed-state expectation, reference variance, reference covariance, and
 realized covariance statement conditions only on the pre-draw frozen condition
-$h_{\rm pre}=(g_{\rm resolved},\theta)$. It contains the immutable parent/class,
-template, $\Dom_{\rm loc}/E_p$, weight, support/missingness, subspace/rank/null,
-regularization, numerical profile, $P_C$, response-query domain, and failure
-semantics. Attempt, realized, publication, outcome, and observed values are
-recorded as provenance and are never U1 conditioning variables. U2 describes
+$h_{\rm pre}=(g_{\rm resolved},\theta)$. It may contain the immutable parent
+product role, identity, and class; exact stochastic-law/population identity;
+template; $\Dom_{\rm loc}/E_p$; weight; support/missingness rules;
+subspace/rank/null; regularization; numerical profile; $P_C$; response-query
+domain; and failure semantics. It shall not contain numerical
+$m_{\rm obs}$ values, an observed-payload digest that fixes the draw, execution
+success, a draw-dependent realized-product identity, publication, censoring,
+pairwise deletion, or a draw-dependent domain. Those are provenance rather
+than U1 conditioning variables. Conditioning on observed target payload
+requires a separately named conditional population and covariance role. U2 describes
 variation over the frozen template/calibration
 state $\theta$ and is excluded from those U1 conditional statements. A named
 operational covariance role is defined only after a fixed, predeclared
 selector $P_C$ establishes a finite numerical random-vector codomain. It exists
-only when $P_CF_g(m)$ is finite almost surely under the declared U1 law.
+only when $P_CF_g(M)$ is finite almost surely under the declared U1 law.
 Conditioning on successful production, censoring, pairwise deletion, or a
 draw-dependent domain is not the same covariance role and requires a
 separately named population and covariance contract.
@@ -259,19 +297,22 @@ premise is absent; no numerical value is asserted. \\
 \Resolved{} & Method, state, parameters, support, policy, and failure
 disposition are immutable for the generation. \\
 \Applied{} & The resolved operator was invoked on an admitted parent. \\
-\Complete{} & Every required member and predicate exists and the bundle is
-eligible for publication; this is not publication, validation, or readiness. \\
-\PublicationDecided{} & Authorized publication policy accepted or rejected one
-immutable complete candidate without changing its scientific content. \\
 \Realized{} & The declared fixed-state producing map generated immutable values
 and outcome provenance; realization neither implies publication nor changes
 pre-draw conditioning. \\
+\Complete{} & Every required realized value, identity, status, validity fact,
+companion identity/status record, lifecycle member, and provenance member
+exists and is ready for publication-policy evaluation. This is not a finding
+of publication eligibility, validation, or readiness. \\
+\PublicationDecided{} & The exact owner-policy/SCI-VAL decision artifact exists
+for one immutable complete candidate without changing its scientific content. \\
 \Published{} & An authorized publication decision exposed the immutable
 product under its declared identity, role, validity, and lineage. \\
-\Failed{} & An authorized attempt began but a required operation or closure
-check failed. \\
-\NotProduced{} & Policy intentionally produced no artifact after a valid
-disposition; it is not zero or unavailable. \\
+\Failed{} & An authorized attempt began but Learn, Resolve, Apply, numerical
+realization, product closure, publication evaluation, or publication action
+failed. \\
+\NotProduced{} & A complete disposition intentionally created no public
+product; it is not zero or unavailable. \\
 \Superseded{} & An immutable successor exists under an authorized policy; the
 predecessor is retained and never rewritten. \\
 \bottomrule
@@ -279,7 +320,10 @@ predecessor is retained and never rewritten. \\
 
 \subsection{SCI-VAL named-use evaluation}
 
-SCI-VAL evaluates an owner-approved named-use profile. It retains four
+SCI-VAL evaluates an owner-approved, Registry-bound named-use profile. The
+role-semantics drafts returned with this package are unregistered and
+unevaluable; missing policy fields are never inferred. A registered profile
+retains four
 independent axes: request, applicability, eligibility, and realization. FLT
 owns the producer facts, dependency graph, named-use disposition, prescribed
 consumer action, and failure semantics. VAL registers and evaluates; it does
@@ -288,6 +332,8 @@ observational/scientific validation. Each profile keeps separate verdicts for
 parent admission (PA), state admission (SA), signal publication (SP),
 conditional-covariance use (CU), NOI-companion use (NU), response-companion
 publication/use (RU), and FLT-to-FRUIT producer-envelope use (FH).
+The SCI-VAL publication-decision artifact is realized independently of the FLT
+signal product; it does not move FLT product realization earlier or mutate it.
 
 Each signal bundle has exact MAP and template boundary identities. NOI and FH
 use additionally records exactly one boundary-request state:

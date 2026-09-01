@@ -1,8 +1,9 @@
 # SCI-FLT-MATCHED v0.1 Scientific-Owner Decision Ledger
 
-Status: Stage B r0.5 final targeted closure draft. The r0.5 repair closes the
-typed-domain, validity, lifecycle, conditioning, covariance-role, template,
-and boundary defects and presents title/AO recommendations without
+Status: Stage B r0.6 conditional-freeze preflight. The r0.6 micro-repair
+distinguishes stochastic-model and observed-payload domains, corrects lifecycle
+order, route-authorization multiplicity, role labels, and standalone-bundle
+closure, and presents title/AO recommendations without
 selecting an `AO-001` weighting, covariance role or scope, state/response
 scientific query vocabulary, named-use profile, or numerical route.
 
@@ -20,7 +21,7 @@ Owner: Grant Wilson
 
 ## Disposition rule
 
-A valid remaining scientific disposition names the ledger ID, exact r0.5
+A valid remaining scientific disposition names the ledger ID, exact r0.6
 scientific alternative or
 scope identity, all scientific parameters, parent class and named use,
 generation, and superseded decision. Representation-only and engineering
@@ -35,8 +36,8 @@ production, or Unity status.
 
 | Ledger ID | State | Exact scientific question | Route unavailable pending disposition |
 | --- | --- | --- | --- |
-| `SCI-FLT-MATCHED-SODL-001` | open | Which concrete `AO-001` weight applies independently to observation and coadd parents: A exact constrained local inverse-covariance GLS; C exact radially symmetrized field-power spectral weight; a future concrete object commissioned under B or D; or unavailable? B/D are not selectable catch-alls. | Weighting realization for the class and every dependent optimality/uncertainty claim. |
-| `SCI-FLT-MATCHED-SODL-002` | open | If `AO-001-A`, bind exact `C_parent` population and pre-draw `h_pre`, predeclared `D_loc(p)`/`E_p`, `U_p/P_p`, positive-definite `C_p,E`, the sole unit-response constraint, all four mode classifications, regularization authority, identifiable projected template, coefficient roles, Learn/Resolve provenance, and observation/coadd generations. | Constrained local GLS, minimum-variance wording, and `v_GLS,reference=d_p^-1`. |
+| `SCI-FLT-MATCHED-SODL-001` | open | Which separately named `AO-001` route identities are package-authorized, then authorized for each observation/coadd parent class and named use? More than one route may be authorized, including A and C. Which one exact authorized route is requested for each realization? B/D are successor triggers, never selectable catch-alls; no realization mixes, selects from target data, or falls back between routes. | Package-, class-, use-, and realization-level weighting authority and every dependent optimality/uncertainty claim. |
+| `SCI-FLT-MATCHED-SODL-002` | open | If `AO-001-A`, bind exact stochastic random vector `M:D_model->R`, `C_parent|h_pre=Cov[M|h_pre]`, population and pre-draw `h_pre`, `D_loc(p) subset D_model`, `M_p=E_p M`, `U_p/P_p`, positive-definite `C_p,E`, the sole unit-response constraint, all four mode classifications, regularization authority, identifiable projected template, coefficient roles, Learn/Resolve provenance, and observation/coadd generations. | Constrained local GLS, minimum-variance wording, and `v_GLS,reference=d_p^-1`. |
 | `SCI-FLT-MATCHED-SODL-003` | open successor-authorship trigger | Commission one concrete covariance-derived structured `W_p`, including covariance family/provenance, coordinate action/units, population, state, local domain/support/boundary/window, rank/subspaces, regularization, coefficient role, diagnostics, and uncertainty nonclaims. | `AO-001-B` cannot be selected until the concrete object is authored and reviewed. |
 | `SCI-FLT-MATCHED-SODL-004` | open | If `AO-001-C`, bind exact field source and deterministic-residual imprint; Learn/Resolve population; local chart and `D_loc(p)`; exact `A_p`, `D_p`, and `W_p=A_p^dagger D_p A_p`; transform phase/normalization/units; fixed window; finite nonnegative weights and positive denominator; half-open radial bins and tie/final-boundary rule; conjugacy/multiplicity; averaging order; indexed same-unit nonnegative regularization; regularized versus excluded-null modes; no borrowing; support/edge; and generation. Effective-sample, anisotropy/dispersion, and leakage remain mandatory diagnostics, never admission thresholds. | Radially symmetrized field-power spectral weighting. No noise, covariance, stationarity, isotropy, optimality, or diagnostic-threshold claim follows by implication. |
 | `SCI-FLT-MATCHED-SODL-005` | open successor-authorship trigger | Commission one concrete other self-adjoint PSD `W_p` with scientific purpose, provenance, population/state, coordinate action/units, local domain/support/boundary/window, rank/subspaces, regularization, coefficient role, response, and uncertainty nonclaims. | `AO-001-D` cannot be selected until the concrete object is authored and reviewed. |
@@ -53,17 +54,19 @@ production, or Unity status.
 | `SCI-FLT-MATCHED-SODL-016` | open | Does any intermediate become a qualified public science product? Each needs exact role, meaning, unit, validity, lifecycle, named-use policy, and failure semantics. | Scientific publication/use of each intermediate. |
 | `SCI-FLT-MATCHED-SODL-017` | open | What immutable supersession, retention, reconstruction duration, dependency versioning, and consumer behavior apply to bundles, companions, state generations, profiles, and successor FLT envelopes? | Governance use of successor generations beyond immutable coexistence. |
 
-## r0.5 recommended disposition set (not selected)
+## r0.6 recommended disposition set (not selected)
 
-The owner directive recommends AO-001-A as the sole exact local-GLS
-optimal/reference-variance route; B and D as successor triggers; C as the
+The owner directive recommends package authorization of AO-001-A as the sole
+exact local-GLS optimal/reference-variance method and AO-001-C as the
 separately named nonoptimal
-`radially_symmetrized_field_power_spectral_weighting` route with diagnostics
+`radially_symmetrized_field_power_spectral_weighting` method with diagnostics
 that are evidence, not thresholds; AO-002 exact numerical realization or typed
 unavailable; AO-003 scope per covariance role before representation; owner-
 fixed AO-004/AO-005 query vocabularies before engineering representation; and
 normative AO-006 seven-role semantics with engineering-only layout. Observation
-and coadd remain separate and no fallback is automatic. These recommendations
+and coadd authorizations/generations remain separate; B and D remain successor
+triggers; every realization requests exactly one authorized method; and no
+mixing, target-data choice, or fallback is allowed. These recommendations
 remain open until exact owner approval is recorded.
 
 ## Engineering declarations after science is fixed
@@ -83,10 +86,13 @@ audit-burden rationale plus exact-equivalence evidence.
 ## Per-realization declarations
 
 Every realization still binds the exact parent and anchor lattice; template
-scientific object and exact representation; Learn/Resolve/Apply identities;
+scientific object and exact representation; stochastic model $M$ and
+$\Dom_{\rm model}$; observed $m_{\rm obs}$ and $\Dom_m$;
+Learn/Resolve/Apply identities;
 five support roles; exact subspaces and regularization; actual and reference
 response/covariance types; pre-draw frozen condition
-`h_pre=(g_resolved,theta)`; fixed
+`h_pre=(g_resolved,theta)` free of observed values/digests and draw-dependent
+facts; fixed
 covariance selector/codomain; U1--U7 availability; complete lifecycle; boundary
 records; named-use profile versions; and provenance. Missing facts create typed
 unavailability, never defaults.

@@ -13,13 +13,13 @@
     "engineering": {
       "overfull_boxes": 0,
       "path": "build/engineering-conformance.log",
-      "underfull_boxes": 279,
+      "underfull_boxes": 306,
       "unexpected_lines": []
     },
     "scientific": {
       "overfull_boxes": 0,
       "path": "build/scientific-rationale.log",
-      "underfull_boxes": 288,
+      "underfull_boxes": 320,
       "unexpected_lines": []
     }
   },
@@ -27,21 +27,23 @@
   "pdfs": {
     "engineering": {
       "option_alternatives_found": 21,
-      "pages": 38,
+      "pages": 41,
       "path": "pdf/SCI-FLT-MATCHED-ENGINEERING-CONFORMANCE-v0.1.pdf",
       "predictions_found": 25,
       "requirements_found": 50,
-      "sha256": "cee6476e664af1c47c89e06fc95b279f0cfeb6cea8e0553f0d9343047b338496"
+      "sha256": "e14b5dce8559311e57217f927496bf809042d492fd76a42ac3839ed18f69d861"
     },
     "scientific": {
       "option_alternatives_found": 21,
-      "pages": 42,
+      "pages": 45,
       "path": "pdf/SCI-FLT-MATCHED-SCIENTIFIC-RATIONALE-v0.1.pdf",
       "predictions_found": 25,
       "requirements_found": 50,
-      "sha256": "95007fb16de1eeb5a6efaa77e7af8b64981e1d5ff572e9c53e5254a0b7b81876"
+      "sha256": "a931c946ab83aab36278056106b525638d9f017ce461a1359b5ce95efc3deb3d"
     }
   },
+  "r0_6_directive_sha256": "5758640064918b2d3021afc7ea63ffba063ba7b1abbb66dc6d43d945ed73ebd3",
+  "revision": "r0.6",
   "scope": "source/PDF build consistency only; not scientific validation or implementation conformity",
   "shared_import_order": [
     "common/notation.tex",
@@ -52,12 +54,12 @@
     "common/edge_cases.tex"
   ],
   "shared_module_sha256": {
-    "assumptions.tex": "deac84b0ba9838cb93567076b9e3551a62bd6d075a8e5e5ecaf4f15f2c175c9a",
-    "definitions.tex": "844b94c8ca9eeec6ae244f9e8e433f11f92eedd44aec4e9518db2c5fef3b9a13",
-    "edge_cases.tex": "489e12fbd069a95db09e61ec72ae71d13539a0c12c5b3aacf7bf66ea0d2d4829",
-    "equations.tex": "f1c3085efe003402b44d6b46d9999c7cf8b08c28e40781681450863c929e620c",
-    "notation.tex": "4343e31819a8d86a4f4380a0c3503de8d9f37be88364616726f9db9cc87cc9d1",
-    "requirements.tex": "9daf28b20c78103df97f7eda67fdcd79fabfdc63f68d6813aa21d1af77a36ead"
+    "assumptions.tex": "d5fd28ee86178d4f72a5fdc88b546119e84a676390b175cac1b62cb497723ac4",
+    "definitions.tex": "5599f8d62a74b884df991a3f95d22e1cb2942daa77d83cb26948256a81886131",
+    "edge_cases.tex": "6b3b89b8e6bc470ea7a4c6565175f97e69d22f69c2088dc0494696376199b054",
+    "equations.tex": "b3a7eef087abd95121edc1f47b84427c35549667bf4207facc7046d3cac63ec6",
+    "notation.tex": "fe98a62fc4e271674e3bf7d13a8f33c9de21874ba50a9966e6b4901bec9e2c09",
+    "requirements.tex": "433fbe0e3cf7851a2f99a1c00f29600f5991d73589950583fbd17696f2bfe934"
   },
   "source_counts": {
     "crosswalk_stable_ids": 96,

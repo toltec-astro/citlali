@@ -14,9 +14,16 @@ Numerical fill near an edge & Merely a computational placeholder & Admit an
 output only after exact erosion proves zero dependency on every filled value. \\
 Missing payload on a construction-only row with exact-zero $c_{pq}$ & The row
 is in $\Dom_{\rm loc}(p)$ but not $\Supp_{\rm apply}(p)$ & Do not dereference
-the payload; the amplitude remains defined and unchanged. If $c_{pq}\ne0$, the
+the observed payload only when exact template/model/covariance construction
+authority exists; the amplitude remains defined and unchanged. If
+$c_{pq}\ne0$, the
 row becomes an active dependency and the anchor is Unavailable{}. No
 coefficient threshold is permitted. \\
+Missing stochastic-model or covariance authority on a required local row &
+\AOpt{001}{A} has no complete local law even if the final application
+coefficient is zero & Mark \AOpt{001}{A}, its optimality claim, and
+$v_{{\rm GLS,reference}}=d_p^{-1}$ \Unavailable{}. Evaluate a sparse non-GLS
+route only when separately authorized and exactly requested; no fallback. \\
 $d_p=0$, $d_p<0$, nonfinite $d_p$, or complex $d_p$ & Template is null,
 weighting is invalid, or numerical identity failed & Typed unavailability or
 attempt failure; never publish zero amplitude, infinite variance, or fallback. \\
@@ -93,6 +100,9 @@ fail. \\
 Optional companion fails after signal completion & Companion atomicity failed,
 not necessarily signal science & Mark companion \Failed{}; preserve signal
 \Complete{} unless exact named-use policy made the companion required. \\
+Complete candidate requested before realization & Product closure is out of
+order and required immutable values do not yet exist & Fail product closure;
+do not evaluate publication policy until a realized candidate is complete. \\
 Optional role not requested & No child or companion was requested & Record
 \texttt{not\_requested}; do not narrow $\Valid_{\rm signal}$ or block another
 role. \\
@@ -103,6 +113,10 @@ Required signal bundle member fails & A required field, mask, identity,
 response reference, lifecycle record, or lineage member is absent & Fail the
 entire signal bundle; do not disguise the missing member as unavailable pixels
 inside an otherwise complete product. \\
+Additional method route is package-authorized & Package authorization is not a
+per-realization selection & Preserve each separately named route. Require one
+exact requested method identity; never mix, choose from target data, or fall
+back between routes. \\
 Successor state or option is approved & Scientific identity advances & Create
 immutable successor generation and mark predecessor \Superseded{} only by
 policy; never mutate predecessor facts. \\
@@ -119,7 +133,7 @@ Reference response or covariance attached to a realized field & Comparator is
 being mislabeled as the actual product consequence & Fail the companion or
 bundle policy; attach the operational realized response and named-role
 $C_{U1,{\rm realized}}$ when authorized. \\
-Failure-bearing operational covariance sample & $P_CF_g(m)$ is not a fixed-
+Failure-bearing operational covariance sample & $P_CF_g(M)$ is not a fixed-
 dimensional finite numerical random vector almost surely on the predeclared
 domain & Mark the covariance role \Unavailable{}. Do not condition on success,
 censor, pairwise-delete, or change domains without a separately named

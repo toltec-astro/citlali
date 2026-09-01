@@ -12,8 +12,9 @@ $\Dom_{\rm loc}(p)$ and its extraction $E_p$, then construct
  \ell_p^\star &= \frac{W_pt_p}{d_p}, &
  c_p &= E_p^{\mathsf T}\ell_p^\star, \\
  \Supp_{\rm apply}(p)&=\{q:c_{pq}\ne0\}, &
- \widehat a_p&=\sum_{q\in\Supp_{\rm apply}(p)}c_{pq}m_q, \\
- n_p&=d_p\widehat a_p, & L_{p,g}u&=c_p^{\mathsf T}u, \\
+ \widehat a_p(m_{\rm obs})&=\sum_{q\in\Supp_{\rm apply}(p)}c_{pq}m_{{\rm obs},q}, \\
+ n_p&=d_p\widehat a_p, &
+ L_{p,g}u&=\sum_{q\in\Supp_{\rm apply}(p)}c_{pq}u_q, \\
  R_{\rm fixed}(p,s) &= L_{p,g}t_s^{\rm full}. &&
 \end{align}
 $W_p=W_p^{\dagger}$ and $u^{\dagger}W_pu\geq0$. The scientific
@@ -23,8 +24,9 @@ never amplitude zero. Ordinary floating-point evidence for the exact
 identities belongs to the preregistered numerical-conformance profile.
 Every active $q\in\Supp_{\rm apply}(p)$ shall be in $\Dom_m$ and admitted.
 Coordinates used only to construct $t_p$, $W_p$, $d_p$, or $c_p$ need no
-signal-payload dereference when their final coefficient is exact zero. Exact
-zero is not a tolerance. The shorthand $m_p=E_pm$ may be used only when the
+observed-payload dereference when their final coefficient is exact zero. Exact
+zero is not a tolerance. The dense shorthand $L_{p,g}u=c_p^{\mathsf T}u$ or
+$m_p=E_pm_{\rm obs}$ may be used only when the
 complete numerical vector exists or an explicit completion is algebraically
 irrelevant outside $\Supp_{\rm apply}(p)$.
 
@@ -32,26 +34,26 @@ irrelevant outside $\Supp_{\rm apply}(p)$.
 
 For the matching single-template model
 \[
- m=A t_s^{\rm full}+n,
- \qquad \operatorname E[n\mid h_{\rm pre}]=0,
+ M=A t_s^{\rm full}+N,
+ \qquad \operatorname E[N\mid h_{\rm pre}]=0,
 \]
 linearity gives
 \[
- \operatorname E[\widehat a_p\mid h_{\rm pre}]=A R_{\rm fixed}(p,s).
+ \operatorname E[\widehat a_p(M)\mid h_{\rm pre}]=A R_{\rm fixed}(p,s).
 \]
 At $p=s$, exact normalization yields
 \[
  R_{\rm fixed}(p,p)=1,
- \qquad \operatorname E[\widehat a_p\mid h_{\rm pre}]=A.
+ \qquad \operatorname E[\widehat a_p(M)\mid h_{\rm pre}]=A.
 \]
 
 For a general linear sky and deterministic residual,
 \[
- m=\sum_s A_s t_s^{\rm full}+b+n,
+ M=\sum_s A_s t_s^{\rm full}+b+N,
 \]
 the exact fixed-state expectation is
 \begin{equation}
- \operatorname E[\widehat a_p\mid h_{\rm pre}]
+ \operatorname E[\widehat a_p(M)\mid h_{\rm pre}]
  =\sum_s R_{\rm fixed}(p,s)A_s+L_{p,g}b.
  \label{eq:general-sky}
 \end{equation}
@@ -63,10 +65,13 @@ are response and nuisance leakage, not source attribution or deblending.
 \subsection{Local restriction and constrained GLS theorem}
 \label{sec:optimality}
 
-For an authorized parent covariance, restriction to the predeclared local
-operator domain precedes inversion:
+For an authorized parent stochastic model, \AOpt{001}{A} requires
+$\Dom_{\rm loc}(p)\subseteq\Dom_{\rm model}$ and $M_p=E_pM$. Restriction of
+the authorized covariance to that predeclared local operator domain precedes
+inversion:
 \begin{equation}
- C_p=E_pC_{\rm parent\mid h_{\rm pre}}E_p^{\mathsf T}.
+ C_p=\operatorname{Cov}[M_p\mid h_{\rm pre}]
+ =E_pC_{\rm parent\mid h_{\rm pre}}E_p^{\mathsf T}.
  \label{eq:local-covariance}
 \end{equation}
 Let the columns of $U_p$ be an exact orthonormal basis, in this declared
@@ -81,7 +86,7 @@ $P_p=U_pU_p^{\mathsf T}$ its representation-specific projector. Define
 where $C_{p,E}$ is positive definite. This is not a claim that a restricted
 global inverse equals the inverse of the restricted covariance.
 
-The competitor class contains exactly the linear estimates $\ell^{\mathsf T}m_p$
+The competitor class contains exactly the linear estimates $\ell^{\mathsf T}M_p$
 on the identical predeclared $\Dom_{\rm loc}(p)$, with the identical $U_p$ and
 fixed state, $\ell=P_p\ell$, and unit response
 $\ell^{\mathsf T}t_p=1$ to the identical projected template. The matched GLS
@@ -91,8 +96,8 @@ row is
 \]
 For every competitor,
 \[
- \operatorname{Var}(\ell^{\mathsf T}m_p\mid h_{\rm pre})
- -\operatorname{Var}(\ell_*^{\mathsf T}m_p\mid h_{\rm pre})
+ \operatorname{Var}(\ell^{\mathsf T}M_p\mid h_{\rm pre})
+ -\operatorname{Var}(\ell_*^{\mathsf T}M_p\mid h_{\rm pre})
  =(\ell-\ell_*)^{\mathsf T}C_p(\ell-\ell_*)\geq0,
 \]
 and
@@ -113,6 +118,12 @@ the admissible row/covector subspace transforms as $S^{-\mathsf T}U_p$;
 orthonormality and $P_p=U_pU_p^{\mathsf T}$ are conveniences of the chosen
 representation, not invariant extra science.
 
+Missing stochastic-model or covariance authority for any coordinate in
+$\Dom_{\rm loc}(p)$ makes this theorem, its optimality claim, and
+$v_{{\rm GLS,reference}}=d_p^{-1}$ unavailable. It does not by itself forbid a
+separately authorized non-GLS sparse amplitude whose exact active observed
+payload dependencies are present.
+
 \subsection{Fixed-state and full-procedure response}
 
 For frozen state $g_0$,
@@ -123,14 +134,14 @@ If state was learned from the parent, a full-procedure response exists only
 under separately authorized rerun authority. With
 \[
  g_\epsilon=\operatorname{Resolve}
-   (\operatorname{Learn}(m+\epsilon t_s^{\rm full})),
+   (\operatorname{Learn}(m_{\rm obs}+\epsilon t_s^{\rm full})),
 \]
 it is the declared limit or predeclared finite difference
 \begin{equation}
  R_{\rm FP}(p,s)=
  \lim_{\epsilon\to0}
- \frac{\widehat a_p(m+\epsilon t_s^{\rm full};g_\epsilon)
-       -\widehat a_p(m;g_0)}{\epsilon},
+ \frac{\widehat a_p(m_{\rm obs}+\epsilon t_s^{\rm full};g_\epsilon)
+       -\widehat a_p(m_{\rm obs};g_0)}{\epsilon},
  \label{eq:full-procedure-response}
 \end{equation}
 or the exact finite-$\epsilon$ analogue with its step, sidedness, and domain
@@ -143,17 +154,18 @@ authority $R_{\rm FP}$ is unavailable.
 Let $L$ be the exact selected scientific operator and let the actual
 fixed-state numerical producing map be
 \[
- y=F_g(m).
+ y=F_g(m_{\rm obs}).
 \]
-It is not presumed linear. For an admitted reference parent $m$, its realized
+It is not presumed linear. For an admitted observed reference parent
+$m_{\rm obs}$, its realized
 fixed-state response is the authorized directional derivative, written as the
 $\delta=0$ derivative case,
 \begin{equation}
- R_{\rm realized}^{[0,{\rm D}]}(m;p,s)
- =\left[\mathrm D F_g[m]\,t_s^{\rm full}\right]_p,
+ R_{\rm realized}^{[0,{\rm D}]}(m_{\rm obs};p,s)
+ =\left[\mathrm D F_g[m_{\rm obs}]\,t_s^{\rm full}\right]_p,
  \label{eq:realized-response}
 \end{equation}
-or $R_{\rm realized}^{[\delta,\sigma]}(m;p,s)$ for a predeclared finite
+or $R_{\rm realized}^{[\delta,\sigma]}(m_{\rm obs};p,s)$ for a predeclared finite
 difference with step, sidedness, and output-query domain fixed before
 evaluation and with no Learn or Resolve rerun. Every required evaluation shall
 be finite on that same domain; otherwise the response query is unavailable.
@@ -166,14 +178,15 @@ are
  & C_{U1,{\rm reference}}
    &=P_CLC_{\rm parent\mid h_{\rm pre}}L^{\mathsf T}P_C^{\mathsf T}, \\
  C_{U1,{\rm realized}}
-   &=\operatorname{Cov}[P_CF_g(m)\mid h_{\rm pre}].
+   &=\operatorname{Cov}[P_CF_g(M)\mid h_{\rm pre}].
 \end{align}
-The realized covariance exists only when $P_CF_g(m)$ is a fixed-dimensional
+The realized covariance exists only when $P_CF_g(M)$ is a fixed-dimensional
 finite real random vector almost surely under the declared U1 law. Successful-
 production conditioning, censoring, pairwise deletion, or draw-dependent
 domains define separately named populations and covariance roles; none is a
 fallback for the expression above.
-Only after evidence establishes $F_g(m)=\widetilde L_gm$ on the declared domain
+Only after evidence establishes $F_g(M)=\widetilde L_gM$ under the declared
+law and the corresponding observed-domain identity on the declared domain
 may one use
 \[
  R_{\rm realized}=\widetilde L_gT.
@@ -183,7 +196,7 @@ may one use
  =P_C\widetilde L_gC_{\rm parent\mid h_{\rm pre}}\widetilde L_g^{\mathsf T}P_C^{\mathsf T}.
  \label{eq:realized-linear-covariance}
 \end{equation}
-An amplitude field generated by $F_g$ shall carry the operational realized
+An amplitude field generated by $F_g(m_{\rm obs})$ shall carry the operational realized
 pair, never the reference pair as though it described actual values. Either
 U1 covariance exists only with matching parent-law authority. U2
 calibration/template-scale uncertainty is a separate named role. A joint
@@ -220,10 +233,10 @@ The following are comparison observables, not owner-selected scientific
 thresholds:
 \begin{align}
  e_d(p)&=\frac{|\widetilde d_p-d_p|}{d_p}, &
- e_a(p)&=|R_{\rm realized}^{[\delta,\sigma]}(m;p,p)-1|,\\
+ e_a(p)&=|R_{\rm realized}^{[\delta,\sigma]}(m_{\rm obs};p,p)-1|,\\
  e_R&=\|P_{\rm out}(R_{\rm realized}^{[\delta,\sigma]}-R_{\rm reference})
                  P_{\rm anc}^{\mathsf T}\|, &
- e_F(m)&=\|P_{\rm out}(F_g(m)-Lm)\|,\\
+ e_F(m_{\rm obs})&=\|P_{\rm out}(F_g(m_{\rm obs})-Lm_{\rm obs})\|,\\
  e_C&=\|P_{\rm out}(C_{U1,{\rm realized}}-C_{U1,{\rm reference}})
                  P_{\rm out}^{\mathsf T}\|.
 \end{align}
@@ -251,7 +264,7 @@ ID & Contribution & Contract treatment \\
 \midrule
 \endhead
 U1 & Parent stochastic covariance & Use
-$C_{U1,{\rm realized}}=\operatorname{Cov}[P_CF_g(m)\mid h_{\rm pre}]$ for the exact
+$C_{U1,{\rm realized}}=\operatorname{Cov}[P_CF_g(M)\mid h_{\rm pre}]$ for the exact
 authorized population, fixed codomain, and conditioning; matrix propagation
 requires established fixed-state linearity. \\
 U2 & Calibration/template scale & Preserve joint CAL/BEAM and parent-template

@@ -126,3 +126,27 @@
   visual QA pass. No numerical route, implementation claim, validation,
   performance, readiness, production state, scientific freeze, or Unity
   activity is selected or claimed.
+
+## `2026-09-01` — Owner-directed r0.6 micro-repair preflight
+
+- Grant Wilson accepted r0.5 as the freeze-candidate basis and restricted the
+  pass to the named stochastic typing, lifecycle, AO authorization, title,
+  role-label, and standalone-bundle repairs.
+- The shared core now distinguishes the parent fact domain, authorized
+  stochastic-model domain and random vector, and observed numerical-payload
+  domain and value. Exact-zero observed dependence does not erase model or
+  covariance authority needed to construct AO-001-A.
+- The lifecycle now orders Realized before CompletePublicationCandidate and
+  PublicationDecided, with Published or NotProduced only after a decision.
+- Package-level authorization may include multiple separately named AO-001
+  methods, while each request/realization binds exactly one without mixing,
+  target-data choice, or fallback.
+- The seven returned role records are labeled role-semantics drafts only,
+  scientifically unapproved, SCI-VAL-unregistered, unevaluable, and without
+  authority effect; missing policy fields are not inferred.
+- The recommended title and AO architecture remain recommendations pending
+  exact owner disposition. The r0.6 output is a conditional-freeze preflight,
+  not a freeze or scientific-owner approval.
+- The current archive policy is authority-only and standalone: repository-
+  context history and `verify_stage_a.py` remain outside the archive, while
+  their immutable anchors or successful repository-context check are recorded.

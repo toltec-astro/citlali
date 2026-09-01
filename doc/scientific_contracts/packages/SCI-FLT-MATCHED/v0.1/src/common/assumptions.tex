@@ -17,9 +17,10 @@ observation or coadd bundle with authoritative identity, generation, grouping,
 WCS/frame, support, units, calibration provenance, and coadd membership when
 applicable. \\
 \texttt{ASM-002} & Parent, template, physical amplitude, filtered amplitude,
-and coordinate-basis covariance have declared real codomains. The parent and
+the stochastic parent $M$, observed payload $m_{\rm obs}$, and coordinate-basis
+covariance have declared real codomains. The parent and
 output anchor lattices have the owner-disposed common WCS/frame/grid/indexing
-relation. Coordinate or quadrature changes transform $m,t,C,W$ according to
+relation. Coordinate or quadrature changes transform $M,m_{\rm obs},t,C,W$ according to
 Section~\ref{sec:measure-convention}; a complex representation preserves
 conjugacy and uses the Hermitian adjoint. \\
 \texttt{ASM-003} & $t_p$ is the one immutable template-response scientific
@@ -30,8 +31,11 @@ validity, lineage, and query vocabulary in an exact representation. It is not
 learned, selected, centered, tuned, updated, or reparameterized from target
 MAP payload, target-derived peaks/candidates, the output field, target
 residuals, NOI members, or post-selection outcomes. \\
-\texttt{ASM-004} & $\Dom_{\rm loc}(p)$ and $E_p$ are declared before local
-inversion and operator construction; complete final
+\texttt{ASM-004} & $\Supp_{\rm parent\ fact}$, $\Dom_{\rm model}$, and
+$\Dom_m$ are distinct. $\Dom_{\rm loc}(p)$ and $E_p$ are declared before local
+inversion and operator construction; \AOpt{001}{A} requires
+$\Dom_{\rm loc}(p)\subseteq\Dom_{\rm model}$ and complete model/covariance
+authority there; complete final
 $\Supp_{\rm apply}(p)$ is present and valid, every active row lies in $\Dom_m$,
 and construction-only rows with exact-zero $c_{pq}$ need no payload. No
 admitted output depends on fill,
@@ -43,12 +47,15 @@ positive-semidefinite complete coordinate-basis bilinear weight named by the
 selected \AO{001} alternative, including population, units, rank, null,
 regularization, window, support, and edge rules. \\
 \texttt{ASM-006} & $d_p$ is finite, exactly real, and strictly positive. \\
-\texttt{ASM-007} & For amplitude unbiasedness, the admitted noise has zero
-conditional mean on the complete support given
+\texttt{ASM-007} & For amplitude unbiasedness, the random parent follows the
+declared model $M=A t_s^{\rm full}+N$, and $N$ has zero conditional mean on the
+complete stochastic support given
 $h_{\rm pre}=(g_{\rm resolved},\theta)$ and does not
 induce target-dependent changes in the template or operator. \\
-\texttt{ASM-008} & For GLS optimality, $C_{\rm parent}$ is the exact authorized
-covariance for the population conditional on $h_{\rm pre}$; $C_p$ is restricted to the
+\texttt{ASM-008} & For GLS optimality,
+$C_{\rm parent\mid h_{\rm pre}}=\operatorname{Cov}[M\mid h_{\rm pre}]$ is the
+exact authorized covariance for the population on $\Dom_{\rm model}$;
+$M_p=E_pM$ and $C_p$ are restricted to the
 predeclared local domain before inversion; $C_{p,E}$ is positive definite on
 the exact authorized row/covector subspace; the projected template is
 identifiable; and competitors share that domain, subspace, fixed state, and
@@ -56,10 +63,13 @@ unit-response constraint. \\
 \texttt{ASM-009} & For covariance, the parent law, actual fixed-state producing
 map $F_g$, operational response, support, units, and pre-draw frozen condition
 $h_{\rm pre}=(g_{\rm resolved},\theta)$ refer to the same realization and
-generation. Attempt, realization, publication, outcome, and observed values are
-provenance rather than conditioning variables. A fixed
+generation. $h_{\rm pre}$ may bind the parent product role/identity/class and
+stochastic-law/population identity, but never numerical $m_{\rm obs}$ values,
+a digest fixing the draw, success, a draw-dependent product identity,
+publication, censoring, pairwise deletion, or a draw-dependent domain. Those
+are provenance rather than conditioning variables. A fixed
 predeclared $P_C$ supplies one finite numerical covariance codomain, and
-$P_CF_g(m)$ is finite almost surely under the declared U1 law. Reference
+$P_CF_g(M)$ is finite almost surely under the declared U1 law. Reference
 quantities and U1/U2 roles remain separate; variation over $\theta$ belongs to
 U2. \\
 \texttt{ASM-010} & State follows the declared Learn--Resolve--Apply graph and
@@ -99,6 +109,13 @@ FLT repair or coaddition. \\
 Application class & Observation or coadd declared independently & Assumed
 commutation or borrowed state between classes & \Unavailable{}; require a
 distinct realization. \\
+Stochastic model & Exact $\Dom_{\rm model}$, random vector $M$, population,
+law, pre-draw conditioning, and covariance authority covering every required
+$\Dom_{\rm loc}(p)$ coordinate for \AOpt{001}{A} & Missing coordinate,
+population/law mismatch, or payload-conditioned law without a separately
+named role & \AOpt{001}{A}, optimality, and
+$v_{{\rm GLS,reference}}=d_p^{-1}$ \Unavailable{}; a separately authorized
+non-GLS sparse amplitude may be evaluated independently. \\
 Output anchors & One anchor at each exact parent pixel center with identical
 parent WCS, frame, grid, shape, index, order, and pixel-center convention & Interpolated,
 subpixel, oversampled, independently sampled, or ambiguous phase/tie rule &
@@ -136,7 +153,7 @@ with selected exact domain/query/representation contract & Undocumented kernel,
 assumed invariance, strengthened fixed-state meaning, or unreconstructable
 response &
 Response-dependent product or handoff \Unavailable{}. \\
-Units and calibration & $[\widehat a]=[m]/[t]$ and compatible joint lineage &
+Units and calibration & $[\widehat a]=[m_{\rm obs}]/[t]$ and compatible joint lineage &
 Unjustified flux, beam, solid angle, DC, extended-source, or covariance meaning
 & Forbid the claim; required named use is \Unavailable{}. \\
 Covariance & Matching authorized parent law, actual $F_g$, pre-draw frozen
@@ -151,8 +168,10 @@ NOI parity & Pre-Apply $K_{\rm NOI}$ compatibility and identical frozen
 transformation & Per-member relearning, post-result admission, adapted support,
 or mixed generation & Member/anchor or NOI companion \Unavailable{} or
 \Failed{}; separate method required. \\
-Lifecycle & Atomic membership, named-use policy, and immutable state & Mixed
-status, partial signal bundle, silent mutation, or overwritten predecessor &
+Lifecycle & Atomic membership, named-use policy, immutable state, and the
+ordered Applied--Realized--Complete--PublicationDecided--Published/NotProduced
+closure & Mixed status, publication candidate before realization, partial
+signal bundle, silent mutation, or overwritten predecessor &
 Bundle \Failed{}; retain predecessor and successor identities. \\
 FLT to FRUIT & Finite $\mathcal Q_{\rm FLT}^{0.1}$, selected \AO{004} for state
 reconstruction where required, selected \AO{005} for response reconstruction,

@@ -896,6 +896,30 @@ disposition; the provisional historical title carries
 claim, validation, performance, readiness, production state, freeze, or Unity
 activity is selected or claimed.
 
+The exact r0.6 micro-repair directive then accepted r0.5 as the
+freeze-candidate basis while withholding the title and AO dispositions. The
+r0.6 shared core distinguishes `S_parent_fact`, the stochastic model
+`M:D_model->R`, and the observed payload `m_obs:D_m->R`; keeps model/covariance
+construction authority required even where the final observed coefficient is
+exact zero; corrects the successful lifecycle to Realized, complete
+publication candidate, PublicationDecided, then Published or NotProduced; and
+allows package authorization of multiple separately named AO-001 methods while
+binding exactly one per request/realization with no mixing, data-driven choice,
+or fallback. The seven PA/SA/SP/CU/NU/RU/FH records are now honestly labeled
+role-semantics drafts only, scientifically unapproved, SCI-VAL-unregistered,
+and unevaluable. Stable counts remain 50 requirements, 25 predictions, six AO
+families/21 alternatives, a 96-ID crosswalk, and 17 SODL IDs. The final views
+render as 45-page scientific and 41-page engineering documents; mechanical
+consistency, the repository Stage A verifier, and all-page visual QA pass. The
+45-object authority-only conditional-freeze preflight manifest verifies at
+SHA-256
+`dea03053e40af2ca6204f7d4c2b408fe0cbab0e1489a0a449e6ea21e62aa26a7`.
+The deterministic 48-file standalone archive has zero unresolved local links
+and SHA-256
+`165fd922a12cfa28af9a37eecf62d2a2d4b7d5d929f42641f02d740579b5b628`.
+The exact owner title and AO dispositions remain the next gate; this r0.6
+preflight is not scientific-owner approval or scientific freeze.
+
 This remains contract-development work only. No algorithm change,
 implementation conformity, validation, calibration, performance, readiness,
 production, freeze, or Unity action is claimed or authorized.

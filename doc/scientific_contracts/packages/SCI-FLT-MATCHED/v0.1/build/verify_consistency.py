@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify shared-source identity and rendered SCI-FLT-MATCHED draft content.
+"""Verify shared-source identity and rendered SCI-FLT-MATCHED r0.6 content.
 
 This is a build-consistency check only. It is not scientific validation or an
 implementation-conformity result.
@@ -44,6 +44,8 @@ PACKET_HASHES = {
     "AUTHOR_BOUNDARIES.md": "273fa218eb0ff9610e433c99d8f4d30f5a3abe653da375dfb17781148fbcce34",
     "REQUIRED_AUTHORED_OPTION_SETS.md": "bad539a66199090ba9e32bf22100da708cb3730b02650e0401bdeeee01330cfe",
 }
+R06_DIRECTIVE_SHA256 = "5758640064918b2d3021afc7ea63ffba063ba7b1abbb66dc6d43d945ed73ebd3"
+ROLE_CODES = ["PA", "SA", "SP", "CU", "NU", "RU", "FH"]
 
 
 def digest(path: Path) -> str:
@@ -119,6 +121,10 @@ def main() -> int:
         errors.append(f"source prediction ID mismatch: {sorted(pred ^ expected_pred)}")
     if ao != AO_OPTIONS:
         errors.append(f"source option ID mismatch: {sorted(ao ^ AO_OPTIONS)}")
+    if "\\Req{051}" in common_text:
+        errors.append("unexpected REQ-051 introduced")
+    if "\\Pred{026}" in common_text:
+        errors.append("unexpected PRED-026 introduced")
     for forbidden in [
         r"Q_x",
         "DeclareOrLearnOnce",
@@ -145,14 +151,14 @@ def main() -> int:
     if missing_ledger:
         errors.append(f"owner-decision ledger IDs missing: {missing_ledger}")
     for boundary in [
-        "SCI-MAP_TO_SCI-FLT-MATCHED-v0.1-r0.5.md",
-        "SCI-TEMPLATE_TO_SCI-FLT-MATCHED-v0.1-r0.5.md",
-        "SCI-FLT-MATCHED_TO_SCI-NOI-v0.1-r0.5.md",
-        "SCI-FLT-MATCHED_TO_SCI-FRUIT-v0.1-r0.5.md",
+        "SCI-MAP_TO_SCI-FLT-MATCHED-v0.1-r0.6.md",
+        "SCI-TEMPLATE_TO_SCI-FLT-MATCHED-v0.1-r0.6.md",
+        "SCI-FLT-MATCHED_TO_SCI-NOI-v0.1-r0.6.md",
+        "SCI-FLT-MATCHED_TO_SCI-FRUIT-v0.1-r0.6.md",
     ]:
         if not (package / boundary).is_file():
-            errors.append(f"r0.5 boundary draft missing: {boundary}")
-    route_text = (package / "ROUTE_STATUS_R0.5.md").read_text(encoding="utf-8")
+            errors.append(f"r0.6 boundary draft missing: {boundary}")
+    route_text = (package / "ROUTE_STATUS_R0.6.md").read_text(encoding="utf-8")
     for route in [
         "Generic exact estimator",
         "Ordinary-MAP parent realization",
@@ -163,12 +169,50 @@ def main() -> int:
         "Implementation assessment",
     ]:
         if route not in route_text:
-            errors.append(f"r0.5 route status missing: {route}")
+            errors.append(f"r0.6 route status missing: {route}")
+
+    directive = package / "SCIENTIFIC_OWNER_R0.6_DIRECTIVE_2026-09-01.md"
+    if digest(directive) != R06_DIRECTIVE_SHA256:
+        errors.append("exact r0.6 scientific-owner directive hash mismatch")
+
+    for required in [
+        "STOCHASTIC_MODEL_AND_OBSERVED_PAYLOAD_AMENDMENT_R0.6.md",
+        "LIFECYCLE_STATE_GRAPH_R0.6.md",
+        "AO001_AUTHORIZATION_MULTIPLICITY_AMENDMENT_R0.6.md",
+        "AO_OWNER_DISPOSITION_PACKET_R0.6.md",
+        "OPTIMALITY_TITLE_OWNER_DISPOSITION_R0.6.md",
+        "CONDITIONAL_SCIENTIFIC_FREEZE_PROPOSAL_R0.6.md",
+        "SEMANTIC_CHANGE_MAP_R0.6.md",
+        "OWNER_DECISION_PARITY_R0.6.md",
+    ]:
+        if not (package / required).is_file():
+            errors.append(f"r0.6 closure record missing: {required}")
+
+    role_header = [
+        "Status: role-semantics draft only",
+        "Scientific owner approval: pending",
+        "SCI-VAL Registry state: unregistered",
+        "SCI-VAL evaluability: unavailable",
+        "Authority effect: none",
+        "Missing policy fields are not inferred.",
+    ]
+    for code in ROLE_CODES:
+        role_path = package / "role_semantics" / f"{code}_R0.6.md"
+        if not role_path.is_file():
+            errors.append(f"r0.6 role-semantics draft missing: {code}")
+            continue
+        role_text = role_path.read_text(encoding="utf-8")
+        for field in role_header:
+            if field not in role_text:
+                errors.append(f"r0.6 {code} role label missing: {field}")
 
     required_repair_terms = {
         "notation": [
             r"\Supp_{\rm parent\ fact}",
+            r"\Dom_{\rm model}",
             r"\Dom_m",
+            r"M:\Dom_{\rm model}\rightarrow\R",
+            r"m_{\rm obs}:\Dom_m\rightarrow\R",
             r"\Dom_{\rm loc}(p)",
             r"\ell_p^\star",
             r"c_p",
@@ -186,10 +230,13 @@ def main() -> int:
             r"operational-response",
             r"selector $P_C$",
             r"named-use policy",
+            r"multiple separately named \AO{001} methods",
+            r"\Realized\to\Complete\to\PublicationDecided",
         ],
         "equations": [
             r"\Supp_{\rm apply}(p)&=\{q:c_{pq}\ne0\}",
-            r"\operatorname{Cov}[P_CF_g(m)\mid h_{\rm pre}]",
+            r"\operatorname{Cov}[P_CF_g(M)\mid h_{\rm pre}]",
+            r"\widehat a_p(m_{\rm obs})",
             r"R_{\rm realized}^{[\delta,\sigma]}",
             r"pairwise deletion",
             r"fixed-dimensional",
@@ -214,7 +261,17 @@ def main() -> int:
     for source_name, terms in required_repair_terms.items():
         for term in terms:
             if term not in repair_sources[source_name]:
-                errors.append(f"r0.5 closure term missing from {source_name}: {term}")
+                errors.append(f"r0.6 closure term missing from {source_name}: {term}")
+
+    if common_text.find(r"\to\Realized\to\Complete\to\PublicationDecided") < 0:
+        errors.append("corrected realized/complete/publication lifecycle order missing")
+    for forbidden_conditioning in [
+        "observed-payload digest that fixes the draw",
+        "draw-dependent realized-product identity",
+        "pairwise deletion",
+    ]:
+        if forbidden_conditioning not in common_text:
+            errors.append(f"h_pre exclusion missing: {forbidden_conditioning}")
 
     pdf_report: dict[str, object] = {}
     for label, path in pdfs.items():
@@ -226,9 +283,9 @@ def main() -> int:
         missing_pred = [x for x in PRED_IDS if x not in text]
         missing_ao = [x for x in sorted(AO_OPTIONS) if x not in text]
         for phrase in [
-            "STAGE B DRAFT",
+            "CONDITIONAL-FREEZE PREFLIGHT",
+            "OWNER DISPOSITIONS PENDING",
             "No numerical route",
-            "unselected",
             "implementation",
             "observational validation",
             "achieved performance",
@@ -279,6 +336,8 @@ def main() -> int:
     result = {
         "status": "PASS" if not errors else "FAIL",
         "scope": "source/PDF build consistency only; not scientific validation or implementation conformity",
+        "revision": "r0.6",
+        "r0_6_directive_sha256": digest(directive),
         "shared_import_order": expected_imports,
         "approved_packet_sha256": observed_packet_hashes,
         "shared_module_sha256": {

@@ -14,9 +14,9 @@
 \definecolor{rust}{HTML}{9C3D10}
 \definecolor{pale}{HTML}{F3F6F9}
 \hypersetup{colorlinks=true,linkcolor=navy,urlcolor=navy,
-  pdftitle={SCI-FLT-MATCHED Engineering Conformance Specification v0.1 r0.5},
+  pdftitle={SCI-FLT-MATCHED Engineering Conformance Specification v0.1 r0.6},
   pdfauthor={Implementation-blind Stage B author basis; owner-authorized review repair},
-  pdfsubject={Final targeted type, lifecycle, covariance-role, and owner-disposition conformance draft}}
+  pdfsubject={Final micro-repair and conditional-freeze conformance preflight}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{4pt}
 \setlength{\emergencystretch}{3em}
@@ -32,7 +32,7 @@
 \newcommand{\StatusBox}{%
 \begin{center}
 \fcolorbox{rust}{pale}{\parbox{0.90\linewidth}{\centering\small
-\textbf{STAGE B DRAFT -- ALL AO-001 THROUGH AO-006 OPTIONS UNSELECTED.}
+\textbf{CONDITIONAL-FREEZE PREFLIGHT -- OWNER DISPOSITIONS PENDING.}
 No numerical route is authorized. This document specifies evidence structure;
 it reports no implementation,
 conformity, response or covariance fidelity, observational validation,
@@ -49,7 +49,7 @@ scientific freeze, or Unity result.}}
 {\Large\color{navy}\textbf{SCI-FLT-MATCHED v0.1}\par}
 \vspace{0.34in}
 {\huge\textbf{Optimal matched-template map filtering}\par}
-{\small\itshape Historical provisional title pending the explicit r0.5 owner
+{\small\itshape Historical provisional title pending the explicit r0.6 owner
 disposition; \texttt{optimality\_status=not\_claimed}\par}
 \vspace{0.22in}
 {\LARGE Engineering Conformance Specification\par}
@@ -57,7 +57,7 @@ disposition; \texttt{optimality\_status=not\_claimed}\par}
 \StatusBox
 \vfill
 {\large Package version: v0.1\par}
-{\large Document revision: r0.5\par}
+{\large Document revision: r0.6\par}
 {\large Author-packet date: 2026-08-31\par}
 {\large Scientific owner for later disposition: Grant Wilson\par}
 \vspace{0.25in}
@@ -66,9 +66,11 @@ eight-object author packet; r0.2 applied the subsequent scientific-owner
 closure directive; r0.3 applies owner-authorized independent-review repairs
 without implementation input; r0.4 applies the second independent-review
 minor repairs and the owner's covariance-scope and diagnostic-only policy
-dispositions; r0.5 applies the owner's final targeted type, lifecycle,
-covariance-role, and boundary closure directive while leaving the human title
-for explicit owner disposition. The admitted packet remains bound by SHA-256\par
+dispositions; r0.5 applied the owner's targeted type, lifecycle,
+covariance-role, and boundary closure; r0.6 applies only the owner's final
+stochastic-domain, lifecycle-order, route-multiplicity, role-label, and
+standalone-bundle micro-repairs while leaving title and AO authorization for
+explicit owner disposition. The admitted packet remains bound by SHA-256\par
 \texttt{255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8}.\par}
 \end{titlepage}
 
@@ -120,9 +122,11 @@ across \texttt{AO-001} through \texttt{AO-006}; no inferred defaults or
 representation-selected science. \\
 Validity domain & Parent classes, WCS/frame, indexing, units, template and
 state strata, support/boundary classes, rank/null regimes, and exclusions. \\
-Comparator & Exact $t_p,d_p,\ell_p^\star,c_p,\mathcal S_{\rm apply}$ and sparse
-amplitude reference identity, actual fixed-state producing
-map $F_g$, pre-draw frozen condition
+Comparator & Exact $\mathcal S_{\rm parent\ fact}$,
+$\mathcal D_{\rm model}$, $M$, $\mathcal D_m$, $m_{\rm obs}$,
+$t_p,d_p,\ell_p^\star,c_p,
+\mathcal S_{\rm apply}$ and sparse amplitude reference identity, actual
+fixed-state producing map $F_g$, pre-draw frozen condition
 $h_{\rm pre}=(g_{\rm resolved},\theta)$, fixed covariance selector
 $P_C$, established linear operator identity when any, named covariance-role
 authority, exact subspace projectors, and
@@ -132,8 +136,8 @@ environment, tool/procedure, tolerance, uncertainty, and provenance records. \\
 Verdicts & Requirement-, consequence-, option-, and profile-level outcomes using
 the complete lifecycle vocabulary, including distinct \textsf{not requested},
 \textsf{disabled}, \textsf{unavailable}, \textsf{learned candidate},
-\textsf{resolved}, \textsf{applied}, \textsf{complete publication candidate},
-\textsf{publication decided}, \textsf{realized}, \textsf{published},
+\textsf{resolved}, \textsf{applied}, \textsf{realized},
+\textsf{complete publication candidate}, \textsf{publication decided}, \textsf{published},
 \textsf{failed}, \textsf{not produced}, and \textsf{superseded} semantics. \\
 Nonclaims & Explicit statement that conformity does not establish validation,
 performance, readiness, production, or scientific authority. \\
@@ -206,11 +210,12 @@ separately; reject derived/JINC parents, missing coadd membership, changed
 generation, and assumed commutation/state sharing. \\
 \CT{003} & Anchors, template, and units & Verify the identical parent-pixel
 anchor lattice, deterministic phase/ties, exact template object and query
-representation, scaling, lineage, $[\widehat a]=[m]/[t]$, rescaling law, and
+representation, scaling, lineage, $[\widehat a]=[m_{\rm obs}]/[t]$, rescaling law, and
 rejection of target/member/candidate/output/residual/post-selection template
 choice or unsupported flux/beam meaning. \\
 \CT{004} & Exact operator and normalization & Compare
-$\Supp_{\rm parent\ fact}$, $\Dom_m$, $\Dom_{\rm loc}(p)$,
+$\Supp_{\rm parent\ fact}$, $\Dom_{\rm model}$, $M$, $\Dom_m$,
+$m_{\rm obs}$, $\Dom_{\rm loc}(p)$,
 $E_p$, $t_p$, $d_p$, $\ell_p^\star$, $c_p$, $\Supp_{\rm apply}$, sparse
 amplitude, and $L$, local restriction/inversion, and
 matching-template response with an
@@ -221,12 +226,16 @@ domains and complete, eroded, filled, missing, invalid, final-zero-coefficient,
 and each distinct covariance/excluded/weighting/template-null case; require
 exact domain, support-family, causal-lineage, and projector equality with no
 partial estimate or edge renormalization. Explicitly verify that a missing
-construction-only payload with exact-zero coefficient is never dereferenced
-and becomes unavailable when the coefficient is nonzero. \\
+construction-only observed payload with exact-zero coefficient is never
+dereferenced when complete construction authority exists; missing
+model/covariance authority makes \AOpt{001}{A} unavailable; and a nonzero
+coefficient makes the anchor unavailable when observed payload is absent. \\
 \CT{006} & Weighting option & Instantiate the selected \AO{001} population,
 units, coefficients, rank/null, regularization, window/edge, response,
 uncertainty, products, failure, and option-specific exact closure.
-Test observation and coadd separately. For \AOpt{001}{C}, report the
+Verify package-, parent-class-, and named-use authorization separately from the
+one exact method requested by each realization, with no mixing, target-data
+selection, or fallback. Test observation and coadd separately. For \AOpt{001}{C}, report the
 preregistered effective-sample, anisotropy/dispersion, and leakage diagnostics
 without treating them as v0.1 admission thresholds, and require
 \texttt{optimality\_status=not\_claimed}. \\
@@ -241,7 +250,8 @@ authority. \\
 types; unit self-response; general off-diagonal behavior; selected \AO{005}
 domain/query/representation contract; lineage; lifecycle; and unsupported-query
 rejection. Directional-derivative and finite-difference evidence shall bind
-reference parent, step, sidedness, and one common finite numerical query domain. \\
+observed reference parent $m_{\rm obs}$, step, sidedness, and one common finite
+numerical query domain. \\
 \CT{009} & State and NOI parity & Verify Learn--Resolve--Apply inputs,
 population, protection, diagnostics, freeze, selected \AO{004} exact query
 reproduction, generation
@@ -249,21 +259,27 @@ immutability, successor behavior, pre-Apply $K_{\rm NOI}$ admission, identical
 admitted-member transformation, and rejection of result-dependent admission,
 adapted support, or per-member relearning. \\
 \CT{010} & Covariance and uncertainty & Where authorized, evaluate operational
-$C_{U1,{\rm realized}}=\operatorname{Cov}[P_CF_g(m)\mid h_{\rm pre}]$ and exact
+$C_{U1,{\rm realized}}=\operatorname{Cov}[P_CF_g(M)\mid h_{\rm pre}]$ and exact
 reference covariance separately; assess the fixed finite codomain, almost-sure
 numerical-production premise, each selected \AO{003} named-role scope and exact
 representation, units, random variables, population, conditioning, subspaces,
-consumers, and any separately authorized U1+U2 joint product. Empirical
+consumers, and any separately authorized U1+U2 joint product. Verify that
+$h_{\rm pre}$ excludes numerical $m_{\rm obs}$ values/digests, success,
+draw-dependent identities/domains, publication, censoring, and pairwise
+deletion. Empirical
 evidence follows the preregistered sampling protocol above. Otherwise verify
 typed role/status unavailability, unchanged signal completeness unless a
 named-use policy requires the companion, and the independent availability or
 unavailability of $v_{\rm GLS,reference}=d_p^{-1}$ under exact \AOpt{001}{A}. \\
 \CT{011} & Products and lifecycle & Verify atomic signal membership, companion
 independence, named covariance-role identity/status in every signal bundle, the
-complete lifecycle vocabulary, required/optional failure propagation,
+complete lifecycle vocabulary and exact Applied--Realized--Complete--
+PublicationDecided--Published/NotProduced order, required/optional failure propagation,
 per-role validity domains, immutability, supersession, no public unqualified intermediate, and exact
 lineage closure. \\
-\CT{012} & SCI-VAL profiles and actions & Instantiate the engineering-declared
+\CT{012} & SCI-VAL profiles and actions & First reject the returned role-
+semantics drafts as unregistered and unevaluable. For an exact later
+owner-approved Registry record, instantiate the engineering-declared
 \AO{006} representation of the owner-disposed semantics; exhaust four-axis
 verdict/dependency/action combinations for
 PA, SA, SP, CU, NU, RU, and FH; verify lossless layout, aggregation
@@ -410,10 +426,13 @@ operational $F_g$ response/covariance evaluation, and a fixed-linearity proof
 before any $\widetilde L_g$ matrix oracle, with state changes and
 actual/reference roles kept distinct. & Response-family or realized-covariance
 claim fails. \\
-\Pred{025} & Remove a numerical payload at a construction-only coordinate,
-first with exact-zero final $c_{pq}$ and then with a nonzero coefficient; verify
-no dereference and unchanged amplitude in the first case and typed
-unavailability in the second. & Numerical application-domain closure fails. \\
+\Pred{025} & Exercise three distinct cases at a local construction coordinate:
+(1) complete template/model/covariance authority, missing observed payload, and
+exact-zero final $c_{pq}$ gives no dereference and unchanged amplitude;
+(2) missing required model or covariance authority makes \AOpt{001}{A}, its
+optimality claim, and reference variance unavailable even when $c_{pq}=0$; and
+(3) exact-nonzero $c_{pq}$ with missing observed payload makes the anchor
+unavailable. & Stochastic-model or numerical application-domain closure fails. \\
 \bottomrule
 \end{longtable}
 
@@ -432,6 +451,26 @@ policy says that companion is not required. Profile representation follows the
 selected \AO{006} alternative and always retains seven distinct role verdicts.
 
 \section{Owner-disposition and engineering-routing guide}
+
+\begin{longtable}{p{0.12\linewidth}p{0.30\linewidth}p{0.48\linewidth}}
+\toprule
+Layer & Disposition authority & Conformance consequence \\
+\midrule
+\endhead
+A & Scientific owner, package level & Authorize separately named method
+routes; recommended A and C may coexist while B/D remain successor triggers. \\
+B & Scientific owner, parent class & Record observation and coadd
+authorizations separately. \\
+C & Scientific owner, named use & Record allowed routes and required
+companions for each use. \\
+D & Request/realization authority & Bind exactly one authorized route; reject
+mixing, target-data choice, and fallback. \\
+E & Engineering after science & Declare the numerical profile and lossless
+state, response, covariance, and verdict representations. \\
+F & Typed route state & Preserve unavailable and successor-trigger routes
+without substitution. \\
+\bottomrule
+\end{longtable}
 
 The method ID remains \ContractID{}. The recommended owner title is
 ``Matched-template map amplitude estimation''; ``Normalized matched-template
@@ -479,7 +518,9 @@ r0.4 repair used the second independent ChatGPT Pro review of the exact r0.3
 PDF pair and the owner's approval of selectable covariance scope plus
 diagnostics-only AO-001-C admission policy. The r0.5 repair used only the exact
 scientific-owner directive dated 2026-09-01 and its resulting owner-facing
-disposition records; it inspected no implementation.
+disposition records. The r0.6 micro-repair used only the exact scientific-owner
+directive dated 2026-09-01 and retained the same implementation firewall.
+Neither revision inspected implementation.
 Links were provenance only and were not opened. No implementation,
 configuration, schema, test, audit, validation, reduction, generated product,
 history, neighboring package, external source, or model-memory source supplied
