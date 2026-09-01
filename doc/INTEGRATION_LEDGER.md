@@ -6,10 +6,51 @@ Detailed scientific and build evidence remains in the linked plans, handoffs,
 ADRs, and validation records.
 
 The application landmarks and their five independent status axes are routed
-through [`APPLICATION_BASELINES.md`](APPLICATION_BASELINES.md). The active
-WP-7 work order is governed by
-[`WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md`](WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md)
+through [`APPLICATION_BASELINES.md`](APPLICATION_BASELINES.md). Timestream
+Successor engineering work is governed by
+[`governance/ENGINEERING_GOVERNANCE.md`](governance/ENGINEERING_GOVERNANCE.md),
+[`governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md`](governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md),
+and [`governance/REVIEW_AND_CONFORMANCE.md`](governance/REVIEW_AND_CONFORMANCE.md).
+The historical WP-7.1 program router and machine-readable scientific-authority
+binding remain in [`WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md`](WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md)
 and `validation/wp7_timestream_successor_authority.json`.
+
+## Timestream Successor Governance Effectiveness — 2026-08-31
+
+The project owner accepted exact governance candidate
+`06a3ade51c1b3f38887295433d913811bf25cd14` and explicitly authorized its
+fast-forward integration into canonical `codex/refactor-mainline`. The clean
+canonical branch advanced from exact
+`4dc7844e59e03cf2d18a9262fe5b75d3ff078681` to the accepted candidate without
+a merge commit, rebase, cherry-pick, or content repair. The candidate's exact
+tree remains `56d652bc23364761bacb805b04975e331114515e`.
+
+This canonical record satisfies the governance effectiveness mechanism. The
+accepted commit and exact SHA-256 digests of the complete governed document
+set are:
+
+| Path | SHA-256 at accepted `06a3ade51...` |
+| --- | --- |
+| `AGENTS.md` | `27e21353a9578fa2f2cc01fbf266499e62ed6f99b3cd1de6d56fc7f1d691ed22` |
+| `doc/governance/ENGINEERING_GOVERNANCE.md` | `70769787ce2ef4b7323cd2a38e221ade4af3310e0ad6b7b682e08cb4e4d61e76` |
+| `doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md` | `29fae6f789bb6133c1f5bcdaf0f15437f2eb8c4110f338d3a8de9a4d98ba88dc` |
+| `doc/governance/REVIEW_AND_CONFORMANCE.md` | `691e6d6250102ef2f4a504397581ee67c5707d898ab20fb8dd9e874c47f99bb1` |
+
+The candidate received independent fresh-context exact-SHA review with no
+remaining scientific/behavioral, architecture/ownership, or
+repository/evidence findings. The later reset package and census are preserved
+separately at exact evidence commit
+`2b7ffb391815f18103541e864a03855a839b652c`; they do not change the accepted
+governance identity.
+
+This effectiveness record changes no scientific authority, implementation,
+configuration, build environment, executable acceptance, activation, release,
+or production authorization. In particular, paired-D1 implementation
+`d7d19bc90d7c994fa767ec2a9fd35e4d8599f032` and historical closure record
+`2f1d836c1db122d22015853582133abf3611bc30` remain preserved evidence and are
+not integrated by this record. No Timestream Successor application increment
+may begin until the owner disposes the independently reviewed exact record
+commit and separately authorizes the next bounded work order.
 
 ## Current Work Orders — 2026-08-31
 
@@ -18,7 +59,8 @@ ledger uses stale language.
 
 | Work order | Scope and authority | WIP rule | State | Exit |
 | --- | --- | --- | --- | --- |
-| `APP-CANON-001` | Canonical application integration on `codex/refactor-mainline`; the executable application tree remains exact `cb3d568c701217ee0248c77f6dccd0bab7deef31`, followed by accepted governance descendants and offline D2 evidence-tooling integration `f8ba732bc4072e918c2521a013305be354ed7b53` | Normal accepted application work lands only through reviewed canonical ancestry | Active authority; administrative/tooling descendants do not imply a new tested executable identity | Ordinary affected-behavior gates and owner-controlled integration |
+| `APP-CANON-001` | Canonical application integration on `codex/refactor-mainline`; the executable application tree remains exact `cb3d568c701217ee0248c77f6dccd0bab7deef31`, followed by accepted governance descendants, offline D2 evidence-tooling integration `f8ba732bc4072e918c2521a013305be354ed7b53`, its record `4dc7844e59e03cf2d18a9262fe5b75d3ff078681`, and accepted Timestream Successor governance `06a3ade51c1b3f38887295433d913811bf25cd14` | Normal accepted application work lands only through reviewed canonical ancestry | Active authority; administrative/tooling/governance descendants do not imply a new tested executable identity | Ordinary affected-behavior gates and owner-controlled integration |
+| `TIMESTREAM-SUCCESSOR-GOV-001` | Repository and Timestream Successor governance accepted at exact `06a3ade51c1b3f38887295433d913811bf25cd14`; the four exact document digests are recorded above | Governance is effective on canonical ancestry; amendment or exception follows the accepted governance process | **Effective 2026-08-31:** owner accepted, canonical fast-forward complete, effectiveness record committed for independent exact-SHA review | Owner disposition of the reviewed record; no implementation follows automatically |
 | `BUILD-ENV-001` | Current build/dependency authority is Spack under ADR 0014; exact V2 binding is `validation/citlali_v2_spack_validation_authority.json` | Build-environment work retains separate scope/ownership and may not silently change application science; non-Spack tests are supplemental; material Conan work requires an owner-authorized compatibility work order | Spack accepted for the most recent end-to-end V2 application generation; portable release bundle and exact V2 lock-byte retention remain open | Close only the bounded ADR 0015 release/reproducibility gaps or record a new owner build decision |
 | `WP7-GOV-001` | WP-7.1 governance reconciliation on `codex/wp7-governance-reconciliation`, based exactly on `cb3d568c...`; accepted package commits are `e874044c4...` and `28e9e559b...` | Historical closed work order; later corrections require their own bounded authority | **Closed 2026-08-31:** owner reviewed and accepted G0--G3 and explicitly resumed G4 | Complete |
 | `WP7-REPLAY-001` | First G4 canonical replay unit; exact divergent source `49fe73e757daa1885cd23127e8441cba47e648d2`, exact accepted integration `f8ba732bc4072e918c2521a013305be354ed7b53` | Historical closed work order; its acceptance covers only the dispositioned D2 PSD/line evidence tooling and records | **Integrated and closed 2026-08-31** after explicit owner review | Complete |
@@ -26,9 +68,10 @@ ledger uses stale language.
 | `SCI-CONTRACTS-001` | Scientific-contract library on `codex/scientific-contract-library`; last committed head `54475956f6aefb839d43b2f0fb019a142cb64310`; package status owned by `doc/scientific_contracts/INDEX.md` in that lane | Contract authoring has its own package-level WIP and does not count as WP-7 application implementation; staged/uncommitted authoring is not an immutable identity | Active independently | Frozen package/owner gate under the contract-library charter; application impact enters a separate integration work order |
 | `MAPSPACE-CONTRACTS-001` | MAP, FLT-FIXED, FLT-INF, NOI, JINC, SRC/MODE, and related mapspace contract packages under the scientific-contract library | Packages may be authored in parallel when their scopes do not edit the same frozen authority; no package silently changes application code | Active independently of WP-7 application WIP state | Package-specific Stage A/Stage B, owner, and freeze gates in the contract index |
 
-Application-integration WIP ceiling: one active WP-7 application work order;
-none is active after `WP7-REPLAY-001` integration. A next increment requires
-owner review before source capture, branch creation, implementation, or replay.
+Application-integration WIP ceiling: one active Timestream Successor spine
+increment and at most one active module probe; neither is active. A next
+increment requires owner review before source capture, branch creation,
+implementation, or replay.
 Scientific-contract authoring is a separate authority lane, but every proposed
 application consequence receives a new bounded integration work order before
 code changes begin.
@@ -37,7 +80,7 @@ code changes begin.
 
 | Workstream | Authority | Purpose | Integration rule | State |
 | --- | --- | --- | --- | --- |
-| Refactored application | `codex/refactor-mainline` at `cb3d568c701217ee0248c77f6dccd0bab7deef31` | Canonical source, tests, configuration, operational behavior, and validation history | Normal application changes land here after their affected gates | Active canonical authority |
+| Refactored application | `codex/refactor-mainline`, containing accepted Timestream Successor governance at `06a3ade51c1b3f38887295433d913811bf25cd14`; tested executable application identity remains `cb3d568c701217ee0248c77f6dccd0bab7deef31` | Canonical source, tests, configuration, operational behavior, validation history, and effective governance | Normal application changes land here after their affected gates | Active canonical authority; governance integration changes no executable identity |
 | WP-7 timestream integration checkpoint | `codex/refactor-mainline` and `codex/wp7-timestream-integration-candidate` at `a36abaebfb82d503b113de0cf4c1c6e0f6dcffc3`, preserving exact Unity-tested application commit `3ebc2a67fc32bad69759ff45638484efabf91773`; bounded cleanup `aa85a2287`; audit-tool repair `ff7899668` | Carry completed Stage 7 152390 evidence, retire only pre-censused inactive sources, admit current campaign evidence to the reduction auditor, and preserve a classified ref/worktree retirement record | Retain `3ebc2a67f` as the exact Stage 7 science identity and `a36abaeb` as the pre-build-modernization point-smoke identity; do not infer a general successor baseline or science-ledger disposition | Integrated and pushed by the owner; both forensic tags are published; the bounded point smoke passed and its reports are preserved outside Git |
 | SCI-MAP-001 application integration | `codex/refactor-mainline` at `d5015fe716971bf8ea617e8a187311bf5af05185`, containing exact application source `af0c849ce59a5f80e5efc8db435bb6662863052f` followed only by its documentation-only integration record | Accepted bounded implementation, product/provenance contract, truth suites, owner-amended evidence, and frozen campaign/closeout history | Preserve as the application base for subsequent audited integrations; do not merge MAP audit or coordination branches | Integrated; bounded MAP contract accepted; production remains `existing_use_only` |
 | SCI-NOI-002 application integration | `codex/refactor-mainline` at `4846fa4db39bd2f7d4ddc41f693836834cbc5ff4`, containing exact audited application source `5b29e13548a6fec884c67b192dec20c92f0bbb62` followed only by its documentation-only integration record | Accepted bounded conditional-stack, package-provenance, truthful-labeling/count, writer/finalizer, and validator contracts | Preserve as the application base; do not merge repair, audit, or coordination branches | Integrated; production remains `existing_use_only`; F005/F006 remain external |
@@ -46,7 +89,7 @@ code changes begin.
 | APT-PROD-003 compact canonical APT v2 | `codex/repair-apt-prod-003-compact-v2` at base `20feebc26f5ab36f3db04d05835de6ac907fd2e6` | Owner-directed normalized ECSV contract, v2 producer/guardian, TolAPT occurrence-scoped matcher seam, TolProj orchestration, migration-only v1 reader, and root-receipt-last publication | Exact 148669/148670 equivalence, <20 MiB portable bundle, determinism, relocation, tamper, parser-count, and all consumer gates; no Unity before owner runbook | Active uncommitted repair; all APT-dependent validation and new baseline issuance suspended; no activation |
 | APT / ALIGN / JINC convergence | `codex/converge-apt-align-jinc`, created from exact owner-run Unity-tested implementation `e77460cffad49387795009539d6abc7e370e8b58`; documentation-only validation parent `91f42ccdc8ce9a4e6811f2f03857180d50d21345` | Preserve the accepted compact-v2/MAP/JINC spine, account for omitted and historical commits, and reconstruct only independently dispositioned application contracts | Do not merge the 76-commit SCI-ALIGN research line or cherry-pick old APT-v1 consumers; reconstruct JINC ownership first, review a separate compact-v2 native-consumer candidate, and keep conditional PTC metadata repair isolated | Active preparation; no post-`e77460cf` application replay, no production expansion, and no push authorized |
 | Spack build-modernization integration | `codex/integrate-spack-build-modernization`, based on exact mainline checkpoint `a36abaebfb82d503b113de0cf4c1c6e0f6dcffc3` and merging exact build-lane head `d9843e85ed87ba9ac8c42d8cc21f997dacbe1046` through merge `4cf8db223cdfc7163bbac91972528d8c0c2dbe78` | Historical source lane for the Tula CMake/Spack build, package-consumer, provenance, release-contract, timing, and V2 build environment | Preserve the source-lane evidence; Spack is the accepted realization for the V2 generation, while release composition and same-SHA platform closure follow the canonical status document | Integrated and operationally demonstrated by owner-accepted Spack-backed V2; source lane preserved, remaining Phase 5 release gates open |
-| Successor build adaptation source | `codex/build-adaptation` at `d9843e85ed87ba9ac8c42d8cc21f997dacbe1046`, five commits ahead of `origin/codex/build-adaptation` | Port the full application into the accepted Tula CMake/Spack architecture | Preserve until the integration candidate passes local and Unity gates; do not delete or rewrite its evidence | Frozen as the exact merge input in `/Users/gwilson/GitHub/citlali-refactor-build` |
+| Successor build adaptation source | `codex/build-adaptation` and cached `origin/codex/build-adaptation` at exact `d9843e85ed87ba9ac8c42d8cc21f997dacbe1046`; annotated tag `spack-build-adaptation-d9843e85` peels to the same commit | Port the full application into the accepted Tula CMake/Spack architecture | Preserve as the exact canonical merge input and accepted build evidence; do not delete or rewrite it | Frozen, remotely preserved, and already integrated through `4cf8db223cdfc7163bbac91972528d8c0c2dbe78` |
 | Historical Conan 2 adaptation | `codex/conan2-adaptation` at `9aae0e669` | Preserved pointer to the superseded package-manager lane name | Legacy reproduction or bounded compatibility only; do not resume, add dependencies, extend recipes, or repair opportunistically without an explicit owner-authorized compatibility work order | Frozen remotely; not a current build authority |
 | Historical structural refactor | `codex/structural-refactor` at `171487196` | Forensic pointer to the pre-follow-on integration tree | Do not resume as an application authority | Frozen |
 | Historical fruit-loop/raw-IQ topic | `codex/fruit-loop-calibration-reference` at `b02fef613` | Forensic pointer to the topic-named branch before mainline normalization | Do not resume as an application authority | Frozen locally; its existing remote remains historical |

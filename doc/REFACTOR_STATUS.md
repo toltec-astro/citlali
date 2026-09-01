@@ -1,5 +1,33 @@
 # Citlali Refactor Status
 
+## 2026-08-31 Timestream Successor Governance Effective On Canonical Lineage
+
+The project owner accepted exact Timestream Successor governance candidate
+`06a3ade51c1b3f38887295433d913811bf25cd14` and explicitly authorized its
+fast-forward integration into canonical `codex/refactor-mainline`. The clean
+canonical branch advanced from exact
+`4dc7844e59e03cf2d18a9262fe5b75d3ff078681` to the accepted candidate with no
+merge commit, rebase, cherry-pick, or content repair. Exact candidate tree
+`56d652bc23364761bacb805b04975e331114515e` and all four governed-document
+SHA-256 digests are recorded in `doc/INTEGRATION_LEDGER.md`.
+
+The accepted engineering, Timestream Successor, and review/conformance
+governance documents are therefore effective on canonical application
+ancestry. Their independent fresh-context exact-SHA review closed with no
+remaining scientific/behavioral, architecture/ownership, or
+repository/evidence findings. This later status/effectiveness record does not
+alter their reviewed content or exact identity.
+
+This integration changes no scientific contract, implementation,
+configuration, executable, build environment, validation acceptance,
+activation, release, or production authority. Paired-D1 implementation
+`d7d19bc90d7c994fa767ec2a9fd35e4d8599f032` and historical closure record
+`2f1d836c1db122d22015853582133abf3611bc30` remain preserved, pushed evidence
+and are not integrated. No Timestream Successor spine increment or module
+probe is active. The owner explicitly held paired-D1 integration until this
+canonical effectiveness-record commit receives independent exact-SHA review
+and is reported for owner disposition.
+
 ## 2026-08-31 WP7-REPLAY-001 Canonical Integration
 
 The project owner reviewed and accepted exact bounded D2 evidence-tooling
