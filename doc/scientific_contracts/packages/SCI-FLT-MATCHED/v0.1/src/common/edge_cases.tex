@@ -7,22 +7,34 @@
 Condition & Scientific meaning & Required handling \\
 \midrule
 \endhead
-Empty or incomplete influence support & No defined reference estimand at the
-affected location & Mark \Unavailable{} before evaluation; no padding,
+Empty or incomplete application support & No defined reference estimand at the
+affected anchor & Mark \Unavailable{} before evaluation; no padding,
 extension, imputation, partial estimate, or renormalization. \\
 Numerical fill near an edge & Merely a computational placeholder & Admit an
 output only after exact erosion proves zero dependency on every filled value. \\
-$D=0$, $D<0$, nonfinite $D$, or materially complex $D$ & Template is null,
+$d_p=0$, $d_p<0$, nonfinite $d_p$, or complex $d_p$ & Template is null,
 weighting is invalid, or numerical identity failed & Typed unavailability or
 attempt failure; never publish zero amplitude, infinite variance, or fallback. \\
-Template lies partly in $\Null(Q_x)$ & Some declared template modes are
+Template lies partly in $\Null(W_p)$ & Some declared template modes are
 unestimable & Allowed only if the selected option explicitly defines the same
-estimable subspace and $D>0$; record response loss and null space. Otherwise
+estimable subspace and $d_p>0$; record response loss and null space. Otherwise
 unavailable. \\
-Indefinite or non-Hermitian $Q_x$ & Weight is outside declared quadratic-form
+Indefinite or non-self-adjoint $W_p$ & Weight is outside the admitted
+scientific bilinear family
 semantics & Fail selected \AO{001} closure unless an exact distinct operator
 and inner product were separately authored; no silent symmetrization. \\
-Zero, negative, or nonfinite PSD bin & No finite declared reciprocal weighting
+Covariance zero-variance mode & Parent law declares deterministic variation in
+that direction & Keep separate from excluded, weighting-null, and template-
+unidentifiable modes; apply only the exact constrained theorem. \\
+Excluded or infinite-variance mode & Policy deliberately removes a direction
+from the estimable subspace & Record the exact projector and response loss; do
+not call it a covariance zero mode. \\
+Weighting-null mode & $W_p$ assigns zero action to a direction & Record the
+weighting null space; no covariance meaning follows without separate authority. \\
+Projected template is zero & The requested amplitude is unidentifiable in the
+declared subspace & Anchor unavailable; no Moore--Penrose or normalization
+fallback. \\
+Zero, negative, or nonfinite field-power bin & No finite declared reciprocal weighting
 for that mode/bin & Apply only owner-declared regularization within the frozen
 state; otherwise exclude as a declared null mode or make route unavailable.
 Never infer infinite precision. \\
@@ -32,14 +44,14 @@ anisotropy, or leakage bounds; no neighboring-bin interpolation unless separatel
 authored. \\
 Unknown covariance entry & Scientific knowledge is absent & Preserve unknown;
 do not encode zero, diagonal independence, or a usable inverse. \\
-Available $Q$ but unavailable $C_{\rm parent}$ & Weighting exists without
+Available $W$ but unavailable $C_{\rm parent}$ & Weighting exists without
 covariance authority & Amplitude filtering may proceed under a selected weaker
-option; optimality, $D^{-1}$ variance, and $C_{\rm cond}$ are unavailable. \\
+option; optimality, $d_p^{-1}$ variance, and conditional covariance are unavailable. \\
 Available $C_{\rm parent}$ with mismatched population/state & Covariance does
 not describe this realization & Covariance route unavailable; no rescaling or
 population substitution. \\
 Template rescaled by $c\neq0$ & Amplitude convention changes & Create a new
-template/realization identity; $\widehat A$ rescales by $1/c$ and units/lineage
+template/realization identity; $\widehat a$ rescales by $1/c$ and units/lineage
 must follow. \\
 Template phase or anchor changed & Scientific response convention changes &
 New template and realization; never treat as a numeric implementation detail. \\
@@ -57,8 +69,8 @@ NOI member suggests a new state & Per-member relearning would change the
 ensemble method & Apply the frozen state or mark member incompatible; a learned
 update creates a successor generation outside the current ensemble. \\
 Approximation misses one null or support mode & Estimand/validity differs even
-if aggregate error is small & Fail every \AO{002} alternative; no percentile
-or mean can hide the disagreement. \\
+if aggregate error is small & Fail the preregistered profile; if intentional,
+assign a distinct scientific identity. No percentile hides the disagreement. \\
 Iteration/tail cap reached & Work limit, not convergence evidence & Accept only
 if every selected quantitative envelope bound independently passes; otherwise
 fail. \\
@@ -77,6 +89,12 @@ fallback. \\
 Response query is unsupported & Scientific interface does not define that
 quantity & Return typed unavailability; never approximate with a kernel,
 radial profile, parent beam, or zero. \\
+Fixed-state response requested as full-procedure response & State-learning
+dependence has not been rerun & Return full-procedure response unavailable and
+retain the fixed-state type; no consumer may strengthen it. \\
+Reference response or covariance attached to a realized field & Comparator is
+being mislabeled as the actual product consequence & Fail the companion or
+bundle policy; attach $R_{\rm realized}$ and $C_{\rm realized}$ when authorized. \\
 FLT to FRUIT consumer asks for FRUIT behavior & Request crosses package
 authority & Withhold the behavior and require a separate FRUIT contract; the
 FLT signal and handoff facts remain unchanged. \\

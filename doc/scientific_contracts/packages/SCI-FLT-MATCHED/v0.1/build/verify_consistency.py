@@ -24,8 +24,8 @@ COMMON = [
     "requirements.tex",
     "edge_cases.tex",
 ]
-REQ_IDS = [f"SCI-FLT-MATCHED-REQ-{i:03d}" for i in range(1, 40)]
-PRED_IDS = [f"SCI-FLT-MATCHED-PRED-{i:03d}" for i in range(1, 19)]
+REQ_IDS = [f"SCI-FLT-MATCHED-REQ-{i:03d}" for i in range(1, 51)]
+PRED_IDS = [f"SCI-FLT-MATCHED-PRED-{i:03d}" for i in range(1, 25)]
 AO_OPTIONS = {
     *[f"SCI-FLT-MATCHED-AO-001-{x}" for x in "ABCD"],
     *[f"SCI-FLT-MATCHED-AO-002-{x}" for x in "ABC"],
@@ -119,6 +119,9 @@ def main() -> int:
         errors.append(f"source prediction ID mismatch: {sorted(pred ^ expected_pred)}")
     if ao != AO_OPTIONS:
         errors.append(f"source option ID mismatch: {sorted(ao ^ AO_OPTIONS)}")
+    for forbidden in [r"Q_x", "DeclareOrLearnOnce", "10^{-3}", "10^{-2}"]:
+        if forbidden in common_text:
+            errors.append(f"superseded r0.1 shared-core term remains: {forbidden}")
 
     crosswalk_text = (package / "CROSSWALK.md").read_text(encoding="utf-8")
     ledger_text = (package / "SCIENTIFIC_OWNER_DECISION_LEDGER.md").read_text(
@@ -135,6 +138,26 @@ def main() -> int:
     missing_ledger = [item for item in ledger_ids if item not in ledger_text]
     if missing_ledger:
         errors.append(f"owner-decision ledger IDs missing: {missing_ledger}")
+    for boundary in [
+        "SCI-MAP_TO_SCI-FLT-MATCHED-v0.1-r0.1.md",
+        "SCI-TEMPLATE_TO_SCI-FLT-MATCHED-v0.1-r0.1.md",
+        "SCI-FLT-MATCHED_TO_SCI-NOI-v0.1-r0.1.md",
+        "SCI-FLT-MATCHED_TO_SCI-FRUIT-v0.1-r0.1.md",
+    ]:
+        if not (package / boundary).is_file():
+            errors.append(f"r0.2 boundary draft missing: {boundary}")
+    route_text = (package / "ROUTE_STATUS_R0.2.md").read_text(encoding="utf-8")
+    for route in [
+        "Generic exact estimator",
+        "Ordinary-MAP parent realization",
+        "Template realization",
+        "Numerical-conformance policy",
+        "Response-qualified publication/use",
+        "Covariance-qualified route",
+        "Implementation assessment",
+    ]:
+        if route not in route_text:
+            errors.append(f"r0.2 route status missing: {route}")
 
     pdf_report: dict[str, object] = {}
     for label, path in pdfs.items():
@@ -149,7 +172,8 @@ def main() -> int:
             "STAGE B DRAFT",
             "No numerical route",
             "unselected",
-            "implementation conformity",
+            "implementation",
+            "observational validation",
             "achieved performance",
             "readiness",
             "production",

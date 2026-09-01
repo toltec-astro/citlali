@@ -1,7 +1,8 @@
 # SCI-FLT-MATCHED — Optimal Matched-Template Map Filtering
 
-Status: implementation-blind Stage B r0.1 draft returned and manager-reviewed
-on `2026-08-31`; 17 scientific-owner questions remain open
+Status: targeted Stage B r0.2 mathematical-closure draft prepared on
+`2026-08-31` for scientific-owner review; 14 owner questions remain open,
+two r0.1 questions are decided, and one is superseded
 
 Version: `v0.1`
 
@@ -33,14 +34,22 @@ separate methods or future packages.
 - Sanitized Scope Brief and exact author packet: candidate prepared.
 - Exact bytes and hashes: owner-approved through
   [`SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-31.md).
-- Stage B: fresh implementation-blind author returned the two-view r0.1 draft.
-- Authored option sets: six families and 21 alternatives produced in both
-  views; all remain unselected.
-- Draft inventory: 39 requirements, 18 predictions, 15 assumptions, a
-  seven-part uncertainty budget, a 78-ID crosswalk, and 17 open owner
-  questions.
-- Manager review and build/PDF consistency: passed; see
-  [`STAGE_B_MANAGER_REVIEW_2026-08-31.md`](STAGE_B_MANAGER_REVIEW_2026-08-31.md).
+- Stage B r0.1: fresh implementation-blind author returned the two-view draft;
+  its immutable review baseline is Git commit `bbbef9fe2`.
+- Stage B r0.2: the scientific-owner closure directive is incorporated without
+  implementation inspection. Collision-free notation, coordinate-basis
+  algebra, local constrained GLS, anchor lattice, general-sky response,
+  Learn--Resolve--Apply, realized/reference separation, option refactor,
+  lifecycle, boundary, and route-status records are present.
+- Authored option identities: six families and 21 r0.1-stable alternatives in
+  both views; no weighting, covariance, representation, named-use, or numerical
+  route is selected.
+- Draft inventory: 50 requirements, 24 predictions, 15 assumptions, a
+  seven-part uncertainty budget, a 95-ID crosswalk, and 17 retained SODL IDs
+  (14 open, 2 decided, 1 superseded).
+- r0.2 build/source/PDF consistency and visual QA: passed; see
+  [`build/BUILD_VERIFICATION.md`](build/BUILD_VERIFICATION.md) and
+  [`PDF_QA_R0.2.md`](PDF_QA_R0.2.md).
 - Scientific authority, numerical availability, implementation conformity,
   validation, achieved performance, readiness, and production status: not
   established.
@@ -59,17 +68,23 @@ separate methods or future packages.
 - [`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md): exclusive content-bound author inputs
 - [`SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-31.md): exact-byte approval and launch authority
 - [`verify_stage_a.py`](verify_stage_a.py): packet and firewall verification
-- [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md): 17 open Stage B dispositions
-- [`CROSSWALK.md`](CROSSWALK.md): complete 78-ID source/view traceability
-- [`STAGE_B_MANAGER_REVIEW_2026-08-31.md`](STAGE_B_MANAGER_REVIEW_2026-08-31.md): manager firewall, content, and PDF review
+- [`SCIENTIFIC_OWNER_R0.2_DIRECTIVE_2026-08-31.md`](SCIENTIFIC_OWNER_R0.2_DIRECTIVE_2026-08-31.md): hash-bound targeted closure direction
+- [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md): retained 17-ID disposition ledger
+- [`SEMANTIC_CHANGE_MAP_R0.2.md`](SEMANTIC_CHANGE_MAP_R0.2.md): stable-ID and equation repair map
+- [`NOTATION_CROSSWALK_R0.2.md`](NOTATION_CROSSWALK_R0.2.md): complete collision-free notation map
+- [`REPRESENTATION_CROSSWALK_R0.2.md`](REPRESENTATION_CROSSWALK_R0.2.md): science-versus-representation closure
+- [`ROUTE_STATUS_R0.2.md`](ROUTE_STATUS_R0.2.md): generic and realized route availability
+- [`CROSSWALK.md`](CROSSWALK.md): complete 95-ID source/view traceability
+- [`STAGE_B_MANAGER_REVIEW_2026-08-31.md`](STAGE_B_MANAGER_REVIEW_2026-08-31.md): historical r0.1 manager review
 - [`STAGE_B_DRAFT_MANIFEST.md`](STAGE_B_DRAFT_MANIFEST.md): exact draft source/PDF binding
 - [`DECISION_LOG.md`](DECISION_LOG.md): package process decisions and preserved nonclaims
 
 ## Stop Boundary
 
-The Stage B draft is not scientific authority and no option is selected.
-Scientific-owner disposition starts with `SCI-FLT-MATCHED-SODL-001`; each
-dependent route remains unavailable until its exact option and parameters are
-disposed and the resulting contract bytes are reviewed. No implementation,
-conformity, validation, performance, readiness, production, or freeze claim
-follows from this draft.
+The Stage B r0.2 draft is not frozen scientific authority. The anchor lattice,
+exact-science/numerical-profile separation, and seven role semantics are owner
+disposed, but no weighting or realized scientific route is selected. Each
+dependent route remains unavailable until the remaining exact dispositions and
+declarations exist and the resulting contract bytes are reviewed. No
+implementation, conformity, response/covariance fidelity, observational
+validation, performance, readiness, production, or freeze claim follows.

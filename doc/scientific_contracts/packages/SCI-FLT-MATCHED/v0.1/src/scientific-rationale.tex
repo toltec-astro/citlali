@@ -14,9 +14,9 @@
 \definecolor{rust}{HTML}{9C3D10}
 \definecolor{pale}{HTML}{F3F6F9}
 \hypersetup{colorlinks=true,linkcolor=navy,urlcolor=navy,
-  pdftitle={SCI-FLT-MATCHED Scientific Rationale and Contract v0.1},
+  pdftitle={SCI-FLT-MATCHED Scientific Rationale and Contract v0.1 r0.2},
   pdfauthor={Implementation-blind Stage B scientific-contract author},
-  pdfsubject={Draft scientific contract with unselected authored options}}
+  pdfsubject={Targeted mathematical-closure draft with unselected authored options}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
 \setlength{\emergencystretch}{3em}
@@ -33,9 +33,9 @@
 \begin{center}
 \fcolorbox{rust}{pale}{\parbox{0.88\linewidth}{\centering\small
 \textbf{STAGE B DRAFT -- ALL AO-001 THROUGH AO-006 OPTIONS UNSELECTED.}
-No numerical route, implementation, conformity result, validation result,
-achieved performance, readiness, production state, scientific freeze, or
-Unity status is claimed.}}
+No numerical route, implementation, conformity result, response or covariance
+fidelity, observational validation, achieved performance, readiness,
+production state, scientific freeze, or Unity status is claimed.}}
 \end{center}}
 
 \begin{document}
@@ -54,11 +54,13 @@ optimality claim\par}
 \StatusBox
 \vfill
 {\large Package version: v0.1\par}
+{\large Document revision: r0.2\par}
 {\large Author-packet date: 2026-08-31\par}
 {\large Scientific owner for later disposition: Grant Wilson\par}
 \vspace{0.25in}
-{\small Shared-core draft derived exclusively from the owner-approved
-eight-object author packet bound by manifest SHA-256\par
+{\small Stage B r0.1 was derived exclusively from the owner-approved
+eight-object author packet; r0.2 applies the subsequent scientific-owner
+closure directive. The admitted packet remains bound by SHA-256\par
 \texttt{255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8}.\par}
 \end{titlepage}
 
@@ -74,11 +76,16 @@ eight-object author packet bound by manifest SHA-256\par
 
 \section{The scientific question}
 
-The method answers one narrow question: at each admitted map location, what is
+The method answers one narrow question: at each admitted parent-pixel anchor, what is
 the amplitude of one exact, already-declared template in one exact ordinary-MAP
 parent? The answer is a map of template amplitude. The method does not decide
 whether a source exists, choose a candidate, infer a posterior sky, or attach
 catalog meaning to a peak.
+
+Base v0.1 places one anchor at every exact parent ordinary-MAP pixel center,
+preserving WCS, frame, grid, shape, indexing, ordering, and the pixel-center
+convention. It does not interpolate or optimize an anchor. Another output
+lattice is a separately named successor.
 
 The template is not merely a shape used for smoothing. It is the expected
 parent-map response per unit amplitude, including its scale, phase, anchor,
@@ -89,7 +96,9 @@ lineages authorize it; another template gives a shape amplitude instead.
 
 \section{Why the estimator is normalized}
 
-The parent is contracted with the template through a frozen weighting object.
+The parent is contracted with the template through a frozen complete
+coordinate-basis weighting object. Every required pixel or quadrature measure
+is already inside that bilinear object; there is no second unexplained measure.
 The same weighting is applied to the template itself, producing the
 normalization. Dividing these two contractions makes an exact matching
 template return its supplied amplitude on complete valid support. This unit
@@ -98,17 +107,20 @@ response is the central scientific identity.
 Weighting and uncertainty are deliberately not conflated. If the weighting is
 the exact authorized inverse covariance on the same population, support,
 conditioning state, and estimable subspace, the estimator has the familiar
-inverse-covariance GLS minimum-variance property. Under a weaker spectral or
+inverse-covariance GLS minimum-variance property only after covariance is
+restricted to local application support and inverted on an exact identifiable
+estimable subspace. Under a weaker spectral or
 reliability weight, it can remain matching-template normalized without being
 minimum variance. In that case the denominator is normalization, not a
 variance estimate.
 
-\section{Why state is frozen}
+\section{Why state is explicit and frozen}
 
 The transformation must mean the same thing for the signal parent and every
-compatible NOI realization member. State is therefore declared externally or
-learned once from the exact parent, assigned an immutable generation, and
-frozen. Learning again from each NOI member would change the ensemble method
+compatible NOI realization member. Learn derives candidates and diagnostics
+from one declared population; Resolve selects the authorized route and freezes
+its identity; Apply uses it unchanged. Externally declared state enters
+Resolve. Learning again from each NOI member would change the ensemble method
 and its uncertainty meaning. New NOI-informed knowledge creates a successor
 generation rather than rewriting an existing one.
 
@@ -119,8 +131,9 @@ filtering commutes with coaddition nor owns a coaddition operation.
 
 \section{Why edges are unavailable rather than repaired}
 
-Each amplitude depends on a complete influence support: every parent sample
-used by the template, weighting, window, boundary action, and normalization.
+Each amplitude depends on complete application support: every parent payload
+row with a nonzero coefficient in its linear functional. Template-query,
+state-learning, response-query, and storage supports are recorded separately.
 If one dependency is absent or invalid, the estimator defined here does not
 exist at that location. Filling, extending, renormalizing, fitting a background,
 or learning an edge taper would define another method. Numerical fill is
@@ -128,14 +141,21 @@ harmless only after erosion proves that no admitted output depends on it.
 
 \section{Response and uncertainty are full scientific objects}
 
-Unit self-response does not make the response a single symmetric beam. The
+Unit self-response does not make the response a single symmetric beam or make
+neighboring sources disappear. For a general linear sky, the expectation is
+the full response-weighted sum of template amplitudes plus the linear action on
+any residual mean, offset, gradient, or other deterministic background. The
 off-diagonal response can be anisotropic, asymmetric, nonstationary,
 position-dependent, or nonlocal. Reducing it to a kernel, radial profile, or
 solid angle is allowed only after the required invariances, measure, and valid
-domain are established.
+domain are established. Fixed-state response is not the response of a
+data-dependent Learn--Resolve procedure. That full-procedure quantity requires
+an authorized rerun or finite difference and is otherwise unavailable.
 
 Likewise, a conditional covariance product exists only when matching parent
-covariance authority exists. Calibration, learned-state, approximation,
+covariance authority exists. A field carries the response and covariance of
+the operator that actually produced it; exact-reference quantities remain
+comparators. Calibration, learned-state, numerical discrepancy,
 representation, NOI sampling, and template-mismatch contributions have
 different populations and conditioning. The normative uncertainty budget
 keeps them separate rather than producing an unsupported scalar total.
@@ -154,10 +174,11 @@ FLT-side scientific fact available or exactly reconstructable without exposing
 undocumented implementation state. It intentionally says nothing about FRUIT's
 future model, iteration, selection, response, uncertainty, or interpretation.
 
-Finally, the contract separates six layers that are often confused:
+Finally, the contract separates claim layers that are often confused:
 scientific authority defines the method; conformity concerns a specific
-implementation; validation evaluates immutable profiles; achieved performance
-is measured behavior; readiness is a governance decision; and production is
+implementation; representation fidelity concerns an exact encoding; SCI-VAL
+evaluates named-use profiles; observational validation and achieved performance
+are evidence classes; readiness is a governance decision; and production is
 an operational state. Evidence in one layer does not promote another.
 
 \part{Shared normative core}
@@ -178,43 +199,47 @@ alternatives, failure rules, and validation consequences.
 
 \section{What remains for the scientific owner}
 
-This draft develops, but does not select, six decision families. The owner
-must select and fully parameterize them before their dependent routes become
-available; the decision ledger states all 17 exact owner questions.
+This draft refactors, but does not select, six decision families. The owner
+must dispose the remaining scientific questions, while one engineering
+numerical profile is separately preregistered, before dependent routes become
+available. The decision ledger records the exact open questions.
 
 \begin{longtable}{p{0.20\linewidth}p{0.31\linewidth}p{0.39\linewidth}}
 \toprule
 Family & Decision & Route unavailable before disposition \\
 \midrule
 \endhead
-\AO{001} & Weighting/noise authority for observation and coadd separately;
-all population, coefficient, PSD/model, rank/null, regularization, and numeric
+\AO{001} & Weighting authority for observation and coadd separately;
+all population, coefficient, field/covariance model, rank/null, and regularization
 fields & A weighting realization, any optimality label, and any variance
 meaning derived from the weight. \\
-\AO{002} & Exact, strict-uniform, or named-use approximation envelope and all
-test-domain identity fields & Any approximate-operator conformance claim. \\
-\AO{003} & Explicit, structured, projected, on-demand, or unavailable
-conditional covariance and its consumers & Conditional-covariance publication,
+\AO{002} & Exact-operator numerical profile, separately authorized distinct
+scientific operator, or typed numerical-route unavailability & Any numerical-
+conformance statement. \\
+\AO{003} & Complete, named-projected, or unavailable covariance scope,
+independently from resident or lineage representation & Covariance publication,
 standardization, or covariance-dependent use. \\
-\AO{004} & Full, compact, or lineage state persistence and reconstruction
-tolerance & State audit/reanalysis and completion of products whose named use
+\AO{004} & Full, compact-exact, or lineage state representation preserving one
+query vocabulary & State audit/reanalysis and completion of products whose named use
 requires reconstructable state. \\
-\AO{005} & Full, structured-query, or lineage response representation and
-query vocabulary & Response-dependent use and FLT to FRUIT handoff. \\
-\AO{006} & Six-profile, three-layer, or composite-vector VAL granularity &
-Registered producer-policy evaluation and publication/handoff profile claims. \\
+\AO{005} & Response domain/query/validity/consumer scope, then full,
+structured, or lineage representation & Response-dependent use and FLT-to-FRUIT
+producer-envelope use. \\
+\AO{006} & Seven normative role verdicts and dependency graph, represented as
+separate, grouped, or vector records & Registered SCI-VAL named-use evaluation. \\
 \bottomrule
 \end{longtable}
 
 No option choice alone authorizes a numerical route. After owner disposition,
 an implementation still needs separate conformity evidence; profiles need
-separate validation; measured performance, readiness, and production remain
+separate SCI-VAL evaluation; observational validation, measured performance,
+readiness, and production remain
 separate decisions.
 
 \appendix
 \section{Author-packet basis and firewall statement}
 
-This draft used only these eight admitted objects:
+Stage B r0.1 used only these eight admitted objects:
 \begin{itemize}
 \item \nolinkurl{AUTHOR_PACKET_MANIFEST.md} and \nolinkurl{SCOPE_BRIEF.md};
 \item \nolinkurl{AUTHOR_SUPERSESSION_COVER.md} and
@@ -224,8 +249,9 @@ This draft used only these eight admitted objects:
 \item \nolinkurl{AUTHOR_BOUNDARIES.md} and
   \nolinkurl{REQUIRED_AUTHORED_OPTION_SETS.md}.
 \end{itemize}
-Links in those objects were not
-opened. No implementation, configuration, schema, test, audit, validation,
+The r0.2 revision additionally used only the scientific owner's exact targeted
+closure directive dated 2026-08-31. Links in the packet were not opened. No
+implementation, configuration, schema, test, audit, validation,
 reduction, generated product, repository history, neighboring package,
 external source, or model-memory source supplied scientific content.
 

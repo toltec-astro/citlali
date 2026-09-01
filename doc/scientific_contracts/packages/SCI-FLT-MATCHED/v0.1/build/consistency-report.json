@@ -13,13 +13,13 @@
     "engineering": {
       "overfull_boxes": 0,
       "path": "build/engineering-conformance.log",
-      "underfull_boxes": 130,
+      "underfull_boxes": 160,
       "unexpected_lines": []
     },
     "scientific": {
       "overfull_boxes": 0,
       "path": "build/scientific-rationale.log",
-      "underfull_boxes": 168,
+      "underfull_boxes": 203,
       "unexpected_lines": []
     }
   },
@@ -27,19 +27,19 @@
   "pdfs": {
     "engineering": {
       "option_alternatives_found": 21,
-      "pages": 33,
+      "pages": 30,
       "path": "pdf/SCI-FLT-MATCHED-ENGINEERING-CONFORMANCE-v0.1.pdf",
-      "predictions_found": 18,
-      "requirements_found": 39,
-      "sha256": "f7f40b8823f7c98a49a69be2db44092c21329f259ca2ac83a554aa4029586145"
+      "predictions_found": 24,
+      "requirements_found": 50,
+      "sha256": "e99811b6282f70016fc796b973d3a737affbf2ff26965417c56794861e192af8"
     },
     "scientific": {
       "option_alternatives_found": 21,
-      "pages": 37,
+      "pages": 32,
       "path": "pdf/SCI-FLT-MATCHED-SCIENTIFIC-RATIONALE-v0.1.pdf",
-      "predictions_found": 18,
-      "requirements_found": 39,
-      "sha256": "0681ada98d57b00fbe9abef23699cf6eee1334ab9420ff84cd862ee0964897c0"
+      "predictions_found": 24,
+      "requirements_found": 50,
+      "sha256": "e0e7e83ee311b002f6916bad0563c874c07121cab70089ef4d3eb8b07f11626a"
     }
   },
   "scope": "source/PDF build consistency only; not scientific validation or implementation conformity",
@@ -52,20 +52,20 @@
     "common/edge_cases.tex"
   ],
   "shared_module_sha256": {
-    "assumptions.tex": "96f20e43d61a4c72b61fb62e2c07a8982bec6018305e50d9e6253ba92e5befb9",
-    "definitions.tex": "e64c558b62f03b921da462d7da47195032050d701e56ce52e23b8dcc4df5d519",
-    "edge_cases.tex": "d2301f9301d63d566393fa44d7e5d35a1c6583afbeb73d55df179cf7c4097106",
-    "equations.tex": "a5ee6dcb95040c9497623318d89c2b2a3de0ab3b30dfc1b663195b781afc28f1",
-    "notation.tex": "74cbdd44636db5e992a26090141712918afb248b553c4ec7ca4ee06e53218aec",
-    "requirements.tex": "82f96e306336cc5dc4f9fdea8869f8a679b2cdc0770c3beeb9e2713a158dda26"
+    "assumptions.tex": "90ce54f641286a3f49d7461d782527b0e83e1a9e907011aac62581295ab58cf2",
+    "definitions.tex": "756797ceb97885d4332b365af945d4ca4d243d2c82ebf1e3f5e16f6b37169989",
+    "edge_cases.tex": "064debf5acf216f3ed07ac2a6ecab376e14782b242cf541627a04da85dd2285f",
+    "equations.tex": "20727427b0b284719fd4f265868edae6b005df7547ac6886ab7364d72a4fb209",
+    "notation.tex": "f2d5eee9a84ef62fecec01ffa78805e33bd58909a900775c3ba62e86f79e6ea9",
+    "requirements.tex": "2d73bb39599013368d165ff7ff54af6fb732484ba46ff86b18f72b7a3a19ace8"
   },
   "source_counts": {
-    "crosswalk_stable_ids": 78,
+    "crosswalk_stable_ids": 95,
     "option_alternatives": 21,
     "option_families": 6,
     "owner_decision_questions": 17,
-    "predictions": 18,
-    "requirements": 39
+    "predictions": 24,
+    "requirements": 50
   },
   "status": "PASS"
 }

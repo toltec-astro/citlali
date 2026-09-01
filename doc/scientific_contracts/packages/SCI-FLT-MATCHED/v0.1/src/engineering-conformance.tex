@@ -14,7 +14,7 @@
 \definecolor{rust}{HTML}{9C3D10}
 \definecolor{pale}{HTML}{F3F6F9}
 \hypersetup{colorlinks=true,linkcolor=navy,urlcolor=navy,
-  pdftitle={SCI-FLT-MATCHED Engineering Conformance Specification v0.1},
+  pdftitle={SCI-FLT-MATCHED Engineering Conformance Specification v0.1 r0.2},
   pdfauthor={Implementation-blind Stage B scientific-contract author},
   pdfsubject={Draft engineering conformance specification with unselected options}}
 \setlength{\parindent}{0pt}
@@ -35,7 +35,8 @@
 \textbf{STAGE B DRAFT -- ALL AO-001 THROUGH AO-006 OPTIONS UNSELECTED.}
 No numerical route is authorized. This document specifies evidence structure;
 it reports no implementation,
-conformity, validation, achieved performance, readiness, production,
+conformity, response or covariance fidelity, observational validation,
+achieved performance, readiness, production,
 scientific freeze, or Unity result.}}
 \end{center}}
 \newcommand{\CT}[1]{\texttt{SCI-FLT-\allowbreak MATCHED-\allowbreak CT-\allowbreak #1}}
@@ -56,11 +57,13 @@ optimality claim\par}
 \StatusBox
 \vfill
 {\large Package version: v0.1\par}
+{\large Document revision: r0.2\par}
 {\large Author-packet date: 2026-08-31\par}
 {\large Scientific owner for later disposition: Grant Wilson\par}
 \vspace{0.25in}
-{\small Shared-core draft derived exclusively from the owner-approved
-eight-object author packet bound by manifest SHA-256\par
+{\small Stage B r0.1 was derived exclusively from the owner-approved
+eight-object author packet; r0.2 applies the subsequent scientific-owner
+closure directive. The admitted packet remains bound by SHA-256\par
 \texttt{255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8}.\par}
 \end{titlepage}
 
@@ -84,9 +87,10 @@ the full validity domain, and the evidence bundle. A partial or aggregate pass
 cannot erase a failed requirement, prediction, option consequence, or named-use
 profile.
 
-Conformity means that a realization implements the selected scientific
-operator and product semantics within the selected envelope. Validation is a
-separate evaluation of immutable FLT-owned profiles. Performance measurement,
+Conformity means that a realization implements the selected exact scientific
+operator and product semantics under one preregistered numerical-conformance
+profile. SCI-VAL separately evaluates immutable FLT-owned named-use profiles;
+observational/scientific validation is another evidence class. Performance measurement,
 readiness, and production are later layers. This draft supplies no result in
 any layer.
 
@@ -104,17 +108,20 @@ Contract identity & \texttt{SCI-FLT-MATCHED v0.1}, shared-core digest, owner-
 disposed contract digest, and supersession status. \\
 Realization identity & Complete realization tuple from
 Section~\ref{sec:definitions}, including parent class and state generation. \\
-Owner dispositions & Exact alternatives and all numeric/profile parameters for
-\texttt{AO-001} through \texttt{AO-006}; no inferred defaults. \\
+Dispositions & Exact scientific alternatives, representation declarations,
+and the preregistered engineering numerical profile for \texttt{AO-001}
+through \texttt{AO-006}; no inferred defaults. \\
 Validity domain & Parent classes, WCS/frame, indexing, units, template and
 state strata, support/boundary classes, rank/null regimes, and exclusions. \\
-Comparator & Exact $N/D$ reference identity, covariance authority when any,
-and response/state reconstruction identity. \\
+Comparator & Exact $n_p/d_p$ reference identity, actual realized operator,
+covariance authority when any, exact subspace projectors, and response/state
+reconstruction identity. \\
 Evidence identity & Immutable input, expected-result, observed-result,
 environment, tool/procedure, tolerance, uncertainty, and provenance records. \\
 Verdicts & Requirement-, prediction-, option-, and profile-level outcomes using
-distinct \textsf{disabled}, \textsf{unavailable}, \textsf{failed},
-\textsf{complete}, and \textsf{superseded} semantics. \\
+the complete lifecycle vocabulary, including distinct \textsf{not requested},
+\textsf{disabled}, \textsf{unavailable}, \textsf{failed},
+\textsf{complete publication candidate}, and \textsf{superseded} semantics. \\
 Nonclaims & Explicit statement that conformity does not establish validation,
 performance, readiness, production, or scientific authority. \\
 \bottomrule
@@ -161,8 +168,8 @@ predictions, option alternatives, edge cases, and failure semantics.
 \label{sec:ct-families}
 
 These are specification-level evidence families, not executed tests. Each
-future realization shall instantiate all applicable families after the owner
-selects the six option sets.
+future realization shall instantiate all applicable families after the exact
+scientific, representation, and numerical-profile dispositions exist.
 
 \begin{longtable}{p{0.18\linewidth}p{0.27\linewidth}p{0.45\linewidth}}
 \toprule
@@ -175,49 +182,59 @@ identities. Any missing/mutable identity is unavailable; mismatch fails. \\
 \CT{002} & Parent admission & Exercise observation and coadd admissions
 separately; reject derived/JINC parents, missing coadd membership, changed
 generation, and assumed commutation/state sharing. \\
-\CT{003} & Template and units & Verify immutable materialization, scaling,
-phase, anchor, sampling, lineage, $[\widehat A]=[m]/[t]$, rescaling law, and
-rejection of target/NOI-member learning and unsupported flux/beam meaning. \\
-\CT{004} & Exact operator and normalization & Compare $N$, $D$, $L$, amplitude,
-and matching-template response with an independent exact oracle over the full
-cover; test zero, negative, nonfinite, and nonreal $D$ failure routing. \\
-\CT{005} & Support, boundaries, and nulls & Construct complete, eroded, filled,
-missing, invalid, and null-confounded cases; require exact valid-domain and
-support/null equality with no partial estimate or edge renormalization. \\
+\CT{003} & Anchors, template, and units & Verify the identical parent-pixel
+anchor lattice, deterministic phase/ties, exact template object and query
+representation, scaling, lineage, $[\widehat a]=[m]/[t]$, rescaling law, and
+rejection of target/member learning or unsupported flux/beam meaning. \\
+\CT{004} & Exact operator and normalization & Compare $n_p$, $d_p$, $L$,
+amplitude, local restriction/inversion, and matching-template response with an
+independent exact oracle; test self-adjoint PSD closure and every invalid-$d_p$
+route. \\
+\CT{005} & Support, boundaries, and subspaces & Construct complete, eroded,
+filled, missing, invalid, zero-coefficient, and each distinct covariance/
+excluded/weighting/template-null case; require exact support-family and
+projector equality with no partial estimate or edge renormalization. \\
 \CT{006} & Weighting option & Instantiate the selected \AO{001} population,
 units, coefficients, rank/null, regularization, window/edge, response,
-uncertainty, products, failure, and option-specific quantitative closure.
+uncertainty, products, failure, and option-specific exact closure.
 Test observation and coadd separately. \\
-\CT{007} & Approximation envelope & Evaluate every selected \AO{002} metric,
-state stratum, boundary/support class, response query, covariance projection,
-coverage proof, and method/realization boundary. Report worst cases. \\
-\CT{008} & Response & Verify $R_t=L_xt_y$, unit self-response, full off-
-diagonal behavior, selected \AO{005} reconstruction/query contract, invariance
-nonclaims, lineage, units, lifecycle, and unsupported-query rejection. \\
-\CT{009} & State and NOI parity & Verify declare/learn-once inputs and
-population, freeze, selected \AO{004} persistence/reconstruction, generation
+\CT{007} & Numerical conformance & Evaluate the one preregistered profile over
+every declared state, support, boundary, subspace, response, and covariance stratum.
+Keep realized and reference quantities separate; report complete observables
+and coverage without promoting thresholds to scientific authority. \\
+\CT{008} & Response & Verify fixed, full-procedure, realized, and reference
+types; unit self-response; general off-diagonal behavior; selected \AO{005}
+domain/query/representation contract; lineage; lifecycle; and unsupported-query
+rejection. \\
+\CT{009} & State and NOI parity & Verify Learn--Resolve--Apply inputs,
+population, protection, diagnostics, freeze, selected \AO{004} exact query
+reproduction, generation
 immutability, successor behavior, identical compatible-NOI transformation, and
 rejection of per-member relearning. \\
 \CT{010} & Covariance and uncertainty & Where authorized, independently
-propagate $LC_{\rm parent}L^{\mathsf T}$ and validate selected \AO{003}, units,
-population, rank/null, calibration terms, omitted-mode labels, consumers, and
-sampling uncertainty. Otherwise verify typed absence and no $D^{-1}$ claim. \\
+propagate actual and reference covariance separately and assess selected
+\AO{003} scientific scope and exact representation, units, population,
+subspaces, calibration terms, consumers, and sampling theorem. Otherwise
+verify typed absence and no $d_p^{-1}$ claim. \\
 \CT{011} & Products and lifecycle & Verify atomic signal membership, companion
-independence, five lifecycle states, required/optional failure propagation,
+independence, the complete lifecycle vocabulary, required/optional failure propagation,
 immutability, supersession, no public unqualified intermediate, and exact
 lineage closure. \\
-\CT{012} & Profiles and actions & Instantiate selected \AO{006}; exhaust role
-verdict/dependency/action combinations for PA, SA, SP, CU, NU, and FH; verify
-versioning, aggregation nonconcealment, and VAL's evaluator-only role. \\
-\CT{013} & FLT to FRUIT handoff & Verify all minimum FLT-side facts and selected
-response/state queries are available without undocumented state; reject FRUIT
+\CT{012} & SCI-VAL profiles and actions & Instantiate selected \AO{006}
+representation; exhaust four-axis verdict/dependency/action combinations for
+PA, SA, SP, CU, NU, RU, and FH; verify lossless layout, aggregation
+nonconcealment, and VAL's evaluator-only role. \\
+\CT{013} & Boundaries and FLT-to-FRUIT envelope & Verify exact MAP, template,
+NOI, and one-way FRUIT producer-envelope records, route status, and all
+supported response/state queries without undocumented state. Reject FRUIT
 science or unsupported queries without changing the signal verdict. \\
 \CT{014} & Exclusions and fail-closed selection & Attempt every excluded or
 unselected route, automatic fallback, source interpretation, posterior/Wiener
 meaning, convolution equivalence, and unsupported uncertainty claim; require
 typed rejection with no substituted product. \\
 \CT{015} & Claim-layer separation & Verify records distinguish scientific
-authority, conformity, validation, achieved performance, readiness, and
+authority, conformity, representation fidelity, SCI-VAL evaluation,
+observational validation, achieved performance, readiness, and
 production, and that no transition is inferred from another layer. \\
 \bottomrule
 \end{longtable}
@@ -230,27 +247,35 @@ Test family & Primary normative coverage \\
 \midrule
 \endhead
 \CT{001} & \Req{001}, \Req{007}, \Req{013}, \Req{032}, \Req{034},
-\Req{038}, \Req{039}. \\
-\CT{002} & \Req{003}, \Req{004}, \Req{016}, \Req{037}; \Pred{006}. \\
-\CT{003} & \Req{002}, \Req{005}, \Req{006}, \Req{007}, \Req{036};
-\Pred{002}, \Pred{003}, \Pred{014}. \\
-\CT{004} & \Req{008}, \Req{009}, \Req{012}; \Pred{001}--\Pred{005}. \\
-\CT{005} & \Req{007}, \Req{009}, \Req{010}, \Req{033}; \Pred{004},
+\Req{038}, \Req{039}, \Req{048}. \\
+\CT{002} & \Req{003}, \Req{004}, \Req{016}, \Req{037}, \Req{040}; \Pred{006}. \\
+\CT{003} & \Req{002}, \Req{005}, \Req{006}, \Req{007}, \Req{036},
+\Req{040}; \Pred{002}, \Pred{003}, \Pred{014}, \Pred{022}. \\
+\CT{004} & \Req{008}, \Req{009}, \Req{012}, \Req{041}, \Req{043},
+\Req{050}; \Pred{001}--\Pred{005}, \Pred{019}--\Pred{021}. \\
+\CT{005} & \Req{007}, \Req{009}, \Req{010}, \Req{033}, \Req{042},
+\Req{050}; \Pred{004},
 \Pred{005}, \Pred{010}. \\
 \CT{006} & \Req{012}--\Req{014}, \Req{019}, \Req{021}; all \AO{001}
 consequences. \\
-\CT{007} & \Req{008}, \Req{011}, \Req{033}; \Pred{010}, \Pred{011}; all
+\CT{007} & \Req{008}, \Req{011}, \Req{033}, \Req{045}; \Pred{010},
+\Pred{011}, \Pred{024}; all
 \AO{002} consequences. \\
-\CT{008} & \Req{005}, \Req{011}, \Req{028}, \Req{036}; \Pred{001},
-\Pred{015}, \Pred{017}; all \AO{005} consequences. \\
-\CT{009} & \Req{015}--\Req{018}, \Req{038}; \Pred{006}, \Pred{007},
-\Pred{011}; all \AO{004} consequences. \\
-\CT{010} & \Req{020}--\Req{022}, \Req{025}, \Req{036}; \Pred{008},
-\Pred{009}, \Pred{013}; all \AO{003} consequences. \\
+\CT{008} & \Req{005}, \Req{011}, \Req{028}, \Req{036}, \Req{043}--\Req{045},
+\Req{048}; \Pred{001}, \Pred{015}, \Pred{017}, \Pred{019}--\Pred{023}; all
+\AO{005} consequences. \\
+\CT{009} & \Req{015}--\Req{018}, \Req{038}, \Req{042}, \Req{044},
+\Req{047}; \Pred{006}, \Pred{007}, \Pred{011}, \Pred{023}; all \AO{004}
+consequences. \\
+\CT{010} & \Req{020}--\Req{022}, \Req{025}, \Req{036}, \Req{045},
+\Req{046}; \Pred{008}, \Pred{009}, \Pred{013}, \Pred{024}; all \AO{003}
+consequences. \\
 \CT{011} & \Req{023}--\Req{027}, \Req{038}; \Pred{011}--\Pred{013}. \\
-\CT{012} & \Req{019}, \Req{026}, \Req{032}, \Req{035}; \Pred{016}; all
+\CT{012} & \Req{019}, \Req{026}, \Req{032}, \Req{035}, \Req{049};
+\Pred{016}; all
 \AO{006} consequences. \\
-\CT{013} & \Req{028}, \Req{029}; \Pred{017}, \Pred{018}; selected \AO{004}
+\CT{013} & \Req{028}, \Req{029}, \Req{038}, \Req{048}; \Pred{017},
+\Pred{018}; selected \AO{004}
 and \AO{005} handoff consequences. \\
 \CT{014} & \Req{006}, \Req{010}, \Req{019}, \Req{027}, \Req{029}--\Req{032};
 \Pred{004}, \Pred{005}, \Pred{016}, \Pred{018}. \\
@@ -269,15 +294,15 @@ Predictions & Evidence pattern & Failure effect \\
 amplitude, phase/anchor, parent class, state, location, and boundary strata;
 independent analytic expectation and repeated zero-mean ensemble where needed.
 & Scientific or operator claim fails. \\
-\Pred{004}--\Pred{005} & Deliberate missing support and each invalid-$D$ class;
+\Pred{004}--\Pred{005} & Deliberate missing support and each invalid-$d_p$ class;
 inspect values, validity, lifecycle, errors, and absence of zero/fallback. &
 Validity or failure contract fails. \\
 \Pred{006}--\Pred{007} & Cross-parent identity comparisons and compatible NOI
-member traces/hashes of state, support, $D$, $L$, and failure decisions. &
+member traces/hashes of state, support, $d_p$, $L$, and failure decisions. &
 State/NOI conformity fails. \\
 \Pred{008}--\Pred{010} & Authorized fixed-state ensembles, exact propagated
 covariance, label-removal audit, and full selected-envelope metric bundle. &
-Affected covariance or approximation route fails. \\
+Affected covariance or numerical-conformance route fails. \\
 \Pred{011}--\Pred{013} & Mutation/supersession attempts and atomic failure
 injection for every required and optional member under each named policy. &
 Identity or product lifecycle fails. \\
@@ -287,6 +312,13 @@ Unit, response, selection, or handoff route fails. \\
 \Pred{018} & Search every public field/profile/action for excluded semantics or
 claim-layer promotion; attempt prohibited consumer interpretations. &
 Conformance claim fails closed. \\
+\Pred{019}--\Pred{022} & Two-template, constant/gradient background,
+off-diagonal-response, and mismatched-shape constructions compared with
+Equation~\ref{eq:general-sky}. & General-sky response or fit boundary fails. \\
+\Pred{023}--\Pred{024} & Authorized Learn--Resolve perturbation reruns and
+exact-law ensembles transformed by both $L$ and $\widetilde L$, with state
+changes and actual/reference response/covariance kept distinct. & Response-
+family or realized-covariance claim fails. \\
 \bottomrule
 \end{longtable}
 
@@ -301,8 +333,8 @@ unless the successor explicitly binds it and closes every changed fact.
 
 Optional companions receive separate verdicts. A signal-level aggregate may
 remain complete when an optional companion fails only if the selected FLT-owned
-policy says that companion is not required. Profile aggregation follows the
-selected \AO{006} alternative and always retains six distinct role verdicts.
+policy says that companion is not required. Profile representation follows the
+selected \AO{006} alternative and always retains seven distinct role verdicts.
 
 \appendix
 \section{Audit artifact minimums}
@@ -319,8 +351,10 @@ evidence.
 
 \section{Author-packet basis and firewall statement}
 
-This draft used only the exact eight objects named by the approved author
-packet. Links were provenance only and were not opened. No implementation,
+Stage B r0.1 used only the exact eight objects named by the approved author
+packet. The r0.2 revision additionally used only the scientific owner's exact
+targeted closure directive dated 2026-08-31. Links were provenance only and
+were not opened. No implementation,
 configuration, schema, test, audit, validation, reduction, generated product,
 history, neighboring package, external source, or model-memory source supplied
 scientific content. The shared core is identical to the one imported by the

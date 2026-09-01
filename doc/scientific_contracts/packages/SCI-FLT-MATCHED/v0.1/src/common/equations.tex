@@ -2,143 +2,187 @@
 \section{Reference estimator, response, and uncertainty}
 \label{sec:equations}
 
-\subsection{Authoritative operator}
+\subsection{Authoritative coordinate-basis operator}
 
-For every admitted $x\in\Valid$, the scientific reference is
+For every admitted anchor $p\in\Valid$,
 \begin{align}
-  N(x) &= \langle t_x,Q_xm_x\rangle_x, \\
-  D(x) &= \langle t_x,Q_xt_x\rangle_x, \\
-  \widehat A(x) &= \frac{N(x)}{D(x)}, \\
-  L_xu &= \frac{\langle t_x,Q_xu_x\rangle_x}{D(x)}, \\
-  R_t(x,y) &= L_xt_y.
+ m_p &= E_pm, & t_p &= E_pt_p^{\rm full}, \\
+ n_p &= t_p^{\mathsf T}W_pm_p, &
+ d_p &= t_p^{\mathsf T}W_pt_p, \\
+ \widehat a_p &= \frac{n_p}{d_p}, &
+ L_{p,g}u &= \frac{t_p^{\mathsf T}W_pE_pu}{d_p}, \\
+ R_{\rm fixed}(p,s) &= L_{p,g}t_s^{\rm full}. &&
 \end{align}
-$D(x)$ shall be finite, real to the declared numerical tolerance, and strictly
-positive under the selected realization. Otherwise $x$ is \Unavailable{} or
-the required bundle is \Failed{} according to whether the defect precedes or
-occurs during an authorized attempt. Neither outcome is amplitude zero.
+$W_p=W_p^{\dagger}$ and $u^{\dagger}W_pu\geq0$. The scientific
+normalization $d_p$ is finite, exactly real, and strictly positive. Failure of
+one of these exact predicates is typed unavailability or attempt failure,
+never amplitude zero. Ordinary floating-point evidence for the exact
+identities belongs to the preregistered numerical-conformance profile.
 
-\subsection{Matching-template amplitude and unbiasedness}
+\subsection{Matching-template and general-sky relations}
 
-Let the admitted parent near $y$ be
+For the matching single-template model
 \[
-  m = A t_y+n,
+ m=A t_s^{\rm full}+n,
+ \qquad \operatorname E[n\mid g]=0,
 \]
-where $A$ has the declared template-amplitude unit and the frozen-state noise
-obeys $\operatorname{E}[n\mid\mathrm{state}_g]=0$ on complete influence
-support. Linearity gives
+linearity gives
 \[
-  \operatorname{E}[\widehat A(x)\mid\mathrm{state}_g]
-  = A R_t(x,y).
+ \operatorname E[\widehat a_p\mid g]=A R_{\rm fixed}(p,s).
 \]
-At $x=y$ the exact reference operator satisfies
+At $p=s$, exact normalization yields
 \[
-  R_t(y,y)=\frac{\langle t_y,Q_yt_y\rangle_y}{D(y)}=1,
-  \qquad
-  \operatorname{E}[\widehat A(y)\mid\mathrm{state}_g]=A.
+ R_{\rm fixed}(p,p)=1,
+ \qquad \operatorname E[\widehat a_p\mid g]=A.
 \]
-This is conditional fixed-state amplitude unbiasedness for a matching supplied
-template. It does not assert unbiasedness after target-dependent state
-learning, under template mismatch, for incomplete support, or for a different
-sky estimand.
 
-\subsection{Optimality criterion}
+For a general linear sky and deterministic residual,
+\[
+ m=\sum_s A_s t_s^{\rm full}+b+n,
+\]
+the exact fixed-state expectation is
+\begin{equation}
+ \operatorname E[\widehat a_p\mid g]
+ =\sum_s R_{\rm fixed}(p,s)A_s+L_{p,g}b.
+ \label{eq:general-sky}
+\end{equation}
+Unit diagonal response does not make off-diagonal response vanish. Neighboring
+or nonlocal templates may contribute, and a mean, offset, gradient, or other
+unmodeled deterministic $b$ may bias the one-parameter amplitude. These terms
+are response and nuisance leakage, not source attribution or deblending.
+
+\subsection{Local restriction and constrained GLS theorem}
 \label{sec:optimality}
 
-``Optimal matched-template map filtering'' is the exact owner-assigned package
-title. Citation of that proper name is not a realization-level optimality
-claim and shall be accompanied by the draft/unselected status until owner
-disposition. Outside that proper-name citation, the unqualified word
-``optimal'' is forbidden before the following criterion is authorized for the
-exact realization.
-
-The allowed exact claim is: among fixed-state linear estimators of the
-declared template amplitude that
-are unbiased for $t_x$, $L_x$ has minimum conditional variance when
-$C_{\rm parent}$ is the exact authorized covariance on the admitted support,
-$Q_x$ is its authorized inverse on the estimable subspace, the null-space and
-constraints are handled identically, and all domain, population, conditioning,
-unit, and regularization premises hold. This is the inverse-covariance
-generalized least-squares (GLS) criterion. Under weaker weighting, the method
-remains normalized and matching-template amplitude-unbiased but no
-minimum-variance or covariance-authority claim follows.
-
-\subsection{Conditional covariance}
-
-When an exact matching parent covariance is authorized, the fixed-state
-conditional covariance is
+For an authorized parent covariance, local restriction precedes inversion:
 \begin{equation}
-  C_{\rm cond}(x,y)
-  = \operatorname{Cov}[\widehat A(x),\widehat A(y)
-      \mid\mathrm{state}_g]
-  = L_x C_{\rm parent} L_y^{\mathsf T}.
+ C_p=E_pC_{\rm parent}E_p^{\mathsf T}.
+ \label{eq:local-covariance}
 \end{equation}
-Only under the exact inverse-covariance GLS premises above may
-$D(x)^{-1}$ be identified with the marginal conditional variance at $x$.
-Otherwise $D$ is normalization. A diagonal representation of
-$C_{\rm cond}$ does not assert independence; omitted entries remain unknown.
+Let the columns of $U_p$ be an exact orthonormal basis for the declared local
+estimable subspace and $P_p=U_pU_p^{\mathsf T}$ its exact projector. Define
+\[
+ C_{p,E}=U_p^{\mathsf T}C_pU_p,
+ \qquad
+ W_p=U_pC_{p,E}^{-1}U_p^{\mathsf T},
+ \qquad U_p^{\mathsf T}t_p\ne0,
+\]
+where $C_{p,E}$ is positive definite. This is not a claim that a restricted
+global inverse equals the inverse of the restricted covariance.
 
-\subsection{Approximation observables}
+The competitor class contains exactly the linear estimates $\ell^{\mathsf T}m_p$
+with: the identical parent support; the identical $U_p$, constraints, and fixed
+state; $\ell=P_p\ell$; and unit response
+$\ell^{\mathsf T}t_p=1$ to the identical projected template. The matched GLS
+row is
+\[
+ \ell_* = \frac{W_pt_p}{t_p^{\mathsf T}W_pt_p}.
+\]
+For every competitor,
+\[
+ \operatorname{Var}(\ell^{\mathsf T}m_p\mid g)
+ -\operatorname{Var}(\ell_*^{\mathsf T}m_p\mid g)
+ =(\ell-\ell_*)^{\mathsf T}C_p(\ell-\ell_*)\geq0,
+\]
+and
+\[
+ \operatorname{Var}(\widehat a_p\mid g)=d_p^{-1}.
+\]
+This is the sole minimum-conditional-variance and $d_p^{-1}$ variance route.
+It distinguishes covariance zero-variance modes, deliberately excluded or
+infinite-variance modes, weighting-null modes, and a projected template with
+no identifiable component. A shared numerical null label or an unconstrained
+Moore--Penrose operation does not establish the theorem.
+
+\subsection{Fixed-state and full-procedure response}
+
+For frozen state $g_0$,
+\[
+ R_{\rm fixed}(p,s)=L_{p,g_0}t_s^{\rm full}.
+\]
+If state was learned from the parent, a full-procedure response exists only
+under separately authorized rerun authority. With
+\[
+ g_\epsilon=\operatorname{Resolve}
+   (\operatorname{Learn}(m+\epsilon t_s^{\rm full})),
+\]
+it is the declared limit or predeclared finite difference
+\begin{equation}
+ R_{\rm FP}(p,s)=
+ \lim_{\epsilon\to0}
+ \frac{\widehat a_p(m+\epsilon t_s^{\rm full};g_\epsilon)
+       -\widehat a_p(m;g_0)}{\epsilon},
+ \label{eq:full-procedure-response}
+\end{equation}
+or the exact finite-$\epsilon$ analogue with its step, sidedness, and domain
+fixed before evaluation. The state-change record is separate. Without this
+authority $R_{\rm FP}$ is unavailable.
+
+\subsection{Realized and reference response and covariance}
+\label{sec:realized-reference}
+
+Let $L$ be the exact selected scientific operator and $\widetilde L$ the
+operator that actually produced a field. Then
+\begin{align}
+ R_{\rm reference} &= LT,
+ & C_{\rm reference} &= LC_{\rm parent}L^{\mathsf T}, \\
+ R_{\rm realized} &= \widetilde LT,
+ & C_{\rm realized} &= \widetilde L C_{\rm parent}\widetilde L^{\mathsf T}.
+\end{align}
+An amplitude field generated by $\widetilde L$ shall carry the realized pair,
+never the reference pair as though it described the actual field. Either
+covariance exists only when matching $C_{\rm parent}$ authority exists. A
+diagonal representation does not assert independence, and omitted entries are
+unknown.
+
+\subsection{Engineering approximation observables}
 \label{sec:approx-metrics}
 
-Let $\widetilde L$, $\widetilde D$, $\widetilde R_t$, and
-$\widetilde C_{\rm cond}$ denote an approximate realization compared with the
-exact reference on a declared test domain $\mathcal{T}\subseteq\Valid$. The
-minimum common observables are
+The following are comparison observables, not owner-selected scientific
+thresholds:
 \begin{align}
- e_D(x) &:= \frac{|\widetilde D(x)-D(x)|}{D(x)}, \\
- e_A(x) &:= |\widetilde R_t(x,x)-1|, \\
- e_R(x,y) &:= |\widetilde R_t(x,y)-R_t(x,y)|, \\
- \Delta_{\rm supp} &:=
-   \mathbf{1}\{\widetilde\Valid\neq\Valid\}, \\
- \Delta_{\rm null} &:=
-   \mathbf{1}\{\Null(\widetilde L)\neq\Null(L)\}, \\
- e_C &:=
- \frac{\|P_{\rm out}(\widetilde C_{\rm cond}-C_{\rm cond})
-                 P_{\rm out}^{\mathsf T}\|}
-      {\|P_{\rm out}C_{\rm cond}P_{\rm out}^{\mathsf T}\|},
+ e_d(p)&=\frac{|\widetilde d_p-d_p|}{d_p}, &
+ e_a(p)&=|R_{\rm realized}(p,p)-1|,\\
+ e_R&=\|P_{\rm out}(R_{\rm realized}-R_{\rm reference})
+                 P_{\rm anc}^{\mathsf T}\|, &
+ e_L&=\|P_{\rm out}(\widetilde L-L)P_{\rm in}^{\mathsf T}\|,\\
+ e_C&=\|P_{\rm out}(C_{\rm realized}-C_{\rm reference})
+                 P_{\rm out}^{\mathsf T}\|.
 \end{align}
-where $P_{\rm in}$, $P_{\rm out}$, and $P_{\rm anc}$ are separately declared
-projections (or identity maps) on $\mathcal X_{\rm in}$,
-$\mathcal X_{\rm out}$, and $\mathcal X_{\rm anc}$, respectively. Every norm,
-domain measure or grid, aggregation, unresolved-mode set, projection codomain,
-and zero-denominator rule is declared by the selected \AO{002} option.
-Support and null-space equality are scientific predicates, not merely small
-numeric residuals.
+One preregistered engineering numerical-conformance profile binds norms,
+scales, domains, projections, coverage, floating-point environment, exact
+subspace projectors, and acceptance rules before evaluation. No package-wide
+constant is scientific authority. If an authorized operator intentionally
+changes scientific response, support, null space, or estimand, it receives a
+separate method/realization identity and publishes that discrepancy.
 
 \subsection{Uncertainty budget and non-combinability}
 \label{sec:uncertainty-budget}
 
-The uncertainty budget is role-separated:
 \begin{longtable}{p{0.13\linewidth}p{0.29\linewidth}p{0.48\linewidth}}
 \toprule
 ID & Contribution & Contract treatment \\
 \midrule
 \endhead
-U1 & Parent stochastic covariance & Propagate as
-$LC_{\rm parent}L^{\mathsf T}$ only for the exact authorized population and
-conditioning state. \\
-U2 & Calibration and template-amplitude scale & Preserve joint CAL/BEAM and
-parent-template covariance authority. Missing cross-covariance is
-\Unavailable{}, not zero. \\
-U3 & Learned-state uncertainty & Base products condition on the frozen
-state. Marginalization over state learning requires separate authority and
-cannot be inferred from U1. \\
-U4 & Operator approximation discrepancy & Bound only through a selected
-\AO{002} envelope. An unbounded approximation makes affected uncertainty use
-\Unavailable{}. \\
-U5 & Covariance representation or projection & Declare lost modes, omitted
-correlations, reconstruction fidelity, and consumer limits through
-\AO{003}. \\
+U1 & Parent stochastic covariance & Propagate with the operator that actually
+produced the field, for the exact authorized population and conditioning. \\
+U2 & Calibration/template scale & Preserve joint CAL/BEAM and parent-template
+authority; missing cross-covariance is unavailable, not zero. \\
+U3 & Learned-state uncertainty & Base products condition on frozen state.
+Marginalization over Learn--Resolve needs separate authority. \\
+U4 & Numerical or intentional operator discrepancy & Ordinary numerical error
+belongs to the preregistered engineering profile. Intentional scientific
+discrepancy changes method/realization identity. \\
+U5 & Covariance scope/representation & Declare complete, projected, or
+unavailable scope separately from exact representation. \\
 U6 & Frozen-NOI empirical uncertainty & A qualified companion with its own
-population, finite-sample estimator, dependence, and validity. It is not
-automatically $C_{\rm parent}$, $C_{\rm cond}$, significance, or physical
-noise. \\
-U7 & Template mismatch and unmodeled systematics & Outside the base
-matching-template covariance claim. A named extension requires separate
-scientific authority; otherwise affected interpretation is unavailable. \\
+population and finite-sample meaning; it is not automatically parent
+covariance or physical noise. \\
+U7 & Template mismatch/unmodeled systematics & Outside the base matching-
+template covariance and separately reported. \\
 \bottomrule
 \end{longtable}
 
-No scalar ``total uncertainty'' may combine these rows unless every term,
-cross-term, conditioning relation, unit, and population is authorized. The
-absence of a term is disclosed as unavailable, never silently set to zero.
+No scalar total uncertainty combines these terms unless every term,
+cross-term, conditioning relation, unit, and population is authorized.
+Absence is unavailable, never zero.

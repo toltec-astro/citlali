@@ -9,9 +9,16 @@
 \newcommand{\AOpt}[2]{\texttt{SCI-FLT-\allowbreak MATCHED-\allowbreak AO-\allowbreak #1-\allowbreak #2}}
 \newcommand{\Unavailable}{\textsf{unavailable}}
 \newcommand{\Failed}{\textsf{failed}}
-\newcommand{\Complete}{\textsf{complete}}
+\newcommand{\Complete}{\textsf{complete publication candidate}}
 \newcommand{\Disabled}{\textsf{disabled}}
 \newcommand{\Superseded}{\textsf{superseded}}
+\newcommand{\NotRequested}{\textsf{not requested}}
+\newcommand{\Requested}{\textsf{requested}}
+\newcommand{\Effective}{\textsf{effective}}
+\newcommand{\Resolved}{\textsf{resolved}}
+\newcommand{\Applied}{\textsf{applied}}
+\newcommand{\Realized}{\textsf{realized}}
+\newcommand{\NotProduced}{\textsf{not produced}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\Dom}{\mathcal{D}}
@@ -23,93 +30,109 @@
 \subsection{Normative language}
 
 ``Shall'' is a contract requirement. ``May'' identifies an allowed form whose
-scientific preconditions still have to be met. ``Exact'' means exact with
-respect to the declared mathematical realization and its declared numerical
-identity; it does not mean that nature, calibration, or the parent data are
-known without uncertainty. ``Unknown'' and ``unavailable'' never mean zero.
-An option in Section~\ref{sec:authored-options} is a decision candidate, not a
+scientific preconditions still have to be met. ``Exact'' means equality in the
+declared mathematical realization. Ordinary finite-precision acceptance is an
+engineering numerical-conformance question and does not weaken an exact
+scientific identity. ``Unknown'' and ``unavailable'' never mean zero. An
+option in Section~\ref{sec:authored-options} is a decision candidate, not a
 selected route.
 
-\subsection{Objects, domains, and indexing}
+\subsection{Collision-free objects, domains, and indexing}
 
-An application location is denoted by $x$ and a parent-map sample by $z$.
-Both are coordinates in one declared map-domain chart with an immutable WCS,
-frame, grouping, pixel measure, and indexing order. The admitted parent field
-is real-valued, $m:\Dom_m\rightarrow\R$, and the unit-amplitude template
-centered or anchored at $x$ is real-valued,
-$t_x:\Supp_t(x)\rightarrow\R$. The physical template amplitude $A$, the
-published amplitude $\widehat A$, and the contractions $N$ and $D$ are real
-scalars. Let $\mathcal X_{\rm in}$ be the real vector space of admitted parent
-samples, $\mathcal X_{\rm out}$ the real vector space of published amplitude
-samples, and $\mathcal X_{\rm anc}$ the real vector space indexing template
-anchors. Then $L:\mathcal X_{\rm in}\rightarrow\mathcal X_{\rm out}$ and
-$R_t:\mathcal X_{\rm anc}\rightarrow\mathcal X_{\rm out}$. The restriction
-of any field $u$ to the samples required at $x$ is $u_x$. The realized linear
-weighting operator is a real linear map $Q_x$ on the admitted parent-sample
-space, and its declared null space is $\Null(Q_x)$.
+The paired readout-coordinate symbols $x$ and $r$ remain reserved to KID
+authority, and bare $Q_p$ remains reserved to MAP/JINC authority. They are not
+used for this package's map-domain anchors or weighting.
 
-The bracket
+A matched-template output anchor is $p$, a parent-map row or pixel is $q$, and
+a separately indexed template anchor is $s$. The base-v0.1 anchor set
+$\Dom_p$ contains exactly one anchor at each parent ordinary-MAP pixel center,
+with the same WCS, frame, grid, shape, indexing, ordering, and pixel-center
+convention as the parent apart from exact support restriction. The parent
+signal sample is $m_q$. The expected parent response at row $q$ per unit
+amplitude anchored at $p$ is $t_{pq}$; its complete parent-coordinate vector is
+$t_p^{\rm full}$. The restriction/extraction matrix for application support is
+$E_p$, so
 \[
-  \langle a,b\rangle_x
-  = \sum_{z\in\Supp_t(x)} a(z)^{*} b(z)\,\mu(z)
+ m_p=E_p m,\qquad t_p=E_p t_p^{\rm full}.
 \]
-denotes the declared discrete inner product. A continuum representation may
-replace the sum by an integral only when the measure, sampling relation, and
-equivalence to the published discrete estimand are declared. Here $\mu(z)$ is
-the declared pixel or quadrature measure. Complex conjugation is explicit so
-the same notation can be used for a complex transform representation. Such a
-representation may use coefficients in $\C$, but it shall preserve the
-conjugate symmetry of real fields, use the Hermitian adjoint for transform-
-domain operators, and induce the same real $Q_x$, $N$, $D$, $L$, and
-$\widehat A$ after inverse transformation. Complex transform coefficients do
-not change the real scientific codomains above. In the real sample basis,
-covariances are real symmetric matrices and ordinary transpose is therefore
-the covariance adjoint. The contract does not assume stationarity, isotropy,
-periodicity, a flat sky, or a Euclidean pixel metric unless the selected
-realization declares and validates it.
+The scientific weighting $W_p$ is the complete coordinate-basis bilinear
+operator on those restricted vectors. The fixed-state row functional is
+$L_{p,g}$, the template matrix whose column $s$ is $t_s^{\rm full}$ is $T$,
+and $R_{\rm fixed}(p,s)=L_{p,g}t_s^{\rm full}$.
 
-\begin{longtable}{p{0.19\linewidth}p{0.71\linewidth}}
+All scientific input and output vectors are real. A transform representation
+may be complex only when it preserves real-field conjugate symmetry and uses
+the Hermitian adjoint. In the real parent-coordinate basis the adjoint is the
+ordinary transpose. No stationarity, isotropy, periodicity, flat-sky metric,
+or Euclidean physical metric follows from the vector notation.
+
+\begin{longtable}{p{0.20\linewidth}p{0.70\linewidth}}
 \toprule
 Symbol & Normative meaning \\
 \midrule
 \endhead
-$m$, $m_x$ & Immutable admitted ordinary-MAP observation or coadd parent, and
-its complete restriction needed at $x$. \\
-$t_x$ & Immutable materialized parent-map response for unit template amplitude
-at $x$; its scaling fixes the amplitude convention. \\
-$Q_x$ & Frozen realized weighting operator. It is inverse covariance only
-when exact covariance authority establishes that identity. \\
-$N(x)$ & Weighted template-parent contraction
-$\langle t_x,Q_xm_x\rangle_x$. \\
-$D(x)$ & Weighted template self-contraction
-$\langle t_x,Q_xt_x\rangle_x$; normalization unless exact inverse-covariance
-GLS premises establish a variance interpretation. \\
-$\widehat A(x)$ & Published template-amplitude estimand $N(x)/D(x)$ at an
-admitted location. \\
-$L_x$ & Fixed-state linear functional that maps a compatible parent field to
-$\widehat A(x)$. \\
-$R_t(x,y)$ & Fixed-state response $L_x t_y$ to a unit template anchored at
-$y$. \\
-$C_{\rm parent}$ & Authorized real symmetric parent covariance on
-$\mathcal X_{\rm in}$ for an explicitly named population and conditioning
-state. \\
-$C_{\rm cond}$ & Conditional covariance of the filtered amplitude field,
-$L C_{\rm parent}L^{\mathsf T}$ on $\mathcal X_{\rm out}$, when every premise
-is authorized. \\
-$g$ & Immutable method/state generation. A successor is a distinct identity. \\
-$\Valid$ & Set of locations satisfying every parent, template, support,
-operator, normalization, unit, calibration, and selected-option predicate. \\
+$p,q,s$ & Output anchor, parent row/pixel, and independently indexed template
+anchor. \\
+$m$, $m_q$, $m_p$ & Immutable admitted ordinary-MAP parent vector, one parent
+sample, and the complete restriction $E_pm$. \\
+$t_{pq}$, $t_p$ & Parent response per unit amplitude and its complete
+application-support vector. \\
+$E_p$ & Exact extraction/restriction from parent coordinates to
+$\Supp_{\rm apply}(p)$. \\
+$W_p$ & Frozen, self-adjoint, positive-semidefinite complete bilinear weight;
+all measure factors required by the scientific contraction are already in it. \\
+$n_p$ & Weighted template-parent contraction $t_p^{\mathsf T}W_pm_p$. \\
+$d_p$ & Weighted template self-contraction $t_p^{\mathsf T}W_pt_p$; exactly
+real and positive for an admitted anchor. \\
+$\widehat a_p$ & Published fixed-template amplitude $n_p/d_p$. \\
+$L_{p,g}$ & Fixed-state linear functional producing $\widehat a_p$. \\
+$T$ & Full template-response operator over the declared template-anchor domain. \\
+$R_{\rm fixed}(p,s)$ & Fixed-state response $L_{p,g}t_s^{\rm full}$. \\
+$R_{\rm FP}(p,s)$ & Full-procedure response when Learn--Resolve is rerun under
+an authorized perturbation definition; otherwise unavailable. \\
+$C_{\rm parent}$ & Authorized coordinate-basis parent covariance for one exact
+population and conditioning state. \\
+$C_p$ & Locally restricted covariance $E_pC_{\rm parent}E_p^{\mathsf T}$. \\
+$g$ & Immutable method/state generation, including requested, effective,
+resolved, applied, and realized identities. \\
+$\Valid$ & Anchors satisfying every parent, template, application-support,
+operator, normalization, unit, calibration, response, and selected-route
+predicate. \\
 \bottomrule
 \end{longtable}
 
-\subsection{Quantity and unit convention}
+\subsection{Coordinate-basis measure and covariance convention}
+\label{sec:measure-convention}
 
-The template is the expected parent-map response per unit amplitude. Therefore
+This package uses coordinate-basis column vectors and ordinary matrix
+multiplication. There is no additional measure-weighted bracket in the
+scientific estimator. Every fixed pixel area, quadrature weight, transform
+normalization, or metric factor required by a selected realization is part of
+$W_p$ (and of the corresponding template/covariance coordinate convention).
+
+For a random parent vector with mean $\bar m$,
 \[
-  [\widehat A] = [m]/[t].
+ C_{\rm parent}=\operatorname E[(m-\bar m)(m-\bar m)^{\mathsf T}],
+ \qquad [C_{qq'}]=[m]^2.
+\]
+It is a coordinate-basis covariance matrix, not an integral-kernel symbol.
+Under an invertible coordinate or quadrature reparameterization $m'=Sm$,
+\[
+ C'=SC S^{\mathsf T},\qquad
+ t'=St,\qquad
+ W'=S^{-\mathsf T}WS^{-1},
+\]
+so $t^{\mathsf T}Wm$ and $t^{\mathsf T}Wt$ are invariant. A complex
+representation replaces transpose by Hermitian adjoint. Thus
+self-adjointness and positivity mean $W_p=W_p^{\dagger}$ and
+$u^{\dagger}W_pu\geq0$ in the declared coordinate representation.
+
+The units satisfy $[t]=[m]/[a]$ and $[W]=[m]^{-2}$ for an exact covariance
+inverse; weaker weights may carry a common nonzero scale and different
+declared units because that scale cancels in $n_p/d_p$. In every case
+\[
+ [\widehat a]=[m]/[t].
 \]
 A point-source flux interpretation exists only if the template producer and
-CAL/BEAM lineage establish that exact amplitude convention. Otherwise
-$\widehat A$ is a shape amplitude. Parent beam, DC or integral response,
-extended-source fidelity, matched-filter solid angle, and calibration
-covariance are not inherited by implication.
+CAL/BEAM lineage establish that exact amplitude convention. Otherwise the
+result is a declared shape amplitude.

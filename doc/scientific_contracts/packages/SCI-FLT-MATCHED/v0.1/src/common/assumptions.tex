@@ -17,43 +17,45 @@ observation or coadd bundle with authoritative identity, generation, grouping,
 WCS/frame, support, units, calibration provenance, and coadd membership when
 applicable. \\
 \texttt{ASM-002} & Parent, template, physical amplitude, filtered amplitude,
-and sample-basis covariance have the declared real codomains; the chart,
-indexing order, sampling, pixel measure, and coordinate transformations are
-common to parent, template, operator, and response, or an exact declared
-mapping relates them. Any complex transform representation preserves real-
-field conjugacy and uses the corresponding Hermitian adjoint. \\
-\texttt{ASM-003} & $t_x$ is the one immutable template-response product for
-the application and expresses expected parent-map response per unit declared
-amplitude, with fixed scale, anchor, and phase. \\
-\texttt{ASM-004} & The complete influence support is present and valid. No
+and coordinate-basis covariance have declared real codomains. The parent and
+output anchor lattices have the owner-disposed common WCS/frame/grid/indexing
+relation. Coordinate or quadrature changes transform $m,t,C,W$ according to
+Section~\ref{sec:measure-convention}; a complex representation preserves
+conjugacy and uses the Hermitian adjoint. \\
+\texttt{ASM-003} & $t_p$ is the one immutable template-response scientific
+object for the application and expresses expected parent response per unit
+declared amplitude, with fixed scale, anchor, phase, validity, lineage, and
+query vocabulary in an exact representation. \\
+\texttt{ASM-004} & Complete $\Supp_{\rm apply}(p)$ is present and valid. No
 admitted output depends on fill, extension, imputation, partial support,
 edge renormalization, adaptive background, learned taper, or signal-derived
-support. \\
-\texttt{ASM-005} & $Q_x$ is the exact frozen realized weighting object named
-by the selected \AO{001} alternative, including domain, population, units,
-rank, null space, regularization, window, and edge rules. \\
-\texttt{ASM-006} & $D(x)$ is finite, real within the declared numerical
-identity tolerance, and strictly positive. \\
+support. Template, state, response, and storage support remain distinct. \\
+\texttt{ASM-005} & $W_p$ is the exact frozen, self-adjoint,
+positive-semidefinite complete coordinate-basis bilinear weight named by the
+selected \AO{001} alternative, including population, units, rank, null,
+regularization, window, support, and edge rules. \\
+\texttt{ASM-006} & $d_p$ is finite, exactly real, and strictly positive. \\
 \texttt{ASM-007} & For amplitude unbiasedness, the admitted noise has zero
 conditional mean on the complete support given the frozen state and does not
 induce target-dependent changes in the template or operator. \\
-\texttt{ASM-008} & For the GLS optimality claim, $C_{\rm parent}$ is the exact
-authorized covariance for the population, support, conditioning, and
-constraints, and $Q_x$ is its exact inverse on the same estimable subspace. \\
-\texttt{ASM-009} & For $C_{\rm cond}$, $L$, $C_{\rm parent}$, response,
-support, units, and conditioning state refer to the same realization and
-generation. \\
-\texttt{ASM-010} & The state is externally declared or learned once from the
-exact parent and external inputs, then frozen. It is neither target-updated nor
-NOI-member relearned. \\
+\texttt{ASM-008} & For GLS optimality, $C_{\rm parent}$ is the exact authorized
+covariance for the population and conditioning; $C_p$ is restricted before
+inversion; $C_{p,E}$ is positive definite on the exact estimable subspace; the
+projected template is identifiable; and the competitor class is identical. \\
+\texttt{ASM-009} & For covariance, the parent law, operator that actually
+produced the field, response, support, units, and conditioning state refer to
+the same realization and generation; reference quantities remain separate. \\
+\texttt{ASM-010} & State follows the declared Learn--Resolve--Apply graph and
+is frozen before Apply. It is neither target-updated nor NOI-member relearned. \\
 \texttt{ASM-011} & A compatible NOI ensemble member receives the identical
-state, operator, support, normalization, approximation, and failure policy as
+state, operator, support, normalization, numerical profile, and failure policy as
 the signal parent. \\
-\texttt{ASM-012} & Any approximate operator satisfies a selected and fully
-parameterized \AO{002} envelope on its complete declared test domain. \\
-\texttt{ASM-013} & Response and uncertainty representations satisfy selected
-\AO{003} and \AO{005} reconstruction, omitted-mode, consumer, and lifecycle
-limits. \\
+\texttt{ASM-012} & A realized numerical operator is assessed under one
+preregistered engineering numerical-conformance profile. An intentional
+scientific discrepancy has separate method/realization identity. \\
+\texttt{ASM-013} & Covariance scope and representation, response query
+vocabulary and representation, and state query vocabulary and representation
+satisfy the selected \AO{003}--\AO{005} lifecycle rules. \\
 \texttt{ASM-014} & Template and parent calibration lineages are compatible;
 any claimed point-source flux meaning or calibration covariance has explicit
 CAL/BEAM authority. \\
@@ -78,31 +80,42 @@ FLT repair or coaddition. \\
 Application class & Observation or coadd declared independently & Assumed
 commutation or borrowed state between classes & \Unavailable{}; require a
 distinct realization. \\
-Template & Exact materialized response per unit amplitude with scale, phase,
-anchor, sampling, and lineage & Learned from target/member, mismatched chart,
-ambiguous scale, or missing lineage & \Unavailable{}; no inferred template. \\
-Influence support & Complete dependency closure and erosion proof & Missing,
+Output anchors & One anchor at each exact parent pixel center with identical
+parent WCS, frame, grid, shape, index, order, and pixel-center convention & Interpolated,
+subpixel, oversampled, independently sampled, or ambiguous phase/tie rule &
+\Unavailable{} under v0.1; require a separately named successor. \\
+Template & Exact response object per unit amplitude with scale, phase, anchor,
+sampling, lineage, validity, and query vocabulary & Learned from target/member,
+mismatched chart, ambiguous scale, lossy representation, or missing lineage &
+\Unavailable{}; no inferred template. \\
+Application support & Complete nonzero-coefficient payload closure and erosion
+proof, separately typed from state, template, response, and storage support & Missing,
 invalid, filled, extended, imputed, or partially supported dependency & Mark
-affected locations \Unavailable{}; no partial estimate. \\
-Weighting state & Selected \AO{001}, population, operator, rank/null,
-regularization, coefficients, window and edge rules bound to $g$ & Unknown,
-unselected, incompatible, or changing $Q_x$ & Fail closed; no fallback. \\
-Normalization & Finite, real-to-tolerance, strictly positive $D(x)$ & NaN,
-infinite, complex beyond tolerance, zero, negative, or null-confounded &
+affected anchors \Unavailable{}; no partial estimate. \\
+Weighting state & Selected \AO{001}, population, self-adjoint PSD operator,
+rank/null, regularization, coefficients, window and edge rules bound at Resolve
+& Unknown, unselected, incompatible, or changing $W_p$ & Fail closed; no
+fallback. \\
+Normalization & Finite, exactly real, strictly positive $d_p$ & NaN,
+infinite, complex, zero, negative, or null-confounded &
 Location \Unavailable{} or attempted bundle \Failed{}; never write zero. \\
-Approximation & Selected \AO{002} and all metrics within bounds on the full
-test domain & Missing exact comparator, uncovered modes, support/null mismatch,
-or any exceeded bound & \Failed{} for that realization; material change is a
-new realization or method. \\
-Response & Full fixed-state response or selected exact reconstruction contract
-& Undocumented kernel, assumed invariance, or unreconstructable response &
+Numerical realization & One preregistered engineering conformance profile with
+the exact comparator, projectors, norms, scales, domain, and acceptance rules &
+Post-hoc profile, uncovered modes, support/subspace mismatch, or failed rule &
+\Failed{} for that profile; a scientific operator change requires distinct
+identity. \\
+Response & Fixed, full-procedure, realized, and reference types kept distinct,
+with selected exact domain/query/representation contract & Undocumented kernel,
+assumed invariance, strengthened fixed-state meaning, or unreconstructable
+response &
 Response-dependent product or handoff \Unavailable{}. \\
-Units and calibration & $[\widehat A]=[m]/[t]$ and compatible joint lineage &
+Units and calibration & $[\widehat a]=[m]/[t]$ and compatible joint lineage &
 Unjustified flux, beam, solid angle, DC, extended-source, or covariance meaning
 & Forbid the claim; required named use is \Unavailable{}. \\
-Covariance & Matching authorized $C_{\rm parent}$ and selected \AO{003} &
+Covariance & Matching authorized $C_{\rm parent}$, actual producing operator,
+declared scientific scope, and exact selected representation &
 Missing population/conditioning, omitted correlations treated as zero, or
-$D^{-1}$ used without GLS & Covariance use \Unavailable{} or companion
+$d_p^{-1}$ used without constrained local GLS & Covariance use \Unavailable{} or companion
 \Failed{}; signal may remain \Complete{}. \\
 NOI parity & Identical frozen transformation for compatible members &
 Per-member relearning, different support, or mixed generation & NOI companion

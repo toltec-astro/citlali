@@ -800,6 +800,32 @@ rendered pages. The draft is accepted for owner disposition, beginning with
 option, numerical route, implementation conformity, validation result,
 performance, readiness, production, or Unity state is selected or claimed.
 
+Grant then supplied a targeted Stage B r0.2 mathematical-closure,
+option-refactor, lifecycle, and boundary directive on `2026-08-31`. The r0.2
+draft preserves the approved eight-object packet and all r0.1 stable
+requirement, prediction, and AO identities while adding a semantic repair map.
+It closes collision-free notation, coordinate-basis measure/covariance
+algebra, restriction-before-inversion and constrained singular GLS, the exact
+parent-pixel output lattice, general-sky/nuisance response, five support roles,
+Learn--Resolve--Apply, fixed/full-procedure/realized/reference response,
+actual/reference covariance, exact science versus one preregistered engineering
+numerical profile, AO-003--006 science/representation separation, expanded
+lifecycle and SCI-VAL semantics, repaired `PRED-008`, and renamed
+field-power-spectral `AO-001-C`. Exact MAP, template, NOI, and one-way FRUIT
+producer-envelope boundary drafts plus a route-status table are present.
+
+The r0.2 six-module core renders as a 32-page Scientific Rationale and a
+30-page Engineering Conformance Specification with 50 requirements, 24
+predictions, 21 stable AO alternatives, and a 95-ID crosswalk. All 62 pages
+passed visual QA, both build logs have zero overfull boxes or compile defects,
+and the 41-object draft manifest verifies at SHA-256
+`4b66a449fc5b6a90e0ada6c71708e56a9344c3e89a7f69bc8d5b1c8bc88ef0e1`.
+Fourteen SODL questions remain open, two are decided, and one is superseded.
+No weighting, numerical route, implementation conformity, response/covariance
+fidelity, observational validation, performance, readiness, production,
+freeze, or Unity state is selected or claimed. Any later fresh author or
+reviewer iteration uses xhigh effort rather than ultra.
+
 This remains contract-development work only. No algorithm change,
 implementation conformity, validation, calibration, performance, readiness,
 production, freeze, or Unity action is claimed or authorized.
