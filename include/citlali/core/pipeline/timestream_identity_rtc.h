@@ -1,6 +1,6 @@
 #pragma once
 
-#include <citlali/core/pipeline/timestream_native_paired_readout.h>
+#include <citlali/core/pipeline/timestream_val_state.h>
 
 #include <algorithm>
 #include <cstddef>
@@ -367,6 +367,18 @@ public:
         const noexcept {
         return input_;
     }
+    const std::shared_ptr<const ValSnapshot> &val_snapshot_handle()
+        const noexcept {
+        return val_snapshot_;
+    }
+    ValGeneration val_generation() const noexcept {
+        return val_snapshot_->generation();
+    }
+    // Identity RTC manufactures no VAL fact. A substantive RTC producer may
+    // expose producer-owned proposals from its own typed evidence contract.
+    std::span<const ValFinding> proposed_val_findings() const noexcept {
+        return {};
+    }
     std::span<const RtcEvidenceEvent> events() const noexcept {
         return events_;
     }
@@ -445,22 +457,26 @@ public:
 
 private:
     friend std::shared_ptr<const RtcEvidence> learn_identity_rtc(
-        std::shared_ptr<const NativePairedReadoutView>, std::uint64_t);
+        std::shared_ptr<const NativePairedReadoutView>,
+        std::shared_ptr<const ValSnapshot>, std::uint64_t);
     friend std::shared_ptr<const RtcEvidence>
     learn_identity_rtc_partitioned(
         std::shared_ptr<const NativePairedReadoutView>,
         std::span<const std::shared_ptr<const NativePairedReadoutView>>,
-        std::uint64_t);
+        std::shared_ptr<const ValSnapshot>, std::uint64_t);
 
     RtcEvidence(RtcEvidenceIdentity identity,
                 std::shared_ptr<const NativePairedReadoutView> input,
+                std::shared_ptr<const ValSnapshot> val_snapshot,
                 std::vector<RtcEvidenceEvent> events,
                 RtcEvidenceSummary summary)
         : identity_{identity}, input_{std::move(input)},
+          val_snapshot_{std::move(val_snapshot)},
           events_{std::move(events)}, summary_{summary} {}
 
     RtcEvidenceIdentity identity_;
     std::shared_ptr<const NativePairedReadoutView> input_;
+    std::shared_ptr<const ValSnapshot> val_snapshot_;
     std::vector<RtcEvidenceEvent> events_;
     RtcEvidenceSummary summary_;
 };
@@ -468,10 +484,14 @@ private:
 inline std::shared_ptr<const RtcEvidence> learn_identity_rtc_partitioned(
     std::shared_ptr<const NativePairedReadoutView> logical_input,
     std::span<const std::shared_ptr<const NativePairedReadoutView>> partitions,
+    std::shared_ptr<const ValSnapshot> val_snapshot,
     std::uint64_t attempt) {
-    if (!logical_input || attempt == 0) {
+    if (!logical_input || !val_snapshot || attempt == 0 ||
+        val_snapshot->paired_handle().get() !=
+            logical_input->parent_handle().get() ||
+        !(val_snapshot->scope() == logical_input->scope())) {
         throw std::invalid_argument(
-            "identity RTC learning requires input and an attempt identity");
+            "identity RTC learning requires exact input, VAL snapshot, and attempt identity");
     }
     require_exact_native_partition_schedule(*logical_input, partitions);
 
@@ -519,16 +539,17 @@ inline std::shared_ptr<const RtcEvidence> learn_identity_rtc_partitioned(
 
     return std::shared_ptr<const RtcEvidence>(new RtcEvidence{
         RtcEvidenceIdentity{attempt}, std::move(logical_input),
-        std::move(events), summary});
+        std::move(val_snapshot), std::move(events), summary});
 }
 
 inline std::shared_ptr<const RtcEvidence> learn_identity_rtc(
     std::shared_ptr<const NativePairedReadoutView> input,
+    std::shared_ptr<const ValSnapshot> val_snapshot,
     std::uint64_t attempt) {
     const std::vector<std::shared_ptr<const NativePairedReadoutView>>
         partitions{input};
     return learn_identity_rtc_partitioned(
-        std::move(input), partitions, attempt);
+        std::move(input), partitions, std::move(val_snapshot), attempt);
 }
 
 enum class RtcPairDecision : std::uint8_t {
@@ -560,6 +581,13 @@ enum class RtcPairPolicy : std::uint8_t {
     conservative_pair_wide,
 };
 
+// This is the identity operator's own VAL dependency contract. It makes no
+// statement about another RTC operator: every different immutable generation
+// invalidates identity evidence/plan use until the lifecycle is repeated.
+enum class IdentityRtcValChangePolicy : std::uint8_t {
+    exact_generation_requires_relearn,
+};
+
 struct RtcPlanMemoryEvidence {
     std::size_t derived_plan_bytes = 0;
     std::size_t referenced_evidence_count = 0;
@@ -582,6 +610,17 @@ public:
     }
     const RtcIdentityOperator &operator_spec() const noexcept {
         return operator_;
+    }
+    const std::shared_ptr<const ValSnapshot> &val_snapshot_handle()
+        const noexcept {
+        return evidence_->val_snapshot_handle();
+    }
+    ValGeneration required_val_generation() const noexcept {
+        return evidence_->val_generation();
+    }
+    IdentityRtcValChangePolicy val_change_policy() const noexcept {
+        return IdentityRtcValChangePolicy::
+            exact_generation_requires_relearn;
     }
     RtcPairPolicy pair_policy() const noexcept {
         return pair_policy_;
@@ -609,7 +648,8 @@ public:
 
 private:
     friend std::shared_ptr<const RtcPlan> consider_identity_rtc(
-        std::shared_ptr<const RtcEvidence>, std::uint64_t);
+        std::shared_ptr<const RtcEvidence>,
+        std::shared_ptr<const ValSnapshot>, std::uint64_t);
 
     RtcPlan(RtcPlanIdentity identity,
             std::shared_ptr<const RtcEvidence> evidence)
@@ -635,10 +675,12 @@ private:
 
 inline std::shared_ptr<const RtcPlan> consider_identity_rtc(
     std::shared_ptr<const RtcEvidence> evidence,
+    std::shared_ptr<const ValSnapshot> val_snapshot,
     std::uint64_t consideration) {
-    if (!evidence || consideration == 0) {
+    if (!evidence || !val_snapshot || consideration == 0 ||
+        evidence->val_snapshot_handle().get() != val_snapshot.get()) {
         throw std::invalid_argument(
-            "identity RTC consideration requires evidence and a consideration identity");
+            "identity RTC consideration requires evidence, its exact VAL snapshot, and a consideration identity");
     }
     // The identity witness has one conservative policy: every accepted
     // input-admission event makes the paired occurrence ineligible. The
@@ -677,6 +719,17 @@ public:
     const std::shared_ptr<const NativePairedReadoutObservation> &
     native_parent_handle() const noexcept {
         return input_->parent_handle();
+    }
+    const std::shared_ptr<const ValSnapshot> &val_snapshot_handle()
+        const noexcept {
+        return plan_->val_snapshot_handle();
+    }
+    ValGeneration val_generation() const noexcept {
+        return plan_->required_val_generation();
+    }
+    // Identity apply produces no post-apply VAL proposal.
+    std::span<const ValFinding> proposed_val_findings() const noexcept {
+        return {};
     }
     const NativeObservationScope &scope() const noexcept {
         return input_->scope();
@@ -792,11 +845,13 @@ public:
 private:
     friend RtcApplyResult apply_identity_rtc(
         std::shared_ptr<const RtcPlan>,
-        std::shared_ptr<const NativePairedReadoutView>);
+        std::shared_ptr<const NativePairedReadoutView>,
+        std::shared_ptr<const ValSnapshot>);
     friend RtcApplyResult apply_identity_rtc_partitioned(
         std::shared_ptr<const RtcPlan>,
         std::shared_ptr<const NativePairedReadoutView>,
-        std::span<const std::shared_ptr<const NativePairedReadoutView>>);
+        std::span<const std::shared_ptr<const NativePairedReadoutView>>,
+        std::shared_ptr<const ValSnapshot>);
 
     RtcTimestream(std::shared_ptr<const RtcPlan> plan,
                   std::shared_ptr<const NativePairedReadoutView> input)
@@ -834,6 +889,7 @@ struct RtcRealization {
     std::size_t x_numerically_valid_cell_count = 0;
     std::size_t r_numerically_valid_cell_count = 0;
     std::size_t realized_sampling_factor = 1;
+    ValGeneration val_generation;
 };
 
 struct RtcApplyResult {
@@ -841,17 +897,30 @@ struct RtcApplyResult {
     RtcRealization realization;
 };
 
+class StaleRtcValGeneration : public std::logic_error {
+public:
+    using std::logic_error::logic_error;
+};
+
 inline RtcApplyResult apply_identity_rtc_partitioned(
     std::shared_ptr<const RtcPlan> plan,
     std::shared_ptr<const NativePairedReadoutView> logical_input,
     std::span<const std::shared_ptr<const NativePairedReadoutView>>
-        partitions) {
+        partitions,
+    std::shared_ptr<const ValSnapshot> resolved_val_snapshot) {
     if (!plan || !logical_input ||
         plan->input_handle().get() != logical_input.get()) {
         throw std::invalid_argument(
             "identity RTC apply requires the exact plan-bound input");
     }
+    if (!resolved_val_snapshot ||
+        plan->val_snapshot_handle().get() != resolved_val_snapshot.get()) {
+        throw StaleRtcValGeneration(
+            "identity RTC plan cannot apply against a different VAL generation");
+    }
     if (!(plan->input_handle()->scope() == logical_input->scope()) ||
+        resolved_val_snapshot->paired_handle().get() !=
+            logical_input->parent_handle().get() ||
         plan->operator_spec().sampling_factor != 1 ||
         plan->operator_spec().sampling_phase != 0) {
         throw std::logic_error(
@@ -865,7 +934,8 @@ inline RtcApplyResult apply_identity_rtc_partitioned(
         plan->identity(), RtcCompletionState::complete,
         logical_input->native_occurrence_count(),
         logical_input->detector_occurrence_count(),
-        pair_ineligible_cell_count, 0, 0, 0, 0, 1};
+        pair_ineligible_cell_count, 0, 0, 0, 0, 1,
+        resolved_val_snapshot->generation()};
     for (const auto &partition : partitions) {
         for (const auto &network_span : partition->spans()) {
             const auto &network =
@@ -906,11 +976,13 @@ inline RtcApplyResult apply_identity_rtc_partitioned(
 
 inline RtcApplyResult apply_identity_rtc(
     std::shared_ptr<const RtcPlan> plan,
-    std::shared_ptr<const NativePairedReadoutView> input) {
+    std::shared_ptr<const NativePairedReadoutView> input,
+    std::shared_ptr<const ValSnapshot> resolved_val_snapshot) {
     const std::vector<std::shared_ptr<const NativePairedReadoutView>>
         partitions{input};
     return apply_identity_rtc_partitioned(
-        std::move(plan), std::move(input), partitions);
+        std::move(plan), std::move(input), partitions,
+        std::move(resolved_val_snapshot));
 }
 
 }  // namespace citlali::pipeline

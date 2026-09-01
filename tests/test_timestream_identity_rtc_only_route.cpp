@@ -17,6 +17,7 @@ namespace support = citlali::test::timestream_successor;
 
 struct RtcOnlyFixture {
     std::shared_ptr<const pipeline::NativePairedReadoutObservation> native;
+    std::shared_ptr<const pipeline::ValSnapshot> val;
 };
 
 RtcOnlyFixture route_fixture(double time_offset = 0.0) {
@@ -42,7 +43,9 @@ RtcOnlyFixture route_fixture(double time_offset = 0.0) {
          1000.0325 + time_offset},
         {700, 701, 703}, 1, 11.0, 111.0,
         std::move(nw7_x), std::move(nw7_r)));
-    return {support::make_observation(std::move(networks), {0, 7})};
+    auto native = support::make_observation(std::move(networks), {0, 7});
+    auto val = pipeline::ValSnapshot::initial(native);
+    return {std::move(native), std::move(val)};
 }
 
 pipeline::RtcOnlyRouteRequest route_request(
@@ -53,6 +56,7 @@ pipeline::RtcOnlyRouteRequest route_request(
     const auto cardinality = fixture.native->cardinality();
     return {{run},
             fixture.native,
+            fixture.val,
             logical_spans,
             {{{0, 10, 12}, {7, 70, 71}},
              {{0, 12, 14}, {7, 71, 73}}},
@@ -89,9 +93,13 @@ TEST(identity_rtc_only_route,
               bundle.realization().plan_identity);
     EXPECT_EQ(bundle.evidence_handle(),
               bundle.plan_handle()->evidence_handle());
+    EXPECT_EQ(bundle.val_snapshot_handle(), fixture.val);
+    EXPECT_EQ(bundle.evidence_handle()->val_snapshot_handle(), fixture.val);
+    EXPECT_EQ(bundle.plan_handle()->val_snapshot_handle(), fixture.val);
 
     const auto &product = *bundle.timestream_handle();
     EXPECT_EQ(product.native_parent_handle(), fixture.native);
+    EXPECT_EQ(product.val_snapshot_handle(), fixture.val);
     EXPECT_EQ(product.network_spans().size(), 2U);
     EXPECT_EQ(product.output_native_occurrence_count(), 7U);
     EXPECT_EQ(product.output_cell_count(), 7U);
@@ -115,6 +123,7 @@ TEST(identity_rtc_only_route,
     EXPECT_EQ(diagnostics.detector_count, 2U);
     EXPECT_EQ(diagnostics.native_occurrence_count, 7U);
     EXPECT_EQ(diagnostics.detector_occurrence_count, 7U);
+    EXPECT_EQ(diagnostics.val_generation, pipeline::ValGeneration{0});
     EXPECT_EQ(diagnostics.evidence_event_count, 2U);
     EXPECT_EQ(diagnostics.direct_x_event_count, 1U);
     EXPECT_EQ(diagnostics.direct_r_event_count, 1U);
@@ -167,6 +176,31 @@ TEST(identity_rtc_only_route,
     EXPECT_EQ(rejected.terminal.failure_cause,
               pipeline::RtcOnlyFailureCause::input_contract_rejected);
     EXPECT_EQ(mismatch_publication.snapshot(), nullptr);
+}
+
+TEST(identity_rtc_only_route,
+     rejects_a_missing_or_foreign_val_snapshot_before_learning) {
+    const auto fixture = route_fixture();
+    auto missing = route_request(fixture);
+    missing.val_snapshot.reset();
+    pipeline::RtcOnlyProductSlot missing_publication;
+    const auto missing_outcome = pipeline::run_identity_rtc_only(
+        missing, missing_publication);
+    EXPECT_FALSE(missing_outcome.complete());
+    EXPECT_EQ(missing_outcome.terminal.failure_cause,
+              pipeline::RtcOnlyFailureCause::val_snapshot_rejected);
+    EXPECT_EQ(missing_outcome.terminal.diagnostics.learn_entry_count, 0U);
+
+    const auto foreign = route_fixture(10.0);
+    auto mismatched = route_request(fixture, 14);
+    mismatched.val_snapshot = foreign.val;
+    pipeline::RtcOnlyProductSlot mismatch_publication;
+    const auto mismatch_outcome = pipeline::run_identity_rtc_only(
+        mismatched, mismatch_publication);
+    EXPECT_FALSE(mismatch_outcome.complete());
+    EXPECT_EQ(mismatch_outcome.terminal.failure_cause,
+              pipeline::RtcOnlyFailureCause::val_snapshot_rejected);
+    EXPECT_EQ(mismatch_outcome.terminal.diagnostics.learn_entry_count, 0U);
 }
 
 TEST(identity_rtc_only_route,

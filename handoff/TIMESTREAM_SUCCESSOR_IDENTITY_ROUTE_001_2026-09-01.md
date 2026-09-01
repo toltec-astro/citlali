@@ -458,3 +458,188 @@ These are supplemental local regression and contract-conformance results, not
 Spack/V2 representative-data, independent-review, integration, activation,
 release, or production evidence. The provisional representative acceptance
 runner was not run.
+
+## Owner-directed VAL state-plane repair work order
+
+Repair work-order identity:
+`TIMESTREAM-SUCCESSOR-IDENTITY-VAL-REPAIR-001`.
+
+Purpose and owner: the Citlali project owner's 2026-09-01 directive preserves
+exact reviewed pre-repair candidate
+`3b1d56a87bebb4aebc02db223f36fc7f5eeb83b7` and requires one local child
+candidate that makes VAL an always-present parallel state plane. The repair
+must stop after exact-SHA validation and fresh independent review.
+
+Risk tier and WIP: Tier 2. This is a repair of the one active Timestream
+Successor spine increment, not a new spine or scientific-module probe.
+
+Applicable authority:
+
+- effective `doc/governance/ENGINEERING_GOVERNANCE.md`,
+  `doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md`, and
+  `doc/governance/REVIEW_AND_CONFORMANCE.md` through their accepted canonical
+  incorporation record;
+- WP-7.1 contract source
+  `170ecea9de1ee810da7d7e45a489a4545ccd623d`, closure
+  `20ba6ae5dcf0b90a24ac3e778a75eff0a1bbe2aa`, and canonical authority router;
+- canonical ADRs 0017, 0018, 0021, and 0023; and
+- the owner's VAL repair directive, which corrects this feature candidate's
+  representation without changing Paired-D1, ALIGN/AST science, or identity
+  RTC numerics.
+
+Exact base, branch, worktree, and initial state:
+
+- base and preserved pre-repair candidate:
+  `3b1d56a87bebb4aebc02db223f36fc7f5eeb83b7`;
+- base tree: `3bda4548b92e33fa648e8452cb3d2d21b38425ab`;
+- sole parent of the preserved candidate:
+  `4c06fe83d8c9627d87f97c6a77d6a4ca99156e5a`;
+- branch: `codex/timestream-successor-identity-route`;
+- worktree: `/private/tmp/citlali-timestream-successor-identity-route`;
+- initial staged, unstaged, and untracked state: clean; and
+- cached remote feature ref remains at accepted component base
+  `4c06fe83d8c9627d87f97c6a77d6a4ca99156e5a`; local is exactly one commit
+  ahead before this repair.
+
+Reassessment finding: the pre-repair candidate has no core VAL container,
+snapshot, generation, delta, or RTC phase binding. Its two VAL-named objects
+represent only later CAL-for-PTC and PTC-for-MAP use dispositions as
+`not_evaluated_product_unavailable`. That representation makes the only VAL
+surface look unavailable alongside CAL and PTC and does not satisfy the
+owner-directed always-present state-plane architecture.
+
+Owned boundary and lifecycle:
+
+- Paired-D1 remains the exact immutable product and identity authority;
+- VAL 0.1 owns only an immutable route-associated snapshot container,
+  producer-owned fact records, deterministic staged deltas, and generation
+  mechanics; it owns no scientific inference, RTC plan, or MAP admission;
+- ALIGN binds the exact Paired-D1, AST view set, and already-existing VAL
+  snapshot into one route context without changing midpoint or AST behavior;
+- identity RTC owns its conservative exact-generation dependency: evidence,
+  plan, and product bind one exact immutable VAL snapshot, and any different
+  generation requires relearning/reconsideration before apply; and
+- application orchestration passes exact handles at phase boundaries and
+  retains typed unavailable CAL/PTC products and unavailable MAP admission.
+
+Included scope and expected paths:
+
+- new isolated `timestream_val_state.h` container contract and header test;
+- exact VAL-snapshot participation in `timestream_identity_rtc.h` and
+  `timestream_identity_rtc_only_route.h`;
+- VAL binding and clarification of optional unavailable downstream VAL
+  evaluation in the identity route-context header/implementation;
+- focused RTC, RTC-only, and route-context tests, including a synthetic
+  producer-owned spike fact used only to prove stale-generation rejection;
+- minimal focused-test CMake registration; and
+- this handoff record.
+
+The snapshot implementation will share its immutable Paired-D1 handle and
+prior generation and own only each committed delta. It will not copy signal,
+AST, support, provenance, or a complete prior VAL container per stage.
+
+Focused gates:
+
+- VAL isolated-header compilation, exact identity binding, deterministic
+  insertion/lookup, staged invisibility, and immutable generation tests;
+- RTC learn/consider/apply exact-snapshot tests, zero identity findings, and
+  V0-plan rejection against a synthetic V1 spike finding followed by a valid
+  V1 relearn/consider/apply lifecycle;
+- always-present route VAL with exact Paired-D1/AST/RTC addressability while
+  CAL/PTC remain unavailable and MAP performs no action; and
+- retained Paired-D1, ALIGN/AST, identity RTC, RTC-only, and route-context
+  focused regressions.
+
+Broader gates: build the focused targets, `citlali_cli`, and
+`citlali_safety_test`; run every runnable CTest with the established disabled
+test reported; run configuration preflight plus baseline-, build-, historical
+WP-7-, and validation-ledger suites; after the child commit, verify exact CLI
+revision, ancestry, tree, changed paths, and clean state.
+
+Affected-mode and representative-environment disposition: no route is active
+and no numerical operator, configuration, or product is changed, so no
+affected-mode reduction is triggered. Local AppleClang/cache-backed results
+are supplemental. Spack/V2 representative execution is explicitly prohibited
+for this repair.
+
+Review triggers and stop conditions: stop on any need for a real spike or
+incidence detector, scientific fact interpretation, convergence rule,
+filtering, decimation, common-grid work, Paired-D1 or AST algorithm mutation,
+nonidentity RTC behavior, CAL/PTC/MAP implementation, `Engine` growth,
+persistent schema, route activation, or a generic workflow/validity framework.
+
+Integration, push, activation, representative execution, cleanup, and
+production authority: none. One coherent local child commit and fresh
+read-only exact-SHA review are authorized. The preserved candidate must not be
+amended, squashed, rebased, accepted, pushed, or integrated.
+
+## VAL repair implementation and pre-commit validation
+
+The repair adds `ValSnapshot` as the always-present route-associated state
+plane. Generation zero binds one exact immutable Paired-D1 product. Each later
+generation shares that product and its prior snapshot and owns only one sorted
+producer-scoped delta. A `ValAddress` resolves exact sample, network,
+occurrence, and optional detector identity through the bound Paired-D1
+authority. Finding keys additionally bind the producer, its product instance,
+and its opaque producer-local fact code; VAL itself assigns no scientific
+meaning, score, operation, or downstream-admission decision.
+
+The only mutable object is a phase-local `ValDeltaBuilder`. Proposals are not
+visible through the immutable base snapshot before or after the builder is
+frozen. Commit creates a new immutable generation; deterministic sorting and
+duplicate-key rejection make insertion and lookup unambiguous. The container
+does not include RTC plan types, MAP admission types, signal/AST payloads, a
+workflow engine, or cross-producer inference.
+
+The repaired route constructs VAL before ALIGN admission and binds that exact
+snapshot beside Paired-D1 and AST. ALIGN, the RTC input/output contexts, the
+RTC-only request and terminal product, and the MAP-facing boundary all retain
+the same snapshot handle. CAL and PTC products remain typed unavailable. Their
+formerly VAL-named downstream dispositions are clarified as optional future
+CAL-for-PTC and PTC-for-MAP VAL evaluations whose absence does not make the
+core state plane unavailable. MAP admission remains unavailable and the route
+still performs no MAP action.
+
+Identity RTC now receives an immutable VAL snapshot explicitly at Learn,
+Consider, and Apply. Evidence retains the exact snapshot and exposes zero
+identity-operator proposals; the plan retains the evidence and declares the
+typed `exact_generation_requires_relearn` policy; Apply requires the exact
+resolved snapshot instance and records the generation in both realization and
+product. A different snapshot, including a child generation of the same
+Paired-D1 product, is rejected as stale. Repeating Learn, Consider, and Apply
+against the new generation is supported without adding a generic iteration
+engine or convergence policy.
+
+The synthetic spike fixture uses only an opaque test-owned RTC fact. It learns
+and plans against V0, stages and commits the test fact into V1, proves the V0
+snapshot never observes the proposal, rejects both V0 evidence consideration
+and V0 plan application against V1, then completes a new explicit lifecycle
+against V1. No spike detector or other incidence science is present in the
+implementation.
+
+Pre-commit local AppleClang/cache-backed validation passed:
+
+- every Timestream Successor focused test: 52/52, comprising canonical
+  Paired-D1 6/6, accepted AST/ALIGN 17/17, VAL/identity RTC/RTC-only 21/21,
+  and repaired route context 8/8;
+- isolated public-header compilation for the new VAL contract plus all
+  retained successor headers;
+- `citlali_cli` and `citlali_safety_test` builds;
+- full CTest registration: 885 tests, 884 runnable tests passed, and the one
+  established disabled `MapFitterLifecycle.ExactProductSequence` remained
+  disabled;
+- configuration preflight: 130/130 tests, all four mode kits, 8/8 compact
+  compatibility cases, complete surface coverage, and every
+  authority/boundary audit passed;
+- baseline tools: 207/207 passed;
+- build tools: 62/62 passed;
+- historical WP-7 tools: 26/26 passed;
+- provisional identity-route verifier: 7/7 passed;
+- validation ledger: 60 records valid; and
+- science-change ledger: 3 changes and 5 integration commits valid.
+
+These results are supplemental local contract and regression evidence. No
+Spack/V2 representative run, affected-mode reduction, route activation,
+canonical integration, remote operation, or MAP action occurred. Exact-child
+ancestry, committed tree, CLI provenance, clean state, and fresh independent
+review remain post-commit gates.

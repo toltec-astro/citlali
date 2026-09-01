@@ -37,6 +37,7 @@ struct IdentityRouteAlignMemoryEvidence {
     std::size_t owned_occurrence_axis_bytes = 0;
     std::size_t referenced_paired_product_count = 0;
     std::size_t referenced_ast_view_set_count = 0;
+    std::size_t referenced_val_snapshot_count = 0;
 
     std::size_t logical_owned_bytes() const noexcept {
         return owned_numeric_bytes + owned_occurrence_axis_bytes;
@@ -50,13 +51,16 @@ class IdentityRouteAlignContext {
 public:
     static std::shared_ptr<const IdentityRouteAlignContext> admit(
         std::shared_ptr<const NativePairedReadoutObservation> paired,
-        std::shared_ptr<const AstScanMotionNetworkViews> ast_views);
+        std::shared_ptr<const AstScanMotionNetworkViews> ast_views,
+        std::shared_ptr<const ValSnapshot> val_snapshot);
 
     const NativeObservationScope &scope() const noexcept;
     const std::shared_ptr<const NativePairedReadoutObservation> &
     paired_handle() const noexcept;
     const std::shared_ptr<const AstScanMotionNetworkViews> &
     ast_views_handle() const noexcept;
+    const std::shared_ptr<const ValSnapshot> &val_snapshot_handle()
+        const noexcept;
     std::span<const TimestreamNetworkId> participant_network_ids()
         const noexcept;
     IdentityRouteOccurrenceTimePolicy occurrence_time_policy()
@@ -75,10 +79,12 @@ public:
 private:
     IdentityRouteAlignContext(
         std::shared_ptr<const NativePairedReadoutObservation> paired,
-        std::shared_ptr<const AstScanMotionNetworkViews> ast_views);
+        std::shared_ptr<const AstScanMotionNetworkViews> ast_views,
+        std::shared_ptr<const ValSnapshot> val_snapshot);
 
     std::shared_ptr<const NativePairedReadoutObservation> paired_;
     std::shared_ptr<const AstScanMotionNetworkViews> ast_views_;
+    std::shared_ptr<const ValSnapshot> val_snapshot_;
 };
 
 enum class IdentityRtcAstDependency : std::uint8_t {
@@ -90,6 +96,7 @@ struct IdentityRtcInputContextMemoryEvidence {
     std::size_t owned_span_bytes = 0;
     std::size_t referenced_align_context_count = 0;
     std::size_t referenced_paired_view_count = 0;
+    std::size_t referenced_val_snapshot_count = 0;
 
     std::size_t logical_owned_bytes() const noexcept {
         return owned_numeric_bytes + owned_span_bytes;
@@ -110,6 +117,8 @@ public:
     signal_handle() const noexcept;
     const std::shared_ptr<const AstScanMotionNetworkViews> &
     ast_views_handle() const noexcept;
+    const std::shared_ptr<const ValSnapshot> &val_snapshot_handle()
+        const noexcept;
     IdentityRtcAstDependency ast_dependency() const noexcept;
     IdentityRtcInputContextMemoryEvidence memory_evidence() const noexcept;
 
@@ -135,6 +144,7 @@ struct IdentityRtcOutputContextMemoryEvidence {
     std::size_t owned_coordinate_plane_bytes = 0;
     std::size_t referenced_input_context_count = 0;
     std::size_t referenced_rtc_terminal_count = 0;
+    std::size_t referenced_val_snapshot_count = 0;
 
     std::size_t logical_owned_bytes() const noexcept {
         return owned_numeric_bytes + owned_coordinate_plane_bytes;
@@ -158,6 +168,8 @@ public:
         const noexcept;
     const std::shared_ptr<const AstScanMotionNetworkViews> &
     ast_views_handle() const noexcept;
+    const std::shared_ptr<const ValSnapshot> &val_snapshot_handle()
+        const noexcept;
     IdentityRtcSamplingRelation sampling_relation() const noexcept;
     IdentityRouteSignalUnitState signal_unit_state() const noexcept;
     IdentityRouteOccurrenceAssignment occurrence_assignment(
@@ -196,8 +208,8 @@ enum class IdentityCalibrationUncertaintyState : std::uint8_t {
     unavailable_no_calibration_product,
 };
 
-enum class IdentityCalibrationForPtcAdmissionState : std::uint8_t {
-    not_evaluated_product_unavailable,
+enum class IdentityCalibrationForPtcValEvaluationState : std::uint8_t {
+    unavailable_calibration_product_absent,
 };
 
 class IdentityRouteCalibrationState {
@@ -233,8 +245,8 @@ enum class IdentityPtcUncertaintyState : std::uint8_t {
     unavailable_no_ptc_product,
 };
 
-enum class IdentityPtcForMapAdmissionState : std::uint8_t {
-    not_evaluated_product_unavailable,
+enum class IdentityPtcForMapValEvaluationState : std::uint8_t {
+    unavailable_ptc_product_absent,
 };
 
 class IdentityRoutePtcState {
@@ -254,31 +266,32 @@ private:
     std::shared_ptr<const IdentityRtcOutputContext> rtc_context_;
 };
 
-// VAL owns consumer-specific use dispositions separately from both producer
-// validity and the unavailable CAL/PTC product states.
-class IdentityRouteCalibrationForPtcValDisposition {
+// These are optional future VAL evaluation capabilities, not the core VAL
+// container and not downstream admission decisions. They remain unavailable
+// only because their required CAL/PTC products do not exist.
+class IdentityRouteCalibrationForPtcValEvaluation {
 public:
     const std::shared_ptr<const IdentityRtcOutputContext> &
     rtc_context_handle() const noexcept;
-    IdentityCalibrationForPtcAdmissionState state() const noexcept;
+    IdentityCalibrationForPtcValEvaluationState state() const noexcept;
 
 private:
     friend class IdentityRouteMapFacingBundle;
-    explicit IdentityRouteCalibrationForPtcValDisposition(
+    explicit IdentityRouteCalibrationForPtcValEvaluation(
         std::shared_ptr<const IdentityRtcOutputContext> rtc_context);
 
     std::shared_ptr<const IdentityRtcOutputContext> rtc_context_;
 };
 
-class IdentityRoutePtcForMapValDisposition {
+class IdentityRoutePtcForMapValEvaluation {
 public:
     const std::shared_ptr<const IdentityRtcOutputContext> &
     rtc_context_handle() const noexcept;
-    IdentityPtcForMapAdmissionState state() const noexcept;
+    IdentityPtcForMapValEvaluationState state() const noexcept;
 
 private:
     friend class IdentityRouteMapFacingBundle;
-    explicit IdentityRoutePtcForMapValDisposition(
+    explicit IdentityRoutePtcForMapValEvaluation(
         std::shared_ptr<const IdentityRtcOutputContext> rtc_context);
 
     std::shared_ptr<const IdentityRtcOutputContext> rtc_context_;
@@ -297,12 +310,14 @@ public:
 
     const std::shared_ptr<const IdentityRtcOutputContext> &
     rtc_context_handle() const noexcept;
+    const std::shared_ptr<const ValSnapshot> &val_snapshot_handle()
+        const noexcept;
     const IdentityRouteCalibrationState &calibration_state() const noexcept;
-    const IdentityRouteCalibrationForPtcValDisposition &
-    calibration_for_ptc_val_disposition() const noexcept;
+    const IdentityRouteCalibrationForPtcValEvaluation &
+    calibration_for_ptc_val_evaluation() const noexcept;
     const IdentityRoutePtcState &ptc_state() const noexcept;
-    const IdentityRoutePtcForMapValDisposition &
-    ptc_for_map_val_disposition() const noexcept;
+    const IdentityRoutePtcForMapValEvaluation &
+    ptc_for_map_val_evaluation() const noexcept;
     IdentityMapAdmissionState map_admission_state() const noexcept;
     bool map_action_performed() const noexcept;
 
@@ -312,9 +327,9 @@ private:
 
     std::shared_ptr<const IdentityRtcOutputContext> rtc_context_;
     IdentityRouteCalibrationState calibration_;
-    IdentityRouteCalibrationForPtcValDisposition calibration_val_;
+    IdentityRouteCalibrationForPtcValEvaluation calibration_val_;
     IdentityRoutePtcState ptc_;
-    IdentityRoutePtcForMapValDisposition ptc_val_;
+    IdentityRoutePtcForMapValEvaluation ptc_val_;
 };
 
 enum class IdentityRouteContextState : std::uint8_t {

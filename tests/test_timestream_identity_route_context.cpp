@@ -81,6 +81,7 @@ std::shared_ptr<const pipeline::AstScanMotionNetworkViews> ast_views(
 
 struct RouteFixture {
     std::shared_ptr<const pipeline::NativePairedReadoutObservation> native;
+    std::shared_ptr<const pipeline::ValSnapshot> val;
     std::shared_ptr<const pipeline::AstScanMotionNetworkViews> ast;
     std::shared_ptr<const pipeline::IdentityRouteAlignContext> align;
 };
@@ -114,9 +115,12 @@ RouteFixture route_fixture(double paired_time_offset = 0.0,
         std::move(nw7_x), std::move(nw7_r)));
     auto native =
         support::make_observation(std::move(networks), {0, 7});
+    auto val = pipeline::ValSnapshot::initial(native);
     auto ast = ast_views(native, ast_source_start_time);
-    auto align = pipeline::IdentityRouteAlignContext::admit(native, ast);
-    return {std::move(native), std::move(ast), std::move(align)};
+    auto align = pipeline::IdentityRouteAlignContext::admit(
+        native, ast, val);
+    return {std::move(native), std::move(val), std::move(ast),
+            std::move(align)};
 }
 
 pipeline::RtcOnlyRouteRequest rtc_request(
@@ -127,6 +131,7 @@ pipeline::RtcOnlyRouteRequest rtc_request(
     const auto cardinality = fixture.native->cardinality();
     return {{run},
             fixture.native,
+            fixture.val,
             logical_spans,
             {{{0, 10, 12}, {7, 70, 71}},
              {{0, 12, 14}, {7, 71, 73}}},
@@ -181,6 +186,7 @@ TEST(identity_route_context,
     const auto &input = *output.input_context_handle();
     EXPECT_EQ(input.align_context_handle(), fixture.align);
     EXPECT_EQ(input.ast_views_handle(), fixture.ast);
+    EXPECT_EQ(input.val_snapshot_handle(), fixture.val);
     EXPECT_EQ(input.signal_handle()->parent_handle(), fixture.native);
     EXPECT_EQ(input.ast_dependency(),
               pipeline::IdentityRtcAstDependency::not_applicable);
@@ -190,6 +196,10 @@ TEST(identity_route_context,
     EXPECT_EQ(output.signal_handle()->input_handle(),
               input.signal_handle());
     EXPECT_EQ(output.ast_views_handle(), fixture.ast);
+    EXPECT_EQ(output.val_snapshot_handle(), fixture.val);
+    EXPECT_EQ(output.signal_handle()->val_snapshot_handle(), fixture.val);
+    EXPECT_EQ(output.signal_handle()->val_generation(),
+              fixture.val->generation());
     EXPECT_EQ(output.sampling_relation(),
               pipeline::IdentityRtcSamplingRelation::
                   native_factor_one_phase_zero);
@@ -211,6 +221,16 @@ TEST(identity_route_context,
     ASSERT_TRUE(output.ast_motion_support(0, 10));
     EXPECT_EQ(output.ast_motion_support(0, 10)->network_occurrence,
               assignment.network_occurrence);
+    const auto val_address = bundle.val_snapshot_handle()->address(0, 10, 0);
+    EXPECT_EQ(val_address.sample_identity(), assignment.network_occurrence);
+    EXPECT_EQ(val_address.sample_identity(),
+              output.signal_handle()->representative_native_identity(0, 10));
+    EXPECT_EQ(bundle.val_snapshot_handle()
+                  ->detector_binding(val_address)
+                  .detector_occurrence_id,
+              output.signal_handle()
+                  ->detector_binding(0, 0)
+                  .detector_occurrence_id);
 
     EXPECT_EQ(std::bit_cast<std::uint64_t>(
                   output.signal_handle()->value(
@@ -226,6 +246,9 @@ TEST(identity_route_context,
     EXPECT_EQ(input.memory_evidence().owned_numeric_bytes, 0U);
     EXPECT_EQ(output.memory_evidence().logical_owned_bytes(), 0U);
 
+    EXPECT_EQ(bundle.val_snapshot_handle(), fixture.val);
+    EXPECT_EQ(bundle.val_snapshot_handle()->generation(),
+              pipeline::ValGeneration{0});
     const auto &cal = bundle.calibration_state();
     EXPECT_EQ(cal.rtc_context_handle(), bundle.rtc_context_handle());
     EXPECT_EQ(cal.product_state(),
@@ -241,11 +264,11 @@ TEST(identity_route_context,
               pipeline::IdentityCalibrationUncertaintyState::
                   unavailable_no_calibration_product);
     const auto &cal_val =
-        bundle.calibration_for_ptc_val_disposition();
+        bundle.calibration_for_ptc_val_evaluation();
     EXPECT_EQ(cal_val.rtc_context_handle(), bundle.rtc_context_handle());
     EXPECT_EQ(cal_val.state(),
-              pipeline::IdentityCalibrationForPtcAdmissionState::
-                  not_evaluated_product_unavailable);
+              pipeline::IdentityCalibrationForPtcValEvaluationState::
+                  unavailable_calibration_product_absent);
 
     const auto &ptc = bundle.ptc_state();
     EXPECT_EQ(ptc.rtc_context_handle(), bundle.rtc_context_handle());
@@ -261,11 +284,11 @@ TEST(identity_route_context,
     EXPECT_EQ(ptc.uncertainty_state(),
               pipeline::IdentityPtcUncertaintyState::
                   unavailable_no_ptc_product);
-    const auto &ptc_val = bundle.ptc_for_map_val_disposition();
+    const auto &ptc_val = bundle.ptc_for_map_val_evaluation();
     EXPECT_EQ(ptc_val.rtc_context_handle(), bundle.rtc_context_handle());
     EXPECT_EQ(ptc_val.state(),
-              pipeline::IdentityPtcForMapAdmissionState::
-                  not_evaluated_product_unavailable);
+              pipeline::IdentityPtcForMapValEvaluationState::
+                  unavailable_ptc_product_absent);
     EXPECT_EQ(bundle.map_admission_state(),
               pipeline::IdentityMapAdmissionState::
                   unavailable_calibration_and_ptc_products);
@@ -296,7 +319,7 @@ TEST(identity_route_context,
      align_admission_rejects_missing_participants_or_copied_timing_handles) {
     const auto fixture = route_fixture();
     EXPECT_THROW(pipeline::IdentityRouteAlignContext::admit(
-                     fixture.native, nullptr),
+                     fixture.native, nullptr, fixture.val),
                  std::invalid_argument);
 
     const auto nw0_timing = fixture.native->network(0)
@@ -306,7 +329,7 @@ TEST(identity_route_context,
         fixture.native->scope(), ast_product(fixture.native->scope()),
         {nw0_timing});
     EXPECT_THROW(pipeline::IdentityRouteAlignContext::admit(
-                     fixture.native, nw0_only),
+                     fixture.native, nw0_only, fixture.val),
                  std::invalid_argument);
 
     std::vector<std::shared_ptr<const pipeline::NativeNetworkAlignment>>
@@ -325,7 +348,7 @@ TEST(identity_route_context,
         fixture.native->scope(), ast_product(fixture.native->scope()),
         std::move(copied_timings));
     EXPECT_THROW(pipeline::IdentityRouteAlignContext::admit(
-                     fixture.native, copied_views),
+                     fixture.native, copied_views, fixture.val),
                  std::invalid_argument);
 }
 
@@ -333,7 +356,9 @@ TEST(identity_route_context,
      approved_midpoint_policy_rejects_a_native_time_at_interval_start) {
     const auto native = non_midpoint_native();
     const auto views = ast_views(native);
-    EXPECT_THROW(pipeline::IdentityRouteAlignContext::admit(native, views),
+    const auto val = pipeline::ValSnapshot::initial(native);
+    EXPECT_THROW(pipeline::IdentityRouteAlignContext::admit(
+                     native, views, val),
                  std::invalid_argument);
 }
 
@@ -354,6 +379,25 @@ TEST(identity_route_context,
     EXPECT_EQ(publication.snapshot(), nullptr);
     EXPECT_EQ(outcome.rtc_terminal.diagnostics.native_admission_entry_count,
               0U);
+}
+
+TEST(identity_route_context,
+     exact_val_snapshot_handle_binding_fails_before_rtc_participation) {
+    const auto fixture = route_fixture();
+    auto request = rtc_request(fixture);
+    // Same Paired-D1 and numeric generation are insufficient: the route
+    // admits one exact immutable snapshot instance.
+    request.val_snapshot = pipeline::ValSnapshot::initial(fixture.native);
+    pipeline::RtcOnlyProductSlot publication;
+    const auto outcome = pipeline::run_identity_route_context(
+        {fixture.align, std::move(request)}, publication);
+
+    EXPECT_FALSE(outcome.map_facing_context_complete());
+    EXPECT_EQ(outcome.failure_cause,
+              pipeline::IdentityRouteContextFailureCause::
+                  align_input_binding_mismatch);
+    EXPECT_EQ(outcome.rtc_terminal.diagnostics.learn_entry_count, 0U);
+    EXPECT_EQ(publication.snapshot(), nullptr);
 }
 
 TEST(identity_route_context,
@@ -383,12 +427,19 @@ TEST(identity_route_context,
     const auto repository = fs::path{__FILE__}.parent_path().parent_path();
     const std::vector<fs::path> paths{
         repository /
+            "include/citlali/core/pipeline/timestream_val_state.h",
+        repository /
+            "include/citlali/core/pipeline/timestream_identity_rtc.h",
+        repository /
+            "include/citlali/core/pipeline/timestream_identity_rtc_only_route.h",
+        repository /
             "include/citlali/core/pipeline/timestream_identity_route_context.h",
         repository /
             "src/citlali/core/pipeline/timestream_identity_route_context.cpp"};
     const std::vector<std::string> forbidden{
-        "CommonAnalysisGrid", "common_analysis_grid", "Engine",
-        "mapmaking/map", "yaml-cpp"};
+        "CommonAnalysisGrid", "common_analysis_grid", "core/engine/",
+        "mapmaking/map", "yaml-cpp", "spike_detector",
+        "spike_detection", "filter_design", "decimator"};
 
     for (const auto &path : paths) {
         std::ifstream stream(path);
@@ -399,6 +450,17 @@ TEST(identity_route_context,
             EXPECT_EQ(content.str().find(token), std::string::npos)
                 << path << " contains excluded dependency " << token;
         }
+    }
+
+    std::ifstream val_stream(paths.front());
+    ASSERT_TRUE(val_stream);
+    std::ostringstream val_content;
+    val_content << val_stream.rdbuf();
+    for (const auto &owned_elsewhere :
+         {"RtcPlan", "RtcIdentityOperator", "IdentityMapAdmissionState"}) {
+        EXPECT_EQ(val_content.str().find(owned_elsewhere),
+                  std::string::npos)
+            << "VAL container owns excluded policy " << owned_elsewhere;
     }
 }
 

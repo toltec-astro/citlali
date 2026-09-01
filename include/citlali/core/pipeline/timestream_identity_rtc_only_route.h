@@ -69,6 +69,7 @@ enum class RtcOnlyFailureCause : std::uint8_t {
     none,
     invalid_run_identity,
     input_contract_rejected,
+    val_snapshot_rejected,
     incomplete_logical_support,
     learning_contract_rejected,
     consideration_contract_rejected,
@@ -90,6 +91,8 @@ constexpr const char *rtc_only_failure_cause_name(
             return "invalid_run_identity";
         case RtcOnlyFailureCause::input_contract_rejected:
             return "input_contract_rejected";
+        case RtcOnlyFailureCause::val_snapshot_rejected:
+            return "val_snapshot_rejected";
         case RtcOnlyFailureCause::incomplete_logical_support:
             return "incomplete_logical_support";
         case RtcOnlyFailureCause::learning_contract_rejected:
@@ -138,6 +141,7 @@ struct RtcOnlyDiagnostics {
     std::size_t apply_entry_count = 0;
     std::size_t finalization_entry_count = 0;
     std::size_t publication_entry_count = 0;
+    ValGeneration val_generation;
 };
 
 struct RtcOnlyTerminalResult {
@@ -179,6 +183,10 @@ public:
         const noexcept {
         return applied_.product->plan_handle()->evidence_handle();
     }
+    const std::shared_ptr<const ValSnapshot> &val_snapshot_handle()
+        const noexcept {
+        return applied_.product->val_snapshot_handle();
+    }
 
 private:
     friend class RtcOnlyProductSlot;
@@ -219,7 +227,9 @@ private:
             candidate->finalization().run_identity !=
                 candidate->terminal_result().identity ||
             candidate->finalization().input_handle !=
-                candidate->timestream_handle()->native_parent_handle()) {
+                candidate->timestream_handle()->native_parent_handle() ||
+            candidate->realization().val_generation !=
+                candidate->timestream_handle()->val_generation()) {
             throw std::invalid_argument(
                 "RTC-only publication candidate is incomplete");
         }
@@ -242,6 +252,9 @@ private:
 struct RtcOnlyRouteRequest {
     RtcOnlyRunIdentity identity;
     std::shared_ptr<const NativePairedReadoutObservation> native_input;
+    // Always-present immutable VAL state for this exact Paired-D1 product.
+    // Learn, consider, and apply all receive this same snapshot explicitly.
+    std::shared_ptr<const ValSnapshot> val_snapshot;
     std::vector<NativeOccurrenceSpan> logical_spans;
     std::vector<std::vector<NativeOccurrenceSpan>> engineering_partitions;
     RtcOnlyLogicalFinalization finalization;
@@ -279,6 +292,20 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
         partition_views;
     try {
         ++terminal.diagnostics.native_admission_entry_count;
+        if (!request.val_snapshot ||
+            request.val_snapshot->paired_handle().get() !=
+                request.native_input.get() ||
+            !(request.val_snapshot->scope() ==
+              request.native_input->scope())) {
+            terminal.state = RtcOnlyTerminalState::input_admission_failed;
+            terminal.failure_cause =
+                RtcOnlyFailureCause::val_snapshot_rejected;
+            terminal.failure_detail =
+                "RTC-only route requires the exact Paired-D1 VAL snapshot";
+            return {terminal, nullptr};
+        }
+        terminal.diagnostics.val_generation =
+            request.val_snapshot->generation();
         if (request.admitted_logical_input) {
             logical_view = request.admitted_logical_input;
             auto requested_spans = request.logical_spans;
@@ -344,7 +371,8 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
     try {
         ++terminal.diagnostics.learn_entry_count;
         evidence = learn_identity_rtc_partitioned(
-            logical_view, partition_views, request.identity.run);
+            logical_view, partition_views, request.val_snapshot,
+            request.identity.run);
         const auto &summary = evidence->summary();
         terminal.diagnostics.evidence_event_count =
             summary.accepted_event_count;
@@ -367,7 +395,8 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
     std::shared_ptr<const RtcPlan> plan;
     try {
         ++terminal.diagnostics.consider_entry_count;
-        plan = consider_identity_rtc(evidence, request.identity.run);
+        plan = consider_identity_rtc(
+            evidence, request.val_snapshot, request.identity.run);
         terminal.diagnostics.derived_plan_bytes =
             plan->memory_evidence().logical_owned_bytes();
     } catch (const std::exception &error) {
@@ -382,7 +411,7 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
     try {
         ++terminal.diagnostics.apply_entry_count;
         applied = apply_identity_rtc_partitioned(
-            plan, logical_view, partition_views);
+            plan, logical_view, partition_views, request.val_snapshot);
         terminal.diagnostics.pair_ineligible_cell_count =
             applied.realization.pair_ineligible_cell_count;
         terminal.diagnostics.x_payload_available_cell_count =

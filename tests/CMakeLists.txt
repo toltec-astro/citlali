@@ -236,21 +236,25 @@ gtest_discover_tests(
         DISCOVERY_MODE PRE_TEST
 )
 
-# Preserved, provisional RTC identity component checkpoint: atomic KIDs
-# ingress, canonical Paired-D1, identity RTC Learn--Consider--Plan--Apply, and
-# an in-memory RTC-only terminal. This target intentionally has no AST input,
-# route coupling, CLI/YAML activation, CAL, PTC, or MAP action.
+# Preserved RTC identity component plus the owner-directed always-present VAL
+# 0.1 state-plane repair: atomic KIDs ingress, canonical Paired-D1, immutable
+# VAL generations, identity RTC Learn--Consider--Plan--Apply, and an in-memory
+# RTC-only terminal. This target intentionally has no AST route coupling,
+# CLI/YAML activation, CAL, PTC, or MAP action.
 add_executable(
     citlali_timestream_successor_identity_test EXCLUDE_FROM_ALL
     timestream_native_paired_readout_kids_adapter_header.cpp
+    timestream_val_state_header.cpp
     timestream_identity_rtc_header.cpp
     timestream_identity_rtc_only_route_header.cpp
     test_timestream_native_paired_readout_kids_adapter.cpp
+    test_timestream_val_state.cpp
     test_timestream_identity_rtc.cpp
     test_timestream_identity_rtc_only_route.cpp
 )
 set_source_files_properties(
     timestream_native_paired_readout_kids_adapter_header.cpp
+    timestream_val_state_header.cpp
     timestream_identity_rtc_header.cpp
     timestream_identity_rtc_only_route_header.cpp
     PROPERTIES SKIP_PRECOMPILE_HEADERS ON
@@ -272,9 +276,10 @@ gtest_discover_tests(
         DISCOVERY_MODE PRE_TEST
 )
 
-# Bounded cross-stage identity context: exact ALIGN/AST/Paired-D1 bindings,
-# identity RTC context continuity, typed unavailable CAL/PTC/VAL states, and a
-# MAP-facing boundary with no MAP admission or action.
+# Bounded cross-stage identity context: exact ALIGN/AST/Paired-D1/VAL bindings,
+# identity RTC context continuity, typed unavailable CAL/PTC products and
+# optional VAL evaluations, and a MAP-facing boundary with no MAP admission or
+# action.
 add_executable(
     citlali_timestream_successor_identity_route_context_test EXCLUDE_FROM_ALL
     timestream_identity_route_context_header.cpp

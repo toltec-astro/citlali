@@ -19,6 +19,7 @@ namespace support = citlali::test::timestream_successor;
 struct IdentityRtcFixture {
     std::shared_ptr<const pipeline::NativePairedReadoutObservation> native;
     std::shared_ptr<const pipeline::NativePairedReadoutView> logical;
+    std::shared_ptr<const pipeline::ValSnapshot> val;
 };
 
 IdentityRtcFixture identity_fixture() {
@@ -39,15 +40,18 @@ IdentityRtcFixture identity_fixture() {
         2, 1.25, 101.25, std::move(x_states), std::move(r_states)));
     auto native = support::make_observation(std::move(networks), {0});
     auto logical = pipeline::NativePairedReadoutView::full(native);
-    return {std::move(native), std::move(logical)};
+    auto val = pipeline::ValSnapshot::initial(native);
+    return {std::move(native), std::move(logical), std::move(val)};
 }
 
 std::shared_ptr<const pipeline::RtcPlan> identity_plan(
     const std::shared_ptr<const pipeline::NativePairedReadoutView> &input,
+    const std::shared_ptr<const pipeline::ValSnapshot> &val,
     std::uint64_t attempt = 1,
     std::uint64_t consideration = 1) {
     return pipeline::consider_identity_rtc(
-        pipeline::learn_identity_rtc(input, attempt), consideration);
+        pipeline::learn_identity_rtc(input, val, attempt), val,
+        consideration);
 }
 
 TEST(identity_rtc,
@@ -67,10 +71,14 @@ TEST(identity_rtc,
 TEST(identity_rtc,
      learn_preserves_coordinate_local_and_pair_causes_as_sparse_evidence) {
     const auto fixture = identity_fixture();
-    const auto evidence = pipeline::learn_identity_rtc(fixture.logical, 7);
+    const auto evidence = pipeline::learn_identity_rtc(
+        fixture.logical, fixture.val, 7);
 
     EXPECT_EQ(evidence->identity().attempt, 7U);
     EXPECT_EQ(evidence->input_handle(), fixture.logical);
+    EXPECT_EQ(evidence->val_snapshot_handle(), fixture.val);
+    EXPECT_EQ(evidence->val_generation(), pipeline::ValGeneration{0});
+    EXPECT_TRUE(evidence->proposed_val_findings().empty());
     EXPECT_EQ(evidence->summary().examined_cell_count, 8U);
     EXPECT_EQ(evidence->summary().accepted_event_count, 3U);
     EXPECT_EQ(evidence->summary().direct_x_event_count, 2U);
@@ -116,8 +124,10 @@ TEST(identity_rtc,
 TEST(identity_rtc,
      consider_produces_one_immutable_factor_one_pair_policy) {
     const auto fixture = identity_fixture();
-    const auto evidence = pipeline::learn_identity_rtc(fixture.logical, 3);
-    const auto plan = pipeline::consider_identity_rtc(evidence, 9);
+    const auto evidence = pipeline::learn_identity_rtc(
+        fixture.logical, fixture.val, 3);
+    const auto plan = pipeline::consider_identity_rtc(
+        evidence, fixture.val, 9);
 
     EXPECT_EQ(plan->identity().evidence, evidence->identity());
     EXPECT_EQ(plan->identity().consideration, 9U);
@@ -125,6 +135,11 @@ TEST(identity_rtc,
               pipeline::RtcPairPolicy::conservative_pair_wide);
     EXPECT_EQ(plan->operator_spec().sampling_factor, 1U);
     EXPECT_EQ(plan->operator_spec().sampling_phase, 0U);
+    EXPECT_EQ(plan->val_snapshot_handle(), fixture.val);
+    EXPECT_EQ(plan->required_val_generation(), pipeline::ValGeneration{0});
+    EXPECT_EQ(plan->val_change_policy(),
+              pipeline::IdentityRtcValChangePolicy::
+                  exact_generation_requires_relearn);
     EXPECT_DOUBLE_EQ(plan->operator_spec().x_from_x, 1.0);
     EXPECT_DOUBLE_EQ(plan->operator_spec().x_from_r, 0.0);
     EXPECT_DOUBLE_EQ(plan->operator_spec().r_from_x, 0.0);
@@ -143,13 +158,16 @@ TEST(identity_rtc,
 TEST(identity_rtc,
      apply_is_bitwise_identity_and_owns_no_duplicate_payload_or_state_plane) {
     const auto fixture = identity_fixture();
-    const auto plan = identity_plan(fixture.logical);
+    const auto plan = identity_plan(fixture.logical, fixture.val);
     const auto result = pipeline::apply_identity_rtc(
-        plan, fixture.logical);
+        plan, fixture.logical, fixture.val);
 
     EXPECT_EQ(result.product->input_handle(), fixture.logical);
     EXPECT_EQ(result.product->native_parent_handle(), fixture.native);
     EXPECT_EQ(result.product->plan_handle(), plan);
+    EXPECT_EQ(result.product->val_snapshot_handle(), fixture.val);
+    EXPECT_EQ(result.product->val_generation(), pipeline::ValGeneration{0});
+    EXPECT_TRUE(result.product->proposed_val_findings().empty());
     EXPECT_EQ(result.product->output_native_occurrence_count(), 4U);
     EXPECT_EQ(result.product->output_cell_count(), 8U);
     EXPECT_EQ(result.product->realized_operator(),
@@ -205,6 +223,8 @@ TEST(identity_rtc,
     EXPECT_EQ(result.realization.x_numerically_valid_cell_count, 6U);
     EXPECT_EQ(result.realization.r_numerically_valid_cell_count, 6U);
     EXPECT_EQ(result.realization.realized_sampling_factor, 1U);
+    EXPECT_EQ(result.realization.val_generation,
+              pipeline::ValGeneration{0});
     EXPECT_EQ(plan->memory_evidence().logical_owned_bytes(), 0U);
 }
 
@@ -218,12 +238,14 @@ TEST(identity_rtc,
             pipeline::NativePairedReadoutView::admit(
                 fixture.native, {{0, 12, 14}})};
     const auto evidence = pipeline::learn_identity_rtc_partitioned(
-        fixture.logical, partitions, 11);
-    const auto plan = pipeline::consider_identity_rtc(evidence, 12);
+        fixture.logical, partitions, fixture.val, 11);
+    const auto plan = pipeline::consider_identity_rtc(
+        evidence, fixture.val, 12);
     const auto partitioned = pipeline::apply_identity_rtc_partitioned(
-        plan, fixture.logical, partitions);
+        plan, fixture.logical, partitions, fixture.val);
     const auto single = pipeline::apply_identity_rtc(
-        identity_plan(fixture.logical, 21, 22), fixture.logical);
+        identity_plan(fixture.logical, fixture.val, 21, 22),
+        fixture.logical, fixture.val);
 
     EXPECT_EQ(partitioned.realization.output_cell_count,
               single.realization.output_cell_count);
@@ -252,17 +274,18 @@ TEST(identity_rtc,
         incomplete{partitions.front()};
     EXPECT_THROW(
         pipeline::learn_identity_rtc_partitioned(
-            fixture.logical, incomplete, 31),
+            fixture.logical, incomplete, fixture.val, 31),
         pipeline::IncompleteNativePartitionSchedule);
 }
 
 TEST(identity_rtc, exact_plan_and_input_instance_binding_is_enforced) {
     const auto first = identity_fixture();
     const auto second = identity_fixture();
-    const auto first_plan = identity_plan(first.logical);
+    const auto first_plan = identity_plan(first.logical, first.val);
 
     EXPECT_THROW(
-        pipeline::apply_identity_rtc(first_plan, second.logical),
+        pipeline::apply_identity_rtc(
+            first_plan, second.logical, second.val),
         std::invalid_argument);
     EXPECT_THROW(first_plan->decision(1, 10, 0), std::out_of_range);
     EXPECT_THROW(first_plan->decision(0, 9, 0), std::out_of_range);
@@ -271,10 +294,55 @@ TEST(identity_rtc, exact_plan_and_input_instance_binding_is_enforced) {
     EXPECT_THROW(first_plan->decision(0, 10, 2), std::out_of_range);
 }
 
+TEST(identity_rtc,
+     synthetic_spike_fact_generation_invalidates_stale_evidence_and_plan) {
+    const auto fixture = identity_fixture();
+    const auto evidence_v0 = pipeline::learn_identity_rtc(
+        fixture.logical, fixture.val, 41);
+    const auto plan_v0 = pipeline::consider_identity_rtc(
+        evidence_v0, fixture.val, 42);
+
+    const pipeline::ValProducerProductIdentity rtc_product{
+        pipeline::ValProducer::rtc, 41};
+    const auto affected_cell = fixture.val->address(0, 12, 0);
+    const pipeline::ValFindingKey spike_key{
+        rtc_product, affected_cell, pipeline::ValFactCode{1}};
+    pipeline::ValDeltaBuilder builder{fixture.val, rtc_product};
+    builder.propose(affected_cell, pipeline::ValFactCode{1},
+                    pipeline::ValFactState{1},
+                    pipeline::ValFactCause{1});
+
+    // A phase that holds V0 cannot observe an uncommitted proposal.
+    EXPECT_EQ(fixture.val->find(spike_key), nullptr);
+    auto delta = builder.freeze();
+    EXPECT_EQ(fixture.val->find(spike_key), nullptr);
+    const auto val_v1 = pipeline::ValSnapshot::commit(std::move(delta));
+    ASSERT_NE(val_v1->find(spike_key), nullptr);
+    EXPECT_EQ(val_v1->generation(), pipeline::ValGeneration{1});
+
+    EXPECT_THROW(
+        pipeline::consider_identity_rtc(evidence_v0, val_v1, 43),
+        std::invalid_argument);
+    EXPECT_THROW(
+        pipeline::apply_identity_rtc(plan_v0, fixture.logical, val_v1),
+        pipeline::StaleRtcValGeneration);
+
+    const auto evidence_v1 = pipeline::learn_identity_rtc(
+        fixture.logical, val_v1, 44);
+    const auto plan_v1 = pipeline::consider_identity_rtc(
+        evidence_v1, val_v1, 45);
+    const auto applied_v1 = pipeline::apply_identity_rtc(
+        plan_v1, fixture.logical, val_v1);
+    EXPECT_EQ(applied_v1.product->val_snapshot_handle(), val_v1);
+    EXPECT_EQ(applied_v1.realization.val_generation,
+              pipeline::ValGeneration{1});
+}
+
 TEST(identity_rtc, completes_from_native_timing_without_pointing_state) {
     const auto fixture = identity_fixture();
     const auto result = pipeline::apply_identity_rtc(
-        identity_plan(fixture.logical), fixture.logical);
+        identity_plan(fixture.logical, fixture.val), fixture.logical,
+        fixture.val);
 
     ASSERT_NE(result.product, nullptr);
     EXPECT_EQ(result.realization.completion,

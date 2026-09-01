@@ -39,10 +39,14 @@ bool exact_spans(std::span<const NativeOccurrenceSpan> lhs,
 std::shared_ptr<const IdentityRouteAlignContext>
 IdentityRouteAlignContext::admit(
     std::shared_ptr<const NativePairedReadoutObservation> paired,
-    std::shared_ptr<const AstScanMotionNetworkViews> ast_views) {
-    if (!paired || !ast_views || !(paired->scope() == ast_views->scope())) {
+    std::shared_ptr<const AstScanMotionNetworkViews> ast_views,
+    std::shared_ptr<const ValSnapshot> val_snapshot) {
+    if (!paired || !ast_views || !val_snapshot ||
+        !(paired->scope() == ast_views->scope()) ||
+        val_snapshot->paired_handle().get() != paired.get() ||
+        !(val_snapshot->scope() == paired->scope())) {
         throw std::invalid_argument(
-            "identity route ALIGN context requires matching Paired-D1 and AST scopes");
+            "identity route ALIGN context requires exact Paired-D1, AST, and VAL bindings");
     }
 
     const auto &paired_ids = paired->participant_network_ids();
@@ -85,13 +89,16 @@ IdentityRouteAlignContext::admit(
 
     return std::shared_ptr<const IdentityRouteAlignContext>(
         new IdentityRouteAlignContext{std::move(paired),
-                                      std::move(ast_views)});
+                                      std::move(ast_views),
+                                      std::move(val_snapshot)});
 }
 
 IdentityRouteAlignContext::IdentityRouteAlignContext(
     std::shared_ptr<const NativePairedReadoutObservation> paired,
-    std::shared_ptr<const AstScanMotionNetworkViews> ast_views)
-    : paired_{std::move(paired)}, ast_views_{std::move(ast_views)} {}
+    std::shared_ptr<const AstScanMotionNetworkViews> ast_views,
+    std::shared_ptr<const ValSnapshot> val_snapshot)
+    : paired_{std::move(paired)}, ast_views_{std::move(ast_views)},
+      val_snapshot_{std::move(val_snapshot)} {}
 
 const NativeObservationScope &IdentityRouteAlignContext::scope()
     const noexcept {
@@ -106,6 +113,11 @@ IdentityRouteAlignContext::paired_handle() const noexcept {
 const std::shared_ptr<const AstScanMotionNetworkViews> &
 IdentityRouteAlignContext::ast_views_handle() const noexcept {
     return ast_views_;
+}
+
+const std::shared_ptr<const ValSnapshot> &
+IdentityRouteAlignContext::val_snapshot_handle() const noexcept {
+    return val_snapshot_;
 }
 
 std::span<const TimestreamNetworkId>
@@ -159,7 +171,7 @@ IdentityRouteAlignContext::ast_motion_support(
 
 IdentityRouteAlignMemoryEvidence
 IdentityRouteAlignContext::memory_evidence() const noexcept {
-    return {0, 0, 1, 1};
+    return {0, 0, 1, 1, 1};
 }
 
 std::shared_ptr<const IdentityRtcInputContext>
@@ -205,6 +217,11 @@ IdentityRtcInputContext::ast_views_handle() const noexcept {
     return align_context_->ast_views_handle();
 }
 
+const std::shared_ptr<const ValSnapshot> &
+IdentityRtcInputContext::val_snapshot_handle() const noexcept {
+    return align_context_->val_snapshot_handle();
+}
+
 IdentityRtcAstDependency IdentityRtcInputContext::ast_dependency()
     const noexcept {
     return IdentityRtcAstDependency::not_applicable;
@@ -213,7 +230,7 @@ IdentityRtcAstDependency IdentityRtcInputContext::ast_dependency()
 IdentityRtcInputContextMemoryEvidence
 IdentityRtcInputContext::memory_evidence() const noexcept {
     return {0, signal_->spans().size() * sizeof(NativeOccurrenceSpan), 1,
-            1};
+            1, 1};
 }
 
 std::shared_ptr<const IdentityRtcOutputContext>
@@ -233,6 +250,10 @@ IdentityRtcOutputContext::admit(
             input_context->align_context_handle()
                 ->paired_handle()
                 .get() ||
+        product.val_snapshot_handle().get() !=
+            input_context->val_snapshot_handle().get() ||
+        product.val_generation() !=
+            input_context->val_snapshot_handle()->generation() ||
         !exact_spans(product.network_spans(),
                      input_context->signal_handle()->spans())) {
         throw std::invalid_argument(
@@ -274,6 +295,11 @@ IdentityRtcOutputContext::signal_handle() const noexcept {
 const std::shared_ptr<const AstScanMotionNetworkViews> &
 IdentityRtcOutputContext::ast_views_handle() const noexcept {
     return input_context_->ast_views_handle();
+}
+
+const std::shared_ptr<const ValSnapshot> &
+IdentityRtcOutputContext::val_snapshot_handle() const noexcept {
+    return input_context_->val_snapshot_handle();
 }
 
 IdentityRtcSamplingRelation
@@ -318,7 +344,7 @@ IdentityRtcOutputContext::ast_motion_support(
 
 IdentityRtcOutputContextMemoryEvidence
 IdentityRtcOutputContext::memory_evidence() const noexcept {
-    return {0, 0, 1, 1};
+    return {0, 0, 1, 1, 1};
 }
 
 IdentityRouteCalibrationState::IdentityRouteCalibrationState(
@@ -383,38 +409,38 @@ IdentityRoutePtcState::uncertainty_state() const noexcept {
     return IdentityPtcUncertaintyState::unavailable_no_ptc_product;
 }
 
-IdentityRouteCalibrationForPtcValDisposition::
-    IdentityRouteCalibrationForPtcValDisposition(
+IdentityRouteCalibrationForPtcValEvaluation::
+    IdentityRouteCalibrationForPtcValEvaluation(
         std::shared_ptr<const IdentityRtcOutputContext> rtc_context)
     : rtc_context_{std::move(rtc_context)} {}
 
 const std::shared_ptr<const IdentityRtcOutputContext> &
-IdentityRouteCalibrationForPtcValDisposition::rtc_context_handle()
+IdentityRouteCalibrationForPtcValEvaluation::rtc_context_handle()
     const noexcept {
     return rtc_context_;
 }
 
-IdentityCalibrationForPtcAdmissionState
-IdentityRouteCalibrationForPtcValDisposition::state() const noexcept {
-    return IdentityCalibrationForPtcAdmissionState::
-        not_evaluated_product_unavailable;
+IdentityCalibrationForPtcValEvaluationState
+IdentityRouteCalibrationForPtcValEvaluation::state() const noexcept {
+    return IdentityCalibrationForPtcValEvaluationState::
+        unavailable_calibration_product_absent;
 }
 
-IdentityRoutePtcForMapValDisposition::
-    IdentityRoutePtcForMapValDisposition(
+IdentityRoutePtcForMapValEvaluation::
+    IdentityRoutePtcForMapValEvaluation(
         std::shared_ptr<const IdentityRtcOutputContext> rtc_context)
     : rtc_context_{std::move(rtc_context)} {}
 
 const std::shared_ptr<const IdentityRtcOutputContext> &
-IdentityRoutePtcForMapValDisposition::rtc_context_handle()
+IdentityRoutePtcForMapValEvaluation::rtc_context_handle()
     const noexcept {
     return rtc_context_;
 }
 
-IdentityPtcForMapAdmissionState
-IdentityRoutePtcForMapValDisposition::state() const noexcept {
-    return IdentityPtcForMapAdmissionState::
-        not_evaluated_product_unavailable;
+IdentityPtcForMapValEvaluationState
+IdentityRoutePtcForMapValEvaluation::state() const noexcept {
+    return IdentityPtcForMapValEvaluationState::
+        unavailable_ptc_product_absent;
 }
 
 std::shared_ptr<const IdentityRouteMapFacingBundle>
@@ -441,13 +467,18 @@ IdentityRouteMapFacingBundle::rtc_context_handle() const noexcept {
     return rtc_context_;
 }
 
+const std::shared_ptr<const ValSnapshot> &
+IdentityRouteMapFacingBundle::val_snapshot_handle() const noexcept {
+    return rtc_context_->val_snapshot_handle();
+}
+
 const IdentityRouteCalibrationState &
 IdentityRouteMapFacingBundle::calibration_state() const noexcept {
     return calibration_;
 }
 
-const IdentityRouteCalibrationForPtcValDisposition &
-IdentityRouteMapFacingBundle::calibration_for_ptc_val_disposition()
+const IdentityRouteCalibrationForPtcValEvaluation &
+IdentityRouteMapFacingBundle::calibration_for_ptc_val_evaluation()
     const noexcept {
     return calibration_val_;
 }
@@ -457,8 +488,8 @@ IdentityRouteMapFacingBundle::ptc_state() const noexcept {
     return ptc_;
 }
 
-const IdentityRoutePtcForMapValDisposition &
-IdentityRouteMapFacingBundle::ptc_for_map_val_disposition()
+const IdentityRoutePtcForMapValEvaluation &
+IdentityRouteMapFacingBundle::ptc_for_map_val_evaluation()
     const noexcept {
     return ptc_val_;
 }
@@ -486,11 +517,13 @@ IdentityRouteContextOutcome run_identity_route_context(
         return result;
     }
     if (request.rtc.native_input.get() !=
-        request.align_context->paired_handle().get()) {
+            request.align_context->paired_handle().get() ||
+        request.rtc.val_snapshot.get() !=
+            request.align_context->val_snapshot_handle().get()) {
         result.failure_cause = IdentityRouteContextFailureCause::
             align_input_binding_mismatch;
         result.failure_detail =
-            "identity route RTC request differs from the ALIGN-bound Paired-D1 input";
+            "identity route RTC request differs from the ALIGN-bound Paired-D1 or VAL input";
         return result;
     }
 
