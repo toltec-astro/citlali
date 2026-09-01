@@ -175,6 +175,35 @@ gtest_discover_tests(
         TEST_PREFIX "citlali::sci_align::"
         DISCOVERY_MODE PRE_TEST
 )
+
+# This Timestream Successor increment is a bounded pre-ALIGN producer
+# contract.  Keep its header isolation and behavioral evidence independent of
+# RTC/PTC execution targets.
+add_executable(
+    citlali_timestream_successor_native_paired_readout_test EXCLUDE_FROM_ALL
+    timestream_native_paired_readout_header.cpp
+    test_timestream_native_paired_readout.cpp
+)
+set_source_files_properties(
+    timestream_native_paired_readout_header.cpp
+    PROPERTIES SKIP_PRECOMPILE_HEADERS ON
+)
+set_target_properties(citlali_timestream_successor_native_paired_readout_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+target_link_libraries(citlali_timestream_successor_native_paired_readout_test
+    PRIVATE
+        citlali::citlali
+        GTest::gtest_main
+)
+add_dependencies(check citlali_timestream_successor_native_paired_readout_test)
+gtest_discover_tests(
+    citlali_timestream_successor_native_paired_readout_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        TEST_PREFIX "citlali::timestream_successor::native_paired_readout::"
+        DISCOVERY_MODE PRE_TEST
+)
 set_target_properties(citlali_science_map_truth_test
     PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
