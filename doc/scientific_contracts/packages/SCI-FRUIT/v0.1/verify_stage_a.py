@@ -141,6 +141,7 @@ REQUIRED_FILES = {
     "SCIENTIFIC_OWNER_ODQ_001F_BASELINE_RELATIVE_REPAIR_DIRECTION_2026-09-01.md",
     "SCIENTIFIC_OWNER_ODQ_001F_FINAL_REPAIR_DIRECTION_2026-09-01.md",
     "SCIENTIFIC_OWNER_ODQ_001F_FINAL_CANDIDATE_DECISION_R0.8.md",
+    "SCIENTIFIC_OWNER_STAGE_A_R0.8_ACCEPTANCE_AND_STAGE_B_REQUEST_2026-09-01.md",
     "METHOD_CLAIM_EVIDENCE_DECISION_IDENTITY_TAXONOMY.md",
     "PROGRAM_CLAIM_LAYER_SEQUENCE.md",
     "QUALIFICATION_ACCESS_AND_MULTIPLICITY_RULES.md",
@@ -306,10 +307,13 @@ def verify_packet() -> None:
     historical_roles = (
         ROOT / "HISTORICAL_CONTROL_COMPATIBILITY_FALLBACK_TAXONOMY.md"
     ).read_text(encoding="utf-8")
+    stage_a_acceptance = (
+        ROOT / "SCIENTIFIC_OWNER_STAGE_A_R0.8_ACCEPTANCE_AND_STAGE_B_REQUEST_2026-09-01.md"
+    ).read_text(encoding="utf-8")
 
     required_tokens = {
         readme: [
-            "recovery-first Stage A owner-review candidate; no Stage B launch",
+            "Stage A r0.8 accepted; ODQ-001F decided",
             "v0.1-stage-a-r0.8",
             LAUNCH,
             PROVISIONAL,
@@ -463,6 +467,15 @@ def verify_packet() -> None:
             "authorized_operational_fallback",
             "unavailable until its science contract",
         ],
+        stage_a_acceptance: [
+            "SCI-FRUIT-OD-001F-DISPOSITION-B-R0.8-2026-09-01",
+            "exact Stage A r0.8 result accepted",
+            "requested reasoning effort is recorded exactly as\n`xhigh`",
+            "No empirical lane, qualified-method record",
+            "exclusive implementation-blind",
+            "two materially different actions",
+            "No Stage B task has been created",
+        ],
     }
     for body, tokens in required_tokens.items():
         for token in tokens:
@@ -586,8 +599,8 @@ def main() -> None:
     print(
         "PASS: exact launch/provisional/historical sources, byte-identical "
         "historical recurrence evidence, revised three-choice ODQ-001, "
-        "owner-approved comparative-quality framework, conditionally preferred "
-        "baseline-relative ODQ-001F frame, exact focused r0.8 source/archive "
+        "owner-approved comparative-quality framework, accepted baseline-relative "
+        "ODQ-001F r0.8 frame, recorded unresolved Stage B dispatch conflict, exact focused source/archive "
         "bindings, bounded edits, four unavailable candidate routes, Stage A "
         "firewall, placeholders, and local links"
     )

@@ -236,3 +236,13 @@ Pointing/OOF. This is a sequencing and recovery action only: Stage B remains
 unauthorized, all four candidate parent routes retain their exact unavailable
 or provisional states, and no algorithm, frozen authority, validation,
 production, or Unity action follows.
+
+On `2026-09-01` the owner accepted the exact SCI-FRUIT Stage A `r0.8` result,
+closing ODQ-001F, and requested an xhigh Stage B launch. Dispatch remains
+unexecuted because the accepted claim-layer sequence places separately
+authorized empirical development, held-out qualification, an owner-approved
+qualified-method record, and a sealed method-specific author packet before
+Stage B; none presently exists. The next owner action must either preserve
+that sequence and authorize the empirical lane or explicitly supersede it with
+a framework-only Stage B scope. No numerical, implementation, validation,
+readiness, production, fallback, or Unity authority follows.

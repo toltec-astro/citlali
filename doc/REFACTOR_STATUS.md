@@ -151,11 +151,18 @@ stopping; and uses generic `compact_high_snr_response_recovery` and
 `extended_low_snr_mode_recovery` profiles without acquiring OOF/SZE authority.
 Valid outcomes remain one broad method, conditional policies, multiple
 materially specialized methods, restricted-domain improvement, or no
-replacement. The exact content-bound final candidate awaits explicit owner
-acceptance. ODQ-001F remains open: no empirical lane, profile, control profile,
-population, metric, threshold, recurrence, implementation, execution, Stage B,
-qualification, validation, readiness, production, fallback, or Unity activity
-is authorized.
+replacement. The owner accepted the exact content-bound `r0.8` result on
+`2026-09-01`, closing ODQ-001F, and requested Stage B at xhigh effort. No task
+has been dispatched: the accepted sequence requires a separately authorized
+empirical-development lane, frozen held-out qualification, an owner-approved
+qualified-method record, and a sealed method-specific author packet, none of
+which exists. Dispatch now would silently replace the accepted sequence with a
+framework-only Stage B task. The next owner action is therefore to preserve the
+accepted sequence and authorize its empirical lane, or explicitly supersede
+that sequence and authorize a framework-level Stage B scope. No profile,
+population, metric, threshold, recurrence, parent route, implementation,
+execution, qualification, validation, readiness, production, fallback, or
+Unity activity is authorized.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

@@ -1,6 +1,7 @@
 # SCI-FRUIT v0.1 — Iterative Feedback, State, And Termination
 
-Status: **recovery-first Stage A owner-review candidate; no Stage B launch**
+Status: **Stage A r0.8 accepted; ODQ-001F decided; xhigh Stage B requested but
+not dispatched pending reconciliation with the accepted claim-layer sequence**
 
 Version: `v0.1-stage-a-r0.8`
 
@@ -80,7 +81,8 @@ missing scientific contract.
 | [`ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md`](ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md) | three-disposition ODQ-001F owner-review frame and fully bounded profile-qualified empirical-development candidate |
 | [`SCIENTIFIC_OWNER_ODQ_001F_BASELINE_RELATIVE_REPAIR_DIRECTION_2026-09-01.md`](SCIENTIFIC_OWNER_ODQ_001F_BASELINE_RELATIVE_REPAIR_DIRECTION_2026-09-01.md) | owner in-principle approval of Disposition B plus required baseline-relative/Pareto repair; final approval not recorded |
 | [`SCIENTIFIC_OWNER_ODQ_001F_FINAL_REPAIR_DIRECTION_2026-09-01.md`](SCIENTIFIC_OWNER_ODQ_001F_FINAL_REPAIR_DIRECTION_2026-09-01.md) | exact-source-bound owner direction for the focused `r0.8` final review repair; not final approval |
-| [`SCIENTIFIC_OWNER_ODQ_001F_FINAL_CANDIDATE_DECISION_R0.8.md`](SCIENTIFIC_OWNER_ODQ_001F_FINAL_CANDIDATE_DECISION_R0.8.md) | exact content-bound final candidate; not yet accepted |
+| [`SCIENTIFIC_OWNER_ODQ_001F_FINAL_CANDIDATE_DECISION_R0.8.md`](SCIENTIFIC_OWNER_ODQ_001F_FINAL_CANDIDATE_DECISION_R0.8.md) | exact content-bound final candidate; accepted by the separate owner record below |
+| [`SCIENTIFIC_OWNER_STAGE_A_R0.8_ACCEPTANCE_AND_STAGE_B_REQUEST_2026-09-01.md`](SCIENTIFIC_OWNER_STAGE_A_R0.8_ACCEPTANCE_AND_STAGE_B_REQUEST_2026-09-01.md) | exact Stage A acceptance and xhigh Stage B request; dispatch gate conflict recorded |
 | [`METHOD_CLAIM_EVIDENCE_DECISION_IDENTITY_TAXONOMY.md`](METHOD_CLAIM_EVIDENCE_DECISION_IDENTITY_TAXONOMY.md) | separately typed method, claim, evidence, and decision identities |
 | [`PROGRAM_CLAIM_LAYER_SEQUENCE.md`](PROGRAM_CLAIM_LAYER_SEQUENCE.md) | complete qualification-to-production claim-layer gates |
 | [`QUALIFICATION_ACCESS_AND_MULTIPLICITY_RULES.md`](QUALIFICATION_ACCESS_AND_MULTIPLICITY_RULES.md) | held-out access, unblinding, selection, and multiplicity safeguards |
@@ -177,11 +179,13 @@ only; they contain no normative science and no rendered contract.
     replacement. It formalizes condition distributions, aggregate uncertainty,
     lower tails, outcome fractions, stratification, catastrophic regressions,
     and prospective goalpost freezing without selecting numerical values.
-18. The `r0.8` repair separates method, claim, evidence, and decision identities;
+18. The accepted `r0.8` repair separates method, claim, evidence, and decision identities;
     completes the program claim-layer sequence; controls qualification access,
     multiplicity, replication, dependence, failure, unavailability, support,
     causal stopping, and metric edge cases; and returns an exact focused final
-    candidate without closing ODQ-001F or launching any lane.
+    candidate. The owner accepted those exact bytes, closing ODQ-001F, and
+    requested xhigh Stage B. No empirical lane, qualified-method record, or
+    exclusive implementation-blind author packet yet exists.
 
 ## Stop Rule
 
@@ -196,14 +200,15 @@ reformulation, or intentionally adopt and validate a new recurrence. The owner
 provisionally favors the third treatment, but ODQ-001 remains open until its
 scientific objective, candidate law, differences, compatibility treatment, and
 validation obligations are explicit. The comparative-quality framework is
-approved. The owner approves the staged profile/domain-aware Disposition B in
-principle and has required the exact `r0.8` owner-review repair before final
-approval is recorded. The exact content-bound candidate is now presented in
-the ODQ-001F frame and final candidate record; ODQ-001F remains open pending
-explicit acceptance of those bound bytes. No
-method-development lane is authorized. Candidate exploration, prospective
-goalpost freezing, held-out qualification, and scientific qualification must
-not be conflated.
+approved. The owner accepted the exact `r0.8` Disposition B architecture and
+closed ODQ-001F. The same instruction requested an xhigh Stage B launch, but no
+task has been dispatched because the accepted sequence requires separately
+authorized method development, held-out qualification, an owner-approved
+qualified-method record, and a sealed author packet before method-specific
+Stage B. An explicit owner choice must either preserve that sequence and
+authorize its empirical lane or supersede it with a framework-only Stage B
+scope. Candidate exploration, prospective goalpost freezing, held-out
+qualification, and scientific qualification must not be conflated.
 
 ## Explicit Nonclaims
 
