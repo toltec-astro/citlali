@@ -151,7 +151,8 @@ Expected changed ownership areas:
 - corresponding focused tests and isolated-header translation units;
 - bounded CMake registration;
 - `tools/timestream_successor/` acceptance runner and validator;
-- this handoff and the living status record.
+- this handoff; the living status record remains unchanged until a later
+  reviewed route state warrants a canonical status transition.
 
 Preserved recovery authority:
 
@@ -221,3 +222,59 @@ a local component checkpoint only. This record makes no full-route
 conformance, representative-environment, integration, activation, production,
 or push claim. A later complete typed topology must incorporate the owner
 dispositions above and undergo its own validation and exact-SHA review.
+
+The exact local RTC component checkpoint is
+`b2ad615b8` (`Preserve RTC identity component checkpoint`), based literally on
+canonical `6d6e5d570e2a311687ede8e954c996046772af6f`. It remains unpushed and is
+not an integration or activation candidate.
+
+## Bounded AST / ALIGN replay stage
+
+Replay parent: exact local RTC component checkpoint `b2ad615b8`.
+
+Source disposition:
+
+- `ast_scan_motion.h`, `ast_scan_motion.cpp`,
+  `ast_scan_motion_alignment.h`, `ast_scan_motion_alignment.cpp`, both isolated
+  header translation units, and `test_ast_scan_motion.cpp` were recovered from
+  the accepted state at `adbc013e2d4287fb5a32db8bc7f2b0112c1c88d7`;
+- both implementation translation units and both isolated-header translation
+  units are blob-identical to that accepted source;
+- the two public headers differ only by replacing the historical
+  `timestream_native_timing.h` include with canonical
+  `timestream_native_alignment.h`;
+- the focused behavioral test differs only by removing its dependency on
+  `Engine::Telescope` and the assertion for the historical Engine registry
+  mutation, which is deliberately not imported; and
+- minimal standalone and Spack library-source registration plus one isolated,
+  non-default focused test target were added.
+
+Ownership and exclusion audit:
+
+- AST owns one immutable raw telescope-motion source/product and its typed
+  validity/cause/support facts;
+- ALIGN owns the per-network mapped views, which reference the exact canonical
+  `NativeNetworkAlignment` and raw AST product without copying a network time
+  axis or creating a common grid;
+- no RTC type includes or consumes AST in this stage;
+- no Paired-D1, `Engine`, YAML, CLI, route-selection, persistence, filtering,
+  factor-selection, resampling, downsampling, CAL, PTC, MAP, or ordinary-route
+  implementation is changed; and
+- historical WP-7 status/control records, acceptance/census/filter tooling,
+  authority-ledger mutations, and the historical review-record content remain
+  evidence only and are not replayed.
+
+Local supplemental validation:
+
+- focused AST/ALIGN target configured and built successfully;
+- `citlali_cli` built successfully without route activation;
+- AST raw-product and ALIGN-mapping tests: 17/17 passed;
+- canonical Paired-D1 regression: 6/6 passed;
+- preserved identity-RTC component regression: 15/15 passed; and
+- canonical SCI-ALIGN regression: 94/94 passed.
+
+These results use the existing local AppleClang/cache-backed build and are not
+Spack/V2, representative-data, integration, activation, or production
+evidence. The representative identity acceptance executable was not run. The
+bounded AST/ALIGN replay stops for owner review at its externally reported
+exact candidate SHA.

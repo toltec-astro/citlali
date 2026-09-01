@@ -205,10 +205,41 @@ gtest_discover_tests(
         DISCOVERY_MODE PRE_TEST
 )
 
-# One unactivated vertical witness: atomic KIDs ingress, canonical Paired-D1,
-# identity RTC Learn--Consider--Plan--Apply, and an in-memory RTC-only
-# terminal. It intentionally has no CLI, YAML, ALIGN, AST, CAL, PTC, or MAP
-# registration.
+# Accepted AST v2 native-motion product and ALIGN-owned network mappings.
+# This remains an isolated component target: it does not couple AST to RTC or
+# activate any application route.
+add_executable(
+    citlali_timestream_successor_ast_scan_motion_test EXCLUDE_FROM_ALL
+    ast_scan_motion_header.cpp
+    ast_scan_motion_alignment_header.cpp
+    test_ast_scan_motion.cpp
+)
+set_source_files_properties(
+    ast_scan_motion_header.cpp
+    ast_scan_motion_alignment_header.cpp
+    PROPERTIES SKIP_PRECOMPILE_HEADERS ON
+)
+set_target_properties(citlali_timestream_successor_ast_scan_motion_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+target_link_libraries(citlali_timestream_successor_ast_scan_motion_test
+    PRIVATE
+        citlali::citlali
+        GTest::gtest_main
+)
+add_dependencies(check citlali_timestream_successor_ast_scan_motion_test)
+gtest_discover_tests(
+    citlali_timestream_successor_ast_scan_motion_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        TEST_PREFIX "citlali::timestream_successor::ast_scan_motion::"
+        DISCOVERY_MODE PRE_TEST
+)
+
+# Preserved, provisional RTC identity component checkpoint: atomic KIDs
+# ingress, canonical Paired-D1, identity RTC Learn--Consider--Plan--Apply, and
+# an in-memory RTC-only terminal. This target intentionally has no AST input,
+# route coupling, CLI/YAML activation, CAL, PTC, or MAP action.
 add_executable(
     citlali_timestream_successor_identity_test EXCLUDE_FROM_ALL
     timestream_native_paired_readout_kids_adapter_header.cpp

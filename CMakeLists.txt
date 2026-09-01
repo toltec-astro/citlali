@@ -67,6 +67,8 @@ add_library(citlali STATIC)
 target_sources(citlali
     PRIVATE
     "src/citlali/core/config/timestream_enums.cpp"
+    "src/citlali/core/pipeline/ast_scan_motion.cpp"
+    "src/citlali/core/pipeline/ast_scan_motion_alignment.cpp"
     "src/citlali/core/pipeline/output_root_lease.cpp"
     "src/citlali/core/pipeline/reduction_restart_checkpoint.cpp"
     "src/citlali/core/engine/calib.cpp"
