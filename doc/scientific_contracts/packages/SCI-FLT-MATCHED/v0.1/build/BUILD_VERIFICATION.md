@@ -1,4 +1,4 @@
-# SCI-FLT-MATCHED v0.1 Stage B r0.3 Build Verification
+# SCI-FLT-MATCHED v0.1 Stage B r0.4 Build Verification
 
 Date: `2026-09-01`
 
@@ -17,7 +17,7 @@ validation, performance, readiness, production, or route authorization.
 - Shared source contains 50 stable requirements, 24 contract-consequence IDs, six AO
   families, and all 21 r0.1-stable AO alternative IDs.
 - `CROSSWALK.md` contains all 95 stable requirement, consequence, and AO IDs.
-- The owner ledger retains all 17 SODL IDs; all four r0.3 boundary drafts and
+- The owner ledger retains all 17 SODL IDs; all four r0.4 boundary drafts and
   the route-status record are present.
 - Superseded shared-core forms `Q_x`, `DeclareOrLearnOnce`, `10^-3`, and
   `10^-2` are absent.
@@ -27,18 +27,20 @@ validation, performance, readiness, production, or route authorization.
   undefined controls/references, missing characters, or overfull boxes.
 - Poppler reopens both PDFs. They are unencrypted, form-free, JavaScript-free,
   unrotated US Letter documents.
-- The directed-review repair vocabulary (`D_loc`, `F_g`, `K_NOI`,
-  `Q_FLT^0.1`, and `W_p=A_p^dagger D_p A_p`) is mechanically present.
-- All 69 pages were rendered and visually reviewed as recorded in
-  `PDF_QA_R0.3.md`.
+- The second-review repair vocabulary (`h=(g,theta)`, `P_C`, fixed response and
+  covariance domains, optional `tilde d_p`, mandatory diagnostics, qualified
+  amplitude-coordinate rescaling, and general operational response) is
+  mechanically present.
+- All 74 pages were rendered and visually reviewed as recorded in
+  `PDF_QA_R0.4.md`.
 
 ## Final PDFs
 
 | Artifact | Pages | SHA-256 |
 | --- | ---: | --- |
-| `pdf/SCI-FLT-MATCHED-SCIENTIFIC-RATIONALE-v0.1.pdf` | 36 | `2b623da8ce85445f7f4db18bab8d719269842658ecbfba75d8de00fe4445f8a2` |
-| `pdf/SCI-FLT-MATCHED-ENGINEERING-CONFORMANCE-v0.1.pdf` | 33 | `079c96b6a044aaa7ab2b2ea62434c8173b3723928b3a0eb50e2a42584b191775` |
+| `pdf/SCI-FLT-MATCHED-SCIENTIFIC-RATIONALE-v0.1.pdf` | 39 | `d39f754eadb6a9f19f0231d786b3d7acd7f5dc408ce2fa3cda21d0f532f5b87b` |
+| `pdf/SCI-FLT-MATCHED-ENGINEERING-CONFORMANCE-v0.1.pdf` | 35 | `e06bfed81c7be5fcc8883ca5027057aa636ac083fbe9ac65940b67e55fa13f2c` |
 
 Machine-readable details are in `build/consistency-report.json`. Exact source
-and PDF bytes are listed in `SOURCE_BYTE_REPORT_R0.3.md` and bound by the active
-Stage B r0.3 manifest.
+and PDF bytes are listed in `SOURCE_BYTE_REPORT_R0.4.md` and bound by the active
+Stage B r0.4 manifest.

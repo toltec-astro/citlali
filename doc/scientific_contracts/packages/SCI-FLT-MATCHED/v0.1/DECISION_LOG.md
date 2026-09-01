@@ -71,3 +71,32 @@
   alternatives, 15 assumptions, 17 SODL entries, and 95 crosswalk IDs. No
   option, numerical route, implementation, conformity result, validation,
   performance, readiness, production status, freeze, or Unity state is selected.
+
+## `2026-09-01` — Independent r0.3 review and owner-authorized r0.4 repair
+
+- Submitted the exact r0.3 36-page scientific and 33-page engineering PDFs to
+  a separate ChatGPT Pro review at the owner-requested xhigh effort.
+- The reviewer independently verified both hashes and returned `accept after
+  minor repair`, confidence `0.90`, with no P0 or P1 defects. Twelve F01--F14
+  findings were closed; F02 and F04 were partially closed.
+- Grant Wilson approved selectable covariance scope with required role/status
+  identity and signal-preserving typed unavailability unless named-use policy
+  requires the companion.
+- Grant Wilson approved diagnostics-only treatment for AO-001-C
+  effective-sample, anisotropy/dispersion, and leakage quantities; no v0.1
+  scientific admission thresholds are authorized.
+- r0.4 closes the eight localized findings through one frozen condition
+  `h=(g,theta)`, fixed covariance selector/codomain `P_C`, common-domain
+  response queries, optional numerical denominator diagnostics, qualified
+  template rescaling, corrected PRED assumption mappings, and explicit
+  operational-response notation.
+- No concrete weighting, covariance role/scope, response/state query
+  vocabulary, named-use profile, representation, numerical route,
+  implementation, validation, performance, readiness, production, freeze, or
+  Unity action is selected.
+- The owner requested a hash-bound `.tar.gz` bundle containing the r0.4 output
+  set.
+- The completed pass binds 46 active objects, preserves the exact Stage A
+  author-packet hash, passes source/PDF consistency and 74-page visual QA, and
+  is returned in a separately SHA-bound archive. This does not approve or
+  freeze the scientific contract.

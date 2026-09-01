@@ -1,7 +1,7 @@
 # Shared Normative Core
 
-The Stage B r0.1 draft imports these six modules, in this order, into both
-rendered views:
+The active Stage B r0.4 draft imports these shared modules, in this order, into
+both rendered views:
 
 1. `notation.tex`
 2. `definitions.tex`

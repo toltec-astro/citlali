@@ -842,9 +842,34 @@ shared-core views now render as 36 and 33 pages. Mechanical consistency and
 all-page visual QA pass, and the 43-object r0.3 draft manifest verifies at
 SHA-256
 `2c54d4d89599ae8b36b050aa1716755852b0e83d6b87575b65e6e138f725a880`.
-The approved Stage A manifest remains unchanged. A second independent ChatGPT
-Pro review at xhigh is the next gate; all scientific nonclaims and open SODL
-states remain in force.
+The approved Stage A manifest remained unchanged. At that checkpoint, a second
+independent ChatGPT Pro review at xhigh was the next gate; all scientific
+nonclaims and open SODL states remained in force.
+
+The second independent ChatGPT Pro review of the exact r0.3 pair then returned
+`accept after minor repair` at confidence `0.90`, with no P0 or P1 finding.
+Grant Wilson approved selectable covariance scope with explicit bundle-level
+role/status and signal-preserving typed unavailability unless an exact
+named-use policy requires the companion. Grant also approved effective-sample,
+anisotropy/dispersion, and leakage quantities as mandatory `AO-001-C`
+diagnostics rather than v0.1 scientific admission thresholds. Stage B r0.4
+applies those two policies and all six direct minor repairs without estimator
+re-derivation or implementation inspection: `h=(g,theta)` is the complete
+frozen condition, U2 owns variation over `theta`, fixed `P_C` establishes the
+finite covariance codomain, failure-bearing domains remain explicit, realized
+normalization diagnostics are optional where no separable denominator exists,
+template rescaling is restricted to pure fixed-state amplitude-coordinate
+reparameterization, consequence assumptions are corrected, and general
+operational response retains its parent dependence unless linearity is proven.
+The shared core renders as 39-page scientific and 35-page engineering views;
+source/PDF consistency and all 74 rendered pages pass. The active 46-object
+r0.4 manifest verifies at SHA-256
+`69f5a8a61b51e17ca4d976e9a65e4f4c25cee12887f5393167d20a1402efed7a`.
+The complete 49-file payload is returned as a separately verified `.tar.gz`
+archive at SHA-256
+`e3dedc0df3492cf5ed421d9de6791186d71c8522c6c24605f78492f40f89d3dd`.
+Fourteen SODL questions remain open, two are decided, and one is superseded;
+r0.4 remains an owner-review draft rather than frozen authority.
 
 This remains contract-development work only. No algorithm change,
 implementation conformity, validation, calibration, performance, readiness,

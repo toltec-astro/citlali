@@ -96,23 +96,38 @@ $\widehat a_p$ & Published fixed-template amplitude $n_p/d_p$. \\
 $L_{p,g}$ & Exact fixed-state scientific row functional producing
 $\widehat a_p$. \\
 $F_g$ & Actual fixed-state numerical producing map from an admitted parent
-vector to the realized amplitude field; it need not be exactly linear. \\
+vector to the realized amplitude field within the complete frozen condition
+$h=(g,\theta)$; it need not be exactly linear. \\
 $T$ & Full template-response operator over the declared template-anchor domain. \\
 $R_{\rm fixed}(p,s)$ & Fixed-state response $L_{p,g}t_s^{\rm full}$. \\
 $R_{\rm FP}(p,s)$ & Full-procedure response when Learn--Resolve is rerun under
 an authorized perturbation definition; otherwise unavailable. \\
-$R_{\rm realized}(p,s)$ & Operational fixed-state response of $F_g$ under the
-declared directional-derivative or finite-difference definition; a matrix
-form is allowed only after fixed-state linearity is established. \\
-$C_{\rm parent}$ & Authorized coordinate-basis parent covariance for one exact
-population and conditioning state. \\
-$C_p$ & Local-domain covariance $E_pC_{\rm parent}E_p^{\mathsf T}$. \\
+$R_{\rm realized}^{[\delta,\sigma]}(m;p,s)$ & Operational fixed-state response
+of $F_g$ at reference parent $m$ under the declared derivative or finite-
+difference specification. Here $\delta$ is the step (zero for an exact
+directional derivative) and $\sigma$ is the derivative/sidedness scheme. A
+parent-independent matrix shorthand is allowed only after fixed-state
+linearity is established. \\
+$C_{\rm parent\mid h}$ & Authorized coordinate-basis parent covariance for one
+exact population conditional on the complete frozen condition $h$. \\
+$C_p$ & Local-domain covariance
+$E_pC_{\rm parent\mid h}E_p^{\mathsf T}$. \\
 $C_{\rm realized}^{(U1)}$ & Operational conditional stochastic covariance
-$\operatorname{Cov}[F_g(m)\mid g,\theta]$ for the exact U1 population. \\
+$\operatorname{Cov}[P_CF_g(m)\mid h]$ on one fixed predeclared finite numerical
+codomain for the exact U1 population. \\
+$P_C$ & Fixed, predeclared selector from the produced field to the numerical
+codomain on which a named covariance role is defined; it is independent of the
+random draw and production outcome. \\
+$\widetilde d_p$ & Optional declared numerical normalization observable exposed
+by a numerical profile. It exists only when the producing route has a separable
+denominator with exact identity; it is not a required product of a general
+$F_g$. \\
 $\theta$ & Frozen template/calibration state on which U1 conditional stochastic
-covariance is conditioned. \\
+statements condition; variation over $\theta$ belongs to U2 rather than U1. \\
 $g$ & Immutable method/state generation, including requested, effective,
 resolved, applied, and realized identities. \\
+$h=(g,\theta)$ & Complete frozen condition for every fixed-state expectation,
+variance, reference covariance, and realized covariance statement. \\
 $\Valid$ & Anchors satisfying every parent, template, application-support,
 operator, normalization, unit, calibration, response, and selected-route
 predicate. \\

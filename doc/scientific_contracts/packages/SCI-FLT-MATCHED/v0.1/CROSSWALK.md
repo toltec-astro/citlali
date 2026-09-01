@@ -1,6 +1,6 @@
 # SCI-FLT-MATCHED v0.1 Stage B Crosswalk
 
-Status: Stage B r0.3 independent-review repair draft; all weighting,
+Status: Stage B r0.4 second-review minor-repair draft; all weighting,
 covariance-role/scope, representation,
 named-use, and numerical routes remain unselected. This crosswalk makes no
 implementation, conformity, response/covariance-fidelity, validation,
@@ -30,6 +30,7 @@ or a reported conformity or validation result.
 | RAO | `REQUIRED_AUTHORED_OPTION_SETS.md` |
 | R02 | `SCIENTIFIC_OWNER_R0.2_DIRECTIVE_2026-08-31.md` |
 | R03 | `CHATGPT_PRO_INDEPENDENT_REVIEW_R0.2_2026-08-31.md` plus the owner's instruction to apply its directed repairs |
+| R04 | `CHATGPT_PRO_INDEPENDENT_REVIEW_R0.3_2026-09-01.md` plus `SCIENTIFIC_OWNER_R0.4_DIRECTIVE_2026-09-01.md` |
 
 Links appearing in admitted objects were not opened and are not inputs.
 
@@ -59,9 +60,9 @@ test family adds future evidence routing without reporting a result.
 | `SCI-FLT-MATCHED-REQ-017` | SOD ODQ-010; ACO NOI ownership; AB NOI | Frozen state; Requirements | Frozen-state rationale; shared core | Shared core; CT-009 |
 | `SCI-FLT-MATCHED-REQ-018` | SOD ODQ-010; OST state generations; AB NOI | Frozen state; Requirements | Frozen-state rationale; shared core | Shared core; CT-009 |
 | `SCI-FLT-MATCHED-REQ-019` | SB fixed boundaries; SOD ODQ-011 | Requirements; Edge cases | Owner-disposition guide; shared core | Shared core; CT-006, CT-012, CT-014 |
-| `SCI-FLT-MATCHED-REQ-020` | SOD ODQ-009; AB NOI | Conditional covariance; Requirements | Uncertainty rationale; shared core | Shared core; CT-010 |
+| `SCI-FLT-MATCHED-REQ-020` | SOD ODQ-009; AB NOI; R04 C01--C03 | Conditional covariance; Requirements | Uncertainty rationale; shared core | Shared core; CT-010 |
 | `SCI-FLT-MATCHED-REQ-021` | SB estimator; SOD ODQ-009 | Optimality/covariance; Requirements | Normalization rationale; shared core | Shared core; CT-006, CT-010 |
-| `SCI-FLT-MATCHED-REQ-022` | SB fixed boundaries; SOD ODQ-009; ACO identities | Uncertainty budget; Requirements | Uncertainty rationale; shared core | Shared core; CT-010 |
+| `SCI-FLT-MATCHED-REQ-022` | SB fixed boundaries; SOD ODQ-009; ACO identities; R04 C01--C03 | Uncertainty budget; Requirements | Uncertainty rationale; shared core | Shared core; CT-010 |
 | `SCI-FLT-MATCHED-REQ-023` | SB product/lifecycle; SOD ODQ-012/013; OST product roles | Product roles; Requirements | Product rationale; shared core | Shared core; CT-011 |
 | `SCI-FLT-MATCHED-REQ-024` | SB product/lifecycle; SOD ODQ-013; OST product roles | Product roles; Requirements | Product rationale; shared core | Shared core; CT-011 |
 | `SCI-FLT-MATCHED-REQ-025` | SB product/lifecycle; SOD ODQ-009/013; OST product roles | Product roles; Requirements | Product rationale; shared core | Shared core; CT-010, CT-011 |
@@ -84,8 +85,8 @@ test family adds future evidence routing without reporting a result.
 | `SCI-FLT-MATCHED-REQ-042` | R02 support taxonomy | Five support roles; Requirements | Edge rationale; shared core | Shared core; CT-005, CT-009 |
 | `SCI-FLT-MATCHED-REQ-043` | R02 general-sky amendment | General-sky relation; Requirements | Response rationale; shared core | Shared core; CT-004, CT-008 |
 | `SCI-FLT-MATCHED-REQ-044` | R02 response-family amendment | Learn--Resolve--Apply; full-procedure response; Requirements | State/response rationale; shared core | Shared core; CT-008, CT-009 |
-| `SCI-FLT-MATCHED-REQ-045` | R02 realized/reference separation | Realized/reference response and covariance; Requirements | Response rationale; shared core | Shared core; CT-007, CT-008, CT-010 |
-| `SCI-FLT-MATCHED-REQ-046` | R02 AO-003 refactor | Covariance scope/representation; Requirements | Owner guide; shared core | Shared core; CT-010 |
+| `SCI-FLT-MATCHED-REQ-045` | R02 realized/reference separation; R04 C02/C08 | Realized/reference response and covariance; Requirements | Response rationale; shared core | Shared core; CT-007, CT-008, CT-010 |
+| `SCI-FLT-MATCHED-REQ-046` | R02 AO-003 refactor; R04 C03 owner disposition | Covariance scope/representation; Requirements | Owner guide; shared core | Shared core; CT-010 |
 | `SCI-FLT-MATCHED-REQ-047` | R02 AO-004 refactor | Immutable-state representation; Requirements | State rationale; shared core | Shared core; CT-009 |
 | `SCI-FLT-MATCHED-REQ-048` | R02 AO-005/boundary directive | Response science and exact representation; Requirements | Product rationale; owner guide; shared core | Shared core; CT-001, CT-008, CT-013 |
 | `SCI-FLT-MATCHED-REQ-049` | R02 AO-006/SCI-VAL directive | SCI-VAL evaluation; AO-006; Requirements | Governance rationale; shared core | Shared core; CT-012 |
@@ -102,23 +103,23 @@ test family adds future evidence routing without reporting a result.
 | `SCI-FLT-MATCHED-PRED-005` | SOD ODQ-006 invalid/nonpositive normalization | Each invalid-`D` class yields typed unavailable/failed and no zero | CT-004, CT-005, CT-014 |
 | `SCI-FLT-MATCHED-PRED-006` | SOD ODQ-003/010 parent/state separation | Observation/coadd identity and state-generation comparison | CT-002, CT-009 |
 | `SCI-FLT-MATCHED-PRED-007` | SOD ODQ-010; AB NOI parity | State/operator/support/normalization/failure identity for every `K_NOI`-admitted NOI member | CT-009 |
-| `SCI-FLT-MATCHED-PRED-008` | SOD ODQ-009 covariance propagation; R03 F05 | Exact fixed-state covariance identity; empirical estimators use a separate preregistered protocol | CT-010 |
+| `SCI-FLT-MATCHED-PRED-008` | SOD ODQ-009 covariance propagation; R03 F05; R04 C01/C02/C07 | Exact fixed-state covariance identity on one fixed codomain; empirical estimators use a separate preregistered protocol | CT-010 |
 | `SCI-FLT-MATCHED-PRED-009` | SOD ODQ-009 `D^-1` restriction | Label/consumer audit under non-GLS weight with invariant amplitude | CT-006, CT-010 |
 | `SCI-FLT-MATCHED-PRED-010` | SOD ODQ-006; RAO AO-002 | Full selected-envelope metrics, coverage, and support/null equality | CT-005, CT-007 |
 | `SCI-FLT-MATCHED-PRED-011` | ACO immutable identities; OST realization tuple | Mutation/successor attempts preserve old identity and create new generation | CT-007, CT-009, CT-011 |
 | `SCI-FLT-MATCHED-PRED-012` | SOD ODQ-013 atomic signal bundle | Failure injection into every required member | CT-011 |
 | `SCI-FLT-MATCHED-PRED-013` | SB/SOD optional companion rule | Optional companion failure under each named-use policy | CT-010, CT-011 |
-| `SCI-FLT-MATCHED-PRED-014` | SOD ODQ-005/008 amplitude scaling/units | Template rescaling law and modeled-signal invariance | CT-003 |
+| `SCI-FLT-MATCHED-PRED-014` | SOD ODQ-005/008 amplitude scaling/units; R04 C06 | Pure fixed-state amplitude-coordinate rescaling and separate rerun case | CT-003 |
 | `SCI-FLT-MATCHED-PRED-015` | OST full response; SOD ODQ-008 | Noninvariance probe rejects insufficient single-kernel reduction | CT-008 |
 | `SCI-FLT-MATCHED-PRED-016` | SOD ODQ-011 no selector/fallback | Request every unavailable route and observe exact rejection | CT-012, CT-014 |
 | `SCI-FLT-MATCHED-PRED-017` | SOD ODQ-012; AB FLT to FRUIT | Complete documented handoff-query suite without hidden state | CT-008, CT-013 |
 | `SCI-FLT-MATCHED-PRED-018` | SB/SOD/AB exclusions and nonclaims | Public-field, profile, and consumer interpretation audit | CT-013, CT-014, CT-015 |
-| `SCI-FLT-MATCHED-PRED-019` | R02 general-sky amendment | Two overlapping templates compared with exact response sum | CT-004, CT-008 |
-| `SCI-FLT-MATCHED-PRED-020` | R02 nuisance-response amendment | Constant/gradient background and exact `L b` comparison | CT-004, CT-008 |
-| `SCI-FLT-MATCHED-PRED-021` | R02 off-diagonal response | Unit template at a distinct anchor with nonzero response | CT-004, CT-008 |
-| `SCI-FLT-MATCHED-PRED-022` | R02 mismatch amendment | Mismatched-shape injection and response-weighted amplitude | CT-003, CT-004, CT-008 |
+| `SCI-FLT-MATCHED-PRED-019` | R02 general-sky amendment; R04 C07 | Two overlapping templates compared with exact response sum | CT-004, CT-008 |
+| `SCI-FLT-MATCHED-PRED-020` | R02 nuisance-response amendment; R04 C07 | Constant/gradient background and exact `L b` comparison | CT-004, CT-008 |
+| `SCI-FLT-MATCHED-PRED-021` | R02 off-diagonal response; R04 C07 | Unit template at a distinct anchor with nonzero response | CT-004, CT-008 |
+| `SCI-FLT-MATCHED-PRED-022` | R02 mismatch amendment; R04 C07 | Mismatched-shape injection and response-weighted amplitude | CT-003, CT-004, CT-008 |
 | `SCI-FLT-MATCHED-PRED-023` | R02 response-family amendment | Authorized Learn--Resolve perturbation rerun and state-change record | CT-008, CT-009 |
-| `SCI-FLT-MATCHED-PRED-024` | R02 realized covariance; R03 F02/F05 | Operational `F_g` covariance; matrix identity only after fixed-state linearity | CT-007, CT-010 |
+| `SCI-FLT-MATCHED-PRED-024` | R02 realized covariance; R03 F02/F05; R04 C01/C02/C07 | Operational `P_C F_g` covariance on one fixed finite codomain; matrix identity only after fixed-state linearity | CT-007, CT-010 |
 
 ## Assumption and uncertainty crosswalk
 
@@ -146,14 +147,14 @@ in `src/common/requirements.tex`, imported by both views.
 | --- | --- | --- | --- | --- |
 | `SCI-FLT-MATCHED-AO-001-A` | SOD ODQ-004/009; RAO AO-001; R02 | Exact constrained local inverse-covariance GLS; sole route eligible for optimality and `d_p^-1` variance | CT-004, CT-006, CT-010 | Exact-GLS weight and associated optimality/variance claim |
 | `SCI-FLT-MATCHED-AO-001-B` | SOD ODQ-004; RAO AO-001; R02; R03 F08 | Nonselectable successor-authorship envelope until one concrete structured covariance-derived `W_p` is supplied | CT-006, CT-010 | Concrete structured weighting authorship and review |
-| `SCI-FLT-MATCHED-AO-001-C` | SOD ODQ-004; ASC; RAO AO-001; R02; R03 F03 | Exact `A_p`, `D_p`, and radially symmetrized field-power `W_p=A_p^dagger D_p A_p`, with truthful source and no implied noise/covariance/isotropy/optimality | CT-006, CT-007 | Field-power weighting and exact conventions |
+| `SCI-FLT-MATCHED-AO-001-C` | SOD ODQ-004; ASC; RAO AO-001; R02; R03 F03; R04 C04 owner disposition | Exact `A_p`, `D_p`, and radially symmetrized field-power `W_p=A_p^dagger D_p A_p`, with truthful source, mandatory diagnostics, no validity thresholds, and no implied noise/covariance/isotropy/optimality | CT-006, CT-007 | Field-power weighting and exact conventions |
 | `SCI-FLT-MATCHED-AO-001-D` | SOD ODQ-004; RAO AO-001; R03 F08 | Nonselectable successor-authorship trigger for one concrete weaker PSD `W_p` | CT-006, CT-007 | Concrete weaker-weight authorship and review |
 | `SCI-FLT-MATCHED-AO-002-A` | SOD ODQ-006; RAO AO-002; R02 | One preregistered engineering profile for a numerical realization of the exact operator; no privileged scientific threshold | CT-007 | Numerical-conformance statement |
 | `SCI-FLT-MATCHED-AO-002-B` | R02; R03 F08 | Nonselectable trigger to author an intentionally distinct scientific operator with separate identity and owner-approved error budget | CT-007 | Concrete scientifically distinct successor authorship |
 | `SCI-FLT-MATCHED-AO-002-C` | R02 | Typed numerical-route unavailability when comparator/profile/coverage is absent | CT-007, CT-014 | Every numerical-conformance statement |
 | `SCI-FLT-MATCHED-AO-003-A` | SOD ODQ-009; RAO AO-003; R02; R03 F04 | Complete covariance scope within one explicitly named role | CT-010, CT-011 | Complete named-role covariance use |
 | `SCI-FLT-MATCHED-AO-003-B` | SOD ODQ-009; RAO AO-003; R02 | Named projected scientific covariance scope; outside correlations unknown | CT-010, CT-012 | Named projected consumer |
-| `SCI-FLT-MATCHED-AO-003-C` | SOD ODQ-009; RAO AO-003; R02 | Typed covariance unavailability while signal may remain complete | CT-010, CT-014 | Every covariance-dependent use |
+| `SCI-FLT-MATCHED-AO-003-C` | SOD ODQ-009; RAO AO-003; R02; R04 C03 owner disposition | Typed covariance role/status unavailability while signal remains complete unless a named-use policy requires the companion | CT-010, CT-014 | Every covariance-dependent use |
 | `SCI-FLT-MATCHED-AO-003-D` | R02; R03 F08 | Engineering exact resident explicit or structured representation of the selected named-role covariance scope | CT-010, CT-011 | Resident covariance queries |
 | `SCI-FLT-MATCHED-AO-003-E` | R02; R03 F08 | Engineering exact lineage/on-demand representation of the selected named-role covariance scope | CT-010, CT-011 | On-demand covariance queries |
 | `SCI-FLT-MATCHED-AO-004-A` | SOD ODQ-010/013; RAO AO-004; R02; R03 F08 | Engineering full materialization preserving exact immutable state/query identity | CT-009, CT-011 | Full-state query/reanalysis route |
@@ -179,7 +180,7 @@ in `src/common/requirements.tex`, imported by both views.
 
 ## Source/PDF consistency obligation
 
-`build/verify_consistency.py` checks that both LaTeX views import all six shared
+`build/verify_consistency.py` checks that both LaTeX views import all shared
 modules in the same order, that the shared source contains the complete stable
 ID sets, that both rendered PDFs contain those IDs and all 21 exact option
 identities, and that draft/nonclaim language survives rendering. Its report is

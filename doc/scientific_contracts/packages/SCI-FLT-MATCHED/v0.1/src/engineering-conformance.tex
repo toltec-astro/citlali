@@ -14,9 +14,9 @@
 \definecolor{rust}{HTML}{9C3D10}
 \definecolor{pale}{HTML}{F3F6F9}
 \hypersetup{colorlinks=true,linkcolor=navy,urlcolor=navy,
-  pdftitle={SCI-FLT-MATCHED Engineering Conformance Specification v0.1 r0.3},
+  pdftitle={SCI-FLT-MATCHED Engineering Conformance Specification v0.1 r0.4},
   pdfauthor={Implementation-blind Stage B author basis; owner-authorized review repair},
-  pdfsubject={Independent-review closure conformance draft with unselected scientific options}}
+  pdfsubject={Second-review minor-repair conformance draft with unselected scientific options}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{4pt}
 \setlength{\emergencystretch}{3em}
@@ -57,14 +57,16 @@ optimality claim\par}
 \StatusBox
 \vfill
 {\large Package version: v0.1\par}
-{\large Document revision: r0.3\par}
+{\large Document revision: r0.4\par}
 {\large Author-packet date: 2026-08-31\par}
 {\large Scientific owner for later disposition: Grant Wilson\par}
 \vspace{0.25in}
 {\small Stage B r0.1 was derived exclusively from the owner-approved
 eight-object author packet; r0.2 applied the subsequent scientific-owner
 closure directive; r0.3 applies owner-authorized independent-review repairs
-without implementation input. The admitted packet remains bound by SHA-256\par
+without implementation input; r0.4 applies the second independent-review
+minor repairs and the owner's covariance-scope and diagnostic-only policy
+dispositions. The admitted packet remains bound by SHA-256\par
 \texttt{255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8}.\par}
 \end{titlepage}
 
@@ -117,8 +119,10 @@ representation-selected science. \\
 Validity domain & Parent classes, WCS/frame, indexing, units, template and
 state strata, support/boundary classes, rank/null regimes, and exclusions. \\
 Comparator & Exact $n_p/d_p$ reference identity, actual fixed-state producing
-map $F_g$, established linear operator identity when any, named covariance-role
-authority, exact subspace projectors, and response/state reconstruction identity. \\
+map $F_g$, complete frozen condition $h=(g,\theta)$, fixed covariance selector
+$P_C$, established linear operator identity when any, named covariance-role
+authority, exact subspace projectors, and
+$R_{\rm realized}^{[\delta,\sigma]}$ response/state reconstruction identity. \\
 Evidence identity & Immutable input, expected-result, observed-result,
 environment, tool/procedure, tolerance, uncertainty, and provenance records. \\
 Verdicts & Requirement-, consequence-, option-, and profile-level outcomes using
@@ -148,6 +152,10 @@ performance, readiness, production, or scientific authority. \\
   estimator and normalization, convergence mode/criterion, uncertainty or
   confidence construction, and coverage. These engineering choices do not
   alter the exact stochastic identities.
+  \item Operational response and covariance evidence shall predeclare fixed
+  finite numerical domains. It shall record every failed/nonfinite evaluation
+  or draw and shall not condition on success, censor, pairwise-delete, or
+  change domains unless it evaluates a separately named population and role.
   \item A test oracle shall not use the same undocumented operation as the
   realization under test. Shared scientific inputs are allowed; shared hidden
   state is not.
@@ -207,16 +215,21 @@ partial estimate or edge renormalization. \\
 \CT{006} & Weighting option & Instantiate the selected \AO{001} population,
 units, coefficients, rank/null, regularization, window/edge, response,
 uncertainty, products, failure, and option-specific exact closure.
-Test observation and coadd separately. \\
+Test observation and coadd separately. For \AOpt{001}{C}, report the
+preregistered effective-sample, anisotropy/dispersion, and leakage diagnostics
+without treating them as v0.1 admission thresholds. \\
 \CT{007} & Numerical conformance & Evaluate $F_g$ under the one preregistered profile over
 every declared state, support, boundary, subspace, response, and covariance stratum.
 Keep realized and reference quantities separate; report complete observables
-and coverage; use linear-operator comparisons only after linearity is
-established, without promoting thresholds to scientific authority. \\
+and coverage; use $e_d$ only when the profile declares a separable numerical
+normalization $\widetilde d_p$; use linear-operator comparisons only after
+linearity is established, without promoting thresholds to scientific
+authority. \\
 \CT{008} & Response & Verify fixed, full-procedure, realized, and reference
 types; unit self-response; general off-diagonal behavior; selected \AO{005}
 domain/query/representation contract; lineage; lifecycle; and unsupported-query
-rejection. \\
+rejection. Directional-derivative and finite-difference evidence shall bind
+reference parent, step, sidedness, and one common finite numerical query domain. \\
 \CT{009} & State and NOI parity & Verify Learn--Resolve--Apply inputs,
 population, protection, diagnostics, freeze, selected \AO{004} exact query
 reproduction, generation
@@ -224,13 +237,17 @@ immutability, successor behavior, pre-Apply $K_{\rm NOI}$ admission, identical
 admitted-member transformation, and rejection of result-dependent admission,
 adapted support, or per-member relearning. \\
 \CT{010} & Covariance and uncertainty & Where authorized, evaluate operational
-$C_{\rm realized}^{(U1)}$ and exact reference covariance separately; assess each
-selected \AO{003} named-role scope and exact representation, units, random
-variables, population, conditioning, subspaces, consumers, and any separately
-authorized U1+U2 joint product. Empirical evidence follows the preregistered
-sampling protocol above. Otherwise verify typed absence and no $d_p^{-1}$ claim. \\
+$C_{\rm realized}^{(U1)}=\operatorname{Cov}[P_CF_g(m)\mid h]$ and exact
+reference covariance separately; assess the fixed finite codomain, almost-sure
+numerical-production premise, each selected \AO{003} named-role scope and exact
+representation, units, random variables, population, conditioning, subspaces,
+consumers, and any separately authorized U1+U2 joint product. Empirical
+evidence follows the preregistered sampling protocol above. Otherwise verify
+typed role/status unavailability, unchanged signal completeness unless a
+named-use policy requires the companion, and no $d_p^{-1}$ claim. \\
 \CT{011} & Products and lifecycle & Verify atomic signal membership, companion
-independence, the complete lifecycle vocabulary, required/optional failure propagation,
+independence, named covariance-role identity/status in every signal bundle, the
+complete lifecycle vocabulary, required/optional failure propagation,
 immutability, supersession, no public unqualified intermediate, and exact
 lineage closure. \\
 \CT{012} & SCI-VAL profiles and actions & Instantiate the engineering-declared
@@ -362,7 +379,9 @@ covariance or numerical-conformance route fails. \\
 \Pred{011}--\Pred{013} & Mutation/supersession attempts and atomic failure
 injection for every required and optional member under each named policy. &
 Identity or product lifecycle fails. \\
-\Pred{014}--\Pred{017} & Template rescaling, noninvariant response probes,
+\Pred{014}--\Pred{017} & Pure fixed-state amplitude-coordinate rescaling,
+separate re-Learn/re-Resolve rescaling,
+noninvariant response probes,
 unavailable-route requests, and complete FLT-side handoff query suite. &
 Unit, response, selection, or handoff route fails. \\
 \Pred{018} & Search every public field/profile/action for excluded semantics or
@@ -412,7 +431,10 @@ Stage B r0.1 used only the exact eight objects named by the approved author
 packet. The r0.2 revision additionally used only the scientific owner's exact
 targeted closure directive dated 2026-08-31. The r0.3 repair used the owner's
 instruction to apply the independent ChatGPT Pro r0.2 document-review findings;
-the reviewer verified the two PDF hashes and inspected no implementation.
+the reviewer verified the two PDF hashes and inspected no implementation. The
+r0.4 repair used the second independent ChatGPT Pro review of the exact r0.3
+PDF pair and the owner's approval of selectable covariance scope plus
+diagnostics-only AO-001-C admission policy.
 Links were provenance only and were not opened. No implementation,
 configuration, schema, test, audit, validation, reduction, generated product,
 history, neighboring package, external source, or model-memory source supplied

@@ -19,7 +19,7 @@
     "scientific": {
       "overfull_boxes": 0,
       "path": "build/scientific-rationale.log",
-      "underfull_boxes": 225,
+      "underfull_boxes": 247,
       "unexpected_lines": []
     }
   },
@@ -27,19 +27,19 @@
   "pdfs": {
     "engineering": {
       "option_alternatives_found": 21,
-      "pages": 33,
+      "pages": 35,
       "path": "pdf/SCI-FLT-MATCHED-ENGINEERING-CONFORMANCE-v0.1.pdf",
       "predictions_found": 24,
       "requirements_found": 50,
-      "sha256": "079c96b6a044aaa7ab2b2ea62434c8173b3723928b3a0eb50e2a42584b191775"
+      "sha256": "e06bfed81c7be5fcc8883ca5027057aa636ac083fbe9ac65940b67e55fa13f2c"
     },
     "scientific": {
       "option_alternatives_found": 21,
-      "pages": 36,
+      "pages": 39,
       "path": "pdf/SCI-FLT-MATCHED-SCIENTIFIC-RATIONALE-v0.1.pdf",
       "predictions_found": 24,
       "requirements_found": 50,
-      "sha256": "2b623da8ce85445f7f4db18bab8d719269842658ecbfba75d8de00fe4445f8a2"
+      "sha256": "d39f754eadb6a9f19f0231d786b3d7acd7f5dc408ce2fa3cda21d0f532f5b87b"
     }
   },
   "scope": "source/PDF build consistency only; not scientific validation or implementation conformity",
@@ -52,12 +52,12 @@
     "common/edge_cases.tex"
   ],
   "shared_module_sha256": {
-    "assumptions.tex": "d9521a8a59e35c656529c3e586b388f91becfa345428e89f1dd09ec5f11bf4d8",
-    "definitions.tex": "3a3943c9856aa424d6d099cf94304c7e9deebb8b889f1a13d1dc2889bece58ad",
-    "edge_cases.tex": "d40f5ae61df6802b680ffe64ed5afadb56bf1272a9d8f5da7df1f0864ccde036",
-    "equations.tex": "7dc5a02cdebf55f5afbf1e15986759c53767d8e3a6e18e73764c680785a3c2cd",
-    "notation.tex": "2a751aba16db39d6d02668a298f7915c6a0062b6cb0d19aef0bbd4bb1792b100",
-    "requirements.tex": "a612235911275831e3efd24868a8b7bc1236dcf0665c939a9e58ed2367e1e766"
+    "assumptions.tex": "56473ed0d12598121ccc23f85993d6db909cb8948a7e9c96f934bc57119ef614",
+    "definitions.tex": "fbd023f1828bb18f105019c420041bc2ea9d0529d2fcd03e9c13a8cefb7fed2a",
+    "edge_cases.tex": "245867c9c8f89ee6e583fe7c43f1e9cc2f7bffa34b11200e1609d6b71ee4b10a",
+    "equations.tex": "b2ea45cb829403421e2dccb1babed0f7ddb7357b2e9e7f9b86a21ad8ad6a5f69",
+    "notation.tex": "00b6fdac27bf2b71cd17b539979ab0ae22aa94872795f09093f4e8ff09a51057",
+    "requirements.tex": "d768dafa2ac03915608d3c8c1625556aef605de69dbb9d8ae2f1b42f087db04b"
   },
   "source_counts": {
     "crosswalk_stable_ids": 95,

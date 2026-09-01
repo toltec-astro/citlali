@@ -40,9 +40,11 @@ for that mode/bin & Apply only owner-declared regularization within the frozen
 state; otherwise exclude as a declared null mode or make route unavailable.
 Never infer infinite precision. \\
 Sparse radial bin or large angular scatter & Radially averaged PSD lacks
-declared information or radial sufficiency & Fail owner-set effective-sample,
-anisotropy, or leakage bounds; no neighboring-bin interpolation unless separately
-authored. \\
+declared information or radial sufficiency & Report the preregistered
+effective-sample, anisotropy/dispersion, and leakage diagnostics. They are not
+v0.1 admission predicates and have no owner-set failure thresholds. Exact
+weight/denominator/support predicates still apply; no neighboring-bin
+interpolation unless separately authored. \\
 Unknown covariance entry & Scientific knowledge is absent & Preserve unknown;
 do not encode zero, diagonal independence, or a usable inverse. \\
 Available $W$ but unavailable $C_{\rm parent}$ & Weighting exists without
@@ -52,8 +54,11 @@ Available $C_{\rm parent}$ with mismatched population/state & Covariance does
 not describe this realization & Covariance route unavailable; no rescaling or
 population substitution. \\
 Template rescaled by $c\neq0$ & Amplitude convention changes & Create a new
-template/realization identity; $\widehat a$ rescales by $1/c$ and units/lineage
-must follow. \\
+template/realization identity. The $\widehat a\mapsto\widehat a/c$ law holds
+only for a pure amplitude-coordinate reparameterization with
+$\Dom_{\rm loc}$, $E_p$, $W_p$, $g$, support, and non-template state fixed.
+Any re-Learn or re-Resolve operation is a new realization outside that law;
+units and lineage must follow in every case. \\
 Template phase or anchor changed & Scientific response convention changes &
 New template and realization; never treat as a numeric implementation detail. \\
 Template mismatch to a real signal & Base matching-template estimand does not
@@ -102,6 +107,12 @@ Reference response or covariance attached to a realized field & Comparator is
 being mislabeled as the actual product consequence & Fail the companion or
 bundle policy; attach the operational realized response and named-role
 $C_{\rm realized}^{(U1)}$ when authorized. \\
+Failure-bearing operational covariance sample & $P_CF_g(m)$ is not a fixed-
+dimensional finite numerical random vector almost surely on the predeclared
+domain & Mark the covariance role \Unavailable{}. Do not condition on success,
+censor, pairwise-delete, or change domains without a separately named
+population and covariance role; signal status is unchanged unless named-use
+policy requires the companion. \\
 FLT to FRUIT consumer asks outside $\mathcal Q_{\rm FLT}^{0.1}$ or for FRUIT
 behavior & Request crosses the current envelope or package authority & Return
 typed unavailability and require a successor FLT envelope or separate FRUIT

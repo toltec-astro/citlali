@@ -38,18 +38,21 @@ selected \AO{001} alternative, including population, units, rank, null,
 regularization, window, support, and edge rules. \\
 \texttt{ASM-006} & $d_p$ is finite, exactly real, and strictly positive. \\
 \texttt{ASM-007} & For amplitude unbiasedness, the admitted noise has zero
-conditional mean on the complete support given the frozen state and does not
+conditional mean on the complete support given $h=(g,\theta)$ and does not
 induce target-dependent changes in the template or operator. \\
 \texttt{ASM-008} & For GLS optimality, $C_{\rm parent}$ is the exact authorized
-covariance for the population and conditioning; $C_p$ is restricted to the
+covariance for the population conditional on $h$; $C_p$ is restricted to the
 predeclared local domain before inversion; $C_{p,E}$ is positive definite on
 the exact authorized row/covector subspace; the projected template is
 identifiable; and competitors share that domain, subspace, fixed state, and
 unit-response constraint. \\
 \texttt{ASM-009} & For covariance, the parent law, actual fixed-state producing
-map $F_g$, operational response, support, units, frozen template/calibration
-state $\theta$, and conditioning refer to the same realization and generation;
-reference quantities and U1/U2 roles remain separate. \\
+map $F_g$, operational response, support, units, and complete frozen condition
+$h=(g,\theta)$ refer to the same realization and generation. A fixed
+predeclared $P_C$ supplies one finite numerical covariance codomain, and
+$P_CF_g(m)$ is finite almost surely under the declared U1 law. Reference
+quantities and U1/U2 roles remain separate; variation over $\theta$ belongs to
+U2. \\
 \texttt{ASM-010} & State follows the declared Learn--Resolve--Apply graph and
 is frozen before Apply. It is neither target-updated nor NOI-member relearned. \\
 \texttt{ASM-011} & A candidate NOI member satisfies the frozen pre-Apply
@@ -121,12 +124,14 @@ Response-dependent product or handoff \Unavailable{}. \\
 Units and calibration & $[\widehat a]=[m]/[t]$ and compatible joint lineage &
 Unjustified flux, beam, solid angle, DC, extended-source, or covariance meaning
 & Forbid the claim; required named use is \Unavailable{}. \\
-Covariance & Matching authorized parent law, actual $F_g$, named U1/U2 role,
-conditioning, scientific scope, and exact selected representation & Missing
-population/conditioning, unproved linear propagation, unnamed calibration
-terms, omitted correlations treated as zero, or $d_p^{-1}$ used without
-constrained local GLS & Covariance use \Unavailable{} or companion \Failed{};
-signal may remain \Complete{}. \\
+Covariance & Matching authorized parent law, actual $F_g$, complete frozen
+condition $h$, fixed predeclared $P_C$, finite numerical random-vector codomain,
+named U1/U2 role, scientific scope, and exact selected representation & Missing
+population or conditioning, failed or nonfinite draws on the fixed domain,
+selection on successful draws, censoring, pairwise deletion, draw-dependent domains,
+unproved linear propagation, unnamed calibration terms, omitted correlations
+treated as zero, or $d_p^{-1}$ used without constrained local GLS & Covariance
+role \Unavailable{} or companion \Failed{}; signal may remain \Complete{}. \\
 NOI parity & Pre-Apply $K_{\rm NOI}$ compatibility and identical frozen
 transformation & Per-member relearning, post-result admission, adapted support,
 or mixed generation & Member/anchor or NOI companion \Unavailable{} or

@@ -1,9 +1,9 @@
 # SCI-FLT-MATCHED v0.1 Scientific-Owner Decision Ledger
 
-Status: Stage B r0.3 independent-review repair draft. The r0.3 repair closes
-author-level defects without selecting an `AO-001` weighting, covariance role
-or scope, state/response scientific query vocabulary, named-use profile, or
-numerical route.
+Status: Stage B r0.4 second-review minor-repair draft. The r0.4 repair closes
+author-level defects and records two owner-approved policy decisions without
+selecting an `AO-001` weighting, covariance role or scope, state/response
+scientific query vocabulary, named-use profile, or numerical route.
 
 Owner: Grant Wilson
 
@@ -14,10 +14,12 @@ Owner: Grant Wilson
 | `SCI-FLT-MATCHED-R0.2-OD-001` | decided 2026-08-31 | Base v0.1 evaluates one anchor at every exact parent ordinary-MAP pixel center and preserves parent WCS/frame/grid/shape/index/order/pixel-center convention, apart from exact support restriction. No interpolation is admitted. | Subpixel, oversampled, or independently sampled output grids require separately named successors. |
 | `SCI-FLT-MATCHED-R0.2-OD-002` | decided 2026-08-31 | The scientific operator is the exact normalized operator for selected `W_p`; ordinary finite precision belongs to one preregistered engineering numerical-conformance profile. | No r0.1 numerical constant is scientific authority. A deliberately different scientific operator requires a separate identity and owner-approved error budget. |
 | `SCI-FLT-MATCHED-R0.2-OD-003` | decided 2026-08-31 | PA, SA, SP, CU, NU, RU, and FH meanings plus their dependency graph are normative; record layout is lossless representation only. | `AO-006` cannot encode different science by choosing separate, grouped, or vector storage. |
+| `SCI-FLT-MATCHED-R0.4-OD-001` | decided 2026-09-01 | Covariance scope remains selectable. Every signal bundle carries each named covariance role's identity and lifecycle status. An available selected scope is an independently atomic companion; `AO-003-C` carries typed unavailability and does not invalidate the signal unless an exact named-use policy requires the companion. | `SODL-008` remains open only for the concrete parent/consumer role and scope selection; covariance availability is not silently mandatory whenever a law exists. |
+| `SCI-FLT-MATCHED-R0.4-OD-002` | decided 2026-09-01 | `AO-001-C` effective-sample, anisotropy/dispersion, and leakage quantities are mandatory diagnostics but not v0.1 scientific validity gates. Their estimators and normalizations are preregistered engineering evidence fields; no owner-set admission thresholds exist in v0.1. | `SODL-004` remains open for the concrete radial weighting realization, but diagnostic values alone cannot admit, reject, or invalidate it. |
 
 ## Disposition rule
 
-A valid remaining scientific disposition names the ledger ID, exact r0.3
+A valid remaining scientific disposition names the ledger ID, exact r0.4
 scientific alternative or
 scope identity, all scientific parameters, parent class and named use,
 generation, and superseded decision. Representation-only and engineering
@@ -35,11 +37,11 @@ production, or Unity status.
 | `SCI-FLT-MATCHED-SODL-001` | open | Which concrete `AO-001` weight applies independently to observation and coadd parents: A exact constrained local inverse-covariance GLS; C exact radially symmetrized field-power spectral weight; a future concrete object commissioned under B or D; or unavailable? B/D are not selectable catch-alls. | Weighting realization for the class and every dependent optimality/uncertainty claim. |
 | `SCI-FLT-MATCHED-SODL-002` | open | If `AO-001-A`, bind exact `C_parent` population/conditioning, predeclared `D_loc(p)`/`E_p`, `U_p/P_p`, positive-definite `C_p,E`, the sole unit-response constraint, all four mode classifications, regularization authority, identifiable projected template, coefficient roles, Learn/Resolve provenance, and observation/coadd generations. | Constrained local GLS, minimum-variance wording, and `d_p^-1` variance. |
 | `SCI-FLT-MATCHED-SODL-003` | open successor-authorship trigger | Commission one concrete covariance-derived structured `W_p`, including covariance family/provenance, coordinate action/units, population, state, local domain/support/boundary/window, rank/subspaces, regularization, coefficient role, diagnostics, and uncertainty nonclaims. | `AO-001-B` cannot be selected until the concrete object is authored and reviewed. |
-| `SCI-FLT-MATCHED-SODL-004` | open | If `AO-001-C`, bind exact field source and deterministic-residual imprint; Learn/Resolve population; local chart and `D_loc(p)`; exact `A_p`, `D_p`, and `W_p=A_p^dagger D_p A_p`; transform phase/normalization/units; fixed window; finite nonnegative weights and positive denominator; half-open radial bins and tie/final-boundary rule; conjugacy/multiplicity; averaging order; indexed same-unit nonnegative regularization; regularized versus excluded-null modes; no borrowing; support/edge; and generation. | Radially symmetrized field-power spectral weighting. No noise, covariance, stationarity, isotropy, or optimality claim follows by implication. |
+| `SCI-FLT-MATCHED-SODL-004` | open | If `AO-001-C`, bind exact field source and deterministic-residual imprint; Learn/Resolve population; local chart and `D_loc(p)`; exact `A_p`, `D_p`, and `W_p=A_p^dagger D_p A_p`; transform phase/normalization/units; fixed window; finite nonnegative weights and positive denominator; half-open radial bins and tie/final-boundary rule; conjugacy/multiplicity; averaging order; indexed same-unit nonnegative regularization; regularized versus excluded-null modes; no borrowing; support/edge; and generation. Effective-sample, anisotropy/dispersion, and leakage remain mandatory diagnostics, never admission thresholds. | Radially symmetrized field-power spectral weighting. No noise, covariance, stationarity, isotropy, optimality, or diagnostic-threshold claim follows by implication. |
 | `SCI-FLT-MATCHED-SODL-005` | open successor-authorship trigger | Commission one concrete other self-adjoint PSD `W_p` with scientific purpose, provenance, population/state, coordinate action/units, local domain/support/boundary/window, rank/subspaces, regularization, coefficient role, response, and uncertainty nonclaims. | `AO-001-D` cannot be selected until the concrete object is authored and reviewed. |
 | `SCI-FLT-MATCHED-SODL-006` | decided | Exact scientific `n_p/d_p` is invariant. Ordinary finite precision is engineering `AO-002-A`; `AO-002-B` is a nonselectable trigger for a concrete distinct successor; `AO-002-C` is typed unavailability. | No science decision is missing for ordinary finite precision. |
 | `SCI-FLT-MATCHED-SODL-007` | superseded | Former core/tail and numerical-ceiling questions are removed. Any future scientific approximation requires concrete successor authorship and exact owner-authorized error budget. | No r0.1 named-use approximation route exists. |
-| `SCI-FLT-MATCHED-SODL-008` | open | For each parent class and named consumer, select an explicitly named covariance role and scientific scope: `AO-003-A` complete within that role, `AO-003-B` named projected, or `AO-003-C` unavailable. | Covariance publication/use, variance/standardization, draws/inversion, and dependent consumers. |
+| `SCI-FLT-MATCHED-SODL-008` | open | For each parent class and named consumer, select an explicitly named covariance role and scientific scope: `AO-003-A` complete within that role, `AO-003-B` named projected, or `AO-003-C` unavailable. Every signal bundle retains the role identity/status; typed unavailability does not invalidate the signal unless `SODL-013` makes the companion required for that named use. | Covariance publication/use, variance/standardization, draws/inversion, and dependent consumers. |
 | `SCI-FLT-MATCHED-SODL-009` | open | Beyond U1 conditional stochastic covariance, which U2 CAL/BEAM/template random variables, cross-covariances, conditioning, units, consumers, and joint pushforward are authorized, and which remain unavailable? | Calibration-aware or joint U1+U2 covariance and any total-uncertainty claim. |
 | `SCI-FLT-MATCHED-SODL-010` | open | What finite exact state query vocabulary and retention are scientifically required by each named use and by `Q_FLT^0.1`? | State audit/reanalysis, NOI parity evidence, and handoff queries requiring reconstructable state. |
 | `SCI-FLT-MATCHED-SODL-011` | open | What fixed/FP/operational-realized/reference response domains, finite query vocabulary, validity, and consumer scope are scientifically required within `Q_FLT^0.1`? | Response companion publication/use and response-dependent handoff queries. |
@@ -69,7 +71,8 @@ audit-burden rationale plus exact-equivalence evidence.
 Every realization still binds the exact parent and anchor lattice; template
 scientific object and exact representation; Learn/Resolve/Apply identities;
 five support roles; exact subspaces and regularization; actual and reference
-response/covariance types; U1--U7 availability; complete lifecycle; boundary
+response/covariance types; complete frozen condition `h=(g,theta)`; fixed
+covariance selector/codomain; U1--U7 availability; complete lifecycle; boundary
 records; named-use profile versions; and provenance. Missing facts create typed
 unavailability, never defaults.
 

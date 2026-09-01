@@ -1,7 +1,7 @@
 # SCI-FLT-MATCHED — Optimal Matched-Template Map Filtering
 
-Status: owner-authorized Stage B r0.3 independent-review repair draft prepared
-on `2026-09-01` for a second independent review; 14 owner questions remain
+Status: owner-authorized Stage B r0.4 second-review minor-repair draft prepared
+on `2026-09-01` for owner review; 14 owner questions remain
 open, two are decided, and one is superseded
 
 Version: `v0.1`
@@ -47,15 +47,26 @@ separate methods or future packages.
   new scientific selection; see
   [`CHATGPT_PRO_INDEPENDENT_REVIEW_R0.2_2026-08-31.md`](CHATGPT_PRO_INDEPENDENT_REVIEW_R0.2_2026-08-31.md)
   and [`SEMANTIC_CHANGE_MAP_R0.3.md`](SEMANTIC_CHANGE_MAP_R0.3.md).
+- A second independent ChatGPT Pro review of the exact r0.3 PDFs returned
+  `accept after minor repair`, confidence `0.90`, with no P0 or P1 findings.
+  Twelve F01--F14 findings were closed and F02/F04 were partially closed.
+  The owner approved selectable covariance scope with truthful role/status and
+  diagnostics-only AO-001-C admission policy. r0.4 applies all eight localized
+  repairs without estimator re-derivation; see
+  [`CHATGPT_PRO_INDEPENDENT_REVIEW_R0.3_2026-09-01.md`](CHATGPT_PRO_INDEPENDENT_REVIEW_R0.3_2026-09-01.md),
+  [`SCIENTIFIC_OWNER_R0.4_DIRECTIVE_2026-09-01.md`](SCIENTIFIC_OWNER_R0.4_DIRECTIVE_2026-09-01.md),
+  and [`SEMANTIC_CHANGE_MAP_R0.4.md`](SEMANTIC_CHANGE_MAP_R0.4.md).
 - Authored option identities: six families and 21 r0.1-stable alternatives in
   both views; no weighting, covariance, representation, named-use, or numerical
   route is selected.
 - Draft inventory: 50 requirements, 24 predictions, 15 assumptions, a
   seven-part uncertainty budget, a 95-ID crosswalk, and 17 retained SODL IDs
   (14 open, 2 decided, 1 superseded).
-- r0.3 build/source/PDF consistency and visual QA are the current closure gate;
+- r0.4 build/source/PDF consistency, 74-page visual QA, and 46-object
+  manifest verification are complete. A hash-bound output bundle accompanies
+  this pass;
   see [`build/BUILD_VERIFICATION.md`](build/BUILD_VERIFICATION.md) and
-  [`PDF_QA_R0.3.md`](PDF_QA_R0.3.md).
+  [`PDF_QA_R0.4.md`](PDF_QA_R0.4.md).
 - Scientific authority, numerical availability, implementation conformity,
   validation, achieved performance, readiness, and production status: not
   established.
@@ -76,20 +87,25 @@ separate methods or future packages.
 - [`verify_stage_a.py`](verify_stage_a.py): packet and firewall verification
 - [`SCIENTIFIC_OWNER_R0.2_DIRECTIVE_2026-08-31.md`](SCIENTIFIC_OWNER_R0.2_DIRECTIVE_2026-08-31.md): hash-bound targeted closure direction
 - [`CHATGPT_PRO_INDEPENDENT_REVIEW_R0.2_2026-08-31.md`](CHATGPT_PRO_INDEPENDENT_REVIEW_R0.2_2026-08-31.md): exact r0.2 independent-review record
+- [`CHATGPT_PRO_INDEPENDENT_REVIEW_R0.3_2026-09-01.md`](CHATGPT_PRO_INDEPENDENT_REVIEW_R0.3_2026-09-01.md): exact r0.3 second-review record
+- [`SCIENTIFIC_OWNER_R0.4_DIRECTIVE_2026-09-01.md`](SCIENTIFIC_OWNER_R0.4_DIRECTIVE_2026-09-01.md): owner-approved minor-repair and policy direction
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md): retained 17-ID disposition ledger
 - [`SEMANTIC_CHANGE_MAP_R0.3.md`](SEMANTIC_CHANGE_MAP_R0.3.md): directed-review repair map
-- [`NOTATION_CROSSWALK_R0.3.md`](NOTATION_CROSSWALK_R0.3.md): complete collision-free notation map
-- [`REPRESENTATION_CROSSWALK_R0.3.md`](REPRESENTATION_CROSSWALK_R0.3.md): authority and representation closure
-- [`ROUTE_STATUS_R0.3.md`](ROUTE_STATUS_R0.3.md): generic and realized route availability
-- [`OWNER_DECISION_PARITY_R0.3.md`](OWNER_DECISION_PARITY_R0.3.md): repair and two-view parity
+- [`SEMANTIC_CHANGE_MAP_R0.4.md`](SEMANTIC_CHANGE_MAP_R0.4.md): second-review minor-repair map
+- [`NOTATION_CROSSWALK_R0.4.md`](NOTATION_CROSSWALK_R0.4.md): complete fixed-conditioning/domain notation map
+- [`REPRESENTATION_CROSSWALK_R0.4.md`](REPRESENTATION_CROSSWALK_R0.4.md): covariance availability and representation closure
+- [`ROUTE_STATUS_R0.4.md`](ROUTE_STATUS_R0.4.md): generic and realized route availability
+- [`OWNER_DECISION_PARITY_R0.4.md`](OWNER_DECISION_PARITY_R0.4.md): owner-policy, repair, and two-view parity
 - [`CROSSWALK.md`](CROSSWALK.md): complete 95-ID source/view traceability
 - [`STAGE_B_MANAGER_REVIEW_2026-08-31.md`](STAGE_B_MANAGER_REVIEW_2026-08-31.md): historical r0.1 manager review
 - [`STAGE_B_DRAFT_MANIFEST.md`](STAGE_B_DRAFT_MANIFEST.md): exact draft source/PDF binding
+- [`SOURCE_BYTE_REPORT_R0.4.md`](SOURCE_BYTE_REPORT_R0.4.md): exact r0.4 source/PDF byte inventory
+- [`PDF_QA_R0.4.md`](PDF_QA_R0.4.md): all-page render and visual-QA record
 - [`DECISION_LOG.md`](DECISION_LOG.md): package process decisions and preserved nonclaims
 
 ## Stop Boundary
 
-The Stage B r0.3 draft is not frozen scientific authority. The anchor lattice,
+The Stage B r0.4 draft is not frozen scientific authority. The anchor lattice,
 exact-science/numerical-profile separation, and seven role semantics are owner
 disposed, but no weighting or realized scientific route is selected. Each
 dependent route remains unavailable until the remaining exact dispositions and

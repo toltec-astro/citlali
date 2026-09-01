@@ -102,13 +102,13 @@ positive semidefinite. A parent coefficient has only its selected-route role;
 its name, positivity, units, reciprocal, or diagonal placement does not make
 it covariance, precision, or inverse variance.
 
-Local GLS first restricts the authorized parent covariance to the predeclared
-local domain:
-$C_p=E_pC_{\rm parent}E_p^{\mathsf T}$, then inverts it only on the exact
+Local GLS first restricts the authorized parent covariance, conditional on
+$h$, to the predeclared local domain:
+$C_p=E_pC_{\rm parent\mid h}E_p^{\mathsf T}$, then inverts it only on the exact
 declared local estimable subspace. In general
 \[
- (E_pC_{\rm parent}E_p^{\mathsf T})^{-1}
- \ne E_pC_{\rm parent}^{-1}E_p^{\mathsf T}.
+ (E_pC_{\rm parent\mid h}E_p^{\mathsf T})^{-1}
+ \ne E_pC_{\rm parent\mid h}^{-1}E_p^{\mathsf T}.
 \]
 A global-precision subblock is generally not the inverse of the locally
 marginal covariance. Under additional distributional assumptions it may equal
@@ -170,10 +170,29 @@ The actual fixed-state numerical producing map is $F_g$. It may include
 rounding, branches, exceptional-value handling, or typed attempt failure and is
 not presumed exactly linear. Its realized response is therefore the declared
 fixed-state directional derivative or predeclared finite difference of $F_g$
-without rerunning Learn or Resolve. Only after evidence establishes
-$F_g(m)=\widetilde L_gm$ on the declared domain may the matrix identity
+without rerunning Learn or Resolve. The general response is
+$R_{\rm realized}^{[\delta,\sigma]}(m;p,s)$, where the response-query domain,
+reference parent, step $\delta$, and derivative or sidedness scheme $\sigma$
+are fixed before evaluation. Every evaluation entering one derivative or
+finite difference shall return finite numerical values on the same
+predeclared output-query domain; otherwise that response query is
+\Unavailable{}. Conditioning on successful evaluations, censoring failed
+evaluations, or changing the domain defines a separately named response
+experiment. Only after evidence establishes $F_g(m)=\widetilde L_gm$ on the
+declared domain may the parent-independent matrix identity
 $R_{\rm realized}=\widetilde L_gT$ be used. The exact scientific comparator is
 $R_{\rm reference}=LT$. These are not interchangeable.
+
+Every fixed-state expectation, variance, reference covariance, and realized
+covariance statement conditions on the complete frozen condition
+$h=(g,\theta)$. U2 describes variation over the frozen template/calibration
+state $\theta$ and is excluded from those U1 conditional statements. A named
+operational covariance role is defined only after a fixed, predeclared
+selector $P_C$ establishes a finite numerical random-vector codomain. It exists
+only when $P_CF_g(m)$ is finite almost surely under the declared U1 law.
+Conditioning on successful production, censoring, pairwise deletion, or a
+draw-dependent domain is not the same covariance role and requires a
+separately named population and covariance contract.
 
 \subsection{Product roles and atomic lifecycle}
 \label{sec:product-roles}
@@ -185,10 +204,14 @@ operational-response reference, uncertainty availability, lifecycle, and complet
 provenance. Failure of any required member prevents a complete publication
 candidate.
 
-Independently atomic qualified companions may carry authorized covariance,
-frozen-NOI uncertainty, response, or exact state/lineage. Every companion has
-its own scientific identity, support, population, unit, validity, lifecycle,
-and named-use policy. Optional failure does not change the signal estimand.
+Every signal bundle carries the identity and lifecycle status of each named
+covariance role. Independently atomic qualified companions may carry an
+authorized available covariance scope, frozen-NOI uncertainty, response, or
+exact state/lineage. Every companion has its own scientific identity, support,
+population, unit, validity, lifecycle, and named-use policy. Under selected
+\AOpt{003}{C}, typed covariance unavailability does not make the signal bundle
+partial unless an exact named-use policy requires that companion. Optional
+failure does not change the signal estimand.
 No numerator, denominator, kernel, field-power estimate, response slice,
 inverse scale, standardized field, or intermediate is a public science product
 without a complete role and policy.
