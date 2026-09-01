@@ -2,10 +2,10 @@
 
 Date: `2026-09-01`
 
-Scope: source/render/build/bundle consistency only. This is not scientific
-approval, implementation conformity, response/covariance fidelity,
+Scope: source/render/build/bundle consistency for the frozen scientific
+authority. This is not implementation conformity, response/covariance fidelity,
 observational validation, performance, readiness, production, route
-authorization, or scientific freeze.
+realization, or Unity evidence.
 
 ## Result
 
@@ -26,10 +26,10 @@ authorization, or scientific freeze.
   `m_obs:D_m->R`, covariance authority, payload-free `h_pre`, three-case
   PRED-025 behavior, corrected lifecycle order, and package-versus-realization
   AO authorization distinctions are mechanically present.
-- All four r0.6 boundaries, all seven honestly labeled role-semantics drafts,
-  the owner disposition packets, route status, conditional-freeze proposal,
-  semantic map, and parity record are present.
-- Both PDFs contain all stable IDs and required conditional-freeze/nonclaim
+- All four r0.6 boundaries, all seven frozen but SCI-VAL-unregistered role-
+  semantics definitions, the final owner dispositions, route status, adopted
+  freeze proposal, semantic map, and parity record are present.
+- Both PDFs contain all stable IDs and required frozen-authority/nonclaim
   language. Tectonic logs contain zero compile errors, undefined controls or
   references, missing characters, and overfull boxes.
 - Poppler and pypdf reopen both PDFs. They are unencrypted, form-free,
@@ -44,10 +44,10 @@ authorization, or scientific freeze.
 
 | Artifact | Pages | SHA-256 |
 | --- | ---: | --- |
-| `pdf/SCI-FLT-MATCHED-SCIENTIFIC-RATIONALE-v0.1.pdf` | 45 | `a931c946ab83aab36278056106b525638d9f017ce461a1359b5ce95efc3deb3d` |
-| `pdf/SCI-FLT-MATCHED-ENGINEERING-CONFORMANCE-v0.1.pdf` | 41 | `e14b5dce8559311e57217f927496bf809042d492fd76a42ac3839ed18f69d861` |
+| `pdf/SCI-FLT-MATCHED-SCIENTIFIC-RATIONALE-v0.1.pdf` | 45 | `aacb61f0f197fcfdd95613e286a5f84dafc15356acd735bfbbfe445e5ac797ff` |
+| `pdf/SCI-FLT-MATCHED-ENGINEERING-CONFORMANCE-v0.1.pdf` | 41 | `c7c50a116faffb152d5035e063454597c11a507a3915385942f778c8d0cd02ab` |
 
 Machine-readable source/PDF details are in `build/consistency-report.json`.
 Exact active-object bytes and link closure are in
 `SOURCE_BYTE_AND_LINK_CLOSURE_R0.6.md` and are bound by the active r0.6
-conditional-freeze preflight manifest.
+frozen scientific-authority manifest.

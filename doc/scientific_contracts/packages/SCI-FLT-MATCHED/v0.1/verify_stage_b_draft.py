@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify the content-bound SCI-FLT-MATCHED Stage B r0.6 preflight set."""
+"""Verify the frozen content-bound SCI-FLT-MATCHED v0.1/r0.6 authority set."""
 
 from hashlib import sha256
 from pathlib import Path
@@ -15,7 +15,7 @@ def digest(path: Path) -> str:
 
 
 text = MANIFEST.read_text()
-assert "SCI-FLT-MATCHED_STAGE_B_CONDITIONAL_FREEZE_PREFLIGHT v0.1/r0.6" in text
+assert "SCI-FLT-MATCHED_SCIENTIFIC_AUTHORITY v0.1/r0.6" in text
 rows = re.findall(
     r"^\|\s*(\d+)\s*\|\s*`([^`]+)`\s*\|\s*`[^`]+`\s*\|\s*(\d+)\s*\|"
     r"\s*`([0-9a-f]{64})`\s*\|.*\|$",
@@ -39,6 +39,12 @@ assert digest(ROOT / "SCIENTIFIC_OWNER_R0.6_DIRECTIVE_2026-09-01.md") == (
 closure = (ROOT / "SOURCE_BYTE_AND_LINK_CLOSURE_R0.6.md").read_text()
 assert "Unresolved active-object local Markdown links: `0`." in closure
 
+freeze = ROOT / "SCIENTIFIC_OWNER_FREEZE_2026-09-01.md"
+assert freeze.is_file(), "external scientific-owner freeze record missing"
+freeze_text = freeze.read_text(encoding="utf-8")
+assert f"`{digest(MANIFEST)}`" in freeze_text
+assert "Status: frozen scientific authority" in freeze_text
+
 # The bundle note exists only in the standalone extracted archive root. In that
 # context, run the bundled auditor over every Markdown file, including the
 # manifest and note. Repository-context verification stays authority-object
@@ -54,9 +60,9 @@ if (ROOT / "BUNDLE_README_R0.6.md").is_file():
     link_result = module.audit(ROOT)
     assert link_result["status"] == "PASS", link_result
 
-print("sci_flt_matched_stage_b_draft=PASS")
-print(f"draft_objects={len(rows)}")
-print(f"draft_manifest_sha256={digest(MANIFEST)}")
-print("draft_revision=r0.6")
-print("owner_dispositions_complete=false")
-print("scientific_authority_frozen=false")
+print("sci_flt_matched_scientific_authority=PASS")
+print(f"authority_objects={len(rows)}")
+print(f"authority_manifest_sha256={digest(MANIFEST)}")
+print("authority_revision=r0.6")
+print("owner_dispositions_complete=true")
+print("scientific_authority_frozen=true")

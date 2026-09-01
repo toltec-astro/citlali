@@ -182,6 +182,7 @@ def main() -> int:
         "AO_OWNER_DISPOSITION_PACKET_R0.6.md",
         "OPTIMALITY_TITLE_OWNER_DISPOSITION_R0.6.md",
         "CONDITIONAL_SCIENTIFIC_FREEZE_PROPOSAL_R0.6.md",
+        "SCIENTIFIC_OWNER_FINAL_DISPOSITIONS_R0.6.md",
         "SEMANTIC_CHANGE_MAP_R0.6.md",
         "OWNER_DECISION_PARITY_R0.6.md",
     ]:
@@ -189,11 +190,11 @@ def main() -> int:
             errors.append(f"r0.6 closure record missing: {required}")
 
     role_header = [
-        "Status: role-semantics draft only",
-        "Scientific owner approval: pending",
+        "Status: frozen role-semantics definition",
+        "Scientific owner approval: approved and frozen `2026-09-01`",
         "SCI-VAL Registry state: unregistered",
         "SCI-VAL evaluability: unavailable",
-        "Authority effect: none",
+        "Authority effect: semantic definition only; not executable policy",
         "Missing policy fields are not inferred.",
     ]
     for code in ROLE_CODES:
@@ -283,9 +284,9 @@ def main() -> int:
         missing_pred = [x for x in PRED_IDS if x not in text]
         missing_ao = [x for x in sorted(AO_OPTIONS) if x not in text]
         for phrase in [
-            "CONDITIONAL-FREEZE PREFLIGHT",
-            "OWNER DISPOSITIONS PENDING",
-            "No numerical route",
+            "FROZEN SCIENTIFIC AUTHORITY",
+            "Matched-template map amplitude estimation",
+            "No concrete numerical route",
             "implementation",
             "observational validation",
             "achieved performance",

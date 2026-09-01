@@ -1,7 +1,7 @@
 # Proposed conditional scientific-owner freeze — SCI-FLT-MATCHED v0.1 r0.6
 
-Status: proposal only; unavailable until exact owner dispositions and approval
-of the resulting bound bytes
+Status: adopted on `2026-09-01` through the exact final dispositions and the
+external manifest-bound scientific-owner freeze record
 
 ## Proposed freeze scope
 
@@ -16,13 +16,15 @@ After exact owner disposition, the freeze may establish:
 - typed unavailable routes and successor-authorship triggers; and
 - the finite FLT-to-FRUIT producer envelope without FRUIT science.
 
-## Required owner dispositions before freeze
+## Satisfied owner dispositions
 
-The owner must select the human title and explicitly dispose package-level,
+The owner selected the human title and explicitly disposed package-level,
 parent-class, named-use, and per-realization AO architecture in
-`AO_OWNER_DISPOSITION_PACKET_R0.6.md`, including every remaining SODL item or a
-typed deferral/unavailability state. The resulting bytes must be rebuilt,
-rebound, reviewed, and approved by exact digest.
+`AO_OWNER_DISPOSITION_PACKET_R0.6.md` and
+`SCIENTIFIC_OWNER_FINAL_DISPOSITIONS_R0.6.md`, including every remaining SODL
+item or a typed deferral/unavailability state. The resulting bytes are rebuilt
+and rebound by the r0.6 authority manifest; the external freeze record binds
+that exact manifest digest.
 
 ## Freeze nonclaims
 

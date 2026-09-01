@@ -1,11 +1,10 @@
 # SCI-FLT-MATCHED v0.1 r0.6 standalone output bundle
 
-Status: conditional-freeze preflight only; owner title and AO dispositions are
-pending, and scientific authority is not frozen.
+Status: standalone bundle of the frozen v0.1/r0.6 scientific authority.
 
-This archive contains exactly the current authority/freeze-candidate object
+This archive contains exactly the current frozen-authority object
 rows in `STAGE_B_DRAFT_MANIFEST.md`, that manifest and its SHA-256 sidecar, and
-this note. Historical repository context is represented only by immutable
+this note, and the external exact-manifest freeze record. Historical repository context is represented only by immutable
 digest anchors in the manifest. It is intentionally not copied into the
 standalone archive.
 
@@ -18,6 +17,7 @@ manifest-bound byte and the complete standalone Markdown-link closure. The
 included `build/audit_bundle_links.py` may also be run directly against the
 extracted root.
 
-The archive makes no title or AO selection and no implementation, conformity,
-response/covariance fidelity, observational validation, performance,
-readiness, production, freeze, or Unity claim.
+The archive records the selected title and final AO/SODL dispositions. It makes
+no concrete numerical-route, implementation-conformity, response/covariance-
+fidelity, observational-validation, performance, readiness, production, or
+Unity claim.

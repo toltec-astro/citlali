@@ -761,8 +761,9 @@ derived companions are admitted; the exact owner-worded FLT→FRUIT scientific
 interface is first-class while FRUIT remains a separate tranche; and signal
 and qualified companions use tiered role-scoped atomic lifecycles with FLT-
 owned named-use policies evaluated by VAL. Grant also approved
-`SCI-FLT-MATCHED`, **Optimal matched-template map filtering**, as the successor
-package identity. No holding-study owner question remains.
+`SCI-FLT-MATCHED` as the successor package identity; the later Stage B freeze
+selected the human title **Matched-template map amplitude estimation**. No
+holding-study owner question remains.
 
 On `2026-08-31`, the package-local
 [`SCI-FLT-MATCHED v0.1`](scientific_contracts/packages/SCI-FLT-MATCHED/v0.1/README.md)
@@ -897,7 +898,8 @@ claim, validation, performance, readiness, production state, freeze, or Unity
 activity is selected or claimed.
 
 The exact r0.6 micro-repair directive then accepted r0.5 as the
-freeze-candidate basis while withholding the title and AO dispositions. The
+freeze-candidate basis while initially withholding the title and AO
+dispositions. The
 r0.6 shared core distinguishes `S_parent_fact`, the stochastic model
 `M:D_model->R`, and the observed payload `m_obs:D_m->R`; keeps model/covariance
 construction authority required even where the final observed coefficient is
@@ -905,24 +907,38 @@ exact zero; corrects the successful lifecycle to Realized, complete
 publication candidate, PublicationDecided, then Published or NotProduced; and
 allows package authorization of multiple separately named AO-001 methods while
 binding exactly one per request/realization with no mixing, data-driven choice,
-or fallback. The seven PA/SA/SP/CU/NU/RU/FH records are now honestly labeled
-role-semantics drafts only, scientifically unapproved, SCI-VAL-unregistered,
-and unevaluable. Stable counts remain 50 requirements, 25 predictions, six AO
-families/21 alternatives, a 96-ID crosswalk, and 17 SODL IDs. The final views
-render as 45-page scientific and 41-page engineering documents; mechanical
-consistency, the repository Stage A verifier, and all-page visual QA pass. The
-45-object authority-only conditional-freeze preflight manifest verifies at
-SHA-256
-`dea03053e40af2ca6204f7d4c2b408fe0cbab0e1489a0a449e6ea21e62aa26a7`.
-The deterministic 48-file standalone archive has zero unresolved local links
-and SHA-256
-`165fd922a12cfa28af9a37eecf62d2a2d4b7d5d929f42641f02d740579b5b628`.
-The exact owner title and AO dispositions remain the next gate; this r0.6
-preflight is not scientific-owner approval or scientific freeze.
+or fallback. The seven PA/SA/SP/CU/NU/RU/FH records are frozen role-semantics
+definitions while remaining SCI-VAL-unregistered and unevaluable. Stable
+counts remain 50 requirements, 25 predictions, six AO families/21
+alternatives, a 96-ID crosswalk, and 17 SODL IDs.
 
-This remains contract-development work only. No algorithm change,
-implementation conformity, validation, calibration, performance, readiness,
-production, freeze, or Unity action is claimed or authorized.
+Grant Wilson then selected title option 1, **Matched-template map amplitude
+estimation**, and authorized AO-001-A plus separately named AO-001-C as
+eligible parameterized methods for ordinary-MAP observation/coadd parents and
+eligible named uses. Every realization binds exactly one fully specified
+authorized method; mixing, target-data selection, substitution, and fallback
+are forbidden. A supports exact-local-GLS optimality/reference variance only
+when every theorem premise is bound. C remains normalized but nonoptimal and
+implies no noise, covariance, stationarity, isotropy, or optimality claim. B/D
+remain nonselectable successor-authorship triggers. The owner also disposed
+all remaining covariance-role, U2, state/response-query, named-companion,
+flux-interpretation, public-intermediate, and supersession questions, closing
+all 17 stable SODL entries.
+
+The final views render as 45-page scientific and 41-page engineering
+documents; mechanical consistency, the repository Stage A verifier, all-page
+visual QA, and extracted standalone verification pass. The 46-object frozen
+scientific-authority manifest has SHA-256
+`6b0231a7e9d34f028eda9cce48f62de1fc9e594348aa1448a2d182d732f78688`.
+The deterministic 50-file standalone archive has zero unresolved local links
+and SHA-256
+`b6d3341956f0f6f3bf10d22bcc4bf262ffc81e3d2e6c92a57a7941530c1dfc27`.
+The external freeze record binds that exact manifest. `SCI-FLT-MATCHED
+v0.1/r0.6` is complete and frozen as scientific authority.
+
+This is a scientific-contract freeze only. No algorithm change, concrete
+numerical realization, implementation conformity, validation, calibration,
+performance, readiness, production, or Unity action is claimed or authorized.
 
 The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
 completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.

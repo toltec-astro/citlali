@@ -1,6 +1,6 @@
 # Corrected product lifecycle state graph — r0.6
 
-Status: normative micro-repair draft; owner review pending
+Status: frozen normative micro-repair
 
 Successful requested route:
 

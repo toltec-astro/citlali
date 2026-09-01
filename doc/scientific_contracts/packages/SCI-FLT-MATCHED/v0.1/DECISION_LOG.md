@@ -150,3 +150,27 @@
 - The current archive policy is authority-only and standalone: repository-
   context history and `verify_stage_a.py` remain outside the archive, while
   their immutable anchors or successful repository-context check are recorded.
+
+## `2026-09-01` — Scientific-owner final disposition and v0.1/r0.6 freeze
+
+- Grant Wilson selected title option 1, **Matched-template map amplitude
+  estimation**. The title and method ID remain non-evidence for optimality.
+- The owner authorized `AO-001-A` and separately named `AO-001-C` as eligible
+  parameterized methods for ordinary-MAP observation and coadd parent classes
+  and eligible named uses. Each request/realization binds exactly one fully
+  specified method; mixing, target-data selection, substitution, and fallback
+  are prohibited.
+- A supports exact-local-GLS optimal/reference-variance language only when
+  every theorem premise is bound. C remains normalized but nonoptimal and
+  implies no noise, covariance, stationarity, isotropy, or optimality claim.
+  B/D remain nonselectable successor-authorship triggers.
+- All 17 stable SODL entries are disposed. The base SP role requires no optional
+  companion; CU/NU/RU/FH require their corresponding exact companions. Joint
+  U1+U2 covariance and additional public intermediates remain unavailable.
+  State and response query vocabularies are frozen while exact representations
+  remain engineering declarations.
+- The rebuilt shared-core views, active authority objects, final dispositions,
+  and exact manifest are frozen by
+  `SCIENTIFIC_OWNER_FREEZE_2026-09-01.md`. This scientific freeze establishes
+  no concrete numerical realization, implementation conformity, validation,
+  performance, readiness, production state, or Unity activity.

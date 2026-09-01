@@ -1,15 +1,15 @@
 # SCI-MAP_TO_SCI-FLT-MATCHED v0.1/r0.6
 
-Status: micro-repaired stochastic-model/observed-payload boundary draft; no
-realized input, implementation, conformity, validation, production, or freeze
-claim
+Status: frozen v0.1/r0.6 stochastic-model/observed-payload scientific boundary;
+no realized input, implementation, conformity, validation, or production claim
 
 Producer: `SCI-MAP`
 
 Consumer: `SCI-FLT-MATCHED`
 
-Provisional historical title status: `optimality_status=not_claimed`; the
-human title remains an explicit owner disposition and is not claim evidence.
+Selected human title: **Matched-template map amplitude estimation**. Title and
+method ID are not optimality evidence; each realization carries its exact
+`optimality_status`.
 
 MAP supplies exactly one immutable normalized ordinary-MAP observation bundle
 or ordinary-MAP coadd bundle. It binds parent identity/class/generation,

@@ -13,13 +13,13 @@
     "engineering": {
       "overfull_boxes": 0,
       "path": "build/engineering-conformance.log",
-      "underfull_boxes": 306,
+      "underfull_boxes": 299,
       "unexpected_lines": []
     },
     "scientific": {
       "overfull_boxes": 0,
       "path": "build/scientific-rationale.log",
-      "underfull_boxes": 320,
+      "underfull_boxes": 319,
       "unexpected_lines": []
     }
   },
@@ -31,7 +31,7 @@
       "path": "pdf/SCI-FLT-MATCHED-ENGINEERING-CONFORMANCE-v0.1.pdf",
       "predictions_found": 25,
       "requirements_found": 50,
-      "sha256": "e14b5dce8559311e57217f927496bf809042d492fd76a42ac3839ed18f69d861"
+      "sha256": "c7c50a116faffb152d5035e063454597c11a507a3915385942f778c8d0cd02ab"
     },
     "scientific": {
       "option_alternatives_found": 21,
@@ -39,7 +39,7 @@
       "path": "pdf/SCI-FLT-MATCHED-SCIENTIFIC-RATIONALE-v0.1.pdf",
       "predictions_found": 25,
       "requirements_found": 50,
-      "sha256": "a931c946ab83aab36278056106b525638d9f017ce461a1359b5ce95efc3deb3d"
+      "sha256": "aacb61f0f197fcfdd95613e286a5f84dafc15356acd735bfbbfe445e5ac797ff"
     }
   },
   "r0_6_directive_sha256": "5758640064918b2d3021afc7ea63ffba063ba7b1abbb66dc6d43d945ed73ebd3",
@@ -54,12 +54,12 @@
     "common/edge_cases.tex"
   ],
   "shared_module_sha256": {
-    "assumptions.tex": "d5fd28ee86178d4f72a5fdc88b546119e84a676390b175cac1b62cb497723ac4",
-    "definitions.tex": "5599f8d62a74b884df991a3f95d22e1cb2942daa77d83cb26948256a81886131",
+    "assumptions.tex": "b81a9b7753b71e3a8779432b03c29d9c7c06e97df06f0f469ee7982b1fc713a1",
+    "definitions.tex": "252e39fe965a798526a45ee0ed7d19af3148e23d03b7a0e358a6d41d29f634e4",
     "edge_cases.tex": "6b3b89b8e6bc470ea7a4c6565175f97e69d22f69c2088dc0494696376199b054",
     "equations.tex": "b3a7eef087abd95121edc1f47b84427c35549667bf4207facc7046d3cac63ec6",
-    "notation.tex": "fe98a62fc4e271674e3bf7d13a8f33c9de21874ba50a9966e6b4901bec9e2c09",
-    "requirements.tex": "433fbe0e3cf7851a2f99a1c00f29600f5991d73589950583fbd17696f2bfe934"
+    "notation.tex": "1ede130bd35d7eb99afefc7c18d195843dfbbcd25c91a7f102942d2f6bcd3909",
+    "requirements.tex": "4ae8c18e46bf39fe504032385dd92e3c65285fa1b9e9542d462ac65ab1ac9bb0"
   },
   "source_counts": {
     "crosswalk_stable_ids": 96,

@@ -1,9 +1,9 @@
 # SCI-FLT-MATCHED v0.1 Stage B Crosswalk
 
-Status: Stage B r0.6 micro-repair conditional-freeze preflight; title and
-owner authorization/disposition remain pending. A package may authorize
-multiple AO-001 routes, while each request/realization shall bind exactly one
-authorized route without mixing, outcome-dependent selection, or fallback.
+Status: frozen Stage B v0.1/r0.6 scientific authority. The owner selected the
+option 1 title and authorized A/C as separately named eligible parameterized
+methods. Each request/realization shall bind exactly one authorized route
+without mixing, outcome-dependent selection, substitution, or fallback.
 This crosswalk makes no
 implementation, conformity, response/covariance-fidelity, validation,
 achieved-performance, readiness, production, scientific-freeze, or Unity
@@ -35,7 +35,7 @@ or a reported conformity or validation result.
 | R04 | `CHATGPT_PRO_INDEPENDENT_REVIEW_R0.3_2026-09-01.md` plus `SCIENTIFIC_OWNER_R0.4_DIRECTIVE_2026-09-01.md` |
 
 | R05 | `SCIENTIFIC_OWNER_R0.5_DIRECTIVE_2026-09-01.md` plus its resulting closure amendments and owner-disposition packets |
-| R06 | `SCIENTIFIC_OWNER_R0.6_DIRECTIVE_2026-09-01.md` plus its stochastic/payload, lifecycle, AO-authorization, role-semantics, and conditional-freeze records |
+| R06 | `SCIENTIFIC_OWNER_R0.6_DIRECTIVE_2026-09-01.md` plus its stochastic/payload, lifecycle, AO-authorization, role-semantics, final-disposition, and freeze records |
 
 Links appearing in admitted objects were not opened and are not inputs.
 
@@ -145,15 +145,18 @@ test family adds future evidence routing without reporting a result.
 
 ## Authored-option alternative crosswalk
 
-Every row below is unselected. The alternatives, assumptions, consequences,
-observables/bounds, failure rules, and validation consequences are fully stated
-in `src/common/requirements.tex`, imported by both views.
+The owner authorized A and C as eligible parameterized scientific methods,
+retained B/D and AO-002-B as nonselectable successor triggers, fixed the
+scientific scopes and query vocabularies, and left the concrete engineering
+representation alternatives for later exact declaration. The assumptions,
+consequences, observables/bounds, failure rules, and validation consequences
+are fully stated in `src/common/requirements.tex`, imported by both views.
 
 | Alternative | Packet assignment | Scientific consequence | Principal validation route | Route unavailable until selected/parameterized |
 | --- | --- | --- | --- | --- |
-| `SCI-FLT-MATCHED-AO-001-A` | SOD ODQ-004/009; RAO AO-001; R02 | Exact constrained local inverse-covariance GLS; sole route eligible for optimality and `d_p^-1` variance | CT-004, CT-006, CT-010 | Exact-GLS weight and associated optimality/variance claim |
+| `SCI-FLT-MATCHED-AO-001-A` | SOD ODQ-004/009; RAO AO-001; R02 | Package-authorized exact constrained local inverse-covariance GLS; sole route eligible for optimality and `d_p^-1` variance | CT-004, CT-006, CT-010 | Exact premises, realization, and associated optimality/variance claim |
 | `SCI-FLT-MATCHED-AO-001-B` | SOD ODQ-004; RAO AO-001; R02; R03 F08 | Nonselectable successor-authorship envelope until one concrete structured covariance-derived `W_p` is supplied | CT-006, CT-010 | Concrete structured weighting authorship and review |
-| `SCI-FLT-MATCHED-AO-001-C` | SOD ODQ-004; ASC; RAO AO-001; R02; R03 F03; R04 C04 owner disposition | Exact `A_p`, `D_p`, and radially symmetrized field-power `W_p=A_p^dagger D_p A_p`, with truthful source, mandatory diagnostics, no validity thresholds, and no implied noise/covariance/isotropy/optimality | CT-006, CT-007 | Field-power weighting and exact conventions |
+| `SCI-FLT-MATCHED-AO-001-C` | SOD ODQ-004; ASC; RAO AO-001; R02; R03 F03; R04 C04 owner disposition | Separately package-authorized exact `A_p`, `D_p`, and radially symmetrized field-power `W_p=A_p^dagger D_p A_p`, with truthful source, mandatory diagnostics, no validity thresholds, and no implied noise/covariance/isotropy/optimality | CT-006, CT-007 | Exact field-power state and numerical realization |
 | `SCI-FLT-MATCHED-AO-001-D` | SOD ODQ-004; RAO AO-001; R03 F08 | Nonselectable successor-authorship trigger for one concrete weaker PSD `W_p` | CT-006, CT-007 | Concrete weaker-weight authorship and review |
 | `SCI-FLT-MATCHED-AO-002-A` | SOD ODQ-006; RAO AO-002; R02 | One preregistered engineering profile for a numerical realization of the exact operator; no privileged scientific threshold | CT-007 | Numerical-conformance statement |
 | `SCI-FLT-MATCHED-AO-002-B` | R02; R03 F08 | Nonselectable trigger to author an intentionally distinct scientific operator with separate identity and owner-approved error budget | CT-007 | Concrete scientifically distinct successor authorship |
@@ -189,6 +192,6 @@ in `src/common/requirements.tex`, imported by both views.
 `build/verify_consistency.py` checks that both LaTeX views import all shared
 modules in the same order, that the shared source contains all 50 stable
 requirement IDs, all 25 prediction IDs, and all 21 exact option
-identities, and that draft/nonclaim language survives rendering. Its report is
+identities, and that frozen/nonclaim language survives rendering. Its report is
 a build-consistency artifact only, not scientific validation or implementation
 conformity evidence.

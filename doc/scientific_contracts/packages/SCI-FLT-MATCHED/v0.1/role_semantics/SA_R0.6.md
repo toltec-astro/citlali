@@ -1,14 +1,14 @@
 # SA — state-admission role semantics r0.6
 
-Status: role-semantics draft only
+Status: frozen role-semantics definition
 
-Scientific owner approval: pending
+Scientific owner approval: approved and frozen `2026-09-01`
 
 SCI-VAL Registry state: unregistered
 
 SCI-VAL evaluability: unavailable
 
-Authority effect: none
+Authority effect: semantic definition only; not executable policy
 
 Missing policy fields are not inferred.
 

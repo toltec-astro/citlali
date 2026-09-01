@@ -1,6 +1,6 @@
 # AO-001 authorization and realization multiplicity amendment — r0.6
 
-Status: normative micro-repair draft; owner review pending
+Status: frozen normative micro-repair
 
 The package may authorize more than one separately named AO-001 method. The
 recommended architecture authorizes both `AO-001-A` and `AO-001-C` while

@@ -1,10 +1,11 @@
 # SCI-FLT-MATCHED_TO_SCI-NOI v0.1/r0.6
 
-Status: micro-repaired compatibility/request-state boundary draft; no NOI
-realization or empirical-covariance equivalence is claimed available
+Status: frozen v0.1/r0.6 compatibility/request-state scientific boundary; no
+NOI realization or empirical-covariance equivalence is claimed available
 
-Provisional historical title status: `optimality_status=not_claimed`; the
-human title remains an explicit owner disposition and is not claim evidence.
+Selected human title: **Matched-template map amplitude estimation**. Title and
+method ID are not optimality evidence; each realization carries its exact
+`optimality_status`.
 
 FLT owns transformation and compatibility; NOI owns realization population and
 membership meaning. Each signal bundle carries the NOI named-use status:

@@ -1,8 +1,7 @@
 # SCI-FLT-MATCHED v0.1
 
-Status: Stage B r0.6 micro-repair conditional-freeze preflight prepared on
-`2026-09-01`; exact title and AO owner dispositions remain pending, so no
-scientific freeze is proposed as complete or approved
+Status: frozen Stage B v0.1/r0.6 scientific authority on `2026-09-01`; all 17
+stable SODL entries are disposed and the exact object set is manifest-bound
 
 Version: `v0.1`
 
@@ -32,7 +31,7 @@ separate methods or future packages.
 ## Current Gate
 
 - Stage A recovery and author-input decisions: complete.
-- Stage B scientific-owner dispositions remain open.
+- Stage B scientific-owner dispositions: complete and frozen.
 - Sanitized Scope Brief and exact author packet: candidate prepared.
 - Exact bytes and hashes: owner-approved through
   [`SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-31.md).
@@ -70,21 +69,32 @@ separate methods or future packages.
   lifecycle order, permits package-level authorization of multiple AO-001
   routes while binding exactly one route per request/realization, and labels
   the seven returned role records as unregistered and unevaluable. It requests
-  exact owner dispositions rather than authorizing the recommended title or AO
-  choices.
+  exact owner dispositions rather than silently authorizing recommendations.
+- Grant Wilson selected title option 1, **Matched-template map amplitude
+  estimation**, authorized A/C as separately named eligible parameterized
+  methods for observation/coadd parents and eligible uses, retained B/D as
+  successor triggers, and closed every remaining SODL entry. Each realization
+  still binds exactly one fully specified method with no mixing, target-data
+  choice, substitution, or fallback.
 - Authored option identities: six families and 21 r0.1-stable alternatives in
-  both views; no weighting, covariance, representation, named-use, or numerical
-  route is selected.
+  both views. The scientific A/C envelopes, covariance/use scopes, and finite
+  query vocabularies are disposed; concrete numerical and representation
+  declarations remain separate or typed unavailable.
 - Draft inventory: 50 requirements, 25 predictions, 15 assumptions, a
-  seven-part uncertainty budget, a 96-ID crosswalk, and 17 retained SODL IDs
-  (14 open, 2 decided, 1 superseded).
+  seven-part uncertainty budget, a 96-ID crosswalk, and 17 disposed SODL IDs.
 - The r0.6 build/source/PDF consistency, all-page visual QA, authority-only
   standalone-bundle link audit, manifest verification, and deterministic
   archive checks are recorded in [`build/BUILD_VERIFICATION.md`](build/BUILD_VERIFICATION.md)
   and [`PDF_QA_R0.6.md`](PDF_QA_R0.6.md).
-- Scientific authority, numerical availability, implementation conformity,
-  validation, achieved performance, readiness, and production status: not
-  established.
+- The frozen 46-object authority manifest has SHA-256
+  `6b0231a7e9d34f028eda9cce48f62de1fc9e594348aa1448a2d182d732f78688`.
+  The deterministic 50-file standalone
+  [`r0.6 bundle`](bundle/SCI-FLT-MATCHED-v0.1-r0.6-stage-b-output-bundle.tar.gz)
+  has SHA-256
+  `b6d3341956f0f6f3bf10d22bcc4bf262ffc81e3d2e6c92a57a7941530c1dfc27`.
+- Scientific authority: frozen. Numerical availability, implementation
+  conformity, validation, achieved performance, readiness, and production
+  status: not established.
 
 ## Package Contents And Current Records
 
@@ -107,8 +117,10 @@ separate methods or future packages.
 - [`SCIENTIFIC_OWNER_R0.4_DIRECTIVE_2026-09-01.md`](SCIENTIFIC_OWNER_R0.4_DIRECTIVE_2026-09-01.md): owner-approved minor-repair and policy direction
 - [`SCIENTIFIC_OWNER_R0.5_DIRECTIVE_2026-09-01.md`](SCIENTIFIC_OWNER_R0.5_DIRECTIVE_2026-09-01.md): exact final targeted closure and owner-disposition direction
 - [`SCIENTIFIC_OWNER_R0.6_DIRECTIVE_2026-09-01.md`](SCIENTIFIC_OWNER_R0.6_DIRECTIVE_2026-09-01.md): exact accepted-basis, micro-repair, and conditional-freeze direction
-- [`AO_OWNER_DISPOSITION_PACKET_R0.6.md`](AO_OWNER_DISPOSITION_PACKET_R0.6.md): exact pending AO disposition layers and recommendations
-- [`OPTIMALITY_TITLE_OWNER_DISPOSITION_R0.6.md`](OPTIMALITY_TITLE_OWNER_DISPOSITION_R0.6.md): pending explicit three-option title decision
+- [`AO_OWNER_DISPOSITION_PACKET_R0.6.md`](AO_OWNER_DISPOSITION_PACKET_R0.6.md): owner-approved AO disposition layers
+- [`OPTIMALITY_TITLE_OWNER_DISPOSITION_R0.6.md`](OPTIMALITY_TITLE_OWNER_DISPOSITION_R0.6.md): selected option 1 title disposition
+- [`SCIENTIFIC_OWNER_FINAL_DISPOSITIONS_R0.6.md`](SCIENTIFIC_OWNER_FINAL_DISPOSITIONS_R0.6.md): exact final closure of all SODL entries
+- [`SCIENTIFIC_OWNER_FREEZE_2026-09-01.md`](SCIENTIFIC_OWNER_FREEZE_2026-09-01.md): external exact-manifest scientific freeze record
 - [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md): retained 17-ID disposition ledger
 - [`SEMANTIC_CHANGE_MAP_R0.3.md`](SEMANTIC_CHANGE_MAP_R0.3.md): directed-review repair map
 - [`SEMANTIC_CHANGE_MAP_R0.4.md`](SEMANTIC_CHANGE_MAP_R0.4.md): second-review minor-repair map
@@ -123,7 +135,7 @@ separate methods or future packages.
 - [`STOCHASTIC_MODEL_AND_OBSERVED_PAYLOAD_AMENDMENT_R0.6.md`](STOCHASTIC_MODEL_AND_OBSERVED_PAYLOAD_AMENDMENT_R0.6.md): random-object and realized-payload type repair
 - [`LIFECYCLE_STATE_GRAPH_R0.6.md`](LIFECYCLE_STATE_GRAPH_R0.6.md): corrected candidate/publication state order
 - [`AO001_AUTHORIZATION_MULTIPLICITY_AMENDMENT_R0.6.md`](AO001_AUTHORIZATION_MULTIPLICITY_AMENDMENT_R0.6.md): package authorization versus per-realization binding
-- [`role_semantics/`](role_semantics/): seven r0.6 role-semantics drafts, explicitly SCI-VAL-unregistered and unevaluable
+- [`role_semantics/`](role_semantics/): seven frozen r0.6 role-semantics definitions, explicitly SCI-VAL-unregistered and unevaluable
 - [`NOTATION_CROSSWALK_R0.4.md`](NOTATION_CROSSWALK_R0.4.md): complete fixed-conditioning/domain notation map
 - [`NOTATION_CROSSWALK_R0.5.md`](NOTATION_CROSSWALK_R0.5.md): typed application-domain and pre-draw notation map
 - [`REPRESENTATION_CROSSWALK_R0.4.md`](REPRESENTATION_CROSSWALK_R0.4.md): covariance availability and representation closure
@@ -134,25 +146,24 @@ separate methods or future packages.
 - [`OWNER_DECISION_PARITY_R0.6.md`](OWNER_DECISION_PARITY_R0.6.md): r0.6 directive and two-view parity
 - [`CROSSWALK.md`](CROSSWALK.md): complete 96-ID source/view traceability
 - [`STAGE_B_MANAGER_REVIEW_2026-08-31.md`](STAGE_B_MANAGER_REVIEW_2026-08-31.md): historical r0.1 manager review
-- [`STAGE_B_DRAFT_MANIFEST.md`](STAGE_B_DRAFT_MANIFEST.md): exact draft source/PDF binding
+- [`STAGE_B_DRAFT_MANIFEST.md`](STAGE_B_DRAFT_MANIFEST.md): exact frozen-authority source/PDF binding
 - [`SOURCE_BYTE_REPORT_R0.4.md`](SOURCE_BYTE_REPORT_R0.4.md): exact r0.4 source/PDF byte inventory
 - [`SOURCE_BYTE_AND_LINK_CLOSURE_R0.6.md`](SOURCE_BYTE_AND_LINK_CLOSURE_R0.6.md): exact active-object bytes and standalone-link closure
-- [`CONDITIONAL_SCIENTIFIC_FREEZE_PROPOSAL_R0.6.md`](CONDITIONAL_SCIENTIFIC_FREEZE_PROPOSAL_R0.6.md): proposal gate with owner dispositions explicitly pending
+- [`CONDITIONAL_SCIENTIFIC_FREEZE_PROPOSAL_R0.6.md`](CONDITIONAL_SCIENTIFIC_FREEZE_PROPOSAL_R0.6.md): adopted freeze-gate record
 - [`PDF_QA_R0.6.md`](PDF_QA_R0.6.md): final-build all-page render and visual-QA record
 - [`DECISION_LOG.md`](DECISION_LOG.md): package process decisions and preserved nonclaims
 
 ## Stop Boundary
 
-The Stage B r0.6 preflight is not frozen scientific authority. The anchor
-lattice and exact-science/numerical-profile separation are owner disposed, but
-the title and exact AO authorization/disposition layers requested by r0.6 are
-pending. Multiple AO-001 routes may be authorized at package level, but each
-request/realization shall bind exactly one route with no mixing, outcome-
-dependent choice, or fallback. Each dependent route remains unavailable until
-the remaining exact dispositions and declarations exist and the resulting
-contract bytes are reviewed. The standalone r0.6 archive intentionally carries
+The Stage B v0.1/r0.6 scientific authority is frozen. A and C are authorized
+only as eligible parameterized methods; each concrete request/realization
+shall bind exactly one fully specified route with no mixing, outcome-dependent
+choice, substitution, or fallback. Each dependent numerical, representation,
+conformity, or validation route remains unavailable until its exact later
+declarations and evidence exist. The standalone r0.6 archive intentionally carries
 only current authority/freeze-candidate objects; historical program links in
 this repository README require complete repository context and are not
 bundle-local links. No
 implementation, conformity, response/covariance fidelity, observational
-validation, performance, readiness, production, or freeze claim follows.
+validation, performance, readiness, or production claim follows from the
+scientific freeze.

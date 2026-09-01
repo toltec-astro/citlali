@@ -1,6 +1,6 @@
 # Stochastic-model and observed-payload domain amendment — r0.6
 
-Status: normative micro-repair draft; owner review pending
+Status: frozen normative micro-repair
 
 The contract distinguishes:
 

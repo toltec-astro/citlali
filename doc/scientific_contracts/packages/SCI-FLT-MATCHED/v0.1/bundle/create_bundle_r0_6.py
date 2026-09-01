@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 BUNDLE_DIR = Path(__file__).resolve().parent
 MANIFEST = ROOT / "STAGE_B_DRAFT_MANIFEST.md"
 BUNDLE_NOTE = BUNDLE_DIR / "BUNDLE_README_R0.6.md"
+FREEZE_RECORD = ROOT / "SCIENTIFIC_OWNER_FREEZE_2026-09-01.md"
 ARCHIVE = BUNDLE_DIR / "SCI-FLT-MATCHED-v0.1-r0.6-stage-b-output-bundle.tar.gz"
 PREFIX = "SCI-FLT-MATCHED-v0.1-r0.6"
 
@@ -50,6 +51,7 @@ payload.extend(
         (MANIFEST, "STAGE_B_DRAFT_MANIFEST.md"),
         (ROOT / "STAGE_B_DRAFT_MANIFEST.sha256", "STAGE_B_DRAFT_MANIFEST.sha256"),
         (BUNDLE_NOTE, "BUNDLE_README_R0.6.md"),
+        (FREEZE_RECORD, "SCIENTIFIC_OWNER_FREEZE_2026-09-01.md"),
     ]
 )
 if len(payload) != len({relative for _, relative in payload}):
