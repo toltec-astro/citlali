@@ -162,10 +162,22 @@ and directed preparation of the empirical-lane authorization packet. The
 successor `r0.1` packet presents only a bounded Gate-0 registration-preparation
 candidate because the exact historical-control execution profile, population,
 metrics, thresholds, candidate family, and execution/resource bindings needed
-for development are not yet available. Gate 0 is not yet approved. No profile,
-population, metric, threshold, recurrence, parent route, additional
-implementation access, empirical execution, qualification, validation,
-readiness, production, fallback, Stage B, or Unity activity is authorized.
+for development are not yet available. The owner approved exact Gate 0 against
+`EMPIRICAL_LANE_BUNDLE_MANIFEST_R0.1.md` on `2026-09-01`; work proceeds on
+`codex/sci-fruit-v0.1-empirical-lane` from accepted packet commit
+`90e55fa7d04fcab5cc716f7d258032275d6f6d7d`. The repository-only pass recovered
+the exact historical recurrence source but found that source commit identity
+alone cannot reproduce the executable because historical direct/transitive
+dependencies floated. A preserved artifact or an anchored pinned
+reconstruction and a human-custodied outcome-free population/control inventory
+are required. A broad initial search also exposed historical
+`validation/fruit_loop*` outcome evidence; that entire family and its lineage
+descendants are quarantined from untouched qualification. No frozen
+qualification population existed and no tuning or ranking occurred. Gate-D
+launch is not ready. No profile, population, metric, threshold, recurrence,
+parent route, numerical implementation access, empirical execution,
+qualification, validation, readiness, production, fallback, Stage B, or Unity
+activity is authorized.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

@@ -330,8 +330,8 @@ def verify_packet() -> None:
 
     required_tokens = {
         readme: [
-            "Stage A r0.8 accepted; accepted sequence preserved",
-            "v0.1-stage-a-el-g0-r0.1-candidate",
+            "Stage A r0.8 accepted; empirical-lane Gate 0 approved and active",
+            "v0.1-stage-a-el-g0-r0.1-active",
             LAUNCH,
             PROVISIONAL,
             "every numerical route is",

@@ -1,14 +1,17 @@
 # SCI-FRUIT v0.1 — Iterative Feedback, State, And Termination
 
-Status: **Stage A r0.8 accepted; accepted sequence preserved; empirical-lane
-Gate-0 r0.1 owner-review candidate prepared; no lane gate or Stage B task**
+Status: **Stage A r0.8 accepted; empirical-lane Gate 0 approved and active;
+Gate-D launch not ready; no development, qualification, or Stage B task**
 
-Version: `v0.1-stage-a-el-g0-r0.1-candidate`
+Version: `v0.1-stage-a-el-g0-r0.1-active`
 
 Launch base: Git commit
 `7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`
 
 Launch branch: `codex/sci-fruit-v0.1-stage-a`
+
+Empirical-lane branch: `codex/sci-fruit-v0.1-empirical-lane`, created from
+accepted packet commit `90e55fa7d04fcab5cc716f7d258032275d6f6d7d`
 
 ## Program Adherence And Prior-Work Recovery
 
@@ -99,15 +102,32 @@ missing scientific contract.
 | [`SOURCE_BYTE_AND_INTERNAL_LINK_REPORT_R0.8.md`](SOURCE_BYTE_AND_INTERNAL_LINK_REPORT_R0.8.md) | source-byte and internal-link verification report |
 | [`CROSSWALK.md`](CROSSWALK.md) | requested deliverable and source crosswalk |
 
-## Empirical-Lane Gate-0 Owner-Review Packet
+## Empirical-Lane Gate 0
 
 The exact accepted `r0.8` bytes remain unchanged. The successor packet at
 [`empirical_lane/EMPIRICAL_LANE_OWNER_REVIEW_README_R0.1.md`](empirical_lane/EMPIRICAL_LANE_OWNER_REVIEW_README_R0.1.md)
 records the owner's decision to preserve the accepted sequence and presents a
-bounded Gate-0 candidate. Gate 0 is registration preparation only. It would
-permit exact-control and protocol preparation after separate approval, but no
-prototype, empirical run, tuning, held-out access, qualification, Stage B, or
-Unity work.
+bounded Gate-0 candidate. The owner approved
+`SCI-FRUIT-EL-G0-REGISTRATION-PREPARATION-R0.1` against its exact manifest on
+`2026-09-01`. The approval record is
+[`empirical_lane/SCIENTIFIC_OWNER_GATE_0_APPROVAL_2026-09-01.md`](empirical_lane/SCIENTIFIC_OWNER_GATE_0_APPROVAL_2026-09-01.md).
+
+Gate 0 permits registration preparation only. The repository-local pass has
+recovered the historical-control source identity and prepared candidate-neutral
+profile, metric, population, candidate-family, resource, and access records.
+It has not established an exact executable historical control or a protected
+finite population. The current disposition in
+[`empirical_lane/EL_G0_GATE_D_READINESS_R0.1.md`](empirical_lane/EL_G0_GATE_D_READINESS_R0.1.md)
+is therefore **Gate-D launch not ready**. No prototype, empirical run, tuning,
+held-out access, qualification, Stage B, or Unity work is authorized.
+
+The first broad repository search during Gate 0 unintentionally exposed rows
+from historical `validation/fruit_loop*` outcome evidence. The exact incident
+and conservative quarantine are recorded in
+[`empirical_lane/EL_G0_ACCESS_INCIDENT_001_2026-09-01.md`](empirical_lane/EL_G0_ACCESS_INCIDENT_001_2026-09-01.md).
+No frozen qualification population existed and no method was tuned or ranked;
+the entire incident family and its lineage descendants are nevertheless
+ineligible for untouched qualification evidence.
 
 `AUTHOR_PACKET_MANIFEST.md`, `AUTHOR_SUPERSESSION_COVER.md`, and
 `AUTHOR_CONVENTIONS_AND_OWNERSHIP.md` are non-dispatchable placeholders required
@@ -201,6 +221,14 @@ only; they contain no normative science and no rendered contract.
     lane authorization packet. The `r0.1` successor returns only a Gate-0
     registration-preparation candidate because the exact development and
     qualification bindings remain unavailable.
+19. The owner approved that exact Gate-0 candidate. Repository-only preparation
+    then showed that historical source identity alone does not yield an exact
+    executable control: the recovered historical build used floating or
+    transitively unpinned dependencies. A preserved artifact or a pinned
+    reconstruction anchored to preserved evidence is required. Gate D remains
+    closed pending that control, a human-custodied outcome-free inventory, and
+    exact owner choices for profiles, metrics, candidate families, and resource
+    bounds.
 
 ## Stop Rule
 
@@ -220,18 +248,22 @@ closed ODQ-001F. The same instruction requested an xhigh Stage B launch, but no
 task has been dispatched because the accepted sequence requires separately
 authorized method development, held-out qualification, an owner-approved
 qualified-method record, and a sealed author packet before method-specific
-Stage B. The owner has preserved that sequence. The next review is the exact
-Gate-0 candidate, which may prepare the missing bindings but may not perform
-candidate exploration or empirical execution. Candidate exploration,
+Stage B. The owner has preserved that sequence. The exact Gate-0 candidate is
+approved and its repository-only preparation pass is complete. Gate D remains
+closed pending the exact human and owner inputs listed in
+`empirical_lane/EL_G0_GATE_D_READINESS_R0.1.md`. Gate 0 may prepare the missing
+bindings but may not perform candidate exploration or empirical execution.
+Candidate exploration,
 prospective goalpost freezing, held-out qualification, and scientific
 qualification must not be conflated.
 
 ## Explicit Nonclaims
 
 This package changes no algorithm or frozen/approved adjacent authority. The
-Gate-0 packet is a candidate, not an authorization. It grants no additional
-implementation access, method-development lane, prototype, tuning, empirical
-execution, or claim of implementation conformity, numerical availability,
+Gate-0 packet authorizes only its bounded registration preparation. It grants
+no numerical implementation access, method-development lane, prototype,
+tuning, empirical execution, or claim of implementation conformity, numerical
+availability,
 calibration, response or covariance fidelity, convergence, stopping validity,
 uncertainty completeness, achieved performance, readiness, production
 authorization, or Unity activity. It neither approves SCI-FLT-MATCHED nor
