@@ -1,6 +1,7 @@
 # SCI-FRUIT v0.1 — Decision Log
 
-Status: Stage A owner-review candidate
+Status: Stage A accepted through ODQ-001F; empirical-lane Gate-0 owner-review
+candidate prepared
 
 Only decisions actually authorized are recorded here. Recovery conclusions,
 recommendations, current behavior, and open questions are not decisions.
@@ -17,10 +18,12 @@ recommendations, current behavior, and open questions are not decisions.
 | `2026-09-01` | `SCI-FRUIT-DIR-2026-09-01-ODQ-001F-FINAL-REPAIR` | Accept r0.7 as the basis for a targeted Stage A repair requiring an exact focused packet, content-bound final candidate, separate method/claim/evidence/decision identities, complete claim layers, qualification-access and inference safeguards, complete outcome/support accounting, causal stopping, repaired metrics, typed historical roles, and generic profiles | Direct scientific-owner repair instruction; exact source identity recorded in `SCIENTIFIC_OWNER_ODQ_001F_FINAL_REPAIR_DIRECTION_2026-09-01.md` | Produce the r0.8 final candidate for owner review. The earlier “fallback” shorthand is superseded by separate scientific-control, compatibility-candidate, and operational-fallback roles. ODQ-001F remains open; no empirical, numerical, implementation, Stage B, validation, readiness, production, or Unity action is authorized. |
 | `2026-09-01` | `SCI-FRUIT-OD-001F-DISPOSITION-B-R0.8-2026-09-01` | Accept the exact content-bound Stage A r0.8 result and select repaired ODQ-001F Disposition B | Direct scientific-owner statement; exact objects and hashes bound by `SCIENTIFIC_OWNER_STAGE_A_R0.8_ACCEPTANCE_AND_STAGE_B_REQUEST_2026-09-01.md` | Closes ODQ-001F and approves the development/qualification architecture only. ODQ-001, 001A–D, routes, methods, empirical execution, qualification, Stage B inputs, fallback, validation, readiness, production, and Unity remain unselected or unauthorized. |
 | `2026-09-01` | `SCI-FRUIT-DIR-STAGE-B-XHIGH-2026-09-01` | Request Stage B launch at xhigh reasoning effort from the accepted Stage A result | Direct scientific-owner instruction | Records requested effort and intended launch. Dispatch is not executed because the accepted architecture requires an empirical lane, qualified-method record, and sealed method-specific packet that do not exist; owner must preserve that sequence or explicitly supersede it with a framework-only Stage B scope. |
+| `2026-09-01` | `SCI-FRUIT-DIR-PRESERVE-SEQUENCE-AND-PREPARE-EL-PACKET-2026-09-01` | Preserve the accepted claim-layer sequence and proceed with preparation of the empirical-lane authorization packet after the accepted commit was pushed | Direct scientific-owner instruction recorded in `empirical_lane/SCIENTIFIC_OWNER_SEQUENCE_PRESERVATION_AND_PACKET_DIRECTION_2026-09-01.md` | Resolves the earlier sequencing choice and authorizes packet preparation only. Gate 0, additional implementation access, development, population access, qualification, Stage B, algorithm changes, validation, production, and Unity remain unauthorized. |
 
 ODQ-001E and ODQ-001F are decided. Revised ODQ-001, the four recurrence axes,
 and all later `SCI-FRUIT-ODQ-*` questions remain open. The accepted r0.8
 architecture is not a completed method, empirical-lane launch, qualified-
-method record, or dispatchable Stage B packet. Future answers require
-separate, dated owner records and exact
+method record, or dispatchable Stage B packet. The immediate open decision is
+the exact Gate-0 registration-preparation candidate in `empirical_lane/`.
+Future answers require separate, dated owner records and exact
 propagation into this log, the ledger, scope, and source bindings.

@@ -157,6 +157,16 @@ REQUIRED_FILES = {
     "SEMANTIC_CHANGE_REPORT_R0.8.md",
     "SOURCE_BYTE_AND_INTERNAL_LINK_REPORT_R0.8.md",
     "ARCHIVE_CHECKSUM_REPORT_R0.8.md",
+    "empirical_lane/SCIENTIFIC_OWNER_SEQUENCE_PRESERVATION_AND_PACKET_DIRECTION_2026-09-01.md",
+    "empirical_lane/ACCEPTED_INPUT_BINDINGS_R0.1.md",
+    "empirical_lane/EMPIRICAL_LANE_GATE_ARCHITECTURE_R0.1.md",
+    "empirical_lane/EMPIRICAL_LANE_REQUIRED_BINDINGS_LEDGER_R0.1.md",
+    "empirical_lane/EMPIRICAL_LANE_ACCESS_EXECUTION_AND_FIREWALL_R0.1.md",
+    "empirical_lane/QUALIFIED_METHOD_RECORD_SCHEMA_R0.1.md",
+    "empirical_lane/SCIENTIFIC_OWNER_EMPIRICAL_LANE_GATE_0_FINAL_CANDIDATE_R0.1.md",
+    "empirical_lane/EMPIRICAL_LANE_OWNER_REVIEW_README_R0.1.md",
+    "empirical_lane/EMPIRICAL_LANE_BUNDLE_MANIFEST_R0.1.md",
+    "empirical_lane/EMPIRICAL_LANE_ARCHIVE_CHECKSUM_REPORT_R0.1.md",
     "CROSSWALK.md",
     "AUTHOR_PACKET_MANIFEST.md",
     "AUTHOR_SUPERSESSION_COVER.md",
@@ -174,6 +184,7 @@ REQUIRED_FILES = {
 
 ALLOWED_GLOBAL_EDITS = {
     "SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review.tar.gz",
+    "SCI-FRUIT-v0.1-empirical-lane-gate-0-r0.1-owner-review.tar.gz",
     "doc/REFACTOR_STATUS.md",
     "doc/scientific_contracts/DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md",
     "doc/scientific_contracts/INDEX.md",
@@ -183,6 +194,12 @@ ALLOWED_GLOBAL_EDITS = {
 
 FOCUSED_ARCHIVE = REPO / "SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review.tar.gz"
 FOCUSED_ROOT = "SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review"
+EMPIRICAL_DIR = ROOT / "empirical_lane"
+EMPIRICAL_ARCHIVE = (
+    REPO / "SCI-FRUIT-v0.1-empirical-lane-gate-0-r0.1-owner-review.tar.gz"
+)
+EMPIRICAL_ROOT = "SCI-FRUIT-v0.1-empirical-lane-gate-0-r0.1-owner-review"
+EMPIRICAL_ACCEPTED_COMMIT = "96fd70d50b0b5f6cc03ca31b7d6769315d02da2b"
 
 
 def run(*args: str) -> str:
@@ -313,8 +330,8 @@ def verify_packet() -> None:
 
     required_tokens = {
         readme: [
-            "Stage A r0.8 accepted; ODQ-001F decided",
-            "v0.1-stage-a-r0.8",
+            "Stage A r0.8 accepted; accepted sequence preserved",
+            "v0.1-stage-a-el-g0-r0.1-candidate",
             LAUNCH,
             PROVISIONAL,
             "every numerical route is",
@@ -589,20 +606,167 @@ def verify_focused_bundle() -> None:
                 fail(f"focused archive member differs from source: {name}")
 
 
+def verify_empirical_lane_bundle() -> None:
+    manifest_path = EMPIRICAL_DIR / "EMPIRICAL_LANE_BUNDLE_MANIFEST_R0.1.md"
+    manifest = manifest_path.read_text(encoding="utf-8")
+    archive_report = (
+        EMPIRICAL_DIR / "EMPIRICAL_LANE_ARCHIVE_CHECKSUM_REPORT_R0.1.md"
+    ).read_text(encoding="utf-8")
+    direction = (
+        EMPIRICAL_DIR
+        / "SCIENTIFIC_OWNER_SEQUENCE_PRESERVATION_AND_PACKET_DIRECTION_2026-09-01.md"
+    ).read_text(encoding="utf-8")
+    candidate = (
+        EMPIRICAL_DIR
+        / "SCIENTIFIC_OWNER_EMPIRICAL_LANE_GATE_0_FINAL_CANDIDATE_R0.1.md"
+    ).read_text(encoding="utf-8")
+    gate_architecture = (
+        EMPIRICAL_DIR / "EMPIRICAL_LANE_GATE_ARCHITECTURE_R0.1.md"
+    ).read_text(encoding="utf-8")
+    ledger = (
+        EMPIRICAL_DIR / "EMPIRICAL_LANE_REQUIRED_BINDINGS_LEDGER_R0.1.md"
+    ).read_text(encoding="utf-8")
+    firewall = (
+        EMPIRICAL_DIR / "EMPIRICAL_LANE_ACCESS_EXECUTION_AND_FIREWALL_R0.1.md"
+    ).read_text(encoding="utf-8")
+    qualified_record = (
+        EMPIRICAL_DIR / "QUALIFIED_METHOD_RECORD_SCHEMA_R0.1.md"
+    ).read_text(encoding="utf-8")
+
+    required_tokens = {
+        direction: [
+            "preserved sequence",
+            "prepare an authorization packet only",
+            "does not itself approve Gate 0",
+        ],
+        candidate: [
+            "SCI-FRUIT-EL-G0-REGISTRATION-PREPARATION-R0.1",
+            "read-only repository implementation",
+            "may not modify numerical code",
+            "Unity directly",
+            "every later gate requires separate exact owner approval",
+            "full development or qualification launch is not a scientifically admissible",
+        ],
+        gate_architecture: ["EL-G0", "EL-GD", "EL-GF", "EL-GQ", "EL-GR", "EL-GS"],
+        ledger: ["ELB-001", "ELB-009", "Qualification Admission Checklist"],
+        firewall: [
+            "Unity access remains human-mediated",
+            "Gate 0 consumes no reduction compute",
+            "Numerical source changes are a\nstop condition",
+        ],
+        qualified_record: [
+            "QUALIFIED_METHOD_RECORD",
+            "no qualifying\nreplacement",
+            "must exclude implementation source",
+        ],
+    }
+    for body, tokens in required_tokens.items():
+        for token in tokens:
+            if token not in body:
+                fail(f"required empirical-lane token absent: {token}")
+
+    bindings = {}
+    row_pattern = re.compile(
+        r"^\| `([^`]+\.md)` \| (\d+) \| `([0-9a-f]{64})` \|$",
+        re.MULTILINE,
+    )
+    for name, byte_text, expected_hash in row_pattern.findall(manifest):
+        path = EMPIRICAL_DIR / name
+        if not path.is_file():
+            fail(f"empirical-lane manifest path missing: {name}")
+        data = path.read_bytes()
+        if len(data) != int(byte_text):
+            fail(f"empirical-lane manifest byte count changed: {name}")
+        if digest(data) != expected_hash:
+            fail(f"empirical-lane manifest hash changed: {name}")
+        bindings[name] = (int(byte_text), expected_hash)
+    if len(bindings) != 8:
+        fail(f"empirical-lane manifest expected 8 non-self bindings, got {len(bindings)}")
+
+    accepted_bindings = (
+        EMPIRICAL_DIR / "ACCEPTED_INPUT_BINDINGS_R0.1.md"
+    ).read_text(encoding="utf-8")
+    accepted_rows = re.findall(
+        r"^\| `([^`]+\.md)` \| `([0-9a-f]{64})` \| [^|]+ \|$",
+        accepted_bindings,
+        re.MULTILINE,
+    )
+    if len(accepted_rows) != 13:
+        fail(f"expected 13 accepted-input bindings, got {len(accepted_rows)}")
+    if subprocess.call(
+        ["git", "merge-base", "--is-ancestor", EMPIRICAL_ACCEPTED_COMMIT, "HEAD"],
+        cwd=REPO,
+    ):
+        fail("current branch is not descended from accepted SCI-FRUIT Stage A")
+    for rel, expected_hash in accepted_rows:
+        data = (ROOT / rel).read_bytes()
+        if digest(data) != expected_hash:
+            fail(f"accepted empirical-lane input changed: {rel}")
+
+    if not EMPIRICAL_ARCHIVE.exists():
+        return
+    archive_data = EMPIRICAL_ARCHIVE.read_bytes()
+    byte_match = re.search(r"Archive byte count: `(\d+)`", archive_report)
+    hash_match = re.search(r"Archive SHA-256:\n`([0-9a-f]{64})`", archive_report)
+    manifest_byte_match = re.search(r"manifest byte count: `(\d+)`", archive_report)
+    manifest_hash_match = re.search(
+        r"manifest SHA-256:\n  `([0-9a-f]{64})`", archive_report
+    )
+    if not all((byte_match, hash_match, manifest_byte_match, manifest_hash_match)):
+        fail("empirical-lane archive checksum report binding is incomplete")
+    if len(archive_data) != int(byte_match.group(1)):
+        fail("empirical-lane archive byte count differs from report")
+    if digest(archive_data) != hash_match.group(1):
+        fail("empirical-lane archive hash differs from report")
+    manifest_data = manifest_path.read_bytes()
+    if len(manifest_data) != int(manifest_byte_match.group(1)):
+        fail("empirical-lane manifest byte count differs from report")
+    if digest(manifest_data) != manifest_hash_match.group(1):
+        fail("empirical-lane manifest hash differs from report")
+
+    with tarfile.open(EMPIRICAL_ARCHIVE, "r:gz") as archive:
+        file_members = [member for member in archive.getmembers() if member.isfile()]
+        expected_names = {
+            f"{EMPIRICAL_ROOT}/EMPIRICAL_LANE_BUNDLE_MANIFEST_R0.1.md",
+            *(f"{EMPIRICAL_ROOT}/{name}" for name in bindings),
+        }
+        actual_names = {member.name for member in file_members}
+        if actual_names != expected_names:
+            fail("empirical-lane archive membership differs from manifest")
+        if any(pathlib.PurePosixPath(name).name.startswith("._") for name in actual_names):
+            fail("AppleDouble member present in empirical-lane archive")
+        for member in file_members:
+            name = pathlib.PurePosixPath(member.name).name
+            archived = archive.extractfile(member)
+            if archived is None:
+                fail(f"unable to read empirical-lane archive member: {name}")
+            data = archived.read()
+            if data != (EMPIRICAL_DIR / name).read_bytes():
+                fail(f"empirical-lane archive member differs from source: {name}")
+            body = data.decode("utf-8")
+            for target in re.findall(r"\[[^\]]+\]\(([^)#]+)(?:#[^)]+)?\)", body):
+                if "://" in target or target.startswith("mailto:"):
+                    continue
+                if f"{EMPIRICAL_ROOT}/{target}" not in actual_names:
+                    fail(f"broken empirical-lane archive-local link in {name}: {target}")
+
+
 def main() -> None:
     verify_sources()
     verify_scope_of_edits()
     verify_packet()
     verify_links()
     verify_focused_bundle()
+    verify_empirical_lane_bundle()
     subprocess.check_call(["git", "diff", "--check"], cwd=REPO)
     print(
         "PASS: exact launch/provisional/historical sources, byte-identical "
         "historical recurrence evidence, revised three-choice ODQ-001, "
         "owner-approved comparative-quality framework, accepted baseline-relative "
-        "ODQ-001F r0.8 frame, recorded unresolved Stage B dispatch conflict, exact focused source/archive "
-        "bindings, bounded edits, four unavailable candidate routes, Stage A "
-        "firewall, placeholders, and local links"
+        "ODQ-001F r0.8 frame, recorded Stage B conflict and preserved-sequence resolution, exact focused source/archive "
+        "bindings, preserved empirical-development sequence, exact Gate-0 "
+        "owner-review packet, bounded edits, four unavailable candidate routes, "
+        "Stage A firewall, placeholders, and local links"
     )
 
 

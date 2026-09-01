@@ -157,12 +157,15 @@ has been dispatched: the accepted sequence requires a separately authorized
 empirical-development lane, frozen held-out qualification, an owner-approved
 qualified-method record, and a sealed method-specific author packet, none of
 which exists. Dispatch now would silently replace the accepted sequence with a
-framework-only Stage B task. The next owner action is therefore to preserve the
-accepted sequence and authorize its empirical lane, or explicitly supersede
-that sequence and authorize a framework-level Stage B scope. No profile,
-population, metric, threshold, recurrence, parent route, implementation,
-execution, qualification, validation, readiness, production, fallback, or
-Unity activity is authorized.
+framework-only Stage B task. The owner has now preserved the accepted sequence
+and directed preparation of the empirical-lane authorization packet. The
+successor `r0.1` packet presents only a bounded Gate-0 registration-preparation
+candidate because the exact historical-control execution profile, population,
+metrics, thresholds, candidate family, and execution/resource bindings needed
+for development are not yet available. Gate 0 is not yet approved. No profile,
+population, metric, threshold, recurrence, parent route, additional
+implementation access, empirical execution, qualification, validation,
+readiness, production, fallback, Stage B, or Unity activity is authorized.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

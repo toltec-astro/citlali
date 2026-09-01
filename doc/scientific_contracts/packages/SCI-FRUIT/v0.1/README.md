@@ -1,9 +1,9 @@
 # SCI-FRUIT v0.1 — Iterative Feedback, State, And Termination
 
-Status: **Stage A r0.8 accepted; ODQ-001F decided; xhigh Stage B requested but
-not dispatched pending reconciliation with the accepted claim-layer sequence**
+Status: **Stage A r0.8 accepted; accepted sequence preserved; empirical-lane
+Gate-0 r0.1 owner-review candidate prepared; no lane gate or Stage B task**
 
-Version: `v0.1-stage-a-r0.8`
+Version: `v0.1-stage-a-el-g0-r0.1-candidate`
 
 Launch base: Git commit
 `7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`
@@ -99,6 +99,16 @@ missing scientific contract.
 | [`SOURCE_BYTE_AND_INTERNAL_LINK_REPORT_R0.8.md`](SOURCE_BYTE_AND_INTERNAL_LINK_REPORT_R0.8.md) | source-byte and internal-link verification report |
 | [`CROSSWALK.md`](CROSSWALK.md) | requested deliverable and source crosswalk |
 
+## Empirical-Lane Gate-0 Owner-Review Packet
+
+The exact accepted `r0.8` bytes remain unchanged. The successor packet at
+[`empirical_lane/EMPIRICAL_LANE_OWNER_REVIEW_README_R0.1.md`](empirical_lane/EMPIRICAL_LANE_OWNER_REVIEW_README_R0.1.md)
+records the owner's decision to preserve the accepted sequence and presents a
+bounded Gate-0 candidate. Gate 0 is registration preparation only. It would
+permit exact-control and protocol preparation after separate approval, but no
+prototype, empirical run, tuning, held-out access, qualification, Stage B, or
+Unity work.
+
 `AUTHOR_PACKET_MANIFEST.md`, `AUTHOR_SUPERSESSION_COVER.md`, and
 `AUTHOR_CONVENTIONS_AND_OWNERSHIP.md` are non-dispatchable placeholders required
 by the uniform package layout. `src/` and `pdf/` contain Stage B placeholders
@@ -158,11 +168,12 @@ only; they contain no normative science and no rendered contract.
     objective, with `compact_high_snr_response_recovery` and
     `extended_low_snr_mode_recovery` as generic motivating regimes. OOF and SZE
     remain downstream motivating populations, not FRUIT-owned inference.
-14. Stage A therefore returns three ODQ-001F dispositions: complete universal
+14. Stage A therefore returned three ODQ-001F dispositions: complete universal
     parameterization before development; a profile-qualified staged empirical
     lane; or historical-compatibility v0.1 with new-method research deferred to
     a successor. The later `2026-09-01` direction conditionally prefers the
-    repaired second disposition; final approval remains open.
+    repaired second disposition; the exact repaired disposition was later
+    accepted as the `r0.8` Stage A result.
 15. The fully specified staged candidate separates development, untouched
     qualification, and challenge populations; prospectively freezes method,
     policy, metrics, thresholds, and decision rules before qualification; and
@@ -185,7 +196,11 @@ only; they contain no normative science and no rendered contract.
     causal stopping, and metric edge cases; and returns an exact focused final
     candidate. The owner accepted those exact bytes, closing ODQ-001F, and
     requested xhigh Stage B. No empirical lane, qualified-method record, or
-    exclusive implementation-blind author packet yet exists.
+    exclusive implementation-blind author packet yet exists. The owner later
+    preserved the accepted sequence and directed preparation of the empirical-
+    lane authorization packet. The `r0.1` successor returns only a Gate-0
+    registration-preparation candidate because the exact development and
+    qualification bindings remain unavailable.
 
 ## Stop Rule
 
@@ -205,17 +220,18 @@ closed ODQ-001F. The same instruction requested an xhigh Stage B launch, but no
 task has been dispatched because the accepted sequence requires separately
 authorized method development, held-out qualification, an owner-approved
 qualified-method record, and a sealed author packet before method-specific
-Stage B. An explicit owner choice must either preserve that sequence and
-authorize its empirical lane or supersede it with a framework-only Stage B
-scope. Candidate exploration, prospective goalpost freezing, held-out
-qualification, and scientific qualification must not be conflated.
+Stage B. The owner has preserved that sequence. The next review is the exact
+Gate-0 candidate, which may prepare the missing bindings but may not perform
+candidate exploration or empirical execution. Candidate exploration,
+prospective goalpost freezing, held-out qualification, and scientific
+qualification must not be conflated.
 
 ## Explicit Nonclaims
 
-This package changes no algorithm or frozen/approved adjacent authority. It
-makes no authorization for a method-development lane, prototype, tuning, or
-experimental execution and no claim of implementation conformity, numerical
-availability,
+This package changes no algorithm or frozen/approved adjacent authority. The
+Gate-0 packet is a candidate, not an authorization. It grants no additional
+implementation access, method-development lane, prototype, tuning, empirical
+execution, or claim of implementation conformity, numerical availability,
 calibration, response or covariance fidelity, convergence, stopping validity,
 uncertainty completeness, achieved performance, readiness, production
 authorization, or Unity activity. It neither approves SCI-FLT-MATCHED nor

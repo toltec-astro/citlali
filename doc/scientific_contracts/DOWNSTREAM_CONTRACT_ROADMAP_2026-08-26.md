@@ -2,9 +2,9 @@
 
 Date: `2026-08-26`
 
-Updated: `2026-08-31` for SCI-JINC closure, SCI-NOI Stage A/Stage B handoff,
-the SCI-FLT-FIXED conditional freeze, and the owner-directed recovery-first
-SCI-FRUIT Stage A launch
+Updated: `2026-09-01` for SCI-JINC closure, SCI-NOI Stage A/Stage B handoff,
+the SCI-FLT-FIXED conditional freeze, SCI-FRUIT Stage A acceptance, and the
+owner direction to preserve its empirical-development sequence
 
 Status: scientific-owner-approved program sequencing record
 
@@ -244,5 +244,9 @@ authorized empirical development, held-out qualification, an owner-approved
 qualified-method record, and a sealed method-specific author packet before
 Stage B; none presently exists. The next owner action must either preserve
 that sequence and authorize the empirical lane or explicitly supersede it with
-a framework-only Stage B scope. No numerical, implementation, validation,
-readiness, production, fallback, or Unity authority follows.
+a framework-only Stage B scope. The owner subsequently preserved the accepted
+sequence and directed preparation of the empirical-lane authorization packet.
+The successor `r0.1` packet returns a bounded Gate-0 registration-preparation
+candidate; it does not authorize Gate 0, development, qualification, Stage B,
+or Unity work. No numerical, implementation, validation, readiness,
+production, fallback, or Unity authority follows.
