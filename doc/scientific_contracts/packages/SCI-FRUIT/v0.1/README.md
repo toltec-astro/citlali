@@ -2,7 +2,7 @@
 
 Status: **recovery-first Stage A owner-review candidate; no Stage B launch**
 
-Version: `v0.1-stage-a-r0.6`
+Version: `v0.1-stage-a-r0.7`
 
 Launch base: Git commit
 `7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`
@@ -78,6 +78,7 @@ missing scientific contract.
 | [`SCIENTIFIC_OWNER_ODQ_001E_FRAMEWORK_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_001E_FRAMEWORK_APPROVAL_2026-08-31.md) | owner approval of the comparative-quality framework; exact parameterization remains open |
 | [`SCIENTIFIC_OWNER_EMPIRICAL_METHOD_DIRECTION_2026-08-31.md`](SCIENTIFIC_OWNER_EMPIRICAL_METHOD_DIRECTION_2026-08-31.md) | owner direction to parameterize an empirical, potentially science-profile-dependent method-selection process; not framework approval |
 | [`ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md`](ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md) | three-disposition ODQ-001F owner-review frame and fully bounded profile-qualified empirical-development candidate |
+| [`SCIENTIFIC_OWNER_ODQ_001F_BASELINE_RELATIVE_REPAIR_DIRECTION_2026-09-01.md`](SCIENTIFIC_OWNER_ODQ_001F_BASELINE_RELATIVE_REPAIR_DIRECTION_2026-09-01.md) | owner in-principle approval of Disposition B plus required baseline-relative/Pareto repair; final approval not recorded |
 | [`CROSSWALK.md`](CROSSWALK.md) | requested deliverable and source crosswalk |
 
 `AUTHOR_PACKET_MANIFEST.md`, `AUTHOR_SUPERSESSION_COVER.md`, and
@@ -141,12 +142,23 @@ only; they contain no normative science and no rendered contract.
 14. Stage A therefore returns three ODQ-001F dispositions: complete universal
     parameterization before development; a profile-qualified staged empirical
     lane; or historical-compatibility v0.1 with new-method research deferred to
-    a successor. No disposition is selected.
+    a successor. The later `2026-09-01` direction conditionally prefers the
+    repaired second disposition; final approval remains open.
 15. The fully specified staged candidate separates development, untouched
     qualification, and challenge populations; prospectively freezes method,
     policy, metrics, thresholds, and decision rules before qualification; and
     keeps expert overrides experimental. Motivating OOF and SZE uses do not
     grant FRUIT authority over downstream OOF or SZE inference.
+16. The owner approves Disposition B in principle but requires baseline-relative
+    rather than optimum-seeking qualification. Exact historical Citlali is the
+    paired performance goalpost and fallback; candidates need protected
+    non-inferiority plus material, statistically credible paired improvement in
+    at least one prioritized dimension over a prospectively declared domain.
+17. The repaired framework admits one broad method, conditional policies,
+    multiple specialized methods, restricted-domain improvements, or no
+    replacement. It formalizes condition distributions, aggregate uncertainty,
+    lower tails, outcome fractions, stratification, catastrophic regressions,
+    and prospective goalpost freezing without selecting numerical values.
 
 ## Stop Rule
 
@@ -161,16 +173,20 @@ reformulation, or intentionally adopt and validate a new recurrence. The owner
 provisionally favors the third treatment, but ODQ-001 remains open until its
 scientific objective, candidate law, differences, compatibility treatment, and
 validation obligations are explicit. The comparative-quality framework is
-approved. ODQ-001F now presents three development/qualification architectures,
-including a fully bounded profile-qualified empirical candidate, but the owner
-has not selected one or authorized a method-development lane. Candidate
-exploration, prospective threshold freezing, held-out qualification, and
-scientific ranking must not be conflated.
+approved. The owner approves the staged profile/domain-aware Disposition B in
+principle but has required the exact baseline-relative repair before final
+approval is recorded. The repaired decision language is now presented in the
+ODQ-001F frame; ODQ-001F remains open pending explicit acceptance. No
+method-development lane is authorized. Candidate exploration, prospective
+goalpost freezing, held-out qualification, and scientific qualification must
+not be conflated.
 
 ## Explicit Nonclaims
 
 This package changes no algorithm or frozen/approved adjacent authority. It
-makes no claim of implementation conformity, numerical availability,
+makes no authorization for a method-development lane, prototype, tuning, or
+experimental execution and no claim of implementation conformity, numerical
+availability,
 calibration, response or covariance fidelity, convergence, stopping validity,
 uncertainty completeness, achieved performance, readiness, production
 authorization, or Unity activity. It neither approves SCI-FLT-MATCHED nor

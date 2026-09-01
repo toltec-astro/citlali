@@ -1,17 +1,19 @@
 # SCI-FRUIT v0.1 — ODQ-001F Profile-Qualified Empirical-Development Frame
 
-Status: **Stage A owner-review candidate; ODQ-001F remains open; no research,
+Status: **Stage A repaired owner-review candidate; Disposition B approved in
+principle but final ODQ-001F approval remains open; no research,
 implementation, qualification, or Stage B launch is authorized**
 
 ## Purpose
 
 The owner-approved ODQ-001E gate defines scientific quality as a constrained
-multi-objective comparison with exact historical Citlali. It does not require
-FRUIT to pretend that the winning recurrence, parameter policy, stopping rule,
-or numerical thresholds are knowable before controlled experiments.
+multi-objective comparison with exact historical Citlali. It does not imply
+that one globally optimal, uniquely correct, or universally best FRUIT
+recurrence exists or can be identified.
 
-This frame parameterizes the *process by which a method may earn scientific
-authority*. It does not parameterize or select the method itself.
+This frame parameterizes the *process by which one or more exact methods may
+earn baseline-relative scientific qualification over declared domains*. It
+does not parameterize or select a method itself.
 
 The proposed sequence is:
 
@@ -47,18 +49,22 @@ This preserves the ordinary contract-first sequence. It is scientifically
 honest only if those quantities can be justified independently of candidate
 behavior and the intended observation class.
 
-### Disposition B — Profile-Qualified Staged Empirical Development
+### Disposition B — Baseline-Relative, Profile-Qualified Staged Development
 
-Approve the bounded architecture below. Define candidate-neutral declaration
-and claim invariants first; develop methods on an identified development
-population; freeze the method, policies, metrics, thresholds, and untouched
+Approve the bounded architecture below. Its purpose is to identify
+demonstrable improvements over exact historical Citlali within prospectively
+declared profiles and applicability domains, not to claim a uniquely optimal
+algorithm. Define candidate-neutral declaration and claim invariants first;
+develop methods on an identified development population; freeze the method,
+policies, metrics, thresholds, guardrails, condition strata, and untouched
 qualification population; qualify only on that frozen protocol; and admit
-only a qualified method record to method-specific Stage B authorship.
+only qualified method records to method-specific Stage B authorship.
 
 This disposition allows thresholds that are not presently knowable to be set
 from a declared development procedure. It does not allow them to be changed
-after qualification data are examined. It is the Stage A response suggested
-by the owner's empirical-method concern, but it is not approved by this file.
+after qualification data are examined. The owner approves this disposition in
+principle subject to the baseline-relative repair directed on `2026-09-01`.
+Final approval is not recorded until the owner accepts the repaired language.
 
 ### Disposition C — Historical-Compatibility v0.1 With Separate Successor R&D
 
@@ -67,8 +73,35 @@ and conduct intentional-new-method research in a separately versioned future
 tranche. This avoids changing the present package lifecycle but defers the
 owner's provisional Choice 3 direction.
 
-No disposition is selected. Disposition B is specified below so the owner can
-review its exact safeguards and consequences rather than approve a slogan.
+Disposition B is the conditional owner preference. It is specified below so
+the owner can review the repaired safeguards and remaining launch decisions
+before final approval is recorded.
+
+## Baseline-Relative Qualification, Not Global Optimization
+
+The empirical program explores a scientific trade space. It is not required to
+produce one algorithm that dominates every other method on every metric,
+profile, or observing condition. The legitimate outcomes include:
+
+1. one method that performs adequately across all tested profiles and domains;
+2. one recurrence with profile- or condition-dependent parameter, adaptation,
+   or stopping policies;
+3. multiple separately qualified methods occupying materially different and
+   scientifically useful points in the trade space;
+4. a candidate qualified only over a restricted signal, angular-scale, or
+   observing-condition domain; or
+5. no new method qualifying, leaving exact historical Citlali as the v0.1
+   production method and program fallback.
+
+None is a failure of the empirical-development program. A defensible finding
+that no candidate clears the prospectively frozen goalposts is a valid
+scientific result.
+
+The program recognizes a Pareto trade space rather than collapsing all
+dimensions into a scalar score. Operationally, it prefers the simplest broadly
+adequate production policy. Multiple methods or policies are retained only
+when prospectively evaluated evidence establishes scientifically meaningful
+specialization, not merely small benchmark fluctuations.
 
 ## Candidate-Neutral Invariants
 
@@ -102,7 +135,8 @@ method.
 
 ## Conditional Qualification Identity
 
-A qualification claim is never simply “FRUIT is qualified.” It has the form
+A qualification claim is never simply “FRUIT is qualified.” Each separately
+qualified method/domain has the form
 
 \[
   K=(M,P,S,Q,D,H,\Pi,E),
@@ -122,6 +156,12 @@ where:
 Changing any scientifically consequential element creates a new candidate or
 qualification generation. Evidence from different `K` identities cannot be
 pooled as though it qualified one method.
+
+More than one `K` identity may qualify when the evidence establishes material
+specialization. Qualification of one identity neither invalidates another nor
+authorizes either outside its own `Q,D`. A final production policy must map an
+eligible request to an exact qualified identity or to the historical fallback;
+it must not search among methods after seeing the desired output.
 
 ## Initial Profile Questions
 
@@ -147,11 +187,34 @@ from the motivating examples.
 
 ## Truth, Control, And Metric Families
 
-Historical Citlali is the mandatory control, not the truth. Known injected
-astronomical signal supplies truth for recovery quantities within the injection
-validity domain. Nuisance-only or otherwise justified null constructions supply
-the complementary check that increased astronomical recovery is not residual
-atmosphere or other nuisance promoted into the sky model.
+Historical Citlali is the mandatory paired control and scientific-performance
+goalpost, not the truth. Known injected astronomical signal supplies truth for
+recovery quantities within the injection validity domain. Nuisance-only or
+otherwise justified null constructions supply the complementary check that
+increased astronomical recovery is not residual atmosphere or other nuisance
+promoted into the sky model.
+
+For each metric `G_l`, the protocol must define whether larger or smaller is
+scientifically preferable. Let `s_l=+1` for larger-is-better metrics and
+`s_l=-1` for smaller-is-better metrics. A paired oriented improvement is
+
+\[
+  \Delta_{l r}=s_l
+  \left(
+    G_{l r}^{\mathrm{candidate}}
+    -G_{l r}^{\mathrm{historical}}
+  \right),
+\]
+
+so positive `Delta_{lr}` always favors the candidate. The candidate and
+historical values must use the same admitted input/truth realization,
+conditioning, metric definition, support rule, and comparison population
+wherever a scientifically valid pairing exists.
+
+Absolute `G_l` values remain mandatory. They expose common-mode failures,
+retain physical meaning, and prevent a candidate from qualifying merely because
+both methods are poor. Qualification does not require an unsupported absolute
+standard of perfect recovery.
 
 Before development begins, each profile must freeze the equations,
 normalization, conditioning, and priority order for at least:
@@ -252,6 +315,12 @@ data. Changing an estimand, metric equation, normalization, or priority after
 candidate behavior is examined creates a new study generation and requires an
 independent development/qualification split.
 
+The truth-referenced quantities above and paired baseline-relative quantities
+answer different questions. `rho`, `T`, `B`, `D`, absolute leakage, and false-
+structure statistics state what either method recovered. `Delta` states how the
+candidate changed performance relative to historical Citlali. Both must be
+reported.
+
 ### Candidate Profile Priority Structure
 
 No scalar score or numerical weight is proposed. Each profile instead declares
@@ -272,6 +341,65 @@ are seen.
 No universal maximum recoverable scale is primitive. A reported boundary must
 be derived from a frozen response criterion for an exact mode family and
 validity domain.
+
+## Prospective Meaning Of “Better Under Most Conditions”
+
+A candidate need not improve every realization or dominate every condition,
+but a favorable average is insufficient. Before the qualification population
+is opened, each proposed `Q,D` must freeze:
+
+1. the applicability-domain population and its inclusion, exclusion, missing,
+   non-finite, and failure rules;
+2. the target distribution or explicit scientific weighting of observing
+   conditions within that population;
+3. signal profiles, morphologies, amplitudes, orientations, angular scales,
+   supports, and nuisance families;
+4. the paired aggregate estimator for each metric, such as a declared mean,
+   median, stratified estimator, or other exact functional;
+5. uncertainty and statistical-credibility construction for every aggregate;
+6. lower-tail, adverse-case, and worst-declared-stratum summaries;
+7. prospective bands defining improved, practically unchanged, degraded, and
+   failed cases, and the reported fraction in each class;
+8. condition-stratified results and rules for scientifically important strata;
+   and
+9. catastrophic-regression definitions and maximum permitted counts or rates.
+
+The protocol must state whether inference targets the declared finite
+qualification population or a superpopulation represented by it. Sampling,
+weights, uncertainty, and claims must match that target.
+
+For a weighted finite-population mean example,
+
+\[
+  A_l=\frac{\sum_r \omega_r\Delta_{lr}}{\sum_r\omega_r},
+\]
+
+but the mean is not a default: a median, stratified functional, model-based
+contrast, or other estimator may be selected prospectively. The protocol must
+pair `A_l` with its exact uncertainty construction and with a declared adverse
+quantile or lower-tail functional `Q_l(alpha)`.
+
+Given prospectively frozen metric-specific practical-change bands, each
+admitted case is classified as improved, practically unchanged, degraded, or
+failed. The protocol reports the weighted or unweighted fractions
+
+\[
+  (p_l^{+},p_l^{0},p_l^{-},p_l^{\mathrm{fail}}),
+  \qquad
+  p_l^{+}+p_l^{0}+p_l^{-}+p_l^{\mathrm{fail}}=1,
+\]
+
+using the same population target as the aggregate. The same summaries are
+reported for every prospectively important condition stratum. A catastrophic-
+regression indicator and its maximum permitted count or rate are frozen
+separately; it is not absorbed into `A_l` or the ordinary degraded fraction.
+
+If a favorable aggregate conceals a protected-dimension failure, catastrophic
+regression, or material degradation in a scientifically important condition
+class, the candidate does not receive broad qualification. The outcome must
+instead fail, narrow `D`, stratify the qualification, or bind an explicit
+condition-dependent policy according to rules frozen before the data are
+opened.
 
 ## Population Separation And Anti-Leakage Rules
 
@@ -308,34 +436,54 @@ assigned to the nearest profile.
 The framework distinguishes quantities that must be fixed at different times:
 
 1. **Before development:** metric equations, conditioning, priority order,
-   population construction/split rules, comparison control, and any externally
-   imposed scientific limits.
+   pairing and sign conventions, applicability-population construction/split
+   rules, target condition distribution/weighting, condition strata,
+   comparison control, and any externally imposed scientific limits.
 2. **After development but before qualification:** exact candidate recurrence,
    parameter/adaptation and stopping policies, protected non-inferiority
    dimensions and tolerances, material-improvement rule, qualification data
-   identity, uncertainty rule, missing/failure handling, and computational
-   protocol.
+   identity, paired aggregate and uncertainty rules, lower-tail and
+   outcome-fraction summaries, catastrophic-regression guardrails,
+   missing/failure handling, and computational protocol.
 3. **After qualification begins:** no method, threshold, profile, population,
    or decision-rule change is allowed within that qualification generation.
    A change creates a new frozen generation and requires a fresh untouched
    qualification population or an owner-approved independent replacement.
 
 This permits empirically informed but prospectively frozen thresholds. It does
-not permit qualification thresholds to be invented after outcomes are known.
+not permit qualification thresholds or condition weights to be invented after
+candidate-versus-control qualification outcomes are known.
 
 ## Qualification, Compatibility, And Out-Of-Domain Policy
 
-Under the already approved ODQ-001E rule, a candidate qualifies for one `Q,D`
-only if it:
+Under the already approved ODQ-001E rule and the `2026-09-01` repair direction,
+a candidate qualifies for one `Q,D` only if it:
 
 1. satisfies the frozen validity, response/uncertainty, restart, reproducibility,
    failure, and disclosure gates;
-2. is non-inferior to exact historical Citlali on every frozen protected
-   scientific dimension;
-3. is materially closer to injected truth in at least one owner-prioritized
-   scientific dimension; and
+2. remains within the frozen baseline-relative non-inferiority or safety
+   guardrail on every protected scientific dimension, including adverse strata
+   and catastrophic-regression limits;
+3. shows a frozen material and statistically credible paired improvement over
+   exact historical Citlali in at least one owner-prioritized scientific
+   dimension, with absolute truth/null metrics retaining acceptable scientific
+   meaning; and
 4. reports computational performance separately unless a scientific-resource
    trade was explicitly approved before qualification.
+
+The candidate need not dominate every metric, realization, or condition. A
+qualification claim may be restricted to a signal family, angular-scale range,
+or observing-condition domain. A method that improves a population aggregate
+but violates a protected tail, important stratum, failure, or catastrophic
+guardrail does not qualify broadly.
+
+Historical Citlali remains the paired control and program fallback throughout
+development and qualification. No candidate displaces it merely by improving
+an average. A specialized candidate does not replace it outside the exact
+qualified `Q,D`, and a candidate with an unacceptable failure mode does not
+replace it inside that domain. This fallback statement does not newly claim
+that every refactored numerical route is available or authorize a production
+change.
 
 When a request lies outside all qualified domains, the realized action must be
 one of: use an explicitly approved historical/compatibility route, require an
@@ -351,8 +499,8 @@ performance evidence. Its code, searches, tuning history, failed candidates,
 and raw evidence remain implementation-informed material outside the later
 implementation-blind author packet.
 
-The only candidate-specific scientific input eligible for Stage B is an
-owner-approved, sanitized, exact qualified-method record binding:
+The only candidate-specific scientific inputs eligible for Stage B are one or
+more owner-approved, sanitized, exact qualified-method records, each binding:
 
 - `K=(M,P,S,Q,D,H,Pi,E)` and its version;
 - the recurrence, model construction, operator order, and causal state;
@@ -362,23 +510,53 @@ owner-approved, sanitized, exact qualified-method record binding:
 - compatibility and out-of-domain behavior; and
 - known limitations and forbidden claims.
 
-Stage B then authors the method-specific scientific contract. Production code
-may be assessed for conformance only after that contract is frozen.
+Stage B then authors the method-specific scientific contract or explicitly
+bounded family of method/profile contracts. It must not manufacture one
+universal recurrence when the qualification evidence supports multiple
+domains. Production code may be assessed for conformance only after the
+applicable contract is frozen.
 
-## Owner Decisions Required To Select Disposition B
+## Repaired Candidate Owner Decision
 
-The owner must separately approve:
+> Approve a staged, profile- and domain-aware empirical qualification program
+> whose purpose is to identify demonstrable improvements over historical
+> Citlali, not to claim a uniquely optimal FRUIT algorithm. Qualification may
+> yield a universal method, conditional policies, multiple specialized
+> methods, restricted-domain improvements, or no replacement method.
 
-1. the package-specific empirical lane and its relation to the governing
-   program lifecycle;
-2. the initial profile identities, objectives, and downstream exclusions;
-3. the candidate-neutral declaration and claim invariants;
-4. the metric equations/priority freeze and truth/null strategy;
-5. population construction, split, leakage-prevention, tuning, adaptation,
-   threshold-freeze, failure, and replacement rules;
-6. the qualification claim identity and acceptance/out-of-domain policy; and
-7. the exact authorization, scope, repository/branch, inputs, and stop rule for
-   any later bounded research execution.
+The owner has approved this direction in principle but required the present
+repair before approval is recorded. ODQ-001F therefore remains open pending
+explicit acceptance of this exact repaired language.
+
+## Remaining Owner Decisions Before The Empirical Lane Can Launch
+
+Even after final ODQ-001F approval, the owner must separately approve:
+
+1. the package-specific empirical lane and its exact relation to the governing
+   contract-program lifecycle;
+2. the exact historical-control identity, build/configuration, route, grouping,
+   stopping behavior, and paired-execution protocol;
+3. the initial FRUIT recovery-profile identities, objectives, applicability
+   domains, and downstream OOF/SZE exclusions;
+4. the applicability-population construction, target condition distribution or
+   weights, signal/nuisance families, condition strata, and immutable
+   development/qualification/challenge split;
+5. the candidate-neutral declaration/claim invariants, exact metric equations,
+   sign conventions, paired estimators, uncertainty, tail summaries, outcome
+   fractions, and truth/null strategy;
+6. the protected and prioritized dimensions, externally imposed limits,
+   development-informed threshold-setting procedure, final non-inferiority
+   margins, material-improvement thresholds, failure rules, and catastrophic-
+   regression guardrails;
+7. the bounded candidate-hypothesis family, simplicity/broad-adequacy rule,
+   specialization evidence rule, tuning, automatic adaptation, expert override,
+   and candidate-generation policy;
+8. the conditional qualification identity, historical fallback, profile
+   selection, out-of-domain, narrowing/stratification, and no-replacement
+   policies; and
+9. the exact authorization, scope, repository/branch, inputs, outputs,
+   provenance, review cadence, resource bound, and stop rule for bounded
+   research execution.
 
 Until those decisions are recorded, ODQ-001F remains open and no empirical
 lane, method study, or implementation is authorized.

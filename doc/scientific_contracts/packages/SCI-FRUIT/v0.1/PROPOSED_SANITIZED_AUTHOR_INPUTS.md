@@ -21,12 +21,15 @@ content-bound versions of:
    owner-approved ODQ-001F architecture defining when the exact historical
    control, profile, metric estimators, protected dimensions, tolerances,
    improvement threshold, validity domain, uncertainty, population split,
-   performance protocol, and failure rules freeze;
+   condition distribution/weighting, tail/stratum/outcome-fraction and
+   catastrophic guardrails, historical fallback, performance protocol, and
+   failure rules freeze;
 6. if an empirical lane is approved, an owner-approved sanitized qualified-
-   method record binding `K=(M,P,S,Q,D,H,Pi,E)`, its scientific conclusions,
-   compatibility, limitations, and forbidden claims without prototype code,
-   tuning history, failed candidates, raw evidence, or implementation-derived
-   prescriptions;
+   method record or records binding `K=(M,P,S,Q,D,H,Pi,E)`, paired baseline-
+   relative and absolute results, their scientific conclusions, applicability,
+   compatibility, fallback, limitations, and forbidden claims without
+   prototype code, tuning history, failed candidates, raw evidence, or
+   implementation-derived prescriptions;
 7. exact frozen SCI-MAP and SCI-JINC boundary extracts for each owner-admitted
    route, without their implementation/audit history;
 8. exact frozen SCI-PTC ownership/admission boundary required by an admitted

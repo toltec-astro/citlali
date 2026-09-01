@@ -4,7 +4,7 @@ Status: **Stage A owner-review candidate; not owner-approved**
 
 Scientific owner: Grant Wilson
 
-Version/date: `v0.1-stage-a-r0.6`, `2026-08-31`
+Version/date: `v0.1-stage-a-r0.7`, `2026-09-01`
 
 Approved source identifier: **none**
 
@@ -124,11 +124,14 @@ response identity; SCI-FRUIT does not perform their inference or calibration.
 3. Which development and qualification architecture instantiates the approved
    comparison gate without choosing a recurrence prematurely? If empirical
    development is selected, which science profiles, validity domains, truth
-   and null constructions, metrics, population splits, tuning/adaptation
-   classes, prospective threshold-freeze rules, and out-of-domain actions
-   apply? Scientific quality must distinguish angular-scale recovery, per-mode
-   flux recovery, nuisance leakage, flux convergence, noise, response, and
-   uncertainty rather than collapse them by default.
+   and null constructions, exact historical control, paired sign conventions,
+   applicability population and condition distribution, aggregate/tail/failure
+   summaries, metrics, population splits, tuning/adaptation classes,
+   prospective goalpost-freeze rules, catastrophic guardrails, fallback, and
+   out-of-domain actions apply? Scientific quality must distinguish angular-
+   scale recovery, per-mode flux recovery, nuisance leakage, flux convergence,
+   noise, response, and uncertainty in a Pareto trade space rather than
+   collapse them by default.
 4. Does a per-iteration update contribution exist, what scientific or
    diagnostic status does it have, and is it causal for later output?
 5. What bounded persistence, compaction, reconstruction, lineage, and
@@ -197,13 +200,25 @@ recovery objectives, using bright OOF PSF recovery and faint extended SZE
 recovery as the motivating contrast. Stage A therefore reframes ODQ-001F as a
 choice among an a priori universal protocol, a staged profile-qualified
 empirical-development architecture, and historical-only v0.1 with successor
-R&D. The staged candidate freezes metric equations and population rules before
-development, then freezes the exact method, policy, thresholds, and untouched
-qualification population before qualification. It does not select a
-disposition, approve either motivating profile, authorize research, or transfer
-OOF/SZE inference into FRUIT. ODQ-001F and its remaining exact choices are
+R&D. The original staged candidate froze metric equations and population rules
+before development, then froze the exact method, policy, thresholds, and
+untouched qualification population before qualification. At r0.6 it did not
+select a disposition, approve either motivating profile, authorize research,
+or transfer OOF/SZE inference into FRUIT. ODQ-001F and its remaining exact choices are
 ordered in
 [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md).
+
+On `2026-09-01` the owner approved Disposition B in principle subject to one
+conceptual repair before approval is recorded. The empirical program seeks
+baseline-relative, profile/domain-conditional improvement over exact historical
+Citlali, not a unique global optimum. Historical Citlali remains the paired
+goalpost and fallback. The repaired frame permits one broad method, conditional
+policies, multiple specialized methods, restricted-domain qualification, or no
+replacement; requires absolute metrics alongside paired candidate-minus-
+historical improvement; and prospectively binds condition distributions,
+aggregates, uncertainty, tails, outcome fractions, strata, and catastrophic
+regressions. The repaired decision awaits explicit owner acceptance and does
+not launch the empirical lane.
 
 ## 11. Independence Statement
 

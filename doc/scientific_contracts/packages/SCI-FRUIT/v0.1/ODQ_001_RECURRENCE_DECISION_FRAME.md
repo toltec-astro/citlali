@@ -117,8 +117,12 @@ development, frozen prospectively through a profile-qualified empirical lane,
 or deferred with intentional-new-method work to a successor. The candidate
 frame is
 [`ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md`](ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md).
-No disposition, empirical lane, profile, benchmark, metric, tolerance, or
-protocol is approved.
+Neither A nor C is selected. The owner subsequently approved the staged
+empirical Disposition B in principle subject to the baseline-relative repair in
+[`SCIENTIFIC_OWNER_ODQ_001F_BASELINE_RELATIVE_REPAIR_DIRECTION_2026-09-01.md`](SCIENTIFIC_OWNER_ODQ_001F_BASELINE_RELATIVE_REPAIR_DIRECTION_2026-09-01.md).
+No final disposition, empirical lane, profile, benchmark, metric, tolerance, or
+protocol is approved. The repaired language awaits explicit final acceptance,
+so ODQ-001F and the empirical-lane launch remain open.
 
 ## Current Stage A Disposition
 

@@ -34,6 +34,11 @@ Status: Stage A vocabulary candidate; no equation or method is approved
 | Qualification population | Held-out population opened only after the complete method and decision protocol freeze | Additional development data after exposure |
 | Challenge population | Predeclared edge/near-boundary population used under a frozen characterization or decision role | Post-hoc replacement for failed qualification cases |
 | Experimental override product | Realized output with explicit nonstandard method/policy identity and downgraded claim class | Ordinary qualified product or silent nearest-profile fallback |
+| Applicability population | Prospectively defined finite population or superpopulation target, with exact sampling, condition distribution/weights, signal/nuisance domain, and missing/failure rules | Convenient available observations or post-hoc favorable subset |
+| Oriented paired improvement | Metric-specific signed candidate-minus-historical difference defined so positive favors the candidate | Absolute truth accuracy, unpaired cohort difference, or scalar global quality |
+| Protected guardrail | Prospectively frozen non-inferiority, safety, adverse-tail, stratum, failure, or catastrophic-regression limit | Primary improvement target or development-time preference |
+| Pareto specialization | Material profile/domain benefit that justifies a separately qualified exact method identity while protected guardrails pass | Small benchmark fluctuation, universal dominance, or permission for run-by-run choice |
+| Historical fallback | Exact historical Citlali method/control selected when no narrower qualified identity applies or a candidate fails its guardrails | Proof of historical correctness, hidden fallback, or automatic numerical route availability |
 
 ## Naming Rule
 

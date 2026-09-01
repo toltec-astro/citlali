@@ -137,6 +137,7 @@ REQUIRED_FILES = {
     "SCIENTIFIC_OWNER_ODQ_001E_FRAMEWORK_APPROVAL_2026-08-31.md",
     "SCIENTIFIC_OWNER_EMPIRICAL_METHOD_DIRECTION_2026-08-31.md",
     "ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md",
+    "SCIENTIFIC_OWNER_ODQ_001F_BASELINE_RELATIVE_REPAIR_DIRECTION_2026-09-01.md",
     "CROSSWALK.md",
     "AUTHOR_PACKET_MANIFEST.md",
     "AUTHOR_SUPERSESSION_COVER.md",
@@ -258,11 +259,15 @@ def verify_packet() -> None:
     odq001f = (
         ROOT / "ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md"
     ).read_text(encoding="utf-8")
+    baseline_repair = (
+        ROOT
+        / "SCIENTIFIC_OWNER_ODQ_001F_BASELINE_RELATIVE_REPAIR_DIRECTION_2026-09-01.md"
+    ).read_text(encoding="utf-8")
 
     required_tokens = {
         readme: [
             "recovery-first Stage A owner-review candidate; no Stage B launch",
-            "v0.1-stage-a-r0.6",
+            "v0.1-stage-a-r0.7",
             LAUNCH,
             PROVISIONAL,
             "every numerical route is",
@@ -338,8 +343,10 @@ def verify_packet() -> None:
         ],
         odq001f: [
             "Disposition A — Complete A Priori Universal Parameterization",
-            "Disposition B — Profile-Qualified Staged Empirical Development",
+            "Disposition B — Baseline-Relative, Profile-Qualified Staged Development",
             "Disposition C — Historical-Compatibility v0.1 With Separate Successor R&D",
+            "Baseline-Relative Qualification, Not Global Optimization",
+            "no new method qualifying",
             "Candidate-Neutral Invariants",
             "Development population",
             "Qualification population",
@@ -348,10 +355,24 @@ def verify_packet() -> None:
             "Candidate Metric Skeleton",
             "Candidate Profile Priority Structure",
             "Small `d` is not evidence of small `e`",
+            "Prospective Meaning Of “Better Under Most Conditions”",
+            "catastrophic-regression",
             "Staged Threshold Freeze",
             "K=(M,P,S,Q,D,H,Pi,E)",
+            "Repaired Candidate Owner Decision",
+            "Remaining Owner Decisions Before The Empirical Lane Can Launch",
             "ODQ-001F remains open and no empirical",
             "lane, method study, or implementation is authorized",
+        ],
+        baseline_repair: [
+            "approved in principle subject to the exact repair",
+            "baseline-relative qualification",
+            "paired control and scientific-performance",
+            "paired candidate-minus-historical comparisons",
+            "catastrophic-regression",
+            "Pareto trade space",
+            "no replacement method",
+            "final ODQ-001F approval is not yet recorded",
         ],
     }
     for body, tokens in required_tokens.items():
@@ -395,8 +416,8 @@ def main() -> None:
     print(
         "PASS: exact launch/provisional/historical sources, byte-identical "
         "historical recurrence evidence, revised three-choice ODQ-001, "
-        "owner-approved comparative-quality framework, three-disposition "
-        "ODQ-001F empirical-development frame, bounded edits, four unavailable "
+        "owner-approved comparative-quality framework, conditionally preferred "
+        "baseline-relative ODQ-001F frame, bounded edits, four unavailable "
         "candidate routes, Stage A firewall, placeholders, and local links"
     )
 

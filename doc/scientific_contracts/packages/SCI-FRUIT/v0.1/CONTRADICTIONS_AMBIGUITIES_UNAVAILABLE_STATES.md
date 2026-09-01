@@ -28,6 +28,9 @@ Status: Stage A recovery record
 | `FRUIT-GAP-022` | Bright compact PSF recovery and faint extended-emission recovery motivate different objectives | The examples do not prove that different methods or profiles are required, and FRUIT cannot assume OOF or SZE downstream inference authority | Test common-method hypotheses before profile/method proliferation; approve any FRUIT recovery-profile identity separately |
 | `FRUIT-GAP-023` | Some numerical thresholds may not be scientifically defensible before development evidence exists | Setting them after viewing qualification outcomes would move the goalposts, while inventing them now would manufacture authority | Freeze metric equations and split rules before development; if disposition B is approved, freeze thresholds and exact qualification data before opening the holdout |
 | `FRUIT-GAP-024` | Manual or data-adaptive tuning may improve individual outputs | Unbounded tuning can leak desired answers into the method and defeats replay, qualification identity, and domain claims | Separate offline profile tuning, bounded deterministic adaptation, and explicitly experimental expert override |
+| `FRUIT-GAP-025` | “Find the best FRUIT algorithm” suggests one global optimum | FRUIT dimensions conflict, relative value can depend on signal/condition, and multiple Pareto-relevant identities or no replacement may be scientifically correct | Repaired ODQ-001F B uses baseline-relative, domain-conditional qualification and accepts all five declared outcome classes |
+| `FRUIT-GAP-026` | “Better under most conditions” can hide population and tail choices | Mean/median, weights, strata, lower tail, failure fraction, and catastrophic regression can give conflicting conclusions | Prospectively freeze applicability population, condition distribution/weights, aggregate/uncertainty, outcome bands/fractions, strata, and catastrophic guardrails before qualification |
+| `FRUIT-GAP-027` | A favorable candidate average could be read as universal displacement of history | Specialized improvements do not establish safety outside their domain, and unacceptable failures cannot be averaged away | Exact historical Citlali remains paired control/fallback; qualify exact `K` identities only and preserve historical use outside narrower domains |
 
 ## Typed Unavailable States
 
@@ -50,5 +53,7 @@ The future contract should preserve at least these machine-auditable reasons:
 - `REQUIRES_SEPARATE_REPLAY_METHOD`
 - `UNAVAILABLE_QUALIFIED_PROFILE`
 - `EXPERIMENTAL_OVERRIDE_REQUIRED`
+- `UNAVAILABLE_BASELINE_RELATIVE_QUALIFICATION`
+- `CATASTROPHIC_REGRESSION`
 
 Unavailable is not zero, false, empty, converged, or a license to fall back.
