@@ -7,6 +7,7 @@ import hashlib
 import pathlib
 import re
 import subprocess
+import tarfile
 
 
 ROOT = pathlib.Path(__file__).resolve().parent
@@ -138,6 +139,23 @@ REQUIRED_FILES = {
     "SCIENTIFIC_OWNER_EMPIRICAL_METHOD_DIRECTION_2026-08-31.md",
     "ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md",
     "SCIENTIFIC_OWNER_ODQ_001F_BASELINE_RELATIVE_REPAIR_DIRECTION_2026-09-01.md",
+    "SCIENTIFIC_OWNER_ODQ_001F_FINAL_REPAIR_DIRECTION_2026-09-01.md",
+    "SCIENTIFIC_OWNER_ODQ_001F_FINAL_CANDIDATE_DECISION_R0.8.md",
+    "METHOD_CLAIM_EVIDENCE_DECISION_IDENTITY_TAXONOMY.md",
+    "PROGRAM_CLAIM_LAYER_SEQUENCE.md",
+    "QUALIFICATION_ACCESS_AND_MULTIPLICITY_RULES.md",
+    "REPLICATION_DEPENDENCE_AND_INFERENCE_TARGET.md",
+    "PAIRED_OUTCOME_FAILURE_UNAVAILABLE_MATRIX.md",
+    "SUPPORT_COMPARISON_RULE.md",
+    "OPERATIONAL_STOPPING_AND_ADAPTATION_BOUNDARY.md",
+    "REPAIRED_METRIC_SKELETON.md",
+    "HISTORICAL_CONTROL_COMPATIBILITY_FALLBACK_TAXONOMY.md",
+    "PROFILE_NAMING_AND_SPECIALIZATION_RULE.md",
+    "ODQ_001F_FOCUSED_OWNER_REVIEW_README_R0.8.md",
+    "BUNDLE_MANIFEST.md",
+    "SEMANTIC_CHANGE_REPORT_R0.8.md",
+    "SOURCE_BYTE_AND_INTERNAL_LINK_REPORT_R0.8.md",
+    "ARCHIVE_CHECKSUM_REPORT_R0.8.md",
     "CROSSWALK.md",
     "AUTHOR_PACKET_MANIFEST.md",
     "AUTHOR_SUPERSESSION_COVER.md",
@@ -154,12 +172,16 @@ REQUIRED_FILES = {
 }
 
 ALLOWED_GLOBAL_EDITS = {
+    "SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review.tar.gz",
     "doc/REFACTOR_STATUS.md",
     "doc/scientific_contracts/DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md",
     "doc/scientific_contracts/INDEX.md",
     "doc/scientific_contracts/PRIOR_WORK_REGISTRY.md",
     "doc/scientific_contracts/verify_layout.py",
 }
+
+FOCUSED_ARCHIVE = REPO / "SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review.tar.gz"
+FOCUSED_ROOT = "SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review"
 
 
 def run(*args: str) -> str:
@@ -263,11 +285,32 @@ def verify_packet() -> None:
         ROOT
         / "SCIENTIFIC_OWNER_ODQ_001F_BASELINE_RELATIVE_REPAIR_DIRECTION_2026-09-01.md"
     ).read_text(encoding="utf-8")
+    final_candidate = (
+        ROOT / "SCIENTIFIC_OWNER_ODQ_001F_FINAL_CANDIDATE_DECISION_R0.8.md"
+    ).read_text(encoding="utf-8")
+    identity_taxonomy = (
+        ROOT / "METHOD_CLAIM_EVIDENCE_DECISION_IDENTITY_TAXONOMY.md"
+    ).read_text(encoding="utf-8")
+    access_rules = (
+        ROOT / "QUALIFICATION_ACCESS_AND_MULTIPLICITY_RULES.md"
+    ).read_text(encoding="utf-8")
+    replication = (
+        ROOT / "REPLICATION_DEPENDENCE_AND_INFERENCE_TARGET.md"
+    ).read_text(encoding="utf-8")
+    paired = (
+        ROOT / "PAIRED_OUTCOME_FAILURE_UNAVAILABLE_MATRIX.md"
+    ).read_text(encoding="utf-8")
+    stopping = (
+        ROOT / "OPERATIONAL_STOPPING_AND_ADAPTATION_BOUNDARY.md"
+    ).read_text(encoding="utf-8")
+    historical_roles = (
+        ROOT / "HISTORICAL_CONTROL_COMPATIBILITY_FALLBACK_TAXONOMY.md"
+    ).read_text(encoding="utf-8")
 
     required_tokens = {
         readme: [
             "recovery-first Stage A owner-review candidate; no Stage B launch",
-            "v0.1-stage-a-r0.7",
+            "v0.1-stage-a-r0.8",
             LAUNCH,
             PROVISIONAL,
             "every numerical route is",
@@ -344,25 +387,22 @@ def verify_packet() -> None:
         odq001f: [
             "Disposition A — Complete A Priori Universal Parameterization",
             "Disposition B — Baseline-Relative, Profile-Qualified Staged Development",
-            "Disposition C — Historical-Compatibility v0.1 With Separate Successor R&D",
+            "Disposition C — Historical Compatibility v0.1 With Separate Successor R&D",
             "Baseline-Relative Qualification, Not Global Optimization",
-            "no new method qualifying",
-            "Candidate-Neutral Invariants",
-            "Development population",
-            "Qualification population",
-            "Challenge population",
-            "Bounded automatic adaptation",
-            "Candidate Metric Skeleton",
-            "Candidate Profile Priority Structure",
-            "Small `d` is not evidence of small `e`",
-            "Prospective Meaning Of “Better Under Most Conditions”",
-            "catastrophic-regression",
-            "Staged Threshold Freeze",
-            "K=(M,P,S,Q,D,H,Pi,E)",
-            "Repaired Candidate Owner Decision",
-            "Remaining Owner Decisions Before The Empirical Lane Can Launch",
-            "ODQ-001F remains open and no empirical",
-            "lane, method study, or implementation is authorized",
+            "no qualifying replacement",
+            "Candidate-Neutral Scientific Invariants",
+            "METHOD_ID",
+            "CLAIM_ID",
+            "EVIDENCE_ID",
+            "QUALIFICATION_DECISION",
+            "compact_high_snr_response_recovery",
+            "extended_low_snr_mode_recovery",
+            "Population Separation, Access, And Multiplicity",
+            "Outcome, Failure, Unavailable, And Support Accounting",
+            "Operational Tuning, Adaptation, And Stopping",
+            "Exact Final Candidate Owner Decision",
+            "ODQ-001F approval selects a development and qualification architecture",
+            "It does not launch the empirical lane",
         ],
         baseline_repair: [
             "approved in principle subject to the exact repair",
@@ -373,6 +413,55 @@ def verify_packet() -> None:
             "Pareto trade space",
             "no replacement method",
             "final ODQ-001F approval is not yet recorded",
+        ],
+        final_candidate: [
+            "SCI-FRUIT-ODQ-001F-DISPOSITION-B-R0.8",
+            "Mandatory Bound Architecture",
+            "duplicate, near-duplicate, and descendant-lineage leakage",
+            "uncertainty-, selection-, and multiplicity-aware",
+            "ODQ-001F approval selects a development and qualification architecture",
+            "It does not launch the empirical lane",
+            "not a recorded decision",
+        ],
+        identity_taxonomy: [
+            "parent_and_reduction_route",
+            "recurrence",
+            "feedback_state_schema",
+            "science_profile",
+            "execution_generation",
+            "Evidence generation is not part of the method",
+        ],
+        access_rules: [
+            "maximum candidate family",
+            "exact unblinding event",
+            "historical-control qualification outcomes",
+            "multiplicity handling across methods, profiles, metrics, scales, strata",
+            "single-candidate",
+        ],
+        replication: [
+            "exact frozen finite held-out population",
+            "primary independent sampling unit",
+            "cluster-aware covariance",
+            "effective sample size",
+            "not independent astronomical observations",
+        ],
+        paired: [
+            "candidate-only rescue endpoint",
+            "candidate regression/failure",
+            "p_unavailable",
+            "must not retain only complete pairs",
+        ],
+        stopping: [
+            "Injected truth",
+            "oracle best iteration",
+            "part of `METHOD_ID`",
+            "deterministic, bounded, versioned mapping",
+        ],
+        historical_roles: [
+            "historical_scientific_control",
+            "historical_compatibility_candidate",
+            "authorized_operational_fallback",
+            "unavailable until its science contract",
         ],
     }
     for body, tokens in required_tokens.items():
@@ -407,18 +496,100 @@ def verify_links() -> None:
                 fail(f"broken local link in {path.relative_to(ROOT)}: {target}")
 
 
+def verify_focused_bundle() -> None:
+    manifest_path = ROOT / "BUNDLE_MANIFEST.md"
+    manifest = manifest_path.read_text(encoding="utf-8")
+    source_report = (
+        ROOT / "SOURCE_BYTE_AND_INTERNAL_LINK_REPORT_R0.8.md"
+    ).read_text(encoding="utf-8")
+    archive_report = (ROOT / "ARCHIVE_CHECKSUM_REPORT_R0.8.md").read_text(
+        encoding="utf-8"
+    )
+    for marker in (
+        "MANIFEST_TABLE_PENDING",
+        "SOURCE_BYTE_REPORT_PENDING",
+        "ARCHIVE_CHECKSUM_PENDING",
+    ):
+        if marker in manifest + source_report + archive_report:
+            fail(f"unfinished focused-bundle marker: {marker}")
+
+    bindings = {}
+    row_pattern = re.compile(
+        r"^\| `([^`]+\.md)` \| (\d+) \| `([0-9a-f]{64})` \|$",
+        re.MULTILINE,
+    )
+    for name, byte_text, expected_hash in row_pattern.findall(manifest):
+        path = ROOT / name
+        if not path.is_file():
+            fail(f"focused manifest path missing: {name}")
+        data = path.read_bytes()
+        if len(data) != int(byte_text):
+            fail(f"focused manifest byte count changed: {name}")
+        if digest(data) != expected_hash:
+            fail(f"focused manifest hash changed: {name}")
+        bindings[name] = (int(byte_text), expected_hash)
+    if len(bindings) != 18:
+        fail(f"focused manifest expected 18 non-self bindings, got {len(bindings)}")
+
+    if "K=(M,P,S,Q,D,H,Pi,E)" not in (
+        ROOT / "METHOD_CLAIM_EVIDENCE_DECISION_IDENTITY_TAXONOMY.md"
+    ).read_text(encoding="utf-8"):
+        fail("retired qualification-tuple history is missing")
+    frame = (ROOT / "ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md").read_text(
+        encoding="utf-8"
+    )
+    for forbidden in (
+        "Bright compact/PSF-shape recovery",
+        "Faint extended-emission recovery",
+        "as the v0.1 production method and program fallback",
+    ):
+        if forbidden in frame:
+            fail(f"superseded active ODQ-001F wording remains: {forbidden}")
+
+    if not FOCUSED_ARCHIVE.exists():
+        return
+    archive_data = FOCUSED_ARCHIVE.read_bytes()
+    byte_match = re.search(r"Archive byte count: `(\d+)`", archive_report)
+    hash_match = re.search(r"Archive SHA-256:\n`([0-9a-f]{64})`", archive_report)
+    if not byte_match or not hash_match:
+        fail("archive checksum report binding is incomplete")
+    if len(archive_data) != int(byte_match.group(1)):
+        fail("focused archive byte count differs from report")
+    if digest(archive_data) != hash_match.group(1):
+        fail("focused archive hash differs from report")
+
+    with tarfile.open(FOCUSED_ARCHIVE, "r:gz") as archive:
+        file_members = [member for member in archive.getmembers() if member.isfile()]
+        expected_names = {
+            f"{FOCUSED_ROOT}/BUNDLE_MANIFEST.md",
+            *(f"{FOCUSED_ROOT}/{name}" for name in bindings),
+        }
+        actual_names = {member.name for member in file_members}
+        if actual_names != expected_names:
+            fail("focused archive membership differs from manifest")
+        if any(pathlib.PurePosixPath(name).name.startswith("._") for name in actual_names):
+            fail("AppleDouble member present in focused archive")
+        for member in file_members:
+            name = pathlib.PurePosixPath(member.name).name
+            archived = archive.extractfile(member)
+            if archived is None or archived.read() != (ROOT / name).read_bytes():
+                fail(f"focused archive member differs from source: {name}")
+
+
 def main() -> None:
     verify_sources()
     verify_scope_of_edits()
     verify_packet()
     verify_links()
+    verify_focused_bundle()
     subprocess.check_call(["git", "diff", "--check"], cwd=REPO)
     print(
         "PASS: exact launch/provisional/historical sources, byte-identical "
         "historical recurrence evidence, revised three-choice ODQ-001, "
         "owner-approved comparative-quality framework, conditionally preferred "
-        "baseline-relative ODQ-001F frame, bounded edits, four unavailable "
-        "candidate routes, Stage A firewall, placeholders, and local links"
+        "baseline-relative ODQ-001F frame, exact focused r0.8 source/archive "
+        "bindings, bounded edits, four unavailable candidate routes, Stage A "
+        "firewall, placeholders, and local links"
     )
 
 

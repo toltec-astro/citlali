@@ -2,7 +2,7 @@
 
 Status: **recovery-first Stage A owner-review candidate; no Stage B launch**
 
-Version: `v0.1-stage-a-r0.7`
+Version: `v0.1-stage-a-r0.8`
 
 Launch base: Git commit
 `7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`
@@ -79,6 +79,22 @@ missing scientific contract.
 | [`SCIENTIFIC_OWNER_EMPIRICAL_METHOD_DIRECTION_2026-08-31.md`](SCIENTIFIC_OWNER_EMPIRICAL_METHOD_DIRECTION_2026-08-31.md) | owner direction to parameterize an empirical, potentially science-profile-dependent method-selection process; not framework approval |
 | [`ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md`](ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md) | three-disposition ODQ-001F owner-review frame and fully bounded profile-qualified empirical-development candidate |
 | [`SCIENTIFIC_OWNER_ODQ_001F_BASELINE_RELATIVE_REPAIR_DIRECTION_2026-09-01.md`](SCIENTIFIC_OWNER_ODQ_001F_BASELINE_RELATIVE_REPAIR_DIRECTION_2026-09-01.md) | owner in-principle approval of Disposition B plus required baseline-relative/Pareto repair; final approval not recorded |
+| [`SCIENTIFIC_OWNER_ODQ_001F_FINAL_REPAIR_DIRECTION_2026-09-01.md`](SCIENTIFIC_OWNER_ODQ_001F_FINAL_REPAIR_DIRECTION_2026-09-01.md) | exact-source-bound owner direction for the focused `r0.8` final review repair; not final approval |
+| [`SCIENTIFIC_OWNER_ODQ_001F_FINAL_CANDIDATE_DECISION_R0.8.md`](SCIENTIFIC_OWNER_ODQ_001F_FINAL_CANDIDATE_DECISION_R0.8.md) | exact content-bound final candidate; not yet accepted |
+| [`METHOD_CLAIM_EVIDENCE_DECISION_IDENTITY_TAXONOMY.md`](METHOD_CLAIM_EVIDENCE_DECISION_IDENTITY_TAXONOMY.md) | separately typed method, claim, evidence, and decision identities |
+| [`PROGRAM_CLAIM_LAYER_SEQUENCE.md`](PROGRAM_CLAIM_LAYER_SEQUENCE.md) | complete qualification-to-production claim-layer gates |
+| [`QUALIFICATION_ACCESS_AND_MULTIPLICITY_RULES.md`](QUALIFICATION_ACCESS_AND_MULTIPLICITY_RULES.md) | held-out access, unblinding, selection, and multiplicity safeguards |
+| [`REPLICATION_DEPENDENCE_AND_INFERENCE_TARGET.md`](REPLICATION_DEPENDENCE_AND_INFERENCE_TARGET.md) | independent-unit, clustering, and finite/superpopulation requirements |
+| [`PAIRED_OUTCOME_FAILURE_UNAVAILABLE_MATRIX.md`](PAIRED_OUTCOME_FAILURE_UNAVAILABLE_MATRIX.md) | complete paired success/failure/unavailable accounting |
+| [`SUPPORT_COMPARISON_RULE.md`](SUPPORT_COMPARISON_RULE.md) | common, gained, lost, and unavailable support reporting |
+| [`OPERATIONAL_STOPPING_AND_ADAPTATION_BOUNDARY.md`](OPERATIONAL_STOPPING_AND_ADAPTATION_BOUNDARY.md) | causal stopping and bounded-adaptation boundary |
+| [`REPAIRED_METRIC_SKELETON.md`](REPAIRED_METRIC_SKELETON.md) | ratio-domain, weight, nuisance, dispersion, and censoring safeguards |
+| [`HISTORICAL_CONTROL_COMPATIBILITY_FALLBACK_TAXONOMY.md`](HISTORICAL_CONTROL_COMPATIBILITY_FALLBACK_TAXONOMY.md) | separate scientific-control, compatibility-candidate, and operational-fallback roles |
+| [`PROFILE_NAMING_AND_SPECIALIZATION_RULE.md`](PROFILE_NAMING_AND_SPECIALIZATION_RULE.md) | generic recovery profiles and specialization gate |
+| [`ODQ_001F_FOCUSED_OWNER_REVIEW_README_R0.8.md`](ODQ_001F_FOCUSED_OWNER_REVIEW_README_R0.8.md) | entry point for the focused `r0.8` owner-review subset |
+| [`BUNDLE_MANIFEST.md`](BUNDLE_MANIFEST.md) | exact focused-subset byte bindings and review scope |
+| [`SEMANTIC_CHANGE_REPORT_R0.8.md`](SEMANTIC_CHANGE_REPORT_R0.8.md) | exact `r0.7` to `r0.8` semantic changes and non-effects |
+| [`SOURCE_BYTE_AND_INTERNAL_LINK_REPORT_R0.8.md`](SOURCE_BYTE_AND_INTERNAL_LINK_REPORT_R0.8.md) | source-byte and internal-link verification report |
 | [`CROSSWALK.md`](CROSSWALK.md) | requested deliverable and source crosswalk |
 
 `AUTHOR_PACKET_MANIFEST.md`, `AUTHOR_SUPERSESSION_COVER.md`, and
@@ -137,8 +153,9 @@ only; they contain no normative science and no rendered contract.
     trade is later approved. Exact parameterization remains ODQ-001F.
 13. The owner identifies a process limitation: recurrence efficacy and tuning
     may require empirical hypothesis testing and may depend on the recovery
-    objective, with bright compact PSF recovery and faint extended-emission
-    recovery as the motivating contrast.
+    objective, with `compact_high_snr_response_recovery` and
+    `extended_low_snr_mode_recovery` as generic motivating regimes. OOF and SZE
+    remain downstream motivating populations, not FRUIT-owned inference.
 14. Stage A therefore returns three ODQ-001F dispositions: complete universal
     parameterization before development; a profile-qualified staged empirical
     lane; or historical-compatibility v0.1 with new-method research deferred to
@@ -151,7 +168,8 @@ only; they contain no normative science and no rendered contract.
     grant FRUIT authority over downstream OOF or SZE inference.
 16. The owner approves Disposition B in principle but requires baseline-relative
     rather than optimum-seeking qualification. Exact historical Citlali is the
-    paired performance goalpost and fallback; candidates need protected
+    paired scientific control; compatibility-candidate and operational-fallback
+    roles remain separate and unavailable. Candidates need protected
     non-inferiority plus material, statistically credible paired improvement in
     at least one prioritized dimension over a prospectively declared domain.
 17. The repaired framework admits one broad method, conditional policies,
@@ -159,6 +177,11 @@ only; they contain no normative science and no rendered contract.
     replacement. It formalizes condition distributions, aggregate uncertainty,
     lower tails, outcome fractions, stratification, catastrophic regressions,
     and prospective goalpost freezing without selecting numerical values.
+18. The `r0.8` repair separates method, claim, evidence, and decision identities;
+    completes the program claim-layer sequence; controls qualification access,
+    multiplicity, replication, dependence, failure, unavailability, support,
+    causal stopping, and metric edge cases; and returns an exact focused final
+    candidate without closing ODQ-001F or launching any lane.
 
 ## Stop Rule
 
@@ -174,9 +197,10 @@ provisionally favors the third treatment, but ODQ-001 remains open until its
 scientific objective, candidate law, differences, compatibility treatment, and
 validation obligations are explicit. The comparative-quality framework is
 approved. The owner approves the staged profile/domain-aware Disposition B in
-principle but has required the exact baseline-relative repair before final
-approval is recorded. The repaired decision language is now presented in the
-ODQ-001F frame; ODQ-001F remains open pending explicit acceptance. No
+principle and has required the exact `r0.8` owner-review repair before final
+approval is recorded. The exact content-bound candidate is now presented in
+the ODQ-001F frame and final candidate record; ODQ-001F remains open pending
+explicit acceptance of those bound bytes. No
 method-development lane is authorized. Candidate exploration, prospective
 goalpost freezing, held-out qualification, and scientific qualification must
 not be conflated.

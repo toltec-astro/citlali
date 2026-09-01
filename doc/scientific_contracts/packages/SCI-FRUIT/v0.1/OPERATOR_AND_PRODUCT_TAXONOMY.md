@@ -38,7 +38,9 @@ Status: Stage A vocabulary candidate; no equation or method is approved
 | Oriented paired improvement | Metric-specific signed candidate-minus-historical difference defined so positive favors the candidate | Absolute truth accuracy, unpaired cohort difference, or scalar global quality |
 | Protected guardrail | Prospectively frozen non-inferiority, safety, adverse-tail, stratum, failure, or catastrophic-regression limit | Primary improvement target or development-time preference |
 | Pareto specialization | Material profile/domain benefit that justifies a separately qualified exact method identity while protected guardrails pass | Small benchmark fluctuation, universal dominance, or permission for run-by-run choice |
-| Historical fallback | Exact historical Citlali method/control selected when no narrower qualified identity applies or a candidate fails its guardrails | Proof of historical correctness, hidden fallback, or automatic numerical route availability |
+| Historical scientific control | Exact recovered historical Citlali profile used for mandatory paired comparison | Truth, compatibility, route availability, or operational fallback authority |
+| Historical compatibility candidate | Exact method/route considered for historical numerical or product compatibility | Scientific qualification or automatic production use |
+| Authorized operational fallback | Separately contracted, conformant, validated, ready, and production-authorized method selected by a prospective policy | Any fallback authorization from Stage A, control status, nearest profile, or best-looking output |
 
 ## Naming Rule
 

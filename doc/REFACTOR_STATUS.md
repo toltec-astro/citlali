@@ -135,24 +135,27 @@ admits only a sanitized owner-approved qualified-method record to later
 method-specific Stage B authorship. FRUIT recovery profiles do not acquire OOF
 or SZE inference authority.
 
-On `2026-09-01` the owner approved Disposition B in principle but required a
-baseline-relative conceptual repair before final approval is recorded. The
-empirical program does not seek one globally optimal FRUIT algorithm. Exact
-historical Citlali is the paired performance goalpost and fallback; absolute
-truth/null metrics remain required to expose common-mode failure. Qualification
-requires material, statistically credible paired improvement in at least one
-prioritized scientific dimension while every protected non-inferiority, tail,
-stratum, failure, and catastrophic-regression guardrail passes over a
-prospectively declared applicability population and condition distribution.
-Valid outcomes are one broad method, one recurrence with conditional policies,
-multiple materially specialized methods, restricted-domain improvement, or no
-replacement. The simplest broadly adequate policy is preferred, computational
-performance remains separate, and thresholds/goalposts freeze before the
-qualification population is opened. The repaired decision sentence awaits
-explicit final acceptance. ODQ-001F remains open: no empirical lane, profile,
-control profile, population, metric, threshold, recurrence, implementation,
-execution, Stage B, qualification, validation, production, or Unity activity is
-authorized.
+On `2026-09-01` the owner approved Disposition B in principle but required
+targeted `r0.8` repair before final approval is recorded. The empirical program
+does not seek one globally optimal FRUIT algorithm. Exact historical Citlali is
+the paired scientific control, not truth; historical compatibility and any
+operational fallback are separate roles, and no fallback is authorized.
+Absolute truth/null metrics remain required. Qualification requires protected
+scientific non-inferiority plus material, statistically credible paired
+improvement in an owner-prioritized dimension, with prospective access,
+multiplicity, inference, tail, stratum, support, failure, unavailable-state,
+and catastrophic-regression safeguards. The `r0.8` candidate also separates
+method, claim, evidence, and decision identities; states the complete
+qualification-to-production claim layers; requires causal operational
+stopping; and uses generic `compact_high_snr_response_recovery` and
+`extended_low_snr_mode_recovery` profiles without acquiring OOF/SZE authority.
+Valid outcomes remain one broad method, conditional policies, multiple
+materially specialized methods, restricted-domain improvement, or no
+replacement. The exact content-bound final candidate awaits explicit owner
+acceptance. ODQ-001F remains open: no empirical lane, profile, control profile,
+population, metric, threshold, recurrence, implementation, execution, Stage B,
+qualification, validation, readiness, production, fallback, or Unity activity
+is authorized.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

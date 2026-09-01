@@ -5,6 +5,11 @@ Date: `2026-08-31`
 Status: **owner Stage A direction; provisional preference for Choice 3;
 ODQ-001 remains open and no recurrence is approved**
 
+`r0.8` supersession note: any “fallback” shorthand in this dated record is
+historical wording only. The active taxonomy separates scientific control,
+compatibility candidate, and authorized operational fallback; no fallback is
+authorized by Stage A.
+
 Direction ID: `SCI-FRUIT-DIR-2026-08-31-CHOICE-3-STUDY`
 
 ## Owner Direction

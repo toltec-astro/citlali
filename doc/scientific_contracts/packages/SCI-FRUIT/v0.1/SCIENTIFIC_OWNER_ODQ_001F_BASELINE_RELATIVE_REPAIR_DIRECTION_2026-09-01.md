@@ -5,6 +5,12 @@ Date: `2026-09-01`
 Status: **Disposition B approved in principle subject to the exact repair in
 this direction; final ODQ-001F approval is not yet recorded**
 
+`r0.8` supersession note: the original “fallback” shorthand below is preserved
+as historical owner direction but is no longer the active role taxonomy.
+`historical_scientific_control`, `historical_compatibility_candidate`, and
+`authorized_operational_fallback` are separate; the last is unavailable in
+Stage A.
+
 ## Owner Direction
 
 The scientific owner approves the staged, profile- and domain-aware empirical

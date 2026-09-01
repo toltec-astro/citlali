@@ -127,8 +127,9 @@ response identity; SCI-FRUIT does not perform their inference or calibration.
    and null constructions, exact historical control, paired sign conventions,
    applicability population and condition distribution, aggregate/tail/failure
    summaries, metrics, population splits, tuning/adaptation classes,
-   prospective goalpost-freeze rules, catastrophic guardrails, fallback, and
-   out-of-domain actions apply? Scientific quality must distinguish angular-
+   prospective goalpost-freeze rules, catastrophic guardrails, typed
+   historical-control/compatibility/fallback roles, and out-of-domain actions
+   apply? Scientific quality must distinguish angular-
    scale recovery, per-mode flux recovery, nuisance leakage, flux convergence,
    noise, response, and uncertainty in a Pareto trade space rather than
    collapse them by default.
@@ -212,13 +213,17 @@ On `2026-09-01` the owner approved Disposition B in principle subject to one
 conceptual repair before approval is recorded. The empirical program seeks
 baseline-relative, profile/domain-conditional improvement over exact historical
 Citlali, not a unique global optimum. Historical Citlali remains the paired
-goalpost and fallback. The repaired frame permits one broad method, conditional
+scientific control; compatibility-candidate and authorized-operational-fallback
+roles are separate and presently unavailable. The repaired frame permits one broad method, conditional
 policies, multiple specialized methods, restricted-domain qualification, or no
 replacement; requires absolute metrics alongside paired candidate-minus-
 historical improvement; and prospectively binds condition distributions,
 aggregates, uncertainty, tails, outcome fractions, strata, and catastrophic
-regressions. The repaired decision awaits explicit owner acceptance and does
-not launch the empirical lane.
+regressions. The `r0.8` repair additionally binds access/multiplicity,
+replication/dependence, unavailable/support, causal stopping, metric edge cases,
+generic profiles, and the complete claim-layer sequence. The exact final
+candidate awaits explicit owner acceptance and does not launch the empirical
+lane.
 
 ## 11. Independence Statement
 

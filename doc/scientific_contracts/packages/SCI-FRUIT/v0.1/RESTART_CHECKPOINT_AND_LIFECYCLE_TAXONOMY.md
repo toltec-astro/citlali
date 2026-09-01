@@ -34,7 +34,7 @@ Status: Stage A owner-review candidate
 | `method_candidate` | Exact recurrence, model/operator, parameter/adaptation, and stopping definition being developed under one immutable candidate generation | qualified scientific method or production implementation |
 | `qualified_method` | Exact method candidate that passed one prospectively frozen profile/domain protocol and has an owner-approved qualification record | universal FRUIT authority outside its bound profile/domain |
 | `experimental_override` | Explicitly identified deviation used for research or an out-of-domain case | exact continuation of the qualified method or ordinary science-product claim |
-| `fallback_selection` | Prospectively resolved choice of exact historical Citlali when no narrower qualified method applies or a candidate is ineligible | Silent method substitution or selection after comparing desired outputs |
+| `operational_fallback_selection` | Prospectively resolved choice of a separately contracted, conformant, validated, ready, and production-authorized fallback method | Historical scientific-control status, silent substitution, or selection after comparing desired outputs |
 
 ## Exact-Restart Compatibility Classes
 
@@ -55,8 +55,9 @@ For a later qualified method it also includes the science-profile identity and
 every parameter-policy or automatic-adaptation state that can affect future
 output. Changing a tuned policy creates a new candidate or qualified-method
 generation; it cannot continue an earlier qualification identity silently.
-Switching between a specialized method and historical fallback is likewise a
-new method/generation choice, not exact checkpoint continuation, unless an
+Switching between a specialized method and any separately authorized
+operational fallback is likewise a new method/generation choice, not exact
+checkpoint continuation, unless an
 owner-approved compatibility proof establishes otherwise.
 
 For the historical baseline, the restart boundary includes the selected
