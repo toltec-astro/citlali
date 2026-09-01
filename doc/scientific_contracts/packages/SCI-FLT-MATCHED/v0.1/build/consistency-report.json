@@ -13,13 +13,13 @@
     "engineering": {
       "overfull_boxes": 0,
       "path": "build/engineering-conformance.log",
-      "underfull_boxes": 238,
+      "underfull_boxes": 279,
       "unexpected_lines": []
     },
     "scientific": {
       "overfull_boxes": 0,
       "path": "build/scientific-rationale.log",
-      "underfull_boxes": 247,
+      "underfull_boxes": 288,
       "unexpected_lines": []
     }
   },
@@ -27,19 +27,19 @@
   "pdfs": {
     "engineering": {
       "option_alternatives_found": 21,
-      "pages": 35,
+      "pages": 38,
       "path": "pdf/SCI-FLT-MATCHED-ENGINEERING-CONFORMANCE-v0.1.pdf",
-      "predictions_found": 24,
+      "predictions_found": 25,
       "requirements_found": 50,
-      "sha256": "e06bfed81c7be5fcc8883ca5027057aa636ac083fbe9ac65940b67e55fa13f2c"
+      "sha256": "cee6476e664af1c47c89e06fc95b279f0cfeb6cea8e0553f0d9343047b338496"
     },
     "scientific": {
       "option_alternatives_found": 21,
-      "pages": 39,
+      "pages": 42,
       "path": "pdf/SCI-FLT-MATCHED-SCIENTIFIC-RATIONALE-v0.1.pdf",
-      "predictions_found": 24,
+      "predictions_found": 25,
       "requirements_found": 50,
-      "sha256": "d39f754eadb6a9f19f0231d786b3d7acd7f5dc408ce2fa3cda21d0f532f5b87b"
+      "sha256": "95007fb16de1eeb5a6efaa77e7af8b64981e1d5ff572e9c53e5254a0b7b81876"
     }
   },
   "scope": "source/PDF build consistency only; not scientific validation or implementation conformity",
@@ -52,19 +52,19 @@
     "common/edge_cases.tex"
   ],
   "shared_module_sha256": {
-    "assumptions.tex": "56473ed0d12598121ccc23f85993d6db909cb8948a7e9c96f934bc57119ef614",
-    "definitions.tex": "fbd023f1828bb18f105019c420041bc2ea9d0529d2fcd03e9c13a8cefb7fed2a",
-    "edge_cases.tex": "245867c9c8f89ee6e583fe7c43f1e9cc2f7bffa34b11200e1609d6b71ee4b10a",
-    "equations.tex": "b2ea45cb829403421e2dccb1babed0f7ddb7357b2e9e7f9b86a21ad8ad6a5f69",
-    "notation.tex": "00b6fdac27bf2b71cd17b539979ab0ae22aa94872795f09093f4e8ff09a51057",
-    "requirements.tex": "d768dafa2ac03915608d3c8c1625556aef605de69dbb9d8ae2f1b42f087db04b"
+    "assumptions.tex": "deac84b0ba9838cb93567076b9e3551a62bd6d075a8e5e5ecaf4f15f2c175c9a",
+    "definitions.tex": "844b94c8ca9eeec6ae244f9e8e433f11f92eedd44aec4e9518db2c5fef3b9a13",
+    "edge_cases.tex": "489e12fbd069a95db09e61ec72ae71d13539a0c12c5b3aacf7bf66ea0d2d4829",
+    "equations.tex": "f1c3085efe003402b44d6b46d9999c7cf8b08c28e40781681450863c929e620c",
+    "notation.tex": "4343e31819a8d86a4f4380a0c3503de8d9f37be88364616726f9db9cc87cc9d1",
+    "requirements.tex": "9daf28b20c78103df97f7eda67fdcd79fabfdc63f68d6813aa21d1af77a36ead"
   },
   "source_counts": {
-    "crosswalk_stable_ids": 95,
+    "crosswalk_stable_ids": 96,
     "option_alternatives": 21,
     "option_families": 6,
     "owner_decision_questions": 17,
-    "predictions": 24,
+    "predictions": 25,
     "requirements": 50
   },
   "status": "PASS"

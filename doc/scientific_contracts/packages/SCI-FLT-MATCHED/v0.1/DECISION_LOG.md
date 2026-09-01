@@ -100,3 +100,29 @@
   author-packet hash, passes source/PDF consistency and 74-page visual QA, and
   is returned in a separately SHA-bound archive. This does not approve or
   freeze the scientific contract.
+
+## `2026-09-01` — Owner-directed r0.5 final targeted closure
+
+- Grant Wilson accepted the r0.4 scientific architecture as the basis for a
+  final targeted type, lifecycle, covariance-role, template-authority, and
+  owner-disposition closure without another broad derivation.
+- r0.5 separates parent fact, numerical payload, construction, and exact
+  application domains and evaluates the amplitude only over exact nonzero
+  final coefficients. New `PRED-025` tests exact-zero missing-payload behavior.
+- Signal, response, covariance, NOI, and FLT-to-FRUIT validity are separately
+  typed; optional companions do not invalidate an unrelated base signal use.
+- The complete lifecycle now distinguishes LearnedCandidate,
+  PublicationDecided, and Published, and U1 conditions on exact pre-draw
+  `h_pre` rather than outcome-dependent state.
+- Exact local-GLS reference variance and operational-realized covariance are
+  distinct roles with an explicit compatibility table. Fixed-template
+  authority may come from an authorized source-class, morphology, beam, or
+  physical-response object, but never from target-derived selection or tuning.
+- The human title and all remaining AO recommendations are presented for
+  explicit owner choice. The provisional rendering makes no title selection
+  and carries `optimality_status=not_claimed`.
+- The two shared-core views render as 42-page scientific and 38-page
+  engineering documents. Source/PDF consistency and final-build all-page
+  visual QA pass. No numerical route, implementation claim, validation,
+  performance, readiness, production state, scientific freeze, or Unity
+  activity is selected or claimed.

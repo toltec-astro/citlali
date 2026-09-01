@@ -12,6 +12,11 @@ affected anchor & Mark \Unavailable{} before evaluation; no padding,
 extension, imputation, partial estimate, or renormalization. \\
 Numerical fill near an edge & Merely a computational placeholder & Admit an
 output only after exact erosion proves zero dependency on every filled value. \\
+Missing payload on a construction-only row with exact-zero $c_{pq}$ & The row
+is in $\Dom_{\rm loc}(p)$ but not $\Supp_{\rm apply}(p)$ & Do not dereference
+the payload; the amplitude remains defined and unchanged. If $c_{pq}\ne0$, the
+row becomes an active dependency and the anchor is Unavailable{}. No
+coefficient threshold is permitted. \\
 $d_p=0$, $d_p<0$, nonfinite $d_p$, or complex $d_p$ & Template is null,
 weighting is invalid, or numerical identity failed & Typed unavailability or
 attempt failure; never publish zero amplitude, infinite variance, or fallback. \\
@@ -49,7 +54,11 @@ Unknown covariance entry & Scientific knowledge is absent & Preserve unknown;
 do not encode zero, diagonal independence, or a usable inverse. \\
 Available $W$ but unavailable $C_{\rm parent}$ & Weighting exists without
 covariance authority & Amplitude filtering may proceed under a selected weaker
-option; optimality, $d_p^{-1}$ variance, and conditional covariance are unavailable. \\
+option; optimality, reference variance, and operational covariance are unavailable. \\
+Exact GLS premises with operational covariance unavailable & Reference theorem
+and operational product have different roles & Preserve
+$v_{{\rm GLS,reference}}=d_p^{-1}$ when independently established; mark the
+operational covariance role Unavailable{} and forbid covariance-derived uses. \\
 Available $C_{\rm parent}$ with mismatched population/state & Covariance does
 not describe this realization & Covariance route unavailable; no rescaling or
 population substitution. \\
@@ -84,6 +93,9 @@ fail. \\
 Optional companion fails after signal completion & Companion atomicity failed,
 not necessarily signal science & Mark companion \Failed{}; preserve signal
 \Complete{} unless exact named-use policy made the companion required. \\
+Optional role not requested & No child or companion was requested & Record
+\texttt{not\_requested}; do not narrow $\Valid_{\rm signal}$ or block another
+role. \\
 Normative per-anchor unavailability & The validity rule defined no amplitude at
 that anchor & Preserve the unavailable status inside an otherwise role-complete
 field; this does not by itself make the bundle partial. \\
@@ -106,7 +118,7 @@ retain the fixed-state type; no consumer may strengthen it. \\
 Reference response or covariance attached to a realized field & Comparator is
 being mislabeled as the actual product consequence & Fail the companion or
 bundle policy; attach the operational realized response and named-role
-$C_{\rm realized}^{(U1)}$ when authorized. \\
+$C_{U1,{\rm realized}}$ when authorized. \\
 Failure-bearing operational covariance sample & $P_CF_g(m)$ is not a fixed-
 dimensional finite numerical random vector almost surely on the predeclared
 domain & Mark the covariance role \Unavailable{}. Do not condition on success,
@@ -120,6 +132,9 @@ contract as applicable; existing FLT signal and handoff facts remain unchanged. 
 Filtered-map peak is examined & A numerical feature is not an authorized
 source object & No detection, candidate, significance, completeness, purity,
 fit, morphology, catalog, or SRC claim follows. \\
+Historical title or filename contains ``optimal'' & Human-facing terminology
+is not theorem evidence & Require explicit \texttt{optimality\_status}; under
+\AOpt{001}{C} it is always \texttt{not\_claimed}. \\
 \bottomrule
 \end{longtable}
 

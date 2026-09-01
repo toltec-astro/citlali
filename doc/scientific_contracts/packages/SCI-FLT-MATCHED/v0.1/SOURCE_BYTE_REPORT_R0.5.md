@@ -1,0 +1,84 @@
+# SCI-FLT-MATCHED v0.1 r0.5 Source-Byte Report
+
+Date: `2026-09-01`
+
+Status: exact returned-source and rendered-byte inventory; no scientific
+approval, option selection, implementation claim, or freeze
+
+Every quoted digest below was computed from the actual package-local bytes.
+The independent reviews are process provenance; the owner directives and
+dispositions carry the scientific authority stated in the manifest.
+
+| Object | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `AUTHOR_PACKET_MANIFEST.md` | 3217 | `255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8` |
+| `SCOPE_BRIEF.md` | 4629 | `69e8db020cd8569fe94dd18ef2012c13691fe5b3a2b188201bfc96cc31fa13c3` |
+| `AUTHOR_SUPERSESSION_COVER.md` | 1774 | `198ec9c50d5c5dc8cb8e68794dd5034a6aca7aaebf81521726ac371ad9bfc1c3` |
+| `AUTHOR_CONVENTIONS_AND_OWNERSHIP.md` | 2121 | `a5d91666a13ea06e39af4356b07a1ef316219559a19847fc81460c9c067446d6` |
+| `SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md` | 4769 | `d7235655bbce52be28714bb637a9d003f1f5bc9947d310bf61d3e5877d6feb9d` |
+| `AUTHOR_OPERATOR_STATE_AND_PRODUCT_TAXONOMY.md` | 2266 | `4e47f825d54645dc6e82b34ed4848e0bb656fc385edd61f744ca43c6124eb980` |
+| `AUTHOR_BOUNDARIES.md` | 2629 | `273fa218eb0ff9610e433c99d8f4d30f5a3abe653da375dfb17781148fbcce34` |
+| `REQUIRED_AUTHORED_OPTION_SETS.md` | 4289 | `bad539a66199090ba9e32bf22100da708cb3730b02650e0401bdeeee01330cfe` |
+| `AUTHOR_PACKET_MANIFEST.sha256` | 92 | `0a6810765c306ed23525f5d1ab90acf895a5485a41c691dcbf4759f768031d43` |
+| `SCIENTIFIC_OWNER_STAGE_A_APPROVAL_2026-08-31.md` | 2315 | `57cf57c47863969ceefe04bf6ebe5253f2a710543f4494ac73e54c7c0419ad3f` |
+| `SCIENTIFIC_OWNER_R0.2_DIRECTIVE_2026-08-31.md` | 8291 | `ef03af840c00b9934b04ceab0635be4f7273afe929e65f84eaa1b31985daa155` |
+| `CHATGPT_PRO_INDEPENDENT_REVIEW_R0.2_2026-08-31.md` | 4808 | `fa41cd5fc5b4a38ba254ad03ea5047114fe7511f3747b61beb327fc55a9a070f` |
+| `SCIENTIFIC_OWNER_R0.3_REPAIR_AUTHORITY_2026-09-01.md` | 1272 | `354a0647709aa98f331b9a50606b6c08d4e26d61e161d796c62e4e2e819d5e4a` |
+| `CHATGPT_PRO_INDEPENDENT_REVIEW_R0.3_2026-09-01.md` | 5499 | `5c93d89544e071bd850176fe309b91a8f911308216de91b06be3c6b37b211958` |
+| `SCIENTIFIC_OWNER_R0.4_DIRECTIVE_2026-09-01.md` | 2118 | `ccaca43228f4ac9f719aa93201cc13c37abdd8b2ddc01c65f2733785d12cf408` |
+| `SCIENTIFIC_OWNER_R0.5_DIRECTIVE_2026-09-01.md` | 17610 | `e27c04e62f01fa2997b229cf50d4a5b1c12cfd3d74805f4806bef6dde1261274` |
+| `AO_OWNER_DISPOSITION_PACKET_R0.5.md` | 2214 | `3e8f2553c61b85f0c1213331077685656f1f3b1bfe25d05f85cbbfba5e79b3fa` |
+| `OPTIMALITY_TITLE_OWNER_DISPOSITION_R0.5.md` | 1313 | `da8c2d0ed3c3224f228892da93e8525cc15accc020722ca910d8cddf4e0fdde8` |
+| `SCIENTIFIC_OWNER_DECISION_LEDGER.md` | 12323 | `e3910e004a38d95cda97e200cb4bc43fc2bcfa02e99e12a536fa3c98270bd9d5` |
+| `NUMERICAL_APPLICATION_DOMAIN_AMENDMENT_R0.5.md` | 1093 | `2e03f1767b17e6997dcf0b74534448ecff2123184571e16ec7ad4affcae93a83` |
+| `VALIDITY_DOMAIN_CROSSWALK_R0.5.md` | 1097 | `f6fdcd08a1ee1c2c8a601d22ca3c3d639795940c83c4e770b873ffce1d82b62c` |
+| `LIFECYCLE_AMENDMENT_R0.5.md` | 784 | `d6d9807a59098d07af2a52ec82074f69dd7beb797042fa872bd28216d94d78fd` |
+| `PRE_DRAW_CONDITIONING_AMENDMENT_R0.5.md` | 750 | `b4ec29a42fb0f163e8b729163707e0f0856f0cc119db2befe1c7264f9dd3e50f` |
+| `GLS_REFERENCE_AND_OPERATIONAL_COVARIANCE_R0.5.md` | 1028 | `fffe8a8437a9391cad0a4015856a611c958bf4471ce857176073718561b30ede` |
+| `TEMPLATE_SOURCE_BOUNDARY_AMENDMENT_R0.5.md` | 763 | `495c639c7f9046b1d4489719e90af483865fa6a909c1fe28efef85a304e2eb7d` |
+| `DOWNSTREAM_BOUNDARY_REQUEST_AMENDMENT_R0.5.md` | 555 | `fb0a717a77af351a17299b76413fe9ce849a9cab6bc4936924ec4186fe42382f` |
+| `SEMANTIC_CHANGE_MAP_R0.5.md` | 1492 | `a6efa3f50394e24b2b76a016924aea44ae0f0783fc100a3d4c40fb75c0a2c1ac` |
+| `NOTATION_CROSSWALK_R0.5.md` | 961 | `b5e2a355f76121d29828d33b2e3487be0c0ef300ad5be418cb807ad155fbee64` |
+| `REPRESENTATION_CROSSWALK_R0.5.md` | 944 | `f9312a3571dc591609242444ba516f1b8889b29fa5e3141b81065b35657d198b` |
+| `ROUTE_STATUS_R0.5.md` | 1500 | `f11eb2529904c69b5d41bf7110dbca2162cbfd5e06db157477d7d03aee5f5550` |
+| `OWNER_DECISION_PARITY_R0.5.md` | 1318 | `170d3a874c53f459125c589241b5f601415f574c2ec4d8ed7e7c978784165248` |
+| `CROSSWALK.md` | 22393 | `c8e50a7d3b006fcbaf14108af613296b39615e146ac2a1bea3492afb3f01ac0a` |
+| `SCI-MAP_TO_SCI-FLT-MATCHED-v0.1-r0.5.md` | 1530 | `8c25b04dedde1c151e17c0f9d545ee007dd0ab4ec13f51a29b79347f56d09cd3` |
+| `SCI-TEMPLATE_TO_SCI-FLT-MATCHED-v0.1-r0.5.md` | 1509 | `38fd710b1a956098e18c0cc6ebc410b84f582d7b6a1ff335831c93afb075c273` |
+| `SCI-FLT-MATCHED_TO_SCI-NOI-v0.1-r0.5.md` | 1447 | `90344aa221fd4214035059de7339653dec8b47b9ffdbe388d2c553c99526a173` |
+| `SCI-FLT-MATCHED_TO_SCI-FRUIT-v0.1-r0.5.md` | 1422 | `d8c239c5999a6fea7c9007d25cb78deb7751f1935cb2f23e7e36a28eaed6c71c` |
+| `role_profiles/PA_R0.5.md` | 414 | `f88da57f6922cb74f8655fc26e60fbbe0267a850582ba4eca196f6724124902c` |
+| `role_profiles/SA_R0.5.md` | 400 | `e5046e5e0cf090d71d599f28ab9788e44c3770bb9f2f781c1acdbf720ebec030` |
+| `role_profiles/SP_R0.5.md` | 422 | `592dcbae18bce496f75fe04b61a2043696e81b874a18c1adc5dc557823a75bda` |
+| `role_profiles/CU_R0.5.md` | 429 | `9eb3d4ede6c8df1264c7d96a64c48a77e4087c67a9ce9e48f72a6a37ec60bfce` |
+| `role_profiles/NU_R0.5.md` | 413 | `4eb4bf864ccd1ffa129c6e2dae90d13731ff28ae82d019e4a23a3e58c720b03d` |
+| `role_profiles/RU_R0.5.md` | 429 | `dbf923d48ef77d1cf7768bc11e7f7d5c45fe6cd5ed887f52fd94b888e4f8a604` |
+| `role_profiles/FH_R0.5.md` | 432 | `d3d61c0ce1cd176cfb34fe851ea172291f55b620e37d7538c1d7632333caced6` |
+| `src/common/README.md` | 471 | `13c5d2d9124f78ebc7f7235f50e0762ea28f56a361153f7f37bacf5e0fdfb3be` |
+| `src/common/notation.tex` | 10659 | `4343e31819a8d86a4f4380a0c3503de8d9f37be88364616726f9db9cc87cc9d1` |
+| `src/common/definitions.tex` | 19056 | `844b94c8ca9eeec6ae244f9e8e433f11f92eedd44aec4e9518db2c5fef3b9a13` |
+| `src/common/equations.tex` | 12306 | `f1c3085efe003402b44d6b46d9999c7cf8b08c28e40781681450863c929e620c` |
+| `src/common/assumptions.tex` | 10706 | `deac84b0ba9838cb93567076b9e3551a62bd6d075a8e5e5ecaf4f15f2c175c9a` |
+| `src/common/requirements.tex` | 33914 | `9daf28b20c78103df97f7eda67fdcd79fabfdc63f68d6813aa21d1af77a36ead` |
+| `src/common/edge_cases.tex` | 10553 | `489e12fbd069a95db09e61ec72ae71d13539a0c12c5b3aacf7bf66ea0d2d4829` |
+| `src/scientific-rationale.tex` | 16566 | `1bd13c51d64df1645cf559bc890a0fd7e0a32333e0d7557e64881159c75a4121` |
+| `src/engineering-conformance.tex` | 25930 | `4596f8743f9f78d88e943d899c28dc8e96222eb9373b97e43468f3a8e8b04d04` |
+| `pdf/README.md` | 426 | `826f53f8e4bba0756a232cb85dd301692aa0406ec07ea52abe6c40d6c9b2fb0e` |
+| `pdf/SCI-FLT-MATCHED-SCIENTIFIC-RATIONALE-v0.1.pdf` | 216096 | `95007fb16de1eeb5a6efaa77e7af8b64981e1d5ff572e9c53e5254a0b7b81876` |
+| `pdf/SCI-FLT-MATCHED-ENGINEERING-CONFORMANCE-v0.1.pdf` | 232482 | `cee6476e664af1c47c89e06fc95b279f0cfeb6cea8e0553f0d9343047b338496` |
+| `PDF_QA_R0.5.md` | 2714 | `c50eeaebc289b4b64fa3e4392232ae56d70914c2b50f59f1be7f33341acb9cd8` |
+| `build/BUILD_VERIFICATION.md` | 2317 | `4742a2e9332553c78fbfb1433f06c0de01a0481744b1b413d49e2eb7df5a8103` |
+| `build/consistency-report.json` | 2968 | `f1bb0d0a6a558949f5a91af14da8d4660adc675ffc8ab7167848a721d5334c69` |
+| `build/verify_consistency.py` | 12126 | `f766c77d93887c6882bb78f1e90b99e14c08be2ba1d90feea1268c48b1ad2cf3` |
+| `build/scientific-rationale.log` | 58123 | `9205f042e99a24ad87f844ed4f8d00480a0ed5636b454061a4cc197c6a30769a` |
+| `build/engineering-conformance.log` | 57471 | `380ce1a1452e864700cc1355a43c1a6f997a141c2e24c2559122eb43dc9a02ee` |
+| `build/generate_r0_5_authority.py` | 16275 | `fd7aa100b07eb1a93cf17058b99640f17be8b94bba38eb59ba4820ac790e3c99` |
+| `verify_stage_a.py` | 4177 | `84e6387f57f799382a3482a5bd2322458ef398538a1338174691572aebb040f5` |
+| `verify_stage_b_draft.py` | 1486 | `7a6b047c0200bf3765c3eb6f63792790398ef0f5b0573816f3806a8a2881d34c` |
+| `README.md` | 10379 | `58f77d3754cd5b8385950fee71c095b779716fb6d933b012ae4116c314ac22f9` |
+| `DECISION_LOG.md` | 7447 | `0b9e85fd98041bab33d8e465cc15c8626e145b38a8dc7d5e691aa1bdf0364b9e` |
+
+The active r0.5 authority manifest additionally binds this report.
+Because the manifest is externally bound by
+`STAGE_B_DRAFT_MANIFEST.sha256`, neither this report nor the manifest
+self-lists its own digest.

@@ -2,6 +2,7 @@
 contact/
 contact-*/
 rendered/
+rendered-*/
 *.aux
 *.out
 *.toc

@@ -4,14 +4,16 @@
 
 \subsection{Authoritative coordinate-basis operator}
 
-For every admitted anchor $p\in\Valid$, first declare
+For every admitted anchor $p\in\Valid_{\rm signal}$, first declare
 $\Dom_{\rm loc}(p)$ and its extraction $E_p$, then construct
 \begin{align}
- m_p &= E_pm, & t_p &= E_pt_p^{\rm full}, \\
- n_p &= t_p^{\mathsf T}W_pm_p, &
+ t_p &= E_pt_p^{\rm full}, &
  d_p &= t_p^{\mathsf T}W_pt_p, \\
- \widehat a_p &= \frac{n_p}{d_p}, &
- L_{p,g}u &= \frac{t_p^{\mathsf T}W_pE_pu}{d_p}, \\
+ \ell_p^\star &= \frac{W_pt_p}{d_p}, &
+ c_p &= E_p^{\mathsf T}\ell_p^\star, \\
+ \Supp_{\rm apply}(p)&=\{q:c_{pq}\ne0\}, &
+ \widehat a_p&=\sum_{q\in\Supp_{\rm apply}(p)}c_{pq}m_q, \\
+ n_p&=d_p\widehat a_p, & L_{p,g}u&=c_p^{\mathsf T}u, \\
  R_{\rm fixed}(p,s) &= L_{p,g}t_s^{\rm full}. &&
 \end{align}
 $W_p=W_p^{\dagger}$ and $u^{\dagger}W_pu\geq0$. The scientific
@@ -19,22 +21,28 @@ normalization $d_p$ is finite, exactly real, and strictly positive. Failure of
 one of these exact predicates is typed unavailability or attempt failure,
 never amplitude zero. Ordinary floating-point evidence for the exact
 identities belongs to the preregistered numerical-conformance profile.
+Every active $q\in\Supp_{\rm apply}(p)$ shall be in $\Dom_m$ and admitted.
+Coordinates used only to construct $t_p$, $W_p$, $d_p$, or $c_p$ need no
+signal-payload dereference when their final coefficient is exact zero. Exact
+zero is not a tolerance. The shorthand $m_p=E_pm$ may be used only when the
+complete numerical vector exists or an explicit completion is algebraically
+irrelevant outside $\Supp_{\rm apply}(p)$.
 
 \subsection{Matching-template and general-sky relations}
 
 For the matching single-template model
 \[
  m=A t_s^{\rm full}+n,
- \qquad \operatorname E[n\mid h]=0,
+ \qquad \operatorname E[n\mid h_{\rm pre}]=0,
 \]
 linearity gives
 \[
- \operatorname E[\widehat a_p\mid h]=A R_{\rm fixed}(p,s).
+ \operatorname E[\widehat a_p\mid h_{\rm pre}]=A R_{\rm fixed}(p,s).
 \]
 At $p=s$, exact normalization yields
 \[
  R_{\rm fixed}(p,p)=1,
- \qquad \operatorname E[\widehat a_p\mid h]=A.
+ \qquad \operatorname E[\widehat a_p\mid h_{\rm pre}]=A.
 \]
 
 For a general linear sky and deterministic residual,
@@ -43,7 +51,7 @@ For a general linear sky and deterministic residual,
 \]
 the exact fixed-state expectation is
 \begin{equation}
- \operatorname E[\widehat a_p\mid h]
+ \operatorname E[\widehat a_p\mid h_{\rm pre}]
  =\sum_s R_{\rm fixed}(p,s)A_s+L_{p,g}b.
  \label{eq:general-sky}
 \end{equation}
@@ -58,7 +66,7 @@ are response and nuisance leakage, not source attribution or deblending.
 For an authorized parent covariance, restriction to the predeclared local
 operator domain precedes inversion:
 \begin{equation}
- C_p=E_pC_{\rm parent\mid h}E_p^{\mathsf T}.
+ C_p=E_pC_{\rm parent\mid h_{\rm pre}}E_p^{\mathsf T}.
  \label{eq:local-covariance}
 \end{equation}
 Let the columns of $U_p$ be an exact orthonormal basis, in this declared
@@ -83,13 +91,14 @@ row is
 \]
 For every competitor,
 \[
- \operatorname{Var}(\ell^{\mathsf T}m_p\mid h)
- -\operatorname{Var}(\ell_*^{\mathsf T}m_p\mid h)
+ \operatorname{Var}(\ell^{\mathsf T}m_p\mid h_{\rm pre})
+ -\operatorname{Var}(\ell_*^{\mathsf T}m_p\mid h_{\rm pre})
  =(\ell-\ell_*)^{\mathsf T}C_p(\ell-\ell_*)\geq0,
 \]
 and
 \[
- \operatorname{Var}(\widehat a_p\mid h)=d_p^{-1}.
+ v_{{\rm GLS,reference}}(p)
+ =\operatorname{Var}(\widehat a_p\mid h_{\rm pre})=d_p^{-1}.
 \]
 There are no constraints beyond $\ell\in\operatorname{Range}(U_p)$ and
 $\ell^{\mathsf T}t_p=1$ in the v0.1 theorem. This is the sole
@@ -148,15 +157,16 @@ or $R_{\rm realized}^{[\delta,\sigma]}(m;p,s)$ for a predeclared finite
 difference with step, sidedness, and output-query domain fixed before
 evaluation and with no Learn or Resolve rerun. Every required evaluation shall
 be finite on that same domain; otherwise the response query is unavailable.
-The U1 realized and reference covariance roles, conditional on the complete
-frozen condition $h=(g,\theta)$ and on the fixed covariance selector $P_C$,
+The U1 realized and reference covariance roles, conditional only on the
+pre-draw frozen condition $h_{\rm pre}=(g_{\rm resolved},\theta)$ and on the
+fixed covariance selector $P_C$,
 are
 \begin{align}
  R_{\rm reference} &= LT,
- & C_{\rm reference}^{(U1)}
-   &=P_CLC_{\rm parent\mid h}L^{\mathsf T}P_C^{\mathsf T}, \\
- C_{\rm realized}^{(U1)}
-   &=\operatorname{Cov}[P_CF_g(m)\mid h].
+ & C_{U1,{\rm reference}}
+   &=P_CLC_{\rm parent\mid h_{\rm pre}}L^{\mathsf T}P_C^{\mathsf T}, \\
+ C_{U1,{\rm realized}}
+   &=\operatorname{Cov}[P_CF_g(m)\mid h_{\rm pre}].
 \end{align}
 The realized covariance exists only when $P_CF_g(m)$ is a fixed-dimensional
 finite real random vector almost surely under the declared U1 law. Successful-
@@ -169,8 +179,8 @@ may one use
  R_{\rm realized}=\widetilde L_gT.
 \]
 \begin{equation}
- C_{\rm realized}^{(U1)}
- =P_C\widetilde L_gC_{\rm parent\mid h}\widetilde L_g^{\mathsf T}P_C^{\mathsf T}.
+ C_{U1,{\rm realized}}
+ =P_C\widetilde L_gC_{\rm parent\mid h_{\rm pre}}\widetilde L_g^{\mathsf T}P_C^{\mathsf T}.
  \label{eq:realized-linear-covariance}
 \end{equation}
 An amplitude field generated by $F_g$ shall carry the operational realized
@@ -180,6 +190,28 @@ calibration/template-scale uncertainty is a separate named role. A joint
 U1+U2 product exists only when its random variables, conditioning,
 cross-covariances, and pushforward are separately authorized. A diagonal
 representation does not assert independence, and omitted entries are unknown.
+
+\subsection{Reference-variance and operational-covariance compatibility}
+
+$v_{{\rm GLS,reference}}(p)=d_p^{-1}$ is a theorem-supported marginal
+reference variance only for \AOpt{001}{A} under every premise of
+Section~\ref{sec:optimality}. It is not the same role as an operational
+covariance companion and survives typed unavailability of that companion.
+\begin{longtable}{p{0.26\linewidth}p{0.27\linewidth}p{0.37\linewidth}}
+\toprule
+Weight / covariance choice & Reference marginal variance & Operational U1 covariance \\
+\midrule
+\endhead
+\AOpt{001}{A} + \AOpt{003}{C} & May be available as
+$v_{{\rm GLS,reference}}(p)$ & Unavailable; no covariance-based
+standardization, draw, independence, or covariance-dependent use. \\
+\AOpt{001}{A} + complete/projected \AO{003} & May be available & Separately
+available on $\Valid_{\rm covariance}(r)$ when all operational premises hold. \\
+\AOpt{001}{C} or another non-GLS route & $d_p$ is normalization only; reference
+variance unavailable & Separately available or unavailable under its own role. \\
+Missing or population-mismatched parent covariance & Unavailable & Unavailable. \\
+\bottomrule
+\end{longtable}
 
 \subsection{Engineering approximation observables}
 \label{sec:approx-metrics}
@@ -192,7 +224,7 @@ thresholds:
  e_R&=\|P_{\rm out}(R_{\rm realized}^{[\delta,\sigma]}-R_{\rm reference})
                  P_{\rm anc}^{\mathsf T}\|, &
  e_F(m)&=\|P_{\rm out}(F_g(m)-Lm)\|,\\
- e_C&=\|P_{\rm out}(C_{\rm realized}^{(U1)}-C_{\rm reference}^{(U1)})
+ e_C&=\|P_{\rm out}(C_{U1,{\rm realized}}-C_{U1,{\rm reference}})
                  P_{\rm out}^{\mathsf T}\|.
 \end{align}
 $e_d$ is available only when the preregistered profile declares
@@ -219,7 +251,7 @@ ID & Contribution & Contract treatment \\
 \midrule
 \endhead
 U1 & Parent stochastic covariance & Use
-$C_{\rm realized}^{(U1)}=\operatorname{Cov}[P_CF_g(m)\mid h]$ for the exact
+$C_{U1,{\rm realized}}=\operatorname{Cov}[P_CF_g(m)\mid h_{\rm pre}]$ for the exact
 authorized population, fixed codomain, and conditioning; matrix propagation
 requires established fixed-state linearity. \\
 U2 & Calibration/template scale & Preserve joint CAL/BEAM and parent-template

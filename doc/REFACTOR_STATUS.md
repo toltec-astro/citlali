@@ -871,6 +871,31 @@ archive at SHA-256
 Fourteen SODL questions remain open, two are decided, and one is superseded;
 r0.4 remains an owner-review draft rather than frozen authority.
 
+Grant Wilson then supplied the exact r0.5 final targeted closure directive on
+`2026-09-01`, accepting the r0.4 scientific architecture as its basis and
+forbidding another broad derivation. Stage B r0.5 separately types parent-fact,
+numerical-payload, construction, and exact nonzero application domains; adds
+`PRED-025`; separates signal, response, covariance, NOI, and FLT-to-FRUIT
+validity; completes LearnedCandidate through Published lifecycle semantics;
+conditions U1 on pre-draw `h_pre`; distinguishes exact local-GLS reference
+variance from operational-realized covariance; admits fixed templates from
+authorized source-class, morphology, beam, or physical-response authority
+while forbidding target-derived selection; and makes NOI/FRUIT state request-
+qualified. Seven separate PA/SA/SP/CU/NU/RU/FH role profiles and all four r0.5
+boundary drafts accompany the shared core. The two views render as 42-page
+scientific and 38-page engineering documents; mechanical consistency and
+final-build all-page visual QA pass. The 67-object authority manifest verifies
+at SHA-256
+`799faaa3b83ca9cf4441ffb17137e3353d0fa617755d00e23ae7ebc61d5c9177`,
+and the complete 70-file payload is returned in a deterministic `.tar.gz` at
+SHA-256
+`ebfa5c653a6c989c7250ed2191898022b9f6382aeb8613e3bc120d3ed4561682`.
+The title and AO packets are recommendations awaiting explicit owner
+disposition; the provisional historical title carries
+`optimality_status=not_claimed`. No option, numerical route, implementation
+claim, validation, performance, readiness, production state, freeze, or Unity
+activity is selected or claimed.
+
 This remains contract-development work only. No algorithm change,
 implementation conformity, validation, calibration, performance, readiness,
 production, freeze, or Unity action is claimed or authorized.

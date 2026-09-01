@@ -25,7 +25,7 @@ COMMON = [
     "edge_cases.tex",
 ]
 REQ_IDS = [f"SCI-FLT-MATCHED-REQ-{i:03d}" for i in range(1, 51)]
-PRED_IDS = [f"SCI-FLT-MATCHED-PRED-{i:03d}" for i in range(1, 25)]
+PRED_IDS = [f"SCI-FLT-MATCHED-PRED-{i:03d}" for i in range(1, 26)]
 AO_OPTIONS = {
     *[f"SCI-FLT-MATCHED-AO-001-{x}" for x in "ABCD"],
     *[f"SCI-FLT-MATCHED-AO-002-{x}" for x in "ABC"],
@@ -145,14 +145,14 @@ def main() -> int:
     if missing_ledger:
         errors.append(f"owner-decision ledger IDs missing: {missing_ledger}")
     for boundary in [
-        "SCI-MAP_TO_SCI-FLT-MATCHED-v0.1-r0.4.md",
-        "SCI-TEMPLATE_TO_SCI-FLT-MATCHED-v0.1-r0.4.md",
-        "SCI-FLT-MATCHED_TO_SCI-NOI-v0.1-r0.4.md",
-        "SCI-FLT-MATCHED_TO_SCI-FRUIT-v0.1-r0.4.md",
+        "SCI-MAP_TO_SCI-FLT-MATCHED-v0.1-r0.5.md",
+        "SCI-TEMPLATE_TO_SCI-FLT-MATCHED-v0.1-r0.5.md",
+        "SCI-FLT-MATCHED_TO_SCI-NOI-v0.1-r0.5.md",
+        "SCI-FLT-MATCHED_TO_SCI-FRUIT-v0.1-r0.5.md",
     ]:
         if not (package / boundary).is_file():
-            errors.append(f"r0.4 boundary draft missing: {boundary}")
-    route_text = (package / "ROUTE_STATUS_R0.4.md").read_text(encoding="utf-8")
+            errors.append(f"r0.5 boundary draft missing: {boundary}")
+    route_text = (package / "ROUTE_STATUS_R0.5.md").read_text(encoding="utf-8")
     for route in [
         "Generic exact estimator",
         "Ordinary-MAP parent realization",
@@ -163,32 +163,41 @@ def main() -> int:
         "Implementation assessment",
     ]:
         if route not in route_text:
-            errors.append(f"r0.4 route status missing: {route}")
+            errors.append(f"r0.5 route status missing: {route}")
 
     required_repair_terms = {
         "notation": [
+            r"\Supp_{\rm parent\ fact}",
+            r"\Dom_m",
             r"\Dom_{\rm loc}(p)",
+            r"\ell_p^\star",
+            r"c_p",
             r"$F_g$",
-            r"h=(g,\theta)",
+            r"h_{\rm pre}=(g_{\rm resolved},\theta)",
             r"P_C",
             r"\widetilde d_p",
             r"\mathcal Q_{\rm FLT}^{0.1}",
         ],
         "definitions": [
             r"K_{\rm NOI}",
+            r"\PublicationDecided",
+            r"\Valid_{\rm signal}",
             r"producing\_map",
             r"operational-response",
             r"selector $P_C$",
             r"named-use policy",
         ],
         "equations": [
-            r"\operatorname{Cov}[P_CF_g(m)\mid h]",
+            r"\Supp_{\rm apply}(p)&=\{q:c_{pq}\ne0\}",
+            r"\operatorname{Cov}[P_CF_g(m)\mid h_{\rm pre}]",
             r"R_{\rm realized}^{[\delta,\sigma]}",
             r"pairwise deletion",
             r"fixed-dimensional",
             r"e_d$ is available only",
         ],
         "requirements": [
+            r"\Pred{025}",
+            r"optimality\_status",
             r"W_p=A_p^{\dagger}D_pA_p",
             r"B_{pb}",
             r"mandatory diagnostics",
@@ -205,7 +214,7 @@ def main() -> int:
     for source_name, terms in required_repair_terms.items():
         for term in terms:
             if term not in repair_sources[source_name]:
-                errors.append(f"r0.4 repair term missing from {source_name}: {term}")
+                errors.append(f"r0.5 closure term missing from {source_name}: {term}")
 
     pdf_report: dict[str, object] = {}
     for label, path in pdfs.items():

@@ -15,9 +15,12 @@
 \newcommand{\NotRequested}{\textsf{not requested}}
 \newcommand{\Requested}{\textsf{requested}}
 \newcommand{\Effective}{\textsf{effective}}
+\newcommand{\LearnedCandidate}{\textsf{learned candidate}}
 \newcommand{\Resolved}{\textsf{resolved}}
 \newcommand{\Applied}{\textsf{applied}}
 \newcommand{\Realized}{\textsf{realized}}
+\newcommand{\PublicationDecided}{\textsf{publication decided}}
+\newcommand{\Published}{\textsf{published}}
 \newcommand{\NotProduced}{\textsf{not produced}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
@@ -47,20 +50,25 @@ A matched-template output anchor is $p$, a parent-map row or pixel is $q$, and
 a separately indexed template anchor is $s$. The base-v0.1 anchor set
 $\Dom_p$ contains exactly one anchor at each parent ordinary-MAP pixel center,
 with the same WCS, frame, grid, shape, indexing, ordering, and pixel-center
-convention as the parent apart from exact support restriction. The parent
-signal sample is $m_q$. The expected parent response at row $q$ per unit
+convention as the parent apart from exact support restriction. The exact
+parent row-identity/fact domain is $\Supp_{\rm parent\ fact}$ and its numerical
+payload domain is
+$\Dom_m=\{q\in\Supp_{\rm parent\ fact}:\hbox{an admitted finite real parent
+signal payload exists}\}$. The sample $m_q$ exists only for $q\in\Dom_m$.
+The expected parent response at row $q$ per unit
 amplitude anchored at $p$ is $t_{pq}$; its complete parent-coordinate vector is
 $t_p^{\rm full}$. Before any local inversion or weight construction, the
 selected route declares the finite local operator domain $\Dom_{\rm loc}(p)$
-and its exact extraction $E_p$, so
-\[
- m_p=E_p m,\qquad t_p=E_p t_p^{\rm full}.
-\]
+and its exact template extraction $E_p$, so $t_p=E_pt_p^{\rm full}$.
 The scientific weighting $W_p$ is the complete coordinate-basis bilinear
 operator on those restricted vectors. Only after $W_p$, $d_p$, and the row are
-constructed is application support defined by the exact nonzero coefficients
-of that row. The fixed-state row functional is
-$L_{p,g}$, the template matrix whose column $s$ is $t_s^{\rm full}$ is $T$,
+constructed is the normalized local covector
+$\ell_p^\star=W_pt_p/d_p$ embedded into parent coordinates as
+$c_p=E_p^{\mathsf T}\ell_p^\star$. Application support is exactly
+$\Supp_{\rm apply}(p)=\{q:c_{pq}\ne0\}$. Exact zero is the canonical
+scientific representation; no numerical threshold defines support. The
+fixed-state row functional is $L_{p,g}u=c_p^{\mathsf T}u$, the template matrix
+whose column $s$ is $t_s^{\rm full}$ is $T$,
 and $R_{\rm fixed}(p,s)=L_{p,g}t_s^{\rm full}$.
 
 All scientific input and output vectors are real. A transform representation
@@ -76,8 +84,10 @@ Symbol & Normative meaning \\
 \endhead
 $p,q,s$ & Output anchor, parent row/pixel, and independently indexed template
 anchor. \\
-$m$, $m_q$, $m_p$ & Immutable admitted ordinary-MAP parent vector, one parent
-sample, and the complete local-domain restriction $E_pm$. \\
+$\Supp_{\rm parent\ fact}$, $\Dom_m$ & Exact parent row-identity/fact domain
+and its subset with admitted finite real signal payload. \\
+$m$, $m_q$ & Immutable admitted ordinary-MAP parent numerical payload and one
+sample, defined only on $\Dom_m$. \\
 $t_{pq}$, $t_p$ & Parent response per unit amplitude and its complete
 local-domain vector. \\
 $\Dom_{\rm loc}(p)$ & Predeclared parent-coordinate domain used to construct the
@@ -87,17 +97,19 @@ $E_p$ & Exact extraction/restriction from parent coordinates to
 $\Dom_{\rm loc}(p)$. \\
 $\Supp_{\rm apply}(p)$ & Parent payload coordinates whose final exact
 $L_{p,g}$ coefficients are nonzero. \\
+$\ell_p^\star$, $c_p$ & Normalized local covector $W_pt_p/d_p$ and its exact
+parent-coordinate embedding $E_p^{\mathsf T}\ell_p^\star$. \\
 $W_p$ & Frozen, self-adjoint, positive-semidefinite complete bilinear weight;
 all measure factors required by the scientific contraction are already in it. \\
-$n_p$ & Weighted template-parent contraction $t_p^{\mathsf T}W_pm_p$. \\
+$n_p$ & Sparse weighted parent contraction
+$\sum_{q\in\Supp_{\rm apply}(p)}c_{pq}d_pm_q$. \\
 $d_p$ & Weighted template self-contraction $t_p^{\mathsf T}W_pt_p$; exactly
 real and positive for an admitted anchor. \\
 $\widehat a_p$ & Published fixed-template amplitude $n_p/d_p$. \\
 $L_{p,g}$ & Exact fixed-state scientific row functional producing
 $\widehat a_p$. \\
-$F_g$ & Actual fixed-state numerical producing map from an admitted parent
-vector to the realized amplitude field within the complete frozen condition
-$h=(g,\theta)$; it need not be exactly linear. \\
+$F_g$ & Actual fixed-state numerical producing map from admitted parent
+payloads to the realized amplitude field; it need not be exactly linear. \\
 $T$ & Full template-response operator over the declared template-anchor domain. \\
 $R_{\rm fixed}(p,s)$ & Fixed-state response $L_{p,g}t_s^{\rm full}$. \\
 $R_{\rm FP}(p,s)$ & Full-procedure response when Learn--Resolve is rerun under
@@ -108,13 +120,16 @@ difference specification. Here $\delta$ is the step (zero for an exact
 directional derivative) and $\sigma$ is the derivative/sidedness scheme. A
 parent-independent matrix shorthand is allowed only after fixed-state
 linearity is established. \\
-$C_{\rm parent\mid h}$ & Authorized coordinate-basis parent covariance for one
-exact population conditional on the complete frozen condition $h$. \\
+$C_{\rm parent\mid h_{\rm pre}}$ & Authorized coordinate-basis parent
+covariance for one exact population conditional only on the pre-draw frozen
+condition $h_{\rm pre}$. \\
 $C_p$ & Local-domain covariance
-$E_pC_{\rm parent\mid h}E_p^{\mathsf T}$. \\
-$C_{\rm realized}^{(U1)}$ & Operational conditional stochastic covariance
-$\operatorname{Cov}[P_CF_g(m)\mid h]$ on one fixed predeclared finite numerical
-codomain for the exact U1 population. \\
+$E_pC_{\rm parent\mid h_{\rm pre}}E_p^{\mathsf T}$. \\
+$C_{U1,{\rm reference}}$ & Theorem/reference covariance
+$P_CLC_{\rm parent\mid h_{\rm pre}}L^{\mathsf T}P_C^{\mathsf T}$. \\
+$C_{U1,{\rm realized}}$ & Operational conditional stochastic covariance
+$\operatorname{Cov}[P_CF_g(m)\mid h_{\rm pre}]$ on one fixed predeclared finite
+numerical codomain for the exact U1 population. \\
 $P_C$ & Fixed, predeclared selector from the produced field to the numerical
 codomain on which a named covariance role is defined; it is independent of the
 random draw and production outcome. \\
@@ -124,13 +139,23 @@ denominator with exact identity; it is not a required product of a general
 $F_g$. \\
 $\theta$ & Frozen template/calibration state on which U1 conditional stochastic
 statements condition; variation over $\theta$ belongs to U2 rather than U1. \\
-$g$ & Immutable method/state generation, including requested, effective,
-resolved, applied, and realized identities. \\
-$h=(g,\theta)$ & Complete frozen condition for every fixed-state expectation,
-variance, reference covariance, and realized covariance statement. \\
-$\Valid$ & Anchors satisfying every parent, template, application-support,
-operator, normalization, unit, calibration, response, and selected-route
-predicate. \\
+$g_{\rm resolved}$ & Immutable method/state generation after Resolve and before
+the random draw or Apply outcome. \\
+$h_{\rm pre}=(g_{\rm resolved},\theta)$ & Pre-draw frozen condition containing
+only parent/class, template, local-domain/extraction, weight, support and
+missingness rules, subspace/rank/null, regularization, numerical profile,
+$P_C$, response-query domain, and failure semantics. Attempt, realization,
+publication, outcome, and observed-value facts are provenance, not U1
+conditioning variables. \\
+$\Valid_{\rm signal}$ & Anchors satisfying every predicate required to publish
+the amplitude signal. \\
+$\Valid_{\rm response}(r)$, $\Valid_{\rm covariance}(r)$ & Signal-valid
+subdomains on which named response or covariance role $r$ is valid. \\
+$\Valid_{\rm NOI}$, $\Valid_{\rm FRUIT\ handoff}$ & Signal-valid subdomain or
+bundle-level validity for the NOI child and FLT-to-FRUIT handoff roles. \\
+$\texttt{optimality\_status}$ & One of
+\texttt{established\_exact\_local\_GLS}, \texttt{not\_claimed}, or
+\texttt{unavailable}; title, filename, and method ID are never evidence. \\
 $\mathcal Q_{\rm FLT}^{0.1}$ & Finite FLT-owned state/response handoff query
 vocabulary for this contract version; queries outside it require a successor
 envelope. \\

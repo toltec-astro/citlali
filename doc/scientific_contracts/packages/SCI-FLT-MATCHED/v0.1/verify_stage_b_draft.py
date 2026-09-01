@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify the content-bound SCI-FLT-MATCHED Stage B r0.4 draft."""
+"""Verify the content-bound SCI-FLT-MATCHED Stage B r0.5 authority set."""
 
 from hashlib import sha256
 from pathlib import Path
@@ -15,17 +15,19 @@ def digest(path: Path) -> str:
 
 
 text = MANIFEST.read_text()
-assert "SCI-FLT-MATCHED_STAGE_B_DRAFT v0.1/r0.4" in text
+assert "SCI-FLT-MATCHED_STAGE_B_AUTHORITY v0.1/r0.5" in text
 rows = re.findall(
-    r"^\|\s*(\d+)\s*\|\s*`([^`]+)`\s*\|.*\|\s*`([0-9a-f]{64})`\s*\|$",
+    r"^\|\s*(\d+)\s*\|\s*`([^`]+)`\s*\|\s*`[^`]+`\s*\|\s*(\d+)\s*\|"
+    r"\s*`([0-9a-f]{64})`\s*\|.*\|$",
     text,
     re.MULTILINE,
 )
 assert rows, "manifest has no object rows"
-for expected, (number, relative, expected_hash) in enumerate(rows, start=1):
+for expected, (number, relative, expected_bytes, expected_hash) in enumerate(rows, start=1):
     assert int(number) == expected, f"row order mismatch {number}"
     path = ROOT / relative
     assert path.is_file(), f"missing {relative}"
+    assert path.stat().st_size == int(expected_bytes), f"byte-count mismatch {relative}"
     assert digest(path) == expected_hash, f"hash mismatch {relative}"
 
 sidecar = (ROOT / "STAGE_B_DRAFT_MANIFEST.sha256").read_text().strip()
@@ -37,5 +39,5 @@ assert digest(ROOT / "AUTHOR_PACKET_MANIFEST.md") == (
 print("sci_flt_matched_stage_b_draft=PASS")
 print(f"draft_objects={len(rows)}")
 print(f"draft_manifest_sha256={digest(MANIFEST)}")
-print("draft_revision=r0.4")
+print("draft_revision=r0.5")
 print("scientific_authority_frozen=false")
