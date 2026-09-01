@@ -1,8 +1,8 @@
 # Timestream Successor Identity Route 001
 
-Status: owner-steered Tier-2 component work; RTC identity component preserved
-locally, full Identity Route candidate not yet assembled, reviewed, integrated,
-activated, or pushed
+Status: owner-steered Tier-2 spine candidate assembled locally from the pushed
+RTC identity and AST/ALIGN components; pending exact-SHA independent review
+and owner disposition, not integrated or activated
 
 Work-order identity: `TIMESTREAM-SUCCESSOR-IDENTITY-ROUTE-001`
 
@@ -223,10 +223,11 @@ conformance, representative-environment, integration, activation, production,
 or push claim. A later complete typed topology must incorporate the owner
 dispositions above and undergo its own validation and exact-SHA review.
 
-The exact local RTC component checkpoint is
+The exact RTC component checkpoint is
 `b2ad615b8` (`Preserve RTC identity component checkpoint`), based literally on
-canonical `6d6e5d570e2a311687ede8e954c996046772af6f`. It remains unpushed and is
-not an integration or activation candidate.
+canonical `6d6e5d570e2a311687ede8e954c996046772af6f`. It is contained in the pushed
+feature branch through `4c06fe83d8c9627d87f97c6a77d6a4ca99156e5a` and is not an integration or
+activation candidate by itself.
 
 ## Bounded AST / ALIGN replay stage
 
@@ -276,5 +277,184 @@ Local supplemental validation:
 These results use the existing local AppleClang/cache-backed build and are not
 Spack/V2, representative-data, integration, activation, or production
 evidence. The representative identity acceptance executable was not run. The
-bounded AST/ALIGN replay stops for owner review at its externally reported
-exact candidate SHA.
+project owner accepted exact AST/ALIGN replay commit
+`4c06fe83d8c9627d87f97c6a77d6a4ca99156e5a` and pushed the feature branch at
+that exact ref. This accepted component state is the literal base for the next
+bounded stage; it is not integrated or activated.
+
+## Bounded route-context assembly stage
+
+Stage work-order identity:
+`TIMESTREAM-SUCCESSOR-IDENTITY-CONTEXT-ASSEMBLY-001`.
+
+Owner authorization: the project owner accepted exact component base
+`4c06fe83d8c9627d87f97c6a77d6a4ca99156e5a`, pushed that exact feature ref,
+and on 2026-09-01 explicitly authorized proceeding with the previously
+proposed bounded typed route-context assembly.
+
+Risk and WIP: Tier 2. This remains the one active Timestream Successor spine
+increment. It opens no scientific-module probe.
+
+Exact base, branch, and worktree:
+
+- base: `4c06fe83d8c9627d87f97c6a77d6a4ca99156e5a`;
+- base tree: `afb0714acea48cc3c477718a3ef44728e8926f9a`;
+- branch: `codex/timestream-successor-identity-route`;
+- worktree: `/private/tmp/citlali-timestream-successor-identity-route`; and
+- initial staged, unstaged, and untracked state: clean, with local branch and
+  `origin/codex/timestream-successor-identity-route` verified at the exact
+  base.
+
+Scientific and owner authority: the effective engineering, Timestream
+Successor, and review/conformance governance package; canonical ADRs 0017,
+0018, 0021, and 0023; the accepted Paired-D1 and AST/ALIGN component contracts;
+and the five owner decisions at the beginning of this record. ADR 0022's
+nonidentity occurrence-level RTC speed admission is not exercised: identity
+RTC's AST motion dependency is explicitly `not_applicable`.
+
+Owned products, interfaces, and lifecycle:
+
+- canonical Paired-D1 remains the sole observation/network owner of paired
+  signal values, detector and occurrence identities, native timing, and
+  integration support;
+- ALIGN owns a concrete immutable route-context wrapper that binds exact
+  Paired-D1 and AST network-view handles, requires identical observation and
+  participant scopes, and assigns each occurrence the midpoint of its
+  Paired-D1 integration interval without creating a common grid;
+- AST remains present as the coordinate/motion authority in the RTC input
+  context and on the RTC output domain; the identity operator declares AST
+  motion consumption `not_applicable` rather than deleting AST from the
+  interface;
+- RTC retains its existing Learn--Consider--Plan--Apply lifecycle and
+  factor-one, phase-zero, zero-copy realization unchanged;
+- application orchestration assembles an immutable MAP-facing context bound
+  to the exact RTC terminal, while CAL and PTC remain typed unavailable and
+  their use-specific VAL dispositions remain explicitly unevaluated because
+  those scientific products do not exist; and
+- MAP admission remains explicitly unavailable and performs no MAP action.
+
+Included paths and scope:
+
+- one concrete `timestream_identity_route_context` public interface and
+  implementation;
+- one backward-compatible optional exact-view field in the preserved RTC-only
+  request so the AST-bearing input context's admitted Paired-D1 view is the
+  exact Learn--Consider--Plan--Apply input;
+- one isolated-header translation unit and focused behavioral tests;
+- minimal standalone/Spack source and focused-test registration, including
+  reconciliation of the source-graph audit's stale pre-AST source count; and
+- this handoff record.
+
+The context stores handles and compact span bindings only. It owns no signal,
+coordinate, motion, response, uncertainty, or common-grid numerical plane.
+It reuses the exact Paired-D1 native timing handle already referenced by each
+AST network view. Because the accepted AST view maps at that timing handle's
+event time, route admission fails closed unless that event time is exactly the
+owner-selected midpoint of the paired occurrence interval.
+
+Explicit exclusions: changes to canonical Paired-D1; changes to AST raw or
+network-view algorithms; nonidentity RTC; filtering; factor selection;
+downsampling; response or kernel construction; real CAL, VAL, PTC, or MAP
+behavior; common-grid projection; route activation; CLI/YAML or persistent
+schema; `Engine`; representative-data execution; build-environment repair;
+status or integration-ledger closure; integration; push; cleanup; and generic
+stage/framework work.
+
+Focused gates:
+
+- isolated compilation of the new public header;
+- exact Paired-D1/AST handle, scope, participant, span, native-row, and
+  midpoint bindings fail closed on mismatch;
+- AST remains inspectable in the identity RTC input/output contexts while the
+  dependency disposition is exactly `not_applicable`;
+- identity execution preserves exact `x/r` bits, identities, validity,
+  causes, support, factor one, phase zero, and zero RTC-owned numerical bytes;
+- CAL, CAL-use VAL, PTC, PTC-use VAL, and MAP admission expose only typed
+  unavailable states and manufacture no products, units, responses, or
+  uncertainties; and
+- the MAP-facing bundle binds the exact completed RTC terminal and does not
+  perform or publish a MAP action.
+
+Broader gates: build the new focused target, canonical Paired-D1, AST/ALIGN,
+identity-RTC, `citlali_cli`, and explicitly `citlali_safety_test`; run all
+runnable CTests with the established disabled test reported; run the complete
+configuration preflight and the baseline-, build-, historical WP-7-, and
+validation-ledger suites; after committing, verify the CLI exact short SHA,
+ancestry, tree, changed paths, and clean worktree.
+
+Build and representative evidence: local AppleClang/cache-backed C++ results
+remain supplemental. This stage changes no active route or existing mode, so
+no affected-mode reduction is triggered. Owner-run Spack/V2 representative
+acceptance remains deliberately deferred until the full typed identity witness
+has an independently reviewed owner-disposed candidate.
+
+Review triggers and stop conditions: stop on any need to mutate Paired-D1 or
+AST algorithms, manufacture missing CAL/PTC/MAP facts, weaken exact midpoint
+or handle binding, introduce a common grid, grow `Engine`, activate a route,
+add persistent configuration/schema, repair the build environment, or make a
+new scientific choice. A contradictory or absent contract, moving base, or
+required sibling-repository change is also a stop.
+
+Integration, push, activation, cleanup, and production authority: none. A
+coherent local candidate commit is authorized. It must receive independent
+fresh-context read-only review at its exact full SHA and stop for owner
+disposition.
+
+## Route-context construction and local validation
+
+The bounded implementation adds one concrete route context and makes one
+backward-compatible exact-input extension to the preserved RTC-only request:
+
+- ALIGN admits only exact Paired-D1/AST scope, participant, timing-handle,
+  support, identity, and owner-selected midpoint agreement;
+- the RTC input context owns the exact admitted logical Paired-D1 view, always
+  carries the AST views, and declares only the identity operator's AST motion
+  dependency `not_applicable`;
+- the existing RTC-only lifecycle uses that exact view instance for evidence,
+  plan, apply, finalization, and terminal publication while retaining its old
+  self-admission behavior for existing callers;
+- the RTC output context binds the exact factor-one terminal to the same AST
+  views and exposes the native occurrence-to-source support association;
+- CAL and PTC product, unit/conditioning, response, and uncertainty states are
+  typed unavailable; their two VAL-owned use dispositions are distinct typed
+  objects and remain unevaluated because the required products do not exist;
+  and
+- the immutable bundle reaches the MAP-facing boundary with admission
+  unavailable and no MAP action or product.
+
+No Paired-D1 value, state, identity, support, or ownership implementation was
+changed. No AST raw or mapping algorithm, RTC numerical operator, ordinary
+route, configuration, `Engine`, CAL/PTC/MAP behavior, response, uncertainty,
+common grid, filter, factor, or downsampling implementation was added.
+
+The production source-graph audit had retained its pre-AST hard-coded count of
+11 even though the accepted AST replay had already raised both matching CMake
+graphs to 13 sources. Registering this stage raised both to 14; the bounded
+audit assertion now names that actual matching count. No build dependency,
+toolchain, environment, or source composition changed beyond the three
+already-declared production implementation translation units.
+
+Pre-candidate local AppleClang/cache-backed validation passed:
+
+- new isolated header and route-context target: 7/7 tests;
+- preserved identity component including exact-view compatibility: 16/16;
+- accepted AST/ALIGN component: 17/17;
+- canonical Paired-D1: 6/6;
+- `citlali_cli` and the explicitly requested `citlali_safety_test` built;
+- full CTest registration: 879 tests, 878 runnable tests passed, and the one
+  established disabled `MapFitterLifecycle.ExactProductSequence` remained
+  disabled;
+- configuration preflight: 130/130 tests, all four mode kits, 8/8 compact
+  compatibility cases, complete surface coverage, and every authority/boundary
+  audit passed;
+- baseline tools: 207 tests and 137 subtests passed;
+- build tools: 62/62 passed;
+- historical WP-7 plus provisional identity-record verifier: 33 tests and 11
+  subtests passed; and
+- validation ledger: 60 records valid; science-change ledger: 3 changes and 5
+  integration commits valid.
+
+These are supplemental local regression and contract-conformance results, not
+Spack/V2 representative-data, independent-review, integration, activation,
+release, or production evidence. The provisional representative acceptance
+runner was not run.

@@ -176,6 +176,7 @@ target_sources(
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/mapmaking/map.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/ast_scan_motion.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/ast_scan_motion_alignment.cpp"
+        "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/timestream_identity_route_context.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/output_root_lease.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/pipeline/reduction_restart_checkpoint.cpp"
         "${CITLALI_SOURCE_ROOT}/src/citlali/core/timestream/ptc/sensitivity.cpp"

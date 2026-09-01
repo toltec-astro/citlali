@@ -141,6 +141,35 @@ TEST(identity_rtc_only_route,
 }
 
 TEST(identity_rtc_only_route,
+     uses_an_exact_application_admitted_logical_view_when_supplied) {
+    const auto fixture = route_fixture();
+    auto request = route_request(fixture);
+    auto exact_view = pipeline::NativePairedReadoutView::admit(
+        fixture.native, request.logical_spans);
+    request.admitted_logical_input = exact_view;
+    pipeline::RtcOnlyProductSlot publication;
+
+    const auto outcome =
+        pipeline::run_identity_rtc_only(request, publication);
+
+    ASSERT_TRUE(outcome.complete());
+    EXPECT_EQ(outcome.published_product->timestream_handle()->input_handle(),
+              exact_view);
+
+    auto mismatch = route_request(fixture, 14);
+    mismatch.admitted_logical_input =
+        pipeline::NativePairedReadoutView::admit(
+            fixture.native, {{0, 10, 13}, {7, 70, 73}});
+    pipeline::RtcOnlyProductSlot mismatch_publication;
+    const auto rejected = pipeline::run_identity_rtc_only(
+        mismatch, mismatch_publication);
+    EXPECT_FALSE(rejected.complete());
+    EXPECT_EQ(rejected.terminal.failure_cause,
+              pipeline::RtcOnlyFailureCause::input_contract_rejected);
+    EXPECT_EQ(mismatch_publication.snapshot(), nullptr);
+}
+
+TEST(identity_rtc_only_route,
      partitioning_preserves_values_identities_causes_and_native_gaps) {
     const auto fixture = route_fixture();
     pipeline::RtcOnlyProductSlot split_publication;

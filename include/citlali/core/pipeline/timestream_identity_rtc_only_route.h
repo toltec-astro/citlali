@@ -245,6 +245,11 @@ struct RtcOnlyRouteRequest {
     std::vector<NativeOccurrenceSpan> logical_spans;
     std::vector<std::vector<NativeOccurrenceSpan>> engineering_partitions;
     RtcOnlyLogicalFinalization finalization;
+    // Optional exact application-admitted logical view. When supplied, the
+    // route verifies its parent and spans against the request and uses this
+    // exact instance for Learn--Consider--Plan--Apply. Existing RTC-only
+    // callers may continue to let the route admit its own view.
+    std::shared_ptr<const NativePairedReadoutView> admitted_logical_input;
 };
 
 struct RtcOnlyRouteOutcome {
@@ -274,8 +279,38 @@ inline RtcOnlyRouteOutcome run_identity_rtc_only(
         partition_views;
     try {
         ++terminal.diagnostics.native_admission_entry_count;
-        logical_view = NativePairedReadoutView::admit(
-            request.native_input, request.logical_spans);
+        if (request.admitted_logical_input) {
+            logical_view = request.admitted_logical_input;
+            auto requested_spans = request.logical_spans;
+            std::sort(requested_spans.begin(), requested_spans.end(),
+                      [](const auto &lhs, const auto &rhs) {
+                          return lhs.network_id < rhs.network_id;
+                      });
+            if (logical_view->parent_handle().get() !=
+                    request.native_input.get() ||
+                logical_view->spans().size() !=
+                    requested_spans.size()) {
+                throw std::invalid_argument(
+                    "admitted native RTC input differs from the route request");
+            }
+            for (std::size_t index = 0;
+                 index < requested_spans.size(); ++index) {
+                const auto &admitted = logical_view->spans()[index];
+                const auto &requested = requested_spans[index];
+                if (admitted.network_id != requested.network_id ||
+                    admitted.first_native_row !=
+                        requested.first_native_row ||
+                    admitted.past_last_native_row !=
+                        requested.past_last_native_row) {
+                    throw std::invalid_argument(
+                        "admitted native RTC spans differ from the route request");
+                }
+            }
+        }
+        else {
+            logical_view = NativePairedReadoutView::admit(
+                request.native_input, request.logical_spans);
+        }
         partition_views.reserve(request.engineering_partitions.size());
         for (const auto &partition : request.engineering_partitions) {
             partition_views.push_back(NativePairedReadoutView::admit(

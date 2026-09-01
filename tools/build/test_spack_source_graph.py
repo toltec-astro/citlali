@@ -26,7 +26,7 @@ class SpackSourceGraphTest(unittest.TestCase):
         )
 
         self.assertEqual(spack, established)
-        self.assertEqual(len(established), 11)
+        self.assertEqual(len(established), 14)
 
     def test_shared_test_graph_is_independent_of_top_level_entry_point(self) -> None:
         source_root = Path(__file__).resolve().parents[2]
