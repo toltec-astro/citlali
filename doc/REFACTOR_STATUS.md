@@ -1,5 +1,58 @@
 # Citlali Refactor Status
 
+## 2026-08-31 Timestream Successor Paired-D1 Canonical Admission
+
+The project owner accepted independently reviewed exact Paired-D1 candidate
+`30c42528f86bb9b7d8104bbda63834ce72595798` and then fast-forwarded and
+pushed canonical `codex/refactor-mainline` to that exact commit. Its sole
+parent is accepted governance-effectiveness record
+`77507836325eff9f469062d5884481ea37599594`; its exact tree is
+`bebf6688caa53da86a8f0fbf7784bd389449624d`. Local canonical, the local
+canonical branch ref, and cached `origin/codex/refactor-mainline` were all
+verified at `30c42528f...` after the push.
+
+The admitted four-path increment establishes only the observation/network
+owned, in-memory native paired-`x/r` D1 product contract and its isolated-header
+and behavioral tests. The product preserves exact producer-interface,
+Tune/mapping, parent-readout, pair-occurrence, detector-association,
+tone/channel, native timing/support, coordinate convention, availability,
+validity, cause, and lineage references on each originating network's native
+axis. It remains move-only and const-facing, stores payload and compact
+coordinate state at detector-occurrence-cell scale, and keeps occurrence,
+detector, mapping, and lineage facts on their natural axes.
+
+Three implementation/test blobs are recovered byte-for-byte from preserved
+source commit `d7d19bc90d7c994fa767ec2a9fd35e4d8599f032`. The focused CMake
+registration is recovered semantically with only the stale historical
+`WP7-REPLAY-002A` comment, target, and test-prefix names replaced by enduring
+Timestream Successor names. All six control/status paths introduced by
+historical closure commit `2f1d836c1db122d22015853582133abf3611bc30`
+remain historical evidence only and were not imported. Neither preserved
+source commit is an ancestor of `30c42528f...`.
+
+Independent fresh-context review passed exact candidate `30c42528f...` with no
+scientific/behavioral, architecture/ownership/anti-bloat, or
+repository/evidence findings. Exact-candidate validation passed 6/6 focused
+tests, all 838 runnable CTests with the one established disabled test
+unchanged, 130 configuration tests and every config-authority audit, all 207
+baseline-tool tests, all 62 build-tool tests, all 26 historical WP-7 tool
+tests, and both validation ledgers. The C++ results used the local AppleClang
+fallback dependency realization and are supplemental regression evidence, not
+a reproduction of the accepted Spack-backed V2 campaign. The reused external
+Kidscpp source snapshot was already dirty. A pre-existing test-harness omission
+also remains: `check` does not build `citlali_safety_test`; explicitly building
+that target before full CTest produced the complete passing result.
+
+Canonical admission does not establish a producer adapter, application-route
+wiring, persistent TOD, D2 plane, filter or factor selection, downsampling,
+RTC/PTC/CAL/AST processing, common-grid projection, activation, release,
+production use, or a new accepted end-to-end executable generation. No
+Timestream Successor spine increment or module probe is active. The next
+implementation or activation milestone requires a separate bounded proposal
+and explicit owner approval. The earlier governance-effectiveness section
+below remains the historical state at `775078363...`; this section supersedes
+its then-correct statement that Paired-D1 had not yet integrated.
+
 ## 2026-08-31 Timestream Successor Governance Effective On Canonical Lineage
 
 The project owner accepted exact Timestream Successor governance candidate
