@@ -31,6 +31,9 @@ Status: Stage A owner-review candidate
 | `checkpoint` | Complete causal state sufficient to continue the same generation exactly | map seed, QA archive, or diagnostic history |
 | `diagnostic_history` | Causally inert record used for review/validation | operational state, unless the stop/update rule consumes it |
 | `update_contribution` | Optional transition-associated object whose diagnostic, causal, equivalence, or scientific status is separately declared | accepted feedback state or permanently retained sky product by default |
+| `method_candidate` | Exact recurrence, model/operator, parameter/adaptation, and stopping definition being developed under one immutable candidate generation | qualified scientific method or production implementation |
+| `qualified_method` | Exact method candidate that passed one prospectively frozen profile/domain protocol and has an owner-approved qualification record | universal FRUIT authority outside its bound profile/domain |
+| `experimental_override` | Explicitly identified deviation used for research or an out-of-domain case | exact continuation of the qualified method or ordinary science-product claim |
 
 ## Exact-Restart Compatibility Classes
 
@@ -47,6 +50,10 @@ parent and ordered observation identity, route/grouping, model and selection
 state, forward projector, PTC/RTC/map policies and their causal learned state,
 support/validity policy, stop/terminal policy, and completed/next absolute
 iteration. This list is not final until the owner closes the scientific DAG.
+For a later qualified method it also includes the science-profile identity and
+every parameter-policy or automatic-adaptation state that can affect future
+output. Changing a tuned policy creates a new candidate or qualified-method
+generation; it cannot continue an earlier qualification identity silently.
 
 For the historical baseline, the restart boundary includes the selected
 complete predecessor route product separately from learned masks, detector

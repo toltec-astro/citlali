@@ -112,8 +112,13 @@ tolerance, and tradeoff decisions are recorded in
 [`COMPARATIVE_QUALITY_OBJECTIVE_GATE.md`](COMPARATIVE_QUALITY_OBJECTIVE_GATE.md).
 The owner has approved that framework by
 [`SCI-FRUIT-OD-001E-FRAMEWORK-2026-08-31`](SCIENTIFIC_OWNER_ODQ_001E_FRAMEWORK_APPROVAL_2026-08-31.md).
-Its exact benchmark, metrics, tolerances, and protocols remain open as
-ODQ-001F.
+ODQ-001F now asks whether those quantities are fixed universally before method
+development, frozen prospectively through a profile-qualified empirical lane,
+or deferred with intentional-new-method work to a successor. The candidate
+frame is
+[`ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md`](ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md).
+No disposition, empirical lane, profile, benchmark, metric, tolerance, or
+protocol is approved.
 
 ## Current Stage A Disposition
 

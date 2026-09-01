@@ -1,8 +1,9 @@
 # SCI-FRUIT v0.1 — Scientific-Owner Decision Ledger
 
 Status: Stage A owner-review queue; owner provisionally favors ODQ-001 Choice
-3 and has approved the ODQ-001E comparative-quality framework; exact
-parameterization and all other scientific questions remain open
+3, has approved the ODQ-001E comparative-quality framework, and has requested
+an empirical/science-profile-aware ODQ-001F parameterization; ODQ-001F and all
+other scientific questions remain open
 
 The questions are ordered by consequence. Later questions must not be answered
 in a way that silently fixes an earlier one.
@@ -11,7 +12,7 @@ in a way that silently fixes an earlier one.
 | --- | --- | --- | --- | --- |
 | `SCI-FRUIT-ODQ-001` | **Which treatment of the recovered historical recurrence should v0.1 adopt?** | (1) preserve the exact recovered recurrence; (2) adopt a mathematically equivalent reformulation only with the route-specific proof and validation stated in the equivalence analysis; (3) intentionally adopt a new recurrence with scientific motivation, expected differences, compatibility effects, and validation obligations. See `ODQ_001_RECURRENCE_DECISION_FRAME.md`. | Determines method/version compatibility and governs the four separate axes below. No route decision should precede it. | **open — owner provisionally favors Choice 3; no law approved; requires estimand and success criteria before closure** |
 | `SCI-FRUIT-ODQ-001E` | What governing comparison and acceptance framework defines a candidate recurrence as better than historical Citlali? | Exact historical control; separate scientific and computational vectors; protected scientific non-inferiority; validity/response/restart/failure gates; material improvement in an owner-prioritized scientific domain; no computational compensation without explicit trade approval. | Governs all candidate ranking and prevents anecdotes, speed, or one favorable metric from deciding scientific quality. | **decided — framework approved by `SCI-FRUIT-OD-001E-FRAMEWORK-2026-08-31`** |
-| `SCI-FRUIT-ODQ-001F` | What exact parameterization instantiates the approved ODQ-001E framework? | Bind the historical profile and comparison tuple; signal/nuisance families; validity domain; metric estimators; uncertainty; protected dimensions and tolerances; material-improvement threshold; performance protocol; failure/unavailable rules. | Must close before candidate recurrences can be ranked or an empirical comparison can be interpreted. | open — no exact benchmark profile, metric, tolerance, or protocol approved |
+| `SCI-FRUIT-ODQ-001F` | Which development and qualification architecture instantiates ODQ-001E without selecting a recurrence prematurely? | (A) complete a priori universal parameterization; (B) staged profile-qualified empirical development with disjoint development/qualification/challenge populations and prospective freezes; or (C) historical-compatibility v0.1 with intentional-new-method R&D deferred to a successor. See `ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md`. | Governs when metrics, thresholds, methods, policies, and populations freeze; what evidence may qualify a method; and whether a separately authorized empirical lane precedes method-specific Stage B. | **open — owner requested empirical/profile-aware parameterization; no disposition, lane, profile, benchmark, metric, threshold, protocol, or research authorization approved** |
 | `SCI-FRUIT-ODQ-001A` | What exact versioned feedback state `F_k` is carried from completed iteration `k` to `k+1`? | Approve or replace the historical-baseline relationship: one selected complete route map bundle is the numerical predecessor, while selection/support/projector/response/lineage complete the accepted state. | Defines the state space on which any update or equivalence statement is meaningful. | open; answer separately from update law |
 | `SCI-FRUIT-ODQ-001B` | What exact numerical transition `U_k` maps `(F_k,R_{k+1})` to `F_{k+1}`? | Preserve `U_hist`, approve a proved equivalent form, or approve a labeled new law. Ordinary `F+Delta F` is not a default. | Defines subtraction, residual-only exposure, bypass/rejoin, final response, and recurrence compatibility. | open; general law only |
 | `SCI-FRUIT-ODQ-001C` | What status does each per-iteration update contribution have? | None required; diagnostic difference; lineage/equivalence witness; causal update state; or separately admitted scientific product with its own calibration/response/uncertainty. | Prevents an increment from silently becoming an independently interpretable sky product. | open; no scientific increment status |
@@ -47,9 +48,13 @@ in a way that silently fixes an earlier one.
 | `SCI-FRUIT-DIR-2026-08-31-RECURRENCE-BASELINE` | Recover the exact historical recurrence; use it as the v0.1 reference; analyze additive equivalence; separate `001A`–`001D`; return preserve/equivalent/new choices | Supersedes the original ODQ-001 wording and establishes the required Stage A analysis | Does not select any choice, approve historical science, make addition normative, require permanent increment retention, admit a route, or launch Stage B |
 | `SCI-FRUIT-DIR-2026-08-31-CHOICE-3-STUDY` | Provisionally favor Choice 3 as the method-development category; seek an intentional new recurrence while retaining history as the mandatory compatibility reference and scientific control | Directs Stage A to define the scientific estimand, meaning of "better," candidate law, expected differences, compatibility treatment, and validation obligations | Does not close ODQ-001, approve a recurrence or additive law, answer `001A`–`001D`, admit a route, launch Stage B, or authorize implementation |
 | `SCI-FRUIT-DIR-2026-08-31-COMPARATIVE-QUALITY` | Define "better" by controlled comparison with exact historical Citlali; separate scientific quality from computational performance; include angular-scale recovery, per-mode flux recovery, atmosphere/other residual leakage, and flux convergence | Establishes the required comparison domains and creates the `ODQ-001E` metric/acceptance gate | Does not approve the benchmark profile, exact metric, threshold, tradeoff, recurrence, validation run, Stage B launch, or implementation |
+| `SCI-FRUIT-DIR-2026-08-31-EMPIRICAL-METHOD` | Parameterize the comparison framework for an iterative method whose recurrence or tuning may require hypothesis testing and may depend on the intended recovery objective, with bright OOF PSF recovery and faint extended SZE recovery as the motivating contrast | Requires Stage A to separate universal declaration/claim invariants from profile-qualified candidate method development and to return a controlled empirical architecture for owner review | Does not select ODQ-001F A/B/C, approve OOF/SZE profile authority, authorize a research lane or implementation, select a method/policy, admit a route, or launch Stage B |
 
 ## Walkthrough Rule
 
-Review one consequential question at a time. Record each answer in a separate
-dated owner-decision artifact, update this ledger without rewriting the earlier
-record, and propagate only the consequences actually authorized.
+Review one consequential question at a time. The immediate question is the
+three-disposition ODQ-001F architecture; its detailed candidate B safeguards
+permit an informed choice without approving candidate B by implication.
+Record each answer in a separate dated owner-decision artifact, update this
+ledger without rewriting the earlier record, and propagate only the
+consequences actually authorized.

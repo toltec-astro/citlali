@@ -135,6 +135,8 @@ REQUIRED_FILES = {
     "SCIENTIFIC_OWNER_COMPARATIVE_QUALITY_DIRECTION_2026-08-31.md",
     "COMPARATIVE_QUALITY_OBJECTIVE_GATE.md",
     "SCIENTIFIC_OWNER_ODQ_001E_FRAMEWORK_APPROVAL_2026-08-31.md",
+    "SCIENTIFIC_OWNER_EMPIRICAL_METHOD_DIRECTION_2026-08-31.md",
+    "ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md",
     "CROSSWALK.md",
     "AUTHOR_PACKET_MANIFEST.md",
     "AUTHOR_SUPERSESSION_COVER.md",
@@ -250,10 +252,17 @@ def verify_packet() -> None:
     quality = (ROOT / "COMPARATIVE_QUALITY_OBJECTIVE_GATE.md").read_text(
         encoding="utf-8"
     )
+    empirical_direction = (
+        ROOT / "SCIENTIFIC_OWNER_EMPIRICAL_METHOD_DIRECTION_2026-08-31.md"
+    ).read_text(encoding="utf-8")
+    odq001f = (
+        ROOT / "ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md"
+    ).read_text(encoding="utf-8")
 
     required_tokens = {
         readme: [
             "recovery-first Stage A owner-review candidate; no Stage B launch",
+            "v0.1-stage-a-r0.6",
             LAUNCH,
             PROVISIONAL,
             "every numerical route is",
@@ -320,6 +329,30 @@ def verify_packet() -> None:
             "Owner-Approved Comparison And Acceptance Logic",
             "No scientific-versus-resource trade is admissible unless separately approved",
         ],
+        empirical_direction: [
+            "hypothesis testing and tuning",
+            "PSF recovery for an OOF observation",
+            "faint extended SZE signal",
+            "not approval of an empirical",
+            "assistant-authored material",
+        ],
+        odq001f: [
+            "Disposition A — Complete A Priori Universal Parameterization",
+            "Disposition B — Profile-Qualified Staged Empirical Development",
+            "Disposition C — Historical-Compatibility v0.1 With Separate Successor R&D",
+            "Candidate-Neutral Invariants",
+            "Development population",
+            "Qualification population",
+            "Challenge population",
+            "Bounded automatic adaptation",
+            "Candidate Metric Skeleton",
+            "Candidate Profile Priority Structure",
+            "Small `d` is not evidence of small `e`",
+            "Staged Threshold Freeze",
+            "K=(M,P,S,Q,D,H,Pi,E)",
+            "ODQ-001F remains open and no empirical",
+            "lane, method study, or implementation is authorized",
+        ],
     }
     for body, tokens in required_tokens.items():
         for token in tokens:
@@ -362,9 +395,9 @@ def main() -> None:
     print(
         "PASS: exact launch/provisional/historical sources, byte-identical "
         "historical recurrence evidence, revised three-choice ODQ-001, "
-        "owner-approved comparative-quality framework, bounded edits, four "
-        "unavailable candidate routes, Stage A firewall, placeholders, and "
-        "local links"
+        "owner-approved comparative-quality framework, three-disposition "
+        "ODQ-001F empirical-development frame, bounded edits, four unavailable "
+        "candidate routes, Stage A firewall, placeholders, and local links"
     )
 
 

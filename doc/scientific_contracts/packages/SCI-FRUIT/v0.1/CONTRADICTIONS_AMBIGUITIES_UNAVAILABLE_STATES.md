@@ -23,7 +23,11 @@ Status: Stage A recovery record
 | `FRUIT-GAP-017` | A stable update-contribution identity may be useful for lineage, diagnostics, or restart | Identity does not establish scientific calibration or causal necessity, and does not imply unbounded retention | Decide ODQ-001C and ODQ-001D separately |
 | `FRUIT-GAP-018` | Literal sample-array add-back could be fused or moved to map space | Execution form may vary, but model removal, residual-only exposure, bypass, rejoin order, support, and next-map response are scientific semantics | ODQ-001B/004; require equivalence for alternative implementation |
 | `FRUIT-GAP-019` | Existing Citlali appears anecdotally strong and is the required comparison control | “Existing Citlali” is not a reproducible benchmark until recurrence, route, policy, data, stopping, build/hardware where relevant, and comparison protocol are bound | ODQ-001F; bind exact historical benchmark profile |
-| `FRUIT-GAP-020` | Scientific quality spans recoverable angular scale, mode flux, leakage, convergence, noise, response, and uncertainty | These quantities can disagree; the constrained multi-objective framework and separation from computational performance are approved, but exact metrics, protected dimensions, tolerances, and improvement thresholds are not | ODQ-001E decided; close ODQ-001F parameterization |
+| `FRUIT-GAP-020` | Scientific quality spans recoverable angular scale, mode flux, leakage, convergence, noise, response, and uncertainty | These quantities can disagree; the constrained multi-objective framework and separation from computational performance are approved, but exact metrics, protected dimensions, tolerances, and improvement thresholds are not | ODQ-001E decided; select an ODQ-001F development/qualification architecture before fixing its remaining parameters |
+| `FRUIT-GAP-021` | A contract-first sequence would require recurrence and thresholds before empirical method behavior is known | FRUIT is an iterative separation problem whose effective recurrence, tuning, and stopping policy may depend on the scientific recovery objective; choosing them a priori could freeze history or an attractive but unqualified replacement | ODQ-001F A/B/C; no empirical lane exists until owner approval |
+| `FRUIT-GAP-022` | Bright compact PSF recovery and faint extended-emission recovery motivate different objectives | The examples do not prove that different methods or profiles are required, and FRUIT cannot assume OOF or SZE downstream inference authority | Test common-method hypotheses before profile/method proliferation; approve any FRUIT recovery-profile identity separately |
+| `FRUIT-GAP-023` | Some numerical thresholds may not be scientifically defensible before development evidence exists | Setting them after viewing qualification outcomes would move the goalposts, while inventing them now would manufacture authority | Freeze metric equations and split rules before development; if disposition B is approved, freeze thresholds and exact qualification data before opening the holdout |
+| `FRUIT-GAP-024` | Manual or data-adaptive tuning may improve individual outputs | Unbounded tuning can leak desired answers into the method and defeats replay, qualification identity, and domain claims | Separate offline profile tuning, bounded deterministic adaptation, and explicitly experimental expert override |
 
 ## Typed Unavailable States
 
@@ -44,5 +48,7 @@ The future contract should preserve at least these machine-auditable reasons:
 - `PROVISIONAL_ADJACENT_AUTHORITY`
 - `REQUIRES_SUCCESSOR_GENERATION`
 - `REQUIRES_SEPARATE_REPLAY_METHOD`
+- `UNAVAILABLE_QUALIFIED_PROFILE`
+- `EXPERIMENTAL_OVERRIDE_REQUIRED`
 
 Unavailable is not zero, false, empty, converged, or a license to fall back.

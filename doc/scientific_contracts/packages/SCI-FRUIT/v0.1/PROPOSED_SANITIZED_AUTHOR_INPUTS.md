@@ -18,19 +18,24 @@ content-bound versions of:
    reformulated equivalently, or an intentional-new-method rationale and
    compatibility statement;
 5. the owner-approved comparative-quality framework and a future
-   owner-approved ODQ-001F parameterization defining the exact historical
-   control, metric estimators, protected dimensions, tolerances, improvement
-   threshold, validity domain, uncertainty, performance protocol, and failure
-   rules without implementation or empirical-result leakage;
-6. exact frozen SCI-MAP and SCI-JINC boundary extracts for each owner-admitted
+   owner-approved ODQ-001F architecture defining when the exact historical
+   control, profile, metric estimators, protected dimensions, tolerances,
+   improvement threshold, validity domain, uncertainty, population split,
+   performance protocol, and failure rules freeze;
+6. if an empirical lane is approved, an owner-approved sanitized qualified-
+   method record binding `K=(M,P,S,Q,D,H,Pi,E)`, its scientific conclusions,
+   compatibility, limitations, and forbidden claims without prototype code,
+   tuning history, failed candidates, raw evidence, or implementation-derived
+   prescriptions;
+7. exact frozen SCI-MAP and SCI-JINC boundary extracts for each owner-admitted
    route, without their implementation/audit history;
-7. exact frozen SCI-PTC ownership/admission boundary required by an admitted
+8. exact frozen SCI-PTC ownership/admission boundary required by an admitted
    recurrence;
-8. the approved SCI-NOI fixed-state/successor/replay boundary;
-9. the exact SCI-FLT-FIXED boundary only if that route is owner-admitted;
-10. a future exact approved FLT-MATCHED boundary only if that package first gains
+9. the approved SCI-NOI fixed-state/successor/replay boundary;
+10. the exact SCI-FLT-FIXED boundary only if that route is owner-admitted;
+11. a future exact approved FLT-MATCHED boundary only if that package first gains
    its own authority and the FRUIT owner then admits the route; and
-11. a supersession cover stating that packet-local owner choices govern any
+12. a supersession cover stating that packet-local owner choices govern any
    conflict with older scope or coordination records.
 
 Every admitted object must have an exact path/ref, byte size, SHA-256, role,

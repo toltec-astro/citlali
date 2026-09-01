@@ -4,7 +4,7 @@ Status: **Stage A owner-review candidate; not owner-approved**
 
 Scientific owner: Grant Wilson
 
-Version/date: `v0.1-stage-a-r0.5`, `2026-08-31`
+Version/date: `v0.1-stage-a-r0.6`, `2026-08-31`
 
 Approved source identifier: **none**
 
@@ -26,7 +26,8 @@ This package follows the
   choice relative to the recovered historical baseline, route admission,
   projection/bypass semantics, state/generation, update-contribution status,
   bounded persistence, support, stopping, response, uncertainty, checkpoint
-  completeness, and terminal-product decisions
+  completeness, terminal-product decisions, and the development/qualification
+  architecture by which an empirical recurrence can earn scientific authority
 - Owner-approved author references: none yet
 - Author-packet exclusions: all implementation-informed and provisional
   material named above
@@ -120,11 +121,14 @@ response identity; SCI-FRUIT does not perform their inference or calibration.
 2. Will v0.1 preserve the recovered historical recurrence, adopt a proved and
    validated equivalent reformulation, or intentionally adopt a new recurrence?
    Until that choice, use only `F_{k+1}=U_k(F_k,R_{k+1})`.
-3. Relative to which exact historical benchmark profile and using which
-   scientific-quality and computational-performance vectors will a candidate
-   recurrence be judged? Scientific quality must distinguish angular-scale
-   recovery, per-mode flux recovery, nuisance leakage, flux convergence, noise,
-   response, and uncertainty rather than collapse them by default.
+3. Which development and qualification architecture instantiates the approved
+   comparison gate without choosing a recurrence prematurely? If empirical
+   development is selected, which science profiles, validity domains, truth
+   and null constructions, metrics, population splits, tuning/adaptation
+   classes, prospective threshold-freeze rules, and out-of-domain actions
+   apply? Scientific quality must distinguish angular-scale recovery, per-mode
+   flux recovery, nuisance leakage, flux convergence, noise, response, and
+   uncertainty rather than collapse them by default.
 4. Does a per-iteration update contribution exist, what scientific or
    diagnostic status does it have, and is it causal for later output?
 5. What bounded persistence, compaction, reconstruction, lineage, and
@@ -152,8 +156,9 @@ response identity; SCI-FRUIT does not perform their inference or calibration.
 
 ## 8. Non-Goals
 
-This package does not implement, repair, optimize, validate, calibrate, run, or
-authorize FRUIT. It does not change MAP, JINC, PTC, NOI, FLT, VAL, RTC, CAL,
+This package does not implement, prototype, tune, repair, optimize, qualify,
+validate, calibrate, run, or authorize FRUIT. It does not change MAP, JINC,
+PTC, NOI, FLT, VAL, RTC, CAL,
 ALIGN, AST, BEAM, source-fitting, Pointing, or OOF authority. It does not approve
 the provisional matched-filter study, define a source catalog, or establish a
 universal stopping threshold, photometric correction, performance level, or
@@ -184,8 +189,20 @@ and benchmark profile remain open. The owner has approved the
 governing constrained multi-objective framework: protected scientific
 non-inferiority plus material improvement in an owner-prioritized scientific
 domain, with computational performance separate absent later explicit trade
-approval. Exact benchmark and metric parameterization remain open under
-ODQ-001F and are ordered in
+approval.
+
+The owner subsequently identified that FRUIT method efficacy and tuning may
+require empirical hypothesis testing and may differ between scientific
+recovery objectives, using bright OOF PSF recovery and faint extended SZE
+recovery as the motivating contrast. Stage A therefore reframes ODQ-001F as a
+choice among an a priori universal protocol, a staged profile-qualified
+empirical-development architecture, and historical-only v0.1 with successor
+R&D. The staged candidate freezes metric equations and population rules before
+development, then freezes the exact method, policy, thresholds, and untouched
+qualification population before qualification. It does not select a
+disposition, approve either motivating profile, authorize research, or transfer
+OOF/SZE inference into FRUIT. ODQ-001F and its remaining exact choices are
+ordered in
 [`SCIENTIFIC_OWNER_DECISION_LEDGER.md`](SCIENTIFIC_OWNER_DECISION_LEDGER.md).
 
 ## 11. Independence Statement

@@ -2,7 +2,7 @@
 
 Status: **recovery-first Stage A owner-review candidate; no Stage B launch**
 
-Version: `v0.1-stage-a-r0.5`
+Version: `v0.1-stage-a-r0.6`
 
 Launch base: Git commit
 `7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`
@@ -76,6 +76,8 @@ missing scientific contract.
 | [`SCIENTIFIC_OWNER_COMPARATIVE_QUALITY_DIRECTION_2026-08-31.md`](SCIENTIFIC_OWNER_COMPARATIVE_QUALITY_DIRECTION_2026-08-31.md) | owner direction to define better by paired scientific and computational comparison with exact historical Citlali |
 | [`COMPARATIVE_QUALITY_OBJECTIVE_GATE.md`](COMPARATIVE_QUALITY_OBJECTIVE_GATE.md) | owner-approved comparison framework; exact ODQ-001F parameterization remains open |
 | [`SCIENTIFIC_OWNER_ODQ_001E_FRAMEWORK_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_001E_FRAMEWORK_APPROVAL_2026-08-31.md) | owner approval of the comparative-quality framework; exact parameterization remains open |
+| [`SCIENTIFIC_OWNER_EMPIRICAL_METHOD_DIRECTION_2026-08-31.md`](SCIENTIFIC_OWNER_EMPIRICAL_METHOD_DIRECTION_2026-08-31.md) | owner direction to parameterize an empirical, potentially science-profile-dependent method-selection process; not framework approval |
+| [`ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md`](ODQ_001F_PROFILE_QUALIFIED_EMPIRICAL_DEVELOPMENT_FRAME.md) | three-disposition ODQ-001F owner-review frame and fully bounded profile-qualified empirical-development candidate |
 | [`CROSSWALK.md`](CROSSWALK.md) | requested deliverable and source crosswalk |
 
 `AUTHOR_PACKET_MANIFEST.md`, `AUTHOR_SUPERSESSION_COVER.md`, and
@@ -132,6 +134,19 @@ only; they contain no normative science and no rendered contract.
     failure gates, and material improvement in an owner-prioritized scientific
     domain. Computational performance remains separate unless an explicit
     trade is later approved. Exact parameterization remains ODQ-001F.
+13. The owner identifies a process limitation: recurrence efficacy and tuning
+    may require empirical hypothesis testing and may depend on the recovery
+    objective, with bright compact PSF recovery and faint extended-emission
+    recovery as the motivating contrast.
+14. Stage A therefore returns three ODQ-001F dispositions: complete universal
+    parameterization before development; a profile-qualified staged empirical
+    lane; or historical-compatibility v0.1 with new-method research deferred to
+    a successor. No disposition is selected.
+15. The fully specified staged candidate separates development, untouched
+    qualification, and challenge populations; prospectively freezes method,
+    policy, metrics, thresholds, and decision rules before qualification; and
+    keeps expert overrides experimental. Motivating OOF and SZE uses do not
+    grant FRUIT authority over downstream OOF or SZE inference.
 
 ## Stop Rule
 
@@ -146,8 +161,11 @@ reformulation, or intentionally adopt and validate a new recurrence. The owner
 provisionally favors the third treatment, but ODQ-001 remains open until its
 scientific objective, candidate law, differences, compatibility treatment, and
 validation obligations are explicit. The comparative-quality framework is
-approved, but ODQ-001F parameterization must close before candidate recurrences
-are ranked.
+approved. ODQ-001F now presents three development/qualification architectures,
+including a fully bounded profile-qualified empirical candidate, but the owner
+has not selected one or authorized a method-development lane. Candidate
+exploration, prospective threshold freezing, held-out qualification, and
+scientific ranking must not be conflated.
 
 ## Explicit Nonclaims
 

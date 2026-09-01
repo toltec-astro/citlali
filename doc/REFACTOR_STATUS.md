@@ -117,11 +117,26 @@ non-inferiority constraints; require validity, response/uncertainty honesty,
 exact-restart, and failure-disclosure gates; require material improvement in at
 least one owner-prioritized scientific domain to justify an incompatible new
 recurrence; and report computational performance separately unless an explicit
-trade is later approved. ODQ-001F remains open for the exact benchmark, signal
-and nuisance families, metric estimators, uncertainties, protected dimensions,
-tolerances, material-improvement threshold, performance protocol, and failure
-rules. No recurrence, Stage B, implementation, benchmark execution, validation,
-production, or Unity activity is authorized by this framework approval.
+trade is later approved.
+
+The owner then identified that an iterative FRUIT method cannot be selected by
+an engineering-conformance-first sequence alone: hypothesis testing and tuning
+may be required, and bright compact PSF recovery for OOF and faint extended SZE
+recovery motivate potentially different policies or methods. Stage A r0.6
+therefore reframes ODQ-001F as three owner choices: complete universal
+parameterization before development; a staged profile-qualified empirical
+method-development/qualification lane; or historical-compatibility v0.1 with
+new-method R&D deferred to a successor. The fully bounded staged candidate
+separates development, untouched qualification, and challenge populations;
+permits only frozen offline tuning, qualified deterministic bounded adaptation,
+or explicitly experimental expert override; freezes metrics/split rules before
+development and the exact method/threshold/protocol before qualification; and
+admits only a sanitized owner-approved qualified-method record to later
+method-specific Stage B authorship. FRUIT recovery profiles do not acquire OOF
+or SZE inference authority. ODQ-001F remains open: no disposition, profile,
+benchmark, metric, threshold, recurrence, research lane, Stage B,
+implementation, benchmark execution, qualification, validation, production,
+or Unity activity is authorized.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

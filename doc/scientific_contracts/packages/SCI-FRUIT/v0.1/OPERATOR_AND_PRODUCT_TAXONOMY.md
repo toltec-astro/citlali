@@ -27,6 +27,13 @@ Status: Stage A vocabulary candidate; no equation or method is approved
 | Replay uncertainty | Separate member-specific partial/complete FRUIT replay method | Fixed-state conditional uncertainty |
 | Diagnostic | Causally inert measurement reported for review | Stop criterion unless explicitly admitted |
 | Checkpoint | Complete causal state for exact continuation | Map seed, QA archive, or diagnostic bundle |
+| Science profile | Versioned FRUIT recovery objective, metric priorities, validity domain, and qualified claim boundary | Observation-mode name alone, downstream OOF/SZE inference, or permission for ad hoc tuning |
+| Parameter policy | Exact fixed parameters or deterministic bounded diagnostic-to-parameter mapping | Unrecorded manual choices or implementation defaults |
+| Qualification identity `K` | Exact `(method, parameter policy, stopping policy, profile, domain, historical control, protocol, evidence)` tuple | Universal statement that “FRUIT is qualified” |
+| Development population | Identified inputs permitted to influence hypotheses, tuning, adaptation, and prospective thresholds | Untouched qualification evidence |
+| Qualification population | Held-out population opened only after the complete method and decision protocol freeze | Additional development data after exposure |
+| Challenge population | Predeclared edge/near-boundary population used under a frozen characterization or decision role | Post-hoc replacement for failed qualification cases |
+| Experimental override product | Realized output with explicit nonstandard method/policy identity and downgraded claim class | Ordinary qualified product or silent nearest-profile fallback |
 
 ## Naming Rule
 
