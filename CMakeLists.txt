@@ -113,6 +113,19 @@ if (CITLALI_BUILD_CLI)
 endif()
 
 if (CITLALI_STANDALONE)
+    # Non-default, owner-run representative-data acceptance for the bounded
+    # Timestream Successor identity route.  This target is deliberately
+    # excluded from ordinary builds and does not activate an application path.
+    add_executable(citlali_timestream_successor_identity_acceptance
+        EXCLUDE_FROM_ALL
+        "tools/timestream_successor/identity_route_acceptance.cpp")
+    target_link_libraries(
+        citlali_timestream_successor_identity_acceptance
+        PRIVATE citlali::citlali)
+    target_include_directories(
+        citlali_timestream_successor_identity_acceptance
+        PRIVATE "include")
+
     # Tests, examples, and docs
     option(CITLALI_BUILD_TESTS "Build tests" ON)
     if (CITLALI_BUILD_TESTS)

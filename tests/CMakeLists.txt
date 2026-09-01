@@ -204,6 +204,42 @@ gtest_discover_tests(
         TEST_PREFIX "citlali::timestream_successor::native_paired_readout::"
         DISCOVERY_MODE PRE_TEST
 )
+
+# One unactivated vertical witness: atomic KIDs ingress, canonical Paired-D1,
+# identity RTC Learn--Consider--Plan--Apply, and an in-memory RTC-only
+# terminal. It intentionally has no CLI, YAML, ALIGN, AST, CAL, PTC, or MAP
+# registration.
+add_executable(
+    citlali_timestream_successor_identity_test EXCLUDE_FROM_ALL
+    timestream_native_paired_readout_kids_adapter_header.cpp
+    timestream_identity_rtc_header.cpp
+    timestream_identity_rtc_only_route_header.cpp
+    test_timestream_native_paired_readout_kids_adapter.cpp
+    test_timestream_identity_rtc.cpp
+    test_timestream_identity_rtc_only_route.cpp
+)
+set_source_files_properties(
+    timestream_native_paired_readout_kids_adapter_header.cpp
+    timestream_identity_rtc_header.cpp
+    timestream_identity_rtc_only_route_header.cpp
+    PROPERTIES SKIP_PRECOMPILE_HEADERS ON
+)
+set_target_properties(citlali_timestream_successor_identity_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+target_link_libraries(citlali_timestream_successor_identity_test
+    PRIVATE
+        citlali::citlali
+        GTest::gtest_main
+)
+add_dependencies(check citlali_timestream_successor_identity_test)
+gtest_discover_tests(
+    citlali_timestream_successor_identity_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        TEST_PREFIX "citlali::timestream_successor::identity::"
+        DISCOVERY_MODE PRE_TEST
+)
 set_target_properties(citlali_science_map_truth_test
     PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"

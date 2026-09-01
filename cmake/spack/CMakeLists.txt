@@ -236,6 +236,25 @@ if(CITLALI_BUILD_CLI)
     install(TARGETS citlali_cli RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
 endif()
 
+# Non-default, owner-run representative-data acceptance for the bounded
+# Timestream Successor identity route.  It is available in the authoritative
+# Spack build but excluded from ordinary builds and installation.
+add_executable(citlali_timestream_successor_identity_acceptance
+    EXCLUDE_FROM_ALL
+    "${CITLALI_SOURCE_ROOT}/tools/timestream_successor/identity_route_acceptance.cpp"
+)
+tula_cmake_target_defaults(
+    TARGET citlali_timestream_successor_identity_acceptance
+)
+target_link_libraries(
+    citlali_timestream_successor_identity_acceptance
+    PRIVATE citlali::citlali
+)
+add_dependencies(
+    citlali_timestream_successor_identity_acceptance
+    gitversion_header_citlali
+)
+
 option(CITLALI_BUILD_TESTS "Build the full Citlali test suite" OFF)
 if(CITLALI_BUILD_TESTS)
     find_package(GTest CONFIG REQUIRED)
