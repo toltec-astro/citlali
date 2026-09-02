@@ -6,6 +6,8 @@ from __future__ import annotations
 import argparse
 import copy
 import csv
+import hashlib
+import json
 import math
 from pathlib import Path
 
@@ -67,6 +69,24 @@ def rms(values: np.ndarray) -> float:
     return float(np.sqrt(np.mean(np.square(values[finite]))))
 
 
+def file_record(path: Path, relative_to: Path | None = None) -> dict:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    recorded_path = path
+    if relative_to is not None:
+        try:
+            recorded_path = path.relative_to(relative_to)
+        except ValueError:
+            pass
+    return {
+        "path": str(recorded_path),
+        "sha256": digest.hexdigest(),
+        "size_bytes": path.stat().st_size,
+    }
+
+
 def kernel_projection_metrics(
     transfer: np.ndarray, kernel: np.ndarray, truth: float,
 ) -> dict[str, float]:
@@ -91,12 +111,33 @@ def kernel_projection_metrics(
 
 
 def gaussian_fit(
-    values: np.ndarray, pixel_size_arcsec: float,
+    values: np.ndarray,
+    pixel_size_arcsec: float,
+    expected_center_arcsec: tuple[float, float] | None = None,
+    search_radius_arcsec: float = 25.0,
 ) -> dict[str, float]:
     finite = np.isfinite(values)
     if not finite.any():
         raise ValueError("cannot fit an entirely non-finite map")
-    peak_flat = np.nanargmax(np.where(finite, values, np.nan))
+    map_yy, map_xx = np.indices(values.shape, dtype=float)
+    map_xx = (
+        map_xx - (values.shape[1] - 1) / 2.0
+    ) * pixel_size_arcsec
+    map_yy = (
+        map_yy - (values.shape[0] - 1) / 2.0
+    ) * pixel_size_arcsec
+    peak_candidates = finite
+    if expected_center_arcsec is not None:
+        expected_x, expected_y = expected_center_arcsec
+        peak_candidates = peak_candidates & (
+            np.hypot(map_xx - expected_x, map_yy - expected_y)
+            <= search_radius_arcsec
+        )
+        if not peak_candidates.any():
+            raise ValueError("no finite samples near the expected source center")
+    peak_flat = np.nanargmax(
+        np.where(peak_candidates, values, np.nan)
+    )
     peak_y, peak_x = np.unravel_index(peak_flat, values.shape)
     radius_px = max(4, int(math.ceil(25.0 / pixel_size_arcsec)))
     y0, y1 = max(0, peak_y - radius_px), min(values.shape[0], peak_y + radius_px + 1)
@@ -109,6 +150,19 @@ def gaussian_fit(
     background = float(np.nanmedian(cutout))
     amplitude = float(np.nanmax(cutout) - background)
     initial_sigma = max(2.0 * pixel_size_arcsec, 3.0)
+    mean_bounds = {}
+    if expected_center_arcsec is not None:
+        expected_x, expected_y = expected_center_arcsec
+        mean_bounds = {
+            "x_mean": (
+                expected_x - search_radius_arcsec,
+                expected_x + search_radius_arcsec,
+            ),
+            "y_mean": (
+                expected_y - search_radius_arcsec,
+                expected_y + search_radius_arcsec,
+            ),
+        }
     model = models.Const2D(amplitude=background) + models.Gaussian2D(
         amplitude=max(amplitude, np.finfo(float).eps),
         x_mean=float(xx[peak_y - y0, peak_x - x0]),
@@ -120,6 +174,7 @@ def gaussian_fit(
             "amplitude": (0.0, None),
             "x_stddev": (pixel_size_arcsec / 4.0, 30.0),
             "y_stddev": (pixel_size_arcsec / 4.0, 30.0),
+            **mean_bounds,
         },
     )
     fitted = fitting.TRFLSQFitter()(
@@ -304,8 +359,20 @@ def comparison_rows(
             )
             truth = float(amplitudes[array])
             transfer = injected_map - control_map
-            transfer_fit = gaussian_fit(transfer, pixel_size)
-            kernel_fit = gaussian_fit(injected_kernel, pixel_size)
+            # The synthetic source is defined at the pointing-map center.  A
+            # global peak search can instead lock onto an unrelated paired-map
+            # subtraction artifact, so make that known test identity explicit.
+            expected_center = (0.0, 0.0)
+            transfer_fit = gaussian_fit(
+                transfer,
+                pixel_size,
+                expected_center_arcsec=expected_center,
+            )
+            kernel_fit = gaussian_fit(
+                injected_kernel,
+                pixel_size,
+                expected_center_arcsec=expected_center,
+            )
             kernel_projection = kernel_projection_metrics(
                 transfer, injected_kernel, truth,
             )
@@ -398,6 +465,206 @@ def comparison_rows(
     return rows
 
 
+def write_plot(
+    rows: list[dict[str, float | int | str]], path: Path,
+) -> None:
+    import matplotlib.pyplot as plt
+
+    colors = {
+        "a1100": "#1f77b4",
+        "a1400": "#ff7f0e",
+        "a2000": "#2ca02c",
+    }
+    figure, axes = plt.subplots(2, 2, figsize=(10.5, 7.5), sharex=True)
+    for array in ARRAYS:
+        selected = sorted(
+            (row for row in rows if row["array"] == array),
+            key=lambda row: int(row["iteration"]),
+        )
+        iterations = [int(row["iteration"]) for row in selected]
+        color = colors[array]
+        axes[0, 0].plot(
+            iterations,
+            [
+                float(row["kernel_normalized_amplitude_recovery_fraction"])
+                for row in selected
+            ],
+            marker="o",
+            color=color,
+            label=f"{array} Gaussian",
+        )
+        axes[0, 0].plot(
+            iterations,
+            [
+                float(row["kernel_projection_recovery_fraction"])
+                for row in selected
+            ],
+            marker="s",
+            linestyle="--",
+            color=color,
+            label=f"{array} projection",
+        )
+        axes[0, 1].plot(
+            iterations,
+            [float(row["major_fwhm_over_kernel"]) for row in selected],
+            marker="o",
+            color=color,
+            label=f"{array} major",
+        )
+        axes[0, 1].plot(
+            iterations,
+            [float(row["minor_fwhm_over_kernel"]) for row in selected],
+            marker="s",
+            linestyle="--",
+            color=color,
+            label=f"{array} minor",
+        )
+        axes[1, 0].plot(
+            iterations,
+            [float(row["centroid_error_arcsec"]) for row in selected],
+            marker="o",
+            color=color,
+            label=array,
+        )
+        axes[1, 1].plot(
+            iterations,
+            [
+                float(row["successive_transfer_delta_relative_rms"])
+                for row in selected
+            ],
+            marker="o",
+            color=color,
+            label=array,
+        )
+
+    axes[0, 0].axhline(1.0, color="0.4", linewidth=1.0)
+    axes[0, 0].set_ylabel("Recovered / injected")
+    axes[0, 0].set_title("Amplitude response")
+    axes[0, 0].legend(fontsize=8, ncol=2)
+    axes[0, 1].axhline(1.0, color="0.4", linewidth=1.0)
+    axes[0, 1].set_ylabel("Transfer FWHM / kernel FWHM")
+    axes[0, 1].set_title("Shape response")
+    axes[0, 1].legend(fontsize=8, ncol=2)
+    axes[1, 0].set_ylabel("Transfer–kernel centroid (arcsec)")
+    axes[1, 0].set_title("Centroid agreement")
+    axes[1, 0].legend(fontsize=8)
+    axes[1, 1].set_ylabel("RMS(iteration delta) / RMS(previous)")
+    axes[1, 1].set_title("Remaining iteration-to-iteration change")
+    axes[1, 1].legend(fontsize=8)
+    for axis in axes[1, :]:
+        axis.set_xlabel("Absolute FRUIT iteration")
+    for axis in axes.flat:
+        axis.grid(alpha=0.25)
+        axis.set_xticks(sorted({int(row["iteration"]) for row in rows}))
+    figure.suptitle(
+        "Pointing 152389: centered 100 mJy/beam injection\n"
+        "development-only diagnostic; no qualification threshold applied"
+    )
+    figure.tight_layout()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    figure.savefig(path, dpi=180, bbox_inches="tight")
+    plt.close(figure)
+
+
+def write_provenance_manifest(
+    path: Path,
+    *,
+    control_root: Path,
+    injected_root: Path,
+    pair_manifest_path: Path,
+    continuation_reference: Path,
+    obsnum: int,
+    output_csv: Path,
+    output_report: Path,
+    output_plot: Path | None,
+    executable: Path,
+    software_id: str,
+    test_id: str,
+) -> None:
+    pair_manifest = yaml.safe_load(pair_manifest_path.read_text())
+    input_paths: set[Path] = {
+        Path(__file__).resolve(),
+        executable.resolve(),
+        pair_manifest_path.resolve(),
+        Path(pair_manifest["source_config"]).resolve(),
+        (
+            Path(pair_manifest["restart_path"])
+            / "citlali_restart_checkpoint.nc"
+        ).resolve(),
+    }
+    for variant in pair_manifest["variants"].values():
+        input_paths.add(
+            (pair_manifest_path.parent / variant["config"]).resolve()
+        )
+    for array in ARRAYS:
+        input_paths.add(
+            product_path(continuation_reference, obsnum, array).resolve()
+        )
+    for root in (control_root, injected_root):
+        for redu in iteration_dirs(root, obsnum).values():
+            for array in ARRAYS:
+                input_paths.add(product_path(redu, obsnum, array).resolve())
+            input_paths.add(
+                (
+                    redu
+                    / str(obsnum)
+                    / "raw"
+                    / f"ppt_commissioning_pointing_{obsnum}_citlali.ecsv"
+                ).resolve()
+            )
+            for name in (
+                "LOCAL_IO_SUPPRESSION.yaml",
+                "config_source_manifest.yaml",
+                "runtime_provenance.yaml",
+            ):
+                candidate = (redu / name).resolve()
+                if candidate.is_file():
+                    input_paths.add(candidate)
+
+    output_paths = [output_csv, output_report]
+    if output_plot is not None:
+        output_paths.append(output_plot)
+    payload = {
+        "schema_version": "sci-fruit-injected-source-development-v1",
+        "test_id": test_id,
+        "role": "exploratory-development-only",
+        "qualification_use_authorized": False,
+        "obsnum": obsnum,
+        "software": {
+            "reported_version": software_id,
+            **file_record(executable.resolve()),
+        },
+        "pair": {
+            "start_iteration": int(pair_manifest["start_iteration"]),
+            "stop_iteration_exclusive": int(
+                pair_manifest["stop_iteration_exclusive"]
+            ),
+            "array_order": list(pair_manifest["array_order"]),
+            "array_amplitude_mjy_beam": [
+                float(value)
+                for value in pair_manifest["array_amplitude_mjy_beam"]
+            ],
+            "exact_restart_control": "PASS",
+        },
+        "measurement": {
+            "map_response": "injected signal_I minus control signal_I",
+            "source_location": "pointing-map center",
+            "gaussian_search_radius_arcsec": 25.0,
+            "kernel_comparator": "same-iteration injected kernel_I",
+        },
+        "inputs": [
+            file_record(input_path)
+            for input_path in sorted(input_paths, key=str)
+        ],
+        "outputs": [
+            file_record(output_path.resolve(), relative_to=path.parent.resolve())
+            for output_path in output_paths
+        ],
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--control", required=True, type=Path)
@@ -411,7 +678,34 @@ def main() -> int:
     )
     parser.add_argument("--obsnum", required=True, type=int)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument(
+        "--plot",
+        type=Path,
+        help="optional path for a development-diagnostic summary plot",
+    )
+    parser.add_argument(
+        "--provenance-output",
+        type=Path,
+        help="optional path for a hashed development-evidence manifest",
+    )
+    parser.add_argument("--executable", type=Path)
+    parser.add_argument("--software-id")
+    parser.add_argument("--test-id")
     args = parser.parse_args()
+
+    provenance_values = (
+        args.provenance_output,
+        args.executable,
+        args.software_id,
+        args.test_id,
+    )
+    if any(value is not None for value in provenance_values) and not all(
+        value is not None for value in provenance_values
+    ):
+        parser.error(
+            "--provenance-output, --executable, --software-id, and --test-id "
+            "must be supplied together"
+        )
 
     rows = comparison_rows(
         args.control,
@@ -450,8 +744,29 @@ def main() -> int:
             f"{row['successive_transfer_delta_relative_rms']:.6g} |"
         )
     report_path.write_text("\n".join(lines) + "\n")
+    if args.plot is not None:
+        write_plot(rows, args.plot)
+    if args.provenance_output is not None:
+        write_provenance_manifest(
+            args.provenance_output,
+            control_root=args.control,
+            injected_root=args.injected,
+            pair_manifest_path=args.manifest,
+            continuation_reference=args.continuation_reference,
+            obsnum=args.obsnum,
+            output_csv=args.output,
+            output_report=report_path,
+            output_plot=args.plot,
+            executable=args.executable,
+            software_id=args.software_id,
+            test_id=args.test_id,
+        )
     print(f"wrote {len(rows)} rows to {args.output}")
     print(f"wrote report to {report_path}")
+    if args.plot is not None:
+        print(f"wrote plot to {args.plot}")
+    if args.provenance_output is not None:
+        print(f"wrote provenance to {args.provenance_output}")
     return 0
 
 

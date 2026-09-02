@@ -1,0 +1,15 @@
+# Development-only local execution overlay.
+# The paired comparison reads map products, not optional RTC/PTC NetCDF
+# timestreams or their diagnostic sidecars. Suppressing them avoids the local
+# HDF5 concurrency crash recorded in TEST_DEFINITION.md.
+runtime:
+  # Keep the local FFTW/OpenMP realization single-threaded so that an
+  # uninterrupted iteration and an exact restart can be compared bitwise.
+  n_threads: 1
+timestream:
+  processed_time_chunk:
+    output:
+      enabled: false
+  raw_time_chunk:
+    output:
+      enabled: false

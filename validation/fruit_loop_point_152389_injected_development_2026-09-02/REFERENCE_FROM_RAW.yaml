@@ -1,0 +1,17 @@
+# Common-base overlay for the fresh uninterrupted local reference.
+runtime:
+  output_dir: /Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/reference/reduced/
+timestream:
+  fruit_loops:
+    path: null
+    restart_path: null
+    max_iters: 3
+    save_all_iters: true
+    diagnostics_enabled: true
+    injected_source_test:
+      enabled: false
+      start_iteration: 1
+      array_amplitude_mjy_beam: [100.0, 100.0, 100.0]
+  raw_time_chunk:
+    kernel:
+      enabled: true

@@ -145,6 +145,27 @@ class InjectedSourcePairTest(unittest.TestCase):
             delta=1.0e-4,
         )
 
+    def test_expected_center_rejects_brighter_distant_artifact(self) -> None:
+        yy, xx = np.indices((101, 101), dtype=float)
+        xx -= 50.0
+        yy -= 50.0
+        amplitude = 100.0
+        values = 2.0 + amplitude * np.exp(
+            -0.5 * (np.square(xx / 3.0) + np.square(yy / 4.0))
+        )
+        values[5, 5] = 3.0 * amplitude
+
+        recovered = compare.gaussian_fit(
+            values,
+            1.0,
+            expected_center_arcsec=(0.0, 0.0),
+            search_radius_arcsec=10.0,
+        )
+
+        self.assertAlmostEqual(recovered["amplitude"], amplitude, delta=1.0e-3)
+        self.assertAlmostEqual(recovered["x_arcsec"], 0.0, delta=1.0e-4)
+        self.assertAlmostEqual(recovered["y_arcsec"], 0.0, delta=1.0e-4)
+
     def test_projects_transfer_onto_realized_kernel(self) -> None:
         kernel = np.arange(1.0, 13.0).reshape(3, 4)
         truth = 4000.0

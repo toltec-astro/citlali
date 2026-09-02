@@ -1,0 +1,233 @@
+{
+  "inputs": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/bin/citlali",
+      "sha256": "5a6f6741ee81c0b78ff718d2d4b6674f3b9a27a476a6d4a29105d3b68b319c38",
+      "size_bytes": 14693768
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/compare_injected_source_pair.py",
+      "sha256": "74b94aac7f21fe13b82e21d4578056a0bbb2b44f80b89f729fbf8db7a33e3280",
+      "size_bytes": 28697
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/control/reduced/redu00/152389/raw/ppt_commissioning_pointing_152389_citlali.ecsv",
+      "sha256": "4a54b89d0aa101624e0fe01d5cad404644decc25200c2cfe2f5decdc9d82431e",
+      "size_bytes": 22207
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/control/reduced/redu00/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "329669052afdaeef3e13ab2c413f37782fd6afd941d606df0398b76eace193cb",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/control/reduced/redu00/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "f63d5a65aa4dd45eba658bdd670b85df6ab01dedd2f43ca04bb548f776556819",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/control/reduced/redu00/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "e8f2169eec78b656ae907e9492d4555375dbdf2c10de400f44f06a9e0ccab6bb",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/control/reduced/redu00/LOCAL_IO_SUPPRESSION.yaml",
+      "sha256": "b119a3d993cd5e41a137aa3f6c36a141e01093531e8b3f7228c33246dee51423",
+      "size_bytes": 539
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/control/reduced/redu00/runtime_provenance.yaml",
+      "sha256": "41051f8ea9bb2aad700f1d2f36b3dd00d8f8b568846c60abb63c8882c1c940ab",
+      "size_bytes": 1134
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/control/reduced/redu01/152389/raw/ppt_commissioning_pointing_152389_citlali.ecsv",
+      "sha256": "21ead4a16f92246dbc66ccfe45339a7501382784877030f5adb96c0fec1e7fcc",
+      "size_bytes": 22199
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/control/reduced/redu01/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "01dfceb95997da5520a2e1e39fbd6807ad95e5c746cd8769dfcf107e7fafc63a",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/control/reduced/redu01/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "db68cc90683ba059a4038e517b6f2763e704858997fa54618f3bb32218f2ae70",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/control/reduced/redu01/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "38ae71556964eb17828e1f1584ef8f238ebbbe1a1a05d3c50faff474fcb41ea8",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/control/reduced/redu01/LOCAL_IO_SUPPRESSION.yaml",
+      "sha256": "b119a3d993cd5e41a137aa3f6c36a141e01093531e8b3f7228c33246dee51423",
+      "size_bytes": 539
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/control/reduced/redu01/config_source_manifest.yaml",
+      "sha256": "1cfba9cd84fd234141f5f0f63386b2737fca2dcc975ddb47a01873c7aa601967",
+      "size_bytes": 1081
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/control/reduced/redu01/runtime_provenance.yaml",
+      "sha256": "41051f8ea9bb2aad700f1d2f36b3dd00d8f8b568846c60abb63c8882c1c940ab",
+      "size_bytes": 1134
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/injected/reduced/redu00/152389/raw/ppt_commissioning_pointing_152389_citlali.ecsv",
+      "sha256": "a5561c154321873c786b4d4232e3eec8660a4a8c00f7a9cad8e9e2be41ee100c",
+      "size_bytes": 22202
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/injected/reduced/redu00/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "4ffbe61a9b379c9acedaa00d8334bb2ec00a421b430c09d1e1164b0a1d564aca",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/injected/reduced/redu00/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "ac109defa693380dbd9f4f756cede668019b5f9fa53ceacb43be1c477e97f3d9",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/injected/reduced/redu00/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "40234cf56ee349df513247c1b077ac5582f021dc6a6e8d93cc97c35eb0b474d7",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/injected/reduced/redu00/LOCAL_IO_SUPPRESSION.yaml",
+      "sha256": "b119a3d993cd5e41a137aa3f6c36a141e01093531e8b3f7228c33246dee51423",
+      "size_bytes": 539
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/injected/reduced/redu00/runtime_provenance.yaml",
+      "sha256": "84b58c20501ff8f29dc038afe73fd0466a0ada6ad866f2b16bb3e3f364badc90",
+      "size_bytes": 1136
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/injected/reduced/redu01/152389/raw/ppt_commissioning_pointing_152389_citlali.ecsv",
+      "sha256": "eb82eb473dea415ea01588cd95dd93f39281c1e77f05f14a27f4a99390976fdf",
+      "size_bytes": 22198
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/injected/reduced/redu01/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "6e622b7e8d39de037fae2eb72504124378b2357def95a141521bfbb7b0014371",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/injected/reduced/redu01/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "51a240efa727fe8168bdf15362eaafaeddc0cd9a6c1b3f9408bd39f481130c4f",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/injected/reduced/redu01/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "925706fe4baca164c4d6c5f80629bb2cceb09c52450aa965c1055c7aceb797e7",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/injected/reduced/redu01/LOCAL_IO_SUPPRESSION.yaml",
+      "sha256": "b119a3d993cd5e41a137aa3f6c36a141e01093531e8b3f7228c33246dee51423",
+      "size_bytes": 539
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/injected/reduced/redu01/config_source_manifest.yaml",
+      "sha256": "af7be4757cb17c11f8780ca95502f521224f08c2579d05550b8e52883657d306",
+      "size_bytes": 1083
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/injected/reduced/redu01/runtime_provenance.yaml",
+      "sha256": "84b58c20501ff8f29dc038afe73fd0466a0ada6ad866f2b16bb3e3f364badc90",
+      "size_bytes": 1136
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/setup/citlali_injected_source_control.yaml",
+      "sha256": "525614dc37fb3b3ab7f3ef3af6044b94df35f4125e77eadc697175f89b389fdb",
+      "size_bytes": 16715
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/setup/citlali_injected_source_injected.yaml",
+      "sha256": "86fe88329a8d78b34de7f1ef7944b3912fb59a0623973fb4d926340a1124d073",
+      "size_bytes": 16715
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/pair/setup/manifest.yaml",
+      "sha256": "4a426298f890db3150ebed3ee49ad36fc165d6680db48904ba4afa1c84adf793",
+      "size_bytes": 1059
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/reference/reduced/redu00/citlali_restart_checkpoint.nc",
+      "sha256": "85419a82e050ae5d3685313abf413e239ffab272d75d336bd43633fc845dfdf8",
+      "size_bytes": 122537
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/reference/reduced/redu01/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "497cb66eb8697da9e69fc3e10f6f504afb62ad968321c30f7b17b8de45de08c6",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/reference/reduced/redu01/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "84dfc90614bb6cd8d7eeae0ab347b6021e0d06766ad06c6dd6f9fb41b55255b8",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-r0.1/attempt-04/reference/reduced/redu01/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "28908effb380c186418b36eacf5de1c4b0af8f250e8d056ca02d760117068445",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-smoke/fruit-current-smoke/citlali_point_152389_fruit3.yaml",
+      "sha256": "dc0df89b706f1af9f32d747861f8c23975ded7cb0cf5c706110e7a96126d5909",
+      "size_bytes": 16644
+    }
+  ],
+  "measurement": {
+    "gaussian_search_radius_arcsec": 25.0,
+    "kernel_comparator": "same-iteration injected kernel_I",
+    "map_response": "injected signal_I minus control signal_I",
+    "source_location": "pointing-map center"
+  },
+  "obsnum": 152389,
+  "outputs": [
+    {
+      "path": "injected_source_iteration_metrics.csv",
+      "sha256": "16d79702e5d0da1f2c80717ee7d30a5bd461752f8d1bc3d0c4677979f14ed584",
+      "size_bytes": 3627
+    },
+    {
+      "path": "injected_source_iteration_metrics.md",
+      "sha256": "d927b72a6f650879908ec80032de097e72ae40598e7975d72b772c047e7eb0e4",
+      "size_bytes": 741
+    },
+    {
+      "path": "injected_source_iteration_metrics.png",
+      "sha256": "f2ef248e6586cce7f11ef0b61e1b37f8498fd658161a966cf68818478041e1f3",
+      "size_bytes": 256256
+    }
+  ],
+  "pair": {
+    "array_amplitude_mjy_beam": [
+      100.0,
+      100.0,
+      100.0
+    ],
+    "array_order": [
+      "a1100",
+      "a1400",
+      "a2000"
+    ],
+    "exact_restart_control": "PASS",
+    "start_iteration": 1,
+    "stop_iteration_exclusive": 3
+  },
+  "qualification_use_authorized": false,
+  "role": "exploratory-development-only",
+  "schema_version": "sci-fruit-injected-source-development-v1",
+  "software": {
+    "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/bin/citlali",
+    "reported_version": "sci-noi-v0.1-stage-a-22-g92d174630",
+    "sha256": "5a6f6741ee81c0b78ff718d2d4b6674f3b9a27a476a6d4a29105d3b68b319c38",
+    "size_bytes": 14693768
+  },
+  "test_id": "SCI-FRUIT-POINT-152389-INJECT-CENTER-100MJY-R0.1"
+}

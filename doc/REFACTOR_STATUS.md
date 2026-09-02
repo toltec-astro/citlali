@@ -179,6 +179,25 @@ parent route, numerical implementation access, empirical execution,
 qualification, validation, readiness, production, fallback, Stage B, or Unity
 activity is authorized.
 
+On `2026-09-02` the owner separately authorized the local copied pointing data
+under `fruit-development/point-152389` for development-only tests while
+preserving the source data and original reductions, then approved proceeding
+with a first controlled compact-source injection. This is not Gate-D launch or
+qualification-population access. The frozen local pair injects a centered 100
+mJy/beam source after RTC processing, starts from a fresh single-thread
+iteration-0 checkpoint, and compares absolute FRUIT iterations 1 and 2 with an
+otherwise identical control. The restarted iteration-1 control is bitwise
+equal to the uninterrupted reference in signal, kernel, and weight for all
+arrays. Kernel-normalized central amplitude recovery rises from 78--87 percent
+at iteration 1 to 89--93 percent at iteration 2; by iteration 2 the fitted axes
+are within roughly 3--5 percent of the realized processed kernel and centroid
+separation is below 0.05 arcsec. The full response still changes by 37--51
+percent of the preceding response-map RMS, so the result selects no stopping
+point. It also supplies no pre-RTC, off-center, extended-mode, qualification,
+historical-superiority, or candidate-ranking claim. The hashed compact record
+is in
+`validation/fruit_loop_point_152389_injected_development_2026-09-02/`.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
