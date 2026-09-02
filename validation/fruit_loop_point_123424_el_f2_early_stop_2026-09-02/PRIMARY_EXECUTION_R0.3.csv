@@ -1,0 +1,5 @@
+trajectory,alpha,injection,status,completed_iterations,wall_seconds,user_seconds,system_seconds,max_rss_bytes,retained_kib,error_or_critical_messages
+alpha-1.25-control,1.25,false,completed,6,175.71,167.52,5.31,953892864,352656,0
+alpha-1.00-control,1.00,false,completed,7,205.38,196.33,6.14,930562048,370308,0
+alpha-1.00-injected,1.00,true,completed,7,197.84,191.98,3.17,924712960,370308,0
+alpha-1.25-injected,1.25,true,completed,6,168.64,163.60,2.60,931053568,352664,0

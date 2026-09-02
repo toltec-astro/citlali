@@ -1,0 +1,45 @@
+{
+  "array_checks": {
+    "a1100": {
+      "terminal_annular_residual_within_limit": false,
+      "terminal_centroid_within_limit": true,
+      "terminal_kernel_residual_within_limit": true,
+      "terminal_major_width_within_limit": false,
+      "terminal_minor_width_within_limit": false,
+      "terminal_recovery_error_within_allowance": true
+    },
+    "a1400": {
+      "terminal_annular_residual_within_limit": false,
+      "terminal_centroid_within_limit": false,
+      "terminal_kernel_residual_within_limit": false,
+      "terminal_major_width_within_limit": false,
+      "terminal_minor_width_within_limit": false,
+      "terminal_recovery_error_within_allowance": false
+    },
+    "a2000": {
+      "terminal_annular_residual_within_limit": false,
+      "terminal_centroid_within_limit": false,
+      "terminal_kernel_residual_within_limit": true,
+      "terminal_major_width_within_limit": false,
+      "terminal_minor_width_within_limit": false,
+      "terminal_recovery_error_within_allowance": true
+    }
+  },
+  "candidate": {
+    "alpha": 1.25,
+    "pair_mean_wall_seconds": 172.175,
+    "terminal_iteration": 5,
+    "wall_time_improvement_fraction": 0.1459997023957145
+  },
+  "classification": "does_not_replicate",
+  "performance_target_pass": true,
+  "reference": {
+    "alpha": 1.0,
+    "pair_mean_wall_seconds": 201.61,
+    "terminal_iteration": 6
+  },
+  "restart_required": false,
+  "scientific_protections_pass": false,
+  "test_id": "SCI-FRUIT-EL-F2-INDEPENDENT-POINTING-EARLY-STOP-R0.1",
+  "valid_primary_screen": true
+}

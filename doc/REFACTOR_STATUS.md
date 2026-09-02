@@ -354,9 +354,24 @@ corresponding tune NetCDF's tone dimension. Acquisition provenance beyond the
 existing local development path is unavailable. The exact r0.3 owner-review
 candidate is
 [`EL_F2_TEXT_FITREPORT_CORRECTION_OWNER_REVIEW_R0.3.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F2_TEXT_FITREPORT_CORRECTION_OWNER_REVIEW_R0.3.md),
-content-bound by `EL_F2_BUNDLE_MANIFEST_R0.3.md`. It recommends authorizing one
-explicitly final environmental replacement; any further pre-iteration failure
-would end EL-F2 as invalid. No further reduction is authorized yet.
+content-bound by `EL_F2_BUNDLE_MANIFEST_R0.3.md`. The owner approved it exactly
+on `2026-09-02`, authorizing one explicitly final environmental replacement.
+That replacement and the other three primary trajectories completed in the
+frozen BAAB order with the expected iteration sets and no error- or
+critical-level messages. Candidate pair-mean wall time was 172.175 seconds
+versus 201.610 seconds for the reference, a 14.600-percent reduction that
+passes the 10-percent performance target. The scientific protections do not
+pass. Candidate iteration 5 fails width and annular-residual limits in all
+three arrays; a1400 additionally falls from 0.890451 recovery at iteration 4
+to 0.822828 at iteration 5, with 0.299-arcsec centroid error, 7.253 times the
+reference annular residual, and 2.399 times its kernel-residual structure. The
+valid prospective classification is therefore `does_not_replicate`. The same
+candidate is not rerun, and the conditional exact-restart replay is neither
+required nor authorized. The complete result is
+[`EXECUTION_RESULT_R0.3.md`](../validation/fruit_loop_point_123424_el_f2_early_stop_2026-09-02/EXECUTION_RESULT_R0.3.md).
+This independent negative result does not promote a method, stopping rule,
+APT, or fallback and does not launch Gate D, Stage B, production, or Unity
+work.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
