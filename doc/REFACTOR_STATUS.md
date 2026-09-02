@@ -198,6 +198,28 @@ historical-superiority, or candidate-ranking claim. The hashed compact record
 is in
 `validation/fruit_loop_point_152389_injected_development_2026-09-02/`.
 
+The owner then approved extending that same frozen pair continuously through
+absolute iteration 6 rather than launching a longer Unity run. The parent
+iterations replay bit-for-bit. By iterations 5--6, kernel-normalized central
+recovery is approximately 96--98 percent, the last-step central gain is only
+0.12--0.35 percentage points, fitted axes are within 1.8 percent of the
+same-iteration kernel, and centroid separation is below 0.09 arcsec. This is a
+descriptive plateau for one bright centered compact source, not a general
+convergence or stopping-rule result. A diagnostic replay from the exact
+iteration-4 checkpoint then failed the required complete-trajectory restart
+identity: iteration 5 is bitwise exact, but iteration 6 differs in `a1100`,
+with signal relative RMS `0.121206`. The uninterrupted process retained prior
+map-pixel-outlier records, used them to enable targeted contributor tracing,
+and learned a new scan-local detector exclusion for UID 1489 at iteration 5.
+The restarted process did not, because the checkpoint persists effective
+masks and penalties but not that causally consumed diagnostic history. This
+realizes the unsafe case anticipated by `FRUIT-GAP-011`; exact restart is
+unavailable for this enabled learning path until repaired and validated. The
+same replay completed iterations 5--6 in 80.74 seconds, so the original
+1,361/2,650-second timings are a transient unresolved execution anomaly and
+not performance evidence. The hashed development record is in
+`validation/fruit_loop_point_152389_injected_convergence_development_2026-09-02/`.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

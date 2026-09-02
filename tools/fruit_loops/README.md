@@ -179,6 +179,27 @@ kernel, and weight image in the restarted control's first iteration to be
 exactly identical to the uninterrupted continuation reference. A mismatch
 invalidates the experiment rather than being reported as a transfer result.
 
+For a replay containing two or more continued iterations, verify the complete
+restart trajectory rather than only the first product:
+
+```bash
+$HOME/tolteca/bin/python \
+  tools/fruit_loops/compare_restart_replay.py \
+  --reference /path/to/uninterrupted/reduced \
+  --replay /path/to/restarted/reduced \
+  --obsnum 133410 \
+  --checkpoint-iteration 12 \
+  --output /path/to/restart_replay_comparison.csv \
+  --manifest-output /path/to/restart_replay_manifest.json \
+  --test-id SCI-FRUIT-RESTART-DEVELOPMENT-ID
+```
+
+The replay comparator discovers absolute iterations from FITS headers,
+compares signal, kernel, and weight images exactly, and records RMS differences.
+It also compares one matching post-iteration checkpoint and retains its
+effective detector-penalty rows. Optional repeated `--evidence` arguments add
+configuration, log, or timing files to the hashed manifest.
+
 This is a diagnostic-only mode. Startup rejects it unless:
 
 - the reduction is pointing/OOF;

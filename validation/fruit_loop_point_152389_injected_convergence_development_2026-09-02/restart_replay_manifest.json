@@ -1,0 +1,246 @@
+{
+  "checkpoint_comparison": {
+    "differing_variables": [
+      "effective_detector_penalty_count",
+      "penalty_array",
+      "penalty_event_time_unix_sec",
+      "penalty_factor",
+      "penalty_iteration",
+      "penalty_network",
+      "penalty_observation_index",
+      "penalty_producer",
+      "penalty_reason",
+      "penalty_scan",
+      "penalty_scan_local",
+      "penalty_score",
+      "penalty_uid"
+    ],
+    "reference": {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/injected/reduced/redu04/citlali_restart_checkpoint.nc",
+      "sha256": "0fd49853b4c05d23c4a58ef5359c76c4362ac9645396dde8f4e7e1be57eca68a",
+      "size_bytes": 436313
+    },
+    "reference_only_variables": [],
+    "reference_penalties": [
+      {
+        "array": 0,
+        "factor": 0.0,
+        "iteration": 3,
+        "network": -1,
+        "observation_id": "152389",
+        "producer": "mapdiag:raw_obs",
+        "reason": "map_pixel_outlier_detector_dominance",
+        "scan": 2,
+        "scan_local": 1,
+        "score": 6.0,
+        "uid": 987
+      },
+      {
+        "array": 0,
+        "factor": 0.0,
+        "iteration": 5,
+        "network": -1,
+        "observation_id": "152389",
+        "producer": "mapdiag:raw_obs",
+        "reason": "map_pixel_outlier_detector_dominance",
+        "scan": 11,
+        "scan_local": 1,
+        "score": 8.0,
+        "uid": 1489
+      },
+      {
+        "array": 0,
+        "factor": 0.0,
+        "iteration": 0,
+        "network": 5,
+        "observation_id": "152389",
+        "producer": "ptc_second_pass",
+        "reason": "busy_vetoed_residual",
+        "scan": 7,
+        "scan_local": 1,
+        "score": 20.44245835026339,
+        "uid": 2714
+      }
+    ],
+    "replay": {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/timing-replay-from-iter4/attempt-02/reduced/redu00/citlali_restart_checkpoint.nc",
+      "sha256": "1f1d1e246497c70313217c1da97f15d42687f10bbde2a3f867e491a6ef3fb125",
+      "size_bytes": 436313
+    },
+    "replay_only_variables": [],
+    "replay_penalties": [
+      {
+        "array": 0,
+        "factor": 0.0,
+        "iteration": 3,
+        "network": -1,
+        "observation_id": "152389",
+        "producer": "mapdiag:raw_obs",
+        "reason": "map_pixel_outlier_detector_dominance",
+        "scan": 2,
+        "scan_local": 1,
+        "score": 6.0,
+        "uid": 987
+      },
+      {
+        "array": 0,
+        "factor": 0.0,
+        "iteration": 0,
+        "network": 5,
+        "observation_id": "152389",
+        "producer": "ptc_second_pass",
+        "reason": "busy_vetoed_residual",
+        "scan": 7,
+        "scan_local": 1,
+        "score": 20.44245835026339,
+        "uid": 2714
+      }
+    ]
+  },
+  "checkpoint_iteration_compared": 5,
+  "first_product_difference": {
+    "array": "a1100",
+    "difference_rms": 2.288684427533107,
+    "exact": false,
+    "extension": "signal_I",
+    "iteration": 6,
+    "max_abs_difference": 151.6869421117715,
+    "reference_rms": 18.882596755518126,
+    "relative_rms": 0.1212060214580538
+  },
+  "inputs": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/compare_restart_replay.py",
+      "sha256": "8d3a58c8eee3c8d1c89b015ff745db708b72ce6be47cf29d8f49609fcde47865",
+      "size_bytes": 9453
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_152389_injected_convergence_development_2026-09-02/TIMING_REPLAY_FROM_ITER4.yaml",
+      "sha256": "70205aaeeb820dd554771a65f73876cd2762ec3865e309fd819b3adaddba4f0d",
+      "size_bytes": 572
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_152389_injected_convergence_development_2026-09-02/timing_replay_attempt_02_time.txt",
+      "sha256": "cae3527d08fed8a63ce550dd79b7d412f53903ef7e0f73e1073a9a2855359fea",
+      "size_bytes": 777
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/injected/reduced/redu04/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "ddbbac67a060acbb32fab6e12c1a244d89b41eab79690a5c9b4f2bfa3aaa5f0b",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/injected/reduced/redu04/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "2cad7970f17743887641b935295127a7e2f339d35406db41f9b986a4fb4d7d33",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/injected/reduced/redu04/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "6c2166b448c417e3473f615357e00aba49bf8f2286a4c55b797ae46927c8476b",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/injected/reduced/redu04/citlali.log.gz",
+      "sha256": "66825a013c5c5d41d68d44c3a2ea3179d81a939f9c518556ccc46cf18381fab6",
+      "size_bytes": 91106
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/injected/reduced/redu04/citlali_restart_checkpoint.nc",
+      "sha256": "0fd49853b4c05d23c4a58ef5359c76c4362ac9645396dde8f4e7e1be57eca68a",
+      "size_bytes": 436313
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/injected/reduced/redu04/learning_iter_5.csv",
+      "sha256": "261714e5ee21b83792164b6d68f8a46b9093e6f462ea4e1ecc12ba2652a8c3fe",
+      "size_bytes": 1035589
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/injected/reduced/redu05/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "1abfc92262f6c3e7241702b86ea2a76fc17ceffe79ebb31814c57917308d3046",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/injected/reduced/redu05/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "a51dd3289df04a8d2269e9bd8993657fe863feb964c59cf7d138da0fdcac8a10",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/injected/reduced/redu05/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "ee769a8959f2acd6d3023fb68d8fb0740da5c4d91d99e310891617947bded9e2",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/injected/reduced/redu05/citlali_restart_checkpoint.nc",
+      "sha256": "9a08c281e7e4c54f695ff2189802fdd683ffe1d5912e6e9a948e0ebf27b9e516",
+      "size_bytes": 436313
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/setup/citlali_injected_source_injected.yaml",
+      "sha256": "cf8899b0c9348c3a1b61fe1a00ee8aefdaa2422cecc90f63ad5eda19c921b007",
+      "size_bytes": 16707
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/timing-replay-from-iter4/attempt-02/reduced/redu00/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "2f09cdaf9ae887aad898f4a1694c7a1d5580790ec2247fff27f07c64c31d3136",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/timing-replay-from-iter4/attempt-02/reduced/redu00/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "4793b7e6094addefee5a1456f0b649c024f3f1939d14011d73005e330119ff27",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/timing-replay-from-iter4/attempt-02/reduced/redu00/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "a5491af93b5370b956827dc04722c40549084e24bc3daef3fcbe34237e752e1a",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/timing-replay-from-iter4/attempt-02/reduced/redu00/citlali.log.gz",
+      "sha256": "9f59aab0a900000ddf9d08730e1d416e3b7108f5cbd3c9445f84def9f21ed774",
+      "size_bytes": 90240
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/timing-replay-from-iter4/attempt-02/reduced/redu00/citlali_restart_checkpoint.nc",
+      "sha256": "1f1d1e246497c70313217c1da97f15d42687f10bbde2a3f867e491a6ef3fb125",
+      "size_bytes": 436313
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/timing-replay-from-iter4/attempt-02/reduced/redu00/learning_iter_5.csv",
+      "sha256": "cba9df89c1231cad7094c1e460e6438bdf7c863d4fefa12f97a69d35cf6aa31b",
+      "size_bytes": 116594
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/timing-replay-from-iter4/attempt-02/reduced/redu01/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "dc3d243542b9814024b60de3771ec8d174ee0c27451628938b81ec82fd17651d",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/timing-replay-from-iter4/attempt-02/reduced/redu01/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "e3d45a1d1ddf24e723dc52c1729d678ac44f7456c36cd7884f29172e0849b614",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/timing-replay-from-iter4/attempt-02/reduced/redu01/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "312793f8a624f0845494b099c8528ace9316d03b4a71b7a14c12bd3addc63f9d",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/timing-replay-from-iter4/attempt-02/reduced/redu01/citlali_restart_checkpoint.nc",
+      "sha256": "c499bd37bf19f810dd11f5eb4f33b18618d85e638a909d9a045afe1ff007ec6c",
+      "size_bytes": 436313
+    }
+  ],
+  "obsnum": 152389,
+  "outputs": [
+    {
+      "path": "restart_replay_comparison.csv",
+      "sha256": "3d9b52dba27b26098d7341c0ae24d2c76872fef14af029184b93665bc6f7f992",
+      "size_bytes": 1215
+    }
+  ],
+  "qualification_use_authorized": false,
+  "result": "FAIL",
+  "role": "exploratory-development-only",
+  "schema_version": "sci-fruit-restart-replay-development-v1",
+  "test_id": "SCI-FRUIT-POINT-152389-INJECT-CENTER-100MJY-ITER1-6-RESTART-R0.1"
+}

@@ -103,9 +103,23 @@ or compatibility rules. The long-term nested run/iteration layout tracked as
 retained debt D10 may change artifact location, but must preserve the explicit
 checkpoint contract and TolTECA-facing final-product compatibility.
 
+On 2026-09-02, a two-iteration real pointing replay invalidated the remaining
+implementation assertion that every omitted diagnostic event vector is
+non-operational. With targeted map-pixel contributor diagnostics and detector
+exclusion enabled, the prior `map_pixel_outliers` vector selects the next
+iteration's targeted contributor pixels. Schema version 2 does not restore
+that vector. The replay therefore matches the first post-checkpoint iteration
+exactly, fails to learn one new `a1100` detector exclusion, and diverges on the
+second post-checkpoint iteration. The accepted explicit-checkpoint contract
+remains the target, but schema version 2 does not currently satisfy it for
+this enabled learning path. Exact-restart claims are unavailable until D19 is
+resolved by an approved state-semantics decision and multi-iteration real-data
+validation.
+
 ## Evidence
 
 - `include/citlali/core/pipeline/reduction_restart_checkpoint.h`
 - `src/citlali/core/pipeline/reduction_restart_checkpoint.cpp`
 - `tests/test_learning_and_fruit_contracts.cpp`
 - [`../SCIENTIFIC_CONVENTIONS.md`](../SCIENTIFIC_CONVENTIONS.md)
+- [`../../validation/fruit_loop_point_152389_injected_convergence_development_2026-09-02/README.md`](../../validation/fruit_loop_point_152389_injected_convergence_development_2026-09-02/README.md)

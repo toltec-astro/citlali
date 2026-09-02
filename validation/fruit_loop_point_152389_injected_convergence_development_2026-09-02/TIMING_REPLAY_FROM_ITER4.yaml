@@ -1,0 +1,12 @@
+# Diagnostic replay of the already completed injected iterations 5 and 6.
+runtime:
+  output_dir: /Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/timing-replay-from-iter4/attempt-02/reduced/
+  n_threads: 1
+
+timestream:
+  fruit_loops:
+    restart_path: /Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/injected/reduced/redu03
+    max_iters: 7
+    save_all_iters: true
+    injected_source_test:
+      start_iteration: 5
