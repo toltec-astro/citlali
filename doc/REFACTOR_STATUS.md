@@ -220,6 +220,18 @@ same replay completed iterations 5--6 in 80.74 seconds, so the original
 not performance evidence. The hashed development record is in
 `validation/fruit_loop_point_152389_injected_convergence_development_2026-09-02/`.
 
+A bounded D19 owner-review candidate now distinguishes the complete
+iteration-boundary state from the diagnostic archive. It recommends resolving
+and checkpointing the small next-iteration map-pixel target set rather than
+retaining all prior map-pixel-outlier events. It also records that a candidate
+detector ID is not sufficient: the detector is discovered only when the next
+iteration traces contributors to those pixels. The proposal keeps
+uninterrupted development available, while exact-restart, restart-dependent
+qualification, and restart-dependent stopping claims remain unavailable for
+the affected feature combination. Choice of the state semantics and any repair
+remain owner decisions; no numerical code has changed. See
+[`EL_D19_ITERATION_BOUNDARY_STATE_CANDIDATE_R0.1.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_D19_ITERATION_BOUNDARY_STATE_CANDIDATE_R0.1.md).
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
