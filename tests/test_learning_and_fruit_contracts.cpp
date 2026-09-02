@@ -1,4 +1,5 @@
 #include <citlali/core/engine/learning.h>
+#include <citlali/core/mapmaking/map.h>
 #include <citlali/core/pipeline/astrometry_execution_plan.h>
 #include <citlali/core/pipeline/fits_image_metadata.h>
 #include <citlali/core/pipeline/fruit_loop_activation_validation.h>
@@ -62,6 +63,22 @@ ReductionLearningState::DetectorPenalty detector_penalty(
     record.array = 0;
     record.factor = 0.0;
     record.scan_local = true;
+    return record;
+}
+
+ReductionLearningState::MapPixelOutlier map_pixel_outlier(
+    std::string obsnum, int iter, int map_index, int row, int col,
+    double leave_one_out_z, double value = 0.0) {
+    ReductionLearningState::MapPixelOutlier record;
+    record.obsnum = std::move(obsnum);
+    record.producer = "mapdiag:raw_obs";
+    record.reason = "extreme_pixel_no_contributor";
+    record.iter = iter;
+    record.map_index = map_index;
+    record.row = row;
+    record.col = col;
+    record.leave_one_out_z = leave_one_out_z;
+    record.value = value;
     return record;
 }
 
@@ -172,6 +189,19 @@ citlali::config::TimestreamLearningConfig restart_learning_config() {
     return config;
 }
 
+citlali::config::TimestreamLearningConfig
+target_restart_learning_config(int max_targets = 4) {
+    auto config = restart_learning_config();
+    config.diagnostics_enabled = true;
+    config.max_records_per_type = 100;
+    config.map_pixel_outlier.diagnostics_enabled = true;
+    config.map_pixel_outlier.contributor_diagnostics_enabled = false;
+    config.map_pixel_outlier.targeted_contributor_diagnostics_enabled = true;
+    config.map_pixel_outlier.detector_exclusion_enabled = true;
+    config.map_pixel_outlier.targeted_contributor_max_pixels = max_targets;
+    return config;
+}
+
 ReductionLearningState restart_learning_state(
     const citlali::config::TimestreamLearningConfig &config) {
     ReductionLearningState state;
@@ -274,6 +304,60 @@ void expect_same_effective_learning_state(
     }
 }
 
+void expect_same_resolved_map_pixel_target_state(
+    const ReductionLearningState &left,
+    const ReductionLearningState &right) {
+    const auto left_records = left.resolved_map_pixel_target_records();
+    const auto right_records = right.resolved_map_pixel_target_records();
+    ASSERT_EQ(left_records.size(), right_records.size());
+    for (std::size_t i = 0; i < left_records.size(); ++i) {
+        EXPECT_EQ(left_records[i].obsnum, right_records[i].obsnum);
+        EXPECT_EQ(left_records[i].producer, right_records[i].producer);
+        EXPECT_EQ(left_records[i].source_iter, right_records[i].source_iter);
+        EXPECT_EQ(left_records[i].apply_iter, right_records[i].apply_iter);
+        EXPECT_EQ(left_records[i].map_count, right_records[i].map_count);
+        EXPECT_EQ(left_records[i].n_rows, right_records[i].n_rows);
+        EXPECT_EQ(left_records[i].n_cols, right_records[i].n_cols);
+        ASSERT_EQ(left_records[i].targets.size(),
+                  right_records[i].targets.size());
+        for (std::size_t j = 0; j < left_records[i].targets.size(); ++j) {
+            EXPECT_EQ(left_records[i].targets[j].map_index,
+                      right_records[i].targets[j].map_index);
+            EXPECT_EQ(left_records[i].targets[j].row,
+                      right_records[i].targets[j].row);
+            EXPECT_EQ(left_records[i].targets[j].col,
+                      right_records[i].targets[j].col);
+        }
+    }
+}
+
+void execute_synthetic_target_iteration(ReductionLearningState &state,
+                                        int iteration) {
+    state.begin_iteration(iteration, iteration > 0, "pointing");
+    if (iteration > 0) {
+        const auto resolved = state.resolved_map_pixel_targets_for(
+            "152390", "mapdiag:raw_obs", iteration);
+        ASSERT_TRUE(resolved.has_value());
+        for (const auto &target : resolved->targets) {
+            auto penalty = detector_penalty(
+                "152390", 1000 + target.row, iteration);
+            penalty.producer = "mapdiag:raw_obs";
+            penalty.reason = "map_pixel_outlier_detector_dominance";
+            penalty.scan = target.col;
+            penalty.score = static_cast<double>(target.row);
+            state.record_detector_penalty(std::move(penalty), true);
+        }
+    }
+    state.record_map_pixel_outlier(map_pixel_outlier(
+        "152390", iteration, 0, iteration + 1, iteration + 2,
+        10.0 + iteration));
+    state.resolve_map_pixel_targets_for_next_iteration(
+        "152390", "mapdiag:raw_obs", iteration, 2, 16, 16);
+    state.finalize_map_pixel_target_state(
+        {"152390"}, "mapdiag:raw_obs", iteration);
+    state.finalize_iteration(iteration);
+}
+
 TEST(ReductionLearningState, DiagnosticCapNeverTruncatesEffectiveState) {
     auto state = make_learning_state();
     state.record_learned_sample_mask(sample_mask("152390", 10, 20, 22));
@@ -324,6 +408,181 @@ TEST(ReductionLearningState, DetectorPenaltyEventsDeduplicateInEffectiveState) {
     EXPECT_EQ(state.detector_penalty_events.size(), 1U);
     EXPECT_EQ(state.dropped_detector_penalties, 2U);
     EXPECT_EQ(state.effective_detector_penalty_records().size(), 2U);
+}
+
+TEST(ReductionLearningState,
+     ResolvesBoundedNextIterationMapPixelTargetsWithoutHistoryCarry) {
+    auto config = target_restart_learning_config(3);
+    config.max_records_per_type = 1;
+    auto state = restart_learning_state(config);
+    state.begin_iteration(4, true, "pointing");
+    state.record_map_pixel_outlier(
+        map_pixel_outlier("152390", 3, 0, 1, 1, 100.0));
+    state.record_map_pixel_outlier(
+        map_pixel_outlier("152390", 4, 0, 2, 2, 10.0));
+    state.record_map_pixel_outlier(
+        map_pixel_outlier("152390", 4, 1, 3, 3,
+                          ReductionLearningState::nan_value(), -9.0));
+    state.record_map_pixel_outlier(
+        map_pixel_outlier("152390", 4, 0, 4, 4, 8.0));
+    state.record_map_pixel_outlier(
+        map_pixel_outlier("152390", 4, 0, 2, 2, 7.0));
+    state.record_map_pixel_outlier(
+        map_pixel_outlier("152390", 4, 3, 5, 5, 200.0));
+
+    state.resolve_map_pixel_targets_for_next_iteration(
+        "152390", "mapdiag:raw_obs", 4, 2, 10, 10);
+    state.finalize_map_pixel_target_state(
+        {"152390"}, "mapdiag:raw_obs", 4);
+
+    EXPECT_EQ(state.map_pixel_outliers.size(), 1U);
+    EXPECT_EQ(state.dropped_map_pixel_outliers, 5U);
+    const auto resolved = state.resolved_map_pixel_targets_for(
+        "152390", "mapdiag:raw_obs", 5);
+    ASSERT_TRUE(resolved.has_value());
+    EXPECT_EQ(resolved->source_iter, 4);
+    EXPECT_EQ(resolved->targets.size(), 3U);
+    EXPECT_EQ(resolved->targets[0].map_index, 0);
+    EXPECT_EQ(resolved->targets[0].row, 2);
+    EXPECT_EQ(resolved->targets[0].col, 2);
+    EXPECT_EQ(resolved->targets[1].map_index, 1);
+    EXPECT_EQ(resolved->targets[1].row, 3);
+    EXPECT_EQ(resolved->targets[1].col, 3);
+    EXPECT_EQ(resolved->targets[2].map_index, 0);
+    EXPECT_EQ(resolved->targets[2].row, 4);
+    EXPECT_EQ(resolved->targets[2].col, 4);
+
+    mapmaking::MapBuffer map;
+    map.n_rows = 10;
+    map.n_cols = 10;
+    std::vector<std::tuple<Eigen::Index, Eigen::Index, Eigen::Index>> targets;
+    for (const auto &target : resolved->targets) {
+        targets.emplace_back(target.map_index, target.row, target.col);
+    }
+    map.set_contribution_targets(2, targets);
+    EXPECT_TRUE(map.contribution_target_enabled(0, 2, 2));
+    EXPECT_TRUE(map.contribution_target_enabled(1, 3, 3));
+    EXPECT_FALSE(map.contribution_target_enabled(0, 1, 1));
+
+    state.map_pixel_outliers.clear();
+    state.finalize_map_pixel_target_state(
+        {"152390"}, "mapdiag:raw_obs", 5);
+    const auto carried = state.resolved_map_pixel_targets_for(
+        "152390", "mapdiag:raw_obs", 6);
+    ASSERT_TRUE(carried.has_value());
+    EXPECT_EQ(carried->source_iter, 4);
+    EXPECT_EQ(carried->targets.size(), 3U);
+}
+
+TEST(ReductionRestartCheckpoint,
+     RoundTripsResolvedMapPixelTargetsWithoutDiagnosticHistory) {
+    RestartCheckpointDirectory directory;
+    const auto config = target_restart_learning_config(3);
+    const auto processed_config = restart_processed_config();
+    auto original = restart_learning_state(config);
+    original.begin_iteration(4, true, "pointing");
+    original.record_map_pixel_outlier(
+        map_pixel_outlier("152390", 4, 0, 2, 3, 12.0));
+    original.record_map_pixel_outlier(
+        map_pixel_outlier("152390", 4, 1, 4, 5, 10.0));
+    original.resolve_map_pixel_targets_for_next_iteration(
+        "152390", "mapdiag:raw_obs", 4, 3, 12, 13);
+    original.finalize_map_pixel_target_state(
+        {"152390", "152433"}, "mapdiag:raw_obs", 4);
+    original.finalize_iteration(4);
+
+    citlali::pipeline::write_reduction_restart_checkpoint(
+        directory.path, 4, "coadd/raw", {"152390", "152433"}, config,
+        processed_config, original, {});
+    auto restored = restart_learning_state(config);
+    citlali::pipeline::WeightValidationRestartState restored_weight_validation;
+    const auto summary =
+        citlali::pipeline::load_reduction_restart_checkpoint(
+            directory.path, "coadd/raw", {"152390", "152433"}, config,
+            processed_config, restored, restored_weight_validation);
+
+    EXPECT_EQ(summary.resolved_map_pixel_target_scopes, 2U);
+    EXPECT_EQ(summary.resolved_map_pixel_targets, 2U);
+    EXPECT_TRUE(restored.map_pixel_outliers.empty());
+    expect_same_resolved_map_pixel_target_state(original, restored);
+    const auto resolved = restored.resolved_map_pixel_targets_for(
+        "152390", "mapdiag:raw_obs", 5);
+    ASSERT_TRUE(resolved.has_value());
+    ASSERT_EQ(resolved->targets.size(), 2U);
+    EXPECT_EQ(resolved->map_count, 3);
+    EXPECT_EQ(resolved->n_rows, 12);
+    EXPECT_EQ(resolved->n_cols, 13);
+    const auto empty = restored.resolved_map_pixel_targets_for(
+        "152433", "mapdiag:raw_obs", 5);
+    ASSERT_TRUE(empty.has_value());
+    EXPECT_EQ(empty->source_iter, -1);
+    EXPECT_TRUE(empty->targets.empty());
+
+}
+
+TEST(ReductionRestartCheckpoint,
+     RejectsMissingRequiredResolvedMapPixelTargetState) {
+    RestartCheckpointDirectory directory;
+    const auto config = target_restart_learning_config();
+    const auto processed_config = restart_processed_config();
+    auto learning = restart_learning_state(config);
+
+    EXPECT_THROW(
+        citlali::pipeline::write_reduction_restart_checkpoint(
+            directory.path, 4, "coadd/raw", {"152390"}, config,
+            processed_config, learning, {}),
+        std::invalid_argument);
+}
+
+TEST(ReductionRestartCheckpoint,
+     RejectsMalformedResolvedMapPixelTargetState) {
+    RestartCheckpointDirectory directory;
+    const auto config = target_restart_learning_config();
+    const auto processed_config = restart_processed_config();
+    auto learning = restart_learning_state(config);
+    learning.begin_iteration(4, true, "pointing");
+    learning.record_map_pixel_outlier(
+        map_pixel_outlier("152390", 4, 0, 2, 3, 12.0));
+    learning.resolve_map_pixel_targets_for_next_iteration(
+        "152390", "mapdiag:raw_obs", 4, 2, 12, 13);
+    learning.finalize_map_pixel_target_state(
+        {"152390"}, "mapdiag:raw_obs", 4);
+    learning.resolved_map_pixel_target_sets.begin()
+        ->second.targets.front().row = 12;
+
+    EXPECT_THROW(
+        citlali::pipeline::write_reduction_restart_checkpoint(
+            directory.path, 4, "coadd/raw", {"152390"}, config,
+            processed_config, learning, {}),
+        std::invalid_argument);
+}
+
+TEST(ReductionRestartCheckpoint, RejectsOlderCheckpointSchema) {
+    RestartCheckpointDirectory directory;
+    const auto config = restart_learning_config();
+    const auto processed_config = restart_processed_config();
+    auto learning = restart_learning_state(config);
+    citlali::pipeline::write_reduction_restart_checkpoint(
+        directory.path, 4, "coadd/raw", {"152390"}, config,
+        processed_config, learning, {});
+    {
+        netCDF::NcFile file(
+            citlali::pipeline::reduction_restart_checkpoint_path(
+                directory.path)
+                .string(),
+            netCDF::NcFile::write);
+        file.getVar("schema_version")
+            .putVar(std::vector<std::size_t>{0},
+                    std::string{"citlali-reduction-restart-checkpoint-v2"});
+    }
+
+    auto restored = restart_learning_state(config);
+    citlali::pipeline::WeightValidationRestartState weight_validation;
+    EXPECT_THROW(
+        citlali::pipeline::load_reduction_restart_checkpoint(
+            directory.path, "coadd/raw", {"152390"}, config,
+            processed_config, restored, weight_validation),
+        std::runtime_error);
 }
 
 TEST(ReductionRestartCheckpoint, RoundTripsEffectiveLearningState) {
@@ -486,6 +745,44 @@ TEST(ReductionRestartCheckpoint,
     EXPECT_EQ(restarted.current_iter, 6);
     EXPECT_EQ(restarted.current_phase,
               ReductionLearningState::IterationPhase::Apply);
+}
+
+TEST(ReductionRestartCheckpoint,
+     FivePlusThreeTargetStateRestartMatchesEightUninterruptedIterations) {
+    RestartCheckpointDirectory directory;
+    const auto config = target_restart_learning_config();
+    const auto processed_config = restart_processed_config();
+    const citlali::pipeline::WeightValidationRestartState weight_validation;
+
+    auto uninterrupted = restart_learning_state(config);
+    for (int iteration = 0; iteration <= 7; ++iteration) {
+        execute_synthetic_target_iteration(uninterrupted, iteration);
+    }
+
+    auto first_run = restart_learning_state(config);
+    for (int iteration = 0; iteration <= 4; ++iteration) {
+        execute_synthetic_target_iteration(first_run, iteration);
+    }
+    citlali::pipeline::write_reduction_restart_checkpoint(
+        directory.path, 4, "coadd/raw", {"152390"}, config,
+        processed_config, first_run, weight_validation);
+
+    auto restarted = restart_learning_state(config);
+    citlali::pipeline::WeightValidationRestartState
+        restarted_weight_validation;
+    const auto summary =
+        citlali::pipeline::load_reduction_restart_checkpoint(
+            directory.path, "coadd/raw", {"152390"}, config,
+            processed_config, restarted, restarted_weight_validation);
+    EXPECT_TRUE(restarted.map_pixel_outliers.empty());
+    for (int iteration = summary.next_iteration; iteration <= 7;
+         ++iteration) {
+        execute_synthetic_target_iteration(restarted, iteration);
+    }
+
+    expect_same_effective_learning_state(uninterrupted, restarted, 8);
+    expect_same_resolved_map_pixel_target_state(uninterrupted, restarted);
+    EXPECT_EQ(restarted.current_iter, 7);
 }
 
 TEST(ReductionRestartCheckpoint,

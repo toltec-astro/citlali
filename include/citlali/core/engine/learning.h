@@ -8,7 +8,9 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <tuple>
 #include <utility>
@@ -141,6 +143,23 @@ struct ReductionLearningState {
         bool source_protected = false;
     };
 
+    struct MapPixelTarget {
+        int map_index = -1;
+        int row = -1;
+        int col = -1;
+    };
+
+    struct ResolvedMapPixelTargetSet {
+        std::string obsnum;
+        std::string producer;
+        int source_iter = -1;
+        int apply_iter = -1;
+        int map_count = -1;
+        int n_rows = -1;
+        int n_cols = -1;
+        std::vector<MapPixelTarget> targets;
+    };
+
     struct SourceProtectionSummary {
         std::string obsnum;
         std::string producer;
@@ -213,10 +232,23 @@ struct ReductionLearningState {
     using EffectiveDetectorPenaltyKey =
         std::tuple<std::string, std::string, std::string, int, int, int, int,
                    bool>;
+    using ResolvedMapPixelTargetKey =
+        std::tuple<std::string, std::string>;
     std::map<EffectiveSampleMaskKey, std::vector<EffectiveSampleMask>>
         effective_sample_masks;
     std::map<EffectiveDetectorPenaltyKey, DetectorPenalty>
         effective_detector_penalties;
+    // This is bounded operational apply state for one next iteration, not
+    // diagnostic event history.  One record is kept per observation and
+    // producer/stage, and each target list is capped by the effective policy.
+    std::map<ResolvedMapPixelTargetKey, ResolvedMapPixelTargetSet>
+        resolved_map_pixel_target_sets;
+    // Transient evidence for resolving the next boundary state. This is
+    // cleared at every iteration start and never checkpointed. Keeping it
+    // separate makes diagnostic-history retention and its record cap
+    // non-causal without changing the target ranking rule.
+    std::map<ResolvedMapPixelTargetKey, std::vector<MapPixelOutlier>>
+        current_map_pixel_target_candidates;
 
     // These vectors are diagnostic event history only.  max_records_per_type
     // bounds their output/memory cost but never truncates effective state.
@@ -288,6 +320,10 @@ struct ReductionLearningState {
         new_options.scan_network_pathology_max_new_flagged_fraction =
             std::max(0.0, new_options.scan_network_pathology_max_new_flagged_fraction);
         options = new_options;
+        if (!map_pixel_target_state_required_unlocked()) {
+            resolved_map_pixel_target_sets.clear();
+            current_map_pixel_target_candidates.clear();
+        }
         if (!options.enabled) {
             current_phase = IterationPhase::Inactive;
         }
@@ -316,6 +352,7 @@ struct ReductionLearningState {
         current_source_model_available = source_model_available;
         current_reduction_type = reduction_type;
         current_phase = phase_for_iteration(iter, source_model_available);
+        current_map_pixel_target_candidates.clear();
         begin_count++;
     }
 
@@ -357,6 +394,8 @@ struct ReductionLearningState {
         std::lock_guard<std::mutex> lock(*mutex);
         effective_sample_masks.clear();
         effective_detector_penalties.clear();
+        resolved_map_pixel_target_sets.clear();
+        current_map_pixel_target_candidates.clear();
         learned_sample_mask_events.clear();
         detector_penalty_events.clear();
         high_weight_detectors.clear();
@@ -413,6 +452,12 @@ struct ReductionLearningState {
         if (!options.enabled || !options.diagnostics_enabled) {
             return;
         }
+        if (map_pixel_target_state_required_unlocked() &&
+            record.iter == current_iter) {
+            current_map_pixel_target_candidates[
+                ResolvedMapPixelTargetKey{record.obsnum, record.producer}]
+                .push_back(record);
+        }
         push_with_cap(map_pixel_outliers, std::move(record),
                       dropped_map_pixel_outliers);
     }
@@ -462,6 +507,10 @@ struct ReductionLearningState {
            << effective_sample_mask_interval_count
            << " effective_detector_penalties="
            << effective_detector_penalties.size()
+           << " resolved_map_pixel_target_scopes="
+           << resolved_map_pixel_target_sets.size()
+           << " resolved_map_pixel_targets="
+           << resolved_map_pixel_target_count_unlocked()
            << " sample_mask_events=" << learned_sample_mask_events.size()
            << " detector_penalty_events=" << detector_penalty_events.size()
            << " high_weight_detectors=" << high_weight_detectors.size()
@@ -525,7 +574,232 @@ struct ReductionLearningState {
         return count;
     }
 
+    bool map_pixel_target_state_required() const {
+        std::lock_guard<std::mutex> lock(*mutex);
+        return map_pixel_target_state_required_unlocked();
+    }
+
+    void resolve_map_pixel_targets_for_next_iteration(
+        const std::string &obsnum, const std::string &producer,
+        int completed_iter, int map_count, int n_rows, int n_cols) {
+        std::lock_guard<std::mutex> lock(*mutex);
+        const ResolvedMapPixelTargetKey key{obsnum, producer};
+        if (!map_pixel_target_state_required_unlocked()) {
+            resolved_map_pixel_target_sets.erase(key);
+            return;
+        }
+        if (obsnum.empty() || producer.empty() || completed_iter < 0 ||
+            map_count < 0 || n_rows < 0 || n_cols < 0) {
+            throw std::invalid_argument(
+                "invalid map-pixel target resolution boundary");
+        }
+
+        const auto evidence = current_map_pixel_target_candidates.find(key);
+        int source_iter = -1;
+        if (evidence != current_map_pixel_target_candidates.end()) {
+            for (const auto &record : evidence->second) {
+                if (record.iter == completed_iter &&
+                    record.map_index >= 0 && record.map_index < map_count &&
+                    record.row >= 0 && record.row < n_rows && record.col >= 0 &&
+                    record.col < n_cols) {
+                    source_iter = completed_iter;
+                    break;
+                }
+            }
+        }
+
+        if (source_iter < 0) {
+            const auto previous = resolved_map_pixel_target_sets.find(key);
+            if (previous != resolved_map_pixel_target_sets.end()) {
+                auto &resolved = previous->second;
+                const bool grid_matches =
+                    resolved.targets.empty() ||
+                    (resolved.map_count == map_count &&
+                     resolved.n_rows == n_rows && resolved.n_cols == n_cols);
+                if (!grid_matches) {
+                    throw std::logic_error(
+                        "map grid changed while carrying resolved map-pixel targets");
+                }
+                resolved.apply_iter = completed_iter + 1;
+                if (resolved.targets.empty()) {
+                    resolved.map_count = map_count;
+                    resolved.n_rows = n_rows;
+                    resolved.n_cols = n_cols;
+                }
+                return;
+            }
+            ResolvedMapPixelTargetSet empty;
+            empty.obsnum = obsnum;
+            empty.producer = producer;
+            empty.apply_iter = completed_iter + 1;
+            empty.map_count = map_count;
+            empty.n_rows = n_rows;
+            empty.n_cols = n_cols;
+            resolved_map_pixel_target_sets.emplace(key, std::move(empty));
+            return;
+        }
+
+        struct Candidate {
+            MapPixelTarget target;
+            double score = 0.0;
+        };
+        std::vector<Candidate> candidates;
+        for (const auto &record : evidence->second) {
+            if (record.iter == source_iter &&
+                record.map_index >= 0 && record.map_index < map_count &&
+                record.row >= 0 && record.row < n_rows && record.col >= 0 &&
+                record.col < n_cols) {
+                const double raw_score =
+                    std::isfinite(record.leave_one_out_z)
+                        ? std::abs(record.leave_one_out_z)
+                        : std::abs(record.value);
+                candidates.push_back(
+                    {{record.map_index, record.row, record.col},
+                     std::isfinite(raw_score) ? raw_score : 0.0});
+            }
+        }
+        std::sort(candidates.begin(), candidates.end(),
+                  [](const auto &left, const auto &right) {
+                      return left.score > right.score;
+                  });
+
+        ResolvedMapPixelTargetSet resolved;
+        resolved.obsnum = obsnum;
+        resolved.producer = producer;
+        resolved.source_iter = source_iter;
+        resolved.apply_iter = completed_iter + 1;
+        resolved.map_count = map_count;
+        resolved.n_rows = n_rows;
+        resolved.n_cols = n_cols;
+        const auto max_targets = static_cast<std::size_t>(
+            options.map_pixel_outlier_targeted_contributor_max_pixels);
+        resolved.targets.reserve(
+            std::min(candidates.size(), max_targets));
+        for (const auto &candidate : candidates) {
+            if (resolved.targets.size() >= max_targets) {
+                break;
+            }
+            const bool duplicate = std::any_of(
+                resolved.targets.begin(), resolved.targets.end(),
+                [&](const auto &target) {
+                    return target.map_index == candidate.target.map_index &&
+                           target.row == candidate.target.row &&
+                           target.col == candidate.target.col;
+                });
+            if (!duplicate) {
+                resolved.targets.push_back(candidate.target);
+            }
+        }
+        resolved_map_pixel_target_sets[key] = std::move(resolved);
+    }
+
+    void finalize_map_pixel_target_state(
+        const std::vector<std::string> &observation_ids,
+        const std::string &producer, int completed_iter) {
+        std::lock_guard<std::mutex> lock(*mutex);
+        if (!map_pixel_target_state_required_unlocked()) {
+            resolved_map_pixel_target_sets.clear();
+            return;
+        }
+        if (producer.empty() || completed_iter < 0 || observation_ids.empty()) {
+            throw std::invalid_argument(
+                "invalid map-pixel target finalization boundary");
+        }
+
+        for (auto it = resolved_map_pixel_target_sets.begin();
+             it != resolved_map_pixel_target_sets.end();) {
+            const auto &[record_obsnum, record_producer] = it->first;
+            if (record_producer == producer &&
+                std::find(observation_ids.begin(), observation_ids.end(),
+                          record_obsnum) == observation_ids.end()) {
+                it = resolved_map_pixel_target_sets.erase(it);
+            }
+            else {
+                ++it;
+            }
+        }
+
+        const int apply_iter = completed_iter + 1;
+        for (const auto &obsnum : observation_ids) {
+            const ResolvedMapPixelTargetKey key{obsnum, producer};
+            const auto found = resolved_map_pixel_target_sets.find(key);
+            if (found == resolved_map_pixel_target_sets.end()) {
+                ResolvedMapPixelTargetSet empty;
+                empty.obsnum = obsnum;
+                empty.producer = producer;
+                empty.apply_iter = apply_iter;
+                resolved_map_pixel_target_sets.emplace(key, std::move(empty));
+                continue;
+            }
+            auto &resolved = found->second;
+            if (resolved.source_iter > completed_iter ||
+                resolved.apply_iter > apply_iter) {
+                throw std::logic_error(
+                    "map-pixel target state is ahead of the completed iteration");
+            }
+            if (resolved.apply_iter != apply_iter) {
+                // No new usable outlier evidence was produced for this scope.
+                // Preserve the same resolved target membership, as the
+                // historical in-process resolver preserved the latest usable
+                // source iteration.
+                resolved.apply_iter = apply_iter;
+            }
+        }
+    }
+
+    std::optional<ResolvedMapPixelTargetSet>
+    resolved_map_pixel_targets_for(const std::string &obsnum,
+                                   const std::string &producer,
+                                   int apply_iter) const {
+        std::lock_guard<std::mutex> lock(*mutex);
+        const auto found = resolved_map_pixel_target_sets.find(
+            ResolvedMapPixelTargetKey{obsnum, producer});
+        if (found == resolved_map_pixel_target_sets.end() ||
+            found->second.apply_iter != apply_iter) {
+            return std::nullopt;
+        }
+        return found->second;
+    }
+
+    std::vector<ResolvedMapPixelTargetSet>
+    resolved_map_pixel_target_records() const {
+        std::lock_guard<std::mutex> lock(*mutex);
+        std::vector<ResolvedMapPixelTargetSet> result;
+        result.reserve(resolved_map_pixel_target_sets.size());
+        for (const auto &[key, record] : resolved_map_pixel_target_sets) {
+            (void) key;
+            result.push_back(record);
+        }
+        return result;
+    }
+
+    std::size_t resolved_map_pixel_target_count() const {
+        std::lock_guard<std::mutex> lock(*mutex);
+        return resolved_map_pixel_target_count_unlocked();
+    }
+
 private:
+    bool map_pixel_target_state_required_unlocked() const {
+        const bool full_contribution_diagnostics =
+            options.enabled && options.diagnostics_enabled &&
+            options.map_pixel_outlier_diagnostics_enabled &&
+            options.map_pixel_outlier_contributor_diagnostics_enabled;
+        return options.enabled && options.diagnostics_enabled &&
+               options.map_pixel_outlier_diagnostics_enabled &&
+               options.map_pixel_outlier_targeted_contributor_diagnostics_enabled &&
+               options.map_pixel_outlier_targeted_contributor_max_pixels > 0 &&
+               !full_contribution_diagnostics;
+    }
+
+    std::size_t resolved_map_pixel_target_count_unlocked() const {
+        std::size_t count = 0;
+        for (const auto &[key, record] : resolved_map_pixel_target_sets) {
+            (void) key;
+            count += record.targets.size();
+        }
+        return count;
+    }
+
     void merge_effective_sample_mask(const LearnedSampleMask &record) {
         const long long start =
             record.apply_pre_rtc ? record.raw_start : record.ptc_start;

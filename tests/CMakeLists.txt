@@ -88,6 +88,29 @@ gtest_discover_tests(
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
         TEST_PREFIX "citlali::science_map_fits::"
         DISCOVERY_MODE PRE_TEST
+    )
+
+# Engine's learning-target consumer is also supplied by legacy
+# implementation-detail headers. Keep its real-path test in one translation
+# unit so it does not duplicate those definitions in citlali_test.
+add_executable(citlali_learning_target_application_test EXCLUDE_FROM_ALL
+    test_learning_target_application.cpp
+)
+set_target_properties(citlali_learning_target_application_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+target_link_libraries(citlali_learning_target_application_test
+    PRIVATE
+        citlali::citlali
+        GTest::gtest_main
+)
+add_dependencies(check citlali_learning_target_application_test)
+gtest_discover_tests(
+    citlali_learning_target_application_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+        TEST_PREFIX "citlali::learning_target_application::"
+        DISCOVERY_MODE PRE_TEST
 )
 
 # SCI-MAP-001-F001: the repaired ordinary primitive is a header-instantiated

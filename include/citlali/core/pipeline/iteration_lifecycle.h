@@ -91,6 +91,7 @@ template <class Engine, class Logger>
 void finalize_fruit_loop_iteration(Engine &engine, const Logger &logger) {
     finalize_iteration_weight_validation(engine);
     finalize_reduction_learning_iteration(engine);
+    finalize_map_pixel_target_boundary_state_if_available(engine);
     log_reduction_learning_iteration_if_needed(engine, logger, "finalize");
     engine.write_learning_summary();
 }

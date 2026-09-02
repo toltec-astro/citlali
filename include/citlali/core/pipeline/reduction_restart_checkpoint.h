@@ -12,7 +12,7 @@
 namespace citlali::pipeline {
 
 inline constexpr const char *reduction_restart_checkpoint_schema_version =
-    "citlali-reduction-restart-checkpoint-v2";
+    "citlali-reduction-restart-checkpoint-v3";
 inline constexpr const char *reduction_restart_checkpoint_filename =
     "citlali_restart_checkpoint.nc";
 
@@ -29,6 +29,8 @@ struct ReductionRestartCheckpointSummary {
     std::size_t weight_validation_detector_slots = 0;
     int weight_validation_accumulated_iterations = 0;
     bool weight_validation_finalized = false;
+    std::size_t resolved_map_pixel_target_scopes = 0;
+    std::size_t resolved_map_pixel_targets = 0;
 };
 
 std::filesystem::path reduction_restart_checkpoint_path(

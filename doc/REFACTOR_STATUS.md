@@ -228,9 +228,28 @@ detector ID is not sufficient: the detector is discovered only when the next
 iteration traces contributors to those pixels. The proposal keeps
 uninterrupted development available, while exact-restart, restart-dependent
 qualification, and restart-dependent stopping claims remain unavailable for
-the affected feature combination. Choice of the state semantics and any repair
-remain owner decisions; no numerical code has changed. See
+the affected feature combination. See
 [`EL_D19_ITERATION_BOUNDARY_STATE_CANDIDATE_R0.1.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_D19_ITERATION_BOUNDARY_STATE_CANDIDATE_R0.1.md).
+
+On `2026-09-02` the scientific owner approved Choice A against that exact
+candidate after reporting its proposal commit pushed. The bounded local repair
+now resolves one policy-capped next-iteration target set per observation at
+the completed-iteration boundary and makes uninterrupted and restarted
+execution consume the same state. Current-iteration resolution evidence is
+separate from the capped diagnostic archive, so record retention is no longer
+causal. Checkpoint v3 carries the resolved scope, source/apply iteration, map
+shape, and target tuples; explicit empty scopes are valid, while missing,
+malformed, policy-incompatible, and grid-incompatible required state fail
+closed. It does not retain map-pixel-outlier history or move detector
+selection earlier. The CLI builds, 16 focused learning/checkpoint tests and 3
+isolated real consumer-path tests pass, all 602 enabled CTests pass with one
+pre-existing disabled test, all 147 baseline tests and 16 fruit-loop tool
+tests pass, and full config preflight passes after updating its moved pointing
+fixture locator. D19 remains open and the affected exact-restart claim remains
+unavailable until the real point-152389 split control matches all required
+products and learned state for the approved three post-checkpoint iterations.
+The exact approval is recorded in
+[`SCIENTIFIC_OWNER_D19_CHOICE_A_APPROVAL_2026-09-02.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_D19_CHOICE_A_APPROVAL_2026-09-02.md).
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

@@ -45,6 +45,23 @@ std::vector<std::string> reduction_restart_observation_ids(
 }
 
 template <class Engine>
+void finalize_map_pixel_target_boundary_state_if_available(Engine &engine) {
+    if (!fruit_loops_config(engine).enabled) {
+        return;
+    }
+    if constexpr (requires {
+                      engine.learning.finalize_map_pixel_target_state(
+                          reduction_restart_observation_ids(engine),
+                          std::string{"mapdiag:raw_obs"},
+                          engine.iteration.fruit_iter);
+                  }) {
+        engine.learning.finalize_map_pixel_target_state(
+            reduction_restart_observation_ids(engine), "mapdiag:raw_obs",
+            engine.iteration.fruit_iter);
+    }
+}
+
+template <class Engine>
 bool fruit_loop_restart_requested(const Engine &engine) {
     return fruit_loops_config(engine).enabled &&
            citlali::config::has_nonempty_config_value(
@@ -141,9 +158,11 @@ void initialize_fruit_loop_restart_if_requested(
                     summary.weight_validation_detector_slots,
                     summary.weight_validation_accumulated_iterations,
                     summary.weight_validation_finalized,
+                    summary.resolved_map_pixel_target_scopes,
+                    summary.resolved_map_pixel_targets,
                 };
         logger->info(
-            "loaded exact fruit-loop restart: checkpoint={} completed_iteration={} next_iteration={} effective_sample_mask_intervals={} effective_detector_penalties={} weight_validation_detector_slots={} weight_validation_accumulated_iterations={} weight_validation_finalized={} creator_version={}",
+            "loaded exact fruit-loop restart: checkpoint={} completed_iteration={} next_iteration={} effective_sample_mask_intervals={} effective_detector_penalties={} weight_validation_detector_slots={} weight_validation_accumulated_iterations={} weight_validation_finalized={} resolved_map_pixel_target_scopes={} resolved_map_pixel_targets={} creator_version={}",
             summary.checkpoint_path.string(), summary.completed_iteration,
             summary.next_iteration,
             summary.effective_sample_mask_intervals,
@@ -151,6 +170,8 @@ void initialize_fruit_loop_restart_if_requested(
             summary.weight_validation_detector_slots,
             summary.weight_validation_accumulated_iterations,
             summary.weight_validation_finalized,
+            summary.resolved_map_pixel_target_scopes,
+            summary.resolved_map_pixel_targets,
             summary.creator_version);
     }
 }

@@ -11,8 +11,9 @@ without repeating completed iterations. Loading only the last map is not an
 exact continuation once reduction learning is active: the next iteration also
 depends on the accumulated effective sample-mask interval union, effective
 detector penalties, and the absolute iteration number that selects the
-learning/apply phase. Diagnostic event vectors are bounded QA history and are
-not operational state.
+learning/apply phase. Diagnostic event vectors are bounded QA history rather
+than restart state, but any resolved projection of that history that controls
+a later operation is operational state and must cross the boundary.
 
 Treating a prior map path as a restart would therefore create plausible output
 while silently discarding learned state. Resetting the iteration number would
@@ -116,6 +117,28 @@ this enabled learning path. Exact-restart claims are unavailable until D19 is
 resolved by an approved state-semantics decision and multi-iteration real-data
 validation.
 
+Later on 2026-09-02 the scientific owner approved D19 Choice A against the
+exact `EL_D19_ITERATION_BOUNDARY_STATE_CANDIDATE_R0.1.md` object. Schema version
+3 therefore adds one bounded resolved next-iteration map-pixel target set per
+observation and `mapdiag:raw_obs` scope, including its source/apply iteration
+and map shape. Both uninterrupted and restarted execution consume this state.
+Current-iteration resolution evidence is kept separately from the capped
+diagnostic archive, so diagnostic retention cannot change a later target set.
+An explicit empty resolution is valid; missing, malformed, out-of-policy, or
+grid-incompatible required state fails closed. The diagnostic event history
+remains outside the checkpoint, and the target set is replaced at each
+completed boundary. Schema versions 1 and 2 are rejected by the version-3
+loader rather than silently treated as complete.
+
+Focused local tests cover bounded resolution, empty state, checkpoint
+round-trip without diagnostic history, fail-closed missing state, application
+to the map contribution tracer, older-schema rejection, and a synthetic
+five-plus-three split that matches eight uninterrupted iterations. D19
+nevertheless remains open, and
+the affected exact-restart claim remains unavailable, until the approved real
+pointing replay matches all required products and learned state for three
+post-checkpoint iterations.
+
 ## Evidence
 
 - `include/citlali/core/pipeline/reduction_restart_checkpoint.h`
@@ -123,3 +146,4 @@ validation.
 - `tests/test_learning_and_fruit_contracts.cpp`
 - [`../SCIENTIFIC_CONVENTIONS.md`](../SCIENTIFIC_CONVENTIONS.md)
 - [`../../validation/fruit_loop_point_152389_injected_convergence_development_2026-09-02/README.md`](../../validation/fruit_loop_point_152389_injected_convergence_development_2026-09-02/README.md)
+- [`../scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_D19_CHOICE_A_APPROVAL_2026-09-02.md`](../scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_D19_CHOICE_A_APPROVAL_2026-09-02.md)

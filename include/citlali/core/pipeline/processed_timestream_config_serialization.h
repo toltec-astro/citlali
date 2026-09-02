@@ -555,6 +555,10 @@ inline YAML::Node fruit_loop_restart_resolution_node(
         resolution.weight_validation_accumulated_iterations;
     node["weight_validation_finalized"] =
         resolution.weight_validation_finalized;
+    node["resolved_map_pixel_target_scopes"] =
+        resolution.resolved_map_pixel_target_scopes;
+    node["resolved_map_pixel_targets"] =
+        resolution.resolved_map_pixel_targets;
     return node;
 }
 

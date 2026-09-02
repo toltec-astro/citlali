@@ -502,17 +502,19 @@
       "failure_policy": "Diagnostic input availability never changes flags. Once learning diagnostics are enabled, sidecar output I/O failure is fatal."
     },
     "reduction_restart_checkpoint": {
-      "scientific_identity": "Atomic operational checkpoint containing absolute fruit-loop iteration identity, observation identity, policy snapshots, compacted learning state, and retained processed-weight validation state needed for exact continuation.",
-      "coordinate_frame": "Not spatial; observation, detector, scan, and sample identities retain their named acquisition domains.",
+      "scientific_identity": "Atomic operational checkpoint containing absolute fruit-loop iteration identity, observation identity, policy snapshots, compacted learning state, retained processed-weight validation state, and any bounded resolved next-iteration map-pixel target state needed for exact continuation.",
+      "coordinate_frame": "Observation, detector, scan, and sample identities retain their named acquisition domains. A resolved map-pixel target is a zero-based map-index, row, and column tuple on the stored raw-observation map shape.",
       "axes": [
         "observation",
         "effective sample-mask interval",
         "effective detector penalty",
-        "weight-validation detector slot"
+        "weight-validation detector slot",
+        "resolved map-pixel target scope",
+        "resolved map-pixel target"
       ],
-      "units_policy": "Iteration, observation, detector, scan, network, array, and sample indices are dimensionless; detector-penalty event time is Unix seconds; factors and scores are dimensionless.",
-      "indexing_policy": "completed_iteration and next_iteration are zero-based absolute fruit-loop indices; observation references index the checkpoint observation_id vector.",
-      "missing_value_policy": "Observation identity is required and non-empty. Zero learned masks, penalties, or weight-validation slots are represented by zero count scalars and absent optional state dimensions.",
+      "units_policy": "Iteration, observation, detector, scan, network, array, sample, map, row, column, and shape indices are dimensionless; detector-penalty event time is Unix seconds; factors and scores are dimensionless.",
+      "indexing_policy": "completed_iteration, next_iteration, target source/apply iterations, map_index, row, and column are zero-based; observation and target-scope references index their checkpoint vectors.",
+      "missing_value_policy": "Observation identity is required and non-empty. Zero learned masks, penalties, weight-validation slots, or resolved targets use zero count scalars and absent optional state dimensions. When the effective policy requires targeted contributor tracing, every observation has one explicit raw-observation target scope; an empty scope is distinct from missing required state.",
       "failure_policy": "Fatal when fruit loops are enabled; the checkpoint is written atomically after each completed iteration."
     }
   },
@@ -1333,7 +1335,8 @@
       "scalar_one_of": {
         "schema_version": [
           "citlali-reduction-restart-checkpoint-v1",
-          "citlali-reduction-restart-checkpoint-v2"
+          "citlali-reduction-restart-checkpoint-v2",
+          "citlali-reduction-restart-checkpoint-v3"
         ]
       },
       "required_variables_by_scalar": {
@@ -1343,6 +1346,14 @@
             "weight_validation_detector_slot_count",
             "weight_validation_accumulated_iterations",
             "weight_validation_finalized"
+          ],
+          "citlali-reduction-restart-checkpoint-v3": [
+            "processed_time_chunk_policy_yaml",
+            "weight_validation_detector_slot_count",
+            "weight_validation_accumulated_iterations",
+            "weight_validation_finalized",
+            "resolved_map_pixel_target_scope_count",
+            "resolved_map_pixel_target_count"
           ]
         }
       }

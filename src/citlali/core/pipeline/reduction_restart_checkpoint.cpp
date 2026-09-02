@@ -29,6 +29,11 @@ using EffectiveSampleMaskKey =
 using EffectiveDetectorPenaltyKey =
     ReductionLearningState::EffectiveDetectorPenaltyKey;
 using DetectorPenalty = ReductionLearningState::DetectorPenalty;
+using ResolvedMapPixelTarget = ReductionLearningState::MapPixelTarget;
+using ResolvedMapPixelTargetKey =
+    ReductionLearningState::ResolvedMapPixelTargetKey;
+using ResolvedMapPixelTargetSet =
+    ReductionLearningState::ResolvedMapPixelTargetSet;
 
 [[noreturn]] void checkpoint_error(const std::filesystem::path &path,
                                    const std::string &message) {
@@ -160,6 +165,19 @@ struct FlatCheckpointState {
     std::vector<double> penalty_score;
     std::vector<double> penalty_event_time_unix_sec;
     std::vector<int> penalty_scan_local;
+
+    std::vector<int> target_scope_observation_index;
+    std::vector<std::string> target_scope_producer;
+    std::vector<int> target_scope_source_iteration;
+    std::vector<int> target_scope_apply_iteration;
+    std::vector<int> target_scope_map_count;
+    std::vector<int> target_scope_n_rows;
+    std::vector<int> target_scope_n_cols;
+
+    std::vector<int> target_scope_index;
+    std::vector<int> target_map_index;
+    std::vector<int> target_row;
+    std::vector<int> target_col;
 };
 
 FlatCheckpointState flatten_effective_state(
@@ -235,7 +253,149 @@ FlatCheckpointState flatten_effective_state(
             penalty.event_time_unix_sec);
         flat.penalty_scan_local.push_back(penalty.scan_local ? 1 : 0);
     }
+
+    const auto target_scope_count =
+        learning.resolved_map_pixel_target_sets.size();
+    flat.target_scope_observation_index.reserve(target_scope_count);
+    flat.target_scope_producer.reserve(target_scope_count);
+    flat.target_scope_source_iteration.reserve(target_scope_count);
+    flat.target_scope_apply_iteration.reserve(target_scope_count);
+    flat.target_scope_map_count.reserve(target_scope_count);
+    flat.target_scope_n_rows.reserve(target_scope_count);
+    flat.target_scope_n_cols.reserve(target_scope_count);
+    for (const auto &[key, resolved] :
+         learning.resolved_map_pixel_target_sets) {
+        (void) key;
+        const auto obs = obs_index.find(resolved.obsnum);
+        if (obs == obs_index.end()) {
+            throw std::invalid_argument(
+                "resolved map-pixel target state names observation " +
+                resolved.obsnum + " outside the reduction observation set");
+        }
+        const int scope_index = static_cast<int>(
+            flat.target_scope_observation_index.size());
+        flat.target_scope_observation_index.push_back(obs->second);
+        flat.target_scope_producer.push_back(resolved.producer);
+        flat.target_scope_source_iteration.push_back(resolved.source_iter);
+        flat.target_scope_apply_iteration.push_back(resolved.apply_iter);
+        flat.target_scope_map_count.push_back(resolved.map_count);
+        flat.target_scope_n_rows.push_back(resolved.n_rows);
+        flat.target_scope_n_cols.push_back(resolved.n_cols);
+        for (const auto &target : resolved.targets) {
+            flat.target_scope_index.push_back(scope_index);
+            flat.target_map_index.push_back(target.map_index);
+            flat.target_row.push_back(target.row);
+            flat.target_col.push_back(target.col);
+        }
+    }
     return flat;
+}
+
+bool resolved_map_pixel_target_state_required(
+    const citlali::config::TimestreamLearningConfig &config) {
+    const auto &outlier = config.map_pixel_outlier;
+    const bool full_contribution_diagnostics =
+        config.enabled && config.diagnostics_enabled &&
+        outlier.diagnostics_enabled &&
+        outlier.contributor_diagnostics_enabled;
+    return config.enabled && config.diagnostics_enabled &&
+           outlier.diagnostics_enabled &&
+           outlier.targeted_contributor_diagnostics_enabled &&
+           outlier.targeted_contributor_max_pixels > 0 &&
+           !full_contribution_diagnostics;
+}
+
+std::string resolved_map_pixel_target_state_error(
+    const FlatCheckpointState &flat, int completed_iteration,
+    const std::vector<std::string> &observation_ids,
+    const citlali::config::TimestreamLearningConfig &config) {
+    const auto scope_count = flat.target_scope_observation_index.size();
+    const auto target_count = flat.target_scope_index.size();
+    if (flat.target_scope_producer.size() != scope_count ||
+        flat.target_scope_source_iteration.size() != scope_count ||
+        flat.target_scope_apply_iteration.size() != scope_count ||
+        flat.target_scope_map_count.size() != scope_count ||
+        flat.target_scope_n_rows.size() != scope_count ||
+        flat.target_scope_n_cols.size() != scope_count ||
+        flat.target_map_index.size() != target_count ||
+        flat.target_row.size() != target_count ||
+        flat.target_col.size() != target_count) {
+        return "resolved map-pixel target vectors do not share their declared sizes";
+    }
+
+    const bool required = resolved_map_pixel_target_state_required(config);
+    if (!required) {
+        if (scope_count != 0 || target_count != 0) {
+            return "resolved map-pixel target state is present when the effective policy does not use it";
+        }
+        return {};
+    }
+    if (scope_count != observation_ids.size()) {
+        return "resolved map-pixel target state does not contain exactly one raw-observation scope per observation";
+    }
+
+    std::vector<int> scope_target_counts(scope_count, 0);
+    std::vector<std::vector<std::tuple<int, int, int>>> scope_targets(
+        scope_count);
+    for (std::size_t i = 0; i < target_count; ++i) {
+        const int scope_index = flat.target_scope_index[i];
+        if (scope_index < 0 ||
+            static_cast<std::size_t>(scope_index) >= scope_count) {
+            return "resolved map-pixel target names an invalid scope";
+        }
+        const auto scope = static_cast<std::size_t>(scope_index);
+        ++scope_target_counts[scope];
+        const auto target = std::tuple{
+            flat.target_map_index[i], flat.target_row[i], flat.target_col[i]};
+        if (std::find(scope_targets[scope].begin(),
+                      scope_targets[scope].end(), target) !=
+            scope_targets[scope].end()) {
+            return "resolved map-pixel target state contains a duplicate target";
+        }
+        scope_targets[scope].push_back(target);
+    }
+
+    std::vector<bool> seen_observation(observation_ids.size(), false);
+    const int next_iteration = completed_iteration + 1;
+    const int max_targets =
+        config.map_pixel_outlier.targeted_contributor_max_pixels;
+    for (std::size_t i = 0; i < scope_count; ++i) {
+        const int obs_index = flat.target_scope_observation_index[i];
+        if (obs_index < 0 ||
+            static_cast<std::size_t>(obs_index) >= observation_ids.size() ||
+            seen_observation[static_cast<std::size_t>(obs_index)]) {
+            return "resolved map-pixel target state has an invalid or duplicate observation scope";
+        }
+        seen_observation[static_cast<std::size_t>(obs_index)] = true;
+        const int source_iteration =
+            flat.target_scope_source_iteration[i];
+        const int map_count = flat.target_scope_map_count[i];
+        const int n_rows = flat.target_scope_n_rows[i];
+        const int n_cols = flat.target_scope_n_cols[i];
+        const int n_targets = scope_target_counts[i];
+        if (flat.target_scope_producer[i] != "mapdiag:raw_obs" ||
+            source_iteration < -1 ||
+            source_iteration > completed_iteration ||
+            flat.target_scope_apply_iteration[i] != next_iteration ||
+            map_count < -1 || n_rows < -1 || n_cols < -1 ||
+            n_targets < 0 || n_targets > max_targets ||
+            (source_iteration < 0 && n_targets != 0) ||
+            (source_iteration >= 0 && n_targets == 0)) {
+            return "invalid resolved map-pixel target scope at row " +
+                   std::to_string(i);
+        }
+        if (n_targets > 0 &&
+            (map_count <= 0 || n_rows <= 0 || n_cols <= 0)) {
+            return "nonempty resolved map-pixel target scope has no valid map grid";
+        }
+        for (const auto &[map_index, row, col] : scope_targets[i]) {
+            if (map_index < 0 || map_index >= map_count || row < 0 ||
+                row >= n_rows || col < 0 || col >= n_cols) {
+                return "resolved map-pixel target lies outside its map grid";
+            }
+        }
+    }
+    return {};
 }
 
 std::string weight_validation_state_error(
@@ -338,6 +498,11 @@ void write_reduction_restart_checkpoint(
     }
     const auto obs_index = observation_index(observation_ids);
     const auto flat = flatten_effective_state(learning, obs_index);
+    if (const auto error = resolved_map_pixel_target_state_error(
+            flat, completed_iteration, observation_ids, learning_config);
+        !error.empty()) {
+        throw std::invalid_argument("invalid restart checkpoint " + error);
+    }
     const auto output_path = reduction_restart_checkpoint_path(reduction_dir);
 
     write_netcdf_atomic(output_path.string(), [&](netCDF::NcFile &file) {
@@ -360,6 +525,13 @@ void write_reduction_restart_checkpoint(
         add_netcdf_var(
             file, "effective_detector_penalty_count",
             static_cast<long long>(flat.penalty_iteration.size()));
+        add_netcdf_var(
+            file, "resolved_map_pixel_target_scope_count",
+            static_cast<long long>(
+                flat.target_scope_observation_index.size()));
+        add_netcdf_var(
+            file, "resolved_map_pixel_target_count",
+            static_cast<long long>(flat.target_scope_index.size()));
         add_netcdf_var(
             file, "weight_validation_detector_slot_count",
             static_cast<long long>(
@@ -424,6 +596,43 @@ void write_reduction_restart_checkpoint(
                                  flat.penalty_event_time_unix_sec);
             write_numeric_vector(file, "penalty_scan_local", netCDF::ncInt,
                                  dim, flat.penalty_scan_local);
+        }
+
+        if (!flat.target_scope_observation_index.empty()) {
+            const auto dim = file.addDim(
+                "resolved_map_pixel_target_scope",
+                flat.target_scope_observation_index.size());
+            write_numeric_vector(
+                file, "target_scope_observation_index", netCDF::ncInt, dim,
+                flat.target_scope_observation_index);
+            write_string_vector(file, "target_scope_producer", dim,
+                                flat.target_scope_producer);
+            write_numeric_vector(
+                file, "target_scope_source_iteration", netCDF::ncInt, dim,
+                flat.target_scope_source_iteration);
+            write_numeric_vector(
+                file, "target_scope_apply_iteration", netCDF::ncInt, dim,
+                flat.target_scope_apply_iteration);
+            write_numeric_vector(
+                file, "target_scope_map_count", netCDF::ncInt, dim,
+                flat.target_scope_map_count);
+            write_numeric_vector(file, "target_scope_n_rows", netCDF::ncInt,
+                                 dim, flat.target_scope_n_rows);
+            write_numeric_vector(file, "target_scope_n_cols", netCDF::ncInt,
+                                 dim, flat.target_scope_n_cols);
+        }
+
+        if (!flat.target_scope_index.empty()) {
+            const auto dim = file.addDim(
+                "resolved_map_pixel_target", flat.target_scope_index.size());
+            write_numeric_vector(file, "target_scope_index", netCDF::ncInt,
+                                 dim, flat.target_scope_index);
+            write_numeric_vector(file, "target_map_index", netCDF::ncInt,
+                                 dim, flat.target_map_index);
+            write_numeric_vector(file, "target_row", netCDF::ncInt, dim,
+                                 flat.target_row);
+            write_numeric_vector(file, "target_col", netCDF::ncInt, dim,
+                                 flat.target_col);
         }
 
         if (!weight_validation.ratio_penalty_sum.empty()) {
@@ -534,6 +743,10 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
         file, input_path, "effective_sample_mask_interval_count");
     const auto penalty_count_ll = read_scalar<long long>(
         file, input_path, "effective_detector_penalty_count");
+    const auto target_scope_count_ll = read_scalar<long long>(
+        file, input_path, "resolved_map_pixel_target_scope_count");
+    const auto target_count_ll = read_scalar<long long>(
+        file, input_path, "resolved_map_pixel_target_count");
     const auto weight_validation_slot_count_ll =
         read_scalar<long long>(
             file, input_path,
@@ -547,6 +760,7 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
             file, input_path, "weight_validation_finalized");
     if (observation_count_ll <= 0 || mask_count_ll < 0 ||
         penalty_count_ll < 0 ||
+        target_scope_count_ll < 0 || target_count_ll < 0 ||
         weight_validation_slot_count_ll < 0 ||
         (weight_validation_finalized != 0 &&
          weight_validation_finalized != 1)) {
@@ -556,6 +770,9 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
         static_cast<std::size_t>(observation_count_ll);
     const auto mask_count = static_cast<std::size_t>(mask_count_ll);
     const auto penalty_count = static_cast<std::size_t>(penalty_count_ll);
+    const auto target_scope_count =
+        static_cast<std::size_t>(target_scope_count_ll);
+    const auto target_count = static_cast<std::size_t>(target_count_ll);
     const auto weight_validation_slot_count =
         static_cast<std::size_t>(
             weight_validation_slot_count_ll);
@@ -565,6 +782,73 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
         checkpoint_error(
             input_path,
             "ordered observation identities differ from the current reduction");
+    }
+
+    FlatCheckpointState target_flat;
+    target_flat.target_scope_observation_index = read_numeric_vector<int>(
+        file, input_path, "target_scope_observation_index",
+        target_scope_count);
+    target_flat.target_scope_producer = read_string_vector(
+        file, input_path, "target_scope_producer", target_scope_count);
+    target_flat.target_scope_source_iteration = read_numeric_vector<int>(
+        file, input_path, "target_scope_source_iteration",
+        target_scope_count);
+    target_flat.target_scope_apply_iteration = read_numeric_vector<int>(
+        file, input_path, "target_scope_apply_iteration",
+        target_scope_count);
+    target_flat.target_scope_map_count = read_numeric_vector<int>(
+        file, input_path, "target_scope_map_count", target_scope_count);
+    target_flat.target_scope_n_rows = read_numeric_vector<int>(
+        file, input_path, "target_scope_n_rows", target_scope_count);
+    target_flat.target_scope_n_cols = read_numeric_vector<int>(
+        file, input_path, "target_scope_n_cols", target_scope_count);
+    target_flat.target_scope_index = read_numeric_vector<int>(
+        file, input_path, "target_scope_index", target_count);
+    target_flat.target_map_index = read_numeric_vector<int>(
+        file, input_path, "target_map_index", target_count);
+    target_flat.target_row = read_numeric_vector<int>(
+        file, input_path, "target_row", target_count);
+    target_flat.target_col = read_numeric_vector<int>(
+        file, input_path, "target_col", target_count);
+    if (const auto error = resolved_map_pixel_target_state_error(
+            target_flat, completed_iteration, observation_ids,
+            expected_learning_config);
+        !error.empty()) {
+        checkpoint_error(input_path, error);
+    }
+
+    std::map<ResolvedMapPixelTargetKey, ResolvedMapPixelTargetSet>
+        resolved_targets;
+    std::vector<ResolvedMapPixelTargetSet *> resolved_target_rows;
+    resolved_target_rows.reserve(target_scope_count);
+    for (std::size_t i = 0; i < target_scope_count; ++i) {
+        ResolvedMapPixelTargetSet resolved;
+        resolved.obsnum = observation_ids[static_cast<std::size_t>(
+            target_flat.target_scope_observation_index[i])];
+        resolved.producer = target_flat.target_scope_producer[i];
+        resolved.source_iter =
+            target_flat.target_scope_source_iteration[i];
+        resolved.apply_iter = target_flat.target_scope_apply_iteration[i];
+        resolved.map_count = target_flat.target_scope_map_count[i];
+        resolved.n_rows = target_flat.target_scope_n_rows[i];
+        resolved.n_cols = target_flat.target_scope_n_cols[i];
+        const auto key = ResolvedMapPixelTargetKey{
+            resolved.obsnum, resolved.producer};
+        const auto [it, inserted] =
+            resolved_targets.emplace(key, std::move(resolved));
+        if (!inserted) {
+            checkpoint_error(
+                input_path,
+                "duplicate resolved map-pixel target scope identity");
+        }
+        resolved_target_rows.push_back(&it->second);
+    }
+    for (std::size_t i = 0; i < target_count; ++i) {
+        auto &resolved = *resolved_target_rows[static_cast<std::size_t>(
+            target_flat.target_scope_index[i])];
+        resolved.targets.push_back(ResolvedMapPixelTarget{
+            target_flat.target_map_index[i], target_flat.target_row[i],
+            target_flat.target_col[i]});
     }
 
     const auto mask_obs = read_numeric_vector<int>(
@@ -727,6 +1011,8 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
         std::lock_guard<std::mutex> lock(*learning.mutex);
         learning.effective_sample_masks = std::move(masks);
         learning.effective_detector_penalties = std::move(penalties);
+        learning.resolved_map_pixel_target_sets =
+            std::move(resolved_targets);
     }
     weight_validation = std::move(restored_weight_validation);
 
@@ -743,6 +1029,8 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
         weight_validation_slot_count,
         weight_validation_accumulated_iterations,
         weight_validation_finalized != 0,
+        target_scope_count,
+        target_count,
     };
 }
 

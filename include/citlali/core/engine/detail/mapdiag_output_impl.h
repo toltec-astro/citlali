@@ -98,6 +98,13 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             mapdiag_context, idx, obs_weight_frac, obs_core_weight_frac);
     }
 
+    if (stage_name == "raw_obs") {
+        learning.resolve_map_pixel_targets_for_next_iteration(
+            observation_identity.obsnum, mapdiag_record_producer,
+            iteration.fruit_iter, static_cast<int>(mb->signal.size()),
+            static_cast<int>(mb->n_rows), static_cast<int>(mb->n_cols));
+    }
+
     write_netcdf_atomic(
         citlali::pipeline::mapdiag_netcdf_filename(filename),
         [&](netCDF::NcFile &fo) {
