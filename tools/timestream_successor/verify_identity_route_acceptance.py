@@ -12,7 +12,16 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA = "citlali-timestream-successor-identity-route-acceptance-v1"
+SCHEMA = "citlali-timestream-successor-identity-route-acceptance-v2"
+SUBJECT_CANDIDATE_REVISION = "b57d9f606549d524ab6bb61faf0cd3d52ac27db6"
+SUBJECT_CANDIDATE_TREE = "32de9791255c6c52032c0f05d64054b83ff44de5"
+REPRESENTATIVE_DATASET = "SCI_ALIGN_STAGE7_NGC4449_152390"
+TELESCOPE_FILENAME = "tel_toltec_2026-02-19_152390_00_0002.nc"
+TELESCOPE_SHA256 = (
+    "2845455a620635955c00a4731e0d9720cfa456fece79d1729cf755a366a1ad6b"
+)
+TELESCOPE_BYTE_COUNT = 24157872
+TELESCOPE_RECORD_COUNT = 62109
 OCCURRENCE_SUPPORT_ASSIGNMENT_SCHEMA = (
     "citlali-native-occurrence-support-assignment-v1"
 )
@@ -80,6 +89,11 @@ def require_true(record: dict[str, Any], name: str) -> None:
         raise AcceptanceError(f"{name} must be true")
 
 
+def require_false(record: dict[str, Any], name: str) -> None:
+    if record.get(name) is not False:
+        raise AcceptanceError(f"{name} must be false")
+
+
 def require_zero(record: dict[str, Any], name: str) -> None:
     if require_integer(record, name) != 0:
         raise AcceptanceError(f"{name} must be zero")
@@ -88,6 +102,10 @@ def require_zero(record: dict[str, Any], name: str) -> None:
 def validate(record: dict[str, Any]) -> None:
     if record.get("schema") != SCHEMA:
         raise AcceptanceError(f"schema must be {SCHEMA!r}")
+    if record.get("subject_candidate_revision") != SUBJECT_CANDIDATE_REVISION:
+        raise AcceptanceError("subject_candidate_revision is not the accepted candidate")
+    if record.get("subject_candidate_tree") != SUBJECT_CANDIDATE_TREE:
+        raise AcceptanceError("subject_candidate_tree is not the accepted candidate tree")
     source_revision = require_string(record, "source_revision")
     if not HEX40.fullmatch(source_revision):
         raise AcceptanceError("source_revision must be one full lowercase Git SHA")
@@ -98,6 +116,8 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError(
             "executable_revision must be an exact prefix of source_revision"
         )
+    if require_string(record, "tooling_revision") != source_revision:
+        raise AcceptanceError("tooling_revision must equal source_revision")
     executable_version = require_string(record, "executable_version")
     if "dirty" in executable_version:
         raise AcceptanceError("executable_version must describe a clean build")
@@ -106,9 +126,12 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError("executable_sha256 must be one lowercase SHA-256")
     if record.get("build_environment") != "spack":
         raise AcceptanceError("build_environment must be 'spack'")
-    require_string(record, "build_profile")
+    if record.get("build_profile") != "unity-gcc13":
+        raise AcceptanceError("build_profile must be 'unity-gcc13'")
     if not HEX64.fullmatch(require_string(record, "spack_lock_sha256")):
         raise AcceptanceError("spack_lock_sha256 must be one lowercase SHA-256")
+    require_integer(record, "spack_lock_byte_count", 1)
+    require_true(record, "spack_lock_retained")
     require_string(record, "spack_root_dag")
     require_true(record, "dependency_state_verified")
     for name in ("kidscpp_version", "tula_version"):
@@ -127,12 +150,38 @@ def validate(record: dict[str, Any]) -> None:
         "publication_complete",
     ):
         require_true(record, name)
-    require_string(record, "representative_dataset_id")
+    if record.get("route_context_state") != "map_facing_context_complete":
+        raise AcceptanceError("route_context_state must be map_facing_context_complete")
+    for name in (
+        "route_activated",
+        "ordinary_route_changed",
+        "canonical_integration_performed",
+        "representative_science_claim",
+        "map_action_performed",
+    ):
+        require_false(record, name)
+    if record.get("representative_dataset_id") != REPRESENTATIVE_DATASET:
+        raise AcceptanceError("representative_dataset_id is not the approved dataset")
     if require_integer(record, "observation", 1) != 152390:
         raise AcceptanceError("observation must be 152390")
-    require_integer(record, "first_native_row")
+    if require_integer(record, "subobservation") != 0:
+        raise AcceptanceError("subobservation must be 0")
+    if require_integer(record, "scan", 1) != 2:
+        raise AcceptanceError("scan must be 2")
+    if require_integer(record, "first_native_row") != 20000:
+        raise AcceptanceError("first_native_row must be 20000")
     native_row_count = require_integer(record, "native_row_count", 2048)
+    if native_row_count != 2048:
+        raise AcceptanceError("native_row_count must be exactly 2048")
     require_string(record, "mapping_instance_id")
+    if record.get("telescope_filename") != TELESCOPE_FILENAME:
+        raise AcceptanceError("telescope_filename is not approved")
+    if record.get("telescope_sha256") != TELESCOPE_SHA256:
+        raise AcceptanceError("telescope_sha256 is not approved")
+    if require_integer(record, "telescope_byte_count", 1) != TELESCOPE_BYTE_COUNT:
+        raise AcceptanceError("telescope_byte_count is not approved")
+    if require_integer(record, "telescope_record_count", 1) != TELESCOPE_RECORD_COUNT:
+        raise AcceptanceError("telescope_record_count is not approved")
     if record.get("producer_interface_id") != PRODUCER_INTERFACE:
         raise AcceptanceError("producer_interface_id is not the approved interface")
     if record.get("producer_interface_sha256") != PRODUCER_SHA256:
@@ -168,6 +217,26 @@ def validate(record: dict[str, Any]) -> None:
             "occurrence_support_assigned_at_utc must use exact UTC seconds"
         )
     require_true(record, "occurrence_support_calibration_pending")
+    require_true(record, "ast_present_in_rtc_input_context")
+    if record.get("identity_rtc_ast_dependency") != "not_applicable":
+        raise AcceptanceError("identity_rtc_ast_dependency must be not_applicable")
+    if require_integer(record, "val_initial_generation") != 0:
+        raise AcceptanceError("val_initial_generation must be 0")
+    if require_integer(record, "val_committed_finding_count") != 0:
+        raise AcceptanceError("val_committed_finding_count must be 0")
+    require_true(record, "val_exact_snapshot_bound")
+    expected_unavailable_states = {
+        "calibration_product_state": "unavailable_component_not_admitted",
+        "calibration_for_ptc_val_evaluation_state": (
+            "unavailable_calibration_product_absent"
+        ),
+        "ptc_product_state": "unavailable_component_not_admitted",
+        "ptc_for_map_val_evaluation_state": "unavailable_ptc_product_absent",
+        "map_admission_state": "unavailable_calibration_and_ptc_products",
+    }
+    for name, expected in expected_unavailable_states.items():
+        if record.get(name) != expected:
+            raise AcceptanceError(f"{name} must be {expected!r}")
     if record.get("terminal_state") != "complete":
         raise AcceptanceError("terminal_state must be 'complete'")
     if record.get("terminal_failure_cause") != "none":
@@ -177,6 +246,8 @@ def validate(record: dict[str, Any]) -> None:
 
     metrics = require_object(record.get("metrics"), "metrics")
     network_count = require_integer(metrics, "network_count", 1)
+    if network_count != 11:
+        raise AcceptanceError("network_count must be exactly 11")
     detector_count = require_integer(metrics, "detector_count", 1)
     native_occurrences = require_integer(metrics, "native_occurrence_count", 1)
     detector_occurrences = require_integer(
@@ -241,6 +312,19 @@ def validate(record: dict[str, Any]) -> None:
     require_zero(metrics, "derived_plan_bytes")
     require_zero(metrics, "rtc_owned_numeric_bytes")
 
+    ast_available = require_integer(metrics, "ast_available_occurrence_count")
+    ast_unavailable = require_integer(metrics, "ast_unavailable_occurrence_count")
+    if ast_available + ast_unavailable != native_occurrences:
+        raise AcceptanceError("AST available/unavailable counts do not cover the run")
+    if require_integer(metrics, "ast_support_count") != ast_available:
+        raise AcceptanceError("ast_support_count must equal available AST occurrences")
+    require_integer(metrics, "ast_raw_owned_bytes", 1)
+    require_integer(metrics, "ast_mapped_owned_bytes", 1)
+    require_zero(metrics, "align_owned_bytes")
+    require_integer(metrics, "rtc_input_owned_bytes", 1)
+    require_zero(metrics, "rtc_output_owned_bytes")
+    require_zero(metrics, "val_owned_bytes")
+
     exact_counts = {
         "paired_ingress_value_comparison_count": 2 * detector_occurrences,
         "paired_ingress_identity_comparison_count": detector_count,
@@ -256,6 +340,9 @@ def validate(record: dict[str, Any]) -> None:
         "chunk_partition_count": 2,
         "chunk_realized_operator_comparison_count": 1,
         "chunk_scientific_comparison_count": detector_occurrences,
+        "route_occurrence_binding_count": native_occurrences,
+        "ast_mapped_occurrence_count": native_occurrences,
+        "val_binding_comparison_count": 8,
         "native_admission_entry_count": 1,
         "learn_entry_count": 1,
         "consider_entry_count": 1,
@@ -285,6 +372,10 @@ def validate(record: dict[str, Any]) -> None:
         "chunk_scientific_mismatch_count",
         "selected_time_mismatch_count",
         "representative_native_mismatch_count",
+        "route_occurrence_binding_mismatch_count",
+        "ast_identity_mismatch_count",
+        "ast_support_mismatch_count",
+        "val_binding_mismatch_count",
         "unexpected_error_count",
         "unexpected_critical_count",
     ):

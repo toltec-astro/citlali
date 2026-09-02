@@ -2,7 +2,7 @@
 #include <citlali/core/pipeline/canonical_apt_detector_relation_v2.h>
 #include <citlali/core/pipeline/observation_setup_validation.h>
 #include <citlali/core/pipeline/timestream_native_paired_readout_kids_adapter.h>
-#include <citlali/core/pipeline/timestream_identity_rtc_only_route.h>
+#include <citlali/core/pipeline/timestream_identity_route_context.h>
 #include <citlali/core/utils/sha256.h>
 
 #include <citlali_config/gitversion.h>
@@ -38,6 +38,8 @@
 #include <iostream>
 #include <limits>
 #include <memory>
+#include <numbers>
+#include <numeric>
 #include <optional>
 #include <random>
 #include <regex>
@@ -58,7 +60,21 @@ namespace pipeline = citlali::pipeline;
 namespace apt = citlali::pipeline::canonical_apt_v2;
 
 constexpr std::string_view acceptance_schema =
-    "citlali-timestream-successor-identity-route-acceptance-v1";
+    "citlali-timestream-successor-identity-route-acceptance-v2";
+constexpr std::string_view subject_candidate_revision =
+    "b57d9f606549d524ab6bb61faf0cd3d52ac27db6";
+constexpr std::string_view subject_candidate_tree =
+    "32de9791255c6c52032c0f05d64054b83ff44de5";
+constexpr std::string_view representative_dataset =
+    "SCI_ALIGN_STAGE7_NGC4449_152390";
+constexpr std::string_view telescope_filename =
+    "tel_toltec_2026-02-19_152390_00_0002.nc";
+constexpr std::string_view telescope_sha256 =
+    "2845455a620635955c00a4731e0d9720cfa456fece79d1729cf755a366a1ad6b";
+constexpr std::uintmax_t telescope_byte_count = 24157872;
+constexpr std::size_t telescope_record_count = 62109;
+constexpr pipeline::AstScanMotionIdentityBinding ast_identity_binding{
+    1523900001, 1523900002, 1523900003, 1523900004};
 constexpr std::string_view occurrence_support_assignment_schema =
     "citlali-native-occurrence-support-assignment-v1";
 constexpr std::string_view occurrence_support_duration_relation =
@@ -77,6 +93,7 @@ constexpr std::string_view producer_interface_sha256 =
     "f9659b34a49a07d4287c4a70db798cdd2ec30049531da603fcca1e9d1fdd5969";
 struct Arguments {
     fs::path data_directory;
+    fs::path telescope;
     fs::path apt_manifest;
     fs::path config;
     fs::path producer_interface_artifact;
@@ -89,7 +106,7 @@ struct Arguments {
     std::string build_environment;
     std::string build_profile;
     std::string spack_root_dag;
-    std::string dataset_id = "SCI_ALIGN_STAGE7_NGC4449_152390";
+    std::string dataset_id = std::string{representative_dataset};
     std::int64_t first_native_row = 20000;
     std::int64_t native_row_count = 2048;
     bool owner_run = false;
@@ -106,12 +123,12 @@ void require(bool condition, const std::string &message) {
 std::string usage() {
     return
         "Usage: citlali_timestream_successor_identity_acceptance\n"
-        "  --data-dir PATH --apt-manifest PATH --config PATH\n"
+        "  --data-dir PATH --telescope PATH --apt-manifest PATH --config PATH\n"
         "  --producer-interface-artifact PATH\n"
         "  --occurrence-support-assignment PATH\n"
         "  --output PATH\n"
         "  --source-revision FULL_SHA --owner-run\n"
-        "  --build-environment spack --build-profile ID\n"
+        "  --build-environment spack --build-profile unity-gcc13\n"
         "  --spack-lock PATH --spack-root-dag ID\n"
         "  [--dataset-id ID] [--first-native-row N] [--native-row-count N]\n";
 }
@@ -143,6 +160,8 @@ Arguments parse_arguments(int argc, char **argv) {
             std::exit(0);
         } else if (option == "--data-dir") {
             result.data_directory = next(index, option);
+        } else if (option == "--telescope") {
+            result.telescope = next(index, option);
         } else if (option == "--apt-manifest") {
             result.apt_manifest = next(index, option);
         } else if (option == "--config") {
@@ -177,6 +196,7 @@ Arguments parse_arguments(int argc, char **argv) {
         }
     }
     require(!result.data_directory.empty(), "--data-dir is required");
+    require(!result.telescope.empty(), "--telescope is required");
     require(!result.apt_manifest.empty(), "--apt-manifest is required");
     require(!result.config.empty(), "--config is required");
     require(!result.producer_interface_artifact.empty(),
@@ -188,15 +208,17 @@ Arguments parse_arguments(int argc, char **argv) {
             "--source-revision is required");
     require(result.build_environment == "spack",
             "authoritative acceptance requires --build-environment spack");
-    require(!result.build_profile.empty(),
-            "--build-profile is required");
+    require(result.build_profile == "unity-gcc13",
+            "authoritative acceptance requires --build-profile unity-gcc13");
     require(!result.spack_lock.empty(), "--spack-lock is required");
     require(!result.spack_root_dag.empty(),
             "--spack-root-dag is required");
     require(result.first_native_row >= 0,
             "--first-native-row must be nonnegative");
-    require(result.native_row_count >= 4,
-            "--native-row-count must be at least four");
+    require(result.dataset_id == representative_dataset &&
+                result.first_native_row == 20000 &&
+                result.native_row_count == 2048,
+            "bounded acceptance requires the approved dataset and exact 2048-row slice at row 20000");
     return result;
 }
 
@@ -360,6 +382,116 @@ T read_netcdf_scalar(netCDF::NcFile &file, const std::string &name) {
     T result{};
     variable.getVar(&result);
     return result;
+}
+
+std::string read_netcdf_text(netCDF::NcFile &file,
+                             const std::string &name) {
+    const auto variable = file.getVar(name);
+    require(!variable.isNull() && variable.getDimCount() == 1,
+            "missing one-dimensional NetCDF text " + name);
+    std::vector<char> buffer(variable.getDim(0).getSize());
+    variable.getVar(buffer.data());
+    std::string result(buffer.begin(), buffer.end());
+    const auto nul = result.find('\0');
+    if (nul != std::string::npos) result.erase(nul);
+    while (!result.empty() &&
+           (result.back() == ' ' || result.back() == '\t' ||
+            result.back() == '\r' || result.back() == '\n')) {
+        result.pop_back();
+    }
+    return result;
+}
+
+std::string read_units(const netCDF::NcVar &variable,
+                       const std::string &name) {
+    const auto attribute = variable.getAtt("units");
+    require(!attribute.isNull(), name + " lacks a units attribute");
+    std::string result;
+    attribute.getValues(result);
+    return result;
+}
+
+Eigen::VectorXd read_vector(netCDF::NcFile &file,
+                            const std::string &name,
+                            std::size_t expected_count,
+                            std::string_view expected_units) {
+    const auto variable = file.getVar(name);
+    require(!variable.isNull() && variable.getDimCount() == 1 &&
+                variable.getDim(0).getSize() == expected_count,
+            name + " has an unexpected shape");
+    require(read_units(variable, name) == expected_units,
+            name + " has unexpected units");
+    Eigen::VectorXd result(static_cast<Eigen::Index>(expected_count));
+    variable.getVar(result.data());
+    return result;
+}
+
+struct TelescopeInput {
+    std::shared_ptr<const pipeline::AstScanMotionSource> source;
+    std::string sha256;
+    std::uintmax_t byte_count = 0;
+};
+
+TelescopeInput load_telescope(
+    const fs::path &path,
+    const pipeline::NativeObservationScope &scope) {
+    require(path.filename() == telescope_filename,
+            "telescope filename is not the approved artifact");
+    std::error_code error;
+    const auto byte_count = fs::file_size(path, error);
+    require(!error && byte_count == telescope_byte_count,
+            "telescope byte count is not approved");
+    const auto digest = citlali::utils::sha256_file(path);
+    require(digest == telescope_sha256,
+            "telescope SHA-256 is not approved");
+
+    netCDF::NcFile file(path.string(), netCDF::NcFile::read);
+    require(read_netcdf_scalar<int>(file, "Header.Dcs.ObsNum") ==
+                    scope.observation &&
+                read_netcdf_scalar<int>(file, "Header.Dcs.SubObsNum") ==
+                    scope.subobservation &&
+                read_netcdf_scalar<int>(file, "Header.Dcs.ScanNum") ==
+                    scope.scan,
+            "telescope producer scope is not the admitted observation");
+
+    pipeline::AstScanMotionSourceMetadata metadata;
+    metadata.producer_kind =
+        pipeline::AstScanMotionProducerKind::real_toltec;
+    metadata.dcs_observation_goal =
+        read_netcdf_text(file, "Header.Dcs.ObsGoal");
+    metadata.dcs_observation_program =
+        read_netcdf_text(file, "Header.Dcs.ObsPgm");
+    metadata.scan_file_valid =
+        read_netcdf_scalar<int>(file, "Header.ScanFile.Valid");
+    metadata.source_epoch =
+        read_netcdf_scalar<double>(file, "Header.Source.Epoch");
+    metadata.source_coordinate_system =
+        read_netcdf_scalar<int>(file, "Header.Source.CoordSys");
+    metadata.nominal_producer_cadence_hz = 50.0;
+    metadata.field_registry = pipeline::AstScanMotionFieldRegistry::
+        source_ra_act_source_dec_act_j2000_radians;
+    metadata.source_artifact_identity = "sha256:" + digest;
+
+    const auto time_variable =
+        file.getVar(std::string{pipeline::ast_scan_motion_time_field});
+    require(!time_variable.isNull() &&
+                time_variable.getDimCount() == 1 &&
+                time_variable.getDim(0).getSize() ==
+                    telescope_record_count,
+            "telescope time cardinality is not approved");
+    auto times = read_vector(
+        file, std::string{pipeline::ast_scan_motion_time_field},
+        telescope_record_count, "sec");
+    auto ra = read_vector(
+        file, std::string{pipeline::ast_scan_motion_ra_field},
+        telescope_record_count, "rad");
+    auto dec = read_vector(
+        file, std::string{pipeline::ast_scan_motion_dec_field},
+        telescope_record_count, "rad");
+    auto source = pipeline::AstScanMotionSource::admit(
+        scope, scope, 0, std::move(metadata), std::move(times),
+        std::move(ra), std::move(dec));
+    return {std::move(source), digest, byte_count};
 }
 
 struct RuntimeConfig {
@@ -790,6 +922,16 @@ struct ComparisonMetrics {
     std::size_t chunk_scientific_comparison_count = 0;
     std::size_t chunk_scientific_mismatch_count = 0;
     std::size_t assigned_support_binding_mismatch_count = 0;
+    std::size_t route_occurrence_binding_count = 0;
+    std::size_t route_occurrence_binding_mismatch_count = 0;
+    std::size_t ast_mapped_occurrence_count = 0;
+    std::size_t ast_available_occurrence_count = 0;
+    std::size_t ast_unavailable_occurrence_count = 0;
+    std::size_t ast_support_count = 0;
+    std::size_t ast_identity_mismatch_count = 0;
+    std::size_t ast_support_mismatch_count = 0;
+    std::size_t val_binding_comparison_count = 0;
+    std::size_t val_binding_mismatch_count = 0;
 };
 
 pipeline::NativeReadoutIntegrationSupport assigned_occurrence_interval(
@@ -1156,13 +1298,15 @@ PairedBuildResult build_paired_readout(
         metrics, "sha256:" + mapping_digest.finish()};
 }
 
-pipeline::RtcOnlyRouteOutcome run_route(
+pipeline::IdentityRouteContextOutcome run_route(
     std::uint64_t run,
-    const std::shared_ptr<const pipeline::NativePairedReadoutObservation> &paired,
+    const std::shared_ptr<const pipeline::IdentityRouteAlignContext>
+        &align_context,
     std::vector<pipeline::NativeOccurrenceSpan> logical_spans,
     std::vector<std::vector<pipeline::NativeOccurrenceSpan>>
         engineering_partitions,
     pipeline::RtcOnlyProductSlot &publication) {
+    const auto &paired = align_context->paired_handle();
     std::size_t completed_occurrences = 0;
     std::size_t completed_cells = 0;
     for (const auto &span : logical_spans) {
@@ -1174,10 +1318,12 @@ pipeline::RtcOnlyRouteOutcome run_route(
     }
     pipeline::RtcOnlyLogicalFinalization finalization{
         run, {run}, paired, completed_occurrences, completed_cells, true};
-    return pipeline::run_identity_rtc_only(
-        {{run}, paired, std::move(logical_spans),
-         std::move(engineering_partitions), std::move(finalization)},
-        publication);
+    pipeline::RtcOnlyRouteRequest rtc{
+        {run}, paired, align_context->val_snapshot_handle(),
+        std::move(logical_spans), std::move(engineering_partitions),
+        std::move(finalization)};
+    return pipeline::run_identity_route_context(
+        {align_context, std::move(rtc)}, publication);
 }
 
 const NetworkInput &producer_input(
@@ -1420,6 +1566,207 @@ void compare_partitioned_to_single(const pipeline::RtcTimestream &partitioned,
     }
 }
 
+struct TypedRouteEvidence {
+    std::size_t ast_raw_record_count = 0;
+    std::size_t ast_raw_owned_bytes = 0;
+    std::size_t ast_mapped_owned_bytes = 0;
+    std::size_t align_owned_bytes = 0;
+    std::size_t rtc_input_owned_bytes = 0;
+    std::size_t rtc_output_owned_bytes = 0;
+    std::size_t val_owned_bytes = 0;
+    std::uint64_t val_generation = 0;
+    std::size_t val_finding_count = 0;
+    bool ast_present = false;
+    bool ast_dependency_not_applicable = false;
+    bool val_exact_snapshot_bound = false;
+    bool calibration_unavailable = false;
+    bool calibration_val_evaluation_unavailable = false;
+    bool ptc_unavailable = false;
+    bool ptc_val_evaluation_unavailable = false;
+    bool map_admission_unavailable = false;
+    bool map_action_performed = false;
+};
+
+TypedRouteEvidence inspect_typed_route(
+    const pipeline::IdentityRouteContextOutcome &outcome,
+    const std::shared_ptr<const pipeline::IdentityRouteAlignContext>
+        &align_context,
+    ComparisonMetrics &metrics) {
+    require(outcome.map_facing_context_complete() &&
+                outcome.failure_cause ==
+                    pipeline::IdentityRouteContextFailureCause::none &&
+                outcome.failure_detail.empty(),
+            "typed identity route did not reach its MAP-facing context");
+    const auto &bundle = outcome.map_facing_bundle;
+    const auto &output = bundle->rtc_context_handle();
+    const auto &input = output->input_context_handle();
+    const auto &terminal = output->rtc_terminal_handle();
+    const auto &product = terminal->timestream_handle();
+    const auto &plan = terminal->plan_handle();
+    const auto &evidence = terminal->evidence_handle();
+    const auto &val = align_context->val_snapshot_handle();
+    const auto &paired = align_context->paired_handle();
+    const auto &ast = align_context->ast_views_handle();
+
+    TypedRouteEvidence result;
+    result.ast_present = ast && input->ast_views_handle().get() == ast.get() &&
+        output->ast_views_handle().get() == ast.get();
+    result.ast_dependency_not_applicable =
+        input->ast_dependency() ==
+        pipeline::IdentityRtcAstDependency::not_applicable;
+
+    const std::array<const pipeline::ValSnapshot *, 8> val_bindings{
+        align_context->val_snapshot_handle().get(),
+        input->val_snapshot_handle().get(),
+        output->val_snapshot_handle().get(),
+        bundle->val_snapshot_handle().get(),
+        terminal->val_snapshot_handle().get(),
+        product->val_snapshot_handle().get(),
+        plan->val_snapshot_handle().get(),
+        evidence->val_snapshot_handle().get()};
+    for (const auto *binding : val_bindings) {
+        ++metrics.val_binding_comparison_count;
+        metrics.val_binding_mismatch_count += binding != val.get();
+    }
+    result.val_generation = val->generation().value;
+    result.val_finding_count = val->committed_delta_findings().size();
+    result.val_owned_bytes = val->memory_evidence().logical_owned_bytes();
+    result.val_exact_snapshot_bound =
+        val->paired_handle().get() == paired.get() &&
+        val->parent_snapshot_handle() == nullptr &&
+        result.val_generation == 0 && result.val_finding_count == 0 &&
+        outcome.rtc_terminal.diagnostics.val_generation ==
+            val->generation() &&
+        metrics.val_binding_mismatch_count == 0;
+
+    const auto &cal = bundle->calibration_state();
+    result.calibration_unavailable =
+        cal.rtc_context_handle().get() == output.get() &&
+        cal.product_state() == pipeline::IdentityCalibrationProductState::
+            unavailable_component_not_admitted &&
+        cal.unit_state() == pipeline::IdentityCalibrationUnitState::
+            unavailable_no_calibration_product &&
+        cal.response_state() == pipeline::IdentityCalibrationResponseState::
+            unavailable_no_calibration_product &&
+        cal.uncertainty_state() ==
+            pipeline::IdentityCalibrationUncertaintyState::
+                unavailable_no_calibration_product;
+    result.calibration_val_evaluation_unavailable =
+        bundle->calibration_for_ptc_val_evaluation()
+                .rtc_context_handle()
+                .get() == output.get() &&
+        bundle->calibration_for_ptc_val_evaluation().state() ==
+        pipeline::IdentityCalibrationForPtcValEvaluationState::
+            unavailable_calibration_product_absent;
+    const auto &ptc = bundle->ptc_state();
+    result.ptc_unavailable =
+        ptc.rtc_context_handle().get() == output.get() &&
+        ptc.product_state() == pipeline::IdentityPtcProductState::
+            unavailable_component_not_admitted &&
+        ptc.conditioning_state() == pipeline::IdentityPtcConditioningState::
+            unavailable_no_ptc_product &&
+        ptc.response_state() == pipeline::IdentityPtcResponseState::
+            unavailable_no_ptc_product &&
+        ptc.uncertainty_state() == pipeline::IdentityPtcUncertaintyState::
+            unavailable_no_ptc_product;
+    result.ptc_val_evaluation_unavailable =
+        bundle->ptc_for_map_val_evaluation()
+                .rtc_context_handle()
+                .get() == output.get() &&
+        bundle->ptc_for_map_val_evaluation().state() ==
+        pipeline::IdentityPtcForMapValEvaluationState::
+            unavailable_ptc_product_absent;
+    result.map_admission_unavailable =
+        bundle->map_admission_state() ==
+        pipeline::IdentityMapAdmissionState::
+            unavailable_calibration_and_ptc_products;
+    result.map_action_performed = bundle->map_action_performed();
+
+    for (const auto &span : product->network_spans()) {
+        const auto &network = paired->network(span.network_id);
+        const auto &axis = network.occurrence_axis();
+        const auto &mapped = ast->network(span.network_id);
+        result.ast_mapped_owned_bytes +=
+            mapped.memory_evidence().logical_owned_bytes();
+        for (auto row = span.first_native_row;
+             row < span.past_last_native_row; ++row) {
+            const auto expected_identity = axis.native_identity(row);
+            const auto &expected_occurrence = axis.occurrence(row);
+            const auto assignment = output->occurrence_assignment(
+                span.network_id, row);
+            ++metrics.route_occurrence_binding_count;
+            if (!(assignment.network_occurrence == expected_identity) ||
+                assignment.parent_readout_occurrence_key !=
+                    expected_occurrence.parent_readout_occurrence_key ||
+                assignment.paired_xr_occurrence_key !=
+                    expected_occurrence.paired_xr_occurrence_key ||
+                !(assignment.integration_support ==
+                  expected_occurrence.integration_support) ||
+                std::bit_cast<std::uint64_t>(assignment.assigned_time_unix_sec) !=
+                    std::bit_cast<std::uint64_t>(
+                        expected_identity.reconstructed_time_unix_sec()) ||
+                assignment.assigned_time_unix_sec !=
+                    std::midpoint(
+                        assignment.integration_support.begin_unix_sec,
+                        assignment.integration_support.end_unix_sec)) {
+                ++metrics.route_occurrence_binding_mismatch_count;
+            }
+
+            ++metrics.ast_mapped_occurrence_count;
+            if (!(mapped.identity(row) == expected_identity)) {
+                ++metrics.ast_identity_mismatch_count;
+            }
+            const auto &record = output->ast_motion_record(
+                span.network_id, row);
+            const auto support = output->ast_motion_support(
+                span.network_id, row);
+            if (record.available()) {
+                ++metrics.ast_available_occurrence_count;
+                if (!support) {
+                    ++metrics.ast_support_mismatch_count;
+                    continue;
+                }
+                ++metrics.ast_support_count;
+                const bool support_valid =
+                    support->network_occurrence == expected_identity &&
+                    support->lower_source_record.scope == paired->scope() &&
+                    support->upper_source_record.scope == paired->scope() &&
+                    support->upper_source_record.record ==
+                        support->lower_source_record.record + 1 &&
+                    support->lower_source_time_unix_sec <=
+                        assignment.assigned_time_unix_sec &&
+                    assignment.assigned_time_unix_sec <=
+                        support->upper_source_time_unix_sec &&
+                    support->lower_weight >= 0.0 &&
+                    support->upper_weight >= 0.0 &&
+                    support->lower_weight <= 1.0 &&
+                    support->upper_weight <= 1.0 &&
+                    std::abs((support->lower_weight +
+                              support->upper_weight) - 1.0) <=
+                        4.0 * std::numeric_limits<double>::epsilon();
+                metrics.ast_support_mismatch_count += !support_valid;
+            } else {
+                ++metrics.ast_unavailable_occurrence_count;
+                if (support || record.causes() ==
+                                   pipeline::AstScanMotionCause::none) {
+                    ++metrics.ast_support_mismatch_count;
+                }
+            }
+        }
+    }
+
+    result.ast_raw_record_count = ast->raw_product_handle()->record_count();
+    result.ast_raw_owned_bytes =
+        ast->raw_product_handle()->memory_evidence().logical_owned_bytes();
+    result.align_owned_bytes =
+        align_context->memory_evidence().logical_owned_bytes();
+    result.rtc_input_owned_bytes =
+        input->memory_evidence().logical_owned_bytes();
+    result.rtc_output_owned_bytes =
+        output->memory_evidence().logical_owned_bytes();
+    return result;
+}
+
 std::uint64_t peak_rss_bytes() {
     rusage usage{};
     require(getrusage(RUSAGE_SELF, &usage) == 0,
@@ -1433,11 +1780,16 @@ std::uint64_t peak_rss_bytes() {
 
 struct AcceptanceRun {
     std::int64_t observation = 0;
+    std::int64_t subobservation = 0;
+    std::int64_t scan = 0;
     pipeline::RtcOnlyTerminalResult terminal;
     pipeline::NativePairedReadoutCardinality native_cardinality;
     pipeline::NativePairedReadoutMemoryEvidence native_memory;
     ComparisonMetrics comparisons;
+    TypedRouteEvidence typed_route;
     std::string mapping_instance_id;
+    std::string telescope_sha256;
+    std::uintmax_t telescope_byte_count = 0;
     double wall_time_sec = 0.0;
     double cpu_time_sec = 0.0;
     std::uint64_t peak_rss = 0;
@@ -1464,26 +1816,51 @@ AcceptanceRun execute_acceptance(
     const auto native_cardinality = paired_build.paired->cardinality();
     const auto native_memory = paired_build.paired->memory_evidence();
 
+    // VAL V0 is established immediately after Paired-D1 and remains the exact
+    // immutable state threaded through ALIGN, RTC, and the MAP-facing bundle.
+    auto val = pipeline::ValSnapshot::initial(paired_build.paired);
+    const auto telescope = load_telescope(arguments.telescope, scope);
+    auto ast_product = pipeline::build_ast_scan_motion_product(
+        telescope.source, ast_identity_binding);
+    require(ast_product->route_profile() ==
+                    pipeline::AstScanMotionRouteProfile::science_lissajous &&
+                ast_product->identity_binding().complete() &&
+                ast_product->source_time_axis_mapping_eligible(),
+            "approved telescope input did not produce the accepted AST route profile");
+    std::vector<std::shared_ptr<const pipeline::NativeNetworkAlignment>>
+        native_timings;
+    native_timings.reserve(inputs.size());
+    for (const auto &input : inputs) {
+        native_timings.push_back(input.native_timing);
+    }
+    auto ast_views = pipeline::AstScanMotionNetworkViews::admit(
+        scope, std::move(ast_product), std::move(native_timings));
+    auto align_context = pipeline::IdentityRouteAlignContext::admit(
+        paired_build.paired, std::move(ast_views), val);
+
     pipeline::RtcOnlyProductSlot full_publication;
     const auto full_spans =
         pipeline::full_native_occurrence_spans(*paired_build.paired);
     const auto full = run_route(
-        1, paired_build.paired, full_spans, {full_spans},
+        1, align_context, full_spans, {full_spans},
         full_publication);
     const auto primary_cpu_end = std::clock();
     const auto primary_wall_end = std::chrono::steady_clock::now();
-    require(full.complete() &&
-                full_publication.snapshot() == full.published_product,
-            "full identity RTC route did not publish exactly one completion");
-    require(full.terminal.failure_cause ==
+    require(full.map_facing_context_complete(),
+            "full typed identity route did not reach the MAP-facing boundary");
+    const auto &full_terminal =
+        full.map_facing_bundle->rtc_context_handle()->rtc_terminal_handle();
+    require(full_publication.snapshot() == full_terminal,
+            "full typed identity route did not publish exactly one completion");
+    require(full.rtc_terminal.failure_cause ==
                     pipeline::RtcOnlyFailureCause::none &&
-                full.terminal.failure_detail.empty(),
+                full.rtc_terminal.failure_detail.empty(),
             "successful identity RTC route retained a failure cause");
-    require(full.published_product->timestream_handle()
+    require(full_terminal->timestream_handle()
                     ->memory_evidence()
                     .owned_numeric_bytes == 0,
             "identity RTC product unexpectedly owns a numerical plane");
-    const auto &op = full.published_product->timestream_handle()
+    const auto &op = full_terminal->timestream_handle()
                          ->realized_operator();
     require(op.sampling_factor == 1 && op.sampling_phase == 0 &&
                 op.x_from_x == 1.0 && op.x_from_r == 0.0 &&
@@ -1492,8 +1869,20 @@ AcceptanceRun execute_acceptance(
 
     auto comparisons = paired_build.ingress_comparisons;
     compare_full_product_to_producer_facts(
-        *full.published_product->timestream_handle(), relation, inputs,
+        *full_terminal->timestream_handle(), relation, inputs,
         comparisons);
+    const auto typed_route = inspect_typed_route(
+        full, align_context, comparisons);
+    require(typed_route.ast_present &&
+                typed_route.ast_dependency_not_applicable &&
+                typed_route.val_exact_snapshot_bound &&
+                typed_route.calibration_unavailable &&
+                typed_route.calibration_val_evaluation_unavailable &&
+                typed_route.ptc_unavailable &&
+                typed_route.ptc_val_evaluation_unavailable &&
+                typed_route.map_admission_unavailable &&
+                !typed_route.map_action_performed,
+            "typed route endpoint states are incomplete or untruthful");
 
     auto first_spans = full_spans;
     auto second_spans = full_spans;
@@ -1510,13 +1899,15 @@ AcceptanceRun execute_acceptance(
     }
     pipeline::RtcOnlyProductSlot partitioned_publication;
     const auto partitioned = run_route(
-        2, paired_build.paired, full_spans,
+        2, align_context, full_spans,
         {std::move(first_spans), std::move(second_spans)},
         partitioned_publication);
-    const auto &partitioned_diagnostics = partitioned.terminal.diagnostics;
-    require(partitioned.complete() &&
+    const auto &partitioned_diagnostics =
+        partitioned.rtc_terminal.diagnostics;
+    require(partitioned.map_facing_context_complete() &&
                 partitioned_publication.snapshot() ==
-                    partitioned.published_product &&
+                    partitioned.map_facing_bundle->rtc_context_handle()
+                        ->rtc_terminal_handle() &&
                 partitioned_diagnostics.engineering_partition_count == 2 &&
                 partitioned_diagnostics.native_admission_entry_count == 1 &&
                 partitioned_diagnostics.learn_entry_count == 1 &&
@@ -1526,8 +1917,9 @@ AcceptanceRun execute_acceptance(
                 partitioned_diagnostics.publication_entry_count == 1,
             "two-chunk identity RTC route did not finalize one publication");
     compare_partitioned_to_single(
-        *partitioned.published_product->timestream_handle(),
-        *full.published_product->timestream_handle(), comparisons);
+        *partitioned.map_facing_bundle->rtc_context_handle()
+             ->signal_handle(),
+        *full_terminal->timestream_handle(), comparisons);
 
     auto incomplete_partition = full_spans;
     for (auto &span : incomplete_partition) {
@@ -1537,33 +1929,40 @@ AcceptanceRun execute_acceptance(
     }
     pipeline::RtcOnlyProductSlot incomplete_publication;
     const auto incomplete = run_route(
-        3, paired_build.paired, full_spans, {incomplete_partition},
+        3, align_context, full_spans, {incomplete_partition},
         incomplete_publication);
-    require(!incomplete.complete() &&
-                incomplete.terminal.failure_cause ==
+    require(!incomplete.map_facing_context_complete() &&
+                incomplete.state ==
+                    pipeline::IdentityRouteContextState::rtc_failed &&
+                incomplete.rtc_terminal.failure_cause ==
                     pipeline::RtcOnlyFailureCause::incomplete_logical_support &&
                 !incomplete_publication.snapshot(),
             "missing engineering chunk published a false completion");
 
     const auto second_publish = run_route(
-        4, paired_build.paired, full_spans, {full_spans},
+        4, align_context, full_spans, {full_spans},
         full_publication);
-    require(!second_publish.complete() &&
-                second_publish.terminal.state ==
+    require(!second_publish.map_facing_context_complete() &&
+                second_publish.state ==
+                    pipeline::IdentityRouteContextState::rtc_failed &&
+                second_publish.rtc_terminal.state ==
                     pipeline::RtcOnlyTerminalState::publication_failed &&
-                second_publish.terminal.failure_cause ==
+                second_publish.rtc_terminal.failure_cause ==
                     pipeline::RtcOnlyFailureCause::publication_slot_occupied &&
-                full_publication.snapshot() == full.published_product,
+                full_publication.snapshot() == full_terminal,
             "second publication did not preserve the committed product");
     pipeline::RtcOnlyProductSlot failed_publication;
     auto invalid_spans = full_spans;
     ++invalid_spans.front().past_last_native_row;
     const auto failed = run_route(
-        5, paired_build.paired, invalid_spans, {invalid_spans},
+        5, align_context, invalid_spans, {invalid_spans},
         failed_publication);
-    require(!failed.complete() &&
-                failed.terminal.failure_cause ==
-                    pipeline::RtcOnlyFailureCause::input_contract_rejected &&
+    require(!failed.map_facing_context_complete() &&
+                failed.state ==
+                    pipeline::IdentityRouteContextState::input_context_failed &&
+                failed.failure_cause ==
+                    pipeline::IdentityRouteContextFailureCause::
+                        input_context_rejected &&
                 !failed_publication.snapshot(),
             "failed route published a false completion");
 
@@ -1574,9 +1973,11 @@ AcceptanceRun execute_acceptance(
     require(wall_time > 0.0 && cpu_time > 0.0,
             "acceptance timing measurements are not positive");
     return {
-        observation.observation, full.terminal, native_cardinality,
-        native_memory, comparisons,
-        std::move(paired_build.mapping_instance_id), wall_time, cpu_time,
+        observation.observation, observation.subobservation,
+        observation.scan, full.rtc_terminal, native_cardinality,
+        native_memory, comparisons, typed_route,
+        std::move(paired_build.mapping_instance_id), telescope.sha256,
+        telescope.byte_count, wall_time, cpu_time,
         peak_rss_bytes(), 2, true, true};
 }
 
@@ -1618,6 +2019,17 @@ void write_acceptance_record(const Arguments &arguments,
     require(run.comparisons.pair_causal_evidence_comparison_count ==
                 run.native_cardinality.detector_occurrence_count,
             "pair causal-evidence comparison count is incomplete");
+    require(run.comparisons.route_occurrence_binding_count ==
+                    run.native_cardinality.native_occurrence_count &&
+                run.comparisons.ast_mapped_occurrence_count ==
+                    run.native_cardinality.native_occurrence_count &&
+                run.comparisons.ast_available_occurrence_count +
+                        run.comparisons.ast_unavailable_occurrence_count ==
+                    run.native_cardinality.native_occurrence_count &&
+                run.comparisons.ast_support_count ==
+                    run.comparisons.ast_available_occurrence_count &&
+                run.comparisons.val_binding_comparison_count == 8,
+            "typed route comparison coverage is incomplete");
     require(run.chunk_partition_count == 2 &&
                 run.comparisons.chunk_realized_operator_comparison_count ==
                     1 &&
@@ -1638,8 +2050,24 @@ void write_acceptance_record(const Arguments &arguments,
                 run.comparisons.chunk_realized_operator_mismatch_count ==
                     0 &&
                 run.comparisons.chunk_scientific_mismatch_count == 0 &&
-                run.comparisons.assigned_support_binding_mismatch_count == 0,
+                run.comparisons.assigned_support_binding_mismatch_count == 0 &&
+                run.comparisons.route_occurrence_binding_mismatch_count == 0 &&
+                run.comparisons.ast_identity_mismatch_count == 0 &&
+                run.comparisons.ast_support_mismatch_count == 0 &&
+                run.comparisons.val_binding_mismatch_count == 0,
             "acceptance comparisons contain a scientific mismatch");
+    require(run.typed_route.ast_present &&
+                run.typed_route.ast_dependency_not_applicable &&
+                run.typed_route.val_exact_snapshot_bound &&
+                run.typed_route.val_generation == 0 &&
+                run.typed_route.val_finding_count == 0 &&
+                run.typed_route.calibration_unavailable &&
+                run.typed_route.calibration_val_evaluation_unavailable &&
+                run.typed_route.ptc_unavailable &&
+                run.typed_route.ptc_val_evaluation_unavailable &&
+                run.typed_route.map_admission_unavailable &&
+                !run.typed_route.map_action_performed,
+            "typed route evidence does not preserve the approved endpoint states");
     const auto &diagnostics = run.terminal.diagnostics;
     require(diagnostics.native_admission_entry_count == 1 &&
                 diagnostics.learn_entry_count == 1 &&
@@ -1658,6 +2086,12 @@ void write_acceptance_record(const Arguments &arguments,
     output << std::setprecision(17)
            << "{\n"
            << "  \"schema\": " << q(acceptance_schema) << ",\n"
+           << "  \"subject_candidate_revision\": "
+           << q(subject_candidate_revision) << ",\n"
+           << "  \"subject_candidate_tree\": "
+           << q(subject_candidate_tree) << ",\n"
+           << "  \"tooling_revision\": "
+           << q(arguments.source_revision) << ",\n"
            << "  \"source_revision\": " << q(arguments.source_revision)
            << ",\n"
            << "  \"executable_revision\": "
@@ -1677,6 +2111,9 @@ void write_acceptance_record(const Arguments &arguments,
            << "  \"spack_lock_sha256\": "
            << q(citlali::utils::sha256_file(arguments.spack_lock))
            << ",\n"
+           << "  \"spack_lock_byte_count\": "
+           << fs::file_size(arguments.spack_lock) << ",\n"
+           << "  \"spack_lock_retained\": true,\n"
            << "  \"spack_root_dag\": "
            << q(arguments.spack_root_dag) << ",\n"
            << "  \"dependency_state_verified\": true,\n"
@@ -1694,15 +2131,30 @@ void write_acceptance_record(const Arguments &arguments,
            << b(run.product_inspected_in_memory) << ",\n"
            << "  \"publication_complete\": "
            << b(run.publication_complete) << ",\n"
+           << "  \"route_context_state\": \"map_facing_context_complete\",\n"
+           << "  \"route_activated\": false,\n"
+           << "  \"ordinary_route_changed\": false,\n"
+           << "  \"canonical_integration_performed\": false,\n"
+           << "  \"representative_science_claim\": false,\n"
            << "  \"representative_dataset_id\": "
            << q(arguments.dataset_id) << ",\n"
            << "  \"observation\": " << run.observation << ",\n"
+           << "  \"subobservation\": " << run.subobservation << ",\n"
+           << "  \"scan\": " << run.scan << ",\n"
            << "  \"first_native_row\": "
            << arguments.first_native_row << ",\n"
            << "  \"native_row_count\": "
            << arguments.native_row_count << ",\n"
            << "  \"mapping_instance_id\": "
            << q(run.mapping_instance_id) << ",\n"
+           << "  \"telescope_filename\": " << q(telescope_filename)
+           << ",\n"
+           << "  \"telescope_sha256\": " << q(run.telescope_sha256)
+           << ",\n"
+           << "  \"telescope_byte_count\": "
+           << run.telescope_byte_count << ",\n"
+           << "  \"telescope_record_count\": "
+           << run.typed_route.ast_raw_record_count << ",\n"
            << "  \"producer_interface_id\": " << q(producer_interface)
            << ",\n"
            << "  \"producer_interface_sha256\": "
@@ -1727,6 +2179,27 @@ void write_acceptance_record(const Arguments &arguments,
                     support_assignment.event_time_role)) << ",\n"
            << "  \"occurrence_support_duration_relation\": "
            << q(occurrence_support_duration_relation) << ",\n"
+           << "  \"ast_present_in_rtc_input_context\": "
+           << b(run.typed_route.ast_present) << ",\n"
+           << "  \"identity_rtc_ast_dependency\": \"not_applicable\",\n"
+           << "  \"val_initial_generation\": "
+           << run.typed_route.val_generation << ",\n"
+           << "  \"val_committed_finding_count\": "
+           << run.typed_route.val_finding_count << ",\n"
+           << "  \"val_exact_snapshot_bound\": "
+           << b(run.typed_route.val_exact_snapshot_bound) << ",\n"
+           << "  \"calibration_product_state\": "
+              "\"unavailable_component_not_admitted\",\n"
+           << "  \"calibration_for_ptc_val_evaluation_state\": "
+              "\"unavailable_calibration_product_absent\",\n"
+           << "  \"ptc_product_state\": "
+              "\"unavailable_component_not_admitted\",\n"
+           << "  \"ptc_for_map_val_evaluation_state\": "
+              "\"unavailable_ptc_product_absent\",\n"
+           << "  \"map_admission_state\": "
+              "\"unavailable_calibration_and_ptc_products\",\n"
+           << "  \"map_action_performed\": "
+           << b(run.typed_route.map_action_performed) << ",\n"
            << "  \"terminal_state\": "
            << q(pipeline::rtc_only_terminal_state_name(run.terminal.state))
            << ",\n"
@@ -1819,6 +2292,30 @@ void write_acceptance_record(const Arguments &arguments,
            << ",\n"
            << "    \"chunk_scientific_comparison_count\": "
            << run.comparisons.chunk_scientific_comparison_count << ",\n"
+           << "    \"route_occurrence_binding_count\": "
+           << run.comparisons.route_occurrence_binding_count << ",\n"
+           << "    \"ast_mapped_occurrence_count\": "
+           << run.comparisons.ast_mapped_occurrence_count << ",\n"
+           << "    \"ast_available_occurrence_count\": "
+           << run.comparisons.ast_available_occurrence_count << ",\n"
+           << "    \"ast_unavailable_occurrence_count\": "
+           << run.comparisons.ast_unavailable_occurrence_count << ",\n"
+           << "    \"ast_support_count\": "
+           << run.comparisons.ast_support_count << ",\n"
+           << "    \"val_binding_comparison_count\": "
+           << run.comparisons.val_binding_comparison_count << ",\n"
+           << "    \"ast_raw_owned_bytes\": "
+           << run.typed_route.ast_raw_owned_bytes << ",\n"
+           << "    \"ast_mapped_owned_bytes\": "
+           << run.typed_route.ast_mapped_owned_bytes << ",\n"
+           << "    \"align_owned_bytes\": "
+           << run.typed_route.align_owned_bytes << ",\n"
+           << "    \"rtc_input_owned_bytes\": "
+           << run.typed_route.rtc_input_owned_bytes << ",\n"
+           << "    \"rtc_output_owned_bytes\": "
+           << run.typed_route.rtc_output_owned_bytes << ",\n"
+           << "    \"val_owned_bytes\": "
+           << run.typed_route.val_owned_bytes << ",\n"
            << "    \"wall_time_sec\": " << run.wall_time_sec << ",\n"
            << "    \"cpu_time_sec\": " << run.cpu_time_sec << ",\n"
            << "    \"process_peak_rss_bytes\": " << run.peak_rss << ",\n"
@@ -1856,6 +2353,15 @@ void write_acceptance_record(const Arguments &arguments,
            << run.comparisons.selected_time_mismatch_count << ",\n"
            << "    \"representative_native_mismatch_count\": "
            << run.comparisons.representative_native_mismatch_count << ",\n"
+           << "    \"route_occurrence_binding_mismatch_count\": "
+           << run.comparisons.route_occurrence_binding_mismatch_count
+           << ",\n"
+           << "    \"ast_identity_mismatch_count\": "
+           << run.comparisons.ast_identity_mismatch_count << ",\n"
+           << "    \"ast_support_mismatch_count\": "
+           << run.comparisons.ast_support_mismatch_count << ",\n"
+           << "    \"val_binding_mismatch_count\": "
+           << run.comparisons.val_binding_mismatch_count << ",\n"
            << "    \"native_admission_entry_count\": "
            << run.terminal.diagnostics.native_admission_entry_count << ",\n"
            << "    \"learn_entry_count\": "
@@ -1890,6 +2396,9 @@ int main(int argc, char **argv) {
         require(arguments.owner_run, "owner-run authorization is required");
         require(fs::is_directory(arguments.data_directory),
                 "data directory does not exist");
+        require(fs::absolute(arguments.telescope) == arguments.telescope &&
+                    fs::is_regular_file(arguments.telescope),
+                "telescope path must be an absolute regular file");
         require(fs::absolute(arguments.apt_manifest) ==
                     arguments.apt_manifest,
                 "APT manifest path must be absolute");
@@ -1914,11 +2423,15 @@ int main(int argc, char **argv) {
             arguments.apt_manifest, true);
         const auto relation =
             pipeline::admit_canonical_apt_detector_relation_v2(verified);
-        require(relation.observation().observation == 152390,
-                "this bounded acceptance invocation requires observation 152390");
+        require(relation.observation().observation == 152390 &&
+                    relation.observation().subobservation == 0 &&
+                    relation.observation().scan == 2,
+                "this bounded acceptance invocation requires observation (152390, 0, 2)");
         const auto config = load_runtime_config(arguments.config);
         const auto inputs = resolve_network_inputs(
             arguments, relation, config);
+        require(inputs.size() == 11,
+                "representative APT bundle must contain 11 networks");
         (void)logger;
         const auto run = execute_acceptance(
             arguments, relation, inputs, config, support_assignment);

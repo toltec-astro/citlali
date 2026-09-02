@@ -20,16 +20,31 @@ SPEC.loader.exec_module(validator)
 
 def valid_record() -> dict[str, object]:
     source_revision = "0123456789abcdef0123456789abcdef01234567"
+    network_count = 11
+    detector_count = 22
+    native_row_count = 2048
+    native_occurrences = network_count * native_row_count
+    detector_occurrences = detector_count * native_row_count
+    paired_numeric_bytes = 2 * detector_occurrences * 8
+    paired_coordinate_state_bytes = 4 * detector_occurrences
+    paired_occurrence_axis_bytes = 32 * native_occurrences
+    paired_detector_axis_bytes = 88 * detector_count
+    paired_identity_text_bytes = 100
     return {
         "schema": validator.SCHEMA,
+        "subject_candidate_revision": validator.SUBJECT_CANDIDATE_REVISION,
+        "subject_candidate_tree": validator.SUBJECT_CANDIDATE_TREE,
+        "tooling_revision": source_revision,
         "source_revision": source_revision,
         "executable_revision": source_revision[:9],
         "executable_version": f"candidate-g{source_revision[:9]}",
         "citlali_source_clean": True,
         "executable_sha256": "a" * 64,
         "build_environment": "spack",
-        "build_profile": "citlali-validation-v2",
+        "build_profile": "unity-gcc13",
         "spack_lock_sha256": "b" * 64,
+        "spack_lock_byte_count": 1024,
+        "spack_lock_retained": True,
         "spack_root_dag": "citlali/abcdef",
         "dependency_state_verified": True,
         "kidscpp_version": "3.1.0",
@@ -42,11 +57,22 @@ def valid_record() -> dict[str, object]:
         "tune_accumulation_explicit": True,
         "product_inspected_in_memory": True,
         "publication_complete": True,
-        "representative_dataset_id": "SCI_ALIGN_STAGE7_NGC4449_152390",
+        "route_context_state": "map_facing_context_complete",
+        "route_activated": False,
+        "ordinary_route_changed": False,
+        "canonical_integration_performed": False,
+        "representative_science_claim": False,
+        "representative_dataset_id": validator.REPRESENTATIVE_DATASET,
         "observation": 152390,
+        "subobservation": 0,
+        "scan": 2,
         "first_native_row": 20000,
-        "native_row_count": 2048,
+        "native_row_count": native_row_count,
         "mapping_instance_id": "sha256:mapping",
+        "telescope_filename": validator.TELESCOPE_FILENAME,
+        "telescope_sha256": validator.TELESCOPE_SHA256,
+        "telescope_byte_count": validator.TELESCOPE_BYTE_COUNT,
+        "telescope_record_count": validator.TELESCOPE_RECORD_COUNT,
         "producer_interface_id": validator.PRODUCER_INTERFACE,
         "producer_interface_sha256": validator.PRODUCER_SHA256,
         "occurrence_support_assignment_schema": (
@@ -71,48 +97,79 @@ def valid_record() -> dict[str, object]:
         "occurrence_support_duration_relation": (
             validator.OCCURRENCE_SUPPORT_DURATION_RELATION
         ),
+        "ast_present_in_rtc_input_context": True,
+        "identity_rtc_ast_dependency": "not_applicable",
+        "val_initial_generation": 0,
+        "val_committed_finding_count": 0,
+        "val_exact_snapshot_bound": True,
+        "calibration_product_state": "unavailable_component_not_admitted",
+        "calibration_for_ptc_val_evaluation_state": (
+            "unavailable_calibration_product_absent"
+        ),
+        "ptc_product_state": "unavailable_component_not_admitted",
+        "ptc_for_map_val_evaluation_state": "unavailable_ptc_product_absent",
+        "map_admission_state": "unavailable_calibration_and_ptc_products",
+        "map_action_performed": False,
         "terminal_state": "complete",
         "terminal_failure_cause": "none",
         "terminal_failure_detail": "",
         "metrics": {
-            "network_count": 2,
-            "detector_count": 10,
-            "native_occurrence_count": 4096,
-            "native_detector_occurrence_count": 20480,
-            "paired_numeric_payload_bytes": 327680,
-            "paired_coordinate_state_bytes": 81920,
-            "paired_occurrence_axis_bytes": 131072,
-            "paired_detector_axis_bytes": 880,
-            "paired_identity_text_bytes": 100,
-            "paired_logical_owned_bytes": 541652,
-            "referenced_native_axis_count": 2,
-            "rtc_native_occurrence_count": 4096,
-            "rtc_detector_occurrence_count": 20480,
+            "network_count": network_count,
+            "detector_count": detector_count,
+            "native_occurrence_count": native_occurrences,
+            "native_detector_occurrence_count": detector_occurrences,
+            "paired_numeric_payload_bytes": paired_numeric_bytes,
+            "paired_coordinate_state_bytes": paired_coordinate_state_bytes,
+            "paired_occurrence_axis_bytes": paired_occurrence_axis_bytes,
+            "paired_detector_axis_bytes": paired_detector_axis_bytes,
+            "paired_identity_text_bytes": paired_identity_text_bytes,
+            "paired_logical_owned_bytes": (
+                paired_numeric_bytes
+                + paired_coordinate_state_bytes
+                + paired_occurrence_axis_bytes
+                + paired_detector_axis_bytes
+                + paired_identity_text_bytes
+            ),
+            "referenced_native_axis_count": network_count,
+            "rtc_native_occurrence_count": native_occurrences,
+            "rtc_detector_occurrence_count": detector_occurrences,
             "evidence_event_count": 5,
             "direct_x_event_count": 3,
             "direct_r_event_count": 4,
             "x_and_r_event_count": 2,
             "pair_ineligible_cell_count": 5,
-            "x_payload_available_cell_count": 20480,
-            "r_payload_available_cell_count": 20480,
-            "x_numerically_valid_cell_count": 20477,
-            "r_numerically_valid_cell_count": 20476,
+            "x_payload_available_cell_count": detector_occurrences,
+            "r_payload_available_cell_count": detector_occurrences,
+            "x_numerically_valid_cell_count": detector_occurrences - 3,
+            "r_numerically_valid_cell_count": detector_occurrences - 4,
             "derived_evidence_bytes": 80,
             "derived_plan_bytes": 0,
-            "paired_ingress_value_comparison_count": 40960,
-            "paired_ingress_identity_comparison_count": 10,
-            "paired_ingress_member_state_comparison_count": 40960,
-            "rtc_product_value_comparison_count": 40960,
-            "identity_comparison_count": 20480,
-            "support_comparison_count": 4096,
-            "native_time_comparison_count": 4096,
-            "representative_native_comparison_count": 4096,
-            "assigned_support_binding_count": 4096,
-            "pair_decision_comparison_count": 20480,
-            "pair_causal_evidence_comparison_count": 20480,
+            "paired_ingress_value_comparison_count": 2 * detector_occurrences,
+            "paired_ingress_identity_comparison_count": detector_count,
+            "paired_ingress_member_state_comparison_count": 2 * detector_occurrences,
+            "rtc_product_value_comparison_count": 2 * detector_occurrences,
+            "identity_comparison_count": detector_occurrences,
+            "support_comparison_count": native_occurrences,
+            "native_time_comparison_count": native_occurrences,
+            "representative_native_comparison_count": native_occurrences,
+            "assigned_support_binding_count": native_occurrences,
+            "pair_decision_comparison_count": detector_occurrences,
+            "pair_causal_evidence_comparison_count": detector_occurrences,
             "chunk_partition_count": 2,
             "chunk_realized_operator_comparison_count": 1,
-            "chunk_scientific_comparison_count": 20480,
+            "chunk_scientific_comparison_count": detector_occurrences,
+            "route_occurrence_binding_count": native_occurrences,
+            "ast_mapped_occurrence_count": native_occurrences,
+            "ast_available_occurrence_count": native_occurrences - 528,
+            "ast_unavailable_occurrence_count": 528,
+            "ast_support_count": native_occurrences - 528,
+            "val_binding_comparison_count": 8,
+            "ast_raw_owned_bytes": 1000000,
+            "ast_mapped_owned_bytes": 100000,
+            "align_owned_bytes": 0,
+            "rtc_input_owned_bytes": 264,
+            "rtc_output_owned_bytes": 0,
+            "val_owned_bytes": 0,
             "wall_time_sec": 1.0,
             "cpu_time_sec": 0.5,
             "process_peak_rss_bytes": 1024,
@@ -131,6 +188,10 @@ def valid_record() -> dict[str, object]:
             "chunk_scientific_mismatch_count": 0,
             "selected_time_mismatch_count": 0,
             "representative_native_mismatch_count": 0,
+            "route_occurrence_binding_mismatch_count": 0,
+            "ast_identity_mismatch_count": 0,
+            "ast_support_mismatch_count": 0,
+            "val_binding_mismatch_count": 0,
             "native_admission_entry_count": 1,
             "learn_entry_count": 1,
             "consider_entry_count": 1,
@@ -149,15 +210,46 @@ class AcceptanceValidatorTest(unittest.TestCase):
 
     def test_rejects_wrong_source_or_environment_identity(self) -> None:
         for name, value in (
+            ("subject_candidate_revision", "f" * 40),
             ("executable_revision", "f" * 9),
             ("executable_version", "candidate-dirty"),
             ("build_environment", "local-fallback"),
+            ("build_profile", "different-profile"),
             ("spack_lock_sha256", "0" * 40),
         ):
             with self.subTest(name=name):
                 record = valid_record()
                 record[name] = value
                 with self.assertRaises(validator.AcceptanceError):
+                    validator.validate(record)
+
+    def test_rejects_missing_ast_val_or_truthful_terminal_state(self) -> None:
+        for name, value in (
+            ("ast_present_in_rtc_input_context", False),
+            ("identity_rtc_ast_dependency", "absent"),
+            ("val_initial_generation", 1),
+            ("val_exact_snapshot_bound", False),
+            ("calibration_product_state", "identity"),
+            ("map_action_performed", True),
+        ):
+            with self.subTest(name=name):
+                record = valid_record()
+                record[name] = value
+                with self.assertRaisesRegex(validator.AcceptanceError, name):
+                    validator.validate(record)
+
+    def test_rejects_incomplete_ast_or_val_route_binding(self) -> None:
+        for name, value in (
+            ("route_occurrence_binding_count", 0),
+            ("ast_mapped_occurrence_count", 0),
+            ("ast_support_count", 0),
+            ("val_binding_comparison_count", 7),
+            ("ast_support_mismatch_count", 1),
+        ):
+            with self.subTest(name=name):
+                record = copy.deepcopy(valid_record())
+                record["metrics"][name] = value
+                with self.assertRaisesRegex(validator.AcceptanceError, name):
                     validator.validate(record)
 
     def test_rejects_different_support_assignment(self) -> None:
