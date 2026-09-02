@@ -340,8 +340,23 @@ bounded r0.2 correction adds their hashes and one path-only overlay while
 leaving the scientific question, recurrence, matrix, metrics, thresholds,
 order, and limits unchanged. It is
 [`EL_F2_INPUT_BINDING_CORRECTION_OWNER_REVIEW_R0.2.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F2_INPUT_BINDING_CORRECTION_OWNER_REVIEW_R0.2.md)
-and is awaiting exact owner approval against
-`EL_F2_BUNDLE_MANIFEST_R0.2.md`. No replacement reduction is authorized yet.
+and the owner approved it exactly against `EL_F2_BUNDLE_MANIFEST_R0.2.md` on
+`2026-09-02`. All bundle and input identities reverified, but the authorized
+replacement exposed a second packet error before iteration 0: the supplied
+files are processed tune NetCDFs, while this executable selects ECSV/ASCII
+text fit reports with per-network `.txt` regular expressions. It emitted 12
+missing-fit-report critical messages, produced no map or checkpoint, and used
+the second and last r0.1 environmental replacement. A read-only local search
+then found all 12 required text tables. Each uniquely matches the executable's
+observed pattern, parses as 14-column ECSV, carries the correct observation/
+sub-observation/tune-scan/network metadata, and has the same row count as the
+corresponding tune NetCDF's tone dimension. Acquisition provenance beyond the
+existing local development path is unavailable. The exact r0.3 owner-review
+candidate is
+[`EL_F2_TEXT_FITREPORT_CORRECTION_OWNER_REVIEW_R0.3.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F2_TEXT_FITREPORT_CORRECTION_OWNER_REVIEW_R0.3.md),
+content-bound by `EL_F2_BUNDLE_MANIFEST_R0.3.md`. It recommends authorizing one
+explicitly final environmental replacement; any further pre-iteration failure
+would end EL-F2 as invalid. No further reduction is authorized yet.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
