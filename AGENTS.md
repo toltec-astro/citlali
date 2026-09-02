@@ -135,8 +135,9 @@ package index, but contract work does not silently edit the application tree.
   binds it to that environment and evidence.
 - The user performs Unity builds and reductions. Do not attempt to use Unity.
 - Do not push. The user performs all GitHub pushes. When a push is needed,
-  provide the exact non-force `git push` command and arguments for the user to
-  run; do not execute it.
+  provide the exact non-force command with the repository supplied as a full
+  absolute argument path using `git -C /absolute/repository/path push ...`, so
+  the user can run it from any directory; do not execute it.
 - Leave unrelated dirty files unchanged.
 - Commit coherent changes after local verification; do not create commits only
   to satisfy a numerical cadence.
