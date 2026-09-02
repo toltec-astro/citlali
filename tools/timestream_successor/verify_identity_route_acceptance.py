@@ -45,6 +45,7 @@ PRODUCER_SHA256 = (
 HEX40 = re.compile(r"^[0-9a-f]{40}$")
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
 HEX_SHORT = re.compile(r"^[0-9a-f]{7,40}$")
+SPACK_DAG_HASH = re.compile(r"^[a-z0-9]{32}$")
 UTC_SECONDS = re.compile(
     r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
 )
@@ -128,11 +129,18 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError("build_environment must be 'spack'")
     if record.get("build_profile") != "unity-gcc13":
         raise AcceptanceError("build_profile must be 'unity-gcc13'")
+    if not HEX64.fullmatch(require_string(record, "spack_environment_sha256")):
+        raise AcceptanceError(
+            "spack_environment_sha256 must be one lowercase SHA-256"
+        )
+    require_integer(record, "spack_environment_byte_count", 1)
+    require_true(record, "spack_environment_retained")
     if not HEX64.fullmatch(require_string(record, "spack_lock_sha256")):
         raise AcceptanceError("spack_lock_sha256 must be one lowercase SHA-256")
     require_integer(record, "spack_lock_byte_count", 1)
     require_true(record, "spack_lock_retained")
-    require_string(record, "spack_root_dag")
+    if not SPACK_DAG_HASH.fullmatch(require_string(record, "spack_root_dag")):
+        raise AcceptanceError("spack_root_dag must be one concrete Spack hash")
     require_true(record, "dependency_state_verified")
     for name in ("kidscpp_version", "tula_version"):
         value = require_string(record, name)
@@ -182,6 +190,14 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError("telescope_byte_count is not approved")
     if require_integer(record, "telescope_record_count", 1) != TELESCOPE_RECORD_COUNT:
         raise AcceptanceError("telescope_record_count is not approved")
+    for name in (
+        "apt_manifest_sha256",
+        "apt_bundle_semantic_sha256",
+        "apt_bundle_envelope_sha256",
+        "config_sha256",
+    ):
+        if not HEX64.fullmatch(require_string(record, name)):
+            raise AcceptanceError(f"{name} must be one lowercase SHA-256")
     if record.get("producer_interface_id") != PRODUCER_INTERFACE:
         raise AcceptanceError("producer_interface_id is not the approved interface")
     if record.get("producer_interface_sha256") != PRODUCER_SHA256:
@@ -312,7 +328,7 @@ def validate(record: dict[str, Any]) -> None:
     require_zero(metrics, "derived_plan_bytes")
     require_zero(metrics, "rtc_owned_numeric_bytes")
 
-    ast_available = require_integer(metrics, "ast_available_occurrence_count")
+    ast_available = require_integer(metrics, "ast_available_occurrence_count", 1)
     ast_unavailable = require_integer(metrics, "ast_unavailable_occurrence_count")
     if ast_available + ast_unavailable != native_occurrences:
         raise AcceptanceError("AST available/unavailable counts do not cover the run")

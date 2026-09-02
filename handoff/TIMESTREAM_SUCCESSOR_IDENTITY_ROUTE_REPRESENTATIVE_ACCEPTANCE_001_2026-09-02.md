@@ -123,10 +123,10 @@ Included:
   future VAL evaluations, unavailable MAP admission, and no MAP action;
 - bind the output record to the exact subject candidate and its tree separately
   from the acceptance-tooling revision;
-- require a clean Spack build under profile `unity-gcc13`, retain a new
-  `spack.lock` by exact bytes and SHA-256, record the realized root DAG and
-  executable/dependency identities, and validate the JSON record
-  mechanically; and
+- require a clean Spack build under profile `unity-gcc13`, retain its exact
+  `spack.yaml` environment manifest and a new `spack.lock` by bytes and
+  SHA-256, record the realized root DAG and executable/dependency identities,
+  and validate the JSON record mechanically; and
 - preserve the exact owner disposition and environment limitations in this
   durable record.
 
@@ -186,8 +186,8 @@ The v2 record and validator require:
 
 - exact subject SHA/tree and a distinct exact tooling SHA;
 - clean compiled-source identity and executable SHA-256;
-- `build_environment=spack`, `build_profile=unity-gcc13`, retained lock byte
-  count and SHA-256, and concrete root DAG;
+- `build_environment=spack`, `build_profile=unity-gcc13`, retained environment
+  and lock byte counts and SHA-256 identities, and a concrete root DAG hash;
 - exact observation, telescope, APT, Tune, producer-interface, and support
   identities;
 - one complete typed route publication and zero unexpected error/critical
@@ -229,11 +229,12 @@ the representative gate.
 
 Representative gate: after exact-SHA review and separate owner authorization,
 the project owner performs one clean Unity `unity-gcc13` Spack build and the
-bounded complete typed witness. The retained package must contain the new
-lock bytes, lock SHA-256, root DAG, exact source and executable identities,
-exact input/support artifact identities, runner output, validator PASS,
-zero unexpected errors, and clean source state. This is an acceptance-tool
-execution only; it is not a Citlali reduction or representative science claim.
+bounded complete typed witness. The retained package must contain the exact
+environment-manifest bytes and SHA-256, new lock bytes and SHA-256, root DAG,
+exact source and executable identities, exact input/support artifact
+identities, runner output, validator PASS, zero unexpected errors, and clean
+source state. This is an acceptance-tool execution only; it is not a Citlali
+reduction or representative science claim.
 
 ## Local candidate validation
 

@@ -42,10 +42,13 @@ def valid_record() -> dict[str, object]:
         "executable_sha256": "a" * 64,
         "build_environment": "spack",
         "build_profile": "unity-gcc13",
+        "spack_environment_sha256": "c" * 64,
+        "spack_environment_byte_count": 512,
+        "spack_environment_retained": True,
         "spack_lock_sha256": "b" * 64,
         "spack_lock_byte_count": 1024,
         "spack_lock_retained": True,
-        "spack_root_dag": "citlali/abcdef",
+        "spack_root_dag": "a" * 32,
         "dependency_state_verified": True,
         "kidscpp_version": "3.1.0",
         "tula_version": "3.1.0",
@@ -73,6 +76,10 @@ def valid_record() -> dict[str, object]:
         "telescope_sha256": validator.TELESCOPE_SHA256,
         "telescope_byte_count": validator.TELESCOPE_BYTE_COUNT,
         "telescope_record_count": validator.TELESCOPE_RECORD_COUNT,
+        "apt_manifest_sha256": "d" * 64,
+        "apt_bundle_semantic_sha256": "e" * 64,
+        "apt_bundle_envelope_sha256": "f" * 64,
+        "config_sha256": "1" * 64,
         "producer_interface_id": validator.PRODUCER_INTERFACE,
         "producer_interface_sha256": validator.PRODUCER_SHA256,
         "occurrence_support_assignment_schema": (
@@ -215,7 +222,11 @@ class AcceptanceValidatorTest(unittest.TestCase):
             ("executable_version", "candidate-dirty"),
             ("build_environment", "local-fallback"),
             ("build_profile", "different-profile"),
+            ("spack_environment_sha256", "0" * 40),
             ("spack_lock_sha256", "0" * 40),
+            ("spack_root_dag", "not-a-concrete-hash"),
+            ("apt_manifest_sha256", "0" * 40),
+            ("config_sha256", "0" * 40),
         ):
             with self.subTest(name=name):
                 record = valid_record()
@@ -251,6 +262,18 @@ class AcceptanceValidatorTest(unittest.TestCase):
                 record["metrics"][name] = value
                 with self.assertRaisesRegex(validator.AcceptanceError, name):
                     validator.validate(record)
+
+        no_ast_support = copy.deepcopy(valid_record())
+        native_occurrences = no_ast_support["metrics"]["native_occurrence_count"]
+        no_ast_support["metrics"]["ast_available_occurrence_count"] = 0
+        no_ast_support["metrics"]["ast_unavailable_occurrence_count"] = (
+            native_occurrences
+        )
+        no_ast_support["metrics"]["ast_support_count"] = 0
+        with self.assertRaisesRegex(
+            validator.AcceptanceError, "ast_available_occurrence_count"
+        ):
+            validator.validate(no_ast_support)
 
     def test_rejects_different_support_assignment(self) -> None:
         record = valid_record()

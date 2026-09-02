@@ -98,6 +98,7 @@ struct Arguments {
     fs::path config;
     fs::path producer_interface_artifact;
     fs::path occurrence_support_assignment_artifact;
+    fs::path spack_environment;
     fs::path spack_lock;
     fs::path output;
     fs::path executable;
@@ -129,7 +130,7 @@ std::string usage() {
         "  --output PATH\n"
         "  --source-revision FULL_SHA --owner-run\n"
         "  --build-environment spack --build-profile unity-gcc13\n"
-        "  --spack-lock PATH --spack-root-dag ID\n"
+        "  --spack-environment PATH --spack-lock PATH --spack-root-dag HASH\n"
         "  [--dataset-id ID] [--first-native-row N] [--native-row-count N]\n";
 }
 
@@ -175,6 +176,8 @@ Arguments parse_arguments(int argc, char **argv) {
             result.build_environment = next(index, option);
         } else if (option == "--build-profile") {
             result.build_profile = next(index, option);
+        } else if (option == "--spack-environment") {
+            result.spack_environment = next(index, option);
         } else if (option == "--spack-lock") {
             result.spack_lock = next(index, option);
         } else if (option == "--spack-root-dag") {
@@ -210,6 +213,8 @@ Arguments parse_arguments(int argc, char **argv) {
             "authoritative acceptance requires --build-environment spack");
     require(result.build_profile == "unity-gcc13",
             "authoritative acceptance requires --build-profile unity-gcc13");
+    require(!result.spack_environment.empty(),
+            "--spack-environment is required");
     require(!result.spack_lock.empty(), "--spack-lock is required");
     require(!result.spack_root_dag.empty(),
             "--spack-root-dag is required");
@@ -1790,6 +1795,10 @@ struct AcceptanceRun {
     std::string mapping_instance_id;
     std::string telescope_sha256;
     std::uintmax_t telescope_byte_count = 0;
+    std::string apt_manifest_sha256;
+    std::string apt_bundle_semantic_sha256;
+    std::string apt_bundle_envelope_sha256;
+    std::string config_sha256;
     double wall_time_sec = 0.0;
     double cpu_time_sec = 0.0;
     std::uint64_t peak_rss = 0;
@@ -1977,7 +1986,11 @@ AcceptanceRun execute_acceptance(
         observation.scan, full.rtc_terminal, native_cardinality,
         native_memory, comparisons, typed_route,
         std::move(paired_build.mapping_instance_id), telescope.sha256,
-        telescope.byte_count, wall_time, cpu_time,
+        telescope.byte_count,
+        citlali::utils::sha256_file(arguments.apt_manifest),
+        relation.bundle_identity().semantic_sha256,
+        relation.bundle_identity().envelope_sha256,
+        citlali::utils::sha256_file(arguments.config), wall_time, cpu_time,
         peak_rss_bytes(), 2, true, true};
 }
 
@@ -2026,6 +2039,7 @@ void write_acceptance_record(const Arguments &arguments,
                 run.comparisons.ast_available_occurrence_count +
                         run.comparisons.ast_unavailable_occurrence_count ==
                     run.native_cardinality.native_occurrence_count &&
+                run.comparisons.ast_available_occurrence_count > 0 &&
                 run.comparisons.ast_support_count ==
                     run.comparisons.ast_available_occurrence_count &&
                 run.comparisons.val_binding_comparison_count == 8,
@@ -2108,6 +2122,12 @@ void write_acceptance_record(const Arguments &arguments,
            << q(arguments.build_environment) << ",\n"
            << "  \"build_profile\": "
            << q(arguments.build_profile) << ",\n"
+           << "  \"spack_environment_sha256\": "
+           << q(citlali::utils::sha256_file(arguments.spack_environment))
+           << ",\n"
+           << "  \"spack_environment_byte_count\": "
+           << fs::file_size(arguments.spack_environment) << ",\n"
+           << "  \"spack_environment_retained\": true,\n"
            << "  \"spack_lock_sha256\": "
            << q(citlali::utils::sha256_file(arguments.spack_lock))
            << ",\n"
@@ -2155,6 +2175,13 @@ void write_acceptance_record(const Arguments &arguments,
            << run.telescope_byte_count << ",\n"
            << "  \"telescope_record_count\": "
            << run.typed_route.ast_raw_record_count << ",\n"
+           << "  \"apt_manifest_sha256\": "
+           << q(run.apt_manifest_sha256) << ",\n"
+           << "  \"apt_bundle_semantic_sha256\": "
+           << q(run.apt_bundle_semantic_sha256) << ",\n"
+           << "  \"apt_bundle_envelope_sha256\": "
+           << q(run.apt_bundle_envelope_sha256) << ",\n"
+           << "  \"config_sha256\": " << q(run.config_sha256) << ",\n"
            << "  \"producer_interface_id\": " << q(producer_interface)
            << ",\n"
            << "  \"producer_interface_sha256\": "
@@ -2413,6 +2440,8 @@ int main(int argc, char **argv) {
                 arguments.occurrence_support_assignment_artifact);
         require(fs::is_regular_file(arguments.spack_lock),
                 "Spack lock is not a regular file");
+        require(fs::is_regular_file(arguments.spack_environment),
+                "Spack environment manifest is not a regular file");
         require(fs::is_regular_file(arguments.executable),
                 "acceptance executable path is not a regular file");
         arguments.executable_sha256 =
