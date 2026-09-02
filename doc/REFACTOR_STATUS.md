@@ -295,8 +295,25 @@ The narrowly bounded owner-review successor is
 [`EL_F1_R1_COMPOSITE_STATE_RETRY_OWNER_REVIEW_R0.1.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F1_R1_COMPOSITE_STATE_RETRY_OWNER_REVIEW_R0.1.md),
 content-bound by `EL_F1_R1_BUNDLE_MANIFEST_R0.1.md`. It recommends removing
 duplicate weight/RMS authority, retaining the original scientific screen, and
-rerunning all six trajectories under one frozen binary. It is not approved;
-no repair or additional run follows from preparing it.
+rerunning all six trajectories under one frozen binary. The owner approved it
+exactly on `2026-09-02`. The narrow repair makes the checkpoint-bound ordinary
+complete map the sole weight/`MEDRMS` authority and limits the separate
+relaxed state to signal/kernel plus exact identity. All six fresh trajectories
+then completed iterations 0--6 on their first attempt under executable SHA-256
+`a49082dde8f71d6f50edd8c378ad94195496b5eb0e0855b746e189f3442acbcc`,
+with no error- or critical-level message and practical wall-time parity.
+Alpha 1.25 and 1.50 both reached the alpha-1.00 iteration-5 central recovery
+by iteration 4 in all arrays and passed every final recovery, width, centroid,
+and full-map residual check, but failed the frozen final a1100 annular-residual
+limit at 1.249 and 1.542 times the alpha-one residual, respectively, where at
+most 1.10 was permitted. The valid prospective classification is therefore
+**not promising on this compact case** for both candidates. No exact-restart
+follow-up is required and neither candidate is promoted. The complete bounded
+result is
+[`EXECUTION_RESULT_R0.1.md`](../validation/fruit_loop_point_152389_el_f1_composite_state_retry_2026-09-02/EXECUTION_RESULT_R0.1.md).
+This remains development evidence only and does not launch Gate D or Stage B,
+qualify a recurrence, change production behavior, establish historical
+superiority, or authorize Unity work.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

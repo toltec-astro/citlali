@@ -592,9 +592,6 @@ void write_reduction_restart_checkpoint(
             add_netcdf_var(file, "fruit_feedback_pixel_size_rad",
                            relaxed_feedback.pixel_size_rad);
             add_netcdf_var(
-                file, "fruit_feedback_median_rms_count",
-                static_cast<long long>(relaxed_feedback.median_rms.size()));
-            add_netcdf_var(
                 file, "fruit_feedback_wcs_cdelt_count",
                 static_cast<long long>(relaxed_feedback.wcs_cdelt.size()));
             add_netcdf_var(
@@ -619,9 +616,6 @@ void write_reduction_restart_checkpoint(
             write_numeric_vector(
                 file, "fruit_feedback_kernel", netCDF::ncDouble,
                 feedback_plane_dim, relaxed_feedback.kernel);
-            write_numeric_vector(
-                file, "fruit_feedback_weight", netCDF::ncDouble,
-                feedback_plane_dim, relaxed_feedback.weight);
 
             const auto wcs_cdelt_dim = file.addDim(
                 "fruit_feedback_wcs_cdelt_value",
@@ -653,14 +647,6 @@ void write_reduction_restart_checkpoint(
             write_string_vector(
                 file, "fruit_feedback_wcs_cunit", wcs_cunit_dim,
                 relaxed_feedback.wcs_cunit);
-            if (!relaxed_feedback.median_rms.empty()) {
-                const auto rms_dim = file.addDim(
-                    "fruit_feedback_median_rms_value",
-                    relaxed_feedback.median_rms.size());
-                write_numeric_vector(
-                    file, "fruit_feedback_median_rms", netCDF::ncDouble,
-                    rms_dim, relaxed_feedback.median_rms);
-            }
         }
 
         const auto observation_dim =
@@ -948,8 +934,6 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
             file, input_path, "fruit_feedback_n_rows");
         const auto n_cols_ll = read_scalar<long long>(
             file, input_path, "fruit_feedback_n_cols");
-        const auto rms_count_ll = read_scalar<long long>(
-            file, input_path, "fruit_feedback_median_rms_count");
         const auto wcs_cdelt_count_ll = read_scalar<long long>(
             file, input_path, "fruit_feedback_wcs_cdelt_count");
         const auto wcs_naxis_count_ll = read_scalar<long long>(
@@ -961,7 +945,7 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
         const auto wcs_cunit_count_ll = read_scalar<long long>(
             file, input_path, "fruit_feedback_wcs_cunit_count");
         if (map_count_ll <= 0 || n_rows_ll <= 0 || n_cols_ll <= 0 ||
-            rms_count_ll < 0 || wcs_cdelt_count_ll < 2 ||
+            wcs_cdelt_count_ll < 2 ||
             wcs_naxis_count_ll < 2 || wcs_crpix_count_ll < 2 ||
             wcs_crval_count_ll < 2 || wcs_cunit_count_ll < 2 ||
             map_count_ll > std::numeric_limits<Eigen::Index>::max() ||
@@ -991,11 +975,6 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
             file, input_path, "fruit_feedback_signal", plane_size);
         restored_relaxed_feedback.kernel = read_numeric_vector<double>(
             file, input_path, "fruit_feedback_kernel", plane_size);
-        restored_relaxed_feedback.weight = read_numeric_vector<double>(
-            file, input_path, "fruit_feedback_weight", plane_size);
-        restored_relaxed_feedback.median_rms = read_numeric_vector<double>(
-            file, input_path, "fruit_feedback_median_rms",
-            static_cast<std::size_t>(rms_count_ll));
         restored_relaxed_feedback.wcs_cdelt = read_numeric_vector<float>(
             file, input_path, "fruit_feedback_wcs_cdelt",
             static_cast<std::size_t>(wcs_cdelt_count_ll));

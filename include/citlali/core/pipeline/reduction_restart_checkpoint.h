@@ -15,7 +15,7 @@ namespace citlali::pipeline {
 inline constexpr const char *reduction_restart_checkpoint_schema_version =
     "citlali-reduction-restart-checkpoint-v3";
 inline constexpr const char *relaxed_feedback_restart_checkpoint_schema_version =
-    "citlali-reduction-restart-checkpoint-v4-el-f1";
+    "citlali-reduction-restart-checkpoint-v5-el-f1-r1";
 inline constexpr const char *reduction_restart_checkpoint_filename =
     "citlali_restart_checkpoint.nc";
 

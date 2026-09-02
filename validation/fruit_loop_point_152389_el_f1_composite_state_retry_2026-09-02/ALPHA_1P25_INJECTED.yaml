@@ -1,0 +1,18 @@
+runtime:
+  output_dir: /Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/el-f1-composite-state-retry-r0.1/alpha-1.25/injected/reduced/
+timestream:
+  fruit_loops:
+    path: null
+    restart_path: null
+    max_iters: 7
+    save_all_iters: true
+    diagnostics_enabled: true
+    relaxation_experiment_enabled: true
+    relaxation_alpha: 1.25
+    injected_source_test:
+      enabled: true
+      start_iteration: 1
+      array_amplitude_mjy_beam: [100.0, 100.0, 100.0]
+  raw_time_chunk:
+    kernel:
+      enabled: true

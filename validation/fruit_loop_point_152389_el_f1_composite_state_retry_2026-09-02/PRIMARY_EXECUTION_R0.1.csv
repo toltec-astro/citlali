@@ -1,0 +1,7 @@
+trajectory,alpha,injection,status,completed_iterations,wall_seconds,user_seconds,system_seconds,max_rss_bytes,retained_kib,error_or_critical_messages
+alpha-1.00-control,1.00,false,completed,7,281.06,274.01,4.66,902037504,383596,0
+alpha-1.00-injected,1.00,true,completed,7,281.55,275.20,4.13,933036032,384052,0
+alpha-1.25-control,1.25,false,completed,7,281.12,274.67,4.21,945176576,430180,0
+alpha-1.25-injected,1.25,true,completed,7,284.57,278.81,3.50,928907264,430188,0
+alpha-1.50-control,1.50,false,completed,7,283.41,277.98,3.38,965836800,430188,0
+alpha-1.50-injected,1.50,true,completed,7,278.67,273.79,3.01,932200448,430188,0

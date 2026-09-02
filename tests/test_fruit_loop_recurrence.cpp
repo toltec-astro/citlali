@@ -205,7 +205,7 @@ TEST(fruit_loop_recurrence,
 }
 
 TEST(fruit_loop_recurrence,
-     relaxed_state_updates_signal_and_kernel_and_keeps_newest_weight) {
+     relaxed_state_updates_signal_and_kernel_and_leaves_q_state_authoritative) {
     auto first = make_map_buffer(true);
     first.signal[0].setConstant(2.0);
     first.kernel[0].setConstant(0.5);
@@ -231,12 +231,16 @@ TEST(fruit_loop_recurrence,
         state, second, "152389", 1, 1.25);
 
     auto loaded = second;
+    const double reloaded_weight = std::nextafter(9.0, 10.0);
+    const double reloaded_fits_medrms = 15.4269797465861;
+    loaded.weight[0].setConstant(reloaded_weight);
+    loaded.median_rms(0) = reloaded_fits_medrms;
     citlali::fruit::apply_fruit_loop_relaxed_feedback_state(
         state, loaded, "152389", 1);
     EXPECT_TRUE(loaded.signal[0].isConstant(7.0));
     EXPECT_TRUE(loaded.kernel[0].isConstant(1.75));
-    EXPECT_TRUE(loaded.weight[0].isConstant(9.0));
-    EXPECT_DOUBLE_EQ(loaded.median_rms(0), 0.125);
+    EXPECT_TRUE(loaded.weight[0].isConstant(reloaded_weight));
+    EXPECT_DOUBLE_EQ(loaded.median_rms(0), reloaded_fits_medrms);
 }
 
 TEST(fruit_loop_recurrence,

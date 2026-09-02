@@ -232,8 +232,6 @@ relaxed_feedback_restart_state(int completed_iteration = 4,
     state.wcs_cunit = {"deg", "deg"};
     state.signal = {1.0, 2.0, 3.0, 4.0};
     state.kernel = {0.1, 0.2, 0.3, 0.4};
-    state.weight = {5.0, 6.0, 7.0, 8.0};
-    state.median_rms = {0.25};
     return state;
 }
 
@@ -549,7 +547,7 @@ TEST(ReductionRestartCheckpoint,
 }
 
 TEST(ReductionRestartCheckpoint,
-     RoundTripsCompleteElF1RelaxedFeedbackState) {
+     RoundTripsElF1SignalKernelFeedbackState) {
     RestartCheckpointDirectory directory;
     const auto config = restart_learning_config();
     const auto processed_config = restart_processed_config();
@@ -559,6 +557,17 @@ TEST(ReductionRestartCheckpoint,
     citlali::pipeline::write_reduction_restart_checkpoint(
         directory.path, 4, "obsnum/raw", {"152390"}, config,
         processed_config, learning, {}, original_feedback);
+    {
+        netCDF::NcFile checkpoint(
+            citlali::pipeline::reduction_restart_checkpoint_path(
+                directory.path),
+            netCDF::NcFile::read);
+        EXPECT_FALSE(checkpoint.getVar("fruit_feedback_signal").isNull());
+        EXPECT_FALSE(checkpoint.getVar("fruit_feedback_kernel").isNull());
+        EXPECT_TRUE(checkpoint.getVar("fruit_feedback_weight").isNull());
+        EXPECT_TRUE(
+            checkpoint.getVar("fruit_feedback_median_rms").isNull());
+    }
 
     auto restored_learning = restart_learning_state(config);
     citlali::pipeline::WeightValidationRestartState weight_validation;
@@ -581,8 +590,6 @@ TEST(ReductionRestartCheckpoint,
     EXPECT_EQ(restored_feedback.completed_iteration, 4);
     EXPECT_EQ(restored_feedback.signal, original_feedback.signal);
     EXPECT_EQ(restored_feedback.kernel, original_feedback.kernel);
-    EXPECT_EQ(restored_feedback.weight, original_feedback.weight);
-    EXPECT_EQ(restored_feedback.median_rms, original_feedback.median_rms);
     EXPECT_EQ(restored_feedback.wcs_crval, original_feedback.wcs_crval);
 }
 

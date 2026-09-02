@@ -1,0 +1,74 @@
+{
+  "candidate_outcomes": {
+    "1.25": {
+      "array_checks": {
+        "a1100": {
+          "final_annular_residual_within_limit": false,
+          "final_centroid_within_limit": true,
+          "final_kernel_residual_within_limit": true,
+          "final_major_width_within_limit": true,
+          "final_minor_width_within_limit": true,
+          "final_recovery_error_within_allowance": true,
+          "reaches_control_iteration_5_by_iteration_4": true
+        },
+        "a1400": {
+          "final_annular_residual_within_limit": true,
+          "final_centroid_within_limit": true,
+          "final_kernel_residual_within_limit": true,
+          "final_major_width_within_limit": true,
+          "final_minor_width_within_limit": true,
+          "final_recovery_error_within_allowance": true,
+          "reaches_control_iteration_5_by_iteration_4": true
+        },
+        "a2000": {
+          "final_annular_residual_within_limit": true,
+          "final_centroid_within_limit": true,
+          "final_kernel_residual_within_limit": true,
+          "final_major_width_within_limit": true,
+          "final_minor_width_within_limit": true,
+          "final_recovery_error_within_allowance": true,
+          "reaches_control_iteration_5_by_iteration_4": true
+        }
+      },
+      "restart_status": "not_required",
+      "scientifically_promising_before_restart": false
+    },
+    "1.50": {
+      "array_checks": {
+        "a1100": {
+          "final_annular_residual_within_limit": false,
+          "final_centroid_within_limit": true,
+          "final_kernel_residual_within_limit": true,
+          "final_major_width_within_limit": true,
+          "final_minor_width_within_limit": true,
+          "final_recovery_error_within_allowance": true,
+          "reaches_control_iteration_5_by_iteration_4": true
+        },
+        "a1400": {
+          "final_annular_residual_within_limit": true,
+          "final_centroid_within_limit": true,
+          "final_kernel_residual_within_limit": true,
+          "final_major_width_within_limit": true,
+          "final_minor_width_within_limit": true,
+          "final_recovery_error_within_allowance": true,
+          "reaches_control_iteration_5_by_iteration_4": true
+        },
+        "a2000": {
+          "final_annular_residual_within_limit": true,
+          "final_centroid_within_limit": true,
+          "final_kernel_residual_within_limit": true,
+          "final_major_width_within_limit": true,
+          "final_minor_width_within_limit": true,
+          "final_recovery_error_within_allowance": true,
+          "reaches_control_iteration_5_by_iteration_4": true
+        }
+      },
+      "restart_status": "not_required",
+      "scientifically_promising_before_restart": false
+    }
+  },
+  "classification": "not_promising_on_this_compact_case",
+  "promising_candidates_requiring_restart": [],
+  "test_id": "SCI-FRUIT-EL-F1-R1-COMPOSITE-STATE-RETRY-R0.1",
+  "valid_primary_screen": true
+}

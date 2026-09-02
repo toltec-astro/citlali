@@ -139,6 +139,36 @@ def write_csv(path: Path, rows: list[dict]) -> None:
         writer.writerows(rows)
 
 
+def trajectory_config(iteration_roots: dict[int, Path]) -> dict:
+    """Load the authoritative realized config for one complete trajectory."""
+    merged_snapshots = sorted(
+        root / "citlali_merged_config.yaml"
+        for root in iteration_roots.values()
+        if (root / "citlali_merged_config.yaml").is_file()
+    )
+    if merged_snapshots:
+        loaded = [yaml.safe_load(path.read_text()) for path in merged_snapshots]
+        if not all(isinstance(config, dict) for config in loaded):
+            raise ValueError(
+                f"invalid merged trajectory config in {merged_snapshots}"
+            )
+        reference = loaded[0]
+        if any(config != reference for config in loaded[1:]):
+            raise ValueError(
+                "merged trajectory configs differ across iterations: "
+                f"{merged_snapshots}"
+            )
+        return reference
+
+    # Compatibility fallback for older retained outputs that predate the
+    # authoritative merged-config snapshot.
+    loaded = [low_level_config(root) for root in iteration_roots.values()]
+    reference = loaded[0]
+    if any(config != reference for config in loaded[1:]):
+        raise ValueError("low-level trajectory configs differ across iterations")
+    return reference
+
+
 def analyze_pair(
     *,
     alpha_label: str,
@@ -171,21 +201,20 @@ def analyze_pair(
             "array_amplitude_mjy_beam"
         ],
     }
-    for iteration in expected_iterations:
-        control_config = low_level_config(control_dirs[iteration])
-        injected_config = low_level_config(injected_dirs[iteration])
-        require_pair_config(control_config, injected_config, pair_contract)
-        for name, config in (
-            ("control", control_config),
-            ("injected", injected_config),
-        ):
-            realized = float(
-                config["timestream"]["fruit_loops"]["relaxation_alpha"]
+    control_config = trajectory_config(control_dirs)
+    injected_config = trajectory_config(injected_dirs)
+    require_pair_config(control_config, injected_config, pair_contract)
+    for name, config in (
+        ("control", control_config),
+        ("injected", injected_config),
+    ):
+        realized = float(
+            config["timestream"]["fruit_loops"]["relaxation_alpha"]
+        )
+        if realized != alpha:
+            raise ValueError(
+                f"alpha={alpha_label} {name} realized alpha={realized}"
             )
-            if realized != alpha:
-                raise ValueError(
-                    f"alpha={alpha_label} {name} realized alpha={realized}"
-                )
 
     for iteration in range(trajectory_start, injection_start):
         require_exact_images(
@@ -206,7 +235,6 @@ def analyze_pair(
     for iteration in expected_iterations:
         control_redu = control_dirs[iteration]
         injected_redu = injected_dirs[iteration]
-        control_config = low_level_config(control_redu)
         pixel_size = float(control_config["mapmaking"]["pixel_size_arcsec"])
         for array in ARRAYS:
             control_path = product_path(control_redu, obsnum, array)
@@ -497,7 +525,7 @@ def write_report(path: Path, rows: list[dict], result: dict) -> None:
                 + ("PASS" if not failed else "FAIL — " + ", ".join(failed))
             )
         lines.append("")
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
 
 
 def main() -> int:

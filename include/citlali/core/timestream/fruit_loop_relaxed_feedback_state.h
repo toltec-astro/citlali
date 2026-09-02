@@ -19,7 +19,9 @@ inline constexpr const char *fruit_loop_compact_relaxation_method_id =
 
 // This is the complete causal feedback state F_k for the bounded EL-F1
 // experiment.  The measured complete map Q~_k remains in the ordinary map
-// products.  Matrices are flattened in map, row, column order so the same
+// products and is the sole authority for newest-product weights and RMS.  F_k
+// carries only the accepted signal/kernel feedback model and its exact
+// identity.  Matrices are flattened in map, row, column order so the same
 // object can be checkpointed without depending on a particular MapBuffer.
 struct FruitLoopRelaxedFeedbackState {
     std::string method_id{fruit_loop_compact_relaxation_method_id};
@@ -40,8 +42,6 @@ struct FruitLoopRelaxedFeedbackState {
     std::vector<std::string> wcs_cunit;
     std::vector<double> signal;
     std::vector<double> kernel;
-    std::vector<double> weight;
-    std::vector<double> median_rms;
 };
 
 inline bool fruit_loop_relaxation_alpha_is_approved(double alpha) {
@@ -98,13 +98,8 @@ inline std::string fruit_loop_relaxed_feedback_state_error(
     }
     const auto plane_size = fruit_loop_relaxed_feedback_plane_size(state);
     if (state.signal.size() != plane_size ||
-        state.kernel.size() != plane_size ||
-        state.weight.size() != plane_size) {
-        return "signal, kernel, or weight plane cardinality is inconsistent";
-    }
-    if (!state.median_rms.empty() &&
-        state.median_rms.size() != static_cast<std::size_t>(state.map_count)) {
-        return "median-RMS cardinality is inconsistent";
+        state.kernel.size() != plane_size) {
+        return "signal or kernel plane cardinality is inconsistent";
     }
     if (state.wcs_naxis.size() != 2 || state.wcs_cdelt.size() != 2 ||
         state.wcs_crpix.size() != 2 || state.wcs_crval.size() != 2 ||
@@ -190,8 +185,6 @@ void update_fruit_loop_relaxed_feedback_state(
         state.completed_iteration = -1;
         state.signal.clear();
         state.kernel.clear();
-        state.weight.clear();
-        state.median_rms.clear();
         return;
     }
     if (observation_id.empty() || completed_iteration < 0) {
@@ -241,7 +234,6 @@ void update_fruit_loop_relaxed_feedback_state(
 
     std::vector<double> next_signal(plane_size);
     std::vector<double> next_kernel(plane_size);
-    std::vector<double> next_weight(plane_size);
     for (Eigen::Index i = 0; i < map_count; ++i) {
         for (Eigen::Index row = 0; row < complete_map.n_rows; ++row) {
             for (Eigen::Index col = 0; col < complete_map.n_cols; ++col) {
@@ -279,7 +271,6 @@ void update_fruit_loop_relaxed_feedback_state(
                     next_signal[offset] = q_signal;
                     next_kernel[offset] = q_kernel;
                 }
-                next_weight[offset] = complete_map.weight[i](row, col);
             }
         }
     }
@@ -303,13 +294,6 @@ void update_fruit_loop_relaxed_feedback_state(
     state.wcs_cunit = fruit_loop_spatial_wcs(complete_map.wcs.cunit);
     state.signal = std::move(next_signal);
     state.kernel = std::move(next_kernel);
-    state.weight = std::move(next_weight);
-    state.median_rms.clear();
-    state.median_rms.reserve(
-        static_cast<std::size_t>(complete_map.median_rms.size()));
-    for (Eigen::Index i = 0; i < complete_map.median_rms.size(); ++i) {
-        state.median_rms.push_back(complete_map.median_rms(i));
-    }
 }
 
 template <class MapBuffer>
@@ -389,31 +373,14 @@ void apply_fruit_loop_relaxed_feedback_state(
             for (Eigen::Index col = 0; col < state.n_cols; ++col) {
                 const auto offset = fruit_loop_relaxed_feedback_offset(
                     i, row, col, state.n_rows, state.n_cols);
-                if (!fruit_loop_bitwise_equal(
-                        state.weight[offset], loaded_map.weight[i](row, col))) {
-                    throw std::invalid_argument(
-                        "EL-F1 feedback load newest-product weight identity mismatch");
-                }
                 loaded_map.signal[i](row, col) = state.signal[offset];
                 loaded_map.kernel[i](row, col) = state.kernel[offset];
-                loaded_map.weight[i](row, col) = state.weight[offset];
             }
         }
     }
-    if (!state.median_rms.empty()) {
-        if (loaded_map.median_rms.size() != state.map_count) {
-            throw std::invalid_argument(
-                "EL-F1 feedback load newest-product RMS cardinality mismatch");
-        }
-        for (Eigen::Index i = 0; i < state.map_count; ++i) {
-            if (!fruit_loop_bitwise_equal(
-                    state.median_rms[static_cast<std::size_t>(i)],
-                    loaded_map.median_rms(i))) {
-                throw std::invalid_argument(
-                    "EL-F1 feedback load newest-product RMS identity mismatch");
-            }
-        }
-    }
+    // Deliberately leave loaded_map.weight and loaded_map.median_rms exactly
+    // as reloaded from checkpoint-bound Q_k.  They are causal selection state,
+    // not properties of relaxed F_k, and must have one authority.
 }
 
 }  // namespace citlali::fruit

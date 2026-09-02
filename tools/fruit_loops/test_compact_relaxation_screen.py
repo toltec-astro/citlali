@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 import pytest
+import yaml
 
 from tools.fruit_loops import analyze_compact_relaxation_screen as analysis
 
@@ -69,6 +70,34 @@ def test_annulus_uses_geometric_map_center() -> None:
     mask = analysis.annulus_mask((5, 5), 1.0, 1.0, 1.0)
     assert int(mask.sum()) == 4
     assert not mask[2, 2]
+
+
+def test_trajectory_config_uses_authoritative_merged_snapshot(tmp_path) -> None:
+    iteration_roots = {}
+    for iteration in range(3):
+        root = tmp_path / f"redu{iteration:02d}"
+        root.mkdir()
+        iteration_roots[iteration] = root
+    expected = {"runtime": {"output_dir": "test"}, "value": 3}
+    (iteration_roots[2] / "citlali_merged_config.yaml").write_text(
+        yaml.safe_dump(expected), encoding="utf-8"
+    )
+
+    assert analysis.trajectory_config(iteration_roots) == expected
+
+
+def test_trajectory_config_rejects_different_merged_snapshots(tmp_path) -> None:
+    iteration_roots = {}
+    for iteration in range(2):
+        root = tmp_path / f"redu{iteration:02d}"
+        root.mkdir()
+        (root / "citlali_merged_config.yaml").write_text(
+            yaml.safe_dump({"iteration": iteration}), encoding="utf-8"
+        )
+        iteration_roots[iteration] = root
+
+    with pytest.raises(ValueError, match="differ across iterations"):
+        analysis.trajectory_config(iteration_roots)
 
 
 def test_classifies_candidate_as_restart_pending_when_all_checks_pass() -> None:
