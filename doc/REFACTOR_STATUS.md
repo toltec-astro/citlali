@@ -243,13 +243,21 @@ malformed, policy-incompatible, and grid-incompatible required state fail
 closed. It does not retain map-pixel-outlier history or move detector
 selection earlier. The CLI builds, 16 focused learning/checkpoint tests and 3
 isolated real consumer-path tests pass, all 602 enabled CTests pass with one
-pre-existing disabled test, all 147 baseline tests and 16 fruit-loop tool
+pre-existing disabled test, all 147 baseline tests and 17 fruit-loop tool
 tests pass, and full config preflight passes after updating its moved pointing
-fixture locator. D19 remains open and the affected exact-restart claim remains
-unavailable until the real point-152389 split control matches all required
-products and learned state for the approved three post-checkpoint iterations.
-The exact approval is recorded in
+fixture locator. Repair commit `2b59ad642` then passed the real point-152389
+split control recorded at `dd342448b`: all 27 signal, kernel, and weight planes
+are bitwise equal at absolute iterations 5--7, and every checkpoint variable
+is bitwise equal at all three boundaries. The restart restores 12 targets for
+iteration 5; both trajectories then resolve the same 13, 3, and 3 targets and
+retain the same seven detector penalties. Both runs have no unexpected
+error- or critical-level message. D19 is closed for this enabled path; the
+result validates exact continuation but does not qualify the FRUIT recurrence,
+choose a stopping rule, or authorize restart-dependent scientific claims
+beyond the tested state contract. The exact approval is recorded in
 [`SCIENTIFIC_OWNER_D19_CHOICE_A_APPROVAL_2026-09-02.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_D19_CHOICE_A_APPROVAL_2026-09-02.md).
+The hashed replay is in
+[`validation/fruit_loop_point_152389_restart_v3_choice_a_2026-09-02/`](../validation/fruit_loop_point_152389_restart_v3_choice_a_2026-09-02/).
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

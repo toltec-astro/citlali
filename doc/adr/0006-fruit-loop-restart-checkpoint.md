@@ -133,11 +133,15 @@ loader rather than silently treated as complete.
 Focused local tests cover bounded resolution, empty state, checkpoint
 round-trip without diagnostic history, fail-closed missing state, application
 to the map contribution tracer, older-schema rejection, and a synthetic
-five-plus-three split that matches eight uninterrupted iterations. D19
-nevertheless remains open, and
-the affected exact-restart claim remains unavailable, until the approved real
-pointing replay matches all required products and learned state for three
-post-checkpoint iterations.
+five-plus-three split that matches eight uninterrupted iterations. Repair
+commit `2b59ad642` then passed the approved real point-152389 control in
+evidence commit `dd342448b`. Restarted absolute iterations 5--7 are bitwise
+equal to the uninterrupted trajectory in all 27 required signal, kernel, and
+weight planes, and every checkpoint variable is bitwise equal at all three
+boundaries. The initial restart applies the 12 resolved iteration-4 targets;
+both trajectories then carry identical target and detector-penalty state.
+D19 is closed for this enabled path. This is exact-restart evidence, not FRUIT
+recurrence qualification or stopping-rule approval.
 
 ## Evidence
 
@@ -146,4 +150,5 @@ post-checkpoint iterations.
 - `tests/test_learning_and_fruit_contracts.cpp`
 - [`../SCIENTIFIC_CONVENTIONS.md`](../SCIENTIFIC_CONVENTIONS.md)
 - [`../../validation/fruit_loop_point_152389_injected_convergence_development_2026-09-02/README.md`](../../validation/fruit_loop_point_152389_injected_convergence_development_2026-09-02/README.md)
+- [`../../validation/fruit_loop_point_152389_restart_v3_choice_a_2026-09-02/README.md`](../../validation/fruit_loop_point_152389_restart_v3_choice_a_2026-09-02/README.md)
 - [`../scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_D19_CHOICE_A_APPROVAL_2026-09-02.md`](../scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_D19_CHOICE_A_APPROVAL_2026-09-02.md)

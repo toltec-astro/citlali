@@ -6,8 +6,7 @@ Decision date: `2026-09-02`
 
 Decision ID: `SCI-FRUIT-EL-D19-ITERATION-BOUNDARY-STATE-A-2026-09-02`
 
-Status: **Choice A approved; bounded checkpoint repair authorized; D19 remains
-open pending the required real three-iteration restart replay**
+Status: **Choice A approved; bounded checkpoint repair validated; D19 closed**
 
 ## Exact Approval
 
@@ -58,3 +57,17 @@ D19 by itself. Exact-restart, restart-dependent qualification, and
 restart-dependent stopping claims remain unavailable for the affected feature
 combination until the complete validation specified by the approved candidate
 passes.
+
+## Validation Disposition
+
+Repair commit `2b59ad642` implements the authorized checkpoint-v3 state.
+Evidence commit `dd342448b` records the required point-152389 replay. Restarted
+absolute iterations 5, 6, and 7 are bitwise equal to the uninterrupted
+trajectory in all 27 required map planes and in every checkpoint variable.
+The initial restart restores the 12 resolved targets from iteration 4, and the
+subsequent resolved targets and detector penalties remain identical. D19 is
+therefore closed for this enabled path. The approval's preserved non-effects
+remain in force.
+
+See
+[`../../../../../../validation/fruit_loop_point_152389_restart_v3_choice_a_2026-09-02/README.md`](../../../../../../validation/fruit_loop_point_152389_restart_v3_choice_a_2026-09-02/README.md).
