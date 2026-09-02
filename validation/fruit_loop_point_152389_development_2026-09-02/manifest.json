@@ -1,0 +1,124 @@
+{
+  "analysis_script": {
+    "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/analyze_compact_pointing_development.py",
+    "sha256": "a80854d86db154bcb689426c98136864745eff6f551940f63efddc092fcd2456"
+  },
+  "control_executable": {
+    "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/.tolproj/citlali-snapshots/9d3ce4f31260bbdf3f630dbaa09e0c18eb92b3ebcc8be15eb146024acd6f7f65/citlali",
+    "sha256": "9d3ce4f31260bbdf3f630dbaa09e0c18eb92b3ebcc8be15eb146024acd6f7f65",
+    "size_bytes": 12320912,
+    "version": "v4.0.0-3753-gc31a60a0"
+  },
+  "control_id": "SCI-FRUIT-C31-OPERATIONAL-CONTROL-POINT-152389-R0.1",
+  "fruit_loop_configuration": {
+    "array_flux_limit": [
+      12,
+      18,
+      10
+    ],
+    "max_iters": 3,
+    "mode": "upper",
+    "sig2noise_limit": 100,
+    "type": "obsnum/raw"
+  },
+  "inputs": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu00/152389/raw/ppt_commissioning_pointing_152389_citlali.ecsv",
+      "sha256": "df08a5f4a58bb634c3ec0af18a0bf54e54d35edf1458bc9325ebfa1ff374fc3b",
+      "size_bytes": 22215
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu00/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "b45839e664d5c58e4710f96f8fdb90e7f19fe9f35f70d352a2295b645f3118ed",
+      "size_bytes": 8023680
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu00/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "2e2ae14a1fed80080b70fe97c6945ca596e280cc794d8d1d840e4dc7faba659e",
+      "size_bytes": 8023680
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu00/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "01dc0d9ba170314b1fa7eb38259e7b66118d15edc939034d2e7e871f11b826b2",
+      "size_bytes": 8023680
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu01/152389/raw/ppt_commissioning_pointing_152389_citlali.ecsv",
+      "sha256": "1684bbd97a546ae5dc5c935119c83b8bd7610d191dcfe88e4e2b6fc2d01f2088",
+      "size_bytes": 22222
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu01/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "fdb83e7395a1aec814581019264f7e45470fe49cfb02b9046ea0ed422e56648c",
+      "size_bytes": 8023680
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu01/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "0630077c6395844534fe16909983337d25b74116fc276b65bc4b1ed0c3a6b394",
+      "size_bytes": 8023680
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu01/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "7e22ca97174b138e52f9547e9be56bfcf4fbb629c21f9487dcb1f446f600b6f9",
+      "size_bytes": 8023680
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu02/152389/raw/ppt_commissioning_pointing_152389_citlali.ecsv",
+      "sha256": "6d7a94c9623114d375221baf387a07dfca6c3cbeb4ee925b37ff03c0906b2127",
+      "size_bytes": 22215
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu02/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "d27aa8aee59c445146469a587744f91c5e6921ef6b91be8023e68b4230c1bf98",
+      "size_bytes": 8023680
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu02/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "4f60f8748be9913a3dbfe050a0e25aa2d1d99d2ba2e453d8a6e27fde076ef21e",
+      "size_bytes": 8023680
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu02/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "5e864e127cc436cfbd7b8d21db661e227002fcf63ef2499234054e8f718a1f09",
+      "size_bytes": 8023680
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu02/citlali_merged_config.yaml",
+      "sha256": "fbb33d39916e267445d1dafe46743f80ad0254c22e4f5bd47201375a15882bda",
+      "size_bytes": 14338
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu02/config_source_manifest.yaml",
+      "sha256": "7b83104eb768d5a230419a698b0971f25366d3e09a7e9c50e7f646e8e83a9d03",
+      "size_bytes": 680
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced/redu02/runtime_provenance.yaml",
+      "sha256": "2996dbcec0dbfc6818857178dcefd893204e3fc8e77427a45899d50f88637871",
+      "size_bytes": 948
+    }
+  ],
+  "iteration_count": 3,
+  "mapmaking_method": "jinc",
+  "obsnum": 152389,
+  "outputs": [
+    {
+      "path": "iteration_metrics.csv",
+      "sha256": "c8014739159b61bdaafdec7fb3db88d8e29e82a157c26176211179a0c004df71",
+      "size_bytes": 6022
+    },
+    {
+      "path": "point_152389_iteration_summary.png",
+      "sha256": "41fb07487f1fcea66d4e0f02845e729b844636aa9b7867128cdb9181dbb6ca44",
+      "size_bytes": 332058
+    }
+  ],
+  "qualification_use_authorized": false,
+  "reference_interpretation": {
+    "apt_header_beam": "secondary reduction-carried beam geometry; not independent diffraction truth",
+    "processed_kernel": "primary same-run response comparator; not independent diffraction truth"
+  },
+  "role": "exploratory-development-only",
+  "schema_version": "sci-fruit-compact-development-analysis-v1",
+  "source_root": "/Users/gwilson/work_toltec/local_data/citlali-validation/v2/point/refactor/reduced"
+}
