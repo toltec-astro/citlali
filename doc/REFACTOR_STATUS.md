@@ -259,6 +259,22 @@ beyond the tested state contract. The exact approval is recorded in
 The hashed replay is in
 [`validation/fruit_loop_point_152389_restart_v3_choice_a_2026-09-02/`](../validation/fruit_loop_point_152389_restart_v3_choice_a_2026-09-02/).
 
+After reporting closure commit `9ba82bdaf` pushed, the owner agreed to resume
+the empirical FRUIT lane and prepare the first candidate-recurrence experiment.
+The current Gate-D assessment is
+[`EL_G0_GATE_D_READINESS_R0.2.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_G0_GATE_D_READINESS_R0.2.md): D19 is no longer the blocker,
+but the exact `f70701ad` historical executable and a protected finite
+population remain unavailable. The preserved pointing artifact is instead a
+refactor-era `c31a60a0` executable. The proposed
+[`EL-F1 compact relaxation screen`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F1_COMPACT_RELAXATION_OWNER_REVIEW_R0.1.md)
+therefore compares fixed `alpha=1.25` and `1.50` candidates only with an exact
+same-build `alpha=1` compatibility control on the already exposed
+point-152389 injection. The proposal is bound by
+[`EL_F1_BUNDLE_MANIFEST_R0.1.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F1_BUNDLE_MANIFEST_R0.1.md)
+and is not yet approved. No prototype, numerical change, new reduction, Gate D,
+qualification, Stage B, production, or Unity action follows from preparation
+of the packet.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

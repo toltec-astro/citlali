@@ -20,15 +20,20 @@ recommendations, current behavior, and open questions are not decisions.
 | `2026-09-01` | `SCI-FRUIT-DIR-STAGE-B-XHIGH-2026-09-01` | Request Stage B launch at xhigh reasoning effort from the accepted Stage A result | Direct scientific-owner instruction | Records requested effort and intended launch. Dispatch is not executed because the accepted architecture requires an empirical lane, qualified-method record, and sealed method-specific packet that do not exist; owner must preserve that sequence or explicitly supersede it with a framework-only Stage B scope. |
 | `2026-09-01` | `SCI-FRUIT-DIR-PRESERVE-SEQUENCE-AND-PREPARE-EL-PACKET-2026-09-01` | Preserve the accepted claim-layer sequence and proceed with preparation of the empirical-lane authorization packet after the accepted commit was pushed | Direct scientific-owner instruction recorded in `empirical_lane/SCIENTIFIC_OWNER_SEQUENCE_PRESERVATION_AND_PACKET_DIRECTION_2026-09-01.md` | Resolves the earlier sequencing choice and authorizes packet preparation only. Gate 0, additional implementation access, development, population access, qualification, Stage B, algorithm changes, validation, production, and Unity remain unauthorized. |
 | `2026-09-01` | `SCI-FRUIT-EL-G0-REGISTRATION-PREPARATION-R0.1-2026-09-01` | Approve `SCI-FRUIT-EL-G0-REGISTRATION-PREPARATION-R0.1` against the exact `EMPIRICAL_LANE_BUNDLE_MANIFEST_R0.1.md` after reporting accepted packet commit `90e55fa7d04fcab5cc716f7d258032275d6f6d7d` pushed | Direct scientific-owner statement bound by `empirical_lane/SCIENTIFIC_OWNER_GATE_0_APPROVAL_2026-09-01.md` | Authorizes only the manifest-bounded Gate-0 preparation on an isolated branch: read-only repository inspection, human-mediated non-outcome inventory, registration drafting, static checks, and typed feasibility/no-go analysis. No prototype, empirical execution, tuning, population unblinding, development, qualification, Stage B, numerical change, validation, production, or Unity action follows. |
+| `2026-09-02` | `SCI-FRUIT-DIR-POST-D19-EMPIRICAL-LANE-2026-09-02` | After D19 exact-restart closure and push, resume the empirical-lane sequence by preparing the first candidate-recurrence experiment against the accepted scientific and performance dimensions | Direct scientific-owner agreement recorded in `empirical_lane/SCIENTIFIC_OWNER_POST_D19_EMPIRICAL_LANE_DIRECTION_2026-09-02.md` | Authorizes preparation of an owner-review experiment decision only. It does not promote the refactor artifact to exact historical control or authorize a prototype, numerical change, reduction, Gate D, qualification, Stage B, production, or Unity activity. |
 
 ODQ-001E and ODQ-001F are decided. Revised ODQ-001, the four recurrence axes,
 and all later `SCI-FRUIT-ODQ-*` questions remain open. The accepted r0.8
 architecture is not a completed method, empirical-development launch,
 qualified-method record, or dispatchable Stage B packet. Gate 0 is active, but
-its repository-only pass found Gate-D launch not ready. The immediate open
-inputs are the exact historical-control acquisition path, human custodian/
-operator and outcome-free inventory, profile and candidate-family selection,
-metric registration, and resource envelope recorded in
-`empirical_lane/EL_G0_GATE_D_READINESS_R0.1.md`. Future answers require
+its repository and development-feasibility work found Gate-D launch not ready.
+The current assessment is
+`empirical_lane/EL_G0_GATE_D_READINESS_R0.2.md`. A separately decidable,
+compact-source recurrence screen is proposed in
+`empirical_lane/EL_F1_COMPACT_RELAXATION_OWNER_REVIEW_R0.1.md`; it is not Gate D
+and is not approved. The immediate Gate-D inputs remain the exact historical-
+control acquisition path, human custodian/operator and outcome-free inventory,
+profile and candidate-family selection, metric registration, and resource
+envelope. Future answers require
 separate, dated owner records and exact
 propagation into this log, the ledger, scope, and source bindings.

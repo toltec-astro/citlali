@@ -117,7 +117,7 @@ recovered the historical-control source identity and prepared candidate-neutral
 profile, metric, population, candidate-family, resource, and access records.
 It has not established an exact executable historical control or a protected
 finite population. The current disposition in
-[`empirical_lane/EL_G0_GATE_D_READINESS_R0.1.md`](empirical_lane/EL_G0_GATE_D_READINESS_R0.1.md)
+[`empirical_lane/EL_G0_GATE_D_READINESS_R0.2.md`](empirical_lane/EL_G0_GATE_D_READINESS_R0.2.md)
 is therefore **Gate-D launch not ready**. No prototype, empirical run, tuning,
 held-out access, qualification, Stage B, or Unity work is authorized.
 
@@ -128,6 +128,17 @@ and conservative quarantine are recorded in
 No frozen qualification population existed and no method was tuned or ranked;
 the entire incident family and its lineage descendants are nevertheless
 ineligible for untouched qualification evidence.
+
+After the D19 checkpoint-v3 repair passed exact restart validation, the owner
+directed preparation of the first candidate-recurrence experiment. The
+separately decidable
+[`EL-F1 compact relaxation proposal`](empirical_lane/EL_F1_COMPACT_RELAXATION_OWNER_REVIEW_R0.1.md)
+would screen two fixed over-relaxation candidates on the already exposed
+point-152389 injection against a same-build compatibility control. Its exact
+owner-review payload is bound by
+[`EL_F1_BUNDLE_MANIFEST_R0.1.md`](empirical_lane/EL_F1_BUNDLE_MANIFEST_R0.1.md).
+EL-F1 is not approved and cannot support a historical-comparison,
+qualification, Stage B, or production claim.
 
 `AUTHOR_PACKET_MANIFEST.md`, `AUTHOR_SUPERSESSION_COVER.md`, and
 `AUTHOR_CONVENTIONS_AND_OWNERSHIP.md` are non-dispatchable placeholders required
@@ -229,6 +240,13 @@ only; they contain no normative science and no rendered contract.
     closed pending that control, a human-custodied outcome-free inventory, and
     exact owner choices for profiles, metrics, candidate families, and resource
     bounds.
+20. The owner later directed preparation of the first recurrence experiment
+    after D19 exact-restart closure. The resulting EL-F1 proposal explicitly
+    refuses to treat the preserved `c31a60a0` refactor executable as the exact
+    `f70701ad` historical control. It proposes only a local compact-source
+    feasibility screen of fixed `alpha=1.25` and `1.50` relaxed transitions
+    against an exact same-build `alpha=1` compatibility control. No prototype,
+    run, or result is authorized until the exact EL-F1 manifest is approved.
 
 ## Stop Rule
 
@@ -251,7 +269,7 @@ qualified-method record, and a sealed author packet before method-specific
 Stage B. The owner has preserved that sequence. The exact Gate-0 candidate is
 approved and its repository-only preparation pass is complete. Gate D remains
 closed pending the exact human and owner inputs listed in
-`empirical_lane/EL_G0_GATE_D_READINESS_R0.1.md`. Gate 0 may prepare the missing
+`empirical_lane/EL_G0_GATE_D_READINESS_R0.2.md`. Gate 0 may prepare the missing
 bindings but may not perform candidate exploration or empirical execution.
 Candidate exploration,
 prospective goalpost freezing, held-out qualification, and scientific
