@@ -1,0 +1,59 @@
+schema_version: sci-fruit-el-f2-analysis-v1
+test_id: SCI-FRUIT-EL-F2-INDEPENDENT-POINTING-EARLY-STOP-R0.1
+role: prospective-development-screen
+qualification_use_authorized: false
+obsnum: 123424
+trajectory_start_iteration: 0
+injection_start_iteration: 1
+array_order: [a1100, a1400, a2000]
+array_amplitude_mjy_beam: [100.0, 100.0, 100.0]
+annulus_inner_arcsec: 40.0
+annulus_outer_arcsec: 120.0
+gaussian_search_radius_arcsec: 25.0
+methods:
+  reference:
+    alpha: 1.0
+    terminal_iteration: 6
+    stop_iteration_exclusive: 7
+    control: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced
+    injected: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/injected/reduced
+  candidate:
+    alpha: 1.25
+    terminal_iteration: 5
+    stop_iteration_exclusive: 6
+    control: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.25/control/reduced
+    injected: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.25/injected/reduced
+metrics:
+  central_recovery: >-
+    Gaussian amplitude of injected-minus-control signal divided by injected
+    truth and the fitted peak of the same-iteration injected kernel.
+  full_kernel_recovery: >-
+    Least-squares projection coefficient of injected-minus-control signal onto
+    the same-iteration injected kernel, divided by injected truth.
+  width_ratios: >-
+    Gaussian major and minor FWHM of injected-minus-control signal divided by
+    the corresponding same-iteration injected-kernel FWHM.
+  centroid_error: >-
+    Euclidean separation in arcsec between the fitted transfer and kernel
+    centroids.
+  kernel_residual_structure: >-
+    Full-common-support RMS after subtracting the least-squares kernel-shaped
+    source, divided by the RMS of the transfer map.
+  annular_residual_structure: >-
+    RMS of the same kernel-subtracted transfer map from 40 through 120 arcsec,
+    divided by injected truth.
+  response_change: >-
+    RMS of injected kernel at iteration k minus iteration k-1, divided by the
+    RMS of the preceding injected kernel on common finite support.
+  support: >-
+    Signal, kernel, and weight shapes, WCS/grid identity, and finite masks must
+    agree within each pair and across iterations; any mismatch invalidates the
+    trajectory.
+screen:
+  max_absolute_recovery_error_degradation: 0.01
+  max_width_fractional_error: 0.03
+  max_centroid_error_arcsec: 0.1
+  max_residual_ratio_to_reference: 1.10
+  minimum_pair_mean_wall_time_improvement_fraction: 0.10
+  restart_source_iteration: 2
+  restart_required_through_iteration: 5

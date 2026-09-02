@@ -1,0 +1,14 @@
+kids:
+  solver:
+    fitreportdir: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/fitreports-unused/
+runtime:
+  n_threads: 1
+timestream:
+  fruit_loops:
+    save_all_iters: true
+  processed_time_chunk:
+    output:
+      enabled: false
+  raw_time_chunk:
+    output:
+      enabled: false

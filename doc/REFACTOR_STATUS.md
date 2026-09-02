@@ -315,6 +315,22 @@ This remains development evidence only and does not launch Gate D or Stage B,
 qualify a recurrence, change production behavior, establish historical
 superiority, or authorize Unity work.
 
+The owner then favored a prospective follow-up that tests whether fixed
+`alpha=1.25` stopped at iteration 5 can preserve the compact-source result of
+`alpha=1.00` through iteration 6 on an independent pointing observation. The
+date-separated observation 123424 was selected before inspecting any of its
+FRUIT outcomes, and the owner retrieved its 12 raw detector files from Unity.
+Local header checks bind observation 123424/sub-observation 0/scan 2 across
+the raw and recomputed telescope files; the matched legacy APT covers the same
+12 networks. APT v2 packaging is unavailable, so the exact legacy ECSV is
+frozen as a common development input with an explicit non-qualification
+limitation. The four-trajectory, unequal-terminal-iteration proposal is
+[`EL_F2_INDEPENDENT_POINTING_EARLY_STOP_OWNER_REVIEW_R0.1.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F2_INDEPENDENT_POINTING_EARLY_STOP_OWNER_REVIEW_R0.1.md)
+and is content-bound by `EL_F2_BUNDLE_MANIFEST_R0.1.md`. It is awaiting exact
+owner approval. No analyzer change, build, reduction, restart replay, Gate D,
+Stage B, qualification, historical comparison, production change, or Unity
+action is authorized by preparation of this packet.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

@@ -1,0 +1,66 @@
+inputs:
+- cal_items:
+  - beammap_source:
+      fluxes:
+      - array_name: a1100
+        uncertainty_mJy: 0.05
+        value_mJy: 2329
+      - array_name: a1400
+        uncertainty_mJy: 0.05
+        value_mJy: 2800
+      - array_name: a2000
+        uncertainty_mJy: 0.05
+        value_mJy: 1923
+    type: photometry
+  - pointing_offsets:
+    - axes_name: az
+      value_arcsec: [0]
+    - axes_name: alt
+      value_arcsec: [0]
+    type: astrometry
+  - filepath: /Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/apts/hero_rc1/apt_123424_matched.ecsv
+    meta:
+      interface: apt
+    type: array_prop_table
+  data_items:
+  - filepath: /Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_rc1/reduced/tel_toltec_2024-11-27_123424_00_0002_recomputed.nc
+    meta:
+      interface: lmt
+  - filepath: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec0_123424_000_0002_2024_11_27_04_09_50.nc
+    meta:
+      interface: toltec0
+  - filepath: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec1_123424_000_0002_2024_11_27_04_09_50.nc
+    meta:
+      interface: toltec1
+  - filepath: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec2_123424_000_0002_2024_11_27_04_09_50.nc
+    meta:
+      interface: toltec2
+  - filepath: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec3_123424_000_0002_2024_11_27_04_09_50.nc
+    meta:
+      interface: toltec3
+  - filepath: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec4_123424_000_0002_2024_11_27_04_09_50.nc
+    meta:
+      interface: toltec4
+  - filepath: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec5_123424_000_0002_2024_11_27_04_09_50.nc
+    meta:
+      interface: toltec5
+  - filepath: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec6_123424_000_0002_2024_11_27_04_09_50.nc
+    meta:
+      interface: toltec6
+  - filepath: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec7_123424_000_0002_2024_11_27_04_09_50.nc
+    meta:
+      interface: toltec7
+  - filepath: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec8_123424_000_0002_2024_11_27_04_09_50.nc
+    meta:
+      interface: toltec8
+  - filepath: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec9_123424_000_0002_2024_11_27_04_09_50.nc
+    meta:
+      interface: toltec9
+  - filepath: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec11_123424_000_0002_2024_11_27_04_09_50.nc
+    meta:
+      interface: toltec11
+  - filepath: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec12_123424_000_0002_2024_11_27_04_09_50.nc
+    meta:
+      interface: toltec12
+  meta:
+    name: '123424_0_2'
