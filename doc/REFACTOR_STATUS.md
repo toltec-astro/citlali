@@ -326,10 +326,22 @@ the raw and recomputed telescope files; the matched legacy APT covers the same
 frozen as a common development input with an explicit non-qualification
 limitation. The four-trajectory, unequal-terminal-iteration proposal is
 [`EL_F2_INDEPENDENT_POINTING_EARLY_STOP_OWNER_REVIEW_R0.1.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F2_INDEPENDENT_POINTING_EARLY_STOP_OWNER_REVIEW_R0.1.md)
-and is content-bound by `EL_F2_BUNDLE_MANIFEST_R0.1.md`. It is awaiting exact
-owner approval. No analyzer change, build, reduction, restart replay, Gate D,
-Stage B, qualification, historical comparison, production change, or Unity
-action is authorized by preparation of this packet.
+and is content-bound by `EL_F2_BUNDLE_MANIFEST_R0.1.md`. The owner approved
+Choice A exactly on `2026-09-02`. The bounded unequal-terminal-iteration
+analyzer extension then passed 10 focused tests, and the executable and
+analysis were frozen before execution. The first scheduled trajectory stopped
+before iteration 0 after 1.22 seconds: the approved local overlay incorrectly
+labeled the KIDs fit-report path unused, producing 12 missing-fit-report
+critical messages and a fail-closed NaN stop. No map or checkpoint was
+created; the complete failed attempt is retained and the first of two allowed
+environmental replacements is consumed. The owner then supplied 12 matching
+processed tune fit reports covering the same observation and networks. The
+bounded r0.2 correction adds their hashes and one path-only overlay while
+leaving the scientific question, recurrence, matrix, metrics, thresholds,
+order, and limits unchanged. It is
+[`EL_F2_INPUT_BINDING_CORRECTION_OWNER_REVIEW_R0.2.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F2_INPUT_BINDING_CORRECTION_OWNER_REVIEW_R0.2.md)
+and is awaiting exact owner approval against
+`EL_F2_BUNDLE_MANIFEST_R0.2.md`. No replacement reduction is authorized yet.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

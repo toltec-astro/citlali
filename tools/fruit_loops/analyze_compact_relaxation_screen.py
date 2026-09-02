@@ -176,11 +176,16 @@ def analyze_pair(
     control_root: Path,
     injected_root: Path,
     manifest: dict,
+    stop_iteration_exclusive: int | None = None,
 ) -> list[dict]:
     obsnum = int(manifest["obsnum"])
     trajectory_start = int(manifest["trajectory_start_iteration"])
     injection_start = int(manifest["injection_start_iteration"])
-    stop_iteration = int(manifest["stop_iteration_exclusive"])
+    stop_iteration = (
+        int(manifest["stop_iteration_exclusive"])
+        if stop_iteration_exclusive is None
+        else int(stop_iteration_exclusive)
+    )
     expected_iterations = list(range(trajectory_start, stop_iteration))
     control_dirs = iteration_dirs(control_root, obsnum)
     injected_dirs = iteration_dirs(injected_root, obsnum)
