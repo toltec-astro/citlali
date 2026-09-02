@@ -18,6 +18,17 @@ void apply_fruit_loops_config_to_processor(
     ptcproc.fruit_loops_diagnostics_enabled = config.diagnostics_enabled;
     ptcproc.fruit_loops_recompute_weights_after_addback =
         config.recompute_weights_after_addback;
+    ptcproc.fruit_loops_relaxation_alpha = config.relaxation_alpha;
+    ptcproc.fruit_loops_relaxation_experiment_enabled =
+        config.relaxation_experiment_enabled;
+    if constexpr (requires {
+                      ptcproc.fruit_loop_relaxed_feedback_state;
+                  }) {
+        ptcproc.fruit_loop_relaxed_feedback_state.method_active =
+            config.relaxation_experiment_enabled;
+        ptcproc.fruit_loop_relaxed_feedback_state.alpha =
+            config.relaxation_alpha;
+    }
     if (!config.enabled) {
         return;
     }

@@ -482,7 +482,9 @@ void write_reduction_restart_checkpoint(
     const citlali::config::TimestreamLearningConfig &learning_config,
     const citlali::config::ProcessedTimeChunkConfig &processed_config,
     const ReductionLearningState &learning,
-    const WeightValidationRestartState &weight_validation) {
+    const WeightValidationRestartState &weight_validation,
+    const citlali::fruit::FruitLoopRelaxedFeedbackState
+        &relaxed_feedback) {
     if (completed_iteration < 0) {
         throw std::invalid_argument(
             "restart checkpoint completed iteration must be nonnegative");
@@ -496,6 +498,23 @@ void write_reduction_restart_checkpoint(
         !error.empty()) {
         throw std::invalid_argument("invalid restart checkpoint " + error);
     }
+    const bool write_el_f1 = relaxed_feedback.method_active;
+    if (write_el_f1) {
+        if (const auto error =
+                citlali::fruit::fruit_loop_relaxed_feedback_state_error(
+                    relaxed_feedback);
+            !error.empty()) {
+            throw std::invalid_argument(
+                "invalid restart checkpoint EL-F1 state: " + error);
+        }
+        if (relaxed_feedback.stored &&
+            (relaxed_feedback.completed_iteration != completed_iteration ||
+             observation_ids.size() != 1 ||
+             relaxed_feedback.observation_id != observation_ids.front())) {
+            throw std::invalid_argument(
+                "invalid restart checkpoint EL-F1 observation or iteration identity");
+        }
+    }
     const auto obs_index = observation_index(observation_ids);
     const auto flat = flatten_effective_state(learning, obs_index);
     if (const auto error = resolved_map_pixel_target_state_error(
@@ -506,8 +525,11 @@ void write_reduction_restart_checkpoint(
     const auto output_path = reduction_restart_checkpoint_path(reduction_dir);
 
     write_netcdf_atomic(output_path.string(), [&](netCDF::NcFile &file) {
-        add_netcdf_var(file, "schema_version",
-                       std::string{reduction_restart_checkpoint_schema_version});
+        add_netcdf_var(
+            file, "schema_version",
+            std::string{write_el_f1
+                            ? relaxed_feedback_restart_checkpoint_schema_version
+                            : reduction_restart_checkpoint_schema_version});
         add_netcdf_var(file, "creator_version", std::string{CITLALI_GIT_VERSION});
         add_netcdf_var(file, "completed_iteration", completed_iteration);
         add_netcdf_var(file, "next_iteration", completed_iteration + 1);
@@ -542,6 +564,104 @@ void write_reduction_restart_checkpoint(
         add_netcdf_var(
             file, "weight_validation_finalized",
             weight_validation.finalized ? 1 : 0);
+
+        if (write_el_f1) {
+            add_netcdf_var(file, "fruit_feedback_method_id",
+                           relaxed_feedback.method_id);
+            add_netcdf_var(file, "fruit_feedback_alpha",
+                           relaxed_feedback.alpha);
+            add_netcdf_var(file, "fruit_feedback_state_stored",
+                           relaxed_feedback.stored ? 1 : 0);
+        }
+        if (write_el_f1 && relaxed_feedback.stored) {
+            add_netcdf_var(file, "fruit_feedback_observation_id",
+                           relaxed_feedback.observation_id);
+            add_netcdf_var(file, "fruit_feedback_completed_iteration",
+                           relaxed_feedback.completed_iteration);
+            add_netcdf_var(file, "fruit_feedback_map_grouping",
+                           relaxed_feedback.map_grouping);
+            add_netcdf_var(
+                file, "fruit_feedback_map_count",
+                static_cast<long long>(relaxed_feedback.map_count));
+            add_netcdf_var(
+                file, "fruit_feedback_n_rows",
+                static_cast<long long>(relaxed_feedback.n_rows));
+            add_netcdf_var(
+                file, "fruit_feedback_n_cols",
+                static_cast<long long>(relaxed_feedback.n_cols));
+            add_netcdf_var(file, "fruit_feedback_pixel_size_rad",
+                           relaxed_feedback.pixel_size_rad);
+            add_netcdf_var(
+                file, "fruit_feedback_median_rms_count",
+                static_cast<long long>(relaxed_feedback.median_rms.size()));
+            add_netcdf_var(
+                file, "fruit_feedback_wcs_cdelt_count",
+                static_cast<long long>(relaxed_feedback.wcs_cdelt.size()));
+            add_netcdf_var(
+                file, "fruit_feedback_wcs_naxis_count",
+                static_cast<long long>(relaxed_feedback.wcs_naxis.size()));
+            add_netcdf_var(
+                file, "fruit_feedback_wcs_crpix_count",
+                static_cast<long long>(relaxed_feedback.wcs_crpix.size()));
+            add_netcdf_var(
+                file, "fruit_feedback_wcs_crval_count",
+                static_cast<long long>(relaxed_feedback.wcs_crval.size()));
+            add_netcdf_var(
+                file, "fruit_feedback_wcs_cunit_count",
+                static_cast<long long>(relaxed_feedback.wcs_cunit.size()));
+
+            const auto feedback_plane_dim = file.addDim(
+                "fruit_feedback_plane_value",
+                relaxed_feedback.signal.size());
+            write_numeric_vector(
+                file, "fruit_feedback_signal", netCDF::ncDouble,
+                feedback_plane_dim, relaxed_feedback.signal);
+            write_numeric_vector(
+                file, "fruit_feedback_kernel", netCDF::ncDouble,
+                feedback_plane_dim, relaxed_feedback.kernel);
+            write_numeric_vector(
+                file, "fruit_feedback_weight", netCDF::ncDouble,
+                feedback_plane_dim, relaxed_feedback.weight);
+
+            const auto wcs_cdelt_dim = file.addDim(
+                "fruit_feedback_wcs_cdelt_value",
+                relaxed_feedback.wcs_cdelt.size());
+            write_numeric_vector(
+                file, "fruit_feedback_wcs_cdelt", netCDF::ncFloat,
+                wcs_cdelt_dim, relaxed_feedback.wcs_cdelt);
+            const auto wcs_naxis_dim = file.addDim(
+                "fruit_feedback_wcs_naxis_value",
+                relaxed_feedback.wcs_naxis.size());
+            write_numeric_vector(
+                file, "fruit_feedback_wcs_naxis", netCDF::ncInt,
+                wcs_naxis_dim, relaxed_feedback.wcs_naxis);
+            const auto wcs_crpix_dim = file.addDim(
+                "fruit_feedback_wcs_crpix_value",
+                relaxed_feedback.wcs_crpix.size());
+            write_numeric_vector(
+                file, "fruit_feedback_wcs_crpix", netCDF::ncFloat,
+                wcs_crpix_dim, relaxed_feedback.wcs_crpix);
+            const auto wcs_crval_dim = file.addDim(
+                "fruit_feedback_wcs_crval_value",
+                relaxed_feedback.wcs_crval.size());
+            write_numeric_vector(
+                file, "fruit_feedback_wcs_crval", netCDF::ncFloat,
+                wcs_crval_dim, relaxed_feedback.wcs_crval);
+            const auto wcs_cunit_dim = file.addDim(
+                "fruit_feedback_wcs_cunit_value",
+                relaxed_feedback.wcs_cunit.size());
+            write_string_vector(
+                file, "fruit_feedback_wcs_cunit", wcs_cunit_dim,
+                relaxed_feedback.wcs_cunit);
+            if (!relaxed_feedback.median_rms.empty()) {
+                const auto rms_dim = file.addDim(
+                    "fruit_feedback_median_rms_value",
+                    relaxed_feedback.median_rms.size());
+                write_numeric_vector(
+                    file, "fruit_feedback_median_rms", netCDF::ncDouble,
+                    rms_dim, relaxed_feedback.median_rms);
+            }
+        }
 
         const auto observation_dim =
             file.addDim("observation", observation_ids.size());
@@ -685,7 +805,9 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
     const citlali::config::TimestreamLearningConfig &expected_learning_config,
     const citlali::config::ProcessedTimeChunkConfig &expected_processed_config,
     ReductionLearningState &learning,
-    WeightValidationRestartState &weight_validation) {
+    WeightValidationRestartState &weight_validation,
+    citlali::fruit::FruitLoopRelaxedFeedbackState
+        *relaxed_feedback) {
     const auto input_path =
         reduction_restart_checkpoint_path(source_reduction_dir);
     if (!std::filesystem::is_directory(source_reduction_dir)) {
@@ -698,9 +820,21 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
 
     netCDF::NcFile file(input_path.string(), netCDF::NcFile::read);
     const auto schema = read_scalar_string(file, input_path, "schema_version");
-    if (schema != reduction_restart_checkpoint_schema_version) {
+    const double expected_feedback_alpha =
+        relaxed_feedback == nullptr ? 1.0 : relaxed_feedback->alpha;
+    const bool expect_el_f1 =
+        relaxed_feedback != nullptr && relaxed_feedback->method_active;
+    if (!citlali::fruit::fruit_loop_relaxation_alpha_is_approved(
+            expected_feedback_alpha)) {
+        checkpoint_error(input_path,
+                         "current EL-F1 alpha is outside the approved set");
+    }
+    const auto *expected_schema = expect_el_f1
+        ? relaxed_feedback_restart_checkpoint_schema_version
+        : reduction_restart_checkpoint_schema_version;
+    if (schema != expected_schema) {
         checkpoint_error(input_path, "unsupported schema_version '" + schema +
-                                         "'");
+                                         "' for the configured feedback method");
     }
     const auto creator_version =
         read_scalar_string(file, input_path, "creator_version");
@@ -782,6 +916,121 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
         checkpoint_error(
             input_path,
             "ordered observation identities differ from the current reduction");
+    }
+
+    citlali::fruit::FruitLoopRelaxedFeedbackState
+        restored_relaxed_feedback;
+    restored_relaxed_feedback.method_active = expect_el_f1;
+    restored_relaxed_feedback.alpha = expected_feedback_alpha;
+    if (expect_el_f1) {
+        restored_relaxed_feedback.method_id = read_scalar_string(
+            file, input_path, "fruit_feedback_method_id");
+        restored_relaxed_feedback.alpha = read_scalar<double>(
+            file, input_path, "fruit_feedback_alpha");
+        const int feedback_state_stored = read_scalar<int>(
+            file, input_path, "fruit_feedback_state_stored");
+        if (feedback_state_stored != 0 && feedback_state_stored != 1) {
+            checkpoint_error(input_path,
+                             "EL-F1 stored-state marker is not boolean");
+        }
+        restored_relaxed_feedback.stored = feedback_state_stored == 1;
+    }
+    if (expect_el_f1 && restored_relaxed_feedback.stored) {
+        restored_relaxed_feedback.observation_id = read_scalar_string(
+            file, input_path, "fruit_feedback_observation_id");
+        restored_relaxed_feedback.completed_iteration = read_scalar<int>(
+            file, input_path, "fruit_feedback_completed_iteration");
+        restored_relaxed_feedback.map_grouping = read_scalar_string(
+            file, input_path, "fruit_feedback_map_grouping");
+        const auto map_count_ll = read_scalar<long long>(
+            file, input_path, "fruit_feedback_map_count");
+        const auto n_rows_ll = read_scalar<long long>(
+            file, input_path, "fruit_feedback_n_rows");
+        const auto n_cols_ll = read_scalar<long long>(
+            file, input_path, "fruit_feedback_n_cols");
+        const auto rms_count_ll = read_scalar<long long>(
+            file, input_path, "fruit_feedback_median_rms_count");
+        const auto wcs_cdelt_count_ll = read_scalar<long long>(
+            file, input_path, "fruit_feedback_wcs_cdelt_count");
+        const auto wcs_naxis_count_ll = read_scalar<long long>(
+            file, input_path, "fruit_feedback_wcs_naxis_count");
+        const auto wcs_crpix_count_ll = read_scalar<long long>(
+            file, input_path, "fruit_feedback_wcs_crpix_count");
+        const auto wcs_crval_count_ll = read_scalar<long long>(
+            file, input_path, "fruit_feedback_wcs_crval_count");
+        const auto wcs_cunit_count_ll = read_scalar<long long>(
+            file, input_path, "fruit_feedback_wcs_cunit_count");
+        if (map_count_ll <= 0 || n_rows_ll <= 0 || n_cols_ll <= 0 ||
+            rms_count_ll < 0 || wcs_cdelt_count_ll < 2 ||
+            wcs_naxis_count_ll < 2 || wcs_crpix_count_ll < 2 ||
+            wcs_crval_count_ll < 2 || wcs_cunit_count_ll < 2 ||
+            map_count_ll > std::numeric_limits<Eigen::Index>::max() ||
+            n_rows_ll > std::numeric_limits<Eigen::Index>::max() ||
+            n_cols_ll > std::numeric_limits<Eigen::Index>::max()) {
+            checkpoint_error(input_path,
+                             "invalid EL-F1 state cardinality");
+        }
+        restored_relaxed_feedback.map_count =
+            static_cast<Eigen::Index>(map_count_ll);
+        restored_relaxed_feedback.n_rows =
+            static_cast<Eigen::Index>(n_rows_ll);
+        restored_relaxed_feedback.n_cols =
+            static_cast<Eigen::Index>(n_cols_ll);
+        restored_relaxed_feedback.pixel_size_rad = read_scalar<double>(
+            file, input_path, "fruit_feedback_pixel_size_rad");
+        std::size_t plane_size = 0;
+        try {
+            plane_size =
+                citlali::fruit::fruit_loop_relaxed_feedback_plane_size(
+                    restored_relaxed_feedback);
+        }
+        catch (const std::exception &error) {
+            checkpoint_error(input_path, error.what());
+        }
+        restored_relaxed_feedback.signal = read_numeric_vector<double>(
+            file, input_path, "fruit_feedback_signal", plane_size);
+        restored_relaxed_feedback.kernel = read_numeric_vector<double>(
+            file, input_path, "fruit_feedback_kernel", plane_size);
+        restored_relaxed_feedback.weight = read_numeric_vector<double>(
+            file, input_path, "fruit_feedback_weight", plane_size);
+        restored_relaxed_feedback.median_rms = read_numeric_vector<double>(
+            file, input_path, "fruit_feedback_median_rms",
+            static_cast<std::size_t>(rms_count_ll));
+        restored_relaxed_feedback.wcs_cdelt = read_numeric_vector<float>(
+            file, input_path, "fruit_feedback_wcs_cdelt",
+            static_cast<std::size_t>(wcs_cdelt_count_ll));
+        restored_relaxed_feedback.wcs_naxis = read_numeric_vector<int>(
+            file, input_path, "fruit_feedback_wcs_naxis",
+            static_cast<std::size_t>(wcs_naxis_count_ll));
+        restored_relaxed_feedback.wcs_crpix = read_numeric_vector<float>(
+            file, input_path, "fruit_feedback_wcs_crpix",
+            static_cast<std::size_t>(wcs_crpix_count_ll));
+        restored_relaxed_feedback.wcs_crval = read_numeric_vector<float>(
+            file, input_path, "fruit_feedback_wcs_crval",
+            static_cast<std::size_t>(wcs_crval_count_ll));
+        restored_relaxed_feedback.wcs_cunit = read_string_vector(
+            file, input_path, "fruit_feedback_wcs_cunit",
+            static_cast<std::size_t>(wcs_cunit_count_ll));
+        if (restored_relaxed_feedback.completed_iteration !=
+                completed_iteration ||
+            observation_ids.size() != 1 ||
+            restored_relaxed_feedback.observation_id !=
+                observation_ids.front()) {
+            checkpoint_error(input_path,
+                             "EL-F1 observation or iteration identity mismatch");
+        }
+    }
+    if (expect_el_f1) {
+        if (restored_relaxed_feedback.alpha != expected_feedback_alpha) {
+            checkpoint_error(input_path,
+                             "EL-F1 alpha differs from current configuration");
+        }
+        if (const auto error =
+                citlali::fruit::fruit_loop_relaxed_feedback_state_error(
+                    restored_relaxed_feedback);
+            !error.empty()) {
+            checkpoint_error(input_path, "invalid EL-F1 state: " + error);
+        }
     }
 
     FlatCheckpointState target_flat;
@@ -1015,6 +1264,9 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
             std::move(resolved_targets);
     }
     weight_validation = std::move(restored_weight_validation);
+    if (relaxed_feedback != nullptr) {
+        *relaxed_feedback = std::move(restored_relaxed_feedback);
+    }
 
     return ReductionRestartCheckpointSummary{
         input_path,
@@ -1031,6 +1283,14 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
         weight_validation_finalized != 0,
         target_scope_count,
         target_count,
+        expect_el_f1
+            ? std::string{
+                  citlali::fruit::fruit_loop_compact_relaxation_method_id}
+            : std::string{},
+        expected_feedback_alpha,
+        expect_el_f1 &&
+            citlali::fruit::fruit_loop_relaxed_feedback_enabled(
+                expected_feedback_alpha),
     };
 }
 

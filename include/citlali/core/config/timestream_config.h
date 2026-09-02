@@ -537,6 +537,11 @@ struct TimestreamFruitLoopsConfig {
         FruitLoopsInterpModeOverride::automatic;
     bool legacy_center = false;
     bool recompute_weights_after_addback = false;
+    // Development-only fixed recurrence factor for the content-bound EL-F1
+    // compact-source feasibility screen.  1.0 preserves the ordinary
+    // complete-product recurrence and remains the production default.
+    bool relaxation_experiment_enabled = false;
+    double relaxation_alpha = 1.0;
     int max_iters = 1;
 };
 

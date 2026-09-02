@@ -1,0 +1,10 @@
+# Common local-only execution overlay for the content-bound EL-F1 screen.
+runtime:
+  n_threads: 1
+timestream:
+  processed_time_chunk:
+    output:
+      enabled: false
+  raw_time_chunk:
+    output:
+      enabled: false

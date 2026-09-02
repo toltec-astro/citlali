@@ -3,6 +3,7 @@
 #include <citlali/core/config/timestream_config.h>
 #include <citlali/core/engine/learning.h>
 #include <citlali/core/pipeline/weight_validation_restart_state.h>
+#include <citlali/core/timestream/fruit_loop_relaxed_feedback_state.h>
 
 #include <cstddef>
 #include <filesystem>
@@ -13,6 +14,8 @@ namespace citlali::pipeline {
 
 inline constexpr const char *reduction_restart_checkpoint_schema_version =
     "citlali-reduction-restart-checkpoint-v3";
+inline constexpr const char *relaxed_feedback_restart_checkpoint_schema_version =
+    "citlali-reduction-restart-checkpoint-v4-el-f1";
 inline constexpr const char *reduction_restart_checkpoint_filename =
     "citlali_restart_checkpoint.nc";
 
@@ -31,6 +34,9 @@ struct ReductionRestartCheckpointSummary {
     bool weight_validation_finalized = false;
     std::size_t resolved_map_pixel_target_scopes = 0;
     std::size_t resolved_map_pixel_targets = 0;
+    std::string feedback_method_id;
+    double feedback_alpha = 1.0;
+    bool feedback_state_stored = false;
 };
 
 std::filesystem::path reduction_restart_checkpoint_path(
@@ -49,7 +55,9 @@ void write_reduction_restart_checkpoint(
     const citlali::config::TimestreamLearningConfig &learning_config,
     const citlali::config::ProcessedTimeChunkConfig &processed_config,
     const ReductionLearningState &learning,
-    const WeightValidationRestartState &weight_validation);
+    const WeightValidationRestartState &weight_validation,
+    const citlali::fruit::FruitLoopRelaxedFeedbackState
+        &relaxed_feedback = {});
 
 ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
     const std::filesystem::path &source_reduction_dir,
@@ -58,6 +66,8 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
     const citlali::config::TimestreamLearningConfig &expected_learning_config,
     const citlali::config::ProcessedTimeChunkConfig &expected_processed_config,
     ReductionLearningState &learning,
-    WeightValidationRestartState &weight_validation);
+    WeightValidationRestartState &weight_validation,
+    citlali::fruit::FruitLoopRelaxedFeedbackState
+        *relaxed_feedback = nullptr);
 
 }  // namespace citlali::pipeline

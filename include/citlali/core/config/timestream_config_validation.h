@@ -1071,6 +1071,36 @@ inline void validate(const TimestreamFruitLoopsConfig &config,
     check_minimum(config.center_keep_radius_arcsec, 0.0,
                   append_config_path(path, {"center_keep_radius_arcsec"}),
                   report);
+    if (config.relaxation_alpha != 1.0 &&
+        config.relaxation_alpha != 1.25 &&
+        config.relaxation_alpha != 1.50) {
+        report.add_error(
+            append_config_path(path, {"relaxation_alpha"}),
+            "EL-F1 permits only the exact fixed values 1.00, 1.25, and 1.50");
+    }
+    if (!config.relaxation_experiment_enabled &&
+        config.relaxation_alpha != 1.0) {
+        report.add_error(
+            append_config_path(path, {"relaxation_alpha"}),
+            "non-unity alpha requires relaxation_experiment_enabled=true");
+    }
+    if (config.relaxation_experiment_enabled) {
+        if (!config.diagnostics_enabled) {
+            report.add_error(
+                append_config_path(path, {"relaxation_alpha"}),
+                "EL-F1 candidate trajectories require diagnostics_enabled=true");
+        }
+        if (!config.save_all_iters) {
+            report.add_error(
+                append_config_path(path, {"relaxation_alpha"}),
+                "EL-F1 candidate trajectories require save_all_iters=true");
+        }
+        if (!is_obsnum_raw_fruit_loops_type(config.type)) {
+            report.add_error(
+                append_config_path(path, {"type"}),
+                "EL-F1 is restricted to the observation/raw feedback route");
+        }
+    }
     check_minimum(config.max_iters, 0,
                   append_config_path(path, {"max_iters"}), report);
 }

@@ -143,6 +143,8 @@ struct RestartLifecycleLogger {
 };
 
 struct RestartWeightValidationProcessor {
+    citlali::fruit::FruitLoopRelaxedFeedbackState
+        fruit_loop_relaxed_feedback_state;
     int weight_validation_current_iter = 0;
     int weight_validation_accumulated_iters = 0;
     int weight_validation_current_iter_contribution_count = 0;
@@ -206,6 +208,32 @@ ReductionLearningState restart_learning_state(
     const citlali::config::TimestreamLearningConfig &config) {
     ReductionLearningState state;
     citlali::pipeline::adapt_learning_config_one_way(config, state);
+    return state;
+}
+
+citlali::fruit::FruitLoopRelaxedFeedbackState
+relaxed_feedback_restart_state(int completed_iteration = 4,
+                               double alpha = 1.25) {
+    citlali::fruit::FruitLoopRelaxedFeedbackState state;
+    state.method_active = true;
+    state.alpha = alpha;
+    state.stored = true;
+    state.observation_id = "152390";
+    state.completed_iteration = completed_iteration;
+    state.map_grouping = "array";
+    state.map_count = 1;
+    state.n_rows = 2;
+    state.n_cols = 2;
+    state.pixel_size_rad = 1.0e-5;
+    state.wcs_cdelt = {-1.0F, 1.0F};
+    state.wcs_naxis = {2, 2};
+    state.wcs_crpix = {0.5F, 0.5F};
+    state.wcs_crval = {10.0F, 20.0F};
+    state.wcs_cunit = {"deg", "deg"};
+    state.signal = {1.0, 2.0, 3.0, 4.0};
+    state.kernel = {0.1, 0.2, 0.3, 0.4};
+    state.weight = {5.0, 6.0, 7.0, 8.0};
+    state.median_rms = {0.25};
     return state;
 }
 
@@ -518,6 +546,100 @@ TEST(ReductionRestartCheckpoint,
     EXPECT_EQ(empty->source_iter, -1);
     EXPECT_TRUE(empty->targets.empty());
 
+}
+
+TEST(ReductionRestartCheckpoint,
+     RoundTripsCompleteElF1RelaxedFeedbackState) {
+    RestartCheckpointDirectory directory;
+    const auto config = restart_learning_config();
+    const auto processed_config = restart_processed_config();
+    auto learning = restart_learning_state(config);
+    const auto original_feedback = relaxed_feedback_restart_state();
+
+    citlali::pipeline::write_reduction_restart_checkpoint(
+        directory.path, 4, "obsnum/raw", {"152390"}, config,
+        processed_config, learning, {}, original_feedback);
+
+    auto restored_learning = restart_learning_state(config);
+    citlali::pipeline::WeightValidationRestartState weight_validation;
+    citlali::fruit::FruitLoopRelaxedFeedbackState restored_feedback;
+    restored_feedback.method_active = true;
+    restored_feedback.alpha = 1.25;
+    const auto summary =
+        citlali::pipeline::load_reduction_restart_checkpoint(
+            directory.path, "obsnum/raw", {"152390"}, config,
+            processed_config, restored_learning, weight_validation,
+            &restored_feedback);
+
+    EXPECT_EQ(summary.feedback_method_id,
+              citlali::fruit::fruit_loop_compact_relaxation_method_id);
+    EXPECT_DOUBLE_EQ(summary.feedback_alpha, 1.25);
+    EXPECT_TRUE(summary.feedback_state_stored);
+    EXPECT_EQ(restored_feedback.method_id, original_feedback.method_id);
+    EXPECT_EQ(restored_feedback.observation_id,
+              original_feedback.observation_id);
+    EXPECT_EQ(restored_feedback.completed_iteration, 4);
+    EXPECT_EQ(restored_feedback.signal, original_feedback.signal);
+    EXPECT_EQ(restored_feedback.kernel, original_feedback.kernel);
+    EXPECT_EQ(restored_feedback.weight, original_feedback.weight);
+    EXPECT_EQ(restored_feedback.median_rms, original_feedback.median_rms);
+    EXPECT_EQ(restored_feedback.wcs_crval, original_feedback.wcs_crval);
+}
+
+TEST(ReductionRestartCheckpoint,
+     IdentifiesElF1AlphaOneWhileReusingOrdinaryCompleteProduct) {
+    RestartCheckpointDirectory directory;
+    const auto config = restart_learning_config();
+    const auto processed_config = restart_processed_config();
+    auto learning = restart_learning_state(config);
+    citlali::fruit::FruitLoopRelaxedFeedbackState feedback;
+    feedback.method_active = true;
+    feedback.alpha = 1.0;
+
+    citlali::pipeline::write_reduction_restart_checkpoint(
+        directory.path, 4, "obsnum/raw", {"152390"}, config,
+        processed_config, learning, {}, feedback);
+
+    auto restored_learning = restart_learning_state(config);
+    citlali::pipeline::WeightValidationRestartState weight_validation;
+    citlali::fruit::FruitLoopRelaxedFeedbackState restored_feedback;
+    restored_feedback.method_active = true;
+    restored_feedback.alpha = 1.0;
+    const auto summary =
+        citlali::pipeline::load_reduction_restart_checkpoint(
+            directory.path, "obsnum/raw", {"152390"}, config,
+            processed_config, restored_learning, weight_validation,
+            &restored_feedback);
+
+    EXPECT_EQ(summary.feedback_method_id,
+              citlali::fruit::fruit_loop_compact_relaxation_method_id);
+    EXPECT_DOUBLE_EQ(summary.feedback_alpha, 1.0);
+    EXPECT_FALSE(summary.feedback_state_stored);
+    EXPECT_TRUE(restored_feedback.method_active);
+    EXPECT_FALSE(restored_feedback.stored);
+}
+
+TEST(ReductionRestartCheckpoint,
+     RejectsFeedbackMethodMismatchAcrossRestart) {
+    RestartCheckpointDirectory directory;
+    const auto config = restart_learning_config();
+    const auto processed_config = restart_processed_config();
+    auto learning = restart_learning_state(config);
+    const auto feedback = relaxed_feedback_restart_state();
+    citlali::pipeline::write_reduction_restart_checkpoint(
+        directory.path, 4, "obsnum/raw", {"152390"}, config,
+        processed_config, learning, {}, feedback);
+
+    auto restored_learning = restart_learning_state(config);
+    citlali::pipeline::WeightValidationRestartState weight_validation;
+    citlali::fruit::FruitLoopRelaxedFeedbackState unity_feedback;
+    unity_feedback.alpha = 1.0;
+    EXPECT_THROW(
+        citlali::pipeline::load_reduction_restart_checkpoint(
+            directory.path, "obsnum/raw", {"152390"}, config,
+            processed_config, restored_learning, weight_validation,
+            &unity_feedback),
+        std::runtime_error);
 }
 
 TEST(ReductionRestartCheckpoint,

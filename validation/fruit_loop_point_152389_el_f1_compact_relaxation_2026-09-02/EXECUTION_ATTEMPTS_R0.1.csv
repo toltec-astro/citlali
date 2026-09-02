@@ -1,0 +1,9 @@
+attempt,alpha,injection,status,completed_iterations,wall_seconds,user_seconds,system_seconds,max_rss_bytes,stop_reason
+alpha-1.00-control,1.00,false,completed,7,279.044664,,,839042368,
+alpha-1.00-injected,1.00,true,completed,7,289.47,280.41,6.61,928235520,
+alpha-1.25-control-attempt-01,1.25,false,stopped,1,35.15,33.66,0.96,789626880,"combined route/grouping/WCS/grid identity guard"
+alpha-1.25-control-attempt-02,1.25,false,stopped,1,35.50,33.70,0.91,784875520,"non-spatial WCS vector entries differed"
+alpha-1.25-control-attempt-03,1.25,false,stopped,1,35.36,33.34,0.95,785416192,"pre-serialization versus FITS-header MEDRMS bit identity differed"
+alpha-1.25-injected,1.25,true,not_run,0,,,,,"replacement allowance exhausted"
+alpha-1.50-control,1.50,false,not_run,0,,,,,"experiment stopped"
+alpha-1.50-injected,1.50,true,not_run,0,,,,,"experiment stopped"

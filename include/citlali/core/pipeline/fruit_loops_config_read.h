@@ -203,6 +203,19 @@ void read_fruit_loops_core_config(
                    "recompute_weights_after_addback"},
         recompute_weights, typed_config.recompute_weights_after_addback,
         diagnostics);
+    bool relaxation_experiment_enabled =
+        typed_config.relaxation_experiment_enabled;
+    read_optional_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "fruit_loops",
+                   "relaxation_experiment_enabled"},
+        relaxation_experiment_enabled,
+        typed_config.relaxation_experiment_enabled, diagnostics);
+    double relaxation_alpha = typed_config.relaxation_alpha;
+    read_optional_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "fruit_loops", "relaxation_alpha"},
+        relaxation_alpha, typed_config.relaxation_alpha, diagnostics);
 }
 
 }  // namespace citlali::pipeline

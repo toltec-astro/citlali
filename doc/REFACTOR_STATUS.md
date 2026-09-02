@@ -271,9 +271,32 @@ therefore compares fixed `alpha=1.25` and `1.50` candidates only with an exact
 same-build `alpha=1` compatibility control on the already exposed
 point-152389 injection. The proposal is bound by
 [`EL_F1_BUNDLE_MANIFEST_R0.1.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F1_BUNDLE_MANIFEST_R0.1.md)
-and is not yet approved. No prototype, numerical change, new reduction, Gate D,
-qualification, Stage B, production, or Unity action follows from preparation
-of the packet.
+and was approved exactly by the owner on `2026-09-02`. The isolated,
+default-disabled prototype and focused tests passed before real-data execution.
+The alpha-one control/injected trajectories completed iterations 0--6, but the
+alpha-1.25 control stopped before iteration-1 scan processing. Two permitted
+replacement attempts isolated first a non-spatial WCS representation mismatch
+and then a bit-level mismatch between pre-serialization median RMS and the
+decimal value reloaded from the FITS header (relative differences
+`4.3e-16`--`3.1e-15`). The replacement allowance is exhausted; alpha-1.25
+injected and both alpha-1.50 trajectories were not run. Diagnostic rebuilds
+also mean the completed alpha-one pair cannot serve as a same-binary control
+for a future repaired candidate. The screen is therefore **invalid**, not a
+negative scientific result: no candidate map was ranked and no recurrence was
+selected. A recommended successor would keep weights/RMS in the
+checkpoint-bound ordinary complete product and keep only relaxed signal/kernel
+plus exact spatial identity in the separate feedback state, then rerun all six
+trajectories under one newly frozen executable if separately authorized. The
+execution record is
+[`EXECUTION_RESULT_R0.1.md`](../validation/fruit_loop_point_152389_el_f1_compact_relaxation_2026-09-02/EXECUTION_RESULT_R0.1.md).
+No Gate D, qualification, Stage B, production, fallback, historical-superiority
+claim, or Unity action is authorized or implied.
+The narrowly bounded owner-review successor is
+[`EL_F1_R1_COMPOSITE_STATE_RETRY_OWNER_REVIEW_R0.1.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F1_R1_COMPOSITE_STATE_RETRY_OWNER_REVIEW_R0.1.md),
+content-bound by `EL_F1_R1_BUNDLE_MANIFEST_R0.1.md`. It recommends removing
+duplicate weight/RMS authority, retaining the original scientific screen, and
+rerunning all six trajectories under one frozen binary. It is not approved;
+no repair or additional run follows from preparing it.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

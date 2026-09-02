@@ -38,6 +38,7 @@
 #include <citlali/core/pipeline/fruit_loop_feedback_validation.h>
 #include <citlali/core/pipeline/fruit_loop_map_input_validation.h>
 #include <citlali/core/timestream/auxiliary_stream.h>
+#include <citlali/core/timestream/fruit_loop_relaxed_feedback_state.h>
 #include <citlali/core/utils/fits_io.h>
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/pointing.h>
@@ -760,6 +761,15 @@ public:
     bool fruit_loops_legacy_center = false;
     // if true, recompute weights after map add-back (pre-Mar-2026 behavior)
     bool fruit_loops_recompute_weights_after_addback = false;
+    // Content-bound EL-F1 development state.  alpha=1 leaves the historical
+    // complete-product path untouched; non-unity values are restricted by
+    // typed validation to the approved feasibility-screen candidates.
+    double fruit_loops_relaxation_alpha = 1.0;
+    bool fruit_loops_relaxation_experiment_enabled = false;
+    citlali::fruit::FruitLoopRelaxedFeedbackState
+        fruit_loop_relaxed_feedback_state;
+    std::string fruit_loop_relaxed_feedback_expected_observation_id;
+    int fruit_loop_relaxed_feedback_expected_completed_iteration = -1;
     // internal guard used by beammap detector kernels when the source-centered
     // kernel placement first becomes available after iteration 0.
     bool fruit_loops_kernel_feedback_enabled = true;
@@ -1564,6 +1574,14 @@ void TCProc::load_mb(std::string filepath, std::string noise_filepath, calib_t &
                 tod_mb.pixel_size_rad, expected_pixel_size_rad));
         }
     }
+
+    // Replace only the complete signal/kernel feedback state.  The ordinary
+    // loader still establishes the exact route, WCS, newest weights/RMS, and
+    // all subsequent support and selection behavior.
+    citlali::fruit::apply_fruit_loop_relaxed_feedback_state(
+        fruit_loop_relaxed_feedback_state, tod_mb,
+        fruit_loop_relaxed_feedback_expected_observation_id,
+        fruit_loop_relaxed_feedback_expected_completed_iteration);
 
     if (citlali::config::is_fruit_loops_jinc_interp_mode(
             fruit_loops_interp_mode)) {

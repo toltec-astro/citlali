@@ -843,6 +843,8 @@ struct FakeFruitLoopsAdapterPtcProc {
     bool run_fruit_loops = false;
     bool fruit_loops_diagnostics_enabled = false;
     bool fruit_loops_recompute_weights_after_addback = false;
+    double fruit_loops_relaxation_alpha = 1.0;
+    bool fruit_loops_relaxation_experiment_enabled = false;
     bool save_all_iters = false;
     std::string fruit_loops_path;
     std::string fruit_loops_type;
@@ -4527,6 +4529,48 @@ TEST(config_scaffold, reads_explicit_fruit_loop_restart_path) {
     EXPECT_EQ(config.restart_path, "/data/reduced/redu04");
 }
 
+TEST(config_scaffold, reads_el_f1_relaxation_alpha) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    root["timestream"]["fruit_loops"]["enabled"] = true;
+    root["timestream"]["fruit_loops"]
+        ["relaxation_experiment_enabled"] = true;
+    root["timestream"]["fruit_loops"]["relaxation_alpha"] = 1.25;
+    auto yaml_config =
+        tula::config::YamlConfig::from_str(YAML::Dump(root));
+    citlali::config::TimestreamFruitLoopsConfig config;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_fruit_loops_core_config(
+        yaml_config, config, diagnostics);
+
+    EXPECT_FALSE(diagnostics.has_errors());
+    EXPECT_DOUBLE_EQ(config.relaxation_alpha, 1.25);
+}
+
+TEST(config_scaffold, validates_el_f1_relaxation_scope) {
+    citlali::config::TimestreamFruitLoopsConfig config;
+    config.enabled = true;
+    config.type = "obsnum/raw";
+    config.relaxation_experiment_enabled = true;
+    config.relaxation_alpha = 1.25;
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+    EXPECT_EQ(report.error_count(), 2U);
+
+    config.diagnostics_enabled = true;
+    config.save_all_iters = true;
+    citlali::config::ValidationReport valid_report;
+    citlali::config::validate(config, valid_report);
+    EXPECT_TRUE(valid_report.ok());
+
+    config.relaxation_alpha = 1.1;
+    citlali::config::ValidationReport invalid_alpha_report;
+    citlali::config::validate(config, invalid_alpha_report);
+    EXPECT_FALSE(invalid_alpha_report.ok());
+}
+
 TEST(config_scaffold, reads_fruit_loop_injected_source_test) {
     ensure_citlali_test_logger();
     auto root = YAML::Load(citlali::citlali_default_config_content);
@@ -7764,6 +7808,8 @@ TEST(pipeline_execution, adapts_typed_fruit_loop_policy_one_way) {
     config.interp_mode_override =
         citlali::config::FruitLoopsInterpModeOverride::nearest;
     config.legacy_center = true;
+    config.relaxation_experiment_enabled = true;
+    config.relaxation_alpha = 1.25;
     config.max_iters = 4;
     FakeFruitLoopsAdapterPtcProc ptcproc;
 
@@ -7805,6 +7851,8 @@ TEST(pipeline_execution, adapts_typed_fruit_loop_policy_one_way) {
     EXPECT_DOUBLE_EQ(ptcproc.fruit_loops_center_keep_radius_arcsec, 8.0);
     EXPECT_EQ(ptcproc.fruit_loops_interp_mode_override, "nearest");
     EXPECT_TRUE(ptcproc.fruit_loops_legacy_center);
+    EXPECT_TRUE(ptcproc.fruit_loops_relaxation_experiment_enabled);
+    EXPECT_DOUBLE_EQ(ptcproc.fruit_loops_relaxation_alpha, 1.25);
     EXPECT_EQ(ptcproc.fruit_loops_iters, 4);
 }
 

@@ -46,6 +46,14 @@ inline citlali::config::ValidationReport validate_fruit_loop_activation(
     const bool flux_gate = fruit_loop_flux_gate_active(fruit_loops);
     const bool adaptive_gate = fruit_loop_adaptive_gate_active(fruit_loops);
 
+    if (fruit_loops.relaxation_experiment_enabled &&
+        reduction_type != citlali::config::ReductionType::pointing) {
+        report.add_error(
+            citlali::config::append_config_path(
+                path, {"relaxation_alpha"}),
+            "EL-F1 candidate trajectories are restricted to pointing reductions");
+    }
+
     if (fruit_loops.max_iters < 2) {
         report.add_error(
             citlali::config::append_config_path(path, {"max_iters"}),

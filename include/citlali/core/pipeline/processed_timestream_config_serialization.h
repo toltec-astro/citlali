@@ -100,6 +100,9 @@ inline YAML::Node fruit_loops_config_node(
     node["legacy_center"] = config.legacy_center;
     node["recompute_weights_after_addback"] =
         config.recompute_weights_after_addback;
+    node["relaxation_experiment_enabled"] =
+        config.relaxation_experiment_enabled;
+    node["relaxation_alpha"] = config.relaxation_alpha;
     node["max_iters"] = config.max_iters;
     return node;
 }

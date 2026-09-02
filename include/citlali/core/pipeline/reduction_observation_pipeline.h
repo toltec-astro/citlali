@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/coherent_iq_mode_sidecar.h>
+#include <citlali/core/pipeline/fruit_loop_relaxed_feedback_lifecycle.h>
 #include <citlali/core/pipeline/observation_fruit_loop_map_loading.h>
 #include <citlali/core/pipeline/observation_output_execution.h>
 #include <citlali/core/pipeline/observation_pipeline.h>
@@ -25,6 +26,7 @@ void run_reduction_observation_pipeline(TodProc &todproc, KidsProc &kidsproc,
     write_observation_outputs_and_accumulate<RawObsMap, FilteredObsMap,
                                              FitMaps>(
         todproc, stage_profile, logger);
+    update_fruit_loop_relaxed_feedback_state_if_needed(engine, logger);
     const auto raw_provenance_path =
         publish_completed_raw_timestream_provenance<IsBeammap>(engine);
     if (raw_provenance_path) {

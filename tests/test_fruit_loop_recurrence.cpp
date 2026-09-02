@@ -75,6 +75,11 @@ mapmaking::MapBuffer make_map_buffer(bool with_kernel) {
     maps.map_grouping = "array";
     maps.parallel_policy = "seq";
     maps.cov_cut = 0.0;
+    maps.wcs.naxis = {static_cast<int>(kCols), static_cast<int>(kRows), 0, 0};
+    maps.wcs.cdelt = {-1.0F, 1.0F, 0.0F, 0.0F};
+    maps.wcs.crpix = {4.0F, 4.0F, 0.0F, 0.0F};
+    maps.wcs.crval = {0.0F, 0.0F, 0.0F, 0.0F};
+    maps.wcs.cunit = {"deg", "deg"};
     maps.signal = {Eigen::MatrixXd::Zero(kRows, kCols)};
     maps.weight = {Eigen::MatrixXd::Zero(kRows, kCols)};
     if (with_kernel) {
@@ -175,6 +180,89 @@ TEST(fruit_loop_recurrence, subtract_addback_round_trip_restores_signal_and_kern
     EXPECT_TRUE(data.kernel.data.isApprox(original_kernel, 2.0e-15));
     EXPECT_DOUBLE_EQ(data.scans.data(0, 0), original_signal(0, 0));
     EXPECT_DOUBLE_EQ(data.kernel.data(0, 0), original_kernel(0, 0));
+}
+
+TEST(fruit_loop_recurrence,
+     alpha_one_uses_unmodified_complete_product_path_bitwise) {
+    auto complete = make_map_buffer(true);
+    complete.signal[0] = gaussian(7.0, 1.2);
+    complete.kernel[0] = gaussian(0.8, 1.5);
+    complete.weight[0].setConstant(3.0);
+    complete.median_rms = Eigen::VectorXd::Constant(1, 0.25);
+    const auto signal = complete.signal[0];
+    const auto kernel = complete.kernel[0];
+    const auto weight = complete.weight[0];
+    citlali::fruit::FruitLoopRelaxedFeedbackState state;
+
+    citlali::fruit::update_fruit_loop_relaxed_feedback_state(
+        state, complete, "152389", 0, 1.0);
+
+    EXPECT_FALSE(state.stored);
+    EXPECT_DOUBLE_EQ(state.alpha, 1.0);
+    EXPECT_TRUE(complete.signal[0].isApprox(signal, 0.0));
+    EXPECT_TRUE(complete.kernel[0].isApprox(kernel, 0.0));
+    EXPECT_TRUE(complete.weight[0].isApprox(weight, 0.0));
+}
+
+TEST(fruit_loop_recurrence,
+     relaxed_state_updates_signal_and_kernel_and_keeps_newest_weight) {
+    auto first = make_map_buffer(true);
+    first.signal[0].setConstant(2.0);
+    first.kernel[0].setConstant(0.5);
+    first.weight[0].setConstant(3.0);
+    first.median_rms = Eigen::VectorXd::Constant(1, 0.25);
+    citlali::fruit::FruitLoopRelaxedFeedbackState state;
+
+    citlali::fruit::update_fruit_loop_relaxed_feedback_state(
+        state, first, "152389", 0, 1.25);
+    ASSERT_TRUE(state.stored);
+    EXPECT_EQ(state.wcs_naxis.size(), 2U);
+    EXPECT_EQ(state.wcs_cdelt.size(), 2U);
+    EXPECT_EQ(state.wcs_crpix.size(), 2U);
+    EXPECT_EQ(state.wcs_crval.size(), 2U);
+    EXPECT_EQ(state.wcs_cunit.size(), 2U);
+
+    auto second = first;
+    second.signal[0].setConstant(6.0);
+    second.kernel[0].setConstant(1.5);
+    second.weight[0].setConstant(9.0);
+    second.median_rms(0) = 0.125;
+    citlali::fruit::update_fruit_loop_relaxed_feedback_state(
+        state, second, "152389", 1, 1.25);
+
+    auto loaded = second;
+    citlali::fruit::apply_fruit_loop_relaxed_feedback_state(
+        state, loaded, "152389", 1);
+    EXPECT_TRUE(loaded.signal[0].isConstant(7.0));
+    EXPECT_TRUE(loaded.kernel[0].isConstant(1.75));
+    EXPECT_TRUE(loaded.weight[0].isConstant(9.0));
+    EXPECT_DOUBLE_EQ(loaded.median_rms(0), 0.125);
+}
+
+TEST(fruit_loop_recurrence,
+     relaxed_state_rejects_grid_and_finite_support_changes) {
+    auto first = make_map_buffer(true);
+    first.signal[0].setConstant(2.0);
+    first.kernel[0].setConstant(0.5);
+    first.weight[0].setOnes();
+    citlali::fruit::FruitLoopRelaxedFeedbackState state;
+    citlali::fruit::update_fruit_loop_relaxed_feedback_state(
+        state, first, "152389", 0, 1.5);
+
+    auto changed_grid = first;
+    changed_grid.wcs.crval[0] = 1.0F;
+    EXPECT_THROW(
+        citlali::fruit::update_fruit_loop_relaxed_feedback_state(
+            state, changed_grid, "152389", 1, 1.5),
+        std::invalid_argument);
+
+    auto changed_support = first;
+    changed_support.signal[0](0, 0) =
+        std::numeric_limits<double>::quiet_NaN();
+    EXPECT_THROW(
+        citlali::fruit::update_fruit_loop_relaxed_feedback_state(
+            state, changed_support, "152389", 1, 1.5),
+        std::invalid_argument);
 }
 
 TEST(fruit_loop_recurrence, injected_gaussian_converges_through_controlled_cleaner) {
