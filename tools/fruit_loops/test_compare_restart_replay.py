@@ -126,6 +126,40 @@ class RestartReplayComparisonTest(unittest.TestCase):
                 [row["uid"] for row in result["replay_penalties"]], [987]
             )
 
+    def test_compares_every_replayed_checkpoint(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            reference = {}
+            replay = {}
+            for iteration in (5, 6, 7):
+                reference[iteration] = root / "reference" / f"redu{iteration:02d}"
+                replay[iteration] = root / "replay" / f"redu{iteration:02d}"
+                reference[iteration].mkdir(parents=True)
+                replay[iteration].mkdir(parents=True)
+                self.write_checkpoint(
+                    reference[iteration] / "citlali_restart_checkpoint.nc",
+                    [987, 1489],
+                )
+                self.write_checkpoint(
+                    replay[iteration] / "citlali_restart_checkpoint.nc",
+                    [987, 1489] if iteration != 7 else [987],
+                )
+
+            results = compare.checkpoint_trajectory_comparisons(
+                reference, replay
+            )
+
+            self.assertEqual(
+                [result["iteration"] for result in results], [5, 6, 7]
+            )
+            self.assertEqual(
+                [result["exact"] for result in results], [True, True, False]
+            )
+            self.assertIn(
+                "effective_detector_penalty_count",
+                results[-1]["differing_variables"],
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

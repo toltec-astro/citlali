@@ -1,0 +1,12 @@
+# Overlay for the second segment of the D19 Choice-A checkpoint-v3 split.
+runtime:
+  output_dir: /Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/
+  n_threads: 1
+
+timestream:
+  fruit_loops:
+    restart_path: /Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu04
+    max_iters: 8
+    save_all_iters: true
+    injected_source_test:
+      start_iteration: 5

@@ -155,6 +155,29 @@ def checkpoint_comparison(
     }
 
 
+def checkpoint_trajectory_comparisons(
+    reference: dict[int, Path], replay: dict[int, Path],
+) -> list[dict[str, object]]:
+    results = []
+    for iteration in sorted(replay):
+        if iteration not in reference:
+            raise ValueError(
+                f"replay checkpoint iteration {iteration} is absent from reference"
+            )
+        comparison = checkpoint_comparison(
+            reference[iteration] / "citlali_restart_checkpoint.nc",
+            replay[iteration] / "citlali_restart_checkpoint.nc",
+        )
+        comparison["iteration"] = iteration
+        comparison["exact"] = not (
+            comparison["reference_only_variables"]
+            or comparison["replay_only_variables"]
+            or comparison["differing_variables"]
+        )
+        results.append(comparison)
+    return results
+
+
 def write_results(
     rows: list[dict[str, int | str | bool | float]],
     output: Path,
@@ -184,11 +207,13 @@ def write_results(
         raise ValueError(
             f"checkpoint iteration {checkpoint_iteration} is unavailable"
         )
-    reference_checkpoint = (
-        reference[checkpoint_iteration] / "citlali_restart_checkpoint.nc"
+    checkpoint_comparisons = checkpoint_trajectory_comparisons(
+        reference, replay
     )
-    replay_checkpoint = (
-        replay[checkpoint_iteration] / "citlali_restart_checkpoint.nc"
+    selected_checkpoint = next(
+        comparison
+        for comparison in checkpoint_comparisons
+        if comparison["iteration"] == checkpoint_iteration
     )
     inputs = {Path(__file__).resolve()}
     inputs.update(path.resolve() for path in evidence_paths)
@@ -208,18 +233,32 @@ def write_results(
     first_difference = next(
         (row for row in rows if not bool(row["exact"])), None
     )
+    first_checkpoint_difference = next(
+        (
+            comparison
+            for comparison in checkpoint_comparisons
+            if not bool(comparison["exact"])
+        ),
+        None,
+    )
     payload = {
-        "schema_version": "sci-fruit-restart-replay-development-v1",
+        "schema_version": "sci-fruit-restart-replay-development-v2",
         "test_id": test_id,
         "role": "exploratory-development-only",
         "qualification_use_authorized": False,
         "obsnum": obsnum,
-        "result": "FAIL" if first_difference else "PASS",
-        "first_product_difference": first_difference,
-        "checkpoint_iteration_compared": checkpoint_iteration,
-        "checkpoint_comparison": checkpoint_comparison(
-            reference_checkpoint, replay_checkpoint
+        "result": (
+            "FAIL"
+            if first_difference or first_checkpoint_difference
+            else "PASS"
         ),
+        "first_product_difference": first_difference,
+        "first_checkpoint_difference": first_checkpoint_difference,
+        "checkpoint_iteration_compared": checkpoint_iteration,
+        # Retained for readers of the v1 manifest. The v2 trajectory field is
+        # authoritative for a multi-iteration exact-restart claim.
+        "checkpoint_comparison": selected_checkpoint,
+        "checkpoint_trajectory_comparisons": checkpoint_comparisons,
         "inputs": [
             file_record(path) for path in sorted(inputs, key=str)
         ],

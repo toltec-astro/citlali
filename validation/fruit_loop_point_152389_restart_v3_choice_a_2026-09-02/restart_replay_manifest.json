@@ -1,0 +1,994 @@
+{
+  "checkpoint_comparison": {
+    "differing_variables": [],
+    "exact": true,
+    "iteration": 5,
+    "reference": {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu05/citlali_restart_checkpoint.nc",
+      "sha256": "c9b68ff9420bc2a9199a634a404455ee38abf2513d8d04a1a3d5a9eee9da4618",
+      "size_bytes": 441330
+    },
+    "reference_only_variables": [],
+    "reference_penalties": [
+      {
+        "array": 2,
+        "factor": 0.0,
+        "iteration": 1,
+        "network": -1,
+        "observation_id": "152389",
+        "producer": "mapdiag:raw_obs",
+        "reason": "map_pixel_outlier_detector_dominance",
+        "scan": 1,
+        "scan_local": 1,
+        "score": 4.0,
+        "uid": 5217
+      },
+      {
+        "array": 0,
+        "factor": 0.0,
+        "iteration": 3,
+        "network": -1,
+        "observation_id": "152389",
+        "producer": "mapdiag:raw_obs",
+        "reason": "map_pixel_outlier_detector_dominance",
+        "scan": 2,
+        "scan_local": 1,
+        "score": 6.0,
+        "uid": 987
+      },
+      {
+        "array": 2,
+        "factor": 0.0,
+        "iteration": 5,
+        "network": -1,
+        "observation_id": "152389",
+        "producer": "mapdiag:raw_obs",
+        "reason": "map_pixel_outlier_detector_dominance",
+        "scan": 2,
+        "scan_local": 1,
+        "score": 4.0,
+        "uid": 5094
+      },
+      {
+        "array": 0,
+        "factor": 0.0,
+        "iteration": 5,
+        "network": -1,
+        "observation_id": "152389",
+        "producer": "mapdiag:raw_obs",
+        "reason": "map_pixel_outlier_detector_dominance",
+        "scan": 7,
+        "scan_local": 1,
+        "score": 8.0,
+        "uid": 1347
+      },
+      {
+        "array": 0,
+        "factor": 0.0,
+        "iteration": 1,
+        "network": -1,
+        "observation_id": "152389",
+        "producer": "mapdiag:raw_obs",
+        "reason": "map_pixel_outlier_detector_dominance",
+        "scan": 11,
+        "scan_local": 1,
+        "score": 6.0,
+        "uid": 1489
+      },
+      {
+        "array": 2,
+        "factor": 0.0,
+        "iteration": 1,
+        "network": -1,
+        "observation_id": "152389",
+        "producer": "mapdiag:raw_obs",
+        "reason": "map_pixel_outlier_detector_dominance",
+        "scan": 11,
+        "scan_local": 1,
+        "score": 4.0,
+        "uid": 5217
+      },
+      {
+        "array": 0,
+        "factor": 0.0,
+        "iteration": 0,
+        "network": 5,
+        "observation_id": "152389",
+        "producer": "ptc_second_pass",
+        "reason": "busy_vetoed_residual",
+        "scan": 7,
+        "scan_local": 1,
+        "score": 20.442458350263333,
+        "uid": 2714
+      }
+    ],
+    "replay": {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu00/citlali_restart_checkpoint.nc",
+      "sha256": "c9b68ff9420bc2a9199a634a404455ee38abf2513d8d04a1a3d5a9eee9da4618",
+      "size_bytes": 441330
+    },
+    "replay_only_variables": [],
+    "replay_penalties": [
+      {
+        "array": 2,
+        "factor": 0.0,
+        "iteration": 1,
+        "network": -1,
+        "observation_id": "152389",
+        "producer": "mapdiag:raw_obs",
+        "reason": "map_pixel_outlier_detector_dominance",
+        "scan": 1,
+        "scan_local": 1,
+        "score": 4.0,
+        "uid": 5217
+      },
+      {
+        "array": 0,
+        "factor": 0.0,
+        "iteration": 3,
+        "network": -1,
+        "observation_id": "152389",
+        "producer": "mapdiag:raw_obs",
+        "reason": "map_pixel_outlier_detector_dominance",
+        "scan": 2,
+        "scan_local": 1,
+        "score": 6.0,
+        "uid": 987
+      },
+      {
+        "array": 2,
+        "factor": 0.0,
+        "iteration": 5,
+        "network": -1,
+        "observation_id": "152389",
+        "producer": "mapdiag:raw_obs",
+        "reason": "map_pixel_outlier_detector_dominance",
+        "scan": 2,
+        "scan_local": 1,
+        "score": 4.0,
+        "uid": 5094
+      },
+      {
+        "array": 0,
+        "factor": 0.0,
+        "iteration": 5,
+        "network": -1,
+        "observation_id": "152389",
+        "producer": "mapdiag:raw_obs",
+        "reason": "map_pixel_outlier_detector_dominance",
+        "scan": 7,
+        "scan_local": 1,
+        "score": 8.0,
+        "uid": 1347
+      },
+      {
+        "array": 0,
+        "factor": 0.0,
+        "iteration": 1,
+        "network": -1,
+        "observation_id": "152389",
+        "producer": "mapdiag:raw_obs",
+        "reason": "map_pixel_outlier_detector_dominance",
+        "scan": 11,
+        "scan_local": 1,
+        "score": 6.0,
+        "uid": 1489
+      },
+      {
+        "array": 2,
+        "factor": 0.0,
+        "iteration": 1,
+        "network": -1,
+        "observation_id": "152389",
+        "producer": "mapdiag:raw_obs",
+        "reason": "map_pixel_outlier_detector_dominance",
+        "scan": 11,
+        "scan_local": 1,
+        "score": 4.0,
+        "uid": 5217
+      },
+      {
+        "array": 0,
+        "factor": 0.0,
+        "iteration": 0,
+        "network": 5,
+        "observation_id": "152389",
+        "producer": "ptc_second_pass",
+        "reason": "busy_vetoed_residual",
+        "scan": 7,
+        "scan_local": 1,
+        "score": 20.442458350263333,
+        "uid": 2714
+      }
+    ]
+  },
+  "checkpoint_iteration_compared": 5,
+  "checkpoint_trajectory_comparisons": [
+    {
+      "differing_variables": [],
+      "exact": true,
+      "iteration": 5,
+      "reference": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu05/citlali_restart_checkpoint.nc",
+        "sha256": "c9b68ff9420bc2a9199a634a404455ee38abf2513d8d04a1a3d5a9eee9da4618",
+        "size_bytes": 441330
+      },
+      "reference_only_variables": [],
+      "reference_penalties": [
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 1,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5217
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 3,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 2,
+          "scan_local": 1,
+          "score": 6.0,
+          "uid": 987
+        },
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 5,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 2,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5094
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 5,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 7,
+          "scan_local": 1,
+          "score": 8.0,
+          "uid": 1347
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 11,
+          "scan_local": 1,
+          "score": 6.0,
+          "uid": 1489
+        },
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 11,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5217
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 0,
+          "network": 5,
+          "observation_id": "152389",
+          "producer": "ptc_second_pass",
+          "reason": "busy_vetoed_residual",
+          "scan": 7,
+          "scan_local": 1,
+          "score": 20.442458350263333,
+          "uid": 2714
+        }
+      ],
+      "replay": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu00/citlali_restart_checkpoint.nc",
+        "sha256": "c9b68ff9420bc2a9199a634a404455ee38abf2513d8d04a1a3d5a9eee9da4618",
+        "size_bytes": 441330
+      },
+      "replay_only_variables": [],
+      "replay_penalties": [
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 1,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5217
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 3,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 2,
+          "scan_local": 1,
+          "score": 6.0,
+          "uid": 987
+        },
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 5,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 2,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5094
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 5,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 7,
+          "scan_local": 1,
+          "score": 8.0,
+          "uid": 1347
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 11,
+          "scan_local": 1,
+          "score": 6.0,
+          "uid": 1489
+        },
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 11,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5217
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 0,
+          "network": 5,
+          "observation_id": "152389",
+          "producer": "ptc_second_pass",
+          "reason": "busy_vetoed_residual",
+          "scan": 7,
+          "scan_local": 1,
+          "score": 20.442458350263333,
+          "uid": 2714
+        }
+      ]
+    },
+    {
+      "differing_variables": [],
+      "exact": true,
+      "iteration": 6,
+      "reference": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu06/citlali_restart_checkpoint.nc",
+        "sha256": "7b30a8d1ae4511c60ad1f3153c837dfdd88d426d1c3d0b0a0d771d06efcead6f",
+        "size_bytes": 441330
+      },
+      "reference_only_variables": [],
+      "reference_penalties": [
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 1,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5217
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 3,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 2,
+          "scan_local": 1,
+          "score": 6.0,
+          "uid": 987
+        },
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 5,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 2,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5094
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 5,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 7,
+          "scan_local": 1,
+          "score": 8.0,
+          "uid": 1347
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 11,
+          "scan_local": 1,
+          "score": 6.0,
+          "uid": 1489
+        },
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 11,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5217
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 0,
+          "network": 5,
+          "observation_id": "152389",
+          "producer": "ptc_second_pass",
+          "reason": "busy_vetoed_residual",
+          "scan": 7,
+          "scan_local": 1,
+          "score": 20.442458350263333,
+          "uid": 2714
+        }
+      ],
+      "replay": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu01/citlali_restart_checkpoint.nc",
+        "sha256": "7b30a8d1ae4511c60ad1f3153c837dfdd88d426d1c3d0b0a0d771d06efcead6f",
+        "size_bytes": 441330
+      },
+      "replay_only_variables": [],
+      "replay_penalties": [
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 1,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5217
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 3,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 2,
+          "scan_local": 1,
+          "score": 6.0,
+          "uid": 987
+        },
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 5,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 2,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5094
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 5,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 7,
+          "scan_local": 1,
+          "score": 8.0,
+          "uid": 1347
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 11,
+          "scan_local": 1,
+          "score": 6.0,
+          "uid": 1489
+        },
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 11,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5217
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 0,
+          "network": 5,
+          "observation_id": "152389",
+          "producer": "ptc_second_pass",
+          "reason": "busy_vetoed_residual",
+          "scan": 7,
+          "scan_local": 1,
+          "score": 20.442458350263333,
+          "uid": 2714
+        }
+      ]
+    },
+    {
+      "differing_variables": [],
+      "exact": true,
+      "iteration": 7,
+      "reference": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu07/citlali_restart_checkpoint.nc",
+        "sha256": "8c08068c7e65d31a3b34a4812587163f3f1f1baa9172e4965e10b9c5a65aff08",
+        "size_bytes": 441330
+      },
+      "reference_only_variables": [],
+      "reference_penalties": [
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 1,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5217
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 3,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 2,
+          "scan_local": 1,
+          "score": 6.0,
+          "uid": 987
+        },
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 5,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 2,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5094
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 5,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 7,
+          "scan_local": 1,
+          "score": 8.0,
+          "uid": 1347
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 11,
+          "scan_local": 1,
+          "score": 6.0,
+          "uid": 1489
+        },
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 11,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5217
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 0,
+          "network": 5,
+          "observation_id": "152389",
+          "producer": "ptc_second_pass",
+          "reason": "busy_vetoed_residual",
+          "scan": 7,
+          "scan_local": 1,
+          "score": 20.442458350263333,
+          "uid": 2714
+        }
+      ],
+      "replay": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu02/citlali_restart_checkpoint.nc",
+        "sha256": "8c08068c7e65d31a3b34a4812587163f3f1f1baa9172e4965e10b9c5a65aff08",
+        "size_bytes": 441330
+      },
+      "replay_only_variables": [],
+      "replay_penalties": [
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 1,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5217
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 3,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 2,
+          "scan_local": 1,
+          "score": 6.0,
+          "uid": 987
+        },
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 5,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 2,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5094
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 5,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 7,
+          "scan_local": 1,
+          "score": 8.0,
+          "uid": 1347
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 11,
+          "scan_local": 1,
+          "score": 6.0,
+          "uid": 1489
+        },
+        {
+          "array": 2,
+          "factor": 0.0,
+          "iteration": 1,
+          "network": -1,
+          "observation_id": "152389",
+          "producer": "mapdiag:raw_obs",
+          "reason": "map_pixel_outlier_detector_dominance",
+          "scan": 11,
+          "scan_local": 1,
+          "score": 4.0,
+          "uid": 5217
+        },
+        {
+          "array": 0,
+          "factor": 0.0,
+          "iteration": 0,
+          "network": 5,
+          "observation_id": "152389",
+          "producer": "ptc_second_pass",
+          "reason": "busy_vetoed_residual",
+          "scan": 7,
+          "scan_local": 1,
+          "score": 20.442458350263333,
+          "uid": 2714
+        }
+      ]
+    }
+  ],
+  "first_checkpoint_difference": null,
+  "first_product_difference": null,
+  "inputs": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/bin/citlali",
+      "sha256": "8665f09a44e57b5c3ba5fe24fb51e06af94bf3f92e98878a55a9c48b146a2418",
+      "size_bytes": 14734872
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/compare_restart_replay.py",
+      "sha256": "1b57ebc88442494034c8d079c53c49dadf9fe4b96e0b970e11f27a5109f1a184",
+      "size_bytes": 10831
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_152389_restart_v3_choice_a_2026-09-02/REFERENCE.yaml",
+      "sha256": "40ab3bb60cd82f062120c87e4ffd5c95ab0b3c9d2e04ad17d7d4e2d7f1e9d81e",
+      "size_bytes": 385
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_152389_restart_v3_choice_a_2026-09-02/RESTART_FROM_ITER4.yaml",
+      "sha256": "38529ac804823a98d05bcc04f2519e3d0cba5dff3f2734687231415d186c5da3",
+      "size_bytes": 535
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/centered-100mjy-iter1-6-r0.1/setup/citlali_injected_source_injected.yaml",
+      "sha256": "cf8899b0c9348c3a1b61fe1a00ee8aefdaa2422cecc90f63ad5eda19c921b007",
+      "size_bytes": 16707
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu04/citlali_restart_checkpoint.nc",
+      "sha256": "154b676dba21cb72ba3a800e96a3dcc0b0d3f8d3f136192e2b44a74593325e46",
+      "size_bytes": 441330
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu05/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "c3a8dc129d85f1b1f9748daa45089d49fa9a88a0e91a41ae31f6b2d61617a9ae",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu05/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "0e6e3a95e3149f776c7acb3cf379d02f37bb581a485cc68e806a2dfff86ac828",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu05/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "6e2e2625905c8cf771480325bd04f8ff252a7cc96bf2a20f3f523bf706c8cf30",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu05/citlali.log.gz",
+      "sha256": "add1249c511ea039ba5da523acb3f45f0ede5ece02b234a960c9a8125087ca6c",
+      "size_bytes": 117892
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu05/citlali_restart_checkpoint.nc",
+      "sha256": "c9b68ff9420bc2a9199a634a404455ee38abf2513d8d04a1a3d5a9eee9da4618",
+      "size_bytes": 441330
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu06/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "98ce237b40315c17e71e4b76fa9d0550b6edde71e0e5932b0f8418081c0bf7d8",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu06/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "3c54e0e4a805dd4d98b50524d672a8c99a27e1c0b9ec862943e106e2bdc1e2e0",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu06/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "c8b22c2495e41c1843533a61c2b0939c6bfad8eff35f272ef0d344b21c4d9278",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu06/citlali_restart_checkpoint.nc",
+      "sha256": "7b30a8d1ae4511c60ad1f3153c837dfdd88d426d1c3d0b0a0d771d06efcead6f",
+      "size_bytes": 441330
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu07/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "d96ef64cd7b05c714bd460cd63b3b2f9ed6becf3d73f828b0f840ce17a0a5243",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu07/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "2e0ae02c9f84b7368aceefe7b9111d027f161f9345301a35c0d027a4b8eaa66e",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu07/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "d5ddb640b9905cdd9d81527e3c6c302d87a18b12ca20e795c0c088a6da7d543d",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/reference/reduced/redu07/citlali_restart_checkpoint.nc",
+      "sha256": "8c08068c7e65d31a3b34a4812587163f3f1f1baa9172e4965e10b9c5a65aff08",
+      "size_bytes": 441330
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu00/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "baf0e107737aa31a6ba258297a33b18c00993c5b15bd45ad299045b5a4f001f5",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu00/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "4cf4d1ada2dd264d013874bd08a5696390a40294db95dff47d0382b7e0e9ad87",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu00/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "9ab0adcde97405450abcd4b87f43971917b85e8dfc3851574720d48996f1df9b",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu00/citlali.log.gz",
+      "sha256": "d42775b5364720371f875534c415fdc4f269e50b88442f422a1acc30ae9d983d",
+      "size_bytes": 117657
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu00/citlali_restart_checkpoint.nc",
+      "sha256": "c9b68ff9420bc2a9199a634a404455ee38abf2513d8d04a1a3d5a9eee9da4618",
+      "size_bytes": 441330
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu01/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "6af5f7cb12f251329e74b0607bbe398f116cec79dedcd2c144e757e208102f56",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu01/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "7ebeabc286fb9976c8878d45f4cf97303856843d86d777b589fcd775f8647a09",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu01/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "7a3051f265fd009cd8261f4fea85b5787659579922f82bbeb8a081a7ddbaf241",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu01/citlali_restart_checkpoint.nc",
+      "sha256": "7b30a8d1ae4511c60ad1f3153c837dfdd88d426d1c3d0b0a0d771d06efcead6f",
+      "size_bytes": 441330
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu02/152389/raw/toltec_commissioning_a1100_pointing_152389_citlali.fits",
+      "sha256": "eda1a3896d142928777b958f4f9d6561ef7b0d618bc5d257211b9d089e23c6dd",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu02/152389/raw/toltec_commissioning_a1400_pointing_152389_citlali.fits",
+      "sha256": "eb0bb5be22af701edbb77d2a4d8bc018a7f073325a5f993f410846a103514178",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu02/152389/raw/toltec_commissioning_a2000_pointing_152389_citlali.fits",
+      "sha256": "374d86cfbd8c8871711550aefd86280df050cb04114079971297175dc36dde25",
+      "size_bytes": 7876800
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/d19-choice-a-v3-r0.1/split-restart/reduced/redu02/citlali_restart_checkpoint.nc",
+      "sha256": "8c08068c7e65d31a3b34a4812587163f3f1f1baa9172e4965e10b9c5a65aff08",
+      "size_bytes": 441330
+    }
+  ],
+  "obsnum": 152389,
+  "outputs": [
+    {
+      "path": "restart_replay_comparison.csv",
+      "sha256": "532958886e22a27e3af28e4d783c1dd4cb0c69e3fd81c0feb52800056e7b1fd7",
+      "size_bytes": 1542
+    }
+  ],
+  "qualification_use_authorized": false,
+  "result": "PASS",
+  "role": "exploratory-development-only",
+  "schema_version": "sci-fruit-restart-replay-development-v2",
+  "test_id": "SCI-FRUIT-POINT-152389-D19-CHOICE-A-V3-R0.1"
+}
