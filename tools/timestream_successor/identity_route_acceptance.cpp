@@ -1,3 +1,4 @@
+#include <citlali/core/compat/kidscpp_raw_timestream.h>
 #include <citlali/core/pipeline/canonical_apt_bundle_v2.h>
 #include <citlali/core/pipeline/canonical_apt_detector_relation_v2.h>
 #include <citlali/core/pipeline/observation_setup_validation.h>
@@ -9,9 +10,7 @@
 #include <kidscpp_config/gitversion.h>
 #include <tula_config/gitversion.h>
 
-#include <kids/core/kidsdata.h>
 #include <kids/timestream/solver.h>
-#include <kids/toltec/toltec.h>
 
 #include <tula/container.h>
 #include <tula/datatable.h>
@@ -593,10 +592,8 @@ struct NetworkInput {
 
 fs::path find_tune_file(const fs::path &directory,
                         const fs::path &raw_path) {
-    const auto [kind, meta] = kids::toltec::get_meta<>(raw_path.string());
-    require((kind & kids::KidsDataKind::RawTimeStream) ==
-                kids::KidsDataKind::RawTimeStream,
-            "raw source is not a KIDs raw timestream");
+    const auto meta =
+        citlali::compat::kidscpp::get_raw_timestream_meta(raw_path);
     require(meta.has("cal_file"),
             "raw timestream lacks its Tune fit-report relation");
     const std::regex pattern{meta.get_str("cal_file")};
@@ -1256,8 +1253,8 @@ PairedBuildResult build_paired_readout(
             static_cast<Eigen::Index>(arguments.first_native_row +
                                       arguments.native_row_count),
             std::nullopt};
-        auto raw = kids::toltec::read_data_slice<
-            kids::KidsDataKind::RawTimeStream>(input.raw_path.string(), slice);
+        auto raw = citlali::compat::kidscpp::read_raw_timestream_slice(
+            input.raw_path, slice);
         const auto normalized_tune = normalized_tune_report(
             input, temporary_tunes.path());
         kids::TimeStreamSolver solver(kids::TimeStreamSolver::Config{

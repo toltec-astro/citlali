@@ -1,8 +1,8 @@
 # Timestream Successor Identity Route Representative Acceptance 001
 
-Status: acceptance-tooling candidate under local validation; representative
-Spack/Unity execution, owner disposition, push, canonical integration, and
-activation have not occurred
+Status: bounded acceptance-tooling repair under local validation after a
+failed Unity build gate; representative execution, repair review and owner
+disposition, canonical integration, and activation have not occurred
 
 Work-order identity:
 `TIMESTREAM-SUCCESSOR-IDENTITY-ROUTE-REPRESENTATIVE-ACCEPTANCE-001`
@@ -162,6 +162,74 @@ already named by the approved plan. The repair changes no public header,
 pipeline source, application route, configuration, or build environment. The
 existing standalone and Spack target registrations remain adequate and no
 generic framework is introduced.
+
+## Unity build-gate reassessment
+
+Trigger: the first exact-source Unity attempt at
+`e50f304919ef0d832e3d9f6999bc376c8532910d` produced representative-build
+evidence that differed from the local AppleClang/cache-backed results.
+
+Observed evidence:
+
+- the clean `unity-gcc13` Spack build registered 836 CTests, but its default
+  build omitted four `EXCLUDE_FROM_ALL` Timestream Successor test binaries;
+- CTest therefore reported those four tests as `NOT_BUILT`; the one
+  established `MapFitterLifecycle.ExactProductSequence` test was disabled and
+  the other 831 registered tests passed; and
+- an explicit build of the representative acceptance target stopped at
+  compilation because the runner directly included the legacy-only
+  `kids/toltec/toltec.h`, which the pinned installed Kidscpp v3 package does
+  not export.
+
+Affected authority: this is build-environment and executable-evidence
+conformance within the already approved acceptance-tooling scope. It does not
+alter the accepted identity-route implementation or any scientific contract.
+
+Disposition: repair within scope. The Spack default build must include all
+four already registered successor test targets, matching the established
+`check` target's coverage. The runner must obtain raw-timestream metadata and
+slices through Citlali's existing
+`citlali::compat::kidscpp` v2/v3 boundary instead of including or calling the
+legacy Kidscpp API directly. The build environment, dependency revision,
+scientific algorithms, typed route, and input selection remain unchanged.
+
+Gate change: the repair adds a build-tool regression assertion for the four
+Spack default targets. Local compilation exercises the compatibility call site
+against the available dependency realization; a new clean exact-SHA Unity
+build remains required to prove the Kidscpp v3 branch and complete the
+representative gate.
+
+No representative acceptance executable ran in this attempt, no v2 acceptance
+record was produced, and the failed build is negative evidence only. It does
+not support a representative science, conformance, integration, activation,
+or production claim.
+
+Pre-commit local validation of the bounded repair passed in the existing
+AppleClang/cache-backed worktree:
+
+- the acceptance target compiled through the existing compatibility boundary
+  and its non-data `--help` boundary completed successfully;
+- all 52 focused Timestream Successor CTests passed;
+- all 884 runnable tests out of 885 registered CTests passed, with only the
+  established `MapFitterLifecycle.ExactProductSequence` test disabled;
+- the complete build-tool suite passed 63/63, including direct regression
+  checks for the Spack default-target set and the runner's compatibility call
+  site;
+- the v2 acceptance validator passed 9/9;
+- configuration preflight passed 130/130 tests, all four mode kits, all 8
+  compact compatibility cases, 100% surface coverage, and every reported
+  authority/boundary audit;
+- baseline tools passed 207/207 and historical WP-7 tools passed 26/26;
+- the validation ledger reported 60 valid records and the science-change
+  ledger reported 3 changes and 5 valid integration commits; and
+- a read-only API audit against exact pinned Kidscpp revision
+  `498ece1113001ae2d42d96d9fc29152aea3eaaef` confirmed the selected v3
+  metadata and sliced-read entry points and their raw-timestream validation.
+
+The accepted implementation blobs under `include/`, `src/`, and `tests/`
+remain unchanged from exact subject `b57d9f606...`. These local results do not
+exercise the Kidscpp v3 compilation branch or replace the required new clean
+Unity build and representative run.
 
 ## Tooling design
 

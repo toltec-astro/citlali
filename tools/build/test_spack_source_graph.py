@@ -46,8 +46,31 @@ class SpackSourceGraphTest(unittest.TestCase):
             "citlali_safety_test",
             "citlali_sci_align_test",
             "citlali_science_map_fits_products_test",
+            "citlali_timestream_successor_native_paired_readout_test",
+            "citlali_timestream_successor_ast_scan_motion_test",
+            "citlali_timestream_successor_identity_test",
+            "citlali_timestream_successor_identity_route_context_test",
         ):
             self.assertIn(target, spack_graph)
+
+    def test_acceptance_runner_uses_raw_timestream_compatibility_boundary(
+        self,
+    ) -> None:
+        source_root = Path(__file__).resolve().parents[2]
+        runner = (
+            source_root
+            / "tools/timestream_successor/identity_route_acceptance.cpp"
+        ).read_text()
+
+        self.assertIn(
+            "#include <citlali/core/compat/kidscpp_raw_timestream.h>",
+            runner,
+        )
+        self.assertNotIn("#include <kids/toltec/toltec.h>", runner)
+        self.assertIn("kidscpp::get_raw_timestream_meta", runner)
+        self.assertIn("kidscpp::read_raw_timestream_slice", runner)
+        self.assertNotIn("kids::toltec::get_meta", runner)
+        self.assertNotIn("kids::toltec::read_data_slice", runner)
 
 
 if __name__ == "__main__":

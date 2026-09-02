@@ -271,6 +271,10 @@ if(CITLALI_BUILD_TESTS)
             citlali_safety_test
             citlali_sci_align_test
             citlali_science_map_fits_products_test
+            citlali_timestream_successor_native_paired_readout_test
+            citlali_timestream_successor_ast_scan_motion_test
+            citlali_timestream_successor_identity_test
+            citlali_timestream_successor_identity_route_context_test
         PROPERTY EXCLUDE_FROM_ALL FALSE
     )
 endif()
