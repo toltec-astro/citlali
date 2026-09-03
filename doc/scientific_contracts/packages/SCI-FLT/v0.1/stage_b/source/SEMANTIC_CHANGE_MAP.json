@@ -1,0 +1,264 @@
+{
+  "schema_version": "1.0",
+  "document_identity": "SCI-FLT-FIXED-SEMANTIC-CHANGE-MAP v0.1/freeze-candidate",
+  "from_identity": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/draft-r0.4",
+  "to_identity": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/freeze-candidate",
+  "owner_directives": [
+    "OWNER_DIRECTIVE_R0_2.txt",
+    "OWNER_DIRECTIVE_R0_3.txt",
+    "OWNER_DIRECTIVE_R0_4.txt",
+    "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt"
+  ],
+  "formal_changes": [
+    {
+      "subject": "parent fact and numerical signal domains",
+      "r0_4": "parent row domain and real-valued m were not separated as typed fact and numerical function domains",
+      "freeze_candidate": "S_parent_fact contains typed parent facts, D_m contains available finite real signal rows, m maps D_m to R, and y maps S_out to R",
+      "disposition": "partial_function_domain_closed",
+      "meaning": "membership in D_m is established before m_q is evaluated; parent-shaped storage is not the scientific vector domain"
+    },
+    {
+      "subject": "zero-operator domain",
+      "r0_4": "zero inherited an admitted parent-support row domain described alongside empty arithmetic support",
+      "freeze_candidate": "K_nonzero_zero and K_req_zero are empty while S_out_zero is independently the exact admitted finite parent-signal row domain",
+      "disposition": "zero_domain_closed",
+      "meaning": "no vacuous storage-row admission and no overloading of K_req as a parent row domain"
+    },
+    {
+      "subject": "scientific and representation identity",
+      "r0_4": "K_store was nonauthoritative but appeared inside a broad operator and generation identity",
+      "freeze_candidate": "scientific operator identity and representation identity have separate digests and generations",
+      "disposition": "identity_layers_closed",
+      "meaning": "representation-only changes preserve scientific operator, FLT product identity, scientific generation, behavior, and claims"
+    },
+    {
+      "subject": "empty-support publication candidate",
+      "r0_4": "applied_no_scientific_output_support proceeded to publication decision without an exact complete candidate object",
+      "freeze_candidate": "complete_publication_disposition_candidate has product_candidate and no_output_support_candidate variants with exact publication-use axes",
+      "disposition": "publication_object_closed",
+      "meaning": "the no-output-support candidate preserves proof and evidence, contains no realized FLT-SIG, and is not an atomic bundle"
+    }
+  ],
+  "requirement_changes": {
+    "amended_without_renumbering": [
+      "SCI-FLT-FIXED-REQ-002",
+      "SCI-FLT-FIXED-REQ-007",
+      "SCI-FLT-FIXED-REQ-009",
+      "SCI-FLT-FIXED-REQ-012",
+      "SCI-FLT-FIXED-REQ-028",
+      "SCI-FLT-FIXED-REQ-029",
+      "SCI-FLT-FIXED-REQ-030",
+      "SCI-FLT-FIXED-REQ-033",
+      "SCI-FLT-FIXED-REQ-037",
+      "SCI-FLT-FIXED-REQ-038",
+      "SCI-FLT-FIXED-REQ-048",
+      "SCI-FLT-FIXED-REQ-051",
+      "SCI-FLT-FIXED-REQ-052",
+      "SCI-FLT-FIXED-REQ-053"
+    ],
+    "preserved_without_semantic_change": [
+      "SCI-FLT-FIXED-REQ-001",
+      "SCI-FLT-FIXED-REQ-003",
+      "SCI-FLT-FIXED-REQ-004",
+      "SCI-FLT-FIXED-REQ-005",
+      "SCI-FLT-FIXED-REQ-006",
+      "SCI-FLT-FIXED-REQ-008",
+      "SCI-FLT-FIXED-REQ-010",
+      "SCI-FLT-FIXED-REQ-011",
+      "SCI-FLT-FIXED-REQ-013",
+      "SCI-FLT-FIXED-REQ-014",
+      "SCI-FLT-FIXED-REQ-015",
+      "SCI-FLT-FIXED-REQ-016",
+      "SCI-FLT-FIXED-REQ-017",
+      "SCI-FLT-FIXED-REQ-018",
+      "SCI-FLT-FIXED-REQ-019",
+      "SCI-FLT-FIXED-REQ-020",
+      "SCI-FLT-FIXED-REQ-021",
+      "SCI-FLT-FIXED-REQ-022",
+      "SCI-FLT-FIXED-REQ-023",
+      "SCI-FLT-FIXED-REQ-024",
+      "SCI-FLT-FIXED-REQ-025",
+      "SCI-FLT-FIXED-REQ-026",
+      "SCI-FLT-FIXED-REQ-027",
+      "SCI-FLT-FIXED-REQ-031",
+      "SCI-FLT-FIXED-REQ-032",
+      "SCI-FLT-FIXED-REQ-034",
+      "SCI-FLT-FIXED-REQ-035",
+      "SCI-FLT-FIXED-REQ-036",
+      "SCI-FLT-FIXED-REQ-039",
+      "SCI-FLT-FIXED-REQ-040",
+      "SCI-FLT-FIXED-REQ-041",
+      "SCI-FLT-FIXED-REQ-042",
+      "SCI-FLT-FIXED-REQ-043",
+      "SCI-FLT-FIXED-REQ-044",
+      "SCI-FLT-FIXED-REQ-045",
+      "SCI-FLT-FIXED-REQ-046",
+      "SCI-FLT-FIXED-REQ-047",
+      "SCI-FLT-FIXED-REQ-049",
+      "SCI-FLT-FIXED-REQ-050"
+    ],
+    "appended": [],
+    "renumbered": []
+  },
+  "prediction_changes": {
+    "amended_without_renumbering": [
+      "SCI-FLT-FIXED-PRED-002",
+      "SCI-FLT-FIXED-PRED-009",
+      "SCI-FLT-FIXED-PRED-011",
+      "SCI-FLT-FIXED-PRED-022",
+      "SCI-FLT-FIXED-PRED-023",
+      "SCI-FLT-FIXED-PRED-029"
+    ],
+    "preserved_without_semantic_change": [
+      "SCI-FLT-FIXED-PRED-001",
+      "SCI-FLT-FIXED-PRED-003",
+      "SCI-FLT-FIXED-PRED-004",
+      "SCI-FLT-FIXED-PRED-005",
+      "SCI-FLT-FIXED-PRED-006",
+      "SCI-FLT-FIXED-PRED-007",
+      "SCI-FLT-FIXED-PRED-008",
+      "SCI-FLT-FIXED-PRED-010",
+      "SCI-FLT-FIXED-PRED-012",
+      "SCI-FLT-FIXED-PRED-013",
+      "SCI-FLT-FIXED-PRED-014",
+      "SCI-FLT-FIXED-PRED-015",
+      "SCI-FLT-FIXED-PRED-016",
+      "SCI-FLT-FIXED-PRED-017",
+      "SCI-FLT-FIXED-PRED-018",
+      "SCI-FLT-FIXED-PRED-019",
+      "SCI-FLT-FIXED-PRED-020",
+      "SCI-FLT-FIXED-PRED-021",
+      "SCI-FLT-FIXED-PRED-024",
+      "SCI-FLT-FIXED-PRED-025",
+      "SCI-FLT-FIXED-PRED-026",
+      "SCI-FLT-FIXED-PRED-027",
+      "SCI-FLT-FIXED-PRED-028",
+      "SCI-FLT-FIXED-PRED-030"
+    ],
+    "appended": [],
+    "renumbered": []
+  },
+  "route_status_changes": [
+    {
+      "route": "ordinary numerical domain",
+      "freeze_candidate": "S_parent_fact and D_m are distinct; m_q is evaluated only after q is established in D_m"
+    },
+    {
+      "route": "zero operator",
+      "freeze_candidate": "empty K_nonzero_zero and K_req_zero with independently constructed S_out_zero"
+    },
+    {
+      "route": "operator identity",
+      "freeze_candidate": "scientific operator identity is independent of representation identity and generation"
+    },
+    {
+      "route": "empty nonzero S_out",
+      "freeze_candidate": "complete no_output_support_candidate; requested, applicable, ineligible, not_produced; exact cause"
+    },
+    {
+      "route": "profiles",
+      "freeze_candidate": "three policy records remain unregistered, unapproved, not Registry-evaluated, and nonnumerical"
+    },
+    {
+      "route": "conditional freeze",
+      "freeze_candidate": "unsigned owner record proposed; exact authority-manifest binding required; all forbidden claims remain excluded"
+    }
+  ],
+  "lifecycle_changes": [
+    {
+      "condition": "requested nonzero convolution resolves and applies with empty S_out",
+      "path": [
+        "applied",
+        "applied_no_scientific_output_support",
+        "complete_publication_disposition_candidate(no_output_support_candidate)",
+        "publication_decision",
+        "not_produced"
+      ],
+      "publication_use_axes": {
+        "request": "requested",
+        "applicability": "applicable",
+        "eligibility": "ineligible",
+        "realization": "not_produced"
+      },
+      "cause": "no_full_footprint_output_rows"
+    }
+  ],
+  "final_owner_directive_routes": {
+    "1. TYPE THE PARENT FACT DOMAIN AND NUMERICAL SIGNAL DOMAIN": [
+      "SCI-FLT-FIXED-REQ-002",
+      "SCI-FLT-FIXED-REQ-007",
+      "SCI-FLT-FIXED-REQ-012",
+      "SCI-FLT-FIXED-REQ-037",
+      "SCI-FLT-FIXED-REQ-052",
+      "SCI-FLT-FIXED-PRED-009",
+      "SCI-FLT-FIXED-PRED-011",
+      "NUMERICAL_DOMAIN_PARTIAL_FUNCTION_AMENDMENT.md"
+    ],
+    "2. TYPE THE ZERO OPERATOR WITHOUT OVERLOADING K_req": [
+      "SCI-FLT-FIXED-REQ-029",
+      "SCI-FLT-FIXED-REQ-038",
+      "SCI-FLT-FIXED-PRED-002",
+      "SCI-FLT-FIXED-PRED-023",
+      "ZERO_OPERATOR_DOMAIN_AMENDMENT.md"
+    ],
+    "3. SEPARATE SCIENTIFIC OPERATOR IDENTITY FROM STORAGE REPRESENTATION": [
+      "SCI-FLT-FIXED-REQ-009",
+      "SCI-FLT-FIXED-REQ-030",
+      "SCI-FLT-FIXED-PRED-009",
+      "SCI-FLT-FIXED-PRED-022",
+      "SCIENTIFIC_REPRESENTATION_IDENTITY_AMENDMENT.md"
+    ],
+    "4. CLOSE THE EMPTY-SUPPORT PUBLICATION OBJECT AND FOUR AXES": [
+      "SCI-FLT-FIXED-REQ-028",
+      "SCI-FLT-FIXED-REQ-033",
+      "SCI-FLT-FIXED-REQ-048",
+      "SCI-FLT-FIXED-REQ-053",
+      "SCI-FLT-FIXED-PRED-029",
+      "EMPTY_SUPPORT_PUBLICATION_CANDIDATE_AMENDMENT.md",
+      "SCI-FLT-FIXED:output_publication@1"
+    ],
+    "5. PRESERVE LATE-NOI AND COVARIANCE CLOSURES": [
+      "SCI-FLT-FIXED-REQ-046",
+      "SCI-FLT-FIXED-REQ-047",
+      "SCI-FLT-FIXED-PRED-026",
+      "SCI-FLT-FIXED-PRED-027",
+      "MARGINAL_ONLY_COVARIANCE_EDGE_CASE.md",
+      "LATE_NOI_REQUEST_AMENDMENT.md"
+    ],
+    "6. COMPLETE AUTHORITY AND SOURCE CLOSURE": [
+      "SCI-FLT-FIXED-REQ-051",
+      "POLICY_RECORDS.json",
+      "TRACEABILITY.json",
+      "BUILD_BINDING.json",
+      "AUTHORITY_MANIFEST.json",
+      "SOURCE_PACKET_CLOSURE_REPORT.md"
+    ],
+    "7. FREEZE-CANDIDATE DISPOSITION": [
+      "PROPOSED_FREEZE_DISPOSITION.md",
+      "SCI-FLT-FIXED v0.1"
+    ],
+    "8. IDENTIFIERS AND PREFLIGHT": [
+      "CORE_VIEW_PARITY_REPORT.md",
+      "OWNER_DECISION_PARITY_REPORT.md",
+      "REBUILD_REPORT.md",
+      "VISUAL_QA.md"
+    ],
+    "9. DELIVERABLES": [
+      "final_freeze_candidate_pdf_set",
+      "complete_source_packet",
+      "artifact_inventory"
+    ]
+  },
+  "preserved_prior_authority": "OWNER_DIRECTIVE_R0_2.txt, OWNER_DIRECTIVE_R0_3.txt, and OWNER_DIRECTIVE_R0_4.txt remain bound; the final directive amends only the exact clauses identified above",
+  "preserved_boundaries": [
+    "MAP parent identity and upstream availability",
+    "JINC atomic five-role parent identity and upstream availability",
+    "NOI scientific ownership, fixed-state parity, and late-child nonmutation",
+    "covariance authority and one-sparse marginal-only closure",
+    "VAL evaluates but does not author producer facts, arithmetic, or FLT policy",
+    "response and covariance remain conditional on compatible parent objects",
+    "full-footprint-only edge method",
+    "no coaddition or filter/coadd commutation claim",
+    "implementation-blind nonclaims"
+  ]
+}

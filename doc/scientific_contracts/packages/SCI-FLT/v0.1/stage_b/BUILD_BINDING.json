@@ -1,0 +1,365 @@
+{
+  "build_tools": [
+    {
+      "bytes": 24412,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/tools/build_stage_b.py",
+      "sha256": "19d4ac5b4238d704a160528f2dc52831ed944cdd48a3f98f1764509ef066ac53"
+    },
+    {
+      "bytes": 54598,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/tools/verify_stage_b.py",
+      "sha256": "22d28dfd10e363bd2389ac3fe9c5ea5cd69ce221744f54f6b91a3e3010fc1956"
+    }
+  ],
+  "deterministic_build": {
+    "page_size": "US Letter",
+    "pdf_count": 3,
+    "pdf_site_packages": "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages",
+    "pypdf": "6.7.2",
+    "python": "3.13.2",
+    "reportlab": "4.4.9",
+    "reportlab_invariant": true
+  },
+  "embedded_fonts": [
+    {
+      "bytes": 65932,
+      "name": "StageBSans",
+      "path": "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/reportlab/fonts/Vera.ttf",
+      "sha256": "c4c45690b345435b2cba52ecabe275f05e49b389b39fe68ad03afbb551288d3d"
+    },
+    {
+      "bytes": 58716,
+      "name": "StageBSans-Bold",
+      "path": "/Users/gwilson/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/reportlab/fonts/VeraBd.ttf",
+      "sha256": "cc037385e4d55bfde89b13e03091ee93bf40c0c52ddd391ff031ab276f13b8e9"
+    },
+    {
+      "bytes": 340240,
+      "name": "StageBMono",
+      "path": "/Users/gwilson/tolteca/lib/python3.13/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSansMono.ttf",
+      "sha256": "602ec86b8948cfcd956482fe64f94c36c867770149ef2f791d4613f443bcecb3"
+    }
+  ],
+  "nonclaims": [
+    "implementation conformity",
+    "algorithm change",
+    "validation",
+    "calibration",
+    "achieved response or covariance",
+    "performance",
+    "readiness",
+    "scientific freeze",
+    "production",
+    "Unity activity"
+  ],
+  "outputs": [
+    {
+      "bytes": 126362,
+      "document_identity": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/freeze-candidate",
+      "filename": "SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-freeze-candidate.pdf",
+      "pages": 22,
+      "sha256": "03390e2a8726867f1257cc50321af2c4f3f8186c8a3e4fa436e49d5df91a37ca",
+      "shared_normative_core_sha256": "7147d242f54d64ca80f6d3a17d309c65f75180457629fed62ce676da93b11089",
+      "source": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/SHARED_NORMATIVE_CORE.md",
+      "source_sha256": "7147d242f54d64ca80f6d3a17d309c65f75180457629fed62ce676da93b11089"
+    },
+    {
+      "bytes": 81325,
+      "document_identity": "SCI-FLT-FIXED-SCIENTIST-RATIONALE v0.1/freeze-candidate",
+      "filename": "SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-freeze-candidate.pdf",
+      "pages": 7,
+      "sha256": "881a260459a707493303d2130490af2a8f2351e7564758ecb2558b582adbec76",
+      "shared_normative_core_sha256": "7147d242f54d64ca80f6d3a17d309c65f75180457629fed62ce676da93b11089",
+      "source": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/SCIENTIST_RATIONALE.md",
+      "source_sha256": "9609a22e7ff4db1c1413f57e5110405b1a74d9af7c0f3d2256462e5a61700235"
+    },
+    {
+      "bytes": 87340,
+      "document_identity": "SCI-FLT-FIXED-ENGINEERING-CONFORMANCE v0.1/freeze-candidate",
+      "filename": "SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-freeze-candidate.pdf",
+      "pages": 9,
+      "sha256": "5b1a20ee16059d83f87c0a9004bbec6f9184881c7ea90edf8f9c046b074bb78e",
+      "shared_normative_core_sha256": "7147d242f54d64ca80f6d3a17d309c65f75180457629fed62ce676da93b11089",
+      "source": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/ENGINEERING_CONFORMANCE.md",
+      "source_sha256": "6796518dc6fe3f34558cff01c62bb78deed6e152ee2e01b5f89ae9d0b12c56a9"
+    }
+  ],
+  "owner_directives": [
+    {
+      "bytes": 17046,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/OWNER_DIRECTIVE_R0_2.txt",
+      "scientific_owner": "Grant Wilson",
+      "sha256": "02ca63dcc8ac19e554fa333c20773ff85264336b4f622024605f6514ec1716d1"
+    },
+    {
+      "bytes": 14548,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/OWNER_DIRECTIVE_R0_3.txt",
+      "scientific_owner": "Grant Wilson",
+      "sha256": "c1de5ad5b9f9e5451ec2a3d9d9c18d30f7990eec721497c9d473aaeb2b043551"
+    },
+    {
+      "bytes": 12061,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/OWNER_DIRECTIVE_R0_4.txt",
+      "scientific_owner": "Grant Wilson",
+      "sha256": "855d9709d3fe3b4d71b6a56a020e52ce52164a0384a2ed2d562145f8fb3b0a99"
+    },
+    {
+      "bytes": 13319,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt",
+      "scientific_owner": "Grant Wilson",
+      "sha256": "c30c49ca19ec15b384ed8178de233e473513fdc520e090c152f571a8a802bf0c"
+    }
+  ],
+  "packet": {
+    "admitted_object_count": 17,
+    "admitted_objects": [
+      {
+        "bytes": 5741,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/SCOPE_BRIEF.md",
+        "sha256": "b66dbca45edc758e1fc29f9f14313deb52473527acec8ed4d8ce93e725e32468"
+      },
+      {
+        "bytes": 2506,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/AUTHOR_SUPERSESSION_COVER.md",
+        "sha256": "68bb884513754375eba67d19881b092564e2c49a0345ca1b0ee2cbc9f0d55ef0"
+      },
+      {
+        "bytes": 4226,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/AUTHOR_CONVENTIONS_AND_OWNERSHIP.md",
+        "sha256": "3daa40ca90fc290a91452d0493e92366ca784372daeeea96b92d2ddd602dc30f"
+      },
+      {
+        "bytes": 4643,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md",
+        "sha256": "118baee3555d7fb498c7f9a479a74a98b619e4eb6147cbe9c252bbd0f54831a2"
+      },
+      {
+        "bytes": 4361,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md",
+        "sha256": "214dad66b93d021a0c67014756dcf746e3bba46c624142298542330b5be9a659"
+      },
+      {
+        "bytes": 7883,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md",
+        "sha256": "8ec6bc2bf1c64a136203cbdc9db7c0ad2531bf1098022b7b813403d47ae9279f"
+      },
+      {
+        "bytes": 3920,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/SCI-MAP_TO_SCI-FLT-FIXED_BOUNDARY.md",
+        "sha256": "2c04689734359a6fa8139b502a691238a118002ae27d8cd58fe82c3d0dddfbca"
+      },
+      {
+        "bytes": 3148,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/SCI-JINC_TO_SCI-FLT-FIXED_BOUNDARY.md",
+        "sha256": "8c9cffe3641311ece334827136eafd47752a13750df1dcf2f55107ecc115892f"
+      },
+      {
+        "bytes": 3193,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/SCI-FLT-FIXED_TO_SCI-NOI_BOUNDARY.md",
+        "sha256": "a349064e5bd0711eec54cd4f63ab02f934a60c2b1b6d5eccae0b64c02b47acd8"
+      },
+      {
+        "bytes": 4940,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md",
+        "sha256": "91f9dd40d6784ff8544f88062645e022435cecac0319332a9a89f61365398ca6"
+      },
+      {
+        "bytes": 2433,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/WCS_KERNEL_DISCRETIZATION_DECISION_TABLE.md",
+        "sha256": "d81b022f7a7feae8d465de3c09904222247a2b40debf6bb484e9825585cc9275"
+      },
+      {
+        "bytes": 1642,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/EDGE_MISSING_NONFINITE_METHOD_DECISION_TABLE.md",
+        "sha256": "fa910834db9a3e9ee068f49d779cdc4a46ae4e7f67ef30e5a21bdb2f497f5ed4"
+      },
+      {
+        "bytes": 2332,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/NORMALIZATION_UNIT_BEAM_DECISION_TABLE.md",
+        "sha256": "7b0090c4782abfe8d86dd15c286015aa9d8d9fd4e75a02cde97d0d99c017e828"
+      },
+      {
+        "bytes": 3087,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md",
+        "sha256": "468d04343dfd715e97df001ca59db996a75f68c644506724d7220c6b86b3b991"
+      },
+      {
+        "bytes": 1607,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/OBSERVATION_COADD_NONCOMMUTATION_TABLE.md",
+        "sha256": "4483fd81d690caf90f16953cd21fb1199cc68c562f42e354e95876e1521b816a"
+      },
+      {
+        "bytes": 4052,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/SCI_FLT_VAL_PROFILE_DRAFTS.md",
+        "sha256": "9546082e4defcc3d83ce65969b44e35926fed7fe0185d306b9679701c0ce7976"
+      },
+      {
+        "bytes": 3730,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md",
+        "sha256": "0c10c8e7cf46b80c94bc2454090ab918f7f440bcd0d4bc8b7e94cf53df66efed"
+      }
+    ],
+    "manifest": "doc/scientific_contracts/packages/SCI-FLT/v0.1/AUTHOR_PACKET_MANIFEST.md",
+    "manifest_bytes": 5199,
+    "manifest_identity": "SCI-FLT-FIXED_AUTHOR_PACKET v0.1/r0.1",
+    "manifest_sha256": "7f2d03f182258ac9770f7dba869e9ae0b5018efdcdb93b18b299a9b9c6df1e4d"
+  },
+  "record_identity": "SCI-FLT-FIXED-STAGE-B-BUILD-BINDING v0.1/freeze-candidate",
+  "schema_version": "1.0",
+  "scientific_owner": "Grant Wilson",
+  "sources": [
+    {
+      "bytes": 72389,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/SHARED_NORMATIVE_CORE.md",
+      "sha256": "7147d242f54d64ca80f6d3a17d309c65f75180457629fed62ce676da93b11089"
+    },
+    {
+      "bytes": 22451,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/SCIENTIST_RATIONALE.md",
+      "sha256": "9609a22e7ff4db1c1413f57e5110405b1a74d9af7c0f3d2256462e5a61700235"
+    },
+    {
+      "bytes": 29363,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/ENGINEERING_CONFORMANCE.md",
+      "sha256": "6796518dc6fe3f34558cff01c62bb78deed6e152ee2e01b5f89ae9d0b12c56a9"
+    },
+    {
+      "bytes": 50334,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/TRACEABILITY.json",
+      "sha256": "f5c5a52ffcc6b274938602c6eaba2e2a9cd60118935f21a05fa5f4b86b298573"
+    },
+    {
+      "bytes": 10543,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/FORMAL_CLOSURE_RECORD.md",
+      "sha256": "56ff1130ff6218a0918dbd0829bcb084b01f3f5cb67034d86084021ccfd17f8b"
+    },
+    {
+      "bytes": 11170,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/POLICY_RECORDS.json",
+      "sha256": "c8767f7bbe044ae521f1b8473c2bde1eff2802d156bbc5edecfdd1a15cd3ae4c"
+    },
+    {
+      "bytes": 4250,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/NUMERICAL_CONFORMANCE_POLICY.md",
+      "sha256": "5e0595b6ceeb966fbac6b5d60590329bd8d001d2ccac907bbd650421c50b14f3"
+    },
+    {
+      "bytes": 10031,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/SEMANTIC_CHANGE_MAP.json",
+      "sha256": "f782c43cb578828ee3285e5ea1c109067a34ea8bf0fbf1a9615c3d3b77a6b2ba"
+    },
+    {
+      "bytes": 17046,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/OWNER_DIRECTIVE_R0_2.txt",
+      "sha256": "02ca63dcc8ac19e554fa333c20773ff85264336b4f622024605f6514ec1716d1"
+    },
+    {
+      "bytes": 14548,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/OWNER_DIRECTIVE_R0_3.txt",
+      "sha256": "c1de5ad5b9f9e5451ec2a3d9d9c18d30f7990eec721497c9d473aaeb2b043551"
+    },
+    {
+      "bytes": 12061,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/OWNER_DIRECTIVE_R0_4.txt",
+      "sha256": "855d9709d3fe3b4d71b6a56a020e52ce52164a0384a2ed2d562145f8fb3b0a99"
+    },
+    {
+      "bytes": 13319,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt",
+      "sha256": "c30c49ca19ec15b384ed8178de233e473513fdc520e090c152f571a8a802bf0c"
+    },
+    {
+      "bytes": 1265,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/PARENT_SIGNAL_ROLE_TABLE.md",
+      "sha256": "9bf66acb134240b5060fff1f718dd49ca2ddb992c6bbc6825b11a086f1a7d6ce"
+    },
+    {
+      "bytes": 2405,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/REQUIRED_FOOTPRINT_OWNER_DISPOSITION.md",
+      "sha256": "2588bb3c56e09fdd7d8946043e00d87e73a0fa5d6410d6661c1ace90b918a673"
+    },
+    {
+      "bytes": 1681,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/CORRECTED_CONVOLUTION_SUPPORT_CROSSWALK.md",
+      "sha256": "6aa7270d57201a94ded2aa0c5fccb078b4c0b40f6d2f11080b5c1e8bafa13a0d"
+    },
+    {
+      "bytes": 1239,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/SELECTOR_RESOLUTION_DATA_INDEPENDENCE.md",
+      "sha256": "7601a991f7a3a3a52a871b10af3f41f66a9eb24a58927599878f274392e26786"
+    },
+    {
+      "bytes": 1439,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/REAL_FINITE_SCALAR_COEFFICIENT_DECLARATION.md",
+      "sha256": "d4b070ad463b1323ec314c9a2ae2eb10be574da7a3583233b650c7172af0e1a7"
+    },
+    {
+      "bytes": 1339,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/EMPTY_OUTPUT_SUPPORT_DISPOSITION.md",
+      "sha256": "094b8391fc12881311b948915acd05c6f51ee0c1e1b8188807cd67df42f897ae"
+    },
+    {
+      "bytes": 1007,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/MARGINAL_ONLY_COVARIANCE_EDGE_CASE.md",
+      "sha256": "9b85ed1cb13d667b528feb99f228453e405f212d53d0313c4f747785236fe0c5"
+    },
+    {
+      "bytes": 804,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/LATE_NOI_REQUEST_AMENDMENT.md",
+      "sha256": "4602991e21db7237d341698f1d73c795fe9e618dd5e221f37343976b9a32701b"
+    },
+    {
+      "bytes": 1407,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/NUMERICAL_DOMAIN_PARTIAL_FUNCTION_AMENDMENT.md",
+      "sha256": "cbf14380304baff0afbc91c7647092a54c62f5376692d170359f58ff3c4a537a"
+    },
+    {
+      "bytes": 1365,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/ZERO_OPERATOR_DOMAIN_AMENDMENT.md",
+      "sha256": "1a51d75ef7cb966ca3b9cfd825564f0e3fe03fa6660d330ce5ea2725b42f3ca8"
+    },
+    {
+      "bytes": 1909,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/SCIENTIFIC_REPRESENTATION_IDENTITY_AMENDMENT.md",
+      "sha256": "d9c6a78ab4150a48d03ca127e02f9702c13d5d1ba79bbccae470c3ed306f4c61"
+    },
+    {
+      "bytes": 1667,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/EMPTY_SUPPORT_PUBLICATION_CANDIDATE_AMENDMENT.md",
+      "sha256": "95583d669619334941ccd040278272a4df443069b995b10c360ced227c9d6d01"
+    },
+    {
+      "bytes": 2205,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/COVARIANCE_COMPATIBILITY_TABLE.md",
+      "sha256": "12e1ffdbb195e53eca568093859724aec2d44fffdd79862d8cb447cd0e6a3ea9"
+    },
+    {
+      "bytes": 1485,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/FLT_NOI_RELATION_DESIGN.md",
+      "sha256": "9c3cbe87cb7a4f88d270728476439f654345b5265134319dd5a5cc6e05701670"
+    },
+    {
+      "bytes": 2066,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/POLICY_ACTION_ARCHITECTURE.md",
+      "sha256": "be9d27a72241dad8db005ff8f40c70ff1fbb5db816e4353abfe170b7be2fb68b"
+    },
+    {
+      "bytes": 1554,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/LOWPASS_TRANSFORM_CONVENTION.md",
+      "sha256": "d05df34af323a9ec26cc9b1dff89703bfd0f9e651a0bf5af839a42afebee910c"
+    },
+    {
+      "bytes": 1089,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/RESPONSE_DOMAIN_AMENDMENT.md",
+      "sha256": "843ed04369d3bd91f4a602c5543b7072957f1895d18a3a7445afc076465d8188"
+    },
+    {
+      "bytes": 2104,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/PROPOSED_FREEZE_DISPOSITION.md",
+      "sha256": "f5fd7abadb435f4de414f9087153fce96feaa9700f31be269c7a78ef8a35dfed"
+    }
+  ],
+  "stage_a_launch_commit": "cd55752e716051383da54356833ef0fac20b083a",
+  "stage_b_date": "2026-08-31",
+  "status": "deterministic conditional-freeze-candidate build record; owner signature required; no scientific freeze or implementation approval claim"
+}

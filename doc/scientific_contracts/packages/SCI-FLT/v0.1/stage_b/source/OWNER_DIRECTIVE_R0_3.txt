@@ -1,0 +1,399 @@
+SCI-FLT-FIXED v0.1 r0.3 — FINAL TARGETED
+SCIENTIFIC-CLOSURE AND SOURCE-PREFLIGHT DIRECTIVE
+
+The SCI-FLT-FIXED r0.2 architecture is accepted as the basis for the next
+targeted revision.
+
+Preserve:
+
+- SCI-FLT-FIXED as the package name;
+- SCI-FLT-INF as a non-authored holding tranche;
+- FLT-FIXED-CONV as the sole numerical base family;
+- FLT-FIXED-CONV-LOWPASS only as a qualified convolution subtype;
+- strict linearity with no additive term;
+- one exact sampled convolution applied exactly once;
+- one exact frozen parent membership and J_full;
+- A_Theta,J = J_full L_Theta;
+- full-footprint-only as the sole v0.1 edge method;
+- no extension, wrapping, truncation, support renormalization, inpainting,
+  replacement, reprojection, resampling, deconvolution, or relearning;
+- distinct MAP observation, MAP coadd, and JINC observation parent roles;
+- no assumed filter/coadd commutation;
+- transformed parent-map amplitude as the output quantity;
+- no automatic filtered-beam, calibration, source-amplitude, or flux claim;
+- separate response families and exact one-time operator application;
+- deterministic covariance separate from NOI empirical uncertainty;
+- request-qualified response and covariance companions;
+- candidate-before-publication lifecycle;
+- exposure lineage distinct from influence;
+- disabled, identity, zero, unavailable, failed, and realized states;
+- prospective numerical-comparison policy;
+- every existing claim ceiling and nonclaim.
+
+Do not inspect implementation, configuration, schemas, tests, audits, repairs,
+validation, reductions, generated products, defaults, historical behavior, or
+production status.
+
+Do not renumber SCI-FLT-FIXED-REQ-001--044 or
+SCI-FLT-FIXED-PRED-001--024. Amend exact draft wording with a semantic-change
+map and append new identifiers only for genuinely new clauses.
+
+======================================================================
+1. BIND THE EXACT SIGNAL ROLE OF EVERY PARENT
+======================================================================
+
+Add a normative parent-role table.
+
+At minimum bind:
+
+    FLT-PARENT-MAP-OBS
+      m = exact base/unfiltered MAP observation signal role;
+
+    FLT-PARENT-MAP-COADD
+      m = exact base/unfiltered MAP coadd signal role;
+
+    FLT-PARENT-JINC-OBS
+      m = exact normalized JINC map role on its admitted local support.
+
+For the JINC parent, bind the exact role names from the current JINC boundary.
+
+The complete five-role JINC bundle remains atomic, but its numerator, signed
+normalization, quadratic accumulator, and coefficient-squared temporal
+accounting are not alternate FLT signal vectors.
+
+State explicitly:
+
+- only the selected signal role receives L_Theta as FLT-SIG;
+- parent response receives the typed response composition;
+- parent covariance receives the typed covariance composition;
+- support and validity are not convolved as signal;
+- exposure is not convolved into physical exposure;
+- normalization and coefficient diagnostics remain parent facts;
+- no other map-shaped role is transformed without a separately named method.
+
+Add a prediction that attempts to filter JINC N, C, Q, temporal accounting,
+MAP exposure, support, validity, covariance, or response as FLT-SIG are rejected
+under the ordinary method.
+
+======================================================================
+2. OWNER-DISPOSITION EXACT-ZERO AND REQUIRED-FOOTPRINT SEMANTICS
+======================================================================
+
+The r0.2 rule makes every stored geometric zero a required parent dependency.
+
+Return one explicit owner decision.
+
+Preferred disposition:
+
+    K_geom_science
+      = exact scientific geometric footprint, independent of serialization;
+
+    K_store
+      = storage/serialization footprint and scientifically nonauthoritative;
+
+    K_nonzero
+      = exact offsets whose canonical coefficient is nonzero;
+
+    K_req
+      = K_nonzero
+
+for the ordinary fixed-convolution method.
+
+Exact zero is determined from the canonical coefficient representation, never
+from a floating tolerance.
+
+Dense, sparse, cropped, or zero-padded storage of the same scientific kernel
+shall not change K_geom_science, K_nonzero, K_req, S_out, response, covariance,
+or product identity.
+
+A zero-valued offset may be added to K_req only under a separately named method
+that provides a scientific support reason independent of storage layout.
+
+Retain the special cases:
+
+- identity:
+      K_req = {0};
+
+- exact zero operator:
+      inherits one exact admitted parent-support row domain and does not acquire
+      arbitrary storage rows through an empty-footprint predicate.
+
+If the owner instead retains K_req = K_geom_science, state that decision
+explicitly, remove “or storage footprint,” and require K_geom_science to be
+representation-invariant.
+
+Update REQ-009, REQ-012, REQ-038, PRED-009, PRED-022, the rationale, and the
+ECS consistently.
+
+======================================================================
+3. CLOSE COVARIANCE AUTHORITY / REPRESENTATION COMPATIBILITY
+======================================================================
+
+Add one exact compatibility table.
+
+A. Complete parent covariance:
+   authorize exact A C A^T on its complete domain and any mathematically exact
+   declared output representation.
+
+B. Explicit independent-diagonal parent model:
+   authorize the full output covariance relative to that exact conditional
+   model, including induced off-diagonal terms.
+
+C. Marginal parent variances only:
+   do not infer independence;
+   do not calculate an exact output marginal variance for any row mixing more
+   than one parent variable;
+   make the output covariance/marginal role unavailable or explicitly partial.
+
+   A separately named diagonal-contribution diagnostic may be allowed, but it
+   shall not be called variance, covariance, uncertainty, or precision.
+
+D. Structured or partial parent model:
+   permit only operations proved exact for that representation and domain.
+
+E. Unavailable parent stochastic authority:
+   output covariance remains unavailable, except for separately stated local
+   zero-operator parent-payload facts.
+
+State explicitly:
+
+    Var(y_i)
+      = sum_j A_ij^2 Var(m_j)
+        + 2 sum_{j<k} A_ij A_ik Cov(m_j,m_k).
+
+Therefore marginal input variances alone generally do not determine output
+marginals.
+
+Add a prediction using two parent covariance matrices with identical diagonal
+entries but different cross terms. Their filtered output variances shall differ;
+a marginal-only parent shall not select either result.
+
+Retain all existing model-conditional and unknown-cross-term warnings.
+
+======================================================================
+4. MAKE NOI COMPATIBILITY AND ATTACHMENT IMMUTABLE
+======================================================================
+
+Do not place a later-changing attachment state inside the immutable FLT bundle.
+
+Replace the atomic-bundle role:
+
+    FLT-NOI-ATTACHMENT-STATE
+
+with:
+
+    FLT-NOI-COMPATIBILITY.
+
+The immutable FLT role shall contain:
+
+- exact FLT product identity;
+- exact operator and row-domain identity;
+- exact FLT-to-NOI boundary/profile compatibility;
+- fixed-state transformation semantics;
+- request state known at FLT publication;
+- typed compatibility or unavailability;
+- no identity of a future NOI product.
+
+A later realized NOI product shall reference the immutable FLT parent.
+
+Any optional reverse relation shall be a separately versioned artifact, for
+example:
+
+    SCI-FLT-FIXED_TO_SCI-NOI-RELATION,
+
+and shall not be part of FLT atomic completion or mutate the FLT bundle.
+
+Update Section 10, REQ-027, REQ-030, the rationale, the ECS, and add a
+nonmutation prediction.
+
+======================================================================
+5. REPAIR POLICY DOMAINS AND THE CONSUMER-ACTION BOUNDARY
+======================================================================
+
+The present input_row_admission profile evaluates a candidate output row.
+
+Replace or clarify the policy architecture.
+
+Preferred structure:
+
+    SCI-FLT-FIXED:input_bundle_admission@1
+      evaluates the complete parent bundle and plan;
+
+    SCI-FLT-FIXED:input_parent_row_admission@1
+      evaluates each exact parent row for the FLT named use;
+
+    J_full and S_out
+      are deterministic FLT-owned constructions from those parent-row decisions,
+      K_req, parent domain, availability, finiteness, and required predicates.
+
+Do not make output-row arithmetic support a producer fact or allow VAL to
+perform the convolution.
+
+For publication:
+
+- the policy/profile defines the disposition and prescribed consumer action;
+- VAL may bind and evaluate the policy and produce the decision artifact;
+- the FLT publisher performs or declines the publication action;
+- FLT owns final realization and FLT-local validity.
+
+A profile or VAL evaluation shall not itself “perform publication.”
+
+If publication is instead an internal FLT rule rather than a VAL-governed named
+use, label it as such and do not imply Registry evaluation.
+
+Retain the four-axis request/applicability/eligibility/realization semantics and
+all request-specific response/covariance qualifications.
+
+Rename profile identities before Registry approval; once registered, do not
+repair misleading names by prose.
+
+======================================================================
+6. COMPLETE THE LOW-PASS TRANSFORM CONVENTION
+======================================================================
+
+Every low-pass-qualified plan shall bind:
+
+- exact discrete/Fourier transform sign convention;
+- transform normalization;
+- coordinate and spatial-frequency units;
+- zero-frequency origin and ordering;
+- positive/negative and Nyquist-frequency treatment;
+- exact frequency sample grid;
+- whether the declared response is complex H, amplitude |H|, power |H|^2, or
+  another exact quantity;
+- linear-ratio versus decibel attenuation;
+- passband, transition, and stopband region geometry;
+- complex-phase branch or unwrapping convention;
+- anisotropy convention;
+- WCS metric relation.
+
+For a pixel-index kernel, an allowed reference relation may be of the form:
+
+    H(nu) = sum_r k(r) exp[-2 pi i nu dot r],
+
+but the exact adopted convention shall be content-bound rather than inferred.
+
+PRED-024 shall use the identical convention. A complete metadata record with a
+different transform convention shall fail.
+
+Retain the distinction between the sampled/interior transfer and the complete
+finite row-restricted A_Theta,J.
+
+======================================================================
+7. TIGHTEN FULL-PROCEDURE RESPONSE DOMAIN COMPATIBILITY
+======================================================================
+
+For:
+
+    Delta y_parent-FP
+      = A_Theta,J Delta m_parent-FP,
+
+require the baseline and perturbed parent-procedure products to provide one
+exact compatible parent-grid difference on the frozen FLT domain.
+
+If the parent procedure changes row membership, availability, WCS, quantity,
+or support so that the difference is not defined on the frozen required
+footprint:
+
+- do not re-resolve J_full;
+- retain the parent state-change record;
+- make the affected transformed full-procedure response unavailable.
+
+A common numerical array shape does not establish a valid procedure difference.
+
+======================================================================
+8. CONSOLIDATE SOURCE AND AUTHORITY BINDING
+======================================================================
+
+Return the actual bytes of:
+
+- SCI-FLT-FIXED_AUTHOR_PACKET v0.1/r0.1;
+- all seventeen admitted objects;
+- the exact r0.2 owner directive;
+- MAP-to-FLT, JINC-to-FLT, and FLT-to-NOI boundaries;
+- all policy/profile drafts;
+- the numerical-comparison policy draft;
+- TRACEABILITY.json;
+- BUILD_BINDING.json;
+- source-closure, owner-parity, core/view-parity, semantic-change, profile,
+  rebuild, and visual-QA reports;
+- all source files and rendered PDFs.
+
+Reproduce every quoted SHA-256.
+
+Create one superseding r0.3 authority manifest or proposed freeze manifest
+binding the complete final authority set. Do not require a future reader to
+combine an older seventeen-object manifest with later normative directives and
+profiles manually.
+
+If any claimed boundary, owner decision, profile, or parity record cannot be
+reproduced, return only its dependent route to typed unavailability.
+
+======================================================================
+9. RATIONALE AND PREFLIGHT
+======================================================================
+
+Keep the rationale concise.
+
+Add:
+
+1. one diagram showing:
+       parent signal role
+       -> parent-row admission
+       -> frozen J_full
+       -> one sampled convolution
+       -> FLT bundle
+       -> optional separate NOI child;
+
+2. one route-status table covering:
+       generic contract,
+       MAP observation parent,
+       MAP coadd parent,
+       JINC parent,
+       base signal,
+       low-pass qualification,
+       response-qualified product,
+       covariance-qualified product,
+       NOI compatibility,
+       profile registration,
+       implementation assessment.
+
+Verify:
+
+- one exact shared core in all views;
+- SCI-FLT-FIXED-REQ-001--044 without gaps;
+- SCI-FLT-FIXED-PRED-001--024 without gaps;
+- any appended IDs use the next available number;
+- core/rationale/ECS semantic parity;
+- exact source hashes;
+- all PDFs reopen and render without clipping, overlap, broken glyphs, or
+  malformed identifiers;
+- title, owner, revision, date, status, and metadata agree.
+
+======================================================================
+10. DELIVERABLES
+======================================================================
+
+Return:
+
+1. revised Normative Core r0.3;
+2. revised Scientist Rationale r0.3;
+3. revised Engineering Conformance Specification r0.3;
+4. exact parent signal-role table;
+5. required-footprint owner disposition;
+6. covariance authority/representation compatibility table;
+7. immutable FLT/NOI relation design;
+8. corrected profile/action architecture;
+9. exact low-pass transform convention;
+10. response-family/domain amendment;
+11. complete authority/source manifest;
+12. equation/requirement/prediction semantic-change map;
+13. owner-decision parity report;
+14. core/rationale/ECS parity report;
+15. PDF visual-QA and metadata report;
+16. proposed freeze disposition.
+
+Do not claim implementation conformity, achieved response or covariance,
+numerical adequacy, validation, calibration, observational performance,
+readiness, scientific freeze, production suitability, production
+authorization, or Unity activity.

@@ -1,0 +1,278 @@
+{
+  "schema_version": "1.0",
+  "document_identity": "SCI-FLT-FIXED-POLICY-RECORDS v0.1/freeze-candidate",
+  "status": "implementation-blind unregistered policy drafts bound to the conditional freeze candidate; separate scientific-owner and Registry approval required",
+  "scientific_policy_owner": "Grant Wilson",
+  "registry_binding_status": "not_owner_approved_not_registered_not_evaluated",
+  "source_bindings": {
+    "normative_core": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/freeze-candidate",
+    "author_packet_manifest": "SCI-FLT-FIXED_AUTHOR_PACKET v0.1/r0.1",
+    "map_boundary": "SCI-MAP_TO_SCI-FLT-FIXED boundary admitted by the author packet",
+    "jinc_boundary": "SCI-JINC_TO_SCI-FLT-FIXED boundary admitted by the author packet",
+    "noi_boundary": "SCI-FLT-FIXED_TO_SCI-NOI boundary admitted by the author packet",
+    "val_profile_source": "SCI_FLT_VAL_PROFILE_DRAFTS.md admitted by the author packet",
+    "r0_2_owner_directive": "OWNER_DIRECTIVE_R0_2.txt",
+    "r0_3_owner_directive": "OWNER_DIRECTIVE_R0_3.txt",
+    "r0_4_owner_directive": "OWNER_DIRECTIVE_R0_4.txt",
+    "final_owner_directive": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt"
+  },
+  "profiles": [
+    {
+      "identity": "SCI-FLT-FIXED:input_bundle_admission@1",
+      "domain": "one exact request, one complete immutable parent bundle, and one exact resolved FLT-owned plan",
+      "request": [
+        "not_requested",
+        "base_signal",
+        "response_qualified",
+        "covariance_qualified",
+        "response_and_covariance_qualified"
+      ],
+      "applicability": [
+        "applicable",
+        "not_applicable",
+        "applicability_unknown"
+      ],
+      "eligibility": [
+        "eligible",
+        "ineligible",
+        "no_eligibility_proposition",
+        "decision_unavailable"
+      ],
+      "realization": [
+        "not_started",
+        "realization_pending",
+        "realization_failed",
+        "complete_candidate_possible"
+      ],
+      "restrictions": [
+        "exactly one supported MAP-observation, MAP-coadd, or JINC-observation parent role",
+        "complete applicable parent and boundary identity",
+        "FLT-FIXED-CONV only",
+        "same grid",
+        "one exact resolved sampled convolution",
+        "full-footprint-only",
+        "no data-derived selection or relearning",
+        "plan facts are independent of parent payload amplitudes",
+        "scientific operator identity is independent of representation identity",
+        "S_parent_fact, D_m, S_out, and S_out_zero are separately typed",
+        "every sampled coefficient is finite, real, unit-typed, canonically represented, and content-bound"
+      ],
+      "decisive_exclusions": [
+        "structural identity or source conflict",
+        "partial parent bundle",
+        "unsupported family",
+        "reprojection or resampling",
+        "deferred edge or missing-data method",
+        "unresolved plan fact",
+        "representation fact that changes scientific operator identity or behavior",
+        "missing, non-finite, complex, unrepresentable, or conflicting coefficient"
+      ],
+      "exceptions": [
+        "base signal may carry typed unavailable response or covariance state",
+        "qualified requests require their named available compatible companion"
+      ],
+      "missing_or_conflict_behavior": {
+        "structural_identity_or_source_conflict": [
+          "applicability_unknown",
+          "decision_unavailable"
+        ],
+        "known_applicable_failed_restriction": [
+          "applicable",
+          "ineligible"
+        ],
+        "not_requested_or_disabled": [
+          "no_eligibility_proposition",
+          "not_produced"
+        ]
+      },
+      "lifecycle": [
+        "requested",
+        "effective",
+        "resolved_or_disabled_or_unavailable"
+      ],
+      "consumer_action": "admit the exact bundle to parent-row admission, or fail closed with typed causes; perform no payload arithmetic"
+    },
+    {
+      "identity": "SCI-FLT-FIXED:input_parent_row_admission@1",
+      "domain": "one exact row in S_parent_fact under one eligible bundle, frozen plan, immutable parent facts, and named FLT use",
+      "request": [
+        "not_requested",
+        "parent_row_evaluation_requested"
+      ],
+      "applicability": [
+        "applicable",
+        "not_applicable",
+        "applicability_unknown"
+      ],
+      "eligibility": [
+        "eligible_parent_row",
+        "ineligible_parent_row",
+        "no_eligibility_proposition",
+        "decision_unavailable"
+      ],
+      "realization": [
+        "admitted_for_named_use",
+        "not_admitted_for_named_use",
+        "parent_row_decision_unavailable"
+      ],
+      "restrictions": [
+        "the parent row lies in exact S_parent_fact",
+        "the parent row is admitted for this named FLT use",
+        "the parent row lies in D_m because an available finite real signal payload exists",
+        "membership in D_m is established before m_q is evaluated",
+        "every parent-row predicate passes",
+        "the decision supplies exact row admission, availability, finiteness, support, and predicates for FLT construction of J_full and S_out",
+        "finite-state classification comes from declared typed row facts, is structural screening, does not evaluate m_q, and cannot tune the plan"
+      ],
+      "decisive_exclusions": [
+        "role substitution",
+        "source identity conflict",
+        "inferred availability",
+        "inferred finiteness",
+        "output-row arithmetic support",
+        "payload transformation"
+      ],
+      "exceptions": [
+        "none; identity support and independently constructed S_out_zero belong to FLT after parent-row decisions"
+      ],
+      "missing_or_conflict_behavior": {
+        "structural_identity_or_source_conflict": [
+          "applicability_unknown",
+          "decision_unavailable"
+        ],
+        "known_failed_row_restriction": [
+          "applicable",
+          "ineligible_parent_row",
+          "not_admitted_for_named_use"
+        ],
+        "missing_or_nonfinite_parent_row": [
+          "ineligible_parent_row",
+          "not_admitted_for_named_use"
+        ]
+      },
+      "lifecycle": [
+        "resolved",
+        "parent_row_decision",
+        "decision_bound_for_flt_construction"
+      ],
+      "consumer_action": "return one immutable parent-row decision with typed causes to FLT; do not construct J_full or S_out and perform no payload arithmetic"
+    },
+    {
+      "identity": "SCI-FLT-FIXED:output_publication@1",
+      "domain": "one exact complete_publication_disposition_candidate with product_candidate or no_output_support_candidate variant",
+      "candidate_variants": {
+        "product_candidate": "complete atomic FLT product bundle with all required roles",
+        "no_output_support_candidate": "exact request, parent, plan, operator, K_req, attempted S_out construction, empty-domain proof, row/cause accounting, application generation, applied_no_scientific_output_support state, and prescribed cause; no realized FLT-SIG and no atomic bundle"
+      },
+      "request": [
+        "not_requested",
+        "base_signal",
+        "response_qualified",
+        "covariance_qualified",
+        "response_and_covariance_qualified"
+      ],
+      "applicability": [
+        "applicable",
+        "not_applicable",
+        "applicability_unknown"
+      ],
+      "eligibility": [
+        "eligible",
+        "ineligible",
+        "no_eligibility_proposition",
+        "decision_unavailable"
+      ],
+      "realization": [
+        "publisher_action_pending",
+        "applied_no_scientific_output_support",
+        "realized",
+        "realized_identity",
+        "realized_zero",
+        "realization_failed",
+        "not_produced"
+      ],
+      "restrictions": [
+        "product_candidate contains every required FLT role",
+        "no_output_support_candidate contains every exact proof and evidence field and no realized FLT-SIG",
+        "base signal contains exact response and covariance state records, which may be unavailable",
+        "response-qualified candidate has an available exact compatible response",
+        "covariance-qualified candidate has the exact declared compatible covariance representation",
+        "jointly qualified candidate satisfies both companion qualifications",
+        "FLT-NOI-COMPATIBILITY is immutable, contains no future NOI identity, and an NOI product is not required",
+        "a publication-time not-requested NOI state is historical provenance and cannot block a later independently requested compatible child"
+      ],
+      "decisive_exclusions": [
+        "partial or wrong-variant candidate",
+        "placeholder or inferred role",
+        "qualification-specific unavailable companion",
+        "failed application",
+        "identity mismatch"
+      ],
+      "exceptions": [
+        "optional companion unavailability does not block a base signal request",
+        "identity and zero use product_candidate and the publication sequence",
+        "a requested nonzero convolution with empty S_out retains applied evidence but publishes no base signal"
+      ],
+      "missing_or_conflict_behavior": {
+        "structural_identity_or_source_conflict": [
+          "applicability_unknown",
+          "decision_unavailable"
+        ],
+        "known_applicable_failed_restriction": [
+          "applicable",
+          "ineligible"
+        ],
+        "not_requested_or_disabled": [
+          "no_eligibility_proposition",
+          "not_produced"
+        ],
+        "eligible_transformation_failure": [
+          "eligible",
+          "realization_failed"
+        ],
+        "requested_nonzero_empty_scientific_output_support": {
+          "candidate": "no_output_support_candidate",
+          "application_state": "applied_no_scientific_output_support",
+          "request": "requested",
+          "applicability": "applicable",
+          "eligibility": "ineligible",
+          "realization": "not_produced",
+          "cause": "no_full_footprint_output_rows"
+        },
+        "identity_operator": [
+          "product_candidate",
+          "publisher_action",
+          "realized_identity"
+        ],
+        "zero_operator": [
+          "product_candidate",
+          "publisher_action",
+          "realized_zero"
+        ],
+        "late_noi_request": [
+          "historical_not_requested_at_FLT_publication",
+          "child_owned_lifecycle",
+          "no_flt_mutation"
+        ]
+      },
+      "lifecycle": [
+        "applied",
+        "complete_publication_disposition_candidate",
+        "product_candidate_or_no_output_support_candidate",
+        "policy_decision_artifact",
+        "publisher_action",
+        "realized_or_failed_or_not_produced"
+      ],
+      "consumer_action": "return disposition and prescribed action to the FLT publisher; the profile or VAL evaluation performs no publication, and the publisher alone realizes or declines the FLT product"
+    }
+  ],
+  "nonclaims": [
+    "Registry approval",
+    "Registry evaluation",
+    "numerical route",
+    "implementation conformity",
+    "validation",
+    "production authorization",
+    "profile registration by name"
+  ]
+}

@@ -1,0 +1,503 @@
+# SCI-FLT-FIXED v0.1 Engineering-Conformance Specification
+
+Document identity: `SCI-FLT-FIXED-ENGINEERING-CONFORMANCE v0.1/freeze-candidate`
+
+Status: implementation-blind conditional freeze-candidate conformance target; no conformity finding
+
+Scientific owner: Grant Wilson
+
+Stage B date: `2026-08-31`
+
+Normative import: the complete
+`SCI-FLT-FIXED-NORMATIVE-CORE v0.1/freeze-candidate`, source SHA-256
+`{{NORMATIVE_CORE_SHA256}}`, is incorporated without modification. This view
+adds no scientific rule. If this view and the imported core differ, the core
+controls.
+
+## 1. Conformance target and evidence boundary
+
+This specification translates the shared scientific core into observable
+engineering obligations without describing, inspecting, or judging an
+implementation. A future conformance review must bind one candidate realization
+to one exact core revision, parent generation, resolved operator generation,
+and product generation.
+
+A claim passes only when positive evidence establishes the exact required
+identity and behavior. A missing, conflicting, approximate, same-name, or
+inferred fact yields unavailable or failed status as directed by the core. A
+finite array, successful process exit, or familiar label is not sufficient.
+
+Conformance, scientific validation, calibration, performance, readiness, and
+production are separate evidence classes. This specification defines only a
+future conformance target.
+
+## 2. Required input and plan records
+
+A candidate realization must accept an immutable request record, effective
+decision, complete parent binding, and externally resolved fixed plan. The
+records must expose enough content to reconstruct and compare exact identities,
+not merely display friendly names.
+
+The parent record must distinguish MAP observation, MAP coadd, and JINC
+observation roles. It must bind the complete applicable upstream identity,
+quantity, units, nominal-beam, WCS, support, validity, response, covariance,
+null, exposure, lifecycle, failure, and provenance state. JINC requires all five
+atomic numerical roles. Upstream unavailability must remain explicit.
+
+The record must identify exactly one signal vector: the base MAP observation
+signal, base MAP coadd signal, or normalized `jinc_map`. It must retain exact
+JINC roles `jinc_signal_numerator`, `jinc_signed_normalization`,
+`jinc_quadratic_accumulator`, `jinc_map`, and
+`jinc_coefficient_squared_time`, while proving that only `jinc_map` becomes
+`FLT-SIG`. Other map-shaped roles remain separately typed facts or
+compositions.
+
+The plan record must distinguish requested, effective, disabled, unavailable,
+and resolved states. A resolved plan must identify `FLT-FIXED-CONV` as the
+sole base family, bind one exact sampled convolution, and bind every
+coefficient, parameter, coordinate domain, grid and metric fact,
+normalization, support and edge rule, transfer qualification, and provenance
+fact before application. "Externally resolved" does not transfer FLT policy
+or application ownership.
+
+The parent record must expose `S_parent_fact`, the typed fact state of every
+row, and `D_m`, the subset on which an available finite real signal payload
+exists. It must type `m : D_m -> R`; parent-shaped storage must not be treated
+as the scientific vector domain. The output must type `y : S_out -> R`.
+Membership in `D_m` must be established before a signal payload is evaluated.
+`k_Theta(r)`, `L_Theta`, and `A_Theta,J` must be real-valued. Each coefficient
+must be finite, real, unit-typed, canonically
+exactly represented, and content-bound. Missing, non-finite, complex,
+unrepresentable, or conflicting coefficients make the plan unavailable before
+application; a numerical-comparison tolerance may not repair them. A complex
+transfer `H(nu)` remains only a representation of the real operator.
+
+## 3. Operator reconstruction record
+
+`FLT-OPERATOR` must provide separate scientific-operator and representation
+identity subrecords sufficient to reconstruct the exact finite `L_Theta`,
+frozen `J_full`, and complete `A_Theta,J`. Scientific identity includes:
+
+- ordered `D_m` and `S_out` scientific domains and their relation to
+  `S_parent_fact`;
+- exact WCS, frame, topology, metric, shape, indexing, and pixel-area facts;
+- canonical offset-to-coefficient relation, exact values and units, and
+  scientific-operator digest;
+- representation-invariant `K_geom_science`, `K_nonzero`, ordinary-method
+  `K_req = K_nonzero`, canonical exact-zero
+  representation, center, extent, tie, phase, subpixel convention,
+  orientation, and handedness;
+- declared normalization, DC gain, and distinct signed, absolute, squared, and
+  geometric support summaries;
+- full-footprint predicates, exact independent `S_out_zero`, and
+  cause vocabulary;
+- qualified transfer facts or explicit unavailability; and
+- immutable plan and scientific-operator generation identifiers.
+
+The representation subrecord must separately bind nonauthoritative `K_store`,
+dense/sparse/cropped/padded encoding, field and byte ordering, compression or
+container, representation digest, and representation generation.
+
+The zero-operator record must bind `K_nonzero_zero = empty set`,
+`K_req_zero = empty set`, and independently constructed `S_out_zero` equal to
+the exact admitted finite parent-signal row domain under its request and
+predicates. It must not describe a parent row domain as a `K_req` domain or
+admit arbitrary storage rows by vacuity. A nonzero convolution is exactly one
+whose `K_nonzero` is not empty.
+
+The record must show that one product applies this exact sampled convolution
+once and makes no intermediate or reordered-composition claim. An alternate
+computational mechanism is comparable only after reconstructing the identical
+declared scientific operator. A representation-only change may create a new
+representation artifact or generation but must preserve scientific operator
+identity, FLT product identity, scientific generation, and behavior. A change
+to a canonical coefficient or other scientific fact is not representation
+equivalence and creates a new scientific transformation.
+
+## 4. Admission and application gate
+
+Bundle admission must evaluate
+`SCI-FLT-FIXED:input_bundle_admission@1` against one exact request, parent, and
+resolved plan. Parent-row admission must evaluate
+`SCI-FLT-FIXED:input_parent_row_admission@1` for every exact parent row and
+named FLT use. Each profile returns the typed request, applicability,
+eligibility, missing/conflict, action, and cause state defined by its bound
+profile. Neither performs payload arithmetic or authors output-row support.
+
+Application may proceed only for an eligible resolved route. Plan state must
+be independent of parent amplitudes. The selector must be resolved once before
+convolution arithmetic from declared immutable `S_parent_fact`, row membership,
+exact input admission, typed facts defining `D_m`, support, and required
+predicates. Establishing an authorized required location's membership in
+`D_m` is structural screening and must not evaluate `m_q` or tune the plan.
+For every output row, FLT verifies all `K_req` locations against those exact
+facts. The scientific row domain must equal the passing set.
+Response perturbations, covariance draws, noise realizations, and NOI members
+must reuse that selector; a member failure produces row unavailability, not
+re-selection.
+
+No extension, periodic wrap, truncation, local renormalization, inpainting,
+reflection, clamp, mirror, padding-based admission, edge completion, or value
+replacement is conforming in v0.1. Rows failing the full-footprint gate remain
+unavailable with causes, even if a storage payload is finite.
+
+Dense, sparse, cropped, and zero-padded encodings of one canonical kernel may
+have different representation identities but must reconstruct identical
+scientific operator and FLT product identities, scientific generation,
+support, row admission, response, and covariance. Only representation facts,
+including `K_store`, may differ. Ordinary convolution
+arithmetic must traverse exactly `K_nonzero = K_req`, not
+`K_geom_science`. An exact-zero offset creates no arithmetic, payload,
+influence, covariance, or admission dependency, and its parent payload must
+not be evaluated or dereferenced.
+
+A requested nonzero convolution with empty `S_out` must retain its application
+evidence as `applied_no_scientific_output_support` and construct a complete
+`no_output_support_candidate` with the required attempted-domain proof and no
+realized `FLT-SIG` or atomic bundle. For publication, request must be
+requested, applicability applicable, eligibility ineligible, realization
+`not_produced`, and cause `no_full_footprint_output_rows`. It must not relabel
+the state as not requested, disabled, failed execution, decision unavailable,
+identity, or zero.
+
+## 5. Signal, response, transfer, mode, and influence records
+
+Application must compute `FLT-SIG` from the exact resolved operator on the
+exact scientific row ordering. The output-unit record must derive units from
+parent and coefficient units and retain the originating nominal-beam and
+calibration lineage without introducing a filtered-beam label.
+
+Each response record must name fixed-state linear, already realized parent-
+grid, parent full-procedure finite difference with FLT fixed, or FLT re-
+resolved procedure family. The first three must apply the identical frozen
+`A_Theta,J` exactly once; the fourth is outside v0.1. A full-procedure
+difference must bind compatible baseline and perturbed membership,
+availability, WCS, quantity, and support on the frozen required domain. A
+mismatch retains the parent state change, does not re-resolve `J_full`, and
+makes affected response rows unavailable. Missing basis, domain, or
+parent-response identity is explicitly unavailable. The exact zero operator
+records its local zero derivative without promoting it to an unavailable
+complete source response. Kernel-only, approximate, multiply applied,
+differently centered, differently normalized, or differently edged surrogates
+do not pass.
+
+Transfer and mode records must bind the exact coordinate domain, WCS metric,
+transform sign and normalization, coordinate/frequency units, origin,
+ordering, signed/Nyquist treatment, frequency grid, response quantity,
+attenuation units, band geometry, phase branch, finite-grid domain, null,
+invariant, anisotropy, and attenuation facts that are scientifically defined. They must
+distinguish sampled-kernel transfer from the complete row-restricted operator.
+Unsupported facts remain unavailable. Influence exposes the parent-row
+coefficient relation; `FLT-EXPOSURE-LINEAGE` binds parent exposure identity or
+typed absence and confirms that neither influence nor a convolved exposure
+plane is physical exposure.
+
+## 6. Covariance and NOI records
+
+For an available compatible parent covariance, a covariance-qualified candidate
+must realize the exact two-sided frozen-operator propagation on `S_out`. Its
+record must state parent stochastic authority separately from output
+representation and name the conditional model, omitted terms, excluded
+selection/kernel/beam/WCS/calibration/model uncertainties, domain, ordering,
+rank, null space, and supported operations.
+
+If an explicitly diagonal parent covariance is propagated, any complete output
+representation must include induced cross-row covariance. A marginal-only
+representation must say so. Missing cross terms may not be encoded as zero or
+independence. For marginal-only parent authority, a row with exactly one
+nonzero coefficient has the exact conditional marginal
+`A_ij^2 Var(m_j)`; a row mixing two or more parent variables remains
+unavailable or explicitly partial. The one-sparse result authorizes no
+cross-row covariance or independence. The exact-zero row keeps its separately
+typed zero parent-payload contribution. Structured or partial authority permits
+only proved-exact operations. Any diagonal-contribution diagnostic must avoid
+variance, covariance, uncertainty, and precision labels.
+
+`FLT-NOI-COMPATIBILITY` must be immutable publication-time FLT state containing
+no future NOI identity. A later NOI child references FLT; an optional reverse
+relation is separately versioned and cannot mutate FLT. Every admitted NOI
+member must receive the identical frozen `A_Theta,J`; member footprint failure
+is unavailable. The route rejects filtering uncertainty-like products,
+approximate transfer, relocation, commutation, substitution, and any per-member
+re-resolution.
+
+A `not_requested_at_FLT_publication` state is historical provenance only. It
+must not block a later independently requested compatible NOI child, whose
+request, applicability, eligibility, realization, generation, and failure are
+child-owned and cannot mutate FLT.
+
+## 7. Atomic publication and lifecycle records
+
+Publication policy must evaluate `SCI-FLT-FIXED:output_publication@1` against
+one exact `complete_publication_disposition_candidate`. A `product_candidate`
+contains all required roles from the imported core, including request-specific
+honest unavailable companion records. A `no_output_support_candidate`
+contains the exact request, parent, plan, operator, `K_req`, attempted output-
+domain construction, empty-domain proof, row/cause accounting, application
+generation, applied-no-support state, and prescribed cause, but no realized
+`FLT-SIG` and no atomic bundle. A partial candidate, placeholder, or inferred
+companion fails publication. The policy defines disposition and prescribed
+action. VAL may produce a decision artifact but performs no publication. The
+FLT publisher performs or declines the action and owns final realization and
+local validity.
+
+Lifecycle evidence must distinguish `not_requested`, `requested`, `effective`,
+`disabled`, `unavailable`, `resolved`, `applied`,
+`applied_no_scientific_output_support`,
+`complete_publication_disposition_candidate`, `product_candidate`,
+`no_output_support_candidate`, `publication_decision`, `not_produced`,
+`realization_failed`, `failed`, `realized_identity`, `realized_zero`,
+`realized`, and `superseded`. Disabled is not produced. Identity and zero use
+the same candidate and decision sequence. Required failure propagates and
+emits no complete product.
+
+Every product must bind immutable parent, plan, scientific operator,
+representation, output, companion, cause, lifecycle, failure, and provenance
+generations. A scientific-identity change creates a new scientific generation;
+a representation-only change does not. A later NOI child or reverse relation
+is separate and cannot mutate an existing FLT bundle.
+
+## 8. Requirement conformance matrix
+
+The following matrix routes every stable core requirement to a future
+observable conformance decision. The exact normative text remains in the
+imported core.
+
+- `SCI-FLT-FIXED-REQ-001`: verify package, tranche, convolution-only base, and
+  qualified low-pass subtype identity; reject arbitrary-linear or inference-
+  bearing identity.
+- `SCI-FLT-FIXED-REQ-002`: reconstruct `A`, `S_parent_fact`, `D_m`, and `S_out`;
+  verify typed partial functions and no additive term or dependency.
+- `SCI-FLT-FIXED-REQ-003`: verify exactly one supported immutable parent role.
+- `SCI-FLT-FIXED-REQ-004`: verify complete applicable parent fields and atomic
+  JINC roles.
+- `SCI-FLT-FIXED-REQ-005`: verify upstream unavailability remains fail-closed.
+- `SCI-FLT-FIXED-REQ-006`: verify observation, coadd, and JINC successor
+  identities and absence of FLT coaddition or inferred commutation.
+- `SCI-FLT-FIXED-REQ-007`: verify all plan and selector state predates payload
+  arithmetic, plan state is amplitude-independent, selector structural
+  screening uses only authorized parent facts, `D_m` membership precedes
+  payload evaluation, and companions do not re-resolve the selector.
+- `SCI-FLT-FIXED-REQ-008`: compare exact WCS and grid facts and reject
+  approximate joins or resampling.
+- `SCI-FLT-FIXED-REQ-009`: reconstruct separate scientific-operator and
+  representation identities, digests, generations, support sets, and domains;
+  compare exact representation invariance.
+- `SCI-FLT-FIXED-REQ-010`: verify one-time convolution construction from the
+  exact sampled kernel over `K_nonzero = K_req`, without geometric exact-zero,
+  intermediate, or reordered terms.
+- `SCI-FLT-FIXED-REQ-011`: verify every low-pass transfer fact or mark only the
+  qualification unavailable.
+- `SCI-FLT-FIXED-REQ-012`: recompute the full-footprint row set from
+  `S_parent_fact`, `D_m`, `K_req = K_nonzero`, and predicates independently of
+  geometric or storage zeros, including membership-before-evaluation.
+- `SCI-FLT-FIXED-REQ-013`: verify all excluded rows are unavailable with
+  causes, never promoted by storage shape.
+- `SCI-FLT-FIXED-REQ-014`: detect and reject every deferred edge or replacement
+  method.
+- `SCI-FLT-FIXED-REQ-015`: verify transformed-amplitude identity and exact unit
+  derivation without amplitude-category relabeling.
+- `SCI-FLT-FIXED-REQ-016`: verify nominal-beam and CAL lineage retention and
+  absence of unsupported beam or flux claims.
+- `SCI-FLT-FIXED-REQ-017`: identify the response family, compare its one-time
+  frozen-operator composition, or verify honest unavailability.
+- `SCI-FLT-FIXED-REQ-018`: verify finite-domain transfer, mode, and phase facts
+  or explicit unavailable states without whole-chain promotion.
+- `SCI-FLT-FIXED-REQ-019`: compare influence to coefficients, verify it is not
+  exposure, and verify exact exposure-lineage state.
+- `SCI-FLT-FIXED-REQ-020`: verify distinct computability, support, admission,
+  validity, confidence, and downstream states.
+- `SCI-FLT-FIXED-REQ-021`: compare covariance to exact two-sided propagation.
+- `SCI-FLT-FIXED-REQ-022`: verify separate parent-authority and output-
+  representation axes, conditional model, exclusions, and unknown cross-term
+  handling.
+- `SCI-FLT-FIXED-REQ-023`: test induced off-diagonal terms and reject marginal
+  planes presented as complete covariance.
+- `SCI-FLT-FIXED-REQ-024`: verify empirical uncertainty and significance are
+  absent from FLT ownership.
+- `SCI-FLT-FIXED-REQ-025`: compare every NOI member's full operator state to
+  the signal state.
+- `SCI-FLT-FIXED-REQ-026`: detect and reject per-member selection or
+  re-resolution.
+- `SCI-FLT-FIXED-REQ-027`: verify every atomic role, exposure lineage, allowed
+  honest unavailable record, and immutable NOI-compatibility role without a
+  future NOI identity or completion dependency.
+- `SCI-FLT-FIXED-REQ-028`: verify both complete publication-disposition
+  candidate variants before decision, including causes, failures, and
+  generation bindings.
+- `SCI-FLT-FIXED-REQ-029`: test distinct disabled, identity, and zero outcomes.
+- `SCI-FLT-FIXED-REQ-030`: mutate scientific and representation facts
+  separately; verify only scientific changes create a new FLT identity and
+  scientific generation, and verify NOI nonmutation.
+- `SCI-FLT-FIXED-REQ-031`: remove or conflict each required fact and verify
+  fail-closed behavior without fallback.
+- `SCI-FLT-FIXED-REQ-032`: evaluate distinct bundle and exact parent-row
+  admission request, applicability, eligibility, unavailable, exclusion, and
+  cause branches while FLT constructs output support.
+- `SCI-FLT-FIXED-REQ-033`: evaluate both exact publication-candidate variants,
+  disposition, axes, prescribed action, honest-unavailable, partial, disabled,
+  identity, zero, and failed branches; verify the publisher acts.
+- `SCI-FLT-FIXED-REQ-034`: verify VAL only binds or evaluates an immutable
+  approved policy and authors no FLT fact, arithmetic, publication, or
+  realization.
+- `SCI-FLT-FIXED-REQ-035`: verify no generic downstream admission follows from
+  product availability.
+- `SCI-FLT-FIXED-REQ-036`: verify every excluded family and every Stage B
+  nonclaim remains outside the product claim set.
+- `SCI-FLT-FIXED-REQ-037`: freeze `J_full` once and verify identical selector
+  reuse, plan amplitude-independence, `S_parent_fact`/`D_m` screening before
+  payload evaluation, and exclusion of unsupplied selection uncertainty.
+- `SCI-FLT-FIXED-REQ-038`: verify `K_geom_science`, `K_store`, `K_nonzero`,
+  ordinary `K_req = K_nonzero`, exact-zero, identity, and zero's empty support
+  sets with independently constructed `S_out_zero`.
+- `SCI-FLT-FIXED-REQ-039`: evaluate all three typed policy objects and each
+  request-specific companion qualification.
+- `SCI-FLT-FIXED-REQ-040`: distinguish every response family and prevent local
+  zero derivative from becoming an unsupported complete response claim.
+- `SCI-FLT-FIXED-REQ-041`: verify exactly one sampled convolution application
+  and absence of composition, collapse, or reordering claims.
+- `SCI-FLT-FIXED-REQ-042`: verify preregistered numerical comparison fields,
+  frozen bounds, independent oracle, and nonclaim boundary.
+- `SCI-FLT-FIXED-REQ-043`: verify exact inherited exposure lineage and reject
+  influence or convolved exposure as physical exposure.
+- `SCI-FLT-FIXED-REQ-044`: verify external timing while retaining exact
+  FLT-owned plan, selector, application, and publication ownership.
+- `SCI-FLT-FIXED-REQ-045`: verify only the exact parent signal role becomes
+  `FLT-SIG` and all JINC diagnostics, support, validity, exposure, response,
+  and covariance retain their typed routes.
+- `SCI-FLT-FIXED-REQ-046`: exercise every covariance-authority row and reject
+  unproved marginal, structured, partial, or unavailable strengthening while
+  admitting only the exact one-sparse conditional marginal edge case.
+- `SCI-FLT-FIXED-REQ-047`: inspect immutable `FLT-NOI-COMPATIBILITY` content
+  and prove a publication-time not-requested state does not block a later
+  independent child and that children and reverse relations do not mutate FLT.
+- `SCI-FLT-FIXED-REQ-048`: verify bundle/parent-row profile decisions, FLT
+  selector construction, both publication candidate variants and axes, VAL
+  decision-artifact boundary, and publisher action.
+- `SCI-FLT-FIXED-REQ-049`: compare every bound low-pass transform convention
+  and reject a complete but different convention.
+- `SCI-FLT-FIXED-REQ-050`: compare full-procedure parent domains and verify
+  mismatch unavailability without selector re-resolution.
+- `SCI-FLT-FIXED-REQ-051`: reproduce every authority-manifest path, byte count,
+  SHA-256, role, authority state, compatibility or supersession state, and
+  generated-view relation or route the dependent claim to unavailability.
+- `SCI-FLT-FIXED-REQ-052`: verify `m : D_m -> R`, `y : S_out -> R`, and reject every
+  missing, non-finite, complex, unrepresentable, or conflicting coefficient
+  before application without tolerance repair.
+- `SCI-FLT-FIXED-REQ-053`: exercise empty `S_out` for a requested nonzero
+  convolution and verify the exact no-output-support candidate, four axes,
+  cause, retained evidence, and forbidden relabelings.
+
+## 9. Falsifiable prediction suite
+
+Each future prediction evaluation must bind exact inputs, operator state,
+expected row domain, expected companions, expected lifecycle, comparison
+semantics, and causes before execution. The normative expected outcomes are in
+the imported core.
+
+- `SCI-FLT-FIXED-PRED-001`: identity operator and identity lifecycle.
+- `SCI-FLT-FIXED-PRED-002`: zero operator with empty arithmetic/dependency sets,
+  independent `S_out_zero`, local zero derivative and covariance, and honest
+  unavailable complete response.
+- `SCI-FLT-FIXED-PRED-003`: scalar input linearity on one frozen selector.
+- `SCI-FLT-FIXED-PRED-004`: constant input under exact DC gain and every
+  authorized normalization.
+- `SCI-FLT-FIXED-PRED-005`: impulse, center, orientation, phase, indexing, and
+  exact-nonzero arithmetic support.
+- `SCI-FLT-FIXED-PRED-006`: exact separately typed response-family
+  composition with one frozen operator application.
+- `SCI-FLT-FIXED-PRED-007`: signed coefficients and distinct support summaries.
+- `SCI-FLT-FIXED-PRED-008`: zero-sum constant-mode null without claim
+  promotion.
+- `SCI-FLT-FIXED-PRED-009`: typed-domain full-footprint inclusion, dependent-
+  row removal, representation invariance, and exact-zero no-dereference.
+- `SCI-FLT-FIXED-PRED-010`: rejection of every deferred edge and replacement
+  method, including support-conditioned renormalization.
+- `SCI-FLT-FIXED-PRED-011`: `S_parent_fact`/`D_m` exclusion of missing,
+  unavailable, non-admitted, and non-finite required locations.
+- `SCI-FLT-FIXED-PRED-012`: exact complete covariance on ordered `S_out`.
+- `SCI-FLT-FIXED-PRED-013`: induced cross-row covariance conditional on an
+  explicit independent-diagonal parent model.
+- `SCI-FLT-FIXED-PRED-014`: unavailable parent response or covariance and
+  rejection of surrogates.
+- `SCI-FLT-FIXED-PRED-015`: exact WCS and grid mismatch failure.
+- `SCI-FLT-FIXED-PRED-016`: distinct observation, coadd, and JINC identities
+  with no FLT coadd product.
+- `SCI-FLT-FIXED-PRED-017`: exact frozen-selector NOI member parity and
+  member-level unavailable footprint state.
+- `SCI-FLT-FIXED-PRED-018`: per-member re-resolution rejection.
+- `SCI-FLT-FIXED-PRED-019`: disabled, identity, zero, and failure lifecycle
+  distinctions.
+- `SCI-FLT-FIXED-PRED-020`: upstream unavailable MAP and JINC route.
+- `SCI-FLT-FIXED-PRED-021`: low-pass qualification completeness.
+- `SCI-FLT-FIXED-PRED-022`: exact-zero support plus distinct dense/sparse
+  representation identities with identical scientific and product identity.
+- `SCI-FLT-FIXED-PRED-023`: zero-operator empty support sets and independent
+  admitted finite parent-signal output domain.
+- `SCI-FLT-FIXED-PRED-024`: independent exact sampled low-pass transfer under
+  the identical complete transform convention.
+- `SCI-FLT-FIXED-PRED-025`: rejection of every non-signal parent role as
+  ordinary-method `FLT-SIG`.
+- `SCI-FLT-FIXED-PRED-026`: filtered-variance sensitivity to parent cross
+  terms with identical marginal diagonals plus one-sparse, two-sparse, and
+  exact-zero marginal-only fixtures.
+- `SCI-FLT-FIXED-PRED-027`: later NOI child and reverse-relation nonmutation of
+  the immutable FLT bundle, including a late request after publication-time
+  not-requested provenance.
+- `SCI-FLT-FIXED-PRED-028`: full-procedure response domain incompatibility and
+  frozen-selector preservation.
+- `SCI-FLT-FIXED-PRED-029`: complete no-output-support candidate, retained
+  evidence, exact publication axes and cause, and forbidden relabelings.
+- `SCI-FLT-FIXED-PRED-030`: invalid-coefficient rejection before application
+  with no numerical-tolerance repair.
+
+## 10. Numerical-comparison evidence record
+
+A future candidate comparison must bind one immutable policy before results are
+observed. The evidence record must identify its independent exact or high-
+precision oracle; absolute, relative, and near-zero rules; signed-cancellation
+and zero-sum cases; conditioning and operation-count dependence; covariance
+comparison; sequential and parallel agreement; overflow, underflow, and non-
+finite handling; simultaneous row decisions; lifecycle; and provenance.
+
+The record must prove that bounds were not changed after a failure and that
+scientific coefficients and identity remained exact. Passing such a policy
+would be future conformance evidence only. This specification supplies no
+candidate result, numerical-adequacy finding, validation, or performance claim.
+
+## 11. Traceability, identity, and reproducibility record
+
+`TRACEABILITY.json` maps every requirement and prediction identifier to its
+normative-core section, scientist-rationale section, engineering-conformance
+section, exact admitted Stage A object sections, and exact r0.2, r0.3, r0.4,
+and final owner-directive sections where a revision changes semantics. The
+durable verifier must reject
+missing, duplicate, extra, malformed, or unadmitted trace entries.
+
+`BUILD_BINDING.json` records the packet manifest binding, all 17 admitted
+object hashes and byte counts, exact r0.2, r0.3, r0.4, and final owner-
+directive bindings, every Stage B source and build-tool hash, deterministic build environment, output PDF
+identities, page counts, byte sizes, and SHA-256 digests. The source-closure,
+owner-decision parity, core/view parity, semantic-change, profile, rebuild, and
+visual-QA records are required. A clean separate rebuild must reproduce the
+three PDF digests exactly.
+
+`AUTHORITY_MANIFEST.json` is the single conditional-freeze-candidate entry
+point. It binds the Stage A packet, all four directives, boundaries, policy and numerical
+drafts, traceability, build binding, closure/parity/change/profile/rebuild/
+visual reports, all sources, tools, and PDFs by exact path, bytes, SHA-256,
+scientific/process/representation role, authority state, compatibility or
+supersession state, and generated-view relation. Its own external digest
+provides the single entry point without a self-hash.
+
+PDF text must expose the document identity, exact source digest, exact shared
+core digest, exact packet-manifest digest, and exact builder digest. PDF page
+rendering and visual QA are required in addition to content and hash checks.
+
+## 12. Nonclaims
+
+This conformance specification does not identify, inspect, modify, or judge an
+implementation. It records no implementation conformity, algorithm change,
+validation result, calibration state, achieved response or covariance,
+numerical adequacy, performance, readiness, scientific freeze, production
+status, or Unity activity.

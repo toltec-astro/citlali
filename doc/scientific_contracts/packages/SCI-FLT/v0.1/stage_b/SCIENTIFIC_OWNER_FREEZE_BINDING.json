@@ -1,0 +1,124 @@
+{
+  "authorization": {
+    "character": "explicit scientific-owner approval recorded in the current Codex task; not a cryptographic signature",
+    "verbatim_statement": "Let's freeze this candidate"
+  },
+  "candidate": {
+    "branch": "codex/sci-flt-fixed-v0.1-stage-b",
+    "commit": "43f4fe59ab23a591c1c9e17a2ac4b1fed0a9e613",
+    "commit_tree": "09b845d0baf5bfec0f1c904989dc5d79b78c0ad1",
+    "proposal": {
+      "bytes": 2104,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/PROPOSED_FREEZE_DISPOSITION.md",
+      "sha256": "f5fd7abadb435f4de414f9087153fce96feaa9700f31be269c7a78ef8a35dfed"
+    }
+  },
+  "candidate_bindings": {
+    "authority_manifest": {
+      "bytes": 36511,
+      "entry_count": 61,
+      "external_digest_file": {
+        "bytes": 90,
+        "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/AUTHORITY_MANIFEST.sha256",
+        "sha256": "175e8821f400a297894832285b0aa89d06df5821c2c68608b35c3ad30f8bb1cf"
+      },
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/AUTHORITY_MANIFEST.json",
+      "sha256": "69e6766f26396ba843ee29cfb89a48efd91b7e1b517ed90d3d93c87a63e55778"
+    },
+    "build_binding": {
+      "bytes": 16419,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/BUILD_BINDING.json",
+      "sha256": "394af9834e6452ca3a17bc56d2d3ce66101fe82338b427be4320e5c2aca256de"
+    },
+    "stage_a_author_packet_manifest": {
+      "admitted_object_count": 17,
+      "bytes": 5199,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/AUTHOR_PACKET_MANIFEST.md",
+      "sha256": "7f2d03f182258ac9770f7dba869e9ae0b5018efdcdb93b18b299a9b9c6df1e4d"
+    }
+  },
+  "effective_date": "2026-08-31",
+  "freeze_record": {
+    "bytes": 3806,
+    "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/SCIENTIFIC_OWNER_FREEZE_RECORD.md",
+    "sha256": "ad00d2895982c2d26000fffb33a2dc73c716ea425f03a2a96b684563b2dfaf39"
+  },
+  "freeze_state": "conditionally_scientifically_frozen",
+  "frozen_scope": [
+    "fixed-convolution scientific method",
+    "exact product, response, covariance, support, lifecycle, identity-layer, and cross-package boundary meanings",
+    "exact typed unavailable routes"
+  ],
+  "immutable_target_rule": "The 61 manifest-bound candidate objects at the candidate commit are immutable. Scientific change requires a successor candidate, complete new bindings and verification, and a new explicit scientific-owner action.",
+  "nonclaims": [
+    "implementation conformity",
+    "algorithm change",
+    "achieved response or covariance",
+    "numerical adequacy",
+    "validation",
+    "calibration",
+    "observational performance",
+    "readiness",
+    "production suitability",
+    "production authorization",
+    "Unity activity"
+  ],
+  "package": "SCI-FLT-FIXED",
+  "record_identity": "SCI-FLT-FIXED-SCIENTIFIC-OWNER-FREEZE v0.1/conditional",
+  "rendered_views": [
+    {
+      "bytes": 126362,
+      "identity": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/freeze-candidate",
+      "pages": 22,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/output/pdf/SCI-FLT-FIXED-v0.1-NORMATIVE-CORE-freeze-candidate.pdf",
+      "sha256": "03390e2a8726867f1257cc50321af2c4f3f8186c8a3e4fa436e49d5df91a37ca"
+    },
+    {
+      "bytes": 81325,
+      "identity": "SCI-FLT-FIXED-SCIENTIST-RATIONALE v0.1/freeze-candidate",
+      "pages": 7,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/output/pdf/SCI-FLT-FIXED-v0.1-SCIENTIST-RATIONALE-freeze-candidate.pdf",
+      "sha256": "881a260459a707493303d2130490af2a8f2351e7564758ecb2558b582adbec76"
+    },
+    {
+      "bytes": 87340,
+      "identity": "SCI-FLT-FIXED-ENGINEERING-CONFORMANCE v0.1/freeze-candidate",
+      "pages": 9,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/output/pdf/SCI-FLT-FIXED-v0.1-ENGINEERING-CONFORMANCE-freeze-candidate.pdf",
+      "sha256": "5b1a20ee16059d83f87c0a9004bbec6f9184881c7ea90edf8f9c046b074bb78e"
+    }
+  ],
+  "schema_version": "1.0",
+  "scientific_owner": "Grant Wilson",
+  "shared_normative_core": {
+    "bytes": 72389,
+    "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/source/SHARED_NORMATIVE_CORE.md",
+    "sha256": "7147d242f54d64ca80f6d3a17d309c65f75180457629fed62ce676da93b11089"
+  },
+  "tranche": "SCI-FLT",
+  "unavailable_state_boundaries": [
+    "ordinary numerical MAP parent remains unavailable",
+    "ordinary numerical JINC parent remains unavailable",
+    "FLT profiles remain unregistered",
+    "no Registry evaluation or numerical route is created",
+    "SCI-FLT-INF remains unauthorized"
+  ],
+  "verification_evidence": [
+    {
+      "bytes": 3531,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/VERIFICATION_REPORT.md",
+      "sha256": "d6026345ec6f1ec636735aeac48c0aeb370ae7c8f0c26b3c726a2d032d43b08d"
+    },
+    {
+      "bytes": 971,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/REBUILD_REPORT.md",
+      "sha256": "8134c25ebdf44e4f9375c6c76081e9be5845fb35702927e81e6f415d90712bfe"
+    },
+    {
+      "bytes": 8642,
+      "path": "doc/scientific_contracts/packages/SCI-FLT/v0.1/stage_b/VISUAL_QA.md",
+      "sha256": "65303d136295ec5b92b6ff2598672fcc9a6423568022e10ee1606bc5d98aff50"
+    }
+  ],
+  "version": "v0.1"
+}

@@ -1,0 +1,993 @@
+{
+  "schema_version": "1.0",
+  "document_identity": "SCI-FLT-FIXED-TRACEABILITY v0.1/freeze-candidate",
+  "normative_core_identity": "SCI-FLT-FIXED-NORMATIVE-CORE v0.1/freeze-candidate",
+  "authority_rule": "The 17 exact objects admitted by AUTHOR_PACKET_MANIFEST.md remain the Stage A scientific authority; OWNER_DIRECTIVE_R0_2.txt, OWNER_DIRECTIVE_R0_3.txt, OWNER_DIRECTIVE_R0_4.txt, and OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt supply the exact later owner decisions; no other scientific source is admitted.",
+  "entries": [
+    {
+      "id": "SCI-FLT-FIXED-REQ-001",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-001 - Package identity",
+      "rationale_section": "1. The scientific question",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCOPE_BRIEF.md#Package And Tranche Decision",
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-101 - Package Split And Name",
+        "AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md#Package Identity"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-002",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-002 - Strict linearity",
+      "rationale_section": "2. Why strict linearity is the base object",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-102A - Strict Linear Base",
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Fixed Linear Transformation"
+      ],
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#1. TYPE THE PARENT FACT DOMAIN AND NUMERICAL SIGNAL DOMAIN"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-003",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-003 - Exact parent role",
+      "rationale_section": "8. Parent identity and ordering",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-103 - Parent And Ordering",
+        "AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md#Parent Roles"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-004",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-004 - Complete parent identity",
+      "rationale_section": "8. Parent identity and ordering",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCI-MAP_TO_SCI-FLT-FIXED_BOUNDARY.md#Parent Roles",
+        "SCI-JINC_TO_SCI-FLT-FIXED_BOUNDARY.md#Exact Parent Role"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-005",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-005 - Honest upstream availability",
+      "rationale_section": "8. Parent identity and ordering",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCI-MAP_TO_SCI-FLT-FIXED_BOUNDARY.md#Current Numerical Availability",
+        "SCI-JINC_TO_SCI-FLT-FIXED_BOUNDARY.md#Current Numerical Availability"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-006",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-006 - Parent ordering",
+      "rationale_section": "8. Parent identity and ordering",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "OBSERVATION_COADD_NONCOMMUTATION_TABLE.md#SCI-FLT-FIXED v0.1 Observation And Coadd Noncommutation Table",
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Coaddition And Ordering"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-007",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-007 - External fixed resolution",
+      "rationale_section": "2. Why strict linearity is the base object",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Fixed Convolution Family",
+        "NORMALIZATION_UNIT_BEAM_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Normalization, Unit, Beam, And Low-Pass Table"
+      ],
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#2. SEPARATE PLAN INDEPENDENCE FROM PARENT-FACT SELECTOR RESOLUTION",
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#1. TYPE THE PARENT FACT DOMAIN AND NUMERICAL SIGNAL DOMAIN"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-008",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-008 - Same-grid boundary",
+      "rationale_section": "3. Fixed convolution and the low-pass qualification",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "WCS_KERNEL_DISCRETIZATION_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 WCS, Kernel, And Discretization Decision Table",
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Complete Realized Operator"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-009",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-009 - Complete operator identity",
+      "rationale_section": "3. Fixed convolution and the low-pass qualification",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Complete Realized Operator",
+        "WCS_KERNEL_DISCRETIZATION_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 WCS, Kernel, And Discretization Decision Table"
+      ],
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#1. REPAIR THE CONVOLUTION SUMMATION DOMAIN",
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#3. SEPARATE SCIENTIFIC OPERATOR IDENTITY FROM STORAGE REPRESENTATION"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-010",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-010 - Fixed convolution construction",
+      "rationale_section": "3. Fixed convolution and the low-pass qualification",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md#FLT-FIXED-CONV",
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Fixed Convolution Family"
+      ],
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#1. REPAIR THE CONVOLUTION SUMMATION DOMAIN"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-011",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-011 - Low-pass qualification",
+      "rationale_section": "3. Fixed convolution and the low-pass qualification",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-102B - Fixed Low-Pass Scope",
+        "NORMALIZATION_UNIT_BEAM_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Normalization, Unit, Beam, And Low-Pass Table"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-012",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-012 - Full-footprint admission",
+      "rationale_section": "4. Why the full-footprint rule is the sole v0.1 edge method",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-104 - Full-Footprint-Only Method",
+        "EDGE_MISSING_NONFINITE_METHOD_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Edge, Missing, And Non-Finite Method Table"
+      ],
+      "r0_4_owner_sources": [
+        "OWNER_DIRECTIVE_R0_4.txt#1. REPAIR THE CONVOLUTION SUMMATION DOMAIN",
+        "OWNER_DIRECTIVE_R0_4.txt#2. SEPARATE PLAN INDEPENDENCE FROM PARENT-FACT SELECTOR RESOLUTION"
+      ],
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#1. TYPE THE PARENT FACT DOMAIN AND NUMERICAL SIGNAL DOMAIN"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-013",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-013 - Unavailable row semantics",
+      "rationale_section": "4. Why the full-footprint rule is the sole v0.1 edge method",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Full-Footprint Scientific Domain",
+        "EDGE_MISSING_NONFINITE_METHOD_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Edge, Missing, And Non-Finite Method Table"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-014",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-014 - Sole edge method",
+      "rationale_section": "4. Why the full-footprint rule is the sole v0.1 edge method",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "EDGE_MISSING_NONFINITE_METHOD_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Edge, Missing, And Non-Finite Method Table",
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-104 - Full-Footprint-Only Method"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-015",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-015 - Output quantity and units",
+      "rationale_section": "5. What the transformed amplitude does and does not mean",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-105 - Transformed Amplitude And Response",
+        "NORMALIZATION_UNIT_BEAM_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Normalization, Unit, Beam, And Low-Pass Table"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-016",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-016 - Beam and calibration boundary",
+      "rationale_section": "5. What the transformed amplitude does and does not mean",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCI-MAP_TO_SCI-FLT-FIXED_BOUNDARY.md#Quantity, Units, Beam, And Exposure",
+        "NORMALIZATION_UNIT_BEAM_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Normalization, Unit, Beam, And Low-Pass Table"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-017",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-017 - Response composition",
+      "rationale_section": "6. Response, beam, transfer, and modes",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Response Propagation",
+        "RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md#SCI-FLT-FIXED v0.1 Response, Null-Space, And Covariance Product Table"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-018",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-018 - Transfer and mode state",
+      "rationale_section": "6. Response, beam, transfer, and modes",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md#SCI-FLT-FIXED v0.1 Response, Null-Space, And Covariance Product Table",
+        "FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md#Atomic Product Bundle"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-019",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-019 - Influence is not exposure",
+      "rationale_section": "6. Response, beam, transfer, and modes",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCI-MAP_TO_SCI-FLT-FIXED_BOUNDARY.md#Quantity, Units, Beam, And Exposure",
+        "RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md#SCI-FLT-FIXED v0.1 Response, Null-Space, And Covariance Product Table"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-020",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-020 - Distinct support and validity states",
+      "rationale_section": "4. Why the full-footprint rule is the sole v0.1 edge method",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "EDGE_MISSING_NONFINITE_METHOD_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Edge, Missing, And Non-Finite Method Table",
+        "FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md#Atomic Product Bundle"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-021",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-021 - Deterministic covariance propagation",
+      "rationale_section": "7. Formal covariance and empirical uncertainty",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-106 - Covariance And NOI",
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Fixed Linear Transformation"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-022",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-022 - Covariance state honesty",
+      "rationale_section": "7. Formal covariance and empirical uncertainty",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md#SCI-FLT-FIXED v0.1 Response, Null-Space, And Covariance Product Table",
+        "AUTHOR_CONVENTIONS_AND_OWNERSHIP.md#Required Conventions"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-023",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-023 - Induced covariance",
+      "rationale_section": "7. Formal covariance and empirical uncertainty",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Fixed Discrete Convolution",
+        "RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md#SCI-FLT-FIXED v0.1 Response, Null-Space, And Covariance Product Table"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-024",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-024 - Empirical uncertainty ownership",
+      "rationale_section": "7. Formal covariance and empirical uncertainty",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-106 - Covariance And NOI",
+        "SCI-FLT-FIXED_TO_SCI-NOI_BOUNDARY.md#Product And Claim Boundary"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-025",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-025 - Fixed-state NOI parity",
+      "rationale_section": "7. Formal covariance and empirical uncertainty",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCI-FLT-FIXED_TO_SCI-NOI_BOUNDARY.md#Fixed-State NOI Parity",
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#SCI-NOI Attachment"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-026",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-026 - Relearning rejection",
+      "rationale_section": "7. Formal covariance and empirical uncertainty",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCI-FLT-FIXED_TO_SCI-NOI_BOUNDARY.md#Relearned And Inference-Bearing Exclusion",
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-107 - Inference-Bearing Methods And Failure"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-027",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-027 - Atomic product roles",
+      "rationale_section": "9. Lifecycle, atomicity, and honest absence",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md#Atomic Product Bundle",
+        "AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md#Product Roles"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-028",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-028 - Lifecycle",
+      "rationale_section": "9. Lifecycle, atomicity, and honest absence",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md#Lifecycle States",
+        "FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md#Generation Rules"
+      ],
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#4. CLOSE THE EMPTY-SUPPORT PUBLICATION OBJECT AND FOUR AXES"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-029",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-029 - Disabled, identity, and zero states",
+      "rationale_section": "9. Lifecycle, atomicity, and honest absence",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md#Lifecycle States",
+        "SCI_FLT_VAL_PROFILE_DRAFTS.md#SCI-FLT-FIXED:output_publication@1"
+      ],
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#2. TYPE THE ZERO OPERATOR WITHOUT OVERLOADING K_req"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-030",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-030 - Generation identity",
+      "rationale_section": "9. Lifecycle, atomicity, and honest absence",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md#Generation Rules",
+        "AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md#Identity Rules"
+      ],
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#3. SEPARATE SCIENTIFIC OPERATOR IDENTITY FROM STORAGE REPRESENTATION"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-031",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-031 - Failure and fallback",
+      "rationale_section": "9. Lifecycle, atomicity, and honest absence",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-107 - Inference-Bearing Methods And Failure",
+        "SCI-MAP_TO_SCI-FLT-FIXED_BOUNDARY.md#Fail-Closed Join"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-032",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-032 - Input admission policy",
+      "rationale_section": "10. Use and ownership limits",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCI_FLT_VAL_PROFILE_DRAFTS.md#SCI-FLT-FIXED:input_admission@1"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-033",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-033 - Output publication policy",
+      "rationale_section": "10. Use and ownership limits",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCI_FLT_VAL_PROFILE_DRAFTS.md#SCI-FLT-FIXED:output_publication@1"
+      ],
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#4. CLOSE THE EMPTY-SUPPORT PUBLICATION OBJECT AND FOUR AXES"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-034",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-034 - VAL boundary",
+      "rationale_section": "10. Use and ownership limits",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCI_FLT_VAL_PROFILE_DRAFTS.md#Registration Gate",
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-108 - Consumer And VAL Boundary"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-035",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-035 - Consumer boundary",
+      "rationale_section": "10. Use and ownership limits",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-108 - Consumer And VAL Boundary",
+        "AUTHOR_CONVENTIONS_AND_OWNERSHIP.md#Ownership Rules"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-036",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-036 - Excluded methods and nonclaims",
+      "rationale_section": "13. Stage B nonclaims",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCOPE_BRIEF.md#Explicitly Deferred Or Excluded",
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#Preserved Limits"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-037",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-037 - Frozen-selector conditioning",
+      "rationale_section": "2. Why strict linearity is the base object",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Full-Footprint Scientific Domain",
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Fixed Linear Transformation"
+      ],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#2. MAKE LINEARITY CONDITIONAL ON ONE FROZEN REALIZED SELECTOR",
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#2. SEPARATE PLAN INDEPENDENCE FROM PARENT-FACT SELECTOR RESOLUTION",
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#1. TYPE THE PARENT FACT DOMAIN AND NUMERICAL SIGNAL DOMAIN"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-038",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-038 - Required-dependency support",
+      "rationale_section": "4. Why the full-footprint rule is the sole v0.1 edge method",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Full-Footprint Scientific Domain",
+        "EDGE_MISSING_NONFINITE_METHOD_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Edge, Missing, And Non-Finite Method Table"
+      ],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#3. DEFINE REQUIRED FOOTPRINT AND ZERO-COEFFICIENT SEMANTICS",
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#1. REPAIR THE CONVOLUTION SUMMATION DOMAIN",
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#2. TYPE THE ZERO OPERATOR WITHOUT OVERLOADING K_req"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-039",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-039 - Typed policy and companion qualification",
+      "rationale_section": "10. Use and ownership limits",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCI_FLT_VAL_PROFILE_DRAFTS.md#SCI-FLT-FIXED:input_admission@1",
+        "SCI_FLT_VAL_PROFILE_DRAFTS.md#SCI-FLT-FIXED:output_publication@1"
+      ],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#6. TYPE INPUT, ROW, AND PUBLICATION POLICIES"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-040",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-040 - Response-family separation",
+      "rationale_section": "6. Response, beam, transfer, and modes",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Response Propagation",
+        "RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md#SCI-FLT-FIXED v0.1 Response, Null-Space, And Covariance Product Table"
+      ],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#7. TYPE RESPONSE FAMILIES AND ZERO-OPERATOR CLAIMS"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-041",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-041 - Single-convolution composition",
+      "rationale_section": "3. Fixed convolution and the low-pass qualification",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Fixed Convolution Family",
+        "AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md#FLT-FIXED-CONV"
+      ],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#10. DEFINE OPERATOR ORDER AND COMPOSITION"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-042",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-042 - Numerical-comparison policy",
+      "rationale_section": "12. Resolution ownership and numerical evidence",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "AUTHOR_CONVENTIONS_AND_OWNERSHIP.md#Required Conventions",
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions"
+      ],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#11. ADD NUMERICAL-CONFORMANCE POLICY"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-043",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-043 - Exposure lineage",
+      "rationale_section": "6. Response, beam, transfer, and modes",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCI-MAP_TO_SCI-FLT-FIXED_BOUNDARY.md#Quantity, Units, Beam, And Exposure",
+        "RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md#SCI-FLT-FIXED v0.1 Response, Null-Space, And Covariance Product Table"
+      ],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#12. EXPOSURE, TERMINOLOGY, AND OWNER METADATA"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-044",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-044 - External-resolution ownership",
+      "rationale_section": "12. Resolution ownership and numerical evidence",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "AUTHOR_CONVENTIONS_AND_OWNERSHIP.md#Ownership Rules",
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Complete Realized Operator"
+      ],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#12. EXPOSURE, TERMINOLOGY, AND OWNER METADATA"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-045",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-045 - Exact parent signal role",
+      "rationale_section": "1. The scientific question",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCI-MAP_TO_SCI-FLT-FIXED_BOUNDARY.md#Parent Roles",
+        "SCI-JINC_TO_SCI-FLT-FIXED_BOUNDARY.md#Exact Parent Role"
+      ],
+      "r0_3_owner_source": "OWNER_DIRECTIVE_R0_3.txt#1. BIND THE EXACT SIGNAL ROLE OF EVERY PARENT"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-046",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-046 - Covariance authority compatibility",
+      "rationale_section": "7. Formal covariance and empirical uncertainty",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-106 - Covariance And NOI",
+        "RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md#SCI-FLT-FIXED v0.1 Response, Null-Space, And Covariance Product Table"
+      ],
+      "r0_3_owner_source": "OWNER_DIRECTIVE_R0_3.txt#3. CLOSE COVARIANCE AUTHORITY / REPRESENTATION COMPATIBILITY",
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#5. COMPLETE THE MARGINAL-ONLY COVARIANCE EDGE CASE",
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#5. PRESERVE LATE-NOI AND COVARIANCE CLOSURES"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-047",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-047 - Immutable NOI compatibility",
+      "rationale_section": "9. Lifecycle, atomicity, and honest absence",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCI-FLT-FIXED_TO_SCI-NOI_BOUNDARY.md#Product And Claim Boundary",
+        "FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md#Atomic Product Bundle"
+      ],
+      "r0_3_owner_source": "OWNER_DIRECTIVE_R0_3.txt#4. MAKE NOI COMPATIBILITY AND ATTACHMENT IMMUTABLE",
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#6. CLARIFY LATE NOI REQUESTS",
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#5. PRESERVE LATE-NOI AND COVARIANCE CLOSURES"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-048",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-048 - Policy actor separation",
+      "rationale_section": "10. Use and ownership limits",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCI_FLT_VAL_PROFILE_DRAFTS.md#SCI-FLT-FIXED:input_admission@1",
+        "AUTHOR_CONVENTIONS_AND_OWNERSHIP.md#Ownership Rules"
+      ],
+      "r0_3_owner_source": "OWNER_DIRECTIVE_R0_3.txt#5. REPAIR POLICY DOMAINS AND THE CONSUMER-ACTION BOUNDARY",
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#4. CLOSE THE EMPTY-SUPPORT PUBLICATION OBJECT AND FOUR AXES"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-049",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-049 - Low-pass transform convention",
+      "rationale_section": "3. Fixed convolution and the low-pass qualification",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-102B - Fixed Low-Pass Scope",
+        "NORMALIZATION_UNIT_BEAM_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Normalization, Unit, Beam, And Low-Pass Table"
+      ],
+      "r0_3_owner_source": "OWNER_DIRECTIVE_R0_3.txt#6. COMPLETE THE LOW-PASS TRANSFORM CONVENTION"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-050",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-050 - Full-procedure response domain",
+      "rationale_section": "6. Response, beam, transfer, and modes",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Response Propagation",
+        "RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md#SCI-FLT-FIXED v0.1 Response, Null-Space, And Covariance Product Table"
+      ],
+      "r0_3_owner_source": "OWNER_DIRECTIVE_R0_3.txt#7. TIGHTEN FULL-PROCEDURE RESPONSE DOMAIN COMPATIBILITY"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-051",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-051 - Consolidated authority preflight",
+      "rationale_section": "12. Resolution ownership and numerical evidence",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "AUTHOR_CONVENTIONS_AND_OWNERSHIP.md#Required Conventions",
+        "SCOPE_BRIEF.md#Program Adherence And Prior-Work Recovery"
+      ],
+      "r0_3_owner_source": "OWNER_DIRECTIVE_R0_3.txt#8. CONSOLIDATE SOURCE AND AUTHORITY BINDING",
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#7. COMPLETE SOURCE, PROFILE, AND AUTHORITY PREFLIGHT",
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#6. COMPLETE AUTHORITY AND SOURCE CLOSURE"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-052",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-052 - Real scalar and coefficient admissibility",
+      "rationale_section": "3. Fixed convolution and the low-pass qualification",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Complete Realized Operator",
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Fixed Linear Transformation"
+      ],
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#3. DECLARE THE BASE SCALAR FIELD AND COEFFICIENT ADMISSIBILITY",
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#1. TYPE THE PARENT FACT DOMAIN AND NUMERICAL SIGNAL DOMAIN"
+    },
+    {
+      "id": "SCI-FLT-FIXED-REQ-053",
+      "kind": "requirement",
+      "core_section": "SCI-FLT-FIXED-REQ-053 - Empty scientific output support",
+      "rationale_section": "4. Why the full-footprint rule is the sole v0.1 edge method",
+      "conformance_section": "8. Requirement conformance matrix",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Full-Footprint Scientific Domain",
+        "FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md#Lifecycle States"
+      ],
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#4. OWNER-DISPOSITION EMPTY SCIENTIFIC OUTPUT SUPPORT",
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#4. CLOSE THE EMPTY-SUPPORT PUBLICATION OBJECT AND FOUR AXES"
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-001",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-001 - Identity operator",
+      "rationale_section": "11. Reading the falsifiable predictions",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md#Lifecycle States"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-002",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-002 - Zero operator",
+      "rationale_section": "11. Reading the falsifiable predictions",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md#Lifecycle States"
+      ],
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#2. TYPE THE ZERO OPERATOR WITHOUT OVERLOADING K_req"
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-003",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-003 - Input scaling",
+      "rationale_section": "11. Reading the falsifiable predictions",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Fixed Linear Transformation"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-004",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-004 - Constant input and DC gain",
+      "rationale_section": "11. Reading the falsifiable predictions",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Kernel Normalization And Estimand"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-005",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-005 - Impulse response",
+      "rationale_section": "11. Reading the falsifiable predictions",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "WCS_KERNEL_DISCRETIZATION_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 WCS, Kernel, And Discretization Decision Table"
+      ],
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#1. REPAIR THE CONVOLUTION SUMMATION DOMAIN"
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-006",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-006 - Parent-response composition",
+      "rationale_section": "11. Reading the falsifiable predictions",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Response Propagation"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-007",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-007 - Signed kernel",
+      "rationale_section": "11. Reading the falsifiable predictions",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "WCS_KERNEL_DISCRETIZATION_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 WCS, Kernel, And Discretization Decision Table"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-008",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-008 - Zero-sum kernel",
+      "rationale_section": "11. Reading the falsifiable predictions",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Kernel Normalization And Estimand"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-009",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-009 - Full-footprint boundary",
+      "rationale_section": "4. Why the full-footprint rule is the sole v0.1 edge method",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "EDGE_MISSING_NONFINITE_METHOD_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Edge, Missing, And Non-Finite Method Table"
+      ],
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#1. REPAIR THE CONVOLUTION SUMMATION DOMAIN",
+      "final_owner_sources": [
+        "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#1. TYPE THE PARENT FACT DOMAIN AND NUMERICAL SIGNAL DOMAIN",
+        "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#3. SEPARATE SCIENTIFIC OPERATOR IDENTITY FROM STORAGE REPRESENTATION"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-010",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-010 - Deferred edge methods",
+      "rationale_section": "4. Why the full-footprint rule is the sole v0.1 edge method",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "EDGE_MISSING_NONFINITE_METHOD_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Edge, Missing, And Non-Finite Method Table"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-011",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-011 - Missing and non-finite input",
+      "rationale_section": "4. Why the full-footprint rule is the sole v0.1 edge method",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "EDGE_MISSING_NONFINITE_METHOD_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Edge, Missing, And Non-Finite Method Table"
+      ],
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#1. TYPE THE PARENT FACT DOMAIN AND NUMERICAL SIGNAL DOMAIN"
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-012",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-012 - Complete covariance transform",
+      "rationale_section": "7. Formal covariance and empirical uncertainty",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md#SCI-FLT-FIXED v0.1 Response, Null-Space, And Covariance Product Table"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-013",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-013 - Off-diagonal covariance from diagonal input",
+      "rationale_section": "7. Formal covariance and empirical uncertainty",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Fixed Discrete Convolution"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-014",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-014 - Unavailable parent companion",
+      "rationale_section": "7. Formal covariance and empirical uncertainty",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Honest Absence"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-015",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-015 - WCS or grid mismatch",
+      "rationale_section": "8. Parent identity and ordering",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "WCS_KERNEL_DISCRETIZATION_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 WCS, Kernel, And Discretization Decision Table"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-016",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-016 - Observation and coadd identity",
+      "rationale_section": "8. Parent identity and ordering",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "OBSERVATION_COADD_NONCOMMUTATION_TABLE.md#SCI-FLT-FIXED v0.1 Observation And Coadd Noncommutation Table"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-017",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-017 - Exact NOI parity",
+      "rationale_section": "7. Formal covariance and empirical uncertainty",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "SCI-FLT-FIXED_TO_SCI-NOI_BOUNDARY.md#Fixed-State NOI Parity"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-018",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-018 - Per-member re-resolution",
+      "rationale_section": "7. Formal covariance and empirical uncertainty",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "SCI-FLT-FIXED_TO_SCI-NOI_BOUNDARY.md#Relearned And Inference-Bearing Exclusion"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-019",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-019 - Disabled, identity, zero, and failure",
+      "rationale_section": "9. Lifecycle, atomicity, and honest absence",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md#Lifecycle States"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-020",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-020 - Upstream unavailable parent",
+      "rationale_section": "8. Parent identity and ordering",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "SCI-MAP_TO_SCI-FLT-FIXED_BOUNDARY.md#Current Numerical Availability",
+        "SCI-JINC_TO_SCI-FLT-FIXED_BOUNDARY.md#Current Numerical Availability"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-021",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-021 - Low-pass claim completeness",
+      "rationale_section": "3. Fixed convolution and the low-pass qualification",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Qualified Fixed-Low-Pass-Convolution Subtype",
+        "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md#ODQ-102B - Fixed Low-Pass Scope"
+      ]
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-022",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-022 - Exact-zero and storage invariance",
+      "rationale_section": "4. Why the full-footprint rule is the sole v0.1 edge method",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Full-Footprint Scientific Domain",
+        "EDGE_MISSING_NONFINITE_METHOD_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Edge, Missing, And Non-Finite Method Table"
+      ],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#3. DEFINE REQUIRED FOOTPRINT AND ZERO-COEFFICIENT SEMANTICS",
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#1. REPAIR THE CONVOLUTION SUMMATION DOMAIN",
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#3. SEPARATE SCIENTIFIC OPERATOR IDENTITY FROM STORAGE REPRESENTATION"
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-023",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-023 - Zero-operator row support",
+      "rationale_section": "4. Why the full-footprint rule is the sole v0.1 edge method",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Required Predictions",
+        "FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md#Lifecycle States"
+      ],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#3. DEFINE REQUIRED FOOTPRINT AND ZERO-COEFFICIENT SEMANTICS",
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#1. REPAIR THE CONVOLUTION SUMMATION DOMAIN",
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#2. TYPE THE ZERO OPERATOR WITHOUT OVERLOADING K_req"
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-024",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-024 - Independent low-pass transfer check",
+      "rationale_section": "3. Fixed convolution and the low-pass qualification",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Qualified Fixed-Low-Pass-Convolution Subtype",
+        "NORMALIZATION_UNIT_BEAM_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 Normalization, Unit, Beam, And Low-Pass Table"
+      ],
+      "r0_2_owner_source": "OWNER_DIRECTIVE_R0_2.txt#9. COMPLETE LOW-PASS, WCS, AND TRANSFER SEMANTICS",
+      "r0_3_owner_source": "OWNER_DIRECTIVE_R0_3.txt#6. COMPLETE THE LOW-PASS TRANSFORM CONVENTION"
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-025",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-025 - Non-signal role rejection",
+      "rationale_section": "11. Reading the falsifiable predictions",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "SCI-MAP_TO_SCI-FLT-FIXED_BOUNDARY.md#Parent Roles",
+        "SCI-JINC_TO_SCI-FLT-FIXED_BOUNDARY.md#Exact Parent Role"
+      ],
+      "r0_3_owner_source": "OWNER_DIRECTIVE_R0_3.txt#1. BIND THE EXACT SIGNAL ROLE OF EVERY PARENT"
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-026",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-026 - Covariance cross-term sensitivity",
+      "rationale_section": "11. Reading the falsifiable predictions",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Fixed Linear Transformation",
+        "RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md#SCI-FLT-FIXED v0.1 Response, Null-Space, And Covariance Product Table"
+      ],
+      "r0_3_owner_source": "OWNER_DIRECTIVE_R0_3.txt#3. CLOSE COVARIANCE AUTHORITY / REPRESENTATION COMPATIBILITY",
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#5. COMPLETE THE MARGINAL-ONLY COVARIANCE EDGE CASE",
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#5. PRESERVE LATE-NOI AND COVARIANCE CLOSURES"
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-027",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-027 - NOI child nonmutation",
+      "rationale_section": "11. Reading the falsifiable predictions",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "SCI-FLT-FIXED_TO_SCI-NOI_BOUNDARY.md#Product And Claim Boundary",
+        "FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md#Atomic Product Bundle"
+      ],
+      "r0_3_owner_source": "OWNER_DIRECTIVE_R0_3.txt#4. MAKE NOI COMPATIBILITY AND ATTACHMENT IMMUTABLE",
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#6. CLARIFY LATE NOI REQUESTS",
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#5. PRESERVE LATE-NOI AND COVARIANCE CLOSURES"
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-028",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-028 - Full-procedure domain incompatibility",
+      "rationale_section": "11. Reading the falsifiable predictions",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "AUTHOR_DETERMINISTIC_TRANSFORMATION_EXTRACT.md#Response Propagation",
+        "RESPONSE_NULLSPACE_COVARIANCE_PRODUCT_TABLE.md#SCI-FLT-FIXED v0.1 Response, Null-Space, And Covariance Product Table"
+      ],
+      "r0_3_owner_source": "OWNER_DIRECTIVE_R0_3.txt#7. TIGHTEN FULL-PROCEDURE RESPONSE DOMAIN COMPATIBILITY"
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-029",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-029 - Empty scientific output support",
+      "rationale_section": "11. Reading the falsifiable predictions",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Full-Footprint Scientific Domain",
+        "FIXED_PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md#Lifecycle States"
+      ],
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#4. OWNER-DISPOSITION EMPTY SCIENTIFIC OUTPUT SUPPORT",
+      "final_owner_source": "OWNER_DIRECTIVE_FINAL_MICRO_REPAIR.txt#4. CLOSE THE EMPTY-SUPPORT PUBLICATION OBJECT AND FOUR AXES"
+    },
+    {
+      "id": "SCI-FLT-FIXED-PRED-030",
+      "kind": "prediction",
+      "core_section": "SCI-FLT-FIXED-PRED-030 - Invalid coefficient rejection",
+      "rationale_section": "11. Reading the falsifiable predictions",
+      "conformance_section": "9. Falsifiable prediction suite",
+      "stage_a_sources": [
+        "FIXED_LINEAR_OPERATOR_AND_CONVOLUTION_SPECIFICATION.md#Complete Realized Operator",
+        "WCS_KERNEL_DISCRETIZATION_DECISION_TABLE.md#SCI-FLT-FIXED v0.1 WCS, Kernel, And Discretization Decision Table"
+      ],
+      "r0_4_owner_source": "OWNER_DIRECTIVE_R0_4.txt#3. DECLARE THE BASE SCALAR FIELD AND COEFFICIENT ADMISSIBILITY"
+    }
+  ]
+}
