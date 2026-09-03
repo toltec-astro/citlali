@@ -1,7 +1,7 @@
 # SCI-POINT — Bright-Source Pointing Inference
 
-Status: recovery-first Stage A candidate for scientific-owner review; Stage B
-not authorized
+Status: final targeted Stage B document revision `r0.3` complete; proposed
+conditional scientific-owner freeze pending
 
 Version: `v0.1`
 
@@ -75,6 +75,29 @@ numerical fit and fit-derived product. Once it is approved, absence of the
 second blocks formal uncertainty and dependent uses without erasing otherwise
 authorized fitted values. Absence of the third blocks only the descriptive
 dynamic-range diagnostic.
+
+## Stage B r0.3 result
+
+The exact owner-approved Stage A r0.3 packet and final targeted owner directive
+now bind a shared normative common core and two rendered views:
+
+- [`pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf`](pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf)
+  explains the conditional scientific contract;
+- [`pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf`](pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf)
+  specifies prospective conformance evidence without independent science;
+- [`STAGE_B_R0_3_RECORDS.json`](STAGE_B_R0_3_RECORDS.json) preserves exact
+  SCI-VAL, response, diagnostic, dependency, lifecycle, weight, lineage, and
+  profile records;
+- [`STAGE_B_R0_3_TARGETED_AMENDMENTS.md`](STAGE_B_R0_3_TARGETED_AMENDMENTS.md)
+  provides a non-normative navigation crosswalk for the eight targeted repairs;
+- [`STAGE_B_R0_3_PARITY_REPORT.json`](STAGE_B_R0_3_PARITY_REPORT.json),
+  [`STAGE_B_R0_3_SEMANTIC_CHANGE_REPORT.md`](STAGE_B_R0_3_SEMANTIC_CHANGE_REPORT.md),
+  and the clean-build/PDF-QA reports close traceability; and
+- [`PROPOSED_SCIENTIFIC_OWNER_FREEZE_R0_3.md`](PROPOSED_SCIENTIFIC_OWNER_FREEZE_R0_3.md)
+  states the bounded conditional freeze proposed to the scientific owner.
+
+This Stage B result adds no numerical route or implementation, validation,
+accuracy, performance, readiness, production, authorization, or Unity claim.
 
 ## Explicit Boundary
 
@@ -176,22 +199,20 @@ in [`PARENT_ROUTE_AND_CLAIM_MATRIX.md`](PARENT_ROUTE_AND_CLAIM_MATRIX.md).
 - [`CROSSWALK.md`](CROSSWALK.md): Stage A deliverable crosswalk
 - [`STAGE_A_CHANGE_LOG.md`](STAGE_A_CHANGE_LOG.md): package creation record
 
-The canonical `src/` and `pdf/` paths contain placeholders only. There is no
-scientific rationale, engineering conformance specification, or rendered
-contract in this Stage A package.
+The canonical `src/` and `pdf/` paths now contain document revision r0.3 and
+its two verified rendered PDFs. Stage A materials remain immutable scientific
+authority and historical recovery evidence; the shared Stage B common core is
+the sole normative scientific source for the two views.
 
 ## Current Gate
 
-Recovery, classification, and the owner-decision walkthrough are complete.
-ODQ-001 through ODQ-009 are decided; no bounded ODQ remains open. The method-
-authority stop is resolved by retaining three distinct unavailable records and
-separate recovery briefs. The repaired exclusive 37-object sanitized author
-packet is content-bound as
-`SCI-POINT_AUTHOR_PACKET_MANIFEST v0.1/r0.3`, with a deterministic `.tar.gz`
-copy prepared for review. Its exact bytes are not yet owner-approved. The
-method-recovery efforts have not been launched. Stage B must not begin until
-the owner approves the exact manifest and explicitly authorizes dispatch to a
-fresh implementation-blind task.
+Recovery, the ODQ-001 through ODQ-009 decisions, exact Stage A r0.3 author
+packet approval, implementation-blind Stage B authorship, final targeted r0.3
+repair, clean rebuild, parity verification, and all-page PDF QA are complete.
+The current decision is the proposed conditional r0.3 scientific-owner freeze.
+The three numerical method authorities, exact route instances, four named-use
+profile registrations, and response/bias authorities remain separately gated;
+none is approved by the document freeze.
 
 No algorithm, frozen authority, implementation, configuration, validation,
 performance, readiness, production, or Unity state is changed or claimed.

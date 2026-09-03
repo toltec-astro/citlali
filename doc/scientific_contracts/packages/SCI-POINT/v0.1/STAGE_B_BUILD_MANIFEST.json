@@ -1,17 +1,22 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "contract": "SCI-POINT v0.1",
-  "document_revision": "r0.2",
-  "build_record": "SCI-POINT-STAGE-B-BUILD/v0.1-r0.2@2026-09-03",
+  "document_revision": "r0.3",
+  "build_record": "SCI-POINT-STAGE-B-BUILD/v0.1-r0.3@2026-09-03",
   "source_manifest": "STAGE_B_SOURCE_MANIFEST.json",
+  "source_manifest_sha256": "4435a943747fa2404e2f5a1f6fc14a0032b8f60551bb2217d4f722014d9673ca",
   "tools": {
     "tectonic": "/opt/homebrew/bin/tectonic 0.16.9",
     "pdftoppm": "Poppler pdftoppm 26.05.0",
-    "verification_python": "/Users/gwilson/tolteca/bin/python 3.13.2"
+    "verification_python": "/Users/gwilson/tolteca/bin/python 3.13.2",
+    "pypdf": "6.7.2",
+    "pillow": "11.1.0"
   },
   "commands": {
     "rationale_compile": "/opt/homebrew/bin/tectonic -X compile src/scientific-rationale.tex --outdir pdf",
     "engineering_compile": "/opt/homebrew/bin/tectonic -X compile src/engineering-conformance.tex --outdir pdf",
+    "canonical_rationale_output": "mv -f pdf/scientific-rationale.pdf pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf",
+    "canonical_engineering_output": "mv -f pdf/engineering-conformance.pdf pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf",
     "rationale_render": "pdftoppm -png -r 120 pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf <temporary-prefix>",
     "engineering_render": "pdftoppm -png -r 120 pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf <temporary-prefix>",
     "delivery_build": "/Users/gwilson/tolteca/bin/python build_stage_b_delivery.py",
@@ -20,59 +25,68 @@
   "pdfs": [
     {
       "path": "pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf",
-      "title": "SCI-POINT Scientific Rationale v0.1 r0.2",
-      "pages": 19,
+      "title": "SCI-POINT Scientific Rationale v0.1 r0.3",
+      "author": "SCI-POINT scientific-contract program; Grant Wilson, scientific owner",
+      "pages": 21,
+      "bytes": 170026,
       "page_size": "letter 612 x 792 pt",
       "forms": "none",
-      "sha256": "2273c13d0e4c1a623d8a6a14b7cfee2f9174356c94d71debacc9cf95ca9fadf4"
+      "sha256": "58445be2ef2190aa7f63a1c2cfade3e527624ee8c57db2151d033ebbfcb630a0"
     },
     {
       "path": "pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf",
-      "title": "SCI-POINT Engineering Conformance v0.1 r0.2",
-      "pages": 19,
+      "title": "SCI-POINT Engineering Conformance v0.1 r0.3",
+      "author": "SCI-POINT scientific-contract program; Grant Wilson, scientific owner",
+      "pages": 22,
+      "bytes": 172804,
       "page_size": "letter 612 x 792 pt",
       "forms": "none",
-      "sha256": "826d037272fb55950bf08d0f435d76abe64bfd55e239df2f324448d5296f12b1"
+      "sha256": "bceec5304c7fe5c571efede8dcb9c25939adeff6d7bed995a6e4f2c1a3b5fac9"
     }
   ],
+  "clean_build_report": {
+    "path": "STAGE_B_R0_3_CLEAN_BUILD_REPORT.json",
+    "result": "pass",
+    "extracted_text_matches_delivered_pdfs": true
+  },
   "visual_qa": {
-    "renderer": "Poppler pdftoppm 26.05.0",
-    "resolution_dpi": 120,
-    "pages_inspected": 38,
+    "report": "STAGE_B_R0_3_PDF_QA_REPORT.json",
+    "pages_inspected": 43,
     "result": "pass",
     "defects": [],
     "checks": [
+      "reopen",
+      "letter_page_size",
+      "forms_absent",
       "clipping",
       "overlap",
       "broken_glyphs",
       "malformed_equations",
       "unreadable_tables",
       "headers_and_footers",
-      "page_numbering",
-      "section_transitions",
-      "cover_bindings",
-      "scientific_flow_diagram"
+      "title_owner_revision_date_status",
+      "cover_binding_parity"
     ]
   },
-  "parity": {
-    "owner_decisions": "pass",
-    "common_core_views": "pass",
-    "requirements": "SCI-POINT-REQ-001 through SCI-POINT-REQ-038 gap-free",
-    "predictions": "SCI-POINT-PRED-001 through SCI-POINT-PRED-032 gap-free",
-    "unavailable_states": "SCI-POINT-UNAV-001 through SCI-POINT-UNAV-023 gap-free",
-    "stale_or_conflicting_tokens": 0
+  "identity_and_semantic_audit": {
+    "requirements": "SCI-POINT-REQ-001 through REQ-038, gap-free, no new IDs",
+    "predictions": "SCI-POINT-PRED-001 through PRED-032, gap-free, no new IDs",
+    "unavailable_states": "SCI-POINT-UNAV-001 through UNAV-023, gap-free, no new IDs",
+    "owner_directive_sha256": "9f445480fd42311ebe21f4da772e4e32db400c2da08a119b699f6bd8e13a54d4",
+    "common_core_sha256": "c0ca71bd457b8e6d37a425eb3ead76400dba3a5e29c869420807928201cdcdbd",
+    "result": "pass"
   },
   "nonclaims": [
-    "numerical route",
-    "implementation conformity",
-    "representation or response fidelity",
-    "uncertainty coverage",
-    "observational pointing accuracy",
+    "numerical_route",
+    "implementation_conformity",
+    "representation_or_response_fidelity",
+    "uncertainty_coverage",
+    "observational_pointing_accuracy",
     "validation",
     "performance",
     "readiness",
-    "production suitability",
-    "production authorization",
-    "Unity activity"
+    "production_suitability",
+    "production_authorization",
+    "Unity_activity"
   ]
 }

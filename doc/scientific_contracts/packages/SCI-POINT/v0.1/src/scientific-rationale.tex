@@ -15,7 +15,7 @@
 \definecolor{pointteal}{HTML}{2B6F6D}
 \definecolor{pointpale}{HTML}{EAF2F4}
 \definecolor{pointwarn}{HTML}{7A4C00}
-\hypersetup{colorlinks=true,linkcolor=pointblue,urlcolor=pointteal,pdfauthor={SCI-POINT scientific-contract program},pdftitle={SCI-POINT Scientific Rationale v0.1 r0.2},pdfsubject={Targeted conditional generic scientific contract revision}}
+\hypersetup{colorlinks=true,linkcolor=pointblue,urlcolor=pointteal,pdfauthor={SCI-POINT scientific-contract program; Grant Wilson, scientific owner},pdftitle={SCI-POINT Scientific Rationale v0.1 r0.3},pdfsubject={Final targeted conditional generic scientific contract revision}}
 \setlist{nosep,leftmargin=*}
 \setlength{\LTpre}{0.35em}
 \setlength{\LTpost}{0.55em}
@@ -24,7 +24,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \lhead{\small\color{pointblue}\textbf{SCI-POINT} Scientific Rationale}
-\rhead{\small v0.1 / r0.2}
+\rhead{\small v0.1 / r0.3}
 \cfoot{\small\thepage}
 \newcommand{\statusbox}[1]{\begin{center}\fcolorbox{pointteal}{pointpale}{\begin{minipage}{0.92\linewidth}#1\end{minipage}}\end{center}}
 
@@ -34,14 +34,15 @@
 {\color{pointteal}\rule{\linewidth}{2.5pt}}\\[0.35in]
 {\Huge\bfseries\color{pointblue} SCI-POINT}\\[0.15in]
 {\LARGE Scientific Rationale and Contract}\\[0.45in]
-{\large Scientific contract v0.1 \quad Document revision r0.2}\\[0.14in]
+{\large Scientific contract v0.1 \quad Document revision r0.3}\\[0.14in]
 {\large Conditional generic Stage B contract}\\[0.55in]
 
 \statusbox{\textbf{Authority status.} This document establishes a conditional
 scientific meaning for known-source per-array Pointing fits. The numerical
 compatibility method, formal-error method, full-map-RMS method, exact numerical
-parent-route instances, registered named-use profiles, fixed/full procedure
-response, and observational bias/accuracy remain unavailable where stated.
+parent-route instances, registered named-use profiles, fixed response,
+POINT-full-procedure/parent-fixed response, whole-chain full-procedure response,
+and observational bias/accuracy remain unavailable where stated.
 Implementation conformity has not been assessed under this contract.}
 
 \vfill
@@ -49,6 +50,8 @@ Implementation conformity has not been assessed under this contract.}
 Scientific owner & Grant Wilson \\
 Source authority & Exact owner-approved SCI-POINT Stage A r0.3 author packet \\
 Stage A packet SHA-256 & \texttt{\StageAPacketSHA} \\
+Owner directive & \texttt{\OwnerDirectiveID} \\
+Owner-directive SHA-256 & \texttt{\OwnerDirectiveSHA} \\
 Normative common core & \texttt{\CommonCoreID} \\
 Common-core SHA-256 & \texttt{\CommonCoreSHA} \\
 Document source & \texttt{\RationaleSourceID} \\
@@ -73,7 +76,8 @@ tangent boundary; and requested method/use state.\\[0.4em]
 elliptical-Gaussian fit and the measured displacement
 $\boldsymbol{\Delta}_{\mathrm{POINT}}=\widehat{\boldsymbol{\mu}}-
 \boldsymbol{\mu}_{\mathrm{expected}}$ in arcseconds, with identities, states,
-support, uncertainty availability, diagnostics, and named-use facts.\\[0.4em]
+support, uncertainty availability, diagnostics, POINT publication state, and
+linked requested downstream decision identities/statuses where required.\\[0.4em]
 \textbf{Current numerical status:} unavailable. The contract does not invent
 the missing numerical methods.}
 
@@ -158,18 +162,24 @@ preserves per-array outputs, downstream correction ownership, four explicit
 routes without substitution, the six-role zero-background compatibility
 family, explicit search/fallback state, independent lifecycle/identifiability/
 named-use axes, conditional marginal formal errors, bounded amplitude/shape
-claims, and separate policy owners.
+claims, and separate policy owners. It also binds exact SCI-VAL semantics
+without authoring a competing disposition function, preserves signed
+diagnostic identities, and separates fixed, POINT-parent-fixed
+full-procedure, and whole-chain full-procedure responses.
 
 No scientific decision remains open inside the generic conditional boundary.
 The remaining owner actions are content approvals, not invitations to infer
 missing science: approve exact compatibility, formal-error, and full-map-RMS
 method records; approve exact numerical route boundary instances; review the
 four draft named-use profile identities/mechanics; and separately authorize
-fixed/full procedure response or observational bias/accuracy if desired.
+fixed, POINT-full-procedure/parent-fixed, whole-chain full-procedure response,
+or observational bias/accuracy if desired.
 
-This r0.2 revision accepts the targeted SCI-VAL congruence, lifecycle,
-product-type, response, displacement-covariance, and source-closure directive.
-It introduces no numerical route and performs no new broad POINT derivation.
+This r0.3 revision accepts the final targeted owner directive for SCI-VAL
+semantics, response type and comparability, signed diagnostics, response-status
+dependency, downstream decision separation, exact fit weights, inherited
+exposure lineage, lifecycle stop rules, and source closure. It introduces no
+numerical route and performs no new broad POINT derivation.
 
 \section{What later validation would and would not establish}\label{sec:validation-layers}
 
@@ -188,8 +198,9 @@ Passing one layer does not establish the next.
 \section{Document status and nonclaims}\label{sec:status}
 
 This is the targeted Stage B representation of scientific contract v0.1,
-document revision r0.2. It was authored from the exclusive Stage A r0.3
-author packet and the owner feedback directive dated 2026-09-03. The shared
+document revision r0.3. It was authored from the exclusive Stage A r0.3
+author packet and the exact owner directive bound on the cover, dated
+2026-09-03. The shared
 common core is the normative scientific source. The rationale explains that
 source. The ECS supplies prospective engineering evidence procedure and
 authors no independent science. A change to any common-core byte requires a

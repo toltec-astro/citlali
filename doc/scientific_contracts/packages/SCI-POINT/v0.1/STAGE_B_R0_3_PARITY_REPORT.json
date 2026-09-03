@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "contract": "SCI-POINT v0.1",
+  "document_revision": "r0.3",
+  "owner_decision_parity": {
+    "status": "pass",
+    "closed_ids": [
+      "SCI-POINT-ODQ-001",
+      "SCI-POINT-ODQ-002",
+      "SCI-POINT-ODQ-003",
+      "SCI-POINT-ODQ-003A",
+      "SCI-POINT-ODQ-003B",
+      "SCI-POINT-ODQ-004",
+      "SCI-POINT-ODQ-005",
+      "SCI-POINT-ODQ-006",
+      "SCI-POINT-ODQ-007",
+      "SCI-POINT-ODQ-008",
+      "SCI-POINT-ODQ-009"
+    ],
+    "method_dispositions": [
+      "POINT-COMPATIBILITY-METHOD v0.1",
+      "POINT-FORMAL-ERROR-METHOD v0.1",
+      "POINT-FULL-MAP-RMS-METHOD v0.1"
+    ],
+    "targeted_owner_directive": {
+      "id": "SCI-POINT-v0.1-r0.3-final-targeted-stage-b-owner-directive@2026-09-03",
+      "sha256": "9f445480fd42311ebe21f4da772e4e32db400c2da08a119b699f6bd8e13a54d4",
+      "status": "implemented"
+    }
+  },
+  "identity_parity": {
+    "requirements": {"first": "SCI-POINT-REQ-001", "last": "SCI-POINT-REQ-038", "count": 38, "gap_free": true, "new_ids": 0},
+    "predictions": {"first": "SCI-POINT-PRED-001", "last": "SCI-POINT-PRED-032", "count": 32, "gap_free": true, "new_ids": 0},
+    "unavailable_states": {"first": "SCI-POINT-UNAV-001", "last": "SCI-POINT-UNAV-023", "count": 23, "gap_free": true, "new_ids": 0}
+  },
+  "view_parity": {
+    "status": "pass",
+    "views": ["src/scientific-rationale.tex", "src/engineering-conformance.tex"],
+    "shared_normative_imports": [
+      "src/common/notation.tex",
+      "src/common/definitions.tex",
+      "src/common/equations.tex",
+      "src/common/assumptions.tex",
+      "src/common/edge_cases.tex",
+      "src/common/requirements.tex"
+    ],
+    "cover_bindings_in_both_views": ["Stage A packet", "r0.3 owner directive", "common core", "build record"],
+    "parity_domains": [
+      "equations",
+      "product_roles",
+      "producer_lifecycle",
+      "component_identifiability",
+      "bound_sci_val_semantics",
+      "draft_profiles",
+      "response_families",
+      "signed_diagnostics",
+      "fit_weight_mapping",
+      "publication_and_exposure_lineage",
+      "requirements",
+      "predictions",
+      "unavailable_states"
+    ]
+  },
+  "targeted_semantic_audit": {
+    "status": "pass",
+    "sci_val_owner_bound_no_independent_function": true,
+    "absence_of_proposition_preserved": true,
+    "written_unknown_or_conflict_decision_is_realized": true,
+    "response_numerator_is_numerical_output": true,
+    "response_families_never_alias": true,
+    "finite_difference_composition_requires_theorem": true,
+    "canonical_diagnostics_signed": true,
+    "absolute_magnitude_identity_unadmitted": true,
+    "response_status_can_be_unavailable_without_erasing_fit": true,
+    "downstream_decisions_outside_base_completion": true,
+    "exact_W_fit_mapping_bound": true,
+    "POINT_creates_no_exposure": true,
+    "early_stop_fabricates_no_stage": true
+  },
+  "token_audit": {
+    "status": "pass",
+    "canonical_applicability": "approximately_centered",
+    "stale_or_conflicting_tokens": 0,
+    "diagnostic_display_only_role": "post_evaluation_consumer_action"
+  },
+  "scope_audit": {
+    "status": "pass",
+    "broad_derivation_performed": false,
+    "numerical_method_invented": false,
+    "implementation_or_operational_evidence_inspected": false,
+    "Unity_activity": false
+  }
+}

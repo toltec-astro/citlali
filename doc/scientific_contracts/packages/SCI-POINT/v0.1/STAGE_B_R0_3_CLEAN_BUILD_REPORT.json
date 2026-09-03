@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "contract": "SCI-POINT v0.1",
+  "document_revision": "r0.3",
+  "date": "2026-09-03",
+  "environment": "fresh_task_specific_temporary_directory",
+  "source": "exact src directory after r0.3 common-core and cover binding",
+  "tool": "/opt/homebrew/bin/tectonic 0.16.9",
+  "commands": [
+    "/opt/homebrew/bin/tectonic -X compile src/scientific-rationale.tex --outdir pdf",
+    "/opt/homebrew/bin/tectonic -X compile src/engineering-conformance.tex --outdir pdf"
+  ],
+  "results": [
+    {
+      "source": "src/scientific-rationale.tex",
+      "exit_code": 0,
+      "pages": 21,
+      "forms": 0,
+      "title": "SCI-POINT Scientific Rationale v0.1 r0.3",
+      "author": "SCI-POINT scientific-contract program; Grant Wilson, scientific owner",
+      "clean_build_sha256": "79d3e86f3f34b7ffc9ce7b119be08f098ee932c0425240ad9fb4dfade0f422f2",
+      "extracted_text_matches_delivered_pdf": true
+    },
+    {
+      "source": "src/engineering-conformance.tex",
+      "exit_code": 0,
+      "pages": 22,
+      "forms": 0,
+      "title": "SCI-POINT Engineering Conformance v0.1 r0.3",
+      "author": "SCI-POINT scientific-contract program; Grant Wilson, scientific owner",
+      "clean_build_sha256": "1896e502afab6b654c951ba56485f0714e51d9d933418c95676d8fc49fa23c6d",
+      "extracted_text_matches_delivered_pdf": true
+    }
+  ],
+  "result": "pass",
+  "notes": [
+    "The PDF container records creation time, so clean-build binary hashes are reported but are not expected to equal the delivered build hashes.",
+    "TeX reported ordinary narrow-table line-breaking warnings; full visual QA found no clipped, overlapping, broken, malformed, or unreadable content."
+  ]
+}

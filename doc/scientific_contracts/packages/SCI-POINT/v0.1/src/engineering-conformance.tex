@@ -15,7 +15,7 @@
 \definecolor{pointteal}{HTML}{2B6F6D}
 \definecolor{pointpale}{HTML}{EAF2F4}
 \definecolor{pointgray}{HTML}{4B5563}
-\hypersetup{colorlinks=true,linkcolor=pointblue,urlcolor=pointteal,pdfauthor={SCI-POINT scientific-contract program},pdftitle={SCI-POINT Engineering Conformance v0.1 r0.2},pdfsubject={Targeted conditional generic engineering specification revision}}
+\hypersetup{colorlinks=true,linkcolor=pointblue,urlcolor=pointteal,pdfauthor={SCI-POINT scientific-contract program; Grant Wilson, scientific owner},pdftitle={SCI-POINT Engineering Conformance v0.1 r0.3},pdfsubject={Final targeted conditional generic engineering specification revision}}
 \setlist{nosep,leftmargin=*}
 \setlength{\LTpre}{0.3em}
 \setlength{\LTpost}{0.5em}
@@ -24,7 +24,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \lhead{\small\color{pointblue}\textbf{SCI-POINT} Engineering Conformance}
-\rhead{\small v0.1 / r0.2}
+\rhead{\small v0.1 / r0.3}
 \cfoot{\small\thepage}
 \newcommand{\statusbox}[1]{\begin{center}\fcolorbox{pointteal}{pointpale}{\begin{minipage}{0.93\linewidth}#1\end{minipage}}\end{center}}
 
@@ -34,7 +34,7 @@
 {\color{pointteal}\rule{\linewidth}{2.5pt}}\\[0.32in]
 {\Huge\bfseries\color{pointblue} SCI-POINT}\\[0.14in]
 {\LARGE Engineering Conformance Specification}\\[0.4in]
-{\large Scientific contract v0.1 \quad Document revision r0.2}\\[0.12in]
+{\large Scientific contract v0.1 \quad Document revision r0.3}\\[0.12in]
 {\large Conditional generic Stage B contract}\\[0.5in]
 
 \statusbox{\textbf{Conformance status.} This specification is normative but
@@ -51,6 +51,8 @@ Common-core identity & \texttt{\CommonCoreID} \\
 Common-core SHA-256 & \texttt{\CommonCoreSHA} \\
 Authorship source & Exact owner-approved Stage A r0.3 author packet \\
 Stage A packet SHA-256 & \texttt{\StageAPacketSHA} \\
+Owner directive & \texttt{\OwnerDirectiveID} \\
+Owner-directive SHA-256 & \texttt{\OwnerDirectiveSHA} \\
 Document source & \texttt{\EngineeringSourceID} \\
 Document-source SHA-256 & \texttt{\EngineeringSourceSHA} \\
 Build record & \texttt{\BuildRecordID} \\
@@ -103,9 +105,9 @@ B. Effective configuration & Every sentinel and requested option resolved to one
 C. Resolved method/plan & One frozen compatible method, route, support, objective, weighting, constraints, fallback, comparison, termination, and failure plan. \\
 D. Application attempt & Applied plan, invocation/attempt identity, branch/restart/retry identity, execution state, cause, and provenance. \\
 E. Realized fit/components & Selected seed; numerical values; component states; association outcome; realized constraints; residual; diagnostics; response, bias, and uncertainty states; causes and provenance. \\
-F. Publication candidate & Every required value-or-status role, identity, cause, provenance, and structural-completeness state. \\
+F. Publication candidate & Every required POINT value-or-status role, identity, cause, provenance, and structural-completeness state; POINT publication state; and linked requested decision identities/statuses where required, without requiring every downstream use to succeed. \\
 G. Publication decision & POINT fit-completeness profile and source bindings; decision, reasons, identity, lifecycle, and provenance. \\
-H. Published product & Accepted immutable candidate; exact role, version, generation, exposure identity, lifecycle, and provenance. \\
+H. Published product & Accepted immutable candidate; exact role, version, generation, inherited parent observation/exposure lineage or typed \path{not_applicable}, lifecycle, and provenance. POINT creates no exposure identity. \\
 \bottomrule
 \end{longtable}
 
@@ -116,8 +118,9 @@ seed or peak identity; association method, domain, state, and cause; admitted su
 count; exact objective and fit-weight identity; parameter values with units
 and conventions; per-component identifiability; active constraints; rank;
 termination, convergence, and retry; fitted model or reconstructibility;
-residual and diagnostics; parent additive-reference and null state; fixed- and
-full-procedure response states; observational bias and accuracy state; formal-error and covariance identities
+residual and diagnostics; parent additive-reference and null state; fixed,
+POINT-full-procedure/parent-fixed, and whole-chain full-procedure response
+identities/states; observational bias and accuracy state; formal-error and covariance identities
 and states; and every typed cause of unavailability or failure. Its numerical
 $A$ role is
 \begin{center}
@@ -147,7 +150,8 @@ sign or applied-correction claim.
 \subsection{Named-use evaluation record}\label{sec:named-use-record}
 
 For each named use, record profile identity/version/digest, policy owner,
-source bindings, request, applicability, eligibility, realization, reason,
+immutable fit reference, source bindings, request, applicability, eligibility,
+realization, reason,
 prescribed consumer action, evaluation identity, lifecycle, and provenance.
 The four axes shall be the exact independent SCI-VAL enumerations:
 request is \path{requested} or \path{not_requested}; applicability is
@@ -155,10 +159,14 @@ request is \path{requested} or \path{not_requested}; applicability is
 \path{applicability_unknown}; eligibility is \path{eligible},
 \path{ineligible}, or \path{decision_unavailable}; realization is
 \path{realized}, \path{incomplete}, \path{failed}, or
-\path{not_produced}. The evaluator shall apply
+\path{not_produced}. Where the owner-bound crosswalk specifies no
+applicability or eligibility proposition, the record shall preserve genuine
+absence rather than invent an enumeration value. The evaluator shall apply
 Section~\ref{sec:val-function}. The action field may contain
 \texttt{diagnostic\_display\_only}; that token is no axis or producer state.
-No result from one named use may modify another.
+No result from one named use may modify another or the fit, create a new fit
+generation, rescue another use, or block base completion merely because the
+downstream artifact is unrequested, unavailable, incomplete, failed, or absent.
 
 \subsection{Availability precedence}\label{sec:availability-precedence}
 
@@ -167,15 +175,24 @@ method authority; coordinate/source boundary; applicability facts; attempted
 producer application and realization; component identifiability; source association; the
 product row in Section~\ref{sec:dependencies}; then each requested named-use
 profile. Stop only the dependent product or claim. Preserve independent
-siblings and record the exact blocking state.
+siblings and record the exact blocking state. An early stop preserves only
+the lifecycle stages reached and records exact terminal \path{unavailable},
+\path{failed}, or \path{not_produced} state with cause; it never fabricates
+\path{applied} or \path{fit_realized} and never silently drops a requested row.
 
 \subsection{Response and covariance records}\label{sec:response-records}
 
-A response record shall identify its domain, codomain, perturbation, selected
-fit roles, branch policy, support, weights, constraints, method, finite versus
-differential construction, parent response compatibility, state, cause, and
-provenance. It shall identify exactly one of fixed-branch response,
-full-procedure response, parent response, or empirical bias/accuracy. A
+A response record shall bind comparable numerical baseline and perturbed
+products/states; intended source and association; parameter roles; gauge and
+canonical ordering; units and basis; target-component availability;
+perturbation source, domain, direction, unit, and $\epsilon$; perturbation-domain
+relation; branch changes; method; finite versus analytic convention; state,
+cause, and provenance. It shall identify exactly one of fixed POINT response,
+fixed parent response, POINT-full-procedure/parent-fixed response, whole-chain
+full-procedure response, or empirical bias/accuracy. Incomparable outputs are
+unavailable or a typed discontinuity/state transition, never a subtraction of
+lifecycle objects. A whole-chain record requires exact upstream rerun authority;
+no finite-difference record is composed as a Jacobian without an exact theorem. A
 conditional displacement-covariance record shall bind every term of
 Equation~\ref{eq:displacement-covariance}, the common basis, transformations
 and Jacobians, independence authority where any cross term is zero, validity,
@@ -186,8 +203,10 @@ state, cause, and provenance.
 \CompatMethod{} shall not become available unless one immutable,
 content-bound, owner-approved record specifies the exact source equation and
 parameter ordering; width and angle conventions; domains and constraints;
-rows and residual; objective/likelihood; weight meaning and covariance
-relation; support; expected-position/search-center distinction; central and
+rows and residual; objective/likelihood; exact consumed $W_{\mathrm{fit}}$ and
+every approved uniform/reliability/covariance/inverse-covariance/other source
+mapping identity, units, normalization, support, lifecycle state, claim
+ceiling, and provenance; expected-position/search-center distinction; central and
 global search; score, candidate, interpolation, tie, initialization, fallback,
 association, retry, and sentinel rules; solver-independent solution
 comparison; convergence, rank, identifiability, failure, and compatibility
@@ -208,9 +227,11 @@ zero-denominator behavior, units, lifecycle/provenance, and identity relation
 to the amplitude parent.
 
 The method records shall also state whether and how \texttt{sig2noise} or
-\texttt{fit\_sig2noise} is an exact legacy alias. No alias is admitted merely
+\texttt{fit\_sig2noise} is mathematically identical to the corresponding signed
+canonical quantity before approving it as a legacy alias. No alias is admitted merely
 by this contract text, and \texttt{peak\_over\_full\_map\_rms} requires a
-separate compatibility-method finding.
+separate compatibility-method finding. The absolute-magnitude standardization
+identity is likewise unadmitted without separate request and authority.
 
 \input{common/requirements}
 
@@ -221,15 +242,16 @@ including ODQ-003A/003B, and preserves the three distinct method dispositions.
 The generic conditional science contains no unresolved ODQ. Remaining owner
 actions are: content-bound approval of the three method records; approval of
 exact numerical route instances; final review and registration of the four
-draft profile identities/mechanics; and separate authorization of response or
-observational bias/accuracy authorities if those claims are sought.
+draft profile identities/mechanics; and separate authorization of fixed,
+POINT-full-procedure/parent-fixed, whole-chain full-procedure, or observational
+bias/accuracy authorities if those claims are sought.
 
-The r0.2 owner/view parity report records gap-free REQ-001--REQ-038 and
+The r0.3 owner/view parity report records gap-free REQ-001--REQ-038 and
 PRED-001--PRED-032, exact common-core imports in both views, canonical token
-checks, and the distinct release conditions for fixed-branch response,
-full-procedure response, and observational bias/accuracy. The complete
+checks, and distinct release conditions for fixed, POINT-full-procedure with a
+fixed parent, whole-chain full-procedure, and observational bias/accuracy. The complete
 delivery packet contains the exact Stage A archive and sidecars, common core,
-both document sources, boundary/profile/method templates, traceability,
+exact owner directive, both document sources, boundary/profile/method templates, traceability,
 manifests, build recipe, and QA records.
 
 \section{Nonclaims}\label{sec:engineering-nonclaims}

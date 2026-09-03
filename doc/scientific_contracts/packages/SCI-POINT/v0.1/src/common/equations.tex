@@ -131,16 +131,25 @@ zero-denominator rules, units, lifecycle, provenance, and parent relation. It
 requires the exact selected fit-amplitude role, a compatible parent and
 generation, a finite positive denominator, and the association state required
 by the declared diagnostic claim. \texttt{sig2noise} may be an exact legacy
-alias only after \RMSMethod{} explicitly approves that alias.
+alias only after \RMSMethod{} explicitly proves mathematical identity with
+this signed ratio and approves that alias.
 \texttt{peak\_over\_full\_map\_rms} is not admitted without a separate
 compatibility-method finding.
 
-Equation~\ref{eq:formal-standardization} is formal standardization only and is
-unavailable until \FormalMethod{} and its signed-versus-absolute convention
-are approved and $\sigma_A$ is positive and finite. It requires the exact
-selected fit-amplitude role and its approved formal amplitude error.
+Equations~\ref{eq:dynamic-range} and \ref{eq:formal-standardization} retain
+the sign of the approved fitted amplitude; the dynamic-range diagnostic is
+therefore not universally nonnegative. Equation~\ref{eq:formal-standardization}
+is the canonical signed
+\path{POINT-FORMAL-AMPLITUDE-STANDARDIZATION@1}. It is unavailable until
+\FormalMethod{} is approved and $\sigma_A$ is positive and finite. It requires
+the exact selected fit-amplitude role and its approved formal amplitude error.
+An absolute-magnitude quantity would instead have the distinct identity
+\path{POINT-FORMAL-AMPLITUDE-MAGNITUDE-STANDARDIZATION@1} and formula
+$|\widehat A|/\sigma_A$; it is not admitted unless separately requested and
+authorized.
 \texttt{fit\_sig2noise} may be an exact legacy alias only after \FormalMethod{}
-explicitly approves that alias. Neither ratio is statistical
+proves mathematical identity with the signed canonical quantity and explicitly
+approves that alias. Neither ratio is statistical
 significance, detection probability, false-alarm statistic, completeness, or
 purity. A zero or non-finite denominator produces the future method's typed
 unavailable or failed state, never an infinite claim.
@@ -169,26 +178,57 @@ R^{\mathrm{fixed}}_{\Delta,m}=P_{\mu}R^{\mathrm{fixed}}_{\theta,m}.
 \label{eq:fixed-displacement-response}
 \end{equation}
 
-For perturbation direction $\delta m$, the full-procedure response is
+For perturbation direction $\delta m$, the POINT full-procedure response with
+the parent product held fixed is
 \begin{equation}
-R^{\mathrm{FP}}_{\theta,m}[\delta m]
+R^{\mathrm{POINT\mbox{-}FP}\mid\mathrm{parent\mbox{-}fixed}}_{\theta,m}
+[\delta m]
 =\lim_{\epsilon\rightarrow0}
-\frac{\mathcal{P}(m+\epsilon\,\delta m)-\mathcal{P}(m)}{\epsilon},
+\frac{\widehat{\boldsymbol{\theta}}_{\mathcal P}
+(m+\epsilon\,\delta m)-
+\widehat{\boldsymbol{\theta}}_{\mathcal P}(m)}{\epsilon},
 \label{eq:full-procedure-response}
 \end{equation}
 or one separately authorized finite-difference equivalent. Both invocations
 of $\mathcal{P}$ rerun central search, fallback, restarts and retries, support
 resolution, applicable weight/state resolution, constraint activation,
-optimization, and association. A source-domain response may be composed only
-with a compatible exact parent response:
+optimization, and association, but do not rerun the upstream parent producer.
+The numerator subtracts comparable numerical parameter outputs, never
+lifecycle, decision, or record objects.
+
+Comparability requires the same intended source, compatible association,
+identical parameter roles, compatible gauge and canonical ordering, compatible
+units and basis, availability of the target components, and a valid relation
+between the two perturbation domains. If those conditions do not hold, the
+response is unavailable or the result is a separately typed discontinuity or
+state transition; it is not silently represented as a derivative. Every
+response record binds the baseline and perturbed products and states,
+perturbation source, domain, direction, unit, and $\epsilon$, finite or analytic
+convention, branch changes, gauge comparison, component availability, exact
+cause, and provenance.
+
+A source-domain fixed differential response may be composed only with a
+compatible exact fixed parent response:
 \begin{equation}
-R_{\theta,\mathrm{source}}=R_{\theta,m}R_{\mathrm{parent}}.
+R^{\mathrm{fixed}}_{\theta,\mathrm{source}}
+=R^{\mathrm{fixed}}_{\theta,m}
+ R^{\mathrm{fixed}}_{m,\mathrm{source}}.
 \label{eq:source-response}
 \end{equation}
-Parent response, fixed-branch POINT response, full-procedure POINT response,
-and empirical observational bias/accuracy are distinct products. Under one
-declared empirical population and procedure, observational displacement bias
-may be defined as
+The POINT-full-procedure/parent-fixed response above and a whole-chain
+full-procedure response
+$R^{\mathrm{chain\mbox{-}FP}}_{\theta,\mathrm{source}}$ are also distinct.
+The latter exists only under authority to rerun the complete upstream parent
+production and POINT procedure together. Fixed parent composition,
+POINT-full-procedure with a fixed parent, and whole-chain full-procedure never
+alias one another. A finite-difference response shall not be multiplied as a
+Jacobian unless an exact composition theorem for those defined procedures and
+domains has been authorized.
+
+Parent response, each of these POINT or whole-chain response types, and
+empirical observational bias/accuracy are distinct products. Under one declared
+empirical population and procedure, observational displacement bias may be
+defined as
 \begin{equation}
 b_{\Delta}=\mathbb{E}\!\left[
 \widehat{\Delta}-\Delta_{\mathrm{true}}

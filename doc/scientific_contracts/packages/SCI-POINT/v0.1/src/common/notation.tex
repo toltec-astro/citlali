@@ -1,6 +1,6 @@
 % Shared normative notation for both SCI-POINT v0.1 views.
 \newcommand{\ContractVersion}{v0.1}
-\newcommand{\DocumentRevision}{r0.2}
+\newcommand{\DocumentRevision}{r0.3}
 \newcommand{\MethodID}{\texttt{POINT-FIT/ELLIPTICAL-GAUSSIAN-COMPATIBILITY@1}}
 \newcommand{\CompatMethod}{\texttt{POINT-COMPATIBILITY-METHOD v0.1}}
 \newcommand{\FormalMethod}{\texttt{POINT-FORMAL-ERROR-METHOD v0.1}}
@@ -34,9 +34,9 @@ $A$ & Fitted amplitude in the exact parent product's unit, calibration, and resp
 $\boldsymbol{\mu}$ & Continuous fitted centroid in the declared ordered AltAz tangent basis. \\
 $\Sigmashape$ & Symmetric positive-definite invariant Gaussian shape matrix. \\
 $\boldsymbol{\theta}$ & The six scientific roles: amplitude, two centroid components, two principal-width roles, and orientation. \\
-$\mathcal{P}$ & The complete data-dependent POINT procedure used to define a full-procedure response. \\
+$\mathcal{P}$ & The complete data-dependent POINT procedure used to define a POINT-full-procedure response while its input parent product is held fixed. \\
 $P_{\mu}$ & Selector that extracts the two fitted-centroid components from the parameter vector. \\
-$W_{\mathrm{fit}}$ & Exact fit-weight role, distinct from parent covariance, inverse covariance, reliability weight, and uncertainty products. \\
+$W_{\mathrm{fit}}$ & Exact weighting object consumed by the compatibility fit. Its approved source role may be uniform, reliability-derived, covariance-derived, inverse covariance, or another approved construction under an exact mapping. \\
 $\DeltaPoint$ & Measured source displacement, fitted centroid minus authoritative expected source position, in arcseconds in the declared basis. \\
 parent & One exact observation-local, per-array MAP, JINC, FLT-FIXED, or FLT-MATCHED signal product. \\
 terminal FRUIT ancestry & Lineage attached to one of the four parent families; it is not a fifth parent family. \\
@@ -81,11 +81,13 @@ SCI-VAL eligibility value. A generic product-availability field may use
 realization field. Likewise, \path{decision_unavailable} is an eligibility
 value only and shall not appear as applicability.
 
-\subsection{Exact SCI-VAL disposition function}\label{sec:val-function}
+\subsection{Bound SCI-VAL semantic crosswalk}\label{sec:val-function}
 
-For one named use, the evaluator shall apply the following precedence and
-shall emit all four axes. An already realized producer fact is never erased by
-the named-use disposition.
+POINT does not author an independent SCI-VAL disposition function. The
+following subordinate crosswalk is content-bound to the governing r0.3 owner
+directive and cannot differ from that authority. ``No proposition'' means the
+corresponding axis has no value; it is not another enumeration token. An
+already realized producer fact is never erased by a named-use decision.
 
 \small
 \begin{longtable}{@{}p{0.24\linewidth}p{0.14\linewidth}p{0.18\linewidth}p{0.18\linewidth}p{0.16\linewidth}@{}}
@@ -93,20 +95,20 @@ the named-use disposition.
 Controlling condition & Request & Applicability & Eligibility & Realization \\
 \midrule
 \endhead
-Use not requested & \path{not_requested} & retained fact or \path{applicability_unknown} & \path{decision_unavailable} & \path{not_produced} \\
-Missing profile or source binding & \path{requested} & \path{applicability_unknown} & \path{decision_unavailable} & \path{not_produced} \\
-Structural profile/binding conflict & \path{requested} & \path{applicability_unknown} & \path{decision_unavailable} & \path{failed} \\
-Use factually inapplicable & \path{requested} & \path{inapplicable} & \path{ineligible} & \path{not_produced} \\
-Applicable, artifact incomplete & \path{requested} & \path{applicable} & \path{decision_unavailable} & \path{incomplete} \\
-Applicable, artifact failed & \path{requested} & \path{applicable} & \path{decision_unavailable} & \path{failed} \\
-Applicable, artifact not produced & \path{requested} & \path{applicable} & \path{decision_unavailable} & \path{not_produced} \\
-Applicable and policy-evaluable & \path{requested} & \path{applicable} & \path{eligible} or \path{ineligible} & \path{realized}, \path{incomplete}, \path{failed}, or \path{not_produced}, as observed \\
+Use not requested & \path{not_requested} & no proposition & no proposition & \path{not_produced} \\
+Requested and known inapplicable; decision artifact written & \path{requested} & \path{inapplicable} & no proposition & \path{realized} \\
+Missing profile/source binding or unresolved structural scope; accounting artifact written & \path{requested} & \path{applicability_unknown} & \path{decision_unavailable} & \path{realized} \\
+Applicable with decisive owner-defined exclusion; artifact written & \path{requested} & \path{applicable} & \path{ineligible} & \path{realized} \\
+Applicable with unresolved required permission; artifact written & \path{requested} & \path{applicable} & \path{decision_unavailable} & \path{realized} \\
+Applicable with every required permission; artifact written & \path{requested} & \path{applicable} & \path{eligible} & \path{realized} \\
+Decision artifact incomplete, failed, or absent & retained request & only a proposition from a separate prior authoritative artifact, otherwise none & no proposition from the defective or absent artifact & \path{incomplete}, \path{failed}, or \path{not_produced} \\
 \bottomrule
 \end{longtable}
 \normalsize
 
-Every row also carries the exact controlling cause, profile identity, source
-bindings, evaluation identity, lifecycle, provenance, and any prescribed
-post-evaluation action. Missing-source means a missing source authority or
-source binding required by that exact use; it does not delete an otherwise
-conforming unassociated fit component.
+Every realized decision artifact also carries the exact controlling cause,
+profile identity, source bindings, evaluation identity, lifecycle, provenance,
+and any prescribed post-evaluation action. A structural scientific conflict
+may be faithfully recorded in a \path{realized} decision; realization is
+\path{failed} only when production of the decision artifact fails. A defective
+or absent artifact creates no eligibility assertion by implication.

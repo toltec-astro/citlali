@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify the immutable SCI-POINT input and targeted Stage B r0.2 closure."""
+"""Verify the immutable SCI-POINT input and final targeted Stage B r0.3 closure."""
 
 from __future__ import annotations
 
@@ -20,8 +20,10 @@ ARCHIVE_BYTES = 33_262
 ARCHIVE_SHA256 = "d74de333b87c66fb74c04c1346beb5ea0956bb25b61efcf9f770bb19818ee00f"
 MANIFEST_SHA256 = "c0df54ea420404cb6b100f3e478b89bd81e9d1c50b211a723230177d180df894"
 PACKET_PREFIX = "SCI-POINT-v0.1-r0.3-stage-b-author-packet/"
-DELIVERY = ROOT / "delivery" / "SCI-POINT-v0.1-r0.2-stage-b-delivery-packet.tar.gz"
-DELIVERY_PREFIX = "SCI-POINT-v0.1-r0.2-stage-b-delivery/"
+OWNER_DIRECTIVE = ROOT / "SCIENTIFIC_OWNER_TARGETED_STAGE_B_R0_3_DIRECTIVE_2026-09-03.md"
+OWNER_DIRECTIVE_SHA256 = "9f445480fd42311ebe21f4da772e4e32db400c2da08a119b699f6bd8e13a54d4"
+DELIVERY = ROOT / "delivery" / "SCI-POINT-v0.1-r0.3-stage-b-delivery-packet.tar.gz"
+DELIVERY_PREFIX = "SCI-POINT-v0.1-r0.3-stage-b-delivery/"
 PDFS = {
     "SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf": "Scientific Rationale",
     "SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf": "Engineering Conformance",
@@ -135,17 +137,23 @@ def verify_sources() -> tuple[str, str]:
     bindings_path = src / "common" / "bindings.tex"
     require(bindings_path.is_file(), "missing source bindings")
     bindings = bindings_path.read_text(encoding="utf-8")
+    require(sha256(OWNER_DIRECTIVE.read_bytes()) == OWNER_DIRECTIVE_SHA256,
+            "owner-directive SHA-256 mismatch")
 
     for main in mains:
         text = main.read_text(encoding="utf-8")
         require("\\input{common/bindings}" in text, f"{main.name} lacks bindings")
         for name in COMMON:
             require(f"\\input{{common/{name[:-4]}}}" in text, f"{main.name} lacks {name}")
+        for cover_macro in ("StageAPacketSHA", "CommonCoreSHA", "OwnerDirectiveSHA", "BuildRecordID"):
+            require(f"\\{cover_macro}" in text, f"{main.name} lacks cover binding {cover_macro}")
 
     common_bytes = b"".join(path.read_bytes() for path in common_paths)
     common_digest = sha256(common_bytes)
     require(macro(bindings, "CommonCoreSHA") == common_digest, "common-core cover binding")
     require(macro(bindings, "StageAPacketSHA") == ARCHIVE_SHA256, "Stage A cover binding")
+    require(macro(bindings, "OwnerDirectiveSHA") == OWNER_DIRECTIVE_SHA256,
+            "owner-directive cover binding")
     require(macro(bindings, "RationaleSourceSHA") == sha256(mains[0].read_bytes()),
             "rationale-source cover binding")
     require(macro(bindings, "EngineeringSourceSHA") == sha256(mains[1].read_bytes()),
@@ -169,7 +177,11 @@ def verify_sources() -> tuple[str, str]:
         "POINT-DYNAMIC-RANGE-DIAGNOSTIC/FITTED-AMPLITUDE-OVER-FULL-MAP-RMS@1",
         "POINT-FORMAL-AMPLITUDE-STANDARDIZATION@1",
         "diagnostic_display_only", "approximately_centered",
-        "C_{\\Delta}", "R^{\\mathrm{fixed}}", "R^{\\mathrm{FP}}",
+        "C_{\\Delta}", "R^{\\mathrm{fixed}}",
+        "R^{\\mathrm{POINT\\mbox{-}FP}\\mid\\mathrm{parent\\mbox{-}fixed}}",
+        "R^{\\mathrm{chain\\mbox{-}FP}}",
+        "POINT-FORMAL-AMPLITUDE-MAGNITUDE-STANDARDIZATION@1",
+        "no proposition", "inherited parent observation/exposure lineage",
     )
     for token in required_tokens:
         require(token in normalized, f"required source token: {token}")
@@ -179,9 +191,15 @@ def verify_sources() -> tuple[str, str]:
             in all_source, "exact realization enumeration")
     require("applicability: \\path{applicable}, \\path{inapplicable}, or"
             in all_source, "exact applicability enumeration")
+    require("Use not requested & \\path{not_requested} & no proposition & no proposition & \\path{not_produced}"
+            in all_source, "source not-requested SCI-VAL row")
+    require("Requested and known inapplicable; decision artifact written & \\path{requested} & \\path{inapplicable} & no proposition & \\path{realized}"
+            in all_source, "source inapplicable SCI-VAL row")
+    require("POINT-FULL-PROCEDURE-RESPONSE-STATE" not in normalized,
+            "ambiguous generic full-procedure response role")
 
-    records = json.loads((ROOT / "STAGE_B_R0_2_RECORDS.json").read_text(encoding="utf-8"))
-    require(records["document_revision"] == "r0.2", "records revision")
+    records = json.loads((ROOT / "STAGE_B_R0_3_RECORDS.json").read_text(encoding="utf-8"))
+    require(records["document_revision"] == "r0.3", "records revision")
     require(records["sci_val"]["applicability"][-1] == "applicability_unknown",
             "records applicability types")
     require(records["sci_val"]["realization"] ==
@@ -191,11 +209,38 @@ def verify_sources() -> tuple[str, str]:
     require(len(records["draft_named_use_profiles"]) == 4, "draft profile count")
     require(len(records["point_boundary_roles"]) == 4, "boundary-role count")
     require(len(records["required_method_record_templates"]) == 3, "method templates")
+    dispositions = records["sci_val"]["dispositions"]
+    require(dispositions["not_requested"] == ["not_requested", None, None, "not_produced"],
+            "not-requested SCI-VAL semantics")
+    require(dispositions["requested_known_inapplicable_artifact_written"] ==
+            ["requested", "inapplicable", None, "realized"],
+            "inapplicable SCI-VAL semantics")
+    for key in ("missing_profile_artifact_written", "missing_source_binding_artifact_written",
+                "unresolved_structural_scope_artifact_written"):
+        require(dispositions[key][-1] == "realized", f"written accounting realization: {key}")
+    require(records["response_families"]["families_alias"] is False,
+            "response families do not alias")
+    require(records["response_families"]["finite_difference_jacobian_composition_without_theorem"] is False,
+            "finite-difference composition gate")
+    require(records["derived_diagnostics"][0]["signed"] is True and
+            records["derived_diagnostics"][1]["signed"] is True,
+            "signed diagnostics")
+    require(records["publication_semantics"]["downstream_success_required_for_base_fit"] is False,
+            "downstream/base-fit separation")
+    require(records["published_product_lineage"]["point_creates_exposure_identity"] is False,
+            "POINT exposure ownership")
+
+    parity = json.loads((ROOT / "STAGE_B_R0_3_PARITY_REPORT.json").read_text(encoding="utf-8"))
+    require(parity["document_revision"] == "r0.3", "parity report revision")
+    require(parity["targeted_semantic_audit"]["status"] == "pass",
+            "targeted semantic audit")
 
     source_manifest = json.loads((ROOT / "STAGE_B_SOURCE_MANIFEST.json").read_text(encoding="utf-8"))
-    require(source_manifest["document_revision"] == "r0.2", "source manifest revision")
+    require(source_manifest["document_revision"] == "r0.3", "source manifest revision")
     require(source_manifest["author_packet_sha256"] == ARCHIVE_SHA256,
             "source manifest Stage A binding")
+    require(source_manifest["owner_directive"]["sha256"] == OWNER_DIRECTIVE_SHA256,
+            "source manifest owner-directive binding")
     require(source_manifest["common_core"]["sha256"] == common_digest,
             "source manifest common-core binding")
     for entry in source_manifest["files"]:
@@ -206,7 +251,7 @@ def verify_sources() -> tuple[str, str]:
 
 def verify_pdfs(common_digest: str) -> list[tuple[str, int, str]]:
     build = json.loads((ROOT / "STAGE_B_BUILD_MANIFEST.json").read_text(encoding="utf-8"))
-    require(build["document_revision"] == "r0.2", "build manifest revision")
+    require(build["document_revision"] == "r0.3", "build manifest revision")
     by_name = {pathlib.Path(entry["path"]).name: entry for entry in build["pdfs"]}
     require(set(by_name) == set(PDFS), "build manifest PDF set")
     results: list[tuple[str, int, str]] = []
@@ -216,11 +261,13 @@ def verify_pdfs(common_digest: str) -> list[tuple[str, int, str]]:
         require(len(reader.pages) == by_name[filename]["pages"], f"PDF pages: {filename}")
         require(not (reader.get_fields() or {}), f"unexpected PDF form fields: {filename}")
         title = str((reader.metadata or {}).get("/Title", ""))
-        require(title_fragment in title and "r0.2" in title, f"PDF title: {filename}")
+        require(title_fragment in title and "r0.3" in title, f"PDF title: {filename}")
+        require("Grant Wilson, scientific owner" in str((reader.metadata or {}).get("/Author", "")),
+                f"PDF author metadata: {filename}")
         text = "\n".join(page.extract_text() or "" for page in reader.pages)
         compact = re.sub(r"\s+", "", text)
         for fragment in (
-            "SCI-POINT", "r0.2", ARCHIVE_SHA256, common_digest,
+            "SCI-POINT", "r0.3", ARCHIVE_SHA256, OWNER_DIRECTIVE_SHA256, common_digest,
             "POINT-FIT-AMPLITUDE-COMPONENT",
             "POINT-SOURCE-ASSOCIATED-AMPLITUDE-DIAGNOSTIC",
             "applicability_unknown", "SCI-POINT-PRED-032",
@@ -233,6 +280,16 @@ def verify_pdfs(common_digest: str) -> list[tuple[str, int, str]]:
     require(build["visual_qa"]["pages_inspected"] == sum(row[1] for row in results),
             "visual-QA page count")
     require(build["visual_qa"]["result"] == "pass", "visual-QA result")
+    require(build["source_manifest_sha256"] ==
+            sha256((ROOT / "STAGE_B_SOURCE_MANIFEST.json").read_bytes()),
+            "build/source manifest binding")
+    qa = json.loads((ROOT / "STAGE_B_R0_3_PDF_QA_REPORT.json").read_text(encoding="utf-8"))
+    require(qa["result"] == "pass" and qa["pages_inspected"] == sum(row[1] for row in results),
+            "PDF QA report")
+    clean = json.loads((ROOT / "STAGE_B_R0_3_CLEAN_BUILD_REPORT.json").read_text(encoding="utf-8"))
+    require(clean["result"] == "pass" and
+            all(row["extracted_text_matches_delivered_pdf"] for row in clean["results"]),
+            "clean-build report")
     return results
 
 
@@ -249,11 +306,24 @@ def verify_delivery() -> tuple[int, int, str]:
     for required in (
         ARCHIVE.name, "AUTHOR_PACKET_MANIFEST.md", "bindings.tex",
         "scientific-rationale.tex", "engineering-conformance.tex",
-        "STAGE_B_R0_2_RECORDS.json", "STAGE_B_SOURCE_MANIFEST.json",
-        "STAGE_B_BUILD_MANIFEST.json", "verify_stage_b.py",
+        "SCIENTIFIC_OWNER_TARGETED_STAGE_B_R0_3_DIRECTIVE_2026-09-03.md",
+        "STAGE_B_R0_3_RECORDS.json", "STAGE_B_R0_3_TARGETED_AMENDMENTS.md",
+        "STAGE_B_R0_3_PARITY_REPORT.json", "STAGE_B_R0_3_SEMANTIC_CHANGE_REPORT.md",
+        "PROPOSED_SCIENTIFIC_OWNER_FREEZE_R0_3.md", "STAGE_B_SOURCE_MANIFEST.json",
+        "STAGE_B_BUILD_MANIFEST.json", "STAGE_B_R0_3_CLEAN_BUILD_REPORT.json",
+        "STAGE_B_R0_3_PDF_QA_REPORT.json", "verify_stage_b.py",
         *PDFS.keys(),
     ):
         require(required in names, f"delivery member: {required}")
+    with tarfile.open(DELIVERY, "r:gz") as bundle:
+        for member in members:
+            relative = pathlib.PurePosixPath(member.name).relative_to(
+                pathlib.PurePosixPath(DELIVERY_PREFIX)
+            )
+            local = ROOT.joinpath(*relative.parts)
+            require(local.is_file(), f"delivery source exists: {relative}")
+            archived = bundle.extractfile(member).read()
+            require(archived == local.read_bytes(), f"delivery byte parity: {relative}")
     return len(members), len(raw), sha256(raw)
 
 
@@ -272,9 +342,11 @@ def main() -> int:
     print(f"PASS author_manifest sha256={MANIFEST_SHA256}")
     print("PASS author_members=39 admitted=37 unsafe=0 unresolved_links=0")
     print("PASS owner_parity=11_ids method_dispositions=3")
+    print(f"PASS owner_directive sha256={OWNER_DIRECTIVE_SHA256}")
     print(f"PASS common_core files=6 sha256={common_digest}")
     print("PASS requirements=38 predictions=32 unavailable_states=23")
     print("PASS sci_val_axes=4 logical_records=8 boundary_roles=4 profiles=4 method_templates=3")
+    print("PASS targeted_semantics=SCI_VAL,response_types,signed_diagnostics,dependencies,weights,lineage")
     for filename, pages, digest in pdfs:
         print(f"PASS pdf={filename} pages={pages} sha256={digest}")
     print(f"PASS delivery members={delivery_members} bytes={delivery_bytes} sha256={delivery_digest}")
