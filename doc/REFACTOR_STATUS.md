@@ -721,6 +721,37 @@ outside the authorization. The recommended next decision is a separately
 authorized read-only map-leverage and flagging audit before any candidate
 safeguard comparison.
 
+The scientific owner then authorized that bounded read-only audit. Registered
+EL-F9 source inspection corrected an important prospective premise before it
+was interpreted: for the fixed JINC products, `weight_formal_I` is the
+nonlinear finalized coefficient `G^2/V`, not an additive detector-weight
+plane. The pre-normalization grid denominator `G`, variance accumulator `V`,
+signal numerator `S`, and detector-resolved components are not published.
+The paired formal-coefficient difference is materially negative in 2,019
+pixels and positive in 2,448, which proves it cannot be used as UID 4460's
+fractional leverage. EL-F9 therefore honored its availability stop: it ran no
+new reduction and substituted no proxy leverage.
+
+The remaining flagging trace completed. UID 4460 is APT-accepted; its scan-5
+PTC detector weight is at the 79th percentile from the low end and its
+flagged fraction sits near the midpoint of a large tie, while its residual
+RMS and standard deviation are high at the 91st and 93rd percentiles and its
+median is near the 1st percentile. The map rule records four globally extreme
+pixels for which the detector-specific leave-one-out significances are only
+`1.70`--`2.12`; four is exactly the repeat threshold, and the resulting
+factor-zero record withholds all 305 proposed scan-5 mapmaking samples. The
+four trigger pixels themselves have exactly zero direct N5/A5-map difference,
+so the trigger and response locations are spatially decoupled. The observed
+arcs are the response to the whole scan-local action, not removal of just four
+pixels. Exact leverage-versus-processed-signal contrast remains unresolved.
+The active
+[`EL-F9 result`](../validation/fruit_loop_point_123424_el_f9_map_leverage_audit_2026-09-03/EXECUTION_RESULT_R0.1.md)
+recommends a separately reviewed diagnostic-only JINC accounting replay that
+persists total and target-UID `S`, `G`, and `V` components and exact support,
+then reconstructs the already retained map-only result. No instrumentation,
+replay, safeguard, policy, recurrence, Gate D, Stage B, or Unity action is yet
+authorized.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

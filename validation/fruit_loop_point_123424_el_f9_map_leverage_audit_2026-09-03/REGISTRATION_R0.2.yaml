@@ -1,0 +1,34 @@
+schema_version: sci-fruit-el-f9-registration-v1
+test_id: SCI-FRUIT-EL-F9-MAP-LEVERAGE-FLAGGING-AUDIT-R0.1
+registration_revision: r0.2
+status: frozen-before-new-numerical-measurement
+source_parent: ca09109c0e7f05f6e1bd0a13d7134cf35c331924
+scope: read-only-development-evidence-audit
+supersedes:
+  path: REGISTRATION_R0.1.yaml
+  size_bytes: 6926
+  sha256: 0fea360923e4ae7ca10a1c623d62cf6dce7c46ffb27f6d362bf3beef70ff6b29
+  reason: >-
+    Source/schema inspection required by the test definition resolved the
+    additive mapmaking coefficient as weight_formal_I rather than the
+    empirically rescaled weight_I plane.
+controlling_definition:
+  path: TEST_DEFINITION.md
+  size_bytes: 5590
+  sha256: a23979463c8f47f8f4278f70d72b1c6af7cc8e1eef65d118014131afdd44cabf
+controlling_semantics_resolution:
+  path: PRE_ANALYSIS_SEMANTICS_R0.2.md
+  size_bytes: 1552
+  sha256: b9f8d4d22ee9f2f48a4eb9b03c877b7e7a848e3b121cc92d90941b22934e9f61
+input_roster: inherited-exactly-from-registration-r0.1
+weight_plane_for_leverage: weight_formal_I
+weight_plane_prohibited_for_leverage: weight_I
+admitted_reconstruction_support:
+  - paired_signal_planes_finite
+  - paired_formal_weight_planes_finite_and_positive
+  - formal_weight_difference_positive_above_roundoff_floor
+support_loss_reporting: separate_no_reconstruction
+new_values_inspected_before_freeze: false
+new_reduction_authorized: false
+algorithm_or_configuration_change_authorized: false
+unity_activity_authorized: false

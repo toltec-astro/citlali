@@ -1,0 +1,48 @@
+schema_version: sci-fruit-el-f9-registration-v1
+test_id: SCI-FRUIT-EL-F9-MAP-LEVERAGE-FLAGGING-AUDIT-R0.1
+registration_revision: r0.3
+status: frozen-before-new-numerical-measurement
+source_parent: ca09109c0e7f05f6e1bd0a13d7134cf35c331924
+scope: read-only-development-evidence-audit
+supersedes:
+  path: REGISTRATION_R0.2.yaml
+  size_bytes: 1460
+  sha256: 933d665ebd95ed06193cf07818bd5728217a9d846a7ebbfc2757bdc4adb18cf0
+inherited_registration:
+  base_input_roster: REGISTRATION_R0.1.yaml
+  base_input_roster_sha256: 0fea360923e4ae7ca10a1c623d62cf6dce7c46ffb27f6d362bf3beef70ff6b29
+  controlling_definition: TEST_DEFINITION.md
+  controlling_definition_sha256: a23979463c8f47f8f4278f70d72b1c6af7cc8e1eef65d118014131afdd44cabf
+  controlling_semantics: PRE_ANALYSIS_SEMANTICS_R0.2.md
+  controlling_semantics_sha256: b9f8d4d22ee9f2f48a4eb9b03c877b7e7a848e3b121cc92d90941b22934e9f61
+additional_inputs:
+  - role: el_f8_registered_analysis_geometry
+    path: validation/fruit_loop_point_123424_el_f8_penalty_placement_2026-09-03/ANALYSIS_MANIFEST_R0.4_ANALYSIS_R0.4.yaml
+    size_bytes: 3886
+    sha256: 7228a6dd68f697b98341a140b2fabe8002b4472168b8ed6c104d25b17805ab67
+  - role: pre_el_f8_mechanism_evidence_note
+    path: doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F8_UID4460_MECHANISM_NOTE_R0.1.md
+    size_bytes: 5737
+    sha256: 39dcd110e58200083796fe1b7da26ae9a06e69dc323a53482218443f59f3c655
+  - role: a5_map_iteration_5_learning_evidence
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f8-penalty-placement-r0.1/r0.4/a5-map/reduced/redu00/learning_iter_5.csv
+    size_bytes: 95883
+    sha256: 267ccb804ffeac160c99cd2369a50d3ea26218d5abcf25ee6e3bb6a7d31d6599
+  - role: injected_iteration_4_learning_evidence
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f8-penalty-placement-r0.1/r0.4/a5-map/restart-source/redu04/learning_iter_4.csv
+    size_bytes: 881918
+    sha256: 4ea7986dbea4ea619438092dab0f7c5221b520ee6901529b52787d3fa7b24616
+  - role: n5_iteration_5_learning_evidence
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/injected-without-uid4460/reduced/redu05/learning_iter_5.csv
+    size_bytes: 96091
+    sha256: 6661d634a885d82dd2c8bcc002e315fea8e8db2118f984fd4e103496c18c0ed5
+  - role: fits_weight_output_semantics
+    path: include/citlali/core/pipeline/map_image_output_helpers.h
+    size_bytes: 27073
+    sha256: cd7837b487c2c61393097322d068538c6570d275647bbe03f4210c3dc7d53633
+weight_plane_for_leverage: weight_formal_I
+fixed_region_geometry_source: el_f8_registered_analysis_geometry
+new_values_inspected_before_freeze: false
+new_reduction_authorized: false
+algorithm_or_configuration_change_authorized: false
+unity_activity_authorized: false
