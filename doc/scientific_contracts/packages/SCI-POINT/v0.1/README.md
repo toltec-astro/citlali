@@ -1,7 +1,7 @@
 # SCI-POINT — Bright-Source Pointing Inference
 
-Status: final targeted Stage B document revision `r0.3` complete; proposed
-conditional scientific-owner freeze pending
+Status: accepted Stage B science republished as document revision `r0.4` under
+the owner-directed three-artifact presentation freeze
 
 Version: `v0.1`
 
@@ -76,25 +76,27 @@ second blocks formal uncertainty and dependent uses without erasing otherwise
 authorized fitted values. Absence of the third blocks only the descriptive
 dynamic-range diagnostic.
 
-## Stage B r0.3 result
+## Stage B r0.4 result
 
-The exact owner-approved Stage A r0.3 packet and final targeted owner directive
-now bind a shared normative common core and two rendered views:
+The exact accepted r0.3 science is unchanged. The r0.4 owner presentation
+directive centralizes it in one normative core and binds two concise rendered
+views:
+
+- [`pdf/SCI-POINT-NORMATIVE-CORE-v0.1.pdf`](pdf/SCI-POINT-NORMATIVE-CORE-v0.1.pdf)
+  contains the complete exact shared scientific content;
 
 - [`pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf`](pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf)
-  explains the conditional scientific contract;
+  is the concise scientist-facing reading surface;
 - [`pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf`](pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf)
-  specifies prospective conformance evidence without independent science;
+  specifies prospective engineering evidence without independent science;
+- [`SCIENTIFIC_OWNER_R0_4_VIEW_SEPARATION_DIRECTIVE_2026-09-03.md`](SCIENTIFIC_OWNER_R0_4_VIEW_SEPARATION_DIRECTIVE_2026-09-03.md)
+  preserves the exact presentation directive;
 - [`STAGE_B_R0_3_RECORDS.json`](STAGE_B_R0_3_RECORDS.json) preserves exact
   SCI-VAL, response, diagnostic, dependency, lifecycle, weight, lineage, and
-  profile records;
-- [`STAGE_B_R0_3_TARGETED_AMENDMENTS.md`](STAGE_B_R0_3_TARGETED_AMENDMENTS.md)
-  provides a non-normative navigation crosswalk for the eight targeted repairs;
-- [`STAGE_B_R0_3_PARITY_REPORT.json`](STAGE_B_R0_3_PARITY_REPORT.json),
-  [`STAGE_B_R0_3_SEMANTIC_CHANGE_REPORT.md`](STAGE_B_R0_3_SEMANTIC_CHANGE_REPORT.md),
-  and the clean-build/PDF-QA reports close traceability; and
-- [`PROPOSED_SCIENTIFIC_OWNER_FREEZE_R0_3.md`](PROPOSED_SCIENTIFIC_OWNER_FREEZE_R0_3.md)
-  states the bounded conditional freeze proposed to the scientific owner.
+  profile records as the unchanged scientific machine baseline; and
+- [`STAGE_B_R0_4_SEMANTIC_CHANGE_REPORT.md`](STAGE_B_R0_4_SEMANTIC_CHANGE_REPORT.md),
+  [`STAGE_B_R0_4_PARITY_REPORT.json`](STAGE_B_R0_4_PARITY_REPORT.json), and the
+  r0.4 clean-build/PDF-QA reports establish nonchange and publication parity.
 
 This Stage B result adds no numerical route or implementation, validation,
 accuracy, performance, readiness, production, authorization, or Unity claim.
@@ -199,20 +201,21 @@ in [`PARENT_ROUTE_AND_CLAIM_MATRIX.md`](PARENT_ROUTE_AND_CLAIM_MATRIX.md).
 - [`CROSSWALK.md`](CROSSWALK.md): Stage A deliverable crosswalk
 - [`STAGE_A_CHANGE_LOG.md`](STAGE_A_CHANGE_LOG.md): package creation record
 
-The canonical `src/` and `pdf/` paths now contain document revision r0.3 and
-its two verified rendered PDFs. Stage A materials remain immutable scientific
-authority and historical recovery evidence; the shared Stage B common core is
-the sole normative scientific source for the two views.
+The canonical `src/` and `pdf/` paths now contain document revision r0.4 and
+its three verified rendered PDFs. Stage A materials remain immutable
+scientific authority and historical recovery evidence; the six byte-identical
+Stage B common files are the sole normative scientific source for all three
+bound views.
 
 ## Current Gate
 
 Recovery, the ODQ-001 through ODQ-009 decisions, exact Stage A r0.3 author
 packet approval, implementation-blind Stage B authorship, final targeted r0.3
-repair, clean rebuild, parity verification, and all-page PDF QA are complete.
-The current decision is the proposed conditional r0.3 scientific-owner freeze.
+repair, r0.4 view separation, clean rebuild, parity verification, and all-page
+PDF QA are complete. The r0.4 presentation is frozen under the owner directive.
 The three numerical method authorities, exact route instances, four named-use
 profile registrations, and response/bias authorities remain separately gated;
-none is approved by the document freeze.
+none is approved by the presentation freeze.
 
 No algorithm, frozen authority, implementation, configuration, validation,
 performance, readiness, production, or Unity state is changed or claimed.

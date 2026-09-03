@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the deterministic SCI-POINT v0.1 r0.3 Stage B delivery archive."""
+"""Build the deterministic SCI-POINT v0.1 r0.4 Stage B delivery archive."""
 
 from __future__ import annotations
 
@@ -11,8 +11,8 @@ import tarfile
 
 
 ROOT = pathlib.Path(__file__).resolve().parent
-OUTPUT = ROOT / "delivery" / "SCI-POINT-v0.1-r0.3-stage-b-delivery-packet.tar.gz"
-PREFIX = "SCI-POINT-v0.1-r0.3-stage-b-delivery"
+OUTPUT = ROOT / "delivery" / "SCI-POINT-v0.1-r0.4-stage-b-delivery-packet.tar.gz"
+PREFIX = "SCI-POINT-v0.1-r0.4-stage-b-delivery"
 FILES = (
     "README.md",
     "author_packet/SCI-POINT-v0.1-r0.3-stage-b-author-packet.tar.gz",
@@ -21,6 +21,7 @@ FILES = (
     "AUTHOR_PACKET_MANIFEST.md",
     "AUTHOR_PACKET_MANIFEST.sha256",
     "SCIENTIFIC_OWNER_TARGETED_STAGE_B_R0_3_DIRECTIVE_2026-09-03.md",
+    "SCIENTIFIC_OWNER_R0_4_VIEW_SEPARATION_DIRECTIVE_2026-09-03.md",
     "src/common/notation.tex",
     "src/common/definitions.tex",
     "src/common/equations.tex",
@@ -28,6 +29,7 @@ FILES = (
     "src/common/requirements.tex",
     "src/common/edge_cases.tex",
     "src/common/bindings.tex",
+    "src/normative-core.tex",
     "src/scientific-rationale.tex",
     "src/engineering-conformance.tex",
     "STAGE_B_R0_3_RECORDS.json",
@@ -35,13 +37,17 @@ FILES = (
     "STAGE_B_R0_3_PARITY_REPORT.json",
     "STAGE_B_R0_3_SEMANTIC_CHANGE_REPORT.md",
     "PROPOSED_SCIENTIFIC_OWNER_FREEZE_R0_3.md",
+    "STAGE_B_R0_4_VIEW_SEPARATION_RECORD.json",
+    "STAGE_B_R0_4_SEMANTIC_CHANGE_REPORT.md",
+    "STAGE_B_R0_4_PARITY_REPORT.json",
     "STAGE_B_SOURCE_MANIFEST.json",
     "STAGE_B_BUILD_MANIFEST.json",
-    "STAGE_B_R0_3_CLEAN_BUILD_REPORT.json",
-    "STAGE_B_R0_3_PDF_QA_REPORT.json",
+    "STAGE_B_R0_4_BUILD_PARITY_REPORT.json",
+    "STAGE_B_R0_4_PDF_QA_REPORT.json",
     "verify_stage_b.py",
     "build_stage_b_delivery.py",
     "pdf/README.md",
+    "pdf/SCI-POINT-NORMATIVE-CORE-v0.1.pdf",
     "pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf",
     "pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf",
 )

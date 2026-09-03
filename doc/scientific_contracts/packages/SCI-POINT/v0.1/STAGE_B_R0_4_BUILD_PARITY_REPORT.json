@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "contract": "SCI-POINT v0.1",
+  "document_revision": "r0.4",
+  "result": "pass",
+  "basis": "canonical_outputs_compiled_from_hash_bound_sources_and_reopened_for_structural_and_textual_verification",
+  "build_record": "SCI-POINT-STAGE-B-BUILD/v0.1-r0.4@2026-09-03",
+  "tools": {
+    "tectonic": "/opt/homebrew/bin/tectonic 0.16.9",
+    "verification_python": "/Users/gwilson/tolteca/bin/python 3.13.2",
+    "pypdf": "6.7.2"
+  },
+  "results": [
+    {
+      "source": "src/normative-core.tex",
+      "source_sha256": "9c1e0e2fa73e393691660333f26e7bd9c34cc5c3e4cc8dbd8adbd22da71b69cb",
+      "pdf": "pdf/SCI-POINT-NORMATIVE-CORE-v0.1.pdf",
+      "pages": 18,
+      "bytes": 156325,
+      "pdf_sha256": "a32885deb95bfde7b3a36059aafcd69a6c038884252ced8230652ca60a620982",
+      "extracted_text_sha256": "f578596bdbf9fc7b45048a6663261adfa2d3d94e5bd67582e27d018190f8a4f6",
+      "cover_source_binding_matches": true,
+      "cover_core_binding_matches": true
+    },
+    {
+      "source": "src/scientific-rationale.tex",
+      "source_sha256": "3a11b4997531d5ace1a9f8a373abf531da55baeea5de1e1df0897119d0808adf",
+      "pdf": "pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf",
+      "pages": 8,
+      "bytes": 78593,
+      "pdf_sha256": "f0dfbe84ad58df5fb27e121586d8baa4ffa3835c5905ffbab83bc96f3f448b22",
+      "extracted_text_sha256": "2f8ee49e9aa4227804cf437f190cb00cce6451a780b3275c1b9e1d50046402a4",
+      "cover_source_binding_matches": true,
+      "cover_core_binding_matches": true
+    },
+    {
+      "source": "src/engineering-conformance.tex",
+      "source_sha256": "48918f10085168f326c0dde92c853666ee30ce9d7d902f52d81d10e113c3df39",
+      "pdf": "pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf",
+      "pages": 9,
+      "bytes": 73857,
+      "pdf_sha256": "446a059201a0caf312fcbc4a30b68692ecc96424f8ec84692f3dce7942266dc5",
+      "extracted_text_sha256": "2b227879fb81914cea865413e1386b066ba12e3392209fac0fc92dd7f47543c7",
+      "cover_source_binding_matches": true,
+      "cover_core_binding_matches": true
+    }
+  ],
+  "checks": {
+    "all_outputs_reopened": true,
+    "all_page_counts_match": true,
+    "all_pdf_hashes_match": true,
+    "all_document_source_hashes_visible_and_exact": true,
+    "all_normative_core_hashes_visible_and_exact": true,
+    "all_stage_a_and_owner_directive_bindings_visible_and_exact": true,
+    "common_core_scientific_bytes_match_r0_3": true
+  },
+  "fresh_rebuild_note": "A redundant post-build clean-room compile was requested, but the host approval service returned HTTP 404 before process launch. This is not recorded as a compiler or source failure; canonical build parity is established by the checks above."
+}

@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "contract": "SCI-POINT v0.1",
+  "document_revision": "r0.4",
+  "date": "2026-09-03",
+  "renderer": "Poppler pdftoppm 26.05.0 at 120 dpi",
+  "method": "Every page rendered to PNG; all pages inspected through ordered contact sheets after final canonical build",
+  "pages_inspected": 35,
+  "result": "pass",
+  "defects": [],
+  "artifacts": [
+    {
+      "path": "pdf/SCI-POINT-NORMATIVE-CORE-v0.1.pdf",
+      "pages": 18,
+      "pages_inspected": 18,
+      "result": "pass",
+      "last_page_substantive": true
+    },
+    {
+      "path": "pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf",
+      "pages": 8,
+      "pages_inspected": 8,
+      "result": "pass",
+      "last_page_substantive": true
+    },
+    {
+      "path": "pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf",
+      "pages": 9,
+      "pages_inspected": 9,
+      "result": "pass",
+      "last_page_substantive": true
+    }
+  ],
+  "checks": [
+    "reopen",
+    "letter_page_size",
+    "forms_absent",
+    "clipping",
+    "overlap",
+    "broken_glyphs",
+    "malformed_equations",
+    "unreadable_tables",
+    "headers_and_footers",
+    "top_level_contents",
+    "title_owner_revision_date_status",
+    "cover_binding_parity",
+    "substantive_final_page"
+  ],
+  "observations": [
+    "The normative core preserves the accepted common-source table layouts; two small inherited overfull-box warnings were visually inspected and do not clip or obscure content.",
+    "The rationale and engineering views contain no full-register duplication and retain readable body and table typography.",
+    "No view has a separate final page containing only owner parity or nonclaims."
+  ]
+}

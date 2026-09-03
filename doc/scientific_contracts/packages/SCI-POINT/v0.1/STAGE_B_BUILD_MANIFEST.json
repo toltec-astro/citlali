@@ -1,57 +1,77 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "contract": "SCI-POINT v0.1",
-  "document_revision": "r0.3",
-  "build_record": "SCI-POINT-STAGE-B-BUILD/v0.1-r0.3@2026-09-03",
+  "document_revision": "r0.4",
+  "build_record": "SCI-POINT-STAGE-B-BUILD/v0.1-r0.4@2026-09-03",
   "source_manifest": "STAGE_B_SOURCE_MANIFEST.json",
-  "source_manifest_sha256": "4435a943747fa2404e2f5a1f6fc14a0032b8f60551bb2217d4f722014d9673ca",
+  "source_manifest_sha256": "76811b925834c7572b422aba3b23820b041307348bdde3da2fb1300263bf1828",
   "tools": {
     "tectonic": "/opt/homebrew/bin/tectonic 0.16.9",
+    "pdfinfo": "Poppler pdfinfo 26.05.0",
     "pdftoppm": "Poppler pdftoppm 26.05.0",
     "verification_python": "/Users/gwilson/tolteca/bin/python 3.13.2",
     "pypdf": "6.7.2",
     "pillow": "11.1.0"
   },
   "commands": {
+    "normative_core_compile": "/opt/homebrew/bin/tectonic -X compile src/normative-core.tex --outdir pdf",
     "rationale_compile": "/opt/homebrew/bin/tectonic -X compile src/scientific-rationale.tex --outdir pdf",
     "engineering_compile": "/opt/homebrew/bin/tectonic -X compile src/engineering-conformance.tex --outdir pdf",
+    "canonical_normative_core_output": "mv -f pdf/normative-core.pdf pdf/SCI-POINT-NORMATIVE-CORE-v0.1.pdf",
     "canonical_rationale_output": "mv -f pdf/scientific-rationale.pdf pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf",
     "canonical_engineering_output": "mv -f pdf/engineering-conformance.pdf pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf",
-    "rationale_render": "pdftoppm -png -r 120 pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf <temporary-prefix>",
-    "engineering_render": "pdftoppm -png -r 120 pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf <temporary-prefix>",
+    "all_page_render": "pdftoppm -png -r 120 <canonical-pdf> <temporary-prefix>",
     "delivery_build": "/Users/gwilson/tolteca/bin/python build_stage_b_delivery.py",
     "verification": "/Users/gwilson/tolteca/bin/python verify_stage_b.py"
   },
   "pdfs": [
     {
-      "path": "pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf",
-      "title": "SCI-POINT Scientific Rationale v0.1 r0.3",
+      "path": "pdf/SCI-POINT-NORMATIVE-CORE-v0.1.pdf",
+      "title": "SCI-POINT Normative Core v0.1 r0.4",
       "author": "SCI-POINT scientific-contract program; Grant Wilson, scientific owner",
-      "pages": 21,
-      "bytes": 170026,
+      "pages": 18,
+      "words": 8346,
+      "bytes": 156325,
       "page_size": "letter 612 x 792 pt",
       "forms": "none",
-      "sha256": "58445be2ef2190aa7f63a1c2cfade3e527624ee8c57db2151d033ebbfcb630a0"
+      "source_sha256": "9c1e0e2fa73e393691660333f26e7bd9c34cc5c3e4cc8dbd8adbd22da71b69cb",
+      "sha256": "a32885deb95bfde7b3a36059aafcd69a6c038884252ced8230652ca60a620982"
+    },
+    {
+      "path": "pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf",
+      "title": "SCI-POINT Scientific Rationale v0.1 r0.4",
+      "author": "SCI-POINT scientific-contract program; Grant Wilson, scientific owner",
+      "pages": 8,
+      "words": 2041,
+      "bytes": 78593,
+      "page_size": "letter 612 x 792 pt",
+      "forms": "none",
+      "source_sha256": "3a11b4997531d5ace1a9f8a373abf531da55baeea5de1e1df0897119d0808adf",
+      "sha256": "f0dfbe84ad58df5fb27e121586d8baa4ffa3835c5905ffbab83bc96f3f448b22"
     },
     {
       "path": "pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf",
-      "title": "SCI-POINT Engineering Conformance v0.1 r0.3",
+      "title": "SCI-POINT Engineering Conformance v0.1 r0.4",
       "author": "SCI-POINT scientific-contract program; Grant Wilson, scientific owner",
-      "pages": 22,
-      "bytes": 172804,
+      "pages": 9,
+      "words": 2608,
+      "bytes": 73857,
       "page_size": "letter 612 x 792 pt",
       "forms": "none",
-      "sha256": "bceec5304c7fe5c571efede8dcb9c25939adeff6d7bed995a6e4f2c1a3b5fac9"
+      "source_sha256": "48918f10085168f326c0dde92c853666ee30ce9d7d902f52d81d10e113c3df39",
+      "sha256": "446a059201a0caf312fcbc4a30b68692ecc96424f8ec84692f3dce7942266dc5"
     }
   ],
-  "clean_build_report": {
-    "path": "STAGE_B_R0_3_CLEAN_BUILD_REPORT.json",
+  "build_parity": {
+    "path": "STAGE_B_R0_4_BUILD_PARITY_REPORT.json",
     "result": "pass",
-    "extracted_text_matches_delivered_pdfs": true
+    "source_bindings_match": true,
+    "pdf_hashes_match": true,
+    "common_core_byte_equal_to_r0_3": true
   },
   "visual_qa": {
-    "report": "STAGE_B_R0_3_PDF_QA_REPORT.json",
-    "pages_inspected": 43,
+    "report": "STAGE_B_R0_4_PDF_QA_REPORT.json",
+    "pages_inspected": 35,
     "result": "pass",
     "defects": [],
     "checks": [
@@ -64,16 +84,20 @@
       "malformed_equations",
       "unreadable_tables",
       "headers_and_footers",
+      "top_level_contents",
       "title_owner_revision_date_status",
-      "cover_binding_parity"
+      "cover_binding_parity",
+      "substantive_final_page"
     ]
   },
   "identity_and_semantic_audit": {
     "requirements": "SCI-POINT-REQ-001 through REQ-038, gap-free, no new IDs",
     "predictions": "SCI-POINT-PRED-001 through PRED-032, gap-free, no new IDs",
     "unavailable_states": "SCI-POINT-UNAV-001 through UNAV-023, gap-free, no new IDs",
-    "owner_directive_sha256": "9f445480fd42311ebe21f4da772e4e32db400c2da08a119b699f6bd8e13a54d4",
-    "common_core_sha256": "c0ca71bd457b8e6d37a425eb3ead76400dba3a5e29c869420807928201cdcdbd",
+    "scientific_directive_sha256": "9f445480fd42311ebe21f4da772e4e32db400c2da08a119b699f6bd8e13a54d4",
+    "presentation_directive_sha256": "3f2331d4dc2a926ebd840cddb9bd85c9bc7d2a88be28718074313e262c259193",
+    "normative_core_sha256": "c0ca71bd457b8e6d37a425eb3ead76400dba3a5e29c869420807928201cdcdbd",
+    "scientific_bytes_changed": false,
     "result": "pass"
   },
   "nonclaims": [

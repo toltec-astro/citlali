@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "contract": "SCI-POINT v0.1",
+  "from_revision": "r0.3",
+  "document_revision": "r0.4",
+  "result": "pass",
+  "semantic_change": false,
+  "contradictions_exposed": [],
+  "scientific_baseline": {
+    "records": "STAGE_B_R0_3_RECORDS.json",
+    "records_sha256": "b80094ec2af23dac256a4ecac488183229c6ea22dc2c24d7660e48bcc8ff57c4",
+    "parity_report": "STAGE_B_R0_3_PARITY_REPORT.json",
+    "parity_report_sha256": "0edf62e705d1a99b7617feca6aa478a04fe98559f1cee88ddd2ad48c855b32ed"
+  },
+  "common_core": {
+    "files": 6,
+    "sha256_r0_3": "c0ca71bd457b8e6d37a425eb3ead76400dba3a5e29c869420807928201cdcdbd",
+    "sha256_r0_4": "c0ca71bd457b8e6d37a425eb3ead76400dba3a5e29c869420807928201cdcdbd",
+    "byte_equal": true
+  },
+  "identity_parity": {
+    "requirements": {"expected": 38, "observed": 38, "range": "SCI-POINT-REQ-001--038", "gap_free": true},
+    "predictions": {"expected": 32, "observed": 32, "range": "SCI-POINT-PRED-001--032", "gap_free": true},
+    "unavailable_states": {"expected": 23, "observed": 23, "range": "SCI-POINT-UNAV-001--023", "gap_free": true}
+  },
+  "semantic_parity": {
+    "equations": "pass",
+    "product_roles_and_claim_ceilings": "pass",
+    "lifecycle_and_state_tokens": "pass",
+    "logical_stage_count": 8,
+    "sci_val_crosswalk_and_absence_of_proposition": "pass",
+    "response_families_and_nonaliasing": "pass",
+    "signed_diagnostics": "pass",
+    "fit_weight_source_typing": "pass",
+    "published_product_lineage": "pass",
+    "source_owner_digest_and_nonclaim_boundaries": "pass"
+  },
+  "view_separation": {
+    "normative_core_contains_all_six_common_sources": true,
+    "rationale_contains_full_formal_registers": false,
+    "engineering_contains_full_scientific_narrative": false,
+    "engineering_requirement_index_count": 38,
+    "engineering_prediction_index_count": 32,
+    "concise_views_use_top_level_only_contents": true
+  },
+  "page_and_word_counts": {
+    "word_pattern": "\\b[\\w@./+\\-]+\\b",
+    "r0_3": {
+      "scientific_rationale": {"pages": 21, "words": 9335},
+      "engineering_conformance": {"pages": 22, "words": 9835},
+      "primary_view_pages_total": 43,
+      "primary_view_words_total": 19170
+    },
+    "r0_4": {
+      "normative_core": {"pages": 18, "words": 8346},
+      "scientific_rationale": {"pages": 8, "words": 2041},
+      "engineering_conformance": {"pages": 9, "words": 2608},
+      "primary_view_pages_total": 17,
+      "primary_view_words_total": 4649,
+      "publication_pages_total": 35,
+      "publication_words_total": 12995
+    },
+    "primary_view_page_reduction_percent": 60.5
+  },
+  "visual_qa": {
+    "pages_inspected": 35,
+    "result": "pass",
+    "defects": []
+  }
+}

@@ -1360,6 +1360,23 @@ requirements. Implementation conformity, observational validation, achieved
 performance, and production readiness remain separate evidence programs; no
 further WP-7 repair or audit cycle is authorized by this closure.
 
+On `2026-09-03`, the scientific owner accepted SCI-POINT v0.1 r0.3 science as
+the basis for an editorial r0.4 publication freeze and directed a three-view
+separation. The final package now publishes an 18-page standalone normative
+core, an 8-page scientist rationale, and a 9-page engineering conformance
+specification. The six accepted common scientific source files are byte-exact
+with r0.3 and retain ordered SHA-256
+`c0ca71bd457b8e6d37a425eb3ead76400dba3a5e29c869420807928201cdcdbd`;
+REQ-001--038, PRED-001--032, UNAV-001--023, equations, roles, lifecycle,
+SCI-VAL, response, covariance, authority, source, and nonclaim boundaries are
+unchanged. The two audience views fall from 43 to 17 pages by removing
+duplicate formal registers, while the complete normative content appears once
+in the core. The durable verifier and all-page Poppler inspection pass across
+35 pages. This presentation freeze establishes no numerical route,
+implementation conformity, response or covariance fidelity, uncertainty
+coverage, observational accuracy, validation, performance, readiness,
+production authorization, or Unity activity.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted
