@@ -15,6 +15,57 @@ The historical WP-7.1 program router and machine-readable scientific-authority
 binding remain in [`WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md`](WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md)
 and `validation/wp7_timestream_successor_authority.json`.
 
+## Timestream Successor Identity Route Canonical Admission — 2026-09-03
+
+The project owner authorized canonical admission of independently reviewed
+exact candidate `2f59ef8b9906b2912c4980fbcf9c7ab3a28c310a`, tree
+`6e9666d4c994d8d1cb16f0f1bdc7a135730232a4`. The clean local
+`codex/refactor-mainline` was fast-forwarded literally from exact
+`6d6e5d570e2a311687ede8e954c996046772af6f` through the candidate's linear
+15-commit ancestry. No merge commit, rebase, cherry-pick, squash, or content
+repair occurred. At this record's preparation checkpoint cached
+`origin/codex/refactor-mainline` remains at the exact base; canonical push and
+remote equality verification require owner acceptance of the independently
+reviewed exact record commit.
+
+The candidate contains the complete bounded, unactivated Identity Route 001
+spine and its acceptance/build-evidence closure. Exact implementation and
+evidence details are retained in the
+[route handoff](../handoff/TIMESTREAM_SUCCESSOR_IDENTITY_ROUTE_001_2026-09-01.md),
+[representative-acceptance handoff](../handoff/TIMESTREAM_SUCCESSOR_IDENTITY_ROUTE_REPRESENTATIVE_ACCEPTANCE_001_2026-09-02.md),
+and [Unity ABI-conformance handoff](../handoff/TIMESTREAM_SUCCESSOR_UNITY_GCC13_ABI_CONFORMANCE_001_2026-09-02.md).
+The runtime implementation subject is exact
+`b3f03ae20059022ecb709dd411dfbdde3723fef3`, tree
+`1712f13d16506895fb94b72b845f2cbb821bccb7`; candidate `2f59ef8b9...`
+follows it only with a documentation/status closure commit.
+
+Independent fresh-context Tier 2 review passed exact candidate
+`2f59ef8b9...` with no findings in any of the three required categories.
+Fresh local exact-candidate validation passed 52/52 focused Timestream
+Successor CTests, 207/207 baseline-tool tests, 130/130 configuration preflight
+tests and audits, 73/73 build-tool tests, 26/26 historical WP-7 tests, 9/9
+acceptance-validator tests, both validation ledgers, the exit audit, Ruff, and
+Python syntax checks. The owner-run clean Unity gate at exact runtime subject
+`b3f03ae2...` used the accepted `unity-gcc13` Spack wrappers and matching
+`-march=cascadelake -mtune=cascadelake` target arguments, passed all 884
+runnable CTests, and completed the bounded real-data acceptance witness and
+validator. This witness is acceptance-tool evidence, not a Citlali reduction
+or representative-science claim.
+
+The admitted route keeps Paired-D1, AST/ALIGN, VAL, identity RTC, RTC-only
+publication, and terminal-context ownership explicit. It does not activate an
+ordinary route; make CAL, PTC, or MAP available; perform a MAP action; change
+the accepted V2 application generation; authorize production, release, or
+legacy retirement; or authorize later D2, filtering, factor selection,
+downsampling, substantive RTC/AST, common-grid, or mapspace work.
+
+The separately preserved Spack release-contract reconciliation branch remains
+at exact `a586fd2cb11d427053205109bf5d7a9a617a5a58`. It overlaps this admitted
+lineage in `doc/REFACTOR_STATUS.md` and `tools/build/spack_citlali_common.py`.
+That branch must be reconstructed and reviewed against the new canonical
+ancestry before any later admission; it is neither silently merged nor
+discarded here.
+
 ## Timestream Successor Paired-D1 Canonical Admission — 2026-08-31
 
 The project owner accepted independently reviewed exact Paired-D1 candidate
@@ -109,16 +160,17 @@ not integrated by this record. No Timestream Successor application increment
 may begin until the owner disposes the independently reviewed exact record
 commit and separately authorizes the next bounded work order.
 
-## Current Work Orders — 2026-08-31
+## Current Work Orders — 2026-09-03
 
 This table governs current work when an older row later in this historical
 ledger uses stale language.
 
 | Work order | Scope and authority | WIP rule | State | Exit |
 | --- | --- | --- | --- | --- |
-| `APP-CANON-001` | Canonical application integration on `codex/refactor-mainline`; exact canonical head `30c42528f86bb9b7d8104bbda63834ce72595798` follows the Native Integration Baseline, accepted offline D2 evidence tooling and records, effective Timestream Successor governance, and accepted Paired-D1 product-contract admission | Normal accepted application work lands only through reviewed canonical ancestry | Active authority; Paired-D1 is admitted but unactivated, and administrative/tooling/governance or unactivated-contract descendants do not establish a new accepted end-to-end executable generation | Ordinary affected-behavior gates and owner-controlled integration |
+| `APP-CANON-001` | Canonical application integration on `codex/refactor-mainline`; canonical source now contains exact Identity Route subject `2f59ef8b9906b2912c4980fbcf9c7ab3a28c310a` followed only by this documentation-only admission record | Normal accepted application work lands only through reviewed canonical ancestry | Active local authority; canonical push and remote equality verification remain owner-held until this exact record commit is accepted | Exact-SHA review, owner-controlled push, and ordinary affected-behavior gates for later work |
 | `TIMESTREAM-SUCCESSOR-GOV-001` | Repository and Timestream Successor governance accepted at exact `06a3ade51c1b3f38887295433d913811bf25cd14`; the four exact document digests are recorded above; canonical effectiveness record is exact `77507836325eff9f469062d5884481ea37599594` | Governance is effective on canonical ancestry; amendment or exception follows the accepted governance process | **Effective and closed 2026-08-31:** owner accepted and pushed both governance and its reviewed effectiveness record | Complete; no implementation follows automatically |
 | `TIMESTREAM-SUCCESSOR-PAIRED-D1-001` | Bounded canonical admission of the native paired-`x/r` D1 product contract and focused tests at exact `30c42528f86bb9b7d8104bbda63834ce72595798` | Historical closed work order; admission does not activate a producer or route and does not authorize D2 or later implementation | **Integrated and closed 2026-08-31:** independently reviewed, owner accepted, fast-forwarded, pushed, and verified local/remote exact | Complete; any producer, consumer wiring, D2, activation, or later milestone requires a new bounded owner-approved work order |
+| `TIMESTREAM-SUCCESSOR-IDENTITY-ROUTE-001` | Bounded canonical admission of exact unactivated Identity Route candidate `2f59ef8b9906b2912c4980fbcf9c7ab3a28c310a`, based literally on `6d6e5d570e2a311687ede8e954c996046772af6f` | Canonical integration operation; no application implementation slot remains active and no later implementation follows automatically | Locally integrated after independent candidate review and owner authorization; this documentation-only record awaits exact-SHA review, owner disposition, push, and local/remote verification | Close after exact record acceptance and verified push; later work requires a new bounded owner-approved proposal |
 | `BUILD-ENV-001` | Current build/dependency authority is Spack under ADR 0014; exact V2 binding is `validation/citlali_v2_spack_validation_authority.json` | Build-environment work retains separate scope/ownership and may not silently change application science; non-Spack tests are supplemental; material Conan work requires an owner-authorized compatibility work order | Spack accepted for the most recent end-to-end V2 application generation; portable release bundle and exact V2 lock-byte retention remain open | Close only the bounded ADR 0015 release/reproducibility gaps or record a new owner build decision |
 | `WP7-GOV-001` | WP-7.1 governance reconciliation on `codex/wp7-governance-reconciliation`, based exactly on `cb3d568c...`; accepted package commits are `e874044c4...` and `28e9e559b...` | Historical closed work order; later corrections require their own bounded authority | **Closed 2026-08-31:** owner reviewed and accepted G0--G3 and explicitly resumed G4 | Complete |
 | `WP7-REPLAY-001` | First G4 canonical replay unit; exact divergent source `49fe73e757daa1885cd23127e8441cba47e648d2`, exact accepted integration `f8ba732bc4072e918c2521a013305be354ed7b53` | Historical closed work order; its acceptance covers only the dispositioned D2 PSD/line evidence tooling and records | **Integrated and closed 2026-08-31** after explicit owner review | Complete |
@@ -138,7 +190,7 @@ code changes begin.
 
 | Workstream | Authority | Purpose | Integration rule | State |
 | --- | --- | --- | --- | --- |
-| Refactored application | `codex/refactor-mainline` at exact `30c42528f86bb9b7d8104bbda63834ce72595798`, containing effective Timestream Successor governance and the accepted but unactivated Paired-D1 product contract | Canonical source, tests, configuration, operational behavior, validation history, and effective governance | Normal application changes land here after their affected gates; the latest accepted end-to-end operational/application generation remains the separately bound Spack-backed V2 campaign | Active canonical authority; Paired-D1 admission changes no route, activation, production, or accepted end-to-end generation |
+| Refactored application | `codex/refactor-mainline`, containing exact Identity Route subject `2f59ef8b9906b2912c4980fbcf9c7ab3a28c310a` followed only by this documentation-only admission record | Canonical source, tests, configuration, operational behavior, validation history, and effective governance | Normal application changes land here after their affected gates; the latest accepted end-to-end operational/application generation remains the separately bound Spack-backed V2 campaign | Active local canonical authority; record acceptance, owner push, and remote equality verification remain open; Identity Route remains unactivated |
 | WP-7 timestream integration checkpoint | `codex/refactor-mainline` and `codex/wp7-timestream-integration-candidate` at `a36abaebfb82d503b113de0cf4c1c6e0f6dcffc3`, preserving exact Unity-tested application commit `3ebc2a67fc32bad69759ff45638484efabf91773`; bounded cleanup `aa85a2287`; audit-tool repair `ff7899668` | Carry completed Stage 7 152390 evidence, retire only pre-censused inactive sources, admit current campaign evidence to the reduction auditor, and preserve a classified ref/worktree retirement record | Retain `3ebc2a67f` as the exact Stage 7 science identity and `a36abaeb` as the pre-build-modernization point-smoke identity; do not infer a general successor baseline or science-ledger disposition | Integrated and pushed by the owner; both forensic tags are published; the bounded point smoke passed and its reports are preserved outside Git |
 | SCI-MAP-001 application integration | `codex/refactor-mainline` at `d5015fe716971bf8ea617e8a187311bf5af05185`, containing exact application source `af0c849ce59a5f80e5efc8db435bb6662863052f` followed only by its documentation-only integration record | Accepted bounded implementation, product/provenance contract, truth suites, owner-amended evidence, and frozen campaign/closeout history | Preserve as the application base for subsequent audited integrations; do not merge MAP audit or coordination branches | Integrated; bounded MAP contract accepted; production remains `existing_use_only` |
 | SCI-NOI-002 application integration | `codex/refactor-mainline` at `4846fa4db39bd2f7d4ddc41f693836834cbc5ff4`, containing exact audited application source `5b29e13548a6fec884c67b192dec20c92f0bbb62` followed only by its documentation-only integration record | Accepted bounded conditional-stack, package-provenance, truthful-labeling/count, writer/finalizer, and validator contracts | Preserve as the application base; do not merge repair, audit, or coordination branches | Integrated; production remains `existing_use_only`; F005/F006 remain external |

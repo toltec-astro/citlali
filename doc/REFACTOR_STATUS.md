@@ -1,5 +1,58 @@
 # Citlali Refactor Status
 
+## 2026-09-03 Timestream Successor Identity Route Canonical Admission
+
+The project owner authorized canonical admission of independently reviewed
+exact Timestream Successor Identity Route candidate
+`2f59ef8b9906b2912c4980fbcf9c7ab3a28c310a`, tree
+`6e9666d4c994d8d1cb16f0f1bdc7a135730232a4`. The clean local canonical branch
+was fast-forwarded literally from exact
+`6d6e5d570e2a311687ede8e954c996046772af6f` through the candidate's linear
+15-commit ancestry, with no merge commit, rebase, cherry-pick, squash, or
+content repair. At this record's preparation checkpoint the cached remote
+canonical ref remains at the exact base; pushing canonical is held for
+independent exact-SHA review and owner acceptance of this documentation-only
+record.
+
+The admitted spine preserves canonical Paired-D1 while adding the bounded
+KIDs adapter, native AST/ALIGN context, always-present immutable VAL plane,
+identity RTC Learn--Consider--Plan--Apply lifecycle, RTC-only publication, and
+typed terminal route context. Identity RTC remains factor one and phase zero,
+preserves native `x/r` values and causes without a common grid, keeps AST in
+the RTC input context while marking motion dependence `not_applicable`, and
+uses the owner-approved midpoint occurrence policy. CAL, PTC, and MAP remain
+typed unavailable and no MAP action is manufactured.
+
+Independent fresh-context Tier 2 review of exact `2f59ef8b9...` passed with no
+scientific/behavioral, architecture/ownership/anti-bloat, or
+repository/evidence findings. Fresh local exact-candidate validation passed
+all 52 focused Timestream Successor CTests, 207 baseline-tool tests, 130 config
+preflight tests and audits, 73 build-tool tests, 26 historical WP-7 tests, and
+9 acceptance-validator tests. The owner-run clean Unity gate at exact runtime
+implementation subject `b3f03ae20059022ecb709dd411dfbdde3723fef3`
+used the accepted `unity-gcc13` Spack compiler wrappers and target arguments,
+passed all 884 runnable CTests, and completed the bounded identity-route
+acceptance witness and validator. Candidate `2f59ef8b9...` differs from that
+runtime subject only in the two documentation/status paths that close the ABI
+evidence record.
+
+This canonical admission does not activate an ordinary route, change an
+accepted end-to-end executable generation, perform a Citlali reduction or MAP
+action, establish representative science, authorize production use, retire
+legacy code, or authorize substantive D2, filtering, factor selection,
+downsampling, CAL, PTC, RTC, AST, common-grid, or mapspace work. The preserved
+Spack release-contract reconciliation branch
+`codex/spack-release-contract-reconciliation` remains at exact
+`a586fd2cb11d427053205109bf5d7a9a617a5a58`; its overlapping status and build
+tool paths require a later bounded reconstruction and review on the new
+canonical ancestry, not silent merge or discard.
+
+After this record is independently reviewed, owner accepted, pushed, and the
+local and remote canonical refs are verified equal, Identity Route 001 is
+closed. No Timestream Successor spine increment or module probe is then
+active. Further application development requires a new bounded proposal and
+explicit owner approval.
+
 ## 2026-09-03 Timestream Successor Unity GCC13 ABI Conformance
 
 The owner-accepted feature candidate
