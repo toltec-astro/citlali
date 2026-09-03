@@ -354,3 +354,18 @@ growth and direction, staged and newly applied detector penalties, pointing
 fit changes, and ordinary map-quality summaries. No threshold or causal rule
 is selected by the tool. The first two-case development result is recorded in
 `validation/fruit_loop_causal_diagnostic_discovery_2026-09-02/`.
+
+## Checkpoint-penalty counterfactual
+
+`edit_restart_checkpoint_penalty.py` is a fail-closed development tool for a
+registered causal intervention. It verifies the source checkpoint hash,
+requires exactly one complete detector-penalty identity match, writes a new
+checkpoint without overwriting its source, and audits every type, dimension,
+attribute, and value. Only the matched penalty dimension row and the explicit
+penalty count may differ.
+
+`analyze_penalty_counterfactual.py` requires the sham control replay to match
+the original iteration exactly before measuring the intervened injected-minus-
+control response. It reports continuous recovery and annular-residual reversal
+fractions, the preregistered mechanism classification, and the inherited
+science screen without treating this one intervention as method qualification.

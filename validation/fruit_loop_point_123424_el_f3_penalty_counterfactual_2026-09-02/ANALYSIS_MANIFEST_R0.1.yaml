@@ -1,0 +1,34 @@
+schema_version: sci-fruit-el-f3-analysis-v1
+test_id: SCI-FRUIT-EL-F3-LATE-PENALTY-COUNTERFACTUAL-R0.1
+obsnum: 123424
+original_control_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.25/control/reduced/redu05
+original_injected_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.25/injected/reduced/redu05
+replay_control_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f3-penalty-counterfactual-r0.1/control-sham/reduced/redu05
+counterfactual_injected_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f3-penalty-counterfactual-r0.1/injected-without-uid4460/reduced/redu05
+intervention_audit: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f3-penalty-counterfactual-r0.1/injected-without-uid4460/restart-source/checkpoint_intervention_audit.json
+original_metrics: validation/fruit_loop_point_123424_el_f2_early_stop_2026-09-02/ITERATION_METRICS_R0.3.csv
+amplitudes_mjy_beam: [100.0, 100.0, 100.0]
+pixel_size_arcsec: 1.0
+annulus_inner_arcsec: 40.0
+annulus_outer_arcsec: 120.0
+expected_removed_penalty:
+  producer: mapdiag:raw_obs
+  reason: map_pixel_outlier_detector_dominance
+  iteration: 4
+  scan: 5
+  uid: 4460
+  network: -1
+  array: 1
+  factor: 0.0
+  score: 4.0
+  scan_local: true
+original_a1400:
+  iteration_4_recovery: 0.8904511775839052
+  iteration_5_recovery: 0.8228281905201593
+  iteration_4_annular_residual: 0.005591061898999446
+  iteration_5_annular_residual: 0.02147410602676817
+screen:
+  max_absolute_recovery_error_degradation: 0.01
+  max_width_fractional_error: 0.03
+  max_centroid_error_arcsec: 0.1
+  max_residual_ratio_to_reference: 1.10

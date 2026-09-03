@@ -1,0 +1,11 @@
+runtime:
+  output_dir: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f3-penalty-counterfactual-r0.1/control-sham/reduced/
+  n_threads: 1
+
+timestream:
+  fruit_loops:
+    restart_path: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f3-penalty-counterfactual-r0.1/control-sham/restart-source/redu04
+    max_iters: 6
+    save_all_iters: true
+    injected_source_test:
+      enabled: false
