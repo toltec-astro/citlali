@@ -9,6 +9,7 @@ from typing import Sequence
 
 from spack_citlali_common import (
     deployment_target,
+    inspect_spack_compiler_environment,
     managed_deployment_environment,
     process_environment,
     require_matching_source_revision,
@@ -18,6 +19,45 @@ from spack_citlali_common import (
     validate_first_party_sources,
 )
 from spack_citlali_profiles import PROFILES, get_profile
+
+
+def consumer_configure_command(
+    *,
+    consumer_source: Path,
+    consumer_build_dir: Path,
+    package_prefix: Path,
+    profile,
+) -> list[str]:
+    """Return the installed-consumer configure command for a build profile."""
+    # The enclosing `spack build-env` supplies concrete wrapper-valued CC/CXX.
+    return [
+        "cmake",
+        "--fresh",
+        "-S",
+        str(consumer_source),
+        "-B",
+        str(consumer_build_dir),
+        *[
+            argument.format(deployment_target=deployment_target())
+            for argument in profile.cmake_platform_arguments
+        ],
+        f"-Dcitlali_DIR={package_prefix / 'lib/cmake/citlali'}",
+    ]
+
+
+def consumer_build_command(
+    *,
+    spack: Path,
+    environment_path: Path,
+    consumer_build_dir: Path,
+    jobs: int = 8,
+) -> list[str]:
+    """Return the wrapper-backed installed-consumer build command."""
+    return spack_build_env_command(
+        spack,
+        environment_path,
+        ["cmake", "--build", str(consumer_build_dir), "-j", str(jobs)],
+    )
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -94,6 +134,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         profile_name=profile.name,
         expected_root_hash=root_hash,
     )
+    inspect_spack_compiler_environment(
+        spack,
+        environment_path,
+        environment=environment,
+        expected_c_compiler=profile.c_compiler,
+        expected_cxx_compiler=profile.cxx_compiler,
+    )
     source_revision = run(
         ["git", "-C", str(source_root), "rev-parse", "HEAD"],
         environment=environment,
@@ -141,26 +188,22 @@ def main(argv: Sequence[str] | None = None) -> int:
                 f"installed CLI help is missing {required_text!r}"
             )
 
-    configure = [
-        "cmake",
-        "--fresh",
-        "-S",
-        str(consumer_source),
-        "-B",
-        str(consumer_build_dir),
-        f"-DCMAKE_CXX_COMPILER={profile.cxx_compiler}",
-        *[
-            argument.format(deployment_target=deployment_target())
-            for argument in profile.cmake_platform_arguments
-        ],
-        f"-Dcitlali_DIR={package_prefix / 'lib/cmake/citlali'}",
-    ]
+    configure = consumer_configure_command(
+        consumer_source=consumer_source,
+        consumer_build_dir=consumer_build_dir,
+        package_prefix=package_prefix,
+        profile=profile,
+    )
     run(
         spack_build_env_command(spack, environment_path, configure),
         environment=environment,
     )
     run(
-        ["cmake", "--build", str(consumer_build_dir), "-j", "8"],
+        consumer_build_command(
+            spack=spack,
+            environment_path=environment_path,
+            consumer_build_dir=consumer_build_dir,
+        ),
         environment=environment,
     )
     run(

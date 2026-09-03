@@ -34,6 +34,16 @@ _VERSION_SOURCE_REVISION = re.compile(
     re.MULTILINE,
 )
 
+_SPACK_COMPILER_ENVIRONMENT_KEYS = (
+    "CC",
+    "CXX",
+    "SPACK_CC",
+    "SPACK_CXX",
+    "SPACK_COMPILER_WRAPPER_PATH",
+    "SPACK_TARGET_ARGS_CC",
+    "SPACK_TARGET_ARGS_CXX",
+)
+
 
 def require_matching_source_revision(
     version_output: str, source_revision: str
@@ -64,9 +74,15 @@ def validate_first_party_sources(source_root: Path) -> None:
     require_accepted_revisions(results)
 
 
-def run(command: Sequence[str], *, environment: dict[str, str]) -> str:
-    """Run a command and relay its combined output."""
-    print("+", " ".join(command), flush=True)
+def run(
+    command: Sequence[str],
+    *,
+    environment: dict[str, str],
+    relay_output: bool = True,
+) -> str:
+    """Run a command and optionally relay its combined output."""
+    suffix = "" if relay_output else " [output captured]"
+    print("+", " ".join(command) + suffix, flush=True)
     try:
         completed = subprocess.run(
             command,
@@ -80,7 +96,8 @@ def run(command: Sequence[str], *, environment: dict[str, str]) -> str:
         if error.stdout:
             print(error.stdout, end="")
         raise
-    print(completed.stdout, end="")
+    if relay_output:
+        print(completed.stdout, end="")
     return completed.stdout.strip()
 
 
@@ -97,6 +114,127 @@ def process_environment(spack_python: Path) -> dict[str, str]:
     environment = dict(os.environ)
     environment["SPACK_PYTHON"] = str(spack_python)
     return environment
+
+
+def validate_spack_compiler_environment(
+    output: str,
+    *,
+    expected_c_compiler: Path,
+    expected_cxx_compiler: Path,
+) -> dict[str, str]:
+    """Validate the concrete root's compiler-wrapper environment."""
+    values = {}
+    for line in output.splitlines():
+        name, separator, value = line.partition("=")
+        if separator and name in _SPACK_COMPILER_ENVIRONMENT_KEYS:
+            values[name] = value
+
+    missing = [
+        name for name in _SPACK_COMPILER_ENVIRONMENT_KEYS if not values.get(name)
+    ]
+    if missing:
+        raise RuntimeError(
+            f"Spack build environment is missing compiler controls: {missing}"
+        )
+
+    expected_compilers = {
+        "SPACK_CC": expected_c_compiler,
+        "SPACK_CXX": expected_cxx_compiler,
+    }
+    for name, expected in expected_compilers.items():
+        actual = Path(values[name])
+        if actual.resolve() != expected.resolve():
+            raise RuntimeError(
+                f"{name} does not identify the profile compiler: "
+                f"actual={actual} expected={expected}"
+            )
+
+    wrapper_directories = [
+        Path(item).resolve()
+        for item in values["SPACK_COMPILER_WRAPPER_PATH"].split(os.pathsep)
+        if item
+    ]
+    for name in ("CC", "CXX"):
+        wrapper = Path(values[name]).resolve()
+        if not any(
+            wrapper == directory or directory in wrapper.parents
+            for directory in wrapper_directories
+        ):
+            raise RuntimeError(
+                f"{name} is not inside SPACK_COMPILER_WRAPPER_PATH: {values[name]}"
+            )
+
+    c_arguments = values["SPACK_TARGET_ARGS_CC"]
+    cxx_arguments = values["SPACK_TARGET_ARGS_CXX"]
+    if c_arguments != cxx_arguments:
+        raise RuntimeError(
+            "Spack C and CXX target arguments differ: "
+            f"CC={c_arguments!r} CXX={cxx_arguments!r}"
+        )
+
+    return values
+
+
+def inspect_spack_compiler_environment(
+    spack: Path,
+    environment_path: Path,
+    *,
+    environment: dict[str, str],
+    expected_c_compiler: Path,
+    expected_cxx_compiler: Path,
+) -> dict[str, str]:
+    """Inspect and report the compiler controls for the concrete Citlali root."""
+    output = run(
+        spack_build_env_command(spack, environment_path, ["/usr/bin/env"]),
+        environment=environment,
+        relay_output=False,
+    )
+    values = validate_spack_compiler_environment(
+        output,
+        expected_c_compiler=expected_c_compiler,
+        expected_cxx_compiler=expected_cxx_compiler,
+    )
+    print(f"Spack C wrapper: {values['CC']}")
+    print(f"Spack CXX wrapper: {values['CXX']}")
+    print(f"Spack target arguments: {values['SPACK_TARGET_ARGS_CXX']}")
+    return values
+
+
+def require_spack_compiler_cache(
+    build_dir: Path,
+    compiler_environment: dict[str, str],
+    *,
+    allow_missing: bool,
+) -> None:
+    """Require a configured CMake tree to retain Spack wrapper compilers."""
+    cache_path = build_dir / "CMakeCache.txt"
+    if not cache_path.is_file():
+        if allow_missing:
+            return
+        raise FileNotFoundError(cache_path)
+
+    cache_values = {}
+    for line in cache_path.read_text(errors="replace").splitlines():
+        name_and_type, separator, value = line.partition("=")
+        if not separator:
+            continue
+        name = name_and_type.partition(":")[0]
+        if name in ("CMAKE_C_COMPILER", "CMAKE_CXX_COMPILER"):
+            cache_values[name] = value
+
+    expected = {
+        "CMAKE_C_COMPILER": compiler_environment["CC"],
+        "CMAKE_CXX_COMPILER": compiler_environment["CXX"],
+    }
+    for name, wrapper in expected.items():
+        actual = cache_values.get(name)
+        if actual is None:
+            raise RuntimeError(f"CMake cache is missing {name}")
+        if Path(actual).resolve() != Path(wrapper).resolve():
+            raise RuntimeError(
+                f"CMake cache bypasses the Spack compiler wrapper for {name}: "
+                f"actual={actual} expected={wrapper}; reconfigure with --fresh"
+            )
 
 
 def managed_deployment_environment(

@@ -9,7 +9,9 @@ from typing import Sequence
 
 from spack_citlali_common import (
     deployment_target,
+    inspect_spack_compiler_environment,
     process_environment,
+    require_spack_compiler_cache,
     run,
     spack_build_env_command,
     validate_concrete_graph,
@@ -27,6 +29,8 @@ def configure_command(
     fresh: bool,
 ) -> list[str]:
     """Return the canonical CMake configure command for a build profile."""
+    # `spack build-env` supplies wrapper-valued CC/CXX for the concrete target.
+    # Passing the profile's underlying compiler here would bypass target flags.
     return [
         "cmake",
         *(["--fresh"] if fresh else []),
@@ -36,8 +40,6 @@ def configure_command(
         str(source_root / "cmake/spack"),
         "-B",
         str(build_dir),
-        f"-DCMAKE_C_COMPILER={profile.c_compiler}",
-        f"-DCMAKE_CXX_COMPILER={profile.cxx_compiler}",
         "-DCMAKE_BUILD_TYPE=Release",
         "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
         *[
@@ -124,8 +126,23 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(f"Spack root: {root_spec}")
     print(f"Spack DAG hash: {root_hash}")
     environment = process_environment(spack_python)
+    compiler_environment = inspect_spack_compiler_environment(
+        spack,
+        environment_path,
+        environment=environment,
+        expected_c_compiler=profile.c_compiler,
+        expected_cxx_compiler=profile.cxx_compiler,
+    )
 
-    if args.action in {"configure", "all"}:
+    configuring = args.action in {"configure", "all"}
+    if not (configuring and args.fresh):
+        require_spack_compiler_cache(
+            build_dir,
+            compiler_environment,
+            allow_missing=configuring,
+        )
+
+    if configuring:
         configure = configure_command(
             source_root=source_root,
             build_dir=build_dir,
@@ -136,6 +153,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         run(
             spack_build_env_command(spack, environment_path, configure),
             environment=environment,
+        )
+        require_spack_compiler_cache(
+            build_dir,
+            compiler_environment,
+            allow_missing=False,
         )
 
     if args.action in {"build", "all"}:

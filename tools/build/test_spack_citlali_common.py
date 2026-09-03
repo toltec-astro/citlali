@@ -19,6 +19,8 @@ EXPECTED_PACKAGES = MODULE.EXPECTED_PACKAGES
 validate_concrete_graph = MODULE.validate_concrete_graph
 managed_deployment_environment = MODULE.managed_deployment_environment
 require_matching_source_revision = MODULE.require_matching_source_revision
+require_spack_compiler_cache = MODULE.require_spack_compiler_cache
+validate_spack_compiler_environment = MODULE.validate_spack_compiler_environment
 
 
 class SpackCitlaliGraphTest(unittest.TestCase):
@@ -192,6 +194,108 @@ class SpackCitlaliSourceRevisionTest(unittest.TestCase):
                 "v4.0.0-3642-g34b83df5 (2026-08-14T11:16:05)\n"
                 "34b83df5 (duplicate)\n",
                 self.source_revision,
+            )
+
+
+class SpackCompilerEnvironmentTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.tempdir = tempfile.TemporaryDirectory()
+        self.root = Path(self.tempdir.name)
+        self.wrapper_root = self.root / "compiler-wrapper"
+        self.c_wrapper = self.wrapper_root / "cc"
+        self.cxx_wrapper = self.wrapper_root / "gcc/g++"
+        self.c_compiler = self.root / "compiler/gcc"
+        self.cxx_compiler = self.root / "compiler/g++"
+        for path in (
+            self.c_wrapper,
+            self.cxx_wrapper,
+            self.c_compiler,
+            self.cxx_compiler,
+        ):
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.touch()
+
+    def tearDown(self) -> None:
+        self.tempdir.cleanup()
+
+    def _output(self, **replacements: str) -> str:
+        values = {
+            "CC": str(self.c_wrapper),
+            "CXX": str(self.cxx_wrapper),
+            "SPACK_CC": str(self.c_compiler),
+            "SPACK_CXX": str(self.cxx_compiler),
+            "SPACK_COMPILER_WRAPPER_PATH": str(self.wrapper_root),
+            "SPACK_TARGET_ARGS_CC": "-march=cascadelake -mtune=cascadelake",
+            "SPACK_TARGET_ARGS_CXX": "-march=cascadelake -mtune=cascadelake",
+        }
+        values.update(replacements)
+        return "\n".join(f"{name}={value}" for name, value in values.items())
+
+    def _validate(self, output: str) -> dict[str, str]:
+        return validate_spack_compiler_environment(
+            output,
+            expected_c_compiler=self.c_compiler,
+            expected_cxx_compiler=self.cxx_compiler,
+        )
+
+    def test_accepts_wrappers_and_matching_concrete_target(self) -> None:
+        values = self._validate(self._output())
+        self.assertEqual(
+            values["SPACK_TARGET_ARGS_CXX"],
+            "-march=cascadelake -mtune=cascadelake",
+        )
+
+    def test_rejects_direct_compiler_bypass(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "not inside"):
+            self._validate(self._output(CC=str(self.c_compiler)))
+
+    def test_rejects_mismatched_target_arguments(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "target arguments differ"):
+            self._validate(self._output(SPACK_TARGET_ARGS_CXX="-march=x86-64"))
+
+    def test_rejects_wrong_profile_compiler(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "profile compiler"):
+            self._validate(self._output(SPACK_CXX="/usr/bin/false"))
+
+    def test_accepts_wrapper_backed_cmake_cache(self) -> None:
+        build_dir = self.root / "build"
+        build_dir.mkdir()
+        (build_dir / "CMakeCache.txt").write_text(
+            "CMAKE_C_COMPILER:FILEPATH=" + str(self.c_wrapper) + "\n"
+            "CMAKE_CXX_COMPILER:FILEPATH=" + str(self.cxx_wrapper) + "\n"
+        )
+        require_spack_compiler_cache(
+            build_dir,
+            self._validate(self._output()),
+            allow_missing=False,
+        )
+
+    def test_rejects_direct_compiler_cmake_cache(self) -> None:
+        build_dir = self.root / "build"
+        build_dir.mkdir()
+        (build_dir / "CMakeCache.txt").write_text(
+            "CMAKE_C_COMPILER:FILEPATH=" + str(self.c_compiler) + "\n"
+            "CMAKE_CXX_COMPILER:FILEPATH=" + str(self.cxx_compiler) + "\n"
+        )
+        with self.assertRaisesRegex(RuntimeError, "bypasses"):
+            require_spack_compiler_cache(
+                build_dir,
+                self._validate(self._output()),
+                allow_missing=False,
+            )
+
+    def test_missing_cmake_cache_requires_explicit_allowance(self) -> None:
+        build_dir = self.root / "build"
+        require_spack_compiler_cache(
+            build_dir,
+            self._validate(self._output()),
+            allow_missing=True,
+        )
+        with self.assertRaises(FileNotFoundError):
+            require_spack_compiler_cache(
+                build_dir,
+                self._validate(self._output()),
+                allow_missing=False,
             )
 
 

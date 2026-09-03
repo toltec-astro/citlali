@@ -19,6 +19,7 @@ from typing import Iterator, Sequence
 
 from run_spack_citlali_dev import build_command, configure_command
 from spack_citlali_common import (
+    inspect_spack_compiler_environment,
     process_environment,
     spack_build_env_command,
     validate_concrete_graph,
@@ -234,6 +235,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         required_graph_packages=profile.required_graph_packages,
     )
     environment = process_environment(spack_python)
+    compiler_environment = inspect_spack_compiler_environment(
+        spack,
+        environment_path,
+        environment=environment,
+        expected_c_compiler=profile.c_compiler,
+        expected_cxx_compiler=profile.cxx_compiler,
+    )
 
     campaign_id = datetime.now().astimezone().strftime("%Y%m%dT%H%M%S%z")
     output_dir = output_root / f"{campaign_id}-{profile.name}"
@@ -262,6 +270,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             "spack_environment": str(environment_path),
             "spack_root_hash": root_hash,
             "spack_root_spec": root_spec,
+            "spack_c_compiler_wrapper": compiler_environment["CC"],
+            "spack_cxx_compiler_wrapper": compiler_environment["CXX"],
+            "spack_target_arguments": compiler_environment["SPACK_TARGET_ARGS_CXX"],
         },
         "incremental_inputs": [str(path.relative_to(source_root)) for path in incremental_paths],
         "stages": [],

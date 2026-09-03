@@ -7,7 +7,8 @@ from measure_spack_build_times import (
     source_identity,
     timestamp_touch,
 )
-from run_spack_citlali_dev import build_command
+from run_spack_citlali_dev import build_command, configure_command
+from spack_citlali_profiles import get_profile
 
 
 class TimestampTouchTest(unittest.TestCase):
@@ -34,6 +35,18 @@ class BuildCommandTest(unittest.TestCase):
             build_command(build_dir=Path("/tmp/build"), jobs=6),
             ["cmake", "--build", "/tmp/build", "-j", "6"],
         )
+
+    def test_configure_uses_spack_environment_compilers(self):
+        command = configure_command(
+            source_root=Path("/tmp/source"),
+            build_dir=Path("/tmp/build"),
+            profile=get_profile("unity-gcc13"),
+            root_hash="a" * 32,
+            fresh=True,
+        )
+        self.assertNotIn("-DCMAKE_C_COMPILER=/usr/bin/gcc", command)
+        self.assertNotIn("-DCMAKE_CXX_COMPILER=/usr/bin/g++", command)
+        self.assertIn("--fresh", command)
 
     def test_source_identity_reports_revision_and_status(self):
         source_root = Path(__file__).resolve().parents[2]
