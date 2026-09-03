@@ -1,8 +1,7 @@
 # Timestream Successor Identity Route Representative Acceptance 001
 
-Status: bounded acceptance-validator repair under exact-SHA review after an
-owner-run matched-native diagnostic witness; the retained record is pending
-repaired validation, and the unmodified `unity-gcc13` profile gate,
+Status: retained owner-run matched-native diagnostic witness is machine-valid
+under the repaired validator; the unmodified `unity-gcc13` profile gate,
 representative acceptance, owner disposition, canonical integration, and
 activation remain open
 
@@ -239,8 +238,7 @@ for both bundle-identity fields. Bare file digests remain required for the APT
 manifest and runtime configuration fields.
 
 Disposition: repair the validator within scope and retain the successful
-Unity record without manual rewriting or representative rerun. The record and
-runner output remain pending validation by the repaired exact-SHA tool.
+Unity record without manual rewriting or representative rerun.
 
 Local validation of the validator-only repair used the repository's
 `$HOME/tolteca/bin/python` environment and passed:
@@ -256,17 +254,46 @@ Local validation of the validator-only repair used the repository's
 
 The C++ acceptance runner and application implementation are byte-unchanged,
 so this validator-only repair did not trigger another local fallback C++
-build. The retained Unity record still requires validation with the repaired
-validator after exact-SHA review and owner-controlled push.
+build.
+
+Exact validator-repair candidate
+`ea05ec1997e0dd10cf123c7ee868139257ddb9a6`, tree
+`fe9b0207bea36e8b3fb8bfab3e558a4c5d63dd9b`, passed independent
+fresh-context exact-SHA review with no scientific/behavioral,
+architecture/ownership, or repository/evidence findings and with the
+matched-native build-profile limitation recorded. Its ancestry preserves
+validator implementation commit
+`00ff75925e2e4552005c61fc7b69d0d4124f0702` as a child of runner source
+`2ece960c28090933565861089ed79ad15f0689bd`. The owner performed the normal
+push, and the live Unity cached remote feature ref was verified at
+`ea05ec1997e0dd10cf123c7ee868139257ddb9a6`.
+
+The owner then validated the retained JSON without rerunning the witness. The
+Unity checkout was clean and detached at validator revision `ea05ec199...`.
+The record preserved runner source and record tooling revision `2ece960c...`;
+the repaired validator reported
+`Timestream Successor identity-route acceptance: PASS`. Exact retained
+evidence identities were:
+
+- acceptance JSON SHA-256
+  `2852dd19d0f9cda953df5b155f57e296cd346956ed7a498e8f163def11156136`;
+- repaired-validator log SHA-256
+  `4f19dec0a09efb7af84d286fe53d475986ff024e92a2b6fabf2c8729a9841b98`;
+  and
+- matched-native evidence-manifest SHA-256
+  `d79f7f456f9519f25b0b3771e39479e36b6dc51f3382d3b9baeea902577fa20e`.
+
+This closes the validator representation defect and establishes a
+machine-valid matched-native diagnostic witness. It does not retroactively
+turn that executable into an unmodified repository-profile build.
 
 The first effect remains a separate build-profile conformance limitation. The
 matched-native execution is positive diagnostic and representative-route
 evidence, but it does not by itself prove the repository's unmodified
 `unity-gcc13` development profile. No build-profile change is included here,
 and the authoritative representative gate remains open pending explicit
-disposition of that mismatch and successful validation of the retained
-record. No route activation, canonical integration, MAP action, production
-use, or representative science claim occurred.
+disposition of that mismatch. No route activation, canonical integration,
+MAP action, production use, or representative science claim occurred.
 
 Pre-commit local validation of the bounded repair passed in the existing
 AppleClang/cache-backed worktree:
