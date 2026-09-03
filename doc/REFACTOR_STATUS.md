@@ -459,6 +459,30 @@ future proposal must prospectively distinguish the harmful injection-sensitive
 penalty from ordinary detector evidence rather than merely retuning this broad
 bypass after seeing the failures.
 
+Before EL-F5, the owner requested a read-only interpretation check of the
+observation-123424 injection geometry. The check found that the synthetic
+source was placed at the nominal map origin while the real Neptune centroid
+was offset by about 14 arcsec (`13.608` arcsec in a1400 at the relevant
+iteration-4 boundary). The source cores are not coincident, but both occupy
+the same central region: the a1400 control map already contains
+`476.849 mJy/beam` at the injection origin before the recovered synthetic
+increment of about `72.186 mJy/beam` is added. Injected-source recovery is
+measured from injected-minus-control maps, so it is the causal response to an
+added source in this real Neptune field, not a guaranteed isolated-source
+response under nonlinear and stateful processing. The UID 4460 penalty pixels
+are instead 107--109 arcsec from the injection and 94--95 arcsec from Neptune;
+the injection changes their map values by only 0.50--0.58 mJy/beam but moves
+the detector from three qualifying pixels to the hard threshold of four.
+EL-F3 therefore retains its exact causal conclusion while losing any generic
+isolated-source interpretation, and EL-F4 still rejects the wholesale bypass
+without establishing a generic source/penalty mechanism. The read-only record
+is
+[`INTERPRETATION_CHECK_R0.1.md`](../validation/fruit_loop_point_123424_injection_geometry_interpretation_2026-09-03/INTERPRETATION_CHECK_R0.1.md).
+The next proposal should prioritize a same-observation, prospectively placed
+off-source injection plus a same-build centered replication under the
+unchanged complete-map policy before EL-F5 attempts to derive a general
+penalty-attribution rule. No experiment, algorithm, or authorization changed.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
