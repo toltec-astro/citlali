@@ -618,6 +618,29 @@ end-to-end adaptive response from matched-operator source transfer and report
 real-field leakage separately. No reduction, algorithm, configuration, or
 authorization changed.
 
+After reviewing the study summary, the scientific owner agreed to formalize
+those response distinctions and proceed toward the next narrow empirical test.
+The resulting owner-review packet proposes
+`SCI-FRUIT-EL-F7-SHARED-START-RESPONSE-DECOMPOSITION-R0.1`. A read-only check
+found that the EL-F5 injected and control iteration-4 checkpoints differ not
+only by the target UID 4460 penalty but also in feedback maps, accumulated
+weight evidence, one mask interval, and learned target pixels. EL-F7 therefore
+places a single off-source injection into iteration 5 after both branches
+start from exact copies of the same EL-F5 control iteration-4 state. One
+no-injection sham first has to reproduce the already existing control
+iteration 5 exactly. The one new probe map then completes the exact telescoping
+decomposition `T5 = S5 + H5 + D4460,5`, separating the total adaptive response
+into a shared-incoming-state one-step response, other inherited injection
+history, and the already isolated UID 4460 effect. The proposed
+[`response-measurement frame`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_RESPONSE_MEASUREMENT_FRAME_R0.1.md)
+does not call the shared-start quantity a fully matched-operator transfer;
+same-iteration data-dependent processing can still differ. The exact
+[`owner-review proposal`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F7_SHARED_START_RESPONSE_OWNER_REVIEW_R0.1.md)
+and
+[`bundle manifest`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F7_BUNDLE_MANIFEST_R0.1.md)
+are pending content-bound owner approval. No setup, replay, analysis
+implementation, safeguard, or algorithm change is yet authorized.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
