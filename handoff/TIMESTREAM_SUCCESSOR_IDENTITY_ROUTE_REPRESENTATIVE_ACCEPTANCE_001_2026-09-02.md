@@ -204,6 +204,68 @@ record was produced, and the failed build is negative evidence only. It does
 not support a representative science, conformance, integration, activation,
 or production claim.
 
+## Unity representative-execution validator reassessment
+
+Trigger: subsequent owner-run Unity diagnostics of exact source
+`2ece960c28090933565861089ed79ad15f0689bd` exposed two distinct
+build/evidence effects that were not exercised by local supplemental gates.
+
+First, the repository development runner configured Citlali with direct
+`/usr/bin/g++` while the installed Spack Kidscpp archive had been compiled for
+the `cascadelake` target. The resulting mixed Eigen allocation conventions
+caused a repeatable invalid free in Kidscpp `loadfitreport`. A matched-native
+diagnostic configuration with explicit `-march=cascadelake
+-mtune=cascadelake` eliminated that crash. Its acceptance target built
+successfully after reducing build concurrency from eight to one when two
+unrelated parallel compiler processes were killed under memory pressure. The
+matched-native executable SHA-256 was
+`ef9ad13d91bd226cd0876570249a70b13cf90a9defedadc2afd23376eb1f401e`.
+
+Second, that matched-native executable completed the bounded representative
+witness and wrote its v2 JSON record, but the Python validator rejected
+`apt_bundle_semantic_sha256`. Canonical APT v2 component identities require
+the exact `sha256:<64 lowercase hex>` reference form. The runner correctly
+copied the admitted bundle's semantic and envelope identities in that form,
+while the validator and its synthetic fixture incorrectly required bare
+64-hex file-digest form for those two fields.
+
+Affected authority: the second effect is a validator-only representation
+defect within this acceptance-tooling work order. The repair preserves the
+canonical APT v2 identity contract and the already produced record, changes
+no runner or application behavior, and requires canonical SHA-256 references
+for both bundle-identity fields. Bare file digests remain required for the APT
+manifest and runtime configuration fields.
+
+Disposition: repair the validator within scope and retain the successful
+Unity record without manual rewriting or representative rerun. The record and
+runner output remain pending validation by the repaired exact-SHA tool.
+
+Local validation of the validator-only repair used the repository's
+`$HOME/tolteca/bin/python` environment and passed:
+
+- all 9 focused acceptance-validator unit tests;
+- Python syntax compilation and Ruff checks for the validator and its tests;
+- all 63 build-tool tests;
+- all 207 baseline-tool tests;
+- the validation ledger with 60 valid records;
+- the science-change ledger with 3 changes and 5 valid integration commits;
+  and
+- `git diff --check`.
+
+The C++ acceptance runner and application implementation are byte-unchanged,
+so this validator-only repair did not trigger another local fallback C++
+build. The retained Unity record still requires validation with the repaired
+validator after exact-SHA review and owner-controlled push.
+
+The first effect remains a separate build-profile conformance limitation. The
+matched-native execution is positive diagnostic and representative-route
+evidence, but it does not by itself prove the repository's unmodified
+`unity-gcc13` development profile. No build-profile change is included here,
+and the authoritative representative gate remains open pending explicit
+disposition of that mismatch and successful validation of the retained
+record. No route activation, canonical integration, MAP action, production
+use, or representative science claim occurred.
+
 Pre-commit local validation of the bounded repair passed in the existing
 AppleClang/cache-backed worktree:
 

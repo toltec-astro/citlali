@@ -45,6 +45,7 @@ PRODUCER_SHA256 = (
 HEX40 = re.compile(r"^[0-9a-f]{40}$")
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
 HEX_SHORT = re.compile(r"^[0-9a-f]{7,40}$")
+SHA256_REFERENCE = re.compile(r"^sha256:[0-9a-f]{64}$")
 SPACK_DAG_HASH = re.compile(r"^[a-z0-9]{32}$")
 UTC_SECONDS = re.compile(
     r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
@@ -190,14 +191,17 @@ def validate(record: dict[str, Any]) -> None:
         raise AcceptanceError("telescope_byte_count is not approved")
     if require_integer(record, "telescope_record_count", 1) != TELESCOPE_RECORD_COUNT:
         raise AcceptanceError("telescope_record_count is not approved")
-    for name in (
-        "apt_manifest_sha256",
-        "apt_bundle_semantic_sha256",
-        "apt_bundle_envelope_sha256",
-        "config_sha256",
-    ):
+    for name in ("apt_manifest_sha256", "config_sha256"):
         if not HEX64.fullmatch(require_string(record, name)):
             raise AcceptanceError(f"{name} must be one lowercase SHA-256")
+    for name in (
+        "apt_bundle_semantic_sha256",
+        "apt_bundle_envelope_sha256",
+    ):
+        if not SHA256_REFERENCE.fullmatch(require_string(record, name)):
+            raise AcceptanceError(
+                f"{name} must be one canonical SHA-256 reference"
+            )
     if record.get("producer_interface_id") != PRODUCER_INTERFACE:
         raise AcceptanceError("producer_interface_id is not the approved interface")
     if record.get("producer_interface_sha256") != PRODUCER_SHA256:

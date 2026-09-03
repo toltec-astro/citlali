@@ -77,8 +77,8 @@ def valid_record() -> dict[str, object]:
         "telescope_byte_count": validator.TELESCOPE_BYTE_COUNT,
         "telescope_record_count": validator.TELESCOPE_RECORD_COUNT,
         "apt_manifest_sha256": "d" * 64,
-        "apt_bundle_semantic_sha256": "e" * 64,
-        "apt_bundle_envelope_sha256": "f" * 64,
+        "apt_bundle_semantic_sha256": "sha256:" + "e" * 64,
+        "apt_bundle_envelope_sha256": "sha256:" + "f" * 64,
         "config_sha256": "1" * 64,
         "producer_interface_id": validator.PRODUCER_INTERFACE,
         "producer_interface_sha256": validator.PRODUCER_SHA256,
@@ -226,6 +226,8 @@ class AcceptanceValidatorTest(unittest.TestCase):
             ("spack_lock_sha256", "0" * 40),
             ("spack_root_dag", "not-a-concrete-hash"),
             ("apt_manifest_sha256", "0" * 40),
+            ("apt_bundle_semantic_sha256", "e" * 64),
+            ("apt_bundle_envelope_sha256", "sha256:" + "G" * 64),
             ("config_sha256", "0" * 40),
         ):
             with self.subTest(name=name):
