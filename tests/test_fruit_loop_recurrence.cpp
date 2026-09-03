@@ -19,6 +19,24 @@ struct SyntheticCalib {
     std::map<std::string, Eigen::VectorXd> apt;
 };
 
+struct SyntheticKernelCenter {
+    bool uniform_source_center_enabled = false;
+    double uniform_source_lat_rad = 0.0;
+    double uniform_source_lon_rad = 0.0;
+
+    void clear_uniform_source_center() {
+        uniform_source_center_enabled = false;
+        uniform_source_lat_rad = 0.0;
+        uniform_source_lon_rad = 0.0;
+    }
+
+    void set_uniform_source_center(double lat_rad, double lon_rad) {
+        uniform_source_center_enabled = true;
+        uniform_source_lat_rad = lat_rad;
+        uniform_source_lon_rad = lon_rad;
+    }
+};
+
 constexpr Eigen::Index kRows = 9;
 constexpr Eigen::Index kCols = 9;
 constexpr double kPixelSizeRad = 1.0e-5;
@@ -361,6 +379,62 @@ TEST(fruit_loop_recurrence,
     EXPECT_DOUBLE_EQ(data.scans.data(1, 1), 5.0);
     EXPECT_DOUBLE_EQ(data.scans.data(0, 2), 35.0);
     EXPECT_DOUBLE_EQ(data.scans.data(1, 2), 12.5);
+}
+
+TEST(fruit_loop_recurrence,
+     injected_source_explicit_zero_offset_retains_legacy_kernel_center) {
+    SyntheticKernelCenter kernel;
+    kernel.set_uniform_source_center(1.0, -1.0);
+    citlali::config::FruitLoopsInjectedSourceTestConfig config;
+    config.enabled = true;
+    config.start_iteration = 1;
+    config.array_amplitude_mjy_beam = {100.0};
+    config.az_offset_arcsec = 0.0;
+    config.el_offset_arcsec = 0.0;
+
+    citlali::pipeline::configure_fruit_loop_injected_source_kernel_center(
+        kernel, config, 1, ASEC_TO_RAD);
+
+    EXPECT_FALSE(kernel.uniform_source_center_enabled);
+    EXPECT_DOUBLE_EQ(kernel.uniform_source_lat_rad, 0.0);
+    EXPECT_DOUBLE_EQ(kernel.uniform_source_lon_rad, 0.0);
+}
+
+TEST(fruit_loop_recurrence,
+     injected_source_offset_configures_map_world_kernel_center) {
+    SyntheticKernelCenter kernel;
+    citlali::config::FruitLoopsInjectedSourceTestConfig config;
+    config.enabled = true;
+    config.start_iteration = 1;
+    config.array_amplitude_mjy_beam = {100.0};
+    config.az_offset_arcsec = kPixelSizeRad / (ASEC_TO_RAD);
+    config.el_offset_arcsec = -2.0 * kPixelSizeRad / (ASEC_TO_RAD);
+
+    citlali::pipeline::configure_fruit_loop_injected_source_kernel_center(
+        kernel, config, 1, ASEC_TO_RAD);
+    ASSERT_TRUE(kernel.uniform_source_center_enabled);
+    EXPECT_NEAR(kernel.uniform_source_lon_rad, kPixelSizeRad, 1.0e-20);
+    EXPECT_NEAR(
+        kernel.uniform_source_lat_rad, -2.0 * kPixelSizeRad, 1.0e-20);
+}
+
+TEST(fruit_loop_recurrence,
+     injected_source_inactive_iteration_clears_offset_kernel_state) {
+    SyntheticKernelCenter kernel;
+    kernel.set_uniform_source_center(1.0, -1.0);
+    citlali::config::FruitLoopsInjectedSourceTestConfig config;
+    config.enabled = true;
+    config.start_iteration = 2;
+    config.array_amplitude_mjy_beam = {100.0};
+    config.az_offset_arcsec = 10.0;
+    config.el_offset_arcsec = -10.0;
+
+    citlali::pipeline::configure_fruit_loop_injected_source_kernel_center(
+        kernel, config, 1, ASEC_TO_RAD);
+
+    EXPECT_FALSE(kernel.uniform_source_center_enabled);
+    EXPECT_DOUBLE_EQ(kernel.uniform_source_lat_rad, 0.0);
+    EXPECT_DOUBLE_EQ(kernel.uniform_source_lon_rad, 0.0);
 }
 
 TEST(fruit_loop_recurrence,

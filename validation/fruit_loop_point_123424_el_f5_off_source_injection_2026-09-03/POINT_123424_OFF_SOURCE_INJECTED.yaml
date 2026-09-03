@@ -1,0 +1,8 @@
+runtime:
+  output_dir: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/
+timestream:
+  fruit_loops:
+    injected_source_test:
+      az_offset_arcsec: 0.0
+      el_offset_arcsec: -60.0
+

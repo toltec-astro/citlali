@@ -25,6 +25,8 @@ struct FruitLoopInjectedSourceArraySummary {
 struct FruitLoopInjectedSourceSummary {
     bool applied = false;
     long long projected_samples = 0;
+    double az_offset_arcsec = 0.0;
+    double el_offset_arcsec = 0.0;
     std::vector<FruitLoopInjectedSourceArraySummary> arrays;
 };
 
@@ -32,6 +34,36 @@ inline bool fruit_loop_injected_source_test_active(
     const citlali::config::FruitLoopsInjectedSourceTestConfig &config,
     int iteration) {
     return config.enabled && iteration >= config.start_iteration;
+}
+
+template <class Kernel>
+void configure_fruit_loop_injected_source_kernel_center(
+    Kernel &kernel,
+    const citlali::config::FruitLoopsInjectedSourceTestConfig &config,
+    int iteration, double arcsec_to_rad) {
+    kernel.clear_uniform_source_center();
+    if (!fruit_loop_injected_source_test_active(config, iteration)) {
+        return;
+    }
+    if (!std::isfinite(config.az_offset_arcsec) ||
+        !std::isfinite(config.el_offset_arcsec) ||
+        !std::isfinite(arcsec_to_rad) || arcsec_to_rad <= 0.0) {
+        throw citlali::error::runtime(
+            "fruit-loop injected-source test requires finite source offsets "
+            "and angular conversion");
+    }
+    // Preserve the established centered code path literally when both
+    // offsets are zero.  This is stronger than calculating an equivalent
+    // zero-valued override through a new branch.
+    if (config.az_offset_arcsec == 0.0 &&
+        config.el_offset_arcsec == 0.0) {
+        return;
+    }
+    // Kernel map coordinates use longitude/latitude ordering internally;
+    // for an altaz pointing product these are AZOFFSET/ELOFFSET.
+    kernel.set_uniform_source_center(
+        config.el_offset_arcsec * arcsec_to_rad,
+        config.az_offset_arcsec * arcsec_to_rad);
 }
 
 template <class PtcData, class Calib>
@@ -65,6 +97,8 @@ FruitLoopInjectedSourceSummary inject_fruit_loop_test_source(
     }
 
     summary.applied = true;
+    summary.az_offset_arcsec = config.az_offset_arcsec;
+    summary.el_offset_arcsec = config.el_offset_arcsec;
     summary.arrays.resize(config.array_amplitude_mjy_beam.size());
     for (std::size_t i = 0; i < summary.arrays.size(); ++i) {
         auto &array = summary.arrays[i];
@@ -131,10 +165,12 @@ void log_fruit_loop_injected_source_summary(
                 : 0.0;
         logger->info(
             "fruit-loop injected-source test iteration={} scan={} array={} "
-            "amplitude_mJy_beam={} projected_samples={} projected_sum={} "
+            "amplitude_mJy_beam={} az_offset_arcsec={} "
+            "el_offset_arcsec={} projected_samples={} projected_sum={} "
             "projected_rms={} projected_peak={}",
             iteration, scan_index + 1, array.array_id,
-            array.amplitude_mjy_beam, array.projected_samples,
+            array.amplitude_mjy_beam, summary.az_offset_arcsec,
+            summary.el_offset_arcsec, array.projected_samples,
             array.projected_sum, rms, array.projected_peak);
     }
 }

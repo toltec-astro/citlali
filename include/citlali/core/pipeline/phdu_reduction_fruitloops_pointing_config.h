@@ -87,6 +87,12 @@ void add_phdu_fruit_loops_config(FitsEntry &fits_entry,
     hdu.addKey("CONFIG.FRUITLOOPS.INJITER",
                config.injected_source_test.start_iteration,
                "Injected-source first zero-based iteration");
+    add_double_key("CONFIG.FRUITLOOPS.INJAZ",
+                   config.injected_source_test.az_offset_arcsec,
+                   "Injected source AZOFFSET (arcsec)");
+    add_double_key("CONFIG.FRUITLOOPS.INJEL",
+                   config.injected_source_test.el_offset_arcsec,
+                   "Injected source ELOFFSET (arcsec)");
     double injected_amplitude = 0.0;
     const int array_position =
         array_name == "a1100" ? 0 :

@@ -178,6 +178,18 @@ void read_fruit_loops_core_config(
         std::tuple{"timestream", "fruit_loops", "injected_source_test",
                    "array_amplitude_mjy_beam"},
         injected_amplitudes, injected.array_amplitude_mjy_beam, diagnostics);
+    double injected_az_offset_arcsec = injected.az_offset_arcsec;
+    read_optional_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "fruit_loops", "injected_source_test",
+                   "az_offset_arcsec"},
+        injected_az_offset_arcsec, injected.az_offset_arcsec, diagnostics);
+    double injected_el_offset_arcsec = injected.el_offset_arcsec;
+    read_optional_mirrored_config_value(
+        config,
+        std::tuple{"timestream", "fruit_loops", "injected_source_test",
+                   "el_offset_arcsec"},
+        injected_el_offset_arcsec, injected.el_offset_arcsec, diagnostics);
 
     read_optional_double(
         std::tuple{"timestream", "fruit_loops", "center_keep_radius_arcsec"},

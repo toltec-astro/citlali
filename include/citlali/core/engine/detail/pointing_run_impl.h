@@ -5,6 +5,7 @@
 #include <citlali/core/pipeline/mapmaking_dispatch.h>
 #include <citlali/core/pipeline/map_grouping_policy.h>
 #include <citlali/core/pipeline/output_policy.h>
+#include <citlali/core/pipeline/raw_timestream_authority.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 #include <citlali/core/pipeline/timestream_run_context.h>
 #include <citlali/core/pipeline/timestream_scan_context.h>
@@ -23,6 +24,11 @@ auto Pointing::run(
         citlali::pipeline::mapmaking_config(*this).method;
     const bool make_maps = citlali::pipeline::mapmaking_enabled(*this);
     const bool make_noise_maps = citlali::pipeline::noise_maps_enabled(*this);
+
+    citlali::pipeline::configure_raw_timestream_fruit_injection_kernel_center(
+        rtcproc,
+        citlali::pipeline::fruit_loops_config(*this).injected_source_test,
+        iteration.fruit_iter, ASEC_TO_RAD);
 
     auto map_grouping_ptr = std::make_shared<std::string>(
         citlali::pipeline::active_map_grouping_name(*this));

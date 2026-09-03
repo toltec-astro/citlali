@@ -1,0 +1,32 @@
+schema_version: sci-fruit-el-f5-analysis-v1
+test_id: SCI-FRUIT-EL-F5-OFF-SOURCE-INJECTION-R0.1
+registered_test: REGISTRATION_R0.1.yaml
+obsnum: 123424
+trajectory_start_iteration: 0
+injection_start_iteration: 1
+stop_iteration_exclusive: 6
+terminal_iteration: 5
+alpha: 1.25
+array_order: [a1100, a1400, a2000]
+array_amplitude_mjy_beam: [100.0, 100.0, 100.0]
+az_offset_arcsec: 0.0
+el_offset_arcsec: -60.0
+# These fit and residual definitions are inherited unchanged from EL-F4.
+gaussian_search_radius_arcsec: 25.0
+annulus_inner_arcsec: 40.0
+annulus_outer_arcsec: 120.0
+new_control: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/control/reduced
+off_source_injected: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced
+historical_control: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f4-feedback-model-bypass-r0.1/point-123424/complete-map/control/reduced
+centered_metrics: validation/fruit_loop_feedback_model_bypass_2026-09-02/ITERATION_METRICS_R0.1.csv
+centered_penalties: validation/fruit_loop_feedback_model_bypass_2026-09-02/PENALTY_INVENTORY_R0.1.csv
+execution_log_dir: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/logs
+target_existing_event: {iteration: 4, scan: 5, uid: 4460, array: 1}
+classification:
+  response_loss_requires_recovery_decrease: true
+  response_loss_requires_annular_residual_increase: true
+  comparable_penalty_iteration: 4
+  comparable_penalty_factor: 0.0
+  compare_penalty_on_matching_array: true
+claim_scope: one off-source location in one bright compact-source pointing observation
+

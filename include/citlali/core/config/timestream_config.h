@@ -503,6 +503,8 @@ struct FruitLoopsInjectedSourceTestConfig {
     bool enabled = false;
     int start_iteration = 1;
     std::vector<double> array_amplitude_mjy_beam;
+    double az_offset_arcsec = 0.0;
+    double el_offset_arcsec = 0.0;
 };
 
 struct TimestreamFruitLoopsConfig {

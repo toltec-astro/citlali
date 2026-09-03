@@ -49,6 +49,12 @@ void add_fruit_loops_config_vars(netCDF::NcFile &fo,
     add_netcdf_var(
         fo, "CONFIG.FRUITLOOPS.INJECTED_SOURCE_TEST.START_ITERATION",
         config.injected_source_test.start_iteration);
+    add_netcdf_var(
+        fo, "CONFIG.FRUITLOOPS.INJECTED_SOURCE_TEST.AZ_OFFSET_ARCSEC",
+        config.injected_source_test.az_offset_arcsec);
+    add_netcdf_var(
+        fo, "CONFIG.FRUITLOOPS.INJECTED_SOURCE_TEST.EL_OFFSET_ARCSEC",
+        config.injected_source_test.el_offset_arcsec);
 }
 
 template <class Calib, class ArrayNameMap>

@@ -40,6 +40,13 @@ public:
     Eigen::VectorXd source_b_fwhm_rad;
     Eigen::VectorXi source_valid;
 
+    // Development-only uniform source center used by the FRUIT injected-
+    // source location control.  The disabled state leaves the established
+    // per-map/centered source path untouched.
+    bool uniform_source_center_enabled = false;
+    double uniform_source_lat_rad = 0.0;
+    double uniform_source_lon_rad = 0.0;
+
     void clear_source_centers();
     void set_source_centers(const Eigen::VectorXd &, const Eigen::VectorXd &,
                             const Eigen::VectorXi &);
@@ -49,6 +56,8 @@ public:
     bool has_source_centers() const;
     bool source_center_for_map(Eigen::Index, double &, double &) const;
     bool source_fwhm_for_map(Eigen::Index, double &, double &) const;
+    void clear_uniform_source_center();
+    void set_uniform_source_center(double, double);
 
     // initial setup
     void setup(Eigen::Index);
@@ -121,11 +130,12 @@ inline void Kernel::set_source_centers(const Eigen::VectorXd &lat,
 }
 
 inline bool Kernel::has_source_centers() const {
-    return citlali::config::is_detector_map_grouping(map_grouping) &&
+    return uniform_source_center_enabled ||
+           (citlali::config::is_detector_map_grouping(map_grouping) &&
            source_valid.size() > 0 &&
            source_lat.size() == source_valid.size() &&
            source_lon.size() == source_valid.size() &&
-           (source_valid.array() != 0).any();
+           (source_valid.array() != 0).any());
 }
 
 inline bool Kernel::source_center_for_map(Eigen::Index map_index,
@@ -133,6 +143,15 @@ inline bool Kernel::source_center_for_map(Eigen::Index map_index,
                                           double &lon) const {
     lat = 0.0;
     lon = 0.0;
+    if (uniform_source_center_enabled) {
+        if (!std::isfinite(uniform_source_lat_rad) ||
+            !std::isfinite(uniform_source_lon_rad)) {
+            return false;
+        }
+        lat = uniform_source_lat_rad;
+        lon = uniform_source_lon_rad;
+        return true;
+    }
     if (!citlali::config::is_detector_map_grouping(map_grouping) ||
         map_index < 0 ||
         map_index >= source_valid.size() ||
@@ -149,6 +168,19 @@ inline bool Kernel::source_center_for_map(Eigen::Index map_index,
     lat = src_lat;
     lon = src_lon;
     return true;
+}
+
+inline void Kernel::clear_uniform_source_center() {
+    uniform_source_center_enabled = false;
+    uniform_source_lat_rad = 0.0;
+    uniform_source_lon_rad = 0.0;
+}
+
+inline void Kernel::set_uniform_source_center(double lat_rad,
+                                              double lon_rad) {
+    uniform_source_center_enabled = true;
+    uniform_source_lat_rad = lat_rad;
+    uniform_source_lon_rad = lon_rad;
 }
 
 inline bool Kernel::source_fwhm_for_map(Eigen::Index map_index,

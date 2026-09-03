@@ -41,6 +41,8 @@ def test_prepares_fresh_uninterrupted_reference() -> None:
         "enabled": False,
         "start_iteration": 1,
         "array_amplitude_mjy_beam": [0.0, 0.0, 0.0],
+        "az_offset_arcsec": 0.0,
+        "el_offset_arcsec": 0.0,
     }
     assert source["runtime"]["output_dir"] == "/old/reduced/"
 

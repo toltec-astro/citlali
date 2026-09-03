@@ -46,6 +46,8 @@ def prepare_reference_config(
         "enabled": False,
         "start_iteration": 1,
         "array_amplitude_mjy_beam": [0.0, 0.0, 0.0],
+        "az_offset_arcsec": 0.0,
+        "el_offset_arcsec": 0.0,
     }
     return config
 

@@ -43,6 +43,8 @@ def output_config(
     start_iteration: int,
     stop_iteration: int,
     amplitudes: list[float],
+    az_offset_arcsec: float = 0.0,
+    el_offset_arcsec: float = 0.0,
 ) -> dict:
     config = copy.deepcopy(source)
     config["runtime"]["output_dir"] = output_dir
@@ -58,6 +60,8 @@ def output_config(
         "enabled": enabled,
         "start_iteration": start_iteration,
         "array_amplitude_mjy_beam": amplitudes,
+        "az_offset_arcsec": az_offset_arcsec,
+        "el_offset_arcsec": el_offset_arcsec,
     }
     return config
 
@@ -90,6 +94,18 @@ def main() -> int:
         type=float,
         metavar=("A1100", "A1400", "A2000"),
     )
+    parser.add_argument(
+        "--az-offset-arcsec",
+        type=float,
+        default=0.0,
+        help="Diagnostic source AZOFFSET in map-world arcsec (default: 0)",
+    )
+    parser.add_argument(
+        "--el-offset-arcsec",
+        type=float,
+        default=0.0,
+        help="Diagnostic source ELOFFSET in map-world arcsec (default: 0)",
+    )
     args = parser.parse_args()
 
     if args.start_iteration < 1:
@@ -102,6 +118,10 @@ def main() -> int:
         parser.error("at least one injected amplitude must be positive")
     if any(value < 0.0 for value in args.amplitudes_mjy_beam):
         parser.error("injected amplitudes cannot be negative")
+    if not math.isfinite(args.az_offset_arcsec):
+        parser.error("--az-offset-arcsec must be finite")
+    if not math.isfinite(args.el_offset_arcsec):
+        parser.error("--el-offset-arcsec must be finite")
 
     source = yaml.safe_load(args.input.read_text())
     if not isinstance(source, dict):
@@ -121,6 +141,8 @@ def main() -> int:
             start_iteration=args.start_iteration,
             stop_iteration=stop_iteration,
             amplitudes=list(args.amplitudes_mjy_beam),
+            az_offset_arcsec=args.az_offset_arcsec,
+            el_offset_arcsec=args.el_offset_arcsec,
         )
         filename = f"citlali_injected_source_{label}.yaml"
         (args.output_dir / filename).write_text(
@@ -141,6 +163,8 @@ def main() -> int:
         "additional_iterations": args.additional_iterations,
         "array_order": ["a1100", "a1400", "a2000"],
         "array_amplitude_mjy_beam": list(args.amplitudes_mjy_beam),
+        "az_offset_arcsec": args.az_offset_arcsec,
+        "el_offset_arcsec": args.el_offset_arcsec,
         "variants": variants,
     }
     (args.output_dir / "manifest.yaml").write_text(

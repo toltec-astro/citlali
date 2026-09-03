@@ -62,6 +62,57 @@ def image(path: Path, extension: str) -> np.ndarray:
         return np.asarray(hdul[extension].data, dtype=float).squeeze()
 
 
+def gaussian_center_for_map_world_offset(
+    path: Path,
+    extension: str,
+    az_offset_arcsec: float,
+    el_offset_arcsec: float,
+) -> tuple[float, float]:
+    """Convert FITS AZ/EL world offsets to gaussian_fit coordinates."""
+    with fits.open(path, memmap=True) as hdul:
+        hdu = hdul[extension]
+        shape = np.asarray(hdu.data).squeeze().shape
+        header = hdu.header
+    if len(shape) != 2:
+        raise ValueError(f"expected a 2-D squeezed map in {path}:{extension}")
+    if header.get("CTYPE1") != "AZOFFSET" or header.get("CTYPE2") != "ELOFFSET":
+        raise ValueError(
+            f"expected AZOFFSET/ELOFFSET WCS in {path}:{extension}"
+        )
+
+    def arcsec_scale(unit: str) -> float:
+        normalized = unit.strip().lower()
+        if normalized in {"arcsec", "arcsecond", "arcseconds"}:
+            return 1.0
+        if normalized in {"deg", "degree", "degrees"}:
+            return 3600.0
+        raise ValueError(f"unsupported offset-map WCS unit {unit!r}")
+
+    scale_x = arcsec_scale(str(header["CUNIT1"]))
+    scale_y = arcsec_scale(str(header["CUNIT2"]))
+    cdelt_x = float(header["CDELT1"]) * scale_x
+    cdelt_y = float(header["CDELT2"]) * scale_y
+    if cdelt_x == 0.0 or cdelt_y == 0.0:
+        raise ValueError(f"zero offset-map WCS increment in {path}:{extension}")
+    pixel_x = (
+        (az_offset_arcsec - float(header["CRVAL1"]) * scale_x) / cdelt_x
+        + float(header["CRPIX1"])
+        - 1.0
+    )
+    pixel_y = (
+        (el_offset_arcsec - float(header["CRVAL2"]) * scale_y) / cdelt_y
+        + float(header["CRPIX2"])
+        - 1.0
+    )
+    pixel_size = abs(cdelt_x)
+    if not math.isclose(abs(cdelt_y), pixel_size, rel_tol=0.0, abs_tol=1.0e-12):
+        raise ValueError(f"non-square offset-map pixels in {path}:{extension}")
+    return (
+        (pixel_x - (shape[1] - 1) / 2.0) * pixel_size,
+        (pixel_y - (shape[0] - 1) / 2.0) * pixel_size,
+    )
+
+
 def rms(values: np.ndarray) -> float:
     finite = np.isfinite(values)
     if not finite.any():
@@ -231,6 +282,8 @@ def require_pair_config(
             float(value)
             for value in manifest["array_amplitude_mjy_beam"]
         ],
+        "az_offset_arcsec": float(manifest.get("az_offset_arcsec", 0.0)),
+        "el_offset_arcsec": float(manifest.get("el_offset_arcsec", 0.0)),
     }
     control_test = control["timestream"]["fruit_loops"][
         "injected_source_test"
@@ -243,7 +296,12 @@ def require_pair_config(
     if injected_test["enabled"] is not True:
         raise ValueError("injected config has injected-source test disabled")
     for key, value in expected.items():
-        if control_test[key] != value or injected_test[key] != value:
+        missing_default = 0.0 if key in {
+            "az_offset_arcsec", "el_offset_arcsec"
+        } else None
+        control_value = control_test.get(key, missing_default)
+        injected_value = injected_test.get(key, missing_default)
+        if control_value != value or injected_value != value:
             raise ValueError(
                 f"paired config {key} does not match manifest value {value}"
             )
@@ -303,6 +361,8 @@ def comparison_rows(
     amplitudes = dict(
         zip(manifest["array_order"], manifest["array_amplitude_mjy_beam"])
     )
+    az_offset_arcsec = float(manifest.get("az_offset_arcsec", 0.0))
+    el_offset_arcsec = float(manifest.get("el_offset_arcsec", 0.0))
     control_dirs = iteration_dirs(control_root, obsnum)
     injected_dirs = iteration_dirs(injected_root, obsnum)
     iterations = sorted(set(control_dirs) & set(injected_dirs))
@@ -359,10 +419,15 @@ def comparison_rows(
             )
             truth = float(amplitudes[array])
             transfer = injected_map - control_map
-            # The synthetic source is defined at the pointing-map center.  A
-            # global peak search can instead lock onto an unrelated paired-map
-            # subtraction artifact, so make that known test identity explicit.
-            expected_center = (0.0, 0.0)
+            # A global peak search can lock onto an unrelated paired-map
+            # subtraction artifact. Convert the declared FITS map-world
+            # position into this fitter's signed pixel-axis coordinates.
+            expected_center = gaussian_center_for_map_world_offset(
+                product_path(injected, obsnum, array),
+                "signal_I",
+                az_offset_arcsec,
+                el_offset_arcsec,
+            )
             transfer_fit = gaussian_fit(
                 transfer,
                 pixel_size,
@@ -400,6 +465,8 @@ def comparison_rows(
                     "iteration": iteration,
                     "array": array,
                     "injected_amplitude_mjy_beam": truth,
+                    "injected_az_offset_arcsec": az_offset_arcsec,
+                    "injected_el_offset_arcsec": el_offset_arcsec,
                     "recovered_transfer_amplitude_mjy_beam":
                         transfer_fit["amplitude"],
                     "amplitude_recovery_fraction":
@@ -644,11 +711,27 @@ def write_provenance_manifest(
                 float(value)
                 for value in pair_manifest["array_amplitude_mjy_beam"]
             ],
+            "az_offset_arcsec": float(
+                pair_manifest.get("az_offset_arcsec", 0.0)
+            ),
+            "el_offset_arcsec": float(
+                pair_manifest.get("el_offset_arcsec", 0.0)
+            ),
             "exact_restart_control": "PASS",
         },
         "measurement": {
             "map_response": "injected signal_I minus control signal_I",
-            "source_location": "pointing-map center",
+            "source_location": {
+                "frame": "FITS map world",
+                "axes": ["AZOFFSET", "ELOFFSET"],
+                "unit": "arcsec",
+                "az_offset_arcsec": float(
+                    pair_manifest.get("az_offset_arcsec", 0.0)
+                ),
+                "el_offset_arcsec": float(
+                    pair_manifest.get("el_offset_arcsec", 0.0)
+                ),
+            },
             "gaussian_search_radius_arcsec": 25.0,
             "kernel_comparator": "same-iteration injected kernel_I",
         },

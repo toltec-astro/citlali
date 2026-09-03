@@ -15,6 +15,7 @@ from astropy.io import fits
 
 from tools.fruit_loops.compare_injected_source_pair import (
     ARRAYS,
+    gaussian_center_for_map_world_offset,
     gaussian_fit,
     iteration_dirs,
     kernel_projection_metrics,
@@ -117,13 +118,15 @@ def annulus_mask(
     pixel_size_arcsec: float,
     inner_arcsec: float,
     outer_arcsec: float,
+    center_arcsec: tuple[float, float] = (0.0, 0.0),
 ) -> np.ndarray:
     if len(shape) != 2:
         raise ValueError(f"expected a 2-D map, got shape {shape}")
     yy, xx = np.indices(shape, dtype=float)
     xx = (xx - (shape[1] - 1) / 2.0) * pixel_size_arcsec
     yy = (yy - (shape[0] - 1) / 2.0) * pixel_size_arcsec
-    radius = np.hypot(xx, yy)
+    center_x, center_y = center_arcsec
+    radius = np.hypot(xx - center_x, yy - center_y)
     return (radius >= inner_arcsec) & (radius <= outer_arcsec)
 
 
@@ -205,6 +208,12 @@ def analyze_pair(
         "array_amplitude_mjy_beam": manifest[
             "array_amplitude_mjy_beam"
         ],
+        "az_offset_arcsec": float(
+            manifest.get("az_offset_arcsec", 0.0)
+        ),
+        "el_offset_arcsec": float(
+            manifest.get("el_offset_arcsec", 0.0)
+        ),
     }
     control_config = trajectory_config(control_dirs)
     injected_config = trajectory_config(injected_dirs)
@@ -287,16 +296,22 @@ def analyze_pair(
             transfer = (
                 loaded["injected_signal_I"] - loaded["control_signal_I"]
             )
+            expected_center = gaussian_center_for_map_world_offset(
+                injected_path,
+                "signal_I",
+                float(manifest.get("az_offset_arcsec", 0.0)),
+                float(manifest.get("el_offset_arcsec", 0.0)),
+            )
             transfer_fit = gaussian_fit(
                 transfer,
                 pixel_size,
-                expected_center_arcsec=(0.0, 0.0),
+                expected_center_arcsec=expected_center,
                 search_radius_arcsec=search_radius,
             )
             kernel_fit = gaussian_fit(
                 injected_kernel,
                 pixel_size,
-                expected_center_arcsec=(0.0, 0.0),
+                expected_center_arcsec=expected_center,
                 search_radius_arcsec=search_radius,
             )
             projection = kernel_projection_metrics(
@@ -305,7 +320,8 @@ def analyze_pair(
             beta = float(projection["scale_mjy_beam"])
             residual = transfer - beta * injected_kernel
             annulus = annulus_mask(
-                transfer.shape, pixel_size, annulus_inner, annulus_outer
+                transfer.shape, pixel_size, annulus_inner, annulus_outer,
+                center_arcsec=expected_center,
             )
             annulus_support = support & annulus
             if not annulus_support.any():
@@ -344,6 +360,12 @@ def analyze_pair(
                     "iteration": iteration,
                     "array": array,
                     "injected_amplitude_mjy_beam": truth,
+                    "injected_az_offset_arcsec": float(
+                        manifest.get("az_offset_arcsec", 0.0)
+                    ),
+                    "injected_el_offset_arcsec": float(
+                        manifest.get("el_offset_arcsec", 0.0)
+                    ),
                     "kernel_normalized_central_recovery":
                         transfer_fit["amplitude"]
                         / (truth * kernel_fit["amplitude"]),

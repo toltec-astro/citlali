@@ -81,6 +81,8 @@ class InjectedSourcePairTest(unittest.TestCase):
         manifest = {
             "start_iteration": 9,
             "array_amplitude_mjy_beam": [1000.0, 2000.0, 3000.0],
+            "az_offset_arcsec": 20.0,
+            "el_offset_arcsec": -60.0,
         }
         control = {
             "runtime": {"output_dir": "/control", "reduction_type": "pointing"},
@@ -96,6 +98,8 @@ class InjectedSourcePairTest(unittest.TestCase):
                             2000.0,
                             3000.0,
                         ],
+                        "az_offset_arcsec": 20.0,
+                        "el_offset_arcsec": -60.0,
                     },
                 }
             },
@@ -111,6 +115,29 @@ class InjectedSourcePairTest(unittest.TestCase):
         injected["mapmaking"]["pixel_size_arcsec"] = 2.0
         with self.assertRaisesRegex(ValueError, "differ beyond"):
             compare.require_pair_config(control, injected, manifest)
+
+    def test_converts_map_world_offset_to_signed_fit_coordinates(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "offset.fits"
+            primary = fits.PrimaryHDU()
+            image = fits.ImageHDU(np.zeros((7, 9)), name="signal_I")
+            image.header["CTYPE1"] = "AZOFFSET"
+            image.header["CTYPE2"] = "ELOFFSET"
+            image.header["CUNIT1"] = "arcsec"
+            image.header["CUNIT2"] = "arcsec"
+            image.header["CRPIX1"] = 5.0
+            image.header["CRPIX2"] = 4.0
+            image.header["CRVAL1"] = 0.0
+            image.header["CRVAL2"] = 0.0
+            image.header["CDELT1"] = -1.0
+            image.header["CDELT2"] = 1.0
+            fits.HDUList([primary, image]).writeto(path)
+
+            center = compare.gaussian_center_for_map_world_offset(
+                path, "signal_I", 2.0, -3.0,
+            )
+
+            self.assertEqual(center, (-2.0, -3.0))
 
     def test_recovers_known_gaussian_amplitude_width_and_center(self) -> None:
         yy, xx = np.indices((101, 101), dtype=float)

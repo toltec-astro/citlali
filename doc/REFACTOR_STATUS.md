@@ -494,6 +494,24 @@ subtraction, qualification, production use, Gate D, Stage B authoring, or
 Unity activity. The prospective definition is
 [`TEST_DEFINITION.md`](../validation/fruit_loop_point_123424_el_f5_off_source_injection_2026-09-03/TEST_DEFINITION.md).
 
+The EL-F5 diagnostic implementation is now locally verified but has not yet
+been executed. It adds only finite map-world AZOFFSET/ELOFFSET controls to the
+default-disabled injected-source test, routes the source through the normal
+RTC kernel and existing filtering/cleaning path, and records the position in
+effective configuration, processed-timestream provenance, NetCDF variables,
+FITS headers, logs, and response identity. Missing or explicit zero offsets
+retain the literal centered-kernel branch; a sample-level unit test verifies
+bitwise equality, and a displaced-kernel test verifies the signed map-world
+position. The analysis window, EL-F4-derived annulus, compatibility comparator,
+target event, and four-way descriptive classification were fixed in
+[`ANALYSIS_MANIFEST_R0.1.yaml`](../validation/fruit_loop_point_123424_el_f5_off_source_injection_2026-09-03/ANALYSIS_MANIFEST_R0.1.yaml)
+before output inspection. The production CLI and test binary build, all 618
+enabled CTest cases pass (one unrelated test remains disabled), 13 focused
+Python tests pass, and the complete required configuration preflight passes
+without changing its raw-execution census. No trajectory, compatibility
+finding, off-source result, or scientific interpretation is claimed at this
+point.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

@@ -76,6 +76,11 @@ std::string science_map_response_identity(const Kernel &kernel,
     hash_vector(kernel.source_a_fwhm_rad);
     hash_vector(kernel.source_b_fwhm_rad);
     hash_vector(kernel.source_valid);
+    if (kernel.uniform_source_center_enabled) {
+        digest.add_string("uniform-source-center");
+        digest.add_double(kernel.uniform_source_lat_rad);
+        digest.add_double(kernel.uniform_source_lon_rad);
+    }
     return digest.finish();
 }
 

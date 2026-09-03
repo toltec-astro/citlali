@@ -18,6 +18,7 @@
 #include <citlali/core/pipeline/coadd_provenance.h>
 #include <citlali/core/pipeline/citlali_config_read.h>
 #include <citlali/core/pipeline/fruit_loop_paths.h>
+#include <citlali/core/pipeline/fruit_loop_injected_source_test.h>
 #include <citlali/core/pipeline/fruit_loops_config_read.h>
 #include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/learning_config_adapter.h>
@@ -4621,6 +4622,10 @@ TEST(config_scaffold, reads_fruit_loop_injected_source_test) {
     root["timestream"]["fruit_loops"]["injected_source_test"]
         ["array_amplitude_mjy_beam"] =
             std::vector<double>{1000.0, 2000.0, 3000.0};
+    root["timestream"]["fruit_loops"]["injected_source_test"]
+        ["az_offset_arcsec"] = 42.5;
+    root["timestream"]["fruit_loops"]["injected_source_test"]
+        ["el_offset_arcsec"] = -63.25;
     auto yaml_config =
         tula::config::YamlConfig::from_str(YAML::Dump(root));
     citlali::config::TimestreamFruitLoopsConfig config;
@@ -4635,6 +4640,8 @@ TEST(config_scaffold, reads_fruit_loop_injected_source_test) {
     EXPECT_EQ(
         config.injected_source_test.array_amplitude_mjy_beam,
         (std::vector<double>{1000.0, 2000.0, 3000.0}));
+    EXPECT_DOUBLE_EQ(config.injected_source_test.az_offset_arcsec, 42.5);
+    EXPECT_DOUBLE_EQ(config.injected_source_test.el_offset_arcsec, -63.25);
 }
 
 TEST(config_scaffold, validates_fruit_loop_injected_source_test_contract) {
@@ -4650,6 +4657,101 @@ TEST(config_scaffold, validates_fruit_loop_injected_source_test_contract) {
 
     EXPECT_FALSE(report.ok());
     EXPECT_EQ(report.error_count(), 5U);
+}
+
+TEST(config_scaffold,
+     rejects_nonfinite_fruit_loop_injected_source_offsets_even_when_disabled) {
+    citlali::config::FruitLoopsInjectedSourceTestConfig config;
+    config.az_offset_arcsec = std::numeric_limits<double>::quiet_NaN();
+    config.el_offset_arcsec = std::numeric_limits<double>::infinity();
+
+    citlali::config::ValidationReport report;
+    citlali::config::validate(config, report);
+
+    EXPECT_FALSE(report.ok());
+    EXPECT_EQ(report.error_count(), 2U);
+}
+
+TEST(config_scaffold,
+     fruit_loop_explicit_zero_offset_preserves_kernel_samples_bitwise) {
+    using RtcData =
+        timestream::TCData<timestream::TCDataKind::RTC, Eigen::MatrixXd>;
+    constexpr Eigen::Index rows = 7;
+    constexpr Eigen::Index cols = 7;
+    constexpr Eigen::Index samples = rows * cols;
+    constexpr double pixel_rad = 1.0e-5;
+
+    auto make_data = [=] {
+        RtcData data;
+        data.scans.data = Eigen::MatrixXd::Zero(samples, 1);
+        data.flags.data.resize(samples, 1);
+        data.flags.data.setConstant(false);
+        Eigen::VectorXd lat(samples);
+        Eigen::VectorXd lon(samples);
+        Eigen::Index sample = 0;
+        for (Eigen::Index row = 0; row < rows; ++row) {
+            for (Eigen::Index col = 0; col < cols; ++col) {
+                lat(sample) =
+                    (static_cast<double>(row) - (rows - 1) / 2.0) *
+                    pixel_rad;
+                lon(sample) =
+                    (static_cast<double>(col) - (cols - 1) / 2.0) *
+                    pixel_rad;
+                ++sample;
+            }
+        }
+        data.tel_data.data["TelElAct"] = Eigen::VectorXd::Zero(samples);
+        data.tel_data.data["alt_phys"] = lat;
+        data.tel_data.data["az_phys"] = lon;
+        data.pointing_offsets_arcsec.data["az"] =
+            Eigen::VectorXd::Zero(samples);
+        data.pointing_offsets_arcsec.data["alt"] =
+            Eigen::VectorXd::Zero(samples);
+        return data;
+    };
+    auto make_kernel = [=] {
+        timestream::Kernel kernel;
+        kernel.type = "gaussian";
+        kernel.map_grouping = "array";
+        kernel.sigma_rad = pixel_rad;
+        kernel.fwhm_rad = pixel_rad / FWHM_TO_STD;
+        kernel.sigma_limit = 3.0;
+        return kernel;
+    };
+    std::map<std::string, Eigen::VectorXd> apt;
+    apt["x_t"] = Eigen::VectorXd::Zero(1);
+    apt["y_t"] = Eigen::VectorXd::Zero(1);
+    std::string pixel_axes = "altaz";
+
+    auto legacy_data = make_data();
+    auto explicit_zero_data = make_data();
+    auto offset_data = make_data();
+    auto legacy_kernel = make_kernel();
+    auto explicit_zero_kernel = make_kernel();
+    auto offset_kernel = make_kernel();
+    legacy_kernel.create_symmetric_gaussian_kernel(
+        legacy_data, pixel_axes, apt);
+
+    citlali::config::FruitLoopsInjectedSourceTestConfig config;
+    config.enabled = true;
+    config.start_iteration = 1;
+    config.array_amplitude_mjy_beam = {100.0};
+    citlali::pipeline::configure_fruit_loop_injected_source_kernel_center(
+        explicit_zero_kernel, config, 1, ASEC_TO_RAD);
+    explicit_zero_kernel.create_symmetric_gaussian_kernel(
+        explicit_zero_data, pixel_axes, apt);
+    EXPECT_TRUE((legacy_data.kernel.data.array() ==
+                 explicit_zero_data.kernel.data.array()).all());
+
+    config.az_offset_arcsec = pixel_rad / (ASEC_TO_RAD);
+    config.el_offset_arcsec = -2.0 * pixel_rad / (ASEC_TO_RAD);
+    citlali::pipeline::configure_fruit_loop_injected_source_kernel_center(
+        offset_kernel, config, 1, ASEC_TO_RAD);
+    offset_kernel.create_symmetric_gaussian_kernel(
+        offset_data, pixel_axes, apt);
+    Eigen::Index peak_sample = -1;
+    offset_data.kernel.data.col(0).maxCoeff(&peak_sample);
+    EXPECT_EQ(peak_sample, 1 * cols + 4);
 }
 
 TEST(config_scaffold, rejects_ambiguous_fruit_loop_seed_and_restart) {
@@ -9975,6 +10077,8 @@ TEST(config_scaffold, serializes_processed_config_snapshot_deterministically) {
     config.fruit_loops.array_flux_limit = {1.0, 2.0};
     config.fruit_loops.weight_feedback.reference =
         citlali::config::FruitLoopsWeightFeedbackReference::median;
+    config.fruit_loops.injected_source_test.az_offset_arcsec = 12.5;
+    config.fruit_loops.injected_source_test.el_offset_arcsec = -60.0;
     auto &clean = config.processed_time_chunk.clean;
     clean.enabled = true;
     clean.active =
@@ -10011,6 +10115,14 @@ TEST(config_scaffold, serializes_processed_config_snapshot_deterministically) {
         "map_center");
     EXPECT_EQ(node["fruit_loops"]["mode"].as<std::string>(), "both");
     EXPECT_EQ(node["fruit_loops"]["array_flux_limit"].size(), 2U);
+    EXPECT_DOUBLE_EQ(
+        node["fruit_loops"]["injected_source_test"]["az_offset_arcsec"]
+            .as<double>(),
+        12.5);
+    EXPECT_DOUBLE_EQ(
+        node["fruit_loops"]["injected_source_test"]["el_offset_arcsec"]
+            .as<double>(),
+        -60.0);
     EXPECT_EQ(node["fruit_loops"]["weight_feedback"]["reference"]
                   .as<std::string>(),
               "median");

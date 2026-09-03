@@ -974,11 +974,21 @@ inline void validate(const FruitLoopsWeightFeedbackConfig &config,
 
 inline void validate(const FruitLoopsInjectedSourceTestConfig &config,
                      ValidationReport &report) {
+    const ConfigPath path{
+        "timestream", "fruit_loops", "injected_source_test"};
+    if (!std::isfinite(config.az_offset_arcsec)) {
+        report.add_error(
+            append_config_path(path, {"az_offset_arcsec"}),
+            "must be finite");
+    }
+    if (!std::isfinite(config.el_offset_arcsec)) {
+        report.add_error(
+            append_config_path(path, {"el_offset_arcsec"}),
+            "must be finite");
+    }
     if (!config.enabled) {
         return;
     }
-    const ConfigPath path{
-        "timestream", "fruit_loops", "injected_source_test"};
     check_minimum(
         config.start_iteration, 1,
         append_config_path(path, {"start_iteration"}), report);

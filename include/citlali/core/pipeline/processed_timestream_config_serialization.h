@@ -56,6 +56,8 @@ inline YAML::Node fruit_loops_injected_source_test_config_node(
     node["start_iteration"] = config.start_iteration;
     node["array_amplitude_mjy_beam"] =
         processed_config_sequence_node(config.array_amplitude_mjy_beam);
+    node["az_offset_arcsec"] = config.az_offset_arcsec;
+    node["el_offset_arcsec"] = config.el_offset_arcsec;
     return node;
 }
 

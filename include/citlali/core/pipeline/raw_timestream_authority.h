@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/config/timestream_config.h>
+#include <citlali/core/pipeline/fruit_loop_injected_source_test.h>
 #include <citlali/core/pipeline/raw_timestream_execution_plan.h>
 #include <citlali/core/pipeline/timestream_config_adapter_raw.h>
 
@@ -20,6 +21,15 @@ void initialize_raw_timestream_authority(
     adapt_raw_timestream_config_one_way(
         effective_config, rtcproc, arcsec_to_rad, fwhm_to_std);
     rtcproc.configure_filter_edge_guard(native_sample_rate_hz);
+}
+
+template <class RtcProc>
+void configure_raw_timestream_fruit_injection_kernel_center(
+    RtcProc &rtcproc,
+    const citlali::config::FruitLoopsInjectedSourceTestConfig &config,
+    int iteration, double arcsec_to_rad) {
+    configure_fruit_loop_injected_source_kernel_center(
+        rtcproc.kernel, config, iteration, arcsec_to_rad);
 }
 
 }  // namespace citlali::pipeline
