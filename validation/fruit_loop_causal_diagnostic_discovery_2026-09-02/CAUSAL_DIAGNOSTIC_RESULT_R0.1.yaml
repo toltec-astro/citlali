@@ -1,0 +1,38 @@
+schema_version: sci-fruit-causal-diagnostic-result-v1
+result_id: SCI-FRUIT-EL-CAUSAL-DIAGNOSTIC-DISCOVERY-R0.1
+role: exploratory-development-only
+classification: mechanism_candidate_found_no_guard_established
+scope:
+  cases: [EL-F1-point-152389, EL-F2-point-123424]
+  analyzed_array_iteration_rows: 51
+  annulus_arcsec: [40.0, 120.0]
+  new_reductions_performed: false
+  algorithm_changed: false
+findings:
+  el_f2_a1400_pre_update_warning_present: true
+  warning:
+    completed_iteration: 4
+    next_iteration: 5
+    producer: mapdiag:raw_obs
+    reason: map_pixel_outlier_detector_dominance
+    scan: 5
+    uid: 4460
+    array: a1400
+    penalty_factor: 0.0
+    control_contributor_pixels: 3
+    injected_contributor_pixels: 4
+    configured_minimum_pixels: 4
+  causal_interpretation: association_localized_counterfactual_not_run
+  simple_update_growth_reliable_across_cases: false
+  new_penalty_event_reliable_across_cases: false
+  update_direction_reliable_across_cases: false
+  ordinary_map_or_pointing_metric_reliable_across_cases: false
+  stopping_rule_selected: false
+  candidate_recurrence_selected: false
+  el_f2_iteration_4_is_acceptable_early_stop: false
+recommended_next:
+  experiment: counterfactual_late_apply_phase_mapdiag_penalty_isolation
+  purpose: determine_whether_penalty_causes_or_only_marks_el_f2_a1400_collapse
+  requires_separate_owner_authorization: true
+  qualification_use_authorized: false
+  production_use_authorized: false

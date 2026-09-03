@@ -330,3 +330,27 @@ failure classification, stopped-versus-iteration-9 residuals, quality/source
 yield breakdowns, separate continuation and measurement-limited tables, one
 convergence plot per observation, and a recursive checksummed manifest. It
 does not change the production stopping policy.
+
+## Causal-diagnostic discovery
+
+`analyze_causal_diagnostic_discovery.py` compares injected-source truth labels
+with diagnostics that are available from one ordinary FRUIT trajectory. It is
+an exploratory development tool, not a stopping-rule or method qualifier. A
+manifest names the already completed development cases, candidate roots,
+paired truth tables, reference terminal iterations, and inherited scientific
+protections:
+
+```bash
+$HOME/tolteca/bin/python \
+  tools/fruit_loops/analyze_causal_diagnostic_discovery.py \
+  --manifest /path/to/CAUSAL_DIAGNOSTIC_MANIFEST.yaml \
+  --output /path/to/CAUSAL_DIAGNOSTIC_METRICS.csv
+```
+
+The output keeps the truth-derived outcome columns separate from the
+single-run diagnostics. Those diagnostics include annular changes in the
+carried feedback state and output signal map, iteration-to-iteration update
+growth and direction, staged and newly applied detector penalties, pointing
+fit changes, and ordinary map-quality summaries. No threshold or causal rule
+is selected by the tool. The first two-case development result is recorded in
+`validation/fruit_loop_causal_diagnostic_discovery_2026-09-02/`.

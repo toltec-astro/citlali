@@ -1,0 +1,30 @@
+schema_version: sci-fruit-causal-diagnostic-discovery-v1
+role: exploratory-development-only
+qualification_use_authorized: false
+array_order: [a1100, a1400, a2000]
+annulus_inner_arcsec: 40.0
+annulus_outer_arcsec: 120.0
+screen:
+  max_absolute_recovery_error_degradation: 0.01
+  max_width_fractional_error: 0.03
+  max_centroid_error_arcsec: 0.1
+  max_residual_ratio_to_reference: 1.10
+cases:
+  - case_id: EL-F1-point-152389
+    obsnum: 152389
+    truth_metrics: ../fruit_loop_point_152389_el_f1_composite_state_retry_2026-09-02/ITERATION_METRICS_R0.1.csv
+    reference_alpha: 1.0
+    reference_terminal_iteration: 6
+    candidates:
+      - alpha: 1.25
+        root: /Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/el-f1-composite-state-retry-r0.1/alpha-1.25
+      - alpha: 1.50
+        root: /Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/el-f1-composite-state-retry-r0.1/alpha-1.50
+  - case_id: EL-F2-point-123424
+    obsnum: 123424
+    truth_metrics: ../fruit_loop_point_123424_el_f2_early_stop_2026-09-02/ITERATION_METRICS_R0.3.csv
+    reference_alpha: 1.0
+    reference_terminal_iteration: 6
+    candidates:
+      - alpha: 1.25
+        root: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.25

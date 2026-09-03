@@ -373,6 +373,27 @@ This independent negative result does not promote a method, stopping rule,
 APT, or fallback and does not launch Gate D, Stage B, production, or Unity
 work.
 
+The owner then approved a read-only causal-diagnostic comparison of the
+completed EL-F1 and EL-F2 trajectories. The 51-row analysis keeps paired
+injection truth out of candidate warning signals and finds no tested simple
+single-run diagnostic that reliably separates helpful from harmful updates
+across the two exposed development cases. Update growth catches the large
+EL-F2 a1400 iteration-5 failure but misses both late EL-F1 a1100 failures and
+has direct counterexamples on improving or acceptable array states. A new hard
+detector penalty likewise is not universal. It does, however, localize a
+specific EL-F2 mechanism candidate: the injection changes UID 4460 on scan 5
+from three contributing a1400 pixels to the configured threshold of four at
+iteration 4, producing a newly carried zero-factor exclusion before the
+iteration-5 collapse. The control has no such exclusion. Because no
+counterfactual has yet been run, this is an association rather than a causal
+claim. Every EL-F2 alpha-1.25 all-array state from iterations 1--5 still fails
+at least one inherited science protection, so this evidence does not rescue an
+iteration-4 early stop. The complete result and recommended separately
+authorized counterfactual are in
+[`CAUSAL_DIAGNOSTIC_RESULT_R0.1.md`](../validation/fruit_loop_causal_diagnostic_discovery_2026-09-02/CAUSAL_DIAGNOSTIC_RESULT_R0.1.md).
+No stopping rule, candidate recurrence, method promotion, qualification,
+production change, Gate D, Stage B, or new reduction is authorized.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
