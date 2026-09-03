@@ -11,6 +11,7 @@
 #include <citlali/core/pipeline/reduction_restart_checkpoint.h>
 
 #include <gtest/gtest.h>
+#include <yaml-cpp/yaml.h>
 
 #include <chrono>
 #include <filesystem>
@@ -820,6 +821,49 @@ TEST(ReductionRestartCheckpoint, RejectsObservationAndPolicyMismatch) {
                      directory.path, "coadd/raw", {"152390"}, config,
                      changed_processed_config, restored,
                      restored_weight_validation),
+                 std::runtime_error);
+}
+
+TEST(ReductionRestartCheckpoint,
+     AcceptsHistoricalMissingPlacementOnlyAtLegacyDefault) {
+    RestartCheckpointDirectory directory;
+    const auto config = restart_learning_config();
+    const auto processed_config = restart_processed_config();
+    const auto weight_validation = restart_weight_validation_state();
+    auto original = restart_learning_state(config);
+    execute_synthetic_learning_iteration(original, 0);
+    citlali::pipeline::write_reduction_restart_checkpoint(
+        directory.path, 0, "coadd/raw", {"152390"}, config,
+        processed_config, original, weight_validation);
+
+    auto historical_policy = YAML::Load(
+        citlali::pipeline::learning_restart_policy_snapshot(config));
+    ASSERT_TRUE(historical_policy.remove(
+        "map_pixel_outlier_detector_exclusion_application"));
+    {
+        netCDF::NcFile checkpoint(
+            citlali::pipeline::reduction_restart_checkpoint_path(
+                directory.path),
+            netCDF::NcFile::write);
+        checkpoint.getVar("learning_policy_yaml")
+            .putVar(std::vector<std::size_t>{0},
+                    YAML::Dump(historical_policy));
+    }
+
+    auto restored = restart_learning_state(config);
+    citlali::pipeline::WeightValidationRestartState restored_weights;
+    EXPECT_NO_THROW(citlali::pipeline::load_reduction_restart_checkpoint(
+        directory.path, "coadd/raw", {"152390"}, config,
+        processed_config, restored, restored_weights));
+
+    auto moved_placement = config;
+    moved_placement.map_pixel_outlier.detector_exclusion_application =
+        citlali::config::MapPixelOutlierDetectorExclusionApplication::
+            pre_mapmaking;
+    EXPECT_THROW(citlali::pipeline::load_reduction_restart_checkpoint(
+                     directory.path, "coadd/raw", {"152390"},
+                     moved_placement, processed_config, restored,
+                     restored_weights),
                  std::runtime_error);
 }
 

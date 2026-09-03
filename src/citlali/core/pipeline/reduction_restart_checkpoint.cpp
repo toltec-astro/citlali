@@ -14,6 +14,7 @@
 #include <limits>
 #include <map>
 #include <mutex>
+#include <optional>
 #include <sstream>
 #include <stdexcept>
 #include <tuple>
@@ -34,6 +35,44 @@ using ResolvedMapPixelTargetKey =
     ReductionLearningState::ResolvedMapPixelTargetKey;
 using ResolvedMapPixelTargetSet =
     ReductionLearningState::ResolvedMapPixelTargetSet;
+
+constexpr const char *map_pixel_outlier_exclusion_application_key =
+    "map_pixel_outlier_detector_exclusion_application";
+
+std::optional<std::map<std::string, std::string>>
+normalized_learning_restart_policy(const std::string &policy) {
+    try {
+        const auto node = YAML::Load(policy);
+        if (!node.IsMap()) {
+            return std::nullopt;
+        }
+        std::map<std::string, std::string> normalized;
+        for (const auto &entry : node) {
+            if (!entry.first.IsScalar() || !entry.second.IsScalar()) {
+                return std::nullopt;
+            }
+            normalized.emplace(entry.first.Scalar(), entry.second.Scalar());
+        }
+        // Checkpoints written before EL-F8 predate this field.  Its legacy
+        // default is the historical placement, so absence has exactly the
+        // same restart identity as an explicit pre_cleaning value.
+        normalized.try_emplace(map_pixel_outlier_exclusion_application_key,
+                               "pre_cleaning");
+        return normalized;
+    } catch (const YAML::Exception &) {
+        return std::nullopt;
+    }
+}
+
+bool learning_restart_policies_match(const std::string &stored,
+                                     const std::string &expected) {
+    const auto normalized_stored =
+        normalized_learning_restart_policy(stored);
+    const auto normalized_expected =
+        normalized_learning_restart_policy(expected);
+    return normalized_stored.has_value() && normalized_expected.has_value() &&
+           *normalized_stored == *normalized_expected;
+}
 
 [[noreturn]] void checkpoint_error(const std::filesystem::path &path,
                                    const std::string &message) {
@@ -841,8 +880,9 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
     }
     const auto learning_policy =
         read_scalar_string(file, input_path, "learning_policy_yaml");
-    if (learning_policy !=
-        learning_restart_policy_snapshot(expected_learning_config)) {
+    if (!learning_restart_policies_match(
+            learning_policy,
+            learning_restart_policy_snapshot(expected_learning_config))) {
         checkpoint_error(
             input_path,
             "timestream.learning policy differs from the checkpoint; exact restart requires the same learning configuration");
