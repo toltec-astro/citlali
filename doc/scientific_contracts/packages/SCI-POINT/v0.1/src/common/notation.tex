@@ -1,6 +1,6 @@
 % Shared normative notation for both SCI-POINT v0.1 views.
 \newcommand{\ContractVersion}{v0.1}
-\newcommand{\DocumentRevision}{r0.1}
+\newcommand{\DocumentRevision}{r0.2}
 \newcommand{\MethodID}{\texttt{POINT-FIT/ELLIPTICAL-GAUSSIAN-COMPATIBILITY@1}}
 \newcommand{\CompatMethod}{\texttt{POINT-COMPATIBILITY-METHOD v0.1}}
 \newcommand{\FormalMethod}{\texttt{POINT-FORMAL-ERROR-METHOD v0.1}}
@@ -34,6 +34,8 @@ $A$ & Fitted amplitude in the exact parent product's unit, calibration, and resp
 $\boldsymbol{\mu}$ & Continuous fitted centroid in the declared ordered AltAz tangent basis. \\
 $\Sigmashape$ & Symmetric positive-definite invariant Gaussian shape matrix. \\
 $\boldsymbol{\theta}$ & The six scientific roles: amplitude, two centroid components, two principal-width roles, and orientation. \\
+$\mathcal{P}$ & The complete data-dependent POINT procedure used to define a full-procedure response. \\
+$P_{\mu}$ & Selector that extracts the two fitted-centroid components from the parameter vector. \\
 $W_{\mathrm{fit}}$ & Exact fit-weight role, distinct from parent covariance, inverse covariance, reliability weight, and uncertainty products. \\
 $\DeltaPoint$ & Measured source displacement, fitted centroid minus authoritative expected source position, in arcseconds in the declared basis. \\
 parent & One exact observation-local, per-array MAP, JINC, FLT-FIXED, or FLT-MATCHED signal product. \\
@@ -50,7 +52,7 @@ remain independent.
 \begin{description}[leftmargin=0.25\linewidth,style=multiline]
 \item[Producer lifecycle]
 \path{not_requested}, \path{requested}, \path{effective},
-\path{unavailable}, \path{resolved}, \path{fit_attempted},
+\path{unavailable}, \path{resolved}, \path{applied},
 \path{fit_realized}, \path{complete_publication_candidate},
 \path{publication_decided}, \path{published}, \path{failed},
 \path{not_produced}, or \path{superseded}.
@@ -63,15 +65,48 @@ Exactly one of \path{available_identifiable},
 Four fields, kept separate:\newline
 request: \path{requested} or \path{not_requested};\newline
 applicability: \path{applicable}, \path{inapplicable}, or
-\path{decision_unavailable};\newline
+\path{applicability_unknown};\newline
 eligibility: \path{eligible}, \path{ineligible}, or
 \path{decision_unavailable};\newline
-realization: \path{realized}, \path{not_realized}, \path{unavailable}, or
-\path{failed}.
+realization: \path{realized}, \path{incomplete}, \path{failed}, or
+\path{not_produced}.
 \end{description}
 
 After the four named-use fields are evaluated, the owning consumer may
 prescribe an action such as \path{diagnostic_display_only}. That token is
 an action, not an eligibility value, producer state, or universal quality flag.
-The token \path{diagnostic_only} is not a producer state or SCI-VAL
-eligibility value.
+The token \path{diagnostic_only} is prohibited as a producer state or
+SCI-VAL eligibility value. A generic product-availability field may use
+\path{unavailable}; that token shall not be substituted into a SCI-VAL
+realization field. Likewise, \path{decision_unavailable} is an eligibility
+value only and shall not appear as applicability.
+
+\subsection{Exact SCI-VAL disposition function}\label{sec:val-function}
+
+For one named use, the evaluator shall apply the following precedence and
+shall emit all four axes. An already realized producer fact is never erased by
+the named-use disposition.
+
+\small
+\begin{longtable}{@{}p{0.24\linewidth}p{0.14\linewidth}p{0.18\linewidth}p{0.18\linewidth}p{0.16\linewidth}@{}}
+\toprule
+Controlling condition & Request & Applicability & Eligibility & Realization \\
+\midrule
+\endhead
+Use not requested & \path{not_requested} & retained fact or \path{applicability_unknown} & \path{decision_unavailable} & \path{not_produced} \\
+Missing profile or source binding & \path{requested} & \path{applicability_unknown} & \path{decision_unavailable} & \path{not_produced} \\
+Structural profile/binding conflict & \path{requested} & \path{applicability_unknown} & \path{decision_unavailable} & \path{failed} \\
+Use factually inapplicable & \path{requested} & \path{inapplicable} & \path{ineligible} & \path{not_produced} \\
+Applicable, artifact incomplete & \path{requested} & \path{applicable} & \path{decision_unavailable} & \path{incomplete} \\
+Applicable, artifact failed & \path{requested} & \path{applicable} & \path{decision_unavailable} & \path{failed} \\
+Applicable, artifact not produced & \path{requested} & \path{applicable} & \path{decision_unavailable} & \path{not_produced} \\
+Applicable and policy-evaluable & \path{requested} & \path{applicable} & \path{eligible} or \path{ineligible} & \path{realized}, \path{incomplete}, \path{failed}, or \path{not_produced}, as observed \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+Every row also carries the exact controlling cause, profile identity, source
+bindings, evaluation identity, lifecycle, provenance, and any prescribed
+post-evaluation action. Missing-source means a missing source authority or
+source binding required by that exact use; it does not delete an otherwise
+conforming unassociated fit component.

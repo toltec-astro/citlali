@@ -25,11 +25,13 @@ SCI-POINT-UNAV-013 & Universal cross-use eligibility or aggregate profile & Proh
 SCI-POINT-UNAV-014 & Source-attributed displacement or amplitude & Valid source reference and established association. \\
 SCI-POINT-UNAV-015 & Published AltAz displacement & Exact AST/source-to-POINT basis boundary and valid transform. \\
 SCI-POINT-UNAV-016 & Marginal formal errors and dependent uses & Approved formal-error method; fit values may remain. \\
-SCI-POINT-UNAV-017 & Fitted-amplitude/full-map-RMS diagnostic & Exact RMS population, centering, weighting, support, finite, and denominator rules. \\
-SCI-POINT-UNAV-018 & Full-procedure response or observational bias/accuracy & Separate response or empirical authority. \\
-SCI-POINT-UNAV-019 & Full-map RMS and canonical ratio/\texttt{sig2noise} & Approved full-map-RMS method; only this diagnostic is blocked. \\
-SCI-POINT-UNAV-020 & Known/isolated/bright/approximately-centered fact & Exact fact authority or test and cause. \\
+SCI-POINT-UNAV-017 & $\mathrm{RMS}_{\mathrm{full}}$ scale product & Approved full-map-RMS method binding exact population, centering, weighting, support, source-region, edge, finite, unit, generation, and provenance rules. \\
+SCI-POINT-UNAV-018 & Fixed-branch POINT response & Approved compatibility method plus exact local perturbation construction with branch, support, weights, constraints, and state frozen. \\
+SCI-POINT-UNAV-019 & Derived fitted-amplitude/full-map-RMS diagnostic and \texttt{sig2noise} alias & UNAV-017 released, compatible selected fit-amplitude role and parent generation, positive finite denominator, claim-appropriate association, and explicit alias approval. \\
+SCI-POINT-UNAV-020 & \path{known}/\path{isolated}/\path{bright}/\path{approximately_centered} fact & Exact fact authority or test and cause. \\
 SCI-POINT-UNAV-021 & Exact numerical parent boundary instance & Exact package/version/source digest, role, owner approval, compatibility, and boundary state. \\
+SCI-POINT-UNAV-022 & Full-procedure POINT response & Separate complete-rerun authority covering every data-dependent branch under perturbation. \\
+SCI-POINT-UNAV-023 & Observational bias/accuracy & Separate empirical population, procedure, reference-truth, and evidence authority. \\
 \bottomrule
 \end{longtable}
 \normalsize
@@ -52,11 +54,16 @@ Centroid on a search or fit boundary & Report boundary/constraint state; named-u
 Rank-deficient or non-positive curvature & Formal error is unavailable unless the future exact method defines another conforming result; fit-component state is assessed separately. \\
 Unmodeled constant, gradient, or structure & Preserve residual and parent additive-reference state; do not fit or silently subtract it. \\
 Association unavailable or failed & A numerical fit may remain a diagnostic, but source-attributed amplitude and displacement are unavailable. \\
+Missing profile or source binding & Apply Section~\ref{sec:val-function}: applicability is \path{applicability_unknown}, eligibility is \path{decision_unavailable}, and realization is \path{not_produced}; preserve producer facts. \\
+Structural named-use conflict & Apply Section~\ref{sec:val-function}: applicability is \path{applicability_unknown}, eligibility is \path{decision_unavailable}, and realization is \path{failed}. \\
+Named use not requested or inapplicable & Emit the exact request/applicability/eligibility/realization tuple from Section~\ref{sec:val-function}; never substitute producer \path{unavailable}. \\
+Incomplete, failed, or absent requested artifact & Use realization \path{incomplete}, \path{failed}, or \path{not_produced}, respectively; eligibility remains separately typed. \\
 Zero or non-finite diagnostic denominator & Ratio is unavailable or failed under its future exact method, never infinite. \\
 Unavailable response or covariance & Follow the dependency matrix; do not universally erase or authorize claims. \\
 One array unavailable or failed & Preserve sibling atomic products; publish no POINT observation-wide success. \\
 Terminal-FRUIT assertion absent, or intermediate iteration & Reject the parent for base v0.1. \\
 Requested route unavailable & Do not choose, substitute, or fall back to another parent route. \\
 Diagnostic-display action present & Preserve the four named-use fields; the action cannot rescue any other exclusion. \\
+One fit component unavailable or failed & Preserve every conforming sibling role and the complete value-or-status atom. \\
 \bottomrule
 \end{longtable}

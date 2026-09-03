@@ -10,6 +10,16 @@ has amplitude, centroid, two width roles, orientation, support, constraints,
 method identity, parent identity, uncertainty state, association state, and
 use-specific evaluation facts.
 
+A POINT fit atom is complete when every required role is present with one
+exact value-or-status state, identity, cause, and provenance. Atomicity does
+not require every role to contain a finite numerical value. Exact circularity
+can therefore carry a complete orientation role with
+\path{undefined_by_model_symmetry}; one width may be weakly identified while
+the centroid remains available; and formal errors, response, bias, or source
+association may be unavailable without deleting conforming numerical fit
+facts. The POINT-owned fit-completeness profile determines eligibility only
+for its named complete-fit use and never erases available producer facts.
+
 SCI-POINT is a producer of per-array measurements. It does not detect blind
 sources, deblend, catalog, make or filter maps, run FRUIT recurrence, calibrate,
 infer per-detector beams, perform OOF inference, aggregate arrays, form a
@@ -47,10 +57,10 @@ authors none of their scientific policies.
 Family & Exact POINT signal role & Required route distinction \\
 \midrule
 \endhead
-MAP & \path{MAP-SIGNAL/OBSERVATION-LEVEL-NORMALIZED@1} & Exact observation-level normalized signal; never a coadd. \\
-JINC & \path{JINC-SIGNAL/NORMALIZED-JINC-MAP@1} & Exact signed and normalized signal; $N$, $C$, $Q$, coefficient-squared accounting, response, covariance, and state records are companions, not alternate signal parents. \\
-FLT-FIXED & \path{FLT-FIXED-SIGNAL/TRANSFORMED-MAP@1} & Exact transformed signal with its MAP/JINC parent, filter operator, normalization, response, edge/support, and covariance state. \\
-FLT-MATCHED & \path{FLT-MATCHED-SIGNAL/MATCHED-TEMPLATE-AMPLITUDE-FIELD@1} & Exact matched-template amplitude field with template, noise/covariance selector, normalization, phase/origin, response, and complete support. \\
+MAP & \path{MAP-SIGNAL/OBSERVATION-LEVEL-NORMALIZED@1} & POINT-facing boundary-role identity for an exact observation-level normalized upstream signal; never a coadd. \\
+JINC & \path{JINC-SIGNAL/NORMALIZED-JINC-MAP@1} & POINT-facing boundary-role identity for an exact signed and normalized upstream signal; $N$, $C$, $Q$, coefficient-squared accounting, response, covariance, and state records are companions, not alternate signal parents. \\
+FLT-FIXED & \path{FLT-FIXED-SIGNAL/TRANSFORMED-MAP@1} & POINT-facing boundary-role identity for an exact upstream transformed signal with its MAP/JINC parent, filter operator, normalization, response, edge/support, and covariance state. \\
+FLT-MATCHED & \path{FLT-MATCHED-SIGNAL/MATCHED-TEMPLATE-AMPLITUDE-FIELD@1} & POINT-facing boundary-role identity for an exact upstream matched-template amplitude field with template, noise/covariance selector, normalization, phase/origin, response, and complete support. \\
 \bottomrule
 \end{longtable}
 
@@ -61,6 +71,13 @@ each instance. Every numerical route currently has state
 \texttt{unavailable\_pending\_method\_and\_route\_binding}. Eligibility of a
 family does not establish an exact numerical parent, Gaussian adequacy,
 response fidelity, zero centroid bias, or numerical availability.
+
+These four tokens are POINT-facing boundary-role identities, not assertions
+that an upstream package publishes the same literal token. Every approved
+numerical boundary instance shall map the POINT-facing role to one exact
+upstream package product role, contract version, source digest, owner
+approval, compatibility state, and generation. A POINT-side label alone
+proves neither upstream existence nor upstream naming.
 
 A terminal FRUIT product retains its exact MAP, JINC, FLT-FIXED, or
 FLT-MATCHED identity and adds the complete method, terminal iteration,
@@ -78,8 +95,11 @@ Role & Meaning and ceiling \\
 \midrule
 \endhead
 \path{POINT-FIT-RESULT} & Conditional numerical six-role fit with lifecycle, component states, support, method, and parent; not association, a catalog, an intrinsic beam, or a correction. \\
+\path{POINT-FIT-AMPLITUDE-COMPONENT} & Numerical $A$ role of an otherwise conforming fit. It may exist with association unavailable or failed, but retains that state and is not attributed to the intended source. \\
 \path{POINT-DISPLACEMENT-MEASUREMENT} & Source-associated fitted centroid minus expected position in the exact AltAz basis; not an absolute spherical position or correction vector. \\
-\path{POINT-AMPLITUDE-DIAGNOSTIC} & Required amplitude in the exact parent unit/calibration/response and a candidate input to CAL/TolProj admission; not universal flux or pre-established photometric eligibility. \\
+\path{POINT-SOURCE-ASSOCIATED-AMPLITUDE-DIAGNOSTIC} & Fit-amplitude component with \path{POINT-SOURCE-ASSOCIATION-STATE=established}; the only amplitude role that may be a candidate input to CAL/TolProj admission. It is not universal flux or pre-established photometric eligibility. \\
+\path{POINT-DYNAMIC-RANGE-DIAGNOSTIC/FITTED-AMPLITUDE-OVER-FULL-MAP-RMS@1} & Independently requested derived product under \RMSMethod; descriptive unit-one dynamic range only. \\
+\path{POINT-FORMAL-AMPLITUDE-STANDARDIZATION@1} & Independently requested derived product under \FormalMethod; formal unit-one standardization only. \\
 \path{POINT-EFFECTIVE-SHAPE-DIAGNOSTIC} & Required width roles and angle under the processed-map response; not an intrinsic telescope beam, detector PSF, SCI-BEAM product, or unique cause. \\
 \path{POINT-FIT-QUALITY-CONTROL-METRICS} & Centroid, amplitude, shape, support, constraints, uncertainty, residual/response state, and fit state for an owner-governed QC use; not an automatic threshold or action. \\
 \path{POINT-SOURCE-ASSOCIATION-STATE} & \path{established}, \path{unavailable}, or \path{failed}, with method, domain, cause, lifecycle, and provenance; never implied by a peak or finite fit. \\
@@ -115,7 +135,11 @@ registered profiles:
 \item \path{VAL-PROFILE/TELESCOPE-QC/POINT-PARAMETER-ADMISSION@draft-r0.3}, owned by the named QC process; and
 \item \path{VAL-PROFILE/CAL-TOLPROJ/POINT-AMPLITUDE-TRANSFER@draft-r0.3}, owned by CAL/TolProj.
 \end{itemize}
-Each record shall bind profile version/digest, owner, use, source facts and
-bindings, the four named-use fields, unavailable-state behavior, reasons,
-prescribed consumer action, evaluation identity, and provenance. No aggregate
-or universal profile enters base \ContractVersion.
+Each draft record independently carries request, applicability, eligibility,
+realization, and action fields using exactly the types in
+Section~\ref{sec:state-axes}; its current registration state is
+\path{unavailable}. Each record shall bind profile version/digest, owner, use,
+source facts and bindings, unavailable-state behavior, reasons, prescribed
+consumer action, evaluation identity, and provenance. The text of this
+revision neither registers a profile nor makes one evaluable. No aggregate or
+universal profile enters base \ContractVersion.

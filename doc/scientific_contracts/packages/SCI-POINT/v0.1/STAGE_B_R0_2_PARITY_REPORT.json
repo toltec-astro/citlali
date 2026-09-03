@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "contract": "SCI-POINT v0.1",
+  "document_revision": "r0.2",
+  "owner_decision_parity": {
+    "status": "pass",
+    "closed_ids": [
+      "SCI-POINT-ODQ-001",
+      "SCI-POINT-ODQ-002",
+      "SCI-POINT-ODQ-003",
+      "SCI-POINT-ODQ-003A",
+      "SCI-POINT-ODQ-003B",
+      "SCI-POINT-ODQ-004",
+      "SCI-POINT-ODQ-005",
+      "SCI-POINT-ODQ-006",
+      "SCI-POINT-ODQ-007",
+      "SCI-POINT-ODQ-008",
+      "SCI-POINT-ODQ-009"
+    ],
+    "method_dispositions": [
+      "POINT-COMPATIBILITY-METHOD v0.1",
+      "POINT-FORMAL-ERROR-METHOD v0.1",
+      "POINT-FULL-MAP-RMS-METHOD v0.1"
+    ]
+  },
+  "identity_parity": {
+    "requirements": {"first": "SCI-POINT-REQ-001", "last": "SCI-POINT-REQ-038", "count": 38, "gap_free": true},
+    "predictions": {"first": "SCI-POINT-PRED-001", "last": "SCI-POINT-PRED-032", "count": 32, "gap_free": true},
+    "unavailable_states": {"first": "SCI-POINT-UNAV-001", "last": "SCI-POINT-UNAV-023", "count": 23, "gap_free": true}
+  },
+  "view_parity": {
+    "status": "pass",
+    "views": ["src/scientific-rationale.tex", "src/engineering-conformance.tex"],
+    "shared_normative_imports": [
+      "src/common/notation.tex",
+      "src/common/definitions.tex",
+      "src/common/equations.tex",
+      "src/common/assumptions.tex",
+      "src/common/edge_cases.tex",
+      "src/common/requirements.tex"
+    ],
+    "parity_domains": [
+      "equations",
+      "product_roles",
+      "producer_lifecycle",
+      "component_identifiability",
+      "sci_val_axes",
+      "draft_profiles",
+      "requirements",
+      "predictions",
+      "unavailable_states"
+    ]
+  },
+  "token_audit": {
+    "status": "pass",
+    "canonical_applicability": "approximately_centered",
+    "stale_or_conflicting_tokens": 0,
+    "diagnostic_display_only_role": "post_evaluation_consumer_action"
+  },
+  "scope_audit": {
+    "status": "pass",
+    "broad_derivation_performed": false,
+    "numerical_method_invented": false,
+    "implementation_or_operational_evidence_inspected": false
+  }
+}

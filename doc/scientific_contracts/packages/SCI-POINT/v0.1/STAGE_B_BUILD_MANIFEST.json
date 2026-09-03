@@ -1,45 +1,78 @@
 {
-  "schema_version": 1,
-  "package": "SCI-POINT",
-  "contract_version": "v0.1",
-  "document_revision": "r0.1",
-  "build_date": "2026-09-02",
-  "builder": {
-    "tectonic": "0.16.9",
-    "poppler": "26.05.0",
-    "verification_python": "3.13.2"
+  "schema_version": 2,
+  "contract": "SCI-POINT v0.1",
+  "document_revision": "r0.2",
+  "build_record": "SCI-POINT-STAGE-B-BUILD/v0.1-r0.2@2026-09-03",
+  "source_manifest": "STAGE_B_SOURCE_MANIFEST.json",
+  "tools": {
+    "tectonic": "/opt/homebrew/bin/tectonic 0.16.9",
+    "pdftoppm": "Poppler pdftoppm 26.05.0",
+    "verification_python": "/Users/gwilson/tolteca/bin/python 3.13.2"
   },
-  "commands": [
-    "tectonic -X compile scientific-rationale.tex --outdir ../pdf --keep-logs",
-    "tectonic -X compile engineering-conformance.tex --outdir ../pdf --keep-logs",
-    "pdftoppm -png -r 120 SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf <temporary-prefix>",
-    "pdftoppm -png -r 120 SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf <temporary-prefix>",
-    "$HOME/tolteca/bin/python verify_stage_b.py"
-  ],
+  "commands": {
+    "rationale_compile": "/opt/homebrew/bin/tectonic -X compile src/scientific-rationale.tex --outdir pdf",
+    "engineering_compile": "/opt/homebrew/bin/tectonic -X compile src/engineering-conformance.tex --outdir pdf",
+    "rationale_render": "pdftoppm -png -r 120 pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf <temporary-prefix>",
+    "engineering_render": "pdftoppm -png -r 120 pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf <temporary-prefix>",
+    "delivery_build": "/Users/gwilson/tolteca/bin/python build_stage_b_delivery.py",
+    "verification": "/Users/gwilson/tolteca/bin/python verify_stage_b.py"
+  },
   "pdfs": [
     {
       "path": "pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf",
-      "pages": 15,
-      "sha256": "0e752b724dfca0c4b7bef73cd195cffe3fa5e91cb6db3b0972b1c045907232c8"
+      "title": "SCI-POINT Scientific Rationale v0.1 r0.2",
+      "pages": 19,
+      "page_size": "letter 612 x 792 pt",
+      "forms": "none",
+      "sha256": "2273c13d0e4c1a623d8a6a14b7cfee2f9174356c94d71debacc9cf95ca9fadf4"
     },
     {
       "path": "pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf",
-      "pages": 14,
-      "sha256": "28aeb04486684985f60dcad89c9d9397168719b02e7b4b02f22fc7a3d5f44a2e"
+      "title": "SCI-POINT Engineering Conformance v0.1 r0.2",
+      "pages": 19,
+      "page_size": "letter 612 x 792 pt",
+      "forms": "none",
+      "sha256": "826d037272fb55950bf08d0f435d76abe64bfd55e239df2f324448d5296f12b1"
     }
   ],
   "visual_qa": {
     "renderer": "Poppler pdftoppm 26.05.0",
-    "pages_inspected": 29,
-    "inspection_scope": "every page of both final canonical PDFs",
+    "resolution_dpi": 120,
+    "pages_inspected": 38,
     "result": "pass",
-    "defects_remaining": 0
+    "defects": [],
+    "checks": [
+      "clipping",
+      "overlap",
+      "broken_glyphs",
+      "malformed_equations",
+      "unreadable_tables",
+      "headers_and_footers",
+      "page_numbering",
+      "section_transitions",
+      "cover_bindings",
+      "scientific_flow_diagram"
+    ]
   },
-  "claims": {
-    "implementation_conformity": "not_assessed",
-    "numerical_production": "not_claimed",
-    "observational_validation": "not_performed",
-    "production_authorization": "not_claimed",
-    "unity_activity": "none"
-  }
+  "parity": {
+    "owner_decisions": "pass",
+    "common_core_views": "pass",
+    "requirements": "SCI-POINT-REQ-001 through SCI-POINT-REQ-038 gap-free",
+    "predictions": "SCI-POINT-PRED-001 through SCI-POINT-PRED-032 gap-free",
+    "unavailable_states": "SCI-POINT-UNAV-001 through SCI-POINT-UNAV-023 gap-free",
+    "stale_or_conflicting_tokens": 0
+  },
+  "nonclaims": [
+    "numerical route",
+    "implementation conformity",
+    "representation or response fidelity",
+    "uncertainty coverage",
+    "observational pointing accuracy",
+    "validation",
+    "performance",
+    "readiness",
+    "production suitability",
+    "production authorization",
+    "Unity activity"
+  ]
 }

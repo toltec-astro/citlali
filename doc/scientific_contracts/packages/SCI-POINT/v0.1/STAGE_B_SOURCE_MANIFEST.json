@@ -1,51 +1,44 @@
 {
-  "schema_version": 1,
-  "package": "SCI-POINT",
-  "contract_version": "v0.1",
-  "document_revision": "r0.1",
-  "stage": "B",
-  "authorship_scope": "conditional_generic_contract",
-  "closure_commit": "2c3269f29b1661948794aaa4ff9a81924bb1fb42",
+  "schema_version": 2,
+  "contract": "SCI-POINT v0.1",
+  "document_revision": "r0.2",
+  "stage_b_base_commit": "bc2a3914590f17f6fa22bc57194e96d4706828e7",
   "author_packet": "author_packet/SCI-POINT-v0.1-r0.3-stage-b-author-packet.tar.gz",
   "author_packet_bytes": 33262,
   "author_packet_sha256": "d74de333b87c66fb74c04c1346beb5ea0956bb25b61efcf9f770bb19818ee00f",
   "author_packet_manifest_sha256": "c0df54ea420404cb6b100f3e478b89bd81e9d1c50b211a723230177d180df894",
+  "feedback_directive": {
+    "identity": "SCI-POINT v0.1 r0.2 targeted Stage B feedback directive dated 2026-09-03",
+    "source_attachment": "pasted-text.txt",
+    "sha256": "dec53083997474a85ee2e18dc4a18d112a36c0e550d843724c04e84f0b9c153f"
+  },
+  "common_core": {
+    "identity": "SCI-POINT-COMMON-CORE/v0.1-r0.2",
+    "digest_algorithm": "SHA-256 of the exact file bytes concatenated in listed order with no separator",
+    "ordered_files": [
+      "src/common/notation.tex",
+      "src/common/definitions.tex",
+      "src/common/equations.tex",
+      "src/common/assumptions.tex",
+      "src/common/requirements.tex",
+      "src/common/edge_cases.tex"
+    ],
+    "sha256": "c5866d096a2627d7f3493c792c2e63dd09a4b2902887c1ed7005695ed58f2d0c"
+  },
   "files": [
-    {
-      "path": "src/scientific-rationale.tex",
-      "sha256": "fa6be9aad3c6ece0ef1961034fbc20958cd07729a50eff9396d70d686c3e3603"
-    },
-    {
-      "path": "src/engineering-conformance.tex",
-      "sha256": "d9d9d87768d0b573c91995f17245bef0a859ac84efd2526cab5df48f65a2e94d"
-    },
-    {
-      "path": "src/common/notation.tex",
-      "sha256": "d42f0d9bd80a99961d9b31f9486970fff2f68dabecf1edf7e67b95ea4bbb8435"
-    },
-    {
-      "path": "src/common/definitions.tex",
-      "sha256": "598740dd6dda57346133d5b284e5c9d95d5b7062067e59ba03e59f5e4a649705"
-    },
-    {
-      "path": "src/common/equations.tex",
-      "sha256": "a1f430f20f511232a3fb28e769e968cb4235ddaf339e0d295597bb7f681f0302"
-    },
-    {
-      "path": "src/common/assumptions.tex",
-      "sha256": "875984766248ada16363536ff9a653c6e09c4a214c402d0a6ccc1cd5f6f15c72"
-    },
-    {
-      "path": "src/common/requirements.tex",
-      "sha256": "88fa6f968e99fea53dac99292b64be2d54d09ea5a48b1ece805cabe70c913507"
-    },
-    {
-      "path": "src/common/edge_cases.tex",
-      "sha256": "4e3887e12497c2e911cdce06a9ba1947e0c640a37e0f637793381a108a1f5a52"
-    },
-    {
-      "path": "verify_stage_b.py",
-      "sha256": "29faeff40f6620077437f910484baa8258dbf1b17571e6e341c07134d8ebf243"
-    }
+    {"path": "src/scientific-rationale.tex", "sha256": "1eeaeaa636b482a1aa305d8be3c5c201d9bf3026e1c58ba7275190ddd4048a42"},
+    {"path": "src/engineering-conformance.tex", "sha256": "db1f7648a3931ce977b79c22658a097ee5391c3fa048c0cceec514b5f93e6e9f"},
+    {"path": "src/common/notation.tex", "sha256": "d95fc2f5599f46068675a734792d630314726ff94304160bd978f91a3d8ce1c4"},
+    {"path": "src/common/definitions.tex", "sha256": "ffa26cc31ff28e2e75d92317962c8210c41aa6870f9502497370cef55ef5f644"},
+    {"path": "src/common/equations.tex", "sha256": "36fac462f0806572ab69ad9fe26da5c8e19e4539bd54d8f28b5a47d72ec956ea"},
+    {"path": "src/common/assumptions.tex", "sha256": "0a28e06ac25c30aae34ef49874f08338a2bda2de3e2f7dcea4f7d5306277b995"},
+    {"path": "src/common/requirements.tex", "sha256": "f294421fa806062157b57a8dcf9d4015b3cf7afd92e6ef6da597cce31816ca01"},
+    {"path": "src/common/edge_cases.tex", "sha256": "e88e8a9c9186bfd71296076317b228c7c9d7e0b8cf41c675aeb7fe834bf2cddb"},
+    {"path": "src/common/bindings.tex", "sha256": "f09b8e958c70b9246a6545ad3ead95eff72b699ea3d15cd66bfca32457041b32"},
+    {"path": "STAGE_B_R0_2_RECORDS.json", "sha256": "9c4d58460fe47cdce05b64f74f0e098754f1c8492f175a409144f87d21028698"},
+    {"path": "STAGE_B_R0_2_PARITY_REPORT.json", "sha256": "e5fc424cd30e495d04a268a08381e58be77a41fb6f84e483abd358c24256ff7d"},
+    {"path": "PROPOSED_SCIENTIFIC_OWNER_DISPOSITION_R0_2.md", "sha256": "786f7565ae7c3a95846da412cde436380347b5de8569c1040c815318425bd105"},
+    {"path": "verify_stage_b.py", "sha256": "917b9efe9e408b425dd77db7d6529f424555240b20c58091e7729a63f6a02e2a"},
+    {"path": "build_stage_b_delivery.py", "sha256": "945007f3bad419891088c20f6ff9750a3a32e9dd3f9425bec870b03456e8ca10"}
   ]
 }

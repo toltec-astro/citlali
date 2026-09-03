@@ -10,11 +10,12 @@
 \usepackage{fancyhdr}
 \usepackage{hyperref}
 \usepackage{parskip}
+\input{common/bindings}
 \definecolor{pointblue}{HTML}{173B57}
 \definecolor{pointteal}{HTML}{2B6F6D}
 \definecolor{pointpale}{HTML}{EAF2F4}
 \definecolor{pointwarn}{HTML}{7A4C00}
-\hypersetup{colorlinks=true,linkcolor=pointblue,urlcolor=pointteal,pdfauthor={SCI-POINT scientific-contract program},pdftitle={SCI-POINT Scientific Rationale v0.1 r0.1},pdfsubject={Conditional generic scientific contract}}
+\hypersetup{colorlinks=true,linkcolor=pointblue,urlcolor=pointteal,pdfauthor={SCI-POINT scientific-contract program},pdftitle={SCI-POINT Scientific Rationale v0.1 r0.2},pdfsubject={Targeted conditional generic scientific contract revision}}
 \setlist{nosep,leftmargin=*}
 \setlength{\LTpre}{0.35em}
 \setlength{\LTpost}{0.55em}
@@ -23,7 +24,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \lhead{\small\color{pointblue}\textbf{SCI-POINT} Scientific Rationale}
-\rhead{\small v0.1 / r0.1}
+\rhead{\small v0.1 / r0.2}
 \cfoot{\small\thepage}
 \newcommand{\statusbox}[1]{\begin{center}\fcolorbox{pointteal}{pointpale}{\begin{minipage}{0.92\linewidth}#1\end{minipage}}\end{center}}
 
@@ -33,7 +34,7 @@
 {\color{pointteal}\rule{\linewidth}{2.5pt}}\\[0.35in]
 {\Huge\bfseries\color{pointblue} SCI-POINT}\\[0.15in]
 {\LARGE Scientific Rationale and Contract}\\[0.45in]
-{\large Scientific contract v0.1 \quad Document revision r0.1}\\[0.14in]
+{\large Scientific contract v0.1 \quad Document revision r0.2}\\[0.14in]
 {\large Conditional generic Stage B contract}\\[0.55in]
 
 \statusbox{\textbf{Authority status.} This document establishes a conditional
@@ -47,9 +48,15 @@ Implementation conformity has not been assessed under this contract.}
 \begin{tabular}{@{}ll@{}}
 Scientific owner & Grant Wilson \\
 Source authority & Exact owner-approved SCI-POINT Stage A r0.3 author packet \\
+Stage A packet SHA-256 & \texttt{\StageAPacketSHA} \\
+Normative common core & \texttt{\CommonCoreID} \\
+Common-core SHA-256 & \texttt{\CommonCoreSHA} \\
+Document source & \texttt{\RationaleSourceID} \\
+Document-source SHA-256 & \texttt{\RationaleSourceSHA} \\
+Build record & \texttt{\BuildRecordID} \\
 Base operator & \texttt{POINT-FIT/ELLIPTICAL-GAUSSIAN-COMPATIBILITY@1} \\
 Primary result & Per-array AltAz tangent-plane source displacement \\
-Contract date & 2026-09-02 \\
+Contract date & 2026-09-03 \\
 \end{tabular}
 \\[0.35in]
 {\color{pointteal}\rule{\linewidth}{1.1pt}}
@@ -82,6 +89,30 @@ meaning remains that of the exact processed parent map. Amplitude is not
 automatically universal flux. Width and orientation are not automatically an
 intrinsic beam. Any use for a pointing correction, photometric transfer, or
 telescope/observing QC has a separate policy owner and evaluation.
+
+\subsection*{Scientific flow}
+\begin{center}
+\small
+\fbox{\begin{minipage}{0.82\linewidth}\centering
+exact parent $+$ source reference $+$ exact AltAz tangent boundary
+\end{minipage}}\\[0.35em]
+$\boldsymbol{\downarrow}$\\[-0.1em]
+\fbox{\begin{minipage}{0.82\linewidth}\centering
+conditional compatibility fit
+\end{minipage}}\\[0.35em]
+$\boldsymbol{\downarrow}$\\[-0.1em]
+\fbox{\begin{minipage}{0.82\linewidth}\centering
+fit components $+$ independently established source association
+\end{minipage}}\\[0.35em]
+$\boldsymbol{\downarrow}$\\[-0.1em]
+\fbox{\begin{minipage}{0.82\linewidth}\centering
+source-associated displacement and amplitude
+\end{minipage}}\\[0.35em]
+$\boldsymbol{\downarrow}$\\[-0.1em]
+\fbox{\begin{minipage}{0.82\linewidth}\centering
+separate named-use evaluations and consumer actions
+\end{minipage}}
+\end{center}
 
 \tableofcontents
 \clearpage
@@ -136,6 +167,10 @@ method records; approve exact numerical route boundary instances; review the
 four draft named-use profile identities/mechanics; and separately authorize
 fixed/full procedure response or observational bias/accuracy if desired.
 
+This r0.2 revision accepts the targeted SCI-VAL congruence, lifecycle,
+product-type, response, displacement-covariance, and source-closure directive.
+It introduces no numerical route and performs no new broad POINT derivation.
+
 \section{What later validation would and would not establish}\label{sec:validation-layers}
 
 Contract conformance would show that identities, records, states, equations,
@@ -152,9 +187,14 @@ Passing one layer does not establish the next.
 
 \section{Document status and nonclaims}\label{sec:status}
 
-This is the initial Stage B representation of scientific contract v0.1,
-document revision r0.1. It was authored from the exclusive Stage A r0.3
-author packet. It claims no implementation inspection, conformity, numerical
+This is the targeted Stage B representation of scientific contract v0.1,
+document revision r0.2. It was authored from the exclusive Stage A r0.3
+author packet and the owner feedback directive dated 2026-09-03. The shared
+common core is the normative scientific source. The rationale explains that
+source. The ECS supplies prospective engineering evidence procedure and
+authors no independent science. A change to any common-core byte requires a
+new binding and document generation. This document claims no implementation
+inspection, conformity, numerical
 production, response/covariance fidelity, uncertainty coverage, observational
 validation, pointing accuracy, performance, readiness, production
 authorization, or Unity activity.

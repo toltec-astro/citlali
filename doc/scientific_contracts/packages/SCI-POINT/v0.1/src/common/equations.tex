@@ -70,10 +70,11 @@ uncertainty are distinct roles.
 
 The preserved mature procedure has configurable expected-center/central
 search, weighted-peak initialization, global fallback, bounded fit domain,
-and amplitude/width/angle constraints. Requested, effective, resolved,
-applied, and realized states remain distinct. A sentinel shall resolve to a
-named effective state, and every fallback, restart, retry, branch, bound, and
-termination shall be reported. Exact rules belong to \CompatMethod{}.
+and amplitude/width/angle constraints. Request, effective configuration,
+resolved plan, application attempt, and realized fit remain distinct. A
+sentinel shall resolve to a named effective state, and every fallback,
+restart, retry, branch, bound, and termination shall be reported. Exact rules
+belong to \CompatMethod{}.
 
 \subsection{Association is not optimization}\label{sec:association}
 
@@ -84,7 +85,11 @@ seed, never source identity. Source-attributed displacement and amplitude
 require \path{POINT-SOURCE-ASSOCIATION-STATE=established} under one
 branch-independent method and declared association domain. A central or
 global peak, finite fit, small displacement, large amplitude, dynamic range,
-or formal standardization cannot establish association.
+or formal standardization cannot establish association. The numerical
+\path{POINT-FIT-AMPLITUDE-COMPONENT} may survive unavailable or failed
+association, but only
+\path{POINT-SOURCE-ASSOCIATED-AMPLITUDE-DIAGNOSTIC} is attributable to the
+intended source.
 
 \subsection{Residual and deterministic mismatch}\label{sec:residual}
 
@@ -103,26 +108,106 @@ and parent additive-reference/null state.
 
 \subsection{Conditional diagnostic identities}\label{sec:diagnostics}
 
-Only the following names are admitted:
+Only two derived product identities are admitted. The role is
+\begin{center}
+\path{POINT-DYNAMIC-RANGE-DIAGNOSTIC/}\\
+\path{FITTED-AMPLITUDE-OVER-FULL-MAP-RMS@1}.
+\end{center}
+Its conditional formula is
 \begin{align}
-\texttt{fitted\_amplitude\_over\_full\_map\_rms}
-&=\widehat A/\mathrm{RMS}_{\mathrm{full}},
-\label{eq:dynamic-range}\\
-\texttt{fitted\_amplitude\_over\_formal\_amplitude\_error}
-&=\widehat A/\sigma_A.
-\label{eq:formal-standardization}
+D_{\mathrm{RMS}}&=\widehat A/\mathrm{RMS}_{\mathrm{full}}.
+\label{eq:dynamic-range}
 \end{align}
+The role \path{POINT-FORMAL-AMPLITUDE-STANDARDIZATION@1} has the conditional
+formula
+\begin{equation}
+Z_A=\widehat A/\sigma_A.
+\label{eq:formal-standardization}
+\end{equation}
 Equation~\ref{eq:dynamic-range} is descriptive dynamic range only and is
 unavailable until \RMSMethod{} binds the parent/generation, population,
 centering, weighting, source-region treatment, support/edge, non-finite and
-zero-denominator rules, units, lifecycle, provenance, and parent relation.
-\texttt{sig2noise} may be an exact legacy alias only after that approval.
-\texttt{peak\_over\_full\_map\_rms} is not an admitted alias.
+zero-denominator rules, units, lifecycle, provenance, and parent relation. It
+requires the exact selected fit-amplitude role, a compatible parent and
+generation, a finite positive denominator, and the association state required
+by the declared diagnostic claim. \texttt{sig2noise} may be an exact legacy
+alias only after \RMSMethod{} explicitly approves that alias.
+\texttt{peak\_over\_full\_map\_rms} is not admitted without a separate
+compatibility-method finding.
 
 Equation~\ref{eq:formal-standardization} is formal standardization only and is
 unavailable until \FormalMethod{} and its signed-versus-absolute convention
-are approved and $\sigma_A$ is positive and finite. \texttt{fit\_sig2noise}
-is its exact legacy alias when available. Neither ratio is statistical
+are approved and $\sigma_A$ is positive and finite. It requires the exact
+selected fit-amplitude role and its approved formal amplitude error.
+\texttt{fit\_sig2noise} may be an exact legacy alias only after \FormalMethod{}
+explicitly approves that alias. Neither ratio is statistical
 significance, detection probability, false-alarm statistic, completeness, or
 purity. A zero or non-finite denominator produces the future method's typed
 unavailable or failed state, never an infinite claim.
+
+Each derived role has its own request, parent, method, producer lifecycle,
+availability, support, unit-one state, cause, provenance, and claim ceiling.
+Neither role is required for fit-result completion. Any diagnostic described
+as applying to the intended source additionally requires
+\path{POINT-SOURCE-ASSOCIATION-STATE=established}; no ratio promotes an
+unassociated amplitude component into a source-associated role.
+
+\subsection{Conditional response objects}\label{sec:response-equations}
+
+For one frozen branch $b$, resolved state $g$, and perturbation coordinate
+$m$, the fixed-branch parameter response, when differentiable or under another
+exact authorized local perturbation rule, is
+\begin{equation}
+R^{\mathrm{fixed}}_{\theta,m}
+=\left.\frac{\partial\thetahat}{\partial m}\right|_{b,g,\,
+\mathrm{support},\,W_{\mathrm{fit}},\,\mathrm{constraints}} ,
+\label{eq:fixed-response}
+\end{equation}
+and the displacement response is
+\begin{equation}
+R^{\mathrm{fixed}}_{\Delta,m}=P_{\mu}R^{\mathrm{fixed}}_{\theta,m}.
+\label{eq:fixed-displacement-response}
+\end{equation}
+
+For perturbation direction $\delta m$, the full-procedure response is
+\begin{equation}
+R^{\mathrm{FP}}_{\theta,m}[\delta m]
+=\lim_{\epsilon\rightarrow0}
+\frac{\mathcal{P}(m+\epsilon\,\delta m)-\mathcal{P}(m)}{\epsilon},
+\label{eq:full-procedure-response}
+\end{equation}
+or one separately authorized finite-difference equivalent. Both invocations
+of $\mathcal{P}$ rerun central search, fallback, restarts and retries, support
+resolution, applicable weight/state resolution, constraint activation,
+optimization, and association. A source-domain response may be composed only
+with a compatible exact parent response:
+\begin{equation}
+R_{\theta,\mathrm{source}}=R_{\theta,m}R_{\mathrm{parent}}.
+\label{eq:source-response}
+\end{equation}
+Parent response, fixed-branch POINT response, full-procedure POINT response,
+and empirical observational bias/accuracy are distinct products. Under one
+declared empirical population and procedure, observational displacement bias
+may be defined as
+\begin{equation}
+b_{\Delta}=\mathbb{E}\!\left[
+\widehat{\Delta}-\Delta_{\mathrm{true}}
+\mid \text{population and procedure}\right].
+\label{eq:observational-bias}
+\end{equation}
+No unavailable response or bias is numerically zero.
+
+\subsection{Conditional displacement covariance}\label{sec:displacement-covariance}
+
+When fitted-centroid and expected-position covariance objects and both cross
+covariances are available in one common tangent basis,
+\begin{equation}
+C_{\Delta}=C_{\muhat}+C_{\muexp}
+-C_{\muhat,\muexp}-C_{\muexp,\muhat}.
+\label{eq:displacement-covariance}
+\end{equation}
+Neither cross term is zero without explicit independence authority. If a
+coordinate transformation is required, its Jacobian and the complete joint
+covariance shall be bound before transformation. If any required covariance
+or cross-covariance is unavailable, the combined displacement covariance is
+unavailable while available component uncertainties remain visible.
