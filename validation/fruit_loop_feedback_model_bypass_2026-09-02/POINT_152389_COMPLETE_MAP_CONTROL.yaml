@@ -1,0 +1,5 @@
+runtime:
+  output_dir: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f4-feedback-model-bypass-r0.1/point-152389/complete-map/control/reduced/
+timestream:
+  learning:
+    map_pixel_outlier_detector_exclusion_feedback_bypass_enabled: false
