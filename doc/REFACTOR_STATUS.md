@@ -1,5 +1,34 @@
 # Citlali Refactor Status
 
+## 2026-09-03 Timestream Successor Unity GCC13 ABI Conformance
+
+The owner-accepted feature candidate
+`b3f03ae20059022ecb709dd411dfbdde3723fef3`, tree
+`1712f13d16506895fb94b72b845f2cbb821bccb7`, has completed its authoritative
+owner-run Unity gate. A fresh unmodified `unity-gcc13` configure/build/test
+used Spack compiler wrappers for C and C++, matched concrete
+`-march=cascadelake -mtune=cascadelake` target arguments, and Spack root DAG
+`ryu6zhjvp5sh7fsbwrzyykbkgkglzkkx`. All 884 runnable CTests passed; the only
+non-run test was the established disabled
+`citlali::MapFitterLifecycle.ExactProductSequence`.
+
+The explicitly built, opt-in Timestream Successor identity-route acceptance
+executable completed the full bounded real-data witness and its v2 validator
+passed. The earlier repeatable invalid free in Eigen/Kidscpp did not recur.
+The exact acceptance JSON, runner log, validator log, and retained evidence
+manifest have SHA-256 identities `0c418997...`, `27d69c67...`, `4f19dec0...`,
+and `4abeecc8...`, respectively. Their full identities, authoritative Unity
+path, execution limitations, and source disposition are recorded in the
+[ABI-conformance handoff](../handoff/TIMESTREAM_SUCCESSOR_UNITY_GCC13_ABI_CONFORMANCE_001_2026-09-02.md).
+
+This closes the feature candidate's build/profile and representative
+acceptance-tool evidence gates. It does not establish canonical integration,
+ordinary-route activation, a Citlali reduction, MAP action, production use,
+legacy retirement, release, or a representative science claim. The
+documentation-only closure candidate still requires independent exact-SHA
+review and owner disposition before any separately authorized canonical
+integration proposal.
+
 ## 2026-08-31 Timestream Successor Paired-D1 Canonical Admission
 
 The project owner accepted independently reviewed exact Paired-D1 candidate

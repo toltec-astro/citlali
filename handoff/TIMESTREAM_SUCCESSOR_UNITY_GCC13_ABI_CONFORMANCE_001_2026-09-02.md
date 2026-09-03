@@ -1,7 +1,8 @@
 # Timestream Successor Unity GCC13 ABI Conformance 001
 
-Status: bounded build-adaptation implementation in progress; no candidate,
-owner acceptance, integration, or activation is established by this record
+Status: owner-accepted build-adaptation candidate and authoritative Unity gate
+complete; closure-record candidate pending independent exact-SHA review and
+owner disposition; no canonical integration or activation
 
 Work-order identity:
 `TIMESTREAM-SUCCESSOR-UNITY-GCC13-ABI-CONFORMANCE-001`
@@ -210,3 +211,108 @@ authority reference and reports the selected Ruff lint gate accurately. It
 does not alter the reviewed implementation, tests, scope, exclusions, or
 remaining Unity gate. The repaired exact commit requires a new independent
 exact-SHA review; the earlier verdict does not transfer.
+
+## Repaired-candidate review and owner acceptance
+
+Independent fresh-context review of repaired exact candidate
+`b3f03ae20059022ecb709dd411dfbdde3723fef3`, tree
+`1712f13d16506895fb94b72b845f2cbb821bccb7`, sole parent
+`aa3b31510b41d750c3475a5071e8f6d51f5f98ca`, passed with no
+scientific/behavioral, architecture/ownership/anti-bloat, or
+repository/evidence findings. The review reproduced 73/73 build-tool tests,
+Python syntax compilation, Ruff 0.13.2 lint, 130/130 configuration tests,
+26/26 historical WP-7 tests, and both validation ledgers. Its local installed
+Spack probe confirmed wrapper ownership and matched target arguments. It
+correctly retained the fresh unmodified Unity build/CTest and representative
+identity-route witness as owner-run gates.
+
+The project owner accepted exact candidate `b3f03ae2...` and performed the
+normal non-force push of its literal ancestry:
+
+`655160ba59a8abcddb5984d3241857c4ae969589`
+-> `aa3b31510b41d750c3475a5071e8f6d51f5f98ca`
+-> `b3f03ae20059022ecb709dd411dfbdde3723fef3`.
+
+The local branch and cached remote feature ref were both verified at
+`b3f03ae2...` before the Unity gate. That acceptance authorized only the
+feature-branch build/profile candidate and its bounded owner-run validation.
+
+## Authoritative Unity execution
+
+The owner ran the unmodified repository `unity-gcc13` profile at exact source
+`b3f03ae20059022ecb709dd411dfbdde3723fef3` on Unity. The source checkout was
+clean and detached at that SHA. A fresh configure/build/test used Spack root
+DAG `ryu6zhjvp5sh7fsbwrzyykbkgkglzkkx`. The CMake cache identified Spack
+compiler-wrapper paths for both C and C++ rather than direct `/usr/bin`
+compilers, and the retained preflight verified matching concrete target
+arguments `-march=cascadelake -mtune=cascadelake` for C and C++.
+
+All 884 runnable CTests passed. The sole non-run test was the established
+disabled `citlali::MapFitterLifecycle.ExactProductSequence`; there were no
+failed tests. The opt-in acceptance executable was then built explicitly
+because its intentional `EXCLUDE_FROM_ALL` declaration keeps it out of the
+ordinary build. The complete bounded real-data Identity Route witness ran,
+wrote its v2 record, and passed the repository validator. The prior invalid
+free in Eigen storage destruction through Kidscpp `loadfitreport` did not
+recur.
+
+The authoritative timestamped evidence directory is:
+
+`/work/toltec/citlali_dev/citlali_acceptance_evidence/TIMESTREAM-SUCCESSOR-UNITY-GCC13-ABI-CONFORMANCE-001/b3f03ae20059022ecb709dd411dfbdde3723fef3/authoritative-20260903T120212Z`
+
+Exact retained evidence identities are:
+
+- acceptance JSON SHA-256
+  `0c4189970739f98ae3d63bb5fe06a140dc86268f1b9b99c791140cf239b11b4d`;
+- runner-log SHA-256
+  `27d69c67eb75b8fb404500a90fa877e52134ecea508fb61ed45b8f6ada817ea4`;
+- validator-log SHA-256
+  `4f19dec0a09efb7af84d286fe53d475986ff024e92a2b6fabf2c8729a9841b98`;
+  and
+- evidence-manifest `SHA256SUMS` SHA-256
+  `4abeecc828817cf890e53bce52b039981fe6bb1b1a2fa8b1b5852a69dc4687e5`.
+
+Two preceding operator attempts are not acceptance evidence. A long
+interactive-shell paste was corrupted before the runner executed. The first
+checksum-verified script invocation then stopped at preflight because the
+deliberately non-default acceptance target had not yet been built. Neither
+attempt created an acceptance record or ran the representative witness. The
+timestamped directory above is the sole authoritative execution reported by
+this closure.
+
+## Completion and conformance
+
+Disposition: evidence/closure-record candidate. The exact implementation
+subject remains `b3f03ae2...`; this later documentation-only record does not
+change its source or tree.
+
+Scientific and behavioral conformance: pass. The accepted wrapper-based build
+repair changes no scientific operation, product, identity, unit, frame,
+validity, cause, lineage, configuration, or route. The representative tool
+proved the complete typed identity witness with no comparison mismatch and no
+unexpected error or critical record. It explicitly makes no representative
+science claim.
+
+Architectural conformity and ownership: pass. The repair remains wholly owned
+by build/profile tooling and adds no `Engine` state, cross-stage dependency,
+generic framework, application behavior, or scientific policy.
+
+Repository, branch, and evidence hygiene: pass subject to independent review
+of the closure commit. The implementation candidate has exact linear ancestry,
+was independently reviewed and owner-pushed, and was clean at local and Unity
+checkpoints. The evidence bytes remain retained on Unity and are represented
+here by their exact path and digests; they have not been copied into Git.
+
+Affected-mode result: no ordinary application route was activated or changed,
+so no affected-mode reduction was triggered. This was an acceptance-tool
+execution, not a Citlali reduction or MAP action.
+
+Intentional scientific changes: none. Canonical integration, route activation,
+legacy retirement, production use, MAP action, release, and representative
+science acceptance remain unauthorized and unperformed.
+
+The next owner decision, after independent fresh-context exact-SHA review of
+the closure commit, is whether to accept this durable evidence record and
+separately authorize a canonical-integration proposal. No integration, push,
+activation, production, cleanup, or subsequent Timestream Successor increment
+is implied.
