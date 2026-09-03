@@ -138,14 +138,28 @@ one exposed pointing checkpoint cannot define a general policy. It does show
 that the present learning path can turn a one-pixel threshold crossing into a
 complete next-iteration detector exclusion with a large scientific effect.
 
+The implementation ordering supplies a concrete hypothesis for that policy
+problem. `pointing_run_impl.h` restores the feedback map to the cleaned
+timestream before it populates the final observation map;
+`observation_output_execution.h` then writes that raw-observation map; and
+`mapdiag_output_impl.h` invokes the detector-dominance learner on that map.
+Thus this learner observes the complete post-add-back map rather than a
+residual-only map. That is implementation evidence, not scientific authority,
+but it connects the empirical result directly to the Stage-A model-bypass
+question.
+
 The scientifically motivated next candidate should therefore address the
 map-diagnostic penalty policy itself, rather than introduce a global stop rule
-or tune alpha again on observation 123424. A new prospective test should
-choose one explicit protection—such as making newly learned hard penalties
-provisional, or preventing accepted astronomical support from supplying the
-evidence for a detector-dominance exclusion—and test it against both harmful
-and benign penalty events in more than one observation. That requires a new
-bounded authorization. No further iteration or variant follows from EL-F3.
+or tune alpha again on observation 123424. The leading candidate is to keep
+the complete-map diagnostic product but prevent the accepted astronomical
+model from supplying evidence for a detector-dominance exclusion—for example,
+by deriving the causally consumed penalty from a residual-only view. A new
+prospective test must also verify that genuine off-source detector failures
+remain detectable and should cover harmful and benign penalty events in more
+than one observation. Making penalties merely provisional remains a fallback
+hypothesis, not a co-equal change to mix into the same test. This requires a
+new bounded authorization. No further iteration or variant follows from
+EL-F3.
 
 ## Evidence identities
 

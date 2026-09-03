@@ -415,9 +415,12 @@ failures. This establishes a causal penalty-policy problem in one exposed
 checkpoint, not a general stop rule, detector judgment, qualified recurrence,
 or rescue of EL-F2. The complete record is
 [`EXECUTION_RESULT_R0.1.md`](../validation/fruit_loop_point_123424_el_f3_penalty_counterfactual_2026-09-02/EXECUTION_RESULT_R0.1.md).
-A later proposal should test one prospective source-protection or provisional-
-penalty policy across harmful and benign events in multiple observations; no
-additional run is authorized by EL-F3.
+Implementation ordering shows that the causally consumed detector-dominance
+learner currently sees the complete post-add-back raw-observation map rather
+than a residual-only map. A later proposal should first test a prospective
+model-bypass/source-protection policy against harmful and benign events in
+multiple observations; provisional penalties remain a separate fallback
+hypothesis. No additional run is authorized by EL-F3.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
