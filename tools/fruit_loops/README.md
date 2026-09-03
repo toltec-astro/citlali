@@ -370,6 +370,14 @@ control response. It reports continuous recovery and annular-residual reversal
 fractions, the preregistered mechanism classification, and the inherited
 science screen without treating this one intervention as method qualification.
 
+`analyze_off_source_penalty_counterfactual.py` applies the same fail-closed
+restart and intervention checks to the EL-F5 off-source trajectory. Its causal
+gate uses reversal of kernel-residual relative RMS and annular residual, the
+two losses actually exposed off source. It reports central and full-kernel
+recovery by absolute distance from unity rather than assuming that a larger
+amplitude is better.
+
+
 ## Feedback-model-bypass screen
 
 `analyze_feedback_model_bypass.py` evaluates the registered EL-F4 comparison

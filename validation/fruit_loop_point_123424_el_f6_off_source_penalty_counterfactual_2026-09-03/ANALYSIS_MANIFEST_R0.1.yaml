@@ -1,0 +1,42 @@
+schema_version: sci-fruit-el-f6-analysis-v1
+test_id: SCI-FRUIT-EL-F6-OFF-SOURCE-PENALTY-COUNTERFACTUAL-R0.1
+obsnum: 123424
+array_order: [a1100, a1400, a2000]
+amplitudes_mjy_beam: [100.0, 100.0, 100.0]
+pixel_size_arcsec: 1.0
+az_offset_arcsec: 0.0
+el_offset_arcsec: -60.0
+gaussian_search_radius_arcsec: 25.0
+annulus_inner_arcsec: 40.0
+annulus_outer_arcsec: 120.0
+control_iteration_4: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/control/reduced/redu04
+control_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/control/reduced/redu05
+original_injected_iteration_4: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/redu04
+original_injected_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/redu05
+sham_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/untouched-injected-sham/reduced/redu05
+counterfactual_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/injected-without-uid4460/reduced/redu05
+intervention_audit: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/injected-without-uid4460/restart-source/checkpoint_intervention_audit.json
+execution_log_dir: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/logs
+expected_removed_penalty:
+  producer: mapdiag:raw_obs
+  reason: map_pixel_outlier_detector_dominance
+  iteration: 4
+  scan: 5
+  uid: 4460
+  network: -1
+  array: 1
+  factor: 0.0
+  score: 4.0
+  scan_local: true
+original_a1400:
+  iteration_4_kernel_residual_relative_rms: 0.32067306391201056
+  iteration_5_kernel_residual_relative_rms: 0.7278038848217114
+  iteration_4_annular_residual_over_truth: 0.0032704798085909136
+  iteration_5_annular_residual_over_truth: 0.02313442849087168
+  iteration_4_central_recovery: 1.0439747063149467
+  iteration_5_central_recovery: 1.037054917736772
+  iteration_4_full_kernel_recovery: 1.0562394449667207
+  iteration_5_full_kernel_recovery: 1.0567036744047271
+minimum_reversal_fraction: 0.5
+full_reversal_fraction: 1.0
+

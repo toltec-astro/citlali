@@ -1,0 +1,14 @@
+runtime:
+  output_dir: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/injected-without-uid4460/reduced/
+  n_threads: 1
+
+timestream:
+  fruit_loops:
+    restart_path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/injected-without-uid4460/restart-source/redu04
+    max_iters: 6
+    save_all_iters: true
+    injected_source_test:
+      enabled: true
+      start_iteration: 5
+      array_amplitude_mjy_beam: [100.0, 100.0, 100.0]
+
