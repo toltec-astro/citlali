@@ -1,0 +1,84 @@
+{
+  "checkpoint_differences": {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f7-shared-start-response-r0.1/analysis/CHECKPOINT_DIFFERENCES_R0.1.json",
+    "sha256": "e8bbc9e0a504e75d5e11888f91125ce091056d4e602962820206ebc7e80a1de1",
+    "size_bytes": 1400
+  },
+  "checkpoint_differing_variable_count": 2,
+  "claim_scope": "one shared-start transition in observation 123424; descriptive development evidence only",
+  "closure": {
+    "a1100": {
+      "closure_pass": true,
+      "maximum_absolute_residual_mjy_beam": 1.4210854715202004e-14,
+      "roundoff_bound_mjy_beam": 1.169524018023049e-12
+    },
+    "a1400": {
+      "closure_pass": true,
+      "maximum_absolute_residual_mjy_beam": 1.4210854715202004e-14,
+      "roundoff_bound_mjy_beam": 1.4452021161286066e-12
+    },
+    "a2000": {
+      "closure_pass": true,
+      "maximum_absolute_residual_mjy_beam": 1.4210854715202004e-14,
+      "roundoff_bound_mjy_beam": 1.5575329937565737e-12
+    }
+  },
+  "common_units_wcs_grid_normalization_and_finite_support": "PASS",
+  "complete_component_products": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f7-shared-start-response-r0.1/analysis/component-maps/point_123424_a1100_el_f7_components.fits",
+      "sha256": "4a04ac832c2e51a4b62189ec8a150272ad8988d71a9a84626d401f0641221c29",
+      "size_bytes": 8182080
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f7-shared-start-response-r0.1/analysis/component-maps/point_123424_a1400_el_f7_components.fits",
+      "sha256": "0d6d0caa11eb994869812131bb962316da9ddc0851709e97497c78075fd8c732",
+      "size_bytes": 8182080
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f7-shared-start-response-r0.1/analysis/component-maps/point_123424_a2000_el_f7_components.fits",
+      "sha256": "1173ae376ff15f15445d0eb59eb817da279805c7c7ebc4439b8189fb5eb1338c",
+      "size_bytes": 8182080
+    }
+  ],
+  "component_metrics": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f7-shared-start-response-r0.1/analysis/COMPONENT_METRICS_R0.1.csv",
+      "sha256": "acd565087c81d342ae49d57b9e97ce545e0377b171762abd8b901773908985f3",
+      "size_bytes": 5023
+    }
+  ],
+  "cross_terms": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f7-shared-start-response-r0.1/analysis/CROSS_TERMS_R0.1.csv",
+      "sha256": "26127bf3ef60870b04b1a330e92b9ca861365dd4e365a7de93368643955ff051",
+      "size_bytes": 7742
+    }
+  ],
+  "execution": {
+    "aggregate_wall_seconds": 62.08,
+    "maximum_resident_bytes": 892796928,
+    "trajectory_count": 2
+  },
+  "fully_matched_operator_transfer_established": false,
+  "method_or_safeguard_selected": false,
+  "paired_realized_configuration_check": "PASS",
+  "response_figure": {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f7-shared-start-response-r0.1/analysis/RESPONSE_DECOMPOSITION_R0.1.png",
+    "sha256": "1c5e6f4a980bd11f7760cb3b1d72a04fd7575103c877af82313d79fa9f7f89c8",
+    "size_bytes": 963366
+  },
+  "response_identity": {
+    "D4460_5": "A5-N5",
+    "H5_other_history": "N5-P5",
+    "S5_shared_start": "P5-C5",
+    "T5_total_adaptive": "A5-C5"
+  },
+  "sham_checkpoint_all_variables_value_identical": true,
+  "sham_exact_planes": 9,
+  "sham_iteration_directory": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f7-shared-start-response-r0.1/control-sham/reduced/redu00",
+  "sham_replay_exact": true,
+  "shared_start_probe_uid4460_learned_at_end_iteration_5": false,
+  "test_id": "SCI-FRUIT-EL-F7-SHARED-START-RESPONSE-DECOMPOSITION-R0.1",
+  "valid_decomposition": true
+}

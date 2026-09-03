@@ -1,0 +1,3 @@
+trajectory,status,wall_seconds,user_seconds,system_seconds,maximum_resident_bytes,error_or_critical_messages
+control-sham,completed,31.31,29.26,0.75,858980352,0
+shared-start-probe,completed,30.77,29.62,0.69,892796928,0

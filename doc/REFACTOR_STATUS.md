@@ -638,8 +638,33 @@ same-iteration data-dependent processing can still differ. The exact
 [`owner-review proposal`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F7_SHARED_START_RESPONSE_OWNER_REVIEW_R0.1.md)
 and
 [`bundle manifest`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F7_BUNDLE_MANIFEST_R0.1.md)
-are pending content-bound owner approval. No setup, replay, analysis
-implementation, safeguard, or algorithm change is yet authorized.
+were approved exactly by the scientific owner on 2026-09-03. The bounded
+authorization is recorded in
+[`SCIENTIFIC_OWNER_EL_F7_AUTHORIZATION_2026-09-03.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_EL_F7_AUTHORIZATION_2026-09-03.md).
+
+Both registered one-iteration replays completed on their first attempt. The
+no-injection sham reproduces all nine signal/kernel/weight planes bitwise and
+the complete existing control iteration-5 checkpoint value-identically. The
+realized paired configurations, units, WCS/grid, normalization, and finite
+support match, and the four-component identity closes to
+`1.4211e-14 mJy/beam` against predeclared bounds of
+`1.1695e-12`--`1.5575e-12 mJy/beam`. The new shared-start response recovers
+kernel-normalized central amplitudes `0.858066`, `0.885121`, and `0.739569`
+for a1100, a1400, and a2000 after one injected transition. Earlier injected
+history adds a positively aligned compact component while strongly cancelling
+shared-start annular structure (annular cosines `-0.915`, `-0.557`, and
+`-0.511`). In a1400 the separate UID 4460 effect remains nearly equal in RMS
+to the total response around Neptune (`2.43696` versus `2.44263 mJy/beam`) and
+in the registered annulus (`2.27360` versus `2.29897 mJy/beam`), while changing
+the injected-source region by only `0.262866 mJy/beam`. The shared-start probe
+does not relearn UID 4460; its completed checkpoint differs from control only
+in feedback signal and kernel maps, not persisted penalties, masks, weight
+accumulators, or target pixels. The active
+[`EL-F7 result`](../validation/fruit_loop_point_123424_el_f7_shared_start_response_2026-09-03/EXECUTION_RESULT_R0.1.md)
+therefore supports a future narrow carried-hard-penalty safeguard proposal
+that preserves accumulated source history. It does not establish a fully
+matched operator, select that safeguard, qualify a recurrence, launch Gate D
+or Stage B, change production, or authorize Unity activity.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

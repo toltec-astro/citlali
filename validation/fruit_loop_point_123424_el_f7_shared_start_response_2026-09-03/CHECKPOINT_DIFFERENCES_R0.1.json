@@ -1,0 +1,44 @@
+{
+  "control_checkpoint": {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/control/reduced/redu05/citlali_restart_checkpoint.nc",
+    "sha256": "d10bb3a90920e8b55174ea1eb34c8126a0a2b6d265636034794967ac6ce17c9e",
+    "size_bytes": 6507974
+  },
+  "control_only_variables": [],
+  "differing_variable_count": 2,
+  "differing_variables": {
+    "fruit_feedback_kernel": {
+      "different_elements": 301153,
+      "equal": false,
+      "left_dtype": "float64",
+      "left_shape": [
+        380205
+      ],
+      "maximum_absolute_difference": 1.0015916478612412,
+      "right_dtype": "float64",
+      "right_shape": [
+        380205
+      ]
+    },
+    "fruit_feedback_signal": {
+      "different_elements": 291218,
+      "equal": false,
+      "left_dtype": "float64",
+      "left_shape": [
+        380205
+      ],
+      "maximum_absolute_difference": 89.46369038824614,
+      "right_dtype": "float64",
+      "right_shape": [
+        380205
+      ]
+    }
+  },
+  "dimension_differences": {},
+  "probe_checkpoint": {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f7-shared-start-response-r0.1/shared-start-probe/reduced/redu00/citlali_restart_checkpoint.nc",
+    "sha256": "24831154acf80254f914150b7e0c1a694e0153b677db21282640f0bf73a17072",
+    "size_bytes": 6507974
+  },
+  "probe_only_variables": []
+}
