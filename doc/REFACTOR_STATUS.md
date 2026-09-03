@@ -666,6 +666,29 @@ that preserves accumulated source history. It does not establish a fully
 matched operator, select that safeguard, qualify a recurrence, launch Gate D
 or Stage B, change production, or authorize Unity activity.
 
+After EL-F7, the scientific owner asked the manager to lead the next step but
+questioned how one detector could make such a large map imprint without being
+flagged or deweighted. A read-only implementation/evidence check resolves the
+apparent contradiction: UID 4460 was APT-accepted and moderately deweighted
+(`0.7587`, near the 36th percentile from the low-weight end among 445
+validated unflagged a1400 detectors), then the four-pixel map-dominance trigger
+fully flagged all 676 raw samples in scan 6 before RTC during iteration 5. The
+four detector-specific leave-one-out significances were only `1.70`--`2.12`;
+the current hard rule requires four globally unusual pixels but no separate
+minimum leave-one-out significance. Removing the detector before shared
+cleaning can change every a1400 detector's processed response, so the arcs are
+not a direct image of UID 4460 alone. The exact
+[`mechanism note`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F8_UID4460_MECHANISM_NOTE_R0.1.md)
+supports a narrow proposed EL-F8 placement decomposition: preserve the
+complete FRUIT feedback state and the hard decision, but compare the existing
+pre-cleaning exclusion with an opt-in exclusion applied only before final map
+accumulation. The
+[`owner-review proposal`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F8_PENALTY_PLACEMENT_OWNER_REVIEW_R0.1.md)
+and exact
+[`bundle manifest`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F8_BUNDLE_MANIFEST_R0.1.md)
+are pending content-bound owner approval. No EL-F8 implementation, build,
+replay, or analysis execution is authorized.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
