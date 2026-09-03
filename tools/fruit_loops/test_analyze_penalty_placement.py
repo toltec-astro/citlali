@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 from pathlib import Path
 
 import numpy as np
@@ -147,3 +148,55 @@ def test_checkpoint_policy_intervention_is_reaudited(tmp_path: Path) -> None:
 
     assert result["control"]["only_registered_policy_field_changed"] is True
     assert result["injected"]["only_registered_policy_field_changed"] is True
+
+
+def test_mapmaking_application_accepts_prior_flags_when_all_samples_excluded(
+    tmp_path: Path,
+) -> None:
+    redu = tmp_path / "redu"
+    redu.mkdir()
+    fields = [
+        "record_type",
+        "scan",
+        "uid",
+        "application_stage",
+        "candidate_records",
+        "matched_records",
+        "invalid_records",
+        "proposed_samples",
+        "newly_flagged_samples",
+        "already_flagged_samples",
+        "source_protected_samples",
+        "applied",
+    ]
+    with (redu / "learning_iter_5.csv").open("w", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer.writeheader()
+        writer.writerow(
+            {
+                "record_type": "detector_penalty_application",
+                "scan": 5,
+                "uid": -1,
+                "application_stage": "pre_mapmaking_detector_exclusion",
+                "candidate_records": 1,
+                "matched_records": 1,
+                "invalid_records": 0,
+                "proposed_samples": 305,
+                "newly_flagged_samples": 271,
+                "already_flagged_samples": 34,
+                "source_protected_samples": 0,
+                "applied": 1,
+            }
+        )
+    source = tmp_path / "source_learning.csv"
+    with source.open("w", newline="") as stream:
+        writer = csv.DictWriter(
+            stream, fieldnames=["record_type", "scan", "uid"]
+        )
+        writer.writeheader()
+
+    result = analysis.detector_application_evidence(redu, source)
+
+    assert result["pre_mapmaking_newly_flagged_samples"] == 271
+    assert result["pre_mapmaking_already_flagged_samples"] == 34
+    assert result["pre_mapmaking_excluded_samples_after_application"] == 305

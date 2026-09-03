@@ -444,10 +444,16 @@ def detector_application_evidence(redu: Path, source_learning: Path) -> dict:
     map_row = stages.get("pre_mapmaking_detector_exclusion")
     if forbidden or map_row is None:
         raise ValueError("UID 4460 exclusion did not move cleanly to mapmaking")
+    proposed = int(map_row["proposed_samples"])
+    newly_flagged = int(map_row["newly_flagged_samples"])
+    already_flagged = int(map_row["already_flagged_samples"])
     if (
-        map_row["matched_records"] != "1"
-        or map_row["proposed_samples"] != "305"
-        or map_row["newly_flagged_samples"] != "305"
+        map_row["candidate_records"] != "1"
+        or map_row["matched_records"] != "1"
+        or map_row["invalid_records"] != "0"
+        or proposed != 305
+        or newly_flagged + already_flagged != proposed
+        or map_row["source_protected_samples"] != "0"
         or map_row["applied"] != "1"
     ):
         raise ValueError("UID 4460 mapmaking exclusion evidence differs")
@@ -468,8 +474,12 @@ def detector_application_evidence(redu: Path, source_learning: Path) -> dict:
         "raw_samples_entering_rtc_without_hard_detector_exclusion": 676,
         "carried_uid4460_sample_masks_in_scan": 0,
         "pre_rtc_or_pre_ptc_detector_exclusion_records": 0,
-        "pre_mapmaking_proposed_samples": 305,
-        "pre_mapmaking_newly_flagged_samples": 305,
+        "pre_mapmaking_proposed_samples": proposed,
+        "pre_mapmaking_newly_flagged_samples": newly_flagged,
+        "pre_mapmaking_already_flagged_samples": already_flagged,
+        "pre_mapmaking_excluded_samples_after_application": (
+            newly_flagged + already_flagged
+        ),
         "pre_mapmaking_applied": True,
     }
 
@@ -527,7 +537,7 @@ def write_component_maps(
                 name=f"R{len(hdus):02d}_{name}"[:8],
             )
         )
-    path = output_dir / f"point_{obsnum}_{array}_el_f8_components.fits"
+    path = output_dir / f"point_{obsnum}_{array}_el_f8_components_r0.2.fits"
     fits.HDUList(hdus).writeto(path, overwrite=True, checksum=False)
     return path
 
@@ -908,13 +918,13 @@ def main() -> int:
     output_dir = Path(manifest["analysis_output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
     paths = {
-        "metrics": output_dir / "COMPONENT_METRICS_R0.1.csv",
-        "cross": output_dir / "CROSS_TERMS_R0.1.csv",
-        "triggers": output_dir / "TRIGGER_PIXELS_R0.1.csv",
-        "execution": output_dir / "PRIMARY_EXECUTION_R0.1.csv",
-        "result": output_dir / "DECOMPOSITION_RESULT_R0.1.json",
-        "report": output_dir / "EXECUTION_RESULT_R0.1.md",
-        "plot": output_dir / "PENALTY_PLACEMENT_DECOMPOSITION_R0.1.png",
+        "metrics": output_dir / "COMPONENT_METRICS_R0.2.csv",
+        "cross": output_dir / "CROSS_TERMS_R0.2.csv",
+        "triggers": output_dir / "TRIGGER_PIXELS_R0.2.csv",
+        "execution": output_dir / "PRIMARY_EXECUTION_R0.2.csv",
+        "result": output_dir / "DECOMPOSITION_RESULT_R0.2.json",
+        "report": output_dir / "EXECUTION_RESULT_R0.2.md",
+        "plot": output_dir / "PENALTY_PLACEMENT_DECOMPOSITION_R0.2.png",
     }
     write_csv(paths["metrics"], metrics)
     write_csv(paths["cross"], cross_terms)
@@ -977,7 +987,7 @@ def main() -> int:
         ],
         "execution": auxiliary["execution"],
     }
-    provenance_path = output_dir / "ANALYSIS_PROVENANCE_R0.1.yaml"
+    provenance_path = output_dir / "ANALYSIS_PROVENANCE_R0.2.yaml"
     provenance_path.write_text(yaml.safe_dump(provenance, sort_keys=False))
     print(paths["report"])
     return 0
