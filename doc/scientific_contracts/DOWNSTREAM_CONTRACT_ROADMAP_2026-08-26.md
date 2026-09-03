@@ -48,6 +48,15 @@ map-space horizontal audit begin. This checkpoint does not establish a new
 numerical route, implementation conformity, validation, achieved performance,
 readiness, production authorization, or Unity activity.
 
+The first map-space horizontal audit covers the integrated SCI-MAP, SCI-JINC,
+SCI-FLT-FIXED, SCI-FLT-MATCHED, SCI-NOI, and SCI-POINT authorities, anchored at
+the frozen PTC-to-MAP handoff. It reviews cross-package coherence without
+reopening each package's frozen local science. `SCI-FLT-*` in this audit means
+the currently frozen FIXED and MATCHED families; a later filtering family must
+be admitted explicitly. Active SCI-FRUIT is excluded from this first pass and
+will require a later attachment audit against the same chain after its own
+scientific-contract and integration state is suitable for review.
+
 ## Starting Boundary
 
 The next downstream work begins from the existing package authorities rather
@@ -150,7 +159,14 @@ Every tranche follows the Scientific Contract Library Program:
 - Record absence or incompleteness honestly. It limits the claims supported by
   a product but is not automatically a prohibition on later scientific use.
 
-## Immediate Authorized Action
+## Historical Execution Record
+
+The material below records previously authorized package work and the
+then-current states at which those actions were documented. It does not state
+the current authorized action, authorize another launch, or authorize
+repetition of completed work. Present-tense launch language and statements that
+a later stage had not begun are historical; the `2026-09-03` Consolidation
+Checkpoint above governs current sequencing.
 
 SCI-MAP v0.1/r0.7.1 and SCI-JINC v0.1/r0.3 are frozen under their own exact
 owner records. The scientific owner's `2026-08-29` direction launches bounded

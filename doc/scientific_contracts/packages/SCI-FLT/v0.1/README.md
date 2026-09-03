@@ -87,7 +87,7 @@ SHA-256
 Ordinary numerical MAP/JINC parents remain unavailable and the FLT profiles
 remain unregistered. No SCI-FLT-INF Stage B authority is created.
 
-This package changes no algorithm or frozen authority and makes no
+The integration reconciliation changes no algorithm or frozen authority and
+creates no new scientific-freeze claim. This package makes no
 implementation-conformity, validation, calibration, response/covariance
-fidelity, performance, readiness, scientific-freeze, production, or Unity
-claim.
+fidelity, performance, readiness, production, or Unity claim.
