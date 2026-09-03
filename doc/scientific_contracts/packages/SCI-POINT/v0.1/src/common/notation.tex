@@ -1,3 +1,77 @@
-% SCI-POINT v0.1 Stage A placeholder.
-% Normative notation is unavailable until an implementation-blind Stage B task
-% is explicitly authorized from an exact owner-approved author packet.
+% Shared normative notation for both SCI-POINT v0.1 views.
+\newcommand{\ContractVersion}{v0.1}
+\newcommand{\DocumentRevision}{r0.1}
+\newcommand{\MethodID}{\texttt{POINT-FIT/ELLIPTICAL-GAUSSIAN-COMPATIBILITY@1}}
+\newcommand{\CompatMethod}{\texttt{POINT-COMPATIBILITY-METHOD v0.1}}
+\newcommand{\FormalMethod}{\texttt{POINT-FORMAL-ERROR-METHOD v0.1}}
+\newcommand{\RMSMethod}{\texttt{POINT-FULL-MAP-RMS-METHOD v0.1}}
+\newcommand{\Unavailable}{\texttt{unavailable\_pending\_separate\_owner\_approval}}
+\newcommand{\DecisionUnavailable}{\texttt{decision\_unavailable}}
+\newcommand{\DeltaPoint}{\boldsymbol{\Delta}_{\mathrm{POINT}}}
+\newcommand{\uvec}{\boldsymbol{u}}
+\newcommand{\muhat}{\widehat{\boldsymbol{\mu}}}
+\newcommand{\muexp}{\boldsymbol{\mu}_{\mathrm{expected}}}
+\newcommand{\thetahat}{\widehat{\boldsymbol{\theta}}}
+\newcommand{\Sigmashape}{\boldsymbol{\Sigma}_{g}}
+
+\section{Normative notation and state axes}\label{sec:notation}
+
+The words \textbf{shall}, \textbf{shall not}, \textbf{required}, and
+\textbf{prohibited} are normative. ``Available'' means that every dependency
+for the stated quantity is bound and valid. ``Unavailable'' means that the
+quantity or claim has not been established; it never means numerical zero.
+``Failed'' means that an authorized computation was attempted but did not
+return a conforming result.
+
+\begin{longtable}{@{}p{0.24\linewidth}p{0.69\linewidth}@{}}
+\toprule
+Symbol or term & Meaning \\
+\midrule
+\endhead
+$m_q$ & Exact parent signal at admitted row or pixel $q$. \\
+$\uvec_q$ & Physical coordinate supplied by the exact AltAz tangent-boundary transform for parent coordinate $p_q$. \\
+$A$ & Fitted amplitude in the exact parent product's unit, calibration, and response. \\
+$\boldsymbol{\mu}$ & Continuous fitted centroid in the declared ordered AltAz tangent basis. \\
+$\Sigmashape$ & Symmetric positive-definite invariant Gaussian shape matrix. \\
+$\boldsymbol{\theta}$ & The six scientific roles: amplitude, two centroid components, two principal-width roles, and orientation. \\
+$W_{\mathrm{fit}}$ & Exact fit-weight role, distinct from parent covariance, inverse covariance, reliability weight, and uncertainty products. \\
+$\DeltaPoint$ & Measured source displacement, fitted centroid minus authoritative expected source position, in arcseconds in the declared basis. \\
+parent & One exact observation-local, per-array MAP, JINC, FLT-FIXED, or FLT-MATCHED signal product. \\
+terminal FRUIT ancestry & Lineage attached to one of the four parent families; it is not a fifth parent family. \\
+named use & One owner-defined consumer purpose evaluated without changing the immutable POINT result. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Three independent state systems}\label{sec:state-axes}
+
+Producer lifecycle, component identifiability, and named-use evaluation shall
+remain independent.
+
+\begin{description}[leftmargin=0.25\linewidth,style=multiline]
+\item[Producer lifecycle]
+\path{not_requested}, \path{requested}, \path{effective},
+\path{unavailable}, \path{resolved}, \path{fit_attempted},
+\path{fit_realized}, \path{complete_publication_candidate},
+\path{publication_decided}, \path{published}, \path{failed},
+\path{not_produced}, or \path{superseded}.
+\item[Component identifiability]
+Exactly one of \path{available_identifiable},
+\path{available_bound_censored}, \path{weakly_identified},
+\path{undefined_by_model_symmetry}, \path{unavailable}, or
+\path{failed} for every required parameter role.
+\item[Named-use evaluation]
+Four fields, kept separate:\newline
+request: \path{requested} or \path{not_requested};\newline
+applicability: \path{applicable}, \path{inapplicable}, or
+\path{decision_unavailable};\newline
+eligibility: \path{eligible}, \path{ineligible}, or
+\path{decision_unavailable};\newline
+realization: \path{realized}, \path{not_realized}, \path{unavailable}, or
+\path{failed}.
+\end{description}
+
+After the four named-use fields are evaluated, the owning consumer may
+prescribe an action such as \path{diagnostic_display_only}. That token is
+an action, not an eligibility value, producer state, or universal quality flag.
+The token \path{diagnostic_only} is not a producer state or SCI-VAL
+eligibility value.

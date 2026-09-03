@@ -1,2 +1,189 @@
-% SCI-POINT v0.1 Stage A placeholder.
-% The engineering conformance specification will be authored only in Stage B.
+\documentclass[10pt]{article}
+\usepackage[letterpaper,margin=0.64in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs,longtable,array}
+\usepackage[table]{xcolor}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{parskip}
+\definecolor{pointblue}{HTML}{173B57}
+\definecolor{pointteal}{HTML}{2B6F6D}
+\definecolor{pointpale}{HTML}{EAF2F4}
+\definecolor{pointgray}{HTML}{4B5563}
+\hypersetup{colorlinks=true,linkcolor=pointblue,urlcolor=pointteal,pdfauthor={SCI-POINT scientific-contract program},pdftitle={SCI-POINT Engineering Conformance v0.1 r0.1},pdfsubject={Conditional generic engineering specification}}
+\setlist{nosep,leftmargin=*}
+\setlength{\LTpre}{0.3em}
+\setlength{\LTpost}{0.5em}
+\renewcommand{\arraystretch}{1.10}
+\setlength{\emergencystretch}{2em}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{pointblue}\textbf{SCI-POINT} Engineering Conformance}
+\rhead{\small v0.1 / r0.1}
+\cfoot{\small\thepage}
+\newcommand{\statusbox}[1]{\begin{center}\fcolorbox{pointteal}{pointpale}{\begin{minipage}{0.93\linewidth}#1\end{minipage}}\end{center}}
+
+\begin{document}
+\begin{titlepage}
+\vspace*{0.45in}
+{\color{pointteal}\rule{\linewidth}{2.5pt}}\\[0.32in]
+{\Huge\bfseries\color{pointblue} SCI-POINT}\\[0.14in]
+{\LARGE Engineering Conformance Specification}\\[0.4in]
+{\large Scientific contract v0.1 \quad Document revision r0.1}\\[0.12in]
+{\large Conditional generic Stage B contract}\\[0.5in]
+
+\statusbox{\textbf{Conformance status.} This specification is normative but
+conditional. No numerical POINT fit conforms until the exact compatibility
+method, exact numerical parent, and route binding are owner-approved. Formal
+errors and full-map-RMS diagnostics have separate gates. No implementation has
+been assessed against this specification.}
+
+\vfill
+\begin{tabular}{@{}ll@{}}
+Scientific owner & Grant Wilson \\
+Normative scientific source & Shared SCI-POINT v0.1 common LaTeX core \\
+Authorship source & Exact owner-approved Stage A r0.3 author packet \\
+Base operator & \texttt{POINT-FIT/ELLIPTICAL-GAUSSIAN-COMPATIBILITY@1} \\
+Contract date & 2026-09-02 \\
+\end{tabular}
+\\[0.35in]
+{\color{pointteal}\rule{\linewidth}{1.1pt}}
+\end{titlepage}
+
+\section*{Conformance rule}
+\addcontentsline{toc}{section}{Conformance rule}
+
+An implementation or product is conforming only for the requirements whose
+complete dependencies are available and whose exact identities and states are
+recorded. Typed unavailability is conforming when a dependency is absent and
+the contract requires fail-closed behavior. Fabricating a default, zero,
+alias, route substitution, association, covariance, response, bias, or use
+decision is nonconforming.
+
+\tableofcontents
+\clearpage
+
+\input{common/notation}
+\input{common/definitions}
+\input{common/equations}
+\input{common/assumptions}
+\input{common/edge_cases}
+
+\section{Engineering record contracts}\label{sec:engineering-records}
+
+The representation syntax is implementation-defined, but the following
+logical records and fields shall be lossless, queryable, and immutable for a
+published result. Co-location in one table or file does not merge identities.
+
+\subsection{Fit request and exact parent record}\label{sec:fit-request-record}
+
+\begin{longtable}{@{}p{0.27\linewidth}p{0.65\linewidth}@{}}
+\toprule
+Record group & Required logical fields \\
+\midrule
+\endhead
+Fit identity & observation; array; request identity; \path{POINT-FIT/ELLIPTICAL-GAUSSIAN-COMPATIBILITY@1}; compatibility-method identity/state; result version/generation; lifecycle; provenance. \\
+Parent identity & family; exact signal role; immutable product; predecessor package/version/source digest; method/version/generation; owner approval; compatibility/supersession; complete terminal-FRUIT ancestry when applicable. \\
+Parent science & estimand; unit; calibration; normalization; WCS/grid/frame; tangent relation; pixel metric; orientation/handedness; support/validity; missing/non-finite policy; response; covariance/uncertainty; null/additive-reference; phase/origin; lifecycle/provenance. \\
+Source reference & source identity; target/catalog/ephemeris authority; convention; time/epoch; frame; refraction/aberration treatment; morphology/reference origin; uncertainty; validity; lifecycle/provenance; availability/failure. \\
+Applicability & known, isolated, bright, approximately-centered values/states; authority/method; domain; cause; validity; lifecycle; provenance. \\
+Requested configuration & expected source position; requested search center/domain; fit domain; initialization; fallback; amplitude/width/angle constraints; support and weight/covariance requests; all sentinels before resolution. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Realized fit and component record}\label{sec:fit-result-record}
+
+When a numerical fit is authorized, the record shall carry requested,
+effective, resolved, applied, and realized configuration; branch and seed/peak
+identity; association method/domain/state/cause; admitted support and row
+count; exact objective and fit-weight identity; parameter values with units
+and conventions; per-component identifiability; active constraints; rank;
+termination/convergence/retry; fitted model or reconstructibility; residual
+and diagnostics; parent additive-reference/null state; fixed/full response
+states; observational bias/accuracy state; formal-error/covariance identities
+and states; and every typed cause of unavailability or failure.
+
+The source association record shall cover every central, global-fallback,
+restart, retry, or other branch. It is a separate product role and cannot be
+derived from fit quality.
+
+\subsection{Displacement record}\label{sec:displacement-record}
+
+A displacement record shall contain the associated fit identity; expected
+source-position identity; fitted centroid; exact ordered basis vectors;
+handedness and positive directions; arcsecond unit; coordinate state/time;
+parent-to-tangent transform and Jacobian where relevant; source and coordinate
+uncertainty states; Equation~\ref{eq:displacement} sign declaration; support,
+validity, lifecycle, and provenance. It shall contain no implied correction
+sign or applied-correction claim.
+
+\subsection{Named-use evaluation record}\label{sec:named-use-record}
+
+For each named use, record profile identity/version/digest, policy owner,
+source bindings, request, applicability, eligibility, realization, reason,
+prescribed consumer action, evaluation identity, lifecycle, and provenance.
+The four axes shall be independent enumerations. The action field may contain
+\texttt{diagnostic\_display\_only}; eligibility shall contain only
+\texttt{eligible}, \texttt{ineligible}, or \texttt{decision\_unavailable}.
+No result from one named use may modify another.
+
+\subsection{Availability precedence}\label{sec:availability-precedence}
+
+For each product request, evaluate in order: exact parent and route boundary;
+method authority; coordinate/source boundary; applicability facts; attempted
+producer realization; component identifiability; source association; the
+product row in Section~\ref{sec:dependencies}; then each requested named-use
+profile. Stop only the dependent product or claim. Preserve independent
+siblings and record the exact blocking state.
+
+\section{Method-record acceptance criteria}\label{sec:method-record-criteria}
+
+\CompatMethod{} shall not become available unless one immutable,
+content-bound, owner-approved record specifies the exact source equation and
+parameter ordering; width and angle conventions; domains and constraints;
+rows and residual; objective/likelihood; weight meaning and covariance
+relation; support; expected-position/search-center distinction; central and
+global search; score, candidate, interpolation, tie, initialization, fallback,
+association, retry, and sentinel rules; solver-independent solution
+comparison; convergence, rank, identifiability, failure, and compatibility
+status; and numerical tests for each applicability class or typed
+unavailability.
+
+\FormalMethod{} shall separately specify the fitted parameterization,
+stochastic model, weight relation, exact covariance/error construction,
+observed/expected curvature, residual scaling, degrees of freedom, rank and
+positive-definiteness rules, transformations, marginal extraction, active
+bounds, circularity/axis degeneracy, weak identification, consistency checks,
+units, scope, omitted uncertainty, and unavailable/failed states.
+
+\RMSMethod{} shall separately specify the exact signal parent and generation,
+full-map population, about-zero RMS versus centered deviation, center/mean,
+weighting, source-region treatment, support/edge/validity, non-finite and
+zero-denominator behavior, units, lifecycle/provenance, and identity relation
+to the amplitude parent.
+
+\input{common/requirements}
+
+\section{Owner-decision parity and remaining approvals}\label{sec:owner-parity}
+
+The engineering contract has one-to-one coverage of ODQ-001 through ODQ-009,
+including ODQ-003A/003B, and preserves the three distinct method dispositions.
+The generic conditional science contains no unresolved ODQ. Remaining owner
+actions are: content-bound approval of the three method records; approval of
+exact numerical route instances; final review and registration of the four
+draft profile identities/mechanics; and separate authorization of response or
+observational bias/accuracy authorities if those claims are sought.
+
+\section{Nonclaims}\label{sec:engineering-nonclaims}
+
+This specification records no implementation inspection and claims no
+implementation conformity, numerical production, representation fidelity,
+response/covariance fidelity, uncertainty coverage, observational validation,
+pointing accuracy, performance, readiness, production suitability, production
+authorization, or Unity activity.
+
+\end{document}

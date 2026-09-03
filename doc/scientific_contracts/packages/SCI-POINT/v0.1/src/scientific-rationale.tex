@@ -1,3 +1,162 @@
-% SCI-POINT v0.1 Stage A placeholder.
-% The scientist-readable rationale will be authored only in a fresh,
-% implementation-blind Stage B task after exact owner approval.
+\documentclass[10pt]{article}
+\usepackage[letterpaper,margin=0.72in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs,longtable,array}
+\usepackage[table]{xcolor}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{parskip}
+\definecolor{pointblue}{HTML}{173B57}
+\definecolor{pointteal}{HTML}{2B6F6D}
+\definecolor{pointpale}{HTML}{EAF2F4}
+\definecolor{pointwarn}{HTML}{7A4C00}
+\hypersetup{colorlinks=true,linkcolor=pointblue,urlcolor=pointteal,pdfauthor={SCI-POINT scientific-contract program},pdftitle={SCI-POINT Scientific Rationale v0.1 r0.1},pdfsubject={Conditional generic scientific contract}}
+\setlist{nosep,leftmargin=*}
+\setlength{\LTpre}{0.35em}
+\setlength{\LTpost}{0.55em}
+\renewcommand{\arraystretch}{1.13}
+\setlength{\emergencystretch}{2em}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{pointblue}\textbf{SCI-POINT} Scientific Rationale}
+\rhead{\small v0.1 / r0.1}
+\cfoot{\small\thepage}
+\newcommand{\statusbox}[1]{\begin{center}\fcolorbox{pointteal}{pointpale}{\begin{minipage}{0.92\linewidth}#1\end{minipage}}\end{center}}
+
+\begin{document}
+\begin{titlepage}
+\vspace*{0.55in}
+{\color{pointteal}\rule{\linewidth}{2.5pt}}\\[0.35in]
+{\Huge\bfseries\color{pointblue} SCI-POINT}\\[0.15in]
+{\LARGE Scientific Rationale and Contract}\\[0.45in]
+{\large Scientific contract v0.1 \quad Document revision r0.1}\\[0.14in]
+{\large Conditional generic Stage B contract}\\[0.55in]
+
+\statusbox{\textbf{Authority status.} This document establishes a conditional
+scientific meaning for known-source per-array Pointing fits. The numerical
+compatibility method, formal-error method, full-map-RMS method, exact numerical
+parent-route instances, registered named-use profiles, fixed/full procedure
+response, and observational bias/accuracy remain unavailable where stated.
+Implementation conformity has not been assessed under this contract.}
+
+\vfill
+\begin{tabular}{@{}ll@{}}
+Scientific owner & Grant Wilson \\
+Source authority & Exact owner-approved SCI-POINT Stage A r0.3 author packet \\
+Base operator & \texttt{POINT-FIT/ELLIPTICAL-GAUSSIAN-COMPATIBILITY@1} \\
+Primary result & Per-array AltAz tangent-plane source displacement \\
+Contract date & 2026-09-02 \\
+\end{tabular}
+\\[0.35in]
+{\color{pointteal}\rule{\linewidth}{1.1pt}}
+\end{titlepage}
+
+\section*{Reader's summary}
+\addcontentsline{toc}{section}{Reader's summary}
+
+\statusbox{\textbf{Input:} one exact observation-local per-array MAP, JINC,
+FLT-FIXED, or FLT-MATCHED signal product; exact parent state and optional
+terminal FRUIT ancestry; a valid expected source position; an exact AltAz
+tangent boundary; and requested method/use state.\\[0.4em]
+\textbf{Output when dependencies are available:} a six-role zero-background
+elliptical-Gaussian fit and the measured displacement
+$\boldsymbol{\Delta}_{\mathrm{POINT}}=\widehat{\boldsymbol{\mu}}-
+\boldsymbol{\mu}_{\mathrm{expected}}$ in arcseconds, with identities, states,
+support, uncertainty availability, diagnostics, and named-use facts.\\[0.4em]
+\textbf{Current numerical status:} unavailable. The contract does not invent
+the missing numerical methods.}
+
+The science is deliberately narrow. A known, isolated, bright Pointing source
+is fitted on one specified array map. The useful measurement is where the
+processed source appears relative to an authoritative expected position in a
+declared physical tangent basis. Search centers and peaks help an algorithm
+find a candidate; they do not define the astrometric zero point or establish
+that the fitted feature is the intended source.
+
+The same fit also supplies amplitude and effective-shape diagnostics. Their
+meaning remains that of the exact processed parent map. Amplitude is not
+automatically universal flux. Width and orientation are not automatically an
+intrinsic beam. Any use for a pointing correction, photometric transfer, or
+telescope/observing QC has a separate policy owner and evaluation.
+
+\tableofcontents
+\clearpage
+
+\section{Why a conditional contract is scientifically useful}\label{sec:rationale}
+
+A mature operation can have a stable scientific purpose while still lacking
+a content-bound description of its numerical procedure. In that situation,
+inventing a familiar least-squares fit or conventional Gaussian width would
+silently replace the operation. SCI-POINT therefore freezes what is known:
+the targeted source class, six scientific parameter roles, zero-background
+model family, coordinate measurement, parent routes, ownership boundaries,
+state semantics, and falsifiable consequences. It leaves the unavailable
+objective, weighting, width convention, search details, solver rule, formal
+errors, and full-map RMS unavailable.
+
+This separation permits later recovery of three exact methods without
+changing the package's primary estimand. It also prevents one missing
+diagnostic from erasing a future authorized fit. The compatibility method
+controls the fit. The formal-error method controls marginal formal errors and
+dependent uses. The full-map-RMS method controls only a descriptive
+amplitude/RMS ratio.
+
+\section{Physical interpretation in one sentence}\label{sec:physical}
+
+For one identified source and one exact processed map, fit the approved
+elliptical-Gaussian family in the map's physical AltAz tangent metric, establish
+that the fitted feature is the source, and report its centroid minus the
+authoritative expected position while preserving every parent, method,
+response, uncertainty, and use limitation.
+
+\input{common/notation}
+\input{common/definitions}
+\input{common/equations}
+\input{common/assumptions}
+\input{common/edge_cases}
+
+\section{Scientific-owner decisions represented}\label{sec:decisions}
+
+This contract implements the closed ODQ-001 through ODQ-009 decisions,
+including the ODQ-003A terminal-FRUIT and ODQ-003B coadd distinctions. It
+preserves per-array outputs, downstream correction ownership, four explicit
+routes without substitution, the six-role zero-background compatibility
+family, explicit search/fallback state, independent lifecycle/identifiability/
+named-use axes, conditional marginal formal errors, bounded amplitude/shape
+claims, and separate policy owners.
+
+No scientific decision remains open inside the generic conditional boundary.
+The remaining owner actions are content approvals, not invitations to infer
+missing science: approve exact compatibility, formal-error, and full-map-RMS
+method records; approve exact numerical route boundary instances; review the
+four draft named-use profile identities/mechanics; and separately authorize
+fixed/full procedure response or observational bias/accuracy if desired.
+
+\section{What later validation would and would not establish}\label{sec:validation-layers}
+
+Contract conformance would show that identities, records, states, equations,
+dependencies, and failure behavior match this authority. Representation tests
+would show that stored and transformed values preserve those meanings.
+Numerical tests could evaluate the predictions only after the relevant method
+and route are approved. Observational validation could separately measure
+bias, repeatability, coverage, or pointing performance. Production readiness
+would additionally require operational, performance, and deployment evidence.
+Passing one layer does not establish the next.
+
+\appendix
+\input{common/requirements}
+
+\section{Document status and nonclaims}\label{sec:status}
+
+This is the initial Stage B representation of scientific contract v0.1,
+document revision r0.1. It was authored from the exclusive Stage A r0.3
+author packet. It claims no implementation inspection, conformity, numerical
+production, response/covariance fidelity, uncertainty coverage, observational
+validation, pointing accuracy, performance, readiness, production
+authorization, or Unity activity.
+
+\end{document}

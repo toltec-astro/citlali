@@ -1,1 +1,131 @@
-% SCI-POINT v0.1 Stage A placeholder. No normative assumptions are present.
+% Shared normative assumptions, input contract, and dependency rules.
+\section{Inputs, assumptions, and dependency gates}\label{sec:inputs}
+
+\subsection{Exact input record}\label{sec:input-record}
+
+Every requested fit shall bind all of the following without filename or
+directory inference:
+\begin{enumerate}
+\item observation, array, exact parent family, immutable product, method,
+version, generation, and complete terminal FRUIT ancestry when applicable;
+\item parent estimand, signal role, unit, calibration, normalization, WCS,
+grid, frame, exact AltAz tangent basis, pixel metric, orientation, handedness,
+support, validity, missing/non-finite policy, response, covariance/uncertainty,
+null/additive-reference, phase/origin where applicable, lifecycle, and
+provenance;
+\item authoritative expected source position and its full source, target,
+catalog or ephemeris authority, convention, time/epoch, frame, atmospheric and
+aberration treatment, morphology/reference origin, uncertainty, validity,
+lifecycle, and provenance;
+\item parent-map WCS/reference origin, requested and effective search center,
+selected seed, fitted centroid, and association state as distinct objects;
+\item requested fit method and every requested, effective, resolved, applied,
+and realized search, support, weight, constraint, fallback, retry, and
+termination state; and
+\item each typed applicability fact and each requested named-use evaluation.
+\end{enumerate}
+
+Every route boundary instance shall additionally bind its exact predecessor
+package/version/source digest, signal role, owner approval,
+compatibility/supersession status, source morphology, response chain,
+processed-map profile, Gaussian compatibility, response-center relation,
+model-mismatch state, expected centroid bias or typed unavailability,
+fit-domain relation, and displacement-claim status.
+
+\subsection{Method authorities and present availability}\label{sec:method-authorities}
+
+The base operator identity is \MethodID. Its numerical realization is gated
+by three scientifically and lifecycle-distinct records:
+
+\begin{longtable}{@{}p{0.29\linewidth}p{0.18\linewidth}p{0.45\linewidth}@{}}
+\toprule
+Authority & Current state & Consequence \\
+\midrule
+\endhead
+\CompatMethod & pending separate owner approval & No numerical fit or fit-derived product. The future record must bind model parameterization, rows, objective, weights, support, search, initialization, association, fallback, constraints, solver-independent resolution, termination, rank, identifiability, sentinel, failure, identity, and compatibility status. \\
+\FormalMethod & pending separate owner approval & Marginal formal errors, formal standardization, and formal-uncertainty-dependent uses are unavailable. An otherwise authorized fit is not erased. Joint covariance remains unavailable unless separately authorized. \\
+\RMSMethod & pending separate owner approval & Only \path{fitted_amplitude_over_full_map_rms} and exact legacy alias \path{sig2noise} are blocked. An otherwise authorized fit, displacement, effective shape, or formal error is not erased. \\
+\bottomrule
+\end{longtable}
+
+The exact numerical parent-route instances, registered named-use profiles,
+fixed-branch response, full-procedure response, and observational bias/accuracy
+are also unavailable. No familiar practice, optimizer output, method name,
+finite value, or adjacent-package analogy may fill any gap.
+
+\subsection{Product and claim dependency matrix}\label{sec:dependencies}
+
+\small
+\begin{longtable}{@{}p{0.25\linewidth}p{0.43\linewidth}p{0.24\linewidth}@{}}
+\toprule
+Product or claim & Required available facts & Blocking result \\
+\midrule
+\endhead
+Fit result & Exact numerical parent and tangent metric; approved compatibility method; admitted support; objective/weight state; successful realization; component states & No numerical fit or fit-derived product. \\
+Fit components & Conforming fit and exact component-identifiability state & Only the affected component is unavailable or failed; conforming siblings remain. \\
+Source association & Exact source-reference authority and branch-independent method/domain & Source attribution is unavailable or failed. \\
+Processed-map displacement & Fitted centroid; expected position; identical tangent chart/basis; established association & No source-attributed displacement. Response and centroid bias may be typed unavailable but remain visible. \\
+Unbiased pointing or correction-use claim & Displacement plus every named-use-required response center, centroid bias, uncertainty, and pointing-support policy & Named use is ineligible or decision-unavailable; missing bias is not zero. \\
+Formal errors & Conforming fit and approved formal-error method & Formal errors unavailable; fitted values may remain. \\
+Formal standardization & Fitted amplitude and positive finite approved formal amplitude error & Diagnostic unavailable. \\
+Dynamic-range diagnostic & Fitted amplitude and approved full-map-RMS method on exact related parent & Only that diagnostic is unavailable. \\
+Photometric transfer & Associated amplitude plus CAL/TolProj profile and source/reference authority & Photometric eligibility is ineligible or decision-unavailable. \\
+Telescope-QC display & Required fit facts plus QC-owner applicability, eligibility, and action & Display not realized; it cannot rescue another use. \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+Response and covariance availability are evaluated by the applicable row and
+named-use policy. Missing response or covariance neither universally erases
+all processed-map results nor authorizes response, bias, uncertainty,
+correction, calibration, or photometric claims.
+
+\subsection{Uncertainty budget}\label{sec:uncertainty}
+
+Conditional formal fit error, joint parameter covariance, source-reference or
+ephemeris uncertainty, WCS/tangent-coordinate uncertainty, parent
+response/model-mismatch uncertainty, calibration uncertainty, empirical
+pointing repeatability, NOI uncertainty, cross-array dependence, and
+pointing-correction uncertainty are separate components with separate owners.
+They may be combined only when every variance and cross-covariance needed for
+the declared operation is available. Missing covariance is not zero, diagonal
+covariance, or independence.
+
+If fit and published tangent bases differ, exact transformation generally
+requires joint centroid covariance. Transforming marginal errors alone through
+a non-axis-aligned Jacobian does not produce exact AltAz marginal errors. A
+later joint-covariance, astrometric, empirical-repeatability, or NOI companion
+is separately versioned and does not rewrite the immutable POINT fit claim.
+
+\subsection{Response and bias separation}\label{sec:response}
+
+POINT can be nonlinear because search, fallback, support, or active constraints
+can depend on the data. A fixed-branch response is conditional on one exact
+seed/fallback branch, fit support, weight state, and active-constraint set. A
+full-procedure response reruns every data-dependent search, fallback, support,
+constraint, and optimization choice under perturbation. Observational
+centroid bias and pointing accuracy require a separate empirical authority.
+Source association is separate from all three. Parent response is input state,
+not automatically fitter response; a local Jacobian is not full-procedure
+response. All three POINT response/bias roles are presently unavailable, and
+their absence does not imply zero response error or zero centroid bias.
+
+\subsection{Named-use ownership}\label{sec:named-uses}
+
+POINT owns only the per-array fit-completeness policy. The pointing-support
+producer owns displacement admission. The named telescope/observing QC process
+owns parameter admission and actions. CAL/TolProj owns amplitude admission for
+photometric transfer. The same immutable result may pass one use, fail another,
+and be shown diagnostically for a third. No state or action propagates across
+uses. Failure of one array does not erase siblings; POINT imputes no array and
+publishes no observation-wide success. A downstream partial-set aggregate
+must record its exact policy and membership.
+
+\subsection{Claim classes and evidence ceiling}\label{sec:claim-ceiling}
+
+This contract establishes scientific meaning and conditional engineering
+conformance requirements. It does not establish representation fidelity,
+implementation conformity, numerical production, response or covariance
+fidelity, uncertainty coverage, observational validation, pointing accuracy,
+performance, readiness, production suitability, production authorization, or
+Unity activity.

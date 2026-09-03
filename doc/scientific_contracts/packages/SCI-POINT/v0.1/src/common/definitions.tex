@@ -1,1 +1,121 @@
-% SCI-POINT v0.1 Stage A placeholder. No normative definitions are present.
+% Shared normative definitions and ownership boundaries.
+\section{Scientific operation and ownership}\label{sec:operation}
+
+SCI-POINT fits one known, isolated, bright Pointing source on one exact
+observation-local per-array map product. Each requested
+observation-array-parent-method fit is scientifically atomic. The primary
+scientific result, when all dependencies are available, is a two-component
+source displacement in a declared AltAz tangent basis. The complete fit also
+has amplitude, centroid, two width roles, orientation, support, constraints,
+method identity, parent identity, uncertainty state, association state, and
+use-specific evaluation facts.
+
+SCI-POINT is a producer of per-array measurements. It does not detect blind
+sources, deblend, catalog, make or filter maps, run FRUIT recurrence, calibrate,
+infer per-detector beams, perform OOF inference, aggregate arrays, form a
+telescope correction, select a correction, or apply one.
+
+\subsection{Producer-transformer-consumer boundary}\label{sec:ownership}
+
+The exact parent producer owns its estimand, signal unit, calibration,
+normalization, WCS, grid, frame, tangent relation, support, validity,
+missing/non-finite policy, response, covariance or uncertainty state,
+null-space, lifecycle, and provenance. POINT binds and consumes those facts
+without redefining them.
+
+The source-reference producer owns the expected source position and its
+identity, convention, time or epoch, frame, atmospheric and aberration
+treatment, morphology or reference origin, uncertainty, validity, lifecycle,
+and provenance. AST owns the exact AltAz tangent-basis realization. A named
+pointing-support producer owns cross-array membership, aggregation, weights,
+dependence, partial-set policy, measurement-to-correction sign, telescope
+user/paddle-offset composition, selection, native support, and correction
+record publication. AST owns conforming application.
+
+SCI-BEAM owns per-detector Beammap fits, detector PSF, sensitivity, APT, and
+beam authority. CAL or TolProj owns photometric-transfer admission and
+reference-flux authority. A named telescope/observing-condition QC process
+owns its reference populations, thresholds, comparisons, aggregation, trend
+analysis, actions, and causal interpretation. NOI owns separately authorized
+empirical uncertainty. SCI-VAL registers and evaluates exact profiles but
+authors none of their scientific policies.
+
+\subsection{Eligible parent families are not equivalent}\label{sec:routes}
+
+\begin{longtable}{@{}p{0.17\linewidth}p{0.34\linewidth}p{0.41\linewidth}@{}}
+\toprule
+Family & Exact POINT signal role & Required route distinction \\
+\midrule
+\endhead
+MAP & \path{MAP-SIGNAL/OBSERVATION-LEVEL-NORMALIZED@1} & Exact observation-level normalized signal; never a coadd. \\
+JINC & \path{JINC-SIGNAL/NORMALIZED-JINC-MAP@1} & Exact signed and normalized signal; $N$, $C$, $Q$, coefficient-squared accounting, response, covariance, and state records are companions, not alternate signal parents. \\
+FLT-FIXED & \path{FLT-FIXED-SIGNAL/TRANSFORMED-MAP@1} & Exact transformed signal with its MAP/JINC parent, filter operator, normalization, response, edge/support, and covariance state. \\
+FLT-MATCHED & \path{FLT-MATCHED-SIGNAL/MATCHED-TEMPLATE-AMPLITUDE-FIELD@1} & Exact matched-template amplitude field with template, noise/covariance selector, normalization, phase/origin, response, and complete support. \\
+\bottomrule
+\end{longtable}
+
+POINT shall not choose, substitute, equate, or fall back among routes. The
+route-specific chain from source morphology through parent response to the
+expected processed-map profile and Gaussian compatibility shall be bound for
+each instance. Every numerical route currently has state
+\texttt{unavailable\_pending\_method\_and\_route\_binding}. Eligibility of a
+family does not establish an exact numerical parent, Gaussian adequacy,
+response fidelity, zero centroid bias, or numerical availability.
+
+A terminal FRUIT product retains its exact MAP, JINC, FLT-FIXED, or
+FLT-MATCHED identity and adds the complete method, terminal iteration,
+generation, recurrence, restart, response, support, covariance, calibration,
+null/additive-reference, lifecycle, and provenance ancestry. The record shall
+assert that the product is terminal. Intermediate iterations and coadds are
+outside base \ContractVersion.
+
+\subsection{Product roles and claim ceilings}\label{sec:products}
+
+\small
+\begin{longtable}{@{}p{0.40\linewidth}p{0.52\linewidth}@{}}
+\toprule
+Role & Meaning and ceiling \\
+\midrule
+\endhead
+\path{POINT-FIT-RESULT} & Conditional numerical six-role fit with lifecycle, component states, support, method, and parent; not association, a catalog, an intrinsic beam, or a correction. \\
+\path{POINT-DISPLACEMENT-MEASUREMENT} & Source-associated fitted centroid minus expected position in the exact AltAz basis; not an absolute spherical position or correction vector. \\
+\path{POINT-AMPLITUDE-DIAGNOSTIC} & Required amplitude in the exact parent unit/calibration/response and a candidate input to CAL/TolProj admission; not universal flux or pre-established photometric eligibility. \\
+\path{POINT-EFFECTIVE-SHAPE-DIAGNOSTIC} & Required width roles and angle under the processed-map response; not an intrinsic telescope beam, detector PSF, SCI-BEAM product, or unique cause. \\
+\path{POINT-FIT-QUALITY-CONTROL-METRICS} & Centroid, amplitude, shape, support, constraints, uncertainty, residual/response state, and fit state for an owner-governed QC use; not an automatic threshold or action. \\
+\path{POINT-SOURCE-ASSOCIATION-STATE} & \path{established}, \path{unavailable}, or \path{failed}, with method, domain, cause, lifecycle, and provenance; never implied by a peak or finite fit. \\
+\path{POINT-FIXED-BRANCH-RESPONSE-STATE} & Response conditional on one exact branch, support, weight state, and active constraints; not full-procedure response. \\
+\path{POINT-FULL-PROCEDURE-RESPONSE-STATE} & Response obtained by rerunning every data-dependent branch under perturbation; not observational accuracy. \\
+\path{POINT-OBSERVATIONAL-BIAS-ACCURACY-STATE} & Separate empirical authority; unavailable bias is not zero bias. \\
+\path{POINT-UNCERTAINTY-STATE} & Separately typed formal, coordinate, reference, response, empirical, NOI, calibration, dependence, and correction uncertainty; not an implied total. \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection{Applicability facts}\label{sec:applicability}
+
+The four facts \texttt{known}, \texttt{isolated}, \texttt{bright}, and
+\texttt{approximately\_centered} each carry value/state, exact authority or
+method, domain, cause, validity, lifecycle, and provenance. \texttt{known}
+requires a valid source identity and expected-position record.
+\texttt{isolated} requires authority over confusing sources or structure in
+the search and fit domains. \texttt{bright} is a compatibility-method class,
+not significance or either diagnostic ratio. \texttt{approximately\_centered}
+is an exact relation among expected position, search domain, fit domain,
+parent support, and map boundary. Tests for the latter three remain
+unavailable pending method authority. Labels, filenames, defaults, map
+finiteness, fitted amplitude, or ratios shall not instantiate them.
+
+\subsection{Draft named-use profile identities}\label{sec:profiles}
+
+The following collision-free mechanics are drafts for final owner review, not
+registered profiles:
+\begin{itemize}
+\item \path{VAL-PROFILE/SCI-POINT/FIT-COMPLETENESS/PER-ARRAY@draft-r0.3}, owned by POINT;
+\item \path{VAL-PROFILE/POINTING-SUPPORT/POINT-DISPLACEMENT-ADMISSION@draft-r0.3}, owned by the pointing-support producer;
+\item \path{VAL-PROFILE/TELESCOPE-QC/POINT-PARAMETER-ADMISSION@draft-r0.3}, owned by the named QC process; and
+\item \path{VAL-PROFILE/CAL-TOLPROJ/POINT-AMPLITUDE-TRANSFER@draft-r0.3}, owned by CAL/TolProj.
+\end{itemize}
+Each record shall bind profile version/digest, owner, use, source facts and
+bindings, the four named-use fields, unavailable-state behavior, reasons,
+prescribed consumer action, evaluation identity, and provenance. No aggregate
+or universal profile enters base \ContractVersion.

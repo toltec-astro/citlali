@@ -1,1 +1,128 @@
-% SCI-POINT v0.1 Stage A placeholder. No normative equations are present.
+% Shared normative equations.
+\section{Model, measurement, and conditional estimators}\label{sec:equations}
+
+\subsection{Invariant zero-background source model}\label{sec:model}
+
+For physical tangent coordinate $\uvec_q$, the only base model family is
+\begin{equation}
+g_q(A,\boldsymbol{\mu},\Sigmashape)
+=A\exp\!\left[-\tfrac12(\uvec_q-\boldsymbol{\mu})^{\mathsf T}
+\Sigmashape^{-1}(\uvec_q-\boldsymbol{\mu})\right],
+\label{eq:gaussian}
+\end{equation}
+where $\Sigmashape$ is symmetric positive definite. The invariant principal
+extents are strictly positive and ordered major not less than minor. The
+source model has no constant, gradient, local baseline, or other nuisance
+term. Its six roles are amplitude, two centroid coordinates, two
+principal-width roles, and orientation.
+
+The exact numerical parameter ordering, published width convention, angle
+origin, positive direction, gauge/period canonicalization, amplitude domain,
+parameter bounds, active-bound interpretation, and source-profile convention
+remain unavailable until \CompatMethod{} is owner-approved. At exact
+circularity, orientation is \texttt{undefined\_by\_model\_symmetry}; a finite
+placeholder is not a measurement. Exchanging principal axes with the
+corresponding angle transformation leaves Equation~\ref{eq:gaussian}
+invariant.
+
+\subsection{Coordinate transform and signed displacement}\label{sec:displacement}
+
+For parent coordinate $p_q$, the exact AST boundary supplies
+\begin{equation}
+\uvec_q=T(p_q;\,\text{coordinate state}).
+\label{eq:transform}
+\end{equation}
+The model shall use the physical tangent metric, not storage-pixel distance,
+unless the boundary proves their equivalence over admitted support. The
+ordered basis vectors, handedness, positive directions, angular unit, time and
+state, Jacobian where relevant, support, uncertainty, lifecycle, provenance,
+and failure behavior are all bound facts. Axis labels, memory order, display
+orientation, and FITS array order are not sign authority.
+
+The measurement is
+\begin{equation}
+\DeltaPoint=\muhat-\muexp,
+\qquad [\DeltaPoint]=\mathrm{arcsec},
+\label{eq:displacement}
+\end{equation}
+in that exact basis. If the tangent-coordinate origin equals the expected
+position, $\muexp=(0,0)$ and $\DeltaPoint=\muhat$. The search center affects
+search and initialization only and never defines the zero point. POINT owns
+the sign in Equation~\ref{eq:displacement}; correction sign and composition
+are downstream.
+
+\subsection{Conditional numerical fit}\label{sec:conditional-fit}
+
+The most that can be stated before method recovery is
+\begin{equation}
+\thetahat=
+\operatorname{Resolve}_{\boldsymbol{\theta}\in\Theta_{\mathrm{effective}}}
+D\!\left(m,g_{\boldsymbol{\theta}};W_{\mathrm{fit}}\right).
+\label{eq:conditional-fit}
+\end{equation}
+The admitted rows, scalar objective or likelihood $D$, weight meaning and
+normalization, constraints, comparison of multiple solutions, convergence,
+retry, and solution rule are not supplied. Equation~\ref{eq:conditional-fit}
+shall not be instantiated by guessing least squares, inverse variance,
+reliability weighting, or covariance weighting. Fit weights, parent
+stochastic covariance, inverse covariance, the formal-error model, and parent
+uncertainty are distinct roles.
+
+The preserved mature procedure has configurable expected-center/central
+search, weighted-peak initialization, global fallback, bounded fit domain,
+and amplitude/width/angle constraints. Requested, effective, resolved,
+applied, and realized states remain distinct. A sentinel shall resolve to a
+named effective state, and every fallback, restart, retry, branch, bound, and
+termination shall be reported. Exact rules belong to \CompatMethod{}.
+
+\subsection{Association is not optimization}\label{sec:association}
+
+Expected position, requested search center, effective search center, selected
+seed, fitted centroid, and source association are distinct. Every central,
+global-fallback, restart, retry, or other authorized branch yields a candidate
+seed, never source identity. Source-attributed displacement and amplitude
+require \path{POINT-SOURCE-ASSOCIATION-STATE=established} under one
+branch-independent method and declared association domain. A central or
+global peak, finite fit, small displacement, large amplitude, dynamic range,
+or formal standardization cannot establish association.
+
+\subsection{Residual and deterministic mismatch}\label{sec:residual}
+
+The scientific decomposition is
+\begin{equation}
+m=g(\boldsymbol{\theta}_{\mathrm{true}})+b+n,
+\label{eq:residual}
+\end{equation}
+where $b$ is any deterministic parent component not represented by the
+zero-background model and $n$ is stochastic variation. POINT neither fits nor
+silently removes $b$. It can bias every fit role; a finite fit does not turn
+it into noise. Once fitting is authorized, the fitted model and residual
+shall be published or reconstructible with objective, support, row count,
+rank, convergence, active constraints, branch state, residual diagnostics,
+and parent additive-reference/null state.
+
+\subsection{Conditional diagnostic identities}\label{sec:diagnostics}
+
+Only the following names are admitted:
+\begin{align}
+\texttt{fitted\_amplitude\_over\_full\_map\_rms}
+&=\widehat A/\mathrm{RMS}_{\mathrm{full}},
+\label{eq:dynamic-range}\\
+\texttt{fitted\_amplitude\_over\_formal\_amplitude\_error}
+&=\widehat A/\sigma_A.
+\label{eq:formal-standardization}
+\end{align}
+Equation~\ref{eq:dynamic-range} is descriptive dynamic range only and is
+unavailable until \RMSMethod{} binds the parent/generation, population,
+centering, weighting, source-region treatment, support/edge, non-finite and
+zero-denominator rules, units, lifecycle, provenance, and parent relation.
+\texttt{sig2noise} may be an exact legacy alias only after that approval.
+\texttt{peak\_over\_full\_map\_rms} is not an admitted alias.
+
+Equation~\ref{eq:formal-standardization} is formal standardization only and is
+unavailable until \FormalMethod{} and its signed-versus-absolute convention
+are approved and $\sigma_A$ is positive and finite. \texttt{fit\_sig2noise}
+is its exact legacy alias when available. Neither ratio is statistical
+significance, detection probability, false-alarm statistic, completeness, or
+purity. A zero or non-finite denominator produces the future method's typed
+unavailable or failed state, never an infinite claim.

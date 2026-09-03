@@ -1,1 +1,100 @@
-% SCI-POINT v0.1 Stage A placeholder. No normative requirements are present.
+% Shared normative requirements, crosswalk, and falsifiable predictions.
+\section{Normative conformance requirements}\label{sec:requirements}
+
+An implementation conforms to one requirement only when the exact records and
+states named by that requirement are present and valid. A finite numerical
+value does not substitute for a missing identity, authority, or state.
+
+\small
+\begin{longtable}{@{}p{0.20\linewidth}p{0.52\linewidth}p{0.20\linewidth}@{}}
+\toprule
+Requirement & Normative statement & Scientific source \\
+\midrule
+\endhead
+SCI-POINT-REQ-001 & Treat every requested observation-array-parent-method fit as an independent scientific atom with its own lifecycle. & Secs.~\ref{sec:operation}, \ref{sec:named-uses} \\
+SCI-POINT-REQ-002 & Bind every exact input-record field in Section~\ref{sec:input-record}; do not infer identity from filenames, labels, or location. & Sec.~\ref{sec:input-record} \\
+SCI-POINT-REQ-003 & Admit only exact MAP, JINC, FLT-FIXED, or FLT-MATCHED signal roles and preserve their distinct meanings and companions. & Sec.~\ref{sec:routes} \\
+SCI-POINT-REQ-004 & Never automatically select, substitute, equate, or fall back among parent routes. & Sec.~\ref{sec:routes} \\
+SCI-POINT-REQ-005 & Treat FRUIT only as complete terminal ancestry on one admitted route; reject intermediate iterations and coadds. & Sec.~\ref{sec:routes} \\
+SCI-POINT-REQ-006 & Bind the exact route response chain, processed profile, Gaussian compatibility, response center, model mismatch, centroid-bias state, and claim status before numerical use. & Secs.~\ref{sec:input-record}, \ref{sec:routes} \\
+SCI-POINT-REQ-007 & Bind expected source position, parent WCS origin, search center, and fitted centroid as four distinct objects. & Secs.~\ref{sec:input-record}, \ref{sec:displacement} \\
+SCI-POINT-REQ-008 & Use the exact ordered AltAz tangent basis, physical metric, transform, handedness, positive directions, state, support, uncertainty, and provenance. & Eqs.~\ref{eq:transform}--\ref{eq:displacement} \\
+SCI-POINT-REQ-009 & Publish displacement only as fitted centroid minus expected position in arcseconds; do not encode correction sign. & Eq.~\ref{eq:displacement} \\
+SCI-POINT-REQ-010 & Use only the zero-background six-role elliptical-Gaussian family in Equation~\ref{eq:gaussian}; add no background or second model family. & Sec.~\ref{sec:model} \\
+SCI-POINT-REQ-011 & Preserve the invariant positive-definite shape, canonical principal ordering, and symmetry-defined orientation state without inventing numerical width or angle conventions. & Sec.~\ref{sec:model} \\
+SCI-POINT-REQ-012 & Produce no numerical fit or fit-derived product until the approved compatibility method, exact parent, and route binding are available. & Sec.~\ref{sec:method-authorities} \\
+SCI-POINT-REQ-013 & Keep objective, weights, stochastic covariance, inverse covariance, formal-error model, and parent uncertainty distinct; never guess Equation~\ref{eq:conditional-fit}. & Sec.~\ref{sec:conditional-fit} \\
+SCI-POINT-REQ-014 & Preserve requested, effective, resolved, applied, and realized search, support, fallback, retry, constraint, sentinel, and termination states. & Sec.~\ref{sec:conditional-fit} \\
+SCI-POINT-REQ-015 & Establish source association independently for every authorized search, fallback, restart, and retry branch before source attribution. & Sec.~\ref{sec:association} \\
+SCI-POINT-REQ-016 & Carry known, isolated, bright, and approximately-centered applicability as typed facts with authority, domain, cause, validity, lifecycle, and provenance. & Sec.~\ref{sec:applicability} \\
+SCI-POINT-REQ-017 & When fitting is authorized, publish or make reconstructible the model, residual, objective, support, row count, rank, convergence, constraints, branch state, residual diagnostics, and additive-reference/null state. & Sec.~\ref{sec:residual} \\
+SCI-POINT-REQ-018 & Give every required fit component exactly one component-identifiability state and preserve available sibling components when another is unavailable or failed. & Secs.~\ref{sec:state-axes}, \ref{sec:dependencies} \\
+SCI-POINT-REQ-019 & Publish amplitude only in the exact parent unit, calibration, response, constraint, support, association, and uncertainty context; do not call it universal flux. & Secs.~\ref{sec:products}, \ref{sec:ownership} \\
+SCI-POINT-REQ-020 & Publish widths and angle only as processed-map effective-shape and QC roles; do not claim intrinsic beam or unique cause. & Secs.~\ref{sec:products}, \ref{sec:model} \\
+SCI-POINT-REQ-021 & Publish marginal formal errors only under the separately approved formal-error method with assumptions, conditioning, domain, units, and limitations. & Secs.~\ref{sec:method-authorities}, \ref{sec:uncertainty} \\
+SCI-POINT-REQ-022 & Represent absent joint covariance as unavailable, not zero, diagonal, or independence, and preserve later uncertainty companions as separate versions. & Sec.~\ref{sec:uncertainty} \\
+SCI-POINT-REQ-023 & Use only the conditional diagnostic names and formulas in Equations~\ref{eq:dynamic-range}--\ref{eq:formal-standardization}; label their claim ceilings truthfully. & Sec.~\ref{sec:diagnostics} \\
+SCI-POINT-REQ-024 & Do not admit \texttt{peak\_over\_full\_map\_rms} as an alias unless a future compatibility-method finding separately authorizes it. & Sec.~\ref{sec:diagnostics} \\
+SCI-POINT-REQ-025 & Keep fixed-branch response, full-procedure response, observational bias/accuracy, source association, and parent response distinct. & Sec.~\ref{sec:response} \\
+SCI-POINT-REQ-026 & Apply the product-and-claim dependency matrix row by row; missing response or covariance shall neither erase nor authorize unrelated claims. & Sec.~\ref{sec:dependencies} \\
+SCI-POINT-REQ-027 & Keep producer lifecycle, component identifiability, and the four named-use fields independent and lossless. & Sec.~\ref{sec:state-axes} \\
+SCI-POINT-REQ-028 & Use \texttt{diagnostic\_display\_only} only as a post-evaluation consumer action; never use \texttt{diagnostic\_only} as producer state or eligibility. & Sec.~\ref{sec:state-axes} \\
+SCI-POINT-REQ-029 & Preserve separate policy ownership for fit completeness, displacement admission, telescope-QC admission, and photometric-transfer admission; VAL only registers/evaluates. & Secs.~\ref{sec:ownership}, \ref{sec:profiles} \\
+SCI-POINT-REQ-030 & Treat all four named-use profile identities as unapproved drafts pending final owner review and never construct an aggregate/universal profile. & Sec.~\ref{sec:profiles} \\
+SCI-POINT-REQ-031 & Publish no POINT cross-array aggregate, correction, correction selection, correction application, or whole-observation success. & Secs.~\ref{sec:operation}, \ref{sec:named-uses} \\
+SCI-POINT-REQ-032 & Do not impute a missing array or erase conforming siblings after one array's failure. & Secs.~\ref{sec:operation}, \ref{sec:named-uses} \\
+SCI-POINT-REQ-033 & Keep deterministic unmodeled background/structure visible as residual and parent state; do not fit or silently subtract it. & Eq.~\ref{eq:residual} \\
+SCI-POINT-REQ-034 & Apply every typed unavailable state and edge rule in Section~\ref{sec:validity}, including exact cause and release condition. & Sec.~\ref{sec:validity} \\
+SCI-POINT-REQ-035 & Keep all uncertainty-budget components separate and combine none without every required variance and cross-covariance. & Sec.~\ref{sec:uncertainty} \\
+SCI-POINT-REQ-036 & Publish a full-procedure response only when every data-dependent branch is rerun under perturbation; do not infer empirical accuracy from either response role. & Sec.~\ref{sec:response} \\
+SCI-POINT-REQ-037 & Evaluate every named use using request, applicability, eligibility, and realization before any action, without cross-use rescue or propagation. & Secs.~\ref{sec:state-axes}, \ref{sec:named-uses} \\
+SCI-POINT-REQ-038 & Respect the evidence ceiling: this contract alone authorizes no implementation, numerical, fidelity, validation, accuracy, performance, readiness, production, or Unity claim. & Sec.~\ref{sec:claim-ceiling} \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{Falsifiable predictions and traceability}\label{sec:predictions}
+
+These predictions specify tests that a future implementation or representation
+can fail. They are not claims that such validation has occurred.
+
+\scriptsize
+\begin{longtable}{@{}p{0.16\linewidth}p{0.58\linewidth}p{0.18\linewidth}@{}}
+\toprule
+Prediction & Falsifiable consequence & Governing requirements \\
+\midrule
+\endhead
+SCI-POINT-PRED-001 & An exact noiseless matching Gaussian recovers the authorized parameters subject to the exact compatibility method. & REQ-010,012,013 \\
+SCI-POINT-PRED-002 & Authorized scaling of the parent signal and compatible unit scales amplitude as the method declares without moving the source reference. & REQ-006,007,019 \\
+SCI-POINT-PRED-003 & Positive displacement follows fitted centroid minus expected position; correction sign remains downstream. & REQ-008,009,031 \\
+SCI-POINT-PRED-004 & Changing only the search center may change branch or seed but never measurement zero. & REQ-007,009,014 \\
+SCI-POINT-PRED-005 & WCS handedness or basis changes transform components through the exact boundary, independent of memory/display order. & REQ-008,009 \\
+SCI-POINT-PRED-006 & Central-search and global-fallback branches remain distinguishable in realized state. & REQ-014 \\
+SCI-POINT-PRED-007 & An exact score tie follows the future method's deterministic tie rule. & REQ-012,014 \\
+SCI-POINT-PRED-008 & A wrong global peak cannot yield source-attributed displacement without established association. & REQ-015 \\
+SCI-POINT-PRED-009 & Principal-axis exchange with corresponding angle transformation leaves the Gaussian invariant. & REQ-011 \\
+SCI-POINT-PRED-010 & Exact circularity makes orientation undefined by model symmetry. & REQ-011,018 \\
+SCI-POINT-PRED-011 & Active amplitude, width, or angle constraints are reported and affected components are bound-censored where applicable. & REQ-014,018 \\
+SCI-POINT-PRED-012 & An unmodeled constant or gradient can bias fit roles and remains visible in residual/additive-reference state. & REQ-017,033 \\
+SCI-POINT-PRED-013 & Missing or non-finite support follows the exact future method rule and is never silently deleted. & REQ-012,034 \\
+SCI-POINT-PRED-014 & Reliability weights cannot be interpreted as inverse covariance without explicit authority. & REQ-013 \\
+SCI-POINT-PRED-015 & Rank deficiency, active bounds, non-positive curvature, or angle degeneracy can preserve fitted values while formal errors remain unavailable. & REQ-018,021,034 \\
+SCI-POINT-PRED-016 & MAP/JINC/FLT response mismatch changes compatibility or bias state and is not erased by common Gaussian naming. & REQ-003,006,025 \\
+SCI-POINT-PRED-017 & Parent-response asymmetry may yield typed centroid-bias state rather than assumed zero bias. & REQ-006,025 \\
+SCI-POINT-PRED-018 & A terminal FRUIT product retains its exact terminal route and ancestry; an intermediate iteration is rejected. & REQ-005 \\
+SCI-POINT-PRED-019 & Failure of one array preserves conforming siblings and produces no POINT observation-wide success. & REQ-001,031,032 \\
+SCI-POINT-PRED-020 & No input produces a POINT-owned cross-array aggregate or telescope correction. & REQ-031 \\
+SCI-POINT-PRED-021 & Dynamic range follows the exact RMS authority and is unavailable for a zero or unavailable denominator. & REQ-023,034 \\
+SCI-POINT-PRED-022 & Formal standardization is unavailable without the formal-error method and never becomes statistical significance by naming. & REQ-021,023 \\
+SCI-POINT-PRED-023 & One fit may have different four-axis values across uses; diagnostic display changes neither lifecycle nor eligibility. & REQ-027,028,037 \\
+SCI-POINT-PRED-024 & Missing profile, source authority, coordinate boundary, or association yields the corresponding typed unavailable decision. & REQ-007,008,015,030,034 \\
+SCI-POINT-PRED-025 & Fixed-branch response cannot be reported as full-procedure response, and neither establishes empirical accuracy. & REQ-025,036 \\
+SCI-POINT-PRED-026 & Missing compatibility method yields no numerical fit or fit-derived product. & REQ-012 \\
+SCI-POINT-PRED-027 & With compatibility fitting available but formal-error authority missing, fitted values may exist while formal errors, unsupported joint covariance, and formal standardization remain unavailable. & REQ-021,022,026 \\
+SCI-POINT-PRED-028 & Missing full-map-RMS authority blocks only the canonical dynamic-range ratio and alias, not an otherwise authorized fit or formal error. & REQ-023,026 \\
+SCI-POINT-PRED-029 & Every search, fallback, restart, and retry branch requires exact association before source-attributed amplitude or displacement. & REQ-015 \\
+SCI-POINT-PRED-030 & Response or covariance unavailability follows the dependency matrix and neither universally erases nor authorizes products and claims. & REQ-025,026 \\
+SCI-POINT-PRED-031 & A diagnostic-display action cannot rescue correction, photometric, fit-completeness, or another named-use exclusion. & REQ-028,037 \\
+\bottomrule
+\end{longtable}
+\normalsize
