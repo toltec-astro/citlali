@@ -1,0 +1,5 @@
+trajectory,status,wall_seconds,user_seconds,system_seconds,maximum_resident_bytes,error_or_critical_messages
+c5-current,completed,31.25,29.69,0.7,858619904,0
+a5-current,completed,30.79,29.73,0.65,860061696,0
+c5-map,completed,30.95,29.95,0.67,859521024,0
+a5-map,completed,31.59,30.5,0.63,860274688,0

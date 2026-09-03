@@ -1,0 +1,85 @@
+{
+  "checkpoint_policy_interventions": {
+    "control": {
+      "audit_json": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f8-penalty-placement-r0.1/r0.4/interventions/control_policy_audit.json",
+      "only_registered_policy_field_changed": true,
+      "output_sha256": "8d9fe5dfa4b90e21ff352315caec6e6566228e659c496bdb80b3a5e05018872a",
+      "source_sha256": "a77505ab0637c1f257016ee0d9e801b3bba17ed52ab88d52f417a5c1513b451f"
+    },
+    "injected": {
+      "audit_json": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f8-penalty-placement-r0.1/r0.4/interventions/injected_policy_audit.json",
+      "only_registered_policy_field_changed": true,
+      "output_sha256": "b357a9a8b2a94759e86163722783711494df1bc46d5eeeaff119f1e82fdd0217",
+      "source_sha256": "2d600fde6b642ea053bc49d357bed16c800bb1dd689c0ee5ae084e115970fb7c"
+    }
+  },
+  "common_units_wcs_grid_normalization_and_finite_support": "PASS",
+  "compatibility": {
+    "control": {
+      "iteration_directory": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f8-penalty-placement-r0.1/r0.4/c5-current/reduced/redu00",
+      "map_planes_bitwise_identical": 9,
+      "observed_allowed_differences": [
+        "learning_policy_yaml"
+      ],
+      "scientific_values_identical": true
+    },
+    "injected": {
+      "iteration_directory": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f8-penalty-placement-r0.1/r0.4/a5-current/reduced/redu00",
+      "map_planes_bitwise_identical": 9,
+      "observed_allowed_differences": [
+        "learning_policy_yaml"
+      ],
+      "scientific_values_identical": true
+    }
+  },
+  "component_identity": {
+    "D_current": "A5_current_minus_N5",
+    "D_map": "A5_map_minus_N5",
+    "Q": "A5_current_minus_A5_map",
+    "T_current": "A5_current_minus_C5_current",
+    "T_map": "A5_map_minus_C5_map"
+  },
+  "direct_uid4460_interpretation_arrays": [
+    "a1400"
+  ],
+  "execution": {
+    "aggregate_wall_seconds": 124.58,
+    "maximum_resident_bytes": 860274688,
+    "trajectory_count": 4
+  },
+  "mechanism_classification": "pending_continuous_evidence_interpretation",
+  "mechanism_dominance_threshold": null,
+  "paired_realized_configuration_check": "PASS",
+  "production_policy_selected": false,
+  "q_identity_closure": {
+    "a1100": {
+      "closure_pass": true,
+      "maximum_absolute_q_identity_residual_mjy_beam": 0.0,
+      "roundoff_bound_mjy_beam": 1.4210854715202004e-14
+    },
+    "a1400": {
+      "closure_pass": true,
+      "maximum_absolute_q_identity_residual_mjy_beam": 1.4210854715202004e-14,
+      "roundoff_bound_mjy_beam": 1.4452021161286066e-12
+    },
+    "a2000": {
+      "closure_pass": true,
+      "maximum_absolute_q_identity_residual_mjy_beam": 0.0,
+      "roundoff_bound_mjy_beam": 1.4993178264581929e-13
+    }
+  },
+  "test_id": "SCI-FRUIT-EL-F8-PENALTY-PLACEMENT-DECOMPOSITION-R0.1",
+  "uid4460_application_evidence": {
+    "carried_uid4460_sample_masks_in_scan": 0,
+    "pre_mapmaking_already_flagged_samples": 34,
+    "pre_mapmaking_applied": true,
+    "pre_mapmaking_excluded_samples_after_application": 305,
+    "pre_mapmaking_newly_flagged_samples": 271,
+    "pre_mapmaking_proposed_samples": 305,
+    "pre_rtc_or_pre_ptc_detector_exclusion_records": 0,
+    "raw_samples_entering_rtc_without_hard_detector_exclusion": 676,
+    "scan_zero_based": 5,
+    "uid": 4460
+  },
+  "valid_penalty_placement_decomposition": true
+}

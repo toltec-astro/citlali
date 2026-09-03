@@ -690,9 +690,36 @@ were approved exactly by the scientific owner on 2026-09-03. The bounded
 authorization is recorded in
 [`SCIENTIFIC_OWNER_EL_F8_AUTHORIZATION_2026-09-03.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_EL_F8_AUTHORIZATION_2026-09-03.md).
 The two existing-placement compatibility replays must pass before either
-mapmaking-placement result may be interpreted. No result yet exists, and the
-production default, Gate D, Stage B, qualification, and Unity remain outside
-the authorization.
+mapmaking-placement result may be interpreted. After fail-closed repairs to
+historical restart-policy compatibility, exact checkpoint intervention,
+application accounting, macOS timing parsing, and result serialization, four
+fresh R0.4 trajectories completed with zero unexpected error or critical
+messages. The two existing-placement replays reproduce all nine EL-F5
+signal/kernel/weight planes bitwise and all scientific checkpoint values. In
+the map-placement injected replay, all 676 UID 4460 raw samples enter shared
+RTC/PTC cleaning; the learned record then excludes all 305 proposed
+downsampled samples before map accumulation (271 newly flagged and 34 already
+flagged). The registered component identity closes to
+`1.4211e-14 mJy/beam` against a `1.4452e-12 mJy/beam` bound in a1400.
+
+The scientific classification is **mixed, with the direct mapped contribution
+larger in the registered Neptune and annular regions**. Around Neptune the
+direct and early/shared terms contribute 76.86 and 24.51 percent of the
+squared-RMS accounting, with a -1.37 percent cross term; in the 40--120 arcsec
+annulus they contribute 81.65 and 17.95 percent, with a +0.40 percent cross
+term. Across the complete map the split is closer to 58.09/42.29 percent.
+Moving the penalty therefore removes a material shared-cleaning interaction
+but does not remove the larger direct scan-trajectory imprint. The compact
+a1400 injection remains stable: central recovery changes from `1.037055` to
+`1.037009`, and the early/shared aperture response is about -0.7 percent. The
+active
+[`R0.4 scientific interpretation`](../validation/fruit_loop_point_123424_el_f8_penalty_placement_2026-09-03/SCIENTIFIC_INTERPRETATION_R0.4.md)
+answers the owner's detector-leverage concern without judging UID 4460 or
+selecting a safeguard. The production default, a soft factor, threshold
+change, recurrence selection, qualification, Gate D, Stage B, and Unity remain
+outside the authorization. The recommended next decision is a separately
+authorized read-only map-leverage and flagging audit before any candidate
+safeguard comparison.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
