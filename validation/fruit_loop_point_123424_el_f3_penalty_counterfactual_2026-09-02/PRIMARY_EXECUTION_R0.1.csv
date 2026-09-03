@@ -1,0 +1,3 @@
+order,trajectory,source_completed_iteration,output_absolute_iteration,output_local_directory,wall_seconds,user_seconds,system_seconds,maximum_rss_bytes,retained_kib,exit_status,warning_count,error_or_critical_count,normal_completion
+1,control_sham,4,5,redu00,31.48,29.64,1.04,885686272,116476,0,1,0,true
+2,injected_without_uid4460,4,5,redu00,30.89,29.69,0.76,891731968,122844,0,1,0,true

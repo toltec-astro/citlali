@@ -1,0 +1,12 @@
+{
+  "a1400_annular_residual_reversal_fraction": 1.1702004853233525,
+  "a1400_recovery_reversal_fraction": 1.1640106584432361,
+  "all_array_inherited_screen_pass": false,
+  "claim_scope": "one exposed development checkpoint intervention",
+  "control_replay_exact": true,
+  "full_reversal": true,
+  "intervention_audit_pass": true,
+  "mechanism_classification": "substantial_causal_contribution",
+  "test_id": "SCI-FRUIT-EL-F3-LATE-PENALTY-COUNTERFACTUAL-R0.1",
+  "valid_counterfactual": true
+}

@@ -394,6 +394,31 @@ authorized counterfactual are in
 No stopping rule, candidate recurrence, method promotion, qualification,
 production change, Gate D, Stage B, or new reduction is authorized.
 
+The owner then delegated the bounded recommended counterfactual and encouraged
+it to proceed. `SCI-FRUIT-EL-F3-LATE-PENALTY-COUNTERFACTUAL-R0.1` copied the
+exact EL-F2 alpha-1.25 iteration-4 checkpoints, replayed an untouched control,
+and removed only the carried factor-zero UID 4460 a1400 penalty from the
+injected copy before advancing each state once. The sham control reproduces
+all iteration-5 signal, kernel, and weight images bitwise in all arrays and all
+checkpoint variables value-for-value. In the counterfactual, a1400 central
+recovery is 0.901542 rather than 0.822828 and annular residual over truth is
+0.00288776 rather than 0.0214741. The two prospectively registered reversal
+fractions are 1.16401 and 1.17020, so the result is
+`substantial_causal_contribution` with full reversal. Every a1100 and a2000
+signal, kernel, and weight image remains bitwise equal to the original
+injected iteration 5; only a1400 changes. UID 4460 is learned again at the end
+of the counterfactual iteration, so the test isolates the consequence of
+applying the prior record and makes no later-iteration claim. The inherited
+all-array science screen still fails: counterfactual a1400 remains narrowly
+outside both width protections, while a1100 and a2000 retain their prior
+failures. This establishes a causal penalty-policy problem in one exposed
+checkpoint, not a general stop rule, detector judgment, qualified recurrence,
+or rescue of EL-F2. The complete record is
+[`EXECUTION_RESULT_R0.1.md`](../validation/fruit_loop_point_123424_el_f3_penalty_counterfactual_2026-09-02/EXECUTION_RESULT_R0.1.md).
+A later proposal should test one prospective source-protection or provisional-
+penalty policy across harmful and benign events in multiple observations; no
+additional run is authorized by EL-F3.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
