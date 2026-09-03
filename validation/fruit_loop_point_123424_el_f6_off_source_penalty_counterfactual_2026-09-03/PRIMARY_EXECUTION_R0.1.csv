@@ -1,0 +1,3 @@
+trajectory,status,wall_seconds,user_seconds,system_seconds,maximum_resident_bytes,error_or_critical_messages
+untouched-injected-sham,completed,30.66,29.46,0.61,858144768,0
+injected-without-uid4460,completed,30.3,29.35,0.62,859111424,0

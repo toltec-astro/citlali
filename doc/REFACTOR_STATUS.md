@@ -577,7 +577,21 @@ before retaining or displaying a result because the timing parser accepted
 GNU token order but not the local macOS order. A tested pre-result portability
 repair accepts both forms without changing any scientific calculation or
 gate; its hashes and scope are recorded in the frozen-input note. Scientific
-analysis remains pending.
+analysis then completed under the unchanged registered rules. Removing only
+the carried UID 4460 penalty reverses `0.957935` of the a1400 kernel-residual
+loss and `0.960110` of the annular-residual loss. Both exceed the prospective
+0.5 threshold, so the valid classification is
+**`substantial_causal_contribution`**; neither reaches the 1.0 full-reversal
+threshold. Central and full-kernel recovery remain effectively unchanged and
+move slightly closer to unity. All six a1100/a2000 planes remain bitwise equal
+to the original injected iteration 5; only a1400 changes. UID 4460 is learned
+again at the end of iteration 5, so this result makes no iteration-6 claim.
+EL-F6 establishes this off-source causal effect for one observation and
+location, not a generic detector or policy rule. The complete result is
+[`EXECUTION_RESULT_R0.1.md`](../validation/fruit_loop_point_123424_el_f6_off_source_penalty_counterfactual_2026-09-03/EXECUTION_RESULT_R0.1.md).
+No further test, recurrence change, penalty-policy change, qualification,
+production use, Gate D, Stage B authoring, or Unity activity follows
+automatically.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

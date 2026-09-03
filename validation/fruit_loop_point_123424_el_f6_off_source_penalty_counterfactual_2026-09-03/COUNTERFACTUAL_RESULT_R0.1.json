@@ -1,0 +1,55 @@
+{
+  "a1400_annular_residual_reversal_fraction": 0.9601100672416761,
+  "a1400_central_recovery_error_change_from_original_iteration_5": -4.612831024886077e-05,
+  "a1400_counterfactual_iteration_5": {
+    "annular_residual_over_truth": 0.004062851385841888,
+    "array": "a1400",
+    "central_recovery_absolute_error": 0.03700878942652319,
+    "centroid_error_arcsec": 0.06501693449402669,
+    "common_valid_pixels": 126735,
+    "full_kernel_recovery": 1.0564046551250135,
+    "full_kernel_recovery_absolute_error": 0.05640465512501347,
+    "iteration": 5,
+    "kernel_normalized_central_recovery": 1.0370087894265232,
+    "kernel_residual_relative_rms": 0.3377991244463306,
+    "major_fwhm_over_kernel": 1.013854338884063,
+    "minor_fwhm_over_kernel": 1.0155443693199873,
+    "total_pixels": 126735,
+    "variant": "counterfactual_iteration_5"
+  },
+  "a1400_full_kernel_recovery_error_change_from_original_iteration_5": -0.0002990192797136526,
+  "a1400_kernel_residual_reversal_fraction": 0.9579347481085976,
+  "claim_scope": "one off-source checkpoint intervention in observation 123424",
+  "complete_counterfactual_response_products": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/analysis/response-maps/point_123424_a1100_fruit_iter_05_response.fits",
+      "sha256": "b5399187df3067cec5267f88d36e8e19c19015ec32ade9b80750e1300a132283",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/analysis/response-maps/point_123424_a1400_fruit_iter_05_response.fits",
+      "sha256": "9e8c86b0ab9079a342133e4b246b34e3e085e24b32c47202478c74959da5f8e5",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/analysis/response-maps/point_123424_a2000_fruit_iter_05_response.fits",
+      "sha256": "50595943304602170f5bf28e5946256c6eb85a1860f2d3b114c8334207467b0a",
+      "size_bytes": 1025280
+    }
+  ],
+  "execution": {
+    "aggregate_wall_seconds": 60.96,
+    "maximum_resident_bytes": 859111424,
+    "trajectory_count": 2
+  },
+  "full_reversal": false,
+  "intervention_audit_pass": true,
+  "mechanism_classification": "substantial_causal_contribution",
+  "sham_checkpoint_all_variables_value_identical": true,
+  "sham_exact_planes": 9,
+  "sham_replay_exact": true,
+  "target_penalty_rediscovered_at_iteration_5": true,
+  "test_id": "SCI-FRUIT-EL-F6-OFF-SOURCE-PENALTY-COUNTERFACTUAL-R0.1",
+  "unchanged_nontarget_planes": 6,
+  "valid_counterfactual": true
+}
