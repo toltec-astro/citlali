@@ -1,8 +1,10 @@
 # Timestream Successor Identity Route Representative Acceptance 001
 
-Status: bounded acceptance-tooling repair under local validation after a
-failed Unity build gate; representative execution, repair review and owner
-disposition, canonical integration, and activation have not occurred
+Status: bounded acceptance-validator repair under exact-SHA review after an
+owner-run matched-native diagnostic witness; the retained record is pending
+repaired validation, and the unmodified `unity-gcc13` profile gate,
+representative acceptance, owner disposition, canonical integration, and
+activation remain open
 
 Work-order identity:
 `TIMESTREAM-SUCCESSOR-IDENTITY-ROUTE-REPRESENTATIVE-ACCEPTANCE-001`
