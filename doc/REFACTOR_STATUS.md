@@ -478,10 +478,21 @@ isolated-source interpretation, and EL-F4 still rejects the wholesale bypass
 without establishing a generic source/penalty mechanism. The read-only record
 is
 [`INTERPRETATION_CHECK_R0.1.md`](../validation/fruit_loop_point_123424_injection_geometry_interpretation_2026-09-03/INTERPRETATION_CHECK_R0.1.md).
-The next proposal should prioritize a same-observation, prospectively placed
-off-source injection plus a same-build centered replication under the
-unchanged complete-map policy before EL-F5 attempts to derive a general
-penalty-attribution rule. No experiment, algorithm, or authorization changed.
+The owner then rejected an automatic centered replication because the existing
+centered output already supplies that comparison. The accepted next step is
+the smaller EL-F5 location control: prove exact zero-offset compatibility, run
+a same-build no-injection control, and place one 100 mJy/beam source at the
+prospectively fixed `(AZOFFSET, ELOFFSET) = (0, -60)` arcsec position under the
+unchanged complete-map policy. The position was selected from existing control
+weights only and has adequate three-array coverage. A fresh centered
+trajectory is conditional on a failed compatibility check or a specific
+post-test ambiguity; it is not part of the registered matrix. The owner
+authorized this bounded registration, diagnostic implementation, local build
+and test, freeze, and two-trajectory execution on 2026-09-03. This does not
+authorize a recurrence or penalty-policy change, NGC4449 campaign, Neptune
+subtraction, qualification, production use, Gate D, Stage B authoring, or
+Unity activity. The prospective definition is
+[`TEST_DEFINITION.md`](../validation/fruit_loop_point_123424_el_f5_off_source_injection_2026-09-03/TEST_DEFINITION.md).
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

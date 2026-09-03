@@ -1,0 +1,86 @@
+schema_version: sci-fruit-el-f5-registration-v1
+test_id: SCI-FRUIT-EL-F5-OFF-SOURCE-INJECTION-R0.1
+registered_before_implementation_or_execution: true
+role: exploratory-development-location-control-only
+authorization:
+  record: ../../doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_EL_F5_AUTHORIZATION_2026-09-03.md
+  kind: delegated_bounded_design_implementation_and_execution
+prospective_location:
+  frame: FITS-map-world
+  axes: [AZOFFSET, ELOFFSET]
+  unit: arcsec
+  az_offset_arcsec: 0.0
+  el_offset_arcsec: -60.0
+  selection_basis: existing_EL_F4_complete_map_control_weights_only
+  selected_before_off_source_execution: true
+  central_source_mask_radius_arcsec: 30.0
+  approximate_a1400_neptune_separation_arcsec: 56.0
+  neighborhood_size_pixels: [21, 21]
+  control_iteration_range: [0, 5]
+  neighborhood_median_weight_over_full_map_p95_ranges:
+    a1100: [0.759, 0.788]
+    a1400: [0.728, 0.751]
+    a2000: [0.765, 0.851]
+implementation:
+  config_keys:
+    - timestream.fruit_loops.injected_source_test.az_offset_arcsec
+    - timestream.fruit_loops.injected_source_test.el_offset_arcsec
+  defaults_arcsec: [0.0, 0.0]
+  nonzero_behavior: generate_normal_kernel_at_declared_map_world_position
+  finished_map_shift_allowed: false
+  unchanged:
+    - fruit_recurrence
+    - injection_operator_order
+    - raw_and_processed_filters
+    - masks
+    - detector_weights
+    - learning_rules
+    - detector_penalty_thresholds
+    - production_defaults
+compatibility_gates:
+  explicit_zero_offset_matches_legacy_samples_bitwise: true
+  disabled_or_inactive_path_matches_legacy_samples_bitwise: true
+  required_ctest: all_enabled
+  required_config_preflight: require_all
+  new_control_comparator: EL_F4_point_123424_complete_map_control
+  compared_iterations: [0, 5]
+  compared_arrays: [a1100, a1400, a2000]
+  compared_planes: [signal_I, kernel_I, weight_I]
+  comparison: bitwise
+execution:
+  output_root: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1
+  executable_policy: one_newly_frozen_same_build_binary
+  configured_threads: 1
+  grppiex: seq
+  obsnum: 123424
+  absolute_iterations: [0, 5]
+  alpha: 1.25
+  penalty_evidence: complete_map
+  injection_start_iteration: 1
+  injected_amplitude_mjy_beam: [100.0, 100.0, 100.0]
+  order: [no_injection_control, off_source_injected]
+  fresh_centered_trajectory_required: false
+  maximum_replacements_per_trajectory: 1
+  maximum_hours_per_trajectory: 2
+  maximum_memory_gib_per_trajectory: 64
+  maximum_aggregate_hours: 4
+  maximum_retained_gib: 4
+analysis:
+  response: off_source_injected_signal_minus_new_control_signal
+  response_fit_center_arcsec: [0.0, -60.0]
+  response_kernel: same_iteration_off_source_injected_kernel
+  target_existing_event: {iteration: 4, scan: 5, uid: 4460, array: 1}
+  inventory_all_injection_specific_factor_zero_penalties: true
+  compare_iterations: [4, 5]
+  centered_comparison: existing_EL_F4_complete_map_evidence
+claim_limits:
+  blank_field_claim_authorized: false
+  isolated_source_claim_authorized: false
+  penalty_causality_claim_authorized: false
+  qualification_use_authorized: false
+  method_selection_authorized: false
+  production_use_authorized: false
+  gate_d_authorized: false
+  stage_b_authoring_authorized: false
+  unity_activity_authorized: false
+
