@@ -552,6 +552,18 @@ emitted. The complete bounded result is
 No blank-field test, recurrence change, penalty-policy change, qualification,
 production use, Gate D, Stage B, or Unity activity follows automatically.
 
+After pushing the EL-F5 result, the owner authorized the recommended bounded
+EL-F6 causal replay. The registered test copies the EL-F5 off-source injected
+iteration-4 checkpoint twice, requires an untouched sham to reproduce the
+original iteration 5 exactly, then removes only the carried scan-5 UID 4460
+a1400 factor-zero penalty before a second one-iteration replay. Its primary
+causal quantities are prospectively fixed reversal fractions for the two
+actual EL-F5 degradations: kernel-residual relative RMS and 40--120 arcsec
+annular residual. Central amplitude is reported by distance from unity and is
+not a causal gate. The registration is
+[`TEST_DEFINITION.md`](../validation/fruit_loop_point_123424_el_f6_off_source_penalty_counterfactual_2026-09-03/TEST_DEFINITION.md).
+No checkpoint has yet been copied or changed and no replay has begun.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
