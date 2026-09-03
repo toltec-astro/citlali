@@ -422,6 +422,43 @@ model-bypass/source-protection policy against harmful and benign events in
 multiple observations; provisional penalties remain a separate fallback
 hypothesis. No additional run is authorized by EL-F3.
 
+After reporting the EL-F3 interpretation pushed, the owner authorized the
+bounded EL-F4 feedback-model-bypass screen and encouraged it to proceed. The
+default-disabled development option changes only hard detector-penalty
+evidence from the complete map `Q_k` to the map-domain view
+`E_k = Q_k - F_(k-1)`; complete products, mapdiag products and archives, D19
+target selection, and every other learned state remain unchanged. This is not
+claimed to be a literal sample-domain residual or an equivalent recurrence.
+All eight registered fresh trajectories completed on their first attempt under
+one frozen executable with no error- or critical-level message. With the
+option disabled, 234 signal/kernel/weight planes reproduce the corresponding
+EL-F1-R1/EL-F2 products bitwise; the 18 candidate iteration-zero planes are
+also bitwise equal before injection.
+
+The primary mechanism gate passes with full reversal. The candidate omits the
+injection-specific UID 4460 a1400 penalty, and observation 123424 iteration-5
+a1400 recovery is `0.901542068` rather than `0.822828191`, while annular
+residual is `0.00288776008` rather than `0.0214741060`. The registered
+reversal fractions are `1.16401066` and `1.17020049`. The global bypass is
+nevertheless regressive: it removes 15 complete-map penalties, retains only
+two, and introduces four protected failures. Observation 123424 a2000
+kernel-residual ratios are `1.53114`, `1.23537`, and `1.12811` at iterations
+3--5, and observation 152389 a1100 iteration-4 annular residual is `1.20870`
+times its same-build complete-map control, all above the registered `1.10`
+limit. No new penalty or timing shift occurs. Pair-mean wall time changes are
+only `+0.467%` and `-0.733%` for observations 123424 and 152389, respectively.
+The prospective disposition is therefore
+**`mechanism_helpful_but_regressive`**: the causal concern is confirmed, but
+this exact wholesale policy does not advance. The development option remains
+default-off evidence instrumentation, not a production behavior or qualified
+FRUIT method. The complete result is
+[`EXECUTION_RESULT_R0.1.md`](../validation/fruit_loop_feedback_model_bypass_2026-09-02/EXECUTION_RESULT_R0.1.md).
+No additional run, candidate, recurrence, stopping rule, Gate D, Stage B,
+fallback, production change, or Unity activity follows automatically. A
+future proposal must prospectively distinguish the harmful injection-sensitive
+penalty from ordinary detector evidence rather than merely retuning this broad
+bypass after seeing the failures.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

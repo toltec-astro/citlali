@@ -1,0 +1,9 @@
+trajectory,status,wall_seconds,maximum_resident_bytes,error_or_critical_messages,evidence_trace_verified
+01-point-123424-complete-map-control,completed,175.52,961150976,0,False
+02-point-123424-feedback-excluded-control,completed,178.1,920682496,0,True
+03-point-123424-feedback-excluded-injected,completed,179.04,944226304,0,True
+04-point-123424-complete-map-injected,completed,179.96,940474368,0,False
+05-point-152389-complete-map-control,completed,283.55,950829056,0,False
+06-point-152389-feedback-excluded-control,completed,277.86,966393856,0,True
+07-point-152389-feedback-excluded-injected,completed,277.39,976896000,0,True
+08-point-152389-complete-map-injected,completed,275.8,966868992,0,False

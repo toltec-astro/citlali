@@ -1,0 +1,57 @@
+schema_version: sci-fruit-el-f4-analysis-v1
+test_id: SCI-FRUIT-EL-F4-FEEDBACK-MODEL-BYPASS-R0.1
+output_root: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f4-feedback-model-bypass-r0.1
+trajectory_start_iteration: 0
+injection_start_iteration: 1
+array_order: [a1100, a1400, a2000]
+array_amplitude_mjy_beam: [100.0, 100.0, 100.0]
+annulus_inner_arcsec: 40.0
+annulus_outer_arcsec: 120.0
+gaussian_search_radius_arcsec: 25.0
+alpha: 1.25
+cases:
+  "123424":
+    stop_iteration_exclusive: 6
+    terminal_iteration: 5
+    complete_control: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f4-feedback-model-bypass-r0.1/point-123424/complete-map/control/reduced
+    complete_injected: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f4-feedback-model-bypass-r0.1/point-123424/complete-map/injected/reduced
+    candidate_control: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f4-feedback-model-bypass-r0.1/point-123424/feedback-excluded/control/reduced
+    candidate_injected: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f4-feedback-model-bypass-r0.1/point-123424/feedback-excluded/injected/reduced
+    historical_complete_control: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.25/control/reduced
+    historical_complete_injected: /Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.25/injected/reduced
+    inherited_reference_metrics: validation/fruit_loop_point_123424_el_f2_early_stop_2026-09-02/ITERATION_METRICS_R0.3.csv
+    inherited_reference_alpha: 1.0
+    inherited_reference_iteration: 6
+  "152389":
+    stop_iteration_exclusive: 7
+    terminal_iteration: 6
+    complete_control: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f4-feedback-model-bypass-r0.1/point-152389/complete-map/control/reduced
+    complete_injected: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f4-feedback-model-bypass-r0.1/point-152389/complete-map/injected/reduced
+    candidate_control: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f4-feedback-model-bypass-r0.1/point-152389/feedback-excluded/control/reduced
+    candidate_injected: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f4-feedback-model-bypass-r0.1/point-152389/feedback-excluded/injected/reduced
+    historical_complete_control: /Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/el-f1-composite-state-retry-r0.1/alpha-1.25/control/reduced
+    historical_complete_injected: /Users/gwilson/work_toltec/local_data/fruit-development/point-152389/fruit-injection-development/el-f1-composite-state-retry-r0.1/alpha-1.25/injected/reduced
+    inherited_reference_metrics: validation/fruit_loop_point_152389_el_f1_composite_state_retry_2026-09-02/ITERATION_METRICS_R0.1.csv
+    inherited_reference_alpha: 1.0
+    inherited_reference_iteration: 6
+primary_gate:
+  obsnum: "123424"
+  target_penalty: {iteration: 4, scan: 5, uid: 4460, array: 1}
+  original_iteration_4_recovery: 0.8904511775839052
+  original_iteration_5_recovery: 0.8228281905201593
+  original_iteration_4_annular_residual: 0.005591061898999446
+  original_iteration_5_annular_residual: 0.02147410602676817
+  minimum_reversal_fraction: 0.5
+  full_reversal_fraction: 1.0
+regression_screen:
+  maximum_central_recovery_absolute_error_increase: 0.01
+  maximum_major_width_absolute_error_increase: 0.01
+  maximum_minor_width_absolute_error_increase: 0.01
+  maximum_centroid_error_increase_arcsec: 0.1
+  maximum_annular_residual_ratio: 1.10
+  maximum_kernel_residual_ratio: 1.10
+inherited_screen:
+  maximum_central_recovery_absolute_error_increase: 0.01
+  maximum_width_fractional_error: 0.03
+  maximum_centroid_error_arcsec: 0.1
+  maximum_residual_ratio: 1.10

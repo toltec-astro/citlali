@@ -1,0 +1,179 @@
+{
+  "all_array_inherited_absolute_screen_pass": false,
+  "candidate_iteration_zero_bitwise_equal_planes": 18,
+  "claim_scope": "two exposed bright compact-source pointing observations",
+  "default_off_bitwise_compatible_planes": 234,
+  "disposition": "mechanism_helpful_but_regressive",
+  "execution": {
+    "aggregate_wall_seconds": 1827.22,
+    "maximum_resident_bytes": 976896000,
+    "retained_output_bytes": 3202867382,
+    "trajectory_count": 8
+  },
+  "inherited_absolute_screen": [
+    {
+      "array": "a1100",
+      "failures": [
+        "major_width",
+        "minor_width",
+        "annular_residual"
+      ],
+      "obsnum": 123424
+    },
+    {
+      "array": "a1400",
+      "failures": [
+        "major_width",
+        "minor_width"
+      ],
+      "obsnum": 123424
+    },
+    {
+      "array": "a2000",
+      "failures": [
+        "major_width",
+        "minor_width",
+        "centroid",
+        "annular_residual",
+        "kernel_residual"
+      ],
+      "obsnum": 123424
+    },
+    {
+      "array": "a1100",
+      "failures": [
+        "annular_residual"
+      ],
+      "obsnum": 152389
+    },
+    {
+      "array": "a1400",
+      "failures": [],
+      "obsnum": 152389
+    },
+    {
+      "array": "a2000",
+      "failures": [],
+      "obsnum": 152389
+    }
+  ],
+  "new_protected_regression_count": 4,
+  "new_protected_regressions": [
+    {
+      "annular_residual_ratio": 1.0056277383086025,
+      "array": "a2000",
+      "candidate_annular_residual": 0.003247573983653959,
+      "complete_annular_residual": 0.0032293997668721404,
+      "failure_details": [
+        {
+          "candidate_value": 0.7075110556465682,
+          "comparison": "candidate_over_complete_ratio",
+          "complete_value": 0.46208175329168366,
+          "limit": 1.1,
+          "measured": 1.5311382685131916,
+          "metric": "kernel_residual"
+        }
+      ],
+      "failures": [
+        "kernel_residual"
+      ],
+      "iteration": 3,
+      "obsnum": 123424
+    },
+    {
+      "annular_residual_ratio": 1.082331384860253,
+      "array": "a2000",
+      "candidate_annular_residual": 0.003702089386586784,
+      "complete_annular_residual": 0.0034204767951589846,
+      "failure_details": [
+        {
+          "candidate_value": 0.5803456553495416,
+          "comparison": "candidate_over_complete_ratio",
+          "complete_value": 0.4697759901148902,
+          "limit": 1.1,
+          "measured": 1.2353667866414588,
+          "metric": "kernel_residual"
+        }
+      ],
+      "failures": [
+        "kernel_residual"
+      ],
+      "iteration": 4,
+      "obsnum": 123424
+    },
+    {
+      "annular_residual_ratio": 1.0461398168471983,
+      "array": "a2000",
+      "candidate_annular_residual": 0.004328275607924378,
+      "complete_annular_residual": 0.004137377756033328,
+      "failure_details": [
+        {
+          "candidate_value": 0.5505676274901594,
+          "comparison": "candidate_over_complete_ratio",
+          "complete_value": 0.48804592037248484,
+          "limit": 1.1,
+          "measured": 1.1281061976093498,
+          "metric": "kernel_residual"
+        }
+      ],
+      "failures": [
+        "kernel_residual"
+      ],
+      "iteration": 5,
+      "obsnum": 123424
+    },
+    {
+      "annular_residual_ratio": 1.2087022059670922,
+      "array": "a1100",
+      "candidate_annular_residual": 0.0007263720937511871,
+      "complete_annular_residual": 0.0006009520708783774,
+      "failure_details": [
+        {
+          "candidate_value": 0.0007263720937511871,
+          "comparison": "candidate_over_complete_ratio",
+          "complete_value": 0.0006009520708783774,
+          "limit": 1.1,
+          "measured": 1.2087022059670922,
+          "metric": "annular_residual"
+        }
+      ],
+      "failures": [
+        "annular_residual"
+      ],
+      "iteration": 4,
+      "obsnum": 152389
+    }
+  ],
+  "penalty_comparison": {
+    "added": 0,
+    "removed": 15,
+    "retained": 2,
+    "retained_value_changed": 0,
+    "timing_changed": 0
+  },
+  "performance_comparison": [
+    {
+      "candidate_pair_mean_wall_seconds": 178.57,
+      "candidate_wall_time_change_percent": 0.46697423202428645,
+      "complete_pair_mean_wall_seconds": 177.74,
+      "obsnum": 123424
+    },
+    {
+      "candidate_pair_mean_wall_seconds": 277.625,
+      "candidate_wall_time_change_percent": -0.7329936533476356,
+      "complete_pair_mean_wall_seconds": 279.675,
+      "obsnum": 152389
+    }
+  ],
+  "primary_gate": {
+    "a1400_iteration_5_annular_residual": 0.0028877600800409826,
+    "a1400_iteration_5_recovery": 0.9015420682181287,
+    "annular_residual_reversal_fraction": 1.1702004853233525,
+    "full_reversal": true,
+    "passed": true,
+    "recovery_reversal_fraction": 1.1640106584432361,
+    "target_penalty_absent": true
+  },
+  "test_id": "SCI-FRUIT-EL-F4-FEEDBACK-MODEL-BYPASS-R0.1",
+  "valid_complete_matrix": true
+}

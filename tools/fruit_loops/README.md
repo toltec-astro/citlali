@@ -369,3 +369,26 @@ the original iteration exactly before measuring the intervened injected-minus-
 control response. It reports continuous recovery and annular-residual reversal
 fractions, the preregistered mechanism classification, and the inherited
 science screen without treating this one intervention as method qualification.
+
+## Feedback-model-bypass screen
+
+`analyze_feedback_model_bypass.py` evaluates the registered EL-F4 comparison
+between complete-map and feedback-excluded detector-penalty evidence. It
+requires bitwise default-off compatibility, verifies configuration, FITS,
+checkpoint, and log provenance, inventories penalty additions/removals/timing,
+and applies the prospective mechanism and cross-case regression screens:
+
+```bash
+$HOME/tolteca/bin/python \
+  tools/fruit_loops/analyze_feedback_model_bypass.py \
+  --manifest /path/to/ANALYSIS_MANIFEST.yaml \
+  --metrics /path/to/ITERATION_METRICS.csv \
+  --penalties /path/to/PENALTY_INVENTORY.csv \
+  --penalty-comparison /path/to/PENALTY_COMPARISON.csv \
+  --execution /path/to/PRIMARY_EXECUTION.csv \
+  --result /path/to/SCREEN_RESULT.json \
+  --report /path/to/EXECUTION_RESULT.md
+```
+
+The analysis is development-only. A favorable mechanism result does not
+qualify the policy or establish equivalence to a sample-domain residual.
