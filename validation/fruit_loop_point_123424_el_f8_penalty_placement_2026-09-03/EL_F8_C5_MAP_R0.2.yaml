@@ -1,0 +1,11 @@
+runtime:
+  output_dir: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f8-penalty-placement-r0.1/r0.2/c5-map/reduced/
+  n_threads: 1
+
+timestream:
+  fruit_loops:
+    restart_path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f8-penalty-placement-r0.1/r0.2/c5-map/restart-source/redu04
+    max_iters: 6
+    save_all_iters: true
+  learning:
+    map_pixel_outlier_detector_exclusion_application: pre_mapmaking

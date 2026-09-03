@@ -1,0 +1,46 @@
+schema_version: sci-fruit-el-f8-analysis-v1
+test_id: SCI-FRUIT-EL-F8-PENALTY-PLACEMENT-DECOMPOSITION-R0.1
+registration: REGISTRATION_R0.2.yaml
+obsnum: 123424
+iteration: 5
+array_order: [a1100, a1400, a2000]
+amplitudes_mjy_beam: [100.0, 100.0, 100.0]
+pixel_size_arcsec: 1.0
+injection_position_fits_world_arcsec: [0.0, -60.0]
+neptune_position_fits_world_arcsec: [12.53903, -5.334553]
+gaussian_search_radius_arcsec: 25.0
+aperture_radius_arcsec: 20.0
+injected_source_radius_arcsec: 20.0
+neptune_radius_arcsec: 20.0
+annulus_inner_arcsec: 40.0
+annulus_outer_arcsec: 120.0
+annulus_neptune_exclusion_radius_arcsec: 25.0
+closure_roundoff_factor: 64.0
+existing_control_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/control/reduced/redu05
+existing_injected_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/redu05
+existing_without_uid4460_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/injected-without-uid4460/reduced/redu05
+injected_iteration_4_learning: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/redu04/learning_iter_4.csv
+c5_current_root: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f8-penalty-placement-r0.1/r0.2/c5-current/reduced
+a5_current_root: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f8-penalty-placement-r0.1/r0.2/a5-current/reduced
+c5_map_root: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f8-penalty-placement-r0.1/r0.2/c5-map/reduced
+a5_map_root: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f8-penalty-placement-r0.1/r0.2/a5-map/reduced
+execution_log_dir: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f8-penalty-placement-r0.1/r0.2/logs
+analysis_output_dir: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f8-penalty-placement-r0.1/r0.2/analysis
+compatibility_checkpoint_allowed_differences: [creator_version, learning_policy_yaml]
+component_order: [T_current, T_map, D_current, D_map, Q]
+component_definitions:
+  T_current: A5_current_minus_C5_current
+  T_map: A5_map_minus_C5_map
+  D_current: A5_current_minus_N5
+  D_map: A5_map_minus_N5
+  Q: A5_current_minus_A5_map
+fixed_decomposition_kernel: A5_map_kernel_I
+native_compact_fit_components:
+  T_current: A5_current_kernel_I
+  T_map: A5_map_kernel_I
+trigger_pixels_a1400:
+  - {row: 142, col: 280, leading_uid: 4460, scan: 5, value_mjy_beam: 135.715, leave_one_out_z: 1.95356}
+  - {row: 144, col: 280, leading_uid: 4460, scan: 5, value_mjy_beam: 116.716, leave_one_out_z: 1.69687}
+  - {row: 142, col: 281, leading_uid: 4460, scan: 5, value_mjy_beam: 126.721, leave_one_out_z: 2.12348}
+  - {row: 144, col: 281, leading_uid: 4460, scan: 5, value_mjy_beam: 111.562, leave_one_out_z: 1.78382}
+mechanism_dominance_threshold: null
