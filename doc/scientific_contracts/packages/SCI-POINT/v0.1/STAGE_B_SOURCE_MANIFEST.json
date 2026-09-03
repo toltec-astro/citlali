@@ -1,0 +1,63 @@
+{
+  "schema_version": 4,
+  "contract": "SCI-POINT v0.1",
+  "document_revision": "r0.4",
+  "r0_4_base_commit": "3053d2d698ab729004e0a192c8ac6f8b6c05fafc",
+  "author_packet": "author_packet/SCI-POINT-v0.1-r0.3-stage-b-author-packet.tar.gz",
+  "author_packet_bytes": 33262,
+  "author_packet_sha256": "d74de333b87c66fb74c04c1346beb5ea0956bb25b61efcf9f770bb19818ee00f",
+  "author_packet_manifest_sha256": "c0df54ea420404cb6b100f3e478b89bd81e9d1c50b211a723230177d180df894",
+  "scientific_directive": {
+    "identity": "SCI-POINT-v0.1-r0.3-final-targeted-stage-b-owner-directive@2026-09-03",
+    "path": "SCIENTIFIC_OWNER_TARGETED_STAGE_B_R0_3_DIRECTIVE_2026-09-03.md",
+    "sha256": "9f445480fd42311ebe21f4da772e4e32db400c2da08a119b699f6bd8e13a54d4"
+  },
+  "presentation_directive": {
+    "identity": "SCI-POINT-v0.1-r0.4-view-separation-directive@2026-09-03",
+    "path": "SCIENTIFIC_OWNER_R0_4_VIEW_SEPARATION_DIRECTIVE_2026-09-03.md",
+    "source_attachment": "pasted-text.txt",
+    "sha256": "3f2331d4dc2a926ebd840cddb9bd85c9bc7d2a88be28718074313e262c259193",
+    "byte_exact_with_source_attachment": true
+  },
+  "normative_core": {
+    "identity": "SCI-POINT-NORMATIVE-CORE/v0.1-r0.4",
+    "accepted_scientific_identity": "SCI-POINT-COMMON-CORE/v0.1-r0.3",
+    "digest_algorithm": "SHA-256 of the exact file bytes concatenated in listed order with no separator",
+    "ordered_files": [
+      "src/common/notation.tex",
+      "src/common/definitions.tex",
+      "src/common/equations.tex",
+      "src/common/assumptions.tex",
+      "src/common/requirements.tex",
+      "src/common/edge_cases.tex"
+    ],
+    "sha256": "c0ca71bd457b8e6d37a425eb3ead76400dba3a5e29c869420807928201cdcdbd",
+    "scientific_bytes_changed": false
+  },
+  "files": [
+    {"path": "README.md", "sha256": "91e1cc42270dde91b7254fb3ff79f595a4537eedea1b2c717d727490021c3e44"},
+    {"path": "src/normative-core.tex", "sha256": "9c1e0e2fa73e393691660333f26e7bd9c34cc5c3e4cc8dbd8adbd22da71b69cb"},
+    {"path": "src/scientific-rationale.tex", "sha256": "3a11b4997531d5ace1a9f8a373abf531da55baeea5de1e1df0897119d0808adf"},
+    {"path": "src/engineering-conformance.tex", "sha256": "48918f10085168f326c0dde92c853666ee30ce9d7d902f52d81d10e113c3df39"},
+    {"path": "src/common/notation.tex", "sha256": "e4579b755cb5fbdc71a061f5718e4b9ab29e040e472d7774d2457383a29695d8"},
+    {"path": "src/common/definitions.tex", "sha256": "74846e0fa6b19613a7cf66aaa8867068a5ed6b3260a772f836e8a6913da7beaf"},
+    {"path": "src/common/equations.tex", "sha256": "dc45043f1ba0a03a5aaf2b1afd602fd57202392fcd625beb524f12f51d43d752"},
+    {"path": "src/common/assumptions.tex", "sha256": "07cd085ceabb6d423fd85be2d3a76f213cfbdfe3230b090e34ae8cf1c6918ad7"},
+    {"path": "src/common/requirements.tex", "sha256": "7d8076a8ae92556a38fbb2cdf0ff023dad25901d5ef4b5b4a8c3cd5343db443d"},
+    {"path": "src/common/edge_cases.tex", "sha256": "42783d6652553ddfba62aa9893544a7e45c2ed2746955992989e1465788e2835"},
+    {"path": "src/common/bindings.tex", "sha256": "9aca1636d5c94bc5a377c52f544785106ad1a03a06caa74d010bac36d881b069"},
+    {"path": "SCIENTIFIC_OWNER_TARGETED_STAGE_B_R0_3_DIRECTIVE_2026-09-03.md", "sha256": "9f445480fd42311ebe21f4da772e4e32db400c2da08a119b699f6bd8e13a54d4"},
+    {"path": "SCIENTIFIC_OWNER_R0_4_VIEW_SEPARATION_DIRECTIVE_2026-09-03.md", "sha256": "3f2331d4dc2a926ebd840cddb9bd85c9bc7d2a88be28718074313e262c259193"},
+    {"path": "STAGE_B_R0_3_RECORDS.json", "sha256": "b80094ec2af23dac256a4ecac488183229c6ea22dc2c24d7660e48bcc8ff57c4"},
+    {"path": "STAGE_B_R0_3_PARITY_REPORT.json", "sha256": "0edf62e705d1a99b7617feca6aa478a04fe98559f1cee88ddd2ad48c855b32ed"},
+    {"path": "STAGE_B_R0_3_SEMANTIC_CHANGE_REPORT.md", "sha256": "ee4bbb5d0e47c92acf9382211155b969dd07d51e1d14e643ec1977bd18f209c0"},
+    {"path": "STAGE_B_R0_4_VIEW_SEPARATION_RECORD.json", "sha256": "f26bbe296425dad213a433bb94d7bf70541cd9497b0fce8050c90906f0a49bcc"},
+    {"path": "STAGE_B_R0_4_SEMANTIC_CHANGE_REPORT.md", "sha256": "3eb1e43a3922adeb923ce1ac15a81c8725ee38803ba5fc65ca49d9cf7a8d653b"},
+    {"path": "STAGE_B_R0_4_PARITY_REPORT.json", "sha256": "31fd13e78a89eeb7ecb945460c8a8ad76e1a892a1f392c05b0acc8b3a4861795"},
+    {"path": "STAGE_B_R0_4_BUILD_PARITY_REPORT.json", "sha256": "0bfff51cdb0b6485b53c4f39641b06f8ee7a7cb3bb8b21cdd07382705dc6e741"},
+    {"path": "STAGE_B_R0_4_PDF_QA_REPORT.json", "sha256": "4da900ba9f36d105edfd6401ebcd8d09b99d7397ab4fb820171024175698b946"},
+    {"path": "verify_stage_b.py", "sha256": "6e2e98bf55bf4165bc3d5fd32cbf919c78d812424e0599453e30388d0e8b1e2a"},
+    {"path": "build_stage_b_delivery.py", "sha256": "9cd5380ca1d28bbe4d0fd1714c2b1b2e94c71af1c0af793972d544753227aefb"},
+    {"path": "pdf/README.md", "sha256": "719fab510350991de9e1ad2c86a171359d54c67162f32eb4c61c33cfcb06c13d"}
+  ]
+}

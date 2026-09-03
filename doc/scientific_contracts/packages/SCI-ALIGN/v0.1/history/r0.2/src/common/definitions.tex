@@ -1,0 +1,247 @@
+\section{Scientific definitions and ownership boundary}
+\label{sec:definitions}
+
+\subsection{Purpose and ordinary signal order}
+
+SCI-ALIGN relates native detector, telescope, and admitted auxiliary-stream
+occurrences to one immutable, observation-scoped detector-reference sample
+identity before scientific conditioning.  The ordinary detector-signal order
+is
+\[
+ (I,Q)^{\rm acq}\;\longrightarrow\;\text{Tune/readout}
+ \;\longrightarrow\;(x,r)^{\rm acq}
+ \;\longrightarrow\;\text{SCI-ALIGN}
+ \;\longrightarrow\;(x,r)^A .
+\]
+Tune/readout owns the native \(I,Q\)-to-\(x,r\) transformation, its units,
+normalization, and Tune/mapping-revision boundary.  ALIGN starts from the exact
+native paired \((x,r)^{\rm acq}\) occurrences.  It does not align \(I,Q\),
+assume that Tune conversion commutes with interpolation or synthesis, mix
+\(x\) and \(r\), or fill either coordinate from the other.
+
+ALIGN owns checked epoch normalization and one exactly-once admitted offset,
+the detector-reference grid and assignment relation, per-field alignment,
+gap/guard/interval identity, origin and synthesis facts, ALIGN-local mapping
+validity and support, acquired exposure, conditional response and uncertainty
+availability, and realized lineage.  It does not calibrate, filter, estimate
+correlated components, construct or correct coordinates, select a WCS center,
+choose a MAP estimator, deposit samples into pixels, author a named-use
+eligibility policy, or interpret polarization.
+
+\subsection{Paired detector occurrence relation}
+
+One realized \(A_{\rm ALIGN}\) is used for both detector coordinates.  The
+outputs have identical native source occurrences, temporal mapping and
+weights, assignment residuals, detector-reference slots, source-relation
+identity, and origin/synthesis state.  Numerical validity and payload
+availability remain coordinate-specific.  No relation crosses a Tune state or
+Tune/readout mapping-revision boundary unless a separately named authority
+defines that operation, response, and uncertainty; otherwise the affected
+pair is typed unavailable.
+
+The detector occurrence/time/mapping relation exists independently of a
+finite numerical \(x\) or \(r\) payload.  AST may therefore construct an
+otherwise defined coordinate when the exact occurrence, time relation,
+geometry, aligned observing-state fields, and other required inputs remain
+valid even if one or both signal coordinates are invalid, unavailable, or not
+requested.  Signal-coordinate facts remain transferred for binding and named
+downstream policy.
+
+\subsection{Native facts and field operators}
+
+Each admitted native interface supplies stable observation, interface, row,
+and occurrence identities; finite ordered time coordinates with named
+event/epoch meaning; acquisition/integration support; cadence information;
+direct validity; and timing uncertainty or typed unavailability.  Each field
+also supplies a versioned field identity, unit, unchanged producer frame,
+topology, missing/validity rule, maximum support span, uncertainty
+availability, composition history when applicable, and one declared operator:
+
+\begin{description}[style=multiline,leftmargin=0.25\linewidth,labelwidth=0.22\linewidth]
+\item[Continuous scalar] Exact copy at coincidence or bounded adjacent linear
+interpolation inside one unbroken valid run.  Units and frame remain unchanged.
+\item[Circular angle] Exact copy or shortest-arc interpolation in a declared
+period, with typed unavailability at unresolved antipodal ambiguity.
+\item[Declared step state] A producer-defined state held only on its explicit
+half-open validity interval; the held output is synthesized at a non-native
+time.
+\item[Exact-only] Exact coincidence is required.  Between samples the field is
+unavailable.
+\end{description}
+
+There is no universal scalar interpolation rule and no extrapolation.  Invalid
+native rows are barriers unless a separate, explicit operator authorizes a
+different result and preserves its cause.  Timestamp and identity coordinates
+are not interpolated measurements.
+
+\subsection{Separated telescope families}
+
+The observing-state family describes the science occurrence on the
+detector-reference grid.  It includes boresight direction, current sample
+time, current elevation, current azimuth where required, and every other
+declared field needed by AST geometry or field rotation.  ALIGN maps each
+producer-declared field without changing its frame, unit, topology, or
+meaning.
+
+The pointing-correction family is separate.  A pointing-support producer
+selects the exact correction record and native support and supplies record,
+parent, and selection identities; vector meaning; sign and basis; unit; native
+support mode and times; covariance availability; and producer semantics.
+ALIGN supplies only the admitted relation of that selected record to
+detector-reference time.  AST may interpolate the correction only inside the
+selected native support and never extrapolates.  Current science-sample
+elevation is not inferred from a bracketing correction record.
+
+Optional HWPR fields form a third typed family.  Their timing, availability,
+and alignment may be represented without trimming intensity support.  No
+demodulation, efficiency, calibration, polarization response, or Stokes
+interpretation follows.
+
+The exact registries for observing-state fields, pointing-correction records,
+and HWPR fields are unresolved owner/producer decisions.  An unresolved entry
+blocks only the dependent field, correction, coordinate, or polarization
+claim; ALIGN may not infer a registry from shape, name, numeric range, or
+storage convention.
+
+\subsection{Gaps, interpolation, synthesis, and guards}
+
+An acquisition timing gap is a maximal nonempty run of expected but unoccupied
+native slots inside declared acquisition support.  A native occurrence with
+an invalid or non-finite numerical value remains an original-invalid
+occurrence, not a timing gap.  Ordinary per-field resampling, an acquisition
+gap, an invalid original, a processing guard, an unavailable optional stream,
+and a detector-signal continuity surrogate are distinct facts.
+
+A declared per-field interpolation operator does not authorize
+detector-signal continuity synthesis.  A continuity surrogate requires a
+separately named signal-domain authority and exact count, duration, fraction,
+edge, causal-support, response, uncertainty, and guard rules.  Any authorized
+surrogate retains exact endpoint rows and weights, causal support, conditional
+response, uncertainty status, synthesized origin, and zero added acquired
+exposure.  It is never an acquired independent measurement and gains no
+direct hit, independent statistical weight, degree of freedom, or significance
+count merely by filling continuity support.  The exact surrogate family and
+limits are unavailable in this v0.1 draft pending \code{SCI-ALIGN-ODQ-104};
+the conditional equation in Section~\ref{sec:equations} is not authorization.
+
+Gap identity is observation-wide before chunk slicing and retains its
+interface, network, detector, or field scope.  A cause does not spread to
+other scopes by convenience.  Long-gap observation failure versus marked
+unavailability is an unresolved owner policy; an unavailable required value
+always fails closed for the consumer that requires it.
+
+\subsection{Five interval identities}
+
+The following are separate stable half-open relations:
+
+\begin{enumerate}
+\item a producer-authoritative physical scan or state interval;
+\item a processing chunk;
+\item a science window;
+\item a context window; and
+\item an output selection.
+\end{enumerate}
+
+They are not silently merged, renumbered, or used as substitutes.  Final
+partial support, short, empty, guarded, and unusable states retain identity.
+A processing subset preserves full-observation scan identities.  Physical
+scan segmentation requires producer-authoritative state semantics; the
+fixed-duration construction in Section~\ref{sec:equations} is only a
+conditional processing-window construction and never replaces physical scan
+authority.
+
+\subsection{Exact ALIGN-to-AST transfer}
+\label{sec:ast-boundary}
+
+The immutable boundary profile is
+\code{SCI-ALIGN_TO_SCI-AST} at \code{v0.1/r0.1}.  The boundary carries no
+self-hash; the packet source manifest binds its final bytes by SHA-256.
+Compatibility requires this exact profile
+identity, a declared compatible version/revision, and preservation of every
+required identity, semantic state, ownership boundary, and typed-availability
+rule.  Similar shape or field names do not establish compatibility.  A
+successor names the revision it supersedes and maps every changed, removed, or
+newly required semantic item.
+
+The transfer is one immutable bundle, not a menu.  Every required payload is
+present with exact identity and semantics or carries typed availability and a
+reason.  It contains:
+
+\begin{longtable}{L{0.22\linewidth}L{0.68\linewidth}}
+\toprule
+Family & Required unchanged scientific content\\
+\midrule
+\endfirsthead
+\toprule
+Family & Required unchanged scientific content\\
+\midrule
+\endhead
+Reference relation & Observation, selected detector-stream reference
+interface, parent, grid, plan and version, stable ALIGN slot \(s\), cadence, phase,
+nominal time and cell support, and physical-timing availability.\\
+Native/assigned timing & Native interface and occurrence, acquisition or
+integration support, corrected native event time when available, nominal slot
+time, residual, offset-record identity, uncertainty or typed availability, and
+acquired exposure as distinct quantities.\\
+Offset record & Producer authority, observation-constant value, positive-add
+sign convention, seconds unit, reference interface, exactly-once stage/count,
+validity domain, uncertainty or bound, residual diagnostics, and typed
+availability.\\
+Source relation & Exact native rows/occurrences, temporal weights, residuals,
+stable slot identities \((o,s)\), support limits, and mapping-exception identity, expanded or
+exactly reconstructible from the compact record.\\
+Paired detector relation & Both equations using one \(A_{\rm ALIGN}\), common
+source-relation and origin/synthesis state, coordinate-specific numerical
+validity and payload availability, and Tune/mapping-revision boundary.\\
+Observing state & Aligned boresight and current observing-state values with
+field and registry identity, unit, unchanged frame, topology, operator,
+support/source mapping, origin, validity, uncertainty availability, and
+reason.\\
+Pointing correction & Producer-selected record, parent and selection
+identities, vector meaning, sign/basis, unit, native support mode/times,
+covariance availability, and admitted detector-reference time relation.\\
+Origin/support & Original, synthesized, unavailable, original-invalid, and
+guarded state; continuity availability; source relation; acquired exposure;
+and separate per-coordinate and per-field validity.\\
+Intervals & Stable physical-scan, processing-chunk, science-window,
+context-window, and output-selection identities with half-open support and
+realized state.\\
+Response/uncertainty & Realized operator identity, conditional temporal and
+nonstationary response or typed availability, propagated covariance when
+admitted, and timing/model/mapping/selection terms or typed availability.\\
+Provenance & Requested, effective, observation-resolved, and realized plan;
+offset application; registry and operator versions; Tune/readout revision;
+stable-slot-to-local-row relation for each materialized view; source,
+exception, and expansion identities; lifecycle; and generation provenance.\\
+\bottomrule
+\end{longtable}
+
+AST consumes this occurrence/time/mapping and observing-state bundle without
+requiring finite detector-signal payload.  AST does not reconstruct clocks,
+choose or repeat ALIGN assignment/interpolation/gap/guard/synthesis policy,
+infer missing semantics, substitute similarly shaped objects, extrapolate
+pointing support, collapse local validity into eligibility, or treat nominal
+slots and synthesized values as physical exposure.
+No downstream contract reconstructs stable ALIGN slot \(s\) from local row
+\(j\); \(n\) is reserved for stable RTC output-sample identity.
+
+\subsection{Downstream ownership}
+
+AST owns coordinate values, declared frame/topology interpretation,
+pointing-correction composition, detector-to-coordinate binding, astrometric
+uncertainty, TAN/WCS astrometric projection, and continuous map coordinates.
+Target/product authority selects the physical center; AST realizes the named
+selection without silent recentering.  ALIGN has no center authority.
+
+MAP owns sample-to-pixel deposition/gridding, including estimator-specific
+\(G_{\pi}\), kernel, weights, numerical contribution, and map support.  The
+AST TAN/WCS projection is not \(G_{\pi}\), and AST coordinate facts do not
+independently select or authorize it.  AST may materialize \(G_{\pi}\) only
+for an exact MAP-owned request; ownership remains with MAP.
+
+RTC owns temporal conditioning and propagation of its replacements.  CAL owns
+calibration and atmosphere operations.  PTC owns correlated-component
+estimation and application.  VAL evaluates immutable, registered predicates
+supplied by their named-use owners and does not originate ALIGN facts or
+policy.  Every consumer preserves origin, source support, and zero acquired
+exposure for synthesized detector values.

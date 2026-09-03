@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "contract": "SCI-POINT v0.1",
+  "document_revision": "r0.4",
+  "status": "accepted_r0.3_science_republished_as_three_bound_views",
+  "scientific_record": {
+    "path": "STAGE_B_R0_3_RECORDS.json",
+    "sha256": "b80094ec2af23dac256a4ecac488183229c6ea22dc2c24d7660e48bcc8ff57c4",
+    "semantic_changes": false
+  },
+  "normative_core": {
+    "identity": "SCI-POINT-NORMATIVE-CORE/v0.1-r0.4",
+    "digest_algorithm": "SHA-256 of the exact file bytes concatenated in listed order with no separator",
+    "ordered_files": [
+      "src/common/notation.tex",
+      "src/common/definitions.tex",
+      "src/common/equations.tex",
+      "src/common/assumptions.tex",
+      "src/common/requirements.tex",
+      "src/common/edge_cases.tex"
+    ],
+    "sha256": "c0ca71bd457b8e6d37a425eb3ead76400dba3a5e29c869420807928201cdcdbd",
+    "scientific_bytes_changed_from_r0_3": false
+  },
+  "views": [
+    {
+      "identity": "SCI-POINT-NORMATIVE-CORE/v0.1-r0.4",
+      "source": "src/normative-core.tex",
+      "pdf": "pdf/SCI-POINT-NORMATIVE-CORE-v0.1.pdf",
+      "responsibility": "complete exact normative scientific content"
+    },
+    {
+      "identity": "SCI-POINT-SCIENTIFIC-RATIONALE/v0.1-r0.4",
+      "source": "src/scientific-rationale.tex",
+      "pdf": "pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf",
+      "responsibility": "concise scientist-facing rationale and compact core index"
+    },
+    {
+      "identity": "SCI-POINT-ENGINEERING-CONFORMANCE/v0.1-r0.4",
+      "source": "src/engineering-conformance.tex",
+      "pdf": "pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf",
+      "responsibility": "prospective engineering evidence procedure and complete compact evidence indexes"
+    }
+  ],
+  "parity": {
+    "requirements": "SCI-POINT-REQ-001--038",
+    "predictions": "SCI-POINT-PRED-001--032",
+    "unavailable_states": "SCI-POINT-UNAV-001--023",
+    "equations": "unchanged",
+    "product_roles": "unchanged",
+    "lifecycle_and_state_tokens": "unchanged",
+    "sci_val_crosswalk": "unchanged",
+    "response_families": "unchanged",
+    "source_and_owner_boundaries": "unchanged"
+  },
+  "nonclaims": [
+    "numerical_route",
+    "implementation_conformity",
+    "representation_or_response_fidelity",
+    "uncertainty_coverage",
+    "observational_pointing_accuracy",
+    "validation",
+    "performance",
+    "readiness",
+    "production_suitability",
+    "production_authorization",
+    "Unity_activity"
+  ]
+}

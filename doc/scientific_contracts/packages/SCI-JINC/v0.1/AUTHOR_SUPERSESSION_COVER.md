@@ -1,0 +1,173 @@
+# SCI-JINC v0.1 — Proposed Supersession Cover For The Recovered JINC Core
+
+Status: proposed sanitized author reference; awaiting scientific-owner approval
+
+Prepared: `2026-08-28`
+
+This cover accompanies only the exact Git object:
+
+`fe201b69be2764dc47dc0a1957bfc8e493f2905a:doc/audits/packages/SCI-MAP-002_INDEPENDENT_CORE.tex`
+
+Verified content SHA-256:
+`2c1f9ff95f65422a098846f747ed165d5aeddc5bedd854678bfa7faeebba4e24`.
+
+The core was frozen before JINC implementation inspection and is reusable
+scientific reasoning. Its audit, source trace, findings, owner-decision source
+files, repairs, tests, re-audits, reductions, validation, integration, and
+production status are not author references.
+
+## Binding Recovered Decisions Proposed For V0.1
+
+If the owner approves this packet, these later decisions control wherever the
+core is broader, earlier, or ambiguous:
+
+1. **Separate method.** JINC is a signed-coefficient estimator. No ordinary
+   SCI-MAP positive-coefficient predicate, one-hot placement, F010 bundle,
+   support alias, coadd rule, or validity rule applies by analogy.
+2. **Retained signed algebra.** Preserve distinct
+   `N_p=sum_i omega_i kappa_ip z_i`,
+   `C_p=sum_i omega_i kappa_ip`, and
+   `Q_p=sum_i omega_i kappa_ip^2`; valid signal is `N_p/C_p`. Negative finite JINC
+   lobes keep their sign in `N` and `C` and enter `Q` quadratically.
+3. **Conditional precision only.** `C_p^2/Q_p` is a formal diagonal weight only
+   when the exact upstream `omega_i` family and covariance assumptions justify
+   that interpretation. Frozen PTC supplies no default inverse-variance
+   family for JINC. The controlled ODQ-101 successor supplies a consumer-
+   permission registry architecture, not a registered family or statistical
+   interpretation; dimensional units or historical names are insufficient.
+   `Q_p` remains a required accumulator, but base v0.1 publishes no separate
+   formal-weight, variance or covariance role.
+4. **Square support supersedes radial support.** `r_max` sets the first zero of
+   the second JINC factor and the half-width of a fully populated square
+   deposition cache. Square corners beyond radial `r_max` are part of the
+   response. Do not insert a radial cutoff.
+5. **Point-phase response supersedes pixel averaging.** The sample center is
+   rounded, residual phase is binned, and one precomputed point-evaluated
+   matrix is selected. Increasing `subpixel_n` refines this realized
+   point-phase representation; it is not pixel-area integration. Specific
+   tie, bin-edge, representative and cache-rounding choices are engineering
+   realizations when they are single-valued, preserve this operator, and meet
+   the ODQ-109 scientific-accuracy rule.
+6. **Unit-invariant conditioning and sufficient numerical accuracy.** Require
+   finite contributors, finite `C` and `Q`, `Q>0`, and nonzero `C`. Define
+   `rho=abs(sum_i omega_i kappa_i)/sum_i abs(omega_i kappa_i)` as a
+   dimensionless conditioning indicator. Exact cancellation is invalid; a
+   finite nonzero result is usable only when numerical error is demonstrably
+   negligible compared with the approximately `10^-3` relative fidelity
+   relevant to the instrument. No absolute unit-bearing `C` or `Q` floor,
+   universal `rho` cutoff, prescribed summation algorithm, contributor-count
+   floating-point formula, bitwise reproducibility, or stronger precision is
+   scientific authority.
+7. **Fail-closed parameter and coefficient admission.** Stable array identity
+   must be present. Define `r'_a=r/s_a`, with angular, array-associated `s_a`;
+   `a_a`, `b_a`, `c_a`, and `(r_max)_a` are dimensionless and may be array-
+   associated where scientifically appropriate. A numerical route requires
+   one exact scientifically authorized parameter-set identity whose values
+   and pixel size are finite and strictly positive, plus effective
+   `subpixel_n>=1`. Missing authority makes the route unavailable without an
+   inherited or hidden default. A non-finite
+   coefficient fails the requested JINC product before deposition; a finite
+   negative coefficient is valid.
+8. **Formal support is not temporal support.** A pixel is formally valid only
+   when normalized signal and formal weight are finite, formal weight is
+   strictly positive, and every required JINC admission and conditioning gate
+   passes. A named empirical policy may only downgrade this state, never
+   promote it. Base v0.1 carries this as local support/validity state of the
+   published `jinc_map`, not as a standalone support or role-availability
+   product.
+9. **JINC coefficient-squared time.** The method-specific accounting product
+   and sole base-v0.1 time-support product is `jinc_coefficient_squared_time`,
+   `T_p^(kappa^2)=sum_i kappa_ip^2/f_s,i` seconds for eligible samples. The
+   squared object is the signed dimensionless analytic kernel coefficient,
+   not `omega_i` or the complete `omega_i kappa_ip` contribution. It is not
+   physical exposure, complete temporal support, hits, normalized influence,
+   white-noise-equivalent time, precision, validity, or significance.
+   A separate physical-exposure product is deferred until an identified
+   scientific use requires and separately authorizes its exact original-
+   occurrence lineage and semantics.
+10. **Recovered response semantics, deferred product.** If a future concrete
+    scientific use authorizes a response companion, the recovered response is
+    the upstream processing-filtered source template transformed through the
+    same JINC coefficients and normalized by `C`; it is not a bare analytic
+    JINC, unfiltered template, measured PSF, or generic beam. ODQ-107 defers
+    every response companion from the fixed base-v0.1 bundle.
+11. **Atomic bundle without a general provenance framework.** Requested,
+    effective, resolved, and realized state remains one-way where those states
+    govern scientific input resolution. ODQ-107 requires only the ODQ-106
+    observation/array/JINC-realization/destination identity and atomic
+    publication of the fixed five-role bundle. Failure to form one required
+    whole-product role suppresses the bundle. No general provenance product,
+    detailed operational-reason archive, per-role availability object, or
+    per-pixel/per-contribution provenance is a base-v0.1 role.
+12. **Unambiguous destination ownership.** Each admitted bounded population
+    resolves one unique complete scientific destination identity before
+    allocation, mutation, output side effects, or parallel execution. Worker,
+    thread, process, container and filename are not scientific identity.
+    Ambiguous or aliased destinations fail without partial result. This is an
+    identity/lifecycle invariant, not a performance or race-freedom claim. For
+    one observation, at most one bundle may be produced for each stable array
+    admitted/requested under the exact JINC realization. Each produced bundle
+    is independently bound to its observation, array, JINC realization and
+    exact destination map geometry. Contributions with different array or
+    destination identities must not merge. Missing, unavailable or unrequested
+    arrays create no placeholder and do not invalidate a different produced
+    bundle; no additional per-contribution provenance is implied.
+13. **Observation scope.** Base v0.1 defines the estimator and complete product
+    bundle for one observation. Observation is a scientific grouping boundary,
+    not a streaming, chunking, process or memory boundary: same-observation
+    samples or chunks may accumulate incrementally only under one exact
+    observation, array, JINC realization, target WCS and lifecycle identity.
+    No cross-observation combination semantics are admitted. Any future JINC
+    coadd requires a separately authorized boundary over complete observation
+    bundles and may not inherit ordinary MAP coadd or infer a rule from
+    accumulator or normalized-map algebra.
+14. **Finite-map center admission.** The resolved rounded center used for JINC
+    cache placement must lie within the finite destination pixel domain before
+    any footprint evaluation. An outside center sets `I_ip=0` for every pixel
+    and contributes to no fixed accumulator, even when its square overlaps the
+    map. For an admitted in-map center, ordinary edge crop applies without
+    wrap, footprint completion, renormalization or edge correction. JINC-then-
+    crop equivalence is not required, and no edge provenance or diagnostic
+    product is introduced.
+15. **Claim separation.** Algebraic contract correctness, implementation
+    conformity, representation/response fidelity, numerical or observational
+    validation, achieved performance, readiness, and production authorization
+    are distinct. The recovered core and owner decisions establish none of the
+    latter claims.
+
+## Matters The Cover Does Not Decide
+
+This cover does not itself supply:
+
+- the complete analytic function, which is supplied separately by the exact
+  Schloerb method excerpt and its author reference cover;
+- any scientifically authorized TolTEC `a1100`/`a1400`/`a2000` numerical
+  parameter-set realization; the generic semantics and typed no-route state
+  are supplied, while optimization is a separate downstream exercise;
+- a registered, selected and realized JINC-permitted PTC coefficient family or
+  unconditional inverse-variance interpretation;
+- final owner approval of the proposed AST coordinate boundary, JINC admission
+  profile, or fixed grouping/product table; response/covariance products are
+  deferred under ODQ-107;
+- a prescribed summation algorithm, machine-specific error formula, or exact
+  tie/bin/cache realization; or
+- any numerical parameter value, threshold, default, storage schema,
+  implementation mapping, validation result, or production policy.
+
+Those are source-availability, exact-approval or later conformance matters,
+not unresolved numbered scientific-scope ODQs. The author must not fill them
+from remembered implementation behavior.
+
+## Permitted Use
+
+The implementation-blind author may reuse, reorganize, and explain the core's
+definitions, `N/C/Q` equations, local support taxonomy, limiting cases, and
+falsification cases under the decisions above. Conditional response/covariance
+reasoning may be identified only as deferred future science, not a base-v0.1
+product. The author
+must not repeat the signed-estimator derivation merely to appear new, weaken a
+decision to match an implementation, or consult any excluded source.
+
+This proposed cover becomes an author reference only if the scientific owner
+approves its exact bytes in
+[`AUTHOR_PACKET_MANIFEST.md`](AUTHOR_PACKET_MANIFEST.md).

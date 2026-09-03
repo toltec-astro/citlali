@@ -1,0 +1,494 @@
+\documentclass[10pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.82in,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{array,booktabs,longtable,tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\definecolor{JincBlue}{HTML}{174A6E}
+\definecolor{JincLight}{HTML}{EDF4F8}
+\definecolor{JincGray}{HTML}{4B5563}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=JincBlue,
+  citecolor=JincBlue,
+  urlcolor=JincBlue,
+  pdftitle={SCI-JINC Engineering Conformance Specification v0.1 r0.3},
+  pdfauthor={Grant Wilson},
+  pdfsubject={Engineering conformance view of the SCI-JINC scientific contract},
+  pdfkeywords={SCI-JINC, JINC, engineering conformance, frozen authority}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{JincGray}{SCI-JINC v0.1}}
+\fancyhead[R]{\small\textcolor{JincGray}{Engineering Conformance r0.3 - Frozen}}
+\fancyfoot[C]{\small\textcolor{JincGray}{\thepage\ / \pageref*{LastPage}}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\setlength{\emergencystretch}{2em}
+\setlist{nosep,leftmargin=*}
+
+\newcommand{\ContractVersion}{v0.1}
+\newcommand{\DocumentRevision}{r0.3}
+\newcommand{\DocumentDate}{2026-08-29}
+\newcommand{\Digest}[2]{\texttt{#1}\allowbreak\texttt{#2}}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries\textcolor{JincBlue}{SCI-JINC}}\\[0.35em]
+  {\LARGE\bfseries Engineering Conformance Specification}\\[0.65em]
+  {\large Contract \ContractVersion{} / document \DocumentRevision{}}\\[0.25em]
+  {\large \DocumentDate}\\[0.25em]
+  {\large Scientific owner: Grant Wilson}
+\end{center}
+
+\vspace{0.5em}
+\noindent\fcolorbox{JincBlue}{JincLight}{%
+\begin{minipage}{0.94\textwidth}
+\textbf{Status.} Frozen conditional implementation-independent scientific
+authority, \texttt{SCI-JINC v0.1/r0.3}.  This document expresses the same
+shared authority as the companion rationale and binds
+\texttt{SCI-JINC-DEC-PHASE-CENTER-001}.  It contains no implementation
+mapping and assesses no implementation candidate.  No TolTEC numerical JINC
+route is authorized until every separately owned input named by this contract
+is available.  Compilation, source-byte checks, and specification replay are
+not evidence of implementation conformity, representation or
+response/covariance fidelity, parameter adequacy, validation, achieved
+performance, readiness, production, or production authorization.  Any
+scientific correction requires a versioned successor; these frozen bytes are
+immutable.
+\end{minipage}}
+
+\vspace{0.8em}
+\begin{tabularx}{\textwidth}{@{}>{\bfseries}p{0.22\textwidth}X@{}}
+\toprule
+Contract identity & \texttt{SCI-JINC v0.1} \\
+Document identity & Engineering Conformance Specification \texttt{r0.3} \\
+Companion view & Scientific Rationale and Contract \texttt{v0.1/r0.3} \\
+Normative core & Six shared modules, included once in identical order in both
+views \\
+Requirements & \texttt{SCI-JINC-REQ-001} through
+\texttt{SCI-JINC-REQ-044}, sequential with no gaps \\
+Predictions & \texttt{SCI-JINC-PRED-001} through
+\texttt{SCI-JINC-PRED-036}, sequential with no gaps \\
+Present assessment & \textbf{Not assessed}; no implementation candidate,
+configuration, product, test, audit, validation result, or reduction was
+inspected \\
+\bottomrule
+\end{tabularx}
+
+\tableofcontents
+\clearpage
+
+\section{Purpose and result vocabulary}
+\label{sec:eng-purpose}
+
+This specification turns the shared SCI-JINC authority into a future
+conformance-review surface and introduces no independent science.  If this
+engineering prose is broader than the shared modules, the shared module
+controls.  A future result is exactly \emph{pass}, \emph{fail}, \emph{not
+assessed}, or \emph{not applicable under an explicit contract-authorized
+condition}.  Missing evidence is never pass.
+
+The conformance object is one claimed realization under one exact contract,
+source packet, observation, array, plan, coefficient family, parameter set,
+target WCS, destination, numerical profile, certificate, and lifecycle
+generation.  These identities must be bound before any conclusion.
+
+\section{Scientific-source byte closure}
+\label{sec:eng-source-closure}
+
+The Stage B author verified the manifest digest and all sixteen admitted
+object digests before authorship.  A later assessor must repeat the checks
+from independently obtained bytes.  Byte identity alone establishes neither
+candidate conformity nor scientific validity.
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.28\textwidth}
+                        >{\raggedright\arraybackslash}p{0.49\textwidth}
+                        >{\raggedright\arraybackslash}p{0.13\textwidth}@{}}
+\caption{Required exact source checks.}\label{tab:eng-source-checks}\\
+\toprule
+Object & Expected binding & Freeze check \\
+\midrule
+\endfirsthead
+\toprule
+Object & Expected binding & Freeze check \\
+\midrule
+\endhead
+Author-packet manifest & Commit
+\Digest{88dcce8b0f7b1d78053b2}{5831b39cf370afd47cc}; SHA-256
+\Digest{52a8e843456a8cb033b7593d9b9f67f}{b83b0ee565c91c141d8e16d46b906140e}.
+& Byte-equal \\
+Targeted r0.2 repair directive & SHA-256
+\Digest{c07505861d91459f69e7d0989f11551e}{2a14265c916cd5772ea48a86bb186ed2}.
+& Byte-equal \\
+Final targeted r0.3 directive & SHA-256
+\Digest{4878e1745e085b4e33d2e71f1190299}{d72f2cfd7b2215e36a9e8405a977bd207}.
+& Byte-equal \\
+Final owner-review/freeze directive & SHA-256
+\Digest{958cffeac67c11e916527c0f78e9c80d}{648f68d5eec38a0607fc4af1511dddec}.
+& Byte-equal \\
+Owner phase/center decision &
+\texttt{SCI-JINC-DEC-PHASE-CENTER-001}.  Phase statement
+``\texttt{I approve disposition A}'',
+SHA-256
+\Digest{9a70cbc63c0c79a7db70ad9796481fb0}{fe3f1f4c2d7524820b54cec68b8b1620}.
+Separate center statement exactly as submitted, SHA-256
+\Digest{3b79351f7661e2432a5426fba3a16e9}{710c2fae0b34fd9b8f60dd45bca837ecb}.
+& Bound separately; no inference \\
+Manifest objects & Exactly sixteen entries, each equal to its manifest
+SHA-256 before use. & 16/16 \\
+Successor Scope Brief & SHA-256
+\Digest{5f2505c2760fc5cb07506249f33f4496}{51aca67cccc9c444305b059674f0ddbd}.
+& Byte-equal \\
+PTC boundary & \texttt{SCI-PTC\_TO\_SCI-JINC v0.1/r0.3}; SHA-256
+\Digest{5769d413460e931745e0d401ea432b12d}{1077c15466247c49caa71b997d4ab1e}.
+& Byte-equal \\
+AST boundary & \texttt{SCI-AST\_TO\_SCI-JINC v0.1/r0.2}; SHA-256
+\Digest{efffa7059b59c89793fa1d523fb3bb482}{35f1ab55f7d55060af1600cbfd470a5}.
+& Byte-equal \\
+JINC upstream-occurrence admission & Immutable Registry identity
+\texttt{SCI-JINC:jinc\_map\_contribution@1}; SHA-256
+\Digest{2db95da7e5d1b980df79993907d45ac0}{ababc3aa05c189bfb62dcf04ff2c2e8a}.
+& Byte-equal \\
+VAL binding and successors & Binding SHA-256
+\Digest{ee8f20db5febdb51e39f7157449d6c2d}{03a0d17058605dd5531e9ab5ca439e30};
+\path{SCI-VAL_SOURCE_BINDING_REGISTER} successor
+\path{v0.1/r0.3-map-r0.7.1-jinc-stage-a-q002-2026-08-28}, SHA-256
+\Digest{0e7ca29ee2e9cd02fb1b76cf87cc64fc}{e6164407a7801f9b9a105ca646317e88};
+\path{SCI-VAL_PROFILE_REGISTRY} successor with the same version, SHA-256
+\Digest{4b9a1ebecfc847c83b59da772afd9b03}{1ab1830e8febbb12d1a47f70ce5a1110}.
+& Exact process bindings under the base-v0.1 exact-source lock \\
+\bottomrule
+\end{longtable}
+
+No unlisted package file, implementation, schema, configuration, test, audit,
+validation product, reduction, status document, or web source may fill a gap.
+The complete exact PTC, AST, profile, binding, and JINC-specific SCI-VAL
+successor snapshot files named above are locked sources.  No ambient current
+Registry substitution is allowed; a changed bound object requires a versioned
+SCI-JINC successor.
+
+\section{ODQ-107 scope-parity control}
+\label{sec:eng-scope-parity}
+
+The admitted successor Scope Brief records an owner-approved ODQ-107 amendment
+that closes base v0.1 to five numerical roles and defers response, covariance,
+formal weight, generalized companion availability, and generalized provenance
+products.  The pre-repair scope therefore matched its admitted Stage A authority.
+The targeted directive's conditional broadening branch does not apply because
+that exact owner amendment already exists.  No new amendment is needed to
+retain REQ-038--040.  Any future broadening needs a bounded successor Stage A
+amendment and renewed exact-byte owner approval.  No candidate may add those
+roles or interpret their absence as zero, independence, or achieved fidelity.
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.26\textwidth}
+                        >{\raggedright\arraybackslash}p{0.41\textwidth}
+                        >{\raggedright\arraybackslash}p{0.23\textwidth}@{}}
+\caption{Deferred response and covariance distinctions.}\label{tab:eng-deferred}\\
+\toprule
+Family & Preserved science & Base-v0.1 state \\
+\midrule
+\endfirsthead
+\toprule
+Family & Preserved science & Base-v0.1 state \\
+\midrule
+\endhead
+Fixed-state response & Apply the fixed normalized operator once to one exact
+available processed response companion. & Conditional mathematics only \\
+PTC procedure response & Re-run PTC while holding the JINC operator fixed. &
+Deferred \\
+JINC re-resolved response & Re-resolve admission, coefficient, parameter,
+phase, support, cancellation, or destination state. & Deferred and distinct \\
+Whole-chain response & Complete RTC--CAL--PTC--JINC rerun under separate
+authority. & Unavailable absent authority and rerun \\
+Covariance & $\mathbf A_{\mathrm{JINC}}\mathbf C_{\mathrm{PTC}}
+\mathbf A_{\mathrm{JINC}}^{\mathsf T}$ on exact available domains. &
+Conditional; missing is not zero or independence \\
+Diagonal variance/weight & $Q_p/C_p^2$ and $C_p^2/Q_p$ under an exact
+true-inverse-variance family and declared independence. & Conditional; no
+base product \\
+\bottomrule
+\end{longtable}
+
+\section{Applicability and fail-closed inputs}
+\label{sec:eng-applicability}
+
+A numerical route requires mutually compatible exact bindings for:
+
+\begin{enumerate}
+\item the transformed occurrence and same-processed-sample AST coordinate;
+\item one registered, selected, realized PTC family that explicitly permits
+SCI-JINC, with payload, QC, generation, and source identity;
+\item one owner-authorized TolTEC array parameter set;
+\item one positive-integer phase count selected by the accepted request or one
+exact owner-authorized versioned mode policy;
+\item one compatible target WCS and positive sample frequency; and
+\item one exact numerical profile and matching certificate when numerical
+adequacy or near-cancellation support is claimed.
+\end{enumerate}
+
+The coefficient family/payload, TolTEC parameter set, numerical profile, and
+certificate are not admitted or supplied by this source packet.  Their routes
+are typed unavailable.  Unity, ordinary-MAP permission, another family, an
+inherited 45~m denominator, inherited shape values, mode-dependent
+$r_{\max}$, an ambient phase count, or any implementation default cannot
+repair them.
+
+\section{Exact discrete reference oracle}
+\label{sec:eng-oracle}
+
+The oracle evaluates the midpoint-quantized discrete operator in exact real
+arithmetic.  There is no hidden continuous-phase or pixel-area-integrated
+target.
+
+For $\mathcal D=\{1,\ldots,N_x\}\times\{1,\ldots,N_y\}$ and exact AST coordinate
+$\boldsymbol u_i$, resolve componentwise
+\[
+ c_{i\mu}=\lfloor u_{i\mu}+\tfrac12\rfloor,\qquad
+ \phi_{i\mu}=u_{i\mu}-c_{i\mu}\in[-\tfrac12,\tfrac12).
+\]
+Decision \texttt{SCI-JINC-DEC-PHASE-CENTER-001} selects the larger integer
+at the positive-axis half tie.  For
+$n_{\mathrm{sub}}=\texttt{subpixel\_n}\in\mathbb N_{>0}$,
+\[
+ q_{i\mu}=\lfloor n_{\mathrm{sub}}(\phi_{i\mu}+\tfrac12)\rfloor,\qquad
+ \widehat\phi_{i\mu}=-\tfrac12+
+ \frac{q_{i\mu}+\tfrac12}{n_{\mathrm{sub}}}.
+\]
+Bins are left closed and right open, and an interior-boundary tie selects the
+upper bin.  No parity restriction exists.  With even $n_{\mathrm{sub}}$, exact
+$\phi=0$ maps to $+1/(2n_{\mathrm{sub}})$.  The same decision retains this
+rule for every positive $n_{\mathrm{sub}}$ with no zero-phase special case.
+WCS axis order and orientation are
+normative.  The logical cache key is
+$(q_{i1},q_{i2},d_1,d_2)$; storage may differ only by a proven
+value-preserving bijection.
+
+The complete target WCS binds frame, projection, reference values, one-based
+reference pixel, dimensions, units, axis order/signs, rotation, handedness,
+version, and constant pixel matrix $\mathbf M$, with
+\[
+ \mathbf M^{\mathsf T}\mathbf M=\Delta^2\mathbf I,\qquad\Delta>0.
+\]
+Arbitrary recorded rotation or reflection is permitted.  Skewed or
+anisotropic geometry is incompatible; a scalar size cannot conceal it.
+
+For array $a$,
+\[
+ h_a=\left\lceil s_a(r_{\max})_a/\Delta\right\rceil,\qquad
+ \boldsymbol d\in\{-h_a,\ldots,+h_a\}^2.
+\]
+An occurrence with $\boldsymbol c_i\notin\mathcal D$ contributes nowhere.
+Otherwise set
+$\boldsymbol p=\boldsymbol c_i+\boldsymbol d$ and retain it exactly when
+$\boldsymbol p\in\mathcal D$.  There is no circular cutoff, wrap, reflection,
+completion, or edge renormalization.  At the destination pixel centre,
+\[
+ \widehat r_{i\boldsymbol d}=
+ \lVert\mathbf M(\boldsymbol d-\widehat{\boldsymbol\phi}_i)\rVert_2,\qquad
+ \widehat r'_{i\boldsymbol d}=\widehat r_{i\boldsymbol d}/s_a.
+\]
+The exact second-factor root is
+$j_{1,1}=\min\{x>0:J_1(x)=0\}$; a rounded decimal is nonnormative.  The shared
+kernel and estimator equations then control.  Outer rows and corners remain
+evaluated beyond the first-zero radius.
+
+For an exact integer-center occurrence with even $n_{\mathrm{sub}}$, zero
+phase on both axes and $\boldsymbol d=\boldsymbol0$ shall give
+\[
+ \widehat r_{i\boldsymbol0}=\frac{\Delta}{\sqrt{2}n_{\mathrm{sub}}},
+ \qquad
+ \kappa_{i,\boldsymbol c_i}=\kappa_a\!\left(
+ \frac{\Delta}{\sqrt{2}n_{\mathrm{sub}}s_a};
+ a_a,b_a,c_a,(r_{\max})_a\right).
+\]
+The expected coefficient is the exact nonzero-radius oracle value, not an
+imposed $\kappa_a(0)=1$.
+
+\section{Numerical profile and certificate}
+\label{sec:eng-numerical-profile}
+
+Algebraic support requires finite inputs and exact discrete coefficients,
+$Q_p>0$, and $C_p\ne0$.  Numerical adequacy separately requires the complete
+pair below.
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.24\textwidth}
+                        >{\raggedright\arraybackslash}p{0.66\textwidth}@{}}
+\caption{Profile-plus-certificate checklist.}\label{tab:eng-profile}\\
+\toprule
+Field & Required exact content \\
+\midrule
+\endfirsthead
+\toprule
+Field & Required exact content \\
+\midrule
+\endhead
+Profile identity & Owner, identifier, version, source digest, compatibility,
+lifecycle, and supersession. \\
+Observable and error & Observable; absolute, relative, or mixed form;
+reference norm/magnitude; units; numerator and denominator treatment. \\
+Domain and aggregation & Exact source/parameter/pixel domain and simultaneous,
+componentwise, or worst-case interpretation. \\
+Near-zero and inequality & Exact zero/near-zero rule and one exact pass/fail
+inequality, without a qualitative fidelity substitute. \\
+Certificate method & Exact oracle, bound/comparison method, uncertainty
+semantics, and authorized coverage. \\
+Certificate binding & Candidate, source bytes, observation/array, coefficient
+generation, parameters, WCS, phase count, destination, reduction policy,
+profile, lifecycle, and immutable certificate identity. \\
+Certificate result & Exact bounds, exceptions, and pass/fail over the complete
+declared domain. \\
+\bottomrule
+\end{longtable}
+
+If $|\widehat C_p-C_p|\le\epsilon_{C,p}$ is certified, normalized support
+requires $|\widehat C_p|>\epsilon_{C,p}$.  Otherwise zero remains inside the
+certified denominator interval.  The profile must provide any additional
+map-error inequality.  A profile alone, certificate alone, successful run,
+two agreeing realizations, or finite nonzero machine result is not a pass.
+
+A passing pair establishes only finite-precision fidelity to the exact
+selected discrete SCI-JINC oracle on its declared domain.  It does not
+establish parameter or phase-count adequacy, square-truncation adequacy,
+source-response or beam fidelity, photometric or astrometric performance,
+optimality, observational validation, response/covariance fidelity,
+readiness, or production authority.  TolTEC parameter-set qualification is a
+separate scientific and observational program.
+
+No exact owner-approved profile or matching certificate is admitted or
+supplied.  Numerical adequacy and near-cancellation support are therefore
+\textbf{typed unavailable}, not tested, failed, or achieved.
+
+\section{Compact generative replay}
+\label{sec:eng-replay}
+
+A future assessor shall:
+
+\begin{enumerate}
+\item verify all source bytes and bind requested, effective, resolved, and
+realized contract, plan, observation, array, destination, and lifecycle;
+\item reconstruct the occurrence population from immutable PTC/AST parents
+and JINC upstream-occurrence admission under its exact Registry identity;
+\item bind coefficient permission/generation/payload/QC, parameter set, WCS
+metric, phase count, and sample frequency;
+\item reapply the owner-approved upper-bin lattice and positive-axis tie,
+bins, midpoints, square extent, centre gate,
+edge crop, and point-centre radius;
+\item evaluate the exact discrete kernel and coupled $N_p$, $C_p$, $Q_p$,
+$m_p$, and $T_p^{(\kappa^2)}$ equations;
+\item evaluate the exact profile/certificate and denominator separation;
+\item verify five-role atomic publication, local versus whole failure, the
+static prohibition on companion roles, completion, and lifecycle; and
+\item compare regenerated identities and values under the profile's exact
+relation, recording every mismatch without fallback.
+\end{enumerate}
+
+The compact generative record binds every item above, including source,
+parentage, coefficient, parameter, WCS, geometry, cancellation,
+profile/certificate, destination, ODQ-107 scope identity, exact-source lock,
+required-role state, failure, and completion.  It contains no per-bundle response/covariance
+information-state record.
+It is plan/bundle lineage, not a generalized provenance product or dense
+per-contribution archive.
+
+\section{Future assessment and evidence}
+\label{sec:eng-procedure}
+
+A later assessor binds identity and applicability, executes the replay,
+checks units, signs, limits, grouping, lifecycle, and five-role publication,
+then evaluates all 44 requirements and 36 predictions.  Each record contains
+construction, expected and observed results, evidence locator, exact
+profile/tolerance authority, and result state.  Numerical assessment occurs
+only when both profile and certificate are authorized and bound.
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.26\textwidth}
+                        >{\raggedright\arraybackslash}p{0.64\textwidth}@{}}
+\caption{Minimum evidence record.}\label{tab:eng-evidence}\\
+\toprule
+Category & Minimum exact content \\
+\midrule
+\endfirsthead
+\toprule
+Category & Minimum exact content \\
+\midrule
+\endhead
+Authority and boundaries & Contract/source digests, candidate/lifecycle,
+PTC coefficient and same-sample AST coordinate parentage. \\
+Discrete operator & FITS coordinate, tie/bin/midpoint rules, WCS metric,
+Bessel root, square extent, point centre, and edge membership. \\
+Algebra and adequacy & Coupled accumulators, units, limits, exact profile,
+certificate, oracle, domain, error functional, and denominator separation. \\
+Bundle and replay & Generative record, array cardinality, destination,
+chunking, five-role atomicity, and no cross-observation route. \\
+Deferred companions & No unauthorized response, covariance, formal-weight,
+exposure, availability, diagnostic, or provenance role; missing covariance is
+not zero. \\
+Results and claims & All stable identifiers plus separate states for
+conformity, representation, response/covariance fidelity, validation,
+performance, readiness, and production. \\
+\bottomrule
+\end{longtable}
+
+This is evidence ordering, not implementation architecture.  Compilation, a
+source hash, one numerical example, or one stored product cannot establish
+complete conformity.
+
+\section{Output-role and claim discipline}
+\label{sec:eng-claims}
+
+The ODQ-107 schema remains exactly $N_p$, $C_p$, $Q_p$, derived $m_p$ with
+local support, and $T_p^{(\kappa^2)}$.  $Q_p$ is not automatically precision;
+$C_p$ is not exposure; coefficient-squared time is not acquired time.  Whole
+role failure suppresses the bundle, while local cancellation or unavailable
+support remains map content without a finite substitute.
+
+Algebraic conformity, representation fidelity, response/covariance fidelity,
+numerical validation, observational performance, readiness, and production
+authorization are separate conclusions with separate evidence and authority.
+At revision \DocumentRevision{}, no candidate was inspected and every later
+claim is not assessed, not performed, or no claim.
+
+\clearpage
+\input{common/notation}
+\input{common/definitions}
+\input{common/equations}
+\input{common/assumptions}
+\input{common/requirements}
+\input{common/edge_cases}
+
+\clearpage
+\section{Blank conformance-result template}
+\label{sec:eng-template}
+
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.34\textwidth}
+                        >{\raggedright\arraybackslash}p{0.56\textwidth}@{}}
+\toprule
+Field & Future value \\
+\midrule
+Source-byte equality & Not assessed for a candidate \\
+Candidate/lifecycle identity & Not assessed \\
+Coefficient family and parameter set & Not assessed \\
+Observation, array, WCS, destination & Not assessed \\
+Exact discrete replay & Not assessed \\
+Requirement results (44) & Not assessed \\
+Prediction results (36) & Not assessed \\
+Numerical profile and certificate & Typed unavailable in this source packet \\
+Five-role publication & Not assessed \\
+Forbidden companion-role absence & Not assessed \\
+Representation/response/covariance fidelity & Not assessed \\
+Numerical/observational validation & Not performed \\
+Achieved performance & No claim \\
+Readiness/production authorization & No claim \\
+\bottomrule
+\end{longtable}
+
+\end{document}

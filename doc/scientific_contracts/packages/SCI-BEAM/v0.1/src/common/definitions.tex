@@ -1,0 +1,156 @@
+% SCI-BEAM v0.1 shared normative definitions. Document revision r0.3.
+\section{Definitions and scientific state model}
+\label{sec:definitions}
+
+\paragraph{SCI-BEAM v0.1 operation.} SCI-BEAM consumes standardized
+per-detector Beammaps in raw $\Delta f/f$, fits an observation-local effective
+PSF core and source amplitude, derives raw and horizon-derotated relative
+detector coordinates, derives top-of-atmosphere nominal-beam \texttt{flxscale}
+and NEFD-like \texttt{sens}, and publishes the mandatory Beammap APT with its
+empirical maps, diagnostics, covariance, state, and lineage companions.
+
+\paragraph{Raw detector signal and standardized Beammap.}
+$x_d(t)=\Delta f_d(t)/f_d$ is the uncalibrated physical detector observable;
+\texttt{xs} denotes its detector collection. A standardized detector Beammap
+is a map-domain representation of that same observable with declared
+reference frequency, sign, zero/baseline treatment, conditioning, support,
+mapmaking, pixelization, WCS, filtering, response, and covariance state. A map
+already in $\mathrm{mJy\,beam^{-1}}$ is not a v0.1 calibration-estimation input.
+
+\paragraph{Primary estimand.} The fitted shape is the observation-local
+effective PSF core measured in the standardized per-detector Beammap. The
+elliptical Gaussian is a compact summary of the measurable high-S/N core after
+all response embodied in the parent map. It is not automatically the intrinsic
+detector-plus-telescope optical beam and does not establish the complete PSF
+outside the finite, noise-limited field.
+
+\paragraph{Empirical response and completeness.} The empirical Beammap is the
+finite-field measurement. The fit, residual map, support, background, map
+extent, covariance state, and response lineage are required companions.
+Gaussian-core validity, measured wing constraint, and complete-PSF
+interpretation are separate states. A non-detection of broad response is not
+evidence of absence; diffuse power may be below noise, outside the field, or
+background-degenerate.
+
+\paragraph{Finite-source and amplitude convention.} The source shape has unit
+integral and a declared zero-first-moment reference origin. The effective
+Gaussian is convolved with that shape and the resulting template is normalized
+to unity at the same origin. $A_d^{\rm obs}$ is the fitted observed-plane
+excess at that origin in $\Delta f/f$; it is not necessarily a profile maximum.
+$F^{\rm TOA,nom}_{s,a}$ is the required top-of-atmosphere calibrator source
+flux in $\mathrm{mJy\,beam_{nom}^{-1}}$ for the fixed nominal beam under the
+identical reference-origin convention. That declared value enters
+\texttt{flxscale}.
+
+\paragraph{Effective PSF tensor.} The scientific shape is one symmetric
+positive-definite two-dimensional tensor. Major/minor/orientation, independent
+tensor elements, Cholesky factors, or an equivalent positive-definite fit
+parameterization may realize it, but all three independent degrees of freedom
+are jointly fitted. Axis-aligned-only fits, separate one-dimensional fits, and
+post-hoc rotation estimates are nonconformant. At circularity the invariant
+tensor remains available and orientation is unavailable.
+
+\paragraph{Widths and Gaussian area.} Major/minor FWHM are compact
+representations of the effective Gaussian core. $2\pi\sigma_{\rm maj}
+\sigma_{\rm min}$ is available only as the solid angle of that Gaussian core
+under an explicit Gaussian-response interpretation. It is not the complete
+beam solid angle when material unmeasured response may exist.
+
+\paragraph{Coordinate plane and Jacobian.} The Euclidean ellipse is evaluated
+only in a metrically orthonormal angular tangent plane. The full WCS transform,
+or a validated local linearization with quantified error, establishes angular
+scale, signs, handedness, rotation, shear/cross terms, correct azimuth metric,
+and material spatial variation. Raw azimuth/elevation offsets are insufficient
+unless this transformation establishes their orthonormality.
+
+\paragraph{Raw and horizon coordinates.} $(x_t,y_t)_{\rm raw}$ is the relative
+detector coordinate obtained from the fitted source centroid by the explicit
+declared sign/frame transformation
+$\mathbf S_{\mu\rightarrow x,o}$. $(x_t,y_t)$ is the coordinate after
+derotation into the declared horizon-fixed focal-plane frame. The effective
+derotation angle is derived for each detector from the parent-sample
+time/elevation support and contribution weights that produced the fitted map
+pixels, propagated through the realized fit support; the PSF tensor transforms
+consistently.
+
+\paragraph{Origin gauge and rotation pivot.} Beammap APT coordinates are
+defined only up to a common translation. The deterministic recentering rule is
+recorded but has no physical boresight meaning. The physical field-rotation
+pivot is separately classified as established, estimated, conventional, or
+unavailable. A conventional pivot is not telescope truth. BEAM does not
+publish ensemble translation as pointing error, boresight offset, absolute
+array position, or pointing-model correction.
+
+\paragraph{Same-APT pointing transfer.} Bracketing pointing observations and
+the associated science observation use the same immutable APT artifact and AST
+rotation convention. A different artifact is invalid unless a separately
+authorized coordinate transform proves equivalence. Physical
+focal-plane-to-boresight registration is a future calibration product.
+
+\paragraph{Broadening tensor.} For compatible Gaussian and response
+conventions, $\boldsymbol\Sigma_{\rm broad}=\boldsymbol\Sigma_{\rm eff}-
+\boldsymbol\Sigma_{\rm nom}$ is a telescope-health diagnostic. A literal
+Gaussian-smoothing interpretation requires positive-semidefinite support
+within uncertainty. An indefinite result is preserved as model-inadequacy or
+incompatibility evidence and is not forced into a kernel.
+
+\paragraph{Fit and derived-product covariance.} The local map-fit Jacobian and
+covariance cover the fitted and admitted map-model parameters. Separate
+derived-product Jacobians add the calibrator source flux, nominal-beam
+convention, source atmosphere, source-model systematics, scan-noise statistic,
+and exposure normalization for \texttt{flxscale} and \texttt{sens}, retaining
+material dependence between stages.
+
+\paragraph{Top-of-atmosphere \texttt{flxscale}.} BEAM owns source-observation
+atmosphere treatment, candidate evaluation, scientific acceptance, and
+publication. The factor converts raw $\Delta f/f$ to top-of-atmosphere mJy per
+fixed nominal beam. Source atmosphere belongs to its lineage; target-
+observation atmosphere is a later SCI-CAL operation. TolProj may associate or
+transform the published source APT under its own approved contract, and
+SCI-CAL consumes the selected observation-specific factor.
+
+\paragraph{Sensitivity.} \texttt{sens} is a per-detector, top-of-atmosphere,
+nominal-beam, NEFD-like point-source sensitivity. It is the product of the
+magnitude of \texttt{flxscale} and a declared non-negative, robust,
+time-normalized off-source scan noise statistic on the matching
+source-atmosphere convention. It is finite and strictly positive whenever
+available; the sign of \texttt{flxscale} remains separately preserved. It may support rough
+relative weights and health diagnosis; it is not calibration, total
+uncertainty, exact inverse variance, empirical significance, or a complete
+noise model.
+
+\paragraph{Deprecated \texttt{responsivity}.} \texttt{responsivity} is not a
+BEAM estimand, calibration factor, weight, validity field, transfer parameter,
+or active scientific authority. It is deprecated compatibility metadata only;
+its absence does not make the canonical APT incomplete and no value is
+fabricated.
+
+\paragraph{Independent quantity state.} Every attempted detector remains in
+the BEAM result. Empirical map, amplitude, centroid, raw coordinate,
+horizon coordinate, tensor, orientation, broadening, model adequacy, wing
+constraint, complete-PSF interpretation, \texttt{flxscale}, \texttt{sens},
+health use, and kernel-use qualification each have independent availability,
+validity, uncertainty, and cause state. One failure does not erase unrelated
+valid quantities.
+
+\paragraph{Canonical Beammap APT.} The APT is a mandatory BEAM scientific
+output. Per-detector content resolves identity, raw/horizon coordinates and
+covariance, derotation, effective tensor/FWHM/orientation, amplitude,
+\texttt{flxscale}, \texttt{sens}, and independent states. APT-level lineage
+resolves observation, calibrator, nominal beam, atmosphere, raw-signal
+convention, WCS/Jacobian, pivot/origin, response, models, estimators, versions,
+and parents. Immutable links resolve dense empirical maps, supports, residuals,
+Jacobians, joint covariance, diagnostics, broadening, wing constraints,
+off-source scan records, convergence/prior records, and cause/QC records.
+
+\paragraph{Authority layers.} Algebraic correctness, implementation
+conformance, map/response representation fidelity, observational performance,
+science-impact qualification, and production readiness are separate evidence
+layers. No earlier layer implies a later one.
+
+\paragraph{Compatibility.} Compatibility requires explicit agreement of
+scientific contract, observation/source/detector identities, raw-signal
+definition, reference plane, units, nominal beam, finite-source convention,
+WCS/Jacobian/frame, origin/pivot/rotation convention, map response, support,
+covariance, atmosphere, validity, and intended use. Equal payloads, filenames,
+row positions, or local labels are insufficient.

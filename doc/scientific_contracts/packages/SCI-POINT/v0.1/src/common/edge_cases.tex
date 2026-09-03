@@ -1,0 +1,72 @@
+% Shared normative validity and edge-case behavior.
+\section{Validity, unavailable states, and edge cases}\label{sec:validity}
+
+\subsection{Typed unavailable-state register}\label{sec:unavailable-register}
+
+\small
+\begin{longtable}{@{}p{0.18\linewidth}p{0.38\linewidth}p{0.36\linewidth}@{}}
+\toprule
+ID & Unavailable quantity or claim & Release condition or disposition \\
+\midrule
+\endhead
+SCI-POINT-UNAV-001 & POINT-owned cross-array aggregate & Outside base v0.1; successor decision required. \\
+SCI-POINT-UNAV-002 & POINT correction candidate or applied correction & Outside scope; pointing-support producer and AST retain ownership. \\
+SCI-POINT-UNAV-003 & Numerical MAP/JINC/FLT route & Exact predecessor authority, product, state, and compatibility binding. \\
+SCI-POINT-UNAV-004 & Numerical compatibility fit and every fit-derived product & Approved compatibility method, exact numerical parent, and route binding. \\
+SCI-POINT-UNAV-005 & POINT whole-observation success from partial arrays & Outside scope; downstream owns partial-set admission. \\
+SCI-POINT-UNAV-006 & Full joint covariance or uncertainty coverage & Separately authorized representation and evidence. \\
+SCI-POINT-UNAV-007 & Absolute flux or calibration accuracy & CAL/TolProj authority and evidence; never POINT alone. \\
+SCI-POINT-UNAV-008 & Intrinsic beam inferred from Pointing width & Separate authorized method; SCI-BEAM boundary. \\
+SCI-POINT-UNAV-009 & Statistical significance or detection probability & Complete probabilistic method and validation. \\
+SCI-POINT-UNAV-010 & Applied correction for another observation & Producer selection and AST application authority. \\
+SCI-POINT-UNAV-011 & OOF or blank-field source result & Separate package authority. \\
+SCI-POINT-UNAV-012 & Coadd or intermediate-FRUIT parent & Outside base v0.1. \\
+SCI-POINT-UNAV-013 & Universal cross-use eligibility or aggregate profile & Prohibited; policies remain use-specific. \\
+SCI-POINT-UNAV-014 & Source-attributed displacement or amplitude & Valid source reference and established association. \\
+SCI-POINT-UNAV-015 & Published AltAz displacement & Exact AST/source-to-POINT basis boundary and valid transform. \\
+SCI-POINT-UNAV-016 & Marginal formal errors and dependent uses & Approved formal-error method; fit values may remain. \\
+SCI-POINT-UNAV-017 & $\mathrm{RMS}_{\mathrm{full}}$ scale product & Approved full-map-RMS method binding exact population, centering, weighting, support, source-region, edge, finite, unit, generation, and provenance rules. \\
+SCI-POINT-UNAV-018 & Fixed-branch POINT response and fixed parent-response composition & Approved compatibility method plus exact local perturbation construction with branch, support, weights, constraints, and state frozen; exact compatible fixed parent-response identity/status for source-domain composition. \\
+SCI-POINT-UNAV-019 & Signed fitted-amplitude/full-map-RMS diagnostic and \texttt{sig2noise} alias & UNAV-017 released, compatible selected signed fit-amplitude role and parent generation, positive finite denominator, claim-appropriate association, and proof of mathematical identity plus explicit alias approval. \\
+SCI-POINT-UNAV-020 & \path{known}/\path{isolated}/\path{bright}/\path{approximately_centered} fact & Exact fact authority or test and cause. \\
+SCI-POINT-UNAV-021 & Exact numerical parent boundary instance & Exact package/version/source digest, role, owner approval, compatibility, and boundary state. \\
+SCI-POINT-UNAV-022 & POINT-full-procedure/parent-fixed or whole-chain full-procedure response & Separate POINT complete-rerun authority for the parent-fixed product; separate upstream-plus-POINT complete-rerun authority for a whole-chain response. Both require comparable numerical baseline/perturbed outputs and exact perturbation records. \\
+SCI-POINT-UNAV-023 & Observational bias/accuracy & Separate empirical population, procedure, reference-truth, and evidence authority. \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\subsection{Edge-case rules}\label{sec:edge-rules}
+
+\begin{longtable}{@{}p{0.34\linewidth}p{0.59\linewidth}@{}}
+\toprule
+Condition & Required behavior \\
+\midrule
+\endhead
+Missing method, boundary, input, or applicability authority & The dependent quantity is \texttt{unavailable} with identity and cause; no default is inferred. \\
+Attempted computation cannot conform & Report \texttt{failed}; do not relabel it scientifically unavailable. \\
+Missing or non-finite admitted support & Apply the future compatibility method's exact failure/unavailability rule; preserve only reached lifecycle stages and the exact terminal \path{unavailable}, \path{failed}, or \path{not_produced} outcome; never fabricate applied/fit-realized evidence or silently delete rows. \\
+Active parameter bound & Report the constraint and \texttt{available\_bound\_censored} where applicable. \\
+Weak curvature or near degeneracy & Report \texttt{weakly\_identified}; formal error may be unavailable independently of the fitted value. \\
+Exact circularity & Orientation is \texttt{undefined\_by\_model\_symmetry}. \\
+Major/minor exchange & Enforce canonical ordering and transform orientation consistently without changing the invariant model. \\
+Centroid on a search or fit boundary & Report boundary/constraint state; named-use eligibility is evaluated separately. \\
+Rank-deficient or non-positive curvature & Formal error is unavailable unless the future exact method defines another conforming result; fit-component state is assessed separately. \\
+Unmodeled constant, gradient, or structure & Preserve residual and parent additive-reference state; do not fit or silently subtract it. \\
+Association unavailable or failed & A numerical fit may remain a diagnostic, but source-attributed amplitude and displacement are unavailable. \\
+Missing profile, source binding, or resolved structural scope & For a written accounting artifact, request is \path{requested}, applicability is \path{applicability_unknown}, eligibility is \path{decision_unavailable}, and realization is \path{realized}; preserve producer facts. \\
+Structural named-use conflict & A faithfully written decision artifact may record the conflict with realization \path{realized}; use \path{failed} only if production of the artifact fails. \\
+Named use not requested & Request is \path{not_requested}; applicability and eligibility have no proposition; realization is \path{not_produced}. \\
+Requested use known inapplicable & For a written decision artifact, applicability is \path{inapplicable}, eligibility has no proposition, and realization is \path{realized}. \\
+Incomplete, failed, or absent requested artifact & Use realization \path{incomplete}, \path{failed}, or \path{not_produced}, respectively; the defective or absent artifact makes no authoritative eligibility assertion. \\
+Zero or non-finite diagnostic denominator & Ratio is unavailable or failed under its future exact method, never infinite. \\
+Unavailable response or covariance & Preserve its exact identity/status and follow the dependency matrix; do not erase amplitude, centroid, displacement, or other independent facts, and do not authorize a dependent claim. \\
+Incomparable response outputs & Report response unavailable or a typed discontinuity/state transition with branch, gauge, component, cause, and provenance; never subtract lifecycle objects or coerce incomparable numerical products. \\
+One array unavailable or failed & Preserve sibling atomic products; publish no POINT observation-wide success. \\
+Terminal-FRUIT assertion absent, or intermediate iteration & Reject the parent for base v0.1. \\
+Requested route unavailable & Do not choose, substitute, or fall back to another parent route. \\
+Diagnostic-display action present & Preserve the four named-use fields; the action cannot rescue any other exclusion. \\
+One fit component unavailable or failed & Preserve every conforming sibling role and the complete value-or-status atom. \\
+Published per-array product & Inherit parent observation/exposure lineage or record typed \path{not_applicable}; POINT creates no exposure identity and no cross-array independence assumption. \\
+\bottomrule
+\end{longtable}

@@ -1,0 +1,272 @@
+% SCI-RTC v0.1/r0.12 shared normative core -- falsifiable predictions.
+\section{Falsifiable predictions and limiting cases}
+\label{sec:core-predictions}
+
+Each prediction is an algebraic or semantic falsification target.  A future
+conformance activity may choose an exact numerical tolerance justified by the
+operation and representation before observing candidate output.  No result is
+reported by this document.
+
+\footnotesize
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-001} & Identity chain: paired raw application context, $A=I$, no replacement or filter, $M=1$, valid original pairs, and conditioned $r$ requested.  Both values, raw coordinate identity, pair order, cardinality, response, flags, and support are unchanged. & Missing/reordered partner, hidden calibration, value/order/cardinality change, flag loss, nonidentity or cross-coordinate kernel, or new claim of timing/coordinate authority. \\
+\PredID{SCI-RTC-PRED-002} & Context neutrality: feed the same paired \texttt{xs}/\texttt{rs} input and resolved numerical plan to contexts historically labeled Beammap, Pointing, OOF, Science, and diagnostic-only.  The same consumer-neutral bundle schema results; labels do not change operation availability or signal meaning, while consumers select the members they require. & A label silently enables, disables, or changes an operation; changes bundle shape or raw meaning; gives $r$ an independent plan; labels RTC output \si{mJy\per beam}; or interchanges CAL and RTC output. \\
+\PredID{SCI-RTC-PRED-003} & Raw donor direction: choose $\phi_q=2$, $\phi_d=4$, and donor $x_q=3$.  Equation~\eqref{eq:raw-donor} predicts raw target replacement $1.5$ and equal detector-static comparison coordinates $\chi_q=\chi_d^R=6$. & Use of $\phi_d/\phi_q$, output other than $1.5$, unequal comparison coordinate, calibration claimed from $\chi$, or dependence on legacy \texttt{responsivity}. \\
+\PredID{SCI-RTC-PRED-004} & Raw donor availability: independently make either factor invalid, convention/domain-incompatible, occurrence-mismatched, or set $\phi_d=0$.  The \texttt{flxscale} route is unavailable. & Finite replacement, stale factor reuse, row-number-only binding, zero insertion, or success without separate donor authority. \\
+\PredID{SCI-RTC-PRED-005} & Order: trace a paired raw input through pair-coherent spike/shift decisions, coordinate-specific correction, ordinary coordinate-diagonal temporal stages, and common phase-zero sampling, then trace only conditioned $x$ through distinct downstream SCI-CAL while retaining raw $r$ and requested conditioned $r$. & Donor replacement precedes resolved boundaries or crosses one, $x$ repair is copied into $r$, atmospheric diagnostic evidence is subtracted, absolute calibration or target atmosphere appears inside RTC, $r$ enters CAL, or the CAL parent omits the complete RTC plan. \\
+\PredID{SCI-RTC-PRED-006} & Interior target/donor impulses under fixed selection.  Each output column equals equation~\eqref{eq:local-kernel}; donor energy appears in the declared detector column, support, scale, and phase. & Missing or circularly wrapped energy, unexplained mixing, wrong donor identity/direction, support, normalization, or phase. \\
+\PredID{SCI-RTC-PRED-007} & Constant input with sufficient context.  Output equals the constant times realized DC gain after the declared transient; a DC-preserving chain is exactly constant. & Drift, divide-by-zero mask normalization, edge values advertised as interior, or a false DC-preservation claim. \\
+\PredID{SCI-RTC-PRED-008} & Interior step with complete context.  Response equals the cumulative impulse response and settles according to DC gain and stability. & Undeclared overshoot, failure to settle, hidden state leakage, or disagreement with the impulse-derived response. \\
+\PredID{SCI-RTC-PRED-009} & Affine ramp through each FIR and admitted alignment mapping.  Output slope and offset follow the zeroth and first moments of the exact kernel. & Unexplained clipping, wrong phase/slope/offset, or a ramp-preservation claim without the required moments. \\
+\PredID{SCI-RTC-PRED-010} & Long bin-centered and off-bin sinusoids at DC, passband interior/edge, transition, stopband, and near output Nyquist.  Amplitude and phase follow equations~\eqref{eq:lti-response} and \eqref{eq:alias}. & Gain/phase outside preregistered tolerance, unrecorded frequency convention, or an aliased component labeled passband signal. \\
+\PredID{SCI-RTC-PRED-011} & Sinusoids at the realized notch center and symmetric offsets under the exact rate and state.  Depth, width, phase, and transient follow realized zeros/poles. & Center/depth/width mismatch, unstable pole, rate mismatch, hidden state, or an edge transient reported ordinary-valid. \\
+\PredID{SCI-RTC-PRED-012} & Coordinate mask with valid inside/outside values plus invalid, unavailable, wrong-frame, out-of-domain, and ambiguously bound coordinates.  Invalid classes fail the affected operation and remain distinct from outside. & Invalid becoming outside/unmasked, entering geometry, clamping to a center/edge, or loss of the distinct cause. \\
+\PredID{SCI-RTC-PRED-013} & Samples just inside, exactly on, and just outside each selected mask boundary and temporal dilation.  Membership follows the recorded inclusive/exclusive and dilation policy identically across execution modes. & An undocumented boundary, frame mismatch, asymmetric dilation, or sequence-dependent membership. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-014} & Impulses and constants at first/last support cells and immediately inside complete FIR context.  Values, guard, support, and output admission follow the selected edge rule. & Undeclared padding, truncation, wrap, renormalization, guard, or output selection. \\
+\PredID{SCI-RTC-PRED-015} & Zero, impulse, and constant inputs split and rejoined at scan/chunk/state boundaries for an IIR.  Results follow the declared reset/carry and terminal-state policy. & Prior-observation leakage, hidden carry/reset, unbounded non-finite poisoning, or contradiction between split and declared state semantics. \\
+\PredID{SCI-RTC-PRED-016} & Lengths $0,1,L-1,L,L+1$ around every support/guard threshold, with stable scan identity. & Crash, underflow, stale output, silent scan deletion/renumbering, or ordinary-valid status without required context. \\
+\PredID{SCI-RTC-PRED-017} & Inject NaN, $+\infty$, and $-\infty$ separately into a sample, factor, coordinate, coefficient, and IIR state.  Failure or unavailable influence follows REQ-026 exactly. & Silent zero/coercion, finite-looking output without cause, stale state recovery, or an unbounded tail reported valid. \\
+\PredID{SCI-RTC-PRED-018} & Place synthesized and replaced causes first at the directly selected occurrence and then at noncenter members of full support.  Direct cases are universally excluded; noncenter causes propagate unchanged and consumer eligibility follows the declared policy. & A direct case called independent, a noncenter cause erased or made universally ineligible by RTC, or consumer disposition reported without its policy. \\
+\PredID{SCI-RTC-PRED-019} & For $M=1,2,3,4,5$ and $N=0$ through several incomplete final strides, enumerate $j=Mn$.  Cardinality and selected time follow equation~\eqref{eq:phase-zero}; no block mean appears. & Wrong $N_y$, dropped/duplicated point, nonzero phase, averaged value, timestamp misidentification, or rate mismatch. \\
+\PredID{SCI-RTC-PRED-020} & Two sinusoids separated by an integer multiple of $f_{\rm out}$, before and after the realized prefilter.  Folded amplitude is the sum in equation~\eqref{eq:alias}. & A folded term missing from response, inadequate stopband labeled alias-free, or incorrect image frequency/amplitude. \\
+\PredID{SCI-RTC-PRED-021} & Reuse one donor for two targets and give neighboring outputs overlapping filter support.  Any covariance claim states whether the resulting cross-target and temporal correlations are included, excluded, or unavailable; when included they follow equation~\eqref{eq:conditional-cov} and the admitted covariance. & Undisclosed omission, excluded or unknown correlations treated as zero, independent weights asserted without evidence, or reused donor described as additional exposure. \\
+\PredID{SCI-RTC-PRED-022} & Enable a response-changing mask, donor mix, stateful filter, edge, and decimator while providing only a scalar FIR transfer.  Complete response state is unavailable. & The partial scalar transfer labeled complete, or downstream use that assumes omitted stages are identity. \\
+\PredID{SCI-RTC-PRED-023} & Learned candidates include at least two safe factors and one failing each astronomical-transfer, alias, sampling, realizability, and compatibility constraint.  Equation~\eqref{eq:learned-plan} chooses the largest passing factor. & A smaller safe factor selected without rule, any failing factor applied, a percentile speed used for safety, or a missing numeric predicate treated as pass. \\
+\PredID{SCI-RTC-PRED-024} & Serialize and restart a learned plan, then alter one of beam identity, speed support, scan set, coefficient precision, rate, phase, application context, consumer binding, or parent.  Apply rejects the mismatch. & Silent relearning, retuning, native fallback, stale-plan application, or a realized record rewriting the application context or plan. \\
+\PredID{SCI-RTC-PRED-025} & Execute two observations sequentially with distinct rates, constants, factors, masks, donors, states, and output parents. & Any coefficient, state, factor, donor, mask, rate, flag, or product link leaks from the first observation. \\
+\PredID{SCI-RTC-PRED-026} & Toggle the complete spike-event/donor manifest and other optional inert diagnostics while holding the compact treatment/population summary, resolved plan, and realized operator fixed.  Values, flags, influence, eligibility, cardinality, response, failures, and normal summary are identical. & Despiking ceases to modify accepted targets, any scientific or numerical result changes, or an observational/production claim appears from the detail toggle. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-027} & Bind identical learned parameters first to a separate training population and then to the apply observation.  The numerical fixed-state response can match, but the second plan records data dependence and parameter/selection uncertainty. & Same-observation learning represented as fixed a priori, or conditional linearity used to erase selection or parameter uncertainty. \\
+\PredID{SCI-RTC-PRED-028} & Remove in turn one required learning-population identity, tolerance, uncertainty, or downstream-compatibility predicate before resolve.  The dependent plan remains unresolved and apply does not begin. & Missing evidence treated as pass, a default inserted, or output represented as applied learned mode. \\
+\PredID{SCI-RTC-PRED-029} & Serialize one resolved plan and attempt during apply to alter a notch center, cutoff, tap count, donor rule, or decimation factor.  The mutation is rejected or belongs to a separately authorized adaptive estimator. & Hidden retuning, silent fallback, or a realized record that rewrites the resolved plan. \\
+\PredID{SCI-RTC-PRED-030} & Sweep notch center error, line drift, width, depth, Q/order, initialization, direction, and overlap.  Residual line and astronomical amplitude, phase, centroid, covariance, transient, and edge loss follow the exact combined response. & Only line disappearance measured, or any changed astronomical observable omitted from the plan's validity evidence. \\
+\PredID{SCI-RTC-PRED-031} & Scan the same projected source at multiple speeds and directions through a fixed filter.  Its temporal spectrum and retained amplitude/PSF change according to equation~\eqref{eq:crossing-time} and exact response. & One nominal cutoff or scalar beam treated as speed- and direction-independent proof of preservation. \\
+\PredID{SCI-RTC-PRED-032} & Design FIR candidates over multiple tap counts and coefficient precisions.  The selected $N_\star$ is the smallest candidate passing every registered transfer, alias, phase, support, guard, and realizability predicate. & Arbitrary configured taps, approximate order formula promoted to authority, or a candidate with any failed predicate selected. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-033} & Inject compact and extended sources through admitted high- or band-pass candidates.  Low-frequency rejection produces the predicted lost broad modes, compensated response, or negative lobes. & Unit preservation labeled flux preservation, or removed absolute/extended modes reported available without response restoration evidence. \\
+\PredID{SCI-RTC-PRED-034} & Choose donor and target with compatible \texttt{flxscale} but deliberately different sky signal or beam coupling.  Raw-domain convention transfer remains algebraically correct while the surrogate is not a missing-sky reconstruction. & Compatible factors claimed to prove physical donor equivalence or independent exposure. \\
+\PredID{SCI-RTC-PRED-035} & Attempt Beammap donor scaling with a new \texttt{flxscale} derived from that same conditioned Beammap.  The route is rejected until an identified prior factor authority is supplied. & Circular use of the new factor or absence of the prior authority in lineage. \\
+\PredID{SCI-RTC-PRED-036} & Apply filters with known nonzero group delay to Pointing/Beammap scans in opposite directions.  Centroid displacement follows equation~\eqref{eq:scan-displacement} with opposite scan-direction sign unless time/coordinates are corrected. & Selected grid time treated as response center, wrong displacement sign, or unrecorded correction. \\
+\PredID{SCI-RTC-PRED-037} & Process calibrator and target with plans that share a nominal label but differ in coefficients, rate, phase, state, edge, or decimation.  Cross-plan calibration transfer is unavailable absent explicit response accounting or observational evidence. & Nominal label, preserved unit, or \texttt{flxscale} alone treated as RTC-plan compatibility. \\
+\PredID{SCI-RTC-PRED-038} & Pass all deterministic coefficient and operator fixtures but withhold the required source/scan design studies.  Algebraic correctness may be supported; science qualification remains unassessed. & Deterministic pass promoted to observational performance, science qualification, or production readiness. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-039} & Inject one strong coherent line and no other valid line. Attempt 1 accepts and suppresses it; Attempt 2 finds no acceptable successor. The accepted-plan count remains one and $\Pi_1$ is final with a no-successor stop. & A manufactured $\Pi_2$ or evaluation product, unbounded iteration, unsupported second notch, rejected evidence lost, or no typed stop/final-plan identity. \\
+\PredID{SCI-RTC-PRED-040} & Inject two unequal coherent lines with the weaker revealed only after the stronger is suppressed, including decisive $r$-origin evidence. A later attempt accepts one complete two-notch pair plan as $\Pi_k$ and replays it once on original $\mathbf u^{(0)}$; projected outputs follow the predicted cumulative paired response. & $x$-only replay parent, $r$ evidence lost, attempt and accepted-plan indices conflated, increment-only plan, accumulated exploratory parent, missing first notch, duplicate filtering, or response disagreement. \\
+\PredID{SCI-RTC-PRED-041} & Create a peak at a first-notch edge that agrees with predicted cumulative ringing or response artifact. The successor candidate is rejected and the first plan remains final. & Artifact admitted as a line, response floor ignored, or prior accepted plan invalidated solely by rejection. \\
+\PredID{SCI-RTC-PRED-042} & Compare applying a one-notch pair plan twice with applying the intended complete successor once to original $\mathbf u^{(0)}$. Values, paired response, phase, edges, support, availability, and covariance differ unless exact operator equivalence is proved. & Repeated filtering treated as original-pair replay, an $x$-only parent used, or equality claimed from nominal notch identity without complete operator proof. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-043} & Propose a successor that fails one cumulative transfer, stability, support, or compatibility predicate. The attempt is rejected; its evidence and cause persist while the accepted-plan index and final product remain unchanged. & Rejected proposal assigned a new accepted-plan index or evaluation, failed plan applied, prior product rewritten, rejected evidence erased, or missing predicate treated as pass. \\
+\PredID{SCI-RTC-PRED-044} & Alternate between proposing addition and removal of the same line or vary its parameters outside declared stability across attempts. Termination is typed oscillating or nonconvergent. & Alternation or parameter instability labeled convergence, stable plan, or successful maximum-safe refinement. \\
+\PredID{SCI-RTC-PRED-045} & Supply a sequence that reaches the owner-approved maximum attempt count without satisfying plan stability. The result records maximum-attempt termination and the last accepted plan, not convergence. & Maximum count labeled stable/converged, continued iteration, attempt count confused with accepted-plan count, or disappearance of the last accepted plan. \\
+\PredID{SCI-RTC-PRED-046} & Serialize and restart the final cumulative plan, then vary original parent or learning-population identity. Exact compatible restart reproduces the product; either mismatch is rejected. & Silent relearning, stale-parent application, altered plan, or acceptance of incompatible learning lineage. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-047} & Supply complete paired occurrences, then remove only one $r$ partner and separately only one $x$ partner.  Complete pairs are admitted; either incomplete occurrence fails required-input admission. & Partner synthesis, copying, zero fill, independent join, or successful admission of an incomplete pair. \\
+\PredID{SCI-RTC-PRED-048} & Apply a known native nonlinear $IQ\!\rightarrow\!xr$ mapping, then one admitted ALIGN relation, and serialize/restart.  The aligned pair and both upstream identities reproduce equations~\eqref{eq:iq-xr-mapping} and~\eqref{eq:order-equivalence}; the RTC-local operator begins at that aligned pair. & A nonlinear mapping is forced into one global affine form, either upstream identity changes, or ALIGN is omitted or applied twice inside RTC. \\
+\PredID{SCI-RTC-PRED-049} & Make $x$ numerically invalid and $r$ valid, then reverse them, while preserving a pair-level pathology cause/support.  The pair persists and coordinate availability remains distinct; invalid $r$ does not alter valid $x$. & One member's numerical state copied to the other, invalid member used as valid, pair-level cause/support lost, or valid $x$ altered because $r$ is unavailable. \\
+\PredID{SCI-RTC-PRED-050} & Inject an optical signal with known nonzero $r/x$ response, then rescale the $r$ coordinate under an explicit mapping revision.  Each estimator recovers the correspondingly transformed $\epsilon$; a reported $\psi$ is invariant only after the declared normalization and metric transform. & $r$ assumed zero, a ratio or angle remains numerically unchanged under incompatible rescaling, or units, mapping revision, metric, uncertainty, or support are missing. \\
+\PredID{SCI-RTC-PRED-051} & Give atmosphere and bright source deliberately different leakage ratios and compare them first under compatible and then incompatible coordinate conventions.  Distinct products remain available; the incompatible comparison is unavailable until an explicit transform is applied. & Averaging, substitution, universal promotion, or cross-revision comparison without a compatible normalization and metric. \\
+\PredID{SCI-RTC-PRED-052} & Generate frequency-dependent leakage and fit both a scalar and admitted spectral estimator.  Only the spectral product supports the frequency-dependent claim; the scalar is range-qualified. & Scalar advertised as broadband authority, missing band/support, or absent response status. \\
+\PredID{SCI-RTC-PRED-053} & Attempt to correct $x$ from $r$, correct $r$ from $x$, calibrate $r$, use either coordinate as a donor for the other, or replace either invalid coordinate with its valid partner.  Every route is unavailable in v0.1. & Any route executes or is implied by shared pair identity. \\
+\PredID{SCI-RTC-PRED-054} & Simulate correlated $x/r$ noise and an $r$-dependent selector with both conditioned coordinates requested.  At fixed state, the numerical Jacobian is coordinate-diagonal; the joint conditional covariance retains propagated cross blocks.  Across selector realizations, selection uncertainty is retained or unavailable. & A cross-coordinate numerical branch appears, admitted cross blocks are discarded or forced to zero, the conditioned-$x$ upper-left block changes because $r$ fails, or selector dependence is discarded. \\
+\PredID{SCI-RTC-PRED-055} & Add one network event with a known finite physical-time transition, bounded detector timing offsets, unequal $x/r$ evidence, and adjacent isolated spikes; repeat it at different sampling cadences. Learning uses the original pair, reports one event identity, cadence-consistent timing-vector-derived transition support, stable plateaus, and only then permits valid additive correction and within-segment replacement. & A fixed sample count changes the inferred physical width, detector events lose their network parent, donor-repaired values drive the change point, shift is absorbed as spikes, amplitude is copied between coordinates, or a donor crosses the boundary. \\
+\PredID{SCI-RTC-PRED-056} & Place isolated spikes immediately before and after a level shift and vary donor values independently.  The resolved change point is invariant to unused donor values; replacement begins only after segmentation and stays inside each stable segment. & Change-point learning consumes donor substitutions, depends on donor policy, crosses a shift boundary, or circularly repairs evidence used to resolve that boundary. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-057} & Put a filter impulse on each side of a declared level-shift boundary.  The ordinary plan resets.  A carry plan is admitted only with separately authorized continuity, complete response, and a passing residual-contamination criterion. & Silent cross-boundary state, ordinary carry without separate authority, failed/missing residual criterion, ordinary-interior labels in guards, or missing reset provenance. \\
+\PredID{SCI-RTC-PRED-058} & Insert two level shifts with overlapping guards and a short middle segment.  Event identities remain ordered and the selected conflict/minimum-segment policy gives one deterministic disposition. & Event collapse, order dependence outside policy, negative/ambiguous segment, or silent guard truncation. \\
+\PredID{SCI-RTC-PRED-059} & Give stable pre/post plateaus a known additive offset around a finite transition. With correction disabled the values are unchanged; with a valid selected correction one plateau moves to the declared reference while transition cells remain flagged, unmodeled, and excluded. & An unselected correction changes values, the reference/sign is ambiguous, transition cells enter either plateau fit or become valid, the cause is erased, or a gain term is fitted. \\
+\PredID{SCI-RTC-PRED-060} & Measure leakage before and after declared coordinate-diagonal filtering.  The raw and conditioned diagnostics differ according to their composed responses and retain separate identities, units, mappings, support, and uncertainty. & One value reused across stages, nonzero $r$ optical response removed or renormalized, filtering treated as commuting without proof, or pre/post parentage lost. \\
+\PredID{SCI-RTC-PRED-061} & Hold the resolved $x$ operator fixed and toggle an atmospheric leakage template between available and diagnostic-unavailable states.  Conditioned $x$ is unchanged while diagnostic availability and lineage change exactly as declared. & The template is numerically subtracted, changes $x$, silently becomes PTC cleaning, or is conflated with target SCI-CAL atmosphere. \\
+\PredID{SCI-RTC-PRED-062} & Stop iterative refinement before $A_{\max}$ after $A$ actual attempts.  The record satisfies $K\le A<A_{\max}$ and contains no fabricated attempts. & $A=A_{\max}$ forced, artificial no-op attempts, or accepted-plan count confused with either attempt quantity. \\
+\PredID{SCI-RTC-PRED-063} & For Beammap, Pointing, OOF, Science, and diagnostic-only application contexts, inspect resolved plans and output bundles.  The consumer-neutral schema retains conditioned $x$, requested conditioned $r$ or typed unavailability, raw $r$ parentage, paired mapping/validity, leakage, level-shift/segment/reset, diagnostic atmosphere treatment, and consumer routing. & Missing disposition, context-dependent loss or shape change, an independent $r$ lifecycle, $x$ correction silently applied to $r$, an operation enabled by label implication, or consumer routing that bypasses downstream contracts. \\
+\bottomrule
+\end{tabularx}
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-064} & Apply an ideal admitted mapping to a purely optical excitation whose nominal orthogonal projection is zero.  The recovered $r$ optical coefficient is consistent with zero within the preregistered estimator tolerance. & A nonzero coefficient outside tolerance, missing uncertainty, or a zero claim made without adequate excitation/support. \\
+\PredID{SCI-RTC-PRED-065} & Apply a known small mapping rotation to the same excitation.  The measured $r/x$ leakage follows the predicted sign and magnitude over the declared local domain. & Wrong sign/magnitude, global-affine extrapolation outside the mapping domain, or rotation absorbed into an unrelated nuisance. \\
+\PredID{SCI-RTC-PRED-066} & Generate shared optical signal with noise in both $x$ and $r$, then compare direct $r$-on-$x$ regression with the admitted estimator.  Direct regression exhibits the predicted errors-in-variables or shared-data bias unless its method explicitly accounts for it. & Raw correlation promoted to an unbiased coefficient, self-inclusion ignored, or estimator uncertainty excludes shared-data dependence. \\
+\PredID{SCI-RTC-PRED-067} & Scan an optical source whose expected $r$ leakage follows the admitted source response across a bounded interval.  The crossing remains a source/leakage event rather than an abrupt persistent level shift. & Expected optical leakage alone triggers a shift, creates a false plateau boundary, or loses source identity. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-068} & Inject a gradual drift over declared support.  It remains drift/nonstationarity evidence unless the selected change-point model independently supports an abrupt transition. & The drift is automatically collapsed into one step or an abrupt-shift label is assigned without model evidence. \\
+\PredID{SCI-RTC-PRED-069} & Learn a PSD/notch plan first from data containing an unsegmented step and then from the same original data with the accepted transition and guards excluded.  The first plan shows the predicted step contamination; the second excludes it under the declared support policy. & Identical stationary-learning claims without accounting, a step learned as a spectral line, or segmentation that still admits cross-boundary support. \\
+\PredID{SCI-RTC-PRED-070} & Give stable pre/post plateaus materially different admitted leakage or paired optical-response states. The event remains distinct, additive correction is unavailable, and v0.1 fits no gain or responsivity change. & Additive equivalence is claimed despite the response change, a gain-changing correction is silently fitted, or pre/post comparison is omitted when support exists. \\
+\PredID{SCI-RTC-PRED-071} & Construct one short plateau that supports readout-health diagnostics but not a defensible offset or stronger requested operations, alongside another usable plateau. The event remains a boundary, no offset is invented, and the plan separately retains or rejects each plateau for the application context. & One sample-count threshold controls all uses, an offset is fabricated, the entire scan is automatically discarded, or diagnostic validity is promoted to a stronger use. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-072} & Toggle the conditioned-$r$ request while holding admitted input and the conditioned-$x$ plan fixed.  Conditioned $x$ is bitwise/numerically identical, raw-$r$ parentage remains, and the request changes only optional paired content and its facts. & Conditioned $x$, its plan, response, support, or CAL eligibility changes; $r$ becomes calibrated/Stokes; or a separate $r$ lifecycle appears. \\
+\PredID{SCI-RTC-PRED-073} & Put coordinate-specific spike evidence in only $r$ and select an $x$-donor repair over the resulting paired support.  The pathology/support affects the paired occurrence, $x$ follows its justified repair, and conditioned $r$ remains present but typed invalid/unavailable without donor reconstruction. & The pathology is ignored in $x$, $r$ is donor-filled or copied from $x$, coordinates are numerically mixed, or coordinate-specific evidence is lost. \\
+\PredID{SCI-RTC-PRED-074} & Request conditioned $r$ with several local invalid intervals and one globally unavailable $r$ operator state.  Its grid, cardinality, selected times, and representative occurrences exactly match conditioned $x$; invalid locations remain in place, and valid $x$ is unchanged in both cases. & Rows are dropped/reindexed/interpolated/filled, grids differ, or local/global $r$ failure corrupts or invalidates valid $x$. \\
+\PredID{SCI-RTC-PRED-075} & Apply a shared filter and phase-zero selector to correlated paired input while adding one $x$-only donor repair.  Ordinary responses use identical diagonal $L_\Pi$ blocks, common grid/support agree, the donor remains an explicit $x$ exception with typed $r$ unavailability over its influence, and available joint covariance follows equation~\eqref{eq:canonical-pair-covariance}. & Either cross numerical derivative is nonzero, ordinary diagonal blocks differ, a donor value appears in $r$, available cross-covariance is erased, or an absent covariance model is reported as numerical zero. \\
+\PredID{SCI-RTC-PRED-076} & Inject an expected optical source with nonzero $r$ response into artifact-learning support.  With required source authority present, the source is pair-protected and raw/conditioned leakage remains separately characterized; with that authority absent, the affected learned/corrective operation is unavailable while an already resolved applicable linear filter remains coordinate-diagonal. & Expected leakage alone is flagged pathological, removed/rotated/renormalized, used as artifact evidence without protection, raw/conditioned stages conflated, or a resolved filter is recast as an invented correction. \\
+\PredID{SCI-RTC-PRED-077} & Deliver one bundle with valid conditioned $x$, locally unavailable conditioned $r$, and complete RTC cause/support/response/leakage/source-protection facts to two consumers with different declared policies.  RTC content is identical; consumer dispositions may differ under their own authority. & RTC changes $x$, selects a PTC joint mode, publishes a cross-package aggregate validity decision, erases causes, or tailors producer facts to a consumer's policy. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-078} & Apply an admitted FIR stage to paired impulses with conditioned $r$ requested.  Both diagonal blocks reproduce the same coefficients, support, precision, phase, and boundary response. & Unequal impulse responses, coefficients, support, phase, precision, or a nonzero cross-coordinate numerical branch. \\
+\PredID{SCI-RTC-PRED-079} & Apply an admitted stateful filter across identical pair-plan gaps, level shifts, guards, and restarts.  Both coordinates use the same state policy, initialization, reset boundaries, and transient classification. & Coordinate-specific ordinary state/reset behavior, silent carry, or different guard/interior classification. \\
+\PredID{SCI-RTC-PRED-080} & Downsample an odd-length paired segment with factor $M$ and several invalid cells.  Both products have identical phase-zero slots, selected times, representative occurrences, cardinality, masks, and unchanged rows. & Different phase/cardinality/grid, row deletion, fill, reindexing, or unequal representative occurrence. \\
+\PredID{SCI-RTC-PRED-081} & Hold $\Pi$ fixed and perturb only $r$, then only $x$, on common available support.  The opposite numerical output is unchanged and the two self-responses equal $L_\Pi$. & Either fixed-state cross derivative is nonzero or the two self-response operators differ. \\
+\PredID{SCI-RTC-PRED-082} & Insert one accepted hard spike seen directly only in $r$.  Resolve retains direct-$r$ evidence, adds inferred-$x$ pair consequence, and uses one unioned action support for both. & $x$ support unchanged, $r$ origin erased, inferred $x$ reported as direct, or evidence values unioned into a generic flag. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-083} & Repeat PRED-082 with direct evidence only in $x$, then with a genuinely joint estimator.  The same pair-action rule applies while the three origins remain distinguishable. & Asymmetric hard-action support, loss of origin, or joint evidence represented as two direct detections. \\
+\PredID{SCI-RTC-PRED-084} & Overlap accepted hard $x$, $r$, and joint events with different supports.  The applied support equals the set union and every contributing cause remains queryable at overlaps. & Intersection, last-writer support, duplicate action, lost cause, or action outside the resolved union. \\
+\PredID{SCI-RTC-PRED-085} & Present a weak $r$ line, leakage-like coherence, and a hard non-finite event.  Only the hard accepted event enters $B_{\rm pair}$ until separate candidate predicates pass. & All diagnostics unioned into hard action or the accepted hard cause left out. \\
+\PredID{SCI-RTC-PRED-086} & Hold the resolved plan fixed while new evidence appears during Apply.  Current output follows the original plan; a changed plan appears only in a successor attempt. & Within-apply event discovery, coefficient/support mutation, or realized record rewriting $\Pi$. \\
+\PredID{SCI-RTC-PRED-087} & Inject expected optical response with nonzero $r/x$ leakage and complete source authority.  It remains protected diagnostic evidence while any independently accepted ordinary filter acts identically on both coordinates. & Leakage becomes automatic hard pathology, is removed/rotated, or causes unequal ordinary operators. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-088} & Repeat PRED-087 without required source-protection authority.  The affected learning/correction is unavailable; expected response is not silently promoted to hard evidence. & Missing authority treated as contamination, pass, or zero leakage. \\
+\PredID{SCI-RTC-PRED-089} & Place an optical source over a real hard discontinuity supported independently of source response.  Protection preserves the optical evidence while the typed hard cause still produces pair action. & Source mask suppresses all hard evidence, or hard action erases the protected source/leakage record. \\
+\PredID{SCI-RTC-PRED-090} & Inject one accepted paired level shift with unequal known $\Delta x$ and $\Delta r$.  One transition, guard, segment split, and reset are recorded, with independently estimated amplitudes and uncertainties. & Two unrelated event boundaries, copied/equal amplitudes, or a missing coordinate-specific uncertainty. \\
+\PredID{SCI-RTC-PRED-091} & Make the $x$ plateau correction valid and the $r$ correction unsupported, then apply a finite FIR and phase-zero selector. Shared segmentation/grid remain; $x$ may be corrected, while conditioned $r$ is unavailable over the full predicted downstream footprint rather than reconstructed. & Unavailability ends at plateau cells, event/grid changes, $x$ is invalidated solely by $r$ failure, or an $r$ correction is copied from $x$. \\
+\PredID{SCI-RTC-PRED-092} & Reverse correction availability in PRED-091 and apply an IIR with a known next reset. The shared event persists, valid $r$ correction may act, and unavailable conditioned $x$ influence extends exactly to the declared reset without $r\rightarrow x$ amplitude mixing. & Influence stops early or crosses the reset, $r$ correction numerically changes $x$, event/grid splits, or missing $x$ correction is invented. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-093} & Reverse the selected plateau reference while preserving evidence and event support.  Each available coordinate correction changes sign consistently with its own amplitude; transition cells and reset remain identical. & Unchanged sign, copied cross-coordinate amplitude, transition repair, or changed segmentation. \\
+\PredID{SCI-RTC-PRED-094} & Repeat the same physical transition at two admitted cadences.  Physical-time event/support and pair identity agree, while sample support follows each timing vector and both coordinates share it per realization. & Fixed sample width, coordinate-specific boundary, or cadence-dependent physical event identity. \\
+\PredID{SCI-RTC-PRED-095} & Place unequal coordinate noise and quality around a shared shift.  Event acceptance follows the resolved evidence policy; amplitude uncertainty and correction availability remain coordinate-specific. & One coordinate's quality copied to the other or a valid pair event equated with two valid corrections. \\
+\PredID{SCI-RTC-PRED-096} & Put a level shift adjacent to a stateful-filter guard with one unavailable coordinate correction. The common operator resets and propagates one identical guard/support rule, while coordinate-local numerical availability differs over the exact downstream influence. & Different reset/guard support, pair identity equated with joint availability, unavailable influence omitted, or affine correction folded into ordinary response. \\
+\PredID{SCI-RTC-PRED-097} & Inject an $r$-only spectral candidate with no passing cross-coordinate predicate.  The evidence is retained and neither coordinate receives a new notch. & Candidate automatically notches $x$ or $r$, or disappears because no notch was admitted. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-098} & Supply a spectral candidate that passes every selected cross-coordinate, transfer, phase, support, covariance, protection, and false-detection predicate.  One admitted notch with identical response acts on both coordinates. & Notch applied to only one canonical branch, unequal parameters, or admission with a missing/failed budget. \\
+\PredID{SCI-RTC-PRED-099} & Vary candidate strength around the selected shared-admission boundary.  Candidate disposition changes under the preregistered rule; ordinary paired action changes only after Resolve. & Hidden threshold, within-apply spectral adaptation, or automatic union of candidate subtraction. \\
+\PredID{SCI-RTC-PRED-100} & Perform one accepted $x$ donor replacement and propagate it through a finite-support filter.  Conditioned $r$ is unavailable over the full transitive output influence while its grid and raw parent remain intact. & Only the representative cell is unavailable, $r$ is donor-filled, rows are dropped, or a cause is lost. \\
+\PredID{SCI-RTC-PRED-101} & Reuse a donor across multiple targets with correlated paired input.  $x$ records donor-induced correlations; $r$ remains unreconstructed and its affected covariance components are unavailable rather than zero. & Independent-exposure claim, missing donor correlation, invented $r$ covariance, or cross-coordinate donor value. \\
+\PredID{SCI-RTC-PRED-102} & Toggle the $x$ donor exception while holding common ordinary $L_\Pi$ fixed.  Outside its causal influence both canonical branches retain identical ordinary response; inside, valid $x$ may remain while $r$ response is typed unavailable. & Donor branch inserted into $L_r$, ordinary filters diverge elsewhere, or $x$ is invalidated solely by $r$ unavailability. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.18\linewidth}p{0.36\linewidth}X@{}}
+\toprule
+ID & Construction and prediction & Falsifier \\
+\midrule
+\PredID{SCI-RTC-PRED-103} & On a preregistered artifact-free population containing expected $r$ optical response, compare $x$ data loss and false pair actions with and without accepted $r$-origin hard-evidence pathways, holding all owner-selected predicates fixed.  The study reports the trade space and uncertainty without asserting a result in this contract. & No false-positive/data-loss accounting, optical response counted as known contamination, thresholds changed after observing outcomes, or a performance/qualification claim inferred from this prediction. \\
+\PredID{SCI-RTC-PRED-104} & Trace one native occurrence from measured $(I,Q)$ through Tune mapping to $(x^{\rm acq},r^{\rm acq})$, then through exactly one ALIGN relation to $(x^A,r^A)$ and RTC. & Tune output mislabeled aligned, ALIGN omitted or applied twice, identities collapsed, or RTC begins from native rows. \\
+\PredID{SCI-RTC-PRED-105} & Hold the original admitted pair fixed, let decisive evidence occur only in $r$, and toggle publication of conditioned $r$. Every iterative evaluation and final replay uses the same $\mathbf u^{(0)}$ and pair plan; only the optional output projection changes. & $x$-only learning/replay, loss of $r$ evidence, changed accepted plan from the publication toggle, or unnecessary conditioned-$r$ artifact required. \\
+\PredID{SCI-RTC-PRED-106} & Create equal pair-action support with valid conditioned $x$, locally unavailable conditioned $r$, and joint covariance available only on their overlap. The grid and action support match, $\mathcal A_x\ne\mathcal A_r$, and $\mathcal A_C\subseteq\mathcal A_x\cap\mathcal A_r$. & Common support treated as complete paired values, rows dropped, covariance reported outside joint support, or one coordinate's availability copied to the other. \\
+\PredID{SCI-RTC-PRED-107} & Make one affine correction unavailable immediately before FIR, IIR, notch, and decimation cases with known support/reset. The affected coordinate's unavailable output follows each exact transitive footprint; the grid and other coordinate remain intact. & Unavailability confined to input cells, wrong finite footprint, IIR influence crossing or missing its reset, row loss, or other-coordinate corruption. \\
+\PredID{SCI-RTC-PRED-108} & Apply a valid additive correction to conditioned $r$ across a known readout step. The corrected companion changes as authorized, while immutable raw-$r$ parentage and event diagnostics reproduce the original step and retain distinct stage identity. & Raw parent overwritten, original step erased from diagnostics, corrected and raw stages conflated, or correction provenance absent. \\
+\bottomrule
+\end{tabularx}
+\normalsize
+
+\subsection{Analytic limits}
+
+The following limits are required: a compatible donor pair with
+$\phi_q=\phi_d$ gives unit raw donor scale; a replacement indicator tending
+to zero gives identity; filter coefficients tending to a Kronecker delta give
+identity; $M\to1$ gives no rate change; a source-mask radius tending to zero
+selects only exact valid coincidences under the declared boundary; complete
+context approaches the declared interior response; and a causal pole
+approaching the unit circle exposes increasing memory and never retains a
+stability claim at or outside the circle.
+
+\hypertarget{rtc-core-end}{}
+\begingroup
+\setlength{\fboxsep}{2pt}
+\noindent\fcolorbox{RTCblue}{RTCpale}{\parbox{0.97\linewidth}{\footnotesize
+\textbf{End of shared normative core:} \texttt{SCI-RTC-v0.1/r0.12}.
+View-specific material cannot add to or modify this scientific authority.
+}}
+\endgroup

@@ -1,0 +1,156 @@
+% SCI-RTC v0.1/r0.12 shared normative core -- notation and status.
+% This file is imported by the complete formal-contract view.
+\hypertarget{rtc-core-begin}{}
+\section{Shared normative authority and notation}
+\label{sec:core-notation}
+
+\begin{center}
+\fcolorbox{RTCblue}{RTCpale}{\parbox{0.92\linewidth}{
+\textbf{Normative core stamp:} \texttt{SCI-RTC-v0.1/r0.12}.  The six files in
+\texttt{src/common/} form one authority.  Text outside this shared core is
+explanatory or conformance guidance and cannot alter a definition, equation,
+assumption, requirement, prediction, unavailable state, or owner decision.
+}}
+\end{center}
+
+SCI-RTC begins with admitted aligned paired raw detector-coordinate streams
+\texttt{xs} and \texttt{rs} and ends with an atomic, consumer-neutral raw
+conditioning bundle.  Conditioned $x$ is the required numerical RTC output;
+when conditioned $r$ is requested, it is the optional paired companion on
+exactly the conditioned-$x$ grid.  The exact paired raw $r$ parent and every
+causal $r$ diagnostic or selector remain in that bundle whether or not the
+companion is requested.  Conditioned $r$ is neither an independent RTC
+pipeline nor a calibrated or Stokes product.  Raw $x$ is not itself a Stokes
+parameter.  ALIGN, the Tune/readout mapping authority, AST, and
+SCI-BEAM retain authority for the upstream meanings they produce; SCI-CAL may
+calibrate only the conditioned $x$ path of an exact RTC bundle.  PTC, VAL,
+MAP, BEAM, NOI, MAP-003, FLT, SRC/MODE, and FRUIT retain authority for their
+downstream science.  This contract owns the realized conditioning order and
+its scientific consequences; it does not infer current software behavior.
+
+The words \ReqWord{shall} and \ReqWord{shall not} identify requirements.
+\ReqWord{Required unavailable} means that the affected product or claim shall
+not be reported as complete.  \ReqWord{Optional unavailable} is a typed,
+scientifically inert state.  Missing, disabled, automatic, rejected, invalid,
+failed, unavailable, unsupported, and omitted remain distinct states.
+
+\subsection{Indices, sets, and application-context labels}
+
+\begin{tabularx}{\linewidth}{@{}p{0.20\linewidth}X@{}}
+\toprule
+Symbol & Normative meaning \\
+\midrule
+$o$ & Immutable observation identity. \\
+$d,q\in\mathcal D_o$ & Exact admitted detector occurrences; $d$ is a target and $q$ may be a donor.  A detector index or row number alone is not this identity. \\
+$m_{\rm native}$ & Native acquisition-row index; it is not a physical $r$ coordinate or an aligned or conditioned slot. \\
+$j\in\{0,\ldots,N-1\}$ & Ordered aligned input slot on the admitted ALIGN grid. \\
+$n\in\{0,\ldots,N_y-1\}$ & Ordered phase-zero RTC output slot. \\
+$\mathcal R$ & RTC application context naming requested use, paired input and interval, consumers, and constraints.  Pointing, OOF, Science, Beammap, and diagnostic labels may be context facts; no such label restricts operation availability or silently selects policy. \\
+$x^{\rm acq}_{dm},r^{\rm acq}_{dm}$ & Exactly paired raw readout coordinates on the native acquisition grid, before the imported ALIGN mapping. \\
+$x^A_{dj},r^A_{dj}$ & Exactly paired admitted aligned raw KID readout coordinates and the RTC-local input boundary.  $x$ supplies the ordinary total-intensity analysis path; $r$ supplies readout/leakage/artifact/Tune-health evidence.  They share occurrence identity, cadence, phase, and mapping lineage but retain independent value validity. \\
+$\mathbf v^{IQ,\rm acq}_{dm}$ & Upstream native-grid orthogonal microwave transmission components $(I^{\rm acq}_{dm},Q^{\rm acq}_{dm})^{\mathsf T}$. \\
+$\mathbf u^{xr}_{dj}$ & Paired raw readout vector $(x^A_{dj},r^A_{dj})^{\mathsf T}$ admitted at the RTC boundary. \\
+$\zeta$ & Complete Tune and $I,Q\!\rightarrow x,r$ mapping identity, reference, normalization, validity domain, epoch, and uncertainty state. \\
+$\chi_{dj}$ & Detector-static \texttt{flxscale} comparison coordinate used only to define compatible donor transfer; it is not a calibrated RTC product. \\
+$u^x_{dj}$ & Raw $x$-coordinate $\Delta f/f$ value immediately before the ordered RTC filter chain. \\
+$v^{x,\rm preD}_{dj}$ & Final raw $x$ stream after every admitted RTC replacement/filter stage and immediately before phase-zero point selection. \\
+$y^{x,\rm RTC}_{dn}$ & Required conditioned raw $x$-coordinate $\Delta f/f$ RTC output at the selected phase-zero slot. \\
+$y^{r,\rm RTC}_{dn}$ & Optional conditioned raw $r$-coordinate companion at exactly the paired conditioned-$x$ slot.  It retains the raw-$r$ coordinate convention and is typed invalid or unavailable where no scientifically justified $r$ value exists. \\
+$c^{\rm CAL}_{dn}$ & Distinct downstream SCI-CAL output, when authorized: top-of-atmosphere, point-source-equivalent mJy per fixed nominal beam. \\
+$\phi_d$ & \texttt{flxscale} for one exact detector occurrence under the declared multiplicative convention and calibration domain. \\
+$A_\alpha,\mathbf a_\alpha$ & Imported, realized upstream ALIGN mapping and affine term with state $\alpha$.  They map the native acquired pair to the admitted aligned pair, remain in lineage, and are not reapplied by the RTC-local operator. \\
+$C^{\rm CAL}_\kappa$ & Downstream SCI-CAL operator with state $\kappa$, including selected absolute \texttt{flxscale} and target-atmosphere correction; RTC does not apply it. \\
+$S_\sigma$ & Spike-candidate evidence selector used only for masking or robust downweighting during level-shift learning; it does not replace samples. \\
+$B^x_\omega$ & Realized post-segmentation $x$-replacement operator conditioned on selection state $\omega$; it has no $r$ numerical branch. \\
+$F_{k,\theta_k}$ & Realized ordered FIR, IIR, notch, or admitted mask-controlled stage $k$. \\
+$D_{M,0}$ & Integer phase-zero point selector of factor $M\geq1$. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.20\linewidth}X@{}}
+\toprule
+Symbol & Normative meaning (continued) \\
+\midrule
+$\Omega$ & Complete realized conditioning state, including all upstream bindings and every selected stage, exception, state, edge rule, and output interval. \\
+$\mathcal L$ & Declared learning population with exact identity, selection, support, masks, exclusions, and compatibility domain. \\
+$\Lambda$ & Learned evidence and uncertainty produced by declared diagnostics; it is not authorization to apply. \\
+$E_x,E_r,E_{xr}$ & Direct coordinate-specific and genuinely joint evidence records, preserving origin, support, protection, uncertainty, quality, causal class, and disposition. \\
+$B_{\rm pair}$ & Cause-preserving union of accepted owner-designated hard action support from $x$, $r$, and joint evidence. \\
+$\Pi$ & One immutable resolved RTC pair plan admitted from learned evidence and fixed scientific policy. \\
+$L_\Pi$ & One ordinary temporal and sampling operator used identically on both canonical coordinate branches. \\
+$\mathcal A_\Pi$ & Apply operator that consumes plan $\Pi$ without changing it. \\
+$a\in\{1,\ldots,A\}$ & Refinement-attempt index; $A$ is the number of attempts actually executed. \\
+$A_{\max}$ & Finite owner-approved maximum attempt count, with $A\leq A_{\max}<\infty$. \\
+$k\in\{0,\ldots,K\}$ & Accepted-plan index; $K\le A$ is the final accepted-plan index. \\
+$k_a$ & Accepted-plan index available at the start of attempt $a$. \\
+$\widetilde\Pi_a$ & Complete cumulative successor plan proposed by attempt $a$; it is not an accepted plan unless its disposition is accepted. \\
+$\delta_a$ & Typed attempt disposition in $\{\mathrm{accepted},\mathrm{rejected},\mathrm{stop}\}$. \\
+$\Pi_k$ & Complete cumulative accepted plan $k$; $\Pi_0$ is the admitted initial fixed or identity plan. \\
+\bottomrule
+\end{tabularx}
+
+\clearpage
+\begin{tabularx}{\linewidth}{@{}p{0.20\linewidth}X@{}}
+\toprule
+Symbol & Normative meaning (continued) \\
+\midrule
+$\mathbf u^{(0)}$ & Original admitted aligned raw pair $((\mathbf x^A)^{\mathsf T},(\mathbf r^A)^{\mathsf T})^{\mathsf T}$ used for canonical learning, evaluation, replay, and restart identity. \\
+$\mathbf u^{\rm eval,(k)}$ & Exploratory paired evaluation product for accepted plan $k$, normally obtained by applying $\Pi_k$ to the original admitted pair $\mathbf u^{(0)}$. \\
+$\mathcal G_{\rm pair}$ & Exact common detector-time/output index grid and representative-occurrence identities, independent of either coordinate's numerical availability. \\
+$\mathcal A_{\rm pair}$ & Common pair-action and ordinary-operator support, including masks, segments, guards, state/reset, and transitive ordinary response support. \\
+$\mathcal A_x,\mathcal A_r$ & Coordinate-local numerical availability sets for conditioned $x$ and requested conditioned $r$ on $\mathcal G_{\rm pair}$. \\
+$\mathcal A_C$ & Joint covariance support, a subset of $\mathcal A_x\cap\mathcal A_r$ on which the admitted joint statistical model and required covariance components are available. \\
+$\rho_{dn}$ & Representative aligned occurrence $(d,Mn)$ on the raw paired ALIGN parent grid, before replacement and temporal propagation. \\
+$\alpha_{x,d},\alpha_{r,d}$ & Local optical-response coefficients in the paired readout coordinates over a declared signal and support domain. \\
+$\epsilon_d,\psi_d$ & Optional optical-leakage ratio $\alpha_{r,d}/\alpha_{x,d}$ and metric-qualified response-direction angle.  Their coordinate units, scales, mapping revision, normalization, metric, domain, and comparison compatibility are part of the product; neither parameterization is universal. \\
+$s^x_{d,\zeta},s^r_{d,\zeta}$ & Declared nonzero coordinate-normalization scales used only to place $x/r$ response components in a common metric when an angle is reported. \\
+$a_g(t)$ & Declared atmospheric optical-mode template or latent common mode for network $g$. \\
+$\tau_e,\delta\tau_{de},\tau_{de},\Delta\mathbf b_{de}$ & Network event time, detector-specific timing offset, detector transition time $\tau_{de}=\tau_e+\delta\tau_{de}$, and paired amplitude $(\Delta x_{de},\Delta r_{de})^{\mathsf T}$; the offset is zero or bounded by a declared coherence tolerance. \\
+$I_h,\mathcal P_{d,h}$ & Coherent plateau interval $h$ and its application-context-specific admissibility state. \\
+$K^{\rm RTC}_{dn,qj}$ & RTC-local detector-time response of one output cell to one admitted aligned input cell at fixed realized state. \\
+$K^{x\leftarrow x,\rm RTC}_{dn,qj},K^{r\leftarrow r,\rm RTC}_{dn,qj}$ & Coordinate-diagonal RTC-local responses for conditioned $x$ and available conditioned $r$.  Both cross-coordinate numerical responses are zero. \\
+$K^{\rm end}_{dn,qm}$ & Optional end-to-end response to one native acquired cell, available only by explicit composition with admitted upstream ALIGN response. \\
+$\mathcal S_{dn}$ & Exact transitive input support of output $(d,n)$, including alignment, donors, filters, state, and selection. \\
+$\mathcal I_{dn}$ & Cause-preserving transitive influence set for output $(d,n)$. \\
+\bottomrule
+\end{tabularx}
+
+\subsection{Identity and interval conventions}
+
+Observation, Tune, array, network/interface, detector occurrence, selected
+APT row/binding, native row, aligned slot, scan, science interval, context
+interval, conditioned output slot, stage, and product identities are
+non-interchangeable.  Array identity is one of \texttt{a1100},
+\texttt{a1400}, and \texttt{a2000}; array ID, array index, network ID,
+detector index, and container position do not substitute for one another.
+Cross-artifact identity requires an explicit occurrence- and product-scoped
+binding.  Equal row numbers do not establish identity.
+
+Primary detector timestreams are samples on rows and detectors on columns
+unless a product explicitly declares another ordered shape.  Every interval
+is half-open.  Science windows, physical scans, processing chunks, filter
+context, output selections, and learned-plan scan sets retain separate
+identities.  Native, aligned, and output indices never silently renumber one
+another.
+
+Time is seconds on the admitted ALIGN-assigned grid.  The approximately
+8-ms rate relationships and the $0.5\times$, $2\times$, and $4\times$ family
+are conditional software-grid facts, not proof of a detector integration
+event, absolute epoch, or astrometric correction.  Coordinate-dependent
+Pointing, OOF, and Beammap controls use a declared AltAz tangent plane;
+Science controls use a declared equatorial J2000 TAN relation.  RTC performs
+no implicit frame conversion.
+
+\subsection{Logical and availability notation}
+
+$\mathbb I[\cdot]$ denotes an indicator, $\E$ expectation, $\Cov$ covariance,
+and $\mathrm{supp}(\cdot)$ operator support.  The logical symbols $\land$,
+$\lor$, and $\neg$ have their usual meanings.  A quantity decorated
+$\Avail$ is present with its required identity, domain, and validity; a
+quantity decorated $\Unavail$ is explicitly unavailable.  Neither zero nor
+NaN is an availability encoding.
+
+\begin{center}
+\textit{End of notation; shared definitions follow without a change of authority.}
+\end{center}

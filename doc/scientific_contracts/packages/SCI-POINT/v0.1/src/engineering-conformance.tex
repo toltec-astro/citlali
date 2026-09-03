@@ -1,0 +1,384 @@
+\documentclass[11pt]{article}
+\usepackage[letterpaper,margin=1.00in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs,longtable,array}
+\usepackage[table]{xcolor}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{needspace}
+\input{common/bindings}
+\definecolor{pointblue}{HTML}{173B57}
+\definecolor{pointteal}{HTML}{2B6F6D}
+\definecolor{pointpale}{HTML}{EAF2F4}
+\hypersetup{colorlinks=true,linkcolor=pointblue,urlcolor=pointteal,
+  pdfauthor={SCI-POINT scientific-contract program; Grant Wilson, scientific owner},
+  pdftitle={SCI-POINT Engineering Conformance v0.1 r0.4},
+  pdfsubject={Concise prospective evidence procedure bound to the normative core}}
+\setlist{nosep,leftmargin=*}
+\setcounter{tocdepth}{1}
+\setlength{\LTpre}{0.3em}
+\setlength{\LTpost}{0.5em}
+\renewcommand{\arraystretch}{1.12}
+\setlength{\emergencystretch}{2em}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{pointblue}\textbf{SCI-POINT} Engineering Conformance}
+\rhead{\small v0.1 / r0.4}
+\cfoot{\small\thepage}
+\newcommand{\statusbox}[1]{\begin{center}\fcolorbox{pointteal}{pointpale}{\begin{minipage}{0.92\linewidth}#1\end{minipage}}\end{center}}
+\newcommand{\CompatMethod}{\path{POINT-COMPATIBILITY-METHOD} v0.1}
+\newcommand{\FormalMethod}{\path{POINT-FORMAL-ERROR-METHOD} v0.1}
+\newcommand{\RMSMethod}{\path{POINT-FULL-MAP-RMS-METHOD} v0.1}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\begin{document}
+\begin{titlepage}
+\vspace*{0.45in}
+{\color{pointteal}\rule{\linewidth}{2.5pt}}\\[0.32in]
+{\Huge\bfseries\color{pointblue} SCI-POINT}\\[0.14in]
+{\LARGE Engineering Conformance Specification}\\[0.38in]
+{\large Scientific contract v0.1 \quad Document revision r0.4}\\[0.12in]
+{\large Concise prospective evidence procedure}\\[0.42in]
+
+\statusbox{\textbf{Conformance status.} This view defines prospective evidence
+against \NormativeCoreID. Typed unavailability is conforming when a required
+dependency is absent and the core requires fail-closed behavior. No numerical
+fit conforms until the compatibility method, exact numerical parent, and route
+binding are approved. No implementation has been assessed.}
+
+\vfill
+\footnotesize
+\begin{tabular}{@{}ll@{}}
+Scientific owner & Grant Wilson \\
+Status & Scientific authority frozen; implementation conformity unassessed \\
+Stage A packet & \texttt{\StageAPacketID} \\
+Stage A SHA-256 & \texttt{\StageAPacketSHA} \\
+Scientific directive & \texttt{\ScientificDirectiveID} \\
+Scientific SHA-256 & \texttt{\ScientificDirectiveSHA} \\
+Owner directive & \texttt{\OwnerDirectiveID} \\
+Owner SHA-256 & \texttt{\OwnerDirectiveSHA} \\
+Normative core & \texttt{\NormativeCoreID} \\
+Core SHA-256 & \texttt{\NormativeCoreSHA} \\
+Document source & \texttt{\EngineeringSourceID} \\
+Source SHA-256 & \texttt{\EngineeringSourceSHA} \\
+Build record & \texttt{\BuildRecordID} \\
+Base operator & \texttt{POINT-FIT/ELLIPTICAL-GAUSSIAN-COMPATIBILITY@1} \\
+Date & 2026-09-03 \\
+\end{tabular}
+\normalsize
+\\[0.28in]
+{\color{pointteal}\rule{\linewidth}{1.1pt}}
+\end{titlepage}
+
+\section*{Conformance object and evidence ceiling}
+\addcontentsline{toc}{section}{Conformance object and evidence ceiling}
+
+An implementation, representation, or product conforms only to requirements
+whose complete dependencies are available and whose exact identities, values
+or states, causes, lifecycles, and provenance are recorded. A finite number
+never replaces a missing authority or state. Fabricated defaults, zeros,
+aliases, route substitutions, source associations, covariance, response, bias,
+or use decisions are nonconforming.
+
+This ECS authors no science. The normative prose, equations, typed unavailable
+register, edge matrix, SCI-POINT-REQ-001--038, and SCI-POINT-PRED-001--032 live
+only in the normative core. Evidence described here can establish contract
+conformance; by itself it establishes no numerical correctness,
+representation or response fidelity, uncertainty coverage, observational
+accuracy, validation, performance, readiness, or production authorization.
+
+\tableofcontents
+
+\section{Exact source, core, build, and route binding}
+
+The cover closes the Stage A packet, r0.3 scientific directive, r0.4
+presentation directive, unchanged scientific payload, this view source, and
+build record. The source manifest records individual SHA-256 values. The core
+digest is the exact ordered concatenation of the six accepted common modules;
+an evidence run shall verify those bytes before applying this index.
+
+Every numerical parent boundary record shall bind the POINT-facing role; exact
+upstream package product role; upstream contract version; source digest; owner
+approval; compatibility state; generation; and parent-response identity and
+status. Admissible route families are exactly MAP, JINC, FLT-FIXED, and
+FLT-MATCHED. Terminal FRUIT is ancestry on one such route, with terminal state
+and full lineage; no intermediate iteration or coadd is admissible. The
+evidence shall show that POINT neither selected nor substituted a route.
+
+The parent source record also binds observation/array; estimand; signal unit,
+calibration, normalization, WCS/grid/frame; tangent relation; support;
+missing/non-finite rule; response and covariance/uncertainty status; null and
+additive-reference state; inherited observation/exposure lineage or typed
+\path{not_applicable}; lifecycle; and provenance. POINT creates no exposure
+identity. Per-array products from one observation share exposure/reference
+terms; cross-array aggregation requires separate dependence authority.
+
+\section{Eight stage-specific logical records}
+
+Representation syntax is implementation-defined, but stages A--H shall be
+lossless, queryable, and distinct for each requested
+observation-array-parent-method atom. Co-location does not merge identities.
+
+\begin{longtable}{@{}P{0.07\linewidth}P{0.21\linewidth}P{0.64\linewidth}@{}}
+\toprule
+Stage & Record & Required logical content \\
+\midrule
+\endhead
+A & Request and parent & Immutable request; observation/array; requested parent, method, and uses; exact parent science/identity; source reference; four applicability facts; requested search/fit domains, initialization, fallback, constraints, support/weights, and unresolved sentinels. No selected seed, fit, association outcome, realized constraint/residual, or applied/realized outcome. \\
+B & Effective configuration & Every sentinel and requested option resolved to one explicit effective value or typed unavailable state. \\
+C & Resolved method/plan & One frozen compatible method, route, support, objective, exact weight mapping, constraints, fallback, comparison, termination, and failure plan. \\
+D & Application attempt & Applied plan, invocation/attempt identity, branch/restart/retry identity, execution state, cause, and provenance. \\
+E & Realized fit/components & Selected seed; numerical values; component states; association; realized constraints; residual; diagnostics; response, bias, covariance, and uncertainty states; causes and provenance. \\
+F & Publication candidate & Every required POINT value-or-status role, identity, cause, provenance, structural completeness, POINT publication state, and required links to requested child decisions; downstream success is not required. \\
+G & Publication decision & POINT fit-completeness profile and bindings; decision, reasons, identity, lifecycle, and provenance. \\
+H & Published product & Accepted immutable candidate; exact role, version, generation, inherited parent observation/exposure lineage or \path{not_applicable}, lifecycle, and provenance. \\
+\bottomrule
+\end{longtable}
+
+Producer lifecycle is the ordered vocabulary \path{not_requested},
+\path{requested}, \path{effective}, \path{unavailable}, \path{resolved},
+\path{applied}, \path{fit_realized}, \path{complete_publication_candidate},
+\path{publication_decided}, \path{published}, \path{failed},
+\path{not_produced}, and \path{superseded}. Component identifiability and the
+four SCI-VAL axes remain separate from it.
+
+\section{Availability precedence and terminal evidence}
+
+For each requested product, evaluate in this order: exact parent and route;
+method authority; coordinate/source boundary; applicability facts; producer
+attempt and realization; component identifiability; association; the
+role-specific dependency; then each requested named-use profile. Stop only the
+dependent product or claim and preserve independent sibling facts.
+
+An early stop records only stages actually reached and an exact terminal
+\path{unavailable}, \path{failed}, or \path{not_produced} state with cause and
+release condition. It never fabricates \path{applied} or
+\path{fit_realized}, never silently deletes a requested row, and never imputes
+a failed array. A written unknown-scope or structural-conflict accounting
+artifact may be \path{realized}; \path{failed} is reserved for failure to
+produce the decision artifact. No defective or absent artifact asserts
+eligibility.
+
+The POINT fit-completeness decision at G is the sole named-use decision in base
+fit completion. Pointing-support, telescope-QC, and CAL/TolProj evaluations
+are independently requested immutable children of F/H. Each binds the owner
+profile, immutable fit, SCI-VAL tuple, cause, lifecycle, action, and provenance;
+none mutates or regenerates the fit, rescues another use, or propagates a
+sibling decision. \path{diagnostic_display_only} is a consumer action, not an
+axis or producer state; \path{diagnostic_only} is prohibited in those roles.
+
+\section{Method-record acceptance criteria}
+
+Each authority remains \path{unavailable_pending_separate_owner_approval}.
+The following fields are stated once; all later product rows reference this
+section and stages C--E.
+
+\Needspace{7\baselineskip}
+\textbf{\CompatMethod.} One immutable, content-bound, owner-approved record
+shall specify source equation and parameter ordering; width/angle conventions;
+domains, constraints and boundaries; rows, residual and objective; exact
+consumed $W_{\mathrm{fit}}$ and every source mapping's identity, units,
+normalization, support, lifecycle, ceiling and provenance; expected-position/
+search distinction; search, score, candidates, interpolation, ties,
+initialization, fallback, association, retry and sentinels; solver-independent
+comparison; convergence, rank, identifiability, failure and compatibility; and
+applicability tests with typed unavailability.
+
+\Needspace{5\baselineskip}
+\textbf{\FormalMethod.} Its separate record shall specify fitted
+parameterization; stochastic model and weight relation; exact covariance/error
+construction; curvature, residual scaling, degrees of freedom, rank and
+positive-definiteness; transformations and marginal extraction; bounds,
+circularity, degeneracy and weak identification; consistency, units, scope,
+omissions and failure states; signed standardization; and exact alias approval.
+
+\Needspace{5\baselineskip}
+\textbf{\RMSMethod.} Its separate record shall specify exact signal parent and
+generation; population, centering/mean, weighting, source-region treatment,
+support, edge and validity; non-finite and zero-denominator behavior; units,
+lifecycle and provenance; relation to the amplitude parent; signed ratio; and
+exact alias approval.
+
+No method is released by a familiar name or presumed default. The
+compatibility record gates every numerical fit. The formal-error record gates
+marginal errors and formal standardization but not otherwise authorized fitted
+values. The full-map-RMS record gates only its RMS scale, signed diagnostic,
+and any explicitly approved alias.
+
+\section{Product and companion record obligations}
+
+The realized-fit record at E shall bind selected branch and seed; association
+method, domain, state, and cause for every branch; support and row count;
+objective and exact $W_{\mathrm{fit}}$ mapping; six role values, units, and
+conventions with per-component states; constraints and rank; termination,
+convergence, and retry;
+model or reconstructibility; residual; diagnostics; parent null/additive state;
+all response, bias, covariance and uncertainty identities/states; and every
+cause and provenance link. Numerical $A$ has the exact fit-amplitude-component
+role bound in the core; only established association creates the separately
+typed source-associated-amplitude role.
+
+The displacement product at F/H shall reference E and bind expected-position
+identity; fitted centroid; ordered basis, handedness and positive directions;
+arcsecond unit; coordinate state/time; transform/Jacobian; source and
+coordinate uncertainty states; the signed equation
+$\boldsymbol{\Delta}_{\mathrm{POINT}}=\widehat{\boldsymbol{\mu}}-
+\boldsymbol{\mu}_{\mathrm{expected}}$; support, validity, lifecycle and
+provenance. It carries no correction sign or application claim.
+
+Each response companion at E/F shall identify exactly one scope: fixed POINT,
+fixed parent, POINT-full-procedure/parent-fixed, whole-chain full procedure, or
+empirical bias/accuracy. It binds comparable numerical baseline/perturbed
+products and states; source and association; parameter roles and gauge/order;
+units/basis and component availability; perturbation source/domain/direction/
+unit/$\epsilon$ and domain relation; branch changes; finite/analytic
+convention; method; cause and provenance. Incomparable outputs are unavailable
+or typed discontinuities/state transitions, never differences of lifecycle
+objects. Whole-chain evidence requires complete upstream rerun authority;
+finite differences do not compose as Jacobians without an exact theorem.
+
+Conditional displacement covariance at E/F binds every variance and
+cross-covariance in
+$C_{\Delta}=C_{\widehat\mu}+C_{\mu_{\mathrm{expected}}}
+-C_{\widehat\mu,\mu_{\mathrm{expected}}}
+-C_{\mu_{\mathrm{expected}},\widehat\mu}$, the common basis, transforms and
+Jacobians, independence authority for any zero cross term, validity, state,
+cause and provenance. Missing terms make the combined covariance unavailable,
+not zero or diagonal.
+
+\section{Requirement-to-evidence index}
+
+The normative-core section keys are: N, notation and state axes; O, operation,
+ownership, and routes; M, model, measurement, and equations; G, inputs, gates,
+and dependencies; and V, validity, unavailable states, and edge rules. Each
+\texttt{REQ-nnn} below denotes exact \texttt{SCI-POINT-REQ-nnn}; the core
+prose governs.
+
+{\small
+\renewcommand{\arraystretch}{1.18}
+\begin{longtable}{@{}P{0.11\linewidth}P{0.07\linewidth}P{0.25\linewidth}P{0.16\linewidth}P{0.23\linewidth}@{}}
+\toprule
+Req. & Core & Required evidence object & Comparison class & Terminal result \\
+\midrule
+\endhead
+REQ-001 & O,G & A--H atom and G decision & structural cardinality & unavailable / failed / not produced \\
+REQ-002 & G & A--H field and lineage record & exact identity/presence & unavailable \\
+REQ-003 & O & A--C parent-role record & closed enumeration & unavailable \\
+REQ-004 & O & C route-selection trace & forbidden transition & unavailable \\
+REQ-005 & O & A--C FRUIT ancestry closure & terminal identity & unavailable \\
+REQ-006 & O,G & A/E parent-response and mismatch record & identity/status & unavailable \\
+REQ-007 & M,G & A/E four-object coordinate record & distinct identity & unavailable \\
+REQ-008 & M & A/E/H tangent-boundary record & geometric transform & unavailable / failed \\
+REQ-009 & M & E/F/H displacement product & signed equation/unit & unavailable \\
+REQ-010 & M & C/E model reconstruction & equation/family & failed / nonconforming \\
+REQ-011 & M & C/E shape and gauge record & invariant and symmetry & undefined / unavailable \\
+REQ-012 & G & C--E method and route approvals & authority presence & unavailable \\
+REQ-013 & M,G & C/E exact weight mapping & typed identity/content & unavailable \\
+REQ-014 & M,G & C--E lifecycle and branch trace & ordered state sequence & unavailable / failed / not produced \\
+REQ-015 & M & E association per branch & independent gate & unavailable / failed \\
+REQ-016 & O,G & A/B applicability facts & typed authority/domain & unavailable \\
+REQ-017 & M,G & D/E fit and residual record & reconstruction & unavailable / failed \\
+REQ-018 & N,G & E/F component-state vector & closed enum/cardinality & unavailable / failed \\
+REQ-019 & O,M & E/F amplitude roles and association & role/dependency & unavailable \\
+REQ-020 & O,M & E/F shape-role publication & claim ceiling & unavailable \\
+REQ-021 & G & E/F formal-error record & method authority & unavailable \\
+REQ-022 & G & E/F covariance status & absence semantics & unavailable \\
+REQ-023 & M,G & E/F derived-product record & equation, identity, gates & unavailable \\
+REQ-024 & M,G & C/F alias/admission record & explicit authority or absence & unavailable \\
+REQ-025 & M,G & E response-family record & scope and comparison & unavailable / discontinuity \\
+REQ-026 & G & F role-dependency evaluation & product-local blocking & unavailable \\
+REQ-027 & N & A/G SCI-VAL record & exact axes/crosswalk & incomplete / failed / not produced \\
+REQ-028 & N & G action and axis fields & token-role separation & unavailable / failed \\
+REQ-029 & O & G owner/profile record & ownership identity & unavailable \\
+REQ-030 & N,O & G draft-profile binding & registration and digest & unavailable \\
+REQ-031 & O & F--H output-role inventory & prohibited-product absence & not produced \\
+REQ-032 & O & E--H sibling-array rows & atomic preservation & failed / not produced \\
+REQ-033 & M & E residual/additive record & reconstruction and state & unavailable / failed \\
+REQ-034 & N,V & A--H terminal/edge evidence & exact enum/cause & unavailable / failed / not produced \\
+REQ-035 & M,G & E/F covariance terms and transforms & exact matrix/basis & unavailable \\
+REQ-036 & M,G & E rerun/response authority trace & scope and comparison & unavailable / discontinuity \\
+REQ-037 & N,O & G child-decision record & exact crosswalk/lineage & incomplete / failed / not produced \\
+REQ-038 & G & Claim-and-evidence ledger & ceiling/absence & no higher claim \\
+\bottomrule
+\end{longtable}
+}
+
+\section{Prediction-to-fixture index}
+
+Each \texttt{PRED-nnn} below denotes exact
+\texttt{SCI-POINT-PRED-nnn}. A future test is admissible only after its method,
+route, and oracle dependencies are approved; the prediction itself is not a
+claim that testing occurred.
+
+{\small
+\renewcommand{\arraystretch}{1.18}
+\begin{longtable}{@{}P{0.11\linewidth}P{0.19\linewidth}P{0.19\linewidth}P{0.20\linewidth}P{0.13\linewidth}@{}}
+\toprule
+Prediction ID & Fixture class & Oracle/reference & Comparison & Governing requirements \\
+\midrule
+\endhead
+PRED-001 & Noiseless matching Gaussian & Approved method solution & Six roles, circular/bound cases & 010--014,018 \\
+PRED-002 & Authorized signal scaling & Method amplitude law & Amplitude scaling; fixed reference & 006,007,019 \\
+PRED-003 & Signed offset & Exact expected position & Centroid minus expected; no correction & 008,009,031 \\
+PRED-004 & Search-center perturbation & Fixed source reference & Branch may change; zero does not & 007,009,014 \\
+PRED-005 & WCS/basis transform & AST transform oracle & Physical components/handedness & 008,009 \\
+PRED-006 & Central/fallback branches & Stage C--E records & Branch distinguishability & 001,014 \\
+PRED-007 & Exact score tie & Approved tie rule & Selected state only after D & 002,012,014 \\
+PRED-008 & Wrong global peak & Association oracle & Fit amplitude survives; source roles blocked & 015,019 \\
+PRED-009 & Principal-axis exchange & Gaussian invariance & Model equality after angle transform & 011 \\
+PRED-010 & Exact circularity & Symmetry oracle & Equal widths; orientation undefined & 011,018 \\
+PRED-011 & Active parameter bounds & Applied/realized constraints & Bound-censored component state & 014,018 \\
+PRED-012 & Constant/gradient mismatch & Known injected structure & Bias/residual visibility & 017,033 \\
+PRED-013 & Missing/non-finite support & Approved support rule & Reached stages and terminal state only & 002,014,034 \\
+PRED-014 & Reliability weights & Weight-authority record & No inverse-covariance alias & 013 \\
+PRED-015 & Degenerate/error cases & Formal-method oracle & Values may survive; errors unavailable & 018,021,034 \\
+PRED-016 & Route-response mismatch & Exact parent response record & Compatibility/bias state retained & 003,006,025 \\
+PRED-017 & Asymmetric parent response & Bias/response authority & Typed bias; independent fit survives & 006,025,026 \\
+PRED-018 & FRUIT terminal cases & Ancestry closure & Terminal admitted; intermediate rejected & 005 \\
+PRED-019 & Array or component failure & Per-array atom inventory & Siblings preserved; no global success & 001, 018, 031, 032 \\
+PRED-020 & Arbitrary input & Output-role inventory & No POINT aggregate or correction & 031 \\
+PRED-021 & Signed amplitude-to-RMS & RMS-method oracle & Sign retained; bad denominator unavailable & 019, 023, 034 \\
+PRED-022 & Signed formal ratio cases & Formal-method oracle & $\widehat A/\sigma_A$; magnitude distinct & 019, 021, 023, 024 \\
+PRED-023 & One fit, multiple uses & Owner profile records & Independent SCI-VAL tuples and actions & 027, 028, 037 \\
+PRED-024 & Missing or conflicting profile & Bound SCI-VAL crosswalk & Realized accounting; failure only on production & 027, 030, 034, 037 \\
+PRED-025 & Three response scopes & Rerun oracle by scope & No alias; typed incomparability & 025,036 \\
+PRED-026 & Missing compatibility method & Authority registry & No numerical fit/product & 012 \\
+PRED-027 & Missing formal-error method & Authority registry & Values survive; formal products unavailable & 021,022,026 \\
+PRED-028 & Missing full-map-RMS method & Authority registry & Only RMS-dependent roles blocked & 019,023,026 \\
+PRED-029 & Every search/retry branch & Association oracle & Source roles require established association & 015,019,023 \\
+PRED-030 & Missing response companions & Separate authority registries & Separate release; unrelated roles survive & 006, 025, 026, 035, 036 \\
+PRED-031 & Child failure or absence & Immutable parent-child lineage & No rescue, mutation, generation, or base block & 001, 028, 037 \\
+PRED-032 & Shared reference error & Full joint covariance oracle & Cross terms retained; no false averaging & 035 \\
+\bottomrule
+\end{longtable}
+}
+
+\section{Parity, source closure, and nonclaims}
+
+The r0.4 parity record shall verify: unchanged six-file scientific bytes;
+gap-free REQ-001--038, PRED-001--032, and UNAV-001--023 identities; equation,
+product-role, lifecycle, component-state, SCI-VAL, response-family, diagnostic,
+weight, exposure-lineage, owner-decision, source, and build parity; and exact
+agreement between this index and the normative core. The rationale is an
+explanatory view; this ECS is the evidence procedure; neither overrides or
+extends the core.
+
+The package has one-to-one coverage of ODQ-001 through ODQ-009, including
+ODQ-003A/003B. The remaining actions are approval of the three exact methods,
+exact route instances, four draft profiles, and any separately requested
+response, bias/accuracy, or covariance authority. The deterministic delivery
+packet contains the Stage A archive and sidecars, both owner directives, the
+unchanged common source, all three document sources and PDFs, manifests,
+parity/semantic reports, build recipe, verifier, and all-page QA record.
+
+This specification claims no numerical route, implementation inspection or
+conformity, representation or response/covariance fidelity, uncertainty
+coverage, observational pointing accuracy, validation, performance, readiness,
+production suitability, production authorization, or Unity activity.
+
+\end{document}

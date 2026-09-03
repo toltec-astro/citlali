@@ -1,0 +1,180 @@
+% Shared normative core: edge cases and failure semantics
+\section{Edge cases, exclusions, and failure routing}
+\label{sec:edge-cases}
+
+\begin{longtable}{p{0.22\linewidth}p{0.36\linewidth}p{0.32\linewidth}}
+\toprule
+Condition & Scientific meaning & Required handling \\
+\midrule
+\endhead
+Empty or incomplete application support & No defined reference estimand at the
+affected anchor & Mark \Unavailable{} before evaluation; no padding,
+extension, imputation, partial estimate, or renormalization. \\
+Numerical fill near an edge & Merely a computational placeholder & Admit an
+output only after exact erosion proves zero dependency on every filled value. \\
+Missing payload on a construction-only row with exact-zero $c_{pq}$ & The row
+is in $\Dom_{\rm loc}(p)$ but not $\Supp_{\rm apply}(p)$ & Do not dereference
+the observed payload only when exact template/model/covariance construction
+authority exists; the amplitude remains defined and unchanged. If
+$c_{pq}\ne0$, the
+row becomes an active dependency and the anchor is Unavailable{}. No
+coefficient threshold is permitted. \\
+Missing stochastic-model or covariance authority on a required local row &
+\AOpt{001}{A} has no complete local law even if the final application
+coefficient is zero & Mark \AOpt{001}{A}, its optimality claim, and
+$v_{{\rm GLS,reference}}=d_p^{-1}$ \Unavailable{}. Evaluate a sparse non-GLS
+route only when separately authorized and exactly requested; no fallback. \\
+$d_p=0$, $d_p<0$, nonfinite $d_p$, or complex $d_p$ & Template is null,
+weighting is invalid, or numerical identity failed & Typed unavailability or
+attempt failure; never publish zero amplitude, infinite variance, or fallback. \\
+Template lies partly in $\Null(W_p)$ & Some declared template modes are
+unestimable & Allowed only if the selected option explicitly defines the same
+estimable subspace and $d_p>0$; record response loss and null space. Otherwise
+unavailable. \\
+Indefinite or non-self-adjoint $W_p$ & Weight is outside the admitted
+scientific bilinear family
+semantics & Fail selected \AO{001} closure unless an exact distinct operator
+and inner product were separately authored; no silent symmetrization. \\
+Covariance zero-variance mode & Parent law declares deterministic variation in
+that direction & Keep separate from excluded, weighting-null, and template-
+unidentifiable modes. It is outside the v0.1 positive-definite-subspace theorem
+unless separately authored; do not broaden the stated optimum. \\
+Excluded or infinite-variance mode & Policy deliberately removes a direction
+from the estimable subspace & Record the exact projector and response loss; do
+not call it a covariance zero mode. \\
+Weighting-null mode & $W_p$ assigns zero action to a direction & Record the
+weighting null space; no covariance meaning follows without separate authority. \\
+Projected template is zero & The requested amplitude is unidentifiable in the
+declared subspace & Anchor unavailable; no Moore--Penrose or normalization
+fallback. \\
+Zero, negative, or nonfinite field-power bin & No finite declared reciprocal weighting
+for that mode/bin & Apply only owner-declared regularization within the frozen
+state; otherwise exclude as a declared null mode or make route unavailable.
+Never infer infinite precision. \\
+Sparse radial bin or large angular scatter & Radially averaged PSD lacks
+declared information or radial sufficiency & Report the preregistered
+effective-sample, anisotropy/dispersion, and leakage diagnostics. They are not
+v0.1 admission predicates and have no owner-set failure thresholds. Exact
+weight/denominator/support predicates still apply; no neighboring-bin
+interpolation unless separately authored. \\
+Unknown covariance entry & Scientific knowledge is absent & Preserve unknown;
+do not encode zero, diagonal independence, or a usable inverse. \\
+Available $W$ but unavailable $C_{\rm parent}$ & Weighting exists without
+covariance authority & Amplitude filtering may proceed under a selected weaker
+option; optimality, reference variance, and operational covariance are unavailable. \\
+Exact GLS premises with operational covariance unavailable & Reference theorem
+and operational product have different roles & Preserve
+$v_{{\rm GLS,reference}}=d_p^{-1}$ when independently established; mark the
+operational covariance role Unavailable{} and forbid covariance-derived uses. \\
+Available $C_{\rm parent}$ with mismatched population/state & Covariance does
+not describe this realization & Covariance route unavailable; no rescaling or
+population substitution. \\
+Template rescaled by $c\neq0$ & Amplitude convention changes & Create a new
+template/realization identity. The $\widehat a\mapsto\widehat a/c$ law holds
+only for a pure amplitude-coordinate reparameterization with
+$\Dom_{\rm loc}$, $E_p$, $W_p$, $g$, support, and non-template state fixed.
+Any re-Learn or re-Resolve operation is a new realization outside that law;
+units and lineage must follow in every case. \\
+Template phase or anchor changed & Scientific response convention changes &
+New template and realization; never treat as a numeric implementation detail. \\
+Template mismatch to a real signal & Base matching-template estimand does not
+equal an unconstrained source property & Report only response-weighted shape
+amplitude; no bias correction, morphology, or new uncertainty without separate
+authority. \\
+Parent beam or calibration exists & Provenance is present, not inherited
+matched-filter meaning & Preserve lineage; require exact authority before flux,
+matched beam/solid angle, extended-source, or calibration-covariance claim. \\
+Coadd membership changes & Parent identity changes & New coadd parent, state,
+realization, response, and products; do not reuse observation/coadd state by
+implication. \\
+NOI member fails $K_{\rm NOI}$ or suggests a new state & Admission or per-member
+relearning would change the ensemble method & Mark the member or affected
+anchor incompatible/unavailable before Apply. A learned update creates a
+successor generation; no support adaptation or result-dependent admission. \\
+Approximation misses one null or support mode & Estimand/validity differs even
+if aggregate error is small & Fail the preregistered profile; if intentional,
+assign a distinct scientific identity. No percentile hides the disagreement. \\
+Iteration/tail cap reached & Work limit, not convergence evidence & Accept only
+if every selected quantitative envelope bound independently passes; otherwise
+fail. \\
+Optional companion fails after signal completion & Companion atomicity failed,
+not necessarily signal science & Mark companion \Failed{}; preserve signal
+\Complete{} unless exact named-use policy made the companion required. \\
+Complete candidate requested before realization & Product closure is out of
+order and required immutable values do not yet exist & Fail product closure;
+do not evaluate publication policy until a realized candidate is complete. \\
+Optional role not requested & No child or companion was requested & Record
+\texttt{not\_requested}; do not narrow $\Valid_{\rm signal}$ or block another
+role. \\
+Normative per-anchor unavailability & The validity rule defined no amplitude at
+that anchor & Preserve the unavailable status inside an otherwise role-complete
+field; this does not by itself make the bundle partial. \\
+Required signal bundle member fails & A required field, mask, identity,
+response reference, lifecycle record, or lineage member is absent & Fail the
+entire signal bundle; do not disguise the missing member as unavailable pixels
+inside an otherwise complete product. \\
+Additional method route is package-authorized & Package authorization is not a
+per-realization selection & Preserve each separately named route. Require one
+exact requested method identity; never mix, choose from target data, or fall
+back between routes. \\
+Successor state or option is approved & Scientific identity advances & Create
+immutable successor generation and mark predecessor \Superseded{} only by
+policy; never mutate predecessor facts. \\
+Unselected or unavailable option requested & No authorized route exists & Fail
+closed and name the missing owner disposition; no automatic selector or
+fallback. \\
+Response query is unsupported & Scientific interface does not define that
+quantity & Return typed unavailability; never approximate with a kernel,
+radial profile, parent beam, or zero. \\
+Fixed-state response requested as full-procedure response & State-learning
+dependence has not been rerun & Return full-procedure response unavailable and
+retain the fixed-state type; no consumer may strengthen it. \\
+Reference response or covariance attached to a realized field & Comparator is
+being mislabeled as the actual product consequence & Fail the companion or
+bundle policy; attach the operational realized response and named-role
+$C_{U1,{\rm realized}}$ when authorized. \\
+Failure-bearing operational covariance sample & $P_CF_g(M)$ is not a fixed-
+dimensional finite numerical random vector almost surely on the predeclared
+domain & Mark the covariance role \Unavailable{}. Do not condition on success,
+censor, pairwise-delete, or change domains without a separately named
+population and covariance role; signal status is unchanged unless named-use
+policy requires the companion. \\
+FLT to FRUIT consumer asks outside $\mathcal Q_{\rm FLT}^{0.1}$ or for FRUIT
+behavior & Request crosses the current envelope or package authority & Return
+typed unavailability and require a successor FLT envelope or separate FRUIT
+contract as applicable; existing FLT signal and handoff facts remain unchanged. \\
+Filtered-map peak is examined & A numerical feature is not an authorized
+source object & No detection, candidate, significance, completeness, purity,
+fit, morphology, catalog, or SRC claim follows. \\
+Historical title or filename contains ``optimal'' & Human-facing terminology
+is not theorem evidence & Require explicit \texttt{optimality\_status}; under
+\AOpt{001}{C} it is always \texttt{not\_claimed}. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Explicit method exclusions}
+
+Posterior/Wiener sky reconstruction, generic ordinary-convolution semantics,
+source or candidate learning, data-thresholded destriping, automatic selectors/fallbacks, adaptive
+edge/background behavior, the historical high-pass/delta case, partial-support
+estimation, FLT-owned coaddition, source analysis, and FRUIT algorithms are not
+authorized by this contract. A proved special-case numerical coincidence with
+normalized correlation/convolution retains the \ContractID{} estimand and does
+not authorize generic convolution semantics. Other methods require separate
+scientific contracts if later commissioned.
+
+\texttt{SCI-FLT-FIXED} remains a separate protected package. This contract
+neither selects, modifies, supersedes, nor supplies scientific authority for
+that method.
+
+The historical compatibility term ``Wiener filter'' may refer to this method
+only when accompanied by the exact \ContractID{} identity and may not imply a
+sky prior, posterior estimand, or Wiener reconstruction.
+
+\subsection{Nonclaim closure}
+
+Passing a scientific contract consequence or an engineering conformance test establishes
+only that named claim for the exact immutable realization. Validation-profile
+pass is not achieved performance. Achieved performance is not readiness.
+Readiness is not production. None of those layers can select an authored
+option, repair missing scientific authority, or broaden this validity domain.

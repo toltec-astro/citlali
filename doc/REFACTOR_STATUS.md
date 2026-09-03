@@ -2069,6 +2069,1355 @@ coherent candidate commit is eligible for owner push only after the complete
 Phase-C broad and retained gates pass; this record does not authorize that
 push, downstream launch, or production use.
 
+## Documentation Contract
+
+As of 2026-08-07, the [`doc/` documentation guide](README.md) governs routing
+for new user-visible scientific work. Team-facing workflow and product meaning
+belong under [`doc/user/`](user/README.md). Non-obvious reusable mathematics
+and statistics belong in the registered method library under
+[`doc/science/`](science/README.md). A technique is explained once and every
+pipeline stage using it links to the same stable method ID; audits and product
+guides do not duplicate derivations.
+
+The framework is intentionally demand-driven. A user-visible scientific change
+must update the applicable documentation before final acceptance, but no note
+or guide is created solely to populate the framework. Existing dated reports
+remain historical evidence and are not being reorganized wholesale.
+
+On 2026-08-16 the project added the
+[`Scientific Contract Library Program`](scientific_contracts/README.md) as the
+governing process for new implementation-independent scientific contracts.
+Every package must begin by linking to that charter and completing a prior-work
+recovery record before fresh derivation is commissioned. The recovery step
+adopts, cites, abstracts, supersedes, defers, or excludes earlier material so
+approved scientific reasoning is not needlessly repeated while implementation
+behavior, audit findings, repairs, and validation evidence remain outside the
+independent author channel. The initial proposed pilot order is CAL, shared
+mapmaking/coaddition, then Beammap; Beammap contract work remains separate from
+active ALIGN work.
+
+On 2026-08-26 the scientific owner approved and archived the downstream
+contract sequence from MAP closure through separate JINC, NOI, filtering,
+source/mode, and FRUIT tranches. The owner also approved the horizontal
+ALIGN-to-MAP decisions governing the mandatory PTC-to-MAP route, MAP-owned
+admission policy, honest response and covariance disclosure, versioned later
+derivatives, and coordinate/projection ownership. A bounded SCI-MAP Stage A
+reopening is now active to reconcile those authorities with the older MAP
+packet. The existing formal MAP clauses, 52 requirement IDs, 25 prediction
+IDs, and local owner-decision ledger remain unchanged at launch; no Stage B
+author, implementation change, conformity finding, validation result, Unity
+work, freeze, performance claim, or readiness claim follows from this status.
+The owner approved the exact four-file MAP author packet and Ultra Stage B
+dispatch later on `2026-08-26`; this authoring approval does not approve the
+revision that will be returned.
+The fresh implementation-blind author returned a bounded r0.1 specification
+on `2026-08-26`. Manager review retained its successful PTC-route, ownership,
+response/covariance, and immutable-derivative science but did not accept it for
+integration because it reinterpreted x/r identity, invented a universal PTC
+availability-scope rule, standardized a JSON/SHA representation, and would
+have closed OD-003 through an unapproved claim registry. The scientific owner
+then directed a bounded correction of the actual canonical deliverable. The
+r0.4 formal, rationale, and engineering sources now fix CAL-to-PTC-to-MAP as
+the sole route; separate PTC facts from MAP admission and ALIGN/AST coordinates
+from MAP projection; retain VAL only as a rule registry/evaluator; preserve
+declared failure scopes; keep paired x/r upstream; and require honest response
+and covariance disclosure with versioned later derivatives. All 52 requirement
+IDs, 25 prediction IDs, and nine open decision IDs are retained. The durable
+checker passes and all 56 rendered PDF pages passed independent Poppler visual
+inspection. This is an owner-review draft, not an implementation-conformity,
+validation, freeze, performance, Unity, or readiness result.
+
+On 2026-08-27 the owner-directed targeted SCI-MAP r0.5 cross-package closure
+was integrated for review without inspecting implementation, schemas, tests,
+reductions, validation products, or production behavior. It binds frozen PTC
+r0.5 and WP-7 closure, frozen CAL and AST authority, continuing VAL Core/
+Registry/source bindings, and the exact exposure/coordinate boundaries. The
+package now includes `SCI-PTC_TO_SCI-MAP v0.1/r0.1`, registered
+`SCI-MAP:map_upstream_admission@1`, exact one-hot containing-pixel projection,
+original-occurrence exposure carriage, typed response/null/covariance state,
+and exact uniform observation-coadd/admission profiles. It renames the ordinary
+quantity as calibrated-`x`-derived nonpolarimetric total-intensity-equivalent
+rather than Stokes I. All 52 requirement and 25 prediction IDs remain stable;
+OD-008 is resolved and eight owner decisions remain open. Frozen PTC leaves the
+MAP-facing coefficient family open and MAP OD-007 leaves the admitted numerical
+`coverage_cut` domain open, so no generally authorized ordinary numerical MAP
+route is claimed. The durable verifier passes and all 58 PDF pages passed
+Poppler visual inspection. This remains an owner-review document result only,
+not implementation conformity, validation, achieved response/performance,
+freeze, readiness, or production authorization.
+
+The owner-approved SCI-MAP r0.6 targeted scientific-closure pass was completed
+on `2026-08-27`. It preserves all 52 requirement IDs, 25 prediction IDs, nine
+owner-decision IDs, and eight open MAP-local decisions while correcting OD-008
+parity; typing all ten contribution gates; defining unique-original exposure
+at each original's own AST coordinate; separating fixed-state, PTC
+full-procedure, and whole-chain response; and registering source-current
+`SCI-MAP:map_upstream_admission@2` plus VAL-governed aggregate
+`SCI-MAP:observation_coadd_admission@1`. The exact
+`SCI-PTC_TO_SCI-MAP v0.1/r0.1` artifact is byte-identical in both packets. The
+durable verifier passes and all 60 rendered PDF pages passed Poppler visual
+inspection. The conditional estimator is coherent, but the PTC coefficient
+family and admitted numerical `coverage_cut` state still block a source-closed
+numerical route. No implementation conformity, validation, response fidelity,
+observational performance, freeze, readiness, or production authorization is
+claimed.
+
+On `2026-08-28` the final targeted SCI-MAP r0.7 closure packet completed its
+content, mechanical, and rendered-document preflight for scientific-owner
+review. It preserves all 52 requirement IDs, 25 prediction IDs, and nine
+owner-decision IDs; imports one canonical shared authority into all three
+views; binds the exact `SCI-PTC_TO_SCI-MAP v0.1/r0.1` source; and treats PTC
+coefficient availability as structural while leaving coefficient finiteness
+to MAP's numerical gate. The packet records the ordered A--E contribution DAG,
+the single operator identity
+`A_MAP,Pi = A_out = D_Q,out^-1 J_out G Omega`, fixed-state/PTC-full-procedure/
+PTC+MAP-re-resolved response families, and original-footprint exposure at the
+stable original's layered AST ALIGN-grid coordinate in the exact target WCS.
+The two installed PTC/MAP boundary copies and every stable/r0.7 PDF pair are
+byte-identical. The durable verifier passes, and all 65 PDF pages passed
+Poppler inspection. The ordinary numerical route remains blocked by the
+missing exact PTC MAP-facing coefficient family and unresolved admitted
+numerical `coverage_cut` domain. This is an owner-review closure packet, not
+implementation conformity, validation, achieved response or performance,
+scientific-authority freeze, readiness, or production authorization.
+
+On `2026-08-28` the owner-directed SCI-MAP r0.7.1 freeze-only errata replaced
+the symbolic decision tuple with named request/applicability/eligibility/
+realization fields, corrected the exact `coverage_cut` wording, canonicalized
+boundary/profile identifiers, defined exact original-footprint exposure
+aliases, narrowed REQ-010 structural-failure grammar, and bound the exact
+Registry/source-binding records and reports through an externally SHA-bound
+source manifest. All 52 requirement IDs and 25 prediction IDs remain stable;
+estimator, response, exposure, support, covariance, coadd, and lifecycle
+semantics are unchanged. This is an author-artifact closure record only and
+makes no implementation, conformity, validation, performance, freeze,
+readiness, production, or route-availability claim.
+
+On `2026-08-28` Grant Wilson authorized the status-only freeze of the exact
+SCI-MAP v0.1/r0.7.1 candidate at commit `bd010e20e`. The scientific-owner
+freeze record binds the externally hashed source manifest, the 52 requirements,
+25 predictions, exact boundary/profile/Registry identities, owner ledger, and
+three canonical PDFs without changing their scientific or rendered bytes.
+Eight MAP owner decisions and the two hard numerical gates remain explicitly
+open; the source-closed numerical MAP route therefore remains unavailable.
+The freeze establishes scientific authority only and makes no implementation
+conformity, representation-fidelity, validation, response-achievement,
+performance, readiness, or production claim. Future substantive changes
+require explicit owner authority and a versioned successor or formally
+reopened revision.
+
+On `2026-08-28` the scientific owner launched SCI-JINC v0.1 as the next
+downstream Stage A tranche from exact scientific-contract library authority
+`codex/scientific-contract-library@731f821954d4321509765720c6ba1838c95eff3d`.
+The package links the program charter, downstream roadmap, and frozen SCI-MAP
+predecessor; recovers and classifies the frozen SCI-MAP-002 independent core,
+all eight JINC owner decisions, later destination-ownership work, and later
+integration/validation history; records exact revisions and content digests;
+and preserved the unidentified memo behind the historical alignment note as
+unavailable rather than reconstructing it. Later on `2026-08-28`, the owner
+supplied F. Peter Schloerb's exact LMT OTF/JINC memo as an authoritative
+generic-method reference; it is not asserted byte-identical to that unnamed
+historical source. The package preserves the 42-page original,
+admits only a verified pages-15--19 generic-method excerpt under an explicit
+cover, and uses it to close the generic two-JINC plus envelope formula. The
+memo is geared to 3-mm spectroscopic receivers: its FCRAO parameter values,
+simulations, scales, optimization and performance claims are not TolTEC
+authority. Exact `a1100`/`a1400`/`a2000` radial scales and per-array parameter
+provenance remain open. The repaired packet also adds PTC/AST boundary
+candidates, a JINC admission-profile candidate, collision-free notation,
+geometry, grouping/product, response/covariance and inherited-decision tables,
+while quarantining implementation, audit, repair, re-audit, Unity, validation,
+achieved-performance, readiness, and production evidence. The repaired Scope
+Brief, open-question ledger, and exact content-bound packet were returned for
+renewed scientific-owner review. No implementation-blind Stage B rationale or
+engineering conformance contract was commissioned or drafted, and frozen
+SCI-MAP authority is unchanged.
+
+Grant Wilson approved the exact repaired SCI-JINC Stage A candidate at
+`6639bff3d94b92ace8faf3e407ccaefd5a38ea1f` on `2026-08-28`. The separate
+approval record binds the manifest and Scope Brief hashes without changing any
+approved author input. This closes only the exact-byte owner gate. The PTC
+coefficient family, TolTEC per-array scale/parameter authority, VAL successor,
+numerical phase/cache/error policy, outside-center edge rule, and residual
+ledger gaps remain unresolved or require typed disposition. Stage B remains
+unlaunched; Ultra use was not authorized; no implementation, validation,
+performance, readiness, production or push claim follows.
+
+Later on `2026-08-28`, Grant Wilson resolved `SCI-JINC-ODQ-101` for successor
+architecture. PTC owns one versioned registry of positive analysis/gridding
+coefficient families; every family/version explicitly permits `SCI-MAP`,
+`SCI-JINC`, or both, and user or authorized versioned mode-policy selection
+retains distinct requested/effective/observation-resolved/realized identities.
+JINC consumes the same positive PTC-produced `omega_i` only with explicit JINC
+permission and owns its signed `kappa_ip`, `w_ip`, normalization, conditioning,
+support, response, covariance and product semantics. The exact post-freeze
+predecessor at `54475956f6aefb839d43b2f0fb019a142cb64310`, SHA-256
+`4d2b857b7ec9efe489fe065f464df4ecd23b57a4c1320cda6a10a56592825d1c`,
+is admitted only under a JINC-specific cover and does not modify frozen MAP or
+PTC. No family is registered by this decision, so numerical production remains
+typed unavailable until an exact JINC-permitted family is selected and
+realized. The bounded successor packet now awaits exact-byte approval under
+`SCI-JINC-STAGE-A-Q002`; Stage B remains unlaunched. The next owner question is
+`SCI-JINC-ODQ-102B`, the exact TolTEC per-array radial scale and parameter
+source/value disposition.
+
+Grant Wilson then resolved `SCI-JINC-ODQ-102B` on `2026-08-28` by a semantic/
+no-numerical-route disposition. SCI-JINC preserves `r'_a=r/s_a`, with `s_a`
+an explicit array-associated angular scale; the Schloerb `s=lambda/D`
+realization is precedent but does not authorize current TolTEC values. The
+inherited `lambda_a/(45 m)`, `(a,b,c)`, and mode-dependent `r_max` values remain
+quarantined implementation evidence with partially recoverable history, not
+TolTEC scientific authority, and no physical interpretation of `45 m` or
+hidden default is admitted. Stage B may define parameter semantics and typed
+unavailability, while a three-array numerical optimization is deferred to a
+separate scientific exercise. The refreshed ODQ-101/102B successor packet
+still awaits `SCI-JINC-STAGE-A-Q002`; Stage B remains unlaunched. The next
+unresolved scientific-owner question is `SCI-JINC-ODQ-103`, the exact AST
+coordinate-role/parent join, JINC admission/profile identity, boundary rule,
+and cause policy.
+
+Grant Wilson then resolved `SCI-JINC-ODQ-103` on `2026-08-28`. AST owns the
+authoritative coordinate realization, its parent-sample association, validity/
+support facts and producer causes; JINC consumes the coordinate associated
+with the same processed sample realization entering its estimator. The
+association is scientific authority, while any key, table join, index or
+object mechanism is engineering choice. JINC owns the single profile
+`SCI-JINC:jinc_map_contribution@1`, local geometry, sample-pixel support,
+signed coefficient, coupled-accumulator identity and local cause policy. No
+row/order/time/tolerance/detector fallback, ordinary MAP validity inheritance,
+producer-owned JINC-usability decision or new per-contribution provenance
+system is admitted. The successor boundaries are AST-to-JINC r0.2 and PTC-to-
+JINC r0.3; frozen AST/MAP/PTC remain unchanged. The refreshed ODQ-101/102B/103
+packet still awaits `SCI-JINC-STAGE-A-Q002`; Stage B remains unlaunched. The
+next unresolved scientific-owner question is `SCI-JINC-ODQ-104`, whether base
+v0.1 adopts only `jinc_coefficient_squared_time` and defers or authorizes a
+distinct physical-exposure role.
+
+Grant Wilson then resolved `SCI-JINC-ODQ-104` on `2026-08-28`:
+`jinc_coefficient_squared_time=sum_i I_ip kappa_ip^2/f_s,i` is the sole
+base-v0.1 time-support product. Its method-specific seconds meaning and
+prohibited physical-exposure, precision, validity and significance
+interpretations remain explicit. A separate physical-exposure product is
+deferred until an identified scientific use requires and separately
+authorizes exact original-occurrence lineage and semantics. The refreshed
+ODQ-101/102B/103/104 packet still awaits `SCI-JINC-STAGE-A-Q002`; Stage B
+remains unlaunched. The next unresolved scientific-owner question is
+`SCI-JINC-ODQ-105`, whether base v0.1 is observation-only with any future JINC
+coadd requiring a separately authorized boundary over complete JINC bundles.
+
+Grant Wilson then resolved `SCI-JINC-ODQ-105` on `2026-08-28`. SCI-JINC v0.1
+defines the estimator and complete product bundle for one observation and
+authorizes no cross-observation combination semantics. Observation is the
+scientific grouping boundary rather than a streaming, chunking, process or
+memory boundary, so same-observation samples/chunks may accumulate
+incrementally only under one exact array/JINC realization/bundle identity.
+Any future JINC coadd requires a separately authorized boundary over complete
+observation bundles and may not inherit ordinary MAP or infer accumulator-
+addition or normalized-map algebra. The refreshed ODQ-101/102B/103/104/105
+packet still awaits `SCI-JINC-STAGE-A-Q002`; Stage B remains unlaunched. The
+next unresolved scientific-owner question is `SCI-JINC-ODQ-106`, the
+independent per-array observation-bundle, missing/unrequested-array
+cardinality and residual destination-identity disposition.
+
+Grant Wilson then resolved `SCI-JINC-ODQ-106` on `2026-08-28`. For one
+observation, JINC may produce zero through three independent bundles, with at
+most one for each stable array admitted/requested under the exact JINC
+realization and destination geometry. Missing, unavailable or unrequested
+arrays create no placeholder or empty product and do not invalidate a
+different produced bundle. Same-identity contributions may accumulate under
+ODQ-105, while contributions with different array or destination identities
+must not merge. Existing plan/bundle provenance remains sufficient; no per-
+contribution provenance is added. The refreshed ODQ-101/102B/103/104/105/106
+packet still awaits `SCI-JINC-STAGE-A-Q002`; Stage B remains unlaunched. The
+next unresolved scientific-owner question is `SCI-JINC-ODQ-107`, the required,
+conditional-required, optional and outside product-role disposition plus exact
+cause vocabulary and unavailable-role representation.
+
+Grant Wilson then resolved `SCI-JINC-ODQ-107` on `2026-08-28` by rejecting the
+broad product-availability/provenance framework and fixing one closed per-
+array bundle schema: required `N_p`, `C_p`, `Q_p`, derived `m_p` with its local
+support/validity state, and `jinc_coefficient_squared_time`. Failure to form
+any required whole-product role suppresses the complete bundle; ordinary
+pixel-level invalid support does not make a role unavailable and creates no
+role-availability record. No generic optional/conditional machinery, detailed
+missing-product cause vocabulary, per-pixel/per-contribution provenance,
+operational-reason archive, placeholder or required diagnostic is authorized.
+The cancellation absolute-term sum/count/bound remains nonpersistent
+construction state governed by ODQ-109. Every other role is outside/deferred;
+ODQ-108 response/covariance products are deferred pending a concrete
+scientific use, and their reference table is removed from author inputs. The
+refreshed 16-object ODQ-101/102B/103/104/105/106/107 packet still awaits
+`SCI-JINC-STAGE-A-Q002`; Stage B remains unlaunched. The next unresolved
+scientific-owner question is `SCI-JINC-ODQ-109`, the exact summation/count
+error bound, deterministic accumulation and phase/cache numerical policy.
+
+Grant Wilson then resolved `SCI-JINC-ODQ-109` on `2026-08-28` by recasting it
+around scientific conditioning and sufficient instrument-relevant numerical
+accuracy. Finite-state requirements, `Q_p>0`, `C_p!=0`, exact-cancellation
+rejection, finite-negative normalization, unit/common-scale invariance and
+dimensionless `rho_p` remain. Total numerical error from arithmetic,
+accumulation/reduction order, function evaluation, phase quantization and
+cache/index realization must be negligible compared with the approximately
+`10^-3` relative fidelity relevant to the instrument. No prescribed summation
+algorithm, contributor-count/machine-epsilon bound, universal `rho` cutoff,
+exact adequate tie/bin/cache choice, bitwise reproducibility or stronger
+precision is a scientific requirement; adequate realization and test design
+belong to later engineering conformance. The refreshed 16-object successor
+packet still awaits `SCI-JINC-STAGE-A-Q002`; Stage B remains unlaunched. The
+next unresolved scientific-owner question is `SCI-JINC-ODQ-110`, the rule for
+a rounded sample center outside the finite map whose square support overlaps
+the map.
+
+Grant Wilson then resolved `SCI-JINC-ODQ-110` on `2026-08-28` with the center-
+admission rule. The resolved rounded center used for JINC cache placement must
+lie in the finite destination domain before footprint evaluation. An outside
+center sets `I_ip=0` for every destination pixel and changes none of `N_p`,
+`C_p`, `Q_p` or `T_p^(kappa^2)`, even when its square overlaps the map. An
+admitted in-map center retains ordinary cropped square membership without
+wrap, completion, renormalization or edge correction. JINC-then-crop
+equivalence is not required, and no added edge cause, provenance or diagnostic
+product follows. No unresolved numbered scientific-scope ODQ remains. The
+next scientific-owner decision is `SCI-JINC-STAGE-A-Q002`, exact-byte approval
+or revision of the 16-object successor packet; the versioned VAL registry
+binding remains a separate Stage B dispatch prerequisite. Stage B remains
+unlaunched.
+
+Grant Wilson then approved `SCI-JINC-STAGE-A-Q002` on `2026-08-28` for the
+complete exclusive Stage A successor packet represented by the author-packet
+manifest at commit `88dcce8b0f7b1d78053b25831b39cf370afd47cc`, manifest
+SHA-256 `52a8e843456a8cb033b7593d9b9f67fb83b0ee565c91c141d8e16d46b906140e`.
+All sixteen allowed-object digests and the information firewall are approved;
+the approved input bytes remain unchanged. Stage A is closed, no additional
+JINC scientific-owner question remains, and Stage B authorship is authorized
+from the controlled packet but was not dispatched in this closure increment.
+The sole dispatch prerequisite is a versioned SCI-VAL source/profile registry
+binding for `SCI-JINC:jinc_map_contribution@1`. Frozen SCI-VAL v0.1/r0.3
+expressly preserves continuing registries, and the approved JINC profile
+already supplies the owning policy, so this is an administrative/interface
+successor rather than a reopened scientific choice. No Stage B normative
+content, PDF, implementation-conformity, validation, performance, numerical-
+readiness, production-readiness, or remote-push claim follows.
+
+The SCI-JINC Stage B registry prerequisite was then satisfied on `2026-08-28`
+through new immutable SCI-VAL continuing-registry successors. The source-
+binding identity is `SCI-VAL_SOURCE_BINDING_REGISTER
+v0.1/r0.3-map-r0.7.1-jinc-stage-a-q002-2026-08-28`, SHA-256
+`0e7ca29ee2e9cd02fb1b76cf87cc64fce6164407a7801f9b9a105ca646317e88`;
+the profile identity is `SCI-VAL_PROFILE_REGISTRY
+v0.1/r0.3-map-r0.7.1-jinc-stage-a-q002-2026-08-28`, SHA-256
+`4b9a1ebecfc847c83b59da772afd9b031ab1830e8febbb12d1a47f70ce5a1110`.
+They register the exact JINC-owned atomic profile with neutral-preserved
+`advisory` response/uncertainty roles. The existing MAP-bound registry files
+remain byte-identical, so frozen MAP authority and verification are unchanged.
+All SCI-JINC Stage B dispatch prerequisites are now satisfied; a fresh
+implementation-blind Ultra author may launch from the exact approved manifest.
+The registry binding itself is not an author input and creates no numerical
+route, conformity, validation, performance, readiness or production claim.
+
+On `2026-08-29` the implementation-blind SCI-JINC Stage B authoring and bounded
+owner-review sequence completed. The two final views import one six-module
+shared authority containing 44 stable requirements and 36 stable predictions.
+Grant Wilson separately approved the positive-axis half-pixel center-tie rule,
+which is bound with the phase-lattice disposition under stable decision
+`SCI-JINC-DEC-PHASE-CENTER-001` without inferring one approval from the other.
+SCI-JINC v0.1/r0.3 is frozen at commit
+`a9f43877e01a661db13bd85b2e7f34ea5ac82fb7` and tag
+`sci-jinc-v0.1-r0.3`; the superseding freeze-manifest SHA-256 is
+`ff4b79e7cca3950831eda95a16ec6a535597f543c4676378d2fc2f01d50faed2`.
+All source/hash, parity, identifier, reference, PDF reopen, metadata, render,
+and visual checks passed. A post-freeze implementation-blind horizontal audit
+over the exact frozen PTC/JINC/AST/VAL authorities found no material
+incoherence and opened no successor. The verification evidence is committed at
+`d6240cc5a6d3f617e60dc907f7f714c8e0212973`, and the consolidated
+`codex/scientific-contract-library` branch contains that record. The numerical
+TolTEC JINC route remains typed unavailable pending the separately owned
+JINC-permitted PTC coefficient family, authorized TolTEC array parameter set,
+and, where numerical support is claimed, exact adequacy profile with matching
+certificate. No implementation candidate was inspected, and no conformity,
+representation-fidelity, validation, achieved-performance, readiness,
+production, or production-authorization claim is made. SCI-JINC is closed for
+the time being; any later scientific correction requires an explicitly
+authorized versioned successor and shall not modify the tagged bytes.
+
+On `2026-08-29` Grant Wilson launched SCI-NOI v0.1 as a recovery-first Stage A
+effort at high reasoning effort. The recovered candidate was then subjected to
+the owner-directed final Stage A scope repair without further implementation,
+configuration, schema, test, audit, validation, reduction, Unity, default, or
+historical-behavior inspection. The repaired packet uses collision-free
+`NOI-GEN`, `NOI-UNC`, and `NOI-STD` roles; exact fixed-state and relearned
+operator DAGs; explicit finite assignment design, source-imprint,
+target/estimator/rank/covariance, STD compatibility, and atomic lifecycle
+semantics; exact sanitized MAP, JINC, and conditional pre-MAP PTC boundaries;
+four NOI-owned VAL profile drafts; and a bounded FLT/Wiener/FRUIT record. One
+sanitized decision artifact now separates every consequential choice, and the
+exclusive author packet plus closure report bind exact bytes by SHA-256.
+
+At that Stage A checkpoint, Stage B had not been launched. Grant Wilson
+approved `SCI-NOI-ODQ-101` on
+`2026-08-29`: fixed-state conditional-sign is the ordinary conditioning family;
+relearned methods are separate and unavailable pending complete approved
+graphs; fixed and relearned members cannot be mixed in one uncertainty
+estimate. The closure repair does not treat that family as one method:
+PTC-to-frozen-MAP, PTC-to-frozen-JINC, realized-MAP, realized-JINC, and
+filtered routes have distinct identities and all remain unavailable. GEN owns
+member completion truth; the corrected NOI profile governs only UNC member
+admission; the assignment-design identity and STD unit `1` are explicit.
+
+Grant Wilson then approved `SCI-NOI-ODQ-102A` on `2026-08-29`. The ordinary
+route applies the NOI-defined realization assignment at the exact PTC-to-MAP
+numerical boundary. MAP may consume the modifier inline during its frozen
+ordinary accumulation, so a materialized randomized timestream is not
+required. NOI owns assignment, ensemble design, realization identity, and the
+resulting NOI realization map; MAP owns only conforming application. The
+result is not an ordinary MAP science product. The route remains numerically
+unavailable until its exact PTC coefficient and numerical `coverage_cut` gates
+are realized; all other routes remain unselected and unavailable.
+
+Grant Wilson then approved `SCI-NOI-ODQ-102B` on `2026-08-29`: once a detector
+receives its member assignment, that assignment applies to all admitted samples
+of that stable realized detector/channel throughout the observation. Scan,
+subscan, chunk, sample/time, traversal, worker, container, and MAP accumulation
+order cannot change it; the same detector identity in another observation is a
+different coherence unit.
+
+Grant Wilson then approved `SCI-NOI-ODQ-102C` on `2026-08-29`: the ordinary
+route uses network-stratified, coefficient-balanced randomized detector signs.
+Detector coefficient mass is derived from exact frozen MAP-admitted positive
+contributions and balanced separately inside each stable readout network; no
+network, array, or observation balances another. Complement-symmetric
+admission/probability preserves marginal detector sign probability `1/2`;
+equal detector counts and post-conditioning independence are not claimed. The
+derived design coefficient is not precision, empirical NOI weight, exposure,
+validity, or a replacement MAP-facing coefficient.
+
+Grant Wilson then resolved `SCI-NOI-ODQ-102D` on `2026-08-29` as an authorship
+delegation. Exact finite-design mechanics and scientific rationale belong to
+the implementation-blind scientific-contract author. The proposed tolerance-
+conditioned network-local construction is approved only as a nonbinding
+suggestion that the author may adopt, revise, or reject within ODQ-102A/B/C.
+No numerical availability or advance owner acceptance follows; the author must
+supply complete exact mechanics or return one precise question.
+
+Grant Wilson explicitly approved `SCI-NOI-ODQ-104` on `2026-08-29`. Every GEN
+method must classify every scientifically consequential adjacent reduction
+state as fixed, rerun/relearned, not applicable, or unavailable. A relearned
+method must identify the consequential stages rerun/relearned and the resulting
+state that may differ from the real-observation reduction; a generic or partial
+`relearned` label is insufficient. This is scientific method definition, not a
+requirement for exhaustive implementation provenance. It selects no relearned
+method and does not change the ODQ-102A ordinary route or its availability.
+
+Grant Wilson approved the scientific content of `SCI-NOI-ODQ-103` on
+`2026-08-29`: randomization is intended to suppress source signal, but does not
+by construction alone establish that the resulting maps are source-free. The
+full source-content, target, assumption, finite-residual, consequential-
+operator-effect, structured-residual, source-model-error, leakage, and
+prohibited-claim disclosures remain required. Exact scientist-readable
+terminology is delegated to the Stage-B scientific author; the provisional
+long label is nonbinding and may not be replaced by terminology implying
+guaranteed source removal. No achieved suppression or numerical availability
+follows.
+
+Grant Wilson approved `SCI-NOI-ODQ-105A` on `2026-08-29`. Candidate assignments
+rejected during finite-design construction are search outcomes, not failures or
+members. Once admitted, every requested realization must complete through the
+declared frozen operator. Any admitted-member failure fails the entire GEN
+ensemble closed for every UNC use; completed survivors cannot be silently
+retained as a partial ensemble. GEN reports diagnostically sufficient failure
+cause/context without exhaustive implementation provenance. Disabled remains
+explicit zero-member/no-work; inability to resolve the required admitted design
+is a design-resolution failure rather than an individual candidate failure.
+
+Grant Wilson approved `SCI-NOI-ODQ-105B` on `2026-08-29`. The initial UNC
+estimand is the zero-centered conditional detector-sign-randomization second
+moment `V_hat_cond(p)=sum_b omega_b M_b(p)^2`, using exact normalized
+finite-design weights on the common domain where every admitted realization
+has a valid finite value. The ensemble mean is not subtracted and no `B-1`
+correction applies. Dependence, complement structure, counts, design rank,
+effective information, and estimator uncertainty/unavailability must be
+reported; realization count is not independent astronomical count or exposure.
+The squared-signal-unit result retains source imprint and structured nonzero
+content and is not automatically physical-noise variance or MAP covariance.
+Square root, projection, off-diagonal covariance, inverse, weight, and STD
+transformations remain separately governed. Numerical availability remains
+blocked on the existing GEN/design/domain/adequacy gates.
+
+Grant Wilson approved `SCI-NOI-ODQ-106` on `2026-08-29`. The ODQ-105B
+pointwise conditional second moment is the ordinary primary uncertainty
+representation but is not covariance merely because it is pointwise or
+diagonal-like. Retained ensembles and separately identified projected,
+stationary/kernel, structured, full, or unavailable covariance methods are
+permitted; dense full covariance is never universally required. Every
+covariance method must declare exact estimator/member population, domain,
+support/response, rank or rank limit, null/unresolved modes, regularization,
+omissions, and uncertainty/calibration state. Unreported covariance is unknown
+or unavailable rather than zero or independence. The initial method retains
+its common-all-member rule and cannot use pairwise populations, survivor
+subsets, or generic missing-data estimators to rescue failure. No covariance
+representation implies an inverse or precision.
+
+Grant Wilson approved `SCI-NOI-ODQ-107` on `2026-08-29`. The initial derived
+inverse product is `W_hat_cond=1/V_hat_cond` on the exact finite strictly
+positive parent domain. Its role is an inverse conditional second-moment scale
+with inverse squared signal units, not inverse variance or precision. Zero,
+negative, nonfinite, unavailable, or outside-parent-domain input yields
+unavailable rather than a numerical zero; any floor, cap, clipping, epsilon,
+shrinkage, or other regularization is a separate method. Marginal inverse
+variance requires separately authorized marginal variance; precision requires
+an authorized covariance inverse/generalized inverse on a declared subspace;
+and consumer-effective weight is exact-use-specific. None is validity,
+support, exposure, a PTC/MAP coefficient, or a parent-mutation instruction.
+Cross-boundary use requires explicit future scientific authority.
+
+Grant Wilson approved `SCI-NOI-ODQ-108` on `2026-08-29`. The first STD method,
+`NOI-STD/MAP-CONDITIONAL-SECOND-MOMENT-SCALE@1`, divides the exact immutable
+normalized real-observation MAP signal associated with the same frozen MAP
+operator state by canonical `sqrt(V_hat_cond)` on their exact compatible
+finite-positive valid-domain intersection. Exact estimator/generation,
+parent, response, unit/beam, WCS, support, validity, lifecycle, transformation,
+and numerator/scale dependence are bound. Invalid or incompatible scale is
+unavailable rather than zero/infinity; interpolation, substitution, and an
+implicit algebraic inverse-scale route are prohibited. The unit-`1` output
+claims only MAP signal standardized by the stated conditional randomization
+second-moment scale—never significance, probability, detection, completeness,
+purity, or catalog authority. JINC remains a separate future method with a
+JINC-specific compatible scale.
+
+Grant Wilson approved `SCI-NOI-ODQ-109` on `2026-08-29`. SCI-NOI admits three
+plan-selected modes: persisted ensemble, compact deterministic regeneration,
+and streaming sufficient statistics. Requested/effective/applied/realized mode
+is explicit; there is no universal default or silent fallback. Compact mode
+binds exact parent/method/algorithm/operator/design/membership/key/configuration
+identity and declares byte-identical or numerical reproducibility. Streaming
+mode retains mathematically sufficient state for every published product/claim
+and declares unsupported later reconstruction/reanalysis. ODQ-105A remains
+absolute: every admitted member completes, failed ensembles yield no survivor
+or partial streaming estimate, and partial accumulators carry no UNC authority.
+Required persistence failure is product failure; planned transience is not.
+Persistence/regeneration establishes no adequacy, covariance completeness,
+calibration, significance, conformity, performance, readiness, or production
+authority.
+
+Grant Wilson approved `SCI-NOI-ODQ-110A` on `2026-08-29`. NOI does not choose
+or define a deterministic filter or other scientific transformation. The
+appropriate upstream/downstream scientific process owns the transformation and
+the transformed scientific product. NOI must bind and apply exactly that
+transformation to every admitted compatible randomization when estimating
+uncertainty for that exact transformed product. Transformation authority,
+version/state/parameters/order/domain/support/edge/missing-data/normalization/
+unit/response/lifecycle/failure identity and parity are mandatory; omission,
+substitution, relocation, inferred equivalence, and cross-product reuse are
+prohibited. Member-specific transformation relearning is a separate ODQ-104
+method. Every transformed route remains numerically unavailable until its owner
+supplies exact content-bound authority and the NOI parity interface is
+satisfied.
+
+Grant Wilson approved `SCI-NOI-ODQ-110B` on `2026-08-29`. A Wiener
+transformation learned once by its scientific owner and frozen before
+application to randomizations follows ODQ-110A even when data-derived. If an
+NOI product is used by that owner to learn, select, or update the
+transformation, the prior UNC input, owner-learning generation, resulting
+transformation, transformed science product, transformed GEN, and successor UNC
+are separate immutable generations with explicit dependence. The prior UNC is
+not independent evidence validating the successor and cannot be mutated.
+Per-realization Wiener learning is a distinct ODQ-104 method and cannot mix
+with fixed-Wiener members without an authorized mixture estimand. All numerical
+Wiener routes remain unavailable pending their exact owner authority,
+inference/relearning contract where applicable, and NOI boundary.
+
+Grant Wilson approved `SCI-NOI-ODQ-110C` on `2026-08-30`. FRUIT retains
+scientific authority over source modeling, subtraction/add-back, recurrence,
+learning, stopping/restart/selection, response, support, validity, lifecycle,
+failure, and interpretation. An exact fixed FRUIT residual or terminal
+transformation may support only uncertainty conditional on frozen FRUIT state
+under ODQ-110A parity. If an NOI product informs later FRUIT continuation, the
+prior input, FRUIT-learning generation, transformation, science product, GEN,
+and successor UNC remain separate immutable generations; the prior product is
+dependent input, not independent validation. Partial or complete per-member
+FRUIT replay is a distinct ODQ-104 method. Fixed and replayed members cannot
+mix without an authorized mixture estimand. All numerical FRUIT routes remain
+unavailable pending exact FRUIT-owner and NOI boundaries.
+
+Grant Wilson approved `SCI-NOI-ODQ-111` on `2026-08-30`. The four exact NOI-
+owned GEN-input, UNC-member, UNC-ensemble, and STD admission profile identities
+and consumer actions are approved. Producer facts remain producer-owned, NOI
+owns each named-use policy/action, and SCI-VAL may only bind and evaluate the
+approved immutable bytes. No generic pass, implicit next-operation realization,
+or cross-use veto/rescue follows. All bounded SCI-NOI Stage A owner decisions
+are complete. Paired immutable SCI-VAL successors dated `2026-08-30` now bind
+the exact r0.18 source packet and register the four profiles while preserving
+all earlier MAP/JINC records. The process-only Registry/source prerequisite is
+satisfied. Grant Wilson approved the exact r0.18 author manifest, r0.19 closure
+report, paired Registry successors, and binding record on `2026-08-30`, and
+authorized a fresh implementation-blind SCI-NOI Stage B author at high
+reasoning effort. The author is restricted to the 17 manifest-admitted objects;
+no implementation, evidence, manager record, or unlisted source is admitted.
+MAP/pre-MAP numerical parents remain
+unavailable pending the exact PTC MAP-facing coefficient and owner-admitted
+numerical `coverage_cut`; JINC numerical parents remain unavailable under its
+frozen gates. No frozen parent was modified, and no implementation conformity,
+empirical calibration, physical-noise validity, significance, achieved
+performance, readiness, or production claim is made.
+
+On `2026-08-30` Grant Wilson launched
+[`SCI-FLT v0.1`](scientific_contracts/packages/SCI-FLT/v0.1/README.md) as a
+recovery-first Stage A scientific-contract effort from that authority line.
+The initial owner-review packet included a package-specific prior-work
+record, quarantined implementation-informed dossier, sanitized Scope Brief,
+ownership/boundary classification, deterministic-transform science extract,
+typed operator/product taxonomy, and eight bounded owner questions. It separately classifies fixed
+deterministic convolution/low-pass, Wiener/noise-model-dependent,
+matched/template-amplitude, source-sensitive, data-thresholded map-domain, RTC
+temporal, and FRUIT feedback operations. Approved SCI-NOI Stage A controls:
+FLT defines the exact transformation and NOI applies it to compatible admitted
+randomizations for uncertainty of the exact transformed product; fixed-state,
+successor-generation, and per-member-relearned routes remain distinct. Current
+SCI-NOI Stage B draft material was excluded.
+
+The final owner scope repair on `2026-08-30` retains `SCI-FLT` as the tranche,
+selects `SCI-FLT-FIXED` as the first package, rejects `SCI-FLT-DET` because of
+the detector-namespace collision, and retains `SCI-FLT-INF` only as a non-
+authoritative holding tranche. Base v0.1 is strict-linear same-grid
+`y=J_full L_Theta m`, fixed convolution is its concrete family, fixed low-pass
+is a qualified subtype only with complete transfer facts, and full-footprint-
+only is the sole edge/missing method. Affine offsets, boundary extension,
+truncation, support renormalization, reprojection, inference-bearing state, and
+coaddition are deferred. Exact MAP/JINC/NOI boundaries, decision tables, VAL
+profile drafts, product/lifecycle roles, and a content-bound owner record now
+form the repaired 17-object SHA-bound author candidate. All bounded Stage A
+scope decisions are resolved. The exact bytes require owner approval and Stage
+B has not begun. No algorithm or frozen authority changed, and no implementation
+conformity, validation, calibration, achieved response/performance, readiness,
+production, freeze, Unity, source/mode, NOI, or FRUIT action is claimed or
+authorized.
+
+Also on `2026-08-30`, a separate recovery-first
+[`SCI-FLT-INF holding study`](scientific_contracts/studies/SCI-FLT-INF_STAGE_A_2026-08-30/README.md)
+was prepared from exact SCI-FLT Stage A commit
+`cd55752e716051383da54356833ef0fac20b083a`, with frozen SCI-NOI authority
+`f28d7a2617160febca85c1c40e6f7ba7494e266e` available only through exact
+read-only object bindings. No later SCI-FLT-FIXED authoring artifact was used
+or modified, and all 17 protected SCI-FLT-FIXED Stage A author objects plus
+their manifest remain byte-identical to the base.
+Recovery concludes that `SCI-FLT-INF` should not become one combined contract:
+normalized template-amplitude estimation, any genuine posterior/Wiener
+reconstruction, selected-source/catalog amplitude estimation, learned-state
+lifecycle variants, data-thresholded mode selection, method selection/fallback,
+adaptive edge/background conditioning, and NOI-derived coefficient/
+standardized products have different estimands, state graphs, response,
+covariance, support, or ownership. Grant Wilson approved and closed
+`SCI-FLT-INF-ODQ-001` on `2026-08-30`: the historical full path is an
+**optimal matched-template amplitude estimator**, with unbiased normalization
+for a matching supplied template under the declared assumptions. The ordinary
+point-source-response kernel yields a matched point-source amplitude field;
+other scientifically defined kernels yield their corresponding template-
+amplitude fields. This is not a posterior/Wiener sky reconstruction and is
+not ordinary source-shaped convolution. Grant Wilson then approved and closed
+`SCI-FLT-INF-ODQ-002` on `2026-08-30`: the method belongs to a narrow map-
+domain filtering package and publishes a matched-filtered version of its exact
+admitted input map product or products, preserving applicable parent map-
+domain structure and semantics. It does not implement or require source
+detection, candidate selection, catalog construction, peak interpretation,
+deblending, fitting, or other source analysis, and no SRC ownership boundary
+is introduced. A future independent source-analysis contract may consume the
+filtered map if separately authorized. Genuine posterior/Wiener reconstruction
+remains separate and deferred. Grant Wilson approved and closed
+`SCI-FLT-INF-ODQ-003` on `2026-08-31`: v0.1 admits both exact ordinary-MAP
+observation bundles and exact ordinary-MAP coadd bundles as distinct
+observation-local and coadd-local parent/grouping identities. No equivalence,
+commutation, filtered-result combination, or filter-owned cross-observation
+operation is approved; JINC and derived-map parents remain deferred. Frozen
+ordinary-MAP numerical gates remain unchanged. On `2026-08-31`, Grant Wilson
+author-delegated `SCI-FLT-INF-ODQ-004`: a future implementation-blind author
+must develop bounded noise/covariance, spectral-weighting, and parent-
+coefficient options in both the Scientific Rationale and Contract and the
+Engineering Conformance Specification, using the same stable option
+identities. The historically used radially symmetrized average map noise PSD
+is a candidate for scientific examination, not a selected default, covariance
+authority, or conformity claim. The owner must select or otherwise dispose of
+the authored options before freeze or a numerical route is authorized.
+Grant Wilson then approved and closed `SCI-FLT-INF-ODQ-005` on `2026-08-31`:
+each base-v0.1 application uses one exact immutable scientifically declared
+template-response product representing parent-map response per unit of the
+declared amplitude. Its scaling and full unit, parent, WCS/phase, support/tail,
+array/beam/calibration, validity, and provenance identity are explicit.
+Admitted sources are an exact parent-bound point-source response or another
+explicitly supplied scientific template; Gaussian/Airy is only complete-
+product construction, while target/source/NOI-learned templates and the
+historical high-pass/delta case are deferred. Grant Wilson then approved and
+closed `SCI-FLT-INF-ODQ-006` on `2026-08-31`:
+`A_hat=<t,Qm>/<t,Qt>` is the authoritative exact reference estimator,
+conditional on the ODQ-004 `Q` and ODQ-007 support. Exact evaluation is
+conformant. Approximate realizations are admitted only inside a quantitative
+conformance envelope bounding normalization, matching-template response,
+support/null behavior, and uncertainty. A future implementation-blind author
+must develop matching bounded alternatives in both contract views for later
+scientific-owner selection. Regularization defining `Q` or its null space
+remains ODQ-004 state; an outside-envelope operator is a distinct method or
+unavailable, and unresolved/nonpositive/nonfinite normalization is null or
+unavailable rather than zero amplitude. Grant Wilson then approved and closed
+`SCI-FLT-INF-ODQ-007` on `2026-08-31`: base v0.1 admits only complete-support
+output locations, evaluated over the exact local or nonlocal influence domain
+of the template, weighting, realization, and boundary convention. Every
+required input must be in-domain, admitted, finite, available, and valid;
+affected locations are unavailable rather than zero or partial-support
+renormalized estimates. Numerical padding or fill is permitted only when
+conservative erosion proves that no admitted output depends on it. Learned
+support, background/fill, windows, and tapers are deferred to a separately
+identified future method. Grant Wilson then approved and closed
+`SCI-FLT-INF-ODQ-008` on `2026-08-31`: the filtered signal has the exact
+template-amplitude unit `unit(m)/unit(t)`, and its fixed-state response is the
+location-indexed row `L_x u=<t_x,Q_x u_x>/<t_x,Q_x t_x>`, with unity response
+to the exact matching template at every admitted location. Off-diagonal
+response need not be stationary, symmetric, isotropic, or one universal
+kernel; a uniformly processed kernel requires an exact invariance proof before
+that use. Parent WCS/grouping and provenance persist, but signal-unit, nominal-
+beam, flux, DC/integral/surface-brightness, extended-source, and calibration-
+covariance meanings do not transfer automatically. Any matched-filter beam or
+solid angle is response-derived, and parent/template calibration dependence is
+joint rather than presumed independent or cancelling. Fixed-state and full-
+procedure response remain distinct. Grant Wilson then approved and closed
+`SCI-FLT-INF-ODQ-009` on `2026-08-31`: every matched-filtered map truthfully
+states covariance availability; when matching authoritative fixed-state parent
+covariance exists, `C_cond=L C_parent L^T`. Only exact inverse-covariance GLS
+premises make `D^-1` a marginal conditional variance, never full precision or
+an independence claim. Frozen-NOI conditional second moments, calibration
+uncertainty, and full-procedure uncertainty remain separate, and the signal may
+remain valid with covariance explicitly unavailable. Both future contract
+views must develop the same bounded covariance-representation alternatives for
+later owner disposition before freeze or a numerical covariance route.
+Grant Wilson subsequently approved and closed ODQ-010 through ODQ-013 on
+`2026-08-31`: application state is declared or learned once from the exact
+parent and frozen for identical NOI-member application; automatic selection,
+fallback, and data-thresholded modes are excluded; only minimal non-mutating
+derived companions are admitted; the exact owner-worded FLT→FRUIT scientific
+interface is first-class while FRUIT remains a separate tranche; and signal
+and qualified companions use tiered role-scoped atomic lifecycles with FLT-
+owned named-use policies evaluated by VAL. Grant also approved
+`SCI-FLT-MATCHED` as the successor package identity; the later Stage B freeze
+selected the human title **Matched-template map amplitude estimation**. No
+holding-study owner question remains.
+
+On `2026-08-31`, the package-local
+[`SCI-FLT-MATCHED v0.1`](scientific_contracts/packages/SCI-FLT-MATCHED/v0.1/README.md)
+Stage A candidate was constructed. It contains package-specific recovery, a
+quarantined dossier pointer, sanitized scope, scientific supersession cover,
+owner decisions, operator/state/product taxonomy, adjacent-package boundaries,
+and six stable authored-option families. The exact eight-object author packet
+is SHA-bound and verified. It requires the Scientific Rationale and Contract
+and Engineering Conformance Specification to carry identical alternatives for
+weighting/noise authority (including the radially symmetrized average map noise
+PSD candidate), quantitative approximation conformance, covariance
+representation, immutable-state persistence, response/product/FLT→FRUIT
+persistence, and VAL profile granularity. Grant Wilson approved the exact
+eight-object packet at manifest SHA-256
+`255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8`
+and explicitly authorized a fresh implementation-blind Stage B author on
+`2026-08-31`. The author is restricted to those exact objects and must develop,
+not select, the six option families. Dispatch is the next process action.
+
+The fresh implementation-blind author subsequently returned the Stage B r0.1
+draft on `2026-08-31` without a blocking question. The shared six-module core
+is imported identically by a 37-page Scientific Rationale and Contract and a
+33-page Engineering Conformance Specification. It contains 39 stable
+requirements, 18 falsifiable predictions, 15 assumptions, a seven-part
+uncertainty budget, 21 exact alternatives across `AO-001` through `AO-006`, a
+complete 78-ID crosswalk, and 17 open scientific-owner questions. The radially
+symmetrized average map-noise PSD appears only as unselected weaker-weighting
+candidate `AO-001-C`; no historical mechanics, covariance authority,
+stationarity, isotropy, optimality, or default is inferred.
+
+Manager review re-verified the approved packet hash, identical shared-source
+imports, complete IDs, source/PDF consistency, clean build logs, and all 70
+rendered pages. The draft is accepted for owner disposition, beginning with
+`SCI-FLT-MATCHED-SODL-001`. It is not frozen scientific authority, and no
+option, numerical route, implementation conformity, validation result,
+performance, readiness, production, or Unity state is selected or claimed.
+
+Grant then supplied a targeted Stage B r0.2 mathematical-closure,
+option-refactor, lifecycle, and boundary directive on `2026-08-31`. The r0.2
+draft preserves the approved eight-object packet and all r0.1 stable
+requirement, prediction, and AO identities while adding a semantic repair map.
+It closes collision-free notation, coordinate-basis measure/covariance
+algebra, restriction-before-inversion and constrained singular GLS, the exact
+parent-pixel output lattice, general-sky/nuisance response, five support roles,
+Learn--Resolve--Apply, fixed/full-procedure/realized/reference response,
+actual/reference covariance, exact science versus one preregistered engineering
+numerical profile, AO-003--006 science/representation separation, expanded
+lifecycle and SCI-VAL semantics, repaired `PRED-008`, and renamed
+field-power-spectral `AO-001-C`. Exact MAP, template, NOI, and one-way FRUIT
+producer-envelope boundary drafts plus a route-status table are present.
+
+The r0.2 six-module core renders as a 32-page Scientific Rationale and a
+30-page Engineering Conformance Specification with 50 requirements, 24
+predictions, 21 stable AO alternatives, and a 95-ID crosswalk. All 62 pages
+passed visual QA, both build logs have zero overfull boxes or compile defects,
+and the 41-object draft manifest verifies at SHA-256
+`4b66a449fc5b6a90e0ada6c71708e56a9344c3e89a7f69bc8d5b1c8bc88ef0e1`.
+Fourteen SODL questions remain open, two are decided, and one is superseded.
+No weighting, numerical route, implementation conformity, response/covariance
+fidelity, observational validation, performance, readiness, production,
+freeze, or Unity state is selected or claimed. Any later fresh author or
+reviewer iteration uses xhigh effort rather than ultra.
+
+On `2026-09-01`, Grant Wilson authorized the directed findings from an
+independent ChatGPT Pro review of the exact r0.2 PDF pair and requested a second
+review after repair. Stage B r0.3 closes the review's F01--F14 findings without
+implementation inspection or a new option selection: construction now begins
+from predeclared `D_loc(p)` rather than final application support; the actual
+producer is the potentially nonlinear `F_g`, with operational response and U1
+covariance primary and matrix forms conditional on established fixed-state
+linearity; radial field-power `AO-001-C` now defines exact `A_p`, `D_p`, and
+`W_p=A_p^dagger D_p A_p`; U1 and U2 are separately authorized; empirical
+sampling is an engineering protocol; `K_NOI` is a frozen pre-Apply admission
+predicate; `Q_FLT^0.1` is a finite FLT-to-FRUIT vocabulary; and scientific,
+engineering, and successor-authorship authority are separated. The two
+shared-core views now render as 36 and 33 pages. Mechanical consistency and
+all-page visual QA pass, and the 43-object r0.3 draft manifest verifies at
+SHA-256
+`2c54d4d89599ae8b36b050aa1716755852b0e83d6b87575b65e6e138f725a880`.
+The approved Stage A manifest remained unchanged. At that checkpoint, a second
+independent ChatGPT Pro review at xhigh was the next gate; all scientific
+nonclaims and open SODL states remained in force.
+
+The second independent ChatGPT Pro review of the exact r0.3 pair then returned
+`accept after minor repair` at confidence `0.90`, with no P0 or P1 finding.
+Grant Wilson approved selectable covariance scope with explicit bundle-level
+role/status and signal-preserving typed unavailability unless an exact
+named-use policy requires the companion. Grant also approved effective-sample,
+anisotropy/dispersion, and leakage quantities as mandatory `AO-001-C`
+diagnostics rather than v0.1 scientific admission thresholds. Stage B r0.4
+applies those two policies and all six direct minor repairs without estimator
+re-derivation or implementation inspection: `h=(g,theta)` is the complete
+frozen condition, U2 owns variation over `theta`, fixed `P_C` establishes the
+finite covariance codomain, failure-bearing domains remain explicit, realized
+normalization diagnostics are optional where no separable denominator exists,
+template rescaling is restricted to pure fixed-state amplitude-coordinate
+reparameterization, consequence assumptions are corrected, and general
+operational response retains its parent dependence unless linearity is proven.
+The shared core renders as 39-page scientific and 35-page engineering views;
+source/PDF consistency and all 74 rendered pages pass. The active 46-object
+r0.4 manifest verifies at SHA-256
+`69f5a8a61b51e17ca4d976e9a65e4f4c25cee12887f5393167d20a1402efed7a`.
+The complete 49-file payload is returned as a separately verified `.tar.gz`
+archive at SHA-256
+`e3dedc0df3492cf5ed421d9de6791186d71c8522c6c24605f78492f40f89d3dd`.
+Fourteen SODL questions remain open, two are decided, and one is superseded;
+r0.4 remains an owner-review draft rather than frozen authority.
+
+Grant Wilson then supplied the exact r0.5 final targeted closure directive on
+`2026-09-01`, accepting the r0.4 scientific architecture as its basis and
+forbidding another broad derivation. Stage B r0.5 separately types parent-fact,
+numerical-payload, construction, and exact nonzero application domains; adds
+`PRED-025`; separates signal, response, covariance, NOI, and FLT-to-FRUIT
+validity; completes LearnedCandidate through Published lifecycle semantics;
+conditions U1 on pre-draw `h_pre`; distinguishes exact local-GLS reference
+variance from operational-realized covariance; admits fixed templates from
+authorized source-class, morphology, beam, or physical-response authority
+while forbidding target-derived selection; and makes NOI/FRUIT state request-
+qualified. Seven separate PA/SA/SP/CU/NU/RU/FH role profiles and all four r0.5
+boundary drafts accompany the shared core. The two views render as 42-page
+scientific and 38-page engineering documents; mechanical consistency and
+final-build all-page visual QA pass. The 67-object authority manifest verifies
+at SHA-256
+`799faaa3b83ca9cf4441ffb17137e3353d0fa617755d00e23ae7ebc61d5c9177`,
+and the complete 70-file payload is returned in a deterministic `.tar.gz` at
+SHA-256
+`ebfa5c653a6c989c7250ed2191898022b9f6382aeb8613e3bc120d3ed4561682`.
+The title and AO packets are recommendations awaiting explicit owner
+disposition; the provisional historical title carries
+`optimality_status=not_claimed`. No option, numerical route, implementation
+claim, validation, performance, readiness, production state, freeze, or Unity
+activity is selected or claimed.
+
+The exact r0.6 micro-repair directive then accepted r0.5 as the
+freeze-candidate basis while initially withholding the title and AO
+dispositions. The
+r0.6 shared core distinguishes `S_parent_fact`, the stochastic model
+`M:D_model->R`, and the observed payload `m_obs:D_m->R`; keeps model/covariance
+construction authority required even where the final observed coefficient is
+exact zero; corrects the successful lifecycle to Realized, complete
+publication candidate, PublicationDecided, then Published or NotProduced; and
+allows package authorization of multiple separately named AO-001 methods while
+binding exactly one per request/realization with no mixing, data-driven choice,
+or fallback. The seven PA/SA/SP/CU/NU/RU/FH records are frozen role-semantics
+definitions while remaining SCI-VAL-unregistered and unevaluable. Stable
+counts remain 50 requirements, 25 predictions, six AO families/21
+alternatives, a 96-ID crosswalk, and 17 SODL IDs.
+
+Grant Wilson then selected title option 1, **Matched-template map amplitude
+estimation**, and authorized AO-001-A plus separately named AO-001-C as
+eligible parameterized methods for ordinary-MAP observation/coadd parents and
+eligible named uses. Every realization binds exactly one fully specified
+authorized method; mixing, target-data selection, substitution, and fallback
+are forbidden. A supports exact-local-GLS optimality/reference variance only
+when every theorem premise is bound. C remains normalized but nonoptimal and
+implies no noise, covariance, stationarity, isotropy, or optimality claim. B/D
+remain nonselectable successor-authorship triggers. The owner also disposed
+all remaining covariance-role, U2, state/response-query, named-companion,
+flux-interpretation, public-intermediate, and supersession questions, closing
+all 17 stable SODL entries.
+
+The final views render as 45-page scientific and 41-page engineering
+documents; mechanical consistency, the repository Stage A verifier, all-page
+visual QA, and extracted standalone verification pass. The 46-object frozen
+scientific-authority manifest has SHA-256
+`6b0231a7e9d34f028eda9cce48f62de1fc9e594348aa1448a2d182d732f78688`.
+The deterministic 50-file standalone archive has zero unresolved local links
+and SHA-256
+`b6d3341956f0f6f3bf10d22bcc4bf262ffc81e3d2e6c92a57a7941530c1dfc27`.
+The external freeze record binds that exact manifest. `SCI-FLT-MATCHED
+v0.1/r0.6` is complete and frozen as scientific authority.
+
+This is a scientific-contract freeze only. No algorithm change, concrete
+numerical realization, implementation conformity, validation, calibration,
+performance, readiness, production, or Unity action is claimed or authorized.
+
+The first pilot, [`SCI-CAL`](scientific_contracts/packages/SCI-CAL/v0.1/README.md),
+completed its initial Stage A recovery and sanitized scope draft on 2026-08-16.
+The recovery reuses the frozen implementation-independent CAL core and later
+owner decisions, incorporates the layered APT-identity supersessions, and
+keeps implementation, audit, repair, validation, Unity, and active ALIGN B3c
+material outside authorship. Grant approved the v0.1 Scope Brief, its five
+named scope decisions, and the four-item sanitized author-reference packet on
+2026-08-16. The next gate is a fresh implementation-blind GPT-5.6 Ultra
+scientific-author draft from that packet. Scope approval does not approve the
+contract substance, establish implementation conformity, authorize
+validation, or change production status.
+
+The content-bound author packet was committed and a fresh GPT-5.6 Ultra
+implementation-blind author was dispatched on 2026-08-16. The author is
+restricted to the approved Scope Brief, independent core plus supersession
+cover, exact passband manifest, and sanitized conventions/ownership extract.
+The internal dossier, implementation, audits, repairs, tests, validation,
+Unity evidence, and active ALIGN work are excluded. The next owner-facing
+milestone is a manager-reviewed two-view contract draft or a precise scientific
+decision that prevents one.
+
+The implementation-blind author returned the first SCI-CAL two-view draft on
+2026-08-16. The package contains one shared LaTeX authority, a 24-page
+scientist-facing rationale, a 21-page engineering conformance view, 50 shared
+numbered requirements, 30 shared limiting/pathological predictions, and a
+complete 50-row crosswalk. The manager verified that the engineering view adds
+no independent normative science and corrected one draft ambiguity so
+`science-qualification-eligible` cannot be mistaken for an achieved
+`science-qualified` or `calibrated-science` claim. Both PDFs passed mechanical
+coverage checks and visual inspection. No scientific validation was run.
+
+The draft is not frozen. `SCI-CAL-OWNER-Q001` remains open because the approved
+packet does not contain the retained atmosphere operator's exact content-bound
+nodes and ordinates, ordinate orientation, numeric support/seam rules, or
+generating-model/passband provenance. Until one immutable record supplies
+those facts, numeric atmosphere evaluation, calibrated numeric output,
+representation-fidelity claims, and numeric science-qualification eligibility
+remain unavailable. The next gate is owner scientific review; an independent
+implementation-blind two-view consistency review follows only after the
+science is approved.
+
+Grant returned a complete science-team assessment of the 24-page rationale on
+2026-08-16: major revision required, scientific core strong. The manager
+rewrote the scientist-facing view as revision 0.2 rather than adding a summary
+to the formal document. The new 14-page PDF has an approximately ten-page
+physical narrative followed by formal appendices. It places the once-only
+calibration equation first; adds calibration-lineage, factor-role,
+uncertainty, validity, and validation explanations; moves exact hashes and
+formal routing to appendices; and leaves the engineering v0.1 contract
+unchanged as normative conformance authority.
+
+The review exposed additional upstream scientific authority gaps rather than
+authorizing invented answers. The rationale r0.2 register contains Q01--Q09:
+physical `xs` meaning; baseline and pipeline ordering; `flxscale` derivation;
+calibrator-to-target transfer; broadband photometric convention; the complete
+numeric atmosphere operator (formerly Q001); opacity/segment policy rationale;
+available numerical uncertainty products; and achieved-science evidence
+criteria. The current durable convention maps `nw10` to `a1400`; no stronger
+durable source classifying it as nonexistent or reserved was found, so the
+science narrative omits the unnecessary roster and records the evidence
+conflict for owner action. No implementation audit or scientific validation
+was run. The package remains not frozen pending owner science decisions and a
+subsequent fresh implementation-blind consistency review.
+
+Grant then returned bounded rationale r0.3 corrections on 2026-08-16. The revised
+rationale assigns source-calibration meaning to Beammap/source-APT
+production, limits TolProj to target/source association and explicitly
+approved child-APT transformations, limits SCI-CAL to applying the selected
+child `flxscale` once plus target atmosphere, and assigns realized
+mapmaker/filter response to MAP/FLT. It distinguishes scalar temporal
+commutation, detector-mixing operations, and sample-dependent atmosphere;
+uses an orientation-neutral atmosphere ordinate; removes unsupported `xs`
+scope/layout claims; and adds the required Q01--Q09 owner-decision ledger,
+r0.3 crosswalk, change log, and consistency report. No engineering
+requirements, numerical science, implementation assessment, or validation
+claim changed.
+
+The final owner voice review judged r0.3 essentially finished and authorized
+only a five-item cleanup: separate contract v0.1 from rationale r0.3; remove
+the title-page production note; apply three sentence-level clarifications;
+clarify the adopted opacity thresholds and Q06 consequence; and rename the
+uncertainty table's status column. The live decision ledger now separates
+resolution authority and date and records affected documents, and the PDF
+decision snapshot is checked against it. The rationale architecture and
+library house standard are frozen as the model for later packages, including
+the v/r version-axis rule. There is no further stylistic round. SCI-CAL
+scientific authority remains a draft pending owner disposition of the open
+scientific questions and the final consistency gate.
+
+After the owner directed the program to proceed, the second pilot
+[`SCI-MAP`](scientific_contracts/packages/SCI-MAP/v0.1/README.md) completed
+Stage A prior-work recovery on 2026-08-16. The recovery reuses the frozen
+implementation-independent ordinary MAP-001 core and the later owner-approved
+whole-bundle, nonprecision-coefficient, centered-integer-coadd, support,
+validity, and raw-parent decisions. It also found and classified later
+MAP-002 integration/ownership work and MAP-003 tracer-parent/implementation
+work that postdate the initial registry. JINC and OOF residual transfer remain
+separate scientific estimators and are not silently absorbed into ordinary
+SCI-MAP v0.1.
+
+The SCI-MAP package now contains the charter-linked recovery record, an
+internal dossier, a sanitized Scope Brief, and author-only
+supersession/convention extracts. Grant approved MAP-SCOPE-D001--D006 and the
+exact three-part author packet on 2026-08-16. The approved packet reuses the
+frozen MAP-001 core rather than repeating its derivation and keeps all
+implementation, audit, repair, validation, Unity, MAP-002, MAP-003, and
+production material outside the author channel. The next gate is a fresh
+implementation-blind GPT-5.6 Ultra scientific-author draft from the exact
+content-bound packet. Scope approval does not approve contract substance,
+implementation conformity, validation, or production use.
+
+The content-bound SCI-MAP author packet was committed and a fresh GPT-5.6
+Ultra implementation-blind author was dispatched on 2026-08-16. The author is
+restricted to the approved Scope Brief, exact independent core plus
+supersession cover, and sanitized conventions/ownership extract. The internal
+dossier, recovery record, implementation, audits, repairs, tests, validation,
+Unity evidence, MAP-002/MAP-003 evidence, and production state are excluded.
+The next owner-facing milestone is a manager-reviewed two-view contract draft
+or a precise scientific decision that prevents one.
+
+The implementation-blind author returned the SCI-MAP Stage B r0.1 draft on
+2026-08-16. It contains one shared canonical LaTeX authority, a 22-page
+scientist-facing rationale with a 12-page main narrative, an 18-page
+engineering conformance view, 52 shared numbered requirements, 25 shared
+falsifiable predictions, a complete crosswalk, and an exact seven-question
+owner-decision register. The manager required explicit support-authorized row
+selectors for map and coadd operators so unsupported storage rows cannot be
+misread as zero-valued scientific output, and required the exact owner register
+and compact traceability summary to appear in the scientist-facing PDF.
+
+Mechanical checks pass for sequential identifiers, crosswalk and PDF coverage,
+owner-ledger identity, support-row semantics, and absence of independent
+normative science in the engineering view. Both PDFs compile without LaTeX
+warnings, and all 40 rendered pages passed independent visual inspection. No
+implementation candidate was inspected, and no validation, reduction, Unity
+execution, or production decision occurred. The draft is not frozen.
+`SCI-MAP-OD-001--007` remain open for threshold rationale and change authority,
+response-unavailable use, covariance persistence, physical observation-map
+publication, registered Pointing/OOF reuse, and the numeric domain, unit status,
+boundary cases, and failure behavior of `coverage_cut`. The next gate is owner
+scientific review; a fresh implementation-blind two-view consistency review
+follows only after the science is approved.
+
+The first SCI-MAP scientific editing round was integrated on 2026-08-16. The
+r0.1 combined rationale/contract was preserved as a formal
+scientific/engineering contract, while a separate science-team rationale r0.2
+now follows the SCI-CAL house model and omits the full 52-requirement and
+25-prediction inventories. The r0.2 rationale adds the fractional-projection
+and complete-bundle coadd teaching figures, translates the eight map facts for
+science users, and makes upstream ownership and claim layers explicit.
+
+Dimensional review found `SCI-MAP-CI-001`: the accepted threshold equations
+force `coverage_cut` to be dimensionless, while the r0.1 normative clauses
+left its unit status open. On 2026-08-16 the scientific owner approved the
+bounded amendment, and r0.3 incorporates it in the shared equations,
+REQ-031/032, and PRED-012. OD-007 now remains open only for numerical-domain
+and failure-policy questions. Existing OD-001--007 remain stable in identity; OD-008 appends the
+unresolved projection-normalization/boundary authority and OD-009 appends the
+unresolved canonical-grid preparation and future reprojection/mosaicking
+ownership. Approved PTC D004 supplies coefficient meaning, and accepted ADR
+0009 plus its 2026-08-05 amendment supplies WCS/FITS and the 0.1-arcsec
+serialization authority, so neither resolved issue was reopened. The r0.3
+science-team rationale is now the frozen SCI-MAP house version; it receives no
+further stylistic round. No implementation inspection, validation, reduction,
+Unity execution, or production decision occurred.
+
+The contract-library package layout was normalized in the same documentation
+pass after the project owner identified drift from the required bundle shape.
+SCI-CAL and SCI-MAP now both expose `README.md`, `SCOPE_BRIEF.md`,
+`DECISION_LOG.md`, `CROSSWALK.md`, all six canonical `src/common/` modules,
+stable `src/scientific-rationale.tex` and
+`src/engineering-conformance.tex` entry points, and stable versioned PDF
+filenames. A small `doc/scientific_contracts/verify_layout.py` check prevents
+future structural drift. The packages remain scientific contract v0.1;
+filesystem normalization does not silently create v1.0 authority.
+
+The CAL/MAP pilot lessons are now durable in
+[`PILOT_PROCESS_REVIEW_2026-08-16.md`](scientific_contracts/PILOT_PROCESS_REVIEW_2026-08-16.md).
+That review makes prior-work recovery, exact author-packet content binding,
+Stage A/Stage B separation, one shared normative core, independent consistency
+review, full rendered-PDF QA, and the four-trigger stopping rule mandatory for
+later packages. It also confirms that SCI-BEAM may enter Stage A while remaining
+separate from active ALIGN/AST work; this does not approve BEAM science or
+physical timing/absolute-placement claims.
+
+[`SCI-BEAM`](scientific_contracts/packages/SCI-BEAM/v0.1/README.md) completed
+its Stage A recovery and sanitized scope draft on 2026-08-16. Recovery found no
+dedicated approved implementation-independent BEAM core, so it preserved prior
+scope, three historical dependency handoffs, current Citlali conventions,
+TolAPT soft-prior ownership, and `toltec_beammap` downstream ownership without
+promoting any of them into a scientific contract. Grant approved the Scope
+Brief and `BEAM-SCOPE-D001--D012` on 2026-08-16. The exact three-part packet is
+now content-bound: the approved Scope Brief, a sanitized conventions/ownership
+extract, and a primary-reference boundary admitting only bounded context from
+Bryan et al. 2018 and Golec and the TolTEC Collaboration 2024. No
+analogue-instrument methodology paper, code, audit, handoff, test, validation,
+current A/B or production status, or active ALIGN/AST material enters the
+author channel. This approval authorizes a fresh implementation-blind author;
+it does not accept the resulting contract, assess conformity, authorize
+validation, or change production status.
+
+The implementation-blind SCI-BEAM author subsequently completed document
+revision `r0.1`, and the contract manager completed the bounded first review.
+The draft has one shared normative core containing 46 sequential requirements
+and 24 sequential falsifiable predictions, an exact 70-row crosswalk, a
+13-page scientific rationale with nine substantive pages before its
+appendices, and a 9-page engineering conformance view with no independent
+normative science. The manager returned three bounded corrections to the same
+author: exact reference-origin rather than unjustified unit-peak
+normalization, modulo-pi and availability-aware convergence with separate
+candidate/support/valid-detector stability, and sufficient substantive
+rationale length. All were corrected without adding implementation-informed
+input. The author packet hashes remained unchanged. The manager supplied the
+already-approved `BEAM-SCOPE-D001--D012` ID mapping after author freeze,
+closing one traceability-only question. Seven scientific-owner questions
+remain open concerning later numerical policies, singular covariance,
+model-inadequacy diagnostics, calibration-candidate compatibility,
+response-completeness interpretation, and successor model families. The draft
+is ready for scientific-owner review, then a fresh implementation-blind
+consistency review; it is not accepted or frozen and makes no conformity,
+validation, observational-performance, or production claim.
+
+On 2026-08-17 the scientific owner issued a substantive SCI-BEAM r0.2
+revision directive after deeper scientific review. The directive supersedes
+conflicting r0.1 draft language while leaving contract version v0.1, the
+original author packet, and its hashes unchanged. R0.2 defines the primary fit
+as a standardized per-detector Beammap in raw fractional frequency shift
+`Delta f/f`; defines the fitted tensor as the observation-local effective PSF
+core rather than an intrinsic or complete beam; uses a fixed nominal-beam,
+top-of-atmosphere reference-origin source amplitude with no additional
+finite-source dilution factor; makes SCI-BEAM the desired authority for the
+complete Beammap APT, accepted source-APT `flxscale`, and scan-domain NEFD-like
+`sens`; requires full WCS metric, 2-D tensor, model Jacobian, joint covariance,
+broadening, raw/horizon geometry, conventional-pivot limitations, exact
+same-APT pointing transfer, independent quantity states, and empirical
+map/residual companions; and deprecates `responsivity` as noncanonical.
+
+The r0.2 authoring lane is explicitly independent of current code, APT
+contracts/files, audits, repairs, tests, and production reductions. It produces
+a separate science-team rationale and Formal Scientific/Engineering Contract,
+retains 46 requirement and 24 prediction IDs with an exact r0.1 disposition
+map, and records cross-package changes for later governed amendments rather
+than editing CAL, MAP, AST, TolProj, weighting, or kernel authorities now.
+Nine owner decisions remain open for sensitivity estimator details,
+model-adequacy/wing policies, required science accuracy, physical pivot
+registration, and kernel qualification. The planned final substantive step is
+an r0.3 owner-voice/presentation pass, after which architecture freezes unless
+a governed evidence or inconsistency trigger applies. No implementation,
+validation, or readiness claim follows from r0.2 authorship.
+
+The r0.2 document-consistency gate completed on 2026-08-17. The formal
+contract contains all 46 requirement and 24 prediction IDs and the exact
+70-row crosswalk; the separate rationale contains no formal ID inventory.
+Both sources compile without warnings. The canonical PDFs are 17 pages formal
+and 9 pages rationale, and all 26 Poppler-rendered pages passed visual review.
+The approved three-item author packet hashes remain unchanged. R0.2 is ready
+for owner review but is not accepted or frozen.
+
+The scientific owner's final bounded SCI-BEAM review completed on 2026-08-17.
+Document revision r0.3 makes NEFD-like `sens` strictly positive through
+`abs(flxscale)` while preserving signed `flxscale`; separates map-fit
+Jacobian/covariance from derived calibration and sensitivity propagation;
+defines the centroid-to-detector sign/frame transformation; derives effective
+rotation from parent-sample contribution support propagated through fit
+support; requires the same immutable APT artifact for pointing/science
+transfer; restores a concise soft-prior/convergence explanation; and binds the
+three document-facing decision groups `SCI-BEAM-OD-001--003` to nine atomic
+open ledger questions. The source flux is stated directly in TOA
+mJy per fixed nominal beam without argumentative unit or duplicate-factor
+language, and the rationale uses a compact contents list.
+
+After final source/PDF consistency and rendered-page QA, SCI-BEAM v0.1/r0.3
+is the frozen implementation-independent scientific authority. Its 46
+requirement and 24 prediction IDs remain stable. The original author packet
+and hashes remain unchanged; no implementation, APT storage, audit, repair,
+test, reduction, or production behavior was inspected. Implementation
+conformance, representation fidelity, observational performance,
+science-impact qualification, and production readiness remain unassessed.
+There is no further editorial round; only the contract-library's four governed
+revision triggers may reopen the package.
+
+After the project owner selected raw-timestream conditioning as the fourth
+contract product, [`SCI-RTC`](scientific_contracts/packages/SCI-RTC/v0.1/README.md)
+completed its initial Stage A recovery and sanitized scope draft on
+2026-08-17. Recovery reuses the frozen implementation-independent RTC core,
+approved D001--D004, the phase-zero point-selection amendment, and the
+owner-approved learned-sampling design. It also reconciles those sources with
+the later frozen SCI-BEAM raw `Delta f/f` boundary and conditional CAL, MAP,
+and PTC interfaces rather than repeating their reasoning.
+
+The v0.1 scope and exact three-item author packet were owner-approved on
+2026-08-17 with one modification to `RTC-SCOPE-D004`. For raw donor `q` and
+target `d`, valid compatible factors under `z_i = flxscale_i x_i` authorize
+raw donor scale `flxscale_q / flxscale_d`; both factors must be valid for the
+exact detector occurrences under the same convention/domain, and the target
+factor must be nonzero. This does not restore a scientific role for legacy
+`responsivity`.
+
+The approved v0.1 scope preserves product-role-specific raw and calibrated
+signal domains; exact unit-domain calibration/replacement order; transitive
+synthesis/replacement ineligibility; complete-response-or-unavailable;
+immutable stage identity; phase-zero sampling; fixed and optional learned
+sampling; and one atomic RTC output bundle. Implementation, audits, handoffs,
+repairs, re-audits, tests, validation, Unity evidence, active ALIGN work, and
+production state remain quarantined. Stage B implementation-blind drafting is
+now authorized from the exact content-bound packet. Eight downstream
+scientific questions remain explicitly open. No RTC scientific authority,
+implementation conformity, validation, or production claim has been
+established.
+
+The fresh implementation-blind author completed SCI-RTC Stage B v0.1/r0.1
+from the exact approved packet on 2026-08-17. The manager-reviewed draft has
+one six-file normative core, 20 definitions, 24 displayed equations, 12
+bounded assumptions, 54 sequential requirements, 26 falsifiable predictions,
+and an exact crosswalk. The scientist-facing rationale is 25 pages with ten
+substantive pre-appendix narrative pages; the engineering view is 17 pages and
+contains no independent normative mathematics. The owner-modified raw donor
+rule appears literally as `flxscale_q / flxscale_d`, with exact occurrence and
+domain validity, nonzero target denominator, unavailable fallbacks, and a
+numerical direction falsifier. The prior eight broad question families are
+decomposed into 23 open, one conditional, and four deferred owner entries.
+
+Both PDFs compile without TeX warnings or errors. Independent manager rebuilds
+match page counts and page text, and all 42 final pages passed 144-dpi Poppler
+inspection. Packet hashes and author write boundaries pass. The draft is ready
+for scientific-owner review but is not approved or frozen; implementation
+conformity, representation fidelity, observational performance, validation,
+science-impact qualification, and production readiness remain unassessed.
+
+On 2026-08-18 the scientific owner directed an implementation-blind r0.2
+revision that makes learn--resolve--immutable-apply the RTC organizing
+principle. The completed revision defines operation purpose and signal model,
+projected scan/beam temporal response, notch width/depth and adaptation,
+low/high/band-pass meaning, constrained FIR order/taps, donor continuity and
+physical limits, decimation/alias control, temporal registration, and complete
+RTC-plan calibration compatibility. It preserves the approved
+`flxscale_q/flxscale_d` donor convention, adds a same-Beammap circular-factor
+prohibition, and imports no implementation evidence or production values.
+
+The r0.2 shared core now contains 26 definitions, 30 equation tags, 12
+assumptions, 70 requirements, and 38 predictions. The 33-page science-team
+rationale has 12 substantive narrative sections and five diagrams; the
+engineering view is 24 pages and contains no independent normative
+mathematics. Thirty-six owner entries retain 31 open, one conditional, and
+four deferred choices. Both PDFs compile without warnings; all 57 pages passed
+Poppler inspection. The package remains a draft for scientific-owner review;
+scientific approval, implementation conformity, validation, science
+qualification, and production readiness remain unassessed.
+
+On 2026-08-18 the scientific owner issued the targeted SCI-RTC r0.3 bounded
+iterative notch-plan refinement directive. The completed implementation-blind
+revision defines a finite outer sequence of immutable learn--resolve--apply
+cycles, complete cumulative successor plans, default evaluation and final
+replay on the original admitted input, and separately authorized cascade
+semantics. Successor learning compares original, predicted, and conditioned
+spectra; distinguishes hidden candidates from filter artifacts; preserves
+cumulative scientific budgets; and terminates with an explicit accepted,
+rejected, nonconvergent, or maximum-cycle disposition. It does not introduce
+online adaptation or inspect current implementation evidence.
+
+The r0.3 shared core appends three definitions, one equation tag, twelve
+requirements, and eight predictions without renumbering prior authority. The
+complete inventory is now 29 definitions, 31 equation tags, 12 assumptions,
+82 requirements, and 46 predictions. Fourteen new owner decisions bring the
+ledger to 50 entries: 45 open, one conditional, and four deferred. Both PDFs
+compile without warnings; the rationale is 38 pages and the engineering view
+29 pages, and all 67 Poppler-rendered pages passed visual inspection. The
+package remains a draft for scientific-owner review; scientific approval,
+implementation conformity, validation, science qualification, and production
+readiness remain unassessed.
+
+On 2026-08-18 the scientific owner approved two r0.4 boundary decisions and a
+bounded correction pass. RTC now remains raw `Delta f/f` through replacement,
+temporal conditioning, and phase-zero sampling; compatible
+`flxscale_q/flxscale_d` is raw donor convention transfer, while absolute
+`flxscale` and target-atmosphere correction belong to a later SCI-CAL handoff.
+Directly selected ALIGN-synthesized or RTC-replaced occurrences are universally
+excluded, while RTC preserves noncenter transitive influence and each
+downstream consumer owns its eligibility policy. R0.4 also separates refinement
+attempts from accepted plans, defines the initial evaluation product, corrects
+phase-zero selection to the final pre-decimation stream, restores the
+Learn--Resolve--Apply title and signal vocabulary, and adds a role-specific RTC
+plan matrix. The 29-definition, 31-equation-tag, 12-assumption, 82-requirement,
+and 46-prediction inventories retain their stable identifiers. The ledger now
+contains 44 open, two resolved, and four deferred entries. Both PDFs compile
+without warnings; the rationale is 39 pages and the engineering view 28 pages,
+and all 67 final Poppler-rendered pages passed visual inspection. The package
+remains a draft for scientific-owner review and freeze disposition; no
+implementation conformity, representation fidelity, validation, science
+qualification, or production-readiness claim is made.
+
+Current SCI-RTC status supersedes the draft-stage statements above. Subsequent
+bounded owner-directed revisions advanced the package through r0.12, which
+Grant froze on `2026-08-21` with 52 definitions, 44 equation tags, 12
+assumptions, 143 requirements, 108 predictions, and 103 owner entries. On
+`2026-08-25`, the WP-7 scientific-owner disposition approved a source-resolved
+explanatory correction: only the rationale's `OWNER-090--096` paraphrase
+ordering now changes to match the controlling ledger. The shared normative
+core, engineering source, ledger, crosswalk, numerical behavior, and retained
+open states are unchanged. Both PDFs were rebuilt and rebound under
+`SCIENTIFIC_OWNER_SOURCE_CORRECTION_2026-08-25.md` and
+`SOURCE_MANIFEST_CORRECTED_2026-08-25.md`; package verification and all-page
+Poppler QA pass. This publishes authority for a new WP-7 clean-room successor
+only and establishes no implementation, validation, performance, production,
+MAP, or finding-closure claim.
+
+On `2026-08-26`, the source-commit-`170ecea9d` WP-7.1 successor audit and its
+locked regression comparison completed. The independent audit found `TS-A`,
+`TS-S`, and `TS-C` ready and the RTC-only terminal route contract-closed. The
+comparison classified nine normalized predecessor issues as closed by the
+approved successor authority, with zero regressions, recurrent findings, new
+successor findings, or unresolved contradictions. Grant recorded the
+[scientific-owner closure](scientific_contracts/audits/WP7_TIMESTREAM_CLEAN_ROOM_170ECEA9D/WP7_SCIENTIFIC_OWNER_CLOSURE_2026-08-26.md),
+which closes WP-7 scientifically at its approved contract scope. The seven
+retained limitations, including unavailable `TS-R`, `TS-U`, and `TS-T`, are
+scope statements only and are not WP-7 findings, owner questions, or repair
+requirements. Implementation conformity, observational validation, achieved
+performance, and production readiness remain separate evidence programs; no
+further WP-7 repair or audit cycle is authorized by this closure.
+
+On `2026-09-03`, the scientific owner accepted SCI-POINT v0.1 r0.3 science as
+the basis for an editorial r0.4 publication freeze and directed a three-view
+separation. The final package now publishes an 18-page standalone normative
+core, an 8-page scientist rationale, and a 9-page engineering conformance
+specification. The six accepted common scientific source files are byte-exact
+with r0.3 and retain ordered SHA-256
+`c0ca71bd457b8e6d37a425eb3ead76400dba3a5e29c869420807928201cdcdbd`;
+REQ-001--038, PRED-001--032, UNAV-001--023, equations, roles, lifecycle,
+SCI-VAL, response, covariance, authority, source, and nonclaim boundaries are
+unchanged. The two audience views fall from 43 to 17 pages by removing
+duplicate formal registers, while the complete normative content appears once
+in the core. The durable verifier and all-page Poppler inspection pass across
+35 pages. This presentation freeze establishes no numerical route,
+implementation conformity, response or covariance fidelity, uncertainty
+coverage, observational accuracy, validation, performance, readiness,
+production authorization, or Unity activity.
+
+The previously approved `DOC-MAP-001` deliverable is the first queued user
+guide. It will combine a canonical map dictionary with a compact per-reduction
+rendering driven by effective and realized state, explaining what each emitted
+map measures without duplicating its provenance package. MAP-, NOI-, and
+filter-related work contributes stable semantics to this guide, which must
+close before production expansion and Phase 5 closeout. The queue entry itself
+changes no numerical behavior, output selection, or audit scope.
+
 ## 2026-08-05 SCI-MAP-001 Application Integration Candidate
 
 The final independent re-audit at
@@ -2640,6 +3989,19 @@ freeze the application mainline.
 
 ## Current Snapshot
 
+- On 2026-08-22, the scientific owner froze the exact SCI-ALIGN v0.1 Stage B
+  r0.3 and SCI-AST v0.1 Stage B r0.3 scientific-contract packets after their
+  bounded joint revision and implementation-blind horizontal coherence audit.
+  The shared boundary identity is exactly
+  `SCI-ALIGN_TO_SCI-AST v0.1/r0.1`; its two installed copies are byte-identical
+  with SHA-256
+  `04357d36b302d607b95950f529044e178deb2528d0c6f656d90da93067a5da36`.
+  The freeze preserves all stable normative IDs and the typed unresolved
+  owner questions; it establishes scientific-content authority only, not
+  implementation conformity, observational validation, readiness, or
+  production authorization. The exact content bindings and successor rules
+  are recorded in the scientific-contract library's
+  [ALIGN/AST freeze record](scientific_contracts/audits/ALIGN_AST_HORIZONTAL_R0.3/SCI-ALIGN_AST_STAGE_B_R0.3_FREEZE_RECORD.md).
 - A 2026-07-30 coherent raw-I/Q event investigation has produced the first
   mode-aware observe-only production slice. The current RTC/PTC learning
   path records accepted intervals per detector UID (a run-scoped row key, not

@@ -1,0 +1,329 @@
+% Canonical formal module. Imported exactly once by the engineering view.
+\section{Deterministic profile evaluation}
+\label{sec:equations}
+
+\subsection{Registry integrity and structural domain}
+
+Write $b(\rho,\mathfrak R)$ for registry binding integrity,
+$g(\rho,\mathsf P_\rho,\mathsf F_k)$ for the structural interchange gate,
+and $a(\rho,\mathsf P_\rho,\mathsf F_k)\in\mathcal A$ for applicability.
+Binding integrity is true only when registry key/version, actual owner,
+authoritative source/version or digest, use, domain/object type, restrictions,
+exception permissions, compatibility, supersession, and missing behavior are
+complete and mutually consistent. A reserved name is insufficient.
+
+For the canonical independent-exposure profile, let $r_{\rm origin}$ be the
+contract-level restriction and let $X_{\rm forbidden}$ contain every attempted
+exception to it. Then
+\[
+ X_{\rm forbidden}\ne\varnothing
+ \quad\Longrightarrow\quad
+ b(\rho,\mathfrak R)=\mathbf F,
+\]
+with reason \texttt{policy\_invalid}. This is a structural failure, not an
+exceptional permission. When representative origin is authoritatively
+synthesized or replaced and no invalid override is attempted,
+$r_{\rm origin}=\mathbf F$ and the profile disposition is ineligible.
+
+The general gate succeeds only when $b=\mathbf T$ and identity, parent,
+immutable fact set, producer authority, source bindings, policy lineage,
+applicability authority, scopes, referenced supports, and influence records
+are present and consistent. Missing or conflicting structural material makes
+applicability unknown and the decision unavailable; it is not a use-specific
+exclusion. Once this structural domain is established, a conflict in an
+unrelated non-gating predicate is unresolved evidence rather than a structural
+failure.
+
+\subsection{Restriction values and exceptions}
+
+For each restriction $r_j\in R_\rho$, the owner-bound profile identifies an
+applicability predicate, a base permission predicate, and its exception class.
+After authority checking, contradiction $\mathbf C$ in a non-gating predicate
+is retained and normalized to unresolved $\mathbf U$ for composition. An
+inapplicable restriction contributes neutral permission $\mathbf T$. The base
+permission of an applicable restriction is
+\[
+ p_j=\begin{cases}
+ \mathbf T, & \text{its permission predicate is authoritatively true},\\
+ \mathbf F, & \text{its permission predicate is authoritatively false},\\
+ \mathbf U, & \text{restriction applicability or permission is unknown or
+                         conflicting}.
+ \end{cases}
+\]
+Only a resolved, permitted same-profile exception can transform this value:
+\[
+ q_j=\begin{cases}
+ \mathbf T^{X}, & \text{that exception authoritatively applies to this exact
+                         exceptionable restriction},\\
+ p_j, & \text{otherwise, including unknown or conflicting exception
+                         applicability}.
+ \end{cases}
+\]
+$\mathbf T^X$ composes as $\mathbf T$ but requires the registry/profile
+identity, exception, underlying restriction, and causes to remain in
+$\mathsf V_k$. An unknown or conflicting exception cannot neutralize an
+underlying $p_j=\mathbf F$; the disposition remains ineligible and the
+exception conflict is preserved. No exception can be supplied by VAL,
+another use, or a registry record that prohibits it. A changed exception
+resolution changes immutable resolved-profile lineage and decision identity.
+
+The normalized permission conjunction is
+\begin{center}
+\begin{tabular}{c|ccc}
+$\wedge_K$ & $\mathbf T$ & $\mathbf U$ & $\mathbf F$ \\
+\hline
+$\mathbf T$ & $\mathbf T$ & $\mathbf U$ & $\mathbf F$ \\
+$\mathbf U$ & $\mathbf U$ & $\mathbf U$ & $\mathbf F$ \\
+$\mathbf F$ & $\mathbf F$ & $\mathbf F$ & $\mathbf F$ \\
+\end{tabular}
+\end{center}
+Known exclusion dominates an unrelated unknown or conflicting non-gating
+restriction; required unresolved information prevents eligibility when no
+known exclusion exists. The table is commutative and associative, and every
+conflict remains in the reason record.
+
+\subsection{Disposition function}
+
+For a requested record that can be realized, define
+\[
+ Q(\rho,\mathsf P_\rho,\mathsf F_k)
+   =\bigwedge_{r_j\in R_\rho}q_j.
+\]
+The disposition is
+\[
+ D(\rho,\mathsf P_\rho,\mathsf F_k)=
+ \begin{cases}
+ \mathrm{decision\_unavailable},
+   &b\ne\mathbf T\text{ or }g\ne\mathbf T
+      \text{ or }a=\mathrm{applicability\_unknown},\\
+ \varnothing_E,
+   &b=\mathbf T,\ g=\mathbf T,\ a=\mathrm{inapplicable},\\
+ \mathrm{ineligible},
+   &b=\mathbf T,\ g=\mathbf T,\ a=\mathrm{applicable},\ Q=\mathbf F,\\
+ \mathrm{decision\_unavailable},
+   &b=\mathbf T,\ g=\mathbf T,\ a=\mathrm{applicable},\ Q=\mathbf U,\\
+ \mathrm{eligible},
+   &b=\mathbf T,\ g=\mathbf T,\ a=\mathrm{applicable},\ Q=\mathbf T.
+ \end{cases}
+\]
+All restrictions are evaluated sufficiently to preserve every false,
+unresolved, conflict, influence, exception, and policy-invalid reason; the
+precedence does not authorize evidence-erasing short circuit.
+
+\begin{center}
+\begin{longtable}{@{}p{0.12\linewidth}p{0.17\linewidth}p{0.21\linewidth}p{0.18\linewidth}p{0.19\linewidth}@{}}
+\toprule
+Request & Applicability & Profile knowledge & Eligibility & Realization \\
+\midrule
+\endhead
+not requested & not assessed or separately recorded & none evaluated &
+$\varnothing_E$ & not produced \\
+requested & inapplicable & domain known outside profile & $\varnothing_E$ &
+realized \\
+requested & applicability unknown & registry, gate, or applicability
+unresolved & decision unavailable & realized \\
+requested & applicable & at least one decisive false & ineligible & realized \\
+requested & applicable & no false; at least one required unresolved &
+decision unavailable & realized \\
+requested & applicable & all required true & eligible & realized \\
+requested & any & authoritative artifact not completed & no authoritative
+eligibility assertion & incomplete, failed, or not produced \\
+\bottomrule
+\end{longtable}
+\end{center}
+A realized decision-unavailable record is a successful scientific account of
+why no disposition can be made. It is not an execution failure.
+
+\subsection{No rescue, cause preservation, and determinism}
+
+The cause/influence join $\sqcup$ is graph union on stable,
+provenance-qualified identities:
+\[
+ \mathcal G_1\sqcup\mathcal G_2=\mathcal G_2\sqcup\mathcal G_1,\qquad
+ (\mathcal G_1\sqcup\mathcal G_2)\sqcup\mathcal G_3
+ =\mathcal G_1\sqcup(\mathcal G_2\sqcup\mathcal G_3),\qquad
+ \mathcal G\sqcup\mathcal G=\mathcal G.
+\]
+These equations establish order invariance and idempotence; they do not
+authorize VAL to combine raw causes into a producer-owned support.
+
+For any applicable restriction multiset $S$, if
+$\bigwedge_K S=\mathbf F$, then for every additional permission
+$q\in\{\mathbf T,\mathbf U,\mathbf F\}$,
+\[
+ \left(\bigwedge_K S\right)\wedge_K q=\mathbf F.
+\]
+Another permission cannot rescue an excluded occurrence. A permitted
+$\mathbf T^X$ is a traceable transformation of the exact restriction by the
+same owner-bound profile, not an unrelated permission. It cannot transform a
+non-exceptionable contract invariant.
+
+With exact immutable inputs,
+\[
+ \mathsf V_k=\operatorname{Eval}_{\rm VAL}
+ (\mathsf F_k,\rho,\mathsf P_\rho,\Gamma_\rho).
+\]
+No ambient time, iteration order, hidden default, mutable global state, or
+consumer side effect may affect $\mathsf V_k$. Equal canonical scientific
+inputs produce equal four-axis states and equal reason/cause graphs.
+Representation may vary only if it preserves this equality.
+
+For a use owner that explicitly declares and justifies a stricter relation
+$\rho'\preceq\rho$ on the same domain,
+\[
+ \{\mathsf F:D(\rho',\mathsf P_{\rho'},\mathsf F)=\mathrm{eligible}\}
+ \subseteq
+ \{\mathsf F:D(\rho,\mathsf P_\rho,\mathsf F)=\mathrm{eligible}\}.
+\]
+VAL does not infer strictness or compatibility from names, versions, numbers,
+or apparent predicate count.
+
+\subsection{Exact and conservative causal influence}
+
+For exact influence graph $\mathcal G$ and producer-declared conservative
+over-approximation $\widehat{\mathcal G}$,
+\[
+ \mathcal G\subseteq\widehat{\mathcal G},
+\]
+under the exact support and approximation-rule identities. Edges in
+$\mathcal G$ are confirmed; additional edges in
+$\widehat{\mathcal G}$ are possible. The profile owner supplies the mapping
+for a possible edge: permit, exclude, make the disposition unavailable, or
+request review. Review is action metadata, not a fourth eligibility state;
+unless the same profile independently resolves admission, the disposition
+remains \texttt{decision\_unavailable}. VAL supplies no mapping and never
+promotes a conservative edge to exact or confirmed.
+
+\subsection{Nonretroactive lifecycle}
+
+For each exact identity,
+\[
+ \mathsf F_k\longrightarrow\mathsf V_k\longrightarrow\mathsf A_k
+ \longrightarrow\mathsf F_{k+1}\longrightarrow\mathsf V_{k+1},
+\]
+where $\mathsf A_k$ is the consumer action that used immutable
+$\mathsf V_k$. Later facts or source bindings form a new fact set and
+decision. A later policy resolution forms distinct resolved-profile lineage
+and a new decision even when it reuses $\mathsf F_k$. Neither path mutates
+$\mathsf F_k$, $\mathsf V_k$, or $\mathsf A_k$.
+
+Fit-invalid, basis-fit exclusion, loading-fit exclusion,
+application-available, post-fit output rejection, coefficient/QC population,
+weight-only noncontribution, and advisory state retain their PTC-owned stage
+and action scope. Only a PTC-owned fit-support change requires the affected
+fit or fitted-state invalidation.
+
+\subsection{Homogeneous aggregation and anti-circular propagation}
+\label{sec:aggregation}
+
+An aggregation specification is
+\[
+ \Gamma=(\rho_\Gamma,I_{\rm atom},v_{\rm atom},\Omega,T,\mathbf n,
+          N,M,\phi,\tau,b,H,B,\Delta),
+\]
+where $\rho_\Gamma$ is the aggregate proposition's own complete registered
+profile; $(I_{\rm atom},v_{\rm atom})$ is its exact atomic source-profile
+binding; $\Omega$ is the exact occurrence population; $T$ is
+observation/scan/segment/time support; $\mathbf n$ contains counts by all four
+axes; $N$ is the denominator; $M$ is missing-decision treatment; $\phi$ is the
+operator; $\tau$ is an owner-supplied threshold; $b$ is boundary polarity;
+$H$ is propagation authority; $B$ is advisory or binding role; and $\Delta$
+describes learned/data-dependent uncertainty. The registry record
+$\rho_\Gamma$ supplies its distinct identity/version, actual scientific owner,
+authoritative source, aggregate object type and domain, failure behavior, and
+compatibility. It cannot reuse the atomic profile identity or masquerade as
+another atomic instance.
+
+For every atomic decision, define the v0.1 compatibility key
+\[
+ \chi(\mathsf V_i)=
+ (I_{\rho_i},v_{\rho_i},k_i,\operatorname{type}(\boldsymbol\iota_i),
+  \mathcal D_{\rho_i}).
+\]
+Base v0.1 permits aggregation only when
+\[
+ \chi(\mathsf V_i)=
+ (I_{\rm atom},v_{\rm atom},k_\Gamma,
+  \operatorname{type}_{\rm atom},\mathcal D_{\rm atom})
+ \qquad\forall i\in\Omega,
+\]
+Thus profile identity/version, lifecycle stage, object type, and applicability
+domain are exact and homogeneous, and the aggregate registry record binds
+that exact compatibility key. A heterogeneous multiset is unavailable
+unless an explicit owner-approved transformation profile maps every input to
+one common aggregate proposition; base v0.1 defines no such transformation.
+
+For a homogeneous population,
+\[
+ \mathsf V_{\rho_\Gamma,k}=\operatorname{Eval}_{\rm VAL}
+   (\operatorname{multiset}\{\mathsf V_{i,k}:i\in\Omega\},
+    \rho_\Gamma,\Gamma).
+\]
+The result retains the aggregate profile identity, exact atomic source-profile
+binding, every input identity, and aggregation lineage. Permuting the same
+multiset cannot change the result. Partitioned and unpartitioned aggregation
+may interchange only when the owner $O_{\rho_\Gamma}$ declares a sufficient
+summary $\sigma$, associative combine operator $\oplus$, and exact equivalence
+\[
+ \sigma(\Omega_1\uplus\Omega_2)
+ =\sigma(\Omega_1)\oplus\sigma(\Omega_2)
+\]
+for the active missing rule, threshold, polarity, and uncertainty. No
+equivalence is presumed for arbitrary thresholds or quantiles.
+
+An empty or unknown denominator is inapplicable or unavailable under the
+supplied owner policy, never a valid zero fraction. Reverse propagation obeys
+\[
+ \{\mathsf V_{i,k}\}_{i\in\Omega}
+ \longrightarrow\mathsf V_{\rho_\Gamma,k}
+ \longrightarrow\mathsf F^{\rm prop}_{i,k+1}
+ \longrightarrow\mathsf V_{i,k+1}.
+\]
+The propagated aggregate is a new producer fact at generation $k+1$. It
+cannot rewrite any $\mathsf V_{i,k}$ in its denominator or feed the same
+generation's $\mathsf V_{\rho_\Gamma,k}$. An iterative classification requires a
+separately authorized bounded lifecycle and stop rule.
+
+\subsection{Response, uncertainty, and payload ordering}
+
+Response and uncertainty availability are typed facts, distinct from their
+numerical values and from zero. The named-use owner assigns each fact exactly
+one role from the closed set below; VAL does not choose or reinterpret it.
+
+\begin{center}
+\begin{tabular}{p{0.23\linewidth}p{0.64\linewidth}}
+\toprule
+Owner-supplied role & Deterministic evaluation consequence \\
+\midrule
+\texttt{structural\_gate} & Without authoritative satisfaction, the
+proposition is not established: applicability is unknown and the decision is
+unavailable. \\
+\texttt{required\_permission} & Authoritative availability contributes
+permission; authoritative unavailability excludes; unknown or conflict is
+unresolved. \\
+\texttt{decisive\_exclusion} & Authoritative failure or unavailability
+excludes; authoritative nonfailure is neutral permission; unknown or conflict
+is unresolved. \\
+\texttt{advisory} & The exact state is preserved but contributes neutral
+permission and cannot determine eligibility. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The restriction conjunction then maps exclusion to \texttt{ineligible} and a
+required unresolved state with no exclusion to
+\texttt{decision\_unavailable}. VAL never substitutes identity response or
+zero uncertainty.
+
+Payload processing is ordered:
+\begin{enumerate}
+  \item establish identity, authority, parentage, applicability, and validity
+        without numerically consuming an already invalid payload;
+  \item exclude a producer- or policy-declared invalid occurrence before
+        arithmetic; and
+  \item only for an admitted required payload, evaluate its numeric domain.
+        A non-finite value then causes failure or scientific unavailability at
+        the owner-declared scope.
+\end{enumerate}
+Finiteness never supplies missing admission, response, uncertainty, parent
+validity, or registry authority.

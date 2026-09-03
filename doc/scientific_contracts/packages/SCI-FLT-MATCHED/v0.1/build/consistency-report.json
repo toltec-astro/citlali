@@ -1,0 +1,73 @@
+{
+  "approved_packet_sha256": {
+    "AUTHOR_BOUNDARIES.md": "273fa218eb0ff9610e433c99d8f4d30f5a3abe653da375dfb17781148fbcce34",
+    "AUTHOR_CONVENTIONS_AND_OWNERSHIP.md": "a5d91666a13ea06e39af4356b07a1ef316219559a19847fc81460c9c067446d6",
+    "AUTHOR_OPERATOR_STATE_AND_PRODUCT_TAXONOMY.md": "4e47f825d54645dc6e82b34ed4848e0bb656fc385edd61f744ca43c6124eb980",
+    "AUTHOR_PACKET_MANIFEST.md": "255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8",
+    "AUTHOR_SUPERSESSION_COVER.md": "198ec9c50d5c5dc8cb8e68794dd5034a6aca7aaebf81521726ac371ad9bfc1c3",
+    "REQUIRED_AUTHORED_OPTION_SETS.md": "bad539a66199090ba9e32bf22100da708cb3730b02650e0401bdeeee01330cfe",
+    "SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md": "d7235655bbce52be28714bb637a9d003f1f5bc9947d310bf61d3e5877d6feb9d",
+    "SCOPE_BRIEF.md": "69e8db020cd8569fe94dd18ef2012c13691fe5b3a2b188201bfc96cc31fa13c3"
+  },
+  "build_logs": {
+    "engineering": {
+      "overfull_boxes": 0,
+      "path": "build/engineering-conformance.log",
+      "underfull_boxes": 299,
+      "unexpected_lines": []
+    },
+    "scientific": {
+      "overfull_boxes": 0,
+      "path": "build/scientific-rationale.log",
+      "underfull_boxes": 319,
+      "unexpected_lines": []
+    }
+  },
+  "errors": [],
+  "pdfs": {
+    "engineering": {
+      "option_alternatives_found": 21,
+      "pages": 41,
+      "path": "pdf/SCI-FLT-MATCHED-ENGINEERING-CONFORMANCE-v0.1.pdf",
+      "predictions_found": 25,
+      "requirements_found": 50,
+      "sha256": "c7c50a116faffb152d5035e063454597c11a507a3915385942f778c8d0cd02ab"
+    },
+    "scientific": {
+      "option_alternatives_found": 21,
+      "pages": 45,
+      "path": "pdf/SCI-FLT-MATCHED-SCIENTIFIC-RATIONALE-v0.1.pdf",
+      "predictions_found": 25,
+      "requirements_found": 50,
+      "sha256": "aacb61f0f197fcfdd95613e286a5f84dafc15356acd735bfbbfe445e5ac797ff"
+    }
+  },
+  "r0_6_directive_sha256": "5758640064918b2d3021afc7ea63ffba063ba7b1abbb66dc6d43d945ed73ebd3",
+  "revision": "r0.6",
+  "scope": "source/PDF build consistency only; not scientific validation or implementation conformity",
+  "shared_import_order": [
+    "common/notation.tex",
+    "common/definitions.tex",
+    "common/equations.tex",
+    "common/assumptions.tex",
+    "common/requirements.tex",
+    "common/edge_cases.tex"
+  ],
+  "shared_module_sha256": {
+    "assumptions.tex": "b81a9b7753b71e3a8779432b03c29d9c7c06e97df06f0f469ee7982b1fc713a1",
+    "definitions.tex": "252e39fe965a798526a45ee0ed7d19af3148e23d03b7a0e358a6d41d29f634e4",
+    "edge_cases.tex": "6b3b89b8e6bc470ea7a4c6565175f97e69d22f69c2088dc0494696376199b054",
+    "equations.tex": "b3a7eef087abd95121edc1f47b84427c35549667bf4207facc7046d3cac63ec6",
+    "notation.tex": "1ede130bd35d7eb99afefc7c18d195843dfbbcd25c91a7f102942d2f6bcd3909",
+    "requirements.tex": "4ae8c18e46bf39fe504032385dd92e3c65285fa1b9e9542d462ac65ab1ac9bb0"
+  },
+  "source_counts": {
+    "crosswalk_stable_ids": 96,
+    "option_alternatives": 21,
+    "option_families": 6,
+    "owner_decision_questions": 17,
+    "predictions": 25,
+    "requirements": 50
+  },
+  "status": "PASS"
+}

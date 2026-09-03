@@ -1,0 +1,393 @@
+# Prior-Work Discovery Registry
+
+Status: discovery seed; re-verify at the start of every package
+
+This registry prevents repeated searches and forgotten scientific work. It is
+not itself scientific authority, an author packet, or a substitute for a
+package-specific [`PRIOR_WORK.md`](templates/PRIOR_WORK.md). Topic branches and
+historical audits may contain later or more detailed reasoning than the
+integrated application line, but their status must be classified before use.
+
+## Reference Snapshot
+
+The initial recovery used these exact repository references:
+
+| Shorthand | Reference | Role |
+| --- | --- | --- |
+| `MAIN` | `origin/codex/refactor-mainline@46ad23888a40f5102cdfd50c06e49a549bdf8a20` | Current integrated application/documentation discovery line at recovery time |
+| `COORD` | `codex/register-sci-map-003-audit-disposition@8c581bfb26f01b187f4f1e0565f4457bcc25f099` | Later coordination decisions, package ledger, and handoff registry |
+| `FRAME` | `codex/scientific-audit-framework@dd5894679bf12bf4a5fb551e871b3c6010ef9b9b` | Historical scientific-audit framework and early package corpus |
+| `METHOD` | `codex/science-doc-framework@4a7916a8ec459f050de236211e5bacfc95695412` | Reusable scientific-method documentation framework |
+
+These references are serial numbers for recovery, not permanent authority.
+Each package must check the living status, relevant current branch, and later
+owner decisions before adopting material.
+
+## Program-Level Recovery Anchors
+
+- `COORD:doc/audits/audit-ledger.yaml`
+- `COORD:doc/audits/packages/SCIENTIFIC_AUDIT_PROGRAM_CHECKPOINT_2026-08-08.md`
+- `FRAME:doc/audits/README.md`
+- `FRAME:doc/audits/AUDIT_MANAGER_INSTRUCTIONS.md`
+- `METHOD:doc/science/README.md`
+- `MAIN:doc/ARCHITECTURE.md`
+- `MAIN:doc/SCIENTIFIC_CONVENTIONS.md`
+- `MAIN:validation/product_contracts.json`
+- `MAIN:tools/config/config_leaf_contract_resolved.json`
+
+The audit framework is historical process and evidence, not the governing
+process for this library. Its package inventory, independent cores, decisions,
+and cross-package handoffs are valuable recovery inputs.
+
+## Package-Family Seed Map
+
+### CAL
+
+- Package-specific recovery:
+  [`packages/SCI-CAL/v0.1/PRIOR_WORK.md`](packages/SCI-CAL/v0.1/PRIOR_WORK.md)
+  at `2026-08-16`. It records the later layered-identity supersession,
+  accuracy hierarchy, passband decision, opacity quality policy, and the
+  distinction between the retained structural atmosphere operator and its
+  unestablished physical/observational authority.
+- Current shared authority: `MAIN:doc/SCIENTIFIC_CONVENTIONS.md`,
+  `MAIN:validation/product_contracts.json`, and
+  `MAIN:tools/config/config_leaf_contract_resolved.json`.
+- Owner/coordination decisions to reconcile: `COORD:doc/audits/packages/`
+  entries beginning `SCI-CAL-001_`, especially the coordinator decision,
+  opacity, APT identity, accuracy/model-scope, atmosphere, and successor
+  owner-acceptance records.
+- Earlier derivation and audit evidence:
+  `codex/audit-sci-cal-001@27b0916e725696597c3ba84fb6a82bf6cf0ea356:doc/audits/packages/SCI-CAL-001_INDEPENDENT_CORE.tex`
+  and `SCI-CAL-001_SCIENTIFIC_CONTRACT_AUDIT.tex` beside it.
+- Scope material: `MAIN:doc/astrometry_photometry_config_transition.md` and
+  the later APT end-to-end and detector-identity audit branches.
+
+### MAP And Coaddition
+
+- Package-specific JINC recovery:
+  [`packages/SCI-JINC/v0.1/PRIOR_WORK.md`](packages/SCI-JINC/v0.1/PRIOR_WORK.md)
+  at `2026-08-28`. It resolves the frozen `SCI-MAP-002` independent core,
+  all eight D003 owner decisions, third-successor owner acceptance, later
+  destination-ownership work, the March memo-alignment note, the internal
+  draft noise derivation, and post-registry convergence/validation records.
+  It proposes reuse of the core under a sanitized supersession cover. On
+  `2026-08-28` the owner supplied F. Peter Schloerb's exact LMT OTF/JINC memo,
+  SHA-256
+  `835fb02e842c9109c2c7ad3f03288882dfac283e63bfcd0f818c7d5379e7e5cd`;
+  recovery admits only a page-exact generic-method excerpt under a TolTEC-
+  exclusion cover. Its 3-mm/FCRAO values and simulations are not TolTEC
+  parameter, optimization, validation, or performance authority. All
+  implementation, audit, repair, re-audit, Unity, validation, achieved-
+  performance, readiness, and production evidence remains excluded from
+  authorship.
+- Package-specific recovery:
+  [packages/SCI-MAP/v0.1/PRIOR_WORK.md](packages/SCI-MAP/v0.1/PRIOR_WORK.md)
+  at 2026-08-16. It separates the reusable ordinary MAP-001 core and later
+  owner decisions from the distinct JINC MAP-002 and OOF-transfer MAP-003
+  estimators, and it records post-registry MAP-002 ownership and MAP-003
+  tracer-parent work without promoting implementation evidence.
+- Current shared authority plus
+  `MAIN:doc/adr/0009-science-map-bundle-admission-and-validity.md`.
+- Approved/integration decisions:
+  `MAIN:handoff/SCI-MAP-001_APPLICATION_INTEGRATION_DECISION_2026-08-05.md`
+  and the later MAP-002/MAP-003 decision records under `COORD`.
+- Earlier independent cores and audits on `codex/audit-sci-map-001`,
+  `codex/audit-sci-map-002`, and `codex/audit-sci-map-003` under
+  `doc/audits/packages/`.
+- Reusable method note:
+  `codex/doc-map-001-phase-a@abf3ba2fd15e5941c571f41d495a58c78d6adf63:doc/science/SCI-METHOD-WEIGHTED-MAP-NORMALIZATION-001.md`.
+- Later material found by package-specific recovery includes
+  `codex/integrate-sci-map-002` at
+  `2917c5210cb131f0e7f952d9b04295e87e22718d`, the JINC
+  ownership-invariant re-audit at
+  `f541d81a266fce0f7baed58e9ec275dadba260ee`, the MAP-003 tracer-parent
+  freeze at `e639d367d280b72953f06ed270b81d7aec51d357`, and the retained-grid
+  implementation slice at `d0512362ba8666621f7622062fa51542ae76bfa1`.
+  These are recovery inputs, not automatic author references.
+- Scope maps: `MAIN:doc/ANALYSIS_FLOW_RAW_TO_SCIENCE_PRODUCTS_2026-07-01.md`
+  and `MAIN:doc/MAPMAKING_CONFIG_AUTHORITY.md`.
+
+### Beammap
+
+- Package-specific recovery:
+  [`packages/SCI-BEAM/v0.1/PRIOR_WORK.md`](packages/SCI-BEAM/v0.1/PRIOR_WORK.md)
+  at `2026-08-16`. It records the absent independent BEAM core, the three
+  historical dependency handoffs, current Citlali scope evidence, the TolAPT
+  soft-prior producer contract, the `toltec_beammap` downstream ownership
+  boundary, and the proposed implementation-blind packet.
+- Current shared authority plus `MAIN:doc/BEAMMAP_CONFIG_AUTHORITY.md` and
+  `MAIN:handoff/BEAMMAP_AUTHORITY_DESIGN_REVIEW_2026-07-14.md`.
+- Package and dependency scope: `FRAME:doc/audits/audit-ledger.yaml` entry
+  `SCI-BEAM-001` and `COORD:doc/audits/handoffs/SCI-BEAM-001/`.
+- Historical-only evidence includes Beammap prior-audit and dated handoff
+  material under `MAIN:handoff/`.
+- No dedicated approved `SCI-BEAM-001` scientific contract was recovered in
+  the initial search.
+
+### RTC And PTC
+
+- Package-specific RTC recovery:
+  [`packages/SCI-RTC/v0.1/PRIOR_WORK.md`](packages/SCI-RTC/v0.1/PRIOR_WORK.md)
+  at `2026-08-17`. It recovers the exact independent core, D001--D004, the
+  phase-zero amendment, the learned-sampling plan, later status records, four
+  incoming handoffs, and the CAL/MAP/BEAM/PTC interface changes. It proposes a
+  supersession cover so the author reuses the derivation without inheriting
+  audit findings or obsolete calibrated-only and aggregate-downsampling
+  assumptions.
+- Current shared authority plus the RTC/PTC decisions and amendments under
+  `COORD:doc/audits/packages/SCI-RTC-001_*` and `SCI-PTC-001_*`.
+- Earlier independent cores and audits on `codex/audit-sci-rtc-001` and
+  `codex/audit-sci-ptc-001` under `doc/audits/packages/`.
+- Earlier scope/reference material: `MAIN:doc/RTC_FLAGGING_AUDIT_2026-03-16.md`
+  and `MAIN:doc/PTC_MODEL_PROTECTED_NOTCH_PLAN_2026-05-21.md`.
+
+### Validity And Eligibility
+
+- Package-specific recovery:
+  [`packages/SCI-VAL/v0.1/PRIOR_WORK.md`](packages/SCI-VAL/v0.1/PRIOR_WORK.md)
+  at `2026-08-20`. It records that no frozen SCI-VAL independent core was
+  found, resolves all eleven recovered `SCI-VAL-001-XAUD-001--011` handoffs
+  including the X005/X006 and X008/X009 supersessions, and separates approved
+  MAP/PTC/RTC interface facts from historical implementation/audit evidence.
+- Current shared authority: `MAIN:doc/SCIENTIFIC_CONVENTIONS.md`,
+  `MAIN:validation/product_contracts.json`, and
+  `MAIN:doc/adr/0009-science-map-bundle-admission-and-validity.md`, rechecked
+  against the living scientific-contract library.
+- Historical inventory and handoffs:
+  `COORD:doc/audits/audit-ledger.yaml` and
+  `COORD:doc/audits/handoffs/SCI-VAL-001/`. Only approved owner decisions may
+  be abstracted for authorship; post-core findings and source traces remain
+  quarantined for later conformity work.
+- Current adjacent-package inputs are the owner-approved RTC/PTC scope
+  decisions, the accepted MAP separation of upstream eligibility from MAP
+  support/final validity, and CAL producer-local validity. Full adjacent
+  drafts are not automatic author references while their scientific freeze
+  states remain open.
+- Implementation scope evidence includes RTC/PTC sample flags, detector/APT
+  flags, masks, finite checks, weights, and mapmaker admission paths. Those
+  paths are internal-dossier evidence only and may not select VAL science.
+- The owner-approved r0.3 work is a representation-independent,
+  cause-preserving evaluator plus an owner-bound immutable Profile Registry;
+  neither layer authors producer facts or named-use policy. It establishes
+  `SCI-VAL:independent_exposure@1` with a non-exceptionable direct-origin
+  invariant, distinct registered aggregate propositions bound to exact
+  homogeneous atomic profiles, deterministic structural/non-gating conflict
+  precedence, four owner-supplied response/uncertainty roles, non-circular
+  successor-generation propagation, and continuing adjacent source/version
+  bindings. The sanitized RTC/CAL/PTC/MAP boundary profile remains approved
+  author-packet content, not adjacent-package policy or freeze authority;
+  unavailable PTC/MAP policy was not invented.
+
+### Alignment And Astrometry
+
+- Current frame, indexing, and pointing-correction authority in
+  `MAIN:doc/SCIENTIFIC_CONVENTIONS.md`.
+- Owner/coordination decisions under
+  `COORD:doc/audits/packages/SCI-ALIGN-001_*` and `SCI-AST-001_*`.
+- Earlier independent cores and audits on `codex/audit-sci-align-001` and
+  `codex/audit-sci-ast-001`.
+- Scope material: `MAIN:doc/astrometry_photometry_config_transition.md`.
+- Recovery must use frozen records only and must not absorb active ALIGN work.
+
+### Noise And Filtering
+
+- Inference-bearing FLT holding-study recovery:
+  [`studies/SCI-FLT-INF_STAGE_A_2026-08-30/PRIOR_WORK.md`](studies/SCI-FLT-INF_STAGE_A_2026-08-30/PRIOR_WORK.md)
+  at `2026-08-30`. It starts from exact SCI-FLT Stage A commit
+  `cd55752e716051383da54356833ef0fac20b083a` and binds frozen SCI-NOI
+  authority at `f28d7a2617160febca85c1c40e6f7ba7494e266e`. It separates
+  normalized template-amplitude, genuine posterior/Wiener, source/catalog
+  amplitude, learned-once and per-member-relearned state, data-thresholded
+  mode selection, selector/fallback, adaptive edge, and NOI-based coefficient
+  families. The result is a non-authoritative holding study, not a combined
+  package or Stage B packet. Grant Wilson approved ODQ-001 on `2026-08-30`:
+  the historical full path is an optimal matched-template amplitude estimator
+  with amplitude-unbiased normalization for a matching supplied template, not
+  a posterior/Wiener sky reconstruction or ordinary source-shaped
+  convolution. Grant Wilson approved ODQ-002 on `2026-08-30`: the selected
+  package is a map-domain filter whose signal output is a matched-filtered map,
+  not source detection, candidate, peak, fitted-source, deblending, or catalog
+  behavior; no SRC ownership boundary is introduced. Posterior reconstruction
+  remains separate and deferred. Grant Wilson approved ODQ-003 on
+  `2026-08-31`: both ordinary-MAP observation and coadd bundles are admitted
+  as distinct observation-local and coadd-local parent/grouping identities,
+  with no equivalence, commutation, or filter-owned combination; JINC and
+  derived-map parents remain deferred. Grant Wilson author-delegated ODQ-004
+  on `2026-08-31`: both implementation-blind contract views must develop
+  bounded noise/covariance, spectral-weighting, and parent-coefficient options
+  with shared stable identities. The historically used radially symmetrized
+  average map noise PSD is a candidate for scientific examination only, not a
+  selected default or covariance authority. The owner retains the later
+  option-selection/disposition decision. Grant Wilson approved ODQ-005 on
+  `2026-08-31`: one immutable declared template-response product per base-v0.1
+  application carries the complete amplitude/unit/parent/WCS/phase/support/
+  array/beam/calibration/validity/provenance identity. Parent-bound point-
+  source and explicitly supplied scientific-template sources are admitted;
+  Gaussian/Airy is complete-product construction only, while learned
+  templates and high-pass/delta are deferred. Grant Wilson approved ODQ-006
+  on `2026-08-31`: `A_hat=<t,Qm>/<t,Qt>` is the authoritative exact reference;
+  exact evaluation is conformant and approximate evaluation requires a
+  quantitative normalization/response/support/uncertainty envelope developed
+  under matching option identities in both future contract views and selected
+  by the owner before freeze. `Q`-defining regularization remains ODQ-004
+  state, and unresolved or nonpositive normalization is null/unavailable,
+  never zero amplitude. Grant Wilson approved ODQ-007 on `2026-08-31`: base
+  v0.1 admits only complete-support locations over the exact local or nonlocal
+  influence domain; required missing/nonfinite/invalid inputs make affected
+  locations unavailable, numerical fill is allowed only when conservative
+  erosion proves it cannot affect admitted output, and learned edge/
+  background/taper conditioning is deferred to a separate method. Grant
+  Wilson approved ODQ-008 on `2026-08-31`: the filtered signal has the exact
+  template-amplitude unit `unit(m)/unit(t)` and exact location-indexed fixed-
+  state response `L_x`, with unity matching-template response on admitted
+  support; no universal processed-kernel response or inherited parent beam is
+  presumed. Any matched-filter beam is response-derived, parent/template
+  calibration dependence is joint, and fixed-state response remains distinct
+  from full-procedure response. Grant Wilson approved ODQ-009 on `2026-08-31`:
+  exact conditional covariance is `C_cond=L C_parent L^T` when matching
+  authoritative fixed-state inputs exist; `D^-1` is only a marginal
+  conditional variance under exact GLS premises; frozen-NOI second moment,
+  calibration uncertainty, and full-procedure uncertainty remain distinct;
+  and covariance may be explicitly unavailable without invalidating the
+  signal. Covariance-representation options are delegated with shared IDs to
+  both future contract views for later owner disposition. Grant Wilson then
+  approved ODQ-010 through ODQ-013: fixed or parent-learned-once/frozen state,
+  no fallback/selector, minimal non-mutating derived companions, a first-class
+  FLT→FRUIT interface preserving exact or lineage-reconstructable state without
+  importing FRUIT science, and tiered atomic product/lifecycle/VAL policy.
+  `SCI-FLT-MATCHED`, **Optimal matched-template map filtering**, is the approved
+  successor package identity. Package-local recovery is now recorded in
+  [`packages/SCI-FLT-MATCHED/v0.1/PRIOR_WORK.md`](packages/SCI-FLT-MATCHED/v0.1/PRIOR_WORK.md).
+  Its exact eight-object author-packet candidate assigns six shared-ID option
+  families to both contract views while keeping implementation/config/schema/
+  history quarantined. Grant Wilson approved the exact eight-object packet at
+  manifest SHA-256
+  `255c66da880fc7664a57635b28a98d874fc024490d04528f802635c0382a57c8`
+  and authorized a fresh implementation-blind Stage B author on `2026-08-31`;
+  protected SCI-FLT-FIXED author bytes are unchanged.
+- Package-specific FLT recovery:
+  [`packages/SCI-FLT/v0.1/PRIOR_WORK.md`](packages/SCI-FLT/v0.1/PRIOR_WORK.md)
+  at `2026-08-30`. It separately classifies fixed convolution/low-pass,
+  Wiener/noise-model-dependent, matched/template-amplitude, source-sensitive,
+  data-thresholded map-domain, RTC temporal, and FRUIT feedback operations.
+  The implementation-informed dossier is quarantined. The sanitized Stage A
+  set abstracts only fixed linear/convolution mathematics from the mixed
+  historical Convolve document, restates approved parent/NOI/consumer
+  boundaries, proposes a typed operator/product taxonomy, and recommends
+  `SCI-FLT-FIXED` plus an `SCI-FLT-INF` holding tranche. Final owner scope
+  decisions select strict linearity, fixed low-pass only as a qualified
+  convolution subtype, and full-footprint-only as the sole v0.1 edge method.
+  All bounded questions are resolved. The repaired exact 17-object future
+  author set is SHA-bound but not releasable until exact-byte owner approval;
+  Stage B has not begun.
+- Package-specific NOI recovery:
+  [`packages/SCI-NOI/v0.1/PRIOR_WORK.md`](packages/SCI-NOI/v0.1/PRIOR_WORK.md)
+  at `2026-08-29`. It locates both earlier implementation-independent NOI
+  cores, their owner decisions and historical application evidence, the
+  internal noise derivation, current generation/inference/persistence
+  surfaces, and the frozen MAP/JINC boundary. The proposed packet reuses both
+  cores under one supersession cover and replaces the old two-package split
+  with collision-free `NOI-GEN`/`NOI-UNC`/`NOI-STD` roles. The final Stage A
+  repair adds exact fixed/relearned DAGs, ensemble-design and source-imprint
+  semantics, target/estimator/rank/covariance and STD tables, sanitized MAP,
+  JINC, and conditional pre-MAP PTC boundaries, four NOI-owned VAL profile
+  drafts, a FLT/FRUIT deferral record, and one complete ODQ-101--110 decision
+  candidate. The exclusive author packet remains implementation-blind and
+  SHA-bound. Empirical NOI weights or standardized signal cannot be promoted
+  into MAP coefficients, uncertainty, or significance by analogy.
+  Implementation, audits, repairs, validation, and defaults remain excluded
+  from authorship; Stage B remains unlaunched.
+- Current shared authority plus `MAIN:doc/NOISE_PRODUCTS_CONFIG_AUTHORITY.md`.
+- Existing noise integration and filter-amendment decisions under `MAIN` and
+  the `codex/coordinate-sci-flt-001-amendment` topic branch.
+- Reusable scientific candidates:
+  `MAIN:doc/citlali_noise_estimation_plan.tex`, earlier NOI-001/NOI-002
+  independent cores, and
+  `codex/convolve-contract-audit@800e8ae433f87d3fb7521fcb1a7fdf1d32532949:doc/CONVOLVE_SIGNAL_UNCERTAINTY_AND_RESPONSE_CONTRACT.tex`.
+- The Convolve document is mixed: recover its independent mathematics, but
+  exclude its source audit, candidate verdicts, repair requirements, and
+  validation history from authorship.
+- No dedicated approved Wiener/lowpass `SCI-FLT-002` contract was recovered.
+
+### Source Fitting, Pointing, And OOF
+
+- Package-specific SCI-POINT recovery:
+  [`packages/SCI-POINT/v0.1/PRIOR_WORK.md`](packages/SCI-POINT/v0.1/PRIOR_WORK.md)
+  at `2026-09-02`. It recovers the mature targeted per-array Pointing fit and
+  product path, current TolTECA cross-array/correction construction, current
+  TolProj pointing/calibration workflow, frozen MAP/JINC/FLT/BEAM/CAL/AST
+  boundaries, and historical SRC/MODE handoffs. Its
+  [`WORKING_WHEEL_ADOPTION_REGISTER.md`](packages/SCI-POINT/v0.1/WORKING_WHEEL_ADOPTION_REGISTER.md)
+  is the explicit anti-repetition control. Per-detector Beammap fitting remains
+  SCI-BEAM authority; blank-field faint distributed-source work is deferred;
+  OOF is separated into a future package. Nine bounded owner questions hold
+  aggregation, correction construction, parent admission, exact compatibility
+  estimator, support, partial success, covariance, amplitude/shape, and VAL
+  policy. ODQ-001 now preserves per-array POINT products as terminal and keeps
+  cross-array aggregation with the named pointing-support producer. ODQ-002
+  now keeps POINT measurement-only, correction construction with that producer,
+  and application with AST. ODQ-003A keeps FRUIT as exact ancestry on its
+  terminal MAP/JINC/FLT product rather than as another POINT parent type;
+  ODQ-003B excludes coadd parents from base v0.1. Completed ODQ-003 makes
+  observation-local MAP, JINC, FLT-FIXED, and FLT-MATCHED eligible as distinct
+  routes without automatic selection, substitution, equivalence, or fallback;
+  exact numerical availability and compatibility binding remain separate
+  gates. ODQ-004 adopts the established six-parameter elliptical-Gaussian
+  Pointing fit as the base compatibility estimator without adding another
+  profile family. ODQ-005 preserves its configurable center/search,
+  weighted-peak initialization, global fallback, bounded fit-domain, and
+  parameter-constraint machinery while requiring explicit requested,
+  effective, and realized state. ODQ-006 makes requested array results
+  independently atomic, preserves sibling results, and leaves partial-set
+  aggregation policy downstream. Producer lifecycle, component
+  identifiability, and named-use evaluation are separate. ODQ-007
+  requires available marginal formal errors, permits honest joint-covariance
+  unavailability, and prohibits treating absence as zero, diagonal covariance,
+  or independence. ODQ-008 makes amplitude and effective shape required fit
+  components and authorizes the fitted parameters/state as telescope and
+  observing-condition QC metrics without promoting them to universal flux,
+  intrinsic beam, or unique causal diagnosis. ODQ-009 assigns the four named-
+  use policies to POINT, the pointing-support producer, the QC process, and
+  CAL/TolProj respectively while VAL only registers/evaluates. The final
+  Stage A closure preserves four named-use axes and represents diagnostic
+  limitation as prescribed action `diagnostic_display_only`, never eligibility
+  or producer state. The scientific owner retained numerical compatibility,
+  formal-error, and full-map-RMS methods as three distinct unavailable
+  authorities pending separate quarantined recovery and owner approval. All
+  bounded ODQs are closed. The exclusive 37-object
+  [`AUTHOR_PACKET_MANIFEST.md`](packages/SCI-POINT/v0.1/AUTHOR_PACKET_MANIFEST.md)
+  `v0.1/r0.3` review candidate is content-bound and has a deterministic
+  39-file `.tar.gz` copy, but its exact bytes are not owner-approved and Stage B
+  remains unauthorized pending explicit fresh-task dispatch.
+- Current authority in `MAIN:doc/SCIENTIFIC_CONVENTIONS.md` and
+  `MAIN:validation/product_contracts.json`.
+- Scope records in the `SCI-SRC-001` and `SCI-MODE-001` ledger and handoff
+  entries under `FRAME` and `COORD`.
+- Earlier reference/evidence:
+  `MAIN:handoff/HANDOFF_2026-06-18_POINTING_SOURCE_AWARE.md` and
+  `MAIN:doc/POINTING_COMPACT_EQUIVALENCE_2026-06-30.md`.
+- No dedicated approved historical `SCI-SRC-001` or `SCI-MODE-001` scientific
+  contract was recovered. The new SCI-POINT Stage A package does not promote
+  either historical inventory entry into authority.
+
+### Fruit Loops
+
+- Current iteration, checkpoint, significance, and morphology authority in
+  `MAIN:doc/SCIENTIFIC_CONVENTIONS.md` and
+  `MAIN:doc/adr/0006-fruit-loop-restart-checkpoint.md`.
+- Reusable investigations under `MAIN:doc/` beginning
+  `FRUIT_LOOP_FEEDBACK`, `FRUIT_LOOP_CALIBRATION_REFERENCE`,
+  `FRUIT_LOOP_CONVERGENCE`, and `FRUIT_LOOP_POPULATION_EXTENSION`.
+- Historical evidence under `MAIN:validation/fruit_loop_*` and the
+  `codex/fruit-loop-calibration-reference` branch.
+- Package/dependency scope in the `SCI-FRUIT-001` ledger and handoff records.
+- No dedicated approved `SCI-FRUIT-001` contract or production stopping rule
+  was recovered.
+
+## Required Use
+
+At package startup, copy relevant entries into the package's `PRIOR_WORK.md`,
+resolve each exact reference, search for later material, classify every item,
+and record its disposition. Do not pass this registry wholesale to an author:
+the approved author packet contains only sanitized scientific references named
+in the Scope Brief.

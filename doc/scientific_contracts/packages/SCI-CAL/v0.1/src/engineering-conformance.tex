@@ -1,0 +1,353 @@
+\documentclass[10pt]{article}
+\newcommand{\DocRevision}{Engineering revision r0.4}
+\newcommand{\DocDate}{2026-08-23}
+\newcommand{\DocShortTitle}{Engineering Conformance r0.4}
+\newcommand{\DocPdfTitle}{SCI-CAL v0.1 Engineering Conformance r0.4 Frozen}
+\input{common/preamble.tex}
+\fancyhead[L]{\small\color{calgray}SCI-CAL v0.1/r0.4 FROZEN}
+\hypersetup{pdfsubject={SCI-CAL v0.1 engineering companion to Science-Team Rationale r0.5}}
+
+\begin{document}
+
+\MakeContractTitle{Engineering Conformance}{%
+  An implementation-independent conformance view of the same shared
+  scientific authority, suitable for a clean implementation or future audit
+  without mapping to current files, functions, classes, or behavior. This
+  revision is the formal companion to Science-Team Rationale r0.5.}
+
+\AuthorityNotice
+
+\begin{abstract}
+This document converts the shared SCI-CAL v0.1 scientific authority, as
+explained by Science-Team Rationale r0.5, into
+observable conformance conditions. A candidate realizes a typed, occurrence-
+scoped transformation from admitted \code{xs} samples to top-of-atmosphere
+point-source-peak \(\mjybeam\), applies selected \code{flxscale} and target
+atmosphere correction exactly once, preserves the boundary to downstream
+measurement-noise estimation, maintains a complete systematic ledger, and emits
+resolvable lineage and truthful validity/quality state. This view does not
+prescribe present software structure and does not assert that any
+implementation conforms. The common numbered requirements are the only
+normative clauses; the procedures here describe evidence for them. Q01--Q09
+are scientifically dispositioned; explicitly unavailable uncertainty products
+and achieved-performance acceptance remain visible and cannot be fabricated by
+candidate metadata or implementation behavior.
+\end{abstract}
+
+\tableofcontents
+\clearpage
+
+\section{Conformance object and non-claims}
+\label{sec:eng-purpose}
+
+The object under review is one complete SCI-CAL transformation for a coherent
+observation or declared segment, including its inputs, resolved state,
+realized numerical outputs, uncertainty products, validity/quality state,
+canonical lineage, and compact product links. A numeric array alone is not a
+conformance object.
+
+Conformance is evaluated against the common definitions, equations,
+assumptions, requirements, and edge predictions included below. The review
+does not infer scientific meaning from names, defaults, row positions, file
+placement, or historical behavior. It does not map requirements to current
+files, functions, classes, configuration keys, or tests. Such a mapping, if
+later authorized, is a separate implementation audit.
+
+This r0.4 engineering view is the semantic companion to Science-Team
+Rationale r0.5 and its Q01--Q09 decision register. Retaining every formal ID is
+necessary but not sufficient for consistency: scientific
+ownership, transfer validity, broadband convention, and ordering limitations
+must also survive into a conformance disposition.
+
+A structural pass establishes only the first claim layer in
+Table~\ref{tab:claim-layers}. Atmosphere representation and observational
+performance require their own evidence. Its strongest structural-policy state
+is \Term{science-qualification-eligible}, never an achieved
+\code{science-qualified} or \code{calibrated-science} claim. The latter claims
+remain governed by the separate-evidence threshold in \Req{049}. No production
+state follows from this frozen authority.
+
+\section{Logical conformance records}
+\label{sec:eng-records}
+
+The following are logical records. They may be serialized or implemented in
+any form that preserves the stated semantics and relationships.
+
+\begin{longtable}{L{0.20\linewidth}L{0.32\linewidth}L{0.38\linewidth}}
+\caption{Logical records to expose for conformance review.}\label{tab:eng-records}\\
+\toprule
+Record & Minimum semantic contents & Primary checks \\
+\midrule
+\endfirsthead
+\toprule
+Record & Minimum semantic contents & Primary checks \\
+\midrule
+\endhead
+Requested state & requested channel, target unit/meaning, mode, source choices,
+and explicitly supplied expert values & immutable acceptance; unsupported
+requests remain visible \\
+Effective state & resolved activation, legal unit path, normalized factor
+direction, selected operator policy, and rejection diagnostics & one-way
+resolution; ``automatic'' resolves to an exact effective choice \\
+Observation-resolved state & observation/Tune, acquisition keys, column
+binding evidence, selected APT identity/digest, row occurrences, association
+edges, factors, atmosphere/time support, response basis, and uncertainty
+ledger & complete replacement per observation; unique keys and supported
+domains \\
+Owner-decision snapshot & Q01--Q09 state, owning authority, required evidence,
+resolution source/date, decided semantics, explicitly unavailable products,
+and final owner-acceptance state & no local default, candidate assertion, or
+implementation behavior substitutes for approved authority \\
+Source-calibration record & Beammap/source-APT producer identity, source APT and
+row occurrence, calibrator model/epoch, source atmosphere, amplitude
+estimator, beam/template normalization, pointing treatment, spectral
+convention, factor direction, and uncertainty/covariance status & selected
+factor meaning and ancestry resolve to the producing authority \\
+Selection/child-transform record & TolProj association, selected
+observation-specific child APT, parent source APT, approved transformation and
+version, transfer-validity domain, retained systematic, and exact child value
+& transformer changes only approved fields and never reinterprets producer
+quantities \\
+Delivery record & TolTECA-delivered selected artifact identity/digest and
+immutable handoff identity & delivery changes neither scientific meaning nor
+factor value \\
+Photometric-convention state & reference frequency or wavelength, reference
+spectrum, calibrator/color treatment, passband weighting/variation, and
+compatibility across source factor, target atmosphere, and reported unit &
+unsupported monochromatic or cross-array interpretation remains unavailable \\
+Pipeline boundary/order state & ordinary dimensionless \code{xs} boundary,
+CAL-before-PTC relation, and declared relation to detector mixing,
+PCA/common-mode removal, temporal filtering, weighting, mapmaking, and
+downstream response & CAL performs no additive operation; PTC owns DC and
+correlated-mode removal \\
+Realized factor ledger & one entry per factor instance and occurrence/support,
+including role, value, unit, direction, reference plane, stage, parent
+lineage, validity, and application count & Equation~\eqref{eq:once-only}; no
+embodied or parent double application \\
+Realized output state & valid occurrence set, calibrated values, downstream
+conditional-uncertainty boundary, observation quality, reason codes, and response
+status & Equations~\eqref{eq:signal}, \eqref{eq:conditional-covariance}, and
+\eqref{eq:validity-tuple} \\
+Canonical lineage & all resolvable identities and relationships in
+Equation~\eqref{eq:reconstruction} plus nuisance completeness/correlation
+scope & deterministic reconstruction and no stale observation state \\
+Product link & canonical-record reference, selected APT reference, and
+occurrence keys sufficient to resolve both & resolvable without copying the
+entire per-detector table \\
+\bottomrule
+\end{longtable}
+
+\section{Conformance evaluation sequence}
+\label{sec:eng-sequence}
+
+The sequence below is explanatory rather than an implementation architecture.
+It groups the observables that the common requirements place at the cold
+boundary before a hot sample calculation can have scientific meaning.
+
+\begin{enumerate}[label=\textbf{E\arabic*.},leftmargin=*]
+\item \Term{Resolve authority gates.} Load the exact Q01--Q09 snapshot and
+  apply its decided semantics and each explicitly unavailable product to the
+  requested output or claim. A candidate cannot promote missing numerical
+  uncertainty or unaccepted performance to an approved claim.
+
+\item \Term{Normalize the request.} Establish that the measured stream is
+  \code{xs}, the target is top-of-atmosphere point-source-peak
+  \(\mjybeam\), the physical input and photometric-convention states are
+  declared, and the requested/effective distinction is recorded.
+
+\item \Term{Resolve occurrence identity.} Validate acquisition keys, the
+  column relation, source and selected child APT identities, local row
+  occurrences, target-to-source edges, approved transformation, delivery
+  identity, and array/network constraints. Establish exact cardinality for
+  the selected support before evaluating factors.
+
+\item \Term{Resolve factor causality.} Admit one selected \code{flxscale} per
+  detector occurrence, resolve its producer-owned generating record, verify
+  its direction and reference plane, classify the child transformation and
+  pointing-correction ancestry, and reject opaque or duplicate factor roles.
+
+\item \Term{Resolve atmosphere support.} Validate opacity and airmass meaning,
+  WVR time coverage/bracketing, whole-observation quality, exact content-bound
+  operator and digests, node support, log-transmission orientation, elevation
+  and opacity interpolation, and passband identity/limitations.
+
+\item \Term{Resolve ordering and broadband compatibility.} Bind the declared
+  no-additive-operation CAL boundary and CAL-before-PTC order. Verify the
+  272/214/150 GHz per-array convention, source spectrum, exact array-average
+  atmosphere passband, and downstream ownership of target color correction.
+
+\item \Term{Evaluate once.} Only on support admitted by the applicable
+  authority gates, evaluate
+  Equations~\eqref{eq:piecewise-operator}, \eqref{eq:multiplier}, and
+  \eqref{eq:signal}. Record factor-instance application counts and numeric
+  factor ranges. Invalid occurrences remain outside the domain rather than
+  becoming zeros.
+
+\item \Term{Preserve the uncertainty boundary.} CAL creates no statistical
+  variance or weight. Verify that any downstream companion on the calibrated
+  support obeys Equation~\eqref{eq:conditional-covariance} or
+  \eqref{eq:variance-weight}, and that unavailable producer/systematic terms
+  remain unavailable rather than zero.
+
+\item \Term{Resolve nuisance and response claims.} Complete the required
+  nuisance ledger, retain correlations, link the originating Beammap response
+  separately from any realized downstream response, and withhold total or
+  point-source-peak claims that lack their conditions.
+
+\item \Term{Publish reconstructible state.} Emit the validity tuple, reason
+  codes, one canonical lineage record, and resolvable product links. State the
+  status of structural, representation, and observational claims separately.
+\end{enumerate}
+
+\section{Scientific-owner dispositions and remaining gates}
+\label{sec:eng-owner-gates}
+
+Table~\ref{tab:eng-owner-gates} carries the Science-Team Rationale r0.5
+decision register into engineering disposition. Q01--Q09 are decided; a
+decision may still require an explicit unavailable numerical product or a
+future owner acceptance based on evidence.
+
+\begin{longtable}{L{0.18\linewidth}L{0.23\linewidth}L{0.49\linewidth}}
+\caption{Owner decisions and required engineering consequences.}
+\label{tab:eng-owner-gates}\\
+\toprule
+ID & Approved disposition & Required engineering consequence \\
+\midrule
+\endfirsthead
+\toprule
+ID & Approved disposition & Required engineering consequence \\
+\midrule
+\endhead
+SCI-CAL-OWNER-Q01 & Ordinary \code{xs} is dimensionless \(\Delta f/f_{\rm res}\), positive with optical power, with no CAL baseline & Validate Tune and expose the half-resonance-width high-noise condition. \\
+SCI-CAL-OWNER-Q02 & CAL precedes PTC; PTC owns DC/common-mode removal & Preserve this order and perform no additive CAL operation. \\
+SCI-CAL-OWNER-Q03 & Frozen SCI-BEAM derivation of \code{flxscale} & Resolve the complete producer record; retain source-factor uncertainty as unavailable until supplied. \\
+SCI-CAL-OWNER-Q04 & Closest accepted Beammap APT by default; optional scientist-directed TolProj per-array rescale & Materialize an immutable child APT and record its reference evidence; retain rescale uncertainty as unavailable until defined. \\
+SCI-CAL-OWNER-Q05 & 272/214/150 GHz convention; source-dependent spectrum; downstream target color correction & Bind the declared spectrum/passband and expose unavailable detector/network passband variation. \\
+SCI-CAL-OWNER-Q06 & Exact WVR/AM/passband operator and content digests & Evaluate within \(0\le\tau_{225}\le0.25\), \(25^\circ\le EL\le80^\circ\), and the authorized \(\alpha\) set; fail closed outside. \\
+SCI-CAL-OWNER-Q07 & One CAL class per observation, 0.025 momentary-excursion tolerance & Never split an observation; separate quality classification from sample-level numeric support. \\
+SCI-CAL-OWNER-Q08 & Noise downstream; CAL ultimately owns array-dependent systematics & Publish current missing source, rescale, WVR, and covariance terms as unavailable; do not emit total uncertainty/significance. \\
+SCI-CAL-OWNER-Q09 & Concrete Beammap closure and associated-pointing transfer workflow & Report achieved evidence by array without arbitrary sample-size/matrix gates; achieved-performance acceptance remains an owner decision. \\
+\bottomrule
+\end{longtable}
+
+\input{common/notation.tex}
+\input{common/definitions.tex}
+\input{common/assumptions.tex}
+\input{common/equations.tex}
+\input{common/requirements.tex}
+\input{common/edge_cases.tex}
+
+\section{Evidence package for a future audit or clean implementation}
+\label{sec:eng-evidence}
+
+A review package can remain implementation neutral while exposing enough
+evidence to falsify the contract. The recommended evidence inventory is:
+
+\begin{itemize}
+\item a content-bound Q01--Q09 owner-decision snapshot plus claim-by-claim
+  fixtures demonstrating that each explicitly unavailable product and final
+  owner-acceptance state cannot be fabricated by candidate metadata;
+\item immutable input and resolved-state records for at least two observations
+  with deliberately different detector subsets, selected APTs, associations,
+  atmosphere states, and response bases;
+\item source-calibration, TolProj association/child-transform, TolTECA
+  delivery, and SCI-CAL consumption records, including identity-transform,
+  approved-transform, out-of-domain-transform, and no-reinterpretation cases;
+\item the exact operator and passband content identities, node inventory,
+  orientation, support, and opacity interpolation records;
+\item broadband-compatibility and pipeline-boundary records covering the exact
+  reference frequencies, authorized spectra, CAL-before-PTC order, and
+  downstream target color correction;
+\item a machine-resolvable factor ledger showing role and application count,
+  including one corrected-APT ancestry challenge;
+\item downstream scalar and dense-vector covariance-consistency fixtures, plus
+  systematic-ledger cases at detector, array, observation, cohort, and global
+  scopes, including current unavailable states;
+\item identity metamorphic cases covering keyed permutations, proven and
+  broken ordered relations, network reorder, missing/duplicate keys, every
+  association disposition, and irrelevant design-ID changes;
+\item response fixtures for an unresolved source before and after a known
+  response-changing kernel; and
+\item output inventories, canonical lineage, compact links, validity tuples,
+  reason codes, and claim-layer status for every case, including every
+  truthful no-output state.
+\item Beammap closure records that trace source APT creation and
+  \code{toltec_beammap} acceptance through \code{apt_library}, TolProj matching,
+  ordinary science reduction, and recovered/input flux by array; and
+\item associated-pointing transfer records, when adequate independent ALMA,
+  SMA, planet, or well-calibrated asteroid fluxes exist, identifying the
+  observations, source and child APTs, associations, references, atmosphere,
+  array, flux ratios/residuals, repeatability, absolute recovery, and observed
+  condition dependence.
+\end{itemize}
+
+For each case, the evidence states expected equations and edge IDs before
+execution, numeric precision and tolerances, exact identity expectations, and
+whether a mismatch invalidates a detector, segment, or entire required output.
+A skipped required case remains unavailable. Structural fixtures do not stand
+in for the separately proposed atmosphere representation and observational
+studies in Section~\ref{sec:validation-evidence}.
+
+\clearpage
+\section{Conformance disposition}
+\label{sec:eng-disposition}
+
+A future reviewer can use four non-overlapping dispositions:
+
+\begin{longtable}{L{0.22\linewidth}L{0.66\linewidth}}
+\caption{Disposition meanings.}\label{tab:eng-disposition}\\
+\toprule
+Disposition & Meaning \\
+\midrule
+\endfirsthead
+\toprule
+Disposition & Meaning \\
+\midrule
+\endhead
+Structurally conformant & All applicable numbered requirements and
+predeclared structural predictions pass on the exact reviewed candidate and
+support; this says nothing stronger about atmosphere fidelity or performance. \\
+Nonconformant & One or more applicable equations, requirements, identity or
+support invariants, uncertainty transforms, lineage conditions, or truthful
+state outputs fail. \\
+Unavailable & Required authority or evidence is absent. This is the current
+claim-specific disposition for the current source-APT, TolProj-rescale,
+WVR/systematic, cross-array-covariance, total-uncertainty, and unaccepted
+performance products; it is not a pass or a failure of an untested
+implementation. \\
+Not applicable & A requirement's premise is demonstrably absent and the
+canonical record gives the scientific justification, for example a pointing-
+correction premise shown to be absent and marked \code{not_applicable}. \\
+\bottomrule
+\end{longtable}
+
+Atmosphere representation fidelity and observational performance receive
+separate dispositions and evidence. Their provisional numerical targets never
+convert ``unavailable'' into ``pass''.
+
+\section{Engineering conclusion}
+\label{sec:eng-conclusion}
+
+The engineering conformance surface is finite and falsifiable: dimensionless
+\code{xs} input,
+layered identity, unique association, producer-owned source calibration,
+approved child transformation, immutable delivery, selected-child factor
+authority, once-only composition, supported atmosphere evaluation, broadband
+and CAL-before-PTC order, downstream uncertainty consistency, truthful
+quality/validity,
+response-basis preservation, and package-level reconstructibility. No current
+implementation mapping is part of this view.
+
+The exact numerical atmosphere record is now bound, as are Q01--Q09's
+scientific semantics. Conformance therefore requires using that record rather
+than choosing nodes, orientation, support, or a fallback inside an
+implementation. Remaining unavailable uncertainty products must be reported
+as unavailable, not used to suppress a valid signal and not represented as
+zero. Structural conformance, atmosphere representation, Beammap closure, and
+independent pointing-source transfer remain separate evidence layers. The
+provisional one-percent, five-percent, and five-to-ten-percent values are
+reporting benchmarks only. Final \code{science-qualified} or
+\code{calibrated-science} acceptance is an owner decision based on the
+honestly and accurately reported evidence.
+
+\end{document}

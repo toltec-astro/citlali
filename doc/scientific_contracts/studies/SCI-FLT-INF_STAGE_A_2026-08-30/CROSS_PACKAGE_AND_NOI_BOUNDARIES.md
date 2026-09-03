@@ -1,0 +1,304 @@
+# SCI-FLT-INF cross-package and NOI boundaries
+
+Boundary identity: `SCI-FLT-INF-BOUNDARIES v0.1/r0.11`
+
+Status: Stage A owner-review candidate; it changes no frozen authority
+
+## MAP to inference-bearing method
+
+SCI-MAP owns the exact immutable normalized map bundle, its parent estimator,
+grouping, WCS/grid, support/validity facts, response/covariance declarations,
+and observation/coadd identity. The inference-bearing method owns its own
+admission policy, state, estimand, operator, response, support/null space,
+uncertainty/covariance, products, and failure.
+
+The MAP coefficient field is not precision unless exact MAP authority says so.
+No INF method may infer `C_PARENT^{-1}` from a field name, positivity, or
+historical use. If the method requires a covariance/inverse-noise operator that
+MAP does not supply, the method is unavailable until an exact scientific
+source is admitted.
+
+The ordinary numerical MAP route remains unavailable at its frozen PTC
+coefficient and numerical `coverage_cut` gates. This study does not bypass
+those gates.
+
+ODQ-001 identifies the historical full path as an optimal matched-template
+amplitude estimator. Its map-domain output is the amplitude of the exact
+supplied template as a function of position; a point-source-response kernel
+specializes this to a matched point-source amplitude field. The normalization
+must be unbiased for a matching amplitude under the exact declared model and
+support assumptions. This identity supplies neither the required parent
+covariance nor a numerical route.
+
+ODQ-003 admits both exact immutable normalized ordinary-MAP observation bundles
+and exact immutable normalized ordinary-MAP coadd bundles. ODQ-002 fixes their
+published product role as a matched-filtered map preserving applicable parent
+map-domain structure and semantics. Observation filtering is observation-local;
+coadd filtering is coadd-local and binds the exact contributing-observation set
+and coadd generation. The filter performs no independent coaddition, and no
+equivalence or commutation between the two graphs is presumed. Exact
+inheritance, units, response, uncertainty, validity, and bundle details remain
+later decisions.
+
+ODQ-004 delegates the exact noise/covariance, spectral-weighting, and parent-
+coefficient choice to bounded two-view author development. The historical
+radially symmetrized average map noise PSD is a candidate only. It supplies no
+current MAP covariance, stationarity/isotropy proof, default, or precision
+meaning. Observation and coadd candidates remain separately accountable, and
+the MAP coefficient field remains nonprecision/unavailable for estimator
+weighting unless a later owner-selected option supplies exact authority.
+
+ODQ-005 requires one immutable template-response product per application. A
+parent-bound point-source response is admitted only through its exact immutable
+MAP-bundle identity; another scientific template is an explicitly supplied
+FLT input with exact parent compatibility. In either case the template binds
+its amplitude convention and units, grid/WCS/phase, support/tails, array and
+beam/calibration relationship, validity, and provenance. MAP ownership of a
+point-source-response product is not FLT permission to reinterpret or relearn
+it. Observation/coadd compatibility is separate, and missing compatibility is
+typed unavailable rather than repaired by resampling or substitution.
+
+ODQ-006 makes
+`A_hat(x)=<t_x,Q m>/<t_x,Q t_x>` the authoritative reference operator,
+conditional on the exact parent, the ODQ-004 weighting operator `Q`, the
+ODQ-005 template-response product, and the ODQ-007 support. `Q=C^-1` gives
+the optimal generalized-least-squares interpretation only when the complete
+covariance assumptions hold; weaker `Q` authority weakens the optimality and
+uncertainty claim. Exact evaluation is conformant. An approximate realization
+is admissible only inside a quantitative envelope, developed in both future
+contract views and selected by the scientific owner, that bounds
+normalization, template response, support/null behavior, and uncertainty.
+Regularization that defines `Q` or its null space remains ODQ-004 state;
+operator changes outside the selected envelope require a separately versioned
+method. A nonfinite or nonpositive denominator, or failure to establish it on
+admitted support, is typed null/unavailable/failure and never a zero-amplitude
+measurement. This method invents no missing MAP covariance.
+
+ODQ-007 admits only complete-support output locations for base v0.1. The
+complete local or nonlocal influence domain required by the template,
+weighting operator, ODQ-006 realization, and boundary convention must remain
+inside the exact parent domain and contain only admitted, finite, available,
+valid required inputs. MAP-owned support and validity remain MAP facts; FLT
+consumes them and applies its exact use admission without mutating or repairing
+the parent. Missing required state makes affected output unavailable rather
+than zero or a partial-support estimate.
+
+Base FLT performs no boundary extension, imputation, support renormalization,
+background estimation/subtraction, learned taper, or signal-derived support
+selection. Numerical fill is outside scientific support and is permitted only
+when conservative erosion proves that no admitted output depends on it. A
+global/nonlocal operator must honor that full dependence. Adaptive edge/
+background conditioning is a deferred separate method and supplies no current
+MAP-to-FLT route.
+
+ODQ-008 makes the FLT signal quantity the declared template amplitude, with
+`unit(A_hat)=unit(m)/unit(t)`. FLT retains the parent's exact WCS/frame,
+location indexing, array/band, observation/coadd grouping, lineage, and
+support/validity/calibration provenance, but does not silently inherit the
+parent signal unit, nominal beam, DC/integral/surface-brightness response,
+extended-source fidelity, or calibration covariance.
+
+For fixed state, the exact MAP-to-FLT response row is
+`L_x u=<t_x,Q_x u_x>/<t_x,Q_x t_x>` and the exact template response is
+`R_t(x,y)=L_x t_y`, with `R_t(y,y)=1` at admitted matching locations. A
+uniformly processed kernel is not a universal response absent exact proof of
+translation invariance and identical weighting, support/validity, phase,
+boundary, and normalization. MAP's nominal beam remains parent provenance;
+any matched-filter beam/solid angle must be derived from `R_t` under an exact
+convention. MAP does not authorize FLT to relabel shape amplitude as flux or
+to invent response/covariance facts absent from the parent boundary.
+
+ODQ-009 consumes an authoritative matching MAP covariance, when available,
+through `C_cond=L C_parent L^T`; it does not manufacture absent parent or
+coadd cross-covariance blocks. The filtered signal may remain valid with typed
+covariance unavailable. `D^-1` is a marginal conditional variance only under
+exact inverse-covariance GLS premises and never establishes independent output
+locations. The future author must develop shared covariance-representation
+options in both contract views for later owner disposition.
+
+## JINC to inference-bearing method
+
+SCI-JINC owns a separate signed-coefficient observation estimator and complete
+per-array bundle. It is not an alternate serialization of ordinary MAP.
+Any INF method over JINC would require a JINC-specific parent, response,
+support, unit/beam, covariance, and product boundary. A method defined for MAP
+is not automatically applicable to JINC. ODQ-003 does not admit JINC in v0.1.
+
+JINC's numerical route remains unavailable under its frozen gates. This study
+does not create a JINC numerical route or cross-observation JINC coadd.
+
+## SCI-FLT-FIXED boundary
+
+SCI-FLT-FIXED is the neighboring strict-linear same-grid transformation
+candidate at the base commit. Its exact 17 Stage A author objects and manifest
+are protected. This study neither amends nor interprets any active Stage B
+work.
+
+ODQ-003 does not admit SCI-FLT-FIXED derivatives in v0.1. If a future INF
+method consumes a fixed-filter product, the exact fixed
+operator, parent, response, covariance, support, order, and product generation
+must be bound. If a future fixed operator consumes an INF product, that is a
+different ordered chain. No commutation or response reuse is presumed.
+
+Ordinary source-shaped convolution remains SCI-FLT-FIXED-like deterministic
+transformation science when it otherwise satisfies that package's scope. It
+is not the owner-selected matched estimator merely because the same kernel is
+used: the matched estimator additionally requires its exact noise weighting,
+normalization, estimand, and validity contract.
+
+## Frozen SCI-NOI boundary
+
+The following rules are imported from exact frozen SCI-NOI authority at
+`f28d7a2617160febca85c1c40e6f7ba7494e266e` through the object bindings in
+[`FROZEN_AUTHORITY_AND_SOURCE_BINDING.md`](FROZEN_AUTHORITY_AND_SOURCE_BINDING.md):
+
+1. the transformation owner, not NOI, owns purpose, algorithm, operator,
+   parameters/learned state, order, support/edge, units, response, validity,
+   lifecycle, and failure;
+2. NOI applies the exact owner-authorized transformation to every admitted
+   compatible member when estimating uncertainty for the exact transformed
+   product;
+3. a method learned once and frozen is a fixed-state NOI route even when the
+   state is data-derived;
+4. if NOI informs learning, selection, or update, the prior UNC input,
+   owner-learning generation, resulting state/transformation, transformed
+   science product, transformed GEN, and successor UNC are separate immutable
+   generations;
+5. the prior UNC is dependent input, not independent validation, and cannot be
+   mutated;
+6. member-specific relearning is a distinct NOI-GEN method under the complete
+   consequential-state graph;
+7. fixed-state and relearned members cannot be mixed absent a separately
+   authorized mixture estimand; and
+8. every transformed numerical route remains unavailable until exact owner
+   authority and parity are content-bound.
+
+### Required parity cases
+
+| Case | Science state | Member state | UNC meaning | Identity |
+| --- | --- | --- | --- | --- |
+| declared fixed | exact external or parent-owned state fixed before method application | identical state for all members | conditional on state | base method + `DECLARED_FIXED` |
+| parent-learned frozen | state learned once from real parent | identical frozen state for all members | conditional on learned real-parent state | base method + learning generation |
+| NOI-informed successor | new state learned using prior UNC | identical successor state for successor members unless separately relearned | conditional successor UNC with explicit dependence | new state/science/GEN/UNC generation chain |
+| per-member relearned | real product uses its declared learning graph | each member reruns the exact consequential graph | full-procedure member population, subject to its declared conditioning | separate NOI-GEN method |
+| selector | realized science method chosen by exact policy | selector and/or underlying method applied under an exact declared member graph | depends on whether selection is fixed or rerun per member | separate selector parity identity |
+
+Adaptive edge/background learning, PSD shaping, any future template learning,
+method selection, convergence selection, and coefficient calibration must
+each be classified in the consequential-state graph; none may hide behind a
+generic `fixed filter` label. ODQ-005 makes the base-v0.1 template declared
+fixed rather than a learning output. Every transformed NOI member must use the
+same ODQ-006 reference operator or the same selected approximation identity
+and bound as the science product, together with the same ODQ-007 complete-
+support and boundary identity. Approximation or support state that is learned
+or updated follows the corresponding frozen-state or relearned-state graph;
+member-specific support learning remains a separate NOI-GEN method.
+
+Every fixed-state member also uses the exact ODQ-008 response/unit convention
+of the science product. A response derived with state held fixed cannot be
+used as the full-procedure response of a member graph that re-estimates `Q`,
+support, approximation, or selection state. That route remains a distinct
+ODQ-010 population and response identity.
+
+Under ODQ-009, the ordinary exact frozen-NOI product remains the frozen SCI-NOI
+conditional randomization second moment on the common all-member domain. It is
+not `C_cond`, physical-noise variance, precision, calibrated significance, or
+a replacement for missing MAP covariance. Fixed-state and relearned members
+cannot be mixed. Calibration uncertainty and cross-covariance also remain
+separate, and total calibrated uncertainty is unavailable when any material
+term is unavailable.
+
+## NOI-derived coefficient calibration
+
+Frozen NOI authority distinguishes conditional second-moment products, their
+finite-positive reciprocal scale, covariance, precision, and consumer-
+effective weight. A future FLT/NOI boundary must therefore state whether an
+empirical scalar changes only a diagnostic coefficient, defines a new
+versioned estimator normalization, or produces a consumer-specific weight.
+It may not mutate an immutable parent or promote a reciprocal to precision by
+analogy.
+
+Any standardized product must bind the exact immutable numerator, exact NOI
+scale, compatible response/unit/WCS/support/domain, and dependence. It cannot
+claim significance, detection probability, completeness, purity, or catalog
+authority. Those behaviors are outside this package and require a future
+independent scientific contract if ever pursued.
+
+## Deferred source-analysis exclusion
+
+The selected package has no source-estimation or SRC ownership boundary. It
+owns a map-domain matched-filter operation and publishes matched-filtered maps.
+It does not detect sources, select candidates, construct catalogs, interpret
+peaks, deblend, fit sources, or assign significance, completeness, purity, or
+morphology.
+
+A future independently governed source-analysis method may consume an exact
+matched-filtered map if later authorized. That possibility creates no current
+dependency, ownership assignment, product role, handoff, or validation
+profile. Source-learned filter/template state is likewise outside the selected
+package.
+
+## VAL boundary
+
+Each future INF producer/consumer owns policy for its named use. SCI-VAL may
+register and evaluate exact immutable profiles but may not invent INF parent
+admission, method support, publication, covariance use, response use, or
+fallback policy. At least separate future profiles are likely for:
+
+- INF parent admission;
+- learned-state admission;
+- public signal/estimand publication;
+- uncertainty/covariance use;
+- standardized-product use.
+
+No profile identity or rule is approved by this study.
+
+## CAL boundary
+
+CAL owns calibrated signal transfer, unit/beam basis, atmosphere/passband/
+color corrections, and calibration covariance. INF owns only the declared
+template-amplitude transformation and its exact response. The parent nominal
+beam and CAL lineage remain provenance, not the matched estimator's automatic
+effective beam or flux label. A point-source amplitude may carry literal
+calibrated flux meaning only when the template amplitude convention and exact
+CAL/BEAM lineage establish it; other templates remain shape amplitudes.
+
+Parent-signal and template calibration dependence must be propagated jointly.
+Shared factors may cancel, remain, or couple, but no independence or
+cancellation is inferred. Missing numerical calibration covariance remains
+unavailable and cannot be recovered from the template, response kernel,
+signal-unit label, or estimator denominator. Any future cross-band amplitude
+inference remains outside this package and conditional on exact CAL authority
+and covariance.
+
+## RTC and PTC boundary
+
+RTC temporal filtering/destriping and PTC correlated-mode cleaning occur
+before MAP/JINC and remain owned there. A map-domain spectral selector cannot
+silently reinterpret or compensate for an upstream temporal transfer. The
+full ordered response must retain the upstream authority and the selected
+map-domain method.
+
+## FRUIT boundary
+
+FRUIT owns source modeling, subtraction/add-back, recurrence, learning,
+stopping/restart/selection, response, support, validity, lifecycle, failure,
+and interpretation. An exact frozen FRUIT terminal/residual product could be a
+future parent under its own boundary. NOI-informed FRUIT continuation and
+per-member replay follow the frozen SCI-NOI generation rules. This study does
+not define FRUIT science.
+
+ODQ-012 strengthens this as a first-class `SCI-FLT-MATCHED` product boundary:
+
+> The FLT product contract shall preserve a first-class FLT→FRUIT scientific
+> interface sufficient for a future FRUIT method to consume the filtered
+> amplitude product without reconstructing undocumented FLT implementation
+> state. At minimum, the interface shall identify the filtered quantity,
+> template, response, valid support, units/calibration, method/state identity,
+> uncertainty availability, and provenance. Additional FLT state required by
+> an authorized FRUIT method shall remain exactly available or reconstructable
+> through the product lineage.
+
+This requirement supplies no FRUIT algorithm, learning, recurrence, stopping,
+restart, uncertainty, or interpretation. Those remain for a separate FRUIT
+contract tranche.

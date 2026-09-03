@@ -1,0 +1,153 @@
+% Canonical formal module. Imported exactly once by the engineering view.
+\section{Identity, registry, and logical domains}
+\label{sec:notation}
+
+\subsection{The object of a decision}
+
+An \emph{occurrence} is an exact sample--detector occurrence, not merely a
+matrix cell. Its identity tuple is
+\[
+ \boldsymbol\iota=(o,s,t,d_{\rm occ},d_{\rm uid},a,n,q,k,\pi,\ell),
+\]
+where the components identify observation, scan or coherent segment,
+sample/time occurrence, detector occurrence, stable detector UID, array,
+network/group, stream or product role, stage, parent, and lifecycle. The tuple
+may be represented in any lossless form. Dense row, column, detector, map, or
+file order is not a substitute for stable external identity. Primary detector
+timestreams have samples on rows and detectors on columns; cross-product
+detector association uses the declared UID/occurrence relation. Actual
+timestamps and gaps, rather than nominal cadence, define time support.
+
+Let $\mathsf F_k$ denote one immutable, versioned producer-fact set about one
+exact occurrence or detector at lifecycle generation $k$. Facts are typed and
+retain producer, scope, stage, parent, asserted state, source binding, and
+provenance. A producer-local support or Boolean composite is itself an opaque
+producer fact with declared owner, inputs, truth-domain rule, missing-state
+rule, scope, use, and version. VAL consumes it; VAL does not reconstruct it
+from raw causes.
+
+\subsection{Knowledge is not Boolean silence}
+
+For a fact applicable to its declared domain, use
+\[
+ \mathbf K=\{\mathbf T,\mathbf F,\mathbf U,\mathbf C\}.
+\]
+$\mathbf T$ is an authoritative positive assertion; $\mathbf F$ is an
+authoritative explicit negative assertion; $\mathbf U$ is missing or unknown;
+and $\mathbf C$ is contradictory, ambiguous, or outside the asserted domain.
+Fact applicability is recorded separately as applicable, inapplicable, or
+unknown. For a cause family, $\mathbf F$ is admissible only when the owning
+producer explicitly asserts absence under a declared complete family.
+Silence is $\mathbf U$, never $\mathbf F$. These symbols state scientific
+meaning, not an enum or bit layout.
+
+A policy predicate uses the same four knowledge outcomes after authority and
+domain checks. A predicate can be false because authoritative facts violate a
+declared restriction; an unavailable fact cannot be coerced to false. A
+structural contradiction prevents the question from being established. A
+non-gating contradiction remains in the reasons and is unresolved by the
+disposition algebra in Section~\ref{sec:equations}.
+
+\subsection{Use classes and package-qualified profile names}
+
+The shared use-class vocabulary is
+\begin{align*}
+\mathcal U=\{&\texttt{independent\_exposure},
+\texttt{estimator\_fit},\\
+&\texttt{operator\_application},
+\texttt{output\_retention},\\
+&\texttt{map\_upstream\_admission},
+\texttt{response\_companion},\\
+&\texttt{empirical\_or\_simulation\_population},
+\texttt{diagnostic\_display}\}.
+\end{align*}
+Except for the mandatory registered profile
+\nolinkurl{SCI-VAL:independent_exposure@1}, these labels classify questions but
+do not supply predicates. Operationally distinct questions use immutable,
+package-qualified names such as
+\nolinkurl{SCI-PTC:basis_fit_admission},
+\nolinkurl{SCI-PTC:loading_fit_admission}, and
+\nolinkurl{SCI-PTC:coefficient_qc_population}.
+The former label \nolinkurl{analysis_or_gridding_contribution} is not a v0.1
+registry key: \nolinkurl{SCI-MAP:map_upstream_admission} names only the
+upstream question and cannot be mistaken for actual numerical contribution.
+The package namespace records where a profile is registered; scientific
+ownership remains the explicit owner field of the immutable registry record.
+
+\subsection{Owner-bound profile registry}
+
+Let $\mathfrak R$ be the immutable profile registry. A registry record is
+\[
+ \rho=(I_\rho,v_\rho,U_\rho,O_\rho,S_\rho,h_\rho,
+        \mathcal D_\rho,R_\rho,X_\rho,Y_\rho,J_\rho,M_\rho),
+\]
+where $I_\rho,v_\rho$ are registry identity and version; $U_\rho$ is the
+named use; $O_\rho$ is the actual scientific owner; $S_\rho$ and $h_\rho$
+are authoritative source identity and exact version or digest;
+$\mathcal D_\rho$ is the applicability domain and object type; $R_\rho$ is
+the restriction set; $X_\rho$ states exception permissions and
+non-exceptionable invariants; $Y_\rho$ assigns every response or uncertainty
+availability fact its owner-supplied role in the closed set
+\[
+ \mathcal Y=\{\texttt{structural\_gate},
+ \texttt{required\_permission},
+ \texttt{decisive\_exclusion},
+ \texttt{advisory}\};
+\]
+$J_\rho$ is the compatibility/supersession
+rule; and $M_\rho$ is missing/conflict behavior. Every scientific element is
+supplied or approved by $O_\rho$. The registry records and resolves the
+binding. It does not make VAL the policy author.
+
+The policy supplied for one evaluation is
+\[
+ \mathsf P_\rho=(\rho,A_\rho,G_\rho,R_\rho,X_\rho,Y_\rho,M_\rho,
+                  \Gamma_\rho,L_\rho).
+\]
+$A_\rho$ is applicability; $G_\rho$ is the structural gate;
+$\Gamma_\rho$ is any aggregation specification; and $L_\rho$ binds requested,
+effective, observation-resolved, learned/resolved, and realized lineage. A
+reserved name without this complete binding is not a policy and cannot be
+evaluated as eligible.
+
+When the proposition is an aggregate, its profile $\rho_\Gamma$ is a
+separate registry record, not the atomic profile reused at a larger object
+scope. It binds its own owner, version, domain, operator, threshold, and
+propagation authority together with the exact compatible atomic source
+profile identity and version.
+
+\subsection{Four independent decision axes}
+
+The domains are
+\begin{align*}
+ \mathcal R&=\{\mathrm{requested},\mathrm{not\_requested}\},\\
+ \mathcal A&=\{\mathrm{applicable},\mathrm{inapplicable},
+                    \mathrm{applicability\_unknown}\},\\
+ \mathcal E&=\{\mathrm{eligible},\mathrm{ineligible},
+                    \mathrm{decision\_unavailable}\},\\
+ \mathcal Z&=\{\mathrm{realized},\mathrm{incomplete},\mathrm{failed},
+                    \mathrm{not\_produced}\}.
+\end{align*}
+A record carries $(R,A,E,Z)$ without aliasing axes. Eligibility is a partial
+proposition: if no eligibility question is evaluated because no request was
+made or the profile is known inapplicable, the $E$ slot is uninstantiated,
+written $\varnothing_E$. This is not a fourth disposition and not
+\texttt{decision\_unavailable}. A failed or unproduced artifact likewise does
+not manufacture a disposition.
+
+\subsection{Cause and influence records}
+
+Let $\mathcal G_k$ be the finite set or directed graph of typed direct causes
+and inherited influences supplied by producers for $\mathsf F_k$. Each node
+retains producer, family, scope, stage, assertion state, and cause identity.
+Each influence edge additionally retains source, target, support identity,
+producer, and
+\[
+ (\text{coverage},\text{epistemic status})\in
+ \{\mathrm{exact},\mathrm{conservative}\}\times
+ \{\mathrm{confirmed},\mathrm{possible}\}.
+\]
+A conservative record includes its over-approximation rule and declared
+false-positive consequence. It may overstate possible influence but may not
+be relabeled exact. A use-owner policy determines the consequence for its
+use; the cause graph carries no universal action.

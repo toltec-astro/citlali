@@ -1,0 +1,263 @@
+\section{Canonical equations}
+\label{sec:equations}
+
+The equation identities below are canonical SCI-ALIGN v0.1 author-draft
+identifiers.  Parenthetical aliases preserve the recovered independent-core
+identities A1--A19.  Equations are conditional on the identities, producer
+semantics, operator registry, and availability rules in
+Sections~\ref{sec:definitions}--\ref{sec:assumptions}.
+
+\subsection{Clock normalization, grid, and assignment}
+
+Checked native time on detector-reference coordinate is
+\begin{equation}
+ t_{ik}^{\rm ref}=(E_i-E_{i_{\rm ref}})_{\rm sec}+u_{ik}
+ +\delta_{i\rightarrow\rm ref},
+ \qquad i_{\rm ref}=D,\quad \delta_{{\rm ref}\rightarrow{\rm ref}}=0.
+ \tag{SCI-ALIGN-EQ-001}\label{eq:clock}
+\end{equation}
+\noindent This preserves recovered-core identity A1.  A positive offset is
+added, acquisition bounds use the same transform, and the operation occurs
+exactly once before ordering, assignment, gap, interval, or interpolation
+logic.
+
+For detector phase \(\phi_D\), cadence \(h_D>0\), and mapped acquisition
+bounds, the nominal lattice is
+\begin{align}
+ t_s&=\phi_D+s h_D,\notag\\
+ s_{\min}&=\left\lceil\frac{B_D^- -\phi_D}{h_D}\right\rceil,
+ &s_{\max}&=\left\lceil\frac{B_D^+ -\phi_D}{h_D}\right\rceil-1,
+ &\mathcal S&=\{s_{\min},\ldots,s_{\max}\}.
+ \tag{SCI-ALIGN-EQ-002}\label{eq:grid}
+\end{align}
+\noindent This preserves A2.  The stable ALIGN slot identity is \((o,s)\).
+Within a selected materialized view, \(j\) is a derived local storage row;
+it is never external identity and cannot be used to reconstruct \(s\) without
+the explicit view relation.  Empty \(\mathcal S\) is an unsuccessful ALIGN
+operation.  Symbol \(n\) is reserved for stable RTC output-sample identity.
+
+An original detector row uses explicit round-half-up assignment:
+\begin{equation}
+ s(k)=\left\lfloor
+ \frac{t_{Dk}^{\rm ref}-\phi_D}{h_D}+\frac12
+ \right\rfloor,
+ \qquad
+ \left|t_{Dk}^{\rm ref}-t_{s(k)}\right|
+ \leq\epsilon_{\rm slot}<\frac{h_D}{2}.
+ \tag{SCI-ALIGN-EQ-003}\label{eq:slot}
+\end{equation}
+\noindent This preserves A3.  The corrected native time and residual
+\(t_{Dk}^{\rm ref}-t_{s(k)}\) remain distinct from nominal slot time.  Collisions,
+ambiguity, duplicate/nonmonotonic coordinates, or rows outside declared
+support fail closed.
+
+\subsection{Field operators and paired detector mapping}
+
+For a continuous scalar at common time \(t_s\), bounded adjacent
+interpolation inside one valid run is
+\begin{align}
+ \lambda_s&=\frac{t_s-t_a}{t_b-t_a},\qquad 0<\lambda_s<1,\notag\\
+ y_s&=(1-\lambda_s)v_a+\lambda_s v_b.
+ \tag{SCI-ALIGN-EQ-004}\label{eq:linear}
+\end{align}
+\noindent This preserves A4.  Exact coincidence is one-hot original support;
+no extrapolation or skipping across invalid rows is allowed.
+
+For a circular field of declared period \(P\), using signed shortest
+difference \(d_P(a,b)\in[-P/2,P/2)\),
+\begin{equation}
+ y_s=\operatorname{wrap}_P\!\left(v_a+\lambda_s d_P(v_a,v_b)\right).
+ \tag{SCI-ALIGN-EQ-005}\label{eq:circular}
+\end{equation}
+\noindent This preserves A5.  Exactly antipodal inputs are unavailable unless
+an explicit unwrap authority resolves the interpolation path; the endpoint
+choice in the half-open difference interval is not such authority.
+
+The canonical paired detector-coordinate invariant is
+\begin{equation}
+ x^A=A_{\rm ALIGN}x^{\rm acq},
+ \qquad
+ r^A=A_{\rm ALIGN}r^{\rm acq}.
+ \tag{SCI-ALIGN-EQ-006}\label{eq:paired}
+\end{equation}
+The two applications have the same native occurrences, weights, residuals,
+slots, source-relation identity, and origin/synthesis state, while numerical
+validity and payload availability remain coordinate-specific.  Equation
+\ref{eq:paired} does not authorize a mapping across a Tune or mapping-revision
+boundary.
+
+For one fixed realized mapping and processing window \(q\), a block view is
+\begin{equation}
+ \boldsymbol y_q=
+ \begin{bmatrix}
+ S_qG_D&0&0\\
+ 0&S_qI_T&0\\
+ 0&0&S_qI_H
+ \end{bmatrix}
+ \begin{bmatrix}
+ \boldsymbol v_D\\ \boldsymbol v_T\\ \boldsymbol v_H
+ \end{bmatrix}
+ \equiv A_q\boldsymbol v .
+ \tag{SCI-ALIGN-EQ-007}\label{eq:block}
+\end{equation}
+\noindent This preserves A6.  \(G_D\) includes the invariant in
+Equation~\ref{eq:paired}; absent HWPR is typed unavailable, not zero.  Circular
+mapping is the corresponding nonlinear map and Equation~\ref{eq:block} its
+local linearization away from ambiguity.
+
+\subsection{Conditional continuity surrogate and windows}
+
+If and only if a signal-domain authority closes \code{SCI-ALIGN-ODQ-104}, an
+authorized internal linear-gap surrogate for \(g\) absent slots between valid
+endpoint values \(z_0,z_{g+1}\) may take the form
+\begin{equation}
+ \widehat z_\ell=\left(1-\frac{\ell}{g+1}\right)z_0
+ +\frac{\ell}{g+1}z_{g+1},
+ \qquad \ell=1,\ldots,g.
+ \tag{SCI-ALIGN-EQ-008}\label{eq:gap}
+\end{equation}
+\noindent This preserves A7 as conditional reasoning, not authorization.
+Every realized cell retains both endpoint identities and weights, synthesized
+origin, zero acquired exposure, and conditional response.  Leading/trailing,
+over-limit, invalid-endpoint, or cross-revision gaps are unavailable; no long
+gap is partially filled.
+
+When a separately requested fixed-duration \emph{processing-window} policy of
+duration \(L>0\) is admitted, it may resolve to
+\begin{equation}
+ M=\left\lfloor\frac{L}{h_D}+\frac12\right\rfloor\geq1,
+ \qquad
+ \mathcal S_q=[s_{\min}+qM,\min\{s_{\min}+(q+1)M,s_{\min}+N\}),
+ \quad q=0,\ldots,\left\lceil\frac NM\right\rceil-1.
+ \tag{SCI-ALIGN-EQ-009}\label{eq:windows}
+\end{equation}
+\noindent This preserves A8 only for the stated conditional construction.  It
+does not define, replace, or renumber producer-authoritative physical scans.
+Final partial and short windows retain identity.
+
+The corresponding selector is
+\begin{equation}
+ (S_q)_{as}=\mathbf 1\{s=s_{\min}+qM+a\},\qquad s\in\mathcal S_q.
+ \tag{SCI-ALIGN-EQ-010}\label{eq:selection}
+\end{equation}
+\noindent This preserves A9.  Slicing changes support and window response but
+not units, slot identity, physical-scan identity, or origin.
+
+\subsection{Response and uncertainty}
+
+For fixed \(A_q\) and temporal template \(\boldsymbol p\), the conditional
+response is
+\begin{equation}
+ R_q(\boldsymbol p)=
+ \frac{\partial\E[\boldsymbol y_q\mid A_q]}{\partial\alpha}
+ =A_q\boldsymbol p,
+ \qquad
+ \E[\boldsymbol v]=\alpha\boldsymbol p+\boldsymbol\mu_0.
+ \tag{SCI-ALIGN-EQ-011}\label{eq:response}
+\end{equation}
+\noindent This preserves A10.  It is conditional ALIGN response, not a
+downstream estimator response.
+
+For uniform samples and fractional target \((k+\alpha)h\),
+\(0\leq\alpha\leq1\), linear interpolation relative to an ideal fractional
+delay has response
+\begin{equation}
+ H_\alpha(\omega)=e^{-i\omega\alpha h}
+ \left[(1-\alpha)+\alpha e^{i\omega h}\right].
+ \tag{SCI-ALIGN-EQ-012}\label{eq:fractional-response}
+\end{equation}
+\noindent This preserves A11.  \(H_\alpha(0)=1\); amplitude and phase are not
+unity in general.  Gap response is row-specific and nonstationary.
+
+For fixed affine mapping and supplied full joint native covariance,
+\begin{align}
+ \E[\boldsymbol y_q\mid A_q]&=A_q\E[\boldsymbol v\mid A_q],\notag\\
+ C_{y_q\mid A_q}&=A_qC_{v\mid A_q}A_q^{\mathsf T}.
+ \tag{SCI-ALIGN-EQ-013}\label{eq:covariance}
+\end{align}
+\noindent This preserves A12, including known cross-time, cross-detector, and
+cross-stream terms.
+
+For Equation~\ref{eq:linear}, one scalar variance is
+\begin{equation}
+ \Var(y_s)=(1-\lambda_s)^2\Var(v_a)+\lambda_s^2\Var(v_b)
+ +2\lambda_s(1-\lambda_s)\Cov(v_a,v_b).
+ \tag{SCI-ALIGN-EQ-014}\label{eq:linear-variance}
+\end{equation}
+\noindent This preserves A13.  Shared endpoints induce output covariance;
+smoother appearance or smaller diagonal variance is not new information.
+
+For differentiable signals and timing parameter vector
+\(\boldsymbol\eta\), the first-order timing term is
+\begin{equation}
+ C_{\rm timing}=J_\eta C_\eta J_\eta^{\mathsf T},
+ \qquad (J_\eta)_{ab}=\frac{\partial y_a}{\partial\eta_b}.
+ \tag{SCI-ALIGN-EQ-015}\label{eq:timing-covariance}
+\end{equation}
+\noindent This preserves A14.  It is systematic/response uncertainty, not
+detector noise.
+
+The full reporting target is
+\begin{equation}
+ C_y=C_{y\mid A}+C_{\rm timing}+C_{\rm interp.model}
+ +C_{\rm policy/selection}.
+ \tag{SCI-ALIGN-EQ-016}\label{eq:full-uncertainty}
+\end{equation}
+\noindent This preserves A15.  Missing terms are unavailable, not zero;
+conditional claims name what was conditioned upon.
+
+For twice differentiable scalar truth on a bracket of width
+\(\Delta=t_b-t_a\),
+\begin{equation}
+ |f(t)-If(t)|\leq\frac{\Delta^2}{8}
+ \sup_{s\in[t_a,t_b]}|f''(s)|.
+ \tag{SCI-ALIGN-EQ-017}\label{eq:interp-bound}
+\end{equation}
+\noindent This preserves A16 and is available only with a scientifically
+justified curvature bound.
+
+\subsection{Exposure and local state}
+
+For nominal cell \(I_s\) and detector occurrence or stable detector identity
+\(d\), physical acquired exposure and its valid-original subset are
+\begin{equation}
+ \begin{aligned}
+ e^{\rm acq}_{sd}&=\begin{cases}
+ |I_s\cap I^{\rm native}_{kd}|,
+   &\text{one original physical detector occurrence }k,\\
+ 0,&\text{synthesized, missing, or unoccupied support,}
+ \end{cases}\\[2pt]
+ e^{\rm vo}_{sd}&=e^{\rm acq}_{sd}
+ \mathbf 1\{\text{original payload and required ALIGN-local mapping facts valid}\}.
+ \end{aligned}
+ \tag{SCI-ALIGN-EQ-018}\label{eq:exposure}
+\end{equation}
+\noindent This preserves A17 while separating physical acquisition from
+scientific usability.  An original-invalid payload may have
+\(e^{\rm acq}_{sd}>0\) and \(e^{\rm vo}_{sd}=0\).  Synthesized/surrogate and
+missing/unoccupied support add no acquired exposure.  Nominal duration,
+elapsed span, guarded/retained/use-qualified exposure, and downstream weight
+remain separate later facts and never rewrite physical acquisition.
+
+Each output cell has the product state
+\begin{equation}
+ \mathcal S_{\rm ALIGN}=(\text{origin},\text{local validity},\text{method},\text{reason},
+ \text{source IDs},\text{weights}).
+ \tag{SCI-ALIGN-EQ-019}\label{eq:quality}
+\end{equation}
+\noindent This preserves A18, specialized so that local validity is not AST
+validity or downstream eligibility.
+
+For a factual ALIGN-local relation requiring an original valid detector value
+and aligned field set \(\mathcal V\),
+\begin{equation}
+ m_{sd}^{\rm local}=
+ \mathbf 1\{D_{sd}\text{ is original and locally valid}\}
+ \prod_{v\in\mathcal V}
+ \mathbf 1\{T_{vs}\text{ is available and locally valid}\}.
+ \tag{SCI-ALIGN-EQ-020}\label{eq:local-support}
+\end{equation}
+\noindent This preserves recovered-core A19 only as an ALIGN-local
+mapping/support fact.  It is not a universal eligibility bit, AST validity,
+or authorization for an estimator.  A named-use owner supplies any additional
+predicate, and its designated evaluator applies every applicable restriction.

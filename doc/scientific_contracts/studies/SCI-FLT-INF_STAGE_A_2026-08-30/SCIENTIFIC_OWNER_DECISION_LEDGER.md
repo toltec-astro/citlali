@@ -1,0 +1,381 @@
+# SCI-FLT-INF scientific-owner decision ledger
+
+Ledger identity: `SCI-FLT-INF-ODQ v0.1/r0.11`
+
+Status: proposed ordered owner walkthrough; ODQ-001 through ODQ-003 approved
+and closed; ODQ-004 author-delegated; ODQ-005 approved and closed; ODQ-006
+approved and closed with quantitative conformance-envelope alternatives
+author-delegated; ODQ-007 through ODQ-009 approved and closed, with ODQ-009
+covariance-representation alternatives author-delegated; ODQ-010 through
+ODQ-013 approved and closed; package identity `SCI-FLT-MATCHED` approved
+
+## Decision discipline
+
+Questions are ordered by scientific consequence. Later questions must not be
+answered in a way that presumes an earlier answer. Each approved answer should
+be recorded in a separate exact owner artifact before a package-local Stage A
+packet is built. This holding study records the exact approved ODQ-001 through
+ODQ-003 and ODQ-005 answers and the exact ODQ-004 author delegation but does
+not approve a noise/covariance option. It also records the exact ODQ-006
+reference-operator decision and quantitative author delegation but does not
+approve a conformance-envelope option. It records the exact ODQ-007 complete-
+support decision, the exact ODQ-008 response/unit/beam decision, and the exact
+ODQ-009 uncertainty policy and representation assignment, the exact ODQ-010
+through ODQ-013 decisions, and the exact package identity. All holding-study
+owner questions are closed.
+
+## `SCI-FLT-INF-ODQ-001` — estimand of the existing full path
+
+Status: **approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md`](SCIENTIFIC_OWNER_ODQ_001_APPROVAL_2026-08-30.md).
+
+The historical Citlali full path is scientifically an **optimal matched-
+template amplitude estimator**. It estimates the supplied template's amplitude
+as a function of map position using the declared noise model. With a
+point-source-response kernel it yields a matched point-source amplitude field;
+with another scientifically defined kernel it yields the amplitude field of
+that specified template/shape. Exact normalization must return an unbiased
+estimate of a matching signal's amplitude, subject to the stated noise,
+support, edge, missing/nonfinite, validity, response, and method assumptions.
+
+It is not a prior-bearing posterior/Wiener sky reconstruction. Historical
+`Wiener filter` terminology may remain only where compatibility requires it.
+Ordinary source-shaped convolution is a separate deterministic operation, not
+the noise-weighted normalized matched estimator. Any future genuine
+Wiener/posterior reconstruction requires its own scientific contract.
+
+This decision selects the estimand, not a package name, numerical operator,
+noise/covariance model, template instance, optimality proof, support rule,
+response, uncertainty, product bundle, or Stage B launch.
+
+## `SCI-FLT-INF-ODQ-002` — package ownership and split
+
+Status: **approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_002_APPROVAL_2026-08-30.md`](SCIENTIFIC_OWNER_ODQ_002_APPROVAL_2026-08-30.md).
+
+The selected method belongs to a narrow map-domain filtering package. It owns
+the matched-filter operation and publishes a matched-filtered version of the
+exact admitted input map product or products, preserving their applicable
+map-domain structure and semantics. The local mathematical identity remains
+the ODQ-001 optimal matched-template amplitude estimator, including exact
+noise weighting and amplitude-unbiased normalization under the declared
+assumptions; the published product role is nevertheless a filtered map.
+
+This package does not own or require source detection, candidate selection,
+catalog construction, peak interpretation, deblending, source fitting, or
+other source-analysis behavior. No source-estimation package or SRC ownership
+boundary is introduced. A later independent source-analysis contract may
+consume matched-filtered maps if separately authorized.
+
+A genuine prior-bearing Wiener/posterior reconstruction remains a distinct
+deferred method and must not enter this package. ODQ-002 selects ownership and
+the top-level product role, not the final package name, parent, operator,
+template, noise model, support, response, uncertainty, lifecycle, or Stage B
+launch.
+
+## `SCI-FLT-INF-ODQ-003` — admitted parent and grouping
+
+Status: **approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_003_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_003_APPROVAL_2026-08-31.md).
+
+V0.1 admits both one exact immutable normalized ordinary-MAP observation
+bundle and one exact immutable normalized ordinary-MAP coadd bundle. They are
+distinct parent/grouping and realized product identities. Observation-map
+filtering is observation-local; coadd-map filtering is coadd-local and binds
+the exact contributing-observation set and coadd generation.
+
+No equivalence, commutation, or cross-observation combination is approved.
+Filtering a coadd is not presumed equivalent to filtering its contributing
+observations and combining the results. The package performs no independent
+coaddition. JINC observation bundles, SCI-FLT-FIXED derivatives, and other
+derived parents are deferred and unavailable. Frozen PTC coefficient and
+numerical `coverage_cut` gates remain absolute.
+
+This decision selects parent roles and grouping, not the noise/covariance
+authority, operator, normalization, state, support, response, uncertainty,
+product details, or Stage B launch.
+
+## `SCI-FLT-INF-ODQ-004` — covariance/noise and parent-coefficient authority
+
+Status: **author-delegated; no option selected** by
+[`SCIENTIFIC_OWNER_ODQ_004_AUTHOR_DELEGATION_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_004_AUTHOR_DELEGATION_2026-08-31.md).
+
+A future implementation-blind author must develop a bounded option set in both
+the Scientific Rationale and Contract and the Engineering Conformance
+Specification. Both views must share exact option identities and consequences.
+The owner must select or dispose of an authored option before freeze or any
+numerical route is authorized.
+
+The owner supplies one historical candidate for scientific examination:
+Citlali has used a **radially symmetrized average map noise PSD**. This is not a
+selected default, covariance authority, proof of stationarity/isotropy or
+optimality, or permission to inherit historical mechanics. The author must
+define the population/domain, averaging and radialization ordering, Fourier/
+WCS and unit conventions, normalization, support/edge/window behavior,
+missingness, rank/null space, approximation, and state dependence for any
+option using those ideas.
+
+Options must separately account for observation-map and coadd-map parents,
+classify whether they supply covariance or only a weaker spectral weighting,
+and state whether/how a parent coefficient participates. No coefficient may
+be called precision or covariance from naming, unit, positivity, or historical
+use. Typed unavailability is required when an option's object or assumptions
+are absent.
+
+## `SCI-FLT-INF-ODQ-005` — template and kernel identity
+
+Status: **approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_005_APPROVAL_2026-08-31.md).
+
+Each base-v0.1 application uses one exact immutable, scientifically declared
+template-response product representing expected parent-map response per unit
+of the declared amplitude `A`. Its scaling defines the amplitude convention:
+`unit(t) = unit(m) / unit(A)`. Its identity binds source authority, compatible
+parent, amplitude/signal/template units, grid/WCS/frame, centering/subpixel
+phase, support/truncation/tails, array dependence, parent-beam relationship,
+calibration, validity, and provenance. No peak, integral, flux-density, beam,
+or other amplitude convention is inferred from a generic kernel label.
+
+Admitted sources are the exact point-source-response product bound to the
+immutable parent bundle or another explicitly supplied scientific template-
+response product. Gaussian/Airy construction is admissible only as a producer
+of that same fully specified materialized product before application. Base
+v0.1 excludes template learning/selection from the target parent, sources,
+candidates, populations, or NOI members. The historical high-pass/delta case
+requires a separate future scientific method.
+
+Observation-parent and coadd-parent compatibility remain separately declared;
+no equality or reuse is presumed. Template discretization and approximation
+consequences pass to ODQ-006, while response, beam, calibration covariance,
+uncertainty, edge, and NOI details remain with their later ordered decisions.
+
+## `SCI-FLT-INF-ODQ-006` — exact operator, approximation, and regularization
+
+Status: **approved and closed at the reference-operator and realization-policy
+level; quantitative conformance-envelope alternatives author-delegated** by
+[`SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_006_APPROVAL_2026-08-31.md).
+
+Conditional on the exact realized ODQ-004 weighting object `Q_x`, ODQ-005
+template `t_x`, ODQ-007 support, and declared discrete conventions, the
+authoritative reference estimator is
+
+```text
+N(x) = <t_x, Q_x m_x>
+D(x) = <t_x, Q_x t_x>
+A_hat(x) = N(x) / D(x).
+```
+
+When `Q_x` is admitted inverse covariance, the complete assumptions support
+the optimal GLS matched-estimator claim. A weaker ODQ-004 weighting object
+requires correspondingly weaker optimality and uncertainty claims; ODQ-006
+selects no noise model.
+
+Exact evaluation is conformant. Approximate evaluation is permitted only
+inside a scientifically selected envelope bounding effects on normalization,
+matching-template amplitude response, support/null behavior, and uncertainty.
+The future implementation-blind author must develop bounded quantitative
+envelope alternatives with shared identities in both contract views. Owner
+disposition is required before freeze or approximate execution.
+
+Regularization defining `Q_x`, its modes, or null space is ODQ-004 scientific
+state. Any approximation or other regularization changing the operator beyond
+the selected envelope is a separate versioned method or unavailable. `N` and
+`D` must be finite and `D` strictly positive on admitted support. Empty/invalid
+support, weighting-null templates, singular/unresolved normalization,
+nonfinite/nonpositive `D`, or an unmet convergence/error bound is typed null,
+unavailable, or failed—never scientific amplitude zero. Iteration and tail
+caps are not success without the selected bound.
+
+## `SCI-FLT-INF-ODQ-007` — edge, missing, nonfinite, and learned support
+
+Status: **approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_007_APPROVAL_2026-08-31.md).
+
+Base v0.1 admits only complete-support output locations. The complete declared
+local or nonlocal influence support of the template, weighting operator,
+ODQ-006 realization, and boundary convention must be in the exact parent
+domain, admitted for this use, finite and available where required, and valid
+under every required predicate. The entire stored map need not be globally
+valid for a bounded local operator; support is decided per output location.
+
+Base v0.1 performs no partial-support or truncated estimation, support
+renormalization, boundary extension, interpolation/imputation/replacement,
+background estimation/subtraction, learned taper, or signal-derived support
+selection. Parent-authoritative support/validity facts may be consumed as
+inputs. An affected output is unavailable, never zero or a successful partial
+estimate.
+
+Padding or fill is a numerical device only when conservative erosion over the
+complete influence support establishes that no admitted output depends on an
+invented value. A nonlocal operator cannot claim an unaffected interior from a
+finite guard band without that proof. Adaptive edge/background conditioning is
+deferred to a separately identified future method with complete learning,
+response, covariance, NOI, validity, lifecycle, and failure authority.
+
+## `SCI-FLT-INF-ODQ-008` — response, units, beam, and output interpretation
+
+Status: **approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_008_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_008_APPROVAL_2026-08-31.md).
+
+The filtered signal is the exact template amplitude, with
+`unit(A_hat)=unit(A)=unit(m)/unit(t)`, not automatic inheritance of the parent
+signal unit. Applicable parent map-domain spatial identity and provenance are
+retained, but parent signal meaning, nominal beam, DC/integral/surface-
+brightness response, extended-source fidelity, and calibration covariance
+are not inherited without exact authority.
+
+For fixed realized state, `L_x u=<t_x,Q_x u_x>/<t_x,Q_x t_x>` is the exact
+response row and `R_t(x,y)=L_x t_y` is the exact location-indexed response to
+the declared unit-amplitude template. At admitted matching locations
+`R_t(y,y)=1`. Off-diagonal response need not be stationary, symmetric,
+isotropic, translation invariant, or reducible to one kernel. A uniformly
+processed kernel is not a universal response without proof of identical
+weighting, complete support/validity, phase, boundary, normalization, and
+translation invariance on the declared domain.
+
+The parent nominal beam remains provenance. A matched-filter beam or solid
+angle must be derived from the exact response. Literal point-source flux
+meaning requires the exact point-source template amplitude convention and
+CAL/BEAM lineage; other templates remain shape amplitudes. Parent/template
+calibration dependence is joint, with no presumed independence or
+cancellation; missing calibration covariance is unavailable and is not `D`.
+Fixed-state response is distinct from ODQ-010 full-procedure response, while
+the exact persisted response representation remains for ODQ-013.
+
+## `SCI-FLT-INF-ODQ-009` — uncertainty and covariance products
+
+Status: **approved and closed at the conditional-uncertainty-policy level;
+covariance-representation alternatives author-delegated** by
+[`SCIENTIFIC_OWNER_ODQ_009_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_009_APPROVAL_2026-08-31.md).
+
+Every matched-filtered map must disclose its uncertainty state truthfully, but
+the signal may remain valid when numerical covariance is explicitly
+unavailable. For exact fixed state and an authoritative matching parent
+covariance, `C_cond = L C_parent L^T`, with exact parent/grouping, domain,
+support, population, rank/null, regularization, approximation, omitted-
+correlation, calibration, and lifecycle bindings. Missing entries or blocks
+are unavailable, never zero or independent.
+
+Only when ODQ-004 selects exact `Q=C_parent^-1` and all GLS premises hold does
+`D(x)^-1` equal the marginal conditional variance. It is not full precision
+and does not establish independent locations. Under weaker premises `D` is
+normalization only. Authorized linear-consumer uncertainty requires the full
+needed operation `g^T C_cond g`; marginal variances alone cannot support
+independent-pixel aperture or integrated uncertainties.
+
+An optional exact frozen-SCI-NOI companion retains its identity as a
+conditional randomization second moment, not physical-noise covariance,
+precision, calibrated significance, or a substitute for `C_cond`. Fixed-state
+and relearned populations cannot be mixed; full-procedure uncertainty belongs
+to ODQ-010. Calibration/nuisance terms remain separate, and total calibrated
+uncertainty is unavailable unless all material terms and cross-covariances are
+quantified or inapplicable.
+
+The future implementation-blind author must develop bounded covariance-
+representation options with the same identities in both contract views,
+including exact/structured/projected/lineage-resolvable or unavailable forms
+as warranted. Owner disposition is required before freeze or publication of a
+numerical covariance route. No posterior-sky covariance or source-analysis
+significance is selected.
+
+## `SCI-FLT-INF-ODQ-010` — learned-state and NOI generation graph
+
+Status: **Option 1 approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_010_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_010_APPROVAL_2026-08-31.md).
+
+Base v0.1 uses one immutable realized application state. Template, externally
+supplied state, method choice, approximation envelope, and tolerances are
+declared fixed. A PSD/`Q` estimated from the exact observation or coadd is
+learned once from that parent and frozen. Support/validity are parent facts
+plus deterministic complete-support admission; `D` is derived fixed-state
+normalization. Observation/coadd state remains separate.
+
+The identical state is applied to all admitted NOI members. Response and
+uncertainty are conditional on it. NOI-informed updates and per-member
+relearning are separate future methods; fixed and relearned populations cannot
+mix. Both contract views must develop matching immutable-state representation
+options where required.
+
+## `SCI-FLT-INF-ODQ-011` — method selection, fallback, and data-thresholded modes
+
+Status: **Option 1 approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_011_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_011_APPROVAL_2026-08-31.md).
+
+Base v0.1 has no automatic selector or fallback. It realizes the exact
+requested method or records unavailable/failed. Missing or failed parent,
+template, PSD/`Q`, learning, support, normalization, response requirement, or
+approximation qualification cannot select a substitute or retain the primary
+label. Explicitly requesting another authorized method is not fallback.
+Data-thresholded spectral selection and destriping are deferred to separate
+Stage A recovery.
+
+## `SCI-FLT-INF-ODQ-012` — NOI coefficient calibration and standardized products
+
+Status: **amended Option 1 approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_012_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_012_APPROVAL_2026-08-31.md).
+
+Base v0.1 permits only minimal immutable non-mutating FLT/NOI companions. No
+NOI scalar changes `A_hat`, `D`, `Q`, template scaling, a parent coefficient,
+or an existing product. Detailed empirical coefficient and standardized-map
+methods remain for a separate FLT/NOI derived-product contract and carry no
+precision, calibration, significance, detection, or catalog meaning by form.
+
+The FLT contract must preserve a first-class FLT→FRUIT scientific interface
+sufficient for future FRUIT consumption without reconstructing undocumented
+FLT implementation state. It identifies at least quantity, template, response,
+valid support, units/calibration, method/state, uncertainty availability, and
+provenance; additional authorized FRUIT-required FLT state remains exactly
+available or lineage-reconstructable. FRUIT retains its own future tranche and
+all FRUIT science.
+
+## `SCI-FLT-INF-ODQ-013` — product bundle, lifecycle, VAL, and failure
+
+Status: **Option 1 approved and closed** by
+[`SCIENTIFIC_OWNER_ODQ_013_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_ODQ_013_APPROVAL_2026-08-31.md).
+
+Base v0.1 uses one role-complete atomic signal bundle and independently atomic
+conditional companions. Required records cover immutable parent, all method
+identity stages, state/lineage, matched-filtered amplitude, normalization,
+response, support/validity/null/cause, uncertainty availability,
+approximation/selection, FLT→FRUIT interface, completion, failure, and
+provenance. Numerical covariance, NOI, calibration, beam, and projection
+companions are required only for their named roles.
+
+Atomicity is role-scoped: covariance unavailability does not invalidate a
+signal-only product, while failure of a requested qualified companion fails
+that companion or composite request. Approved lifecycle states are
+`not_requested`, `requested`, `effective`, `disabled`, `unavailable`,
+`resolved`, `applied`, `failed`, `realized`, and `superseded`. FLT authors
+named-use policies; VAL registers/evaluates them. Both contract views must
+develop matching bounded persistence and VAL-profile-granularity options.
+
+## Decision dependency graph
+
+```text
+ODQ-001 estimand
+  -> ODQ-002 map-domain package and filtered-map role
+     -> ODQ-003 parent/grouping
+        -> ODQ-004 covariance/noise
+        -> ODQ-005 template/prior
+           -> ODQ-006 exact operator/approximation
+              -> ODQ-007 edge/support method
+              -> ODQ-008 response/units/beam
+              -> ODQ-009 uncertainty/covariance
+                 -> ODQ-010 NOI generation graph
+                    -> ODQ-011 selector/fallback/mode selection
+                    -> ODQ-012 coefficient/STD derivatives
+                       -> ODQ-013 product/VAL/lifecycle
+```
+
+ODQ-001 through ODQ-003 and ODQ-005 through ODQ-013 are closed, and ODQ-004 is
+author-delegated without an option selection. ODQ-006 also delegates
+quantitative conformance-envelope alternatives without selecting one. ODQ-009
+also delegates covariance-representation alternatives without selecting one.
+The package identity `SCI-FLT-MATCHED` is approved by
+[`SCIENTIFIC_OWNER_PACKAGE_IDENTITY_APPROVAL_2026-08-31.md`](SCIENTIFIC_OWNER_PACKAGE_IDENTITY_APPROVAL_2026-08-31.md).
+No holding-study owner question remains. The next gate is construction and
+exact-byte owner approval of a package-local Stage A packet and exclusive
+implementation-blind author manifest. Stage B dispatch remains unauthorized.
+Freeze and numerical authorization remain blocked until the owner disposes of
+the authored ODQ-004, ODQ-006, ODQ-009, and other explicitly delegated option
+sets.

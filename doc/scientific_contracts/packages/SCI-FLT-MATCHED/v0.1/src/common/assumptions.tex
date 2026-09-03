@@ -1,0 +1,193 @@
+% Shared normative core: assumptions and validity
+\section{Assumptions and validity domain}
+\label{sec:assumptions}
+
+The unbiasedness, response, optimality, and covariance statements are valid
+only on the intersection of the following declared predicates. Every product
+shall identify which predicates were evaluated, by whose authority, and with
+what immutable evidence.
+
+\begin{longtable}{p{0.16\linewidth}p{0.74\linewidth}}
+\toprule
+ID & Assumption or predicate \\
+\midrule
+\endhead
+\texttt{ASM-001} & The parent is exactly one immutable normalized ordinary-MAP
+observation or coadd bundle with authoritative identity, generation, grouping,
+WCS/frame, support, units, calibration provenance, and coadd membership when
+applicable. \\
+\texttt{ASM-002} & Parent, template, physical amplitude, filtered amplitude,
+the stochastic parent $M$, observed payload $m_{\rm obs}$, and coordinate-basis
+covariance have declared real codomains. The parent and
+output anchor lattices have the owner-disposed common WCS/frame/grid/indexing
+relation. Coordinate or quadrature changes transform $M,m_{\rm obs},t,C,W$ according to
+Section~\ref{sec:measure-convention}; a complex representation preserves
+conjugacy and uses the Hermitian adjoint. \\
+\texttt{ASM-003} & $t_p$ is the one immutable template-response scientific
+object for the application, supplied by exact owner-authorized source-class,
+morphology, beam, or physical-response authority. It expresses expected parent
+response per unit declared amplitude, with fixed scale, anchor, phase,
+validity, lineage, and query vocabulary in an exact representation. It is not
+learned, selected, centered, tuned, updated, or reparameterized from target
+MAP payload, target-derived peaks/candidates, the output field, target
+residuals, NOI members, or post-selection outcomes. \\
+\texttt{ASM-004} & $\Supp_{\rm parent\ fact}$, $\Dom_{\rm model}$, and
+$\Dom_m$ are distinct. $\Dom_{\rm loc}(p)$ and $E_p$ are declared before local
+inversion and operator construction; \AOpt{001}{A} requires
+$\Dom_{\rm loc}(p)\subseteq\Dom_{\rm model}$ and complete model/covariance
+authority there; complete final
+$\Supp_{\rm apply}(p)$ is present and valid, every active row lies in $\Dom_m$,
+and construction-only rows with exact-zero $c_{pq}$ need no payload. No
+admitted output depends on fill,
+extension, imputation, partial support, edge renormalization, adaptive
+background, learned taper, or signal-derived support. Template, state,
+response, and storage support remain distinct. \\
+\texttt{ASM-005} & $W_p$ is the exact frozen, self-adjoint,
+positive-semidefinite complete coordinate-basis bilinear weight named by the
+selected \AO{001} alternative, including population, units, rank, null,
+regularization, window, support, and edge rules. \\
+\texttt{ASM-006} & $d_p$ is finite, exactly real, and strictly positive. \\
+\texttt{ASM-007} & For amplitude unbiasedness, the random parent follows the
+declared model $M=A t_s^{\rm full}+N$, and $N$ has zero conditional mean on the
+complete stochastic support given
+$h_{\rm pre}=(g_{\rm resolved},\theta)$ and does not
+induce target-dependent changes in the template or operator. \\
+\texttt{ASM-008} & For GLS optimality,
+$C_{\rm parent\mid h_{\rm pre}}=\operatorname{Cov}[M\mid h_{\rm pre}]$ is the
+exact authorized covariance for the population on $\Dom_{\rm model}$;
+$M_p=E_pM$ and $C_p$ are restricted to the
+predeclared local domain before inversion; $C_{p,E}$ is positive definite on
+the exact authorized row/covector subspace; the projected template is
+identifiable; and competitors share that domain, subspace, fixed state, and
+unit-response constraint. \\
+\texttt{ASM-009} & For covariance, the parent law, actual fixed-state producing
+map $F_g$, operational response, support, units, and pre-draw frozen condition
+$h_{\rm pre}=(g_{\rm resolved},\theta)$ refer to the same realization and
+generation. $h_{\rm pre}$ may bind the parent product role/identity/class and
+stochastic-law/population identity, but never numerical $m_{\rm obs}$ values,
+a digest fixing the draw, success, a draw-dependent product identity,
+publication, censoring, pairwise deletion, or a draw-dependent domain. Those
+are provenance rather than conditioning variables. A fixed
+predeclared $P_C$ supplies one finite numerical covariance codomain, and
+$P_CF_g(M)$ is finite almost surely under the declared U1 law. Reference
+quantities and U1/U2 roles remain separate; variation over $\theta$ belongs to
+U2. \\
+\texttt{ASM-010} & State follows the declared Learn--Resolve--Apply graph and
+is frozen before Apply. It is neither target-updated nor NOI-member relearned. \\
+\texttt{ASM-011} & A candidate NOI member satisfies the frozen pre-Apply
+$K_{\rm NOI}$ predicate in Section~\ref{sec:noi-compatibility} and receives the
+identical state, operator, support, normalization, numerical profile, and
+failure policy as the signal parent. \\
+\texttt{ASM-012} & A realized numerical operator is assessed under one
+preregistered engineering numerical-conformance profile. An intentional
+scientific discrepancy has separate method/realization identity. \\
+\texttt{ASM-013} & Each named covariance role has a separate scope and
+representation; response and state query vocabularies and representations
+satisfy selected \AO{003}--\AO{005} lifecycle rules and the finite
+$\mathcal Q_{\rm FLT}^{0.1}$ handoff vocabulary. \\
+\texttt{ASM-014} & Template and parent calibration lineages are compatible;
+any claimed point-source flux meaning or calibration covariance has explicit
+CAL/BEAM authority. \\
+\texttt{ASM-015} & A method option, named-use policy, and lifecycle route are
+explicitly selected; there is no automatic selector, fallback, or silent
+substitution. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Validity table}
+\label{sec:validity-table}
+
+\begin{longtable}{p{0.16\linewidth}p{0.29\linewidth}p{0.25\linewidth}p{0.20\linewidth}}
+\toprule
+Dimension & Admission evidence & Invalid or missing case & Required outcome \\
+\midrule
+\endhead
+Parent identity & Exact bundle identity, class, generation, grouping, WCS/frame,
+support, unit, quantity, calibration lineage, and coadd membership & Missing,
+mutable, derived, or mixed parent & \Unavailable{} before application; no
+FLT repair or coaddition. \\
+Application class & Observation or coadd declared independently & Assumed
+commutation or borrowed state between classes & \Unavailable{}; require a
+distinct realization. \\
+Stochastic model & Exact $\Dom_{\rm model}$, random vector $M$, population,
+law, pre-draw conditioning, and covariance authority covering every required
+$\Dom_{\rm loc}(p)$ coordinate for \AOpt{001}{A} & Missing coordinate,
+population/law mismatch, or payload-conditioned law without a separately
+named role & \AOpt{001}{A}, optimality, and
+$v_{{\rm GLS,reference}}=d_p^{-1}$ \Unavailable{}; a separately authorized
+non-GLS sparse amplitude may be evaluated independently. \\
+Output anchors & One anchor at each exact parent pixel center with identical
+parent WCS, frame, grid, shape, index, order, and pixel-center convention & Interpolated,
+subpixel, oversampled, independently sampled, or ambiguous phase/tie rule &
+\Unavailable{} under v0.1; require a separately named successor. \\
+Template & Exact owner-authorized source-class/\allowbreak morphology/\allowbreak
+beam/\allowbreak physical-
+response object per unit amplitude with scale, phase, anchor, sampling,
+lineage, validity, and query vocabulary & Learned, selected, centered, tuned,
+updated, or reparameterized from target payload, target peak/\allowbreak
+candidate, output,
+residual, NOI member, or post-selection outcome; mismatched chart, ambiguous
+scale, lossy representation, or missing lineage &
+\Unavailable{}; no inferred template. \\
+Local domain and application support & Predeclared $\Dom_{\rm loc}(p)$ and
+$E_p$, exact $c_p$, complete nonzero-coefficient payload closure in $\Dom_m$,
+and exact-zero erosion proof without a threshold,
+separately typed from state, template, response, and storage support & Domain
+inferred from final zeros, or missing, invalid, filled, extended, imputed, or
+partially supported dependency & Fail Resolve for an invalid construction;
+mark affected Apply anchors \Unavailable{}; no partial estimate. \\
+Weighting state & Selected \AO{001}, population, self-adjoint PSD operator,
+rank/null, regularization, coefficients, window and edge rules bound at Resolve
+& Unknown, unauthorized, unrequested, incompatible, or changing $W_p$ & Fail closed; no
+fallback. \\
+Normalization & Finite, exactly real, strictly positive $d_p$ & NaN,
+infinite, complex, zero, negative, or null-confounded &
+Location \Unavailable{} or attempted bundle \Failed{}; never write zero. \\
+Numerical realization & One preregistered engineering conformance profile with
+the exact comparator, projectors, norms, scales, domain, and acceptance rules &
+Post-hoc profile, uncovered modes, support/subspace mismatch, or failed rule &
+\Failed{} for that profile; a scientific operator change requires distinct
+identity. \\
+Response & Fixed, full-procedure, realized, and reference types kept distinct,
+with selected exact domain/query/representation contract & Undocumented kernel,
+assumed invariance, strengthened fixed-state meaning, or unreconstructable
+response &
+Response-dependent product or handoff \Unavailable{}. \\
+Units and calibration & $[\widehat a]=[m_{\rm obs}]/[t]$ and compatible joint lineage &
+Unjustified flux, beam, solid angle, DC, extended-source, or covariance meaning
+& Forbid the claim; required named use is \Unavailable{}. \\
+Covariance & Matching authorized parent law, actual $F_g$, pre-draw frozen
+condition $h_{\rm pre}$, fixed predeclared $P_C$, finite numerical random-vector codomain,
+named U1/U2 role, scientific scope, and exact selected representation & Missing
+population or conditioning, failed or nonfinite draws on the fixed domain,
+selection on successful draws, censoring, pairwise deletion, draw-dependent domains,
+unproved linear propagation, unnamed calibration terms, omitted correlations
+treated as zero, or $d_p^{-1}$ used without constrained local GLS & Covariance
+role \Unavailable{} or companion \Failed{}; signal may remain \Complete{}. \\
+NOI parity & Pre-Apply $K_{\rm NOI}$ compatibility and identical frozen
+transformation & Per-member relearning, post-result admission, adapted support,
+or mixed generation & Member/anchor or NOI companion \Unavailable{} or
+\Failed{}; separate method required. \\
+Lifecycle & Atomic membership, named-use policy, immutable state, and the
+ordered Applied--Realized--Complete--PublicationDecided--Published/NotProduced
+closure & Mixed status, publication candidate before realization, partial
+signal bundle, silent mutation, or overwritten predecessor &
+Bundle \Failed{}; retain predecessor and successor identities. \\
+FLT to FRUIT & Finite $\mathcal Q_{\rm FLT}^{0.1}$, selected \AO{004} for state
+reconstruction where required, selected \AO{005} for response reconstruction,
+and documented lineage & Requires an unsupported future query, undocumented
+implementation state, or supplies FRUIT science & Handoff/query \Unavailable{};
+require a successor envelope for new queries; signal status is unchanged. \\
+\bottomrule
+\end{longtable}
+
+The signal domain $\Valid_{\rm signal}$ is the intersection of the predicates
+required for the amplitude role. For each response or covariance role $r$,
+$\Valid_{\rm response}(r)\subseteq\Valid_{\rm signal}$ and
+$\Valid_{\rm covariance}(r)\subseteq\Valid_{\rm signal}$ contain only anchors
+where that companion's additional predicates hold. Likewise
+$\Valid_{\rm NOI}\subseteq\Valid_{\rm signal}$ and the subdomain or bundle-level
+$\Valid_{\rm FRUIT\ handoff}$ is no broader than signal validity. Bundle-level
+validity additionally requires the role's own atomic identity and lifecycle
+members. An optional companion that is not requested or is unavailable never
+narrows $\Valid_{\rm signal}$; consumer-specific validity may be narrower.

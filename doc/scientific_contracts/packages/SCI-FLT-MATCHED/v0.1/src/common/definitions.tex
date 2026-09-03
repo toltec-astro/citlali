@@ -1,0 +1,383 @@
+% Shared normative core: definitions
+\section{Normative scientific definitions}
+\label{sec:definitions}
+
+\subsection{Method, estimand, and fit boundary}
+
+\ContractID{} is a normalized matched-template map amplitude estimator. The
+word ``optimal'' applies only when the exact criterion and premises in
+Section~\ref{sec:optimality} are established. It publishes
+a filtered amplitude map. At each fixed parent-pixel anchor it performs a
+fixed-template, fixed-anchor, one-parameter linear amplitude estimate. It does
+not select candidates, optimize position, fit morphology or background,
+deblend, infer source existence, or produce a catalog. It is not a
+posterior/Wiener sky reconstruction. Ordinary convolution does not acquire
+\ContractID{} identity or amplitude-estimator semantics merely through
+numerical resemblance. A selected realization may coincide numerically with a
+normalized correlation or convolution under proved special conditions; such
+coincidence does not weaken the fixed-template estimand or authorize generic
+convolution semantics.
+
+Each realization has the immutable scientific identity
+\begin{quote}\small\ttfamily\raggedright
+(method\_id, estimand, parent\_id, parent\_class, stochastic\_model\_id,
+model\_domain, observed\_payload\_domain, anchor\_lattice,
+WCS/frame, template\_id, requested/effective/resolved/applied/realized
+generation, weighting\_object, exact\_operator, producing\_map,
+established\_linear\_operator,
+numerical\_profile, response\_family, support\_family, units/calibration,
+covariance\_scope, NOI\_lifecycle, product\_bundle, validity,
+failure\_policy, optimality\_status, provenance).
+\end{quote}
+A scientifically consequential change creates a new realization, generation,
+or separately named method. A representation-only change that exactly
+preserves the scientific object and supported query vocabulary does not change
+the estimand or scientific generation.
+
+\subsection{Parent classes and anchor lattice}
+
+Exactly one parent class is admitted per application: one immutable normalized
+ordinary-MAP observation bundle, or one immutable normalized ordinary-MAP
+coadd bundle with its exact contributing-observation membership. They are
+distinct applications. This contract asserts no filter/coadd commutation and
+owns no coaddition. JINC and other derived parents are not admitted. Numerical
+computability cannot repair missing MAP authority.
+
+The base-v0.1 owner disposition places one output anchor at every exact parent
+ordinary-MAP pixel center. The output amplitude field preserves the parent's
+WCS, frame, grid, shape, indexing, order, phase origin, and pixel-center
+convention, except that exact support rules may make anchors unavailable. No
+interpolation is part of anchor creation. Template translation at an anchor,
+including even/odd sampling and ties, follows the exact deterministic template
+object. Subpixel, oversampled, and independent output lattices are successors.
+
+\subsection{Template-response scientific object}
+
+Each application binds one immutable template-response scientific object from
+exact owner-authorized source-class, morphology, beam, or physical-response
+authority. It binds the unit-amplitude convention, source-domain reference,
+parent response, anchor/WCS relation, sampling, phase, support, CAL/BEAM
+lineage, validity, generation, and supported query vocabulary.
+
+The template shall not be learned, selected, centered, tuned, updated, or
+reparameterized from target MAP payload, a target-derived candidate or peak,
+the resulting amplitude field, target residuals, any NOI member, or a
+post-selection outcome. A predeclared template bank is admissible only when
+its member-selection rule is fixed independently of target outcomes. Selecting
+after inspecting target data defines a different inference method.
+
+The same scientific object may be represented by exact materialization, an
+exact structured form, or exact lineage/query reconstruction. A
+representation-only change shall preserve every supported query and shall not
+alter the amplitude estimand. Template mismatch is not silently absorbed into
+normalization or parent covariance.
+
+\subsection{Five support roles}
+\label{sec:support-roles}
+
+The following supports are distinct:
+\begin{description}
+\item[$\Supp_{\rm apply}(p)$.] Exact parent payload rows with nonzero
+coefficients in $L_{p,g}$. Exact-zero coefficients neither require nor
+dereference their payloads.
+\item[$\Supp_{\rm template}(p)$.] Exact rows and metadata required to define or
+query $t_p$.
+\item[$\Supp_{\rm state}(g)$.] Complete population influencing learned
+covariance, spectra, reliability, window, rank, null, regularization, or other
+resolved state.
+\item[$\Supp_{\rm response}(p,s)$.] Exact state, template, and operator support
+required by the declared response query.
+\item[$\Supp_{\rm store}$.] Representation footprint. It has no scientific
+authority and may change losslessly.
+\end{description}
+The pre-inversion local operator domain $\Dom_{\rm loc}(p)$ is declared before
+$E_p$, $W_p$, $d_p$, or $L_{p,g}$ is constructed. It is not inferred from the
+final exact-zero pattern. Coordinates in
+$\Dom_{\rm loc}(p)\setminus\Supp_{\rm apply}(p)$ may influence local covariance,
+weight, rank, normalization, or state and therefore remain in operator/state
+lineage even though Apply does not dereference their parent payload values.
+For an \AOpt{001}{A} route, every $q\in\Dom_{\rm loc}(p)$ shall lie in the
+authorized stochastic-model domain $\Dom_{\rm model}$. Every
+$q\in\Supp_{\rm apply}(p)$ shall lie in $\Dom_m$ and be admitted. A
+coordinate in $\Dom_{\rm loc}(p)\setminus\Supp_{\rm apply}(p)$ may participate
+in construction without any observed-payload dereference only when the exact
+template/model/covariance authority exists there. The shorthand
+$m_p=E_pm_{\rm obs}$ is permitted only when a complete numerical local vector exists or
+when an explicit algebraic completion is proved irrelevant outside
+$\Supp_{\rm apply}(p)$. An output anchor is admitted only when complete
+application support is present and valid. No partial-support estimator, edge
+renormalization, extension,
+imputation, background subtraction, learned taper, or signal-derived support
+belongs to this method. Numerical fill is allowed only after exact erosion
+proves zero application coefficient. Causal provenance retains
+$\Supp_{\rm state}$ even when a fixed-state derivative touches only
+$\Supp_{\rm apply}$.
+
+\subsection{Weighting and local covariance order}
+
+$W_p$ is the selected frozen complete bilinear weight, exactly self-adjoint and
+positive semidefinite. A parent coefficient has only its selected-route role;
+its name, positivity, units, reciprocal, or diagonal placement does not make
+it covariance, precision, or inverse variance.
+
+Local GLS first restricts the authorized parent covariance, conditional on
+$h_{\rm pre}$, to the predeclared local domain:
+$C_p=E_pC_{\rm parent\mid h_{\rm pre}}E_p^{\mathsf T}$, then inverts it only on the exact
+declared local estimable subspace. This requires
+$\Dom_{\rm loc}(p)\subseteq\Dom_{\rm model}$,
+$M_p=E_pM$, and
+$C_p=\operatorname{Cov}[M_p\mid h_{\rm pre}]$. Missing model or covariance
+authority anywhere on $\Dom_{\rm loc}(p)$ makes \AOpt{001}{A}, its optimality
+status, and $v_{{\rm GLS,reference}}=d_p^{-1}$ unavailable, even if a
+separately authorized sparse non-GLS amplitude remains computable. In general
+\[
+ (E_pC_{\rm parent\mid h_{\rm pre}}E_p^{\mathsf T})^{-1}
+ \ne E_pC_{\rm parent\mid h_{\rm pre}}^{-1}E_p^{\mathsf T}.
+\]
+A global-precision subblock is generally not the inverse of the locally
+marginal covariance. Under additional distributional assumptions it may equal
+a conditional precision, but using that block without the corresponding
+conditional mean and outside-data terms is not a complete conditional
+estimator. It is therefore a separately authored weight and method with a
+different influence domain, response, covariance, and edge rule.
+
+\subsection{Learn--Resolve--Apply state graph}
+\label{sec:state-graph}
+
+State advances through three explicit operations:
+\begin{description}
+\item[Learn.] Derive candidate covariance, spectral/reliability information,
+window, rank, null, regularization, and diagnostics from one declared
+population, with source/target protection and state uncertainty recorded.
+\item[Resolve.] Select exactly one requested, owner-authorized \AO{001} method
+for this realization and bind its
+parameters, support, scientific identity, numerical-conformance policy,
+failure disposition, and immutable generation. Externally declared state
+enters here without observational learning.
+\item[Apply.] Use the resolved state unchanged. No target, candidate, source,
+or NOI-member update occurs during Apply.
+\end{description}
+The package may authorize multiple separately named \AO{001} methods, including
+both \AOpt{001}{A} and \AOpt{001}{C}, but one request and realization binds
+exactly one. There is no automatic selector, target-data-driven choice, route
+mixing, or fallback between them. Requested, effective, learned-candidate,
+resolved, applied, realized, complete-publication-candidate,
+publication-decided, and published identities
+are distinct even when their values happen to agree.
+Observation and coadd states are separate. A compatible NOI member receives
+the identical resolved transformation, support, normalization, and failure
+rules. Any update creates a successor; per-member relearning is a different
+future method.
+
+For a successful requested product route, the exact order is
+\[
+\begin{aligned}
+\Requested&\to\Effective\to\LearnedCandidate\\
+&\to\Resolved\to\Applied\\
+&\to\Realized\to\Complete\to\PublicationDecided\\
+&\to(\Published\ \hbox{or}\ \NotProduced),
+\end{aligned}
+\]
+with \LearnedCandidate{} omitted when Learn does not apply.
+\NotRequested{} is an alternative initial disposition. \Disabled{} and
+\Unavailable{} are pre-application dispositions where applicable. \Failed{}
+may branch from Learn, Resolve, Apply, numerical realization, product closure,
+publication evaluation, or publication action.
+
+\subsection{NOI compatibility predicate}
+\label{sec:noi-compatibility}
+
+For a signal realization $y$ and a candidate NOI member $z$, FLT evaluates a
+frozen admission predicate $K_{\rm NOI}(z,y)$ before Apply. The predicate uses
+only declared input facts: parent class and quantity; WCS, grid, shape,
+indexing, ordering, and pixel-center convention; units and calibration
+convention; template identity; resolved state generation; local-domain and
+missingness semantics; NOI population and membership authority; numerical
+profile; and failure policy. NOI owns population and membership meaning; FLT
+owns this transformation-compatibility decision. Compatibility never depends
+on whether a transformed value later succeeds. Missing required payload makes
+the affected member or anchor incompatible or unavailable; it never adapts
+support, changes normalization, or triggers member-specific Learn or Resolve.
+
+\subsection{Fixed-state, full-procedure, realized, and reference response}
+\label{sec:response-families}
+
+The fixed-state response is
+$R_{\rm fixed}(p,s)=L_{p,g_0}t_s^{\rm full}$. It may be asymmetric,
+anisotropic, nonstationary, position-dependent, or nonlocal. A learned
+procedure has a separately typed full-procedure response obtained only by an
+authorized exact rerun or finite-difference definition that reruns Learn and
+Resolve after perturbation. The state-change record is retained separately.
+Until such authority exists, $R_{\rm FP}$ is \Unavailable{}; no FLT, FRUIT,
+SRC, or other consumer may call $R_{\rm fixed}$ the full-procedure response.
+
+The actual fixed-state numerical producing map is $F_g$. It acts on the
+observed payload $m_{\rm obs}$ for one numerical realization and on $M$ when
+defining its stochastic law. It may include
+rounding, branches, exceptional-value handling, or typed attempt failure and is
+not presumed exactly linear. Its realized response is therefore the declared
+fixed-state directional derivative or predeclared finite difference of $F_g$
+without rerunning Learn or Resolve. The general response is
+$R_{\rm realized}^{[\delta,\sigma]}(m_{\rm obs};p,s)$, where the response-query domain,
+reference parent, step $\delta$, and derivative or sidedness scheme $\sigma$
+are fixed before evaluation. Every evaluation entering one derivative or
+finite difference shall return finite numerical values on the same
+predeclared output-query domain; otherwise that response query is
+\Unavailable{}. Conditioning on successful evaluations, censoring failed
+evaluations, or changing the domain defines a separately named response
+experiment. Only after evidence establishes
+$F_g(m_{\rm obs})=\widetilde L_gm_{\rm obs}$ on the
+declared domain may the parent-independent matrix identity
+$R_{\rm realized}=\widetilde L_gT$ be used. The exact scientific comparator is
+$R_{\rm reference}=LT$. These are not interchangeable.
+
+Every fixed-state expectation, reference variance, reference covariance, and
+realized covariance statement conditions only on the pre-draw frozen condition
+$h_{\rm pre}=(g_{\rm resolved},\theta)$. It may contain the immutable parent
+product role, identity, and class; exact stochastic-law/population identity;
+template; $\Dom_{\rm loc}/E_p$; weight; support/missingness rules;
+subspace/rank/null; regularization; numerical profile; $P_C$; response-query
+domain; and failure semantics. It shall not contain numerical
+$m_{\rm obs}$ values, an observed-payload digest that fixes the draw, execution
+success, a draw-dependent realized-product identity, publication, censoring,
+pairwise deletion, or a draw-dependent domain. Those are provenance rather
+than U1 conditioning variables. Conditioning on observed target payload
+requires a separately named conditional population and covariance role. U2 describes
+variation over the frozen template/calibration
+state $\theta$ and is excluded from those U1 conditional statements. A named
+operational covariance role is defined only after a fixed, predeclared
+selector $P_C$ establishes a finite numerical random-vector codomain. It exists
+only when $P_CF_g(M)$ is finite almost surely under the declared U1 law.
+Conditioning on successful production, censoring, pairwise deletion, or a
+draw-dependent domain is not the same covariance role and requires a
+separately named population and covariance contract.
+
+\subsection{Product roles and atomic lifecycle}
+\label{sec:product-roles}
+
+The required atomic signal bundle is valid on $\Valid_{\rm signal}$ and
+contains the filtered amplitude field plus
+its quantity/unit, parent and anchor-lattice identity, template convention,
+resolved and realized operator/state identity, application validity, actual
+operational-response reference, uncertainty availability, lifecycle, and complete
+provenance. Failure of any required member prevents a complete publication
+candidate.
+
+Every signal bundle carries the identity, request status, validity domain, and
+lifecycle status of each named covariance role. Independently atomic qualified companions may carry an
+authorized available covariance scope, frozen-NOI uncertainty, response, or
+exact state/lineage. Every companion has its own scientific identity, support,
+population, unit, validity, lifecycle, and named-use policy. Under selected
+\AOpt{003}{C}, typed operational-covariance unavailability does not make the signal bundle
+partial unless an exact named-use policy requires that companion. Optional
+failure does not change the signal estimand.
+No numerator, denominator, kernel, field-power estimate, response slice,
+inverse scale, standardized field, or intermediate is a public science product
+without a complete role and policy.
+
+\subsection{Lifecycle vocabulary}
+\label{sec:lifecycle}
+
+\begin{longtable}{p{0.25\linewidth}p{0.65\linewidth}}
+\toprule
+State & Meaning \\
+\midrule
+\endhead
+\NotRequested{} & No request exists. This is not disabled. \\
+\Requested{} & A named method/product/use was requested; no admission is yet
+implied. \\
+\Effective{} & Boundary resolution determined that the request applies to
+this parent and method identity. \\
+\LearnedCandidate{} & Learn produced candidate state that has not been
+owner-authorized, frozen, or resolved for Apply. \\
+\Disabled{} & An applicable requested route was explicitly disabled by its
+authorized state or policy. \\
+\Unavailable{} & A required authority, input, option, support, or scientific
+premise is absent; no numerical value is asserted. \\
+\Resolved{} & Method, state, parameters, support, policy, and failure
+disposition are immutable for the generation. \\
+\Applied{} & The resolved operator was invoked on an admitted parent. \\
+\Realized{} & The declared fixed-state producing map generated immutable values
+and outcome provenance; realization neither implies publication nor changes
+pre-draw conditioning. \\
+\Complete{} & Every required realized value, identity, status, validity fact,
+companion identity/status record, lifecycle member, and provenance member
+exists and is ready for publication-policy evaluation. This is not a finding
+of publication eligibility, validation, or readiness. \\
+\PublicationDecided{} & The exact owner-policy/SCI-VAL decision artifact exists
+for one immutable complete candidate without changing its scientific content. \\
+\Published{} & An authorized publication decision exposed the immutable
+product under its declared identity, role, validity, and lineage. \\
+\Failed{} & An authorized attempt began but Learn, Resolve, Apply, numerical
+realization, product closure, publication evaluation, or publication action
+failed. \\
+\NotProduced{} & A complete disposition intentionally created no public
+product; it is not zero or unavailable. \\
+\Superseded{} & An immutable successor exists under an authorized policy; the
+predecessor is retained and never rewritten. \\
+\bottomrule
+\end{longtable}
+
+\subsection{SCI-VAL named-use evaluation}
+
+SCI-VAL evaluates an owner-approved, Registry-bound named-use profile. The
+frozen role-semantics definitions returned with this package are unregistered
+and unevaluable; missing policy fields are never inferred. A registered profile
+retains four
+independent axes: request, applicability, eligibility, and realization. FLT
+owns the producer facts, dependency graph, named-use disposition, prescribed
+consumer action, and failure semantics. VAL registers and evaluates; it does
+not filter, publish, select an option, invent a missing fact, or perform
+observational/scientific validation. Each profile keeps separate verdicts for
+parent admission (PA), state admission (SA), signal publication (SP),
+conditional-covariance use (CU), NOI-companion use (NU), response-companion
+publication/use (RU), and FLT-to-FRUIT producer-envelope use (FH).
+The SCI-VAL publication-decision artifact is realized independently of the FLT
+signal product; it does not move FLT product realization earlier or mutate it.
+
+Each signal bundle has exact MAP and template boundary identities. NOI and FH
+use additionally records exactly one boundary-request state:
+\texttt{not\_requested}, \texttt{inapplicable}, \texttt{unavailable},
+\texttt{compatible}, \texttt{requested\_pending}, or
+\texttt{realized\_child\_exists}. A missing or unrequested optional child does
+not narrow $\Valid_{\rm signal}$ or block an unrelated role. A child never
+mutates its parent signal.
+
+\subsection{First-class FLT-to-FRUIT producer envelope}
+
+The FLT product contract preserves a first-class interface sufficient for a
+future FRUIT method to consume the filtered amplitude product without
+reconstructing undocumented FLT implementation state. The finite v0.1
+FLT-owned handoff vocabulary $\mathcal Q_{\rm FLT}^{0.1}$ contains exactly:
+filtered quantity and per-anchor value/validity/lifecycle; parent and anchor
+identity/WCS; template identity and amplitude convention; local domain and
+application support; fixed-state scientific and available realized/reference
+response identities; method, resolved state, producing-map, and numerical-
+profile identities; named U1/U2 and companion availability; units/calibration;
+provenance; and the exact supported state/response query declarations. Selected
+\AO{004} representation is required for state reconstruction and selected
+\AO{005} representation for response reconstruction. A future FRUIT method
+requiring a query outside $\mathcal Q_{\rm FLT}^{0.1}$ requires a successor FLT
+envelope or generation; existing signal products remain unchanged. FLT defines
+no FRUIT model, recurrence, subtraction/add-back, learning, stopping, restart,
+selection, response, uncertainty, or interpretation.
+
+The handoff role has its own $\Valid_{\rm FRUIT\ handoff}$, either as a
+subdomain of $\Valid_{\rm signal}$ or as a bundle-level predicate. A failed or
+unrequested handoff does not narrow signal validity.
+
+\subsection{Producer ownership and claim layers}
+
+MAP owns the immutable parent identity, support, response, covariance, beam,
+calibration, WCS, lifecycle, and provenance. The template producer owns the
+unit-amplitude response object. CAL/BEAM owns calibration and beam authority.
+FLT owns the exact transformation, resolved state, operational realized
+response/covariance consequences, products, lifecycle, finite handoff query
+vocabulary, and one-way producer envelope. NOI owns its
+realization population and empirical uncertainty meaning. FRUIT owns any
+future FRUIT science. No SRC boundary is created.
+
+Scientific authority, implementation conformity, representation fidelity,
+observational/scientific validation, achieved performance, readiness, and
+production are separate claims. This package establishes only its frozen
+scientific authority, not any of the later claim layers.

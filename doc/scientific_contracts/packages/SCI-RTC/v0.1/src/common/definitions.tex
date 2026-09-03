@@ -1,0 +1,457 @@
+% SCI-RTC v0.1/r0.12 shared normative core -- definitions.
+\section{Normative definitions}
+\label{sec:core-definitions}
+
+\begin{description}[style=nextline,leftmargin=1em,labelindent=0pt,
+  labelwidth=0pt,labelsep=0pt]
+
+\item[SCI-RTC-DEF-001 -- Admitted aligned paired stream.]
+An immutable observation-scoped pair of \texttt{xs} and \texttt{rs} arrays.
+Every admitted $x$ has exactly one $r$ partner with the same observation,
+Tune, array, network/interface, detector occurrence, native acquisition
+occurrence, aligned slot, cadence, phase, and mapping lineage.  Missing a
+partner is malformed required input.  The paired samples retain independent
+finiteness, origin/synthesis, support, validity, and uncertainty states.
+
+\item[SCI-RTC-DEF-002 -- RTC application context.]
+The immutable request-side description $\mathcal R$ naming requested use,
+paired input and interval, raw-coordinate sign and reference/baseline, valid
+domain, named consumers, and external constraints.  Historical labels such as
+Beammap, Pointing, OOF, Science, or diagnostic may be recorded as context but
+do not partition the admitted RTC operation classes or silently select a
+policy.  Every context consumes paired raw \texttt{xs}/\texttt{rs}; when
+conditioned $r$ is requested it is produced as the paired companion on the
+selected conditioned-$x$ grid.  Only conditioned $x$ is eligible
+for a later SCI-CAL handoff.  A calibrated downstream detector
+signal is a distinct SCI-CAL product $c^{\rm CAL}$ in the top-of-atmosphere,
+point-source-equivalent mJy-per-fixed-nominal-beam convention; it is not
+another meaning of \texttt{xs}.
+
+\item[SCI-RTC-DEF-003 -- Exact detector occurrence.]
+An observation-local layered binding containing observation, Tune,
+network/interface, network-local tone or admitted row slot, selected APT
+identity/digest, and row association.  A transient column number is only a
+locator.
+
+\item[SCI-RTC-DEF-004 -- Downstream CAL handoff.]
+An immutable RTC-to-SCI-CAL boundary carrying the raw conditioned parent,
+detector binding, complete RTC plan/response/support, selected \texttt{flxscale}
+authority, target-atmosphere lineage, validity, uncertainty availability, and
+provenance required by SCI-CAL.  Absolute \texttt{flxscale} and target
+atmosphere are applied only after RTC; RTC does not derive, apply, repair, or
+promote the calibrated product.  Because target-atmosphere correction is
+sample dependent and follows temporal filtering, a handoff claim also
+requires complete response accounting over RTC support or a preregistered
+owner-approved noncommutation bound; output-time correction is not an
+automatic inverse of a filtered atmosphere operator.
+
+\item[SCI-RTC-DEF-005 -- Compatible \texttt{flxscale} pair.]
+Two finite factors $\phi_q$ and $\phi_d$ that are valid for the exact donor
+and target detector occurrences under the same multiplicative calibration
+convention, quantity domain, reference plane, and applicable support, with
+$\phi_d\neq0$.  Compatibility is not established by matching row numbers or
+finite values alone.
+
+\item[SCI-RTC-DEF-006 -- Selected conditioning policy.]
+A versioned, admitted specification selected within a resolved RTC plan from
+operation classes available to every application context.  It covers
+spike-candidate detection and
+change-point masking/downweighting, donor eligibility, donor scoring and ties,
+post-segmentation $x$ replacement and fallback, source protection,
+filter stages and order, exact coefficients and normalization, numeric
+precision, state/reset, boundaries/edges, non-finite handling, sampling mode,
+phase-zero factor, flags, influence aggregation, diagnostics, and failure
+behavior.  Availability or admission does not mean enabled, selected,
+numerically resolved, or scientifically qualified.  It is selected authority,
+not an implementation default.
+
+\item[SCI-RTC-DEF-007 -- One-way context--plan--record lifecycle.]
+Three distinct objects are preserved in one-way order.  The
+\emph{RTC application context} preserves requested use, input, consumers, and
+constraints.  The \emph{RTC resolved plan} is the immutable selected numerical
+plan admitted after every required predicate passes, including any learned
+evidence and observation binding.  The \emph{RTC realized record} states the
+exact operations, intervals, state, exceptions, outputs, and completion that
+actually occurred.  More detailed requested, effective, observation-resolved,
+learned, resolved, and realized substates may be retained, but a later object
+or substate never rewrites an earlier one.
+
+\item[SCI-RTC-DEF-008 -- Realized conditioning operator.]
+The chronological composition of paired admission and evidence selection,
+level-shift transition masking and plateau segmentation, then every admitted
+$x$-domain replacement, mask, FIR/IIR/notch, boundary, reset state,
+non-finite, and phase-zero sampling action, including all affine state terms
+and exception intervals.  Raw $r$ may affect evidence and the resolved pair
+state; every ordinary canonical stage then acts through the same $L_\Pi$ on
+both coordinates, without copying any $x$-only donor exception into $r$.
+Annotations that affect values, support, influence, or availability are part
+of the operator.  Detection and affected-support decisions are pair-coherent;
+coordinate-specific evidence and correction amplitudes remain distinct.
+
+\item[SCI-RTC-DEF-009 -- Phase-zero sampling.]
+Point selection of the pre-sampling paired stream at input indices $j=Mn$ for
+one integer factor $M\geq1$, with conditioned $r$ occupying exactly the
+conditioned-$x$ grid when requested.  It is not an arithmetic mean, block aggregate, or
+implicit anti-alias filter.  Its representative occurrence is exactly
+$(d,Mn)$ on the raw paired aligned parent before replacement and filtering;
+that identity is not a largest-coefficient claim.
+
+\item[SCI-RTC-DEF-010 -- Complete realized response.]
+An exact local or factorized representation that includes every enabled
+response-changing stage, detector mixing, mask, state, edge rule, exception,
+and sampling phase on its declared support.  Conditioned $x$ and available
+conditioned $r$ use identical ordinary diagonal response blocks; both
+cross-coordinate numerical responses are zero.  The RTC-local response is with
+respect to the admitted aligned pair.  An optional end-to-end response to the
+native acquisition grid is a distinct composition with admitted upstream
+ALIGN response and lineage.  If either representation is not truthfully
+available, its response state is \Unavail; a partial kernel is not complete
+response.
+
+\item[SCI-RTC-DEF-011 -- Representative source occurrence.]
+For output $(d,n)$, the raw aligned paired occurrence $(d,Mn)$ before
+replacement and temporal propagation.  It may be original,
+ALIGN-synthesized, or subsequently RTC-replaced.  This identity, rather than
+the largest realized coefficient, governs independent-exposure exclusion.
+
+\item[SCI-RTC-DEF-012 -- Transitive influence.]
+The cause-preserving closure from every original, synthesized, replaced,
+masked, edge, state, and non-finite source cell through all nonzero realized
+alignment, donor, filter, state, and sampling dependencies to an output.
+Influence is broader than the selected point and may cross detector columns.
+
+\item[SCI-RTC-DEF-013 -- Direct exclusion and consumer eligibility.]
+An output whose representative occurrence of SCI-RTC-DEF-011 is
+ALIGN-synthesized or RTC-replaced is universally excluded as an independent detector measurement,
+even when finite.  Synthesis or replacement elsewhere in its transitive
+support remains a mandatory cause-preserving influence input, not a universal
+RTC eligibility decision.  Each downstream consumer owns the declared policy
+that maps that influence, response, and support to its own eligibility.
+
+\item[SCI-RTC-DEF-014 -- Coordinate-dependent control.]
+A source mask or response operation that consumes an AST coordinate identity,
+frame, topology, detector binding, validity, uncertainty where required, and
+support.  Invalid or unavailable coordinates are not outside-source values.
+
+\item[SCI-RTC-DEF-015 -- Fixed sampling mode.]
+A request whose admitted factor, realizable prefilter, rate, phase-zero rule,
+and downstream compatibility are resolved without learning them from the
+observation.
+
+\item[SCI-RTC-DEF-016 -- Learned sampling mode.]
+An optional request that evaluates an admitted finite candidate set and
+resolves one immutable observation-wide cadence/filter plan before apply.
+Its admission uses the smallest admitted beam, maximum valid in-scan speed,
+analytical beam-times-realized-filter response, exact phase-zero alias
+accounting, sampling sufficiency, filter realizability, and downstream
+compatibility.  Noise-aware, per-array, per-scan, heterogeneous-cadence, and
+continuous adaptation are outside v0.1.
+
+\item[SCI-RTC-DEF-017 -- Conditional statistical covariance.]
+The covariance obtained from an admitted joint $x/r$ input covariance through
+the fixed identical paired operator while holding selection and
+nuisance state fixed.  It preserves available cross-coordinate covariance even
+though numerical $x\leftrightarrow r$ response is zero.  It is
+not total uncertainty and does not imply a diagonal, white, stationary, or
+independent noise model.  Every covariance or uncertainty claim, whether
+conditional, component-limited, or total, explicitly names the components and
+correlations it includes and excludes; unknown items remain unavailable rather
+than zero.
+
+\item[SCI-RTC-DEF-018 -- Atomic RTC bundle.]
+One consumer-neutral completion unit containing conditioned raw $x$ TOD; when
+requested, its grid-aligned conditioned raw $r$ companion and exact local or
+global availability; the immutable paired \texttt{rs} parent and
+pairing/mapping identity; every
+\texttt{rs}-derived diagnostic, selector, segmentation, and resolved-plan use;
+ordered detector/sample/scan/support and parent identity; complete response or typed
+unavailability; cause-preserving flags and influence; separated validity and
+eligibility inputs; conditional uncertainty/covariance status; one-way state
+and provenance; required common diagnostics and any separately requested
+diagnostic detail; downstream CAL handoff state; and
+completion/failure state.  Conditioned $r$ is optional product content under
+the same context, plan, and realized record; it is not a separately optimized
+pipeline.  TOD alone is not this bundle.
+
+\item[SCI-RTC-DEF-019 -- Scientifically named diagnostic.]
+A quantity with an explicit estimator, unit, support, selection/mask,
+validity, uncertainty/availability, and policy role.  It is either inert,
+advisory, or an input to an explicitly selected policy; those roles are not
+interchangeable.
+
+\item[SCI-RTC-DEF-020 -- Claim layer.]
+One of algebraic contract correctness, implementation conformity,
+representation fidelity, observational performance, science-impact
+qualification, or production readiness.  Evidence at one layer does not
+establish another.
+
+\item[SCI-RTC-DEF-021 -- Declared learning population.]
+The exact training interval, designated same-observation interval, scan
+collection, observation aggregate, or other named population used to infer an
+RTC quantity, including identity, support, selection, masks, exclusions,
+signal role, compatibility domain, and completeness.  A population is not
+defined by whatever samples happen to be available during execution.
+
+\item[SCI-RTC-DEF-022 -- Learned evidence.]
+The output of named diagnostics applied to a declared learning population,
+including candidate parameters, estimator, unit and convention, support,
+quality, uncertainty, validity, and failure state.  Learned evidence proposes
+or constrains a plan; it does not authorize apply.
+
+\item[SCI-RTC-DEF-023 -- Resolved RTC plan.]
+One immutable observation- and application-context-bound specification admitted only after
+all required scientific predicates pass.  It contains operation sequence,
+family, exact coefficients or identity, rates and conventions, order/taps,
+bands and tolerances, notch state, applicability, masks, donor policy, edges,
+guards, resets, decimation and timing, expected response/support, uncertainty,
+validity, and downstream compatibility.
+
+\item[SCI-RTC-DEF-024 -- Apply state.]
+Execution of exactly one resolved plan on compatible admitted input.  Apply
+records actual intervals, exceptions, resets, outputs, and completion but does
+not relearn, retune, change policy, or rewrite the resolved plan.
+
+\item[SCI-RTC-DEF-025 -- Online-adaptive estimator.]
+A separate time-varying, data-dependent estimator whose coefficients or other
+operator parameters evolve during apply under a declared update rule.  Its
+learning support, stability, response, uncertainty, guard, reset, and restart
+semantics are not those of learned-then-fixed filtering.  It is unavailable in
+v0.1 absent successor authority.
+
+\item[SCI-RTC-DEF-026 -- Scientific filter design specification.]
+The physical purpose, source/contaminant model, admitted scan/beam/source
+domain, pass/transition/stop or notch constraints, phase and registration,
+alias bound, support/guard, numeric precision, realizability, validation, and
+failure criteria that justify a filter family and its numerical parameters.
+An operation label or coefficient array alone is not this specification.
+
+\item[SCI-RTC-DEF-027 -- Bounded iterative notch-plan refinement.]
+A finite owner-bounded sequence of refinement attempts.  Each attempt learns
+from a declared population and the current accepted-plan paired evaluation
+product derived from the original admitted pair $\mathbf u^{(0)}$,
+resolves a complete cumulative proposal and typed disposition, and advances
+the accepted-plan index only when that proposal is accepted.  Apply of every
+accepted plan is immutable; rejected or stop attempts do not manufacture a
+new accepted plan or evaluation product.  This is not the online-adaptive
+estimator of SCI-RTC-DEF-025.
+
+\item[SCI-RTC-DEF-028 -- Complete cumulative successor proposal.]
+The full plan proposed by attempt $a$ and accepted as $\Pi_{k+1}$ only after
+its admission predicates pass, containing every retained,
+modified, removed, and rejected notch disposition; every broad-band stage;
+exact order, coefficients, precision, state, masks, edges, guards, intervals,
+decimation, timing, cumulative response/support, uncertainty, validity, and
+downstream compatibility.  ``Add this notch to the prior output'' is not a
+complete successor plan.  Its canonical evaluation and final replay parent is
+the original admitted pair, not an $x$-only projection or accumulated
+exploratory output.
+
+\item[SCI-RTC-DEF-029 -- Final accepted plan and termination disposition.]
+The last complete plan whose admission predicates passed, together with one
+typed finite stop cause.  No-successor, residual-satisfied, stable-plan,
+budget/stability/support/compatibility rejection, insufficient evidence,
+maximum-attempt, oscillating-plan, nonconvergent-parameter, and owner-cancelled
+states remain distinct.  Maximum-attempt termination is not convergence.
+
+\item[SCI-RTC-DEF-030 -- Paired raw $x,r$ detector coordinates.]
+The two raw coordinates $\mathbf u_d=(x_d,r_d)^{\mathsf T}$ produced for one
+exact detector occurrence by an admitted Tune-dependent readout mapping.  The
+$x$ coordinate carries the ordinary total-intensity analysis path; the
+nominally orthogonal $r$ coordinate carries readout, leakage, artifact, and
+Tune-health information.  Pairing does not assert equal scaling, response,
+validity, or uncertainty.
+
+\item[SCI-RTC-DEF-031 -- Tune-dependent $I,Q\rightarrow x,r$ mapping authority.]
+The upstream authority identified by $\zeta$ that owns the microwave
+transmission coordinates, transform, reference point, normalization, sign,
+local Jacobian or nonlinear equivalent, validity/linearity domain, epoch, and
+uncertainty.  RTC consumes its identity and admitted output but does not
+produce or repair the mapping.
+
+\item[SCI-RTC-DEF-032 -- Optical leakage into the paired $r$ coordinate.]
+A nonzero admitted optical-response projection in nominally orthogonal $r$.
+It is a readout-coordinate alignment or optical-leakage diagnostic, not
+automatically a literal Tune-angle error.  A scalar ratio or angle tests only
+its declared optical projection and does not prove the complete transform.
+Every product retains the $x/r$ coordinate units or scales, mapping revision,
+normalization and metric, Tune and validity domain, whether its ratio is
+dimensionless or carries a coordinate-unit ratio, and the compatibility rule
+for comparison across detectors, Tunes, loading states, epochs, or mapping
+revisions.  An angle is available only after a declared metric makes the two
+axes commensurate.  Otherwise it is coordinate bookkeeping, not a comparable
+physical readout angle.
+
+\item[SCI-RTC-DEF-033 -- Atmospheric optical-leakage diagnostic.]
+A scientifically named estimate of paired $x/r$ response to a declared
+network atmospheric optical-mode template, with exact membership,
+self-inclusion rule, time/frequency support, preprocessing, estimator,
+response, covariance, uncertainty, coherence, Tune/loading state, and scalar,
+frequency-dependent, or unavailable disposition.  The estimator shall address
+shared-data dependence, noise in both coordinates, and detector self-inclusion;
+measured correlation or direct noisy $r$-on-$x$ regression is not by itself an
+unbiased leakage coefficient.  This diagnostic does not authorize numerical
+template subtraction from $x$.
+
+\item[SCI-RTC-DEF-034 -- Bright-source optical-leakage diagnostic.]
+A separately parented estimate of paired $x/r$ response to a declared
+localized source template and support, often requested by Beammap,
+Pointing, or OOF application contexts.  It neither inherits nor silently replaces an
+atmosphere-derived diagnostic.
+
+\item[SCI-RTC-DEF-035 -- Network-coherent detector-dependent level shift.]
+An unexpected persistent additive readout-baseline change having a common or
+near-common network event identity, detector transition support constrained by
+a declared coherence tolerance, and independently estimated detector/channel
+amplitudes $(\Delta x,\Delta r)$.  On each stable $x$ plateau the v0.1 model is
+signal plus an additive baseline; it contains no multiplicative gain,
+responsivity, or more general response-change degree of freedom.  Simultaneity,
+an $r$ signature, or its absence does not by itself identify physical cause.
+
+\item[SCI-RTC-DEF-036 -- Transition interval and guarded change-point support.]
+The finite physical-time interval between stable pre- and post-event plateaus,
+together with its timing uncertainty, affected detector population, and any
+downstream operator-specific guards.  Its sample support is derived from the
+applicable timing vector, never from a fixed sample count or scan-relative
+fraction.  The physical transition support is explicitly flagged, excluded
+from both plateau estimators, and remains unmodeled even when a valid plateau
+offset correction is applied.  Propagated influence remains distinguishable
+from this underlying physical support.  Reset is the ordinary segmentation
+behavior; carry requires separately authorized continuity.
+
+\item[SCI-RTC-DEF-037 -- Stable plateau and application-context admissibility.]
+A half-open interval outside resolved transition support that is consistent
+with its declared signal-plus-additive-baseline model, accounting for
+atmosphere, sources, noise, slow variation, Tune state, valid support, and
+absence of unresolved additional shifts.  Suitability is application-context
+specific and depends on the required estimator support, not sample count
+alone.
+
+\item[SCI-RTC-DEF-038 -- Separately authorized response-changing correction.]
+Any estimator that numerically mixes $x$ and $r$, subtracts or rotates one into
+the other, or assigns a multiplicative gain, responsivity, or more general
+response change to a level-shift event.  It requires separate purpose,
+coupling and learning models, complete response and covariance, astronomical
+transfer, uncertainty, validation, restart, and provenance authority; none is
+part of the v0.1 additive level-shift model.  A selected additive translation
+between sufficiently supported stable $x$ plateaus is governed instead by
+Equations~\eqref{eq:level-shift}--\eqref{eq:plateau-reset} and REQ-101.
+
+\item[SCI-RTC-DEF-039 -- Conditioned-$r$ paired companion.]
+The optional raw-coordinate $r$ product produced under the same RTC
+application context, immutable resolved plan, realized record, selected grid,
+temporal support, source protection, and pair-level pathology decisions as
+conditioned $x$.  Ordinary shared filtering, masking, state, and sampling act
+coordinate-diagonally.  Existing $x$ repair does not imply $r$ reconstruction:
+where no scientifically justified $r$-domain correction exists, the paired
+$r$ location and response remain typed invalid or unavailable with exact
+cause.  The companion preserves raw-$r$ parentage, mapping, units, sign,
+reference, optical-leakage lineage, coordinate-specific evidence, response,
+uncertainty status, and provenance.  It does not enter SCI-CAL, numerically
+mix into conditioned $x$, or authorize numerical $x\leftrightarrow r$ mixing;
+its evidence may nevertheless affect the resolved pair plan under
+equations~\eqref{eq:paired-evidence}--\eqref{eq:pair-resolve-apply}.
+
+\item[SCI-RTC-DEF-040 -- Canonical conditioned pair.]
+The jointly requested RTC product formed from one exact admitted raw
+$x/r$ occurrence pair, one application context, one immutable resolved pair
+plan, one realized record, and one selected output grid.  On ordinary common
+available support, both coordinates undergo the identical operator of
+equation~\eqref{eq:canonical-pair-operator}.  ``Conditioned pair'' is not a
+permitted product claim when conditioned $r$ was not requested or is globally
+unavailable; the product is then conditioned $x$ with raw-$r$ parentage and
+the exact conditioned-$r$ request/availability disposition.
+
+\item[SCI-RTC-DEF-041 -- Coordinate-specific evidence.]
+A learned record $E_x$ or $E_r$ whose direct numerical observation originates
+in exactly one member of the raw pair.  It preserves detector and occurrence
+identity, estimator, coordinate of origin, physical and sample support,
+source-protection and Tune/mapping state, uncertainty, quality, causal class,
+direct status, and source or frequency domain where applicable.  Pair action
+does not convert it into direct evidence in the other coordinate.
+
+\item[SCI-RTC-DEF-042 -- Joint paired evidence.]
+A learned record $E_{xr}$ whose estimator and declared causal meaning depend
+on the joint behavior of the exact paired coordinates.  It carries the same
+identity, support, protection, mapping, uncertainty, quality, and domain facts
+as coordinate-specific evidence and is not reducible to two generic flags.
+
+\item[SCI-RTC-DEF-043 -- Hard pair-pathology class.]
+An owner-designated causal class whose accepted direct or joint evidence is
+sufficient under its resolved policy to require pair-level action.  Accepted
+spikes, level shifts, resets or discontinuities, structurally invalid mapped
+pairs, declared non-finite or out-of-domain events, and later expressly
+approved classes may qualify.  Weak lines, PSD shape, variance, leakage,
+coherence, population outliers, Tune-health metrics, and source-overlapping
+features remain diagnostic or candidate evidence until their stronger
+owner-approved predicates pass.
+
+\item[SCI-RTC-DEF-044 -- Pair-level action support.]
+The immutable mask, physical/sample interval, guards, segments, reset
+boundaries, and transitive operator influence on which one resolved pair plan
+acts because at least one accepted hard cause requires action.  Its union does
+not merge or erase the originating evidence records or their causal classes.
+
+\item[SCI-RTC-DEF-045 -- Inferred pair contamination.]
+The typed consequence assigned to the paired coordinate when accepted direct
+evidence in one coordinate or accepted joint evidence establishes a hard pair
+event.  It identifies direct-$x$, direct-$r$, joint, inferred-$x$-from-$r$,
+or inferred-$r$-from-$x$ status and never asserts a numerical detection that
+was not made.
+
+\item[SCI-RTC-DEF-046 -- Common identical paired operator.]
+The canonical ordinary operator $I_2\otimes L_\Pi$, with exactly the same
+masks, pair-action support, segments, transitions, guards, coefficients,
+state, initialization/reset, filter definitions, order, precision,
+phase/delay, boundaries, downsampling, selected times, representative
+occurrences, cardinality, and output grid on both coordinates.  Its two
+cross-coordinate numerical branches are zero.
+
+\item[SCI-RTC-DEF-047 -- Coordinate-specific affine correction.]
+An admitted additive baseline translation $b^x$ or $b^r$ learned for one
+coordinate on stable plateau support.  A shared event has one transition,
+guards, segmentation, and reset, while the two amplitudes, uncertainties,
+quality states, availability, and numerical correction actions remain
+separate.  Neither amplitude is copied, inferred, or numerically mixed from
+the other.
+
+\item[SCI-RTC-DEF-048 -- $x$-only donor-recovery exception.]
+The existing coordinate-specific RTC repair in which justified donor
+information may replace an accepted target $x$ occurrence.  It is not an
+ordinary common paired operator, creates no donor-derived $r$ value, and makes
+conditioned $r$ and its response unavailable over the full causal influence
+of the repair while retaining the common grid and every raw-pair cause.
+
+\item[SCI-RTC-DEF-049 -- Coordinate-local unavailable influence.]
+The exact selected-grid support on which one conditioned coordinate, its
+response, or its covariance component cannot be scientifically produced,
+including the complete downstream transitive influence of an $x$-only donor
+repair or a required but unavailable coordinate-specific affine correction.
+Finite filters, stateful filters, and phase-zero sampling propagate the cause
+through their exact realized support; an IIR influence may continue to the next
+reset. Locations remain in place with typed causes, and the other coordinate
+may remain available.
+
+\item[SCI-RTC-DEF-050 -- Separately optimized $r$ diagnostic descendant.]
+Any future product that uses an $r$-specific temporal, sampling, state, mask,
+or response operator differing from $L_\Pi$.  It requires a new name,
+identity, purpose, response, covariance, uncertainty, provenance, and owner
+authority and is not the canonical conditioned-$r$ companion.
+
+\item[SCI-RTC-DEF-051 -- Cause-preserving pair evidence/action record.]
+The ordered record linking every $E_x$, $E_r$, and $E_{xr}$ item to its
+accepted/rejected/candidate disposition, direct or inferred status, resolved
+pair action, exact support and transitive influence, coordinate-local
+modification and availability, operator identity, uncertainty, and downstream
+handoff.  It allows reconstruction of why pair action occurred without
+turning a unioned support into an undifferentiated flag.
+
+\item[SCI-RTC-DEF-052 -- Pair support and availability partition.]
+Four noninterchangeable states: (1) the common index grid
+$\mathcal G_{\rm pair}$; (2) common pair-action and ordinary-operator support
+$\mathcal A_{\rm pair}$; (3) coordinate-local numerical availability
+$\mathcal A_x$ and $\mathcal A_r$; and (4) joint covariance support
+$\mathcal A_C\subseteq\mathcal A_x\cap\mathcal A_r$ where both conditioned
+values and the required admitted statistical model are available.  Common
+identity or action support never asserts identical numerical availability.
+
+\end{description}

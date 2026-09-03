@@ -1,0 +1,338 @@
+\section{Canonical equations and typed operators}
+\label{sec:equations}
+
+The exact spherical equations in this section are mathematical identities and
+the independent offline oracle.  The v0.1 production geometry may retain the
+established small-angle operator only inside the preregistered adequacy domain
+defined in Section~\ref{sec:assumptions}; no automatic spherical fallback or
+universal numerical threshold is implied.
+
+\subsection{Directions, tangent basis, and circular topology}
+
+For longitude $\ell$ and latitude $b$ in a declared frame,
+\begin{equation}
+ \widehat{\boldsymbol u}_{\rm sky}(\ell,b)=
+ \begin{bmatrix}\cos b\cos\ell\\ \cos b\sin\ell\\ \sin b\end{bmatrix},
+ \quad
+ \boldsymbol e_\ell=
+ \begin{bmatrix}-\sin\ell\\ \cos\ell\\0\end{bmatrix},
+ \quad
+ \boldsymbol e_b=
+ \begin{bmatrix}-\sin b\cos\ell\\-\sin b\sin\ell\\\cos b\end{bmatrix}.
+ \label{eq:unit-basis}
+\end{equation}
+Away from a coordinate pole, $\boldsymbol e_\ell$ and $\boldsymbol e_b$ are
+unit tangent vectors toward increasing longitude at fixed latitude and
+increasing latitude.  The direction remains
+$\widehat{\boldsymbol u}_{\rm sky}$ at a pole.  The symbols $x$ and $r$ are
+reserved for paired KID readout coordinates and never denote sky vectors or
+TAN axes.
+
+For period $P$,
+\begin{align}
+ \operatorname{wrap}_P(\theta)
+ &=\theta-P\left\lfloor\frac{\theta+P/2}{P}\right\rfloor
+   \in[-P/2,P/2),\label{eq:wrap}\\
+ \operatorname{norm}_P(\theta)
+ &=\theta-P\left\lfloor\frac{\theta}{P}\right\rfloor
+   \in[0,P).\label{eq:norm}
+\end{align}
+Longitude and azimuth use $P=2\pi$.  The half-open endpoint convention is
+deterministic.  Exactly antipodal samples have no unique shortest interpolation
+path; interpolation is unavailable unless an explicit unwrap authority names
+and parents the selected path.
+
+\subsection{Exact displacement oracle and input normalization}
+
+For tangent components
+$\boldsymbol\eta=(\eta_1,\eta_2)^\mathsf T$ in the local orthonormal basis
+$(\boldsymbol e_1,\boldsymbol e_2)$, define
+$\boldsymbol t=\eta_1\boldsymbol e_1+\eta_2\boldsymbol e_2$,
+$\rho=\lVert\boldsymbol t\rVert$ and, for $\rho>0$,
+$\widehat{\boldsymbol v}=\boldsymbol t/\rho$.  The exact spherical displacement oracle is
+\begin{equation}
+ \operatorname{Exp}_{\widehat{\boldsymbol u}_{\rm sky}}(\boldsymbol\eta)=
+ \begin{cases}
+  \cos\rho\,\widehat{\boldsymbol u}_{\rm sky}
+   +\sin\rho\,\widehat{\boldsymbol v},&\rho>0,\\
+  \widehat{\boldsymbol u}_{\rm sky},&\rho=0.
+ \end{cases}
+ \label{eq:exp}
+\end{equation}
+Renormalization may remove roundoff only; it may not hide invalid input.
+
+An input longitude-like component is normalized at the boundary as
+\begin{equation}
+ \eta_\ell=
+ \begin{cases}
+  \cos b\,\Delta\ell,&\text{declared coordinate increment},\\
+  \Delta\ell_{\rm tangent},&\text{declared on-sky tangent component}.
+ \end{cases}
+ \label{eq:longitude-normalization}
+\end{equation}
+The declared correction pair $\boldsymbol a_k$ in arcseconds becomes
+\begin{equation}
+ \boldsymbol c_k=\kappa\boldsymbol a_k.
+ \label{eq:correction-unit}
+\end{equation}
+Positive components move toward the increasing declared tangent-basis axes.
+An upstream residual requiring the opposite action needs one explicit,
+parented sign adapter and an application count of one.
+
+\subsection{Pointing-support realization}
+
+One finite pair is constant:
+\begin{equation}
+ \boldsymbol c_s=\boldsymbol c_0.
+ \label{eq:constant-correction}
+\end{equation}
+For two finite, strictly increasing MJD supports $m_0<m_1$ and aligned
+stable-slot occurrence time $m_s$,
+\begin{equation}
+ \lambda_s=\frac{m_s-m_0}{m_1-m_0},\qquad
+ \boldsymbol c_s=(1-\lambda_s)\boldsymbol c_0+
+                  \lambda_s\boldsymbol c_1,
+ \qquad 0\leq\lambda_s\leq1.
+ \label{eq:mjd-correction}
+\end{equation}
+For explicit legacy observation-span mode, where $t_-$ and $t_+$ are the
+times of the exact first and last admitted aligned sample identities,
+\begin{equation}
+ \lambda_s^{\rm span}=\frac{t_s-t_-}{t_+-t_-},\qquad
+ \boldsymbol c_s=(1-\lambda_s^{\rm span})\boldsymbol c_0+
+                  \lambda_s^{\rm span}\boldsymbol c_1,
+ \quad t_-\leq t_s\leq t_+.
+ \label{eq:span-correction}
+\end{equation}
+A one-sample span is defined only when the endpoint corrections are exactly
+equal, in which case Equation~\ref{eq:constant-correction} applies.
+
+When the two-support covariance is available, stack
+$\boldsymbol c_*=(\boldsymbol c_0^\mathsf T,
+\boldsymbol c_1^\mathsf T)^\mathsf T$ and define
+\begin{equation}
+ \mathsf H_s=
+ \begin{bmatrix}(1-\lambda_s)\mathsf I_2&\lambda_s\mathsf I_2\end{bmatrix},
+ \quad
+ \mathsf C_{c,s}^{\rm formal}=
+ \mathsf H_s\mathsf C_{c,*}\mathsf H_s^\mathsf T.
+ \label{eq:support-covariance}
+\end{equation}
+Cross-covariance is retained when supplied.  Model, selection, and systematic
+terms remain separately labeled.
+
+\subsection{Ordered detector-direction composition}
+
+Let $\widehat{\boldsymbol u}^{B}_{\rm sky,s}$ be the exact aligned boresight in the declared native
+horizon frame.  The spherical oracle for the first two geometric stages is
+\begin{align}
+ \widehat{\boldsymbol u}^{H,c}_{\rm sky,s}
+   &=\operatorname{Exp}_{\widehat{\boldsymbol u}^{B}_{\rm sky,s}}
+     (\boldsymbol c_s),
+   \label{eq:corrected-boresight}\\
+ \boldsymbol\xi_{ds}
+   &=\mathcal G_\gamma(\boldsymbol g_d;t_s,E_s,
+      \text{declared occurrence-local state}),
+   \label{eq:geometry-realization}\\
+ \widehat{\boldsymbol u}^{H}_{\rm sky,ds}
+   &=\mathcal C_\gamma(\widehat{\boldsymbol u}^{H,c}_{\rm sky,s},
+      \boldsymbol\xi_{ds}),
+   \label{eq:detector-direction}\\
+ \widehat{\boldsymbol u}^{F}_{\rm sky,ds}
+   &=\mathsf R_{F\leftarrow H,s}
+      (\widehat{\boldsymbol u}^{H}_{\rm sky,ds}).
+   \label{eq:frame-operation}
+\end{align}
+$\mathcal C_\gamma$ is the selected composition relation and carries the same
+gauge, pivot, basis, handedness, affine limitations, and lineage as
+$\mathcal G_\gamma$.  In the admitted pure tangent-displacement limiting
+case, $\mathcal C_\gamma(\widehat{\boldsymbol u}_{\rm sky},\boldsymbol\xi)=
+\operatorname{Exp}_{\widehat{\boldsymbol u}_{\rm sky}}(\boldsymbol\xi)$; the contract does not
+presume that this limiting case describes every selected artifact.
+
+The established production small-angle relation may be written
+\begin{equation}
+ \boldsymbol\eta_{ds}^{\rm prod}\simeq
+ \boldsymbol c_s+\mathsf B_{ds}\boldsymbol f_d,
+ \label{eq:small-angle}
+\end{equation}
+only when $\mathsf B_{ds}$ is the declared selected geometry/rotation mapping
+and the preregistered adequacy record admits the exact occurrence, detector,
+product use, and error metric.  Equation~\ref{eq:exp} and the full selected
+geometry relation are the offline oracle for that record.
+
+\subsection{Gnomonic projection}
+
+For output direction $\widehat{\boldsymbol u}_{\rm sky}$, center
+$\widehat{\boldsymbol u}_{\rm sky,0}$, and center
+basis $(\boldsymbol e_1,\boldsymbol e_2)$,
+\begin{equation}
+ D=\widehat{\boldsymbol u}_{\rm sky}\!\cdot\!
+   \widehat{\boldsymbol u}_{\rm sky,0},\qquad
+ \zeta_1=\frac{\widehat{\boldsymbol u}_{\rm sky}\cdot\boldsymbol e_1}{D},
+ \qquad
+ \zeta_2=\frac{\widehat{\boldsymbol u}_{\rm sky}\cdot\boldsymbol e_2}{D},
+ \qquad D>0.
+ \label{eq:tan-forward}
+\end{equation}
+The inverse is
+\begin{equation}
+ \widehat{\boldsymbol u}_{\rm sky}=
+ \frac{\widehat{\boldsymbol u}_{\rm sky,0}
+       +\zeta_1\boldsymbol e_1+\zeta_2\boldsymbol e_2}
+      {\sqrt{1+\zeta_1^2+\zeta_2^2}}.
+ \label{eq:tan-inverse}
+\end{equation}
+In longitude and latitude, with
+$\Delta\ell=\operatorname{wrap}_{2\pi}(\ell-\ell_0)$,
+\begin{align}
+ D&=\sin b_0\sin b+\cos b_0\cos b\cos\Delta\ell,\nonumber\\
+ \zeta_1&=\frac{\cos b\sin\Delta\ell}{D},\qquad
+ \zeta_2=\frac{\cos b_0\sin b-
+          \sin b_0\cos b\cos\Delta\ell}{D}.
+ \label{eq:tan-lonlat}
+\end{align}
+The mathematical domain is finite $D>0$.  There is no universal positive
+$D_{\min}$.  A separately preregistered footprint bound may be tighter, but
+does not alter the mathematical domain.  Non-finite input or output and
+$D\leq0$ are coordinate invalidity, never a center or edge pixel.
+
+For Point/OOF/Beammap,
+\begin{equation}
+ \boldsymbol w=206264.806247\,(\zeta_1,\zeta_2)^\mathsf T\ \text{arcsec},
+ \label{eq:altaz-plane}
+\end{equation}
+with ordered AZOFFSET/ELOFFSET identity.  For Science,
+\begin{equation}
+ \boldsymbol w=\frac{180}{\pi}(\zeta_1,\zeta_2)^\mathsf T\ \text{degree},
+ \label{eq:science-plane}
+\end{equation}
+with explicitly identified RA---TAN/DEC--TAN axes in the declared equatorial
+J2000 frame.
+
+\subsection{Continuous WCS and nominal discrete pixel}
+
+Let $\boldsymbol q_0=\mathrm{CRPIX}$ be one-based and let $\mathsf M$ be the
+declared nonsingular CD matrix in plane-units per pixel:
+\begin{equation}
+ \boldsymbol w=\mathsf M(\boldsymbol q-\boldsymbol q_0),\qquad
+ \boldsymbol q=\boldsymbol q_0+\mathsf M^{-1}\boldsymbol w.
+ \label{eq:wcs}
+\end{equation}
+When the product plan places the projection center at the geometric array
+center for $N_1$ columns and $N_2$ rows,
+\begin{equation}
+ \mathrm{CRPIX}_1=\frac{N_1+1}{2},\qquad
+ \mathrm{CRPIX}_2=\frac{N_2+1}{2}.
+ \label{eq:crpix}
+\end{equation}
+Even dimensions therefore have half-integer reference pixels.  A different
+declared reference-pixel policy remains valid only when Equation~\ref{eq:wcs}
+places CRVAL there exactly and provenance records that policy.
+
+At pixel centers,
+\begin{equation}
+ q_1=h+1,\qquad q_2=j+1.
+ \label{eq:index-base}
+\end{equation}
+The v0.1 half-open nearest-center assignment is
+\begin{equation}
+ h=\left\lfloor q_1-\tfrac12\right\rfloor,\qquad
+ j=\left\lfloor q_2-\tfrac12\right\rfloor,
+ \quad 0\leq h<N_1,\quad0\leq j<N_2.
+ \label{eq:pixel-assignment}
+\end{equation}
+Another rule is a separately identified operator with equivalent boundary
+tests; it is never inferred from integer casting.
+
+\subsection{Typed map-center Jacobian and covariance}
+
+For Equation~\ref{eq:tan-forward}, let
+$a=\widehat{\boldsymbol u}_{\rm sky}\cdot\boldsymbol e_1$ and
+$b=\widehat{\boldsymbol u}_{\rm sky}\cdot\boldsymbol e_2$.  The
+direction-to-plane derivative is
+\begin{equation}
+ \mathsf J_{w\leftarrow u_{\rm sky}}=
+ \begin{bmatrix}
+ (D\boldsymbol e_1^\mathsf T-a\widehat{\boldsymbol u}_{\rm sky,0}^\mathsf T)/D^2\\
+ (D\boldsymbol e_2^\mathsf T-b\widehat{\boldsymbol u}_{\rm sky,0}^\mathsf T)/D^2
+ \end{bmatrix},
+ \label{eq:projection-jacobian}
+\end{equation}
+followed by the declared unit conversion.  For a family-requested typed input
+$\boldsymbol c_{\rm in}$ and output $\boldsymbol c_{\rm out}$,
+\begin{equation}
+ J_{\rm AST,0}^{({\rm out}\leftarrow{\rm in})}
+ =\left.\frac{\partial\boldsymbol c_{\rm out}}
+                {\partial\boldsymbol c_{\rm in}}\right|_{\widehat{\boldsymbol u}_{\rm sky,0},
+                \mathcal W_o}.
+ \label{eq:map-center-jacobian}
+\end{equation}
+Its direction, axes, units, family, center/WCS parent, approximation domain,
+method, and included or unavailable terms are part of the type.  For an available
+map-center covariance term $k$,
+\begin{equation}
+ \mathsf C_{\rm out}^{(k)}=
+ J_{{\rm out}\leftarrow k}\mathsf C_k
+ J_{{\rm out}\leftarrow k}^{\mathsf T}.
+ \label{eq:center-covariance}
+\end{equation}
+Supplied cross terms are propagated.  No total is reported unless all claimed
+components, cross-covariances, and combination assumptions are declared.
+
+\subsection{Grid roles, RTC response, and delegated MAP operator}
+
+On the ALIGN grid and the RTC output grid, respectively,
+\begin{align}
+ \theta^A_{ds}
+   &=\mathcal A_{\rm AST}(d,s;\Pi^{A,{\rm role}}_{ds}),
+   \label{eq:theta-align}\\
+ \theta^{\rm RTC}_{dn}
+   &=\mathcal A_{\rm AST}(d,n;\Pi^{\rm RTC}_{dn}).
+   \label{eq:theta-rtc}
+\end{align}
+The second relation has stable product-role identity
+\texttt{SCI-AST:rtc\_output\_grid\_coordinates@1}.  It is realized by AST for
+every ordinary downstream science product whose numerical signal is
+represented on an RTC output grid, and it binds the RTC-supplied parent in
+Equation~\ref{eq:rtc-parent} without reconstruction.
+For an RTC signal relation
+\begin{equation}
+ y_{dn}=\sum_s L_{ns}x_{ds},
+ \label{eq:rtc-signal}
+\end{equation}
+the sky response retains $L_{ns}$ and the full set
+$\{\theta^A_{ds}\}$ jointly.  In general,
+\begin{equation}
+ \text{sky-response}(L_{ns},\{\theta^A_{ds}\})
+ \neq \sum_s L_{ns}\theta^A_{ds}.
+ \label{eq:not-angular-filter}
+\end{equation}
+
+Before a complete MAP estimator request, the base AST geometry facts are only
+\begin{equation}
+ \mathcal B^{\rm AST}_{i}=
+ (\boldsymbol q_i,\ [\text{nominal containing pixel}]_{\rm if\ requested},
+ \ \text{bounds state}),
+ \label{eq:geometry-incidence}
+\end{equation}
+with exact coordinate/WCS parent.  It contains no neighbor stencil or
+candidate support whose extent depends on MAP kernel family or radius,
+deposition support, edge policy, normalization, or conservation behavior, and
+it has no numerical-contribution, MAP-support, response, covariance,
+normalization, or estimator-validity meaning.
+
+When and only when a complete exact MAP plan $\Pi^{\rm MAP}$ requests it, a
+delegated $G_{pi}$ materialization has the typed parent relation
+\begin{equation}
+ G_{pi}^{\rm materialized}=
+ \mathcal M_{\rm AST}\!\left(
+   \Pi^{\rm AST}_{i},\mathcal W_o,
+   [\Pi^{\rm RTC}_{i}]_{\rm if\ applicable},
+   \Pi^{\rm MAP}_{\rm kernel/support/boundary/normalization}
+ \right).
+ \label{eq:gpi-parentage}
+\end{equation}
+$\mathcal M_{\rm AST}$ denotes a materialization service, not scientific
+selection or ownership of $G_{pi}$.  Thus AST determines exactly where the
+occurrence is, while MAP determines exactly how it contributes to pixels.

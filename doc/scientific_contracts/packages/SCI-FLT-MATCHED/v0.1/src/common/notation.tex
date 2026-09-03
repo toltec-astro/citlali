@@ -1,0 +1,216 @@
+% Shared normative core: notation
+\section{Normative notation and interpretation}
+\label{sec:notation}
+
+\newcommand{\ContractID}{\texttt{SCI-FLT-MATCHED}}
+\newcommand{\Req}[1]{\texttt{SCI-FLT-\allowbreak MATCHED-\allowbreak REQ-\allowbreak #1}}
+\newcommand{\Pred}[1]{\texttt{SCI-FLT-\allowbreak MATCHED-\allowbreak PRED-\allowbreak #1}}
+\newcommand{\AO}[1]{\texttt{SCI-FLT-\allowbreak MATCHED-\allowbreak AO-\allowbreak #1}}
+\newcommand{\AOpt}[2]{\texttt{SCI-FLT-\allowbreak MATCHED-\allowbreak AO-\allowbreak #1-\allowbreak #2}}
+\newcommand{\Unavailable}{\textsf{unavailable}}
+\newcommand{\Failed}{\textsf{failed}}
+\newcommand{\Complete}{\textsf{complete publication candidate}}
+\newcommand{\Disabled}{\textsf{disabled}}
+\newcommand{\Superseded}{\textsf{superseded}}
+\newcommand{\NotRequested}{\textsf{not requested}}
+\newcommand{\Requested}{\textsf{requested}}
+\newcommand{\Effective}{\textsf{effective}}
+\newcommand{\LearnedCandidate}{\textsf{learned candidate}}
+\newcommand{\Resolved}{\textsf{resolved}}
+\newcommand{\Applied}{\textsf{applied}}
+\newcommand{\Realized}{\textsf{realized}}
+\newcommand{\PublicationDecided}{\textsf{publication decided}}
+\newcommand{\Published}{\textsf{published}}
+\newcommand{\NotProduced}{\textsf{not produced}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Dom}{\mathcal{D}}
+\newcommand{\Supp}{\mathcal{S}}
+\newcommand{\Null}{\mathcal{N}}
+\newcommand{\Valid}{\mathcal{V}}
+\newcommand{\Lin}{\mathcal{L}}
+
+\subsection{Normative language}
+
+``Shall'' is a contract requirement. ``May'' identifies an allowed form whose
+scientific preconditions still have to be met. ``Exact'' means equality in the
+declared mathematical realization. Ordinary finite-precision acceptance is an
+engineering numerical-conformance question and does not weaken an exact
+scientific identity. ``Unknown'' and ``unavailable'' never mean zero. An
+alternative in Section~\ref{sec:authored-options} is an exact envelope identity.
+Owner authorization of an envelope does not by itself select or realize it for
+a request.
+
+\subsection{Collision-free objects, domains, and indexing}
+
+The paired readout-coordinate symbols $x$ and $r$ remain reserved to KID
+authority, and bare $Q_p$ remains reserved to MAP/JINC authority. They are not
+used for this package's map-domain anchors or weighting.
+
+A matched-template output anchor is $p$, a parent-map row or pixel is $q$, and
+a separately indexed template anchor is $s$. The base-v0.1 anchor set
+$\Dom_p$ contains exactly one anchor at each parent ordinary-MAP pixel center,
+with the same WCS, frame, grid, shape, indexing, ordering, and pixel-center
+convention as the parent apart from exact support restriction. The exact
+parent row-identity/fact domain is $\Supp_{\rm parent\ fact}$. The exact
+coordinate domain of the authorized parent stochastic model is
+$\Dom_{\rm model}$, and
+$M:\Dom_{\rm model}\rightarrow\R$ is the parent random vector under one exact
+declared stochastic law. The observed numerical-payload domain is
+$\Dom_m=\{q\in\Supp_{\rm parent\ fact}:\hbox{an admitted finite real parent
+signal payload exists}\}$, and the immutable observed MAP payload
+$m_{\rm obs}:\Dom_m\rightarrow\R$ exists only there.
+The expected parent response at row $q$ per unit
+amplitude anchored at $p$ is $t_{pq}$; its complete parent-coordinate vector is
+$t_p^{\rm full}$. Before any local inversion or weight construction, the
+selected route declares the finite local operator domain $\Dom_{\rm loc}(p)$
+and its exact template extraction $E_p$, so $t_p=E_pt_p^{\rm full}$.
+The scientific weighting $W_p$ is the complete coordinate-basis bilinear
+operator on those restricted vectors. Only after $W_p$, $d_p$, and the row are
+constructed is the normalized local covector
+$\ell_p^\star=W_pt_p/d_p$ embedded into parent coordinates as
+$c_p=E_p^{\mathsf T}\ell_p^\star$. Application support is exactly
+$\Supp_{\rm apply}(p)=\{q:c_{pq}\ne0\}$. Exact zero is the canonical
+scientific representation; no numerical threshold defines support. The
+fixed-state row functional on any partially available numerical object is
+$L_{p,g}u=\sum_{q\in\Supp_{\rm apply}(p)}c_{pq}u_q$. The dense shorthand
+$c_p^{\mathsf T}u$ is allowed only when $u$ exists on the complete parent
+coordinate domain or an exact algebraic completion is proved irrelevant.
+The template matrix whose column $s$ is $t_s^{\rm full}$ is $T$,
+and $R_{\rm fixed}(p,s)=L_{p,g}t_s^{\rm full}$.
+
+All scientific input and output vectors are real. A transform representation
+may be complex only when it preserves real-field conjugate symmetry and uses
+the Hermitian adjoint. In the real parent-coordinate basis the adjoint is the
+ordinary transpose. No stationarity, isotropy, periodicity, flat-sky metric,
+or Euclidean physical metric follows from the vector notation.
+
+\begin{longtable}{p{0.20\linewidth}p{0.70\linewidth}}
+\toprule
+Symbol & Normative meaning \\
+\midrule
+\endhead
+$p,q,s$ & Output anchor, parent row/pixel, and independently indexed template
+anchor. \\
+$\Supp_{\rm parent\ fact}$, $\Dom_{\rm model}$, $\Dom_m$ & Exact parent
+row-identity/fact domain, authorized stochastic-model coordinate domain, and
+the parent-fact subset carrying admitted finite real observed payload. \\
+$M$, $M_p$ & Parent random vector $M:\Dom_{\rm model}\to\R$ under one exact
+declared stochastic law and its local restriction $M_p=E_pM$. \\
+$m_{\rm obs}$, $m_{{\rm obs},q}$ & Immutable observed ordinary-MAP payload and
+one sample, defined only on $\Dom_m$. \\
+$t_{pq}$, $t_p$ & Parent response per unit amplitude and its complete
+local-domain vector. \\
+$\Dom_{\rm loc}(p)$ & Predeclared parent-coordinate domain used to construct the
+local template, weight, normalization, and operator before final application
+support is known. \\
+$E_p$ & Exact extraction/restriction from parent coordinates to
+$\Dom_{\rm loc}(p)$. \\
+$\Supp_{\rm apply}(p)$ & Parent payload coordinates whose final exact
+$L_{p,g}$ coefficients are nonzero. \\
+$\ell_p^\star$, $c_p$ & Normalized local covector $W_pt_p/d_p$ and its exact
+parent-coordinate embedding $E_p^{\mathsf T}\ell_p^\star$. \\
+$W_p$ & Frozen, self-adjoint, positive-semidefinite complete bilinear weight;
+all measure factors required by the scientific contraction are already in it. \\
+$n_p$ & Sparse weighted observed-parent contraction
+$\sum_{q\in\Supp_{\rm apply}(p)}c_{pq}d_pm_{{\rm obs},q}$. \\
+$d_p$ & Weighted template self-contraction $t_p^{\mathsf T}W_pt_p$; exactly
+real and positive for an admitted anchor. \\
+$\widehat a_p$ & Published fixed-template amplitude $n_p/d_p$. \\
+$L_{p,g}$ & Exact fixed-state scientific row functional producing
+$\widehat a_p$. \\
+$F_g$ & Actual fixed-state numerical producing map from an admitted observed
+payload, or the corresponding random input $M$ when defining its stochastic
+law, to the realized amplitude field; it need not be exactly linear. \\
+$T$ & Full template-response operator over the declared template-anchor domain. \\
+$R_{\rm fixed}(p,s)$ & Fixed-state response $L_{p,g}t_s^{\rm full}$. \\
+$R_{\rm FP}(p,s)$ & Full-procedure response when Learn--Resolve is rerun under
+an authorized perturbation definition; otherwise unavailable. \\
+$R_{\rm realized}^{[\delta,\sigma]}(m_{\rm obs};p,s)$ & Operational fixed-state
+response of $F_g$ at observed reference parent $m_{\rm obs}$ under the declared derivative or finite-
+difference specification. Here $\delta$ is the step (zero for an exact
+directional derivative) and $\sigma$ is the derivative/sidedness scheme. A
+parent-independent matrix shorthand is allowed only after fixed-state
+linearity is established. \\
+$C_{\rm parent\mid h_{\rm pre}}$ & Authorized coordinate-basis covariance
+$\operatorname{Cov}[M\mid h_{\rm pre}]$ for one exact stochastic population
+conditional only on the pre-draw frozen condition $h_{\rm pre}$. \\
+$C_p$ & Local-domain covariance
+$E_pC_{\rm parent\mid h_{\rm pre}}E_p^{\mathsf T}$. \\
+$C_{U1,{\rm reference}}$ & Theorem/reference covariance
+$P_CLC_{\rm parent\mid h_{\rm pre}}L^{\mathsf T}P_C^{\mathsf T}$. \\
+$C_{U1,{\rm realized}}$ & Operational conditional stochastic covariance
+$\operatorname{Cov}[P_CF_g(M)\mid h_{\rm pre}]$ on one fixed predeclared finite
+numerical codomain for the exact U1 population. \\
+$P_C$ & Fixed, predeclared selector from the produced field to the numerical
+codomain on which a named covariance role is defined; it is independent of the
+random draw and production outcome. \\
+$\widetilde d_p$ & Optional declared numerical normalization observable exposed
+by a numerical profile. It exists only when the producing route has a separable
+denominator with exact identity; it is not a required product of a general
+$F_g$. \\
+$\theta$ & Frozen template/calibration state on which U1 conditional stochastic
+statements condition; variation over $\theta$ belongs to U2 rather than U1. \\
+$g_{\rm resolved}$ & Immutable method/state generation after Resolve and before
+the random draw or Apply outcome. \\
+$h_{\rm pre}=(g_{\rm resolved},\theta)$ & Pre-draw frozen condition containing
+only parent product role/identity/class, stochastic-law/population identity,
+template, local-domain/extraction, weight, support/missingness rules,
+subspace/rank/null, regularization, numerical profile, $P_C$, response-query
+domain, and failure semantics. Numerical $m_{\rm obs}$ values, a digest that
+fixes the draw, execution success, draw-dependent product identity,
+publication, censoring, pairwise deletion, and draw-dependent domains are not
+U1 conditioning variables. \\
+$\Valid_{\rm signal}$ & Anchors satisfying every predicate required to publish
+the amplitude signal. \\
+$\Valid_{\rm response}(r)$, $\Valid_{\rm covariance}(r)$ & Signal-valid
+subdomains on which named response or covariance role $r$ is valid. \\
+$\Valid_{\rm NOI}$, $\Valid_{\rm FRUIT\ handoff}$ & Signal-valid subdomain or
+bundle-level validity for the NOI child and FLT-to-FRUIT handoff roles. \\
+$\texttt{optimality\_status}$ & One of
+\texttt{established\_exact\_local\_GLS}, \texttt{not\_claimed}, or
+\texttt{unavailable}; title, filename, and method ID are never evidence. \\
+$\mathcal Q_{\rm FLT}^{0.1}$ & Finite FLT-owned state/response handoff query
+vocabulary for this contract version; queries outside it require a successor
+envelope. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Coordinate-basis measure and covariance convention}
+\label{sec:measure-convention}
+
+This package uses coordinate-basis column vectors and ordinary matrix
+multiplication. There is no additional measure-weighted bracket in the
+scientific estimator. Every fixed pixel area, quadrature weight, transform
+normalization, or metric factor required by a selected realization is part of
+$W_p$ (and of the corresponding template/covariance coordinate convention).
+
+For the parent random vector $M$ with mean $\overline M$,
+\[
+ C_{\rm parent}=\operatorname E[(M-\overline M)(M-\overline M)^{\mathsf T}],
+ \qquad [C_{qq'}]=[M]^2.
+\]
+It is a coordinate-basis covariance matrix, not an integral-kernel symbol.
+Under an invertible coordinate or quadrature reparameterization $M'=SM$ and
+$m_{\rm obs}'=Sm_{\rm obs}$ on their respective complete domains,
+\[
+ C'=SC S^{\mathsf T},\qquad
+ t'=St,\qquad
+ W'=S^{-\mathsf T}WS^{-1},
+\]
+so the corresponding complete-domain contractions and $t^{\mathsf T}Wt$ are
+invariant. A complex
+representation replaces transpose by Hermitian adjoint. Thus
+self-adjointness and positivity mean $W_p=W_p^{\dagger}$ and
+$u^{\dagger}W_pu\geq0$ in the declared coordinate representation.
+
+The units satisfy $[t]=[M]/[a]=[m_{\rm obs}]/[a]$ and
+$[W]=[M]^{-2}$ for an exact covariance
+inverse; weaker weights may carry a common nonzero scale and different
+declared units because that scale cancels in $n_p/d_p$. In every case
+\[
+ [\widehat a]=[m_{\rm obs}]/[t].
+\]
+A point-source flux interpretation exists only if the template producer and
+CAL/BEAM lineage establish that exact amplitude convention. Otherwise the
+result is a declared shape amplitude.

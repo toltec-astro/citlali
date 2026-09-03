@@ -1,0 +1,122 @@
+\section{Normative definitions and boundary}
+\label{sec:definitions}
+
+\begin{description}[style=nextline,leftmargin=0pt,labelindent=0pt]
+\item[SCI-JINC observation estimator.]
+A signed spatial-kernel transformer that consumes exact PTC signal occurrences
+and their exact AST coordinates and forms at most one complete JINC bundle for
+each admitted and requested stable array in one observation.  It is a sibling
+alternative to ordinary SCI-MAP, not a downstream stage of SCI-MAP.
+
+\item[Exact occurrence.]
+The scientific identity that jointly fixes observation, detector occurrence
+and UID, stable RTC output sample, PTC product and application generation, PTC
+segment, stable array/group, time attribute, and immutable parent chain.  Row
+position, nearest time, tolerance, shape, detector order, or numerical equality
+is not a substitute.
+
+\item[Exact AST association.]
+The relation binding $z_i$ to the AST-owned
+\texttt{SCI-AST:rtc\_output\_grid\_coordinates@1} continuous coordinate for the
+same processed sample realization in the exact target JINC WCS.  Its data-model
+join is an engineering choice; its scientific identity is not.
+
+\item[JINC upstream-occurrence admission.]
+The canonical human-readable term for the decision that one exact upstream
+occurrence may be considered by JINC.  Its immutable Registry identity is
+\texttt{SCI-JINC:jinc\_map\_contribution@1}; the identity remains fixed, but
+its name shall not be used as shorthand for arithmetic contribution.  This
+decision neither authorizes rounded-center admission, sample-pixel
+membership, cancellation support, numerical contribution, nor bundle
+publication.
+
+\item[Rounded-center domain admission.]
+The JINC-owned occurrence-level gate applied after center rounding and before
+any footprint evaluation.  The resolved rounded center must lie within the
+finite destination pixel domain.  An outside center makes $I_{ip}=0$ for every
+$p$, even when the square footprint would overlap the map.
+
+\item[Point phase.]
+The residual between the exact continuous sample coordinate and the exact
+rounded center of Equation~\eqref{eq:rounded-center}.  Equations~
+\eqref{eq:phase-bin}--\eqref{eq:phase-representative} select a half-open bin
+and its midpoint representative independently on each axis.  The resulting
+kernel matrix is point evaluated and is not a pixel-area average.
+Under decision \texttt{SCI-JINC-DEC-PHASE-CENTER-001}, every positive
+$n_{\mathrm{sub}}$ remains permitted.  For even $n_{\mathrm{sub}}$, exact
+zero phase selects the positive midpoint on each applicable WCS axis; no
+zero-phase special case replaces that representative.  The positive-axis
+half-pixel center tie is likewise intentional.
+
+\item[Square support.]
+The fully populated integer-offset cache of Equation~\eqref{eq:square-offsets},
+with exact half-width
+$h_a=\lceil s_a(r_{\max})_a/\Delta\rceil$.  Every resolved square pixel is
+evaluated, including corners with radius larger than $(r_{\max})_a$; there is
+no circular membership predicate.
+
+\item[Sample-pixel membership.]
+The Boolean proposition $I_{ip}=1$ after sample admission, exact coordinate
+association, rounded-center domain admission, square placement, finite local
+geometry, and every pixel-local precondition.  A contract-defined analytic
+zero is a member with zero contribution; outside support is nonmembership; a
+finite negative coefficient is an ordinary signed member.
+
+\item[Algebraic local support.]
+The exact-arithmetic state in which the required inputs and accumulators are
+finite, $Q_p>0$, and $C_p\ne0$.  It establishes that $N_p/C_p$ is
+algebraically defined; it does not certify a finite-precision realization.
+
+\item[Certified numerical-realization adequacy.]
+The state in which an exact owner-approved profile
+$\mathcal{P}_{\mathrm{NA}}$ and a matching certificate $\mathcal{E}_p$ bind
+the scientific observable, absolute or relative form, reference norm,
+parameter/source/pixel domain, numerator and denominator error treatment,
+near-zero behavior, simultaneous or worst-case interpretation, exact
+pass/fail inequality, uncertainty, lifecycle, and provenance, and the
+certificate passes that inequality.  No such profile or certificate is
+admitted or supplied by this source packet, so numerical-realization adequacy
+is presently typed unavailable rather than approximated by prose.
+A passing pair establishes only finite-precision fidelity to the exact
+selected discrete SCI-JINC oracle over its declared domain.  It does not
+qualify the selected parameters, phase resolution, square truncation,
+scientific response, performance, validation, readiness, or production use.
+
+\item[Exact-source lock.]
+The base-v0.1 compatibility rule that binds the complete exact PTC boundary,
+AST boundary, admission-profile object, SCI-VAL binding, and JINC-specific
+source/profile successor snapshot bytes named by
+\texttt{SCI-JINC-REQ-043}.  Ambient or merely current Registry state is not a
+substitute.  Any changed bound object requires a versioned SCI-JINC
+successor; numerical or textual similarity cannot establish compatibility.
+
+\item[Complete observation bundle.]
+The atomic fixed-role product for one observation, stable array, exact JINC
+plan and realization, target WCS, and lifecycle generation.  It contains
+exactly five numerical map-plane roles: $N_p$, $C_p$, $Q_p$, derived $m_p$
+with local support/validity, and $T_p^{(\kappa^2)}$.  Its compact bundle-level
+generative record $G_a$ is required information state at the existing
+plan/bundle provenance granularity; it is not a sixth product role, a dense
+per-contribution archive, or generalized provenance machinery.
+
+\item[Whole-bundle failure.]
+Failure to form or publish any required whole-product role.  It suppresses the
+affected bundle without a partial role, placeholder, synthetic empty-array
+product, or completion override.  Pixel-local invalid support is ordinary
+bundle content and is not whole-bundle failure.
+
+\item[Typed numerical unavailability.]
+The fail-closed state in which a numerical JINC route cannot be realized
+because an exact authorized TolTEC kernel parameter set or an exact registered,
+selected, realized, JINC-permitted PTC coefficient family/payload is absent.
+The same state applies when an exact owner-approved numerical-adequacy profile
+and matching certificate are required but absent.  It is not repaired by a
+hidden default, unity coefficient, alternate family, ordinary MAP permission,
+inherited scale, implementation value, or approximate fidelity phrase.
+
+\item[Scientific destination identity.]
+The product identity formed from observation, stable array, exact JINC plan and
+realization, target WCS, product role, and lifecycle generation.  Worker,
+thread, process, container, filename, vector position, and network order are
+not scientific identity.
+\end{description}

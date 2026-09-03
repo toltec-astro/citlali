@@ -1,0 +1,78 @@
+\section{Notation and identity}
+\label{sec:notation}
+
+The contract is observation-scoped.  A quantity's unit, frame, topology,
+support, and missing-data meaning belong to that quantity and never follow
+from a shared container name.  Observation identity is externally supplied;
+reduction-local observation, sample, slot, and internal scan indices are
+zero-based.  Internal intervals are half-open.
+
+\begin{longtable}{L{0.16\linewidth}L{0.28\linewidth}L{0.20\linewidth}L{0.27\linewidth}}
+\toprule
+Symbol or term & Identity and shape & Unit or domain & Meaning\\
+\midrule
+\endfirsthead
+\toprule
+Symbol or term & Identity and shape & Unit or domain & Meaning\\
+\midrule
+\endhead
+\(o\) & stable observation identity & external identifier & Parent of every native occurrence, grid, slot, interval, and realized plan.\\
+\(i\in\{D,T,H\}\) & detector, telescope, optional HWPR interface & interface identifier & Native interface; \(i_{\rm ref}=D\) is the selected v0.1 reference interface.\\
+\(d\) & detector occurrence or stable detector identity & detector identifier & Detector identity is not detector-column position; \(p\) is reserved for a map pixel.\\
+\(k\) & ordered native row & zero-based integer & Native occurrence identity is bound to interface, observation, and row, not reconstructed from time alone.\\
+\(E_i,u_{ik}\) & named epoch and native coordinate & seconds after checked conversion & Producer-owned event/epoch meaning and ordered native time coordinate.\\
+\(t_{ik}^{\rm ref}\) & corrected native event coordinate & detector-reference seconds & Checked epoch conversion plus the exactly-once admitted interface offset.\\
+\(h_i,d_{ik}\) & cadence and native support/duration & seconds & Producer facts; neither is inferred from row count or nominal slots.\\
+\([B_i^-,B_i^+)\) & acquisition bounds & seconds & Half-open producer-declared native acquisition support, mapped by the same admitted clock relation.\\
+\(\delta_{i\rightarrow\rm ref}\) & interface-offset record value & seconds & Positive when added to place the native coordinate later on detector-reference time; \(\delta_{{\rm ref}\rightarrow{\rm ref}}=0\).\\
+\(\phi_D,h_D\) & detector-grid phase and cadence & seconds & Define the nominal detector-reference lattice.\\
+\(s\) & stable ALIGN detector-reference slot & zero-based integer & Stable ALIGN identity is \((o,s)\), independent of any selected window or array layout.\\
+\(j\) & local storage row & zero-based integer & A view-local row derived from \(s\) and the selected window; never an external identity and never a source for reconstructing \(s\).\\
+\(n\) & stable RTC output-sample identity & downstream identifier & Reserved for RTC output identity; it is not an ALIGN slot or ALIGN local row.\\
+\(t_s,I_s\) & nominal ALIGN slot time and cell support & seconds & Nominal output relation; neither proves physical event time, integration, nor exposure.\\
+\(\epsilon_{\rm slot}\) & assignment tolerance & seconds & Declared with \(0\leq\epsilon_{\rm slot}<h_D/2\).\\
+\(V_D\) & native paired detector-value container over rows and detectors & coordinate-specific declared units & Tune/readout-produced \((x,r)^{\rm acq}\), with common occurrence relation but coordinate-specific validity and payload availability.\\
+\(V_{Tv},V_{Hv}\) & native values for named field \(v\) & declared unit and source frame & Telescope/observing-state or optional HWPR producer facts.\\
+\(A_{\rm ALIGN}\) & realized detector-pair temporal mapping & dimensionless & One mapping applied separately to \(x^{\rm acq}\) and \(r^{\rm acq}\), never mixing the coordinates.\\
+\(G_D,I_T,I_H\) & realized detector, telescope, and HWPR mappings & dimensionless & Conditional mappings after identities, operators, timing, support, and policy resolve.\\
+\(S_q\) & processing-window selection & dimensionless & Selects a stable half-open window without changing slot or physical-scan identity.\\
+\(A_q\) & realized block mapping for selected window \(q\) & dimensionless & Data-derived and conditioned on timestamps, producer state, offsets, and resolved plan.\\
+\(\mathcal S_{\rm ALIGN}\) & ALIGN product-state tuple & categorical and relational & Origin, local validity, method, reason, source identities, and weights; distinct from acquired microwave quadrature \(Q\).\\
+\(e^{\rm acq}_{sd}\) & physical acquired detector exposure & seconds & Native physical integration support attributable to an original detector occurrence \(d\) at slot \(s\), independent of payload scientific validity; zero for synthesized, missing, or unoccupied support.\\
+\(e^{\rm vo}_{sd}\) & valid-original detector exposure & seconds & Subset of \(e^{\rm acq}_{sd}\) whose original payload and required ALIGN-local mapping facts are valid.\\
+\(C_v,C_y\) & input and output covariance & squared declared units & Formal covariance when admitted inputs and the selected detail tier make it available.\\
+\(R_q\) & conditional mapping response & output per template amplitude & ALIGN response conditional on the realized mapping, not a downstream end-to-end transfer function.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Typed state axes}
+
+The following axes are independent unless an explicit named rule composes
+them:
+
+\begin{description}[style=nextline,leftmargin=0pt]
+\item[Origin] \(\state{original}\), \(\state{synthesized}\), or
+\(\state{unavailable}\), refined without upgrading origin by
+\(\state{original\mbox{-}invalid}\) and \(\state{guarded}\) facts.
+\item[Method] \(\state{exact}\), \(\state{linear}\),
+\(\state{circular}\), \(\state{held}\), a separately authorized
+continuity-surrogate identity, or \(\state{none}\).
+\item[Availability and validity] Presence, payload availability, finiteness,
+producer validity, ALIGN mapping validity, support, uncertainty availability,
+and reason are separately represented; no numeric sentinel is sufficient.
+\item[Five causes] Detector-occurrence identity, signal-coordinate validity,
+ALIGN mapping validity, AST coordinate validity, and downstream use-specific
+eligibility are non-substitutable causes.  One cause neither aliases nor
+rescues another.
+\item[Exposure facts] Physical acquired exposure, valid-original exposure,
+synthesized/surrogate support, missing/unoccupied support, and later guarded,
+retained, or use-qualified exposure are separate facts.  Later policy never
+rewrites whether a physical integration occurred.
+\item[Resolution state] Requested, effective, observation-resolved, and
+realized state flow one way.  Lifecycle and generation provenance identify
+the owning request and observation.
+\end{description}
+
+The word \emph{detector-reference} names the selected detector-stream
+reference interface, its admitted clock relation, and its assigned grid.  It
+never names a reference detector.

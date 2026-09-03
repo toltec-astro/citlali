@@ -1,0 +1,43 @@
+requirement_id,prediction_ids,owner_decision_ids,owner_source_sha256,approval_state,source_profile_dependency,parity_result,ecs_section,verification_kind
+SCI-NOI-REQ-001,SCI-NOI-PRED-011,r0.3-architecture-basis,4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5,approved,SCOPE|TAX,exact,1,operation-role review
+SCI-NOI-REQ-002,SCI-NOI-PRED-004,ODQ-102A,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved-identity-numerically-unavailable,PTCB|MAPB,exact,2,operator identity review
+SCI-NOI-REQ-003,SCI-NOI-PRED-010,ODQ-101|ODQ-104,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved,GRAPH|FILTER,exact,8,fixed-relearned review
+SCI-NOI-REQ-004,SCI-NOI-PRED-002,ODQ-102B,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved,PTCB|DESIGN,exact,3,coherence audit
+SCI-NOI-REQ-005,SCI-NOI-PRED-001,ODQ-102C,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved,DESIGN|MAPB,exact,3,mass-balance audit
+SCI-NOI-REQ-006,SCI-NOI-PRED-015,SCI-NOI-OWNER-Q-SCOPE-01,4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5,approved,SCOPE,exact,1,observation-array scope audit
+SCI-NOI-REQ-007,SCI-NOI-PRED-004,ODQ-102A,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved-identity-numerically-unavailable,PTCB|MAPB,exact,2,sign-placement audit
+SCI-NOI-REQ-008,SCI-NOI-PRED-004,ODQ-102A,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved,MAPB,exact,2,representation and parent audit
+SCI-NOI-REQ-009,SCI-NOI-PRED-012,ODQ-102A,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved,MAPB|GRAPH,exact,2,response parity review
+SCI-NOI-REQ-010,SCI-NOI-PRED-015|SCI-NOI-PRED-016,ODQ-102D|SCI-NOI-OWNER-Q-102D-01,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b|4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5,approved,DESIGN,exact,4,population-state audit
+SCI-NOI-REQ-011,SCI-NOI-PRED-015|SCI-NOI-PRED-016,SCI-NOI-OWNER-Q-102D-01,4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5,approved,DESIGN,exact,4,edge-state audit
+SCI-NOI-REQ-012,SCI-NOI-PRED-014,SCI-NOI-OWNER-Q-102D-01,4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5,approved,DESIGN,exact,4,rejection mechanics audit
+SCI-NOI-REQ-013,SCI-NOI-PRED-013,r0.3-architecture-basis|SCI-NOI-OWNER-Q-102D-01,4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5,approved,DESIGN|LIFE,exact,3,universal design identity review
+SCI-NOI-REQ-014,SCI-NOI-PRED-014,SCI-NOI-OWNER-Q-102D-01,4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5,approved,DESIGN,exact,4,conditional-uniformity proof
+SCI-NOI-REQ-015,SCI-NOI-PRED-005,SCI-NOI-OWNER-Q-102D-01,4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5,approved,DESIGN,exact-repaired,4,duplicate-complement audit
+SCI-NOI-REQ-016,SCI-NOI-PRED-005,SCI-NOI-OWNER-Q-102D-01|ODQ-105B,4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5|272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved,DESIGN|UNCT,exact,5,count-rank-information review
+SCI-NOI-REQ-017,SCI-NOI-PRED-003|SCI-NOI-PRED-007,ODQ-103,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved,DESIGN,exact,6,source-imprint claim review
+SCI-NOI-REQ-018,SCI-NOI-PRED-008,ODQ-105A,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved,LIFE|VALP,exact,5,atomic completion audit
+SCI-NOI-REQ-019,SCI-NOI-PRED-013,r0.3-architecture-basis,4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5,approved,LIFE,exact,5,retry-replacement identity audit
+SCI-NOI-REQ-020,SCI-NOI-PRED-009,ODQ-109,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved,LIFE,exact,5,persistence plan review
+SCI-NOI-REQ-021,SCI-NOI-PRED-010,ODQ-110A,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved-boundary-numerically-unavailable,FILTER,exact,8,external transform parity review
+SCI-NOI-REQ-022,SCI-NOI-PRED-010,ODQ-110B|ODQ-110C,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved-boundary-numerically-unavailable,FILTER|LIFE,exact,8,generation separation review
+SCI-NOI-REQ-023,SCI-NOI-PRED-006|SCI-NOI-PRED-007,ODQ-105B|ODQ-106,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved-estimand,UNCT,exact,6,UNC completeness review
+SCI-NOI-REQ-024,SCI-NOI-PRED-008,ODQ-105A|ODQ-111,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved-r0.18-profile-r0.3-evaluation-unavailable,UNCT|VALP,exact,6,all-member admission audit
+SCI-NOI-REQ-025,SCI-NOI-PRED-002|SCI-NOI-PRED-006,ODQ-105B,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved-estimand,UNCT,exact,6,estimator reproduction
+SCI-NOI-REQ-026,SCI-NOI-PRED-007|SCI-NOI-PRED-009,ODQ-105B|r0.3-architecture-basis,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b|4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5,approved,UNCT,exact,6,product-name-unit-claim review
+SCI-NOI-REQ-027,SCI-NOI-PRED-009,ODQ-105B,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved,UNCT,exact,6,uncertainty-information separation
+SCI-NOI-REQ-028,SCI-NOI-PRED-005,ODQ-106,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved,UNCT|TAX,exact,6,representation-role review
+SCI-NOI-REQ-029,SCI-NOI-PRED-006,ODQ-107|r0.3-no-new-reciprocal-decision,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b|4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5,legacy-approved-r0.3-successor-unavailable,UNCT|VALP,typed-unavailability,7,reciprocal gate review
+SCI-NOI-REQ-030,SCI-NOI-PRED-017,ODQ-108|ODQ-102A,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved-method-numerically-unavailable,STDT|MAPB|JINCB,exact,7,numerator-scale-parent audit
+SCI-NOI-REQ-031,SCI-NOI-PRED-017,ODQ-108,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved,STDT,exact,7,unit-claim review
+SCI-NOI-REQ-032,SCI-NOI-PRED-011,ODQ-111,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved-r0.18-bytes-r0.3-successor-unavailable,VALP|REG_BIND,exact-boundary,8,profile projection review
+SCI-NOI-REQ-033,SCI-NOI-PRED-011,ODQ-111,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved-r0.18-bytes-r0.3-successor-unavailable,VALP|REG_BIND,exact-boundary,8,GEN-input profile review
+SCI-NOI-REQ-034,SCI-NOI-PRED-008|SCI-NOI-PRED-011,ODQ-111,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved-r0.18-bytes-r0.3-successor-unavailable,VALP|REG_BIND,exact-boundary,8,UNC-member profile review
+SCI-NOI-REQ-035,SCI-NOI-PRED-008|SCI-NOI-PRED-011,ODQ-111,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved-r0.18-bytes-r0.3-successor-unavailable,VALP|REG_BIND,exact-boundary,8,UNC-ensemble profile review
+SCI-NOI-REQ-036,SCI-NOI-PRED-011|SCI-NOI-PRED-017,ODQ-111|ODQ-108,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,r0.18-approved-r0.3-successor-unavailable,VALP|STDT|REG_BIND,exact-boundary,8,STD successor gate review
+SCI-NOI-REQ-037,SCI-NOI-PRED-012,r0.3-architecture-basis,4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5,approved,CONV,exact,1,typed-state no-default review
+SCI-NOI-REQ-038,SCI-NOI-PRED-010,ODQ-110A|ODQ-110B|ODQ-110C,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved,FILTER|LIFE,exact,8,immutable ancestry review
+SCI-NOI-REQ-039,SCI-NOI-PRED-009,ODQ-102C|ODQ-105B|ODQ-107,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,approved,TAX|UNCT|STDT,exact,7,role-promotion prohibition
+SCI-NOI-REQ-040,SCI-NOI-PRED-011,ODQ-111,272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b,r0.18-approved-and-bound-r0.3-successor-unavailable,VALP|REG_BIND,exact-boundary,8,profile immutability review
+SCI-NOI-REQ-041,SCI-NOI-PRED-001,r0.3-architecture-basis,4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5,approved,COVER,exact,8,module binding review
+SCI-NOI-REQ-042,SCI-NOI-PRED-017,r0.3-architecture-basis,4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5,approved,SCOPE|COVER,exact,8,claim-ceiling review

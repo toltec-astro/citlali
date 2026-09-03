@@ -1,0 +1,63 @@
+# SCI-ALIGN v0.1 — Owner Decision Register
+
+Status: Stage B targeted r0.3 scientific-decision register; candidate authority
+remains an author draft pending scientific-owner review
+
+Prepared: `2026-08-22`
+
+This register preserves every decision and owner-question identity supplied in
+the exact approved author packet. Packet approval authorized implementation-
+blind authorship against the bound bytes; it is not approval of the Stage B
+draft, implementation conformity, validation, freeze, readiness, or production
+use.
+
+## Decisions to preserve
+
+| Decision identity | State | Scientific substance |
+| --- | --- | --- |
+| `ALIGN-OD1--OD2` | recovered owner-approved | The selected detector-stream interface `i_ref=D` defines the reference grid/clock relation. “Detector-reference” never means a reference detector. Stable ALIGN slot identity is `(observation,s)`; `j` is local storage row only and `n` is reserved for RTC output identity. Preserve acquisition support, explicit cadence/phase/slot identity, round-half-up assignment, tolerance below half a sample, and fail-closed ambiguous/nonmonotonic/colliding assignment. V0.1 admits one producer-authorized observation-constant interface offset `delta_(i->ref)` with sign, unit, reference, application stage/count, validity domain, uncertainty/bound, and residual diagnostics. It is applied exactly once. Drift/state dependence is typed unavailable outside the admitted model; no time-varying correction is inferred. |
+| `ALIGN-SCOPE-D007--D008` | owner-directed | The ordinary chain is `(I,Q)^acq -> Tune/readout -> (x,r)^acq -> SCI-ALIGN -> (x,r)^A`. Tune/readout owns native IQ-to-`x/r`; ALIGN never aligns IQ under assumed commutation. The pair satisfies `x^A=A_ALIGN x^acq`, `r^A=A_ALIGN r^acq` with identical native occurrences, temporal mapping/weights, residuals, detector-reference slots, source-relation identity, and origin/synthesis state. No mixing, cross-filling, or crossing Tune/mapping revisions without separate authority. Numerical validity/payload availability remain coordinate-specific. |
+| `ALIGN-OD3` | recovered owner-approved | Every aligned field has versioned identity, unit, unchanged source frame, topology, validity/missing semantics, maximum support span, and a declared continuous-scalar, circular, step/state, or exact-only operator. Circular shortest signed difference uses exactly `[-P/2,P/2)` and an exactly antipodal interpolation is unavailable absent explicit unwrap authority. No universal scalar interpolation or unapproved extrapolation is inferred. |
+| `ALIGN-OD4--OD6` | recovered owner-approved, bounded by open questions | Acquisition gaps, ordinary resampling, invalid originals, processing guards, and continuity synthesis are distinct. Physical scans, chunks, science/context windows, and output selections retain separate stable half-open identities. Declared per-field interpolation does not authorize detector-signal synthesis. An authorized surrogate retains exact rows/weights, causal support, response, uncertainty status, synthesized origin, and zero added acquired exposure; it is never an original independent occurrence. The recovered OD4 numerical threshold remains scoped to its recorded decision and is not a general v0.1 default. |
+| `ALIGN-OD7` and `ALIGN-C001` | recovered owner-approved | Persist a compact generative grid/offset/registry/window/mapping identity with ordinary identity mapping implicit and exceptions explicit. Expanded rows/weights/residuals and selected covariance may be reconstructible or requested. Unavailable response/uncertainty is not zero. ALIGN owns only its conditional mapping response; optional detail does not change semantics or numerical results. |
+| `ALIGN-SCOPE-D015--D016` | owner-directed | AST consumes exact detector-occurrence identity, detector-reference slot/time, native-to-aligned source relation, ALIGN mapping identity/weights, aligned observing-state fields, and origin/support/validity/response/provenance facts without requiring finite numerical `x/r`. A coordinate may remain available despite invalid/unavailable `x/r` or later signal exclusion when the occurrence/time/geometry/telescope inputs remain valid. Preserve five distinct causes: occurrence identity, signal-coordinate validity, ALIGN mapping validity, AST coordinate validity, and downstream use-specific eligibility. None aliases or rescues another. |
+| `ALIGN-SCOPE-D017` | owner-directed | Exact detector-reference occurrence time is grid/time identity. Aligned boresight, elevation, required azimuth, and other declared observing-state fields are evaluated or mapped at that exact time and supply AST field-rotation inputs. A producer telescope timestamp may remain native metadata but is not a competing current-sample time. Producer-selected pointing-correction records remain separate; ALIGN supplies the admitted relation and AST interpolates only within selected support. |
+| `ALIGN-SCOPE-D018` | owner-directed | AST owns TAN/WCS astrometric projection to continuous map coordinates. MAP owns sample-to-pixel deposition/gridding projection and estimator-specific `G_pi`, weights, contribution, and map support. AST coordinates do not independently authorize `G_pi`. AST may materialize `G_pi` only for an exact MAP-owned request; scientific ownership remains with MAP. |
+| `ALIGN-SCOPE-D019` | owner-directed | The shared boundary profile is `SCI-ALIGN_TO_SCI-AST` at `v0.1/r0.1`, with explicit owner, roles, approval state/date, and compatibility/supersession rule. Compatibility never follows from similar shape or field names. The profile carries no self-hash; packet manifests bind identical bytes. |
+| `ALIGN-SCOPE-D005` | owner-directed boundary | ALIGN exports ALIGN-local mapping validity and support, not downstream eligibility. AST coordinate validity remains distinct. A named-use owner authors its policy and the designated evaluator applies it. |
+| `ALIGN-OD8` | recovered owner-approved | Optional HWPR timing/availability/alignment facts may be represented without trimming ordinary nonpolarimetric detector-signal support. The `x/r` coordinates remain raw KID readout coordinates. No polarization demodulation, efficiency, calibration, or Stokes reconstruction is authorized by ALIGN. |
+
+## Scientific-owner open-question ledger
+
+No implementation convention or plausible numerical value closes these
+questions. Each unresolved item blocks only its named field, operator, detail
+tier, or claim.
+
+| ID | Owning authority | State | Evidence or decision required / decided substance | Exact blocked claim or output | Resolution authority | Resolution date | Affected author artifacts |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `SCI-ALIGN-ODQ-101` | Native detector/telescope producers plus SCI-ALIGN | open | Producer-authoritative event, epoch, cadence/phase, acquisition/integration support, rollover/drift/state dependence, timestamp uncertainty, and constant-offset validity domain for each admitted interface | Physical/absolute event-time or offset-validity claims for the affected interface beyond the conditional assigned relation | Grant Wilson with named producer authority | — | Scope; timing equations; shared boundary |
+| `SCI-ALIGN-ODQ-102` | Telescope/observing-state producer plus SCI-ALIGN | open | Exact versioned boresight/elevation/required-azimuth and additional geometry/field-rotation field set evaluated or mapped at exact occurrence time, with unit, frame, topology, validity/missing rule, interpolation span, uncertainty availability, and composition history | Coordinate or field-rotation claims requiring an unresolved occurrence-local observing-state field | Grant Wilson with telescope and AST authorities | — | Scope; field registry; shared boundary |
+| `SCI-ALIGN-ODQ-103` | Telescope state producer | open | Producer definition of `Hold`/scan state, transition event, state semantics, validity interval, and continuity rule | Physical scan segmentation or transition claims depending on unresolved producer state meaning | Grant Wilson with named telescope authority | — | Scan contract; field registry; shared boundary |
+| `SCI-ALIGN-ODQ-104` | SCI-ALIGN gap/continuity authority | open | Exact detector-signal surrogate family; count, duration, and fraction thresholds; whether and where the recovered scoped threshold is admitted; edge, causal-support, response, uncertainty, and guard requirements | Bounded synthesis and gap-limit claims for the affected detector signal domain | Grant Wilson | — | Gap equations; requirements; predictions |
+| `SCI-ALIGN-ODQ-105` | SCI-ALIGN/SCI-AST interface | open | Quantitative response tier; expanded-row/weight/residual tier; covariance/model/selection-uncertainty payload tier; and required-versus-typed-unavailable rules for each AST operation | AST claims requiring a response, covariance, model, selection-uncertainty, or expanded-detail tier not supplied by the compact exact relation | Grant Wilson with AST authority | — | Scope; shared boundary; uncertainty contract |
+| `SCI-ALIGN-ODQ-106` | SCI-ALIGN/SCI-AST/named-use policy vocabulary | decided | Preserve detector-occurrence identity, signal-coordinate validity, ALIGN mapping validity, AST coordinate validity, and downstream use-specific eligibility as five distinct causes. Signal invalidity alone does not establish AST invalidity; no cause rescues another restriction. | Cause taxonomy no longer blocked; an unavailable owner predicate blocks only its named use | Grant Wilson | `2026-08-21` | Scope; shared boundary; validity sections |
+| `SCI-ALIGN-ODQ-107` | Pointing-support producer, SCI-ALIGN, and SCI-AST | decided | Aligned current observing state describes the science occurrence. Separately, the producer selects a correction record/native support; ALIGN supplies its admitted time relation; AST interpolates only within support and never extrapolates. Current elevation is not inferred from the correction record. | Family/ownership split no longer blocked; unresolved registry entries block only dependent correction/coordinate claims | Grant Wilson | `2026-08-21` | Scope; shared boundary; field registries |
+| `SCI-ALIGN-ODQ-108` | Target/product authority and SCI-AST | decided | Target/product authority selects the physical center; AST realizes the named selection and constructs the TAN/WCS astrometric projection without silent recentering; ALIGN has no center-selection authority. | Ownership no longer blocked; unavailable named center selection blocks only its dependent WCS/coordinate claim | Grant Wilson | `2026-08-21` | Scope; shared boundary; AST ownership |
+| `SCI-ALIGN-ODQ-109` | Optional HWPR producer plus future polarimetry authority | deferred | Exact versioned HWPR registry, event/epoch meaning, unit, frame, angle/state topology, validity/missing rule, operator/span, required-mode policy, and separate polarimetry authority | Claims requiring an unresolved HWPR field; any HWPR-dependent Stokes output additionally requires separate polarimetry authority | Grant Wilson with named HWPR/polarimetry authority | — | Field registry; shared boundary; future polarimetry contract |
+| `SCI-ALIGN-ODQ-110` | Pointing-correction producer plus SCI-ALIGN/SCI-AST | open | Exact admitted pointing-correction record family: record/parent/selection identities, vector meaning, sign/basis, unit, native support mode/times, covariance availability, missing behavior, and producer authority | Correction and derived-coordinate claims requiring an unresolved correction-record family or semantic field | Grant Wilson with pointing-support producer and AST authority | — | Scope; correction-record registry; shared boundary |
+
+## Stage B targeted r0.3 disposition
+
+- Decisions remain binding within their recorded scope and are not reopened by
+  author convenience.
+- Open/deferred items remain unresolved and are represented as typed
+  unavailability in the shared modules.
+- Decided items `SCI-ALIGN-ODQ-106` through `SCI-ALIGN-ODQ-108` are carried into
+  the five-cause, telescope-family, and projection/center requirements.
+- No new owner decision is claimed by this register.
+- The r0.3 exposure taxonomy separates physical acquired exposure from its
+  valid-original subset; original-invalid payloads may retain physical
+  integration, while synthesized and missing support add zero exposure.
+- Exact occurrence time is no longer a mapped scalar observing-state field.
+  These repairs implement the directive without closing or reopening any ALIGN
+  owner question.

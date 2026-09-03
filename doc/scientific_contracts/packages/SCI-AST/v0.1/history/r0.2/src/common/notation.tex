@@ -1,0 +1,171 @@
+\section{Notation and typed identities}
+\label{sec:notation}
+
+This module fixes the symbols used by both views of the SCI-AST v0.1
+authority.  A symbol is meaningful only together with its declared identity,
+unit, frame, topology, support, parent, validity, and availability.  Array
+position or a similar name is never an identity.
+
+\subsection{Indices and scientific objects}
+
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.16\linewidth}
+                  >{\raggedright\arraybackslash}p{0.76\linewidth}}
+\toprule
+Symbol & Meaning \\
+\midrule
+\endhead
+$o$ & Immutable observation identity. \\
+$d$ & Admitted detector/acquisition occurrence, including its observation
+binding; it is not merely an array row or an optional design identity. \\
+$s$ & Stable detector-reference slot identity on the exact admitted SCI-ALIGN
+grid.  Its stable identity is $(o,s)$; it is independent of any local storage
+row or numerical array position. \\
+$j$ & Local storage row only.  It is never an external identity, an ALIGN
+slot, an occurrence identity, or a scientific parent. \\
+$n$ & Stable output-sample identity on an exact resolved SCI-RTC output grid. \\
+$k\in\{0,1\}$ & Producer-selected pointing-support record identity. \\
+$p$ & Pixel identity used by a MAP-owned deposition/gridding operator. \\
+$F$ & Declared output frame.  $H$ denotes the declared native horizon frame;
+$J$ denotes the explicitly identified equatorial J2000 frame used by Science.
+The letters do not supply missing frame semantics. \\
+$\widehat{\boldsymbol u}_{\rm sky}$ & Unit sky direction in a declared
+spherical frame.  Symbols $x$ and $r$ are reserved exclusively for the paired
+KID readout coordinates. \\
+$\boldsymbol e_\ell,\boldsymbol e_b$ & Local orthonormal tangent basis toward
+increasing longitude at fixed latitude and increasing latitude. \\
+$\boldsymbol c_k,\boldsymbol c_s$ & Pointing-support correction and its
+realization at stable ALIGN slot $s$, expressed as declared tangent
+components in radians. \\
+$\boldsymbol g_d$ & Selected detector-geometry datum, including its immutable
+APT realization and occurrence binding. \\
+$\mathcal G_\gamma$ & Selected, versioned geometry and field-rotation relation
+with lineage $\gamma$; it includes the declared gauge, basis, handedness,
+pivot state, affine limitations, time/elevation support, and uncertainty
+availability. \\
+$\boldsymbol\xi_{ds}$ & Realized detector tangent displacement supplied by
+$\mathcal G_\gamma$ at the current aligned sample time and elevation. \\
+$\mathsf R_{F\leftarrow H,s}$ & Named frame operator from the declared native
+horizon frame to $F$ at stable slot $s$, including required time, site,
+epoch/equinox, EOP/refraction policy, version, and validity. \\
+$\boldsymbol w$ & Continuous tangent-plane coordinate, in arcseconds for
+Point/OOF/Beammap and degrees for Science. \\
+$\boldsymbol q=(q_1,q_2)^\mathsf T$ & Continuous one-based FITS pixel
+coordinate. \\
+$(j,h)$ & Zero-based local storage row and column.  Neither is an external
+identity; $j$ is reserved for local storage row only. \\
+$\mathcal W_o$ & Immutable realized WCS identity for the declared
+observation/product plan. \\
+$\theta^A_{ds}$ & AST coordinate on the exact ALIGN-grid parent. \\
+$\theta^{\rm RTC}_{dn}$ & Separately parented AST coordinate on the exact
+resolved RTC output grid. \\
+$G_{pi}$ & Estimator-specific sample-to-pixel deposition/gridding operator
+owned by SCI-MAP, even when materialized by AST as a delegated service. \\
+$I^{\rm geom}_{pi}$ & Optional geometry-only candidate incidence, neighbor
+stencil, or pixel-support relation.  It is not an estimator and has no
+numerical-contribution, normalization, conservation, MAP-support, validity,
+response, or covariance meaning. \\
+$J_{\rm AST,0}^{({\rm out}\leftarrow{\rm in})}$ & Typed
+\texttt{astrometric\_map\_center\_jacobian}, evaluated at the declared
+physical center. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Units, topology, and indexing}
+
+Angles used by the spherical equations are radians unless an equation states
+otherwise.  Define
+\begin{equation}
+  \kappa \equiv \frac{\pi}{180\,3600}
+  \quad\text{radian per arcsecond}.
+  \label{eq:kappa}
+\end{equation}
+FITS/WCS pixel coordinates are one-based.  In-memory rows and columns are
+zero-based.  Internal windows and supports are half-open and retain stable
+identities.  A longitude component must declare whether it is a coordinate
+increment or an on-sky tangent component.
+
+For a period $P$, \emph{shortest signed difference} means a deterministic
+member of $[-P/2,P/2)$, while persisted normalized longitude is a member of
+$[0,P)$.  Exactly antipodal interpolation is unavailable unless an explicit
+unwrap authority selects the path and parents that selection.  At a
+coordinate pole, the unit vector rather than longitude is the direction
+identity.
+
+\subsection{Exact parent identities}
+
+The parent of an ALIGN-grid detector sky direction is
+\begin{equation}
+ \begin{aligned}
+ \Pi^{A,{\rm direction}}_{ds}=(o,d,s,\;&
+  \text{SCI-ALIGN\_TO\_SCI-AST v0.1/r0.1},\\
+  &\text{ALIGN plan/grid/source relation},\;\text{observing state},\\
+  &\text{pointing correction},\;\gamma,\;F).
+ \end{aligned}
+ \label{eq:align-parent}
+\end{equation}
+It binds the stable slot $(o,s)$ and never a local row $j$.  The exact ALIGN
+profile is compatible only when its profile identity and declared
+version/revision preserve every required identity, semantic state, ownership
+boundary, and typed-availability rule.  A successor must name the revision it
+supersedes and map every changed, removed, or newly required item explicitly;
+similar shape or field names do not establish compatibility.
+
+The successive tangent, continuous-pixel, and nominal-pixel roles add only
+their scientific dependencies:
+\begin{align}
+ \Pi^{A,{\rm tangent}}_{ds}
+   &= (\Pi^{A,{\rm direction}}_{ds},\;
+       \text{selected physical center},\;
+       \text{tangent projection identity}),
+       \label{eq:tangent-parent}\\
+ \Pi^{A,{\rm pixel}}_{ds}
+   &= (\Pi^{A,{\rm tangent}}_{ds},\;\mathcal W_o),
+       \label{eq:pixel-parent}\\
+ \Pi^{A,{\rm nominal\ pixel}}_{ds}
+   &= (\Pi^{A,{\rm pixel}}_{ds},\;\text{rounding rule},\;
+       \text{dimensions},\;\text{bounds convention}).
+       \label{eq:nominal-pixel-parent}
+\end{align}
+Consequently a WCS failure cannot erase a valid direction or tangent fact,
+and a nominal-pixel failure cannot erase a valid continuous pixel.  A
+requested product family may still require atomic completion and fail that
+product while preserving the individual facts and exact causes.
+
+The parent of $\theta^{\rm RTC}_{dn}$ extends the appropriate available
+direction, tangent, or pixel role rather than relabeling it:
+\begin{equation}
+ \begin{aligned}
+ \Pi^{\rm RTC}_{dn} = (o,d,n,\;&\Pi^{A,{\rm role}}_{dM_n},
+   \text{RTC product/plan/grid},M_n,t_n,\\
+   &\text{phase/delay},\text{segment},\text{decimation},\\
+   &\text{support/response/correction state}).
+ \end{aligned}
+ \label{eq:rtc-parent}
+\end{equation}
+Here $M_n$ denotes the exact RTC-selected representative stable ALIGN slot
+when applicable; it is never selected by AST.  The selected role and every
+response/correction fact are part of the identity.
+
+\subsection{Availability and cause types}
+
+Every optional or unresolved quantity carries a typed state and exact reason.
+The vocabulary used here is:
+\begin{itemize}
+  \item \texttt{available} and \texttt{available\_conditional};
+  \item \texttt{unavailable\_input}, \texttt{unavailable\_authority}, and
+        \texttt{unavailable\_unsupported}; and
+  \item \texttt{not\_applicable} and \texttt{not\_persisted\_standard}.
+\end{itemize}
+A producer may refine these states, but must not collapse unavailable into
+numeric zero or an empty unlabeled field.
+
+Five cause types are distinct throughout:
+\begin{enumerate}[label=\arabic*.]
+  \item detector-occurrence identity;
+  \item detector signal-coordinate validity and numerical payload
+        availability for $x$ and $r$;
+  \item SCI-ALIGN mapping validity;
+  \item SCI-AST coordinate validity; and
+  \item downstream use-specific eligibility under a named owner's policy.
+\end{enumerate}
+No cause is an alias, precedence rule, or rescue rule for another.

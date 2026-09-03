@@ -1,0 +1,71 @@
+% SCI-BEAM v0.1 shared normative assumptions. Document revision r0.3.
+\section{Assumptions, dependencies, and unavailable claims}
+\label{sec:assumptions}
+\begin{enumerate}[label=\textbf{A\arabic*.}]
+\item The raw detector observable is $x_d=\Delta f_d/f_d$. Its exact reference
+frequency, sign, zero/baseline treatment, conditioning, support, and valid
+loading/tune/signal domain are declared inputs rather than inferred by BEAM.
+\item The primary v0.1 fit input is a standardized detector-resolved Beammap in
+$\Delta f/f$. A calibrated map is not the calibration-estimation input, and a
+timestream fit is not the v0.1 production estimator.
+\item Parent mapmaking, pixelization, projection, gridding, filtering, finite
+boundary, WCS, response, validity, and covariance provenance are supplied and
+preserved. The fitted tensor is conditioned on that map response.
+\item The coordinate transformation establishes a metrically orthonormal
+angular plane and its uncertainty. A local Jacobian is used only with validated
+approximation error over the fit region.
+\item The immutable calibrator identity and source model are supplied for the
+declared epoch, passband, spectral, finite-source, and reference-origin
+convention, with uncertainty or explicit unavailable state.
+\item $F^{\rm TOA,nom}_{s,a}$ is supplied as the top-of-atmosphere calibrator
+source flux in $\mathrm{mJy\,beam_{nom}^{-1}}$ for the fixed versioned nominal
+beam at the fitted reference origin.
+\item The effective Gaussian family is only a compact core model. A good fit
+does not prove the complete PSF, absence of wings, intrinsic optical response,
+or adequacy for a downstream kernel.
+\item The admitted support and constant/planar background jointly identify the
+reported source, centroid, three tensor degrees of freedom, amplitude, source
+nuisance, and background parameters. Unidentified quantities are unavailable.
+\item The covariance or declared approximation describes the retained map
+support sufficiently for the statistical claim. A diagonal approximation does
+not authorize calibrated uncertainty under correlated residuals.
+\item The full local map-model Jacobian and fit covariance preserve material
+cross terms among fitted and admitted map-model parameters. Separate
+derived-product Jacobians propagate external calibration and sensitivity
+inputs while retaining material dependence between stages. Missing nuisance
+covariance is unavailable, not independent or zero.
+\item The nominal and effective tensors share compatible frame, Gaussian,
+source, and response conventions before broadening is formed. Positive-
+semidefinite support is required for a literal Gaussian smoothing meaning.
+\item The centroid-to-detector sign/frame transformation, horizon derotation
+law, parent-sample support and contribution weights, effective per-detector
+angle, fit support, conventional pivot, origin gauge, and uncertainty are
+supplied. Pixel-domain fit weights alone are not parent timing evidence.
+Neither the conventional origin nor ensemble translation is physical
+boresight truth.
+\item Bracketing pointing observations and their associated science
+observation use the same immutable APT artifact and AST rotation convention
+unless a separately authorized transformation proves equivalence.
+\item BEAM owns source-observation atmosphere used in \texttt{flxscale}; the
+operator and support match the fitted amplitude. Target-observation atmosphere
+is excluded and later applied by SCI-CAL.
+\item The scan-domain \texttt{sens} structure is fixed and uses
+$|\texttt{flxscale}|$ so an available sensitivity is finite and strictly
+positive. Its numerical noise, source-exclusion, admission, exposure,
+bandwidth, and uncertainty policies remain open owner decisions. No default
+is inferred.
+\item A compatible TolAPT prior is soft locator initialization and bounded
+gating only. It contributes no measurement-objective penalty, is not exact
+detector or position truth, cannot veto the blind route, and records influence.
+\item Every attempted detector and per-quantity state is published atomically
+with the mandatory APT and resolvable dense companions. One unavailable field
+does not erase independently valid fields.
+\item Numerical QC and production thresholds are versioned evidence-based
+policy, not physical constants derived from this model.
+\end{enumerate}
+
+Dependencies on calibrator/source modeling, nominal-beam authority, source
+atmosphere, ALIGN/AST, mapmaking/response, TolAPT priors, TolProj child-APT
+transformation, SCI-CAL target calibration, weighting, and downstream kernel
+science remain explicit. This contract defines their interfaces but does not
+certify their inputs, implementations, or validation evidence.

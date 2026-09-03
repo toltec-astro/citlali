@@ -1,0 +1,43 @@
+requirement_id,prediction_ids,authority_codes,engineering_section,verification_kind
+SCI-NOI-REQ-001,SCI-NOI-PRED-011,SCOPE|TAX|OWNER,1,identity-and-role review
+SCI-NOI-REQ-002,SCI-NOI-PRED-004,PTCB|MAPB|GRAPH|OWNER,2,operator identity review
+SCI-NOI-REQ-003,SCI-NOI-PRED-010,GRAPH|FILTER|OWNER,7,fixed-relearned generation review
+SCI-NOI-REQ-004,SCI-NOI-PRED-002,DESIGN|OWNER,2,coherence occurrence audit
+SCI-NOI-REQ-005,SCI-NOI-PRED-001,DESIGN|OWNER,3,coefficient-mass stratum audit
+SCI-NOI-REQ-006,SCI-NOI-PRED-015,SCOPE|OWNER,3,typed pending-scope review
+SCI-NOI-REQ-007,SCI-NOI-PRED-004,MAPB|PTCB|OWNER,2,symbolic sign-placement audit
+SCI-NOI-REQ-008,SCI-NOI-PRED-004,MAPB|PTCB|OWNER,2,inline-materialized parity review
+SCI-NOI-REQ-009,SCI-NOI-PRED-012,MAPB|GRAPH|OWNER,2,response occurrence parity review
+SCI-NOI-REQ-010,SCI-NOI-PRED-015,DESIGN|OWNER,3,population-state and denominator audit
+SCI-NOI-REQ-011,SCI-NOI-PRED-016,DESIGN|OWNER,3,typed pending-disposition review
+SCI-NOI-REQ-012,SCI-NOI-PRED-014,DESIGN|OWNER,3,owner-question gate review
+SCI-NOI-REQ-013,SCI-NOI-PRED-013,DESIGN|LIFE|OWNER,3,plan preregistration identity review
+SCI-NOI-REQ-014,SCI-NOI-PRED-014,DESIGN|OWNER,3,conditional-law proof after approval
+SCI-NOI-REQ-015,SCI-NOI-PRED-005,DESIGN|OWNER,3,duplicate and complement audit
+SCI-NOI-REQ-016,SCI-NOI-PRED-005,DESIGN|UNCT|OWNER,4,count rank and information reconciliation
+SCI-NOI-REQ-017,SCI-NOI-PRED-003|SCI-NOI-PRED-007,DESIGN|OWNER,3,claim and source-imprint review
+SCI-NOI-REQ-018,SCI-NOI-PRED-008,DESIGN|LIFE|OWNER,4,atomic completion audit
+SCI-NOI-REQ-019,SCI-NOI-PRED-013,LIFE|OWNER,4,retry-versus-replacement identity audit
+SCI-NOI-REQ-020,SCI-NOI-PRED-009,LIFE|OWNER,7,persistence plan review
+SCI-NOI-REQ-021,SCI-NOI-PRED-010,FILTER|OWNER,7,external transform parity review
+SCI-NOI-REQ-022,SCI-NOI-PRED-010,FILTER|LIFE|OWNER,7,generation-separation review
+SCI-NOI-REQ-023,SCI-NOI-PRED-006|SCI-NOI-PRED-007,UNCT|OWNER,5,UNC contract completeness review
+SCI-NOI-REQ-024,SCI-NOI-PRED-008,UNCT|VALP|OWNER,5,all-member admission audit
+SCI-NOI-REQ-025,SCI-NOI-PRED-002|SCI-NOI-PRED-006,UNCT|OWNER,5,estimator reproduction
+SCI-NOI-REQ-026,SCI-NOI-PRED-007|SCI-NOI-PRED-009,UNCT|OWNER,5,unit target and claim review
+SCI-NOI-REQ-027,SCI-NOI-PRED-009,UNCT|OWNER,5,uncertainty-count-rank separation review
+SCI-NOI-REQ-028,SCI-NOI-PRED-005,UNCT|TAX|OWNER,5,product-role separation review
+SCI-NOI-REQ-029,SCI-NOI-PRED-006,UNCT|STDT|OWNER,6,typed reciprocal gate and domain review
+SCI-NOI-REQ-030,SCI-NOI-PRED-017,STDT|JINCB|OWNER,6,numerator-scale-domain audit
+SCI-NOI-REQ-031,SCI-NOI-PRED-017,STDT|OWNER,6,unit and claim-ceiling review
+SCI-NOI-REQ-032,SCI-NOI-PRED-011,VALP|OWNER|REG_BIND,7,profile field/action projection review
+SCI-NOI-REQ-033,SCI-NOI-PRED-011,VALP|OWNER|REG_BIND,7,GEN-input named-use audit
+SCI-NOI-REQ-034,SCI-NOI-PRED-008|SCI-NOI-PRED-011,VALP|OWNER|REG_BIND,7,UNC-member named-use audit
+SCI-NOI-REQ-035,SCI-NOI-PRED-008|SCI-NOI-PRED-011,VALP|OWNER|REG_BIND,7,UNC-ensemble named-use audit
+SCI-NOI-REQ-036,SCI-NOI-PRED-011|SCI-NOI-PRED-017,VALP|STDT|OWNER|REG_BIND,7,STD successor-binding gate review
+SCI-NOI-REQ-037,SCI-NOI-PRED-012,CONV|OWNER,1,typed-state and no-default review
+SCI-NOI-REQ-038,SCI-NOI-PRED-010,LIFE|FILTER|OWNER,7,immutable-parent ancestry review
+SCI-NOI-REQ-039,SCI-NOI-PRED-009,TAX|UNCT|STDT|OWNER,6,role-promotion prohibition review
+SCI-NOI-REQ-040,SCI-NOI-PRED-011,VALP|OWNER|REG_BIND,7,profile-byte immutability review
+SCI-NOI-REQ-041,SCI-NOI-PRED-001,COVER|OWNER,8,module hash and document binding review
+SCI-NOI-REQ-042,SCI-NOI-PRED-017,SCOPE|COVER|OWNER,8,claim-ceiling language review

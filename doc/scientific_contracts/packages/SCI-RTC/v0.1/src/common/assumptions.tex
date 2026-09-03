@@ -1,0 +1,127 @@
+% SCI-RTC v0.1/r0.12 shared normative core -- assumptions and scope.
+\section{Bounded assumptions and non-goals}
+\label{sec:core-assumptions}
+
+\begin{description}[style=nextline,leftmargin=1em,labelindent=0pt,
+  labelwidth=0pt,labelsep=0pt]
+
+\item[SCI-RTC-ASM-001 -- Capability.]
+V0.1 admits the exact paired raw readout coordinates \texttt{xs} and
+\texttt{rs}.  The $x$ member is the ordinary science-conditioning path; the
+$r$ member is a retained diagnostic coordinate and, when requested, an
+optional conditioned companion on exactly the conditioned-$x$ grid.  It is
+not an independently planned pipeline.  Raw $x$ and conditioned $r$ are not
+themselves Stokes observables, and enabled polarimetry remains excluded until
+separately approved.
+
+\item[SCI-RTC-ASM-002 -- Aligned-grid boundary.]
+The input grid, cadence, phase, mapping, gaps, synthesis/origin state,
+support, and scan partition are admitted ALIGN facts.  Physical event timing,
+absolute timing accuracy, and a producer epoch may remain unavailable.
+RTC's local numerical operator begins at this aligned pair; ALIGN remains
+upstream lineage and is composed only for a separately identified end-to-end
+response.
+
+\item[SCI-RTC-ASM-003 -- Coordinate boundary.]
+Coordinate-dependent operations assume an admitted AST identity, frame,
+topology, detector binding, support, validity, and uncertainty where required.
+The absence of such authority does not license inference or clamping.
+
+\item[SCI-RTC-ASM-004 -- Calibration boundary.]
+Calibration-factor production, target-atmosphere correction, beam meaning,
+uncertainty, and promotion belong to SCI-BEAM/SCI-CAL.  RTC remains in raw
+$\Delta f/f$ through replacement, filtering, and sampling.  Atmospheric
+templates are diagnostic evidence for leakage, Tune/readout health, shift and
+artifact assessment, and selection/review only; v0.1 does not subtract them
+from science $x$.  SCI-CAL consumes only the exact RTC $x$ product and applies
+absolute \texttt{flxscale} plus target atmosphere only after RTC.
+
+\item[SCI-RTC-ASM-005 -- Selected-policy boundary.]
+Despike, level-shift detection, transition masks, segmentation, reset,
+plateau use, donor, mask, FIR, IIR, notch, atmospheric-template diagnostics, leakage,
+state, edge, non-finite, recovery, sampling, diagnostic, and failure choices
+are operation classes admitted across application contexts and governed by
+selected versioned policies.  Admission does not mean execution; a class runs
+only when the resolved plan selects and numerically resolves it.
+Artifact evidence may be coordinate-specific, but detection and affected
+support are pair-coherent.  Coordinate-valued corrections remain distinct;
+an $x$ repair does not imply an $r$ reconstruction.
+No current default or numerical threshold is promoted to a universal
+scientific constant by this contract.
+
+\item[SCI-RTC-ASM-006 -- Conditional linearity.]
+Linear response and covariance identities condition on fixed paired-stream
+selection and realized state.  At fixed state the paired conditioned response
+has identical ordinary diagonal blocks and both cross-coordinate numerical
+Jacobian branches are zero.  Available joint covariance retains its cross-coordinate blocks even
+though numerical mixing is absent.  Cross-coordinate covariance and shared
+selectors are retained in selection, learned-parameter, model, and cross-term
+uncertainty.  Data-derived selectors make the unconditional operation generally
+nonlinear and nonstationary, and a total derivative may be unavailable at a
+selector boundary.
+
+\item[SCI-RTC-ASM-007 -- Statistical input.]
+Moments or covariance are claimed only from a supplied statistical model with
+declared included and excluded components, correlations, and limitations.
+Absence does not imply diagonal, white, stationary, independent, or zero
+covariance, and a qualified partial claim need not pretend to be total.
+
+\item[SCI-RTC-ASM-008 -- Learned-mode scope.]
+Every learned-then-fixed RTC operation uses one declared learning population,
+one resolved immutable plan, and one explicit compatibility domain.  The
+first learned sampling scope produces one common observation plan.  Per-array,
+per-scan, heterogeneous-cadence, noise-aware, and continuously adaptive
+sampling execution are successor scopes.
+Bounded iterative notch-plan refinement is admitted only as a finite outer
+sequence of actual attempts, bounded by a separately configured maximum, over
+complete immutable accepted plans; rejected attempts do not advance the
+accepted-plan sequence, unused maximum attempts are not artificial no-ops,
+and no parameter evolves within an apply pass.
+
+\item[SCI-RTC-ASM-009 -- Analytical authority.]
+Exact analytical source-times-realized-filter transfer and phase-zero alias
+accounting define learned-plan admission.  Deterministic vectors may falsify
+a realization, while source injections and observational studies are required
+for separately claimed performance or science-impact evidence.
+
+\item[SCI-RTC-ASM-010 -- Compact representation.]
+Dense observation-sized response, covariance, or per-sample provenance is not
+required when a factorized, sparse, interval-based, or generative
+representation exactly reconstructs the operator, support, causes, and
+exceptions.  Normal despike output may retain compact treatment state and
+population counts and characteristics without a complete per-event or
+per-donor manifest; detailed event fits and donor links may be a separately
+requested verbose or diagnostic product whose presence is numerically inert.
+
+\item[SCI-RTC-ASM-011 -- Downstream authority.]
+RTC supplies causal inputs but does not own PTC cleaning/weights, VAL
+eligibility policy, MAP estimation, BEAM inference, empirical NOI products,
+MAP-003 response tracing, map filtering, source fitting, or fruit-loop
+recurrence.  It reports the conditioned $x/r$ pair and enough exact RTC facts
+for those consumers to apply their own policies; it does not select a PTC
+joint-$r$ mode or a cross-package validity aggregation policy.
+
+\item[SCI-RTC-ASM-012 -- Claim separation.]
+The contract is an algebraic and semantic authority only.  It contains no
+claim that a present implementation conforms, that a representation is
+faithful, that observational performance is adequate, or that a mode is ready
+for production.
+
+\end{description}
+
+\subsection{Explicit non-goals}
+
+This revision does not derive ALIGN timing, AST coordinates, SCI-BEAM or
+SCI-CAL calibration, PTC, VAL, MAP, or FLT estimators, source fitting, or recurrence;
+authorize absolute-timing or astrometric corrections; redesign mature
+despike/FIR/IIR/notch numerics; choose universal numerical thresholds;
+authorize online adaptation; activate polarimetry; authorize atmospheric or
+common-mode template subtraction from science $x$; authorize automatic
+$r$-to-$x$ correction, $r$ calibration, use of $r$ as an $x$ donor, or a
+donor-based or otherwise invented $r$ repair; decide how PTC uses conditioned
+$r$ or how SCI-VAL aggregates cross-package validity; or authorize a default
+joint-$r$ mode;
+gain-, responsivity-, or general response-changing level-shift model;
+prescribe source classes, files,
+storage schemas, or product names; authorize per-array/per-scan cadence; inspect implementation;
+perform validation or reductions; or assert production status.

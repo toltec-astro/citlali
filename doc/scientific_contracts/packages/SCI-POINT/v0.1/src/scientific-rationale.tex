@@ -1,0 +1,363 @@
+\documentclass[12pt]{article}
+\usepackage[letterpaper,margin=0.90in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs,longtable,array}
+\usepackage[table]{xcolor}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{needspace}
+\input{common/bindings}
+\definecolor{pointblue}{HTML}{173B57}
+\definecolor{pointteal}{HTML}{2B6F6D}
+\definecolor{pointpale}{HTML}{EAF2F4}
+\definecolor{pointgray}{HTML}{4B5563}
+\hypersetup{colorlinks=true,linkcolor=pointblue,urlcolor=pointteal,
+  pdfauthor={SCI-POINT scientific-contract program; Grant Wilson, scientific owner},
+  pdftitle={SCI-POINT Scientific Rationale v0.1 r0.4},
+  pdfsubject={Concise scientist-facing view of the exact normative core}}
+\setlist{nosep,leftmargin=*}
+\setcounter{tocdepth}{1}
+\setlength{\LTpre}{0.3em}
+\setlength{\LTpost}{0.5em}
+\renewcommand{\arraystretch}{1.14}
+\setlength{\emergencystretch}{2em}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{pointblue}\textbf{SCI-POINT} Scientific Rationale}
+\rhead{\small v0.1 / r0.4}
+\cfoot{\small\thepage}
+\newcommand{\statusbox}[1]{\begin{center}\fcolorbox{pointteal}{pointpale}{\begin{minipage}{0.92\linewidth}#1\end{minipage}}\end{center}}
+\newcommand{\MethodID}{\texttt{POINT-FIT/ELLIPTICAL-GAUSSIAN-COMPATIBILITY@1}}
+\newcommand{\CompatMethod}{\texttt{POINT-COMPATIBILITY-METHOD v0.1}}
+\newcommand{\FormalMethod}{\texttt{POINT-FORMAL-ERROR-METHOD v0.1}}
+\newcommand{\RMSMethod}{\texttt{POINT-FULL-MAP-RMS-METHOD v0.1}}
+\newcommand{\DeltaPoint}{\boldsymbol{\Delta}_{\mathrm{POINT}}}
+\newcommand{\muhat}{\widehat{\boldsymbol{\mu}}}
+\newcommand{\muexp}{\boldsymbol{\mu}_{\mathrm{expected}}}
+\newcommand{\thetahat}{\widehat{\boldsymbol{\theta}}}
+\newcommand{\Sigmashape}{\boldsymbol{\Sigma}_{g}}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\begin{document}
+\begin{titlepage}
+\vspace*{0.45in}
+{\color{pointteal}\rule{\linewidth}{2.5pt}}\\[0.32in]
+{\Huge\bfseries\color{pointblue} SCI-POINT}\\[0.14in]
+{\LARGE Scientific Rationale}\\[0.38in]
+{\large Scientific contract v0.1 \quad Document revision r0.4}\\[0.12in]
+{\large Concise scientist-facing view}\\[0.42in]
+
+\statusbox{\textbf{Authority status.} The complete scientific authority is
+\NormativeCoreID. This view explains its conditional known-source, per-array
+Pointing contract without reproducing the complete formal registers. The
+compatibility, formal-error, and full-map-RMS methods and every exact numerical
+route remain unavailable pending separate owner approval. Implementation
+conformity has not been assessed.}
+
+\vfill
+\footnotesize
+\begin{tabular}{@{}ll@{}}
+Scientific owner & Grant Wilson \\
+Status & Scientific authority frozen; implementation conformity unassessed \\
+Stage A packet & \texttt{\StageAPacketID} \\
+Stage A SHA-256 & \texttt{\StageAPacketSHA} \\
+Scientific directive & \texttt{\ScientificDirectiveID} \\
+Scientific SHA-256 & \texttt{\ScientificDirectiveSHA} \\
+Owner directive & \texttt{\OwnerDirectiveID} \\
+Owner SHA-256 & \texttt{\OwnerDirectiveSHA} \\
+Normative core & \texttt{\NormativeCoreID} \\
+Core SHA-256 & \texttt{\NormativeCoreSHA} \\
+Document source & \texttt{\RationaleSourceID} \\
+Source SHA-256 & \texttt{\RationaleSourceSHA} \\
+Build record & \texttt{\BuildRecordID} \\
+Base operator & \texttt{POINT-FIT/ELLIPTICAL-GAUSSIAN-COMPATIBILITY@1} \\
+Date & 2026-09-03 \\
+\end{tabular}
+\normalsize
+\\[0.28in]
+{\color{pointteal}\rule{\linewidth}{1.1pt}}
+\end{titlepage}
+
+\section*{Reader summary}
+\addcontentsline{toc}{section}{Reader summary}
+
+\statusbox{\textbf{Input.} One exact observation-local, per-array MAP, JINC,
+FLT-FIXED, or FLT-MATCHED signal product; exact state and optional terminal
+FRUIT ancestry; a valid expected source position and AltAz tangent boundary;
+and explicit requested method/use state.\\[0.35em]
+\textbf{Conditional output.} A six-role zero-background elliptical-Gaussian
+fit and signed source displacement
+$\DeltaPoint=\muhat-\muexp$ in arcseconds, with exact identities, states,
+dependencies, uncertainty availability, diagnostics, and separately owned use
+decisions.\\[0.35em]
+\textbf{Present numerical status.} Unavailable. The missing numerical
+authorities are not inferred.}
+
+The physical meaning in one sentence is: for one identified source and one
+exact processed map, fit the approved Gaussian family in the physical AltAz
+tangent metric, independently establish that the fitted feature is the source,
+and report its centroid minus the authoritative expected position while
+preserving every parent, method, response, uncertainty, and use limitation.
+
+\begin{center}
+\small
+\fbox{exact parent $+$ source reference $+$ AltAz tangent boundary}
+$\;\longrightarrow\;$
+\fbox{conditional fit $+$ association}\\[0.35em]
+$\boldsymbol{\downarrow}$\\[-0.1em]
+\fbox{signed displacement $+$ bounded diagnostics $+$ separate use decisions}
+\end{center}
+
+\tableofcontents
+
+\section{Why the contract is conditional}
+
+A mature operation can have a stable scientific purpose while still lacking
+a content-bound numerical procedure. Choosing a familiar least-squares
+objective, a conventional Gaussian width, or an assumed inverse-variance
+weight would silently replace that operation. SCI-POINT therefore fixes the
+scientific estimand, six parameter roles, zero-background family, coordinate
+measurement, four parent families, ownership, typed state semantics, and
+falsifiable consequences while leaving unavailable details unavailable.
+
+This separation lets the exact compatibility, formal-error, and full-map-RMS
+methods be recovered later without changing the primary estimand. It also
+prevents a missing optional diagnostic, response, or downstream decision from
+erasing an otherwise authorized independent fit fact.
+
+The producer lifecycle, component-identifiability state, and named-use
+evaluation are independent. SCI-VAL retains four axes: request
+(\path{requested}, \path{not_requested}); applicability
+(\path{applicable}, \path{inapplicable}, \path{applicability_unknown});
+eligibility (\path{eligible}, \path{ineligible},
+\path{decision_unavailable}); and realization (\path{realized},
+\path{incomplete}, \path{failed}, \path{not_produced}). Where the controlling
+crosswalk makes no applicability or eligibility proposition, no value exists;
+absence is not another token. A successfully written unknown-scope or conflict
+accounting artifact is \path{realized}; \path{failed} means production of the
+decision artifact failed.
+
+\section{Parent routes and ownership}
+
+SCI-POINT consumes exactly one observation-local per-array parent and never
+selects, substitutes, equates, or falls back among route families. The
+normative core binds the exact POINT-facing role identities; readable role
+labels are used below.
+
+\begin{longtable}{@{}P{0.15\linewidth}P{0.38\linewidth}P{0.39\linewidth}@{}}
+\toprule
+Family & POINT-facing signal role & Required distinction \\
+\midrule
+\endhead
+MAP & Observation-level normalized signal & Exact observation-level normalized signal; never a coadd. \\
+JINC & Normalized JINC signal & Exact signed normalized signal; normalization and response companions do not replace the signal. \\
+FLT-FIXED & Fixed transformed signal & Exact transformed signal with parent, operator, normalization, response, edge/support, and covariance state. \\
+FLT-MATCHED & Matched-template amplitude field & Exact template-amplitude field with template, noise/covariance selector, normalization, phase/origin, response, and support. \\
+\bottomrule
+\end{longtable}
+
+Terminal FRUIT is ancestry, not a fifth route. It retains the exact terminal
+MAP, JINC, FLT-FIXED, or FLT-MATCHED identity plus complete terminal iteration,
+generation, recurrence, restart, response, support, covariance, calibration,
+null/additive-reference, lifecycle, and provenance. Intermediate iterations
+and coadds are outside base v0.1.
+
+The parent producer owns the parent estimand, units, calibration, response,
+support, covariance, lifecycle, and provenance. The source-reference producer
+owns the expected position. AST owns the physical AltAz tangent realization.
+POINT owns the per-array fit and the sign of its displacement measurement.
+Pointing support owns aggregation and correction construction; AST owns
+correction application. SCI-BEAM owns beam products; CAL/TolProj owns
+photometric-transfer admission; named QC processes own their thresholds and
+actions; NOI owns separately authorized empirical uncertainty; SCI-VAL
+registers and evaluates profiles but authors no scientific policy.
+
+\section{Model, measurement, search, and association}
+
+For physical tangent coordinate $\boldsymbol{u}_q$, the base model is
+\begin{equation}
+g_q(A,\boldsymbol{\mu},\Sigmashape)
+=A\exp\!\left[-\tfrac12(\boldsymbol{u}_q-\boldsymbol{\mu})^{\mathsf T}
+\Sigmashape^{-1}(\boldsymbol{u}_q-\boldsymbol{\mu})\right].
+\end{equation}
+The symmetric positive-definite shape has ordered, strictly positive principal
+extents. The six roles are amplitude, two centroid components, two principal
+widths, and orientation. No constant, gradient, local baseline, or second
+model family is admitted. At exact circularity the orientation is
+\path{undefined_by_model_symmetry}; no finite placeholder is a measurement.
+
+The exact AST boundary maps parent coordinates into the declared physical
+AltAz tangent metric. The signed measurement is
+\begin{equation}
+\DeltaPoint=\muhat-\muexp,
+\qquad [\DeltaPoint]=\mathrm{arcsec}.
+\end{equation}
+Search center, expected position, selected seed, fitted centroid, and source
+association are distinct. Search and fallback locate candidates; they never
+define the astrometric zero or establish identity. Every central, global,
+restart, or retry branch requires an independent
+\path{POINT-SOURCE-ASSOCIATION-STATE=established} before displacement,
+source-associated amplitude, or an intended-source diagnostic can be created.
+
+\section{Method authorities and present availability}
+
+{\small
+\begin{longtable}{@{}P{0.15\linewidth}P{0.12\linewidth}P{0.14\linewidth}P{0.16\linewidth}P{0.13\linewidth}P{0.14\linewidth}@{}}
+\toprule
+Authority & Present state & Enabled when available & Blocked while absent & Unaffected & Release condition \\
+\midrule
+\endhead
+Compatibility method v0.1 & unavailable; owner approval pending & Numerical fit and all fit-derived roles & Fit, components, displacement, diagnostics, formal errors & Request, parent, boundary and typed accounting & Exact immutable method, numerical parent, and route binding \\
+Formal-error method v0.1 & unavailable; owner approval pending & Marginal formal errors and signed formal standardization & Formal errors, unsupported joint covariance and dependent uses & Authorized fitted values and non-formal roles & Exact error method with conditioning and failure rules \\
+Full-map-RMS method v0.1 & unavailable; owner approval pending & RMS scale and signed amplitude/RMS diagnostic & RMS scale, diagnostic and approved aliases & Fit, displacement and formal errors & Exact population, centering, weighting, support, denominator, and lineage rules \\
+\bottomrule
+\end{longtable}
+}
+
+The conditional estimator is only
+\begin{equation}
+\thetahat=\operatorname{Resolve}_{\boldsymbol{\theta}\in\Theta_{\mathrm{effective}}}
+D\!\left(m,g_{\boldsymbol{\theta}};W_{\mathrm{fit}}\right).
+\end{equation}
+The exact objective, rows, constraints, comparison, convergence, retry, and
+solution rule remain gated. $W_{\mathrm{fit}}$ is the exact consumed object;
+uniform, reliability, covariance, inverse-covariance, or other approved source
+roles are not aliases. Every mapping binds identity, source/target units,
+normalization, support, state, claim ceiling, and provenance.
+
+Every exact route instance is also unavailable pending its upstream product
+role, contract version, source digest, owner approval, compatibility state,
+generation, and parent-response identity/status. The four draft named-use
+profiles remain unregistered and unevaluable pending owner review. Separate
+authority is required for fixed response, POINT-full-procedure/parent-fixed
+response, whole-chain response, observational bias/accuracy, and any requested
+covariance representation.
+
+\section{Products, dependencies, diagnostics, and edge behavior}
+
+The consolidated table states minimum scientific dependencies; the normative
+core controls every exact field and terminal rule.
+
+{\small
+\begin{longtable}{@{}P{0.18\linewidth}P{0.15\linewidth}P{0.22\linewidth}P{0.15\linewidth}P{0.14\linewidth}@{}}
+\toprule
+Role & Scientific quantity & Minimum dependencies & Unavailable result & Claim ceiling \\
+\midrule
+\endhead
+Fit result & Six-role conditional fit & Compatibility method, exact parent/route, support, plan and fit realization & No numerical fit & Not association, beam, catalog or correction \\
+Fit-amplitude component & Signed fitted $A$ & Conforming fit and component state & Component status retained & Parent-unit fit component; not source attribution \\
+Displacement measurement & $\muhat-\muexp$ in AltAz & Identifiable centroid, expected position, exact basis, established association & Displacement unavailable; fit may remain & Measurement, never correction \\
+Source-associated amplitude & Fitted $A$ attributed to intended source & Fit amplitude plus established association & Source-associated role unavailable & Candidate input only; not universal flux \\
+Signed derived diagnostics & $\widehat A/\mathrm{RMS}_{\mathrm{full}}$; $\widehat A/\sigma_A$ & Separate request, exact amplitude, corresponding method, positive finite denominator, claim-appropriate association & Only dependent diagnostic unavailable & Descriptive ratio or formal standardization; not significance \\
+Effective-shape diagnostic & Processed-map widths and angle & Conforming fit and component states & Per-role status retained & Not intrinsic beam or unique cause \\
+Fit QC metrics & Fit components and states for named QC & Immutable fit plus owner profile/evaluation & QC decision unavailable & No automatic threshold, cause or action \\
+Association state & Established, unavailable, or failed & Independent method, domain, cause and branch coverage & Source-attributed roles blocked & Never implied by peak or finite fit \\
+Response, bias, covariance states & Exact separately scoped companions & Exact authority and complete scope-specific dependencies & Typed companion unavailable & Blocks only dependent claim; no implied zero \\
+\bottomrule
+\end{longtable}
+}
+
+Both admitted diagnostics are signed:
+\begin{equation}
+D_{\mathrm{RMS}}=\widehat A/\mathrm{RMS}_{\mathrm{full}},
+\qquad Z_A=\widehat A/\sigma_A.
+\end{equation}
+Neither is statistical significance. $|\widehat A|/\sigma_A$ has a distinct,
+unadmitted magnitude-standardization role; its exact identity is bound in the
+normative core. A legacy alias is admitted only after proof of mathematical
+identity and explicit method approval.
+
+\Needspace{8\baselineskip}
+\textbf{Scientifically important edge examples.}
+\begin{itemize}
+\item Missing compatibility authority yields no numerical fit or fit-derived product.
+\item Unavailable source association blocks source-attributed displacement, amplitude, and intended-source diagnostics, not the numerical amplitude component.
+\item Circular shape preserves equal widths and invariant shape while orientation is symmetry-undefined.
+\item Missing formal-error authority can coexist with fitted values; marginal errors, unsupported joint covariance, and formal standardization remain unavailable.
+\item Unavailable response or bias is not zero and blocks only claims that depend on it.
+\item Failure of one array preserves conforming sibling atoms and never creates POINT whole-observation success or imputes the missing array.
+\end{itemize}
+
+\section{Response families and displacement covariance}
+
+\begin{align}
+R^{\mathrm{fixed}}_{\theta,m}
+&=\left.\frac{\partial\thetahat}{\partial m}\right|_{b,g,\,
+\mathrm{support},W_{\mathrm{fit}},\mathrm{constraints}},\\
+R^{\mathrm{fixed}}_{\theta,\mathrm{source}}
+&=R^{\mathrm{fixed}}_{\theta,m}R^{\mathrm{fixed}}_{m,\mathrm{source}},\\
+R^{\mathrm{POINT\mbox{-}FP}\mid\mathrm{parent\mbox{-}fixed}}_{\theta,m}[\delta m]
+&=\lim_{\epsilon\to0}\frac{\widehat{\boldsymbol{\theta}}_{\mathcal P}(m+\epsilon\delta m)-
+\widehat{\boldsymbol{\theta}}_{\mathcal P}(m)}{\epsilon}.
+\end{align}
+
+\begin{longtable}{@{}P{0.24\linewidth}P{0.31\linewidth}P{0.37\linewidth}@{}}
+\toprule
+Response family & What is held or rerun & Availability and non-equivalence \\
+\midrule
+\endhead
+Fixed branch and fixed source composition & Branch, support, weights, constraints, and state fixed; compatible fixed parent response may compose & Requires exact local perturbation construction. It is neither full-procedure response nor empirical accuracy. \\
+POINT full procedure, parent fixed & Rerun every POINT data-dependent branch while holding the realized parent product fixed & Requires comparable numerical outputs and separate authority. It is not fixed-branch or whole-chain response. \\
+Whole-chain full procedure & Rerun every included upstream parent operation and POINT & Requires complete upstream-plus-POINT authority. It never aliases the parent-fixed response. \\
+\bottomrule
+\end{longtable}
+
+Full-procedure numerators subtract comparable numerical parameter outputs, not
+lifecycle or record objects. Comparability requires the same intended source,
+compatible association, identical roles, compatible gauge/order, units and
+basis, available components, and an exact perturbation-domain relation.
+Incomparable results are unavailable or typed discontinuities/state
+transitions. Finite differences are not multiplied as Jacobians without an
+exact composition theorem.
+
+When every term is available in one common tangent basis, the displacement
+covariance is
+\begin{equation}
+C_{\Delta}=C_{\muhat}+C_{\muexp}
+-C_{\muhat,\muexp}-C_{\muexp,\muhat}.
+\end{equation}
+No cross term is zero without independence authority. If any variance,
+cross-covariance, basis transform, or required Jacobian is unavailable, the
+combined covariance is unavailable while established component uncertainties
+remain visible. Shared expected-reference error does not average down as
+independent per-array noise without explicit authority.
+
+\section{Current status, evidence layers, and formal index}
+
+The generic conditional science has no unresolved owner decision. Remaining
+actions are content approvals: the three exact method records; exact numerical
+route instances; the four draft named-use profile identities and mechanics;
+and any separately requested response, bias/accuracy, or covariance authority.
+Only the POINT fit-completeness/publication decision participates in base fit
+completion. Pointing-support, telescope-QC, and CAL/TolProj decisions are
+immutable requested child artifacts. None may mutate the fit, create a new fit
+generation, rescue a sibling use, or block base completion merely because a
+downstream artifact is unrequested, unavailable, incomplete, failed, or absent.
+
+Later evidence has distinct ceilings. Contract conformance tests identities,
+records, states, equations, dependencies, and failure behavior.
+Representation testing establishes faithful storage and transformation.
+Numerical testing can evaluate predictions only after relevant methods and
+routes exist. Observational validation separately measures bias,
+repeatability, coverage, or pointing performance. Production authorization
+also requires operational, performance, and deployment evidence. Passing one
+layer does not establish the next.
+
+\statusbox{\textbf{Normative requirements:}
+SCI-POINT-REQ-001--038.\\
+\textbf{Falsifiable predictions:}
+SCI-POINT-PRED-001--032.\\
+\textbf{Controlling source:} \NormativeCoreID, exact SHA-256
+\texttt{\NormativeCoreSHA} shown on the cover.}
+
+This concise view claims no numerical route, implementation inspection or
+conformity, representation or response/covariance fidelity, uncertainty
+coverage, observational pointing accuracy, validation, performance, readiness,
+production suitability, production authorization, or Unity activity.
+
+\end{document}

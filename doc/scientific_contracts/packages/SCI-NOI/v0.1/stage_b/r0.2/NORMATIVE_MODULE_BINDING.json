@@ -1,0 +1,30 @@
+{
+  "binding_identity": "SCI-NOI_NORMATIVE_MODULE_BINDING v0.1/r0.2",
+  "status": "implementation-blind Stage B draft; not owner-accepted or frozen",
+  "ordered_modules": [
+    {
+      "path": "normative/NOTATION.md",
+      "sha256": "7716466aa6bcf97d6df84a7b7d4482b39b8332f01aabe15c8bcdf22470558541"
+    },
+    {
+      "path": "normative/DEFINITIONS.md",
+      "sha256": "4b74528bcd3453109cfd9bd16eeb11362f5032699609c80ffd2db6e8286a8e64"
+    },
+    {
+      "path": "normative/EQUATIONS.md",
+      "sha256": "38bcbe30ece212d941e25b2f24be4e252de8f5d43160ece16cc1966f6992c372"
+    },
+    {
+      "path": "normative/ASSUMPTIONS.md",
+      "sha256": "6b8e82bde2dc9f5be5d8ae164846b3382dd714dcc01fa635f38b8046ba60d972"
+    },
+    {
+      "path": "normative/REQUIREMENTS.md",
+      "sha256": "bde769dea982e6999b8a4e7f9f2d9ce1a8fa18eaf1f15acdd8f0a25b82307dfd"
+    },
+    {
+      "path": "normative/PREDICTIONS.md",
+      "sha256": "99e5941d0b10389ec2bd5342a954e29a37194ffb861825e326e7e17887925fe2"
+    }
+  ]
+}

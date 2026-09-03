@@ -1,0 +1,85 @@
+\documentclass[10pt]{article}
+\usepackage[letterpaper,margin=0.72in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs,longtable,array}
+\usepackage[table]{xcolor}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{parskip}
+\input{common/bindings}
+\definecolor{pointblue}{HTML}{173B57}
+\definecolor{pointteal}{HTML}{2B6F6D}
+\definecolor{pointpale}{HTML}{EAF2F4}
+\hypersetup{colorlinks=true,linkcolor=pointblue,urlcolor=pointteal,
+  pdfauthor={SCI-POINT scientific-contract program; Grant Wilson, scientific owner},
+  pdftitle={SCI-POINT Normative Core v0.1 r0.4},
+  pdfsubject={Exact accepted SCI-POINT scientific authority in standalone form}}
+\setlist{nosep,leftmargin=*}
+\setcounter{tocdepth}{1}
+\setlength{\LTpre}{0.35em}
+\setlength{\LTpost}{0.55em}
+\renewcommand{\arraystretch}{1.13}
+\setlength{\emergencystretch}{2em}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small\color{pointblue}\textbf{SCI-POINT} Normative Core}
+\rhead{\small v0.1 / r0.4}
+\cfoot{\small\thepage}
+\newcommand{\statusbox}[1]{\begin{center}\fcolorbox{pointteal}{pointpale}{\begin{minipage}{0.92\linewidth}#1\end{minipage}}\end{center}}
+
+\begin{document}
+\begin{titlepage}
+\vspace*{0.45in}
+{\color{pointteal}\rule{\linewidth}{2.5pt}}\\[0.32in]
+{\Huge\bfseries\color{pointblue} SCI-POINT}\\[0.14in]
+{\LARGE Normative Scientific Core}\\[0.38in]
+{\large Scientific contract v0.1 \quad Document revision r0.4}\\[0.12in]
+{\large Conditional generic Stage B authority}\\[0.42in]
+
+\statusbox{\textbf{Authority status.} This standalone artifact contains the
+complete accepted r0.3 scientific payload without byte changes, published in
+the owner-directed r0.4 three-artifact presentation. Exact source and authority
+bindings are below. Numerical methods, routes, implementation conformity, and
+all higher evidence claims remain unavailable where the core states.}
+
+\vfill
+\begin{tabular}{@{}ll@{}}
+Scientific owner & Grant Wilson \\
+Status & Scientific authority frozen; implementation conformity unassessed \\
+Stage A packet & \texttt{\StageAPacketID} \\
+Stage A SHA-256 & \texttt{\StageAPacketSHA} \\
+Scientific directive & \texttt{\ScientificDirectiveID} \\
+Scientific SHA-256 & \texttt{\ScientificDirectiveSHA} \\
+Owner directive & \texttt{\OwnerDirectiveID} \\
+Owner SHA-256 & \texttt{\OwnerDirectiveSHA} \\
+Normative core & \texttt{\NormativeCoreID} \\
+Core SHA-256 & \texttt{\NormativeCoreSHA} \\
+Document source & \texttt{\NormativeSourceID} \\
+Source SHA-256 & \texttt{\NormativeSourceSHA} \\
+Build record & \texttt{\BuildRecordID} \\
+Base operator & \texttt{POINT-FIT/ELLIPTICAL-GAUSSIAN-COMPATIBILITY@1} \\
+Date & 2026-09-03 \\
+\end{tabular}
+\\[0.28in]
+{\color{pointteal}\rule{\linewidth}{1.1pt}}
+\end{titlepage}
+
+\noindent\textbf{Reading rule.} This PDF controls both concise r0.4 views. Its
+digest is the unchanged ordered concatenation of the six accepted common
+modules; the wrapper and bindings change presentation and source closure only.
+Every exact register below governs the summaries and evidence indexes.
+
+\tableofcontents
+
+\input{common/notation}
+\input{common/definitions}
+\input{common/equations}
+\input{common/assumptions}
+\input{common/requirements}
+\input{common/edge_cases}
+
+\end{document}

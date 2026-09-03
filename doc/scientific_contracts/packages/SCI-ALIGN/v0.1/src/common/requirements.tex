@@ -1,0 +1,292 @@
+\section{Normative requirements}
+\label{sec:requirements}
+
+``Must'' and ``shall'' below are normative for this candidate authority.  The
+stable identifiers are sequential and must not be reassigned; a successor may
+supersede a requirement only through an explicit semantic mapping.
+
+\subsection{Boundary, identity, and paired detector relation}
+
+\Req{001}{SCI-ALIGN shall operate after Tune/readout has transformed native
+\((I,Q)^{\rm acq}\) into exact native paired \((x,r)^{\rm acq}\) occurrences
+and before AST, RTC, CAL, PTC, VAL, MAP, or other scientific conditioning.}
+
+\Req{002}{``Detector-reference'' shall identify the selected detector-stream
+reference interface, admitted clock relation, and assigned grid, never a
+reference detector.}
+
+\Req{003}{Every admitted input and output shall retain stable observation,
+parent, interface, occurrence, native-row where applicable, detector, plan,
+grid, stable ALIGN slot \(s\), and version identities sufficient to distinguish
+identity from row position or numerical time.  Stable ALIGN identity is
+\((o,s)\); \(j\) is local storage row only, and no downstream contract shall
+reconstruct \(s\) from \(j\).  Symbol \(n\) is reserved for stable RTC
+output-sample identity.}
+
+\Req{004}{ALIGN shall realize Equation~\ref{eq:paired} with identical native
+source occurrences, temporal weights, residuals, slot identities,
+source-relation identity, and origin/synthesis state for \(x\) and \(r\),
+while preserving coordinate-specific numerical validity and payload
+availability.}
+
+\Req{005}{ALIGN shall not align \(I,Q\), mix \(x\) with \(r\), fill one
+coordinate from the other, or cross a Tune state or Tune/readout
+mapping-revision boundary without separately named operation, response, and
+uncertainty authority.}
+
+\Req{006}{The exact detector occurrence/time/mapping relation shall remain
+available independently of whether either numerical detector-coordinate
+payload is finite, valid, available, or requested.}
+
+\subsection{Clock relation and detector-reference grid}
+
+\Req{007}{Every native interface shall supply a finite strictly ordered time
+coordinate with named event/epoch meaning, unit, acquisition or integration
+support, cadence information, validity, and uncertainty or typed
+unavailability.}
+
+\Req{008}{Epoch normalization and each admitted interface offset shall follow
+Equation~\ref{eq:clock}; a positive offset is added to place the native
+coordinate later on detector-reference time.}
+
+\Req{009}{Each non-reference offset record shall identify producer authority,
+observation-constant value, sign, seconds unit, reference interface,
+application stage and count, validity domain, uncertainty or bound, residual
+diagnostics, and typed availability.}
+
+\Req{010}{An admitted interface offset shall be applied exactly once, before
+ordering checks, slot assignment, gap identity, interval construction, or
+interpolation, and shall never be rounded to an integer number of samples.}
+
+\Req{011}{Absent authority, incomparable epochs, ambiguous sign/unit/reference
+or stage, drift, or state dependence outside the declared constant-offset
+domain shall make the affected physical-time or mapping claim unavailable or
+unsuccessful; ALIGN shall not fit a time-varying correction.}
+
+\Req{012}{The selected detector interface shall define the lattice in
+Equation~\ref{eq:grid}; detector acquisition support shall not be trimmed
+merely because telescope or optional auxiliary support is missing.}
+
+\Req{013}{Original detector rows shall use the round-half-up assignment and
+declared tolerance in Equation~\ref{eq:slot}, with
+\(0\leq\epsilon_{\rm slot}<h_D/2\).}
+
+\Req{014}{Nonpositive cadence, empty detector support, nonmonotonic or
+duplicate native time identity, ambiguous assignment, two original rows in
+one slot, or a row outside declared acquisition support shall make the ALIGN
+operation unsuccessful before scientific conditioning.}
+
+\Req{015}{Nominal assigned slot time, corrected native event time, assignment
+residual, native acquisition/integration support, nominal cell support, and
+acquired exposure shall remain distinct and queryable.}
+
+\subsection{Fields and telescope-family separation}
+
+\Req{016}{Every aligned field shall have a versioned registry identity, unit,
+unchanged source frame, topology, validity and missing rule, maximum support
+span, uncertainty availability, producer semantics, and one exact operator
+class before it is mapped.}
+
+\Req{017}{A continuous scalar may use only exact copy or bounded adjacent
+interpolation inside one unbroken valid run; endpoints are exact, invalid rows
+are barriers, and extrapolation is prohibited.}
+
+\Req{018}{A circular field shall declare its period and use the exact shortest
+signed difference interval \([-P/2,P/2)\) in Equation~\ref{eq:circular}; an
+exactly antipodal interpolation shall be typed unavailable absent explicit
+unwrap authority.  A bounded non-wrapping angle may use scalar interpolation only
+under its declared topology.}
+
+\Req{019}{A categorical, Boolean, counter, mode, flag, or hardware state shall
+never be linearly interpolated.  It may be held only under producer-authorized
+half-open state semantics; otherwise it is exact-only.}
+
+\Req{020}{The detector-reference occurrence time \(t_s\) shall be an exact
+grid/time identity, not an interpolated observing-state field.  ALIGN shall
+evaluate or map the declared boresight, elevation, required azimuth, and other
+occurrence-local observing-state fields at that exact time while preserving
+their producer meaning, units, frames, topology, support, and causes.  A
+producer telescope timestamp may remain native metadata but shall not become
+a competing current-sample time.}
+
+\Req{021}{Producer-selected pointing-correction records shall remain a
+separate family with exact record, parent, selection, vector-meaning,
+sign/basis, unit, native-support, time, covariance-availability, and producer
+identities; ALIGN shall supply only their admitted detector-reference time
+relation.}
+
+\Req{022}{ALIGN shall not infer current science-sample elevation or other
+occurrence-local observing state from a pointing-correction record.  AST may
+interpolate a producer-selected correction only within its native support and
+shall never extrapolate it.}
+
+\Req{023}{Optional HWPR fields shall retain their own versioned identities,
+event semantics, units, frames, topology, operator, support, availability, and
+reason.  Missing HWPR shall not trim ordinary nonpolarimetric detector-signal
+support.}
+
+\subsection{Gaps, synthesis, exposure, and intervals}
+
+\Req{024}{Acquisition timing gaps, invalid original rows, ordinary field
+resampling, processing guards, unavailable optional streams, and
+detector-signal continuity synthesis shall be represented as distinct causes
+and shall retain their interface/network/detector/field scope.}
+
+\Req{025}{A declared per-field interpolation operator shall not authorize a
+detector-signal continuity surrogate.  Each surrogate requires a separately
+named signal-domain authority and exact count, duration, fraction, edge,
+causal-support, response, uncertainty, and guard rules.}
+
+\Req{026}{Until \code{SCI-ALIGN-ODQ-104} is decided, quantitative detector
+surrogate and gap-limit claims shall remain unavailable; the conditional form
+in Equation~\ref{eq:gap} shall not be enabled by analogy or convenience.}
+
+\Req{027}{Every authorized synthesized detector value shall retain exact
+source rows and weights, causal support, mapping identity, conditional
+response, uncertainty status, synthesized origin, and zero added acquired
+exposure.}
+
+\Req{028}{A synthesized detector value shall never be relabeled as an
+original independent occurrence and shall gain no direct hit, independent
+statistical weight, degree of freedom, or significance count merely through
+continuity support.}
+
+\Req{029}{Leading or trailing gaps shall not be extrapolated; over-limit or
+invalid-endpoint gaps shall not be partially filled; and each maximal gap
+shall retain stable half-open identity, extent, classification, action, and
+realized count.}
+
+\Req{030}{Nominal duration, elapsed span, physical acquired exposure,
+valid-original exposure, synthesized/surrogate support, missing/unoccupied
+support, guarded/retained/use-qualified exposure, continuity availability, and
+downstream weight shall be separately reported according to
+Equation~\ref{eq:exposure}.  Payload invalidity or later policy shall not
+rewrite physical acquisition.}
+
+\Req{031}{Physical-scan, processing-chunk, science-window, context-window, and
+output-selection identities shall remain distinct stable half-open intervals
+and shall not be silently merged, renumbered, or substituted.}
+
+\Req{032}{Producer-authoritative physical scan/state relations shall take
+precedence over processing-window construction.  Unresolved producer
+\code{Hold}/transition semantics shall block only dependent physical-scan
+claims.}
+
+\Req{033}{If a fixed-duration processing-window policy is separately
+admitted, it shall use the recorded rounding and partition in
+Equation~\ref{eq:windows}, preserve stable full-observation identities, retain
+final partial, short, empty, and unusable states, and reject overlap unless a
+successor defines multiple membership and exposure.}
+
+\subsection{Validity, response, uncertainty, and provenance}
+
+\Req{034}{Origin, method, reason, source identities, weights, payload
+availability, finiteness, producer validity, ALIGN mapping validity, support,
+uncertainty availability, physical acquired exposure, and valid-original
+exposure shall be separately
+representable; a numeric sentinel shall not be the sole encoding.}
+
+\Req{035}{Detector-occurrence identity, signal-coordinate validity, ALIGN
+mapping validity, AST coordinate validity, and downstream use-specific
+eligibility shall remain five distinct causes.  None shall alias or rescue
+another.}
+
+\Req{036}{ALIGN shall export factual local mapping validity and support and
+shall not author a global science-eligibility bit.  A named-use owner shall
+author its predicate and a designated evaluator shall apply every applicable
+restriction.}
+
+\Req{037}{For every realized mapping, ALIGN shall provide an exact conditional
+response or typed response availability sufficient for the admitted detail
+tier.  DC preservation shall not be generalized to time-varying unity
+response.}
+
+\Req{038}{When admitted input covariance is supplied and the selected tier
+supports propagation, ALIGN shall use Equation~\ref{eq:covariance} and retain
+known cross-time, cross-detector, and cross-stream terms; it shall not invent
+independent white noise, inverse variance, or a dense covariance.}
+
+\Req{039}{Timing, interpolation-model, mapping, and policy/selection
+uncertainty terms shall be reported when admitted or as typed unavailable with
+reason.  Unavailable shall never be encoded or interpreted as zero.}
+
+\Req{040}{Requested, effective, observation-resolved, and realized state shall
+be distinct and flow one way, with exact accepted values, normalized values,
+observation facts, applied mappings, exceptions, diagnostics, and reasons
+recorded at their owning stage.}
+
+\Req{041}{State shall be owned by one reduction request and replaced per
+observation.  Sequential repeated runs and every admitted alternate or
+parallel path shall produce the same identities, mappings, states, ordering,
+and diagnostics within the declared numerical gate, without state leakage.}
+
+\Req{042}{The standard persisted relation shall be compact and generative:
+grid, offset, registry, interval, mapping/operator, aggregate support, and
+exception identities shall exactly reconstruct ordinary identity and every
+nonidentity state.}
+
+\Req{043}{Expanded rows, endpoints, weights, residuals, selected covariance,
+and forensic details may be requested by tier only when their availability is
+explicit and their omission does not change semantics, numerical results, or
+the exact reconstructibility of the always-on compact relation.}
+
+\Req{044}{Failure to produce required mapping, state, availability, or
+realized provenance shall propagate as an unsuccessful operation; logging and
+continuing as success is prohibited.}
+
+\subsection{AST transfer and ownership restrictions}
+
+\Req{045}{ALIGN shall export the one immutable
+\code{SCI-ALIGN_TO_SCI-AST v0.1/r0.1} transfer bundle described in
+Section~\ref{sec:ast-boundary}; similar shape, field names, or separately
+substituted objects shall not establish compatibility.}
+
+\Req{046}{Every required AST-transfer payload shall be present with exact
+identity and semantics or typed availability and reason, including reference
+grid, timing, offset, source relation, paired detector facts, observing state,
+pointing correction, origin/support, intervals, response/uncertainty, and
+complete provenance.}
+
+\Req{047}{AST shall consume the immutable occurrence/time/mapping and aligned
+observing-state relation without reconstructing clocks; choosing, replacing,
+or repeating ALIGN policy; inferring missing semantics; extrapolating pointing
+support; or requiring finite numerical \(x/r\) merely to bind an otherwise
+defined coordinate.}
+
+\Req{048}{AST shall own geometry, field rotation, pointing-correction
+composition, detector-coordinate binding, astrometric uncertainty, TAN/WCS
+astrometric projection, and continuous map coordinates; target/product
+authority shall own physical-center selection.}
+
+\Req{049}{MAP shall own sample-to-pixel deposition/gridding projection,
+estimator-specific \(G_\pi\), kernel, weights, contribution, and map support.
+AST may materialize \(G_\pi\) only for an exact MAP-owned request, without
+transferring ownership.}
+
+\Req{050}{RTC, CAL, PTC, VAL, MAP, and every admitted consumer shall preserve
+ALIGN identities, origin, support, response, covariance availability, and
+exposure facts and shall own only their named transformation or policy.}
+
+\Req{051}{SCI-ALIGN v0.1 shall admit only the ordinary nonpolarimetric
+detector-signal path.  The \(x/r\) coordinates remain raw KID readout
+coordinates.  Optional HWPR timing or alignment shall not authorize
+polarization demodulation, efficiency, calibration, response, or Stokes
+reconstruction.}
+
+\Req{052}{SCI-ALIGN shall not infer any unavailable producer event, epoch,
+field, topology, transition, unit, frame, clock, support, correction,
+uncertainty, or policy meaning from plausible values, implementation
+conventions, or similarly shaped data.}
+
+\Req{053}{All internal sample, slot, and scan indices shall be zero-based and
+all internal intervals half-open.  A persisted one-based scan number shall be
+a named representation adapter and shall not alter internal identity.}
+
+\Req{054}{The output shall include detailed facts and aggregate counts or
+exposure together with an availability manifest that is internally consistent
+with the compact generative mapping and every exception.}
+
+\Req{055}{No SCI-ALIGN output or this authority shall by itself claim
+implementation conformity, observational validation, scientific approval,
+freeze, readiness, production authorization, or an end-to-end downstream
+response.}

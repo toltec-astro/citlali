@@ -1,0 +1,94 @@
+\section{Assumptions, conditional scope, and typed unavailability}
+\label{sec:assumptions}
+
+These assumptions are explicit premises, not recovered implementation facts.
+When a premise is unavailable, only the dependent operation or claim is
+unavailable or fails closed.  No numeric range, storage convention, or model
+memory supplies a missing premise.
+
+\Assumption{001}{Every admitted stream supplies stable observation,
+interface, occurrence, and native-row identities and a strictly ordered time
+coordinate with producer-authoritative event/epoch meaning.}
+
+\Assumption{002}{Epoch differences and admitted interface offsets can be
+checked and converted to seconds without guessing.  Physical or absolute time
+claims are conditional on the named producer authority.}
+
+\Assumption{003}{The selected detector-stream interface defines the v0.1
+reference grid and clock relation.  This selection does not designate a
+reference detector and does not turn nominal slots into acquisitions.}
+
+\Assumption{004}{V0.1 admits at most one producer-authorized,
+observation-constant offset per non-reference interface.  Drift or
+state-dependent correction is outside this model and is typed unavailable,
+not fitted or approximated.}
+
+\Assumption{005}{Tune/readout supplies exact paired \((x,r)^{\rm acq}\)
+occurrences and a Tune/mapping-revision identity.  Any cross-revision mapping
+requires separate authority, response, and uncertainty.}
+
+\Assumption{006}{Every aligned producer field has a versioned registry entry
+that fixes unit, source frame, topology, validity/missing semantics, maximum
+span, uncertainty availability, and operator before ALIGN applies it.}
+
+\Assumption{007}{A producer-defined state may be held only when its transition
+event, half-open validity interval, state semantics, and continuity rule are
+authoritative.  Otherwise the field is exact-only.}
+
+\Assumption{008}{A detector-signal continuity surrogate exists only when a
+named signal-domain authority supplies its family and count, duration,
+fraction, edge, causal-support, response, uncertainty, and guard rules.
+Per-field interpolation is not that authority.}
+
+\Assumption{009}{Formal covariance propagation is conditional on supplied
+joint covariance and the selected payload tier.  Timing, model, mapping, and
+selection uncertainty terms are absent only as typed unavailable, never as
+numerical zero.}
+
+\Assumption{010}{Physical scans are supplied by an authoritative scan/state
+relation when they exist.  A requested fixed-duration partition is a
+processing-window policy and cannot replace or rename physical scans.}
+
+\Assumption{011}{All policy parameters are fixed only after requested,
+effective, and observation-resolved state is recorded.  Realized mappings,
+masks, and intervals are data-derived quantities conditioned upon in the
+response and covariance equations.}
+
+\Assumption{012}{SCI-ALIGN v0.1 admits only the ordinary nonpolarimetric
+detector-signal path.  The \(x/r\) coordinates remain raw KID readout
+coordinates.  Optional HWPR timing/alignment facts neither define nor
+authorize demodulation, polarization calibration, or Stokes reconstruction.}
+
+\subsection{Open owner and producer decisions}
+
+\begin{longtable}{L{0.19\linewidth}L{0.30\linewidth}L{0.42\linewidth}}
+\toprule
+Identity & Required authority & Typed consequence while unresolved\\
+\midrule
+\endfirsthead
+\toprule
+Identity & Required authority & Typed consequence while unresolved\\
+\midrule
+\endhead
+\code{SCI-ALIGN-ODQ-101} & Native detector/telescope producers plus SCI-ALIGN & Physical/absolute event-time and offset-validity claims beyond the conditional assigned relation are unavailable for the affected interface.\\
+\code{SCI-ALIGN-ODQ-102} & Telescope/observing-state producer plus SCI-ALIGN & Coordinate or field-rotation claims needing an unresolved occurrence-local field are unavailable.\\
+\code{SCI-ALIGN-ODQ-103} & Telescope state producer & Physical scan segmentation or transition claims depending on unresolved \code{Hold}/state meaning are unavailable.\\
+\code{SCI-ALIGN-ODQ-104} & SCI-ALIGN gap/continuity authority & Detector-signal synthesis and quantitative gap-limit claims are unavailable; the conditional linear-gap equation is not enabled.\\
+\code{SCI-ALIGN-ODQ-105} & SCI-ALIGN and SCI-AST interface authorities & Claims requiring an unspecified response, expanded mapping, covariance, model, or selection-uncertainty tier are unavailable.\\
+\code{SCI-ALIGN-ODQ-109} & HWPR producer plus future polarimetry authority & Unresolved HWPR fields are unavailable, and every HWPR-dependent Stokes claim remains outside v0.1.\\
+\code{SCI-ALIGN-ODQ-110} & Pointing-support producer plus SCI-ALIGN/SCI-AST & Correction and derived-coordinate claims requiring an unresolved correction-record field are unavailable.\\
+\bottomrule
+\end{longtable}
+
+The cause taxonomy in \code{SCI-ALIGN-ODQ-106}, observing-state/correction
+family split in \code{SCI-ALIGN-ODQ-107}, center-selection ownership in
+\code{SCI-ALIGN-ODQ-108}, and all other decisions recorded in the exact owner
+decision register are preserved rather than reopened by these assumptions.
+
+\subsection{Claim boundary}
+
+The equations and requirements below define a candidate scientific authority.
+They do not establish that any producer supplies the required facts, that any
+implementation realizes them, that any result has been validated, or that a
+system is conformant, frozen, operationally ready, or authorized for
+production.  Such claims require separately scoped evidence and owner review.

@@ -1,0 +1,253 @@
+% Shared normative equations.
+\section{Model, measurement, and conditional estimators}\label{sec:equations}
+
+\subsection{Invariant zero-background source model}\label{sec:model}
+
+For physical tangent coordinate $\uvec_q$, the only base model family is
+\begin{equation}
+g_q(A,\boldsymbol{\mu},\Sigmashape)
+=A\exp\!\left[-\tfrac12(\uvec_q-\boldsymbol{\mu})^{\mathsf T}
+\Sigmashape^{-1}(\uvec_q-\boldsymbol{\mu})\right],
+\label{eq:gaussian}
+\end{equation}
+where $\Sigmashape$ is symmetric positive definite. The invariant principal
+extents are strictly positive and ordered major not less than minor. The
+source model has no constant, gradient, local baseline, or other nuisance
+term. Its six roles are amplitude, two centroid coordinates, two
+principal-width roles, and orientation.
+
+The exact numerical parameter ordering, published width convention, angle
+origin, positive direction, gauge/period canonicalization, amplitude domain,
+parameter bounds, active-bound interpretation, and source-profile convention
+remain unavailable until \CompatMethod{} is owner-approved. At exact
+circularity, orientation is \texttt{undefined\_by\_model\_symmetry}; a finite
+placeholder is not a measurement. Exchanging principal axes with the
+corresponding angle transformation leaves Equation~\ref{eq:gaussian}
+invariant.
+
+\subsection{Coordinate transform and signed displacement}\label{sec:displacement}
+
+For parent coordinate $p_q$, the exact AST boundary supplies
+\begin{equation}
+\uvec_q=T(p_q;\,\text{coordinate state}).
+\label{eq:transform}
+\end{equation}
+The model shall use the physical tangent metric, not storage-pixel distance,
+unless the boundary proves their equivalence over admitted support. The
+ordered basis vectors, handedness, positive directions, angular unit, time and
+state, Jacobian where relevant, support, uncertainty, lifecycle, provenance,
+and failure behavior are all bound facts. Axis labels, memory order, display
+orientation, and FITS array order are not sign authority.
+
+The measurement is
+\begin{equation}
+\DeltaPoint=\muhat-\muexp,
+\qquad [\DeltaPoint]=\mathrm{arcsec},
+\label{eq:displacement}
+\end{equation}
+in that exact basis. If the tangent-coordinate origin equals the expected
+position, $\muexp=(0,0)$ and $\DeltaPoint=\muhat$. The search center affects
+search and initialization only and never defines the zero point. POINT owns
+the sign in Equation~\ref{eq:displacement}; correction sign and composition
+are downstream.
+
+\subsection{Conditional numerical fit}\label{sec:conditional-fit}
+
+The most that can be stated before method recovery is
+\begin{equation}
+\thetahat=
+\operatorname{Resolve}_{\boldsymbol{\theta}\in\Theta_{\mathrm{effective}}}
+D\!\left(m,g_{\boldsymbol{\theta}};W_{\mathrm{fit}}\right).
+\label{eq:conditional-fit}
+\end{equation}
+The admitted rows, scalar objective or likelihood $D$, weight meaning and
+normalization, constraints, comparison of multiple solutions, convergence,
+retry, and solution rule are not supplied. Equation~\ref{eq:conditional-fit}
+shall not be instantiated by guessing least squares, inverse variance,
+reliability weighting, or covariance weighting. Fit weights, parent
+stochastic covariance, inverse covariance, the formal-error model, and parent
+uncertainty are distinct roles.
+
+The preserved mature procedure has configurable expected-center/central
+search, weighted-peak initialization, global fallback, bounded fit domain,
+and amplitude/width/angle constraints. Request, effective configuration,
+resolved plan, application attempt, and realized fit remain distinct. A
+sentinel shall resolve to a named effective state, and every fallback,
+restart, retry, branch, bound, and termination shall be reported. Exact rules
+belong to \CompatMethod{}.
+
+\subsection{Association is not optimization}\label{sec:association}
+
+Expected position, requested search center, effective search center, selected
+seed, fitted centroid, and source association are distinct. Every central,
+global-fallback, restart, retry, or other authorized branch yields a candidate
+seed, never source identity. Source-attributed displacement and amplitude
+require \path{POINT-SOURCE-ASSOCIATION-STATE=established} under one
+branch-independent method and declared association domain. A central or
+global peak, finite fit, small displacement, large amplitude, dynamic range,
+or formal standardization cannot establish association. The numerical
+\path{POINT-FIT-AMPLITUDE-COMPONENT} may survive unavailable or failed
+association, but only
+\path{POINT-SOURCE-ASSOCIATED-AMPLITUDE-DIAGNOSTIC} is attributable to the
+intended source.
+
+\subsection{Residual and deterministic mismatch}\label{sec:residual}
+
+The scientific decomposition is
+\begin{equation}
+m=g(\boldsymbol{\theta}_{\mathrm{true}})+b+n,
+\label{eq:residual}
+\end{equation}
+where $b$ is any deterministic parent component not represented by the
+zero-background model and $n$ is stochastic variation. POINT neither fits nor
+silently removes $b$. It can bias every fit role; a finite fit does not turn
+it into noise. Once fitting is authorized, the fitted model and residual
+shall be published or reconstructible with objective, support, row count,
+rank, convergence, active constraints, branch state, residual diagnostics,
+and parent additive-reference/null state.
+
+\subsection{Conditional diagnostic identities}\label{sec:diagnostics}
+
+Only two derived product identities are admitted. The role is
+\begin{center}
+\path{POINT-DYNAMIC-RANGE-DIAGNOSTIC/}\\
+\path{FITTED-AMPLITUDE-OVER-FULL-MAP-RMS@1}.
+\end{center}
+Its conditional formula is
+\begin{align}
+D_{\mathrm{RMS}}&=\widehat A/\mathrm{RMS}_{\mathrm{full}}.
+\label{eq:dynamic-range}
+\end{align}
+The role \path{POINT-FORMAL-AMPLITUDE-STANDARDIZATION@1} has the conditional
+formula
+\begin{equation}
+Z_A=\widehat A/\sigma_A.
+\label{eq:formal-standardization}
+\end{equation}
+Equation~\ref{eq:dynamic-range} is descriptive dynamic range only and is
+unavailable until \RMSMethod{} binds the parent/generation, population,
+centering, weighting, source-region treatment, support/edge, non-finite and
+zero-denominator rules, units, lifecycle, provenance, and parent relation. It
+requires the exact selected fit-amplitude role, a compatible parent and
+generation, a finite positive denominator, and the association state required
+by the declared diagnostic claim. \texttt{sig2noise} may be an exact legacy
+alias only after \RMSMethod{} explicitly proves mathematical identity with
+this signed ratio and approves that alias.
+\texttt{peak\_over\_full\_map\_rms} is not admitted without a separate
+compatibility-method finding.
+
+Equations~\ref{eq:dynamic-range} and \ref{eq:formal-standardization} retain
+the sign of the approved fitted amplitude; the dynamic-range diagnostic is
+therefore not universally nonnegative. Equation~\ref{eq:formal-standardization}
+is the canonical signed
+\path{POINT-FORMAL-AMPLITUDE-STANDARDIZATION@1}. It is unavailable until
+\FormalMethod{} is approved and $\sigma_A$ is positive and finite. It requires
+the exact selected fit-amplitude role and its approved formal amplitude error.
+An absolute-magnitude quantity would instead have the distinct identity
+\path{POINT-FORMAL-AMPLITUDE-MAGNITUDE-STANDARDIZATION@1} and formula
+$|\widehat A|/\sigma_A$; it is not admitted unless separately requested and
+authorized.
+\texttt{fit\_sig2noise} may be an exact legacy alias only after \FormalMethod{}
+proves mathematical identity with the signed canonical quantity and explicitly
+approves that alias. Neither ratio is statistical
+significance, detection probability, false-alarm statistic, completeness, or
+purity. A zero or non-finite denominator produces the future method's typed
+unavailable or failed state, never an infinite claim.
+
+Each derived role has its own request, parent, method, producer lifecycle,
+availability, support, unit-one state, cause, provenance, and claim ceiling.
+Neither role is required for fit-result completion. Any diagnostic described
+as applying to the intended source additionally requires
+\path{POINT-SOURCE-ASSOCIATION-STATE=established}; no ratio promotes an
+unassociated amplitude component into a source-associated role.
+
+\subsection{Conditional response objects}\label{sec:response-equations}
+
+For one frozen branch $b$, resolved state $g$, and perturbation coordinate
+$m$, the fixed-branch parameter response, when differentiable or under another
+exact authorized local perturbation rule, is
+\begin{equation}
+R^{\mathrm{fixed}}_{\theta,m}
+=\left.\frac{\partial\thetahat}{\partial m}\right|_{b,g,\,
+\mathrm{support},\,W_{\mathrm{fit}},\,\mathrm{constraints}} ,
+\label{eq:fixed-response}
+\end{equation}
+and the displacement response is
+\begin{equation}
+R^{\mathrm{fixed}}_{\Delta,m}=P_{\mu}R^{\mathrm{fixed}}_{\theta,m}.
+\label{eq:fixed-displacement-response}
+\end{equation}
+
+For perturbation direction $\delta m$, the POINT full-procedure response with
+the parent product held fixed is
+\begin{equation}
+R^{\mathrm{POINT\mbox{-}FP}\mid\mathrm{parent\mbox{-}fixed}}_{\theta,m}
+[\delta m]
+=\lim_{\epsilon\rightarrow0}
+\frac{\widehat{\boldsymbol{\theta}}_{\mathcal P}
+(m+\epsilon\,\delta m)-
+\widehat{\boldsymbol{\theta}}_{\mathcal P}(m)}{\epsilon},
+\label{eq:full-procedure-response}
+\end{equation}
+or one separately authorized finite-difference equivalent. Both invocations
+of $\mathcal{P}$ rerun central search, fallback, restarts and retries, support
+resolution, applicable weight/state resolution, constraint activation,
+optimization, and association, but do not rerun the upstream parent producer.
+The numerator subtracts comparable numerical parameter outputs, never
+lifecycle, decision, or record objects.
+
+Comparability requires the same intended source, compatible association,
+identical parameter roles, compatible gauge and canonical ordering, compatible
+units and basis, availability of the target components, and a valid relation
+between the two perturbation domains. If those conditions do not hold, the
+response is unavailable or the result is a separately typed discontinuity or
+state transition; it is not silently represented as a derivative. Every
+response record binds the baseline and perturbed products and states,
+perturbation source, domain, direction, unit, and $\epsilon$, finite or analytic
+convention, branch changes, gauge comparison, component availability, exact
+cause, and provenance.
+
+A source-domain fixed differential response may be composed only with a
+compatible exact fixed parent response:
+\begin{equation}
+R^{\mathrm{fixed}}_{\theta,\mathrm{source}}
+=R^{\mathrm{fixed}}_{\theta,m}
+ R^{\mathrm{fixed}}_{m,\mathrm{source}}.
+\label{eq:source-response}
+\end{equation}
+The POINT-full-procedure/parent-fixed response above and a whole-chain
+full-procedure response
+$R^{\mathrm{chain\mbox{-}FP}}_{\theta,\mathrm{source}}$ are also distinct.
+The latter exists only under authority to rerun the complete upstream parent
+production and POINT procedure together. Fixed parent composition,
+POINT-full-procedure with a fixed parent, and whole-chain full-procedure never
+alias one another. A finite-difference response shall not be multiplied as a
+Jacobian unless an exact composition theorem for those defined procedures and
+domains has been authorized.
+
+Parent response, each of these POINT or whole-chain response types, and
+empirical observational bias/accuracy are distinct products. Under one declared
+empirical population and procedure, observational displacement bias may be
+defined as
+\begin{equation}
+b_{\Delta}=\mathbb{E}\!\left[
+\widehat{\Delta}-\Delta_{\mathrm{true}}
+\mid \text{population and procedure}\right].
+\label{eq:observational-bias}
+\end{equation}
+No unavailable response or bias is numerically zero.
+
+\subsection{Conditional displacement covariance}\label{sec:displacement-covariance}
+
+When fitted-centroid and expected-position covariance objects and both cross
+covariances are available in one common tangent basis,
+\begin{equation}
+C_{\Delta}=C_{\muhat}+C_{\muexp}
+-C_{\muhat,\muexp}-C_{\muexp,\muhat}.
+\label{eq:displacement-covariance}
+\end{equation}
+Neither cross term is zero without explicit independence authority. If a
+coordinate transformation is required, its Jacobian and the complete joint
+covariance shall be bound before transformation. If any required covariance
+or cross-covariance is unavailable, the combined displacement covariance is
+unavailable while available component uncertainties remain visible.

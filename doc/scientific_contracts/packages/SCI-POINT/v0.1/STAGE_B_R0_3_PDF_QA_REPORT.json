@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "contract": "SCI-POINT v0.1",
+  "document_revision": "r0.3",
+  "date": "2026-09-03",
+  "renderer": "Poppler pdftoppm 26.05.0",
+  "render_command": "pdftoppm -png -r 120 <pdf> <temporary-prefix>",
+  "resolution_dpi": 120,
+  "pages_inspected": 43,
+  "inspection_scope": "every rendered page plus full-size inspection of covers, SCI-VAL crosswalk, product-role tables, response equations, unavailable/edge register, requirement/prediction tables, and final status pages",
+  "checks": {
+    "reopen": "pass",
+    "page_size_letter": "pass",
+    "forms_absent": "pass",
+    "clipping": "pass",
+    "overlap": "pass",
+    "broken_glyphs": "pass",
+    "malformed_equations": "pass",
+    "unreadable_tables": "pass",
+    "headers_and_footers": "pass",
+    "title_owner_revision_date_status": "pass",
+    "cover_binding_parity": "pass"
+  },
+  "pdfs": [
+    {
+      "path": "pdf/SCI-POINT-SCIENTIFIC-RATIONALE-v0.1.pdf",
+      "pages": 21,
+      "page_size": "letter 612 x 792 pt",
+      "forms": 0,
+      "title": "SCI-POINT Scientific Rationale v0.1 r0.3",
+      "subject": "Final targeted conditional generic scientific contract revision",
+      "author": "SCI-POINT scientific-contract program; Grant Wilson, scientific owner",
+      "sha256": "58445be2ef2190aa7f63a1c2cfade3e527624ee8c57db2151d033ebbfcb630a0"
+    },
+    {
+      "path": "pdf/SCI-POINT-ENGINEERING-CONFORMANCE-v0.1.pdf",
+      "pages": 22,
+      "page_size": "letter 612 x 792 pt",
+      "forms": 0,
+      "title": "SCI-POINT Engineering Conformance v0.1 r0.3",
+      "subject": "Final targeted conditional generic engineering specification revision",
+      "author": "SCI-POINT scientific-contract program; Grant Wilson, scientific owner",
+      "sha256": "bceec5304c7fe5c571efede8dcb9c25939adeff6d7bed995a6e4f2c1a3b5fac9"
+    }
+  ],
+  "defects": [],
+  "result": "pass"
+}

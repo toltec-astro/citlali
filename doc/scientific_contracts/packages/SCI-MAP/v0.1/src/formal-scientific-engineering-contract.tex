@@ -1,0 +1,857 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.78in,headheight=15pt]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,array,tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+
+\definecolor{MapNavy}{HTML}{17324D}
+\definecolor{MapBlue}{HTML}{2A6F97}
+\definecolor{MapPale}{HTML}{EAF3F8}
+\definecolor{MapGray}{HTML}{53606B}
+\hypersetup{colorlinks=true,linkcolor=MapBlue,urlcolor=MapBlue,citecolor=MapBlue,
+  pdftitle={SCI-MAP v0.1 Formal Scientific/Engineering Contract, r0.7.1},
+  pdfauthor={Independent Stage B scientific-contract author}}
+\setlength{\emergencystretch}{3em}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.48em}
+\setlist{nosep,leftmargin=1.5em}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcommand{\code}[1]{\nolinkurl{#1}}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\digest}[4]{\texttt{#1\allowbreak{}#2\allowbreak{}#3\allowbreak{}#4}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{MapGray}SCI-MAP v0.1 | Formal Scientific/Engineering Contract}
+\fancyhead[R]{\small\color{MapGray}Document r0.7.1}
+\fancyfoot[L]{\small\color{MapGray}Author draft | no conformity or performance claim}
+\fancyfoot[R]{\small\color{MapGray}Page \thepage}
+
+\input{SCI-MAP-v0.1_SHARED_AUTHORITY_r0.7.1.tex}
+\renewcommand{\SCIMapDocumentRevision}{r0.7.1}
+
+\newcommand{\StatusBox}[1]{%
+  \begin{center}\fcolorbox{MapBlue}{MapPale}{\parbox{0.92\linewidth}{#1}}\end{center}}
+\newcommand{\ClaimNo}{\textcolor{MapGray}{Not assessed}}
+
+\begin{document}
+
+\begin{center}
+{\color{MapNavy}\LARGE\bfseries SCI-MAP}\\[0.25em]
+{\Large Ordinary Mapmaking and Observation Coaddition}\\[0.45em]
+{\large Formal Scientific/Engineering Contract}\\[0.8em]
+\begin{tabular}{rl}
+Scientific contract version: & \textbf{\SCIMapContractVersion}\\
+Document revision: & \textbf{\SCIMapDocumentRevision}\\
+Status: & \textbf{\SCIMapApprovalState}\\
+Scientific owner: & Grant Wilson\\
+Author-packet approval: & \SCIMapApprovalDate
+\end{tabular}
+\end{center}
+
+\StatusBox{\textbf{Authority boundary.} This is the normative formal view of
+the implementation-independent scientific contract. It preserves the
+canonical equations, 52 requirements, 25 predictions, exact state and support
+semantics, provenance, and conformance routing. The separate science-team
+rationale r0.7.1 explains the same science without replacing this authority.
+This document does not claim implementation conformity, representation
+fidelity, scientific validation, observational performance, or production
+readiness.}
+
+\section*{Physical model and contract at a glance}
+\addcontentsline{toc}{section}{Physical model and contract at a glance}
+
+MAP consumes the realized MAP-facing output of PTC; it never bypasses PTC to
+consume CAL output directly. ALIGN/AST supplies the coordinate facts and MAP
+supplies the target grid and declared projection. SCI-MAP applies one fixed,
+positive-coefficient linear averaging operator to the signal and to every
+declared linear companion. A coadd then applies a second positive-coefficient
+operator to atomically admitted, compatible observation bundles on the same
+grid. All scientific statements are conditional on the complete admitted
+calibration, alignment, eligibility, coefficient, response, geometry, and
+covariance state.
+
+\begin{longtable}{L{0.14\linewidth}L{0.78\linewidth}}
+\toprule
+Facet & Compact authority\\
+\midrule
+Input & Realized SCI-PTC v0.1/r0.5 calibrated-\(x\)-derived nonpolarimetric
+total-intensity-equivalent product in \code{mJy/beam}, with exact originating
+nominal-beam identity, occurrence/generation, retention, causes, and response
+state; exact AST RTC-grid coordinates for the same stable sample and parent;
+and a future owner-selected PTC MAP coefficient.\\
+Output & A complete immutable observation-map bundle and, when requested and
+admissible, a complete centered-integer common-grid observation coadd bundle.\\
+Equation & On admitted membership, \(N_p=\sum_i a_{pi}z_i\) and
+\(Q_p=\sum_i a_{pi}\). The normalized scientific vector contains exactly the
+rows authorized by the effective support policy, with
+\(\widehat m_p=N_p/Q_p\) there; response and covariance use the same explicit
+row selection. Coadd repeats this restricted structure over complete
+observations.\\
+Source & Frozen SCI-PTC v0.1/r0.5 digest
+\digest{8357961a49272adc}{40e27a8aa9e760e0}{d01ff2419ae2c88a}{62c0f93c9f959e66};
+SCI-CAL v0.1 science r0.5/engineering r0.4 digest
+\digest{413426f49edf1249}{f751a05bb8c6e9fd}{907b11e8da0530fe}{2da39814885efb22};
+SCI-AST v0.1/r0.3 manifest digest
+\digest{b54b6013750540f2}{8aad02339a60bf36}{078980dc53b132be}{ab73069d66ef3601};
+SCI-VAL Core v0.1/r0.3 digest
+\digest{2fc3b3ad329fe303}{5d442b43d1e564a7}{4fc86ab49f85f56e}{87322d8553fad9a6};
+\SCIMapPTCMapBoundaryId; and the exact r0.7.1 MAP profile,
+boundary, owner-decision, and source-binding records.\\
+Status & Contract author draft. Algebraic predictions are preregistered below;
+none has been executed here. All stronger claim layers remain unassessed.\\
+\bottomrule
+\end{longtable}
+
+\tableofcontents
+
+\clearpage
+\section{Scientific boundary and estimand}
+
+The ordinary observation map estimates the coefficient-weighted average of
+the admitted realized PTC sample quantity in each declared map pixel. Its
+meaning is inherited through the required CAL-to-PTC route, from ALIGN/AST's
+coordinate relation, and from PTC's transformed signal, product identity,
+availability, producer-local validity, and MAP-facing coefficient. SCI-MAP
+does not repair or reinterpret those facts. VAL may register and evaluate a
+named rule, but it is not the author of producer or MAP policy.
+
+Let \(i\) bind observation, detector occurrence and UID, stable RTC output
+sample \(n\), exact PTC product/application generation, segment, and
+array/network/group; time is an attribute and storage positions are locators.
+Here \(z_i=Z_i^{\rm PTC}\) is the realized PTC transformed signal and
+\(\gamma_i\) is its exact PTC-owner-selected MAP-facing coefficient. The
+paired \(x/r\) symbols remain KID readout coordinates. The effective
+coefficient is \(a_{pi}=G_{pi}\gamma_i\). No MAP-facing coefficient family is
+selected by frozen SCI-PTC v0.1/r0.5 or bound in the SCI-MAP r0.7.1 source
+packet. MAP does not select this PTC-owned family. The ordinary numerical
+route is therefore unavailable rather than defaulting to unity, loading,
+sensitivity, scatter, or precision.
+
+The fixed contribution set \(\mathcal C_p\) factors transformed-signal
+availability, PTC retention, coefficient availability, coefficient/QC,
+\SCIMapUpstreamProfile, AST validity, finite signal, finite
+positive coefficient, admitted projection/boundary, and MAP-local companion
+gates. Each retained typed state \(\sigma_g\) is projected to a Boolean
+membership predicate \(b_g\); T/F/U/C and VAL's four axes are never conjoined
+directly. Evaluation follows the structural, safe numerical-classification,
+coordinate/product, membership, and accumulation stages. Only structurally
+admitted payloads are read for MAP classification, and all required gates
+pass before payload arithmetic. Every source state, immutable reason, cause,
+provenance, and failure scope is retained.
+Let \(\Pi_{\rm eff}\) be the recorded effective product
+support policy and \(\mathcal S_{\rm out}(\Pi_{\rm eff})\) the exact set of map
+rows for which every support predicate that policy designates applicable
+passes. This is a row domain, not a numerical mask. The frozen ordinary result
+is then reused directly:
+
+\SCIMapObservationEquations
+
+The ten projections in Equation~\eqref{eq:typed-gate-projection} are exact:
+
+{\footnotesize
+\begin{longtable}{L{0.11\linewidth}L{0.15\linewidth}L{0.17\linewidth}L{0.19\linewidth}L{0.16\linewidth}}
+\toprule
+Pass predicate & Owner and object & Retained source codomain & Sole passing state & Nonpass and scope\\
+\midrule
+\(b_{Z_{\rm avail}}(i)\) & PTC; transformed occurrence & signal availability with cause & exact \code{available} \(Z_i^{\rm PTC}\) & unavailable, invalid, not requested, or conflict; occurrence/route exclusion\\
+\(b_{{\rm PTC}_{\rm ret}}(i)\) & PTC policy and VAL; occurrence & named request, applicability, eligibility, and realization fields & requested, applicable, \code{eligible}, realized & every other field combination; occurrence/route scope\\
+\(b_{\gamma_{\rm avail}}(i)\) & PTC; coefficient slot/generation & family/generation, index/broadcast, product compatibility, readable payload, typed state/cause & exact compatible typed payload available; no finiteness claim & missing/unreadable, unavailable, conflict, or generation mismatch; route exclusion\\
+\(\mathrm{pass}_{\gamma{\rm QC}}(i)\) & PTC policy owner; coefficient occurrence & named request, applicability, eligibility, and realization fields plus causes & request=\code{requested}; applicability=\code{applicable}; eligibility=\code{eligible}; realization=\code{realized} under exact PTC profile & any other named-field combination is nonpassing; structural source-binding failure only when separately present; never MAP admission\\
+\(b_{{\rm MAP}_{\rm adm}}(i)\) & MAP policy and VAL; occurrence & named request, applicability, eligibility, and realization fields & requested, applicable, \code{eligible}, realized & every other field combination; occurrence exclusion or source-binding block\\
+\(b_{{\rm AST}_{\rm coord}}(i)\) & AST; same-\(n\) coordinate parent & availability, validity, frame, parent, cause & exact coordinate available and valid on matching parent & invalid, unavailable, conflict, or parent mismatch; occurrence exclusion\\
+\(b_{Z_{\rm finite}}(i)\) & MAP numerical gate; \(z_i\) & finite classification & finite & NaN, Inf, or unrepresentable; occurrence/product scope\\
+\(b_{\gamma_{>0}}(i)\) & MAP numerical gate; \(\gamma_i\) & positive; zero; negative; non-finite; unrepresentable class & finite and strictly positive & zero noncontributing; negative, non-finite, or unrepresentable invalid; occurrence scope\\
+\(b_{G_{\rm place}}(i,p)\) & MAP; occurrence--pixel relation & one-hot placement/boundary state & unique in-grid half-open containing pixel & invalid coordinate, outer-upper boundary, or out of grid; pixel nonmembership\\
+\(b_{{\rm MAP}_{\rm local}}(i,p)\) & MAP; product row and role & local and companion decisions & every applicable local predicate passes & false, unknown, conflict, unavailable, or missing companion; declared scope\\
+\bottomrule
+\end{longtable}
+}
+
+Boolean zero here means estimator nonmembership only. It is never multiplied
+into \(z_i\), and it never erases the retained typed record or cause.
+
+The supported division is not a recipe for filling unsupported pixels.
+Pre-normalized accumulators and representation-specific storage slots may exist outside
+\(\mathcal S_{\rm out}\), but the normalized scientific vector has no row
+there. A dense zero, sentinel, or coincidentally finite payload is not a
+semantic substitute and is not measured zero sky. Likewise, \(Q_p\) is a
+normalization fact. Its dimensions or historical name do not make it
+precision.
+
+The active role is a calibrated-\(x\)-derived nonpolarimetric
+total-intensity-equivalent quantity in \code{mJy/beam}. The exact originating
+fixed-nominal-beam/template and CAL/PTC lineage are part of the quantity
+identity. Neither the unit nor a STOKES token promotes it to Stokes~I. V0.1
+does not authorize polarimetry, measured-R mapmaking, JINC,
+maximum-likelihood mapmaking, mosaicking, or reprojection.
+
+\clearpage
+\section{Linear operator, response, and absolute mode}
+
+For the selected frozen plan \(\Pi\), transformed-sample input domain
+\(\mathcal I_\Pi\), projection matrix \(G\), diagonal coefficient matrix
+\(\Omega\), neutral full-grid pixel vector \(\boldsymbol v\), exact fixed-state
+upstream-to-PTC response \(H_{{\rm fixed},\Theta}\), and output-row selector
+\(J_{\rm out}\), the map operator, fixed-state response, and conditional
+covariance are:
+
+\SCIMapOperatorEquations
+
+The identity \(A_{{\rm MAP},\Pi}\equiv A_{\rm out}\equiv
+D_{Q,{\rm out}}^{-1}J_{\rm out}G\Omega\) binds \(\mathcal I_\Pi\), output-row
+domain \(\mathcal S_{\rm out}\), exact coefficient family/generation,
+\SCIMapOneHotProfile, support policy, target WCS/grid,
+immutable parents, and lifecycle generation. The diagonal
+\(D_{Q,{\rm out}}\) contains only finite positive normalizations
+on \(\mathcal S_{\rm out}\), so its ordinary inverse is defined. The matrix
+has no rows outside that set. Extending it to the full storage
+grid by writing zeros would be a representation convenience, not this
+scientific operator, response, or covariance.
+
+Here \(N_{\rm PTC}\) is a declared covariance of PTC-domain processed-sample
+error when such information is available, not the ensemble
+covariance of sky plus error. The state \(\Theta\) contains all selected or
+estimated calibration, alignment, membership, coefficients, response,
+geometry, identity, and effective-support facts.
+Equation~\eqref{eq:response-covariance} therefore makes a conditional
+perturbation statement on exactly the authorized rows; it makes no unnamed
+\(\mu_0\) or residual-bias claim. If any element of \(\Theta\) is
+estimated from the same data, an unconditional claim requires its joint
+uncertainty and cross-covariances.
+
+The linear object \(H_{{\rm fixed},\Theta}\) has an exact source domain,
+PTC-sample codomain, unit transformation, parent, membership, support,
+coefficient state, and response basis. It is not a name for a refitted
+procedure. When available,
+\(R_{{\rm fixed},\Theta}=A_{{\rm MAP},\Pi}H_{{\rm fixed},\Theta}\) describes
+the response of that exact frozen state on the authorized output domain.
+A stored kernel image is the realized response to a named unit-bearing
+template \(\boldsymbol\tau\) only if its sample-domain parent is
+\(\boldsymbol k=H_{{\rm fixed},\Theta}\boldsymbol\tau\) and the stored map is
+\(A_{{\rm MAP},\Pi}\boldsymbol k=R_{{\rm fixed},\Theta}\boldsymbol\tau\) with the same exact row
+identity as signal. Without that identity it is a tracer, not the measured
+response. If any signal member lacks the required exact parent, response is
+limited or unavailable on the unchanged signal membership; no hidden subset,
+zero, or identity array can stand in for it. A realized PTC-grid companion
+begins at MAP and receives \(A_{{\rm MAP},\Pi}\) exactly once; it is never
+passed through upstream response again.
+
+PTC full-procedure and PTC+MAP re-resolved responses are bounded
+finite-difference families, not one \(H\) matrix:
+
+\SCIMapProcedureResponseEquations
+
+Here \(\alpha\) binds amplitude, perturbation side, source state, location,
+domain, and every other family parameter.
+\(\Delta\mathcal S_{{\rm PTC}\text{-}{\rm FP}}\) separately
+records changed masks, groups, rank, loading subspace, classifications,
+coefficient state, stop cause, support, and other selected state. Equation
+\eqref{eq:map-of-ptc-full-procedure} applies only when MAP membership,
+coefficient, projection, and support remain fixed. Equation
+\eqref{eq:ptc-map-reresolved-procedure-response} instead uses separately
+resolved \(\Pi_0\) and \(\Pi_+\); it is the PTC+MAP re-resolved procedure
+response, not the fixed MAP operator applied to one matrix. The reserved
+whole-chain RTC-to-CAL-to-PTC-to-MAP response would rerun RTC, CAL,
+AST-dependent selection, PTC, MAP admission, coefficient/support resolution,
+and MAP from exact immutable parents under separate authority; it is
+unavailable and not claimed. An unavailable response state does not invalidate the numerical map
+or prohibit later analysis. A
+later simulated response or response-corrected map is a new versioned product
+bound to the original MAP product and processing identity; it does not rewrite
+the original product's claim.
+
+V0.1 fixes the signal-centering operator to \(L=I\). SCI-MAP therefore does not
+remove a mean or a constant mode during coaddition. It preserves a constant
+admitted sample vector on the exact support-authorized output rows because
+numerator and denominator use identical coefficients. A stronger constant-sky
+statement additionally requires the forward operator to map that sky mode to
+the admitted sample constant. Neither result alone establishes point-source,
+integrated-flux, extended-source, edge, or absolute astrometric fidelity. The
+PTC nonrestored additive reference \(\lambda\), fitted correlated removed
+component \(\widehat U_{\rm corr}\), total removed component
+\(U_{{\rm total},\Theta}\), removed-subspace identity, fixed-state null space,
+full-procedure invariant/unidentifiable modes, and any separately authorized
+residual conditional bias are distinct facts. Any absolute mode already
+removed upstream remains absent and must be carried in response and null-mode
+provenance.
+
+\clearpage
+\section{Input classes and falsifiable response behavior}
+
+The same response equation yields distinct, testable input classes without
+granting them equal scientific meaning:
+
+\begin{description}[style=nextline,leftmargin=1.8em]
+\item[Constant.] Fixed positive coefficients preserve a constant admitted
+sample vector even when coverage and variance vary.
+\item[Delta or basis pixel.] The output is a support-row-restricted column of
+\(R_{{\rm fixed},\Theta}\), including beam, projection, preprocessing, and boundary
+effects.
+\item[Point-source template.] The output is
+\(R_{{\rm fixed},\Theta}\boldsymbol\tau_b\) on exactly the authorized rows. Peak,
+integrated, and fit amplitudes are different functionals.
+\item[Resolved, gradient, and Fourier structure.] The output is
+\(R_{{\rm fixed},\Theta}\boldsymbol\tau\); constant preservation says nothing about these
+modes.
+\item[Variable coverage.] Fixed-coefficient normalization may preserve a
+constant while covariance and nonconstant response vary spatially.
+\item[Finite boundary.] Truncation can preserve a local constant yet change a
+compact-source peak or integral. No wrap or clamp is authorized.
+\end{description}
+
+The authorized base family is
+\SCIMapOneHotProfile. It uses half-open pixel cells,
+assigns unity to the unique finite in-grid containing pixel, excludes the
+outer upper boundary, never wraps or clamps, and has \(\sum_pG_{pi}=1\) only
+on that in-grid domain. Fractional projection remains a future role; no
+kernel, conservation, boundary-loss, response, or covariance semantics are
+inferred for it.
+
+Response fidelity is therefore a validation layer, not a consequence of code
+executing the algebra. Delta, point-template, extended, Fourier, variable-
+coverage, and edge injections are preregistered in Appendix~\ref{app:predictions};
+they are not run or claimed here.
+
+\clearpage
+\section{Conditional uncertainty and statistical labels}
+
+For independent selected sample errors with a future exact coefficient family
+proven to be true inverse variance, the general formal relation is:
+
+\SCIMapFormalWeightEquations
+
+Equation~\eqref{eq:formal-weight} states why normalization is not precision by
+default. One-hot geometry satisfies the projection part of the equality, but
+cannot establish that \(\gamma\) is calibrated inverse variance or that sample
+errors are independent. Frozen PTC r0.5 has selected no \(\gamma\) family.
+
+Four uncertainty objects must not be conflated:
+
+\begin{enumerate}
+\item \(Q\), an ordinary normalization with its declared gridding unit;
+\item \(\phi=1/[C_{m,{\rm out}}]_{pp}\), a conditional marginal inverse
+variance under
+its named assumptions;
+\item \(C_{m,{\rm out}}\) or \(C_{m,{\rm out}}^+\), the full conditional
+covariance or precision on the identifiable stochastic subspace of the exact
+authorized row domain; and
+\item an empirical covariance, weight, or significance calibrated by NOI.
+\end{enumerate}
+
+The bundle reports what uncertainty or covariance information it actually
+provides, its meaning, domain, assumptions, and limitations, and whether fuller
+information is persisted, lineage-resolvable, summarized, incomplete, or
+unavailable. Missing correlations are named, not set to zero. Neither
+normalization, hits, exposure, nor diagnostic weight is silently promoted to
+covariance. Absence of a complete covariance model does not invalidate the map
+or prohibit later scientific analysis. A later covariance estimate is a new
+versioned product bound to the original map and processing identity. The
+minimum persistence form remains an owner decision.
+
+\clearpage
+\section{Distinct map facts, support, and MAP-local validity}
+
+The base/unfiltered MAP bundle separates facts because they answer different questions:
+
+\begin{longtable}{L{0.24\linewidth}L{0.66\linewidth}}
+\toprule
+Fact & Meaning\\
+\midrule
+AST-geometric incidence & Which coordinate-valid occurrences touch the unique
+containing pixel, independent of signal availability.\\
+MAP-route-candidate incidence & Which exact realized PTC occurrences also pass
+the occurrence-level MAP upstream-admission profile.\\
+Estimator-admitted contributions & How many occurrences passed every ordinary
+coefficient and contribution predicate.\\
+Admitted observation count & How many complete observation bundles contribute
+to a coadd pixel; not sample hits or attempted observations.\\
+Upstream-eligible original-footprint exposure & Unique original acquisition
+footprints ancestral to route candidates, placed by each original's own AST
+ALIGN-grid coordinate in the target WCS; not complete temporal support.\\
+Retained original-footprint exposure & The same original-footprint estimand
+restricted to ancestors of estimator-admitted membership; not precision or
+effective integration time.\\
+Normalization support & The numerical threshold predicate used to authorize
+ordinary division.\\
+Science-policy support & The separately stricter adopted policy predicate.\\
+MAP-local base-product validity & MAP's conjunction of admitted identity,
+support, finite signal, and no MAP-product failure; not downstream eligibility.\\
+\bottomrule
+\end{longtable}
+
+No one fact is an alias for another. In particular, exposure is not precision,
+positive normalization is not final validity, and a finite payload is not
+evidence of scientific availability.
+
+ALIGN owns \(e_{\rm acq}\) and valid-original \(e_{\rm vo}\), in seconds on
+stable original occurrences. RTC, CAL, and PTC preserve those facts, exact
+lineage, and causes. MAP deduplicates by observation, detector occurrence/UID,
+stable original/native occurrence, stable ALIGN slot, and ALIGN mapping
+generation. Under
+\SCIMapASTFootprintBoundaryId, each
+positive-\(e_{\rm vo}\) original is placed exactly once using its layered AST
+ALIGN-grid direction/tangent/continuous-pixel parent in the exact target MAP
+WCS, with exact geometry/pointing realization, frame, validity, boundary,
+parent, and version. A descendant RTC-output coordinate is never substituted:
+
+\SCIMapExposureEquations
+
+The relation \(u\leadsto i\) is causal influence only. One original may
+influence several RTC/PTC descendants at different MAP pixels, but those
+edges do not relocate or duplicate its physical detector-seconds. Under the
+base one-hot family an original contributes exposure to at most one pixel, or
+none after boundary loss. Upstream-eligible exposure uses originals ancestral
+to the exact route-candidate population; retained exposure restricts that
+population to ancestors of estimator-admitted outputs. Coadd identity includes
+the observation, so union never merges distinct acquisitions. Overlapping
+filters, decimation, replacement, synthesis, donor reuse, cadence, hits,
+\(Q\), and \(\gamma\) create no exposure. Missing exact original lineage or
+own-coordinate authority makes the affected exposure role unavailable rather
+than reconstructible from duration or count. Causal influence/support is
+published separately from representative RTC occurrence and physical
+original-footprint exposure. Neither exposure plane is complete temporal
+support, effective map integration time, precision, or normalized-map
+influence.
+
+The adopted v0.1 threshold rule is policy authority, not a derived physical
+law. For the declared plane and policy population of finite positive \(Q_p\)
+values, sorted in ascending order, the admitted formula names
+\(c=\texttt{coverage\_cut}\):
+
+\SCIMapThresholdEquations
+
+Both predicates require the pixel's own explicit finite positive coefficient;
+the empty-population threshold of zero does not manufacture support. The
+operator row set \(\mathcal S_{\rm out}\) is the exact intersection of the
+predicate row sets designated applicable by \(\Pi_{\rm eff}\); it is not a
+full-grid mask with zero semantics.
+
+The scientific owner has fixed \(c=\texttt{coverage\_cut}\) as a
+dimensionless support-policy scalar because \(Q_p\), \(Q_\star\), and both
+thresholds are directly compared in the same coefficient unit.
+\code{SCI-MAP-CI-001} records the resolved inconsistency and the bounded
+amendment to the canonical equations, REQ-031/032, and PRED-012. This
+disposition does not establish a numerical domain. Negative, zero,
+non-finite, and greater-than-one values, the recommended range, policy
+authority, and failure behavior remain SCI-MAP-OD-007. Threshold rationale
+and future change authority remain SCI-MAP-OD-001 and SCI-MAP-OD-002.
+
+\clearpage
+\section{Observation coaddition on one common grid}
+
+Coaddition consumes immutable complete observation bundles, not independent
+planes. The MAP-owned aggregate profile
+\SCIMapCoaddProfile{} is registered and evaluated by
+SCI-VAL. Its four axes independently record request, applicability,
+eligibility, and realization. It atomically checks quantity
+and nominal-beam convention, PTC route/product role, response source/class,
+complete AST frame/WCS/grid, support policy, coefficient family, covariance
+disclosure, null/additive-reference state, required companions, lifecycle,
+and parentage before any coadd-owned state changes.
+
+The only v0.1 placement is centered integer embedding on the same grid.
+Observation and coadd row and column differences are nonnegative and even;
+their half-differences are the integer offsets, and the shifted reference
+pixels identify the same world coordinate. The lossless typed WCS is the
+authority. No fractional shift, interpolation, reprojection, wrapping, or
+implicit source recentering is allowed.
+
+For the atomically admitted per-pixel set \(\mathcal O_p\), every contributing
+observation row is already a member of that observation's support-authorized
+scientific domain. Let \(\mathcal S^c_{\rm out}\) be the exact rows authorized
+by the effective coadd support policy. The MAP-owned family
+\SCIMapUniformCoaddProfile{} assigns dimensionless
+\(u_{op}=1\) to every admitted row. It is equal-observation weighting, not
+precision. The coadd is:
+
+\SCIMapCoaddEquations
+
+Here \(\widehat{\boldsymbol m}_{\rm obs}\) is the stacked signal on exact
+observation-row identities; \(B_{\rm out}\) is the centered-integer equal-
+observation averaging operator; \(T_{\rm obs}\) stacks exact compatible
+fixed-state observation response objects; and \(C_{\rm obs}\) is the block covariance with
+every available within- and cross-observation block explicitly located.
+Equation~\eqref{eq:coadd-companions} is a complete numerical covariance claim
+only when every block required by the exact covariance-qualified role is
+available. Otherwise the state is explicitly partial, symbolic, summarized,
+lineage-resolvable, or unavailable. Unknown blocks are not zero or
+independence. The coadd operator \(B_{\rm out}\) has rows only in
+\(\mathcal S^c_{\rm out}\). Coadd accumulators or dense storage slots outside
+that set do not become a zero-valued scientific coadd. On its exact domain the
+coadd is a convex weighted mean. One admitted observation reproduces itself;
+two admitted observations produce their equal-observation mean. Its
+normalization is not precision. With cross-observation covariance, the exact
+conditional covariance retains those blocks on the same selected rows. A
+correlated-GLS benchmark may require negative combination coefficients,
+placing it outside this ordinary positive-coefficient contract.
+
+The exact base-coadd role makes response advisory and unavailable-compatible;
+the response-bearing role requires compatible source domain, response basis,
+class, units, normalization, parent, and rows for every member. If any member
+response is unavailable or incompatible, the base role may retain the
+unchanged numerical signal membership but must report coadd response
+unavailable; it forms no hidden response subset. The covariance-qualified
+role similarly requires all named blocks. Retained exposure and admitted
+observation count follow the same atomic bundle admission, while exposure
+retains its unique-original own-coordinate placement.
+A rejected observation changes no
+coadd state anywhere, even if a subset of its planes would otherwise appear
+compatible.
+
+\clearpage
+\section{Identity, WCS, units, and lifecycle}
+
+A map cannot be reconstructed from its collection position. Paired PTC
+\(x/r\) components remain upstream detector coordinates and are carried only
+when a MAP-facing fact requires their identity; MAP does not recast \(r\) as a
+response. The minimum
+identity includes the nonpolarimetric total-intensity-equivalent product role;
+external observation or coadd ID; array/group and occurrence domains;
+estimator, projection, PTC and coadd coefficient families; response/covariance
+states; signal unit and exact nominal-beam parent; complete AST frame/WCS;
+exposure convention; MAP profiles; exact PTC/AST generations and product
+identity. A STOKES field is only a locator unless separate quantity authority exists. The policy must
+be scientifically identifiable, durable, and comparable, but this contract
+prescribes no JSON, hash, or sidecar serialization. Array ID, name, index,
+network, map group, map index,
+detector occurrence, and container position remain distinct.
+
+Science maps bind the complete frame identity supplied by
+\SCIMapASTRTCGridProfile, including the actual reference
+system, equinox/epoch, time scale, site/model state, TAN topology, WCS, axis
+order, signs, handedness, and degree-valued axes. MAP never equates J2000,
+FK5, ICRS, apparent, observed, or unrefracted frames by name/default. A
+Pointing/OOF ordinary-map use, if the owner registers it, uses
+a declared AltAz tangent plane in arcseconds; its mode-specific meaning is
+outside SCI-MAP. FITS/WCS coordinates are one-based and in-memory row/column
+indices are zero-based.
+
+Full-precision typed or sidecar WCS is the lossless admission and provenance
+authority. A physical FITS serialization may differ by at most 0.1 arcsec in
+maximum sky separation while preserving exact axis sign, handedness,
+orientation, and centered-integer shape/reference-pixel relations. This is a
+representation tolerance, not authority for a different grid.
+
+Requested state records the immutable accepted intent. Effective state records
+the executable supported plan. Observation-resolved state replaces all
+observation-specific arrays, mappings, geometry, coefficients, and provenance.
+Realized state records what actually ran, all accumulators and distinct facts,
+products, offsets, representation states, cardinality, and failures. State
+flows one way; execution does not rewrite the request or inherit a prior
+observation's resolution.
+
+\clearpage
+\section{Failure, downstream boundary, and immutable parentage}
+
+Failure semantics protect the scientific bundle from partial truth. An
+invalid candidate can be excluded at contribution scope; an unsupported pixel
+is MAP-local invalid; an incompatible observation is rejected atomically; an
+unrepresentable finite aggregate, coordinate/index conversion, missing
+required companion, or failed required publication propagates at its declared
+product scope before live state mutation. A completion marker cannot override
+a missing required output.
+
+No downstream package receives a bare signal plane as a complete map. The
+boundary includes the estimator and normalization identity; response state;
+conditional covariance/formal-weight state and assumptions; distinct map facts;
+additive-bias and null-mode state; units; WCS; grouping; lifecycle;
+base/unfiltered MAP parentage; dependency versions; and failures. NOI may propagate a fixed
+operator but owns realization construction and empirical calibration. FLT
+owns filtered support, response, covariance, and validity. SRC, MODE, and BEAM
+own inference and fit uncertainty. FRUIT owns recurrence and iteration state.
+
+Every later analysis is responsible for deciding which facts its own claim
+requires. An unavailable response prevents the original MAP bundle from making
+an unsupported response-dependent claim, but it does not prohibit analysis or
+invalidate other map claims. A significance analysis cannot relabel merely
+formal standardization; an absolute-level claim cannot ignore an unobservable
+offset. This contract defines no closed-world registry of all future uses. A
+downstream product may have local validity or eligibility, but it cannot
+rewrite MAP-local base-product validity or sever the immutable base/unfiltered
+MAP-parent identity.
+
+When an admitted noise realization is described as using the same operator,
+membership, projection, grouping, coefficients, normalization, exact
+support-authorized row selection, boundary, and coadd admission are fixed or
+identically prescribed. Recomputing them from randomized data creates a
+different estimator, regardless of matching array shapes or filenames.
+
+\clearpage
+\section{Uncertainty, validity, validation, and claim layers}
+
+The contract deliberately separates four reasoning layers:
+
+\begin{enumerate}
+\item \textbf{Uncertainty layer:} conditional covariance and response are
+propagated through the fixed operators; omitted state uncertainty remains
+explicit.
+\item \textbf{Validity layer:} contribution eligibility, numerical support,
+science-policy support, and MAP-local base-product validity determine the exact rows on
+which the estimator is scientifically available; unsupported rows are absent,
+not zero-filled observations.
+\item \textbf{Validation layer:} preregistered analytic fixtures, matrix
+comparisons, injections, covariance controls, representation round trips, and
+observational references test distinct claims.
+\item \textbf{Readiness layer:} implementation evidence, operational
+reliability, data completeness, and release authority are assessed elsewhere.
+\end{enumerate}
+
+\begin{longtable}{L{0.26\linewidth}L{0.22\linewidth}L{0.42\linewidth}}
+\toprule
+Claim layer & Status here & Evidence needed before an achieved claim\\
+\midrule
+Algebraic scientific contract & Proposed author draft & Scientific-owner
+review and contract freeze; analytic predictions are specified, not executed.\\
+Engineering conformance & \ClaimNo & Requirement-by-requirement inspection and
+tests against one exact candidate identity.\\
+Representation/response fidelity & \ClaimNo & WCS round trips and delta,
+template, extended, variable-coverage, and edge injections with preregistered
+bounds.\\
+Observational performance & \ClaimNo & Independent astronomical amplitude,
+shape, position, covariance, and repeatability references where available.\\
+Production readiness & \ClaimNo & Complete required artifacts, failure/log
+audit, operational gates, owner release decision, and no disqualifying gaps.\\
+\bottomrule
+\end{longtable}
+
+Floating reductions require a preregistered bound derived from operation count
+and conditioning. For a sum of \(n\) terms, a reference policy may use
+\(\gamma_n=n\epsilon/(1-n\epsilon)\) and a fixed multiple such as the admitted
+core's \(8\gamma_n\sum_i|a_i|\), frozen before observing results. Integer
+counts, identities, masks, support, offsets, and product cardinality remain
+exact. Tolerances are not relaxed after failure.
+
+The contract's 25 predictions are listed formally in
+Appendix~\ref{app:predictions}. No validation run, implementation inspection,
+observational reduction, or production decision was performed during this
+scientific authorship stage.
+
+\clearpage
+\section{Owner decisions, external hard gates, and route disposition}
+
+Eight MAP-local decisions remain open: (1) the physical rationale
+for the adopted support thresholds; (2) future threshold change authority and
+evidence; (3) the minimum response information that the original MAP product
+must provide for each response-dependent claim it makes; (4) the minimum covariance
+representation that must persist rather than remain lineage-resolvable; (5)
+whether physical observation-map publication is an abstract obligation beyond
+the effective v0.1 required-product rule; (6) whether Pointing/OOF ordinary
+arithmetic is a registered reuse of this operator; and (7) the admissible
+numeric domain, boundary-case dispositions, and failure behavior for the
+dimensionless \(c=\texttt{coverage\_cut}\); and (8) canonical-grid preparation
+and future reprojection/mosaicking ownership. OD-008 remains a stable resolved
+identity: only \SCIMapOneHotProfile{} is authorized, with
+lower-inclusive/upper-exclusive cells, outer-upper-boundary loss, no wrap or
+clamp, and fractional projection deferred. SCI-MAP-CI-001 is also resolved.
+
+\begin{longtable}{L{0.25\linewidth}L{0.20\linewidth}L{0.45\linewidth}}
+\toprule
+Route level & Contract status & Exact remaining gate\\
+\midrule
+Conditional estimator authority & Defined & Positive-coefficient observation and equal-observation centered-integer coadd equations are conditional scientific authority.\\
+Source-closed numerical observation map & Unavailable & Exact PTC MAP-facing coefficient family and exact owner-admitted numerical \code{coverage\_cut} state/value remain open; every required boundary/profile/source and realized same-\(n\) parent must also match.\\
+Response-bearing science map & Conditional or unavailable & Requires an exact sufficient fixed-state, PTC full-procedure, or PTC+MAP re-resolved family for the named claim; whole-chain RTC-to-CAL-to-PTC-to-MAP response is unavailable; missing membership never creates a hidden subset.\\
+Uncertainty-qualified map & Conditional or unavailable & Requires the exact covariance representation and every term/block needed by the named claim; unknown is not zero.\\
+Compatible-grid coadd & Defined conditionally & Requires source-closed admitted observation bundles and \code{observation\_coadd\_admission@1}; response/covariance qualification remains role-specific.\\
+Future reprojection/mosaic & Not authorized & OD-009 and a separate scientific contract remain required.\\
+\bottomrule
+\end{longtable}
+
+\begin{longtable}{L{0.27\linewidth}L{0.22\linewidth}L{0.41\linewidth}}
+\toprule
+External hard gate & Contract disposition & Route effect\\
+\midrule
+PTC MAP-facing coefficient & Open in PTC-OD-010 & Blocks every ordinary numerical observation map.\\
+Admitted numerical \code{coverage\_cut} state & Open in MAP-OD-007 & Blocks support-row construction and every numerical map.\\
+\SCIMapPTCMapBoundaryId{} & Source-closed in this packet & Required exact digest/version; a mismatch blocks the route.\\
+MAP upstream-admission profile & Exact manifest-bound Registry record & A
+missing or incompatible \SCIMapUpstreamProfile{} evaluation blocks candidate
+admission.\\
+Exact AST same-\(n\) coordinate parent & Contract role closed; realization input-dependent & Missing/mismatched parent excludes the occurrence.\\
+Original-footprint exposure lineage and AST ALIGN-grid parent & Exact boundary closed; realization input-dependent & Missing stable-original, target-WCS, validity, or boundary facts make required exposure unavailable and block a product that designates it required.\\
+Response/covariance state & Claim-dependent & Does not by itself invalidate the base signal; blocks only a role whose exact policy requires stronger information.\\
+\bottomrule
+\end{longtable}
+
+The contract is coherent at this conditional boundary. It does not authorize
+an ordinary numerical realization while any hard structural gate remains
+open, and it establishes no implementation conformity, response fidelity,
+validation, observational performance, freeze, readiness, or production
+authorization.
+
+\appendix
+\clearpage
+\section{Owner-decision register}\label{app:owner-decisions}
+
+This compact register is generated from
+\code{SCIENTIFIC_OWNER_DECISION_LEDGER.md}. The mechanical contract checker
+requires exact decision IDs, open statuses, decision prompts, and conservative
+interim dispositions to match before either PDF is accepted. Rendering this
+register does not answer or close an item.
+
+\input{SCI-MAP-v0.1_OWNER_DECISION_REGISTER_r0.1.tex}
+
+\clearpage
+\section{Requirement and crosswalk summary}\label{app:traceability-summary}
+
+The detailed 52-row requirement crosswalk and 25-row prediction crosswalk
+remain in \code{CROSSWALK.md}. This compact index makes the rationale's
+traceability visible without duplicating the normative clause text or the
+detailed row table. Appendix~\ref{app:requirements} renders every canonical
+requirement, and Appendix~\ref{app:predictions} renders every prediction,
+directly from the shared authority.
+
+\begin{longtable}{L{0.19\linewidth}L{0.38\linewidth}L{0.33\linewidth}}
+\toprule
+Authority range & Scientific surface & Principal rationale / open gate\\
+\midrule
+REQ-001 & Version and revision identity & Cover; owner freeze\\
+REQ-002--010 & Capability, input, identity, projection, coefficients, lifecycle,
+and admission & Sections 1, 7, 8; upstream producer facts\\
+REQ-011--018 & Ordinary accumulators, exact support-row publication, response,
+and absolute mode & Sections 1--3; OD-003\\
+REQ-019--024 & Row-selected covariance, formal weight, nuisance state, and
+statistical labels & Sections 2, 4; OD-004\\
+REQ-025--035 & Separate incidence/contribution/exposure/support facts,
+threshold policy, exact rows, and MAP-local validity & Section 5; OD-001,
+OD-002, OD-007\\
+REQ-036--042 & Complete bundles, atomic centered-integer coadd, row-selected
+coadd response/covariance, and GLS boundary & Sections 6, 8; OD-003, OD-004,
+OD-007\\
+REQ-043--048 & Product identity, WCS, provenance, failure, and publication &
+Sections 7--8; OD-005, OD-006\\
+REQ-049--052 & Immutable base MAP parent, consumer boundary, fixed realization
+operator, and claim separation & Sections 8--9; OD-003, OD-004, OD-006,
+OD-007\\
+PRED-001--025 & Analytic consequences and conformance/representation challenges
+& Sections 3, 9; Appendix~\ref{app:predictions}; not executed\\
+OD-001--009 & Stable scientific-owner decisions & Section 10;
+Appendix~\ref{app:owner-decisions}; eight OPEN, OD-008 RESOLVED\\
+SCI-MAP-CI-001 & Resolved dimensionless classification and bounded amendment &
+Section 5; equations, REQ-031/032, and PRED-012 amended in place\\
+\bottomrule
+\end{longtable}
+
+\clearpage
+\section{Canonical requirements}\label{app:requirements}
+
+This appendix is rendered directly from the shared canonical LaTeX authority.
+Requirement identifiers are stable within SCI-MAP v0.1. Editing prose in this
+document does not silently change them.
+
+\renewcommand{\SCIMapRequirement}[4]{%
+  \phantomsection\label{req:#1}%
+  \noindent\textbf{\textcolor{MapNavy}{#1} -- #2.} #3\par\smallskip}
+\begin{sloppypar}
+\SCIMapRequirements
+\end{sloppypar}
+
+\clearpage
+\section{Falsifiable predictions}\label{app:predictions}
+
+These predictions are preregistered contract consequences or conformance
+challenges. Their presence is not validation evidence.
+
+\renewcommand{\SCIMapPrediction}[4]{%
+  \phantomsection\label{pred:#1}%
+  \noindent\textbf{\textcolor{MapNavy}{#1} -- #2.} #3
+  \textit{Primary claim layer: #4.}\par\smallskip}
+\SCIMapPredictions
+
+\clearpage
+\section{Product vocabulary}
+
+\begin{longtable}{L{0.23\linewidth}L{0.18\linewidth}L{0.49\linewidth}}
+\toprule
+Product & Unit & Contract meaning\\
+\midrule
+Signal numerator & coefficient times \code{mJy/beam} & Pre-normalized
+accumulator; not a sky estimator.\\
+Normalization & declared gridding unit & Positive denominator; precision only
+under Requirements 020--021.\\
+Normalized signal & \code{mJy/beam} & Conditional ordinary map estimand whose
+vector contains exactly the effective-policy-authorized output rows; no
+unsupported zero-filled semantic extension.\\
+Formal diagonal weight & inverse square signal unit & Conditional marginal
+inverse variance under named assumptions; not empirical significance.\\
+Conditional covariance & square signal unit & Full fixed-state noise
+propagation on the exact scientific output-row domain, with omissions and
+representation status named.\\
+Response/kernel & \code{mJy/beam} when unit-bearing & Realized template response
+only when the sample-parent identity is proven; otherwise tracer or unavailable.\\
+Geometric/estimator hits & integer & Counts of declared populations, not
+coverage, precision, or validity.\\
+\code{upstream_eligible_original_footprint_exposure} & named time/accounting
+unit & Unique-original acquisition-footprint accounting for route-candidate
+ancestors; explicit prose alias: upstream-eligible exposure; not precision.\\
+\code{retained_original_footprint_exposure} & named time/accounting unit &
+Unique-original acquisition-footprint accounting for estimator-admitted
+ancestors; explicit prose alias: retained exposure; not precision.\\
+Support facts & logical & Separate normalization and science-policy predicates;
+their effective conjunction defines output-row membership.\\
+MAP-local base-product validity & logical & Authority for the base/unfiltered
+MAP bundle only; downstream uses own their eligibility.\\
+\bottomrule
+\end{longtable}
+
+\clearpage
+\section{Admitted source register and independence statement}
+
+The scientific author used only the following admitted sources:
+
+\begin{longtable}{L{0.18\linewidth}L{0.72\linewidth}}
+\toprule
+Source & Exact admitted identity\\
+\midrule
+Scope Brief & \code{SCOPE_BRIEF.md}\\
+& SHA-256
+\digest{e2a9eb51edb59561}{91813b4cdbd23866}{e875d52cdf89cd8b}{6c272988b4f26674}.\\[0.3em]
+Supersession Cover & \code{AUTHOR_SUPERSESSION_COVER.md}\\
+& SHA-256
+\digest{8ea283525f18199d}{9760c3f672d145d7}{1f0db87b320ab2e8}{8a5c6635ef3d4aa0}.\\[0.3em]
+Frozen core & Exact Git object \code{c28f18ed089657dae278caba2d6d6d65c7ec72f4:}\\
+& \code{doc/audits/packages/SCI-MAP-001_INDEPENDENT_CORE.tex}\\
+& SHA-256
+\digest{13dd5922bd492e38}{1afcc3b015284216}{dde1ccc2199ece3d}{070ee577c7324381}.\\[0.3em]
+Conventions and ownership & \code{AUTHOR_CONVENTIONS_AND_OWNERSHIP.md}\\
+& SHA-256
+\digest{2d478cb6c5e89730}{8d19614b8b016633}{18744971850c6745}{9f84c7ddcd57c5c9}.\\
+Frozen adjacent authority & SCI-PTC v0.1/r0.5 digest
+\digest{8357961a49272adc}{40e27a8aa9e760e0}{d01ff2419ae2c88a}{62c0f93c9f959e66};
+SCI-CAL v0.1 science r0.5/engineering r0.4 digest
+\digest{413426f49edf1249}{f751a05bb8c6e9fd}{907b11e8da0530fe}{2da39814885efb22};
+SCI-AST v0.1/r0.3 manifest digest
+\digest{b54b6013750540f2}{8aad02339a60bf36}{078980dc53b132be}{ab73069d66ef3601};
+SCI-VAL Core v0.1/r0.3 digest
+\digest{2fc3b3ad329fe303}{5d442b43d1e564a7}{4fc86ab49f85f56e}{87322d8553fad9a6}.\\
+PTC-to-MAP boundary & \SCIMapPTCMapBoundaryId; one byte-identical
+copy is installed in each PTC and MAP packet.\\
+MAP r0.7.1 profiles & \SCIMapUpstreamProfile{} and
+\SCIMapCoaddProfile, registered in the exact manifest-bound SCI-VAL Registry
+revision.\\
+Original-footprint coordinate &
+\SCIMapASTFootprintBoundaryId, binding
+SCI-AST Equation \code{align-parent}, Equations
+\code{tangent-parent}--\code{pixel-parent}, and REQ-073/080/081.\\
+Owner closure directive & SCI-MAP r0.7 directive, SHA-256
+\digest{f7747eea28710d52}{4e12c818b872ac3f}{cc49f413271f83c0}{644ae129949a8c8c}; semantic changes in
+\code{CHANGE_LOG_R0.7.md}.\\
+\bottomrule
+\end{longtable}
+
+No implementation, test, validation, reduction, production-status record,
+MAP-002/MAP-003 evidence, or web source entered this authorship. The bounded
+handoff review supplied only the owner-authorized authority corrections
+recorded above. The frozen ordinary derivation was consolidated rather than
+rederived for novelty.
+
+\end{document}

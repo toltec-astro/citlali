@@ -1,0 +1,192 @@
+{
+  "schema_version": 1,
+  "contract": "SCI-POINT v0.1",
+  "document_revision": "r0.2",
+  "status": "conditional_generic",
+  "scientific_authorities": [
+    "SCI-POINT-v0.1-r0.3-stage-b-author-packet",
+    "SCI-POINT-v0.1-r0.2 targeted Stage B feedback directive dated 2026-09-03"
+  ],
+  "sci_val": {
+    "request": ["requested", "not_requested"],
+    "applicability": ["applicable", "inapplicable", "applicability_unknown"],
+    "eligibility": ["eligible", "ineligible", "decision_unavailable"],
+    "realization": ["realized", "incomplete", "failed", "not_produced"],
+    "post_evaluation_action": "diagnostic_display_only",
+    "prohibited_axis_or_lifecycle_token": "diagnostic_only",
+    "dispositions": {
+      "not_requested": ["not_requested", "applicability_unknown", "decision_unavailable", "not_produced"],
+      "missing_profile": ["requested", "applicability_unknown", "decision_unavailable", "not_produced"],
+      "missing_source_binding": ["requested", "applicability_unknown", "decision_unavailable", "not_produced"],
+      "structural_conflict": ["requested", "applicability_unknown", "decision_unavailable", "failed"],
+      "inapplicable": ["requested", "inapplicable", "ineligible", "not_produced"],
+      "incomplete_artifact": ["requested", "applicable", "decision_unavailable", "incomplete"],
+      "failed_artifact": ["requested", "applicable", "decision_unavailable", "failed"],
+      "not_produced_artifact": ["requested", "applicable", "decision_unavailable", "not_produced"]
+    }
+  },
+  "producer_lifecycle": [
+    "not_requested",
+    "requested",
+    "effective",
+    "unavailable",
+    "resolved",
+    "applied",
+    "fit_realized",
+    "complete_publication_candidate",
+    "publication_decided",
+    "published",
+    "failed",
+    "not_produced",
+    "superseded"
+  ],
+  "logical_records": [
+    "request_and_parent",
+    "effective_configuration",
+    "resolved_method_plan",
+    "application_attempt",
+    "realized_fit_and_component",
+    "publication_candidate",
+    "publication_decision",
+    "published_product"
+  ],
+  "amplitude_roles": {
+    "fit_component": "POINT-FIT-AMPLITUDE-COMPONENT",
+    "source_associated": "POINT-SOURCE-ASSOCIATED-AMPLITUDE-DIAGNOSTIC",
+    "source_associated_gate": "POINT-SOURCE-ASSOCIATION-STATE=established",
+    "cal_tolproj_candidate_role": "POINT-SOURCE-ASSOCIATED-AMPLITUDE-DIAGNOSTIC"
+  },
+  "derived_diagnostics": [
+    {
+      "role": "POINT-DYNAMIC-RANGE-DIAGNOSTIC/FITTED-AMPLITUDE-OVER-FULL-MAP-RMS@1",
+      "method_authority": "POINT-FULL-MAP-RMS-METHOD v0.1",
+      "legacy_alias": "sig2noise",
+      "alias_state": "unavailable_pending_explicit_method_approval"
+    },
+    {
+      "role": "POINT-FORMAL-AMPLITUDE-STANDARDIZATION@1",
+      "method_authority": "POINT-FORMAL-ERROR-METHOD v0.1",
+      "legacy_alias": "fit_sig2noise",
+      "alias_state": "unavailable_pending_explicit_method_approval"
+    }
+  ],
+  "point_boundary_roles": [
+    {
+      "point_facing_role": "MAP-SIGNAL/OBSERVATION-LEVEL-NORMALIZED@1",
+      "family": "MAP",
+      "classification": "POINT-facing boundary-role identity",
+      "numerical_instance_state": "unavailable_pending_exact_boundary_mapping"
+    },
+    {
+      "point_facing_role": "JINC-SIGNAL/NORMALIZED-JINC-MAP@1",
+      "family": "JINC",
+      "classification": "POINT-facing boundary-role identity",
+      "numerical_instance_state": "unavailable_pending_exact_boundary_mapping"
+    },
+    {
+      "point_facing_role": "FLT-FIXED-SIGNAL/TRANSFORMED-MAP@1",
+      "family": "FLT-FIXED",
+      "classification": "POINT-facing boundary-role identity",
+      "numerical_instance_state": "unavailable_pending_exact_boundary_mapping"
+    },
+    {
+      "point_facing_role": "FLT-MATCHED-SIGNAL/MATCHED-TEMPLATE-AMPLITUDE-FIELD@1",
+      "family": "FLT-MATCHED",
+      "classification": "POINT-facing boundary-role identity",
+      "numerical_instance_state": "unavailable_pending_exact_boundary_mapping"
+    }
+  ],
+  "boundary_instance_required_fields": [
+    "point_facing_role",
+    "exact_upstream_package_product_role",
+    "upstream_contract_version",
+    "source_digest",
+    "owner_approval",
+    "compatibility_state",
+    "generation"
+  ],
+  "draft_named_use_profiles": [
+    {
+      "id": "VAL-PROFILE/SCI-POINT/FIT-COMPLETENESS/PER-ARRAY@draft-r0.3",
+      "owner": "SCI-POINT",
+      "registration": "unavailable",
+      "evaluable": false,
+      "record_state": "uninstantiated_template",
+      "required_axes": ["request", "applicability", "eligibility", "realization"]
+    },
+    {
+      "id": "VAL-PROFILE/POINTING-SUPPORT/POINT-DISPLACEMENT-ADMISSION@draft-r0.3",
+      "owner": "pointing-support producer",
+      "registration": "unavailable",
+      "evaluable": false,
+      "record_state": "uninstantiated_template",
+      "required_axes": ["request", "applicability", "eligibility", "realization"]
+    },
+    {
+      "id": "VAL-PROFILE/TELESCOPE-QC/POINT-PARAMETER-ADMISSION@draft-r0.3",
+      "owner": "named telescope/observing-condition QC process",
+      "registration": "unavailable",
+      "evaluable": false,
+      "record_state": "uninstantiated_template",
+      "required_axes": ["request", "applicability", "eligibility", "realization"]
+    },
+    {
+      "id": "VAL-PROFILE/CAL-TOLPROJ/POINT-AMPLITUDE-TRANSFER@draft-r0.3",
+      "owner": "CAL/TolProj",
+      "registration": "unavailable",
+      "evaluable": false,
+      "record_state": "uninstantiated_template",
+      "required_axes": ["request", "applicability", "eligibility", "realization"],
+      "required_amplitude_role": "POINT-SOURCE-ASSOCIATED-AMPLITUDE-DIAGNOSTIC"
+    }
+  ],
+  "required_method_record_templates": {
+    "POINT-COMPATIBILITY-METHOD v0.1": [
+      "source_equation_and_parameter_ordering",
+      "width_and_angle_conventions",
+      "domains_constraints_and_boundary_rules",
+      "rows_residual_objective_weighting_and_covariance_relation",
+      "support_search_score_candidate_interpolation_and_tie_rules",
+      "initialization_fallback_association_retry_and_sentinel_rules",
+      "solver_independent_solution_comparison",
+      "convergence_rank_identifiability_failure_and_compatibility",
+      "applicability_tests_and_typed_unavailability"
+    ],
+    "POINT-FORMAL-ERROR-METHOD v0.1": [
+      "fitted_parameterization_and_stochastic_model",
+      "weight_relation_and_covariance_error_construction",
+      "curvature_residual_scaling_degrees_of_freedom_and_rank",
+      "positive_definiteness_transformations_and_marginal_extraction",
+      "active_bounds_circularity_degeneracy_and_weak_identification",
+      "consistency_units_scope_omissions_and_failure_states",
+      "signed_versus_absolute_standardization_and_alias_approval"
+    ],
+    "POINT-FULL-MAP-RMS-METHOD v0.1": [
+      "exact_signal_parent_and_generation",
+      "population_centering_mean_and_weighting",
+      "source_region_support_edge_and_validity",
+      "nonfinite_and_zero_denominator_behavior",
+      "units_lifecycle_provenance_and_amplitude_parent_relation",
+      "sig2noise_alias_approval"
+    ]
+  },
+  "unavailable_response_roles": {
+    "SCI-POINT-UNAV-018": "fixed_branch_response",
+    "SCI-POINT-UNAV-022": "full_procedure_response",
+    "SCI-POINT-UNAV-023": "observational_bias_accuracy"
+  },
+  "canonical_applicability_token": "approximately_centered",
+  "nonclaims": [
+    "numerical_route",
+    "implementation_conformity",
+    "representation_or_response_fidelity",
+    "uncertainty_coverage",
+    "observational_pointing_accuracy",
+    "validation",
+    "performance",
+    "readiness",
+    "production_suitability",
+    "production_authorization",
+    "Unity_activity"
+  ]
+}
