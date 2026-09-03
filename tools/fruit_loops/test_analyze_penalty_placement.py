@@ -200,3 +200,21 @@ def test_mapmaking_application_accepts_prior_flags_when_all_samples_excluded(
     assert result["pre_mapmaking_newly_flagged_samples"] == 271
     assert result["pre_mapmaking_already_flagged_samples"] == 34
     assert result["pre_mapmaking_excluded_samples_after_application"] == 305
+
+
+def test_execution_reader_accepts_macos_time_line(tmp_path: Path) -> None:
+    text = (
+        "[info] citlali is done!  going to sleep now\n"
+        "       31.25 real        29.69 user         0.70 sys\n"
+        "           858619904  maximum resident set size\n"
+    )
+    for trajectory in analysis.TRAJECTORIES:
+        (tmp_path / f"{trajectory}.log").write_text(text)
+
+    rows = analysis.read_execution(tmp_path)
+
+    assert len(rows) == 4
+    assert rows[0]["wall_seconds"] == 31.25
+    assert rows[0]["user_seconds"] == 29.69
+    assert rows[0]["system_seconds"] == 0.70
+    assert rows[0]["maximum_resident_bytes"] == 858619904

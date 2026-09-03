@@ -72,6 +72,17 @@ def scalar_text(value: object) -> str:
     return str(item)
 
 
+def execution_time_value(text: str, label: str) -> float | None:
+    for pattern in (
+        rf"(?:^|\s)([0-9.]+)\s+{label}(?=\s|$)",
+        rf"(?:^|\s){label}\s+([0-9.]+)(?=\s|$)",
+    ):
+        match = re.search(pattern, text, re.M)
+        if match is not None:
+            return float(match.group(1))
+    return None
+
+
 def normalized_learning_policy(value: object) -> dict:
     policy = yaml.safe_load(scalar_text(value))
     if not isinstance(policy, dict):
@@ -381,24 +392,14 @@ def cross_term_rows(
 
 
 def read_execution(log_dir: Path) -> list[dict]:
-    def value(text: str, label: str) -> float | None:
-        for pattern in (
-            rf"^\s*([0-9.]+)\s+{label}\s*$",
-            rf"^\s*{label}\s+([0-9.]+)\s*$",
-        ):
-            match = re.search(pattern, text, re.M)
-            if match is not None:
-                return float(match.group(1))
-        return None
-
     rows = []
     error_pattern = re.compile(r"\[(?:error|critical)\]|(?:error|critical):", re.I)
     for label in TRAJECTORIES:
         path = log_dir / f"{label}.log"
         text = path.read_text(encoding="utf-8")
-        wall = value(text, "real")
-        user = value(text, "user")
-        system = value(text, "sys")
+        wall = execution_time_value(text, "real")
+        user = execution_time_value(text, "user")
+        system = execution_time_value(text, "sys")
         rss = re.search(
             r"^\s*([0-9]+)\s+maximum resident set size$", text, re.M
         )
@@ -537,7 +538,7 @@ def write_component_maps(
                 name=f"R{len(hdus):02d}_{name}"[:8],
             )
         )
-    path = output_dir / f"point_{obsnum}_{array}_el_f8_components_r0.2.fits"
+    path = output_dir / f"point_{obsnum}_{array}_el_f8_components_r0.3.fits"
     fits.HDUList(hdus).writeto(path, overwrite=True, checksum=False)
     return path
 
@@ -918,13 +919,13 @@ def main() -> int:
     output_dir = Path(manifest["analysis_output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
     paths = {
-        "metrics": output_dir / "COMPONENT_METRICS_R0.2.csv",
-        "cross": output_dir / "CROSS_TERMS_R0.2.csv",
-        "triggers": output_dir / "TRIGGER_PIXELS_R0.2.csv",
-        "execution": output_dir / "PRIMARY_EXECUTION_R0.2.csv",
-        "result": output_dir / "DECOMPOSITION_RESULT_R0.2.json",
-        "report": output_dir / "EXECUTION_RESULT_R0.2.md",
-        "plot": output_dir / "PENALTY_PLACEMENT_DECOMPOSITION_R0.2.png",
+        "metrics": output_dir / "COMPONENT_METRICS_R0.3.csv",
+        "cross": output_dir / "CROSS_TERMS_R0.3.csv",
+        "triggers": output_dir / "TRIGGER_PIXELS_R0.3.csv",
+        "execution": output_dir / "PRIMARY_EXECUTION_R0.3.csv",
+        "result": output_dir / "DECOMPOSITION_RESULT_R0.3.json",
+        "report": output_dir / "EXECUTION_RESULT_R0.3.md",
+        "plot": output_dir / "PENALTY_PLACEMENT_DECOMPOSITION_R0.3.png",
     }
     write_csv(paths["metrics"], metrics)
     write_csv(paths["cross"], cross_terms)
@@ -987,7 +988,7 @@ def main() -> int:
         ],
         "execution": auxiliary["execution"],
     }
-    provenance_path = output_dir / "ANALYSIS_PROVENANCE_R0.2.yaml"
+    provenance_path = output_dir / "ANALYSIS_PROVENANCE_R0.3.yaml"
     provenance_path.write_text(yaml.safe_dump(provenance, sort_keys=False))
     print(paths["report"])
     return 0
