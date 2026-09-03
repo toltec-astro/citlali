@@ -752,6 +752,22 @@ then reconstructs the already retained map-only result. No instrumentation,
 replay, safeguard, policy, recurrence, Gate D, Stage B, or Unity action is yet
 authorized.
 
+The scientific owner agreed with that next direction. The resulting proposed
+[`SCI-FRUIT-EL-F10-TARGETED-JINC-ACCOUNTING-R0.1` packet](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F10_JINC_ACCOUNTING_OWNER_REVIEW_R0.1.md),
+bound by its exact
+[`bundle manifest`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F10_BUNDLE_MANIFEST_R0.1.md),
+now states the missing accounting in frozen SCI-JINC notation (`N`, signed
+`C`, and quadratic `Q`) and keeps signed normalization share distinct from
+absolute coefficient mass, quadratic support, hit count, and unique-detector
+count. It proposes one diagnostic-on replay from the exact EL-F6 no-record
+iteration-4 checkpoint.
+Bitwise reproduction of the existing science maps is a prerequisite to any
+interpretation; a pre-registered forward-error bound governs reconstruction
+of the existing EL-F8 map-only result. The diagnostic sidecars are explicitly
+not calibrated sky products, checkpoint state, a JINC-conformity assessment,
+or a production interface. The packet remains unapproved: no diagnostic
+implementation, build, replay, or new analysis is authorized.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
