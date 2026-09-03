@@ -277,9 +277,18 @@ and cross-package handoffs are valuable recovery inputs.
   `SCI-FLT-FIXED` plus an `SCI-FLT-INF` holding tranche. Final owner scope
   decisions select strict linearity, fixed low-pass only as a qualified
   convolution subtype, and full-footprint-only as the sole v0.1 edge method.
-  All bounded questions are resolved. The repaired exact 17-object future
-  author set is SHA-bound but not releasable until exact-byte owner approval;
-  Stage B has not begun.
+  All bounded questions are resolved. The exact 17-object Stage A author set
+  was approved, implementation-blind Stage B completed, and Grant Wilson
+  conditionally froze the manifest-bound fixed-convolution authority on
+  `2026-08-31`. The immutable freeze target is
+  `43f4fe59ab23a591c1c9e17a2ac4b1fed0a9e613`; its approval record is retained
+  on branch tip `7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`, and
+  `AUTHORITY_MANIFEST.json` has SHA-256
+  `69e6766f26396ba843ee29cfb89a48efd91b7e1b517ed90d3d93c87a63e55778`.
+  Ordinary numerical MAP/JINC parents remain unavailable, the two FLT
+  profiles remain unregistered, and no implementation-conformity, validation,
+  calibration, achieved-performance, readiness, production, or Unity claim
+  follows from the conditional scientific freeze.
 - Package-specific NOI recovery:
   [`packages/SCI-NOI/v0.1/PRIOR_WORK.md`](packages/SCI-NOI/v0.1/PRIOR_WORK.md)
   at `2026-08-29`. It locates both earlier implementation-independent NOI
@@ -292,11 +301,20 @@ and cross-package handoffs are valuable recovery inputs.
   semantics, target/estimator/rank/covariance and STD tables, sanitized MAP,
   JINC, and conditional pre-MAP PTC boundaries, four NOI-owned VAL profile
   drafts, a FLT/FRUIT deferral record, and one complete ODQ-101--110 decision
-  candidate. The exclusive author packet remains implementation-blind and
-  SHA-bound. Empirical NOI weights or standardized signal cannot be promoted
-  into MAP coefficients, uncertainty, or significance by analogy.
-  Implementation, audits, repairs, validation, and defaults remain excluded
-  from authorship; Stage B remains unlaunched.
+  candidate. The exclusive author packet remained implementation-blind and
+  SHA-bound. Stage B and the bounded r0.5 target-law repair subsequently
+  completed. Grant Wilson froze the exact r0.5 contract snapshot at
+  `2303daf7061a19945a6333099d33dd559cf2abf8`, bound by
+  `PROPOSED_FREEZE_MANIFEST.json` SHA-256
+  `b6915186424dd52d7c94fb0df47db91654d3c20cf4b3fa6ab98c3554626d8bfc`;
+  the post-snapshot approval record is retained on branch tip
+  `f28d7a2617160febca85c1c40e6f7ba7494e266e`. Empirical NOI weights or
+  standardized signal cannot be promoted into MAP coefficients, uncertainty,
+  or significance by analogy. The four r0.5 profile successors remain
+  proposed, unapproved, Registry-unbound, and unevaluable. The freeze makes no
+  implementation-conformity, generator-validation, calibration,
+  physical-noise-validity, covariance-completeness, Gaussian-significance,
+  achieved-performance, readiness, or production claim.
 - Current shared authority plus `MAIN:doc/NOISE_PRODUCTS_CONFIG_AUTHORITY.md`.
 - Existing noise integration and filter-amendment decisions under `MAIN` and
   the `codex/coordinate-sci-flt-001-amendment` topic branch.
@@ -356,9 +374,17 @@ and cross-package handoffs are valuable recovery inputs.
   authorities pending separate quarantined recovery and owner approval. All
   bounded ODQs are closed. The exclusive 37-object
   [`AUTHOR_PACKET_MANIFEST.md`](packages/SCI-POINT/v0.1/AUTHOR_PACKET_MANIFEST.md)
-  `v0.1/r0.3` review candidate is content-bound and has a deterministic
-  39-file `.tar.gz` copy, but its exact bytes are not owner-approved and Stage B
-  remains unauthorized pending explicit fresh-task dispatch.
+  `v0.1/r0.3` packet was owner-approved and used by a fresh
+  implementation-blind Stage B author. Targeted review closed the r0.3 science;
+  the owner then directed an editorial r0.4 publication freeze that preserves
+  the six accepted common source files byte-exactly at ordered SHA-256
+  `c0ca71bd457b8e6d37a425eb3ead76400dba3a5e29c869420807928201cdcdbd`.
+  The final 18-page normative core, 8-page scientist rationale, and 9-page
+  engineering view contain 38 requirements, 32 predictions, and 23 typed
+  unavailable states. The compatibility, formal-error, full-map-RMS, and
+  exact numerical route authorities remain unavailable at their stated gates;
+  the presentation freeze makes no implementation, validation, accuracy,
+  performance, readiness, production, or Unity claim.
 - Current authority in `MAIN:doc/SCIENTIFIC_CONVENTIONS.md` and
   `MAIN:validation/product_contracts.json`.
 - Scope records in the `SCI-SRC-001` and `SCI-MODE-001` ledger and handoff

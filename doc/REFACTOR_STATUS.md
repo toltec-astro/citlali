@@ -3410,6 +3410,31 @@ implementation conformity, response or covariance fidelity, uncertainty
 coverage, observational accuracy, validation, performance, readiness,
 production authorization, or Unity activity.
 
+On `2026-09-03`, the owner authorized a bounded Tier 2 consolidation
+preflight for POINT, frozen NOI, and conditionally frozen FLT-FIXED before the
+planned map-space horizontal audit. The temporary branch
+`codex/integrate-point-flt-fixed-2026-09-03` starts from exact canonical
+mainline `4d14d0dce8c80b6bc9d0d39c9a90a8f4b2504538` and contains three explicit
+merge commits: POINT `4bff928e89c2ba2664d26707d2650698b1bbed01`,
+FLT-FIXED `1b0cecf90d4bed4c051c3ac840450d3cc228da34`, and NOI
+`aed08007f86b7416f7630266394f9c4fc4b7d1ed`. The only content conflict was
+resolved additively in `doc/SCIENTIFIC_CONVENTIONS.md`; all selected current
+package verifiers, manifest checks, the complete configuration preflight, the
+60-record validation-ledger check, reconciliation whitespace check, and
+obsolete-source-path guard pass, subject to the explicitly recorded retired
+Stage A/base-Registry assertions. Exact refs, results, exclusions, and
+nonclaims are in the
+[integration-candidate record](scientific_contracts/POINT_NOI_FLT_FIXED_INTEGRATION_CANDIDATE_2026-09-03.md).
+
+`codex/refactor-mainline` has not moved and nothing has been pushed. The active
+SCI-FRUIT branch and its untracked artifacts remain independent. The older
+dirty ALIGN worktree and its 77 uniquely reachable historical commits remain
+protected and untouched. Independent exact-SHA review and owner acceptance are
+still required before canonical movement; the map-space horizontal audit has
+not begun. This consolidation changes no frozen scientific semantics and
+makes no implementation-conformity, validation, achieved-performance,
+readiness, production, or Unity claim.
+
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction
 rendering driven by effective and realized state, explaining what each emitted

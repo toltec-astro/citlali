@@ -1,7 +1,7 @@
 # SCI-FLT — Map-Domain Filtering Tranche
 
-Status: final repaired SCI-FLT-FIXED Stage A candidate complete; exact-byte
-owner approval required; implementation-blind Stage B not authorized
+Status: **SCI-FLT-FIXED v0.1 conditionally scientifically frozen;
+implementation conformity and numerical validation not established.**
 
 Version: `v0.1`
 
@@ -76,10 +76,16 @@ mix with fixed-state members.
 
 ## Current Gate And Nonclaims
 
-All bounded Stage A scope decisions are resolved. The exact repaired bytes and
-hashes now require scientific-owner approval. Only a later explicit record may
-launch one fresh implementation-blind SCI-FLT-FIXED Stage B author. No
-SCI-FLT-INF Stage B task is authorized.
+All bounded Stage A scope decisions are resolved. Implementation-blind Stage B
+completed, and Grant Wilson conditionally froze the exact manifest-bound
+candidate at Git commit
+`43f4fe59ab23a591c1c9e17a2ac4b1fed0a9e613` on `2026-08-31`. The approval
+record is retained on dedicated-branch tip
+`7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`; `AUTHORITY_MANIFEST.json` has
+SHA-256
+`69e6766f26396ba843ee29cfb89a48efd91b7e1b517ed90d3d93c87a63e55778`.
+Ordinary numerical MAP/JINC parents remain unavailable and the FLT profiles
+remain unregistered. No SCI-FLT-INF Stage B authority is created.
 
 This package changes no algorithm or frozen authority and makes no
 implementation-conformity, validation, calibration, response/covariance

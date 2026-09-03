@@ -2,10 +2,8 @@
 
 Date: `2026-08-26`
 
-Updated: `2026-08-31` for SCI-JINC closure, SCI-NOI Stage A/Stage B handoff,
-SCI-FLT-INF ODQ-001 through ODQ-003 and ODQ-005 through ODQ-013 closure, and
-ODQ-004, ODQ-006, ODQ-009, ODQ-010, and ODQ-013 option author delegation;
-ODQ-010 through ODQ-013 closure; and `SCI-FLT-MATCHED` package identity
+Updated: `2026-09-03` for the POINT/NOI/FLT-FIXED integration candidate and
+the current downstream package checkpoint
 
 Status: scientific-owner-approved program sequencing record
 
@@ -13,6 +11,42 @@ This record preserves the agreed progression after the frozen ALIGN-through-PTC
 handoff. It is a program plan, not a scientific contract, package freeze,
 implementation-conformity finding, validation result, or production-readiness
 claim.
+
+## 2026-09-03 Consolidation Checkpoint
+
+The temporary integration candidate records the following scientific-contract
+state without advancing `codex/refactor-mainline`:
+
+- SCI-MAP v0.1/r0.7.1 remains frozen under its exact package authority;
+- SCI-JINC v0.1/r0.3 remains frozen at
+  `a9f43877e01a661db13bd85b2e7f34ea5ac82fb7` and tag
+  `sci-jinc-v0.1-r0.3`;
+- SCI-NOI v0.1/r0.5 is frozen at exact snapshot
+  `2303daf7061a19945a6333099d33dd559cf2abf8`, with post-snapshot approval on
+  dedicated-branch tip `f28d7a2617160febca85c1c40e6f7ba7494e266e`;
+- SCI-FLT-FIXED v0.1 is conditionally scientifically frozen at exact candidate
+  `43f4fe59ab23a591c1c9e17a2ac4b1fed0a9e613`, with its approval record on
+  dedicated-branch tip `7f9307ff4e1cda0f112f2398bb72f52a3f4f01d5`;
+- SCI-FLT-MATCHED v0.1/r0.6 is frozen with authority-manifest SHA-256
+  `6b0231a7e9d34f028eda9cce48f62de1fc9e594348aa1448a2d182d732f78688`;
+  and
+- SCI-POINT v0.1 retains accepted r0.3 science in the owner-directed r0.4
+  three-view publication freeze on branch tip
+  `c7582052d48c991e0caec6f2b56ab63d2d44afcd`.
+
+SCI-FRUIT remains an independent active package-development line. Its
+integration-start snapshot is
+`dafa8fbd47af5934706fc1b123c2d4139b92acd0`; during verification the active
+branch advanced to `ccb67a99257fc9fba82d25346e85503363673651` and retained three
+untracked artifacts. Neither state is part of the integration candidate. The
+older dirty ALIGN worktree remains protected as historical evidence and is not
+treated as an authoritative project checkout.
+
+The next program action is owner review of the exact integration candidate.
+Only after acceptance may the canonical line advance and the planned
+map-space horizontal audit begin. This checkpoint does not establish a new
+numerical route, implementation conformity, validation, achieved performance,
+readiness, production authorization, or Unity activity.
 
 ## Starting Boundary
 

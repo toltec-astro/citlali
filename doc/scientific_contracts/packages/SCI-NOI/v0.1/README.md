@@ -1,7 +1,7 @@
 # SCI-NOI — Noise Realizations And Empirical Uncertainty
 
-Status: exact Stage A set owner-approved on `2026-08-30`; implementation-blind
-Stage B launch authorized at high reasoning effort
+Status: **Scientific authority frozen at v0.1/r0.5; implementation conformity
+and numerical validation not established.**
 
 Version: `v0.1`
 
@@ -71,11 +71,18 @@ validation, reductions, Unity, defaults, or historical behavior.
   and preserves its proposed construction as nonbinding guidance.
 - Sanitized Scope Brief and author packet: exact final bytes/hashes
   owner-approved.
-- Implementation-blind scientific rationale: commissioned in a fresh task;
-  no Stage B result is present in this Stage A branch at launch.
-- Engineering conformance specification: commissioned under the same firewall;
-  no Stage B result is present in this Stage A branch at launch.
-- Scientific authority: not frozen.
+- Implementation-blind Stage B authorship and bounded r0.5 target-law repair:
+  complete.
+- Exact frozen snapshot: commit
+  `2303daf7061a19945a6333099d33dd559cf2abf8`, bound by
+  `PROPOSED_FREEZE_MANIFEST.json` SHA-256
+  `b6915186424dd52d7c94fb0df47db91654d3c20cf4b3fa6ab98c3554626d8bfc`.
+- Post-snapshot owner approval: recorded at dedicated-branch tip
+  `f28d7a2617160febca85c1c40e6f7ba7494e266e`.
+- The four r0.5 profile successors remain proposed, unapproved,
+  Registry-unbound, and unevaluable; their absence does not undo the contract
+  freeze.
+- Scientific authority: frozen at v0.1/r0.5.
 - Implementation conformity, representation fidelity, validation, achieved
   uncertainty/performance, readiness, and production state: not assessed.
 
