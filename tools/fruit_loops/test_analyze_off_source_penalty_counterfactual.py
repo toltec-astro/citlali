@@ -27,3 +27,18 @@ def test_reversal_fraction_rejects_non_loss() -> None:
 def test_classify_effect(kernel: float, annular: float, expected: str) -> None:
     assert analysis.classify_effect(kernel, annular, 0.5) == expected
 
+
+def test_read_execution_accepts_bsd_and_gnu_time_order(tmp_path) -> None:
+    common = "citlali is done!\n12345 maximum resident set size\n"
+    (tmp_path / "untouched-injected-sham.log").write_text(
+        common + "real 30.5\nuser 29.1\nsys 0.6\n"
+    )
+    (tmp_path / "injected-without-uid4460.log").write_text(
+        common + "31.5 real\n29.2 user\n0.7 sys\n"
+    )
+
+    rows = analysis.read_execution(tmp_path)
+
+    assert rows[0]["wall_seconds"] == 30.5
+    assert rows[1]["wall_seconds"] == 31.5
+    assert all(row["maximum_resident_bytes"] == 12345 for row in rows)

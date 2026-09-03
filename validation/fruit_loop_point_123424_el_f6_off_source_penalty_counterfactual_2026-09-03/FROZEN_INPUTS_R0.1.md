@@ -85,8 +85,10 @@ dimensions, and attributes equal.
 | `ANALYSIS_MANIFEST_R0.1.yaml` | `cfaf035ee9fa3ef9266dc0a423063ab3d5ec124bb8ab8749627382173b7ae183` |
 | `edit_restart_checkpoint_penalty.py` | `40afc57ba07e5d7e2415b5d0967fb3cb73b831560258aebfac1e3a4e0c9961e0` |
 | `test_edit_restart_checkpoint_penalty.py` | `0cea07ae72fa4e093b1980e41c46cb7310e712da0231bd3dae2d485faf558799` |
-| `analyze_off_source_penalty_counterfactual.py` | `1fdc15d657b45551813fe16bc7038b86ee9bd860aca78ef4af9a81c362db44b2` |
-| `test_analyze_off_source_penalty_counterfactual.py` | `ae42f1e5d45787d9d92cabb473ef4c9d189d24a301bdbe6b8d2c475e33fd2c56` |
+| initially frozen `analyze_off_source_penalty_counterfactual.py` | `1fdc15d657b45551813fe16bc7038b86ee9bd860aca78ef4af9a81c362db44b2` |
+| initially frozen `test_analyze_off_source_penalty_counterfactual.py` | `ae42f1e5d45787d9d92cabb473ef4c9d189d24a301bdbe6b8d2c475e33fd2c56` |
+| pre-result parser repair `analyze_off_source_penalty_counterfactual.py` | `1b3dce81f1a3f3ae729f6eb90a8ef1bdf569dfed94490b955ad5fdb38c60fa70` |
+| pre-result parser repair `test_analyze_off_source_penalty_counterfactual.py` | `96cc2babb004f360f36cfc73024dfda992dc60f884cb2cc2a87059e563ce7bb6` |
 
 Before the freeze:
 
@@ -101,6 +103,17 @@ Before the freeze:
 The external root retained 136,964 KiB at freeze. No replay product or result
 had been created.
 
+### Pre-result timing-parser repair
+
+Both replays later completed normally, but the initially frozen analyzer
+stopped before writing or printing a scientific result because it recognized
+GNU-style `30.66 real` timing text while the local macOS `/usr/bin/time -lp`
+logs use `real 30.66`. No output metric had been reported or retained. The
+repair accepts both token orders and adds a regression test covering both; it
+does not change a scientific metric, threshold, comparison, intervention, or
+trajectory. The repaired identities are recorded above before the analyzer is
+rerun. The raw logs remain unchanged.
+
 ## Fixed execution order
 
 1. Run the untouched injected sham from iteration 4 to 5.
@@ -110,4 +123,3 @@ had been created.
    iteration 4 to 5.
 4. Apply the frozen analysis without adding a variant, iteration, threshold,
    or tuning choice.
-

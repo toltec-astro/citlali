@@ -569,7 +569,15 @@ only the exact UID 4460 record was removed. The executable, seven-file stacks,
 source hashes, transformed checkpoint, analysis identities, and fixed run
 order are frozen in
 [`FROZEN_INPUTS_R0.1.md`](../validation/fruit_loop_point_123424_el_f6_off_source_penalty_counterfactual_2026-09-03/FROZEN_INPUTS_R0.1.md).
-No replay has begun.
+Both one-iteration replays then completed normally. The untouched sham passed
+its gate: all nine image planes are bitwise equal to the original EL-F5
+iteration 5 and every checkpoint variable is value-identical. The
+counterfactual also completed, but the first analyzer invocation stopped
+before retaining or displaying a result because the timing parser accepted
+GNU token order but not the local macOS order. A tested pre-result portability
+repair accepts both forms without changing any scientific calculation or
+gate; its hashes and scope are recorded in the frozen-input note. Scientific
+analysis remains pending.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

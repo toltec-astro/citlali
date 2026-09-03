@@ -256,14 +256,24 @@ def classify_effect(
 
 
 def read_execution(log_dir: Path) -> list[dict]:
+    def time_value(text: str, label: str) -> float | None:
+        for pattern in (
+            rf"^\s*([0-9.]+)\s+{label}\s*$",
+            rf"^\s*{label}\s+([0-9.]+)\s*$",
+        ):
+            match = re.search(pattern, text, re.M)
+            if match is not None:
+                return float(match.group(1))
+        return None
+
     rows = []
     error_pattern = re.compile(r"\[(?:error|critical)\]|(?:error|critical):", re.I)
     for label in ("untouched-injected-sham", "injected-without-uid4460"):
         path = log_dir / f"{label}.log"
         text = path.read_text(encoding="utf-8")
-        wall = re.search(r"^\s*([0-9.]+) real\s", text, re.M)
-        user = re.search(r"^\s*([0-9.]+) user\s", text, re.M)
-        system = re.search(r"^\s*([0-9.]+) sys\s", text, re.M)
+        wall = time_value(text, "real")
+        user = time_value(text, "user")
+        system = time_value(text, "sys")
         rss = re.search(r"^\s*([0-9]+)\s+maximum resident set size$", text, re.M)
         errors = sum(bool(error_pattern.search(line)) for line in text.splitlines())
         if (
@@ -279,9 +289,9 @@ def read_execution(log_dir: Path) -> list[dict]:
             {
                 "trajectory": label,
                 "status": "completed",
-                "wall_seconds": float(wall.group(1)),
-                "user_seconds": float(user.group(1)),
-                "system_seconds": float(system.group(1)),
+                "wall_seconds": wall,
+                "user_seconds": user,
+                "system_seconds": system,
                 "maximum_resident_bytes": int(rss.group(1)),
                 "error_or_critical_messages": errors,
             }
