@@ -135,6 +135,15 @@ inline constexpr std::array<EnumName<FruitLoopsInterpModeOverride>, 5>
         {FruitLoopsInterpModeOverride::trunc, "trunc"},
     }};
 
+inline constexpr std::array<
+    EnumName<MapPixelOutlierDetectorExclusionApplication>, 2>
+    map_pixel_outlier_detector_exclusion_application_names{{
+        {MapPixelOutlierDetectorExclusionApplication::pre_cleaning,
+         "pre_cleaning"},
+        {MapPixelOutlierDetectorExclusionApplication::pre_mapmaking,
+         "pre_mapmaking"},
+    }};
+
 inline constexpr std::array<EnumName<AuxiliaryMeasuredChannelCalibrationPolicy>, 3>
     auxiliary_measured_channel_calibration_policy_names{{
         {AuxiliaryMeasuredChannelCalibrationPolicy::native, "native"},
@@ -229,6 +238,13 @@ parse_fruit_loops_interp_mode_override(std::string_view value) {
     return parse_enum(value, fruit_loops_interp_mode_override_names);
 }
 
+std::optional<MapPixelOutlierDetectorExclusionApplication>
+parse_map_pixel_outlier_detector_exclusion_application(
+    std::string_view value) {
+    return parse_enum(
+        value, map_pixel_outlier_detector_exclusion_application_names);
+}
+
 std::optional<AuxiliaryMeasuredChannelCalibrationPolicy>
 parse_auxiliary_measured_channel_calibration_policy(std::string_view value) {
     return parse_enum(value, auxiliary_measured_channel_calibration_policy_names);
@@ -300,6 +316,12 @@ std::string_view to_string(FruitLoopsWeightFeedbackReference value) {
 
 std::string_view to_string(FruitLoopsInterpModeOverride value) {
     return enum_name(value, fruit_loops_interp_mode_override_names);
+}
+
+std::string_view to_string(
+    MapPixelOutlierDetectorExclusionApplication value) {
+    return enum_name(
+        value, map_pixel_outlier_detector_exclusion_application_names);
 }
 
 std::string_view to_string(

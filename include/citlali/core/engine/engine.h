@@ -158,7 +158,7 @@ public:
     void apply_learned_mapmaking_detector_exclusions(tc_t &, calib_t &);
     template <class tc_t, class calib_t>
     void apply_learned_detector_exclusions(tc_t &, calib_t &, const std::string &,
-                                           bool, bool, bool, bool);
+                                           bool, bool, bool, bool, bool);
     template <class tc_t, class calib_t>
     void apply_learned_sample_masks(tc_t &, calib_t &, bool, const std::string &,
                                     bool, double);

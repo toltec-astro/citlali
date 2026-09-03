@@ -85,6 +85,19 @@ void read_learning_map_pixel_outlier_config(
             "timestream", "learning",
             "map_pixel_outlier_detector_exclusion_feedback_bypass_enabled"},
         outlier.detector_exclusion_feedback_bypass_enabled, diagnostics);
+    std::string detector_exclusion_application{
+        citlali::config::to_string(
+            outlier.detector_exclusion_application)};
+    read_optional_parsed_mirrored_config_value(
+        config,
+        std::tuple{
+            "timestream", "learning",
+            "map_pixel_outlier_detector_exclusion_application"},
+        detector_exclusion_application,
+        outlier.detector_exclusion_application,
+        citlali::config::
+            parse_map_pixel_outlier_detector_exclusion_application,
+        diagnostics, {"pre_cleaning", "pre_mapmaking"});
     read_optional_learning_config(
         config,
         std::tuple{"timestream", "learning", "map_pixel_outlier_top_n"},

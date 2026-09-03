@@ -1,7 +1,7 @@
 {
   "schema_version": "citlali-frozen-learning-config-paths-v1",
-  "path_count": 29,
-  "path_sha256": "ac715c7c21344ebd9792e1fc58faee3795f79b5950c8df554eb34e28a4646af2",
+  "path_count": 30,
+  "path_sha256": "8dc863875274f51fbdade4fb2f5188f4391733da99f997a77d1318046d334f9a",
   "paths": [
     "timestream.learning.apply_max_new_flagged_fraction",
     "timestream.learning.apply_sample_masks_enabled",
@@ -11,6 +11,7 @@
     "timestream.learning.enabled",
     "timestream.learning.learn_iters",
     "timestream.learning.map_pixel_outlier_contributor_diagnostics_enabled",
+    "timestream.learning.map_pixel_outlier_detector_exclusion_application",
     "timestream.learning.map_pixel_outlier_detector_exclusion_enabled",
     "timestream.learning.map_pixel_outlier_detector_exclusion_feedback_bypass_enabled",
     "timestream.learning.map_pixel_outlier_detector_exclusion_min_pixels",

@@ -18,7 +18,7 @@ BOUNDARY_SOURCE = "include/citlali/core/engine/detail/learning_config_impl.h"
 PLAN_SOURCE = "include/citlali/core/pipeline/processed_timestream_execution_plan.h"
 SERIALIZATION_SOURCE = "include/citlali/core/pipeline/processed_timestream_config_serialization.h"
 EXPECTED_SCHEMA = "citlali-frozen-learning-config-paths-v1"
-EXPECTED_DIGEST = "ac715c7c21344ebd9792e1fc58faee3795f79b5950c8df554eb34e28a4646af2"
+EXPECTED_DIGEST = "8dc863875274f51fbdade4fb2f5188f4391733da99f997a77d1318046d334f9a"
 
 
 def digest(paths: list[str]) -> str:
@@ -57,14 +57,14 @@ def audit(repo_root: Path) -> dict[str, object]:
     checks = {
         "manifest_exact": bool(
             manifest.get("schema_version") == EXPECTED_SCHEMA
-            and manifest.get("path_count") == len(paths) == 29
+            and manifest.get("path_count") == len(paths) == 30
             and paths == sorted(set(paths))
             and digest(paths) == manifest.get("path_sha256") == EXPECTED_DIGEST
         ),
         "leaf_contract_exact": contract_paths == paths,
         "typed_reader_exact": reader_paths == paths
         and "read_optional_mirrored_config_value" not in reader,
-        "one_way_adapter_exact": len(adapter_members) == 29
+        "one_way_adapter_exact": len(adapter_members) == 30
         and "adapt_learning_config_one_way" in adapter
         and "make_learning_options" in adapter,
         "boundary_exact": boundary.count("read_learning_config(") == 1
@@ -92,7 +92,7 @@ def main() -> int:
         path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
     print(
         "learning config boundary: "
-        f"paths=29 typed_reader={result['checks']['typed_reader_exact']} "
+        f"paths=30 typed_reader={result['checks']['typed_reader_exact']} "
         f"adapter={result['checks']['one_way_adapter_exact']} "
         f"provenance={result['checks']['serialization_exact']} "
         f"drift={result['drift']}"

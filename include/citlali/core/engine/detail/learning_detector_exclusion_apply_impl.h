@@ -3,6 +3,7 @@
 // Engine learned detector-exclusion application detail.
 // Include this only after Engine has been declared.
 
+#include <citlali/core/pipeline/learning_detector_exclusion_stage.h>
 #include <citlali/core/pipeline/map_grouping_policy.h>
 
 template <class tc_t, class calib_t>
@@ -11,7 +12,8 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
                                                const std::string &stage,
                                                bool pre_rtc,
                                                bool update_apt_flags,
-                                               bool include_detector_records,
+                                               bool include_mapdiag_detector_records,
+                                               bool include_busy_detector_records,
                                                bool include_network_records) {
     if (!learning.is_enabled() ||
         !learning.apply_active()) {
@@ -22,10 +24,15 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
     }
 
     const bool mapdiag_detector_exclusion =
-        include_detector_records &&
-        learning.options.map_pixel_outlier_detector_exclusion_enabled;
+        include_mapdiag_detector_records &&
+        learning.options.map_pixel_outlier_detector_exclusion_enabled &&
+        citlali::pipeline::
+            map_pixel_outlier_detector_exclusion_applies_at_stage(
+                learning.options
+                    .map_pixel_outlier_detector_exclusion_application,
+                stage);
     const bool busy_detector_exclusion =
-        include_detector_records &&
+        include_busy_detector_records &&
         learning.options.busy_detector_exclusion_enabled;
     const bool network_exclusion =
         include_network_records &&

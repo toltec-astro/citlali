@@ -116,6 +116,11 @@ enum class FruitLoopsInterpModeOverride {
     trunc
 };
 
+enum class MapPixelOutlierDetectorExclusionApplication {
+    pre_cleaning,
+    pre_mapmaking
+};
+
 enum class AuxiliaryMeasuredChannelCalibrationPolicy {
     native,
     primary_equivalent,
@@ -157,6 +162,9 @@ std::optional<FruitLoopsWeightFeedbackReference>
 parse_fruit_loops_weight_feedback_reference(std::string_view value);
 std::optional<FruitLoopsInterpModeOverride>
 parse_fruit_loops_interp_mode_override(std::string_view value);
+std::optional<MapPixelOutlierDetectorExclusionApplication>
+parse_map_pixel_outlier_detector_exclusion_application(
+    std::string_view value);
 std::optional<AuxiliaryMeasuredChannelCalibrationPolicy>
 parse_auxiliary_measured_channel_calibration_policy(std::string_view value);
 
@@ -177,6 +185,8 @@ std::string_view to_string(FruitLoopsMode value);
 std::string_view to_string(FruitLoopsSourceCenterMode value);
 std::string_view to_string(FruitLoopsWeightFeedbackReference value);
 std::string_view to_string(FruitLoopsInterpModeOverride value);
+std::string_view to_string(
+    MapPixelOutlierDetectorExclusionApplication value);
 std::string_view to_string(
     AuxiliaryMeasuredChannelCalibrationPolicy value);
 

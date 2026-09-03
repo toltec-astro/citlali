@@ -23,6 +23,7 @@
 #include <citlali/core/pipeline/iteration_lifecycle.h>
 #include <citlali/core/pipeline/learning_config_adapter.h>
 #include <citlali/core/pipeline/learning_config_read.h>
+#include <citlali/core/pipeline/learning_detector_exclusion_stage.h>
 #include <citlali/core/pipeline/interface_sync_config_adapter.h>
 #include <citlali/core/pipeline/map_geometry.h>
 #include <citlali/core/pipeline/map_index_state.h>
@@ -3385,6 +3386,26 @@ TEST(config_scaffold, parses_existing_timestream_enum_values) {
     EXPECT_EQ(citlali::config::parse_fruit_loops_interp_mode_override("trunc").value(),
               citlali::config::FruitLoopsInterpModeOverride::trunc);
     EXPECT_FALSE(citlali::config::parse_fruit_loops_interp_mode_override("legacy_nearest").has_value());
+
+    EXPECT_EQ(
+        citlali::config::
+            parse_map_pixel_outlier_detector_exclusion_application(
+                "pre_cleaning")
+                .value(),
+        citlali::config::
+            MapPixelOutlierDetectorExclusionApplication::pre_cleaning);
+    EXPECT_EQ(
+        citlali::config::
+            parse_map_pixel_outlier_detector_exclusion_application(
+                "pre_mapmaking")
+                .value(),
+        citlali::config::
+            MapPixelOutlierDetectorExclusionApplication::pre_mapmaking);
+    EXPECT_FALSE(
+        citlali::config::
+            parse_map_pixel_outlier_detector_exclusion_application(
+                "post_mapmaking")
+                .has_value());
 }
 
 TEST(config_scaffold, parses_existing_pointing_enum_values) {
@@ -3943,6 +3964,7 @@ timestream:
     learn_iters: 4
     map_pixel_outlier_top_n: 17
     map_pixel_outlier_detector_exclusion_feedback_bypass_enabled: true
+    map_pixel_outlier_detector_exclusion_application: pre_mapmaking
     scan_network_pathology_max_new_flagged_fraction: 0.2
 )yaml");
     citlali::config::TimestreamLearningConfig request;
@@ -3958,8 +3980,37 @@ timestream:
     EXPECT_TRUE(
         request.map_pixel_outlier
             .detector_exclusion_feedback_bypass_enabled);
+    EXPECT_EQ(
+        request.map_pixel_outlier.detector_exclusion_application,
+        citlali::config::
+            MapPixelOutlierDetectorExclusionApplication::pre_mapmaking);
     EXPECT_DOUBLE_EQ(
         request.scan_network_pathology.max_new_flagged_fraction, 0.2);
+}
+
+TEST(config_scaffold, rejects_unknown_map_outlier_exclusion_application) {
+    ensure_citlali_test_logger();
+    auto config = tula::config::YamlConfig::from_str(R"yaml(
+timestream:
+  learning:
+    map_pixel_outlier_detector_exclusion_application: after_cleaning
+)yaml");
+    citlali::config::TimestreamLearningConfig request;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_learning_config(
+        config, request, diagnostics);
+
+    ASSERT_TRUE(diagnostics.has_errors());
+    EXPECT_EQ(
+        diagnostics.invalid_key_paths().front(),
+        (std::vector<std::string>{
+            "timestream", "learning",
+            "map_pixel_outlier_detector_exclusion_application"}));
+    EXPECT_EQ(
+        request.map_pixel_outlier.detector_exclusion_application,
+        citlali::config::
+            MapPixelOutlierDetectorExclusionApplication::pre_cleaning);
 }
 
 TEST(config_scaffold, adapts_learning_request_one_way) {
@@ -3976,6 +4027,10 @@ TEST(config_scaffold, adapts_learning_request_one_way) {
         bool map_pixel_outlier_targeted_contributor_diagnostics_enabled = false;
         bool map_pixel_outlier_detector_exclusion_enabled = false;
         bool map_pixel_outlier_detector_exclusion_feedback_bypass_enabled = false;
+        citlali::config::MapPixelOutlierDetectorExclusionApplication
+            map_pixel_outlier_detector_exclusion_application =
+                citlali::config::
+                    MapPixelOutlierDetectorExclusionApplication::pre_cleaning;
         int map_pixel_outlier_top_n = 0;
         int map_pixel_outlier_targeted_contributor_max_pixels = 0;
         int map_pixel_outlier_detector_exclusion_min_pixels = 0;
@@ -4005,6 +4060,9 @@ TEST(config_scaffold, adapts_learning_request_one_way) {
     request.map_pixel_outlier.top_n = 19;
     request.map_pixel_outlier.detector_exclusion_feedback_bypass_enabled =
         true;
+    request.map_pixel_outlier.detector_exclusion_application =
+        citlali::config::
+            MapPixelOutlierDetectorExclusionApplication::pre_mapmaking;
     request.scan_network_pathology.max_new_flagged_fraction = 0.25;
 
     citlali::pipeline::adapt_learning_config_one_way(request, learning);
@@ -4015,10 +4073,39 @@ TEST(config_scaffold, adapts_learning_request_one_way) {
     EXPECT_TRUE(
         learning.options
             .map_pixel_outlier_detector_exclusion_feedback_bypass_enabled);
+    EXPECT_EQ(
+        learning.options
+            .map_pixel_outlier_detector_exclusion_application,
+        citlali::config::
+            MapPixelOutlierDetectorExclusionApplication::pre_mapmaking);
     EXPECT_DOUBLE_EQ(
         learning.options.scan_network_pathology_max_new_flagged_fraction,
         0.25);
     EXPECT_EQ(request.learn_iters, 5);
+}
+
+TEST(config_scaffold, routes_map_outlier_detector_exclusion_by_application) {
+    using Application = citlali::config::
+        MapPixelOutlierDetectorExclusionApplication;
+    using citlali::pipeline::
+        map_pixel_outlier_detector_exclusion_applies_at_stage;
+
+    EXPECT_TRUE(map_pixel_outlier_detector_exclusion_applies_at_stage(
+        Application::pre_cleaning, "pre_rtc_detector_exclusion"));
+    EXPECT_TRUE(map_pixel_outlier_detector_exclusion_applies_at_stage(
+        Application::pre_cleaning, "pre_ptc_detector_exclusion"));
+    EXPECT_FALSE(map_pixel_outlier_detector_exclusion_applies_at_stage(
+        Application::pre_cleaning, "pre_mapmaking_detector_exclusion"));
+    EXPECT_FALSE(map_pixel_outlier_detector_exclusion_applies_at_stage(
+        Application::pre_mapmaking, "pre_rtc_detector_exclusion"));
+    EXPECT_FALSE(map_pixel_outlier_detector_exclusion_applies_at_stage(
+        Application::pre_mapmaking, "pre_ptc_detector_exclusion"));
+    EXPECT_TRUE(map_pixel_outlier_detector_exclusion_applies_at_stage(
+        Application::pre_mapmaking, "pre_mapmaking_detector_exclusion"));
+    EXPECT_FALSE(map_pixel_outlier_detector_exclusion_applies_at_stage(
+        Application::pre_cleaning, "unknown_detector_exclusion"));
+    EXPECT_FALSE(map_pixel_outlier_detector_exclusion_applies_at_stage(
+        Application::pre_mapmaking, "unknown_detector_exclusion"));
 }
 
 TEST(config_scaffold, reads_interface_sync_offsets_into_typed_request) {
@@ -10070,6 +10157,9 @@ TEST(config_scaffold, processed_provenance_write_failure_propagates) {
 
 TEST(config_scaffold, serializes_processed_config_snapshot_deterministically) {
     citlali::config::TimestreamConfig config;
+    config.learning.map_pixel_outlier.detector_exclusion_application =
+        citlali::config::
+            MapPixelOutlierDetectorExclusionApplication::pre_mapmaking;
     config.fruit_loops.enabled = true;
     config.fruit_loops.mode = citlali::config::FruitLoopsMode::both;
     config.fruit_loops.source_center_mode =
@@ -10126,6 +10216,11 @@ TEST(config_scaffold, serializes_processed_config_snapshot_deterministically) {
     EXPECT_EQ(node["fruit_loops"]["weight_feedback"]["reference"]
                   .as<std::string>(),
               "median");
+    EXPECT_EQ(
+        node["learning"]
+            ["map_pixel_outlier_detector_exclusion_application"]
+                .as<std::string>(),
+        "pre_mapmaking");
     const auto clean_node = node["processed_time_chunk"]["clean"];
     EXPECT_EQ(clean_node["active"].as<std::string>(), "standard_pca");
     EXPECT_EQ(clean_node["grouping"].size(), 2U);

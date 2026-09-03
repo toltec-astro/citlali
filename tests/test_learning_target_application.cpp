@@ -5,6 +5,7 @@
 
 #include <spdlog/sinks/null_sink.h>
 
+#include <map>
 #include <memory>
 #include <stdexcept>
 
@@ -56,6 +57,82 @@ mapmaking::MapBuffer target_map() {
     return map;
 }
 
+struct ExclusionTestChunk {
+    struct {
+        Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> data;
+    } flags;
+    struct {
+        int data = 0;
+    } index;
+    struct {
+        Eigen::MatrixXd data;
+    } scans;
+    struct {
+        std::map<std::string, Eigen::VectorXd> data;
+    } tel_data;
+    struct {
+        std::map<std::string, Eigen::VectorXd> data;
+    } pointing_offsets_arcsec;
+};
+
+struct ExclusionTestCalibration {
+    std::map<std::string, Eigen::VectorXd> apt;
+};
+
+Engine exclusion_engine(
+    citlali::config::MapPixelOutlierDetectorExclusionApplication
+        application,
+    const std::string &producer,
+    const std::string &reason) {
+    Engine engine;
+    engine.logger = std::make_shared<spdlog::logger>(
+        "learning-exclusion-application-test",
+        std::make_shared<spdlog::sinks::null_sink_mt>());
+    auto options = targeted_options();
+    options.learn_iters = 1;
+    options.apply_start_iter = 1;
+    options.apply_max_new_flagged_fraction = 1.0;
+    options.map_pixel_outlier_detector_exclusion_application = application;
+    engine.learning.configure(options);
+    engine.observation_identity.obsnum = "152390";
+    engine.learning.begin_iteration(0, false, "pointing");
+    ReductionLearningState::DetectorPenalty penalty;
+    penalty.obsnum = "152390";
+    penalty.producer = producer;
+    penalty.reason = reason;
+    penalty.iter = 0;
+    penalty.scan = 0;
+    penalty.uid = 4460;
+    penalty.nw = 9;
+    penalty.array = 1;
+    penalty.factor = 0.0;
+    penalty.scan_local = true;
+    engine.learning.record_detector_penalty(penalty, true);
+    engine.learning.begin_iteration(1, true, "pointing");
+    engine.iteration.fruit_iter = 1;
+    return engine;
+}
+
+ExclusionTestChunk exclusion_chunk() {
+    ExclusionTestChunk chunk;
+    chunk.flags.data.resize(3, 2);
+    chunk.flags.data.setConstant(false);
+    chunk.scans.data = Eigen::MatrixXd::Zero(3, 2);
+    return chunk;
+}
+
+ExclusionTestCalibration exclusion_calibration() {
+    ExclusionTestCalibration calibration;
+    calibration.apt["uid"] = Eigen::VectorXd(2);
+    calibration.apt["uid"] << 4460.0, 4461.0;
+    calibration.apt["nw"] = Eigen::VectorXd::Constant(2, 9.0);
+    calibration.apt["array"] = Eigen::VectorXd::Constant(2, 1.0);
+    calibration.apt["flag"] = Eigen::VectorXd::Zero(2);
+    calibration.apt["x_t"] = Eigen::VectorXd::Zero(2);
+    calibration.apt["y_t"] = Eigen::VectorXd::Zero(2);
+    return calibration;
+}
+
 TEST(LearningTargetApplication,
      AppliesResolvedBoundaryTargetsToRealContributionTracer) {
     auto engine = configured_engine();
@@ -98,6 +175,63 @@ TEST(LearningTargetApplication,
     EXPECT_THROW(
         engine.configure_map_pixel_contribution_targets(map, "raw_obs"),
         std::runtime_error);
+}
+
+TEST(LearningTargetApplication,
+     MapDiagnosticExclusionDefaultsToSharedCleaningStages) {
+    auto engine = exclusion_engine(
+        citlali::config::
+            MapPixelOutlierDetectorExclusionApplication::pre_cleaning,
+        "mapdiag:raw_obs", "map_pixel_outlier_detector_dominance");
+    auto calibration = exclusion_calibration();
+    auto rtc = exclusion_chunk();
+    engine.apply_learned_rtc_sample_masks(rtc, calibration);
+    EXPECT_TRUE(rtc.flags.data.col(0).all());
+    EXPECT_FALSE(rtc.flags.data.col(1).any());
+
+    auto map_input = exclusion_chunk();
+    engine.apply_learned_mapmaking_detector_exclusions(
+        map_input, calibration);
+    EXPECT_FALSE(map_input.flags.data.col(0).any());
+}
+
+TEST(LearningTargetApplication,
+     MapDiagnosticExclusionCanMoveAfterSharedCleaning) {
+    auto engine = exclusion_engine(
+        citlali::config::
+            MapPixelOutlierDetectorExclusionApplication::pre_mapmaking,
+        "mapdiag:raw_obs", "map_pixel_outlier_detector_dominance");
+    auto calibration = exclusion_calibration();
+    auto rtc = exclusion_chunk();
+    engine.apply_learned_rtc_sample_masks(rtc, calibration);
+    EXPECT_FALSE(rtc.flags.data.col(0).any());
+
+    auto ptc = exclusion_chunk();
+    engine.apply_learned_ptc_detector_exclusions(ptc, calibration);
+    EXPECT_FALSE(ptc.flags.data.col(0).any());
+
+    auto map_input = exclusion_chunk();
+    engine.apply_learned_mapmaking_detector_exclusions(
+        map_input, calibration);
+    EXPECT_TRUE(map_input.flags.data.col(0).all());
+    EXPECT_FALSE(map_input.flags.data.col(1).any());
+}
+
+TEST(LearningTargetApplication,
+     BusyDetectorExclusionPlacementDoesNotMoveWithMapDiagnosticSetting) {
+    auto engine = exclusion_engine(
+        citlali::config::
+            MapPixelOutlierDetectorExclusionApplication::pre_mapmaking,
+        "ptc_second_pass", "busy_vetoed_residual");
+    auto calibration = exclusion_calibration();
+    auto rtc = exclusion_chunk();
+    engine.apply_learned_rtc_sample_masks(rtc, calibration);
+    EXPECT_TRUE(rtc.flags.data.col(0).all());
+
+    auto map_input = exclusion_chunk();
+    engine.apply_learned_mapmaking_detector_exclusions(
+        map_input, calibration);
+    EXPECT_FALSE(map_input.flags.data.col(0).any());
 }
 
 }  // namespace

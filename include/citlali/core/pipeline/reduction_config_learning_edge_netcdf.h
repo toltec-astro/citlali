@@ -26,6 +26,11 @@ void add_reduction_learning_config_vars(
         "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_FEEDBACK_BYPASS_ENABLED",
         options
             .map_pixel_outlier_detector_exclusion_feedback_bypass_enabled);
+    add_netcdf_var<std::string>(
+        fo,
+        "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_APPLICATION",
+        std::string{citlali::config::to_string(
+            options.map_pixel_outlier_detector_exclusion_application)});
     add_netcdf_var(
         fo, "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_MIN_PIXELS",
         options.map_pixel_outlier_detector_exclusion_min_pixels);

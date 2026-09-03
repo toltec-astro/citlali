@@ -30,6 +30,11 @@ void add_phdu_reduction_learning_config(
                options
                    .map_pixel_outlier_detector_exclusion_feedback_bypass_enabled,
                "Use feedback-excluded map for detector exclusions");
+    hdu.addKey(
+        "CONFIG.LEARNING.MAP_OUTLIER_DET_APPLICATION",
+        std::string{citlali::config::to_string(
+            options.map_pixel_outlier_detector_exclusion_application)},
+        "Map-outlier detector-exclusion application stage");
     hdu.addKey("CONFIG.LEARNING.MAP_OUTLIER_DET_MINPIX",
                options.map_pixel_outlier_detector_exclusion_min_pixels,
                "Outlier pixels needed for learned detector exclusion");
