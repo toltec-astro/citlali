@@ -25,8 +25,9 @@ Applicable governance:
 - `doc/governance/ENGINEERING_GOVERNANCE.md`;
 - `doc/governance/TIMESTREAM_SUCCESSOR_GOVERNANCE.md`;
 - `doc/governance/REVIEW_AND_CONFORMANCE.md`;
-- ADR 0014, `doc/adr/0014-spack-build-foundation.md`; and
-- `doc/TOLTECA_BUILD_INTEGRATION_REVIEW_2026-07-26.md`.
+- ADR 0014, `doc/adr/0014-spack-build-foundation.md`;
+- `doc/TOLTECA_BUILD_INTEGRATION_REQUIREMENTS_2026-07-23.md`; and
+- `doc/TOLTECA_SPACK_BUILD_INTEGRATION_REVIEW_2026-07-31.md`.
 
 Branch and worktree:
 
@@ -146,7 +147,9 @@ contract, route, or acceptance-runner source.
 
 Focused and broad non-Unity results:
 
-- Ruff check and format check passed for all seven affected Python paths;
+- Ruff 0.13.2 lint (`ruff check --no-cache`) passed for all seven affected
+  Python paths; Ruff formatter conformance was not selected as a gate because
+  four of those files retain the repository's existing non-Ruff formatting;
 - Python syntax compilation passed for `tools/build`;
 - build-tool tests passed 73/73, including new failure cases for a direct
   compiler, wrong underlying compiler, mismatched target arguments, stale
@@ -187,3 +190,23 @@ profile. It must show wrapper-valued cached compilers, concrete
 `cascadelake` target arguments supplied by Spack rather than a manual CMake
 flag, a complete build and CTest result, and the representative identity-route
 witness without the invalid free.
+
+## Independent review repair
+
+Independent fresh-context review of exact first candidate
+`aa3b31510b41d750c3475a5071e8f6d51f5f98ca`, tree
+`28421540b0fb307ae7e7268e80f6ae179ae6e42a`, passed the
+scientific/behavioral and architecture/ownership/anti-bloat categories with no
+findings. It failed repository/evidence conformance on two minor record defects:
+
+1. the applicable-governance list cited the superseded 2026-07-26 Conan
+   review instead of the active 2026-07-31 Spack review and its requirements;
+   and
+2. the validation summary claimed a Ruff formatter check that was not
+   reproducible after pre-existing file formatting was intentionally retained.
+
+This follow-up changes only this work-order record: it replaces the stale
+authority reference and reports the selected Ruff lint gate accurately. It
+does not alter the reviewed implementation, tests, scope, exclusions, or
+remaining Unity gate. The repaired exact commit requires a new independent
+exact-SHA review; the earlier verdict does not transfer.
