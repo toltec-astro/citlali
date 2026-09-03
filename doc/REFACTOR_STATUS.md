@@ -512,6 +512,17 @@ without changing its raw-execution census. No trajectory, compatibility
 finding, off-source result, or scientific interpretation is claimed at this
 point.
 
+The verified EL-F5 executable and exact eight-file setup were subsequently
+copied into the new development output root and frozen before either
+trajectory. The executable SHA-256 is
+`6431c6653ed46ff6e1dfa5512cd27e8169525f7a110207b0b24505786f39dbbe`
+and its clean source identity is
+`fd760cdbf59940f803ab38323088b35682f342cd`. The immutable record and fixed
+merge order are in
+[`FROZEN_INPUTS_R0.1.md`](../validation/fruit_loop_point_123424_el_f5_off_source_injection_2026-09-03/FROZEN_INPUTS_R0.1.md).
+The registered control remains the mandatory first trajectory, followed by
+its bitwise comparison with EL-F4 before the off-source output may be opened.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
