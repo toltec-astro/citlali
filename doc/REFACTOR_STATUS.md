@@ -562,7 +562,14 @@ actual EL-F5 degradations: kernel-residual relative RMS and 40--120 arcsec
 annular residual. Central amplitude is reported by distance from unity and is
 not a causal gate. The registration is
 [`TEST_DEFINITION.md`](../validation/fruit_loop_point_123424_el_f6_off_source_penalty_counterfactual_2026-09-03/TEST_DEFINITION.md).
-No checkpoint has yet been copied or changed and no replay has begun.
+The existing checkpoint editor and the off-source-specific analyzer pass all
+222 baseline and FRUIT-loop Python tests. Both source copies were recursively
+verified before the registered one-row intervention; its audit confirms that
+only the exact UID 4460 record was removed. The executable, seven-file stacks,
+source hashes, transformed checkpoint, analysis identities, and fixed run
+order are frozen in
+[`FROZEN_INPUTS_R0.1.md`](../validation/fruit_loop_point_123424_el_f6_off_source_penalty_counterfactual_2026-09-03/FROZEN_INPUTS_R0.1.md).
+No replay has begun.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
