@@ -550,6 +550,9 @@ struct TimestreamLearningMapPixelOutlierConfig {
     bool contributor_diagnostics_enabled = false;
     bool targeted_contributor_diagnostics_enabled = false;
     bool detector_exclusion_enabled = false;
+    // Development-only EL-F4 candidate.  Preserve complete-map diagnostics,
+    // but select hard detector-exclusion evidence from Q_k - F_(k-1).
+    bool detector_exclusion_feedback_bypass_enabled = false;
     int top_n = 8;
     int targeted_contributor_max_pixels = 32;
     int detector_exclusion_min_pixels = 4;

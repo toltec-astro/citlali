@@ -26,6 +26,8 @@ Options make_learning_options(
         outlier.targeted_contributor_diagnostics_enabled;
     options.map_pixel_outlier_detector_exclusion_enabled =
         outlier.detector_exclusion_enabled;
+    options.map_pixel_outlier_detector_exclusion_feedback_bypass_enabled =
+        outlier.detector_exclusion_feedback_bypass_enabled;
     options.map_pixel_outlier_top_n = outlier.top_n;
     options.map_pixel_outlier_targeted_contributor_max_pixels =
         outlier.targeted_contributor_max_pixels;

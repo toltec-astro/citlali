@@ -38,6 +38,7 @@ struct ReductionLearningState {
         bool map_pixel_outlier_contributor_diagnostics_enabled = false;
         bool map_pixel_outlier_targeted_contributor_diagnostics_enabled = false;
         bool map_pixel_outlier_detector_exclusion_enabled = false;
+        bool map_pixel_outlier_detector_exclusion_feedback_bypass_enabled = false;
         int map_pixel_outlier_top_n = 8;
         int map_pixel_outlier_targeted_contributor_max_pixels = 32;
         int map_pixel_outlier_detector_exclusion_min_pixels = 4;

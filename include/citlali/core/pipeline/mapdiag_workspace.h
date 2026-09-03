@@ -5,6 +5,7 @@
 #include <citlali/core/pipeline/mapdiag_labels.h>
 #include <citlali/core/pipeline/mapdiag_netcdf.h>
 #include <citlali/core/pipeline/mapdiag_observation_weight.h>
+#include <citlali/core/pipeline/mapdiag_penalty_evidence.h>
 #include <citlali/core/pipeline/mapdiag_stats.h>
 
 #include <cstddef>

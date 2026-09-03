@@ -81,6 +81,12 @@ void read_learning_map_pixel_outlier_config(
         outlier.detector_exclusion_enabled, diagnostics);
     read_optional_learning_config(
         config,
+        std::tuple{
+            "timestream", "learning",
+            "map_pixel_outlier_detector_exclusion_feedback_bypass_enabled"},
+        outlier.detector_exclusion_feedback_bypass_enabled, diagnostics);
+    read_optional_learning_config(
+        config,
         std::tuple{"timestream", "learning", "map_pixel_outlier_top_n"},
         outlier.top_n, diagnostics, {0});
     read_optional_learning_config(

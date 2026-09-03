@@ -9,7 +9,7 @@ void log_reduction_learning_config(const LearningOptions &options,
         "reduction learning state configured: enabled={} diagnostics_enabled={} "
         "learn_iters={} apply_start_iter={} max_records_per_type={} "
         "apply_sample_masks_enabled={} apply_max_new_flagged_fraction={:.4g} "
-        "map_pixel_outliers(enabled={} contributors={} targeted_contributors={} detector_exclusion={} top_n={} target_max={} exclude_min_pixels={} min_abs_z={} min_n_eff={} source_radius_arcsec={}) "
+        "map_pixel_outliers(enabled={} contributors={} targeted_contributors={} detector_exclusion={} detector_exclusion_feedback_bypass={} top_n={} target_max={} exclude_min_pixels={} min_abs_z={} min_n_eff={} source_radius_arcsec={}) "
         "busy_detector_exclusion_enabled={} scan_network_pathology(enabled={} pre_rtc={} pre_ptc={} pre_mapmaking={} min_clusters={} min_events={} min_resid_z={} severe_events={} severe_resid_z={} max_new_flagged_fraction={:.4g})",
         options.enabled, options.diagnostics_enabled, options.learn_iters,
         options.apply_start_iter, options.max_records_per_type,
@@ -19,6 +19,8 @@ void log_reduction_learning_config(const LearningOptions &options,
         options.map_pixel_outlier_contributor_diagnostics_enabled,
         options.map_pixel_outlier_targeted_contributor_diagnostics_enabled,
         options.map_pixel_outlier_detector_exclusion_enabled,
+        options
+            .map_pixel_outlier_detector_exclusion_feedback_bypass_enabled,
         options.map_pixel_outlier_top_n,
         options.map_pixel_outlier_targeted_contributor_max_pixels,
         options.map_pixel_outlier_detector_exclusion_min_pixels,

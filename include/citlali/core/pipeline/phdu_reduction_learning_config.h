@@ -26,6 +26,10 @@ void add_phdu_reduction_learning_config(
     hdu.addKey("CONFIG.LEARNING.MAP_OUTLIER_DET_EXCL",
                options.map_pixel_outlier_detector_exclusion_enabled,
                "Enable map-outlier learned detector exclusions");
+    hdu.addKey("CONFIG.LEARNING.MAP_OUTLIER_DET_FB_BYPASS",
+               options
+                   .map_pixel_outlier_detector_exclusion_feedback_bypass_enabled,
+               "Use feedback-excluded map for detector exclusions");
     hdu.addKey("CONFIG.LEARNING.MAP_OUTLIER_DET_MINPIX",
                options.map_pixel_outlier_detector_exclusion_min_pixels,
                "Outlier pixels needed for learned detector exclusion");
@@ -66,4 +70,3 @@ void add_phdu_reduction_learning_config(
                reduction_learning.current_phase_name(),
                "Shared reduction learning phase");
 }
-

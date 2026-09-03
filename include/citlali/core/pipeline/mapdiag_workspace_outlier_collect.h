@@ -17,10 +17,11 @@ MapdiagOutlierMaskContext make_mapdiag_outlier_mask_context(
             core_mask, source_distance, protect_radius)};
 }
 
-template <class MapBuffer, class Matrix, class Mask,
+template <class MapBuffer, class Signal, class Matrix, class Mask,
           class RobustStats, class ReductionLearning>
 auto collect_mapdiag_pixel_candidates_for_map(
-    MapBuffer &mb, Eigen::Index map_index, const Matrix &sig2noise,
+    MapBuffer &mb, Eigen::Index map_index, const Signal &diagnostic_signal,
+    const Matrix &sig2noise,
     const Mask &off_source_core_mask,
     const MapdiagSourceDistanceContext &source_distance_context,
     const RobustStats &robust_stats,
@@ -43,7 +44,7 @@ auto collect_mapdiag_pixel_candidates_for_map(
             }
 
             const double value =
-                mapdiag_matrix_double_value(mb->signal[map_index], r, c);
+                mapdiag_matrix_double_value(diagnostic_signal, r, c);
             const double wt =
                 mapdiag_matrix_double_value(mb->weight[map_index], r, c);
             const double sn = mapdiag_matrix_double_value(sig2noise, r, c);
@@ -136,4 +137,3 @@ auto collect_mapdiag_pixel_candidates_for_map(
     }
     return candidates;
 }
-

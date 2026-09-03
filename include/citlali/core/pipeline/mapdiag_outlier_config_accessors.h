@@ -67,9 +67,15 @@ bool mapdiag_detector_exclusion_enabled(
 }
 
 template <class ReductionLearning>
+bool mapdiag_detector_exclusion_feedback_bypass_enabled(
+    const ReductionLearning &reduction_learning) {
+    return reduction_learning.options
+        .map_pixel_outlier_detector_exclusion_feedback_bypass_enabled;
+}
+
+template <class ReductionLearning>
 int mapdiag_detector_exclusion_min_pixels(
     const ReductionLearning &reduction_learning) {
     return reduction_learning.options
         .map_pixel_outlier_detector_exclusion_min_pixels;
 }
-

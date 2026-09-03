@@ -22,6 +22,11 @@ void add_reduction_learning_config_vars(
         fo, "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_ENABLED",
         options.map_pixel_outlier_detector_exclusion_enabled);
     add_netcdf_var(
+        fo,
+        "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_FEEDBACK_BYPASS_ENABLED",
+        options
+            .map_pixel_outlier_detector_exclusion_feedback_bypass_enabled);
+    add_netcdf_var(
         fo, "CONFIG.LEARNING.MAP_PIXEL_OUTLIER_DETECTOR_EXCLUSION_MIN_PIXELS",
         options.map_pixel_outlier_detector_exclusion_min_pixels);
     add_netcdf_var(fo, "CONFIG.LEARNING.BUSY_DETECTOR_EXCLUSION_ENABLED",
@@ -81,4 +86,3 @@ void add_tod_filter_edge_guard_config_vars(
         fo, "CONFIG.TODFILTER.EDGE_GUARD.IIR_SETTLE_ATTENUATION",
         edge_guard.iir_settle_attenuation);
 }
-

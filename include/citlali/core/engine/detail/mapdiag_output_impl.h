@@ -61,6 +61,21 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
     const citlali::pipeline::MapdiagStatsContext mapdiag_stats{fill_double};
     const std::string mapdiag_record_producer =
         citlali::pipeline::mapdiag_record_producer(stage_name);
+    const bool feedback_bypass_stage_enabled =
+        stage_name == "raw_obs" &&
+        citlali::pipeline::
+            mapdiag_detector_exclusion_feedback_bypass_enabled(learning);
+    if (feedback_bypass_stage_enabled && iteration.fruit_iter > 0 &&
+        ptcproc.tod_mb.signal.empty()) {
+        throw std::runtime_error(
+            "EL-F4 feedback-excluded mapdiag evidence requires the accepted feedback model after iteration 0");
+    }
+    if (feedback_bypass_stage_enabled &&
+        !ptcproc.tod_mb.signal.empty() &&
+        ptcproc.tod_mb.signal.size() != mb->signal.size()) {
+        throw std::runtime_error(
+            "EL-F4 feedback-excluded mapdiag evidence requires identical complete-map and feedback-map counts");
+    }
     auto map_name_for_index = [&](Eigen::Index map_i) {
         return get_map_name(map_i);
     };
@@ -75,6 +90,11 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
                 mapdiag_label_storage);
         const auto core_mask = citlali::pipeline::assign_mapdiag_basic_map_stats(
             i, idx, mb, fill_double, map_workspace);
+        const Eigen::MatrixXd *accepted_feedback_signal = nullptr;
+        if (feedback_bypass_stage_enabled &&
+            !ptcproc.tod_mb.signal.empty()) {
+            accepted_feedback_signal = &ptcproc.tod_mb.signal[i];
+        }
         citlali::pipeline::assign_mapdiag_signal_diagnostics_for_map<
             ReductionLearningState::MapPixelOutlier,
             ReductionLearningState::DetectorPenalty>(
@@ -82,6 +102,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             fill_int, mapdiag_stats, RAD_TO_ASEC,
             processed_time_chunk_fs_hz(), calib.arrays, observation_identity.obsnum,
             mapdiag_record_producer, stage_name, iteration.fruit_iter,
+            feedback_bypass_stage_enabled, accepted_feedback_signal,
             learning, map_workspace, logger);
 
         citlali::engine_detail::

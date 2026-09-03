@@ -3941,6 +3941,7 @@ timestream:
     enabled: true
     learn_iters: 4
     map_pixel_outlier_top_n: 17
+    map_pixel_outlier_detector_exclusion_feedback_bypass_enabled: true
     scan_network_pathology_max_new_flagged_fraction: 0.2
 )yaml");
     citlali::config::TimestreamLearningConfig request;
@@ -3953,6 +3954,9 @@ timestream:
     EXPECT_TRUE(request.enabled);
     EXPECT_EQ(request.learn_iters, 4);
     EXPECT_EQ(request.map_pixel_outlier.top_n, 17);
+    EXPECT_TRUE(
+        request.map_pixel_outlier
+            .detector_exclusion_feedback_bypass_enabled);
     EXPECT_DOUBLE_EQ(
         request.scan_network_pathology.max_new_flagged_fraction, 0.2);
 }
@@ -3970,6 +3974,7 @@ TEST(config_scaffold, adapts_learning_request_one_way) {
         bool map_pixel_outlier_contributor_diagnostics_enabled = false;
         bool map_pixel_outlier_targeted_contributor_diagnostics_enabled = false;
         bool map_pixel_outlier_detector_exclusion_enabled = false;
+        bool map_pixel_outlier_detector_exclusion_feedback_bypass_enabled = false;
         int map_pixel_outlier_top_n = 0;
         int map_pixel_outlier_targeted_contributor_max_pixels = 0;
         int map_pixel_outlier_detector_exclusion_min_pixels = 0;
@@ -3997,6 +4002,8 @@ TEST(config_scaffold, adapts_learning_request_one_way) {
     request.enabled = true;
     request.learn_iters = 5;
     request.map_pixel_outlier.top_n = 19;
+    request.map_pixel_outlier.detector_exclusion_feedback_bypass_enabled =
+        true;
     request.scan_network_pathology.max_new_flagged_fraction = 0.25;
 
     citlali::pipeline::adapt_learning_config_one_way(request, learning);
@@ -4004,6 +4011,9 @@ TEST(config_scaffold, adapts_learning_request_one_way) {
     EXPECT_TRUE(learning.options.enabled);
     EXPECT_EQ(learning.options.learn_iters, 5);
     EXPECT_EQ(learning.options.map_pixel_outlier_top_n, 19);
+    EXPECT_TRUE(
+        learning.options
+            .map_pixel_outlier_detector_exclusion_feedback_bypass_enabled);
     EXPECT_DOUBLE_EQ(
         learning.options.scan_network_pathology_max_new_flagged_fraction,
         0.25);
@@ -4569,6 +4579,35 @@ TEST(config_scaffold, validates_el_f1_relaxation_scope) {
     citlali::config::ValidationReport invalid_alpha_report;
     citlali::config::validate(config, invalid_alpha_report);
     EXPECT_FALSE(invalid_alpha_report.ok());
+}
+
+TEST(config_scaffold, validates_el_f4_feedback_bypass_scope) {
+    citlali::config::TimestreamConfig config;
+    auto &fruit = config.fruit_loops;
+    fruit.enabled = true;
+    fruit.diagnostics_enabled = true;
+    fruit.save_all_iters = true;
+    fruit.type = "obsnum/raw";
+    fruit.relaxation_experiment_enabled = true;
+    fruit.relaxation_alpha = 1.25;
+
+    auto &learning = config.learning;
+    learning.enabled = true;
+    learning.diagnostics_enabled = true;
+    auto &outlier = learning.map_pixel_outlier;
+    outlier.diagnostics_enabled = true;
+    outlier.targeted_contributor_diagnostics_enabled = true;
+    outlier.detector_exclusion_enabled = true;
+    outlier.detector_exclusion_feedback_bypass_enabled = true;
+
+    citlali::config::ValidationReport valid_report;
+    citlali::config::validate(config, valid_report);
+    EXPECT_TRUE(valid_report.ok());
+
+    outlier.detector_exclusion_enabled = false;
+    citlali::config::ValidationReport invalid_report;
+    citlali::config::validate(config, invalid_report);
+    EXPECT_FALSE(invalid_report.ok());
 }
 
 TEST(config_scaffold, reads_fruit_loop_injected_source_test) {

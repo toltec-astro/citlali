@@ -1217,6 +1217,48 @@ inline void validate(const TimestreamConfig &config, ValidationReport &report) {
             "requires timestream.raw_time_chunk.kernel.enabled=true");
     }
     validate(config.learning, report);
+    if (config.learning.map_pixel_outlier
+            .detector_exclusion_feedback_bypass_enabled) {
+        const ConfigPath path{
+            "timestream", "learning",
+            "map_pixel_outlier_detector_exclusion_feedback_bypass_enabled"};
+        const auto &outlier = config.learning.map_pixel_outlier;
+        if (!config.fruit_loops.enabled) {
+            report.add_error(
+                path, "EL-F4 requires timestream.fruit_loops.enabled=true");
+        }
+        if (!config.fruit_loops.diagnostics_enabled ||
+            !config.fruit_loops.save_all_iters ||
+            !is_obsnum_raw_fruit_loops_type(config.fruit_loops.type)) {
+            report.add_error(
+                path,
+                "EL-F4 requires saved diagnostics on the observation/raw feedback route");
+        }
+        if (!config.fruit_loops.relaxation_experiment_enabled ||
+            config.fruit_loops.relaxation_alpha != 1.25) {
+            report.add_error(
+                path,
+                "EL-F4 R0.1 is restricted to the registered alpha=1.25 recurrence");
+        }
+        if (!config.learning.enabled || !config.learning.diagnostics_enabled ||
+            !outlier.diagnostics_enabled ||
+            !outlier.detector_exclusion_enabled) {
+            report.add_error(
+                path,
+                "EL-F4 requires active map-outlier diagnostics and detector exclusion learning");
+        }
+        if (!outlier.contributor_diagnostics_enabled &&
+            !outlier.targeted_contributor_diagnostics_enabled) {
+            report.add_error(
+                path,
+                "EL-F4 requires full or targeted map-pixel contributor tracing");
+        }
+        if (outlier.top_n < outlier.detector_exclusion_min_pixels) {
+            report.add_error(
+                path,
+                "EL-F4 top_n must be at least the detector-exclusion pixel threshold");
+        }
+    }
     validate(config.auxiliary_channels, report);
 }
 

@@ -127,6 +127,8 @@ inline YAML::Node learning_config_node(
         outlier.targeted_contributor_diagnostics_enabled;
     node["map_pixel_outlier_detector_exclusion_enabled"] =
         outlier.detector_exclusion_enabled;
+    node["map_pixel_outlier_detector_exclusion_feedback_bypass_enabled"] =
+        outlier.detector_exclusion_feedback_bypass_enabled;
     node["map_pixel_outlier_top_n"] = outlier.top_n;
     node["map_pixel_outlier_targeted_contributor_max_pixels"] =
         outlier.targeted_contributor_max_pixels;

@@ -2,6 +2,7 @@
 
 #include <citlali/core/mapmaking/naive_mm.h>
 #include <citlali/core/pipeline/fruit_loop_injected_source_test.h>
+#include <citlali/core/pipeline/mapdiag_penalty_evidence.h>
 #include <citlali/core/timestream/timestream.h>
 
 #include <cmath>
@@ -402,6 +403,41 @@ TEST(fruit_loop_recurrence,
         citlali::pipeline::inject_fruit_loop_test_source(
             data, calib, config, 1, "mJy/beam"),
         citlali::error::Error);
+}
+
+TEST(fruit_loop_recurrence,
+     mapdiag_feedback_excluded_evidence_subtracts_exact_carried_model) {
+    Eigen::MatrixXd complete(2, 3);
+    complete << 9.0, 7.0, 4.0,
+                -1.0, 3.0, 8.0;
+    const Eigen::MatrixXd original = complete;
+    Eigen::MatrixXd feedback(2, 3);
+    feedback << 2.0, 5.0, -1.0,
+                -4.0, 3.5, 6.0;
+
+    const Eigen::MatrixXd evidence =
+        citlali::pipeline::make_mapdiag_feedback_excluded_signal(
+            complete, feedback);
+
+    EXPECT_TRUE(evidence.isApprox(complete - feedback, 0.0));
+    EXPECT_TRUE(complete.isApprox(original, 0.0));
+}
+
+TEST(fruit_loop_recurrence,
+     mapdiag_feedback_excluded_evidence_rejects_grid_or_support_mismatch) {
+    Eigen::MatrixXd complete = Eigen::MatrixXd::Ones(2, 2);
+    Eigen::MatrixXd wrong_grid = Eigen::MatrixXd::Ones(3, 2);
+    EXPECT_THROW(
+        citlali::pipeline::make_mapdiag_feedback_excluded_signal(
+            complete, wrong_grid),
+        std::runtime_error);
+
+    Eigen::MatrixXd wrong_support = Eigen::MatrixXd::Ones(2, 2);
+    wrong_support(0, 1) = std::numeric_limits<double>::quiet_NaN();
+    EXPECT_THROW(
+        citlali::pipeline::make_mapdiag_feedback_excluded_signal(
+            complete, wrong_support),
+        std::runtime_error);
 }
 
 }  // namespace
