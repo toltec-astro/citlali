@@ -311,6 +311,54 @@ and cross-package handoffs are valuable recovery inputs.
 
 ### Source Fitting, Pointing, And OOF
 
+- Package-specific SCI-POINT recovery:
+  [`packages/SCI-POINT/v0.1/PRIOR_WORK.md`](packages/SCI-POINT/v0.1/PRIOR_WORK.md)
+  at `2026-09-02`. It recovers the mature targeted per-array Pointing fit and
+  product path, current TolTECA cross-array/correction construction, current
+  TolProj pointing/calibration workflow, frozen MAP/JINC/FLT/BEAM/CAL/AST
+  boundaries, and historical SRC/MODE handoffs. Its
+  [`WORKING_WHEEL_ADOPTION_REGISTER.md`](packages/SCI-POINT/v0.1/WORKING_WHEEL_ADOPTION_REGISTER.md)
+  is the explicit anti-repetition control. Per-detector Beammap fitting remains
+  SCI-BEAM authority; blank-field faint distributed-source work is deferred;
+  OOF is separated into a future package. Nine bounded owner questions hold
+  aggregation, correction construction, parent admission, exact compatibility
+  estimator, support, partial success, covariance, amplitude/shape, and VAL
+  policy. ODQ-001 now preserves per-array POINT products as terminal and keeps
+  cross-array aggregation with the named pointing-support producer. ODQ-002
+  now keeps POINT measurement-only, correction construction with that producer,
+  and application with AST. ODQ-003A keeps FRUIT as exact ancestry on its
+  terminal MAP/JINC/FLT product rather than as another POINT parent type;
+  ODQ-003B excludes coadd parents from base v0.1. Completed ODQ-003 makes
+  observation-local MAP, JINC, FLT-FIXED, and FLT-MATCHED eligible as distinct
+  routes without automatic selection, substitution, equivalence, or fallback;
+  exact numerical availability and compatibility binding remain separate
+  gates. ODQ-004 adopts the established six-parameter elliptical-Gaussian
+  Pointing fit as the base compatibility estimator without adding another
+  profile family. ODQ-005 preserves its configurable center/search,
+  weighted-peak initialization, global fallback, bounded fit-domain, and
+  parameter-constraint machinery while requiring explicit requested,
+  effective, and realized state. ODQ-006 makes requested array results
+  independently atomic, preserves sibling results, and leaves partial-set
+  aggregation policy downstream. Producer lifecycle, component
+  identifiability, and named-use evaluation are separate. ODQ-007
+  requires available marginal formal errors, permits honest joint-covariance
+  unavailability, and prohibits treating absence as zero, diagonal covariance,
+  or independence. ODQ-008 makes amplitude and effective shape required fit
+  components and authorizes the fitted parameters/state as telescope and
+  observing-condition QC metrics without promoting them to universal flux,
+  intrinsic beam, or unique causal diagnosis. ODQ-009 assigns the four named-
+  use policies to POINT, the pointing-support producer, the QC process, and
+  CAL/TolProj respectively while VAL only registers/evaluates. The final
+  Stage A closure preserves four named-use axes and represents diagnostic
+  limitation as prescribed action `diagnostic_display_only`, never eligibility
+  or producer state. The scientific owner retained numerical compatibility,
+  formal-error, and full-map-RMS methods as three distinct unavailable
+  authorities pending separate quarantined recovery and owner approval. All
+  bounded ODQs are closed. The exclusive 37-object
+  [`AUTHOR_PACKET_MANIFEST.md`](packages/SCI-POINT/v0.1/AUTHOR_PACKET_MANIFEST.md)
+  `v0.1/r0.3` review candidate is content-bound and has a deterministic
+  39-file `.tar.gz` copy, but its exact bytes are not owner-approved and Stage B
+  remains unauthorized pending explicit fresh-task dispatch.
 - Current authority in `MAIN:doc/SCIENTIFIC_CONVENTIONS.md` and
   `MAIN:validation/product_contracts.json`.
 - Scope records in the `SCI-SRC-001` and `SCI-MODE-001` ledger and handoff
@@ -318,8 +366,9 @@ and cross-package handoffs are valuable recovery inputs.
 - Earlier reference/evidence:
   `MAIN:handoff/HANDOFF_2026-06-18_POINTING_SOURCE_AWARE.md` and
   `MAIN:doc/POINTING_COMPACT_EQUIVALENCE_2026-06-30.md`.
-- No dedicated approved `SCI-SRC-001` or `SCI-MODE-001` scientific contract
-  was recovered.
+- No dedicated approved historical `SCI-SRC-001` or `SCI-MODE-001` scientific
+  contract was recovered. The new SCI-POINT Stage A package does not promote
+  either historical inventory entry into authority.
 
 ### Fruit Loops
 

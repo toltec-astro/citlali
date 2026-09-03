@@ -455,20 +455,23 @@ silently reinterpreted.
 
 ### Pointing-Fit Significance And Dynamic Range
 
-Pointing-table schema `citlali-pointing-fit-v2` makes three formerly conflated
-quantities explicit:
+The SCI-POINT contract keeps three formerly conflated quantities explicit:
 
-- `sig2noise` is retained only for backward compatibility. Its historical
-  pointing-table definition is fitted amplitude divided by the standard
-  deviation of the complete map. Because a bright recovered source contributes
-  to that denominator, this is a dynamic-range diagnostic and is not
-  statistical significance.
-- `peak_over_full_map_rms` carries that same historical value under its
-  truthful name.
+- `fitted_amplitude_over_full_map_rms` is the canonical descriptive name for
+  fitted amplitude divided by the RMS of the complete map. Because a bright
+  recovered source can contribute to that denominator, this is a dynamic-range
+  diagnostic and is not statistical significance. Its exact value remains
+  unavailable until the applicable full-map-RMS method is approved.
+- `sig2noise` is retained only as a legacy alias for that dynamic-range
+  diagnostic.
+- `peak_over_full_map_rms` is a recovered implementation label, not an admitted
+  scientific alias, unless the approved compatibility method establishes that
+  fitted amplitude is the relevant positive peak for the exact source model
+  and parent route.
 - `fit_sig2noise` is the fitted amplitude divided by the fitted
-  amplitude uncertainty. It is a formal fit-significance diagnostic and does
-  not by itself establish an empirical uncertainty in the presence of
-  correlated map noise.
+  amplitude uncertainty. When the applicable formal-error method is available,
+  it is a formal fit-standardization diagnostic; it does not by itself
+  establish an empirical uncertainty in the presence of correlated map noise.
 
 Population fruit-loop analysis calibrates a separate empirical point-source
 significance by applying one fixed-PSF amplitude estimator to the source and
