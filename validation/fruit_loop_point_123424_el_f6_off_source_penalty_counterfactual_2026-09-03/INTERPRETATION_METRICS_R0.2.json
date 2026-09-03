@@ -1,0 +1,66 @@
+{
+  "schema_version": "sci-fruit-el-f6-interpretation-v1",
+  "test_id": "SCI-FRUIT-EL-F6-OFF-SOURCE-PENALTY-COUNTERFACTUAL-R0.1",
+  "result_revision": "r0.2",
+  "observation": 123424,
+  "array": "a1400",
+  "iteration": 5,
+  "units": "mJy/beam",
+  "definitions": {
+    "original_response": "original_injected_signal_I - control_signal_I",
+    "counterfactual_response": "injected_without_uid4460_signal_I - control_signal_I",
+    "penalty_effect": "original_injected_signal_I - injected_without_uid4460_signal_I"
+  },
+  "positions_fits_world_arcsec": {
+    "injected_source": [0.0, -60.0],
+    "fitted_neptune": [12.53903, -5.334553]
+  },
+  "twenty_arcsec_region_rms": {
+    "injected_source": {
+      "original_response": 15.214740668877822,
+      "counterfactual_response": 15.212683954255521,
+      "penalty_effect": 0.25814632431455786
+    },
+    "fitted_neptune": {
+      "original_response": 2.442630173314901,
+      "counterfactual_response": 0.10239905119495848,
+      "penalty_effect": 2.4369607720829936
+    }
+  },
+  "injection_annulus_40_120_arcsec_excluding_neptune_25_arcsec_rms": {
+    "original_response": 2.299276919851648,
+    "counterfactual_response": 0.4121641828526136,
+    "penalty_effect": 2.2738998459044244
+  },
+  "compact_fit": {
+    "original_response": {
+      "amplitude_mjy_beam": 92.33525990309239,
+      "major_fwhm_arcsec": 7.797716234596951,
+      "minor_fwhm_arcsec": 7.58959225301999,
+      "centroid_separation_from_kernel_arcsec": 0.06505489761062794,
+      "kernel_normalized_central_recovery": 1.037054917736772,
+      "full_kernel_recovery": 1.0567036744047271
+    },
+    "counterfactual_response": {
+      "amplitude_mjy_beam": 92.33113338129361,
+      "major_fwhm_arcsec": 7.791153501312828,
+      "minor_fwhm_arcsec": 7.582493488251498,
+      "centroid_separation_from_kernel_arcsec": 0.06501693449402669,
+      "kernel_normalized_central_recovery": 1.0370087894265232,
+      "full_kernel_recovery": 1.0564046551250135
+    },
+    "original_kernel": {
+      "major_fwhm_arcsec": 7.684719516835934,
+      "minor_fwhm_arcsec": 7.4664659859692515
+    },
+    "counterfactual_kernel": {
+      "major_fwhm_arcsec": 7.684687240070851,
+      "minor_fwhm_arcsec": 7.466432503907995
+    }
+  },
+  "registered_reversal_fractions_unchanged": {
+    "kernel_residual": 0.9579347481,
+    "annular_residual": 0.9601100672
+  },
+  "interpretation": "The carried penalty causes non-kernel structure in the total paired response; the compact injected source is not spread into the arcs."
+}

@@ -593,6 +593,31 @@ No further test, recurrence change, penalty-policy change, qualification,
 production use, Gate D, Stage B authoring, or Unity activity follows
 automatically.
 
+The scientific owner subsequently identified that the EL-F6 a1400 residual
+image appeared to spread the source over several arcs and approved a focused
+interpretation correction. The preserved r0.1 numerical result and registered
+`substantial_causal_contribution` classification remain unchanged, but their
+scientific meaning is narrower. The injected compact component remains at its
+declared position with a `0.065`-arcsec response/kernel centroid separation and
+only 1.4--1.6 percent width excess over the processed kernel. Applying the
+UID 4460 exclusion changes the 20-arcsec injected-source region by only
+`0.2581 mJy/beam` RMS, but changes the 20-arcsec fitted-Neptune region by
+`2.4370 mJy/beam` RMS; without the penalty the latter injected-minus-control
+residual is only `0.1024 mJy/beam` RMS. The trigger pixels also lie on the
+observation-wide UID 4460 scan trajectory to about 1.1 arcsec. Because the
+injected and control branches have different detector participation before
+shared RTC/PTC processing, real-field and scan-synchronous material does not
+cancel and appears as several arcs in the total paired response. The active
+[`r0.2 result`](../validation/fruit_loop_point_123424_el_f6_off_source_penalty_counterfactual_2026-09-03/EXECUTION_RESULT_R0.2.md)
+therefore treats the registered annular and kernel-residual measures as total
+paired-response leakage, not an isolated astronomical point-source halo or a
+telescope-pointing failure. It also corrects the diagnostic image's horizontal
+orientation to follow the frozen FITS `AZOFFSET` WCS; no numerical metric is
+affected. Future source-transfer experiments must distinguish total
+end-to-end adaptive response from matched-operator source transfer and report
+real-field leakage separately. No reduction, algorithm, configuration, or
+authorization changed.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
