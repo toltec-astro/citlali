@@ -1,0 +1,76 @@
+schema_version: sci-fruit-el-f7-registration-v1
+test_id: SCI-FRUIT-EL-F7-SHARED-START-RESPONSE-DECOMPOSITION-R0.1
+registered_before_staging_or_execution: true
+role: exploratory-development-response-clarification-only
+authorization:
+  record: ../../doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_EL_F7_AUTHORIZATION_2026-09-03.md
+  kind: exact_content_bound_local_staging_tooling_execution_and_result_recording
+software:
+  path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/setup/citlali-el-f5
+  sha256: 6431c6653ed46ff6e1dfa5512cd27e8169525f7a110207b0b24505786f39dbbe
+source:
+  obsnum: 123424
+  alpha: 1.25
+  completed_iteration: 4
+  next_iteration: 5
+  control_iteration_4: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/control/reduced/redu04
+  control_checkpoint_sha256: a77505ab0637c1f257016ee0d9e801b3bba17ed52ab88d52f417a5c1513b451f
+  control_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/control/reduced/redu05
+  adaptive_injected_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/redu05
+  injected_without_uid4460_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/injected-without-uid4460/reduced/redu05
+injection:
+  start_iteration: 5
+  position_frame: FITS_map_world_AZOFFSET_ELOFFSET
+  az_offset_arcsec: 0.0
+  el_offset_arcsec: -60.0
+  array_order: [a1100, a1400, a2000]
+  array_amplitude_mjy_beam: [100.0, 100.0, 100.0]
+execution:
+  output_root: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f7-shared-start-response-r0.1
+  order: [control_sham, shared_start_probe]
+  configured_threads: 1
+  grppiex: seq
+  iterations_per_trajectory: 1
+  max_iters_exclusive: 6
+  maximum_replacements_per_trajectory: 1
+  maximum_hours_per_trajectory: 1
+  maximum_memory_gib_per_trajectory: 64
+  maximum_aggregate_hours: 3
+  maximum_retained_gib: 8
+validity:
+  sham_compared_arrays: [a1100, a1400, a2000]
+  sham_compared_planes: [signal_I, kernel_I, weight_I]
+  sham_map_comparison: bitwise
+  sham_checkpoint_comparison: all_variables_value_identical
+  require_common_units_wcs_grid_normalization_and_finite_support: true
+  closure_roundoff_factor: 64.0
+  closure_formula: 64_times_float64_epsilon_times_max_of_one_and_all_four_absolute_signal_values
+measurement:
+  total_adaptive_response: A5_minus_C5
+  shared_incoming_state_one_step_response: P5_minus_C5
+  other_earlier_injected_history: N5_minus_P5
+  uid4460_effect: A5_minus_N5
+  fixed_decomposition_kernel: P5_kernel_I
+  native_compact_fit_kernels:
+    T5: A5_kernel_I
+    S5: P5_kernel_I
+  injected_source_radius_arcsec: 20.0
+  neptune_position_fits_world_arcsec: [12.53903, -5.334553]
+  neptune_radius_arcsec: 20.0
+  annulus_arcsec: [40.0, 120.0]
+  annulus_neptune_exclusion_radius_arcsec: 25.0
+  gaussian_search_radius_arcsec: 25.0
+  aperture_radius_arcsec: 20.0
+  component_dominance_threshold: null
+claim_limits:
+  fully_matched_operator_transfer_authorized: false
+  detector_judgment_authorized: false
+  generic_mechanism_claim_authorized: false
+  penalty_policy_selection_authorized: false
+  safeguard_test_authorized: false
+  qualification_use_authorized: false
+  method_selection_authorized: false
+  production_use_authorized: false
+  gate_d_authorized: false
+  stage_b_authoring_authorized: false
+  unity_activity_authorized: false

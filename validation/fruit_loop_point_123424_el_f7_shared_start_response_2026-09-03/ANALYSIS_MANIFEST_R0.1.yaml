@@ -1,0 +1,45 @@
+schema_version: sci-fruit-el-f7-analysis-v1
+test_id: SCI-FRUIT-EL-F7-SHARED-START-RESPONSE-DECOMPOSITION-R0.1
+registration: REGISTRATION_R0.1.yaml
+obsnum: 123424
+iteration: 5
+array_order: [a1100, a1400, a2000]
+amplitudes_mjy_beam: [100.0, 100.0, 100.0]
+pixel_size_arcsec: 1.0
+injection_position_fits_world_arcsec: [0.0, -60.0]
+neptune_position_fits_world_arcsec: [12.53903, -5.334553]
+gaussian_search_radius_arcsec: 25.0
+aperture_radius_arcsec: 20.0
+injected_source_radius_arcsec: 20.0
+neptune_radius_arcsec: 20.0
+annulus_inner_arcsec: 40.0
+annulus_outer_arcsec: 120.0
+annulus_neptune_exclusion_radius_arcsec: 25.0
+closure_roundoff_factor: 64.0
+source_control_iteration_4: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/control/reduced/redu04
+existing_control_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/control/reduced/redu05
+existing_adaptive_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/redu05
+existing_without_uid4460_iteration_5: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/injected-without-uid4460/reduced/redu05
+control_sham_root: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f7-shared-start-response-r0.1/control-sham/reduced
+shared_start_probe_root: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f7-shared-start-response-r0.1/shared-start-probe/reduced
+execution_log_dir: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f7-shared-start-response-r0.1/logs
+analysis_output_dir: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f7-shared-start-response-r0.1/analysis
+target_penalty:
+  producer: mapdiag:raw_obs
+  reason: map_pixel_outlier_detector_dominance
+  scan: 5
+  uid: 4460
+  network: -1
+  array: 1
+  factor: 0.0
+  score: 4.0
+  scan_local: true
+component_order: [T5_total_adaptive, S5_shared_start, H5_other_history, D4460_5]
+component_definitions:
+  T5_total_adaptive: A5_minus_C5
+  S5_shared_start: P5_minus_C5
+  H5_other_history: N5_minus_P5
+  D4460_5: A5_minus_N5
+fixed_decomposition_kernel: P5_kernel_I
+native_compact_fit_components: [T5_total_adaptive, S5_shared_start]
+component_dominance_threshold: null

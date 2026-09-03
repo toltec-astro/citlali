@@ -1,0 +1,15 @@
+runtime:
+  output_dir: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f7-shared-start-response-r0.1/control-sham/reduced/
+  n_threads: 1
+
+timestream:
+  fruit_loops:
+    restart_path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f7-shared-start-response-r0.1/control-sham/restart-source/redu04
+    max_iters: 6
+    save_all_iters: true
+    injected_source_test:
+      enabled: false
+      start_iteration: 5
+      array_amplitude_mjy_beam: [100.0, 100.0, 100.0]
+      az_offset_arcsec: 0.0
+      el_offset_arcsec: -60.0
