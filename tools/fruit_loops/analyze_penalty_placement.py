@@ -42,7 +42,10 @@ from tools.fruit_loops.compare_injected_source_pair import (
     product_path,
     rms,
 )
-from tools.fruit_loops.edit_restart_checkpoint_penalty import values_equal
+from tools.fruit_loops.edit_restart_checkpoint_learning_policy import (
+    audit_transformation as audit_learning_policy_transformation,
+)
+from tools.fruit_loops.edit_restart_checkpoint_penalty import sha256, values_equal
 
 
 COMPONENTS = ("T_current", "T_map", "D_current", "D_map", "Q")
@@ -231,6 +234,56 @@ def validate_compatibility(manifest: dict) -> dict:
             "map_planes_bitwise_identical": planes,
             **checkpoint,
             "iteration_directory": str(actual.resolve()),
+        }
+    return result
+
+
+def validate_checkpoint_policy_interventions(manifest: dict) -> dict:
+    registered = manifest["map_checkpoint_policy_interventions"]
+    result = {}
+    for branch in ("control", "injected"):
+        entry = registered[branch]
+        audit_path = Path(entry["audit_json"]).resolve()
+        audit = json.loads(audit_path.read_text())
+        transformation = audit["transformation"]
+        if (
+            transformation["variable"] != "learning_policy_yaml"
+            or transformation["field"]
+            != "map_pixel_outlier_detector_exclusion_application"
+            or transformation["source_value"] != "pre_cleaning"
+            or transformation["output_value"] != "pre_mapmaking"
+            or not transformation["all_other_values_verified_equal"]
+            or not transformation["all_types_dimensions_and_attributes_verified"]
+        ):
+            raise ValueError(
+                f"invalid registered checkpoint-policy intervention: {branch}"
+            )
+        source_path = Path(audit["source"]["path"]).resolve()
+        output_path = Path(audit["output"]["path"]).resolve()
+        if output_path != Path(entry["checkpoint"]).resolve():
+            raise ValueError(
+                f"checkpoint-policy output path differs: {branch}"
+            )
+        if sha256(source_path) != audit["source"]["sha256"]:
+            raise ValueError(
+                f"checkpoint-policy source hash differs: {branch}"
+            )
+        if sha256(output_path) != audit["output"]["sha256"]:
+            raise ValueError(
+                f"checkpoint-policy output hash differs: {branch}"
+            )
+        audit_learning_policy_transformation(
+            source_path,
+            output_path,
+            transformation["field"],
+            transformation["source_value"],
+            transformation["output_value"],
+        )
+        result[branch] = {
+            "audit_json": str(audit_path),
+            "source_sha256": audit["source"]["sha256"],
+            "output_sha256": audit["output"]["sha256"],
+            "only_registered_policy_field_changed": True,
         }
     return result
 
@@ -574,6 +627,9 @@ def analyze(manifest: dict) -> tuple[list[dict], list[dict], list[dict], dict, d
         )
     )
     compatibility = validate_compatibility(manifest)
+    checkpoint_policy_interventions = (
+        validate_checkpoint_policy_interventions(manifest)
+    )
     redu = reductions(manifest)
     require_placement_pair(redu["C_current"], redu["C_map"], "control")
     require_placement_pair(redu["A_current"], redu["A_map"], "injected")
@@ -716,6 +772,7 @@ def analyze(manifest: dict) -> tuple[list[dict], list[dict], list[dict], dict, d
         "test_id": manifest["test_id"],
         "valid_penalty_placement_decomposition": True,
         "compatibility": compatibility,
+        "checkpoint_policy_interventions": checkpoint_policy_interventions,
         "paired_realized_configuration_check": "PASS",
         "common_units_wcs_grid_normalization_and_finite_support": "PASS",
         "q_identity_closure": closure,
@@ -899,6 +956,12 @@ def main() -> int:
                     Path(__file__).resolve(),
                     manifest_path,
                     (manifest_path.parent / manifest["registration"]).resolve(),
+                    *(
+                        Path(entry["audit_json"]).resolve()
+                        for entry in manifest[
+                            "map_checkpoint_policy_interventions"
+                        ].values()
+                    ),
                     *Path(manifest["execution_log_dir"]).glob("*.log"),
                     *(
                         (redu / "citlali_restart_checkpoint.nc")

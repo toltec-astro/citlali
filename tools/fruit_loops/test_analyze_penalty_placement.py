@@ -7,6 +7,7 @@ import yaml
 from netCDF4 import Dataset
 
 from tools.fruit_loops import analyze_penalty_placement as analysis
+from tools.fruit_loops import edit_restart_checkpoint_learning_policy as edit
 
 
 def test_learning_policy_normalization_adds_legacy_default() -> None:
@@ -109,3 +110,40 @@ def test_q_identity_closes_exactly() -> None:
     q = current - moved
 
     assert np.array_equal(q, d_current - d_map)
+
+
+def test_checkpoint_policy_intervention_is_reaudited(tmp_path: Path) -> None:
+    field = "map_pixel_outlier_detector_exclusion_application"
+    registered = {}
+    for branch in ("control", "injected"):
+        source = tmp_path / f"{branch}-source.nc"
+        output = tmp_path / f"{branch}-output.nc"
+        audit_path = tmp_path / f"{branch}-audit.json"
+        with Dataset(source, "w") as dataset:
+            dataset.createDimension("one", 1)
+            dataset.createVariable("learning_policy_yaml", str, ("one",))[0] = (
+                "enabled: true\n"
+            )
+            dataset.createVariable("scientific", "f8", ("one",))[:] = [2.0]
+        audit = edit.transform_checkpoint(
+            source,
+            output,
+            edit.sha256(source),
+            field,
+            "pre_cleaning",
+            "pre_mapmaking",
+        )
+        import json
+
+        audit_path.write_text(json.dumps(audit))
+        registered[branch] = {
+            "audit_json": str(audit_path),
+            "checkpoint": str(output),
+        }
+
+    result = analysis.validate_checkpoint_policy_interventions(
+        {"map_checkpoint_policy_interventions": registered}
+    )
+
+    assert result["control"]["only_registered_policy_field_changed"] is True
+    assert result["injected"]["only_registered_policy_field_changed"] is True
