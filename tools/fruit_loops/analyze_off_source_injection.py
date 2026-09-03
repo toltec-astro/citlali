@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 import re
 from pathlib import Path
 
@@ -24,7 +25,11 @@ from tools.fruit_loops.analyze_feedback_model_bypass import (
     require_exact_trajectory_images,
     write_csv,
 )
-from tools.fruit_loops.compare_injected_source_pair import ARRAYS, product_path
+from tools.fruit_loops.compare_injected_source_pair import (
+    ARRAYS,
+    file_record,
+    product_path,
+)
 
 
 ARRAY_IDS = {"a1100": 0, "a1400": 1, "a2000": 2}
@@ -148,6 +153,36 @@ def read_centered_penalties(path: Path) -> list[dict]:
     return rows
 
 
+def target_contributor_records(root: Path, terminal: int, target: dict) -> list[dict]:
+    path = root / f"redu{terminal:02d}" / f"learning_iter_{terminal}.csv"
+    records = []
+    with path.open(newline="", encoding="utf-8") as stream:
+        for row in csv.DictReader(stream):
+            if not (
+                row["record_type"] == "map_pixel_outlier"
+                and row["producer"] == "mapdiag:raw_obs"
+                and row["reason"] == "extreme_pixel_targeted_contributor"
+                and int(row["iter"]) == int(target["iteration"])
+                and int(row["scan"]) == int(target["scan"])
+                and int(row["uid"]) == int(target["uid"])
+                and int(row["map_index"]) == int(target["array"])
+            ):
+                continue
+            records.append(
+                {
+                    "row": int(row["row"]),
+                    "col": int(row["col"]),
+                    "sample": int(row["sample"]),
+                    "map_value_mjy_beam": float(row["value"]),
+                    "leave_one_out_z": float(row["leave_one_out_z"]),
+                    "source_distance_arcsec": float(
+                        row["source_distance_arcsec"]
+                    ),
+                }
+            )
+    return records
+
+
 def scalar_netcdf_value(dataset: Dataset, name: str):
     variable = dataset[name]
     value = variable[...]
@@ -250,7 +285,70 @@ def read_execution(log_dir: Path, expected_az: float, expected_el: float) -> lis
     return rows
 
 
-def analyze(manifest: dict, repo_root: Path) -> tuple[list[dict], list[dict], list[dict], dict]:
+def write_complete_response_maps(
+    control_root: Path,
+    injected_root: Path,
+    output_dir: Path,
+    manifest: dict,
+) -> list[dict]:
+    """Persist every full-map injected-minus-control signal response."""
+    obsnum = int(manifest["obsnum"])
+    start = int(manifest["trajectory_start_iteration"])
+    stop = int(manifest["stop_iteration_exclusive"])
+    control_dirs = iteration_dirs(control_root, obsnum)
+    injected_dirs = iteration_dirs(injected_root, obsnum)
+    output_dir.mkdir(parents=True, exist_ok=True)
+    records = []
+    for iteration in range(start, stop):
+        for array in ARRAYS:
+            control_path = product_path(control_dirs[iteration], obsnum, array)
+            injected_path = product_path(injected_dirs[iteration], obsnum, array)
+            with fits.open(control_path, memmap=True) as control, fits.open(
+                injected_path, memmap=True
+            ) as injected:
+                control_hdu = control["signal_I"]
+                injected_hdu = injected["signal_I"]
+                if control_hdu.data.shape != injected_hdu.data.shape:
+                    raise ValueError("paired signal shapes differ")
+                response = injected_hdu.data.astype("float64") - (
+                    control_hdu.data.astype("float64")
+                )
+                header = injected_hdu.header.copy()
+                # The source HDU checksums describe the parent signal plane,
+                # and Astropy timestamps regenerated checksum comments. Drop
+                # both so the derived response product is content-stable and
+                # is bound by the external SHA-256 record below.
+                for key in ("CHECKSUM", "DATASUM"):
+                    if key in header:
+                        del header[key]
+            primary = fits.PrimaryHDU()
+            primary.header["HIERARCH SCI.TESTID"] = manifest["test_id"]
+            primary.header["HIERARCH SCI.RESPONSE"] = "injected-control"
+            primary.header["HIERARCH SCI.OBSNUM"] = obsnum
+            primary.header["HIERARCH SCI.FRUIT_ITER"] = iteration
+            primary.header["HIERARCH SCI.ARRAY"] = array
+            primary.header["HIERARCH SCI.INJAZ"] = float(
+                manifest["az_offset_arcsec"]
+            )
+            primary.header["HIERARCH SCI.INJEL"] = float(
+                manifest["el_offset_arcsec"]
+            )
+            response_hdu = fits.ImageHDU(
+                data=response, header=header, name="RESPONSE_I"
+            )
+            output = output_dir / (
+                f"point_{obsnum}_{array}_fruit_iter_{iteration:02d}_response.fits"
+            )
+            fits.HDUList([primary, response_hdu]).writeto(
+                output, overwrite=True, checksum=False
+            )
+            records.append(file_record(output.resolve()))
+    return records
+
+
+def analyze(
+    manifest: dict, repo_root: Path, response_dir: Path
+) -> tuple[list[dict], list[dict], list[dict], dict]:
     obsnum = int(manifest["obsnum"])
     stop = int(manifest["stop_iteration_exclusive"])
     terminal = int(manifest["terminal_iteration"])
@@ -353,12 +451,48 @@ def analyze(manifest: dict, repo_root: Path) -> tuple[list[dict], list[dict], li
     )
     if not any(penalty_key(row) == target_key for row in centered_penalties):
         raise ValueError("registered centered target event is absent")
+    contributor_records = {
+        "control": target_contributor_records(control_root, terminal, target),
+        "off_source_injected": target_contributor_records(
+            injected_root, terminal, target
+        ),
+    }
 
     execution = read_execution(
         Path(manifest["execution_log_dir"]),
         float(manifest["az_offset_arcsec"]),
         float(manifest["el_offset_arcsec"]),
     )
+    response_products = write_complete_response_maps(
+        control_root, injected_root, response_dir, manifest
+    )
+    position_validation = {
+        "maximum_transfer_centroid_distance_from_target_arcsec": max(
+            math.hypot(
+                row["transfer_centroid_x_arcsec"]
+                - row["expected_center_x_arcsec"],
+                row["transfer_centroid_y_arcsec"]
+                - row["expected_center_y_arcsec"],
+            )
+            for row in metrics
+        ),
+        "maximum_kernel_centroid_distance_from_target_arcsec": max(
+            math.hypot(
+                row["kernel_centroid_x_arcsec"]
+                - row["expected_center_x_arcsec"],
+                row["kernel_centroid_y_arcsec"]
+                - row["expected_center_y_arcsec"],
+            )
+            for row in metrics
+        ),
+        "arrays": list(ARRAYS),
+        "iterations": list(
+            range(
+                int(manifest["injection_start_iteration"]),
+                int(manifest["stop_iteration_exclusive"]),
+            )
+        ),
+    }
     result = {
         "test_id": manifest["test_id"],
         "disposition": disposition,
@@ -368,10 +502,13 @@ def analyze(manifest: dict, repo_root: Path) -> tuple[list[dict], list[dict], li
             "az": float(manifest["az_offset_arcsec"]),
             "el": float(manifest["el_offset_arcsec"]),
         },
+        "complete_response_products": response_products,
+        "source_position_validation": position_validation,
         "injection_specific_iteration_4_factor_zero_penalties": hard,
         "target_penalty_replicated": any(
             penalty_key(row) == target_key for row in hard
         ),
+        "target_qualifying_contributors": contributor_records,
         "off_source_response_change": response_by_array,
         "centered_response_change": centered_response,
         "execution": {
@@ -402,6 +539,14 @@ def write_report(path: Path, result: dict) -> None:
         "signal, kernel, and weight planes bitwise before the off-source result "
         "was interpreted.",
         "",
+        "The complete injected-minus-control response was retained in "
+        f"`{len(result['complete_response_products'])}` FITS maps. Across all "
+        "three arrays and injected iterations, the largest fitted transfer-"
+        "centroid distance from the declared position was "
+        f"`{result['source_position_validation']['maximum_transfer_centroid_distance_from_target_arcsec']:.3f}` "
+        "arcsec and the largest kernel-centroid distance was "
+        f"`{result['source_position_validation']['maximum_kernel_centroid_distance_from_target_arcsec']:.3f}` arcsec.",
+        "",
         "## Iteration-4 to iteration-5 response",
         "",
         "| Location | Array | Recovery k=4 | Recovery k=5 | Annular k=4 | Annular k=5 | Registered loss direction |",
@@ -428,6 +573,11 @@ def write_report(path: Path, result: dict) -> None:
             "",
             f"Target UID 4460 event replicated: `{'yes' if result['target_penalty_replicated'] else 'no'}`.",
             f"Injection-specific iteration-4 hard penalties: `{len(penalties)}`.",
+            "The target detector has "
+            f"`{len(result['target_qualifying_contributors']['control'])}` "
+            "qualifying map pixels in the control and "
+            f"`{len(result['target_qualifying_contributors']['off_source_injected'])}` "
+            "in the injected run; four is the configured hard-penalty threshold.",
             "",
         ]
     )
@@ -446,6 +596,36 @@ def write_report(path: Path, result: dict) -> None:
         lines.append("")
     lines.extend(
         [
+            "## What changed in a1400",
+            "",
+            "The off-source Gaussian/kernel-normalized central response falls "
+            "only from `1.043975` to `1.037055` (an absolute change of "
+            "`-0.006920`, or `-0.663%`). Because both values exceed unity, that "
+            "change is slightly *closer* to unit recovery, not an amplitude "
+            "degradation. The whole-kernel projection changes from `1.056239` "
+            "to `1.056704`. The actual degradation is response shape/leakage: "
+            "kernel-residual relative RMS "
+            "rises from `0.320673` to `0.727804` (`2.270x`) and the registered "
+            "annular residual rises from `0.00327048` to `0.0231344` (`7.074x`).",
+            "",
+            "## Execution",
+            "",
+            f"Both first-attempt trajectories completed in `{result['execution']['aggregate_wall_seconds']:.2f}` aggregate seconds with zero error/critical messages. Maximum resident memory was `{result['execution']['maximum_resident_bytes'] / 2**30:.3f}` GiB.",
+            "",
+            "## Interpretation",
+            "",
+            "The preregistered classification is **same event replicated off "
+            "source**. This rules out overlap with Neptune's central source "
+            "core as a necessary condition for the UID 4460 event in this "
+            "observation. It strengthens the narrower hypothesis that the "
+            "penalty responds to injection-altered complete-map state under "
+            "this detector/scan geometry. It does not yet show that the "
+            "interaction is generic across observations or prove that the "
+            "reapplied penalty caused the off-source iteration-5 degradation.",
+            "The classification label follows the prospectively registered "
+            "sign test; it must not be read as evidence that the off-source "
+            "central amplitude itself became less accurate.",
+            "",
             "## Interpretation limit",
             "",
             "This one-location pointing result does not establish a blank-field "
@@ -466,10 +646,13 @@ def main() -> int:
     parser.add_argument("--execution", required=True, type=Path)
     parser.add_argument("--result", required=True, type=Path)
     parser.add_argument("--report", required=True, type=Path)
+    parser.add_argument("--response-dir", required=True, type=Path)
     args = parser.parse_args()
     repo_root = Path(__file__).resolve().parents[2]
     manifest = yaml.safe_load(args.manifest.read_text(encoding="utf-8"))
-    metrics, penalties, comparison, execution, result = analyze(manifest, repo_root)
+    metrics, penalties, comparison, execution, result = analyze(
+        manifest, repo_root, args.response_dir
+    )
     write_csv(args.metrics, metrics)
     write_csv(args.penalties, penalties)
     write_csv(args.penalty_comparison, comparison)

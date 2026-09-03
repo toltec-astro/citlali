@@ -1,0 +1,267 @@
+{
+  "centered_response_change": {
+    "a1100": {
+      "annular_residual_increased": false,
+      "array": "a1100",
+      "iteration_4_annular_residual": 0.0003829022982478287,
+      "iteration_4_recovery": 0.8516569277655747,
+      "iteration_5_annular_residual": 0.00030476191544342437,
+      "iteration_5_recovery": 0.869744608499742,
+      "recovery_decreased": false,
+      "registered_response_loss_direction": false
+    },
+    "a1400": {
+      "annular_residual_increased": true,
+      "array": "a1400",
+      "iteration_4_annular_residual": 0.005591061898999446,
+      "iteration_4_recovery": 0.8904511775839052,
+      "iteration_5_annular_residual": 0.02147410602676817,
+      "iteration_5_recovery": 0.8228281905201593,
+      "recovery_decreased": true,
+      "registered_response_loss_direction": true
+    },
+    "a2000": {
+      "annular_residual_increased": true,
+      "array": "a2000",
+      "iteration_4_annular_residual": 0.0034204767951589846,
+      "iteration_4_recovery": 0.7247082747382387,
+      "iteration_5_annular_residual": 0.004137377756033328,
+      "iteration_5_recovery": 0.7344532710549322,
+      "recovery_decreased": false,
+      "registered_response_loss_direction": false
+    }
+  },
+  "claim_limits": {
+    "blank_field_or_isolated_source": false,
+    "method_qualification_or_selection": false,
+    "penalty_causality": false,
+    "production_or_gate_d": false
+  },
+  "claim_scope": "one off-source location in one bright compact-source pointing observation",
+  "complete_response_products": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a1100_fruit_iter_00_response.fits",
+      "sha256": "4c594fce87b4a8fc87d992e6d68a33fea9c5cb4226517482c630793987d91507",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a1400_fruit_iter_00_response.fits",
+      "sha256": "51c7912c060be192fadb128685575b272db05f567c02fd2a4d4a5eff46c83035",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a2000_fruit_iter_00_response.fits",
+      "sha256": "5e3468390e1e1808b7079af0e66c67859d51f0aaffd09a2189d44a1fc5c5cbb6",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a1100_fruit_iter_01_response.fits",
+      "sha256": "e362b66ac8e212cd3930ddcf84b618fd85006ac07b3373b747fd5cb27fbf63e0",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a1400_fruit_iter_01_response.fits",
+      "sha256": "d03800cea45040b52f400d5376c0d1cd4b692e9385405e13cf1c016f1d6bc795",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a2000_fruit_iter_01_response.fits",
+      "sha256": "a5706b2ad0891282b48f093b44a065df269760b0d16634b46359a1805c60daaa",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a1100_fruit_iter_02_response.fits",
+      "sha256": "9c569b97224d7451f33d565dbdd77a6cd39d7eb5aef9497325882d198b3bd434",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a1400_fruit_iter_02_response.fits",
+      "sha256": "57c73d8840f88517be0e3c490894c401e41b24aa0f25120e01b08235e23946c9",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a2000_fruit_iter_02_response.fits",
+      "sha256": "e5f2ee3025536cc588cc650f878b2420bacaacbc1962fd724299c283dd3658b7",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a1100_fruit_iter_03_response.fits",
+      "sha256": "869e8d05896200485b134236505114358412920212100427b055e4e2a0fc31dc",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a1400_fruit_iter_03_response.fits",
+      "sha256": "0ea7499353c2088213c68ce1b222b10676254bd4a4b9b30c7297b1bee903bdfb",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a2000_fruit_iter_03_response.fits",
+      "sha256": "8189566a97eea8d83d79cbc551af4eae36071fd416f728d196bf6c30ecc1f6d6",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a1100_fruit_iter_04_response.fits",
+      "sha256": "2400455660a8742ea247c2f049bc2e4a26b59e546a5f2e3325a3929a1e6f9411",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a1400_fruit_iter_04_response.fits",
+      "sha256": "9fad75051ac3794ffac77e2761bfff43b8d4f933ead2bf328304497ae58cdf5d",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a2000_fruit_iter_04_response.fits",
+      "sha256": "60d2559c1ad69f4e757568669bd5d992e4c00d8bb996bd3b6a4d85fa08ed3173",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a1100_fruit_iter_05_response.fits",
+      "sha256": "40066866c487098d5e7fcf3f571ac316dbc8d9055fed8e99f466aaf4f8d4f206",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a1400_fruit_iter_05_response.fits",
+      "sha256": "44ba2752a98763b882c1834d0dd2af34a5cc216046e2205b54377cd5becfd4a4",
+      "size_bytes": 1025280
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/analysis/response-maps/point_123424_a2000_fruit_iter_05_response.fits",
+      "sha256": "8a0664afa559c08689396305c1630f9fb8109789d43f69d78d3232fddf7af2c4",
+      "size_bytes": 1025280
+    }
+  ],
+  "default_off_bitwise_compatible_planes": 54,
+  "disposition": "same_event_replicated_off_source",
+  "execution": {
+    "aggregate_wall_seconds": 344.66999999999996,
+    "maximum_resident_bytes": 978714624,
+    "trajectory_count": 2
+  },
+  "injection_specific_iteration_4_factor_zero_penalties": [
+    {
+      "array": 1,
+      "factor": 0.0,
+      "iteration": 4,
+      "scan": 5,
+      "scan_local": true,
+      "score": 4.0,
+      "uid": 4460
+    }
+  ],
+  "off_source_position_arcsec": {
+    "az": 0.0,
+    "el": -60.0
+  },
+  "off_source_response_change": {
+    "a1100": {
+      "annular_residual_increased": false,
+      "array": "a1100",
+      "iteration_4_annular_residual": 0.0004946838759253924,
+      "iteration_4_recovery": 0.9812487588884673,
+      "iteration_5_annular_residual": 0.0004378510285131031,
+      "iteration_5_recovery": 0.981291131256759,
+      "recovery_decreased": false,
+      "registered_response_loss_direction": false
+    },
+    "a1400": {
+      "annular_residual_increased": true,
+      "array": "a1400",
+      "iteration_4_annular_residual": 0.0032704798085909136,
+      "iteration_4_recovery": 1.0439747063149467,
+      "iteration_5_annular_residual": 0.02313442849087168,
+      "iteration_5_recovery": 1.037054917736772,
+      "recovery_decreased": true,
+      "registered_response_loss_direction": true
+    },
+    "a2000": {
+      "annular_residual_increased": true,
+      "array": "a2000",
+      "iteration_4_annular_residual": 0.003431128843699333,
+      "iteration_4_recovery": 0.958046124934548,
+      "iteration_5_annular_residual": 0.0034853413529205425,
+      "iteration_5_recovery": 0.967962748108257,
+      "recovery_decreased": false,
+      "registered_response_loss_direction": false
+    }
+  },
+  "source_position_validation": {
+    "arrays": [
+      "a1100",
+      "a1400",
+      "a2000"
+    ],
+    "iterations": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "maximum_kernel_centroid_distance_from_target_arcsec": 0.2389628950536493,
+    "maximum_transfer_centroid_distance_from_target_arcsec": 0.22866988274538508
+  },
+  "target_penalty_replicated": true,
+  "target_qualifying_contributors": {
+    "control": [
+      {
+        "col": 280,
+        "leave_one_out_z": 1.95039,
+        "map_value_mjy_beam": 135.607,
+        "row": 142,
+        "sample": 267,
+        "source_distance_arcsec": 107.838
+      },
+      {
+        "col": 280,
+        "leave_one_out_z": 1.69416,
+        "map_value_mjy_beam": 116.623,
+        "row": 144,
+        "sample": 263,
+        "source_distance_arcsec": 107.205
+      },
+      {
+        "col": 281,
+        "leave_one_out_z": 2.12006,
+        "map_value_mjy_beam": 126.622,
+        "row": 142,
+        "sample": 267,
+        "source_distance_arcsec": 108.784
+      }
+    ],
+    "off_source_injected": [
+      {
+        "col": 280,
+        "leave_one_out_z": 1.95356,
+        "map_value_mjy_beam": 135.715,
+        "row": 142,
+        "sample": 267,
+        "source_distance_arcsec": 107.838
+      },
+      {
+        "col": 280,
+        "leave_one_out_z": 1.69687,
+        "map_value_mjy_beam": 116.716,
+        "row": 144,
+        "sample": 263,
+        "source_distance_arcsec": 107.205
+      },
+      {
+        "col": 281,
+        "leave_one_out_z": 2.12348,
+        "map_value_mjy_beam": 126.721,
+        "row": 142,
+        "sample": 267,
+        "source_distance_arcsec": 108.784
+      },
+      {
+        "col": 281,
+        "leave_one_out_z": 1.78382,
+        "map_value_mjy_beam": 111.562,
+        "row": 144,
+        "sample": 264,
+        "source_distance_arcsec": 108.157
+      }
+    ]
+  },
+  "test_id": "SCI-FRUIT-EL-F5-OFF-SOURCE-INJECTION-R0.1"
+}

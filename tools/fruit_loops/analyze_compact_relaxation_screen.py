@@ -366,6 +366,12 @@ def analyze_pair(
                     "injected_el_offset_arcsec": float(
                         manifest.get("el_offset_arcsec", 0.0)
                     ),
+                    "expected_center_x_arcsec": expected_center[0],
+                    "expected_center_y_arcsec": expected_center[1],
+                    "transfer_centroid_x_arcsec": transfer_fit["x_arcsec"],
+                    "transfer_centroid_y_arcsec": transfer_fit["y_arcsec"],
+                    "kernel_centroid_x_arcsec": kernel_fit["x_arcsec"],
+                    "kernel_centroid_y_arcsec": kernel_fit["y_arcsec"],
                     "kernel_normalized_central_recovery":
                         transfer_fit["amplitude"]
                         / (truth * kernel_fit["amplitude"]),

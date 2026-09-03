@@ -1,0 +1,3 @@
+trajectory,status,wall_seconds,maximum_resident_bytes,error_or_critical_messages,injection_log_records
+control,completed,174.85,978714624,0,0
+off-source-injected,completed,169.82,953139200,0,180

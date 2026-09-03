@@ -523,6 +523,35 @@ merge order are in
 The registered control remains the mandatory first trajectory, followed by
 its bitwise comparison with EL-F4 before the off-source output may be opened.
 
+Both registered EL-F5 trajectories have now completed on their first attempt.
+The new disabled-injection control reproduces all 54 EL-F4 observation-123424
+signal/kernel/weight planes bitwise over iterations 0--5. The off-source
+kernel and transfer centroids remain within `0.239` arcsec of the declared
+`(0, -60)` arcsec position across all arrays and injected iterations. The
+complete 18 response maps are retained with deterministic hashes. The same
+injection-specific hard record reappears at iteration 4: scan 5, UID 4460,
+a1400, score 4, factor zero. The control has three qualifying contributor
+pixels for that detector and the injected run has the threshold four.
+
+The prospectively registered disposition is
+**`same_event_replicated_off_source`**. In a1400, the annular residual rises
+from `0.00327048` to `0.0231344` (`7.074x`) and kernel-residual relative RMS
+rises from `0.320673` to `0.727804` (`2.270x`) from iteration 4 to 5. The
+Gaussian/kernel-normalized central response decreases only from `1.043975` to
+`1.037055`; because both exceed unity, this is slightly closer to correct
+amplitude rather than a flux degradation, while whole-kernel recovery is
+essentially unchanged (`1.056239` to `1.056704`). Thus central Neptune overlap
+is not necessary for the exact penalty event in this observation, and the
+scientifically adverse replication is shape/residual leakage, not lost total
+flux. The result strengthens a same-observation injection-state/penalty
+hypothesis but does not establish generality across observations or causality
+for the off-source response change. Aggregate runtime was `344.67` seconds,
+maximum resident memory was `0.912` GiB, and no error/critical message was
+emitted. The complete bounded result is
+[`EXECUTION_RESULT_R0.1.md`](../validation/fruit_loop_point_123424_el_f5_off_source_injection_2026-09-03/EXECUTION_RESULT_R0.1.md).
+No blank-field test, recurrence change, penalty-policy change, qualification,
+production use, Gate D, Stage B, or Unity activity follows automatically.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

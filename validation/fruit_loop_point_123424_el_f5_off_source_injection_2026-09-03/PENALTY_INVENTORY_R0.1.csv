@@ -1,0 +1,6 @@
+variant,iteration,scan,uid,array,score,factor,scan_local
+control,1,10,5279,2,6.0,0.0,True
+control,2,0,5282,2,6.0,0.0,True
+off_source_injected,1,10,5279,2,6.0,0.0,True
+off_source_injected,2,0,5282,2,6.0,0.0,True
+off_source_injected,4,5,4460,1,4.0,0.0,True
