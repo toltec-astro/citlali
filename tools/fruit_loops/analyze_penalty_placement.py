@@ -538,7 +538,7 @@ def write_component_maps(
                 name=f"R{len(hdus):02d}_{name}"[:8],
             )
         )
-    path = output_dir / f"point_{obsnum}_{array}_el_f8_components_r0.3.fits"
+    path = output_dir / f"point_{obsnum}_{array}_el_f8_components_r0.4.fits"
     fits.HDUList(hdus).writeto(path, overwrite=True, checksum=False)
     return path
 
@@ -694,14 +694,20 @@ def analyze(manifest: dict) -> tuple[list[dict], list[dict], list[dict], dict, d
         }
         q_alternate = components["D_current"] - components["D_map"]
         q_error = float(np.max(np.abs((components["Q"] - q_alternate)[support])))
-        q_bound = roundoff_bound(
-            [components["Q"], components["D_current"], components["D_map"]],
-            float(manifest["closure_roundoff_factor"]),
+        q_bound = float(
+            roundoff_bound(
+                [
+                    components["Q"],
+                    components["D_current"],
+                    components["D_map"],
+                ],
+                float(manifest["closure_roundoff_factor"]),
+            )
         )
         closure[array] = {
             "maximum_absolute_q_identity_residual_mjy_beam": q_error,
             "roundoff_bound_mjy_beam": q_bound,
-            "closure_pass": q_error <= q_bound,
+            "closure_pass": bool(q_error <= q_bound),
         }
         if q_error > q_bound:
             raise ValueError(f"EL-F8 Q identity closure failed for {array}")
@@ -919,13 +925,13 @@ def main() -> int:
     output_dir = Path(manifest["analysis_output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
     paths = {
-        "metrics": output_dir / "COMPONENT_METRICS_R0.3.csv",
-        "cross": output_dir / "CROSS_TERMS_R0.3.csv",
-        "triggers": output_dir / "TRIGGER_PIXELS_R0.3.csv",
-        "execution": output_dir / "PRIMARY_EXECUTION_R0.3.csv",
-        "result": output_dir / "DECOMPOSITION_RESULT_R0.3.json",
-        "report": output_dir / "EXECUTION_RESULT_R0.3.md",
-        "plot": output_dir / "PENALTY_PLACEMENT_DECOMPOSITION_R0.3.png",
+        "metrics": output_dir / "COMPONENT_METRICS_R0.4.csv",
+        "cross": output_dir / "CROSS_TERMS_R0.4.csv",
+        "triggers": output_dir / "TRIGGER_PIXELS_R0.4.csv",
+        "execution": output_dir / "PRIMARY_EXECUTION_R0.4.csv",
+        "result": output_dir / "DECOMPOSITION_RESULT_R0.4.json",
+        "report": output_dir / "EXECUTION_RESULT_R0.4.md",
+        "plot": output_dir / "PENALTY_PLACEMENT_DECOMPOSITION_R0.4.png",
     }
     write_csv(paths["metrics"], metrics)
     write_csv(paths["cross"], cross_terms)
@@ -988,7 +994,7 @@ def main() -> int:
         ],
         "execution": auxiliary["execution"],
     }
-    provenance_path = output_dir / "ANALYSIS_PROVENANCE_R0.3.yaml"
+    provenance_path = output_dir / "ANALYSIS_PROVENANCE_R0.4.yaml"
     provenance_path.write_text(yaml.safe_dump(provenance, sort_keys=False))
     print(paths["report"])
     return 0

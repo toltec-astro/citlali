@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import json
 from pathlib import Path
 
 import numpy as np
@@ -218,3 +219,11 @@ def test_execution_reader_accepts_macos_time_line(tmp_path: Path) -> None:
     assert rows[0]["user_seconds"] == 29.69
     assert rows[0]["system_seconds"] == 0.70
     assert rows[0]["maximum_resident_bytes"] == 858619904
+
+
+def test_numpy_closure_comparison_is_normalized_for_json() -> None:
+    residual = 0.0
+    bound = float(np.float64(1e-12))
+    result = {"closure_pass": bool(residual <= bound), "bound": bound}
+
+    assert json.loads(json.dumps(result))["closure_pass"] is True
