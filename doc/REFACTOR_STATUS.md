@@ -686,8 +686,13 @@ accumulation. The
 [`owner-review proposal`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F8_PENALTY_PLACEMENT_OWNER_REVIEW_R0.1.md)
 and exact
 [`bundle manifest`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F8_BUNDLE_MANIFEST_R0.1.md)
-are pending content-bound owner approval. No EL-F8 implementation, build,
-replay, or analysis execution is authorized.
+were approved exactly by the scientific owner on 2026-09-03. The bounded
+authorization is recorded in
+[`SCIENTIFIC_OWNER_EL_F8_AUTHORIZATION_2026-09-03.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_EL_F8_AUTHORIZATION_2026-09-03.md).
+The two existing-placement compatibility replays must pass before either
+mapmaking-placement result may be interpreted. No result yet exists, and the
+production default, Gate D, Stage B, qualification, and Unity remain outside
+the authorization.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
