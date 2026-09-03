@@ -1,0 +1,112 @@
+{
+  "manifest_identity": "SCI-NOI_SUPERSEDING_PROPOSED_FREEZE_MANIFEST v0.1/r0.5",
+  "date": "2026-08-30",
+  "scientific_owner": "Grant Wilson",
+  "disposition": "scientifically freezeable conditional; not frozen",
+  "missing_freeze_gates": [
+    "scientific-owner approval of the exact final r0.5 contract bytes and hashes bound by this manifest"
+  ],
+  "claim_ceiling": "No implementation conformity, numerical validation, calibration, physical-noise validity, covariance completeness, Gaussian significance, achieved performance, readiness, production suitability, or production authorization.",
+  "immutable_r0_18_manifest": {
+    "path": "../../AUTHOR_PACKET_MANIFEST.md",
+    "identity": "SCI-NOI_AUTHOR_PACKET_MANIFEST v0.1/r0.18",
+    "sha256": "b6f8e7252e7f61f4506899cb3e8e26cf939887bb48464852713f8ce81ac77ca0"
+  },
+  "immutable_r0_18_author_objects": [
+    ["SCOPE_BRIEF.md", "044abcd528b46d41338a01cc1613df45d1898f96cd2546d85234bf006669b403"],
+    ["AUTHOR_SUPERSESSION_COVER.md", "07dd18d45adc08572480b3141aabf324e9a9834ab806ab4dc661cc210f7b47cf"],
+    ["5a027c94ef9fc9c4a6e6cadc84af1c8a550d3508:doc/audits/packages/SCI-NOI-001_INDEPENDENT_CORE_R3.tex", "27263ab3bf29ac8f098463455e540f13e783241a688ef2bc5cb15b1f2a4319da"],
+    ["4f1fec36f7802f3b5e8ac067377679946930983c:doc/audits/packages/SCI-NOI-002_INDEPENDENT_CORE.tex", "36781b766a2f57c9a3bd7e173ee8f1d85cba7f3d08afe2e67a403166f6b6d72d"],
+    ["AUTHOR_CONVENTIONS_AND_OWNERSHIP.md", "aca85dd1d5ea5e6a3123e4e544b2e844b78a774929e6d34dc2f651c4735cd966"],
+    ["AUTHOR_OPERATOR_AND_PRODUCT_TAXONOMY.md", "a6fd83a19f373c83d26355255aa6a8878ec7a4f37dd306351d7e36e57acfda46"],
+    ["SCI-MAP_TO_SCI-NOI_BOUNDARY.md", "4273c5a75ff10d00506e5aa8732690cd3f398ff5afbaa561af8f1434ec467e29"],
+    ["SCI-JINC_TO_SCI-NOI_BOUNDARY.md", "7bf0ff489957943cee5abcd581b6b6b1fea0840969d62ced4d73072cff8b51f8"],
+    ["SCI-PTC_TO_SCI-NOI-GEN_BOUNDARY.md", "0a6484058569930cee62e80e04ca2045c107fde67603f662473ae471406f905c"],
+    ["NOI_GEN_PARENT_OPERATOR_GRAPH.md", "d7cacc667f479965ab7d1a7c3acb453f0195224bf0df1051b319d424ac04e5ac"],
+    ["ENSEMBLE_DESIGN_AND_SOURCE_IMPRINT_SPECIFICATION.md", "f0927dad70bb8487cbdd798efb1c7d82f35755721cbcf49f24dcbd3c62e89b9f"],
+    ["FINITE_DESIGN_UNC_ESTIMATOR_AND_COVARIANCE_TABLE.md", "cad960d438810942ee630b63dff05211ad831977d3fcd81fb8ab40042b820976"],
+    ["STD_NUMERATOR_SCALE_AND_CLAIM_TABLE.md", "ff24c6946104d0653469fe0f2921efcda39fbbc2a431e673528ce622f388d28e"],
+    ["SCI-NOI_VAL_PROFILE_DRAFTS.md", "c89883d8c20f72aea05f0ae62464daee3a3ee6e81543ff313888ac318a192d6b"],
+    ["FILTER_AND_FRUIT_SCOPE.md", "08eba55f840e8f8aa265e1d2f1a981e16351a1c2460e74907cb4beb5ccb7df77"],
+    ["PRODUCT_ROLE_AND_LIFECYCLE_TABLE.md", "3d138d769c9629f93b0a493955d5a76f537d2d832c2b58de33fae595653e6212"],
+    ["SCIENTIFIC_OWNER_DECISIONS_FOR_AUTHORSHIP.md", "272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b"]
+  ],
+  "later_owner_authority": [
+    ["../r0.3/SCIENTIFIC_OWNER_DECISION_SUPPLEMENT.md", "4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5"],
+    ["../r0.4/SCIENTIFIC_OWNER_DIRECTIVE.md", "f155c1e70c1a8431bf4baf68f111960456ef24e9e77544837ff2efbecb86f423"],
+    ["SCIENTIFIC_OWNER_DIRECTIVE.md", "4f04e25a32b44b729bd291d4919c9acb4bc197f79d94f7f213f4d9505539114d"]
+  ],
+  "normative_authority": {
+    "binding": ["NORMATIVE_MODULE_BINDING.json", "aa59ecaaaa149e2990d07623563d90af76c7b3084ee37c497a06e17ebf0fe213"],
+    "ordered_modules": [
+      ["normative/NOTATION.md", "576921c2755ac2e12a38b0cce1c00404616aa24ae704136f60e5a52231c8740f"],
+      ["normative/DEFINITIONS.md", "350351f524cd0b8ed802a4c51061a83b2b6393819e9a6a1d92e46d81f503df8e"],
+      ["normative/EQUATIONS.md", "3de518165975c70604eefeec4dfb379fd3a9eef26aa32939d07fda73310fb586"],
+      ["normative/ASSUMPTIONS.md", "b1ba36f45db99aad9b7dcd405e94b2f7b6b131d3474cb214d613b851c3cf0398"],
+      ["normative/REQUIREMENTS.md", "7e7d0bbca6e58155ceccb2ceef1bc825f0a15a4fbb58266f736d766fd3cb1ba1"],
+      ["normative/PREDICTIONS.md", "cef8c39f952a7e1a8d739e29e20206e2d71a2176aa1607a69724abd6071eb1a4"]
+    ]
+  },
+  "profile_authority_and_proposals": {
+    "immutable_r0_18_profile_blocks": {
+      "SCI-NOI:generation_input_admission@1": "373b8496f6553527da937ae44422734b00db16517964ca239dbbefba6f59c5b3",
+      "SCI-NOI:uncertainty_member_admission@1": "85c6641060ebb21f4246995d8f471888992b2b29b013457254ba1cc5938cfaa3",
+      "SCI-NOI:uncertainty_ensemble_admission@1": "61e3da9349f55110ee8cd46114c980dbda6b173cc24514e79404db3ede9d18d6",
+      "SCI-NOI:standardization_admission@1": "f6979949b907ffebe97c1a807381398dfb342dafcfe3def477f1c08dbcd77021"
+    },
+    "process_bindings": {
+      "SCI_VAL_source_register": "04eca2da9ce76afacf18ae90dc2dbcb702fedbf55e03acb28e14e7dbc459a7c3",
+      "SCI_VAL_profile_registry": "5994f4dff49dff3a9c9da6fbb494671b14a2f926f325f1c7c4a9603a6c2a38c1",
+      "SCI_NOI_registry_binding": "739b5c7d7818a4292ae4b0beeab5a2d0356d77f0525bd0198e67181ae6d28a2e"
+    },
+    "superseded_unapproved_r0_4_source": ["../r0.4/PROPOSED_PROFILE_SUCCESSORS.md", "b0ca8c26da0f04d9acb26823f5dce207dcb1a766621cb40770f2482b9b15355c"],
+    "superseded_unapproved_r0_4_blocks": {
+      "SCI-NOI:generation_input_admission@2": "53361ec1df6006e8b0d80b6c59391165fd1df678a777811680d24856cc18a697",
+      "SCI-NOI:uncertainty_member_admission@2": "554e608d3eb3f5a89a3bc9d07504f8f48673ed768ae85ad1970a59ff51a240b0",
+      "SCI-NOI:uncertainty_ensemble_admission@2": "b19e0a19782cd42cb24203fd96fe67b89e014aa999c34decf49e09412f2d4e3c",
+      "SCI-NOI:standardization_admission@2": "d825f97c3d89f6f6f73a83bdf2d3fc2034c949f881b29533e8eff8353df419b4"
+    },
+    "proposed_r0_5_source": ["PROPOSED_PROFILE_SUCCESSORS.md", "aa1c53e7400f8b38804bc0002f23731b6d4b2d04a87b663a67151e4c07065f75"],
+    "proposed_r0_5_blocks": {
+      "SCI-NOI:generation_input_admission@2": "4d62a7c6469f708fc21a6f8a0ae89a97b9e75940eeb9ec1c55fc842d52369a41",
+      "SCI-NOI:uncertainty_member_admission@2": "5abb1353efe1b424021ab2dbc842232c9eb00c0d44692638c48e46ea19fd824f",
+      "SCI-NOI:uncertainty_ensemble_admission@2": "abbfc097d9b652101d6c4a1400ce15d72c0576a56320cfb07c93b1941c0949db",
+      "SCI-NOI:standardization_admission@2": "2cdc10762664469647d113269263f90a78f800fabdd790f00cad901430850d27"
+    },
+    "proposal_state": "complete proposed r0.5 bytes; profile approval absent; Registry/source binding absent; evaluation unavailable; these unavailable profile actions do not block scientific-contract freeze"
+  },
+  "scientist_and_engineering_views": [
+    ["NORMATIVE_CORE.md", "a46244c2b295c0efbbc0d2a6161ba4a6835080946356e239a34307cb2fcf2288"],
+    ["SCIENTIFIC_RATIONALE.md", "d160c60410939750bf0779fbbbe1310a1ca1c4d83cac5388430acfc0854fd9d7"],
+    ["ENGINEERING_CONFORMANCE_SPECIFICATION.md", "de49c2c94cd59eca76d11157e964d73ff745e29b3d75aa134bdfd14f2349ad95"],
+    ["PROFILE_AND_REGISTRY_SUCCESSOR_TABLE.md", "38d4e66613a9c290d470948a2e9b550384338b9362f4aca76fa1bd38cb29cec7"],
+    ["REQUIREMENT_PREDICTION_OWNER_TRACEABILITY.csv", "6c786eb50e3074dff53e09f4996e9aaf17e1fc26ee92c08df65ba5360b3d1889"]
+  ],
+  "completion_and_parity_records": [
+    ["ARTIFACT_INDEX.md", "db1a995d13d5a87b8c61b6cad9cb9694bde29af2a659d57288bda76044f2fe4b"],
+    ["TARGET_LAW_MEMBER_SELECTION_DISPOSITION.md", "fd26896e98caff13a07e0189102c258ed1713923e752a62645b416cc40155dc3"],
+    ["RANDOMIZATION_LAW_AND_REPLAY_DISPOSITION.md", "50b65ef9c32849606d18fb90a163dbf8101c6f5c6f69a91d52bd051deb6c9782"],
+    ["CONDITIONAL_UNC_REALIZATION_AMENDMENT.md", "c229c08af577975d19d49c83b8c61c624090f44d3b05cd31f034022158542532"],
+    ["EXACT_RATIONAL_PARENT_BINDING.md", "ff2d3ca458bfab8d2eb3cf76fc639fa0619100eda0c97c508ccec4faa06e0763"],
+    ["REQUEST_AND_DISABLED_LIFECYCLE_AMENDMENT.md", "17e4931d790bdad9f8f0e3b11833adfa01039508169f7c4048bc8ec9c1997356"],
+    ["STD_RESPONSE_FAMILY_AMENDMENT.md", "50cd23f2d22d0c3270861ab07782887d8a6825a8713d0c6302d32b1446543c97"],
+    ["FINAL_AUTHORITY_SOURCE_PACKET.md", "bd1e0057723cccfcb96ef545437efd8fbec975b4fe6c4f54306f3b2a08f99ec9"],
+    ["ROUTE_STATUS_PARITY_REPORT.md", "5da45aca7515e1e9a2fa284d4eb9df6441a28d60bcf2833b07c6039ef5c5c68b"],
+    ["R0_4_TO_R0_5_SEMANTIC_CHANGE_MAP.md", "e22c5a6cc8205339b6d7a9948943bc7902fca12f2293df4cb70f666ebfec3393"],
+    ["OWNER_DECISION_PARITY_REPORT.md", "626984067c91f47c4fc841ea046765bd23d6753326d9c5b4b908e878b2abf13b"],
+    ["CORE_RATIONALE_ECS_PARITY_REPORT.md", "6c7fea25f77f7024996f96f393b9a130fafcf057692f9cf99b6791f6632ef6b3"],
+    ["PDF_VISUAL_QA_AND_METADATA_REPORT.md", "e1258aab6e415d7406d5f3a97148c064e5d8199b2ded9794a3ee195da66571a6"],
+    ["SOURCE_BYTE_AND_BYTE_EQUALITY_REPORT.md", "ba5054f92891e9d9912cb0b3bb83bde7ca3c11734b8a9f854e83db848438abb8"],
+    ["PROPOSED_SCIENTIFIC_OWNER_FREEZE_DISPOSITION.md", "627dc1157380989beafdc204a59230f397dea4618b67dea2040fc436dbf0b523"]
+  ],
+  "package_local_build_and_verification": [
+    ["build_stage_b_r0_5_pdfs.py", "e2d154f8df9b14f64c8a399a0e6aa1e0f5a046f17062ef0052a21f3c9a0426a4"],
+    ["verify_stage_b_r0_5.py", "22601ed8ad51cb7bcc4d681b2815cfcd6b827f7f507a052de7dc2e241774f11e"]
+  ],
+  "deterministic_pdf_views": [
+    ["SCI-NOI_v0.1_STAGE_B_NORMATIVE_CORE_DRAFT_r0.5.pdf", "81301b472f231b0f3cd34829bddf482a9578b634aa78841332ab0d4087f7cfff", 16],
+    ["SCI-NOI_v0.1_STAGE_B_SCIENTIFIC_RATIONALE_DRAFT_r0.5.pdf", "c826acd3d71b24a861150c649e8b591b1488dc22fa761ed0e364dcc8346142a2", 8],
+    ["SCI-NOI_v0.1_STAGE_B_ENGINEERING_CONFORMANCE_DRAFT_r0.5.pdf", "52acaa919a4306333dd627f19e76a04c811beb105906619567ce57133b669e18", 15]
+  ],
+  "authority_rule": "This manifest supersedes manual assembly for r0.5 freeze review. Generated views, completion records, build artifacts, and proposed profiles do not override the six normative modules or enlarge the admitted scientific authority. Exact profile approval and SCI-VAL source/Registry binding remain separate evaluation gates and are not contract-freeze gates. This manifest is a proposal and does not itself freeze or authorize evaluation."
+}

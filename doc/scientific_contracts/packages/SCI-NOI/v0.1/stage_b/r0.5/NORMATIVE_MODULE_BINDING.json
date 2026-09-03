@@ -1,0 +1,41 @@
+{
+  "binding_identity": "SCI-NOI_NORMATIVE_MODULE_BINDING v0.1/r0.5",
+  "date": "2026-08-30",
+  "scientific_owner": "Grant Wilson",
+  "status": "proposed final; not frozen",
+  "authority_bindings": {
+    "r0_18_author_packet_manifest_sha256": "b6f8e7252e7f61f4506899cb3e8e26cf939887bb48464852713f8ce81ac77ca0",
+    "r0_18_owner_decisions_sha256": "272ac939b8a7109a123073b1a39fcdd7ac4129c603683ee81257b94ab2f55a0b",
+    "r0_3_owner_supplement_sha256": "4b622de96e72860e544bf3699e3a131bc9cca5d2be0b0fe5bb41096327e977e5",
+    "r0_4_owner_directive_sha256": "f155c1e70c1a8431bf4baf68f111960456ef24e9e77544837ff2efbecb86f423",
+    "r0_5_owner_directive_sha256": "4f04e25a32b44b729bd291d4919c9acb4bc197f79d94f7f213f4d9505539114d"
+  },
+  "ordered_modules": [
+    {
+      "path": "normative/NOTATION.md",
+      "sha256": "576921c2755ac2e12a38b0cce1c00404616aa24ae704136f60e5a52231c8740f"
+    },
+    {
+      "path": "normative/DEFINITIONS.md",
+      "sha256": "350351f524cd0b8ed802a4c51061a83b2b6393819e9a6a1d92e46d81f503df8e"
+    },
+    {
+      "path": "normative/EQUATIONS.md",
+      "sha256": "3de518165975c70604eefeec4dfb379fd3a9eef26aa32939d07fda73310fb586"
+    },
+    {
+      "path": "normative/ASSUMPTIONS.md",
+      "sha256": "b1ba36f45db99aad9b7dcd405e94b2f7b6b131d3474cb214d613b851c3cf0398"
+    },
+    {
+      "path": "normative/REQUIREMENTS.md",
+      "sha256": "7e7d0bbca6e58155ceccb2ceef1bc825f0a15a4fbb58266f736d766fd3cb1ba1"
+    },
+    {
+      "path": "normative/PREDICTIONS.md",
+      "sha256": "cef8c39f952a7e1a8d739e29e20206e2d71a2176aa1607a69724abd6071eb1a4"
+    }
+  ],
+  "view_rule": "The core, rationale, ECS, and their PDFs consume these exact ordered bytes and author no independent normative science.",
+  "change_rule": "Any module byte change requires a new binding identity, regenerated views, and renewed owner review."
+}
