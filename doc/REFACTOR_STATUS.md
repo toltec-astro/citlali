@@ -866,6 +866,12 @@ checkpoint's required next iteration `4`. The failed log and empty lock are
 preserved. The method-preserving correction is recorded under the owner's
 standing routine-defect direction and frozen in `REGISTRATION_R0.2.yaml`; the
 single scientific replay remains unused and is still the next action.
+The corrected replay then completed absolute iteration 4 in 31.59 seconds at
+871,579,648 bytes maximum resident set size with no error or critical log
+records. Its exact outputs and the retained EL-F10 comparison inputs are bound
+in `REGISTRATION_R0.3.yaml` before any new accounting value was opened. The
+single scientific replay is consumed; compatibility-first analysis is the next
+action and cannot relax a failed gate or authorize another run.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
