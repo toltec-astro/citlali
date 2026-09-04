@@ -1,0 +1,73 @@
+schema_version: sci-fruit-el-f11-analysis-provenance-v1
+test_id: SCI-FRUIT-EL-F11-PROSPECTIVE-INFLUENCE-PERSISTENCE-R0.1
+repair_id: SCI-FRUIT-EL-F11-R2-LEARNING-LEDGER-SCOPE-NORMALIZATION-R0.1
+result_revision: r0.5
+role: oracle-targeted-development-persistence-feasibility
+analysis_completed_local: 2026-09-04T12:52:47-04:00
+source_commit: 98456931f
+command:
+  environment:
+    MPLBACKEND: Agg
+    MPLCONFIGDIR: /private/tmp/el_f11_r2_mpl
+    XDG_CACHE_HOME: /private/tmp/el_f11_r2_cache
+  executable: /Users/gwilson/tolteca/bin/python
+  script: /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/analyze_prospective_influence_persistence.py
+  arguments:
+    - --registration
+    - /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f11_prospective_influence_2026-09-04/REGISTRATION_R0.4.yaml
+    - --output-dir
+    - /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f11_prospective_influence_2026-09-04
+registration:
+  path: REGISTRATION_R0.4.yaml
+  size_bytes: 17433
+  sha256: 7e0ded9b04a6d1026b3abd3ad0bc7ceb10f6ea8683942cadc829ebe5ac52a707
+analysis_tool:
+  path: ../../tools/fruit_loops/analyze_prospective_influence_persistence.py
+  size_bytes: 34471
+  sha256: 2984af42111c1888f02f7c68026530e2e6de7721466c9899aa8cbec3b94afe4f
+runtime:
+  python: 3.13.2
+  numpy: 2.2.3
+  scipy: 1.15.2
+  astropy: 7.0.1
+  netCDF4: 1.7.2
+  matplotlib: 3.10.0
+  PyYAML: 6.0.2
+outputs:
+  - path: ANALYSIS_RESULT_R0.1.json
+    size_bytes: 62132
+    sha256: 199ea6b3e26de2c341f485ee372ab80d9746720dfbef50f2d2dec9835a94fc91
+  - path: PERSISTENCE_COMPONENT_MAPS_R0.1.nc
+    size_bytes: 2102331
+    sha256: bfa8d66fcf9f48b0f376bfeac3318b7afaec0879faab14769c84da15d78217d7
+  - path: PERSISTENCE_METRICS_R0.1.csv
+    size_bytes: 1664
+    sha256: 1bf6d777aee08e87a14f06483e4a83d5b68a8c65b7c23c4d614f752d0f98991c
+  - path: TOP_RESPONSE_OVERLAP_R0.1.csv
+    size_bytes: 498
+    sha256: 1d510da97d751dbc99afbf7c4e76847cd7c08fdc80f1c0778c24c95159d515e8
+  - path: PERSISTENCE_RESPONSE_R0.1.png
+    size_bytes: 102128
+    sha256: 0f82a4c24c4173ef28363949c828ed63934a80222b59f337aff21a1d75f06ffd
+registered_files_validated: 39
+packaging_normalization:
+  files: [PERSISTENCE_METRICS_R0.1.csv, TOP_RESPONSE_OVERLAP_R0.1.csv]
+  transformation: CRLF line endings normalized to LF
+  values_changed: false
+analysis_continuations_consumed: 1
+citlali_replay_in_this_analysis: false
+external_inputs_modified: false
+unity_activity: false
+claim_limits:
+  oracle_targeted: true
+  deployable_candidate_selection_established: false
+  unbiased_performance_estimate_established: false
+  detector_judgment_authorized: false
+  generic_mechanism_claim_authorized: false
+  intervention_comparison_authorized: false
+  safeguard_selection_authorized: false
+  qualification_use_authorized: false
+  production_use_authorized: false
+  gate_d_authorized: false
+  stage_b_authoring_authorized: false
+  unity_activity_authorized: false

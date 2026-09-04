@@ -887,6 +887,25 @@ without replay, with exact ordered equality of the registered iteration-4
 rows. It is bound for review by the exact
 [`EL_F11_R2_BUNDLE_MANIFEST_R0.1.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F11_R2_BUNDLE_MANIFEST_R0.1.md).
 Every other EL-F11 gate and claim limit would remain unchanged.
+The owner approved that exact R2 repair on `2026-09-04`. The repaired analyzer
+and 39-file no-replay registration passed all 115 fruit-loop tests, Ruff, and
+the complete configuration preflight before accounting values were opened.
+All compatibility, accumulator, ledger, support, grid, and deletion-identity
+gates then passed. Iterations 4 and 5 have the same 4,229 conditioned target
+pixels. Their UID 4460 scan-5 deletion responses have normalized inner product
+`0.9996376`, fitted scale `1.0040724`, and a `2.69205%` scaled residual; the
+top 1% absolute-response pixel sets are identical. The registered Neptune and
+annular regions are similarly persistent, while the injected-source aperture
+has no direct conditioned target occurrence in either iteration. The complete
+[`EL-F11 result`](../validation/fruit_loop_point_123424_el_f11_prospective_influence_2026-09-04/EXECUTION_RESULT_R0.5.md)
+therefore establishes strong oracle-targeted temporal persistence in this one
+case: the harmful iteration-5 map consequence was already measurable from
+iteration-4 JINC state before the carried hard action took effect. It does not
+define a causal candidate selector, compare an intervention, establish
+generality, or qualify a safeguard. This closes the diagnosis-only UID 4460
+branch. The next significant decision is whether to authorize one bounded
+response-aware intervention screen; another explanatory study of the same
+event is not recommended.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
