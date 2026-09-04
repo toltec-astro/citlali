@@ -48,6 +48,12 @@ inline YAML::Node mapmaking_config_node(
         }
         node["jinc_filter"]["shape_params"][array_name] = values;
     }
+    node["jinc_accounting"]["enabled"] =
+        config.jinc_accounting.enabled;
+    node["jinc_accounting"]["array"] = config.jinc_accounting.array;
+    node["jinc_accounting"]["uid"] = config.jinc_accounting.uid;
+    node["jinc_accounting"]["scan_index"] =
+        config.jinc_accounting.scan_index;
     node["maximum_likelihood"]["max_iterations"] =
         config.maximum_likelihood.max_iterations;
     node["maximum_likelihood"]["tolerance"] =

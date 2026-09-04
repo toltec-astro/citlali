@@ -56,6 +56,7 @@ void clear_map_matrix_products(MapBuffer &buffer) {
     buffer.science_products.clear();
     buffer.raw_science_parent.reset();
     buffer.clear_contribution_diag();
+    buffer.jinc_accounting.clear();
 }
 
 template <class MapBuffer, class MapExtent, class MapCoord>

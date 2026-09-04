@@ -292,6 +292,10 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     }
     if (run_omb) {
         omb.ensure_contribution_diag(static_cast<Eigen::Index>(omb.signal.size()));
+        if (omb.jinc_accounting.enabled()) {
+            std::scoped_lock<std::mutex> lk(*jinc_mutex);
+            omb.jinc_accounting.prepare_uid_inventory(apt);
+        }
     }
 
     double noise_cube_gb = 0.0;
@@ -487,6 +491,27 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
             // loop through the samples
             for (Eigen::Index j=0; j<n_pts; ++j) {
+                const bool target_sample = omb.jinc_accounting.is_target(
+                    det_uid, static_cast<int>(in.index.data),
+                    static_cast<int>(array_index), map_index);
+                JincAccountingSample accounting_sample;
+                if (target_sample) {
+                    accounting_sample.scan_index =
+                        static_cast<int>(in.index.data);
+                    accounting_sample.sample_index =
+                        static_cast<std::int64_t>(j);
+                    accounting_sample.array_id =
+                        static_cast<int>(array_index);
+                    accounting_sample.uid = det_uid;
+                    accounting_sample.processed_signal = in.scans.data(j, i);
+                    accounting_sample.analysis_coefficient =
+                        i < in.weights.data.size()
+                            ? in.weights.data(i)
+                            : std::numeric_limits<double>::quiet_NaN();
+                    accounting_sample.final_flag = in.flags.data(j, i) ? 1 : 0;
+                    accounting_sample.continuous_row = omb_irow(j);
+                    accounting_sample.continuous_col = omb_icol(j);
+                }
                 // check if sample is flagged, ignore if so
                 if (!in.flags.data(j,i) &&
                     std::isfinite(in.scans.data(j,i)) &&
@@ -512,6 +537,17 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                         int sr = subpix_index(drow);
                         int sc = subpix_index(dcol);
                         subpix_idx = sr * subpixel_n + sc;
+                    }
+                    if (target_sample) {
+                        accounting_sample.rounded_row =
+                            static_cast<std::int64_t>(omb_ir);
+                        accounting_sample.rounded_col =
+                            static_cast<std::int64_t>(omb_ic);
+                        accounting_sample.row_phase =
+                            omb_irow(j) - static_cast<double>(omb_ir);
+                        accounting_sample.col_phase =
+                            omb_icol(j) - static_cast<double>(omb_ic);
+                        accounting_sample.subpixel_index = subpix_idx;
                     }
 
                     if (run_polarization) {
@@ -551,6 +587,15 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             const auto &jinc_sq_mat = use_subpix ? subpix_sq_vec->at(subpix_idx) : jinc_weights_sq_mat[array_index];
                             const auto mat_block = jinc_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
                             const auto mat_sq_block = jinc_sq_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
+
+                            if (target_sample) {
+                                accounting_sample.admitted = 1;
+                                accounting_sample.reason = "admitted";
+                                accounting_sample.center_in_map = 1;
+                                accounting_sample.contributed_pixel_count =
+                                    static_cast<std::int64_t>(size_rows) *
+                                    static_cast<std::int64_t>(size_cols);
+                            }
 
                             auto sig_block = omb_copy.signal[map_index].block(lower_row,lower_col,size_rows,size_cols);
                             auto grid_wt_block = omb_copy.grid_weight[map_index].block(lower_row,lower_col,size_rows,size_cols);
@@ -613,6 +658,23 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
                             // variance accumulator for final inverse-variance weights
                             wt_block.array() += (mat_sq_block.array() * in.weights.data(i));
+
+                            if (omb.jinc_accounting.enabled() &&
+                                map_index == omb.jinc_accounting.map_index) {
+                                std::scoped_lock<std::mutex> lk(*jinc_mutex);
+                                for (Eigen::Index rr = 0; rr < size_rows; ++rr) {
+                                    for (Eigen::Index cc = 0; cc < size_cols; ++cc) {
+                                        const double kappa = mat_block(rr, cc);
+                                        omb.jinc_accounting.record_contribution(
+                                            static_cast<Eigen::Index>(lower_row) + rr,
+                                            static_cast<Eigen::Index>(lower_col) + cc,
+                                            kappa * weighted_signal,
+                                            kappa * in.weights.data(i),
+                                            mat_sq_block(rr, cc) * in.weights.data(i),
+                                            det_uid, target_sample);
+                                    }
+                                }
+                            }
 
                             // populate coverage map
                             if (run_coverage) {
@@ -721,6 +783,22 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             }
                         }
                     }
+                }
+                if (target_sample) {
+                    if (accounting_sample.reason.empty()) {
+                        accounting_sample.reason =
+                            jinc_accounting_admission_reason(
+                                accounting_sample.final_flag != 0,
+                                std::isfinite(
+                                    accounting_sample.processed_signal),
+                                std::isfinite(
+                                    accounting_sample.analysis_coefficient) &&
+                                    accounting_sample.analysis_coefficient > 0.0,
+                                accounting_sample.center_in_map != 0);
+                    }
+                    std::scoped_lock<std::mutex> lk(*jinc_mutex);
+                    omb.jinc_accounting.record_sample(
+                        std::move(accounting_sample));
                 }
             }
         }

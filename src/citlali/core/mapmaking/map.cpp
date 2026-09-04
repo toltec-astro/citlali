@@ -76,6 +76,18 @@ MapBuffer::MapBuffer(std::string _n): name(_n) {}
 void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
     // vectors for maps
     const bool use_grid_weight = grid_weight.size() == signal.size();
+    if (jinc_accounting.enabled()) {
+        const auto i = jinc_accounting.map_index;
+        if (!use_grid_weight || i < 0 ||
+            i >= static_cast<Eigen::Index>(signal.size()) ||
+            i >= static_cast<Eigen::Index>(grid_weight.size()) ||
+            i >= static_cast<Eigen::Index>(weight.size())) {
+            throw std::runtime_error(
+                "JINC accounting cannot snapshot the selected accumulators");
+        }
+        jinc_accounting.capture_totals(
+            signal[i], grid_weight[i], weight[i]);
+    }
     const bool realize_science_products =
         science_products.initialized && !science_products.normalization_support.empty();
     if (realize_science_products) {
@@ -300,6 +312,11 @@ void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *act
 
             weight[i] = (mask > 0.0)
                 .select(finalized_weight.array(), 0.0).matrix();
+            if (jinc_accounting.enabled() &&
+                i == jinc_accounting.map_index) {
+                jinc_accounting.capture_normalization(
+                    weight[i], mask, support_weight_threshold);
+            }
         }
         else {
             const Eigen::MatrixXd raw_signal = signal[i];

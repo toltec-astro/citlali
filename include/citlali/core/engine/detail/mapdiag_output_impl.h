@@ -5,6 +5,7 @@
 
 #include <citlali/core/engine/detail/mapdiag_observation_contribution.h>
 #include <citlali/core/pipeline/mapdiag_workspace.h>
+#include <citlali/core/pipeline/jinc_accounting_output.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template <mapmaking::MapType map_t, class map_buffer_t>
@@ -136,4 +137,7 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
             citlali::pipeline::add_mapdiag_netcdf_vars(
                 fo, mapdiag_netcdf_vars);
         });
+    if constexpr (map_t == mapmaking::RawObs) {
+        citlali::pipeline::write_jinc_accounting_receipt(*mb, filename);
+    }
 }

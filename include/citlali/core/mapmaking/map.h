@@ -13,6 +13,7 @@
 #include <citlali/core/utils/utils.h>
 #include <citlali/core/utils/fitting.h>
 #include <citlali/core/mapmaking/science_map_contract.h>
+#include <citlali/core/mapmaking/jinc_accounting.h>
 
 namespace mapmaking {
 
@@ -130,6 +131,9 @@ public:
         bool use_grid_weight = false;
     };
     std::vector<NormalizeSupportDiag> normalize_support_diag;
+
+    // Opt-in EL-F10 construction receipt. Mapmaking never reads these values.
+    JincAccountingState jinc_accounting;
 
     // noise maps (n_rows, n_cols, n_noise) of length n_maps
     std::vector<Eigen::Tensor<double,3>> noise;

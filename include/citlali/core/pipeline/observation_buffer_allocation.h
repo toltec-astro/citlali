@@ -40,6 +40,7 @@ void allocate_observation_map_buffers(TodProc &todproc,
     allocate_observation_signal_map_buffer(
         todproc, map_extent, map_coord, logger);
     configure_observation_pixel_contribution_targets(engine);
+    configure_observation_jinc_accounting(engine);
 
     if (should_allocate_observation_noise_maps(engine)) {
         allocate_observation_noise_map_buffer(todproc, logger);

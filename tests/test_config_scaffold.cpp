@@ -1489,6 +1489,35 @@ TEST(config_scaffold, reads_and_adapts_typed_jinc_filter_config) {
     EXPECT_DOUBLE_EQ(legacy.shape_params.at(0)(2), 2.4);
 }
 
+TEST(config_scaffold, reads_and_serializes_opt_in_jinc_accounting) {
+    ensure_citlali_test_logger();
+    auto root = YAML::Load(citlali::citlali_default_config_content);
+    root["mapmaking"]["jinc_accounting"]["enabled"] = true;
+    root["mapmaking"]["jinc_accounting"]["array"] = "a1400";
+    root["mapmaking"]["jinc_accounting"]["uid"] = 4460;
+    root["mapmaking"]["jinc_accounting"]["scan_index"] = 5;
+    auto yaml_config =
+        tula::config::YamlConfig::from_str(YAML::Dump(root));
+    const std::map<int, std::string> array_names = {
+        {0, "a1100"}, {1, "a1400"}, {2, "a2000"}};
+    citlali::config::MapmakingConfig request;
+    request.method = citlali::config::MapMethod::jinc;
+    citlali::pipeline::ConfigDiagnosticsState diagnostics;
+
+    citlali::pipeline::read_mapmaking_method_request_config(
+        yaml_config, request.method, array_names, request, diagnostics);
+
+    ASSERT_FALSE(diagnostics.has_errors());
+    EXPECT_TRUE(request.jinc_accounting.enabled);
+    EXPECT_EQ(request.jinc_accounting.array, "a1400");
+    EXPECT_EQ(request.jinc_accounting.uid, 4460);
+    EXPECT_EQ(request.jinc_accounting.scan_index, 5);
+    const auto node = citlali::pipeline::mapmaking_config_node(request);
+    EXPECT_TRUE(node["jinc_accounting"]["enabled"].as<bool>());
+    EXPECT_EQ(node["jinc_accounting"]["array"].as<std::string>(),
+              "a1400");
+}
+
 TEST(config_scaffold, rejects_malformed_typed_jinc_shape) {
     ensure_citlali_test_logger();
     auto root = YAML::Load(citlali::citlali_default_config_content);
@@ -3269,6 +3298,28 @@ TEST(config_scaffold, rejects_unvalidated_maximum_likelihood_mapmaking) {
               std::string::npos);
     EXPECT_NE(report.format_for_cli().find("under development"),
               std::string::npos);
+}
+
+TEST(config_scaffold, validates_enabled_jinc_accounting_target) {
+    citlali::config::MapmakingConfig config;
+    config.method = citlali::config::MapMethod::jinc;
+    config.grouping = citlali::config::MapGrouping::array;
+    config.jinc_accounting.enabled = true;
+    config.jinc_accounting.array = "a1400";
+    config.jinc_accounting.uid = 4460;
+    config.jinc_accounting.scan_index = 5;
+    citlali::config::ValidationReport valid;
+    citlali::config::validate(config, valid);
+    EXPECT_TRUE(valid.ok()) << valid.format_for_cli();
+
+    config.method = citlali::config::MapMethod::naive;
+    config.grouping = citlali::config::MapGrouping::network;
+    config.jinc_accounting.array = "bad";
+    config.jinc_accounting.uid = -1;
+    config.jinc_accounting.scan_index = -1;
+    citlali::config::ValidationReport invalid;
+    citlali::config::validate(config, invalid);
+    EXPECT_EQ(invalid.error_count(), 5U);
 }
 
 TEST(config_scaffold, parses_existing_timestream_enum_values) {

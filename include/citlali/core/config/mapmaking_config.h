@@ -47,6 +47,15 @@ struct MapmakingJincFilterConfig {
     };
 };
 
+// Development-only, disabled-by-default receipt for one exact JINC target.
+// These settings identify diagnostic accounting; they do not alter mapmaking.
+struct MapmakingJincAccountingConfig {
+    bool enabled = false;
+    std::string array;
+    int uid = -1;
+    int scan_index = -1;
+};
+
 struct MapmakingMaximumLikelihoodConfig {
     int max_iterations = 50;
     double tolerance = 1e-20;
@@ -224,6 +233,7 @@ struct MapmakingConfig {
     int y_size_pix = 0;
     double coverage_cut = 0.0;
     MapmakingJincFilterConfig jinc_filter;
+    MapmakingJincAccountingConfig jinc_accounting;
     MapmakingMaximumLikelihoodConfig maximum_likelihood;
 };
 

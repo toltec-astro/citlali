@@ -16,6 +16,7 @@ target_sources(citlali_test
         test_config_scaffold.cpp
         test_external_config_provenance.cpp
         test_fruit_loop_recurrence.cpp
+        test_jinc_accounting.cpp
         reduction_session_header_result.cpp
         reduction_session_header_state.cpp
         fruit_loop_feedback_validation_header.cpp

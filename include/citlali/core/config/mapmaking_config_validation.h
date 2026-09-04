@@ -3,6 +3,8 @@
 #include <citlali/core/config/config_error.h>
 #include <citlali/core/config/mapmaking_config.h>
 
+#include <algorithm>
+#include <array>
 #include <cstddef>
 #include <string>
 
@@ -44,6 +46,33 @@ inline void validate(const MapmakingConfig &config, ValidationReport &report) {
                  array_name, std::to_string(index)},
                 report);
         }
+    }
+    if (config.jinc_accounting.enabled) {
+        if (!is_jinc_map_method(config.method)) {
+            report.add_error(
+                {"mapmaking", "jinc_accounting", "enabled"},
+                "JINC accounting requires mapmaking.method='jinc'");
+        }
+        if (!is_automatic_map_grouping(config.grouping) &&
+            !is_array_map_grouping(config.grouping)) {
+            report.add_error(
+                {"mapmaking", "jinc_accounting", "array"},
+                "JINC accounting requires automatic or array grouping");
+        }
+        constexpr std::array<const char *, 3> arrays{
+            "a1100", "a1400", "a2000"};
+        if (std::find(arrays.begin(), arrays.end(),
+                      config.jinc_accounting.array) == arrays.end()) {
+            report.add_error(
+                {"mapmaking", "jinc_accounting", "array"},
+                "JINC accounting array must be a1100, a1400, or a2000");
+        }
+        check_minimum(
+            config.jinc_accounting.uid, 0,
+            {"mapmaking", "jinc_accounting", "uid"}, report);
+        check_minimum(
+            config.jinc_accounting.scan_index, 0,
+            {"mapmaking", "jinc_accounting", "scan_index"}, report);
     }
     check_minimum(
         config.maximum_likelihood.max_iterations, 1,

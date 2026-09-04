@@ -55,6 +55,27 @@ void read_jinc_filter_request_config(
 }
 
 template <class Config, class Diagnostics>
+void read_jinc_accounting_request_config(
+    Config &config, citlali::config::MapmakingJincAccountingConfig &target,
+    Diagnostics &diagnostics) {
+    const auto enabled_key =
+        std::tuple{"mapmaking", "jinc_accounting", "enabled"};
+    if (!config.template has_typed<bool>(enabled_key)) {
+        return;
+    }
+    read_config_value(config, target.enabled, diagnostics, enabled_key);
+    read_config_value(
+        config, target.array, diagnostics,
+        std::tuple{"mapmaking", "jinc_accounting", "array"});
+    read_config_value(
+        config, target.uid, diagnostics,
+        std::tuple{"mapmaking", "jinc_accounting", "uid"});
+    read_config_value(
+        config, target.scan_index, diagnostics,
+        std::tuple{"mapmaking", "jinc_accounting", "scan_index"});
+}
+
+template <class Config, class Diagnostics>
 void read_maximum_likelihood_request_config(
     Config &config,
     citlali::config::MapmakingMaximumLikelihoodConfig &target,
@@ -74,6 +95,8 @@ void read_mapmaking_method_request_config(
     Config &config, citlali::config::MapMethod method,
     const ArrayNameMap &array_name_map,
     citlali::config::MapmakingConfig &target, Diagnostics &diagnostics) {
+    read_jinc_accounting_request_config(
+        config, target.jinc_accounting, diagnostics);
     if (citlali::config::is_jinc_map_method(method)) {
         read_jinc_filter_request_config(
             config, array_name_map, target.jinc_filter, diagnostics);
