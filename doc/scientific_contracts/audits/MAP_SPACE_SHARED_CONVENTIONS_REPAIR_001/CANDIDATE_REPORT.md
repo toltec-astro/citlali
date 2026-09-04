@@ -1,10 +1,10 @@
 # MAP-SPACE-SHARED-CONVENTIONS-REPAIR-001 Candidate Report
 
-Status: repair candidate complete; independent exact-SHA review required
+Status: revised repair candidate; fresh independent exact-SHA review required
 
 Date: 2026-09-04
 
-Recommended candidate disposition: `READY FOR INDEPENDENT REVIEW`
+Recommended candidate disposition: `READY FOR FRESH INDEPENDENT REVIEW`
 
 ## Exact inputs
 
@@ -22,7 +22,7 @@ Recommended candidate disposition: `READY FOR INDEPENDENT REVIEW`
 ## Repair implemented
 
 `doc/SCIENTIFIC_CONVENTIONS.md`, candidate SHA-256
-`7b5df9a9f24d48e95510080aeee2242b924596c44b4fc9522a7e3713fc8635ca`,
+`c29ad515eb84aa2ee2d13b04245ebacf99ba8a790ea2ccb86ff568bcb84284d7`,
 now records the four owner-selected meanings:
 
 1. Ordinary SCI-MAP is the frozen nonpolarimetric
@@ -57,9 +57,39 @@ repeat `MSP-OD-001`: component index `0` and legacy label `I` do not establish
 formal Stokes I.  This required no additional owner choice and introduced no
 new product or method.
 
-The historical SCI-MAP-001 implementation-evidence paragraphs are now
-explicitly separated from the SCI-JINC section.  Their bytes remain historical
-evidence and make no present implementation-conformance claim.
+The historical SCI-MAP-001/002 implementation-evidence paragraphs are now
+explicitly separated from the SCI-JINC section. Their meaning is retained as
+historical evidence and makes no present implementation-conformance claim.
+
+## First exact-SHA review and bounded repair
+
+An independent xhigh review of commit
+`50fd98d7f5b57738ef265080bff223feee6c4e92`, tree
+`201e61577c95ff44586c6daf22bb5e0f74cdb84e`, returned `repair required`.
+The four owner-selected replacement meanings passed. The review instead found
+collateral loss or misclassification around those replacements. The owner
+authorized the following bounded repair on 2026-09-04:
+
+1. Restore the frozen MAP order-statistic selector, separate
+   numerical-normalization and science-policy support predicates, exact
+   `coverage_cut` admission state, one-way lifecycle, raw-parent validity, and
+   provenance, explicitly distinguished from observation-row `u_op` and JINC.
+2. Correct the JINC geometry distinction between `(r_max)_a` and cache
+   half-width `h_a`, and retain certified finite-precision numerical support as
+   unavailable under frozen r0.3.
+3. Move the historical two-level binary64 policy and the integrated
+   SCI-MAP-001/SCI-NOI-002 writer, lifecycle, publication, and coefficient-stage
+   material under the explicit historical implementation-evidence boundary.
+4. Restore the literal `maps_to_stokes`, `map_stokes`, and `STOKES` transport
+   identifiers while stating that none establishes formal Stokes identity.
+5. Make the verifier branch-independent, require an explicitly supplied exact
+   candidate SHA and tree plus a clean checkout, remove the erroneous
+   `coverage_cut / 10` prohibition, and assert preservation of the repaired
+   support, lifecycle, JINC, and transport clauses.
+
+No owner-selected scientific meaning, product role, estimator, exposure,
+coaddition rule, unavailable route, or frozen package byte was changed by this
+follow-up repair.
 
 ## Finding disposition proposed for independent review
 
@@ -77,12 +107,14 @@ requires independent review of the exact repair commit and later owner
 integration disposition.  All `MSP-U-*` unavailable, conditional,
 not-authorized, and not-applicable route states remain unchanged.
 
-## Checks performed
+## Checks and exact-SHA gate
 
-- `verify_repair.py`: PASS against the exact base and preserved audit commit;
-  seven preserved audit artifacts remain byte-identical; all four repaired
-  meanings are present; the superseded clauses are absent; frozen package and
-  application paths are unchanged.
+- `verify_repair.py` now requires `--expected-candidate <full-sha>` and
+  `--expected-tree <full-tree-sha>`. It rejects a mismatched or dirty checkout,
+  is independent of branch attachment, preserves the seven audit hashes, and
+  checks the four owner-selected meanings plus the bounded review repairs.
+  Post-commit execution is reported by exact candidate identity in the task
+  completion and fresh independent review records.
 - `doc/scientific_contracts/verify_layout.py`: PASS.
 - Relative Markdown links in `doc/SCIENTIFIC_CONVENTIONS.md`: 12 checked, 0
   missing.

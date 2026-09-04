@@ -3,14 +3,15 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
+import re
 import subprocess
 from pathlib import Path
 
 
 BASE = "5f0fc20042b88fb6cd883c92d1b59b7f22832901"
 AUDIT_COMMIT = "34a29a1eac8a2c41a97263bbd775bd36c3d06398"
-BRANCH = "codex/map-space-shared-conventions-repair-2026-09-04"
 AUDIT_DIR = Path("doc/scientific_contracts/audits/MAP_SPACE_HORIZONTAL_AUDIT_001")
 REPAIR_DIR = Path("doc/scientific_contracts/audits/MAP_SPACE_SHARED_CONVENTIONS_REPAIR_001")
 CONVENTIONS = Path("doc/SCIENTIFIC_CONVENTIONS.md")
@@ -37,8 +38,10 @@ FORBIDDEN = (
     "conditional formal mapmaker weight is `C^2/Q`",
     "For JINC, `coverage_bool_I` is the authoritative formal-support mask",
     "The JINC empirical downgrade",
-    "Ordinary normalization uses the `coverage_cut / 10` cut",
     "Only Stokes I is validated.",
+    "map-to-component mappings",
+    "WCS spectral/component-axis serialization",
+    "`r_max` remains both the second-JINC-zero parameter and the square-cache half-width",
 )
 
 REQUIRED = (
@@ -54,6 +57,19 @@ REQUIRED = (
     "Base SCI-JINC v0.1 publishes no response, variance, formal-weight, covariance",
     "appropriate `NOT_AUTHORIZED`, `UNAVAILABLE`, or `NOT_APPLICABLE` state",
     "no formal Stokes product is authorized by this convention",
+    "`maps_to_arrays` and `maps_to_stokes` mappings",
+    "persisted `map_stokes` label",
+    "WCS spectral/`STOKES`-axis serialization",
+    "`Q_p >= Q_star * c / 10`",
+    "These are MAP output-row support rules, not coadd weighting rules",
+    "requested, effective, observation-resolved, and realized states",
+    "raw-parent identity separately from local numerical support",
+    "`h_a = ceil(s_a * (r_max)_a / Delta)`",
+    "Base r0.3 admits no owner-approved numerical-adequacy profile or matching certificate",
+    "Historical SCI-MAP-002 implementation evidence used the two-level binary64 policy",
+    "is not an owner-approved SCI-JINC r0.3 numerical-adequacy profile or certificate",
+    "Historical integrated SCI-MAP-001/SCI-NOI-002 evidence used one compact atomic",
+    "`raw-parent/product` digests",
 )
 
 
@@ -70,10 +86,41 @@ def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Verify one exact MAP-space shared-conventions repair candidate."
+    )
+    parser.add_argument(
+        "--expected-candidate",
+        required=True,
+        help="Exact full candidate commit SHA to review.",
+    )
+    parser.add_argument(
+        "--expected-tree",
+        required=True,
+        help="Exact full candidate tree SHA to review.",
+    )
+    args = parser.parse_args()
+    for label, value in (
+        ("candidate", args.expected_candidate),
+        ("tree", args.expected_tree),
+    ):
+        require(re.fullmatch(r"[0-9a-f]{40}", value) is not None, f"invalid {label} SHA")
+    return args
+
+
 def main() -> None:
+    args = parse_args()
     root = Path(run("git", "rev-parse", "--show-toplevel"))
     require(root == Path.cwd().resolve(), "run from the repair worktree root")
-    require(run("git", "branch", "--show-current") == BRANCH, "unexpected branch")
+    head = run("git", "rev-parse", "HEAD")
+    tree = run("git", "rev-parse", "HEAD^{tree}")
+    require(head == args.expected_candidate, "HEAD does not match expected candidate")
+    require(tree == args.expected_tree, "tree does not match expected candidate tree")
+    require(
+        not run("git", "status", "--porcelain=v1", "--untracked-files=all"),
+        "candidate checkout is not clean",
+    )
     subprocess.check_call(("git", "merge-base", "--is-ancestor", BASE, "HEAD"))
     subprocess.check_call(("git", "merge-base", "--is-ancestor", AUDIT_COMMIT, "HEAD"))
 
@@ -114,10 +161,9 @@ def main() -> None:
     )
     require(not package_diff, f"frozen package changed: {package_diff}")
 
-    changed = set(filter(None, run("git", "diff", "--name-only", BASE).splitlines()))
-    status = run("git", "status", "--porcelain=v1", "--untracked-files=all")
-    for line in status.splitlines():
-        changed.add(line[2:].lstrip())
+    changed = set(
+        filter(None, run("git", "diff", "--name-only", BASE, "HEAD").splitlines())
+    )
     allowed_exact = {CONVENTIONS.as_posix()}
     unexpected = sorted(
         path
@@ -128,6 +174,7 @@ def main() -> None:
     )
     require(not unexpected, f"out-of-scope changed paths: {unexpected}")
 
+    print(f"PASS candidate={head} tree={tree} clean=true branch_independent=true")
     print(f"PASS base={BASE}")
     print(f"PASS audit_commit={AUDIT_COMMIT} audit_artifacts={len(AUDIT_HASHES)}")
     print("PASS owner_resolved_conflicts=4 shared_conventions_repaired=true")

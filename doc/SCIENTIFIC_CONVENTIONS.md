@@ -319,8 +319,10 @@ baseline bytes, detector set/order, or scientific values.
 ### Maps And Component Labels
 
 A map index is a zero-based position in a reduction-local map collection. Its
-scientific identity is resolved through explicit map-to-array and
-map-to-component mappings plus the configured grouping:
+grouping and legacy transport identity are carried by the explicit
+`maps_to_arrays` and `maps_to_stokes` mappings, the persisted `map_stokes`
+label where present, and the configured grouping. Those transport identifiers
+do not by themselves establish a formal Stokes quantity:
 
 - array grouping: one map group per present array;
 - network grouping: one map group per present network;
@@ -407,13 +409,15 @@ intentionally not restored. Exact continuation requires unchanged inputs and
 science configuration; schema v1 is rejected because it omitted retained
 weight-validation state.
 
-Map products are collections of two-dimensional spatial planes. Array,
-frequency, and component identity are represented by product grouping, FITS
-extensions, WCS spectral/component-axis serialization, and explicit map-index
-mappings; they must not be reconstructed from vector position alone. A legacy
-STOKES-axis code or `I` label is an index/transport fact unless a separate
-scientific authority establishes a formal Stokes quantity. Exact FITS
-extension and NetCDF dimension requirements live in
+Map products are collections of two-dimensional spatial planes. Array and
+frequency identity and the legacy component slot are represented by product
+grouping, FITS extensions, WCS spectral/`STOKES`-axis serialization, the
+`maps_to_stokes` mapping, and the persisted `map_stokes` label where present.
+Scientific quantity identity must not be reconstructed from vector position or
+those legacy transport identifiers alone. A `STOKES`-axis code or `I` label is
+an index/transport fact unless a separate scientific authority establishes a
+formal Stokes quantity. Exact FITS extension and NetCDF dimension requirements
+live in
 `validation/product_contracts.json`.
 
 ### Science-Map Bundle Identity And Coaddition
@@ -436,11 +440,11 @@ The shared summary below does not widen those sources.
 
 An observation enters a coadd as one immutable ordered bundle. Admission
 includes grouping and slot identities, array/network/detector or group identity,
-Stokes and applicable frequency identity, signal unit, estimator, response and
-required companions, full-precision WCS, shapes, and the versioned coefficient,
-contribution, support, validity, and non-finite policies. Identity is formed
-from authoritative full-precision inputs. The legacy float-valued map WCS is a
-one-way output/compatibility projection and cannot establish equality.
+legacy component-slot and applicable frequency identity, signal unit, estimator,
+response and required companions, full-precision WCS, shapes, and the versioned
+coefficient, contribution, support, validity, and non-finite policies. Identity
+is formed from authoritative full-precision inputs. The legacy float-valued map
+WCS is a one-way output/compatibility projection and cannot establish equality.
 
 For coadd shape `(R_c, C_c)` and observation shape `(R_o, C_o)`, the only
 permitted placement is centered integer common-grid embedding:
@@ -540,6 +544,35 @@ The ordinary MAP F010 hierarchy and positive-coefficient predicate do not apply
 to SCI-JINC. Base SCI-JINC v0.1 neither synthesizes an F010 plane nor inherits
 ordinary MAP coaddition.
 
+Within ordinary SCI-MAP only, numerical-normalization support and
+science-policy support are separate versioned predicates over an exact declared
+MAP support-policy population. For finite strictly positive MAP normalization
+coefficients `Q_p`, let `N` be the population count. When `N > 0`, sort the
+values in ascending order, use the zero-based index
+`k = floor((floor(0.75 * N) + N) / 2)`, and let `Q_star` be the selected value;
+for an empty population, `Q_star = 0`. The effective support policy must
+explicitly admit the exact numerical state of the dimensionless scalar
+`c = coverage_cut` before support is resolved. This shared convention asserts
+no general numerical domain for `c`; a state not authorized by the effective
+policy fails closed before an output-row set is constructed.
+
+After that admission, MAP numerical-normalization support requires finite
+positive `Q_p >= Q_star * c / 10`, while MAP science-policy support independently
+requires finite positive `Q_p >= Q_star * c`. IEEE
+`!(Q_p < threshold)` is not equivalent to either explicit predicate. These are
+MAP output-row support rules, not coadd weighting rules: they neither alter nor
+derive the observation-row coefficient `u_op = 1`, and they do not establish
+final validity, precision, or any SCI-JINC support/product role.
+
+The accepted MAP request resolves one way through requested, effective,
+observation-resolved, and realized states. Realized provenance retains the
+exact support-policy population and identity, admitted `c` state, selected
+order-statistic index and value, both thresholds and predicates, output-row
+sets, lifecycle generation, required companions, and immutable parent joins.
+Downstream operators preserve raw `science_valid_I` and raw-parent identity
+separately from local numerical support, response, covariance, and output
+validity. A finite downstream value cannot promote a raw-invalid input.
+
 ### SCI-JINC Base Estimator And Five-Role Bundle
 
 The frozen SCI-JINC v0.1/r0.3 contract retains every finite signed lobe and the
@@ -556,21 +589,25 @@ shared core bound by
 including its required five-role closure and explicit unavailable-product
 states. This shared summary creates no successor role or compatibility alias.
 
-`r_max` remains both the second-JINC-zero parameter and the square-cache
-half-width. Every square-cache cell is populated, including corners whose
-radius exceeds `r_max`; map edges crop only the rectangle and apply no radial
-predicate. Residual sample phase is rounded-center, quantized point sampling.
-`subpixel_n` refines phase bins and never denotes pixel-area integration.
+For selected array `a`, `(r_max)_a` fixes the exact first zero of the second
+JINC factor. The distinct square-cache half-width is
+`h_a = ceil(s_a * (r_max)_a / Delta)`. Every cell in the integer-offset square
+`{-h_a, ..., h_a}^2` is evaluated, including corners whose radius exceeds
+`(r_max)_a`; map edges crop only the rectangle and apply no radial predicate.
+Residual sample phase is rounded-center, quantized point sampling. `subpixel_n`
+refines phase bins and never denotes pixel-area integration.
 
 Admission requires stable selected-array identity and finite-positive `a`,
-`b`, `c`, `r_max`, pixel size, and array scale before deposition. Finalization
-requires finite accumulators, `Q > 0`, nonzero `C`, and a resolved
+`b`, `c`, `r_max`, pixel size, and array scale before deposition. Algebraic
+local support requires finite accumulators, `Q > 0`, and nonzero `C`. The
 dimensionless cancellation ratio
-`rho = abs(C) / sum(abs(q_i c_i))`. The declared two-level binary64 policy is
-`naive-binary64-two-level-2gamma-n-sumabs-v1`, with resolution bound
-`2 * gamma_n`, `gamma_n = n * epsilon / (1 - n * epsilon)`, derived from the
-realized contributor count. Unit-bearing absolute `C` or `Q` gates are
-forbidden.
+`rho = abs(C) / sum(abs(q_i c_i))` is retained as an indicator and does not
+itself promote numerical support. Unit-bearing absolute `C` or `Q` gates,
+ambient universal `rho` cutoffs, contributor-count/machine-epsilon formulas,
+prescribed summation algorithms, approximate-fidelity phrases, and
+implementation defaults are not scientific authority. Base r0.3 admits no
+owner-approved numerical-adequacy profile or matching certificate, so certified
+finite-precision numerical support remains explicitly unavailable.
 
 Every produced base-v0.1 JINC bundle contains exactly five numerical map-plane
 roles:
@@ -608,12 +645,42 @@ numerical closure. One observation may produce independent bundles for its
 admitted arrays; a missing array creates no placeholder and does not invalidate
 a valid sibling bundle.
 
-### Historical SCI-MAP-001 Implementation-Evidence Boundary
+### Historical SCI-MAP-001/002 Implementation-Evidence Boundary
 
 The following implementation-evidence conventions retain their own historical
 SCI-MAP-001/F009/F010 product identities. They do not add a base SCI-JINC
 product, change the frozen SCI-MAP/JINC meanings above, or establish present
 implementation conformity.
+
+Historical SCI-MAP-002 implementation evidence used the two-level binary64
+policy `naive-binary64-two-level-2gamma-n-sumabs-v1`, with a recorded bound
+`2 * gamma_n` and `gamma_n = n * epsilon / (1 - n * epsilon)` derived from a
+realized contributor count. That implementation-specific policy is not an
+owner-approved SCI-JINC r0.3 numerical-adequacy profile or certificate, does not
+authorize a numerical-support result, and does not make the frozen unavailable
+numerical-adequacy route available.
+
+Historical integrated SCI-MAP-001/SCI-NOI-002 evidence used one compact atomic
+forward-only record per coherent observation or declared processing segment.
+It recorded requested, effective, observation-resolved, and realized identity;
+summation and conditioning policy; contributor and support summaries; and
+immutable output-file, HDU, and content-digest joins. The record was not
+per-sample, per-detector, or per-pixel. Its historical owner, writer/finalizer,
+publication, and provenance seams remain evidence only and do not replace the
+frozen package authorities above.
+
+That historical evidence used a one-way requested-to-effective-to-
+observation-resolved-to-realized lifecycle and kept raw `science_valid_I` and
+`raw-parent/product` digests separate from downstream numerical support,
+response, covariance, and output validity. Its closed coefficient-stage
+vocabulary distinguished
+`pre-observation-normalization-accumulated-coefficient` and
+`pre-coadd-normalization-sum-of-admitted-observation-coefficients` from the
+published `post-observation-normalization-*` and
+`post-coadd-normalization-*` states. Empirical refresh did not rewrite admitted
+observation state. These names document the historical implementation route;
+they do not change the frozen MAP support predicates, the dimensionless
+`u_op = 1` coadd rule, or the base JINC five-role closure.
 
 Filtering first freezes the validated raw F010 bundle. Filtered signal,
 coefficient, F010, and compatibility-alias HDUs identify that immutable input
