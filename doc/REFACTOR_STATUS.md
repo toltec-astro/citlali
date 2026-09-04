@@ -785,6 +785,11 @@ second replay is warranted. The next decision is a separately approved,
 no-replay repair that freezes the retained output hashes and permits only this
 already established absence-to-`pre_cleaning` normalization; every other
 neutrality, closure, bound, scope, and claim gate remains unchanged.
+That proposed repair is now presented as
+[`SCI-FRUIT-EL-F10-R1-COMPATIBILITY-NORMALIZATION-R0.1`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F10_R1_COMPATIBILITY_NORMALIZATION_OWNER_REVIEW_R0.1.md),
+bound by its exact
+[`EL_F10_R1_BUNDLE_MANIFEST_R0.1.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F10_R1_BUNDLE_MANIFEST_R0.1.md).
+It remains unapproved; the retained receipt and target ledger remain unopened.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
