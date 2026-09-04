@@ -930,6 +930,32 @@ or revision of this screen. No intervention implementation, replay, new
 scientific result, Gate-D launch, qualification, Stage B, production or Unity
 activity is authorized by proposal preparation.
 
+The owner approved Choice A against the exact EL-F12 manifest at proposal
+commit `d78d4d94a` on `2026-09-04`. The
+[`authorization record`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_EL_F12_AUTHORIZATION_2026-09-04.md)
+permits the bounded prototype, local gates, registration and execution matrix.
+All 26 proposal-member identities and 27 external science/configuration/text
+fit-report inputs reverify. No EL-F12 trajectory has begun. Replication, policy
+recommendation, full Gate D, qualification, Stage B, production and Unity
+remain outside this authorization.
+
+Source inspection after approval exposed a missing method rule: the ordinary
+hard-exclusion cap is evaluated both before RTC and before PTC, and these
+checks can disagree as the detector population changes. Eight focused tests
+of the unchanged handler pass, including synthetic rejection-before-RTC and
+acceptance-before-PTC evidence. The
+[`two-stage cap amendment`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F12_TWO_STAGE_CAP_OWNER_REVIEW_R0.1.md)
+proposes that Half requires permission for that key at either applicable
+stage in the current iteration. Its
+[`exact manifest`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F12_TWO_STAGE_CAP_MANIFEST_R0.1.md)
+binds the rule and
+[`test/preflight evidence`](../validation/fruit_loop_el_f12_preimplementation_2026-09-04/CAP_BOUNDARY_TEST_RESULT_R0.1.md).
+The next significant owner decision is `SCI-FRUIT-EL-F12-CAP-001-R0.1`;
+Choice A remains approved, but intervention implementation and replay pause
+at this method decision. No intervention or full pre-execution gate has been
+implemented or completed. Original proposal bytes, both review archives and
+all retained reduction products are preserved.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

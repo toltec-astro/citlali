@@ -1,0 +1,21 @@
+Test project /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build
+    Start 614: citlali::learning_target_application::LearningTargetApplication.AppliesResolvedBoundaryTargetsToRealContributionTracer
+1/8 Test #614: citlali::learning_target_application::LearningTargetApplication.AppliesResolvedBoundaryTargetsToRealContributionTracer ..............   Passed    0.02 sec
+    Start 615: citlali::learning_target_application::LearningTargetApplication.MissingRequiredBoundaryStateFailsClosed
+2/8 Test #615: citlali::learning_target_application::LearningTargetApplication.MissingRequiredBoundaryStateFailsClosed .............................   Passed    0.02 sec
+    Start 616: citlali::learning_target_application::LearningTargetApplication.IncompatibleMapGridFailsClosed
+3/8 Test #616: citlali::learning_target_application::LearningTargetApplication.IncompatibleMapGridFailsClosed ......................................   Passed    0.01 sec
+    Start 617: citlali::learning_target_application::LearningTargetApplication.MapDiagnosticExclusionDefaultsToSharedCleaningStages
+4/8 Test #617: citlali::learning_target_application::LearningTargetApplication.MapDiagnosticExclusionDefaultsToSharedCleaningStages ................   Passed    0.01 sec
+    Start 618: citlali::learning_target_application::LearningTargetApplication.MapDiagnosticExclusionCanMoveAfterSharedCleaning
+5/8 Test #618: citlali::learning_target_application::LearningTargetApplication.MapDiagnosticExclusionCanMoveAfterSharedCleaning ....................   Passed    0.01 sec
+    Start 619: citlali::learning_target_application::LearningTargetApplication.BusyDetectorExclusionPlacementDoesNotMoveWithMapDiagnosticSetting
+6/8 Test #619: citlali::learning_target_application::LearningTargetApplication.BusyDetectorExclusionPlacementDoesNotMoveWithMapDiagnosticSetting ...   Passed    0.01 sec
+    Start 620: citlali::learning_target_application::LearningTargetApplication.HistoricalCapCanRejectBeforeRtcAndAcceptBeforePtc
+7/8 Test #620: citlali::learning_target_application::LearningTargetApplication.HistoricalCapCanRejectBeforeRtcAndAcceptBeforePtc ...................   Passed    0.01 sec
+    Start 621: citlali::learning_target_application::LearningTargetApplication.HistoricalCapAcceptsItsExactBoundary
+8/8 Test #621: citlali::learning_target_application::LearningTargetApplication.HistoricalCapAcceptsItsExactBoundary ................................   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 8
+
+Total Test time (real) =   0.59 sec

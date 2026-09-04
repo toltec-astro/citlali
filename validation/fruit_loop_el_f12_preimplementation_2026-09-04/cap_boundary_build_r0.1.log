@@ -1,0 +1,22 @@
+[  0%] Built target config_header_citlali
+[  0%] Built target default_config_header_citlali
+[  0%] Built target gitversion_header_kidscpp
+[  0%] Built target config_header_kidscpp
+[  0%] Built target gitversion_header_citlali
+[  1%] Built target gtest
+[  2%] Built target gramsavgol
+[  2%] Built target config_header_tula
+[  2%] Built target gitversion_header_tula
+[ 11%] Built target re2
+[ 13%] Built target fmt
+[ 13%] Built target gtest_main
+[ 15%] Built target glog
+[ 25%] Built target netcdf-cxx4
+[ 36%] Built target yaml-cpp
+[ 38%] Built target spdlog
+[ 90%] Built target ceres
+[ 94%] Built target kids
+[ 98%] Built target citlali
+[ 98%] Building CXX object tests/CMakeFiles/citlali_learning_target_application_test.dir/test_learning_target_application.cpp.o
+[ 98%] Linking CXX executable citlali_learning_target_application_test
+[100%] Built target citlali_learning_target_application_test
