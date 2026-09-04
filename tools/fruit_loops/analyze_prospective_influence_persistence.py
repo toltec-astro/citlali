@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import re
@@ -90,15 +91,16 @@ def require_equal_netcdf(expected_path: Path, actual_path: Path) -> dict:
         if expected.ncattrs() != actual.ncattrs():
             raise ValueError("NetCDF global attribute names differ")
         for name in expected.ncattrs():
-            if not values_equal(
-                expected.getncattr(name), actual.getncattr(name)
-            ):
+            if not values_equal(expected.getncattr(name), actual.getncattr(name)):
                 raise ValueError(f"NetCDF global attribute differs: {name}")
         if set(expected.dimensions) != set(actual.dimensions):
             raise ValueError("NetCDF dimensions differ")
         for name, dimension in expected.dimensions.items():
             other = actual.dimensions[name]
-            if len(dimension) != len(other) or dimension.isunlimited() != other.isunlimited():
+            if (
+                len(dimension) != len(other)
+                or dimension.isunlimited() != other.isunlimited()
+            ):
                 raise ValueError(f"NetCDF dimension differs: {name}")
         if set(expected.variables) != set(actual.variables):
             raise ValueError("NetCDF variables differ")
@@ -126,10 +128,104 @@ def require_equal_netcdf(expected_path: Path, actual_path: Path) -> dict:
     }
 
 
+def require_learning_iteration_rows(
+    reference_path: Path,
+    replay_path: Path,
+    completed_iteration: int,
+    allowed_reference_only_iterations: set[int],
+) -> dict:
+    """Require exact current-iteration rows across cumulative and restart logs."""
+
+    def read_rows(path: Path) -> tuple[list[str], list[list[str]]]:
+        with path.open(newline="") as stream:
+            reader = csv.reader(stream)
+            header = next(reader, None)
+            if not header:
+                raise ValueError(f"learning output has no CSV header: {path}")
+            if len(set(header)) != len(header):
+                raise ValueError(f"learning output has duplicate fields: {path}")
+            rows = list(reader)
+        if any(len(row) != len(header) for row in rows):
+            raise ValueError(f"learning output has malformed row width: {path}")
+        return header, rows
+
+    reference_header, reference_rows = read_rows(reference_path)
+    replay_header, replay_rows = read_rows(replay_path)
+    if reference_header != replay_header:
+        raise ValueError("learning output CSV headers differ")
+    if reference_header.count("iter") != 1:
+        raise ValueError("learning output requires one literal iter field")
+    iteration_column = reference_header.index("iter")
+
+    def counts(rows: list[list[str]], label: str) -> dict[int, int]:
+        observed: dict[int, int] = {}
+        for row in rows:
+            literal = row[iteration_column]
+            try:
+                iteration = int(literal)
+            except ValueError as error:
+                raise ValueError(
+                    f"{label} learning output has invalid iter value: {literal!r}"
+                ) from error
+            if iteration < 0 or literal != str(iteration):
+                raise ValueError(
+                    f"{label} learning output has noncanonical iter value: {literal!r}"
+                )
+            observed[iteration] = observed.get(iteration, 0) + 1
+        return dict(sorted(observed.items()))
+
+    reference_counts = counts(reference_rows, "reference")
+    replay_counts = counts(replay_rows, "replay")
+    if set(replay_counts) != {completed_iteration}:
+        raise ValueError(
+            "restart learning output contains rows outside the completed iteration"
+        )
+    reference_only = set(reference_counts) - {completed_iteration}
+    if reference_only != allowed_reference_only_iterations:
+        raise ValueError(
+            "reference-only learning iteration coverage differs from registration"
+        )
+    selected_reference = [
+        row
+        for row in reference_rows
+        if row[iteration_column] == str(completed_iteration)
+    ]
+    if not selected_reference:
+        raise ValueError("reference learning output has no completed-iteration rows")
+    if selected_reference != replay_rows:
+        raise ValueError(
+            "completed-iteration learning rows differ in count, order, or raw fields"
+        )
+
+    records = [dict(zip(reference_header, row)) for row in selected_reference]
+    canonical = json.dumps(
+        records,
+        ensure_ascii=True,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    return {
+        "headers_identical": True,
+        "completed_iteration": completed_iteration,
+        "reference_iteration_counts": {
+            str(key): value for key, value in reference_counts.items()
+        },
+        "replay_iteration_counts": {
+            str(key): value for key, value in replay_counts.items()
+        },
+        "reference_completed_iteration_rows": len(selected_reference),
+        "replay_completed_iteration_rows": len(replay_rows),
+        "ordered_raw_rows_identical": True,
+        "canonical_ordered_row_sha256": hashlib.sha256(canonical).hexdigest(),
+        "allowed_reference_only_iterations": sorted(allowed_reference_only_iterations),
+    }
+
+
 def fits_grid_identity(left_path: Path, right_path: Path) -> dict:
-    with fits.open(left_path, memmap=True) as left, fits.open(
-        right_path, memmap=True
-    ) as right:
+    with (
+        fits.open(left_path, memmap=True) as left,
+        fits.open(right_path, memmap=True) as right,
+    ):
         left_header = left["signal_I"].header
         right_header = right["signal_I"].header
         observed = {}
@@ -169,9 +265,7 @@ def read_receipt(path: Path, registration: dict) -> tuple[dict, dict[str, np.nda
         for name, expected in expected_scalars.items():
             observed = scalar(receipt, name)
             if observed != expected:
-                raise ValueError(
-                    f"unexpected receipt identity {name}: {observed!r}"
-                )
+                raise ValueError(f"unexpected receipt identity {name}: {observed!r}")
             observed_scalars[name] = observed
         for name in RECEIPT_PLANES:
             if name not in receipt.variables:
@@ -179,9 +273,7 @@ def read_receipt(path: Path, registration: dict) -> tuple[dict, dict[str, np.nda
         planes = {name: receipt_plane(receipt, name) for name in RECEIPT_PLANES}
         observed_scalars.update(
             coverage_cut=float(scalar(receipt, "coverage_cut")),
-            normalization_threshold=float(
-                scalar(receipt, "normalization_threshold")
-            ),
+            normalization_threshold=float(scalar(receipt, "normalization_threshold")),
             empirical_coefficient_scale=float(
                 scalar(receipt, "empirical_coefficient_scale")
             ),
@@ -317,16 +409,18 @@ def derive_iteration_maps(
             out=np.full_like(planes["target_C"], np.nan),
             where=planes["target_abs_C_terms"] > 0.0,
         ),
-        "total_unique_detector_count": planes[
-            "total_unique_detector_count"
-        ].astype(np.float64),
+        "total_unique_detector_count": planes["total_unique_detector_count"].astype(
+            np.float64
+        ),
         "conditioned": conditioned,
     }
     return maps, {"total": total, "without": without}
 
 
 def require_total_closure(
-    finalized: dict, planes: dict[str, np.ndarray], receipt_scalars: dict,
+    finalized: dict,
+    planes: dict[str, np.ndarray],
+    receipt_scalars: dict,
     fits_path: Path,
 ) -> dict:
     signal = image(fits_path, "signal_I")
@@ -359,9 +453,7 @@ def require_total_closure(
     return checks
 
 
-def require_identity_closure(
-    maps: dict[str, np.ndarray], registration: dict
-) -> dict:
+def require_identity_closure(maps: dict[str, np.ndarray], registration: dict) -> dict:
     selected = maps["conditioned"]
     scale = np.maximum.reduce(
         [
@@ -422,9 +514,7 @@ def correlation(left: np.ndarray, right: np.ndarray) -> float | None:
     return finite_number(np.corrcoef(left, right)[0, 1])
 
 
-def persistence_summary(
-    d4: np.ndarray, d5: np.ndarray, selected: np.ndarray
-) -> dict:
+def persistence_summary(d4: np.ndarray, d5: np.ndarray, selected: np.ndarray) -> dict:
     left = d4[selected]
     right = d5[selected]
     if left.size == 0:
@@ -453,8 +543,7 @@ def persistence_summary(
         "twice_cross_term": 2.0 * dot,
         "difference_squared_norm": float(np.dot(difference, difference)),
         "energy_identity_residual": float(
-            np.dot(difference, difference)
-            - (left_energy + right_energy - 2.0 * dot)
+            np.dot(difference, difference) - (left_energy + right_energy - 2.0 * dot)
         ),
         "normalized_inner_product": finite_number(
             dot / (left_norm * right_norm)
@@ -468,9 +557,7 @@ def persistence_summary(
         ),
         "beta_d5_on_d4": finite_number(beta),
         "scaled_residual_fraction": finite_number(
-            np.linalg.norm(residual) / right_norm
-            if right_norm > 0.0
-            else math.nan
+            np.linalg.norm(residual) / right_norm if right_norm > 0.0 else math.nan
         ),
         "both_nonzero_count": int(np.count_nonzero(nonzero)),
         "sign_agreement_fraction": finite_number(
@@ -481,14 +568,18 @@ def persistence_summary(
     }
 
 
-def stable_top_indices(values: np.ndarray, selected: np.ndarray, count: int) -> np.ndarray:
+def stable_top_indices(
+    values: np.ndarray, selected: np.ndarray, count: int
+) -> np.ndarray:
     indices = np.flatnonzero(selected)
     order = np.argsort(-np.abs(values.ravel()[indices]), kind="stable")
     return indices[order[:count]]
 
 
 def top_response_summary(
-    d4: np.ndarray, d5: np.ndarray, selected: np.ndarray,
+    d4: np.ndarray,
+    d5: np.ndarray,
+    selected: np.ndarray,
     fractions: list[float],
 ) -> list[dict]:
     population = int(np.count_nonzero(selected))
@@ -509,12 +600,8 @@ def top_response_summary(
                 "intersection_count": int(intersection.size),
                 "overlap_fraction_each_set": intersection.size / count,
                 "jaccard_fraction": intersection.size / union.size,
-                "d4_abs_threshold_mjy_beam": float(
-                    np.min(np.abs(d4.ravel()[top4]))
-                ),
-                "d5_abs_threshold_mjy_beam": float(
-                    np.min(np.abs(d5.ravel()[top5]))
-                ),
+                "d4_abs_threshold_mjy_beam": float(np.min(np.abs(d4.ravel()[top4]))),
+                "d5_abs_threshold_mjy_beam": float(np.min(np.abs(d5.ravel()[top5]))),
                 "d5_squared_response_captured_by_d4_selection": (
                     captured / total_d5_energy if total_d5_energy > 0.0 else None
                 ),
@@ -524,7 +611,9 @@ def top_response_summary(
 
 
 def write_maps(
-    path: Path, d4: dict[str, np.ndarray], d5: dict[str, np.ndarray],
+    path: Path,
+    d4: dict[str, np.ndarray],
+    d5: dict[str, np.ndarray],
     supports: dict[str, np.ndarray],
 ) -> None:
     with Dataset(path, "w", format="NETCDF4") as dataset:
@@ -551,7 +640,10 @@ def write_maps(
 
 
 def write_plot(
-    path: Path, d4: np.ndarray, d5: np.ndarray, support: np.ndarray,
+    path: Path,
+    d4: np.ndarray,
+    d5: np.ndarray,
+    support: np.ndarray,
     fits_path: Path,
 ) -> None:
     import matplotlib.pyplot as plt
@@ -561,9 +653,7 @@ def write_plot(
     titles = ("Iteration 4 $D_4$", "Iteration 5 $D_5$", "$D_5-D_4$")
     finite = support & np.isfinite(d4) & np.isfinite(d5)
     limit = float(
-        np.percentile(
-            np.concatenate([np.abs(d4[finite]), np.abs(d5[finite])]), 99
-        )
+        np.percentile(np.concatenate([np.abs(d4[finite]), np.abs(d5[finite])]), 99)
     )
     figure, axes = plt.subplots(1, 3, figsize=(16, 5), sharex=True, sharey=True)
     for axis, values, title in zip(axes, maps, titles):
@@ -590,11 +680,14 @@ def write_plot(
 def count_log_errors(path: Path) -> dict:
     text = path.read_text(errors="replace")
     error_lines = [
-        line for line in text.splitlines()
+        line
+        for line in text.splitlines()
         if re.search(r"\]\s+\[(?:error|critical)\]", line, re.I)
     ]
     if error_lines:
-        raise ValueError(f"replay log contains error/critical records: {error_lines[:3]}")
+        raise ValueError(
+            f"replay log contains error/critical records: {error_lines[:3]}"
+        )
     return {"error_or_critical_records": 0}
 
 
@@ -608,15 +701,24 @@ def analyze(registration: dict, output_dir: Path) -> dict:
     science_planes = require_exact_maps(reference_redu, replay_redu, obsnum)
     formal_planes = 0
     for array_name in ARRAYS:
-        expected = image(product_path(reference_redu, obsnum, array_name), "weight_formal_I")
+        expected = image(
+            product_path(reference_redu, obsnum, array_name), "weight_formal_I"
+        )
         actual = image(product_path(replay_redu, obsnum, array_name), "weight_formal_I")
         if not bitwise_equal(expected, actual):
             raise ValueError(f"formal coefficient changed: {array_name}")
         formal_planes += 1
-    if paths["iteration_4_reference_learning"].read_bytes() != paths[
-        "diagnostic_iteration_4_learning"
-    ].read_bytes():
-        raise ValueError("iteration-4 learning output is not byte-identical")
+    learning = require_learning_iteration_rows(
+        paths["iteration_4_reference_learning"],
+        paths["diagnostic_iteration_4_learning"],
+        int(registration["execution"]["completed_iteration"]),
+        {
+            int(value)
+            for value in registration["neutrality"][
+                "learning_allowed_reference_only_iterations"
+            ]
+        },
+    )
     mapdiag = require_equal_netcdf(
         paths["iteration_4_reference_mapdiag"],
         paths["diagnostic_iteration_4_mapdiag"],
@@ -629,9 +731,7 @@ def analyze(registration: dict, output_dir: Path) -> dict:
     if checkpoint["observed_allowed_differences"] != sorted(
         registration["neutrality"]["checkpoint_required_observed_differences"]
     ):
-        raise ValueError(
-            "checkpoint observed difference set differs from registration"
-        )
+        raise ValueError("checkpoint observed difference set differs from registration")
     log_result = count_log_errors(paths["replay_log"])
 
     receipt_scalars, planes = read_receipt(paths["accounting_receipt"], registration)
@@ -667,8 +767,12 @@ def analyze(registration: dict, output_dir: Path) -> dict:
         "iteration_5": int(np.count_nonzero(d5["conditioned"])),
         "intersection": int(np.count_nonzero(common)),
         "union": int(np.count_nonzero(supports["conditioned_union"])),
-        "iteration_4_only": int(np.count_nonzero(d4["conditioned"] & ~d5["conditioned"])),
-        "iteration_5_only": int(np.count_nonzero(d5["conditioned"] & ~d4["conditioned"])),
+        "iteration_4_only": int(
+            np.count_nonzero(d4["conditioned"] & ~d5["conditioned"])
+        ),
+        "iteration_5_only": int(
+            np.count_nonzero(d5["conditioned"] & ~d4["conditioned"])
+        ),
     }
 
     spatial = region_masks(product_path(replay_redu, obsnum, "a1400"), registration)
@@ -714,17 +818,13 @@ def analyze(registration: dict, output_dir: Path) -> dict:
         common,
         product_path(replay_redu, obsnum, "a1400"),
     )
-    with (output_dir / "PERSISTENCE_METRICS_R0.1.csv").open(
-        "w", newline=""
-    ) as stream:
+    with (output_dir / "PERSISTENCE_METRICS_R0.1.csv").open("w", newline="") as stream:
         fields = ["region", *next(iter(persistence.values())).keys()]
         writer = csv.DictWriter(stream, fieldnames=fields)
         writer.writeheader()
         for region_name, values in persistence.items():
             writer.writerow({"region": region_name, **values})
-    with (output_dir / "TOP_RESPONSE_OVERLAP_R0.1.csv").open(
-        "w", newline=""
-    ) as stream:
+    with (output_dir / "TOP_RESPONSE_OVERLAP_R0.1.csv").open("w", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=list(top_rows[0]))
         writer.writeheader()
         writer.writerows(top_rows)
@@ -737,7 +837,7 @@ def analyze(registration: dict, output_dir: Path) -> dict:
         "compatibility": {
             "nine_science_planes_bitwise_identical": science_planes == 9,
             "three_formal_planes_bitwise_identical": formal_planes == 3,
-            "learning_output_byte_identical": True,
+            "learning_ledger": learning,
             "mapdiag": mapdiag,
             "checkpoint": checkpoint,
             "grid": grid,

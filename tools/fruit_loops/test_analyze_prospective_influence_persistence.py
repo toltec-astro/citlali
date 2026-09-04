@@ -1,9 +1,105 @@
 from __future__ import annotations
 
+import csv
+
 import numpy as np
+import pytest
 from netCDF4 import Dataset
 
 from tools.fruit_loops import analyze_prospective_influence_persistence as analysis
+
+
+LEARNING_HEADER = ["record_type", "iter", "uid", "score"]
+
+
+def write_learning(path, rows: list[list[str]], header=LEARNING_HEADER) -> None:
+    with path.open("w", newline="") as stream:
+        writer = csv.writer(stream)
+        writer.writerow(header)
+        writer.writerows(rows)
+
+
+def test_learning_iteration_rows_compare_exact_registered_iteration(tmp_path) -> None:
+    reference = tmp_path / "reference.csv"
+    replay = tmp_path / "replay.csv"
+    prior = [
+        ["penalty", str(iteration), "10", str(iteration)] for iteration in range(4)
+    ]
+    current = [
+        ["penalty", "4", "4460", "4"],
+        ["application", "4", "4460", "0"],
+    ]
+    write_learning(reference, [*prior, *current])
+    write_learning(replay, current)
+
+    result = analysis.require_learning_iteration_rows(
+        reference, replay, 4, {0, 1, 2, 3}
+    )
+
+    assert result["headers_identical"] is True
+    assert result["reference_iteration_counts"] == {
+        "0": 1,
+        "1": 1,
+        "2": 1,
+        "3": 1,
+        "4": 2,
+    }
+    assert result["replay_iteration_counts"] == {"4": 2}
+    assert result["ordered_raw_rows_identical"] is True
+
+
+def test_learning_iteration_rows_reject_header_difference(tmp_path) -> None:
+    reference = tmp_path / "reference.csv"
+    replay = tmp_path / "replay.csv"
+    write_learning(reference, [["penalty", "4", "4460", "4"]])
+    write_learning(
+        replay,
+        [["penalty", "4", "4460", "4"]],
+        ["record_type", "iter", "score", "uid"],
+    )
+
+    with pytest.raises(ValueError, match="headers differ"):
+        analysis.require_learning_iteration_rows(reference, replay, 4, set())
+
+
+def test_learning_iteration_rows_reject_replay_history(tmp_path) -> None:
+    reference = tmp_path / "reference.csv"
+    replay = tmp_path / "replay.csv"
+    current = [["penalty", "4", "4460", "4"]]
+    write_learning(reference, current)
+    write_learning(replay, [["penalty", "3", "4460", "3"], *current])
+
+    with pytest.raises(ValueError, match="outside the completed iteration"):
+        analysis.require_learning_iteration_rows(reference, replay, 4, set())
+
+
+@pytest.mark.parametrize(
+    "replay_rows",
+    [
+        [
+            ["application", "4", "4460", "0"],
+            ["penalty", "4", "4460", "4"],
+        ],
+        [
+            ["penalty", "4", "4460", "5"],
+            ["application", "4", "4460", "0"],
+        ],
+    ],
+)
+def test_learning_iteration_rows_reject_order_or_field_change(
+    tmp_path, replay_rows
+) -> None:
+    reference = tmp_path / "reference.csv"
+    replay = tmp_path / "replay.csv"
+    expected = [
+        ["penalty", "4", "4460", "4"],
+        ["application", "4", "4460", "0"],
+    ]
+    write_learning(reference, expected)
+    write_learning(replay, replay_rows)
+
+    with pytest.raises(ValueError, match="count, order, or raw fields"):
+        analysis.require_learning_iteration_rows(reference, replay, 4, set())
 
 
 def test_persistence_summary_exact_scaled_case() -> None:
