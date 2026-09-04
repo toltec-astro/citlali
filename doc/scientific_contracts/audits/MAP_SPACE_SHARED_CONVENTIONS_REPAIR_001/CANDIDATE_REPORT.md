@@ -86,7 +86,11 @@ not-authorized, and not-applicable route states remain unchanged.
 - `doc/scientific_contracts/verify_layout.py`: PASS.
 - Relative Markdown links in `doc/SCIENTIFIC_CONVENTIONS.md`: 12 checked, 0
   missing.
-- `git diff --check`: PASS.
+- `git diff --check 34a29a1eac8a2c41a97263bbd775bd36c3d06398..candidate`:
+  PASS for the repair range. The earlier preserved audit work order uses a
+  legitimate Markdown setext `=======` heading, which Git's whole-base
+  conflict-marker heuristic reports if the audit-preservation commit is
+  included; its byte identity is intentionally unchanged.
 - Changed-path inspection: only the preserved audit packet,
   `doc/SCIENTIFIC_CONVENTIONS.md`, and this repair directory differ from the
   exact base.
