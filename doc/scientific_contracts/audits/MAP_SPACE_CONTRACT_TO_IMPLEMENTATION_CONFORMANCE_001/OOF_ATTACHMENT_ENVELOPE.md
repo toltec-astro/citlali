@@ -9,11 +9,13 @@ current OOF route exists.
 
 ## Candidate upstream products
 
-A future OOF boundary may consider only explicitly selected immutable
-MSP-P004, MSP-P005, MSP-P007, MSP-P009, or MSP-P014 products after their
-respective routes are conformant and after an OOF scientific owner identifies
-the exact admissible role.  Shape similarity, FITS keywords, map names, or
-legacy pointing tables are not sufficient.
+MSP-P004, MSP-P005, MSP-P007, MSP-P009, and MSP-P014 are non-exhaustive
+examples for a future recovery-first OOF scope review.  This envelope neither
+admits those products nor excludes other proposals, including JINC.  Eventual
+parent selection and exact admissible roles belong to separately reviewed OOF
+scientific authority and the applicable upstream product/route bindings.
+Shape similarity, FITS keywords, map names, or legacy pointing tables are not
+sufficient.  No graph ID or numerical route is added here.
 
 ## Minimum boundary record
 

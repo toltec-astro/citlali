@@ -11,11 +11,11 @@ every original edge.
 | Edge ID | Frozen route | Primary state | Source path present? | Blocking reason / direct evidence |
 | --- | --- | --- | --- | --- |
 | MSP-E001 | MSP-P001 -> MSP-P004 | `MISSING_AUTHORITY` | legacy path only | `naive_mm.h:436-454` consumes `in.weights`, but no owner-selected MAP coefficient family/QC proposition is carried. |
-| MSP-E002 | MSP-P002 -> MSP-P004 signal | `IMPLEMENTED_CONFORMANT_AT_SOURCE_LEVEL` | native route | `timestream_native_science_projection.h:211-279` rejects unequal inputs; `naive_mm.h:376-390` uses its same processed pointing.  End-to-end route remains blocked by MSP-E001/MSP-P004. |
+| MSP-E002 | MSP-P002 -> MSP-P004 signal | `IMPLEMENTED_LEGACY_SEMANTICS` | native predecessor route | `timestream_native_science_projection.h:314-326,439-494` checks native identity during construction; its consumer guard at `211-279` compares payload/inventory but not incoming occurrence/application generation or exact target-WCS identity.  `naive_mm.h:376-390` uses the stored pointing; the frozen AST same-sample join is not established.  MSP-E001/MSP-P004 remain additional blockers. |
 | MSP-E003 | MSP-P003 -> MSP-P004 exposure | `MISSING_IMPLEMENTATION` | no | `naive_mm.h:400-434,522-530` places exposure at the processed signal coordinate; no original-coordinate/deduplication path was found. |
 | MSP-E004 | MSP-P004 -> MSP-P005 | `CONTRADICTORY` | yes, legacy | `observation_coadd_accumulation.h:681-750,829-856` applies per-pixel `omb.weight`, not observation-row `u_op=1`, and sums exposure. |
 | MSP-E005 | MSP-P001 -> MSP-P006 | `MISSING_AUTHORITY` | legacy path only | `jinc_mm.h:638-760` consumes the same legacy detector weight; permitted PTC/JINC coefficient family and exact upstream bundle remain unavailable. |
-| MSP-E006 | AST coordinate -> MSP-P006 | `IMPLEMENTED_CONFORMANT_AT_SOURCE_LEVEL` | native route | `jinc_mm.h:607-617` uses the exact native projection after `require_compatible_mapmaking_input` at `jinc_mm.h:370-375`; downstream JINC product remains contradictory. |
+| MSP-E006 | AST coordinate -> MSP-P006 | `IMPLEMENTED_LEGACY_SEMANTICS` | native predecessor route | `jinc_mm.h:370-375,607-617` checks then consumes the native projection.  Construction-local identity checks exist, but `timestream_native_science_projection.h:211-279` does not bind the incoming occurrence/application generation or exact target JINC WCS.  The frozen same-processed-sample AST join is not established; the downstream JINC product remains contradictory. |
 | MSP-E007 | MSP-P004/MSP-P005 -> MSP-P006 | `UNAVAILABLE_BY_DESIGN` | no authorized path | JINC dispatch consumes PTC and coordinates directly; the frozen graph forbids MAP serialization into JINC. |
 | MSP-E008 | MSP-P006 -> MSP-P005 | `UNAVAILABLE_BY_DESIGN` | no authorized path | Ordinary coadd is not a JINC operation; base JINC has no cross-observation coadd authority. |
 | MSP-E009 | MSP-P004 -> MSP-P007 | `CONTRADICTORY` | legacy path | `wiener_filter.h:1054-1104,1314-1449` mutates the parent buffer, derives learned/empirical support, filters weight-like planes, and zeros unavailable output. |
@@ -48,8 +48,8 @@ every original edge.
 
 | Primary state | Edge count |
 | --- | ---: |
-| `IMPLEMENTED_CONFORMANT_AT_SOURCE_LEVEL` | 2 |
-| `IMPLEMENTED_LEGACY_SEMANTICS` | 4 |
+| `IMPLEMENTED_CONFORMANT_AT_SOURCE_LEVEL` | 0 |
+| `IMPLEMENTED_LEGACY_SEMANTICS` | 6 |
 | `DECLARED_NOT_IMPLEMENTED` | 0 |
 | `UNAVAILABLE_BY_DESIGN` | 5 |
 | `MISSING_AUTHORITY` | 10 |
@@ -59,7 +59,8 @@ every original edge.
 | `INDETERMINATE` | 0 |
 | Total | 32 |
 
-The two source-level conformant coordinate edges do not produce an available
-scientific route because required adjacent edges are unavailable or
-contradictory.  Therefore this packet identifies **zero complete conformant
-end-to-end map-space routes** at the inspected source tree.
+MSP-E002 and MSP-E006 retain useful construction-local native behavior under
+legacy classifications; the missing consumer identity/WCS binding prevents a
+frozen coordinate-boundary conformance claim.  All other edge classifications
+are unchanged.  This packet identifies **zero complete conformant end-to-end
+map-space routes** at the inspected source tree.
