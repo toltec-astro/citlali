@@ -199,6 +199,14 @@ public:
                detector_map_index == map_index;
     }
 
+    bool is_target_mapmaking_occurrence(
+        bool run_observation_map, int detector_uid, int detector_scan_index,
+        int detector_array_id, Eigen::Index detector_map_index) const {
+        return run_observation_map &&
+               is_target(detector_uid, detector_scan_index,
+                         detector_array_id, detector_map_index);
+    }
+
     void record_sample(JincAccountingSample sample) {
         if (configured) {
             target_samples.push_back(std::move(sample));

@@ -109,6 +109,12 @@ measured, and recorded as intentional.
   not change. The repaired local analysis or validation may be rerun as needed
   to complete the already authorized work. Stop for owner review when a repair
   would change any of those scientific or scope decisions.
+- A diagnostic-only Citlali instrumentation defect may receive one isolated
+  local replacement replay without fresh owner approval when the defective
+  output is retained, the replacement changes no science algorithm,
+  configuration, gate, bound, input, or interpretation, and the replacement is
+  required only to obtain the diagnostic product already authorized. Record
+  both attempts. This does not authorize Unity activity.
 - Commit coherent changes after local verification; do not create commits only
   to satisfy a numerical cadence.
 - Update `doc/REFACTOR_STATUS.md` when a phase gate, governing decision, or

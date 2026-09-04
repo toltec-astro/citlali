@@ -25,3 +25,11 @@ still required whenever a proposed repair would change a scientific gate,
 method, interpretation, external input, reduction or replay count, algorithm,
 configuration, or another material scope decision. A repaired local analysis
 or validation may be rerun as needed to complete the already authorized work.
+
+A diagnostic-only Citlali instrumentation defect may also receive one isolated
+local replacement replay without a new owner decision when the defective
+output is retained and the replacement is required only to obtain the exact
+diagnostic product already authorized. Such a replay must not alter a science
+algorithm, science configuration, gate, bound, input, or interpretation, and
+both attempts must remain in the record. This standing direction does not
+authorize Unity activity.

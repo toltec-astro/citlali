@@ -491,9 +491,10 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
             // loop through the samples
             for (Eigen::Index j=0; j<n_pts; ++j) {
-                const bool target_sample = omb.jinc_accounting.is_target(
-                    det_uid, static_cast<int>(in.index.data),
-                    static_cast<int>(array_index), map_index);
+                const bool target_sample =
+                    omb.jinc_accounting.is_target_mapmaking_occurrence(
+                        run_omb, det_uid, static_cast<int>(in.index.data),
+                        static_cast<int>(array_index), map_index);
                 JincAccountingSample accounting_sample;
                 if (target_sample) {
                     accounting_sample.scan_index =

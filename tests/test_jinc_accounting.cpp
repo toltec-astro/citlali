@@ -78,6 +78,10 @@ TEST(jinc_accounting, snapshots_actual_accumulators_and_sample_reasons) {
     EXPECT_TRUE(state.is_target(4460, 5, 1, 1));
     EXPECT_FALSE(state.is_target(4461, 5, 1, 1));
     EXPECT_FALSE(state.is_target(4460, 4, 1, 1));
+    EXPECT_TRUE(state.is_target_mapmaking_occurrence(
+        true, 4460, 5, 1, 1));
+    EXPECT_FALSE(state.is_target_mapmaking_occurrence(
+        false, 4460, 5, 1, 1));
     EXPECT_EQ(mapmaking::jinc_accounting_admission_reason(
                   true, true, true, true),
               "final_flagged");

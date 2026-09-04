@@ -1,0 +1,41 @@
+{
+  "schema_version": "sci-fruit-el-f10-analysis-abort-v1",
+  "test_id": "SCI-FRUIT-EL-F10-R3-FITS-ORIENTATION-READER-REPAIR-R0.1",
+  "registration_revision": "r0.4",
+  "registration_sha256": "822224575e56d125db3034033e5927ab3ccec0ae4e2d8d09ee131fc91d0318e5",
+  "attempted_date": "2026-09-04",
+  "passed_gates": [
+    "registered_file_identity",
+    "ordinary_map_neutrality",
+    "checkpoint_compatibility",
+    "total_accumulator_exact_closure"
+  ],
+  "stopped_at_gate": "target_sample_ledger",
+  "observed_ledger_rows": 610,
+  "observed_row_reasons": {
+    "admitted": 271,
+    "center_outside_map": 271,
+    "final_flagged": 68
+  },
+  "read_only_diagnosis": {
+    "unique_sample_indices": 305,
+    "sample_index_multiplicity": 2,
+    "first_contiguous_sequence": {
+      "sample_indices": "0..304",
+      "role": "noise_only_pass",
+      "center_outside_map": 271,
+      "final_flagged": 34
+    },
+    "second_contiguous_sequence": {
+      "sample_indices": "0..304",
+      "role": "final_observation_map_pass",
+      "admitted": 271,
+      "final_flagged": 34
+    },
+    "apt_rows_for_array_1_uid_4460": 1,
+    "target_accumulators_contaminated": false,
+    "cause": "diagnostic ledger recording was not gated by run_omb"
+  },
+  "result_products_written": false,
+  "disposition": "routine diagnostic-instrumentation repair and isolated local replacement replay under the standing owner direction"
+}
