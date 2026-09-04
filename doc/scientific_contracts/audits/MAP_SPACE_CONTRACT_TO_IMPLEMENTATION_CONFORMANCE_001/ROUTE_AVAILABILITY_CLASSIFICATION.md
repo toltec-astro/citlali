@@ -49,7 +49,7 @@ every original edge.
 | Primary state | Edge count |
 | --- | ---: |
 | `IMPLEMENTED_CONFORMANT_AT_SOURCE_LEVEL` | 2 |
-| `IMPLEMENTED_LEGACY_SEMANTICS` | 3 |
+| `IMPLEMENTED_LEGACY_SEMANTICS` | 4 |
 | `DECLARED_NOT_IMPLEMENTED` | 0 |
 | `UNAVAILABLE_BY_DESIGN` | 5 |
 | `MISSING_AUTHORITY` | 10 |
@@ -57,6 +57,7 @@ every original edge.
 | `CONTRADICTORY` | 9 |
 | `NOT_APPLICABLE` | 1 |
 | `INDETERMINATE` | 0 |
+| Total | 32 |
 
 The two source-level conformant coordinate edges do not produce an available
 scientific route because required adjacent edges are unavailable or

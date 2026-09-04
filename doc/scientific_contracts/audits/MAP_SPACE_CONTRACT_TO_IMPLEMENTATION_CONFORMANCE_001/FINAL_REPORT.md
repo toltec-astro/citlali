@@ -35,9 +35,10 @@ product, filter, and policy edges are missing, legacy, or contradictory.
 ## Route results
 
 All 32 original edges are preserved and classified: 2 source-level conformant
-coordinate fragments, 3 legacy routes, 5 intentionally unavailable routes,
+coordinate fragments, 4 legacy routes, 5 intentionally unavailable routes,
 10 authority gaps, 1 implementation gap, 9 contradictions, and 1 excluded
-FRUIT envelope.  There are zero complete conformant end-to-end routes.
+FRUIT envelope (`NOT_APPLICABLE`).  The legacy count includes MSP-E027.
+There are zero complete conformant end-to-end routes.
 
 ## Principal blockers
 
@@ -77,8 +78,11 @@ reinterpreted as frozen-contract validation.
   `SOURCE_AUTHORITY_MANIFEST.md` were inspected.
 - No source, configuration, test, validation, Registry, frozen audit/package,
   governance, status, or integration-ledger file was modified.
-- No active FRUIT branch or historical ALIGN worktree was inspected.  FRUIT
-  and OOF are envelope-only.
+- The original source study did not inspect the active FRUIT branch or the
+  historical ALIGN worktree.  The bounded documentation successor checked
+  local ref/worktree state and cited only dated FRUIT Stage A parent-family
+  records to correct the attachment envelope; it did not extend the source
+  study.  FRUIT remains independent and OOF remains envelope-only.
 - No Unity access, network access, dependency installation, build, reduction,
   or performance work was performed.
 - No configured local `build/` directory existed, so CTest was unavailable.
@@ -91,6 +95,22 @@ reinterpreted as frozen-contract validation.
 
 ## Owner stop
 
-All CTI-OD-001--CTI-OD-007 decisions remain open.  This candidate stops for
-scientific-owner review.  It authorizes no implementation unit, no attachment
-work, no integration-ref movement, and no push.
+CTI-OD-001--CTI-OD-006 remain open.  CTI-OD-007 records inherited/closed
+program sequencing: FRUIT remains independent and OOF remains envelope-only
+for this study.  This candidate stops for scientific-owner review.  It
+authorizes no implementation unit, no attachment work, no integration-ref
+movement, and no push.
+
+## Bounded documentation successor — 2026-09-04
+
+This successor starts from preserved original candidate
+`93c2b4591bb5d0cf8efe4491975c31e5f8fb5903`, tree
+`e0b51383cdeb4ad318d3548b05ad803dd9ef1cf4`.  Its four corrections follow the
+manager handoff at `ae953ed4d87d1f693d2bbf42aebbc25ef730c771`:
+count MSP-E027 and verify summary arithmetic; retain MSP-E030 as one
+non-exhaustive deferred FRUIT envelope; record CTI-OD-007 as inherited/closed;
+and explicitly define ordinary MAP observation-bundle unit
+`CTI-RU-MAP-OBS-001` in the backlog.  The original work order, source
+manifest, product traceability, failure findings, trace plan, and OOF envelope
+remain byte-identical evidence of the original study.  No product or edge
+classification, scientific meaning, or original evidence is reinterpreted.

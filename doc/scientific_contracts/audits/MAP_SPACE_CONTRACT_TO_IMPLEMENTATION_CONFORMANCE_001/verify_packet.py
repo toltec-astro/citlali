@@ -3,8 +3,9 @@
 
 The verifier is read-only.  It validates the exact base identity, accepted
 oracle and inspected-source bytes, artifact closure, stable product/edge/trace
-IDs, closed state vocabulary, and packet-only mutation both before and after
-the single candidate commit.  It performs no scientific interpretation.
+IDs, closed state vocabulary, derived summary counts, and the six-file repair
+boundary before and after one successor commit.  Original classifications and
+evidence remain fixed.  It performs no scientific interpretation.
 """
 
 from __future__ import annotations
@@ -13,6 +14,7 @@ import hashlib
 import re
 import subprocess
 import sys
+from collections import Counter
 from pathlib import Path
 
 
@@ -24,8 +26,19 @@ PACKET_PREFIX = (
 )
 EXPECTED_BASE = "9f42d348298d76c5d5145aaf0c3eace1f3e154c1"
 EXPECTED_BASE_TREE = "e51f22760c64454ce7233c45dd740aa710777bae"
-EXPECTED_BRANCH = "refs/heads/codex/map-space-contract-to-implementation-conformance-001"
-EXPECTED_MAINLINE = EXPECTED_BASE
+ORIGINAL_CANDIDATE = "93c2b4591bb5d0cf8efe4491975c31e5f8fb5903"
+ORIGINAL_TREE = "e0b51383cdeb4ad318d3548b05ad803dd9ef1cf4"
+ORIGINAL_BRANCH = "refs/heads/codex/map-space-contract-to-implementation-conformance-001"
+EXPECTED_BRANCH = "refs/heads/codex/map-space-conformance-001-doc-repair-2026-09-04"
+HANDOFF_COMMIT = "ae953ed4d87d1f693d2bbf42aebbc25ef730c771"
+REPAIR_FILES = {
+    "FINAL_REPORT.md",
+    "OWNER_DECISION_LEDGER.md",
+    "PRIORITIZED_REPAIR_BACKLOG.md",
+    "ROUTE_AVAILABILITY_CLASSIFICATION.md",
+    "FRUIT_ATTACHMENT_ENVELOPE.md",
+    "verify_packet.py",
+}
 
 REQUIRED_FILES = {
     "WORK_ORDER.md",
@@ -119,33 +132,41 @@ def status_paths() -> list[tuple[str, str]]:
 def verify_repository_scope() -> str:
     require(git_value("rev-parse", f"{EXPECTED_BASE}^{{tree}}") == EXPECTED_BASE_TREE,
             "base tree mismatch")
-    require(git_value("rev-parse", "refs/heads/codex/refactor-mainline") == EXPECTED_MAINLINE,
-            "codex/refactor-mainline moved")
+    require(git_value("rev-parse", f"{ORIGINAL_CANDIDATE}^{{tree}}") == ORIGINAL_TREE,
+            "original candidate tree mismatch")
+    require(git_value("rev-parse", f"{ORIGINAL_CANDIDATE}^") == EXPECTED_BASE,
+            "original candidate parent mismatch")
+    require(git_value("rev-parse", ORIGINAL_BRANCH) == ORIGINAL_CANDIDATE,
+            "original candidate branch moved")
     require(git_value("symbolic-ref", "-q", "HEAD") == EXPECTED_BRANCH,
             "not on the dedicated task branch")
     head = git_value("rev-parse", "HEAD")
     expected_paths = {PACKET_PREFIX + name for name in REQUIRED_FILES}
+    original_paths = set(git_value(
+        "diff", "--name-only", f"{EXPECTED_BASE}..{ORIGINAL_CANDIDATE}"
+    ).splitlines())
+    require(original_paths == expected_paths, "original packet path set mismatch")
+    repair_paths = {PACKET_PREFIX + name for name in REPAIR_FILES}
     status = status_paths()
 
-    if head == EXPECTED_BASE:
-        require({path for _, path in status} == expected_paths,
-                "pre-commit status is not the exact packet artifact set")
-        require(all(code == "??" for code, _ in status),
-                "pre-commit packet files are not all untracked")
-        require(not git("diff", "--name-only").stdout.strip(),
-                "tracked working-tree changes exist before packet commit")
-        require(not git("diff", "--cached", "--name-only").stdout.strip(),
-                "staged changes exist before packet commit")
+    if head == ORIGINAL_CANDIDATE:
+        require({path for _, path in status} == repair_paths,
+                "pre-commit status is not the exact six-file repair set")
+        require(all(code in {" M", "M ", "MM"} for code, _ in status),
+                "repair must only modify existing packet files")
+        require(set(git_value("diff", "--name-only", ORIGINAL_CANDIDATE).splitlines())
+                == repair_paths, "working repair path set mismatch")
+        git("diff", "--check", ORIGINAL_CANDIDATE)
+        git("diff", "--cached", "--check")
         mode = "pre_commit"
     else:
-        require(git_value("rev-parse", "HEAD^") == EXPECTED_BASE,
-                "candidate is not a single child commit of the exact base")
-        changed = set(git("diff", "--name-only", f"{EXPECTED_BASE}..HEAD").stdout.splitlines())
-        require(changed == expected_paths,
-                "candidate commit does not contain exactly the packet artifacts")
+        require(git_value("rev-parse", "HEAD^") == ORIGINAL_CANDIDATE,
+                "successor is not a single child commit of the original candidate")
+        changed = set(git_value("diff", "--name-only", f"{ORIGINAL_CANDIDATE}..HEAD").splitlines())
+        require(changed == repair_paths,
+                "successor commit does not contain exactly the six repair files")
         require(not status, "post-commit worktree is not clean")
-        require(not git("diff", "--check", f"{EXPECTED_BASE}..HEAD").stdout.strip(),
-                "candidate diff check failed")
+        git("diff", "--check", f"{EXPECTED_BASE}..HEAD")
         mode = "post_commit"
     return mode
 
@@ -220,6 +241,16 @@ def verify_stable_ids_and_states() -> tuple[int, int, int]:
     for row in trace_rows:
         require(len(row) == 6, f"trace column count: {row[0]}")
 
+    original_route = git(
+        "show", f"{ORIGINAL_CANDIDATE}:{PACKET_PREFIX}ROUTE_AVAILABILITY_CLASSIFICATION.md"
+    ).stdout
+    require(between(route_text, "<!-- BEGIN-ROUTE-CLASSIFICATION -->",
+                    "<!-- END-ROUTE-CLASSIFICATION -->") ==
+            between(original_route, "<!-- BEGIN-ROUTE-CLASSIFICATION -->",
+                    "<!-- END-ROUTE-CLASSIFICATION -->"),
+            "original edge classification/evidence table changed")
+    verify_summary_counts(product_rows, route_rows, route_text)
+
     packet_text = "\n".join(
         path.read_text(encoding="utf-8")
         for path in PACKET_DIR.glob("*.md")
@@ -233,6 +264,56 @@ def verify_stable_ids_and_states() -> tuple[int, int, int]:
     require(seen_edges == set(EDGE_IDS), "unknown or missing edge IDs in packet")
     require(seen_traces == set(TRACE_IDS), "unknown or missing trace IDs in packet")
     return len(product_rows), len(route_rows), len(trace_rows)
+
+
+def verify_summary_counts(product_rows: list[list[str]],
+                          route_rows: list[list[str]], route_text: str) -> None:
+    """Derive counts from the classified rows, then check both report views."""
+    report = (PACKET_DIR / "FINAL_REPORT.md").read_text(encoding="utf-8")
+    product_counts = Counter(row[2].strip("`") for row in product_rows)
+    route_counts = Counter(row[2].strip("`") for row in route_rows)
+
+    def check_table(section: str, counts: Counter[str], label: str) -> None:
+        rows = markdown_rows(section, r"`[A-Z_]+`")
+        require(len(rows) == len(STATES) and
+                {row[0].strip('`') for row in rows} == STATES,
+                f"{label} summary state set is not exact")
+        require(all(len(row) >= 2 and row[1].isdigit() for row in rows),
+                f"{label} summary count is malformed")
+        for row in rows:
+            state = row[0].strip("`")
+            require(int(row[1]) == counts[state],
+                    f"{label} summary count mismatch: {state}; "
+                    f"reported={row[1]} derived={counts[state]}")
+        require(sum(int(row[1]) for row in rows) == sum(counts.values()),
+                f"{label} summary total mismatch")
+
+    check_table(between(report, "## Product results", "## Route results"),
+                product_counts, "product")
+    summary = route_text.split("## Availability summary", 1)[-1]
+    check_table(summary, route_counts, "route")
+    totals = markdown_rows(summary, r"Total")
+    require(totals == [["Total", "32"]] and sum(route_counts.values()) == 32,
+            "route summary must total exactly 32")
+
+    prose = " ".join(between(report, "## Route results", "## Principal blockers").split())
+    require(re.findall(r"All (\d+) original edges", prose) == ["32"],
+            "final report route total must be 32")
+    labels = {
+        "IMPLEMENTED_CONFORMANT_AT_SOURCE_LEVEL": "source-level conformant coordinate fragments",
+        "IMPLEMENTED_LEGACY_SEMANTICS": "legacy routes",
+        "UNAVAILABLE_BY_DESIGN": "intentionally unavailable routes",
+        "MISSING_AUTHORITY": "authority gaps",
+        "MISSING_IMPLEMENTATION": "implementation gap",
+        "CONTRADICTORY": "contradictions",
+        "NOT_APPLICABLE": "excluded FRUIT envelope",
+    }
+    for state, label in labels.items():
+        require(re.findall(r"\b(\d+) " + re.escape(label) + r"\b", prose)
+                == [str(route_counts[state])],
+                f"final report route count mismatch: {state}")
+    require(sum(route_counts[state] for state in labels) == 32,
+            "final report omits a nonzero route state")
 
 
 def verify_required_statements() -> None:
@@ -252,11 +333,27 @@ def verify_required_statements() -> None:
         "zero complete conformant end-to-end routes",
         "No configured local `build/` directory existed",
         "scientific-owner review",
-        "No active FRUIT branch or historical ALIGN worktree was inspected",
+        "The original source study did not inspect the active FRUIT branch",
+        "CTI-OD-001--CTI-OD-006 remain open",
+        "CTI-OD-007 records inherited/closed",
     ):
         require(phrase in report, f"report statement missing: {phrase}")
     require("No route-realization" in fruit and "no OOF implementation claim" in oof,
             "attachment-envelope nonclaim missing")
+    ledger = (PACKET_DIR / "OWNER_DECISION_LEDGER.md").read_text(encoding="utf-8")
+    decision_rows = markdown_rows(
+        between(ledger, "<!-- BEGIN-OWNER-DECISIONS -->", "<!-- END-OWNER-DECISIONS -->"),
+        r"CTI-OD-\d{3}",
+    )
+    original_ledger = git(
+        "show", f"{ORIGINAL_CANDIDATE}:{PACKET_PREFIX}OWNER_DECISION_LEDGER.md"
+    ).stdout
+    original_decisions = markdown_rows(original_ledger, r"CTI-OD-\d{3}")
+    require([row[0] for row in decision_rows] == [row[0] for row in original_decisions]
+            and decision_rows[:6] == original_decisions[:6],
+            "owner-decision IDs or open decisions changed")
+    require(len(decision_rows[-1]) == 5 and decision_rows[-1][-1] == "`INHERITED_CLOSED`",
+            "CTI-OD-007 must record inherited/closed sequencing")
     forbidden_claims = (
         "Status: production-ready",
         "is a validated frozen implementation",
@@ -287,9 +384,14 @@ def main() -> int:
     print(f"PASS exact_base={EXPECTED_BASE} base_tree={EXPECTED_BASE_TREE}")
     print(f"PASS admitted_sources={source_count} digests_match=true")
     print(f"PASS products={product_count} edges={edge_count} traces={trace_count}")
-    print("PASS state_vocabulary=closed stable_ids=exact")
+    print("PASS state_vocabulary=closed stable_ids=exact original_edge_table=unchanged")
+    print("PASS product_summary_counts=derived route_summary_counts=derived route_total=32")
     print("PASS packet_only=true frozen_sources_unchanged=true application_unchanged=true")
-    print("PASS fruit_not_inspected=true align_worktree_not_inspected=true oof_envelope_only=true")
+    print(f"PASS original_candidate={ORIGINAL_CANDIDATE} original_branch=preserved")
+    print("PASS successor_scope=six_packet_files oof_envelope_only=true")
+    mainline = git_value("rev-parse", "refs/heads/codex/refactor-mainline")
+    print(f"OBSERVED canonical={mainline} handoff_snapshot={HANDOFF_COMMIT} "
+          f"drift={str(mainline != HANDOFF_COMMIT).lower()} (not an authority decision)")
     print("PASS claims=source_level_only owner_review_required=true")
     print("map_space_contract_to_implementation_packet=PASS")
     return 0

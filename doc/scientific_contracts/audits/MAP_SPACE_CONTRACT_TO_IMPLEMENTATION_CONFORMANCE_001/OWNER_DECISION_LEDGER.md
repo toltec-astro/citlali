@@ -3,8 +3,7 @@
 Status: **candidate decision packet; all new decisions remain open**
 
 This ledger separates inherited accepted authority from decisions requested by
-the conformance study.  Nothing in the right-hand table is approved merely by
-appearing here.
+the conformance study.  Listing a requested decision does not approve it.
 
 ## Inherited decisions applied without reopening
 
@@ -16,7 +15,17 @@ appearing here.
 | SCI-VAL Registry | A reserved/template/unregistered name is unavailable and cannot be inferred from a predecessor or numeric match. |
 | Current program sequencing | FRUIT remains independent; OOF is envelope-only; Unity and application work are outside this study. |
 
-## Open scientific-owner decisions
+## Scientific-owner decisions and inherited sequencing
+
+CTI-OD-001--CTI-OD-006 remain open.  CTI-OD-007 is an inherited/closed
+program-sequencing record, not a new scientific-owner question.  Its authority
+is the accepted `2026-09-04` section of
+[`DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md`](../../DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md)
+and the original study's envelope-only work order; the
+`2026-09-04` manager handoff at
+`ae953ed4d87d1f693d2bbf42aebbc25ef730c771` directs this bookkeeping
+correction.  It neither pauses independent FRUIT work nor launches OOF or a
+FRUIT attachment review.
 
 <!-- BEGIN-OWNER-DECISIONS -->
 | Decision ID | Requested decision | Evidence requiring the decision | Options bounded by existing authority | Current state |
@@ -27,7 +36,7 @@ appearing here.
 | CTI-OD-004 | Decide the compatibility lifetime and naming of predecessor MAP/JINC/filter/NOI/POINT outputs | Multiple `IMPLEMENTED_LEGACY_SEMANTICS` rows | Retain under explicit legacy identities; add one-way adapters after frozen product implementation; or retire under a separately reviewed migration | `OPEN` |
 | CTI-OD-005 | Supply or explicitly defer the POINT parent-compatibility, formal-error, named-use, and SCI-VAL profiles | MSP-E023--MSP-E029; CTI-FM-010/CTI-FM-015 | Register complete immutable profiles; declare selected roles unavailable; no fit-success or namespace-template fallback | `OPEN` |
 | CTI-OD-006 | Authorize one next bounded implementation-mapping unit, if any | Prioritized backlog | Choose exactly one P0/P1 unit with source/config/test/validation scope and gates; this study itself grants no work order | `OPEN` |
-| CTI-OD-007 | Preserve FRUIT and OOF as separate future attachment reviews | Attachment envelopes | Keep excluded; or issue a separate exact-source work order after upstream frozen products exist | `OPEN` |
+| CTI-OD-007 | Inherited program sequencing: preserve FRUIT independently and OOF as envelope-only for this study | Accepted downstream roadmap, original work order, and dated manager handoff cited above | Applied without reopening; any later attachment or OOF work requires its own owner-authorized scope | `INHERITED_CLOSED` |
 <!-- END-OWNER-DECISIONS -->
 
 ## Manager-only follow-up
