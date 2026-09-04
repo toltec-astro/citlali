@@ -16,11 +16,12 @@ decision when all of the following remain unchanged:
 - the scientific method and interpretation scope;
 - every registered scientific gate, numerical bound, region, and trigger;
 - the registered external inputs and retained products;
-- the authorized replay or analysis-run count; and
+- the authorized external reduction or Citlali replay count; and
 - the algorithm and production configuration under study.
 
 Examples include parser type handling, plotting or output-format defects, and
 serialization plumbing that do not alter scientific content. Owner review is
 still required whenever a proposed repair would change a scientific gate,
-method, interpretation, external input, run count, algorithm, configuration,
-or another material scope decision.
+method, interpretation, external input, reduction or replay count, algorithm,
+configuration, or another material scope decision. A repaired local analysis
+or validation may be rerun as needed to complete the already authorized work.

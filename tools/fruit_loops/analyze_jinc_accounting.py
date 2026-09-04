@@ -107,6 +107,15 @@ def scalar(dataset: Dataset, name: str) -> object:
     return value
 
 
+def receipt_plane(dataset: Dataset, name: str) -> np.ndarray:
+    values = np.asarray(dataset.variables[name][...]).squeeze()
+    if values.ndim != 2:
+        raise ValueError(f"expected 2-D receipt plane: {name}")
+    # The receipt preserves Citlali's internal Eigen (row, col) orientation;
+    # FITS output reverses columns in fits_io.h before serializing the image.
+    return values[:, ::-1]
+
+
 def positive_order_threshold(values: np.ndarray, cut: float) -> tuple[float, int, int]:
     positive = np.sort(values[np.isfinite(values) & (values > 0.0)])
     if positive.size == 0:
@@ -392,10 +401,7 @@ def analyze(registration: dict, output_dir: Path) -> dict:
         for name in RECEIPT_PLANES:
             if name not in receipt.variables:
                 raise ValueError(f"required receipt plane is absent: {name}")
-        planes = {
-            name: np.asarray(receipt.variables[name][...]).squeeze()
-            for name in RECEIPT_PLANES
-        }
+        planes = {name: receipt_plane(receipt, name) for name in RECEIPT_PLANES}
         coverage_cut = float(scalar(receipt, "coverage_cut"))
         normalization_threshold = float(
             scalar(receipt, "normalization_threshold")

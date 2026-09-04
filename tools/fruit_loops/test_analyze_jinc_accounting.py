@@ -39,6 +39,14 @@ def test_scalar_unwraps_numpy_numeric_scalar() -> None:
     assert isinstance(value, int)
 
 
+def test_receipt_plane_reverses_internal_columns_to_fits_orientation() -> None:
+    dataset = FakeDataset(np.asarray([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]))
+
+    result = analysis.receipt_plane(dataset, "value")
+
+    assert np.array_equal(result, [[3.0, 2.0, 1.0], [6.0, 5.0, 4.0]])
+
+
 def test_positive_order_threshold_matches_registered_algorithm() -> None:
     values = np.array([[0.0, 1.0, 2.0], [3.0, 4.0, np.nan]])
 
