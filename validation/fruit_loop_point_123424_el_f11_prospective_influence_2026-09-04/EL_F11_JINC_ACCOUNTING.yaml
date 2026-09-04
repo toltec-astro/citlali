@@ -1,0 +1,20 @@
+runtime:
+  output_dir: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f11-prospective-influence-r0.1/reduced/
+  n_threads: 1
+
+timestream:
+  fruit_loops:
+    restart_path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f11-prospective-influence-r0.1/restart-source/redu03
+    max_iters: 5
+    save_all_iters: true
+    injected_source_test:
+      enabled: true
+      start_iteration: 1
+      array_amplitude_mjy_beam: [100.0, 100.0, 100.0]
+
+mapmaking:
+  jinc_accounting:
+    enabled: true
+    array: a1400
+    uid: 4460
+    scan_index: 5

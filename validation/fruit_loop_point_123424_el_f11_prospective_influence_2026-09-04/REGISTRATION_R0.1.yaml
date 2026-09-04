@@ -1,0 +1,175 @@
+schema_version: sci-fruit-el-f11-replay-registration-v1
+test_id: SCI-FRUIT-EL-F11-PROSPECTIVE-INFLUENCE-PERSISTENCE-R0.1
+registration_revision: r0.1
+registered_before_execution: true
+role: oracle-targeted-development-persistence-feasibility
+authorization:
+  record: ../../doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_EL_F11_AUTHORIZATION_2026-09-04.md
+  bundle: ../../doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F11_BUNDLE_MANIFEST_R0.1.md
+software:
+  executable_source_commit: c68b97f30
+  staged_path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.2/setup/citlali-el-f10-r4
+  size_bytes: 14858136
+  sha256: 71911a6768b7ecfff0d165a17d498adf5c0e8e0219e733e72d633d8b545c7636
+execution:
+  completed_iteration: 4
+  incoming_completed_iteration: 3
+  configured_threads: 1
+  grppiex: seq
+  iterations: 1
+  max_iters_exclusive: 5
+  maximum_hours: 1
+  maximum_memory_gib: 64
+  maximum_retained_gib: 8
+  local_only: true
+  maximum_scientific_replays: 1
+target:
+  obsnum: 123424
+  array: a1400
+  array_id: 1
+  uid: 4460
+  scan_index_zero_based: 5
+receipt_schema: SCI-FRUIT-EL-F10-JINC-ACCOUNTING-R0.1
+paths:
+  diagnostic_iteration_4: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f11-prospective-influence-r0.1/reduced/redu00
+  iteration_4_reference: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/redu04
+  iteration_4_reference_checkpoint: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/redu04/citlali_restart_checkpoint.nc
+  diagnostic_iteration_4_checkpoint: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f11-prospective-influence-r0.1/reduced/redu00/citlali_restart_checkpoint.nc
+  iteration_4_reference_learning: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/redu04/learning_iter_4.csv
+  diagnostic_iteration_4_learning: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f11-prospective-influence-r0.1/reduced/redu00/learning_iter_4.csv
+  iteration_4_reference_mapdiag: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/redu04/123424/raw/toltec_commissioning_pointing_123424_mapdiag.nc
+  diagnostic_iteration_4_mapdiag: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f11-prospective-influence-r0.1/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_mapdiag.nc
+  accounting_receipt: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f11-prospective-influence-r0.1/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_jinc_accounting.nc
+  target_samples: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f11-prospective-influence-r0.1/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_jinc_accounting_target_samples.ecsv
+  replay_log: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f11-prospective-influence-r0.1/logs/replay.log
+  d5_component_maps: validation/fruit_loop_point_123424_el_f10_jinc_accounting_2026-09-04/JINC_COMPONENT_MAPS_R0.1.nc
+  d5_analysis_result: validation/fruit_loop_point_123424_el_f10_jinc_accounting_2026-09-04/ANALYSIS_RESULT_R0.1.json
+  d5_science_fits: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.2/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits
+neutrality:
+  science_planes: [signal_I, kernel_I, weight_I]
+  formal_plane: weight_formal_I
+  arrays: [a1100, a1400, a2000]
+  map_comparison: bitwise
+  learning_comparison: bytewise
+  mapdiag_comparison: structure-attributes-masks-values
+  checkpoint_allowed_differences: [creator_version, learning_policy_yaml]
+  checkpoint_required_observed_differences: [creator_version, learning_policy_yaml]
+  learning_policy_historical_absence_normalizes_to:
+    map_pixel_outlier_detector_exclusion_application: pre_cleaning
+forward_error:
+  unit_roundoff: 1.1102230246251565e-16
+  finalization_safety_factor: 16.0
+  identity_safety_factor: 64.0
+top_response_fractions: [0.01, 0.05, 0.10]
+regions:
+  injection_world_arcsec: [0.0, -60.0]
+  neptune_world_arcsec: [12.53903, -5.334553]
+  source_aperture_radius_arcsec: 20.0
+  annulus_arcsec: [40.0, 120.0]
+  annulus_neptune_exclusion_radius_arcsec: 25.0
+claim_limits:
+  oracle_targeted: true
+  deployable_candidate_selection_established: false
+  unbiased_performance_estimate_established: false
+  detector_judgment_authorized: false
+  generic_mechanism_claim_authorized: false
+  intervention_comparison_authorized: false
+  safeguard_selection_authorized: false
+  qualification_use_authorized: false
+  production_use_authorized: false
+  gate_d_authorized: false
+  stage_b_authoring_authorized: false
+  unity_activity_authorized: false
+registered_files:
+  - role: frozen_executable
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.2/setup/citlali-el-f10-r4
+    size_bytes: 14858136
+    sha256: 71911a6768b7ecfff0d165a17d498adf5c0e8e0219e733e72d633d8b545c7636
+  - role: el_f11_override_config
+    path: validation/fruit_loop_point_123424_el_f11_prospective_influence_2026-09-04/EL_F11_JINC_ACCOUNTING.yaml
+    size_bytes: 572
+    sha256: d8ae7d33765c74a9209aea80fa67e502f96739f7267109fe05ee7d4f298cb7cc
+  - role: base_config
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.1/setup/POINT_123424_BASE.yaml
+    size_bytes: 16258
+    sha256: f710d1c172b5655b136ef4d8ebbff918083d37cb4974036c7af8725978d51491
+  - role: input_config
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.1/setup/POINT_123424_INPUTS_LOCAL.yaml
+    size_bytes: 2975
+    sha256: d79e22e1fdfdc67e9235829f1fc2b904a82894c4fbfc10fbfa7b713409b9bc02
+  - role: common_config
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.1/setup/POINT_123424_COMMON_LOCAL.yaml
+    size_bytes: 356
+    sha256: 716c952133ee37b51d8ca4edb783741279aa8f9117149810ab94f987c5d4e269
+  - role: fit_report_config
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.1/setup/POINT_123424_FITREPORTS_LOCAL.yaml
+    size_bytes: 119
+    sha256: df63463a1a3e83ed5dc2969525b9600c60d88b3226f79af82fda6cba4750d629
+  - role: alpha_config
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.1/setup/POINT_123424_ALPHA_1P25_INJECTED.yaml
+    size_bytes: 550
+    sha256: e140f68eb4d445393e7bab590f1901a7f732869d699e23b7608e4ffd3ef0f8c0
+  - role: off_source_injection_config
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.1/setup/POINT_123424_OFF_SOURCE_INJECTED.yaml
+    size_bytes: 271
+    sha256: a7ac14987b8f71e2ee5bb4dc5ae61901d182d19a0eabb293b523444e3a0f3c3f
+  - role: copied_iteration_3_checkpoint
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f11-prospective-influence-r0.1/restart-source/redu03/citlali_restart_checkpoint.nc
+    size_bytes: 6508010
+    sha256: a20558aaed4ddf1c34ab343770002d15882964c1fa22b616277146bb54e5c00e
+  - role: iteration_4_reference_checkpoint
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/redu04/citlali_restart_checkpoint.nc
+    size_bytes: 6506519
+    sha256: 2d600fde6b642ea053bc49d357bed16c800bb1dd689c0ee5ae084e115970fb7c
+  - role: iteration_4_reference_learning
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/redu04/learning_iter_4.csv
+    size_bytes: 881918
+    sha256: 4ea7986dbea4ea619438092dab0f7c5221b520ee6901529b52787d3fa7b24616
+  - role: iteration_4_reference_mapdiag
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/redu04/123424/raw/toltec_commissioning_pointing_123424_mapdiag.nc
+    size_bytes: 63962
+    sha256: b35d9c2f9f6a29e102206d575c990a253fc565c1d2545e48fc375dd0e5c66d11
+  - role: iteration_4_reference_a1100_fits
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/redu04/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits
+    size_bytes: 7191360
+    sha256: f423fbb19ea53b4c83d0bd1fb899216ee9973bc8e690b43f4ad4bfa771c64aa6
+  - role: iteration_4_reference_a1400_fits
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/redu04/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits
+    size_bytes: 7191360
+    sha256: 96cea6952608d0ea7605873e97604ecdc70c6af3ee5bfa410ed7028ed3797dbc
+  - role: iteration_4_reference_a2000_fits
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f5-off-source-injection-r0.1/point-123424/off-source-injected/reduced/redu04/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits
+    size_bytes: 7191360
+    sha256: 0e9512a3ac1c6c730b2f1b9f8fe90e20318b516a275a8c786663af7b07d4fe09
+  - role: d5_component_maps
+    path: validation/fruit_loop_point_123424_el_f10_jinc_accounting_2026-09-04/JINC_COMPONENT_MAPS_R0.1.nc
+    size_bytes: 3411419
+    sha256: 57f16f694bc437197a2b5b763ba14ad6270324105c4ec2675d23dc3f7ac3784c
+  - role: d5_analysis_result
+    path: validation/fruit_loop_point_123424_el_f10_jinc_accounting_2026-09-04/ANALYSIS_RESULT_R0.1.json
+    size_bytes: 29803
+    sha256: ee6a8112902de13ec52d0397e02901c4192af1b13fda7f2d591318bb97c3f5de
+  - role: d5_science_fits
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.2/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits
+    size_bytes: 7191360
+    sha256: ced690b8c7a3700ce9920f750efe71e7d77a1b4733c599f3d3e81eaa9e7879a5
+  - role: frozen_analysis_tool
+    path: tools/fruit_loops/analyze_prospective_influence_persistence.py
+    size_bytes: 30506
+    sha256: 97f4fc5202ba4f137e0be0f901c8ef53e2812f45dc306e6dbde2eebfaae0fd40
+  - role: focused_analysis_tests
+    path: tools/fruit_loops/test_analyze_prospective_influence_persistence.py
+    size_bytes: 3465
+    sha256: bec70ae74aa8a162ebd456c69b2705f5ab31c6eebd8fb2aa017cd6153898b7c3
+  - role: frozen_test_definition
+    path: validation/fruit_loop_point_123424_el_f11_prospective_influence_2026-09-04/TEST_DEFINITION.md
+    size_bytes: 7213
+    sha256: 8b2dd3a434f4dd655b2bfbac124579e02440f7f8ae72671825f68276d595a858
+  - role: owner_authorization
+    path: doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_EL_F11_AUTHORIZATION_2026-09-04.md
+    size_bytes: 1056
+    sha256: 509c5a9d5e939091b37fbdcbab2b2681f5bdf14f4e4bb2ae399bf26c0098a549
+  - role: controlling_bundle_manifest
+    path: doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F11_BUNDLE_MANIFEST_R0.1.md
+    size_bytes: 5056
+    sha256: 917ad655cdb52f07420d061507ee4269c6e9b2107355787758bbf528d2e5bdda

@@ -850,6 +850,17 @@ and
 are prepared for owner review. No setup, replay, safeguard, threshold,
 recurrence, Gate D, Stage B, production, or Unity action is authorized.
 
+The scientific owner approved
+`SCI-FRUIT-EL-F11-PROSPECTIVE-INFLUENCE-PERSISTENCE-R0.1` exactly against
+`EL_F11_BUNDLE_MANIFEST_R0.1.md` on `2026-09-04`. The complete copied
+iteration-3 restart directory matches its preserved EL-F5 source, all 23
+registered files pass exact identity checks, all 110 fruit-loop Python tests
+and the complete configuration preflight pass, and the single local replay
+and analysis method are frozen in
+[`REGISTRATION_R0.1.yaml`](../validation/fruit_loop_point_123424_el_f11_prospective_influence_2026-09-04/REGISTRATION_R0.1.yaml).
+No new accounting values have been opened. The one authorized local replay is
+the next action; its outputs must be hash-bound before analysis.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
