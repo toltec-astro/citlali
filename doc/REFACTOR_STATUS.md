@@ -765,8 +765,26 @@ Bitwise reproduction of the existing science maps is a prerequisite to any
 interpretation; a pre-registered forward-error bound governs reconstruction
 of the existing EL-F8 map-only result. The diagnostic sidecars are explicitly
 not calibrated sky products, checkpoint state, a JINC-conformity assessment,
-or a production interface. The packet remains unapproved: no diagnostic
-implementation, build, replay, or new analysis is authorized.
+or a production interface.
+
+The scientific owner approved that exact packet on `2026-09-04`. EL-F10 then
+added the disabled-by-default diagnostic, passed the full local build and test
+gates, froze its executable and 19 inputs, and completed the one authorized
+local copied-checkpoint replay in 33.29 seconds with no error or critical log
+records. All nine ordinary science planes and all three formal-coefficient
+planes match EL-F6 N5 bitwise. The registered analysis nevertheless stopped at
+checkpoint compatibility before opening the target accounting values: in
+addition to the allowed `creator_version` change, the new checkpoint
+explicitly serializes
+`map_pixel_outlier_detector_exclusion_application: pre_cleaning`, while the
+older EL-F6 checkpoint omits that historically implicit default. The
+checkpoint structures and all other values match. The active
+[`EL-F10 result`](../validation/fruit_loop_point_123424_el_f10_jinc_accounting_2026-09-04/EXECUTION_RESULT_R0.1.md)
+records a compatibility failure, not a scientific accounting result. No
+second replay is warranted. The next decision is a separately approved,
+no-replay repair that freezes the retained output hashes and permits only this
+already established absence-to-`pre_cleaning` normalization; every other
+neutrality, closure, bound, scope, and claim gate remains unchanged.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

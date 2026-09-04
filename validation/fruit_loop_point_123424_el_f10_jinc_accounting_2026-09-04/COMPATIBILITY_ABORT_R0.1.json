@@ -1,0 +1,44 @@
+{
+  "analysis_opened_target_accounting_values": false,
+  "checkpoint": {
+    "dimensions_identical": true,
+    "global_attributes_identical": true,
+    "only_value_differences": [
+      "creator_version",
+      "learning_policy_yaml"
+    ],
+    "structure_identical": true,
+    "variable_count_each": 77,
+    "variable_sets_identical": true
+  },
+  "failure": {
+    "actual_learning_policy_change": "one added serialized field: map_pixel_outlier_detector_exclusion_application: pre_cleaning",
+    "allowed_checkpoint_differences": [
+      "creator_version"
+    ],
+    "failed_gate": "checkpoint_neutrality",
+    "message": "scientific checkpoint value differs: learning_policy_yaml"
+  },
+  "ordinary_map_neutrality_before_abort": {
+    "formal_coefficient_planes_bitwise_identical": 3,
+    "formal_coefficient_planes_required": 3,
+    "science_planes_bitwise_identical": 9,
+    "science_planes_required": 9,
+    "wcs_and_grid_identical": true
+  },
+  "replay": {
+    "configured_threads": 1,
+    "critical_log_records": 0,
+    "elapsed_seconds": 33.29,
+    "error_log_records": 0,
+    "exit_code": 0,
+    "grppiex": "seq",
+    "peak_resident_bytes": 922501120,
+    "retained_log_kib": 516,
+    "retained_reduction_kib": 63848,
+    "scientific_replays_consumed": 1
+  },
+  "result": "compatibility_failure_stop",
+  "schema_version": "sci-fruit-el-f10-compatibility-abort-v1",
+  "test_id": "SCI-FRUIT-EL-F10-TARGETED-JINC-ACCOUNTING-R0.1"
+}
