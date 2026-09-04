@@ -835,6 +835,21 @@ authorize a prospective EL-F11 influence study comparing the existing repeat-
 count action with response-aware hard and bounded soft or map-local candidates,
 followed by independent-pointing replication before any policy selection.
 
+The scientific owner agreed with that recommendation on `2026-09-04`. The
+resulting EL-F11 proposal deliberately resolves one prerequisite before any
+intervention comparison: one short replay would measure UID 4460 scan 5's
+exact whole-map JINC deletion response in iteration 4, using only state
+available before its iteration-5 hard exclusion, and compare it descriptively
+with the retained EL-F10 iteration-5 response. The target is retrospectively
+known, so this is explicitly an oracle-targeted persistence feasibility test,
+not yet a deployable candidate-selection method. The exact
+[`owner-review proposal`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F11_PROSPECTIVE_INFLUENCE_OWNER_REVIEW_R0.1.md),
+[`design`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F11_PROSPECTIVE_INFLUENCE_PERSISTENCE_DESIGN_R0.1.md),
+and
+[`bundle manifest`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F11_BUNDLE_MANIFEST_R0.1.md)
+are prepared for owner review. No setup, replay, safeguard, threshold,
+recurrence, Gate D, Stage B, production, or Unity action is authorized.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
