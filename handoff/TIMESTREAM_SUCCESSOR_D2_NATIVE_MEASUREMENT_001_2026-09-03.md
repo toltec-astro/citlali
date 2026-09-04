@@ -227,21 +227,22 @@ executable route or numerical operator.
 
 ### Build-environment reassessment
 
-An earlier interactive attempt built on the shared NFS `/work` filesystem with
-8 compile jobs inside a 6-CPU allocation. It exhibited long-lived existing test
-translation units, blocked tasks, disproportionate system time, I/O wait, and
-eventual Slurm time-limit/OOM termination. A first attempt to move the build to
-local scratch exited before configure because the command checked a build path
-before creating it. Neither attempt completed the gate, and neither is
-acceptance evidence.
+The owner reported that an earlier interactive attempt built on the shared NFS
+`/work` filesystem with 8 compile jobs inside a 6-CPU allocation. It exhibited
+long-lived existing test translation units, blocked tasks, disproportionate
+system time, I/O wait, and eventual Slurm time-limit/OOM termination. The owner
+also reported that a first attempt to move the build to local scratch exited
+before configure because the command checked a build path before creating it.
+Neither attempt completed the gate, and neither is acceptance evidence.
 
 The owner's typical interactive `srun_bash` environment requests 16 GiB. The
 authoritative six-job run later reported approximately 21.6 GiB peak RSS, so
-16 GiB is insufficient for this clean full build. The successful run changed
-memory, concurrency, and storage placement together; it proves the D2 source
-was not the cause of the earlier delay but does not isolate a single
-environmental variable. The retained operational conclusion is to use a
-resource-matched batch job and job-local build tree for long clean Unity gates.
+16 GiB is insufficient for this clean full build. The successful run shows that
+the exact D2 source builds under the corrected conditions; because memory,
+concurrency, and storage placement changed together, it does not identify which
+earlier condition caused the delay. The retained operational conclusion is to
+use a resource-matched batch job and job-local build tree for long clean Unity
+gates.
 
 The unexpected build behavior triggered the Tier 2 environment/performance
 reassessment. Its disposition is **continue after an in-scope gate-method
@@ -268,7 +269,10 @@ During closure preparation, local `refs/heads/codex/refactor-mainline` had
 independently advanced through map-space contract work to
 `9f42d348298d76c5d5145aaf0c3eace1f3e154c1`, while the local cached
 `refs/remotes/origin/codex/refactor-mainline` remained at the D2 base
-`4d14d0dce8c80b6bc9d0d39c9a90a8f4b2504538`. This moving-base trigger does not
+`4d14d0dce8c80b6bc9d0d39c9a90a8f4b2504538`. During independent review on
+2026-09-04, a read-only live `git ls-remote` check confirmed that GitHub
+`refs/heads/codex/refactor-mainline` had also advanced to exact
+`9f42d348298d76c5d5145aaf0c3eace1f3e154c1`. This moving-base trigger does not
 invalidate the literally based D2 candidate, but it prevents treating later
 canonical admission as the originally available simple fast-forward. This
 closure therefore does not modify the older feature branch's
