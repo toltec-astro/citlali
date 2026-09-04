@@ -1,0 +1,862 @@
+{
+  "claim_limits": {
+    "detector_judgment_authorized": false,
+    "gate_d_authorized": false,
+    "generic_mechanism_claim_authorized": false,
+    "production_use_authorized": false,
+    "qualification_use_authorized": false,
+    "safeguard_selection_authorized": false,
+    "stage_b_authoring_authorized": false,
+    "unity_activity_authorized": false
+  },
+  "deletion_identity": {
+    "conditioned_pixels": 4229,
+    "max_abs_residual_mjy_beam": 2.4436008771999695e-13
+  },
+  "neutrality": {
+    "checkpoint": {
+      "observed_allowed_differences": [
+        "creator_version",
+        "learning_policy_yaml"
+      ],
+      "scientific_values_identical": true
+    },
+    "formal_planes_bitwise_identical": true,
+    "nine_science_planes_bitwise_identical": true
+  },
+  "region_metrics": {
+    "annulus_r40_120_excluding_neptune_r25": {
+      "absolute_mass_share_Bt_over_B": {
+        "count": 3054,
+        "max": 0.1425714094950054,
+        "mean": 0.00299062421782964,
+        "median": 0.00032241616545505847,
+        "min": 2.758643861876347e-07,
+        "p05": 1.6223925030154835e-06,
+        "p25": 1.5523391921958402e-05,
+        "p75": 0.002678133479011544,
+        "p95": 0.01434156928767768,
+        "rms": 0.009123930825628427
+      },
+      "deletion_response_mjy_beam": {
+        "count": 3054,
+        "max": 16.13898235232851,
+        "mean": -0.45656343263720545,
+        "median": 0.00010258899933934806,
+        "min": -98.97121370313417,
+        "p05": -0.8387384883725407,
+        "p25": -0.04502482498029625,
+        "p75": 0.051598267565434286,
+        "p95": 3.6494746606443886,
+        "rms": 7.280687137923387
+      },
+      "identity_residual_mjy_beam": {
+        "count": 3054,
+        "max": 2.353672812205332e-14,
+        "mean": 4.833813398156496e-17,
+        "median": 0.0,
+        "min": -1.9539925233402755e-14,
+        "p05": -2.886579864025407e-15,
+        "p25": -4.68592178948235e-16,
+        "p75": 4.863730945769973e-16,
+        "p95": 3.0725530626718443e-15,
+        "rms": 2.330923772643332e-15
+      },
+      "quadratic_share_Qt_over_Q": {
+        "count": 3054,
+        "max": 0.18768788140625114,
+        "mean": 0.003010273759726237,
+        "median": 1.5891991541094586e-05,
+        "min": 9.847666863863262e-11,
+        "p05": 5.729601482271264e-10,
+        "p25": 1.9490964848246025e-08,
+        "p75": 0.0008075784958218872,
+        "p95": 0.01688381544640395,
+        "rms": 0.011379464151621534
+      },
+      "signal_contrast_mjy_beam": {
+        "count": 3054,
+        "max": 7033.066806082194,
+        "mean": -18.641279725162292,
+        "median": 110.72787845199755,
+        "min": -9947.278914353341,
+        "p05": -2182.318621291472,
+        "p25": -81.69564016346325,
+        "p75": 241.93523295878202,
+        "p95": 1143.5663632030648,
+        "rms": 904.6383951772228
+      },
+      "signed_leverage_Ct_over_C": {
+        "count": 3054,
+        "max": 0.18874397672783716,
+        "mean": 0.0030400501892541318,
+        "median": 2.265103659936668e-06,
+        "min": -0.006397532394557015,
+        "p05": -0.0011164806385238271,
+        "p25": -0.00018368352585576626,
+        "p75": 0.0017977198622167773,
+        "p95": 0.017433253091190797,
+        "rms": 0.011505886418546234
+      },
+      "target_cancellation_abs_Ct_over_Bt": {
+        "count": 3054,
+        "max": 1.0,
+        "mean": 0.7783384704419797,
+        "median": 0.888746085948563,
+        "min": 0.026933140451366393,
+        "p05": 0.23230956784907544,
+        "p25": 0.6634827775763275,
+        "p75": 0.9620416294734129,
+        "p95": 1.0,
+        "rms": 0.8155019984190971
+      },
+      "target_occurrence_pixel_count": {
+        "count": 3054,
+        "max": 145.0,
+        "mean": 20.07334643091028,
+        "median": 9.0,
+        "min": 1.0,
+        "p05": 3.0,
+        "p25": 8.0,
+        "p75": 22.0,
+        "p95": 83.34999999999991,
+        "rms": 33.32614526295764
+      },
+      "target_signal_mjy_beam": {
+        "count": 3054,
+        "max": 10031.950822957428,
+        "mean": 24.298524144462235,
+        "median": -105.21521554564657,
+        "min": -7021.2849601368625,
+        "p05": -1146.964444219819,
+        "p25": -235.41915066096888,
+        "p75": 79.97323266083075,
+        "p95": 2208.998838501591,
+        "rms": 911.0746955910487
+      },
+      "total_cancellation_abs_C_over_B": {
+        "count": 3054,
+        "max": 0.8874692488453286,
+        "mean": 0.7628129424437371,
+        "median": 0.7658863721215814,
+        "min": 0.5994613997573845,
+        "p05": 0.6920965655737888,
+        "p25": 0.7413366512110373,
+        "p75": 0.7885976096724658,
+        "p95": 0.820159768151131,
+        "rms": 0.7638179612774859
+      },
+      "total_occurrence_pixel_count": {
+        "count": 3054,
+        "max": 17034.0,
+        "mean": 11828.616895874264,
+        "median": 11748.0,
+        "min": 6514.0,
+        "p05": 7636.6,
+        "p25": 9873.0,
+        "p75": 13571.0,
+        "p95": 16003.35,
+        "rms": 12097.169101372046
+      },
+      "total_unique_detector_count": {
+        "count": 3054,
+        "max": 306.0,
+        "mean": 230.85854616895875,
+        "median": 238.0,
+        "min": 123.0,
+        "p05": 149.0,
+        "p25": 196.0,
+        "p75": 271.75,
+        "p95": 292.0,
+        "rms": 235.25797959126095
+      },
+      "without_target_signal_mjy_beam": {
+        "count": 3054,
+        "max": 134.72265891692936,
+        "mean": 5.657244419299925,
+        "median": 1.8647642705710932,
+        "min": -68.32755460880459,
+        "p05": -22.549234930431513,
+        "p25": -6.074918148262301,
+        "p75": 11.980432669137995,
+        "p95": 51.51805226349312,
+        "rms": 22.871285233894408
+      }
+    },
+    "complete_map": {
+      "absolute_mass_share_Bt_over_B": {
+        "count": 4229,
+        "max": 0.14461859074981417,
+        "mean": 0.003404702508710486,
+        "median": 0.00031049695919631456,
+        "min": 2.721318888680887e-07,
+        "p05": 1.1953769769297855e-06,
+        "p25": 1.2309909485998755e-05,
+        "p75": 0.0026819870379708667,
+        "p95": 0.014703315313639267,
+        "rms": 0.011586188759675025
+      },
+      "deletion_response_mjy_beam": {
+        "count": 4229,
+        "max": 17.783476527290148,
+        "mean": -0.2937837700626806,
+        "median": 7.489045247144333e-05,
+        "min": -98.97121370313417,
+        "p05": -1.125188394455035,
+        "p25": -0.04795374036060118,
+        "p75": 0.045815891032717104,
+        "p95": 3.731954533211465,
+        "rms": 6.404715070927537
+      },
+      "identity_residual_mjy_beam": {
+        "count": 4229,
+        "max": 2.4436008771999695e-13,
+        "mean": 1.6692716953939203e-16,
+        "median": 0.0,
+        "min": -2.427502643342905e-13,
+        "p05": -9.84455572616838e-15,
+        "p25": -7.609472947589513e-16,
+        "p75": 8.187894806610529e-16,
+        "p95": 1.1648922928694779e-14,
+        "rms": 1.9460405572213523e-14
+      },
+      "quadratic_share_Qt_over_Q": {
+        "count": 4229,
+        "max": 0.20136622375212374,
+        "mean": 0.0034502340166904888,
+        "median": 1.5494527814402212e-05,
+        "min": 9.600636469631911e-11,
+        "p05": 4.4603876371058354e-10,
+        "p25": 1.5223134865820217e-08,
+        "p75": 0.0009319110244771233,
+        "p95": 0.016598979224724482,
+        "rms": 0.014251916651706527
+      },
+      "signal_contrast_mjy_beam": {
+        "count": 4229,
+        "max": 13134.901884601793,
+        "mean": -59.12232251196912,
+        "median": 63.25264389651886,
+        "min": -110066.08762783233,
+        "p05": -1723.76468490278,
+        "p25": -166.912183258396,
+        "p75": 221.54383710149068,
+        "p95": 1124.4690267644014,
+        "rms": 1909.8068278715966
+      },
+      "signed_leverage_Ct_over_C": {
+        "count": 4229,
+        "max": 0.19153753871512502,
+        "mean": 0.0034961728429667846,
+        "median": 1.6816597039357886e-06,
+        "min": -0.006397532394557015,
+        "p05": -0.001074847647830112,
+        "p25": -0.0001688680665255307,
+        "p75": 0.0018992009230342582,
+        "p95": 0.017006056623660556,
+        "rms": 0.014540406983686097
+      },
+      "target_cancellation_abs_Ct_over_Bt": {
+        "count": 4229,
+        "max": 1.0,
+        "mean": 0.7782718206742493,
+        "median": 0.8907177621255088,
+        "min": 0.000858597200431094,
+        "p05": 0.21706475157594513,
+        "p25": 0.6647888418970157,
+        "p75": 0.9633443492689415,
+        "p95": 1.0,
+        "rms": 0.8167037246293326
+      },
+      "target_occurrence_pixel_count": {
+        "count": 4229,
+        "max": 145.0,
+        "mean": 22.919839205485932,
+        "median": 10.0,
+        "min": 1.0,
+        "p05": 3.0,
+        "p25": 8.0,
+        "p75": 22.0,
+        "p95": 117.0,
+        "rms": 39.551768579040306
+      },
+      "target_signal_mjy_beam": {
+        "count": 4229,
+        "max": 110075.89666945073,
+        "mean": 124.17557326706194,
+        "median": -29.774392154558388,
+        "min": -13137.876381681488,
+        "p05": -975.3745416002969,
+        "p25": -192.0789665944394,
+        "p75": 203.60718492767595,
+        "p95": 1788.3744283144724,
+        "rms": 1912.82408238264
+      },
+      "total_cancellation_abs_C_over_B": {
+        "count": 4229,
+        "max": 0.8874692488453286,
+        "mean": 0.7635085388067308,
+        "median": 0.7665456801635799,
+        "min": 0.5994613997573845,
+        "p05": 0.6988220883940824,
+        "p25": 0.7433261828313146,
+        "p75": 0.7867365685739938,
+        "p95": 0.8159993466296973,
+        "rms": 0.7643498529183615
+      },
+      "total_occurrence_pixel_count": {
+        "count": 4229,
+        "max": 18519.0,
+        "mean": 13324.496098368409,
+        "median": 12961.0,
+        "min": 6514.0,
+        "p05": 7942.8,
+        "p25": 10909.0,
+        "p75": 16435.0,
+        "p95": 18004.0,
+        "rms": 13717.021470640442
+      },
+      "total_unique_detector_count": {
+        "count": 4229,
+        "max": 324.0,
+        "mean": 251.49302435563962,
+        "median": 265.0,
+        "min": 123.0,
+        "p05": 157.0,
+        "p25": 212.0,
+        "p75": 295.0,
+        "p95": 314.0,
+        "rms": 256.6346481560751
+      },
+      "without_target_signal_mjy_beam": {
+        "count": 4229,
+        "max": 1880.9734731580454,
+        "mean": 65.05325075509282,
+        "median": 5.160196432641545,
+        "min": -76.55811237628534,
+        "p05": -22.672281373630497,
+        "p25": -5.043384962073178,
+        "p75": 36.08628830081915,
+        "p95": 396.2401926839142,
+        "rms": 222.20896744669162
+      }
+    },
+    "injected_source_r20": {
+      "absolute_mass_share_Bt_over_B": {
+        "count": 0
+      },
+      "deletion_response_mjy_beam": {
+        "count": 0
+      },
+      "identity_residual_mjy_beam": {
+        "count": 0
+      },
+      "quadratic_share_Qt_over_Q": {
+        "count": 0
+      },
+      "signal_contrast_mjy_beam": {
+        "count": 0
+      },
+      "signed_leverage_Ct_over_C": {
+        "count": 0
+      },
+      "target_cancellation_abs_Ct_over_Bt": {
+        "count": 0
+      },
+      "target_occurrence_pixel_count": {
+        "count": 0
+      },
+      "target_signal_mjy_beam": {
+        "count": 0
+      },
+      "total_cancellation_abs_C_over_B": {
+        "count": 0
+      },
+      "total_occurrence_pixel_count": {
+        "count": 0
+      },
+      "total_unique_detector_count": {
+        "count": 0
+      },
+      "without_target_signal_mjy_beam": {
+        "count": 0
+      }
+    },
+    "neptune_r20": {
+      "absolute_mass_share_Bt_over_B": {
+        "count": 894,
+        "max": 0.04905562843205346,
+        "mean": 0.0019538164667083037,
+        "median": 0.0002622177969599719,
+        "min": 3.0263181946071947e-07,
+        "p05": 5.635110448199908e-07,
+        "p25": 7.085627984900963e-06,
+        "p75": 0.0022067784422559844,
+        "p95": 0.008822003943051483,
+        "rms": 0.004616129879120643
+      },
+      "deletion_response_mjy_beam": {
+        "count": 894,
+        "max": 10.223889198595316,
+        "mean": -0.312537534244223,
+        "median": -2.9074600469414236e-05,
+        "min": -18.934953122814093,
+        "p05": -3.4165317466136482,
+        "p25": -0.09482391390054712,
+        "p75": 0.03985794122183739,
+        "p95": 1.4673900782071834,
+        "rms": 2.537457401051499
+      },
+      "identity_residual_mjy_beam": {
+        "count": 894,
+        "max": 2.4436008771999695e-13,
+        "mean": 4.363887051820479e-16,
+        "median": 1.2663481374630692e-16,
+        "min": -2.427502643342905e-13,
+        "p05": -6.432801340217064e-14,
+        "p25": -6.958777155311076e-15,
+        "p75": 6.922264953086732e-15,
+        "p95": 6.493486304215415e-14,
+        "rms": 4.1922047992677184e-14
+      },
+      "quadratic_share_Qt_over_Q": {
+        "count": 894,
+        "max": 0.05169510951218308,
+        "mean": 0.001785093441464098,
+        "median": 1.340785752469316e-05,
+        "min": 9.885923219727574e-11,
+        "p05": 1.8713638276126172e-10,
+        "p25": 9.74251730037996e-09,
+        "p75": 0.0008204787089084685,
+        "p95": 0.009877535409707238,
+        "rms": 0.004747480753169087
+      },
+      "signal_contrast_mjy_beam": {
+        "count": 894,
+        "max": 9243.038429476592,
+        "mean": -248.05227223693586,
+        "median": -154.05399422028353,
+        "min": -110066.08762783233,
+        "p05": -903.7008010044875,
+        "p25": -541.1302180312861,
+        "p75": 51.99343892525589,
+        "p95": 1148.1050563580147,
+        "rms": 3756.913434440962
+      },
+      "signed_leverage_Ct_over_C": {
+        "count": 894,
+        "max": 0.05727184123703362,
+        "mean": 0.0017454256128629957,
+        "median": 7.830199609436525e-07,
+        "min": -0.004943566964805027,
+        "p05": -0.0006483336774736939,
+        "p25": -0.0001161123475187278,
+        "p75": 0.001833844633314781,
+        "p95": 0.009785331098589761,
+        "rms": 0.00490551549589582
+      },
+      "target_cancellation_abs_Ct_over_Bt": {
+        "count": 894,
+        "max": 1.0,
+        "mean": 0.7964195394710828,
+        "median": 0.9059523483397354,
+        "min": 0.000858597200431094,
+        "p05": 0.18993989744520345,
+        "p25": 0.7159733715148037,
+        "p75": 0.9703046893035013,
+        "p95": 1.0,
+        "rms": 0.8341387941240404
+      },
+      "target_occurrence_pixel_count": {
+        "count": 894,
+        "max": 143.0,
+        "mean": 22.620805369127517,
+        "median": 11.0,
+        "min": 1.0,
+        "p05": 2.0,
+        "p25": 7.0,
+        "p75": 17.0,
+        "p95": 114.19999999999891,
+        "rms": 40.305336299653774
+      },
+      "target_signal_mjy_beam": {
+        "count": 894,
+        "max": 110075.89666945073,
+        "mean": 524.3402070456308,
+        "median": 223.46528369535548,
+        "min": -9183.098553817328,
+        "p05": -121.25669397648744,
+        "p25": 124.25610346267686,
+        "p75": 780.2619337340695,
+        "p95": 1057.1965681629442,
+        "rms": 3759.094832972581
+      },
+      "total_cancellation_abs_C_over_B": {
+        "count": 894,
+        "max": 0.8399965147360169,
+        "mean": 0.7661916774431101,
+        "median": 0.7689101034225629,
+        "min": 0.6869055238377756,
+        "p05": 0.7237741994924712,
+        "p25": 0.7486629273493927,
+        "p75": 0.7834060471999482,
+        "p95": 0.805032914152441,
+        "rms": 0.7666212953100835
+      },
+      "total_occurrence_pixel_count": {
+        "count": 894,
+        "max": 18519.0,
+        "mean": 17488.616331096197,
+        "median": 17574.0,
+        "min": 15753.0,
+        "p05": 16510.55,
+        "p25": 17031.5,
+        "p75": 17998.0,
+        "p95": 18222.5,
+        "rms": 17497.928865711092
+      },
+      "total_unique_detector_count": {
+        "count": 894,
+        "max": 324.0,
+        "mean": 307.834451901566,
+        "median": 309.0,
+        "min": 284.0,
+        "p05": 292.0,
+        "p25": 303.0,
+        "p75": 313.0,
+        "p95": 320.0,
+        "rms": 307.94292594177887
+      },
+      "without_target_signal_mjy_beam": {
+        "count": 894,
+        "max": 1880.9734731580454,
+        "mean": 276.2879348086949,
+        "median": 119.19731206624681,
+        "min": -32.3123767039543,
+        "p05": -19.64197638581621,
+        "p25": 31.331862382496503,
+        "p75": 378.0816215265345,
+        "p95": 1204.1037618486487,
+        "rms": 479.57867830526857
+      }
+    },
+    "target_scan_footprint": {
+      "absolute_mass_share_Bt_over_B": {
+        "count": 4229,
+        "max": 0.14461859074981417,
+        "mean": 0.003404702508710486,
+        "median": 0.00031049695919631456,
+        "min": 2.721318888680887e-07,
+        "p05": 1.1953769769297855e-06,
+        "p25": 1.2309909485998755e-05,
+        "p75": 0.0026819870379708667,
+        "p95": 0.014703315313639267,
+        "rms": 0.011586188759675025
+      },
+      "deletion_response_mjy_beam": {
+        "count": 4229,
+        "max": 17.783476527290148,
+        "mean": -0.2937837700626806,
+        "median": 7.489045247144333e-05,
+        "min": -98.97121370313417,
+        "p05": -1.125188394455035,
+        "p25": -0.04795374036060118,
+        "p75": 0.045815891032717104,
+        "p95": 3.731954533211465,
+        "rms": 6.404715070927537
+      },
+      "identity_residual_mjy_beam": {
+        "count": 4229,
+        "max": 2.4436008771999695e-13,
+        "mean": 1.6692716953939203e-16,
+        "median": 0.0,
+        "min": -2.427502643342905e-13,
+        "p05": -9.84455572616838e-15,
+        "p25": -7.609472947589513e-16,
+        "p75": 8.187894806610529e-16,
+        "p95": 1.1648922928694779e-14,
+        "rms": 1.9460405572213523e-14
+      },
+      "quadratic_share_Qt_over_Q": {
+        "count": 4229,
+        "max": 0.20136622375212374,
+        "mean": 0.0034502340166904888,
+        "median": 1.5494527814402212e-05,
+        "min": 9.600636469631911e-11,
+        "p05": 4.4603876371058354e-10,
+        "p25": 1.5223134865820217e-08,
+        "p75": 0.0009319110244771233,
+        "p95": 0.016598979224724482,
+        "rms": 0.014251916651706527
+      },
+      "signal_contrast_mjy_beam": {
+        "count": 4229,
+        "max": 13134.901884601793,
+        "mean": -59.12232251196912,
+        "median": 63.25264389651886,
+        "min": -110066.08762783233,
+        "p05": -1723.76468490278,
+        "p25": -166.912183258396,
+        "p75": 221.54383710149068,
+        "p95": 1124.4690267644014,
+        "rms": 1909.8068278715966
+      },
+      "signed_leverage_Ct_over_C": {
+        "count": 4229,
+        "max": 0.19153753871512502,
+        "mean": 0.0034961728429667846,
+        "median": 1.6816597039357886e-06,
+        "min": -0.006397532394557015,
+        "p05": -0.001074847647830112,
+        "p25": -0.0001688680665255307,
+        "p75": 0.0018992009230342582,
+        "p95": 0.017006056623660556,
+        "rms": 0.014540406983686097
+      },
+      "target_cancellation_abs_Ct_over_Bt": {
+        "count": 4229,
+        "max": 1.0,
+        "mean": 0.7782718206742493,
+        "median": 0.8907177621255088,
+        "min": 0.000858597200431094,
+        "p05": 0.21706475157594513,
+        "p25": 0.6647888418970157,
+        "p75": 0.9633443492689415,
+        "p95": 1.0,
+        "rms": 0.8167037246293326
+      },
+      "target_occurrence_pixel_count": {
+        "count": 4229,
+        "max": 145.0,
+        "mean": 22.919839205485932,
+        "median": 10.0,
+        "min": 1.0,
+        "p05": 3.0,
+        "p25": 8.0,
+        "p75": 22.0,
+        "p95": 117.0,
+        "rms": 39.551768579040306
+      },
+      "target_signal_mjy_beam": {
+        "count": 4229,
+        "max": 110075.89666945073,
+        "mean": 124.17557326706194,
+        "median": -29.774392154558388,
+        "min": -13137.876381681488,
+        "p05": -975.3745416002969,
+        "p25": -192.0789665944394,
+        "p75": 203.60718492767595,
+        "p95": 1788.3744283144724,
+        "rms": 1912.82408238264
+      },
+      "total_cancellation_abs_C_over_B": {
+        "count": 4229,
+        "max": 0.8874692488453286,
+        "mean": 0.7635085388067308,
+        "median": 0.7665456801635799,
+        "min": 0.5994613997573845,
+        "p05": 0.6988220883940824,
+        "p25": 0.7433261828313146,
+        "p75": 0.7867365685739938,
+        "p95": 0.8159993466296973,
+        "rms": 0.7643498529183615
+      },
+      "total_occurrence_pixel_count": {
+        "count": 4229,
+        "max": 18519.0,
+        "mean": 13324.496098368409,
+        "median": 12961.0,
+        "min": 6514.0,
+        "p05": 7942.8,
+        "p25": 10909.0,
+        "p75": 16435.0,
+        "p95": 18004.0,
+        "rms": 13717.021470640442
+      },
+      "total_unique_detector_count": {
+        "count": 4229,
+        "max": 324.0,
+        "mean": 251.49302435563962,
+        "median": 265.0,
+        "min": 123.0,
+        "p05": 157.0,
+        "p25": 212.0,
+        "p75": 295.0,
+        "p95": 314.0,
+        "rms": 256.6346481560751
+      },
+      "without_target_signal_mjy_beam": {
+        "count": 4229,
+        "max": 1880.9734731580454,
+        "mean": 65.05325075509282,
+        "median": 5.160196432641545,
+        "min": -76.55811237628534,
+        "p05": -22.672281373630497,
+        "p25": -5.043384962073178,
+        "p75": 36.08628830081915,
+        "p95": 396.2401926839142,
+        "rms": 222.20896744669162
+      }
+    }
+  },
+  "registered_files_validated": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f10_jinc_accounting_2026-09-04/REGISTRATION_R0.5.yaml",
+      "role": "immutable_r0_5_replay_registration",
+      "sha256": "018ce09c634789d011a1f73843301fcd7f9b2fda38e8c9d29c00e954a76e34c8",
+      "size_bytes": 10603
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f10_jinc_accounting_2026-09-04/REGISTRATION_MANIFEST_R0.5.md",
+      "role": "immutable_r0_5_registration_manifest",
+      "sha256": "92c25b1e944bacc612945b8b2240e8b0ecb56ef0103466c65b84898869e77354",
+      "size_bytes": 2596
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f10_jinc_accounting_2026-09-04/REPLAY_RESULT_R0.5.md",
+      "role": "replacement_replay_result",
+      "sha256": "bfb1d121af72b9ae48b1539a5610877368bac8d1078fdb8005701837644747e1",
+      "size_bytes": 1480
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f10_jinc_accounting_2026-09-04/TEST_DEFINITION.md",
+      "role": "frozen_test_definition",
+      "sha256": "0ca64854ffcd25b9309e4217b8413f53f00616185cccf94a921585cda94a902c",
+      "size_bytes": 5806
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/analyze_jinc_accounting.py",
+      "role": "repaired_analysis_tool",
+      "sha256": "dc47a0cd61320b7afccd4a3233305046d3c82e3f6ea08a1015c7a32e259acb93",
+      "size_bytes": 27551
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/test_analyze_jinc_accounting.py",
+      "role": "repaired_analysis_tests",
+      "sha256": "38c942747aa4c4308568d7e677a20e8be27d2f77633f27796020653c6d4a704d",
+      "size_bytes": 3167
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F10_R4_ROUTINE_NOISE_PASS_LEDGER_REPAIR_2026-09-04.md",
+      "role": "delegated_ledger_repair",
+      "sha256": "730bc4aa8cdbc050e77c7ff524e69a0fef13249514ce396fc983e483bed4e011",
+      "size_bytes": 2133
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_ROUTINE_DEFECT_REPAIR_DIRECTION_2026-09-04.md",
+      "role": "standing_owner_direction",
+      "sha256": "0d0596ec42c857fde6048b481bfff97d79aa3abac7de5798d72cc73773a860fa",
+      "size_bytes": 1797
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.2/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_jinc_accounting.nc",
+      "role": "replacement_diagnostic_receipt",
+      "sha256": "010d8cbac8b4031223b84b3ef4e6a2e77d52a5a9d0b8e673a735e0e97e1c9cfc",
+      "size_bytes": 5485571
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.2/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_jinc_accounting_target_samples.ecsv",
+      "role": "replacement_target_sample_ledger",
+      "sha256": "7e9881a7f2d629e2e76d29b93bd41d42fbc71cf8ef94ca64df19005156366ddb",
+      "size_bytes": 49806
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.2/reduced/redu00/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "role": "replacement_a1100_fits",
+      "sha256": "e761c683a23deb6bd2e85ba916259ced56501e7cf6548751714548096a56a882",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.2/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "role": "replacement_a1400_fits",
+      "sha256": "ced690b8c7a3700ce9920f750efe71e7d77a1b4733c599f3d3e81eaa9e7879a5",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.2/reduced/redu00/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "role": "replacement_a2000_fits",
+      "sha256": "2d5507466561f197a367add69e2d3dcc99868b2947bf8a6e10ed4735f3e7c46e",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.2/reduced/redu00/citlali_restart_checkpoint.nc",
+      "role": "replacement_checkpoint",
+      "sha256": "d1879db047230e1768069276bef4670d9b4826ea6f2376be59e24b46c3d9638f",
+      "size_bytes": 6506466
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f10-jinc-accounting-r0.2/logs/replay.log",
+      "role": "replacement_replay_log",
+      "sha256": "cab6a411a4fb2d2166e7edb058cec75297fc61c8d18d52e98a11cbcd146cac07",
+      "size_bytes": 494853
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/injected-without-uid4460/reduced/redu00/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "role": "el_f6_n5_a1100_fits",
+      "sha256": "c60da5025d7412820c01aa59b069d5aa324a2b09b8f2fbbfd6ac47e3897c3ee7",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/injected-without-uid4460/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "role": "el_f6_n5_a1400_fits",
+      "sha256": "5d8594aa566d3bd30f00e4ca3beecef69e3c69f26503f57ce4f0c7834670b0cd",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/injected-without-uid4460/reduced/redu00/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "role": "el_f6_n5_a2000_fits",
+      "sha256": "ff1cfea4d8964b5e157811f62ac1c2ba260bf16c88488a882e9f9d81009add14",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f6-off-source-penalty-counterfactual-r0.1/injected-without-uid4460/reduced/redu00/citlali_restart_checkpoint.nc",
+      "role": "el_f6_n5_checkpoint",
+      "sha256": "d7df0ee480ad99ab3e1b51bb9f311c69e5ae9ab7104a525490dc2fe32ff37faa",
+      "size_bytes": 6506519
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f8-penalty-placement-r0.1/r0.4/a5-map/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "role": "el_f8_a5_map_a1400_fits",
+      "sha256": "ce1633261dbd8bdb3836f9db8eb731e7e46d7f817e5fe3951f73e8ffef81468c",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f8-penalty-placement-r0.1/r0.4/a5-map/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_mapdiag.nc",
+      "role": "el_f8_a5_map_mapdiag",
+      "sha256": "9c08826b5c01f17f01e908c6af328e9f199aacb2dc8f950b1e0d16de7a3174da",
+      "size_bytes": 63962
+    }
+  ],
+  "schema_version": "sci-fruit-el-f10-result-v1",
+  "target_sample_ledger": {
+    "admitted": 271,
+    "already_unavailable": 34,
+    "proposed": 305,
+    "reasons": {
+      "admitted": 271,
+      "final_flagged": 34
+    }
+  },
+  "test_id": "SCI-FRUIT-EL-F10-R4-NOISE-PASS-LEDGER-REPAIR-R0.1",
+  "total_accumulator_exact_closure": {
+    "captured_empirical_matches_fits": true,
+    "captured_formal_matches_fits": true,
+    "formal_from_total_accumulators": true,
+    "normalization_support_matches": true,
+    "normalization_threshold_matches": true,
+    "signal_from_total_accumulators": true
+  },
+  "without_target_reconstruction": {
+    "common_conditioned_support_pixels": 94635,
+    "diagnostic_empirical_scale": 1.292566567724443,
+    "formal_coefficient_max_abs_difference": 1.457167719820518e-16,
+    "formal_coefficient_max_bound": 1.0129763274187332e-11,
+    "gained_support_pixels": 0,
+    "lost_support_pixels": 0,
+    "registered_derived_threshold_bound": 1.0129763274187333e-13,
+    "signal_max_abs_difference": 6.821210263296962e-13,
+    "signal_max_bound": 2.963132553746818e-07,
+    "threshold_edge_explained_changes": 0,
+    "unexplained_support_changes": 0
+  }
+}

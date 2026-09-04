@@ -1,0 +1,5 @@
+row,col,signed_leverage_Ct_over_C,absolute_mass_share_Bt_over_B,quadratic_share_Qt_over_Q,total_cancellation_abs_C_over_B,target_cancellation_abs_Ct_over_Bt,total_occurrence_pixel_count,target_occurrence_pixel_count,total_unique_detector_count,target_signal_mjy_beam,without_target_signal_mjy_beam,signal_contrast_mjy_beam,deletion_response_mjy_beam,identity_residual_mjy_beam
+142,280,0.0,0.0,0.0,0.5809889903622383,nan,955.0,0.0,15.0,nan,22.404150199416016,nan,0.0,nan
+144,280,0.0,0.0,0.0,0.41686406112051033,nan,981.0,0.0,18.0,nan,-12.459595752255035,nan,0.0,nan
+142,281,0.0,0.0,0.0,0.5571126522325136,nan,960.0,0.0,16.0,nan,14.894999046603242,nan,0.0,nan
+144,281,0.0,0.0,0.0,0.3594265192726904,nan,1000.0,0.0,17.0,nan,-19.778117084327615,nan,0.0,nan

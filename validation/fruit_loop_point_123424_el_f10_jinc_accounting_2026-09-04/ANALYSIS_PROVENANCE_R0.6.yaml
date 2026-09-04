@@ -1,0 +1,53 @@
+schema_version: sci-fruit-el-f10-analysis-provenance-v1
+test_id: SCI-FRUIT-EL-F10-R4-NOISE-PASS-LEDGER-REPAIR-R0.1
+result_revision: r0.6
+role: exploratory-development-exact-accounting-only
+analysis_completed_local: 2026-09-04T08:32:24-04:00
+command:
+  executable: /Users/gwilson/tolteca/bin/python
+  script: /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/analyze_jinc_accounting.py
+  arguments:
+    - --registration
+    - /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f10_jinc_accounting_2026-09-04/REGISTRATION_R0.6.yaml
+    - --output-dir
+    - /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f10_jinc_accounting_2026-09-04
+registration:
+  path: REGISTRATION_R0.6.yaml
+  size_bytes: 10316
+  sha256: dd5288cd51302e46a3bccc9f5d1ce874c641ca6620944bf592d186400e19473f
+analysis_tool:
+  path: ../../tools/fruit_loops/analyze_jinc_accounting.py
+  size_bytes: 27551
+  sha256: dc47a0cd61320b7afccd4a3233305046d3c82e3f6ea08a1015c7a32e259acb93
+outputs:
+  - path: ANALYSIS_RESULT_R0.1.json
+    size_bytes: 29803
+    sha256: ee6a8112902de13ec52d0397e02901c4192af1b13fda7f2d591318bb97c3f5de
+  - path: BINNED_RESPONSE_R0.1.csv
+    size_bytes: 7359
+    sha256: f4ecad1c1c0495255c484af40199a506aa4c073e0ca4c4bcc843ba0e8167b4d4
+  - path: TRIGGER_ACCOUNTING_R0.1.csv
+    size_bytes: 753
+    sha256: 73d694f2c99b758c6a405639385568e41a55fe75ad2526a83993d669082d7ee6
+  - path: JINC_COMPONENT_MAPS_R0.1.nc
+    size_bytes: 3411419
+    sha256: 57f16f694bc437197a2b5b763ba14ad6270324105c4ec2675d23dc3f7ac3784c
+  - path: JINC_ACCOUNTING_R0.1.png
+    size_bytes: 418113
+    sha256: 996c1ba4f6d7e2f6ecb0d2f6ef7b4edc1bc237e8619a33ae8afbe90dd4328fff
+registered_files_validated: 21
+packaging_normalization:
+  files: [BINNED_RESPONSE_R0.1.csv, TRIGGER_ACCOUNTING_R0.1.csv]
+  transformation: CRLF line endings normalized to LF
+  values_changed: false
+citlali_replay_in_this_analysis: false
+external_inputs_modified: false
+unity_activity: false
+claim_limits:
+  detector_judgment_authorized: false
+  generic_mechanism_claim_authorized: false
+  safeguard_selection_authorized: false
+  qualification_use_authorized: false
+  production_use_authorized: false
+  gate_d_authorized: false
+  stage_b_authoring_authorized: false

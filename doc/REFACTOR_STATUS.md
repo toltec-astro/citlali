@@ -802,9 +802,38 @@ proposed
 [`SCI-FRUIT-EL-F10-R2-NETCDF-SCALAR-READER-REPAIR-R0.1`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F10_R2_NETCDF_SCALAR_READER_OWNER_REVIEW_R0.1.md),
 bound by its exact
 [`EL_F10_R2_BUNDLE_MANIFEST_R0.1.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F10_R2_BUNDLE_MANIFEST_R0.1.md),
-would authorize only the displayed native-string/bytes/NumPy-scalar reader
-repair, focused tests, a new output-bound registration, and one no-replay
-analysis retry. It remains unapproved.
+was approved on `2026-09-04`. The scalar repair and two subsequently exposed
+routine diagnostic-path defects were resolved under the owner's standing
+narrow-defect direction: FITS receipt comparison now applies the documented
+output column reversal, and target-ledger collection now excludes the
+noise-only JINC pass.
+The latter required one isolated local replacement replay; its accumulator
+receipt and checkpoint are byte-for-byte identical to the retained defective-
+ledger replay, while the corrected ledger contains exactly 305 unique target
+samples (271 admitted and 34 already final-flagged). Full local build, test,
+configuration, and formatting gates passed.
+
+The final
+[`EL-F10 result`](../validation/fruit_loop_point_123424_el_f10_jinc_accounting_2026-09-04/EXECUTION_RESULT_R0.6.md)
+passes all registered neutrality, compatibility, exact-closure, ledger,
+forward-error, and support gates. Removing the target `N_t`, `C_t`, and `Q_t`
+reconstructs the retained EL-F8 map-only counterfactual with maximum signal
+difference `6.82121e-13 mJy/beam` and no support changes. The exact identity
+shows that the localized response is signed local leverage times processed-
+signal contrast. At the worst arc pixel, a 4.87% signed share multiplies an
+approximately `-2032 mJy/beam` contrast to give the observed
+`-98.97 mJy/beam` response; 164 unique detectors contribute at that pixel.
+UID 4460's scalar detector weight is elevated but remains well below the
+pipeline's logged upper limit, so ordinary weighting does not measure this
+interaction. The four original trigger pixels and the off-source injected
+aperture have zero direct target contribution.
+
+This is exact but bounded evidence for one observation, UID, scan, and
+iteration. It neither judges the detector nor establishes a generic mechanism
+or selects a safeguard. The next significant owner decision is whether to
+authorize a prospective EL-F11 influence study comparing the existing repeat-
+count action with response-aware hard and bounded soft or map-local candidates,
+followed by independent-pointing replication before any policy selection.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
