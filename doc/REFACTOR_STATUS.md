@@ -907,6 +907,29 @@ branch. The next significant decision is whether to authorize one bounded
 response-aware intervention screen; another explanatory study of the same
 event is not recommended.
 
+On `2026-09-04`, repository recovery at `d39d4685b` confirmed that final
+EL-F11 result and both preserved review-archive identities. The requested
+next milestone is now a concrete
+[`EL-F12 owner-review proposal`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F12_RESPONSE_AWARE_INTERVENTION_OWNER_REVIEW_R0.1.md),
+with a
+[`bounded design`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F12_RESPONSE_AWARE_INTERVENTION_DESIGN_R0.1.md)
+and exact
+[`proposal manifest`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F12_BUNDLE_MANIFEST_R0.1.md).
+It proposes a causal census of all new map-dominance hard-exclusion records,
+individual and joint JINC deletion-response screening, and two fixed
+alternatives: hold the selected exclusion or retain half its map coefficient
+through the fixed iteration-6 horizon. All arms start fresh with the historical
+`alpha=1` recurrence; the rejected alpha-1.25 diagnosis checkpoints are not
+reused as control state. The proposal retains all-array source, morphology,
+leakage, useful-exclusion, support, convergence and performance protections.
+Eight primary trajectories and at most four conditional restart checks are
+proposed; no run has been staged or performed. A favorable result could only
+advance to separately authorized independent-pointing replication before any
+policy recommendation. The next significant decision is exact owner approval
+or revision of this screen. No intervention implementation, replay, new
+scientific result, Gate-D launch, qualification, Stage B, production or Unity
+activity is authorized by proposal preparation.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
