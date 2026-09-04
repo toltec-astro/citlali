@@ -1,5 +1,37 @@
 # Citlali Refactor Status
 
+## 2026-09-04 Timestream Successor D2 Admission Candidate
+
+The owner approved `TIMESTREAM-SUCCESSOR-D2-CANONICAL-ADMISSION-001` to
+prepare one Tier 2 integration candidate on
+`codex/timestream-successor-d2-canonical-admission`, based exactly on live
+canonical `9f42d348298d76c5d5145aaf0c3eace1f3e154c1`. Its second parent is
+accepted and pushed D2 closure `54c3254aaf8a6639d3fe1e56e23709e29cd34b3b`.
+The original implementation `bb060947175523d6fc6a777ae4ad4606693e9e5f` and
+both closure commits remain unchanged. The merge applied without conflicts;
+canonical's intervening documentation-only changes do not overlap D2's five
+paths, all of which are preserved byte-for-byte.
+
+This section records candidate preparation, not canonical admission. Local
+CLI/header builds, 7/7 focused D2 tests, 891/891 runnable CTests, 207/207
+baseline-tool tests, the complete 130-test config preflight and audits, and
+both validation ledgers pass. The original authoritative Unity gate remains job
+`63987273` at exact implementation `bb0609471...`, with 891/891 runnable tests
+passing; evidence reuse requires exact application/build/test-input
+equivalence, established by the preservation proof, and does not relabel
+that run as the merge SHA. Full identities,
+owner authorization, moving-base reassessment, preserved VAL ownership,
+validation, and independent-review requirements are in the
+[admission handoff](../handoff/TIMESTREAM_SUCCESSOR_D2_CANONICAL_ADMISSION_001_2026-09-04.md).
+
+Canonical remains at `9f42d3482...`; independent exact-SHA review and a later
+owner decision are required before canonical movement and user-controlled
+push. This integration operation occupies neither a spine nor module-probe
+slot. It authorizes no route activation, filtering, factor selection,
+downsampling, substantive RTC/PTC/AST, common-grid, CAL, MAP, production,
+cleanup, or subsequent implementation. The completed map-space closure below
+and all unrelated canonical content remain preserved.
+
 ## 2026-09-04 Map-Space Horizontal Audit Closure
 
 The scientific owner accepted independently reviewed MAP-space shared-

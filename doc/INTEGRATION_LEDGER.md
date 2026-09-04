@@ -15,6 +15,44 @@ The historical WP-7.1 program router and machine-readable scientific-authority
 binding remain in [`WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md`](WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md)
 and `validation/wp7_timestream_successor_authority.json`.
 
+## Timestream Successor D2 Admission Candidate — 2026-09-04
+
+For the current D2 operation, this entry supersedes older canonical-tip and
+pending-push checkpoint wording below. Live GitHub canonical is exact
+`9f42d348298d76c5d5145aaf0c3eace1f3e154c1`; accepted D2 feature closure is
+exact `54c3254aaf8a6639d3fe1e56e23709e29cd34b3b`. Both were verified with
+read-only live ref checks before the owner-approved candidate construction.
+
+`TIMESTREAM-SUCCESSOR-D2-CANONICAL-ADMISSION-001` owns one clean worktree and
+branch `codex/timestream-successor-d2-canonical-admission`. It prepares one
+explicit merge with canonical first and accepted closure second, retaining
+the three original D2 commits and all five D2 paths exactly. The common
+ancestor remains the literal implementation base
+`4d14d0dce8c80b6bc9d0d39c9a90a8f4b2504538`; neither live tip contains the
+other. The intervening canonical documentation does not overlap D2, and the
+merge applied without conflicts. The source and evidence preservation proof
+and the three additional admission-record paths are specified in the
+[admission handoff](../handoff/TIMESTREAM_SUCCESSOR_D2_CANONICAL_ADMISSION_001_2026-09-04.md).
+
+Local CLI/header builds, 7/7 focused D2 tests, 891/891 runnable CTests,
+207/207 baseline-tool tests, complete config preflight, and both validation
+ledgers pass. The preservation proof establishes application/build/test-input
+equivalence to the accepted implementation. Accepted Unity job `63987273` remains bound
+to implementation `bb060947175523d6fc6a777ae4ad4606693e9e5f` and its 891/891
+runnable-test result. Reuse depends on exact application/build/test-input
+equivalence; the new merge SHA has not been run on Unity. Independent
+fresh-context read-only review must bind the final full candidate SHA before
+the next owner disposition. Canonical movement and push are not authorized
+by candidate preparation; the user performs every GitHub push.
+
+This Tier 2 canonical integration operation consumes no application spine
+or module-probe slot. D2 owns residual storage and mechanical completeness;
+VAL retains semantic validation authority. Activation, filtering, factor
+selection, downsampling, substantive RTC/PTC/AST, common-grid, MAP, CAL,
+production, cleanup, and subsequent implementation remain excluded. No
+accepted application generation, scientific-contract authority, build-policy
+authority, or production disposition changes.
+
 ## Timestream Successor Identity Route Canonical Admission — 2026-09-03
 
 The project owner authorized canonical admission of independently reviewed
