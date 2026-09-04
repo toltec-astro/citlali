@@ -5,6 +5,40 @@ import numpy as np
 from tools.fruit_loops import analyze_jinc_accounting as analysis
 
 
+class FakeVariable:
+    def __init__(self, value: object) -> None:
+        self.value = value
+
+    def __getitem__(self, key: object) -> object:
+        return self.value
+
+
+class FakeDataset:
+    def __init__(self, value: object) -> None:
+        self.variables = {"value": FakeVariable(value)}
+
+
+def test_scalar_returns_native_string() -> None:
+    dataset = FakeDataset(np.asarray(["schema-v1"], dtype=object))
+
+    assert analysis.scalar(dataset, "value") == "schema-v1"
+
+
+def test_scalar_decodes_bytes() -> None:
+    dataset = FakeDataset(np.asarray([b"schema-v1"], dtype=object))
+
+    assert analysis.scalar(dataset, "value") == "schema-v1"
+
+
+def test_scalar_unwraps_numpy_numeric_scalar() -> None:
+    dataset = FakeDataset(np.asarray([np.int64(17)]))
+
+    value = analysis.scalar(dataset, "value")
+
+    assert value == 17
+    assert isinstance(value, int)
+
+
 def test_positive_order_threshold_matches_registered_algorithm() -> None:
     values = np.array([[0.0, 1.0, 2.0], [3.0, 4.0, np.nan]])
 

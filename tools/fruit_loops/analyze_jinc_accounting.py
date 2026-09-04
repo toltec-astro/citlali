@@ -100,7 +100,11 @@ def bitwise_equal(left: np.ndarray, right: np.ndarray) -> bool:
 
 def scalar(dataset: Dataset, name: str) -> object:
     value = np.asarray(dataset.variables[name][...]).reshape(-1)[0]
-    return value.decode() if isinstance(value, bytes) else value.item()
+    if isinstance(value, bytes):
+        return value.decode()
+    if hasattr(value, "item"):
+        return value.item()
+    return value
 
 
 def positive_order_threshold(values: np.ndarray, cut: float) -> tuple[float, int, int]:

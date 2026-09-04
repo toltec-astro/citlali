@@ -102,6 +102,12 @@ measured, and recorded as intentional.
 - The user performs Unity builds and reductions. Do not attempt to use Unity.
 - Do not push. The user controls pushes to GitHub.
 - Leave unrelated dirty files unchanged.
+- Narrow implementation defects found during an already authorized analysis
+  or validation run may be repaired, tested, documented, and continued without
+  fresh owner approval when the scientific method, registered gates and
+  bounds, interpretation scope, external inputs, and authorized run count do
+  not change. Stop for owner review when a repair would change any of those
+  scientific or scope decisions.
 - Commit coherent changes after local verification; do not create commits only
   to satisfy a numerical cadence.
 - Update `doc/REFACTOR_STATUS.md` when a phase gate, governing decision, or
