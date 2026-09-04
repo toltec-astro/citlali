@@ -9,7 +9,7 @@ timestream:
     save_all_iters: true
     injected_source_test:
       enabled: true
-      start_iteration: 1
+      start_iteration: 4
       array_amplitude_mjy_beam: [100.0, 100.0, 100.0]
 
 mapmaking:

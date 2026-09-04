@@ -860,6 +860,12 @@ and analysis method are frozen in
 [`REGISTRATION_R0.1.yaml`](../validation/fruit_loop_point_123424_el_f11_prospective_influence_2026-09-04/REGISTRATION_R0.1.yaml).
 No new accounting values have been opened. The one authorized local replay is
 the next action; its outputs must be hash-bound before analysis.
+The first launch then stopped in the restart guard before any FRUIT iteration
+because the override repeated fresh-run `start_iteration: 1` instead of the
+checkpoint's required next iteration `4`. The failed log and empty lock are
+preserved. The method-preserving correction is recorded under the owner's
+standing routine-defect direction and frozen in `REGISTRATION_R0.2.yaml`; the
+single scientific replay remains unused and is still the next action.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

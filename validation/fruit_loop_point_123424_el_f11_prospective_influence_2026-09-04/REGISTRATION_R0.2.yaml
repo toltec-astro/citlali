@@ -1,0 +1,69 @@
+schema_version: sci-fruit-el-f11-replay-repair-registration-v1
+test_id: SCI-FRUIT-EL-F11-PROSPECTIVE-INFLUENCE-PERSISTENCE-R0.1
+registration_revision: r0.2
+registered_before_repaired_launch: true
+supersedes_registration:
+  path: validation/fruit_loop_point_123424_el_f11_prospective_influence_2026-09-04/REGISTRATION_R0.1.yaml
+  size_bytes: 11413
+  sha256: 3e20076162e0b28b7ab25ee0c8f4a2d9bd7a2d0c1bc212c5eee7d000e820e116
+authorization:
+  owner_record: ../../doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_EL_F11_AUTHORIZATION_2026-09-04.md
+  standing_direction: ../../doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_ROUTINE_DEFECT_REPAIR_DIRECTION_2026-09-04.md
+  repair_record: ../../doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F11_R1_ROUTINE_RESTART_INJECTION_START_REPAIR_2026-09-04.md
+failed_attempt:
+  stopped_before_fruit_iteration: true
+  scientific_replay_consumed: false
+  iteration_directory_created: false
+  scientific_products_created: false
+  reason: injected_source_start_iteration_did_not_equal_checkpoint_next_iteration
+repair:
+  file: validation/fruit_loop_point_123424_el_f11_prospective_influence_2026-09-04/EL_F11_JINC_ACCOUNTING.yaml
+  field: timestream.fruit_loops.injected_source_test.start_iteration
+  source_value: 1
+  corrected_value: 4
+  checkpoint_next_iteration: 4
+  injected_source_remains_enabled: true
+  source_position_or_amplitude_changed: false
+  scientific_method_or_gate_changed: false
+execution:
+  launch_argument_order_and_all_other_bindings: REGISTRATION_MANIFEST_R0.1.md
+  completed_iteration: 4
+  incoming_completed_iteration: 3
+  iterations: 1
+  maximum_scientific_replays: 1
+  configured_threads: 1
+  grppiex: seq
+  max_iters_exclusive: 5
+  maximum_hours: 1
+  maximum_memory_gib: 64
+  maximum_retained_gib: 8
+  local_only: true
+registered_files:
+  - role: immutable_initial_registration
+    path: validation/fruit_loop_point_123424_el_f11_prospective_influence_2026-09-04/REGISTRATION_R0.1.yaml
+    size_bytes: 11413
+    sha256: 3e20076162e0b28b7ab25ee0c8f4a2d9bd7a2d0c1bc212c5eee7d000e820e116
+  - role: immutable_initial_registration_manifest
+    path: validation/fruit_loop_point_123424_el_f11_prospective_influence_2026-09-04/REGISTRATION_MANIFEST_R0.1.md
+    size_bytes: 3249
+    sha256: 5325ea192be6eafd00de9bd31748feccb93ee4c96ee93bb44adc4747b7b74ad3
+  - role: corrected_override_config
+    path: validation/fruit_loop_point_123424_el_f11_prospective_influence_2026-09-04/EL_F11_JINC_ACCOUNTING.yaml
+    size_bytes: 572
+    sha256: a2a174152cd4a9da594baf5bbd94bf067d4f9912caed8cfecb4d730e9f6b10dc
+  - role: setup_abort_record
+    path: validation/fruit_loop_point_123424_el_f11_prospective_influence_2026-09-04/SETUP_ABORT_R0.1.md
+    size_bytes: 985
+    sha256: c5a9f47569d6953e03a815d23931384b70a6ea39fee4e56eaa07bfce5561c7e8
+  - role: routine_repair_record
+    path: doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F11_R1_ROUTINE_RESTART_INJECTION_START_REPAIR_2026-09-04.md
+    size_bytes: 1749
+    sha256: d25cdda23072803842c590bfbf1d2cfb4095dbc2763bc3ba669abde6eede4342
+  - role: preserved_failed_log
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f11-prospective-influence-r0.1/attempts/r0.1-preflight-failure/logs/replay.log
+    size_bytes: 14411
+    sha256: ad64d9cdd90d51e2ae330eb765805158fb027a145e626032fb3253454570a951
+  - role: preserved_failed_lock
+    path: /Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f11-prospective-influence-r0.1/attempts/r0.1-preflight-failure/reduced/.citlali-reduction.lock
+    size_bytes: 0
+    sha256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
