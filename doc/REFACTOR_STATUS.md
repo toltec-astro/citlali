@@ -1,5 +1,47 @@
 # Citlali Refactor Status
 
+## 2026-09-04 Map-Space Horizontal Audit Closure
+
+The scientific owner accepted independently reviewed MAP-space shared-
+conventions repair candidate
+`a983e3e31ca6422ade8f081585f5ef6babcfe5d0`, tree
+`c54bcd0c9b26055f02fe4975e2ea06f6007238d5`, after the review returned
+`PASS WITH RECORDED LIMITATIONS` on the scientific/behavioral,
+architecture/ownership, and repository/evidence axes. Canonical
+`codex/refactor-mainline` was then fast-forwarded literally from exact audit
+base `5f0fc20042b88fb6cd883c92d1b59b7f22832901` through the reviewed linear
+repair history to `a983e3e31ca6422ade8f081585f5ef6babcfe5d0`. The owner reports
+that canonical push complete; this local record does not independently verify
+the remote ref.
+
+The accepted repair closes `MSP-F-001`--`MSP-F-004` in repository
+documentation while preserving the product-scoped frozen SCI-MAP v0.1/r0.7.1
+and SCI-JINC v0.1/r0.3 meanings. The seven exact horizontal-audit artifacts
+remain byte-identical at preserved audit commit
+`34a29a1eac8a2c41a97263bbd775bd36c3d06398`; frozen packages, application
+source, tests, validation products, algorithms, defaults, and numerical-route
+states are unchanged. Post-integration execution of the exact candidate
+repair verifier and the scientific-contract layout verifier passed from the
+clean canonical checkout.
+
+`MSP-F-005` is now an owner-acknowledged, manifest-superseded, nonblocking
+editorial residue. The stale candidate/approval wording inside the frozen MAP
+and JINC sets remains unchanged; any byte correction requires a separately
+authorized versioned freeze-only erratum or successor. `MSP-F-006` is closed
+by the manager-record corrections in this closeout. Exact identities,
+dispositions, preservation boundaries, and nonclaims are recorded in the
+[scientific-owner acceptance and integration record](scientific_contracts/audits/MAP_SPACE_SHARED_CONVENTIONS_REPAIR_001/SCIENTIFIC_OWNER_ACCEPTANCE_AND_INTEGRATION_2026-09-04.md).
+
+The next independent scientific-contract package eligible for separate owner
+authorization is recovery-first SCI-OOF Stage A. SCI-BEAM already owns
+per-detector Beammap fitting, and blank-field source fitting remains deferred.
+Active SCI-FRUIT remains independent; after its own completion, review, and
+integration, it requires a focused attachment audit against the repaired
+map-space chain rather than a wholesale repeat of the completed six-package
+audit. This closeout makes no implementation-conformity, validation,
+achieved-response, achieved-covariance, performance, readiness, production,
+activation, deployment, or Unity claim.
+
 ## 2026-09-03 Timestream Successor Identity Route Canonical Admission
 
 The project owner authorized canonical admission of independently reviewed
@@ -3426,14 +3468,16 @@ Stage A/base-Registry assertions. Exact refs, results, exclusions, and
 nonclaims are in the
 [integration-candidate record](scientific_contracts/POINT_NOI_FLT_FIXED_INTEGRATION_CANDIDATE_2026-09-03.md).
 
-`codex/refactor-mainline` has not moved and nothing has been pushed. The active
-SCI-FRUIT branch and its untracked artifacts remain independent. The older
-dirty ALIGN worktree and its 77 uniquely reachable historical commits remain
-protected and untouched. Independent exact-SHA review and owner acceptance are
-still required before canonical movement; the map-space horizontal audit has
-not begun. This consolidation changes no frozen scientific semantics and
-makes no implementation-conformity, validation, achieved-performance,
-readiness, production, or Unity claim.
+At that preflight checkpoint, `codex/refactor-mainline` had not moved and
+nothing had been pushed. The active SCI-FRUIT branch and its untracked
+artifacts remained independent. The older dirty ALIGN worktree and its 77
+uniquely reachable historical commits remained protected and untouched.
+Independent exact-SHA review and owner acceptance were still required before
+canonical movement, and the map-space horizontal audit had not begun. The
+later `2026-09-04` closure entry at the top of this document supersedes only
+those status statements. This consolidation changed no frozen scientific
+semantics and made no implementation-conformity, validation,
+achieved-performance, readiness, production, or Unity claim.
 
 The previously approved `DOC-MAP-001` deliverable is the first queued user
 guide. It will combine a canonical map dictionary with a compact per-reduction

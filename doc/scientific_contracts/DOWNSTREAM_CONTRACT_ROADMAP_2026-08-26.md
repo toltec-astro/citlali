@@ -2,8 +2,8 @@
 
 Date: `2026-08-26`
 
-Updated: `2026-09-03` for the POINT/NOI/FLT-FIXED integration candidate and
-the current downstream package checkpoint
+Updated: `2026-09-04` for map-space horizontal-audit closure and the next
+downstream package boundary
 
 Status: scientific-owner-approved program sequencing record
 
@@ -11,6 +11,38 @@ This record preserves the agreed progression after the frozen ALIGN-through-PTC
 handoff. It is a program plan, not a scientific contract, package freeze,
 implementation-conformity finding, validation result, or production-readiness
 claim.
+
+## 2026-09-04 Map-Space Audit Closure And Next Tranche
+
+The owner accepted independently reviewed shared-conventions repair candidate
+`a983e3e31ca6422ade8f081585f5ef6babcfe5d0`, tree
+`c54bcd0c9b26055f02fe4975e2ea06f6007238d5`, and canonical
+`codex/refactor-mainline` was fast-forwarded from exact audit base
+`5f0fc20042b88fb6cd883c92d1b59b7f22832901` through the preserved audit and
+repair history. The owner reports that canonical push complete. The completed
+horizontal audit and accepted repair establish simultaneous repository-
+documentation coherence for SCI-MAP, SCI-JINC, SCI-FLT-FIXED,
+SCI-FLT-MATCHED, SCI-NOI, and SCI-POINT under their exact product-scoped
+authorities without reopening frozen local science.
+
+`MSP-F-001`--`MSP-F-004` are closed by the shared-conventions repair.
+`MSP-F-005` is an owner-acknowledged, manifest-superseded, nonblocking
+editorial residue whose frozen bytes remain unchanged pending any separately
+authorized versioned erratum or successor. `MSP-F-006` is closed by the dated
+manager-record corrections. The exact closure record is
+[`SCIENTIFIC_OWNER_ACCEPTANCE_AND_INTEGRATION_2026-09-04.md`](audits/MAP_SPACE_SHARED_CONVENTIONS_REPAIR_001/SCIENTIFIC_OWNER_ACCEPTANCE_AND_INTEGRATION_2026-09-04.md).
+
+The next independent package eligible for separate owner authorization is a
+recovery-first SCI-OOF Stage A. SCI-BEAM already owns per-detector Beammap
+fitting; blank-field detection, deblending, catalogs, and faint distributed-
+source fitting remain deferred. SCI-FRUIT remains an independent active
+package-development line. After its own completion, owner review, and
+integration, FRUIT requires a focused attachment audit against the repaired
+map-space chain rather than repetition of the completed six-package audit.
+
+This checkpoint establishes no new numerical route, implementation
+conformity, validation, achieved response or covariance, performance,
+readiness, production authorization, activation, deployment, or Unity result.
 
 ## 2026-09-03 Consolidation Checkpoint
 
@@ -165,8 +197,8 @@ The material below records previously authorized package work and the
 then-current states at which those actions were documented. It does not state
 the current authorized action, authorize another launch, or authorize
 repetition of completed work. Present-tense launch language and statements that
-a later stage had not begun are historical; the `2026-09-03` Consolidation
-Checkpoint above governs current sequencing.
+a later stage had not begun are historical; the `2026-09-04` Map-Space Audit
+Closure And Next Tranche above governs current sequencing.
 
 SCI-MAP v0.1/r0.7.1 and SCI-JINC v0.1/r0.3 are frozen under their own exact
 owner records. The scientific owner's `2026-08-29` direction launches bounded

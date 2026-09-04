@@ -11,9 +11,14 @@ The [consolidation ledger](CONSOLIDATION_LEDGER_2026-08-22.md) records the
 canonical branch, package provenance, retained revision history, and known
 recovery gaps before the next program-wide audit.
 The [2026-09-03 POINT/NOI/FLT-FIXED integration candidate](POINT_NOI_FLT_FIXED_INTEGRATION_CANDIDATE_2026-09-03.md)
-records the exact temporary branch, source refs, bounded merge resolutions,
-verification state, and protected FRUIT/ALIGN exclusions. It is an
-owner-review candidate, not an accepted movement of the canonical branch.
+is the historical preflight record for the exact temporary branch, source
+refs, bounded merge resolutions, verification state, and protected
+FRUIT/ALIGN exclusions. Its review and canonical-movement gates are complete.
+The
+[2026-09-04 map-space scientific-owner acceptance and integration record](audits/MAP_SPACE_SHARED_CONVENTIONS_REPAIR_001/SCIENTIFIC_OWNER_ACCEPTANCE_AND_INTEGRATION_2026-09-04.md)
+closes the subsequent horizontal audit and shared-conventions repair at
+reviewed candidate `a983e3e31ca6422ade8f081585f5ef6babcfe5d0`, while preserving
+the exact audit evidence and frozen package bytes.
 The [owner-approved downstream roadmap](DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md)
 preserves the sequence from MAP closure through JINC, NOI, filtering,
 source/mode work, and FRUIT. The
@@ -81,8 +86,8 @@ implementation, performance, production, or MAP authorization follows.
 | [SCI-FLT-MATCHED — matched-template map amplitude estimation](packages/SCI-FLT-MATCHED/v0.1/README.md) | Stage A, implementation-blind Stage B, two independent review rounds, owner dispositions, and r0.6 freeze closure complete on `2026-09-01` | **Scientific authority frozen** at v0.1/r0.6; 46-object authority-manifest SHA-256 `6b0231a7e9d34f028eda9cce48f62de1fc9e594348aa1448a2d182d732f78688`; 50 requirements, 25 predictions, 17 disposed SODL IDs, and a 96-ID crosswalk | Concrete weight/profile/numerical routes and response/covariance fidelity remain separately gated or unavailable; no implementation conformity, observational validation, achieved performance, readiness, or production claim | Preserve the frozen r0.6 authority; bind any concrete route or scientific change through a separately authorized successor |
 | [SCI-POINT — bright-source Pointing inference](packages/SCI-POINT/v0.1/README.md) | Recovery-first Stage A, implementation-blind Stage B, targeted review, and owner-directed r0.4 three-view publication complete | **Scientific presentation authority frozen** at v0.1/r0.4; six-file common-core SHA-256 `c0ca71bd457b8e6d37a425eb3ead76400dba3a5e29c869420807928201cdcdbd`; 38 requirements, 32 predictions, and 23 typed unavailable states | Compatibility, formal-error, full-map-RMS, and exact numerical routes remain unavailable at their stated gates; no implementation, validation, accuracy, performance, readiness, production, or Unity claim | Preserve the r0.4 presentation and unchanged r0.3 science; separately recover and approve any unavailable numerical method authority |
 | SRC — blank-field detection, deblending, catalogs, and faint distributed-source fitting | Historical `SCI-SRC-001` inventory recovered and explicitly deferred | Not started | None for current tranche | Preserve recovered material for a later separately launched package |
-| SCI-OOF — optical/out-of-focus inference | Historical `SCI-MODE-001` and OOF handoff material recovered; separated from frozen SCI-POINT | Not started | None for the current consolidation tranche | Hold for a separately authorized package launch after the map-space horizontal audit |
-| FRUIT — fruit-loop feedback, learning, and restart | Active package-development work remains separate on `codex/sci-fruit-v0.1-empirical-lane`; the integration-start snapshot is `dafa8fbd47af5934706fc1b123c2d4139b92acd0`, while the branch had advanced to `ccb67a99257fc9fba82d25346e85503363673651` with three untracked artifacts at the later `2026-09-03` check | Not integrated by the POINT/NOI/FLT-FIXED candidate; status and evidence must be inspected on the dedicated branch/worktree | No owner decision is inferred by this consolidation | Leave FRUIT independent; integrate only after its own completion, verification, and owner review |
+| SCI-OOF — optical/out-of-focus inference | Historical `SCI-MODE-001` and OOF handoff material recovered; separated from frozen SCI-POINT | Not started; now eligible for a separately authorized recovery-first Stage A after map-space audit closure | None before Stage A recovery and scope review | Launch only through the standard recovery-first Stage A gate; do not duplicate SCI-BEAM per-detector fitting or begin Stage B prematurely |
+| FRUIT — fruit-loop feedback, learning, and restart | Active package-development work remains separate on `codex/sci-fruit-v0.1-empirical-lane`; historical exact snapshots remain bound by the integration record | Not integrated; current status and evidence must be inspected on the dedicated branch/worktree | No owner decision is inferred by map-space audit closure | Leave FRUIT independent; after its own completion, verification, owner review, and integration, run a focused attachment audit against the repaired map-space chain |
 
 Enabled polarimetry and measured R-channel execution remain outside the active
 inventory until their scientific execution boundaries are approved.

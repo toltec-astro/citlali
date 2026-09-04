@@ -2,7 +2,7 @@
 
 Date: `2026-09-03`
 
-Status: owner-review candidate; canonical branch not advanced
+Status: **historical preflight record; owner accepted and canonically integrated**
 
 Candidate branch: `codex/integrate-point-flt-fixed-2026-09-03`
 
@@ -11,9 +11,26 @@ Candidate worktree:
 
 This is a Tier 2 integration preflight record. It binds the source refs,
 bounded merge resolutions, verification results, and exclusions used to
-prepare the candidate. It is not an accepted integration, package-science
-change, implementation-conformity finding, validation result, performance
-claim, readiness claim, production authorization, or Unity record.
+prepare the candidate. At its creation it was not an accepted integration,
+package-science change, implementation-conformity finding, validation result,
+performance claim, readiness claim, production authorization, or Unity
+record.
+
+## 2026-09-04 Closure Update
+
+The independent exact-SHA review and scientific-owner acceptance required by
+this preflight were completed. The accepted integration line advanced
+`codex/refactor-mainline` to exact corrected integration/audit base
+`5f0fc20042b88fb6cd883c92d1b59b7f22832901`. The subsequent map-space
+horizontal audit, owner disposition, independently reviewed shared-
+conventions repair, and literal canonical fast-forward through
+`a983e3e31ca6422ade8f081585f5ef6babcfe5d0` are closed in the
+[2026-09-04 scientific-owner acceptance and integration record](audits/MAP_SPACE_SHARED_CONVENTIONS_REPAIR_001/SCIENTIFIC_OWNER_ACCEPTANCE_AND_INTEGRATION_2026-09-04.md).
+The owner reports the resulting canonical ref pushed.
+
+The execution-time stop statements below remain historical descriptions of
+the preflight, not current gates. FRUIT remains independent and the protected
+historical ALIGN worktree remains outside this integration.
 
 ## Owner-Approved Sequence And Stop Boundary
 
@@ -217,10 +234,10 @@ worktree, and dirty files therefore must remain protected until a separately
 authorized preservation/disposition audit is complete. Nothing was switched,
 merged, rebased, deleted, cleaned, or committed there.
 
-## Owner Review Required
+## Historical Owner-Review Gate — Completed
 
-The safe next action is an independent fresh-context review of the exact final
-candidate SHA, followed by scientific-owner acceptance or rejection. Only an
-accepted candidate may advance `codex/refactor-mainline`. FRUIT remains
-separate either way. The map-space horizontal audit must not begin until that
-canonical integration decision is complete.
+This preflight correctly required independent fresh-context review and
+scientific-owner acceptance before canonical movement. That gate was later
+completed, canonical advanced, and the map-space horizontal audit and bounded
+shared-conventions repair were completed and accepted as recorded in the
+closure update above. FRUIT remains separate.
