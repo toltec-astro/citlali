@@ -1,5 +1,71 @@
 # Citlali Refactor Status
 
+## 2026-09-04 Timestream Successor D2 Admission Repair
+
+Independent exact-SHA review of admission candidate
+`218988dc21cfc279cdfe7a4318b574f070cd45f9` returned **repair required** for
+one inherited mechanical failure-path defect, `D2-ADM-F01`: non-finite
+line-frequency metadata reached `std::sort` before rejection. The owner
+approved the narrow repair and reconciliation with independently advanced
+local canonical `ae953ed4d87d1f693d2bbf42aebbc25ef730c771`. Live GitHub
+canonical remained `9f42d348298d76c5d5145aaf0c3eace1f3e154c1` at preflight.
+
+`TIMESTREAM-SUCCESSOR-D2-ADMISSION-REPAIR-001` uses the clean
+`codex/timestream-successor-d2-admission-repair` worktree, with local
+canonical first and preserved `218988dc...` second in the merge candidate.
+Both earlier candidate and accepted D2 refs remain unchanged. Only the
+existing finite-frequency checks move before sorting, with focused malformed
+metadata regression coverage; residual `x/r` non-finite handling and VAL
+ownership are unchanged. The new test fails against inherited source under
+libc++ debug hardening and all eight D2 tests pass with the repair.
+
+Local CLI/isolated-header builds, 8/8 focused D2 tests, all 892 runnable
+CTests, 207 baseline-tool tests, full config preflight, and both validation
+ledgers pass. Fresh independent exact-SHA review remains pending at record
+preparation. Because source changed, original Unity job `63987273` remains
+historical evidence only;
+a fresh owner-run Unity gate is required before canonical admission.
+The [repair handoff](../handoff/TIMESTREAM_SUCCESSOR_D2_ADMISSION_REPAIR_001_2026-09-04.md)
+records the owner scope, ancestry, regression, and acceptance boundaries.
+This bounded repair temporarily occupies the spine slot; the prior candidate
+is retained evidence. No canonical movement, push, activation, production,
+cleanup, or subsequent implementation is authorized by preparation.
+
+The prior admission entry below is a preserved preparation checkpoint; this
+section supersedes its pending-review and unchanged-source gate disposition.
+
+## 2026-09-04 Timestream Successor D2 Admission Candidate
+
+The owner approved `TIMESTREAM-SUCCESSOR-D2-CANONICAL-ADMISSION-001` to
+prepare one Tier 2 integration candidate on
+`codex/timestream-successor-d2-canonical-admission`, based exactly on live
+canonical `9f42d348298d76c5d5145aaf0c3eace1f3e154c1`. Its second parent is
+accepted and pushed D2 closure `54c3254aaf8a6639d3fe1e56e23709e29cd34b3b`.
+The original implementation `bb060947175523d6fc6a777ae4ad4606693e9e5f` and
+both closure commits remain unchanged. The merge applied without conflicts;
+canonical's intervening documentation-only changes do not overlap D2's five
+paths, all of which are preserved byte-for-byte.
+
+This section records candidate preparation, not canonical admission. Local
+CLI/header builds, 7/7 focused D2 tests, 891/891 runnable CTests, 207/207
+baseline-tool tests, the complete 130-test config preflight and audits, and
+both validation ledgers pass. The original authoritative Unity gate remains job
+`63987273` at exact implementation `bb0609471...`, with 891/891 runnable tests
+passing; evidence reuse requires exact application/build/test-input
+equivalence, established by the preservation proof, and does not relabel
+that run as the merge SHA. Full identities,
+owner authorization, moving-base reassessment, preserved VAL ownership,
+validation, and independent-review requirements are in the
+[admission handoff](../handoff/TIMESTREAM_SUCCESSOR_D2_CANONICAL_ADMISSION_001_2026-09-04.md).
+
+Canonical remains at `9f42d3482...`; independent exact-SHA review and a later
+owner decision are required before canonical movement and user-controlled
+push. This integration operation occupies neither a spine nor module-probe
+slot. It authorizes no route activation, filtering, factor selection,
+downsampling, substantive RTC/PTC/AST, common-grid, CAL, MAP, production,
+cleanup, or subsequent implementation. The completed map-space closure below
+and all unrelated canonical content remain preserved.
+
 ## 2026-09-04 Map-Space Horizontal Audit Closure
 
 The scientific owner accepted independently reviewed MAP-space shared-
