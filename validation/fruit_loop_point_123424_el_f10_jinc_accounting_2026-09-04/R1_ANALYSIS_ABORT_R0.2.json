@@ -1,0 +1,30 @@
+{
+  "accounting_access": {
+    "receipt_schema_identity_read": true,
+    "target_ledger_opened": false,
+    "target_n_c_q_planes_read": false,
+    "total_n_c_q_planes_read": false
+  },
+  "analysis": {
+    "exception": "AttributeError: 'str' object has no attribute 'item'",
+    "failed_operation": "read schema_identity scalar",
+    "frozen_analyzer_sha256": "f78d033af1d7fb68b8c5a73197cbcf1b1d936b1cecaa92b4241dc76693da31e4",
+    "result_products_written": 0,
+    "runs_consumed": 1
+  },
+  "cause": {
+    "actual_type": "str",
+    "helper_assumption": "every non-bytes scalar implements item()",
+    "kind": "analysis_reader_type_handling"
+  },
+  "gates_passed_before_abort": {
+    "checkpoint_required_difference_set_exact": true,
+    "learning_policy_one_key_normalization_exact": true,
+    "registered_file_hashes": 21,
+    "registered_file_hashes_valid": true,
+    "science_and_formal_planes_bitwise_identical": 12
+  },
+  "result": "analysis_reader_failure_stop",
+  "schema_version": "sci-fruit-el-f10-r1-analysis-abort-v1",
+  "test_id": "SCI-FRUIT-EL-F10-R1-COMPATIBILITY-NORMALIZATION-R0.1"
+}

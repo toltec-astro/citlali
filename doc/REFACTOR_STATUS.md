@@ -789,7 +789,22 @@ That proposed repair is now presented as
 [`SCI-FRUIT-EL-F10-R1-COMPATIBILITY-NORMALIZATION-R0.1`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F10_R1_COMPATIBILITY_NORMALIZATION_OWNER_REVIEW_R0.1.md),
 bound by its exact
 [`EL_F10_R1_BUNDLE_MANIFEST_R0.1.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F10_R1_BUNDLE_MANIFEST_R0.1.md).
-It remains unapproved; the retained receipt and target ledger remain unopened.
+The owner approved R1 on `2026-09-04`. Its 21 exact hashes and repaired
+checkpoint gate passed, including the required observed difference set and
+one-key normalized-policy equality. The frozen analyzer then failed on the
+receipt's `schema_identity` before reading any `N`, `C`, or `Q` plane or
+opening the target ledger: NetCDF returned a native Python string and the
+helper incorrectly called `.item()` on it. No result product was written. The
+active
+[`R1 result`](../validation/fruit_loop_point_123424_el_f10_jinc_accounting_2026-09-04/EXECUTION_RESULT_R0.2.md)
+therefore records an analysis-reader stop, not an accounting result. The
+proposed
+[`SCI-FRUIT-EL-F10-R2-NETCDF-SCALAR-READER-REPAIR-R0.1`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F10_R2_NETCDF_SCALAR_READER_OWNER_REVIEW_R0.1.md),
+bound by its exact
+[`EL_F10_R2_BUNDLE_MANIFEST_R0.1.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F10_R2_BUNDLE_MANIFEST_R0.1.md),
+would authorize only the displayed native-string/bytes/NumPy-scalar reader
+repair, focused tests, a new output-bound registration, and one no-replay
+analysis retry. It remains unapproved.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
