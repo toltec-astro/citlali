@@ -316,20 +316,25 @@ absent from profiles, accepted runs, ingestion, CAL, ALIGN, and production
 dispatch. The accepted candidate does not change the canonical Beammap
 baseline bytes, detector set/order, or scientific values.
 
-### Maps And Stokes
+### Maps And Component Labels
 
 A map index is a zero-based position in a reduction-local map collection. Its
-scientific identity is resolved through explicit map-to-array and map-to-Stokes
-mappings plus the configured grouping:
+scientific identity is resolved through explicit map-to-array and
+map-to-component mappings plus the configured grouping:
 
 - array grouping: one map group per present array;
 - network grouping: one map group per present network;
 - frequency-group grouping: frequency group within array;
 - detector grouping: one map group per detector row.
 
-The current validated capability has one Stokes component: index 0, label `I`.
-Indices 1 and 2 are reserved by the legacy adapter for `Q` and `U`, but enabled
-polarimetry is rejected and those products are not scientifically validated.
+The current ordinary nonpolarimetric capability has one component: index `0`,
+with legacy label `I`. That index, label, a FITS/WCS STOKES-axis slot, or the
+unit `mJy/beam` does not establish formal Stokes I. The SCI-MAP v0.1/r0.7.1
+quantity is nonpolarimetric total-intensity-equivalent signal in the inherited
+top-of-atmosphere, point-source-equivalent `mJy/beam` convention with its exact
+fixed-nominal-beam lineage. Indices `1` and `2` are reserved by the legacy
+adapter for `Q` and `U`; enabled polarimetry is rejected, and no formal Stokes
+product is authorized by this convention.
 
 ### Observations, Scans, Iterations, And Pixels
 
@@ -403,17 +408,31 @@ science configuration; schema v1 is rejected because it omitted retained
 weight-validation state.
 
 Map products are collections of two-dimensional spatial planes. Array,
-frequency, and Stokes identity are represented by product grouping, FITS
-extensions, WCS spectral/Stokes axes, and the explicit map-index mappings; they
-must not be reconstructed from vector position alone. Exact FITS extension and
-NetCDF dimension requirements live in `validation/product_contracts.json`.
+frequency, and component identity are represented by product grouping, FITS
+extensions, WCS spectral/component-axis serialization, and explicit map-index
+mappings; they must not be reconstructed from vector position alone. A legacy
+STOKES-axis code or `I` label is an index/transport fact unless a separate
+scientific authority establishes a formal Stokes quantity. Exact FITS
+extension and NetCDF dimension requirements live in
+`validation/product_contracts.json`.
 
 ### Science-Map Bundle Identity And Coaddition
 
-The accepted `SCI-MAP-001` F009/F010 successor contract applies to ordinary
-naive, array-grouped Stokes-I observation and coadd maps. Its implementation is
-pending independent re-audit; this section states the accepted meaning and does
-not declare the repair conformant.
+The frozen SCI-MAP v0.1/r0.7.1 contract applies to ordinary naive,
+array-grouped observation and coadd maps of the nonpolarimetric
+total-intensity-equivalent quantity defined above. It does not promote the
+legacy component label `I` to formal Stokes I. This section states the accepted
+scientific meaning and makes no implementation-conformance claim.
+
+The controlling product-specific authorities are the frozen
+[`SCI-PTC_TO_SCI-MAP` boundary](scientific_contracts/packages/SCI-MAP/v0.1/SCI-PTC_TO_SCI-MAP_BOUNDARY.md),
+[`SCI-AST_TO_SCI-MAP` original-footprint-coordinate boundary](scientific_contracts/packages/SCI-MAP/v0.1/SCI-AST_TO_SCI-MAP_ORIGINAL_FOOTPRINT_COORDINATE_BOUNDARY.md),
+[`SCI-MAP` coadd profiles](scientific_contracts/packages/SCI-MAP/v0.1/SCI-MAP_COADD_PROFILES_R0.7.md),
+and the exact r0.7 authority bound by
+[`SOURCE_MANIFEST_R0.7.md`](scientific_contracts/packages/SCI-MAP/v0.1/SOURCE_MANIFEST_R0.7.md)
+and
+[`SCIENTIFIC_OWNER_FREEZE_R0.7.1.md`](scientific_contracts/packages/SCI-MAP/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.7.1.md).
+The shared summary below does not widen those sources.
 
 An observation enters a coadd as one immutable ordered bundle. Admission
 includes grouping and slot identities, array/network/detector or group identity,
@@ -443,15 +462,17 @@ reprojection, interpolation, fractional shifts, and implicit recentering are
 not part of this contract. The signal-centering operator is `L = I`; coaddition
 does not subtract a mean or null mode.
 
-The existing ordinary arithmetic remains `Q += u`, `N += u * signal`, and
-`K += u * kernel`, followed by division on finite positive `Q`. The coefficient
-`u` is the realized `weight_I` after observation normalization and any existing
-optional global empirical rescaling. It is a nonprecision gridding and
-normalization coefficient by default. Its inverse-squared signal unit does not
-make it inverse variance. Precision requires `SCI-PTC-001` evidence for the
-applicable marginal-precision and independence/covariance assumptions; no GLS,
-covariance regularization, coadd uncertainty, or standardized-significance
-claim follows from this contract.
+For each atomically admitted observation-output row `(o,p)`, the ordinary
+SCI-MAP coadd arithmetic is `Q += u_op`, `N += u_op * signal`, and, when the
+exact compatible response companion is available, `K += u_op * kernel`,
+followed by division on finite positive `Q`. The frozen coefficient is exactly
+`u_op = 1`, dimensionless: it defines equal-observation arithmetic averaging
+over the admitted rows. It is not `weight_I`, empirical weight, exposure,
+inverse variance, precision, covariance, equal-noise evidence, or scientific
+significance. This observation-level rule does not replace or flatten
+authorized sample-, pixel-, numerator-, denominator-, validity-, coverage-,
+response-, or covariance-level information. It authorizes neither GLS nor a
+JINC coadd; base SCI-JINC v0.1 authorizes no cross-observation combination.
 
 Sequential and OpenMP execution must apply a declared deterministic or bounded
 equivalence policy without unsynchronized shared-pixel mutation. For the fully
@@ -467,12 +488,15 @@ the long-double sum of per-scan planes by
 `2 * gamma_n * sum(abs(scan_value))`, with
 `gamma_n = n * epsilon / (1 - n * epsilon)`. Integer fact planes remain exact.
 
-An explicitly invalid contribution is skipped before its numerical payload is
-evaluated. A declared ordinary contribution requires finite signal, finite
-positive coefficient, and finite declared companions; an unexpected violation
-is a required pre-mutation failure. Signal, kernel, noise realizations, retained
-exposure, and coadd-observation count share the admitted membership and integer
-embedding.
+An explicitly invalid signal-route contribution is skipped before its numerical
+payload is evaluated. A declared ordinary contribution requires finite signal,
+finite positive coefficient, and finite declared companions; an unexpected
+violation is a required pre-mutation failure. Signal, an available compatible
+response companion, and matching noise realizations share the exact admitted
+signal-route membership and integer embedding. Observation count follows
+atomic coadd admission and row placement. Physical original-footprint exposure
+does not share descendant signal membership: it follows the separate
+unique-original construction below.
 
 Finite floating-point and signed count aggregates that overflow their storage
 domain are required pre-mutation failures. A finite projected coordinate that
@@ -488,31 +512,49 @@ The version-one F010 product hierarchy is:
 | `geometric_hits_I` | `int64`, count | Finite in-bounds sample/detector projections before upstream eligibility and estimator selection |
 | `contributing_hits_I` | `int64`, count | Terms admitted by the named estimator contribution predicate |
 | `coadd_observation_count_I` | `int64`, count | Admitted observation maps contributing to each coadd pixel |
-| `upstream_eligible_exposure_I` | `float64`, detector s | Projected detector-seconds eligible under the upstream validity contract before contribution and normalization retention |
-| `retained_exposure_I` | `float64`, detector s | Detector-seconds retained after contribution and normalization-support decisions |
+| `upstream_eligible_original_footprint_exposure` | `float64`, detector s | Unique upstream-eligible original acquisition footprints, each placed once at that original's own AST ALIGN-grid coordinate in the target MAP WCS |
+| `retained_original_footprint_exposure` | `float64`, detector s | The ancestor-population-restricted unique-original footprint exposure, using the same own-coordinate placement and exact original identity |
 | `normalization_support_I` | `uint8`, dimensionless | Numerical division/population support under the normalization rule |
 | `science_policy_support_I` | `uint8`, dimensionless | Separate full-cut science-policy support |
 | `science_valid_I` | `uint8`, dimensionless | The only authoritative raw science-validity mask |
 
-`coadd_observation_count_I` is not applicable to observation maps. The v1
-contract makes the complete F010 bundle explicitly unavailable for JINC and
-detector-grouped products. JINC does not inherit the ordinary positive-
-coefficient predicate or synthesize any F010 plane. Its separately approved
-signed estimator and formal-support products are governed by `SCI-MAP-002`.
+`coadd_observation_count_I` is not applicable to observation maps. The two
+original-footprint exposure products are geometric accounting products. MAP
+deduplicates by exact observation, detector occurrence/UID, stable
+original/native occurrence, stable ALIGN slot, and ALIGN mapping generation,
+then places each positive valid-original exposure exactly once at that
+original's own AST ALIGN-grid coordinate in the target MAP WCS. Descendant RTC
+or PTC coordinates, signal/contribution membership, filtering or interpolation
+footprints, operator or response support, normalized influence, and statistical
+weight do not define or relocate physical exposure. Synthesis, replacement,
+donor reuse, overlapping filters, and decimation create no exposure.
 
-`coverage_I` is retained only as a bitwise compatibility alias of
-`retained_exposure_I`, with detector-seconds meaning. `coverage_bool_I` is a
-deprecated bitwise compatibility alias of `science_policy_support_I`. Neither
-alias is a science-validity authority.
+The shorter prose names "upstream-eligible exposure" and "retained exposure"
+are aliases only for the two exact original-footprint product names above.
+Legacy `coverage_I` or `coverage_bool_I` spellings do not establish those
+products, physical exposure, standalone support, or science validity under the
+frozen contract. `science_valid_I` remains the only authoritative raw
+science-validity mask for the ordinary SCI-MAP successor bundle.
 
-### SCI-MAP-002 JINC Estimator And Support
+The ordinary MAP F010 hierarchy and positive-coefficient predicate do not apply
+to SCI-JINC. Base SCI-JINC v0.1 neither synthesizes an F010 plane nor inherits
+ordinary MAP coaddition.
 
-The bounded JINC contract retains every finite signed lobe and the established
-equations
-`N = sum(q_i c_i d_i)`, `C = sum(q_i c_i)`, and
-`Q = sum(q_i c_i^2)`. Finalized signal is `N/C`; conditional formal mapmaker
-weight is `C^2/Q`. That formal weight remains distinct from any empirically
-rescaled working weight and carries no covariance or inverse-variance claim.
+### SCI-JINC Base Estimator And Five-Role Bundle
+
+The frozen SCI-JINC v0.1/r0.3 contract retains every finite signed lobe and the
+established equations `N = sum(q_i c_i d_i)`, `C = sum(q_i c_i)`, and
+`Q = sum(q_i c_i^2)`. Finalized signal is `N/C` on its local authorized
+support. Conditional expressions such as `C^2/Q` remain nonproduct mathematics
+unless a future authority establishes their statistical meaning; base v0.1
+publishes no formal-weight product and makes no variance, precision, covariance,
+or significance claim from that expression.
+
+The controlling product-specific authority is the exact SCI-JINC v0.1/r0.3
+shared core bound by
+[`FREEZE_AUTHORITY_MANIFEST_R0.3.md`](scientific_contracts/packages/SCI-JINC/v0.1/FREEZE_AUTHORITY_MANIFEST_R0.3.md),
+including its required five-role closure and explicit unavailable-product
+states. This shared summary creates no successor role or compatibility alias.
 
 `r_max` remains both the second-JINC-zero parameter and the square-cache
 half-width. Every square-cache cell is populated, including corners whose
@@ -530,62 +572,48 @@ dimensionless cancellation ratio
 realized contributor count. Unit-bearing absolute `C` or `Q` gates are
 forbidden.
 
-For JINC, `coverage_bool_I` is the authoritative formal-support mask exactly
-where admission/conditioning passes and finalized signal and formal weight are
-finite with positive formal weight. Empirical policy may downgrade that mask
-but cannot promote it. `coverage_I` is the coefficient-squared effective
-integration-time sum `sum(c_i^2 / f_s,i)`, in seconds, and is consumed only on
-formal support; it is neither geometric exposure, a hit count, nor validity.
-`kernel_I` is the realized processing-filtered source-template response
-projected through JINC, `K/C`, not an analytic unfiltered JINC or measured
-beam.
+Every produced base-v0.1 JINC bundle contains exactly five numerical map-plane
+roles:
 
-The JINC empirical downgrade evaluates the normalization-support rule on the
-finalized formal `C^2/Q` coefficient plane. Before any working map is consumed,
-the persisted support mask and the coupled signal, coefficient, coverage,
-kernel, and noise planes are cleared wherever that rule rejects a formally
-conditioned pixel. This downgrade does not alter the signed estimator,
-conditioning decision, or any retained well-conditioned pixel.
+1. `jinc_signal_numerator` (`N`);
+2. `jinc_signed_normalization` (`C`);
+3. `jinc_quadratic_accumulator` (`Q`);
+4. derived `jinc_map` (`N/C`) with its local support/validity; and
+5. `jinc_coefficient_squared_time`, exactly the method-specific
+   coefficient-squared temporal accounting product.
 
-One compact atomic forward-only record is persisted per coherent observation
-or declared processing segment. It preserves requested, effective, resolved,
-and realized JINC identity, summation/conditioning policy, contributor and
-support summaries, and immutable output-file/HDU/content-digest joins. It is
-never emitted per sample, detector, or pixel. Integrated `SCI-MAP-001` and
-`SCI-NOI-002` ownership, writer/finalizer, publication, and provenance seams
-remain unchanged.
+The fifth role is neither physical exposure nor complete temporal support,
+hits, normalized influence, white-noise-equivalent time, precision, validity,
+confidence, or significance. Local support and validity are part of the
+`jinc_map` role, not standalone product roles. The compact bundle-level
+generative record is information state at the plan/bundle provenance
+granularity, not a sixth numerical role or generalized-provenance product.
 
-Normalization and science-policy support use separate versioned rules. Both
-select finite strictly positive coefficient values. If `N` values remain, the
-zero-based ascending order-statistic index is
-`k = floor((floor(0.75 * N) + N) / 2)`. The realized threshold is the selected
-coefficient at `k` multiplied by the applicable cut; empty input has threshold
-zero. Ordinary normalization uses the `coverage_cut / 10` cut and
-science-policy support uses the full `coverage_cut`. Both predicates require a
-finite positive coefficient and `coefficient >= realized_threshold`; IEEE
-`!(coefficient < threshold)` is not equivalent.
+Base SCI-JINC v0.1 publishes no response, variance, formal-weight, covariance,
+empirical-noise, significance, physical-exposure, standalone-support,
+availability, diagnostic, or generalized-provenance numerical product. It also
+authorizes no cross-observation coaddition. Conditional mathematics, local
+conditioning facts, similar legacy names, or downstream need do not create any
+of those roles. A consumer requiring an excluded role must retain the
+appropriate `NOT_AUTHORIZED`, `UNAVAILABLE`, or `NOT_APPLICABLE` state; it must
+not infer the role from `N`, `C`, `Q`, `N/C`, coefficient-squared time, or the
+generative record.
 
-The one-way lifecycle is requested to effective to observation-resolved to
-realized state; later stages do not rewrite earlier authorities. Realized
-provenance preserves both algorithm/version identities, coefficient product
-and lifecycle stage, lossless requested/realized cuts and thresholds,
-positive-value count and selected order-statistic index, finite, positivity,
-and comparison conventions, counts for each fact and state, required
-companions, admitted bundle and observation membership/offsets, and exact
-`raw-parent/product` digests. Downstream operators preserve raw
-`science_valid_I` and raw-parent identity separately from local numerical
-support, response, covariance, and output validity. A finite downstream value
-cannot promote a raw-invalid input.
+One compact atomic forward-only generative record accompanies each coherent
+observation/array bundle. It binds requested, effective, observation-resolved,
+and realized JINC identity, exact plan, summation and conditioning policy,
+target WCS, array, lifecycle generation, output roles, and immutable joins. It
+is never emitted per sample, detector, or pixel and does not alter the five-role
+numerical closure. One observation may produce independent bundles for its
+admitted arrays; a missing array creates no placeholder and does not invalidate
+a valid sibling bundle.
 
-Coefficient stages use a closed vocabulary. Threshold selection records
-`pre-observation-normalization-accumulated-coefficient` or
-`pre-coadd-normalization-sum-of-admitted-observation-coefficients`. Published
-state records
-`post-observation-normalization-no-empirical-rescale`,
-`post-observation-normalization-global-empirical-rescale-applied`,
-`post-coadd-normalization-no-empirical-rescale`, or
-`post-coadd-normalization-global-empirical-rescale-applied`. Empirical refresh
-does not rewrite admitted observation state.
+### Historical SCI-MAP-001 Implementation-Evidence Boundary
+
+The following implementation-evidence conventions retain their own historical
+SCI-MAP-001/F009/F010 product identities. They do not add a base SCI-JINC
+product, change the frozen SCI-MAP/JINC meanings above, or establish present
+implementation conformity.
 
 Filtering first freezes the validated raw F010 bundle. Filtered signal,
 coefficient, F010, and compatibility-alias HDUs identify that immutable input
@@ -600,9 +628,9 @@ authority. Physical FITS WCS serialization must remain within `0.1 arcsec`
 maximum sky separation of that authority while preserving exact axis sign,
 handedness, orientation, and centered integer observation/coadd shape and
 reference-pixel relationships. No WCS tolerance authorizes a fractional shift,
-reprojection, interpolation, or implicit recentering. The typed Stokes identity
-for the validated Stokes-I lane is index `0`; no FITS physical-code rule is
-inferred from that typed value.
+reprojection, interpolation, or implicit recentering. The typed component index
+for the validated nonpolarimetric lane is `0`, with legacy label `I`; neither
+that index nor its FITS serialization establishes formal Stokes I.
 
 The binary64 sidecar is also the exact realized-threshold authority. FITS
 threshold cards must be finite, identify the correct policy and unit, preserve
@@ -694,12 +722,14 @@ Units belong to values and products, not to variable names alone.
 
 | Quantity | Current convention |
 | --- | --- |
-| Accepted map signal and kernel | `mJy/beam` |
-| Map gridding/normalization coefficient (`weight_I`) | recorded as inverse square of the associated signal unit; nonprecision by default, with precision conditional on `SCI-PTC-001` and applicable covariance evidence |
+| Accepted ordinary SCI-MAP signal and an available compatible response companion | inherited top-of-atmosphere, point-source-equivalent `mJy/beam`, with exact fixed-nominal-beam lineage; neither the unit nor legacy label `I` establishes formal Stokes I |
+| PTC-to-MAP sample analysis/gridding coefficient | the exact PTC-owner-selected family's declared unit and meaning; no family is selected by the frozen contracts, and MAP infers neither unity nor precision |
+| SCI-MAP observation coadd coefficient | exactly `u_op = 1`, dimensionless, for each admitted observation-output row; not empirical weight, inverse variance, exposure, or a JINC rule |
 | Map noise variance | square of the associated signal unit |
-| Upstream-eligible and retained exposure | detector-seconds; not unique wall-clock integration time |
+| `upstream_eligible_original_footprint_exposure` and `retained_original_footprint_exposure` | detector-seconds from unique-original, own-AST-coordinate geometric accounting; not complete temporal support, normalized influence, precision, or unique wall-clock integration time |
 | Hit/count products | integer counts with the product-specific sample/detector or admitted-observation meaning |
-| Support/validity masks, standardized signal, and signal-to-noise | dimensionless; only `science_valid_I` is authoritative raw map validity under the successor contract |
+| Ordinary SCI-MAP support/validity masks, standardized signal, and signal-to-noise | dimensionless; only `science_valid_I` is authoritative raw map validity under that successor contract; this row creates no SCI-JINC role |
+| Base SCI-JINC numerical roles | exact source-bound units in the SCI-JINC notation table; `jinc_coefficient_squared_time` is seconds, while no extra response, weight, covariance, exposure, standalone-support, diagnostic, or coadd role is implied |
 | TOD signal | the recorded `signal_unit`/`BUNIT` |
 | Raw ADC snapshots | signed 12-bit ADC counts, `[-2048, 2047]` |
 | PTC weights | inverse square of the recorded signal unit as a dimensional statement; precision/covariance meaning remains conditional on `SCI-PTC-001` |
@@ -947,10 +977,12 @@ result pass.
 
 ## Deferred Channels
 
-Only Stokes I is validated. Enabled polarimetry remains a future capability,
-not a permanently closed design direction. Its exit condition is an approved
-polarimetry/HWPR contract plus an enabled reference dataset and product gate.
-Until then, an enabled request fails before scientific execution.
+Only the ordinary nonpolarimetric total-intensity-equivalent component is
+validated. Its legacy label `I` does not establish formal Stokes I. Enabled
+polarimetry remains a future capability, not a permanently closed design
+direction. Its exit condition is an approved polarimetry/HWPR contract plus an
+enabled reference dataset and product gate. Until then, an enabled request
+fails before scientific execution.
 
 The R/quadrature stream is measured detector data, not a synthetic kernel. Its
 execution remains deferred. Before activation, its channel identity, sample
