@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "record_id": "CITLALI-SCIENTIFIC-CONTRACT-PROGRAM-MANAGER-HANDOFF-2026-09-04",
+  "snapshot_date": "2026-09-04",
+  "authority_class": "manager_transition_evidence_only",
+  "canonical_snapshot": {
+    "branch": "codex/refactor-mainline",
+    "commit": "9f42d348298d76c5d5145aaf0c3eace1f3e154c1",
+    "tree": "e51f22760c64454ce7233c45dd740aa710777bae",
+    "worktree_clean_before_handoff": true,
+    "remote_state": "owner_reported_pushed; local remote-tracking ref stale; not independently verified"
+  },
+  "review_candidate": {
+    "branch": "codex/map-space-contract-to-implementation-conformance-001",
+    "commit": "93c2b4591bb5d0cf8efe4491975c31e5f8fb5903",
+    "tree": "e0b51383cdeb4ad318d3548b05ad803dd9ef1cf4",
+    "parent": "9f42d348298d76c5d5145aaf0c3eace1f3e154c1",
+    "worktree_clean": true,
+    "disposition": "review_candidate_not_accepted_not_integrated",
+    "artifact_sha256": {
+      "doc/scientific_contracts/audits/MAP_SPACE_CONTRACT_TO_IMPLEMENTATION_CONFORMANCE_001/FINAL_REPORT.md": "f034fdf1f342ae06870bbb3d5717c4ebb4b10bd45e28fd8e844d1d3e83ef6b6b",
+      "doc/scientific_contracts/audits/MAP_SPACE_CONTRACT_TO_IMPLEMENTATION_CONFORMANCE_001/OWNER_DECISION_LEDGER.md": "7c21be71866df54015296586913620ba3f65ec5b556dcacec8a351009bfdb6fc",
+      "doc/scientific_contracts/audits/MAP_SPACE_CONTRACT_TO_IMPLEMENTATION_CONFORMANCE_001/PRIORITIZED_REPAIR_BACKLOG.md": "c3e98c90c543400c1b4f4b75b9ad9120440ac1a58f967be0867b8de77afb1816",
+      "doc/scientific_contracts/audits/MAP_SPACE_CONTRACT_TO_IMPLEMENTATION_CONFORMANCE_001/ROUTE_AVAILABILITY_CLASSIFICATION.md": "f0bfa3948a4867fd469384ca0b5d4e8a1a1d82593b4e6867dbb04d3aafe2b9b2",
+      "doc/scientific_contracts/audits/MAP_SPACE_CONTRACT_TO_IMPLEMENTATION_CONFORMANCE_001/FRUIT_ATTACHMENT_ENVELOPE.md": "9caed2e0df6c47eb40341f00ad57be26c2b4131b9a083a579f8da51ca96bb5cf",
+      "doc/scientific_contracts/audits/MAP_SPACE_CONTRACT_TO_IMPLEMENTATION_CONFORMANCE_001/verify_packet.py": "445fc044da148682d212fc3587f0a3fc4ac2d1f364bfd97a54040ffe8219463b"
+    }
+  },
+  "independent_snapshots": {
+    "sci_fruit": {
+      "branch": "codex/sci-fruit-v0.1-empirical-lane",
+      "commit": "d39d4685baa0aeda036305031491121ce97008ec",
+      "tree": "4034b9b3037ec577dfaea7078c93561953edd364",
+      "worktree_state": "tracked_clean_with_two_untracked_owner_review_archives",
+      "untracked": [
+        "SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review.tar.gz",
+        "SCI-FRUIT-v0.1-empirical-lane-gate-0-r0.1-owner-review.tar.gz"
+      ],
+      "disposition": "active_independent_not_integrated"
+    },
+    "historical_align": {
+      "branch": "codex/sci-align-001-lissajous-timestream-fit",
+      "commit": "353b11887ff04dfd7bca12915917495f81a587fa",
+      "tree": "0212e37395c86cdd34b4d824ba6ac91bb5a5220e",
+      "worktree_state": "dirty_tracked_and_untracked_historical_evidence",
+      "disposition": "protect_do_not_use_as_current_checkout"
+    }
+  },
+  "divergence_at_snapshot": {
+    "fruit_only_commits_relative_to_canonical": 93,
+    "canonical_only_commits_relative_to_fruit": 188
+  },
+  "candidate_repairs": [
+    "correct legacy edge count from 3 to 4 and verify all summary arithmetic",
+    "make MSP-E030 a non-exclusive deferred FRUIT envelope and do not restrict FRUIT to MATCHED",
+    "record CTI-OD-007 as inherited/closed rather than open",
+    "define the missing MAP ordinary observation-bundle repair unit explicitly"
+  ],
+  "incoming_task": {
+    "model": "gpt-6-astra",
+    "reasoning_effort": "xhigh",
+    "official_guidance": "https://developers.openai.com/api/docs/guides/latest-model",
+    "first_gate": "verify_handoff_and_live_state_before_bounded_candidate_repair",
+    "stop": "owner_review_no_merge_no_push_no_canonical_movement_no_cleanup"
+  }
+}

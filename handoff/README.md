@@ -21,3 +21,9 @@ Each entry should start with the local timestamp and include, as relevant:
 - important decisions,
 - next steps,
 - open questions.
+
+The current scientific-contract program manager transition is
+[`HANDOFF_2026-09-04_SCIENTIFIC_CONTRACT_PROGRAM.md`](HANDOFF_2026-09-04_SCIENTIFIC_CONTRACT_PROGRAM.md).
+Its companion JSON manifest and verifier bind the exact repository snapshot,
+the pending conformance-review candidate, and the protected independent FRUIT
+and historical ALIGN states.
