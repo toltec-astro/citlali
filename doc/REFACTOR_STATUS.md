@@ -872,6 +872,21 @@ records. Its exact outputs and the retained EL-F10 comparison inputs are bound
 in `REGISTRATION_R0.3.yaml` before any new accounting value was opened. The
 single scientific replay is consumed; compatibility-first analysis is the next
 action and cannot relax a failed gate or authorize another run.
+That analysis reproduced all nine ordinary science planes and all three formal
+planes bitwise, then stopped before opening the JINC receipt because the
+complete learning CSVs were not byte-identical. Read-only diagnosis established
+that the uninterrupted historical file is cumulative across iterations 0--4,
+whereas the checkpoint replay file contains only iteration 4. Their headers
+and 439 ordered iteration-4 rows match exactly in every raw field. Map-
+diagnostic and checkpoint compatibility also pass their registered semantic
+comparisons. The active result is therefore a compatibility failure, not a
+prospective-influence result, and no replay is warranted. The proposed
+[`SCI-FRUIT-EL-F11-R2-LEARNING-LEDGER-SCOPE-NORMALIZATION-R0.1`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F11_R2_LEARNING_LEDGER_SCOPE_NORMALIZATION_OWNER_REVIEW_R0.1.md)
+would preserve the failed whole-file check and replace it, prospectively and
+without replay, with exact ordered equality of the registered iteration-4
+rows. It is bound for review by the exact
+[`EL_F11_R2_BUNDLE_MANIFEST_R0.1.md`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F11_R2_BUNDLE_MANIFEST_R0.1.md).
+Every other EL-F11 gate and claim limit would remain unchanged.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
