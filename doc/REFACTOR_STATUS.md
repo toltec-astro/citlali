@@ -969,6 +969,11 @@ configuration preflight and focused lint. The
 records routine fixes, exact input recovery and active-assignment restart
 coverage. No real-data trajectory has begun. Prospective executable/analyzer
 registration and the already approved bounded matrix are the next actions.
+The exact
+[`prospective registration`](../validation/fruit_loop_el_f12_response_intervention_2026-09-05/REGISTRATION_R0.1.md)
+now freezes native source 10478fa0e, controller 80e608eb8, the rebuilt binary,
+6,273 artifact identities and all primary/conditional commands before any
+observation run. Local execution of H0 uninjected is the next authorized step.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

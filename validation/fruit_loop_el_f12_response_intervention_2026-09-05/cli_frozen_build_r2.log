@@ -1,0 +1,23 @@
+[  0%] Built target gitversion_header_citlali
+[  0%] Built target config_header_citlali
+[  0%] Built target default_config_header_citlali
+[  0%] Built target gitversion_header_kidscpp
+[  0%] Built target config_header_kidscpp
+[  0%] Built target config_header_tula
+[  0%] Built target gitversion_header_tula
+[  1%] Built target gramsavgol
+[  2%] Built target fmt
+[  5%] Built target glog
+[  8%] Built target spdlog
+[ 16%] Built target re2
+[ 27%] Built target netcdf-cxx4
+[ 39%] Built target yaml-cpp
+[ 91%] Built target ceres
+[ 94%] Built target kids
+[ 95%] Building CXX object CMakeFiles/citlali.dir/src/citlali/core/pipeline/reduction_restart_checkpoint.cpp.o
+[ 95%] Linking CXX static library lib/libcitlali.a
+[ 98%] Built target citlali
+[100%] Building CXX object CMakeFiles/citlali_cli.dir/src/citlali/cli/main.cpp.o
+Elapsed time (seconds): 56.2652
+[100%] Linking CXX executable bin/citlali
+[100%] Built target citlali_cli
