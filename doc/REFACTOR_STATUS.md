@@ -1014,6 +1014,23 @@ and beneficial action. Neither this negative screen nor the earlier oracle
 diagnoses establish a policy, generic result, qualified method, full Gate D,
 Stage B, production change or Unity authorization.
 
+Following the owner's request to continue, a separate
+[`EL-F13 feasibility proposal`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F13_BENEFIT_SIGNAL_OWNER_REVIEW_R0.1.md)
+is ready for the significant method decision
+`SCI-FRUIT-EL-F13-SCAN-AGREEMENT-FEASIBILITY-R0.1`. Its
+[`exact manifest`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F13_BUNDLE_MANIFEST_R0.1.md)
+binds a proposed pre-action scan-agreement test using only retained H/uninjected
+boundaries 0–5, fixed coefficient probes 0/0.5/1, two deterministic other-scan
+references and explicit coverage/numerical requirements. Preparation reverified
+36 decision files and both archive identities without computing the new score.
+The proposed approval permits a bounded offline helper/test/report only, with
+zero Citlali runs or interventions. Exposed EL-F12 failures may challenge the
+predictions only after they are frozen; neither agreement nor avoiding a known
+failure establishes benefit. The exact new score and thresholds remain pending
+owner approval. An actual intervention, attainable end-to-end benefit endpoint,
+joint action rule and independent-pointing replication remain later decisions.
+EL-F12 stays negative and the historical control and all gate boundaries remain.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

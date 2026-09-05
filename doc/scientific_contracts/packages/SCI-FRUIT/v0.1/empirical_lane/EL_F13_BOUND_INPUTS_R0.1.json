@@ -1,0 +1,512 @@
+{
+  "status": "bound proposal inputs; new score not implemented or evaluated",
+  "decision": "SCI-FRUIT-EL-F13-SCAN-AGREEMENT-FEASIBILITY-R0.1",
+  "repository": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor",
+  "branch": "codex/sci-fruit-v0.1-empirical-lane",
+  "base_commit": "e84f0fd4582e610689134ff6afbe614f7ce6650b",
+  "preparation_access": "Existing metadata and file hashes only; no spool decompression, new map construction, fit or score.",
+  "prior_retention_manifest": {
+    "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_el_f12_response_intervention_2026-09-05/RETAINED_OUTPUT_MANIFEST_R0.1.json",
+    "sha256": "ead4614e80085ed335566346d556c27082642fa01c4ea679c572a452be649c32",
+    "size_bytes": 766046
+  },
+  "decision_boundaries": [
+    {
+      "boundary": 0,
+      "role": "decision_data: this boundary only",
+      "files": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/fruit_response_123424_iter0.bin.gz",
+          "sha256": "405d9cd5d01314a0777dabd46e8e267994ab16e36ee1cf6cbff5f2c7243a8b0b",
+          "size_bytes": 240806703
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/citlali_restart_checkpoint.nc",
+          "sha256": "268cf9d8fa20c299b6c698c42d99d1f45761e38400a85d3c0674f2f398c4bff2",
+          "size_bytes": 89016
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+          "sha256": "259d90da1b7c7d7a253400edc4304e18a331398c9b5120d11fe30a01402a12ee",
+          "size_bytes": 18970869
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+          "sha256": "6ec0d399e42b82f95b4c5877d5f65d3b342094e59c9fd753a7add6f7c7fede0f",
+          "size_bytes": 7191360
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+          "sha256": "0b7495958c2aa993b1b5728e692c8cb1eff987ffc940084ed70d7d4d5ad2846f",
+          "size_bytes": 7191360
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+          "sha256": "9bfdb1e452d350ba554404b9422806f65485bcb5a2d1c37eae7bc44ccba6893a",
+          "size_bytes": 7191360
+        }
+      ],
+      "ledger_metadata": {
+        "schema": "SCI-FRUIT-EL-F12-OCCURRENCE-LEDGER-R0.1",
+        "observation": "123424",
+        "iteration": 0,
+        "spool_record_bytes": 104,
+        "spool_records": 9334765,
+        "science_occurrences": 9334753,
+        "spool_byte_order": "little",
+        "spool_int64_fields": "kind scan uid array row col kernel sample",
+        "spool_binary64_fields": "N_scale C_scale Q_scale processed_signal multiplier",
+        "scan_marker_count": 12,
+        "array_groups": [
+          "array_0",
+          "array_1",
+          "array_2"
+        ],
+        "map_shapes": {
+          "array_0": [
+            355,
+            357
+          ],
+          "array_1": [
+            355,
+            357
+          ],
+          "array_2": [
+            355,
+            357
+          ]
+        }
+      }
+    },
+    {
+      "boundary": 1,
+      "role": "decision_data: this boundary only",
+      "files": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/fruit_response_123424_iter1.bin.gz",
+          "sha256": "f082db668fe1327e206d72f21e0847117b573bb88b8bcfc58d0a80941531a946",
+          "size_bytes": 240978141
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/citlali_restart_checkpoint.nc",
+          "sha256": "905a7c3adcb7dfe4e9ecdc1cf887bcc2271c1fa1faa42b7104532f8120637a9f",
+          "size_bytes": 402375
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+          "sha256": "7e05845560dae1dd67c6be605fcb80ce3c0a3b02129c62fb2e2222c122d4f7e4",
+          "size_bytes": 25226741
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+          "sha256": "69c583a7e12e30e42eecc081ba95766bd2ffb19f00ac85b439c21e735ec73c34",
+          "size_bytes": 7191360
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+          "sha256": "fd94839d7c0218edb6801936b719f29886fee546fd8682487077ac9f146cc3d5",
+          "size_bytes": 7191360
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+          "sha256": "c050cf91a679dc3dfb25d955e48e2ad200ee0c5b6574d8d2b75bc37c9ac29b2c",
+          "size_bytes": 7191360
+        }
+      ],
+      "ledger_metadata": {
+        "schema": "SCI-FRUIT-EL-F12-OCCURRENCE-LEDGER-R0.1",
+        "observation": "123424",
+        "iteration": 1,
+        "spool_record_bytes": 104,
+        "spool_records": 9340357,
+        "science_occurrences": 9340345,
+        "spool_byte_order": "little",
+        "spool_int64_fields": "kind scan uid array row col kernel sample",
+        "spool_binary64_fields": "N_scale C_scale Q_scale processed_signal multiplier",
+        "scan_marker_count": 12,
+        "array_groups": [
+          "array_0",
+          "array_1",
+          "array_2",
+          "candidate_0",
+          "joint_array_2"
+        ],
+        "map_shapes": {
+          "array_0": [
+            355,
+            357
+          ],
+          "array_1": [
+            355,
+            357
+          ],
+          "array_2": [
+            355,
+            357
+          ],
+          "candidate_0": [
+            355,
+            357
+          ],
+          "joint_array_2": [
+            355,
+            357
+          ]
+        }
+      }
+    },
+    {
+      "boundary": 2,
+      "role": "decision_data: this boundary only",
+      "files": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/fruit_response_123424_iter2.bin.gz",
+          "sha256": "19e34eac5e80c283aa3b72a07907818861399f238487974428ac318bc5fc08d6",
+          "size_bytes": 241227701
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/citlali_restart_checkpoint.nc",
+          "sha256": "ab7b56828059c9051ec217d74febeb2742d971ef24b83c02ebd80b4595714a92",
+          "size_bytes": 402375
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+          "sha256": "dc628721214f5cb2757e090997c3f1a2a618abd282307de15547ab276e975c51",
+          "size_bytes": 25109332
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+          "sha256": "e59b0f74447af28b49dd4b81ce43bb64947927685b886415e29b0a141c0d6458",
+          "size_bytes": 7191360
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+          "sha256": "57bad9649e5390eeb09b8054e1400cdb0980cee097e795694b2b2fde7f19272b",
+          "size_bytes": 7191360
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+          "sha256": "b715ff9b944f7809c1486aa37e72e1fdad071f0226c6376fede074c9bde74cd0",
+          "size_bytes": 7191360
+        }
+      ],
+      "ledger_metadata": {
+        "schema": "SCI-FRUIT-EL-F12-OCCURRENCE-LEDGER-R0.1",
+        "observation": "123424",
+        "iteration": 2,
+        "spool_record_bytes": 104,
+        "spool_records": 9348338,
+        "science_occurrences": 9348326,
+        "spool_byte_order": "little",
+        "spool_int64_fields": "kind scan uid array row col kernel sample",
+        "spool_binary64_fields": "N_scale C_scale Q_scale processed_signal multiplier",
+        "scan_marker_count": 12,
+        "array_groups": [
+          "array_0",
+          "array_1",
+          "array_2",
+          "candidate_0",
+          "joint_array_2"
+        ],
+        "map_shapes": {
+          "array_0": [
+            355,
+            357
+          ],
+          "array_1": [
+            355,
+            357
+          ],
+          "array_2": [
+            355,
+            357
+          ],
+          "candidate_0": [
+            355,
+            357
+          ],
+          "joint_array_2": [
+            355,
+            357
+          ]
+        }
+      }
+    },
+    {
+      "boundary": 3,
+      "role": "decision_data: this boundary only",
+      "files": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/fruit_response_123424_iter3.bin.gz",
+          "sha256": "ab14a8649dc77d2ec90323534bc21f602069966af3f8daed271eb0e8aacd7b9c",
+          "size_bytes": 241247410
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/citlali_restart_checkpoint.nc",
+          "sha256": "679253bfa458c5eea171fcbedeaf1f65242859964c5069d6621d4635755e5932",
+          "size_bytes": 402375
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+          "sha256": "6cd93403abbc7e99e761d0aa8f366199df5e116738b77855da19f4801a65f9f3",
+          "size_bytes": 19021604
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+          "sha256": "7679107a423ffff91e28912f12fff56751f12b9138473d33e9d72ef62f75af6b",
+          "size_bytes": 7191360
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+          "sha256": "11920ca9159b318a654d51e3ab7d00754e3b2239f1818c54b0915df9eea3c0d5",
+          "size_bytes": 7191360
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+          "sha256": "e1dc142b5be2e4611266276555cf1e97d5c6b242368281e852960fab019e8c27",
+          "size_bytes": 7191360
+        }
+      ],
+      "ledger_metadata": {
+        "schema": "SCI-FRUIT-EL-F12-OCCURRENCE-LEDGER-R0.1",
+        "observation": "123424",
+        "iteration": 3,
+        "spool_record_bytes": 104,
+        "spool_records": 9349666,
+        "science_occurrences": 9349654,
+        "spool_byte_order": "little",
+        "spool_int64_fields": "kind scan uid array row col kernel sample",
+        "spool_binary64_fields": "N_scale C_scale Q_scale processed_signal multiplier",
+        "scan_marker_count": 12,
+        "array_groups": [
+          "array_0",
+          "array_1",
+          "array_2"
+        ],
+        "map_shapes": {
+          "array_0": [
+            355,
+            357
+          ],
+          "array_1": [
+            355,
+            357
+          ],
+          "array_2": [
+            355,
+            357
+          ]
+        }
+      }
+    },
+    {
+      "boundary": 4,
+      "role": "decision_data: this boundary only",
+      "files": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/fruit_response_123424_iter4.bin.gz",
+          "sha256": "7cf939ea7e1085ee5c4a5fa5c89a95850d8ea07269bb5bc95b43f1b787198745",
+          "size_bytes": 241267371
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/citlali_restart_checkpoint.nc",
+          "sha256": "bfe782288ca37a3d9bc79b7784e5d25a9f0fd2a123dfddd8b4d7d02d8ef8dd35",
+          "size_bytes": 402375
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+          "sha256": "89b7600eb4c709024d1cc0bc89afaf4ee3df2a2b912bf1307e00b7cc80d84790",
+          "size_bytes": 19021816
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+          "sha256": "c92b84f0001c9df3a39255a751518e6175e9d4b44dbd1fa01420c1cce93af950",
+          "size_bytes": 7191360
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+          "sha256": "5e33488b5b48408cea78601f63ec2efa0e4ef61b65f50a90c8d6b9f90cec8f93",
+          "size_bytes": 7191360
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+          "sha256": "884a99b691a5382f3c63e3dae353d310bfc4f2786d125615db102ac7d65c6050",
+          "size_bytes": 7191360
+        }
+      ],
+      "ledger_metadata": {
+        "schema": "SCI-FRUIT-EL-F12-OCCURRENCE-LEDGER-R0.1",
+        "observation": "123424",
+        "iteration": 4,
+        "spool_record_bytes": 104,
+        "spool_records": 9350469,
+        "science_occurrences": 9350457,
+        "spool_byte_order": "little",
+        "spool_int64_fields": "kind scan uid array row col kernel sample",
+        "spool_binary64_fields": "N_scale C_scale Q_scale processed_signal multiplier",
+        "scan_marker_count": 12,
+        "array_groups": [
+          "array_0",
+          "array_1",
+          "array_2"
+        ],
+        "map_shapes": {
+          "array_0": [
+            355,
+            357
+          ],
+          "array_1": [
+            355,
+            357
+          ],
+          "array_2": [
+            355,
+            357
+          ]
+        }
+      }
+    },
+    {
+      "boundary": 5,
+      "role": "decision_data: this boundary only",
+      "files": [
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/fruit_response_123424_iter5.bin.gz",
+          "sha256": "861a3bed2b67fb48ada4a81103acd1553f79f8bc6e01826ba81c7185b27048c7",
+          "size_bytes": 241245484
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/citlali_restart_checkpoint.nc",
+          "sha256": "90254eb0d4f30afa0652c45bc1e66604589d120ec506045fe41e4cbe140fc930",
+          "size_bytes": 402375
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+          "sha256": "c5872ce485b318794676f63846ce1fd5fd5d5db8153045d9c49e6c0eb309d6c0",
+          "size_bytes": 19022201
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+          "sha256": "bb906714bd25cdc794dd7bcd30185d8fbadba06f6067e8a397b4258b78e1faf0",
+          "size_bytes": 7191360
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+          "sha256": "70468e3b9ec97ea558e54108e8da74cd13ef3340dfd4e498cac7b6784802ca05",
+          "size_bytes": 7191360
+        },
+        {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+          "sha256": "9e1e7f491d81324dba860faff524037b58b8309925bcdedb912cdb612680470f",
+          "size_bytes": 7191360
+        }
+      ],
+      "ledger_metadata": {
+        "schema": "SCI-FRUIT-EL-F12-OCCURRENCE-LEDGER-R0.1",
+        "observation": "123424",
+        "iteration": 5,
+        "spool_record_bytes": 104,
+        "spool_records": 9349709,
+        "science_occurrences": 9349697,
+        "spool_byte_order": "little",
+        "spool_int64_fields": "kind scan uid array row col kernel sample",
+        "spool_binary64_fields": "N_scale C_scale Q_scale processed_signal multiplier",
+        "scan_marker_count": 12,
+        "array_groups": [
+          "array_0",
+          "array_1",
+          "array_2"
+        ],
+        "map_shapes": {
+          "array_0": [
+            355,
+            357
+          ],
+          "array_1": [
+            355,
+            357
+          ],
+          "array_2": [
+            355,
+            357
+          ]
+        }
+      }
+    }
+  ],
+  "evaluation_only_after_prediction_freeze": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_el_f12_response_intervention_2026-09-05/Half_RESULT.json",
+      "sha256": "aa8eb5092dec4e4a839e012cfd84ef481a2cb53abe8bdbf6d77dd62bb8c1a477",
+      "size_bytes": 481213
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_el_f12_response_intervention_2026-09-05/Hold_RESULT.json",
+      "sha256": "f4c91ebc839786166291528ee58fafac5f7e31d63a58f27069b7fd6588702e3e",
+      "size_bytes": 480536
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_el_f12_response_intervention_2026-09-05/PROTECTION_CHECKS_R0.1.csv",
+      "sha256": "c04f13937c4847dfd77bd09414cc2d1860c80d9a06ca86a9ca95bb1c575bbc30",
+      "size_bytes": 23576
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_el_f12_response_intervention_2026-09-05/EXECUTION_COMPLETION_R0.1.json",
+      "sha256": "443885c249cd911622212c95d977d241e2a9f62568b9ab20380eb608978689c7",
+      "size_bytes": 12795
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_el_f12_response_intervention_2026-09-05/SCIENTIFIC_INTERPRETATION_R0.1.md",
+      "sha256": "5a7b6374f83f47bdb4649d60e3899d17933ace2cc100edf3a504cd46936b6384",
+      "size_bytes": 12214
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_el_f12_response_intervention_2026-09-05/RESULT_MANIFEST_R0.1.md",
+      "sha256": "861346e958e5529926c0eb555f4ba87d5e32a3617a895af8c469fc194d0f2328",
+      "size_bytes": 8122
+    }
+  ],
+  "format_and_recovery_sources": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/include/citlali/core/fruit/response_intervention.h",
+      "sha256": "4ad455b04bb8141f07a45768543b7a65032dce2b5bb90edbf11092750f9caee6",
+      "size_bytes": 17850
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/include/citlali/core/fruit/response_ledger.h",
+      "sha256": "a64b9a67a6f7c1d77d40782e49158b0803f174c3128163f364b3c36b5c6f1855",
+      "size_bytes": 4880
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/src/citlali/core/fruit/response_ledger.cpp",
+      "sha256": "d39ae9dedb2af0a3b1d061d724498c528821ce1b1ece19067d27c6f84428ec79",
+      "size_bytes": 31325
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/analyze_response_intervention.py",
+      "sha256": "a15fac8e778883fad6c0747b147b4e073e8de22d4bbc6c1cd042c90234327329",
+      "size_bytes": 23969
+    }
+  ],
+  "archives": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review.tar.gz",
+      "sha256": "5f11836908aa6aeb4f51690209a32dc6e8d4cee4e6b9c223903c6c57033b9b22",
+      "size_bytes": 28617
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/SCI-FRUIT-v0.1-empirical-lane-gate-0-r0.1-owner-review.tar.gz",
+      "sha256": "761ba278a53e32ad1d5d3977230cc4f1f90f257056b547508342797f584167ed",
+      "size_bytes": 11602
+    }
+  ],
+  "original_spool_integrity": "Before scoring, decompressed SHA-256/size must also match the fixed H/uninjected repair receipt; streaming is allowed.",
+  "original_spool_receipt": {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/SCALAR_DIMENSION_REPAIR_R0.2.json",
+    "sha256": "6374ea0a703eb6ec0841ea31351f285afd6c4b96d09980a79ba278f6669379ec",
+    "size_bytes": 103036
+  },
+  "new_raw_inputs": 0,
+  "new_observations": 0,
+  "citlali_run_allowance": 0
+}
