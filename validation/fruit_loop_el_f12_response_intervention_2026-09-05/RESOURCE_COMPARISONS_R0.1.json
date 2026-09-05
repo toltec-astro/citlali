@@ -1,0 +1,66 @@
+[
+  {
+    "arm": "Half",
+    "injection": "uninjected",
+    "native_cpu_ratio": 2.119654540696153,
+    "native_peak_rss_ratio": 1.310877379842897,
+    "native_wall_ratio": 2.102913121938644,
+    "reference": "H0"
+  },
+  {
+    "arm": "Half",
+    "injection": "uninjected",
+    "native_cpu_ratio": 1.1346913614839307,
+    "native_peak_rss_ratio": 1.0131088839956373,
+    "native_wall_ratio": 1.1334481991996443,
+    "reference": "H"
+  },
+  {
+    "arm": "Half",
+    "injection": "injected",
+    "native_cpu_ratio": 2.10822827849558,
+    "native_peak_rss_ratio": 1.4823036706539294,
+    "native_wall_ratio": 2.1010445754473057,
+    "reference": "H0"
+  },
+  {
+    "arm": "Half",
+    "injection": "injected",
+    "native_cpu_ratio": 1.027115879609572,
+    "native_peak_rss_ratio": 1.1147868332750066,
+    "native_wall_ratio": 1.0262433381324039,
+    "reference": "H"
+  },
+  {
+    "arm": "Hold",
+    "injection": "uninjected",
+    "native_cpu_ratio": 2.109029049986914,
+    "native_peak_rss_ratio": 1.3765144454799627,
+    "native_wall_ratio": 2.097705594225316,
+    "reference": "H0"
+  },
+  {
+    "arm": "Hold",
+    "injection": "uninjected",
+    "native_cpu_ratio": 1.1290033343607275,
+    "native_peak_rss_ratio": 1.06383635503056,
+    "native_wall_ratio": 1.1306413961760784,
+    "reference": "H"
+  },
+  {
+    "arm": "Hold",
+    "injection": "injected",
+    "native_cpu_ratio": 2.0676361353768895,
+    "native_peak_rss_ratio": 1.4632797744504968,
+    "native_wall_ratio": 2.0626745268383493,
+    "reference": "H0"
+  },
+  {
+    "arm": "Hold",
+    "injection": "injected",
+    "native_cpu_ratio": 1.0073396365860496,
+    "native_peak_rss_ratio": 1.1004796508635775,
+    "native_wall_ratio": 1.0075017049329393,
+    "reference": "H"
+  }
+]

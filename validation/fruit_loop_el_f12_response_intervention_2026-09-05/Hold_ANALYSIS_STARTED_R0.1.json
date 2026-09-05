@@ -1,0 +1,26 @@
+{
+  "analyzer": {
+    "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/analyze_response_intervention.py",
+    "sha256": "a15fac8e778883fad6c0747b147b4e073e8de22d4bbc6c1cd042c90234327329",
+    "size_bytes": 23969
+  },
+  "command": [
+    "/usr/bin/time",
+    "-l",
+    "/Users/gwilson/tolteca/bin/python",
+    "/private/tmp/fruit-el-f12-prototype-20260905/run_registered_analysis.py",
+    "Hold",
+    "--child"
+  ],
+  "registration": {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/setup/REGISTRATION_R0.2.json",
+    "sha256": "91938c886c42ba704b6b1a670fe75fd2d4d7d94273050cc963d2584d87c53d24",
+    "size_bytes": 1629165
+  },
+  "started_unix": 1788628698.607444,
+  "wrapper": {
+    "path": "/private/tmp/fruit-el-f12-prototype-20260905/run_registered_analysis.py",
+    "sha256": "c5154c5add1e9c8caf35ba68f592c9a50a6a70222bd3c60e7fa68a9af8063406",
+    "size_bytes": 4520
+  }
+}

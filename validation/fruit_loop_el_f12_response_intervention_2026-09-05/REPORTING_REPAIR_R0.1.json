@@ -1,0 +1,30 @@
+{
+  "actual_field": "unix_time",
+  "additional_replays": 0,
+  "corrected_wrapper": {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/analysis/REPORT_R0.1/reporting_sources/run_registered_analysis.py",
+    "sha256": "c5154c5add1e9c8caf35ba68f592c9a50a6a70222bd3c60e7fa68a9af8063406",
+    "size_bytes": 4520
+  },
+  "existing_products_changed": false,
+  "failure": "KeyError: 'started_unix' while reading STARTED.json",
+  "figures_visually_reviewed": [
+    "PRIORITIZED_LEAKAGE_R0.1.png",
+    "ALL_ARRAY_PROTECTIONS_R0.1.png"
+  ],
+  "initial_wrapper": {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/analysis/REPORT_R0.1/reporting_sources/run_registered_analysis_initial_timestamp_error.py",
+    "sha256": "9c2d01e6354da38d4874933ea447817ea1bf69e041462dd8a7f8aee8144a32b4",
+    "size_bytes": 4523
+  },
+  "measurements_before_repair": 0,
+  "native_binary_changed": false,
+  "registered_analyzer_changed": false,
+  "status": "resolved_before_measurements",
+  "supplement_resources": {
+    "peak_rss_bytes": 219217920,
+    "system_seconds": 0.38,
+    "user_seconds": 3.82,
+    "wall_seconds": 5.57
+  }
+}

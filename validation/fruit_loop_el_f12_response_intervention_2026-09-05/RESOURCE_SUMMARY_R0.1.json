@@ -1,0 +1,326 @@
+[
+  {
+    "arm": "H0",
+    "injection": "uninjected",
+    "status": "pass",
+    "resource_receipt": {
+      "peak_rss_bytes": 615301120,
+      "system_seconds": 3.36,
+      "user_seconds": 187.69,
+      "wall_seconds": 193.95
+    },
+    "elapsed_with_gates_and_retention_seconds": 194.8182098865509,
+    "map_output_including_accounting_seconds": 0.834025,
+    "map_output_iteration_seconds": [
+      0.124044,
+      0.118577,
+      0.120762,
+      0.117585,
+      0.119665,
+      0.114449,
+      0.118943
+    ],
+    "native_iteration_seconds": {
+      "0": 22.773078,
+      "1": 27.951693,
+      "2": 28.198577,
+      "3": 28.363315,
+      "4": 28.436098,
+      "5": 28.553593,
+      "6": 28.690775
+    },
+    "timing_scope": "inclusive existing map-output profile; includes census, accounting and receipt output, plus ordinary map output; spool append cost is in timestream and total runtime",
+    "temporary_spool_original_bytes": 0,
+    "retained_compressed_spool_bytes": 0,
+    "receipt_identity": {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H0/uninjected/EXECUTION_RECEIPT.json",
+      "sha256": "c4e129895efe3df786f6965561ac2981e10820a57bb9a7222aff712bc4695c92",
+      "size_bytes": 2183
+    },
+    "comparison_repair_identity": null
+  },
+  {
+    "arm": "H0",
+    "injection": "injected",
+    "status": "pass",
+    "resource_receipt": {
+      "peak_rss_bytes": 598556672,
+      "system_seconds": 2.91,
+      "user_seconds": 188.26,
+      "wall_seconds": 193.38
+    },
+    "elapsed_with_gates_and_retention_seconds": 194.01843571662903,
+    "map_output_including_accounting_seconds": 0.794225,
+    "map_output_iteration_seconds": [
+      0.113292,
+      0.110441,
+      0.117185,
+      0.120043,
+      0.111013,
+      0.110732,
+      0.111519
+    ],
+    "native_iteration_seconds": {
+      "0": 22.350944,
+      "1": 27.591192,
+      "2": 28.264236,
+      "3": 28.487662,
+      "4": 28.582989,
+      "5": 28.739614,
+      "6": 28.788876
+    },
+    "timing_scope": "inclusive existing map-output profile; includes census, accounting and receipt output, plus ordinary map output; spool append cost is in timestream and total runtime",
+    "temporary_spool_original_bytes": 0,
+    "retained_compressed_spool_bytes": 0,
+    "receipt_identity": {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H0/injected/EXECUTION_RECEIPT.json",
+      "sha256": "32a35120f4e93b695d05a9efbc5872ae77705c93c9f65628fcef6ee105b51553",
+      "size_bytes": 1851
+    },
+    "comparison_repair_identity": null
+  },
+  {
+    "arm": "H",
+    "injection": "uninjected",
+    "status": "pass",
+    "resource_receipt": {
+      "peak_rss_bytes": 796147712,
+      "system_seconds": 5.4,
+      "user_seconds": 351.49,
+      "wall_seconds": 359.84
+    },
+    "elapsed_with_gates_and_retention_seconds": 1239.2981760501862,
+    "map_output_including_accounting_seconds": 162.343312,
+    "map_output_iteration_seconds": [
+      22.634186,
+      23.19836,
+      23.26573,
+      23.232104,
+      23.244527,
+      23.460782,
+      23.307623
+    ],
+    "native_iteration_seconds": {
+      "0": 45.674468,
+      "1": 51.388773,
+      "2": 52.097442,
+      "3": 52.554525,
+      "4": 52.332117,
+      "5": 52.62784,
+      "6": 52.546107
+    },
+    "timing_scope": "inclusive existing map-output profile; includes census, accounting and receipt output, plus ordinary map output; spool append cost is in timestream and total runtime",
+    "temporary_spool_original_bytes": 6804133752,
+    "retained_compressed_spool_bytes": 1688044596,
+    "receipt_identity": {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/EXECUTION_RECEIPT.json",
+      "sha256": "fd58967a8c4ec729f0b21b3bd236f76ac4e13807bdc8b89d045b1aad87762f9d",
+      "size_bytes": 1834
+    },
+    "comparison_repair_identity": {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/SCALAR_DIMENSION_REPAIR_R0.2.json",
+      "sha256": "6374ea0a703eb6ec0841ea31351f285afd6c4b96d09980a79ba278f6669379ec",
+      "size_bytes": 103036
+    }
+  },
+  {
+    "arm": "H",
+    "injection": "injected",
+    "status": "pass",
+    "resource_receipt": {
+      "peak_rss_bytes": 795885568,
+      "system_seconds": 7.08,
+      "user_seconds": 385.31,
+      "wall_seconds": 395.91
+    },
+    "elapsed_with_gates_and_retention_seconds": 434.9135990142822,
+    "map_output_including_accounting_seconds": 183.414758,
+    "map_output_iteration_seconds": [
+      25.738637,
+      26.396461,
+      26.458042,
+      26.180416,
+      26.538485,
+      26.232638,
+      25.870079
+    ],
+    "native_iteration_seconds": {
+      "0": 50.603056,
+      "1": 56.603392,
+      "2": 57.349293,
+      "3": 57.329976,
+      "4": 58.24017,
+      "5": 57.632412,
+      "6": 57.41632
+    },
+    "timing_scope": "inclusive existing map-output profile; includes census, accounting and receipt output, plus ordinary map output; spool append cost is in timestream and total runtime",
+    "temporary_spool_original_bytes": 6805446440,
+    "retained_compressed_spool_bytes": 1688379241,
+    "receipt_identity": {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/EXECUTION_RECEIPT.json",
+      "sha256": "8cb64ffb317d073492a7091e2438892c285158d56ff220123881ffd1b02b39c0",
+      "size_bytes": 9342
+    },
+    "comparison_repair_identity": null
+  },
+  {
+    "arm": "Half",
+    "injection": "uninjected",
+    "status": "pass",
+    "resource_receipt": {
+      "peak_rss_bytes": 806584320,
+      "system_seconds": 9.72,
+      "user_seconds": 395.24,
+      "wall_seconds": 407.86
+    },
+    "elapsed_with_gates_and_retention_seconds": 445.3544280529022,
+    "map_output_including_accounting_seconds": 189.675955,
+    "map_output_iteration_seconds": [
+      26.578628,
+      27.015039,
+      27.001636,
+      27.5257,
+      27.252152,
+      27.339824,
+      26.962976
+    ],
+    "native_iteration_seconds": {
+      "0": 52.239362,
+      "1": 58.127999,
+      "2": 58.818589,
+      "3": 59.662038,
+      "4": 59.154547,
+      "5": 59.852586,
+      "6": 59.37832
+    },
+    "timing_scope": "inclusive existing map-output profile; includes census, accounting and receipt output, plus ordinary map output; spool append cost is in timestream and total runtime",
+    "temporary_spool_original_bytes": 6804381480,
+    "retained_compressed_spool_bytes": 1688096514,
+    "receipt_identity": {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/uninjected/EXECUTION_RECEIPT.json",
+      "sha256": "60fcf0cc585edc7712be2dadb61187e1e52caa96464e6321a2946ac3ddaf3481",
+      "size_bytes": 7182
+    },
+    "comparison_repair_identity": null
+  },
+  {
+    "arm": "Half",
+    "injection": "injected",
+    "status": "pass",
+    "resource_receipt": {
+      "peak_rss_bytes": 887242752,
+      "system_seconds": 8.2,
+      "user_seconds": 394.83,
+      "wall_seconds": 406.3
+    },
+    "elapsed_with_gates_and_retention_seconds": 444.75400590896606,
+    "map_output_including_accounting_seconds": 187.678089,
+    "map_output_iteration_seconds": [
+      26.527543,
+      27.274727,
+      26.641299,
+      26.602465,
+      26.907838,
+      26.927603,
+      26.796614
+    ],
+    "native_iteration_seconds": {
+      "0": 53.454585,
+      "1": 58.6594,
+      "2": 58.771216,
+      "3": 58.081989,
+      "4": 58.65725,
+      "5": 58.984991,
+      "6": 59.04757
+    },
+    "timing_scope": "inclusive existing map-output profile; includes census, accounting and receipt output, plus ordinary map output; spool append cost is in timestream and total runtime",
+    "temporary_spool_original_bytes": 6805697184,
+    "retained_compressed_spool_bytes": 1688434352,
+    "receipt_identity": {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/injected/EXECUTION_RECEIPT.json",
+      "sha256": "fe2a031afc37c48ece01b7f02cf57a733e4b1721cbcd39a8b2bc69af13a08ac7",
+      "size_bytes": 7184
+    },
+    "comparison_repair_identity": null
+  },
+  {
+    "arm": "Hold",
+    "injection": "uninjected",
+    "status": "pass",
+    "resource_receipt": {
+      "peak_rss_bytes": 846970880,
+      "system_seconds": 13.05,
+      "user_seconds": 389.88,
+      "wall_seconds": 406.85
+    },
+    "elapsed_with_gates_and_retention_seconds": 444.6874098777771,
+    "map_output_including_accounting_seconds": 188.358763,
+    "map_output_iteration_seconds": [
+      26.578761,
+      27.125051,
+      27.212911,
+      26.79957,
+      26.780137,
+      26.972405,
+      26.889928
+    ],
+    "native_iteration_seconds": {
+      "0": 52.253831,
+      "1": 58.311516,
+      "2": 59.038659,
+      "3": 58.799118,
+      "4": 58.977517,
+      "5": 59.319014,
+      "6": 59.204931
+    },
+    "timing_scope": "inclusive existing map-output profile; includes census, accounting and receipt output, plus ordinary map output; spool append cost is in timestream and total runtime",
+    "temporary_spool_original_bytes": 6804377528,
+    "retained_compressed_spool_bytes": 1688097961,
+    "receipt_identity": {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/uninjected/EXECUTION_RECEIPT.json",
+      "sha256": "9f0fb2525ccb04480b83d46feba34f6f2f10e1128c0a54e6a30459fde47401b6",
+      "size_bytes": 7183
+    },
+    "comparison_repair_identity": null
+  },
+  {
+    "arm": "Hold",
+    "injection": "injected",
+    "status": "pass",
+    "resource_receipt": {
+      "peak_rss_bytes": 875855872,
+      "system_seconds": 13.95,
+      "user_seconds": 381.32,
+      "wall_seconds": 398.88
+    },
+    "elapsed_with_gates_and_retention_seconds": 436.66308188438416,
+    "map_output_including_accounting_seconds": 183.843692,
+    "map_output_iteration_seconds": [
+      26.270984,
+      26.566119,
+      26.617316,
+      26.076041,
+      26.066058,
+      26.151203,
+      26.095971
+    ],
+    "native_iteration_seconds": {
+      "0": 52.057104,
+      "1": 57.546572,
+      "2": 58.11803,
+      "3": 57.494051,
+      "4": 57.526638,
+      "5": 57.789849,
+      "6": 57.716071
+    },
+    "timing_scope": "inclusive existing map-output profile; includes census, accounting and receipt output, plus ordinary map output; spool append cost is in timestream and total runtime",
+    "temporary_spool_original_bytes": 6805692816,
+    "retained_compressed_spool_bytes": 1688431966,
+    "receipt_identity": {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/injected/EXECUTION_RECEIPT.json",
+      "sha256": "4e20555289454c6595fdc6979633c90b5ff28a32e1b3d5ebdb6ca4a18d6cb8ec",
+      "size_bytes": 7191
+    },
+    "comparison_repair_identity": null
+  }
+]

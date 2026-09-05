@@ -1,0 +1,13 @@
+arm,iteration,all_arrays_meet_declared_terminal_source_targets,uninjected_cumulative_native_seconds,injected_cumulative_native_seconds
+Half,1,False,110.367361,112.113985
+Half,2,False,169.18595,170.885201
+Half,3,False,228.84798800000002,228.96719000000002
+Half,4,False,288.002535,287.62444
+Half,5,False,347.855121,346.609431
+Half,6,False,407.233441,405.657001
+Hold,1,False,110.565347,109.60367600000001
+Hold,2,False,169.604006,167.72170599999998
+Hold,3,False,228.403124,225.215757
+Hold,4,False,287.38064099999997,282.742395
+Hold,5,False,346.699655,340.532244
+Hold,6,False,405.904586,398.248315

@@ -1,0 +1,52 @@
+[
+  {
+    "arm": "Half",
+    "status": "not_promising",
+    "all_protections_pass": false,
+    "prioritized_leakage_pass": false,
+    "selected_opportunities": 8,
+    "failed_protection_checks": 23,
+    "total_protection_checks": 315,
+    "unavailable_metrics": [],
+    "restarts": [
+      "not_run",
+      "not_run"
+    ],
+    "independent_pointing_replication": "not authorized or performed",
+    "policy": "not established"
+  },
+  {
+    "arm": "Hold",
+    "status": "not_promising",
+    "all_protections_pass": false,
+    "prioritized_leakage_pass": false,
+    "selected_opportunities": 4,
+    "failed_protection_checks": 23,
+    "total_protection_checks": 315,
+    "unavailable_metrics": [],
+    "restarts": [
+      "not_run",
+      "not_run"
+    ],
+    "independent_pointing_replication": "not authorized or performed",
+    "policy": "not established"
+  }
+]
+        3.62 real         1.30 user         0.16 sys
+           134545408  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               10251  page reclaims
+                  43  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 266  voluntary context switches
+                1127  involuntary context switches
+         16182962859  instructions retired
+          4831690527  cycles elapsed
+           118161960  peak memory footprint

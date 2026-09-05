@@ -993,6 +993,27 @@ trajectories/28 passes are complete, with no diagnostic replacement. The
 binds those receipts. The approved alternatives may now run in their fixed
 order; Half uninjected is active. Neither benefit nor policy is established.
 
+EL-F12 is now complete under the unchanged r0.2 registration. All eight primary
+trajectories/56 passes and both paired analyses are retained. The
+[`scientific interpretation`](../validation/fruit_loop_el_f12_response_intervention_2026-09-05/SCIENTIFIC_INTERPRETATION_R0.1.md)
+and [`result manifest`](../validation/fruit_loop_el_f12_response_intervention_2026-09-05/RESULT_MANIFEST_R0.1.md)
+record **Half and Hold as `not_promising`**. Both fail a2000 support and
+uninjected-Neptune stability protections, and neither improves the fixed
+a1400 leakage endpoints. a1100/a1400 remain bitwise equal to H. H's a1400
+Neptune response is already below 0.1 mJy/beam at both endpoints, making the
+declared 0.1 mJy/beam improvement unattainable on this pair; this limitation is
+disclosed without changing the gate. The independent protection failures
+also prevent advancement. Each candidate has all 18 required measurement
+rows, with 23 of 315 protection checks failing. No conditional restart or
+diagnostic replacement ran, and no independent pointing is authorized.
+All 6,274 registered identities reverify; the binary, historical-control
+boundaries, existing reductions and both review archives remain preserved.
+The next significant owner decision is whether to commission a separate
+development generation addressing attainable historical-control endpoints
+and beneficial action. Neither this negative screen nor the earlier oracle
+diagnoses establish a policy, generic result, qualified method, full Gate D,
+Stage B, production change or Unity authorization.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

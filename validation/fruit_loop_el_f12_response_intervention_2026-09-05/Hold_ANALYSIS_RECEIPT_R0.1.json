@@ -1,0 +1,26 @@
+{
+  "aggregate_elapsed_seconds": 12667.185820102692,
+  "arm": "Hold",
+  "elapsed_seconds": 5.7880859375,
+  "exit_code": 0,
+  "failure": null,
+  "log": {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/analysis/Hold_ANALYSIS_R0.1.log",
+    "sha256": "8e51de5ee5a3333cc1c3a5321b5b575b00a6dc17a9db6db3b0b6874697ed462f",
+    "size_bytes": 1915
+  },
+  "resources": {
+    "peak_rss_bytes": 201900032,
+    "system_seconds": 0.21,
+    "user_seconds": 4.55,
+    "wall_seconds": 5.47
+  },
+  "result": {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/analysis/Hold_RESULT.json",
+    "sha256": "f4c91ebc839786166291528ee58fafac5f7e31d63a58f27069b7fd6588702e3e",
+    "size_bytes": 480536
+  },
+  "retained_bytes": 14207245800,
+  "sampled_peak_process_rss_bytes": 201572352,
+  "status": "pass"
+}

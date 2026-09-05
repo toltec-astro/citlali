@@ -1,0 +1,66 @@
+{
+  "arm": "Hold",
+  "all_protections_pass": false,
+  "selected_opportunities": 4,
+  "assignments": {
+    "Cu": [
+      {
+        "observation": "123424",
+        "array": 2,
+        "uid": 5279,
+        "scan": 10,
+        "source_iteration": 1,
+        "first_application": 2
+      },
+      {
+        "observation": "123424",
+        "array": 2,
+        "uid": 5282,
+        "scan": 0,
+        "source_iteration": 2,
+        "first_application": 3
+      }
+    ],
+    "Ci": [
+      {
+        "observation": "123424",
+        "array": 2,
+        "uid": 5279,
+        "scan": 10,
+        "source_iteration": 1,
+        "first_application": 2
+      },
+      {
+        "observation": "123424",
+        "array": 2,
+        "uid": 5282,
+        "scan": 0,
+        "source_iteration": 2,
+        "first_application": 3
+      }
+    ]
+  },
+  "prioritized_leakage_pass": false,
+  "promising_before_required_restarts": false,
+  "claim": "exposed development only; independent-pointing replication requires separate approval",
+  "false_action_rate": "unavailable: no independent detector truth labels",
+  "terminal_iteration": "hard-cap censored"
+}
+        5.47 real         4.55 user         0.21 sys
+           201900032  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               42116  page reclaims
+                2254  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 144  voluntary context switches
+                3426  involuntary context switches
+         55714581231  instructions retired
+         20043753621  cycles elapsed
+           164201216  peak memory footprint

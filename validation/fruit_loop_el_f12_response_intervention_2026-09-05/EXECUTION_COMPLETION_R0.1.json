@@ -1,0 +1,395 @@
+{
+  "aggregate_wall_seconds_at_check": 12955.423067092896,
+  "archives": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review.tar.gz",
+      "sha256": "5f11836908aa6aeb4f51690209a32dc6e8d4cee4e6b9c223903c6c57033b9b22",
+      "size_bytes": 28617
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/SCI-FRUIT-v0.1-empirical-lane-gate-0-r0.1-owner-review.tar.gz",
+      "sha256": "761ba278a53e32ad1d5d3977230cc4f1f90f257056b547508342797f584167ed",
+      "size_bytes": 11602
+    }
+  ],
+  "attempt_count": 8,
+  "completed": [
+    {
+      "comparison_repair": null,
+      "compatibility": {
+        "EL_F2_alpha_one": {
+          "0": {
+            "maps": "bitwise"
+          },
+          "1": {
+            "maps": "bitwise"
+          },
+          "2": {
+            "maps": "bitwise"
+          },
+          "3": {
+            "maps": "bitwise"
+          },
+          "4": {
+            "maps": "bitwise"
+          },
+          "5": {
+            "maps": "bitwise"
+          },
+          "6": {
+            "maps": "bitwise"
+          }
+        }
+      },
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H0/uninjected/EXECUTION_RECEIPT.json",
+        "sha256": "c4e129895efe3df786f6965561ac2981e10820a57bb9a7222aff712bc4695c92",
+        "size_bytes": 2183
+      },
+      "resources": {
+        "peak_rss_bytes": 615301120,
+        "system_seconds": 3.36,
+        "user_seconds": 187.69,
+        "wall_seconds": 193.95
+      },
+      "status": "pass",
+      "trajectory": "H0/uninjected"
+    },
+    {
+      "comparison_repair": null,
+      "compatibility": {
+        "paired_iteration_zero": "bitwise"
+      },
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H0/injected/EXECUTION_RECEIPT.json",
+        "sha256": "32a35120f4e93b695d05a9efbc5872ae77705c93c9f65628fcef6ee105b51553",
+        "size_bytes": 1851
+      },
+      "resources": {
+        "peak_rss_bytes": 598556672,
+        "system_seconds": 2.91,
+        "user_seconds": 188.26,
+        "wall_seconds": 193.38
+      },
+      "status": "pass",
+      "trajectory": "H0/injected"
+    },
+    {
+      "comparison_repair": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/SCALAR_DIMENSION_REPAIR_R0.2.json",
+        "sha256": "6374ea0a703eb6ec0841ea31351f285afd6c4b96d09980a79ba278f6669379ec",
+        "size_bytes": 103036
+      },
+      "compatibility": {
+        "H0_neutrality": {
+          "0": {
+            "checkpoint": {
+              "D19_and_all_other_state": "exact",
+              "audit_added": true,
+              "provenance_differences": [
+                "learning_policy_yaml"
+              ]
+            },
+            "learning": "exact ordered iteration rows",
+            "mapdiag": "exact",
+            "maps": "bitwise"
+          },
+          "1": {
+            "checkpoint": {
+              "D19_and_all_other_state": "exact",
+              "audit_added": true,
+              "provenance_differences": [
+                "learning_policy_yaml"
+              ]
+            },
+            "learning": "exact ordered iteration rows",
+            "mapdiag": "exact",
+            "maps": "bitwise"
+          },
+          "2": {
+            "checkpoint": {
+              "D19_and_all_other_state": "exact",
+              "audit_added": true,
+              "provenance_differences": [
+                "learning_policy_yaml"
+              ]
+            },
+            "learning": "exact ordered iteration rows",
+            "mapdiag": "exact",
+            "maps": "bitwise"
+          },
+          "3": {
+            "checkpoint": {
+              "D19_and_all_other_state": "exact",
+              "audit_added": true,
+              "provenance_differences": [
+                "learning_policy_yaml"
+              ]
+            },
+            "learning": "exact ordered iteration rows",
+            "mapdiag": "exact",
+            "maps": "bitwise"
+          },
+          "4": {
+            "checkpoint": {
+              "D19_and_all_other_state": "exact",
+              "audit_added": true,
+              "provenance_differences": [
+                "learning_policy_yaml"
+              ]
+            },
+            "learning": "exact ordered iteration rows",
+            "mapdiag": "exact",
+            "maps": "bitwise"
+          },
+          "5": {
+            "checkpoint": {
+              "D19_and_all_other_state": "exact",
+              "audit_added": true,
+              "provenance_differences": [
+                "learning_policy_yaml"
+              ]
+            },
+            "learning": "exact ordered iteration rows",
+            "mapdiag": "exact",
+            "maps": "bitwise"
+          },
+          "6": {
+            "checkpoint": {
+              "D19_and_all_other_state": "exact",
+              "audit_added": true,
+              "provenance_differences": [
+                "learning_policy_yaml"
+              ]
+            },
+            "learning": "exact ordered iteration rows",
+            "mapdiag": "exact",
+            "maps": "bitwise"
+          }
+        }
+      },
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/EXECUTION_RECEIPT.json",
+        "sha256": "fd58967a8c4ec729f0b21b3bd236f76ac4e13807bdc8b89d045b1aad87762f9d",
+        "size_bytes": 1834
+      },
+      "resources": {
+        "peak_rss_bytes": 796147712,
+        "system_seconds": 5.4,
+        "user_seconds": 351.49,
+        "wall_seconds": 359.84
+      },
+      "status": "pass",
+      "trajectory": "H/uninjected"
+    },
+    {
+      "comparison_repair": null,
+      "compatibility": {
+        "H0_neutrality": {
+          "0": {
+            "checkpoint": {
+              "D19_and_all_other_state": "exact",
+              "audit_added": true,
+              "provenance_differences": [
+                "learning_policy_yaml"
+              ]
+            },
+            "learning": "exact ordered iteration rows",
+            "mapdiag": "exact",
+            "maps": "bitwise"
+          },
+          "1": {
+            "checkpoint": {
+              "D19_and_all_other_state": "exact",
+              "audit_added": true,
+              "provenance_differences": [
+                "learning_policy_yaml"
+              ]
+            },
+            "learning": "exact ordered iteration rows",
+            "mapdiag": "exact",
+            "maps": "bitwise"
+          },
+          "2": {
+            "checkpoint": {
+              "D19_and_all_other_state": "exact",
+              "audit_added": true,
+              "provenance_differences": [
+                "learning_policy_yaml"
+              ]
+            },
+            "learning": "exact ordered iteration rows",
+            "mapdiag": "exact",
+            "maps": "bitwise"
+          },
+          "3": {
+            "checkpoint": {
+              "D19_and_all_other_state": "exact",
+              "audit_added": true,
+              "provenance_differences": [
+                "learning_policy_yaml"
+              ]
+            },
+            "learning": "exact ordered iteration rows",
+            "mapdiag": "exact",
+            "maps": "bitwise"
+          },
+          "4": {
+            "checkpoint": {
+              "D19_and_all_other_state": "exact",
+              "audit_added": true,
+              "provenance_differences": [
+                "learning_policy_yaml"
+              ]
+            },
+            "learning": "exact ordered iteration rows",
+            "mapdiag": "exact",
+            "maps": "bitwise"
+          },
+          "5": {
+            "checkpoint": {
+              "D19_and_all_other_state": "exact",
+              "audit_added": true,
+              "provenance_differences": [
+                "learning_policy_yaml"
+              ]
+            },
+            "learning": "exact ordered iteration rows",
+            "mapdiag": "exact",
+            "maps": "bitwise"
+          },
+          "6": {
+            "checkpoint": {
+              "D19_and_all_other_state": "exact",
+              "audit_added": true,
+              "provenance_differences": [
+                "learning_policy_yaml"
+              ]
+            },
+            "learning": "exact ordered iteration rows",
+            "mapdiag": "exact",
+            "maps": "bitwise"
+          }
+        },
+        "paired_iteration_zero": "bitwise"
+      },
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/EXECUTION_RECEIPT.json",
+        "sha256": "8cb64ffb317d073492a7091e2438892c285158d56ff220123881ffd1b02b39c0",
+        "size_bytes": 9342
+      },
+      "resources": {
+        "peak_rss_bytes": 795885568,
+        "system_seconds": 7.08,
+        "user_seconds": 385.31,
+        "wall_seconds": 395.91
+      },
+      "status": "pass",
+      "trajectory": "H/injected"
+    },
+    {
+      "comparison_repair": null,
+      "compatibility": {
+        "pre_first_action": {
+          "bitwise_through_iteration": 1,
+          "first_application": 2
+        }
+      },
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/uninjected/EXECUTION_RECEIPT.json",
+        "sha256": "60fcf0cc585edc7712be2dadb61187e1e52caa96464e6321a2946ac3ddaf3481",
+        "size_bytes": 7182
+      },
+      "resources": {
+        "peak_rss_bytes": 806584320,
+        "system_seconds": 9.72,
+        "user_seconds": 395.24,
+        "wall_seconds": 407.86
+      },
+      "status": "pass",
+      "trajectory": "Half/uninjected"
+    },
+    {
+      "comparison_repair": null,
+      "compatibility": {
+        "paired_iteration_zero": "bitwise",
+        "pre_first_action": {
+          "bitwise_through_iteration": 1,
+          "first_application": 2
+        }
+      },
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/injected/EXECUTION_RECEIPT.json",
+        "sha256": "fe2a031afc37c48ece01b7f02cf57a733e4b1721cbcd39a8b2bc69af13a08ac7",
+        "size_bytes": 7184
+      },
+      "resources": {
+        "peak_rss_bytes": 887242752,
+        "system_seconds": 8.2,
+        "user_seconds": 394.83,
+        "wall_seconds": 406.3
+      },
+      "status": "pass",
+      "trajectory": "Half/injected"
+    },
+    {
+      "comparison_repair": null,
+      "compatibility": {
+        "pre_first_action": {
+          "bitwise_through_iteration": 1,
+          "first_application": 2
+        }
+      },
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/uninjected/EXECUTION_RECEIPT.json",
+        "sha256": "9f0fb2525ccb04480b83d46feba34f6f2f10e1128c0a54e6a30459fde47401b6",
+        "size_bytes": 7183
+      },
+      "resources": {
+        "peak_rss_bytes": 846970880,
+        "system_seconds": 13.05,
+        "user_seconds": 389.88,
+        "wall_seconds": 406.85
+      },
+      "status": "pass",
+      "trajectory": "Hold/uninjected"
+    },
+    {
+      "comparison_repair": null,
+      "compatibility": {
+        "paired_iteration_zero": "bitwise",
+        "pre_first_action": {
+          "bitwise_through_iteration": 1,
+          "first_application": 2
+        }
+      },
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/injected/EXECUTION_RECEIPT.json",
+        "sha256": "4e20555289454c6595fdc6979633c90b5ff28a32e1b3d5ebdb6ca4a18d6cb8ec",
+        "size_bytes": 7191
+      },
+      "resources": {
+        "peak_rss_bytes": 875855872,
+        "system_seconds": 13.95,
+        "user_seconds": 381.32,
+        "wall_seconds": 398.88
+      },
+      "status": "pass",
+      "trajectory": "Hold/injected"
+    }
+  ],
+  "conditional_disposition": "Neither candidate met protections and prioritized endpoints; no restart condition triggered.",
+  "conditional_restarts": 0,
+  "diagnostic_replacements": 0,
+  "native_binary": {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/setup/citlali-el-f12-r0.1",
+    "sha256": "1a47fb8fbf958c2df0d2ce49f27d0e3e20db899447d021c4c291d05f96aa0469",
+    "size_bytes": 15030312
+  },
+  "primary_passes": 56,
+  "primary_trajectories": 8,
+  "retained_bytes_at_check": 14208326514,
+  "status": "complete",
+  "temporary_spool_bytes_at_check": 0,
+  "unchanged_arrays": "56 maps / 224 science-plane comparisons bitwise"
+}

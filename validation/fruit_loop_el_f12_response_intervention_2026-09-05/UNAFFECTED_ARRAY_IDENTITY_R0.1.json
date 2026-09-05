@@ -1,0 +1,567 @@
+{
+  "bitwise_planes_checked": 224,
+  "checks": [
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/uninjected/reduced/redu06/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/uninjected/reduced/redu06/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/injected/reduced/redu00/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu00/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/injected/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/injected/reduced/redu01/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu01/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/injected/reduced/redu01/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu01/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/injected/reduced/redu02/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu02/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/injected/reduced/redu02/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu02/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/injected/reduced/redu03/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu03/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/injected/reduced/redu03/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu03/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/injected/reduced/redu04/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu04/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/injected/reduced/redu04/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu04/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/injected/reduced/redu05/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu05/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/injected/reduced/redu05/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu05/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/injected/reduced/redu06/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu06/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Half/injected/reduced/redu06/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu06/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/uninjected/reduced/redu06/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/uninjected/reduced/redu06/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/injected/reduced/redu00/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu00/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/injected/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/injected/reduced/redu01/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu01/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/injected/reduced/redu01/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu01/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/injected/reduced/redu02/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu02/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/injected/reduced/redu02/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu02/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/injected/reduced/redu03/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu03/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/injected/reduced/redu03/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu03/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/injected/reduced/redu04/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu04/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/injected/reduced/redu04/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu04/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/injected/reduced/redu05/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu05/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/injected/reduced/redu05/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu05/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/injected/reduced/redu06/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu06/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits"
+    },
+    {
+      "actual": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/Hold/injected/reduced/redu06/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "bitwise_planes": [
+        "signal_I",
+        "kernel_I",
+        "weight_I",
+        "weight_formal_I"
+      ],
+      "expected": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/reduced/redu06/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits"
+    }
+  ],
+  "map_files_checked": 56,
+  "status": "pass"
+}

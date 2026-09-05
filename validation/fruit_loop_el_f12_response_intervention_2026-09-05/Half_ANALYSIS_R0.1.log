@@ -1,0 +1,98 @@
+{
+  "arm": "Half",
+  "all_protections_pass": false,
+  "selected_opportunities": 8,
+  "assignments": {
+    "Cu": [
+      {
+        "observation": "123424",
+        "array": 2,
+        "uid": 5279,
+        "scan": 10,
+        "source_iteration": 1,
+        "first_application": 2
+      },
+      {
+        "observation": "123424",
+        "array": 2,
+        "uid": 5282,
+        "scan": 0,
+        "source_iteration": 2,
+        "first_application": 3
+      },
+      {
+        "observation": "123424",
+        "array": 2,
+        "uid": 5311,
+        "scan": 6,
+        "source_iteration": 3,
+        "first_application": 4
+      },
+      {
+        "observation": "123424",
+        "array": 2,
+        "uid": 5416,
+        "scan": 10,
+        "source_iteration": 4,
+        "first_application": 5
+      }
+    ],
+    "Ci": [
+      {
+        "observation": "123424",
+        "array": 2,
+        "uid": 5279,
+        "scan": 10,
+        "source_iteration": 1,
+        "first_application": 2
+      },
+      {
+        "observation": "123424",
+        "array": 2,
+        "uid": 5282,
+        "scan": 0,
+        "source_iteration": 2,
+        "first_application": 3
+      },
+      {
+        "observation": "123424",
+        "array": 2,
+        "uid": 5311,
+        "scan": 6,
+        "source_iteration": 3,
+        "first_application": 4
+      },
+      {
+        "observation": "123424",
+        "array": 2,
+        "uid": 5416,
+        "scan": 10,
+        "source_iteration": 4,
+        "first_application": 5
+      }
+    ]
+  },
+  "prioritized_leakage_pass": false,
+  "promising_before_required_restarts": false,
+  "claim": "exposed development only; independent-pointing replication requires separate approval",
+  "false_action_rate": "unavailable: no independent detector truth labels",
+  "terminal_iteration": "hard-cap censored"
+}
+        6.11 real         4.79 user         0.34 sys
+           238534656  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               36053  page reclaims
+               10555  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                 413  voluntary context switches
+                6469  involuntary context switches
+         55768612228  instructions retired
+         21075323058  cycles elapsed
+           200803024  peak memory footprint
