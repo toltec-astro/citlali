@@ -1,0 +1,77 @@
+{
+  "completed": [
+    {
+      "trajectory": "H0/uninjected",
+      "status": "pass",
+      "resources": {
+        "peak_rss_bytes": 615301120,
+        "system_seconds": 3.36,
+        "user_seconds": 187.69,
+        "wall_seconds": 193.95
+      },
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H0/uninjected/EXECUTION_RECEIPT.json",
+        "sha256": "c4e129895efe3df786f6965561ac2981e10820a57bb9a7222aff712bc4695c92",
+        "size_bytes": 2183
+      },
+      "comparison_repair": null
+    },
+    {
+      "trajectory": "H0/injected",
+      "status": "pass",
+      "resources": {
+        "peak_rss_bytes": 598556672,
+        "system_seconds": 2.91,
+        "user_seconds": 188.26,
+        "wall_seconds": 193.38
+      },
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H0/injected/EXECUTION_RECEIPT.json",
+        "sha256": "32a35120f4e93b695d05a9efbc5872ae77705c93c9f65628fcef6ee105b51553",
+        "size_bytes": 1851
+      },
+      "comparison_repair": null
+    },
+    {
+      "trajectory": "H/uninjected",
+      "status": "pass",
+      "resources": {
+        "peak_rss_bytes": 796147712,
+        "system_seconds": 5.4,
+        "user_seconds": 351.49,
+        "wall_seconds": 359.84
+      },
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/EXECUTION_RECEIPT.json",
+        "sha256": "fd58967a8c4ec729f0b21b3bd236f76ac4e13807bdc8b89d045b1aad87762f9d",
+        "size_bytes": 1834
+      },
+      "comparison_repair": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/SCALAR_DIMENSION_REPAIR_R0.2.json",
+        "sha256": "6374ea0a703eb6ec0841ea31351f285afd6c4b96d09980a79ba278f6669379ec",
+        "size_bytes": 103036
+      }
+    },
+    {
+      "trajectory": "H/injected",
+      "status": "pass",
+      "resources": {
+        "peak_rss_bytes": 795885568,
+        "system_seconds": 7.08,
+        "user_seconds": 385.31,
+        "wall_seconds": 395.91
+      },
+      "receipt": {
+        "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/injected/EXECUTION_RECEIPT.json",
+        "sha256": "8cb64ffb317d073492a7091e2438892c285158d56ff220123881ffd1b02b39c0",
+        "size_bytes": 9342
+      },
+      "comparison_repair": null
+    }
+  ],
+  "current": "Half/uninjected",
+  "primary_trajectories_completed": 4,
+  "passes_completed": 28,
+  "replacement_replays": 0,
+  "scientific_claim": "both H0/H pairs pass; no intervention outcome claimed"
+}

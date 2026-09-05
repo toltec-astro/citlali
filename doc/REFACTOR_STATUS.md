@@ -984,6 +984,14 @@ ordered learning-row and map-diagnostic comparisons without replay or binary
 change. All 272 Python tests pass. Three primary trajectories/21 passes are
 consumed; no alternative or diagnostic replacement has run. H injected is
 next after successor analyzer registration.
+Under the
+[`r0.2 analyzer registration`](../validation/fruit_loop_el_f12_response_intervention_2026-09-05/REGISTRATION_R0.2.md),
+H injected also completes all seven iterations and passes every neutrality
+check. Both H0/H pairs and both iteration-zero pair checks pass. Four primary
+trajectories/28 passes are complete, with no diagnostic replacement. The
+[`control-gate progress`](../validation/fruit_loop_el_f12_response_intervention_2026-09-05/EXECUTION_PROGRESS_R0.2.json)
+binds those receipts. The approved alternatives may now run in their fixed
+order; Half uninjected is active. Neither benefit nor policy is established.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
