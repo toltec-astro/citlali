@@ -1,5 +1,23 @@
 # Citlali Refactor Status
 
+## 2026-09-05 CTI-OD-002 Uniform-First Scope Approval
+
+Grant Wilson approved preparation of the registry contract and one
+uniform/constant coefficient family first, for explicit MAP/JINC permission
+review, in response to the independently reviewed decision brief at
+`84974658c8179057fd26184110871f187c4bb793`. The
+[first-scope approval and Stage A packet](scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/README.md)
+record that direction and assemble the exact sanitized author-input candidate.
+Sensitivity and residual-scatter entries remain deferred; no constant,
+normalization, numerical QC rule or mode default is selected.
+
+This is a topic-branch preparation record. Canonical integration, exact
+author-input release and scientific authorship remain pending. CTI-OD-002
+stays open; CTI-OD-001 remains accepted/closed, CTI-OD-003--006 remain open,
+and CTI-OD-007 remains inherited/closed. Frozen authority, current Registry
+records, application code and all existing numerical-route limitations remain
+unchanged. No application unit is authorized by this scope decision.
+
 ## 2026-09-05 Map-Space Source-Study Acceptance
 
 Grant Wilson accepted exact independently reviewed source study
