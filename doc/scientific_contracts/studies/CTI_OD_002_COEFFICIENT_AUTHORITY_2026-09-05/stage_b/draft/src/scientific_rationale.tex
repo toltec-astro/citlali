@@ -1,0 +1,61 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.70in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,array}
+\usepackage[hidelinks]{hyperref}
+\usepackage{url}
+\DeclareFontShape{TU}{lmr}{m}{sl}{<->ssub*lmr/m/n}{}
+\DeclareFontShape{TU}{lmr}{m}{it}{<->ssub*lmr/m/n}{}
+\DeclareFontShape{TU}{lmr}{bx}{sl}{<->ssub*lmr/bx/n}{}
+\DeclareFontShape{TU}{lmr}{bx}{it}{<->ssub*lmr/bx/n}{}
+\renewcommand{\itshape}{\upshape}
+\renewcommand{\slshape}{\upshape}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.45em}
+\setlength{\LTpre}{0.3em}
+\setlength{\LTpost}{0.5em}
+\setlength{\headheight}{13pt}
+\makeatletter
+\def\ps@draftheadings{%
+  \def\@oddhead{\normalfont\small Scientific Rationale and Contract
+    v0.1-draft.1/r0.1\hfil\thepage}%
+  \let\@evenhead\@oddhead
+  \def\@oddfoot{}\let\@evenfoot\@oddfoot}
+\let\ps@plain\ps@draftheadings
+\makeatother
+\sloppy
+\begin{document}
+\makeatletter
+\let\ps@plain\ps@draftheadings
+\let\ps@headings\ps@draftheadings
+\let\ps@myheadings\ps@draftheadings
+\makeatother
+\let\DraftOriginalThisPageStyle\thispagestyle
+\renewcommand{\thispagestyle}[1]{\DraftOriginalThisPageStyle{draftheadings}}
+\title{PTC Uniform/Constant Analysis Coefficient\\
+Scientific Rationale and Contract\\
+\large \ContractIdentity\ \ContractVersion\ /\ \DocumentRevision}
+\author{Implementation-blind scientific author}
+\date{2026-09-05}
+% Identity macros are needed in the title before the common composition.
+\newcommand{\ContractIdentity}{SCI-PTC-COEFFICIENT-UNIFORM}
+\newcommand{\ContractVersion}{v0.1-draft.1}
+\newcommand{\DocumentRevision}{r0.1}
+\hypersetup{
+  pdftitle={PTC Uniform/Constant Analysis Coefficient -- Scientific Rationale and Contract -- SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.1},
+  pdfsubject={Implementation-blind first scientific draft for owner review; v0.1-draft.1 / r0.1},
+  pdfauthor={Implementation-blind scientific author}
+}
+\pagestyle{draftheadings}
+\maketitle
+\thispagestyle{draftheadings}
+\begin{abstract}
+\textbf{Draft for scientific-owner review.} This view explains a complete
+proposal for a dimensionless uniform PTC analysis/gridding coefficient. Every
+new numerical, profile, permission, and boundary choice remains unapproved.
+The document claims algebraic definition only; it claims no implementation
+conformity, validation, performance, readiness, registered family, policy, or
+default.
+\end{abstract}
+\input{common_core.tex}
+\end{document}

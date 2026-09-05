@@ -1,0 +1,91 @@
+\section{Numerical construction}
+
+\subsection{Occurrence index and broadcast}
+
+Let $p$ identify one exact realized PTC transformed-product/application
+generation for one observation $o$. Let $g$ identify a new immutable
+coefficient generation bound to $p$, its immutable CAL parent, and the
+requested, effective-policy, observation-resolved, and realized family
+selection states. The logical coefficient index is the exact detector-time
+occurrence $i$. A compact representation may store one scalar only if it binds
+the lossless relation
+\begin{equation}
+ \mathcal B_g(1)=\{(\boldsymbol\iota_i,1):i\in\mathcal D_{g,o}\}.
+ \label{eq:broadcast}
+\end{equation}
+Time, row, column, shape, cardinality, detector label, coordinate equality, or
+container position cannot establish broadcast membership.
+
+\subsection{Support and population}
+
+The proposed coefficient support and normalization population are identical:
+\begin{equation}
+ \mathcal D_{g,o}=\mathcal S^{\mathrm{coef}}_{g,o}
+ =\mathcal S^{\mathrm{PTC,out}}_{p,o}.
+ \label{eq:domain}
+\end{equation}
+The family covers every and only exact occurrence in the PTC output support of
+its bound generation for one observation. The population spans all detectors,
+times, groups, segments, arrays, and networks represented in that support;
+none defines a separate normalization population. Observations and product
+generations are never pooled.
+
+Equation~\ref{eq:domain} does not make sample validity a support predicate. An
+occurrence may carry coefficient one while its signal, coordinate, retention,
+or consumer admission is independently unusable. An occurrence outside the
+support has no coefficient under this family; absence is not zero.
+
+\subsection{Fixed constant and normalization}
+
+For finite nonempty $\mathcal D_{g,o}$, define
+\begin{align}
+ c_\star &\equiv 1,\qquad [c_\star]=1,\label{eq:constant}\\
+ \widetilde\omega_i&=c_\star,\qquad
+ i\in\mathcal D_{g,o},\label{eq:raw}\\
+ m_g&=\frac{1}{|\mathcal D_{g,o}|}
+       \sum_{j\in\mathcal D_{g,o}}\widetilde\omega_j,\label{eq:mean}\\
+ \omega_i&=\mathcal N_{\rm mean1}
+   (\widetilde\omega_i;\mathcal D_{g,o})
+   \equiv\frac{\widetilde\omega_i}{m_g}=1.
+ \label{eq:normalized}
+\end{align}
+The unit $1$ is dimensionless. Cardinality and summation operate on exact
+logical identities; a duplicate identity is a structural conflict rather
+than another population member.
+
+The family has no configurable numerical parameter. A generic positive raw
+constant $c$ would give
+\[
+ \frac{c}{|\mathcal D|^{-1}\sum_{j\in\mathcal D}c}=1,
+\]
+so its scale would be non-identifiable. The fixed value $c_\star=1$ is
+therefore part of the family definition. A request carrying any override,
+including another positive constant, is not an instance of this family and
+cannot be silently ignored, clipped, or normalized into acceptance.
+
+The explicit normalization declares a stable comparison convention. Changing
+the operator or population changes scientific identity even though this
+constant would remain numerically one. A singleton population is sufficient.
+An empty population has no mean and creates no generation or payload; it is
+not repaired by an empty pass, zero, or a scalar with inferred empty broadcast.
+
+\subsection{Consumer consequences}
+
+At the proposed JINC boundary,
+\begin{equation}
+ w_{ip}=\kappa_{ip}\omega_i=\kappa_{ip}.
+ \label{eq:jinc}
+\end{equation}
+The equality concerns only the PTC factor and transfers no JINC ownership.
+
+For the already selected NOI design on an exact MAP-admitted contribution
+population,
+\begin{equation}
+ a_{pi}=G_{pi}\gamma_i=G_{pi},\qquad
+ B_d=\sum_p\sum_{\substack{i\in C_p\\
+             \operatorname{detector}(i)=d}}a_{pi}.
+ \label{eq:noi}
+\end{equation}
+This does not define $G_{pi}$, change MAP arithmetic, or change the NOI design
+law.
+

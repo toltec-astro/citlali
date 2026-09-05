@@ -1,0 +1,203 @@
+\section{Assumptions, decision semantics, and lifecycle}
+
+\subsection{Scientific assumptions and limits}
+
+This definition assumes only that one exact realized PTC product generation
+exists for one observation, its exact output support can be identified, and
+the support is finite and nonempty. It assumes no statistical distribution,
+stationarity, independence, homoscedasticity, detector equivalence, exposure
+equivalence, residual model, sensitivity model, or response model. It neither
+estimates nor ranks data quality.
+
+The coefficient value is an exact policy constant and therefore introduces no
+sampling uncertainty. That statement is limited to the coefficient itself. It
+does not assign zero to calibration, signal, response, covariance,
+cross-observation, support-selection, family-selection, representation, or
+performance uncertainty. Unknown remains unknown and absent covariance never
+means independence.
+
+\subsection{Knowledge and four independent axes}
+
+Every applicable fact and profile predicate uses
+$\{\mathbf T,\mathbf F,\mathbf U,\mathbf C\}$ with the admitted VAL meanings.
+Silence is $\mathbf U$. A structural contradiction blocks establishment of the
+question. A non-gating $\mathbf C$ is preserved and composes as unresolved
+$\mathbf U$. One decisive $\mathbf F$ yields ineligible even when another
+non-gating predicate is unresolved; without a false, any required unresolved
+predicate yields decision unavailable; all required predicates true yields
+eligible. Every cause is retained without evidence-erasing short circuit.
+
+The \ProfileKey\ record carries independent axes:
+\begin{itemize}
+\item $R=$ requested or not requested. A family not selected and handoff not
+requested has no eligibility evaluation.
+\item $A=$ applicable, inapplicable, or applicability unknown under the
+profile definition. Known outside-support occurrences have
+$E=\varnothing_E$.
+\item $E=$ eligible, ineligible, decision unavailable, or uninstantiated
+$\varnothing_E$ where no question is evaluated.
+\item $Z=$ realized, incomplete, failed, or not produced for the profile
+evaluation. Coefficient payload availability remains a separate typed fact.
+\end{itemize}
+A realized decision-unavailable record is a successful account of missing
+authority. If the evaluation artifact itself is incomplete, failed, or not
+produced, it cannot manufacture an eligibility assertion.
+
+\subsection{Payload order and failure scope}
+
+Processing first establishes identity, parentage, profile authority,
+applicability, and producer validity; then excludes producer-invalid payloads;
+then checks an admitted required payload against exact unity. Finiteness or a
+numerical value of one cannot supply missing authority, validity, support, or
+permission. MAP and JINC subsequently perform their own positive/zero/
+negative/non-finite/unrepresentable classification.
+
+\begin{longtable}{p{0.29\linewidth}p{0.34\linewidth}p{0.28\linewidth}}
+\toprule
+Condition & Required result & Failure scope\\
+\midrule
+\endhead
+Missing/conflicting Registry, source, parent, occurrence, generation, support,
+or broadcast identity/binding & Applicability unknown or decision unavailable;
+no fallback payload & Entire affected coefficient generation\\
+Known empty $\mathcal D_{g,o}$ & No family instance or payload; no eligibility
+claim & Observation/generation\\
+After structural identity is established, explicit incompatible-generation
+permission, wrong selected family, wrong operator/unit, or readable non-one
+payload & Ineligible with all causes; no reinterpretation & Entire
+scalar-broadcast generation\\
+Missing, unreadable, or unrepresentable scalar/broadcast & Typed availability
+is unavailable or invalid as appropriate; decision unavailable or failed
+realization & Entire scalar-broadcast generation\\
+Absent explicit consumer permission & Ineligible for that named consumer only
+& Consumer-specific route\\
+Occurrence authoritatively outside support & Inapplicable,
+$E=\varnothing_E$, and no coefficient & Occurrence\\
+Consumer numerical rejection of an otherwise faithful payload & Preserve PTC
+record; consumer excludes or fails under its rule & Occurrence and consumer\\
+Unrelated metadata/advisory diagnostic missing or conflicting & Preserve
+state and cause; neutral for this profile & No coefficient-QC failure\\
+\bottomrule
+\end{longtable}
+
+\subsection{Immutable lifecycle and repetition}
+
+Creating $g$ never changes transformed product $p$ or an earlier coefficient
+generation. A change in support, product/application generation, observation,
+family/version, operator, population, unit, profile, permission, or selection
+lineage creates a new scientific identity and preserves all earlier parents.
+
+Repeated realization from the same exact inputs must yield the same
+mathematical payload and membership relation, but each realization retains its
+own immutable generation identity. Equal values do not authorize substitution
+or borrowing. Cross-generation use requires an explicit compatibility record
+binding both generations and preserving their claims. This proposal provides
+no general compatibility alias.
+
+\section{Scientific validity and uncertainty status}
+
+\begin{longtable}{p{0.28\linewidth}p{0.21\linewidth}p{0.42\linewidth}}
+\toprule
+Claim or uncertainty & Status class & Meaning in this draft\\
+\midrule
+\endhead
+Frozen ownership and generic coefficient constraints & Approved/recovered &
+Adopted from the admitted packet and not reopened.\\
+Uniform definition, normalization, support, and profile & Unresolved decision
+& Complete author proposal awaiting owner approval.\\
+Separate MAP and JINC permissions & Unresolved decisions & Proposed for both;
+each remains independently open.\\
+Algebraic positivity and mean-one identity & Engineering conformance claim &
+Follows analytically for exact one on a finite nonempty population; eventual
+artifact tests must confirm exact realization.\\
+Coefficient sampling uncertainty & Known by definition & None is introduced
+by the fixed constant; this is not a zero estimate of physical uncertainty.\\
+Family- and support-selection uncertainty & Known but not supplied /
+unresolved & Not encoded in the coefficient. Unknown is not zero.\\
+Signal, calibration, response, covariance, and cross-observation uncertainty &
+Producer facts, possibly unavailable & Preserved without reinterpretation;
+absence does not imply zero or independence.\\
+Implementation conformity & Implementation unassessed & No implementation was
+inspected and no conformance claim is made.\\
+Representation and response fidelity & Validation not performed & Exact
+encoding, broadcast, lineage, and whole-chain behavior require later evidence.\\
+Observational performance and comparative suitability & Validation not
+performed & No sensitivity, variance, bias, or optimality claim is made.\\
+Production readiness & Validation not performed & No route is authorized by
+this draft.\\
+NOI profile successors & Deferred/unavailable & All four retain their admitted
+proposed, unapproved, Registry-unbound, and unevaluable status.\\
+\bottomrule
+\end{longtable}
+
+\section{Decision boundary}
+
+The draft has no blocked mathematical definition. Every consequential new
+choice remains an open author proposal in the owner-decision ledger. Until
+those choices are adopted and exact successor source/Registry bindings exist,
+the family, profile, permissions, and boundary successors remain unavailable
+for evaluation or use. Approval of this family would not close deferred
+families, mode defaults, or independently governed route prerequisites.
+
+\section{Compact owner-decision register}
+
+This common-source register is explicitly checked against the companion
+\texttt{OWNER\_DECISION\_LEDGER.md}; the ledger carries the full owner,
+evidence, resolution-authority, date, and affected-document fields.
+
+\subsection*{Recovered and deferred states}
+
+\begin{center}
+\begin{tabular}{p{0.25\linewidth}p{0.13\linewidth}p{0.52\linewidth}}
+\toprule
+IDs & State & Disposition\\
+\midrule
+UFC-REC-001--007 & decided & Admitted PTC, registry, MAP, JINC, NOI, VAL, and
+PTC-disabled-route facts are recovered constraints; no claim is blocked.\\
+UFC-DEF-001--005 & deferred & Other coefficient families, defaults, NOI
+profile successors, performance criteria, and a general cross-generation alias
+remain outside this draft.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{Open author proposals}
+
+\begin{longtable}{p{0.18\linewidth}p{0.12\linewidth}p{0.61\linewidth}}
+\toprule
+ID & State & Exact blocked claim or output\\
+\midrule
+\endhead
+UFC-OD-001 & open & Registered exact-unity numerical family and payload.\\
+UFC-OD-002 & open & Exact logical index and scalar-broadcast declaration.\\
+UFC-OD-003 & open & Approved support and normalization population.\\
+UFC-OD-004 & open & Approved mean-one operator and empty/singleton behavior.\\
+UFC-OD-005 & open & Approved no-parameter selection rule.\\
+UFC-OD-006 & open & Complete evaluable coefficient-handoff profile identity,
+use, object, and applicability.\\
+UFC-OD-007 & open & Approved UQ-01--UQ-07 truth rules, no-exception rule,
+advisory roles, and failure scopes.\\
+UFC-OD-008 & open & SCI-MAP permission and MAP use of this family.\\
+UFC-OD-009 & open & SCI-JINC permission and JINC use of this family.\\
+UFC-OD-010 & open & Immutable MAP and JINC successor-boundary bindings.\\
+UFC-OD-011 & open & Exact actual-owner field for active Registry/profile
+binding; the mathematical draft is not blocked.\\
+UFC-OD-012 & open & Approved generation/replay and cross-generation rules.\\
+UFC-OD-013 & open & Approved coefficient uncertainty meaning.\\
+UFC-OD-014 & open & Active coefficient Registry identity and source binding.\\
+\bottomrule
+\end{longtable}
+
+\subsection*{Precise open question}
+
+\begin{center}
+\begin{tabular}{p{0.18\linewidth}p{0.12\linewidth}p{0.61\linewidth}}
+\toprule
+ID & State & Exact question and blocked output\\
+\midrule
+UFC-Q-001 & open & Is the actual scientific owner Grant Wilson acting for
+SCI-PTC, as proposed, or another named authority? This blocks active
+Registry/profile binding only.\\
+\bottomrule
+\end{tabular}
+\end{center}
