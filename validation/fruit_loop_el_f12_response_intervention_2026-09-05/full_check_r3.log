@@ -1,0 +1,1360 @@
+[  0%] Built target config_header_kidscpp
+[  0%] Built target config_header_citlali
+[  0%] Built target gitversion_header_citlali
+[  0%] Built target gitversion_header_kidscpp
+[  0%] Built target default_config_header_citlali
+[  0%] Built target gtest
+[  1%] Built target gramsavgol
+[  1%] Built target config_header_tula
+[  1%] Built target gitversion_header_tula
+[  5%] Built target fmt
+[  9%] Built target re2
+[  9%] Built target gmock
+[ 11%] Built target glog
+[ 12%] Built target gtest_main
+[ 22%] Built target netcdf-cxx4
+[ 24%] Built target spdlog
+[ 35%] Built target yaml-cpp
+[ 81%] Built target ceres
+[ 83%] Built target kids
+[ 87%] Built target citlali
+[ 88%] Building CXX object tests/CMakeFiles/citlali_learning_target_application_test.dir/test_learning_target_application.cpp.o
+[ 88%] Building CXX object tests/CMakeFiles/citlali_science_map_fits_products_test.dir/test_science_map_fits_products.cpp.o
+[ 88%] Building CXX object tests/CMakeFiles/citlali_fruit_response_test.dir/test_fruit_response_intervention.cpp.o
+[ 88%] Building CXX object tests/CMakeFiles/citlali_test.dir/test_config_scaffold.cpp.o
+[ 88%] Linking CXX executable ../bin/citlali_fruit_response_test
+[ 89%] Built target citlali_fruit_response_test
+[ 89%] Linking CXX executable citlali_learning_target_application_test
+[ 89%] Built target citlali_learning_target_application_test
+[ 89%] Linking CXX executable citlali_science_map_fits_products_test
+[ 90%] Built target citlali_science_map_fits_products_test
+[ 90%] Linking CXX executable citlali_test
+[100%] Built target citlali_test
+Test project /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/build/tests
+Connected to MAKE jobserver
+        Start   1: citlali::AstrometryExecutionPlan.ResolvesApplicationModesWithoutChangingValues
+  1/653 Test   #1: citlali::AstrometryExecutionPlan.ResolvesApplicationModesWithoutChangingValues ......................................................   Passed    0.03 sec
+        Start   2: citlali::AstrometryExecutionPlan.RecordsRepeatedObservationLifecycle
+  2/653 Test   #2: citlali::AstrometryExecutionPlan.RecordsRepeatedObservationLifecycle ................................................................   Passed    0.02 sec
+        Start   3: citlali::AstrometryExecutionPlan.RejectsIdentityChangesAndIncompleteCompletion
+  3/653 Test   #3: citlali::AstrometryExecutionPlan.RejectsIdentityChangesAndIncompleteCompletion ......................................................   Passed    0.01 sec
+        Start   4: citlali::AstrometryExecutionPlan.RecordsApplicationAtPointingBoundary
+  4/653 Test   #4: citlali::AstrometryExecutionPlan.RecordsApplicationAtPointingBoundary ...............................................................   Passed    0.01 sec
+        Start   5: citlali::AstrometryExecutionPlan.RejectsChangedRealizedSampleCount
+  5/653 Test   #5: citlali::AstrometryExecutionPlan.RejectsChangedRealizedSampleCount ..................................................................   Passed    0.01 sec
+        Start   6: citlali::AstrometryProvenance.SerializesAuthorityIdentityAndRealizedState
+  6/653 Test   #6: citlali::AstrometryProvenance.SerializesAuthorityIdentityAndRealizedState ...........................................................   Passed    0.01 sec
+        Start   7: citlali::AstrometryProvenance.RequiresCompletionAndWritesAtomically
+  7/653 Test   #7: citlali::AstrometryProvenance.RequiresCompletionAndWritesAtomically .................................................................   Passed    0.02 sec
+        Start   8: citlali::BeammapMapProductHeaders.OmitsNonfiniteValues
+  8/653 Test   #8: citlali::BeammapMapProductHeaders.OmitsNonfiniteValues ..............................................................................   Passed    0.01 sec
+        Start   9: citlali::BeammapSplitMapProducts.CapturesAllInterleavedDetectorIndices
+  9/653 Test   #9: citlali::BeammapSplitMapProducts.CapturesAllInterleavedDetectorIndices ..............................................................   Passed    0.01 sec
+        Start  10: citlali::BeammapConfigSerialization.CoversFrozenSeventyFourLeafSurface
+ 10/653 Test  #10: citlali::BeammapConfigSerialization.CoversFrozenSeventyFourLeafSurface ..............................................................   Passed    0.01 sec
+        Start  11: citlali::BeammapExecutionPlan.PreservesRequestAndRecordsEffectivePolicy
+ 11/653 Test  #11: citlali::BeammapExecutionPlan.PreservesRequestAndRecordsEffectivePolicy .............................................................   Passed    0.01 sec
+        Start  12: citlali::BeammapExecutionPlan.ResolvesMissingValuesWithoutMutatingRequest
+ 12/653 Test  #12: citlali::BeammapExecutionPlan.ResolvesMissingValuesWithoutMutatingRequest ...........................................................   Passed    0.01 sec
+        Start  13: citlali::BeammapExecutionPlan.ResetClearsPriorResolutionState
+ 13/653 Test  #13: citlali::BeammapExecutionPlan.ResetClearsPriorResolutionState .......................................................................   Passed    0.01 sec
+        Start  14: citlali::BeammapExecutionPlan.RecordsCompletedObservationLifecycle
+ 14/653 Test  #14: citlali::BeammapExecutionPlan.RecordsCompletedObservationLifecycle ..................................................................   Passed    0.01 sec
+        Start  15: citlali::BeammapExecutionPlan.RequiresEveryInternalStageBeforeCompletion
+ 15/653 Test  #15: citlali::BeammapExecutionPlan.RequiresEveryInternalStageBeforeCompletion ............................................................   Passed    0.01 sec
+        Start  16: citlali::BeammapExecutionPlan.RejectsFitContextCardinalityMismatch
+ 16/653 Test  #16: citlali::BeammapExecutionPlan.RejectsFitContextCardinalityMismatch ..................................................................   Passed    0.01 sec
+        Start  17: citlali::BeammapExecutionPlan.RecordsEarlyConvergenceTermination
+ 17/653 Test  #17: citlali::BeammapExecutionPlan.RecordsEarlyConvergenceTermination ....................................................................   Passed    0.01 sec
+        Start  18: citlali::BeammapExecutionPlan.RecordsDisabledExecutionWithoutFakeProducts
+ 18/653 Test  #18: citlali::BeammapExecutionPlan.RecordsDisabledExecutionWithoutFakeProducts ...........................................................   Passed    0.01 sec
+        Start  19: citlali::BeammapExecutionPlan.RequiresExactlyOneEnabledDetectorTodWrite
+ 19/653 Test  #19: citlali::BeammapExecutionPlan.RequiresExactlyOneEnabledDetectorTodWrite .............................................................   Passed    0.01 sec
+        Start  20: citlali::BeammapExecutionPlan.RepeatedIterationResetClearsRealizedState
+ 20/653 Test  #20: citlali::BeammapExecutionPlan.RepeatedIterationResetClearsRealizedState .............................................................   Passed    0.01 sec
+        Start  21: citlali::BeammapExecutionPlan.ReadsRawRequestBeforeResolvingEffectivePolicy
+ 21/653 Test  #21: citlali::BeammapExecutionPlan.ReadsRawRequestBeforeResolvingEffectivePolicy .........................................................   Passed    0.01 sec
+        Start  22: citlali::BeammapProvenance.SerializesRequestedEffectiveAndRealizedState
+ 22/653 Test  #22: citlali::BeammapProvenance.SerializesRequestedEffectiveAndRealizedState .............................................................   Passed    0.01 sec
+        Start  23: citlali::BeammapProvenance.RequiresCompletionAndPropagatesWriteFailure
+ 23/653 Test  #23: citlali::BeammapProvenance.RequiresCompletionAndPropagatesWriteFailure ..............................................................   Passed    0.01 sec
+        Start  24: citlali::BeammapConfigValidation.AcceptsDefaultAndCompleteShapes
+ 24/653 Test  #24: citlali::BeammapConfigValidation.AcceptsDefaultAndCompleteShapes ....................................................................   Passed    0.01 sec
+        Start  25: citlali::BeammapConfigValidation.RejectsNonFiniteAndInconsistentVectors
+ 25/653 Test  #25: citlali::BeammapConfigValidation.RejectsNonFiniteAndInconsistentVectors .............................................................   Passed    0.01 sec
+        Start  26: citlali::BeammapConfigValidation.RequiresTodSubdirectoryWhenEnabled
+ 26/653 Test  #26: citlali::BeammapConfigValidation.RequiresTodSubdirectoryWhenEnabled .................................................................   Passed    0.01 sec
+        Start  27: citlali::BeammapConfigValidation.RejectsPartiallyPopulatedArrayVectors
+ 27/653 Test  #27: citlali::BeammapConfigValidation.RejectsPartiallyPopulatedArrayVectors ..............................................................   Passed    0.01 sec
+        Start  28: citlali::calib_apt_filtering.ignores_fully_flagged_network_absent_from_raw_observation
+ 28/653 Test  #28: citlali::calib_apt_filtering.ignores_fully_flagged_network_absent_from_raw_observation ..............................................   Passed    0.03 sec
+        Start  29: citlali::calib_apt_filtering.still_rejects_fully_flagged_network_present_in_raw_observation
+ 29/653 Test  #29: citlali::calib_apt_filtering.still_rejects_fully_flagged_network_present_in_raw_observation .........................................   Passed    0.02 sec
+        Start  30: citlali::coherent_iq_mode_observer.exact_rank_one_amplitude_and_sign
+ 30/653 Test  #30: citlali::coherent_iq_mode_observer.exact_rank_one_amplitude_and_sign ................................................................   Passed    0.01 sec
+        Start  31: citlali::coherent_iq_mode_observer.partial_tones_obey_coverage_contract
+ 31/653 Test  #31: citlali::coherent_iq_mode_observer.partial_tones_obey_coverage_contract .............................................................   Passed    0.01 sec
+        Start  32: citlali::coherent_iq_mode_observer.incompatible_tone_map_fails_closed
+ 32/653 Test  #32: citlali::coherent_iq_mode_observer.incompatible_tone_map_fails_closed ...............................................................   Passed    0.01 sec
+        Start  33: citlali::coherent_iq_mode_observer.distinguishes_local_common_and_delay_models
+ 33/653 Test  #33: citlali::coherent_iq_mode_observer.distinguishes_local_common_and_delay_models ......................................................   Passed    0.01 sec
+        Start  34: citlali::coherent_iq_mode_observer.multi_mode_metric_explains_two_mode_event
+ 34/653 Test  #34: citlali::coherent_iq_mode_observer.multi_mode_metric_explains_two_mode_event ........................................................   Passed    0.01 sec
+        Start  35: citlali::coherent_iq_mode_observer.null_wrong_network_and_metadata_fail_closed
+ 35/653 Test  #35: citlali::coherent_iq_mode_observer.null_wrong_network_and_metadata_fail_closed ......................................................   Passed    0.01 sec
+        Start  36: citlali::coherent_iq_mode_observer.scoring_does_not_mutate_candidate_data
+ 36/653 Test  #36: citlali::coherent_iq_mode_observer.scoring_does_not_mutate_candidate_data ...........................................................   Passed    0.01 sec
+        Start  37: citlali::coherent_iq_mode_observer.candidate_records_are_compact_and_deterministic
+ 37/653 Test  #37: citlali::coherent_iq_mode_observer.candidate_records_are_compact_and_deterministic ..................................................   Passed    0.01 sec
+        Start  38: citlali::coherent_iq_mode_observer.cross_network_candidates_seed_one_shared_event
+ 38/653 Test  #38: citlali::coherent_iq_mode_observer.cross_network_candidates_seed_one_shared_event ...................................................   Passed    0.01 sec
+        Start  39: citlali::coherent_iq_mode_observer.template_loader_enforces_versioned_contract
+ 39/653 Test  #39: citlali::coherent_iq_mode_observer.template_loader_enforces_versioned_contract ......................................................   Passed    0.02 sec
+        Start  40: citlali::config_scaffold.formats_config_paths
+ 40/653 Test  #40: citlali::config_scaffold.formats_config_paths .......................................................................................   Passed    0.01 sec
+        Start  41: citlali::config_scaffold.validation_report_tracks_errors_and_warnings
+ 41/653 Test  #41: citlali::config_scaffold.validation_report_tracks_errors_and_warnings ...............................................................   Passed    0.01 sec
+        Start  42: citlali::config_scaffold.parses_existing_runtime_enum_values
+ 42/653 Test  #42: citlali::config_scaffold.parses_existing_runtime_enum_values ........................................................................   Passed    0.01 sec
+        Start  43: citlali::config_scaffold.parses_existing_mapmaking_enum_values
+ 43/653 Test  #43: citlali::config_scaffold.parses_existing_mapmaking_enum_values ......................................................................   Passed    0.01 sec
+        Start  44: citlali::config_scaffold.limits_science_map_v1_products_to_naive_array_stokes_i
+ 44/653 Test  #44: citlali::config_scaffold.limits_science_map_v1_products_to_naive_array_stokes_i .....................................................   Passed    0.01 sec
+        Start  45: citlali::config_scaffold.reads_and_adapts_typed_jinc_filter_config
+ 45/653 Test  #45: citlali::config_scaffold.reads_and_adapts_typed_jinc_filter_config ..................................................................   Passed    0.01 sec
+        Start  46: citlali::config_scaffold.reads_and_serializes_opt_in_jinc_accounting
+ 46/653 Test  #46: citlali::config_scaffold.reads_and_serializes_opt_in_jinc_accounting ................................................................   Passed    0.01 sec
+        Start  47: citlali::config_scaffold.rejects_malformed_typed_jinc_shape
+ 47/653 Test  #47: citlali::config_scaffold.rejects_malformed_typed_jinc_shape .........................................................................   Passed    0.01 sec
+        Start  48: citlali::config_scaffold.reads_and_adapts_typed_maximum_likelihood_config
+ 48/653 Test  #48: citlali::config_scaffold.reads_and_adapts_typed_maximum_likelihood_config ...........................................................   Passed    0.02 sec
+        Start  49: citlali::config_scaffold.reads_typed_mapmaking_output_request
+ 49/653 Test  #49: citlali::config_scaffold.reads_typed_mapmaking_output_request .......................................................................   Passed    0.02 sec
+        Start  50: citlali::config_scaffold.reads_complete_post_processing_request
+ 50/653 Test  #50: citlali::config_scaffold.reads_complete_post_processing_request .....................................................................   Passed    0.02 sec
+        Start  51: citlali::config_scaffold.post_processing_request_preserves_disabled_values
+ 51/653 Test  #51: citlali::config_scaffold.post_processing_request_preserves_disabled_values ..........................................................   Passed    0.01 sec
+        Start  52: citlali::config_scaffold.post_processing_request_rejects_invalid_enum
+ 52/653 Test  #52: citlali::config_scaffold.post_processing_request_rejects_invalid_enum ...............................................................   Passed    0.01 sec
+        Start  53: citlali::config_scaffold.post_processing_plan_preserves_request_and_resolves_activation
+ 53/653 Test  #53: citlali::config_scaffold.post_processing_plan_preserves_request_and_resolves_activation .............................................   Passed    0.01 sec
+        Start  54: citlali::config_scaffold.post_processing_plan_suppresses_products_without_mapmaking
+ 54/653 Test  #54: citlali::config_scaffold.post_processing_plan_suppresses_products_without_mapmaking .................................................   Passed    0.01 sec
+        Start  55: citlali::config_scaffold.post_processing_plan_enables_pointing_fitter_without_filtering
+ 55/653 Test  #55: citlali::config_scaffold.post_processing_plan_enables_pointing_fitter_without_filtering .............................................   Passed    0.01 sec
+        Start  56: citlali::config_scaffold.beammap_plan_preserves_request_without_mapmaking
+ 56/653 Test  #56: citlali::config_scaffold.beammap_plan_preserves_request_without_mapmaking ...........................................................   Passed    0.01 sec
+        Start  57: citlali::config_scaffold.adapts_effective_map_filter_config_one_way
+ 57/653 Test  #57: citlali::config_scaffold.adapts_effective_map_filter_config_one_way .................................................................   Passed    0.01 sec
+        Start  58: citlali::config_scaffold.map_filter_prerequisites_throw_canonical_config_error
+ 58/653 Test  #58: citlali::config_scaffold.map_filter_prerequisites_throw_canonical_config_error ......................................................   Passed    0.01 sec
+        Start  59: citlali::config_scaffold.adapts_effective_source_finding_config_one_way
+ 59/653 Test  #59: citlali::config_scaffold.adapts_effective_source_finding_config_one_way .............................................................   Passed    0.01 sec
+        Start  60: citlali::config_scaffold.adapts_effective_source_fitting_config_one_way
+ 60/653 Test  #60: citlali::config_scaffold.adapts_effective_source_fitting_config_one_way .............................................................   Passed    0.04 sec
+        Start  61: citlali::config_scaffold.records_complete_post_processing_point_iteration
+ 61/653 Test  #61: citlali::config_scaffold.records_complete_post_processing_point_iteration ...........................................................   Passed    0.01 sec
+        Start  62: citlali::config_scaffold.rejects_incomplete_post_processing_source_table
+ 62/653 Test  #62: citlali::config_scaffold.rejects_incomplete_post_processing_source_table ............................................................   Passed    0.01 sec
+        Start  63: citlali::config_scaffold.records_complete_post_processing_science_coadd
+ 63/653 Test  #63: citlali::config_scaffold.records_complete_post_processing_science_coadd .............................................................   Passed    0.01 sec
+        Start  64: citlali::config_scaffold.records_complete_post_processing_beammap_fits
+ 64/653 Test  #64: citlali::config_scaffold.records_complete_post_processing_beammap_fits ..............................................................   Passed    0.01 sec
+        Start  65: citlali::config_scaffold.atomically_writes_post_processing_provenance
+ 65/653 Test  #65: citlali::config_scaffold.atomically_writes_post_processing_provenance ...............................................................   Passed    0.01 sec
+        Start  66: citlali::config_scaffold.post_processing_provenance_failure_propagates
+ 66/653 Test  #66: citlali::config_scaffold.post_processing_provenance_failure_propagates ..............................................................   Passed    0.01 sec
+        Start  67: citlali::config_scaffold.reads_typed_coadd_request
+ 67/653 Test  #67: citlali::config_scaffold.reads_typed_coadd_request ..................................................................................   Passed    0.01 sec
+        Start  68: citlali::config_scaffold.coadd_plan_preserves_disabled_request
+ 68/653 Test  #68: citlali::config_scaffold.coadd_plan_preserves_disabled_request ......................................................................   Passed    0.01 sec
+        Start  69: citlali::config_scaffold.routes_coadd_accessor_through_effective_plan
+ 69/653 Test  #69: citlali::config_scaffold.routes_coadd_accessor_through_effective_plan ...............................................................   Passed    0.01 sec
+        Start  70: citlali::config_scaffold.records_enabled_coadd_realized_cardinality
+ 70/653 Test  #70: citlali::config_scaffold.records_enabled_coadd_realized_cardinality .................................................................   Passed    0.01 sec
+        Start  71: citlali::config_scaffold.records_effectively_disabled_coadd
+ 71/653 Test  #71: citlali::config_scaffold.records_effectively_disabled_coadd .........................................................................   Passed    0.01 sec
+        Start  72: citlali::config_scaffold.rejects_inconsistent_coadd_realized_state
+ 72/653 Test  #72: citlali::config_scaffold.rejects_inconsistent_coadd_realized_state ..................................................................   Passed    0.01 sec
+        Start  73: citlali::config_scaffold.reads_complete_typed_noise_request
+ 73/653 Test  #73: citlali::config_scaffold.reads_complete_typed_noise_request .........................................................................   Passed    0.01 sec
+        Start  74: citlali::config_scaffold.preserves_legacy_noise_optional_defaults
+ 74/653 Test  #74: citlali::config_scaffold.preserves_legacy_noise_optional_defaults ...................................................................   Passed    0.01 sec
+        Start  75: citlali::config_scaffold.noise_plan_preserves_disabled_request
+ 75/653 Test  #75: citlali::config_scaffold.noise_plan_preserves_disabled_request ......................................................................   Passed    0.01 sec
+        Start  76: citlali::config_scaffold.routes_noise_accessor_through_effective_plan
+ 76/653 Test  #76: citlali::config_scaffold.routes_noise_accessor_through_effective_plan ...............................................................   Passed    0.01 sec
+        Start  77: citlali::config_scaffold.adapts_effective_noise_config_one_way
+ 77/653 Test  #77: citlali::config_scaffold.adapts_effective_noise_config_one_way ......................................................................   Passed    0.01 sec
+        Start  78: citlali::config_scaffold.explicit_noise_seed_preserves_default_sequence
+ 78/653 Test  #78: citlali::config_scaffold.explicit_noise_seed_preserves_default_sequence .............................................................   Passed    0.01 sec
+        Start  79: citlali::config_scaffold.records_disabled_noise_run
+ 79/653 Test  #79: citlali::config_scaffold.records_disabled_noise_run .................................................................................   Passed    0.01 sec
+        Start  80: citlali::config_scaffold.records_jinc_science_noise_cardinality
+ 80/653 Test  #80: citlali::config_scaffold.records_jinc_science_noise_cardinality .....................................................................   Passed    0.01 sec
+        Start  81: citlali::config_scaffold.records_full_observation_noise_outputs
+ 81/653 Test  #81: citlali::config_scaffold.records_full_observation_noise_outputs .....................................................................   Passed    0.01 sec
+        Start  82: citlali::config_scaffold.records_naive_coadd_observation_and_coadd_noise_cardinality
+ 82/653 Test  #82: citlali::config_scaffold.records_naive_coadd_observation_and_coadd_noise_cardinality ................................................   Passed    0.01 sec
+        Start  83: citlali::config_scaffold.records_separate_observation_and_coadd_filtered_noise_cardinality
+ 83/653 Test  #83: citlali::config_scaffold.records_separate_observation_and_coadd_filtered_noise_cardinality ..........................................   Passed    0.01 sec
+        Start  84: citlali::config_scaffold.rejects_noise_completion_before_mapmaking
+ 84/653 Test  #84: citlali::config_scaffold.rejects_noise_completion_before_mapmaking ..................................................................   Passed    0.01 sec
+        Start  85: citlali::config_scaffold.adapts_typed_mapmaking_output_to_legacy_wcs_one_way
+ 85/653 Test  #85: citlali::config_scaffold.adapts_typed_mapmaking_output_to_legacy_wcs_one_way ........................................................   Passed    0.01 sec
+        Start  86: citlali::config_scaffold.mapmaking_execution_plan_preserves_request_and_resolves_grouping
+ 86/653 Test  #86: citlali::config_scaffold.mapmaking_execution_plan_preserves_request_and_resolves_grouping ...........................................   Passed    0.01 sec
+        Start  87: citlali::config_scaffold.routes_mapmaking_accessor_through_effective_plan
+ 87/653 Test  #87: citlali::config_scaffold.routes_mapmaking_accessor_through_effective_plan ...........................................................   Passed    0.01 sec
+        Start  88: citlali::config_scaffold.records_uncalibrated_effective_map_unit
+ 88/653 Test  #88: citlali::config_scaffold.records_uncalibrated_effective_map_unit ....................................................................   Passed    0.01 sec
+        Start  89: citlali::config_scaffold.serializes_versioned_mapmaking_provenance
+ 89/653 Test  #89: citlali::config_scaffold.serializes_versioned_mapmaking_provenance ..................................................................   Passed    0.01 sec
+        Start  90: citlali::config_scaffold.resets_mapmaking_cardinality_per_iteration
+ 90/653 Test  #90: citlali::config_scaffold.resets_mapmaking_cardinality_per_iteration .................................................................   Passed    0.01 sec
+        Start  91: citlali::config_scaffold.serializes_zero_padded_obsnum_as_numeric_identity
+ 91/653 Test  #91: citlali::config_scaffold.serializes_zero_padded_obsnum_as_numeric_identity ..........................................................   Passed    0.01 sec
+        Start  92: citlali::config_scaffold.rejects_incomplete_mapmaking_cardinality
+ 92/653 Test  #92: citlali::config_scaffold.rejects_incomplete_mapmaking_cardinality ...................................................................   Passed    0.01 sec
+        Start  93: citlali::config_scaffold.records_zero_cardinality_when_mapmaking_disabled
+ 93/653 Test  #93: citlali::config_scaffold.records_zero_cardinality_when_mapmaking_disabled ...........................................................   Passed    0.01 sec
+        Start  94: citlali::config_scaffold.calculates_required_mapmaking_write_count
+ 94/653 Test  #94: citlali::config_scaffold.calculates_required_mapmaking_write_count ..................................................................   Passed    0.01 sec
+        Start  95: citlali::config_scaffold.atomically_writes_mapmaking_provenance
+ 95/653 Test  #95: citlali::config_scaffold.atomically_writes_mapmaking_provenance .....................................................................   Passed    0.01 sec
+        Start  96: citlali::config_scaffold.mapmaking_provenance_failure_propagates
+ 96/653 Test  #96: citlali::config_scaffold.mapmaking_provenance_failure_propagates ....................................................................   Passed    0.01 sec
+        Start  97: citlali::config_scaffold.serializes_versioned_coadd_provenance
+ 97/653 Test  #97: citlali::config_scaffold.serializes_versioned_coadd_provenance ......................................................................   Passed    0.01 sec
+        Start  98: citlali::config_scaffold.atomically_writes_coadd_provenance
+ 98/653 Test  #98: citlali::config_scaffold.atomically_writes_coadd_provenance .........................................................................   Passed    0.02 sec
+        Start  99: citlali::config_scaffold.coadd_provenance_failure_propagates
+ 99/653 Test  #99: citlali::config_scaffold.coadd_provenance_failure_propagates ........................................................................   Passed    0.01 sec
+        Start 100: citlali::config_scaffold.serializes_versioned_noise_provenance
+100/653 Test #100: citlali::config_scaffold.serializes_versioned_noise_provenance ......................................................................   Passed    0.01 sec
+        Start 101: citlali::config_scaffold.atomically_writes_noise_provenance
+101/653 Test #101: citlali::config_scaffold.atomically_writes_noise_provenance .........................................................................   Passed    0.01 sec
+        Start 102: citlali::config_scaffold.noise_provenance_failure_propagates
+102/653 Test #102: citlali::config_scaffold.noise_provenance_failure_propagates ........................................................................   Passed    0.01 sec
+        Start 103: citlali::config_scaffold.resolves_pointing_request_without_mutating_it
+103/653 Test #103: citlali::config_scaffold.resolves_pointing_request_without_mutating_it ..............................................................   Passed    0.01 sec
+        Start 104: citlali::config_scaffold.reads_complete_typed_pointing_request
+104/653 Test #104: citlali::config_scaffold.reads_complete_typed_pointing_request ......................................................................   Passed    0.01 sec
+        Start 105: citlali::config_scaffold.records_pointing_observation_lifecycle
+105/653 Test #105: citlali::config_scaffold.records_pointing_observation_lifecycle .....................................................................   Passed    0.01 sec
+        Start 106: citlali::config_scaffold.keeps_pointing_fit_independent_of_filtered_outputs
+106/653 Test #106: citlali::config_scaffold.keeps_pointing_fit_independent_of_filtered_outputs .........................................................   Passed    0.01 sec
+        Start 107: citlali::config_scaffold.rejects_duplicate_pointing_fit_stage_results
+107/653 Test #107: citlali::config_scaffold.rejects_duplicate_pointing_fit_stage_results ...............................................................   Passed    0.01 sec
+        Start 108: citlali::config_scaffold.requires_filtered_pointing_fit_when_filtering
+108/653 Test #108: citlali::config_scaffold.requires_filtered_pointing_fit_when_filtering ..............................................................   Passed    0.01 sec
+        Start 109: citlali::config_scaffold.disables_pointing_fit_without_mapmaking
+109/653 Test #109: citlali::config_scaffold.disables_pointing_fit_without_mapmaking ....................................................................   Passed    0.01 sec
+        Start 110: citlali::config_scaffold.pointing_adapter_is_one_way
+110/653 Test #110: citlali::config_scaffold.pointing_adapter_is_one_way ................................................................................   Passed    0.01 sec
+        Start 111: citlali::config_scaffold.serializes_versioned_pointing_provenance
+111/653 Test #111: citlali::config_scaffold.serializes_versioned_pointing_provenance ...................................................................   Passed    0.01 sec
+        Start 112: citlali::config_scaffold.pointing_provenance_write_contract
+112/653 Test #112: citlali::config_scaffold.pointing_provenance_write_contract .........................................................................   Passed    0.02 sec
+        Start 113: citlali::config_scaffold.validates_typed_mapmaking_method_values
+113/653 Test #113: citlali::config_scaffold.validates_typed_mapmaking_method_values ....................................................................   Passed    0.01 sec
+        Start 114: citlali::config_scaffold.rejects_unvalidated_maximum_likelihood_mapmaking
+114/653 Test #114: citlali::config_scaffold.rejects_unvalidated_maximum_likelihood_mapmaking ...........................................................   Passed    0.01 sec
+        Start 115: citlali::config_scaffold.validates_enabled_jinc_accounting_target
+115/653 Test #115: citlali::config_scaffold.validates_enabled_jinc_accounting_target ...................................................................   Passed    0.01 sec
+        Start 116: citlali::config_scaffold.parses_existing_timestream_enum_values
+116/653 Test #116: citlali::config_scaffold.parses_existing_timestream_enum_values .....................................................................   Passed    0.01 sec
+        Start 117: citlali::config_scaffold.parses_existing_pointing_enum_values
+117/653 Test #117: citlali::config_scaffold.parses_existing_pointing_enum_values .......................................................................   Passed    0.01 sec
+        Start 118: citlali::config_scaffold.parses_existing_map_filter_enum_values
+118/653 Test #118: citlali::config_scaffold.parses_existing_map_filter_enum_values .....................................................................   Passed    0.01 sec
+        Start 119: citlali::config_scaffold.parses_existing_beammap_enum_values
+119/653 Test #119: citlali::config_scaffold.parses_existing_beammap_enum_values ........................................................................   Passed    0.01 sec
+        Start 120: citlali::config_scaffold.parses_polarimetry_enum_values
+120/653 Test #120: citlali::config_scaffold.parses_polarimetry_enum_values .............................................................................   Passed    0.01 sec
+        Start 121: citlali::config_scaffold.reads_disabled_polarimetry_request
+121/653 Test #121: citlali::config_scaffold.reads_disabled_polarimetry_request .........................................................................   Passed    0.01 sec
+        Start 122: citlali::config_scaffold.reads_enabled_polarimetry_request
+122/653 Test #122: citlali::config_scaffold.reads_enabled_polarimetry_request ..........................................................................   Passed    0.01 sec
+        Start 123: citlali::config_scaffold.rejects_invalid_polarimetry_enum
+123/653 Test #123: citlali::config_scaffold.rejects_invalid_polarimetry_enum ...........................................................................   Passed    0.01 sec
+        Start 124: citlali::config_scaffold.adapts_typed_polarimetry_config_one_way
+124/653 Test #124: citlali::config_scaffold.adapts_typed_polarimetry_config_one_way ....................................................................   Passed    0.01 sec
+        Start 125: citlali::config_scaffold.rejects_enabled_polarimetry_capability
+125/653 Test #125: citlali::config_scaffold.rejects_enabled_polarimetry_capability .....................................................................   Passed    0.01 sec
+        Start 126: citlali::config_scaffold.records_disabled_polarimetry_provenance
+126/653 Test #126: citlali::config_scaffold.records_disabled_polarimetry_provenance ....................................................................   Passed    0.01 sec
+        Start 127: citlali::config_scaffold.polarimetry_provenance_write_contract
+127/653 Test #127: citlali::config_scaffold.polarimetry_provenance_write_contract ......................................................................   Passed    0.02 sec
+        Start 128: citlali::config_scaffold.validates_beammap_source_fluxes
+128/653 Test #128: citlali::config_scaffold.validates_beammap_source_fluxes ............................................................................   Passed    0.01 sec
+        Start 129: citlali::config_scaffold.reads_beammap_photometry_without_source_identity
+129/653 Test #129: citlali::config_scaffold.reads_beammap_photometry_without_source_identity ...........................................................   Passed    0.01 sec
+        Start 130: citlali::config_scaffold.rejects_invalid_beammap_source_observation
+130/653 Test #130: citlali::config_scaffold.rejects_invalid_beammap_source_observation .................................................................   Passed    0.01 sec
+        Start 131: citlali::config_scaffold.rejects_invalid_beammap_flux_uncertainty
+131/653 Test #131: citlali::config_scaffold.rejects_invalid_beammap_flux_uncertainty ...................................................................   Passed    0.01 sec
+        Start 132: citlali::config_scaffold.replaces_beammap_photometry_atomically
+132/653 Test #132: citlali::config_scaffold.replaces_beammap_photometry_atomically .....................................................................   Passed    0.01 sec
+        Start 133: citlali::config_scaffold.reads_and_adapts_astrometry_atomically
+133/653 Test #133: citlali::config_scaffold.reads_and_adapts_astrometry_atomically .....................................................................   Passed    0.01 sec
+        Start 134: citlali::config_scaffold.preserves_positional_astrometry_and_mjd_sentinel
+134/653 Test #134: citlali::config_scaffold.preserves_positional_astrometry_and_mjd_sentinel ...........................................................   Passed    0.01 sec
+        Start 135: citlali::config_scaffold.rejects_nonfinite_astrometry_before_install
+135/653 Test #135: citlali::config_scaffold.rejects_nonfinite_astrometry_before_install ................................................................   Passed    0.01 sec
+        Start 136: citlali::config_scaffold.rejects_explicit_empty_astrometry_mjd
+136/653 Test #136: citlali::config_scaffold.rejects_explicit_empty_astrometry_mjd ......................................................................   Passed    0.01 sec
+        Start 137: citlali::config_scaffold.rejects_incomplete_astrometry_before_install
+137/653 Test #137: citlali::config_scaffold.rejects_incomplete_astrometry_before_install ...............................................................   Passed    0.01 sec
+        Start 138: citlali::config_scaffold.validates_top_level_config_values
+138/653 Test #138: citlali::config_scaffold.validates_top_level_config_values ..........................................................................   Passed    0.01 sec
+        Start 139: citlali::config_scaffold.accepts_checked_low_level_config_schema
+139/653 Test #139: citlali::config_scaffold.accepts_checked_low_level_config_schema ....................................................................   Passed    0.01 sec
+        Start 140: citlali::config_scaffold.rejects_unknown_low_level_config_nodes
+140/653 Test #140: citlali::config_scaffold.rejects_unknown_low_level_config_nodes .....................................................................   Passed    0.01 sec
+        Start 141: citlali::config_scaffold.accepts_known_optional_low_level_config_node
+141/653 Test #141: citlali::config_scaffold.accepts_known_optional_low_level_config_node ...............................................................   Passed    0.01 sec
+        Start 142: citlali::config_scaffold.accepts_deprecated_required_rtcdiag_switch
+142/653 Test #142: citlali::config_scaffold.accepts_deprecated_required_rtcdiag_switch .................................................................   Passed    0.01 sec
+        Start 143: citlali::config_scaffold.leaves_tolteca_input_subtree_to_external_schema
+143/653 Test #143: citlali::config_scaffold.leaves_tolteca_input_subtree_to_external_schema ............................................................   Passed    0.01 sec
+        Start 144: citlali::config_scaffold.typed_validation_errors_are_fatal_diagnostics
+144/653 Test #144: citlali::config_scaffold.typed_validation_errors_are_fatal_diagnostics ..............................................................   Passed    0.01 sec
+        Start 145: citlali::config_scaffold.reads_learning_into_typed_request
+145/653 Test #145: citlali::config_scaffold.reads_learning_into_typed_request ..........................................................................   Passed    0.01 sec
+        Start 146: citlali::config_scaffold.rejects_unknown_map_outlier_exclusion_application
+146/653 Test #146: citlali::config_scaffold.rejects_unknown_map_outlier_exclusion_application ..........................................................   Passed    0.01 sec
+        Start 147: citlali::config_scaffold.adapts_learning_request_one_way
+147/653 Test #147: citlali::config_scaffold.adapts_learning_request_one_way ............................................................................   Passed    0.01 sec
+        Start 148: citlali::config_scaffold.routes_map_outlier_detector_exclusion_by_application
+148/653 Test #148: citlali::config_scaffold.routes_map_outlier_detector_exclusion_by_application .......................................................   Passed    0.01 sec
+        Start 149: citlali::config_scaffold.reads_interface_sync_offsets_into_typed_request
+149/653 Test #149: citlali::config_scaffold.reads_interface_sync_offsets_into_typed_request ............................................................   Passed    0.01 sec
+        Start 150: citlali::config_scaffold.rejects_interface_sync_duplicates_atomically
+150/653 Test #150: citlali::config_scaffold.rejects_interface_sync_duplicates_atomically ...............................................................   Passed    0.01 sec
+        Start 151: citlali::config_scaffold.rejects_unknown_interface_sync_entry
+151/653 Test #151: citlali::config_scaffold.rejects_unknown_interface_sync_entry .......................................................................   Passed    0.01 sec
+        Start 152: citlali::config_scaffold.rejects_nonfinite_interface_sync_offset
+152/653 Test #152: citlali::config_scaffold.rejects_nonfinite_interface_sync_offset ....................................................................   Passed    0.01 sec
+        Start 153: citlali::config_scaffold.adapts_interface_sync_request_one_way
+153/653 Test #153: citlali::config_scaffold.adapts_interface_sync_request_one_way ......................................................................   Passed    0.01 sec
+        Start 154: citlali::config_scaffold.validates_timestream_output_selection_values
+154/653 Test #154: citlali::config_scaffold.validates_timestream_output_selection_values ...............................................................   Passed    0.01 sec
+        Start 155: citlali::config_scaffold.validates_timestream_source_protection_values
+155/653 Test #155: citlali::config_scaffold.validates_timestream_source_protection_values ..............................................................   Passed    0.01 sec
+        Start 156: citlali::config_scaffold.validates_timestream_despike_local_residual_values
+156/653 Test #156: citlali::config_scaffold.validates_timestream_despike_local_residual_values .........................................................   Passed    0.01 sec
+        Start 157: citlali::config_scaffold.validates_raw_time_chunk_filter_values
+157/653 Test #157: citlali::config_scaffold.validates_raw_time_chunk_filter_values .....................................................................   Passed    0.01 sec
+        Start 158: citlali::config_scaffold.validates_raw_downsample_requires_filter
+158/653 Test #158: citlali::config_scaffold.validates_raw_downsample_requires_filter ...................................................................   Passed    0.01 sec
+        Start 159: citlali::config_scaffold.validates_raw_time_chunk_flagging_diagnostics
+159/653 Test #159: citlali::config_scaffold.validates_raw_time_chunk_flagging_diagnostics ..............................................................   Passed    0.01 sec
+        Start 160: citlali::config_scaffold.validates_raw_time_chunk_altaz_destripe_values
+160/653 Test #160: citlali::config_scaffold.validates_raw_time_chunk_altaz_destripe_values .............................................................   Passed    0.01 sec
+        Start 161: citlali::config_scaffold.validates_raw_time_chunk_line_audit_values
+161/653 Test #161: citlali::config_scaffold.validates_raw_time_chunk_line_audit_values .................................................................   Passed    0.01 sec
+        Start 162: citlali::config_scaffold.validates_processed_time_chunk_second_pass_local_values
+162/653 Test #162: citlali::config_scaffold.validates_processed_time_chunk_second_pass_local_values ....................................................   Passed    0.01 sec
+        Start 163: citlali::config_scaffold.validates_processed_time_chunk_weighting_values
+163/653 Test #163: citlali::config_scaffold.validates_processed_time_chunk_weighting_values ............................................................   Passed    0.01 sec
+        Start 164: citlali::config_scaffold.validates_processed_time_chunk_clean_values
+164/653 Test #164: citlali::config_scaffold.validates_processed_time_chunk_clean_values ................................................................   Passed    0.01 sec
+        Start 165: citlali::config_scaffold.requires_exactly_one_processed_cleaner
+165/653 Test #165: citlali::config_scaffold.requires_exactly_one_processed_cleaner .....................................................................   Passed    0.01 sec
+        Start 166: citlali::config_scaffold.validates_processed_time_chunk_clean_expert_values
+166/653 Test #166: citlali::config_scaffold.validates_processed_time_chunk_clean_expert_values .........................................................   Passed    0.01 sec
+        Start 167: citlali::config_scaffold.validates_processed_time_chunk_weight_validation_values
+167/653 Test #167: citlali::config_scaffold.validates_processed_time_chunk_weight_validation_values ....................................................   Passed    0.01 sec
+        Start 168: citlali::config_scaffold.validates_processed_time_chunk_corr_penalty_values
+168/653 Test #168: citlali::config_scaffold.validates_processed_time_chunk_corr_penalty_values .........................................................   Passed    0.01 sec
+        Start 169: citlali::config_scaffold.validates_fruit_loops_values
+169/653 Test #169: citlali::config_scaffold.validates_fruit_loops_values ...............................................................................   Passed    0.01 sec
+        Start 170: citlali::config_scaffold.reads_science_fruit_loops_source_center_mode
+170/653 Test #170: citlali::config_scaffold.reads_science_fruit_loops_source_center_mode ...............................................................   Passed    0.02 sec
+        Start 171: citlali::config_scaffold.reads_explicit_fruit_loop_restart_path
+171/653 Test #171: citlali::config_scaffold.reads_explicit_fruit_loop_restart_path .....................................................................   Passed    0.02 sec
+        Start 172: citlali::config_scaffold.reads_el_f1_relaxation_alpha
+172/653 Test #172: citlali::config_scaffold.reads_el_f1_relaxation_alpha ...............................................................................   Passed    0.01 sec
+        Start 173: citlali::config_scaffold.validates_el_f1_relaxation_scope
+173/653 Test #173: citlali::config_scaffold.validates_el_f1_relaxation_scope ...........................................................................   Passed    0.01 sec
+        Start 174: citlali::config_scaffold.validates_el_f4_feedback_bypass_scope
+174/653 Test #174: citlali::config_scaffold.validates_el_f4_feedback_bypass_scope ......................................................................   Passed    0.01 sec
+        Start 175: citlali::config_scaffold.reads_fruit_loop_injected_source_test
+175/653 Test #175: citlali::config_scaffold.reads_fruit_loop_injected_source_test ......................................................................   Passed    0.01 sec
+        Start 176: citlali::config_scaffold.validates_fruit_loop_injected_source_test_contract
+176/653 Test #176: citlali::config_scaffold.validates_fruit_loop_injected_source_test_contract .........................................................   Passed    0.01 sec
+        Start 177: citlali::config_scaffold.rejects_nonfinite_fruit_loop_injected_source_offsets_even_when_disabled
+177/653 Test #177: citlali::config_scaffold.rejects_nonfinite_fruit_loop_injected_source_offsets_even_when_disabled ....................................   Passed    0.01 sec
+        Start 178: citlali::config_scaffold.fruit_loop_explicit_zero_offset_preserves_kernel_samples_bitwise
+178/653 Test #178: citlali::config_scaffold.fruit_loop_explicit_zero_offset_preserves_kernel_samples_bitwise ...........................................   Passed    0.01 sec
+        Start 179: citlali::config_scaffold.rejects_ambiguous_fruit_loop_seed_and_restart
+179/653 Test #179: citlali::config_scaffold.rejects_ambiguous_fruit_loop_seed_and_restart ..............................................................   Passed    0.01 sec
+        Start 180: citlali::config_scaffold.validates_timestream_learning_values
+180/653 Test #180: citlali::config_scaffold.validates_timestream_learning_values .......................................................................   Passed    0.01 sec
+        Start 181: citlali::config_scaffold.validates_map_filter_config_values
+181/653 Test #181: citlali::config_scaffold.validates_map_filter_config_values .........................................................................   Passed    0.01 sec
+        Start 182: citlali::config_scaffold.validates_source_finding_config_values
+182/653 Test #182: citlali::config_scaffold.validates_source_finding_config_values .....................................................................   Passed    0.01 sec
+        Start 183: citlali::config_scaffold.source_finding_requires_map_filtering
+183/653 Test #183: citlali::config_scaffold.source_finding_requires_map_filtering ......................................................................   Passed    0.01 sec
+        Start 184: citlali::config_scaffold.validates_beammap_config_values
+184/653 Test #184: citlali::config_scaffold.validates_beammap_config_values ............................................................................   Passed    0.01 sec
+        Start 185: citlali::config_scaffold.validates_beammap_photometry_values
+185/653 Test #185: citlali::config_scaffold.validates_beammap_photometry_values ........................................................................   Passed    0.01 sec
+        Start 186: citlali::config_scaffold.validates_astrometry_pointing_offsets_values
+186/653 Test #186: citlali::config_scaffold.validates_astrometry_pointing_offsets_values ...............................................................   Passed    0.01 sec
+        Start 187: citlali::config_scaffold.typed_tod_output_shape_ignores_legacy_mirror_values
+187/653 Test #187: citlali::config_scaffold.typed_tod_output_shape_ignores_legacy_mirror_values ........................................................   Passed    0.01 sec
+        Start 188: citlali::config_scaffold.tod_file_layout_uses_typed_stream_modes
+188/653 Test #188: citlali::config_scaffold.tod_file_layout_uses_typed_stream_modes ....................................................................   Passed    0.01 sec
+        Start 189: citlali::config_scaffold.writes_observation_tod_output_provenance
+189/653 Test #189: citlali::config_scaffold.writes_observation_tod_output_provenance ...................................................................   Passed    0.01 sec
+        Start 190: citlali::config_scaffold.normalizes_processed_clean_group_aliases
+190/653 Test #190: citlali::config_scaffold.normalizes_processed_clean_group_aliases ...................................................................   Passed    0.01 sec
+        Start 191: citlali::config_scaffold.resolves_processed_weighting_source_mask_inheritance
+191/653 Test #191: citlali::config_scaffold.resolves_processed_weighting_source_mask_inheritance .......................................................   Passed    0.01 sec
+        Start 192: citlali::config_scaffold.separates_raw_requested_effective_and_observation_state
+192/653 Test #192: citlali::config_scaffold.separates_raw_requested_effective_and_observation_state ....................................................   Passed    0.01 sec
+        Start 193: citlali::config_scaffold.resolves_raw_context_free_request_without_observation_data
+193/653 Test #193: citlali::config_scaffold.resolves_raw_context_free_request_without_observation_data .................................................   Passed    0.01 sec
+        Start 194: citlali::config_scaffold.reads_raw_filtering_request_without_activation_loss
+194/653 Test #194: citlali::config_scaffold.reads_raw_filtering_request_without_activation_loss ........................................................   Passed    0.01 sec
+        Start 195: citlali::config_scaffold.reads_raw_flagging_request_and_legacy_threshold_alias
+195/653 Test #195: citlali::config_scaffold.reads_raw_flagging_request_and_legacy_threshold_alias ......................................................   Passed    0.01 sec
+        Start 196: citlali::config_scaffold.reads_complete_raw_request_through_typed_boundary
+196/653 Test #196: citlali::config_scaffold.reads_complete_raw_request_through_typed_boundary ..........................................................   Passed    0.01 sec
+        Start 197: citlali::config_scaffold.serializes_raw_request_without_observation_state
+197/653 Test #197: citlali::config_scaffold.serializes_raw_request_without_observation_state ...........................................................   Passed    0.01 sec
+        Start 198: citlali::config_scaffold.validates_coherent_iq_observer_fail_closed
+198/653 Test #198: citlali::config_scaffold.validates_coherent_iq_observer_fail_closed .................................................................   Passed    0.01 sec
+        Start 199: citlali::config_scaffold.coherent_iq_observer_adapter_enables_diagnostics_only
+199/653 Test #199: citlali::config_scaffold.coherent_iq_observer_adapter_enables_diagnostics_only ......................................................   Passed    0.01 sec
+        Start 200: citlali::config_scaffold.coherent_iq_compact_candidates_survive_detailed_cleanup
+200/653 Test #200: citlali::config_scaffold.coherent_iq_compact_candidates_survive_detailed_cleanup ....................................................   Passed    0.01 sec
+        Start 201: citlali::config_scaffold.resets_raw_observation_and_realized_state
+201/653 Test #201: citlali::config_scaffold.resets_raw_observation_and_realized_state ..................................................................   Passed    0.01 sec
+        Start 202: citlali::config_scaffold.shadows_raw_observation_legacy_state_without_mutation
+202/653 Test #202: citlali::config_scaffold.shadows_raw_observation_legacy_state_without_mutation ......................................................   Passed    0.01 sec
+        Start 203: citlali::config_scaffold.ignores_inactive_legacy_downsample_factor_in_observation_shadow
+203/653 Test #203: citlali::config_scaffold.ignores_inactive_legacy_downsample_factor_in_observation_shadow ............................................   Passed    0.01 sec
+        Start 204: citlali::config_scaffold.reports_raw_observation_shadow_divergence
+204/653 Test #204: citlali::config_scaffold.reports_raw_observation_shadow_divergence ..................................................................   Passed    0.01 sec
+        Start 205: citlali::config_scaffold.defers_frequency_derived_downsample_edge_guard_shadow_parity
+205/653 Test #205: citlali::config_scaffold.defers_frequency_derived_downsample_edge_guard_shadow_parity ...............................................   Passed    0.01 sec
+        Start 206: citlali::config_scaffold.serializes_versioned_raw_timestream_provenance
+206/653 Test #206: citlali::config_scaffold.serializes_versioned_raw_timestream_provenance .............................................................   Passed    0.01 sec
+        Start 207: citlali::config_scaffold.serializes_unavailable_raw_observation_explicitly
+207/653 Test #207: citlali::config_scaffold.serializes_unavailable_raw_observation_explicitly ..........................................................   Passed    0.01 sec
+        Start 208: citlali::config_scaffold.atomically_writes_raw_timestream_provenance
+208/653 Test #208: citlali::config_scaffold.atomically_writes_raw_timestream_provenance ................................................................   Passed    0.02 sec
+        Start 209: citlali::config_scaffold.raw_timestream_provenance_failure_propagates
+209/653 Test #209: citlali::config_scaffold.raw_timestream_provenance_failure_propagates ...............................................................   Passed    0.01 sec
+        Start 210: citlali::config_scaffold.rejects_incomplete_raw_timestream_provenance
+210/653 Test #210: citlali::config_scaffold.rejects_incomplete_raw_timestream_provenance ...............................................................   Passed    0.01 sec
+        Start 211: citlali::config_scaffold.completes_raw_timestream_realized_state_explicitly
+211/653 Test #211: citlali::config_scaffold.completes_raw_timestream_realized_state_explicitly .........................................................   Passed    0.01 sec
+        Start 212: citlali::config_scaffold.counts_required_raw_timestream_writes_by_mode
+212/653 Test #212: citlali::config_scaffold.counts_required_raw_timestream_writes_by_mode ..............................................................   Passed    0.01 sec
+        Start 213: citlali::config_scaffold.publishes_sequential_raw_observation_provenance_without_state_leakage
+213/653 Test #213: citlali::config_scaffold.publishes_sequential_raw_observation_provenance_without_state_leakage ......................................   Passed    0.02 sec
+        Start 214: citlali::config_scaffold.raw_observation_provenance_write_failure_propagates
+214/653 Test #214: citlali::config_scaffold.raw_observation_provenance_write_failure_propagates ........................................................   Passed    0.01 sec
+        Start 215: citlali::config_scaffold.rejects_raw_observation_before_plan_initialization
+215/653 Test #215: citlali::config_scaffold.rejects_raw_observation_before_plan_initialization .........................................................   Passed    0.01 sec
+        Start 216: citlali::config_scaffold.adapts_complete_raw_request_to_legacy_rtc_one_way
+216/653 Test #216: citlali::config_scaffold.adapts_complete_raw_request_to_legacy_rtc_one_way ..........................................................   Passed    0.01 sec
+        Start 217: citlali::config_scaffold.keeps_disabled_raw_request_values_out_of_rtc_sentinels
+217/653 Test #217: citlali::config_scaffold.keeps_disabled_raw_request_values_out_of_rtc_sentinels .....................................................   Passed    0.01 sec
+        Start 218: citlali::config_scaffold.expands_legacy_line_audit_width_only_in_rtc_target
+218/653 Test #218: citlali::config_scaffold.expands_legacy_line_audit_width_only_in_rtc_target .........................................................   Passed    0.01 sec
+        Start 219: citlali::config_scaffold.overlays_raw_observation_state_without_mutating_plan
+219/653 Test #219: citlali::config_scaffold.overlays_raw_observation_state_without_mutating_plan .......................................................   Passed    0.01 sec
+        Start 220: citlali::config_scaffold.resolves_raw_sample_rate_without_mutating_request
+220/653 Test #220: citlali::config_scaffold.resolves_raw_sample_rate_without_mutating_request ..........................................................   Passed    0.01 sec
+        Start 221: citlali::config_scaffold.classifies_raw_sample_rate_resolution_failures
+221/653 Test #221: citlali::config_scaffold.classifies_raw_sample_rate_resolution_failures .............................................................   Passed    0.01 sec
+        Start 222: citlali::config_scaffold.raw_filter_edge_guard_matches_legacy_rtc_resolution
+222/653 Test #222: citlali::config_scaffold.raw_filter_edge_guard_matches_legacy_rtc_resolution ........................................................   Passed    0.01 sec
+        Start 223: citlali::config_scaffold.raw_filter_edge_guard_max_policy_matches_legacy_rtc
+223/653 Test #223: citlali::config_scaffold.raw_filter_edge_guard_max_policy_matches_legacy_rtc ........................................................   Passed    0.01 sec
+        Start 224: citlali::config_scaffold.raw_source_protection_matches_shared_resolution
+224/653 Test #224: citlali::config_scaffold.raw_source_protection_matches_shared_resolution ............................................................   Passed    0.01 sec
+        Start 225: citlali::config_scaffold.raw_extinction_model_matches_legacy_calibration
+225/653 Test #225: citlali::config_scaffold.raw_extinction_model_matches_legacy_calibration ............................................................   Passed    0.01 sec
+        Start 226: citlali::config_scaffold.constructs_complete_raw_observation_state
+226/653 Test #226: citlali::config_scaffold.constructs_complete_raw_observation_state ..................................................................   Passed    0.01 sec
+        Start 227: citlali::config_scaffold.initializes_typed_raw_execution_authority
+227/653 Test #227: citlali::config_scaffold.initializes_typed_raw_execution_authority ..................................................................   Passed    0.01 sec
+        Start 228: citlali::config_scaffold.raw_authority_preserves_disabled_request_values
+228/653 Test #228: citlali::config_scaffold.raw_authority_preserves_disabled_request_values ............................................................   Passed    0.01 sec
+        Start 229: citlali::config_scaffold.projects_effective_raw_iir_output_metadata
+229/653 Test #229: citlali::config_scaffold.projects_effective_raw_iir_output_metadata .................................................................   Passed    0.01 sec
+        Start 230: citlali::config_scaffold.separates_processed_requested_and_effective_state
+230/653 Test #230: citlali::config_scaffold.separates_processed_requested_and_effective_state ..........................................................   Passed    0.01 sec
+        Start 231: citlali::config_scaffold.resets_all_processed_plan_state_between_runs
+231/653 Test #231: citlali::config_scaffold.resets_all_processed_plan_state_between_runs ...............................................................   Passed    0.01 sec
+        Start 232: citlali::config_scaffold.routes_processed_accessors_through_effective_plan
+232/653 Test #232: citlali::config_scaffold.routes_processed_accessors_through_effective_plan ..........................................................   Passed    0.01 sec
+        Start 233: citlali::config_scaffold.records_processed_iteration_result
+233/653 Test #233: citlali::config_scaffold.records_processed_iteration_result .........................................................................   Passed    0.01 sec
+        Start 234: citlali::config_scaffold.serializes_versioned_processed_provenance
+234/653 Test #234: citlali::config_scaffold.serializes_versioned_processed_provenance ..................................................................   Passed    0.01 sec
+        Start 235: citlali::config_scaffold.atomically_writes_processed_provenance
+235/653 Test #235: citlali::config_scaffold.atomically_writes_processed_provenance .....................................................................   Passed    0.02 sec
+        Start 236: citlali::config_scaffold.processed_provenance_write_failure_propagates
+236/653 Test #236: citlali::config_scaffold.processed_provenance_write_failure_propagates ..............................................................   Passed    0.01 sec
+        Start 237: citlali::config_scaffold.serializes_processed_config_snapshot_deterministically
+237/653 Test #237: citlali::config_scaffold.serializes_processed_config_snapshot_deterministically .....................................................   Passed    0.01 sec
+        Start 238: citlali::config_scaffold.serializes_processed_resolution_availability
+238/653 Test #238: citlali::config_scaffold.serializes_processed_resolution_availability ...............................................................   Passed    0.01 sec
+        Start 239: citlali::config_scaffold.resolves_processed_weighting_dependencies
+239/653 Test #239: citlali::config_scaffold.resolves_processed_weighting_dependencies ..................................................................   Passed    0.01 sec
+        Start 240: citlali::error_scaffold.preserves_error_code_and_message
+240/653 Test #240: citlali::error_scaffold.preserves_error_code_and_message ............................................................................   Passed    0.01 sec
+        Start 241: citlali::cli_config_loading.loads_and_merges_config_files
+241/653 Test #241: citlali::cli_config_loading.loads_and_merges_config_files ...........................................................................   Passed    0.01 sec
+        Start 242: citlali::cli_runtime_setup.derives_fftw_threads
+242/653 Test #242: citlali::cli_runtime_setup.derives_fftw_threads .....................................................................................   Passed    0.01 sec
+        Start 243: citlali::cli_runtime_setup.parses_positive_slurm_cpu_counts
+243/653 Test #243: citlali::cli_runtime_setup.parses_positive_slurm_cpu_counts .........................................................................   Passed    0.01 sec
+        Start 244: citlali::cli_runtime_setup.selects_most_restrictive_scheduler_and_affinity_limit
+244/653 Test #244: citlali::cli_runtime_setup.selects_most_restrictive_scheduler_and_affinity_limit ....................................................   Passed    0.01 sec
+        Start 245: citlali::cli_runtime_setup.caps_requested_threads_to_available_resources
+245/653 Test #245: citlali::cli_runtime_setup.caps_requested_threads_to_available_resources ............................................................   Passed    0.01 sec
+        Start 246: citlali::cli_runtime_setup.preserves_request_below_available_resources
+246/653 Test #246: citlali::cli_runtime_setup.preserves_request_below_available_resources ..............................................................   Passed    0.01 sec
+        Start 247: citlali::cli_runtime_setup.preserves_request_when_availability_is_unknown
+247/653 Test #247: citlali::cli_runtime_setup.preserves_request_when_availability_is_unknown ...........................................................   Passed    0.01 sec
+        Start 248: citlali::cli_runtime_setup.records_cap_and_warns_once
+248/653 Test #248: citlali::cli_runtime_setup.records_cap_and_warns_once ...............................................................................   Passed    0.01 sec
+        Start 249: citlali::cli_runtime_setup.separates_requested_effective_and_realized_runtime
+249/653 Test #249: citlali::cli_runtime_setup.separates_requested_effective_and_realized_runtime .......................................................   Passed    0.01 sec
+        Start 250: citlali::cli_runtime_setup.uses_effective_thread_plan_as_runtime_authority
+250/653 Test #250: citlali::cli_runtime_setup.uses_effective_thread_plan_as_runtime_authority ..........................................................   Passed    0.01 sec
+        Start 251: citlali::cli_runtime_setup.uses_effective_runtime_values_as_policy_authority
+251/653 Test #251: citlali::cli_runtime_setup.uses_effective_runtime_values_as_policy_authority ........................................................   Passed    0.01 sec
+        Start 252: citlali::cli_runtime_setup.serializes_stable_runtime_provenance_schema
+252/653 Test #252: citlali::cli_runtime_setup.serializes_stable_runtime_provenance_schema ..............................................................   Passed    0.01 sec
+        Start 253: citlali::cli_runtime_setup.atomically_writes_runtime_provenance_sidecar
+253/653 Test #253: citlali::cli_runtime_setup.atomically_writes_runtime_provenance_sidecar .............................................................   Passed    0.01 sec
+        Start 254: citlali::cli_runtime_setup.runtime_provenance_write_failure_propagates
+254/653 Test #254: citlali::cli_runtime_setup.runtime_provenance_write_failure_propagates ..............................................................   Passed    0.01 sec
+        Start 255: citlali::cli_runtime_setup.configures_runtime_threads
+255/653 Test #255: citlali::cli_runtime_setup.configures_runtime_threads ...............................................................................   Passed    0.01 sec
+        Start 256: citlali::cli_runtime_setup.configures_single_fftw_thread_for_wiener_omp
+256/653 Test #256: citlali::cli_runtime_setup.configures_single_fftw_thread_for_wiener_omp .............................................................   Passed    0.01 sec
+        Start 257: citlali::cli_runtime_setup.warns_when_fftw_thread_init_fails
+257/653 Test #257: citlali::cli_runtime_setup.warns_when_fftw_thread_init_fails ........................................................................   Passed    0.01 sec
+        Start 258: citlali::cli_reduction_runtime.prepares_reduction_runtime
+258/653 Test #258: citlali::cli_reduction_runtime.prepares_reduction_runtime ...........................................................................   Passed    0.01 sec
+        Start 259: citlali::cli_reduction_runtime.rejects_invalid_reduction_runtime
+259/653 Test #259: citlali::cli_reduction_runtime.rejects_invalid_reduction_runtime ....................................................................   Passed    0.01 sec
+        Start 260: citlali::pipeline_map_geometry.stores_typed_map_vectors
+260/653 Test #260: citlali::pipeline_map_geometry.stores_typed_map_vectors .............................................................................   Passed    0.01 sec
+        Start 261: citlali::cli_tod_processor_selection.selects_science_processor
+261/653 Test #261: citlali::cli_tod_processor_selection.selects_science_processor ......................................................................   Passed    0.01 sec
+        Start 262: citlali::cli_tod_processor_selection.exposes_reduction_type_config_key
+262/653 Test #262: citlali::cli_tod_processor_selection.exposes_reduction_type_config_key ..............................................................   Passed    0.01 sec
+        Start 263: citlali::cli_tod_processor_selection.reads_reduction_type_config
+263/653 Test #263: citlali::cli_tod_processor_selection.reads_reduction_type_config ....................................................................   Passed    0.01 sec
+        Start 264: citlali::cli_tod_processor_selection.returns_empty_reduction_type_when_missing
+264/653 Test #264: citlali::cli_tod_processor_selection.returns_empty_reduction_type_when_missing ......................................................   Passed    0.01 sec
+        Start 265: citlali::cli_tod_processor_selection.selects_pointing_processor
+265/653 Test #265: citlali::cli_tod_processor_selection.selects_pointing_processor .....................................................................   Passed    0.01 sec
+        Start 266: citlali::cli_tod_processor_selection.rejects_unknown_processor_type
+266/653 Test #266: citlali::cli_tod_processor_selection.rejects_unknown_processor_type .................................................................   Passed    0.01 sec
+        Start 267: citlali::pipeline_preflight.applies_flxscale_correction_when_present
+267/653 Test #267: citlali::pipeline_preflight.applies_flxscale_correction_when_present ................................................................   Passed    0.01 sec
+        Start 268: citlali::pipeline_preflight.skips_absent_flxscale_correction
+268/653 Test #268: citlali::pipeline_preflight.skips_absent_flxscale_correction ........................................................................   Passed    0.01 sec
+        Start 269: citlali::pipeline_preflight.rejects_invalid_flxscale_correction
+269/653 Test #269: citlali::pipeline_preflight.rejects_invalid_flxscale_correction .....................................................................   Passed    0.01 sec
+        Start 270: citlali::pipeline_preflight.rejects_missing_flxscale_column
+270/653 Test #270: citlali::pipeline_preflight.rejects_missing_flxscale_column .........................................................................   Passed    0.01 sec
+        Start 271: citlali::pipeline_preflight.loads_array_properties_table
+271/653 Test #271: citlali::pipeline_preflight.loads_array_properties_table ............................................................................   Passed    0.01 sec
+        Start 272: citlali::pipeline_preflight.loads_array_properties_table_from_reference_wrapped_kidsdata
+272/653 Test #272: citlali::pipeline_preflight.loads_array_properties_table_from_reference_wrapped_kidsdata ............................................   Passed    0.01 sec
+        Start 273: citlali::pipeline_preflight.configures_non_beammap_observation_calibration
+273/653 Test #273: citlali::pipeline_preflight.configures_non_beammap_observation_calibration ..........................................................   Passed    0.01 sec
+        Start 274: citlali::pipeline_preflight.configures_beammap_detector_calibration_from_files
+274/653 Test #274: citlali::pipeline_preflight.configures_beammap_detector_calibration_from_files ......................................................   Passed    0.01 sec
+        Start 275: citlali::pipeline_preflight.configures_beammap_array_calibration_from_apt
+275/653 Test #275: citlali::pipeline_preflight.configures_beammap_array_calibration_from_apt ...........................................................   Passed    0.01 sec
+        Start 276: citlali::pipeline_preflight.skips_reduction_calibration_when_not_needed
+276/653 Test #276: citlali::pipeline_preflight.skips_reduction_calibration_when_not_needed .............................................................   Passed    0.01 sec
+        Start 277: citlali::pipeline_preflight.configures_reduction_calibration_when_needed
+277/653 Test #277: citlali::pipeline_preflight.configures_reduction_calibration_when_needed ............................................................   Passed    0.01 sec
+        Start 278: citlali::pipeline_preflight.resets_simulated_observation_indices
+278/653 Test #278: citlali::pipeline_preflight.resets_simulated_observation_indices ....................................................................   Passed    0.01 sec
+        Start 279: citlali::pipeline_preflight.leaves_hwpr_indices_when_hwpr_disabled
+279/653 Test #279: citlali::pipeline_preflight.leaves_hwpr_indices_when_hwpr_disabled ..................................................................   Passed    0.01 sec
+        Start 280: citlali::pipeline_preflight.loads_and_aligns_telescope_data
+280/653 Test #280: citlali::pipeline_preflight.loads_and_aligns_telescope_data .........................................................................   Passed    0.01 sec
+        Start 281: citlali::pipeline_preflight.aligns_telescope_data_over_gaps
+281/653 Test #281: citlali::pipeline_preflight.aligns_telescope_data_over_gaps .........................................................................   Passed    0.01 sec
+        Start 282: citlali::pipeline_preflight.resets_indices_for_simulated_telescope_data
+282/653 Test #282: citlali::pipeline_preflight.resets_indices_for_simulated_telescope_data .............................................................   Passed    0.01 sec
+        Start 283: citlali::pipeline_preflight.calculates_telescope_pointing
+283/653 Test #283: citlali::pipeline_preflight.calculates_telescope_pointing ...........................................................................   Passed    0.01 sec
+        Start 284: citlali::pipeline_preflight.skips_telescope_reload_when_not_needed
+284/653 Test #284: citlali::pipeline_preflight.skips_telescope_reload_when_not_needed ..................................................................   Passed    0.01 sec
+        Start 285: citlali::pipeline_preflight.reloads_and_points_telescope_when_needed
+285/653 Test #285: citlali::pipeline_preflight.reloads_and_points_telescope_when_needed ................................................................   Passed    0.01 sec
+        Start 286: citlali::pipeline_preflight.calculates_scan_indices
+286/653 Test #286: citlali::pipeline_preflight.calculates_scan_indices .................................................................................   Passed    0.01 sec
+        Start 287: citlali::pipeline_preflight.skips_scan_indices_when_not_needed
+287/653 Test #287: citlali::pipeline_preflight.skips_scan_indices_when_not_needed ......................................................................   Passed    0.01 sec
+        Start 288: citlali::pipeline_preflight.calculates_scan_indices_when_needed
+288/653 Test #288: citlali::pipeline_preflight.calculates_scan_indices_when_needed .....................................................................   Passed    0.01 sec
+        Start 289: citlali::pipeline_preflight.loads_rawobs_kids_meta
+289/653 Test #289: citlali::pipeline_preflight.loads_rawobs_kids_meta ..................................................................................   Passed    0.01 sec
+        Start 290: citlali::pipeline_preflight.makes_kids_data_proc_from_config
+290/653 Test #290: citlali::pipeline_preflight.makes_kids_data_proc_from_config ........................................................................   Passed    0.01 sec
+        Start 291: citlali::pipeline_preflight.loads_valid_engine_config
+291/653 Test #291: citlali::pipeline_preflight.loads_valid_engine_config ...............................................................................   Passed    0.01 sec
+        Start 292: citlali::pipeline_preflight.rejects_invalid_engine_config
+292/653 Test #292: citlali::pipeline_preflight.rejects_invalid_engine_config ...........................................................................   Passed    0.01 sec
+        Start 293: citlali::pipeline_preflight.configures_verbose_logging_when_requested
+293/653 Test #293: citlali::pipeline_preflight.configures_verbose_logging_when_requested ...............................................................   Passed    0.01 sec
+        Start 294: citlali::pipeline_preflight.skips_verbose_logging_when_not_requested
+294/653 Test #294: citlali::pipeline_preflight.skips_verbose_logging_when_not_requested ................................................................   Passed    0.01 sec
+        Start 295: citlali::pipeline_preflight.checks_observation_inputs
+295/653 Test #295: citlali::pipeline_preflight.checks_observation_inputs ...............................................................................   Passed    0.01 sec
+        Start 296: citlali::pipeline_preflight.updates_sample_rate_from_rawobs_meta
+296/653 Test #296: citlali::pipeline_preflight.updates_sample_rate_from_rawobs_meta ....................................................................   Passed    0.01 sec
+        Start 297: citlali::pipeline_preflight.loads_raw_detector_diagnostics
+297/653 Test #297: citlali::pipeline_preflight.loads_raw_detector_diagnostics ..........................................................................   Passed    0.01 sec
+        Start 298: citlali::pipeline_preflight.skips_adc_snap_for_simulated_observations
+298/653 Test #298: citlali::pipeline_preflight.skips_adc_snap_for_simulated_observations ...............................................................   Passed    0.01 sec
+        Start 299: citlali::pipeline_preflight.calculates_flux_calibration
+299/653 Test #299: citlali::pipeline_preflight.calculates_flux_calibration .............................................................................   Passed    0.01 sec
+        Start 300: citlali::pipeline_preflight.configures_sample_rate_without_downsample
+300/653 Test #300: citlali::pipeline_preflight.configures_sample_rate_without_downsample ...............................................................   Passed    0.01 sec
+        Start 301: citlali::pipeline_preflight.configures_sample_rate_with_downsample_factor
+301/653 Test #301: citlali::pipeline_preflight.configures_sample_rate_with_downsample_factor ...........................................................   Passed    0.01 sec
+        Start 302: citlali::pipeline_preflight.derives_downsample_factor_from_frequency
+302/653 Test #302: citlali::pipeline_preflight.derives_downsample_factor_from_frequency ................................................................   Passed    0.01 sec
+        Start 303: citlali::pipeline_preflight.rejects_invalid_downsample_frequency
+303/653 Test #303: citlali::pipeline_preflight.rejects_invalid_downsample_frequency ....................................................................   Passed    0.01 sec
+        Start 304: citlali::pipeline_preflight.rejects_downsample_frequency_above_sample_rate
+304/653 Test #304: citlali::pipeline_preflight.rejects_downsample_frequency_above_sample_rate ..........................................................   Passed    0.01 sec
+        Start 305: citlali::pipeline_preflight.rejects_downsample_filter_above_nyquist
+305/653 Test #305: citlali::pipeline_preflight.rejects_downsample_filter_above_nyquist .................................................................   Passed    0.01 sec
+        Start 306: citlali::pipeline_preflight.sample_rate_policy_uses_typed_downsample_config
+306/653 Test #306: citlali::pipeline_preflight.sample_rate_policy_uses_typed_downsample_config .........................................................   Passed    0.01 sec
+        Start 307: citlali::pipeline_preflight.raw_filter_policy_uses_typed_config
+307/653 Test #307: citlali::pipeline_preflight.raw_filter_policy_uses_typed_config .....................................................................   Passed    0.01 sec
+        Start 308: citlali::pipeline_preflight.source_protection_activation_uses_typed_config
+308/653 Test #308: citlali::pipeline_preflight.source_protection_activation_uses_typed_config ..........................................................   Passed    0.01 sec
+        Start 309: citlali::pipeline_preflight.loads_hwpr_data_for_polarized_observation
+309/653 Test #309: citlali::pipeline_preflight.loads_hwpr_data_for_polarized_observation ...............................................................   Passed    0.01 sec
+        Start 310: citlali::pipeline_preflight.ignores_hwpr_when_configured
+310/653 Test #310: citlali::pipeline_preflight.ignores_hwpr_when_configured ............................................................................   Passed    0.01 sec
+        Start 311: citlali::pipeline_preflight.ignores_null_hwpr_filepath
+311/653 Test #311: citlali::pipeline_preflight.ignores_null_hwpr_filepath ..............................................................................   Passed    0.01 sec
+        Start 312: citlali::pipeline_preflight.leaves_hwpr_state_when_not_polarized
+312/653 Test #312: citlali::pipeline_preflight.leaves_hwpr_state_when_not_polarized ....................................................................   Passed    0.01 sec
+        Start 313: citlali::pipeline_preflight.leaves_map_center_when_not_configured
+313/653 Test #313: citlali::pipeline_preflight.leaves_map_center_when_not_configured ...................................................................   Passed    0.01 sec
+        Start 314: citlali::pipeline_preflight.overwrites_map_center_when_configured
+314/653 Test #314: citlali::pipeline_preflight.overwrites_map_center_when_configured ...................................................................   Passed    0.01 sec
+        Start 315: citlali::pipeline_preflight.updates_observation_exposure_time
+315/653 Test #315: citlali::pipeline_preflight.updates_observation_exposure_time .......................................................................   Passed    0.01 sec
+        Start 316: citlali::pipeline_preflight.defers_coadd_exposure_until_atomic_admission
+316/653 Test #316: citlali::pipeline_preflight.defers_coadd_exposure_until_atomic_admission ............................................................   Passed    0.01 sec
+        Start 317: citlali::pipeline_preflight.retains_legacy_coadd_exposure_outside_v1_profile
+317/653 Test #317: citlali::pipeline_preflight.retains_legacy_coadd_exposure_outside_v1_profile ........................................................   Passed    0.01 sec
+        Start 318: citlali::pipeline_preflight.retains_polarized_direct_coadd_exposure_path
+318/653 Test #318: citlali::pipeline_preflight.retains_polarized_direct_coadd_exposure_path ............................................................   Passed    0.01 sec
+        Start 319: citlali::pipeline_preflight.appends_observation_date
+319/653 Test #319: citlali::pipeline_preflight.appends_observation_date ................................................................................   Passed    0.01 sec
+        Start 320: citlali::pipeline_preflight.derives_date_obs_from_telescope_time
+320/653 Test #320: citlali::pipeline_preflight.derives_date_obs_from_telescope_time ....................................................................   Passed    0.01 sec
+        Start 321: citlali::pipeline_preflight.configures_non_fruit_loop_as_single_iteration
+321/653 Test #321: citlali::pipeline_preflight.configures_non_fruit_loop_as_single_iteration ...........................................................   Passed    0.01 sec
+        Start 322: citlali::pipeline_preflight.configures_beammap_fruit_loop_as_single_iteration
+322/653 Test #322: citlali::pipeline_preflight.configures_beammap_fruit_loop_as_single_iteration .......................................................   Passed    0.01 sec
+        Start 323: citlali::pipeline_preflight.permits_flux_only_fruit_loops_without_noise_warning
+323/653 Test #323: citlali::pipeline_preflight.permits_flux_only_fruit_loops_without_noise_warning .....................................................   Passed    0.01 sec
+        Start 324: citlali::pipeline_preflight.preserves_science_fruit_loop_iteration_policy
+324/653 Test #324: citlali::pipeline_preflight.preserves_science_fruit_loop_iteration_policy ...........................................................   Passed    0.01 sec
+        Start 325: citlali::pipeline_fruit_loop_paths.derives_obsnum_raw_map_dir
+325/653 Test #325: citlali::pipeline_fruit_loop_paths.derives_obsnum_raw_map_dir .......................................................................   Passed    0.01 sec
+        Start 326: citlali::pipeline_fruit_loop_paths.derives_obsnum_filtered_map_dir
+326/653 Test #326: citlali::pipeline_fruit_loop_paths.derives_obsnum_filtered_map_dir ..................................................................   Passed    0.01 sec
+        Start 327: citlali::pipeline_fruit_loop_paths.derives_coadd_map_dirs
+327/653 Test #327: citlali::pipeline_fruit_loop_paths.derives_coadd_map_dirs ...........................................................................   Passed    0.01 sec
+        Start 328: citlali::pipeline_fruit_loop_paths.preserves_empty_path_for_unknown_type
+328/653 Test #328: citlali::pipeline_fruit_loop_paths.preserves_empty_path_for_unknown_type ............................................................   Passed    0.01 sec
+        Start 329: citlali::pipeline_fruit_loop_paths.derives_previous_iteration_map_dir
+329/653 Test #329: citlali::pipeline_fruit_loop_paths.derives_previous_iteration_map_dir ...............................................................   Passed    0.01 sec
+        Start 330: citlali::pipeline_iteration_lifecycle.detects_pending_fruit_loop_iteration
+330/653 Test #330: citlali::pipeline_iteration_lifecycle.detects_pending_fruit_loop_iteration ..........................................................   Passed    0.01 sec
+        Start 331: citlali::pipeline_iteration_lifecycle.stops_when_fruit_loops_converge
+331/653 Test #331: citlali::pipeline_iteration_lifecycle.stops_when_fruit_loops_converge ...............................................................   Passed    0.01 sec
+        Start 332: citlali::pipeline_iteration_lifecycle.stops_at_iteration_limit
+332/653 Test #332: citlali::pipeline_iteration_lifecycle.stops_at_iteration_limit ......................................................................   Passed    0.01 sec
+        Start 333: citlali::pipeline_iteration_lifecycle.begins_non_fruit_loop_iteration
+333/653 Test #333: citlali::pipeline_iteration_lifecycle.begins_non_fruit_loop_iteration ...............................................................   Passed    0.01 sec
+        Start 334: citlali::pipeline_iteration_lifecycle.begins_fruit_loop_iteration_with_source_model
+334/653 Test #334: citlali::pipeline_iteration_lifecycle.begins_fruit_loop_iteration_with_source_model .................................................   Passed    0.01 sec
+        Start 335: citlali::pipeline_iteration_lifecycle.rejects_realized_zero_sample_feedback
+335/653 Test #335: citlali::pipeline_iteration_lifecycle.rejects_realized_zero_sample_feedback .........................................................   Passed    0.01 sec
+        Start 336: citlali::pipeline_iteration_lifecycle.accepts_realized_nonzero_feedback
+336/653 Test #336: citlali::pipeline_iteration_lifecycle.accepts_realized_nonzero_feedback .............................................................   Passed    0.01 sec
+        Start 337: citlali::pipeline_iteration_lifecycle.rejects_realized_zero_sample_injection
+337/653 Test #337: citlali::pipeline_iteration_lifecycle.rejects_realized_zero_sample_injection ........................................................   Passed    0.01 sec
+        Start 338: citlali::pipeline_iteration_lifecycle.accepts_realized_nonzero_injection
+338/653 Test #338: citlali::pipeline_iteration_lifecycle.accepts_realized_nonzero_injection ............................................................   Passed    0.01 sec
+        Start 339: citlali::pipeline_iteration_lifecycle.uses_configured_fruit_loop_path_as_source_model
+339/653 Test #339: citlali::pipeline_iteration_lifecycle.uses_configured_fruit_loop_path_as_source_model ...............................................   Passed    0.01 sec
+        Start 340: citlali::pipeline_iteration_lifecycle.finalizes_iteration
+340/653 Test #340: citlali::pipeline_iteration_lifecycle.finalizes_iteration ...........................................................................   Passed    0.01 sec
+        Start 341: citlali::pipeline_iteration_lifecycle.logs_finalize_diagnostics_when_enabled
+341/653 Test #341: citlali::pipeline_iteration_lifecycle.logs_finalize_diagnostics_when_enabled ........................................................   Passed    0.01 sec
+        Start 342: citlali::pipeline_iteration_lifecycle.finalizes_iteration_outputs
+342/653 Test #342: citlali::pipeline_iteration_lifecycle.finalizes_iteration_outputs ...................................................................   Passed    0.01 sec
+        Start 343: citlali::pipeline_execution.setup_runs_before_enabled_pipeline
+343/653 Test #343: citlali::pipeline_execution.setup_runs_before_enabled_pipeline ......................................................................   Passed    0.01 sec
+        Start 344: citlali::pipeline_execution.setup_runs_when_tod_pipeline_disabled
+344/653 Test #344: citlali::pipeline_execution.setup_runs_when_tod_pipeline_disabled ...................................................................   Passed    0.01 sec
+        Start 345: citlali::pipeline_execution.prepares_coadd_iteration_buffers
+345/653 Test #345: citlali::pipeline_execution.prepares_coadd_iteration_buffers ........................................................................   Passed    0.01 sec
+        Start 346: citlali::pipeline_execution.skips_coadd_noise_buffer_when_noise_disabled
+346/653 Test #346: citlali::pipeline_execution.skips_coadd_noise_buffer_when_noise_disabled ............................................................   Passed    0.01 sec
+        Start 347: citlali::pipeline_execution.prepares_iteration_observation_buffers_for_coadd
+347/653 Test #347: citlali::pipeline_execution.prepares_iteration_observation_buffers_for_coadd ........................................................   Passed    0.01 sec
+        Start 348: citlali::pipeline_execution.prepares_iteration_observation_buffers_without_coadd
+348/653 Test #348: citlali::pipeline_execution.prepares_iteration_observation_buffers_without_coadd ....................................................   Passed    0.01 sec
+        Start 349: citlali::pipeline_execution.begins_reduction_iteration
+349/653 Test #349: citlali::pipeline_execution.begins_reduction_iteration ..............................................................................   Passed    0.01 sec
+        Start 350: citlali::pipeline_execution.initializes_reduction_iterations
+350/653 Test #350: citlali::pipeline_execution.initializes_reduction_iterations ........................................................................   Passed    0.01 sec
+        Start 351: citlali::pipeline_execution.calculates_initial_observation_map_dimensions
+351/653 Test #351: citlali::pipeline_execution.calculates_initial_observation_map_dimensions ...........................................................   Passed    0.01 sec
+        Start 352: citlali::pipeline_execution.skips_initial_observation_map_dimensions_when_mapmaking_disabled
+352/653 Test #352: citlali::pipeline_execution.skips_initial_observation_map_dimensions_when_mapmaking_disabled ........................................   Passed    0.01 sec
+        Start 353: citlali::pipeline_execution.prepares_initial_observation_setup
+353/653 Test #353: citlali::pipeline_execution.prepares_initial_observation_setup ......................................................................   Passed    0.01 sec
+        Start 354: citlali::pipeline_execution.prepares_initial_observation
+354/653 Test #354: citlali::pipeline_execution.prepares_initial_observation ............................................................................   Passed    0.01 sec
+        Start 355: citlali::pipeline_execution.prepares_initial_observations
+355/653 Test #355: citlali::pipeline_execution.prepares_initial_observations ...........................................................................   Passed    0.01 sec
+        Start 356: citlali::pipeline_execution.rejects_initial_observations_on_failure
+356/653 Test #356: citlali::pipeline_execution.rejects_initial_observations_on_failure .................................................................   Passed    0.01 sec
+        Start 357: citlali::pipeline_execution.prepares_initial_reduction_geometry
+357/653 Test #357: citlali::pipeline_execution.prepares_initial_reduction_geometry .....................................................................   Passed    0.01 sec
+        Start 358: citlali::pipeline_execution.rejects_initial_reduction_geometry_on_failure
+358/653 Test #358: citlali::pipeline_execution.rejects_initial_reduction_geometry_on_failure ...........................................................   Passed    0.01 sec
+        Start 359: citlali::pipeline_execution.rejects_initial_observation_setup_on_bad_flxscale
+359/653 Test #359: citlali::pipeline_execution.rejects_initial_observation_setup_on_bad_flxscale .......................................................   Passed    0.01 sec
+        Start 360: citlali::pipeline_execution.calculates_initial_coadd_map_dimensions
+360/653 Test #360: citlali::pipeline_execution.calculates_initial_coadd_map_dimensions .................................................................   Passed    0.01 sec
+        Start 361: citlali::pipeline_execution.skips_initial_coadd_map_dimensions_when_coadd_disabled
+361/653 Test #361: citlali::pipeline_execution.skips_initial_coadd_map_dimensions_when_coadd_disabled ..................................................   Passed    0.01 sec
+        Start 362: citlali::pipeline_execution.allocates_observation_map_buffers
+362/653 Test #362: citlali::pipeline_execution.allocates_observation_map_buffers .......................................................................   Passed    0.01 sec
+        Start 363: citlali::pipeline_execution.allocates_observation_noise_for_naive_coadd
+363/653 Test #363: citlali::pipeline_execution.allocates_observation_noise_for_naive_coadd .............................................................   Passed    0.01 sec
+        Start 364: citlali::pipeline_execution.allocates_observation_map_buffers_by_index
+364/653 Test #364: citlali::pipeline_execution.allocates_observation_map_buffers_by_index ..............................................................   Passed    0.01 sec
+        Start 365: citlali::pipeline_execution.records_observation_mapmaking_cardinality
+365/653 Test #365: citlali::pipeline_execution.records_observation_mapmaking_cardinality ...............................................................   Passed    0.01 sec
+        Start 366: citlali::pipeline_execution.skips_observation_map_buffer_indexing_when_mapmaking_disabled
+366/653 Test #366: citlali::pipeline_execution.skips_observation_map_buffer_indexing_when_mapmaking_disabled ...........................................   Passed    0.01 sec
+        Start 367: citlali::pipeline_execution.prepares_reduction_observation_inputs
+367/653 Test #367: citlali::pipeline_execution.prepares_reduction_observation_inputs ...................................................................   Passed    0.01 sec
+        Start 368: citlali::pipeline_execution.production_input_policy_records_legacy_coadd_metadata_once
+368/653 Test #368: citlali::pipeline_execution.production_input_policy_records_legacy_coadd_metadata_once ..............................................   Passed    0.01 sec
+        Start 369: citlali::pipeline_execution.production_input_policy_defers_v1_coadd_metadata_to_admission
+369/653 Test #369: citlali::pipeline_execution.production_input_policy_defers_v1_coadd_metadata_to_admission ...........................................   Passed    0.01 sec
+        Start 370: citlali::pipeline_execution.rejects_reduction_observation_inputs_on_bad_sample_rate
+370/653 Test #370: citlali::pipeline_execution.rejects_reduction_observation_inputs_on_bad_sample_rate .................................................   Passed    0.01 sec
+        Start 371: citlali::pipeline_execution.coadds_observation
+371/653 Test #371: citlali::pipeline_execution.coadds_observation ......................................................................................   Passed    0.01 sec
+        Start 372: citlali::pipeline_execution.skips_coadd_for_polarization
+372/653 Test #372: citlali::pipeline_execution.skips_coadd_for_polarization ............................................................................   Passed    0.01 sec
+        Start 373: citlali::pipeline_execution.writes_raw_observation_outputs
+373/653 Test #373: citlali::pipeline_execution.writes_raw_observation_outputs ..........................................................................   Passed    0.01 sec
+        Start 374: citlali::pipeline_execution.skips_raw_noise_products_when_disabled
+374/653 Test #374: citlali::pipeline_execution.skips_raw_noise_products_when_disabled ..................................................................   Passed    0.01 sec
+        Start 375: citlali::pipeline_execution.skips_raw_outputs_when_mapmaking_disabled
+375/653 Test #375: citlali::pipeline_execution.skips_raw_outputs_when_mapmaking_disabled ...............................................................   Passed    0.01 sec
+        Start 376: citlali::pipeline_execution.writes_filtered_observation_outputs
+376/653 Test #376: citlali::pipeline_execution.writes_filtered_observation_outputs .....................................................................   Passed    0.01 sec
+        Start 377: citlali::pipeline_execution.fits_filtered_observation_maps_when_requested
+377/653 Test #377: citlali::pipeline_execution.fits_filtered_observation_maps_when_requested ...........................................................   Passed    0.01 sec
+        Start 378: citlali::pipeline_execution.skips_post_filter_observation_output_for_science
+378/653 Test #378: citlali::pipeline_execution.skips_post_filter_observation_output_for_science ........................................................   Passed    0.01 sec
+        Start 379: citlali::pipeline_execution.writes_observation_outputs_without_accumulation
+379/653 Test #379: citlali::pipeline_execution.writes_observation_outputs_without_accumulation .........................................................   Passed    0.01 sec
+        Start 380: citlali::pipeline_execution.writes_observation_outputs_and_coadds
+380/653 Test #380: citlali::pipeline_execution.writes_observation_outputs_and_coadds ...................................................................   Passed    0.01 sec
+        Start 381: citlali::pipeline_execution.writes_observation_outputs_and_filters
+381/653 Test #381: citlali::pipeline_execution.writes_observation_outputs_and_filters ..................................................................   Passed    0.01 sec
+        Start 382: citlali::pipeline_execution.map_output_failure_does_not_complete_observation_cardinality
+382/653 Test #382: citlali::pipeline_execution.map_output_failure_does_not_complete_observation_cardinality ............................................   Passed    0.01 sec
+        Start 383: citlali::pipeline_execution.runs_reduction_observation_pipeline
+383/653 Test #383: citlali::pipeline_execution.runs_reduction_observation_pipeline .....................................................................   Passed    0.01 sec
+        Start 384: citlali::pipeline_execution.runs_reduction_observation
+384/653 Test #384: citlali::pipeline_execution.runs_reduction_observation ..............................................................................   Passed    0.01 sec
+        Start 385: citlali::pipeline_execution.rejects_reduction_observation_when_prepare_fails
+385/653 Test #385: citlali::pipeline_execution.rejects_reduction_observation_when_prepare_fails ........................................................   Passed    0.01 sec
+        Start 386: citlali::pipeline_execution.runs_reduction_observation_at_index
+386/653 Test #386: citlali::pipeline_execution.runs_reduction_observation_at_index .....................................................................   Passed    0.01 sec
+        Start 387: citlali::pipeline_execution.reports_observation_context_when_metadata_load_fails
+387/653 Test #387: citlali::pipeline_execution.reports_observation_context_when_metadata_load_fails ....................................................   Passed    0.01 sec
+        Start 388: citlali::pipeline_execution.runs_reduction_iteration_observations
+388/653 Test #388: citlali::pipeline_execution.runs_reduction_iteration_observations ...................................................................   Passed    0.01 sec
+        Start 389: citlali::pipeline_execution.rejects_reduction_iteration_observations_on_failure
+389/653 Test #389: citlali::pipeline_execution.rejects_reduction_iteration_observations_on_failure .....................................................   Passed    0.01 sec
+        Start 390: citlali::pipeline_execution.runs_reduction_iteration
+390/653 Test #390: citlali::pipeline_execution.runs_reduction_iteration ................................................................................   Passed    0.01 sec
+        Start 391: citlali::pipeline_execution.runs_reduction_iterations
+391/653 Test #391: citlali::pipeline_execution.runs_reduction_iterations ...............................................................................   Passed    0.01 sec
+        Start 392: citlali::pipeline_execution.runs_reduction_pipeline
+392/653 Test #392: citlali::pipeline_execution.runs_reduction_pipeline .................................................................................   Passed    0.01 sec
+        Start 393: citlali::pipeline_execution.writes_raw_coadd_outputs
+393/653 Test #393: citlali::pipeline_execution.writes_raw_coadd_outputs ................................................................................   Passed    0.01 sec
+        Start 394: citlali::pipeline_execution.writes_polarized_raw_coadd_outputs
+394/653 Test #394: citlali::pipeline_execution.writes_polarized_raw_coadd_outputs ......................................................................   Passed    0.01 sec
+        Start 395: citlali::pipeline_execution.skips_raw_coadd_noise_products_when_disabled
+395/653 Test #395: citlali::pipeline_execution.skips_raw_coadd_noise_products_when_disabled ............................................................   Passed    0.01 sec
+        Start 396: citlali::pipeline_execution.writes_filtered_coadd_outputs
+396/653 Test #396: citlali::pipeline_execution.writes_filtered_coadd_outputs ...........................................................................   Passed    0.01 sec
+        Start 397: citlali::pipeline_execution.skips_post_filter_coadd_output_for_science
+397/653 Test #397: citlali::pipeline_execution.skips_post_filter_coadd_output_for_science ..............................................................   Passed    0.01 sec
+        Start 398: citlali::pipeline_execution.skips_iteration_coadd_outputs_when_coadd_disabled
+398/653 Test #398: citlali::pipeline_execution.skips_iteration_coadd_outputs_when_coadd_disabled .......................................................   Passed    0.01 sec
+        Start 399: citlali::pipeline_execution.writes_iteration_raw_coadd_outputs
+399/653 Test #399: citlali::pipeline_execution.writes_iteration_raw_coadd_outputs ......................................................................   Passed    0.01 sec
+        Start 400: citlali::pipeline_execution.writes_iteration_filtered_coadd_outputs
+400/653 Test #400: citlali::pipeline_execution.writes_iteration_filtered_coadd_outputs .................................................................   Passed    0.01 sec
+        Start 401: citlali::pipeline_execution.records_coadd_mapmaking_cardinality
+401/653 Test #401: citlali::pipeline_execution.records_coadd_mapmaking_cardinality .....................................................................   Passed    0.01 sec
+        Start 402: citlali::pipeline_execution.finishes_reduction_iteration
+402/653 Test #402: citlali::pipeline_execution.finishes_reduction_iteration ............................................................................   Passed    0.01 sec
+        Start 403: citlali::pipeline_execution.loads_initial_fruit_loop_map_from_configured_path
+403/653 Test #403: citlali::pipeline_execution.loads_initial_fruit_loop_map_from_configured_path .......................................................   Passed    0.01 sec
+        Start 404: citlali::pipeline_execution.uses_typed_fruit_loop_weight_policy
+404/653 Test #404: citlali::pipeline_execution.uses_typed_fruit_loop_weight_policy .....................................................................   Passed    0.01 sec
+        Start 405: citlali::pipeline_execution.uses_typed_fruit_loop_interpolation_policy
+405/653 Test #405: citlali::pipeline_execution.uses_typed_fruit_loop_interpolation_policy ..............................................................   Passed    0.01 sec
+        Start 406: citlali::pipeline_execution.uses_typed_fruit_loop_flux_metadata
+406/653 Test #406: citlali::pipeline_execution.uses_typed_fruit_loop_flux_metadata .....................................................................   Passed    0.01 sec
+        Start 407: citlali::pipeline_execution.adapts_typed_fruit_loop_policy_one_way
+407/653 Test #407: citlali::pipeline_execution.adapts_typed_fruit_loop_policy_one_way ..................................................................   Passed    0.01 sec
+        Start 408: citlali::pipeline_execution.adapts_typed_processed_clean_policy_one_way
+408/653 Test #408: citlali::pipeline_execution.adapts_typed_processed_clean_policy_one_way .............................................................   Passed    0.01 sec
+        Start 409: citlali::pipeline_execution.adapts_typed_processed_weighting_policy_one_way
+409/653 Test #409: citlali::pipeline_execution.adapts_typed_processed_weighting_policy_one_way .........................................................   Passed    0.01 sec
+        Start 410: citlali::pipeline_execution.adapts_typed_second_pass_policy_one_way
+410/653 Test #410: citlali::pipeline_execution.adapts_typed_second_pass_policy_one_way .................................................................   Passed    0.01 sec
+        Start 411: citlali::pipeline_execution.skips_initial_fruit_loop_map_without_path
+411/653 Test #411: citlali::pipeline_execution.skips_initial_fruit_loop_map_without_path ...............................................................   Passed    0.01 sec
+        Start 412: citlali::pipeline_execution.loads_previous_saved_fruit_loop_map
+412/653 Test #412: citlali::pipeline_execution.loads_previous_saved_fruit_loop_map .....................................................................   Passed    0.01 sec
+        Start 413: citlali::pipeline_execution.loads_previous_stored_fruit_loop_map
+413/653 Test #413: citlali::pipeline_execution.loads_previous_stored_fruit_loop_map ....................................................................   Passed    0.01 sec
+        Start 414: citlali::pipeline_execution.skips_previous_fruit_loop_map_on_first_iteration
+414/653 Test #414: citlali::pipeline_execution.skips_previous_fruit_loop_map_on_first_iteration ........................................................   Passed    0.01 sec
+        Start 415: citlali::pipeline_execution.loads_observation_fruit_loop_maps_for_non_beammap
+415/653 Test #415: citlali::pipeline_execution.loads_observation_fruit_loop_maps_for_non_beammap .......................................................   Passed    0.01 sec
+        Start 416: citlali::pipeline_execution.skips_observation_fruit_loop_maps_for_beammap
+416/653 Test #416: citlali::pipeline_execution.skips_observation_fruit_loop_maps_for_beammap ...........................................................   Passed    0.01 sec
+        Start 417: citlali::pipeline_output_layout.derives_config_copy_destinations
+417/653 Test #417: citlali::pipeline_output_layout.derives_config_copy_destinations ....................................................................   Passed    0.01 sec
+        Start 418: citlali::pipeline_output_layout.formats_obsnums_with_legacy_padding
+418/653 Test #418: citlali::pipeline_output_layout.formats_obsnums_with_legacy_padding .................................................................   Passed    0.01 sec
+        Start 419: citlali::pipeline_output_layout.configures_observation_output_layout
+419/653 Test #419: citlali::pipeline_output_layout.configures_observation_output_layout ................................................................   Passed    0.01 sec
+        Start 420: citlali::pipeline_output_layout.defers_coadd_observation_number_until_admission
+420/653 Test #420: citlali::pipeline_output_layout.defers_coadd_observation_number_until_admission .....................................................   Passed    0.01 sec
+        Start 421: citlali::pipeline_output_layout.retains_legacy_coadd_membership_outside_v1_profile
+421/653 Test #421: citlali::pipeline_output_layout.retains_legacy_coadd_membership_outside_v1_profile ..................................................   Passed    0.01 sec
+        Start 422: citlali::pipeline_output_layout.retains_polarized_direct_coadd_membership_path
+422/653 Test #422: citlali::pipeline_output_layout.retains_polarized_direct_coadd_membership_path ......................................................   Passed    0.01 sec
+        Start 423: citlali::pipeline_output_layout.reads_obsnum_from_rawobs_meta
+423/653 Test #423: citlali::pipeline_output_layout.reads_obsnum_from_rawobs_meta .......................................................................   Passed    0.01 sec
+        Start 424: citlali::pipeline_output_layout.prepares_observation_layout_from_rawobs_meta
+424/653 Test #424: citlali::pipeline_output_layout.prepares_observation_layout_from_rawobs_meta ........................................................   Passed    0.01 sec
+        Start 425: citlali::pipeline_output_layout.prepares_iteration_output_layout_on_first_iter
+425/653 Test #425: citlali::pipeline_output_layout.prepares_iteration_output_layout_on_first_iter ......................................................   Passed    0.01 sec
+        Start 426: citlali::pipeline_output_layout.skips_iteration_output_layout_when_not_saved
+426/653 Test #426: citlali::pipeline_output_layout.skips_iteration_output_layout_when_not_saved ........................................................   Passed    0.01 sec
+        Start 427: citlali::pipeline_output_layout.prepares_first_restarted_output_layout_when_not_saved
+427/653 Test #427: citlali::pipeline_output_layout.prepares_first_restarted_output_layout_when_not_saved ...............................................   Passed    0.01 sec
+        Start 428: citlali::pipeline_output_layout.derives_gaps_log_filepath
+428/653 Test #428: citlali::pipeline_output_layout.derives_gaps_log_filepath ...........................................................................   Passed    0.01 sec
+        Start 429: citlali::pipeline_output_layout.warns_when_timing_gaps_are_present
+429/653 Test #429: citlali::pipeline_output_layout.warns_when_timing_gaps_are_present ..................................................................   Passed    0.01 sec
+        Start 430: citlali::kids_external_config.records_requested_and_effective_identity
+430/653 Test #430: citlali::kids_external_config.records_requested_and_effective_identity ..............................................................   Passed    0.01 sec
+        Start 431: citlali::kids_external_config.declares_all_four_tod_types_supported
+431/653 Test #431: citlali::kids_external_config.declares_all_four_tod_types_supported .................................................................   Passed    0.01 sec
+        Start 432: citlali::kids_external_config.serializes_external_contract
+432/653 Test #432: citlali::kids_external_config.serializes_external_contract ..........................................................................   Passed    0.01 sec
+        Start 433: citlali::sha256.matches_standard_vectors
+433/653 Test #433: citlali::sha256.matches_standard_vectors ............................................................................................   Passed    0.01 sec
+        Start 434: citlali::config_source_manifest.preserves_order_hashes_and_colliding_basenames
+434/653 Test #434: citlali::config_source_manifest.preserves_order_hashes_and_colliding_basenames ......................................................   Passed    0.02 sec
+        Start 435: citlali::fruit_loop_recurrence.subtract_addback_round_trip_restores_signal_and_kernel
+435/653 Test #435: citlali::fruit_loop_recurrence.subtract_addback_round_trip_restores_signal_and_kernel ...............................................   Passed    0.01 sec
+        Start 436: citlali::fruit_loop_recurrence.alpha_one_uses_unmodified_complete_product_path_bitwise
+436/653 Test #436: citlali::fruit_loop_recurrence.alpha_one_uses_unmodified_complete_product_path_bitwise ..............................................   Passed    0.01 sec
+        Start 437: citlali::fruit_loop_recurrence.relaxed_state_updates_signal_and_kernel_and_leaves_q_state_authoritative
+437/653 Test #437: citlali::fruit_loop_recurrence.relaxed_state_updates_signal_and_kernel_and_leaves_q_state_authoritative .............................   Passed    0.01 sec
+        Start 438: citlali::fruit_loop_recurrence.relaxed_state_rejects_grid_and_finite_support_changes
+438/653 Test #438: citlali::fruit_loop_recurrence.relaxed_state_rejects_grid_and_finite_support_changes ................................................   Passed    0.01 sec
+        Start 439: citlali::fruit_loop_recurrence.injected_gaussian_converges_through_controlled_cleaner
+439/653 Test #439: citlali::fruit_loop_recurrence.injected_gaussian_converges_through_controlled_cleaner ...............................................   Passed    0.01 sec
+        Start 440: citlali::fruit_loop_recurrence.injected_source_test_scales_pristine_kernel_by_array
+440/653 Test #440: citlali::fruit_loop_recurrence.injected_source_test_scales_pristine_kernel_by_array .................................................   Passed    0.01 sec
+        Start 441: citlali::fruit_loop_recurrence.injected_source_explicit_zero_offset_retains_legacy_kernel_center
+441/653 Test #441: citlali::fruit_loop_recurrence.injected_source_explicit_zero_offset_retains_legacy_kernel_center ....................................   Passed    0.01 sec
+        Start 442: citlali::fruit_loop_recurrence.injected_source_offset_configures_map_world_kernel_center
+442/653 Test #442: citlali::fruit_loop_recurrence.injected_source_offset_configures_map_world_kernel_center ............................................   Passed    0.01 sec
+        Start 443: citlali::fruit_loop_recurrence.injected_source_inactive_iteration_clears_offset_kernel_state
+443/653 Test #443: citlali::fruit_loop_recurrence.injected_source_inactive_iteration_clears_offset_kernel_state ........................................   Passed    0.01 sec
+        Start 444: citlali::fruit_loop_recurrence.injected_source_test_is_exactly_inactive_before_start
+444/653 Test #444: citlali::fruit_loop_recurrence.injected_source_test_is_exactly_inactive_before_start ................................................   Passed    0.01 sec
+        Start 445: citlali::fruit_loop_recurrence.injected_source_test_rejects_missing_kernel_and_wrong_units
+445/653 Test #445: citlali::fruit_loop_recurrence.injected_source_test_rejects_missing_kernel_and_wrong_units ..........................................   Passed    0.01 sec
+        Start 446: citlali::fruit_loop_recurrence.mapdiag_feedback_excluded_evidence_subtracts_exact_carried_model
+446/653 Test #446: citlali::fruit_loop_recurrence.mapdiag_feedback_excluded_evidence_subtracts_exact_carried_model .....................................   Passed    0.01 sec
+        Start 447: citlali::fruit_loop_recurrence.mapdiag_feedback_excluded_evidence_rejects_grid_or_support_mismatch
+447/653 Test #447: citlali::fruit_loop_recurrence.mapdiag_feedback_excluded_evidence_rejects_grid_or_support_mismatch ..................................   Passed    0.01 sec
+        Start 448: citlali::jinc_accounting.disabled_state_allocates_nothing
+448/653 Test #448: citlali::jinc_accounting.disabled_state_allocates_nothing ...........................................................................   Passed    0.01 sec
+        Start 449: citlali::jinc_accounting.records_exact_signed_total_and_target_construction
+449/653 Test #449: citlali::jinc_accounting.records_exact_signed_total_and_target_construction .........................................................   Passed    0.01 sec
+        Start 450: citlali::jinc_accounting.snapshots_actual_accumulators_and_sample_reasons
+450/653 Test #450: citlali::jinc_accounting.snapshots_actual_accumulators_and_sample_reasons ...........................................................   Passed    0.01 sec
+        Start 451: citlali::jinc_accounting.normalization_receipt_is_observational_only
+451/653 Test #451: citlali::jinc_accounting.normalization_receipt_is_observational_only ................................................................   Passed    0.01 sec
+        Start 452: citlali::jinc_accounting.required_sample_output_failure_propagates
+452/653 Test #452: citlali::jinc_accounting.required_sample_output_failure_propagates ..................................................................   Passed    0.01 sec
+        Start 453: citlali::jinc_accounting.writes_complete_required_receipt
+453/653 Test #453: citlali::jinc_accounting.writes_complete_required_receipt ...........................................................................   Passed    0.03 sec
+        Start 454: citlali::kids_input_validation.accepts_finite_detector_data
+454/653 Test #454: citlali::kids_input_validation.accepts_finite_detector_data .........................................................................   Passed    0.01 sec
+        Start 455: citlali::kids_input_validation.classifies_nan_as_input_io_failure
+455/653 Test #455: citlali::kids_input_validation.classifies_nan_as_input_io_failure ...................................................................   Passed    0.01 sec
+        Start 456: citlali::kids_input_validation.classifies_infinity_as_input_io_failure
+456/653 Test #456: citlali::kids_input_validation.classifies_infinity_as_input_io_failure ..............................................................   Passed    0.01 sec
+        Start 457: citlali::ReductionLearningState.DiagnosticCapNeverTruncatesEffectiveState
+457/653 Test #457: citlali::ReductionLearningState.DiagnosticCapNeverTruncatesEffectiveState ...........................................................   Passed    0.01 sec
+        Start 458: citlali::ReductionLearningState.MergesRepeatedAndAdjacentMaskEventsOnline
+458/653 Test #458: citlali::ReductionLearningState.MergesRepeatedAndAdjacentMaskEventsOnline ...........................................................   Passed    0.01 sec
+        Start 459: citlali::ReductionLearningState.DiagnosticsCanBeDisabledWithoutDisablingLearning
+459/653 Test #459: citlali::ReductionLearningState.DiagnosticsCanBeDisabledWithoutDisablingLearning ....................................................   Passed    0.01 sec
+        Start 460: citlali::ReductionLearningState.DetectorPenaltyEventsDeduplicateInEffectiveState
+460/653 Test #460: citlali::ReductionLearningState.DetectorPenaltyEventsDeduplicateInEffectiveState ....................................................   Passed    0.01 sec
+        Start 461: citlali::ReductionLearningState.ResolvesBoundedNextIterationMapPixelTargetsWithoutHistoryCarry
+461/653 Test #461: citlali::ReductionLearningState.ResolvesBoundedNextIterationMapPixelTargetsWithoutHistoryCarry ......................................   Passed    0.01 sec
+        Start 462: citlali::ReductionRestartCheckpoint.RoundTripsResolvedMapPixelTargetsWithoutDiagnosticHistory
+462/653 Test #462: citlali::ReductionRestartCheckpoint.RoundTripsResolvedMapPixelTargetsWithoutDiagnosticHistory .......................................   Passed    0.02 sec
+        Start 463: citlali::ReductionRestartCheckpoint.RoundTripsElF1SignalKernelFeedbackState
+463/653 Test #463: citlali::ReductionRestartCheckpoint.RoundTripsElF1SignalKernelFeedbackState .........................................................   Passed    0.03 sec
+        Start 464: citlali::ReductionRestartCheckpoint.IdentifiesElF1AlphaOneWhileReusingOrdinaryCompleteProduct
+464/653 Test #464: citlali::ReductionRestartCheckpoint.IdentifiesElF1AlphaOneWhileReusingOrdinaryCompleteProduct .......................................   Passed    0.02 sec
+        Start 465: citlali::ReductionRestartCheckpoint.RejectsFeedbackMethodMismatchAcrossRestart
+465/653 Test #465: citlali::ReductionRestartCheckpoint.RejectsFeedbackMethodMismatchAcrossRestart ......................................................   Passed    0.03 sec
+        Start 466: citlali::ReductionRestartCheckpoint.RejectsMissingRequiredResolvedMapPixelTargetState
+466/653 Test #466: citlali::ReductionRestartCheckpoint.RejectsMissingRequiredResolvedMapPixelTargetState ...............................................   Passed    0.01 sec
+        Start 467: citlali::ReductionRestartCheckpoint.RejectsMalformedResolvedMapPixelTargetState
+467/653 Test #467: citlali::ReductionRestartCheckpoint.RejectsMalformedResolvedMapPixelTargetState .....................................................   Passed    0.01 sec
+        Start 468: citlali::ReductionRestartCheckpoint.RejectsOlderCheckpointSchema
+468/653 Test #468: citlali::ReductionRestartCheckpoint.RejectsOlderCheckpointSchema ....................................................................   Passed    0.03 sec
+        Start 469: citlali::ReductionRestartCheckpoint.RoundTripsEffectiveLearningState
+469/653 Test #469: citlali::ReductionRestartCheckpoint.RoundTripsEffectiveLearningState ................................................................   Passed    0.03 sec
+        Start 470: citlali::ReductionRestartCheckpoint.RoundTripsPartiallyAccumulatedWeightValidationState
+470/653 Test #470: citlali::ReductionRestartCheckpoint.RoundTripsPartiallyAccumulatedWeightValidationState .............................................   Passed    0.03 sec
+        Start 471: citlali::ReductionRestartCheckpoint.RejectsObservationAndPolicyMismatch
+471/653 Test #471: citlali::ReductionRestartCheckpoint.RejectsObservationAndPolicyMismatch .............................................................   Passed    0.03 sec
+        Start 472: citlali::ReductionRestartCheckpoint.AcceptsHistoricalMissingPlacementOnlyAtLegacyDefault
+472/653 Test #472: citlali::ReductionRestartCheckpoint.AcceptsHistoricalMissingPlacementOnlyAtLegacyDefault ............................................   Passed    0.04 sec
+        Start 473: citlali::ReductionRestartCheckpoint.RejectsMalformedWeightValidationState
+473/653 Test #473: citlali::ReductionRestartCheckpoint.RejectsMalformedWeightValidationState ...........................................................   Passed    0.01 sec
+        Start 474: citlali::ReductionRestartCheckpoint.FivePlusTwoRestartMatchesSevenUninterruptedIterations
+474/653 Test #474: citlali::ReductionRestartCheckpoint.FivePlusTwoRestartMatchesSevenUninterruptedIterations ...........................................   Passed    0.03 sec
+        Start 475: citlali::ReductionRestartCheckpoint.FivePlusThreeTargetStateRestartMatchesEightUninterruptedIterations
+475/653 Test #475: citlali::ReductionRestartCheckpoint.FivePlusThreeTargetStateRestartMatchesEightUninterruptedIterations ..............................   Passed    0.03 sec
+        Start 476: citlali::ReductionRestartCheckpoint.LifecycleRestoresAbsoluteIterationAndSelectsRestartMapOnce
+476/653 Test #476: citlali::ReductionRestartCheckpoint.LifecycleRestoresAbsoluteIterationAndSelectsRestartMapOnce ......................................   Passed    0.03 sec
+        Start 477: citlali::ReductionRestartCheckpoint.FruitResponseActiveAssignmentsRoundTripAndContinueExactly
+477/653 Test #477: citlali::ReductionRestartCheckpoint.FruitResponseActiveAssignmentsRoundTripAndContinueExactly .......................................   Passed    0.03 sec
+        Start 478: citlali::ReductionRestartCheckpoint.FruitResponseMissingStateRejectsBeforeMutatingLearning
+478/653 Test #478: citlali::ReductionRestartCheckpoint.FruitResponseMissingStateRejectsBeforeMutatingLearning ..........................................   Passed    0.03 sec
+        Start 479: citlali::FruitLoopActivation.RejectsEnabledNoOpConfiguration
+479/653 Test #479: citlali::FruitLoopActivation.RejectsEnabledNoOpConfiguration ........................................................................   Passed    0.01 sec
+        Start 480: citlali::FruitLoopActivation.RequiresEmpiricalProductsForSnrGate
+480/653 Test #480: citlali::FruitLoopActivation.RequiresEmpiricalProductsForSnrGate ....................................................................   Passed    0.01 sec
+        Start 481: citlali::FruitLoopActivation.AcceptsNonzeroFluxGateWithoutNoiseProducts
+481/653 Test #481: citlali::FruitLoopActivation.AcceptsNonzeroFluxGateWithoutNoiseProducts .............................................................   Passed    0.01 sec
+        Start 482: citlali::FruitLoopActivation.LeavesBeammapInternalIterationPolicyAlone
+482/653 Test #482: citlali::FruitLoopActivation.LeavesBeammapInternalIterationPolicyAlone ..............................................................   Passed    0.01 sec
+        Start 483: citlali::MapImageSemantics.FormalStandardizedSignalIsNotNamedSnr
+483/653 Test #483: citlali::MapImageSemantics.FormalStandardizedSignalIsNotNamedSnr ....................................................................   Passed    0.01 sec
+        Start 484: citlali::LearningHousekeepingQa.MatchesNearestSampleAndPublishesLocalChange
+484/653 Test #484: citlali::LearningHousekeepingQa.MatchesNearestSampleAndPublishesLocalChange .........................................................   Passed    0.01 sec
+        Start 485: citlali::LearningHousekeepingQa.RejectsUnavailableAndOutOfRangeMatches
+485/653 Test #485: citlali::LearningHousekeepingQa.RejectsUnavailableAndOutOfRangeMatches ..............................................................   Passed    0.01 sec
+        Start 486: citlali::LearningHousekeepingQa.WritesRequiredSidecarFromExplicitInput
+486/653 Test #486: citlali::LearningHousekeepingQa.WritesRequiredSidecarFromExplicitInput ..............................................................   Passed    0.02 sec
+        Start 487: citlali::MapFitterLifecycle.RepeatedPointingFitsRemainStablePastFailureCount
+487/653 Test #487: citlali::MapFitterLifecycle.RepeatedPointingFitsRemainStablePastFailureCount ........................................................   Passed    0.44 sec
+        Start 488: citlali::MapFitterLifecycle.ExactProductSequence
+488/653 Test #488: citlali::MapFitterLifecycle.ExactProductSequence ....................................................................................***Not Run (Disabled)   0.00 sec
+        Start 489: citlali::output_root_lease.public_header_links_across_translation_units
+489/653 Test #489: citlali::output_root_lease.public_header_links_across_translation_units .............................................................   Passed    0.01 sec
+        Start 490: citlali::output_root_lease.rejects_a_concurrent_owner
+490/653 Test #490: citlali::output_root_lease.rejects_a_concurrent_owner ...............................................................................   Passed    0.01 sec
+        Start 491: citlali::output_root_lease.releases_ownership_at_scope_exit
+491/653 Test #491: citlali::output_root_lease.releases_ownership_at_scope_exit .........................................................................   Passed    0.01 sec
+        Start 492: citlali::output_root_lease.permits_independent_output_roots
+492/653 Test #492: citlali::output_root_lease.permits_independent_output_roots .........................................................................   Passed    0.01 sec
+        Start 493: citlali::pointing_fit_table_metrics.separates_legacy_dynamic_range_and_fit_snr
+493/653 Test #493: citlali::pointing_fit_table_metrics.separates_legacy_dynamic_range_and_fit_snr ......................................................   Passed    0.01 sec
+        Start 494: citlali::pointing_fit_table_metrics.rejects_nonpositive_denominators
+494/653 Test #494: citlali::pointing_fit_table_metrics.rejects_nonpositive_denominators ................................................................   Passed    0.01 sec
+        Start 495: citlali::pointing_fit_table_metrics.appends_explicit_columns_after_legacy_schema
+495/653 Test #495: citlali::pointing_fit_table_metrics.appends_explicit_columns_after_legacy_schema ....................................................   Passed    0.01 sec
+        Start 496: citlali::ProcessResourceSnapshot.ParsesLinuxStatusValues
+496/653 Test #496: citlali::ProcessResourceSnapshot.ParsesLinuxStatusValues ............................................................................   Passed    0.01 sec
+        Start 497: citlali::ProcessResourceSnapshot.ConvertsKibibytesToGibibytes
+497/653 Test #497: citlali::ProcessResourceSnapshot.ConvertsKibibytesToGibibytes .......................................................................   Passed    0.01 sec
+        Start 498: citlali::rawobs_adc_snap_schema.maps_beginning_and_ending_rows_to_named_boundary_columns
+498/653 Test #498: citlali::rawobs_adc_snap_schema.maps_beginning_and_ending_rows_to_named_boundary_columns ............................................   Passed    0.02 sec
+        Start 499: citlali::rawobs_adc_snap_schema.declares_signed_twelve_bit_count_domain
+499/653 Test #499: citlali::rawobs_adc_snap_schema.declares_signed_twelve_bit_count_domain .............................................................   Passed    0.01 sec
+        Start 500: citlali::reduction_session.returns_structured_success
+500/653 Test #500: citlali::reduction_session.returns_structured_success ...............................................................................   Passed    0.01 sec
+        Start 501: citlali::reduction_session.converts_exceptions_to_diagnostics
+501/653 Test #501: citlali::reduction_session.converts_exceptions_to_diagnostics .......................................................................   Passed    0.01 sec
+        Start 502: citlali::reduction_session.classifies_canonical_library_errors
+502/653 Test #502: citlali::reduction_session.classifies_canonical_library_errors ......................................................................   Passed    0.01 sec
+        Start 503: citlali::reduction_session.supports_success_after_failure
+503/653 Test #503: citlali::reduction_session.supports_success_after_failure ...........................................................................   Passed    0.01 sec
+        Start 504: citlali::reduction_session.supports_two_sequential_successes
+504/653 Test #504: citlali::reduction_session.supports_two_sequential_successes ........................................................................   Passed    0.01 sec
+        Start 505: citlali::reduction_session.rejects_nested_run_without_losing_outer_state
+505/653 Test #505: citlali::reduction_session.rejects_nested_run_without_losing_outer_state ............................................................   Passed    0.01 sec
+        Start 506: citlali::reduction_session.resets_owned_profile_between_sequential_runs
+506/653 Test #506: citlali::reduction_session.resets_owned_profile_between_sequential_runs .............................................................   Passed    0.01 sec
+        Start 507: citlali::reduction_session.keeps_cli_reporting_outside_session_policy
+507/653 Test #507: citlali::reduction_session.keeps_cli_reporting_outside_session_policy ...............................................................   Passed    0.01 sec
+        Start 508: citlali::reduction_session.public_headers_link_across_translation_units
+508/653 Test #508: citlali::reduction_session.public_headers_link_across_translation_units .............................................................   Passed    0.01 sec
+        Start 509: citlali::science_map_provenance.exact_double_round_trip_distinguishes_float_aliases
+509/653 Test #509: citlali::science_map_provenance.exact_double_round_trip_distinguishes_float_aliases .................................................   Passed    0.01 sec
+        Start 510: citlali::science_map_provenance.serializes_full_identity_and_eight_product_facts
+510/653 Test #510: citlali::science_map_provenance.serializes_full_identity_and_eight_product_facts ....................................................   Passed    0.01 sec
+        Start 511: citlali::science_map_provenance.mapmaking_v3_owns_observation_science_records
+511/653 Test #511: citlali::science_map_provenance.mapmaking_v3_owns_observation_science_records .......................................................   Passed    0.01 sec
+        Start 512: citlali::science_map_provenance.rejects_mapmaking_science_cardinality_mismatch
+512/653 Test #512: citlali::science_map_provenance.rejects_mapmaking_science_cardinality_mismatch ......................................................   Passed    0.01 sec
+        Start 513: citlali::science_map_provenance.captures_observation_state_one_way_at_completion
+513/653 Test #513: citlali::science_map_provenance.captures_observation_state_one_way_at_completion ....................................................   Passed    0.01 sec
+        Start 514: citlali::science_map_provenance.persists_per_product_absence_for_unavailable_observation_profile
+514/653 Test #514: citlali::science_map_provenance.persists_per_product_absence_for_unavailable_observation_profile ....................................   Passed    0.01 sec
+        Start 515: citlali::science_map_provenance.persists_per_product_absence_for_unavailable_coadd_profile
+515/653 Test #515: citlali::science_map_provenance.persists_per_product_absence_for_unavailable_coadd_profile ..........................................   Passed    0.01 sec
+        Start 516: citlali::science_map_provenance.coadd_v2_preserves_membership_at_completion
+516/653 Test #516: citlali::science_map_provenance.coadd_v2_preserves_membership_at_completion .........................................................   Passed    0.01 sec
+        Start 517: citlali::science_map_provenance.resets_coadd_admission_state_per_iteration
+517/653 Test #517: citlali::science_map_provenance.resets_coadd_admission_state_per_iteration ..........................................................   Passed    0.01 sec
+        Start 518: citlali::science_map_provenance.captures_coadd_realized_maps_without_membership_mutation
+518/653 Test #518: citlali::science_map_provenance.captures_coadd_realized_maps_without_membership_mutation ............................................   Passed    0.01 sec
+        Start 519: citlali::science_map_provenance.rejects_realized_coadd_membership_and_admission_provenance_drift
+519/653 Test #519: citlali::science_map_provenance.rejects_realized_coadd_membership_and_admission_provenance_drift ....................................   Passed    0.01 sec
+        Start 520: citlali::science_map_provenance.serializes_explicit_absence_reasons
+520/653 Test #520: citlali::science_map_provenance.serializes_explicit_absence_reasons .................................................................   Passed    0.01 sec
+        Start 521: citlali::science_map_contract.coadd_dispatch_uses_explicit_profile_authority_and_fails_closed
+521/653 Test #521: citlali::science_map_contract.coadd_dispatch_uses_explicit_profile_authority_and_fails_closed .......................................   Passed    0.01 sec
+        Start 522: citlali::science_map_contract.centered_offsets_reject_odd_negative_and_zero_shapes
+522/653 Test #522: citlali::science_map_contract.centered_offsets_reject_odd_negative_and_zero_shapes ..................................................   Passed    0.01 sec
+        Start 523: citlali::science_map_contract.unequal_coefficient_coadd_preserves_L_identity
+523/653 Test #523: citlali::science_map_contract.unequal_coefficient_coadd_preserves_L_identity ........................................................   Passed    0.01 sec
+        Start 524: citlali::science_map_contract.bundle_mismatches_fail_without_any_coadd_mutation
+524/653 Test #524: citlali::science_map_contract.bundle_mismatches_fail_without_any_coadd_mutation .....................................................   Passed    0.01 sec
+        Start 525: citlali::science_map_contract.realized_provenance_tampering_rejects_the_whole_bundle_atomically
+525/653 Test #525: citlali::science_map_contract.realized_provenance_tampering_rejects_the_whole_bundle_atomically .....................................   Passed    0.01 sec
+        Start 526: citlali::science_map_contract.invalid_payload_is_skipped_but_valid_nonfinite_fails_atomically
+526/653 Test #526: citlali::science_map_contract.invalid_payload_is_skipped_but_valid_nonfinite_fails_atomically .......................................   Passed    0.01 sec
+        Start 527: citlali::science_map_contract.threshold_rule_is_finite_positive_and_boundary_exact
+527/653 Test #527: citlali::science_map_contract.threshold_rule_is_finite_positive_and_boundary_exact ..................................................   Passed    0.01 sec
+        Start 528: citlali::science_map_contract.normalization_persists_eight_distinct_pixel_facts
+528/653 Test #528: citlali::science_map_contract.normalization_persists_eight_distinct_pixel_facts .....................................................   Passed    0.01 sec
+        Start 529: citlali::science_map_contract.all_valid_coadd_preserves_historical_arithmetic_order_bitwise
+529/653 Test #529: citlali::science_map_contract.all_valid_coadd_preserves_historical_arithmetic_order_bitwise .........................................   Passed    0.01 sec
+        Start 530: citlali::science_map_contract.unsupported_profile_legacy_lane_preserves_arithmetic_without_science_claims
+530/653 Test #530: citlali::science_map_contract.unsupported_profile_legacy_lane_preserves_arithmetic_without_science_claims ...........................   Passed    0.01 sec
+        Start 531: citlali::science_map_truth.small_matrix_mean_and_covariance_match_equations
+531/653 Test #531: citlali::science_map_truth.small_matrix_mean_and_covariance_match_equations .........................................................   Passed    0.01 sec
+        Start 532: citlali::science_map_truth.ordinary_profiles_match_reference_and_requested_parallel_exactly
+532/653 Test #532: citlali::science_map_truth.ordinary_profiles_match_reference_and_requested_parallel_exactly .........................................   Passed    0.01 sec
+        Start 533: citlali::science_map_truth.all_invalid_samples_have_geometric_hits_but_zero_valid_coverage
+533/653 Test #533: citlali::science_map_truth.all_invalid_samples_have_geometric_hits_but_zero_valid_coverage ..........................................   Passed    0.01 sec
+        Start 534: citlali::science_map_truth.zero_coefficients_are_eligible_but_have_zero_numerical_support
+534/653 Test #534: citlali::science_map_truth.zero_coefficients_are_eligible_but_have_zero_numerical_support ...........................................   Passed    0.01 sec
+        Start 535: citlali::science_map_truth.valid_nonfinite_ordinary_inputs_fail_before_any_map_commit
+535/653 Test #535: citlali::science_map_truth.valid_nonfinite_ordinary_inputs_fail_before_any_map_commit ...............................................   Passed    0.01 sec
+        Start 536: citlali::science_map_truth.malformed_required_kernel_shape_fails_before_any_map_commit
+536/653 Test #536: citlali::science_map_truth.malformed_required_kernel_shape_fails_before_any_map_commit ..............................................   Passed    0.01 sec
+        Start 537: citlali::science_map_truth.floating_and_count_aggregate_overflow_fail_before_bundle_commit
+537/653 Test #537: citlali::science_map_truth.floating_and_count_aggregate_overflow_fail_before_bundle_commit ..........................................   Passed    0.01 sec
+        Start 538: citlali::science_map_truth.finite_projection_outside_index_domain_fails_before_bundle_commit
+538/653 Test #538: citlali::science_map_truth.finite_projection_outside_index_domain_fails_before_bundle_commit ........................................   Passed    0.01 sec
+        Start 539: citlali::science_map_truth.repaired_primitive_is_race_free_under_concurrent_calls
+539/653 Test #539: citlali::science_map_truth.repaired_primitive_is_race_free_under_concurrent_calls ...................................................   Passed    0.01 sec
+        Start 540: citlali::session_failure_boundaries.rejects_missing_tone_frequency_network
+540/653 Test #540: citlali::session_failure_boundaries.rejects_missing_tone_frequency_network ..........................................................   Passed    0.01 sec
+        Start 541: citlali::session_failure_boundaries.rejects_empty_tone_frequency_sweeps
+541/653 Test #541: citlali::session_failure_boundaries.rejects_empty_tone_frequency_sweeps .............................................................   Passed    0.01 sec
+        Start 542: citlali::session_failure_boundaries.rejects_tone_frequency_size_mismatch
+542/653 Test #542: citlali::session_failure_boundaries.rejects_tone_frequency_size_mismatch ............................................................   Passed    0.01 sec
+        Start 543: citlali::session_failure_boundaries.rejects_missing_gap_mask
+543/653 Test #543: citlali::session_failure_boundaries.rejects_missing_gap_mask ........................................................................   Passed    0.01 sec
+        Start 544: citlali::session_failure_boundaries.rejects_detector_count_mismatch
+544/653 Test #544: citlali::session_failure_boundaries.rejects_detector_count_mismatch .................................................................   Passed    0.01 sec
+        Start 545: citlali::session_failure_boundaries.reconciles_matching_sample_rates
+545/653 Test #545: citlali::session_failure_boundaries.reconciles_matching_sample_rates ................................................................   Passed    0.01 sec
+        Start 546: citlali::session_failure_boundaries.rejects_sample_rate_mismatch
+546/653 Test #546: citlali::session_failure_boundaries.rejects_sample_rate_mismatch ....................................................................   Passed    0.01 sec
+        Start 547: citlali::session_failure_boundaries.rejects_nonpositive_sample_rate
+547/653 Test #547: citlali::session_failure_boundaries.rejects_nonpositive_sample_rate .................................................................   Passed    0.01 sec
+        Start 548: citlali::session_failure_boundaries.rejects_negative_extinction_tau
+548/653 Test #548: citlali::session_failure_boundaries.rejects_negative_extinction_tau .................................................................   Passed    0.01 sec
+        Start 549: citlali::session_failure_boundaries.rejects_missing_polarization_groups
+549/653 Test #549: citlali::session_failure_boundaries.rejects_missing_polarization_groups .............................................................   Passed    0.01 sec
+        Start 550: citlali::session_failure_boundaries.rejects_iir_frequency_above_nyquist
+550/653 Test #550: citlali::session_failure_boundaries.rejects_iir_frequency_above_nyquist .............................................................   Passed    0.01 sec
+        Start 551: citlali::session_failure_boundaries.rejects_beammap_fit_geometry_mismatch
+551/653 Test #551: citlali::session_failure_boundaries.rejects_beammap_fit_geometry_mismatch ...........................................................   Passed    0.01 sec
+        Start 552: citlali::session_failure_boundaries.classifies_noncontiguous_grouping_as_io
+552/653 Test #552: citlali::session_failure_boundaries.classifies_noncontiguous_grouping_as_io .........................................................   Passed    0.01 sec
+        Start 553: citlali::session_failure_boundaries.classifies_invalid_weight_counters_as_internal
+553/653 Test #553: citlali::session_failure_boundaries.classifies_invalid_weight_counters_as_internal ..................................................   Passed    0.01 sec
+        Start 554: citlali::session_failure_boundaries.classifies_kernel_image_count_as_config
+554/653 Test #554: citlali::session_failure_boundaries.classifies_kernel_image_count_as_config .........................................................   Passed    0.01 sec
+        Start 555: citlali::session_failure_boundaries.classifies_fruit_loop_map_request_as_config
+555/653 Test #555: citlali::session_failure_boundaries.classifies_fruit_loop_map_request_as_config .....................................................   Passed    0.01 sec
+        Start 556: citlali::session_failure_boundaries.fruit_loop_map_input_failure_is_recoverable
+556/653 Test #556: citlali::session_failure_boundaries.fruit_loop_map_input_failure_is_recoverable .....................................................   Passed    0.01 sec
+        Start 557: citlali::session_failure_boundaries.validates_fruit_loop_feedback_identity
+557/653 Test #557: citlali::session_failure_boundaries.validates_fruit_loop_feedback_identity ..........................................................   Passed    0.01 sec
+        Start 558: citlali::session_failure_boundaries.validates_wiener_filter_boundaries
+558/653 Test #558: citlali::session_failure_boundaries.validates_wiener_filter_boundaries ..............................................................   Passed    0.01 sec
+        Start 559: citlali::session_failure_boundaries.accepts_valid_required_output_slots
+559/653 Test #559: citlali::session_failure_boundaries.accepts_valid_required_output_slots .............................................................   Passed    0.01 sec
+        Start 560: citlali::session_failure_boundaries.classifies_required_output_slot_failures
+560/653 Test #560: citlali::session_failure_boundaries.classifies_required_output_slot_failures ........................................................   Passed    0.01 sec
+        Start 561: citlali::session_failure_boundaries.classifies_missing_fits_input
+561/653 Test #561: citlali::session_failure_boundaries.classifies_missing_fits_input ...................................................................   Passed    0.01 sec
+        Start 562: citlali::session_failure_boundaries.classifies_uncreatable_fits_output
+562/653 Test #562: citlali::session_failure_boundaries.classifies_uncreatable_fits_output ..............................................................   Passed    0.01 sec
+        Start 563: citlali::session_failure_boundaries.classifies_missing_ecsv_input
+563/653 Test #563: citlali::session_failure_boundaries.classifies_missing_ecsv_input ...................................................................   Passed    0.01 sec
+        Start 564: citlali::session_failure_boundaries.accepts_supported_mapmaking_policies
+564/653 Test #564: citlali::session_failure_boundaries.accepts_supported_mapmaking_policies ............................................................   Passed    0.01 sec
+        Start 565: citlali::session_failure_boundaries.classifies_invalid_mapmaking_policies
+565/653 Test #565: citlali::session_failure_boundaries.classifies_invalid_mapmaking_policies ...........................................................   Passed    0.01 sec
+        Start 566: citlali::tod_output_selection_config.records_invalid_chunk_list_atomically
+566/653 Test #566: citlali::tod_output_selection_config.records_invalid_chunk_list_atomically ..........................................................   Passed    0.01 sec
+        Start 567: citlali::tod_output_selection_config.records_invalid_selection_count_path
+567/653 Test #567: citlali::tod_output_selection_config.records_invalid_selection_count_path ...........................................................   Passed    0.01 sec
+        Start 568: citlali::tod_output_selection_config.records_impossible_selection_mode_path
+568/653 Test #568: citlali::tod_output_selection_config.records_impossible_selection_mode_path .........................................................   Passed    0.01 sec
+        Start 569: citlali::tod_output_selection_config.rejects_invalid_effective_mode
+569/653 Test #569: citlali::tod_output_selection_config.rejects_invalid_effective_mode .................................................................   Passed    0.01 sec
+        Start 570: citlali::tod_output_selection_config.rejects_empty_source_crossing_selection
+570/653 Test #570: citlali::tod_output_selection_config.rejects_empty_source_crossing_selection ........................................................   Passed    0.01 sec
+        Start 571: citlali::tod_output_selection_config.rejects_chunk_outside_scan_range
+571/653 Test #571: citlali::tod_output_selection_config.rejects_chunk_outside_scan_range ...............................................................   Passed    0.01 sec
+        Start 572: citlali::calibration.beam_flux_to_rj_temperature_has_expected_scale
+572/653 Test #572: citlali::calibration.beam_flux_to_rj_temperature_has_expected_scale .................................................................   Passed    0.01 sec
+        Start 573: citlali::calibration.applies_detector_specific_flux_factors
+573/653 Test #573: citlali::calibration.applies_detector_specific_flux_factors .........................................................................   Passed    0.01 sec
+        Start 574: citlali::pointing.rotates_detector_offsets_in_altaz_frame
+574/653 Test #574: citlali::pointing.rotates_detector_offsets_in_altaz_frame ...........................................................................   Passed    0.01 sec
+        Start 575: citlali::source_finder.negative_no_detection_does_not_mutate_signal
+575/653 Test #575: citlali::source_finder.negative_no_detection_does_not_mutate_signal .................................................................   Passed    0.01 sec
+        Start 576: citlali::source_finder.detects_source_on_map_edge_without_out_of_bounds_access
+576/653 Test #576: citlali::source_finder.detects_source_on_map_edge_without_out_of_bounds_access ......................................................   Passed    0.01 sec
+        Start 577: citlali::utils.fft2_into_matches_fft2_forward_and_inverse
+577/653 Test #577: citlali::utils.fft2_into_matches_fft2_forward_and_inverse ...........................................................................   Passed    0.01 sec
+        Start 578: citlali::wiener_filter.denominator_honors_max_denom_iters
+578/653 Test #578: citlali::wiener_filter.denominator_honors_max_denom_iters ...........................................................................   Passed    0.01 sec
+        Start 579: citlali::wiener_filter.denominator_rel_tol_can_stop_before_tail_cap
+579/653 Test #579: citlali::wiener_filter.denominator_rel_tol_can_stop_before_tail_cap .................................................................   Passed    0.01 sec
+        Start 580: citlali::wiener_filter.kernel_template_tail_zero_truncates_extrapolated_pixels
+580/653 Test #580: citlali::wiener_filter.kernel_template_tail_zero_truncates_extrapolated_pixels ......................................................   Passed    0.01 sec
+        Start 581: citlali::wiener_filter.unit_sum_convolution_rejects_compensated_template
+581/653 Test #581: citlali::wiener_filter.unit_sum_convolution_rejects_compensated_template ............................................................   Passed    0.01 sec
+        Start 582: citlali::wiener_filter.unit_sum_convolution_preserves_well_conditioned_behavior
+582/653 Test #582: citlali::wiener_filter.unit_sum_convolution_preserves_well_conditioned_behavior .....................................................   Passed    0.01 sec
+        Start 583: citlali::timestream_filter.notch_settle_samples_are_positive_for_narrow_notches
+583/653 Test #583: citlali::timestream_filter.notch_settle_samples_are_positive_for_narrow_notches .....................................................   Passed    0.01 sec
+        Start 584: citlali::timestream_filter.notch_settle_samples_increase_for_narrower_widths
+584/653 Test #584: citlali::timestream_filter.notch_settle_samples_increase_for_narrower_widths ........................................................   Passed    0.01 sec
+        Start 585: citlali::timestream_filter.zero_phase_notch_preserves_constant_timestream
+585/653 Test #585: citlali::timestream_filter.zero_phase_notch_preserves_constant_timestream ...........................................................   Passed    0.01 sec
+        Start 586: citlali::timestream_filter.zero_phase_notch_preserves_constant_edges
+586/653 Test #586: citlali::timestream_filter.zero_phase_notch_preserves_constant_edges ................................................................   Passed    0.01 sec
+        Start 587: citlali::UtilsTest.generate_chunks
+587/653 Test #587: citlali::UtilsTest.generate_chunks ..................................................................................................   Passed    0.01 sec
+        Start 588: citlali::UtilsTest.eigen_to_stdvec_iterates_in_storage_order
+588/653 Test #588: citlali::UtilsTest.eigen_to_stdvec_iterates_in_storage_order ........................................................................   Passed    0.01 sec
+        Start 589: citlali::UtilsTest.eigen_to_stdvec_supports_standard_algorithms
+589/653 Test #589: citlali::UtilsTest.eigen_to_stdvec_supports_standard_algorithms .....................................................................   Passed    0.01 sec
+        Start 590: citlali::UtilsTest.vector
+590/653 Test #590: citlali::UtilsTest.vector ...........................................................................................................   Passed    0.01 sec
+        Start 591: citlali::UtilsTest.meanstd
+591/653 Test #591: citlali::UtilsTest.meanstd ..........................................................................................................   Passed    0.01 sec
+        Start 592: citlali::UtilsTest.medianmad
+592/653 Test #592: citlali::UtilsTest.medianmad ........................................................................................................   Passed    0.01 sec
+        Start 593: citlali::UtilsTest.indexofthresh
+593/653 Test #593: citlali::UtilsTest.indexofthresh ....................................................................................................   Passed    0.01 sec
+        Start 594: citlali::science_map_fits::science_map_fits_products.writes_canonical_typed_planes_and_aliases
+594/653 Test #594: citlali::science_map_fits::science_map_fits_products.writes_canonical_typed_planes_and_aliases ......................................   Passed    0.01 sec
+        Start 595: citlali::science_map_fits::science_map_fits_products.skips_products_declared_unavailable
+595/653 Test #595: citlali::science_map_fits::science_map_fits_products.skips_products_declared_unavailable ............................................   Passed    0.01 sec
+        Start 596: citlali::science_map_fits::science_map_fits_products.supported_output_bundle_rejects_all_unavailable_or_missing_inventory
+596/653 Test #596: citlali::science_map_fits::science_map_fits_products.supported_output_bundle_rejects_all_unavailable_or_missing_inventory ...........   Passed    0.01 sec
+        Start 597: citlali::science_map_fits::science_map_fits_products.coadd_writes_f010_hierarchy_without_significance_products
+597/653 Test #597: citlali::science_map_fits::science_map_fits_products.coadd_writes_f010_hierarchy_without_significance_products ......................   Passed    0.01 sec
+        Start 598: citlali::science_map_fits::science_map_fits_products.selected_frozen_coadd_authority_controls_output_family
+598/653 Test #598: citlali::science_map_fits::science_map_fits_products.selected_frozen_coadd_authority_controls_output_family .........................   Passed    0.01 sec
+        Start 599: citlali::science_map_fits::science_map_fits_products.coadd_primary_weight_omits_uncertainty_metadata
+599/653 Test #599: citlali::science_map_fits::science_map_fits_products.coadd_primary_weight_omits_uncertainty_metadata ................................   Passed    0.01 sec
+        Start 600: citlali::science_map_fits::science_map_fits_products.rejects_nonidentical_coverage_alias
+600/653 Test #600: citlali::science_map_fits::science_map_fits_products.rejects_nonidentical_coverage_alias ............................................   Passed    0.01 sec
+        Start 601: citlali::science_map_fits::science_map_fits_products.filtered_output_carries_immutable_raw_parent_after_live_mutation
+601/653 Test #601: citlali::science_map_fits::science_map_fits_products.filtered_output_carries_immutable_raw_parent_after_live_mutation ...............   Passed    0.01 sec
+        Start 602: citlali::science_map_fits::science_map_fits_products.filtered_output_without_frozen_raw_parent_fails_before_write
+602/653 Test #602: citlali::science_map_fits::science_map_fits_products.filtered_output_without_frozen_raw_parent_fails_before_write ...................   Passed    0.01 sec
+        Start 603: citlali::science_map_fits::science_map_fits_products.missing_empirical_companions_fail_before_any_primary_or_f010_write
+603/653 Test #603: citlali::science_map_fits::science_map_fits_products.missing_empirical_companions_fail_before_any_primary_or_f010_write .............   Passed    0.01 sec
+        Start 604: citlali::science_map_fits::science_map_fits_products.missing_median_diagnostic_fails_before_primary_write
+604/653 Test #604: citlali::science_map_fits::science_map_fits_products.missing_median_diagnostic_fails_before_primary_write ...........................   Passed    0.01 sec
+        Start 605: citlali::science_map_fits::science_map_fits_products.products_off_observation_can_prepare_and_publish_median_diagnostic
+605/653 Test #605: citlali::science_map_fits::science_map_fits_products.products_off_observation_can_prepare_and_publish_median_diagnostic .............   Passed    0.01 sec
+        Start 606: citlali::science_map_fits::science_map_fits_products.labels_weights_as_nonprecision_coefficients
+606/653 Test #606: citlali::science_map_fits::science_map_fits_products.labels_weights_as_nonprecision_coefficients ....................................   Passed    0.01 sec
+        Start 607: citlali::science_map_fits::science_map_fits_products.preserves_native_fits_scalar_types
+607/653 Test #607: citlali::science_map_fits::science_map_fits_products.preserves_native_fits_scalar_types .............................................   Passed    0.01 sec
+        Start 608: citlali::science_map_fits::science_map_fits_products.round_trips_complete_f010_bundle_metadata_aliases_and_wcs
+608/653 Test #608: citlali::science_map_fits::science_map_fits_products.round_trips_complete_f010_bundle_metadata_aliases_and_wcs ......................   Passed    0.01 sec
+        Start 609: citlali::science_map_fits::science_map_fits_products.filtered_fits_round_trips_complete_raw_parent_digest
+609/653 Test #609: citlali::science_map_fits::science_map_fits_products.filtered_fits_round_trips_complete_raw_parent_digest ...........................   Passed    0.01 sec
+        Start 610: citlali::science_map_fits::science_map_fits_products.coadd_enabled_observation_inventory_keeps_required_noise_file
+610/653 Test #610: citlali::science_map_fits::science_map_fits_products.coadd_enabled_observation_inventory_keeps_required_noise_file ..................   Passed    0.01 sec
+        Start 611: citlali::science_map_fits::science_map_fits_products.production_writer_preserves_wcs_threshold_and_realization_contracts
+611/653 Test #611: citlali::science_map_fits::science_map_fits_products.production_writer_preserves_wcs_threshold_and_realization_contracts ............   Passed    0.03 sec
+        Start 612: citlali::science_map_fits::science_map_fits_products.unavailable_profile_representation_has_explicit_absence
+612/653 Test #612: citlali::science_map_fits::science_map_fits_products.unavailable_profile_representation_has_explicit_absence ........................   Passed    0.01 sec
+        Start 613: citlali::science_map_fits::science_map_fits_products.detector_profile_preserves_empty_coverage_output_guard
+613/653 Test #613: citlali::science_map_fits::science_map_fits_products.detector_profile_preserves_empty_coverage_output_guard .........................   Passed    0.01 sec
+        Start 614: citlali::science_map_fits::science_map_fits_products.unavailable_legacy_coadd_is_not_promoted_to_successor_output_policy
+614/653 Test #614: citlali::science_map_fits::science_map_fits_products.unavailable_legacy_coadd_is_not_promoted_to_successor_output_policy ............   Passed    0.01 sec
+        Start 615: citlali::science_map_fits::science_map_fits_products.rejects_tampered_unavailable_inventory_before_first_hdu
+615/653 Test #615: citlali::science_map_fits::science_map_fits_products.rejects_tampered_unavailable_inventory_before_first_hdu ........................   Passed    0.01 sec
+        Start 616: citlali::fruit_response::FruitResponseIntervention.DisabledAndEmptyCensusHaveNoAction
+616/653 Test #616: citlali::fruit_response::FruitResponseIntervention.DisabledAndEmptyCensusHaveNoAction ...............................................   Passed    0.01 sec
+        Start 617: citlali::fruit_response::FruitResponseIntervention.EitherStagePermitsHalfAndNeverStacks
+617/653 Test #617: citlali::fruit_response::FruitResponseIntervention.EitherStagePermitsHalfAndNeverStacks .............................................   Passed    0.01 sec
+        Start 618: citlali::fruit_response::FruitResponseIntervention.AllKeysAndJointRiskDriveSelectionWithoutUidRanking
+618/653 Test #618: citlali::fruit_response::FruitResponseIntervention.AllKeysAndJointRiskDriveSelectionWithoutUidRanking ...............................   Passed    0.01 sec
+        Start 619: citlali::fruit_response::FruitResponseIntervention.IndependentExclusionsRemainOutsideSelection
+619/653 Test #619: citlali::fruit_response::FruitResponseIntervention.IndependentExclusionsRemainOutsideSelection ......................................   Passed    0.01 sec
+        Start 620: citlali::fruit_response::FruitResponseIntervention.InvalidAndIncompleteCensusCannotPartiallyAssign
+620/653 Test #620: citlali::fruit_response::FruitResponseIntervention.InvalidAndIncompleteCensusCannotPartiallyAssign ..................................   Passed    0.01 sec
+        Start 621: citlali::fruit_response::FruitResponseIntervention.PopulationAndAssignmentCapsNeverTruncate
+621/653 Test #621: citlali::fruit_response::FruitResponseIntervention.PopulationAndAssignmentCapsNeverTruncate .........................................   Passed    0.01 sec
+        Start 622: citlali::fruit_response::FruitResponseIntervention.RestartRejectsMissingChangedAndBeyondHorizonState
+622/653 Test #622: citlali::fruit_response::FruitResponseIntervention.RestartRejectsMissingChangedAndBeyondHorizonState ................................   Passed    0.01 sec
+        Start 623: citlali::fruit_response::FruitResponseIntervention.HighInfluenceDoesNotClaimBeneficialRescue
+623/653 Test #623: citlali::fruit_response::FruitResponseIntervention.HighInfluenceDoesNotClaimBeneficialRescue ........................................   Passed    0.01 sec
+        Start 624: citlali::fruit_response::FruitResponseCensus.IncludesAllNewKeysAndKeepsExclusionReasonsWithoutOracleInputs
+624/653 Test #624: citlali::fruit_response::FruitResponseCensus.IncludesAllNewKeysAndKeepsExclusionReasonsWithoutOracleInputs ..........................   Passed    0.01 sec
+        Start 625: citlali::fruit_response::FruitResponseLedgerTest.JointDeletionSubtractsContributionsBeforeNormalization
+625/653 Test #625: citlali::fruit_response::FruitResponseLedgerTest.JointDeletionSubtractsContributionsBeforeNormalization .............................   Passed    0.02 sec
+        Start 626: citlali::fruit_response::FruitResponseLedgerTest.LostSupportSelectsEvenWithUnavailableResponse
+626/653 Test #626: citlali::fruit_response::FruitResponseLedgerTest.LostSupportSelectsEvenWithUnavailableResponse ......................................   Passed    0.01 sec
+        Start 627: citlali::fruit_response::FruitResponseLedgerTest.ZeroContributionKeyIsAValidNoOpportunity
+627/653 Test #627: citlali::fruit_response::FruitResponseLedgerTest.ZeroContributionKeyIsAValidNoOpportunity ...........................................   Passed    0.01 sec
+        Start 628: citlali::fruit_response::FruitResponseLedgerTest.MissingNonfiniteAndDuplicateOccurrenceStateFailClosed
+628/653 Test #628: citlali::fruit_response::FruitResponseLedgerTest.MissingNonfiniteAndDuplicateOccurrenceStateFailClosed ..............................   Passed    0.01 sec
+        Start 629: citlali::fruit_response::FruitResponseLedgerTest.BrokenAccountingCannotPublishASelection
+629/653 Test #629: citlali::fruit_response::FruitResponseLedgerTest.BrokenAccountingCannotPublishASelection ............................................   Passed    0.01 sec
+        Start 630: citlali::learning_target_application::LearningTargetApplication.AppliesResolvedBoundaryTargetsToRealContributionTracer
+630/653 Test #630: citlali::learning_target_application::LearningTargetApplication.AppliesResolvedBoundaryTargetsToRealContributionTracer ..............   Passed    0.01 sec
+        Start 631: citlali::learning_target_application::LearningTargetApplication.MissingRequiredBoundaryStateFailsClosed
+631/653 Test #631: citlali::learning_target_application::LearningTargetApplication.MissingRequiredBoundaryStateFailsClosed .............................   Passed    0.01 sec
+        Start 632: citlali::learning_target_application::LearningTargetApplication.IncompatibleMapGridFailsClosed
+632/653 Test #632: citlali::learning_target_application::LearningTargetApplication.IncompatibleMapGridFailsClosed ......................................   Passed    0.01 sec
+        Start 633: citlali::learning_target_application::LearningTargetApplication.MapDiagnosticExclusionDefaultsToSharedCleaningStages
+633/653 Test #633: citlali::learning_target_application::LearningTargetApplication.MapDiagnosticExclusionDefaultsToSharedCleaningStages ................   Passed    0.01 sec
+        Start 634: citlali::learning_target_application::LearningTargetApplication.MapDiagnosticExclusionCanMoveAfterSharedCleaning
+634/653 Test #634: citlali::learning_target_application::LearningTargetApplication.MapDiagnosticExclusionCanMoveAfterSharedCleaning ....................   Passed    0.01 sec
+        Start 635: citlali::learning_target_application::LearningTargetApplication.BusyDetectorExclusionPlacementDoesNotMoveWithMapDiagnosticSetting
+635/653 Test #635: citlali::learning_target_application::LearningTargetApplication.BusyDetectorExclusionPlacementDoesNotMoveWithMapDiagnosticSetting ...   Passed    0.01 sec
+        Start 636: citlali::learning_target_application::LearningTargetApplication.HistoricalCapCanRejectBeforeRtcAndAcceptBeforePtc
+636/653 Test #636: citlali::learning_target_application::LearningTargetApplication.HistoricalCapCanRejectBeforeRtcAndAcceptBeforePtc ...................   Passed    0.01 sec
+        Start 637: citlali::learning_target_application::LearningTargetApplication.HistoricalCapAcceptsItsExactBoundary
+637/653 Test #637: citlali::learning_target_application::LearningTargetApplication.HistoricalCapAcceptsItsExactBoundary ................................   Passed    0.01 sec
+        Start 638: citlali::learning_target_application::LearningTargetApplication.FruitResponseNativeCapPrecedence
+638/653 Test #638: citlali::learning_target_application::LearningTargetApplication.FruitResponseNativeCapPrecedence ....................................   Passed    0.01 sec
+        Start 639: citlali::learning_target_application::LearningTargetApplication.FruitResponseNativeJincHalfPropagatesEveryCoefficient
+639/653 Test #639: citlali::learning_target_application::LearningTargetApplication.FruitResponseNativeJincHalfPropagatesEveryCoefficient ...............   Passed    0.01 sec
+        Start 640: citlali::safety::config_safety.parsed_enum_failure_records_invalid_path
+640/653 Test #640: citlali::safety::config_safety.parsed_enum_failure_records_invalid_path .............................................................   Passed    0.02 sec
+        Start 641: citlali::safety::config_safety.range_checks_reject_nonfinite_values
+641/653 Test #641: citlali::safety::config_safety.range_checks_reject_nonfinite_values .................................................................   Passed    0.01 sec
+        Start 642: citlali::safety::config_safety.optional_minimum_allows_nan_sentinel_but_rejects_infinity
+642/653 Test #642: citlali::safety::config_safety.optional_minimum_allows_nan_sentinel_but_rejects_infinity ............................................   Passed    0.01 sec
+        Start 643: citlali::safety::config_safety.authoritative_range_check_rejects_nonfinite_values
+643/653 Test #643: citlali::safety::config_safety.authoritative_range_check_rejects_nonfinite_values ...................................................   Passed    0.01 sec
+        Start 644: citlali::safety::config_safety.authoritative_optional_range_allows_only_nan_nonfinite
+644/653 Test #644: citlali::safety::config_safety.authoritative_optional_range_allows_only_nan_nonfinite ...............................................   Passed    0.01 sec
+        Start 645: citlali::safety::ordered_writer.serializes_out_of_order_workers
+645/653 Test #645: citlali::safety::ordered_writer.serializes_out_of_order_workers .....................................................................   Passed    0.01 sec
+        Start 646: citlali::safety::ordered_writer.failure_cancels_and_wakes_waiters
+646/653 Test #646: citlali::safety::ordered_writer.failure_cancels_and_wakes_waiters ...................................................................   Passed    0.01 sec
+        Start 647: citlali::safety::ordered_writer.required_output_failure_cancels_other_streams
+647/653 Test #647: citlali::safety::ordered_writer.required_output_failure_cancels_other_streams .......................................................   Passed    0.01 sec
+        Start 648: citlali::safety::ordered_writer.verifies_required_output_cardinality
+648/653 Test #648: citlali::safety::ordered_writer.verifies_required_output_cardinality ................................................................   Passed    0.01 sec
+        Start 649: citlali::safety::ordered_writer.derives_standard_and_beammap_output_expectations
+649/653 Test #649: citlali::safety::ordered_writer.derives_standard_and_beammap_output_expectations ....................................................   Passed    0.01 sec
+        Start 650: citlali::safety::ordered_writer.netcdf_failure_leaves_diagnosed_partial_product_and_next_run_recovers
+650/653 Test #650: citlali::safety::ordered_writer.netcdf_failure_leaves_diagnosed_partial_product_and_next_run_recovers ...............................   Passed    0.02 sec
+        Start 651: citlali::safety::ptc_tod_schema.includes_all_second_pass_summary_fields
+651/653 Test #651: citlali::safety::ptc_tod_schema.includes_all_second_pass_summary_fields .............................................................   Passed    0.01 sec
+        Start 652: citlali::safety::scan_cursor.enumerates_each_scan_once
+652/653 Test #652: citlali::safety::scan_cursor.enumerates_each_scan_once ..............................................................................   Passed    0.01 sec
+        Start 653: citlali::safety::scan_cursor.new_run_starts_clean_after_interrupted_run
+653/653 Test #653: citlali::safety::scan_cursor.new_run_starts_clean_after_interrupted_run .............................................................   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 652
+
+Total Test time (real) =  10.32 sec
+
+The following tests did not run:
+	488 - citlali::MapFitterLifecycle.ExactProductSequence (Disabled)
+[100%] Built target check
+make[2]: *** read jobs pipe: Resource temporarily unavailable.  Stop.
+make[2]: *** Waiting for unfinished jobs....
+[  0%] Built target gitversion_header_citlali
+[  0%] Built target config_header_citlali
+[  0%] Built target gitversion_header_kidscpp
+[  0%] Built target default_config_header_citlali
+[  0%] Built target config_header_kidscpp
+[  0%] Built target gitversion_header_tula
+[  1%] Built target gramsavgol
+[  9%] Built target re2
+make[1]: *** [CMakeFiles/citlali_cli.dir/rule] Error 2
+make: *** [citlali_cli] Error 2

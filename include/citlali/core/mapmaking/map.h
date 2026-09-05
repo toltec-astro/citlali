@@ -14,6 +14,7 @@
 #include <citlali/core/utils/fitting.h>
 #include <citlali/core/mapmaking/science_map_contract.h>
 #include <citlali/core/mapmaking/jinc_accounting.h>
+#include <citlali/core/fruit/response_ledger.h>
 
 namespace mapmaking {
 
@@ -134,6 +135,10 @@ public:
 
     // Opt-in EL-F10 construction receipt. Mapmaking never reads these values.
     JincAccountingState jinc_accounting;
+    // The observation buffer owns its diagnostic spool. Decision state is a
+    // borrow from ReductionLearningState, whose lifetime encloses this buffer.
+    std::shared_ptr<citlali::fruit::ResponseOccurrenceLedger> fruit_response_ledger;
+    citlali::fruit::ResponseInterventionState *fruit_response_state = nullptr;
 
     // noise maps (n_rows, n_cols, n_noise) of length n_maps
     std::vector<Eigen::Tensor<double,3>> noise;

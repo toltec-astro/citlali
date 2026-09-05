@@ -585,6 +585,8 @@ struct TimestreamLearningScanNetworkPathologyConfig {
 };
 
 struct TimestreamLearningConfig {
+    // Authorized EL-F12 development screen only; no production policy.
+    std::string fruit_response_arm = "disabled";
     bool enabled = false;
     bool diagnostics_enabled = true;
     int learn_iters = 2;

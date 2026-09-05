@@ -554,6 +554,20 @@ void write_reduction_restart_checkpoint(
                 "invalid restart checkpoint EL-F1 observation or iteration identity");
         }
     }
+    if (learning.fruit_response.arm() != learning_config.fruit_response_arm)
+        throw std::invalid_argument("EL-F12 checkpoint action/configuration mismatch");
+    if (learning.fruit_response.enabled()) {
+        if (observation_ids.size() != 1)
+            throw std::invalid_argument("EL-F12 checkpoint requires one observation");
+        for (const auto &[key, source] : learning.fruit_response.assignments()) {
+            (void) source;
+            if (key.observation != observation_ids.front())
+                throw std::invalid_argument("EL-F12 checkpoint assignment observation mismatch");
+        }
+        for (const auto &candidate : learning.fruit_response.census())
+            if (candidate.key.observation != observation_ids.front())
+                throw std::invalid_argument("EL-F12 checkpoint census observation mismatch");
+    }
     const auto obs_index = observation_index(observation_ids);
     const auto flat = flatten_effective_state(learning, obs_index);
     if (const auto error = resolved_map_pixel_target_state_error(
@@ -569,6 +583,12 @@ void write_reduction_restart_checkpoint(
             std::string{write_el_f1
                             ? relaxed_feedback_restart_checkpoint_schema_version
                             : reduction_restart_checkpoint_schema_version});
+        if (learning.fruit_response.enabled()) {
+            if (learning.fruit_response.iteration() != completed_iteration ||
+                !learning.fruit_response.completed())
+                throw std::runtime_error("EL-F12 checkpoint boundary mismatch");
+            add_netcdf_var(file, "fruit_response_state", learning.fruit_response.serialize());
+        }
         add_netcdf_var(file, "creator_version", std::string{CITLALI_GIT_VERSION});
         add_netcdf_var(file, "completed_iteration", completed_iteration);
         add_netcdf_var(file, "next_iteration", completed_iteration + 1);
@@ -1275,8 +1295,31 @@ ReductionRestartCheckpointSummary load_reduction_restart_checkpoint(
         checkpoint_error(input_path, error);
     }
 
+    citlali::fruit::ResponseInterventionState restored_response;
+    const bool has_response = !file.getVar("fruit_response_state").isNull();
+    const bool expect_response = expected_learning_config.fruit_response_arm != "disabled";
+    if (has_response != expect_response)
+        checkpoint_error(input_path, "EL-F12 operational state is missing or unexpected");
+    if (expect_response) {
+        try {
+            restored_response = citlali::fruit::ResponseInterventionState::restore(
+                read_scalar_string(file, input_path, "fruit_response_state"),
+                expected_learning_config.fruit_response_arm, completed_iteration);
+            for (const auto &candidate : restored_response.census())
+                if (observation_ids.size() != 1 || candidate.key.observation != observation_ids.front())
+                    throw std::runtime_error("EL-F12 census observation mismatch");
+            for (const auto &[key, source] : restored_response.assignments()) {
+                (void) source;
+                if (observation_ids.size() != 1 || key.observation != observation_ids.front())
+                    throw std::runtime_error("EL-F12 assignment observation mismatch");
+            }
+        } catch (const std::exception &error) {
+            checkpoint_error(input_path, error.what());
+        }
+    }
     {
         std::lock_guard<std::mutex> lock(*learning.mutex);
+        learning.fruit_response = std::move(restored_response);
         learning.effective_sample_masks = std::move(masks);
         learning.effective_detector_penalties = std::move(penalties);
         learning.resolved_map_pixel_target_sets =

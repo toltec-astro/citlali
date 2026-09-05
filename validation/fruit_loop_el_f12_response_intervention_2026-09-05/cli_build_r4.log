@@ -1,0 +1,21 @@
+[  0%] Built target default_config_header_citlali
+[  0%] Built target gitversion_header_citlali
+[  0%] Built target config_header_citlali
+[  0%] Built target gitversion_header_tula
+[  0%] Built target config_header_kidscpp
+[  0%] Built target gitversion_header_kidscpp
+[  1%] Built target gramsavgol
+[  1%] Built target config_header_tula
+[  2%] Built target fmt
+[ 10%] Built target re2
+[ 13%] Built target glog
+[ 24%] Built target netcdf-cxx4
+[ 27%] Built target spdlog
+[ 39%] Built target yaml-cpp
+[ 91%] Built target ceres
+[ 94%] Built target kids
+[ 98%] Built target citlali
+[100%] Building CXX object CMakeFiles/citlali_cli.dir/src/citlali/cli/main.cpp.o
+Elapsed time (seconds): 57.5383
+[100%] Linking CXX executable bin/citlali
+[100%] Built target citlali_cli

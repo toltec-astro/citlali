@@ -1,0 +1,34 @@
++ /Users/gwilson/tolteca/bin/python -m py_compile tools/config/expand_compact_config.py tools/config/lowlevel_to_compact_config.py tools/config/run_compact_compatibility.py tools/config/audit_compact_surface_coverage.py tools/config/audit_config_authority_reads.py tools/config/audit_config_leaf_contract.py tools/config/test_audit_config_leaf_contract.py tools/config/generate_config_schema_header.py tools/config/test_generate_config_schema_header.py tools/config/audit_learning_boundary.py tools/config/test_audit_learning_boundary.py tools/config/audit_interface_sync_boundary.py tools/config/test_audit_interface_sync_boundary.py tools/config/audit_mapmaking_boundary.py tools/config/test_audit_mapmaking_boundary.py tools/config/audit_coadd_boundary.py tools/config/test_audit_coadd_boundary.py tools/config/audit_noise_products_boundary.py tools/config/test_audit_noise_products_boundary.py tools/config/audit_pointing_boundary.py tools/config/test_audit_pointing_boundary.py tools/config/audit_polarimetry_boundary.py tools/config/test_audit_polarimetry_boundary.py tools/config/audit_astrometry_boundary.py tools/config/test_audit_astrometry_boundary.py tools/config/audit_post_processing_boundary.py tools/config/test_audit_post_processing_boundary.py tools/config/audit_beammap_boundary.py tools/config/test_audit_beammap_boundary.py tools/config/audit_kids_external_boundary.py tools/config/test_audit_kids_external_boundary.py tools/config/audit_config_source_manifest.py tools/config/test_audit_config_source_manifest.py tools/config/audit_processed_timestream_boundary.py tools/config/test_audit_processed_timestream_boundary.py tools/config/audit_raw_timestream_boundary.py tools/config/test_audit_raw_timestream_boundary.py tools/config/audit_raw_timestream_execution_reads.py tools/config/test_audit_raw_timestream_execution_reads.py tools/config/test_validate_config_authority_inventory.py tools/config/classify_lowlevel_config.py tools/config/compare_lowlevel_yaml.py tools/config/test_compare_lowlevel_yaml.py tools/config/validate_config_authority_inventory.py tools/config/tolteca_mode_kit.py tools/config/generate_tolteca_mode_kits.py tools/config/generate_tolteca_v2_mode_kits.py tools/config/test_tolteca_mode_kit.py
++ /Users/gwilson/tolteca/bin/python -m unittest tools.config.test_audit_processed_timestream_boundary tools.config.test_audit_mapmaking_boundary tools.config.test_audit_coadd_boundary tools.config.test_audit_noise_products_boundary tools.config.test_audit_pointing_boundary tools.config.test_audit_polarimetry_boundary tools.config.test_audit_astrometry_boundary tools.config.test_audit_post_processing_boundary tools.config.test_audit_beammap_boundary tools.config.test_audit_kids_external_boundary tools.config.test_audit_config_source_manifest tools.config.test_audit_raw_timestream_boundary tools.config.test_audit_raw_timestream_execution_reads tools.config.test_validate_config_authority_inventory tools.config.test_audit_config_leaf_contract tools.config.test_generate_config_schema_header tools.config.test_audit_learning_boundary tools.config.test_audit_interface_sync_boundary tools.config.test_tolteca_mode_kit tools.config.test_compare_lowlevel_yaml
+...............................................................................................................................
+----------------------------------------------------------------------
+Ran 127 tests in 4.689s
+
+OK
++ /Users/gwilson/tolteca/bin/python tools/config/tolteca_mode_kit.py validate-all --json-out /private/tmp/citlali_config_preflight/tolteca_mode_kits.json
+PASS point: leaves=445 hash=f2d124d40ac7ad9e6351a647253050e5146659c666feed07262125e6fa5415c8
+PASS oof: leaves=444 hash=414a5d16ceba8b6f9163851c139affa486f50397e1ead56fc480ed53475b76f4
+PASS beammap: leaves=485 hash=75eaf79fb5ce45b383f48bbb6a4715209fbb25cb29a1ac595a3afb2a7df4e0b0
+PASS science: leaves=404 hash=10095418b09100f15c90af173ee34ea7bfcf12260cec41d80f43f6f50473a347
++ /Users/gwilson/tolteca/bin/python tools/config/run_compact_compatibility.py --fail-on-warnings --work-dir /private/tmp/citlali_config_preflight/compact_compat --json-out /private/tmp/citlali_config_preflight/compact_compat/results.json --markdown-out /private/tmp/citlali_config_preflight/compact_compat/results.md --require-all
+compact compatibility: passed=8 failed=0 skipped=0
+passed: pointing_152389_passthrough leaves=444/444 diffs=0
+passed: pointing_152389_compact_keys leaves=444/444 diffs=0
+passed: oof_149056_passthrough leaves=164/164 diffs=0
+passed: oof_149056_compact_keys leaves=164/164 diffs=0
+passed: beammap_3c273_passthrough leaves=485/485 diffs=0
+passed: beammap_3c273_compact_keys leaves=485/485 diffs=0
+passed: science_goodsn_passthrough leaves=219/219 diffs=0
+passed: science_goodsn_compact_keys leaves=219/219 diffs=0
++ /Users/gwilson/tolteca/bin/python tools/config/audit_compact_surface_coverage.py --json-out /private/tmp/citlali_config_preflight/surface_coverage.json --csv-out /private/tmp/citlali_config_preflight/surface_coverage.csv --markdown-out /private/tmp/citlali_config_preflight/surface_coverage.md --require-all --fail-on-gaps
+compact surface coverage: covered=261 profile_owned=17 gaps=0 coverage=100.0%
++ /Users/gwilson/tolteca/bin/python tools/config/validate_config_authority_inventory.py
+config authority inventory: 15 domains valid (external-boundary=1, typed-authoritative=3, typed-authoritative-with-adapter=11)
++ /Users/gwilson/tolteca/bin/python tools/config/audit_config_leaf_contract.py --json-out /private/tmp/citlali_config_preflight/config_leaf_contract.json --require-all
+config leaf contract: leaves=602 executable=600 non_executable=2 authorities=15
++ /Users/gwilson/tolteca/bin/python tools/config/generate_config_schema_header.py --check
+runtime config schema header: leaves=602 nodes=758 external_roots=1
++ /Users/gwilson/tolteca/bin/python tools/config/audit_config_authority_reads.py --json-out /private/tmp/citlali_config_preflight/config_read_census.json --markdown-out /private/tmp/citlali_config_preflight/config_read_census.md --fail-on-review
+config read census: files=26 sites=131 accesses=133 review_required=0
++ /Users/gwilson/tolteca/bin/python tools/config/audit_learning_boundary.py --json-out /private/tmp/citlali_config_preflight/learning_boundary.json --fail-on-drift
+learning config boundary: paths=30 typed_reader=False adapter=False provenance=True drift=True

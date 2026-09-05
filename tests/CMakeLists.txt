@@ -91,6 +91,19 @@ gtest_discover_tests(
         DISCOVERY_MODE PRE_TEST
     )
 
+# EL-F12 owns its bounded action state independently of Engine.
+add_executable(citlali_fruit_response_test EXCLUDE_FROM_ALL
+    test_fruit_response_intervention.cpp
+    test_fruit_response_ledger.cpp
+)
+target_link_libraries(citlali_fruit_response_test PRIVATE citlali::citlali GTest::gtest_main)
+add_dependencies(check citlali_fruit_response_test)
+gtest_discover_tests(citlali_fruit_response_test
+    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+    TEST_PREFIX "citlali::fruit_response::"
+    DISCOVERY_MODE PRE_TEST
+)
+
 # Engine's learning-target consumer is also supplied by legacy
 # implementation-detail headers. Keep its real-path test in one translation
 # unit so it does not duplicate those definitions in citlali_test.

@@ -112,6 +112,9 @@ inline YAML::Node fruit_loops_config_node(
 inline YAML::Node learning_config_node(
     const citlali::config::TimestreamLearningConfig &config) {
     YAML::Node node;
+    // Disabled H0 retains the historical learning-policy snapshot exactly.
+    if (config.fruit_response_arm != "disabled")
+        node["fruit_response_arm"] = config.fruit_response_arm;
     node["enabled"] = config.enabled;
     node["diagnostics_enabled"] = config.diagnostics_enabled;
     node["learn_iters"] = config.learn_iters;

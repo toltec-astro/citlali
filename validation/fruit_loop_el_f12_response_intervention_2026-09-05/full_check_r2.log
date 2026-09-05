@@ -1,0 +1,43 @@
+[  0%] Built target gitversion_header_citlali
+[  0%] Built target config_header_citlali
+[  0%] Built target default_config_header_citlali
+[  0%] Built target config_header_kidscpp
+[  0%] Built target gitversion_header_kidscpp
+[  0%] Built target gtest
+[  1%] Built target gramsavgol
+[  1%] Built target gitversion_header_tula
+[  1%] Built target config_header_tula
+[  2%] Built target fmt
+[  9%] Built target re2
+[ 11%] Built target glog
+[ 12%] Built target gtest_main
+[ 22%] Built target netcdf-cxx4
+[ 22%] Built target gmock
+[ 24%] Built target spdlog
+[ 35%] Built target yaml-cpp
+[ 81%] Built target ceres
+[ 83%] Built target kids
+[ 87%] Built target citlali
+[ 87%] Building CXX object tests/CMakeFiles/citlali_fruit_response_test.dir/test_fruit_response_intervention.cpp.o
+[ 88%] Built target citlali_learning_target_application_test
+[ 89%] Built target citlali_science_map_fits_products_test
+In file included from /Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tests/test_fruit_response_intervention.cpp:4:
+/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/include/citlali/core/pipeline/fruit_response_hooks.h:18:31: error: no member named 'is_jinc_map_method' in namespace 'citlali::config'
+   18 |             !citlali::config::is_jinc_map_method(config.method) || buffer.sig_unit != "mJy/beam" ||
+      |                               ^~~~~~~~~~~~~~~~~~
+[ 89%] Building CXX object tests/CMakeFiles/citlali_test.dir/test_reduction_session.cpp.o
+[ 89%] Building CXX object tests/CMakeFiles/citlali_test.dir/test_config_scaffold.cpp.o
+[ 90%] Building CXX object tests/CMakeFiles/citlali_test.dir/test_science_map_provenance.cpp.o
+[ 90%] Building CXX object tests/CMakeFiles/citlali_test.dir/test_science_map_contract.cpp.o
+[ 91%] Building CXX object tests/CMakeFiles/citlali_test.dir/test_session_failure_boundaries.cpp.o
+[ 91%] Building CXX object tests/CMakeFiles/citlali_test.dir/test_science_map_truth_suite.cpp.o
+[ 91%] Building CXX object tests/CMakeFiles/citlali_test.dir/test_tod_output_selection_config.cpp.o
+1 error generated.
+make[3]: *** [tests/CMakeFiles/citlali_fruit_response_test.dir/test_fruit_response_intervention.cpp.o] Error 1
+make[2]: *** [tests/CMakeFiles/citlali_fruit_response_test.dir/all] Error 2
+make[2]: *** Waiting for unfinished jobs....
+[ 91%] Building CXX object tests/CMakeFiles/citlali_test.dir/test_utils.cpp.o
+[ 91%] Linking CXX executable citlali_test
+[ 98%] Built target citlali_test
+make[1]: *** [tests/CMakeFiles/check.dir/rule] Error 2
+make: *** [check] Error 2

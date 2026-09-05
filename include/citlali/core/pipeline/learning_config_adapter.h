@@ -8,6 +8,7 @@ template <class Options>
 Options make_learning_options(
     const citlali::config::TimestreamLearningConfig &config) {
     Options options;
+    options.fruit_response_arm = config.fruit_response_arm;
     options.enabled = config.enabled;
     options.diagnostics_enabled = config.diagnostics_enabled;
     options.learn_iters = config.learn_iters;

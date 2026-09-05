@@ -956,6 +956,20 @@ at this method decision. No intervention or full pre-execution gate has been
 implemented or completed. Original proposal bytes, both review archives and
 all retained reduction products are preserved.
 
+On `2026-09-05`, the owner approved CAP-001 against the exact manifest at
+`7327e642e`; the
+[`CAP-001 authorization`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_EL_F12_CAP_001_AUTHORIZATION_2026-09-05.md)
+resolves the two-stage cap decision. Bounded EL-F12 prototype implementation
+and pre-execution gates resume under Choice A and CAP-001. No replay has begun;
+all original science and resource limits remain in force.
+The default-disabled prototype and local pre-execution gates now pass:
+652 enabled CTests, 270 baseline/FRUIT Python tests, CLI build, complete
+configuration preflight and focused lint. The
+[`pre-execution evidence`](../validation/fruit_loop_el_f12_response_intervention_2026-09-05/PRE_EXECUTION_GATES_R0.1.md)
+records routine fixes, exact input recovery and active-assignment restart
+coverage. No real-data trajectory has begun. Prospective executable/analyzer
+registration and the already approved bounded matrix are the next actions.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.

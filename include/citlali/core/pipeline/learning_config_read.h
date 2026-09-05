@@ -190,6 +190,9 @@ void read_learning_scan_network_pathology_config(
 template <class Config, class LearningConfig, class Diagnostics>
 void read_learning_config(Config &config, LearningConfig &typed_config,
                           Diagnostics &diagnostics) {
+    read_optional_learning_config(
+        config, std::tuple{"timestream", "learning", "fruit_response_arm"},
+        typed_config.fruit_response_arm, diagnostics);
     read_learning_core_config(config, typed_config, diagnostics);
     read_learning_map_pixel_outlier_config(config, typed_config, diagnostics);
     read_learning_scan_network_pathology_config(

@@ -16,6 +16,7 @@
 #include <utility>
 #include <vector>
 
+#include <citlali/core/fruit/response_intervention.h>
 #include <citlali/core/config/runtime_config.h>
 #include <citlali/core/config/timestream_enums.h>
 
@@ -28,6 +29,7 @@ struct ReductionLearningState {
     };
 
     struct Options {
+        std::string fruit_response_arm = "disabled";
         bool enabled = false;
         bool diagnostics_enabled = true;
         int learn_iters = 2;
@@ -274,6 +276,11 @@ struct ReductionLearningState {
     std::size_t dropped_busy_network_summaries = 0;
     std::size_t dropped_learned_mask_applications = 0;
 
+    // Reduction-owned operational EL-F12 decisions; observation ledgers
+    // borrow this object and cannot change the requested arm.
+    citlali::fruit::ResponseInterventionState fruit_response;
+    std::set<citlali::fruit::ResponseKey> fruit_response_entry_hard_keys;
+
     std::shared_ptr<std::mutex> mutex = std::make_shared<std::mutex>();
 
     static double nan_value() {
@@ -326,6 +333,8 @@ struct ReductionLearningState {
         new_options.scan_network_pathology_max_new_flagged_fraction =
             std::max(0.0, new_options.scan_network_pathology_max_new_flagged_fraction);
         options = new_options;
+        fruit_response.configure(options.fruit_response_arm);
+        fruit_response_entry_hard_keys.clear();
         if (!map_pixel_target_state_required_unlocked()) {
             resolved_map_pixel_target_sets.clear();
             current_map_pixel_target_candidates.clear();
@@ -358,6 +367,18 @@ struct ReductionLearningState {
         current_source_model_available = source_model_available;
         current_reduction_type = reduction_type;
         current_phase = phase_for_iteration(iter, source_model_available);
+        fruit_response.begin(iter, current_phase == IterationPhase::Apply);
+        fruit_response_entry_hard_keys.clear();
+        if (fruit_response.enabled()) {
+            for (const auto &[key, record] : effective_detector_penalties) {
+                (void) key;
+                if (record.scan_local && record.uid >= 0 && record.factor == 0.0) {
+                    citlali::fruit::ResponseKey identity{record.obsnum, record.array, record.uid, record.scan};
+                    identity.validate();
+                    fruit_response_entry_hard_keys.insert(std::move(identity));
+                }
+            }
+        }
         current_map_pixel_target_candidates.clear();
         begin_count++;
     }
@@ -371,6 +392,8 @@ struct ReductionLearningState {
 
     void finalize_iteration(int iter) {
         std::lock_guard<std::mutex> lock(*mutex);
+        if (fruit_response.enabled() && (!fruit_response.completed() || fruit_response.iteration() != iter))
+            throw std::runtime_error("EL-F12 missing completed observation decision boundary");
         current_iter = iter;
         finalize_count++;
     }
@@ -398,6 +421,8 @@ struct ReductionLearningState {
 
     void clear_records() {
         std::lock_guard<std::mutex> lock(*mutex);
+        fruit_response.configure(options.fruit_response_arm);
+        fruit_response_entry_hard_keys.clear();
         effective_sample_masks.clear();
         effective_detector_penalties.clear();
         resolved_map_pixel_target_sets.clear();

@@ -19,7 +19,19 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
         !learning.apply_active()) {
         return;
     }
+    const int response_stage = stage == "pre_rtc_detector_exclusion" ? 0 :
+        (stage == "pre_ptc_detector_exclusion" ? 1 : -1);
+    auto response_absent_stage = [&] {
+        if (!learning.fruit_response.enabled() || response_stage < 0) return;
+        for (const auto &[key, source] : learning.fruit_response.assignments()) {
+            (void) source;
+            if (key.observation == observation_identity.obsnum && key.scan == static_cast<int>(tcdata.index.data))
+                learning.fruit_response.record_stage(key, response_stage, 2, 0.0,
+                    learning.options.apply_max_new_flagged_fraction);
+        }
+    };
     if (tcdata.flags.data.rows() <= 0 || tcdata.flags.data.cols() <= 0) {
+        response_absent_stage();
         return;
     }
 
@@ -80,6 +92,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
             }
     }
     if (records.empty()) {
+        response_absent_stage();
         return;
     }
 
@@ -135,6 +148,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
         }
     }
     if (proposed_dets.empty()) {
+        response_absent_stage();
         learning.record_learned_mask_application(summary);
         return;
     }
@@ -189,6 +203,38 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
         summary.max_new_flagged_fraction > 0.0 &&
         summary.newly_flagged_fraction >
             summary.max_new_flagged_fraction;
+    // CAP-001: the complete historical proposed set above determines the
+    // gate before experimental suppression. Every other reason keeps priority.
+    const auto ordinary_proposed_count = proposed_dets.size();
+    if (learning.fruit_response.enabled() && response_stage >= 0) {
+        for (const auto &[key, source] : learning.fruit_response.assignments()) {
+            (void) source;
+            if (key.observation != observation_identity.obsnum || key.scan != scan_id) continue;
+            const auto det = citlali::pipeline::learning_find_det_by_uid(calib_scan.apt, key.uid);
+            const bool present = det >= 0 && det < n_dets;
+            bool matches = false, independent = false;
+            if (present) {
+                if (citlali::pipeline::learning_apt_int(calib_scan.apt, "array", det, -1) != key.array)
+                    throw std::runtime_error("EL-F12 application UID/array identity mismatch");
+                const int nw = citlali::pipeline::learning_apt_int(calib_scan.apt, "nw", det, -1);
+                for (const auto &record : records) {
+                    const bool record_matches = record.uid == key.uid ||
+                        (record.uid < 0 && record.nw >= 0 && record.nw == nw);
+                    if (!record_matches) continue;
+                    if (record.uid == key.uid && record.reason == "map_pixel_outlier_detector_dominance" &&
+                        record.producer.rfind("mapdiag:", 0) == 0) matches = true;
+                    else independent = true;
+                }
+            }
+            const int status = !matches ? 2 : (over_cap ? 3 : 4);
+            const bool suppressed = status == 4 && !independent && learning.fruit_response.suppresses(key);
+            const long long new_samples = present ? static_cast<long long>((!tcdata.flags.data.col(det).array()).count()) : 0;
+            learning.fruit_response.record_stage(key, response_stage, status,
+                summary.newly_flagged_fraction, summary.max_new_flagged_fraction,
+                suppressed, independent, new_samples);
+            if (suppressed) proposed_dets.erase(det);
+        }
+    }
     if (!over_cap) {
         auto flag_it = calib_scan.apt.find("flag");
         std::set<Eigen::Index> apt_flag_dets;
@@ -280,7 +326,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
         logger->warn(
             "learned {} rejected scan {} iter {}: candidates={} matched={} dets={} newly_flagged={} newly_flagged_fraction={:.4f} cap={:.4f}",
             stage, scan_id + 1, iteration.fruit_iter, summary.candidate_records,
-            summary.matched_records, proposed_dets.size(),
+            summary.matched_records, ordinary_proposed_count,
             summary.newly_flagged_samples, summary.newly_flagged_fraction,
             summary.max_new_flagged_fraction);
     }
@@ -288,7 +334,7 @@ void Engine::apply_learned_detector_exclusions(tc_t &tcdata,
         logger->info(
             "learned {} applied scan {} iter {}: candidates={} matched={} dets={} newly_flagged={} already_flagged={} newly_flagged_fraction={:.4f}",
             stage, scan_id + 1, iteration.fruit_iter, summary.candidate_records,
-            summary.matched_records, proposed_dets.size(),
+            summary.matched_records, ordinary_proposed_count,
             summary.newly_flagged_samples, summary.already_flagged_samples,
             summary.newly_flagged_fraction);
     }

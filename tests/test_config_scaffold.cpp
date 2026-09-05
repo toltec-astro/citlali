@@ -4066,6 +4066,7 @@ timestream:
 
 TEST(config_scaffold, adapts_learning_request_one_way) {
     struct FakeOptions {
+        std::string fruit_response_arm = "disabled";
         bool enabled = false;
         bool diagnostics_enabled = false;
         int learn_iters = 0;

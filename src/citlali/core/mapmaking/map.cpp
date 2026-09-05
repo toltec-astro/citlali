@@ -76,6 +76,10 @@ MapBuffer::MapBuffer(std::string _n): name(_n) {}
 void MapBuffer::normalize_maps(const Eigen::Matrix<bool, Eigen::Dynamic, 1> *active_maps) {
     // vectors for maps
     const bool use_grid_weight = grid_weight.size() == signal.size();
+    if (fruit_response_ledger) {
+        if (!use_grid_weight) throw std::runtime_error("EL-F12 missing signed JINC denominator");
+        fruit_response_ledger->capture_totals(signal, grid_weight, weight);
+    }
     if (jinc_accounting.enabled()) {
         const auto i = jinc_accounting.map_index;
         if (!use_grid_weight || i < 0 ||

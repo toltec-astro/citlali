@@ -290,6 +290,8 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
     if (run_noise) {
         nmb = use_cmb ? &cmb : (use_omb ? &omb : nullptr);
     }
+    if (run_omb && omb.fruit_response_ledger)
+        omb.fruit_response_ledger->begin_scan(static_cast<int>(in.index.data));
     if (run_omb) {
         omb.ensure_contribution_diag(static_cast<Eigen::Index>(omb.signal.size()));
         if (omb.jinc_accounting.enabled()) {
@@ -454,6 +456,19 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                 continue;
             }
             Eigen::Index array_index = apt["array"](det_index);
+            const citlali::fruit::ResponseKey response_key{
+                omb.fruit_response_ledger ? omb.fruit_response_ledger->observation() : std::string{},
+                static_cast<int>(array_index), det_uid, static_cast<int>(in.index.data)};
+            const double response_multiplier = omb.fruit_response_state
+                ? omb.fruit_response_state->coefficient(response_key) : 1.0;
+            const double response_weight = i < in.weights.data.size()
+                ? (response_multiplier == 1.0 ? in.weights.data(i) : in.weights.data(i) * response_multiplier)
+                : std::numeric_limits<double>::quiet_NaN();
+            const double response_quadratic_weight = response_multiplier == 1.0 ? response_weight
+                : response_weight * response_multiplier;
+            bool response_map_application_recorded = false;
+            if (run_omb && omb.fruit_response_ledger)
+                omb.fruit_response_ledger->register_detector(det_uid, static_cast<int>(array_index));
             const bool use_subpix = (subpixel_n > 1) && (jinc_weights_mat_subpix.count(array_index) > 0);
             const auto *subpix_vec = use_subpix ? &jinc_weights_mat_subpix.at(array_index) : nullptr;
             const auto *subpix_sq_vec = use_subpix ? &jinc_weights_sq_mat_subpix.at(array_index) : nullptr;
@@ -604,10 +619,20 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
                             // populate signal map
                             const double weighted_signal =
-                                in.weights.data(i) * in.scans.data(j,i);
+                                response_weight * in.scans.data(j,i);
+                            if (omb.fruit_response_ledger) {
+                                omb.fruit_response_ledger->append(static_cast<int>(in.index.data), det_uid,
+                                    static_cast<int>(array_index), static_cast<int>(omb_ir), static_cast<int>(omb_ic),
+                                    subpix_idx, static_cast<std::int64_t>(j), weighted_signal, response_weight,
+                                    response_quadratic_weight, in.scans.data(j,i), response_multiplier);
+                                if (response_multiplier == 0.5 && !response_map_application_recorded) {
+                                    omb.fruit_response_state->mark_applied(response_key);
+                                    response_map_application_recorded = true;
+                                }
+                            }
                             sig_block += (mat_block * weighted_signal).eval();
                             if (omb.contribution_diag_enabled) {
-                                const double sample_weight = in.weights.data(i);
+                                const double sample_weight = response_weight;
                                 if (omb.contribution_diag_targeted &&
                                     map_index < static_cast<Eigen::Index>(omb.contribution_targets.size())) {
                                     const auto &targets =
@@ -629,7 +654,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                             map_index, target_row, target_col,
                                             mat_block(rr, cc) * weighted_signal,
                                             mat_block(rr, cc) * sample_weight,
-                                            mat_sq_block(rr, cc) * sample_weight,
+                                            mat_sq_block(rr, cc) * response_quadratic_weight,
                                             det_uid,
                                             static_cast<int>(in.index.data),
                                             static_cast<int>(j));
@@ -645,7 +670,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                                                 static_cast<Eigen::Index>(lower_col) + cc,
                                                 mat_block(rr, cc) * weighted_signal,
                                                 mat_block(rr, cc) * sample_weight,
-                                                mat_sq_block(rr, cc) * sample_weight,
+                                                mat_sq_block(rr, cc) * response_quadratic_weight,
                                                 det_uid,
                                                 static_cast<int>(in.index.data),
                                                 static_cast<int>(j));
@@ -655,10 +680,10 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             }
 
                             // memo-style gridding denominator
-                            grid_wt_block.array() += (mat_block.array() * in.weights.data(i));
+                            grid_wt_block.array() += (mat_block.array() * response_weight);
 
                             // variance accumulator for final inverse-variance weights
-                            wt_block.array() += (mat_sq_block.array() * in.weights.data(i));
+                            wt_block.array() += (mat_sq_block.array() * response_quadratic_weight);
 
                             if (omb.jinc_accounting.enabled() &&
                                 map_index == omb.jinc_accounting.map_index) {
@@ -686,7 +711,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
                             // populate kernel map
                             if (run_kernel) {
                                 auto ker_block = omb_copy.kernel[map_index].block(lower_row,lower_col,size_rows,size_cols);
-                                ker_block += mat_block*in.weights.data(i)*in.kernel.data(j,i);
+                                ker_block += mat_block*response_weight*in.kernel.data(j,i);
                             }
 
                             omb_bounds[static_cast<size_t>(map_index)].update(lower_row, upper_row, lower_col, upper_col);
@@ -748,7 +773,7 @@ void JincMapmaker::populate_maps_jinc(TCData<TCDataKind::PTC, Eigen::MatrixXd> &
 
                             const auto &jinc_mat = use_subpix ? subpix_vec->at(nmb_subpix_idx) : jinc_weights_mat[array_index];
                             const auto mat_block = jinc_mat.block(jinc_lower_row,jinc_lower_col,size_rows,size_cols);
-                            signal = in.scans.data(j,i)*in.weights.data(i);
+                            signal = in.scans.data(j,i)*response_weight;
 
                             if (direct_noise_accum) {
                                 std::scoped_lock<std::mutex> lk(*jinc_mutex);

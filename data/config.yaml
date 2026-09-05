@@ -161,6 +161,7 @@ timestream: # timestream reduction parameters
     value: 10.0 # either chunk length or number of chunks for lissajous/rastajous maps (ignored if raster map)
     chunk_mode: duration # how to subdivide chunks, either by time (duration) or number (number)
   learning: # shared RTC/PTC/mapmaking learning state for source-aware weighting and deglitching
+    fruit_response_arm: disabled # approved EL-F12 local development only: disabled, H, Half, Hold
     enabled: false # learn and apply shared RTC/PTC/mapmaking masks and detector exclusions across iterations
     diagnostics_enabled: true # retain bounded event history and write learning CSVs; disabling this does not disable operational learning
     learn_iters: 2 # initial iterations treated as learning passes before production application

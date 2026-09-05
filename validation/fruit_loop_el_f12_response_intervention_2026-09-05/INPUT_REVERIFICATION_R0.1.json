@@ -1,0 +1,474 @@
+{
+  "status": "pass",
+  "current": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F12_RESPONSE_AWARE_INTERVENTION_OWNER_REVIEW_R0.1.md",
+      "bytes": 5130,
+      "sha256": "356f88c802e8c0d17bb4ff77bbaf5463f3b1fd4a37c65194bb7b01af15dd7773",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F12_RESPONSE_AWARE_INTERVENTION_DESIGN_R0.1.md",
+      "bytes": 23036,
+      "sha256": "7504bdfc8492bc0aac8249cb0c4862d01a582e3a0325205244d0eb6b1d0570ec",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F12_CONTINUITY_AUDIT_2026-09-04.md",
+      "bytes": 3327,
+      "sha256": "64452e668282dbaeade463638e0a142595f0a19c83a35e04db5da2f5a72f2b51",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/doc/scientific_contracts/README.md",
+      "bytes": 16297,
+      "sha256": "351e9b7775b0bf78cba01bf4cd2fafd9591c4b43931b0dc23d82d97f0dfe82d2",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/ACCEPTED_INPUT_BINDINGS_R0.1.md",
+      "bytes": 3200,
+      "sha256": "6dcd4d2a047923473c4ac49a3eee08dc2c6ca10bf3f9a92700cb05de8fcb1675",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EMPIRICAL_LANE_GATE_ARCHITECTURE_R0.1.md",
+      "bytes": 3696,
+      "sha256": "756e85b3e20d558bbb85ab338936828ffa97e1e674f2cd2a2a67bdd6396c9b69",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_G0_GATE_D_READINESS_R0.2.md",
+      "bytes": 3680,
+      "sha256": "955b7ebd354ebec18614ed99e70d469ffc3809c52c422ddeb525a346d31e1b38",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_ROUTINE_DEFECT_REPAIR_DIRECTION_2026-09-04.md",
+      "bytes": 1797,
+      "sha256": "0d0596ec42c857fde6048b481bfff97d79aa3abac7de5798d72cc73773a860fa",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_RESPONSE_MEASUREMENT_FRAME_R0.1.md",
+      "bytes": 5069,
+      "sha256": "8ec17afb47ee2a1228f675e6a476f69af40075c2c05ff563de0bdac5b8ab9809",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F10_JINC_ACCOUNTING_DESIGN_R0.1.md",
+      "bytes": 8449,
+      "sha256": "bfb91544558ee7631729def81698d218cab173bc2c764bf49081186bdaa8ec74",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f11_prospective_influence_2026-09-04/SCIENTIFIC_INTERPRETATION_R0.5.md",
+      "bytes": 3742,
+      "sha256": "6b4dfb6e70789ef7fff5192a61f4aea56f6dfb1b9bbb477e2166c141af798e07",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f11_prospective_influence_2026-09-04/RESULT_MANIFEST_R0.5.md",
+      "bytes": 2806,
+      "sha256": "5902e4417e81f6998c687417128e7bc6911fdcbad34fea2e5a45350e5e13eaaf",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f11_prospective_influence_2026-09-04/REGISTRATION_R0.4.yaml",
+      "bytes": 17433,
+      "sha256": "7e0ded9b04a6d1026b3abd3ad0bc7ceb10f6ea8683942cadc829ebe5ac52a707",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f2_early_stop_2026-09-02/INPUT_INVENTORY_R0.1.md",
+      "bytes": 3789,
+      "sha256": "008592874d01862bfbdb5c56eb9376d845530de07d78816715aab1748a7d8f01",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f2_early_stop_2026-09-02/TEXT_FITREPORT_INPUT_INVENTORY_R0.3.md",
+      "bytes": 2953,
+      "sha256": "05482036cfbab88e92df14bcfd9f4fcda1c73d91acf339bae1ceb327d8003f2d",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f2_early_stop_2026-09-02/FROZEN_INPUTS_R0.3.md",
+      "bytes": 3351,
+      "sha256": "9856817bd8134f0814d8b66888877d888a2362da65db1802a65e78ce9ccb4659",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f2_early_stop_2026-09-02/INPUTS_LOCAL.yaml",
+      "bytes": 2975,
+      "sha256": "d79e22e1fdfdc67e9235829f1fc2b904a82894c4fbfc10fbfa7b713409b9bc02",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f2_early_stop_2026-09-02/COMMON_LOCAL.yaml",
+      "bytes": 356,
+      "sha256": "716c952133ee37b51d8ca4edb783741279aa8f9117149810ab94f987c5d4e269",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f2_early_stop_2026-09-02/FITREPORTS_LOCAL_R0.3.yaml",
+      "bytes": 119,
+      "sha256": "df63463a1a3e83ed5dc2969525b9600c60d88b3226f79af82fda6cba4750d629",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f2_early_stop_2026-09-02/ALPHA_1P00_CONTROL.yaml",
+      "bytes": 549,
+      "sha256": "c5fc9f5c4ea86de468a0e939e07b6d60d91ec40dd50cae6a67d858983906e3a7",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f5_off_source_injection_2026-09-03/TEST_DEFINITION.md",
+      "bytes": 6174,
+      "sha256": "15ed6dbfac6232828752a693f7e522a8a7d8031297747b55cbaee608b007790e",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_point_123424_el_f5_off_source_injection_2026-09-03/ANALYSIS_MANIFEST_R0.1.yaml",
+      "bytes": 1720,
+      "sha256": "a9e24373d5ce3223bdf34835a3369d2c69ca5fd09e1b9d212d487d6cb2513227",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/analyze_jinc_accounting.py",
+      "bytes": 27551,
+      "sha256": "dc47a0cd61320b7afccd4a3233305046d3c82e3f6ea08a1015c7a32e259acb93",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/analyze_off_source_injection.py",
+      "bytes": 27780,
+      "sha256": "0917fe4ff90836983385dd5cce796e8508368346cb1062dec127fa100b19b30e",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/compare_injected_source_pair.py",
+      "bytes": 32050,
+      "sha256": "de641f021e8a3861cb379a96bb7482b50da45688facd5a0302a3ab53fbf9c347",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/source_morphology.py",
+      "bytes": 7185,
+      "sha256": "293a53c33bda1fa0c9231180ee2fb8fc07e22bd6103b7414b2d8caffa3c00216",
+      "role": "approved_member",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec0_123424_000_0002_2024_11_27_04_09_50.nc",
+      "bytes": 38202904,
+      "sha256": "c555414fc281cc39b33bd46783e15bce2e8ac22c20775135308a419a11ddf6e6",
+      "role": "external_science_input",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec1_123424_000_0002_2024_11_27_04_09_50.nc",
+      "bytes": 29596424,
+      "sha256": "89689337f32981488306801317401e201c54552bc37d1c4a57d4e0d77e89738b",
+      "role": "external_science_input",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec2_123424_000_0002_2024_11_27_04_09_50.nc",
+      "bytes": 31704576,
+      "sha256": "36e6a1e91cbb5258b1a958b6ee1d4446dc6f6b08fdc1432d021c78f44f6f914a",
+      "role": "external_science_input",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec3_123424_000_0002_2024_11_27_04_09_50.nc",
+      "bytes": 32245608,
+      "sha256": "7494f28d5b5e1ae90aacc264c84ddfff4f20182edec9f76b3a7facec0dfbf2bc",
+      "role": "external_science_input",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec4_123424_000_0002_2024_11_27_04_09_50.nc",
+      "bytes": 25634040,
+      "sha256": "4bb26e04f6eea19116594bb5bfb108696e65d67e686e84c226dab5e214d4b7b4",
+      "role": "external_science_input",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec5_123424_000_0002_2024_11_27_04_09_50.nc",
+      "bytes": 29415944,
+      "sha256": "35909a256b46658e86a64954e0fc5f324e907aaaef0157da76f5974fd37573e4",
+      "role": "external_science_input",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec6_123424_000_0002_2024_11_27_04_09_50.nc",
+      "bytes": 34229904,
+      "sha256": "f625e0606b9359913d73537f64b537ae51fce5e696dee049137f9c2428cbc843",
+      "role": "external_science_input",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec7_123424_000_0002_2024_11_27_04_09_50.nc",
+      "bytes": 25034920,
+      "sha256": "96b900a25d94528014326c50ca021264240e7115314ac02865a1bebc3dae7a1b",
+      "role": "external_science_input",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec8_123424_000_0002_2024_11_27_04_09_50.nc",
+      "bytes": 27313832,
+      "sha256": "d054d4cf8391ef2c44a83bbf5be0cb529d61de09ca06e4ab3d5998310b31c7a8",
+      "role": "external_science_input",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec9_123424_000_0002_2024_11_27_04_09_50.nc",
+      "bytes": 25634584,
+      "sha256": "a841df1dbd7d9ffa7f8de1c4ae4a9d2c4de81286e7bcb2b76bd094fbbd63cf0b",
+      "role": "external_science_input",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec11_123424_000_0002_2024_11_27_04_09_50.nc",
+      "bytes": 29116008,
+      "sha256": "82f5c626d272daacd4116c1a5b0712108bd950ab5fd7e9c6a900f5da5d898b89",
+      "role": "external_science_input",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/input/raw/toltec12_123424_000_0002_2024_11_27_04_09_50.nc",
+      "bytes": 30744032,
+      "sha256": "1ad4b9a875e011a5fdd8522c9549c70f6e5424986d9e72cb3fbbdaf53777c3cd",
+      "role": "external_science_input",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/apts/hero_rc1/apt_123424_matched.ecsv",
+      "bytes": 6207815,
+      "sha256": "16389e5e58b76d39ef7fcedd3888c662e96db592bc3a8561530379e51c435626",
+      "role": "external_science_input",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/2026-ENG-hero-multiyear-pointings-v1/pointings_rc1/reduced/tel_toltec_2024-11-27_123424_00_0002_recomputed.nc",
+      "bytes": 1226332,
+      "sha256": "bfb95deda33e8f5a3e86a0990db2698bddb9ed7c39c6284733900d91fd99defe",
+      "role": "external_science_input",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/point-123424/fruit-injection-development/el-f2-early-stop-r0.1/alpha-1.00/control/reduced/redu00/BASE_POINT_123424.yaml",
+      "bytes": 16258,
+      "sha256": "f710d1c172b5655b136ef4d8ebbff918083d37cb4974036c7af8725978d51491",
+      "role": "external_science_input",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/tone-match-lab/c2025t_tune_text/beammaps/data/toltec0_123424_000_0001_2024_11_27_04_08_30_tune.txt",
+      "bytes": 130398,
+      "sha256": "b7e901b45849ab40de208e44e4758d7a166d32cc6529afd99bcec87b95dd4550",
+      "role": "external_fitreport",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/tone-match-lab/c2025t_tune_text/beammaps/data/toltec1_123424_000_0001_2024_11_27_04_08_30_tune.txt",
+      "bytes": 101199,
+      "sha256": "4351a10f53b140a3fbbc44b87da351a86c4176f5a69e2a7bae7a2192af4771c3",
+      "role": "external_fitreport",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/tone-match-lab/c2025t_tune_text/beammaps/data/toltec2_123424_000_0001_2024_11_27_04_08_30_tune.txt",
+      "bytes": 108204,
+      "sha256": "61f56bf0985a3542bc5e09e314e12018f4547dd0c1b4edbae7de41e88a619004",
+      "role": "external_fitreport",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/tone-match-lab/c2025t_tune_text/beammaps/data/toltec3_123424_000_0001_2024_11_27_04_08_30_tune.txt",
+      "bytes": 109708,
+      "sha256": "4a4aea2d1420f285e6c439b53ccc06f5d4c000d928511057e5131d0be16e897a",
+      "role": "external_fitreport",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/tone-match-lab/c2025t_tune_text/beammaps/data/toltec4_123424_000_0001_2024_11_27_04_08_30_tune.txt",
+      "bytes": 87220,
+      "sha256": "790fb017e3ab62638ad30acd1752ccc5db884448c7f8fe3440fcfb9265b5c3ca",
+      "role": "external_fitreport",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/tone-match-lab/c2025t_tune_text/beammaps/data/toltec5_123424_000_0001_2024_11_27_04_08_30_tune.txt",
+      "bytes": 100145,
+      "sha256": "240023e8cf5214529fd173a9b56f93f4a804eb78114f33d50475c5bd4c880261",
+      "role": "external_fitreport",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/tone-match-lab/c2025t_tune_text/beammaps/data/toltec6_123424_000_0001_2024_11_27_04_08_30_tune.txt",
+      "bytes": 115504,
+      "sha256": "b0f41d5e6e0010983ea5107d0f284847e9373166c671e0e110e500b0d89c3368",
+      "role": "external_fitreport",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/tone-match-lab/c2025t_tune_text/beammaps/data/toltec7_123424_000_0001_2024_11_27_04_08_30_tune.txt",
+      "bytes": 84975,
+      "sha256": "023f7bc923dada4cae32ee62b640433eb10968602da97b1c4304d13b11952984",
+      "role": "external_fitreport",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/tone-match-lab/c2025t_tune_text/beammaps/data/toltec8_123424_000_0001_2024_11_27_04_08_30_tune.txt",
+      "bytes": 93155,
+      "sha256": "d0c01cbbf4daec7d6cf5ccb1ca89d11135040e1bf6239b2cb95506f3f8fdb615",
+      "role": "external_fitreport",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/tone-match-lab/c2025t_tune_text/beammaps/data/toltec9_123424_000_0001_2024_11_27_04_08_30_tune.txt",
+      "bytes": 85673,
+      "sha256": "2924ea377f92d91bb4b49644bfeb3dafb5ebfc7156cd6c5d13dfad0efb5c508f",
+      "role": "external_fitreport",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/tone-match-lab/c2025t_tune_text/beammaps/data/toltec11_123424_000_0001_2024_11_27_04_08_30_tune.txt",
+      "bytes": 99347,
+      "sha256": "869dcbee034587706eca8795276e0f9c981fa4b0bd2d5a9113cf3017e2314833",
+      "role": "external_fitreport",
+      "pass": true
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/tone-match-lab/c2025t_tune_text/beammaps/data/toltec12_123424_000_0001_2024_11_27_04_08_30_tune.txt",
+      "bytes": 104644,
+      "sha256": "3268a6da23370136bb26b25f9820fd09573a9adb1bdde82e402c89bd76ee51c0",
+      "role": "external_fitreport",
+      "pass": true
+    }
+  ],
+  "preserved_archives": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review.tar.gz",
+      "bytes": 28617,
+      "sha256": "5f11836908aa6aeb4f51690209a32dc6e8d4cee4e6b9c223903c6c57033b9b22"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/SCI-FRUIT-v0.1-empirical-lane-gate-0-r0.1-owner-review.tar.gz",
+      "bytes": 11602,
+      "sha256": "761ba278a53e32ad1d5d3977230cc4f1f90f257056b547508342797f584167ed"
+    }
+  ],
+  "approved_cap_predecessor": [
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F12_TWO_STAGE_CAP_OWNER_REVIEW_R0.1.md",
+      "bytes": 5736,
+      "sha256": "e34ccc2334eee19b1fe2a816c0fc29cdd5e67a4db32c8d1e47873f9b3823c752",
+      "verified_ref": "7327e642e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_EL_F12_AUTHORIZATION_2026-09-04.md",
+      "bytes": 1447,
+      "sha256": "b567435eb39661269db061815839725afa484d4d3ea852b040e32022bf2d9fc0",
+      "verified_ref": "7327e642e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F12_BUNDLE_MANIFEST_R0.1.md",
+      "bytes": 7610,
+      "sha256": "a587db8af538856ce5bd966727b20a55369a12f335105657f3bf3069dc6a021f",
+      "verified_ref": "7327e642e"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F12_RESPONSE_AWARE_INTERVENTION_DESIGN_R0.1.md",
+      "bytes": 23036,
+      "sha256": "7504bdfc8492bc0aac8249cb0c4862d01a582e3a0325205244d0eb6b1d0570ec",
+      "verified_ref": "7327e642e"
+    },
+    {
+      "path": "validation/fruit_loop_el_f12_preimplementation_2026-09-04/CAP_BOUNDARY_TEST_RESULT_R0.1.md",
+      "bytes": 3862,
+      "sha256": "69708063eb75d8836c108efe8ca12580103fd5376ae1c85879895ee160e8416d",
+      "verified_ref": "7327e642e"
+    },
+    {
+      "path": "validation/fruit_loop_el_f12_preimplementation_2026-09-04/INPUT_IDENTITY_PREFLIGHT_R0.1.json",
+      "bytes": 25969,
+      "sha256": "07e80afe91b1fe220e22699684b8e3e1cae4e7bb68b2c334434276c925a73802",
+      "verified_ref": "7327e642e"
+    },
+    {
+      "path": "validation/fruit_loop_el_f12_preimplementation_2026-09-04/cap_boundary_build_r0.1.log",
+      "bytes": 896,
+      "sha256": "259a77c2e2371173a183e23213e62e72acaf34bfbde097a2911be2569cc80a03",
+      "verified_ref": "7327e642e"
+    },
+    {
+      "path": "validation/fruit_loop_el_f12_preimplementation_2026-09-04/cap_boundary_ctest_r0.1.log",
+      "bytes": 2527,
+      "sha256": "a0bf0fbb4eec05994edb3b8f95255206391dc48aff26427270d40a51e2e71a59",
+      "verified_ref": "7327e642e"
+    },
+    {
+      "path": "tests/test_learning_target_application.cpp",
+      "bytes": 13279,
+      "sha256": "1e702600e2084e8131bc92ce1adb9b6964a2b40549821da78a361bdd662f779e",
+      "verified_ref": "7327e642e"
+    },
+    {
+      "path": "tests/CMakeLists.txt",
+      "bytes": 5677,
+      "sha256": "9f7d282a8239ce2e1e67d6f307455e63ac30feaaf7a8e52f36fc3ad50575be3f",
+      "verified_ref": "7327e642e"
+    },
+    {
+      "path": "include/citlali/core/engine/detail/learning_detector_exclusion_apply_impl.h",
+      "bytes": 12461,
+      "sha256": "c848a62be82bd5329c8fca3d5241d8cbc50831158ea31dbcdd4bc22798a7acb5",
+      "verified_ref": "7327e642e"
+    },
+    {
+      "path": "include/citlali/core/engine/detail/learning_detector_apply_impl.h",
+      "bytes": 1825,
+      "sha256": "a658f1ed9d1878445c2d8a0735925f53c5b782bb3ce31c1b5b64f4dae236f11c",
+      "verified_ref": "7327e642e"
+    },
+    {
+      "path": "include/citlali/core/pipeline/learning_detector_exclusion_stage.h",
+      "bytes": 861,
+      "sha256": "11aba40af84689ec6af9ae88714f2d6f69d1432d49875703f89ff72114567cf6",
+      "verified_ref": "7327e642e"
+    },
+    {
+      "path": "include/citlali/core/engine/detail/pointing_run_impl.h",
+      "bytes": 7821,
+      "sha256": "68fdea619ea94b127f11fd45934932f3fc3506f1a8594a09ad5e4489b8d7be2f",
+      "verified_ref": "7327e642e"
+    }
+  ]
+}

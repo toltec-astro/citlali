@@ -6,6 +6,7 @@
 #include <citlali/core/engine/detail/mapdiag_observation_contribution.h>
 #include <citlali/core/pipeline/mapdiag_workspace.h>
 #include <citlali/core/pipeline/jinc_accounting_output.h>
+#include <citlali/core/pipeline/fruit_response_hooks.h>
 #include <citlali/core/pipeline/reduction_config_accessors.h>
 
 template <mapmaking::MapType map_t, class map_buffer_t>
@@ -139,5 +140,6 @@ void Engine::write_mapdiag(map_buffer_t &mb, std::string dir_name) {
         });
     if constexpr (map_t == mapmaking::RawObs) {
         citlali::pipeline::write_jinc_accounting_receipt(*mb, filename);
+        citlali::pipeline::finalize_observation_fruit_response(*this, *mb, filename);
     }
 }

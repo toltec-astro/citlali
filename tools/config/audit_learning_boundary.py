@@ -21,6 +21,11 @@ EXPECTED_SCHEMA = "citlali-frozen-learning-config-paths-v1"
 EXPECTED_DIGEST = "8dc863875274f51fbdade4fb2f5188f4391733da99f997a77d1318046d334f9a"
 
 
+# Owner-approved EL-F12 adds one default-disabled field; the historical
+# thirty-field manifest and digest remain exact and independently checked.
+EL_F12_PATH = "timestream.learning.fruit_response_arm"
+
+
 def digest(paths: list[str]) -> str:
     return hashlib.sha256("\n".join(paths).encode()).hexdigest()
 
@@ -38,6 +43,7 @@ def tuple_paths(source: str) -> list[str]:
 def audit(repo_root: Path) -> dict[str, object]:
     manifest = json.loads((repo_root / MANIFEST_SOURCE).read_text())
     paths = manifest.get("paths", [])
+    active_paths = sorted([*paths, EL_F12_PATH])
     leaf_contract = json.loads((repo_root / LEAF_CONTRACT_SOURCE).read_text())
     contract_paths = sorted(
         row["path"]
@@ -52,7 +58,7 @@ def audit(repo_root: Path) -> dict[str, object]:
     reader_paths = tuple_paths(reader)
     adapter_members = set(re.findall(r"options\.([A-Za-z0-9_]+)", adapter))
     serialized_names = set(re.findall(r'node\["([A-Za-z0-9_]+)"\]', serialization))
-    expected_names = {path.rsplit(".", 1)[-1] for path in paths}
+    expected_names = {path.rsplit(".", 1)[-1] for path in active_paths}
 
     checks = {
         "manifest_exact": bool(
@@ -61,10 +67,10 @@ def audit(repo_root: Path) -> dict[str, object]:
             and paths == sorted(set(paths))
             and digest(paths) == manifest.get("path_sha256") == EXPECTED_DIGEST
         ),
-        "leaf_contract_exact": contract_paths == paths,
-        "typed_reader_exact": reader_paths == paths
+        "leaf_contract_exact": contract_paths == active_paths,
+        "typed_reader_exact": reader_paths == active_paths
         and "read_optional_mirrored_config_value" not in reader,
-        "one_way_adapter_exact": len(adapter_members) == 30
+        "one_way_adapter_exact": adapter_members == expected_names
         and "adapt_learning_config_one_way" in adapter
         and "make_learning_options" in adapter,
         "boundary_exact": boundary.count("read_learning_config(") == 1

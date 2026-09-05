@@ -1212,3 +1212,74 @@ TEST(LearningHousekeepingQa, WritesRequiredSidecarFromExplicitInput) {
 }
 
 }  // namespace
+
+
+TEST(ReductionRestartCheckpoint, FruitResponseActiveAssignmentsRoundTripAndContinueExactly) {
+    using namespace citlali::fruit;
+    RestartCheckpointDirectory directory;
+    auto config = restart_learning_config();
+    config.fruit_response_arm = "Half";
+    auto original = restart_learning_state(config);
+    ResponseCandidate candidate;
+    candidate.key = {"152390", 0, 500, 4};
+    candidate.response.ratio = 2;
+    candidate.response.footprint = candidate.response.conditioned = 1;
+    original.begin_iteration(0, false, "pointing");
+    original.fruit_response.resolve({candidate}, {{0, candidate.response}});
+    original.finalize_iteration(0);
+    auto advance = [&](ReductionLearningState &state, int iteration) {
+        state.begin_iteration(iteration, true, "pointing");
+        if (iteration >= 2) {
+            state.fruit_response.record_stage(candidate.key, 0, 3, .03, .02);
+            state.fruit_response.record_stage(candidate.key, 1, 4, .01, .02, true, false, 12);
+        }
+        state.fruit_response.resolve({}, {});
+        state.finalize_iteration(iteration);
+    };
+    for (int iteration = 1; iteration <= 3; ++iteration) advance(original, iteration);
+    const auto processed = restart_processed_config();
+    const auto weights = restart_weight_validation_state();
+    citlali::pipeline::write_reduction_restart_checkpoint(
+        directory.path, 3, "obsnum/raw", {"152390"}, config, processed, original, weights);
+    auto restored = restart_learning_state(config);
+    citlali::pipeline::WeightValidationRestartState restored_weights;
+    citlali::pipeline::load_reduction_restart_checkpoint(
+        directory.path, "obsnum/raw", {"152390"}, config, processed, restored, restored_weights);
+    EXPECT_EQ(original.fruit_response.serialize(), restored.fruit_response.serialize());
+    EXPECT_EQ(restored.fruit_response.first_applications().at(candidate.key), 2);
+    EXPECT_EQ(restored.fruit_response.coefficient(candidate.key), .5);
+    for (int iteration = 4; iteration <= 6; ++iteration) {
+        advance(original, iteration);
+        advance(restored, iteration);
+        EXPECT_EQ(original.fruit_response.serialize(), restored.fruit_response.serialize());
+    }
+    EXPECT_THROW(restored.begin_iteration(7, true, "pointing"), std::runtime_error);
+}
+
+TEST(ReductionRestartCheckpoint, FruitResponseMissingStateRejectsBeforeMutatingLearning) {
+    RestartCheckpointDirectory directory;
+    auto config = restart_learning_config();
+    config.fruit_response_arm = "Half";
+    auto original = restart_learning_state(config);
+    original.begin_iteration(0, false, "pointing");
+    original.fruit_response.resolve({}, {});
+    original.finalize_iteration(0);
+    const auto processed = restart_processed_config();
+    const auto weights = restart_weight_validation_state();
+    citlali::pipeline::write_reduction_restart_checkpoint(
+        directory.path, 0, "obsnum/raw", {"152390"}, config, processed, original, weights);
+    {
+        netCDF::NcFile file(citlali::pipeline::reduction_restart_checkpoint_path(directory.path).string(),
+                            netCDF::NcFile::write);
+        file.getVar("fruit_response_state").rename("missing_response_state");
+    }
+    auto restored = restart_learning_state(config);
+    restored.record_learned_sample_mask(sample_mask("152390", 900, 1, 2));
+    const auto count = restored.effective_sample_mask_interval_count();
+    citlali::pipeline::WeightValidationRestartState restored_weights;
+    EXPECT_THROW(citlali::pipeline::load_reduction_restart_checkpoint(
+        directory.path, "obsnum/raw", {"152390"}, config, processed, restored, restored_weights),
+        std::runtime_error);
+    EXPECT_EQ(restored.effective_sample_mask_interval_count(), count);
+    EXPECT_EQ(restored.fruit_response.iteration(), -1);
+}

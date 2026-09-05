@@ -1,6 +1,7 @@
 #pragma once
 
 #include <citlali/core/pipeline/observation_buffer_policy.h>
+#include <citlali/core/pipeline/fruit_response_hooks.h>
 
 namespace citlali::pipeline {
 
@@ -41,6 +42,7 @@ void allocate_observation_map_buffers(TodProc &todproc,
         todproc, map_extent, map_coord, logger);
     configure_observation_pixel_contribution_targets(engine);
     configure_observation_jinc_accounting(engine);
+    configure_observation_fruit_response(engine);
 
     if (should_allocate_observation_noise_maps(engine)) {
         allocate_observation_noise_map_buffer(todproc, logger);

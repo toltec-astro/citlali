@@ -344,4 +344,151 @@ TEST(LearningTargetApplication, HistoricalCapAcceptsItsExactBoundary) {
     EXPECT_FALSE(rtc.flags.data.rightCols(98).any());
 }
 
+
+
+TEST(LearningTargetApplication, FruitResponseNativeCapPrecedence) {
+    using namespace citlali::fruit;
+    for (const std::string arm : {"H", "Half", "Hold"}) {
+        for (const bool independent : {false, true}) {
+            SCOPED_TRACE(arm + (independent ? ":independent" : ":map-only"));
+            auto engine = synthetic_cap_engine(3);
+            const ResponseKey key{"synthetic-cap-boundary", 0, 1002, 0};
+            if (independent) {
+                ReductionLearningState::DetectorPenalty penalty;
+                penalty.obsnum = key.observation;
+                penalty.producer = "ptc_second_pass";
+                penalty.reason = "busy_vetoed_residual";
+                penalty.iter = 0; penalty.scan = 0; penalty.uid = 1002;
+                penalty.nw = 0; penalty.array = 0; penalty.factor = 0;
+                penalty.scan_local = true;
+                engine.learning.record_detector_penalty(penalty, true);
+            }
+            auto &state = engine.learning.fruit_response;
+            state.configure(arm);
+            state.begin(0, false);
+            ResponseCandidate proposal;
+            proposal.key = key;
+            proposal.response.ratio = 2;
+            proposal.response.footprint = proposal.response.conditioned = 1;
+            state.resolve({proposal}, {{0, proposal.response}});
+            state.begin(1, true);
+            auto raw_calibration = synthetic_cap_calibration(0);
+            auto rtc = synthetic_cap_chunk(10, 100);
+            engine.apply_learned_rtc_sample_masks(rtc, raw_calibration);
+            EXPECT_FALSE(rtc.flags.data.any());
+            EXPECT_EQ(state.receipts().at(key)[0].status, 3);
+            auto processed_calibration = synthetic_cap_calibration(2);
+            auto ptc = synthetic_cap_chunk(5, 98);
+            engine.apply_learned_ptc_detector_exclusions(ptc, processed_calibration);
+            const bool hard = arm == "H" || independent;
+            EXPECT_EQ(ptc.flags.data.col(0).all(), hard);
+            EXPECT_EQ(processed_calibration.apt.at("flag")(0), hard ? 1 : 0);
+            EXPECT_FALSE(ptc.flags.data.rightCols(97).any());
+            EXPECT_EQ(state.receipts().at(key)[1].status, 4);
+            EXPECT_EQ(state.receipts().at(key)[1].suppressed, !hard);
+            EXPECT_EQ(state.receipts().at(key)[1].independent_reason, independent);
+            EXPECT_EQ(state.coefficient(key), arm == "Half" ? 0.5 : 1.0);
+            EXPECT_EQ(state.first_applications().at(key), hard && arm != "H" ? -1 : 1);
+        }
+    }
+}
+
+TEST(LearningTargetApplication, FruitResponseNativeJincHalfPropagatesEveryCoefficient) {
+    using namespace citlali::fruit;
+    const auto directory = std::filesystem::path(testing::TempDir()) /
+        ("fruit-native-jinc-" + std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()));
+    std::filesystem::create_directory(directory);
+    struct Cleanup {
+        std::filesystem::path path;
+        ~Cleanup() { std::filesystem::remove_all(path); }
+    } cleanup{directory};
+    for (const double input_weight : {1.0, 0.731}) for (const bool clip : {false, true}) {
+        mapmaking::JincMapmaker maker;
+        maker.run_polarization = false;
+        maker.parallel_policy = "seq";
+        maker.subpixel_n = 2;
+        Eigen::MatrixXd base(3, 3);
+        base << 0, -0.25, 0, -0.25, 1, -0.25, 0, -0.25, 0;
+        maker.jinc_weights_mat[0] = base;
+        maker.jinc_weights_sq_mat[0] = base.array().square().matrix();
+        for (int i = 0; i < 4; ++i) {
+            maker.jinc_weights_mat_subpix[0].push_back(base * (i + 1));
+            maker.jinc_weights_sq_mat_subpix[0].push_back((base * (i + 1)).array().square().matrix());
+        }
+        timestream::TCData<timestream::TCDataKind::PTC, Eigen::MatrixXd> data;
+        data.index.data = 0;
+        data.scans.data.resize(1, 2); data.scans.data << 20, 0;
+        data.kernel.data.resize(1, 2); data.kernel.data << 2, 3;
+        data.weights.data = Eigen::VectorXd::Constant(2, input_weight);
+        data.flags.data.resize(1, 2); data.flags.data.setConstant(false);
+        data.noise.data.resize(1, 2); data.noise.data << 1, -1;
+        data.tel_data.data["TelElAct"] = Eigen::VectorXd::Zero(1);
+        data.tel_data.data["alt_phys"] = Eigen::VectorXd::Constant(1, (clip ? -0.8 : 0.2) * 1e-5);
+        data.tel_data.data["az_phys"] = Eigen::VectorXd::Constant(1, (clip ? -1.2 : -0.2) * 1e-5);
+        data.pointing_offsets_arcsec.data["az"] = Eigen::VectorXd::Zero(1);
+        data.pointing_offsets_arcsec.data["alt"] = Eigen::VectorXd::Zero(1);
+        std::map<std::string, Eigen::VectorXd> apt;
+        for (const auto *name : {"array", "flag", "x_t", "y_t"}) apt[name] = Eigen::VectorXd::Zero(2);
+        apt["uid"] = Eigen::VectorXd(2); apt["uid"] << 1000, 1001;
+        Eigen::VectorXi indices = Eigen::VectorXi::Zero(2);
+        std::string axes = "altaz";
+        auto make_buffer = [] {
+            mapmaking::MapBuffer buffer;
+            buffer.n_rows = buffer.n_cols = 3;
+            buffer.pixel_size_rad = 1e-5;
+            buffer.map_grouping = "array";
+            buffer.parallel_policy = "seq";
+            buffer.sig_unit = "mJy/beam";
+            buffer.cov_cut = 0;
+            buffer.signal = buffer.grid_weight = buffer.weight = buffer.kernel = buffer.coverage =
+                std::vector<Eigen::MatrixXd>{Eigen::MatrixXd::Zero(3, 3)};
+            buffer.n_noise = 1;
+            buffer.randomize_dets = true;
+            buffer.noise.emplace_back(3, 3, 1); buffer.noise.back().setZero();
+            return buffer;
+        };
+        auto control = make_buffer(), half = make_buffer();
+        mapmaking::MapBuffer coadd;
+        ResponseInterventionState state;
+        state.configure("Half"); state.begin(0, false);
+        ResponseCandidate proposal;
+        proposal.key = {"synthetic", 0, 1000, 0};
+        proposal.response.ratio = 2;
+        proposal.response.footprint = proposal.response.conditioned = 1;
+        state.resolve({proposal}, {{0, proposal.response}});
+        state.begin(1, true);
+        state.record_stage(proposal.key, 0, 4, 0.01, 0.02);
+        state.record_stage(proposal.key, 1, 4, 0.01, 0.02);
+        ResponseOccurrenceLedger::KernelBank kernels{{0, maker.jinc_weights_mat_subpix.at(0)}};
+        ResponseOccurrenceLedger::KernelBank squares{{0, maker.jinc_weights_sq_mat_subpix.at(0)}};
+        half.fruit_response_state = &state;
+        half.fruit_response_ledger = std::make_shared<ResponseOccurrenceLedger>(
+            directory / ((clip ? "clip-" : "center-") + std::to_string(input_weight) + ".bin"), "synthetic", 1, 3, 3,
+            std::vector<int>{0}, kernels, squares);
+        maker.populate_maps_jinc(data, control, coadd, indices, axes, apt, 2.0, true, false);
+        maker.populate_maps_jinc(data, half, coadd, indices, axes, apt, 2.0, true, false);
+        EXPECT_TRUE((half.signal[0].array() == control.signal[0].array() * 0.5).all());
+        EXPECT_TRUE(half.grid_weight[0].isApprox(control.grid_weight[0] * 0.75, 64 * std::numeric_limits<double>::epsilon()));
+        EXPECT_TRUE(half.weight[0].isApprox(control.weight[0] * 0.625, 64 * std::numeric_limits<double>::epsilon()));
+        EXPECT_TRUE(half.kernel[0].isApprox(control.kernel[0] * 0.8, 64 * std::numeric_limits<double>::epsilon()));
+        EXPECT_TRUE((half.coverage[0].array() == control.coverage[0].array()).all());
+        EXPECT_EQ(half.fruit_response_ledger->occurrence_count(), 2U);
+        // A separate diagnostic noise pass uses the same multiplier but adds
+        // no second science occurrence or duplicate scan boundary.
+        maker.populate_maps_jinc(data, control, coadd, indices, axes, apt, 2.0, false, true);
+        maker.populate_maps_jinc(data, half, coadd, indices, axes, apt, 2.0, false, true);
+        EXPECT_EQ(half.fruit_response_ledger->occurrence_count(), 2U);
+        for (Eigen::Index i = 0; i < half.noise[0].size(); ++i)
+            EXPECT_DOUBLE_EQ(half.noise[0].data()[i], control.noise[0].data()[i] * 0.5);
+        control.normalize_maps(); half.normalize_maps();
+        const Eigen::Index center = clip ? 0 : 1;
+        EXPECT_DOUBLE_EQ(control.signal[0](center, center), 10.0);
+        EXPECT_DOUBLE_EQ(half.signal[0](center, center), 10.0 / 1.5);
+        EXPECT_DOUBLE_EQ(control.weight[0](center, center), 2.0 * input_weight);
+        EXPECT_DOUBLE_EQ(half.weight[0](center, center), 1.8 * input_weight);
+        half.fruit_response_ledger->finish(state, {}, half.signal, half.weight, half.weight, 0.0);
+        EXPECT_EQ(state.first_applications().at(proposal.key), 1);
+    }
+}
+
 }  // namespace
