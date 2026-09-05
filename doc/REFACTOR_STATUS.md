@@ -1,5 +1,35 @@
 # Citlali Refactor Status
 
+## 2026-09-05 Map-Space Source-Study Acceptance
+
+Grant Wilson accepted exact independently reviewed source study
+`f36cb788dc1ce99dad9c30bcd4442dc8bfbf681e`, tree
+`c12a3cb915cd900331661fc1f9e3fdf2899a197c`, under **CTI-OD-001** and
+directed the manager to proceed. The accepted study classifies 17 products
+and 32 edges at exact inspected application base
+`9f42d348298d76c5d5145aaf0c3eace1f3e154c1`. It establishes zero complete
+conformant end-to-end frozen map-space routes; useful predecessor behavior
+remains. This is source-study acceptance, not an operational failure or a
+runtime-validation result.
+
+The [owner acceptance and integration route](scientific_contracts/acceptance/MAP_SPACE_CONFORMANCE_001_2026-09-05/README.md)
+preserves all 13 reviewed packet files and both documentation histories. The
+route joins canonical handoff `ae953ed4d87d1f693d2bbf42aebbc25ef730c771`
+and the exact accepted study through one independently reviewed merge, with
+only eight additional manager/evidence paths. Canonical advancement requires
+that exact integration review and a clean unchanged base; the owner holds
+the GitHub push.
+
+CTI-OD-001 is accepted/closed; CTI-OD-002--CTI-OD-006 remain open and
+CTI-OD-007 remains inherited/closed. The next recommended owner discussion
+is the PTC-owned consumer coefficient authority under CTI-OD-002. No
+application implementation unit is active or authorized by this acceptance.
+SCI-OOF requires a separate recovery-first Stage A scope/launch decision;
+SCI-FRUIT continues independently. Frozen science, application source,
+configuration, tests, Registry and validation bytes are unchanged. No
+production, activation, performance, Unity or new numerical-route claim is
+made.
+
 ## 2026-09-04 Map-Space Horizontal Audit Closure
 
 The scientific owner accepted independently reviewed MAP-space shared-

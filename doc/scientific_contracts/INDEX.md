@@ -1,5 +1,16 @@
 # Citlali Scientific Contract Package Index
 
+The [2026-09-05 map-space source-study acceptance](acceptance/MAP_SPACE_CONFORMANCE_001_2026-09-05/README.md)
+records Grant Wilson's acceptance of exact reviewed study
+`f36cb788dc1ce99dad9c30bcd4442dc8bfbf681e` under CTI-OD-001. The
+classifications and zero-complete-route conclusion are accepted as bounded
+source evidence. All 13 study files remain unchanged; the later acceptance
+record governs their historical pending-owner wording. CTI-OD-002--CTI-OD-006
+remain open, CTI-OD-007 remains inherited/closed, and no application unit is
+authorized. The next recommended owner discussion concerns PTC consumer
+coefficient authority. Package freeze and numerical-availability states below
+are unchanged.
+
 This index is governed by the
 [Scientific Contract Library Program](README.md). Every new package begins by
 linking to that charter and completing the prior-work recovery procedure.

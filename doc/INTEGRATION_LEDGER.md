@@ -1,5 +1,30 @@
 # Citlali Integration Ledger
 
+## 2026-09-05 Map-Space Source-Study Owner Acceptance
+
+The owner accepted exact source-study successor
+`f36cb788dc1ce99dad9c30bcd4442dc8bfbf681e`, tree
+`c12a3cb915cd900331661fc1f9e3fdf2899a197c`, after fresh independent review
+returned `ACCEPTABLE FOR OWNER REVIEW` with all three findings repaired and
+no new actionable findings. **CTI-OD-001 is accepted/closed** for its bounded
+classifications and zero-complete-route conclusion. CTI-OD-002--CTI-OD-006
+remain open; CTI-OD-007 remains inherited/closed.
+
+The [dated acceptance record](scientific_contracts/acceptance/MAP_SPACE_CONFORMANCE_001_2026-09-05/README.md)
+binds the full review and all 13 exact packet digests. Its integration route
+uses canonical handoff `ae953ed4d87d1f693d2bbf42aebbc25ef730c771` as first
+parent and the accepted study as second parent. A fresh exact-commit review
+and unchanged clean canonical base precede literal fast-forward publication
+to local mainline; GitHub push remains owner-held. The source-study packet
+and its pending-decision ledger are preserved as historical reviewed bytes;
+this later record governs the accepted CTI-OD-001 disposition.
+
+No application source, configuration, tests, frozen science, Registry or
+validation record changes. No numerical implementation, production,
+activation, OOF/FRUIT attachment or Unity work follows. The separate
+implementation, build-environment and operational authorities below are
+preserved.
+
 This is the compact authority for concurrent Citlali workstreams. Update it
 when a workstream starts, changes authority, reaches a gate, or integrates.
 Detailed scientific and build evidence remains in the linked plans, handoffs,

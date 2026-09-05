@@ -2,8 +2,8 @@
 
 Date: `2026-08-26`
 
-Updated: `2026-09-04` for map-space horizontal-audit closure and the next
-downstream package boundary
+Updated: `2026-09-05` for owner acceptance of the map-space source study and
+its bounded documentation-integration route
 
 Status: scientific-owner-approved program sequencing record
 
@@ -11,6 +11,30 @@ This record preserves the agreed progression after the frozen ALIGN-through-PTC
 handoff. It is a program plan, not a scientific contract, package freeze,
 implementation-conformity finding, validation result, or production-readiness
 claim.
+
+## 2026-09-05 Map-Space Source-Study Acceptance
+
+Grant Wilson accepted independently reviewed exact candidate
+`f36cb788dc1ce99dad9c30bcd4442dc8bfbf681e`, tree
+`c12a3cb915cd900331661fc1f9e3fdf2899a197c`, under CTI-OD-001 and directed
+the manager to proceed. The [acceptance record](acceptance/MAP_SPACE_CONFORMANCE_001_2026-09-05/README.md)
+binds the reviewed evidence and preserves the exact source-study packet
+through a separately reviewed documentation merge with the canonical
+manager-handoff history. Owner-controlled GitHub publication follows local
+integration.
+
+CTI-OD-001 is accepted/closed; CTI-OD-002--CTI-OD-006 remain open and
+CTI-OD-007 remains inherited/closed. The next recommended discussion is
+PTC-owned MAP/JINC/NOI-design-balance coefficient authority and its exact
+QC/profile bindings. No numerical choice, backlog ordering, compatibility
+policy or application unit is silently approved by accepting the source
+study. The owner may authorize at most one bounded implementation-mapping
+unit after its applicable authority and scope gates are met.
+
+SCI-OOF remains deferred pending a separate recovery-first Stage A scope and
+launch decision. SCI-FRUIT continues independently and has no admitted parent
+from this study. Frozen package science, source-product availability, Registry,
+application behavior and operational authority are unchanged.
 
 ## 2026-09-04 Map-Space Audit Closure And Next Tranche
 
