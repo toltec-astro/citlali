@@ -1,5 +1,36 @@
 # Citlali Integration Ledger
 
+## Timestream Successor D2 Canonical Admission 002 Preparation — 2026-09-05
+
+The existing owner-approved admission scope continues in isolated branch
+`codex/timestream-successor-d2-canonical-admission-002`, literally based at
+verified canonical `00b974c9039d4c3025dcce18f26bca69d36af9c3` and merging
+preserved, independently reviewed repair
+`7d57a5acf893ae0f34c3639499484b3f5976768a`. The common ancestor is
+`ae953ed4d87d1f693d2bbf42aebbc25ef730c771`. Canonical's 21 intervening
+paths are documentation-only; both histories and all accepted MAP study
+bytes remain intact. All four D2 source/build/test paths are byte-identical
+to the repaired source. This integration consumes no implementation slot.
+
+The complete owner receipt confirms Unity job `64018093` PASS at the
+repaired source: 892/892 runnable tests, 8/8 focused tests, exact CLI binding,
+clean pinned dependencies/source, all 21 archive files checksum-verified,
+and zero-byte Slurm stderr. Slurm completed `0:0` in 9m20s; the executable
+reports GNU 13.3.0/C++23 and its Spack DAG. Runtime deployment labels remain
+unmanaged, so the evidence establishes the source-build/test gate without
+claiming managed-deployment acceptance. Failed job `64008057` remains
+retained evidence of an external runner path error; corrected runner v2
+passed independent artifact review. No source or acceptance threshold was
+changed for the rerun.
+
+The staged tree/input-equivalence proof passes. Fresh independent exact-SHA
+review of the final merge remains pending at record preparation and must
+precede owner admission. Existing source reviews and Unity
+results retain their original subjects. Canonical movement, GitHub push,
+activation, cleanup and subsequent work remain held. The
+[admission 002 handoff](../handoff/TIMESTREAM_SUCCESSOR_D2_CANONICAL_ADMISSION_002_2026-09-05.md)
+records the bounded continuation and moving-base reassessment.
+
 ## 2026-09-05 Map-Space Source-Study Owner Acceptance
 
 The owner accepted exact source-study successor
@@ -39,6 +70,74 @@ and [`governance/REVIEW_AND_CONFORMANCE.md`](governance/REVIEW_AND_CONFORMANCE.m
 The historical WP-7.1 program router and machine-readable scientific-authority
 binding remain in [`WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md`](WP7_TIMESTREAM_SUCCESSOR_PROGRAM.md)
 and `validation/wp7_timestream_successor_authority.json`.
+
+## Timestream Successor D2 Admission Repair — 2026-09-04
+
+Owner-approved `TIMESTREAM-SUCCESSOR-D2-ADMISSION-REPAIR-001` addresses major
+independent-review finding `D2-ADM-F01` at exact prior admission candidate
+`218988dc21cfc279cdfe7a4318b574f070cd45f9` and reconciles local canonical
+`ae953ed4d87d1f693d2bbf42aebbc25ef730c771`. GitHub canonical remained
+`9f42d348298d76c5d5145aaf0c3eace1f3e154c1` at the post-approval live check.
+The new isolated branch `codex/timestream-successor-d2-admission-repair`
+starts literally at local canonical and merges preserved `218988dc...`.
+The four canonical manager-handoff paths and both original D2 handoffs remain
+unchanged. Original D2 closure `54c3254a...` and the prior admission branch
+stay preserved at their exact tips.
+
+The repair moves existing finite-frequency checks before sorting and adds
+regression coverage in the existing D2 test file. The malformed-input test
+triggers a libc++ debug-hardening assertion with the inherited header and
+passes with the repair. No D2/VAL ownership, valid-input outcome, residual
+payload semantics, numerical operator, or route changes. Local CLI/header
+builds, 8/8 focused D2 tests, 892 runnable CTests, 207 baseline-tool tests,
+full config preflight, and both ledgers pass. Fresh independent exact-SHA
+review is pending at record preparation; a new owner-run Unity gate remains
+required. Original job `63987273` does not cover the changed source.
+
+The work occupies one bounded spine slot during repair; the old candidate is
+evidence only, and no module probe is active. Canonical movement, push,
+activation, production, cleanup, and later implementation remain held.
+This section supersedes the older pending-review and Unity-reuse checkpoint
+below. See the
+[repair work order and handoff](../handoff/TIMESTREAM_SUCCESSOR_D2_ADMISSION_REPAIR_001_2026-09-04.md).
+
+## Timestream Successor D2 Admission Candidate — 2026-09-04
+
+For the current D2 operation, this entry supersedes older canonical-tip and
+pending-push checkpoint wording below. Live GitHub canonical is exact
+`9f42d348298d76c5d5145aaf0c3eace1f3e154c1`; accepted D2 feature closure is
+exact `54c3254aaf8a6639d3fe1e56e23709e29cd34b3b`. Both were verified with
+read-only live ref checks before the owner-approved candidate construction.
+
+`TIMESTREAM-SUCCESSOR-D2-CANONICAL-ADMISSION-001` owns one clean worktree and
+branch `codex/timestream-successor-d2-canonical-admission`. It prepares one
+explicit merge with canonical first and accepted closure second, retaining
+the three original D2 commits and all five D2 paths exactly. The common
+ancestor remains the literal implementation base
+`4d14d0dce8c80b6bc9d0d39c9a90a8f4b2504538`; neither live tip contains the
+other. The intervening canonical documentation does not overlap D2, and the
+merge applied without conflicts. The source and evidence preservation proof
+and the three additional admission-record paths are specified in the
+[admission handoff](../handoff/TIMESTREAM_SUCCESSOR_D2_CANONICAL_ADMISSION_001_2026-09-04.md).
+
+Local CLI/header builds, 7/7 focused D2 tests, 891/891 runnable CTests,
+207/207 baseline-tool tests, complete config preflight, and both validation
+ledgers pass. The preservation proof establishes application/build/test-input
+equivalence to the accepted implementation. Accepted Unity job `63987273` remains bound
+to implementation `bb060947175523d6fc6a777ae4ad4606693e9e5f` and its 891/891
+runnable-test result. Reuse depends on exact application/build/test-input
+equivalence; the new merge SHA has not been run on Unity. Independent
+fresh-context read-only review must bind the final full candidate SHA before
+the next owner disposition. Canonical movement and push are not authorized
+by candidate preparation; the user performs every GitHub push.
+
+This Tier 2 canonical integration operation consumes no application spine
+or module-probe slot. D2 owns residual storage and mechanical completeness;
+VAL retains semantic validation authority. Activation, filtering, factor
+selection, downsampling, substantive RTC/PTC/AST, common-grid, MAP, CAL,
+production, cleanup, and subsequent implementation remain excluded. No
+accepted application generation, scientific-contract authority, build-policy
+authority, or production disposition changes.
 
 ## Timestream Successor Identity Route Canonical Admission — 2026-09-03
 

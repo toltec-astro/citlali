@@ -309,6 +309,41 @@ gtest_discover_tests(
         TEST_PREFIX "citlali::timestream_successor::identity_route_context::"
         DISCOVERY_MODE PRE_TEST
 )
+
+# Bounded D2 native-measurement carrier: zero-copy prefilter x/r views,
+# residual-only numerical ownership, exact immutable VAL-snapshot binding, and
+# separately bound source-mask/line-operator processing evidence.  This target
+# adds no RTC policy, decimation, common grid, route activation, or D2-local
+# validity interpretation.
+add_executable(
+    citlali_timestream_successor_d2_native_measurement_test EXCLUDE_FROM_ALL
+    timestream_d2_native_measurement_header.cpp
+    test_timestream_d2_native_measurement.cpp
+)
+set_source_files_properties(
+    timestream_d2_native_measurement_header.cpp
+    PROPERTIES SKIP_PRECOMPILE_HEADERS ON
+)
+set_target_properties(
+    citlali_timestream_successor_d2_native_measurement_test
+    PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
+)
+target_link_libraries(
+    citlali_timestream_successor_d2_native_measurement_test
+    PRIVATE
+        citlali::citlali
+        GTest::gtest_main
+)
+add_dependencies(
+    check citlali_timestream_successor_d2_native_measurement_test
+)
+gtest_discover_tests(
+    citlali_timestream_successor_d2_native_measurement_test
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        TEST_PREFIX "citlali::timestream_successor::d2_native_measurement::"
+        DISCOVERY_MODE PRE_TEST
+)
 set_target_properties(citlali_science_map_truth_test
     PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
