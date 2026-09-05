@@ -157,6 +157,32 @@ def completed_gate(root: Path, name: str, registration: dict) -> dict:
     return result
 
 
+def verify_prerequisite(root: Path, name: str, registration: dict) -> None:
+    """Require successful execution and fresh scientific gates; never rerun.
+
+    The sole representation repair keeps its original failed receipt. It is
+    not a substitute gate result: all bound outputs and actual gates are
+    verified again here before any dependent trajectory can start.
+    """
+    path = root / name / "EXECUTION_RECEIPT.json"
+    if not path.exists():
+        raise ValueError(f"earlier trajectory has not executed: {name}")
+    receipt = json.loads(path.read_text())
+    if receipt["status"] != "pass":
+        if (name != "H/uninjected" or receipt.get("exit_code") != 0 or
+                receipt.get("failure") != "ValueError: checkpoint dimensions changed"):
+            raise ValueError(f"earlier trajectory/gate has not passed: {name}")
+        repair_path = root / "H/uninjected/SCALAR_DIMENSION_REPAIR_R0.2.json"
+        repair = json.loads(repair_path.read_text())
+        if repair["original_failed_receipt"] != file_record(path):
+            raise ValueError("original failed receipt changed")
+        if repair["repair"] != "owned length-one fruit_response_state_dim only" or repair["status"] != "pass":
+            raise ValueError("unrecognized scalar representation repair")
+        verify_artifacts(repair["retained_output_identities"])
+    # A receipt cannot waive or replace any prerequisite scientific check.
+    completed_gate(root, name, registration)
+
+
 def run_one(registration_path: Path, name: str) -> dict:
     registration = json.loads(registration_path.read_text())
     if registration["decision"] != "SCI-FRUIT-EL-F12-RESPONSE-AWARE-INTERVENTION-SCREEN-R0.1+CAP-001":
@@ -166,9 +192,7 @@ def run_one(registration_path: Path, name: str) -> dict:
     root = Path(registration["output_root"])
     restart = name in RESTART_ORDER
     for earlier in ORDER if restart else ORDER[:ORDER.index(name)]:
-        receipt = root / earlier / "EXECUTION_RECEIPT.json"
-        if not receipt.exists() or json.loads(receipt.read_text())["status"] != "pass":
-            raise ValueError(f"earlier trajectory/gate has not passed: {earlier}")
+        verify_prerequisite(root, earlier, registration)
     if restart:
         arm = name.split("/")[0]
         analysis = json.loads((root / "analysis" / f"{arm}_RESULT.json").read_text())

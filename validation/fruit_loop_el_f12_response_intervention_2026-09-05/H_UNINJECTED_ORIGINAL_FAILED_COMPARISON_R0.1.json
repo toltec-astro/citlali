@@ -1,0 +1,36 @@
+{
+  "aggregate_elapsed_seconds": 1027.514848947525,
+  "command": [
+    "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/setup/citlali-el-f12-r0.1",
+    "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/setup/BASE_POINT_123424.yaml",
+    "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/setup/INPUTS_LOCAL.yaml",
+    "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/setup/COMMON_LOCAL.yaml",
+    "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/setup/FITREPORTS_LOCAL_R0.3.yaml",
+    "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/setup/ALPHA_1P00_CONTROL.yaml",
+    "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/setup/H_uninjected.yaml",
+    "--grppiex",
+    "seq",
+    "-l",
+    "info"
+  ],
+  "elapsed_including_gates_and_retention_seconds": 360.6859269142151,
+  "exit_code": 0,
+  "failure": "ValueError: checkpoint dimensions changed",
+  "log": {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduction.log",
+    "sha256": "14d5dc0c13260d482a86570dd729552129da2c727c764542218a4c5ac1c5e5e1",
+    "size_bytes": 3138015
+  },
+  "name": "H/uninjected",
+  "resources": {
+    "peak_rss_bytes": 796147712,
+    "system_seconds": 5.4,
+    "user_seconds": 351.49,
+    "wall_seconds": 359.84
+  },
+  "retained_bytes": 8090011739,
+  "sampled_peak_process_rss_bytes": 795820032,
+  "started_unix": 1788616704.038635,
+  "status": "unavailable",
+  "temporary_spool_bytes": 6804133752
+}

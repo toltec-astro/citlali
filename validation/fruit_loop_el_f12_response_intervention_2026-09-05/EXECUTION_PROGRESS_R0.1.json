@@ -1,0 +1,30 @@
+{
+  "completed": [
+    {
+      "trajectory": "H0/uninjected",
+      "status": "pass",
+      "resources": {
+        "peak_rss_bytes": 615301120,
+        "system_seconds": 3.36,
+        "user_seconds": 187.69,
+        "wall_seconds": 193.95
+      },
+      "elapsed_with_gates": 194.8182098865509,
+      "receipt": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H0/uninjected/EXECUTION_RECEIPT.json"
+    },
+    {
+      "trajectory": "H0/injected",
+      "status": "pass",
+      "resources": {
+        "peak_rss_bytes": 598556672,
+        "system_seconds": 2.91,
+        "user_seconds": 188.26,
+        "wall_seconds": 193.38
+      },
+      "elapsed_with_gates": 194.01843571662903,
+      "receipt": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H0/injected/EXECUTION_RECEIPT.json"
+    }
+  ],
+  "current": "H/uninjected",
+  "scientific_claim": "H0 control identity established; no intervention or selector performance result"
+}

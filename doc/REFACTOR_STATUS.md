@@ -974,6 +974,16 @@ The exact
 now freezes native source 10478fa0e, controller 80e608eb8, the rebuilt binary,
 6,273 artifact identities and all primary/conditional commands before any
 observation run. Local execution of H0 uninjected is the next authorized step.
+Both H0 trajectories have now passed; uninjected H0 reproduces all retained
+EL-F2 alpha-one map planes bitwise through iteration 6, and the pair matches
+at iteration zero. H uninjected completed all seven iterations, then exposed
+an analyzer omission for the added audit scalar's length-one NetCDF dimension.
+The [routine comparison repair](../validation/fruit_loop_el_f12_response_intervention_2026-09-05/SCALAR_DIMENSION_REPAIR_R0.2.md)
+retains the original failure and passes all science-plane, checkpoint/D19,
+ordered learning-row and map-diagnostic comparisons without replay or binary
+change. All 272 Python tests pass. Three primary trajectories/21 passes are
+consumed; no alternative or diagnostic replacement has run. H injected is
+next after successor analyzer registration.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

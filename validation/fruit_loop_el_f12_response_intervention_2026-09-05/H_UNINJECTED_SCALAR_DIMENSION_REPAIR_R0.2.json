@@ -1,0 +1,1745 @@
+{
+  "additional_trajectories": 0,
+  "binary_changed": false,
+  "execution_receipt_after_comparison_repair": {
+    "aggregate_elapsed_seconds": 1906.1270990371704,
+    "command": [
+      "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/setup/citlali-el-f12-r0.1",
+      "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/setup/BASE_POINT_123424.yaml",
+      "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/setup/INPUTS_LOCAL.yaml",
+      "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/setup/COMMON_LOCAL.yaml",
+      "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/setup/FITREPORTS_LOCAL_R0.3.yaml",
+      "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/setup/ALPHA_1P00_CONTROL.yaml",
+      "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/setup/H_uninjected.yaml",
+      "--grppiex",
+      "seq",
+      "-l",
+      "info"
+    ],
+    "compatibility": {
+      "H0_neutrality": {
+        "0": {
+          "checkpoint": {
+            "D19_and_all_other_state": "exact",
+            "audit_added": true,
+            "provenance_differences": [
+              "learning_policy_yaml"
+            ]
+          },
+          "learning": "exact ordered iteration rows",
+          "mapdiag": "exact",
+          "maps": "bitwise"
+        },
+        "1": {
+          "checkpoint": {
+            "D19_and_all_other_state": "exact",
+            "audit_added": true,
+            "provenance_differences": [
+              "learning_policy_yaml"
+            ]
+          },
+          "learning": "exact ordered iteration rows",
+          "mapdiag": "exact",
+          "maps": "bitwise"
+        },
+        "2": {
+          "checkpoint": {
+            "D19_and_all_other_state": "exact",
+            "audit_added": true,
+            "provenance_differences": [
+              "learning_policy_yaml"
+            ]
+          },
+          "learning": "exact ordered iteration rows",
+          "mapdiag": "exact",
+          "maps": "bitwise"
+        },
+        "3": {
+          "checkpoint": {
+            "D19_and_all_other_state": "exact",
+            "audit_added": true,
+            "provenance_differences": [
+              "learning_policy_yaml"
+            ]
+          },
+          "learning": "exact ordered iteration rows",
+          "mapdiag": "exact",
+          "maps": "bitwise"
+        },
+        "4": {
+          "checkpoint": {
+            "D19_and_all_other_state": "exact",
+            "audit_added": true,
+            "provenance_differences": [
+              "learning_policy_yaml"
+            ]
+          },
+          "learning": "exact ordered iteration rows",
+          "mapdiag": "exact",
+          "maps": "bitwise"
+        },
+        "5": {
+          "checkpoint": {
+            "D19_and_all_other_state": "exact",
+            "audit_added": true,
+            "provenance_differences": [
+              "learning_policy_yaml"
+            ]
+          },
+          "learning": "exact ordered iteration rows",
+          "mapdiag": "exact",
+          "maps": "bitwise"
+        },
+        "6": {
+          "checkpoint": {
+            "D19_and_all_other_state": "exact",
+            "audit_added": true,
+            "provenance_differences": [
+              "learning_policy_yaml"
+            ]
+          },
+          "learning": "exact ordered iteration rows",
+          "mapdiag": "exact",
+          "maps": "bitwise"
+        }
+      }
+    },
+    "compressed_spools": [
+      {
+        "compression_and_verification_seconds": 4.477469792007469,
+        "lossless_retained": {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/fruit_response_123424_iter0.bin.gz",
+          "sha256": "405d9cd5d01314a0777dabd46e8e267994ab16e36ee1cf6cbff5f2c7243a8b0b",
+          "size_bytes": 240806703
+        },
+        "original": {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/fruit_response_123424_iter0.bin",
+          "sha256": "f68ecbb9f3e31c24ce4cd04f7630ec035655a9c752776cda90dd13f283fd009d",
+          "size_bytes": 970815560
+        }
+      },
+      {
+        "compression_and_verification_seconds": 4.493972250027582,
+        "lossless_retained": {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/fruit_response_123424_iter1.bin.gz",
+          "sha256": "f082db668fe1327e206d72f21e0847117b573bb88b8bcfc58d0a80941531a946",
+          "size_bytes": 240978141
+        },
+        "original": {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/fruit_response_123424_iter1.bin",
+          "sha256": "b30aee6303c53a6fa95cdcbb76129646904875409c9e5acc2fb9ced66b685c4d",
+          "size_bytes": 971397128
+        }
+      },
+      {
+        "compression_and_verification_seconds": 4.493856500019319,
+        "lossless_retained": {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/fruit_response_123424_iter2.bin.gz",
+          "sha256": "19e34eac5e80c283aa3b72a07907818861399f238487974428ac318bc5fc08d6",
+          "size_bytes": 241227701
+        },
+        "original": {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/fruit_response_123424_iter2.bin",
+          "sha256": "abcc9fae8a672731bad482cfbcc6cf3245fe58f5209ed5b01e8803c261067383",
+          "size_bytes": 972227152
+        }
+      },
+      {
+        "compression_and_verification_seconds": 4.518857458024286,
+        "lossless_retained": {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/fruit_response_123424_iter3.bin.gz",
+          "sha256": "ab14a8649dc77d2ec90323534bc21f602069966af3f8daed271eb0e8aacd7b9c",
+          "size_bytes": 241247410
+        },
+        "original": {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/fruit_response_123424_iter3.bin",
+          "sha256": "643dc193b2881379c5264948ff1cac97aae9a653211d4fdf0ba9f1a58c5e03db",
+          "size_bytes": 972365264
+        }
+      },
+      {
+        "compression_and_verification_seconds": 4.5476342079928145,
+        "lossless_retained": {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/fruit_response_123424_iter4.bin.gz",
+          "sha256": "7cf939ea7e1085ee5c4a5fa5c89a95850d8ea07269bb5bc95b43f1b787198745",
+          "size_bytes": 241267371
+        },
+        "original": {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/fruit_response_123424_iter4.bin",
+          "sha256": "7eb9db02aaddb9c5dd967fa3f5eb82edb9bdb00c4385892dd7890804b9fc8272",
+          "size_bytes": 972448776
+        }
+      },
+      {
+        "compression_and_verification_seconds": 4.557622874970548,
+        "lossless_retained": {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/fruit_response_123424_iter5.bin.gz",
+          "sha256": "861a3bed2b67fb48ada4a81103acd1553f79f8bc6e01826ba81c7185b27048c7",
+          "size_bytes": 241245484
+        },
+        "original": {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/fruit_response_123424_iter5.bin",
+          "sha256": "414c2975f3987e2fbc964b87823e18fdc782df46a5327978f43e7b77cff3305f",
+          "size_bytes": 972369736
+        }
+      },
+      {
+        "compression_and_verification_seconds": 4.5478921670001,
+        "lossless_retained": {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/fruit_response_123424_iter6.bin.gz",
+          "sha256": "c476e45f7ada6e8ca19196a0583acb6fffbcbb75bd6e51491e0e697d62d349ea",
+          "size_bytes": 241271786
+        },
+        "original": {
+          "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/fruit_response_123424_iter6.bin",
+          "sha256": "459504ed3347bc1f1983073feba65ffe08805b0a81a5a6834b2365ca00440121",
+          "size_bytes": 972510136
+        }
+      }
+    ],
+    "elapsed_including_gates_and_retention_seconds": 1239.2981760501862,
+    "exit_code": 0,
+    "log": {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduction.log",
+      "sha256": "14d5dc0c13260d482a86570dd729552129da2c727c764542218a4c5ac1c5e5e1",
+      "size_bytes": 3138015
+    },
+    "name": "H/uninjected",
+    "resources": {
+      "peak_rss_bytes": 796147712,
+      "system_seconds": 5.4,
+      "user_seconds": 351.49,
+      "wall_seconds": 359.84
+    },
+    "retained_bytes": 2973924417,
+    "sampled_peak_process_rss_bytes": 795820032,
+    "started_unix": 1788616704.038635,
+    "status": "pass",
+    "temporary_spool_bytes": 0
+  },
+  "original_failed_receipt": {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/EXECUTION_RECEIPT.json",
+    "sha256": "fd58967a8c4ec729f0b21b3bd236f76ac4e13807bdc8b89d045b1aad87762f9d",
+    "size_bytes": 1834
+  },
+  "repair": "owned length-one fruit_response_state_dim only",
+  "retained_output_identities": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/EXECUTION_RECEIPT.json",
+      "sha256": "fd58967a8c4ec729f0b21b3bd236f76ac4e13807bdc8b89d045b1aad87762f9d",
+      "size_bytes": 1834
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/STARTED.json",
+      "sha256": "2848642e28cdf2f8e9ff6483157297d7e6bc1ee8ca9037d047b23da0eb0f3f96",
+      "size_bytes": 1447
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/.citlali-reduction.lock",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/index.yaml",
+      "sha256": "0ce5f5a39ed526415656dbf905c4d42ba5c84b8c735aebf36e6869cc4aa3fdef",
+      "size_bytes": 291
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/logs/chunk_summary_0.log",
+      "sha256": "ea9ae4668711266b31b356a4338b8cf1d5b2c2f2852f104a247fc0db87b510f9",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/logs/chunk_summary_1.log",
+      "sha256": "b58cda8ccbdd61ec091207efcb79a36edd110513e08491e7f86249180f499b95",
+      "size_bytes": 1439
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/logs/chunk_summary_10.log",
+      "sha256": "a45a8e24ce693a4fb3c0b8cf045da4183e97687b8fcfc62b60be5680baa22039",
+      "size_bytes": 1436
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/logs/chunk_summary_11.log",
+      "sha256": "2c9b07cc44d646e30508e86bc597ed4c91d8f29470b1c74f13d1aed2f4ce43ed",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/logs/chunk_summary_2.log",
+      "sha256": "634a0acca3d58b4762ff1f93e514a0d3f62c5673e2660764f7dc42187d1faf5e",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/logs/chunk_summary_3.log",
+      "sha256": "beaddf61456c0467ddac5a375078db3b375f1f62b1505f4e30eea2388f7de997",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/logs/chunk_summary_4.log",
+      "sha256": "e0bdabfc5ed04de333e1c0c51abb633028221a245fb7d8b680ac35c742c4244b",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/logs/chunk_summary_5.log",
+      "sha256": "6148e366d6584724de3d38993cabbb3564c63ababa314708421d3db379258a1c",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/logs/chunk_summary_6.log",
+      "sha256": "daec33e8c74791020876f57e7dae17a0468194a2202251cf618b8cae6df3812e",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/logs/chunk_summary_7.log",
+      "sha256": "0dd707cd6304e2b16861d18131c929c57d8addf37fa64ac15fc49e79c1346839",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/logs/chunk_summary_8.log",
+      "sha256": "801f7486cb03290fc7e15fc828f031c040d3e6e795120a504f2bd09e8b22e4cb",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/logs/chunk_summary_9.log",
+      "sha256": "560c60f7f8f5db70de4641e31ac0bb63d918d8bca835eb3a2755e65a66afb416",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/logs/index.yaml",
+      "sha256": "d8f284107fc837b8084e4eb1c9f64613a08f8cfa7b04607086f77d2f22647a66",
+      "size_bytes": 491
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/index.yaml",
+      "sha256": "e640e9d424831125bf444e5d4d893f98fdc53ab323a567aa3b7f69fe1372409d",
+      "size_bytes": 802
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/ppt_commissioning_pointing_123424_citlali.ecsv",
+      "sha256": "1864507997deebb84474208ecb6e2fb3844ccd9bc6d030b0d46315e17c4d93dc",
+      "size_bytes": 22079
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "sha256": "6ec0d399e42b82f95b4c5877d5f65d3b342094e59c9fd753a7add6f7c7fede0f",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "sha256": "0b7495958c2aa993b1b5728e692c8cb1eff987ffc940084ed70d7d4d5ad2846f",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "sha256": "9bfdb1e452d350ba554404b9422806f65485bcb5a2d1c37eae7bc44ccba6893a",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_hist.nc",
+      "sha256": "5e1b7bd5151d5c929062eff4fa57e9b44879e2a5fe390a99e795dd37ac27e161",
+      "size_bytes": 15501
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_mapdiag.nc",
+      "sha256": "f443f5a9462a53b1514350b2023d0ce1e57dbfb28789b4399811f628bdc38e74",
+      "size_bytes": 63962
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+      "sha256": "259d90da1b7c7d7a253400edc4304e18a331398c9b5120d11fe30a01402a12ee",
+      "size_bytes": 18970869
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_psd.nc",
+      "sha256": "9c8e720fad78aa73960a74ae2eb4d07408dda1176d99ba1d23772787a6396124",
+      "size_bytes": 10336153
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_ptcdiag.nc",
+      "sha256": "6e04934da158091c8f39d54f154e9a6c2ae64d57b8fc200b8569a40393ff1c9d",
+      "size_bytes": 7723946
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_rtcdiag.nc",
+      "sha256": "236486c34e79677fbb185baef00acf8ad40719b19f8ab15eb3386706d3c2f60e",
+      "size_bytes": 6610620
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_stats.nc",
+      "sha256": "c32b5ffcd44c6417350ac7e1c8f11e3579248cc8707f7b1a98218ea172d8f52d",
+      "size_bytes": 5169896
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw_timestream_provenance.yaml",
+      "sha256": "59679cc808fe8a7eb99609f15a5097976151ea3f056ec5c9d5f8e1eb05f512f3",
+      "size_bytes": 12495
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/timestream_output_provenance.yaml",
+      "sha256": "fe1e7232b57c67dc794a693c4614bb42321e97e0775f714eb59514bdd5a75580",
+      "size_bytes": 1193
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/ALPHA_1P00_CONTROL.yaml",
+      "sha256": "c5fc9f5c4ea86de468a0e939e07b6d60d91ec40dd50cae6a67d858983906e3a7",
+      "size_bytes": 549
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/BASE_POINT_123424.yaml",
+      "sha256": "f710d1c172b5655b136ef4d8ebbff918083d37cb4974036c7af8725978d51491",
+      "size_bytes": 16258
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/COMMON_LOCAL.yaml",
+      "sha256": "716c952133ee37b51d8ca4edb783741279aa8f9117149810ab94f987c5d4e269",
+      "size_bytes": 356
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/FITREPORTS_LOCAL_R0.3.yaml",
+      "sha256": "df63463a1a3e83ed5dc2969525b9600c60d88b3226f79af82fda6cba4750d629",
+      "size_bytes": 119
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/H_uninjected.yaml",
+      "sha256": "6603307c4c438a564c11fe166e1174b1ec043bd763c7b4054daa0818a1399c1a",
+      "size_bytes": 629
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/INPUTS_LOCAL.yaml",
+      "sha256": "d79e22e1fdfdc67e9235829f1fc2b904a82894c4fbfc10fbfa7b713409b9bc02",
+      "size_bytes": 2975
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/citlali.log.gz",
+      "sha256": "ee84f45a74d17e1c09a5e3ea2297988a81a0c2fa581006bff34537149be0dd02",
+      "size_bytes": 44054
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/citlali_profile.ecsv",
+      "sha256": "a14e60d786009be3c2ef22a9bca01cb60798eba1044705be07f6747200ac9e7f",
+      "size_bytes": 16029
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/citlali_restart_checkpoint.nc",
+      "sha256": "268cf9d8fa20c299b6c698c42d99d1f45761e38400a85d3c0674f2f398c4bff2",
+      "size_bytes": 89016
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/fruit_response_123424_iter0.bin.gz",
+      "sha256": "405d9cd5d01314a0777dabd46e8e267994ab16e36ee1cf6cbff5f2c7243a8b0b",
+      "size_bytes": 240806703
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/index.yaml",
+      "sha256": "3c3a0aa01a8547587d0235b8983c171e01afd25d546bc75627b09517d0280089",
+      "size_bytes": 533
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/learning_housekeeping_iter_0.csv",
+      "sha256": "f083ee03ef062c2bcbfc81802ff5c471b2e6a5408541559b9f3cc72e04ae0d31",
+      "size_bytes": 381
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/learning_iter_0.csv",
+      "sha256": "a336166cc801bcbd3456d599e83913e87b321f6edf2dffbd00669658fbf2f8a1",
+      "size_bytes": 301443
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/runtime_provenance.yaml",
+      "sha256": "18c3999f9d066fed1aa2be7403f21a9def55c97c259d5bca4b4843f5918e55cd",
+      "size_bytes": 1078
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/index.yaml",
+      "sha256": "c9b76353ec661cfd0c8740baaa9b506ff901cb4215ee4229186dc58e00dd9dfc",
+      "size_bytes": 291
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/logs/chunk_summary_0.log",
+      "sha256": "2a902dc99c2f8ac5241b79113bd5e4d15ef46aef678fdb481602a558389b1911",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/logs/chunk_summary_1.log",
+      "sha256": "58122c76dade900ee680c0c56581a28724af38a54361ed071558c85f33acc2d0",
+      "size_bytes": 1439
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/logs/chunk_summary_10.log",
+      "sha256": "7f01cbe465cb585bd96ef68159a3e2d5a9f194cfe2a844844213a13d55b08e24",
+      "size_bytes": 1436
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/logs/chunk_summary_11.log",
+      "sha256": "8b070bcb6dc1a70d74edf0335e2f2ecc5453c0d6c9af61c7af93c8220a802843",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/logs/chunk_summary_2.log",
+      "sha256": "c6d1493359e29dccbe7e9ff5463cc08abb2f561c76e2be724e89ae97e5bcf912",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/logs/chunk_summary_3.log",
+      "sha256": "8a97debfa1b0e1696188aecbafc9332254ce84951df80392a96cc871439e771e",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/logs/chunk_summary_4.log",
+      "sha256": "981b8a15dc4e1e6c9766e73897e6615dee17f4cb637d3e962dd6bd9eb2691e30",
+      "size_bytes": 1433
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/logs/chunk_summary_5.log",
+      "sha256": "0a1d8078dbd399280f026ff47f5ebe18c4808d66216964c5940ee104fbf14cff",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/logs/chunk_summary_6.log",
+      "sha256": "7f046e55cbd8ad0038236e98c6a7e167e59ad9341070448ad2bd87a2a0340a90",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/logs/chunk_summary_7.log",
+      "sha256": "4acef36a797c9ae8ae74562a735c249defffd6dac427f4023f474e30a869f63e",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/logs/chunk_summary_8.log",
+      "sha256": "a704e32a557cb9897ae78385e9dc721b748ecdadbc3ef62e6b6341eed25118ef",
+      "size_bytes": 1433
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/logs/chunk_summary_9.log",
+      "sha256": "2b560bf974801d69c19d37850b4ec40b8070f7b9bc24d35c33c7aa3da7bcf351",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/logs/index.yaml",
+      "sha256": "7231cb7bfcdd38edf5cadf8826fb7ddae908eff8f725ce6213ae3bc3136b362e",
+      "size_bytes": 491
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/index.yaml",
+      "sha256": "69332b1c8101fac5512f37309b4d729c9dfe4c6a8587d462c3565500f114a5eb",
+      "size_bytes": 802
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/ppt_commissioning_pointing_123424_citlali.ecsv",
+      "sha256": "ca921d55490b5d39e61f7b4e9ca47a9088206746bebefe90e9398401e8395f56",
+      "size_bytes": 22077
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "sha256": "69c583a7e12e30e42eecc081ba95766bd2ffb19f00ac85b439c21e735ec73c34",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "sha256": "fd94839d7c0218edb6801936b719f29886fee546fd8682487077ac9f146cc3d5",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "sha256": "c050cf91a679dc3dfb25d955e48e2ad200ee0c5b6574d8d2b75bc37c9ac29b2c",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_hist.nc",
+      "sha256": "518be83d183ca0b4e6435dffd1257d609caf9ea87ecdd5f455dfd928fabd81d8",
+      "size_bytes": 15501
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_mapdiag.nc",
+      "sha256": "be05b0e1d8a50819633dd823aefc5b8a28812f40ddb61522e94005d932f17b05",
+      "size_bytes": 63962
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+      "sha256": "7e05845560dae1dd67c6be605fcb80ce3c0a3b02129c62fb2e2222c122d4f7e4",
+      "size_bytes": 25226741
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_psd.nc",
+      "sha256": "ddae9decbaa6e7820fee687bd90c71926929cb597566c8103b99cf9d30470b22",
+      "size_bytes": 10315097
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_ptcdiag.nc",
+      "sha256": "45d3e33bc56047880e4d4050a2bb19fd400a9c2f090a8fc7d4faa419d17a6591",
+      "size_bytes": 7723946
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_rtcdiag.nc",
+      "sha256": "3527c2e23eebda872f7ff5d96bd1ad2a17b17405f03498390e92d86f71c3a808",
+      "size_bytes": 6610620
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_stats.nc",
+      "sha256": "60273194293ed9fb7f366cada0d8379b055849219a69bb47b8382e604f8807e2",
+      "size_bytes": 5169896
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw_timestream_provenance.yaml",
+      "sha256": "59679cc808fe8a7eb99609f15a5097976151ea3f056ec5c9d5f8e1eb05f512f3",
+      "size_bytes": 12495
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/timestream_output_provenance.yaml",
+      "sha256": "fe1e7232b57c67dc794a693c4614bb42321e97e0775f714eb59514bdd5a75580",
+      "size_bytes": 1193
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/ALPHA_1P00_CONTROL.yaml",
+      "sha256": "c5fc9f5c4ea86de468a0e939e07b6d60d91ec40dd50cae6a67d858983906e3a7",
+      "size_bytes": 549
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/BASE_POINT_123424.yaml",
+      "sha256": "f710d1c172b5655b136ef4d8ebbff918083d37cb4974036c7af8725978d51491",
+      "size_bytes": 16258
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/COMMON_LOCAL.yaml",
+      "sha256": "716c952133ee37b51d8ca4edb783741279aa8f9117149810ab94f987c5d4e269",
+      "size_bytes": 356
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/FITREPORTS_LOCAL_R0.3.yaml",
+      "sha256": "df63463a1a3e83ed5dc2969525b9600c60d88b3226f79af82fda6cba4750d629",
+      "size_bytes": 119
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/H_uninjected.yaml",
+      "sha256": "6603307c4c438a564c11fe166e1174b1ec043bd763c7b4054daa0818a1399c1a",
+      "size_bytes": 629
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/INPUTS_LOCAL.yaml",
+      "sha256": "d79e22e1fdfdc67e9235829f1fc2b904a82894c4fbfc10fbfa7b713409b9bc02",
+      "size_bytes": 2975
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/citlali.log.gz",
+      "sha256": "82332ed4acf3aaf1f4d765740427dc0fb59d86bdeb9918988422229e3ddc2af3",
+      "size_bytes": 91770
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/citlali_restart_checkpoint.nc",
+      "sha256": "905a7c3adcb7dfe4e9ecdc1cf887bcc2271c1fa1faa42b7104532f8120637a9f",
+      "size_bytes": 402375
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/fruit_response_123424_iter1.bin.gz",
+      "sha256": "f082db668fe1327e206d72f21e0847117b573bb88b8bcfc58d0a80941531a946",
+      "size_bytes": 240978141
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/index.yaml",
+      "sha256": "e3c6d510640b415a1f3ab2aad19d0444bea82723cbcbc7610cbe465b20d73b42",
+      "size_bytes": 508
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/learning_housekeeping_iter_1.csv",
+      "sha256": "f083ee03ef062c2bcbfc81802ff5c471b2e6a5408541559b9f3cc72e04ae0d31",
+      "size_bytes": 381
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/learning_iter_1.csv",
+      "sha256": "4eaa16e05d808e67ed41bbd6f271b90533b991de7f9f74c0ae7873205c6fbd03",
+      "size_bytes": 596569
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/runtime_provenance.yaml",
+      "sha256": "18c3999f9d066fed1aa2be7403f21a9def55c97c259d5bca4b4843f5918e55cd",
+      "size_bytes": 1078
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/index.yaml",
+      "sha256": "8d7ddcf4baf81ca6c98dc8dc30d965c283ab41fc1d972d2540d1ee0fbdf76553",
+      "size_bytes": 291
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/logs/chunk_summary_0.log",
+      "sha256": "84f114d45503c766ffffff8fe920c76831f4a8bf1a852531a1565fce95720d33",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/logs/chunk_summary_1.log",
+      "sha256": "1aa301c0068ccbcef475434c711fc2ecdf4c22ebc721ef2b07cba245b737d0c8",
+      "size_bytes": 1440
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/logs/chunk_summary_10.log",
+      "sha256": "666c67955f1c9968ca1bce5de5ffe6107d3fdd6b4496e450f6f5e8c3142aaaae",
+      "size_bytes": 1436
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/logs/chunk_summary_11.log",
+      "sha256": "f5e5ddce9d7f67a67178c077c7d374b85b1d02a3b01d1b3cf9f7879e1dffb898",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/logs/chunk_summary_2.log",
+      "sha256": "5a98428b4c1078c2766819e99e23716ee4243919e1bfac3f4163ba1ea1e0d36c",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/logs/chunk_summary_3.log",
+      "sha256": "0f1541ede08275014a421ce559f13d5d0a8211a3f34c62de168ce7cc122b04e4",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/logs/chunk_summary_4.log",
+      "sha256": "6420cd8dacd082acb78ad262f091b346d887e4062e4ef6119b1c55386e82acab",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/logs/chunk_summary_5.log",
+      "sha256": "6e6c126d4350bc88ab8506a8bfc68eed2d6ad2c3a097048d94ed242c752328c2",
+      "size_bytes": 1432
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/logs/chunk_summary_6.log",
+      "sha256": "43f5041b3dedd412d11e6655f8121b8d70b538039934efad81339fd132a648e7",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/logs/chunk_summary_7.log",
+      "sha256": "545ac7ee52366bd07f396189494d94f011d3de9a993a15d10f8ebc703767680b",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/logs/chunk_summary_8.log",
+      "sha256": "798e6a9dbd3ddfddb0d10cddbbc7a0590e940daf2d486401f6604e27f03abb3a",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/logs/chunk_summary_9.log",
+      "sha256": "c32d1bf99f8971d4ee782d8bda19ce515bf94f99791b25b25f89d6d9452c6802",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/logs/index.yaml",
+      "sha256": "805f90153bd99cc9f888dbe0a66601613283ffa5c6d14b8456dc28e66e53c555",
+      "size_bytes": 491
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/index.yaml",
+      "sha256": "74c30d30db0d82f8ea6156fba3777f8f264eee9e77c0fe16093448b36870fe05",
+      "size_bytes": 802
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/ppt_commissioning_pointing_123424_citlali.ecsv",
+      "sha256": "18b980c36505c6c8b4c09c39a0eeab25891354c40644b10d7a5997f949630548",
+      "size_bytes": 22078
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "sha256": "e59b0f74447af28b49dd4b81ce43bb64947927685b886415e29b0a141c0d6458",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "sha256": "57bad9649e5390eeb09b8054e1400cdb0980cee097e795694b2b2fde7f19272b",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "sha256": "b715ff9b944f7809c1486aa37e72e1fdad071f0226c6376fede074c9bde74cd0",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_pointing_123424_hist.nc",
+      "sha256": "0c04aa9402c0cf4fd05bdd3959371c9e6bad2bfe02e81df15af1d16769dec4e5",
+      "size_bytes": 15501
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_pointing_123424_mapdiag.nc",
+      "sha256": "ce788326967717e6e028dc87b0c6c9a4067a2e778aa7a451681e1138c4d8f111",
+      "size_bytes": 63962
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+      "sha256": "dc628721214f5cb2757e090997c3f1a2a618abd282307de15547ab276e975c51",
+      "size_bytes": 25109332
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_pointing_123424_psd.nc",
+      "sha256": "02ebed345fd3665617c520062ca91ba1e726286da3153cbe73a2cfea071aa92a",
+      "size_bytes": 10693657
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_pointing_123424_ptcdiag.nc",
+      "sha256": "51e7e6602fe1694300d1c587a7bf3fb4f845927d56b31727872c560510727528",
+      "size_bytes": 7723946
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_pointing_123424_rtcdiag.nc",
+      "sha256": "f42ac1e20c3877dcb6b592a5e1b315f364d4553e7efcbc3deff7e0497c5e7257",
+      "size_bytes": 6590445
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_pointing_123424_stats.nc",
+      "sha256": "28880be80fe231ec32482bfbe409d44506811d9248aedafd9bfafb9419192297",
+      "size_bytes": 5169896
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw_timestream_provenance.yaml",
+      "sha256": "59679cc808fe8a7eb99609f15a5097976151ea3f056ec5c9d5f8e1eb05f512f3",
+      "size_bytes": 12495
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/timestream_output_provenance.yaml",
+      "sha256": "fe1e7232b57c67dc794a693c4614bb42321e97e0775f714eb59514bdd5a75580",
+      "size_bytes": 1193
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/ALPHA_1P00_CONTROL.yaml",
+      "sha256": "c5fc9f5c4ea86de468a0e939e07b6d60d91ec40dd50cae6a67d858983906e3a7",
+      "size_bytes": 549
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/BASE_POINT_123424.yaml",
+      "sha256": "f710d1c172b5655b136ef4d8ebbff918083d37cb4974036c7af8725978d51491",
+      "size_bytes": 16258
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/COMMON_LOCAL.yaml",
+      "sha256": "716c952133ee37b51d8ca4edb783741279aa8f9117149810ab94f987c5d4e269",
+      "size_bytes": 356
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/FITREPORTS_LOCAL_R0.3.yaml",
+      "sha256": "df63463a1a3e83ed5dc2969525b9600c60d88b3226f79af82fda6cba4750d629",
+      "size_bytes": 119
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/H_uninjected.yaml",
+      "sha256": "6603307c4c438a564c11fe166e1174b1ec043bd763c7b4054daa0818a1399c1a",
+      "size_bytes": 629
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/INPUTS_LOCAL.yaml",
+      "sha256": "d79e22e1fdfdc67e9235829f1fc2b904a82894c4fbfc10fbfa7b713409b9bc02",
+      "size_bytes": 2975
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/citlali.log.gz",
+      "sha256": "4bdca71601b70abd87f0535c1f6b56d12d962089a64e21d26d351063c63967f5",
+      "size_bytes": 91142
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/citlali_restart_checkpoint.nc",
+      "sha256": "ab7b56828059c9051ec217d74febeb2742d971ef24b83c02ebd80b4595714a92",
+      "size_bytes": 402375
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/fruit_response_123424_iter2.bin.gz",
+      "sha256": "19e34eac5e80c283aa3b72a07907818861399f238487974428ac318bc5fc08d6",
+      "size_bytes": 241227701
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/index.yaml",
+      "sha256": "965595270aa8931de59f3fee3f896912bbc214edf4741c0afe7e61581812ecc0",
+      "size_bytes": 508
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/learning_housekeeping_iter_2.csv",
+      "sha256": "f083ee03ef062c2bcbfc81802ff5c471b2e6a5408541559b9f3cc72e04ae0d31",
+      "size_bytes": 381
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/learning_iter_2.csv",
+      "sha256": "153edc7827aa9ba84d6acbea465363d4acf1161fc8d1b005066f5816310ecba3",
+      "size_bytes": 691454
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/runtime_provenance.yaml",
+      "sha256": "18c3999f9d066fed1aa2be7403f21a9def55c97c259d5bca4b4843f5918e55cd",
+      "size_bytes": 1078
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/index.yaml",
+      "sha256": "8259659853f2a8dae45683f4729d61b5e07389d5d9a0c05f8a553637eb67e9e4",
+      "size_bytes": 291
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/logs/chunk_summary_0.log",
+      "sha256": "1f3210518beab3ff0238436b9e3c97b987f2d60f902fd8582f691199d4dd58a8",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/logs/chunk_summary_1.log",
+      "sha256": "39329f3c88b36cb34034837723e41c4573c7e6c72beea45749a24ae0f3b77ac2",
+      "size_bytes": 1439
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/logs/chunk_summary_10.log",
+      "sha256": "d9171b40fdc89f5744fd1655b4e61e6ee547a5e09210f86890a739185756ada4",
+      "size_bytes": 1436
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/logs/chunk_summary_11.log",
+      "sha256": "6ca898bd6d8921fc49f1f3d2d6da8dc2522a4880ca791e10ba028eefac170a22",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/logs/chunk_summary_2.log",
+      "sha256": "ca258854ec9affabac8ec375129635c1d79ddf59912fd28fc1a33fe14adb9096",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/logs/chunk_summary_3.log",
+      "sha256": "2036f5ad6e9b3764736b0aa1964b7dbd768cf1f92ebc430da9ff110d2c10d243",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/logs/chunk_summary_4.log",
+      "sha256": "a02d38929e0de30c6d8c8a8339c8b6921ab18060951d900f8335bd6b8b80977e",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/logs/chunk_summary_5.log",
+      "sha256": "fd4a87d38320c4972ab9321e5ebee130313a5fb6fff05c1fb6469d4b312ce213",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/logs/chunk_summary_6.log",
+      "sha256": "1c4ec9dd13f37d4ff639ef54e51fc946343b7c48ee1b88c767dcad0e53b57fd1",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/logs/chunk_summary_7.log",
+      "sha256": "a2d82795191f0946a913f272a797efd163b153ecbfb4aa76b92d3db05ea2f434",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/logs/chunk_summary_8.log",
+      "sha256": "73d517b582839b6a8604e6c8c1ca2184f834798ea066c010b95c40b1cb9bd896",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/logs/chunk_summary_9.log",
+      "sha256": "8386013bb45fc1283d7bc1a4fc42b842d24b743a78e1e85f41ca6f8998a39be0",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/logs/index.yaml",
+      "sha256": "0d5cc8caae86812cbf06845e74b886e5d5f20b18c025137c2415b4eef32c3d93",
+      "size_bytes": 491
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/index.yaml",
+      "sha256": "743df9f566cc76e150e83f18a79216f6b2f2384f8094d78dff7d35a2131703c8",
+      "size_bytes": 802
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/ppt_commissioning_pointing_123424_citlali.ecsv",
+      "sha256": "1a8f5e47de28227be16b779171ab6cfb032bc92647e6d279dacb8d76f8060a05",
+      "size_bytes": 22075
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "sha256": "7679107a423ffff91e28912f12fff56751f12b9138473d33e9d72ef62f75af6b",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "sha256": "11920ca9159b318a654d51e3ab7d00754e3b2239f1818c54b0915df9eea3c0d5",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "sha256": "e1dc142b5be2e4611266276555cf1e97d5c6b242368281e852960fab019e8c27",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_pointing_123424_hist.nc",
+      "sha256": "588894f4be9fe47dc3904c20d51c9715f0ad6bac872a78647531c268d6890e31",
+      "size_bytes": 15501
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_pointing_123424_mapdiag.nc",
+      "sha256": "4bbee39e38713fd7d12b7836decd4f652eb01329f2a2d3d03ea869df970dd25c",
+      "size_bytes": 63962
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+      "sha256": "6cd93403abbc7e99e761d0aa8f366199df5e116738b77855da19f4801a65f9f3",
+      "size_bytes": 19021604
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_pointing_123424_psd.nc",
+      "sha256": "94e78a2fbdfbb8fa86c69599b83bbe7e64810a90d45afe0a0a0c5e4c63ac6d34",
+      "size_bytes": 10628569
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_pointing_123424_ptcdiag.nc",
+      "sha256": "7bc853edfb7dd038c59d65df3a9513ef59be29d8f6deb35ee70ba1eb76e454e6",
+      "size_bytes": 7723946
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_pointing_123424_rtcdiag.nc",
+      "sha256": "d61721cacda8a82c5d1df9b366654935f39d398be7728f3b63a19fb4ed7ebeab",
+      "size_bytes": 6590443
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_pointing_123424_stats.nc",
+      "sha256": "9b2b6983904f96e38dddb711f367b9da265e528d9ea70a3090f6600b03988be0",
+      "size_bytes": 5169896
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw_timestream_provenance.yaml",
+      "sha256": "59679cc808fe8a7eb99609f15a5097976151ea3f056ec5c9d5f8e1eb05f512f3",
+      "size_bytes": 12495
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/timestream_output_provenance.yaml",
+      "sha256": "fe1e7232b57c67dc794a693c4614bb42321e97e0775f714eb59514bdd5a75580",
+      "size_bytes": 1193
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/ALPHA_1P00_CONTROL.yaml",
+      "sha256": "c5fc9f5c4ea86de468a0e939e07b6d60d91ec40dd50cae6a67d858983906e3a7",
+      "size_bytes": 549
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/BASE_POINT_123424.yaml",
+      "sha256": "f710d1c172b5655b136ef4d8ebbff918083d37cb4974036c7af8725978d51491",
+      "size_bytes": 16258
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/COMMON_LOCAL.yaml",
+      "sha256": "716c952133ee37b51d8ca4edb783741279aa8f9117149810ab94f987c5d4e269",
+      "size_bytes": 356
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/FITREPORTS_LOCAL_R0.3.yaml",
+      "sha256": "df63463a1a3e83ed5dc2969525b9600c60d88b3226f79af82fda6cba4750d629",
+      "size_bytes": 119
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/H_uninjected.yaml",
+      "sha256": "6603307c4c438a564c11fe166e1174b1ec043bd763c7b4054daa0818a1399c1a",
+      "size_bytes": 629
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/INPUTS_LOCAL.yaml",
+      "sha256": "d79e22e1fdfdc67e9235829f1fc2b904a82894c4fbfc10fbfa7b713409b9bc02",
+      "size_bytes": 2975
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/citlali.log.gz",
+      "sha256": "8d81b81991c1e64c376da863e31202401068f781dc0939d72ef9aa697b810ad2",
+      "size_bytes": 91918
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/citlali_restart_checkpoint.nc",
+      "sha256": "679253bfa458c5eea171fcbedeaf1f65242859964c5069d6621d4635755e5932",
+      "size_bytes": 402375
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/fruit_response_123424_iter3.bin.gz",
+      "sha256": "ab14a8649dc77d2ec90323534bc21f602069966af3f8daed271eb0e8aacd7b9c",
+      "size_bytes": 241247410
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/index.yaml",
+      "sha256": "50589a8b27bb5353cd110dff939b41b3457507f2a8a285fb4334570460e42754",
+      "size_bytes": 508
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/learning_housekeeping_iter_3.csv",
+      "sha256": "f083ee03ef062c2bcbfc81802ff5c471b2e6a5408541559b9f3cc72e04ae0d31",
+      "size_bytes": 381
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/learning_iter_3.csv",
+      "sha256": "aaec5d3370942a671328959aee960fe69a3bbf2dd6e43c37686a40cdd28fb86c",
+      "size_bytes": 786559
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/runtime_provenance.yaml",
+      "sha256": "18c3999f9d066fed1aa2be7403f21a9def55c97c259d5bca4b4843f5918e55cd",
+      "size_bytes": 1078
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/index.yaml",
+      "sha256": "fe8cded20baef191d9d9492337dce6d60f9a48a42738aa121d9b86c651567f20",
+      "size_bytes": 291
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/logs/chunk_summary_0.log",
+      "sha256": "204f2519a54b9fd76d1f72df0c5468664ebf22d6cb3a062aa0844c9cadcf50b7",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/logs/chunk_summary_1.log",
+      "sha256": "b90491f4811c160a8c0d866ada0812a2a221b93fbc08b878fd0913f595601c7f",
+      "size_bytes": 1438
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/logs/chunk_summary_10.log",
+      "sha256": "14c9862ddca1062d88d651f8c0e7711e2a55198ddfc1c8413d487da2055283d2",
+      "size_bytes": 1436
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/logs/chunk_summary_11.log",
+      "sha256": "4fe1f4a910cb70b1772075c7533f5eb6545b2349d826ddc56580dc7f182d5004",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/logs/chunk_summary_2.log",
+      "sha256": "16443ba27080dc3f745d2729882bfd616406334e24109bed9071a8c8e91d067a",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/logs/chunk_summary_3.log",
+      "sha256": "78b2cb9328e695fde856db5defb360be82e7fca65855493e2275da167b1d5b01",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/logs/chunk_summary_4.log",
+      "sha256": "d8fdff0e9959f10ac9f95a6a10e15365ee90419d3f45b401d2e95cce3c897432",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/logs/chunk_summary_5.log",
+      "sha256": "d49c9008560faeea6ec9e48ca7db9591cdbffb0c4e2c09771c98473b9322641b",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/logs/chunk_summary_6.log",
+      "sha256": "db2bdf9cefaf9d4a273429ebd67f1c8d54c35471d1d8179bd6f224b8ef0cb745",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/logs/chunk_summary_7.log",
+      "sha256": "dcad06e90a160f059412d03c9c7ad30630c2adbd1479f902b425187ecd3c2fdc",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/logs/chunk_summary_8.log",
+      "sha256": "14b67506579e2d526d848ae1ee18b42cd7761f1599d5829b38b083719090d390",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/logs/chunk_summary_9.log",
+      "sha256": "22e96bc8144bcc85ce5efedb2cd9fbb13a5a9a7f6365e51d55c4389821943ab2",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/logs/index.yaml",
+      "sha256": "5d1dff0c6735d0d00d425ceb3da4d1d275217099545b0f5df9ffb44fbf6c55f2",
+      "size_bytes": 491
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/index.yaml",
+      "sha256": "7a63b568818753a0ceba0c98f0f6888509316833feb0dbca58472f8ab0a1b266",
+      "size_bytes": 802
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/ppt_commissioning_pointing_123424_citlali.ecsv",
+      "sha256": "86d006b7e6a4d30c72d08bc146ffda1ebd755fc3b2f107dfe2697bfac88de453",
+      "size_bytes": 22072
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "sha256": "c92b84f0001c9df3a39255a751518e6175e9d4b44dbd1fa01420c1cce93af950",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "sha256": "5e33488b5b48408cea78601f63ec2efa0e4ef61b65f50a90c8d6b9f90cec8f93",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "sha256": "884a99b691a5382f3c63e3dae353d310bfc4f2786d125615db102ac7d65c6050",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_pointing_123424_hist.nc",
+      "sha256": "5a4bdc219ec3dd3fd4588cd522f52b17ca9678715a5149e21f7973065c7e4393",
+      "size_bytes": 15501
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_pointing_123424_mapdiag.nc",
+      "sha256": "785b624defac970bfd84db8d265cd7a1b730eef272315829454adab67fe59464",
+      "size_bytes": 63962
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+      "sha256": "89b7600eb4c709024d1cc0bc89afaf4ee3df2a2b912bf1307e00b7cc80d84790",
+      "size_bytes": 19021816
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_pointing_123424_psd.nc",
+      "sha256": "15949facb28eb8a09d6b5561ab25e0756108cf05e97fe19a9f4a358e55b2151c",
+      "size_bytes": 10628569
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_pointing_123424_ptcdiag.nc",
+      "sha256": "69eaf815b98332d9ce7dce2acea73ab261f95334d82f315f7cb4c9f531da80e2",
+      "size_bytes": 7723946
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_pointing_123424_rtcdiag.nc",
+      "sha256": "d61721cacda8a82c5d1df9b366654935f39d398be7728f3b63a19fb4ed7ebeab",
+      "size_bytes": 6590443
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_pointing_123424_stats.nc",
+      "sha256": "c8544a9e1af174ed9f322f51e89130c957bc404f3c6b62005e9529e837d0bc4f",
+      "size_bytes": 5169896
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw_timestream_provenance.yaml",
+      "sha256": "59679cc808fe8a7eb99609f15a5097976151ea3f056ec5c9d5f8e1eb05f512f3",
+      "size_bytes": 12495
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/timestream_output_provenance.yaml",
+      "sha256": "fe1e7232b57c67dc794a693c4614bb42321e97e0775f714eb59514bdd5a75580",
+      "size_bytes": 1193
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/ALPHA_1P00_CONTROL.yaml",
+      "sha256": "c5fc9f5c4ea86de468a0e939e07b6d60d91ec40dd50cae6a67d858983906e3a7",
+      "size_bytes": 549
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/BASE_POINT_123424.yaml",
+      "sha256": "f710d1c172b5655b136ef4d8ebbff918083d37cb4974036c7af8725978d51491",
+      "size_bytes": 16258
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/COMMON_LOCAL.yaml",
+      "sha256": "716c952133ee37b51d8ca4edb783741279aa8f9117149810ab94f987c5d4e269",
+      "size_bytes": 356
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/FITREPORTS_LOCAL_R0.3.yaml",
+      "sha256": "df63463a1a3e83ed5dc2969525b9600c60d88b3226f79af82fda6cba4750d629",
+      "size_bytes": 119
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/H_uninjected.yaml",
+      "sha256": "6603307c4c438a564c11fe166e1174b1ec043bd763c7b4054daa0818a1399c1a",
+      "size_bytes": 629
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/INPUTS_LOCAL.yaml",
+      "sha256": "d79e22e1fdfdc67e9235829f1fc2b904a82894c4fbfc10fbfa7b713409b9bc02",
+      "size_bytes": 2975
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/citlali.log.gz",
+      "sha256": "82dbeff116f0c54347e2d28f92bc5cc3882a6d1c845462856840cd16cea061d7",
+      "size_bytes": 91543
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/citlali_restart_checkpoint.nc",
+      "sha256": "bfe782288ca37a3d9bc79b7784e5d25a9f0fd2a123dfddd8b4d7d02d8ef8dd35",
+      "size_bytes": 402375
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/fruit_response_123424_iter4.bin.gz",
+      "sha256": "7cf939ea7e1085ee5c4a5fa5c89a95850d8ea07269bb5bc95b43f1b787198745",
+      "size_bytes": 241267371
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/index.yaml",
+      "sha256": "467b06446aef62af03b6c8c5109e083d8848ca19a09916a570e638ae7aa5249f",
+      "size_bytes": 508
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/learning_housekeeping_iter_4.csv",
+      "sha256": "f083ee03ef062c2bcbfc81802ff5c471b2e6a5408541559b9f3cc72e04ae0d31",
+      "size_bytes": 381
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/learning_iter_4.csv",
+      "sha256": "a688277459d13694ebed15d1b2e6699b057caca09774e5e8e0f9c4666ed5e305",
+      "size_bytes": 881518
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/runtime_provenance.yaml",
+      "sha256": "18c3999f9d066fed1aa2be7403f21a9def55c97c259d5bca4b4843f5918e55cd",
+      "size_bytes": 1078
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/index.yaml",
+      "sha256": "4e8c6b1e375c80175a182ae28c6d356cf006b4397a1e46159f8fe82f85dc103e",
+      "size_bytes": 291
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/logs/chunk_summary_0.log",
+      "sha256": "730fa6f51b419de9e4182083a31544fd17699ed002cd56879e95be892eb8ac5b",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/logs/chunk_summary_1.log",
+      "sha256": "894a90a0b0b8f7be74bbb083dfee719af182ab5d88a47c8e1d3ddbb46aa78629",
+      "size_bytes": 1438
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/logs/chunk_summary_10.log",
+      "sha256": "4a1c738afe4d13edbd4518b0af3b1df14bd18e265d077677011074aa7c87da5d",
+      "size_bytes": 1436
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/logs/chunk_summary_11.log",
+      "sha256": "36a16669229667f070088d39e619ca78063de48ff00e1e31bc5c9afd93c97cc4",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/logs/chunk_summary_2.log",
+      "sha256": "f9e40c500cfbd392cb214e328d278e3200cd734f521b92ec84240b4951db1a24",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/logs/chunk_summary_3.log",
+      "sha256": "88063bc488a48e6407ac4570caa58d269eb6198d4f61d257f8a260291340aabe",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/logs/chunk_summary_4.log",
+      "sha256": "1792ae7262e6349ce65ed93dee91e254befdb2753eff1b877918dfd23bfe5120",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/logs/chunk_summary_5.log",
+      "sha256": "0d43c38f02865038225ef9fa1a6145c7c08f742727526310ece43a83d985fa0d",
+      "size_bytes": 1433
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/logs/chunk_summary_6.log",
+      "sha256": "46e1b36e75c948e232cc4b2155dbbd1d8941ba0a08bb35a3847f096226390c6c",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/logs/chunk_summary_7.log",
+      "sha256": "8ea8f637abb16cff04ddf36f07a04631e2d134078d947d4bd6e7a19122fab571",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/logs/chunk_summary_8.log",
+      "sha256": "e0defc1d7e01b6afb64ac722fedacd2db334a52312b8abee5b1b4c3e576b9d4b",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/logs/chunk_summary_9.log",
+      "sha256": "19399c56b4ad038e0760d2e1f93055e3ea1521f793a68398bd957f6e7c268ae2",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/logs/index.yaml",
+      "sha256": "f0c49efc38ce69187fc63c7eb2cef42a980059a2e688324bca786aede61a58b3",
+      "size_bytes": 491
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/index.yaml",
+      "sha256": "7edd989bbff2992354bbc7e06ddd7a5c726ecf474ae019c82a905fe1429f5c33",
+      "size_bytes": 802
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/ppt_commissioning_pointing_123424_citlali.ecsv",
+      "sha256": "987d692c0dff036834471d1764a66d873a999eff2ad35e419bcd2bbb64b46212",
+      "size_bytes": 22065
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "sha256": "bb906714bd25cdc794dd7bcd30185d8fbadba06f6067e8a397b4258b78e1faf0",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "sha256": "70468e3b9ec97ea558e54108e8da74cd13ef3340dfd4e498cac7b6784802ca05",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "sha256": "9e1e7f491d81324dba860faff524037b58b8309925bcdedb912cdb612680470f",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_pointing_123424_hist.nc",
+      "sha256": "cceb16b888d28862229678511b110454d1286c0eed7707e38414e7335496bc8b",
+      "size_bytes": 15501
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_pointing_123424_mapdiag.nc",
+      "sha256": "37153b81af96a3671d7cfa09ed9c3250a2da750a22c609fc13d192d9e4197f8e",
+      "size_bytes": 63962
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+      "sha256": "c5872ce485b318794676f63846ce1fd5fd5d5db8153045d9c49e6c0eb309d6c0",
+      "size_bytes": 19022201
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_pointing_123424_psd.nc",
+      "sha256": "874fa3c2033545d1d1798b7b322c33a79c5cfb17b247b3b946d00a9d8754892e",
+      "size_bytes": 10628569
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_pointing_123424_ptcdiag.nc",
+      "sha256": "74c7e4fc0bfd095cd3d7f3865372bd4e052cd5f6ea467c10f140356279ae17b2",
+      "size_bytes": 7723946
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_pointing_123424_rtcdiag.nc",
+      "sha256": "d61721cacda8a82c5d1df9b366654935f39d398be7728f3b63a19fb4ed7ebeab",
+      "size_bytes": 6590443
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_pointing_123424_stats.nc",
+      "sha256": "113335042746aae7a8edeb4ade4a6f505c482a26795c9af120e67fd649d90df0",
+      "size_bytes": 5169896
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw_timestream_provenance.yaml",
+      "sha256": "59679cc808fe8a7eb99609f15a5097976151ea3f056ec5c9d5f8e1eb05f512f3",
+      "size_bytes": 12495
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/timestream_output_provenance.yaml",
+      "sha256": "fe1e7232b57c67dc794a693c4614bb42321e97e0775f714eb59514bdd5a75580",
+      "size_bytes": 1193
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/ALPHA_1P00_CONTROL.yaml",
+      "sha256": "c5fc9f5c4ea86de468a0e939e07b6d60d91ec40dd50cae6a67d858983906e3a7",
+      "size_bytes": 549
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/BASE_POINT_123424.yaml",
+      "sha256": "f710d1c172b5655b136ef4d8ebbff918083d37cb4974036c7af8725978d51491",
+      "size_bytes": 16258
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/COMMON_LOCAL.yaml",
+      "sha256": "716c952133ee37b51d8ca4edb783741279aa8f9117149810ab94f987c5d4e269",
+      "size_bytes": 356
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/FITREPORTS_LOCAL_R0.3.yaml",
+      "sha256": "df63463a1a3e83ed5dc2969525b9600c60d88b3226f79af82fda6cba4750d629",
+      "size_bytes": 119
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/H_uninjected.yaml",
+      "sha256": "6603307c4c438a564c11fe166e1174b1ec043bd763c7b4054daa0818a1399c1a",
+      "size_bytes": 629
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/INPUTS_LOCAL.yaml",
+      "sha256": "d79e22e1fdfdc67e9235829f1fc2b904a82894c4fbfc10fbfa7b713409b9bc02",
+      "size_bytes": 2975
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/citlali.log.gz",
+      "sha256": "c830d34b27bc312ae03f0c02a217fd402f8501f97d9532b33af73374d96a4f11",
+      "size_bytes": 90028
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/citlali_restart_checkpoint.nc",
+      "sha256": "90254eb0d4f30afa0652c45bc1e66604589d120ec506045fe41e4cbe140fc930",
+      "size_bytes": 402375
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/fruit_response_123424_iter5.bin.gz",
+      "sha256": "861a3bed2b67fb48ada4a81103acd1553f79f8bc6e01826ba81c7185b27048c7",
+      "size_bytes": 241245484
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/index.yaml",
+      "sha256": "08133f07db33cf6d54cabd80e47d0793a876f06b8169f1272119daf2de6dd071",
+      "size_bytes": 508
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/learning_housekeeping_iter_5.csv",
+      "sha256": "f083ee03ef062c2bcbfc81802ff5c471b2e6a5408541559b9f3cc72e04ae0d31",
+      "size_bytes": 381
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/learning_iter_5.csv",
+      "sha256": "795328c374cf394673c377e0fe56c03a14b71a5e1a6754c2050786024a063705",
+      "size_bytes": 976501
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/runtime_provenance.yaml",
+      "sha256": "18c3999f9d066fed1aa2be7403f21a9def55c97c259d5bca4b4843f5918e55cd",
+      "size_bytes": 1078
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/index.yaml",
+      "sha256": "28ddf3c627d59240d848dbf5e14a520af060cc5fa6260401ce6d4e58628b767c",
+      "size_bytes": 291
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/logs/chunk_summary_0.log",
+      "sha256": "3d957508ea9c529791b9ccc12e9f4b169fd0ff5798ea166a3643170f7c5c9fbf",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/logs/chunk_summary_1.log",
+      "sha256": "888c9a816ffdf30774ccb100969066941caaea80d586a9415fdd7af4e3aeea7f",
+      "size_bytes": 1440
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/logs/chunk_summary_10.log",
+      "sha256": "4fce3b516eb04a5436a32c558d247d82a91f028a363e476a52f4e7a60ad433a3",
+      "size_bytes": 1436
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/logs/chunk_summary_11.log",
+      "sha256": "4ecb1a5d9907f1b85e03beb0c772994cd25b46afca20dc1924bea7c000c61eef",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/logs/chunk_summary_2.log",
+      "sha256": "5d0b07b5f544d1c51bf8ef6a0cc9997e52d94f92f79ce587a2ec27b19196acd3",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/logs/chunk_summary_3.log",
+      "sha256": "abfa2b22542595f889b819066b34041a879e8cfdbb2e243d546bc6823cb39442",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/logs/chunk_summary_4.log",
+      "sha256": "5f9c669b0c5c4e068e1055e96933f9d070e46ea88212cb3d0cab64523c179b53",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/logs/chunk_summary_5.log",
+      "sha256": "d26d62a03f8518e33767b92f7c9a96db00e4223e5b88cb35fcc20ad0f4b09700",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/logs/chunk_summary_6.log",
+      "sha256": "b9d94534acba11c80d2af56794cc17b180c4121f1909b9529dfae6b3934eadbd",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/logs/chunk_summary_7.log",
+      "sha256": "6c9264b21ffcaa927ed35f19dea81bcc6d29f0ae3b1e83b0595431aeadd07354",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/logs/chunk_summary_8.log",
+      "sha256": "ff7653371554c5ef9c1847cd4e9e13431cb202a0dce3e8f237f3ace2f7e50f7a",
+      "size_bytes": 1434
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/logs/chunk_summary_9.log",
+      "sha256": "b7d5df76becf34c60c59d1d2c6313d1a2a02c21a6c6f5f4ffa02e5764e9c2cbc",
+      "size_bytes": 1435
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/logs/index.yaml",
+      "sha256": "4d715e509da00f9488d55d90b6d65769f194ea3878d9f2e846ca64a5b1e7b9fd",
+      "size_bytes": 491
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw/index.yaml",
+      "sha256": "b41601bae3cf136eae7f4b3001a6aa8a7d855bc8a12e02bb2a41f03d1bfb1f3d",
+      "size_bytes": 802
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw/ppt_commissioning_pointing_123424_citlali.ecsv",
+      "sha256": "3fc5dd0ed3645a72ed1621922cf4c3724eacdd50b05ba0634901e6e3170a5b86",
+      "size_bytes": 22066
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "sha256": "326eb17ce7cbddb4191045e6ec41c1b1f357e85b8bfceb3ad137b7c8b8dfe882",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "sha256": "debeb78ecf7a68ba9125c42b98f01a95d29f6399e2e36fbc254fea1f6f25e960",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "sha256": "d1f2b11552702125dd0fd02b1b0fca305a40a5aa58d14fce2d1e3a7514dff665",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw/toltec_commissioning_pointing_123424_hist.nc",
+      "sha256": "5e93ef5ad64edc9cf89d87bfcef72d4f9ef717bb97901ee49499d4c2db9420be",
+      "size_bytes": 15501
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw/toltec_commissioning_pointing_123424_mapdiag.nc",
+      "sha256": "7117b640517e908a2be6c563010d14be8a46bf63897a8397131bd8e9f8110b13",
+      "size_bytes": 63962
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+      "sha256": "cf44f6323f70f5884f15db42a49e3eabdcef4bb57bf8d190242664a41429a4f6",
+      "size_bytes": 19021487
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw/toltec_commissioning_pointing_123424_psd.nc",
+      "sha256": "3bf1db43ef0833ed4e6a8f8cba3074b622e48de782b52002863a217bb9492803",
+      "size_bytes": 10628569
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw/toltec_commissioning_pointing_123424_ptcdiag.nc",
+      "sha256": "06dcc3c4c610f98862607bd2e700d9d027cb754bd44982e6c8b1382e18c65449",
+      "size_bytes": 7723946
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw/toltec_commissioning_pointing_123424_rtcdiag.nc",
+      "sha256": "d61721cacda8a82c5d1df9b366654935f39d398be7728f3b63a19fb4ed7ebeab",
+      "size_bytes": 6590443
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw/toltec_commissioning_pointing_123424_stats.nc",
+      "sha256": "ea567453bc616c933766ca22d0490e81341171a1b1a6c4a93df3846a5b2ea63c",
+      "size_bytes": 5169896
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/raw_timestream_provenance.yaml",
+      "sha256": "59679cc808fe8a7eb99609f15a5097976151ea3f056ec5c9d5f8e1eb05f512f3",
+      "size_bytes": 12495
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/123424/timestream_output_provenance.yaml",
+      "sha256": "fe1e7232b57c67dc794a693c4614bb42321e97e0775f714eb59514bdd5a75580",
+      "size_bytes": 1193
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/ALPHA_1P00_CONTROL.yaml",
+      "sha256": "c5fc9f5c4ea86de468a0e939e07b6d60d91ec40dd50cae6a67d858983906e3a7",
+      "size_bytes": 549
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/BASE_POINT_123424.yaml",
+      "sha256": "f710d1c172b5655b136ef4d8ebbff918083d37cb4974036c7af8725978d51491",
+      "size_bytes": 16258
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/COMMON_LOCAL.yaml",
+      "sha256": "716c952133ee37b51d8ca4edb783741279aa8f9117149810ab94f987c5d4e269",
+      "size_bytes": 356
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/FITREPORTS_LOCAL_R0.3.yaml",
+      "sha256": "df63463a1a3e83ed5dc2969525b9600c60d88b3226f79af82fda6cba4750d629",
+      "size_bytes": 119
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/H_uninjected.yaml",
+      "sha256": "6603307c4c438a564c11fe166e1174b1ec043bd763c7b4054daa0818a1399c1a",
+      "size_bytes": 629
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/INPUTS_LOCAL.yaml",
+      "sha256": "d79e22e1fdfdc67e9235829f1fc2b904a82894c4fbfc10fbfa7b713409b9bc02",
+      "size_bytes": 2975
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/astrometry_provenance.yaml",
+      "sha256": "d2127265a7de78e28161ba958ff8e90cacba23ba764185eca64c9023393ec617",
+      "size_bytes": 1362
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/citlali.log.gz",
+      "sha256": "b2715993a484009e68a695765a596568e12f0336074e703dda4336cae5867116",
+      "size_bytes": 90277
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/citlali_merged_config.yaml",
+      "sha256": "e638469006a536b83ec62f86ee6b10ca26298c577c84626899c1f1a6170cb829",
+      "size_bytes": 15053
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/citlali_restart_checkpoint.nc",
+      "sha256": "2036fb320290af491bb52f2ef9062c28f64068ea025579c9bf774941aa26c83c",
+      "size_bytes": 402375
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/coadd_provenance.yaml",
+      "sha256": "a6e8ad77f908586770726b23bc395c33b37269aeccf32d10eabecb38c31cf928",
+      "size_bytes": 2271
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/config_source_manifest.yaml",
+      "sha256": "797be5d8da3ca2bc979801688284cc585691b0c05de4f5557d9d95dcfe6ff0b9",
+      "size_bytes": 2381
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/fruit_response_123424_iter6.bin.gz",
+      "sha256": "c476e45f7ada6e8ca19196a0583acb6fffbcbb75bd6e51491e0e697d62d349ea",
+      "size_bytes": 241271786
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/index.yaml",
+      "sha256": "b8a35be1696c6e6c015db56c913713813e81a50df6cf0a2be7c8fb955c753324",
+      "size_bytes": 508
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/kids_external_provenance.yaml",
+      "sha256": "fd522bb4b7d5d846318f21a450f0eabff5b31add2778d1a78966e63f1c1b278b",
+      "size_bytes": 970
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/learning_housekeeping_iter_6.csv",
+      "sha256": "f083ee03ef062c2bcbfc81802ff5c471b2e6a5408541559b9f3cc72e04ae0d31",
+      "size_bytes": 381
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/learning_iter_6.csv",
+      "sha256": "77de6a451e0b7417ffae6878b297797f52f4f10d972e5b0895c22a7e856532c1",
+      "size_bytes": 1071500
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/mapmaking_provenance.yaml",
+      "sha256": "437a26dbbbabd59c312103e5cc675669f489a9efbbc4bca6204e91a5c2591bf3",
+      "size_bytes": 18304
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/noise_products_provenance.yaml",
+      "sha256": "3fe70cfd7c4f0db6f09f300acdfcc242912c079749f9d9415e658eb8e4b78c40",
+      "size_bytes": 1440
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/pointing_provenance.yaml",
+      "sha256": "e29c4686319c26abc99c1f34499690ad6b9f171101ea2d883634dc579fb06be6",
+      "size_bytes": 1430
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/polarimetry_provenance.yaml",
+      "sha256": "76b0064cbb87035f6b9e05d6c31820ab7326881b42d94036137c834ae65130e6",
+      "size_bytes": 765
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/post_processing_provenance.yaml",
+      "sha256": "cf73b2cbb1addda9ac6077a43b29fbb902d3e75c02e8af553659cd3edaab20c2",
+      "size_bytes": 3621
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/processed_timestream_provenance.yaml",
+      "sha256": "dd16e9d1c026672a5316d0171cf3f43bdab4f680919ca38a3ce6f727c4a2dfbe",
+      "size_bytes": 16579
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu06/runtime_provenance.yaml",
+      "sha256": "18c3999f9d066fed1aa2be7403f21a9def55c97c259d5bca4b4843f5918e55cd",
+      "size_bytes": 1078
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduction.log",
+      "sha256": "14d5dc0c13260d482a86570dd729552129da2c727c764542218a4c5ac1c5e5e1",
+      "size_bytes": 3138015
+    }
+  ],
+  "scientific_normalization": "only the representation of the already registered added H audit scalar; all previous dimensions and state exact",
+  "status": "pass"
+}

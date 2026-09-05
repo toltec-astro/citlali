@@ -104,8 +104,13 @@ def require_checkpoint_identity(expected: Path, actual: Path, *, audit_added: bo
         for name in left.ncattrs():
             if not values_equal(left.getncattr(name), right.getncattr(name)):
                 raise ValueError(f"checkpoint attribute changed: {name}")
-        if set(left.dimensions) != set(right.dimensions):
+        audit_dimensions = {"fruit_response_state_dim"} if audit_added else set()
+        if set(right.dimensions) != set(left.dimensions) | audit_dimensions or audit_dimensions & set(left.dimensions):
             raise ValueError("checkpoint dimensions changed")
+        if audit_added:
+            dimension = right.dimensions["fruit_response_state_dim"]
+            if len(dimension) != 1 or dimension.isunlimited():
+                raise ValueError("H audit-state scalar dimension is malformed")
         for name, dimension in left.dimensions.items():
             other = right.dimensions[name]
             if len(dimension) != len(other) or dimension.isunlimited() != other.isunlimited():
@@ -114,6 +119,11 @@ def require_checkpoint_identity(expected: Path, actual: Path, *, audit_added: bo
         if set(right.variables) != set(left.variables) | extra or extra & set(left.variables):
             raise ValueError("checkpoint variable census changed")
         if audit_added:
+            if right["fruit_response_state"].dimensions != ("fruit_response_state_dim",) or right["fruit_response_state"].dtype is not str:
+                raise ValueError("H audit-state representation changed")
+            if any("fruit_response_state_dim" in variable.dimensions for name, variable in right.variables.items()
+                   if name != "fruit_response_state"):
+                raise ValueError("audit-state dimension was reused by scientific state")
             state = scalar_text(right["fruit_response_state"][...])
             if state.splitlines()[:1] != ["SCI-FRUIT-EL-F12-STATE-R0.1+CAP-001"] or not state.splitlines()[1].startswith("H "):
                 raise ValueError("H checkpoint audit state missing/wrong arm")

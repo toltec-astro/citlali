@@ -85,12 +85,18 @@ def test_checkpoint_audit_normalization_rejects_scientific_or_unlisted_change():
                 value = f.createVariable("penalty_factor", "f8")
                 value[()] = 0.
                 if arm:
-                    state = f.createVariable("fruit_response_state", str)
-                    state[()] = "SCI-FRUIT-EL-F12-STATE-R0.1+CAP-001\nH 0\n0\n0\n0\n0\n"
+                    f.createDimension("fruit_response_state_dim", 1)
+                    state = f.createVariable("fruit_response_state", str, ("fruit_response_state_dim",))
+                    state[0] = "SCI-FRUIT-EL-F12-STATE-R0.1+CAP-001\nH 0\n0\n0\n0\n0\n"
         analysis.require_checkpoint_identity(left, right, audit_added=True)
         with Dataset(right, "a") as f:
             f["penalty_factor"][()] = .5
         with pytest.raises(ValueError, match="scientific checkpoint"):
+            analysis.require_checkpoint_identity(left, right, audit_added=True)
+        with Dataset(right, "a") as f:
+            f["penalty_factor"][()] = 0.
+            f.createDimension("unrelated_science_dimension", 1)
+        with pytest.raises(ValueError, match="checkpoint dimensions"):
             analysis.require_checkpoint_identity(left, right, audit_added=True)
 
 
@@ -112,3 +118,26 @@ def test_run_controller_has_exact_predeclared_order_and_requires_no_implicit_ret
     assert runner.ORDER == ["H0/uninjected", "H0/injected", "H/uninjected", "H/injected",
                             "Half/uninjected", "Half/injected", "Hold/uninjected", "Hold/injected"]
     assert len(runner.RESTART_ORDER) == 4
+
+
+def test_passed_receipt_cannot_bypass_fresh_prerequisite_scientific_gate(tmp_path, monkeypatch):
+    import json
+    directory = tmp_path / "H0/uninjected"
+    directory.mkdir(parents=True)
+    (directory / "EXECUTION_RECEIPT.json").write_text(json.dumps({"status": "pass"}))
+    def failed_gate(*args):
+        raise ValueError("scientific map mismatch")
+    monkeypatch.setattr(runner, "completed_gate", failed_gate)
+    with pytest.raises(ValueError, match="scientific map mismatch"):
+        runner.verify_prerequisite(tmp_path, "H0/uninjected", {})
+
+
+def test_scientific_or_execution_failure_cannot_use_scalar_repair(tmp_path):
+    import json
+    directory = tmp_path / "H/uninjected"
+    directory.mkdir(parents=True)
+    for status in ({"status": "unavailable", "exit_code": 0, "failure": "scientific map mismatch"},
+                   {"status": "unavailable", "exit_code": 1, "failure": "ValueError: checkpoint dimensions changed"}):
+        (directory / "EXECUTION_RECEIPT.json").write_text(json.dumps(status))
+        with pytest.raises(ValueError, match="has not passed"):
+            runner.verify_prerequisite(tmp_path, "H/uninjected", {})
