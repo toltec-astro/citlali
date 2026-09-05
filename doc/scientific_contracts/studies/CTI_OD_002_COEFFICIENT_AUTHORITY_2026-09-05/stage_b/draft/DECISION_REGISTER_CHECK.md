@@ -1,6 +1,6 @@
 # PDF decision-register and crosswalk check
 
-Draft checked: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.1**  
+Draft checked: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.2**  
 Check date: **2026-09-05**  
 Result: **PASS**
 
@@ -18,13 +18,16 @@ explicitly checked against `OWNER_DECISION_LEDGER.md`:
   five individually listed deferred items in the ledger.
 - All entries remain separated as decided, open, or deferred; no open proposal
   was rendered as adopted.
+- UFC-OD-007 remains open in both records and now explicitly covers the
+  disjoint structural-target/payload-fidelity partition. The r0.2 repair is
+  recorded as an initial-draft consistency repair, not an owner decision.
 
 The checked source hashes were:
 
 | File | SHA-256 |
 | --- | --- |
-| `OWNER_DECISION_LEDGER.md` | `3c1fb532a23014f0f98e40e6b614ce152a39458bbbaec98dfce3a79afa453c1d` |
-| `src/common/assumptions.tex` | `6c85d8cf9118ef2074e0b620665caa0c3ba0add469c3e80b55ab33ca778ea26b` |
+| `OWNER_DECISION_LEDGER.md` | `3f9b405272bcdf003987b80abe148f99cbd5400fa7be84fff5daaeeef7f358ce` |
+| `src/common/assumptions.tex` | `3844877f22a6ba9388a3b21c7cf478d602206774f583d55e4c5448938e067581` |
 
 The requirement/prediction checks also passed:
 
@@ -37,8 +40,7 @@ Their checked hashes were:
 
 | File | SHA-256 |
 | --- | --- |
-| `CROSSWALK.md` | `e41e33cffb28702c28e4210aa38aa91729fe670ded48d8d061fff3c3bff34742` |
-| `PREDICTION_CROSSWALK.md` | `c7e23c45cd94076aa896681ead41a160a4a46bfee597d62f9cc069c91b8b7d22` |
-| `src/common/requirements.tex` | `6981313de81b51a8b5e25f0057299589f762742b1aa350049a27be8b0cd8470f` |
-| `src/common/edge_cases.tex` | `f5f6ef5d4a82334e88f5c754c4ca0e1c19c0ec4184f6c87c875d189ca064ddbf` |
-
+| `CROSSWALK.md` | `7d2be3cb5d5e4a1fd84e47c1a4b2c93044ff1428dcf82099b59261a75adfb255` |
+| `PREDICTION_CROSSWALK.md` | `8189244a0b5da6e7c3c1a8cc6cbff9bb0ae4d27586f5be726d9146f1fc30b83d` |
+| `src/common/requirements.tex` | `9355b660002215ba7791677d0c1b1877cea033feb7a9ac439f251e073f1ef932` |
+| `src/common/edge_cases.tex` | `fb39a76ac0e7fa57667fd320e7150c16b407544ee8358b17570f86fb1187c4c4` |

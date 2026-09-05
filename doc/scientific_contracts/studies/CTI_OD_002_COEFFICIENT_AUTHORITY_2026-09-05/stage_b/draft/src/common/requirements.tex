@@ -11,8 +11,9 @@ UFC-REQ-001 & The family shall have exact identity \FamilyKey, scientific
 owner SCI-PTC, and no active or registered status until owner approval and
 exact Registry binding.\\
 UFC-REQ-002 & The logical index shall be exact detector-time occurrence $i$;
-any scalar storage shall bind the complete lossless broadcast relation in
-Equation~\ref{eq:broadcast}.\\
+any scalar publication shall structurally bind its identity to the complete
+lossless target relation in Equation~\ref{eq:broadcast}. Its stored membership
+manifest shall be separately evaluated as payload-fidelity evidence.\\
 UFC-REQ-003 & For one observation and bound PTC product generation,
 coefficient support and normalization population shall both equal the exact
 PTC output support as in Equation~\ref{eq:domain}.\\
@@ -22,10 +23,11 @@ in Equations~\ref{eq:constant}--\ref{eq:normalized}.\\
 UFC-REQ-005 & The family shall accept no numerical parameter. Any constant,
 unit, operator, or population override shall require another registered family
 or version and shall not be silently ignored.\\
-UFC-REQ-006 & A singleton population shall be valid. An empty, duplicate,
-ambiguous, or conflicting population shall create no realized coefficient
-generation and shall not be repaired by zero, unity, deduplication, or an
-empty pass.\\
+UFC-REQ-006 & A singleton population shall be valid. An empty population, or
+an authoritative population with duplicate, ambiguous, or conflicting
+identity, shall create no realized coefficient generation and shall not be
+repaired by zero, unity, deduplication, or an empty pass. Stored payload
+membership is assessed only after a unique target population exists.\\
 UFC-REQ-007 & Occurrences outside coefficient support shall have no coefficient
 under this family; absence shall remain distinct from numerical zero.\\
 UFC-REQ-008 & Every generation shall bind exact transformed product,
@@ -44,21 +46,26 @@ placeholder shall not be used or simulated.\\
 UFC-REQ-012 & The profile shall bind exact use, owner, source, object/domain,
 restrictions, no-exception rule, response/uncertainty roles, compatibility,
 supersession, missing/conflict behavior, aggregation status, and lifecycle.\\
-UFC-REQ-013 & Structural identity, sample validity, payload availability,
-producer QC, MAP admission, JINC admission, and each consumer's numerical
-classification and contribution shall remain distinct.\\
+UFC-REQ-013 & Structural target identity, stored payload membership, payload
+availability, producer fidelity, sample validity, MAP admission, JINC
+admission, and each consumer's numerical classification and contribution shall
+remain distinct.\\
 UFC-REQ-014 & Every applicable fact and predicate shall use T/F/U/C semantics;
 silence shall be unknown, conflict shall be preserved, known exclusion shall
 dominate unrelated unknowns, and no evidence shall be erased.\\
 UFC-REQ-015 & Requested, applicability, eligibility, and realization shall be
 four independent axes, including uninstantiated eligibility where no question
-is evaluated.\\
+is evaluated. A completed false predicate shall yield a realized ineligible
+profile evaluation, not a failed profile artifact.\\
 UFC-REQ-016 & All profile restrictions and structural invariants shall be
 nonexceptionable. No exception from VAL, another use, consumer, or mode shall
 alter them.\\
-UFC-REQ-017 & Missing, invalid, conflicting, unavailable, exact zero,
-non-finite, and unrepresentable states shall remain distinct and shall follow
-the stated failure scopes.\\
+UFC-REQ-017 & Structural missing/conflict/ambiguity shall stop the question;
+within an established target, absent evidence or unexplained unreadability
+shall be $\mathbf U$, while authoritatively established corruption or
+missing/extra/repeated stored membership shall be $\mathbf F$. These states,
+conflict, exact zero, non-finite, and unrepresentable cases shall remain
+distinct and follow the stated failure scopes.\\
 UFC-REQ-018 & Response and uncertainty availability shall be advisory for this
 coefficient-fidelity profile; exact upstream states shall be preserved and
 neither identity response nor zero uncertainty shall be inferred.\\
@@ -86,4 +93,3 @@ representation/response fidelity, observational performance, and production
 readiness shall remain separate evidence claims.\\
 \bottomrule
 \end{longtable}
-

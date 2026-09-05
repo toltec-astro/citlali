@@ -1,51 +1,52 @@
 # Cached PDF build and render receipt
 
-Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.1**  
+Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.2**  
 Date: **2026-09-05**
+
+## Revision and operation record
+
+The r0.2 sibling began as an exact copy of the sealed r0.1 package's 43
+final/source artifact files. The old `build/` scratch was excluded. The two
+copied root PDFs were replaced by fresh r0.2 builds, and every log and QA
+raster under this package's `build/` was created during this revision.
+
+The required PDF artifact marker was successfully invoked exactly once for
+this bounded edit operation, immediately before the new sibling directory was
+created, with operation kind `edit`, expected output count `2`, and output
+format `pdf`.
 
 ## Renderer and network posture
 
 Both PDFs were produced with local `/opt/homebrew/bin/tectonic` using
-`--only-cached`. No package installation, network retrieval, or external
-scientific source was used. Build logs and visual-QA rasters are confined to
-`build/`.
+`--only-cached`. No installation, network retrieval, or external scientific
+source was used. The existing output-local upright-font substitution remains
+unchanged from r0.1 because the cached TeX assets lack the requested slanted
+metric; this repair made no typography change.
 
-The required create-operation marker was successfully invoked once before
-output authoring. A preceding literal invocation containing the manager
-message’s sentence-final period was rejected with usage text and created no
-marker; the accepted invocation ended at `--output-format pdf`.
-
-## Attempt history
-
-1. The first sandboxed cached call failed before TeX because the local
-   renderer’s macOS system-configuration client returned a null object.
-2. The first permitted local call found the entrypoint but reported
-   `src/common_core.tex` unresolved because Tectonic resolves input paths
-   relative to `src/`. All includes were then made output-local and relative.
-3. Cached assets lacked the Latin Modern slanted metric
-   `lmromanslant10-regular`. A T1 fallback likewise lacked `ecrm1095`.
-4. The final entrypoints silently substitute the cached upright Latin Modern
-   face for italic/slanted requests. This is typography only; no scientific
-   wording, equation, requirement, or decision changed.
-5. Both final cached builds completed, reran TeX for references, and wrote
-   PDFs. Final logs contain no overfull box, undefined-reference, emergency,
-   fatal, or TeX error entry. Narrow-table underfull spacing notices remain and
-   do not clip content.
+Both cached builds completed and reran TeX for references. Their final logs
+contain no overfull box, undefined-reference, emergency, fatal, or TeX error
+entry. Narrow-table underfull spacing notices remain; rendered inspection
+found no clipping or overlap.
 
 ## Final artifacts
 
 | View | Pages | SHA-256 |
 | --- | ---: | --- |
-| `scientific_rationale.pdf` | 12 | `e46cca90b1bb10c84bb1987bff3582b0fe825f3f8bc58650c7befc7b91f80fcb` |
-| `engineering_conformance.pdf` | 11 | `a50d4012816adf107ac9ec6978f85102474b27ecf16b4089a6645e2cfcc49b92` |
+| `scientific_rationale.pdf` | 13 | `3f67fe72c973cc015b062591d7fe9946b67fd6bbee1370ba32ad609b11991e7d` |
+| `engineering_conformance.pdf` | 13 | `4083fe401d39b2193a0a420a6fde1af981dbbbc65b72d4106d607a8f3cc24d86` |
 
-Each root PDF byte-matches its corresponding `build/` copy. PDF metadata
-contains the full draft contract version and document revision in title and
-subject. The entrypoints force the same visible version/revision header on all
-standard and special page styles, including longtable continuation pages.
-Representative normal and continuation pages in both final views were
-rendered at 110 dpi and visually checked for the header, legible equations,
-table boundaries, clipping, and overlap.
+Each root PDF byte-matches its corresponding `build/` copy. PDF title and
+subject metadata contain `v0.1-draft.1 / r0.2`. Text extraction checked the
+visible `v0.1-draft.1/r0.2` running header at the opening of all 13 pages in
+each view, including longtable continuation pages.
+
+All 13 pages of each PDF were rendered at 110 dpi. The scientifically affected
+scientific pages 3--5, 8--9, and 12--13 and engineering pages 2--5, 8, and
+11--12 were visually inspected at full rendered resolution. The structural
+gate, UQ-05 rule and restriction, four-axis distinction, failure-scope table,
+requirements, predictions, equations, and table boundaries are legible, with
+no clipping or overlap. Visible headers were also confirmed on these affected
+pages; the all-page extraction check covers the remaining headers.
 
 ## Reproduction commands
 

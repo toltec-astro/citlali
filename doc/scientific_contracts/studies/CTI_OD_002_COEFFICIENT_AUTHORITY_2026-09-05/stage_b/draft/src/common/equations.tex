@@ -13,8 +13,16 @@ the lossless relation
  \mathcal B_g(1)=\{(\boldsymbol\iota_i,1):i\in\mathcal D_{g,o}\}.
  \label{eq:broadcast}
 \end{equation}
-Time, row, column, shape, cardinality, detector label, coordinate equality, or
-container position cannot establish broadcast membership.
+Here $\mathcal B_g$ is the authoritative target binding between the identified
+scalar publication and the exact, unique population; it is established before
+payload fidelity is evaluated. A stored payload-membership manifest is
+separate evidence about whether the publication realizes that target. Time,
+row, column, shape, cardinality, detector label, coordinate equality, or
+container position cannot establish either the target binding or its stored
+membership. A missing or conflicting target binding, or a duplicate or
+ambiguous identity in the target population, prevents establishment of the
+question. After the target is established, a complete authoritative stored
+manifest that omits, adds, or repeats a member is a payload-fidelity failure.
 
 \subsection{Support and population}
 
@@ -88,4 +96,3 @@ population,
 \end{equation}
 This does not define $G_{pi}$, change MAP arithmetic, or change the NOI design
 law.
-

@@ -30,14 +30,19 @@ author input was provided to the fresh author.
 | Triggers / stop conditions | Missing scientific prerequisite, scope drift, scientific contradiction, firewall breach, changed approved input or unavailable local rendering dependency; repair within approved scope or return the precise scientific decision |
 | Operation authority | Draft and commit coherent verified work on the owned branch; no canonical advancement, push, production activation, cleanup or other worktree mutation |
 
-## First draft returned
+## Corrected first draft returned
 
 The fresh author returned the complete proposed scientific draft
-**SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.1**. Its
+**SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.2**. Its
 [43-file preserved package](draft/PACKAGE_INVENTORY.md) comprises 42
 manifested final/source artifacts plus the manifest itself. Manifest SHA-256:
-`c15bf5e238dd3776a4cf83a506c6d1c7e3b8172761b1f621ca28cf42e9574124`.
-Every copied author artifact is byte-identical to the sealed return.
+`9c05f8d5d14c338ee4f58d81101f7e23d2bc361401012076b8c47a366e063064`.
+Every copied author artifact is byte-identical to the sealed r0.2 return.
+The first r0.1 return remains preserved at exact commit
+`f605be6f23560ef81aa05598091964081b8fe749`. Its
+[independent review](DRAFT_CANDIDATE_REVIEW_f605be6f.md) identified one
+bounded QC consistency finding, repaired in this revision before a new
+exact-SHA candidate review.
 
 Start with the [Scientific Rationale and Contract](draft/scientific_rationale.pdf),
 then the [owner decision ledger](draft/OWNER_DECISION_LEDGER.md). The

@@ -43,14 +43,24 @@ A realized decision-unavailable record is a successful account of missing
 authority. If the evaluation artifact itself is incomplete, failed, or not
 produced, it cannot manufacture an eligibility assertion.
 
+A complete authoritative UQ-05 false is likewise a successfully realized
+negative profile evaluation: $Z=$ realized, $E=$ ineligible, and the separate
+typed payload state is invalid. It does not set profile-artifact $Z$ to failed.
+That failure state is reserved for failure to complete or produce the profile
+evaluation artifact, independent of whether a completed predicate is true,
+false, unknown, or conflicting.
+
 \subsection{Payload order and failure scope}
 
-Processing first establishes identity, parentage, profile authority,
-applicability, and producer validity; then excludes producer-invalid payloads;
-then checks an admitted required payload against exact unity. Finiteness or a
-numerical value of one cannot supply missing authority, validity, support, or
-permission. MAP and JINC subsequently perform their own positive/zero/
-negative/non-finite/unrepresentable classification.
+Processing first establishes authoritative identity, parentage, profile
+authority, applicability, the exact unique population, and the target
+broadcast binding. Only then does it evaluate the bound payload and its stored
+membership for producer fidelity. A decisive fidelity false excludes the
+payload; an unknown or conflicting fidelity fact remains decision unavailable
+absent another false. Finiteness or a numerical value of one cannot supply
+missing authority, validity, support, membership, or permission. MAP and JINC
+subsequently perform their own positive/zero/negative/non-finite/
+unrepresentable classification.
 
 \begin{longtable}{p{0.29\linewidth}p{0.34\linewidth}p{0.28\linewidth}}
 \toprule
@@ -58,17 +68,28 @@ Condition & Required result & Failure scope\\
 \midrule
 \endhead
 Missing/conflicting Registry, source, parent, occurrence, generation, support,
-or broadcast identity/binding & Applicability unknown or decision unavailable;
-no fallback payload & Entire affected coefficient generation\\
+payload-publication identity, or target broadcast binding; or duplicate or
+ambiguous identity in the authoritative population & Applicability unknown or
+decision unavailable; UQ-05 is not evaluated and there is no fallback payload
+& Entire affected coefficient generation\\
 Known empty $\mathcal D_{g,o}$ & No family instance or payload; no eligibility
 claim & Observation/generation\\
 After structural identity is established, explicit incompatible-generation
-permission, wrong selected family, wrong operator/unit, or readable non-one
-payload & Ineligible with all causes; no reinterpretation & Entire
-scalar-broadcast generation\\
-Missing, unreadable, or unrepresentable scalar/broadcast & Typed availability
-is unavailable or invalid as appropriate; decision unavailable or failed
-realization & Entire scalar-broadcast generation\\
+permission, wrong selected family, or known family-definition
+operator/unit/population substitution & Ineligible with all causes; no
+reinterpretation & Entire scalar-broadcast generation\\
+Complete authoritative payload-fidelity check establishes decoded non-one or
+wrong unit, digest/integrity failure, corruption, truncation, decoder-invalid
+bytes, known unrepresentability, or missing/extra/repeated stored membership
+relative to the established target & UQ-05 is $\mathbf F$; the payload is
+producer-invalid and the realized profile decision is ineligible, even when
+corruption makes the scalar unreadable & Entire scalar-broadcast generation\\
+Payload, bytes, decoder, digest, integrity result, complete check, or complete
+stored membership manifest is absent/unavailable; or payload is unreadable
+without an authoritative fidelity cause or verdict & UQ-05 is $\mathbf U$;
+typed payload state remains unknown/unavailable and a realized profile decision
+is decision unavailable absent another false & Entire scalar-broadcast
+generation\\
 Absent explicit consumer permission & Ineligible for that named consumer only
 & Consumer-specific route\\
 Occurrence authoritatively outside support & Inapplicable,
@@ -175,8 +196,8 @@ UFC-OD-004 & open & Approved mean-one operator and empty/singleton behavior.\\
 UFC-OD-005 & open & Approved no-parameter selection rule.\\
 UFC-OD-006 & open & Complete evaluable coefficient-handoff profile identity,
 use, object, and applicability.\\
-UFC-OD-007 & open & Approved UQ-01--UQ-07 truth rules, no-exception rule,
-advisory roles, and failure scopes.\\
+UFC-OD-007 & open & Approved UQ-01--UQ-07 truth rules, disjoint structural and
+payload-fidelity cases, no-exception rule, advisory roles, and failure scopes.\\
 UFC-OD-008 & open & SCI-MAP permission and MAP use of this family.\\
 UFC-OD-009 & open & SCI-JINC permission and JINC use of this family.\\
 UFC-OD-010 & open & Immutable MAP and JINC successor-boundary bindings.\\

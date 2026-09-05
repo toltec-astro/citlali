@@ -41,10 +41,46 @@ uses explicit static versioned headers and the sealed final PDFs passed
 independent all-page visual and header checks. This was a presentation check,
 not a scientific finding or new owner-review round.
 
+## Exact-candidate review and bounded reassessment
+
+The [independent review of the first candidate](DRAFT_CANDIDATE_REVIEW_f605be6f.md)
+bound exact commit `f605be6f23560ef81aa05598091964081b8fe749`, tree
+`5f222389e5b504640fde13b198db97e6222ccc53`, and returned **REPAIR REQUIRED**.
+Its one major scientific/behavioral finding S1 identified overlapping UQ-05
+classifications for established corruption versus unreadable payload, and
+authoritative structural membership versus malformed payload membership.
+Architecture/ownership and repository/evidence had no findings; the
+independently reproduced mechanical checks passed. Review receipt SHA-256:
+`9af2b676c6dfc1a1dd0bf1a0de508816bbe362f170e508f6f25e02c82dc56e11`.
+
+The manager returned only the conflicting passages and case distinctions
+from the author's own draft to the isolated author. The author was not given
+the review report, repository access, or any additional scientific source.
+The bounded work is to make structural establishment, known negative payload
+checks, unavailable information, and profile-artifact realization outcomes
+disjoint, and align the existing discriminating cases. Scope, numerical family,
+consumer ownership, open owner proposals, and the exact released input are
+unchanged. This remains the initial drafting stage, not an owner scientific
+review round. The original return remains sealed in its isolated directory
+and in exact candidate `f605be6f...`; the repaired return has its own revision
+and manifest, and must receive a new exact-SHA candidate review.
+
+The sealed r0.2 return resolves the two overlaps by establishing the exact
+unique target population/publication/broadcast before evaluating stored
+payload fidelity. A complete authoritative negative check, including corrupt
+unreadable bytes or missing/extra/repeated stored members against that target,
+is false and produces an ineligible but successfully realized evaluation.
+Unexplained unreadability or absent fidelity evidence is unknown; conflicting
+same-payload fidelity assertions remain conflicting. Failure to produce the
+evaluation artifact remains a separate realization fact. The existing
+requirements, predictions and ledger were aligned without adopting any
+proposal. Manager source and rendered-page checks verify that partition;
+independent disposition must bind the repaired exact candidate.
+
 ## Returned draft and focused results
 
 The returned draft identity is **SCI-PTC-COEFFICIENT-UNIFORM
-v0.1-draft.1 / r0.1**. The scientific proposal is exact dimensionless unity on
+v0.1-draft.1 / r0.2**. The scientific proposal is exact dimensionless unity on
 a finite nonempty single-observation PTC output-support population, an exact
 scalar-to-occurrence broadcast, arithmetic-mean-to-one normalization, no
 parameter override, and a complete proposed coefficient-handoff QC policy.
@@ -65,20 +101,20 @@ provide the reviewable substance.
 
 | Rendered view | Pages | Final PDF SHA-256 |
 | --- | ---: | --- |
-| Scientific Rationale and Contract | 12 | `e46cca90b1bb10c84bb1987bff3582b0fe825f3f8bc58650c7befc7b91f80fcb` |
-| Engineering Conformance Specification | 11 | `a50d4012816adf107ac9ec6978f85102474b27ecf16b4089a6645e2cfcc49b92` |
+| Scientific Rationale and Contract | 13 | `3f67fe72c973cc015b062591d7fe9946b67fd6bbee1370ba32ad609b11991e7d` |
+| Engineering Conformance Specification | 13 | `4083fe401d39b2193a0a420a6fde1af981dbbbc65b72d4106d607a8f3cc24d86` |
 
 The manager sealed exact copies at those digests before final rendering and
 inspected every page at 110 dpi, including equations, tables, source/status
 blocks, decision register and final transitions. No clipping or overlap was
-found. Full-resolution header crops and PDF text confirm version/revision on
-all 23 pages. Local source/input/link/inventory checks and crosswalk/register
+found. Full-resolution rendered pages and PDF text confirm version/revision on
+all 26 pages. Local source/input/link/inventory checks and crosswalk/register
 checks are recorded with the returned artifact manifest. The scientific-contract
 library layout checker passed. The default Git whitespace check identifies
-twelve intentional two-space Markdown hard breaks and one harmless final
-blank line in ten exact author-return source files. These enumerated formats
-are preserved with the sealed artifacts. The focused source gate permits only
-those cases and rejects other trailing whitespace; manager source uses the
+thirteen intentional two-space Markdown hard breaks in the exact author
+return. Those enumerated formats are preserved with the sealed artifacts;
+there are no extra final blank lines in r0.2 source files. The focused source
+gate permits only those cases and rejects other trailing whitespace; manager source uses the
 default Git whitespace check. Verbatim final renderer logs are checked by
 digest, not reformatted. These checks concern document integrity and
 traceability; they are not implementation or observational validation.
@@ -111,10 +147,13 @@ arithmetic; NOI retains its MAP-derived law and rational-parent binding; VAL
 supplies no policy. There are no application, Engine, configuration or schema
 implementation changes, nor any edits to current Registry/frozen packages.
 
-**Repository/evidence:** the candidate continues solely from exact released
+**Repository/evidence:** the unit continues from exact released
 input `959bb90947d4b9651fbba9f16a0eb73dde893b84` on the owned branch.
-All 20 earlier study files are protected byte-for-byte. Changes are confined
-to this new Stage B directory and the dated status entry. Canonical remains
+The repaired candidate has the reviewed r0.1 candidate `f605be6f...` as its
+sole parent. All 20 earlier study files are protected byte-for-byte, and all
+43 r0.1 author artifacts remain exact in their sealed directory and parent
+commit. Changes are confined to this Stage B directory and the dated status
+entry. Canonical remains
 `00b974c9039d4c3025dcce18f26bca69d36af9c3`; the candidate commit/tree and clean
 postcommit state are bound by the external completion and independent-review
 receipts, avoiding a self-referential commit identity.

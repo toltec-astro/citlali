@@ -1,8 +1,14 @@
 # PTC uniform/constant coefficient successor — first scientific draft
 
-Draft identity: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.1**  
+Draft identity: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.2**  
 Authoring date: **2026-09-05**  
 Status: **implementation-blind first scientific draft for owner review; no family, profile, permission, boundary, policy, or default is adopted or registered**
+
+Revision r0.2 is a bounded initial-draft consistency repair derived from the
+sealed r0.1 package. It retains the exact released input, scientific contract
+version, family/profile identities, owner-decision states, and scope. The
+repair makes structural target establishment disjoint from fidelity of the
+already-bound stored payload; it is not an owner scientific-review round.
 
 ## Program adherence and prior-work recovery
 
@@ -81,3 +87,11 @@ broadcast relation to every member identity. The declared normalization is
 arithmetic-mean-to-one on that exact population; it leaves unity unchanged.
 No parameter is accepted. MAP and JINC permissions are proposed separately,
 and neither permission can be inferred from the other.
+
+A missing or conflicting target broadcast, or a duplicate or ambiguous
+identity in the authoritative target population, prevents the eligibility
+question from being established. Once that exact target exists, a complete
+authoritative finding of payload corruption or missing, extra, or repeated
+stored membership is false and producer-invalid. Missing fidelity evidence or
+unexplained unreadability is unknown. None of these states permits a unity
+fallback.

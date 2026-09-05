@@ -1,7 +1,12 @@
 # Scientific-owner decision ledger
 
-Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.1**  
+Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.2**  
 Status: **first author draft; all new choices remain open**
+
+Revision r0.2 is a bounded consistency repair within the initial authoring
+stage. It separates structural target establishment from stored-payload
+fidelity and changes no proposal, question, recovered fact, or deferred item
+to an adopted state.
 
 Resolution date is “—” for every open or deferred item. “Affected documents”
 means both rendered views through their common source, plus the named companion
@@ -29,10 +34,10 @@ artifact.
 | UFC-OD-004 | SCI-PTC | open | Adopt, revise, or reject arithmetic-mean-to-one normalization and singleton-valid/empty-unavailable behavior. | Complete normalization operator and edge-case policy. | Grant Wilson for SCI-PTC | — | `equations.tex`; `edge_cases.tex` |
 | UFC-OD-005 | SCI-PTC | open | Adopt, revise, or reject the no-parameter rule. | Whether an effective request with a constant override is a valid family instance. | Grant Wilson for SCI-PTC | — | `equations.tex`; requirements; predictions |
 | UFC-OD-006 | SCI-PTC / VAL binding | open | Adopt, revise, or reject profile identity `SCI-PTC:uniform_coefficient_handoff@draft-0.1`, exact named use, object, and applicability. | Any complete evaluable coefficient-use QC record. | Grant Wilson for SCI-PTC | — | `definitions.tex`; proposed records |
-| UFC-OD-007 | SCI-PTC / VAL binding | open | Adopt, revise, or reject UQ-01--UQ-07, their exact inputs/truth rules, no-exception policy, advisory response/uncertainty roles, and failure scopes. | Coefficient-use eligibility and cause semantics. | Grant Wilson for SCI-PTC | — | `definitions.tex`; `assumptions.tex`; proposed records |
+| UFC-OD-007 | SCI-PTC / VAL binding | open | Adopt, revise, or reject UQ-01--UQ-07, their exact inputs/truth rules including the disjoint structural-target/payload-fidelity partition, no-exception policy, advisory response/uncertainty roles, and failure scopes. | Coefficient-use eligibility and cause semantics. | Grant Wilson for SCI-PTC | — | `definitions.tex`; `assumptions.tex`; requirements; predictions; crosswalks; proposed records |
 | UFC-OD-008 | SCI-PTC and SCI-MAP boundary owners | open | Separately approve explicit SCI-MAP permission for this family. | MAP use of the proposed family. | Grant Wilson and the SCI-MAP scientific authority | — | MAP boundary proposal; proposed records |
 | UFC-OD-009 | SCI-PTC and SCI-JINC boundary owners | open | Separately approve explicit SCI-JINC permission for this family. | JINC use of the proposed family. | Grant Wilson and the SCI-JINC scientific authority | — | JINC boundary proposal; proposed records |
-| UFC-OD-010 | SCI-PTC / boundary owners | open | Adopt, revise, or reject proposed successor identities `SCI-PTC_TO_SCI-MAP_BOUNDARY v0.2-draft.1/r0.1` and `SCI-PTC_TO_SCI-JINC_BOUNDARY v0.2-draft.1/r0.1`. | Immutable successor boundary bindings; frozen boundaries remain unchanged. | Grant Wilson and each consumer boundary authority | — | `notation.tex`; `definitions.tex`; proposed records |
+| UFC-OD-010 | SCI-PTC / boundary owners | open | Adopt, revise, or reject proposed successor identities `SCI-PTC_TO_SCI-MAP_BOUNDARY v0.2-draft.1/r0.2` and `SCI-PTC_TO_SCI-JINC_BOUNDARY v0.2-draft.1/r0.2`. | Immutable successor boundary bindings; frozen boundaries remain unchanged. | Grant Wilson and each consumer boundary authority | — | `notation.tex`; `definitions.tex`; proposed records |
 | UFC-OD-011 | SCI-PTC | open | Confirm the Registry’s actual-owner field as “Grant Wilson, acting for SCI-PTC,” or provide the exact actual owner. | Active Registry/profile binding; the draft definition itself is not blocked. | Grant Wilson | — | Proposed records; common entry/profile identity |
 | UFC-OD-012 | SCI-PTC | open | Adopt, revise, or reject immutable generation/replay rules and absence of a general cross-generation compatibility alias. | Cross-generation coefficient use. | Grant Wilson for SCI-PTC | — | `assumptions.tex`; requirements; predictions |
 | UFC-OD-013 | SCI-PTC | open | Adopt, revise, or reject uncertainty statement: no coefficient sampling uncertainty, with all physical/selection/representation uncertainties separate. | Approved uncertainty meaning for the family. | Grant Wilson for SCI-PTC | — | `definitions.tex`; `assumptions.tex` |
@@ -57,4 +62,3 @@ artifact.
 There is no unresolved contradiction among admitted sources and no blocked
 mathematical definition for the first draft. All route activation is blocked
 by the open owner decisions above, as required for a proposal.
-

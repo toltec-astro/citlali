@@ -25,13 +25,20 @@ compatibility record is forbidden.\\
 UFC-PRED-006 & A request containing $c\ne1$, even when $c>0$ and mean
 normalization would cancel it, does not select this family and cannot be
 accepted by silently dropping the parameter.\\
-UFC-PRED-007 & A readable value other than exact one fails producer fidelity.
-Exact zero, a negative finite value, a non-finite value, or an unrepresentable
-value also fails the consumer's independent positive classification.\\
-UFC-PRED-008 & A missing payload cannot be replaced by one even though one is
-the defining constant; the route remains unavailable.\\
-UFC-PRED-009 & A scalar one without an exact occurrence-member broadcast is
-structurally insufficient and yields decision unavailable.\\
+UFC-PRED-007 & After structural establishment, a complete authoritative check
+that identifies a decoded non-one or wrong unit, corruption even when
+unreadable, known unrepresentability, or missing/extra/repeated stored member
+makes UQ-05 false, the payload producer-invalid, and the profile ineligible.
+The negative profile evaluation is successfully realized rather than a failed
+profile artifact. Exact zero, negative finite, or non-finite content also
+fails the consumer's independent positive classification.\\
+UFC-PRED-008 & An absent payload or fidelity input, or unreadability without an
+authoritative fidelity cause or verdict, makes UQ-05 unknown and the profile
+decision unavailable absent another false. Unity cannot be substituted.\\
+UFC-PRED-009 & Missing/conflicting target broadcast binding or a
+duplicate/ambiguous identity in the authoritative population prevents
+structural establishment and yields decision unavailable. A stored scalar one
+cannot repair it.\\
 UFC-PRED-010 & An invalid signal occurrence can still have a faithful
 coefficient one. It contributes only if all independent producer and consumer
 gates admit the signal and occurrence.\\
@@ -59,10 +66,13 @@ Eventual conformance evidence must bind the exact approved source and Registry
 records. Algebraic tests must cover nonempty populations across detector,
 time, group, segment, array, and network labels; singleton support; exact
 mean-one results; and exact scalar broadcast membership. Negative tests must
-cover empty, duplicate, ambiguous, or changed support; parameter overrides;
-wrong unit/operator/family; missing or non-one payload; unreadable or
-unrepresentable value; wrong product or generation; absent consumer
-permission; and cross-generation borrowing. Replay evidence must show exact
+cover empty, duplicate, ambiguous, or changed authoritative support; parameter
+overrides; missing/conflicting target broadcast binding; wrong
+unit/operator/family; absent payload or fidelity input; unexplained
+unreadability; authoritatively established corruption or unrepresentability;
+missing/extra/repeated stored membership; non-one content; wrong product or
+generation; absent consumer permission; and cross-generation borrowing. Replay
+evidence must show exact
 numerical reproducibility while retaining distinct immutable generations.
 
 Profile evidence must exercise T/F/U/C composition, all four decision axes,
@@ -80,4 +90,3 @@ here. Such evidence could establish comparative performance or suitability;
 algebraic tests cannot. Production readiness adds operational completeness and
 failure-handling evidence only after scientific and implementation conformance
 are established.
-

@@ -1,12 +1,12 @@
 # Final package inventory
 
-Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.1**
+Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.2**
 
 ## Final author artifacts
 
 - `README.md` — package opening, status, artifact map, and decision headline.
-- `scientific_rationale.pdf` — 12-page scientist-facing view.
-- `engineering_conformance.pdf` — 11-page engineering-facing view.
+- `scientific_rationale.pdf` — 13-page scientist-facing view.
+- `engineering_conformance.pdf` — 13-page engineering-facing view.
 - `src/scientific_rationale.tex` and
   `src/engineering_conformance.tex` — view entrypoints with exact PDF
   metadata and forced version/revision headers.
@@ -57,8 +57,9 @@ unchanged.
   root PDFs.
 - `build/scientific_rationale.log` and
   `build/engineering_conformance.log` are the final Tectonic logs.
-- `build/check_markdown_links.py` is the local link checker.
-- `build/qa/`, `build/qa-final/`, and `build/qa-header/` contain
-  110-dpi page rasters used for visual inspection.
+- `build/check_package.py` and `build/package_check.txt` are the r0.2 package,
+  copy, crosswalk, ledger, metadata, and header checker and its PASS output.
+- `build/qa-r0.2/` contains both complete 13-page sets of 110-dpi page rasters
+  used for visual inspection.
 
 Scratch files are intentionally omitted from the artifact manifest.

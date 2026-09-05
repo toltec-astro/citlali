@@ -1,7 +1,7 @@
 # Input integrity and read record
 
 Authoring run: `citlali-ptc-uniform-author-run-2026-09-05`  
-Draft: `SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.1`  
+Draft: `SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.2`  
 Recorded: 2026-09-05
 
 ## Pre-read integrity result
@@ -56,3 +56,11 @@ The manifest's historical `release approval pending` labels were treated as
 superseded only by the explicit owner release instruction carried in the
 author task. They were not treated as scientific adoption.
 
+## Revision provenance
+
+The sealed r0.1 output was verified against its manifest, whose SHA-256 is
+`c15bf5e238dd3776a4cf83a506c6d1c7e3b8172761b1f621ca28cf42e9574124`.
+Exactly 43 final/source artifact files were copied into sibling
+`output-r0.2`; the r0.1 `build/` scratch was excluded. All r0.2 edits and new
+render scratch were confined to that sibling. The released 11-file input and
+both local preserved-copy trees remain byte-exact.

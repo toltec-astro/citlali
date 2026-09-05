@@ -4,7 +4,7 @@
   "base_commit": "959bb90947d4b9651fbba9f16a0eb73dde893b84",
   "canonical_commit_unchanged": "00b974c9039d4c3025dcce18f26bca69d36af9c3",
   "predecessor_study_files_preserved": 20,
-  "author_manifest_sha256": "c15bf5e238dd3776a4cf83a506c6d1c7e3b8172761b1f621ca28cf42e9574124",
+  "author_manifest_sha256": "9c05f8d5d14c338ee4f58d81101f7e23d2bc361401012076b8c47a366e063064",
   "manifested_author_artifacts": 42,
   "exact_author_inventory_including_manifest": 43,
   "approved_input_copies": 11,
@@ -19,13 +19,14 @@
   "requirements": 25,
   "predictions": 16,
   "open_consequential_proposals": 14,
-  "local_navigation_links_checked": 64,
+  "local_navigation_links_checked": 74,
   "link_policy": "PASS; fenced verbatim approved excerpts retain citation locators and are excluded from local-navigation checks",
   "intentional_markdown_hard_breaks": [
     "draft/RENDER_RECEIPT.md:3",
     "draft/DECISION_REGISTER_CHECK.md:3",
     "draft/DECISION_REGISTER_CHECK.md:4",
     "draft/LINK_AND_COPY_CHECK.md:3",
+    "draft/LINK_AND_COPY_CHECK.md:4",
     "draft/CROSSWALK.md:3",
     "draft/README.md:3",
     "draft/README.md:4",
@@ -36,38 +37,32 @@
     "draft/OWNER_DECISION_LEDGER.md:3"
   ],
   "other_trailing_source_whitespace": "none",
-  "preserved_author_files_with_one_blank_line_at_eof": [
-    "draft/BLOCKED_DEFINITIONS_AND_QUESTIONS.md",
-    "draft/CROSSWALK.md",
-    "draft/DECISION_REGISTER_CHECK.md",
-    "draft/INPUT_INTEGRITY_AND_READ_RECORD.md",
-    "draft/LINK_AND_COPY_CHECK.md",
-    "draft/OWNER_DECISION_LEDGER.md",
-    "draft/PROPOSED_REGISTRY_AND_BOUNDARY_RECORDS.md",
-    "draft/src/common/edge_cases.tex",
-    "draft/src/common/equations.tex",
-    "draft/src/common/requirements.tex"
-  ],
-  "whitespace_policy": "Exact author return is immutable: 12 Markdown hard breaks and one final blank line in exactly 10 manifested source files are accepted; manager source uses the default Git whitespace check, other author trailing whitespace is rejected, and verbatim renderer logs use digest verification.",
+  "preserved_author_files_with_one_blank_line_at_eof": [],
+  "whitespace_policy": "Exact author return is immutable: 13 Markdown hard breaks and no final blank lines are accepted; manager source uses the default Git whitespace check, other author trailing whitespace is rejected, and verbatim renderer logs use digest verification.",
   "pdfs": [
     {
       "path": "scientific_rationale.pdf",
-      "pages": 12,
-      "sha256": "e46cca90b1bb10c84bb1987bff3582b0fe825f3f8bc58650c7befc7b91f80fcb",
+      "pages": 13,
+      "sha256": "3f67fe72c973cc015b062591d7fe9946b67fd6bbee1370ba32ad609b11991e7d",
       "metadata_and_all_page_headers": "PASS",
       "all_page_visual_QA": "PASS; manager inspected sealed 110 dpi render before preservation"
     },
     {
       "path": "engineering_conformance.pdf",
-      "pages": 11,
-      "sha256": "a50d4012816adf107ac9ec6978f85102474b27ecf16b4089a6645e2cfcc49b92",
+      "pages": 13,
+      "sha256": "4083fe401d39b2193a0a420a6fde1af981dbbbc65b72d4106d607a8f3cc24d86",
       "metadata_and_all_page_headers": "PASS",
       "all_page_visual_QA": "PASS; manager inspected sealed 110 dpi render before preservation"
     }
   ],
   "verbatim_final_render_log_sha256": {
-    "scientific_rationale.log": "47273fcee0e06cb24b064a0e0e4c147205bed5b95eb2ab5b7855ccd90405a97e",
-    "engineering_conformance.log": "c3af062333f8a2c36ea4f8eaeb34c942af358dd2df93f2cee9a2a8780e0c7d2b"
+    "scientific_rationale.log": "bd9b9a1e374010625cd7e6429773a8d89dd5e88ffcbea1d0aea2121eabc78b73",
+    "engineering_conformance.log": "a7492f37e3dbffaa8d0364450cd92f768e0e1555d2ad0e8abcde13827ddb1436"
   },
-  "scope": "Document integrity and traceability only; no scientific approval, implementation conformance, observational validation, Registry admission, freeze or integration is claimed."
+  "scope": "Document integrity and traceability only; no scientific approval, implementation conformance, observational validation, Registry admission, freeze or integration is claimed.",
+  "document_revision": "r0.2",
+  "repair_parent_commit": "f605be6f23560ef81aa05598091964081b8fe749",
+  "sealed_r01_and_committed_predecessor_artifacts_preserved": 43,
+  "prior_candidate_review_sha256": "9af2b676c6dfc1a1dd0bf1a0de508816bbe362f170e508f6f25e02c82dc56e11",
+  "review_finding_addressed": "S1: disjoint structural target, known negative payload-fidelity, unavailable fidelity evidence, and profile-artifact realization cases; independent disposition must bind the new exact candidate."
 }

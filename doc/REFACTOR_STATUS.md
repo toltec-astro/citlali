@@ -9,12 +9,16 @@ after its independent review passed with recorded limitations and no findings.
 The [release and Stage B record](scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/README.md)
 preserves the exact approval and input review. A fresh implementation-blind
 GPT-5.6 Sol Ultra author completed the first draft from the isolated 11-file
-input. The preserved v0.1-draft.1/r0.1 package has 25 requirements, 16
+input. The preserved v0.1-draft.1/r0.2 package has 25 requirements, 16
 predictions, two rendered views and an explicit owner ledger; its artifact
 manifest SHA-256 is
-`c15bf5e238dd3776a4cf83a506c6d1c7e3b8172761b1f621ca28cf42e9574124`.
-The approved Stage A and prior recovery bytes are unchanged. This later release
-supersedes the earlier pending-release checkpoint below.
+`9c05f8d5d14c338ee4f58d81101f7e23d2bc361401012076b8c47a366e063064`.
+The approved Stage A and prior recovery bytes are unchanged. The first
+candidate `f605be6f23560ef81aa05598091964081b8fe749` remains preserved;
+its independent review found one QC outcome ambiguity. The isolated author
+repaired the structural-binding versus payload-fidelity cases in r0.2, with
+a fresh exact-SHA candidate review required. This later release supersedes
+the earlier pending-release checkpoint below.
 
 The returned deliverable is a first proposed common coefficient-entry contract and
 uniform/constant family for separate MAP/JINC permission review. Scientific

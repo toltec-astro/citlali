@@ -375,80 +375,125 @@ Underfull \hbox (badness 10000) in paragraph at lines 82--86
 ]
  []
 
-[2]
-Underfull \hbox (badness 5771) in paragraph at lines 216--217
+[2] [3]
+Underfull \hbox (badness 5771) in paragraph at lines 251--252
 []|\TU/lmr/m/n/10 Resolved selection is exactly $[][][][][][][][] []
  []
 
 
-Underfull \hbox (badness 1270) in paragraph at lines 233--234
-[]|\TU/lmr/m/n/10 The payload is published/readable under
- []
-
-
-Underfull \hbox (badness 1902) in paragraph at lines 237--238
+Underfull \hbox (badness 1902) in paragraph at lines 276--277
 []|\TU/lmr/m/n/10 The requested named consumer has ex-
  []
 
-[3] [4]) (common/equations.tex [5]) (common/assumptions.tex [6]
-Underfull \hbox (badness 10000) in paragraph at lines 60--61
+[4]) (common/equations.tex [5] [6]) (common/assumptions.tex
+Underfull \hbox (badness 10000) in paragraph at lines 70--72
 []|\TU/lmr/m/n/10 Missing/conflicting Registry,
  []
 
 
-Underfull \hbox (badness 1248) in paragraph at lines 60--61
-\TU/lmr/m/n/10 source, parent, occurrence, gen-
+Underfull \hbox (badness 10000) in paragraph at lines 70--72
+\TU/lmr/m/n/10 identity, or target broadcast
  []
 
 
-Underfull \hbox (badness 5302) in paragraph at lines 60--61
-\TU/lmr/m/n/10 eration, support, or broadcast
- []
-
-
-Underfull \hbox (badness 3557) in paragraph at lines 65--67
+Underfull \hbox (badness 3557) in paragraph at lines 77--79
 []|\TU/lmr/m/n/10 After structural identity is es-
  []
 
 
-Underfull \hbox (badness 3838) in paragraph at lines 65--67
+Underfull \hbox (badness 3838) in paragraph at lines 77--79
 \TU/lmr/m/n/10 tablished, explicit incompatible-
  []
 
 
-Underfull \hbox (badness 4144) in paragraph at lines 67--69
+Underfull \hbox (badness 10000) in paragraph at lines 77--79
+\TU/lmr/m/n/10 generation permission, wrong
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 77--79
+\TU/lmr/m/n/10 selected family, or known
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 77--79
+\TU/lmr/m/n/10 family-definition opera-
+ []
+
+
+Underfull \hbox (badness 4144) in paragraph at lines 80--81
 []|\TU/lmr/m/n/10 Entire scalar-broadcast genera-
  []
 
 
-Underfull \hbox (badness 4144) in paragraph at lines 71--72
+Underfull \hbox (badness 3343) in paragraph at lines 81--84
+[]|\TU/lmr/m/n/10 Complete authoritative payload-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 81--84
+\TU/lmr/m/n/10 fidelity check establishes de-
+ []
+
+
+Underfull \hbox (badness 4531) in paragraph at lines 81--84
+\TU/lmr/m/n/10 coded non-one or wrong unit,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 81--84
+\TU/lmr/m/n/10 digest/integrity failure, corrup-
+ []
+
+
+Underfull \hbox (badness 2435) in paragraph at lines 81--84
+\TU/lmr/m/n/10 tion, truncation, decoder-invalid
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 81--84
+\TU/lmr/m/n/10 bytes, known unrepresentabil-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 81--84
+\TU/lmr/m/n/10 ity, or missing/extra/repeated
+ []
+
+
+Underfull \hbox (badness 4144) in paragraph at lines 86--87
 []|\TU/lmr/m/n/10 Entire scalar-broadcast genera-
  []
 
 
-Underfull \hbox (badness 1342) in paragraph at lines 111--113
+Underfull \hbox (badness 4144) in paragraph at lines 91--93
+[]|\TU/lmr/m/n/10 Entire scalar-broadcast genera-
+ []
+
+[7]
+Underfull \hbox (badness 1342) in paragraph at lines 132--134
 []|\TU/lmr/m/n/10 Follows analytically for exact one on a finite
  []
 
 
-Underfull \hbox (badness 3209) in paragraph at lines 117--117
+Underfull \hbox (badness 3209) in paragraph at lines 138--138
 \TU/lmr/m/n/10 variance, and cross-observation
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 120--120
+Underfull \hbox (badness 10000) in paragraph at lines 141--141
 []|\TU/lmr/m/n/10 Implementation
  []
 
 
-Underfull \hbox (badness 3240) in paragraph at lines 124--124
+Underfull \hbox (badness 3240) in paragraph at lines 145--145
 []|\TU/lmr/m/n/10 Observational performance and
  []
 
-[7] [8]) (common/requirements.tex [9]) (common/edge_cases.tex [10])) [11]
-(engineering_conformance.aux)
+[8] [9]) (common/requirements.tex [10]) (common/edge_cases.tex [11])) [12]
+[13] (engineering_conformance.aux)
 Package rerunfilecheck Info: File `engineering_conformance.out' has not changed
 .
 (rerunfilecheck)             Checksum: 9E91D231139795D6AD00BD301F7FCD5F;6303.
  )
-Output written on engineering_conformance.xdv (11 pages, 422100 bytes).
+Output written on engineering_conformance.xdv (13 pages, 479244 bytes).

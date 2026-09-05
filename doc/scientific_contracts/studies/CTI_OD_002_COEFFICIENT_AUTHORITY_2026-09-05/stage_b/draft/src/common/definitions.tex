@@ -84,8 +84,9 @@ SCI-PTC. The proposed actual human owner binding is Grant Wilson acting for
 SCI-PTC; exact confirmation is an open owner decision. Both identities remain
 drafts until owner adoption and immutable Registry binding.\\
 Index and broadcast & Logical detector-time occurrence $i$ with full exact
-identity. One scalar may represent the family only through the lossless
-broadcast in Equation~\ref{eq:broadcast} and its bound member identities.\\
+identity. One scalar may represent the family only through the lossless target
+broadcast in Equation~\ref{eq:broadcast}; a complete stored membership
+manifest is separately checked against its bound member identities.\\
 Statistic and factors & No measured statistic and no fitted, residual,
 sensitivity, exposure, response, covariance, or loading factor. The sole raw
 factor is fixed $c_\star=1$.\\
@@ -116,13 +117,16 @@ Prohibited meanings & Precision, inverse variance, sensitivity, significance,
 fitted loading, residual scatter, validity, exposure, response, covariance,
 independence, optimality, default, support restoration, or missing-value
 substitution.\\
-Missing/invalid/conflict & Missing selection, family, binding, support,
-payload, profile decision, or permission makes the affected route unavailable.
-Producer-invalid payload is not consumed. Structural conflict makes the
-decision unavailable. No state becomes zero or unity by fallback.\\
-Unrepresentable state & If a representation cannot encode exact dimensionless
-one and its exact broadcast identity, the payload is typed
-unrepresentable/unavailable and the generation cannot be claimed realized.\\
+Missing/invalid/conflict & Missing selection, family, structural binding,
+support, payload/fidelity evidence, profile decision, or permission makes the
+affected route unavailable. A complete authoritative false makes the payload
+producer-invalid and ineligible. Structural conflict stops the question. No
+state becomes zero or unity by fallback.\\
+Unrepresentable state & After structural establishment, an authoritative
+complete finding that the bound representation cannot encode exact
+dimensionless one or its exactly-once stored membership is $\mathbf F$ and
+producer-invalid. Missing representation/decoder evidence is $\mathbf U$. A
+negative profile evaluation may itself be successfully realized.\\
 \bottomrule
 \end{longtable}
 
@@ -155,16 +159,30 @@ for a named consumer and a coefficient handoff is requested. It is applicable
 when the exact PTC product exists, $\mathcal D_{g,o}$ is authoritatively
 nonempty, and $i\in\mathcal D_{g,o}$. It is inapplicable when authoritative
 identity establishes $i\notin\mathcal D_{g,o}$. It has
-\texttt{applicability\_unknown} when product, observation, support, membership,
-or generation binding is missing or conflicting.
+\texttt{applicability\_unknown} when product, observation, support, target
+occurrence membership, or generation binding is missing or conflicting.
 
 The nonexceptionable structural gate requires an active exact Registry record;
 actual owner and source binding; complete occurrence, observation, product,
-parent, family, generation, selection-lineage, support, scalar, broadcast,
-profile, and named-consumer identities; and consistent scopes and immutable
-provenance. Duplicate or ambiguous occurrence identity, inferred ordering,
-cross-observation pooling, or cross-generation pairing fails the gate and
-makes the decision unavailable rather than use-specifically ineligible.
+parent, family, generation, selection-lineage, support, payload-publication,
+target-broadcast, profile, and named-consumer identities; and consistent scopes
+and immutable provenance. The target population must contain exact unique
+occurrence identities, and the target broadcast must bind the identified
+publication slot to that population and generation. An expected publication
+slot may be identified while its bytes remain absent or unavailable; that
+availability is a later payload-fidelity input. Missing or conflicting target
+broadcast binding, duplicate or ambiguous occurrence identity, inferred
+ordering, cross-observation pooling, or cross-generation pairing fails the
+gate and makes the decision unavailable rather than use-specifically
+ineligible.
+
+Structural establishment fixes what population and publication are being
+asked about; it does not assert that the stored payload faithfully realizes
+them. Only after that question exists does UQ-05 compare the bound bytes and a
+complete stored payload-membership manifest with the authoritative target.
+Thus a duplicate identity in the authoritative population is structural,
+whereas a repeated stored payload member relative to an already unique target
+population is a payload-fidelity violation.
 
 \subsection{Exact profile inputs and truth-domain rules}
 
@@ -174,9 +192,10 @@ its parameter field; the PTC compatibility permission for the already-bound
 product and coefficient generations; the immutable PTC output-support record
 and exact member identities; the family-definition record naming constant,
 unit, operator, and population; the typed payload-availability record,
-published scalar bytes, declared decoder, unit, broadcast member binding, and
-publication digest; the exact named-consumer permission; and immutable
-lifecycle links and overwrite/nonmutation attestations. Sample validity,
+published scalar bytes, declared decoder, decoded unit, complete stored
+payload-membership manifest, publication digest, and authoritative integrity
+result; the exact named-consumer permission; and immutable lifecycle links and
+overwrite/nonmutation attestations. Sample validity,
 retention, consumer admission, response, covariance, and diagnostics are
 preserved inputs for provenance but are not permission predicates.
 
@@ -184,23 +203,39 @@ For each restriction below, $\mathbf T$ means its complete authoritative input
 set positively satisfies the stated predicate; $\mathbf F$ means the complete
 authoritative input set explicitly violates it; $\mathbf U$ means a required
 input or complete assertion is missing or the check was not performed; and
-$\mathbf C$ means authoritative inputs are contradictory, ambiguous, or
-outside the predicate's declared domain. A parent, occurrence, source, or
-generation identity mismatch is handled earlier by the structural gate and is
-therefore decision unavailable. It is not converted to $\mathbf F$ here.
+$\mathbf C$ means authoritative predicate inputs for the same structurally
+established object are contradictory or ambiguous. A parent, occurrence,
+source, or generation identity mismatch is handled earlier by the structural
+gate and is therefore decision unavailable. It is not converted to
+$\mathbf F$ here.
 
 The payload-fidelity input in UQ-05 is the producer QC primitive, not an
-assertion of this profile's outcome. Its truth-domain rule is exact:
-$\mathbf T$ only when SCI-PTC authoritatively reports
+assertion of this profile's outcome. It is evaluated only after the exact
+unique $\mathcal D_{g,o}$, payload-publication identity, and target broadcast
+binding are structurally established. Its disjoint truth-domain rule is exact:
+\begin{itemize}
+\item $\mathbf T$ only when SCI-PTC authoritatively reports
 \texttt{computed\_published}, the bound bytes are readable under the declared
 decoder, the decoded scalar and unit are exactly $(1,1)$, the publication
-digest matches, and the broadcast binds every and only exact member of
-$\mathcal D_{g,o}$; $\mathbf F$ only when a complete authoritative check
-reports a readable non-one value, wrong unit, digest failure, corruption, or
-incomplete/extra/duplicate broadcast membership; $\mathbf U$ when payload,
-decoder, digest, complete check, or required membership input is absent; and
-$\mathbf C$ when authoritative payload or membership records conflict or lie
-outside the declared generation domain.
+digest matches, and a complete authoritative stored membership manifest
+contains every and only each target identity exactly once;
+\item $\mathbf F$ only when a complete authoritative fidelity check establishes
+a decoded non-one value or wrong unit; a digest or other integrity failure;
+corruption, truncation, decoder-invalid bytes, or known unrepresentability,
+including a corrupt scalar that cannot be read; or a complete stored membership
+manifest that omits, adds, or repeats any member relative to the established
+target population;
+\item $\mathbf U$ when the payload, bytes, decoder, digest, integrity result,
+complete check, or complete stored membership manifest is absent or
+unavailable, or when the payload is unreadable without an authoritative
+fidelity cause or verdict; and
+\item $\mathbf C$ when authoritative fidelity records for the same bound
+payload contradict one another or are ambiguous. The conflict is preserved and
+composes as unresolved $\mathbf U$ unless another required predicate is
+decisively $\mathbf F$.
+\end{itemize}
+Missing or conflicting structural identity never enters this UQ-05 partition;
+it stops the question at the structural gate.
 
 \subsection{Restriction set}
 
@@ -230,10 +265,14 @@ UQ-04 & The raw scalar is exactly dimensionless $c_\star=1$ and the operator
 is exactly $\mathcal N_{\rm mean1}$ on $\mathcal D_{g,o}$. & A different
 constant, unit, operator, or population is another family/version; known
 substitution is ineligible.\\
-UQ-05 & The payload is published/readable under typed availability, decodes
-exactly to one, and broadcasts to every and only member identity. & A readable
-non-one payload is producer-invalid and ineligible. Missing or unreadable
-payload is unresolved/unavailable and is never replaced by unity.\\
+UQ-05 & Within an established target binding, complete producer fidelity
+evidence establishes a published exact-one scalar and exactly-once stored
+membership for every and only target identity. & A complete authoritative
+violation is $\mathbf F$, producer-invalid, and ineligible, including corruption
+even when unreadable and any missing, extra, or repeated stored member.
+Absent evidence or unexplained unreadability is $\mathbf U$ and decision
+unavailable absent another false. Structural failures stop earlier; unity is
+never substituted.\\
 UQ-06 & The requested named consumer has explicit permission in this exact
 family/version record. & Missing MAP permission does not affect JINC and vice
 versa. Authoritative absence is consumer-specific ineligibility; missing or
