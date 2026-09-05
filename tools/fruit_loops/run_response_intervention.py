@@ -187,8 +187,16 @@ def run_one(registration_path: Path, name: str) -> dict:
     started = time.time()
     run_dir = root / name
     run_dir.mkdir(parents=True, exist_ok=True)
+    restart_inputs = []
+    if restart:
+        arm, injection = name.split("/")
+        source = root / arm / injection.removeprefix("restart-") / "reduced/redu03"
+        if not (source / "citlali_restart_checkpoint.nc").is_file():
+            raise ValueError("conditional restart source checkpoint missing")
+        restart_inputs = [file_record(path) for path in sorted(source.rglob("*")) if path.is_file()]
     write_json(run_dir / "STARTED.json", {"unix_time": started, "name": name,
                "registered_command": case["command"], "registration": file_record(registration_path),
+               "restart_inputs": restart_inputs,
                "reserved_passes": 3 if restart else 7, "primary_attempt": None if restart else ORDER.index(name) + 1})
     environment = os.environ.copy()
     environment.update(registration["environment"])
@@ -204,7 +212,12 @@ def run_one(registration_path: Path, name: str) -> dict:
             monitored = psutil.Process(process.pid)
             while process.poll() is None:
                 rss = 0
-                for child in [monitored, *monitored.children(recursive=True)]:
+                try:
+                    children = [monitored, *monitored.children(recursive=True)]
+                except psutil.NoSuchProcess:
+                    process.wait()
+                    break
+                for child in children:
                     try:
                         rss = max(rss, child.memory_info().rss)
                     except psutil.NoSuchProcess:
