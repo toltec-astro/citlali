@@ -1,0 +1,89 @@
+{
+  "boundary": 0,
+  "command": [
+    "/Users/gwilson/tolteca/bin/python",
+    "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/setup_r0.3/scan_agreement.py",
+    "--input",
+    "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/setup_r0.3/boundary_0_input.json",
+    "--library",
+    "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/setup_r0.3/scan_agreement_stream.dylib",
+    "--output",
+    "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_0"
+  ],
+  "started_utc": "2026-09-05T20:33:37.175236+00:00",
+  "finished_utc": "2026-09-05T20:33:51.380071+00:00",
+  "exit_code": 0,
+  "peak_sampled_worker_rss_bytes": 907493376,
+  "resource_samples": [
+    {
+      "elapsed_seconds": 1480.461182,
+      "worker_rss_bytes": 4194304,
+      "output_bytes": 6034386
+    },
+    {
+      "elapsed_seconds": 1481.478661,
+      "worker_rss_bytes": 584450048,
+      "output_bytes": 6034386
+    },
+    {
+      "elapsed_seconds": 1482.487179,
+      "worker_rss_bytes": 589168640,
+      "output_bytes": 6034386
+    },
+    {
+      "elapsed_seconds": 1483.504069,
+      "worker_rss_bytes": 589529088,
+      "output_bytes": 6034386
+    },
+    {
+      "elapsed_seconds": 1484.514088,
+      "worker_rss_bytes": 589725696,
+      "output_bytes": 6034386
+    },
+    {
+      "elapsed_seconds": 1485.53092,
+      "worker_rss_bytes": 589905920,
+      "output_bytes": 6034386
+    },
+    {
+      "elapsed_seconds": 1486.54775,
+      "worker_rss_bytes": 590151680,
+      "output_bytes": 6034386
+    },
+    {
+      "elapsed_seconds": 1487.563643,
+      "worker_rss_bytes": 590348288,
+      "output_bytes": 6034386
+    },
+    {
+      "elapsed_seconds": 1488.575108,
+      "worker_rss_bytes": 590512128,
+      "output_bytes": 6034386
+    },
+    {
+      "elapsed_seconds": 1489.592238,
+      "worker_rss_bytes": 590659584,
+      "output_bytes": 6034386
+    },
+    {
+      "elapsed_seconds": 1490.609272,
+      "worker_rss_bytes": 590839808,
+      "output_bytes": 6034386
+    },
+    {
+      "elapsed_seconds": 1491.620507,
+      "worker_rss_bytes": 590987264,
+      "output_bytes": 6034386
+    },
+    {
+      "elapsed_seconds": 1492.637569,
+      "worker_rss_bytes": 709132288,
+      "output_bytes": 42910060
+    },
+    {
+      "elapsed_seconds": 1493.647871,
+      "worker_rss_bytes": 907493376,
+      "output_bytes": 108702627
+    }
+  ]
+}

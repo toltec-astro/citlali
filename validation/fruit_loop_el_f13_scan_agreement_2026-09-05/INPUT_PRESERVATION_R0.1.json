@@ -1,0 +1,195 @@
+{
+  "status": "all 36 input files and both archives unchanged",
+  "files": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/fruit_response_123424_iter0.bin.gz",
+      "sha256": "405d9cd5d01314a0777dabd46e8e267994ab16e36ee1cf6cbff5f2c7243a8b0b",
+      "size_bytes": 240806703
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/citlali_restart_checkpoint.nc",
+      "sha256": "268cf9d8fa20c299b6c698c42d99d1f45761e38400a85d3c0674f2f398c4bff2",
+      "size_bytes": 89016
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+      "sha256": "259d90da1b7c7d7a253400edc4304e18a331398c9b5120d11fe30a01402a12ee",
+      "size_bytes": 18970869
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "sha256": "6ec0d399e42b82f95b4c5877d5f65d3b342094e59c9fd753a7add6f7c7fede0f",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "sha256": "0b7495958c2aa993b1b5728e692c8cb1eff987ffc940084ed70d7d4d5ad2846f",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "sha256": "9bfdb1e452d350ba554404b9422806f65485bcb5a2d1c37eae7bc44ccba6893a",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/fruit_response_123424_iter1.bin.gz",
+      "sha256": "f082db668fe1327e206d72f21e0847117b573bb88b8bcfc58d0a80941531a946",
+      "size_bytes": 240978141
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/citlali_restart_checkpoint.nc",
+      "sha256": "905a7c3adcb7dfe4e9ecdc1cf887bcc2271c1fa1faa42b7104532f8120637a9f",
+      "size_bytes": 402375
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+      "sha256": "7e05845560dae1dd67c6be605fcb80ce3c0a3b02129c62fb2e2222c122d4f7e4",
+      "size_bytes": 25226741
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "sha256": "69c583a7e12e30e42eecc081ba95766bd2ffb19f00ac85b439c21e735ec73c34",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "sha256": "fd94839d7c0218edb6801936b719f29886fee546fd8682487077ac9f146cc3d5",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "sha256": "c050cf91a679dc3dfb25d955e48e2ad200ee0c5b6574d8d2b75bc37c9ac29b2c",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/fruit_response_123424_iter2.bin.gz",
+      "sha256": "19e34eac5e80c283aa3b72a07907818861399f238487974428ac318bc5fc08d6",
+      "size_bytes": 241227701
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/citlali_restart_checkpoint.nc",
+      "sha256": "ab7b56828059c9051ec217d74febeb2742d971ef24b83c02ebd80b4595714a92",
+      "size_bytes": 402375
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+      "sha256": "dc628721214f5cb2757e090997c3f1a2a618abd282307de15547ab276e975c51",
+      "size_bytes": 25109332
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "sha256": "e59b0f74447af28b49dd4b81ce43bb64947927685b886415e29b0a141c0d6458",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "sha256": "57bad9649e5390eeb09b8054e1400cdb0980cee097e795694b2b2fde7f19272b",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu02/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "sha256": "b715ff9b944f7809c1486aa37e72e1fdad071f0226c6376fede074c9bde74cd0",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/fruit_response_123424_iter3.bin.gz",
+      "sha256": "ab14a8649dc77d2ec90323534bc21f602069966af3f8daed271eb0e8aacd7b9c",
+      "size_bytes": 241247410
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/citlali_restart_checkpoint.nc",
+      "sha256": "679253bfa458c5eea171fcbedeaf1f65242859964c5069d6621d4635755e5932",
+      "size_bytes": 402375
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+      "sha256": "6cd93403abbc7e99e761d0aa8f366199df5e116738b77855da19f4801a65f9f3",
+      "size_bytes": 19021604
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "sha256": "7679107a423ffff91e28912f12fff56751f12b9138473d33e9d72ef62f75af6b",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "sha256": "11920ca9159b318a654d51e3ab7d00754e3b2239f1818c54b0915df9eea3c0d5",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu03/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "sha256": "e1dc142b5be2e4611266276555cf1e97d5c6b242368281e852960fab019e8c27",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/fruit_response_123424_iter4.bin.gz",
+      "sha256": "7cf939ea7e1085ee5c4a5fa5c89a95850d8ea07269bb5bc95b43f1b787198745",
+      "size_bytes": 241267371
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/citlali_restart_checkpoint.nc",
+      "sha256": "bfe782288ca37a3d9bc79b7784e5d25a9f0fd2a123dfddd8b4d7d02d8ef8dd35",
+      "size_bytes": 402375
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+      "sha256": "89b7600eb4c709024d1cc0bc89afaf4ee3df2a2b912bf1307e00b7cc80d84790",
+      "size_bytes": 19021816
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "sha256": "c92b84f0001c9df3a39255a751518e6175e9d4b44dbd1fa01420c1cce93af950",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "sha256": "5e33488b5b48408cea78601f63ec2efa0e4ef61b65f50a90c8d6b9f90cec8f93",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu04/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "sha256": "884a99b691a5382f3c63e3dae353d310bfc4f2786d125615db102ac7d65c6050",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/fruit_response_123424_iter5.bin.gz",
+      "sha256": "861a3bed2b67fb48ada4a81103acd1553f79f8bc6e01826ba81c7185b27048c7",
+      "size_bytes": 241245484
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/citlali_restart_checkpoint.nc",
+      "sha256": "90254eb0d4f30afa0652c45bc1e66604589d120ec506045fe41e4cbe140fc930",
+      "size_bytes": 402375
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+      "sha256": "c5872ce485b318794676f63846ce1fd5fd5d5db8153045d9c49e6c0eb309d6c0",
+      "size_bytes": 19022201
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+      "sha256": "bb906714bd25cdc794dd7bcd30185d8fbadba06f6067e8a397b4258b78e1faf0",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+      "sha256": "70468e3b9ec97ea558e54108e8da74cd13ef3340dfd4e498cac7b6784802ca05",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu05/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+      "sha256": "9e1e7f491d81324dba860faff524037b58b8309925bcdedb912cdb612680470f",
+      "size_bytes": 7191360
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/SCI-FRUIT-v0.1-ODQ-001F-r0.8-owner-review.tar.gz",
+      "sha256": "5f11836908aa6aeb4f51690209a32dc6e8d4cee4e6b9c223903c6c57033b9b22",
+      "size_bytes": 28617
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/SCI-FRUIT-v0.1-empirical-lane-gate-0-r0.1-owner-review.tar.gz",
+      "sha256": "761ba278a53e32ad1d5d3977230cc4f1f90f257056b547508342797f584167ed",
+      "size_bytes": 11602
+    }
+  ]
+}

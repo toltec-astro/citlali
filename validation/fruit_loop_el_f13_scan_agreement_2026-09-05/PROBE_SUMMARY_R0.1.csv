@@ -1,0 +1,5 @@
+boundary,array,uid,scan,coefficient,footprint_pixels,domain_pixels,domain_loss_pixels,full_support_lost,full_support_gained,status,baseline_R0,baseline_R1,probe_R0,probe_R1
+1,2,5279,10,0.5,6619,6489,7,25,1,unavailable_probe_support,91.51697726947198,100.42242682353536,,
+1,2,5279,10,1.0,6619,6489,13,31,1,unavailable_probe_support,91.51697726947198,100.42242682353536,,
+2,2,5282,0,0.5,5606,5541,0,15,1,no_gain,88.4628816354068,97.14599295122919,91.91144371176001,102.12104573686837
+2,2,5282,0,1.0,5606,5541,1,20,1,unavailable_probe_support,88.4628816354068,97.14599295122919,,

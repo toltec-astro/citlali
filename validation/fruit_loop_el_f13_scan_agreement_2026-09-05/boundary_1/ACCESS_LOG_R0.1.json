@@ -1,0 +1,67 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/fruit_response_123424_iter1.bin.gz",
+    "purpose": "verify bound compressed/file bytes",
+    "utc": "2026-09-05T20:33:51.550178+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/citlali_restart_checkpoint.nc",
+    "purpose": "verify bound compressed/file bytes",
+    "utc": "2026-09-05T20:33:51.657617+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+    "purpose": "verify bound compressed/file bytes",
+    "utc": "2026-09-05T20:33:51.658297+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+    "purpose": "verify bound compressed/file bytes",
+    "utc": "2026-09-05T20:33:51.667632+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+    "purpose": "verify bound compressed/file bytes",
+    "utc": "2026-09-05T20:33:51.683708+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+    "purpose": "verify bound compressed/file bytes",
+    "utc": "2026-09-05T20:33:51.695691+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/citlali_restart_checkpoint.nc",
+    "purpose": "decode census; discard old selection and response fields",
+    "utc": "2026-09-05T20:33:51.708209+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+    "purpose": "read only schema, state, array totals and kernel banks",
+    "utc": "2026-09-05T20:33:51.710780+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/fruit_response_123424_iter1.bin.gz",
+    "purpose": "first stream: original-order all-scan construction only; no decompressed output",
+    "utc": "2026-09-05T20:33:51.782481+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+    "purpose": "verify historical signal/formal weight/grid",
+    "utc": "2026-09-05T20:34:03.284764+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+    "purpose": "verify historical signal/formal weight/grid",
+    "utc": "2026-09-05T20:34:03.302351+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+    "purpose": "verify historical signal/formal weight/grid",
+    "utc": "2026-09-05T20:34:03.316930+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu01/fruit_response_123424_iter1.bin.gz",
+    "purpose": "second stream after exact reconstruction gates: direct probe and UID-excluded scan accumulation",
+    "utc": "2026-09-05T20:34:03.328556+00:00"
+  }
+]

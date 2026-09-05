@@ -1,0 +1,24 @@
+{
+  "boundary": 0,
+  "command": [
+    "/Users/gwilson/tolteca/bin/python",
+    "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/setup/scan_agreement.py",
+    "--input",
+    "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/setup/boundary_0_input.json",
+    "--library",
+    "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/setup/scan_agreement_stream.dylib",
+    "--output",
+    "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_0"
+  ],
+  "started_utc": "2026-09-05T20:26:14.706498+00:00",
+  "finished_utc": "2026-09-05T20:26:15.722882+00:00",
+  "exit_code": 1,
+  "peak_sampled_worker_rss_bytes": 4374528,
+  "resource_samples": [
+    {
+      "elapsed_seconds": 1037.99203,
+      "worker_rss_bytes": 4374528,
+      "output_bytes": 1991795
+    }
+  ]
+}

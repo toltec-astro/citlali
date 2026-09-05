@@ -1,0 +1,5 @@
+{
+  "status": "invalid",
+  "error": "FITS/ledger plane mismatch signal_I",
+  "type": "ValueError"
+}

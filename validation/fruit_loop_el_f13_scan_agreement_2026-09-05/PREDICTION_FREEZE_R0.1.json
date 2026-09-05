@@ -1,0 +1,101 @@
+{
+  "frozen_utc": "2026-09-05T20:35:49.013723+00:00",
+  "files": [
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_0/ACCESS_LOG_R0.1.json",
+      "sha256": "4e53c3c320998014413a2a30477b3501101c6c4f1b295cebd7a1defdd1eeb75b",
+      "size_bytes": 3833
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_0/COMPONENT_MAPS_R0.1.nc",
+      "sha256": "f1899e4616fabd1819e2545e061cfca550542651f4333632d08b5d5791794b2c",
+      "size_bytes": 161958654
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_0/PREDICTION_R0.1.json",
+      "sha256": "7f920d8f67899b900603cc0d6265e6bce03bc3ea28062e9ac0fecbdcda3128d5",
+      "size_bytes": 2653
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_1/ACCESS_LOG_R0.1.json",
+      "sha256": "93b85449d8bec0265e4cbcc48fc1438a94fdaa29504b511ce4e1f5cc9d009622",
+      "size_bytes": 4182
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_1/COMPONENT_MAPS_R0.1.nc",
+      "sha256": "d6f4c4d55f98655bcb719df4ab7be0e30f65e5aa9dc9f00aad1ccfca43b3ab2d",
+      "size_bytes": 267441140
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_1/PREDICTION_R0.1.json",
+      "sha256": "0741bfefcb3d6ee7afef46f0e83a39ad0844cd08bd3b530c28d4189a855089d4",
+      "size_bytes": 4394
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_2/ACCESS_LOG_R0.1.json",
+      "sha256": "4d2c9903b44fd6a7b6f53febdc63e59d3f1d6bd63daa9064ce2b3b3fc67d5f6d",
+      "size_bytes": 4182
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_2/COMPONENT_MAPS_R0.1.nc",
+      "sha256": "85050f6adaf2bc92df931e64ac4820f2207222cbfb440e4ceff269ca7578ced4",
+      "size_bytes": 265457768
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_2/PREDICTION_R0.1.json",
+      "sha256": "6f2b388bac961975d9a9c4200539b8ddcf07b34e369eeac1a00075b2e7ab0e09",
+      "size_bytes": 7274
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_3/ACCESS_LOG_R0.1.json",
+      "sha256": "65e698c60c51461d17686a266aa17f7ac86c6ad4a6939d9e3216ad943579a189",
+      "size_bytes": 3833
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_3/COMPONENT_MAPS_R0.1.nc",
+      "sha256": "3faecb3c56b953fb49dc08f3ce05a3bc19f6733f33c59adf1017a62501e3d5d5",
+      "size_bytes": 162001849
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_3/PREDICTION_R0.1.json",
+      "sha256": "efdb0b0b9afaa2302ddd57724898861cf34de8dadc1e023ffa010b029bc2f56a",
+      "size_bytes": 2931
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_4/ACCESS_LOG_R0.1.json",
+      "sha256": "4c65d943278a6aa105aaf652a2fc8afcce0c39bfac4fe5ae869133ef7ee9e37b",
+      "size_bytes": 3833
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_4/COMPONENT_MAPS_R0.1.nc",
+      "sha256": "70197d2b0a0b2d040c63327fa08dafe5dfaf2fa40903cf8690bb24f583701f24",
+      "size_bytes": 162005838
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_4/PREDICTION_R0.1.json",
+      "sha256": "9f24e4e72a6ca8dbb99f8e0d2bd9d725d0fa0d0706aea24d1383f66b488d51b0",
+      "size_bytes": 2931
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_5/ACCESS_LOG_R0.1.json",
+      "sha256": "3a3b466614dba6efb782cdb5db1ac93dd54f9730f57f63ed7914fd496b24a2ad",
+      "size_bytes": 3833
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_5/COMPONENT_MAPS_R0.1.nc",
+      "sha256": "365e4f2634228b36ef434518049ac3f8636ec84d2ed51306cef90e304af0aec8",
+      "size_bytes": 162010111
+    },
+    {
+      "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/boundary_5/PREDICTION_R0.1.json",
+      "sha256": "9f4602872d699f51589fc9d3279e93656d2397f9c7cdeb95386e70741bb8f265",
+      "size_bytes": 2930
+    }
+  ],
+  "all_six_complete": true,
+  "source_registration": {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/setup_r0.3/REGISTRATION_R0.1.json",
+    "sha256": "9c0a1f2e18b7462e0bbb4fc902f0d56c12c67fa69419baf4c7970e2d8b88b00c",
+    "size_bytes": 11585
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "boundary": 4,
+  "construction": "valid",
+  "census": [
+    {
+      "observation": "123424",
+      "array": 2,
+      "uid": 5279,
+      "scan": 10,
+      "disposition": "already_assigned"
+    },
+    {
+      "observation": "123424",
+      "array": 2,
+      "uid": 5282,
+      "scan": 0,
+      "disposition": "already_assigned"
+    }
+  ],
+  "keys": [],
+  "accounting": [
+    {
+      "array": 0,
+      "exact_fields": [
+        "N",
+        "C",
+        "Q",
+        "absolute_N_terms",
+        "absolute_C_terms",
+        "occurrence_pixel_count",
+        "unique_detector_count",
+        "signal",
+        "formal_weight",
+        "FITS signal/formal/weight",
+        "science_support"
+      ],
+      "wcs": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CDELT1": -1.0,
+        "CDELT2": 1.0,
+        "CRPIX1": 179.0,
+        "CRPIX2": 178.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "BUNIT": "mJy/beam"
+      },
+      "science_pixels": 82348
+    },
+    {
+      "array": 1,
+      "exact_fields": [
+        "N",
+        "C",
+        "Q",
+        "absolute_N_terms",
+        "absolute_C_terms",
+        "occurrence_pixel_count",
+        "unique_detector_count",
+        "signal",
+        "formal_weight",
+        "FITS signal/formal/weight",
+        "science_support"
+      ],
+      "wcs": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CDELT1": -1.0,
+        "CDELT2": 1.0,
+        "CRPIX1": 179.0,
+        "CRPIX2": 178.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "BUNIT": "mJy/beam"
+      },
+      "science_pixels": 75070
+    },
+    {
+      "array": 2,
+      "exact_fields": [
+        "N",
+        "C",
+        "Q",
+        "absolute_N_terms",
+        "absolute_C_terms",
+        "occurrence_pixel_count",
+        "unique_detector_count",
+        "signal",
+        "formal_weight",
+        "FITS signal/formal/weight",
+        "science_support"
+      ],
+      "wcs": {
+        "CTYPE1": "AZOFFSET",
+        "CTYPE2": "ELOFFSET",
+        "CUNIT1": "arcsec",
+        "CUNIT2": "arcsec",
+        "CDELT1": -1.0,
+        "CDELT2": 1.0,
+        "CRPIX1": 179.0,
+        "CRPIX2": 178.0,
+        "CRVAL1": 0.0,
+        "CRVAL2": 0.0,
+        "BUNIT": "mJy/beam"
+      },
+      "science_pixels": 85000
+    }
+  ],
+  "scan_order": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "spool_sha256": "7eb9db02aaddb9c5dd967fa3f5eb82edb9bdb00c4385892dd7890804b9fc8272",
+  "spool_bytes": 972448776,
+  "stream_passes": 1,
+  "records": 9350469,
+  "occurrences": 9350457,
+  "inherited_identity_safety": 64,
+  "finalization_safety": 16,
+  "combined_reference_unique_count": "unavailable; per-scan and full-observation unique counts retained",
+  "elapsed_seconds": 14.62690916704014,
+  "peak_rss_bytes": 1059995648
+}

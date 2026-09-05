@@ -1,0 +1,30 @@
+{
+  "files": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/scan_agreement.py",
+      "sha256": "ea7d1f27c07fc95be4890f0ee7016a86d6fb52865a4ea1bdc9fa9a9cc2687ac7",
+      "size_bytes": 23558
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/scan_agreement_stream.cpp",
+      "sha256": "0d222eb0bc70c2aba27e6f6e58bbba62e591530260bab0d6130fe531bfc5a168",
+      "size_bytes": 8031
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/run_scan_agreement_feasibility.py",
+      "sha256": "0b578902699ea2619f1203b14dad50126b518e780de522523a47442d91d70059",
+      "size_bytes": 7279
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/tools/fruit_loops/test_scan_agreement.py",
+      "sha256": "16bc69fac7abaf2d5f38501beb7c3f4051186d24eb41674b91383426f923843a",
+      "size_bytes": 13165
+    }
+  ],
+  "post_scoring_test_harness": "Added automatic temporary helper compilation for normal pytest; same 32 construction tests, verified again. Original r0.3 registered test bytes remain retained.",
+  "reporting_source": {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/retain_report.py",
+    "sha256": "c65cc111238954fd7ce0a1e378716aba1420fe80623c885e3ad9f3e28a391fc6",
+    "size_bytes": 6902
+  }
+}

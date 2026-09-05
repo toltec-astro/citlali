@@ -1,0 +1,11 @@
+{
+  "started_utc": "2026-09-05T20:08:56.719853+00:00",
+  "aggregate_seconds_limit": 7200,
+  "rss_bytes_limit": 4294967296,
+  "new_output_bytes_limit": 4294967296,
+  "cpu_threads": 1,
+  "decision": "SCI-FRUIT-EL-F13-SCAN-AGREEMENT-FEASIBILITY-R0.1",
+  "proposal_commit": "9b75104dd6df1708fe28f7de2178fcb2f85cf3c5",
+  "manifest_sha256": "64e92d2e19322e7d6ee219d97d4ced984cd7036a45ada62442a9744cc993bf77",
+  "owner_quote": "I approve.  Let's give this a go"
+}

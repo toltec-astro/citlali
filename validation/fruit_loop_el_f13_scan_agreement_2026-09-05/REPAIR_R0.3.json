@@ -1,0 +1,12 @@
+{
+  "date": "2026-09-05T20:32:17.715823+00:00",
+  "kind": "routine FITS representation repair",
+  "failure": "First all-scan pass passed array-0 native accumulator and finalizer equality, then rejected FITS/internal column orientation; no new partition or score formed.",
+  "change": "Apply exact existing native column reversal for FITS comparison and output serialization; all prediction arithmetic stays in common internal orientation.",
+  "verification": "All three bound boundary-0 arrays: signal, ordinary weight and formal coefficient planes exactly match after documented conversion.",
+  "scientific_changes": false,
+  "resource_changes": false,
+  "retained_setup": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/setup_r0.2",
+  "retained_attempt": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/failed_attempt_2",
+  "reduction_replay_count": 0
+}

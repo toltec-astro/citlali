@@ -1,0 +1,11 @@
+{
+  "date": "2026-09-05T20:28:23.483997+00:00",
+  "kind": "routine macOS resource API startup repair",
+  "failure": "RLIMIT_RSS setter rejected before any input file was opened",
+  "change": "Remove advisory setter; retain supervisor sampled RSS enforcement and ru_maxrss ceiling",
+  "scientific_changes": false,
+  "resource_changes": false,
+  "retained_setup": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/setup",
+  "retained_attempt": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/failed_attempt_1",
+  "reduction_replay_count": 0
+}

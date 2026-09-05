@@ -1,0 +1,9 @@
+{
+  "completed_utc": "2026-09-05T20:35:49.512230+00:00",
+  "aggregate_elapsed_seconds": 1612.79238,
+  "output_bytes": 1186990131,
+  "citlali_runs": 0,
+  "threads": 1,
+  "boundaries": 6,
+  "peak_sampled_worker_rss_bytes": 1499938816
+}

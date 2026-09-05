@@ -1014,22 +1014,36 @@ and beneficial action. Neither this negative screen nor the earlier oracle
 diagnoses establish a policy, generic result, qualified method, full Gate D,
 Stage B, production change or Unity authorization.
 
-Following the owner's request to continue, a separate
-[`EL-F13 feasibility proposal`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F13_BENEFIT_SIGNAL_OWNER_REVIEW_R0.1.md)
-is ready for the significant method decision
-`SCI-FRUIT-EL-F13-SCAN-AGREEMENT-FEASIBILITY-R0.1`. Its
-[`exact manifest`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F13_BUNDLE_MANIFEST_R0.1.md)
-binds a proposed pre-action scan-agreement test using only retained H/uninjected
-boundaries 0–5, fixed coefficient probes 0/0.5/1, two deterministic other-scan
-references and explicit coverage/numerical requirements. Preparation reverified
-36 decision files and both archive identities without computing the new score.
-The proposed approval permits a bounded offline helper/test/report only, with
-zero Citlali runs or interventions. Exposed EL-F12 failures may challenge the
-predictions only after they are frozen; neither agreement nor avoiding a known
-failure establishes benefit. The exact new score and thresholds remain pending
-owner approval. An actual intervention, attainable end-to-end benefit endpoint,
-joint action rule and independent-pointing replication remain later decisions.
-EL-F12 stays negative and the historical control and all gate boundaries remain.
+The owner-approved EL-F13 scan-agreement feasibility experiment is complete
+on `2026-09-05`. The [authorization](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_EL_F13_AUTHORIZATION_2026-09-05.md)
+binds proposal commit `9b75104dd6df1708fe28f7de2178fcb2f85cf3c5`; the immutable
+proposal and all three implementation registrations remain retained. The
+[result](../validation/fruit_loop_el_f13_scan_agreement_2026-09-05/SCIENTIFIC_INTERPRETATION_R0.1.md)
+records six H/uninjected boundary evaluations, exact historical reconstruction
+for all arrays, and two eligible a2000 keys. Boundary 1's 6,489-pixel fixed
+domain loses 7/13 required pixels under half/full retention, so both probes
+are unavailable and the primary negative challenge is unassessed. Boundary 2's
+5,541-pixel domain supports half retention, which worsens RMS agreement with
+both references (88.4629→91.9114 and 97.1460→102.1210 mJy/beam); full retention
+loses one required pixel and is unavailable. There is no positive empirical
+benefit evidence or policy recommendation.
+
+All six predictions were frozen before the reporter joined the already-exposed
+EL-F12 outcomes. Thirty-two focused tests, all 304 offline FRUIT/baseline tests,
+and full required configuration preflight passed. Routine macOS startup and
+native FITS-orientation repairs preserved failed attempts and changed no method,
+gate, input, resource limit or scientific interpretation. Maximum worker RSS
+was 1.442 GiB; six worker evaluations took 127.011 seconds in total. The
+[manifest](../validation/fruit_loop_el_f13_scan_agreement_2026-09-05/RESULT_MANIFEST_R0.1.md)
+retains exact clocks, complete maps, support accounting, intervals and inputs.
+All 36 bound input files and both review archives remain unchanged. Zero
+Citlali runs, interventions, new observations, Unity work or qualification.
+The next significant owner decision is whether to commission a separate
+benefit-signal design addressing shared-reference contamination and attainable
+historical-control endpoints. Any intervention still requires concrete joint
+action/duration/cap rules, all science and resource protections, exact paired
+inputs, and independent-pointing replication before policy. EL-F12 stays
+negative, the UID 4460 diagnosis remains closed, and Stage B remains separate.
 
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the

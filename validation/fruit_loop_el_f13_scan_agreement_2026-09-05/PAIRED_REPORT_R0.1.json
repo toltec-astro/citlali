@@ -1,0 +1,70 @@
+{
+  "status": "feasibility_only",
+  "construction": "valid",
+  "boundaries": 6,
+  "eligible_keys": 2,
+  "scoreable_probes": 1,
+  "primary_negative_challenge": [
+    {
+      "arm": "Half",
+      "coefficient": 0.5,
+      "prediction_status": "unavailable_probe_support",
+      "challenge": "negative_challenge_unassessed"
+    },
+    {
+      "arm": "Hold",
+      "coefficient": 1.0,
+      "prediction_status": "unavailable_probe_support",
+      "challenge": "negative_challenge_unassessed"
+    }
+  ],
+  "independent_negative_opportunities": 1,
+  "boundary_2_label": "unavailable: later outcomes are confounded by earlier actions",
+  "empirical_benefit_rate": "unavailable",
+  "false_action_rate": "unavailable",
+  "next_decision": "Separate owner review before any new method, input, gate, resource scope or intervention.",
+  "limitation": "Shared-reference agreement can favor a wrong sky feature. Fixed-sample probes do not reproduce pre-RTC/PTC actions or adaptive trajectories.",
+  "evaluations": [
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_el_f12_response_intervention_2026-09-05/Half_RESULT.json",
+      "sha256": "aa8eb5092dec4e4a839e012cfd84ef481a2cb53abe8bdbf6d77dd62bb8c1a477",
+      "size_bytes": 481213,
+      "opened_utc": "2026-09-05T20:35:49.470929+00:00"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_el_f12_response_intervention_2026-09-05/Hold_RESULT.json",
+      "sha256": "f4c91ebc839786166291528ee58fafac5f7e31d63a58f27069b7fd6588702e3e",
+      "size_bytes": 480536,
+      "opened_utc": "2026-09-05T20:35:49.484371+00:00"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_el_f12_response_intervention_2026-09-05/PROTECTION_CHECKS_R0.1.csv",
+      "sha256": "c04f13937c4847dfd77bd09414cc2d1860c80d9a06ca86a9ca95bb1c575bbc30",
+      "size_bytes": 23576,
+      "opened_utc": "2026-09-05T20:35:49.495504+00:00"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_el_f12_response_intervention_2026-09-05/EXECUTION_COMPLETION_R0.1.json",
+      "sha256": "443885c249cd911622212c95d977d241e2a9f62568b9ab20380eb608978689c7",
+      "size_bytes": 12795,
+      "opened_utc": "2026-09-05T20:35:49.504883+00:00"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_el_f12_response_intervention_2026-09-05/SCIENTIFIC_INTERPRETATION_R0.1.md",
+      "sha256": "5a7b6374f83f47bdb4649d60e3899d17933ace2cc100edf3a504cd46936b6384",
+      "size_bytes": 12214,
+      "opened_utc": "2026-09-05T20:35:49.505142+00:00"
+    },
+    {
+      "path": "/Users/gwilson/.codex/worktrees/4c31/citlali-refactor/validation/fruit_loop_el_f12_response_intervention_2026-09-05/RESULT_MANIFEST_R0.1.md",
+      "sha256": "861346e958e5529926c0eb555f4ba87d5e32a3617a895af8c469fc194d0f2328",
+      "size_bytes": 8122,
+      "opened_utc": "2026-09-05T20:35:49.511052+00:00"
+    }
+  ],
+  "prediction_freeze": {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/PREDICTION_FREEZE_R0.1.json",
+    "sha256": "e7bbf4afe02ab909783d7f428cf6eea56f31e2ee635749856811c844523964ad",
+    "size_bytes": 5326
+  }
+}

@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/setup_r0.2/scan_agreement.py", line 425, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/setup_r0.2/scan_agreement.py", line 418, in main
+    try:run_boundary(args.input,args.library,args.output)
+        ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/setup_r0.2/scan_agreement.py", line 345, in run_boundary
+    reconstructed=accounting(stream,ledgers,fits_paths,access)
+  File "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/setup_r0.2/scan_agreement.py", line 284, in accounting
+    check(np.array_equal(hdul[plane].data.squeeze(),ledger[field]),'FITS/ledger plane mismatch '+plane)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f13-scan-agreement-feasibility-r0.1/setup_r0.2/scan_agreement.py", line 31, in check
+    raise ValueError(message)
+ValueError: FITS/ledger plane mismatch signal_I

@@ -1,0 +1,52 @@
+[
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/fruit_response_123424_iter0.bin.gz",
+    "purpose": "verify bound compressed/file bytes",
+    "utc": "2026-09-05T20:29:12.609030+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/citlali_restart_checkpoint.nc",
+    "purpose": "verify bound compressed/file bytes",
+    "utc": "2026-09-05T20:29:12.709658+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+    "purpose": "verify bound compressed/file bytes",
+    "utc": "2026-09-05T20:29:12.710289+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+    "purpose": "verify bound compressed/file bytes",
+    "utc": "2026-09-05T20:29:12.717780+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1400_pointing_123424_citlali.fits",
+    "purpose": "verify bound compressed/file bytes",
+    "utc": "2026-09-05T20:29:12.721046+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a2000_pointing_123424_citlali.fits",
+    "purpose": "verify bound compressed/file bytes",
+    "utc": "2026-09-05T20:29:12.737458+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/citlali_restart_checkpoint.nc",
+    "purpose": "decode census; discard old selection and response fields",
+    "utc": "2026-09-05T20:29:12.750260+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_pointing_123424_mapdiag_fruit_response.nc",
+    "purpose": "read only schema, state, array totals and kernel banks",
+    "utc": "2026-09-05T20:29:12.752699+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/fruit_response_123424_iter0.bin.gz",
+    "purpose": "first stream: original-order all-scan construction only; no decompressed output",
+    "utc": "2026-09-05T20:29:12.820582+00:00"
+  },
+  {
+    "path": "/Users/gwilson/work_toltec/local_data/fruit-development/fruit-el-f12-response-aware-intervention-r0.1/H/uninjected/reduced/redu00/123424/raw/toltec_commissioning_a1100_pointing_123424_citlali.fits",
+    "purpose": "verify historical signal/formal weight/grid",
+    "utc": "2026-09-05T20:29:23.982990+00:00"
+  }
+]

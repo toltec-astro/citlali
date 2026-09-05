@@ -400,3 +400,37 @@ $HOME/tolteca/bin/python \
 
 The analysis is development-only. A favorable mechanism result does not
 qualify the policy or establish equivalence to a sample-domain residual.
+
+
+## EL-F13 retained scan agreement
+
+`scan_agreement.py` and `scan_agreement_stream.cpp` implement the isolated,
+owner-approved EL-F13 fixed-sample feasibility calculation. They do not call
+Citlali or alter its configuration. The Python boundary interface accepts six
+exact current-boundary files. The C++ accumulator accepts bytes and kernels,
+has no filesystem access, and reconstructs full-array totals before a second
+pass forms direct coefficient probes. Output planes use the companion FITS
+orientation; numerical arithmetic uses the original internal ledger orientation.
+
+`run_scan_agreement_feasibility.py` supervises the six sequential workers,
+enforces the approved resource bounds, freezes their outputs, and then performs
+the separate exposed-result comparison. Existing output paths are never
+overwritten. Exact registrations and the complete negative/inconclusive result
+are retained in
+`validation/fruit_loop_el_f13_scan_agreement_2026-09-05/`.
+
+Run focused construction tests with:
+
+```bash
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+VECLIB_MAXIMUM_THREADS=1 MPLBACKEND=Agg \
+$HOME/tolteca/bin/python -m pytest -q -p no:cacheprovider \
+  tools/fruit_loops/test_scan_agreement.py
+```
+
+The test fixture compiles only the standalone helper in temporary storage.
+`EL_F13_LIBRARY` may instead identify an already registered helper binary.
+The frozen scoring helper and pre-scoring tests remain byte-identifiable in
+the registration; the later self-build test fixture changes no prediction.
+EL-F13 supplied no positive empirical benefit evidence and did not authorize
+an intervention, a changed support rule, qualification or Stage B.

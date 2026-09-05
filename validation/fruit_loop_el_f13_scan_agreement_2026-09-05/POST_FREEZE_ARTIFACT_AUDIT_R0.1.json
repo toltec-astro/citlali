@@ -1,0 +1,179 @@
+{
+  "prediction_freeze_unchanged": true,
+  "all_outcome_access_after_freeze": true,
+  "boundaries": [
+    {
+      "boundary": 0,
+      "current_boundary_access_only": true,
+      "term_presence_equals_nonzero_coefficient": true,
+      "keys": []
+    },
+    {
+      "boundary": 1,
+      "current_boundary_access_only": true,
+      "term_presence_equals_nonzero_coefficient": true,
+      "keys": [
+        {
+          "identity": {
+            "observation": "123424",
+            "array": 2,
+            "uid": 5279,
+            "scan": 10,
+            "disposition": "eligible"
+          },
+          "baseline_intervals": [
+            {
+              "error": 91.51697726947198,
+              "bound": 3.27178268876441e-08,
+              "map_bound_rms": 2.71388578473126e-08,
+              "rms_magnitude": 120.92562611214005,
+              "rms_arithmetic_bound": 5.578969040331496e-09,
+              "lower": 91.51697723675414,
+              "upper": 91.51697730218982,
+              "positive_peak": 519.5651793187677,
+              "negative_peak": -345.3897098408158,
+              "signed_sum": -28020.056760972697,
+              "positive_sum": 180613.50726318703,
+              "negative_sum": -208633.56402415974
+            },
+            {
+              "error": 100.42242682353536,
+              "bound": 3.473954708246185e-08,
+              "map_bound_rms": 2.961025010357079e-08,
+              "rms_magnitude": 111.17886552219578,
+              "rms_arithmetic_bound": 5.129296978891053e-09,
+              "lower": 100.4224267887958,
+              "upper": 100.42242685827492,
+              "positive_peak": 532.069401615151,
+              "negative_peak": -347.0418397183197,
+              "signed_sum": -38273.555938915364,
+              "positive_sum": 200558.07213074464,
+              "negative_sum": -238831.62806966
+            }
+          ],
+          "probes": [
+            {
+              "coefficient": 0.5,
+              "status": "unavailable_probe_support",
+              "probe_intervals": null,
+              "unavailable_reason": "No error or benefit decision on an incomplete fixed domain."
+            },
+            {
+              "coefficient": 1.0,
+              "status": "unavailable_probe_support",
+              "probe_intervals": null,
+              "unavailable_reason": "No error or benefit decision on an incomplete fixed domain."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundary": 2,
+      "current_boundary_access_only": true,
+      "term_presence_equals_nonzero_coefficient": true,
+      "keys": [
+        {
+          "identity": {
+            "observation": "123424",
+            "array": 2,
+            "uid": 5282,
+            "scan": 0,
+            "disposition": "eligible"
+          },
+          "baseline_intervals": [
+            {
+              "error": 88.4628816354068,
+              "bound": 3.3165043296026246e-08,
+              "map_bound_rms": 2.8171161220874624e-08,
+              "rms_magnitude": 126.74957987336359,
+              "rms_arithmetic_bound": 4.9938820751516156e-09,
+              "lower": 88.46288160224175,
+              "upper": 88.46288166857185,
+              "positive_peak": 487.1981209803863,
+              "negative_peak": -547.4866365541653,
+              "signed_sum": -68694.03148183829,
+              "positive_sum": 103781.84791029285,
+              "negative_sum": -172475.87939213112
+            },
+            {
+              "error": 97.14599295122919,
+              "bound": 3.4174706059580634e-08,
+              "map_bound_rms": 2.975528587840654e-08,
+              "rms_magnitude": 112.16917877074087,
+              "rms_arithmetic_bound": 4.419420181174088e-09,
+              "lower": 97.14599291705447,
+              "upper": 97.14599298540391,
+              "positive_peak": 507.72768628578154,
+              "negative_peak": -581.102121204567,
+              "signed_sum": -69525.9597867287,
+              "positive_sum": 123239.00373656195,
+              "negative_sum": -192764.96352329061
+            }
+          ],
+          "probes": [
+            {
+              "coefficient": 0.5,
+              "status": "no_gain",
+              "probe_intervals": [
+                {
+                  "error": 91.91144371176001,
+                  "bound": 3.3645125347566846e-08,
+                  "map_bound_rms": 2.8426360446772936e-08,
+                  "rms_magnitude": 132.4573245181006,
+                  "rms_arithmetic_bound": 5.218764900793903e-09,
+                  "lower": 91.91144367811488,
+                  "upper": 91.91144374540515,
+                  "positive_peak": 460.4461910660908,
+                  "negative_peak": -547.4020507681146,
+                  "signed_sum": -70260.68462560298,
+                  "positive_sum": 112855.11452066863,
+                  "negative_sum": -183115.7991462716
+                },
+                {
+                  "error": 102.12104573686837,
+                  "bound": 3.456584306634734e-08,
+                  "map_bound_rms": 2.994868114362534e-08,
+                  "rms_magnitude": 117.18805632680798,
+                  "rms_arithmetic_bound": 4.617161922721993e-09,
+                  "lower": 102.12104570230251,
+                  "upper": 102.12104577143423,
+                  "positive_peak": 493.93676581227123,
+                  "negative_peak": -581.0175354185162,
+                  "signed_sum": -71092.61293049339,
+                  "positive_sum": 134720.82533683305,
+                  "negative_sum": -205813.43826732642
+                }
+              ]
+            },
+            {
+              "coefficient": 1.0,
+              "status": "unavailable_probe_support",
+              "probe_intervals": null,
+              "unavailable_reason": "No error or benefit decision on an incomplete fixed domain."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "boundary": 3,
+      "current_boundary_access_only": true,
+      "term_presence_equals_nonzero_coefficient": true,
+      "keys": []
+    },
+    {
+      "boundary": 4,
+      "current_boundary_access_only": true,
+      "term_presence_equals_nonzero_coefficient": true,
+      "keys": []
+    },
+    {
+      "boundary": 5,
+      "current_boundary_access_only": true,
+      "term_presence_equals_nonzero_coefficient": true,
+      "keys": []
+    }
+  ],
+  "scope": "Verification and baseline-error completion from frozen component maps only; no changed prediction, domain, threshold or outcome input."
+}

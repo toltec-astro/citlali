@@ -1,0 +1,7 @@
+{
+  "kind": "test expectation bug",
+  "retained_attempt": "tests_attempt_1.log",
+  "description": "The Decimal raw N/C expectation was incorrectly compared with coverage-masked signal=0. Test now compares raw N/C where the bound applies, while scoring still requires supported pixels.",
+  "scientific_changes": false,
+  "test_result": "31 passed"
+}
