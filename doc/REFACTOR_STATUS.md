@@ -1,5 +1,23 @@
 # Citlali Refactor Status
 
+## 2026-09-06 CTI-OD-002 Uniform r0.4 Scientific Approval
+
+Grant Wilson reviewed and approved exact uniform-coefficient scientific
+candidate `b38ce251207e4f445d5b421f42f774ae3e4f0477`, tree
+`87f8a1837b2707e797a9f61ea784f331b50d5632`. The
+[owner decision and exact inventory](scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_approval_r04/SCIENTIFIC_OWNER_APPROVAL.md)
+adopt all fourteen UFC-OD proposals, separately grant the proposed MAP/JINC
+scientific permissions, and confirm Grant Wilson acting for SCI-PTC, resolving
+UFC-Q-001. The five deferred subjects remain deferred. This completes the
+first substantive scientific-owner round; it supersedes the older pending
+approval wording without changing any of the 48 submitted artifacts.
+
+The next charter gate is a fresh implementation-blind consistency review of
+the two exact approved views and their mappings. Freeze and the later bounded
+Registry/boundary admission remain separate. CTI-OD-002 is not yet closed;
+canonical integration, the owner-held GitHub push, application implementation,
+validation and route activation are not performed by this approval record.
+
 ## 2026-09-06 CTI-OD-002 Uniform r0.4 Candidate Repair
 
 Independent review of exact r0.3 candidate
