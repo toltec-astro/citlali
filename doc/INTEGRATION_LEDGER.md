@@ -1,5 +1,36 @@
 # Citlali Integration Ledger
 
+## VAL Native Target Unity Evidence and Admission Candidate — 2026-09-06
+
+The owner supplied the completed Unity GCC13/Spack receipt for job `64035873`
+at exact independently reviewed source `37e6fb6ce50acba644f04b6b6b546762bf07f384`.
+All 899 runnable CTests and 50 focused successor tests passed; CLI/source
+identity and clean pinned dependencies match; 21 archive checksums pass and
+stderr is empty. The actual allocation remained six CPUs and 64 GiB, with
+9m34s elapsed and batch MaxRSS 23071116 KiB. The runner digest matches its
+reviewed package and final-status reconstruction matches the supplied digest.
+
+The [admission handoff](../handoff/TIMESTREAM_SUCCESSOR_VAL_NATIVE_ADMISSION_001_2026-09-06.md)
+binds the owner-held archive, exact digests, verbatim implementation review,
+environment and remaining limitations. Separate completion evidence is at
+`/private/tmp/citlali-val-native-target-completion-evidence-2026-09-06`;
+the original 56-file implementation manifest was reverified and preserved.
+Unity source-build/test evidence is not managed-deployment acceptance.
+
+Read-only live GitHub and clean local canonical verification found
+`36176ac14abe23a5c331ba40af2bb86d3e97a7f6`, after the separate uniform
+scientific authority admission. The common ancestor remains exact approved
+VAL base `080df2a1431487e8cabc255beb9ddc59c0721b59`. Admission preparation
+retains canonical as first parent and tested VAL as second, with both shared
+history additions preserved. All canonical scientific bytes remain unchanged;
+the admitted uniform profile is not selected or evaluated by this unit.
+
+The new candidate must pass exact input/authority preservation and independent
+review on all three axes before the owner decides canonical admission.
+Preparation is bounded closeout of the approved VAL unit, not source
+acceptance or authorization to move canonical, push, activate, clean up,
+enter production or open a subsequent implementation unit.
+
 ## 2026-09-06 Uniform Scientific Authority Integration
 
 The [exact integration record](scientific_contracts/acceptance/PTC_UNIFORM_R04_2026-09-06/INTEGRATION_RECEIPT.md)
@@ -38,6 +69,29 @@ receipt; preparation is not a claim that canonical already moved. The owner
 retains all GitHub pushes. CTI-OD-003/004 and the exact first CTI-OD-006 mapping
 unit remain proposed in the linked decision brief. Existing D2, Spack and V2
 application evidence retains its original exact source and environment.
+
+## VAL/D2 Prerequisite Acceptance and Native Target Work Order — 2026-09-06
+
+Owner directive: "I accept and approve this. Let's proceed."
+The accepted prerequisite is exact `080df2a1431487e8cabc255beb9ddc59c0721b59`,
+tree `a619f802a11eca8f9adccbebbf230517b2891945`, sole parent
+`5244e04638db5aa92180feab52acd782229cfa32`. The fresh-context read-only
+review passed with the documented historical SCI-VAL verifier limitation and
+no findings on all three axes. Its preserved external report SHA-256 is
+`665baf8487ab25d3deeb9726c4a21da672fc346b79adde63872197d9383dff1e`;
+11-file evidence-manifest SHA-256 is
+`5b1e7cece633f9ba13f3153df8c0eb513240efcc4313ef7e21955e9fecf46f24`,
+at `/private/tmp/citlali-val-d2-prerequisite-evidence-2026-09-06`.
+
+After verifying the evidence and clean live-matching canonical, local
+canonical was fast-forwarded literally to the accepted SHA. No push occurred.
+The approved [VAL implementation work order](../handoff/TIMESTREAM_SUCCESSOR_VAL_NATIVE_TARGET_001_2026-09-06.md)
+starts from that exact accepted local authority on one clean owned branch.
+The expected live/local difference is solely the admitted work-order commit;
+there is no unseen source/authority overlap to reconcile. The prior reviewed
+proposal, D2 history and all previous evidence remain preserved. This record
+makes the owner's acceptance and source-scope authorization durable; it does
+not preaccept the future source candidate or its representative gate.
 
 ## VAL/D2 Prerequisite Work Order — 2026-09-06
 

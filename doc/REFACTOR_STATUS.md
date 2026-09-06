@@ -1,5 +1,36 @@
 # Citlali Refactor Status
 
+## 2026-09-06 VAL Native Target Unity Gate and Admission Preparation
+
+Owner-run Unity GCC13 job `64035873` passed at exact VAL implementation
+`37e6fb6ce50acba644f04b6b6b546762bf07f384`, tree
+`32dea6ffe86b5855ad75a21cd56e6817559fb9f9`: 899/899 runnable CTests and
+50/50 focused successor tests, including 10 VAL and 8 D2 tests. The clean
+CLI/source binding, clean pinned dependencies, all 21 archive checksums and
+zero-byte stderr are confirmed by the owner receipt. It completed in 9m34s
+on six CPUs with the original 64 GiB request; batch MaxRSS was about 22 GiB.
+This completes the required representative source-build/test gate, with
+unmanaged deployment labels and owner-held archive limitations retained.
+
+Canonical advanced independently to live/local
+`36176ac14abe23a5c331ba40af2bb86d3e97a7f6`, admitting the reviewed uniform
+scientific authority below. Its 136 intervening paths are documentation-only;
+all 1600 executable inputs match the VAL implementation base. The bounded
+[admission candidate](../handoff/TIMESTREAM_SUCCESSOR_VAL_NATIVE_ADMISSION_001_2026-09-06.md)
+preserves canonical first and the tested implementation second, reconciles
+only overlapping status/ledger histories and retains all scientific bindings.
+Its executable inputs must match the tested source exactly. Unity evidence
+remains bound to that source, not the later admission SHA.
+
+The implementation's independent exact-SHA review passed with recorded
+limitations and no findings. The new merge requires its own fresh-context
+read-only exact-SHA review; its identity, checks and verdict bind externally
+after commit. Canonical source admission is pending explicit owner approval.
+No canonical movement, push, route activation, production or subsequent
+implementation is performed by this preparation. The historical SCI-VAL
+verifier failure remains disclosed. Earlier pending-gate entries are preserved
+as historical checkpoints rather than edited into later results.
+
 ## 2026-09-06 Uniform Scientific Authority Canonical Admission
 
 The owner-authorized integration binds reviewed scientific candidate
@@ -162,6 +193,26 @@ stays open; CTI-OD-001 remains accepted/closed, CTI-OD-003--006 remain open,
 and CTI-OD-007 remains inherited/closed. Frozen authority, current Registry
 records, application code and all existing numerical-route limitations remain
 unchanged. No application unit is authorized by this scope decision.
+
+## 2026-09-06 VAL Native Target 001 Implementation
+
+The owner accepted prerequisite candidate
+`080df2a1431487e8cabc255beb9ddc59c0721b59`, tree
+`a619f802a11eca8f9adccbebbf230517b2891945`, following independent exact-SHA
+PASS with recorded limitations and no findings, and approved its bounded VAL
+implementation. Local canonical was fast-forwarded literally from verified
+live GitHub `5244e04638db5aa92180feab52acd782229cfa32` to that accepted
+candidate. GitHub remains at the earlier pushed closure; this known one-commit
+documentation difference requires no push before the approved implementation.
+
+`TIMESTREAM-SUCCESSOR-VAL-NATIVE-TARGET-001` occupies the sole active spine
+slot on `codex/timestream-successor-val-native-target-001`, based exactly on
+accepted local canonical `080df2a1...`. Its [work order](../handoff/TIMESTREAM_SUCCESSOR_VAL_NATIVE_TARGET_001_2026-09-06.md)
+records mechanical coordinate/realization targets, exact parent and immutable
+snapshot preservation, no scientific-policy change, focused/broad local gates,
+and a new owner-run Unity gate before later source admission. Source admission,
+push, activation and subsequent numerical work are separate dispositions.
+Earlier preparation entries below are historical checkpoints.
 
 ## 2026-09-06 VAL/D2 Prerequisite Review
 

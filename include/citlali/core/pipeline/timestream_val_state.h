@@ -12,6 +12,7 @@
 #include <span>
 #include <stdexcept>
 #include <utility>
+#include <variant>
 #include <vector>
 
 namespace citlali::pipeline {
@@ -193,16 +194,139 @@ private:
     const NativePairedReadoutObservation *paired_product_identity_;
 };
 
+enum class ValNativeProductRole : std::uint8_t {
+    original_input,
+    derived_residual,
+};
+
+// A producer creates one immutable identity per native-network realization.
+// Its full occurrence/detector support is the exact Paired-D1 network. This
+// descriptor owns no payload, snapshot, policy, or per-cell identity text.
+// Retaining its handle establishes scoped in-memory identity; equal producer
+// numbers in independently created descriptors do not alias. This is not a
+// persistent identity or permission to compute/consume either coordinate.
+class ValNativeRealization {
+public:
+    ValNativeRealization(const ValNativeRealization &) = delete;
+    ValNativeRealization &operator=(const ValNativeRealization &) = delete;
+
+    static std::shared_ptr<const ValNativeRealization>
+    create(std::shared_ptr<const NativePairedReadoutObservation> paired,
+           ValProducerProductIdentity product,
+           std::uint64_t realization_instance, ValNativeProductRole role,
+           TimestreamNetworkId network_id) {
+        if (!paired || realization_instance == 0 ||
+            (role != ValNativeProductRole::original_input &&
+             role != ValNativeProductRole::derived_residual)) {
+            throw std::invalid_argument(
+                "VAL native realization requires parent, identity and role");
+        }
+        switch (product.producer()) {
+        case ValProducer::align:
+        case ValProducer::ast:
+        case ValProducer::rtc:
+        case ValProducer::cal:
+        case ValProducer::ptc:
+            break;
+        default:
+            throw std::invalid_argument(
+                "VAL native realization requires a named producer");
+        }
+        (void)paired->network(network_id);
+        return std::shared_ptr<const ValNativeRealization>(
+            new ValNativeRealization{std::move(paired), product,
+                                     realization_instance, role, network_id});
+    }
+
+    const std::shared_ptr<const NativePairedReadoutObservation> &
+    paired_handle() const noexcept {
+        return paired_;
+    }
+    const ValProducerProductIdentity &producer_product() const noexcept {
+        return product_;
+    }
+    std::uint64_t realization_instance() const noexcept {
+        return realization_instance_;
+    }
+    ValNativeProductRole role() const noexcept { return role_; }
+    TimestreamNetworkId network_id() const noexcept { return network_id_; }
+
+private:
+    ValNativeRealization(
+        std::shared_ptr<const NativePairedReadoutObservation> paired,
+        ValProducerProductIdentity product, std::uint64_t realization_instance,
+        ValNativeProductRole role, TimestreamNetworkId network_id)
+        : paired_{std::move(paired)}, product_{product},
+          realization_instance_{realization_instance}, role_{role},
+          network_id_{network_id} {}
+
+    std::shared_ptr<const NativePairedReadoutObservation> paired_;
+    ValProducerProductIdentity product_;
+    std::uint64_t realization_instance_;
+    ValNativeProductRole role_;
+    TimestreamNetworkId network_id_;
+};
+
+// One coordinate of one explicitly detector-bound native occurrence. The
+// producer owns coordinate meaning/units and facts; VAL only preserves their
+// exact subject. A moved-from target is not admissible to a delta.
+class ValNativeTarget {
+public:
+    const ValAddress &address() const noexcept { return address_; }
+    NativeReadoutCoordinate coordinate() const noexcept { return coordinate_; }
+    const std::shared_ptr<const ValNativeRealization> &
+    realization_handle() const noexcept {
+        return realization_;
+    }
+
+    friend bool operator==(const ValNativeTarget &,
+                           const ValNativeTarget &) = default;
+    friend bool operator<(const ValNativeTarget &lhs,
+                          const ValNativeTarget &rhs) noexcept {
+        if (lhs.address_ < rhs.address_) return true;
+        if (rhs.address_ < lhs.address_) return false;
+        if (lhs.coordinate_ != rhs.coordinate_) {
+            return static_cast<std::uint8_t>(lhs.coordinate_) <
+                   static_cast<std::uint8_t>(rhs.coordinate_);
+        }
+        // A strict total order for retained instances, not serialized pointer
+        // order or an assertion that fresh allocations are the same subject.
+        return std::less<const ValNativeRealization *>{}(
+            lhs.realization_.get(), rhs.realization_.get());
+    }
+
+private:
+    friend class ValSnapshot;
+
+    ValNativeTarget(std::shared_ptr<const ValNativeRealization> realization,
+                    ValAddress address, NativeReadoutCoordinate coordinate)
+        : address_{std::move(address)}, realization_{std::move(realization)},
+          coordinate_{coordinate} {}
+
+    ValAddress address_;
+    std::shared_ptr<const ValNativeRealization> realization_;
+    NativeReadoutCoordinate coordinate_;
+};
+
 class ValFindingKey {
 public:
-    ValFindingKey(ValProducerProductIdentity product,
-                  ValAddress address, ValFactCode fact)
-        : product_{product}, address_{std::move(address)}, fact_{fact} {}
+    ValFindingKey(ValProducerProductIdentity product, ValAddress address,
+                  ValFactCode fact)
+        : product_{product}, subject_{std::move(address)}, fact_{fact} {}
+    ValFindingKey(ValProducerProductIdentity product, ValNativeTarget target,
+                  ValFactCode fact)
+        : product_{product}, subject_{std::move(target)}, fact_{fact} {}
 
     const ValProducerProductIdentity &product() const noexcept {
         return product_;
     }
-    const ValAddress &address() const noexcept { return address_; }
+    const ValAddress &address() const noexcept {
+        if (const auto *target = native_target()) return target->address();
+        return std::get<ValAddress>(subject_);
+    }
+    const ValNativeTarget *native_target() const noexcept {
+        return std::get_if<ValNativeTarget>(&subject_);
+    }
     ValFactCode fact() const noexcept { return fact_; }
 
     friend bool operator==(const ValFindingKey &,
@@ -211,14 +335,16 @@ public:
                           const ValFindingKey &rhs) noexcept {
         if (lhs.product_ < rhs.product_) return true;
         if (rhs.product_ < lhs.product_) return false;
-        if (lhs.address_ < rhs.address_) return true;
-        if (rhs.address_ < lhs.address_) return false;
+        if (lhs.subject_ < rhs.subject_) return true;
+        if (rhs.subject_ < lhs.subject_) return false;
         return lhs.fact_ < rhs.fact_;
     }
 
 private:
     ValProducerProductIdentity product_;
-    ValAddress address_;
+    // Unqualified and coordinate-qualified facts are disjoint domains. There
+    // is no implicit pair-wide meaning, coordinate broadcast or fallback.
+    std::variant<ValAddress, ValNativeTarget> subject_;
     ValFactCode fact_;
 };
 
@@ -284,6 +410,8 @@ struct ValSnapshotMemoryEvidence {
     std::size_t owned_finding_bytes = 0;
     std::size_t referenced_paired_product_count = 0;
     std::size_t referenced_parent_generation_count = 0;
+    // Counts handle references in this delta, not unique descriptor objects.
+    std::size_t referenced_native_target_count = 0;
 
     std::size_t logical_owned_bytes() const noexcept {
         return owned_finding_bytes;
@@ -367,6 +495,32 @@ public:
         }
     }
 
+    ValNativeTarget
+    native_target(std::shared_ptr<const ValNativeRealization> realization,
+                  ValAddress address,
+                  NativeReadoutCoordinate coordinate) const {
+        ValNativeTarget target{std::move(realization), std::move(address),
+                               coordinate};
+        if (!contains(target)) {
+            throw std::invalid_argument(
+                "VAL native target requires exact parent, network, detector "
+                "and coordinate");
+        }
+        return target;
+    }
+
+    bool contains(const ValNativeTarget &target) const noexcept {
+        const auto &realization = target.realization_handle();
+        return realization &&
+               realization->paired_handle().get() == paired_.get() &&
+               realization->network_id() ==
+                   target.address().sample_identity().network_id() &&
+               target.address().detector_bound() &&
+               (target.coordinate() == NativeReadoutCoordinate::x ||
+                target.coordinate() == NativeReadoutCoordinate::r) &&
+               contains(target.address());
+    }
+
     const NativeReadoutDetectorBinding &detector_binding(
         const ValAddress &address) const {
         if (!contains(address) || !address.detector_index()) {
@@ -402,8 +556,12 @@ public:
     }
 
     ValSnapshotMemoryEvidence memory_evidence() const noexcept {
-        return {findings_.size() * sizeof(ValFinding), 1,
-                parent_ ? 1U : 0U};
+        return {findings_.size() * sizeof(ValFinding), 1, parent_ ? 1U : 0U,
+                static_cast<std::size_t>(std::count_if(
+                    findings_.begin(), findings_.end(),
+                    [](const ValFinding &finding) {
+                        return finding.key().native_target() != nullptr;
+                    }))};
     }
 
 private:
@@ -440,17 +598,16 @@ public:
 
     ValDeltaBuilder &propose(ValAddress address, ValFactCode fact,
                              ValFactState state, ValFactCause cause) {
-        if (frozen_) {
-            throw std::logic_error("VAL delta builder is already frozen");
-        }
-        if (!base_snapshot_->contains(address)) {
-            throw std::invalid_argument(
-                "VAL finding address differs from the base snapshot");
-        }
-        findings_.push_back(ValFinding{
-            ValFindingKey{producer_product_, std::move(address), fact},
-            state, cause});
-        return *this;
+        return propose_key(
+            ValFindingKey{producer_product_, std::move(address), fact}, state,
+            cause);
+    }
+
+    ValDeltaBuilder &propose(ValNativeTarget target, ValFactCode fact,
+                             ValFactState state, ValFactCause cause) {
+        return propose_key(
+            ValFindingKey{producer_product_, std::move(target), fact}, state,
+            cause);
     }
 
     ValDelta freeze() {
@@ -472,6 +629,24 @@ public:
     }
 
 private:
+    ValDeltaBuilder &propose_key(ValFindingKey key, ValFactState state,
+                                 ValFactCause cause) {
+        if (frozen_) {
+            throw std::logic_error("VAL delta builder is already frozen");
+        }
+        if (!base_snapshot_->contains(key.address())) {
+            throw std::invalid_argument(
+                "VAL finding address differs from the base snapshot");
+        }
+        if (const auto *target = key.native_target();
+            target && !base_snapshot_->contains(*target)) {
+            throw std::invalid_argument(
+                "VAL finding target differs from the base snapshot");
+        }
+        findings_.push_back(ValFinding{std::move(key), state, cause});
+        return *this;
+    }
+
     std::shared_ptr<const ValSnapshot> base_snapshot_;
     ValProducerProductIdentity producer_product_;
     std::vector<ValFinding> findings_;
