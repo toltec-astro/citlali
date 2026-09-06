@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "date": "2026-09-06",
+  "recovered_source_objects": 33,
+  "admitted_source_objects": 22,
+  "original_literal_excerpts": 61,
+  "checks": "Exact retained Git mode/blob, byte count, SHA-256, VAL frozen-core equality where bound, original excerpt spans and literal packet equality",
+  "scope": "Source and extraction integrity; does not change frozen source approval or broaden author input. Original Stage A verifier parent/path gates are not repurposed for r0.3."
+}

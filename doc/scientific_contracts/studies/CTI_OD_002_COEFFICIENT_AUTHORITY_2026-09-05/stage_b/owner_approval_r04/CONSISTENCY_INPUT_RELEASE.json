@@ -1,0 +1,10 @@
+{
+  "packet_path": "/private/tmp/citlali-ptc-uniform-post-owner-consistency-2026-09-06/input",
+  "packet_manifest_sha256": "287752c5a4dbace51f98a12330c9eb3e32a80dcfc3625374352064378c82a2d6",
+  "packet_files_including_manifest": 55,
+  "scientific_subject": "b38ce251207e4f445d5b421f42f774ae3e4f0477",
+  "owner_approval_sha256": "a771eddc1d1a9cfae76f9f6f0c13398a90552ca0ad28a06f872a77048dc712e5",
+  "allowed_scientific_input": "Only exact approved draft and its admitted references plus current owner approval. Historical independent review reports and implementation evidence excluded.",
+  "process_input": "Exact charter and governance copies; no new science.",
+  "review_state": "Dispatch after committing this approval-record candidate; exact candidate/review bound externally."
+}

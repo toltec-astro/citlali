@@ -1,0 +1,26 @@
+{
+  "identity": "SCI-PTC uniform coefficient owner review 1 supplement",
+  "date": "2026-09-06",
+  "subject_commit": "448194ac3e650a12e5a3862d86a4a05f867a90c5",
+  "subject_revision": "v0.1-draft.1/r0.2",
+  "owner_review_round": 1,
+  "original_author_input_manifest_sha256": "3140f1769ce1d4ed970c21f8cb56ff50e697880d5676983314d7b0584afd8f00",
+  "authorization": "Owner-provided review and requested targeted revision; exact frozen-parent provenance recovery only",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2798,
+      "sha256": "b54e80d86b270ae4c558e80a01bf68679e08b595091f44972f39cd0cb62e62a9"
+    },
+    {
+      "path": "OWNER_REVIEW_1_VERBATIM.md",
+      "bytes": 18992,
+      "sha256": "1e9074bfa86566a790f7d1a0284817aced321c66222c6899ef0e13a229a223e9"
+    },
+    {
+      "path": "PTC_RANK_AND_PUBLICATION_CLAUSES.md",
+      "bytes": 3586,
+      "sha256": "9e16b036203e0fbb6d4899220864476be4a6cc3f412df6e2157f693fc066abea"
+    }
+  ]
+}

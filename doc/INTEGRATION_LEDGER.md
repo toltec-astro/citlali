@@ -1,5 +1,44 @@
 # Citlali Integration Ledger
 
+## 2026-09-06 Uniform Scientific Authority Integration
+
+The [exact integration record](scientific_contracts/acceptance/PTC_UNIFORM_R04_2026-09-06/INTEGRATION_RECEIPT.md)
+binds canonical first parent `080df2a1431487e8cabc255beb9ddc59c0721b59`
+and independently reviewed scientific second parent
+`867879b992598484e1bc5b481e5e14ff91c04dab`. All scientific-candidate review
+axes passed with zero actionable findings. The subsequent exact merge review
+and clean-base check precede the already owner-authorized literal canonical
+fast-forward. On canonical ancestry this admits the exact frozen uniform
+authority, PTC Registry entry, complete VAL profile and separate MAP/JINC
+consumer successors. Earlier preparation checkpoints below are historical.
+
+All canonical application/D2/build/config/test/evidence bytes and all reviewed
+scientific bytes retain their exact identities; only shared status/history
+navigation is combined. Scientific admission completes the uniform-first
+CTI-OD-002 subgate, with other routes still gated. CTI-OD-003/004/006 remain
+proposed and no application work order, push, activation, cleanup or new
+operational validation is performed by this integration record.
+
+## 2026-09-06 Uniform Coefficient Scientific Admission Preparation
+
+Grant Wilson authorized freeze, Registry/boundary admission, review and local
+canonical integration of exact approved uniform science `b38ce251207e4f445d5b421f42f774ae3e4f0477`,
+with owner approval at `3cb01ef3672435c0cf9e3fec505abaa33c2f37a0`.
+The [bounded operation](scientific_contracts/acceptance/PTC_UNIFORM_R04_2026-09-06/README.md)
+preserves its approved artifacts and all frozen predecessors, adds one
+PTC-owned uniform family and complete VAL profile, and binds MAP/JINC
+permissions separately. The post-owner consistency review passed; the new
+admission candidate and subsequent two-parent integration each require fresh
+exact-SHA review. Canonical first-parent checkpoint is
+`080df2a1431487e8cabc255beb9ddc59c0721b59`.
+
+This is scientific-contract admission, with no implementation slot or
+operational activation. The actual integration result is bound by its later
+receipt; preparation is not a claim that canonical already moved. The owner
+retains all GitHub pushes. CTI-OD-003/004 and the exact first CTI-OD-006 mapping
+unit remain proposed in the linked decision brief. Existing D2, Spack and V2
+application evidence retains its original exact source and environment.
+
 ## VAL/D2 Prerequisite Work Order — 2026-09-06
 
 The owner approved authority recovery and preparation of the next bounded

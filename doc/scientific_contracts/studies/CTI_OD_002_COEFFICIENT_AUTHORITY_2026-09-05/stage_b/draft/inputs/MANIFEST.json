@@ -1,0 +1,71 @@
+{
+  "identity": "PTC coefficient successor uniform-first author input",
+  "revision": "Stage A r0.1",
+  "date": "2026-09-05",
+  "release_status": "candidate; owner release approval pending",
+  "scope_status": "uniform-first preparation approved; no numerical definition or default adopted",
+  "read_rule": "Only these ten content files plus this manifest. No repository or external retrieval. Provenance citations do not enlarge the allowlist.",
+  "manifest_binding": "This manifest excludes its own hash. The exact committed subject and exported archive receipt bind its complete bytes externally.",
+  "files": [
+    {
+      "path": "PRIOR_WORK.md",
+      "bytes": 3437,
+      "sha256": "2fc533d236ab04b98783c6acd932a23f1e6caa2de0548d273436a2e44e6f9d8d",
+      "role": "scope/process"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2895,
+      "sha256": "a9402af0d78f93be1bd1ecf693eac582e10b16ca78b9ba5baca21c0601245303",
+      "role": "scope/process"
+    },
+    {
+      "path": "SCOPE_BRIEF.md",
+      "bytes": 6943,
+      "sha256": "d42df7ae3e6b2272eb42e420fd2b4c364db7df8cd1db96cea5eee88fd47a7481",
+      "role": "scope/process"
+    },
+    {
+      "path": "references/JINC_BOUNDARY.md",
+      "bytes": 8747,
+      "sha256": "246f9c87d04bdbf09c878155810d089da9f7509f744847a61a83846824c9728c",
+      "role": "scoped scientific reference"
+    },
+    {
+      "path": "references/MAP_BOUNDARY.md",
+      "bytes": 8917,
+      "sha256": "a02a98af1d381336b47bba10d908bd84999613fe5c60a1cc92fc6286b40606a3",
+      "role": "scoped scientific reference"
+    },
+    {
+      "path": "references/NOI_BINDING.md",
+      "bytes": 8903,
+      "sha256": "b8bf96cf6e32e82b244d1f2f0eb45683435e3725f51ea4135a14703b10c9dde4",
+      "role": "scoped scientific reference"
+    },
+    {
+      "path": "references/PROCESS_AND_SCOPE.md",
+      "bytes": 9256,
+      "sha256": "3665e6008399a7af49b7050709fa00c66e2f3a92070da1623c9bd0dfbc41501c",
+      "role": "scope/process"
+    },
+    {
+      "path": "references/PTC_COEFFICIENTS.md",
+      "bytes": 21015,
+      "sha256": "ffe62f6a9110ac7d442944afaedde90d69e0f28cabc2dc2d2159a53bb011e014",
+      "role": "scoped scientific reference"
+    },
+    {
+      "path": "references/REGISTRY_FRAMEWORK.md",
+      "bytes": 6348,
+      "sha256": "9b9a8426b26afdce584bb30189d6dc25dc03f090b6bbebfbf07f15c0e56fef46",
+      "role": "scoped scientific reference"
+    },
+    {
+      "path": "references/VAL_RULES.md",
+      "bytes": 20276,
+      "sha256": "579d966ad64a378bfab05b5c8f4ffa3a1400dfb319e3bd8f43a9bd29a0b03d75",
+      "role": "scoped scientific reference"
+    }
+  ]
+}

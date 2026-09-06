@@ -1,0 +1,26 @@
+{
+  "date": "2026-09-06",
+  "result": "PASS",
+  "original_canonical": "00b974c9039d4c3025dcce18f26bca69d36af9c3",
+  "current_canonical": "5244e04638db5aa92180feab52acd782229cfa32",
+  "current_canonical_tree": "10136ecdb4c503cdd1c4315832855472075cbaa8",
+  "effective_governance_commit": "06a3ade51c1b3f38887295433d913811bf25cd14",
+  "both_ancestors_verified": true,
+  "exact_source_sha256": {
+    "doc/governance/ENGINEERING_GOVERNANCE.md": "70769787ce2ef4b7323cd2a38e221ade4af3310e0ad6b7b682e08cb4e4d61e76",
+    "doc/governance/REVIEW_AND_CONFORMANCE.md": "691e6d6250102ef2f4a504397581ee67c5707d898ab20fb8dd9e874c47f99bb1",
+    "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.5.md": "8357961a49272adc40e27a8aa9e760e0d01ff2419ae2c88a62c0f93c9f959e66",
+    "doc/scientific_contracts/packages/SCI-PTC/v0.1/src/common/requirements.tex": "f2047600cc06c234a78aa3ddf6a575abf2f9592b3e3da810491f6db0150fe21c"
+  },
+  "source_bytes_equal_owned_original_and_current_canonical": true,
+  "recovered_clauses": {
+    "072": 99,
+    "090": 124,
+    "094": 132,
+    "095": 134
+  },
+  "extraction": "Exact whole lines, independently checked against source",
+  "supplement_manifest_sha256": "3732fe857290645e52b6b1a37ec9e161eb46de5c89094380425e0983c29400ea",
+  "prior_review_sha256": "402f9569c06b8d6197f51da14533d35efcff6995c42392d6cdc744ddd5522715",
+  "disposition": "Continue bounded owner revision on existing scientific draft branch; no canonical/application mutation."
+}

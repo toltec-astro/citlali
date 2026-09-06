@@ -1,0 +1,299 @@
+{
+  "approved_scientific_commit": "b38ce251207e4f445d5b421f42f774ae3e4f0477",
+  "tree": "87f8a1837b2707e797a9f61ea784f331b50d5632",
+  "scientific_identity": "SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1/r0.4",
+  "approval_date": "2026-09-06",
+  "owner": "Grant Wilson acting for SCI-PTC",
+  "file_count": 48,
+  "files": [
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/BLOCKED_DEFINITIONS_AND_QUESTIONS.md",
+      "draft_relative_path": "BLOCKED_DEFINITIONS_AND_QUESTIONS.md",
+      "bytes": 1749,
+      "sha256": "c8345970d9d470edacb8bb06724fc1be2dd0f08b3dddf25836d112dc1511560f"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/CROSSWALK.md",
+      "draft_relative_path": "CROSSWALK.md",
+      "bytes": 7153,
+      "sha256": "6b3ee8d86b485cbca07ef7db46258042b5db3c243d64e6f2a8767a4758eaf2d5"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/DECISION_REGISTER_CHECK.md",
+      "draft_relative_path": "DECISION_REGISTER_CHECK.md",
+      "bytes": 3379,
+      "sha256": "e1f566e1f8cb09421794800ada2483b5cf97eb9832a7c7ac783e7b7356005ffd"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/DRAFT_ARTIFACT_MANIFEST.sha256",
+      "draft_relative_path": "DRAFT_ARTIFACT_MANIFEST.sha256",
+      "bytes": 4530,
+      "sha256": "e8ba0c16a9ee64358b8fb45d8989fdf5988c929bcbae3b1463e8ca767952c17e"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/INPUT_INTEGRITY_AND_READ_RECORD.md",
+      "draft_relative_path": "INPUT_INTEGRITY_AND_READ_RECORD.md",
+      "bytes": 5419,
+      "sha256": "ffe799a47d23c6b8d928d274559093b0f1247f04067a2c30c8bf0739bf8b019c"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/LINK_AND_COPY_CHECK.md",
+      "draft_relative_path": "LINK_AND_COPY_CHECK.md",
+      "bytes": 1582,
+      "sha256": "5049205173f7fad75b0d2b13b67e003b5a1c93b1ff4351b7a0ca768b31bef00a"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/OWNER_DECISION_LEDGER.md",
+      "draft_relative_path": "OWNER_DECISION_LEDGER.md",
+      "bytes": 8678,
+      "sha256": "9bd339c5ea4a75111209ffdfb420106c72a885350d91a34efae872d946be353d"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/OWNER_REVIEW_1_RESPONSE.md",
+      "draft_relative_path": "OWNER_REVIEW_1_RESPONSE.md",
+      "bytes": 7227,
+      "sha256": "ce3cbe50c7482691722d85451a3bb0879be6951992353f4f93ec2469381cb809"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/PACKAGE_INVENTORY.md",
+      "draft_relative_path": "PACKAGE_INVENTORY.md",
+      "bytes": 3678,
+      "sha256": "7d9a39783e3b377d35edbefd06cb06251683677b5b5ab039b5dd9f41b2341ff3"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/PREDICTION_CROSSWALK.md",
+      "draft_relative_path": "PREDICTION_CROSSWALK.md",
+      "bytes": 7362,
+      "sha256": "b8dbdcfb477090533ba00ed76993493a59593c2c661d2cbeb76e882b9c19e69a"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/PRIOR_WORK.md",
+      "draft_relative_path": "PRIOR_WORK.md",
+      "bytes": 3437,
+      "sha256": "2fc533d236ab04b98783c6acd932a23f1e6caa2de0548d273436a2e44e6f9d8d"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/PROPOSED_REGISTRY_AND_BOUNDARY_RECORDS.md",
+      "draft_relative_path": "PROPOSED_REGISTRY_AND_BOUNDARY_RECORDS.md",
+      "bytes": 10498,
+      "sha256": "5a0e2fce9ad012d9d004c2b04151175e71396ddac818dde066727d815c8c3667"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/README.md",
+      "draft_relative_path": "README.md",
+      "bytes": 6614,
+      "sha256": "a4f181a3906e30aa37ed57c18529545ed6d71cb6af760740b80269fd03ea25e1"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/RENDER_RECEIPT.md",
+      "draft_relative_path": "RENDER_RECEIPT.md",
+      "bytes": 3909,
+      "sha256": "35af0e13456d679d1f432448ca0d6418a6c8eca941c869d735a4732cbe5253df"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/SCOPE_BRIEF.md",
+      "draft_relative_path": "SCOPE_BRIEF.md",
+      "bytes": 6943,
+      "sha256": "d42df7ae3e6b2272eb42e420fd2b4c364db7df8cd1db96cea5eee88fd47a7481"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/engineering_conformance.pdf",
+      "draft_relative_path": "engineering_conformance.pdf",
+      "bytes": 126199,
+      "sha256": "655192bef6a8db428d9b6bdc192318eeb78b2b983d2e53f0792961a97911d5c3"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/MANIFEST.json",
+      "draft_relative_path": "inputs/MANIFEST.json",
+      "bytes": 2595,
+      "sha256": "3140f1769ce1d4ed970c21f8cb56ff50e697880d5676983314d7b0584afd8f00"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/PRIOR_WORK.md",
+      "draft_relative_path": "inputs/PRIOR_WORK.md",
+      "bytes": 3437,
+      "sha256": "2fc533d236ab04b98783c6acd932a23f1e6caa2de0548d273436a2e44e6f9d8d"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/README.md",
+      "draft_relative_path": "inputs/README.md",
+      "bytes": 2895,
+      "sha256": "a9402af0d78f93be1bd1ecf693eac582e10b16ca78b9ba5baca21c0601245303"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/SCOPE_BRIEF.md",
+      "draft_relative_path": "inputs/SCOPE_BRIEF.md",
+      "bytes": 6943,
+      "sha256": "d42df7ae3e6b2272eb42e420fd2b4c364db7df8cd1db96cea5eee88fd47a7481"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/references/JINC_BOUNDARY.md",
+      "draft_relative_path": "inputs/references/JINC_BOUNDARY.md",
+      "bytes": 8747,
+      "sha256": "246f9c87d04bdbf09c878155810d089da9f7509f744847a61a83846824c9728c"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/references/MAP_BOUNDARY.md",
+      "draft_relative_path": "inputs/references/MAP_BOUNDARY.md",
+      "bytes": 8917,
+      "sha256": "a02a98af1d381336b47bba10d908bd84999613fe5c60a1cc92fc6286b40606a3"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/references/NOI_BINDING.md",
+      "draft_relative_path": "inputs/references/NOI_BINDING.md",
+      "bytes": 8903,
+      "sha256": "b8bf96cf6e32e82b244d1f2f0eb45683435e3725f51ea4135a14703b10c9dde4"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/references/PROCESS_AND_SCOPE.md",
+      "draft_relative_path": "inputs/references/PROCESS_AND_SCOPE.md",
+      "bytes": 9256,
+      "sha256": "3665e6008399a7af49b7050709fa00c66e2f3a92070da1623c9bd0dfbc41501c"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/references/PTC_COEFFICIENTS.md",
+      "draft_relative_path": "inputs/references/PTC_COEFFICIENTS.md",
+      "bytes": 21015,
+      "sha256": "ffe62f6a9110ac7d442944afaedde90d69e0f28cabc2dc2d2159a53bb011e014"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/references/REGISTRY_FRAMEWORK.md",
+      "draft_relative_path": "inputs/references/REGISTRY_FRAMEWORK.md",
+      "bytes": 6348,
+      "sha256": "9b9a8426b26afdce584bb30189d6dc25dc03f090b6bbebfbf07f15c0e56fef46"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/inputs/references/VAL_RULES.md",
+      "draft_relative_path": "inputs/references/VAL_RULES.md",
+      "bytes": 20276,
+      "sha256": "579d966ad64a378bfab05b5c8f4ffa3a1400dfb319e3bd8f43a9bd29a0b03d75"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/owner-review-1-input/MANIFEST.json",
+      "draft_relative_path": "owner-review-1-input/MANIFEST.json",
+      "bytes": 958,
+      "sha256": "3732fe857290645e52b6b1a37ec9e161eb46de5c89094380425e0983c29400ea"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/owner-review-1-input/OWNER_REVIEW_1_VERBATIM.md",
+      "draft_relative_path": "owner-review-1-input/OWNER_REVIEW_1_VERBATIM.md",
+      "bytes": 18992,
+      "sha256": "1e9074bfa86566a790f7d1a0284817aced321c66222c6899ef0e13a229a223e9"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/owner-review-1-input/PTC_RANK_AND_PUBLICATION_CLAUSES.md",
+      "draft_relative_path": "owner-review-1-input/PTC_RANK_AND_PUBLICATION_CLAUSES.md",
+      "bytes": 3586,
+      "sha256": "9e16b036203e0fbb6d4899220864476be4a6cc3f412df6e2157f693fc066abea"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/owner-review-1-input/README.md",
+      "draft_relative_path": "owner-review-1-input/README.md",
+      "bytes": 2798,
+      "sha256": "b54e80d86b270ae4c558e80a01bf68679e08b595091f44972f39cd0cb62e62a9"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/references/JINC_BOUNDARY.md",
+      "draft_relative_path": "references/JINC_BOUNDARY.md",
+      "bytes": 8747,
+      "sha256": "246f9c87d04bdbf09c878155810d089da9f7509f744847a61a83846824c9728c"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/references/MAP_BOUNDARY.md",
+      "draft_relative_path": "references/MAP_BOUNDARY.md",
+      "bytes": 8917,
+      "sha256": "a02a98af1d381336b47bba10d908bd84999613fe5c60a1cc92fc6286b40606a3"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/references/NOI_BINDING.md",
+      "draft_relative_path": "references/NOI_BINDING.md",
+      "bytes": 8903,
+      "sha256": "b8bf96cf6e32e82b244d1f2f0eb45683435e3725f51ea4135a14703b10c9dde4"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/references/PROCESS_AND_SCOPE.md",
+      "draft_relative_path": "references/PROCESS_AND_SCOPE.md",
+      "bytes": 9256,
+      "sha256": "3665e6008399a7af49b7050709fa00c66e2f3a92070da1623c9bd0dfbc41501c"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/references/PTC_COEFFICIENTS.md",
+      "draft_relative_path": "references/PTC_COEFFICIENTS.md",
+      "bytes": 21015,
+      "sha256": "ffe62f6a9110ac7d442944afaedde90d69e0f28cabc2dc2d2159a53bb011e014"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/references/REGISTRY_FRAMEWORK.md",
+      "draft_relative_path": "references/REGISTRY_FRAMEWORK.md",
+      "bytes": 6348,
+      "sha256": "9b9a8426b26afdce584bb30189d6dc25dc03f090b6bbebfbf07f15c0e56fef46"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/references/VAL_RULES.md",
+      "draft_relative_path": "references/VAL_RULES.md",
+      "bytes": 20276,
+      "sha256": "579d966ad64a378bfab05b5c8f4ffa3a1400dfb319e3bd8f43a9bd29a0b03d75"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/scientific_rationale.pdf",
+      "draft_relative_path": "scientific_rationale.pdf",
+      "bytes": 70211,
+      "sha256": "22907c022cb91e05364c20f2fb3d982d5a23b0211e652fab277e54ec9188b817"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/common/assumptions.tex",
+      "draft_relative_path": "src/common/assumptions.tex",
+      "bytes": 12353,
+      "sha256": "7561dbdac512d0c17e98609ee5dedc72810035d0ea99a727b7a96e18eed88a70"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/common/definitions.tex",
+      "draft_relative_path": "src/common/definitions.tex",
+      "bytes": 18702,
+      "sha256": "6c62e83d673612afd44bc11cd28798a1cfabf2eefb1f9f5215ab03c89c8c6423"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/common/edge_cases.tex",
+      "draft_relative_path": "src/common/edge_cases.tex",
+      "bytes": 9840,
+      "sha256": "e47b0c18016193711275c50bed1a2ab02fd98b0d11b904782f0d95c1c4741151"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/common/equations.tex",
+      "draft_relative_path": "src/common/equations.tex",
+      "bytes": 7557,
+      "sha256": "8e84d10a9febf5eb3805604bfce5d41ee15bd2e40110ca2f5294ef56a9c9e73e"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/common/notation.tex",
+      "draft_relative_path": "src/common/notation.tex",
+      "bytes": 639,
+      "sha256": "88b6ad914bb8ac85a9eec8032deb6185b3b076ce42c31794f93a51925a1c9943"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/common/requirements.tex",
+      "draft_relative_path": "src/common/requirements.tex",
+      "bytes": 7401,
+      "sha256": "ca78a7a77aea54832b5baf69d11c16d9603ffd06ae3711cec2914ad55158533c"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/common_core.tex",
+      "draft_relative_path": "src/common_core.tex",
+      "bytes": 259,
+      "sha256": "c8f51f5c9999235649dc99ddbfae4f538468ee7530034fb96d51b94d129597cf"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/engineering_conformance.tex",
+      "draft_relative_path": "src/engineering_conformance.tex",
+      "bytes": 2426,
+      "sha256": "4f5f123c9520ea229ab798e537348c01cf57df3444ee5d424fe7818c1f09dea1"
+    },
+    {
+      "path": "doc/scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/draft/src/scientific_rationale.tex",
+      "draft_relative_path": "src/scientific_rationale.tex",
+      "bytes": 2519,
+      "sha256": "6f5a90bd4a2386fd0d5f2394b37fb54897629daa5c0ee73b6551daa73296e61b"
+    }
+  ],
+  "scope": "Exact owner-approved submitted artifacts. Historical draft/open status is superseded by SCIENTIFIC_OWNER_APPROVAL.md for scientific acceptance. Post-owner consistency review and freeze remain separate gates."
+}

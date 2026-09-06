@@ -1,0 +1,23 @@
+{
+  "result": "PASS",
+  "date": "2026-09-06",
+  "trigger": "Local canonical advanced independently during bounded r0.4 repair",
+  "previous_checkpoint": "5244e04638db5aa92180feab52acd782229cfa32",
+  "current_local_canonical_ref": "refs/heads/codex/refactor-mainline",
+  "current_checkpoint": "080df2a1431487e8cabc255beb9ddc59c0721b59",
+  "current_tree": "a619f802a11eca8f9adccbebbf230517b2891945",
+  "changed_paths": [
+    "doc/INTEGRATION_LEDGER.md",
+    "doc/REFACTOR_STATUS.md",
+    "handoff/TIMESTREAM_SUCCESSOR_VAL_D2_PREREQUISITE_001_2026-09-06.md"
+  ],
+  "unchanged_authority_sha256": {
+    "doc/governance/ENGINEERING_GOVERNANCE.md": "70769787ce2ef4b7323cd2a38e221ade4af3310e0ad6b7b682e08cb4e4d61e76",
+    "doc/governance/REVIEW_AND_CONFORMANCE.md": "691e6d6250102ef2f4a504397581ee67c5707d898ab20fb8dd9e874c47f99bb1",
+    "doc/scientific_contracts/README.md": "351e9b7775b0bf78cba01bf4cd2fafd9591c4b43931b0dc23d82d97f0dfe82d2",
+    "doc/scientific_contracts/packages/SCI-PTC/v0.1/src/common/requirements.tex": "f2047600cc06c234a78aa3ddf6a575abf2f9592b3e3da810491f6db0150fe21c",
+    "doc/scientific_contracts/packages/SCI-PTC/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.5.md": "8357961a49272adc40e27a8aa9e760e0d01ff2419ae2c88a62c0f93c9f959e66"
+  },
+  "disposition": "Continue bounded r0.4 scientific-document repair on existing owned branch and exact parent 0dbcc9f0527d73fb873e29edaefa35095636ddc7. The three-document VAL/D2 prerequisite change touches no scientific source, governance, uniform packet, or application file; no new authority is admitted.",
+  "limitations": "Read-only local checkpoint; no GitHub verification, integration, push, author exposure, application work, or other-worktree mutation."
+}

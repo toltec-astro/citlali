@@ -1,5 +1,168 @@
 # Citlali Refactor Status
 
+## 2026-09-06 Uniform Scientific Authority Canonical Admission
+
+The owner-authorized integration binds reviewed scientific candidate
+`867879b992598484e1bc5b481e5e14ff91c04dab` after independent review passed
+all three axes with no actionable findings. The
+[exact admission record](scientific_contracts/acceptance/PTC_UNIFORM_R04_2026-09-06/INTEGRATION_RECEIPT.md)
+preserves canonical `080df2a1431487e8cabc255beb9ddc59c0721b59` first and
+the reviewed science second. After its exact merge review and literal
+canonical fast-forward, this record establishes the frozen uniform authority,
+complete Registry/profile bindings and separate MAP/JINC boundary grants on
+canonical ancestry. Earlier pending checkpoints below remain historical.
+
+The CTI-OD-002 uniform-first scientific subgate is complete on that admission;
+other coefficient/NOI routes retain their gates. The approved source/PDF
+bytes and literal identifiers are unchanged. Canonical application, D2,
+configuration, tests and prior validation evidence are preserved exactly.
+No actual coefficient publication, runtime VAL evaluation, end-to-end route,
+default, implementation conformity or production authority follows.
+The [repair/compatibility decisions](scientific_contracts/acceptance/PTC_UNIFORM_R04_2026-09-06/NEXT_IMPLEMENTATION_DECISIONS.md)
+remain proposed for CTI-OD-003/004/006; no application unit is opened.
+The external exact-merge review and completion receipt bind the final SHA
+and actual canonical movement. GitHub push remains owner-held.
+
+## 2026-09-06 Uniform Coefficient Freeze and Admission Candidate
+
+The owner directed freeze, immutable Registry and separate MAP/JINC boundary
+admission, review and integration of the approved r0.4 contract. The fresh
+implementation-blind post-owner consistency review passed all three review
+axes with no material findings. The
+[freeze and admission package](scientific_contracts/acceptance/PTC_UNIFORM_R04_2026-09-06/README.md)
+binds unchanged scientific sources and both approved PDF views, the brief,
+crosswalks, decision disposition and complete source/permission records.
+The literal approved `@draft-0.1` identities remain unchanged; exact admission
+supersedes historical proposal statuses without silently renaming science.
+
+The new PTC Registry entry, complete VAL profile and separate consumer
+successors are scientific authority candidates for canonical admission after
+exact-SHA review. All prior frozen sources, Registries, boundaries and study
+artifacts remain intact. CTI-OD-002's uniform-first authority step is ready for
+that admission; other coefficient families and additional NOI authority remain
+deferred or unavailable. No actual PTC/MAP/JINC realization, default,
+end-to-end conformity or operational availability follows.
+
+The [next implementation decision brief](scientific_contracts/acceptance/PTC_UNIFORM_R04_2026-09-06/NEXT_IMPLEMENTATION_DECISIONS.md)
+recommends the separate repair sequence, milestone-based predecessor
+compatibility and an initial NOI coefficient-nonmutation mapping unit.
+CTI-OD-003/004/006 remain pending their concrete owner dispositions; application
+work is not started. Canonical integration follows the recorded two-parent
+route and passing independent review; GitHub push remains owner-held.
+
+## 2026-09-06 CTI-OD-002 Uniform r0.4 Scientific Approval
+
+Grant Wilson reviewed and approved exact uniform-coefficient scientific
+candidate `b38ce251207e4f445d5b421f42f774ae3e4f0477`, tree
+`87f8a1837b2707e797a9f61ea784f331b50d5632`. The
+[owner decision and exact inventory](scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_approval_r04/SCIENTIFIC_OWNER_APPROVAL.md)
+adopt all fourteen UFC-OD proposals, separately grant the proposed MAP/JINC
+scientific permissions, and confirm Grant Wilson acting for SCI-PTC, resolving
+UFC-Q-001. The five deferred subjects remain deferred. This completes the
+first substantive scientific-owner round; it supersedes the older pending
+approval wording without changing any of the 48 submitted artifacts.
+
+The next charter gate is a fresh implementation-blind consistency review of
+the two exact approved views and their mappings. Freeze and the later bounded
+Registry/boundary admission remain separate. CTI-OD-002 is not yet closed;
+canonical integration, the owner-held GitHub push, application implementation,
+validation and route activation are not performed by this approval record.
+
+## 2026-09-06 CTI-OD-002 Uniform r0.4 Candidate Repair
+
+Independent review of exact r0.3 candidate
+`0dbcc9f0527d73fb873e29edaefa35095636ddc7` returned repair required for one
+bounded scientific wording finding F01. The
+[preserved review and repair preflight](scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_review_1/README.md)
+record the ambiguity between authoritative publication binding failure and
+corruption of already-bound payload bytes. Architecture and evidence checks
+passed; independent cached compilation was limited by a local pre-TeX panic.
+
+The isolated author repaired that distinction in v0.1-draft.1/r0.4 without
+changing the exact-unity mathematics, publication proposal, original inputs or
+owner-review round. The sealed return has 5 scientific pages, 14
+engineering pages, 25 requirements, 16 predictions and ten worked cases;
+manifest SHA-256 `e8ba0c16a9ee64358b8fb45d8989fdf5988c929bcbae3b1463e8ca767952c17e`. All prior draft generations and the exact review are
+preserved. Focused preservation, fidelity/scope, traceability and final render
+checks passed; a fresh exact-SHA review of the committed repair is required
+before renewed owner presentation.
+
+This remains substantive owner round 1. All fourteen proposals, UFC-Q-001
+and CTI-OD-002 remain open. Complete scientific approval, final consistency
+review, freeze, Registry activation, canonical integration and the owner-held
+push remain separate; no application unit or default is authorized.
+
+## 2026-09-06 CTI-OD-002 Owner Review 1 and Uniform Revision
+
+Grant Wilson supports the exact-unity coefficient design in principle and
+returned the paired r0.2 draft at `448194ac3e650a12e5a3862d86a4a05f867a90c5`
+for nine targeted corrections before complete contract approval. The
+[owner review and bounded preflight](scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_review_1/README.md)
+preserve the verbatim assessment, exact frozen PTC rank/publication recovery,
+and independently rechecked prior sources. This is substantive owner round 1.
+
+The isolated author revised the common six-module contract to
+v0.1-draft.1/r0.3, with a 5-page explanatory scientific rationale and
+14-page engineering specification, 25 requirements, 16 predictions, ten
+worked decision cases and a point-by-point response. Manifest SHA-256:
+`87eafdbaed29dc8d810a5bba9d4ba818d57a837c04337a4c71c31b06215f0ee9`. Payload and permission states, mixed evidence, request versus shared
+failure scopes, compact representation, bounded publication, rank authority,
+version/realization identity, finalization and notation are explicit. Source,
+manifest, crosswalk and all-page render checks passed; an independent Tier 2
+review must bind the committed candidate before renewed owner presentation.
+
+Original Stage A/recovery bytes and both earlier draft generations remain
+preserved. All fourteen consequential proposals and UFC-Q-001 remain open;
+CTI-OD-002 remains open. No complete freeze, Registry activation, application
+unit, default, new NOI permission, implementation conformance or production
+claim is authorized. Canonical advanced independently to `5244e046...`; the
+recorded reassessment keeps this revision on its existing owned draft branch.
+
+## 2026-09-05 CTI-OD-002 Exact-Input Release and Scientific Authorship
+
+Grant Wilson approved release of the exact uniform-first author input at
+`959bb90947d4b9651fbba9f16a0eb73dde893b84`, manifest SHA-256
+`3140f1769ce1d4ed970c21f8cb56ff50e697880d5676983314d7b0584afd8f00`,
+after its independent review passed with recorded limitations and no findings.
+The [release and Stage B record](scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/README.md)
+preserves the exact approval and input review. A fresh implementation-blind
+GPT-5.6 Sol Ultra author completed the first draft from the isolated 11-file
+input. The preserved v0.1-draft.1/r0.2 package has 25 requirements, 16
+predictions, two rendered views and an explicit owner ledger; its artifact
+manifest SHA-256 is
+`9c05f8d5d14c338ee4f58d81101f7e23d2bc361401012076b8c47a366e063064`.
+The approved Stage A and prior recovery bytes are unchanged. The first
+candidate `f605be6f23560ef81aa05598091964081b8fe749` remains preserved;
+its independent review found one QC outcome ambiguity. The isolated author
+repaired the structural-binding versus payload-fidelity cases in r0.2, with
+a fresh exact-SHA candidate review required. This later release supersedes
+the earlier pending-release checkpoint below.
+
+The returned deliverable is a first proposed common coefficient-entry contract and
+uniform/constant family for separate MAP/JINC permission review. Scientific
+substance, final consistency review, freeze and Registry adoption remain later
+gates. CTI-OD-002 remains open, and no application unit, default or usable
+numerical route is authorized. Canonical integration and the owner-held push
+remain separate.
+
+## 2026-09-05 CTI-OD-002 Uniform-First Scope Approval
+
+Grant Wilson approved preparation of the registry contract and one
+uniform/constant coefficient family first, for explicit MAP/JINC permission
+review, in response to the independently reviewed decision brief at
+`84974658c8179057fd26184110871f187c4bb793`. The
+[first-scope approval and Stage A packet](scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_a/README.md)
+record that direction and assemble the exact sanitized author-input candidate.
+Sensitivity and residual-scatter entries remain deferred; no constant,
+normalization, numerical QC rule or mode default is selected.
+
+This is a topic-branch preparation record. Canonical integration, exact
+author-input release and scientific authorship remain pending. CTI-OD-002
+stays open; CTI-OD-001 remains accepted/closed, CTI-OD-003--006 remain open,
+and CTI-OD-007 remains inherited/closed. Frozen authority, current Registry
+records, application code and all existing numerical-route limitations remain
+unchanged. No application unit is authorized by this scope decision.
+
 ## 2026-09-06 VAL/D2 Prerequisite Review
 
 The owner approved the next bounded VAL/D2 prerequisite approach after the
