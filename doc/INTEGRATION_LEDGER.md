@@ -1,5 +1,29 @@
 # Citlali Integration Ledger
 
+## VAL/D2 Prerequisite Work Order — 2026-09-06
+
+The owner approved authority recovery and preparation of the next bounded
+VAL/D2 milestone. The clean documentation branch
+`codex/timestream-successor-val-d2-prerequisite-001` starts literally at
+verified pushed canonical `5244e04638db5aa92180feab52acd782229cfa32`.
+Its [work order and recovery conclusions](../handoff/TIMESTREAM_SUCCESSOR_VAL_D2_PREREQUISITE_001_2026-09-06.md)
+preserve the accepted D2 carrier, VAL fact ownership and immutable generations.
+
+The report proposes a small mechanical VAL target extension before any
+producer/PSD consumer integration. It identifies the separate absence of a
+D2 PSD named-use profile and the need to disposition the offline tool's
+nonfinite-input behavior before scientific adoption. These are bounded
+implementation/adoption prerequisites, not reopened frozen-contract findings.
+No frozen Core, registry, source, test, build, configuration, validation or
+route bytes change. No source implementation slot is active. Independent
+exact-SHA review of this documentation candidate is required; canonical
+admission, publication and the proposed source unit remain later dispositions.
+
+Document checks preserve the pre-existing SCI-VAL verifier failure concerning
+MAP's former unbound profile on both candidate and exact base. Scientific
+layout and frozen Core digests pass; no verifier or scientific authority is
+changed to obtain a passing result.
+
 ## Timestream Successor D2 Canonical Admission — 2026-09-06
 
 The owner accepted exact candidate

@@ -1,5 +1,40 @@
 # Citlali Refactor Status
 
+## 2026-09-06 VAL/D2 Prerequisite Review
+
+The owner approved the next bounded VAL/D2 prerequisite approach after the
+D2 admission closure was pushed. Read-only GitHub verification resolved
+canonical to `5244e04638db5aa92180feab52acd782229cfa32`, matching clean
+local canonical. `TIMESTREAM-SUCCESSOR-VAL-D2-PREREQUISITE-001` records
+authority recovery and a proposed implementation boundary on one isolated
+documentation branch. No application implementation slot is opened.
+
+The [prerequisite work order](../handoff/TIMESTREAM_SUCCESSOR_VAL_D2_PREREQUISITE_001_2026-09-06.md)
+separates mechanical coordinate/realization targeting from named-use
+eligibility. Frozen SCI-VAL supplies the ownership, identity and immutable
+lifecycle rules. Current VAL stores opaque producer facts but has no typed
+coordinate target or policy evaluator. The admitted D2 carrier binds its
+exact realization-time snapshot and deliberately exposes no usability mask.
+The reviewed registry set supplies no D2 PSD profile, and existing PTC/MAP/NOI
+profiles cannot be repurposed by name. An offline tool's Boolean `valid`
+array is not a substitute for an exact owner-approved scientific-use rule.
+
+The smallest proposed source unit is VAL-owned native-coordinate fact
+targeting, preserving existing unqualified findings and immutable snapshots,
+with no eligibility evaluator, mask export or D2 carrier change. Producer
+and PSD-policy adoption remain separate later work. This three-document
+candidate requires independent exact-SHA review; its identity and verdict
+bind externally after commit. Canonical movement and GitHub publication of
+this prerequisite record are not performed here. No filtering, factor
+selection, downsampling, substantive RTC/PTC/AST, common-grid, MAP, CAL,
+production, activation or cleanup is started.
+
+Scientific-contract layout passes. The unchanged SCI-VAL verifier fails the
+same historical MAP-unbound assertion at this worktree and its exact canonical
+base; the handoff records this limitation without weakening the check or
+changing the accepted registry. Frozen Core digests and complete preservation
+outside the three documentation paths are checked separately.
+
 ## 2026-09-06 Timestream Successor D2 Canonical Admission
 
 The project owner accepted exact independently reviewed admission candidate
