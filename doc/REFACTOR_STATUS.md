@@ -1091,6 +1091,35 @@ independent-pointing replication before policy, full Gate D, qualification,
 production and Unity boundaries remain unchanged. All retained products,
 EL-F14 bytes and both known review archives are preserved.
 
+On `2026-09-06` Grant Wilson approved
+`SCI-FRUIT-SCIENTIFIC-CORE-SCOPE-R0.1` and its narrow sequence exception,
+recorded in the separate
+[scope approval](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_OWNER_SCIENTIFIC_CORE_SCOPE_APPROVAL_2026-09-06.md).
+A conditional scientific core may enter separately approved authorship before
+a qualified numerical replacement, while admitting no numerical profile.
+The numerical development, qualification and independent-pointing evidence
+requirements remain intact. The original approved proposal and bounded-review
+bytes are preserved; their earlier proposal-status prose is historical.
+
+The [successor Stage A packet](scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/README.md)
+is prepared for exact owner review, bound by its
+[manifest](scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/PACKET_MANIFEST_R0.1.md).
+It supplies a sanitized Scope Brief, resolved core/deferred numerical decision
+map, prior-authority reuse record, restricted scientific boundary extracts
+and a bounded author task. The six author inputs and their manifest contain
+no empirical results or implementation-informed dossier. The next significant
+owner decision is exact packet approval plus an explicit Stage B launch
+instruction; this preparation does not dispatch an author.
+
+The current benefit-selector exploration is closed without a qualifying
+replacement. EL-F14 remains unapproved and unrun. Historical Citlali remains
+the mandatory empirical control and a compatibility candidate, not an
+automatically selected scientific method. No new experiment, reduction,
+replay, implementation, numerical admission, full Gate D, qualification,
+production change or Unity activity occurs in this step. All retained
+products, empirical conclusions and both known review archives are preserved.
+
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
