@@ -1067,6 +1067,30 @@ mandatory. Existing reduction products and both review archives are preserved;
 EL-F12/EL-F13 conclusions, the closed UID 4460 diagnosis, full Gate D,
 qualification, Stage B, production and Unity boundaries are unchanged.
 
+After the owner questioned EL-F14's overlap with PTC and requested a bounded
+return to scientific basics on `2026-09-06`, the
+[evidence review](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/BOUNDED_EVIDENCE_REVIEW_R0.1.md)
+is complete. Fourteen retained H/uninjected PTC/checkpoint files were inspected
+only for schema and identity; they do not establish a replay-ready fixed PTC
+operator. Even a conditional source-response measurement would leave the
+real-field sky/nuisance benefit target unresolved. The manager therefore
+recommends no further retention experiment from this review and withdraws the
+recommendation to execute EL-F14 r0.1. Its proposal bytes remain preserved,
+unapproved and unrun. This is a planning conclusion, not proof that no better
+method exists; no new scientific score or transfer was measured.
+
+The concrete next owner decision is the
+[scientific-core scope proposal](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/SCIENTIFIC_CORE_CONTRACT_SCOPE_OWNER_REVIEW_R0.1.md),
+bound by its [manifest](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/BOUNDED_REVIEW_MANIFEST_R0.1.md).
+It proposes a conditional scientific core with no admitted numerical profile,
+and an explicit narrow exception to the qualification-before-authorship
+sequence. The current accepted sequence remains in force pending that exact
+decision. No Stage B is dispatched; author-input sanitization and separate
+launch approval remain mandatory. Historical control, empirical outcomes,
+independent-pointing replication before policy, full Gate D, qualification,
+production and Unity boundaries remain unchanged. All retained products,
+EL-F14 bytes and both known review archives are preserved.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
