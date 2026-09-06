@@ -1,0 +1,689 @@
+SCI-FRUIT v0.1 — FINAL STAGE A TYPE, RECURRENCE,
+RESPONSE, AND METHOD-GATE REPAIR
+
+The SCI-FRUIT Conditional Feedback Core r0.2 architecture is accepted as the
+basis for one bounded Stage A repair.
+
+Do not select or recover a numerical FRUIT algorithm.
+
+Preserve:
+
+- SCI-FRUIT as a conditional feedback scientific core;
+- no numerical recurrence, threshold, prior, inverse, filter, support rule,
+  grouping, convergence threshold, iteration cap, or terminal-selection rule;
+- the distinction among astronomical target, measured signal, candidate model,
+  accepted model, applied model, residual, processed residual, rejoined model,
+  iteration result, update contribution, and successor state;
+- exact upstream producer ownership;
+- FRUIT ownership of feedback composition and iteration/terminal identity;
+- downstream source inference, cataloging, Pointing, OOF, and consumer fitness
+  as separate operations;
+- model protection as insufficient to establish model correctness, recovery of
+  lost modes, true-sky identity, or unit response;
+- exact PTC fixed-subspace/recomputed-coefficient versus frozen-component
+  distinction;
+- exact NOI fixed-state versus dependent-successor versus per-realization
+  relearning distinction;
+- representation-independent authorship and every existing nonclaim.
+
+Do not inspect implementation, schemas, configuration, defaults, tests, audits,
+repairs, reductions, generated products, performance records, validation,
+production material, Unity material, web sources, or unlisted repository
+files.
+
+======================================================================
+1. INTRODUCE A TYPE-COMPLETE FEEDBACK ALGEBRA
+======================================================================
+
+Define exact method-dependent spaces:
+
+    Y_k = residual-removal input space;
+    M_k = accepted feedback-model space;
+    Z_k = iteration-result space.
+
+Define distinct objects:
+
+    y_k^in   in Y_k
+    m_k      in M_k
+    Pi_k     : M_k -> Y_k
+    F_k      : Y_k -> Z_k
+    B_k      : M_k -> Z_k.
+
+For the ordinary additive remove-process-rejoin structure use:
+
+    rho_k = y_k^in - Pi_k m_k
+
+    z_k   = F_k(rho_k) + B_k m_k.
+
+Bind sign convention as method identity. A method using another sign or
+composition requires another identity.
+
+Do not assume:
+
+- Pi_k = B_k;
+- B_k is an inverse of Pi_k;
+- model and measured signal share a domain;
+- F_k is linear;
+- removal and rejoin have equal support;
+- the model is true sky;
+- the rejoined contribution has unit response.
+
+When and only when F_k is an exact fixed linear operator A_k, derive:
+
+    z_k = A_k y_k^in + D_k m_k
+
+    D_k = B_k - A_k Pi_k.
+
+When F_k is affine, nonlinear, thresholded, coefficient-recomputing, or
+relearned, retain the complete procedure and do not silently use the linear
+expansion.
+
+======================================================================
+2. BIND THE ITERATION INPUT RULE
+======================================================================
+
+Every numerical method shall state whether y_k^in is:
+
+- the immutable original measured parent;
+- the previous iteration result z_(k-1);
+- a residual or product reconstructed from the immutable parent and current
+  cumulative model;
+- or another exactly identified product.
+
+The word “iteration” supplies no default recurrence.
+
+The immutable original parent remains in every lineage.
+
+A method that returns to the immutable parent and a method that repeatedly
+processes the previous result are different methods, even when they use the
+same model update.
+
+======================================================================
+3. COMPLETE STATE, ITERATION, BRANCH, AND GENERATION IDENTITY
+======================================================================
+
+Use the generic convention:
+
+    S_0 = initial seed state;
+
+    iteration k consumes:
+        S_k and y_k^in;
+
+    iteration k produces:
+        accepted/applied model m_k,
+        iteration result z_k,
+        successor state S_(k+1).
+
+After completed iteration N, exact continuation begins from S_(N+1).
+
+Identify every iteration by at least:
+
+    lineage_id
+    branch_id
+    absolute zero-based iteration index
+    method generation
+    parent generation
+    state generation.
+
+Keep distinct:
+
+- seed;
+- continuation;
+- restart;
+- relearned successor;
+- branch;
+- retry;
+- completed iteration;
+- selected terminal record;
+- publication.
+
+A restart creates a new lineage and does not masquerade as continuation.
+
+A terminal selection references an immutable completed iteration and never
+mutates it.
+
+Replace observation_resolved with application_scope_resolved or another
+grouping-neutral term.
+
+Replace universal fitted_state with exact roles such as:
+
+    learned_candidate
+    resolved_model_state
+    applied_model_state
+    realized_iteration_state.
+
+Not every feedback model is fitted.
+
+======================================================================
+4. CREATE A STABLE NUMERICAL-METHOD AUTHORITY
+======================================================================
+
+Create a required method authority provisionally identified as:
+
+    FRUIT-FEEDBACK-METHOD v0.1
+
+or:
+
+    FRUIT-FEEDBACK-METHOD/<method-name>@<revision>.
+
+Current state:
+
+    unavailable_pending_separate_owner_approval.
+
+A complete method record shall bind:
+
+- exact parent route and grouping;
+- immutable base parent;
+- iteration-input rule;
+- target and model quantity;
+- external versus internally learned model;
+- candidate/selection/acceptance rule;
+- cumulative-model versus increment meaning;
+- Pi_k, F_k, B_k and their domains;
+- bypass set and operator order;
+- application counts;
+- every fixed, recomputed, and relearned state;
+- support and missing-data behavior;
+- update and transition law;
+- response family;
+- uncertainty method;
+- continuation-sufficient state;
+- stochastic generator/state where applicable;
+- convergence proposition;
+- resource limits;
+- terminal-selection rule;
+- persistence/reconstruction contract;
+- failure.
+
+No numerical FRUIT route exists without one exact owner-approved method record.
+
+The generic conditional core may be authored and later frozen while every
+numerical method remains unavailable.
+
+======================================================================
+5. FACTOR STATE BY OPERATION
+======================================================================
+
+For every named residual-processing operation and every consequential state
+component, record exactly one of:
+
+    fixed numerical operator
+    fixed structural state with recomputed coefficients
+    externally supplied
+    relearned
+    bypassed
+    not_applicable
+    unavailable.
+
+Do not classify an entire stage as fixed merely because one subspace or basis
+is fixed.
+
+For PTC retain explicitly:
+
+- fixed-subspace application with recomputed application coefficients;
+- frozen numerical-component subtraction;
+- fully relearned PTC state.
+
+These are different procedures with different response and uncertainty.
+
+Bind the exact operations bypassed by the model and the exact removal and
+rejoin locations. A generic “bypass” flag is insufficient.
+
+======================================================================
+6. TYPE MODEL ROLES
+======================================================================
+
+Define separately:
+
+- astronomical target quantity;
+- proposed/candidate feedback model;
+- accepted model;
+- applied model;
+- projected removal contribution;
+- model rejoin contribution;
+- update contribution or diagnostic difference;
+- cumulative model where applicable;
+- successor model/state.
+
+Acceptance for feedback does not establish model truth.
+
+A method may construct or update an internal feedback model. That object has
+the claim feedback_model_state only.
+
+It is not automatically:
+
+- a source catalog;
+- a detection;
+- a posterior sky;
+- a deconvolved sky;
+- an unbiased source estimate;
+- a pointing or OOF result.
+
+An external model and an internally learned model retain distinct parent,
+prior, response, uncertainty, and generation states.
+
+======================================================================
+7. TYPE SUPPORT AND INFORMATION ORIGIN BY PATH
+======================================================================
+
+Define separately:
+
+- measured-parent support;
+- model-definition support;
+- projection/removal support;
+- residual-processing support;
+- model-rejoin support;
+- final output support;
+- learning influence;
+- response-query support.
+
+For each output row or occurrence distinguish:
+
+    residual_and_model_supported
+    residual_only
+    model_only
+    unavailable.
+
+A method may prohibit any of these classes.
+
+If a method does not define unequal-support behavior, the affected output is
+unavailable.
+
+No implicit:
+
+- zero fill;
+- extrapolation;
+- imputation;
+- support renormalization;
+- nearest-value substitution;
+- model completion of missing measured support.
+
+A model-only result is model/prior-supported, not a newly measured sky value.
+
+Iteration, model projection, and model rejoin create no acquired exposure or
+independent observation.
+
+Path contribution, support, and influence shall be materialized or exactly
+reconstructible even when intermediate numerical arrays are not retained.
+
+======================================================================
+8. DEFINE RESPONSE FAMILIES
+======================================================================
+
+For the fixed linear one-step relation define:
+
+    R_(z<-y,k)^fixed = A_k
+
+    R_(z<-m,k)^fixed = B_k - A_k Pi_k.
+
+Keep these response roles distinct.
+
+Define separately:
+
+1. fixed one-step response;
+2. one-step full-procedure response, including model/state/support changes;
+3. recursive multi-iteration response;
+4. selected-terminal response, including stopping and selection;
+5. FRUIT-full-procedure with upstream parent held fixed;
+6. whole-chain response with every included upstream data-dependent operation
+   rerun.
+
+A fixed response is not the response of a learned procedure.
+
+If the model, coefficients, support, cleaner, stop state, or selection depends
+on data, full-procedure response shall include that dependence.
+
+Threshold crossings, branch changes, changes of support, or terminal-selection
+changes may make the derivative nonexistent. Record unavailable or a typed
+discontinuity/state transition rather than using the fixed-branch response.
+
+Model bypass can reinsert a model component into a mode removed from the
+measured residual path. That does not establish observational recovery of the
+lost mode.
+
+======================================================================
+9. DEFINE CONDITIONAL UNCERTAINTY
+======================================================================
+
+For the exact fixed linear relation:
+
+    z_k = A_k y_k^in + D_k m_k
+    D_k = B_k - A_k Pi_k,
+
+define the complete joint conditional covariance:
+
+    C_z =
+        A_k C_yy A_k^T
+      + D_k C_mm D_k^T
+      + A_k C_ym D_k^T
+      + D_k C_my A_k^T.
+
+Do not drop the cross terms without exact independence authority.
+
+If m_k is held deterministic under the declared conditioning, state that the
+reduced covariance is conditional and omits model-learning variation.
+
+Keep separate:
+
+- measured-parent covariance;
+- model/prior covariance;
+- parent-model cross covariance;
+- operator/state uncertainty;
+- support and threshold selection;
+- stopping and terminal-selection uncertainty;
+- model mismatch and bias;
+- empirical repeatability;
+- NOI uncertainty.
+
+Iterations sharing one parent are not independent observations.
+
+No uncertainty decreases as 1/sqrt(number of iterations) by implication.
+
+A fixed-state NOI route applies the identical fixed FRUIT state and operator
+graph to every compatible admitted realization.
+
+A route that relearns model, support, cleaner, coefficients, stopping, or
+terminal selection per realization is a separate NOI/FRUIT method and cannot
+share the same ensemble.
+
+The existing NOI boundary alone authorizes no numerical FRUIT uncertainty
+route.
+
+======================================================================
+10. DEFINE EXACT CONTINUATION
+======================================================================
+
+An exact continuation record after iteration N shall bind every fact capable of
+changing any future required result, including:
+
+- immutable base parent;
+- S_(N+1);
+- accepted/cumulative model;
+- learned state;
+- operator state;
+- support and masks;
+- update and selection history;
+- convergence history;
+- counters and resource state;
+- random generator/key/counter state where applicable;
+- method and parameter versions;
+- branch and generation;
+- upstream and model parents.
+
+A checkpoint is continuation-sufficient only when replay under the same future
+controls yields the same scientific states and results under the declared
+numerical profile.
+
+A terminal signal array alone is not continuation state by implication.
+
+A representation may be materialized, compact, or lineage-reconstructible,
+provided the exact required state-query vocabulary is preserved.
+
+A representation-only change does not change scientific state identity.
+
+======================================================================
+11. SEPARATE TERMINATION PROPOSITIONS
+======================================================================
+
+Keep distinct:
+
+    iteration_completed
+    resource_limit_reached
+    converged
+    stopped_by_policy
+    failed
+    selected_terminal
+    consumer_fit.
+
+Convergence shall bind:
+
+- exact proposition;
+- quantity and domain;
+- metric or norm;
+- scale/denominator;
+- tolerance;
+- direction;
+- persistence or consecutive-iteration rule;
+- missing/non-finite behavior;
+- generation and state.
+
+A resource maximum is not convergence.
+
+Completion is not convergence.
+
+Convergence is not correctness, unit response, unbiasedness, or downstream
+fitness.
+
+Terminal selection shall use one exact predeclared rule. If it inspects several
+realized iterations, that selection is part of the full procedure and its
+response and uncertainty.
+
+The terminal-selection record references an immutable completed iteration.
+It does not relabel or mutate it.
+
+======================================================================
+12. MAKE GROUPING METHOD IDENTITY
+======================================================================
+
+The conditional core may remain grouping-neutral.
+
+Every numerical method shall bind exactly one:
+
+- observation-local;
+- coadd-level;
+- multi-observation;
+- per-array;
+- joint-array;
+- or another explicitly named grouping.
+
+Do not assume:
+
+    FRUIT(Coadd(y_o))
+      =
+    Coadd(FRUIT(y_o)).
+
+Do not assume that a jointly learned model is equivalent to independent
+per-observation or per-array models.
+
+Shared parent, source model, calibration, response, or reference terms create
+dependence that shall remain explicit.
+
+Replace any universal observation-resolved lifecycle term with a
+grouping-neutral application-scope term.
+
+======================================================================
+13. SEPARATE INTERNAL METHOD POLICY FROM DOWNSTREAM SCI-VAL USE
+======================================================================
+
+The FRUIT method owner owns:
+
+- internal model selection;
+- update;
+- transition;
+- convergence;
+- stopping;
+- terminal selection.
+
+FRUIT records producer facts and local completeness.
+
+Downstream use owners own:
+
+- Pointing fitness;
+- OOF fitness;
+- source-inference admission;
+- catalog admission;
+- other consumer-specific use.
+
+SCI-VAL may bind and evaluate an exact owner-approved named-use policy.
+It does not author or execute FRUIT recurrence, select a model, advance an
+iteration, or perform terminal selection.
+
+A missing downstream profile does not erase an otherwise complete FRUIT
+iteration or terminal product.
+
+======================================================================
+14. DEFINE ITERATION AND TERMINAL PRODUCT BUNDLES
+======================================================================
+
+Every completed iteration bundle shall contain or type unavailable:
+
+- immutable base parent;
+- exact iteration input;
+- method, lineage, branch, and iteration identity;
+- target and model identities;
+- candidate, accepted, and applied model states;
+- projected removal contribution;
+- residual;
+- processed residual;
+- rejoin contribution;
+- iteration result;
+- update/successor state;
+- path-specific support and influence;
+- information-origin classification;
+- response states;
+- uncertainty states;
+- validity and causes;
+- continuation state;
+- completion and failure state;
+- provenance.
+
+The numerical path components may be materialized or exactly reconstructible.
+
+A terminal product is a separate immutable selection record plus the selected
+iteration bundle.
+
+Terminal FRUIT ancestry does not create a fifth generic numerical parent class
+for downstream packages. A downstream consumer receives the exact underlying
+MAP, JINC, FLT-FIXED, FLT-MATCHED, detector-time, or other method-defined
+product role plus complete terminal-FRUIT lineage.
+
+======================================================================
+15. USE COLLISION-FREE NOTATION
+======================================================================
+
+Do not use x or r for generic signal, residual, or model objects.
+
+Those symbols remain reserved for paired KID readout coordinates.
+
+Avoid bare symbols that collide with MAP, JINC, PTC, or NOI, including
+unqualified Q_p, N_p, C_p, or generic sign/member symbols.
+
+Use semantic names or package-qualified notation for:
+
+- target;
+- parent;
+- iteration input;
+- candidate model;
+- accepted/applied model;
+- residual;
+- processed residual;
+- rejoin contribution;
+- result;
+- update;
+- state;
+- response;
+- covariance.
+
+Return a notation crosswalk.
+
+======================================================================
+16. REQUIRED CONDITIONAL PREDICTIONS
+======================================================================
+
+Require at least:
+
+- zero feedback model reduces to the declared residual-only route;
+- identity residual processing with identical removal/rejoin map and support
+  reproduces the iteration input;
+- B_k = A_k Pi_k makes the fixed linear output model-independent;
+- perfect model plus nonidentity rejoin does not imply true sky or unit
+  response;
+- model mismatch produces the declared D_k-weighted bias;
+- fixed-subspace/recomputed-coefficient PTC differs from frozen-component
+  subtraction;
+- model-only support remains model/prior-supported and creates no exposure;
+- support mismatch follows the declared path classes or becomes unavailable;
+- fixed-state response differs from full-procedure response when model or state
+  is learned;
+- threshold or terminal-selection branch changes can make response unavailable;
+- joint covariance requires parent-model cross terms;
+- repeated iterations do not become independent measurements;
+- exact continuation agrees with uninterrupted execution under the declared
+  method/profile;
+- restart and relearning create new lineage or generation;
+- maximum iteration is not convergence;
+- selected terminal identity does not mutate the selected iteration;
+- observation-level FRUIT and coadd-level FRUIT do not commute by implication;
+- fixed-state and per-realization-relearned NOI members cannot share an
+  ensemble;
+- missing FRUIT-FEEDBACK-METHOD produces no numerical FRUIT result;
+- a complete FRUIT result does not establish Pointing, OOF, source-catalog, or
+  production fitness.
+
+======================================================================
+17. RESTATE THE APPROVED NARROW SEQUENCE EXCEPTION
+======================================================================
+
+Replace the opaque phrase “narrow sequence exception” with:
+
+- one stable owner-decision ID;
+- exact operator sequence;
+- exact affected state;
+- fixed versus recomputed versus relearned classification;
+- response and uncertainty consequence;
+- scope;
+- failure behavior.
+
+Do not require the Stage B author to infer the exception from a reference
+fragment.
+
+======================================================================
+18. PACKET CLOSURE
+======================================================================
+
+Return the exact bytes of:
+
+- revised Scope Brief;
+- SCIENTIFIC_OWNER_DECISION_LEDGER.md;
+- BOUNDARIES_AND_CONVENTIONS.md;
+- the frozen PTC application excerpt;
+- PROGRAM_REFERENCE.md;
+- FRUIT-FEEDBACK-METHOD required-record template;
+- notation and role taxonomy;
+- iteration/state/lifecycle table;
+- support/information-origin table;
+- response and uncertainty family table;
+- required prediction list;
+- Stage A semantic-change report;
+- AUTHOR_INPUT_MANIFEST.md;
+- manifest digest sidecar;
+- compressed packet and archive sidecar.
+
+The manifest shall bind exact role, byte count, SHA-256, authority state,
+compatibility/supersession state, and author permission for every input.
+
+No author shall be launched until Grant Wilson approves the exact packet bytes.
+
+======================================================================
+19. STAGE B DISPOSITION
+======================================================================
+
+After exact packet approval, Stage B may author the conditional SCI-FRUIT core
+even while:
+
+    FRUIT-FEEDBACK-METHOD = unavailable;
+    numerical parent routes = unavailable;
+    numerical model construction = unavailable;
+    numerical stopping/selection = unavailable;
+    numerical response/covariance = unavailable;
+    downstream named-use profiles = unavailable.
+
+Stage B shall derive conditional scientific consequences and typed
+unavailability. It shall not fill a missing method field with familiar FRUIT
+practice, current software behavior, or a plausible default.
+
+Do not claim a numerical route, implementation conformity, response or
+covariance fidelity, recovered sky modes, uncertainty coverage, convergence
+adequacy, Pointing/OOF fitness, observational validation, performance,
+readiness, production suitability, production authorization, or Unity
+activity.
