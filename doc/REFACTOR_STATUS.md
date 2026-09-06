@@ -1,5 +1,32 @@
 # Citlali Refactor Status
 
+## 2026-09-06 Uniform Coefficient Freeze and Admission Candidate
+
+The owner directed freeze, immutable Registry and separate MAP/JINC boundary
+admission, review and integration of the approved r0.4 contract. The fresh
+implementation-blind post-owner consistency review passed all three review
+axes with no material findings. The
+[freeze and admission package](scientific_contracts/acceptance/PTC_UNIFORM_R04_2026-09-06/README.md)
+binds unchanged scientific sources and both approved PDF views, the brief,
+crosswalks, decision disposition and complete source/permission records.
+The literal approved `@draft-0.1` identities remain unchanged; exact admission
+supersedes historical proposal statuses without silently renaming science.
+
+The new PTC Registry entry, complete VAL profile and separate consumer
+successors are scientific authority candidates for canonical admission after
+exact-SHA review. All prior frozen sources, Registries, boundaries and study
+artifacts remain intact. CTI-OD-002's uniform-first authority step is ready for
+that admission; other coefficient families and additional NOI authority remain
+deferred or unavailable. No actual PTC/MAP/JINC realization, default,
+end-to-end conformity or operational availability follows.
+
+The [next implementation decision brief](scientific_contracts/acceptance/PTC_UNIFORM_R04_2026-09-06/NEXT_IMPLEMENTATION_DECISIONS.md)
+recommends the separate repair sequence, milestone-based predecessor
+compatibility and an initial NOI coefficient-nonmutation mapping unit.
+CTI-OD-003/004/006 remain pending their concrete owner dispositions; application
+work is not started. Canonical integration follows the recorded two-parent
+route and passing independent review; GitHub push remains owner-held.
+
 ## 2026-09-06 CTI-OD-002 Uniform r0.4 Scientific Approval
 
 Grant Wilson reviewed and approved exact uniform-coefficient scientific

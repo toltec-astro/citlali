@@ -23,6 +23,7 @@ COMPLETE_PACKAGES = {
     "SCI-ALIGN": "v0.1",
     "SCI-AST": "v0.1",
     "SCI-JINC": "v0.1",
+    "SCI-PTC-COEFFICIENT-UNIFORM": "v0.1",
 }
 STAGE_A_PACKAGES = {
     "SCI-NOI": "v0.1",
