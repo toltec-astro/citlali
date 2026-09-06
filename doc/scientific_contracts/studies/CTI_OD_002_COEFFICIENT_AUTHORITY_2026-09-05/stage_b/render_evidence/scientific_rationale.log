@@ -273,31 +273,31 @@ File: l3backend-xetex.def 2022-02-07 L3 backend support: XeTeX
 ) (scientific_rationale.aux)
 \openout1 = `scientific_rationale.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 27.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 29.
 LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 2
-7.
+9.
  (ts1cmr.fd
 File: ts1cmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
@@ -333,7 +333,7 @@ LaTeX Font Info:    ... okay on input line 27.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 27.
+Package hyperref Info: Link coloring OFF on input line 29.
 (nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
  (refcount.sty
@@ -343,187 +343,30 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count298
 )
-LaTeX Info: Redefining \ref on input line 27.
-LaTeX Info: Redefining \pageref on input line 27.
-LaTeX Info: Redefining \nameref on input line 27.
+LaTeX Info: Redefining \ref on input line 29.
+LaTeX Info: Redefining \pageref on input line 29.
+LaTeX Info: Redefining \nameref on input line 29.
  (scientific_rationale.out)
 (scientific_rationale.out)
 \@outlinefile=\write3
 \openout3 = `scientific_rationale.out'.
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 51.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 53.
 
  (umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 51.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 53.
 
  (umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (common_core.tex
 (common/notation.tex) (common/definitions.tex [1
 
-]
-Underfull \hbox (badness 2165) in paragraph at lines 82--86
-[]|$[][][][][][][][] [] [][][][][][][][] [] [][][][][][][][] [] [][][][][][][][
-][][][][] [] [][][][][][][][] [] []$\TU/lmr/m/n/10 ; family $[][][][][][][][] [
-]
- []
-
-[2] [3]
-Underfull \hbox (badness 2875) in paragraph at lines 251--252
-[]|\TU/lmr/m/n/10 Resolved selection is exactly $[][][][][][][][] []
- []
-
-
-Underfull \hbox (badness 4569) in paragraph at lines 251--252
-[][][][][][][] [] [][][][][][][][] [] [][][][][][][][] [] []$\TU/lmr/m/n/10 , w
-ith no
- []
-
-
-Underfull \hbox (badness 1527) in paragraph at lines 254--256
-\TU/lmr/m/n/10 and CAL-parent binding, the SCI-PTC
- []
-
-
-Underfull \hbox (badness 2529) in paragraph at lines 276--277
-\TU/lmr/m/n/10 permission in this exact family/version
- []
-
-
-Underfull \hbox (badness 4217) in paragraph at lines 277--280
-\TU/lmr/m/n/10 and vice versa. Authoritative absence is
- []
-
-[4] [5]) (common/equations.tex [6]) (common/assumptions.tex [7]
-Underfull \hbox (badness 10000) in paragraph at lines 70--72
-[]|\TU/lmr/m/n/10 Missing/conflicting Registry,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 70--72
-\TU/lmr/m/n/10 source, parent, occurrence,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 70--72
-\TU/lmr/m/n/10 generation, support, payload-
- []
-
-
-Underfull \hbox (badness 4505) in paragraph at lines 70--72
-\TU/lmr/m/n/10 publication identity, or target
- []
-
-
-Underfull \hbox (badness 4819) in paragraph at lines 70--72
-\TU/lmr/m/n/10 or ambiguous identity in the
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 77--79
-[]|\TU/lmr/m/n/10 After structural identity is
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 77--79
-\TU/lmr/m/n/10 generation permission, wrong
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 77--79
-\TU/lmr/m/n/10 selected family, or known
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 77--79
-\TU/lmr/m/n/10 family-definition opera-
- []
-
-
-Underfull \hbox (badness 1132) in paragraph at lines 80--81
-[]|\TU/lmr/m/n/10 Entire scalar-broadcast genera-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 81--84
-\TU/lmr/m/n/10 non-one or wrong unit, di-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 81--84
-\TU/lmr/m/n/10 known unrepresentability, or
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 81--84
-\TU/lmr/m/n/10 missing/extra/repeated stored
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 81--84
-\TU/lmr/m/n/10 membership relative to the
- []
-
-
-Underfull \hbox (badness 1132) in paragraph at lines 86--87
-[]|\TU/lmr/m/n/10 Entire scalar-broadcast genera-
- []
-
-
-Underfull \hbox (badness 1132) in paragraph at lines 91--93
-[]|\TU/lmr/m/n/10 Entire scalar-broadcast genera-
- []
-
-
-Underfull \hbox (badness 3260) in paragraph at lines 95--95
-[]|\TU/lmr/m/n/10 Occurrence authoritatively out-
- []
-
-
-Underfull \hbox (badness 1546) in paragraph at lines 97--98
-[]|\TU/lmr/m/n/10 Preserve PTC record; consumer ex-
- []
-
-[8]
-Underfull \hbox (badness 2401) in paragraph at lines 127--127
-[]|\TU/lmr/m/n/10 Uniform definition, normaliza-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 131--131
-[]|\TU/lmr/m/n/10 Engineering confor-
- []
-
-
-Underfull \hbox (badness 6477) in paragraph at lines 136--136
-[]|\TU/lmr/m/n/10 Family- and support-selection
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 141--141
-[]|\TU/lmr/m/n/10 Implementation
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 143--143
-[]|\TU/lmr/m/n/10 Validation not per-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 145--146
-[]|\TU/lmr/m/n/10 Validation not per-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 147--147
-[]|\TU/lmr/m/n/10 Validation not per-
- []
-
-[9] [10]) (common/requirements.tex [11]) (common/edge_cases.tex [12])) [13]
-(scientific_rationale.aux)
+]) (common/equations.tex
+[2] [3]) (common/assumptions.tex [4]) (common/requirements.tex)
+(common/edge_cases.tex)) [5] (scientific_rationale.aux)
 Package rerunfilecheck Info: File `scientific_rationale.out' has not changed.
-(rerunfilecheck)             Checksum: 70E1CE78B824D8A976C160D4A24158F2;6018.
+(rerunfilecheck)             Checksum: 357B7DB698307BC3256802C793D2620C;3493.
  )
-Output written on scientific_rationale.xdv (13 pages, 473484 bytes).
+Output written on scientific_rationale.xdv (5 pages, 160284 bytes).

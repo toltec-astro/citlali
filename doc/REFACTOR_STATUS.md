@@ -1,5 +1,31 @@
 # Citlali Refactor Status
 
+## 2026-09-06 CTI-OD-002 Owner Review 1 and Uniform Revision
+
+Grant Wilson supports the exact-unity coefficient design in principle and
+returned the paired r0.2 draft at `448194ac3e650a12e5a3862d86a4a05f867a90c5`
+for nine targeted corrections before complete contract approval. The
+[owner review and bounded preflight](scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_review_1/README.md)
+preserve the verbatim assessment, exact frozen PTC rank/publication recovery,
+and independently rechecked prior sources. This is substantive owner round 1.
+
+The isolated author revised the common six-module contract to
+v0.1-draft.1/r0.3, with a 5-page explanatory scientific rationale and
+14-page engineering specification, 25 requirements, 16 predictions, ten
+worked decision cases and a point-by-point response. Manifest SHA-256:
+`87eafdbaed29dc8d810a5bba9d4ba818d57a837c04337a4c71c31b06215f0ee9`. Payload and permission states, mixed evidence, request versus shared
+failure scopes, compact representation, bounded publication, rank authority,
+version/realization identity, finalization and notation are explicit. Source,
+manifest, crosswalk and all-page render checks passed; an independent Tier 2
+review must bind the committed candidate before renewed owner presentation.
+
+Original Stage A/recovery bytes and both earlier draft generations remain
+preserved. All fourteen consequential proposals and UFC-Q-001 remain open;
+CTI-OD-002 remains open. No complete freeze, Registry activation, application
+unit, default, new NOI permission, implementation conformance or production
+claim is authorized. Canonical advanced independently to `5244e046...`; the
+recorded reassessment keeps this revision on its existing owned draft branch.
+
 ## 2026-09-05 CTI-OD-002 Exact-Input Release and Scientific Authorship
 
 Grant Wilson approved release of the exact uniform-first author input at

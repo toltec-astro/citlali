@@ -1,70 +1,54 @@
-# CTI-OD-002 uniform-first scientific authorship
+# CTI-OD-002 uniform coefficient scientific draft
 
 ## Program adherence and prior-work recovery
 
-The [exact-input owner release](OWNER_INPUT_RELEASE_2026-09-05.md) activates
-Stage B under the [charter](../../../README.md). The independently reviewed
-Stage A recovery and 11 author files remain immutable. This directory contains
-manager release/evidence and the returned scientific draft; only the isolated
-author input was provided to the fresh author.
+The [exact-input release](OWNER_INPUT_RELEASE_2026-09-05.md) and
+[owner review round 1](owner_review_1/README.md) govern this Stage B work under
+the [contract charter](../../../README.md). The original reviewed recovery
+and eleven-file Stage A packet remain byte-identical. The existing isolated
+scientific author used only that packet, its own sealed r0.2, and the separate
+four-file owner-review supplement. Manager and candidate-review records are
+not author inputs.
 
-## Work order / preflight
+## Current proposed revision
 
-| Field | Disposition |
-| --- | --- |
-| Purpose / owner | Execute Grant Wilson's exact-input release and preserve the first scientific draft for owner review |
-| Risk tier | Tier 2 cross-package scientific-contract drafting; no application implementation slot |
-| Governance read | Engineering Governance and Review And Conformance; effective accepted identity `06a3ade51c1b3f38887295433d913811bf25cd14` on canonical ancestry |
-| Governance digests | Engineering `70769787ce2ef4b7323cd2a38e221ade4af3310e0ad6b7b682e08cb4e4d61e76`; review `691e6d6250102ef2f4a504397581ee67c5707d898ab20fb8dd9e874c47f99bb1` |
-| Sequencing / science | Current status, contract charter, reviewed recovery and exact released Scope Brief/reference manifest |
-| Exact starting candidate | `959bb90947d4b9651fbba9f16a0eb73dde893b84`, tree `1e067d1d661d1ebd0bd8e05ce6cb4c9d652b8437` |
-| Canonical base | `00b974c9039d4c3025dcce18f26bca69d36af9c3`, tree `6ca6ebe6561e1a3ba5c7fbeb5f555022f739c19b` |
-| Owned branch / worktree | `codex/cti-od-002-coefficient-authority-2026-09-05` in `/private/tmp/citlali-cti-od-002-coefficient-authority-2026-09-05` |
-| Initial dirt | Clean staged, unstaged and fully enumerated untracked state |
-| Expected changes | This new `stage_b/` directory and one dated `doc/REFACTOR_STATUS.md` entry; no edits to prior study or Stage A files |
-| Scientific owners | PTC coefficient definition and immutable generation; MAP/JINC separate consumption; NOI existing MAP-derived binding; VAL evaluates supplied named-use propositions |
-| Included work | Record release, isolated fresh authorship, bounded manager QA, preserve exact draft artifacts and review evidence |
-| Excluded work | Other coefficient families, defaults, application/config/tests, frozen package and current Registry changes, WP-7, Unity, dependency installation, push, integration and cleanup |
-| Focused gates | Approved-input and earlier-file preservation; author input/output manifest; common-module and crosswalk/ledger completeness; local PDF compilation and rendered-page QA; layout and whitespace checks; independent exact-SHA manager-record review |
-| Broader / environment gates | No runtime, CTest/config, Spack/Unity, observation or performance campaign is triggered by scientific-document drafting; no such validation is claimed |
-| Triggers / stop conditions | Missing scientific prerequisite, scope drift, scientific contradiction, firewall breach, changed approved input or unavailable local rendering dependency; repair within approved scope or return the precise scientific decision |
-| Operation authority | Draft and commit coherent verified work on the owned branch; no canonical advancement, push, production activation, cleanup or other worktree mutation |
+**SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1/r0.3**, dated 2026-09-06,
+answers all nine owner revision areas. Start with the
+[scientific rationale](draft/scientific_rationale.pdf) (5 pages), then the
+[engineering specification](draft/engineering_conformance.pdf) (14 pages)
+and [point-by-point owner response](draft/OWNER_REVIEW_1_RESPONSE.md).
+The [owner ledger](draft/OWNER_DECISION_LEDGER.md) records support in principle
+separately from the fourteen still-open consequential proposals.
 
-## Corrected first draft returned
+The revision preserves exact dimensionless one and its restricted scientific
+meaning. It separates payload fidelity from named permission; composes four
+independent fidelity facts with explicit mixed cases; distinguishes shared
+object defects from malformed requests; and permits compact support references,
+shared fact evaluations, analytic normalization, and independently complete
+segment/scan/chunk publication. Rank provenance, realization/version changes,
+finalization, notation, and the two document audiences are explicit.
 
-The fresh author returned the complete proposed scientific draft
-**SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.2**. Its
-[43-file preserved package](draft/PACKAGE_INVENTORY.md) comprises 42
-manifested final/source artifacts plus the manifest itself. Manifest SHA-256:
-`9c05f8d5d14c338ee4f58d81101f7e23d2bc361401012076b8c47a366e063064`.
-Every copied author artifact is byte-identical to the sealed r0.2 return.
-The first r0.1 return remains preserved at exact commit
-`f605be6f23560ef81aa05598091964081b8fe749`. Its
-[independent review](DRAFT_CANDIDATE_REVIEW_f605be6f.md) identified one
-bounded QC consistency finding, repaired in this revision before a new
-exact-SHA candidate review.
+The six common modules produce both views without duplicating the complete
+formal tables in the shorter rationale. The [requirement crosswalk](draft/CROSSWALK.md)
+maps every requirement to an actual scientist-facing explanation.
+The [artifact inventory](draft/PACKAGE_INVENTORY.md) and manifest bind the
+exact sealed return; manifest SHA-256: `87eafdbaed29dc8d810a5bba9d4ba818d57a837c04337a4c71c31b06215f0ee9`.
 
-Start with the [Scientific Rationale and Contract](draft/scientific_rationale.pdf),
-then the [owner decision ledger](draft/OWNER_DECISION_LEDGER.md). The
-[Engineering Conformance Specification](draft/engineering_conformance.pdf)
-renders the same six common modules. The
-[manager QA and conformance record](MANAGER_QA_AND_COMPLETION.md) and
-[mechanical check results](MANAGER_CHECK_RESULTS.json) distinguish document
-integrity from still-pending scientific approval.
+## Verification and next gate
 
-The draft proposes exact dimensionless unity, no parameter, a mean-one
-operator on exact single-observation PTC output support, and a complete
-coefficient-use QC profile. All 14 consequential proposals remain open;
-MAP/JINC permission is separate. The one actual-owner question blocks future
-Registry activation only. No mathematical definition is blocked for this
-first draft.
+The [work order and reassessment](owner_review_1/README.md) record exact
+parent, current and original canonical checkpoints, scope, owners, risks,
+operation authority, and source recovery. The [manager conformance record](MANAGER_QA_AND_COMPLETION.md)
+and [focused results](MANAGER_CHECK_RESULTS.json) cover document integrity,
+traceability, source preservation, and all-page rendering. A fresh-context
+Tier 2 review must bind the committed r0.3 candidate; it is not scientific
+adoption or the charter's later post-owner consistency review.
 
-The [input review receipt](AUTHOR_INPUT_REVIEW_959bb909.md) is preserved
-byte-for-byte and does not review author output. A fresh-context exact-SHA
-Tier 2 candidate review follows the commit. Owner scientific review and the
-charter's later implementation-blind consistency review remain separate gates.
+Historical r0.1 and r0.2 remain sealed and committed at `f605be6f...` and
+`448194ac...`. Their [first candidate review](DRAFT_CANDIDATE_REVIEW_f605be6f.md)
+and [r0.2 review](owner_review_1/CANDIDATE_REVIEW_448194ac.md) remain immutable.
+The owner's substantive return supersedes the r0.2 readiness checkpoint.
 
-The original Stage A verifier remains scoped to its exact `959bb909...`
-subject. It passed again before this release record was added. Its original
-17-path/parent check is not a gate for this later commit; current checks prove
-the approved inputs and all 20 predecessor study files remain byte-identical.
+CTI-OD-002 remains open. Complete scientific approval, actual-owner binding,
+final consistency review, freeze, Registry admission, canonical integration,
+owner-held push, and application work remain separate gates.

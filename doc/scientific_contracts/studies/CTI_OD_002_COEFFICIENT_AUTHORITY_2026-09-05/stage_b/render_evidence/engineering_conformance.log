@@ -273,31 +273,31 @@ File: l3backend-xetex.def 2022-02-07 L3 backend support: XeTeX
 ) (engineering_conformance.aux)
 \openout1 = `engineering_conformance.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 27.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 29.
 LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 2
-7.
+9.
  (ts1cmr.fd
 File: ts1cmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
@@ -333,7 +333,7 @@ LaTeX Font Info:    ... okay on input line 27.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 27.
+Package hyperref Info: Link coloring OFF on input line 29.
 (nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
  (refcount.sty
@@ -343,157 +343,293 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count298
 )
-LaTeX Info: Redefining \ref on input line 27.
-LaTeX Info: Redefining \pageref on input line 27.
-LaTeX Info: Redefining \nameref on input line 27.
+LaTeX Info: Redefining \ref on input line 29.
+LaTeX Info: Redefining \pageref on input line 29.
+LaTeX Info: Redefining \nameref on input line 29.
  (engineering_conformance.out) (engineering_conformance.out)
 \@outlinefile=\write3
 \openout3 = `engineering_conformance.out'.
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 50.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 52.
 
  (umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 50.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 52.
 
  (umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (common_core.tex
-(common/notation.tex) (common/definitions.tex
-Underfull \hbox (badness 1033) in paragraph at lines 26--30
-\TU/lmr/m/n/10 plication generation; observation and occurrence identities; out
-put support; re-
- []
-
-[1
+(common/notation.tex) (common/definitions.tex [1
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 82--86
-[]|$[][][][][][][][] [] [][][][][][][][] [] [][][][][][][][] [] [][][][][][][][
-][][][][] [] [][][][][][][][] [] []$\TU/lmr/m/n/10 ; family $[][][][][][][][] [
-]
- []
-
-[2] [3]
-Underfull \hbox (badness 5771) in paragraph at lines 251--252
-[]|\TU/lmr/m/n/10 Resolved selection is exactly $[][][][][][][][] []
+Underfull \hbox (badness 10000) in paragraph at lines 99--102
+[]|\TU/lmr/m/n/10 Registry $[][][][][][][][] [] [][][][][][][][] [] [][][][][][
+][][] [] [][][][][][][][][][][][] [] [][][][][][][][] [] []$; family
  []
 
 
-Underfull \hbox (badness 1902) in paragraph at lines 276--277
-[]|\TU/lmr/m/n/10 The requested named consumer has ex-
+Underfull \hbox (badness 1210) in paragraph at lines 99--102
+\TU/lmr/m/n/10 posed actual human owner is Grant Wilson acting for SCI-PTC, pen
+ding
  []
 
-[4]) (common/equations.tex [5] [6]) (common/assumptions.tex
-Underfull \hbox (badness 10000) in paragraph at lines 70--72
-[]|\TU/lmr/m/n/10 Missing/conflicting Registry,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 70--72
-\TU/lmr/m/n/10 identity, or target broadcast
+[2]
+Underfull \hbox (badness 10000) in paragraph at lines 148--154
+[]\TU/lmr/m/n/10 It explicitly binds the admitted SCI-PTC common named-use frag
+ment at exact digest
  []
 
 
-Underfull \hbox (badness 3557) in paragraph at lines 77--79
-[]|\TU/lmr/m/n/10 After structural identity is es-
+Underfull \hbox (badness 5008) in paragraph at lines 148--154
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][][][][][][][][][][][][][][]$\TU/lmr/m/n/10 . That immutab
+le common-fragment
  []
 
 
-Underfull \hbox (badness 3838) in paragraph at lines 77--79
-\TU/lmr/m/n/10 tablished, explicit incompatible-
+Underfull \hbox (badness 2020) in paragraph at lines 183--186
+[]\TU/lmr/m/n/10 The lineage $\OML/cmm/m/it/10 L[]$ \TU/lmr/m/n/10 one-way link
+s the exact requested, effective-policy, observation-resolved, selected, coeffi
+cient-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 77--79
-\TU/lmr/m/n/10 generation permission, wrong
+Underfull \hbox (badness 10000) in paragraph at lines 214--217
+[]|$\OT1/cmr/bx/n/10 U$\TU/lmr/m/n/10 : value evidence ab-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 77--79
-\TU/lmr/m/n/10 selected family, or known
+Underfull \hbox (badness 7012) in paragraph at lines 214--217
+\TU/lmr/m/n/10 sent/unavailable. $\OT1/cmr/bx/n/10 C$\TU/lmr/m/n/10 : au-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 77--79
-\TU/lmr/m/n/10 family-definition opera-
+Underfull \hbox (badness 10000) in paragraph at lines 218--221
+[]|$\OT1/cmr/bx/n/10 U$\TU/lmr/m/n/10 : unit evidence ab-
  []
 
 
-Underfull \hbox (badness 4144) in paragraph at lines 80--81
-[]|\TU/lmr/m/n/10 Entire scalar-broadcast genera-
+Underfull \hbox (badness 2165) in paragraph at lines 218--221
+\TU/lmr/m/n/10 sent/unavailable. $\OT1/cmr/bx/n/10 C$\TU/lmr/m/n/10 : same-
  []
 
 
-Underfull \hbox (badness 3343) in paragraph at lines 81--84
-[]|\TU/lmr/m/n/10 Complete authoritative payload-
+Underfull \hbox (badness 7151) in paragraph at lines 221--222
+[]|\TU/lmr/m/n/10 Declared decoder succeeds,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 81--84
-\TU/lmr/m/n/10 fidelity check establishes de-
+Underfull \hbox (badness 6016) in paragraph at lines 221--222
+\TU/lmr/m/n/10 publication digest and in-
  []
 
 
-Underfull \hbox (badness 4531) in paragraph at lines 81--84
-\TU/lmr/m/n/10 coded non-one or wrong unit,
+Underfull \hbox (badness 3815) in paragraph at lines 223--225
+[]|\TU/lmr/m/n/10 An authoritative check es-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 81--84
-\TU/lmr/m/n/10 digest/integrity failure, corrup-
+Underfull \hbox (badness 10000) in paragraph at lines 223--225
+\TU/lmr/m/n/10 tablishes digest/integrity
  []
 
 
-Underfull \hbox (badness 2435) in paragraph at lines 81--84
-\TU/lmr/m/n/10 tion, truncation, decoder-invalid
+Underfull \hbox (badness 4492) in paragraph at lines 223--225
+\TU/lmr/m/n/10 failure, corruption, trunca-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 81--84
-\TU/lmr/m/n/10 bytes, known unrepresentabil-
+Underfull \hbox (badness 4927) in paragraph at lines 223--225
+\TU/lmr/m/n/10 tion, decoder-invalid bytes,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 81--84
-\TU/lmr/m/n/10 ity, or missing/extra/repeated
+Underfull \hbox (badness 1043) in paragraph at lines 223--225
+\TU/lmr/m/n/10 or known unrepresentability,
  []
 
 
-Underfull \hbox (badness 4144) in paragraph at lines 86--87
-[]|\TU/lmr/m/n/10 Entire scalar-broadcast genera-
+Underfull \hbox (badness 10000) in paragraph at lines 223--225
+\TU/lmr/m/n/10 including corruption that
  []
 
 
-Underfull \hbox (badness 4144) in paragraph at lines 91--93
-[]|\TU/lmr/m/n/10 Entire scalar-broadcast genera-
- []
-
-[7]
-Underfull \hbox (badness 1342) in paragraph at lines 132--134
-[]|\TU/lmr/m/n/10 Follows analytically for exact one on a finite
+Underfull \hbox (badness 1975) in paragraph at lines 229--231
+[]|\TU/lmr/m/n/10 Stored compact $[]$ exactly
  []
 
 
-Underfull \hbox (badness 3209) in paragraph at lines 138--138
-\TU/lmr/m/n/10 variance, and cross-observation
+Underfull \hbox (badness 10000) in paragraph at lines 231--233
+[]|\TU/lmr/m/n/10 Stored $[]$ names the
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 141--141
-[]|\TU/lmr/m/n/10 Implementation
+Underfull \hbox (badness 10000) in paragraph at lines 231--233
+\TU/lmr/m/n/10 wrong support/generation
  []
 
 
-Underfull \hbox (badness 3240) in paragraph at lines 145--145
-[]|\TU/lmr/m/n/10 Observational performance and
+Underfull \hbox (badness 10000) in paragraph at lines 231--233
+\TU/lmr/m/n/10 or mismatches target
  []
 
-[8] [9]) (common/requirements.tex [10]) (common/edge_cases.tex [11])) [12]
-[13] (engineering_conformance.aux)
+
+Underfull \hbox (badness 10000) in paragraph at lines 231--233
+\TU/lmr/m/n/10 source/scope/digest, or a
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 231--233
+\TU/lmr/m/n/10 complete enumerated form
+ []
+
+
+Underfull \hbox (badness 3128) in paragraph at lines 231--233
+\TU/lmr/m/n/10 omits, adds, or repeats a
+ []
+
+
+Underfull \hbox (badness 3250) in paragraph at lines 233--237
+[]|$\OT1/cmr/bx/n/10 U$\TU/lmr/m/n/10 : stored-reference compari-
+ []
+
+
+Underfull \hbox (badness 3250) in paragraph at lines 233--237
+\TU/lmr/m/n/10 son or complete enumeration
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 233--237
+\TU/lmr/m/n/10 payload stored-reference or
+ []
+
+
+Underfull \hbox (badness 4060) in paragraph at lines 233--237
+\TU/lmr/m/n/10 membership claims contradict
+ []
+
+[3]
+Underfull \hbox (badness 1953) in paragraph at lines 265--267
+\TU/lmr/m/n/10 bound, its resolved value is exactly $[][][][][][][][] []
+ []
+
+
+Underfull \hbox (badness 1205) in paragraph at lines 267--270
+[]|\TU/lmr/m/n/10 Known different value is $\OT1/cmr/bx/n/10 F$ \TU/lmr/m/n/10 
+and the re-
+ []
+
+[4]) (common/equations.tex [5] [6]
+Underfull \hbox (badness 10000) in paragraph at lines 147--149
+\TU/lmr/m/n/10 tity/source/generation/scope/digest
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 158--160
+\TU/lmr/m/n/10 occurrence-specific membership/request
+ []
+
+
+Underfull \hbox (badness 3078) in paragraph at lines 165--167
+[]|\TU/lmr/m/n/10 Completion of other segments, scans,
+ []
+
+
+Underfull \hbox (badness 1454) in paragraph at lines 168--170
+[]|\TU/lmr/m/n/10 A literal population reduction or per-
+ []
+
+) (common/assumptions.tex [7] [8]
+Underfull \hbox (badness 10000) in paragraph at lines 118--121
+[]|\TU/lmr/m/n/10 Shared Registry/source/owner,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 118--121
+\TU/lmr/m/n/10 selection-record identity, appli-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 118--121
+\TU/lmr/m/n/10 cation/CAL, authoritative $\OML/cmm/m/it/10 q$\TU/lmr/m/n/10 -to
+-$\OML/cmm/m/it/10 g$
+ []
+
+
+Underfull \hbox (badness 2237) in paragraph at lines 118--121
+\TU/lmr/m/n/10 conflicting, corrupt, or misbound;
+ []
+
+
+Underfull \hbox (badness 1661) in paragraph at lines 118--121
+\TU/lmr/m/n/10 or the authoritative population is
+ []
+
+
+Underfull \hbox (badness 1297) in paragraph at lines 126--127
+\TU/lmr/m/n/10 known different selected family or
+ []
+
+
+Underfull \hbox (badness 1478) in paragraph at lines 130--132
+[]|\TU/lmr/m/n/10 UQ-05 is $\OT1/cmr/bx/n/10 F$\TU/lmr/m/n/10 ; payload produce
+r-invalid;
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 149--150
+[]|\TU/lmr/m/n/10 Advisory response, uncertainty,
+ []
+
+
+Underfull \hbox (badness 6775) in paragraph at lines 149--150
+\TU/lmr/m/n/10 or unrelated diagnostic is miss-
+ []
+
+[9]) (common/requirements.tex [10] [11]) (common/edge_cases.tex
+Underfull \hbox (badness 1400) in paragraph at lines 25--26
+[]|\TU/lmr/m/n/10 The same scalar conflict exists, and the inde-
+ []
+
+
+Underfull \hbox (badness 2165) in paragraph at lines 38--40
+\TU/lmr/m/n/10 recordable according to its preserved
+ []
+
+[12] [13]
+Underfull \hbox (badness 1424) in paragraph at lines 122--123
+[]|\TU/lmr/m/n/10 Source/Registry identity, algebraic,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 127--130
+[]|\TU/lmr/m/n/10 UFC-MIX-001–010; named request with
+ []
+
+
+Underfull \hbox (badness 1742) in paragraph at lines 127--130
+\TU/lmr/m/n/10 wrong family; permission denial versus un-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 130--131
+\TU/lmr/m/n/10 provenance, fallback, NOI, and
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 134--137
+[]|\TU/lmr/m/n/10 Algebraic, implementation, representa-
+ []
+
+
+Underfull \hbox (badness 6032) in paragraph at lines 134--137
+\TU/lmr/m/n/10 tion/response, observational, and readiness
+ []
+
+)) [14] (engineering_conformance.aux)
 Package rerunfilecheck Info: File `engineering_conformance.out' has not changed
 .
-(rerunfilecheck)             Checksum: 9E91D231139795D6AD00BD301F7FCD5F;6303.
+(rerunfilecheck)             Checksum: 80E06E6B59AB373C0DE7AD6CE1A707E3;7067.
  )
-Output written on engineering_conformance.xdv (13 pages, 479244 bytes).
+Output written on engineering_conformance.xdv (14 pages, 505244 bytes).

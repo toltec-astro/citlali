@@ -1,170 +1,185 @@
-\section{Assumptions, decision semantics, and lifecycle}
+\section{Scientific assumptions, uncertainty, and route limits}
 
-\subsection{Scientific assumptions and limits}
+The family assumes only a completed, exact PTC publication generation \(q\)
+with identifiable finite nonempty output support. It assumes no statistical
+distribution, stationarity, independence, equal detector response, equal
+exposure, residual model, sensitivity model, or covariance model. The
+coefficient is defined rather than estimated and ranks no data quality.
 
-This definition assumes only that one exact realized PTC product generation
-exists for one observation, its exact output support can be identified, and
-the support is finite and nonempty. It assumes no statistical distribution,
-stationarity, independence, homoscedasticity, detector equivalence, exposure
-equivalence, residual model, sensitivity model, or response model. It neither
-estimates nor ranks data quality.
+The exact policy constant introduces no coefficient sampling uncertainty.
+This does not assign zero to signal, calibration, response, covariance,
+support-selection, family-selection, representation, or performance
+uncertainty. Unknown remains unknown, and absent covariance does not mean
+independence.
 
-The coefficient value is an exact policy constant and therefore introduces no
-sampling uncertainty. That statement is limited to the coefficient itself. It
-does not assign zero to calibration, signal, response, covariance,
-cross-observation, support-selection, family-selection, representation, or
-performance uncertainty. Unknown remains unknown and absent covariance never
-means independence.
+\subsection{Ordinary-route and rank provenance}
 
-\subsection{Knowledge and four independent axes}
+Frozen SCI-PTC v0.1/r0.5 requirement 090 defines the admitted first ordinary
+PTC route: the parent \(q\) is an explicitly requested calibrated-\(x\),
+configured-rank, group-local PCA/SVD operation with exact CAL parent, segment,
+output identity, lifecycle, and failure state. Requirement 094 requires an
+integer rank at least one for each group, or one explicitly common positive
+rank applied to named groups; every group verifies realizability on its own
+support and degeneracy state. Requirement 095 says rank zero, noninteger rank,
+or an unrealizable positive rank fails closed with exact group and cause. It
+does not become centering-only output, get clipped or substituted, become
+PTC-disabled, select RTC-terminal export, or produce a map.
 
-Every applicable fact and profile predicate uses
-$\{\mathbf T,\mathbf F,\mathbf U,\mathbf C\}$ with the admitted VAL meanings.
-Silence is $\mathbf U$. A structural contradiction blocks establishment of the
-question. A non-gating $\mathbf C$ is preserved and composes as unresolved
-$\mathbf U$. One decisive $\mathbf F$ yields ineligible even when another
-non-gating predicate is unresolved; without a false, any required unresolved
-predicate yields decision unavailable; all required predicates true yields
-eligible. Every cause is retained without evidence-erasing short circuit.
+Consequently, this coefficient can be instantiated on the ordinary route only
+from a completed \(q\) produced after those rank obligations pass. The
+PTC-disabled route remains separately RTC-terminal and produces no PTC
+coefficient. These inherited statements provide no authority for an identity
+PTC route, a zero-rank route family, or any other route.
 
-The \ProfileKey\ record carries independent axes:
+\subsection{Family rules, realizations, and immutable change}
+
+A family-rule version defines the constant, unit, normalization operator,
+support rule, representation permissions, and profile semantics. Changing one
+of those scientific rules creates the appropriate versioned family, profile,
+permission, or boundary successor.
+
+Applying unchanged rules to a different application generation, observation,
+publication unit, or exact support population creates new immutable \(q\) and
+\(g\) realizations under the same family version. It does not version the
+family. A published realization is never rewritten: a corrected or changed
+actual support produces a new realization and preserves the earlier record.
+Numerical equality alone does not authorize cross-generation borrowing.
+
+\section{Scientific choices still awaiting owner approval}
+
+Owner review round 1 supports the basic uniform design in principle and
+withholds approval of the complete contract. The owner still must adopt,
+revise, or reject:
+
 \begin{itemize}
-\item $R=$ requested or not requested. A family not selected and handoff not
-requested has no eligibility evaluation.
-\item $A=$ applicable, inapplicable, or applicability unknown under the
-profile definition. Known outside-support occurrences have
-$E=\varnothing_E$.
-\item $E=$ eligible, ineligible, decision unavailable, or uninstantiated
-$\varnothing_E$ where no question is evaluated.
-\item $Z=$ realized, incomplete, failed, or not produced for the profile
-evaluation. Coefficient payload availability remains a separate typed fact.
+\item the registered exact-unity family and analytic mean-one convention;
+\item the exact publication-unit support rule, compact support reference,
+shared-fact association, and incremental handoff proposal;
+\item the named-profile identity, independent request rule, four fidelity
+facts, mixed-evidence composition, nonexceptionability, and failure scopes;
+\item the separate MAP and JINC grants and their r0.3 boundary successors;
+\item immutable realization, replay, supersession, uncertainty, and Registry
+source-binding rules; and
+\item the proposed actual-owner field, Grant Wilson acting for SCI-PTC.
 \end{itemize}
-A realized decision-unavailable record is a successful account of missing
-authority. If the evaluation artifact itself is incomplete, failed, or not
-produced, it cannot manufacture an eligibility assertion.
 
-A complete authoritative UQ-05 false is likewise a successfully realized
-negative profile evaluation: $Z=$ realized, $E=$ ineligible, and the separate
-typed payload state is invalid. It does not set profile-artifact $Z$ to failed.
-That failure state is reserved for failure to complete or produce the profile
-evaluation artifact, independent of whether a completed predicate is true,
-false, unknown, or conflicting.
+The first five groups are complete author proposals rather than missing
+definitions. The final item remains precise question UFC-Q-001 and blocks
+active Registry/profile binding. No implementation conformity, observational
+performance, production readiness, Registry activation, default, or complete
+scientific freeze follows from this revision.
 
-\subsection{Payload order and failure scope}
+\ifengineeringview
 
-Processing first establishes authoritative identity, parentage, profile
-authority, applicability, the exact unique population, and the target
-broadcast binding. Only then does it evaluate the bound payload and its stored
-membership for producer fidelity. A decisive fidelity false excludes the
-payload; an unknown or conflicting fidelity fact remains decision unavailable
-absent another false. Finiteness or a numerical value of one cannot supply
-missing authority, validity, support, membership, or permission. MAP and JINC
-subsequently perform their own positive/zero/negative/non-finite/
-unrepresentable classification.
+\section{Decision semantics and failure scopes}
 
-\begin{longtable}{p{0.29\linewidth}p{0.34\linewidth}p{0.28\linewidth}}
+\subsection{Knowledge states and four independent axes}
+
+Every fact uses \(\{\mathbf T,\mathbf F,\mathbf U,\mathbf C\}\). Silence is
+unknown. Contradictory authoritative claims about the same fact remain
+\(\mathbf C\). Across independent facts, a decisive \(\mathbf F\) dominates
+unrelated unknown or conflict for eligibility while every cause remains
+recorded. With no false, any required unknown or conflict yields decision
+unavailable; all required facts true yields eligible.
+
+The named profile carries independent axes:
+
+\begin{itemize}
+\item \(R\): requested or not requested, set by the explicit named-profile
+request rather than by the selected-family value;
+\item \(A\): applicable, inapplicable, or applicability unknown;
+\item \(E\): eligible, ineligible, decision unavailable, or uninstantiated
+where no question is evaluated; and
+\item \(Z\): realized, incomplete, failed, or not produced for the profile
+evaluation artifact, separate from payload availability.
+\end{itemize}
+
+A completed false predicate produces a successfully realized negative
+evaluation, \(Z=\) realized and \(E=\) ineligible. A completed record of
+missing authority may likewise have \(Z=\) realized and \(E=\) decision
+unavailable. \(Z=\) failed is reserved for failure to complete or publish the
+profile-evaluation artifact.
+
+\subsection{Failure-scope table}
+
+\begin{longtable}{p{0.31\linewidth}p{0.35\linewidth}p{0.25\linewidth}}
 \toprule
-Condition & Required result & Failure scope\\
+Established condition & Required result & Scope\\
 \midrule
 \endhead
-Missing/conflicting Registry, source, parent, occurrence, generation, support,
-payload-publication identity, or target broadcast binding; or duplicate or
-ambiguous identity in the authoritative population & Applicability unknown or
-decision unavailable; UQ-05 is not evaluated and there is no fallback payload
-& Entire affected coefficient generation\\
-Known empty $\mathcal D_{g,o}$ & No family instance or payload; no eligibility
-claim & Observation/generation\\
-After structural identity is established, explicit incompatible-generation
-permission, wrong selected family, or known family-definition
-operator/unit/population substitution & Ineligible with all causes; no
-reinterpretation & Entire scalar-broadcast generation\\
-Complete authoritative payload-fidelity check establishes decoded non-one or
-wrong unit, digest/integrity failure, corruption, truncation, decoder-invalid
-bytes, known unrepresentability, or missing/extra/repeated stored membership
-relative to the established target & UQ-05 is $\mathbf F$; the payload is
-producer-invalid and the realized profile decision is ineligible, even when
-corruption makes the scalar unreadable & Entire scalar-broadcast generation\\
-Payload, bytes, decoder, digest, integrity result, complete check, or complete
-stored membership manifest is absent/unavailable; or payload is unreadable
-without an authoritative fidelity cause or verdict & UQ-05 is $\mathbf U$;
-typed payload state remains unknown/unavailable and a realized profile decision
-is decision unavailable absent another false & Entire scalar-broadcast
-generation\\
-Absent explicit consumer permission & Ineligible for that named consumer only
-& Consumer-specific route\\
-Occurrence authoritatively outside support & Inapplicable,
-$E=\varnothing_E$, and no coefficient & Occurrence\\
-Consumer numerical rejection of an otherwise faithful payload & Preserve PTC
-record; consumer excludes or fails under its rule & Occurrence and consumer\\
-Unrelated metadata/advisory diagnostic missing or conflicting & Preserve
-state and cause; neutral for this profile & No coefficient-QC failure\\
+Named request and evaluation identity are recordable, but its occurrence,
+consumer, selection-record, or \(q,g\) reference is malformed, missing,
+ambiguous, or pairs the wrong otherwise-authoritative objects &
+\(R=\) requested, \(A=\) unknown, \(E=\) decision unavailable in a completed
+request-local record; no shared object changes & That attempted request only\\
+Request lacks enough identity to create a durable named-profile record &
+No eligibility assertion; evaluation artifact is failed or not produced &
+That attempted request only\\
+Shared Registry/source/owner, selection-record identity, application/CAL,
+authoritative \(q\)-to-\(g\) object, target \(R_q\), payload publication, or
+target broadcast is missing, conflicting, corrupt, or misbound; or the
+authoritative population is ambiguous & Applicability unknown or decision
+unavailable; no UQ-05 evaluation or fallback & Every request referencing the
+defective shared object\\
+Known empty output support of \(q\) & No family instance, coefficient
+realization, or eligibility claim & That publication unit\\
+Explicit named profile request with known different selected family or
+known incompatible \(q\)-to-\(g\) permission & UQ-01 or UQ-02 is
+\(\mathbf F\); ineligible without reinterpreting the payload & Every request
+sharing that exact selection or compatibility fact\\
+Any independent payload-fidelity fact is \(\mathbf F\) & UQ-05 is
+\(\mathbf F\); payload producer-invalid; completed handoff evaluations
+ineligible & Every request using that payload publication\\
+No fidelity false, but a required fidelity fact is \(\mathbf U\) or
+\(\mathbf C\) & UQ-05 remains unknown/conflicting; decision unavailable
+unless another restriction is false & Every request using that payload
+publication\\
+Complete permission record denies or does not authorize named consumer \(c\)
+& UQ-06 is \(\mathbf F\); that named use is ineligible; payload and other
+consumer unchanged & Consumer \(c\) under that permission record\\
+Permission evidence for \(c\) is missing/unresolved or contradictory &
+UQ-06 is \(\mathbf U\) or \(\mathbf C\); decision unavailable absent another
+false & Consumer \(c\) under that permission record\\
+Occurrence is authoritatively outside \(q\)'s support & Inapplicable,
+\(E=\varnothing_E\), and no coefficient for that occurrence & That occurrence
+request\\
+Consumer rejects an otherwise faithful value under its own numerical rule &
+Preserve PTC profile; consumer excludes or fails under its rule & That
+consumer contribution\\
+Advisory response, uncertainty, or unrelated diagnostic is missing/conflicting
+& Preserve exact state and cause; neutral for coefficient fidelity & No
+coefficient-profile failure\\
 \bottomrule
 \end{longtable}
 
-\subsection{Immutable lifecycle and repetition}
+\subsection{Noncircular UQ-07 construction and finalization}
 
-Creating $g$ never changes transformed product $p$ or an earlier coefficient
-generation. A change in support, product/application generation, observation,
-family/version, operator, population, unit, profile, permission, or selection
-lineage creates a new scientific identity and preserves all earlier parents.
+UQ-07 is staged and never requires an already completed evaluation of itself.
 
-Repeated realization from the same exact inputs must yield the same
-mathematical payload and membership relation, but each realization retains its
-own immutable generation identity. Equal values do not authorize substitution
-or borrowing. Cross-generation use requires an explicit compatibility record
-binding both generations and preserving their claims. This proposal provides
-no general compatibility alias.
+\begin{enumerate}
+\item Construction allocates the evaluation identity and snapshots the
+pre-existing request, Registry, parent, lineage, support, payload, permission,
+and UQ-01--UQ-06 fact references.
+\item Before sealing, UQ-07 evaluates only those pre-existing lineage,
+nonmutation, scope, and write-once-target facts. A known violation is
+\(\mathbf F\); missing/conflicting evidence is \(\mathbf U/\mathbf C\).
+\item Finalization durably writes the complete result and its retained causes,
+then the lifecycle envelope records \(Z=\) realized. If durable finalization
+fails, the envelope records failed/incomplete as available; no completed
+UQ-07 value or eligibility assertion is invented.
+\end{enumerate}
 
-\section{Scientific validity and uncertainty status}
+Later discovery never rewrites the sealed record. It produces a successor
+evaluation or realization with explicit supersession and preserved cause.
 
-\begin{longtable}{p{0.28\linewidth}p{0.21\linewidth}p{0.42\linewidth}}
-\toprule
-Claim or uncertainty & Status class & Meaning in this draft\\
-\midrule
-\endhead
-Frozen ownership and generic coefficient constraints & Approved/recovered &
-Adopted from the admitted packet and not reopened.\\
-Uniform definition, normalization, support, and profile & Unresolved decision
-& Complete author proposal awaiting owner approval.\\
-Separate MAP and JINC permissions & Unresolved decisions & Proposed for both;
-each remains independently open.\\
-Algebraic positivity and mean-one identity & Engineering conformance claim &
-Follows analytically for exact one on a finite nonempty population; eventual
-artifact tests must confirm exact realization.\\
-Coefficient sampling uncertainty & Known by definition & None is introduced
-by the fixed constant; this is not a zero estimate of physical uncertainty.\\
-Family- and support-selection uncertainty & Known but not supplied /
-unresolved & Not encoded in the coefficient. Unknown is not zero.\\
-Signal, calibration, response, covariance, and cross-observation uncertainty &
-Producer facts, possibly unavailable & Preserved without reinterpretation;
-absence does not imply zero or independence.\\
-Implementation conformity & Implementation unassessed & No implementation was
-inspected and no conformance claim is made.\\
-Representation and response fidelity & Validation not performed & Exact
-encoding, broadcast, lineage, and whole-chain behavior require later evidence.\\
-Observational performance and comparative suitability & Validation not
-performed & No sensitivity, variance, bias, or optimality claim is made.\\
-Production readiness & Validation not performed & No route is authorized by
-this draft.\\
-NOI profile successors & Deferred/unavailable & All four retain their admitted
-proposed, unapproved, Registry-unbound, and unevaluable status.\\
-\bottomrule
-\end{longtable}
+\section{Evidence status and compact owner-decision register}
 
-\section{Decision boundary}
+Algebraic equality follows from the exact definition. Implementation
+conformity, representation and response fidelity, observational performance,
+and production readiness are separate evidence layers and have not been
+established.
 
-The draft has no blocked mathematical definition. Every consequential new
-choice remains an open author proposal in the owner-decision ledger. Until
-those choices are adopted and exact successor source/Registry bindings exist,
-the family, profile, permissions, and boundary successors remain unavailable
-for evaluation or use. Approval of this family would not close deferred
-families, mode defaults, or independently governed route prerequisites.
-
-\section{Compact owner-decision register}
-
-This common-source register is explicitly checked against the companion
-\texttt{OWNER\_DECISION\_LEDGER.md}; the ledger carries the full owner,
-evidence, resolution-authority, date, and affected-document fields.
+This register is checked against the companion owner ledger.
 
 \subsection*{Recovered and deferred states}
 
@@ -173,11 +188,12 @@ evidence, resolution-authority, date, and affected-document fields.
 \toprule
 IDs & State & Disposition\\
 \midrule
-UFC-REC-001--007 & decided & Admitted PTC, registry, MAP, JINC, NOI, VAL, and
-PTC-disabled-route facts are recovered constraints; no claim is blocked.\\
+UFC-REC-001--008 & decided & Admitted PTC, Registry, MAP, JINC, NOI, VAL,
+PTC-disabled, atomic-output, and ordinary-rank facts are recovered
+constraints; no claim is blocked.\\
 UFC-DEF-001--005 & deferred & Other coefficient families, defaults, NOI
-profile successors, performance criteria, and a general cross-generation alias
-remain outside this draft.\\
+profile successors, performance criteria, and a general cross-generation
+alias remain outside this draft.\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -190,21 +206,24 @@ ID & State & Exact blocked claim or output\\
 \midrule
 \endhead
 UFC-OD-001 & open & Registered exact-unity numerical family and payload.\\
-UFC-OD-002 & open & Exact logical index and scalar-broadcast declaration.\\
-UFC-OD-003 & open & Approved support and normalization population.\\
-UFC-OD-004 & open & Approved mean-one operator and empty/singleton behavior.\\
-UFC-OD-005 & open & Approved no-parameter selection rule.\\
-UFC-OD-006 & open & Complete evaluable coefficient-handoff profile identity,
-use, object, and applicability.\\
-UFC-OD-007 & open & Approved UQ-01--UQ-07 truth rules, disjoint structural and
-payload-fidelity cases, no-exception rule, advisory roles, and failure scopes.\\
+UFC-OD-002 & open & Exact logical index and compact occurrence-association
+forms.\\
+UFC-OD-003 & open & Publication-unit support and incremental handoff rule.\\
+UFC-OD-004 & open & Analytic mean-one operator and empty/singleton behavior.\\
+UFC-OD-005 & open & No-parameter and no-default selection rule.\\
+UFC-OD-006 & open & Named-profile identity, independent request, object, and
+applicability.\\
+UFC-OD-007 & open & Fidelity-fact composition, restrictions,
+nonexceptionability, permission distinctions, and failure scopes.\\
 UFC-OD-008 & open & SCI-MAP permission and MAP use of this family.\\
 UFC-OD-009 & open & SCI-JINC permission and JINC use of this family.\\
-UFC-OD-010 & open & Immutable MAP and JINC successor-boundary bindings.\\
-UFC-OD-011 & open & Exact actual-owner field for active Registry/profile
-binding; the mathematical draft is not blocked.\\
-UFC-OD-012 & open & Approved generation/replay and cross-generation rules.\\
-UFC-OD-013 & open & Approved coefficient uncertainty meaning.\\
+UFC-OD-010 & open & Immutable MAP and JINC r0.3 successor-boundary
+bindings.\\
+UFC-OD-011 & open & Exact actual-owner field; the mathematical draft is not
+blocked.\\
+UFC-OD-012 & open & Realization, replay, finalization, family-version, and
+cross-generation rules.\\
+UFC-OD-013 & open & Coefficient uncertainty meaning.\\
 UFC-OD-014 & open & Active coefficient Registry identity and source binding.\\
 \bottomrule
 \end{longtable}
@@ -222,3 +241,5 @@ Registry/profile binding only.\\
 \bottomrule
 \end{tabular}
 \end{center}
+
+\fi

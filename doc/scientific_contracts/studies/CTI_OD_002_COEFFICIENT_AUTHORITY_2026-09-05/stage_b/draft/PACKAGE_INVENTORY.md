@@ -1,65 +1,45 @@
 # Final package inventory
 
-Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.2**
+Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.3**  
+Revision date: **2026-09-06**
 
-## Final author artifacts
+The package contains **48 final/source files** outside build: the 43 r0.2 final/source files copied byte-for-byte before revision, four byte-exact owner-review supplement files, and the new OWNER_REVIEW_1_RESPONSE.md. DRAFT_ARTIFACT_MANIFEST.sha256 contains 47 artifact entries and excludes itself and all build scratch.
 
-- `README.md` — package opening, status, artifact map, and decision headline.
-- `scientific_rationale.pdf` — 13-page scientist-facing view.
-- `engineering_conformance.pdf` — 13-page engineering-facing view.
-- `src/scientific_rationale.tex` and
-  `src/engineering_conformance.tex` — view entrypoints with exact PDF
-  metadata and forced version/revision headers.
-- `src/common_core.tex` — thin composition wrapper.
-- `src/common/notation.tex`, `definitions.tex`, `equations.tex`,
-  `assumptions.tex`, `requirements.tex`, and `edge_cases.tex` — the six
-  canonical, singly sourced scientific modules.
-- `CROSSWALK.md` — three-column mapping for all 25 requirements.
-- `PREDICTION_CROSSWALK.md` — all 16 predictions, discriminating
-  observations, and evidence layers.
-- `OWNER_DECISION_LEDGER.md` — seven recovered decisions, fourteen open
-  author proposals, one precise open question, and five deferred items.
-- `PROPOSED_REGISTRY_AND_BOUNDARY_RECORDS.md` — proposed exact family,
-  profile, MAP, JINC, and NOI bindings.
-- `BLOCKED_DEFINITIONS_AND_QUESTIONS.md` — no blocked mathematical
-  definition; one exact actual-owner question for Registry activation.
-- `INPUT_INTEGRITY_AND_READ_RECORD.md` — input digest, inventory, content
-  hashes, read order, and firewall record.
-- `DECISION_REGISTER_CHECK.md` — explicit PDF-register/ledger and
-  crosswalk-count check.
-- `LINK_AND_COPY_CHECK.md` — local Markdown-link and byte-exact source-copy
-  check.
-- `RENDER_RECEIPT.md` — cached build attempts, final build status, metadata,
-  visual QA, page counts, and PDF hashes.
-- `DRAFT_ARTIFACT_MANIFEST.sha256` — exact hashes of the returned final and
-  preserved-source artifacts; it excludes itself and scratch.
-- `PACKAGE_INVENTORY.md` — this inventory.
+## Authored final artifacts
 
-## Byte-exact local source copies
+- README.md — required program/recovery opening, revision status, contract synopsis, artifact map, and open owner action.
+- scientific_rationale.pdf — 5-page explanatory scientist-facing view.
+- engineering_conformance.pdf — 14-page complete engineering specification.
+- src/scientific_rationale.tex and src/engineering_conformance.tex — view entrypoints with exact metadata, revision date, and all-page headers.
+- src/common_core.tex — thin composition wrapper.
+- src/common/notation.tex, definitions.tex, equations.tex, assumptions.tex, requirements.tex, and edge_cases.tex — the six canonical singly sourced modules.
+- OWNER_REVIEW_1_RESPONSE.md — point-by-point OR1-01--05, OR1-S1--S3, and OR1-A1 dispositions.
+- CROSSWALK.md — exact three-column mapping for all 25 requirements.
+- PREDICTION_CROSSWALK.md — all 16 predictions and 10 mixed cases with discriminating evidence.
+- OWNER_DECISION_LEDGER.md — eight recovered constraints, owner-review evidence, fourteen open proposals, one precise open question, and five deferred items.
+- PROPOSED_REGISTRY_AND_BOUNDARY_RECORDS.md — proposed exact family, profile, MAP, JINC, and NOI records.
+- BLOCKED_DEFINITIONS_AND_QUESTIONS.md — no blocked mathematical definition and one exact actual-owner question.
+- INPUT_INTEGRITY_AND_READ_RECORD.md — both input preflights, content hashes/read order, firewall, and revision provenance.
+- DECISION_REGISTER_CHECK.md — PDF-register/ledger, owner-response, requirement, prediction, and mixed-case traceability checks.
+- LINK_AND_COPY_CHECK.md — local-link, immutable-copy, and predecessor-manifest checks.
+- RENDER_RECEIPT.md — marker, cached build, metadata, hash, header, and visual-QA receipt.
+- PACKAGE_INVENTORY.md — this inventory.
+- DRAFT_ARTIFACT_MANIFEST.sha256 — exact SHA-256 binding for every returned artifact except itself; it grants no scientific authority.
 
-The following are preserved inputs rather than new author content:
+## Immutable local input copies
 
-- `PRIOR_WORK.md`, `SCOPE_BRIEF.md`, and the seven files under
-  `references/` make all links in the required package opening resolve.
-- `inputs/` is a labeled byte-exact copy of all eleven released packet files,
-  including `inputs/MANIFEST.json` and `inputs/README.md`.
+- PRIOR_WORK.md, SCOPE_BRIEF.md, and the seven files under references are byte-exact local copies from the original released packet, retained so approved links resolve.
+- inputs contains the complete byte-exact eleven-file original packet, including its MANIFEST.json and README.md.
+- owner-review-1-input contains the complete byte-exact four-file owner supplement, including its MANIFEST.json, cover, verbatim assessment, and admitted frozen-clause extract.
 
-The root source copies and their counterparts under `inputs/` have no byte
-differences. The packet manifest and all ten declared content hashes remain
-unchanged.
+## Scratch and final render evidence
 
-## Scratch and render logs
+build is non-authoritative scratch and is excluded from the artifact manifest. It contains:
 
-`build/` is non-authoritative scratch:
+- final byte-identical build copies of both PDFs and their final Tectonic logs;
+- 19 page rasters at 110 dpi under build/qa-r0.3 plus four contact sheets;
+- check_pdf_text.py, check_links_and_copies.py, check_package.py, and their PASS output where applicable;
+- make_contact_sheets.py used only for local visual inspection.
+- build/superseded-qa-checkpoint-before-profile-binding-restoration contains the clearly labeled intermediate r0.3 PDF pair retained at the manager's request; it is excluded from final artifact identities and the manifest.
 
-- `build/scientific_rationale.pdf` and
-  `build/engineering_conformance.pdf` are byte-identical build copies of the
-  root PDFs.
-- `build/scientific_rationale.log` and
-  `build/engineering_conformance.log` are the final Tectonic logs.
-- `build/check_package.py` and `build/package_check.txt` are the r0.2 package,
-  copy, crosswalk, ledger, metadata, and header checker and its PASS output.
-- `build/qa-r0.2/` contains both complete 13-page sets of 110-dpi page rasters
-  used for visual inspection.
-
-Scratch files are intentionally omitted from the artifact manifest.
+No old r0.2 build directory, PDF, log identity, or raster was copied into this package.

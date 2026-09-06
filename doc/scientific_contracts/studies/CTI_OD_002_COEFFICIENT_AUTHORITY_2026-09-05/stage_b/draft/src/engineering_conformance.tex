@@ -18,12 +18,14 @@
 \makeatletter
 \def\ps@draftheadings{%
   \def\@oddhead{\normalfont\small Engineering Conformance Specification
-    v0.1-draft.1/r0.2\hfil\thepage}%
+    v0.1-draft.1/r0.3\hfil\thepage}%
   \let\@evenhead\@oddhead
   \def\@oddfoot{}\let\@evenfoot\@oddfoot}
 \let\ps@plain\ps@draftheadings
 \makeatother
 \sloppy
+\newif\ifengineeringview
+\engineeringviewtrue
 \begin{document}
 \makeatletter
 \let\ps@plain\ps@draftheadings
@@ -36,41 +38,25 @@
 Engineering Conformance Specification\\
 \large \ContractIdentity\ \ContractVersion\ /\ \DocumentRevision}
 \author{Implementation-blind scientific author}
-\date{2026-09-05}
+\date{2026-09-06}
 \newcommand{\ContractIdentity}{SCI-PTC-COEFFICIENT-UNIFORM}
 \newcommand{\ContractVersion}{v0.1-draft.1}
-\newcommand{\DocumentRevision}{r0.2}
+\newcommand{\DocumentRevision}{r0.3}
 \hypersetup{
-  pdftitle={PTC Uniform/Constant Analysis Coefficient -- Engineering Conformance Specification -- SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.2},
-  pdfsubject={Implementation-blind first engineering conformance draft for owner review; v0.1-draft.1 / r0.2},
+  pdftitle={PTC Uniform/Constant Analysis Coefficient -- Engineering Conformance Specification -- SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.3},
+  pdfsubject={Engineering conformance proposal revised after owner review round 1; v0.1-draft.1 / r0.3},
   pdfauthor={Implementation-blind scientific author}
 }
 \pagestyle{draftheadings}
 \maketitle
 \thispagestyle{draftheadings}
 \begin{abstract}
-\textbf{Draft for scientific-owner review.} This view renders the same
-canonical definitions, equations, assumptions, requirements, and edge cases
-as the scientist-facing contract. Requirement verbs describe proposed
-eventual conformance obligations and do not authorize implementation or claim
-that any test has passed.
+\textbf{Revised draft for scientific-owner review.} This view is the complete
+proposed conformance specification: structural rules, independent fidelity
+facts, mixed-evidence cases, failure scopes, compact representation,
+publication lifecycle, requirements, predictions, and evidence mapping.
+Requirement verbs describe eventual obligations and do not authorize
+implementation or claim that any test has passed.
 \end{abstract}
 \input{common_core.tex}
-
-\appendix
-\section{Engineering interpretation of the shared core}
-
-An eventual implementation assessment should treat UFC-REQ-001--010 as the
-family payload and lifecycle surface, UFC-REQ-011--018 as the PTC-owned
-profile/evaluation surface, UFC-REQ-019--024 as consumer, NOI, fallback, and
-change-control boundaries, and UFC-REQ-025 as the evidence ceiling. This
-grouping changes no requirement meaning. The authoritative mapping for review
-is the companion \texttt{CROSSWALK.md}; exact draft identity and provenance
-bindings are in \texttt{PROPOSED\_REGISTRY\_AND\_BOUNDARY\_RECORDS.md} and the
-artifact manifest.
-
-Conformance evidence must report exact source, family, profile, product,
-coefficient-generation, observation, occurrence-support, consumer, and
-evaluation identities. A numerical array of ones by itself establishes none
-of those bindings.
 \end{document}

@@ -1,98 +1,173 @@
-\section{Numerical construction}
+\section{Mathematical definition, support, and publication}
 
-\subsection{Occurrence index and broadcast}
+\subsection{Distinct identities and indices}
 
-Let $p$ identify one exact realized PTC transformed-product/application
-generation for one observation $o$. Let $g$ identify a new immutable
-coefficient generation bound to $p$, its immutable CAL parent, and the
-requested, effective-policy, observation-resolved, and realized family
-selection states. The logical coefficient index is the exact detector-time
-occurrence $i$. A compact representation may store one scalar only if it binds
-the lossless relation
+Let \(a\) identify one application generation. Let \(q\) identify one exact,
+immutable, completed PTC transformed-product publication generation bound to
+\(a\), its CAL parent, and one observation \(o\). Let \(g\) identify one
+coefficient realization bound to \(q\). The logical coefficient index \(i\)
+is an exact detector-time occurrence with stable identity
+\(\boldsymbol\iota_i\). The symbol \(p\) is reserved for a consumer-owned
+spatial/map index; it never denotes a PTC product.
+
+Each \(q\) declares exactly one publication-unit tag and bounds: a complete
+segment, a complete scan, or a bounded chunk wholly within one named
+segment/scan and observation. A unit never crosses observation, application,
+CAL-parent, segment/scan, or PTC-product-generation identity. The tagged unit
+size is explicit in \(q\); this contract supplies no hidden size default.
+
+\subsection{Exact support}
+
+The coefficient support and normalization population are
+
 \begin{equation}
- \mathcal B_g(1)=\{(\boldsymbol\iota_i,1):i\in\mathcal D_{g,o}\}.
- \label{eq:broadcast}
-\end{equation}
-Here $\mathcal B_g$ is the authoritative target binding between the identified
-scalar publication and the exact, unique population; it is established before
-payload fidelity is evaluated. A stored payload-membership manifest is
-separate evidence about whether the publication realizes that target. Time,
-row, column, shape, cardinality, detector label, coordinate equality, or
-container position cannot establish either the target binding or its stored
-membership. A missing or conflicting target binding, or a duplicate or
-ambiguous identity in the target population, prevents establishment of the
-question. After the target is established, a complete authoritative stored
-manifest that omits, adds, or repeats a member is a payload-fidelity failure.
-
-\subsection{Support and population}
-
-The proposed coefficient support and normalization population are identical:
-\begin{equation}
- \mathcal D_{g,o}=\mathcal S^{\mathrm{coef}}_{g,o}
- =\mathcal S^{\mathrm{PTC,out}}_{p,o}.
+ \mathcal D_{g,q}=\mathcal S^{\mathrm{coef}}_{g,q}
+ =\mathcal S^{\mathrm{PTC,out}}_q .
  \label{eq:domain}
 \end{equation}
-The family covers every and only exact occurrence in the PTC output support of
-its bound generation for one observation. The population spans all detectors,
-times, groups, segments, arrays, and networks represented in that support;
-none defines a separate normalization population. Observations and product
-generations are never pooled.
 
-Equation~\ref{eq:domain} does not make sample validity a support predicate. An
-occurrence may carry coefficient one while its signal, coordinate, retention,
-or consumer admission is independently unusable. An occurrence outside the
-support has no coefficient under this family; absence is not zero.
+They contain every and only exact occurrence in the completed output support
+of \(q\). The population is finite, nonempty, and identity-unique. It may span
+all detectors, groups, arrays, networks, and times present in that publication
+unit; none silently defines a separate population. A singleton is valid.
+An empty population has no family instance. Observations and publication
+units are never pooled.
 
-\subsection{Fixed constant and normalization}
+A required \(q\) is labeled complete only after all required components and
+links for that unit are durable, as required by frozen SCI-PTC v0.1/r0.5
+requirement 072. This preserves the inherited atomic-output rule while
+allowing each completed segment, scan, or bounded chunk to be published and
+handed off independently. No coefficient handoff waits for unrelated
+publication units or for the whole observation to finish.
 
-For finite nonempty $\mathcal D_{g,o}$, define
+\subsection{Uniform construction}
+
+For finite nonempty \(\mathcal D_{g,q}\),
+
 \begin{align}
  c_\star &\equiv 1,\qquad [c_\star]=1,\label{eq:constant}\\
  \widetilde\omega_i&=c_\star,\qquad
- i\in\mathcal D_{g,o},\label{eq:raw}\\
- m_g&=\frac{1}{|\mathcal D_{g,o}|}
-       \sum_{j\in\mathcal D_{g,o}}\widetilde\omega_j,\label{eq:mean}\\
+ i\in\mathcal D_{g,q},\label{eq:raw}\\
+ m_g&=\frac{1}{|\mathcal D_{g,q}|}
+       \sum_{j\in\mathcal D_{g,q}}\widetilde\omega_j=1,\label{eq:mean}\\
  \omega_i&=\mathcal N_{\rm mean1}
-   (\widetilde\omega_i;\mathcal D_{g,o})
+   (\widetilde\omega_i;\mathcal D_{g,q})
    \equiv\frac{\widetilde\omega_i}{m_g}=1.
  \label{eq:normalized}
 \end{align}
-The unit $1$ is dimensionless. Cardinality and summation operate on exact
-logical identities; a duplicate identity is a structural conflict rather
-than another population member.
 
-The family has no configurable numerical parameter. A generic positive raw
-constant $c$ would give
-\[
- \frac{c}{|\mathcal D|^{-1}\sum_{j\in\mathcal D}c}=1,
-\]
-so its scale would be non-identifiable. The fixed value $c_\star=1$ is
-therefore part of the family definition. A request carrying any override,
-including another positive constant, is not an instance of this family and
-cannot be silently ignored, clipped, or normalized into acceptance.
+The mean is a mathematical identity, not an instruction to execute a
+population-wide floating-point reduction of stored ones. A conforming
+realization may return exact unity analytically after the finite, nonempty
+support fact is established. Changing the normalization rule changes the
+family definition even though this family's result is one.
 
-The explicit normalization declares a stable comparison convention. Changing
-the operator or population changes scientific identity even though this
-constant would remain numerically one. A singleton population is sufficient.
-An empty population has no mean and creates no generation or payload; it is
-not repaired by an empty pass, zero, or a scalar with inferred empty broadcast.
+The family accepts no numerical parameter. A request carrying another
+constant, including another positive constant whose scale would cancel, is
+not an instance of this family and cannot be clipped, ignored, or normalized
+into acceptance.
+
+\subsection{Compact exact association}
+
+Let \(R_q\) be the immutable authoritative target-support reference in
+Equation~\ref{eq:domain}. Its identity, source, generation, scope, and digest
+are structurally bound to \(q\), and
+
+\begin{equation}
+ \operatorname{resolve}(R_q)
+ =\{\boldsymbol\iota_i:i\in\mathcal D_{g,q}\}.
+ \label{eq:supportref}
+\end{equation}
+
+A compact scalar publication carries a distinct stored support reference
+\(\widehat R_g\). Its membership fact is true only when the independently
+checked \(\widehat R_g\) exactly identifies \(R_q\), including matching source,
+generation, scope, and digest. Equation~\ref{eq:supportref} defines the target
+association; \(\widehat R_g\) is evidence that the payload realizes it without
+a copied member list. If a representation instead enumerates members, its
+complete stored manifest \(M_g\) must satisfy
+
+\begin{equation}
+ M_g=\{(\boldsymbol\iota_i,1):i\in\mathcal D_{g,q}\}
+ \quad\text{with each identity exactly once}.
+ \label{eq:enumerated}
+\end{equation}
+
+A missing or conflicting authoritative \(R_q\) prevents structural
+establishment. After \(R_q\) is valid, a wrong or mismatched stored
+\(\widehat R_g\), or an omission, addition, or repetition in \(M_g\), is a
+payload-membership false. An unavailable stored reference or enumeration
+check is unknown; contradictory claims about that same stored fact are
+conflict. Row order, shape, cardinality, detector label, coordinate equality,
+or container position cannot replace exact identity.
+
+Family identity, scalar value, unit, integrity, \(q\)-to-\(g\) compatibility,
+and named permission are immutable shared facts. They may be evaluated once
+for their declared scope. Each occurrence-level handoff remains logically
+associated with those shared evaluations through exact references plus its
+own \(i\in\operatorname{resolve}(R_q)\) and request identity. Neither the
+coefficient array nor a separate full profile record must be materialized for
+every occurrence.
 
 \subsection{Consumer consequences}
 
-At the proposed JINC boundary,
+At the JINC boundary, \(p\) is JINC's spatial index and
+
 \begin{equation}
  w_{ip}=\kappa_{ip}\omega_i=\kappa_{ip}.
  \label{eq:jinc}
 \end{equation}
-The equality concerns only the PTC factor and transfers no JINC ownership.
+
+This equality transfers no ownership of \(\kappa_{ip}\), its sign, or JINC
+support.
 
 For the already selected NOI design on an exact MAP-admitted contribution
-population,
+population, \(p\) is the MAP spatial index, \(C_p\) is MAP's occurrence set for
+that spatial index, and
+
 \begin{equation}
  a_{pi}=G_{pi}\gamma_i=G_{pi},\qquad
  B_d=\sum_p\sum_{\substack{i\in C_p\\
              \operatorname{detector}(i)=d}}a_{pi}.
  \label{eq:noi}
 \end{equation}
-This does not define $G_{pi}$, change MAP arithmetic, or change the NOI design
-law.
+
+This does not define \(G_{pi}\), change MAP arithmetic, or alter the NOI
+design law.
+
+\ifengineeringview
+
+\subsection{Representation and publication conformance}
+
+\begin{longtable}{p{0.25\linewidth}p{0.31\linewidth}p{0.35\linewidth}}
+\toprule
+Form or stage & Required evidence & Forbidden inference\\
+\midrule
+\endhead
+Compact support reference & Structurally valid target \(R_q\), stored
+\(\widehat R_g\), and an independent exact
+identity/source/generation/scope/digest match between them. & Cardinality,
+order, shape, or a numerical one cannot substitute; a wrong stored reference
+is payload false, not a structural redefinition of \(R_q\).\\
+Enumerated representation & Complete \(M_g\), every and only target identity,
+each exactly once, plus scalar/unit/integrity facts. & Deduplication,
+truncation, inferred members, or acceptance from matching length is
+forbidden.\\
+Shared fact evaluation & Immutable fact result, exact declared scope, source
+and input identities, retained T/F/U/C causes, and a stable reference from
+each logical handoff. & Sharing cannot widen scope or erase an
+occurrence-specific membership/request result.\\
+Publication completion & All required components and links for that \(q\) are
+durable before complete status; required failure propagates. & A partial
+chunk cannot be labeled complete, and incomplete status cannot be repaired by
+unity.\\
+Incremental handoff & A completed \(q\), its exact support and payload, and a
+complete profile decision for the requested use. & Completion of other
+segments, scans, chunks, or the whole observation is not a prerequisite.\\
+Normalization evaluation & Finite nonempty support plus the exact registered
+constant and operator establishes \(m_g=1\) analytically. & A literal
+population reduction or per-member stored coefficient is not required.\\
+\bottomrule
+\end{longtable}
+
+\fi

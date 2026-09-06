@@ -1,92 +1,178 @@
-\section{Predictions and discriminating edge cases}
+\ifengineeringview
 
-These predictions follow from the proposal; they do not claim that a system
-has been tested.
+\section{Worked decision cases}
+
+These are proposed discriminating cases, not observations of an
+implementation.
+
+\begin{longtable}{p{0.14\linewidth}p{0.43\linewidth}p{0.34\linewidth}}
+\toprule
+ID & Established evidence & Required result\\
+\midrule
+\endhead
+UFC-MIX-001 & Target established; \(Q_{\rm scalar}=\mathbf F\) from exact
+stored value two; \(Q_{\rm member}=\mathbf U\); unit and integrity true. &
+UQ-05 is \(\mathbf F\). Payload is producer-invalid and all of its handoffs
+are ineligible; membership unknown is retained.\\
+UFC-MIX-002 & Target established; complete enumeration omits a target member,
+so \(Q_{\rm member}=\mathbf F\); integrity check is unavailable; scalar and
+unit true. & UQ-05 is \(\mathbf F\); integrity unknown is retained and does
+not hide the membership violation.\\
+UFC-MIX-003 & Two authoritative scalar claims for the same payload contradict;
+all other fidelity facts are true. & \(Q_{\rm scalar}=\mathbf C\), UQ-05 is
+\(\mathbf C\), and eligibility is decision unavailable. Neither scalar claim
+is selected.\\
+UFC-MIX-004 & The same scalar conflict exists, and the independently assessed
+enumeration repeats one target member. & \(Q_{\rm scalar}=\mathbf C\),
+\(Q_{\rm member}=\mathbf F\), and UQ-05 is \(\mathbf F\). Eligibility is
+ineligible while the scalar conflict remains recorded.\\
+UFC-MIX-005 & Payload fidelity is true; a complete permission record does not
+authorize MAP; JINC permission is assessed separately. & MAP UQ-06 is
+\(\mathbf F\) and MAP use is ineligible. Payload remains faithful; no JINC
+result is inferred.\\
+UFC-MIX-006 & Payload fidelity is true; MAP permission evidence is missing or
+unresolved, with no other false. & MAP UQ-06 is \(\mathbf U\); MAP decision is
+unavailable, not denied. Payload and JINC remain unchanged.\\
+UFC-MIX-007 & One named-profile request has a malformed occurrence reference
+or pairs the wrong otherwise-authoritative \(q,g\); the shared objects are
+valid. & Only that request is unavailable or unrecordable according to its
+preserved identity state. Other well-formed requests remain assessable.\\
+UFC-MIX-008 & The authoritative shared support \(R_q\) has ambiguous
+occurrence identity, or the shared \(q\)-to-\(g\) object is corrupt/misbound. &
+Structural establishment fails for every request referencing that shared
+object; UQ-05 is not evaluated.\\
+UFC-MIX-009 & Compact form stores exact one and \(\widehat R_g\), which an
+independent check matches exactly to valid target \(R_q\), including source,
+generation, scope, and digest. & \(Q_{\rm member}=\mathbf T\) without a
+duplicated member manifest; logical occurrence handoffs may reference the
+shared result. A wrong stored \(\widehat R_g\) would be \(\mathbf F\), not a
+structural change to \(R_q\).\\
+UFC-MIX-010 & Enumerated form has the right length but repeats one identity and
+omits another. & \(Q_{\rm member}=\mathbf F\); length cannot repair identity
+mismatch, and the shared payload is producer-invalid.\\
+\bottomrule
+\end{longtable}
+
+\section{Predictions and discriminating edge cases}
 
 \begin{longtable}{p{0.14\linewidth}p{0.77\linewidth}}
 \toprule
 ID & Prediction or edge case\\
 \midrule
 \endhead
-UFC-PRED-001 & For every finite nonempty exact population and every member,
-$\widetilde\omega_i=\omega_i=1$ exactly; every pairwise coefficient ratio and
-the arithmetic mean are one.\\
-UFC-PRED-002 & A population with exactly one occurrence is valid and produces
-one exact coefficient.\\
-UFC-PRED-003 & An empty population produces no mean, scalar broadcast, or
-realized family payload.\\
-UFC-PRED-004 & Splitting, merging, relabeling, adding, or removing groups,
-segments, arrays, networks, detectors, or times leaves member values at one
-when support is otherwise valid, but any support change creates a new
-generation identity.\\
-UFC-PRED-005 & Repeated realizations from the same exact inputs are numerically
-identical, yet substituting one generation for another without an explicit
-compatibility record is forbidden.\\
-UFC-PRED-006 & A request containing $c\ne1$, even when $c>0$ and mean
-normalization would cancel it, does not select this family and cannot be
-accepted by silently dropping the parameter.\\
-UFC-PRED-007 & After structural establishment, a complete authoritative check
-that identifies a decoded non-one or wrong unit, corruption even when
-unreadable, known unrepresentability, or missing/extra/repeated stored member
-makes UQ-05 false, the payload producer-invalid, and the profile ineligible.
-The negative profile evaluation is successfully realized rather than a failed
-profile artifact. Exact zero, negative finite, or non-finite content also
-fails the consumer's independent positive classification.\\
-UFC-PRED-008 & An absent payload or fidelity input, or unreadability without an
-authoritative fidelity cause or verdict, makes UQ-05 unknown and the profile
-decision unavailable absent another false. Unity cannot be substituted.\\
-UFC-PRED-009 & Missing/conflicting target broadcast binding or a
-duplicate/ambiguous identity in the authoritative population prevents
-structural establishment and yields decision unavailable. A stored scalar one
-cannot repair it.\\
+UFC-PRED-001 & For every finite nonempty exact support and every member,
+\(\widetilde\omega_i=\omega_i=1\); all pairwise coefficient ratios and the
+arithmetic mean are exactly one.\\
+UFC-PRED-002 & A publication support containing exactly one occurrence is
+valid and produces one exact coefficient.\\
+UFC-PRED-003 & Empty support produces no mean, coefficient realization,
+payload, or eligibility claim.\\
+UFC-PRED-004 & Completed segment, scan, or bounded-chunk publication units can
+be handed off independently without an observation-wide barrier. Different
+actual units create new \(q,g\) realizations under the same family rule.\\
+UFC-PRED-005 & Repetition from the same exact inputs is numerically identical,
+yet each \(q,g\) and evaluation retains immutable identity; unbound
+cross-generation substitution is forbidden.\\
+UFC-PRED-006 & When the named profile is explicitly requested, a selected
+constant override or different family reaches UQ-01 and is ineligible rather
+than silently ignored.\\
+UFC-PRED-007 & A false scalar, unit, integrity, or membership fact makes
+UQ-05 false even with unrelated unknown/conflict. The payload is
+producer-invalid, while the completed negative profile artifact is realized
+and ineligible.\\
+UFC-PRED-008 & With no fidelity false, absent evidence or unexplained
+unreadability leaves UQ-05 unknown; same-fact contradiction remains conflict.
+The decision is unavailable without unity fallback.\\
+UFC-PRED-009 & A stored compact \(\widehat R_g\) exactly matched to target
+\(R_q\) establishes membership without a duplicated list. A wrong stored
+reference is payload false; missing/conflicting target or corrupt shared
+binding has shared structural scope; a wrong pair in one request remains
+request-local.\\
 UFC-PRED-010 & An invalid signal occurrence can still have a faithful
-coefficient one. It contributes only if all independent producer and consumer
+coefficient one. It contributes only if independent producer and consumer
 gates admit the signal and occurrence.\\
-UFC-PRED-011 & MAP consumption gives $\gamma_i=1$ and removes only relative
-variation attributable to the PTC coefficient; it does not make total MAP
-contributions equal.\\
-UFC-PRED-012 & JINC consumption gives $w_{ip}=\kappa_{ip}$ for the PTC factor,
-including the sign supplied by JINC; it does not make JINC weights positive or
-uniform.\\
-UFC-PRED-013 & MAP permission alone leaves the JINC route unavailable, and
-JINC permission alone leaves the MAP route unavailable.\\
-UFC-PRED-014 & With no selected family and no authorized mode default, neither
-consumer may infer this family from a stored one, a label, or another route.\\
+UFC-PRED-011 & MAP consumption gives \(\gamma_i=1\) and removes only variation
+attributable to the PTC coefficient; other MAP factors and gates remain.\\
+UFC-PRED-012 & JINC consumption gives \(w_{ip}=\kappa_{ip}\), including JINC's
+sign; final JINC weights need not be positive or uniform.\\
+UFC-PRED-013 & An authoritative MAP denial affects only MAP; missing or
+conflicting MAP permission is decision unavailable absent another false.
+Neither state determines JINC or payload fidelity.\\
+UFC-PRED-014 & With no named-profile request there is no evaluation. With no
+selected family and no authorized default, neither consumer may infer this
+family from a stored one, a label, or another route.\\
 UFC-PRED-015 & On an otherwise valid exact MAP host route,
-$a_{pi}=G_{pi}$; missing lossless rational identity for that exact $a_{pi}$
+\(a_{pi}=G_{pi}\); missing lossless rational identity for that exact parent
 still leaves NOI design resolution unavailable.\\
-UFC-PRED-016 & PTC-disabled or missing positive-rank PTC realization produces
-no instance of this coefficient and creates no MAP or JINC route.\\
+UFC-PRED-016 & On the admitted first ordinary route, missing valid positive
+integer rank, noninteger/zero rank, or unrealizable positive rank prevents a
+completed \(q\), coefficient, and downstream route and does not become
+PTC-disabled or another route. PTC-disabled separately produces no PTC
+coefficient. No identity or zero-rank route family is inferred.\\
 \bottomrule
 \end{longtable}
 
-\section{Evidence required after owner adoption}
+\section{Evidence mapping after owner adoption}
 
-Eventual conformance evidence must bind the exact approved source and Registry
-records. Algebraic tests must cover nonempty populations across detector,
-time, group, segment, array, and network labels; singleton support; exact
-mean-one results; and exact scalar broadcast membership. Negative tests must
-cover empty, duplicate, ambiguous, or changed authoritative support; parameter
-overrides; missing/conflicting target broadcast binding; wrong
-unit/operator/family; absent payload or fidelity input; unexplained
-unreadability; authoritatively established corruption or unrepresentability;
-missing/extra/repeated stored membership; non-one content; wrong product or
-generation; absent consumer permission; and cross-generation borrowing. Replay
-evidence must show exact
-numerical reproducibility while retaining distinct immutable generations.
+\begin{longtable}{p{0.20\linewidth}p{0.31\linewidth}p{0.40\linewidth}}
+\toprule
+Requirement group & Required evidence & Discriminating coverage\\
+\midrule
+\endhead
+UFC-REQ-001--010 & Source/Registry identity, algebraic, publication,
+representation, and lifecycle conformance & Exact one and singleton/empty
+support; analytic normalization; compact and enumerated forms; independent
+unit completion; shared fact references; immutable replay.\\
+UFC-REQ-011--018 & Profile, truth-algebra, request, scope, and four-axis
+conformance & UFC-MIX-001--010; named request with wrong family; permission
+denial versus unknown/conflict; successful negative evaluation versus failed
+artifact; advisory facts neutral.\\
+UFC-REQ-019--024 & Meaning, consumer boundary, rank provenance, fallback, NOI,
+and change-control conformance & No precision/default meaning; MAP/JINC
+permission isolation; ordinary-rank failures; PTC-disabled separation; exact
+NOI parent; family version versus realization.\\
+UFC-REQ-025 & Evidence-layer reporting & Algebraic, implementation,
+representation/response, observational, and readiness claims reported
+separately with exact identities.\\
+\bottomrule
+\end{longtable}
 
-Profile evidence must exercise T/F/U/C composition, all four decision axes,
-nonexceptionability, structural versus non-gating conflict, payload ordering,
-cause preservation, and every failure scope. Boundary evidence must show MAP
-and JINC performing independent numerical classification and admission,
-permissions not crossing, and no fallback route. NOI evidence, if that
-independently governed route becomes evaluable, must bind the exact MAP value
-and canonical lossless rational parent without changing MAP arithmetic.
+Conformance evidence must bind the exact approved source, Registry record,
+application, \(q\), \(g\), support reference or enumeration, payload, request,
+consumer, and evaluation identities. It must exercise all T/F/U/C
+compositions and preserve every cause. Successful scan/segment/chunk evidence
+must show that an independently complete unit can be handed off before
+unrelated observation units without labeling partial required output complete.
 
-Scientific validation is a separate future activity. It requires
-owner-approved observational or simulation populations, comparison questions,
-metrics, uncertainty treatment, and acceptance criteria. None is invented
-here. Such evidence could establish comparative performance or suitability;
-algebraic tests cannot. Production readiness adds operational completeness and
-failure-handling evidence only after scientific and implementation conformance
-are established.
+Scientific validation remains separate and future. Comparative performance or
+suitability would require owner-approved populations, questions, metrics,
+uncertainty treatment, and criteria. No larger observational program is
+invented for the algebraic identity \(1=1\), and no implementation has been
+inspected.
+
+\else
+
+\section{Consequences that distinguish the proposal}
+
+A known non-one scalar or authoritative corruption makes the shared payload
+invalid even when another fidelity fact is unknown. An unexplained unreadable
+payload remains unknown. A faithful payload paired with a MAP denial remains
+faithful while MAP use is ineligible; missing MAP permission evidence leaves
+the MAP decision unavailable. These distinctions preserve causes instead of
+turning every failure into either corruption or absence.
+
+A compact exact support reference is scientifically sufficient when it binds
+the correct immutable support. Enumerated storage remains permitted but must
+contain every and only each target identity once. Shared facts can be reused
+through exact references, while a malformed occurrence request stays local.
+These rules preserve exact association without requiring an array of ones or
+a separately copied decision record for every sample.
+
+The proposal predicts identical coefficient values across independently
+completed segment, scan, or chunk publications, while their realization
+identities remain distinct. It also predicts that a valid coefficient does
+not rescue invalid signal data, change MAP or JINC gates, or complete a
+missing NOI parent. These are future conformance tests, not evidence about an
+implementation.
+
+\fi

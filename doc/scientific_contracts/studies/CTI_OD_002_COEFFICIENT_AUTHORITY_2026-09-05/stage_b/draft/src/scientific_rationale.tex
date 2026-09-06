@@ -18,12 +18,14 @@
 \makeatletter
 \def\ps@draftheadings{%
   \def\@oddhead{\normalfont\small Scientific Rationale and Contract
-    v0.1-draft.1/r0.2\hfil\thepage}%
+    v0.1-draft.1/r0.3\hfil\thepage}%
   \let\@evenhead\@oddhead
   \def\@oddfoot{}\let\@evenfoot\@oddfoot}
 \let\ps@plain\ps@draftheadings
 \makeatother
 \sloppy
+\newif\ifengineeringview
+\engineeringviewfalse
 \begin{document}
 \makeatletter
 \let\ps@plain\ps@draftheadings
@@ -36,26 +38,27 @@
 Scientific Rationale and Contract\\
 \large \ContractIdentity\ \ContractVersion\ /\ \DocumentRevision}
 \author{Implementation-blind scientific author}
-\date{2026-09-05}
+\date{2026-09-06}
 % Identity macros are needed in the title before the common composition.
 \newcommand{\ContractIdentity}{SCI-PTC-COEFFICIENT-UNIFORM}
 \newcommand{\ContractVersion}{v0.1-draft.1}
-\newcommand{\DocumentRevision}{r0.2}
+\newcommand{\DocumentRevision}{r0.3}
 \hypersetup{
-  pdftitle={PTC Uniform/Constant Analysis Coefficient -- Scientific Rationale and Contract -- SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.2},
-  pdfsubject={Implementation-blind first scientific draft for owner review; v0.1-draft.1 / r0.2},
+  pdftitle={PTC Uniform/Constant Analysis Coefficient -- Scientific Rationale -- SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.3},
+  pdfsubject={Scientific rationale revised after owner review round 1; v0.1-draft.1 / r0.3},
   pdfauthor={Implementation-blind scientific author}
 }
 \pagestyle{draftheadings}
 \maketitle
 \thispagestyle{draftheadings}
 \begin{abstract}
-\textbf{Draft for scientific-owner review.} This view explains a complete
-proposal for a dimensionless uniform PTC analysis/gridding coefficient. Every
-new numerical, profile, permission, and boundary choice remains unapproved.
-The document claims algebraic definition only; it claims no implementation
-conformity, validation, performance, readiness, registered family, policy, or
-default.
+\textbf{Revised draft for scientific-owner review.} This shorter view explains
+the mathematical meaning, exact support, uncertainty limits, consumer
+boundaries, and choices still awaiting approval for a dimensionless uniform
+PTC analysis/gridding coefficient. Formal decision rules, failure scopes, and
+evidence mappings are carried by the paired engineering view. No
+implementation conformity, validation, readiness, Registry activation,
+policy, or default is claimed.
 \end{abstract}
 \input{common_core.tex}
 \end{document}

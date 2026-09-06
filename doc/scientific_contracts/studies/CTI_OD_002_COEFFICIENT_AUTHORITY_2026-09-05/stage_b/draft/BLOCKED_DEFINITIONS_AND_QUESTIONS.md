@@ -1,25 +1,14 @@
 # Blocked definitions and precise owner question
 
-Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.2**
+Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.3**  
+Revision date: **2026-09-06**
 
-No admitted-source contradiction or missing scientific assumption blocks the
-first mathematical definition. The fixed constant, unit, normalization,
-support, lifecycle, QC proposition, consumer-boundary changes, and NOI limit
-are complete as author proposals.
+No conflict among the admitted sources and no missing scientific assumption currently blocks the mathematical proposal. Owner-review round 1 produced targeted corrections rather than an inherited contradiction: producer payload state is separated from consumer permission; independently assessable fidelity facts have an explicit mixed-evidence algebra; named-profile request is independent of family selection; request-local and shared-object scopes are separated; compact and enumerated representations, incremental publication, analytic normalization, route-rank provenance, family versions, and staged UQ-07 finalization are explicit.
 
-Revision r0.2 resolves the internal classification overlap between structural
-target establishment and stored-payload fidelity. No scientific definition is
-blocked by that repair, and no proposal was adopted through it.
+Those statements remain author proposals. The scientific owner has not approved the complete contract or freeze.
 
-One exact administrative/scientific-owner binding is required before an
-immutable VAL Registry record can become active:
+One exact owner binding is unresolved:
 
-> Who is the exact actual scientific owner to place in the immutable profile
-> field: Grant Wilson acting for SCI-PTC, as proposed, or another named
-> authority?
+> **UFC-Q-001:** Is the exact actual scientific owner Grant Wilson acting for SCI-PTC, as proposed, or another named authority?
 
-This is UFC-Q-001 in `OWNER_DECISION_LEDGER.md`. It blocks Registry/profile
-activation, not review of the scientific definition. The fourteen
-consequential author choices in that ledger likewise require owner adoption;
-their open status is deliberate and does not mean the first draft is
-incomplete.
+This question blocks active Registry and profile binding only. It does not block scientific assessment of the definition. The fourteen open proposals in OWNER_DECISION_LEDGER.md likewise require adoption, revision, or rejection before activation; their open status is deliberate and does not signal a missing definition.

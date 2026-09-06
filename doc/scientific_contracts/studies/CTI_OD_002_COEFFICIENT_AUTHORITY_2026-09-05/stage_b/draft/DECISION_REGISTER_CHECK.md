@@ -1,46 +1,35 @@
-# PDF decision-register and crosswalk check
+# PDF decision-register, owner-response, and crosswalk check
 
-Draft checked: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.2**  
-Check date: **2026-09-05**  
+Draft checked: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.3**  
+Check date: **2026-09-06**  
 Result: **PASS**
 
-The PDF decision register is singly sourced from
-`src/common/assumptions.tex` and therefore renders in both views. It was
-explicitly checked against `OWNER_DECISION_LEDGER.md`:
+The compact decision register is singly sourced from src/common/assumptions.tex and appears in the complete engineering PDF. It was explicitly checked against OWNER_DECISION_LEDGER.md:
 
-- UFC-OD-001 through UFC-OD-014 occur in both the full ledger and the common
-  PDF register.
-- UFC-Q-001 occurs in both and carries the same open actual-owner question and
-  blocked Registry/profile activation.
-- The common register’s UFC-REC-001--007 decided range corresponds to the
-  seven individually listed recovered decisions in the ledger.
-- The common register’s UFC-DEF-001--005 deferred range corresponds to the
-  five individually listed deferred items in the ledger.
-- All entries remain separated as decided, open, or deferred; no open proposal
-  was rendered as adopted.
-- UFC-OD-007 remains open in both records and now explicitly covers the
-  disjoint structural-target/payload-fidelity partition. The r0.2 repair is
-  recorded as an initial-draft consistency repair, not an owner decision.
+- UFC-REC-001--008 are decided in the PDF register and individually present in the ledger. UFC-REC-008 contains the exact newly admitted requirement 072 and 090/094/095 provenance without claiming authority for another route.
+- UFC-OD-001--014 occur exactly once in each register, remain open, and describe equivalent blocked outputs.
+- UFC-Q-001 occurs in each register with the same open actual-owner question and the same bounded Registry/profile activation effect.
+- UFC-DEF-001--005 remain deferred and separate from recovered and open states.
+- Owner support in principle is retained as review evidence in the full ledger; no proposal is labeled adopted or frozen.
 
-The checked source hashes were:
-
-| File | SHA-256 |
+| Checked file | SHA-256 |
 | --- | --- |
-| `OWNER_DECISION_LEDGER.md` | `3f9b405272bcdf003987b80abe148f99cbd5400fa7be84fff5daaeeef7f358ce` |
-| `src/common/assumptions.tex` | `3844877f22a6ba9388a3b21c7cf478d602206774f583d55e4c5448938e067581` |
+| OWNER_DECISION_LEDGER.md | c6707de6913860668ae853f3ca2fb6e3ed376ead9602679bc2e8cf3757740a93 |
+| src/common/assumptions.tex | 8ec6e02297b3bb9f1bc1dd7ea0cad0c9131d418ad4553120e3dbaa157eab521d |
 
-The requirement/prediction checks also passed:
+OWNER_REVIEW_1_RESPONSE.md contains the complete stable inventory OR1-01--OR1-05, OR1-S1--OR1-S3, and OR1-A1. Each disposition points to canonical source plus requirements, predictions, or cases where applicable. Its checked SHA-256 is 7042d940a7ad9876c0a7b7b0818496605a8e89dfd9e88446a976e09e01e33c04.
 
-- 25 unique canonical requirements and 25 requirement-crosswalk rows.
-- 16 unique canonical predictions and 16 prediction-crosswalk rows.
-- `CROSSWALK.md` has exactly the requested three mapping columns:
-  `Requirement | Scientist-facing source | Engineering interpretation`.
+The requirement, prediction, and mixed-case checks also passed:
 
-Their checked hashes were:
+- 25 unique canonical requirements and 25 unique requirement-crosswalk rows.
+- 16 unique canonical predictions and 16 unique prediction-crosswalk rows.
+- 10 unique canonical worked cases and 10 unique case-crosswalk rows.
+- CROSSWALK.md contains only title/status context and the exact three-column schema Requirement | Scientist-facing source | Engineering interpretation.
+- REQ-015 maps to the scientist-facing four-axis and finalization explanation; REQ-016 maps to the scientist-facing nonexceptionability explanation.
 
-| File | SHA-256 |
+| Checked file | SHA-256 |
 | --- | --- |
-| `CROSSWALK.md` | `7d2be3cb5d5e4a1fd84e47c1a4b2c93044ff1428dcf82099b59261a75adfb255` |
-| `PREDICTION_CROSSWALK.md` | `8189244a0b5da6e7c3c1a8cc6cbff9bb0ae4d27586f5be726d9146f1fc30b83d` |
-| `src/common/requirements.tex` | `9355b660002215ba7791677d0c1b1877cea033feb7a9ac439f251e073f1ef932` |
-| `src/common/edge_cases.tex` | `fb39a76ac0e7fa57667fd320e7150c16b407544ee8358b17570f86fb1187c4c4` |
+| CROSSWALK.md | a94ed180e5636c14a104e7891344e756b1eea4c693d979c67ed7a2f9937d582c |
+| PREDICTION_CROSSWALK.md | 376c393a75ae1aec52fa85ca3b9ad88903fdfe6d39223479b29b9a47fba92af5 |
+| src/common/requirements.tex | dd3b069d8a410b59509c09b6a7c1c47d0109d5dd438a32f2974434ad34b210ce |
+| src/common/edge_cases.tex | 29fadddecd7c99223a1491b2599494744bd35f7c504f08852b775bd6538c86e8 |
