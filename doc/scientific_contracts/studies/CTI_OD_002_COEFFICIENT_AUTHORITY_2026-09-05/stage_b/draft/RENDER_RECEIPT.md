@@ -1,45 +1,77 @@
 # Cached PDF build and render receipt
 
-Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.3**  
+Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.4**  
 Date: **2026-09-06**
 
 ## Revision and operation record
 
-The r0.3 sibling began with the 43 final/source files from sealed r0.2; r0.2 build scratch was excluded. The four byte-exact owner-review supplement files and the new owner-response artifact were then added. All r0.3 source, compilation, checks, and rasters stayed beneath output-r0.3. The sealed output and output-r0.2 packages were not changed.
+The sealed r0.3 manifest was verified at SHA-256
+`87eafdbaed29dc8d810a5bba9d4ba818d57a837c04337a4c71c31b06215f0ee9`;
+all 47 manifest-listed artifacts passed. Its complete 48-file final/source
+inventory, including the manifest and excluding `build/`, was then copied
+byte-for-byte into the new `output-r0.4` sibling before revision. All r0.4
+source, companion, build, check, and raster work stayed beneath that sibling.
+The sealed `output/`, `output-r0.2/`, and `output-r0.3/` packages were
+not changed.
 
-The required PDF artifact marker was invoked successfully exactly once for this bounded r0.3 operation before output-r0.3 was created, with operation kind edit, expected output count 2, and output format pdf.
+The required PDF artifact marker was invoked successfully exactly once for
+this bounded r0.4 operation before `output-r0.4` was created, with operation
+kind `edit`, expected output count 2, and output format `pdf`.
 
 ## Renderer and network posture
 
-Both final PDFs were produced with local /opt/homebrew/bin/tectonic using --only-cached. No installation, network retrieval, or external scientific source was used. The output-local upright-font substitution inherited from the prior draft remains unchanged because the cached TeX assets lack the requested slanted metric; no typography revision was made.
+Both final PDFs were produced with local `/opt/homebrew/bin/tectonic` and
+`--only-cached`. No installation, network retrieval, or external scientific
+source was used. The output-local cached/default typography remains unchanged.
 
-A first final-content invocation inside the restricted process sandbox stopped before TeX with the local macOS system-configuration NULL-object panic. The same two cached commands were rerun with the permitted local process access and succeeded. The final build PDFs and logs replaced the earlier preview outputs. Final logs contain no overfull box, undefined-control, undefined-reference, emergency, fatal, or TeX error entry. Engineering tables retain underfull spacing notices; page inspection found no clipping or overlap.
+The first authoring compile exposed an output-local LaTeX delimiter error:
+`Q_{\rm integrity}` had temporarily appeared outside math mode in the new
+r0.4 explanatory sentence. That invocation stopped and no PDF or log from it
+is a returned identity. The source was corrected to `\(Q_{\rm integrity}\)`
+before the successful final pair was built. The retained final logs contain no
+overfull box, undefined-control, undefined-reference, emergency, fatal, or TeX
+error entry. Underfull table-spacing notices remain; page inspection found no
+clipping or overlap.
 
 ## Final fixed PDF artifacts
 
 | View | Pages | SHA-256 |
 | --- | ---: | --- |
-| scientific_rationale.pdf | 5 | efd265d423929dad071a499d3b81a0354d0a3bda2e21ebf7cc2c8ca5b192c266 |
-| engineering_conformance.pdf | 14 | f476d16ae997770a7fb9b3c2ebd24937da037fc70354de574b2c4d820e16013c |
+| `scientific_rationale.pdf` | 5 | `22907c022cb91e05364c20f2fb3d982d5a23b0211e652fab277e54ec9188b817` |
+| `engineering_conformance.pdf` | 14 | `655192bef6a8db428d9b6bdc192318eeb78b2b983d2e53f0792961a97911d5c3` |
 
-The final Tectonic log SHA-256 values are:
+The retained final Tectonic logs are:
 
 | Log | SHA-256 |
 | --- | --- |
-| build/scientific_rationale.log | 8d27030161177989b4b3b8796a9f190fc81e78123c5881bb2a14b06623f014a0 |
-| build/engineering_conformance.log | 67d2b644cec3382d6da37090425502078d18a5c0d31f649fe3a22c0d1dce3674 |
+| `build/scientific_rationale.log` | `2559dbf20ef6e78d554d5c7a02cf311c675814831e155a052c6adee21e4b4260` |
+| `build/engineering_conformance.log` | `60331f56ccecd152ac46d0619ba5824e1f318fdf3f2d55b25b4210ce058f0fbc` |
 
-Each root PDF byte-matches its final build copy. PDF title and subject metadata contain v0.1-draft.1 / r0.3, the visible title date is 2026-09-06, and extracted opening text confirms the view name plus v0.1-draft.1/r0.3 running header on every one of the 19 pages, including longtable continuation pages.
+Each root PDF byte-matches its final build copy. PDF title and subject metadata
+contain `v0.1-draft.1 / r0.4`, the visible title date is 2026-09-06, and
+extracted opening text confirms the view name plus the
+`v0.1-draft.1/r0.4` running header on every one of the 19 pages, including
+longtable continuation pages.
 
-All 5 scientific and 14 final engineering pages were rendered at 110 dpi under build/qa-r0.3. Local contact-sheet and full-resolution inspection found all headings, equations, tables, decision register, requirements, mixed cases, predictions, and body text legible without clipping or overlap. The scientific four-axis/finalization/nonexceptionability paragraph and exact requirements 072/090/094/095 citations were visible. The restored formal profile digest, source-promotion rule, aggregation status, lineage, and scope/influence text are legible on engineering page 3. All-page header and metadata checks, plus the 25 requirement, 16 prediction, and 10 mixed-case inventories, pass.
+All 5 scientific and 14 engineering pages were rendered at 110 dpi under
+`build/qa-r0.4`. Contact-sheet inspection covered every page; full-resolution
+inspection covered scientific page 2 and engineering pages 9, 12, and 13,
+which carry the corrected identity/binding versus bound-byte-integrity
+explanation, failure-scope table, UFC-REQ-017, UFC-MIX-008, and UFC-PRED-009.
+The text is legible with no clipping or overlap. The 25 requirement, 16
+prediction, 10 mixed-case, 14 open-proposal, and UFC-Q-001 inventories pass.
+No PDF bytes were changed after these checks.
 
-Manager all-page inspection first passed the intermediate efd265d423929dad071a499d3b81a0354d0a3bda2e21ebf7cc2c8ca5b192c266 / 56afc891ab72e36859e07669f0c8b05315532b39775735d0daf88b9435119598 pair. A final preservation check then found two admitted profile fields omitted by the restructuring. That pair is retained only as a labeled superseded QA checkpoint under build/superseded-qa-checkpoint-before-profile-binding-restoration. Restoring the fields left the scientific PDF byte-identical and changed/reflowed extracted engineering text on pages 3--14; pages 1--2 remained text-identical. The root PDFs and ordinary build copies now contain only the final identities in the table above.
-
-Manager final QA then rechecked the fixed pair: scientific bytes remained identical, engineering pages 1--2 were pixel-identical, and changed pages 3--14 were all inspected. The restored digest, aggregation, one-way lineage, and scope/influence clauses were verified in rendered text; all 25/16/10 stable IDs passed again. No clipping, overlap, header, metadata, or inventory defect remained. The final PDF bytes were not changed after this pass.
+Manager independently rendered and inspected all 19 pages at 110 dpi against
+the same two final hashes. That check passed with no clipping, overlap, missing
+table, invalid glyph, or header defect; it also confirmed the complete 25/16/10
+engineering inventories and the coherence of the bounded source correction.
+The separate manager QA receipt was not read or copied into this scientific
+packet. The final PDF bytes remained unchanged after the manager pass.
 
 ## Reproduction commands
 
-Run from the output-r0.3 directory:
+Run from the `output-r0.4` directory:
 
 ```sh
 mkdir -p build

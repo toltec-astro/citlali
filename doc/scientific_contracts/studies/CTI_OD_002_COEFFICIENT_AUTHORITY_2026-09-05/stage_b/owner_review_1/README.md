@@ -125,3 +125,57 @@ input. The science PDF stayed byte-identical. The engineering PDF was rebuilt,
 its unchanged first two pages verified pixel-identical, and reflowed pages
 3–14 inspected again. The earlier PDF pair remains labeled as a superseded
 QA checkpoint; only the final digests enter the delivered manifest.
+
+## Exact r0.3 review and bounded r0.4 repair preflight
+
+The [independent r0.3 review](CANDIDATE_REVIEW_0dbcc9f0.md) binds exact
+candidate `0dbcc9f0527d73fb873e29edaefa35095636ddc7`, tree
+`9025475cb0a01a5285cd52018a9aa784d055382c`, and returns **repair required**
+for major scientific/behavioral wording finding F01 only. Report SHA-256:
+`11f94fab9b0c2d911fcb0555ee03d087e62072fc25fc55b19915d92324a7e1eb`.
+Architecture passes; repository/evidence passes with an independent cached
+rebuild limitation: a local macOS library panic stopped that attempt before
+TeX. The reviewer independently verified source/manifest/excerpt integrity,
+traceability and all 19 rendered pages, and left the repository clean.
+
+F01 observes that the structural failure-scope row's bare "payload
+publication" can include corrupt payload bytes even after exact identity
+binding. Its literal structural outcome then conflicts with the explicit
+`Q_integrity=F` rule. The smallest repair names authoritative publication
+identity/binding records as structural and leaves bound payload bytes,
+integrity/decoder checks and stored-membership evidence in the independent
+fidelity facts. Valid bindings with corrupt bytes must produce payload false;
+valid bindings with unavailable bytes must preserve unknown alongside any
+independent false. Actual binding-record defects retain their shared scope.
+
+Disposition: **repair within the already authorized owner round 1**.
+The repair starts from clean exact `0dbcc9f0...` on the same owned branch and
+worktree. Tier 2, accepted governance, canonical checkpoint, authorities,
+owners, exclusions and operation limits above remain unchanged. Expected
+changes remain within Stage B and one additive dated status entry, including
+this exact review receipt. No additional source or scientific choice enters
+authorship: the manager returned only the conflicting passages from the
+author's own sealed draft. The full independent report remains manager
+evidence and is not an author input.
+
+The author preserves its 48-file r0.3 return and produces a separate r0.4
+return under the same scientific version. Focused gates add exact preservation
+of r0.3 and this review, the three F01 discrimination cases, refreshed PDF
+and companion identities, and a fresh review of the repaired exact commit.
+The r0.3 verdict does not transfer. No new substantive owner round, expanded
+derivation, default, application work, freeze, Registry admission, push or
+integration is authorized by this repair.
+
+### Second local-canonical movement during r0.4 preparation
+
+The local canonical ref subsequently advanced from `5244e046...` to
+`080df2a1431487e8cabc255beb9ddc59c0721b59`, tree
+`a619f802a11eca8f9adccbebbf230517b2891945`. The
+[exact reassessment](R04_CANONICAL_REASSESSMENT.json) verifies ancestry and
+the three changed documentation paths for the separate VAL/D2 prerequisite.
+No governance, frozen scientific source, uniform input or application file
+changed in that movement. The previously bound governance, charter and frozen
+PTC sources remain byte-identical. Disposition: continue the same bounded
+r0.4 repair on exact parent `0dbcc9f0...`; no new scientific authority,
+author input, rebase, integration or application scope is introduced. This is
+a local-ref observation, not a new GitHub or owner-adoption claim.

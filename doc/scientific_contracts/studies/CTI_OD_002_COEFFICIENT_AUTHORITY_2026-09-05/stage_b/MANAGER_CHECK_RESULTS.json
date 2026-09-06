@@ -2,9 +2,9 @@
   "result": "PASS",
   "date": "2026-09-06",
   "base_commit": "959bb90947d4b9651fbba9f16a0eb73dde893b84",
-  "current_canonical_checkpoint": "5244e04638db5aa92180feab52acd782229cfa32",
+  "current_canonical_checkpoint": "080df2a1431487e8cabc255beb9ddc59c0721b59",
   "predecessor_study_files_preserved": 20,
-  "author_manifest_sha256": "87eafdbaed29dc8d810a5bba9d4ba818d57a837c04337a4c71c31b06215f0ee9",
+  "author_manifest_sha256": "e8ba0c16a9ee64358b8fb45d8989fdf5988c929bcbae3b1463e8ca767952c17e",
   "manifested_author_artifacts": 47,
   "exact_author_inventory_including_manifest": 48,
   "approved_input_copies": 11,
@@ -19,7 +19,7 @@
   "requirements": 25,
   "predictions": 16,
   "open_consequential_proposals": 14,
-  "local_navigation_links_checked": 97,
+  "local_navigation_links_checked": 102,
   "link_policy": "PASS; fenced verbatim approved excerpts retain citation locators and are excluded from local-navigation checks",
   "intentional_markdown_hard_breaks": [
     "draft/RENDER_RECEIPT.md:3",
@@ -44,32 +44,34 @@
   ],
   "other_trailing_source_whitespace": "none",
   "preserved_author_files_with_one_blank_line_at_eof": [
-    "draft/OWNER_REVIEW_1_RESPONSE.md"
+    "draft/DECISION_REGISTER_CHECK.md"
   ],
-  "whitespace_policy": "Exact owner assessment and renderer logs use digest checks. Enumerated author Markdown hard breaks are preserved; one enumerated final blank line in the exact owner-response artifact is preserved; other source trailing whitespace and excess EOF blanks are rejected.",
+  "whitespace_policy": "Exact owner assessment and renderer logs use digest checks. Enumerated author Markdown hard breaks are preserved; one enumerated final blank line in the exact author decision-register receipt is preserved; other source trailing whitespace and excess EOF blanks are rejected.",
   "pdfs": [
     {
       "path": "scientific_rationale.pdf",
       "pages": 5,
-      "sha256": "efd265d423929dad071a499d3b81a0354d0a3bda2e21ebf7cc2c8ca5b192c266",
+      "sha256": "22907c022cb91e05364c20f2fb3d982d5a23b0211e652fab277e54ec9188b817",
       "metadata_and_all_page_headers": "PASS",
       "all_page_visual_QA": "PASS; manager inspected sealed 110 dpi render before preservation"
     },
     {
       "path": "engineering_conformance.pdf",
       "pages": 14,
-      "sha256": "f476d16ae997770a7fb9b3c2ebd24937da037fc70354de574b2c4d820e16013c",
+      "sha256": "655192bef6a8db428d9b6bdc192318eeb78b2b983d2e53f0792961a97911d5c3",
       "metadata_and_all_page_headers": "PASS",
       "all_page_visual_QA": "PASS; manager inspected sealed 110 dpi render before preservation"
     }
   ],
   "verbatim_final_render_log_sha256": {
-    "scientific_rationale.log": "8d27030161177989b4b3b8796a9f190fc81e78123c5881bb2a14b06623f014a0",
-    "engineering_conformance.log": "67d2b644cec3382d6da37090425502078d18a5c0d31f649fe3a22c0d1dce3674"
+    "scientific_rationale.log": "2559dbf20ef6e78d554d5c7a02cf311c675814831e155a052c6adee21e4b4260",
+    "engineering_conformance.log": "60331f56ccecd152ac46d0619ba5824e1f318fdf3f2d55b25b4210ce058f0fbc"
   },
   "scope": "Document integrity and traceability only; no scientific approval, implementation conformance, observational validation, Registry admission, freeze or integration is claimed.",
-  "document_revision": "r0.3",
-  "parent_commit": "448194ac3e650a12e5a3862d86a4a05f867a90c5",
+  "sealed_r03_and_committed_predecessor_artifacts_preserved": 48,
+  "prior_r03_candidate_review_sha256": "11f94fab9b0c2d911fcb0555ee03d087e62072fc25fc55b19915d92324a7e1eb",
+  "document_revision": "r0.4",
+  "parent_commit": "0dbcc9f0527d73fb873e29edaefa35095636ddc7",
   "sealed_r01_and_committed_predecessor_artifacts_preserved": 43,
   "sealed_r02_and_committed_predecessor_artifacts_preserved": 43,
   "owner_review_round": 1,
@@ -86,6 +88,7 @@
     "OR1-S2",
     "OR1-S3"
   ],
-  "prior_candidate_review_sha256": "402f9569c06b8d6197f51da14533d35efcff6995c42392d6cdc744ddd5522715",
-  "scientific_and_traceability_review": "PASS for owner-review readiness: all nine owner revision areas, all 25 actual scientist-facing requirement mappings, 16 predictions, ten mixed/scope cases and complete inherited profile bindings checked. Scientific adoption remains pending."
+  "prior_candidate_review_sha256": "11f94fab9b0c2d911fcb0555ee03d087e62072fc25fc55b19915d92324a7e1eb",
+  "prior_r02_candidate_review_sha256": "402f9569c06b8d6197f51da14533d35efcff6995c42392d6cdc744ddd5522715",
+  "scientific_and_traceability_review": "PASS for owner-review readiness: all nine owner revision areas, 25 actual scientist-facing requirement mappings, 16 predictions, ten worked cases and complete inherited profile bindings preserved. F01 distinguishes authoritative binding-record defect (structural), bound corrupt bytes (integrity F), and bound unavailable bytes with an independent false (U retained; aggregate F). The r0.3 mathematics and publication rules are unchanged. Scientific adoption remains pending."
 }

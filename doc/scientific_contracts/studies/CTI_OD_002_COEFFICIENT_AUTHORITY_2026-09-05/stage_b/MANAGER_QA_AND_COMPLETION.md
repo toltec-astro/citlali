@@ -1,4 +1,4 @@
-# Uniform coefficient r0.3 manager conformance record
+# Uniform coefficient r0.4 manager conformance record
 
 ## Program adherence and prior-work recovery
 
@@ -8,6 +8,20 @@ Grant Wilson supports fixed dimensionless unity in principle and explicitly
 returns the complete r0.2 contract for targeted revision. New details remain
 proposals. This is the first substantive owner round; earlier initial drafting
 and reviewer repair do not consume additional owner rounds.
+
+## Exact-candidate review and repair
+
+The preserved [r0.3 review](owner_review_1/CANDIDATE_REVIEW_0dbcc9f0.md)
+returned repair required for F01 at exact candidate
+`0dbcc9f0527d73fb873e29edaefa35095636ddc7`, tree
+`9025475cb0a01a5285cd52018a9aa784d055382c`. The structural row's bare
+payload-publication wording overlapped with the bound-byte fidelity rule.
+The r0.4 repair names authoritative identity/binding records and explicitly
+keeps bound bytes, decoder/integrity and stored-membership evidence within
+UQ-05. Binding-record defect, bound corrupt bytes, and bound unavailable
+bytes with an independent false now have their distinct declared outcomes.
+The mathematical definition and publication proposal are unchanged. This
+continues owner round 1, and the older draft and review remain exact.
 
 ## Scientific and behavioral disposition
 
@@ -67,10 +81,10 @@ or current Registry changes, and no implementation conformance is claimed.
 
 | Rendered artifact | Pages | SHA-256 |
 | --- | ---: | --- |
-| scientific_rationale.pdf | 5 | `efd265d423929dad071a499d3b81a0354d0a3bda2e21ebf7cc2c8ca5b192c266` |
-| engineering_conformance.pdf | 14 | `f476d16ae997770a7fb9b3c2ebd24937da037fc70354de574b2c4d820e16013c` |
+| scientific_rationale.pdf | 5 | `22907c022cb91e05364c20f2fb3d982d5a23b0211e652fab277e54ec9188b817` |
+| engineering_conformance.pdf | 14 | `655192bef6a8db428d9b6bdc192318eeb78b2b983d2e53f0792961a97911d5c3` |
 
-Manifest SHA-256: `87eafdbaed29dc8d810a5bba9d4ba818d57a837c04337a4c71c31b06215f0ee9`. All 47
+Manifest SHA-256: `e8ba0c16a9ee64358b8fb45d8989fdf5988c929bcbae3b1463e8ca767952c17e`. All 47
 manifested artifacts plus the manifest itself are copied byte-for-byte from
 the isolated author return. The manager independently inspected every final
 page at 110 dpi after sealing by hash; no clipping or overlap was found.
@@ -103,15 +117,16 @@ Unity access, push or integration occurred.
 ## Repository, evidence and completion boundary
 
 **Owned draft candidate.** Exact parent is
-`448194ac3e650a12e5a3862d86a4a05f867a90c5`, tree
-`791dcef1fcf0ca148f4d3cdfb9899fec1fe31ab9`, on the existing owned branch and
-worktree specified in the preflight. All r0.1/r0.2 author artifacts remain
+`0dbcc9f0527d73fb873e29edaefa35095636ddc7`, tree
+`9025475cb0a01a5285cd52018a9aa784d055382c`, on the existing owned branch and
+worktree specified in the preflight. All r0.1/r0.2/r0.3 author artifacts remain
 sealed and exact in their respective commits. Changes are confined to this
 Stage B directory and one new dated status entry.
 
-Canonical advanced independently from `00b974c...` to
-`5244e04638db5aa92180feab52acd782229cfa32`; the preflight verifies ancestry,
-unchanged effective governance and frozen source bytes. That movement requires
+Canonical advanced independently from `00b974c...` through `5244e046...` to
+`080df2a1431487e8cabc255beb9ddc59c0721b59`; the preflight and
+[latest local reassessment](owner_review_1/R04_CANONICAL_REASSESSMENT.json)
+verify ancestry, unchanged effective governance and frozen source bytes. That movement requires
 no rebase or application changes in this bounded draft. Canonical and other
 worktrees remain outside the mutation scope.
 

@@ -1,6 +1,6 @@
 # Scientific-owner decision ledger
 
-Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.3**  
+Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.4**  
 Revision date: **2026-09-06**  
 Status: **revised after scientific-owner review round 1; all new choices remain open**
 
@@ -28,7 +28,7 @@ The owner supports fixed dimensionless unity, no tunable numerical parameter or 
 | Separation from signal validity and uncertainty | Supported in principle; UFC-OD-007 and UFC-OD-013 remain open. |
 | Separate MAP and JINC permissions | Supported in principle as structure; the individual grants UFC-OD-008 and UFC-OD-009 remain open. |
 | Existing NOI limits | Supported in principle; no NOI successor or new design rule is proposed. |
-| Complete r0.2 contract and freeze | Explicitly withheld; r0.3 is returned for another exact owner decision. |
+| Complete r0.2 contract and freeze | Explicitly withheld; r0.4 remains an unapproved round-1 response for another exact owner decision. |
 
 ## Consequential author proposals awaiting owner decision
 
@@ -40,10 +40,10 @@ The owner supports fixed dimensionless unity, no tunable numerical parameter or 
 | UFC-OD-004 | SCI-PTC | open | Adopt, revise, or reject analytic arithmetic-mean-to-one normalization, singleton validity, and empty no-instance behavior. | Exact operator and edge cases. | Grant Wilson for SCI-PTC | — |
 | UFC-OD-005 | SCI-PTC | open | Adopt, revise, or reject no numerical parameter, family default, or publication-size default. | Valid family requests and selection policy. | Grant Wilson for SCI-PTC | — |
 | UFC-OD-006 | SCI-PTC / VAL binding | open | Adopt, revise, or reject profile identity SCI-PTC:uniform_coefficient_handoff@draft-0.1, independent named request, object (g,q,i,c), and applicability. | Complete evaluable named profile. | Grant Wilson for SCI-PTC | — |
-| UFC-OD-007 | SCI-PTC / VAL binding | open | Adopt, revise, or reject UQ-01--UQ-07; four independent fidelity facts and their F/C/U/T composition; distinct payload, permission, and four-axis outcomes; nonexceptionability; request/shared/consumer scopes; and retained causes. | Eligibility and cause semantics. | Grant Wilson for SCI-PTC | — |
+| UFC-OD-007 | SCI-PTC / VAL binding | open | Adopt, revise, or reject UQ-01--UQ-07; four independent fidelity facts and their F/C/U/T composition; distinct structural identity/binding-record and bound-payload integrity states; distinct payload, permission, and four-axis outcomes; nonexceptionability; request/shared/consumer scopes; and retained causes. | Eligibility and cause semantics. | Grant Wilson for SCI-PTC | — |
 | UFC-OD-008 | SCI-PTC and SCI-MAP boundary owners | open | Separately grant, revise, or reject SCI-MAP permission. | MAP use of this family. | Grant Wilson and SCI-MAP authority | — |
 | UFC-OD-009 | SCI-PTC and SCI-JINC boundary owners | open | Separately grant, revise, or reject SCI-JINC permission. | JINC use of this family. | Grant Wilson and SCI-JINC authority | — |
-| UFC-OD-010 | SCI-PTC / boundary owners | open | Adopt, revise, or reject successor identities SCI-PTC_TO_SCI-MAP_BOUNDARY v0.2-draft.1/r0.3 and SCI-PTC_TO_SCI-JINC_BOUNDARY v0.2-draft.1/r0.3. | Immutable successor bindings; frozen predecessors remain unchanged. | Grant Wilson and each boundary authority | — |
+| UFC-OD-010 | SCI-PTC / boundary owners | open | Adopt, revise, or reject successor identities SCI-PTC_TO_SCI-MAP_BOUNDARY v0.2-draft.1/r0.4 and SCI-PTC_TO_SCI-JINC_BOUNDARY v0.2-draft.1/r0.4. | Immutable successor bindings; frozen predecessors remain unchanged. | Grant Wilson and each boundary authority | — |
 | UFC-OD-011 | SCI-PTC | open | Confirm “Grant Wilson acting for SCI-PTC” as the actual owner or supply another exact owner. | Active Registry/profile binding only. | Grant Wilson | — |
 | UFC-OD-012 | SCI-PTC | open | Adopt, revise, or reject family-rule version versus realization identities, noncircular staged UQ-07 finalization, replay, and absence of a general cross-generation alias. | Lifecycle and cross-generation use. | Grant Wilson for SCI-PTC | — |
 | UFC-OD-013 | SCI-PTC | open | Adopt, revise, or reject no sampling uncertainty from the fixed coefficient and separation of every physical, selection, representation, and performance uncertainty. | Approved uncertainty meaning. | Grant Wilson for SCI-PTC | — |

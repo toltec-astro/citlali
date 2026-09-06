@@ -77,10 +77,12 @@ nonexceptionable. No VAL, consumer, mode, or other-use exception shall alter
 the result.\\
 UFC-REQ-017 & Failure scope shall follow the defective object. A wrong
 \(q,g\) pair or other malformed reference in one request shall remain local;
-a corrupt/misbound authoritative \(q\)-to-\(g\) or other shared object shall
-affect every reference to that object; payload false shall affect that
-payload's handoffs; permission state shall affect only its named consumer.
-Every cause and independent fact state shall be retained.\\
+a corrupt/misbound authoritative \(q\)-to-\(g\) or other shared
+identity/binding record shall affect every reference to that record. After
+valid payload-publication binding, corrupt bytes, digest failure, and decoder
+failure shall remain \(Q_{\rm integrity}\) rather than structural; payload
+false shall affect that payload's handoffs. Permission state shall affect only
+its named consumer. Every cause and independent fact state shall be retained.\\
 UFC-REQ-018 & Response and uncertainty availability shall be advisory and
 neutral for coefficient fidelity. Exact upstream states shall be preserved,
 and neither identity response nor zero uncertainty shall be inferred.\\

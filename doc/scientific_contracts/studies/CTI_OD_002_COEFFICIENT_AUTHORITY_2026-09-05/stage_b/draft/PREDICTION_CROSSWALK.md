@@ -1,6 +1,6 @@
 # Prediction and evidence crosswalk
 
-Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.3**  
+Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.4**  
 Status: **sixteen proposed predictions and ten worked decision cases; no implementation or observational evidence performed**
 
 ## Predictions
@@ -15,7 +15,7 @@ Status: **sixteen proposed predictions and ten worked decision cases; no impleme
 | UFC-PRED-006 | When the named profile is explicitly requested, a selected constant override or different family reaches UQ-01 and is ineligible rather than silently ignored. | Named request with independently varied selection value. |
 | UFC-PRED-007 | A false scalar, unit, integrity, or membership fact makes UQ-05 false even with unrelated unknown/conflict. The payload is producer-invalid, while the completed negative profile artifact is realized and ineligible. | Mixed-fact truth composition and four-axis lifecycle conformance. |
 | UFC-PRED-008 | With no fidelity false, absent evidence or unexplained unreadability leaves UQ-05 unknown; same-fact contradiction remains conflict. The decision is unavailable without unity fallback. | Unknown-only and same-fact-conflict cases with retained causes. |
-| UFC-PRED-009 | A stored compact R-hat_g exactly matched to target R_q establishes membership without a duplicated list. A wrong stored reference is payload false; missing/conflicting target or corrupt shared binding has shared structural scope; a wrong pair in one request remains request-local. | Independent target/reference match, mismatch, missing target, shared corruption, and request-local pairing cases. |
+| UFC-PRED-009 | A stored compact R-hat_g exactly matched to target R_q establishes membership without a duplicated list. A wrong stored reference is payload false; missing/conflicting target or corrupt shared identity/binding record has shared structural scope; a wrong pair in one request remains request-local. Bound-payload byte corruption remains Q_integrity after valid binding. | Independent target/reference match, mismatch, missing target, shared binding-record corruption, bound-byte integrity failure, and request-local pairing cases. |
 | UFC-PRED-010 | An invalid signal occurrence can still have a faithful coefficient one. It contributes only if independent producer and consumer gates admit the signal and occurrence. | Cross-profile evidence varying signal validity independently of coefficient fidelity. |
 | UFC-PRED-011 | MAP consumption gives gamma_i=1 and removes only variation attributable to the PTC coefficient; other MAP factors and gates remain. | MAP boundary conformance with independent admission and numerical classification. |
 | UFC-PRED-012 | JINC consumption gives w_ip=kappa_ip, including JINC's sign; final JINC weights need not be positive or uniform. | JINC boundary conformance over signed spatial factors. |
@@ -35,7 +35,7 @@ Status: **sixteen proposed predictions and ten worked decision cases; no impleme
 | UFC-MIX-005 | Faithful payload plus complete MAP denial makes only MAP ineligible; no JINC result is inferred. | Complete named MAP permission record and separate JINC state. |
 | UFC-MIX-006 | Faithful payload plus missing/unresolved MAP permission and no other false makes MAP decision unavailable, without denial. | Missing or unresolved permission evidence distinct from a complete denial. |
 | UFC-MIX-007 | Malformed occurrence reference or wrong otherwise-authoritative q,g pair in one request affects only that request. | Valid shared objects plus one malformed request reference. |
-| UFC-MIX-008 | Ambiguous authoritative R_q identity or corrupt/misbound shared q-to-g object prevents structural establishment for every reference; UQ-05 is not evaluated. | Shared-object identity/binding failure observed through multiple requests. |
+| UFC-MIX-008 | Ambiguous authoritative R_q identity or corrupt/misbound shared q-to-g identity/binding record prevents structural establishment for every reference; UQ-05 is not evaluated. | Shared identity/binding failure observed through multiple requests. |
 | UFC-MIX-009 | Exact compact one plus stored R-hat_g independently matched to valid R_q makes membership T without a member list; wrong R-hat_g instead makes payload F. | Exact independent source/generation/scope/digest match and mismatch. |
 | UFC-MIX-010 | An enumerated form with correct length but one repeated and one omitted identity makes membership F and the payload producer-invalid. | Exact identity multiset comparison rather than cardinality alone. |
 

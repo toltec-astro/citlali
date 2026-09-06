@@ -1,5 +1,29 @@
 # Citlali Refactor Status
 
+## 2026-09-06 CTI-OD-002 Uniform r0.4 Candidate Repair
+
+Independent review of exact r0.3 candidate
+`0dbcc9f0527d73fb873e29edaefa35095636ddc7` returned repair required for one
+bounded scientific wording finding F01. The
+[preserved review and repair preflight](scientific_contracts/studies/CTI_OD_002_COEFFICIENT_AUTHORITY_2026-09-05/stage_b/owner_review_1/README.md)
+record the ambiguity between authoritative publication binding failure and
+corruption of already-bound payload bytes. Architecture and evidence checks
+passed; independent cached compilation was limited by a local pre-TeX panic.
+
+The isolated author repaired that distinction in v0.1-draft.1/r0.4 without
+changing the exact-unity mathematics, publication proposal, original inputs or
+owner-review round. The sealed return has 5 scientific pages, 14
+engineering pages, 25 requirements, 16 predictions and ten worked cases;
+manifest SHA-256 `e8ba0c16a9ee64358b8fb45d8989fdf5988c929bcbae3b1463e8ca767952c17e`. All prior draft generations and the exact review are
+preserved. Focused preservation, fidelity/scope, traceability and final render
+checks passed; a fresh exact-SHA review of the committed repair is required
+before renewed owner presentation.
+
+This remains substantive owner round 1. All fourteen proposals, UFC-Q-001
+and CTI-OD-002 remain open. Complete scientific approval, final consistency
+review, freeze, Registry activation, canonical integration and the owner-held
+push remain separate; no application unit or default is authorized.
+
 ## 2026-09-06 CTI-OD-002 Owner Review 1 and Uniform Revision
 
 Grant Wilson supports the exact-unity coefficient design in principle and

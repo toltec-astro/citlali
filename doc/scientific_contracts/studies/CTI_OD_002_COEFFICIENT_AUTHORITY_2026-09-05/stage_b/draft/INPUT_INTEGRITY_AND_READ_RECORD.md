@@ -1,7 +1,7 @@
 # Input integrity and constrained-read record
 
 Authoring run: **citlali-ptc-uniform-author-run-2026-09-05**  
-Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.3**  
+Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.4**  
 Recorded: **2026-09-06**
 
 ## Original released eleven-file packet
@@ -51,6 +51,8 @@ The original manifest's historical release-pending labels were superseded only b
 
 ## Revision provenance and preservation
 
-The sealed r0.1 manifest remains SHA-256 c15bf5e238dd3776a4cf83a506c6d1c7e3b8172761b1f621ca28cf42e9574124 and its manifest check passed on 2026-09-06. The sealed r0.2 manifest remains SHA-256 9c05f8d5d14c338ee4f58d81101f7e23d2bc361401012076b8c47a366e063064 and all 43 listed files passed verification before revision.
+The sealed r0.1 manifest remains SHA-256 c15bf5e238dd3776a4cf83a506c6d1c7e3b8172761b1f621ca28cf42e9574124 and its 42 listed artifacts passed on 2026-09-06. The sealed r0.2 manifest remains SHA-256 9c05f8d5d14c338ee4f58d81101f7e23d2bc361401012076b8c47a366e063064; its 42 listed artifacts plus the manifest (43 final/source files total) passed verification before revision.
 
-Exactly those 43 r0.2 final/source artifact files were copied into sibling output-r0.3; r0.2 build scratch was excluded. The four owner-review supplement files were copied byte-exact under owner-review-1-input, and OWNER_REVIEW_1_RESPONSE.md was added as the new response artifact. All edits and build scratch were confined to output-r0.3. The sealed output and output-r0.2 trees and both isolated input directories remain unchanged.
+Exactly those 43 r0.2 final/source artifact files were copied into sibling output-r0.3; r0.2 build scratch was excluded. The four owner-review supplement files were copied byte-exact under owner-review-1-input, and OWNER_REVIEW_1_RESPONSE.md was added as the new response artifact. All r0.3 edits and build scratch were confined to output-r0.3.
+
+Before this correction, the sealed r0.3 manifest was verified at SHA-256 87eafdbaed29dc8d810a5bba9d4ba818d57a837c04337a4c71c31b06215f0ee9 and all 47 listed artifacts passed. Its complete 48-file final/source inventory, including the manifest and excluding build scratch, was copied byte-exact into sibling output-r0.4. Revision r0.4 uses no additional scientific input and changes only the structural-binding versus bound-byte-integrity wording plus revision-bearing records and fresh render/sealing artifacts. The sealed output, output-r0.2, and output-r0.3 trees and both isolated input directories remain unchanged.

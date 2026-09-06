@@ -38,7 +38,8 @@ or pairs the wrong otherwise-authoritative \(q,g\); the shared objects are
 valid. & Only that request is unavailable or unrecordable according to its
 preserved identity state. Other well-formed requests remain assessable.\\
 UFC-MIX-008 & The authoritative shared support \(R_q\) has ambiguous
-occurrence identity, or the shared \(q\)-to-\(g\) object is corrupt/misbound. &
+occurrence identity, or the shared \(q\)-to-\(g\) identity/binding record is
+corrupt/misbound. &
 Structural establishment fails for every request referencing that shared
 object; UQ-05 is not evaluated.\\
 UFC-MIX-009 & Compact form stores exact one and \(\widehat R_g\), which an
@@ -86,8 +87,9 @@ The decision is unavailable without unity fallback.\\
 UFC-PRED-009 & A stored compact \(\widehat R_g\) exactly matched to target
 \(R_q\) establishes membership without a duplicated list. A wrong stored
 reference is payload false; missing/conflicting target or corrupt shared
-binding has shared structural scope; a wrong pair in one request remains
-request-local.\\
+identity/binding record has shared structural scope; a wrong pair in one
+request remains request-local. After valid binding, bound-payload byte
+corruption remains \(Q_{\rm integrity}=\mathbf F\).\\
 UFC-PRED-010 & An invalid signal occurrence can still have a faithful
 coefficient one. It contributes only if independent producer and consumer
 gates admit the signal and occurrence.\\

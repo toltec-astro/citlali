@@ -1,10 +1,10 @@
 # PTC uniform/constant coefficient successor — owner-review revision
 
-Draft identity: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.3**  
+Draft identity: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.4**  
 Revision date: **2026-09-06**  
 Status: **implementation-blind revision after scientific-owner review round 1; every new family, profile, permission, boundary, policy, and Registry binding remains an open proposal**
 
-Revision r0.3 answers the scientific owner's targeted review of sealed r0.2. It retains the approved input packet, contract version, and scope while separating the explanatory scientific narrative from the complete engineering specification. Owner support in principle is recorded as review evidence; it does not approve the complete contract or authorize a freeze.
+Revision r0.4 is a bounded consistency correction to sealed r0.3 within scientific-owner review round 1. It narrows structural failure to authoritative identity/binding-record defects and leaves byte integrity of an already bound payload under Q_integrity. It retains the approved inputs, contract version, proposal inventory, and audience separation. Owner support in principle remains review evidence; it does not approve the complete contract or authorize a freeze.
 
 ## Program adherence and prior-work recovery
 
@@ -18,7 +18,7 @@ The generic PTC coefficient construction is cited rather than re-derived. Implem
 
 The proposal defines exact dimensionless unity over one finite, nonempty, identity-unique PTC output support. It accepts no numerical parameter or default. An immutable authoritative target support R_q is distinct from the stored compact reference R-hat_g; enumerated storage remains permitted with exact-once membership checks. Scalar value, unit, integrity, and membership are independently assessed and composed without hiding a decisive false behind unrelated unknown or conflict evidence.
 
-A named-profile request is independent of the selected-family predicate. Request, applicability, eligibility, and realization have distinct meanings. A completed ineligible or decision-unavailable evaluation is a successfully realized record, while failed finalization creates no completed result. Producer payload invalidity, named-consumer denial, and unavailable or conflicting permission remain distinct. Malformed request references have request-local scope; corrupt or misbound shared authoritative objects affect every reference to that object.
+A named-profile request is independent of the selected-family predicate. Request, applicability, eligibility, and realization have distinct meanings. A completed ineligible or decision-unavailable evaluation is a successfully realized record, while failed finalization creates no completed result. Producer payload invalidity, named-consumer denial, and unavailable or conflicting permission remain distinct. Malformed request references have request-local scope; corrupt or misbound shared authoritative identity/binding records affect every reference to that record. Once payload identity and binding are valid, corrupt bytes remain a shared Q_integrity payload failure rather than a structural failure.
 
 Each immutable PTC product generation q declares a complete segment, scan, or bounded within-scan or within-segment chunk as its publication unit. Required components and links must be durable before that unit is complete, but handoff need not wait for unrelated units or a whole observation. Exact unity is evaluated analytically after support establishment, so neither an array of ones nor a population-wide numerical reduction is required. Shared immutable fact evaluations can be associated logically with occurrences.
 

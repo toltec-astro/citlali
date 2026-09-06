@@ -19,6 +19,11 @@ here and explicitly withheld complete contract approval and freeze. Every new
 family, profile, publication, permission, and boundary choice therefore
 remains an open proposal.
 
+Revision r0.4 is a bounded consistency correction within scientific-owner
+round 1. It changes only the description of structural binding-record defects
+versus integrity of bytes in an already bound payload; it adds no source or
+scientific choice.
+
 \section{Scientific meaning of the uniform family}
 
 For every occurrence in its exact declared support, the PTC-owned coefficient
@@ -60,6 +65,13 @@ authoritative support, scalar publication, family generation, or source
 binding affects every request that references that object. A named-consumer
 permission result affects that consumer and does not determine the other
 consumer.
+
+Classification follows the established identity. A corrupt authoritative
+identity or binding record can prevent structural establishment. Once the
+payload publication identity and bindings are valid, corruption, digest
+failure, or decoder failure in its bound bytes is a payload-integrity fact
+under \(Q_{\rm integrity}\), never structural merely because the bytes are
+corrupt.
 
 Request, applicability, eligibility, and realization answer different
 questions. A requested and applicable profile can finish with an ineligible
@@ -193,8 +205,8 @@ influence bindings; and immutable provenance. A missing or
 conflicting selection-record identity is structural. After that identity is
 bound, its selection value is independently T/F/U/C under UQ-01.
 
-A corrupt or misbound authoritative \(q\)-to-\(g\) object, a missing or
-conflicting shared binding, or an authoritatively ambiguous population makes
+A corrupt or misbound authoritative \(q\)-to-\(g\) identity/binding record, a
+missing or conflicting shared binding, or an authoritatively ambiguous population makes
 every question referencing that shared object unavailable. One attempted
 request that cites a wrong \(q,g\) pair remains request-local and does not
 contaminate the authoritative object.
@@ -269,8 +281,9 @@ ineligible. Missing value in the bound record is \(\mathbf U\);
 contradictory value claims are \(\mathbf C\).\\
 UQ-02 & An authoritative compatibility record permits \(g\) for its already
 bound \(q\). & Explicit incompatibility after a valid shared \(q,g\) binding is
-\(\mathbf F\). A corrupt/misbound shared object is structural at shared scope;
-one attempted wrong pair is request-local. Missing/conflicting compatibility
+\(\mathbf F\). A corrupt/misbound authoritative \(q\)-to-\(g\)
+identity/binding record is structural at shared scope; one attempted wrong pair
+is request-local. Missing/conflicting compatibility
 permission evidence is \(\mathbf U/\mathbf C\).\\
 UQ-03 & The target support equals the complete output support of \(q\), is
 finite and nonempty, and has unique occurrence identities. & Empty support

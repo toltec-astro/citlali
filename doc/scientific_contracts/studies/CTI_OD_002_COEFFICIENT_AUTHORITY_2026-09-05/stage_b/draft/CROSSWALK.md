@@ -1,6 +1,6 @@
 # Requirement crosswalk
 
-Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.3**  
+Draft: **SCI-PTC-COEFFICIENT-UNIFORM v0.1-draft.1 / r0.4**  
 Status: **twenty-five open requirements after scientific-owner review round 1**
 
 Every scientist-facing source below is printed in the short scientific view from the same canonical modules that produce the engineering requirement. The engineering interpretation states the conformance reading without adding a scientific rule.
@@ -23,7 +23,7 @@ Every scientist-facing source below is printed in the short scientific view from
 | UFC-REQ-014 | definitions.tex, Handoff decisions and ownership; edge_cases.tex, Consequences that distinguish the proposal | Assess scalar, unit, integrity, and membership independently; apply F before C before U before all-T while retaining every cause and keeping same-fact contradiction as C. |
 | UFC-REQ-015 | definitions.tex, Handoff decisions and ownership | Store request, applicability, eligibility, and realization separately. A completed negative or unresolved result may be realized; failed finalization leaves no completed evaluation. |
 | UFC-REQ-016 | definitions.tex, Handoff decisions and ownership; assumptions.tex, Scientific choices still awaiting owner approval | Permit no exception, override, advisory fact, mode, or other use to bypass structural identity, payload fidelity, named permission, or another restriction. |
-| UFC-REQ-017 | definitions.tex, Handoff decisions and ownership; edge_cases.tex, Consequences that distinguish the proposal | Scope defects to the defective object: malformed request local, corrupt shared object shared, payload false to its handoffs, and permission state to its consumer; retain all causes. |
+| UFC-REQ-017 | definitions.tex, Handoff decisions and ownership; edge_cases.tex, Consequences that distinguish the proposal | Scope defects to the defective object: malformed request local; corrupt shared identity/binding record shared; after valid binding, corrupt/digest-failing/decoder-invalid payload bytes remain Q_integrity; payload false reaches its handoffs and permission state only its consumer. Retain all causes. |
 | UFC-REQ-018 | definitions.tex, Scientific meaning of the uniform family; assumptions.tex, Scientific assumptions, uncertainty, and route limits | Keep response and uncertainty advisory for coefficient fidelity; infer neither identity response nor zero uncertainty. |
 | UFC-REQ-019 | definitions.tex, Scientific meaning of the uniform family | Prohibit precision, sensitivity, validity, response, covariance, independence, optimality, default, and all other listed meanings. |
 | UFC-REQ-020 | definitions.tex, Consumer boundaries | Change only MAP's coefficient binding; preserve MAP gates and arithmetic, including independent finite-strictly-positive classification. |

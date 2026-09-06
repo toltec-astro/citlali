@@ -57,7 +57,7 @@ revise, or reject:
 shared-fact association, and incremental handoff proposal;
 \item the named-profile identity, independent request rule, four fidelity
 facts, mixed-evidence composition, nonexceptionability, and failure scopes;
-\item the separate MAP and JINC grants and their r0.3 boundary successors;
+\item the separate MAP and JINC grants and their r0.4 boundary successors;
 \item immutable realization, replay, supersession, uncertainty, and Registry
 source-binding rules; and
 \item the proposed actual-owner field, Grant Wilson acting for SCI-PTC.
@@ -115,10 +115,10 @@ request-local record; no shared object changes & That attempted request only\\
 Request lacks enough identity to create a durable named-profile record &
 No eligibility assertion; evaluation artifact is failed or not produced &
 That attempted request only\\
-Shared Registry/source/owner, selection-record identity, application/CAL,
-authoritative \(q\)-to-\(g\) object, target \(R_q\), payload publication, or
-target broadcast is missing, conflicting, corrupt, or misbound; or the
-authoritative population is ambiguous & Applicability unknown or decision
+An authoritative identity/binding record for Registry/source/owner,
+selection, application/CAL, \(q\)-to-\(g\), target \(R_q\), payload
+publication, or target broadcast is missing, conflicting, corrupt, or
+misbound; or the authoritative population identity is ambiguous & Applicability unknown or decision
 unavailable; no UQ-05 evaluation or fallback & Every request referencing the
 defective shared object\\
 Known empty output support of \(q\) & No family instance, coefficient
@@ -151,6 +151,14 @@ Advisory response, uncertainty, or unrelated diagnostic is missing/conflicting
 coefficient-profile failure\\
 \bottomrule
 \end{longtable}
+
+In the structural row, ``corrupt'' modifies an authoritative identity or
+binding record, not bytes of an already bound payload. After valid publication
+identity and binding, authoritative payload-byte corruption, digest failure,
+or decoder-invalid bytes gives \(Q_{\rm integrity}=\mathbf F\); unavailable
+or unexplained integrity evidence gives \(\mathbf U\); and contradictory
+integrity evidence gives \(\mathbf C\). Payload bytes never become structural
+merely because they are corrupt.
 
 \subsection{Noncircular UQ-07 construction and finalization}
 
@@ -217,7 +225,7 @@ UFC-OD-007 & open & Fidelity-fact composition, restrictions,
 nonexceptionability, permission distinctions, and failure scopes.\\
 UFC-OD-008 & open & SCI-MAP permission and MAP use of this family.\\
 UFC-OD-009 & open & SCI-JINC permission and JINC use of this family.\\
-UFC-OD-010 & open & Immutable MAP and JINC r0.3 successor-boundary
+UFC-OD-010 & open & Immutable MAP and JINC r0.4 successor-boundary
 bindings.\\
 UFC-OD-011 & open & Exact actual-owner field; the mathematical draft is not
 blocked.\\
