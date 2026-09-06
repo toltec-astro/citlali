@@ -1,5 +1,37 @@
 # Citlali Refactor Status
 
+## 2026-09-06 Timestream Successor D2 Canonical Admission
+
+The project owner accepted exact independently reviewed admission candidate
+`aeea0eef04ec70d8142c8a20fd7b09dfb64725ed`, tree
+`751f274f57b13883eadb02ab546105601e1f66dc`, and authorized canonical
+admission. After rechecking live GitHub and clean local canonical at
+`00b974c9039d4c3025dcce18f26bca69d36af9c3`, local
+`codex/refactor-mainline` was fast-forwarded literally to that accepted SHA.
+Its ordered parents preserve that canonical history and the validated repair
+`7d57a5acf893ae0f34c3639499484b3f5976768a`. No accepted commit was rewritten.
+
+Fresh independent exact-SHA review passed with recorded limitations and no
+findings on all three required review axes. Owner-run Unity GCC13 job
+`64018093` passed at exact repaired source `7d57a5acf...`: 892/892 runnable
+tests, 8/8 focused D2 tests, matching clean CLI/source identity, clean pinned
+dependencies and 21/21 archive checksum successes. All 1600 tracked inputs
+outside `doc/` and `handoff/` match that source. Evidence remains bound to
+the tested repair; unmanaged runtime deployment labels and owner-held remote
+logs remain explicit limitations.
+
+The [admission closure](../handoff/TIMESTREAM_SUCCESSOR_D2_CANONICAL_ADMISSION_CLOSURE_2026-09-06.md)
+records the owner decision, exact ancestry, evidence and preserved boundaries.
+The [accepted candidate review](../handoff/TIMESTREAM_SUCCESSOR_D2_CANONICAL_ADMISSION_002_EXACT_SHA_REVIEW_2026-09-05.md)
+is preserved verbatim. The documentation-only closeout continues on the owned
+admission branch and requires its own fresh exact-SHA review before its
+fast-forward to canonical; its final identity and review bind externally
+after commit. The owner retains the GitHub push, which has not been performed
+by this task. No further implementation unit is opened. Route activation,
+filtering, factor selection, downsampling, substantive RTC/PTC/AST,
+common-grid, MAP, CAL, production, cleanup and subsequent work remain outside
+this admission. Earlier preparation entries below are historical checkpoints.
+
 ## 2026-09-05 Timestream Successor D2 Canonical Admission 002 Preparation
 
 Owner-approved D2 admission preparation continues against reverified local

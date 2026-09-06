@@ -1,5 +1,33 @@
 # Citlali Integration Ledger
 
+## Timestream Successor D2 Canonical Admission — 2026-09-06
+
+The owner accepted exact candidate
+`aeea0eef04ec70d8142c8a20fd7b09dfb64725ed`, tree
+`751f274f57b13883eadb02ab546105601e1f66dc`, after fresh independent review
+passed with recorded limitations and no findings. The reverified clean local
+canonical branch was fast-forwarded from live-matching
+`00b974c9039d4c3025dcce18f26bca69d36af9c3` to the accepted candidate.
+Its second parent is validated repair
+`7d57a5acf893ae0f34c3639499484b3f5976768a`. Original D2 implementation,
+closure and earlier candidate/repair histories remain intact and reachable.
+
+Unity job `64018093` remains evidence at the exact repair: 892/892 runnable
+tests and 8/8 focused D2 tests passed, with clean source/dependencies, matching
+CLI binding and all 21 archive checksums verified by the owner. Complete
+source/build/config/test equivalence supports reuse for admission; it does
+not relabel Unity execution or accept managed deployment. All accepted MAP
+source-study bytes and D2/VAL ownership remain unchanged.
+
+The [dated admission closure](../handoff/TIMESTREAM_SUCCESSOR_D2_CANONICAL_ADMISSION_CLOSURE_2026-09-06.md)
+and [preserved exact candidate review](../handoff/TIMESTREAM_SUCCESSOR_D2_CANONICAL_ADMISSION_002_EXACT_SHA_REVIEW_2026-09-05.md)
+make the owner disposition durable. This four-path documentation closeout
+uses the existing owned admission branch, with fresh exact-SHA review before
+its fast-forward. The final closure identity and review are recorded externally
+after commit. GitHub publication remains owner-controlled and unperformed by
+this task. No new implementation slot, activation, production, cleanup or
+subsequent Timestream Successor work is authorized.
+
 ## Timestream Successor D2 Canonical Admission 002 Preparation — 2026-09-05
 
 The existing owner-approved admission scope continues in isolated branch
