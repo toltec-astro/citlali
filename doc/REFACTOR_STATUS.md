@@ -1120,6 +1120,24 @@ production change or Unity activity occurs in this step. All retained
 products, empirical conclusions and both known review archives are preserved.
 
 
+On `2026-09-06` the owner requested a review of the Stage A output
+instructions. The [manager instruction review](scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/r0.2/STAGE_A_INSTRUCTION_REVIEW.md)
+found the core r0.1 packet insufficient: its scientific input/output boundary,
+individual decision dispositions, explicit successor dossier and current
+navigation were incomplete. Hash/link checks had not established scientific
+readiness. The manager withdraws the r0.1 approval/launch request while
+preserving its exact bytes and the already approved core scope.
+
+The [r0.2 successor](scientific_contracts/packages/SCI-FRUIT/v0.1/scientific_core/r0.2/README.md)
+repairs the complete eleven-section Scope Brief, maps all eighteen existing
+questions separately, designates the dated internal dossier and recovery
+chain, and updates current package/index navigation. It is a corrected Stage A
+draft for owner scientific review; exact packet approval and explicit launch
+remain outstanding. The explicit xhigh author-effort direction is retained.
+No scientific derivation, numerical choice, experiment, replay, qualification,
+production change or Unity action occurs. All earlier empirical conclusions,
+reduction products, r0.1 input bytes and both review archives are preserved.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
