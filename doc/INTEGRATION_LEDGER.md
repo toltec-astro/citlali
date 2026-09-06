@@ -1,5 +1,28 @@
 # Citlali Integration Ledger
 
+## VAL/D2 Prerequisite Acceptance and Native Target Work Order — 2026-09-06
+
+Owner directive: "I accept and approve this. Let's proceed."
+The accepted prerequisite is exact `080df2a1431487e8cabc255beb9ddc59c0721b59`,
+tree `a619f802a11eca8f9adccbebbf230517b2891945`, sole parent
+`5244e04638db5aa92180feab52acd782229cfa32`. The fresh-context read-only
+review passed with the documented historical SCI-VAL verifier limitation and
+no findings on all three axes. Its preserved external report SHA-256 is
+`665baf8487ab25d3deeb9726c4a21da672fc346b79adde63872197d9383dff1e`;
+11-file evidence-manifest SHA-256 is
+`5b1e7cece633f9ba13f3153df8c0eb513240efcc4313ef7e21955e9fecf46f24`,
+at `/private/tmp/citlali-val-d2-prerequisite-evidence-2026-09-06`.
+
+After verifying the evidence and clean live-matching canonical, local
+canonical was fast-forwarded literally to the accepted SHA. No push occurred.
+The approved [VAL implementation work order](../handoff/TIMESTREAM_SUCCESSOR_VAL_NATIVE_TARGET_001_2026-09-06.md)
+starts from that exact accepted local authority on one clean owned branch.
+The expected live/local difference is solely the admitted work-order commit;
+there is no unseen source/authority overlap to reconcile. The prior reviewed
+proposal, D2 history and all previous evidence remain preserved. This record
+makes the owner's acceptance and source-scope authorization durable; it does
+not preaccept the future source candidate or its representative gate.
+
 ## VAL/D2 Prerequisite Work Order — 2026-09-06
 
 The owner approved authority recovery and preparation of the next bounded
