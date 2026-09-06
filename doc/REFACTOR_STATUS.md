@@ -1045,6 +1045,28 @@ action/duration/cap rules, all science and resource protections, exact paired
 inputs, and independent-pointing replication before policy. EL-F12 stays
 negative, the UID 4460 diagnosis remains closed, and Stage B remains separate.
 
+On `2026-09-06`, the requested next benefit-signal design is ready as the
+[`EL-F14 owner-review proposal`](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F14_BENEFIT_SIGNAL_OWNER_REVIEW_R0.1.md),
+with a fixed [synthetic design](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F14_SKY_TIME_SEPARATION_DESIGN_R0.1.md)
+and [exact manifest](scientific_contracts/packages/SCI-FRUIT/v0.1/empirical_lane/EL_F14_BUNDLE_MANIFEST_R0.1.md).
+It proposes using simultaneous detector differences to constrain sky contrasts
+under an explicit shared additive time model, then bounding the benefit of
+half/full retention against deletion over every compatible sky. Thirteen fixed
+scientific fixtures and four integrity evaluations would test positive,
+harmful, ambiguous and inconsistent cases. Identical-data/different-truth twins
+must expose the inability to distinguish arbitrary sky-shaped contamination.
+The toy contrast margin is not an astronomical endpoint or an EL-F12 gate
+change. A pass could establish only conditional synthetic identifiability;
+real-data timing, response, error bounds and transfer remain unestablished.
+No EL-F14 helper, evaluation, real-data scoring or intervention has been
+implemented or run. The next significant owner decision is exact approval or
+revision of `SCI-FRUIT-EL-F14-SKY-TIME-FEASIBILITY-R0.1`, limited to this
+synthetic method and population. Historical control, all later intervention
+protections and independent-pointing replication before policy remain
+mandatory. Existing reduction products and both review archives are preserved;
+EL-F12/EL-F13 conclusions, the closed UID 4460 diagnosis, full Gate D,
+qualification, Stage B, production and Unity boundaries are unchanged.
+
 The owner approved the exact four-file MAP author packet and Ultra Stage B
 dispatch later on `2026-08-26`; this authoring approval does not approve the
 revision that will be returned.
