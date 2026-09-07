@@ -91,7 +91,7 @@ not evidence that settled science should be reopened.
 
 ## Completion boundary
 
-Local read-only document checks passed: exact restored source; 55 proposed
+Local read-only document checks passed: exact restored source; 56 proposed
 reference identities; all new links; library layout; 52 retained MAP
 requirements and 25 predictions; unchanged uniform bindings; all 1,140
 pre-existing package files and 3,237 pre-existing paths outside the five

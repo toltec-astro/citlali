@@ -4,7 +4,7 @@
   "scientific_base": "8eccf8990027b8f65febb5f20d9a415829152322",
   "scope_brief": {
     "path": "doc/scientific_contracts/studies/SCI_MAP_POST_FREEZE_RECONCILIATION_2026-09-07/SCOPE_BRIEF.md",
-    "sha256": "62984705f67db37641d1f85041c720869f2080d8776d1aa573a44a84fb11e3b9"
+    "sha256": "0b0504ccdcda3d5844c85f7cc563fb81b47f9bb9fb28dda6438cbc8bd368a8bc"
   },
   "policy": "Only the approved Scope Brief and these exact files may enter the future author packet. Links are locators, not permission to open unlisted files. No implementation, audit/review report, validation result, manager dossier or full prior-work inventory is allowed. Missing needed scientific reference returns to the manager and owner.",
   "references": [
@@ -145,6 +145,12 @@
       "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
       "sha256": "99fdb64e42c005afb37740170aa69ba41c50e9c53424dbe936a76ee2a7664229",
       "role": "frozen shared-core view wrapper"
+    },
+    {
+      "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/src/SCI-MAP-v0.1_OWNER_DECISION_REGISTER_r0.1.tex",
+      "source_commit": "8eccf8990027b8f65febb5f20d9a415829152322",
+      "sha256": "740478258f16ef67095798d53a02f7679a20d7a8a8be0c6e6644c4475bc5615d",
+      "role": "direct formal-source input; frozen predecessor decision rendering whose OPEN states are historical and superseded by the approved post-freeze decisions"
     },
     {
       "path": "doc/scientific_contracts/packages/SCI-MAP/v0.1/pdf/SCI-MAP-FORMAL-SCIENTIFIC-ENGINEERING-CONTRACT-v0.1.pdf",

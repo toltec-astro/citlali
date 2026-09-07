@@ -6,8 +6,10 @@ This brief does not freeze a successor or activate any numerical route.
 ## Program adherence and prior-work recovery
 
 This brief follows the [scientific-contract charter](../../README.md),
-[pilot process](../../PILOT_PROCESS_REVIEW_2026-08-16.md) and approved downstream
-sequence. The completed manager [prior-work recovery](PRIOR_WORK.md) is reviewed
+[pilot process](../../PILOT_PROCESS_REVIEW_2026-08-16.md),
+[approved downstream roadmap](../../DOWNSTREAM_CONTRACT_ROADMAP_2026-08-26.md)
+and [frozen MAP predecessor authority](../../packages/SCI-MAP/v0.1/SCIENTIFIC_OWNER_FREEZE_R0.7.1.md).
+The completed manager [prior-work recovery](PRIOR_WORK.md) is reviewed
 with this brief; its implementation-informed content stays outside the author
 packet. The scientific recovery synthesis is:
 
